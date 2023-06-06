@@ -8,6 +8,7 @@ class Wani:
         NoteType = "note"
 
     class RadicalFields:
+        Radical = "Radical"
         Radical_Name = "Radical_Name"
 
     class KanjiFields:
@@ -17,5 +18,6 @@ class Wani:
         Radicals_Icons_Names = "Radicals_Icons_Names"
 
     class VocabFields:
+        Vocab = "Vocab"
         Kanji = "Kanji"
         Vocab_Meaning = "Vocab_Meaning"
