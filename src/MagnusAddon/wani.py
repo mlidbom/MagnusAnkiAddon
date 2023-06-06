@@ -3,10 +3,6 @@ class Wani:
         Kanji = "WaniKanji"
         Vocab = "WaniVocab"
         Radical = "WaniRadical"
-
-    class SearchTags:
-        NoteType = "note"
-
     class RadicalFields:
         Radical = "Radical"
         Radical_Name = "Radical_Name"
@@ -21,3 +17,4 @@ class Wani:
         Vocab = "Vocab"
         Kanji = "Kanji"
         Vocab_Meaning = "Vocab_Meaning"
+

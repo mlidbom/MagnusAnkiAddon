@@ -2,7 +2,8 @@ from typing import List
 from anki.notes import Note
 from aqt import mw, gui_hooks, dialogs
 
-from .wani import Wani
+from .wani import *
+from .my_anki import *
 
 
 def setup_buttons(buttons, the_editor):
@@ -20,7 +21,7 @@ def get_kanji_dependencies(kanji_note: Note) -> List[Note]:
                      kanji_note[Wani.KanjiFields.Radicals_Names].split(",") + kanji_note[
                          Wani.KanjiFields.Radicals_Icons_Names].split(",")]
     radical_note_ids = [mw.col.find_notes(
-        "{}:{} {}:{}".format(Wani.SearchTags.NoteType, Wani.NoteType.Radical, Wani.RadicalFields.Radical_Name,
+        "{}:{} {}:{}".format(SearchTags.NoteType, Wani.NoteType.Radical, Wani.RadicalFields.Radical_Name,
                              radical_name)) for radical_name in
         radical_names]
     radical_note_ids = [item for sublist in radical_note_ids for item in sublist]
@@ -31,7 +32,7 @@ def get_kanji_dependencies(kanji_note: Note) -> List[Note]:
 def get_vocab_dependencies(vocab_note: Note) -> List[Note]:
     kanji_names = [item.strip() for item in vocab_note[Wani.VocabFields.Kanji].split(",")]
     kanji_note_ids = [mw.col.find_notes(
-        "{}:{} {}:{}".format(Wani.SearchTags.NoteType, Wani.NoteType.Kanji, Wani.KanjiFields.Kanji, kanji_name)) for
+        "{}:{} {}:{}".format(SearchTags.NoteType, Wani.NoteType.Kanji, Wani.KanjiFields.Kanji, kanji_name)) for
         kanji_name in kanji_names]
     kanji_note_ids = [item for sublist in kanji_note_ids for item in sublist]
     kanji_notes = [mw.col.get_note(note_id) for note_id in kanji_note_ids]

@@ -1,0 +1,2 @@
+class SearchTags:
+    NoteType = "note"
