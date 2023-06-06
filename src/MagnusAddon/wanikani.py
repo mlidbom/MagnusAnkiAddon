@@ -1,30 +1,8 @@
 from typing import List
-
 from anki.notes import Note
 from aqt import mw, gui_hooks, dialogs
 
-
-class Wani:
-    class NoteType:
-        Kanji = "WaniKanji"
-        Vocab = "WaniVocab"
-        Radical = "WaniRadical"
-
-    class SearchTags:
-        NoteType = "note"
-
-    class RadicalFields:
-        Radical_Name = "Radical_Name"
-
-    class KanjiFields:
-        Kanji_Meaning = "Kanji_Meaning"
-        Kanji = "Kanji"
-        Radicals_Names = "Radicals_Names"
-        Radicals_Icons_Names = "Radicals_Icons_Names"
-
-    class VocabFields:
-        Kanji = "Kanji"
-        Vocab_Meaning = "Vocab_Meaning"
+from src.MagnusAddon.wani import Wani
 
 
 def setup_buttons(buttons, the_editor):
