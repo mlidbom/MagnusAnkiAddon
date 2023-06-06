@@ -2,7 +2,7 @@ from typing import List
 from anki.notes import Note
 from aqt import mw, gui_hooks, dialogs
 
-from src.MagnusAddon.wani import Wani
+from .wani import Wani
 
 
 def setup_buttons(buttons, the_editor):

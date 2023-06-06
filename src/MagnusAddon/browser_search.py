@@ -2,7 +2,7 @@
 import aqt
 from anki.hooks import addHook
 
-from src.MagnusAddon.wani import Wani
+from .wani import Wani
 
 def lookup(text):
     browser = aqt.dialogs.open('Browser', aqt.mw)
