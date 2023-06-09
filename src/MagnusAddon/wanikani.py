@@ -2,71 +2,97 @@ from typing import List
 from anki.notes import Note
 from aqt import mw, gui_hooks, dialogs
 
-from .wani import *
 from .my_anki import *
+from .wani import *
 
 
 def setup_buttons(buttons, the_editor):
-    btn = the_editor.addButton("", "Unsuspend vocab dependencies",
-                               lambda local_editor: unsuspend_vocab_with_dependencies(local_editor.note))
-    buttons.append(btn)
-
-    btn = the_editor.addButton("", "Unsuspend kanji dependencies",
-                               lambda local_editor: unsuspend_kanji_with_dependencies(local_editor.note))
+    btn = the_editor.addButton("", "Unsuspend with dependencies",
+                               lambda local_editor: unsuspend_with_dependencies(local_editor.note))
     buttons.append(btn)
 
 
-def get_kanji_dependencies(kanji_note: Note) -> List[Note]:
-    radical_names = [item.strip() for item in
-                     kanji_note[Wani.KanjiFields.Radicals_Names].split(",") + kanji_note[
-                         Wani.KanjiFields.Radicals_Icons_Names].split(",")]
-    radical_note_ids = [mw.col.find_notes(
-        "{}:{} {}:{}".format(SearchTags.NoteType, Wani.NoteType.Radical, Wani.RadicalFields.Radical_Name,
-                             radical_name)) for radical_name in
-        radical_names]
-    radical_note_ids = [item for sublist in radical_note_ids for item in sublist]
-    radical_notes = [mw.col.get_note(note_id) for note_id in radical_note_ids]
-    return radical_notes
+def unsuspend_with_dependencies(note: Note) -> None:
+    note_type = get_note_type_name(note)
+    if note_type == Wani.NoteType.Vocab:
+        unsuspend_vocab_with_dependencies(note)
+    if note_type == Wani.NoteType.Kanji:
+        unsuspend_kanji_with_dependencies(note, None)
+    if note_type == Wani.NoteType.Radical:
+        unsuspend_radical_with_dependencies(note, None)
 
-
-def get_vocab_dependencies(vocab_note: Note) -> List[Note]:
-    kanji_names = [item.strip() for item in vocab_note[Wani.VocabFields.Kanji].split(",")]
-    kanji_note_ids = [mw.col.find_notes(
-        "{}:{} {}:{}".format(SearchTags.NoteType, Wani.NoteType.Kanji, Wani.KanjiFields.Kanji, kanji_name)) for
-        kanji_name in kanji_names]
-    kanji_note_ids = [item for sublist in kanji_note_ids for item in sublist]
-    kanji_notes = [mw.col.get_note(note_id) for note_id in kanji_note_ids]
-    return kanji_notes
-
-
-def unsuspend_kanji_with_dependencies(kanji_note: Note) -> None:
-    radicals = get_kanji_dependencies(kanji_note)
-    for radical in radicals:
-        print("Unsuspending radical card:{}".format(radical[Wani.RadicalFields.Radical_Name]))
-        mw.col.sched.unsuspend_cards(radical.card_ids())
-
-    print("Unsuspending kanji card:{}".format(kanji_note[Wani.KanjiFields.Kanji_Meaning]))
-    mw.col.sched.unsuspend_cards(kanji_note.card_ids())
     refresh_search()
 
 
 def unsuspend_vocab_with_dependencies(vocab_note: Note) -> None:
-    kanji_notes = get_vocab_dependencies(vocab_note)
-    for kanji_note in kanji_notes:
-        unsuspend_kanji_with_dependencies(kanji_note)
+    kanji_dependencies_names = extract_comma_separated_values(vocab_note[Wani.VocabFields.Kanji])
+    kanji_dependencies_notes = fetch_notes_by_note_type_and_field_value(Wani.NoteType.Kanji, Wani.KanjiFields.Kanji, kanji_dependencies_names)
 
-    for kanji_note in kanji_notes:
-        print("Unsuspending kanji card:{}".format(kanji_note[Wani.KanjiFields.Kanji_Meaning]))
-        mw.col.sched.unsuspend_cards(kanji_note.card_ids())
+    for kanji_note in kanji_dependencies_notes:
+        unsuspend_kanji_with_dependencies(kanji_note, None)
 
-    print("Unsuspending vocab card:{}".format(vocab_note[Wani.VocabFields.Vocab_Meaning]))
+    print("Unsuspending vocab: {}".format(vocab_note[Wani.VocabFields.Vocab_Meaning]))
     mw.col.sched.unsuspend_cards(vocab_note.card_ids())
-    refresh_search()
+
+
+def unsuspend_kanji_with_dependencies(kanji_note: Note, calling_radical_note: Note) -> None:
+    radical_dependencies_names = extract_comma_separated_values(kanji_note[Wani.KanjiFields.Radicals_Names]) + extract_comma_separated_values(kanji_note[Wani.KanjiFields.Radicals_Icons_Names])
+
+    if calling_radical_note is not None and calling_radical_note[
+        Wani.RadicalFields.Radical_Name] in radical_dependencies_names:
+        return  # We do not want to unsuspend the kanji that depends on the radical, only kanji upon which the radical depends
+
+    radical_dependencies_notes = fetch_notes_by_note_type_and_field_value(Wani.NoteType.Radical,
+                                                                          Wani.RadicalFields.Radical_Name,
+                                                                          radical_dependencies_names)
+    for radical in radical_dependencies_notes:
+        unsuspend_radical_with_dependencies(radical, kanji_note)
+
+    print("Unsuspending kanji: {}".format(kanji_note[Wani.KanjiFields.Kanji_Meaning]))
+    mw.col.sched.unsuspend_cards(kanji_note.card_ids())
+
+
+def unsuspend_radical_with_dependencies(radical_note: Note, calling_kanji_note: Note):
+    kanji_dependencies_notes = fetch_notes_by_note_type_and_field_value(Wani.NoteType.Kanji, Wani.KanjiFields.Kanji,
+                                                                  [radical_note[Wani.RadicalFields.Radical]])
+    for kanji in kanji_dependencies_notes:
+        if calling_kanji_note is None or kanji[Wani.KanjiFields.Kanji] != calling_kanji_note[Wani.KanjiFields.Kanji]:
+            unsuspend_kanji_with_dependencies(kanji, radical_note)
+
+    print("Unsuspending radical: {}".format(radical_note[Wani.RadicalFields.Radical_Name]))
+    mw.col.sched.unsuspend_cards(radical_note.card_ids())
+
+
+def fetch_notes_by_note_type_and_field_value(note_type: str, field: str, field_values: List):
+    note_ids = [mw.col.find_notes(
+        "{}:{} {}:{}".format(SearchTags.NoteType, note_type, field, field_value))
+        for field_value in field_values]
+
+    note_ids = flatten_list(note_ids)
+    notes = fetch_notes_by_id(note_ids)
+    return notes
+
+
+def fetch_notes_by_id(note_ids: List):
+    return [mw.col.get_note(note_id) for note_id in note_ids]
+
+
+def extract_comma_separated_values(string: str) -> List:
+    result = [item.strip() for item in string.split(",")]
+    return [] + result
+
+
+def flatten_list(the_list: List):
+    return [item for sub_list in the_list for item in sub_list]
 
 
 def refresh_search():
     browser = dialogs.open('Browser', mw)
     browser.onSearchActivated()
+
+
+def get_note_type_name(note):
+    return note._note_type['name']  # Todo: find how to do this without digging into protected members
 
 
 gui_hooks.editor_did_init_buttons.append(setup_buttons)
