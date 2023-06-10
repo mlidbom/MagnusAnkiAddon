@@ -22,6 +22,7 @@ SEARCH_PROVIDERS = [
     ("&Jisho", [u"https://jisho.org/search/%s"]),
     ("&Wanikani", [u"https://www.wanikani.com/search?query=%s"]),
     ("&Verbix conjugate", [u"https://www.verbix.com/webverbix/japanese/%s"]),
+    ("&Japanese verb conjugator", [u"https://www.japaneseverbconjugator.com/VerbDetails.asp?Go=Conjugate&txtVerb=%s"]),
     ("&Anime Sentences", [u"https://www.immersionkit.com/dictionary?exact=true&sort=shortness&keyword=%s"])
 ]
 
@@ -75,7 +76,7 @@ def add_lookup_action(view, menu):
             label = provider[0]
             menu = search_menu
         else:
-            label = u'Search for "%s" on %s' % (suffix, provider[0])
+            label = provider[0]
         a = menu.addAction(label)
         a.triggered.connect(lambda _, i=idx,t=selected: lookup_online(t, i))
 
