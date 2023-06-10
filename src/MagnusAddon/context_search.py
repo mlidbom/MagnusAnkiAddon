@@ -21,6 +21,7 @@ Based on:
 SEARCH_PROVIDERS = [
     ("&Jisho", [u"https://jisho.org/search/%s"]),
     ("&Wanikani", [u"https://www.wanikani.com/search?query=%s"]),
+    ("&Verbix conjugate", [u"https://www.verbix.com/webverbix/japanese/%s"]),
     ("&Anime Sentences", [u"https://www.immersionkit.com/dictionary?exact=true&sort=shortness&keyword=%s"])
 ]
 
