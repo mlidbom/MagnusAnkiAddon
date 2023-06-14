@@ -3,6 +3,7 @@ class Wani:
         Kanji = "WaniKanji"
         Vocab = "WaniVocab"
         Radical = "WaniRadical"
+
     class RadicalFields:
         Radical = "Radical"
         Radical_Name = "Radical_Name"
@@ -18,3 +19,7 @@ class Wani:
         Kanji = "Kanji"
         Vocab_Meaning = "Vocab_Meaning"
 
+
+class Mine:
+    class Tags:
+        Sentence = "_sentence"
