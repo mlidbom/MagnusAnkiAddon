@@ -25,18 +25,20 @@ def unsuspend_with_dependencies(note: Note) -> None:
 
 
 def unsuspend_vocab_with_dependencies(vocab_note: Note) -> None:
-    kanji_dependencies_names = extract_comma_separated_values(vocab_note[Wani.VocabFields.Kanji])
-    kanji_dependencies_notes = fetch_notes_by_note_type_and_field_value(Wani.NoteType.Kanji, Wani.KanjiFields.Kanji, kanji_dependencies_names)
+    kanji_dependencies_names = extract_characters(vocab_note[Wani.VocabFields.Vocab])
+    kanji_dependencies_notes = fetch_notes_by_note_type_and_field_value(Wani.NoteType.Kanji, Wani.KanjiFields.Kanji,
+                                                                        kanji_dependencies_names)
 
     for kanji_note in kanji_dependencies_notes:
         unsuspend_kanji_with_dependencies(kanji_note, None)
 
-    print("Unsuspending vocab: {}".format(vocab_note[Wani.VocabFields.Vocab_Meaning]))
-    mw.col.sched.unsuspend_cards(vocab_note.card_ids())
+    unsuspend_note_cards(vocab_note, vocab_note[Wani.VocabFields.Vocab_Meaning])
 
 
 def unsuspend_kanji_with_dependencies(kanji_note: Note, calling_radical_note: Note) -> None:
-    radical_dependencies_names = extract_comma_separated_values(kanji_note[Wani.KanjiFields.Radicals_Names]) + extract_comma_separated_values(kanji_note[Wani.KanjiFields.Radicals_Icons_Names])
+    radical_dependencies_names = extract_comma_separated_values(
+        kanji_note[Wani.KanjiFields.Radicals_Names]) + extract_comma_separated_values(
+        kanji_note[Wani.KanjiFields.Radicals_Icons_Names])
 
     if calling_radical_note is not None and calling_radical_note[
         Wani.RadicalFields.Radical_Name] in radical_dependencies_names:
@@ -48,19 +50,22 @@ def unsuspend_kanji_with_dependencies(kanji_note: Note, calling_radical_note: No
     for radical in radical_dependencies_notes:
         unsuspend_radical_with_dependencies(radical, kanji_note)
 
-    print("Unsuspending kanji: {}".format(kanji_note[Wani.KanjiFields.Kanji_Meaning]))
-    mw.col.sched.unsuspend_cards(kanji_note.card_ids())
+    unsuspend_note_cards(kanji_note, kanji_note[Wani.KanjiFields.Kanji_Meaning])
 
 
 def unsuspend_radical_with_dependencies(radical_note: Note, calling_kanji_note: Note):
     kanji_dependencies_notes = fetch_notes_by_note_type_and_field_value(Wani.NoteType.Kanji, Wani.KanjiFields.Kanji,
-                                                                  [radical_note[Wani.RadicalFields.Radical]])
+                                                                        [radical_note[Wani.RadicalFields.Radical]])
     for kanji in kanji_dependencies_notes:
         if calling_kanji_note is None or kanji[Wani.KanjiFields.Kanji] != calling_kanji_note[Wani.KanjiFields.Kanji]:
             unsuspend_kanji_with_dependencies(kanji, radical_note)
 
-    print("Unsuspending radical: {}".format(radical_note[Wani.RadicalFields.Radical_Name]))
-    mw.col.sched.unsuspend_cards(radical_note.card_ids())
+    unsuspend_note_cards(radical_note, radical_note[Wani.RadicalFields.Radical_Name])
+
+
+def unsuspend_note_cards(note: Note, name: str):
+    print("Unsuspending {}: {}".format(get_note_type_name(note), name))
+    mw.col.sched.unsuspend_cards(note.card_ids())
 
 
 def fetch_notes_by_note_type_and_field_value(note_type: str, field: str, field_values: List):
@@ -80,6 +85,10 @@ def fetch_notes_by_id(note_ids: List):
 def extract_comma_separated_values(string: str) -> List:
     result = [item.strip() for item in string.split(",")]
     return [] + result
+
+
+def extract_characters(string):
+    return [char for char in string if not char.isspace()]
 
 
 def flatten_list(the_list: List):
