@@ -58,6 +58,17 @@ def add_sentence_lookup_action(view, menu):
     action.triggered.connect(lambda: lookup(
         "{}:{} {}".format(SearchTags.Tag, Mine.Tags.Sentence, selected)))
 
+def add_listen_lookup_action(view, menu):
+    selected = view.page().selectedText()
+    if not selected:
+        return
+
+    suffix = (selected[:20] + '..') if len(selected) > 20 else selected
+    label = f'Anki -> Listen'
+    action = menu.addAction(label)
+    action.triggered.connect(lambda: lookup(
+        "{}:{} {}".format(SearchTags.Deck, Mine.DeckFilters.Listen, selected)))
+
 
 addHook("AnkiWebView.contextMenuEvent", add_vocab_lookup_action)
 addHook("EditorWebView.contextMenuEvent", add_vocab_lookup_action)
@@ -70,3 +81,6 @@ addHook("EditorWebView.contextMenuEvent", add_radical_lookup_action)
 
 addHook("AnkiWebView.contextMenuEvent", add_sentence_lookup_action)
 addHook("EditorWebView.contextMenuEvent", add_sentence_lookup_action)
+
+addHook("AnkiWebView.contextMenuEvent", add_listen_lookup_action)
+addHook("EditorWebView.contextMenuEvent", add_listen_lookup_action)

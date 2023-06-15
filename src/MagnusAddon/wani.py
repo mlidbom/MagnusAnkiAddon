@@ -23,3 +23,6 @@ class Wani:
 class Mine:
     class Tags:
         Sentence = "_sentence"
+
+    class DeckFilters:
+        Listen = "*listen*"
