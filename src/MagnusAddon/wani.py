@@ -26,3 +26,4 @@ class Mine:
 
     class DeckFilters:
         Listen = "*listen*"
+        Sentence = "*sentence*"
