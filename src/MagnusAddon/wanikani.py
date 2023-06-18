@@ -1,4 +1,6 @@
 from typing import List
+
+import aqt
 from anki.notes import Note
 from aqt import mw, gui_hooks, dialogs
 
@@ -6,7 +8,7 @@ from .my_anki import *
 from .wani_constants import *
 
 
-def setup_buttons(buttons, the_editor):
+def setup_buttons(buttons, the_editor: aqt.editor.Editor):
     btn = the_editor.addButton("", "Unsuspend with dependencies",
                                lambda local_editor: unsuspend_with_dependencies(local_editor.note))
     buttons.append(btn)

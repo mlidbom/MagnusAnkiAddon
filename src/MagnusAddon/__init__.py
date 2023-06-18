@@ -1,1 +1,5 @@
-from . import browser_search, wanikani, context_search, wani_constants, refresh_media_references
+from . import browser_search, \
+    wanikani, \
+    context_search, \
+    refresh_media_references, \
+    test_edit_note
