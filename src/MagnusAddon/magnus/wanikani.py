@@ -1,3 +1,5 @@
+from typing import Optional
+
 import aqt.editor
 from aqt import gui_hooks, dialogs
 
@@ -33,7 +35,7 @@ def unsuspend_vocab_with_dependencies(vocab_note: WaniVocabNote) -> None:
     WaniCollection.unsuspend_note_cards(vocab_note, vocab_note.get_vocab_meaning())
 
 
-def unsuspend_kanji_with_dependencies(kanji_note: WaniKanjiNote, calling_radical_note: WaniRadicalNote) -> None:
+def unsuspend_kanji_with_dependencies(kanji_note: WaniKanjiNote, calling_radical_note: Optional[WaniRadicalNote]) -> None:
     radical_dependencies_names = StringUtils.extract_comma_separated_values(
         kanji_note.get_radicals_names()) + StringUtils.extract_comma_separated_values(
             kanji_note.get_radicals_icons_names())
@@ -48,7 +50,7 @@ def unsuspend_kanji_with_dependencies(kanji_note: WaniKanjiNote, calling_radical
     WaniCollection.unsuspend_note_cards(kanji_note, kanji_note.get_kanji_meaning())
 
 
-def unsuspend_radical_with_dependencies(radical_note: WaniRadicalNote, calling_kanji_note: WaniKanjiNote):
+def unsuspend_radical_with_dependencies(radical_note: WaniRadicalNote, calling_kanji_note: Optional[WaniKanjiNote]):
     kanji_dependencies_notes = WaniCollection.fetch_kanji_notes([radical_note.get_radical()])
     for kanji_note in kanji_dependencies_notes:
         if calling_kanji_note is None or kanji_note.get_kanji() != calling_kanji_note.get_kanji():

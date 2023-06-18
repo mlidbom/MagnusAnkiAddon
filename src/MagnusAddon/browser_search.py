@@ -2,8 +2,8 @@
 import aqt
 from anki.hooks import addHook
 
-from .my_anki import *
-from .wani_constants import *
+from .magnus.my_anki import *
+from .magnus.wani_constants import *
 
 
 def lookup(text):

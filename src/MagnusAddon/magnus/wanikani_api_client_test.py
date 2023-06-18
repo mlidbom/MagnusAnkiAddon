@@ -1,13 +1,13 @@
-from typing import List
+from typing import List, Optional
 
 from wanikani_api.client import Client, models
 
 v2_api_key = "ebeda84c-2f6a-423e-bfc7-3068796ed50a"
 client = Client(v2_api_key)
 
-_all_vocabulary: List[models.Vocabulary] = None
-_all_radicals: List[models.Radical] = None
-_all_kanji: List[models.Kanji] = None
+_all_vocabulary: Optional[List[models.Vocabulary]] = None
+_all_radicals: Optional[List[models.Radical]] = None
+_all_kanji: Optional[List[models.Kanji]] = None
 
 
 def fetch_radicals() -> List[models.Radical]:
