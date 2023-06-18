@@ -1,18 +1,14 @@
-from typing import List
+import aqt.editor
+from aqt import gui_hooks
 
-import aqt
-from anki.notes import Note
-from aqt import mw, gui_hooks, dialogs
+
 from .wanikani_note import *
-
-from .my_anki import *
-from .wani_constants import *
 
 
 def edit_note(kanji_note: WaniKanjiNote):
-    old_value = kanji_note.get_meaning()
+    old_value = kanji_note.get_kanji_meaning()
     new_value = old_value + " edited"
-    kanji_note.set_meaning(new_value)
+    kanji_note.set_kanji_meaning(new_value)
 
 def setup_buttons(buttons, the_editor: aqt.editor.Editor):
     btn = the_editor.addButton("", "Edit note",

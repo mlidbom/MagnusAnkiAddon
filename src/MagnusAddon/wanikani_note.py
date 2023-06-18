@@ -1,4 +1,5 @@
 from anki.notes import Note
+
 from .wani_constants import *
 
 
@@ -22,6 +23,13 @@ class WaniNote:
     def get_sort_id(self): return self._get_field(Wani.KanjiFields.sort_id)
     def set_sort_id(self, value: str) -> None: self._set_field(Wani.KanjiFields.sort_id, value)
 
+    def get_note_type_name(self) -> str:
+        # noinspection PyProtectedMember
+        return self._note._note_type['name']  # Todo: find how to do this without digging into protected members
+
+    def card_ids(self):
+        return self._note.card_ids()
+
 
 class WaniKanjiNote(WaniNote):
     def __init__(self, note: Note):
@@ -30,8 +38,8 @@ class WaniKanjiNote(WaniNote):
     def get_kanji(self): return super()._get_field(Wani.KanjiFields.Kanji)
     def set_kanji(self, value: str) -> None: super()._set_field(Wani.KanjiFields.Kanji, value)
 
-    def get_meaning(self): return super()._get_field(Wani.KanjiFields.Kanji_Meaning)
-    def set_meaning(self, value: str) -> None: super()._set_field(Wani.KanjiFields.Kanji_Meaning, value)
+    def get_kanji_meaning(self): return super()._get_field(Wani.KanjiFields.Kanji_Meaning)
+    def set_kanji_meaning(self, value: str) -> None: super()._set_field(Wani.KanjiFields.Kanji_Meaning, value)
 
     def get_reading_on(self): return super()._get_field(Wani.KanjiFields.Readings_On)
     def set_reading_on(self, value: str) -> None: super()._set_field(Wani.KanjiFields.Readings_On, value)

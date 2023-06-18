@@ -17,7 +17,6 @@ def add_vocab_lookup_action(view, menu):
     if not selected:
         return
 
-    suffix = (selected[:20] + '..') if len(selected) > 20 else selected
     label = f'Anki -> Wanikani Vocab'
     action = menu.addAction(label)
     action.triggered.connect(lambda: lookup(
@@ -29,7 +28,6 @@ def add_kanji_lookup_action(view, menu):
     if not selected:
         return
 
-    suffix = (selected[:20] + '..') if len(selected) > 20 else selected
     label = f'Anki -> Wanikani Kanji'
     action = menu.addAction(label)
     action.triggered.connect(lambda: lookup(
@@ -41,7 +39,6 @@ def add_radical_lookup_action(view, menu):
     if not selected:
         return
 
-    suffix = (selected[:20] + '..') if len(selected) > 20 else selected
     label = f'Anki -> Wanikani Radical'
     action = menu.addAction(label)
     action.triggered.connect(lambda: lookup(
@@ -53,7 +50,6 @@ def add_sentence_lookup_action(view, menu):
     if not selected:
         return
 
-    suffix = (selected[:20] + '..') if len(selected) > 20 else selected
     label = f'Anki -> Sentence'
     action = menu.addAction(label)
     action.triggered.connect(lambda: lookup(
@@ -65,7 +61,6 @@ def add_listen_lookup_action(view, menu):
     if not selected:
         return
 
-    suffix = (selected[:20] + '..') if len(selected) > 20 else selected
     label = f'Anki -> Listen'
     action = menu.addAction(label)
     action.triggered.connect(lambda: lookup(
@@ -77,7 +72,6 @@ def add_listen_sentence_lookup_action(view, menu):
     if not selected:
         return
 
-    suffix = (selected[:20] + '..') if len(selected) > 20 else selected
     label = f'Anki -> Listen Sentence'
     action = menu.addAction(label)
     action.triggered.connect(lambda: lookup(
