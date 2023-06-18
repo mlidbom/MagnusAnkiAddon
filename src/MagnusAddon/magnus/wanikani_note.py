@@ -163,6 +163,10 @@ class WaniVocabNote(WaniKanaVocabNote):
         meanings = ', '.join(str(meaning.meaning) for meaning in wani_vocab.meanings)
         self.set_vocab_meaning(meanings)
 
+        readings = [reading.reading for reading in wani_vocab.readings]
+
+        self.set_reading(", ".join(readings))
+
         self.set_level(wani_vocab.level)
 
 class WaniRadicalNote(WaniNote):
