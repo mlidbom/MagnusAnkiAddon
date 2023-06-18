@@ -3,3 +3,7 @@
 /src/__pycache__/
 /src/MagnusAddon/magnus/__pycache__
 /src/MagnusAddon/wanikani_api/__pycache__
+/src/MagnusAddon/dateutil/__pycache__
+/src/MagnusAddon/dateutil/parser/__pycache__/
+/src/MagnusAddon/dateutil/tz/__pycache__/
+/src/MagnusAddon/dateutil/zoneinfo/__pycache__/

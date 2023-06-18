@@ -86,7 +86,7 @@ class WaniKanjiNote(WaniNote):
 
     def update_from_wani(self, wani_kanji: models.Kanji):
         self.set_meaning_mnemonic(wani_kanji.meaning_mnemonic)
-        self.set_meaning_hint( wani_kanji.meaning_hint)
+        self.set_meaning_hint(wani_kanji.meaning_hint)
 
         self.set_reading_mnemonic(wani_kanji.reading_mnemonic)
         self.set_reading_hint(wani_kanji.reading_hint)
