@@ -147,10 +147,10 @@ class WaniKanaVocabNote(WaniNote):
     def set_reading_mnemonic(self, value: str) -> None: super()._set_field(Wani.KanaVocabFields.Reading_Exp, value)
 
     def get_audio_b(self): return super()._get_field(Wani.KanaVocabFields.Audio_b)
-    def set_audio_b(self, value: str) -> None: super()._set_field(Wani.KanaVocabFields.Audio_b, value)
+    def set_audio_b(self, value: str) -> None: super()._set_field(Wani.KanaVocabFields.Audio_b, "[sound:{}]".format(value))
 
     def get_audio_g(self): return super()._get_field(Wani.KanaVocabFields.Audio_g)
-    def set_audio_g(self, value: str) -> None: super()._set_field(Wani.KanaVocabFields.Audio_g, value)
+    def set_audio_g(self, value: str) -> None: super()._set_field(Wani.KanaVocabFields.Audio_g, "[sound:{}]".format(value))
 
 
 class WaniVocabNote(WaniKanaVocabNote):
@@ -195,6 +195,8 @@ class WaniVocabNote(WaniKanaVocabNote):
         kanji_note = WaniVocabNote(note)
         mw.col.addNote(note)
 
+        kanji_note.set_audio_b("malm_empty.mp3")
+        kanji_note.set_audio_g("malm_empty.mp3")
         kanji_note.set_vocab(wani_vocabulary.characters)
         kanji_note.update_from_wani(wani_vocabulary)
 
