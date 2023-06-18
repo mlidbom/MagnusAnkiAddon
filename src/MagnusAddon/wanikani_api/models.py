@@ -199,6 +199,7 @@ class Subject(Resource):
         self.meaning_mnemonic = resource_data["meaning_mnemonic"]
         self.lesson_position = resource_data["lesson_position"]
         self.spaced_repitition_system_id  = resource_data["spaced_repetition_system_id"]
+        self.resource_data = resource_data
 
     def __str__(self) -> str:
         return f"{['['+meaning.meaning+']' if meaning.primary else meaning.meaning for meaning in self.meanings]}:{[character for character in self.characters] if self.characters else 'UNAVAILABLE'}"

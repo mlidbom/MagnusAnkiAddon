@@ -2,7 +2,7 @@ from anki.notes import Note
 from wanikani_api import models
 
 from .wani_constants import *
-
+from aqt import mw
 
 class WaniNote:
     def __init__(self, note: Note):
@@ -98,6 +98,13 @@ class WaniKanjiNote(WaniNote):
 
         self.set_level(wani_kanji.level)
 
+    def create_from_wani_kanji(wani_kanji: models.Kanji):
+        note = Note(mw.col, mw.col.models.byName(Wani.NoteType.Kanji))
+        note.add_tag("__imported")
+        kanji_note = WaniKanjiNote(note)
+        mw.col.addNote(note)
+        kanji_note.set_kanji(wani_kanji.characters)
+        kanji_note.update_from_wani(wani_kanji)
 
 class WaniKanaVocabNote(WaniNote):
     def __init__(self, note: Note):
@@ -164,10 +171,32 @@ class WaniVocabNote(WaniKanaVocabNote):
         self.set_vocab_meaning(meanings)
 
         readings = [reading.reading for reading in wani_vocab.readings]
-
         self.set_reading(", ".join(readings))
 
+        self.set_speech_type(", ".join(wani_vocab.parts_of_speech))
+
+        if len(wani_vocab.context_sentences) > 0:
+            self.set_context_en(wani_vocab.context_sentences[0].english)
+            self.set_context_jp(wani_vocab.context_sentences[0].japanese)
+
+        if len(wani_vocab.context_sentences) > 1:
+            self.set_context_en_2(wani_vocab.context_sentences[1].english)
+            self.set_context_jp_2(wani_vocab.context_sentences[1].japanese)
+
+        if len(wani_vocab.context_sentences) > 2:
+            self.set_context_en_3(wani_vocab.context_sentences[2].english)
+            self.set_context_jp_3(wani_vocab.context_sentences[2].japanese)
+
         self.set_level(wani_vocab.level)
+
+    def create_from_wani_vocabulary(wani_vocabulary: models.Vocabulary):
+        note = Note(mw.col, mw.col.models.byName(Wani.NoteType.Vocab))
+        note.add_tag("__imported")
+        kanji_note = WaniVocabNote(note)
+        mw.col.addNote(note)
+
+        kanji_note.set_vocab(wani_vocabulary.characters)
+        kanji_note.update_from_wani(wani_vocabulary)
 
 class WaniRadicalNote(WaniNote):
     def __init__(self, note: Note):
@@ -192,3 +221,11 @@ class WaniRadicalNote(WaniNote):
         # self.set_vocab_meaning(meanings)
 
         self.set_level(wani_radical.level)
+
+    def create_from_wani_radical(wani_radical: models.Radical):
+        note = Note(mw.col, mw.col.models.byName(Wani.NoteType.Radical))
+        note.add_tag("__imported")
+        radical_note = WaniRadicalNote(note)
+        mw.col.addNote(note)
+        radical_note.set_radical(wani_radical.characters)
+        radical_note.update_from_wani(wani_radical)

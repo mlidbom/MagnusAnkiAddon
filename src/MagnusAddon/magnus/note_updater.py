@@ -4,7 +4,7 @@ from aqt.utils import showInfo, qconnect
 from aqt.qt import *
 
 from .wanikani_note import *
-from .wanikani_api_client_test import WanikaniClient
+from .wanikani_api_client import WanikaniClient
 from .wani_collection import WaniCollection
 
 waniClient = WanikaniClient()

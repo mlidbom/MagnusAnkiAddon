@@ -17,8 +17,8 @@ class WanikaniClient:
             self._vocab_list: List[models.Vocabulary] = list(client.subjects(types="vocabulary", fetch_all=True))
 
             self._radical_dictionary = {radical.slug: radical for radical in self._radical_list}
-            self._kanji_dictionary = {kanji.slug: kanji for kanji in self._kanji_list}
-            self._vocab_dictionary = {vocab.slug: vocab for vocab in self._vocab_list}
+            self._kanji_dictionary = {kanji.characters: kanji for kanji in self._kanji_list}
+            self._vocab_dictionary = {vocab.characters: vocab for vocab in self._vocab_list}
             self.isInitialized = True
             return self
 
