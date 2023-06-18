@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List
 
 from wanikani_api.client import Client, models
 
@@ -16,9 +16,9 @@ class WanikaniClient:
             self._kanji_list: List[models.Kanji] = list(client.subjects(types="kanji", fetch_all=True))
             self._vocab_list: List[models.Vocabulary] = list(client.subjects(types="vocabulary", fetch_all=True))
 
-            self._radical_dictionary = {radical.characters: radical for radical in self._radical_list}
-            self._kanji_dictionary = {kanji.characters: kanji for kanji in self._kanji_list}
-            self._vocab_dictionary = {vocab.characters: vocab for vocab in self._vocab_list}
+            self._radical_dictionary = {radical.slug: radical for radical in self._radical_list}
+            self._kanji_dictionary = {kanji.slug: kanji for kanji in self._kanji_list}
+            self._vocab_dictionary = {vocab.slug: vocab for vocab in self._vocab_list}
             self.isInitialized = True
             return self
 
@@ -36,7 +36,7 @@ class WanikaniClient:
 
     def get_radical(self, radical_name: str) -> models.Radical:
         self._init()
-        return self._radical_dictionary[radical_name]
+        return self._radical_dictionary[radical_name.replace(" ", "-")]
 
     def get_kanji(self, kanji_name: str) -> models.Kanji:
         self._init()

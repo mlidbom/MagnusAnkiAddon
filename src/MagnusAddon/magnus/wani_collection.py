@@ -32,6 +32,12 @@ class WaniCollection:
         notes = WaniCollection.fetch_notes_by_id(note_ids)
         return notes
 
+    def fetch_notes_by_note_type(note_type: str) -> List[anki.notes.Note]:
+        note_ids = [mw.col.find_notes("{}:{}".format(SearchTags.NoteType, note_type))]
+        note_ids = ListUtils.flatten_list(note_ids)
+        notes = WaniCollection.fetch_notes_by_id(note_ids)
+        return notes
+
     def fetch_kanji_notes(field_values: List) -> List[WaniKanjiNote]:
         notes = WaniCollection.fetch_notes_by_note_type_and_field_value(Wani.NoteType.Kanji, Wani.KanjiFields.Kanji,
                                                                         field_values)
@@ -41,14 +47,29 @@ class WaniCollection:
     def fetch_radical_notes(field_values: List) -> List[WaniRadicalNote]:
         notes = WaniCollection.fetch_notes_by_note_type_and_field_value(Wani.NoteType.Radical,
                                                                         Wani.RadicalFields.Radical_Name, field_values)
-        kanji_notes = [WaniRadicalNote(note) for note in notes]
-        return kanji_notes
+        radical_notes = [WaniRadicalNote(note) for note in notes]
+        return radical_notes
 
     def fetch_vocab_notes(field_values: List) -> List[WaniVocabNote]:
         notes = WaniCollection.fetch_notes_by_note_type_and_field_value(Wani.NoteType.Vocab, Wani.KanjiFields.Kanji,
                                                                         field_values)
-        kanji_notes = [WaniVocabNote(note) for note in notes]
+        vocab_notes = [WaniVocabNote(note) for note in notes]
+        return vocab_notes
+
+    def fetch_all_radical_notes() -> List[WaniRadicalNote]:
+        notes = WaniCollection.fetch_notes_by_note_type(Wani.NoteType.Radical)
+        radical_notes = [WaniRadicalNote(note) for note in notes]
+        return radical_notes
+
+    def fetch_all_kanji_notes() -> List[WaniKanjiNote]:
+        notes = WaniCollection.fetch_notes_by_note_type(Wani.NoteType.Kanji)
+        kanji_notes = [WaniKanjiNote(note) for note in notes]
         return kanji_notes
+
+    def fetch_all_vocab_notes() -> List[WaniVocabNote]:
+        notes = WaniCollection.fetch_notes_by_note_type(Wani.NoteType.Vocab)
+        vocab_notes = [WaniVocabNote(note) for note in notes]
+        return vocab_notes
 
     def fetch_notes_by_id(note_ids: List) -> List[anki.notes.Note]:
         return [mw.col.get_note(note_id) for note_id in note_ids]
