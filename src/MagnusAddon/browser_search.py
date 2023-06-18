@@ -3,7 +3,7 @@ import aqt
 from anki.hooks import addHook
 
 from .my_anki import *
-from .wani import *
+from .wani_constants import *
 
 
 def lookup(text):

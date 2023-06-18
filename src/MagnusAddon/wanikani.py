@@ -3,7 +3,7 @@ from anki.notes import Note
 from aqt import mw, gui_hooks, dialogs
 
 from .my_anki import *
-from .wani import *
+from .wani_constants import *
 
 
 def setup_buttons(buttons, the_editor):
