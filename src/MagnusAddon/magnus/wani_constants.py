@@ -1,4 +1,10 @@
 class Wani:
+    class WaniVocabNoteType:
+        class Card:
+            Reading = "Reading"
+            Listening = "Listening"
+            Recognition = "Recognition"
+
     class NoteType:
         Kanji = "WaniKanji"
         Vocab = "WaniVocab"

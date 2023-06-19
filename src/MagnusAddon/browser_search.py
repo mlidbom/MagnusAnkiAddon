@@ -22,6 +22,22 @@ def add_vocab_lookup_action(view, menu):
     action.triggered.connect(lambda: lookup(
         "{}:{} {}:*{}*".format(SearchTags.NoteType, Wani.NoteType.Vocab, Wani.VocabFields.Vocab, selected)))
 
+def add_vocab_reading_lookup_action(view, menu):
+    selected = view.page().selectedText()
+    if not selected:
+        return
+
+    label = f'Anki -> Wanikani Vocab Reading'
+    action = menu.addAction(label)
+    action.triggered.connect(lambda: lookup(
+        "{}:{} {}:{} {}:{}".format(
+            SearchTags.NoteType,
+            Wani.NoteType.Vocab,
+            SearchTags.Card,
+            Wani.WaniVocabNoteType.Card.Listening,
+            Wani.VocabFields.Reading,
+            selected)))
+
 
 def add_kanji_lookup_action(view, menu):
     selected = view.page().selectedText()
@@ -81,6 +97,9 @@ def add_listen_sentence_lookup_action(view, menu):
 
 addHook("AnkiWebView.contextMenuEvent", add_vocab_lookup_action)
 addHook("EditorWebView.contextMenuEvent", add_vocab_lookup_action)
+
+addHook("AnkiWebView.contextMenuEvent", add_vocab_reading_lookup_action)
+addHook("EditorWebView.contextMenuEvent", add_vocab_reading_lookup_action)
 
 addHook("AnkiWebView.contextMenuEvent", add_kanji_lookup_action)
 addHook("EditorWebView.contextMenuEvent", add_kanji_lookup_action)
