@@ -31,15 +31,16 @@ def import_missing_vocab() -> None:
 
     showInfo("Imported {} vocabulary notes".format(imported))
 
+def fetch_missing_audio() -> None:
+    all_vocabulary: list[WaniVocabNote] = WaniCollection.fetch_all_vocab_notes()
+    local_vocabulary_dictionary = {vocab.get_vocab(): vocab for vocab in all_vocabulary}
+    all_wani_vocabulary = waniClient.list_vocabulary()
+    imported = 0
+    for wani_vocab in all_wani_vocabulary:
+        if wani_vocab.characters not in local_vocabulary_dictionary:
+            print("Importing: {}".format(wani_vocab.slug))
+            WaniVocabNote.create_from_wani_vocabulary(wani_vocab)
+            imported = imported + 1
 
-action = QAction("Import Missing Radicals", mw)
-qconnect(action.triggered, import_missing_radicals)
-mw.form.menuTools.addAction(action)
+    showInfo("Imported {} vocabulary notes".format(imported))
 
-action = QAction("Import Missing Kanji", mw)
-qconnect(action.triggered, import_missing_kanji)
-mw.form.menuTools.addAction(action)
-
-action = QAction("Import Missing Vocabulary", mw)
-qconnect(action.triggered, import_missing_vocab)
-mw.form.menuTools.addAction(action)

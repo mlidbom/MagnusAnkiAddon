@@ -6,10 +6,7 @@ from aqt import gui_hooks, dialogs
 from .wani_collection import *
 
 
-def setup_buttons(buttons, the_editor: aqt.editor.Editor):
-    btn = the_editor.addButton("", "Unsuspend with dependencies",
-                               lambda local_editor: unsuspend_with_dependencies(local_editor.note))
-    buttons.append(btn)
+
 
 
 def unsuspend_with_dependencies(note: Note) -> None:
@@ -64,4 +61,4 @@ def refresh_search():
     browser.onSearchActivated()
 
 
-gui_hooks.editor_did_init_buttons.append(setup_buttons)
+

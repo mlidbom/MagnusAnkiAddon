@@ -10,18 +10,9 @@ from .wani_collection import WaniCollection
 waniClient = WanikaniClient()
 
 
-def get_wani_vocab(vocab_note: WaniVocabNote):
+def update_from_wanikani(vocab_note: WaniVocabNote):
     remote_vocab = waniClient.get_vocab(vocab_note.get_vocab())
     vocab_note.update_from_wani(remote_vocab)
-
-
-def setup_buttons(buttons, the_editor: aqt.editor.Editor):
-    btn = the_editor.addButton("", "Update from wanikani",
-                               lambda local_editor: get_wani_vocab(WaniVocabNote(local_editor.note)))
-    buttons.append(btn)
-
-
-gui_hooks.editor_did_init_buttons.append(setup_buttons)
 
 
 def update_radical() -> None:
@@ -71,16 +62,3 @@ def update_vocab() -> None:
     message = "Successfully matched {} vocab notes.\n Failed:{}".format(updated, failed)
     print(message)
     showInfo(message)
-
-
-action = QAction("Update Radicals", mw)
-qconnect(action.triggered, update_radical)
-mw.form.menuTools.addAction(action)
-
-action = QAction("Update Kanji", mw)
-qconnect(action.triggered, update_kanji)
-mw.form.menuTools.addAction(action)
-
-action = QAction("Update Vocabulary", mw)
-qconnect(action.triggered, update_vocab)
-mw.form.menuTools.addAction(action)
