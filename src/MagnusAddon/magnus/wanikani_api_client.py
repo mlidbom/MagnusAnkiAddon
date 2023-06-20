@@ -4,6 +4,14 @@ from wanikani_api.client import Client, models
 
 
 class WanikaniClient:
+    _instance = None
+
+    @classmethod
+    def get_instance(cls):
+        if not cls._instance:
+            cls._instance = WanikaniClient()
+        return cls._instance
+
     def __init__(self):
         self.isInitialized = False
 
@@ -15,6 +23,10 @@ class WanikaniClient:
             self._radical_list: List[models.Radical] = list(client.subjects(types="radical", fetch_all=True))
             self._kanji_list: List[models.Kanji] = list(client.subjects(types="kanji", fetch_all=True))
             self._vocab_list: List[models.Vocabulary] = list(client.subjects(types="vocabulary", fetch_all=True))
+
+            self._radical_list = [radical for radical in self._radical_list if radical.hidden_at is None]
+            self._kanji_list = [kanji for kanji in self._kanji_list if kanji.hidden_at is None]
+            self._vocab_list = [vocab for vocab in self._vocab_list if vocab.hidden_at is None]
 
             self._radical_dictionary = {radical.slug: radical for radical in self._radical_list}
             self._kanji_dictionary = {kanji.characters: kanji for kanji in self._kanji_list}

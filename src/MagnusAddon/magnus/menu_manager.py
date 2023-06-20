@@ -1,7 +1,7 @@
 import aqt
 
 from magnus import note_updater, note_importer, wanikani
-from aqt.utils import showInfo, qconnect
+from magnus.wani_downloader import WaniDownloader
 from aqt import gui_hooks, mw
 from aqt.qt import *
 
@@ -36,6 +36,22 @@ def build_main_menu():
     qconnect(action.triggered, note_importer.import_missing_vocab)
     sub_menu.addAction(action)
 
+    action = QAction("Download Missing Vocabulary audio", mw)
+    qconnect(action.triggered, WaniDownloader.fetch_missing_vocab_audio)
+    sub_menu.addAction(action)
+
+    action = QAction("Delete Missing Radicals", mw)
+    qconnect(action.triggered, note_updater.delete_missing_radicals)
+    sub_menu.addAction(action)
+
+    action = QAction("Delete Missing Kanji", mw)
+    qconnect(action.triggered, note_updater.delete_missing_kanji)
+    sub_menu.addAction(action)
+
+    action = QAction("Delete Missing Vocabulary", mw)
+    qconnect(action.triggered, note_updater.delete_missing_vocab)
+    sub_menu.addAction(action)
+
 
 def setup_editor_buttons(buttons, the_editor: aqt.editor.Editor):
     unsuspend_button = the_editor.addButton("", "Unsuspend with dependencies",
@@ -47,6 +63,10 @@ def setup_editor_buttons(buttons, the_editor: aqt.editor.Editor):
                                          lambda local_editor: note_updater.update_from_wanikani(
                                              WaniVocabNote(local_editor.note)))
     buttons.append(update_button)
+
+    buttons.append(the_editor.addButton("", "Fetch audio from wanikani",
+                                        lambda local_editor: WaniDownloader.fetch_audio_from_wanikani(
+                                            WaniVocabNote(local_editor.note))))
 
 
 build_main_menu()

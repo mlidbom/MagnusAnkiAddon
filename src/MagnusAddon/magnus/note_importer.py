@@ -7,7 +7,7 @@ from .wanikani_note import *
 from .wanikani_api_client import WanikaniClient
 from .wani_collection import WaniCollection
 
-waniClient = WanikaniClient()
+waniClient = WanikaniClient.get_instance()
 
 
 def import_missing_radicals() -> None:

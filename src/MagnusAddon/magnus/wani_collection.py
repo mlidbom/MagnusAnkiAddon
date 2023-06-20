@@ -69,6 +69,7 @@ class WaniCollection:
     def fetch_all_vocab_notes() -> List[WaniVocabNote]:
         notes = WaniCollection.fetch_notes_by_note_type(Wani.NoteType.Vocab)
         vocab_notes = [WaniVocabNote(note) for note in notes]
+        vocab_notes = [vocab for vocab in vocab_notes if vocab.is_wani_vocab()]
         return vocab_notes
 
     def fetch_notes_by_id(note_ids: List) -> List[anki.notes.Note]:

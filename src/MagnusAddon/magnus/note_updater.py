@@ -7,7 +7,7 @@ from .wanikani_note import *
 from .wanikani_api_client import WanikaniClient
 from .wani_collection import WaniCollection
 
-waniClient = WanikaniClient()
+waniClient = WanikaniClient.get_instance()
 
 
 def update_from_wanikani(vocab_note: WaniVocabNote):
@@ -31,6 +31,7 @@ def update_radical() -> None:
     print(message)
     showInfo(message)
 
+
 def update_kanji() -> None:
     all_kanji: list[WaniKanjiNote] = WaniCollection.fetch_all_kanji_notes()
     fetched = 0
@@ -47,6 +48,7 @@ def update_kanji() -> None:
     print(message)
     showInfo(message)
 
+
 def update_vocab() -> None:
     all_vocabulary: list[WaniVocabNote] = WaniCollection.fetch_all_vocab_notes()
     updated = 0
@@ -60,5 +62,54 @@ def update_vocab() -> None:
             failed = failed + "," + vocab_note.get_vocab()
 
     message = "Successfully matched {} vocab notes.\n Failed:{}".format(updated, failed)
+    print(message)
+    showInfo(message)
+
+
+def delete_missing_radicals() -> None:
+    all_radicals = WaniCollection.fetch_all_radical_notes()
+    deleted = 0
+    deleted_radicals: str = ""
+    for radical_note in all_radicals:
+        try:
+            waniClient.get_radical(radical_note.get_radical_name())
+        except KeyError:
+            deleted = deleted + 1
+            deleted_radicals = deleted_radicals + "," + radical_note.get_radical_name()
+
+    message = "Deleted {} radical notes.".format(deleted, deleted_radicals)
+    print(message)
+    showInfo(message)
+
+
+def delete_missing_kanji() -> None:
+    all_kanji: list[WaniKanjiNote] = WaniCollection.fetch_all_kanji_notes()
+    deleted = 0
+    deleted_kanji: str = ""
+    for kanji_note in all_kanji:
+        try:
+            waniClient.get_kanji(kanji_note.get_kanji())
+        except KeyError:
+            deleted = deleted + 1
+            deleted_kanji = deleted_kanji + "," + kanji_note.get_kanji()
+
+    message = "Deleted {} kanji notes.".format(deleted, deleted_kanji)
+    print(message)
+    showInfo(message)
+
+
+def delete_missing_vocab() -> None:
+    all_vocabulary: list[WaniVocabNote] = WaniCollection.fetch_all_vocab_notes()
+    deleted = 0
+    deleted_vocab: str = ""
+    for vocab_note in all_vocabulary:
+        try:
+            waniClient.get_vocab(vocab_note.get_vocab())
+        except KeyError:
+            deleted = deleted + 1
+            deleted_vocab = deleted_vocab + "," + vocab_note.get_vocab()
+            vocab_note.delete()
+
+    message = "Deleted {} vocab notes.".format(deleted, deleted_vocab)
     print(message)
     showInfo(message)

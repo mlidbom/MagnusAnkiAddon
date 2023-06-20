@@ -57,6 +57,7 @@ class Wani:
 class Mine:
     class Tags:
         Sentence = "_sentence"
+        Wani = "_wani"
 
     class DeckFilters:
         Listen = "*listen*"
