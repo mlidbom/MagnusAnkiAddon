@@ -20,8 +20,8 @@ class Wani:
     class KanjiFields:
         Kanji = "Kanji"
         Kanji_Meaning = "Kanji_Meaning"
-        Readings_On = "Readings_On"
-        Readings_Kun = "Readings_Kun"
+        Reading_On = "Reading_On"
+        Reading_Kun = "Reading_Kun"
         Radicals = "Radicals"
         Radicals_Icons = "Radicals_Icons"
         Radicals_Names = "Radicals_Names"

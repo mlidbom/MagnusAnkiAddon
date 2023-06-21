@@ -1,7 +1,6 @@
 from typing import List
 
 import anki
-from aqt import mw
 
 from .my_anki import *
 from .wanikani_note import *

@@ -1,18 +1,24 @@
-import aqt.editor
-from aqt import gui_hooks, mw
-from aqt.utils import showInfo, qconnect
-from aqt.qt import *
+from aqt.utils import showInfo
 
-from .wanikani_note import *
-from .wanikani_api_client import WanikaniClient
 from .wani_collection import WaniCollection
+from .wanikani_api_client import WanikaniClient
+from .wanikani_note import *
 
 waniClient = WanikaniClient.get_instance()
 
 
-def update_from_wanikani(vocab_note: WaniVocabNote):
-    remote_vocab = waniClient.get_vocab(vocab_note.get_vocab())
-    vocab_note.update_from_wani(remote_vocab)
+def update_from_wanikani(note: Note):
+    # noinspection PyProtectedMember
+    note_type = note._note_type['name']
+    if note_type == Wani.NoteType.Vocab:
+        vocab_note = WaniVocabNote(note)
+        vocab_note.update_from_wani(waniClient.get_vocab(vocab_note.get_vocab()))
+    if note_type == Wani.NoteType.Kanji:
+        kanji_note = WaniKanjiNote(note)
+        kanji_note.update_from_wani(waniClient.get_kanji(kanji_note.get_kanji()))
+    if note_type == Wani.NoteType.Radical:
+        radical_note = WaniRadicalNote(note)
+        radical_note.update_from_wani(waniClient.get_radical(radical_note.get_radical_name()))
 
 
 def update_radical() -> None:

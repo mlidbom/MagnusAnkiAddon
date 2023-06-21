@@ -1,12 +1,8 @@
 from typing import Optional
 
-import aqt.editor
-from aqt import gui_hooks, dialogs
+from aqt import dialogs
 
 from .wani_collection import *
-
-
-
 
 
 def unsuspend_with_dependencies(note: Note) -> None:
@@ -32,10 +28,11 @@ def unsuspend_vocab_with_dependencies(vocab_note: WaniVocabNote) -> None:
     WaniCollection.unsuspend_note_cards(vocab_note, vocab_note.get_vocab_meaning())
 
 
-def unsuspend_kanji_with_dependencies(kanji_note: WaniKanjiNote, calling_radical_note: Optional[WaniRadicalNote]) -> None:
+def unsuspend_kanji_with_dependencies(kanji_note: WaniKanjiNote,
+                                      calling_radical_note: Optional[WaniRadicalNote]) -> None:
     radical_dependencies_names = StringUtils.extract_comma_separated_values(
         kanji_note.get_radicals_names()) + StringUtils.extract_comma_separated_values(
-            kanji_note.get_radicals_icons_names())
+        kanji_note.get_radicals_icons_names())
 
     if calling_radical_note is not None and calling_radical_note.get_radical_name() in radical_dependencies_names:
         return  # We do not want to unsuspend the kanji that depends on the radical, only kanji upon which the radical depends
@@ -59,6 +56,3 @@ def unsuspend_radical_with_dependencies(radical_note: WaniRadicalNote, calling_k
 def refresh_search():
     browser = dialogs.open('Browser', mw)
     browser.onSearchActivated()
-
-
-

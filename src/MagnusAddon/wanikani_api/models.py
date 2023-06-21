@@ -276,7 +276,7 @@ class Kanji(Subject):
             "component_subject_ids"
         ]  #: A list of IDs for the related :class:`.models.Radical` which combine to make this kanji
         self.readings = [
-            Reading(reading_json) for reading_json in self._resource["readings"]
+            KanjiReading(reading_json) for reading_json in self._resource["readings"]
         ]  #: A list of :class:`.models.Reading` related to this Vocabulary.
         self.reading_mnemonic = self._resource["reading_mnemonic"]
         self.meaning_hint = self._resource["meaning_hint"]
@@ -365,6 +365,20 @@ class Reading:
         self.accepted_answer = meaning_json[
             "accepted_answer"
         ]  #: Whether this answer is accepted as correct by Wanikani during review.
+
+class KanjiReading:
+    """
+    Simple class holding information about a given reading of a vocabulary/kanji
+    """
+
+    def __init__(self, meaning_json):
+        #: the actual かな for the reading.
+        self.reading = meaning_json["reading"]
+        self.primary = meaning_json["primary"]  #: Whether this is the primary reading.
+        self.accepted_answer = meaning_json[
+            "accepted_answer"
+        ]  #: Whether this answer is accepted as correct by Wanikani during review.
+        self.type = meaning_json["type"]  #: The kanji reading's classification: kunyomi, nanori, or onyomi.
 
 
 class Assignment(Resource, Subjectable):

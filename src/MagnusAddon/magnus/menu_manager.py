@@ -1,4 +1,4 @@
-import aqt
+from aqt.editor import Editor
 
 from magnus import note_updater, note_importer, wanikani
 from magnus.wani_downloader import WaniDownloader
@@ -53,7 +53,7 @@ def build_main_menu():
     sub_menu.addAction(action)
 
 
-def setup_editor_buttons(buttons, the_editor: aqt.editor.Editor):
+def setup_editor_buttons(buttons, the_editor: Editor):
     unsuspend_button = the_editor.addButton("", "Unsuspend with dependencies",
                                             lambda local_editor: wanikani.unsuspend_with_dependencies(
                                                 local_editor.note))
@@ -61,7 +61,7 @@ def setup_editor_buttons(buttons, the_editor: aqt.editor.Editor):
 
     update_button = the_editor.addButton("", "Update from wanikani",
                                          lambda local_editor: note_updater.update_from_wanikani(
-                                             WaniVocabNote(local_editor.note)))
+                                             local_editor.note))
     buttons.append(update_button)
 
     buttons.append(the_editor.addButton("", "Fetch audio from wanikani",

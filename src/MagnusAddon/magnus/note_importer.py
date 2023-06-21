@@ -1,11 +1,8 @@
-import aqt.editor
-from aqt import gui_hooks, mw
-from aqt.utils import showInfo, qconnect
-from aqt.qt import *
+from aqt.utils import showInfo
 
-from .wanikani_note import *
-from .wanikani_api_client import WanikaniClient
 from .wani_collection import WaniCollection
+from .wanikani_api_client import WanikaniClient
+from .wanikani_note import *
 
 waniClient = WanikaniClient.get_instance()
 

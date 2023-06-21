@@ -2,9 +2,7 @@ import os
 from typing import List
 
 import requests
-from aqt import mw
 
-from magnus import wanikani_api_client
 from magnus.wani_collection import WaniCollection
 from magnus.wanikani_api_client import WanikaniClient
 from magnus.wanikani_note import *
@@ -38,18 +36,18 @@ class WaniDownloader:
         female_audio_mp3 = [audio for audio in wani_vocab.pronunciation_audios if
                             audio.metadata.gender == "female" and audio.content_type == "audio/mpeg"]
         male_audio_mp3 = [audio for audio in wani_vocab.pronunciation_audios if
-                            audio.metadata.gender == "male" and audio.content_type == "audio/mpeg"]
+                          audio.metadata.gender == "male" and audio.content_type == "audio/mpeg"]
 
         if len(female_audio_mp3) > 0:
-            vocab.set_audio_female(cls.download_file(female_audio_mp3[0].url, "Wani_{}_female.mp3".format(wani_vocab.id)))
+            vocab.set_audio_female(
+                cls.download_file(female_audio_mp3[0].url, "Wani_{}_female.mp3".format(wani_vocab.id)))
 
         if len(male_audio_mp3) > 0:
             vocab.set_audio_male(cls.download_file(male_audio_mp3[0].url, "Wani_{}_male.mp3".format(wani_vocab.id)))
 
     @classmethod
     def fetch_missing_vocab_audio(cls):
-        vocab_missing_audio: List[WaniVocabNote] = [vocab for vocab in WaniCollection.fetch_all_vocab_notes() if vocab.get_audio_female() == ""]
+        vocab_missing_audio: List[WaniVocabNote] = [vocab for vocab in WaniCollection.fetch_all_vocab_notes() if
+                                                    vocab.get_audio_female() == ""]
         for vocab in vocab_missing_audio:
             cls.fetch_audio_from_wanikani(vocab)
-
-
