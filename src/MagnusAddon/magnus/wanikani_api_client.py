@@ -13,10 +13,11 @@ class WanikaniClient:
         return cls._instance
 
     def __init__(self):
-        self.isInitialized = False
+        self._is_initialized = False
+
 
     def _init(self):
-        if self.isInitialized is False:
+        if self._is_initialized is False:
             self.v2_api_key = "ebeda84c-2f6a-423e-bfc7-3068796ed50a"
             client = Client(self.v2_api_key)
 
@@ -31,7 +32,7 @@ class WanikaniClient:
             self._radical_dictionary = {radical.slug: radical for radical in self._radical_list}
             self._kanji_dictionary = {kanji.characters: kanji for kanji in self._kanji_list}
             self._vocab_dictionary = {vocab.characters: vocab for vocab in self._vocab_list}
-            self.isInitialized = True
+            self._is_initialized = True
             return self
 
     def list_radicals(self) -> List[models.Radical]:
