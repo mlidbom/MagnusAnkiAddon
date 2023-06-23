@@ -4,6 +4,7 @@ import anki
 
 from magnus.my_anki import *
 from magnus.utils import ListUtils
+from magnus.wani_utils import CardUtils
 from magnus.wanikani_note import *
 
 
@@ -61,6 +62,11 @@ class WaniCollection:
     def fetch_notes_by_id(note_ids: List) -> List[anki.notes.Note]:
         return [mw.col.get_note(note_id) for note_id in note_ids]
 
-    def unsuspend_note_cards(note: WaniNote, name: str):
+    def unsuspend_note_cards(note: WaniNote, name: str) -> None:
         print("Unsuspending {}: {}".format(WaniNote.get_note_type_name(note), name))
         mw.col.sched.unsuspend_cards(note.card_ids())
+
+    def prioritize_note_cards(note: WaniNote, name: str) -> None:
+        cards = [mw.col.get_card(id) for id in note.card_ids()]
+        for card in cards:
+            CardUtils.prioritize(card)

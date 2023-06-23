@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Sequence, Callable
 
 import aqt.browser
 
@@ -10,30 +10,37 @@ from magnus.wani_utils import CardUtils
 
 
 def unsuspend_with_dependencies(note: Note) -> None:
+    visit_note_dependencies(note, WaniCollection.unsuspend_note_cards)
+
+def prioritize_with_dependencies(note: Note) -> None:
+    visit_note_dependencies(note, CardUtils.prioritize_note_cards)
+
+
+def visit_note_dependencies(note, callback):
     # noinspection PyProtectedMember
     note_type = note._note_type['name']
     if note_type == Wani.NoteType.Vocab:
-        unsuspend_vocab_with_dependencies(WaniVocabNote(note))
+        visit_vocab_with_dependencies(WaniVocabNote(note), callback)
     if note_type == Wani.NoteType.Kanji:
-        unsuspend_kanji_with_dependencies(WaniKanjiNote(note), None)
+        visit_kanji_with_dependencies(WaniKanjiNote(note), None, callback)
     if note_type == Wani.NoteType.Radical:
-        unsuspend_radical_with_dependencies(WaniRadicalNote(note), None)
-
+        visit_radical_with_dependencies(WaniRadicalNote(note), None, callback)
     refresh_search()
 
 
-def unsuspend_vocab_with_dependencies(vocab_note: WaniVocabNote) -> None:
+def visit_vocab_with_dependencies(vocab_note: WaniVocabNote, callback: Callable[[WaniNote, str], None]) -> None:
     kanji_dependencies_names = StringUtils.extract_characters(vocab_note.get_vocab())
     kanji_dependencies_notes = WaniCollection.fetch_kanji_notes(kanji_dependencies_names)
 
     for kanji_note in kanji_dependencies_notes:
-        unsuspend_kanji_with_dependencies(kanji_note, None)
+        visit_kanji_with_dependencies(kanji_note, None, callback)
 
-    WaniCollection.unsuspend_note_cards(vocab_note, vocab_note.get_vocab_meaning())
+    callback(vocab_note, vocab_note.get_vocab_meaning())
 
 
-def unsuspend_kanji_with_dependencies(kanji_note: WaniKanjiNote,
-                                      calling_radical_note: Optional[WaniRadicalNote]) -> None:
+def visit_kanji_with_dependencies(kanji_note: WaniKanjiNote,
+                                  calling_radical_note: Optional[WaniRadicalNote],
+                                  callback: Callable[[WaniNote, str], None]) -> None:
     radical_dependencies_names = StringUtils.extract_comma_separated_values(
         kanji_note.get_radicals_names()) + StringUtils.extract_comma_separated_values(
         kanji_note.get_radicals_icons_names())
@@ -43,18 +50,20 @@ def unsuspend_kanji_with_dependencies(kanji_note: WaniKanjiNote,
 
     radical_dependencies_notes = WaniCollection.fetch_radical_notes(radical_dependencies_names)
     for radical in radical_dependencies_notes:
-        unsuspend_radical_with_dependencies(radical, kanji_note)
+        visit_radical_with_dependencies(radical, kanji_note, callback)
 
-    WaniCollection.unsuspend_note_cards(kanji_note, kanji_note.get_kanji_meaning())
+    callback(kanji_note, kanji_note.get_kanji_meaning())
 
 
-def unsuspend_radical_with_dependencies(radical_note: WaniRadicalNote, calling_kanji_note: Optional[WaniKanjiNote]):
+def visit_radical_with_dependencies(radical_note: WaniRadicalNote,
+                                    calling_kanji_note: Optional[WaniKanjiNote],
+                                    callback: Callable[[WaniNote, str], None]):
     kanji_dependencies_notes = WaniCollection.fetch_kanji_notes([radical_note.get_radical()])
     for kanji_note in kanji_dependencies_notes:
         if calling_kanji_note is None or kanji_note.get_kanji() != calling_kanji_note.get_kanji():
-            unsuspend_kanji_with_dependencies(kanji_note, radical_note)
+            visit_kanji_with_dependencies(kanji_note, radical_note, callback)
 
-    WaniCollection.unsuspend_note_cards(radical_note, radical_note.get_radical_name())
+    callback(radical_note, radical_note.get_radical_name())
 
 
 def refresh_search():
@@ -62,8 +71,10 @@ def refresh_search():
     browser.onSearchActivated()
 
 
-def prioritize_cards_with_dependencies(card_ids : List[int]):
+def prioritize_cards_with_dependencies(card_ids : Sequence[int]):
     something = card_ids
     cards = [mw.col.get_card(id) for id in card_ids]
     for card in cards:
-        print(CardUtils.is_new(card))
+        CardUtils.prioritize(card)
+
+    refresh_search()

@@ -55,15 +55,17 @@ def build_main_menu():
 
 
 def setup_editor_buttons(buttons, the_editor: Editor):
-    unsuspend_button = the_editor.addButton("", "Unsuspend with dependencies",
+    buttons.append(the_editor.addButton("", "Unsuspend with dependencies",
                                             lambda local_editor: wani_queue_manager.unsuspend_with_dependencies(
-                                                local_editor.note))
-    buttons.append(unsuspend_button)
+                                                local_editor.note)))
 
-    update_button = the_editor.addButton("", "Update from wanikani",
+    buttons.append(the_editor.addButton("", "prioritize with dependencies",
+                                            lambda local_editor: wani_queue_manager.prioritize_with_dependencies(
+                                                local_editor.note)))
+
+    buttons.append(the_editor.addButton("", "Update from wanikani",
                                          lambda local_editor: note_updater.update_from_wanikani(
-                                             local_editor.note))
-    buttons.append(update_button)
+                                             local_editor.note)))
 
     buttons.append(the_editor.addButton("", "Fetch audio from wanikani",
                                         lambda local_editor: WaniDownloader.fetch_audio_from_wanikani(
