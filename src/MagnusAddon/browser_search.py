@@ -12,7 +12,7 @@ def lookup(text):
     browser.onSearchActivated()
 
 
-def add_vocab_lookup_action(view, menu):
+def add_wani_vocab_lookup_action(view, menu):
     selected = view.page().selectedText()
     if not selected:
         return
@@ -22,21 +22,26 @@ def add_vocab_lookup_action(view, menu):
     action.triggered.connect(lambda: lookup(
         "{}:{} {}:*{}*".format(SearchTags.NoteType, Wani.NoteType.Vocab, Wani.VocabFields.Vocab, selected)))
 
+def add_vocab_lookup_action(view, menu):
+    selected = view.page().selectedText()
+    if not selected:
+        return
+
+    label = f'Anki -> Vocab'
+    action = menu.addAction(label)
+    action.triggered.connect(lambda: lookup(
+        "deck:*Vocab* card:*Listen* (Vocab:*{}* OR Expression:*{}*)".format(selected, selected)))
+
 def add_vocab_reading_lookup_action(view, menu):
     selected = view.page().selectedText()
     if not selected:
         return
 
-    label = f'Anki -> Wanikani Vocab Reading'
+    label = f'Anki -> Vocab Reading'
     action = menu.addAction(label)
     action.triggered.connect(lambda: lookup(
-        "{}:{} {}:{} {}:{}".format(
-            SearchTags.NoteType,
-            Wani.NoteType.Vocab,
-            SearchTags.Card,
-            Wani.WaniVocabNoteType.Card.Listening,
-            Wani.VocabFields.Reading,
-            selected)))
+        "note:*Vocab* card:*Listen* (Reading:{} OR Expression:{})".format(
+            selected, selected)))
 
 
 def add_kanji_lookup_action(view, menu):
@@ -91,9 +96,21 @@ def add_listen_sentence_lookup_action(view, menu):
     label = f'Anki -> Listen Sentence'
     action = menu.addAction(label)
     action.triggered.connect(lambda: lookup(
-        "{}:{} {}:{} {}".format(SearchTags.Deck, Mine.DeckFilters.Listen, SearchTags.Deck, Mine.DeckFilters.Sentence,
-                                selected)))
+        "(deck:*sentence* deck:*listen*) (Jlab-Kanji:*{}* OR Expression:*{}*)".format(selected, selected)))
 
+def add_listen_sentence_reading_lookup_action(view, menu):
+    selected = view.page().selectedText()
+    if not selected:
+        return
+
+    label = f'Anki -> Listen Sentence Reading'
+    action = menu.addAction(label)
+    action.triggered.connect(lambda: lookup(
+        "(deck:*sentence* deck:*listen*) (Jlab-Hiragana:*{}* OR Reading:*{}*)".format(selected, selected)))
+
+
+addHook("AnkiWebView.contextMenuEvent", add_wani_vocab_lookup_action)
+addHook("EditorWebView.contextMenuEvent", add_wani_vocab_lookup_action)
 
 addHook("AnkiWebView.contextMenuEvent", add_vocab_lookup_action)
 addHook("EditorWebView.contextMenuEvent", add_vocab_lookup_action)
@@ -115,3 +132,6 @@ addHook("EditorWebView.contextMenuEvent", add_listen_lookup_action)
 
 addHook("AnkiWebView.contextMenuEvent", add_listen_sentence_lookup_action)
 addHook("EditorWebView.contextMenuEvent", add_listen_sentence_lookup_action)
+
+addHook("AnkiWebView.contextMenuEvent", add_listen_sentence_reading_lookup_action)
+addHook("EditorWebView.contextMenuEvent", add_listen_sentence_reading_lookup_action)
