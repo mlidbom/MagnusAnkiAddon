@@ -1,3 +1,4 @@
+from anki.cards import Card
 from anki.notes import Note
 from aqt import mw
 

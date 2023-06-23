@@ -2,6 +2,7 @@ from anki.cards import Card
 from anki.consts import *
 from aqt import mw
 
+from magnus.wani_constants import Mine, Wani
 from magnus.wanikani_note import WaniNote
 
 
@@ -11,9 +12,19 @@ class CardUtils:
         return card.queue == QUEUE_TYPE_NEW
 
     @classmethod
+    def get_notetype_priority(cls, card : Card):
+        note_type_name = card.note_type()["name"]
+        if note_type_name == Wani.NoteType.Radical: return 1
+        if note_type_name == Wani.NoteType.Kanji: return 2
+        if note_type_name == Wani.NoteType.Vocab: return 3
+
+        return 4 # It's nice to use it for other note types too so default them to 4.
+
+
+    @classmethod
     def prioritize(cls, card: Card):
         if(CardUtils.is_new(card)):
-            card.due = 0
+            card.due = cls.get_notetype_priority(card)
             card.flush()
 
     @classmethod
