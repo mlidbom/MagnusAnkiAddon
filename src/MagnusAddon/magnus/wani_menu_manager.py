@@ -1,6 +1,8 @@
+import aqt.browser
+from anki.cards import Card
 from aqt.editor import Editor
 
-from magnus import note_updater, note_importer, wanikani
+from magnus import note_updater, note_importer, wani_queue_manager
 from magnus.wani_downloader import WaniDownloader
 from aqt import gui_hooks, mw
 from aqt.qt import *
@@ -55,7 +57,7 @@ def build_main_menu():
 
 def setup_editor_buttons(buttons, the_editor: Editor):
     unsuspend_button = the_editor.addButton("", "Unsuspend with dependencies",
-                                            lambda local_editor: wanikani.unsuspend_with_dependencies(
+                                            lambda local_editor: wani_queue_manager.unsuspend_with_dependencies(
                                                 local_editor.note))
     buttons.append(unsuspend_button)
 
@@ -68,6 +70,14 @@ def setup_editor_buttons(buttons, the_editor: Editor):
                                         lambda local_editor: WaniDownloader.fetch_audio_from_wanikani(
                                             WaniVocabNote(local_editor.note))))
 
+def setup_browser_context_menu(browser: aqt.browser.Browser, menu: QMenu):
+    selected_cards = browser.selected_cards()
+
+    if len(selected_cards) == 1:
+        action = menu.addAction("Prioritize with dependencies")
+        action.triggered.connect(lambda: wani_queue_manager.prioritize_cards_with_dependencies(selected_cards))
+
 
 build_main_menu()
 gui_hooks.editor_did_init_buttons.append(setup_editor_buttons)
+gui_hooks.browser_will_show_context_menu.append(setup_browser_context_menu)

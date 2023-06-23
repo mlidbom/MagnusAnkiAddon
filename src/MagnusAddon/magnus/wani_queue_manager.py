@@ -1,5 +1,6 @@
 from typing import Optional
 
+import aqt.browser
 from aqt import dialogs
 
 from .wani_collection import *
@@ -54,5 +55,12 @@ def unsuspend_radical_with_dependencies(radical_note: WaniRadicalNote, calling_k
 
 
 def refresh_search():
-    browser = dialogs.open('Browser', mw)
+    browser: aqt.browser.Browser = dialogs.open('Browser', mw)
     browser.onSearchActivated()
+
+
+def prioritize_cards_with_dependencies(card_ids : List[int]):
+    something = card_ids
+    cards = [mw.col.get_card(id) for id in card_ids]
+    for card in cards:
+        print(card)
