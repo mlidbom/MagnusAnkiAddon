@@ -72,6 +72,9 @@ class WaniNote:
         self.set_level_tag(value)
         self._set_field(Wani.NoteFields.level, str(value))
 
+    def set_auxiliary_meanings_whitelist(self, value:str)-> None: self._set_field(Wani.NoteFields.auxiliary_meanings_whitelist, value)
+    def set_auxiliary_meanings_blacklist(self, value:str)-> None: self._set_field(Wani.NoteFields.auxiliary_meanings_blacklist, value)
+
     def update_from_wani(self, wani_model: models.Subject):
         self.set_level(wani_model.level)
         self.set_subject_id(wani_model.id)
@@ -80,6 +83,15 @@ class WaniNote:
 
         my_learning_order = "level:{:02d}-lesson_position:{:03d}".format(self.get_level(), self.get_lesson_position())
         self._set_my_learning_order(my_learning_order)
+
+        auxiliary_meanings_whitelist = [meaning.meaning for meaning in wani_model.auxiliary_meanings if
+                                        meaning.type == "whitelist"]
+
+        auxiliary_meanings_blacklist = [meaning.meaning for meaning in wani_model.auxiliary_meanings if
+                                        meaning.type == "blacklist"]
+
+        self.set_auxiliary_meanings_whitelist(", ".join(auxiliary_meanings_whitelist))
+        self.set_auxiliary_meanings_blacklist(", ".join(auxiliary_meanings_blacklist))
 
     def delete(self):
         mw.col.remNotes([self._note.id])

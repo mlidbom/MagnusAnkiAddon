@@ -22,8 +22,8 @@ class Wani:
 #        hidden_at = "hidden_at"
 #        spaced_repetition_system_id = "spaced_repetition_system_id"
 #        created_at = "created_at"
-#        auxiliary_meanings_whitelist = "auxiliary_meanings_whitelist"
-#        auxiliary_meanings_blacklist = "auxiliary_meanings_blacklist"
+        auxiliary_meanings_whitelist = "auxiliary_meanings_whitelist"
+        auxiliary_meanings_blacklist = "auxiliary_meanings_blacklist"
 
     class RadicalFields:
         Radical = "Radical"
