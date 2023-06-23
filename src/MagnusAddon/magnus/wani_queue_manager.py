@@ -1,9 +1,12 @@
 from typing import Optional
 
 import aqt.browser
+
 from aqt import dialogs
 
-from .wani_collection import *
+from magnus.utils import StringUtils
+from magnus.wani_collection import *
+from magnus.wani_utils import CardUtils
 
 
 def unsuspend_with_dependencies(note: Note) -> None:
@@ -63,4 +66,4 @@ def prioritize_cards_with_dependencies(card_ids : List[int]):
     something = card_ids
     cards = [mw.col.get_card(id) for id in card_ids]
     for card in cards:
-        print(card)
+        print(CardUtils.is_new(card))

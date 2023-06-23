@@ -1,5 +1,4 @@
 import aqt.browser
-from anki.cards import Card
 from aqt.editor import Editor
 
 from magnus import note_updater, note_importer, wani_queue_manager
