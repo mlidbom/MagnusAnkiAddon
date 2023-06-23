@@ -1,9 +1,9 @@
-from anki.cards import Card
 from anki.notes import Note
 from aqt import mw
 
 from wanikani_api import models
 from .wani_constants import *
+from .wanikani_api_client import WanikaniClient
 
 
 class WaniNote:
@@ -46,7 +46,20 @@ class WaniNote:
     def set_subject_id(self, value: int) -> None: self._set_field(Wani.NoteFields.subject_id, str(value))
 
     def get_lesson_position(self) ->int: return int(self._get_field(Wani.NoteFields.lesson_position))
-    def set_lesson_position(self, value: int) -> None: self._set_field(Wani.NoteFields.lesson_position, str(value))
+    def set_lesson_position(self, value: int) -> None:
+        current_position = self._get_field(Wani.NoteFields.lesson_position)
+
+        # Wani api does some veird stuff sometimes returning 0 as lesson positions for many subjects.
+        # Possibly the ones in the current level or currently being studied.
+        # Anyway, we do NOT want to overwrite valid lesson positions with zeroes!
+        if value > 0:
+            self._set_field(Wani.NoteFields.lesson_position, str(value))
+        else:
+            if current_position == "0" or current_position == "" or current_position is None:
+                self._set_field(Wani.NoteFields.lesson_position, str(value))
+            else:
+                print("Ignoring 0 as value for lesson_position for subject: {}".format(self.get_subject_id()))
+
 
     def get_my_learning_order(self) ->str: return self._get_field(Wani.NoteFields.my_learning_order)
     def _set_my_learning_order(self, value: str) -> None: self._set_field(Wani.NoteFields.my_learning_order, value)
@@ -258,6 +271,14 @@ class WaniVocabNote(WaniKanaVocabNote):
 
         component_subject_ids = [str(id) for id in wani_vocab.component_subject_ids]
         self.set_component_subject_ids(", ".join(component_subject_ids))
+
+        client = WanikaniClient.get_instance()
+        kanji_subjects = [client.get_kanji_by_id(kanji_id) for kanji_id in wani_vocab.component_subject_ids]
+        kanji_characters = [subject.characters for subject in kanji_subjects]
+        self.set_kanji(", ".join(kanji_characters))
+
+        kanji_names = [subject.meanings[0].meaning for subject in kanji_subjects]
+        self.set_kanji_name(", ".join(kanji_names))
 
     def create_from_wani_vocabulary(wani_vocabulary: models.Vocabulary):
         note = Note(mw.col, mw.col.models.byName(Wani.NoteType.Vocab))

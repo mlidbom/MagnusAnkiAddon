@@ -1,7 +1,6 @@
 from aqt.utils import showInfo
 
 from .wani_collection import WaniCollection
-from .wanikani_api_client import WanikaniClient
 from .wanikani_note import *
 
 waniClient = WanikaniClient.get_instance()
@@ -15,7 +14,7 @@ def update_from_wanikani(note: Note):
         vocab_note.update_from_wani(waniClient.get_vocab(vocab_note.get_vocab()))
     if note_type == Wani.NoteType.Kanji:
         kanji_note = WaniKanjiNote(note)
-        kanji_note.update_from_wani(waniClient.get_kanji(kanji_note.get_kanji()))
+        kanji_note.update_from_wani(waniClient.get_kanji_by_name(kanji_note.get_kanji()))
     if note_type == Wani.NoteType.Radical:
         radical_note = WaniRadicalNote(note)
         radical_note.update_from_wani(waniClient.get_radical(radical_note.get_radical_name()))
@@ -44,7 +43,7 @@ def update_kanji() -> None:
     failed: str = ""
     for kanji_note in all_kanji:
         try:
-            wani_kanji = waniClient.get_kanji(kanji_note.get_kanji())
+            wani_kanji = waniClient.get_kanji_by_name(kanji_note.get_kanji())
             kanji_note.update_from_wani(wani_kanji)
             fetched = fetched + 1
         except KeyError:
@@ -94,7 +93,7 @@ def delete_missing_kanji() -> None:
     deleted_kanji: str = ""
     for kanji_note in all_kanji:
         try:
-            waniClient.get_kanji(kanji_note.get_kanji())
+            waniClient.get_kanji_by_name(kanji_note.get_kanji())
         except KeyError:
             deleted = deleted + 1
             deleted_kanji = deleted_kanji + "," + kanji_note.get_kanji()

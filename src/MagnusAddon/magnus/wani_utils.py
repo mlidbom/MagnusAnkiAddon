@@ -2,7 +2,7 @@ from anki.cards import Card
 from anki.consts import *
 from aqt import mw
 
-from magnus.wani_constants import Mine, Wani
+from magnus.wani_constants import Wani
 from magnus.wanikani_note import WaniNote
 
 

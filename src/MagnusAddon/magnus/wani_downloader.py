@@ -4,7 +4,6 @@ from typing import List
 import requests
 
 from magnus.wani_collection import WaniCollection
-from magnus.wanikani_api_client import WanikaniClient
 from magnus.wanikani_note import *
 
 
