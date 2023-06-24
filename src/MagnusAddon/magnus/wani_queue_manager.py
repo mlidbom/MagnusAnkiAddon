@@ -15,6 +15,9 @@ def unsuspend_with_dependencies(note: Note) -> None:
 def prioritize_with_dependencies(note: Note) -> None:
     visit_note_dependencies(note, CardUtils.prioritize_note_cards)
 
+def answer_again_with_zero_interval_for_new_note_cards_with_dependencies(note: Note) -> None:
+    visit_note_dependencies(note, CardUtils.answer_again_with_zero_interval_for_new_note_cards)
+
 
 def visit_note_dependencies(note, callback):
     # noinspection PyProtectedMember
@@ -25,6 +28,7 @@ def visit_note_dependencies(note, callback):
         visit_kanji_with_dependencies(WaniKanjiNote(note), None, callback)
     if note_type == Wani.NoteType.Radical:
         visit_radical_with_dependencies(WaniRadicalNote(note), None, callback)
+
     refresh_search()
 
 
@@ -71,8 +75,7 @@ def refresh_search():
     browser.onSearchActivated()
 
 
-def prioritize_cards_with_dependencies(card_ids : Sequence[int]):
-    something = card_ids
+def prioritize_selected_cards(card_ids : Sequence[int]):
     cards = [mw.col.get_card(id) for id in card_ids]
     for card in cards:
         CardUtils.prioritize(card)

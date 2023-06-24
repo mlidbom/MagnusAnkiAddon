@@ -63,6 +63,10 @@ def setup_editor_buttons(buttons, the_editor: Editor):
                                             lambda local_editor: wani_queue_manager.prioritize_with_dependencies(
                                                 local_editor.note)))
 
+    buttons.append(the_editor.addButton("", "answer again with zero interval with dependencies",
+                                            lambda local_editor: wani_queue_manager.answer_again_with_zero_interval_for_new_note_cards_with_dependencies(
+                                                local_editor.note)))
+
     buttons.append(the_editor.addButton("", "Update from wanikani",
                                          lambda local_editor: note_updater.update_from_wanikani(
                                              local_editor.note)))
@@ -75,8 +79,8 @@ def setup_browser_context_menu(browser: aqt.browser.Browser, menu: QMenu):
     selected_cards = browser.selected_cards()
 
     if len(selected_cards) == 1:
-        action = menu.addAction("Prioritize with dependencies")
-        action.triggered.connect(lambda: wani_queue_manager.prioritize_cards_with_dependencies(selected_cards))
+        action = menu.addAction("Prioritize selected cards")
+        action.triggered.connect(lambda: wani_queue_manager.prioritize_selected_cards(selected_cards))
 
 
 build_main_menu()

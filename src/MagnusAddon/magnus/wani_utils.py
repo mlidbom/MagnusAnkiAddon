@@ -1,10 +1,14 @@
+from anki import scheduler
 from anki.cards import Card
 from anki.consts import *
+from anki.scheduler.v3 import CardAnswer
 from aqt import mw
+from aqt.operations.scheduling import answer_card
+import time
 
 from magnus.wani_constants import Wani
 from magnus.wanikani_note import WaniNote
-
+from anki import scheduler
 
 class CardUtils:
 
@@ -33,3 +37,14 @@ class CardUtils:
         for card in cards:
             print("Prioritizing {}: {}".format(WaniNote.get_note_type_name(note), name))
             CardUtils.prioritize(card)
+
+    @classmethod
+    def answer_again_with_zero_interval_for_new_note_cards(cls, note:WaniNote, name: str):
+        cards = [mw.col.get_card(card_id) for card_id in note.card_ids()]
+        for card in cards:
+            if(CardUtils.is_new(card)):
+                print("Answering new card again {}: {}".format(WaniNote.get_note_type_name(note), name))
+                card.start_timer() #answerCard crashes unless I do this.
+                mw.col.sched.answerCard(card, 1)
+                card.due = int(time.time())
+                card.flush()
