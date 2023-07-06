@@ -61,7 +61,7 @@ def add_lookup_action(view, menu):
     """Add 'lookup' action to context menu"""
     if USE_CUSTOM_STYLESHEET:
         menu.setStyleSheet(stylesheet)
-    selected = view.page().selectedText()
+    selected = view.page().selectedText().strip()
     if not selected:
         return
     

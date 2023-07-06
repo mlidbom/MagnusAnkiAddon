@@ -13,7 +13,7 @@ def lookup(text):
 
 
 def add_wani_vocab_lookup_action(view, menu):
-    selected = view.page().selectedText()
+    selected = view.page().selectedText().strip()
     if not selected:
         return
 
@@ -23,7 +23,7 @@ def add_wani_vocab_lookup_action(view, menu):
         "{}:{} {}:*{}*".format(SearchTags.NoteType, Wani.NoteType.Vocab, Wani.VocabFields.Vocab, selected)))
 
 def add_vocab_lookup_action(view, menu):
-    selected = view.page().selectedText()
+    selected = view.page().selectedText().strip()
     if not selected:
         return
 
@@ -33,7 +33,7 @@ def add_vocab_lookup_action(view, menu):
         "deck:*Vocab* card:*Listen* (Vocab:*{}* OR Expression:*{}*)".format(selected, selected)))
 
 def add_vocab_reading_lookup_action(view, menu):
-    selected = view.page().selectedText()
+    selected = view.page().selectedText().strip()
     if not selected:
         return
 
@@ -45,7 +45,7 @@ def add_vocab_reading_lookup_action(view, menu):
 
 
 def add_kanji_lookup_action(view, menu):
-    selected = view.page().selectedText()
+    selected = view.page().selectedText().strip()
     if not selected:
         return
 
@@ -56,7 +56,7 @@ def add_kanji_lookup_action(view, menu):
 
 
 def add_radical_lookup_action(view, menu):
-    selected = view.page().selectedText()
+    selected = view.page().selectedText().strip()
     if not selected:
         return
 
@@ -67,7 +67,7 @@ def add_radical_lookup_action(view, menu):
 
 
 def add_sentence_lookup_action(view, menu):
-    selected = view.page().selectedText()
+    selected = view.page().selectedText().strip()
     if not selected:
         return
 
@@ -78,7 +78,7 @@ def add_sentence_lookup_action(view, menu):
 
 
 def add_listen_lookup_action(view, menu):
-    selected = view.page().selectedText()
+    selected = view.page().selectedText().strip()
     if not selected:
         return
 
@@ -89,7 +89,7 @@ def add_listen_lookup_action(view, menu):
 
 
 def add_listen_sentence_lookup_action(view, menu):
-    selected = view.page().selectedText()
+    selected = view.page().selectedText().strip()
     if not selected:
         return
 
@@ -99,7 +99,7 @@ def add_listen_sentence_lookup_action(view, menu):
         "(deck:*sentence* deck:*listen*) (Jlab-Kanji:*{}* OR Expression:*{}*)".format(selected, selected)))
 
 def add_listen_sentence_reading_lookup_action(view, menu):
-    selected = view.page().selectedText()
+    selected = view.page().selectedText().strip()
     if not selected:
         return
 
