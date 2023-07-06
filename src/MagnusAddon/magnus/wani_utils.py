@@ -1,14 +1,12 @@
-from anki import scheduler
-from anki.cards import Card
-from anki.consts import *
-from anki.scheduler.v3 import CardAnswer
-from aqt import mw
-from aqt.operations.scheduling import answer_card
 import time
+
+from anki.cards import Card
+from anki.consts import QUEUE_TYPE_NEW
+from aqt import mw
 
 from magnus.wani_constants import Wani
 from magnus.wanikani_note import WaniNote
-from anki import scheduler
+
 
 class CardUtils:
 

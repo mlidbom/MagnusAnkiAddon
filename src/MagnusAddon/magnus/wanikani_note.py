@@ -177,6 +177,25 @@ class WaniKanjiNote(WaniNote):
         component_subject_ids = [str(id) for id in wani_kanji.component_subject_ids]
         self.set_component_subject_ids(", ".join(component_subject_ids))
 
+        radicals = [WanikaniClient.get_instance().get_radical_by_id(int(radical_id)) for radical_id in component_subject_ids]
+        radicals_with_characters = [radical for radical in radicals if len(radical.characters) > 0]
+        radicals_without_characters = [radical for radical in radicals if len(radical.characters) == 0]
+
+        radical_characters = [radical.characters for radical in radicals_with_characters]
+        self.set_radicals(", ".join(radical_characters))
+
+        radical_names = [radical.meanings[0].meaning for radical in radicals_with_characters]
+        self.set_radicals_names(", ".join(radical_names))
+
+        characterless_radical_names = [radical.meanings[0].meaning for radical in radicals_without_characters]
+        self.set_radicals_icons_names(", ".join(characterless_radical_names))
+
+        radical_images_lists = [radical.character_images for radical in radicals_without_characters]
+        #self.set_radicals_icons(",".join(radical_characters))
+
+        # radical_images = [radical.character_images for radical in radicals]
+
+
     def create_from_wani_kanji(wani_kanji: models.Kanji):
         note = Note(mw.col, mw.col.models.byName(Wani.NoteType.Kanji))
         note.add_tag("__imported")

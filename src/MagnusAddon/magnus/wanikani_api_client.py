@@ -32,6 +32,7 @@ class WanikaniClient:
             self._radical_dictionary = {radical.slug: radical for radical in self._radical_list}
             self._kanji_dictionary = {kanji.characters: kanji for kanji in self._kanji_list}
             self._kanji_id_dictionary = {kanji.id: kanji for kanji in self._kanji_list}
+            self._radical_id_dictionary = {radical.id: radical for radical in self._radical_list}
             self._vocab_dictionary = {vocab.characters: vocab for vocab in self._vocab_list}
             self._is_initialized = True
             return self
@@ -51,6 +52,10 @@ class WanikaniClient:
     def get_radical(self, radical_name: str) -> models.Radical:
         self._init()
         return self._radical_dictionary[radical_name.replace(" ", "-")]
+
+    def get_radical_by_id(self, radical_id: int) -> models.Radical:
+        self._init()
+        return self._radical_id_dictionary[radical_id]
 
     def get_kanji_by_name(self, kanji_name: str) -> models.Kanji:
         self._init()
