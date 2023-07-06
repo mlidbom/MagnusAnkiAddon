@@ -148,6 +148,9 @@ class WaniKanjiNote(WaniNote):
     def get_component_subject_ids(self): return super()._get_field(Wani.KanjiFields.component_subject_ids)
     def set_component_subject_ids(self, value: str) -> None: super()._set_field(Wani.KanjiFields.component_subject_ids, value)
 
+    def get_vocabs(self): return super()._get_field(Wani.KanjiFields.Vocabs)
+    def set_vocabs(self, value: str) -> None: super()._set_field(Wani.KanjiFields.Vocabs, value)
+
     def update_from_wani(self, wani_kanji: models.Kanji):
         super().update_from_wani(wani_kanji)
         
@@ -177,9 +180,10 @@ class WaniKanjiNote(WaniNote):
         component_subject_ids = [str(id) for id in wani_kanji.component_subject_ids]
         self.set_component_subject_ids(", ".join(component_subject_ids))
 
-        radicals = [WanikaniClient.get_instance().get_radical_by_id(int(radical_id)) for radical_id in component_subject_ids]
-        radicals_with_characters = [radical for radical in radicals if len(radical.characters) > 0]
-        radicals_without_characters = [radical for radical in radicals if len(radical.characters) == 0]
+        client = WanikaniClient.get_instance()
+        radicals = [client.get_radical_by_id(int(radical_id)) for radical_id in component_subject_ids]
+        radicals_with_characters = [radical for radical in radicals if radical.characters is not None]
+        radicals_without_characters = [radical for radical in radicals if radical.characters is None]
 
         radical_characters = [radical.characters for radical in radicals_with_characters]
         self.set_radicals(", ".join(radical_characters))
@@ -192,9 +196,22 @@ class WaniKanjiNote(WaniNote):
 
         radical_images_lists = [radical.character_images for radical in radicals_without_characters]
         #self.set_radicals_icons(",".join(radical_characters))
-
         # radical_images = [radical.character_images for radical in radicals]
 
+        vocabs = [client.get_vocab_by_id(int(kanji_id)) for kanji_id in amalgamation_subject_ids]
+        vocab_html = '''
+<div class="vocabList">
+    <div>'''
+
+        for vocab in vocabs:
+            vocab_html = vocab_html + '''
+        <div>{} ({}) {}</div>'''.format(vocab.characters, vocab.readings[0].reading, vocab.meanings[0].meaning)
+
+        vocab_html = vocab_html + '''
+    </div>
+</div>
+'''
+        self.set_vocabs(vocab_html)
 
     def create_from_wani_kanji(wani_kanji: models.Kanji):
         note = Note(mw.col, mw.col.models.byName(Wani.NoteType.Kanji))

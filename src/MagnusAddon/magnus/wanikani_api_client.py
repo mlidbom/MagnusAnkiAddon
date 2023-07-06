@@ -31,9 +31,13 @@ class WanikaniClient:
 
             self._radical_dictionary = {radical.slug: radical for radical in self._radical_list}
             self._kanji_dictionary = {kanji.characters: kanji for kanji in self._kanji_list}
-            self._kanji_id_dictionary = {kanji.id: kanji for kanji in self._kanji_list}
-            self._radical_id_dictionary = {radical.id: radical for radical in self._radical_list}
             self._vocab_dictionary = {vocab.characters: vocab for vocab in self._vocab_list}
+
+            self._radical_id_dictionary = {radical.id: radical for radical in self._radical_list}
+            self._kanji_id_dictionary = {kanji.id: kanji for kanji in self._kanji_list}
+            self._vocab_id_dictionary = {vocab.id: vocab for vocab in self._vocab_list}
+
+
             self._is_initialized = True
             return self
 
@@ -64,6 +68,10 @@ class WanikaniClient:
     def get_kanji_by_id(self, kanji_id: int) -> models.Kanji:
         self._init()
         return self._kanji_id_dictionary[kanji_id]
+
+    def get_vocab_by_id(self, vocab_id: int) -> models.Kanji:
+        self._init()
+        return self._vocab_id_dictionary[vocab_id]
 
     def get_vocab(self, vocab_name: str) -> models.Vocabulary:
         self._init()

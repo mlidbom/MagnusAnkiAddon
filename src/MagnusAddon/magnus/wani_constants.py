@@ -51,6 +51,8 @@ class Wani:
         amalgamation_subject_ids = "amalgamation_subject_ids"
         component_subject_ids = "component_subject_ids"
 
+        Vocabs = "Vocabs"
+
     class KanaVocabFields:
         Vocab = "Vocab"
         Vocab_Meaning = "Vocab_Meaning"
