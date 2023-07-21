@@ -23,7 +23,7 @@ SEARCH_PROVIDERS = [
     ("&Wanikani", [u"https://www.wanikani.com/search?query=%s"]),
     ("&Verbix conjugate", [u"https://www.verbix.com/webverbix/japanese/%s"]),
     ("&Japanese verb conjugator", [u"https://www.japaneseverbconjugator.com/VerbDetails.asp?Go=Conjugate&txtVerb=%s"]),
-    ("&Anime Sentences", [u"https://www.immersionkit.com/dictionary?exact=true&sort=shortness&keyword=%s"])
+    ("&Immersion Kit", [u"https://www.immersionkit.com/dictionary?exact=true&sort=shortness&keyword=%s"])
 ]
 
 # (Advanced) Use custom context menu style sheet, somewhat buggy

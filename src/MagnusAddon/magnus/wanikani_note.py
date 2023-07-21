@@ -199,6 +199,7 @@ class WaniKanjiNote(WaniNote):
         # radical_images = [radical.character_images for radical in radicals]
 
         vocabs = [client.get_vocab_by_id(int(kanji_id)) for kanji_id in amalgamation_subject_ids]
+        vocabs.sort(key=lambda vocab: (vocab.level, vocab.lesson_position))
         vocab_html = '''
 <div class="vocabList">
     <div>'''

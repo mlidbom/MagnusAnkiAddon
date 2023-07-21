@@ -7,11 +7,31 @@ waniClient = WanikaniClient.get_instance()
 
 
 def import_missing_radicals() -> None:
-    showInfo("")
+    all_radicals: list[WaniRadicalNote] = WaniCollection.fetch_all_radical_notes()
+    local_radicals_dictionary = {radical.get_subject_id(): radical for radical in all_radicals}
+    all_wani_radicals = waniClient.list_radicals()
+    imported = 0
+    for wani_radical in all_wani_radicals:
+        if wani_radical.id not in local_radicals_dictionary:
+            print("Importing: {}".format(wani_radical.slug))
+            WaniRadicalNote.create_from_wani_radical(wani_radical)
+            imported = imported + 1
+
+    showInfo("Imported {} radical notes".format(imported))
 
 
 def import_missing_kanji() -> None:
-    showInfo("message")
+    all_kanji: list[WaniKanjiNote] = WaniCollection.fetch_all_kanji_notes()
+    local_kanji_dictionary = {kanji.get_subject_id(): kanji for kanji in all_kanji}
+    all_wani_kanji = waniClient.list_kanji()
+    imported = 0
+    for wani_kanji in all_wani_kanji:
+        if wani_kanji.id not in local_kanji_dictionary:
+            print("Importing: {}".format(wani_kanji.slug))
+            WaniKanjiNote.create_from_wani_kanji(wani_kanji)
+            imported = imported + 1
+
+    showInfo("Imported {} kanji notes".format(imported))
 
 
 def import_missing_vocab() -> None:

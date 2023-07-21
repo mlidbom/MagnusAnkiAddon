@@ -16,6 +16,7 @@ def prioritize_with_dependencies(note: Note) -> None:
     visit_note_dependencies(note, CardUtils.prioritize_note_cards)
 
 def answer_again_with_zero_interval_for_new_note_cards_with_dependencies(note: Note) -> None:
+    prioritize_with_dependencies(note)
     visit_note_dependencies(note, CardUtils.answer_again_with_zero_interval_for_new_note_cards)
 
 
@@ -54,7 +55,8 @@ def visit_kanji_with_dependencies(kanji_note: WaniKanjiNote,
 
     radical_dependencies_notes = WaniCollection.fetch_radical_notes(radical_dependencies_names)
     for radical in radical_dependencies_notes:
-        visit_radical_with_dependencies(radical, kanji_note, callback)
+        if calling_radical_note is None or radical.get_radical_name() != calling_radical_note.get_radical_name():
+            visit_radical_with_dependencies(radical, kanji_note, callback)
 
     callback(kanji_note, kanji_note.get_kanji_meaning())
 
