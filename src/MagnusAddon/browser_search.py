@@ -27,21 +27,21 @@ def add_vocab_lookup_action(view, menu):
     if not selected:
         return
 
-    label = f'Anki -> Vocab'
+    label = f'Anki -> Vocab Wildcard'
     action = menu.addAction(label)
     action.triggered.connect(lambda: lookup(
-        "deck:*Vocab* card:*Listen* (Vocab:*{}* OR Expression:*{}*)".format(selected, selected)))
+        "deck:*Vocab* card:*Listen* (Vocab:*{}* OR Expression:*{}* OR Reading:*{}*)".format(selected, selected, selected)))
 
 def add_vocab_reading_lookup_action(view, menu):
     selected = view.page().selectedText().strip()
     if not selected:
         return
 
-    label = f'Anki -> Vocab Reading'
+    label = f'Anki -> Vocab Exact'
     action = menu.addAction(label)
     action.triggered.connect(lambda: lookup(
-        "note:*Vocab* card:*Listen* (Reading:{} OR Expression:{})".format(
-            selected, selected)))
+        "deck:*Vocab* card:*Listen* (Vocab:{} OR Expression:{} OR Reading:{})".format(
+            selected, selected, selected)))
 
 
 def add_kanji_lookup_action(view, menu):
