@@ -1,10 +1,14 @@
 import aqt.browser
+from anki.cards import Card
 from aqt.editor import Editor
 
 from magnus import note_updater, note_importer, wani_queue_manager
+from magnus.wani_constants import Wani
 from magnus.wani_downloader import WaniDownloader
 from aqt import gui_hooks, mw
 from aqt.qt import *
+import win32clipboard
+import re
 
 from magnus.wanikani_note import WaniVocabNote
 
@@ -83,6 +87,22 @@ def setup_browser_context_menu(browser: aqt.browser.Browser, menu: QMenu):
         action.triggered.connect(lambda: wani_queue_manager.prioritize_selected_cards(selected_cards))
 
 
+def set_clipboard_text(text):
+    win32clipboard.OpenClipboard()
+    win32clipboard.EmptyClipboard()
+    win32clipboard.SetClipboardText(text, win32clipboard.CF_UNICODETEXT)
+    win32clipboard.CloseClipboard()
+
+def copy_sort_field_to_windows_clipboard(card: Card):
+    note = card.note()
+    model = note.model()
+    sort_field = model['sortf']
+    sort_value = note.fields[sort_field]
+    clean_string = re.sub('<.*?>', '', sort_value)
+    set_clipboard_text(clean_string)
+
+
 build_main_menu()
 gui_hooks.editor_did_init_buttons.append(setup_editor_buttons)
 gui_hooks.browser_will_show_context_menu.append(setup_browser_context_menu)
+gui_hooks.reviewer_did_show_answer.append(copy_sort_field_to_windows_clipboard)
