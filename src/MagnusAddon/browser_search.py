@@ -63,7 +63,9 @@ def add_radical_lookup_action(view, menu):
     label = f'Anki -> Wanikani Radical'
     action = menu.addAction(label)
     action.triggered.connect(lambda: lookup(
-        "{}:{} {}:{}".format(SearchTags.NoteType, Wani.NoteType.Radical, Wani.RadicalFields.Radical, selected)))
+        "{}:{} ({}:{} OR {}:{})".format(SearchTags.NoteType, Wani.NoteType.Radical,
+                                        Wani.RadicalFields.Radical, selected,
+                                        Wani.RadicalFields.Radical_Name, selected)))
 
 
 def add_sentence_lookup_action(view, menu):

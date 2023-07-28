@@ -19,11 +19,13 @@ Based on:
 # list of tuples of search provider names and urls.
 # '%s' will be replaced with the search term
 SEARCH_PROVIDERS = [
+    ("&Takoboto", [u"https://takoboto.jp/?q=%s"]),
     ("&Jisho", [u"https://jisho.org/search/%s"]),
     ("&Wanikani", [u"https://www.wanikani.com/search?query=%s"]),
     ("&Verbix conjugate", [u"https://www.verbix.com/webverbix/japanese/%s"]),
     ("&Japanese verb conjugator", [u"https://www.japaneseverbconjugator.com/VerbDetails.asp?Go=Conjugate&txtVerb=%s"]),
-    ("&Immersion Kit", [u"https://www.immersionkit.com/dictionary?exact=true&sort=shortness&keyword=%s"])
+    ("&Immersion Kit", [u"https://www.immersionkit.com/dictionary?exact=true&sort=shortness&keyword=%s"]),
+    ("&Deepl", [u"https://www.deepl.com/en/translator#ja/en/%s"])
 ]
 
 # (Advanced) Use custom context menu style sheet, somewhat buggy
