@@ -14,7 +14,7 @@ def update_kanji_names(all_vocabulary, all_kanji):
         kanji_list = StringUtils.extract_characters(vocab_note.get_vocab())
         kanji_list = [item for item in kanji_list if item in kanji_dict]
         kanji_meanings = [kanji_dict[kanji] for kanji in kanji_list]
-        kanji_names_string = " ".join(kanji_meanings)
+        kanji_names_string = " # ".join(kanji_meanings)
         vocab_note.set_kanji_name(kanji_names_string)
 
 def update_vocab() -> None:
