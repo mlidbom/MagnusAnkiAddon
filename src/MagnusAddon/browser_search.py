@@ -17,31 +17,24 @@ def add_wani_vocab_lookup_action(view, menu):
     if not selected:
         return
 
-    label = f'Anki -> Wanikani Vocab'
-    action = menu.addAction(label)
-    action.triggered.connect(lambda: lookup(
-        "{}:{} {}:*{}*".format(SearchTags.NoteType, Wani.NoteType.Vocab, Wani.VocabFields.Vocab, selected)))
+    action = menu.addAction(f'Anki -> Wanikani Vocab')
+    action.triggered.connect(lambda: lookup(f"{SearchTags.NoteType}:{Wani.NoteType.Vocab} {Wani.VocabFields.Vocab}:*{selected}*"))
 
 def add_vocab_lookup_action(view, menu):
     selected = view.page().selectedText().strip()
     if not selected:
         return
 
-    label = f'Anki -> Vocab Wildcard'
-    action = menu.addAction(label)
-    action.triggered.connect(lambda: lookup(
-        "deck:*Vocab* card:*Listen* (Vocab:*{}* OR Expression:*{}* OR Reading:*{}*)".format(selected, selected, selected)))
+    action = menu.addAction(f'Anki -> Vocab Wildcard')
+    action.triggered.connect(lambda: lookup(f"deck:*Vocab* card:*Listen* (Vocab:*{selected}* OR Reading:*{selected}*)"))
 
 def add_vocab_reading_lookup_action(view, menu):
     selected = view.page().selectedText().strip()
     if not selected:
         return
 
-    label = f'Anki -> Vocab Exact'
-    action = menu.addAction(label)
-    action.triggered.connect(lambda: lookup(
-        "deck:*Vocab* card:*Listen* (Vocab:{} OR Expression:{} OR Reading:{})".format(
-            selected, selected, selected)))
+    action = menu.addAction(f'Anki -> Vocab Exact')
+    action.triggered.connect(lambda: lookup("deck:*Vocab* card:*Listen* (Vocab:{} OR Reading:{})".format(selected, selected)))
 
 
 def add_kanji_lookup_action(view, menu):
@@ -49,10 +42,8 @@ def add_kanji_lookup_action(view, menu):
     if not selected:
         return
 
-    label = f'Anki -> Wanikani Kanji'
-    action = menu.addAction(label)
-    action.triggered.connect(lambda: lookup(
-        "{}:{} {}:{}".format(SearchTags.NoteType, Wani.NoteType.Kanji, Wani.KanjiFields.Kanji, selected)))
+    action = menu.addAction(f'Anki -> Wanikani Kanji')
+    action.triggered.connect(lambda: lookup("{}:{} {}:{}".format(SearchTags.NoteType, Wani.NoteType.Kanji, Wani.KanjiFields.Kanji, selected)))
 
 
 def add_radical_lookup_action(view, menu):
@@ -60,10 +51,8 @@ def add_radical_lookup_action(view, menu):
     if not selected:
         return
 
-    label = f'Anki -> Wanikani Radical'
-    action = menu.addAction(label)
-    action.triggered.connect(lambda: lookup(
-        "{}:{} ({}:{} OR {}:{})".format(SearchTags.NoteType, Wani.NoteType.Radical,
+    action = menu.addAction(f'Anki -> Wanikani Radical')
+    action.triggered.connect(lambda: lookup("{}:{} ({}:{} OR {}:{})".format(SearchTags.NoteType, Wani.NoteType.Radical,
                                         Wani.RadicalFields.Radical, selected,
                                         Wani.RadicalFields.Radical_Name, selected)))
 
@@ -73,10 +62,8 @@ def add_sentence_lookup_action(view, menu):
     if not selected:
         return
 
-    label = f'Anki -> Sentence'
-    action = menu.addAction(label)
-    action.triggered.connect(lambda: lookup(
-        "{}:{} {}".format(SearchTags.Tag, Mine.Tags.Sentence, selected)))
+    action = menu.addAction(f'Anki -> Sentence')
+    action.triggered.connect(lambda: lookup("{}:{} {}".format(SearchTags.Tag, Mine.Tags.Sentence, selected)))
 
 
 def add_listen_lookup_action(view, menu):
@@ -84,10 +71,8 @@ def add_listen_lookup_action(view, menu):
     if not selected:
         return
 
-    label = f'Anki -> Listen'
-    action = menu.addAction(label)
-    action.triggered.connect(lambda: lookup(
-        "{}:{} {}".format(SearchTags.Deck, Mine.DeckFilters.Listen, selected)))
+    action = menu.addAction(f'Anki -> Listen')
+    action.triggered.connect(lambda: lookup("{}:{} {}".format(SearchTags.Deck, Mine.DeckFilters.Listen, selected)))
 
 
 def add_listen_sentence_lookup_action(view, menu):
@@ -95,20 +80,16 @@ def add_listen_sentence_lookup_action(view, menu):
     if not selected:
         return
 
-    label = f'Anki -> Listen Sentence'
-    action = menu.addAction(label)
-    action.triggered.connect(lambda: lookup(
-        "(deck:*sentence* deck:*listen*) (Jlab-Kanji:*{}* OR Expression:*{}*)".format(selected, selected)))
+    action = menu.addAction(f'Anki -> Listen Sentence')
+    action.triggered.connect(lambda: lookup("(deck:*sentence* deck:*listen*) (Jlab-Kanji:*{}* OR Expression:*{}*)".format(selected, selected)))
 
 def add_listen_sentence_reading_lookup_action(view, menu):
     selected = view.page().selectedText().strip()
     if not selected:
         return
 
-    label = f'Anki -> Listen Sentence Reading'
-    action = menu.addAction(label)
-    action.triggered.connect(lambda: lookup(
-        "(deck:*sentence* deck:*listen*) (Jlab-Hiragana:*{}* OR Reading:*{}*)".format(selected, selected)))
+    action = menu.addAction(f'Anki -> Listen Sentence Reading')
+    action.triggered.connect(lambda: lookup("(deck:*sentence* deck:*listen*) (Jlab-Hiragana:*{}* OR Reading:*{}*)".format(selected, selected)))
 
 
 addHook("AnkiWebView.contextMenuEvent", add_wani_vocab_lookup_action)

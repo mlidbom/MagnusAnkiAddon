@@ -1,5 +1,5 @@
 from typing import *
-
+import re
 
 class ListUtils:
     def flatten_list(the_list: List):
@@ -13,3 +13,6 @@ class StringUtils:
     def extract_comma_separated_values(string: str) -> List:
         result = [item.strip() for item in string.split(",")]
         return [] + result
+
+    def strip_markup(string:str) -> str:
+        return re.sub('<.*?>', '', string)

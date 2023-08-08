@@ -2,8 +2,7 @@ import aqt.browser
 from anki.cards import Card
 from aqt.editor import Editor
 
-from magnus import note_updater, note_importer, wani_queue_manager
-from magnus.wani_constants import Wani
+from magnus import wani_note_updater, note_importer, wani_queue_manager, local_note_updater
 from magnus.wani_downloader import WaniDownloader
 from aqt import gui_hooks, mw
 from aqt.qt import *
@@ -12,50 +11,37 @@ import re
 
 from magnus.wanikani_note import WaniVocabNote
 
+def add_menu_action(sub_menu, heading, callback):
+    qaction = QAction(heading, mw)
+    qconnect(qaction.triggered, callback)
+    sub_menu.addAction(qaction)
 
 def build_main_menu():
-    sub_menu = QMenu("Wanikani", mw)
-    mw.form.menuTools.addMenu(sub_menu)
+    my_menu = QMenu("Magnus", mw)
+    mw.form.menuTools.addMenu(my_menu)
 
-    action = QAction("Update Radicals", mw)
-    qconnect(action.triggered, note_updater.update_radical)
-    sub_menu.addAction(action)
+    local_menu = QMenu("Local", mw)
+    my_menu.addMenu(local_menu)
+    build_local_menu(local_menu)
 
-    action = QAction("Update Kanji", mw)
-    qconnect(action.triggered, note_updater.update_kanji)
-    sub_menu.addAction(action)
+    wani_menu = QMenu("Wanikani", mw)
+    my_menu.addMenu(wani_menu)
+    build_wani_menu(wani_menu)
 
-    action = QAction("Update Vocabulary", mw)
-    qconnect(action.triggered, note_updater.update_vocab)
-    sub_menu.addAction(action)
+def build_local_menu(sub_menu):
+    add_menu_action(sub_menu, "Update Vocab Kanji Names", local_note_updater.update_vocab)
 
-    action = QAction("Import Missing Radicals", mw)
-    qconnect(action.triggered, note_importer.import_missing_radicals)
-    sub_menu.addAction(action)
-
-    action = QAction("Import Missing Kanji", mw)
-    qconnect(action.triggered, note_importer.import_missing_kanji)
-    sub_menu.addAction(action)
-
-    action = QAction("Import Missing Vocabulary", mw)
-    qconnect(action.triggered, note_importer.import_missing_vocab)
-    sub_menu.addAction(action)
-
-    action = QAction("Download Missing Vocabulary audio", mw)
-    qconnect(action.triggered, WaniDownloader.fetch_missing_vocab_audio)
-    sub_menu.addAction(action)
-
-    action = QAction("Delete Missing Radicals", mw)
-    qconnect(action.triggered, note_updater.delete_missing_radicals)
-    sub_menu.addAction(action)
-
-    action = QAction("Delete Missing Kanji", mw)
-    qconnect(action.triggered, note_updater.delete_missing_kanji)
-    sub_menu.addAction(action)
-
-    action = QAction("Delete Missing Vocabulary", mw)
-    qconnect(action.triggered, note_updater.delete_missing_vocab)
-    sub_menu.addAction(action)
+def build_wani_menu(sub_menu):
+    add_menu_action(sub_menu, "Update Radicals", wani_note_updater.update_radical)
+    add_menu_action(sub_menu, "Update Kanji", wani_note_updater.update_kanji)
+    add_menu_action(sub_menu, "Update Vocabulary", wani_note_updater.update_vocab)
+    add_menu_action(sub_menu, "Import Missing Radicals", note_importer.import_missing_radicals)
+    add_menu_action(sub_menu, "Import Missing Kanji", note_importer.import_missing_kanji)
+    add_menu_action(sub_menu, "Import Missing Vocabulary", note_importer.import_missing_vocab)
+    add_menu_action(sub_menu, "Download Missing Vocabulary audio", WaniDownloader.fetch_missing_vocab_audio)
+    add_menu_action(sub_menu, "Delete Missing Radicals", wani_note_updater.delete_missing_radicals)
+    add_menu_action(sub_menu, "Delete Missing Kanji", wani_note_updater.delete_missing_kanji)
+    add_menu_action(sub_menu, "Delete Missing Vocabulary", wani_note_updater.delete_missing_vocab)
 
 
 def setup_editor_buttons(buttons, the_editor: Editor):
@@ -72,7 +58,7 @@ def setup_editor_buttons(buttons, the_editor: Editor):
                                                 local_editor.note)))
 
     buttons.append(the_editor.addButton("", "Update from wanikani",
-                                         lambda local_editor: note_updater.update_from_wanikani(
+                                         lambda local_editor: wani_note_updater.update_from_wanikani(
                                              local_editor.note)))
 
     buttons.append(the_editor.addButton("", "Fetch audio from wanikani",
@@ -88,10 +74,13 @@ def setup_browser_context_menu(browser: aqt.browser.Browser, menu: QMenu):
 
 
 def set_clipboard_text(text):
-    win32clipboard.OpenClipboard()
-    win32clipboard.EmptyClipboard()
-    win32clipboard.SetClipboardText(text, win32clipboard.CF_UNICODETEXT)
-    win32clipboard.CloseClipboard()
+    try:
+        win32clipboard.OpenClipboard()
+        win32clipboard.EmptyClipboard()
+        win32clipboard.SetClipboardText(text, win32clipboard.CF_UNICODETEXT)
+        win32clipboard.CloseClipboard()
+    except:
+        pass  # Occationally this code randomly fails. Let's not have that result in a crash of the addon OK?
 
 def copy_sort_field_to_windows_clipboard(card: Card):
     note = card.note()
@@ -99,6 +88,7 @@ def copy_sort_field_to_windows_clipboard(card: Card):
     sort_field = model['sortf']
     sort_value = note.fields[sort_field]
     clean_string = re.sub('<.*?>', '', sort_value)
+    clean_string = re.sub('\[.*?\]', '', clean_string)
     set_clipboard_text(clean_string)
 
 

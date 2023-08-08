@@ -47,6 +47,7 @@ class Wani:
         Meaning_Info = "Meaning_Info"
         Reading_Mnemonic = "Reading_Mnemonic"
         Reading_Info = "Reading_Info"
+        Override_meaning = "__meaning_Override"
 
         amalgamation_subject_ids = "amalgamation_subject_ids"
         component_subject_ids = "component_subject_ids"

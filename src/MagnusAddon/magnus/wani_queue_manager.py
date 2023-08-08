@@ -34,10 +34,10 @@ def visit_note_dependencies(note, callback):
 
 
 def visit_vocab_with_dependencies(vocab_note: WaniVocabNote, callback: Callable[[WaniNote, str], None]) -> None:
-    kanji_dependencies_names = StringUtils.extract_characters(vocab_note.get_vocab())
-    kanji_dependencies_notes = WaniCollection.fetch_kanji_notes(kanji_dependencies_names)
+    kanji_list = StringUtils.extract_characters(vocab_note.get_vocab())
+    kanji_notes = WaniCollection.fetch_kanji_notes(kanji_list)
 
-    for kanji_note in kanji_dependencies_notes:
+    for kanji_note in kanji_notes:
         visit_kanji_with_dependencies(kanji_note, None, callback)
 
     callback(vocab_note, vocab_note.get_vocab_meaning())

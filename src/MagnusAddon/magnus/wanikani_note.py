@@ -107,7 +107,12 @@ class WaniKanjiNote(WaniNote):
     def get_kanji(self): return super()._get_field(Wani.KanjiFields.Kanji)
     def set_kanji(self, value: str) -> None: super()._set_field(Wani.KanjiFields.Kanji, value)
 
-    def get_kanji_meaning(self): return super()._get_field(Wani.KanjiFields.Kanji_Meaning)
+    def get_kanji_meaning(self):
+        meaning = super()._get_field(Wani.KanjiFields.Override_meaning)
+        if meaning != "":
+            return meaning
+        return super()._get_field(Wani.KanjiFields.Kanji_Meaning)
+
     def set_kanji_meaning(self, value: str) -> None: super()._set_field(Wani.KanjiFields.Kanji_Meaning, value)
 
     def get_reading_on(self): return super()._get_field(Wani.KanjiFields.Reading_On)
@@ -278,18 +283,6 @@ class WaniKanaVocabNote(WaniNote):
 
         self.set_speech_type(", ".join(wani_vocab.parts_of_speech))
 
-        if len(wani_vocab.context_sentences) > 0:
-            self.set_context_en(wani_vocab.context_sentences[0].english)
-            self.set_context_jp(wani_vocab.context_sentences[0].japanese)
-
-        if len(wani_vocab.context_sentences) > 1:
-            self.set_context_en_2(wani_vocab.context_sentences[1].english)
-            self.set_context_jp_2(wani_vocab.context_sentences[1].japanese)
-
-        if len(wani_vocab.context_sentences) > 2:
-            self.set_context_en_3(wani_vocab.context_sentences[2].english)
-            self.set_context_jp_3(wani_vocab.context_sentences[2].japanese)
-
 
 class WaniVocabNote(WaniKanaVocabNote):
     def __init__(self, note: Note):
@@ -329,13 +322,26 @@ class WaniVocabNote(WaniKanaVocabNote):
         kanji_names = [subject.meanings[0].meaning for subject in kanji_subjects]
         self.set_kanji_name(", ".join(kanji_names))
 
-    def create_from_wani_vocabulary(wani_vocabulary: models.Vocabulary):
+    def create_from_wani_vocabulary(wani_vocab: models.Vocabulary):
         note = Note(mw.col, mw.col.models.byName(Wani.NoteType.Vocab))
         note.add_tag("__imported")
         kanji_note = WaniVocabNote(note)
         mw.col.addNote(note)
-        kanji_note.set_vocab(wani_vocabulary.characters)
-        kanji_note.update_from_wani(wani_vocabulary)
+        kanji_note.set_vocab(wani_vocab.characters)
+        kanji_note.update_from_wani(wani_vocab)
+
+        #Do not move to update method or we will wipe out local changes made to the context sentences.
+        if len(wani_vocab.context_sentences) > 0:
+            kanji_note.set_context_en(wani_vocab.context_sentences[0].english)
+            kanji_note.set_context_jp(wani_vocab.context_sentences[0].japanese)
+
+        if len(wani_vocab.context_sentences) > 1:
+            kanji_note.set_context_en_2(wani_vocab.context_sentences[1].english)
+            kanji_note.set_context_jp_2(wani_vocab.context_sentences[1].japanese)
+
+        if len(wani_vocab.context_sentences) > 2:
+            kanji_note.set_context_en_3(wani_vocab.context_sentences[2].english)
+            kanji_note.set_context_jp_3(wani_vocab.context_sentences[2].japanese)
 
 
 class WaniRadicalNote(WaniNote):
