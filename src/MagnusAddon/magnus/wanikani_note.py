@@ -19,8 +19,10 @@ class WaniNote:
         return self._note[field_name]
 
     def _set_field(self, field_name: str, value: str) -> None:
-        self._assert_field_exists(field_name)
-        if self._note[field_name] != value:
+        field_value = self._note[field_name]
+        if field_value is None:
+            raise ValueError("No field named:" + field_name)
+        if field_value != value:
             self._note[field_name] = value
             self._note.flush()
 

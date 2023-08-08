@@ -2,14 +2,22 @@
 import aqt
 from PyQt6.QtWidgets import QMenu
 from anki.hooks import addHook
+from aqt.browser import Browser
 
 from .magnus.wani_constants import *
 
 
 def lookup(text):
-    browser = aqt.dialogs.open('Browser', aqt.mw)
+    browser: Browser = aqt.dialogs.open('Browser', aqt.mw)
     browser.form.searchEdit.lineEdit().setText(text)
     browser.onSearchActivated()
+
+#Works sometimes, unsure of the pattern.
+    if browser._previewer is None:
+        browser.onTogglePreview()
+    else:
+        browser._previewer.activateWindow()
+
 
 def add_lookup_action(menu:QMenu, name: str, search:str):
     action = menu.addAction(name)
@@ -26,7 +34,7 @@ def register_lookup_actions(view, root_menu: QMenu):
     add_lookup_action(menu, "Vocab Wildcard" , f"deck:*Vocab* card:*Listen* (Vocab:*{selected}* OR Reading:*{selected}*)")
     add_lookup_action(menu, "Vocab Exact", f"deck:*Vocab* card:*Listen* (Vocab:{selected} OR Reading:{selected})")
     add_lookup_action(menu, "Kanji", f"note:{Wani.NoteType.Kanji} {Wani.KanjiFields.Kanji}:{selected}")
-    add_lookup_action(menu, "Radical", f"note:{Wani.NoteType.Radical} ({Wani.RadicalFields.Radical}:{selected} OR {Wani.RadicalFields.Radical_Name}:{selected}")
+    add_lookup_action(menu, "Radical", f"note:{Wani.NoteType.Radical} ({Wani.RadicalFields.Radical}:{selected} OR {Wani.RadicalFields.Radical_Name}:{selected})")
     add_lookup_action(menu, "Sentence", f"tag:{Mine.Tags.Sentence} {selected}")
     add_lookup_action(menu, "Listen", f"deck:{Mine.DeckFilters.Listen} {selected}")
     add_lookup_action(menu, "Listen Sentence", f"(deck:*sentence* deck:*listen*) (Jlab-Kanji:*{selected}* OR Expression:*{selected}*)")
