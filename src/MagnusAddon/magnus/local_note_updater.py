@@ -1,5 +1,3 @@
-from aqt.utils import showInfo
-
 from .utils import StringUtils
 from .wani_collection import WaniCollection
 from .wanikani_note import *
