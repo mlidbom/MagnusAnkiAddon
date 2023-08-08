@@ -23,6 +23,15 @@ def add_lookup_action(menu:QMenu, name: str, search:str):
     action = menu.addAction(name)
     action.triggered.connect(lambda: lookup(search))
 
+def build_kanji_search_string(selected: str) -> str:
+    clauses = " OR ".join([f"{Wani.KanjiFields.Kanji}:{char}" for char in selected])
+    return f"note:{Wani.NoteType.Kanji} ( {clauses} )"
+
+def build_radical_search_string(selected: str) -> str:
+    start = f"{Wani.RadicalFields.Radical_Name}:{selected} OR"
+    clauses = " OR ".join([f"{Wani.RadicalFields.Radical}:{char}" for char in selected])
+    return f"note:{Wani.NoteType.Radical} ( {start} {clauses} )"
+
 def register_lookup_actions(view, root_menu: QMenu):
     selected = view.page().selectedText().strip()
     if not selected:
@@ -30,10 +39,10 @@ def register_lookup_actions(view, root_menu: QMenu):
 
     menu = root_menu.addMenu("Anki Search")
 
-    add_lookup_action(menu, "Kanji", f"note:{Wani.NoteType.Kanji} {Wani.KanjiFields.Kanji}:{selected}")
+    add_lookup_action(menu, "Kanji", build_kanji_search_string(selected))
     add_lookup_action(menu, "Vocab Wildcard" , f"deck:*Vocab* deck:*Read* (Vocab:*{selected}* OR Reading:*{selected}*)")
     add_lookup_action(menu, "Vocab Exact", f"deck:*Vocab* deck:*Read* (Vocab:{selected} OR Reading:{selected})")
-    add_lookup_action(menu, "Radical", f"note:{Wani.NoteType.Radical} ({Wani.RadicalFields.Radical}:{selected} OR {Wani.RadicalFields.Radical_Name}:{selected})")
+    add_lookup_action(menu, "Radical", build_radical_search_string(selected))
     add_lookup_action(menu, "Sentence", f"tag:{Mine.Tags.Sentence} {selected}")
     add_lookup_action(menu, "Listen", f"deck:{Mine.DeckFilters.Listen} {selected}")
     add_lookup_action(menu, "Listen Sentence", f"(deck:*sentence* deck:*listen*) (Jlab-Kanji:*{selected}* OR Expression:*{selected}*)")
