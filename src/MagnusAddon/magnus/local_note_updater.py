@@ -7,7 +7,7 @@ from .wanikani_note import *
 def prepare_kanji_meaning(kanji: WaniKanjiNote) -> str:
     meaning = kanji.get_kanji_meaning()
     meaning = StringUtils.strip_markup(meaning)
-    meaning = meaning.strip().lower().replace(",", "/").replace(" ", "")
+    meaning = meaning.strip().replace(",", "/").replace(" ", "")
     return meaning
 
 def update_kanji_names(all_vocabulary, all_kanji):

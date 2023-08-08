@@ -35,7 +35,7 @@ def import_missing_kanji() -> None:
 
 
 def import_missing_vocab() -> None:
-    all_vocabulary: list[WaniVocabNote] = WaniCollection.fetch_all_vocab_notes()
+    all_vocabulary: list[WaniVocabNote] = WaniCollection.fetch_all_wani_vocab_notes()
     local_vocabulary_dictionary = {vocab.get_vocab(): vocab for vocab in all_vocabulary}
     all_wani_vocabulary = waniClient.list_vocabulary()
     imported = 0
@@ -48,7 +48,7 @@ def import_missing_vocab() -> None:
     showInfo("Imported {} vocabulary notes".format(imported))
 
 def fetch_missing_audio() -> None:
-    all_vocabulary: list[WaniVocabNote] = WaniCollection.fetch_all_vocab_notes()
+    all_vocabulary: list[WaniVocabNote] = WaniCollection.fetch_all_wani_vocab_notes()
     local_vocabulary_dictionary = {vocab.get_vocab(): vocab for vocab in all_vocabulary}
     all_wani_vocabulary = waniClient.list_vocabulary()
     imported = 0

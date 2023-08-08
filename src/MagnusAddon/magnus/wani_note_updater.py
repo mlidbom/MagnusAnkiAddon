@@ -55,7 +55,7 @@ def update_kanji() -> None:
 
 
 def update_vocab() -> None:
-    all_vocabulary: list[WaniVocabNote] = WaniCollection.fetch_all_vocab_notes()
+    all_vocabulary: list[WaniVocabNote] = WaniCollection.fetch_all_wani_vocab_notes()
     updated = 0
     failed: str = ""
     for vocab_note in all_vocabulary:
@@ -104,7 +104,7 @@ def delete_missing_kanji() -> None:
 
 
 def delete_missing_vocab() -> None:
-    all_vocabulary: list[WaniVocabNote] = WaniCollection.fetch_all_vocab_notes()
+    all_vocabulary: list[WaniVocabNote] = WaniCollection.fetch_all_wani_vocab_notes()
     deleted = 0
     deleted_vocab: str = ""
     for vocab_note in all_vocabulary:

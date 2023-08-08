@@ -25,26 +25,11 @@ SEARCH_PROVIDERS = [
     ("&Verbix conjugate", [u"https://www.verbix.com/webverbix/japanese/%s"]),
     ("&Japanese verb conjugator", [u"https://www.japaneseverbconjugator.com/VerbDetails.asp?Go=Conjugate&txtVerb=%s"]),
     ("&Immersion Kit", [u"https://www.immersionkit.com/dictionary?exact=true&sort=shortness&keyword=%s"]),
-    ("&Deepl", [u"https://www.deepl.com/en/translator#ja/en/%s"])
+    ("&Deepl", [u"https://www.deepl.com/en/translator#ja/en/%s"]),
+    ("&Merriam Webster", [u"https://www.merriam-webster.com/dictionary/%s"])
 ]
 
-# (Advanced) Use custom context menu style sheet, somewhat buggy
-USE_CUSTOM_STYLESHEET = False 
-
 ##############  USER CONFIGURATION END  ##############
-
-stylesheet = """
-QMenu::item {
-    padding-top: 15px;
-    padding-bottom: 15px;
-    padding-right: 10px;
-    padding-left: 10px;
-}
-QMenu::item:selected {
-    color: black;
-    background-color: white;
-}
-"""
 
 import urllib
 
@@ -61,25 +46,17 @@ def lookup_online(text, idx):
 
 def add_lookup_action(view, menu):
     """Add 'lookup' action to context menu"""
-    if USE_CUSTOM_STYLESHEET:
-        menu.setStyleSheet(stylesheet)
     selected = view.page().selectedText().strip()
     if not selected:
         return
     
     suffix = (selected[:20] + '..') if len(selected) > 20 else selected
 
-    search_menu = None
-    if len(SEARCH_PROVIDERS) > 10:  
-        search_menu = menu.addMenu(u'&Search for "%s" with...' % suffix)
+    search_menu = menu.addMenu(f'&Web search')
 
     for idx, provider in enumerate(SEARCH_PROVIDERS):
-        if search_menu:
-            label = provider[0]
-            menu = search_menu
-        else:
-            label = provider[0]
-        a = menu.addAction(label)
+        label = provider[0]
+        a = search_menu.addAction(label)
         a.triggered.connect(lambda _, i=idx,t=selected: lookup_online(t, i))
 
 addHook("AnkiWebView.contextMenuEvent", add_lookup_action)

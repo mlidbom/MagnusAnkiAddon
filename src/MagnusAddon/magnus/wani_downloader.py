@@ -46,7 +46,7 @@ class WaniDownloader:
 
     @classmethod
     def fetch_missing_vocab_audio(cls):
-        vocab_missing_audio: List[WaniVocabNote] = [vocab for vocab in WaniCollection.fetch_all_vocab_notes() if
+        vocab_missing_audio: List[WaniVocabNote] = [vocab for vocab in WaniCollection.fetch_all_wani_vocab_notes() if
                                                     vocab.get_audio_female() == ""]
         for vocab in vocab_missing_audio:
             cls.fetch_audio_from_wanikani(vocab)
