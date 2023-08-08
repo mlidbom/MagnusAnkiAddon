@@ -20,8 +20,9 @@ class WaniNote:
 
     def _set_field(self, field_name: str, value: str) -> None:
         self._assert_field_exists(field_name)
-        self._note[field_name] = value
-        self._note.flush()
+        if self._note[field_name] != value:
+            self._note[field_name] = value
+            self._note.flush()
 
     def get_level_tag(self) -> int:
         level_tag = [level for level in self._note.tags if level.startswith('level')][0]
