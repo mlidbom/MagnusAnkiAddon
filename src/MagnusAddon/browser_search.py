@@ -3,7 +3,6 @@ import aqt
 from PyQt6.QtWidgets import QMenu
 from anki.hooks import addHook
 
-from .magnus.my_anki import *
 from .magnus.wani_constants import *
 
 
