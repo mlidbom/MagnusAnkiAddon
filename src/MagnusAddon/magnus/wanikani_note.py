@@ -38,6 +38,9 @@ class WaniNote:
         self._note.add_tag("level{:02d}".format(new_level))
         self._note.flush()
 
+    def is_wani_note(self) -> bool:
+        return Mine.Tags.Wani in self._note.tags
+
     def get_note_type_name(self) -> str:
         # noinspection PyProtectedMember
         return self._note._note_type['name']  # Todo: find how to do this without digging into protected members
@@ -225,6 +228,7 @@ class WaniKanjiNote(WaniNote):
     def create_from_wani_kanji(wani_kanji: models.Kanji):
         note = Note(mw.col, mw.col.models.byName(Wani.NoteType.Kanji))
         note.add_tag("__imported")
+        note.add_tag(Mine.Tags.Wani)
         kanji_note = WaniKanjiNote(note)
         mw.col.addNote(note)
         kanji_note.set_kanji(wani_kanji.characters)
@@ -272,9 +276,6 @@ class WaniKanaVocabNote(WaniNote):
     def get_audio_female(self): return super()._get_field(Wani.KanaVocabFields.Audio_g)
     def set_audio_female(self, value: str) -> None: super()._set_field(Wani.KanaVocabFields.Audio_g,
                                                                        "[sound:{}]".format(value))
-
-    def is_wani_vocab(self) -> bool:
-        return Mine.Tags.Wani in self._note.tags
 
     def update_from_wani(self, wani_vocab: models.Vocabulary):
         super().update_from_wani(wani_vocab)
@@ -328,6 +329,7 @@ class WaniVocabNote(WaniKanaVocabNote):
     def create_from_wani_vocabulary(wani_vocab: models.Vocabulary):
         note = Note(mw.col, mw.col.models.byName(Wani.NoteType.Vocab))
         note.add_tag("__imported")
+        note.add_tag(Mine.Tags.Wani)
         kanji_note = WaniVocabNote(note)
         mw.col.addNote(note)
         kanji_note.set_vocab(wani_vocab.characters)
@@ -378,6 +380,7 @@ class WaniRadicalNote(WaniNote):
     def create_from_wani_radical(wani_radical: models.Radical):
         note = Note(mw.col, mw.col.models.byName(Wani.NoteType.Radical))
         note.add_tag("__imported")
+        note.add_tag(Mine.Tags.Wani)
         radical_note = WaniRadicalNote(note)
         mw.col.addNote(note)
         radical_note.set_radical(wani_radical.characters)

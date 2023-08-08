@@ -30,10 +30,9 @@ def register_lookup_actions(view, root_menu: QMenu):
 
     menu = root_menu.addMenu("Anki Search")
 
-    add_lookup_action(menu, "Wanikani Vocab", f"note:{Wani.NoteType.Vocab} {Wani.VocabFields.Vocab}:*{selected}*")
-    add_lookup_action(menu, "Vocab Wildcard" , f"deck:*Vocab* card:*Listen* (Vocab:*{selected}* OR Reading:*{selected}*)")
-    add_lookup_action(menu, "Vocab Exact", f"deck:*Vocab* card:*Listen* (Vocab:{selected} OR Reading:{selected})")
     add_lookup_action(menu, "Kanji", f"note:{Wani.NoteType.Kanji} {Wani.KanjiFields.Kanji}:{selected}")
+    add_lookup_action(menu, "Vocab Wildcard" , f"deck:*Vocab* deck:*Read* (Vocab:*{selected}* OR Reading:*{selected}*)")
+    add_lookup_action(menu, "Vocab Exact", f"deck:*Vocab* deck:*Read* (Vocab:{selected} OR Reading:{selected})")
     add_lookup_action(menu, "Radical", f"note:{Wani.NoteType.Radical} ({Wani.RadicalFields.Radical}:{selected} OR {Wani.RadicalFields.Radical_Name}:{selected})")
     add_lookup_action(menu, "Sentence", f"tag:{Mine.Tags.Sentence} {selected}")
     add_lookup_action(menu, "Listen", f"deck:{Mine.DeckFilters.Listen} {selected}")

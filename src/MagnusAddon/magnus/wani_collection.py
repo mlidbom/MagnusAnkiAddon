@@ -53,10 +53,13 @@ class WaniCollection:
         kanji_notes = [WaniKanjiNote(note) for note in notes]
         return kanji_notes
 
+    def fetch_all_wani_kanji_notes():
+        return [kanji for kanji in WaniCollection.fetch_all_kanji_notes() if kanji.is_wani_note()]
+
     def fetch_all_wani_vocab_notes() -> List[WaniVocabNote]:
         notes = WaniCollection.fetch_notes_by_note_type(Wani.NoteType.Vocab)
         vocab_notes = [WaniVocabNote(note) for note in notes]
-        vocab_notes = [vocab for vocab in vocab_notes if vocab.is_wani_vocab()]
+        vocab_notes = [vocab for vocab in vocab_notes if vocab.is_wani_note()]
         return vocab_notes
 
     def fetch_all_vocab_notes() -> List[WaniVocabNote]:

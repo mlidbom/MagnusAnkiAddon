@@ -21,7 +21,7 @@ def import_missing_radicals() -> None:
 
 
 def import_missing_kanji() -> None:
-    all_kanji: list[WaniKanjiNote] = WaniCollection.fetch_all_kanji_notes()
+    all_kanji: list[WaniKanjiNote] = WaniCollection.fetch_all_wani_kanji_notes()
     local_kanji_dictionary = {kanji.get_subject_id(): kanji for kanji in all_kanji}
     all_wani_kanji = waniClient.list_kanji()
     imported = 0
