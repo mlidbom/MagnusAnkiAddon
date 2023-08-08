@@ -5,15 +5,8 @@ from anki.hooks import addHook
 from aqt.browser import Browser
 from win32clipboard import CF_TEXT
 
+from magnus import my_clipboard
 from .magnus.wani_constants import *
-
-import win32clipboard
-
-def get_clipboard_data() -> str:
-    win32clipboard.OpenClipboard()
-    clipboard_content = win32clipboard.GetClipboardData()
-    win32clipboard.CloseClipboard()
-    return clipboard_content;
 
 
 def lookup(text):
@@ -44,7 +37,7 @@ def build_radical_search_string(selected: str) -> str:
 def register_lookup_actions(view, root_menu: QMenu):
     selected = view.page().selectedText().strip()
     if not selected:
-        selected = get_clipboard_data()
+        selected = my_clipboard.get_text()
         if not selected:
             return
 

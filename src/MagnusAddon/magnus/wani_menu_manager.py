@@ -2,11 +2,11 @@ import aqt.browser
 from anki.cards import Card
 from aqt.editor import Editor
 
-from magnus import wani_note_updater, note_importer, wani_queue_manager, local_note_updater
+from magnus import wani_note_updater, note_importer, wani_queue_manager, local_note_updater, my_clipboard
 from magnus.wani_downloader import WaniDownloader
 from aqt import gui_hooks, mw
 from aqt.qt import *
-import win32clipboard
+
 import re
 
 from magnus.wanikani_note import WaniVocabNote
@@ -73,15 +73,6 @@ def setup_browser_context_menu(browser: aqt.browser.Browser, menu: QMenu):
         action.triggered.connect(lambda: wani_queue_manager.prioritize_selected_cards(selected_cards))
 
 
-def set_clipboard_text(text):
-    try:
-        win32clipboard.OpenClipboard()
-        win32clipboard.EmptyClipboard()
-        win32clipboard.SetClipboardText(text, win32clipboard.CF_UNICODETEXT)
-        win32clipboard.CloseClipboard()
-    except:
-        pass  # Occationally this code randomly fails. Let's not have that result in a crash of the addon OK?
-
 def copy_sort_field_to_windows_clipboard(card: Card):
     note = card.note()
     model = note.model()
@@ -89,7 +80,7 @@ def copy_sort_field_to_windows_clipboard(card: Card):
     sort_value = note.fields[sort_field]
     clean_string = re.sub('<.*?>', '', sort_value)
     clean_string = re.sub('\[.*?\]', '', clean_string)
-    set_clipboard_text(clean_string)
+    my_clipboard.set_text(clean_string)
 
 
 build_main_menu()

@@ -13,6 +13,7 @@ Based on:
 'OSX Dictionary Lookup' by Eddie Blundell, 
 'Search Google Images' by Steve AW,
 """
+from magnus import my_clipboard
 
 ############## USER CONFIGURATION START ##############
 
@@ -48,7 +49,9 @@ def add_lookup_action(view, menu):
     """Add 'lookup' action to context menu"""
     selected = view.page().selectedText().strip()
     if not selected:
-        return
+        selected = my_clipboard.get_text()
+        if not selected:
+            return
     
     suffix = (selected[:20] + '..') if len(selected) > 20 else selected
 
