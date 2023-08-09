@@ -38,7 +38,7 @@ def update_kanji_vocab_List():
                     {newline.join([f"""
                     <div class="vocabEntry">
                         <span class="clipboard">{vocab.get_vocab()}</span>
-                        (<span class="reading">{vocab.get_reading()}</span>)
+                        (<span class="vocabReading">{vocab.get_reading()}</span>)
                         <span class="vocabListMeaning"> {StringUtils.strip_markup(vocab.get_vocab_meaning())}</span>
                     </div>
                     """ for vocab in vocabs])}
