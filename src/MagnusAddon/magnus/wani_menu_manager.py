@@ -29,7 +29,8 @@ def build_main_menu():
     build_wani_menu(wani_menu)
 
 def build_local_menu(sub_menu):
-    add_menu_action(sub_menu, "Update Vocab Kanji Names", local_note_updater.update_vocab)
+    add_menu_action(sub_menu, "Update Vocab Kanji Names", local_note_updater.update_vocab_kani_names)
+    add_menu_action(sub_menu, "Update Kanji Vocab Lists", local_note_updater.update_kanji_vocab_List)
 
 def build_wani_menu(sub_menu):
     add_menu_action(sub_menu, "Update Radicals", wani_note_updater.update_radical)

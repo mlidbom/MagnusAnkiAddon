@@ -20,8 +20,7 @@ class WaniNote:
 
     def _set_field(self, field_name: str, value: str) -> None:
         field_value = self._note[field_name]
-        if field_value is None:
-            raise ValueError("No field named:" + field_name)
+        if field_value is None: raise ValueError("No field named:" + field_name)
         if field_value != value:
             self._note[field_name] = value
             self._note.flush()
@@ -51,7 +50,9 @@ class WaniNote:
     def get_subject_id(self) -> int: return int(self._get_field(Wani.NoteFields.subject_id))
     def set_subject_id(self, value: int) -> None: self._set_field(Wani.NoteFields.subject_id, str(value))
 
-    def get_lesson_position(self) ->int: return int(self._get_field(Wani.NoteFields.lesson_position))
+    def get_lesson_position(self) ->int:
+        if not self.is_wani_note(): return 0
+        return int(self._get_field(Wani.NoteFields.lesson_position))
     def set_lesson_position(self, value: int) -> None:
         current_position = self._get_field(Wani.NoteFields.lesson_position)
 
@@ -73,7 +74,10 @@ class WaniNote:
     def get_document_url(self) -> str: return self._get_field(Wani.NoteFields.document_url)
     def set_document_url(self, value: str) -> None: self._set_field(Wani.NoteFields.document_url, value)
 
-    def get_level(self) -> int: return int(self._get_field(Wani.NoteFields.level))
+    def get_level(self) -> int:
+        if not self.is_wani_note():
+            return 0 #non vani items
+        return int(self._get_field(Wani.NoteFields.level))
     def set_level(self, value: int) -> None:
         self.set_level_tag(value)
         self._set_field(Wani.NoteFields.level, str(value))
