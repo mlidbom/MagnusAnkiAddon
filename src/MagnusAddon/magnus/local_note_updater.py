@@ -5,8 +5,21 @@ from aqt.utils import tooltip
 from .utils import StringUtils
 from .wani_collection import WaniCollection
 from .wanikani_note import *
+import time
 
-def update_vocab_kanji_names() -> None:
+def update_all():
+    def sort_vocab_list(vocabs: List[WaniVocabNote]) -> list[WaniVocabNote]:
+        vocabs.sort(key=lambda vocab: (vocab.get_level(), vocab.get_lesson_position()))
+        return vocabs
+
+    all_vocabulary: list[WaniVocabNote] = WaniCollection.fetch_all_vocab_notes()
+    all_kanji: list[WaniKanjiNote] = WaniCollection.fetch_all_kanji_notes()
+    all_vocabulary = sort_vocab_list(all_vocabulary)# we want a specific order in the kanji entries etc
+
+    _update_kanji(all_vocabulary, all_kanji)
+    _update_vocab(all_vocabulary, all_kanji)
+
+def _update_vocab(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanjiNote]) -> None:
     def update_kanji_names(all_vocabulary, all_kanji):
         def prepare_kanji_meaning(kanji: WaniKanjiNote) -> str:
             meaning = kanji.get_kanji_meaning()
@@ -22,20 +35,16 @@ def update_vocab_kanji_names() -> None:
             kanji_names_string = " # ".join(kanji_meanings)
             vocab_note.set_kanji_name(kanji_names_string)
 
-    all_vocabulary: list[WaniVocabNote] = WaniCollection.fetch_all_vocab_notes()
-    all_kanji: list[WaniKanjiNote] = WaniCollection.fetch_all_kanji_notes()
-
     update_kanji_names(all_vocabulary, all_kanji)
     tooltip("done")
 
-def update_kanji():
+def _update_kanji(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanjiNote]):
     def generate_vocab_html_list(vocabs: List[WaniVocabNote]):
-        newline = "\n"
-        vocab_html = f'''
+        return f'''
                 <div class="kanjiVocabList">
                     <div>
                     
-                    {newline.join([f"""
+                    {StringUtils.Newline().join([f"""
                     <div class="entry">
                         <span class="kanji clipboard">{vocab.get_vocab()}</span>
                         (<span class="reading clipboard">{vocab.get_reading()}</span>)
@@ -46,11 +55,7 @@ def update_kanji():
                     </div>
                 </div>
                 '''
-        return vocab_html
 
-    all_vocabulary: list[WaniVocabNote] = WaniCollection.fetch_all_vocab_notes()
-    all_vocabulary = sort_vocab_list(all_vocabulary)# we want a specific order in the kanji entries
-    all_kanji = WaniCollection.fetch_all_kanji_notes()
     kanji_dict: Dict[str, WaniKanjiNote]   = {kanji.get_kanji(): kanji for kanji in all_kanji}
     kanji_vocab_dict: Dict[str, List[WaniVocabNote]] = {kanji.get_kanji(): [] for kanji in all_kanji}
 
@@ -88,8 +93,4 @@ def update_kanji():
                 kanji.set_PrimaryVocabAudio(audios)
 
     tooltip("done")
-
-def sort_vocab_list(vocabs: List[WaniVocabNote]) -> list[WaniVocabNote]:
-    vocabs.sort(key=lambda vocab: (vocab.get_level(), vocab.get_lesson_position()))
-    return vocabs
 
