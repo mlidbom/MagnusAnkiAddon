@@ -57,6 +57,7 @@ class Wani:
     class KanaVocabFields:
         Vocab = "Vocab"
         Vocab_Meaning = "Vocab_Meaning"
+        Override_meaning = "__override_meaning";
         Reading = "Reading"
         Speech_Type = "Speech_Type"
         Context_jp = "Context_jp"

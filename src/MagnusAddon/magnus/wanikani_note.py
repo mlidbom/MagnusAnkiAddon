@@ -246,7 +246,11 @@ class WaniKanaVocabNote(WaniNote):
     def get_vocab(self): return super()._get_field(Wani.KanaVocabFields.Vocab)
     def set_vocab(self, value: str) -> None: super()._set_field(Wani.KanaVocabFields.Vocab, value)
 
-    def get_vocab_meaning(self): return super()._get_field(Wani.KanaVocabFields.Vocab_Meaning)
+    def get_vocab_meaning(self):
+        meaning = super()._get_field(Wani.VocabFields.Override_meaning)
+        if meaning != "": return meaning
+        return super()._get_field(Wani.KanaVocabFields.Vocab_Meaning)
+
     def set_vocab_meaning(self, value: str) -> None: super()._set_field(Wani.KanaVocabFields.Vocab_Meaning, value)
 
     def get_speech_type(self): return super()._get_field(Wani.KanaVocabFields.Speech_Type)

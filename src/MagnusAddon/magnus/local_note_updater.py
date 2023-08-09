@@ -1,5 +1,7 @@
 from typing import *
 
+from aqt.utils import tooltip
+
 from .utils import StringUtils
 from .wani_collection import WaniCollection
 from .wanikani_note import *
@@ -24,6 +26,7 @@ def update_vocab_kani_names() -> None:
     all_kanji: list[WaniKanjiNote] = WaniCollection.fetch_all_kanji_notes()
 
     update_kanji_names(all_vocabulary, all_kanji)
+    tooltip("done")
 
 def update_kanji_vocab_List():
     def generate_vocab_html_list(vocabs: List[WaniVocabNote]):
@@ -31,13 +34,15 @@ def update_kanji_vocab_List():
         vocab_html = f'''
                 <div class="vocabList">
                     <div>
+                    
                     {newline.join([f"""
-                    <div>
+                    <div class="vocabEntry">
                         <span class="clipboard">{vocab.get_vocab()}</span>
                         (<span class="reading">{vocab.get_reading()}</span>)
-                        {StringUtils.strip_markup(vocab.get_vocab_meaning())}
+                        <span class="vocabListMeaning"> {StringUtils.strip_markup(vocab.get_vocab_meaning())}</span>
                     </div>
-                        """ for vocab in vocabs])}
+                    """ for vocab in vocabs])}
+                    
                     </div>
                 </div>
                 '''
@@ -62,3 +67,5 @@ def update_kanji_vocab_List():
 
         html = generate_vocab_html_list(vocabs)
         kanji_dict[kanji].set_vocabs(html)
+
+    tooltip("done")
