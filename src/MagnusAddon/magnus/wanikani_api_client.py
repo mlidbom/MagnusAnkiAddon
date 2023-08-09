@@ -55,7 +55,7 @@ class WanikaniClient:
 
     def get_radical(self, radical_name: str) -> models.Radical:
         self._init()
-        return self._radical_dictionary[radical_name.replace(" ", "-")]
+        return self._radical_dictionary[radical_name.replace(" ", "-").lower()]
 
     def get_radical_by_id(self, radical_id: int) -> models.Radical:
         self._init()

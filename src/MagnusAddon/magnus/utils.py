@@ -8,6 +8,7 @@ class ListUtils:
 
 class StringUtils:
     def Newline() -> str: return "\n"
+    def Backslash() -> str: return "\\"
 
     def extract_characters(string: str):
         return [char for char in string if not char.isspace()]

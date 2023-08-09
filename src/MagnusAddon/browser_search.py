@@ -10,7 +10,7 @@ from aqt.webview import AnkiWebView, AnkiWebViewKind
 from magnus import my_clipboard
 from magnus.wani_constants import Wani as wani
 from magnus.wani_utils import NoteUtils
-from magnus.wanikani_note import WaniKanjiNote
+from magnus.wanikani_note import *
 from .magnus.wani_constants import *
 
 
@@ -38,7 +38,7 @@ def build_radical_search_string(selected: str) -> str:
     return f"note:{Wani.NoteType.Radical} ( {start} {clauses} )"
 
 def register_lookup_actions(view: AnkiWebView, root_menu: QMenu):
-    def get_kanji_note() -> WaniKanjiNote:
+    def get_note() -> WaniNote:
         def get_note() -> Note:
             if view.kind == AnkiWebViewKind.MAIN:
                 return mw.reviewer.card.note()
@@ -46,8 +46,8 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu):
                 return [window for window in mw.app.topLevelWidgets() if isinstance(window, Previewer)][0].card().note()
 
         note = get_note()
-        if NoteUtils.get_note_type(note) == Wani.NoteType.Kanji:
-            return WaniKanjiNote(note)
+        if note:
+            return NoteUtils.create_note(note)
 
         return None
 
@@ -55,16 +55,27 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu):
     if not selected:
         selected = my_clipboard.get_text()
 
-    kanji_note = get_kanji_note()
-
-    if not selected and not kanji_note:
+    note = get_note()
+    if not selected and not note:
         return
 
     menu = root_menu.addMenu("Anki Search")
 
-    if kanji_note:
-        kanji = kanji_note.get_kanji()
-        add_lookup_action(menu, "Kanji Vocabs", f"deck:*Vocab* deck:*Read* (Vocab:*{kanji}*)")
+    if isinstance(note, WaniKanjiNote):
+        add_lookup_action(menu, "Kanji Vocabs", f"deck:*Vocab* deck:*Read* (Vocab:*{note.get_kanji()}*)")
+        radicals = [rad.strip() for rad in note.get_radicals_names().split(",")]
+        radicals_clause = " OR ".join([f"{Wani.RadicalFields.Radical_Name}:{rad}" for rad in radicals])
+        add_lookup_action(menu, "Kanji Radicals", f"note:{Wani.NoteType.Radical} ({radicals_clause})")
+
+    if isinstance(note, WaniVocabNote):
+        add_lookup_action(menu, "Vocab Kanji",
+                          f"note:{wani.NoteType.Kanji} ( {' OR '.join([f'{wani.KanjiFields.Kanji}:{char}' for char in note.get_kanji()])} )")
+
+    if isinstance(note, WaniRadicalNote):
+        radicals_names = f""
+
+        add_lookup_action(menu, "Radical Kanji",
+                          f"note:{wani.NoteType.Kanji} {Wani.KanjiFields.Radicals_Names}:re:\\b{note.get_radical_name()}\\b")
 
     if selected:
         add_lookup_action(menu, "Kanji",

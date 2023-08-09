@@ -392,6 +392,7 @@ class WaniRadicalNote(WaniNote):
     def update_from_wani(self, wani_radical: models.Radical):
         super().update_from_wani(wani_radical)
         self.set_meaning_mnemonic(wani_radical.meaning_mnemonic)
+        self.set_radical_name(wani_radical.meanings[0].meaning)
 
         amalgamation_subject_ids = [str(id) for id in  wani_radical.amalgamation_subject_ids]
         self.set_amalgamation_subject_ids(", ".join(amalgamation_subject_ids))

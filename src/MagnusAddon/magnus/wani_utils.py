@@ -2,13 +2,20 @@ import time
 
 from anki.cards import *
 from anki.consts import QUEUE_TYPE_NEW
-from aqt import mw
 
-from magnus.wani_constants import Wani
-from magnus.wanikani_note import WaniNote
+from magnus.wanikani_note import *
+
 
 class NoteUtils:
     def get_note_type(note: Note) -> str: return note.note_type()["name"]
+
+    def create_note(note: Note) -> WaniNote:
+        if NoteUtils.get_note_type(note) == Wani.NoteType.Kanji:
+            return WaniKanjiNote(note)
+        elif NoteUtils.get_note_type(note) == Wani.NoteType.Vocab:
+            return WaniVocabNote(note)
+        elif NoteUtils.get_note_type(note) == Wani.NoteType.Radical:
+            return WaniRadicalNote(note)
 
 class CardUtils:
 
