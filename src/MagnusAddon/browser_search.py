@@ -19,9 +19,10 @@ def lookup(text):
     browser.form.searchEdit.lineEdit().setText(text)
     browser.onSearchActivated()
 
-#Works sometimes, unsure of the pattern.
+    mw.app.processEvents()
     if browser._previewer is None:
         browser.onTogglePreview()
+
     else:
         browser._previewer.activateWindow()
 
@@ -37,7 +38,7 @@ def build_radical_search_string(selected: str) -> str:
     return f"note:{Wani.NoteType.Radical} ( {start} {clauses} )"
 
 def register_lookup_actions(view: AnkiWebView, root_menu: QMenu):
-    def get_kanji_vocabs() -> list[str]:
+    def get_kanji_note() -> WaniKanjiNote:
         def get_note() -> Note:
             if view.kind == AnkiWebViewKind.MAIN:
                 return mw.reviewer.card.note()
@@ -46,7 +47,7 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu):
 
         note = get_note()
         if NoteUtils.get_note_type(note) == Wani.NoteType.Kanji:
-            return WaniKanjiNote(note).get_vocabs_raw()
+            return WaniKanjiNote(note)
 
         return None
 
@@ -54,16 +55,16 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu):
     if not selected:
         selected = my_clipboard.get_text()
 
-    kanji_vocabs = get_kanji_vocabs()
+    kanji_note = get_kanji_note()
 
-    if not selected and not kanji_vocabs:
+    if not selected and not kanji_note:
         return
 
     menu = root_menu.addMenu("Anki Search")
 
-    if kanji_vocabs:
-        add_lookup_action(menu, "Kanji Vocabs",
-                          f"note:{Wani.NoteType.Vocab} ( {' OR '.join([f'{Wani.VocabFields.Vocab}:{vocab}' for vocab in kanji_vocabs])} )")
+    if kanji_note:
+        kanji = kanji_note.get_kanji()
+        add_lookup_action(menu, "Kanji Vocabs", f"deck:*Vocab* deck:*Read* (Vocab:*{kanji}*)")
 
     if selected:
         add_lookup_action(menu, "Kanji",
