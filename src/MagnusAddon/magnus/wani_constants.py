@@ -55,6 +55,7 @@ class Wani:
         component_subject_ids = "component_subject_ids"
 
         Vocabs = "Vocabs"
+        VocabsRaw ="VocabsRaw"
 
     class KanaVocabFields:
         Vocab = "Vocab"

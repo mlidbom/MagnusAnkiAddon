@@ -68,6 +68,7 @@ def _update_kanji(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanji
 
         html = generate_vocab_html_list(vocabs)
         kanji_dict[kanji].set_vocabs(html)
+        kanji_dict[kanji].set_vocabs_raw([vo.get_vocab() for vo in vocabs])
 
     kanji_with_vocab = [kanji for kanji in all_kanji if kanji.get_PrimaryVocab()]
     for kanji in kanji_with_vocab:

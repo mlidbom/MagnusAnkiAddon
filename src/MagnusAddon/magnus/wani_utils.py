@@ -1,12 +1,14 @@
 import time
 
-from anki.cards import Card
+from anki.cards import *
 from anki.consts import QUEUE_TYPE_NEW
 from aqt import mw
 
 from magnus.wani_constants import Wani
 from magnus.wanikani_note import WaniNote
 
+class NoteUtils:
+    def get_note_type(note: Note) -> str: return note.note_type()["name"]
 
 class CardUtils:
 

@@ -166,6 +166,9 @@ class WaniKanjiNote(WaniNote):
     def get_vocabs(self): return super()._get_field(Wani.KanjiFields.Vocabs)
     def set_vocabs(self, value: str) -> None: super()._set_field(Wani.KanjiFields.Vocabs, value)
 
+    def get_vocabs_raw(self) -> list[str]: return super()._get_field(Wani.KanjiFields.VocabsRaw).split(",")
+    def set_vocabs_raw(self, value: list[str]) -> None: super()._set_field(Wani.KanjiFields.VocabsRaw, ",".join(value))
+
     def get_PrimaryVocab(self): return super()._get_field(Wani.KanjiFields.PrimaryVocab)
     def set_PrimaryVocab(self, value: str) -> None: super()._set_field(Wani.KanjiFields.PrimaryVocab, value)
 
