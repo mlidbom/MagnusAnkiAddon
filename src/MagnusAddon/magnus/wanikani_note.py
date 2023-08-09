@@ -166,6 +166,12 @@ class WaniKanjiNote(WaniNote):
     def get_vocabs(self): return super()._get_field(Wani.KanjiFields.Vocabs)
     def set_vocabs(self, value: str) -> None: super()._set_field(Wani.KanjiFields.Vocabs, value)
 
+    def get_PrimaryVocab(self): return super()._get_field(Wani.KanjiFields.PrimaryVocab)
+    def set_PrimaryVocab(self, value: str) -> None: super()._set_field(Wani.KanjiFields.PrimaryVocab, value)
+
+    def get_PrimaryVocabAudio(self): return super()._get_field(Wani.KanjiFields.PrimaryVocabAudio)
+    def set_PrimaryVocabAudio(self, value: str) -> None: super()._set_field(Wani.KanjiFields.PrimaryVocabAudio, value)
+
     def update_from_wani(self, wani_kanji: models.Kanji):
         super().update_from_wani(wani_kanji)
         
@@ -285,6 +291,8 @@ class WaniKanaVocabNote(WaniNote):
     def set_audio_female(self, value: str) -> None: super()._set_field(Wani.KanaVocabFields.Audio_g,
                                                                        "[sound:{}]".format(value))
 
+    def get_audios(self): return f"{self.get_audio_male()}{self.get_audio_female()}"
+
     def update_from_wani(self, wani_vocab: models.Vocabulary):
         super().update_from_wani(wani_vocab)
 
@@ -308,6 +316,8 @@ class WaniVocabNote(WaniKanaVocabNote):
 
     def get_reading_mnemonic(self): return super()._get_field(Wani.VocabFields.Reading_Exp)
     def set_reading_mnemonic(self, value: str) -> None: super()._set_field(Wani.VocabFields.Reading_Exp, value)
+
+    def get_reading_list(self) -> list[str]: return [reading.strip() for reading in self.get_reading().split(",")]
 
     def get_reading(self): return super()._get_field(Wani.KanaVocabFields.Reading)
     def set_reading(self, value: str) -> None: super()._set_field(Wani.KanaVocabFields.Reading, value)

@@ -6,7 +6,7 @@ from .utils import StringUtils
 from .wani_collection import WaniCollection
 from .wanikani_note import *
 
-def update_vocab_kani_names() -> None:
+def update_vocab_kanji_names() -> None:
     def update_kanji_names(all_vocabulary, all_kanji):
         def prepare_kanji_meaning(kanji: WaniKanjiNote) -> str:
             meaning = kanji.get_kanji_meaning()
@@ -28,18 +28,18 @@ def update_vocab_kani_names() -> None:
     update_kanji_names(all_vocabulary, all_kanji)
     tooltip("done")
 
-def update_kanji_vocab_List():
+def update_kanji():
     def generate_vocab_html_list(vocabs: List[WaniVocabNote]):
         newline = "\n"
         vocab_html = f'''
-                <div class="vocabList">
+                <div class="kanjiVocabList">
                     <div>
                     
                     {newline.join([f"""
-                    <div class="vocabEntry">
-                        <span class="clipboard">{vocab.get_vocab()}</span>
-                        (<span class="vocabReading">{vocab.get_reading()}</span>)
-                        <span class="vocabListMeaning"> {StringUtils.strip_markup(vocab.get_vocab_meaning())}</span>
+                    <div class="entry">
+                        <span class="kanji clipboard">{vocab.get_vocab()}</span>
+                        (<span class="reading clipboard">{vocab.get_reading()}</span>)
+                        <span class="meaning"> {StringUtils.strip_markup(vocab.get_vocab_meaning())}</span>
                     </div>
                     """ for vocab in vocabs])}
                     
@@ -48,15 +48,11 @@ def update_kanji_vocab_List():
                 '''
         return vocab_html
 
-    def sort_vocab_list(vocabs: List[WaniVocabNote]) -> list[WaniVocabNote]:
-        vocabs.sort(key=lambda vocab: (vocab.get_level(), vocab.get_lesson_position()))
-        return vocabs
-
     all_vocabulary: list[WaniVocabNote] = WaniCollection.fetch_all_vocab_notes()
     all_vocabulary = sort_vocab_list(all_vocabulary)# we want a specific order in the kanji entries
-    kanji_list = WaniCollection.fetch_all_kanji_notes()
-    kanji_dict: Dict[str, WaniKanjiNote]   = {kanji.get_kanji(): kanji for kanji in kanji_list}
-    kanji_vocab_dict: Dict[str, List[WaniVocabNote]] = {kanji.get_kanji(): [] for kanji in kanji_list}
+    all_kanji = WaniCollection.fetch_all_kanji_notes()
+    kanji_dict: Dict[str, WaniKanjiNote]   = {kanji.get_kanji(): kanji for kanji in all_kanji}
+    kanji_vocab_dict: Dict[str, List[WaniVocabNote]] = {kanji.get_kanji(): [] for kanji in all_kanji}
 
     for voc in all_vocabulary:
         for char in voc.get_vocab():
@@ -68,4 +64,32 @@ def update_kanji_vocab_List():
         html = generate_vocab_html_list(vocabs)
         kanji_dict[kanji].set_vocabs(html)
 
+    kanji_with_vocab = [kanji for kanji in all_kanji if kanji.get_PrimaryVocab()]
+    for kanji in kanji_with_vocab:
+        kanji_vocab = kanji_vocab_dict[kanji.get_kanji()]
+        primary_vocabs: List[str] = [StringUtils.strip_markup(vocab).strip() for vocab in kanji.get_PrimaryVocab().split(",")]
+        if len(primary_vocabs) > 0:
+            found_vocab: list[WaniVocabNote] = list[WaniVocabNote]()
+            vocab_to_vocab: dict[str, WaniVocabNote] = {vo.get_vocab(): vo for vo in kanji_vocab}
+            reading_to_vocab: dict[str, WaniVocabNote] = dict[str, WaniVocabNote]()
+
+            for vocab in kanji_vocab:
+                for reading in vocab.get_reading_list():
+                    reading_to_vocab[reading] = vocab
+
+            for vocab in primary_vocabs:
+                if vocab in vocab_to_vocab:
+                    found_vocab.append(vocab_to_vocab[vocab])
+                elif vocab in reading_to_vocab:
+                    found_vocab.append(reading_to_vocab[vocab])
+
+            if len(found_vocab) > 0:
+                audios = "".join([vo.get_audios() for vo in found_vocab])
+                kanji.set_PrimaryVocabAudio(audios)
+
     tooltip("done")
+
+def sort_vocab_list(vocabs: List[WaniVocabNote]) -> list[WaniVocabNote]:
+    vocabs.sort(key=lambda vocab: (vocab.get_level(), vocab.get_lesson_position()))
+    return vocabs
+
