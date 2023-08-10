@@ -48,7 +48,7 @@ def set_kanji_primary_vocab(note: WaniKanjiNote, selection:str):
             if reading and reading in selection:
                 note.set_PrimaryVocab(selection.replace(reading, f"<read>{reading}</read>"))
                 return True
-            return False
+        return False
 
     if not try_format_vocab(note.get_reading_kun()) and not try_format_vocab(note.get_reading_on()):
         note.set_PrimaryVocab(selection)
