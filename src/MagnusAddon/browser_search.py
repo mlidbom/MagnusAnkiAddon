@@ -5,10 +5,11 @@ from aqt.browser import Browser
 
 from aqt import *
 from aqt.browser.previewer import Previewer
+from aqt.reviewer import RefreshNeeded
 from aqt.webview import AnkiWebView, AnkiWebViewKind
 
 from magnus import my_clipboard
-from magnus.utils import StringUtils
+from magnus.utils import StringUtils, UIUtils
 from magnus.wani_constants import Wani as wani
 from magnus.wani_utils import NoteUtils
 from magnus.wanikani_note import *
@@ -39,7 +40,7 @@ def build_radical_search_string(selected: str) -> str:
     return f"note:{Wani.NoteType.Radical} ( {start} {clauses} )"
 
 
-def set_kanji_primary_vocab(note: WaniKanjiNote, selection:str):
+def set_kanji_primary_vocab(note: WaniKanjiNote, selection:str, view: AnkiWebView):
     def try_format_vocab(readings:str):
         markup_stripped = StringUtils.strip_markup(readings)
         split_to_list = markup_stripped.split(",")
@@ -53,7 +54,8 @@ def set_kanji_primary_vocab(note: WaniKanjiNote, selection:str):
     if not try_format_vocab(note.get_reading_kun()) and not try_format_vocab(note.get_reading_on()):
         note.set_PrimaryVocab(selection)
 
-    lookup(f"note:{wani.NoteType.Kanji} {wani.KanjiFields.Kanji}:{note.get_kanji()}")
+    #lookup(f"note:{wani.NoteType.Kanji} {wani.KanjiFields.Kanji}:{note.get_kanji()}")
+    UIUtils.refresh(view)
 
 def register_lookup_actions(view: AnkiWebView, root_menu: QMenu):
     def get_note() -> WaniNote:
@@ -88,7 +90,7 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu):
 
         if selection:
             kanji_menu = root_menu.addMenu("Kanji Actions")
-            kanji_menu.addAction("Set primary vocab").triggered.connect(lambda: set_kanji_primary_vocab(note, selection) )
+            kanji_menu.addAction("Set primary vocab").triggered.connect(lambda: set_kanji_primary_vocab(note, selection, view) )
 
     if isinstance(note, WaniVocabNote):
         add_lookup_action(menu, "Vocab Kanji",
