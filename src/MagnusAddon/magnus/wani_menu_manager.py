@@ -73,7 +73,12 @@ def setup_browser_context_menu(browser: aqt.browser.Browser, menu: QMenu):
         action.triggered.connect(lambda: wani_queue_manager.prioritize_selected_cards(selected_cards))
 
 
-def copy_sort_field_to_windows_clipboard(card: Card):
+def copy_previewer_sort_field_to_windows_clipboard(html:str, card: Card, typeOfDisplay:str) -> str:
+    if typeOfDisplay == 'previewAnswer':
+        copy_card_sort_field_to_clipboard(card)
+    return html
+
+def copy_card_sort_field_to_clipboard(card):
     note = card.note()
     model = note.model()
     sort_field = model['sortf']
@@ -86,4 +91,5 @@ def copy_sort_field_to_windows_clipboard(card: Card):
 build_main_menu()
 gui_hooks.editor_did_init_buttons.append(setup_editor_buttons)
 gui_hooks.browser_will_show_context_menu.append(setup_browser_context_menu)
-gui_hooks.reviewer_did_show_answer.append(copy_sort_field_to_windows_clipboard)
+gui_hooks.reviewer_did_show_answer.append(copy_card_sort_field_to_clipboard)
+gui_hooks.card_will_show.append(copy_previewer_sort_field_to_windows_clipboard)
