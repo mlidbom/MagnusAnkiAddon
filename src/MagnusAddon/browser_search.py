@@ -23,11 +23,7 @@ def lookup(text):
     browser.form.searchEdit.lineEdit().setText(text)
     browser.onSearchActivated()
 
-    mw.app.processEvents()
-    if browser._previewer is None:
-        browser.onTogglePreview()
-    else:
-        browser._previewer.activateWindow()
+    UIUtils.activate_preview()
 
 
 def add_lookup_action(menu:QMenu, name: str, search:str):
@@ -87,15 +83,18 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu):
     if not selection_or_clipboard and not note:
         return
 
+    kanji_menu = None
+    if isinstance(note, WaniKanjiNote):
+        kanji_menu = root_menu.addMenu("Kanji Actions")
+
     menu = root_menu.addMenu("Anki Search")
 
-    if isinstance(note, WaniKanjiNote):
+    if kanji_menu:
         add_lookup_action(menu, "Kanji Vocabs", f"deck:*Vocab* deck:*Read* (Vocab:*{note.get_kanji()}*)")
         radicals = [rad.strip() for rad in note.get_radicals_names().split(",")]
         radicals_clause = " OR ".join([f"{Wani.RadicalFields.Radical_Name}:{rad}" for rad in radicals])
         add_lookup_action(menu, "Kanji Radicals", f"note:{Wani.NoteType.Radical} ({radicals_clause})")
 
-        kanji_menu = root_menu.addMenu("Kanji Actions")
         kanji_menu.addAction("Hide mnemonic", lambda: hide_kanji_mnemonic(note))
 
         if selection:
@@ -107,8 +106,6 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu):
                           f"note:{wani.NoteType.Kanji} ( {' OR '.join([f'{wani.KanjiFields.Kanji}:{char}' for char in note.get_kanji()])} )")
 
     if isinstance(note, WaniRadicalNote):
-        radicals_names = f""
-
         add_lookup_action(menu, "Radical Kanji",
                           f"note:{wani.NoteType.Kanji} {Wani.KanjiFields.Radicals_Names}:re:\\b{note.get_radical_name()}\\b")
 
