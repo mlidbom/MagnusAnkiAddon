@@ -40,21 +40,23 @@ def build_radical_search_string(selected: str) -> str:
     return f"note:{Wani.NoteType.Radical} ( {start} {clauses} )"
 
 
-def set_kanji_primary_vocab(note: WaniKanjiNote, selection:str, view: AnkiWebView):
-    def try_format_vocab(readings:str):
-        markup_stripped = StringUtils.strip_markup(readings)
-        split_to_list = markup_stripped.split(",")
-        stripped_okurigana = [s.split(".")[0].strip() for s in split_to_list]
-        for reading in stripped_okurigana:
+def add_kanji_primary_vocab(note: WaniKanjiNote, selection:str, view: AnkiWebView):
+    def format_vocab() -> str:
+        readings = f"{note.get_reading_kun()}, {note.get_reading_on()}"
+        readings_list = [s.split(".")[0].strip() for s in (StringUtils.strip_markup(readings).split(","))]
+        for reading in readings_list:
             if reading and reading in selection:
-                note.set_PrimaryVocab(selection.replace(reading, f"<read>{reading}</read>"))
-                return True
-        return False
+                return selection.replace(reading, f"<read>{reading}</read>")
+        return None
 
-    if not try_format_vocab(note.get_reading_kun()) and not try_format_vocab(note.get_reading_on()):
-        note.set_PrimaryVocab(selection)
 
+    primary_vocabs = [voc for voc in [note.get_PrimaryVocab(), format_vocab()] if voc]
+    note.set_PrimaryVocab(", ".join(primary_vocabs))
     local_note_updater.update_kanji(note)
+
+def set_kanji_primary_vocab(note: WaniKanjiNote, selection:str, view: AnkiWebView):
+    note.set_PrimaryVocab("")
+    add_kanji_primary_vocab(note, selection, view)
 
 
 def hide_kanji_mnemonic(note: WaniKanjiNote):
@@ -96,7 +98,8 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu):
         kanji_menu.addAction("Hide mnemonic", lambda: hide_kanji_mnemonic(note))
 
         if selection:
-            kanji_menu.addAction("Set primary vocab").triggered.connect(lambda: set_kanji_primary_vocab(note, selection, view) )
+            kanji_menu.addAction("Add primary vocab").triggered.connect(lambda: add_kanji_primary_vocab(note, selection, view))
+            kanji_menu.addAction("Set primary vocab").triggered.connect(lambda: set_kanji_primary_vocab(note, selection, view))
 
     if isinstance(note, WaniVocabNote):
         add_lookup_action(menu, "Vocab Kanji",
