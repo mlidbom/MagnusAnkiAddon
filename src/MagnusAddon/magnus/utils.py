@@ -3,6 +3,7 @@ from typing import *
 from aqt import *
 from aqt.browser import Browser
 from aqt.browser.previewer import Previewer
+from aqt.editcurrent import EditCurrent
 from aqt.reviewer import *
 from aqt.webview import *
 
@@ -27,6 +28,10 @@ class StringUtils:
         return re.sub('<.*?>', '', string)
 
 class UIUtils:
+
+    def is_edit_current_open():
+        return len([window for window in mw.app.topLevelWidgets() if isinstance(window, EditCurrent)]) > 0
+
     def refresh() -> None:
         if mw.reviewer.card:
             mw.reviewer._refresh_needed = RefreshNeeded.NOTE_TEXT

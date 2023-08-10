@@ -23,9 +23,7 @@ def lookup(text):
     browser: Browser = aqt.dialogs.open('Browser', aqt.mw)
     browser.form.searchEdit.lineEdit().setText(text)
     browser.onSearchActivated()
-
     UIUtils.activate_preview()
-
 
 def add_lookup_action(menu:QMenu, name: str, search:str):
     action = menu.addAction(name)
@@ -42,6 +40,7 @@ def add_kanji_primary_vocab(note: WaniKanjiNote, selection:str, view: AnkiWebVie
     def format_vocab() -> str:
         readings = f"{note.get_reading_kun()}, {note.get_reading_on()}"
         readings_list = [s.split(".")[0].strip() for s in (StringUtils.strip_markup(readings).split(","))]
+        readings_list.sort(key=len, reverse=True)
         for reading in readings_list:
             if reading and reading in selection:
                 return selection.replace(reading, f"<read>{reading}</read>")
@@ -85,14 +84,6 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu):
 
     menu = root_menu.addMenu("&Anki Search")
 
-    if isinstance(note, WaniVocabNote):
-        add_lookup_action(menu, "Vocab &Kanji",
-                          f"note:{wani.NoteType.Kanji} ( {' OR '.join([f'{wani.KanjiFields.Kanji}:{char}' for char in note.get_kanji()])} )")
-
-    if isinstance(note, WaniRadicalNote):
-        add_lookup_action(menu, "Radical &Kanji",
-                          f"note:{wani.NoteType.Kanji} {Wani.KanjiFields.Radicals_Names}:re:\\b{note.get_radical_name()}\\b")
-
     if selection_or_clipboard:
         add_lookup_action(menu, "&Kanji",
                           f"note:{wani.NoteType.Kanji} ( {' OR '.join([f'{wani.KanjiFields.Kanji}:{char}' for char in selection_or_clipboard])} )")
@@ -104,6 +95,10 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu):
         add_lookup_action(menu, "Listen", f"deck:{Mine.DeckFilters.Listen} {selection_or_clipboard}")
         add_lookup_action(menu, "&Listen Sentence", f"(deck:*sentence* deck:*listen*) (Jlab-Kanji:*{selection_or_clipboard}* OR Expression:*{selection_or_clipboard}* OR Reading:*{selection_or_clipboard}*)")
         #add_lookup_action(menu, "Listen Sentence Reading", f"(deck:*sentence* deck:*listen*) (Jlab-Hiragana:*{selection_or_clipboard}* OR Reading:*{selection_or_clipboard}*)")
+
+    if isinstance(note, WaniRadicalNote):
+        radical_menu = root_menu.addMenu("&Radical Actions")
+        add_lookup_action(radical_menu, "Radical &Kanji", f"note:{wani.NoteType.Kanji} {Wani.KanjiFields.Radicals_Names}:re:\\b{note.get_radical_name()}\\b")
 
     if isinstance(note, WaniKanjiNote):
         kanji_menu = root_menu.addMenu("&Kanji Actions")
@@ -121,13 +116,18 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu):
 
     if isinstance(note, WaniVocabNote):
         vocab_menu = root_menu.addMenu("&Vocab Actions")
+        add_lookup_action(vocab_menu, "Vocab &Kanji", f"note:{wani.NoteType.Kanji} ( {' OR '.join([f'{wani.KanjiFields.Kanji}:{char}' for char in note.get_vocab()])} )")
         vocab_menu.addAction("&Hide mnemonic", lambda: run_ui_action(lambda: note.override_meaning_mnemonic()))
         vocab_menu.addAction("&Restore mnemonic", lambda: run_ui_action(lambda: note.restore_meaning_mnemonic()))
 
 def register_show_previewer(editor: Editor):
-    if editor.editorMode == aqt.editor.EditorMode.EDIT_CURRENT:
+    if editor.editorMode == EditorMode.EDIT_CURRENT:
         UIUtils.show_current_review_in_preview()
         editor.parentWindow.activateWindow()
+
+def try_suppress_audio(tags: list[AVTag], something:str, view:Any):
+    if isinstance(view, aqt.browser.previewer.BrowserPreviewer) and UIUtils.is_edit_current_open():
+        tags.clear()
 
 gui_hooks.webview_will_show_context_menu.append(context_search.add_lookup_action)
 gui_hooks.editor_will_show_context_menu.append(context_search.add_lookup_action)
@@ -136,3 +136,5 @@ gui_hooks.webview_will_show_context_menu.append(register_lookup_actions)
 gui_hooks.editor_will_show_context_menu.append(register_lookup_actions)
 
 gui_hooks.editor_did_load_note.append(register_show_previewer)
+
+gui_hooks.av_player_will_play_tags.append(try_suppress_audio)

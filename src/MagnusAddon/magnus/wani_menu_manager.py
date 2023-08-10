@@ -17,19 +17,19 @@ def add_menu_action(sub_menu, heading, callback):
     sub_menu.addAction(qaction)
 
 def build_main_menu():
-    my_menu = QMenu("Magnus", mw)
+    my_menu = QMenu("Magnu&s", mw)
     mw.form.menuTools.addMenu(my_menu)
 
-    local_menu = QMenu("Local", mw)
+    local_menu = QMenu("Local Action&s", mw)
     my_menu.addMenu(local_menu)
     build_local_menu(local_menu)
 
-    wani_menu = QMenu("Wanikani", mw)
+    wani_menu = QMenu("&Wanikani Actions", mw)
     my_menu.addMenu(wani_menu)
     build_wani_menu(wani_menu)
 
 def build_local_menu(sub_menu):
-    add_menu_action(sub_menu, "Update All", local_note_updater.update_all)
+    add_menu_action(sub_menu, "Update &All", local_note_updater.update_all)
 
 def build_wani_menu(sub_menu):
     add_menu_action(sub_menu, "Update Radicals", wani_note_updater.update_radical)
