@@ -20,8 +20,6 @@ def update_kanji(kanji_note: WaniKanjiNote) -> None:
     UIUtils.refresh()
 
 def update_all():
-
-
     all_vocabulary: list[WaniVocabNote] = WaniCollection.fetch_all_vocab_notes()
     all_kanji: list[WaniKanjiNote] = WaniCollection.fetch_all_kanji_notes()
     all_vocabulary = _sort_vocab_list(all_vocabulary)# we want a specific order in the kanji entries etc
@@ -29,6 +27,7 @@ def update_all():
     _update_kanji(all_vocabulary, all_kanji)
     _update_vocab(all_vocabulary, all_kanji)
     UIUtils.refresh()
+    tooltip("done")
 
 def _update_vocab(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanjiNote]) -> None:
     def update_kanji_names(all_vocabulary, all_kanji):
@@ -49,7 +48,15 @@ def _update_vocab(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanji
     update_kanji_names(all_vocabulary, all_kanji)
 
 def _update_kanji(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanjiNote]):
-    def generate_vocab_html_list(vocabs: List[WaniVocabNote]):
+    def generate_vocab_html_list(note: WaniVocabNote, vocabs: List[WaniVocabNote]):
+        def format_vocab(selection:str) -> str:
+            readings = f"{note.get_reading_kun()}, {note.get_reading_on()}"
+            readings_list = [s.split(".")[0].strip() for s in (StringUtils.strip_markup(readings).split(","))]
+            for reading in readings_list:
+                if reading and reading in selection:
+                    return selection.replace(reading, f'<span class="kanjiReading">{reading}</span>')
+            return selection
+
         return f'''
                 <div class="kanjiVocabList">
                     <div>
@@ -57,7 +64,7 @@ def _update_kanji(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanji
                     {StringUtils.Newline().join([f"""
                     <div class="entry">
                         <span class="kanji clipboard">{vocab.get_vocab()}</span>
-                        (<span class="reading clipboard">{vocab.get_reading()}</span>)
+                        (<span class="clipboard vocabReading">{format_vocab(vocab.get_reading())}</span>)
                         <span class="meaning"> {StringUtils.strip_markup(vocab.get_vocab_meaning())}</span>
                     </div>
                     """ for vocab in vocabs])}
@@ -75,10 +82,10 @@ def _update_kanji(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanji
                 kanji_vocab_dict[char].append(voc)
 
     for kanji, vocabs in kanji_vocab_dict.items():
-
-        html = generate_vocab_html_list(vocabs)
-        kanji_dict[kanji].set_vocabs(html)
-        kanji_dict[kanji].set_vocabs_raw([vo.get_vocab() for vo in vocabs])
+        kanji_note = kanji_dict[kanji]
+        html = generate_vocab_html_list(kanji_note, vocabs)
+        kanji_note.set_vocabs(html)
+        kanji_note.set_vocabs_raw([vo.get_vocab() for vo in vocabs])
 
     kanji_with_vocab = [kanji for kanji in all_kanji if kanji.get_PrimaryVocab()]
     for kanji in kanji_with_vocab:
