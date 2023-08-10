@@ -126,7 +126,7 @@ def register_show_previewer(editor: Editor):
         editor.parentWindow.activateWindow()
 
 def try_suppress_audio(tags: list[AVTag], something:str, view:Any):
-    if isinstance(view, aqt.browser.previewer.BrowserPreviewer) and UIUtils.is_edit_current_open():
+    if isinstance(view, aqt.browser.previewer.BrowserPreviewer) and UIUtils.is_edit_current_active():
         tags.clear()
 
 gui_hooks.webview_will_show_context_menu.append(context_search.add_lookup_action)

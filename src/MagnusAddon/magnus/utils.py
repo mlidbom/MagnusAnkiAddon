@@ -29,8 +29,12 @@ class StringUtils:
 
 class UIUtils:
 
-    def is_edit_current_open():
-        return len([window for window in mw.app.topLevelWidgets() if isinstance(window, EditCurrent)]) > 0
+    def is_edit_current_active():
+        edit_current = [window for window in mw.app.topLevelWidgets() if isinstance(window, EditCurrent)]
+        if len(edit_current) > 0:
+            return edit_current[0].isActiveWindow()
+        return False
+
 
     def refresh() -> None:
         if mw.reviewer.card:
