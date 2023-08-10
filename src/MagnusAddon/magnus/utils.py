@@ -43,6 +43,7 @@ class UIUtils:
     def show_current_review_in_preview():
         mw.onBrowse()
         UIUtils.activate_preview()
+        mw.activateWindow()
 
     def activate_preview():
         browser: Browser = aqt.dialogs.open('Browser', aqt.mw)
