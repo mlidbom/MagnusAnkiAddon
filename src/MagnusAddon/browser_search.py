@@ -127,6 +127,7 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu):
 def register_show_previewer(editor: Editor):
     if editor.editorMode == aqt.editor.EditorMode.EDIT_CURRENT:
         UIUtils.show_current_review_in_preview()
+        editor.parentWindow.activateWindow()
 
 gui_hooks.webview_will_show_context_menu.append(context_search.add_lookup_action)
 gui_hooks.editor_will_show_context_menu.append(context_search.add_lookup_action)
