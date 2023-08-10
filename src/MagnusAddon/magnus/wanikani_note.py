@@ -123,6 +123,13 @@ class WaniKanjiNote(WaniNote):
             return meaning
         return super()._get_field(Wani.KanjiFields.Kanji_Meaning)
 
+    def override_meaning_mnemonic(self):
+        if not self.get_Mnemonics_Override():
+            self.set_Mnemonics_Override("-")
+
+    def get_Mnemonics_Override(self) -> str: return super()._get_field(Wani.KanjiFields.Mnemonics_Override)
+    def set_Mnemonics_Override(self, value: str) -> None: super()._set_field(Wani.KanjiFields.Mnemonics_Override, value)
+
     def set_kanji_meaning(self, value: str) -> None: super()._set_field(Wani.KanjiFields.Kanji_Meaning, value)
 
     def get_reading_on(self): return super()._get_field(Wani.KanjiFields.Reading_On)

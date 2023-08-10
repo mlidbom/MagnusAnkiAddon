@@ -51,6 +51,8 @@ class Wani:
         PrimaryVocab = "__primary_Vocab"
         PrimaryVocabAudio ="__primary_Vocab_Audio"
 
+        Mnemonics_Override = "__mnemonics_Override"
+
         amalgamation_subject_ids = "amalgamation_subject_ids"
         component_subject_ids = "component_subject_ids"
 

@@ -56,6 +56,11 @@ def set_kanji_primary_vocab(note: WaniKanjiNote, selection:str, view: AnkiWebVie
 
     local_note_updater.update_kanji(note)
 
+
+def hide_kanji_mnemonic(note: WaniKanjiNote):
+   note.override_meaning_mnemonic()
+   UIUtils.refresh()
+
 def register_lookup_actions(view: AnkiWebView, root_menu: QMenu):
     def get_note() -> WaniNote:
         def get_note() -> Note:
@@ -87,8 +92,10 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu):
         radicals_clause = " OR ".join([f"{Wani.RadicalFields.Radical_Name}:{rad}" for rad in radicals])
         add_lookup_action(menu, "Kanji Radicals", f"note:{Wani.NoteType.Radical} ({radicals_clause})")
 
+        kanji_menu = root_menu.addMenu("Kanji Actions")
+        kanji_menu.addAction("Hide mnemonic", lambda: hide_kanji_mnemonic(note))
+
         if selection:
-            kanji_menu = root_menu.addMenu("Kanji Actions")
             kanji_menu.addAction("Set primary vocab").triggered.connect(lambda: set_kanji_primary_vocab(note, selection, view) )
 
     if isinstance(note, WaniVocabNote):
