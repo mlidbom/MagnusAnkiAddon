@@ -8,6 +8,7 @@ from aqt.browser.previewer import Previewer
 from aqt.webview import AnkiWebView, AnkiWebViewKind
 
 from magnus import my_clipboard
+from magnus.utils import StringUtils
 from magnus.wani_constants import Wani as wani
 from magnus.wani_utils import NoteUtils
 from magnus.wanikani_note import *
@@ -37,6 +38,23 @@ def build_radical_search_string(selected: str) -> str:
     clauses = " OR ".join([f"{Wani.RadicalFields.Radical}:{char}" for char in selected])
     return f"note:{Wani.NoteType.Radical} ( {start} {clauses} )"
 
+
+def set_kanji_primary_vocab(note: WaniKanjiNote, selection:str):
+    def try_format_vocab(readings:str):
+        markup_stripped = StringUtils.strip_markup(readings)
+        split_to_list = markup_stripped.split(",")
+        stripped_okurigana = [s.split(".")[0].strip() for s in split_to_list]
+        for reading in stripped_okurigana:
+            if reading and reading in selection:
+                note.set_PrimaryVocab(selection.replace(reading, f"<read>{reading}</read>"))
+                return True
+            return False
+
+    if not try_format_vocab(note.get_reading_kun()) and not try_format_vocab(note.get_reading_on()):
+        note.set_PrimaryVocab(selection)
+
+    lookup(f"note:{wani.NoteType.Kanji} {wani.KanjiFields.Kanji}:{note.get_kanji()}")
+
 def register_lookup_actions(view: AnkiWebView, root_menu: QMenu):
     def get_note() -> WaniNote:
         def get_note() -> Note:
@@ -51,12 +69,13 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu):
 
         return None
 
-    selected = view.page().selectedText().strip()
-    if not selected:
-        selected = my_clipboard.get_text()
+    selection = view.page().selectedText().strip()
+    selection_or_clipboard = selection
+    if not selection_or_clipboard:
+        selection_or_clipboard = my_clipboard.get_text().strip()
 
     note = get_note()
-    if not selected and not note:
+    if not selection_or_clipboard and not note:
         return
 
     menu = root_menu.addMenu("Anki Search")
@@ -66,6 +85,10 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu):
         radicals = [rad.strip() for rad in note.get_radicals_names().split(",")]
         radicals_clause = " OR ".join([f"{Wani.RadicalFields.Radical_Name}:{rad}" for rad in radicals])
         add_lookup_action(menu, "Kanji Radicals", f"note:{Wani.NoteType.Radical} ({radicals_clause})")
+
+        if selection:
+            kanji_menu = root_menu.addMenu("Kanji Actions")
+            kanji_menu.addAction("Set primary vocab").triggered.connect(lambda: set_kanji_primary_vocab(note, selection) )
 
     if isinstance(note, WaniVocabNote):
         add_lookup_action(menu, "Vocab Kanji",
@@ -77,17 +100,17 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu):
         add_lookup_action(menu, "Radical Kanji",
                           f"note:{wani.NoteType.Kanji} {Wani.KanjiFields.Radicals_Names}:re:\\b{note.get_radical_name()}\\b")
 
-    if selected:
+    if selection_or_clipboard:
         add_lookup_action(menu, "Kanji",
-                          f"note:{wani.NoteType.Kanji} ( {' OR '.join([f'{wani.KanjiFields.Kanji}:{char}' for char in selected])} )")
+                          f"note:{wani.NoteType.Kanji} ( {' OR '.join([f'{wani.KanjiFields.Kanji}:{char}' for char in selection_or_clipboard])} )")
 
-        add_lookup_action(menu, "Vocab Wildcard" , f"deck:*Vocab* deck:*Read* (Vocab:*{selected}* OR Reading:*{selected}* OR Vocab_Meaning:*{selected}*)")
-        add_lookup_action(menu, "Vocab Exact", f"deck:*Vocab* deck:*Read* (Vocab:{selected} OR Reading:{selected} OR Vocab_Meaning:{selected} )")
-        add_lookup_action(menu, "Radical", build_radical_search_string(selected))
-        add_lookup_action(menu, "Sentence", f"tag:{Mine.Tags.Sentence} {selected}")
-        add_lookup_action(menu, "Listen", f"deck:{Mine.DeckFilters.Listen} {selected}")
-        add_lookup_action(menu, "Listen Sentence", f"(deck:*sentence* deck:*listen*) (Jlab-Kanji:*{selected}* OR Expression:*{selected}*)")
-        add_lookup_action(menu, "Listen Sentence Reading", f"(deck:*sentence* deck:*listen*) (Jlab-Hiragana:*{selected}* OR Reading:*{selected}*)")
+        add_lookup_action(menu, "Vocab Wildcard" , f"deck:*Vocab* deck:*Read* (Vocab:*{selection_or_clipboard}* OR Reading:*{selection_or_clipboard}* OR Vocab_Meaning:*{selection_or_clipboard}*)")
+        add_lookup_action(menu, "Vocab Exact", f"deck:*Vocab* deck:*Read* (Vocab:{selection_or_clipboard} OR Reading:{selection_or_clipboard} OR Vocab_Meaning:{selection_or_clipboard} )")
+        add_lookup_action(menu, "Radical", build_radical_search_string(selection_or_clipboard))
+        add_lookup_action(menu, "Sentence", f"tag:{Mine.Tags.Sentence} {selection_or_clipboard}")
+        add_lookup_action(menu, "Listen", f"deck:{Mine.DeckFilters.Listen} {selection_or_clipboard}")
+        add_lookup_action(menu, "Listen Sentence", f"(deck:*sentence* deck:*listen*) (Jlab-Kanji:*{selection_or_clipboard}* OR Expression:*{selection_or_clipboard}*)")
+        add_lookup_action(menu, "Listen Sentence Reading", f"(deck:*sentence* deck:*listen*) (Jlab-Hiragana:*{selection_or_clipboard}* OR Reading:*{selection_or_clipboard}*)")
 
 gui_hooks.webview_will_show_context_menu.append(register_lookup_actions)
 gui_hooks.editor_will_show_context_menu.append(register_lookup_actions)
