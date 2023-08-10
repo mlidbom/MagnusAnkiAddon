@@ -41,4 +41,17 @@ class UIUtils:
         if len(browser) > 0:
             browser[0].onSearchActivated()
 
+    def show_current_review_in_preview():
+        mw.onBrowse()
+        UIUtils.activate_preview()
+
+    def activate_preview():
+        browser: Browser = aqt.dialogs.open('Browser', aqt.mw)
+        mw.app.processEvents()
+        if browser._previewer is None:
+            browser.onTogglePreview()
+        else:
+            browser._previewer.activateWindow()
+
+
 

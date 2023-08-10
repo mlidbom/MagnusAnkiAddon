@@ -5,6 +5,8 @@ from aqt.browser import Browser
 
 from aqt import *
 from aqt.browser.previewer import Previewer
+from aqt.editcurrent import EditCurrent
+from aqt.editor import *
 from aqt.reviewer import RefreshNeeded
 from aqt.webview import AnkiWebView, AnkiWebViewKind
 
@@ -24,7 +26,6 @@ def lookup(text):
     mw.app.processEvents()
     if browser._previewer is None:
         browser.onTogglePreview()
-
     else:
         browser._previewer.activateWindow()
 
@@ -47,7 +48,7 @@ def add_kanji_primary_vocab(note: WaniKanjiNote, selection:str, view: AnkiWebVie
         for reading in readings_list:
             if reading and reading in selection:
                 return selection.replace(reading, f"<read>{reading}</read>")
-        return None
+        return selection
 
 
     primary_vocabs = [voc for voc in [note.get_PrimaryVocab(), format_vocab()] if voc]
@@ -123,5 +124,10 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu):
         add_lookup_action(menu, "Listen Sentence", f"(deck:*sentence* deck:*listen*) (Jlab-Kanji:*{selection_or_clipboard}* OR Expression:*{selection_or_clipboard}*)")
         add_lookup_action(menu, "Listen Sentence Reading", f"(deck:*sentence* deck:*listen*) (Jlab-Hiragana:*{selection_or_clipboard}* OR Reading:*{selection_or_clipboard}*)")
 
+def register_show_previewer(editor: Editor):
+    if editor.editorMode == aqt.editor.EditorMode.EDIT_CURRENT:
+        UIUtils.show_current_review_in_preview()
+
 gui_hooks.webview_will_show_context_menu.append(register_lookup_actions)
 gui_hooks.editor_will_show_context_menu.append(register_lookup_actions)
+gui_hooks.editor_did_load_note.append(register_show_previewer)
