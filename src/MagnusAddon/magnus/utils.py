@@ -29,7 +29,7 @@ class StringUtils:
 
 class UIUtils:
     def refresh() -> None:
-        if mw.reviewer:
+        if mw.reviewer.card:
             mw.reviewer._refresh_needed = RefreshNeeded.NOTE_TEXT
             mw.reviewer.refresh_if_needed()
 
