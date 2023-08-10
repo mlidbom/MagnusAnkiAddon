@@ -81,6 +81,8 @@ class Wani:
         Kanji_Name = "Kanji_Name"
         Reading_Exp = "Reading_Exp"
 
+        Mnemonics_Override = "__override_mnemonic"
+
         component_subject_ids = "component_subject_ids"
 
 

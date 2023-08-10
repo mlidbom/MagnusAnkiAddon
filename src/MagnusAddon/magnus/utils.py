@@ -1,5 +1,4 @@
 from typing import *
-import re
 
 from aqt import *
 from aqt.browser import Browser

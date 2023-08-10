@@ -5,7 +5,6 @@ from aqt.utils import tooltip
 from .utils import StringUtils, UIUtils
 from .wani_collection import WaniCollection
 from .wanikani_note import *
-import time
 
 
 def _sort_vocab_list(vocabs: List[WaniVocabNote]) -> list[WaniVocabNote]:
@@ -48,10 +47,11 @@ def _update_vocab(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanji
     update_kanji_names(all_vocabulary, all_kanji)
 
 def _update_kanji(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanjiNote]):
-    def generate_vocab_html_list(note: WaniVocabNote, vocabs: List[WaniVocabNote]):
+    def generate_vocab_html_list(note: WaniKanjiNote, vocabs: List[WaniVocabNote]):
         def format_vocab(selection:str) -> str:
             readings = f"{note.get_reading_kun()}, {note.get_reading_on()}"
             readings_list = [s.split(".")[0].strip() for s in (StringUtils.strip_markup(readings).split(","))]
+            readings_list.sort(key=len, reverse=True)
             for reading in readings_list:
                 if reading and reading in selection:
                     return selection.replace(reading, f'<span class="kanjiReading">{reading}</span>')

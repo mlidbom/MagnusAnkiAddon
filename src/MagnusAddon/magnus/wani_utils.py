@@ -1,5 +1,3 @@
-import time
-
 from anki.cards import *
 from anki.consts import QUEUE_TYPE_NEW
 

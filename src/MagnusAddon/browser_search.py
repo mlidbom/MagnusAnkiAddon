@@ -10,6 +10,7 @@ from aqt.editor import *
 from aqt.reviewer import RefreshNeeded
 from aqt.webview import AnkiWebView, AnkiWebViewKind
 
+import context_search
 from magnus import my_clipboard, local_note_updater
 from magnus.utils import StringUtils, UIUtils
 from magnus.wani_constants import Wani as wani
@@ -55,10 +56,9 @@ def set_kanji_primary_vocab(note: WaniKanjiNote, selection:str, view: AnkiWebVie
     note.set_PrimaryVocab("")
     add_kanji_primary_vocab(note, selection, view)
 
-
-def hide_kanji_mnemonic(note: WaniKanjiNote):
-   note.override_meaning_mnemonic()
-   UIUtils.refresh()
+def run_ui_action(callback: Callable[[], None]) -> None:
+    callback()
+    UIUtils.refresh()
 
 def register_lookup_actions(view: AnkiWebView, root_menu: QMenu):
     def get_note() -> WaniNote:
@@ -83,23 +83,7 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu):
     if not selection_or_clipboard and not note:
         return
 
-    kanji_menu = None
-    if isinstance(note, WaniKanjiNote):
-        kanji_menu = root_menu.addMenu("Kanji Actions")
-
     menu = root_menu.addMenu("Anki Search")
-
-    if kanji_menu:
-        add_lookup_action(menu, "Kanji Vocabs", f"deck:*Vocab* deck:*Read* (Vocab:*{note.get_kanji()}*)")
-        radicals = [rad.strip() for rad in note.get_radicals_names().split(",")]
-        radicals_clause = " OR ".join([f"{Wani.RadicalFields.Radical_Name}:{rad}" for rad in radicals])
-        add_lookup_action(menu, "Kanji Radicals", f"note:{Wani.NoteType.Radical} ({radicals_clause})")
-
-        kanji_menu.addAction("Hide mnemonic", lambda: hide_kanji_mnemonic(note))
-
-        if selection:
-            kanji_menu.addAction("Add primary vocab").triggered.connect(lambda: add_kanji_primary_vocab(note, selection, view))
-            kanji_menu.addAction("Set primary vocab").triggered.connect(lambda: set_kanji_primary_vocab(note, selection, view))
 
     if isinstance(note, WaniVocabNote):
         add_lookup_action(menu, "Vocab Kanji",
@@ -121,10 +105,33 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu):
         add_lookup_action(menu, "Listen Sentence", f"(deck:*sentence* deck:*listen*) (Jlab-Kanji:*{selection_or_clipboard}* OR Expression:*{selection_or_clipboard}*)")
         add_lookup_action(menu, "Listen Sentence Reading", f"(deck:*sentence* deck:*listen*) (Jlab-Hiragana:*{selection_or_clipboard}* OR Reading:*{selection_or_clipboard}*)")
 
+    if isinstance(note, WaniKanjiNote):
+        kanji_menu = root_menu.addMenu("Kanji Actions")
+        add_lookup_action(menu, "Kanji Vocabs", f"deck:*Vocab* deck:*Read* (Vocab:*{note.get_kanji()}*)")
+        radicals = [rad.strip() for rad in note.get_radicals_names().split(",")]
+        radicals_clause = " OR ".join([f"{Wani.RadicalFields.Radical_Name}:{rad}" for rad in radicals])
+        add_lookup_action(menu, "Kanji Radicals", f"note:{Wani.NoteType.Radical} ({radicals_clause})")
+
+        kanji_menu.addAction("Hide mnemonic", lambda: run_ui_action(lambda: note.override_meaning_mnemonic()))
+        kanji_menu.addAction("Restore mnemonic", lambda: run_ui_action(lambda: note.restore_meaning_mnemonic()))
+
+        if selection:
+            kanji_menu.addAction("Add primary vocab").triggered.connect(lambda: add_kanji_primary_vocab(note, selection, view))
+            kanji_menu.addAction("Set primary vocab").triggered.connect(lambda: set_kanji_primary_vocab(note, selection, view))
+
+    if isinstance(note, WaniVocabNote):
+        vocab_menu = root_menu.addMenu("Vocab Actions")
+        vocab_menu.addAction("Hide mnemonic", lambda: run_ui_action(lambda: note.override_meaning_mnemonic()))
+        vocab_menu.addAction("Restore mnemonic", lambda: run_ui_action(lambda: note.restore_meaning_mnemonic()))
+
 def register_show_previewer(editor: Editor):
     if editor.editorMode == aqt.editor.EditorMode.EDIT_CURRENT:
         UIUtils.show_current_review_in_preview()
 
+gui_hooks.webview_will_show_context_menu.append(context_search.add_lookup_action)
+gui_hooks.editor_will_show_context_menu.append(context_search.add_lookup_action)
+
 gui_hooks.webview_will_show_context_menu.append(register_lookup_actions)
 gui_hooks.editor_will_show_context_menu.append(register_lookup_actions)
+
 gui_hooks.editor_did_load_note.append(register_show_previewer)

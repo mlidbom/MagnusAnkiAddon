@@ -127,6 +127,10 @@ class WaniKanjiNote(WaniNote):
         if not self.get_Mnemonics_Override():
             self.set_Mnemonics_Override("-")
 
+    def restore_meaning_mnemonic(self):
+        if self.get_Mnemonics_Override() == "-":
+            self.set_Mnemonics_Override("")
+
     def get_Mnemonics_Override(self) -> str: return super()._get_field(Wani.KanjiFields.Mnemonics_Override)
     def set_Mnemonics_Override(self, value: str) -> None: super()._set_field(Wani.KanjiFields.Mnemonics_Override, value)
 
@@ -334,6 +338,17 @@ class WaniVocabNote(WaniKanaVocabNote):
 
     def get_component_subject_ids(self): return super()._get_field(Wani.VocabFields.component_subject_ids)
     def set_component_subject_ids(self, value: str) -> None: super()._set_field(Wani.VocabFields.component_subject_ids, value)
+
+    def override_meaning_mnemonic(self):
+        if not self.get_Mnemonics_Override():
+            self.set_Mnemonics_Override("-")
+
+    def restore_meaning_mnemonic(self):
+        if self.get_Mnemonics_Override() == "-":
+            self.set_Mnemonics_Override("")
+
+    def get_Mnemonics_Override(self) -> str: return super()._get_field(Wani.VocabFields.Mnemonics_Override)
+    def set_Mnemonics_Override(self, value: str) -> None: super()._set_field(Wani.VocabFields.Mnemonics_Override, value)
 
     def update_from_wani(self, wani_vocab: models.Vocabulary):
         super().update_from_wani(wani_vocab)

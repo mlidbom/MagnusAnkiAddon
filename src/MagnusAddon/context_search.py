@@ -61,6 +61,3 @@ def add_lookup_action(view, menu):
         label = provider[0]
         a = search_menu.addAction(label)
         a.triggered.connect(lambda _, i=idx,t=selected: lookup_online(t, i))
-
-addHook("AnkiWebView.contextMenuEvent", add_lookup_action)
-addHook("EditorWebView.contextMenuEvent", add_lookup_action)
