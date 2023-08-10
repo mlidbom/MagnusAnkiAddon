@@ -28,12 +28,17 @@ class StringUtils:
         return re.sub('<.*?>', '', string)
 
 class UIUtils:
-    def refresh(view: AnkiWebView) -> None:
-        if view.kind == AnkiWebViewKind.MAIN:
+    def refresh() -> None:
+        if mw.reviewer:
             mw.reviewer._refresh_needed = RefreshNeeded.NOTE_TEXT
             mw.reviewer.refresh_if_needed()
-        if view.kind == AnkiWebViewKind.PREVIEWER:
-            previewer: Previewer = [window for window in mw.app.topLevelWidgets() if isinstance(window, Previewer)][0]
-            previewer.render_card()
+
+        previewer: list[Previewer] = [window for window in mw.app.topLevelWidgets() if isinstance(window, Previewer)]
+        if len(previewer) > 0:
+            previewer[0].render_card()
+
+        browser: list[Browser] = [window for window in mw.app.topLevelWidgets() if isinstance(window, Browser)]
+        if len(browser) > 0:
+            browser[0].onSearchActivated()
 
 

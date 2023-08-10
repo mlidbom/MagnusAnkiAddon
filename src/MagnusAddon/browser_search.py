@@ -8,7 +8,7 @@ from aqt.browser.previewer import Previewer
 from aqt.reviewer import RefreshNeeded
 from aqt.webview import AnkiWebView, AnkiWebViewKind
 
-from magnus import my_clipboard
+from magnus import my_clipboard, local_note_updater
 from magnus.utils import StringUtils, UIUtils
 from magnus.wani_constants import Wani as wani
 from magnus.wani_utils import NoteUtils
@@ -54,8 +54,7 @@ def set_kanji_primary_vocab(note: WaniKanjiNote, selection:str, view: AnkiWebVie
     if not try_format_vocab(note.get_reading_kun()) and not try_format_vocab(note.get_reading_on()):
         note.set_PrimaryVocab(selection)
 
-    #lookup(f"note:{wani.NoteType.Kanji} {wani.KanjiFields.Kanji}:{note.get_kanji()}")
-    UIUtils.refresh(view)
+    local_note_updater.update_kanji(note)
 
 def register_lookup_actions(view: AnkiWebView, root_menu: QMenu):
     def get_note() -> WaniNote:

@@ -2,22 +2,33 @@ from typing import *
 
 from aqt.utils import tooltip
 
-from .utils import StringUtils
+from .utils import StringUtils, UIUtils
 from .wani_collection import WaniCollection
 from .wanikani_note import *
 import time
 
+
+def _sort_vocab_list(vocabs: List[WaniVocabNote]) -> list[WaniVocabNote]:
+    vocabs.sort(key=lambda vocab: (vocab.get_level(), vocab.get_lesson_position()))
+    return vocabs
+
+def update_kanji(kanji_note: WaniKanjiNote) -> None:
+    all_vocabulary: list[WaniVocabNote] = WaniCollection.fetch_all_vocab_notes()
+    all_kanji: list[WaniKanjiNote] = WaniCollection.fetch_all_kanji_notes()
+    all_vocabulary = _sort_vocab_list(all_vocabulary)  # we want a specific order in the kanji entries etc
+    _update_kanji(all_vocabulary, all_kanji)
+    UIUtils.refresh()
+
 def update_all():
-    def sort_vocab_list(vocabs: List[WaniVocabNote]) -> list[WaniVocabNote]:
-        vocabs.sort(key=lambda vocab: (vocab.get_level(), vocab.get_lesson_position()))
-        return vocabs
+
 
     all_vocabulary: list[WaniVocabNote] = WaniCollection.fetch_all_vocab_notes()
     all_kanji: list[WaniKanjiNote] = WaniCollection.fetch_all_kanji_notes()
-    all_vocabulary = sort_vocab_list(all_vocabulary)# we want a specific order in the kanji entries etc
+    all_vocabulary = _sort_vocab_list(all_vocabulary)# we want a specific order in the kanji entries etc
 
     _update_kanji(all_vocabulary, all_kanji)
     _update_vocab(all_vocabulary, all_kanji)
+    UIUtils.refresh()
 
 def _update_vocab(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanjiNote]) -> None:
     def update_kanji_names(all_vocabulary, all_kanji):
@@ -36,7 +47,6 @@ def _update_vocab(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanji
             vocab_note.set_kanji_name(kanji_names_string)
 
     update_kanji_names(all_vocabulary, all_kanji)
-    tooltip("done")
 
 def _update_kanji(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanjiNote]):
     def generate_vocab_html_list(vocabs: List[WaniVocabNote]):
@@ -92,6 +102,4 @@ def _update_kanji(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanji
             if len(found_vocab) > 0:
                 audios = "".join([vo.get_audios() for vo in found_vocab])
                 kanji.set_PrimaryVocabAudio(audios)
-
-    tooltip("done")
 
