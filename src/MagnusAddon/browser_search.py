@@ -3,7 +3,6 @@ import aqt
 from anki.cards import *
 from aqt.browser import Browser
 
-from aqt import *
 from aqt.browser.previewer import Previewer
 from aqt.editcurrent import EditCurrent
 from aqt.editor import *
@@ -126,9 +125,8 @@ def register_show_previewer(editor: Editor):
         UIUtils.show_current_review_in_preview()
         editor.parentWindow.activateWindow()
 
-def try_suppress_audio(tags: list[AVTag], something:str, view:Any):
-    if isinstance(view, aqt.browser.previewer.BrowserPreviewer) and UIUtils.is_edit_current_active():
-        tags.clear()
+
+
 
 gui_hooks.webview_will_show_context_menu.append(context_search.add_lookup_action)
 gui_hooks.editor_will_show_context_menu.append(context_search.add_lookup_action)
@@ -137,5 +135,3 @@ gui_hooks.webview_will_show_context_menu.append(register_lookup_actions)
 gui_hooks.editor_will_show_context_menu.append(register_lookup_actions)
 
 gui_hooks.editor_did_load_note.append(register_show_previewer)
-
-gui_hooks.av_player_will_play_tags.append(try_suppress_audio)
