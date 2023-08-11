@@ -67,8 +67,6 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu):
         if note:
             return NoteUtils.create_note(note)
 
-        return None
-
     selection = view.page().selectedText().strip()
     selection_or_clipboard = selection
     if not selection_or_clipboard:
@@ -97,25 +95,27 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu):
         add_lookup_action(radical_menu, "Radical &Kanji", f"note:{wani.NoteType.Kanji} {Wani.KanjiFields.Radicals_Names}:re:\\b{note.get_radical_name()}\\b")
 
     if isinstance(note, WaniKanjiNote):
+        kanji = note
         kanji_menu = root_menu.addMenu("&Kanji Actions")
         add_lookup_action(kanji_menu, "Kanji &Vocabs", f"deck:*Vocab* deck:*Read* (Vocab:*{note.get_kanji()}*)")
         radicals = [rad.strip() for rad in note.get_radicals_names().split(",")]
         radicals_clause = " OR ".join([f"{Wani.RadicalFields.Radical_Name}:{rad}" for rad in radicals])
         add_lookup_action(kanji_menu, "Kanji &Radicals", f"note:{Wani.NoteType.Radical} ({radicals_clause})")
 
-        kanji_menu.addAction("&Hide mnemonic", lambda: run_ui_action(lambda: note.override_meaning_mnemonic()))
-        kanji_menu.addAction("&Restore mnemonic", lambda: run_ui_action(lambda: note.restore_meaning_mnemonic()))
+        kanji_menu.addAction("&Hide mnemonic", lambda: run_ui_action(lambda: kanji.override_meaning_mnemonic()))
+        kanji_menu.addAction("&Restore mnemonic", lambda: run_ui_action(lambda: kanji.restore_meaning_mnemonic()))
 
         if selection:
-            kanji_menu.addAction("&Add primary vocab").triggered.connect(lambda: add_kanji_primary_vocab(note, selection, view))
-            kanji_menu.addAction("&Set primary vocab").triggered.connect(lambda: set_kanji_primary_vocab(note, selection, view))
+            kanji_menu.addAction("&Add primary vocab").triggered.connect(lambda: add_kanji_primary_vocab(kanji, selection, view))
+            kanji_menu.addAction("&Set primary vocab").triggered.connect(lambda: set_kanji_primary_vocab(kanji, selection, view))
 
     if isinstance(note, WaniVocabNote):
+        vocab = note
         vocab_menu = root_menu.addMenu("&Vocab Actions")
         add_lookup_action(vocab_menu, "Vocab &Kanji", f"note:{wani.NoteType.Kanji} ( {' OR '.join([f'{wani.KanjiFields.Kanji}:{char}' for char in note.get_vocab()])} )")
-        vocab_menu.addAction("&Hide mnemonic", lambda: run_ui_action(lambda: note.override_meaning_mnemonic()))
-        vocab_menu.addAction("&Restore mnemonic", lambda: run_ui_action(lambda: note.restore_meaning_mnemonic()))
-        vocab_menu.addAction("&Accept meaning", lambda: run_ui_action(lambda: note.set_Override_meaning(note.get_vocab_meaning().lower())))
+        vocab_menu.addAction("&Hide mnemonic", lambda: run_ui_action(lambda: vocab.override_meaning_mnemonic()))
+        vocab_menu.addAction("&Restore mnemonic", lambda: run_ui_action(lambda: vocab.restore_meaning_mnemonic()))
+        vocab_menu.addAction("&Accept meaning", lambda: run_ui_action(lambda: vocab.set_Override_meaning(vocab.get_vocab_meaning().lower())))
 
 def register_show_previewer(editor: Editor):
     if editor.editorMode == EditorMode.EDIT_CURRENT:
@@ -123,12 +123,11 @@ def register_show_previewer(editor: Editor):
         editor.parentWindow.activateWindow()
 
 
+def init():
+    gui_hooks.webview_will_show_context_menu.append(web_search.add_lookup_action)
+    gui_hooks.editor_will_show_context_menu.append(web_search.add_lookup_action)
 
+    gui_hooks.webview_will_show_context_menu.append(register_lookup_actions)
+    gui_hooks.editor_will_show_context_menu.append(register_lookup_actions)
 
-gui_hooks.webview_will_show_context_menu.append(web_search.add_lookup_action)
-gui_hooks.editor_will_show_context_menu.append(web_search.add_lookup_action)
-
-gui_hooks.webview_will_show_context_menu.append(register_lookup_actions)
-gui_hooks.editor_will_show_context_menu.append(register_lookup_actions)
-
-gui_hooks.editor_did_load_note.append(register_show_previewer)
+    gui_hooks.editor_did_load_note.append(register_show_previewer)

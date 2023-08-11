@@ -16,5 +16,6 @@ def will_play_tags(tags: list[AVTag], something:str, view:Any):
     if time.time() - suppress_audio_data._last_typing_time < 0.1:
         tags.clear()
 
-gui_hooks.editor_did_fire_typing_timer.append(typed_in_editor)
-gui_hooks.av_player_will_play_tags.append(will_play_tags)
+def setup():
+    gui_hooks.editor_did_fire_typing_timer.append(typed_in_editor)
+    gui_hooks.av_player_will_play_tags.append(will_play_tags)

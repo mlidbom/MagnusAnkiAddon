@@ -32,16 +32,12 @@ SEARCH_PROVIDERS = [
 
 ##############  USER CONFIGURATION END  ##############
 
-import urllib
-
-import aqt
-from aqt.qt import *
+from urllib import parse
 from aqt.utils import openLink
-from anki.hooks import addHook
 
 def lookup_online(text, idx):
 #    text = " ".join(text.split())
-    text = urllib.parse.quote(text, encoding='utf8')
+    text = parse.quote(text, encoding='utf8')
     for url in SEARCH_PROVIDERS[idx][1]:
         openLink(url % text)    
 

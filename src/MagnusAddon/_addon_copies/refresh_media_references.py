@@ -18,8 +18,6 @@ Copyright: (c) Glutanimate 2017 <https://glutanimate.com/>
 License: GNU AGPLv3 or later <https://www.gnu.org/licenses/agpl.html>
 """
 
-import os
-
 from aqt import mw
 from aqt.utils import tooltip
 from aqt.qt import *
@@ -43,5 +41,5 @@ def refresh_media():
 # Set up menus and hooks
 refresh_media_action = QAction("Refresh &Media", mw)
 refresh_media_action.setShortcut(QKeySequence("Ctrl+Alt+M"))
-refresh_media_action.triggered.connect(refresh_media)
+qconnect(refresh_media_action.triggered, refresh_media)
 mw.form.menuTools.addAction(refresh_media_action)

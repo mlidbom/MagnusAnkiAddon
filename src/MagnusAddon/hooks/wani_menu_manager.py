@@ -93,8 +93,9 @@ def copy_card_sort_field_to_clipboard(card):
     my_clipboard.set_text(clean_string)
 
 
-build_main_menu()
-gui_hooks.editor_did_init_buttons.append(setup_editor_buttons)
-gui_hooks.browser_will_show_context_menu.append(setup_browser_context_menu)
-gui_hooks.reviewer_did_show_answer.append(copy_card_sort_field_to_clipboard)
-gui_hooks.card_will_show.append(copy_previewer_sort_field_to_windows_clipboard)
+def setup():
+    build_main_menu()
+    gui_hooks.editor_did_init_buttons.append(setup_editor_buttons)
+    gui_hooks.browser_will_show_context_menu.append(setup_browser_context_menu)
+    gui_hooks.reviewer_did_show_answer.append(copy_card_sort_field_to_clipboard)
+    gui_hooks.card_will_show.append(copy_previewer_sort_field_to_windows_clipboard)
