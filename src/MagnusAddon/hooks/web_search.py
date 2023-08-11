@@ -13,7 +13,7 @@ Based on:
 'OSX Dictionary Lookup' by Eddie Blundell, 
 'Search Google Images' by Steve AW,
 """
-from magnus import my_clipboard
+from sysutils import my_clipboard
 
 ############## USER CONFIGURATION START ##############
 

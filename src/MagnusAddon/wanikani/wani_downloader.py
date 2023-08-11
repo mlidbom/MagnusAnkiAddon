@@ -3,8 +3,8 @@ from typing import List
 
 import requests
 
-from magnus.wani_collection import WaniCollection
-from magnus.wanikani_note import *
+from wanikani.wani_collection import WaniCollection
+from wanikani.wanikani_note import *
 
 
 class FileDownloadError(Exception):

@@ -4,9 +4,9 @@ import aqt.browser
 
 from aqt import dialogs
 
-from magnus.utils import StringUtils
-from magnus.wani_collection import *
-from magnus.wani_utils import CardUtils
+from sysutils.utils import StringUtils
+from wanikani.wani_collection import *
+from wanikani.utils.wani_utils import CardUtils
 
 
 def unsuspend_with_dependencies(note: Note) -> None:

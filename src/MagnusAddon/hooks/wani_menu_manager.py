@@ -2,15 +2,18 @@ import aqt.browser
 from anki.cards import Card
 from aqt.editor import Editor
 
-from magnus import wani_note_updater, note_importer, wani_queue_manager, local_note_updater, my_clipboard
-from magnus.utils import UIUtils
-from magnus.wani_downloader import WaniDownloader
+from batches import local_note_updater
+from wanikani import wani_note_updater, wani_queue_manager
+from wanikani import note_importer
+from sysutils.utils import UIUtils
+from sysutils import my_clipboard
+from wanikani.wani_downloader import WaniDownloader
 from aqt import gui_hooks, mw
 from aqt.qt import *
 
 import re
 
-from magnus.wanikani_note import WaniVocabNote
+from wanikani.wanikani_note import WaniVocabNote
 
 def add_menu_action(sub_menu, heading, callback):
     qaction = QAction(heading, mw)

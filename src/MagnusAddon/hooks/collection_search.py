@@ -1,21 +1,18 @@
 # coding: utf-8
-import aqt
-from anki.cards import *
 from aqt.browser import Browser
 
 from aqt.browser.previewer import Previewer
-from aqt.editcurrent import EditCurrent
 from aqt.editor import *
-from aqt.reviewer import RefreshNeeded
 from aqt.webview import AnkiWebView, AnkiWebViewKind
 
-import context_search
-from magnus import my_clipboard, local_note_updater
-from magnus.utils import StringUtils, UIUtils
-from magnus.wani_constants import Wani as wani
-from magnus.wani_utils import NoteUtils
-from magnus.wanikani_note import *
-from .magnus.wani_constants import *
+from batches import local_note_updater
+from hooks import web_search
+from sysutils import my_clipboard
+from sysutils.utils import StringUtils, UIUtils
+from wanikani.wani_constants import Wani as wani
+from wanikani.utils.wani_utils import NoteUtils
+from wanikani.wanikani_note import *
+from wanikani.wani_constants import *
 
 
 def lookup(text):
@@ -128,8 +125,8 @@ def register_show_previewer(editor: Editor):
 
 
 
-gui_hooks.webview_will_show_context_menu.append(context_search.add_lookup_action)
-gui_hooks.editor_will_show_context_menu.append(context_search.add_lookup_action)
+gui_hooks.webview_will_show_context_menu.append(web_search.add_lookup_action)
+gui_hooks.editor_will_show_context_menu.append(web_search.add_lookup_action)
 
 gui_hooks.webview_will_show_context_menu.append(register_lookup_actions)
 gui_hooks.editor_will_show_context_menu.append(register_lookup_actions)

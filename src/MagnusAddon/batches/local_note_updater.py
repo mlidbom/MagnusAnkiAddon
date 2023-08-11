@@ -2,9 +2,9 @@ from typing import *
 
 from aqt.utils import tooltip
 
-from .utils import StringUtils, UIUtils
-from .wani_collection import WaniCollection
-from .wanikani_note import *
+from sysutils.utils import StringUtils, UIUtils
+from wanikani.wani_collection import WaniCollection
+from wanikani.wanikani_note import *
 
 
 def _sort_vocab_list(vocabs: List[WaniVocabNote]) -> list[WaniVocabNote]:

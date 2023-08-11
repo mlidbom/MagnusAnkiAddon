@@ -1,11 +1,11 @@
 from typing import List
 
 import anki
-
-from magnus.my_anki import *
-from magnus.utils import ListUtils
-from magnus.wani_utils import CardUtils
-from magnus.wanikani_note import *
+from ankiutils.my_anki import *
+from sysutils.utils import ListUtils
+from wanikani.utils.wani_utils import CardUtils
+from wanikani.wanikani_note import *
+from wanikani.wanikani_note import WaniKanjiNote
 
 
 class WaniCollection:

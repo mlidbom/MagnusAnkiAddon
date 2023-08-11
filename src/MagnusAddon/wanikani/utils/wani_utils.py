@@ -1,7 +1,7 @@
 from anki.cards import *
 from anki.consts import QUEUE_TYPE_NEW
 
-from magnus.wanikani_note import *
+from wanikani.wanikani_note import *
 
 
 class NoteUtils:

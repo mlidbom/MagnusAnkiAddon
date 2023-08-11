@@ -1,7 +1,7 @@
 from aqt.utils import showInfo
 
-from .wani_collection import WaniCollection
-from .wanikani_note import *
+from wanikani.wani_collection import WaniCollection
+from wanikani.wanikani_note import *
 
 waniClient = WanikaniClient.get_instance()
 

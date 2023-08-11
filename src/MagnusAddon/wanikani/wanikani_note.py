@@ -1,9 +1,9 @@
 from anki.notes import Note
 from aqt import mw
 
-from wanikani_api import models
-from .wani_constants import *
-from .wanikani_api_client import WanikaniClient
+from _lib.wanikani_api import models
+from wanikani.wani_constants import *
+from wanikani.wanikani_api_client import WanikaniClient
 
 
 class WaniNote:

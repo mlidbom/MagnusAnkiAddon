@@ -1,6 +1,7 @@
 from typing import List
 
-from wanikani_api.client import Client, models
+from _lib.wanikani_api import models
+from _lib.wanikani_api.client import Client
 
 
 class WanikaniClient:
