@@ -54,7 +54,7 @@ def _update_kanji(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanji
             readings_list.sort(key=len, reverse=True)
             for reading in readings_list:
                 if reading and reading in selection:
-                    return selection.replace(reading, f'<span class="kanjiReading">{reading}</span>')
+                    return selection.replace(reading, f'<span class="kanjiReading">{reading}</span>', 1)
             return selection
 
         return f'''

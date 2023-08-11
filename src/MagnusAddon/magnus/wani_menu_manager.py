@@ -3,6 +3,7 @@ from anki.cards import Card
 from aqt.editor import Editor
 
 from magnus import wani_note_updater, note_importer, wani_queue_manager, local_note_updater, my_clipboard
+from magnus.utils import UIUtils
 from magnus.wani_downloader import WaniDownloader
 from aqt import gui_hooks, mw
 from aqt.qt import *
@@ -75,7 +76,8 @@ def setup_browser_context_menu(browser: aqt.browser.Browser, menu: QMenu):
 
 def copy_previewer_sort_field_to_windows_clipboard(html:str, card: Card, typeOfDisplay:str) -> str:
     if typeOfDisplay == 'previewAnswer':
-        copy_card_sort_field_to_clipboard(card)
+        if not UIUtils.is_edit_current_active():
+            copy_card_sort_field_to_clipboard(card)
     return html
 
 def copy_card_sort_field_to_clipboard(card):

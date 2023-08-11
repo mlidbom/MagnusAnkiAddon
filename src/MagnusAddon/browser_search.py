@@ -43,7 +43,7 @@ def add_kanji_primary_vocab(note: WaniKanjiNote, selection:str, view: AnkiWebVie
         readings_list.sort(key=len, reverse=True)
         for reading in readings_list:
             if reading and reading in selection:
-                return selection.replace(reading, f"<read>{reading}</read>")
+                return selection.replace(reading, f"<read>{reading}</read>", 1)
         return selection
 
 
@@ -119,6 +119,7 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu):
         add_lookup_action(vocab_menu, "Vocab &Kanji", f"note:{wani.NoteType.Kanji} ( {' OR '.join([f'{wani.KanjiFields.Kanji}:{char}' for char in note.get_vocab()])} )")
         vocab_menu.addAction("&Hide mnemonic", lambda: run_ui_action(lambda: note.override_meaning_mnemonic()))
         vocab_menu.addAction("&Restore mnemonic", lambda: run_ui_action(lambda: note.restore_meaning_mnemonic()))
+        vocab_menu.addAction("&Accept meaning", lambda: run_ui_action(lambda: note.set_Override_meaning(note.get_vocab_meaning().lower())))
 
 def register_show_previewer(editor: Editor):
     if editor.editorMode == EditorMode.EDIT_CURRENT:
