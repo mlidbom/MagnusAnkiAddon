@@ -13,7 +13,7 @@ def typed_in_editor(note:Note):
     suppress_audio_data._last_typing_note = note
 
 def will_play_tags(tags: list[AVTag], something:str, view:Any):
-    if time.time() - suppress_audio_data._last_typing_time < 0.2:
+    if time.time() - suppress_audio_data._last_typing_time < 0.1:
         tags.clear()
 
 gui_hooks.editor_did_fire_typing_timer.append(typed_in_editor)
