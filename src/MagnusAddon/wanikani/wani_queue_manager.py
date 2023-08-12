@@ -1,12 +1,14 @@
 from typing import Optional, Sequence, Callable
 
 import aqt.browser
+from anki.notes import Note
 
 from aqt import dialogs
 
 from sysutils.utils import StringUtils
 from wanikani.wani_collection import *
 from wanikani.utils.wani_utils import CardUtils
+from wanikani.wani_constants import Wani
 
 
 def unsuspend_with_dependencies(note: Note) -> None:

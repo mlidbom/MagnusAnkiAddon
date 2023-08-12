@@ -1,7 +1,12 @@
+from anki.notes import Note
 from aqt.utils import showInfo
 
+from wanikani.Note.WaniKanjiNote import WaniKanjiNote
+from wanikani.Note.WaniRadicalNote import WaniRadicalNote
+from wanikani.Note.WaniVocabNote import WaniVocabNote
 from wanikani.wani_collection import WaniCollection
-from wanikani.wanikani_note import *
+from wanikani.wani_constants import Wani
+from wanikani.wanikani_api_client import WanikaniClient
 
 waniClient = WanikaniClient.get_instance()
 

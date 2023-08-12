@@ -1,4 +1,5 @@
 # coding: utf-8
+from aqt import mw
 from aqt.browser import Browser
 
 from aqt.browser.previewer import Previewer
@@ -7,9 +8,12 @@ from aqt.webview import AnkiWebView, AnkiWebViewKind
 
 from batches import local_note_updater
 from sysutils.utils import StringUtils, UIUtils
+from wanikani.Note.MyNote import MyNote
+from wanikani.Note.WaniKanjiNote import WaniKanjiNote
+from wanikani.Note.WaniRadicalNote import WaniRadicalNote
+from wanikani.Note.WaniVocabNote import WaniVocabNote
 from wanikani.wani_constants import Wani as wani
 from wanikani.utils.wani_utils import NoteUtils
-from wanikani.wanikani_note import *
 from wanikani.wani_constants import *
 from sysutils import my_clipboard, kana_utils
 from urllib import parse
@@ -67,26 +71,26 @@ def run_ui_action(callback: Callable[[], None]) -> None:
 
 
 def register_lookup_actions(view: AnkiWebView, root_menu: QMenu):
-    def get_note() -> MyNote:
-        def get_note() -> Note:
+    def get_card() -> MyNote:
+        def get_card_inner() -> Card:
             if view.kind == AnkiWebViewKind.MAIN:
-                return mw.reviewer.card.note()
+                return mw.reviewer.card
             if view.kind == AnkiWebViewKind.PREVIEWER:
-                return [window for window in mw.app.topLevelWidgets() if isinstance(window, Previewer)][0].card().note()
+                return [window for window in mw.app.topLevelWidgets() if isinstance(window, Previewer)][0].card()
 
-        note = get_note()
-        if note:
-            return NoteUtils.create_note(note)
+        card = get_card_inner()
+        if card:
+            return NoteUtils.create_note(card)
 
-    def add_sentence_lookup(menu, search):
-        add_lookup_action(menu, "&Sentence", f"(deck:*sentence* deck:*listen*) (Jlab-Kanji:*{search}* OR Expression:*{search}* OR Reading:*{search}*)")
+    def add_sentence_lookup(menu, name: str, search):
+        add_lookup_action(menu, name, f"(deck:*sentence* deck:*listen*) (Jlab-Kanji:*{search}* OR Expression:*{search}* OR Reading:*{search}*)")
 
     selection = view.page().selectedText().strip()
     sel_clip = selection
     if not sel_clip:
         sel_clip = my_clipboard.get_text().strip()
 
-    note = get_note()
+    note = get_card()
     if not sel_clip and not note:
         return
 
@@ -100,22 +104,22 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu):
 
         search_anki_menu = search_menu.addMenu("&Anki")
         add_lookup_action(search_anki_menu, "&Kanji", f"note:{wani.NoteType.Kanji} ( {' OR '.join([f'{wani.KanjiFields.Kanji}:{char}' for char in sel_clip])} )")
+        add_lookup_action(search_anki_menu, "&Vocab", f"deck:*Vocab* deck:*Read* (Vocab:{sel_clip} OR Reading:re:\\b{sel_clip}\\b OR Vocab_Meaning:re:\\b{sel_clip}\\b )")
         add_lookup_action(search_anki_menu, "Vocab &Wildcard", f"deck:*Vocab* deck:*Read* (Vocab:*{sel_clip}* OR Reading:*{sel_clip}* OR Vocab_Meaning:*{sel_clip}*)")
-        add_lookup_action(search_anki_menu, "&Vocab Exact", f"deck:*Vocab* deck:*Read* (Vocab:{sel_clip} OR Reading:{sel_clip} OR Vocab_Meaning:{sel_clip} )")
         add_lookup_action(search_anki_menu, "&Radical", build_radical_search_string(sel_clip))
-        add_lookup_action(search_anki_menu, "&Sentence", f"tag:{Mine.Tags.Sentence} {sel_clip}")
+        add_sentence_lookup(search_anki_menu, "&Sentence", sel_clip)
         add_lookup_action(search_anki_menu, "Listen", f"deck:{Mine.DeckFilters.Listen} {sel_clip}")
-        add_sentence_lookup(search_anki_menu, sel_clip)
 
         search_web_menu = search_menu.addMenu("&Web")
         add_web_lookup(search_web_menu, "&Takoboto", u"https://takoboto.jp/?q=%s", sel_clip)
-        add_web_lookup(search_web_menu, "&Jisho", u"https://jisho.org/search/%s", sel_clip),
-        add_web_lookup(search_web_menu, "&Wanikani", u"https://www.wanikani.com/search?query=%s", sel_clip),
-        add_web_lookup(search_web_menu, "&Verbix conjugate", u"https://www.verbix.com/webverbix/japanese/%s", sel_clip),
-        add_web_lookup(search_web_menu, "&Japanese verb conjugator", u"https://www.japaneseverbconjugator.com/VerbDetails.asp?Go=Conjugate&txtVerb=%s", sel_clip),
-        add_web_lookup(search_web_menu, "&Immersion Kit", u"https://www.immersionkit.com/dictionary?exact=true&sort=shortness&keyword=%s", sel_clip),
-        add_web_lookup(search_web_menu, "&Deepl", u"https://www.deepl.com/en/translator#ja/en/%s", sel_clip),
         add_web_lookup(search_web_menu, "&Merriam Webster", u"https://www.merriam-webster.com/dictionary/%s", sel_clip)
+        add_web_lookup(search_web_menu, "&Immersion Kit", u"https://www.immersionkit.com/dictionary?exact=true&sort=shortness&keyword=%s", sel_clip)
+        add_web_lookup(search_web_menu, "Japanese verb &conjugator", u"https://www.japaneseverbconjugator.com/VerbDetails.asp?Go=Conjugate&txtVerb=%s", sel_clip)
+        add_web_lookup(search_web_menu, "&Kanshudo", u"https://www.kanshudo.com/searchw?q=%s", sel_clip)
+        add_web_lookup(search_web_menu, "&Deepl", u"https://www.deepl.com/en/translator#ja/en/%s", sel_clip),
+        add_web_lookup(search_web_menu, "&Jisho", u"https://jisho.org/search/%s", sel_clip)
+        add_web_lookup(search_web_menu, "&Wanikani", u"https://www.wanikani.com/search?query=%s", sel_clip)
+        add_web_lookup(search_web_menu, "&Verbix conjugate", u"https://www.verbix.com/webverbix/japanese/%s", sel_clip)
 
     if sel_clip:
         add_vocab_menu = note_add_menu.addMenu("&Vocab")
@@ -137,7 +141,7 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu):
 
         add_ui_action(note_menu, "&Hide mnemonic",lambda: kanji.override_meaning_mnemonic())
         add_ui_action(note_menu, "&Restore mnemonic", lambda: kanji.restore_meaning_mnemonic())
-        add_ui_action(note_menu, "&Accept meaning", lambda: kanji.set_Override_meaning(kanji.get_kanji_meaning().lower().replace(",", "/").replace(" ", "")))
+        add_ui_action(note_menu, "&Accept meaning", lambda: kanji.set_Override_meaning(kanji.get_kanji_meaning().lower().replace(", ", "/").replace(" ", "-")))
 
         if selection:
             add_ui_action(note_add_menu, "&Primary vocab", lambda: add_kanji_primary_vocab(kanji, selection, view))
@@ -146,11 +150,11 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu):
     if isinstance(note, WaniVocabNote):
         vocab = note
         add_lookup_action(note_lookup_menu, "&Kanji", f"note:{wani.NoteType.Kanji} ( {' OR '.join([f'{wani.KanjiFields.Kanji}:{char}' for char in note.get_vocab()])} )")
-        add_sentence_lookup(note_lookup_menu, kana_utils.get_conjugation_base(vocab.get_vocab()))
+        add_sentence_lookup(note_lookup_menu, "&Sentence", kana_utils.get_conjugation_base(vocab.get_vocab()))
 
         add_ui_action(note_menu, "&Hide mnemonic", lambda: vocab.override_meaning_mnemonic())
         add_ui_action(note_menu, "&Restore mnemonic", lambda: vocab.restore_meaning_mnemonic())
-        add_ui_action(note_menu, "Accept &meaning", lambda: vocab.set_Override_meaning(vocab.get_vocab_meaning().lower().replace(",", "/").replace(" ", "")))
+        add_ui_action(note_menu, "Accept &meaning", lambda: vocab.set_Override_meaning(vocab.get_vocab_meaning().lower().replace(", ", "/").replace(" ", "-")))
 
         add_ui_action(note_set_menu, "&Meaning", lambda: vocab.set_Override_meaning(sel_clip))
         add_ui_action(note_set_menu, "&Similar vocab", lambda: vocab.set_related_similar_vocab(sel_clip))

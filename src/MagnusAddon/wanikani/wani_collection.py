@@ -1,11 +1,16 @@
 from typing import List
 
 import anki
+from aqt import mw
+
 from ankiutils.my_anki import *
 from sysutils.utils import ListUtils
+from wanikani.Note.WaniNote import WaniNote
+from wanikani.Note.WaniRadicalNote import WaniRadicalNote
+from wanikani.Note.WaniVocabNote import WaniVocabNote
 from wanikani.utils.wani_utils import CardUtils
-from wanikani.wanikani_note import *
-from wanikani.wanikani_note import WaniKanjiNote
+from wanikani.Note.WaniKanjiNote import WaniKanjiNote
+from wanikani.wani_constants import Wani
 
 
 class WaniCollection:

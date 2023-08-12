@@ -2,9 +2,11 @@ import os
 from typing import List
 
 import requests
+from aqt import mw
 
+from wanikani.Note.WaniVocabNote import WaniVocabNote
 from wanikani.wani_collection import WaniCollection
-from wanikani.wanikani_note import *
+from wanikani.wanikani_api_client import WanikaniClient
 
 
 class FileDownloadError(Exception):

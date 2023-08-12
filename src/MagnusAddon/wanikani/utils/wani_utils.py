@@ -1,21 +1,32 @@
 from anki.cards import *
 from anki.consts import QUEUE_TYPE_NEW
+from aqt import mw
 
-from wanikani.wanikani_note import *
+from wanikani.Note.MyNote import MyNote
+from wanikani.Note.SentenceNote import SentenceNote
+from wanikani.Note.WaniKanjiNote import WaniKanjiNote
+from wanikani.Note.WaniNote import WaniNote
+from wanikani.Note.WaniRadicalNote import WaniRadicalNote
+from wanikani.Note.WaniVocabNote import WaniVocabNote
+from wanikani.wani_constants import Wani
 
 
 class NoteUtils:
     def get_note_type(note: Note) -> str:
         return note.note_type()["name"]
 
-    def create_note(note: Note) -> MyNote:
+    def create_note(card: Card) -> MyNote:
+        note = card.note()
         if NoteUtils.get_note_type(note) == Wani.NoteType.Kanji:
             return WaniKanjiNote(note)
         elif NoteUtils.get_note_type(note) == Wani.NoteType.Vocab:
             return WaniVocabNote(note)
         elif NoteUtils.get_note_type(note) == Wani.NoteType.Radical:
             return WaniRadicalNote(note)
-
+        else:
+            deck = mw.col.decks.get(card.current_deck_id())
+            if "sentence" in deck['name'].lower():
+                return SentenceNote(note)
         return MyNote(note)
 
 

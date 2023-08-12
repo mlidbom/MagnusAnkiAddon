@@ -5,15 +5,16 @@ from anki.sound import AVTag
 from aqt import gui_hooks
 import time
 
-class suppress_audio_data:
+class SuppressAudioData:
     _last_typing_time = 0.0
     _last_typing_note: Note
-def typed_in_editor(note:Note):
-    suppress_audio_data._last_typing_time = time.time()
-    suppress_audio_data._last_typing_note = note
 
-def will_play_tags(tags: list[AVTag], something:str, view:Any):
-    if time.time() - suppress_audio_data._last_typing_time < 0.1:
+def typed_in_editor(note:Note):
+    SuppressAudioData._last_typing_time = time.time()
+    SuppressAudioData._last_typing_note = note
+
+def will_play_tags(tags: list[AVTag], something: str, view: Any):
+    if time.time() - SuppressAudioData._last_typing_time < 0.05:
         tags.clear()
 
 def setup():
