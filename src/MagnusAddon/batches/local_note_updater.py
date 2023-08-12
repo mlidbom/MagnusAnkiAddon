@@ -2,6 +2,7 @@ from typing import *
 
 from aqt.utils import tooltip
 
+from sysutils import kana_utils
 from sysutils.utils import StringUtils, UIUtils
 from wanikani.wani_collection import WaniCollection
 from wanikani.wanikani_note import *
@@ -32,7 +33,7 @@ def update_all():
 
 
 def _update_vocab(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanjiNote]) -> None:
-    def update_kanji_names(all_vocabulary, all_kanji):
+    def update_kanji_names():
         def prepare_kanji_meaning(kanji: WaniKanjiNote) -> str:
             meaning = kanji.get_kanji_meaning()
             meaning = StringUtils.strip_markup(meaning)
@@ -49,16 +50,24 @@ def _update_vocab(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanji
 
     def format_context_sentences():
         for vocab in all_vocabulary:
+            def format_sentence(html_sentence: str):
+                clean_sentence = StringUtils.strip_markup(html_sentence)
+                word = vocab.get_vocab()
+                if word in clean_sentence:
+                    return clean_sentence.replace(word, f"""<span class="vocabInContext">{word}</span>""")
+                else:
+                    word = kana_utils.get_conjugation_base(word)
+                    return clean_sentence.replace(word, f"""<span class="vocabInContext">{word}</span>""")
+
             for get_context_japanese, set_contex_japanese in [(vocab.get_context_jp, vocab.set_context_jp), (vocab.get_context_jp_2, vocab.set_context_jp_2),
                                                               (vocab.get_context_jp_3, vocab.set_context_jp_3)]:
-                context_japanese = get_context_japanese()
-                if context_japanese:
-                    clean = StringUtils.strip_markup(context_japanese)
-                    vocab_string = vocab.get_vocab()
-                    formatted = clean.replace(vocab_string, f"""<span class="vocabInContext">{vocab_string}</span>""")
+                sentence = get_context_japanese()
+                if sentence:
+                    formatted = format_sentence(sentence)
+                    bla = 1
                     set_contex_japanese(formatted)
 
-    update_kanji_names(all_vocabulary, all_kanji)
+    update_kanji_names()
     format_context_sentences()
 
 
