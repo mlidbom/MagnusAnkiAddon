@@ -1,5 +1,6 @@
 import aqt.browser
 from anki.cards import Card
+from anki.notes import Note
 from aqt.editor import Editor
 
 from batches import local_note_updater
@@ -83,8 +84,15 @@ def copy_previewer_sort_field_to_windows_clipboard(html:str, card: Card, typeOfD
             copy_card_sort_field_to_clipboard(card)
     return html
 
+class copy_card_data:
+    note_id = 0
+
 def copy_card_sort_field_to_clipboard(card):
     note = card.note()
+    if note.id == copy_card_data.note_id:
+        return
+    else:
+        copy_card_data.note_id = note.id
     model = note.model()
     sort_field = model['sortf']
     sort_value = note.fields[sort_field]

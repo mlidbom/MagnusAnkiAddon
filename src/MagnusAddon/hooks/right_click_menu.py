@@ -6,16 +6,21 @@ from aqt.editor import *
 from aqt.webview import AnkiWebView, AnkiWebViewKind
 
 from batches import local_note_updater
-from hooks import web_search
-from sysutils import my_clipboard
 from sysutils.utils import StringUtils, UIUtils
 from wanikani.wani_constants import Wani as wani
 from wanikani.utils.wani_utils import NoteUtils
 from wanikani.wanikani_note import *
 from wanikani.wani_constants import *
+from sysutils import my_clipboard, kana_utils
+from urllib import parse
+from aqt.utils import openLink
 
 
-def lookup(text):
+def add_web_lookup(menu: QMenu, name: str, url: str, search: str):
+    search = parse.quote(search, encoding='utf8')
+    menu.addAction(name, lambda: openLink(url % search))
+
+def anki_lookup(text):
     browser: Browser = aqt.dialogs.open('Browser', aqt.mw)
     browser.form.searchEdit.lineEdit().setText(text)
     browser.onSearchActivated()
@@ -23,8 +28,7 @@ def lookup(text):
 
 
 def add_lookup_action(menu: QMenu, name: str, search: str):
-    action = menu.addAction(name)
-    action.triggered.connect(lambda: lookup(search))
+    menu.addAction(name, lambda: anki_lookup(search))
 
 
 def add_ui_action(menu: QMenu, name: str, callback: Callable[[], None]) -> None:
@@ -74,73 +78,86 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu):
         if note:
             return NoteUtils.create_note(note)
 
+    def add_sentence_lookup(menu, search):
+        add_lookup_action(menu, "&Sentence", f"(deck:*sentence* deck:*listen*) (Jlab-Kanji:*{search}* OR Expression:*{search}* OR Reading:*{search}*)")
+
     selection = view.page().selectedText().strip()
-    selection_or_clipboard = selection
-    if not selection_or_clipboard:
-        selection_or_clipboard = my_clipboard.get_text().strip()
+    sel_clip = selection
+    if not sel_clip:
+        sel_clip = my_clipboard.get_text().strip()
 
     note = get_note()
-    if not selection_or_clipboard and not note:
+    if not sel_clip and not note:
         return
 
-    menu = root_menu.addMenu("&Anki Search")
+    note_menu = root_menu.addMenu("&Note")
+    note_lookup_menu = note_menu.addMenu("&Lookup")
+    note_add_menu = note_menu.addMenu("&Add")
+    note_set_menu = note_menu.addMenu("&Set")
 
-    if selection_or_clipboard:
-        add_lookup_action(menu, "&Kanji",
-                          f"note:{wani.NoteType.Kanji} ( {' OR '.join([f'{wani.KanjiFields.Kanji}:{char}' for char in selection_or_clipboard])} )")
+    if sel_clip:
+        search_menu = root_menu.addMenu("&Search")
 
-        add_lookup_action(menu, "Vocab &Wildcard", f"deck:*Vocab* deck:*Read* (Vocab:*{selection_or_clipboard}* OR Reading:*{selection_or_clipboard}* OR Vocab_Meaning:*{selection_or_clipboard}*)")
-        add_lookup_action(menu, "&Vocab Exact", f"deck:*Vocab* deck:*Read* (Vocab:{selection_or_clipboard} OR Reading:{selection_or_clipboard} OR Vocab_Meaning:{selection_or_clipboard} )")
-        add_lookup_action(menu, "&Radical", build_radical_search_string(selection_or_clipboard))
-        add_lookup_action(menu, "&Sentence", f"tag:{Mine.Tags.Sentence} {selection_or_clipboard}")
-        add_lookup_action(menu, "Listen", f"deck:{Mine.DeckFilters.Listen} {selection_or_clipboard}")
-        add_lookup_action(menu, "&Listen Sentence",
-                          f"(deck:*sentence* deck:*listen*) (Jlab-Kanji:*{selection_or_clipboard}* OR Expression:*{selection_or_clipboard}* OR Reading:*{selection_or_clipboard}*)")
-        # add_lookup_action(menu, "Listen Sentence Reading", f"(deck:*sentence* deck:*listen*) (Jlab-Hiragana:*{selection_or_clipboard}* OR Reading:*{selection_or_clipboard}*)")
+        search_anki_menu = search_menu.addMenu("&Anki")
+        add_lookup_action(search_anki_menu, "&Kanji", f"note:{wani.NoteType.Kanji} ( {' OR '.join([f'{wani.KanjiFields.Kanji}:{char}' for char in sel_clip])} )")
+        add_lookup_action(search_anki_menu, "Vocab &Wildcard", f"deck:*Vocab* deck:*Read* (Vocab:*{sel_clip}* OR Reading:*{sel_clip}* OR Vocab_Meaning:*{sel_clip}*)")
+        add_lookup_action(search_anki_menu, "&Vocab Exact", f"deck:*Vocab* deck:*Read* (Vocab:{sel_clip} OR Reading:{sel_clip} OR Vocab_Meaning:{sel_clip} )")
+        add_lookup_action(search_anki_menu, "&Radical", build_radical_search_string(sel_clip))
+        add_lookup_action(search_anki_menu, "&Sentence", f"tag:{Mine.Tags.Sentence} {sel_clip}")
+        add_lookup_action(search_anki_menu, "Listen", f"deck:{Mine.DeckFilters.Listen} {sel_clip}")
+        add_sentence_lookup(search_anki_menu, sel_clip)
 
-    if selection_or_clipboard:
-        actions_menu = root_menu.addMenu("&Generic Actions")
-        add_ui_action(actions_menu, "Add Vocab &1", lambda: note.set_field(MyNoteFields.Vocab1, selection_or_clipboard))
-        add_ui_action(actions_menu, "Add Vocab &2", lambda: note.set_field(MyNoteFields.Vocab2, selection_or_clipboard))
-        add_ui_action(actions_menu, "Add Vocab &3", lambda: note.set_field(MyNoteFields.Vocab3, selection_or_clipboard))
-        add_ui_action(actions_menu, "Add Vocab &4", lambda: note.set_field(MyNoteFields.Vocab4, selection_or_clipboard))
-        add_ui_action(actions_menu, "Add Vocab &5", lambda: note.set_field(MyNoteFields.Vocab5, selection_or_clipboard))
+        search_web_menu = search_menu.addMenu("&Web")
+        add_web_lookup(search_web_menu, "&Takoboto", u"https://takoboto.jp/?q=%s", sel_clip)
+        add_web_lookup(search_web_menu, "&Jisho", u"https://jisho.org/search/%s", sel_clip),
+        add_web_lookup(search_web_menu, "&Wanikani", u"https://www.wanikani.com/search?query=%s", sel_clip),
+        add_web_lookup(search_web_menu, "&Verbix conjugate", u"https://www.verbix.com/webverbix/japanese/%s", sel_clip),
+        add_web_lookup(search_web_menu, "&Japanese verb conjugator", u"https://www.japaneseverbconjugator.com/VerbDetails.asp?Go=Conjugate&txtVerb=%s", sel_clip),
+        add_web_lookup(search_web_menu, "&Immersion Kit", u"https://www.immersionkit.com/dictionary?exact=true&sort=shortness&keyword=%s", sel_clip),
+        add_web_lookup(search_web_menu, "&Deepl", u"https://www.deepl.com/en/translator#ja/en/%s", sel_clip),
+        add_web_lookup(search_web_menu, "&Merriam Webster", u"https://www.merriam-webster.com/dictionary/%s", sel_clip)
+
+    if sel_clip:
+        add_vocab_menu = note_add_menu.addMenu("&Vocab")
+        add_ui_action(add_vocab_menu, "&1", lambda: note.set_field(MyNoteFields.Vocab1, sel_clip))
+        add_ui_action(add_vocab_menu, "&2", lambda: note.set_field(MyNoteFields.Vocab2, sel_clip))
+        add_ui_action(add_vocab_menu, "&3", lambda: note.set_field(MyNoteFields.Vocab3, sel_clip))
+        add_ui_action(add_vocab_menu, "&4", lambda: note.set_field(MyNoteFields.Vocab4, sel_clip))
+        add_ui_action(add_vocab_menu, "&5", lambda: note.set_field(MyNoteFields.Vocab5, sel_clip))
 
     if isinstance(note, WaniRadicalNote):
-        radical_menu = root_menu.addMenu("&Radical Actions")
-        add_lookup_action(radical_menu, "Radical &Kanji", f"note:{wani.NoteType.Kanji} {Wani.KanjiFields.Radicals_Names}:re:\\b{note.get_radical_name()}\\b")
+        add_lookup_action(note_lookup_menu, "&Kanji", f"note:{wani.NoteType.Kanji} {Wani.KanjiFields.Radicals_Names}:re:\\b{note.get_radical_name()}\\b")
 
     if isinstance(note, WaniKanjiNote):
         kanji = note
-        kanji_menu = root_menu.addMenu("&Kanji Actions")
-        add_lookup_action(kanji_menu, "Kanji &Vocabs", f"deck:*Vocab* deck:*Read* (Vocab:*{note.get_kanji()}*)")
+        add_lookup_action(note_lookup_menu, "&Vocabs", f"deck:*Vocab* deck:*Read* (Vocab:*{note.get_kanji()}*)")
         radicals = [rad.strip() for rad in note.get_radicals_names().split(",")]
         radicals_clause = " OR ".join([f"{Wani.RadicalFields.Radical_Name}:{rad}" for rad in radicals])
-        add_lookup_action(kanji_menu, "Kanji &Radicals", f"note:{Wani.NoteType.Radical} ({radicals_clause})")
+        add_lookup_action(note_lookup_menu, "&Radicals", f"note:{Wani.NoteType.Radical} ({radicals_clause})")
 
-        kanji_menu.addAction("&Hide mnemonic", lambda: run_ui_action(lambda: kanji.override_meaning_mnemonic()))
-        kanji_menu.addAction("&Restore mnemonic", lambda: run_ui_action(lambda: kanji.restore_meaning_mnemonic()))
-
-        add_ui_action(kanji_menu, "&Accept meaning", lambda: kanji.set_Override_meaning(kanji.get_kanji_meaning().lower().replace(",", "/").replace(" ", "")))
+        add_ui_action(note_menu, "&Hide mnemonic",lambda: kanji.override_meaning_mnemonic())
+        add_ui_action(note_menu, "&Restore mnemonic", lambda: kanji.restore_meaning_mnemonic())
+        add_ui_action(note_menu, "&Accept meaning", lambda: kanji.set_Override_meaning(kanji.get_kanji_meaning().lower().replace(",", "/").replace(" ", "")))
 
         if selection:
-            kanji_menu.addAction("&Add primary vocab").triggered.connect(lambda: add_kanji_primary_vocab(kanji, selection, view))
-            kanji_menu.addAction("&Set primary vocab").triggered.connect(lambda: set_kanji_primary_vocab(kanji, selection, view))
+            add_ui_action(note_add_menu, "&Primary vocab", lambda: add_kanji_primary_vocab(kanji, selection, view))
+            add_ui_action(note_set_menu, "&Primary vocab", lambda: set_kanji_primary_vocab(kanji, selection, view))
 
     if isinstance(note, WaniVocabNote):
         vocab = note
-        vocab_menu = root_menu.addMenu("&Vocab Actions")
-        add_lookup_action(vocab_menu, "Vocab &Kanji", f"note:{wani.NoteType.Kanji} ( {' OR '.join([f'{wani.KanjiFields.Kanji}:{char}' for char in note.get_vocab()])} )")
+        add_lookup_action(note_lookup_menu, "&Kanji", f"note:{wani.NoteType.Kanji} ( {' OR '.join([f'{wani.KanjiFields.Kanji}:{char}' for char in note.get_vocab()])} )")
+        add_sentence_lookup(note_lookup_menu, kana_utils.get_conjugation_base(vocab.get_vocab()))
 
-        add_ui_action(vocab_menu, "&Hide mnemonic", lambda: vocab.override_meaning_mnemonic())
-        add_ui_action(vocab_menu, "&Restore mnemonic", lambda: vocab.restore_meaning_mnemonic())
-        add_ui_action(vocab_menu, "&Accept meaning", lambda: vocab.set_Override_meaning(vocab.get_vocab_meaning().lower().replace(",", "/").replace(" ", "")))
-        add_ui_action(vocab_menu, "Set similar &vocab", lambda: vocab.set_related_similar_vocab(selection_or_clipboard))
-        add_ui_action(vocab_menu, "Set &derived from", lambda: vocab.set_related_derived_from(selection_or_clipboard))
-        add_ui_action(vocab_menu, "Set &similar meaning", lambda: vocab.set_related_similar_meaning(selection_or_clipboard))
-        add_ui_action(vocab_menu, "Set homo&phone", lambda: vocab.set_related_homophones(selection_or_clipboard))
-        add_ui_action(vocab_menu, "Set &ergative twin", lambda: vocab.set_related_ergative_twin(selection_or_clipboard))
+        add_ui_action(note_menu, "&Hide mnemonic", lambda: vocab.override_meaning_mnemonic())
+        add_ui_action(note_menu, "&Restore mnemonic", lambda: vocab.restore_meaning_mnemonic())
+        add_ui_action(note_menu, "Accept &meaning", lambda: vocab.set_Override_meaning(vocab.get_vocab_meaning().lower().replace(",", "/").replace(" ", "")))
 
+        add_ui_action(note_set_menu, "&Meaning", lambda: vocab.set_Override_meaning(sel_clip))
+        add_ui_action(note_set_menu, "&Similar vocab", lambda: vocab.set_related_similar_vocab(sel_clip))
+        add_ui_action(note_set_menu, "&Derived from", lambda: vocab.set_related_derived_from(sel_clip))
+        add_ui_action(note_set_menu, "S&imilar meaning", lambda: vocab.set_related_similar_meaning(sel_clip))
+        add_ui_action(note_set_menu, "&Homophone", lambda: vocab.set_related_homophones(sel_clip))
+        add_ui_action(note_set_menu, "&Ergative twin", lambda: vocab.set_related_ergative_twin(sel_clip))
 
 def register_show_previewer(editor: Editor):
     if editor.editorMode == EditorMode.EDIT_CURRENT:
@@ -149,9 +166,6 @@ def register_show_previewer(editor: Editor):
 
 
 def init():
-    gui_hooks.webview_will_show_context_menu.append(web_search.add_lookup_action)
-    gui_hooks.editor_will_show_context_menu.append(web_search.add_lookup_action)
-
     gui_hooks.webview_will_show_context_menu.append(register_lookup_actions)
     gui_hooks.editor_will_show_context_menu.append(register_lookup_actions)
 
