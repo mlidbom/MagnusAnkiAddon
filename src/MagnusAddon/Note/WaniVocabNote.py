@@ -2,7 +2,7 @@ from _lib.wanikani_api import models
 from anki.notes import Note
 from aqt import mw
 
-from wanikani.Note.WaniKanaVocabNote import WaniKanaVocabNote
+from Note.WaniKanaVocabNote import WaniKanaVocabNote
 from wanikani.wani_constants import Wani, Mine
 from wanikani.wanikani_api_client import WanikaniClient
 

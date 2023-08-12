@@ -2,12 +2,12 @@ from anki.cards import *
 from anki.consts import QUEUE_TYPE_NEW
 from aqt import mw
 
-from wanikani.Note.MyNote import MyNote
-from wanikani.Note.SentenceNote import SentenceNote
-from wanikani.Note.WaniKanjiNote import WaniKanjiNote
-from wanikani.Note.WaniNote import WaniNote
-from wanikani.Note.WaniRadicalNote import WaniRadicalNote
-from wanikani.Note.WaniVocabNote import WaniVocabNote
+from Note.MyNote import MyNote
+from Note.SentenceNote import SentenceNote
+from Note.WaniKanjiNote import WaniKanjiNote
+from Note.WaniNote import WaniNote
+from Note.WaniRadicalNote import WaniRadicalNote
+from Note.WaniVocabNote import WaniVocabNote
 from wanikani.wani_constants import Wani
 
 

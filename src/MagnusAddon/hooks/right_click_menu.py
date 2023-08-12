@@ -13,10 +13,10 @@ from aqt.webview import AnkiWebView, AnkiWebViewKind
 
 from batches import local_note_updater
 from sysutils.utils import UIUtils
-from wanikani.Note.MyNote import MyNote
-from wanikani.Note.WaniKanjiNote import WaniKanjiNote
-from wanikani.Note.WaniRadicalNote import WaniRadicalNote
-from wanikani.Note.WaniVocabNote import WaniVocabNote
+from Note.MyNote import MyNote
+from Note.WaniKanjiNote import WaniKanjiNote
+from Note.WaniRadicalNote import WaniRadicalNote
+from Note.WaniVocabNote import WaniVocabNote
 from wanikani.utils.wani_utils import NoteUtils
 from sysutils import my_clipboard, kana_utils
 from urllib import parse

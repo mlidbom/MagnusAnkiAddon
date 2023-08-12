@@ -3,7 +3,7 @@ from anki.notes import Note
 from aqt import mw
 
 from sysutils.utils import StringUtils
-from wanikani.Note.WaniNote import WaniNote
+from Note.WaniNote import WaniNote
 from wanikani.wani_constants import Wani, Mine
 from wanikani.wanikani_api_client import WanikaniClient
 

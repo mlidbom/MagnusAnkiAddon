@@ -1,6 +1,6 @@
 from anki.notes import Note
 
-from wanikani.Note.MyNote import MyNote
+from Note.MyNote import MyNote
 
 
 class SentenceNote(MyNote):

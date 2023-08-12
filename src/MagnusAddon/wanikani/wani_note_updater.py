@@ -1,9 +1,9 @@
 from anki.notes import Note
 from aqt.utils import showInfo
 
-from wanikani.Note.WaniKanjiNote import WaniKanjiNote
-from wanikani.Note.WaniRadicalNote import WaniRadicalNote
-from wanikani.Note.WaniVocabNote import WaniVocabNote
+from Note.WaniKanjiNote import WaniKanjiNote
+from Note.WaniRadicalNote import WaniRadicalNote
+from Note.WaniVocabNote import WaniVocabNote
 from wanikani.wani_collection import WaniCollection
 from wanikani.wani_constants import Wani
 from wanikani.wanikani_api_client import WanikaniClient
