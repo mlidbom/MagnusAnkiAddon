@@ -55,13 +55,13 @@ def add_kanji_primary_vocab(note: WaniKanjiNote, selection: str, view: AnkiWebVi
                 return selection.replace(reading, f"<read>{reading}</read>", 1)
         return selection
 
-    primary_vocabs = [voc for voc in [note.get_PrimaryVocab(), format_vocab()] if voc]
-    note.set_PrimaryVocab(", ".join(primary_vocabs))
+    primary_vocabs = [voc for voc in [note.get_primary_vocab(), format_vocab()] if voc]
+    note.set_primary_vocab(", ".join(primary_vocabs))
     local_note_updater.update_kanji(note)
 
 
 def set_kanji_primary_vocab(note: WaniKanjiNote, selection: str, view: AnkiWebView):
-    note.set_PrimaryVocab("")
+    note.set_primary_vocab("")
     add_kanji_primary_vocab(note, selection, view)
 
 
@@ -141,7 +141,7 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu):
 
         add_ui_action(note_menu, "&Hide mnemonic",lambda: kanji.override_meaning_mnemonic())
         add_ui_action(note_menu, "&Restore mnemonic", lambda: kanji.restore_meaning_mnemonic())
-        add_ui_action(note_menu, "&Accept meaning", lambda: kanji.set_Override_meaning(kanji.get_kanji_meaning().lower().replace(", ", "/").replace(" ", "-")))
+        add_ui_action(note_menu, "&Accept meaning", lambda: kanji.set_override_meaning(kanji.get_kanji_meaning().lower().replace(", ", "/").replace(" ", "-")))
 
         if selection:
             add_ui_action(note_add_menu, "&Primary vocab", lambda: add_kanji_primary_vocab(kanji, selection, view))
@@ -154,9 +154,9 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu):
 
         add_ui_action(note_menu, "&Hide mnemonic", lambda: vocab.override_meaning_mnemonic())
         add_ui_action(note_menu, "&Restore mnemonic", lambda: vocab.restore_meaning_mnemonic())
-        add_ui_action(note_menu, "Accept &meaning", lambda: vocab.set_Override_meaning(vocab.get_vocab_meaning().lower().replace(", ", "/").replace(" ", "-")))
+        add_ui_action(note_menu, "Accept &meaning", lambda: vocab.set_override_meaning(vocab.get_vocab_meaning().lower().replace(", ", "/").replace(" ", "-")))
 
-        add_ui_action(note_set_menu, "&Meaning", lambda: vocab.set_Override_meaning(sel_clip))
+        add_ui_action(note_set_menu, "&Meaning", lambda: vocab.set_override_meaning(sel_clip))
         add_ui_action(note_set_menu, "&Similar vocab", lambda: vocab.set_related_similar_vocab(sel_clip))
         add_ui_action(note_set_menu, "&Derived from", lambda: vocab.set_related_derived_from(sel_clip))
         add_ui_action(note_set_menu, "S&imilar meaning", lambda: vocab.set_related_similar_meaning(sel_clip))

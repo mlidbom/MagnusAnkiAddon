@@ -113,10 +113,10 @@ def _update_kanji(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanji
         kanji_note.set_vocabs(html)
         kanji_note.set_vocabs_raw([vo.get_vocab() for vo in vocabs])
 
-    kanji_with_vocab = [kanji for kanji in all_kanji if kanji.get_PrimaryVocab()]
+    kanji_with_vocab = [kanji for kanji in all_kanji if kanji.get_primary_vocab()]
     for kanji in kanji_with_vocab:
         kanji_vocab = kanji_vocab_dict[kanji.get_kanji()]
-        primary_vocabs: List[str] = [StringUtils.strip_markup(vocab).strip() for vocab in kanji.get_PrimaryVocab().split(",")]
+        primary_vocabs: List[str] = [StringUtils.strip_markup(vocab).strip() for vocab in kanji.get_primary_vocab().split(",")]
         if len(primary_vocabs) > 0:
             found_vocab: list[WaniVocabNote] = list[WaniVocabNote]()
             vocab_to_vocab: dict[str, WaniVocabNote] = {vo.get_vocab(): vo for vo in kanji_vocab}
@@ -134,4 +134,4 @@ def _update_kanji(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanji
 
             if len(found_vocab) > 0:
                 audios = "".join([vo.get_audios() for vo in found_vocab])
-                kanji.set_PrimaryVocabAudio(audios)
+                kanji.set_primary_vocab_audio(audios)

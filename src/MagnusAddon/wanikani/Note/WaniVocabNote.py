@@ -29,15 +29,15 @@ class WaniVocabNote(WaniKanaVocabNote):
     def set_component_subject_ids(self, value: str) -> None: super().set_field(Wani.VocabFields.component_subject_ids, value)
 
     def override_meaning_mnemonic(self):
-        if not self.get_Mnemonics_Override():
-            self.set_Mnemonics_Override("-")
+        if not self.get_mnemonics_override():
+            self.set_mnemonics_override("-")
 
     def restore_meaning_mnemonic(self):
-        if self.get_Mnemonics_Override() == "-":
-            self.set_Mnemonics_Override("")
+        if self.get_mnemonics_override() == "-":
+            self.set_mnemonics_override("")
 
-    def get_Mnemonics_Override(self) -> str: return super().get_field(Wani.VocabFields.Mnemonics_Override)
-    def set_Mnemonics_Override(self, value: str) -> None: super().set_field(Wani.VocabFields.Mnemonics_Override, value)
+    def get_mnemonics_override(self) -> str: return super().get_field(Wani.VocabFields.Mnemonics_Override)
+    def set_mnemonics_override(self, value: str) -> None: super().set_field(Wani.VocabFields.Mnemonics_Override, value)
 
     def update_from_wani(self, wani_vocab: models.Vocabulary):
         super().update_from_wani(wani_vocab)
@@ -58,6 +58,7 @@ class WaniVocabNote(WaniKanaVocabNote):
         kanji_names = [subject.meanings[0].meaning for subject in kanji_subjects]
         self.set_kanji_name(", ".join(kanji_names))
 
+    @staticmethod
     def create_from_wani_vocabulary(wani_vocab: models.Vocabulary):
         note = Note(mw.col, mw.col.models.byName(Wani.NoteType.Vocab))
         note.add_tag("__imported")

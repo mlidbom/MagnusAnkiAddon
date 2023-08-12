@@ -13,14 +13,14 @@ class WaniKanaVocabNote(WaniNote):
     def set_vocab(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Vocab, value)
 
     def get_vocab_meaning(self):
-        meaning = self.get_Override_meaning()
+        meaning = self.get_override_meaning()
         if meaning != "": return meaning
         return super().get_field(Wani.KanaVocabFields.Vocab_Meaning)
 
     def set_vocab_meaning(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Vocab_Meaning, value)
 
-    def get_Override_meaning(self) -> str: return super().get_field(Wani.KanaVocabFields.Override_meaning)
-    def set_Override_meaning(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Override_meaning, value)
+    def get_override_meaning(self) -> str: return super().get_field(Wani.KanaVocabFields.Override_meaning)
+    def set_override_meaning(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Override_meaning, value)
 
     def get_related_homophones(self) -> str: return super().get_field(Wani.KanaVocabFields.Related_homophones)
     def set_related_homophones(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Related_homophones, value)

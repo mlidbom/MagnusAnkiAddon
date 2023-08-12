@@ -15,24 +15,24 @@ class WaniKanjiNote(WaniNote):
     def set_kanji(self, value: str) -> None: super().set_field(Wani.KanjiFields.Kanji, value)
 
     def get_kanji_meaning(self) -> str:
-        meaning = self.get_Override_meaning()
+        meaning = self.get_override_meaning()
         if meaning != "":
             return meaning
         return super().get_field(Wani.KanjiFields.Kanji_Meaning)
 
-    def get_Override_meaning(self) -> str: return super().get_field(Wani.KanjiFields.Override_meaning)
-    def set_Override_meaning(self, value: str) -> None: super().set_field(Wani.KanjiFields.Override_meaning, value)
+    def get_override_meaning(self) -> str: return super().get_field(Wani.KanjiFields.Override_meaning)
+    def set_override_meaning(self, value: str) -> None: super().set_field(Wani.KanjiFields.Override_meaning, value)
 
     def override_meaning_mnemonic(self):
-        if not self.get_Mnemonics_Override():
-            self.set_Mnemonics_Override("-")
+        if not self.get_mnemonics_override():
+            self.set_mnemonics_override("-")
 
     def restore_meaning_mnemonic(self):
-        if self.get_Mnemonics_Override() == "-":
-            self.set_Mnemonics_Override("")
+        if self.get_mnemonics_override() == "-":
+            self.set_mnemonics_override("")
 
-    def get_Mnemonics_Override(self) -> str: return super().get_field(Wani.KanjiFields.Mnemonics_Override)
-    def set_Mnemonics_Override(self, value: str) -> None: super().set_field(Wani.KanjiFields.Mnemonics_Override, value)
+    def get_mnemonics_override(self) -> str: return super().get_field(Wani.KanjiFields.Mnemonics_Override)
+    def set_mnemonics_override(self, value: str) -> None: super().set_field(Wani.KanjiFields.Mnemonics_Override, value)
 
     def set_kanji_meaning(self, value: str) -> None: super().set_field(Wani.KanjiFields.Kanji_Meaning, value)
 
@@ -52,21 +52,19 @@ class WaniKanjiNote(WaniNote):
     def set_radicals_names(self, value: str) -> None: super().set_field(Wani.KanjiFields.Radicals_Names, value)
 
     def get_radicals_icons_names(self): return super().get_field(Wani.KanjiFields.Radicals_Icons_Names)
-    def set_radicals_icons_names(self, value: str) -> None: super().set_field(Wani.KanjiFields.Radicals_Icons_Names,
-                                                                              value)
+    def set_radicals_icons_names(self, value: str) -> None: super().set_field(Wani.KanjiFields.Radicals_Icons_Names, value)
+
     def get_meaning_mnemonic(self): return super().get_field(Wani.KanjiFields.Meaning_Mnemonic)
     def set_meaning_mnemonic(self, value: str) -> None: super().set_field(Wani.KanjiFields.Meaning_Mnemonic, value)
 
     def get_meaning_hint(self): return super().get_field(Wani.KanjiFields.Meaning_Info)
-    def set_meaning_hint(self, value: str) -> None: super().set_field(Wani.KanjiFields.Meaning_Info,
-                                                                      value if value is not None else "")
+    def set_meaning_hint(self, value: str) -> None: super().set_field(Wani.KanjiFields.Meaning_Info, value if value is not None else "")
 
     def get_reading_mnemonic(self): return super().get_field(Wani.KanjiFields.Reading_Mnemonic)
     def set_reading_mnemonic(self, value: str) -> None: super().set_field(Wani.KanjiFields.Reading_Mnemonic, value)
 
     def get_reading_hint(self): return super().get_field(Wani.KanjiFields.Reading_Info)
-    def set_reading_hint(self, value: str) -> None: super().set_field(Wani.KanjiFields.Reading_Info,
-                                                                      value if value is not None else "")
+    def set_reading_hint(self, value: str) -> None: super().set_field(Wani.KanjiFields.Reading_Info, value if value is not None else "")
 
     def get_amalgamation_subject_ids(self): return super().get_field(Wani.KanjiFields.amalgamation_subject_ids)
     def set_amalgamation_subject_ids(self, value: str) -> None: super().set_field(Wani.KanjiFields.amalgamation_subject_ids, value)
@@ -80,11 +78,11 @@ class WaniKanjiNote(WaniNote):
     def get_vocabs_raw(self) -> list[str]: return super().get_field(Wani.KanjiFields.VocabsRaw).split(",")
     def set_vocabs_raw(self, value: list[str]) -> None: super().set_field(Wani.KanjiFields.VocabsRaw, ",".join(value))
 
-    def get_PrimaryVocab(self): return super().get_field(Wani.KanjiFields.PrimaryVocab)
-    def set_PrimaryVocab(self, value: str) -> None: super().set_field(Wani.KanjiFields.PrimaryVocab, value)
+    def get_primary_vocab(self): return super().get_field(Wani.KanjiFields.PrimaryVocab)
+    def set_primary_vocab(self, value: str) -> None: super().set_field(Wani.KanjiFields.PrimaryVocab, value)
 
-    def get_PrimaryVocabAudio(self): return super().get_field(Wani.KanjiFields.PrimaryVocabAudio)
-    def set_PrimaryVocabAudio(self, value: str) -> None: super().set_field(Wani.KanjiFields.PrimaryVocabAudio, value)
+    def get_primary_vocab_audio(self): return super().get_field(Wani.KanjiFields.PrimaryVocabAudio)
+    def set_primary_vocab_audio(self, value: str) -> None: super().set_field(Wani.KanjiFields.PrimaryVocabAudio, value)
 
     def update_from_wani(self, wani_kanji: models.Kanji):
         super().update_from_wani(wani_kanji)
@@ -130,11 +128,9 @@ class WaniKanjiNote(WaniNote):
         self.set_radicals_icons_names(", ".join(characterless_radical_names))
 
         radical_images_lists = [radical.character_images for radical in radicals_without_characters]
-        #self.set_radicals_icons(",".join(radical_characters))
-        # radical_images = [radical.character_images for radical in radicals]
 
         vocabs = [client.get_vocab_by_id(int(kanji_id)) for kanji_id in amalgamation_subject_ids]
-        vocabs.sort(key=lambda vocab: (vocab.level, vocab.lesson_position))
+        vocabs.sort(key=lambda voc: (voc.level, voc.lesson_position))
         vocab_html = '''
 <div class="vocabList">
     <div>'''
@@ -149,6 +145,7 @@ class WaniKanjiNote(WaniNote):
 '''
         self.set_vocabs(vocab_html)
 
+    @staticmethod
     def create_from_wani_kanji(wani_kanji: models.Kanji):
         note = Note(mw.col, mw.col.models.byName(Wani.NoteType.Kanji))
         note.add_tag("__imported")
