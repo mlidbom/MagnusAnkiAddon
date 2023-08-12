@@ -4,8 +4,8 @@ from aqt.utils import tooltip
 
 from sysutils import kana_utils
 from sysutils.utils import StringUtils, UIUtils
-from Note.WaniKanjiNote import WaniKanjiNote
-from Note.WaniVocabNote import WaniVocabNote
+from note.wanikanjinote import WaniKanjiNote
+from note.wanivocabnote import WaniVocabNote
 from wanikani.wani_collection import WaniCollection
 
 

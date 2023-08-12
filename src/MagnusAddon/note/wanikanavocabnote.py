@@ -1,7 +1,7 @@
 from _lib.wanikani_api import models
 from anki.notes import Note
 
-from Note.WaniNote import WaniNote
+from note.waninote import WaniNote
 from wanikani.wani_constants import Wani
 
 

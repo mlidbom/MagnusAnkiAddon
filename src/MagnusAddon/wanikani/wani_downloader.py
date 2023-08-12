@@ -4,7 +4,7 @@ from typing import List
 import requests
 from aqt import mw
 
-from Note.WaniVocabNote import WaniVocabNote
+from note.wanivocabnote import WaniVocabNote
 from wanikani.wani_collection import WaniCollection
 from wanikani.wanikani_api_client import WanikaniClient
 

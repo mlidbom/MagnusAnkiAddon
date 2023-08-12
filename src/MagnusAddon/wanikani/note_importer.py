@@ -1,8 +1,8 @@
 from aqt.utils import showInfo
 
-from Note.WaniKanjiNote import WaniKanjiNote
-from Note.WaniRadicalNote import WaniRadicalNote
-from Note.WaniVocabNote import WaniVocabNote
+from note.wanikanjinote import WaniKanjiNote
+from note.waniradicalnote import WaniRadicalNote
+from note.wanivocabnote import WaniVocabNote
 from wanikani.wani_collection import WaniCollection
 from wanikani.wanikani_api_client import WanikaniClient
 

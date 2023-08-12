@@ -5,11 +5,11 @@ from aqt import mw
 
 from ankiutils.my_anki import *
 from sysutils.utils import ListUtils
-from Note.WaniNote import WaniNote
-from Note.WaniRadicalNote import WaniRadicalNote
-from Note.WaniVocabNote import WaniVocabNote
+from note.waninote import WaniNote
+from note.waniradicalnote import WaniRadicalNote
+from note.wanivocabnote import WaniVocabNote
 from wanikani.utils.wani_utils import CardUtils
-from Note.WaniKanjiNote import WaniKanjiNote
+from note.wanikanjinote import WaniKanjiNote
 from wanikani.wani_constants import Wani
 
 

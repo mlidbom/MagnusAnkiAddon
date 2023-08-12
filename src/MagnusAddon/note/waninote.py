@@ -2,7 +2,7 @@ from _lib.wanikani_api import models
 from anki.notes import Note
 from aqt import mw
 
-from Note.MyNote import MyNote
+from note.mynote import MyNote
 from wanikani.wani_constants import Mine, Wani
 
 

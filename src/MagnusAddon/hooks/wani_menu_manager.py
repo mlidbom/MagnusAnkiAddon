@@ -12,7 +12,7 @@ from sysutils.utils import UIUtils
 from wanikani import note_importer
 from wanikani import wani_note_updater, wani_queue_manager
 from wanikani.wani_downloader import WaniDownloader
-from Note.WaniVocabNote import WaniVocabNote
+from note.wanivocabnote import WaniVocabNote
 
 
 def add_menu_action(sub_menu, heading, callback):
