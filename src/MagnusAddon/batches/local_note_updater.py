@@ -11,6 +11,7 @@ def _sort_vocab_list(vocabs: List[WaniVocabNote]) -> list[WaniVocabNote]:
     vocabs.sort(key=lambda vocab: (vocab.get_level(), vocab.get_lesson_position()))
     return vocabs
 
+
 def update_kanji(kanji_note: WaniKanjiNote) -> None:
     all_vocabulary: list[WaniVocabNote] = WaniCollection.fetch_all_vocab_notes()
     all_kanji: list[WaniKanjiNote] = WaniCollection.fetch_all_kanji_notes()
@@ -18,15 +19,17 @@ def update_kanji(kanji_note: WaniKanjiNote) -> None:
     _update_kanji(all_vocabulary, all_kanji)
     UIUtils.refresh()
 
+
 def update_all():
     all_vocabulary: list[WaniVocabNote] = WaniCollection.fetch_all_vocab_notes()
     all_kanji: list[WaniKanjiNote] = WaniCollection.fetch_all_kanji_notes()
-    all_vocabulary = _sort_vocab_list(all_vocabulary)# we want a specific order in the kanji entries etc
+    all_vocabulary = _sort_vocab_list(all_vocabulary)  # we want a specific order in the kanji entries etc
 
     _update_kanji(all_vocabulary, all_kanji)
     _update_vocab(all_vocabulary, all_kanji)
     UIUtils.refresh()
     tooltip("done")
+
 
 def _update_vocab(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanjiNote]) -> None:
     def update_kanji_names(all_vocabulary, all_kanji):
@@ -44,11 +47,24 @@ def _update_vocab(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanji
             kanji_names_string = " # ".join(kanji_meanings)
             vocab_note.set_kanji_name(kanji_names_string)
 
+    def format_context_sentences():
+        for vocab in all_vocabulary:
+            for get_context_japanese, set_contex_japanese in [(vocab.get_context_jp, vocab.set_context_jp), (vocab.get_context_jp_2, vocab.set_context_jp_2),
+                                                              (vocab.get_context_jp_3, vocab.set_context_jp_3)]:
+                context_japanese = get_context_japanese()
+                if context_japanese:
+                    clean = StringUtils.strip_markup(context_japanese)
+                    vocab_string = vocab.get_vocab()
+                    formatted = clean.replace(vocab_string, f"""<span class="vocabInContext">{vocab_string}</span>""")
+                    set_contex_japanese(formatted)
+
     update_kanji_names(all_vocabulary, all_kanji)
+    format_context_sentences()
+
 
 def _update_kanji(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanjiNote]):
     def generate_vocab_html_list(note: WaniKanjiNote, vocabs: List[WaniVocabNote]):
-        def format_vocab(selection:str) -> str:
+        def format_vocab(selection: str) -> str:
             readings = f"{note.get_reading_kun()}, {note.get_reading_on()}"
             readings_list = [s.split(".")[0].strip() for s in (StringUtils.strip_markup(readings).split(","))]
             readings_list.sort(key=len, reverse=True)
@@ -73,7 +89,7 @@ def _update_kanji(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanji
                 </div>
                 '''
 
-    kanji_dict: Dict[str, WaniKanjiNote]   = {kanji.get_kanji(): kanji for kanji in all_kanji}
+    kanji_dict: Dict[str, WaniKanjiNote] = {kanji.get_kanji(): kanji for kanji in all_kanji}
     kanji_vocab_dict: Dict[str, List[WaniVocabNote]] = {kanji.get_kanji(): [] for kanji in all_kanji}
 
     for voc in all_vocabulary:
@@ -109,4 +125,3 @@ def _update_kanji(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanji
             if len(found_vocab) > 0:
                 audios = "".join([vo.get_audios() for vo in found_vocab])
                 kanji.set_PrimaryVocabAudio(audios)
-

@@ -1,3 +1,10 @@
+class MyNoteFields:
+    Vocab1 = "__vocab1"
+    Vocab2 = "__vocab2"
+    Vocab3 = "__vocab3"
+    Vocab4 = "__vocab4"
+    Vocab5 = "__vocab5"
+
 class Wani:
     class WaniVocabNoteType:
         class Card:
@@ -75,6 +82,12 @@ class Wani:
         Audio_b = "Audio_b"
         Audio_g = "Audio_g"
         sort_id = "sort_id"
+
+        Related_homophones = "__homophones"
+        Related_similar_meaning = "__similar_meaning"
+        Related_derived_from = "__derivedFrom"
+        Related_ergative_twin = "__ergative_twin"
+        Related_similarVocab = "__similar_vocab"
 
     class VocabFields(KanaVocabFields):
         Kanji = "Kanji"
