@@ -56,7 +56,7 @@ class Wani:
         Reading_Info = "Reading_Info"
         Override_meaning = "__meaning_Override"
         PrimaryVocab = "__primary_Vocab"
-        PrimaryVocabAudio ="__primary_Vocab_Audio"
+        PrimaryVocabAudio = "__primary_Vocab_Audio"
 
         Mnemonics_Override = "__mnemonics_Override"
 
@@ -64,7 +64,7 @@ class Wani:
         component_subject_ids = "component_subject_ids"
 
         Vocabs = "Vocabs"
-        VocabsRaw ="VocabsRaw"
+        VocabsRaw = "VocabsRaw"
 
     class KanaVocabFields:
         Vocab = "Vocab"

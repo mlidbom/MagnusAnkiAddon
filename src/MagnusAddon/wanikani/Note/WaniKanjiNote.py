@@ -2,6 +2,7 @@ from _lib.wanikani_api import models
 from anki.notes import Note
 from aqt import mw
 
+from sysutils.utils import StringUtils
 from wanikani.Note.WaniNote import WaniNote
 from wanikani.wani_constants import Wani, Mine
 from wanikani.wanikani_api_client import WanikaniClient
@@ -10,6 +11,15 @@ from wanikani.wanikani_api_client import WanikaniClient
 class WaniKanjiNote(WaniNote):
     def __init__(self, note: Note):
         super().__init__(note)
+
+    def format_vocabulary(self, vocabulary: str) -> str:
+        readings = f"{self.get_reading_kun()}, {self.get_reading_on()}"
+        readings_list = [s.split(".")[0].strip() for s in (StringUtils.strip_markup(readings).split(","))]
+        readings_list.sort(key=len, reverse=True)
+        for reading in readings_list:
+            if reading and reading in vocabulary:
+                return vocabulary.replace(reading, f"<read>{reading}</read>", 1)
+        return vocabulary
 
     def get_kanji(self): return super().get_field(Wani.KanjiFields.Kanji)
     def set_kanji(self, value: str) -> None: super().set_field(Wani.KanjiFields.Kanji, value)
@@ -107,10 +117,10 @@ class WaniKanjiNote(WaniNote):
         self.set_reading_on(", ".join(onyomi_readings))
         self.set_reading_kun(", ".join(kunyomi_readings))
 
-        amalgamation_subject_ids = [str(id) for id in wani_kanji.amalgamation_subject_ids]
+        amalgamation_subject_ids = [str(subject_id) for subject_id in wani_kanji.amalgamation_subject_ids]
         self.set_amalgamation_subject_ids(", ".join(amalgamation_subject_ids))
 
-        component_subject_ids = [str(id) for id in wani_kanji.component_subject_ids]
+        component_subject_ids = [str(subject_id) for subject_id in wani_kanji.component_subject_ids]
         self.set_component_subject_ids(", ".join(component_subject_ids))
 
         client = WanikaniClient.get_instance()
@@ -126,8 +136,6 @@ class WaniKanjiNote(WaniNote):
 
         characterless_radical_names = [radical.meanings[0].meaning for radical in radicals_without_characters]
         self.set_radicals_icons_names(", ".join(characterless_radical_names))
-
-        radical_images_lists = [radical.character_images for radical in radicals_without_characters]
 
         vocabs = [client.get_vocab_by_id(int(kanji_id)) for kanji_id in amalgamation_subject_ids]
         vocabs.sort(key=lambda voc: (voc.level, voc.lesson_position))

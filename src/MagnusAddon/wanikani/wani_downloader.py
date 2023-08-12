@@ -14,6 +14,7 @@ class FileDownloadError(Exception):
 
 
 class WaniDownloader:
+    @staticmethod
     def media_dir() -> str:
         return mw.col.media.dir()
 

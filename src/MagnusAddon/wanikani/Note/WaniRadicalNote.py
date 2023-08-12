@@ -30,11 +30,12 @@ class WaniRadicalNote(WaniNote):
         self.set_meaning_mnemonic(wani_radical.meaning_mnemonic)
         self.set_radical_name(wani_radical.meanings[0].meaning)
 
-        amalgamation_subject_ids = [str(id) for id in wani_radical.amalgamation_subject_ids]
+        amalgamation_subject_ids = [str(subject_id) for subject_id in wani_radical.amalgamation_subject_ids]
         self.set_amalgamation_subject_ids(", ".join(amalgamation_subject_ids))
 
         self.set_level(wani_radical.level)
 
+    @staticmethod
     def create_from_wani_radical(wani_radical: models.Radical):
         note = Note(mw.col, mw.col.models.byName(Wani.NoteType.Radical))
         note.add_tag("__imported")

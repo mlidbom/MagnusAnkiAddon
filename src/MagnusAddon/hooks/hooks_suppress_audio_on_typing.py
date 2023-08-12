@@ -6,15 +6,15 @@ from aqt import gui_hooks
 import time
 
 class SuppressAudioData:
-    _last_typing_time = 0.0
+    last_typing_time = 0.0
     _last_typing_note: Note
 
 def typed_in_editor(note:Note):
-    SuppressAudioData._last_typing_time = time.time()
+    SuppressAudioData.last_typing_time = time.time()
     SuppressAudioData._last_typing_note = note
 
-def will_play_tags(tags: list[AVTag], something: str, view: Any):
-    if time.time() - SuppressAudioData._last_typing_time < 0.05:
+def will_play_tags(tags: list[AVTag], _something: str, _view: Any):
+    if time.time() - SuppressAudioData.last_typing_time < 0.05:
         tags.clear()
 
 def setup():

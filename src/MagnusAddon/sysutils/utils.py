@@ -1,11 +1,12 @@
-from typing import *
+import re
+from typing import List
 
-from aqt import *
+import aqt
+from aqt import mw
 from aqt.browser import Browser
 from aqt.browser.previewer import Previewer
 from aqt.editcurrent import EditCurrent
-from aqt.reviewer import *
-from aqt.webview import *
+from aqt.reviewer import RefreshNeeded
 
 
 class ListUtils:
@@ -15,10 +16,10 @@ class ListUtils:
 
 class StringUtils:
     @staticmethod
-    def Newline() -> str: return "\n"
+    def newline() -> str: return "\n"
 
     @staticmethod
-    def Backslash() -> str: return "\\"
+    def backslash() -> str: return "\\"
 
     @staticmethod
     def extract_characters(string: str):
@@ -63,9 +64,9 @@ class UIUtils:
 
     @staticmethod
     def activate_preview():
-        browser: Browser = aqt.dialogs.open('Browser', aqt.mw)
+        browser: Browser = aqt.dialogs.open('Browser', aqt.mw) # noqa
         mw.app.processEvents()
-        if browser._previewer is None:
+        if browser._previewer is None: # noqa
             browser.onTogglePreview()
         else:
-            browser._previewer.activateWindow()
+            browser._previewer.activateWindow() # noqa

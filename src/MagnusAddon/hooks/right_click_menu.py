@@ -1,23 +1,28 @@
 # coding: utf-8
-from aqt import mw
+from typing import Callable
+
+import aqt
+from PyQt6.QtWidgets import QMenu
+from anki.cards import Card
+from aqt import mw, gui_hooks
 from aqt.browser import Browser
 
 from aqt.browser.previewer import Previewer
-from aqt.editor import *
+from aqt.editor import Editor, EditorMode
 from aqt.webview import AnkiWebView, AnkiWebViewKind
 
 from batches import local_note_updater
-from sysutils.utils import StringUtils, UIUtils
+from sysutils.utils import UIUtils
 from wanikani.Note.MyNote import MyNote
 from wanikani.Note.WaniKanjiNote import WaniKanjiNote
 from wanikani.Note.WaniRadicalNote import WaniRadicalNote
 from wanikani.Note.WaniVocabNote import WaniVocabNote
-from wanikani.wani_constants import Wani as wani
 from wanikani.utils.wani_utils import NoteUtils
-from wanikani.wani_constants import *
 from sysutils import my_clipboard, kana_utils
 from urllib import parse
 from aqt.utils import openLink
+
+from wanikani.wani_constants import Wani, Mine, MyNoteFields
 
 
 def add_web_lookup(menu: QMenu, name: str, url: str, search: str):
@@ -45,17 +50,8 @@ def build_radical_search_string(selected: str) -> str:
     return f"note:{Wani.NoteType.Radical} ( {start} {clauses} )"
 
 
-def add_kanji_primary_vocab(note: WaniKanjiNote, selection: str, view: AnkiWebView):
-    def format_vocab() -> str:
-        readings = f"{note.get_reading_kun()}, {note.get_reading_on()}"
-        readings_list = [s.split(".")[0].strip() for s in (StringUtils.strip_markup(readings).split(","))]
-        readings_list.sort(key=len, reverse=True)
-        for reading in readings_list:
-            if reading and reading in selection:
-                return selection.replace(reading, f"<read>{reading}</read>", 1)
-        return selection
-
-    primary_vocabs = [voc for voc in [note.get_primary_vocab(), format_vocab()] if voc]
+def add_kanji_primary_vocab(note: WaniKanjiNote, selection: str, _view: AnkiWebView):
+    primary_vocabs = [voc for voc in [note.get_primary_vocab(), WaniKanjiNote.format_vocabulary(note, selection)] if voc]
     note.set_primary_vocab(", ".join(primary_vocabs))
     local_note_updater.update_kanji(note)
 
@@ -103,7 +99,7 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu):
         search_menu = root_menu.addMenu("&Search")
 
         search_anki_menu = search_menu.addMenu("&Anki")
-        add_lookup_action(search_anki_menu, "&Kanji", f"note:{wani.NoteType.Kanji} ( {' OR '.join([f'{wani.KanjiFields.Kanji}:{char}' for char in sel_clip])} )")
+        add_lookup_action(search_anki_menu, "&Kanji", f"note:{Wani.NoteType.Kanji} ( {' OR '.join([f'{Wani.KanjiFields.Kanji}:{char}' for char in sel_clip])} )")
         add_lookup_action(search_anki_menu, "&Vocab", f"deck:*Vocab* deck:*Read* (Vocab:{sel_clip} OR Reading:re:\\b{sel_clip}\\b OR Vocab_Meaning:re:\\b{sel_clip}\\b )")
         add_lookup_action(search_anki_menu, "Vocab &Wildcard", f"deck:*Vocab* deck:*Read* (Vocab:*{sel_clip}* OR Reading:*{sel_clip}* OR Vocab_Meaning:*{sel_clip}*)")
         add_lookup_action(search_anki_menu, "&Radical", build_radical_search_string(sel_clip))
@@ -130,7 +126,7 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu):
         add_ui_action(add_vocab_menu, "&5", lambda: note.set_field(MyNoteFields.Vocab5, sel_clip))
 
     if isinstance(note, WaniRadicalNote):
-        add_lookup_action(note_lookup_menu, "&Kanji", f"note:{wani.NoteType.Kanji} {Wani.KanjiFields.Radicals_Names}:re:\\b{note.get_radical_name()}\\b")
+        add_lookup_action(note_lookup_menu, "&Kanji", f"note:{Wani.NoteType.Kanji} {Wani.KanjiFields.Radicals_Names}:re:\\b{note.get_radical_name()}\\b")
 
     if isinstance(note, WaniKanjiNote):
         kanji = note
@@ -149,7 +145,7 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu):
 
     if isinstance(note, WaniVocabNote):
         vocab = note
-        add_lookup_action(note_lookup_menu, "&Kanji", f"note:{wani.NoteType.Kanji} ( {' OR '.join([f'{wani.KanjiFields.Kanji}:{char}' for char in note.get_vocab()])} )")
+        add_lookup_action(note_lookup_menu, "&Kanji", f"note:{Wani.NoteType.Kanji} ( {' OR '.join([f'{Wani.KanjiFields.Kanji}:{char}' for char in note.get_vocab()])} )")
         add_sentence_lookup(note_lookup_menu, "&Sentence", kana_utils.get_conjugation_base(vocab.get_vocab()))
 
         add_ui_action(note_menu, "&Hide mnemonic", lambda: vocab.override_meaning_mnemonic())

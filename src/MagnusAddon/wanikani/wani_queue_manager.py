@@ -79,8 +79,8 @@ def refresh_search():
     browser.onSearchActivated()
 
 
-def prioritize_selected_cards(card_ids : Sequence[int]):
-    cards = [mw.col.get_card(id) for id in card_ids]
+def prioritize_selected_cards(card_ids: Sequence[int]):
+    cards = [mw.col.get_card(card_id) for card_id in card_ids]
     for card in cards:
         CardUtils.prioritize(card)
 

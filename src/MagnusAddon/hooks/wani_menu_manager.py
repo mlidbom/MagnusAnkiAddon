@@ -16,9 +16,9 @@ from wanikani.Note.WaniVocabNote import WaniVocabNote
 
 
 def add_menu_action(sub_menu, heading, callback):
-    qaction = QAction(heading, mw)
-    qconnect(qaction.triggered, callback)
-    sub_menu.addAction(qaction)
+    action = QAction(heading, mw)
+    qconnect(action.triggered, callback)
+    sub_menu.addAction(action)
 
 def build_main_menu():
     my_menu = QMenu("Magnu&s", mw)
@@ -62,7 +62,7 @@ def setup_editor_buttons(buttons, the_editor: Editor):
                                                 local_editor.note)))
 
     buttons.append(the_editor.addButton("", "Update from wanikani",
-                                         lambda local_editor: wani_note_updater.update_from_wanikani(
+                                        lambda local_editor: wani_note_updater.update_from_wanikani(
                                              local_editor.note)))
 
     buttons.append(the_editor.addButton("", "Fetch audio from wanikani",
@@ -77,26 +77,26 @@ def setup_browser_context_menu(browser: aqt.browser.Browser, menu: QMenu):
         action.triggered.connect(lambda: wani_queue_manager.prioritize_selected_cards(selected_cards))
 
 
-def copy_previewer_sort_field_to_windows_clipboard(html:str, card: Card, typeOfDisplay:str) -> str:
-    if typeOfDisplay == 'previewAnswer':
+def copy_previewer_sort_field_to_windows_clipboard(html:str, card: Card, type_of_display:str) -> str:
+    if type_of_display == 'previewAnswer':
         if not UIUtils.is_edit_current_active():
             copy_card_sort_field_to_clipboard(card)
     return html
 
-class copy_card_data:
+class CopyCardData:
     note_id = 0
 
 def copy_card_sort_field_to_clipboard(card):
     note = card.note()
-    if note.id == copy_card_data.note_id:
+    if note.id == CopyCardData.note_id:
         return
     else:
-        copy_card_data.note_id = note.id
+        CopyCardData.note_id = note.id
     model = note.model()
     sort_field = model['sortf']
     sort_value = note.fields[sort_field]
     clean_string = re.sub('<.*?>', '', sort_value)
-    clean_string = re.sub('\[.*?\]', '', clean_string)
+    clean_string = re.sub('\[.*?\]', '', clean_string) # noqa
     my_clipboard.set_text(clean_string)
 
 

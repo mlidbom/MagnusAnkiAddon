@@ -12,9 +12,11 @@ from wanikani.wani_constants import Wani
 
 
 class NoteUtils:
+    @staticmethod
     def get_note_type(note: Note) -> str:
         return note.note_type()["name"]
 
+    @staticmethod
     def create_note(card: Card) -> MyNote:
         note = card.note()
         if NoteUtils.get_note_type(note) == Wani.NoteType.Kanji:
@@ -31,11 +33,12 @@ class NoteUtils:
 
 
 class CardUtils:
+    @staticmethod
     def is_new(card: Card) -> bool:
         return card.queue == QUEUE_TYPE_NEW
 
     @classmethod
-    def get_notetype_priority(cls, card: Card):
+    def get_note_type_priority(cls, card: Card):
         note_type_name = card.note_type()["name"]
         if note_type_name == Wani.NoteType.Radical: return 1
         if note_type_name == Wani.NoteType.Kanji: return 2
@@ -45,8 +48,8 @@ class CardUtils:
 
     @classmethod
     def prioritize(cls, card: Card):
-        if (CardUtils.is_new(card)):
-            card.due = cls.get_notetype_priority(card)
+        if CardUtils.is_new(card):
+            card.due = cls.get_note_type_priority(card)
             card.flush()
 
     @classmethod
@@ -60,7 +63,7 @@ class CardUtils:
     def answer_again_with_zero_interval_for_new_note_cards(cls, note: WaniNote, name: str):
         cards = [mw.col.get_card(card_id) for card_id in note.card_ids()]
         for card in cards:
-            if (CardUtils.is_new(card)):
+            if CardUtils.is_new(card):
                 print("Answering new card again {}: {}".format(WaniNote.get_note_type_name(note), name))
                 card.start_timer()  # answerCard crashes unless I do this.
                 mw.col.sched.answerCard(card, 1)
