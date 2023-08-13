@@ -3,7 +3,7 @@ from urllib import parse
 from PyQt6.QtWidgets import QMenu
 from aqt.utils import openLink
 
-from hooks.right_click_menu_utils import build_radical_search_string, add_sentence_lookup, add_lookup_action
+from hooks.right_click_menu_utils import add_sentence_lookup, add_lookup_action
 from wanikani.wani_constants import Wani, Mine
 
 
@@ -42,3 +42,7 @@ def add_web_lookup(menu: QMenu, name: str, url: str, search: str):
     menu.addAction(name, lambda: openLink(url % search))
 
 
+def build_radical_search_string(selected: str) -> str:
+    start = f"{Wani.RadicalFields.Radical_Name}:{selected} OR"
+    clauses = " OR ".join([f"{Wani.RadicalFields.Radical}:{char}" for char in selected])
+    return f"note:{Wani.NoteType.Radical} ( {start} {clauses} )"

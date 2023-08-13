@@ -1,6 +1,7 @@
 from aqt.webview import AnkiWebView
 
-from hooks.right_click_menu_utils import add_ui_action, add_kanji_primary_vocab, set_kanji_primary_vocab, add_sentence_lookup, add_lookup_action
+from batches import local_note_updater
+from hooks.right_click_menu_utils import add_ui_action, add_sentence_lookup, add_lookup_action
 from note.wanikanjinote import WaniKanjiNote
 from note.waniradicalnote import WaniRadicalNote
 from note.wanivocabnote import WaniVocabNote
@@ -58,3 +59,14 @@ def setup_note_menu(note, root_menu, sel_clip, selection, view: AnkiWebView):
         add_ui_action(note_set_menu, "S&imilar meaning", lambda: vocab.set_related_similar_meaning(sel_clip))
         add_ui_action(note_set_menu, "&Homophone", lambda: vocab.set_related_homophones(sel_clip))
         add_ui_action(note_set_menu, "&Ergative twin", lambda: vocab.set_related_ergative_twin(sel_clip))
+
+
+def add_kanji_primary_vocab(note: WaniKanjiNote, selection: str, _view: AnkiWebView):
+    primary_vocabs = [voc for voc in [note.get_primary_vocab(), note.tag_readings_in_string(selection, lambda read: f"<read>{read}</read>")] if voc]
+    note.set_primary_vocab(", ".join(primary_vocabs))
+    local_note_updater.update_kanji(note)
+
+
+def set_kanji_primary_vocab(note: WaniKanjiNote, selection: str, view: AnkiWebView):
+    note.set_primary_vocab("")
+    add_kanji_primary_vocab(note, selection, view)
