@@ -1,3 +1,5 @@
+from typing import Callable
+
 from _lib.wanikani_api import models
 from anki.notes import Note
 from aqt import mw
@@ -12,13 +14,13 @@ class WaniKanjiNote(WaniNote):
     def __init__(self, note: Note):
         super().__init__(note)
 
-    def format_vocabulary(self, vocabulary: str) -> str:
+    def tag_readings_in_string(self, vocabulary: str, tagger: Callable[[str], str]) -> str:
         readings = f"{self.get_reading_kun()}, {self.get_reading_on()}"
         readings_list = [s.split(".")[0].strip() for s in (StringUtils.strip_markup(readings).split(","))]
         readings_list.sort(key=len, reverse=True)
         for reading in readings_list:
             if reading and reading in vocabulary:
-                return vocabulary.replace(reading, f"<read>{reading}</read>", 1)
+                return vocabulary.replace(reading, tagger(reading), 1)
         return vocabulary
 
     def get_kanji(self): return super().get_field(Wani.KanjiFields.Kanji)

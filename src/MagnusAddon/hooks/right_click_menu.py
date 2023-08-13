@@ -51,7 +51,7 @@ def build_radical_search_string(selected: str) -> str:
 
 
 def add_kanji_primary_vocab(note: WaniKanjiNote, selection: str, _view: AnkiWebView):
-    primary_vocabs = [voc for voc in [note.get_primary_vocab(), WaniKanjiNote.format_vocabulary(note, selection)] if voc]
+    primary_vocabs = [voc for voc in [note.get_primary_vocab(), note.tag_readings_in_string(selection, lambda read: f"<read>{read}</read>")] if voc]
     note.set_primary_vocab(", ".join(primary_vocabs))
     local_note_updater.update_kanji(note)
 
