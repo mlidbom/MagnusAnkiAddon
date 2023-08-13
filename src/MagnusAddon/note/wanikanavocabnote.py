@@ -62,10 +62,10 @@ class WaniKanaVocabNote(WaniNote):
     def set_meaning_mnemonic(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Meaning_Exp, value)
 
     def get_audio_male(self): return super().get_field(Wani.KanaVocabFields.Audio_b)
-    def set_audio_male(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Audio_b, "[sound:{}]".format(value))
+    def set_audio_male(self, value: list[str]) -> None: super().set_field(Wani.KanaVocabFields.Audio_b, ''.join([f'[sound:{item}]' for item in value]))
 
     def get_audio_female(self): return super().get_field(Wani.KanaVocabFields.Audio_g)
-    def set_audio_female(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Audio_g, "[sound:{}]".format(value))
+    def set_audio_female(self, value: list[str]) -> None: super().set_field(Wani.KanaVocabFields.Audio_g, ''.join([f'[sound:{item}]' for item in value]))
 
     def get_audios(self): return f"{self.get_audio_male()}{self.get_audio_female()}"
 

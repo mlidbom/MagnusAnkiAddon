@@ -148,9 +148,12 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu):
         add_lookup_action(note_lookup_menu, "&Kanji", f"note:{Wani.NoteType.Kanji} ( {' OR '.join([f'{Wani.KanjiFields.Kanji}:{char}' for char in note.get_vocab()])} )")
         add_sentence_lookup(note_lookup_menu, "&Sentence", kana_utils.get_conjugation_base(vocab.get_vocab()))
 
-        add_ui_action(note_menu, "&Hide mnemonic", lambda: vocab.override_meaning_mnemonic())
-        add_ui_action(note_menu, "&Restore mnemonic", lambda: vocab.restore_meaning_mnemonic())
-        add_ui_action(note_menu, "Accept &meaning", lambda: vocab.set_override_meaning(vocab.get_vocab_meaning().lower().replace(", ", "/").replace(" ", "-")))
+        if not vocab.get_mnemonics_override():
+            add_ui_action(note_menu, "&Hide mnemonic", lambda: vocab.override_meaning_mnemonic())
+        if vocab.get_mnemonics_override() == "-":
+            add_ui_action(note_menu, "&Restore mnemonic", lambda: vocab.restore_meaning_mnemonic())
+        if not vocab.get_override_meaning():
+            add_ui_action(note_menu, "Accept &meaning", lambda: vocab.set_override_meaning(vocab.get_vocab_meaning().lower().replace(", ", "/").replace(" ", "-")))
 
         add_ui_action(note_set_menu, "&Meaning", lambda: vocab.set_override_meaning(sel_clip))
         add_ui_action(note_set_menu, "&Similar vocab", lambda: vocab.set_related_similar_vocab(sel_clip))
