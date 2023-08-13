@@ -135,9 +135,12 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu):
         radicals_clause = " OR ".join([f"{Wani.RadicalFields.Radical_Name}:{rad}" for rad in radicals])
         add_lookup_action(note_lookup_menu, "&Radicals", f"note:{Wani.NoteType.Radical} ({radicals_clause})")
 
-        add_ui_action(note_menu, "&Hide mnemonic",lambda: kanji.override_meaning_mnemonic())
-        add_ui_action(note_menu, "&Restore mnemonic", lambda: kanji.restore_meaning_mnemonic())
-        add_ui_action(note_menu, "&Accept meaning", lambda: kanji.set_override_meaning(kanji.get_kanji_meaning().lower().replace(", ", "/").replace(" ", "-")))
+        if not kanji.get_mnemonics_override():
+            add_ui_action(note_menu, "&Hide mnemonic",lambda: kanji.override_meaning_mnemonic())
+        if kanji.get_mnemonics_override() == "-":
+            add_ui_action(note_menu, "&Restore mnemonic", lambda: kanji.restore_meaning_mnemonic())
+        if not kanji.get_override_meaning():
+            add_ui_action(note_menu, "&Accept meaning", lambda: kanji.set_override_meaning(kanji.get_kanji_meaning().lower().replace(", ", "/").replace(" ", "-")))
 
         if selection:
             add_ui_action(note_add_menu, "&Primary vocab", lambda: add_kanji_primary_vocab(kanji, selection, view))
