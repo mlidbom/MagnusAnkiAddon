@@ -41,5 +41,5 @@ def build_wani_menu(sub_menu):
     add_menu_action(sub_menu, "Delete Missing Vocabulary", wani_note_updater.delete_missing_vocab)
 
 
-def setup():
+def init():
     build_main_menu()

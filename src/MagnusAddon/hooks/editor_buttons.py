@@ -28,5 +28,5 @@ def setup_editor_buttons(buttons, the_editor: Editor):
                                             WaniVocabNote(local_editor.note))))
 
 
-def setup():
+def init():
     gui_hooks.editor_did_init_buttons.append(setup_editor_buttons)

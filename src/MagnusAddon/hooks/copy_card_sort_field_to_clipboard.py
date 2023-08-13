@@ -32,6 +32,6 @@ def copy_card_sort_field_to_clipboard(card):
     my_clipboard.set_text(clean_string)
 
 
-def setup():
+def init():
     gui_hooks.reviewer_did_show_answer.append(copy_card_sort_field_to_clipboard)
     gui_hooks.card_will_show.append(copy_previewer_sort_field_to_windows_clipboard)
