@@ -33,7 +33,7 @@ def update_radical() -> None:
         try:
             wani_radical = waniClient.get_radical(radical_note.get_radical_name())
             radical_note.update_from_wani(wani_radical)
-            fetched = fetched + 1
+            fetched += 1
         except KeyError:
             failed = failed + "," + radical_note.get_radical_name()
 
@@ -50,7 +50,7 @@ def update_kanji() -> None:
         try:
             wani_kanji = waniClient.get_kanji_by_name(kanji_note.get_kanji())
             kanji_note.update_from_wani(wani_kanji)
-            fetched = fetched + 1
+            fetched += 1
         except KeyError:
             failed = failed + "," + kanji_note.get_kanji()
 
@@ -67,7 +67,7 @@ def update_vocab() -> None:
         try:
             wani_vocab = waniClient.get_vocab(vocab_note.get_vocab())
             vocab_note.update_from_wani(wani_vocab)
-            updated = updated + 1
+            updated += 1
         except KeyError:
             failed = failed + "," + vocab_note.get_vocab()
 
@@ -84,7 +84,7 @@ def delete_missing_radicals() -> None:
         try:
             waniClient.get_radical(radical_note.get_radical_name())
         except KeyError:
-            deleted = deleted + 1
+            deleted += 1
             deleted_radicals = deleted_radicals + "," + radical_note.get_radical_name()
 
     message = "Deleted {} radical notes.".format(deleted, deleted_radicals)
@@ -100,7 +100,7 @@ def delete_missing_kanji() -> None:
         try:
             waniClient.get_kanji_by_name(kanji_note.get_kanji())
         except KeyError:
-            deleted = deleted + 1
+            deleted += 1
             deleted_kanji = deleted_kanji + "," + kanji_note.get_kanji()
 
     message = "Deleted {} kanji notes.".format(deleted, deleted_kanji)
@@ -116,7 +116,7 @@ def delete_missing_vocab() -> None:
         try:
             waniClient.get_vocab(vocab_note.get_vocab())
         except KeyError:
-            deleted = deleted + 1
+            deleted += 1
             deleted_vocab = deleted_vocab + "," + vocab_note.get_vocab()
             vocab_note.delete()
 

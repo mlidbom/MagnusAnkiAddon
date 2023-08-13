@@ -146,10 +146,10 @@ class WaniKanjiNote(WaniNote):
     <div>'''
 
         for vocab in vocabs:
-            vocab_html = vocab_html + '''
+            vocab_html += '''
         <div>{} ({}) {}</div>'''.format(vocab.characters, vocab.readings[0].reading, vocab.meanings[0].meaning)
 
-        vocab_html = vocab_html + '''
+        vocab_html += '''
     </div>
 </div>
 '''

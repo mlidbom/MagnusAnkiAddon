@@ -14,5 +14,5 @@ def set_text(text):
         win32clipboard.SetClipboardText(text, win32clipboard.CF_UNICODETEXT)
         win32clipboard.CloseClipboard()
 
-    except: # noqa: E722
+    except: # noqa
         pass  # Occasionally this code randomly fails. Let's not have that result in a crash of the addon OK?
