@@ -1,5 +1,3 @@
-from typing import *
-
 from anki.notes import Note
 from anki.sound import AVTag
 from aqt import gui_hooks
@@ -13,7 +11,7 @@ def typed_in_editor(note:Note):
     SuppressAudioData.last_typing_time = time.time()
     SuppressAudioData._last_typing_note = note
 
-def will_play_tags(tags: list[AVTag], _something: str, _view: Any):
+def will_play_tags(tags: list[AVTag], _something: str, _view: any):
     if time.time() - SuppressAudioData.last_typing_time < 0.05:
         tags.clear()
 

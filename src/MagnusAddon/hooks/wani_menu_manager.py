@@ -1,10 +1,11 @@
 import re
 
 import aqt.browser
+from PyQt6.QtGui import QAction
+from PyQt6.QtWidgets import QMenu
 from anki.cards import Card
-from aqt import gui_hooks, mw
+from aqt import gui_hooks, mw, qconnect
 from aqt.editor import Editor
-from aqt.qt import *
 
 from batches import local_note_updater
 from sysutils import my_clipboard

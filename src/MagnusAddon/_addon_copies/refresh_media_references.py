@@ -18,14 +18,14 @@ Copyright: (c) Glutanimate 2017 <https://glutanimate.com/>
 License: GNU AGPLv3 or later <https://www.gnu.org/licenses/agpl.html>
 """
 
-from aqt import mw
+import os
+
+from PyQt6.QtGui import QAction, QKeySequence
+from aqt import mw, qconnect
 from aqt.utils import tooltip
-from aqt.qt import *
 
 
 def refresh_media():
-    # clear QWebView cache
-    # QWebSettings.clearMemoryCaches()
     # write a dummy file to update collection.media modtime and force sync
     media_dir = mw.col.media.dir()
     fpath = os.path.join(media_dir, "syncdummy.txt")
