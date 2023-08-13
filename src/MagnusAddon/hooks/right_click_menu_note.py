@@ -36,7 +36,7 @@ def setup_note_menu(note, root_menu, sel_clip, selection, view: AnkiWebView):
         if kanji.get_mnemonics_override() == "-":
             add_ui_action(note_menu, "&Restore mnemonic", lambda: kanji.restore_meaning_mnemonic())
         if not kanji.get_override_meaning():
-            add_ui_action(note_menu, "&Accept meaning", lambda: kanji.set_override_meaning(kanji.get_kanji_meaning().lower().replace(", ", "/").replace(" ", "-")))
+            add_ui_action(note_menu, "Accept &meaning", lambda: kanji.set_override_meaning(kanji.get_kanji_meaning().lower().replace(", ", "/").replace(" ", "-")))
 
         if selection:
             add_ui_action(note_add_menu, "&Primary vocab", lambda: add_kanji_primary_vocab(kanji, selection, view))
