@@ -1,26 +1,34 @@
+import time
 from typing import *
 
 from aqt.utils import tooltip
 
-from sysutils import kana_utils
+from sysutils import kana_utils, janomeutils
 from sysutils.utils import StringUtils, UIUtils
 from note.wanikanjinote import WaniKanjiNote
 from note.wanivocabnote import WaniVocabNote
 from wanikani.wani_collection import WaniCollection
-from janome.tokenizer import Tokenizer
 
 def _sort_vocab_list(vocabs: List[WaniVocabNote]) -> list[WaniVocabNote]:
     vocabs.sort(key=lambda vocab: (vocab.get_level(), vocab.get_lesson_position()))
     return vocabs
 
-def loop_janone() -> None:
-    tokenizer = Tokenizer()
+def populate_sentence_parsed_words() -> None:
     sentences = WaniCollection.list_sentence_notes()
+
     for sentence in sentences:
-        expression = StringUtils.strip_markup(sentence.get_expression())
-        tokens = [token for token in tokenizer.tokenize(expression)]
-        surfaces = [token.node.surface for token in tokens]
-        something = 1
+        note_update_time = sentence.last_edit_time()
+        old_parsed_words = sentence.get_parsed_words().split(",")
+        old_parse_time = int(old_parsed_words[-1]) if old_parsed_words and old_parsed_words[-1].isdigit() else 0
+
+
+        if old_parse_time < note_update_time:
+            words = janomeutils.extract_dictionary_forms(sentence.get_active_expression())
+            one_second_from_now = int(time.time()) + 1
+            words.append(str(one_second_from_now))
+            sentence.set_parsed_words(",".join(words))
+
+    tooltip("done")
 
 def update_kanji(_kanji_note: WaniKanjiNote) -> None:
     all_vocabulary: list[WaniVocabNote] = WaniCollection.fetch_all_vocab_notes()

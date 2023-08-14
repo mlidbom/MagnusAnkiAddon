@@ -8,7 +8,7 @@ class MyNoteFields:
 class SentenceNoteFields:
     Expression = "Expression"
     Expression__ = "__expression"
-
+    ParsedWords = "ParsedWords"
 
 class Wani:
     class WaniVocabNoteType:

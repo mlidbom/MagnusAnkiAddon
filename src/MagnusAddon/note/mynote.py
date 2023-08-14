@@ -20,3 +20,6 @@ class MyNote:
             self._note[field_name] = value
             self._note.flush()
 
+    def last_edit_time(self) -> int:
+        return self._note.mod
+

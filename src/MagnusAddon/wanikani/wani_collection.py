@@ -18,8 +18,7 @@ from wanikani.wani_constants import Wani
 class WaniCollection:
     @staticmethod
     def list_sentence_notes() -> list[SentenceNote]:
-        note_ids = mw.col.find_notes("deck:*sentence* deck:*listen*")
-        return [SentenceNote(note) for note in (WaniCollection.fetch_notes_by_id(note_ids))]
+        return [SentenceNote(note) for note in WaniCollection.fetch_notes_by_note_type("_japanese_sentence")]
 
     @staticmethod
     def fetch_notes_by_note_type_and_field_value(note_type: str, field: str,
