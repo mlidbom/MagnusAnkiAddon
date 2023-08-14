@@ -4,7 +4,7 @@ from aqt.editor import Editor, EditorMode
 from sysutils.utils import UIUtils
 
 
-def init():
+def init() -> None:
     gui_hooks.editor_did_load_note.append(register_show_previewer)
 
 

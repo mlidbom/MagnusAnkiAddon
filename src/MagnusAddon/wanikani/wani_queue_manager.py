@@ -1,4 +1,4 @@
-from typing import Optional, Sequence, Callable
+from typing import Optional, Callable
 
 import aqt.browser
 from anki.notes import Note
@@ -22,7 +22,7 @@ def answer_again_with_zero_interval_for_new_note_cards_with_dependencies(note: N
     visit_note_dependencies(note, CardUtils.answer_again_with_zero_interval_for_new_note_cards)
 
 
-def visit_note_dependencies(note, callback):
+def visit_note_dependencies(note: Note, callback: Callable[[WaniNote, str], None]) -> None:
     # noinspection PyProtectedMember
     note_type = note._note_type['name']
     if note_type == Wani.NoteType.Vocab:
@@ -74,7 +74,7 @@ def visit_radical_with_dependencies(radical_note: WaniRadicalNote,
     callback(radical_note, radical_note.get_radical_name())
 
 
-def refresh_search():
+def refresh_search() -> None:
     browser: aqt.browser.Browser = dialogs.open('Browser', mw)
     browser.onSearchActivated()
 

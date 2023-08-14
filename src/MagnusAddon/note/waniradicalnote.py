@@ -10,19 +10,19 @@ class WaniRadicalNote(WaniNote):
     def __init__(self, note: Note):
         super().__init__(note)
 
-    def get_radical_name(self): return super().get_field(Wani.RadicalFields.Radical_Name)
+    def get_radical_name(self) -> str: return super().get_field(Wani.RadicalFields.Radical_Name)
     def set_radical_name(self, value: str) -> None: super().set_field(Wani.RadicalFields.Radical_Name, value)
 
-    def get_radical(self): return super().get_field(Wani.RadicalFields.Radical)
+    def get_radical(self) -> str: return super().get_field(Wani.RadicalFields.Radical)
     def set_radical(self, value: str) -> None: super().set_field(Wani.RadicalFields.Radical, value)
 
-    def get_meaning_mnemonic(self): return super().get_field(Wani.RadicalFields.Radical_Meaning)
+    def get_meaning_mnemonic(self) -> str: return super().get_field(Wani.RadicalFields.Radical_Meaning)
     def set_meaning_mnemonic(self, value: str) -> None: super().set_field(Wani.RadicalFields.Radical_Meaning, value)
 
-    def get_radical_icon(self): return super().get_field(Wani.RadicalFields.Radical_Icon)
+    def get_radical_icon(self) -> str: return super().get_field(Wani.RadicalFields.Radical_Icon)
     def set_radical_icon(self, value: str) -> None: super().set_field(Wani.RadicalFields.Radical_Icon, value)
 
-    def get_amalgamation_subject_ids(self): return super().get_field(Wani.RadicalFields.amalgamation_subject_ids)
+    def get_amalgamation_subject_ids(self) -> str: return super().get_field(Wani.RadicalFields.amalgamation_subject_ids)
     def set_amalgamation_subject_ids(self, value: str) -> None: super().set_field(Wani.RadicalFields.amalgamation_subject_ids, value)
 
     def update_from_wani(self, wani_radical: models.Radical):

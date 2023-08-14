@@ -25,7 +25,7 @@ from aqt import mw, qconnect
 from aqt.utils import tooltip
 
 
-def refresh_media():
+def refresh_media() -> None:
     # write a dummy file to update collection.media modtime and force sync
     media_dir = mw.col.media.dir()
     fpath = os.path.join(media_dir, "syncdummy.txt")

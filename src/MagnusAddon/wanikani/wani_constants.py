@@ -5,6 +5,11 @@ class MyNoteFields:
     Vocab4 = "__vocab4"
     Vocab5 = "__vocab5"
 
+class SentenceNoteFields:
+    Expression = "Expression"
+    Expression__ = "__expression"
+
+
 class Wani:
     class WaniVocabNoteType:
         class Card:

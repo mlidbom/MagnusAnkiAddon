@@ -8,16 +8,16 @@ class WanikaniClient:
     _instance = None
 
     @classmethod
-    def get_instance(cls):
+    def get_instance(cls) -> 'WanikaniClient':
         if not cls._instance:
             cls._instance = WanikaniClient()
         return cls._instance
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._is_initialized = False
 
 
-    def _init(self):
+    def _init(self) -> 'WanikaniClient':
         if self._is_initialized is False:
             self.v2_api_key = "ebeda84c-2f6a-423e-bfc7-3068796ed50a"
             client = Client(self.v2_api_key)

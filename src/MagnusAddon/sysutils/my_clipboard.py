@@ -7,7 +7,7 @@ def get_text() -> str:
     win32clipboard.CloseClipboard()
     return clipboard_content
 
-def set_text(text):
+def set_text(text) -> None:
     try:
         win32clipboard.OpenClipboard()
         win32clipboard.EmptyClipboard()

@@ -17,7 +17,7 @@ def add_ui_action(menu: QMenu, name: str, callback: Callable[[], None]) -> None:
 def add_lookup_action(menu: QMenu, name: str, search: str):
     menu.addAction(name, lambda: anki_lookup())
 
-    def anki_lookup():
+    def anki_lookup() -> None:
         browser: Browser = aqt.dialogs.open('Browser', aqt.mw)
         browser.form.searchEdit.lineEdit().setText(search)
         browser.onSearchActivated()

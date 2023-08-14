@@ -19,7 +19,7 @@ def get_conjugation_base(word) -> str:
     return word
 
 def hiragana_to_katakana(hiragana: str) -> str:
-    def convert_character(char):
+    def convert_character(char: str) -> str:
         if 0x3040 <= ord(char) <= 0x309F: #is it hiragana?
             return chr(ord(char) + 96)
         else:

@@ -9,10 +9,10 @@ class WaniKanaVocabNote(WaniNote):
     def __init__(self, note: Note):
         super().__init__(note)
 
-    def get_vocab(self): return super().get_field(Wani.KanaVocabFields.Vocab)
+    def get_vocab(self) -> str: return super().get_field(Wani.KanaVocabFields.Vocab)
     def set_vocab(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Vocab, value)
 
-    def get_vocab_meaning(self):
+    def get_vocab_meaning(self) -> str:
         meaning = self.get_override_meaning()
         if meaning != "": return meaning
         return super().get_field(Wani.KanaVocabFields.Vocab_Meaning)
@@ -40,34 +40,34 @@ class WaniKanaVocabNote(WaniNote):
     def get_speech_type(self) -> str: return super().get_field(Wani.KanaVocabFields.Speech_Type)
     def set_speech_type(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Speech_Type, value)
 
-    def get_context_jp(self): return super().get_field(Wani.KanaVocabFields.Context_jp)
+    def get_context_jp(self) -> str: return super().get_field(Wani.KanaVocabFields.Context_jp)
     def set_context_jp(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Context_jp, value)
 
-    def get_context_en(self): return super().get_field(Wani.KanaVocabFields.Context_en)
+    def get_context_en(self) -> str: return super().get_field(Wani.KanaVocabFields.Context_en)
     def set_context_en(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Context_en, value)
 
-    def get_context_jp_2(self): return super().get_field(Wani.KanaVocabFields.Context_jp_2)
+    def get_context_jp_2(self) -> str: return super().get_field(Wani.KanaVocabFields.Context_jp_2)
     def set_context_jp_2(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Context_jp_2, value)
 
-    def get_context_en_2(self): return super().get_field(Wani.KanaVocabFields.Context_en_2)
+    def get_context_en_2(self) -> str: return super().get_field(Wani.KanaVocabFields.Context_en_2)
     def set_context_en_2(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Context_en_2, value)
 
-    def get_context_jp_3(self): return super().get_field(Wani.KanaVocabFields.Context_jp_3)
+    def get_context_jp_3(self) -> str: return super().get_field(Wani.KanaVocabFields.Context_jp_3)
     def set_context_jp_3(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Context_jp_3, value)
 
-    def get_context_en_3(self): return super().get_field(Wani.KanaVocabFields.Context_en_3)
+    def get_context_en_3(self) -> str: return super().get_field(Wani.KanaVocabFields.Context_en_3)
     def set_context_en_3(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Context_en_3, value)
 
-    def get_meaning_mnemonic(self): return super().get_field(Wani.KanaVocabFields.Meaning_Exp)
+    def get_meaning_mnemonic(self) -> str: return super().get_field(Wani.KanaVocabFields.Meaning_Exp)
     def set_meaning_mnemonic(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Meaning_Exp, value)
 
-    def get_audio_male(self): return super().get_field(Wani.KanaVocabFields.Audio_b)
+    def get_audio_male(self) -> str: return super().get_field(Wani.KanaVocabFields.Audio_b)
     def set_audio_male(self, value: list[str]) -> None: super().set_field(Wani.KanaVocabFields.Audio_b, ''.join([f'[sound:{item}]' for item in value]))
 
-    def get_audio_female(self): return super().get_field(Wani.KanaVocabFields.Audio_g)
+    def get_audio_female(self) -> str: return super().get_field(Wani.KanaVocabFields.Audio_g)
     def set_audio_female(self, value: list[str]) -> None: super().set_field(Wani.KanaVocabFields.Audio_g, ''.join([f'[sound:{item}]' for item in value]))
 
-    def get_audios(self): return f"{self.get_audio_male()}{self.get_audio_female()}"
+    def get_audios(self) -> str: return f"{self.get_audio_male()}{self.get_audio_female()}"
 
     def update_from_wani(self, wani_vocab: models.Vocabulary):
         super().update_from_wani(wani_vocab)

@@ -1,9 +1,11 @@
-from typing import List
+from typing import List, Sequence
 
 import anki
+from anki.notes import NoteId
 from aqt import mw
 
 from ankiutils.my_anki import *
+from note.sentencenote import SentenceNote
 from sysutils.utils import ListUtils
 from note.waninote import WaniNote
 from note.waniradicalnote import WaniRadicalNote
@@ -14,6 +16,11 @@ from wanikani.wani_constants import Wani
 
 
 class WaniCollection:
+    @staticmethod
+    def list_sentence_notes() -> list[SentenceNote]:
+        note_ids = mw.col.find_notes("deck:*sentence* deck:*listen*")
+        return [SentenceNote(note) for note in (WaniCollection.fetch_notes_by_id(note_ids))]
+
     @staticmethod
     def fetch_notes_by_note_type_and_field_value(note_type: str, field: str,
                                                  field_values: List) -> List[anki.notes.Note]:
@@ -66,7 +73,7 @@ class WaniCollection:
         return kanji_notes
 
     @staticmethod
-    def fetch_all_wani_kanji_notes():
+    def fetch_all_wani_kanji_notes() -> list[WaniKanjiNote]:
         return [kanji for kanji in WaniCollection.fetch_all_kanji_notes() if kanji.is_wani_note()]
 
     @staticmethod
@@ -83,7 +90,7 @@ class WaniCollection:
         return vocab_notes
 
     @staticmethod
-    def fetch_notes_by_id(note_ids: List) -> List[anki.notes.Note]:
+    def fetch_notes_by_id(note_ids: Sequence[NoteId]) -> List[anki.notes.Note]:
         return [mw.col.get_note(note_id) for note_id in note_ids]
 
     @staticmethod

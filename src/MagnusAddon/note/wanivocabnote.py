@@ -11,28 +11,28 @@ class WaniVocabNote(WaniKanaVocabNote):
     def __init__(self, note: Note):
         super().__init__(note)
 
-    def get_kanji(self): return super().get_field(Wani.VocabFields.Kanji)
+    def get_kanji(self) -> str: return super().get_field(Wani.VocabFields.Kanji)
     def set_kanji(self, value: str) -> None: super().set_field(Wani.VocabFields.Kanji, value)
 
-    def get_kanji_name(self): return super().get_field(Wani.VocabFields.Kanji_Name)
+    def get_kanji_name(self) -> str: return super().get_field(Wani.VocabFields.Kanji_Name)
     def set_kanji_name(self, value: str) -> None: super().set_field(Wani.VocabFields.Kanji_Name, value)
 
-    def get_reading_mnemonic(self): return super().get_field(Wani.VocabFields.Reading_Exp)
+    def get_reading_mnemonic(self) -> str: return super().get_field(Wani.VocabFields.Reading_Exp)
     def set_reading_mnemonic(self, value: str) -> None: super().set_field(Wani.VocabFields.Reading_Exp, value)
 
     def get_reading_list(self) -> list[str]: return [reading.strip() for reading in self.get_reading().split(",")]
 
-    def get_reading(self): return super().get_field(Wani.KanaVocabFields.Reading)
+    def get_reading(self) -> str: return super().get_field(Wani.KanaVocabFields.Reading)
     def set_reading(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Reading, value)
 
-    def get_component_subject_ids(self): return super().get_field(Wani.VocabFields.component_subject_ids)
+    def get_component_subject_ids(self) -> str: return super().get_field(Wani.VocabFields.component_subject_ids)
     def set_component_subject_ids(self, value: str) -> None: super().set_field(Wani.VocabFields.component_subject_ids, value)
 
-    def override_meaning_mnemonic(self):
+    def override_meaning_mnemonic(self) -> None:
         if not self.get_mnemonics_override():
             self.set_mnemonics_override("-")
 
-    def restore_meaning_mnemonic(self):
+    def restore_meaning_mnemonic(self) -> None:
         if self.get_mnemonics_override() == "-":
             self.set_mnemonics_override("")
 

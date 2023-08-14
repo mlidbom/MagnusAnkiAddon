@@ -23,7 +23,7 @@ class WaniKanjiNote(WaniNote):
                 return vocabulary.replace(reading, tagger(reading), 1)
         return vocabulary
 
-    def get_kanji(self): return super().get_field(Wani.KanjiFields.Kanji)
+    def get_kanji(self) -> str: return super().get_field(Wani.KanjiFields.Kanji)
     def set_kanji(self, value: str) -> None: super().set_field(Wani.KanjiFields.Kanji, value)
 
     def get_kanji_meaning(self) -> str:
@@ -35,11 +35,11 @@ class WaniKanjiNote(WaniNote):
     def get_override_meaning(self) -> str: return super().get_field(Wani.KanjiFields.Override_meaning)
     def set_override_meaning(self, value: str) -> None: super().set_field(Wani.KanjiFields.Override_meaning, value)
 
-    def override_meaning_mnemonic(self):
+    def override_meaning_mnemonic(self) -> None:
         if not self.get_mnemonics_override():
             self.set_mnemonics_override("-")
 
-    def restore_meaning_mnemonic(self):
+    def restore_meaning_mnemonic(self) -> None:
         if self.get_mnemonics_override() == "-":
             self.set_mnemonics_override("")
 
@@ -48,52 +48,52 @@ class WaniKanjiNote(WaniNote):
 
     def set_kanji_meaning(self, value: str) -> None: super().set_field(Wani.KanjiFields.Kanji_Meaning, value)
 
-    def get_reading_on(self): return super().get_field(Wani.KanjiFields.Reading_On)
+    def get_reading_on(self) -> str: return super().get_field(Wani.KanjiFields.Reading_On)
     def set_reading_on(self, value: str) -> None: super().set_field(Wani.KanjiFields.Reading_On, value)
 
-    def get_reading_kun(self): return super().get_field(Wani.KanjiFields.Reading_Kun)
+    def get_reading_kun(self) -> str: return super().get_field(Wani.KanjiFields.Reading_Kun)
     def set_reading_kun(self, value: str) -> None: super().set_field(Wani.KanjiFields.Reading_Kun, value)
 
-    def get_radicals(self): return super().get_field(Wani.KanjiFields.Radicals)
+    def get_radicals(self) -> str: return super().get_field(Wani.KanjiFields.Radicals)
     def set_radicals(self, value: str) -> None: super().set_field(Wani.KanjiFields.Radicals, value)
 
-    def get_radicals_icons(self): return super().get_field(Wani.KanjiFields.Radicals_Icons)
+    def get_radicals_icons(self) -> str: return super().get_field(Wani.KanjiFields.Radicals_Icons)
     def set_radicals_icons(self, value: str) -> None: super().set_field(Wani.KanjiFields.Radicals_Icons, value)
 
-    def get_radicals_names(self): return super().get_field(Wani.KanjiFields.Radicals_Names)
+    def get_radicals_names(self) -> str: return super().get_field(Wani.KanjiFields.Radicals_Names)
     def set_radicals_names(self, value: str) -> None: super().set_field(Wani.KanjiFields.Radicals_Names, value)
 
-    def get_radicals_icons_names(self): return super().get_field(Wani.KanjiFields.Radicals_Icons_Names)
+    def get_radicals_icons_names(self) -> str: return super().get_field(Wani.KanjiFields.Radicals_Icons_Names)
     def set_radicals_icons_names(self, value: str) -> None: super().set_field(Wani.KanjiFields.Radicals_Icons_Names, value)
 
-    def get_meaning_mnemonic(self): return super().get_field(Wani.KanjiFields.Meaning_Mnemonic)
+    def get_meaning_mnemonic(self) -> str: return super().get_field(Wani.KanjiFields.Meaning_Mnemonic)
     def set_meaning_mnemonic(self, value: str) -> None: super().set_field(Wani.KanjiFields.Meaning_Mnemonic, value)
 
-    def get_meaning_hint(self): return super().get_field(Wani.KanjiFields.Meaning_Info)
+    def get_meaning_hint(self) -> str: return super().get_field(Wani.KanjiFields.Meaning_Info)
     def set_meaning_hint(self, value: str) -> None: super().set_field(Wani.KanjiFields.Meaning_Info, value if value is not None else "")
 
-    def get_reading_mnemonic(self): return super().get_field(Wani.KanjiFields.Reading_Mnemonic)
+    def get_reading_mnemonic(self) -> str: return super().get_field(Wani.KanjiFields.Reading_Mnemonic)
     def set_reading_mnemonic(self, value: str) -> None: super().set_field(Wani.KanjiFields.Reading_Mnemonic, value)
 
-    def get_reading_hint(self): return super().get_field(Wani.KanjiFields.Reading_Info)
+    def get_reading_hint(self) -> str: return super().get_field(Wani.KanjiFields.Reading_Info)
     def set_reading_hint(self, value: str) -> None: super().set_field(Wani.KanjiFields.Reading_Info, value if value is not None else "")
 
-    def get_amalgamation_subject_ids(self): return super().get_field(Wani.KanjiFields.amalgamation_subject_ids)
+    def get_amalgamation_subject_ids(self) -> str: return super().get_field(Wani.KanjiFields.amalgamation_subject_ids)
     def set_amalgamation_subject_ids(self, value: str) -> None: super().set_field(Wani.KanjiFields.amalgamation_subject_ids, value)
 
-    def get_component_subject_ids(self): return super().get_field(Wani.KanjiFields.component_subject_ids)
+    def get_component_subject_ids(self) -> str: return super().get_field(Wani.KanjiFields.component_subject_ids)
     def set_component_subject_ids(self, value: str) -> None: super().set_field(Wani.KanjiFields.component_subject_ids, value)
 
-    def get_vocabs(self): return super().get_field(Wani.KanjiFields.Vocabs)
+    def get_vocabs(self) -> str: return super().get_field(Wani.KanjiFields.Vocabs)
     def set_vocabs(self, value: str) -> None: super().set_field(Wani.KanjiFields.Vocabs, value)
 
     def get_vocabs_raw(self) -> list[str]: return super().get_field(Wani.KanjiFields.VocabsRaw).split(",")
     def set_vocabs_raw(self, value: list[str]) -> None: super().set_field(Wani.KanjiFields.VocabsRaw, ",".join(value))
 
-    def get_primary_vocab(self): return super().get_field(Wani.KanjiFields.PrimaryVocab)
+    def get_primary_vocab(self) -> str: return super().get_field(Wani.KanjiFields.PrimaryVocab)
     def set_primary_vocab(self, value: str) -> None: super().set_field(Wani.KanjiFields.PrimaryVocab, value)
 
-    def get_primary_vocab_audio(self): return super().get_field(Wani.KanjiFields.PrimaryVocabAudio)
+    def get_primary_vocab_audio(self) -> str: return super().get_field(Wani.KanjiFields.PrimaryVocabAudio)
     def set_primary_vocab_audio(self, value: str) -> None: super().set_field(Wani.KanjiFields.PrimaryVocabAudio, value)
 
     def update_from_wani(self, wani_kanji: models.Kanji):

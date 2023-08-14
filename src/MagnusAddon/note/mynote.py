@@ -19,3 +19,4 @@ class MyNote:
         if field_value != value:
             self._note[field_name] = value
             self._note.flush()
+

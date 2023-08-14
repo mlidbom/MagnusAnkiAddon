@@ -36,7 +36,12 @@ class StringUtils:
 
 class UIUtils:
     @staticmethod
-    def is_edit_current_active():
+    def is_edit_current_open() -> bool:
+        edit_current = [window for window in mw.app.topLevelWidgets() if isinstance(window, EditCurrent)]
+        return len(edit_current) > 0
+
+    @staticmethod
+    def is_edit_current_active() -> bool:
         edit_current = [window for window in mw.app.topLevelWidgets() if isinstance(window, EditCurrent)]
         if len(edit_current) > 0:
             return edit_current[0].isActiveWindow()
@@ -57,13 +62,13 @@ class UIUtils:
             browser[0].onSearchActivated()
 
     @staticmethod
-    def show_current_review_in_preview():
+    def show_current_review_in_preview() -> None:
         mw.onBrowse()
         UIUtils.activate_preview()
         mw.activateWindow()
 
     @staticmethod
-    def activate_preview():
+    def activate_preview() -> None:
         browser: Browser = aqt.dialogs.open('Browser', aqt.mw) # noqa
         mw.app.processEvents()
         if browser._previewer is None: # noqa

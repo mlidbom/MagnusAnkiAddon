@@ -1,3 +1,5 @@
+from typing import Sequence
+
 from _lib.wanikani_api import models
 from anki.notes import Note
 from aqt import mw
@@ -29,7 +31,7 @@ class WaniNote(MyNote):
         # noinspection PyProtectedMember
         return self._note._note_type['name']  # Todo: find how to do this without digging into protected members
 
-    def get_sort_id(self): return self.get_field(Wani.NoteFields.sort_id)
+    def get_sort_id(self) -> str: return self.get_field(Wani.NoteFields.sort_id)
     def set_sort_id(self, value: str) -> None: self.set_field(Wani.NoteFields.sort_id, value)
 
     def get_subject_id(self) -> int: return int(self.get_field(Wani.NoteFields.subject_id))
@@ -90,9 +92,9 @@ class WaniNote(MyNote):
         self.set_auxiliary_meanings_whitelist(", ".join(auxiliary_meanings_whitelist))
         self.set_auxiliary_meanings_blacklist(", ".join(auxiliary_meanings_blacklist))
 
-    def delete(self):
+    def delete(self) -> None:
         mw.col.remNotes([self._note.id])
         mw.col.save()
 
-    def card_ids(self):
+    def card_ids(self) -> Sequence[int]:
         return self._note.card_ids()

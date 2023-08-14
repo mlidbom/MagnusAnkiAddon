@@ -39,7 +39,7 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu):
     setup_search_menu(root_menu, sel_clip)
 
 
-def init():
+def init() -> None:
     gui_hooks.webview_will_show_context_menu.append(register_lookup_actions)
     gui_hooks.editor_will_show_context_menu.append(register_lookup_actions)
 

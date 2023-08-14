@@ -7,14 +7,14 @@ from hooks.right_click_menu_utils import add_sentence_lookup, add_lookup_action
 from wanikani.wani_constants import Wani, Mine
 
 
-def setup_search_menu(root_menu, sel_clip):
+def setup_search_menu(root_menu: QMenu, sel_clip: str) -> None:
     if sel_clip:
         search_menu = root_menu.addMenu("&Search")
         setup_anki_search_menu(search_menu, sel_clip)
         setup_web_search_menu(search_menu, sel_clip)
 
 
-def setup_anki_search_menu(search_menu, sel_clip):
+def setup_anki_search_menu(search_menu: QMenu, sel_clip: str) -> None:
     search_anki_menu = search_menu.addMenu("&Anki")
     add_lookup_action(search_anki_menu, "&Kanji", f"note:{Wani.NoteType.Kanji} ( {' OR '.join([f'{Wani.KanjiFields.Kanji}:{char}' for char in sel_clip])} )")
     add_lookup_action(search_anki_menu, "&Vocab", f"deck:*Vocab* deck:*Read* (Vocab:{sel_clip} OR Reading:re:\\b{sel_clip}\\b OR Vocab_Meaning:re:\\b{sel_clip}\\b )")
@@ -24,7 +24,7 @@ def setup_anki_search_menu(search_menu, sel_clip):
     add_lookup_action(search_anki_menu, "Listen", f"deck:{Mine.DeckFilters.Listen} {sel_clip}")
 
 
-def setup_web_search_menu(search_menu, sel_clip):
+def setup_web_search_menu(search_menu: QMenu, sel_clip: str) -> None:
     search_web_menu = search_menu.addMenu("&Web")
     add_web_lookup(search_web_menu, "&Takoboto", u"https://takoboto.jp/?q=%s", sel_clip)
     add_web_lookup(search_web_menu, "&Merriam Webster", u"https://www.merriam-webster.com/dictionary/%s", sel_clip)

@@ -7,12 +7,20 @@ from sysutils.utils import StringUtils, UIUtils
 from note.wanikanjinote import WaniKanjiNote
 from note.wanivocabnote import WaniVocabNote
 from wanikani.wani_collection import WaniCollection
-
+#from janome.tokenizer import Tokenizer
 
 def _sort_vocab_list(vocabs: List[WaniVocabNote]) -> list[WaniVocabNote]:
     vocabs.sort(key=lambda vocab: (vocab.get_level(), vocab.get_lesson_position()))
     return vocabs
 
+# def loop_janone() -> None:
+#     tokenizer = Tokenizer()
+#     sentences = WaniCollection.list_sentence_notes()
+#     for sentence in sentences:
+#         expression = StringUtils.strip_markup(sentence.get_expression())
+#         tokens = [token for token in tokenizer.tokenize(expression)]
+#         surfaces = [token.node.surface for token in tokens]
+#         something = 1
 
 def update_kanji(_kanji_note: WaniKanjiNote) -> None:
     all_vocabulary: list[WaniVocabNote] = WaniCollection.fetch_all_vocab_notes()
@@ -22,7 +30,7 @@ def update_kanji(_kanji_note: WaniKanjiNote) -> None:
     UIUtils.refresh()
 
 
-def update_all():
+def update_all() -> None:
     all_vocabulary: list[WaniVocabNote] = WaniCollection.fetch_all_vocab_notes()
     all_kanji: list[WaniKanjiNote] = WaniCollection.fetch_all_kanji_notes()
     all_vocabulary = _sort_vocab_list(all_vocabulary)  # we want a specific order in the kanji entries etc
@@ -34,7 +42,7 @@ def update_all():
 
 
 def _update_vocab(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanjiNote]) -> None:
-    def update_kanji_names():
+    def update_kanji_names() -> None:
         def prepare_kanji_meaning(kanji: WaniKanjiNote) -> str:
             meaning = kanji.get_kanji_meaning()
             meaning = StringUtils.strip_markup(meaning)
@@ -49,7 +57,7 @@ def _update_vocab(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanji
             kanji_names_string = " # ".join(kanji_meanings)
             vocab_note.set_kanji_name(kanji_names_string)
 
-    def format_context_sentences():
+    def format_context_sentences() -> None:
         for vocab in all_vocabulary:
             def format_sentence(html_sentence: str):
                 clean_sentence = StringUtils.strip_markup(html_sentence)

@@ -6,6 +6,7 @@ from note.wanikanjinote import WaniKanjiNote
 from note.waniradicalnote import WaniRadicalNote
 from note.wanivocabnote import WaniVocabNote
 from sysutils import kana_utils
+from sysutils.utils import StringUtils
 from wanikani.wani_constants import MyNoteFields, Wani
 
 
@@ -36,7 +37,7 @@ def setup_note_menu(note, root_menu, sel_clip, selection, view: AnkiWebView):
         if kanji.get_mnemonics_override() == "-":
             add_ui_action(note_menu, "&Restore mnemonic", lambda: kanji.restore_meaning_mnemonic())
         if not kanji.get_override_meaning():
-            add_ui_action(note_menu, "Accept &meaning", lambda: kanji.set_override_meaning(kanji.get_kanji_meaning().lower().replace(", ", "/").replace(" ", "-")))
+            add_ui_action(note_menu, "Accept &meaning", lambda: kanji.set_override_meaning(format_kanji_meaning(kanji.get_kanji_meaning())))
 
         if selection:
             add_ui_action(note_add_menu, "&Primary vocab", lambda: add_kanji_primary_vocab(kanji, selection, view))
@@ -51,7 +52,7 @@ def setup_note_menu(note, root_menu, sel_clip, selection, view: AnkiWebView):
         if vocab.get_mnemonics_override() == "-":
             add_ui_action(note_menu, "&Restore mnemonic", lambda: vocab.restore_meaning_mnemonic())
         if not vocab.get_override_meaning():
-            add_ui_action(note_menu, "Accept &meaning", lambda: vocab.set_override_meaning(vocab.get_vocab_meaning().lower().replace(", ", "/").replace(" ", "-")))
+            add_ui_action(note_menu, "Accept &meaning", lambda: vocab.set_override_meaning(format_vocab_meaning(vocab.get_vocab_meaning())))
 
         add_ui_action(note_set_menu, "&Meaning", lambda: vocab.set_override_meaning(sel_clip))
         add_ui_action(note_set_menu, "&Similar vocab", lambda: vocab.set_related_similar_vocab(sel_clip))
@@ -70,3 +71,9 @@ def add_kanji_primary_vocab(note: WaniKanjiNote, selection: str, _view: AnkiWebV
 def set_kanji_primary_vocab(note: WaniKanjiNote, selection: str, view: AnkiWebView):
     note.set_primary_vocab("")
     add_kanji_primary_vocab(note, selection, view)
+
+def format_vocab_meaning(meaning:str) -> str:
+    return StringUtils.strip_markup(meaning.lower().replace(", ", "/"))
+
+def format_kanji_meaning(meaning:str) -> str:
+    return StringUtils.strip_markup(meaning.lower().replace(", ", "/").replace(" ", "-"))

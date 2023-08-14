@@ -45,7 +45,7 @@ class WaniDownloader:
         vocab.set_audio_male(male_audios[::-1])
 
     @classmethod
-    def fetch_missing_vocab_audio(cls):
+    def fetch_missing_vocab_audio(cls) -> None:
         vocab_missing_audio: List[WaniVocabNote] = [vocab for vocab in WaniCollection.fetch_all_wani_vocab_notes() if
                                                     vocab.get_audio_female() == ""]
         for vocab in vocab_missing_audio:
