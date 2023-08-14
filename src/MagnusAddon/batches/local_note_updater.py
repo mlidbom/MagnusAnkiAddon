@@ -1,9 +1,8 @@
-import time
 from typing import *
 
 from aqt.utils import tooltip
 
-from sysutils import kana_utils, janomeutils
+from sysutils import kana_utils
 from sysutils.utils import StringUtils, UIUtils
 from note.wanikanjinote import WaniKanjiNote
 from note.wanivocabnote import WaniVocabNote
@@ -14,20 +13,7 @@ def _sort_vocab_list(vocabs: List[WaniVocabNote]) -> list[WaniVocabNote]:
     return vocabs
 
 def populate_sentence_parsed_words() -> None:
-    sentences = WaniCollection.list_sentence_notes()
-
-    for sentence in sentences:
-        note_update_time = sentence.last_edit_time()
-        old_parsed_words = sentence.get_parsed_words().split(",")
-        old_parse_time = int(old_parsed_words[-1]) if old_parsed_words and old_parsed_words[-1].isdigit() else 0
-
-
-        if old_parse_time < note_update_time:
-            words = janomeutils.extract_dictionary_forms(sentence.get_active_expression())
-            one_second_from_now = int(time.time()) + 1
-            words.append(str(one_second_from_now))
-            sentence.set_parsed_words(",".join(words))
-
+    for sentence in WaniCollection.list_sentence_notes(): sentence.update_parsed_words()
     tooltip("done")
 
 def update_kanji(_kanji_note: WaniKanjiNote) -> None:

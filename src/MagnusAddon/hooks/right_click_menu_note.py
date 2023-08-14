@@ -1,13 +1,12 @@
 from aqt.webview import AnkiWebView
 
 from batches import local_note_updater
-from hooks.right_click_menu_utils import add_ui_action, add_sentence_lookup, add_lookup_action
+from hooks.right_click_menu_utils import add_ui_action, add_lookup_action
 from note.wanikanjinote import WaniKanjiNote
 from note.waniradicalnote import WaniRadicalNote
 from note.wanivocabnote import WaniVocabNote
-from sysutils import kana_utils
 from sysutils.utils import StringUtils
-from wanikani.wani_constants import MyNoteFields, Wani
+from wanikani.wani_constants import MyNoteFields, Wani, SentenceNoteFields
 
 
 def setup_note_menu(note, root_menu, sel_clip, selection, view: AnkiWebView):
@@ -45,7 +44,7 @@ def setup_note_menu(note, root_menu, sel_clip, selection, view: AnkiWebView):
     if isinstance(note, WaniVocabNote):
         vocab = note
         add_lookup_action(note_lookup_menu, "&Kanji", f"note:{Wani.NoteType.Kanji} ( {' OR '.join([f'{Wani.KanjiFields.Kanji}:{char}' for char in note.get_vocab()])} )")
-        add_sentence_lookup(note_lookup_menu, "&Sentence", kana_utils.get_conjugation_base(vocab.get_vocab()))
+        add_lookup_action(note_lookup_menu, "&Sentence", f"(deck:*sentence* deck:*listen*) {SentenceNoteFields.ParsedWords}:re:\\b{note.get_vocab()}\\b")
 
         if not vocab.get_mnemonics_override():
             add_ui_action(note_menu, "&Hide mnemonic", lambda: vocab.override_meaning_mnemonic())
