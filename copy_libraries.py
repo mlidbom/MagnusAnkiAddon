@@ -9,7 +9,7 @@ source_dir = os.path.join(script_dir, './venv/lib/site-packages')
 target_dir = os.path.join(script_dir, './src/MagnusAddon/_lib')
 
 # List the libraries you want to copy
-libraries_to_copy = ['dateutil', 'wanikani_api']
+libraries_to_copy = ['dateutil', 'wanikani_api', 'janome']
 
 # Create the target directory if it doesn't exist
 os.makedirs(target_dir, exist_ok=True)

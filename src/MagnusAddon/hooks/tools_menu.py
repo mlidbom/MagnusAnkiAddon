@@ -29,7 +29,7 @@ def build_main_menu() -> None:
 
 def build_local_menu(sub_menu: QMenu) -> None:
     add_menu_action(sub_menu, "Update &All", local_note_updater.update_all)
-#    add_menu_action(sub_menu, "&Janone test", local_note_updater.loop_janone)
+    add_menu_action(sub_menu, "&Janone test", local_note_updater.loop_janone)
 
 def build_wani_menu(sub_menu: QMenu) -> None:
     add_menu_action(sub_menu, "Update Radicals", wani_note_updater.update_radical)

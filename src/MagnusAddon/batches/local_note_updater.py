@@ -7,20 +7,20 @@ from sysutils.utils import StringUtils, UIUtils
 from note.wanikanjinote import WaniKanjiNote
 from note.wanivocabnote import WaniVocabNote
 from wanikani.wani_collection import WaniCollection
-#from janome.tokenizer import Tokenizer
+from janome.tokenizer import Tokenizer
 
 def _sort_vocab_list(vocabs: List[WaniVocabNote]) -> list[WaniVocabNote]:
     vocabs.sort(key=lambda vocab: (vocab.get_level(), vocab.get_lesson_position()))
     return vocabs
 
-# def loop_janone() -> None:
-#     tokenizer = Tokenizer()
-#     sentences = WaniCollection.list_sentence_notes()
-#     for sentence in sentences:
-#         expression = StringUtils.strip_markup(sentence.get_expression())
-#         tokens = [token for token in tokenizer.tokenize(expression)]
-#         surfaces = [token.node.surface for token in tokens]
-#         something = 1
+def loop_janone() -> None:
+    tokenizer = Tokenizer()
+    sentences = WaniCollection.list_sentence_notes()
+    for sentence in sentences:
+        expression = StringUtils.strip_markup(sentence.get_expression())
+        tokens = [token for token in tokenizer.tokenize(expression)]
+        surfaces = [token.node.surface for token in tokens]
+        something = 1
 
 def update_kanji(_kanji_note: WaniKanjiNote) -> None:
     all_vocabulary: list[WaniVocabNote] = WaniCollection.fetch_all_vocab_notes()
