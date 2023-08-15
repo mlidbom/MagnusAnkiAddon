@@ -7,11 +7,11 @@ from note.wanivocabnote import WaniVocabNote
 from wanikani.wani_collection import WaniCollection
 
 def update_all() -> None:
-    all_vocabulary: list[WaniVocabNote] = WaniCollection.fetch_all_vocab_notes()
-    all_kanji: list[WaniKanjiNote] = WaniCollection.fetch_all_kanji_notes()
-    all_sentences = WaniCollection.list_sentence_notes()
-
     def update_all_inner() -> None:
+        all_vocabulary: list[WaniVocabNote] = WaniCollection.fetch_all_vocab_notes()
+        all_kanji: list[WaniKanjiNote] = WaniCollection.fetch_all_kanji_notes()
+        all_sentences = WaniCollection.list_sentence_notes()
+
         _update_sentences(all_sentences)
         _update_kanji(all_vocabulary, all_kanji)
         _update_vocab(all_vocabulary, all_kanji)
