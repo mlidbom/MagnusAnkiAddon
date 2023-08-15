@@ -1,39 +1,39 @@
 from typing import *
 
-from aqt.utils import tooltip
-
 from sysutils import kana_utils
 from sysutils.utils import StringUtils, UIUtils
 from note.wanikanjinote import WaniKanjiNote
 from note.wanivocabnote import WaniVocabNote
 from wanikani.wani_collection import WaniCollection
 
+def update_all() -> None:
+    all_vocabulary: list[WaniVocabNote] = WaniCollection.fetch_all_vocab_notes()
+    all_kanji: list[WaniKanjiNote] = WaniCollection.fetch_all_kanji_notes()
+    all_sentences = WaniCollection.list_sentence_notes()
+
+    def update_all_inner() -> None:
+        _update_sentences(all_sentences)
+        _update_kanji(all_vocabulary, all_kanji)
+        _update_vocab(all_vocabulary, all_kanji)
+
+    UIUtils.run_ui_action(update_all_inner)
+
+def update_sentences() -> None:
+    UIUtils.run_ui_action(lambda: _update_sentences(WaniCollection.list_sentence_notes()))
+
+def update_kanji(_kanji_note: WaniKanjiNote) -> None:
+    UIUtils.run_ui_action(lambda: _update_kanji(WaniCollection.fetch_all_vocab_notes(), WaniCollection.fetch_all_kanji_notes()))
+
+def update_vocab() -> None:
+    UIUtils.run_ui_action(lambda: _update_vocab(WaniCollection.fetch_all_vocab_notes(), WaniCollection.fetch_all_kanji_notes()))
+
 def _sort_vocab_list(vocabs: List[WaniVocabNote]) -> list[WaniVocabNote]:
     vocabs.sort(key=lambda vocab: (vocab.get_level(), vocab.get_lesson_position()))
     return vocabs
 
-def populate_sentence_parsed_words() -> None:
-    for sentence in WaniCollection.list_sentence_notes(): sentence.update_parsed_words()
-    tooltip("done")
 
-def update_kanji(_kanji_note: WaniKanjiNote) -> None:
-    all_vocabulary: list[WaniVocabNote] = WaniCollection.fetch_all_vocab_notes()
-    all_kanji: list[WaniKanjiNote] = WaniCollection.fetch_all_kanji_notes()
-    all_vocabulary = _sort_vocab_list(all_vocabulary)  # we want a specific order in the kanji entries etc
-    _update_kanji(all_vocabulary, all_kanji)
-    UIUtils.refresh()
-
-
-def update_all() -> None:
-    all_vocabulary: list[WaniVocabNote] = WaniCollection.fetch_all_vocab_notes()
-    all_kanji: list[WaniKanjiNote] = WaniCollection.fetch_all_kanji_notes()
-    all_vocabulary = _sort_vocab_list(all_vocabulary)  # we want a specific order in the kanji entries etc
-
-    _update_kanji(all_vocabulary, all_kanji)
-    _update_vocab(all_vocabulary, all_kanji)
-    UIUtils.refresh()
-    tooltip("done")
-
+def _update_sentences(sentences) -> None:
+    for sentence in sentences: sentence.update_parsed_words()
 
 def _update_vocab(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanjiNote]) -> None:
     def update_kanji_names() -> None:
@@ -91,7 +91,7 @@ def _update_kanji(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanji
                     </div>
                 </div>
                 '''
-
+    all_vocabulary = _sort_vocab_list(all_vocabulary)  # we want a specific order in the kanji entries etc
     kanji_dict: Dict[str, WaniKanjiNote] = {kanji.get_kanji(): kanji for kanji in all_kanji}
     kanji_vocab_dict: Dict[str, List[WaniVocabNote]] = {kanji.get_kanji(): [] for kanji in all_kanji}
 

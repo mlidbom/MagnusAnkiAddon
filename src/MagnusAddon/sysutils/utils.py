@@ -1,5 +1,5 @@
 import re
-from typing import List
+from typing import List, Callable
 
 import aqt
 from aqt import mw
@@ -7,6 +7,9 @@ from aqt.browser import Browser
 from aqt.browser.previewer import Previewer
 from aqt.editcurrent import EditCurrent
 from aqt.reviewer import RefreshNeeded
+from aqt.utils import tooltip
+
+from sysutils import timeutil
 
 
 class ListUtils:
@@ -46,6 +49,12 @@ class UIUtils:
         if len(edit_current) > 0:
             return edit_current[0].isActiveWindow()
         return False
+
+    @staticmethod
+    def run_ui_action(callback: Callable[[], None]) -> None:
+        time = timeutil.time_execution(callback)
+        UIUtils.refresh()
+        tooltip(f"done in {time}")
 
     @staticmethod
     def refresh() -> None:
