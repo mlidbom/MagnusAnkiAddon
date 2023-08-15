@@ -3,6 +3,7 @@ import os
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
+import _lib # noqa
 import hooks
 from _addon_copies import refresh_media_references # noqa
 

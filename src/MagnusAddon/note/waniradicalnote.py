@@ -1,4 +1,4 @@
-from _lib.wanikani_api import models
+from wanikani_api import models
 from anki.notes import Note
 from aqt import mw
 
