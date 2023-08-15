@@ -6,6 +6,7 @@ from note.sentencenote import SentenceNote
 from note.wanikanjinote import WaniKanjiNote
 from note.waniradicalnote import WaniRadicalNote
 from note.wanivocabnote import WaniVocabNote
+from sysutils.janomeutils import ParsedWord
 from sysutils.utils import StringUtils
 from wanikani.wani_constants import MyNoteFields, Wani, SentenceNoteFields
 
@@ -15,9 +16,11 @@ def setup_note_menu(note, root_menu, sel_clip, selection, view: AnkiWebView):
     note_lookup_menu = note_menu.addMenu("&Lookup")
     note_add_menu = note_menu.addMenu("&Add")
     note_set_menu = note_menu.addMenu("&Set")
+    note_hide_menu = note_menu.addMenu("&Hide")
+    note_restore_menu = note_menu.addMenu("&Restore")
 
     if sel_clip:
-        add_vocab_menu = note_add_menu.addMenu("&Vocab")
+        add_vocab_menu = note_set_menu.addMenu("&Vocab")
         add_ui_action(add_vocab_menu, "&1", lambda: note.set_field(MyNoteFields.Vocab1, sel_clip))
         add_ui_action(add_vocab_menu, "&2", lambda: note.set_field(MyNoteFields.Vocab2, sel_clip))
         add_ui_action(add_vocab_menu, "&3", lambda: note.set_field(MyNoteFields.Vocab3, sel_clip))
@@ -25,7 +28,9 @@ def setup_note_menu(note, root_menu, sel_clip, selection, view: AnkiWebView):
         add_ui_action(add_vocab_menu, "&5", lambda: note.set_field(MyNoteFields.Vocab5, sel_clip))
 
     if isinstance(note, SentenceNote):
-        def voc_clause(voc:str) -> str: return f'Vocab:re:\\b{voc}\\b OR Reading:re:\\b{voc}\\b'
+        def voc_clause(voc:ParsedWord) -> str:
+            return f'Vocab:re:\\b{voc.word}\\b OR Reading:re:\\b{voc.word}\\b'
+            #return f'(ParsedTypeOfSpeech:{voc.parts_of_speech} (Vocab:re:\\b{voc.word}\\b OR Reading:re:\\b{voc.word}\\b) )'
         add_lookup_action(note_lookup_menu,
                           "&Vocabulary words",
                           f"deck:*Vocab* deck:*Read* ({' OR '.join([voc_clause(voc) for voc in note.parse_words_from_expression()])})")
@@ -41,9 +46,9 @@ def setup_note_menu(note, root_menu, sel_clip, selection, view: AnkiWebView):
         add_sentence_lookup(note_lookup_menu, "&Sentences", sel_clip)
 
         if not kanji.get_mnemonics_override():
-            add_ui_action(note_menu, "&Hide mnemonic", lambda: kanji.override_meaning_mnemonic())
+            add_ui_action(note_hide_menu, "&Mnemonic", lambda: kanji.override_meaning_mnemonic())
         if kanji.get_mnemonics_override() == "-":
-            add_ui_action(note_menu, "&Restore mnemonic", lambda: kanji.restore_meaning_mnemonic())
+            add_ui_action(note_restore_menu, "&Mnemonic", lambda: kanji.restore_meaning_mnemonic())
         if not kanji.get_override_meaning():
             add_ui_action(note_menu, "Accept &meaning", lambda: kanji.set_override_meaning(format_kanji_meaning(kanji.get_kanji_meaning())))
 
@@ -56,9 +61,9 @@ def setup_note_menu(note, root_menu, sel_clip, selection, view: AnkiWebView):
         add_lookup_action(note_lookup_menu, "&Sentence", f"(deck:*sentence* deck:*listen*) ({SentenceNoteFields.ParsedWords}:re:\\b{note.get_vocab()}\\b OR Expression:*{note.get_vocab()}*)")
 
         if not vocab.get_mnemonics_override():
-            add_ui_action(note_menu, "&Hide mnemonic", lambda: vocab.override_meaning_mnemonic())
+            add_ui_action(note_hide_menu, "&Mnemonic", lambda: vocab.override_meaning_mnemonic())
         if vocab.get_mnemonics_override() == "-":
-            add_ui_action(note_menu, "&Restore mnemonic", lambda: vocab.restore_meaning_mnemonic())
+            add_ui_action(note_restore_menu, "&Mnemonic", lambda: vocab.restore_meaning_mnemonic())
         if not vocab.get_override_meaning():
             add_ui_action(note_menu, "Accept &meaning", lambda: vocab.set_override_meaning(format_vocab_meaning(vocab.get_vocab_meaning())))
 

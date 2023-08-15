@@ -1,6 +1,6 @@
 from typing import *
 
-from sysutils import kana_utils
+from sysutils import kana_utils, janomeutils
 from sysutils.utils import StringUtils, UIUtils
 from note.wanikanjinote import WaniKanjiNote
 from note.wanivocabnote import WaniVocabNote
@@ -15,8 +15,13 @@ def update_all() -> None:
         _update_sentences(all_sentences)
         _update_kanji(all_vocabulary, all_kanji)
         _update_vocab(all_vocabulary, all_kanji)
+        _update_vocab_parsed_parts_of_speech(all_vocabulary)
 
     UIUtils.run_ui_action(update_all_inner)
+
+def _update_vocab_parsed_parts_of_speech(all_vocabulary: list[WaniVocabNote]) -> None:
+    for vocab in all_vocabulary:
+        vocab.set_parsed_type_of_speech(janomeutils.get_word_parts_of_speech(vocab.get_vocab()))
 
 def update_sentences() -> None:
     UIUtils.run_ui_action(lambda: _update_sentences(WaniCollection.list_sentence_notes()))
@@ -30,7 +35,6 @@ def update_vocab() -> None:
 def _sort_vocab_list(vocabs: List[WaniVocabNote]) -> list[WaniVocabNote]:
     vocabs.sort(key=lambda vocab: (vocab.get_level(), vocab.get_lesson_position()))
     return vocabs
-
 
 def _update_sentences(sentences) -> None:
     for sentence in sentences: sentence.update_parsed_words()

@@ -98,7 +98,7 @@ class Wani:
         Kanji = "Kanji"
         Kanji_Name = "Kanji_Name"
         Reading_Exp = "Reading_Exp"
-
+        ParsedTypeOfSpeech = "ParsedTypeOfSpeech"
         Mnemonics_Override = "__override_mnemonic"
 
         component_subject_ids = "component_subject_ids"

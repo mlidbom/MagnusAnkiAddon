@@ -33,6 +33,7 @@ def build_local_menu(sub_menu: QMenu) -> None:
     add_menu_action(sub_menu, "Update &Kanji", local_note_updater.update_kanji)
     add_menu_action(sub_menu, "Update &Sentences", local_note_updater.update_sentences)
 
+
 def build_wani_menu(sub_menu: QMenu) -> None:
     add_menu_action(sub_menu, "Update Radicals", wani_note_updater.update_radical)
     add_menu_action(sub_menu, "Update Kanji", wani_note_updater.update_kanji)

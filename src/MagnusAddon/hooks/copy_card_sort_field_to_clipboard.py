@@ -1,28 +1,21 @@
 import re
-
 from anki.cards import Card
 from aqt import gui_hooks
 
 from sysutils import my_clipboard
+from sysutils.collections.recent_items import RecentItems
 from sysutils.utils import UIUtils
 
+recent_note_ids = RecentItems[int](2)
 
 def copy_previewer_sort_field_to_windows_clipboard(html:str, card: Card, type_of_display:str) -> str:
     if type_of_display == 'previewAnswer':
         copy_card_sort_field_to_clipboard(card)
     return html
 
-
-class CopyCardData:
-    note_id = 0
-
-
 def copy_card_sort_field_to_clipboard(card: Card) -> None:
-    if UIUtils.is_edit_current_open(): return
-
     note = card.note()
-    if note.id == CopyCardData.note_id: return
-    else: CopyCardData.note_id = note.id
+    if UIUtils.is_edit_current_open() or recent_note_ids.is_recent(note.id): return
 
     model = note.model()
     sort_field = model['sortf']

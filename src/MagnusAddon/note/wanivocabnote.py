@@ -39,6 +39,9 @@ class WaniVocabNote(WaniKanaVocabNote):
     def get_mnemonics_override(self) -> str: return super().get_field(Wani.VocabFields.Mnemonics_Override)
     def set_mnemonics_override(self, value: str) -> None: super().set_field(Wani.VocabFields.Mnemonics_Override, value)
 
+    def get_parsed_type_of_speech(self) -> str: return super().get_field(Wani.VocabFields.ParsedTypeOfSpeech)
+    def set_parsed_type_of_speech(self, value: str) -> None: super().set_field(Wani.VocabFields.ParsedTypeOfSpeech, value)
+
     def update_from_wani(self, wani_vocab: models.Vocabulary):
         super().update_from_wani(wani_vocab)
 
