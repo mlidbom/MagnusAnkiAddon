@@ -25,7 +25,7 @@ def setup_note_menu(note, root_menu, sel_clip, selection, view: AnkiWebView):
         add_ui_action(add_vocab_menu, "&5", lambda: note.set_field(MyNoteFields.Vocab5, sel_clip))
 
     if isinstance(note, SentenceNote):
-        def voc_clause(voc:str) -> str: return f'Vocab:re:\\b{voc}\\b'
+        def voc_clause(voc:str) -> str: return f'Vocab:re:\\b{voc}\\b OR Reading:re:\\b{voc}\\b'
         add_lookup_action(note_lookup_menu,
                           "&Vocabulary words",
                           f"deck:*Vocab* deck:*Read* ({' OR '.join([voc_clause(voc) for voc in note.parse_words_from_expression()])})")
