@@ -11,7 +11,7 @@ sys.path.append(f"c:\\Users\\magnu\\PycharmProjects\\MagnusAnkiAddon\\venv\\Lib\
 sys.path.append(f"c:\\Users\\magnu\\PycharmProjects\\MagnusAnkiAddon\\venv\\Lib\\site-packages\\win32\\")
 sys.path.append("c:\\Users\\magnu\\PycharmProjects\\MagnusAnkiAddon\\src\\MagnusAddon\\")
 
-import aqt
+import aqt # noqa
 
 if not os.environ.get("ANKI_IMPORT_ONLY"):
     aqt.run()
