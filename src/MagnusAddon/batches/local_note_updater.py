@@ -79,13 +79,14 @@ def _update_vocab(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanji
         for vocab in all_vocabulary:
             expression = vocab.get_vocab().strip()
             reading = vocab.get_reading().strip()
-            
+
             if expression == reading:
                 vocab.set_tag(Mine.Tags.UsuallyKanaOnly)
 
             if not reading:
                 if kana_utils.is_only_kana(expression):
                     vocab.set_reading(expression)
+                    vocab.set_tag(Mine.Tags.UsuallyKanaOnly)
 
     update_kanji_names()
     format_context_sentences()
