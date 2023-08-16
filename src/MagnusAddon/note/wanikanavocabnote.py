@@ -2,6 +2,7 @@ from wanikani_api import models
 from anki.notes import Note
 
 from note.waninote import WaniNote
+from sysutils.utils import StringUtils
 from wanikani.wani_constants import Wani
 
 
@@ -22,8 +23,12 @@ class WaniKanaVocabNote(WaniNote):
     def get_override_meaning(self) -> str: return super().get_field(Wani.KanaVocabFields.Override_meaning)
     def set_override_meaning(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Override_meaning, value)
 
-    def get_related_homophones(self) -> list[str]: return super().get_field(Wani.KanaVocabFields.Related_homophones).split(",")
-    def set_related_homophones(self, value: list[str]) -> None: super().set_field(Wani.KanaVocabFields.Related_homophones, ",".join(value))
+    def get_related_homophones(self) -> list[str]: return super().get_field(Wani.KanaVocabFields.Related_homophones).split(", ")
+    def set_related_homophones(self, value: list[str]) -> None:
+        list = f'''<ul class="homophone">
+{StringUtils.newline().join([f'   <li class="clipboard">{val}</li>' for val in value])}
+</ul>'''
+        super().set_field(Wani.KanaVocabFields.Related_homophones, list)
 
     def get_related_similar_meaning(self) -> str: return super().get_field(Wani.KanaVocabFields.Related_similar_meaning)
     def set_related_similar_meaning(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Related_similar_meaning, value)
