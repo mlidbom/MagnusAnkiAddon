@@ -1,7 +1,7 @@
 from aqt.webview import AnkiWebView
 
 from batches import local_note_updater
-from hooks.right_click_menu_utils import add_ui_action, add_lookup_action, add_sentence_lookup
+from hooks.right_click_menu_utils import add_ui_action, add_lookup_action, add_sentence_lookup, add_single_vocab_lookup_action
 from note.sentencenote import SentenceNote
 from note.wanikanjinote import WaniKanjiNote
 from note.waniradicalnote import WaniRadicalNote
@@ -37,6 +37,7 @@ def setup_note_menu(note, root_menu, sel_clip, selection, view: AnkiWebView):
 
     if isinstance(note, WaniRadicalNote):
         add_lookup_action(note_lookup_menu, "&Kanji", f"note:{Wani.NoteType.Kanji} {Wani.KanjiFields.Radicals_Names}:re:\\b{note.get_radical_name()}\\b")
+
     if isinstance(note, WaniKanjiNote):
         kanji = note
         add_lookup_action(note_lookup_menu, "&Vocabs", f"deck:*Vocab* deck:*Read* (Vocab:*{note.get_kanji()}*)")
@@ -55,9 +56,13 @@ def setup_note_menu(note, root_menu, sel_clip, selection, view: AnkiWebView):
         if selection:
             add_ui_action(note_add_menu, "&Primary vocab", lambda: add_kanji_primary_vocab(kanji, selection, view))
             add_ui_action(note_set_menu, "&Primary vocab", lambda: set_kanji_primary_vocab(kanji, selection, view))
+
     if isinstance(note, WaniVocabNote):
         vocab = note
         add_lookup_action(note_lookup_menu, "&Kanji", f"note:{Wani.NoteType.Kanji} ( {' OR '.join([f'{Wani.KanjiFields.Kanji}:{char}' for char in note.get_vocab()])} )")
+        if vocab.get_related_ergative_twin():
+            add_single_vocab_lookup_action(note_lookup_menu, "&Ergative twin", vocab.get_related_ergative_twin())
+
         add_lookup_action(note_lookup_menu, "&Sentence", f"(deck:*sentence* deck:*listen*) ({SentenceNoteFields.ParsedWords}:re:\\b{note.get_vocab()}\\b OR Expression:*{note.get_vocab()}*)")
 
         if not vocab.get_mnemonics_override():

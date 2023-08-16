@@ -25,10 +25,10 @@ class WaniKanaVocabNote(WaniNote):
 
     def get_related_homophones(self) -> list[str]: return super().get_field(Wani.KanaVocabFields.Related_homophones).split(", ")
     def set_related_homophones(self, value: list[str]) -> None:
-        list = f'''<ul class="homophone">
+        html = f'''<ul class="homophone">
 {StringUtils.newline().join([f'   <li class="clipboard">{val}</li>' for val in value])}
 </ul>'''
-        super().set_field(Wani.KanaVocabFields.Related_homophones, list)
+        super().set_field(Wani.KanaVocabFields.Related_homophones, html)
 
     def get_related_similar_meaning(self) -> str: return super().get_field(Wani.KanaVocabFields.Related_similar_meaning)
     def set_related_similar_meaning(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Related_similar_meaning, value)
