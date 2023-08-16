@@ -22,8 +22,8 @@ class WaniKanaVocabNote(WaniNote):
     def get_override_meaning(self) -> str: return super().get_field(Wani.KanaVocabFields.Override_meaning)
     def set_override_meaning(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Override_meaning, value)
 
-    def get_related_homophones(self) -> str: return super().get_field(Wani.KanaVocabFields.Related_homophones)
-    def set_related_homophones(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Related_homophones, value)
+    def get_related_homophones(self) -> list[str]: return super().get_field(Wani.KanaVocabFields.Related_homophones).split(",")
+    def set_related_homophones(self, value: list[str]) -> None: super().set_field(Wani.KanaVocabFields.Related_homophones, ",".join(value))
 
     def get_related_similar_meaning(self) -> str: return super().get_field(Wani.KanaVocabFields.Related_similar_meaning)
     def set_related_similar_meaning(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Related_similar_meaning, value)

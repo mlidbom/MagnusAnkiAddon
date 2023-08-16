@@ -88,9 +88,25 @@ def _update_vocab(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanji
                     vocab.set_reading(expression)
                     vocab.set_tag(Mine.Tags.UsuallyKanaOnly)
 
+
+    def populate_homophones() -> None:
+        reading_dict = dict[str, list[WaniVocabNote]]()
+        for vocab in all_vocabulary:
+            reading = vocab.get_reading()
+            if reading not in reading_dict: reading_dict[reading] = list[WaniVocabNote]()
+            reading_dict[reading].append(vocab)
+
+        for read, vocabs in reading_dict.items():
+            if len(vocabs) > 1:
+                for vocab in vocabs:
+                    homonyms = [voc.get_vocab() for voc in vocabs if voc is not vocab]
+                    vocab.set_related_homophones(homonyms)
+
+
     update_kanji_names()
     format_context_sentences()
     fill_empty_reading_for_uk_vocab()
+    populate_homophones()
 
 
 def _update_kanji(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanjiNote]):

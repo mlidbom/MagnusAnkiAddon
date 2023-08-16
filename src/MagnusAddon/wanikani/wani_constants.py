@@ -88,7 +88,7 @@ class Wani:
         Audio_g = "Audio_g"
         sort_id = "sort_id"
 
-        Related_homophones = "__homophones"
+        Related_homophones = "Homophones"
         Related_similar_meaning = "__similar_meaning"
         Related_derived_from = "__derivedFrom"
         Related_ergative_twin = "__ergative_twin"
@@ -98,6 +98,7 @@ class Wani:
         Kanji = "Kanji"
         Kanji_Name = "Kanji_Name"
         Reading_Exp = "Reading_Exp"
+        Homophones = "Homophones"
         ParsedTypeOfSpeech = "ParsedTypeOfSpeech"
         Mnemonics_Override = "__override_mnemonic"
 
