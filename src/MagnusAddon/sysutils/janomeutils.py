@@ -29,7 +29,7 @@ def extract_dictionary_forms(text: str) -> list[ParsedWord]:
     expression = StringUtils.strip_markup(text)
     tokens = [token for token in _tokenizer.tokenize(expression) if token.part_of_speech.split(',')[0] not in ['記号']]  # Exclude punctuation
     tokens = listutil.remove_duplicates_with_lambda(tokens, lambda token: token.base_form)
-    tokens = [token for token in tokens if token.base_form not in _excluded_items]
+#    tokens = [token for token in tokens if token.base_form not in _excluded_items]
 
     dictionary_forms = list[ParsedWord]()
     for index, token in enumerate(tokens):
@@ -47,7 +47,7 @@ def extract_dictionary_forms(text: str) -> list[ParsedWord]:
 #     "する": "為る",
 #     "こと": "事"
 # }
-_excluded_items = {"た", "ます", "たい"}
+#_excluded_items = {"た", "ます", "たい"}
 
 _part_of_speech_translation = {
     '*': '*',
@@ -107,5 +107,6 @@ _part_of_speech_translation = {
     '連体詞': 'adnominal-adjective',
     '連語': 'compound',
     '間投': 'interjection',
-    '非自立': 'dependent'
+    '非自立': 'dependent',
+    '動詞接続': 'verb-connective'
 }

@@ -25,5 +25,5 @@ def add_lookup_action(menu: QMenu, name: str, search: str):
 
 
 def add_sentence_lookup(menu, name: str, search):
-    add_lookup_action(menu, name, f"(deck:*sentence* deck:*listen*) (Expression:*{search}* OR Reading:*{search}*)")
+    add_lookup_action(menu, name, f"(deck:*sentence* deck:*listen*) (Expression:*{search}* OR Reading:*{search}* OR ParsedWords:*{search}*)")
 
