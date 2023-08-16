@@ -29,7 +29,7 @@ def setup_note_menu(note, root_menu, sel_clip, selection, view: AnkiWebView):
 
     if isinstance(note, SentenceNote):
         def voc_clause(voc:ParsedWord) -> str:
-            return f'Vocab:re:\\b{voc.word}\\b OR Reading:re:\\b{voc.word}\\b'
+            return f'(tag:_uk AND Reading:{voc.word})' if voc.is_kana_only() else f'Vocab:{voc.word}'
             #return f'(ParsedTypeOfSpeech:{voc.parts_of_speech} (Vocab:re:\\b{voc.word}\\b OR Reading:re:\\b{voc.word}\\b) )'
         add_lookup_action(note_lookup_menu,
                           "&Vocabulary words",

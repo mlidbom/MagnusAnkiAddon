@@ -20,6 +20,13 @@ class MyNote:
             self._note[field_name] = value
             self._note.flush()
 
+    def has_tag(self, tag:str) -> bool: return tag in self._note.tags
+
+    def set_tag(self, tag:str) -> None:
+        if not self.has_tag(tag):
+            self._note.tags.append(tag)
+            self._note.flush()
+
     def last_edit_time(self) -> int:
         return self._note.mod
 

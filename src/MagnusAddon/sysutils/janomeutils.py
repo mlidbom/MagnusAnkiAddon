@@ -1,5 +1,6 @@
 from janome.tokenizer import Tokenizer, Token
 
+from sysutils import kana_utils
 from sysutils.collections import listutil
 from sysutils.utils import StringUtils
 
@@ -7,6 +8,8 @@ class ParsedWord:
     def __init__(self, word: str, parts_of_speech: str) -> None:
         self.word = word
         self.parts_of_speech = parts_of_speech
+
+    def is_kana_only(self) -> bool: return kana_utils.is_only_kana(self.word)
 
 _tokenizer = Tokenizer()
 
@@ -31,8 +34,8 @@ def extract_dictionary_forms(text: str) -> list[ParsedWord]:
     dictionary_forms = list[ParsedWord]()
     for index, token in enumerate(tokens):
         dictionary_form = token.base_form
-        if dictionary_form in _replaced_items:
-            dictionary_form = _replaced_items[dictionary_form]
+#        if dictionary_form in _replaced_items:
+#            dictionary_form = _replaced_items[dictionary_form]
 
         parts_of_speech = translate_parts_of_speech(token)
         dictionary_forms.append(ParsedWord(dictionary_form, parts_of_speech))
@@ -40,10 +43,10 @@ def extract_dictionary_forms(text: str) -> list[ParsedWord]:
     return dictionary_forms
 
 
-_replaced_items: dict[str, str] = {
-    "する": "為る",
-    "こと": "事"
-}
+# _replaced_items: dict[str, str] = {
+#     "する": "為る",
+#     "こと": "事"
+# }
 _excluded_items = {"た", "ます", "たい"}
 
 _part_of_speech_translation = {

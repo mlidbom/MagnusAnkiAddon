@@ -108,6 +108,7 @@ class Mine:
     class Tags:
         Sentence = "_sentence"
         Wani = "_wani"
+        UsuallyKanaOnly = "_uk"
 
     class DeckFilters:
         Listen = "*listen*"
