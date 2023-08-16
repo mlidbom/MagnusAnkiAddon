@@ -1,12 +1,11 @@
 from aqt.webview import AnkiWebView
 
 from batches import local_note_updater
-from hooks.right_click_menu_utils import add_ui_action, add_lookup_action, add_sentence_lookup, add_single_vocab_lookup_action
+from hooks.right_click_menu_utils import add_ui_action, add_lookup_action, add_sentence_lookup, add_single_vocab_lookup_action, add_text_vocab_lookup
 from note.sentencenote import SentenceNote
 from note.wanikanjinote import WaniKanjiNote
 from note.waniradicalnote import WaniRadicalNote
 from note.wanivocabnote import WaniVocabNote
-from sysutils.janomeutils import ParsedWord
 from sysutils.utils import StringUtils
 from wanikani.wani_constants import MyNoteFields, Wani, SentenceNoteFields
 
@@ -28,12 +27,7 @@ def setup_note_menu(note, root_menu, sel_clip, selection, view: AnkiWebView):
         add_ui_action(add_vocab_menu, "&5", lambda: note.set_field(MyNoteFields.Vocab5, sel_clip))
 
     if isinstance(note, SentenceNote):
-        def voc_clause(voc:ParsedWord) -> str:
-            return f'(tag:_uk AND Reading:{voc.word})' if voc.is_kana_only() else f'Vocab:{voc.word}'
-            #return f'(ParsedTypeOfSpeech:{voc.parts_of_speech} (Vocab:re:\\b{voc.word}\\b OR Reading:re:\\b{voc.word}\\b) )'
-        add_lookup_action(note_lookup_menu,
-                          "&Vocabulary words",
-                          f"deck:*Vocab* deck:*Read* ({' OR '.join([voc_clause(voc) for voc in note.parse_words_from_expression()])})")
+        add_text_vocab_lookup(note_lookup_menu, "&Vocabulary words", note.get_active_expression())
 
     if isinstance(note, WaniRadicalNote):
         add_lookup_action(note_lookup_menu, "&Kanji", f"note:{Wani.NoteType.Kanji} {Wani.KanjiFields.Radicals_Names}:re:\\b{note.get_radical_name()}\\b")
