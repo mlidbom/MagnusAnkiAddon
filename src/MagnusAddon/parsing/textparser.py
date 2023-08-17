@@ -7,7 +7,7 @@ _tokenizer: Tokenizer = Tokenizer()
 
 
 def is_valid_word(word: str) -> bool:
-    result = _jamdict.lookup(word)
+    result = _jamdict.lookup(word, lookup_chars=False, lookup_ne=False)
     return len(result.entries) > 0
 
 def identify_words(sentence: str) -> list[ParsedWord]:
