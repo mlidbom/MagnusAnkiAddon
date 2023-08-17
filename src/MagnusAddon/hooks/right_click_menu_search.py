@@ -3,7 +3,7 @@ from urllib import parse
 from PyQt6.QtWidgets import QMenu
 from aqt.utils import openLink
 
-from hooks.right_click_menu_utils import add_sentence_lookup, add_lookup_action, add_text_vocab_lookup
+from hooks.right_click_menu_utils import add_sentence_lookup, add_lookup_action, add_text_vocab_lookup, add_text_vocab_lookup_v2
 from wanikani.wani_constants import Wani, Mine
 
 
@@ -21,7 +21,8 @@ def setup_anki_search_menu(search_menu: QMenu, sel_clip: str) -> None:
     add_lookup_action(search_anki_menu, "Vocab &Wildcard", f"deck:*Vocab* deck:*Read* (Vocab:*{sel_clip}* OR Reading:*{sel_clip}* OR Vocab_Meaning:*{sel_clip}*)")
     add_lookup_action(search_anki_menu, "&Radical", build_radical_search_string(sel_clip))
     add_sentence_lookup(search_anki_menu, "&Sentence", sel_clip)
-    add_text_vocab_lookup(search_anki_menu, "Text &words", sel_clip)
+    add_text_vocab_lookup(search_anki_menu, "Text &words v1", sel_clip)
+    add_text_vocab_lookup_v2(search_anki_menu, "Text &words v2", sel_clip)
     add_lookup_action(search_anki_menu, "Listen", f"deck:{Mine.DeckFilters.Listen} {sel_clip}")
 
 
