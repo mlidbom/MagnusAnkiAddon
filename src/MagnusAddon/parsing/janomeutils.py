@@ -20,8 +20,6 @@ def translate_parts_of_speech(token: Token) -> str:
 def get_word_parts_of_speech(word: str) -> str:
     tokens = list(_tokenizer.tokenize(word))
 
-    # if len(tokens) != 1:
-    #     raise ValueError(f"'{word}' is not a single word or it's not recognized.")
 
     return translate_parts_of_speech(tokens[0])
 
@@ -29,25 +27,15 @@ def extract_dictionary_forms(text: str) -> list[ParsedWord]:
     expression = StringUtils.strip_markup(text)
     tokens = [token for token in _tokenizer.tokenize(expression) if token.part_of_speech.split(',')[0] not in ['記号']]  # Exclude punctuation
     tokens = listutil.remove_duplicates_with_lambda(tokens, lambda token: token.base_form)
-#    tokens = [token for token in tokens if token.base_form not in _excluded_items]
 
     dictionary_forms = list[ParsedWord]()
     for index, token in enumerate(tokens):
         dictionary_form = token.base_form
-#        if dictionary_form in _replaced_items:
-#            dictionary_form = _replaced_items[dictionary_form]
 
         parts_of_speech = translate_parts_of_speech(token)
         dictionary_forms.append(ParsedWord(dictionary_form, parts_of_speech))
 
     return dictionary_forms
-
-
-# _replaced_items: dict[str, str] = {
-#     "する": "為る",
-#     "こと": "事"
-# }
-#_excluded_items = {"た", "ます", "たい"}
 
 _part_of_speech_translation = {
     '*': '*',
