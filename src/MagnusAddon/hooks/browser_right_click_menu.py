@@ -9,8 +9,7 @@ def setup_browser_context_menu(browser: aqt.browser.Browser, menu: QMenu) -> Non
     selected_cards = browser.selected_cards()
 
     if len(selected_cards) == 1:
-        action = menu.addAction("Prioritize selected cards")
-        action.triggered.connect(lambda: wani_queue_manager.prioritize_selected_cards(selected_cards))
+        action = menu.addAction("Prioritize selected cards", lambda: wani_queue_manager.prioritize_selected_cards(selected_cards))
 
 
 def init() -> None:

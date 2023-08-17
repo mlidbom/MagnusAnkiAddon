@@ -7,6 +7,7 @@ import _lib # noqa
 import hooks
 from _addon_copies import refresh_media_references # noqa
 
+hooks.browser_right_click_menu.init()
 hooks.editor_buttons.init()
 hooks.tools_menu.init()
 hooks.suppress_audio_on_typing.init()
