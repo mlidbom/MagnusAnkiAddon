@@ -6,7 +6,6 @@ def is_valid_word(word: str, jmd: Jamdict) -> bool:
     result = jmd.lookup(word)
     return len(result.entries) > 0
 
-
 def identify_words(sentence: str) -> list[str]:
     jamdict = Jamdict()
     tokens = [token.surface for token in Tokenizer().tokenize(sentence)]
