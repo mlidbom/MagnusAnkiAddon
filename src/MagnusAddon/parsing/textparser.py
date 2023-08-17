@@ -27,17 +27,18 @@ def identify_words(sentence: str) -> list[ParsedWord]:
 
     return potential_words
 
-def identify_words2(sentence: str) -> list[str]:
+def identify_words2(sentence: str) -> list[ParsedWord]:
     tokens: list[Token] = [token for token in _tokenizer.tokenize(sentence) if not token.part_of_speech.startswith("記号")]
     potential_words = list[str]()
 
     for token_index in range(len(tokens)):
         token = tokens[token_index]
-        if is_valid_word(token.surface) and token.surface not in potential_words:
-            potential_words.append(token.surface)
 
-        if is_valid_word(token.base_form) and token.base_form not in potential_words:
-            potential_words.append(token.base_form)
+        if not is_valid_word(token.base_form): raise Exception("WTF?")
+        if token.base_form not in potential_words: potential_words.append(token.base_form)
+
+        if not is_valid_word(token.surface): continue
+        if token.surface not in potential_words: potential_words.append(token.surface)
 
         word_combination: str = token.surface
         for lookahead_index in range(token_index + 1, len(tokens)):
@@ -53,7 +54,7 @@ def identify_words2(sentence: str) -> list[str]:
                         potential_words.append(base_form_combination)
                 break
 
-    return potential_words
+    return [ParsedWord(word, "") for word in potential_words]
 
 def identify_first_word(sentence: str) -> str:
 
