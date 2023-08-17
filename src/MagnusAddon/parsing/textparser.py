@@ -2,7 +2,7 @@ from janome.tokenizer import Tokenizer, Token
 from jamdict import Jamdict
 from parsing.janomeutils import ParsedWord
 
-_jamdict = Jamdict()
+_jamdict = Jamdict(memory_mode=True)
 _tokenizer: Tokenizer = Tokenizer()
 
 

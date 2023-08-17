@@ -25,7 +25,7 @@ def test_identify_words(sentence: str, expected_output: list[ParsedWord]) -> Non
     ("これをください。",
      [ParsedWord('これ', 'noun,pronoun,general,*'),
       ParsedWord('を', 'particle,case-particle,general,*'),
-      ParsedWord('くださる', 'verb,independent,*,*')]),  # BAD
+      ParsedWord('くださる', 'verb,independent,*,*')]),  # BAD wrong word, correct word missing
     ("ハート形",
      [ParsedWord('ハート', 'noun,general,*,*'),
       ParsedWord('形', 'noun,suffix,general,*')]),
@@ -34,7 +34,10 @@ def test_identify_words(sentence: str, expected_output: list[ParsedWord]) -> Non
       ParsedWord('が', 'particle,case-particle,general,*'),
       ParsedWord('行く', 'verb,independent,*,*'),
       ParsedWord('ます', 'auxiliary-verb,*,*,*'),
-      ParsedWord('う', 'auxiliary-verb,*,*,*')])
+      ParsedWord('う', 'auxiliary-verb,*,*,*')]),
+    ("ハート形",
+     [ParsedWord('ハート', 'noun,general,*,*'),
+      ParsedWord('形', 'noun,suffix,general,*')]) #BAD compound word missing
 ])
 def test_extract_dictionary_forms(sentence: str, expected_output: list[ParsedWord]) -> None:
     result = extract_dictionary_forms(sentence)
@@ -48,10 +51,7 @@ def test_extract_dictionary_forms(sentence: str, expected_output: list[ParsedWor
     ("走って", "走る"),
     ("走り回る", "走り回る"),
     ("走って", "走る")
-    # ... Add more test cases as needed
 ])
 def test_identify_word(sentence: str, expected_output: str) -> None:
     result = identify_first_word(sentence)
-    something = ParsedWord("aoeu", "aoeu")
-    print(result)
     assert result == expected_output
