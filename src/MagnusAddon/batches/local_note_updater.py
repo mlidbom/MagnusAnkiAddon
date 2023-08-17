@@ -1,6 +1,7 @@
 from typing import *
 
-from sysutils import kana_utils, janomeutils
+from sysutils import kana_utils
+from parsing import janomeutils
 from sysutils.utils import StringUtils, UIUtils
 from note.wanikanjinote import WaniKanjiNote
 from note.wanivocabnote import WaniVocabNote

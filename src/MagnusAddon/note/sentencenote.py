@@ -1,8 +1,9 @@
 from anki.notes import Note
 
 from note.mynote import MyNote
-from sysutils import timeutil, janomeutils
-from sysutils.janomeutils import ParsedWord
+from sysutils import timeutil
+from parsing import janomeutils
+from parsing.janomeutils import ParsedWord
 from wanikani.wani_constants import SentenceNoteFields
 
 

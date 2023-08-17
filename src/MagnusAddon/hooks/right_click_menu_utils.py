@@ -4,8 +4,8 @@ import aqt
 from PyQt6.QtWidgets import QMenu
 from aqt.browser import Browser
 
-from sysutils import janomeutils
-from sysutils.janomeutils import ParsedWord
+from parsing import janomeutils
+from parsing.janomeutils import ParsedWord
 from sysutils.utils import UIUtils
 from wanikani.wani_constants import Wani
 
