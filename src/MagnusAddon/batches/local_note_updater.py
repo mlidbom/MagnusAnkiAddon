@@ -117,7 +117,7 @@ def _update_kanji(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanji
                     <div>
                     
                     {StringUtils.newline().join([f"""
-                    <div class="entry">
+                    <div class="kanjiVocabEntry">
                         <span class="kanji clipboard">{vocab.get_vocab()}</span>
                         (<span class="clipboard vocabReading">{note.tag_readings_in_string(vocab.get_reading(), lambda read:  f'<span class="kanjiReading">{read}</span>' )}</span>)
                         <span class="meaning"> {StringUtils.strip_markup(vocab.get_vocab_meaning())}</span>
