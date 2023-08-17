@@ -27,6 +27,11 @@ class ParsedWord:
 
 _tokenizer = Tokenizer()
 
+def is_noise_token(token: Token) -> bool:
+    if token.part_of_speech.split(',')[0] in ['記号']:
+        return True
+    return False
+
 def translate_parts_of_speech(token: Token) -> str:
     translated_pos = [_part_of_speech_translation[pos] for pos in token.part_of_speech.split(',')]
     return ','.join(translated_pos)

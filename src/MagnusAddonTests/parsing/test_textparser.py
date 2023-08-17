@@ -25,32 +25,36 @@ from parsing.textparser import ParsedWord, identify_first_word, identify_words2
       ParsedWord('ましょ', ''),
       ParsedWord('ましょう', ''),
       ParsedWord('う', '')]),
-("１人でいる時間がこれほどまでに長く感じるとは",
- [ParsedWord('１', ''),
-  ParsedWord('１人', ''),
-  ParsedWord('１人で', ''),
-  ParsedWord('人', ''),
-  ParsedWord('で', ''),
-  ParsedWord('いる', ''),
-  ParsedWord('時間', ''),
-  ParsedWord('が', ''),
-  ParsedWord('これ', ''),
-  ParsedWord('これほど', ''),
-  ParsedWord('ほど', ''),
-  ParsedWord('まで', ''),
-  ParsedWord('までに', ''),
-  ParsedWord('に', ''),
-  ParsedWord('長い', ''),
-  ParsedWord('感じる', ''),
-  ParsedWord('と', ''),
-  ParsedWord('とは', ''),
-  ParsedWord('は', '')])
+    ("１人でいる時間がこれほどまでに長く感じるとは",
+     [ParsedWord('１', ''),
+      ParsedWord('１人', ''),
+      ParsedWord('１人で', ''),
+      ParsedWord('人', ''),
+      ParsedWord('で', ''),
+      ParsedWord('いる', ''),
+      ParsedWord('時間', ''),
+      ParsedWord('が', ''),
+      ParsedWord('これ', ''),
+      ParsedWord('これほど', ''),
+      ParsedWord('ほど', ''),
+      ParsedWord('まで', ''),
+      ParsedWord('までに', ''),
+      ParsedWord('に', ''),
+      ParsedWord('長い', ''),
+      ParsedWord('感じる', ''),
+      ParsedWord('と', ''),
+      ParsedWord('とは', ''),
+      ParsedWord('は', '')]),
 ])
 def test_identify_words(sentence: str, expected_output: list[ParsedWord]) -> None:
     result = identify_words2(sentence)
     print(result)
     assert result == expected_output
 
+def test_ignores_noise_characters() -> None:
+    result = identify_words2(".,:;/|。、ー")
+    print(result)
+    assert result == [ParsedWord("ー","")]
 
 @pytest.mark.parametrize('sentence, expected_output', [
     ("走る", [ParsedWord('走る', 'verb,independent,*,*')]),

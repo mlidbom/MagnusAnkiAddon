@@ -1,6 +1,6 @@
 from janome.tokenizer import Tokenizer, Token
 from jamdict import Jamdict
-from parsing.janomeutils import ParsedWord
+from parsing.janomeutils import ParsedWord, is_noise_token
 
 _jamdict = Jamdict(memory_mode=True)
 _tokenizer: Tokenizer = Tokenizer()
@@ -28,17 +28,19 @@ def identify_words(sentence: str) -> list[ParsedWord]:
     return potential_words
 
 def identify_words2(sentence: str) -> list[ParsedWord]:
-    tokens: list[Token] = [token for token in _tokenizer.tokenize(sentence) if not token.part_of_speech.startswith("記号")]
+    tokens: list[Token] = [token for token in _tokenizer.tokenize(sentence) if not is_noise_token(token)]
     potential_words = list[str]()
 
     for token_index in range(len(tokens)):
         token = tokens[token_index]
 
-        if not is_valid_word(token.base_form): raise Exception("WTF?")
-        if token.base_form not in potential_words: potential_words.append(token.base_form)
+        if not is_valid_word(token.base_form): continue # the is_noise_token method does not actually work as of yet so we do this.
+        if token.base_form not in potential_words:
+            potential_words.append(token.base_form)
 
         if not is_valid_word(token.surface): continue
-        if token.surface not in potential_words: potential_words.append(token.surface)
+        if token.surface not in potential_words:
+            potential_words.append(token.surface)
 
         word_combination: str = token.surface
         for lookahead_index in range(token_index + 1, len(tokens)):
