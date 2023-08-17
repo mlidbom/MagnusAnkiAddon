@@ -5,8 +5,11 @@ from parsing.textparser import ParsedWord, identify_first_word, identify_words2
 
 
 @pytest.mark.parametrize('sentence, expected_output', [
-    ("走る", [ParsedWord('走る', '')]),
-    ("走って", [ParsedWord('走る', ''), ParsedWord('て', '')]),
+    ("走る",
+     [ParsedWord('走る', '')]),
+    ("走って",
+     [ParsedWord('走る', ''),
+      ParsedWord('て', '')]),
     ("これをください。",
      [ParsedWord('これ', ''),
       ParsedWord('を', ''),
@@ -57,7 +60,8 @@ def test_ignores_noise_characters() -> None:
     assert result == [ParsedWord("ー","")]
 
 @pytest.mark.parametrize('sentence, expected_output', [
-    ("走る", [ParsedWord('走る', 'verb,independent,*,*')]),
+    ("走る",
+     [ParsedWord('走る', 'verb,independent,*,*')]),
     ("走って",
      [ParsedWord('走る', 'verb,independent,*,*'),
       ParsedWord('て', 'particle,conjunctive,*,*')]),
