@@ -35,8 +35,8 @@ class DictLookup:
 
     _jamdict = Jamdict(memory_mode=True)
 
-    def __init__(self, entries: Sequence[JMDEntry]):
-        self.entries = DictEntry.create(entries)
+    def __init__(self, entries: list[DictEntry]):
+        self.entries = entries
 
     def found_words_count(self) -> int: return len(self.entries)
     def found_words(self) -> bool: return len(self.entries) > 0
@@ -46,48 +46,58 @@ class DictLookup:
                                          if ent.is_kana_only()))
 
     @classmethod
-    def lookup_word_shallow(cls, word: str) -> 'DictLookup':
-        return DictLookup(cls._jamdict.lookup(word, lookup_chars=False, lookup_ne=False).entries)
+    def lookup_vocab_word_or_name(cls, word: WaniVocabNote) -> 'DictLookup':
+        return cls.lookup_word_or_name(word.get_vocab(), word.get_readings())
 
     @classmethod
-    def lookup_vocab_word_shallow_lookup(cls, word: WaniVocabNote) -> list[DictEntry]:
+    def lookup_word_or_name(cls, word: str, readings: list[str]) -> 'DictLookup':
+        result = cls.try_lookup_word_or_name(word, readings)
+        if not result.found_words():
+            raise KeyError("No matching entries")
+        return result
+
+    @classmethod
+    def try_lookup_word_or_name(cls, word: str, readings: list[str]) -> 'DictLookup':
         def kanji_is_default_form() -> list[DictEntry]:
-            return [ent for ent in lookup.entries
+            return [ent for ent in lookup
                     if any(ent.has_matching_kana_form(reading) for reading in readings)
                     and ent.kanji_forms()
-                    and vocab == ent.kanji_forms()[0]]
+                    and word == ent.kanji_forms()[0]]
 
         def any_kanji_reading_matches() -> list[DictEntry]:
-            return [ent for ent in lookup.entries
+            return [ent for ent in lookup
                     if any(ent.has_matching_kana_form(reading) for reading in readings)
                     and ent.kanji_forms()
-                    and vocab in ent.kanji_forms()]
+                    and word in ent.kanji_forms()]
 
         def kana_only_matches() -> list[DictEntry]:
-            return [ent for ent in lookup.entries
+            return [ent for ent in lookup
                     if any(ent.has_matching_kana_form(reading) for reading in readings)
                     and ent.is_kana_only()]
 
-        vocab = word.get_vocab()
-        readings = word.get_readings()
-        lookup = cls.lookup_word_shallow(vocab)
-        if not lookup.entries:
-            lookup = cls._lookup_name(vocab)
+        lookup = cls._lookup_word_shallow(word)
+        if not lookup:
+            lookup = cls._lookup_name(word)
         matching = kanji_is_default_form()
         if not any(matching):
-            if kana_utils.is_only_kana(vocab):
+            if kana_utils.is_only_kana(word):
                 matching = kana_only_matches()
             else:
                 matching = any_kanji_reading_matches()
 
-        if not any(matching):
-            raise KeyError("No matching entries")
-
-        return matching
+        return DictLookup(matching)
 
     @classmethod
-    def _lookup_name(cls, word: str) -> 'DictLookup':
-        return DictLookup(cls._jamdict.lookup(word).names)
+    def lookup_word_shallow(cls, word: str) -> 'DictLookup':
+        return DictLookup(cls._lookup_word_shallow(word))
+
+    @classmethod
+    def _lookup_word_shallow(cls, word: str) -> 'list[DictEntry]':
+        return DictEntry.create(cls._jamdict.lookup(word, lookup_chars=False, lookup_ne=False).entries)
+
+    @classmethod
+    def _lookup_name(cls, word: str) -> list[DictEntry]:
+        return DictEntry.create(cls._jamdict.lookup(word).names)
 
 
 def is_valid_word(word: str) -> bool:

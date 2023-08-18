@@ -13,7 +13,7 @@ def vocab_mock(word: str, readings: list[str]) -> WaniVocabNote:
 def test_something() -> None:
     #print(jam.lookup("下さい"))
     #print(jam.lookup("くださる"))
-    lookup = DictLookup.lookup_word_shallow("ましょう")
+    lookup = DictLookup._lookup_word_shallow("ましょう")
     print(lookup)
 
 @pytest.mark.parametrize('word, readings', [
@@ -22,9 +22,9 @@ def test_something() -> None:
 ])
 def test_uk(word: str, readings: list[str]) -> None:
     mock_instance = vocab_mock(word, readings)
-    dict_entry = DictLookup.lookup_vocab_word_shallow_lookup(mock_instance)
-    assert all(ent.is_kana_only() for ent in dict_entry)
-    assert len(dict_entry) == 1
+    dict_entry = DictLookup.lookup_vocab_word_or_name(mock_instance)
+    assert dict_entry.is_uk()
+    assert dict_entry.found_words_count() == 1
 
 @pytest.mark.parametrize('word, readings', [
     ("毎月", ["まいつき","まいげつ"]),
@@ -32,8 +32,8 @@ def test_uk(word: str, readings: list[str]) -> None:
 ])
 def test_multi_readings(word: str, readings: list[str]) -> None:
     mock_instance = vocab_mock(word, readings)
-    dict_entry = DictLookup.lookup_vocab_word_shallow_lookup(mock_instance)
-    assert len(dict_entry) == 1
+    dict_entry = DictLookup.lookup_vocab_word_or_name(mock_instance)
+    assert dict_entry.found_words_count() == 1
 
 @pytest.mark.parametrize('word, readings', [
     ("元", ["もと"]),
@@ -41,8 +41,8 @@ def test_multi_readings(word: str, readings: list[str]) -> None:
 ])
 def test_multi_matches(word: str, readings: list[str]) -> None:
     mock_instance = vocab_mock(word, readings)
-    dict_entry = DictLookup.lookup_vocab_word_shallow_lookup(mock_instance)
-    assert len(dict_entry) > 1
+    dict_entry = DictLookup.lookup_vocab_word_or_name(mock_instance)
+    assert dict_entry.found_words_count() > 1
 
 @pytest.mark.parametrize('word, readings', [
     ("に", ["に"]),
@@ -51,15 +51,15 @@ def test_multi_matches(word: str, readings: list[str]) -> None:
 ])
 def test_missing(word: str, readings: list[str]) -> None:
     mock_instance = vocab_mock(word, readings)
-    dict_entry = DictLookup.lookup_vocab_word_shallow_lookup(mock_instance)
-    assert len(dict_entry) == 1
+    dict_entry = DictLookup.lookup_vocab_word_or_name(mock_instance)
+    assert dict_entry.found_words_count() == 1
 
 @pytest.mark.parametrize('word, readings', [
     ("田代島", ["たしろじま"])
 ])
 def test_names(word: str, readings: list[str]) -> None:
     mock_instance = vocab_mock(word, readings)
-    dict_entry = DictLookup.lookup_vocab_word_shallow_lookup(mock_instance)
-    assert len(dict_entry) == 1
+    dict_entry = DictLookup.lookup_vocab_word_or_name(mock_instance)
+    assert dict_entry.found_words_count() == 1
 
 

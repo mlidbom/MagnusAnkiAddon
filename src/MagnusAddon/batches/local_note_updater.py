@@ -42,12 +42,12 @@ def update_vocab_pos_information() -> None:
         all_vocabulary: list[WaniVocabNote] = WaniCollection.fetch_all_vocab_notes()
         for vocab in all_vocabulary:
             try:
-                dict_entries = DictLookup.lookup_vocab_word_shallow_lookup(vocab)
-                hits = len(dict_entries)
+                lookup = DictLookup.lookup_vocab_word_or_name(vocab)
+                hits = lookup.found_words_count()
                 if hits > 1: multi.append(vocab)
                 if hits == 1: single.append(vocab)
 
-                if any([ent for ent in dict_entries if ent.is_kana_only()]):
+                if lookup.is_uk():
                     uk.append(vocab)
                     if hits > 1:
                         something = 1
