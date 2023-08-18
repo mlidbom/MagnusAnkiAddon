@@ -1,8 +1,22 @@
 import pytest
+from janome.tokenizer import Tokenizer
 
 from parsing.janomeutils import extract_dictionary_forms
 from parsing.textparser import ParsedWord, identify_first_word, identify_words2
 
+_tokenizer = Tokenizer()
+
+#TODO: See if we can't find a way to parse suru out of sentences such that the verbalizing suffix can be
+# handled separately from the stand-alone word.
+def test_suffix_suru_recognized_as_suffix() -> None:
+    result = list(_tokenizer.tokenize("心配する"))
+    print(result)
+    assert result == "NOT HAPPENING"
+
+def test_stand_alone_suru_recognized_as_stand_alone() -> None:
+    result = list(_tokenizer.tokenize("する"))
+    print(result)
+    assert result == "NOT HAPPENING"
 
 @pytest.mark.parametrize('sentence, expected_output', [
     ("走る",

@@ -10,11 +10,16 @@ def vocab_mock(word: str, readings: list[str]) -> WaniVocabNote:
     mock_instance.get_readings.return_value = readings
     return mock_instance
 
-def test_something() -> None:
-    #print(jam.lookup("下さい"))
-    #print(jam.lookup("くださる"))
-    lookup = DictLookup._lookup_word_shallow("ましょう")
-    print(lookup)
+#TODO: See if we can find a way to parse suru out of sentences such that the verbalizing suffix can be
+# handled separately from the stand-alone word. The pos information from Janome might allow this
+# @pytest.mark.parametrize('word, readings', [
+#     ("する", ["する"])
+# ])
+# def test_separate_usages_verb_suffix(word: str, readings: list[str]) -> None:
+#     mock_instance = vocab_mock(word, readings)
+#     dict_entry = DictLookup.lookup_vocab_word_or_name(mock_instance)
+#     assert dict_entry.is_uk()
+#     assert dict_entry.found_words_count() == 1
 
 @pytest.mark.parametrize('word, readings', [
     ("為る", ["する"]),
