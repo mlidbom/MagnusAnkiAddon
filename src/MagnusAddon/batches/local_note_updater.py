@@ -55,12 +55,20 @@ def update_vocab_pos_information() -> None:
                 missing.append(vocab)
 
     UIUtils.run_ui_action(inner)
-    tooltip(f"""
-    single: {len(single)}<br>
-    multi: {len(multi)}<br>
-    missing: {len(missing)}<br>
-    uk: {len(uk)}<br>
-    """)
+    message = f"""
+    single: {len(single)}
+    multi: {len(multi)}
+    missing: {len(missing)}
+    uk: {len(uk)}
+    """
+    tooltip(message.replace(StringUtils.newline(), "<br>"))
+    print(message)
+
+    print("missing")
+    for mis in missing: print(f"""{mis.get_vocab()}: {",".join(mis.get_readings())}""")
+    print(StringUtils.newline() + StringUtils.newline() + StringUtils.newline())
+    print("multi")
+    for mul in multi: print(f"""{mul.get_vocab()}: {",".join(mul.get_readings())}""")
 
 def _update_vocab_parsed_parts_of_speech(all_vocabulary: list[WaniVocabNote]) -> None:
     for vocab in all_vocabulary:
