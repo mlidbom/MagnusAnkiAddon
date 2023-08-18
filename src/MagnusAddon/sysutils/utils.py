@@ -46,7 +46,7 @@ class StringUtils:
         return [char for char in string if not char.isspace()]
 
     @staticmethod
-    def extract_comma_separated_values(string: str) -> List:
+    def extract_comma_separated_values(string: str) -> list[str]:
         result = [item.strip() for item in string.split(",")]
         return [] + result
 

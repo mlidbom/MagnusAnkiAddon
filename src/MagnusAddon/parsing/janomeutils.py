@@ -1,39 +1,20 @@
-from typing import Any
-
-from janome.tokenizer import Tokenizer, Token
-
-from sysutils import kana_utils
+from janome.tokenizer import Token
+from parsing.janome_extensions.parsed_word import ParsedWord
+from parsing.janome_extensions.token_ext import TokenExt
+from parsing.janome_extensions.tokenizer_ext import TokenizerExt
 from sysutils.collections import listutil
 from sysutils.utils import StringUtils
-from parsing.janomeutils_part_of_speech_translation import _part_of_speech_translation
+from parsing.janome_extensions.janomeutils_part_of_speech_translation import part_of_speech_translation
 
-class ParsedWord:
-    def __init__(self, word: str, parts_of_speech: str) -> None:
-        self.word = word
-        self.parts_of_speech = parts_of_speech
-
-    def is_kana_only(self) -> bool: return kana_utils.is_only_kana(self.word)
-
-    def __repr__(self) -> str:
-        return f"ParsedWord('{self.word}', '{self.parts_of_speech}')"
-
-    def __eq__(self, other: Any) -> bool:
-        if isinstance(other, ParsedWord):
-            return self.word == other.word and self.parts_of_speech == other.parts_of_speech
-        return False
-
-    def __hash__(self) -> int:
-        return hash((self.word, self.parts_of_speech))
-
-_tokenizer = Tokenizer()
+_tokenizer = TokenizerExt()
 
 def is_noise_token(token: Token) -> bool:
     if token.part_of_speech.split(',')[0] in ['記号']:
         return True
     return False
 
-def translate_parts_of_speech(token: Token) -> str:
-    translated_pos = [_part_of_speech_translation[pos] for pos in token.part_of_speech.split(',')]
+def translate_parts_of_speech(token: TokenExt) -> str:
+    translated_pos = [part_of_speech_translation[pos] for pos in token.part_of_speech.split(',')]
     return ','.join(translated_pos)
 
 def get_word_parts_of_speech(word: str) -> str:
@@ -44,7 +25,7 @@ def get_word_parts_of_speech(word: str) -> str:
 
 def extract_dictionary_forms(text: str) -> list[ParsedWord]:
     expression = StringUtils.strip_markup(text)
-    tokens = [token for token in _tokenizer.tokenize(expression) if token.part_of_speech.split(',')[0] not in ['記号']]  # Exclude punctuation
+    tokens = [token for token in _tokenizer.tokenize(expression) if token.parts_of_speech.level1 not in ['記号']]  # Exclude punctuation
     tokens = listutil.remove_duplicates_with_lambda(tokens, lambda token: token.base_form)
 
     dictionary_forms = list[ParsedWord]()

@@ -1,4 +1,4 @@
-_part_of_speech_translation = {
+part_of_speech_translation = {
     '*': '*',
     'その他': 'others',
     'アルファベット': 'alphabet',
