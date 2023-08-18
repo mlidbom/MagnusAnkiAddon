@@ -1,5 +1,6 @@
+from typing import Sequence
+
 from jamdict.jmdict import JMDEntry
-from jamdict.util import LookupResult
 from janome.tokenizer import Tokenizer, Token
 from jamdict import Jamdict
 
@@ -18,8 +19,8 @@ class DictEntry:
                                                   if 'word usually written using kana alone' in sense.misc))
 
     @classmethod
-    def create(cls, result: LookupResult) -> list['DictEntry']:
-        return [cls(entry) for entry in result.entries]
+    def create(cls, entries: Sequence[JMDEntry]) -> list['DictEntry']:
+        return [cls(entry) for entry in entries]
 
     def has_matching_kana_form(self, search: str) -> bool:
         search = kana_utils.to_hiragana(search)
@@ -34,9 +35,8 @@ class DictLookup:
 
     _jamdict = Jamdict(memory_mode=True)
 
-    def __init__(self, result: LookupResult):
-        self.result = result
-        self.entries = DictEntry.create(result)
+    def __init__(self, entries: Sequence[JMDEntry]):
+        self.entries = DictEntry.create(entries)
 
     def found_words_count(self) -> int: return len(self.entries)
     def found_words(self) -> bool: return len(self.entries) > 0
@@ -47,7 +47,7 @@ class DictLookup:
 
     @classmethod
     def lookup_word_shallow(cls, word: str) -> 'DictLookup':
-        return DictLookup(cls._jamdict.lookup(word, lookup_chars=False, lookup_ne=False))
+        return DictLookup(cls._jamdict.lookup(word, lookup_chars=False, lookup_ne=False).entries)
 
     @classmethod
     def lookup_vocab_word_shallow_lookup(cls, word: WaniVocabNote) -> list[DictEntry]:
@@ -71,6 +71,8 @@ class DictLookup:
         vocab = word.get_vocab()
         readings = word.get_readings()
         lookup = cls.lookup_word_shallow(vocab)
+        if not lookup.entries:
+            lookup = cls._lookup_name(vocab)
         matching = kanji_is_default_form()
         if not any(matching):
             if kana_utils.is_only_kana(vocab):
@@ -84,12 +86,8 @@ class DictLookup:
         return matching
 
     @classmethod
-    def lookup_word_shallow_strict(cls, word: str) -> 'DictLookup':
-        return DictLookup(cls._jamdict.lookup(word, lookup_chars=False, lookup_ne=False, strict_lookup=True))
-
-    @classmethod
-    def lookup_word_deep(cls, word: str) -> 'DictLookup':
-        return DictLookup(cls._jamdict.lookup(word))
+    def _lookup_name(cls, word: str) -> 'DictLookup':
+        return DictLookup(cls._jamdict.lookup(word).names)
 
 
 def is_valid_word(word: str) -> bool:

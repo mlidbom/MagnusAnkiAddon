@@ -13,7 +13,7 @@ def vocab_mock(word: str, readings: list[str]) -> WaniVocabNote:
 def test_something() -> None:
     #print(jam.lookup("下さい"))
     #print(jam.lookup("くださる"))
-    lookup = DictLookup.lookup_word_deep("ましょう")
+    lookup = DictLookup.lookup_word_shallow("ましょう")
     print(lookup)
 
 @pytest.mark.parametrize('word, readings', [
@@ -53,4 +53,13 @@ def test_missing(word: str, readings: list[str]) -> None:
     mock_instance = vocab_mock(word, readings)
     dict_entry = DictLookup.lookup_vocab_word_shallow_lookup(mock_instance)
     assert len(dict_entry) == 1
+
+@pytest.mark.parametrize('word, readings', [
+    ("田代島", ["たしろじま"])
+])
+def test_names(word: str, readings: list[str]) -> None:
+    mock_instance = vocab_mock(word, readings)
+    dict_entry = DictLookup.lookup_vocab_word_shallow_lookup(mock_instance)
+    assert len(dict_entry) == 1
+
 
