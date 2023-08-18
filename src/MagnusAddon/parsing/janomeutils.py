@@ -12,14 +12,12 @@ def translate_parts_of_speech(token: TokenExt) -> str:
     return ','.join(translated_pos)
 
 def get_word_parts_of_speech(word: str) -> str:
-    tokens = list(_tokenizer.tokenize(word))
-
-
+    tokens = _tokenizer.tokenize(word)
     return translate_parts_of_speech(tokens[0])
 
 def extract_dictionary_forms(text: str) -> list[ParsedWord]:
     expression = StringUtils.strip_markup(text)
-    tokens = [token for token in _tokenizer.tokenize(expression) if token.parts_of_speech.level1 not in ['記号']]  # Exclude punctuation
+    tokens = _tokenizer.tokenize(expression)
     tokens = listutil.remove_duplicates_with_lambda(tokens, lambda token: token.base_form)
 
     dictionary_forms = list[ParsedWord]()

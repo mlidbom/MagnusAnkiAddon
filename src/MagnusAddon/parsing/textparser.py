@@ -156,7 +156,7 @@ def identify_words2(sentence: str) -> list[ParsedWord]:
 
 def identify_first_word(sentence: str) -> str:
 
-    tokens = [token for token in _tokenizer.tokenize(sentence) if not token.part_of_speech.startswith("記号")]
+    tokens = _tokenizer.tokenize(sentence)
     word_combination = ""
     for token_index in range(len(tokens)):
         word_combination: str = tokens[token_index].base_form

@@ -8,4 +8,6 @@ class TokenizerExt:
         self._tokenizer = Tokenizer()
 
     def tokenize(self, text: str) -> list[TokenExt]:
-        return [TokenExt(token) for token in self._tokenizer.tokenize(text)]
+        return [token for token in
+                (TokenExt(tok) for tok in self._tokenizer.tokenize(text))
+                if not token.is_noise_token()]
