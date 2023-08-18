@@ -22,32 +22,35 @@ def test_something() -> None:
 ])
 def test_uk(word: str, readings: list[str]) -> None:
     mock_instance = vocab_mock(word, readings)
-    dict_entry = DictLookup.lookup_vocab_word_shallow(mock_instance)
-    assert dict_entry.is_kana_only() is True
+    dict_entry = DictLookup.lookup_vocab_word_shallow_lookup(mock_instance)
+    assert all(ent.is_kana_only() for ent in dict_entry)
+    assert len(dict_entry) == 1
 
 @pytest.mark.parametrize('word, readings', [
-    ("毎月", ["まいつき","まいげつ"])
+    ("毎月", ["まいつき","まいげつ"]),
+    ("正す", ["ただす"]),
 ])
 def test_multi_readings(word: str, readings: list[str]) -> None:
     mock_instance = vocab_mock(word, readings)
-    dict_entry = DictLookup.lookup_vocab_word_shallow(mock_instance)
-    assert dict_entry is not None
+    dict_entry = DictLookup.lookup_vocab_word_shallow_lookup(mock_instance)
+    assert len(dict_entry) == 1
 
 @pytest.mark.parametrize('word, readings', [
-    ("正す", ["ただす"]),
+    ("元", ["もと"]),
     ("角", ["かく","かど"])
 ])
 def test_multi_matches(word: str, readings: list[str]) -> None:
     mock_instance = vocab_mock(word, readings)
-    dict_entry = DictLookup.lookup_vocab_word_shallow(mock_instance)
-    assert dict_entry is not None
+    dict_entry = DictLookup.lookup_vocab_word_shallow_lookup(mock_instance)
+    assert len(dict_entry) > 1
 
 @pytest.mark.parametrize('word, readings', [
     ("に", ["に"]),
-    ("しか", ["しか"])
+    ("しか", ["しか"]),
+    ("ローマ字", ["ろーまじ"])
 ])
 def test_missing(word: str, readings: list[str]) -> None:
     mock_instance = vocab_mock(word, readings)
-    dict_entry = DictLookup.lookup_vocab_word_shallow(mock_instance)
-    assert dict_entry is not None
+    dict_entry = DictLookup.lookup_vocab_word_shallow_lookup(mock_instance)
+    assert len(dict_entry) == 1
 

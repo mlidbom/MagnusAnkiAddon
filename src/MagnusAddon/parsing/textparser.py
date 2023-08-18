@@ -21,6 +21,10 @@ class DictEntry:
     def create(cls, result: LookupResult) -> list['DictEntry']:
         return [cls(entry) for entry in result.entries]
 
+    def has_matching_kana_form(self, search: str) -> bool:
+        search = kana_utils.to_hiragana(search)
+        return any(search == kana_utils.to_hiragana(form) for form in self.kana_forms())
+
     def kana_forms(self) -> list[str]: return [ent.text for ent in self.entry.kana_forms]
     def kanji_forms(self) -> list[str]: return [ent.text for ent in self.entry.kanji_forms]
 
@@ -46,29 +50,22 @@ class DictLookup:
         return DictLookup(cls._jamdict.lookup(word, lookup_chars=False, lookup_ne=False))
 
     @classmethod
-    def lookup_vocab_word_shallow(cls, word: WaniVocabNote) -> DictEntry:
-        matching = cls.lookup_vocab_word_shallow_lookup(word)
-
-        if len(matching) > len(word.get_readings()): raise Exception("More matching entries than readings")
-        return DictEntry(matching[0].entry)
-
-    @classmethod
     def lookup_vocab_word_shallow_lookup(cls, word: WaniVocabNote) -> list[DictEntry]:
         def kanji_is_default_form() -> list[DictEntry]:
             return [ent for ent in lookup.entries
-                    if any(reading in ent.kana_forms() for reading in readings)
+                    if any(ent.has_matching_kana_form(reading) for reading in readings)
                     and ent.kanji_forms()
                     and vocab == ent.kanji_forms()[0]]
 
         def any_kanji_reading_matches() -> list[DictEntry]:
             return [ent for ent in lookup.entries
-                    if any(reading in ent.kana_forms() for reading in readings)
+                    if any(ent.has_matching_kana_form(reading) for reading in readings)
                     and ent.kanji_forms()
                     and vocab in ent.kanji_forms()]
 
         def kana_only_matches() -> list[DictEntry]:
             return [ent for ent in lookup.entries
-                    if any(reading in ent.kana_forms() for reading in readings)
+                    if any(ent.has_matching_kana_form(reading) for reading in readings)
                     and ent.is_kana_only()]
 
         vocab = word.get_vocab()

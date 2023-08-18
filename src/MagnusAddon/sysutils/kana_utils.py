@@ -21,14 +21,23 @@ def get_conjugation_base(word) -> str:
         return word[:-1]
     return word
 
-def hiragana_to_katakana(hiragana: str) -> str:
-    def convert_character(char: str) -> str:
-        if 0x3040 <= ord(char) <= 0x309F: #is it hiragana?
+def to_katakana(hiragana: str) -> str:
+    def char_to_katakana(char: str) -> str:
+        if is_hiragana(char):
             return chr(ord(char) + 96)
         else:
-            return char  # Return the original character if it's not Hiragana
+            return char
 
-    return ''.join([convert_character(char) for char in hiragana])
+    return ''.join([char_to_katakana(char) for char in hiragana])
+
+def to_hiragana(hiragana: str) -> str:
+    def char_to_hiragana(char: str) -> str:
+        if is_katakana(char):
+            return chr(ord(char) - 96)
+        else:
+            return char
+
+    return ''.join([char_to_hiragana(char) for char in hiragana])
 
 
 def is_only_kana(word: str) -> bool:
