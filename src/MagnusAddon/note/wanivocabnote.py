@@ -20,10 +20,11 @@ class WaniVocabNote(WaniKanaVocabNote):
     def get_reading_mnemonic(self) -> str: return super().get_field(Wani.VocabFields.Reading_Exp)
     def set_reading_mnemonic(self, value: str) -> None: super().set_field(Wani.VocabFields.Reading_Exp, value)
 
-    def get_reading_list(self) -> list[str]: return [reading.strip() for reading in self.get_reading().split(",")]
+    def get_readings(self) -> list[str]: return [reading.strip() for reading in self._get_reading().split(",")]
+    def set_readings(self, readings: list[str]) -> None: self._set_reading(", ".join([reading.strip() for reading in readings]))
 
-    def get_reading(self) -> str: return super().get_field(Wani.KanaVocabFields.Reading)
-    def set_reading(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Reading, value)
+    def _get_reading(self) -> str: return super().get_field(Wani.KanaVocabFields.Reading)
+    def _set_reading(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Reading, value)
 
     def get_component_subject_ids(self) -> str: return super().get_field(Wani.VocabFields.component_subject_ids)
     def set_component_subject_ids(self, value: str) -> None: super().set_field(Wani.VocabFields.component_subject_ids, value)
@@ -48,7 +49,7 @@ class WaniVocabNote(WaniKanaVocabNote):
         self.set_reading_mnemonic(wani_vocab.reading_mnemonic)
 
         readings = [reading.reading for reading in wani_vocab.readings]
-        self.set_reading(", ".join(readings))
+        self._set_reading(", ".join(readings))
 
         component_subject_ids = [str(subject_id) for subject_id in wani_vocab.component_subject_ids]
         self.set_component_subject_ids(", ".join(component_subject_ids))

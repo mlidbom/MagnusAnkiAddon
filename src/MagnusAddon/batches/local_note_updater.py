@@ -119,23 +119,23 @@ def _update_vocab(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanji
     def fill_empty_reading_for_uk_vocab() -> None:
         for vocab in all_vocabulary:
             expression = vocab.get_vocab().strip()
-            reading = vocab.get_reading().strip()
+            readings = ",".join(vocab.get_readings())
 
-            if expression == reading:
+            if expression == readings:
                 vocab.set_tag(Mine.Tags.UsuallyKanaOnly)
 
-            if not reading:
+            if not readings:
                 if kana_utils.is_only_kana(expression):
-                    vocab.set_reading(expression)
+                    vocab.set_readings([expression])
                     vocab.set_tag(Mine.Tags.UsuallyKanaOnly)
 
 
     def populate_homophones() -> None:
         reading_dict = dict[str, list[WaniVocabNote]]()
         for vocab in all_vocabulary:
-            reading = vocab.get_reading()
-            if reading not in reading_dict: reading_dict[reading] = list[WaniVocabNote]()
-            reading_dict[reading].append(vocab)
+            for reading in vocab.get_readings():
+                if reading not in reading_dict: reading_dict[reading] = list[WaniVocabNote]()
+                reading_dict[reading].append(vocab)
 
         for read, vocabs in reading_dict.items():
             if len(vocabs) > 1:
@@ -160,7 +160,7 @@ def _update_kanji(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanji
                     {StringUtils.newline().join([f"""
                     <div class="kanjiVocabEntry">
                         <span class="kanji clipboard">{vocab.get_vocab()}</span>
-                        (<span class="clipboard vocabReading">{note.tag_readings_in_string(vocab.get_reading(), lambda read:  f'<span class="kanjiReading">{read}</span>' )}</span>)
+                        (<span class="clipboard vocabReading">{note.tag_readings_in_string(", ".join(vocab.get_readings()), lambda read: f'<span class="kanjiReading">{read}</span>')}</span>)
                         <span class="meaning"> {StringUtils.strip_markup(vocab.get_vocab_meaning())}</span>
                     </div>
                     """ for vocab in vocabs])}
@@ -193,7 +193,7 @@ def _update_kanji(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanji
             reading_to_vocab: dict[str, WaniVocabNote] = dict[str, WaniVocabNote]()
 
             for vocab in kanji_vocab:
-                for reading in vocab.get_reading_list():
+                for reading in vocab.get_readings():
                     reading_to_vocab[reading] = vocab
 
             for vocab in primary_vocabs:
