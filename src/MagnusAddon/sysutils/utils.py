@@ -1,5 +1,5 @@
 import re
-from typing import List, Callable
+from typing import List
 
 import aqt
 from aqt import mw
@@ -10,9 +10,26 @@ from aqt.reviewer import RefreshNeeded
 from aqt.utils import tooltip
 
 from sysutils import timeutil
+from typing import TypeVar, Generic, Callable, Iterable
 
+T = TypeVar('T')
+
+class TypedList(Generic[T]):
+    @staticmethod
+    def any(iterable: Iterable[T], predicate: Callable[[T], bool]) -> bool:
+        for item in iterable:
+            if predicate(item):
+                return True
+        return False
 
 class ListUtils:
+    @staticmethod
+    def any(iterable: Iterable[T], predicate: Callable[[T], bool]) -> bool:
+        for item in iterable:
+            if predicate(item):
+                return True
+        return False
+
     @staticmethod
     def flatten_list(the_list: List):
         return [item for sub_list in the_list for item in sub_list]

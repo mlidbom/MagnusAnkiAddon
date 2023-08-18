@@ -1,5 +1,8 @@
 from typing import *
 
+from aqt.utils import tooltip
+
+from parsing.textparser import DictLookup
 from sysutils import kana_utils
 from parsing import janomeutils
 from sysutils.utils import StringUtils, UIUtils
@@ -21,6 +24,41 @@ def update_all() -> None:
         _update_vocab_parsed_parts_of_speech(all_vocabulary)
 
     UIUtils.run_ui_action(update_all_inner)
+
+def update_vocab_pos_information() -> None:
+    uk = list[WaniVocabNote]()
+    single = list[WaniVocabNote]()
+    multi = list[WaniVocabNote]()
+    missing = list[WaniVocabNote]()
+    uk = list[WaniVocabNote]()
+
+    numbers: list[int] = [1, 2, 3, 4, 5]
+
+    # Check if any number in the list is even
+    has_even_number = any(map(lambda x: x % 2 == 0, numbers))
+    print(has_even_number)  # True
+
+    def inner() -> None:
+        all_vocabulary: list[WaniVocabNote] = WaniCollection.fetch_all_vocab_notes()
+        for vocab in all_vocabulary:
+            dict_entries = DictLookup.lookup_word_shallow(vocab.get_vocab())
+            hits = len(dict_entries.entries)
+            if hits > 1: multi.append(vocab)
+            if hits == 1: single.append(vocab)
+            if hits == 0: missing.append(vocab)
+
+            if dict_entries.is_uk():
+                uk.append(vocab)
+                if hits > 1:
+                    something = 1
+
+    UIUtils.run_ui_action(inner)
+    tooltip(f"""
+    single: {len(single)}<br>
+    multi: {len(multi)}<br>
+    missing: {len(missing)}<br>
+    uk: {len(uk)}<br>
+    """)
 
 def _update_vocab_parsed_parts_of_speech(all_vocabulary: list[WaniVocabNote]) -> None:
     for vocab in all_vocabulary:

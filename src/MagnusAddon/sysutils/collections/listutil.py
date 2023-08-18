@@ -12,3 +12,4 @@ def remove_duplicates_with_lambda(input_list: List[T], callback: Callable[[T], s
             result.append(item)
 
     return result
+

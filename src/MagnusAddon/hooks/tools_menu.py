@@ -32,6 +32,7 @@ def build_local_menu(sub_menu: QMenu) -> None:
     add_menu_action(sub_menu, "Update &Vocab", local_note_updater.update_vocab)
     add_menu_action(sub_menu, "Update &Kanji", local_note_updater.update_kanji)
     add_menu_action(sub_menu, "Update &Sentences", local_note_updater.update_sentences)
+    add_menu_action(sub_menu, "Update &POS", local_note_updater.update_vocab_pos_information)
 
 
 def build_wani_menu(sub_menu: QMenu) -> None:
