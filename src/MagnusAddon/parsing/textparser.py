@@ -5,7 +5,6 @@ from jamdict import Jamdict
 
 from parsing.janomeutils import ParsedWord, is_noise_token
 from sysutils import kana_utils
-from wanikani.wani_constants import Mine
 
 _tokenizer: Tokenizer = Tokenizer()
 
