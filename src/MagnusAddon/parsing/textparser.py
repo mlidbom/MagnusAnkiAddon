@@ -70,22 +70,11 @@ class DictLookup:
 
     @classmethod
     def try_lookup_word_or_name(cls, word: str, readings: list[str]) -> 'DictLookup':
-        def kanji_is_default_form() -> list[DictEntry]:
-            return [ent for ent in lookup
-                    if any(ent.has_matching_kana_form(reading) for reading in readings)
-                    and ent.kanji_forms()
-                    and ent.is_default_kanji_form(word)]
-
-        def any_kanji_reading_matches() -> list[DictEntry]:
+        def kanji_form_matches() -> list[DictEntry]:
             return [ent for ent in lookup
                     if any(ent.has_matching_kana_form(reading) for reading in readings)
                     and ent.kanji_forms()
                     and ent.has_matching_kanji_form(word)]
-
-        def kana_is_default_form_matches() -> list[DictEntry]:
-            return [ent for ent in lookup
-                    if any(ent.is_default_kana_form(reading) for reading in readings)
-                    and ent.is_kana_only()]
 
         def any_kana_only_matches() -> list[DictEntry]:
             return [ent for ent in lookup
@@ -95,14 +84,8 @@ class DictLookup:
         lookup = cls._lookup_word_shallow(word)
         if not lookup:
             lookup = cls._lookup_name(word)
-        matching = kanji_is_default_form()
-        if not any(matching):
-            if kana_utils.is_only_kana(word):
-                matching = kana_is_default_form_matches()
-                if not matching:
-                    matching = any_kana_only_matches()
-            else:
-                matching = any_kanji_reading_matches()
+
+        matching = any_kana_only_matches() if kana_utils.is_only_kana(word) else kanji_form_matches()
 
         return DictLookup(matching)
 
@@ -116,7 +99,7 @@ class DictLookup:
 
     @classmethod
     def _lookup_name(cls, word: str) -> list[DictEntry]:
-        return DictEntry.create(cls._jamdict.lookup(word).names)
+        return DictEntry.create(cls._jamdict.lookup(word, lookup_chars=False).names)
 
 
 def is_valid_word(word: str) -> bool:

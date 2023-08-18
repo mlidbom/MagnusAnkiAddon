@@ -18,8 +18,7 @@ def test_something() -> None:
 
 @pytest.mark.parametrize('word, readings', [
     ("為る", ["する"]),
-    ("為る", ["なる"]),
-    ("て", ["て"])
+    ("為る", ["なる"])
 ])
 def test_uk(word: str, readings: list[str]) -> None:
     mock_instance = vocab_mock(word, readings)
@@ -28,8 +27,7 @@ def test_uk(word: str, readings: list[str]) -> None:
     assert dict_entry.found_words_count() == 1
 
 @pytest.mark.parametrize('word, readings', [
-    ("毎月", ["まいつき","まいげつ"]),
-    ("正す", ["ただす"]),
+    ("毎月", ["まいつき","まいげつ"])
 ])
 def test_multi_readings(word: str, readings: list[str]) -> None:
     mock_instance = vocab_mock(word, readings)
@@ -39,7 +37,9 @@ def test_multi_readings(word: str, readings: list[str]) -> None:
 @pytest.mark.parametrize('word, readings', [
     ("元", ["もと"]),
     ("角", ["かく","かど"]),
-    ("これ", ["これ"])
+    ("これ", ["これ"]),
+    ("正す", ["ただす"]),
+    ("て", ["て"])
 ])
 def test_multi_matches(word: str, readings: list[str]) -> None:
     mock_instance = vocab_mock(word, readings)

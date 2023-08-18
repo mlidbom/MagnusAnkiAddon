@@ -1,7 +1,5 @@
 from typing import *
 
-from aqt.utils import tooltip
-
 from parsing.textparser import DictLookup
 from sysutils import kana_utils
 from parsing import janomeutils
@@ -26,51 +24,16 @@ def update_all() -> None:
     UIUtils.run_ui_action(update_all_inner)
 
 def update_vocab_pos_information() -> None:
-    uk = list[WaniVocabNote]()
-    single = list[WaniVocabNote]()
-    multi = list[WaniVocabNote]()
-    missing = list[WaniVocabNote]()
-    uk = list[WaniVocabNote]()
-
-    numbers: list[int] = [1, 2, 3, 4, 5]
-
-    # Check if any number in the list is even
-    has_even_number = any(map(lambda x: x % 2 == 0, numbers))
-    print(has_even_number)  # True
-
     def inner() -> None:
         all_vocabulary: list[WaniVocabNote] = WaniCollection.fetch_all_vocab_notes()
         for vocab in all_vocabulary:
             try:
                 lookup = DictLookup.lookup_vocab_word_or_name(vocab)
-                hits = lookup.found_words_count()
-                if hits > 1: multi.append(vocab)
-                if hits == 1: single.append(vocab)
-
-                if lookup.is_uk():
-                    uk.append(vocab)
             except KeyError:
-                missing.append(vocab)
+                pass
 
     UIUtils.run_ui_action(inner)
-    missing_not_suru = [miss for miss in missing if not miss.get_vocab().endswith("する")]
-    missing_suru = [miss for miss in missing if miss.get_vocab().endswith("する")]
-    message = f"""
-    single: {len(single)}
-    multi: {len(multi)}
-    missing-suru: {len(missing_suru)}
-    missing-not_suru {len(missing_not_suru)}
-    uk: {len(uk)}
-    """
-    tooltip(message.replace(StringUtils.newline(), "<br>"))
-    print(message)
 
-    print("multi")
-    for mul in multi: print(f"""{mul.get_vocab()}: {",".join(mul.get_readings())}""")
-
-    print("missing not suru")
-    print(" OR ".join([f"Vocab:{miss.get_vocab()}" for miss in missing_not_suru]))
-    print(StringUtils.newline() + StringUtils.newline() + StringUtils.newline())
 
 def _update_vocab_parsed_parts_of_speech(all_vocabulary: list[WaniVocabNote]) -> None:
     for vocab in all_vocabulary:
