@@ -45,15 +45,19 @@ class DictLookup:
 
     @classmethod
     def lookup_vocab_word_shallow(cls, word: WaniVocabNote) -> DictEntry:
+        matching = cls.lookup_vocab_word_shallow_lookup(word)
+        if len(matching) > 1: raise Exception("Multiple matching entries")
+        return DictEntry(matching[0].entry)
+
+    @classmethod
+    def lookup_vocab_word_shallow_lookup(cls, word: WaniVocabNote) -> list[DictEntry]:
 
         lookup = cls.lookup_word_shallow(word.get_vocab())
+        readings = [read.strip() for read in word.get_reading().split(",")]
+        matching = [ent for ent in lookup.entries if all(reading in ent.readings() for reading in readings)]
+        if not any(matching): raise KeyError("No matching entries")
 
-        matching = [ent for ent in lookup.entries if word.get_reading() in ent.readings()]
-
-        if not any(matching): raise Exception("No matching entries")
-        if len(matching) > 1: raise Exception("Multiple matching entries")
-
-        return DictEntry(matching[0].entry)
+        return matching
 
     @classmethod
     def lookup_word_shallow_strict(cls, word: str) -> 'DictLookup':

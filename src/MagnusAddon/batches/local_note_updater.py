@@ -41,16 +41,18 @@ def update_vocab_pos_information() -> None:
     def inner() -> None:
         all_vocabulary: list[WaniVocabNote] = WaniCollection.fetch_all_vocab_notes()
         for vocab in all_vocabulary:
-            dict_entries = DictLookup.lookup_word_shallow(vocab.get_vocab())
-            hits = len(dict_entries.entries)
-            if hits > 1: multi.append(vocab)
-            if hits == 1: single.append(vocab)
-            if hits == 0: missing.append(vocab)
+            try:
+                dict_entries = DictLookup.lookup_vocab_word_shallow_lookup(vocab)
+                hits = len(dict_entries)
+                if hits > 1: multi.append(vocab)
+                if hits == 1: single.append(vocab)
 
-            if dict_entries.is_uk():
-                uk.append(vocab)
-                if hits > 1:
-                    something = 1
+                if any([ent for ent in dict_entries if ent.is_kana_only()]):
+                    uk.append(vocab)
+                    if hits > 1:
+                        something = 1
+            except KeyError:
+                missing.append(vocab)
 
     UIUtils.run_ui_action(inner)
     tooltip(f"""

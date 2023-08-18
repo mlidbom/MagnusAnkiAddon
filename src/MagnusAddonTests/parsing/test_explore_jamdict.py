@@ -1,3 +1,4 @@
+import pytest
 from jamdict import Jamdict
 from parsing.textparser import DictLookup
 from unittest.mock import MagicMock
@@ -12,13 +13,28 @@ def test_something() -> None:
     lookup = DictLookup.lookup_word_deep("ましょう")
     print(lookup)
 
-def test_uk() -> None:
+@pytest.mark.parametrize('word, reading', [
+    ("為る", "する"),
+    ("為る", "なる")
+])
+def test_uk(word: str, reading: str) -> None:
     mock_instance = MagicMock(spec=WaniVocabNote)
-    mock_instance.get_vocab.return_value = "為る"
-    mock_instance.get_reading.return_value = "する"
+    mock_instance.get_vocab.return_value = word
+    mock_instance.get_reading.return_value = reading
 
     dict_entry = DictLookup.lookup_vocab_word_shallow(mock_instance)
     assert dict_entry.is_kana_only() is True
+
+@pytest.mark.parametrize('word, reading', [
+    ("毎月", "まいつき, まいげつ ")
+])
+def test_multi_readings(word: str, reading: str) -> None:
+    mock_instance = MagicMock(spec=WaniVocabNote)
+    mock_instance.get_vocab.return_value = word
+    mock_instance.get_reading.return_value = reading
+
+    dict_entry = DictLookup.lookup_vocab_word_shallow(mock_instance)
+    assert dict_entry is not None
 
 def test_pos() -> None:
     for pos in jam.all_pos():
