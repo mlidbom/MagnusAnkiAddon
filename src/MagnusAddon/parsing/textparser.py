@@ -26,6 +26,18 @@ class DictEntry:
         search = kana_utils.to_hiragana(search)
         return any(search == kana_utils.to_hiragana(form) for form in self.kana_forms())
 
+    def is_default_kana_form(self, search: str) -> bool:
+        search = kana_utils.to_hiragana(search)
+        return search == kana_utils.to_hiragana(self.kana_forms()[0])
+
+    def has_matching_kanji_form(self, search: str) -> bool:
+        search = kana_utils.to_hiragana(search)
+        return any(search == kana_utils.to_hiragana(form) for form in self.kanji_forms())
+
+    def is_default_kanji_form(self, search: str) -> bool:
+        search = kana_utils.to_hiragana(search)
+        return search == kana_utils.to_hiragana(self.kanji_forms()[0])
+
     def kana_forms(self) -> list[str]: return [ent.text for ent in self.entry.kana_forms]
     def kanji_forms(self) -> list[str]: return [ent.text for ent in self.entry.kanji_forms]
 
@@ -62,15 +74,20 @@ class DictLookup:
             return [ent for ent in lookup
                     if any(ent.has_matching_kana_form(reading) for reading in readings)
                     and ent.kanji_forms()
-                    and word == ent.kanji_forms()[0]]
+                    and ent.is_default_kanji_form(word)]
 
         def any_kanji_reading_matches() -> list[DictEntry]:
             return [ent for ent in lookup
                     if any(ent.has_matching_kana_form(reading) for reading in readings)
                     and ent.kanji_forms()
-                    and word in ent.kanji_forms()]
+                    and ent.has_matching_kanji_form(word)]
 
-        def kana_only_matches() -> list[DictEntry]:
+        def kana_is_default_form_matches() -> list[DictEntry]:
+            return [ent for ent in lookup
+                    if any(ent.is_default_kana_form(reading) for reading in readings)
+                    and ent.is_kana_only()]
+
+        def any_kana_only_matches() -> list[DictEntry]:
             return [ent for ent in lookup
                     if any(ent.has_matching_kana_form(reading) for reading in readings)
                     and ent.is_kana_only()]
@@ -81,7 +98,9 @@ class DictLookup:
         matching = kanji_is_default_form()
         if not any(matching):
             if kana_utils.is_only_kana(word):
-                matching = kana_only_matches()
+                matching = kana_is_default_form_matches()
+                if not matching:
+                    matching = any_kana_only_matches()
             else:
                 matching = any_kanji_reading_matches()
 
