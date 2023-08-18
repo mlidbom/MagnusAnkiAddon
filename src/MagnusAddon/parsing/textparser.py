@@ -4,6 +4,7 @@ from janome.tokenizer import Tokenizer, Token
 from jamdict import Jamdict
 
 from parsing.janomeutils import ParsedWord, is_noise_token
+from sysutils import kana_utils
 from wanikani.wani_constants import Mine
 
 _tokenizer: Tokenizer = Tokenizer()
@@ -48,29 +49,41 @@ class DictLookup:
     @classmethod
     def lookup_vocab_word_shallow(cls, word: WaniVocabNote) -> DictEntry:
         matching = cls.lookup_vocab_word_shallow_lookup(word)
-        if len(matching) > 1: raise Exception("Multiple matching entries")
+
+        if len(matching) > len(word.get_readings()): raise Exception("More matching entries than readings")
         return DictEntry(matching[0].entry)
 
     @classmethod
     def lookup_vocab_word_shallow_lookup(cls, word: WaniVocabNote) -> list[DictEntry]:
-        def default_matches() -> list[DictEntry]:
+        def kanji_is_default_form() -> list[DictEntry]:
             return [ent for ent in lookup.entries
                     if any(reading in ent.kana_forms() for reading in readings)
-                    and (not ent.kanji_forms() or word.get_vocab() in ent.kanji_forms())]
+                    and ent.kanji_forms()
+                    and vocab == ent.kanji_forms()[0]]
+
+        def any_kanji_reading_matches() -> list[DictEntry]:
+            return [ent for ent in lookup.entries
+                    if any(reading in ent.kana_forms() for reading in readings)
+                    and ent.kanji_forms()
+                    and vocab in ent.kanji_forms()]
 
         def kana_only_matches() -> list[DictEntry]:
             return [ent for ent in lookup.entries
                     if any(reading in ent.kana_forms() for reading in readings)
                     and ent.is_kana_only()]
 
-        lookup = cls.lookup_word_shallow(word.get_vocab())
+        vocab = word.get_vocab()
         readings = word.get_readings()
-        matching = default_matches()
+        lookup = cls.lookup_word_shallow(vocab)
+        matching = kanji_is_default_form()
         if not any(matching):
-            if word.has_tag(Mine.Tags.UsuallyKanaOnly):
+            if kana_utils.is_only_kana(vocab):
                 matching = kana_only_matches()
-                if not any(matching):
-                    raise KeyError("No matching entries")
+            else:
+                matching = any_kanji_reading_matches()
+
+            if not any(matching):
+                raise KeyError("No matching entries")
 
         return matching
 
