@@ -1,13 +1,13 @@
 from typing import Sequence
 
 from jamdict.jmdict import JMDEntry
-from janome.tokenizer import Tokenizer, Token
 from jamdict import Jamdict
 
-from parsing.janomeutils import ParsedWord, is_noise_token
+from parsing.janome_extensions.tokenizer_ext import TokenizerExt
+from parsing.janomeutils import ParsedWord
 from sysutils import kana_utils
 
-_tokenizer: Tokenizer = Tokenizer()
+_tokenizer = TokenizerExt()
 
 class DictEntry:
     def __init__(self, entry: JMDEntry) -> None:
@@ -107,15 +107,15 @@ def is_valid_word(word: str) -> bool:
     return result.found_words()
 
 def identify_words(sentence: str) -> list[ParsedWord]:
-    tokens: list[Token] = [token for token in _tokenizer.tokenize(sentence)]
+    tokens = [token for token in _tokenizer.tokenize(sentence)]
     potential_words = list[ParsedWord]()
 
     for token_index in range(len(tokens)):
-        word_combination:str = tokens[token_index].node.surface
+        word_combination:str = tokens[token_index].surface
         if is_valid_word(word_combination) and word_combination not in potential_words:
             potential_words.append(ParsedWord(word_combination, ""))
         for lookahead_index in range(token_index + 1, len(tokens)):
-            word_combination += tokens[lookahead_index].node.surface
+            word_combination += tokens[lookahead_index].surface
             if is_valid_word(word_combination) and word_combination not in potential_words:
                 potential_words.append(ParsedWord(word_combination, ""))
             else:
@@ -124,7 +124,7 @@ def identify_words(sentence: str) -> list[ParsedWord]:
     return potential_words
 
 def identify_words2(sentence: str) -> list[ParsedWord]:
-    tokens: list[Token] = [token for token in _tokenizer.tokenize(sentence) if not is_noise_token(token)]
+    tokens = [token for token in _tokenizer.tokenize(sentence) if not token.is_noise_token()]
     potential_words = list[str]()
 
     for token_index in range(len(tokens)):
@@ -156,7 +156,7 @@ def identify_words2(sentence: str) -> list[ParsedWord]:
 
 def identify_first_word(sentence: str) -> str:
 
-    tokens: list[Token] = [token for token in _tokenizer.tokenize(sentence) if not token.part_of_speech.startswith("記号")]
+    tokens = [token for token in _tokenizer.tokenize(sentence) if not token.part_of_speech.startswith("記号")]
     word_combination = ""
     for token_index in range(len(tokens)):
         word_combination: str = tokens[token_index].base_form

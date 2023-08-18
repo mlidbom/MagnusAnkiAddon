@@ -19,3 +19,5 @@ class TokenExt:
         self.parts_of_speech = PartsOfSpeech(self.part_of_speech)
 
     def __str__(self) -> str: return self._token.__str__()
+
+    def is_noise_token(self) -> bool: return self.parts_of_speech.level1 in ['記号']
