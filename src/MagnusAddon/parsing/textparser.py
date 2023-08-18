@@ -4,6 +4,7 @@ from janome.tokenizer import Tokenizer, Token
 from jamdict import Jamdict
 
 from parsing.janomeutils import ParsedWord, is_noise_token
+from wanikani.wani_constants import Mine
 
 _tokenizer: Tokenizer = Tokenizer()
 
@@ -20,7 +21,8 @@ class DictEntry:
     def create(cls, result: LookupResult) -> list['DictEntry']:
         return [cls(entry) for entry in result.entries]
 
-    def readings(self) -> list[str]: return [ent.text for ent in self.entry.kana_forms]
+    def kana_forms(self) -> list[str]: return [ent.text for ent in self.entry.kana_forms]
+    def kanji_forms(self) -> list[str]: return [ent.text for ent in self.entry.kanji_forms]
 
 
 class DictLookup:
@@ -51,10 +53,24 @@ class DictLookup:
 
     @classmethod
     def lookup_vocab_word_shallow_lookup(cls, word: WaniVocabNote) -> list[DictEntry]:
+        def default_matches() -> list[DictEntry]:
+            return [ent for ent in lookup.entries
+                    if any(reading in ent.kana_forms() for reading in readings)
+                    and (not ent.kanji_forms() or word.get_vocab() in ent.kanji_forms())]
+
+        def kana_only_matches() -> list[DictEntry]:
+            return [ent for ent in lookup.entries
+                    if any(reading in ent.kana_forms() for reading in readings)
+                    and ent.is_kana_only()]
+
         lookup = cls.lookup_word_shallow(word.get_vocab())
         readings = word.get_readings()
-        matching = [ent for ent in lookup.entries if all(reading in ent.readings() for reading in readings)]
-        if not any(matching): raise KeyError("No matching entries")
+        matching = default_matches()
+        if not any(matching):
+            if word.has_tag(Mine.Tags.UsuallyKanaOnly):
+                matching = kana_only_matches()
+                if not any(matching):
+                    raise KeyError("No matching entries")
 
         return matching
 

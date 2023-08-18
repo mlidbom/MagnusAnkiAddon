@@ -36,11 +36,28 @@ def test_multi_readings(word: str, readings: list[str]) -> None:
     dict_entry = DictLookup.lookup_vocab_word_shallow(mock_instance)
     assert dict_entry is not None
 
-def test_pos() -> None:
-    for pos in jam.all_pos():
-        print(pos)  # pos is a string
+@pytest.mark.parametrize('word, readings', [
+    ("正す", ["ただす"]),
+    ("角", ["かく","かど"])
+])
+def test_multi_matches(word: str, readings: list[str]) -> None:
+    mock_instance = MagicMock(spec=WaniVocabNote)
+    mock_instance.get_vocab.return_value = word
+    mock_instance.get_readings.return_value = readings
 
-def test_name() -> None:
-    for ne_type in jam.all_ne_type():
-        print(ne_type)  # ne_type is a string
+    dict_entry = DictLookup.lookup_vocab_word_shallow(mock_instance)
+    assert dict_entry is not None
+
+@pytest.mark.parametrize('word, readings', [
+    ("に", ["に"]),
+    ("しか", ["しか"]),
+    ("そこに", ["そこに"])
+])
+def test_missing(word: str, readings: list[str]) -> None:
+    mock_instance = MagicMock(spec=WaniVocabNote)
+    mock_instance.get_vocab.return_value = word
+    mock_instance.get_readings.return_value = readings
+
+    dict_entry = DictLookup.lookup_vocab_word_shallow(mock_instance)
+    assert dict_entry is not None
 
