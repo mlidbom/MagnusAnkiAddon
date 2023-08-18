@@ -49,9 +49,9 @@ def test_multi_matches(word: str, readings: list[str]) -> None:
     assert dict_entry is not None
 
 @pytest.mark.parametrize('word, readings', [
+    ("想像する", "そうぞうする"),
     ("に", ["に"]),
-    ("しか", ["しか"]),
-    ("そこに", ["そこに"])
+    ("しか", ["しか"])
 ])
 def test_missing(word: str, readings: list[str]) -> None:
     mock_instance = MagicMock(spec=WaniVocabNote)
