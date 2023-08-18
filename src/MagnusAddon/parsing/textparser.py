@@ -14,9 +14,9 @@ class DictEntry:
         self.entry = entry
 
     def is_kana_only(self) -> bool:
-        return any((sense for sense
-                    in self.entry.senses
-                    if 'word usually written using kana alone' in sense.misc))
+        return not self.entry.kanji_forms or any((sense for sense
+                                                  in self.entry.senses
+                                                  if 'word usually written using kana alone' in sense.misc))
 
     @classmethod
     def create(cls, result: LookupResult) -> list['DictEntry']:
@@ -82,8 +82,8 @@ class DictLookup:
             else:
                 matching = any_kanji_reading_matches()
 
-            if not any(matching):
-                raise KeyError("No matching entries")
+        if not any(matching):
+            raise KeyError("No matching entries")
 
         return matching
 
