@@ -49,26 +49,28 @@ def update_vocab_pos_information() -> None:
 
                 if lookup.is_uk():
                     uk.append(vocab)
-                    if hits > 1:
-                        something = 1
             except KeyError:
                 missing.append(vocab)
 
     UIUtils.run_ui_action(inner)
+    missing_not_suru = [miss for miss in missing if not miss.get_vocab().endswith("する")]
+    missing_suru = [miss for miss in missing if miss.get_vocab().endswith("する")]
     message = f"""
     single: {len(single)}
     multi: {len(multi)}
-    missing: {len(missing)}
+    missing-suru: {len(missing_suru)}
+    missing-not_suru {len(missing_not_suru)}
     uk: {len(uk)}
     """
     tooltip(message.replace(StringUtils.newline(), "<br>"))
     print(message)
 
-    print("missing")
-    for mis in missing: print(f"""{mis.get_vocab()}: {",".join(mis.get_readings())}""")
-    print(StringUtils.newline() + StringUtils.newline() + StringUtils.newline())
     print("multi")
     for mul in multi: print(f"""{mul.get_vocab()}: {",".join(mul.get_readings())}""")
+
+    print("missing not suru")
+    print(" OR ".join([f"Vocab:{miss.get_vocab()}" for miss in missing_not_suru]))
+    print(StringUtils.newline() + StringUtils.newline() + StringUtils.newline())
 
 def _update_vocab_parsed_parts_of_speech(all_vocabulary: list[WaniVocabNote]) -> None:
     for vocab in all_vocabulary:

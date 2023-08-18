@@ -47,7 +47,8 @@ def test_multi_matches(word: str, readings: list[str]) -> None:
 @pytest.mark.parametrize('word, readings', [
     ("に", ["に"]),
     ("しか", ["しか"]),
-    ("ローマ字", ["ろーまじ"])
+    ("ローマ字", ["ろーまじ"]),
+    ("狩り", ["かり"])
 ])
 def test_missing(word: str, readings: list[str]) -> None:
     mock_instance = vocab_mock(word, readings)
