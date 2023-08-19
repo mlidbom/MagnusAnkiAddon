@@ -29,6 +29,7 @@ def setup_note_menu(note, root_menu, sel_clip, selection, view: AnkiWebView):
     if isinstance(note, SentenceNote):
         add_text_vocab_lookup(note_lookup_menu, "&Vocabulary words v1", note.get_active_expression())
         add_text_vocab_lookup_v2(note_lookup_menu, "&Vocabulary words v2", note.get_active_expression())
+        add_lookup_action(note_lookup_menu, "&Kanji", f"""note:{Wani.NoteType.Kanji} ({" OR ".join([f"{Wani.KanjiFields.Kanji}:{kan}" for kan in note.extract_kanji()])})""")
 
     if isinstance(note, WaniRadicalNote):
         add_lookup_action(note_lookup_menu, "&Kanji", f"note:{Wani.NoteType.Kanji} {Wani.KanjiFields.Radicals_Names}:re:\\b{note.get_radical_name()}\\b")

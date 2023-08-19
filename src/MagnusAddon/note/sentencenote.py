@@ -1,9 +1,10 @@
 from anki.notes import Note
 
 from note.mynote import MyNote
-from sysutils import timeutil
+from sysutils import timeutil, kana_utils
 from parsing import janomeutils
 from parsing.janomeutils import ParsedWord
+from sysutils.utils import StringUtils
 from wanikani.wani_constants import SentenceNoteFields
 
 
@@ -32,3 +33,7 @@ class SentenceNote(MyNote):
     def update_parsed_words(self) -> None:
         if self._needs_words_reparsed():
             self._set_parsed_words([word.word for word in self.parse_words_from_expression()])
+
+    def extract_kanji(self) -> list[str]:
+        clean = StringUtils.strip_markup(self.get_expression())
+        return [char for char in clean if not kana_utils.is_kana(char)]
