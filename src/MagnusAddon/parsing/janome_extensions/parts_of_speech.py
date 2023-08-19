@@ -27,19 +27,19 @@ class PartOfSpeech:
     def __str__(self) -> str: return f"PartOfSpeech('{self.japanese}', '{self.english}')"
 
 _level_1 = [
-    PartOfSpeech('副詞', 'adverb', "Modifies verbs/adjectives"),
-    PartOfSpeech('助詞', 'particle', "Functional word indicating relation"),
-    PartOfSpeech('接続詞', 'conjunction', "Connects words/clauses"),
     PartOfSpeech('名詞', 'noun', "Names things or ideas"),
-    PartOfSpeech('記号', 'symbol', "Punctuation, special symbols"),
-    PartOfSpeech('感動詞', 'exclamation', "Expresses emotion"),
-    PartOfSpeech('接頭詞', 'prefix', "Added to beginning of words"),
+    PartOfSpeech('形容詞', 'adjective / i-adjective', "Describes nouns"),
+    PartOfSpeech('連体詞', 'pre-noun adjectival / adnominal-adjective', "Modifies nouns directly"),
     PartOfSpeech('動詞', 'verb', "Indicates action"),
+    PartOfSpeech('副詞', 'adverb', "Modifies verbs/adjectives"),
+    PartOfSpeech('助動詞', 'inflecting dependent word (in Japanese) / bound auxiliary |  auxiliary verb (in languages other than Japanese)', "Modifies verb tense/mood"),
+    PartOfSpeech('助詞', 'particle', "Functional word indicating relation such as marking direct object, subject etc"),
+    PartOfSpeech('接続詞', 'conjunction', "Connects words/clauses"),
+    PartOfSpeech('感動詞', 'interjection', "Expresses emotion"),
+    PartOfSpeech('接頭詞', 'prefix', "Added to beginning of words"),
     PartOfSpeech('フィラー', 'filler', "Sound/word filling a pause"),
-    PartOfSpeech('助動詞', 'auxiliary-verb', "Modifies verb tense/mood"),
-    PartOfSpeech('その他', 'others', "Miscellaneous, doesn't fit other categories"),
-    PartOfSpeech('連体詞', 'adnominal-adjective', "Modifies nouns directly"),
-    PartOfSpeech('形容詞', 'adjective', "Describes nouns")
+    PartOfSpeech('記号', 'symbol', "Punctuation, special symbols"),
+    PartOfSpeech('その他', 'others', "Miscellaneous, doesn't fit other categories")
 ]
 
 _level_2_3_4 = [
@@ -101,10 +101,7 @@ _level_4 = _level_2_3_4 + [
     PartOfSpeech('姓', 'surname', "Family names or surnames"),
     PartOfSpeech('国', 'country', "Names of countries")
 ]
+_all_parts_of_speech = _level_1 + _level_2 + _level_3 + _level_4
 
-
-
-_parts_of_speech = _level_1 + _level_2 + _level_3 + _level_4
-
-_japanese_to_part_of_speech = {pos.japanese: pos for pos in _parts_of_speech}
-_part_of_speech_string_translation = {pos.japanese: pos.english for pos in _parts_of_speech}
+_japanese_to_part_of_speech = {pos.japanese: pos for pos in _all_parts_of_speech}
+_part_of_speech_string_translation = {pos.japanese: pos.english for pos in _all_parts_of_speech}
