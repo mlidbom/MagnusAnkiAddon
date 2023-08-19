@@ -56,6 +56,7 @@ _level_2_3 = [
 
 _level_2 = _level_2_3_4 + _level_2_3 + [
     PartOfSpeech('自立', 'independent', "Not dependent on other words"),
+    PartOfSpeech('動詞接続', 'verb-connective', "indicates a form or a word that is used to connect with or modify a verb"),
     PartOfSpeech('代名詞', 'pronoun', "Replaces a noun, e.g., he, she, it"),
     PartOfSpeech('係助詞', 'binding', "Connects words/clauses, e.g., は, も"),
     PartOfSpeech('読点', 'comma', "Punctuation to separate elements"),
