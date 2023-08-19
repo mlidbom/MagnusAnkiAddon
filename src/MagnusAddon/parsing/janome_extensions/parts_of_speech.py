@@ -28,7 +28,7 @@ class PartOfSpeech:
 
 _level_1 = [
     PartOfSpeech('名詞', 'noun', "Names things or ideas"),
-    PartOfSpeech('形容詞', 'adjective / i-adjective', "Describes nouns"),
+    PartOfSpeech('形容詞', 'i-adjective', "Describes nouns"),
     PartOfSpeech('連体詞', 'pre-noun adjectival / adnominal-adjective', "Modifies nouns directly"),
     PartOfSpeech('動詞', 'verb', "Indicates action"),
     PartOfSpeech('副詞', 'adverb', "Modifies verbs/adjectives"),
@@ -51,11 +51,11 @@ _level_2_3 = [
     PartOfSpeech('サ変接続', 'suru-verb', "Nouns convertible into verbs with 'する'"),
     PartOfSpeech('特殊', 'special', "Irregular forms"),
     PartOfSpeech('副詞可能', 'adverbial', "Nouns/verbs that can function as adverbs"),
-    PartOfSpeech('形容動詞語幹', 'adjectival-verb-stem', "Base form of na-adjectives")
+    PartOfSpeech('形容動詞語幹', 'na-adjective stem', "Base form of na-adjectives")
 ]
 
 _level_2 = _level_2_3_4 + _level_2_3 + [
-    PartOfSpeech('自立', 'independent', "Can stand alone, not dependent on other words"),
+    PartOfSpeech('自立', 'independent', "Not dependent on other words"),
     PartOfSpeech('代名詞', 'pronoun', "Replaces a noun, e.g., he, she, it"),
     PartOfSpeech('係助詞', 'binding', "Connects words/clauses, e.g., は, も"),
     PartOfSpeech('読点', 'comma', "Punctuation to separate elements"),
