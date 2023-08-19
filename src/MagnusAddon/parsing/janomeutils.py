@@ -18,7 +18,6 @@ def extract_dictionary_forms(text: str) -> list[ParsedWord]:
     for index, token in enumerate(tokens):
         dictionary_form = token.base_form
 
-        parts_of_speech = token.parts_of_speech.translate()
-        dictionary_forms.append(ParsedWord(dictionary_form, parts_of_speech))
+        dictionary_forms.append(ParsedWord(dictionary_form, token.parts_of_speech))
 
     return dictionary_forms
