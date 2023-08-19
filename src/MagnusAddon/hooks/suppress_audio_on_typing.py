@@ -12,7 +12,7 @@ def typed_in_editor(note:Note):
     SuppressAudioData._last_typing_note = note
 
 def will_play_tags(tags: list[AVTag], _something: str, _view: any):
-    if time.time() - SuppressAudioData.last_typing_time < 0.01:
+    if time.time() - SuppressAudioData.last_typing_time < 0.1:
         tags.clear()
 
 def init() -> None:

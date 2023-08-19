@@ -27,7 +27,7 @@ def vocab_mock(word: str, readings: list[str]) -> WaniVocabNote:
 ])
 def test_uk(word: str, readings: list[str]) -> None:
     mock_instance = vocab_mock(word, readings)
-    dict_entry = DictLookup.lookup_vocab_word_or_name(mock_instance)
+    dict_entry = DictLookup.try_lookup_vocab_word_or_name(mock_instance)
     assert dict_entry.is_uk()
     assert dict_entry.found_words_count() == 1
 
@@ -36,7 +36,7 @@ def test_uk(word: str, readings: list[str]) -> None:
 ])
 def test_multi_readings(word: str, readings: list[str]) -> None:
     mock_instance = vocab_mock(word, readings)
-    dict_entry = DictLookup.lookup_vocab_word_or_name(mock_instance)
+    dict_entry = DictLookup.try_lookup_vocab_word_or_name(mock_instance)
     assert dict_entry.found_words_count() == 1
 
 @pytest.mark.parametrize('word, readings', [
@@ -48,7 +48,7 @@ def test_multi_readings(word: str, readings: list[str]) -> None:
 ])
 def test_multi_matches(word: str, readings: list[str]) -> None:
     mock_instance = vocab_mock(word, readings)
-    dict_entry = DictLookup.lookup_vocab_word_or_name(mock_instance)
+    dict_entry = DictLookup.try_lookup_vocab_word_or_name(mock_instance)
     assert dict_entry.found_words_count() > 1
 
 @pytest.mark.parametrize('word, readings', [
@@ -59,7 +59,7 @@ def test_multi_matches(word: str, readings: list[str]) -> None:
 ])
 def test_missing(word: str, readings: list[str]) -> None:
     mock_instance = vocab_mock(word, readings)
-    dict_entry = DictLookup.lookup_vocab_word_or_name(mock_instance)
+    dict_entry = DictLookup.try_lookup_vocab_word_or_name(mock_instance)
     assert dict_entry.found_words_count() == 1
 
 @pytest.mark.parametrize('word, readings', [
@@ -67,7 +67,7 @@ def test_missing(word: str, readings: list[str]) -> None:
 ])
 def test_names(word: str, readings: list[str]) -> None:
     mock_instance = vocab_mock(word, readings)
-    dict_entry = DictLookup.lookup_vocab_word_or_name(mock_instance)
+    dict_entry = DictLookup.try_lookup_vocab_word_or_name(mock_instance)
     assert dict_entry.found_words_count() == 1
 
 

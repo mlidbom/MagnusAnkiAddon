@@ -58,8 +58,8 @@ class DictLookup:
                                          if ent.is_kana_only()))
 
     @classmethod
-    def lookup_vocab_word_or_name(cls, word: WaniVocabNote) -> 'DictLookup':
-        return cls.lookup_word_or_name(word.get_vocab(), word.get_readings())
+    def try_lookup_vocab_word_or_name(cls, word: WaniVocabNote) -> 'DictLookup':
+        return cls.try_lookup_word_or_name(word.get_vocab(), word.get_readings())
 
     @classmethod
     def lookup_word_or_name(cls, word: str, readings: list[str]) -> 'DictLookup':

@@ -1,5 +1,7 @@
 from typing import *
 
+from aqt.utils import tooltip
+
 from parsing.textparser import DictLookup
 from sysutils import kana_utils
 from parsing import janomeutils
@@ -23,16 +25,16 @@ def update_all() -> None:
 
     UIUtils.run_ui_action(update_all_inner)
 
-def update_vocab_pos_information() -> None:
+def set_vocab_uk_from_dictionary() -> None:
     def inner() -> None:
         all_vocabulary: list[WaniVocabNote] = WaniCollection.fetch_all_vocab_notes()
         for vocab in all_vocabulary:
-            try:
-                lookup = DictLookup.lookup_vocab_word_or_name(vocab)
-            except KeyError:
-                pass
+            lookup = DictLookup.try_lookup_vocab_word_or_name(vocab)
+            if lookup.is_uk():
+                vocab.set_tag(Mine.Tags.UsuallyKanaOnly)
 
     UIUtils.run_ui_action(inner)
+
 
 
 def _update_vocab_parsed_parts_of_speech(all_vocabulary: list[WaniVocabNote]) -> None:
