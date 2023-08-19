@@ -124,7 +124,7 @@ def identify_words(sentence: str) -> list[ParsedWord]:
     return potential_words
 
 def identify_words2(sentence: str) -> list[ParsedWord]:
-    tokens = [token for token in _tokenizer.tokenize(sentence) if not token.is_noise_token()]
+    tokens = [token for token in _tokenizer.tokenize(sentence) if not token.parts_of_speech.is_noise()]
     potential_words = list[str]()
 
     for token_index in range(len(tokens)):

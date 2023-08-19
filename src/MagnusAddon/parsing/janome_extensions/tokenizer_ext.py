@@ -1,5 +1,4 @@
 from janome.tokenizer import Tokenizer
-
 from parsing.janome_extensions.token_ext import TokenExt
 
 
@@ -10,4 +9,4 @@ class TokenizerExt:
     def tokenize(self, text: str) -> list[TokenExt]:
         return [token for token in
                 (TokenExt(tok) for tok in self._tokenizer.tokenize(text))
-                if not token.is_noise_token()]
+                if not token.parts_of_speech.is_noise()]

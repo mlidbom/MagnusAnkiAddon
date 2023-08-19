@@ -1,8 +1,6 @@
 from janome.tokenizer import Token
-
 from parsing.janome_extensions.parts_of_speech import PartsOfSpeech
 from sysutils import typed
-
 
 class TokenExt:
     def __init__(self, token: Token):
@@ -19,5 +17,3 @@ class TokenExt:
         self.parts_of_speech = PartsOfSpeech(self.part_of_speech)
 
     def __str__(self) -> str: return self._token.__str__()
-
-    def is_noise_token(self) -> bool: return self.parts_of_speech.is_noise()
