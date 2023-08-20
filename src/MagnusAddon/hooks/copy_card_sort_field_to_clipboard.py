@@ -20,7 +20,7 @@ def copy_card_sort_field_to_clipboard(card: Card) -> None:
     model = note.model()
     sort_field = model['sortf']
     sort_value = note.fields[sort_field]
-    clean_string = StringUtils.strip_markup(sort_value)
+    clean_string = StringUtils.strip_markup_and_noise_characters(sort_value)
     my_clipboard.set_text(clean_string)
 
 

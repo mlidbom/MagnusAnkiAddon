@@ -52,7 +52,12 @@ class StringUtils:
 
     @staticmethod
     def strip_markup(string: str) -> str:
-        return re.sub('<.*?>|\[.*?\]|[〜]', '', string) # noqa
+        return re.sub('<.*?>|\[.*?\]', '', string) # noqa
+
+    @staticmethod
+    def strip_markup_and_noise_characters(string: str) -> str:
+        return re.sub('<.*?>|\[.*?\]|[〜]', '', string)  # noqa
+
 
 class UIUtils:
     @staticmethod
