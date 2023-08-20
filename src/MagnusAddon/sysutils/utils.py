@@ -51,8 +51,8 @@ class StringUtils:
         return [] + result
 
     @staticmethod
-    def strip_markup(string:str) -> str:
-        return re.sub('<.*?>', '', string)
+    def strip_markup(string: str) -> str:
+        return re.sub('<.*?>|\[.*?\]|[〜]', '', string) # noqa
 
 class UIUtils:
     @staticmethod

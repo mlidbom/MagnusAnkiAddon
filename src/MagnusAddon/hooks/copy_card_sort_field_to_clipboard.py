@@ -4,7 +4,7 @@ from aqt import gui_hooks
 
 from sysutils import my_clipboard
 from sysutils.collections.recent_items import RecentItems
-from sysutils.utils import UIUtils
+from sysutils.utils import UIUtils, StringUtils
 
 recent_note_ids = RecentItems[int](2)
 
@@ -20,8 +20,7 @@ def copy_card_sort_field_to_clipboard(card: Card) -> None:
     model = note.model()
     sort_field = model['sortf']
     sort_value = note.fields[sort_field]
-    clean_string = re.sub('<.*?>', '', sort_value)
-    clean_string = re.sub('\[.*?\]', '', clean_string) # noqa
+    clean_string = StringUtils.strip_markup(sort_value)
     my_clipboard.set_text(clean_string)
 
 

@@ -30,6 +30,7 @@ _level_1 = [
     PartOfSpeech('名詞', 'noun', "Names things or ideas"),
     PartOfSpeech('形容詞', 'i-adjective', "Describes nouns"),
     PartOfSpeech('連体詞', 'pre-noun adjectival / adnominal-adjective', "Modifies nouns directly"),
+    PartOfSpeech('接続詞的', 'conjunctive', 'words or expressions that function in a manner similar to conjunctions'),
     PartOfSpeech('動詞', 'verb', "Indicates action"),
     PartOfSpeech('副詞', 'adverb', "Modifies verbs/adjectives"),
     PartOfSpeech('助動詞', 'inflecting dependent word (in Japanese) / bound auxiliary |  auxiliary verb (in languages other than Japanese)', "Modifies verb tense/mood"),
