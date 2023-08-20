@@ -102,42 +102,40 @@ class DictLookup:
         return DictEntry.create(cls._jamdict.lookup(word, lookup_chars=False).names)
 
 
-def is_valid_word(word: str) -> bool:
+def word_is_in_dictionary(word: str) -> bool:
     result = DictLookup.lookup_word_shallow(word)
     return result.found_words()
 
 _max_lookahead = 4
 def identify_words(sentence: str) -> list[ParsedWord]:
-    tokens = [token for token in _tokenizer.tokenize(sentence) if not token.parts_of_speech.is_noise()]
-    potential_words = list[str]()
+    def add_word_if_it_is_in_dictionary(word: str) -> None:
+        if word_is_in_dictionary(word) and word not in found_words:
+            found_words.add(word)
+            found_words_list.append(word)
 
-    for token_index in range(len(tokens)):
-        token = tokens[token_index]
-
-        if not is_valid_word(token.base_form): continue
-        if token.base_form not in potential_words:
-            potential_words.append(token.base_form)
-
-        if not is_valid_word(token.surface): continue
-        if token.surface not in potential_words:
-            potential_words.append(token.surface)
-
+    def check_for_compound_words() -> None:
         surface_compound = token.surface
         for lookahead_index in range(token_index + 1, min(token_index + _max_lookahead, len(tokens))):
             look_ahead_token = tokens[lookahead_index]
             base_compound = surface_compound + look_ahead_token.base_form
-            surface_compound = surface_compound + look_ahead_token.surface
+            surface_compound += look_ahead_token.surface
 
             if base_compound != surface_compound:
-                if is_valid_word(base_compound):
-                    if base_compound not in potential_words:
-                        potential_words.append(base_compound)
+                add_word_if_it_is_in_dictionary(base_compound)
+            add_word_if_it_is_in_dictionary(surface_compound)
 
-            if is_valid_word(surface_compound):
-                if surface_compound not in potential_words:
-                    potential_words.append(surface_compound)
+    tokens = _tokenizer.tokenize(sentence)
+    found_words = set[str]()
+    found_words_list = []
 
-    return [ParsedWord(word) for word in potential_words]
+    for token_index, token in enumerate(tokens):
+        add_word_if_it_is_in_dictionary(token.base_form)
+        add_word_if_it_is_in_dictionary(token.surface)
+        check_for_compound_words()
+
+    return [ParsedWord(word) for word in found_words_list]
+
+
 
 def identify_first_word(sentence: str) -> str:
 
@@ -148,7 +146,7 @@ def identify_first_word(sentence: str) -> str:
 
         for lookahead_index in range(token_index + 1, len(tokens)):
             next_combination = word_combination + tokens[token_index + 1].base_form
-            if not is_valid_word(next_combination):
+            if not word_is_in_dictionary(next_combination):
                 return word_combination
             word_combination = next_combination
 
