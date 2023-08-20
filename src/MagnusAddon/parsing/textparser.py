@@ -136,7 +136,6 @@ def identify_words(sentence: str) -> list[ParsedWord]:
             if is_valid_word(surface_compound):
                 if surface_compound not in potential_words:
                     potential_words.append(surface_compound)
-                    surface_compound = surface_compound
 
     return [ParsedWord(word) for word in potential_words]
 
