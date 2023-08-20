@@ -2,7 +2,7 @@ from typing import Sequence
 
 from jamdict.jmdict import JMDEntry
 from jamdict import Jamdict
-
+from functools import lru_cache
 from parsing.janome_extensions.tokenizer_ext import TokenizerExt
 from parsing.janomeutils import ParsedWord
 from sysutils import kana_utils
@@ -70,6 +70,11 @@ class DictLookup:
 
     @classmethod
     def try_lookup_word_or_name(cls, word: str, readings: list[str]) -> 'DictLookup':
+        return cls._try_lookup_word_or_name(word, tuple(readings))
+
+    @classmethod
+    @lru_cache(maxsize=None)
+    def _try_lookup_word_or_name(cls, word: str, readings: tuple[str]) -> 'DictLookup':
         def kanji_form_matches() -> list[DictEntry]:
             return [ent for ent in lookup
                     if any(ent.has_matching_kana_form(reading) for reading in readings)
@@ -81,7 +86,7 @@ class DictLookup:
                     if any(ent.has_matching_kana_form(reading) for reading in readings)
                     and ent.is_kana_only()]
 
-        lookup = cls._lookup_word_shallow(word)
+        lookup = cls._lookup_word(word)
         if not lookup:
             lookup = cls._lookup_name(word)
 
@@ -91,13 +96,15 @@ class DictLookup:
 
     @classmethod
     def lookup_word_shallow(cls, word: str) -> 'DictLookup':
-        return DictLookup(cls._lookup_word_shallow(word))
+        return DictLookup(cls._lookup_word(word))
 
     @classmethod
-    def _lookup_word_shallow(cls, word: str) -> 'list[DictEntry]':
+    @lru_cache(maxsize=None)  # _lookup_word_shallow.cache_clear(), _lookup_word_shallow.cache_info()
+    def _lookup_word(cls, word: str) -> 'list[DictEntry]':
         return DictEntry.create(cls._jamdict.lookup(word, lookup_chars=False, lookup_ne=False).entries)
 
     @classmethod
+    @lru_cache(maxsize=None)  # _lookup_word_shallow.cache_clear(), _lookup_word_shallow.cache_info()
     def _lookup_name(cls, word: str) -> list[DictEntry]:
         return DictEntry.create(cls._jamdict.lookup(word, lookup_chars=False).names)
 
