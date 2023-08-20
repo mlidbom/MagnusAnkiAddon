@@ -69,7 +69,8 @@ _tokenizer = Tokenizer()
       ParsedWord('とは'),
       ParsedWord('は')]),
     ("どうやってここを知った。",
-     [ParsedWord('どう'), # TODO compound どうやって missing
+     [ParsedWord('どう'),
+      ParsedWord('どうやって'),
       ParsedWord('やる'),
       ParsedWord('て'),
       ParsedWord('ここ'),

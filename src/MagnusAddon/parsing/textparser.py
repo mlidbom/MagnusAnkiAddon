@@ -106,6 +106,7 @@ def is_valid_word(word: str) -> bool:
     result = DictLookup.lookup_word_shallow(word)
     return result.found_words()
 
+_max_lookahead = 4
 def identify_words(sentence: str) -> list[ParsedWord]:
     tokens = [token for token in _tokenizer.tokenize(sentence) if not token.parts_of_speech.is_noise()]
     potential_words = list[str]()
@@ -121,22 +122,21 @@ def identify_words(sentence: str) -> list[ParsedWord]:
         if token.surface not in potential_words:
             potential_words.append(token.surface)
 
-        word_combination = token.surface
-        for lookahead_index in range(token_index + 1, len(tokens)):
-            word_combination = word_combination + tokens[lookahead_index].surface
-            if is_valid_word(word_combination):
-                if word_combination not in potential_words:
-                    potential_words.append(word_combination)
-                    word_combination = word_combination
-            else: break
+        surface_compound = token.surface
+        for lookahead_index in range(token_index + 1, min(token_index + _max_lookahead, len(tokens))):
+            look_ahead_token = tokens[lookahead_index]
+            base_compound = surface_compound + look_ahead_token.base_form
+            surface_compound = surface_compound + look_ahead_token.surface
 
-        word_combination = token.surface
-        for lookahead_index in range(token_index + 1, len(tokens)):
-            word_combination = word_combination + tokens[lookahead_index].base_form
-            if is_valid_word(word_combination):
-                if word_combination not in potential_words:
-                    potential_words.append(word_combination)
-            else: break
+            if base_compound != surface_compound:
+                if is_valid_word(base_compound):
+                    if base_compound not in potential_words:
+                        potential_words.append(base_compound)
+
+            if is_valid_word(surface_compound):
+                if surface_compound not in potential_words:
+                    potential_words.append(surface_compound)
+                    surface_compound = surface_compound
 
     return [ParsedWord(word) for word in potential_words]
 
