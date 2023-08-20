@@ -2,17 +2,23 @@ import pytest
 from janome.tokenizer import Tokenizer
 
 from parsing.janomeutils import extract_dictionary_forms
-from parsing.textparser import ParsedWord, identify_first_word, identify_words
+from parsing.textparser import ParsedWord, identify_words
 
 _tokenizer = Tokenizer()
 
 #TODO: See if we can't find a way to parse suru out of sentences such that the verbalizing suffix can be
 # handled separately from the stand-alone word.
-# Check out SudachiPy
-# https://pypi.org/project/SudachiDict-full/
-# https://github.com/polm/fugashi
-# https://github.com/nakagami/janomecabdic
-# https://pypi.org/project/unidic2ud/
+# Now that we have reasonably good POS handling this should be no harder than checking if the previous token
+# is a suru verb once we find an instance of suru right?
+# It's a word specific hack, but for suru, maybe it is OK since it is one heck of a special word.
+#
+#
+# todo:
+#  Check out SudachiPy
+#  https://pypi.org/project/SudachiDict-full/
+#  https://github.com/polm/fugashi
+#  https://github.com/nakagami/janomecabdic
+#  https://pypi.org/project/unidic2ud/
 #
 # def test_suffix_suru_recognized_as_suffix() -> None:
 #     result = list(_tokenizer.tokenize("心配する"))
@@ -112,15 +118,3 @@ def test_ignores_noise_characters() -> None:
     result = identify_words(".,:;/|。、ー")
     print(result)
     assert result == [ParsedWord("ー")]
-
-
-@pytest.mark.parametrize('sentence, expected_output', [
-    ("ハート形", "ハート形"),
-    ("走る", "走る"),
-    ("走って", "走る"),
-    ("走り回る", "走り回る"),
-    ("走って", "走る")
-])
-def test_identify_word(sentence: str, expected_output: str) -> None:
-    result = identify_first_word(sentence)
-    assert result == expected_output

@@ -143,24 +143,3 @@ def identify_words(sentence: str) -> list[ParsedWord]:
     return [ParsedWord(word) for word in found_words_list]
 
 
-
-def identify_first_word(sentence: str) -> str:
-
-    tokens = _tokenizer.tokenize(sentence)
-    word_combination = ""
-    for token_index in range(len(tokens)):
-        word_combination: str = tokens[token_index].base_form
-
-        for lookahead_index in range(token_index + 1, len(tokens)):
-            next_combination = word_combination + tokens[token_index + 1].base_form
-            if not word_is_in_dictionary(next_combination):
-                return word_combination
-            word_combination = next_combination
-
-        return word_combination
-
-
-    return word_combination
-
-
-
