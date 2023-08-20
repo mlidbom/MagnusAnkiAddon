@@ -48,5 +48,5 @@ def anki_lookup(search: Callable[[], str]) -> Callable[[],None]:
 
 
 def add_sentence_lookup(menu, name: str, search):
-    add_lookup_action(menu, name, f"(deck:*sentence* deck:*listen*) (Expression:*{search}* OR Reading:*{search}* OR ParsedWords:*{search}*)")
+    add_lookup_action(menu, name, f"(deck:*sentence* deck:*listen*) (Expression:*{search}* OR Reading:*{search}* OR ParsedWords:re:\b{search}\b)")
 
