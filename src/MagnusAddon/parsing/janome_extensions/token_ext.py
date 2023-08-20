@@ -13,7 +13,7 @@ class TokenExt:
         self.reading = typed.str_(token.reading)
         self.phonetic = typed.str_(token.phonetic)
         self.node_type = typed.str_(token.node_type)
-        self.part_of_speech = typed.str_(token.part_of_speech)
-        self.parts_of_speech = PartsOfSpeech(self.part_of_speech)
+        self.parts_of_speech = PartsOfSpeech(typed.str_(token.part_of_speech))
 
-    def __str__(self) -> str: return self._token.__str__()
+    def __repr__(self) -> str:
+        return f"""{self.surface}:{self.base_form}:{self.parts_of_speech}"""

@@ -42,7 +42,7 @@ def add_text_vocab_lookup_v2(menu: QMenu, name:str, text:str) -> None:
         return f'(tag:_uk AND Reading:{voc.word})' if voc.is_kana_only() else f'Vocab:{voc.word}'
 
     def create_search_string() -> str:
-        dictionary_forms = textparser.identify_words2(text)
+        dictionary_forms = textparser.identify_words(text)
         return f"deck:*Vocab* deck:*Read* ({' OR '.join([voc_clause(voc) for voc in dictionary_forms])})"
 
     add_lookup_action_lambda(menu, name, create_search_string)

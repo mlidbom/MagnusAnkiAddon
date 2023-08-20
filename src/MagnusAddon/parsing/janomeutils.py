@@ -17,7 +17,8 @@ def extract_dictionary_forms(text: str) -> list[ParsedWord]:
     dictionary_forms = list[ParsedWord]()
     for index, token in enumerate(tokens):
         dictionary_form = token.base_form
-
         dictionary_forms.append(ParsedWord(dictionary_form, token.parts_of_speech))
+        if token.base_form != token.surface and not token.parts_of_speech.is_verb():
+            dictionary_forms.append(ParsedWord(token.surface, token.parts_of_speech))
 
     return dictionary_forms

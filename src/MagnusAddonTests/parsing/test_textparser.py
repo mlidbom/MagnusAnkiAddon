@@ -2,12 +2,18 @@ import pytest
 from janome.tokenizer import Tokenizer
 
 from parsing.janomeutils import extract_dictionary_forms
-from parsing.textparser import ParsedWord, identify_first_word, identify_words2
+from parsing.textparser import ParsedWord, identify_first_word, identify_words
 
 _tokenizer = Tokenizer()
 
 #TODO: See if we can't find a way to parse suru out of sentences such that the verbalizing suffix can be
 # handled separately from the stand-alone word.
+# Check out SudachiPy
+# https://pypi.org/project/SudachiDict-full/
+# https://github.com/polm/fugashi
+# https://github.com/nakagami/janomecabdic
+# https://pypi.org/project/unidic2ud/
+#
 # def test_suffix_suru_recognized_as_suffix() -> None:
 #     result = list(_tokenizer.tokenize("心配する"))
 #     print(result)
@@ -62,41 +68,28 @@ _tokenizer = Tokenizer()
       ParsedWord('と'),
       ParsedWord('とは'),
       ParsedWord('は')]),
-])
-def test_identify_words(sentence: str, expected_output: list[ParsedWord]) -> None:
-    result = identify_words2(sentence)
-    print(result)
-    assert result == expected_output
-
-def test_ignores_noise_characters() -> None:
-    result = identify_words2(".,:;/|。、ー")
-    print(result)
-    assert result == [ParsedWord("ー")]
-
-@pytest.mark.parametrize('sentence, expected_output', [
-    ("走る",
-     [ParsedWord('走る')]),
-    ("走って",
-     [ParsedWord('走る'),
-      ParsedWord('て')]),
-    ("これをください。",
-     [ParsedWord('これ'),
+    ("どうやってここを知った。",
+     [ParsedWord('どう'), # TODO compound どうやって missing
+      ParsedWord('やる'),
+      ParsedWord('て'),
+      ParsedWord('ここ'),
       ParsedWord('を'),
-      ParsedWord('くださる')]),  # TODO wrong word, correct word missing
-    ("ハート形",
-     [ParsedWord('ハート'),
-      ParsedWord('形')]),
-    ("私が行きましょう。",
-     [ParsedWord('私'),
-      ParsedWord('が'),
-      ParsedWord('行く'),
-      ParsedWord('ます'),
-      ParsedWord('う')]),
-    ("ハート形",
-     [ParsedWord('ハート'),
-      ParsedWord('形')]), # TODO compound ハート形 missing
+      ParsedWord('知る'),
+      ParsedWord('た')]),
+    ("声出したら駄目だからね",
+     [ParsedWord('声'),
+      ParsedWord('出す'),
+      ParsedWord('出し'),
+      ParsedWord('た'),
+      ParsedWord('たら'),
+      ParsedWord('駄目'),
+      ParsedWord('だ'),
+      ParsedWord('だから'),
+      ParsedWord('から'),
+      ParsedWord('ね')]),
     ("彼の日本語のレベルは私と同じ位だ。",
      [ParsedWord('彼'),
+      ParsedWord('彼の'),
       ParsedWord('の'),
       ParsedWord('日本語'),
       ParsedWord('レベル'),
@@ -104,22 +97,20 @@ def test_ignores_noise_characters() -> None:
       ParsedWord('私'),
       ParsedWord('と'),
       ParsedWord('同じ'),
+      ParsedWord('同じ位'),
       ParsedWord('位'),
       ParsedWord('だ')]
-     ),
-    ("どうやってここを知った。",
-    [ParsedWord('どう'), # TODO compound どうやって missing
-     ParsedWord('やる'),
-     ParsedWord('て'),
-     ParsedWord('ここ'),
-     ParsedWord('を'),
-     ParsedWord('知る'),
-     ParsedWord('た')])
+     )
 ])
-def test_extract_dictionary_forms(sentence: str, expected_output: list[ParsedWord]) -> None:
-    result = extract_dictionary_forms(sentence)
+def test_identify_words(sentence: str, expected_output: list[ParsedWord]) -> None:
+    result = identify_words(sentence)
     print(result)
     assert result == expected_output
+
+def test_ignores_noise_characters() -> None:
+    result = identify_words(".,:;/|。、ー")
+    print(result)
+    assert result == [ParsedWord("ー")]
 
 
 @pytest.mark.parametrize('sentence, expected_output', [

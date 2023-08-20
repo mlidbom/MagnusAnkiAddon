@@ -107,23 +107,6 @@ def is_valid_word(word: str) -> bool:
     return result.found_words()
 
 def identify_words(sentence: str) -> list[ParsedWord]:
-    tokens = [token for token in _tokenizer.tokenize(sentence)]
-    potential_words = list[ParsedWord]()
-
-    for token_index in range(len(tokens)):
-        word_combination:str = tokens[token_index].surface
-        if is_valid_word(word_combination) and word_combination not in potential_words:
-            potential_words.append(ParsedWord(word_combination))
-        for lookahead_index in range(token_index + 1, len(tokens)):
-            word_combination += tokens[lookahead_index].surface
-            if is_valid_word(word_combination) and word_combination not in potential_words:
-                potential_words.append(ParsedWord(word_combination))
-            else:
-                break
-
-    return potential_words
-
-def identify_words2(sentence: str) -> list[ParsedWord]:
     tokens = [token for token in _tokenizer.tokenize(sentence) if not token.parts_of_speech.is_noise()]
     potential_words = list[str]()
 

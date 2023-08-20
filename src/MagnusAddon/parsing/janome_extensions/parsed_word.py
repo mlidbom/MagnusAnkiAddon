@@ -11,7 +11,7 @@ class ParsedWord:
     def to_hiragana(self) -> str: return kana_utils.to_hiragana(self.word)
 
     def __repr__(self) -> str:
-        return f"ParsedWord('{self.word}', '{self.parts_of_speech}')"
+        return f"ParsedWord('{self.word}')"
 
     def __eq__(self, other: any) -> bool:
         if isinstance(other, ParsedWord):

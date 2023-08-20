@@ -18,7 +18,10 @@ class PartsOfSpeech:
     def translate(self) -> str:
         return ','.join([_part_of_speech_string_translation[pos] for pos in self._parts])
 
-    def __str__(self) -> str: return f"'{self.level1.japanese},{self.level2.japanese},{self.level3.japanese},{self.level4.japanese}'"
+    def __repr__(self) -> str: return f"'{self.level1},{self.level2},{self.level3},{self.level4}'"
+
+    def is_verb(self) -> bool: return "verb" == self.level1.english
+
 
 class PartOfSpeech:
     def __init__(self, japanese: str, english: str, explanation: str):
@@ -26,7 +29,7 @@ class PartOfSpeech:
         self.english = english
         self.explanation = explanation
 
-    def __str__(self) -> str: return f"PartOfSpeech('{self.japanese}', '{self.english}')"
+    def __repr__(self) -> str: return self.english
 
 _level_1 = [
     PartOfSpeech('名詞', 'noun', "Names things or ideas"),
