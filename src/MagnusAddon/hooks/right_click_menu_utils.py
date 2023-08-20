@@ -4,8 +4,8 @@ import aqt
 from PyQt6.QtWidgets import QMenu
 from aqt.browser import Browser
 
-from parsing import janomeutils, textparser
-from parsing.janomeutils import ParsedWord
+from parsing import textparser
+from parsing.janome_extensions.parsed_word import ParsedWord
 from sysutils.utils import UIUtils
 from wanikani.wani_constants import Wani
 
@@ -28,16 +28,6 @@ def add_single_vocab_lookup_action(menu: QMenu, name:str, vocab:str) -> None:
     menu.addAction(name, anki_lookup(lambda: f"{_vocab_read_cards} Vocab:{vocab}"))
 
 def add_text_vocab_lookup(menu: QMenu, name:str, text:str) -> None:
-    def voc_clause(voc: ParsedWord) -> str:
-        return f'(tag:_uk AND Reading:{voc.word})' if voc.is_kana_only() else f'Vocab:{voc.word}'
-
-    def create_search_string() -> str:
-        dictionary_forms = janomeutils.extract_dictionary_forms(text)
-        return f"deck:*Vocab* deck:*Read* ({' OR '.join([voc_clause(voc) for voc in dictionary_forms])})"
-
-    add_lookup_action_lambda(menu, name, create_search_string)
-
-def add_text_vocab_lookup_v2(menu: QMenu, name:str, text:str) -> None:
     def voc_clause(voc: ParsedWord) -> str:
         return f'(tag:_uk AND Reading:{voc.word})' if voc.is_kana_only() else f'Vocab:{voc.word}'
 

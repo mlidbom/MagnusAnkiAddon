@@ -1,7 +1,5 @@
 from typing import *
 
-from aqt.utils import tooltip
-
 from parsing.textparser import DictLookup
 from sysutils import kana_utils
 from parsing import janomeutils

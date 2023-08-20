@@ -3,8 +3,9 @@ from typing import Sequence
 from jamdict.jmdict import JMDEntry
 from jamdict import Jamdict
 from functools import lru_cache
+
+from parsing.janome_extensions.parsed_word import ParsedWord
 from parsing.janome_extensions.tokenizer_ext import TokenizerExt
-from parsing.janomeutils import ParsedWord
 from sysutils import kana_utils
 
 _tokenizer = TokenizerExt()

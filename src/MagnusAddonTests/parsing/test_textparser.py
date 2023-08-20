@@ -1,8 +1,8 @@
 import pytest
 from janome.tokenizer import Tokenizer
 
-from parsing.janomeutils import extract_dictionary_forms
-from parsing.textparser import ParsedWord, identify_words
+from parsing.janome_extensions.parsed_word import ParsedWord
+from parsing.textparser import identify_words
 
 _tokenizer = Tokenizer()
 

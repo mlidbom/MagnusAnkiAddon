@@ -1,9 +1,9 @@
 from anki.notes import Note
 
 from note.mynote import MyNote
+from parsing.janome_extensions.parsed_word import ParsedWord
 from sysutils import timeutil, kana_utils
-from parsing import janomeutils
-from parsing.janomeutils import ParsedWord
+from parsing import textparser
 from sysutils.utils import StringUtils
 from wanikani.wani_constants import SentenceNoteFields
 
@@ -19,7 +19,7 @@ class SentenceNote(MyNote):
     def get_active_expression(self) -> str:
         return self._get_expression__() or self.get_expression()
 
-    def parse_words_from_expression(self) -> list[ParsedWord]: return janomeutils.extract_dictionary_forms(self.get_active_expression())
+    def parse_words_from_expression(self) -> list[ParsedWord]: return textparser.identify_words(self.get_active_expression())
     def _set_parsed_words(self, value: list[str]) -> None:
         value.append(str(timeutil.one_second_from_now()))
         super().set_field(SentenceNoteFields.ParsedWords, ",".join(value))

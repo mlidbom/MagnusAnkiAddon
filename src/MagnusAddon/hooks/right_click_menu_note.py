@@ -1,7 +1,7 @@
 from aqt.webview import AnkiWebView
 
 from batches import local_note_updater
-from hooks.right_click_menu_utils import add_ui_action, add_lookup_action, add_sentence_lookup, add_single_vocab_lookup_action, add_text_vocab_lookup, add_text_vocab_lookup_v2
+from hooks.right_click_menu_utils import add_ui_action, add_lookup_action, add_sentence_lookup, add_single_vocab_lookup_action, add_text_vocab_lookup
 from note.sentencenote import SentenceNote
 from note.wanikanjinote import WaniKanjiNote
 from note.waniradicalnote import WaniRadicalNote
@@ -27,8 +27,7 @@ def setup_note_menu(note, root_menu, sel_clip, selection, view: AnkiWebView):
         add_ui_action(add_vocab_menu, "&5", lambda: note.set_field(MyNoteFields.Vocab5, sel_clip))
 
     if isinstance(note, SentenceNote):
-        add_text_vocab_lookup(note_lookup_menu, "&Vocabulary words v1", note.get_active_expression())
-        add_text_vocab_lookup_v2(note_lookup_menu, "&Vocabulary words v2", note.get_active_expression())
+        add_text_vocab_lookup(note_lookup_menu, "&Vocabulary words", note.get_active_expression())
         add_lookup_action(note_lookup_menu, "&Kanji", f"""note:{Wani.NoteType.Kanji} ({" OR ".join([f"{Wani.KanjiFields.Kanji}:{kan}" for kan in note.extract_kanji()])})""")
 
     if isinstance(note, WaniRadicalNote):

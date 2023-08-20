@@ -1,4 +1,3 @@
-import re
 from anki.cards import Card
 from aqt import gui_hooks
 
