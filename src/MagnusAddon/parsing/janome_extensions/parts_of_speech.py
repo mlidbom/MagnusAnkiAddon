@@ -18,6 +18,8 @@ class PartsOfSpeech:
     def translate(self) -> str:
         return ','.join([_part_of_speech_string_translation[pos] for pos in self._parts])
 
+    def __str__(self) -> str: return f"'{self.level1.japanese},{self.level2.japanese},{self.level3.japanese},{self.level4.japanese}'"
+
 class PartOfSpeech:
     def __init__(self, japanese: str, english: str, explanation: str):
         self.japanese = japanese
@@ -105,5 +107,5 @@ _level_4 = _level_2_3_4 + [
 ]
 _all_parts_of_speech = _level_1 + _level_2 + _level_3 + _level_4
 
-_japanese_to_part_of_speech = {pos.japanese: pos for pos in _all_parts_of_speech}
+_japanese_to_part_of_speech: dict[str, PartOfSpeech] = {pos.japanese: pos for pos in _all_parts_of_speech}
 _part_of_speech_string_translation = {pos.japanese: pos.english for pos in _all_parts_of_speech}
