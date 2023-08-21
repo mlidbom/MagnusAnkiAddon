@@ -17,8 +17,8 @@ class TokenExt:
 
     def __repr__(self) -> str:
         return "".join([
-             "sur: " + kana_utils.pad_to_length(self.surface, 6),
              "baf: " + kana_utils.pad_to_length(self.base_form, 6),
+             "sur: " + kana_utils.pad_to_length(self.surface if self.surface != self.base_form else "", 6),
              "inf: " + kana_utils.pad_to_length(self.inflected_form, 6),
              "int: " + kana_utils.pad_to_length(self.inflection_type, 10),
              "pos: " + str(self.parts_of_speech)])
