@@ -2,9 +2,11 @@ import pytest
 from janome.tokenizer import Tokenizer
 
 from parsing.janome_extensions.parsed_word import ParsedWord
+from parsing.janome_extensions.tokenizer_ext import TokenizerExt
 from parsing.textparser import identify_words
+from sysutils.utils import StringUtils
 
-_tokenizer = Tokenizer()
+_tokenizer = TokenizerExt()
 
 #TODO: See if we can't find a way to parse suru out of sentences such that the verbalizing suffix can be
 # handled separately from the stand-alone word.
@@ -111,10 +113,8 @@ _tokenizer = Tokenizer()
 ])
 def test_identify_words(sentence: str, expected_output: list[ParsedWord]) -> None:
     result = identify_words(sentence)
-    print(result)
     assert result == expected_output
 
 def test_ignores_noise_characters() -> None:
     result = identify_words(".,:;/|。、ー")
-    print(result)
     assert result == [ParsedWord("ー")]

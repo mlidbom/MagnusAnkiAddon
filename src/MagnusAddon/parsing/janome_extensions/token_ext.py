@@ -1,6 +1,7 @@
 from janome.tokenizer import Token
 from parsing.janome_extensions.parts_of_speech import PartsOfSpeech
 from sysutils import typed
+from wcwidth import wcswidth
 
 class TokenExt:
     def __init__(self, token: Token):
@@ -16,4 +17,14 @@ class TokenExt:
         self.parts_of_speech = PartsOfSpeech(typed.str_(token.part_of_speech))
 
     def __repr__(self) -> str:
-        return f"""{self.surface}:{self.base_form}:{self.parts_of_speech}"""
+        #Tries to make the string length such that we more or less line up the : characters in the debugger display
+        def ml(value:str, max_length: int) -> str:
+            actual_width = int(wcswidth(value) * 1.7)
+            padding_length = max_length - actual_width
+            return f"{value:.{max_length}}" + ' ' * padding_length
+
+        return ":".join([ml(self.surface, 20),
+                         ml(self.base_form, 20),
+                         ml(self.inflected_form, 20),
+                         ml(self.inflection_type, 30),
+                         str(self.parts_of_speech)])
