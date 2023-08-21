@@ -16,8 +16,9 @@ class TokenExt:
         self.parts_of_speech = PartsOfSpeech(typed.str_(token.part_of_speech))
 
     def __repr__(self) -> str:
-        return ":".join([kana_utils.pad_to_length(self.surface, 6),
-                         kana_utils.pad_to_length(self.base_form, 6),
-                         kana_utils.pad_to_length(self.inflected_form, 6),
-                         kana_utils.pad_to_length(self.inflection_type, 10),
-                         str(self.parts_of_speech)])
+        return "".join([
+             "sur: " + kana_utils.pad_to_length(self.surface, 6),
+             "baf: " + kana_utils.pad_to_length(self.base_form, 6),
+             "inf: " + kana_utils.pad_to_length(self.inflected_form, 6),
+             "int: " + kana_utils.pad_to_length(self.inflection_type, 10),
+             "pos: " + str(self.parts_of_speech)])

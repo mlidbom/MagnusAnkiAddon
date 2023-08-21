@@ -16,11 +16,11 @@ class PartsOfSpeech:
         return ','.join([_part_of_speech_string_translation[pos] for pos in self._parts])
 
     def __repr__(self) -> str:
-        return ":".join([
-            kana_utils.pad_to_length(self.level1.japanese, 6),
-            kana_utils.pad_to_length(self.level2.japanese, 6),
-            kana_utils.pad_to_length(self.level3.japanese, 6),
-            kana_utils.pad_to_length(self.level4.japanese, 6)])
+        return "".join([
+            "1:" + kana_utils.pad_to_length(self.level1.japanese, 5),
+            "2:" + kana_utils.pad_to_length(self.level2.japanese.replace("*", ""), 6),
+            "3:" + kana_utils.pad_to_length(self.level3.japanese.replace("*", ""), 6),
+            "4:" + kana_utils.pad_to_length(self.level4.japanese.replace("*", ""), 6)])
 
     def is_verb(self) -> bool: return "verb" == self.level1.english
 
