@@ -93,8 +93,8 @@ class WaniKanjiNote(WaniNote):
     def get_primary_vocab(self) -> str: return super().get_field(Wani.KanjiFields.PrimaryVocab)
     def set_primary_vocab(self, value: str) -> None: super().set_field(Wani.KanjiFields.PrimaryVocab, value)
 
-    def get_primary_vocab_audio(self) -> str: return super().get_field(Wani.KanjiFields.PrimaryVocabAudio)
-    def set_primary_vocab_audio(self, value: str) -> None: super().set_field(Wani.KanjiFields.PrimaryVocabAudio, value)
+    def get_primary_vocab_audio(self) -> str: return super().get_field(Wani.KanjiFields.Audio__)
+    def set_primary_vocab_audio(self, value: str) -> None: super().set_field(Wani.KanjiFields.Audio__, value)
 
     def update_from_wani(self, wani_kanji: models.Kanji):
         super().update_from_wani(wani_kanji)

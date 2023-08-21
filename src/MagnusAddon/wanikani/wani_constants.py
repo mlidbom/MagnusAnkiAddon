@@ -61,7 +61,7 @@ class Wani:
         Reading_Info = "Reading_Info"
         Override_meaning = "__meaning_Override"
         PrimaryVocab = "__primary_Vocab"
-        PrimaryVocabAudio = "__primary_Vocab_Audio"
+        Audio__ = "__audio"
 
         Mnemonics_Override = "__mnemonics_Override"
 
