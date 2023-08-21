@@ -1,10 +1,8 @@
 import pytest
-from janome.tokenizer import Tokenizer
 
 from parsing.janome_extensions.parsed_word import ParsedWord
 from parsing.janome_extensions.tokenizer_ext import TokenizerExt
 from parsing.textparser import identify_words
-from sysutils.utils import StringUtils
 
 _tokenizer = TokenizerExt()
 
@@ -118,3 +116,11 @@ def test_identify_words(sentence: str, expected_output: list[ParsedWord]) -> Non
 def test_ignores_noise_characters() -> None:
     result = identify_words(".,:;/|。、ー")
     assert result == [ParsedWord("ー")]
+
+def test_something() -> None:
+    result = identify_words("知ってる人があんまりいない高校に行って")
+    print(result)
+
+def test_token_formatting() -> None:
+    result = _tokenizer.tokenize("知ってる人があんまりいない高校に行って")
+    result = [str(tok) for tok in result]

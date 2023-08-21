@@ -1,24 +1,26 @@
+from sysutils import kana_utils
 from sysutils.utils import StringUtils
 
 class PartsOfSpeech:
     def __init__(self, unparsed: str) -> None:
         parts = StringUtils.extract_comma_separated_values(unparsed)
         self._parts = parts
-        self.level1japanese = parts[0]
-        self.level2japanese = parts[1]
-        self.level3japanese = parts[2]
-        self.level4japanese = parts[3]
         self.level1 = _japanese_to_part_of_speech[parts[0]]
         self.level2 = _japanese_to_part_of_speech[parts[1]]
         self.level3 = _japanese_to_part_of_speech[parts[2]]
         self.level4 = _japanese_to_part_of_speech[parts[3]]
 
-    def is_noise(self) -> bool: return self.level1japanese in ['記号']
+    def is_noise(self) -> bool: return self.level1.japanese in ['記号']
 
     def translate(self) -> str:
         return ','.join([_part_of_speech_string_translation[pos] for pos in self._parts])
 
-    def __repr__(self) -> str: return f"'{self.level1},{self.level2},{self.level3},{self.level4}'"
+    def __repr__(self) -> str:
+        return ":".join([
+            kana_utils.pad_to_length(self.level1.japanese, 6),
+            kana_utils.pad_to_length(self.level2.japanese, 6),
+            kana_utils.pad_to_length(self.level3.japanese, 6),
+            kana_utils.pad_to_length(self.level4.japanese, 6)])
 
     def is_verb(self) -> bool: return "verb" == self.level1.english
 
@@ -38,7 +40,7 @@ _level_1 = [
     PartOfSpeech('接続詞的', 'conjunctive', 'words or expressions that function in a manner similar to conjunctions'),
     PartOfSpeech('動詞', 'verb', "Indicates action"),
     PartOfSpeech('副詞', 'adverb', "Modifies verbs/adjectives"),
-    PartOfSpeech('助動詞', 'inflecting dependent word (in Japanese) / bound auxiliary |  auxiliary verb (in languages other than Japanese)', "Modifies verb tense/mood"),
+    PartOfSpeech('助動詞', 'bound-auxiliary', "Modifies verb tense/mood"),
     PartOfSpeech('助詞', 'particle', "Functional word indicating relation such as marking direct object, subject etc"),
     PartOfSpeech('接続詞', 'conjunction', "Connects words/clauses"),
     PartOfSpeech('感動詞', 'interjection', "Expresses emotion"),
