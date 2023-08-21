@@ -123,4 +123,4 @@ def test_something() -> None:
 
 def test_token_formatting() -> None:
     result = _tokenizer.tokenize("知ってる人があんまりいない高校に行って")
-    result = [str(tok) for tok in result]
+    result = [str(tok) for tok in result.tokens]

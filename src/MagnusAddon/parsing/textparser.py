@@ -132,7 +132,7 @@ def identify_words(sentence: str) -> list[ParsedWord]:
                 add_word_if_it_is_in_dictionary(base_compound)
             add_word_if_it_is_in_dictionary(surface_compound)
 
-    tokens = _tokenizer.tokenize(sentence)
+    tokens = _tokenizer.tokenize(sentence).tokens
     found_words = set[str]()
     found_words_list = []
 

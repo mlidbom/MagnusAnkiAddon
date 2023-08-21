@@ -4,5 +4,5 @@ _tokenizer = TokenizerExt()
 
 
 def get_word_parts_of_speech(word: str) -> str:
-    return _tokenizer.tokenize(word)[0].parts_of_speech.translate()
+    return _tokenizer.tokenize(word).tokens[0].parts_of_speech.translate()
 

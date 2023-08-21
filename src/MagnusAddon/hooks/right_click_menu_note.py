@@ -1,7 +1,7 @@
 from aqt.webview import AnkiWebView
 
 from batches import local_note_updater
-from hooks.right_click_menu_utils import add_ui_action, add_lookup_action, add_sentence_lookup, add_single_vocab_lookup_action, add_text_vocab_lookup
+from hooks.right_click_menu_utils import add_ui_action, add_lookup_action, add_sentence_lookup, add_single_vocab_lookup_action, add_text_vocab_lookup, add_vocab_dependencies_lookup
 from note.sentencenote import SentenceNote
 from note.wanikanjinote import WaniKanjiNote
 from note.waniradicalnote import WaniRadicalNote
@@ -59,6 +59,8 @@ def setup_note_menu(note, root_menu, sel_clip, selection, view: AnkiWebView):
             add_single_vocab_lookup_action(note_lookup_menu, "&Ergative twin", vocab.get_related_ergative_twin())
 
         add_lookup_action(note_lookup_menu, "&Sentence", f"(deck:*sentence* deck:*listen*) ({SentenceNoteFields.ParsedWords}:re:\\b{note.get_vocab()}\\b OR Expression:*{note.get_vocab()}*)")
+        add_text_vocab_lookup(note_lookup_menu, "&Compounds", note.get_vocab())
+        add_vocab_dependencies_lookup(note_lookup_menu, "&Dependencies", note)
 
         if not vocab.get_mnemonics_override():
             add_ui_action(note_hide_menu, "&Mnemonic", lambda: vocab.override_meaning_mnemonic())
