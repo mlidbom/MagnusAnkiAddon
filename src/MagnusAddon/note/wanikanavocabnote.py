@@ -28,7 +28,7 @@ class WaniKanaVocabNote(WaniNote):
         html = f'''<ul class="homophone">
 {StringUtils.newline().join([f'   <li class="clipboard">{val}</li>' for val in value])}
 </ul>'''
-        super().set_field(Wani.KanaVocabFields.Related_homophones, html)
+        super().set_field(Wani.KanaVocabFields.Related_homophones, html if value else "")
 
     def get_related_similar_meaning(self) -> str: return super().get_field(Wani.KanaVocabFields.Related_similar_meaning)
     def set_related_similar_meaning(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Related_similar_meaning, value)

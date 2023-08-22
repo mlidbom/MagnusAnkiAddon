@@ -114,7 +114,7 @@ def _update_vocab(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanji
             if len(vocabs) > 1:
                 for vocab in vocabs:
                     homonyms = [voc.get_vocab() for voc in vocabs if voc is not vocab]
-                    vocab.set_related_homophones(homonyms)
+                    vocab.set_related_homophones(homonyms if read else [])
 
 
     update_kanji_names()
