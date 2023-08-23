@@ -1,6 +1,5 @@
 from typing import *
 
-from parsing.janome_extensions.parts_of_speech import PartsOfSpeech
 from parsing.textparser import DictLookup
 from sysutils import kana_utils
 from parsing import janomeutils
@@ -55,8 +54,6 @@ def _sort_vocab_list(vocabs: List[WaniVocabNote]) -> list[WaniVocabNote]:
 
 def _update_sentences(sentences) -> None:
     for sentence in sentences: sentence.update_parsed_words()
-
-    print(PartsOfSpeech.all_known)
 
 def _update_vocab(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanjiNote]) -> None:
     def update_kanji_names() -> None:

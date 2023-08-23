@@ -28,7 +28,7 @@ class SentenceNote(MyNote):
         words = super().get_field(SentenceNoteFields.ParsedWords).split(",")
         return int(words[-1]) if words and words[-1].isdigit() else 0
 
-    def _needs_words_reparsed(self) -> bool: return True# self._note.mod > self._parsed_words_timestamp()
+    def _needs_words_reparsed(self) -> bool: return self._note.mod > self._parsed_words_timestamp()
 
     def update_parsed_words(self) -> None:
         if self._needs_words_reparsed():
