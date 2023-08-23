@@ -1,9 +1,9 @@
-from parsing.janome_extensions.parts_of_speech import PartOfSpeech
+from parsing.janome_extensions.parts_of_speech import PartOfSpeechDescription
 from sysutils import kana_utils
 
 
 class ParsedWord:
-    def __init__(self, word: str, parts_of_speech: PartOfSpeech = None) -> None:
+    def __init__(self, word: str, parts_of_speech: PartOfSpeechDescription = None) -> None:
         self.word = word
         self.parts_of_speech = parts_of_speech
 
