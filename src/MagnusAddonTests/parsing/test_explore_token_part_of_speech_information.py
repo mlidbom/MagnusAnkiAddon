@@ -1,13 +1,13 @@
 import pytest
 
-from parsing.janome_extensions.parts_of_speech import FullPartsOfSpeech, PartsOfSpeech
+from parsing.janome_extensions.parts_of_speech import PartsOfSpeechHierarchy, PartsOfSpeech
 from parsing.janome_extensions.tokenizer_ext import TokenizerExt
 
 _tokenizer = TokenizerExt()
 
 
 @pytest.mark.parametrize('sentence, expected_parts_of_speech', [
-    ("こんなに", [FullPartsOfSpeech.Adverb.particle_connection])
+    ("こんなに", [PartsOfSpeechHierarchy.Adverb.particle_connection])
 ])
 def test_identify_something_words(sentence: str, expected_parts_of_speech: list[PartsOfSpeech]) -> None:
     tokenized = _tokenizer.tokenize(sentence)
