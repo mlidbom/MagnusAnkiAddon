@@ -124,7 +124,7 @@ def _add_full_part_of_speech(level1:str, level2:str = "*", level3:str = "*", lev
     _full_parts_of_speech_dictionary[combined] = parts_of_speech
     return parts_of_speech
 
-class PartsOfSpeechHierarchy:
+class POS:
     filler = _add_full_part_of_speech('フィラー')
     bound_auxiliary = _add_full_part_of_speech('助動詞')
     pre_noun_adjectival = _add_full_part_of_speech('連体詞')

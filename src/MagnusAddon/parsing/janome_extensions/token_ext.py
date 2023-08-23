@@ -3,17 +3,23 @@ from parsing.janome_extensions.parts_of_speech import PartsOfSpeech
 from sysutils import typed, kana_utils
 
 class TokenExt:
-    def __init__(self, token: Token):
-        self._token = token
-        self.base_form = typed.str_(token.base_form)
-        self.surface = typed.str_(token.surface)
-        self.inflection_type = typed.str_(token.infl_type).replace("*", "")
-        self.inflected_form = typed.str_(token.infl_form).replace("*", "")
-        self.base_form = typed.str_(token.base_form)
-        self.reading = typed.str_(token.reading)
-        self.phonetic = typed.str_(token.phonetic)
-        self.node_type = typed.str_(token.node_type)
-        self.parts_of_speech = PartsOfSpeech.fetch(typed.str_(token.part_of_speech))
+    def __init__(self,
+                 base_form: str,
+                 surface:str,
+                 inflection_type: str,
+                 inflected_form,
+                 reading:str,
+                 phonetic:str,
+                 node_type:str,
+                 parts_of_speech: PartsOfSpeech):
+        self.base_form = typed.str_(base_form)
+        self.surface = typed.str_(surface)
+        self.inflection_type = typed.str_(inflection_type).replace("*", "")
+        self.inflected_form = typed.str_(inflected_form).replace("*", "")
+        self.reading = typed.str_(reading)
+        self.phonetic = typed.str_(phonetic)
+        self.node_type = typed.str_(node_type)
+        self.parts_of_speech = parts_of_speech
 
     def __repr__(self) -> str:
         return "".join([
