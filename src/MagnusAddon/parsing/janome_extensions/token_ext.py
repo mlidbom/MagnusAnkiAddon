@@ -27,9 +27,9 @@ class TokenExt:
             ", " + kana_utils.pad_to_length(f"'{self.surface}'", 6),
             ", " + kana_utils.pad_to_length(f"'{self.inflection_type}'", 6),
             ", " + kana_utils.pad_to_length(f"'{self.inflected_form}'", 10),
-            ", " + kana_utils.pad_to_length(f"'{self.reading}'", 10),
-            ", " + kana_utils.pad_to_length(f"'{self.phonetic}'", 10),
-            ", " + kana_utils.pad_to_length(f"'{self.node_type}'", 10),
+            #", " + kana_utils.pad_to_length(f"'{self.reading}'", 10),
+            #", " + kana_utils.pad_to_length(f"'{self.phonetic}'", 10),
+            #", " + kana_utils.pad_to_length(f"'{self.node_type}'", 10),
             ", " + str(self.parts_of_speech)])
 
     def __eq__(self, other) -> bool:

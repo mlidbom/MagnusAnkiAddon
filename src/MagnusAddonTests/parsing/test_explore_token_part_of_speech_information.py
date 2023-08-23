@@ -24,7 +24,11 @@ def test_identify_something_words(sentence: str, expected_parts_of_speech: list[
 
 @pytest.mark.parametrize('sentence, expected_tokens', [
     ("こんなに", [TokenExt(POS.Adverb.particle_connection, "こんなに", "こんなに")]),
-    #("こんなに疲れている", [POS.Adverb.particle_connection, POS.Verb.independent,             POS.Particle.conjunctive, POS.Verb.non_independent]),
+    ("こんなに疲れている", [
+        TokenExt(POS.Adverb.particle_connection, "こんなに", "こんなに"),
+        TokenExt(POS.Verb.independent, "疲れる", "疲れ", "一段", "連用形"),
+        TokenExt(POS.Particle.conjunctive, "て", "て"),
+        TokenExt(POS.Verb.non_independent, "いる", "いる", "一段", "基本形")]),
     #("こんなに食べている", [POS.Adverb.particle_connection, POS.Verb.independent,             POS.Particle.conjunctive, POS.Verb.non_independent]),
     #("こんなにする",      [POS.pre_noun_adjectival,        POS.Particle.CaseMarking.general, POS.Verb.independent]),
     #("そんなに好きだ",    [POS.Adverb.general,             POS.Noun.na_adjective_stem,       POS.bound_auxiliary]),
@@ -34,6 +38,4 @@ def test_identify_something_words(sentence: str, expected_parts_of_speech: list[
 def test_identify_something_words(sentence: str, expected_tokens: list[TokenizerExt]) -> None:
     tokenized = _tokenizer.tokenize(sentence)
 
-    expected = expected_tokens[0]
-    actual = tokenized.tokens[0]
-    assert expected == actual
+    assert expected_tokens == tokenized.tokens
