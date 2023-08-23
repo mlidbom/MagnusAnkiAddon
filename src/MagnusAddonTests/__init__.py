@@ -1,0 +1,1 @@
+from aqt import mw # noqa this fixes a dependency resolution error in the tests. I don't much care if it is not orthodox placing this here

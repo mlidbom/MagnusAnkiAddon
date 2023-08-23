@@ -3,7 +3,8 @@ from aqt import gui_hooks
 
 from sysutils import my_clipboard
 from sysutils.collections.recent_items import RecentItems
-from sysutils.utils import UIUtils, StringUtils
+from sysutils.utils import StringUtils
+from sysutils.ui_utils import UIUtils
 
 recent_note_ids = RecentItems[int](2)
 

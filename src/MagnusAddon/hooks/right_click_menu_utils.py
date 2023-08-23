@@ -7,7 +7,7 @@ from aqt.browser import Browser
 from note.wanivocabnote import WaniVocabNote
 from parsing import textparser
 from parsing.janome_extensions.parsed_word import ParsedWord
-from sysutils.utils import UIUtils
+from sysutils.ui_utils import UIUtils
 from wanikani.wani_constants import Wani
 
 _vocab_read_cards = f"(note:{Wani.NoteType.Vocab} card:*read*)"

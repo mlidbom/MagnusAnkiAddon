@@ -3,7 +3,8 @@ from typing import *
 from parsing.textparser import DictLookup
 from sysutils import kana_utils
 from parsing import janomeutils
-from sysutils.utils import StringUtils, UIUtils
+from sysutils.utils import StringUtils
+from sysutils.ui_utils import UIUtils
 from note.wanikanjinote import WaniKanjiNote
 from note.wanivocabnote import WaniVocabNote
 from wanikani.wani_collection import WaniCollection

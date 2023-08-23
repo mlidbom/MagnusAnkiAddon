@@ -1,5 +1,4 @@
 from sysutils import kana_utils
-from sysutils.utils import StringUtils
 
 class PartsOfSpeech:
     @staticmethod
