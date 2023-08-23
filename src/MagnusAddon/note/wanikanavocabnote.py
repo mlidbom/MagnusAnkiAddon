@@ -39,8 +39,8 @@ class WaniKanaVocabNote(WaniNote):
     def get_related_ergative_twin(self) -> str: return super().get_field(Wani.KanaVocabFields.Related_ergative_twin)
     def set_related_ergative_twin(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Related_ergative_twin, value)
 
-    def get_related_similar_vocab(self) -> str: return super().get_field(Wani.KanaVocabFields.Related_similarVocab)
-    def set_related_similar_vocab(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Related_similarVocab, value)
+    def get_related_similar_vocab(self) -> str: return super().get_field(Wani.KanaVocabFields.Related_confused_with)
+    def set_related_similar_vocab(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Related_confused_with, value)
 
     def get_speech_type(self) -> str: return super().get_field(Wani.KanaVocabFields.Speech_Type)
     def set_speech_type(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Speech_Type, value)

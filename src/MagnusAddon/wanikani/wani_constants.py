@@ -92,7 +92,7 @@ class Wani:
         Related_similar_meaning = "__similar_meaning"
         Related_derived_from = "__derivedFrom"
         Related_ergative_twin = "__ergative_twin"
-        Related_similarVocab = "__similar_vocab"
+        Related_confused_with = "__confused_with"
 
     class VocabFields(KanaVocabFields):
         Kanji = "Kanji"
