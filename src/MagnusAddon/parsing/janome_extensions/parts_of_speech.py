@@ -167,6 +167,7 @@ class POS:
         auxiliary_verb = _add_full_part_of_speech('名詞', '動詞非自立的')
         na_adjective_stem = _add_full_part_of_speech('名詞', '形容動詞語幹')
         numeric = _add_full_part_of_speech('名詞', '数')
+        conjunctive = _add_full_part_of_speech('名詞', '接続詞的')
 
         class Pronoun:
             general = _add_full_part_of_speech('名詞', '代名詞', '一般')
@@ -214,6 +215,7 @@ class POS:
         noun = _add_full_part_of_speech('接頭詞', '名詞接続')
         adjective = _add_full_part_of_speech('接頭詞', '形容詞接続')
         number = _add_full_part_of_speech('接頭詞', '数接続')
+        verb_connective = _add_full_part_of_speech('接頭詞', '動詞接続')
 
     class Symbol:
         alphabet = _add_full_part_of_speech('記号', 'アルファベット')
