@@ -15,7 +15,7 @@ class PartsOfSpeech:
     def is_noise(self) -> bool: return self.level1.japanese in ['記号']
 
     def translate(self) -> str:
-        return ','.join([_part_of_speech_string_translation[pos] for pos in [self.level1, self.level2, self.level3, self.level4]])
+        return ','.join([self.level1.english, self.level2.english, self.level3.english, self.level4.english])
 
     def __repr__(self) -> str:
         return "".join([
