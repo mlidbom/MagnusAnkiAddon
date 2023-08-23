@@ -74,7 +74,7 @@ class Wani:
     class KanaVocabFields:
         Vocab = "Vocab"
         Vocab_Meaning = "Vocab_Meaning"
-        Override_meaning = "__override_meaning"
+        Meaning__ = "__meaning"
         Reading = "Reading"
         Speech_Type = "Speech_Type"
         Context_jp = "Context_jp"
@@ -100,7 +100,7 @@ class Wani:
         Reading_Exp = "Reading_Exp"
         Homophones = "Homophones"
         ParsedTypeOfSpeech = "ParsedTypeOfSpeech"
-        Mnemonics_Override = "__override_mnemonic"
+        Mnemonic__ = "__mnemonic"
 
         component_subject_ids = "component_subject_ids"
 

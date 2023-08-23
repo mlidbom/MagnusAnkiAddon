@@ -20,8 +20,8 @@ class WaniKanaVocabNote(WaniNote):
 
     def set_vocab_meaning(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Vocab_Meaning, value)
 
-    def get_override_meaning(self) -> str: return super().get_field(Wani.KanaVocabFields.Override_meaning)
-    def set_override_meaning(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Override_meaning, value)
+    def get_override_meaning(self) -> str: return super().get_field(Wani.KanaVocabFields.Meaning__)
+    def set_override_meaning(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Meaning__, value)
 
     def get_related_homophones(self) -> list[str]: return super().get_field(Wani.KanaVocabFields.Related_homophones).split(", ")
     def set_related_homophones(self, value: list[str]) -> None:

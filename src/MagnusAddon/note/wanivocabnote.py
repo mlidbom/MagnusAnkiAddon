@@ -37,8 +37,8 @@ class WaniVocabNote(WaniKanaVocabNote):
         if self.get_mnemonics_override() == "-":
             self.set_mnemonics_override("")
 
-    def get_mnemonics_override(self) -> str: return super().get_field(Wani.VocabFields.Mnemonics_Override)
-    def set_mnemonics_override(self, value: str) -> None: super().set_field(Wani.VocabFields.Mnemonics_Override, value)
+    def get_mnemonics_override(self) -> str: return super().get_field(Wani.VocabFields.Mnemonic__)
+    def set_mnemonics_override(self, value: str) -> None: super().set_field(Wani.VocabFields.Mnemonic__, value)
 
     def get_parsed_type_of_speech(self) -> str: return super().get_field(Wani.VocabFields.ParsedTypeOfSpeech)
     def set_parsed_type_of_speech(self, value: str) -> None: super().set_field(Wani.VocabFields.ParsedTypeOfSpeech, value)
