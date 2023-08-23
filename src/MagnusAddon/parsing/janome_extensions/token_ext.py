@@ -13,7 +13,7 @@ class TokenExt:
         self.reading = typed.str_(token.reading)
         self.phonetic = typed.str_(token.phonetic)
         self.node_type = typed.str_(token.node_type)
-        self.parts_of_speech = PartsOfSpeech(typed.str_(token.part_of_speech))
+        self.parts_of_speech = PartsOfSpeech.fetch(typed.str_(token.part_of_speech))
 
     def __repr__(self) -> str:
         return "".join([

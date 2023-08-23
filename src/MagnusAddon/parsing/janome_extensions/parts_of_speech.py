@@ -2,9 +2,11 @@ from sysutils import kana_utils
 from sysutils.utils import StringUtils
 
 class PartsOfSpeech:
-    all_known = set[str]()
+    @staticmethod
+    def fetch(unparsed: str) -> 'PartsOfSpeech':
+        return _full_parts_of_speech_dictionary[unparsed]
+
     def __init__(self, unparsed: str) -> None:
-        PartsOfSpeech.all_known.add(unparsed)
         parts = StringUtils.extract_comma_separated_values(unparsed)
         self._parts = parts
         self.level1 = _japanese_to_part_of_speech[parts[0]]
@@ -119,15 +121,16 @@ _part_of_speech_string_translation = {pos.japanese: pos.english for pos in _all_
 
 
 _full_parts_of_speech = [
+    'フィラー,*,*,*', #filler
+    '助動詞,*,*,*', #bound auxiliary/auxiliary verb
+    '連体詞,*,*,*' # pre_noun_adjectival
+
     #other
     'その他,間投,*,*',
-    'フィラー,*,*,*',
 
     #adverb
     '副詞,一般,*,*',
     '副詞,助詞類接続,*,*',
-
-    '助動詞,*,*,*', #bound auxiliary/auxiliary verb
 
     #Particle
     '助詞,並立助詞,*,*',
@@ -219,112 +222,111 @@ _full_parts_of_speech = [
     '記号,括弧開,*,*',
     '記号,空白,*,*',
     '記号,読点,*,*',
+]
 
-    '連体詞,*,*,*']
+_full_parts_of_speech_dictionary = dict[str, PartsOfSpeech]()
+
+def _add_full_part_of_speech(unparsed: str) -> PartsOfSpeech:
+    parts_of_speech = PartsOfSpeech(unparsed)
+    _full_parts_of_speech_dictionary[unparsed] = parts_of_speech
+    return parts_of_speech
 
 class FullPartsOfSpeech:
+    filler = _add_full_part_of_speech('フィラー,*,*,*')
+    bound_auxiliary = _add_full_part_of_speech('助動詞,*,*,*')
+    pre_noun_adjectival = _add_full_part_of_speech('連体詞,*,*,*')
+    interjection = _add_full_part_of_speech('感動詞,*,*,*')
+    conjunction = _add_full_part_of_speech('接続詞,*,*,*')
+
     class Other:
-        interjection = PartsOfSpeech('その他,間投,*,*')
-        filler = PartsOfSpeech('フィラー,*,*,*')
+        interjection = _add_full_part_of_speech('その他,間投,*,*')
 
     class Adverb:
-        general = PartsOfSpeech('副詞,一般,*,*')
-        particle_connection = PartsOfSpeech('副詞,助詞類接続,*,*')
-
-    bound_auxiliary = PartsOfSpeech('助動詞,*,*,*')
+        general = _add_full_part_of_speech('副詞,一般,*,*')
+        particle_connection = _add_full_part_of_speech('副詞,助詞類接続,*,*')
 
     class Particle:
-        coordinating_conjunction = PartsOfSpeech('助詞,並立助詞,*,*')
-        binding = PartsOfSpeech('助詞,係助詞,*,*')
-        adverbial = PartsOfSpeech('助詞,副助詞,*,*')
-        adverbial_coordinating_ending = PartsOfSpeech('助詞,副助詞／並立助詞／終助詞,*,*')
-        adverbialization = PartsOfSpeech('助詞,副詞化,*,*')
-        conjunctive = PartsOfSpeech('助詞,接続助詞,*,*')
-        class CaseMarking:
-            general = PartsOfSpeech('助詞,格助詞,一般,*')
-            quotation = PartsOfSpeech('助詞,格助詞,引用,*')
-            compound = PartsOfSpeech('助詞,格助詞,連語,*')
+        coordinating_conjunction = _add_full_part_of_speech('助詞,並立助詞,*,*')
+        binding = _add_full_part_of_speech('助詞,係助詞,*,*')
+        adverbial = _add_full_part_of_speech('助詞,副助詞,*,*')
+        adverbial_coordinating_ending = _add_full_part_of_speech('助詞,副助詞／並立助詞／終助詞,*,*')
+        adverbialization = _add_full_part_of_speech('助詞,副詞化,*,*')
+        conjunctive = _add_full_part_of_speech('助詞,接続助詞,*,*')
+        special = _add_full_part_of_speech('助詞,特殊,*,*')
+        sentence_ending = _add_full_part_of_speech('助詞,終助詞,*,*')
+        adnominalization = _add_full_part_of_speech('助詞,連体化,*,*')
 
-        special = PartsOfSpeech('助詞,特殊,*,*')
-        sentence_ending = PartsOfSpeech('助詞,終助詞,*,*')
-        adnominalization = PartsOfSpeech('助詞,連体化,*,*')
+        class CaseMarking:
+            general = _add_full_part_of_speech('助詞,格助詞,一般,*')
+            quotation = _add_full_part_of_speech('助詞,格助詞,引用,*')
+            compound = _add_full_part_of_speech('助詞,格助詞,連語,*')
 
     class Verb:
-        suffix = PartsOfSpeech('動詞,接尾,*,*')
-        independent = PartsOfSpeech('動詞,自立,*,*')
-        non_independent = PartsOfSpeech('動詞,非自立,*,*')
+        suffix = _add_full_part_of_speech('動詞,接尾,*,*')
+        independent = _add_full_part_of_speech('動詞,自立,*,*')
+        non_independent = _add_full_part_of_speech('動詞,非自立,*,*')
 
     class Noun:
-        suru_verb = PartsOfSpeech('名詞,サ変接続,*,*')
-        negative_adjective_stem = PartsOfSpeech('名詞,ナイ形容詞語幹,*,*')
-        general = PartsOfSpeech('名詞,一般,*,*')
+        suru_verb = _add_full_part_of_speech('名詞,サ変接続,*,*')
+        negative_adjective_stem = _add_full_part_of_speech('名詞,ナイ形容詞語幹,*,*')
+        general = _add_full_part_of_speech('名詞,一般,*,*')
+        adv_possible = _add_full_part_of_speech('名詞,副詞可能,*,*')
+        auxiliary_verb = _add_full_part_of_speech('名詞,動詞非自立的,*,*')
+        na_adjective_stem = _add_full_part_of_speech('名詞,形容動詞語幹,*,*')
+        numeric = _add_full_part_of_speech('名詞,数,*,*')
+
         class Pronoun:
-            general = PartsOfSpeech('名詞,代名詞,一般,*')
-            contracted = PartsOfSpeech('名詞,代名詞,縮約,*')
-        adv_possible = PartsOfSpeech('名詞,副詞可能,*,*')
-        auxiliary_verb = PartsOfSpeech('名詞,動詞非自立的,*,*')
+            general = _add_full_part_of_speech('名詞,代名詞,一般,*')
+            contracted = _add_full_part_of_speech('名詞,代名詞,縮約,*')
 
         class ProperNoun:
-            general = PartsOfSpeech('名詞,固有名詞,一般,*')
+            general = _add_full_part_of_speech('名詞,固有名詞,一般,*')
+            organization = _add_full_part_of_speech('名詞,固有名詞,組織,*')
 
             class Person:
-                general = PartsOfSpeech('名詞,固有名詞,人名,一般')
-                firstname = PartsOfSpeech('名詞,固有名詞,人名,名')
-                surname = PartsOfSpeech('名詞,固有名詞,人名,姓')
+                general = _add_full_part_of_speech('名詞,固有名詞,人名,一般')
+                firstname = _add_full_part_of_speech('名詞,固有名詞,人名,名')
+                surname = _add_full_part_of_speech('名詞,固有名詞,人名,姓')
 
             class Location:
-                general = PartsOfSpeech('名詞,固有名詞,地域,一般')
-                country = PartsOfSpeech('名詞,固有名詞,地域,国')
-
-            organization = PartsOfSpeech('名詞,固有名詞,組織,*')
-
-        na_adjective_stem = PartsOfSpeech('名詞,形容動詞語幹,*,*')
+                general = _add_full_part_of_speech('名詞,固有名詞,地域,一般')
+                country = _add_full_part_of_speech('名詞,固有名詞,地域,国')
 
         class Suffix:
-            suru_verb_connection = PartsOfSpeech('名詞,接尾,サ変接続,*')
-            general = PartsOfSpeech('名詞,接尾,一般,*')
-            persons_name = PartsOfSpeech('名詞,接尾,人名,*')
-            adv_possible = PartsOfSpeech('名詞,接尾,副詞可能,*')
-            auxiliary_verb_stem = PartsOfSpeech('名詞,接尾,助動詞語幹,*')
-            counter = PartsOfSpeech('名詞,接尾,助数詞,*')
-            region = PartsOfSpeech('名詞,接尾,地域,*')
-            na_adjective_stem = PartsOfSpeech('名詞,接尾,形容動詞語幹,*')
-            special = PartsOfSpeech('名詞,接尾,特殊,*')
+            suru_verb_connection = _add_full_part_of_speech('名詞,接尾,サ変接続,*')
+            general = _add_full_part_of_speech('名詞,接尾,一般,*')
+            persons_name = _add_full_part_of_speech('名詞,接尾,人名,*')
+            adv_possible = _add_full_part_of_speech('名詞,接尾,副詞可能,*')
+            auxiliary_verb_stem = _add_full_part_of_speech('名詞,接尾,助動詞語幹,*')
+            counter = _add_full_part_of_speech('名詞,接尾,助数詞,*')
+            region = _add_full_part_of_speech('名詞,接尾,地域,*')
+            na_adjective_stem = _add_full_part_of_speech('名詞,接尾,形容動詞語幹,*')
+            special = _add_full_part_of_speech('名詞,接尾,特殊,*')
 
-        numeric = PartsOfSpeech('名詞,数,*,*')
-        special_auxiliary_verb_stem = PartsOfSpeech('名詞,特殊,助動詞語幹,*')
+        class Special:
+            auxiliary_verb_stem = _add_full_part_of_speech('名詞,特殊,助動詞語幹,*')
 
         class NonSelfReliant:
-            general = PartsOfSpeech('名詞,非自立,一般,*')
-            adv_possible = PartsOfSpeech('名詞,非自立,副詞可能,*')
-            auxiliary_verb_stem = PartsOfSpeech('名詞,非自立,助動詞語幹,*')
-            na_adjective_stem = PartsOfSpeech('名詞,非自立,形容動詞語幹,*')
+            general = _add_full_part_of_speech('名詞,非自立,一般,*')
+            adv_possible = _add_full_part_of_speech('名詞,非自立,副詞可能,*')
+            auxiliary_verb_stem = _add_full_part_of_speech('名詞,非自立,助動詞語幹,*')
+            na_adjective_stem = _add_full_part_of_speech('名詞,非自立,形容動詞語幹,*')
 
     class Adjective:
-        suffix = PartsOfSpeech('形容詞,接尾,*,*')
-        independent = PartsOfSpeech('形容詞,自立,*,*')
-        non_independent = PartsOfSpeech('形容詞,非自立,*,*')
-
-    interjection = PartsOfSpeech('感動詞,*,*,*')
-
-    conjunction = PartsOfSpeech('接続詞,*,*,*')
+        suffix = _add_full_part_of_speech('形容詞,接尾,*,*')
+        independent = _add_full_part_of_speech('形容詞,自立,*,*')
+        non_independent = _add_full_part_of_speech('形容詞,非自立,*,*')
 
     class Prefix:
-        noun = PartsOfSpeech('接頭詞,名詞接続,*,*')
-        adjective = PartsOfSpeech('接頭詞,形容詞接続,*,*')
-        number = PartsOfSpeech('接頭詞,数接続,*,*')
+        noun = _add_full_part_of_speech('接頭詞,名詞接続,*,*')
+        adjective = _add_full_part_of_speech('接頭詞,形容詞接続,*,*')
+        number = _add_full_part_of_speech('接頭詞,数接続,*,*')
 
     class Symbol:
-        alphabet = PartsOfSpeech('記号,アルファベット,*,*')
-        general = PartsOfSpeech('記号,一般,*,*')
-        period = PartsOfSpeech('記号,句点,*,*')
-        closing_bracket = PartsOfSpeech('記号,括弧閉,*,*')
-        opening_bracket = PartsOfSpeech('記号,括弧開,*,*')
-        space = PartsOfSpeech('記号,空白,*,*')
-        comma = PartsOfSpeech('記号,読点,*,*')
-
-    pre_noun_adjectival = PartsOfSpeech('連体詞,*,*,*')
-
-
-
-
+        alphabet = _add_full_part_of_speech('記号,アルファベット,*,*')
+        general = _add_full_part_of_speech('記号,一般,*,*')
+        period = _add_full_part_of_speech('記号,句点,*,*')
+        closing_bracket = _add_full_part_of_speech('記号,括弧閉,*,*')
+        opening_bracket = _add_full_part_of_speech('記号,括弧開,*,*')
+        space = _add_full_part_of_speech('記号,空白,*,*')
+        comma = _add_full_part_of_speech('記号,読点,*,*')
