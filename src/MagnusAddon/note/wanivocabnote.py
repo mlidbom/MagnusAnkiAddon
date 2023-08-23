@@ -1,6 +1,6 @@
 from wanikani_api import models
-from anki.notes import Note
 from aqt import mw
+from anki.notes import Note
 
 from note.wanikanavocabnote import WaniKanaVocabNote
 from wanikani.wani_constants import Wani, Mine

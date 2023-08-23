@@ -1,7 +1,7 @@
 import pytest
+from note.wanivocabnote import WaniVocabNote
 from parsing.textparser import DictLookup
 from unittest.mock import MagicMock
-from note.wanivocabnote import WaniVocabNote
 
 
 def vocab_mock(word: str, readings: list[str]) -> WaniVocabNote:
