@@ -59,11 +59,11 @@ class Wani:
         Meaning_Info = "Meaning_Info"
         Reading_Mnemonic = "Reading_Mnemonic"
         Reading_Info = "Reading_Info"
-        Override_meaning = "__meaning_Override"
+        Meaning__ = "__meaning"
         PrimaryVocab = "__primary_Vocab"
         Audio__ = "__audio"
 
-        Mnemonics_Override = "__mnemonics_Override"
+        Mnemonic__ = "__mnemonic"
 
         amalgamation_subject_ids = "amalgamation_subject_ids"
         component_subject_ids = "component_subject_ids"

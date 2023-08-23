@@ -32,8 +32,8 @@ class WaniKanjiNote(WaniNote):
             return meaning
         return super().get_field(Wani.KanjiFields.Kanji_Meaning)
 
-    def get_override_meaning(self) -> str: return super().get_field(Wani.KanjiFields.Override_meaning)
-    def set_override_meaning(self, value: str) -> None: super().set_field(Wani.KanjiFields.Override_meaning, value)
+    def get_override_meaning(self) -> str: return super().get_field(Wani.KanjiFields.Meaning__)
+    def set_override_meaning(self, value: str) -> None: super().set_field(Wani.KanjiFields.Meaning__, value)
 
     def override_meaning_mnemonic(self) -> None:
         if not self.get_mnemonics_override():
@@ -43,8 +43,8 @@ class WaniKanjiNote(WaniNote):
         if self.get_mnemonics_override() == "-":
             self.set_mnemonics_override("")
 
-    def get_mnemonics_override(self) -> str: return super().get_field(Wani.KanjiFields.Mnemonics_Override)
-    def set_mnemonics_override(self, value: str) -> None: super().set_field(Wani.KanjiFields.Mnemonics_Override, value)
+    def get_mnemonics_override(self) -> str: return super().get_field(Wani.KanjiFields.Mnemonic__)
+    def set_mnemonics_override(self, value: str) -> None: super().set_field(Wani.KanjiFields.Mnemonic__, value)
 
     def set_kanji_meaning(self, value: str) -> None: super().set_field(Wani.KanjiFields.Kanji_Meaning, value)
 
