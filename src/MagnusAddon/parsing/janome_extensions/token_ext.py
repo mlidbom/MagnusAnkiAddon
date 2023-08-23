@@ -1,17 +1,16 @@
-from janome.tokenizer import Token
 from parsing.janome_extensions.parts_of_speech import PartsOfSpeech
 from sysutils import typed, kana_utils
 
 class TokenExt:
     def __init__(self,
+                 parts_of_speech: PartsOfSpeech,
                  base_form: str,
-                 surface:str,
-                 inflection_type: str,
-                 inflected_form,
-                 reading:str,
-                 phonetic:str,
-                 node_type:str,
-                 parts_of_speech: PartsOfSpeech):
+                 surface: str,
+                 inflection_type: str = "",
+                 inflected_form: str = "",
+                 reading: str = "",
+                 phonetic: str = "",
+                 node_type: str = ""):
         self.base_form = typed.str_(base_form)
         self.surface = typed.str_(surface)
         self.inflection_type = typed.str_(inflection_type).replace("*", "")
@@ -23,8 +22,24 @@ class TokenExt:
 
     def __repr__(self) -> str:
         return "".join([
-             "baf: " + kana_utils.pad_to_length(self.base_form, 6),
-             "sur: " + kana_utils.pad_to_length(self.surface if self.surface != self.base_form else "", 6),
-             "inf: " + kana_utils.pad_to_length(self.inflected_form, 6),
-             "int: " + kana_utils.pad_to_length(self.inflection_type, 10),
-             "pos: " + str(self.parts_of_speech)])
+            "TokenExt(",
+            "" + kana_utils.pad_to_length(f"'{self.base_form}'", 6),
+            ", " + kana_utils.pad_to_length(f"'{self.surface}'", 6),
+            ", " + kana_utils.pad_to_length(f"'{self.inflection_type}'", 6),
+            ", " + kana_utils.pad_to_length(f"'{self.inflected_form}'", 10),
+            ", " + kana_utils.pad_to_length(f"'{self.reading}'", 10),
+            ", " + kana_utils.pad_to_length(f"'{self.phonetic}'", 10),
+            ", " + kana_utils.pad_to_length(f"'{self.node_type}'", 10),
+            ", " + str(self.parts_of_speech)])
+
+    def __eq__(self, other) -> bool:
+        if isinstance(other, TokenExt):
+            return (self.base_form == other.base_form and
+                    self.surface == other.surface and
+                    self.inflection_type == other.inflection_type and
+                    self.inflected_form == other.inflected_form and
+                    #self.reading == other.reading and
+                    #self.phonetic == other.phonetic and
+                    #self.node_type == other.node_type and
+                    self.parts_of_speech == other.parts_of_speech)
+        return False
