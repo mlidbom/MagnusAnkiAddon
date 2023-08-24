@@ -4,13 +4,12 @@ import aqt
 from PyQt6.QtWidgets import QMenu
 from aqt.browser import Browser
 
+from ankiutils import search_utils as su
 from note.wanivocabnote import WaniVocabNote
 from parsing import textparser
 from parsing.janome_extensions.parsed_word import ParsedWord
 from sysutils.ui_utils import UIUtils
 from wanikani.wani_constants import Wani
-
-_vocab_read_cards = f"(note:{Wani.NoteType.Vocab} card:*read*)"
 
 def add_ui_action(menu: QMenu, name: str, callback: Callable[[], None]) -> None:
     menu.addAction(name, lambda: run_ui_action())
@@ -26,7 +25,7 @@ def add_lookup_action(menu: QMenu, name: str, search: str) -> None:
     menu.addAction(name, anki_lookup(lambda: search))
 
 def add_single_vocab_lookup_action(menu: QMenu, name:str, vocab:str) -> None:
-    menu.addAction(name, anki_lookup(lambda: f"{_vocab_read_cards} Vocab:{vocab}"))
+    menu.addAction(name, anki_lookup(lambda: f"{su.vocab_read} Vocab:{vocab}"))
 
 def add_text_vocab_lookup(menu: QMenu, name:str, text:str) -> None:
     def voc_clause(voc: ParsedWord) -> str:
@@ -34,7 +33,7 @@ def add_text_vocab_lookup(menu: QMenu, name:str, text:str) -> None:
 
     def create_search_string() -> str:
         dictionary_forms = textparser.identify_words(text)
-        return f"deck:*Vocab* deck:*Read* ({' OR '.join([voc_clause(voc) for voc in dictionary_forms])})"
+        return f"{su.vocab_read} ({' OR '.join([voc_clause(voc) for voc in dictionary_forms])})"
 
     add_lookup_action_lambda(menu, name, create_search_string)
 
@@ -44,7 +43,7 @@ def add_vocab_dependencies_lookup(menu: QMenu, name: str, vocab: WaniVocabNote):
 
     def create_vocab_clause(text:str) -> str:
         dictionary_forms = textparser.identify_words(text)
-        return f"deck:*Vocab* deck:*Read* ({' OR '.join([single_vocab_clause(voc) for voc in dictionary_forms])})"
+        return f"{su.vocab_read} ({' OR '.join([single_vocab_clause(voc) for voc in dictionary_forms])})"
 
     def create_vocab_vocab_clause() -> str:
         return create_vocab_clause(vocab.get_question())

@@ -5,6 +5,7 @@ from aqt.utils import openLink
 
 from hooks.right_click_menu_utils import add_sentence_lookup, add_lookup_action, add_text_vocab_lookup
 from wanikani.wani_constants import Wani, Mine
+from ankiutils import search_utils as su
 
 
 def setup_search_menu(root_menu: QMenu, sel_clip: str) -> None:
@@ -16,13 +17,13 @@ def setup_search_menu(root_menu: QMenu, sel_clip: str) -> None:
 
 def setup_anki_search_menu(search_menu: QMenu, sel_clip: str) -> None:
     search_anki_menu = search_menu.addMenu("&Anki")
-    add_lookup_action(search_anki_menu, "&Kanji", f"note:{Wani.NoteType.Kanji} ( {' OR '.join([f'{Wani.KanjiFields.question}:{char}' for char in sel_clip])} )")
-    add_lookup_action(search_anki_menu, "&Vocab", f"deck:*Vocab* deck:*Read* (Q:{sel_clip} OR Reading:re:\\b{sel_clip}\\b OR A:re:\\b{sel_clip}\\b )")
-    add_lookup_action(search_anki_menu, "Vocab &Wildcard", f"deck:*Vocab* deck:*Read* (Q:*{sel_clip}* OR Reading:*{sel_clip}* OR A:*{sel_clip}*)")
+    add_lookup_action(search_anki_menu, "&Kanji", f"{su.kanji_filter} ( {' OR '.join([f'{Wani.KanjiFields.question}:{char}' for char in sel_clip])} )")
+    add_lookup_action(search_anki_menu, "&Vocab", f"{su.vocab_read} (Q:{sel_clip} OR Reading:re:\\b{sel_clip}\\b OR A:re:\\b{sel_clip}\\b )")
+    add_lookup_action(search_anki_menu, "Vocab &Wildcard", f"{su.vocab_read} (Q:*{sel_clip}* OR Reading:*{sel_clip}* OR A:*{sel_clip}*)")
     add_lookup_action(search_anki_menu, "&Radical", build_radical_search_string(sel_clip))
     add_sentence_lookup(search_anki_menu, "&Sentence", sel_clip)
     add_text_vocab_lookup(search_anki_menu, "Text &words", sel_clip)
-    add_lookup_action(search_anki_menu, "Listen", f"deck:{Mine.DeckFilters.Listen} {sel_clip}")
+    add_lookup_action(search_anki_menu, "Listen", f"{su.deck_listen} {sel_clip}")
 
 
 def setup_web_search_menu(search_menu: QMenu, sel_clip: str) -> None:
