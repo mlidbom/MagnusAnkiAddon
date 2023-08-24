@@ -47,10 +47,10 @@ def add_vocab_dependencies_lookup(menu: QMenu, name: str, vocab: WaniVocabNote):
         return f"deck:*Vocab* deck:*Read* ({' OR '.join([single_vocab_clause(voc) for voc in dictionary_forms])})"
 
     def create_vocab_vocab_clause() -> str:
-        return create_vocab_clause(vocab.get_q())
+        return create_vocab_clause(vocab.get_question())
 
     def create_kanji_clause() -> str:
-        return f"note:{Wani.NoteType.Kanji} ( {' OR '.join([f'{Wani.KanjiFields.Q}:{char}' for char in vocab.get_q()])} )"
+        return f"note:{Wani.NoteType.Kanji} ( {' OR '.join([f'{Wani.KanjiFields.question}:{char}' for char in vocab.get_question()])} )"
 
     def create_dependencies_lookup_query() -> str:
         return f'''({create_vocab_vocab_clause()}) OR ({create_kanji_clause()})'''

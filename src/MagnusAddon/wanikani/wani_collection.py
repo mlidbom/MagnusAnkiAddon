@@ -40,7 +40,7 @@ class WaniCollection:
 
     @staticmethod
     def fetch_kanji_notes(field_values: List) -> List[WaniKanjiNote]:
-        notes = WaniCollection.fetch_notes_by_note_type_and_field_value(Wani.NoteType.Kanji, Wani.KanjiFields.Q,
+        notes = WaniCollection.fetch_notes_by_note_type_and_field_value(Wani.NoteType.Kanji, Wani.KanjiFields.question,
                                                                         field_values)
         kanji_notes = [WaniKanjiNote(note) for note in notes]
         return kanji_notes
@@ -48,13 +48,13 @@ class WaniCollection:
     @staticmethod
     def fetch_radical_notes(field_values: List) -> List[WaniRadicalNote]:
         notes = WaniCollection.fetch_notes_by_note_type_and_field_value(Wani.NoteType.Radical,
-                                                                        Wani.RadicalFields.A, field_values)
+                                                                        Wani.RadicalFields.answer, field_values)
         radical_notes = [WaniRadicalNote(note) for note in notes]
         return radical_notes
 
     @staticmethod
     def fetch_vocab_notes(field_values: List) -> List[WaniVocabNote]:
-        notes = WaniCollection.fetch_notes_by_note_type_and_field_value(Wani.NoteType.Vocab, Wani.KanjiFields.Q,
+        notes = WaniCollection.fetch_notes_by_note_type_and_field_value(Wani.NoteType.Vocab, Wani.KanjiFields.question,
                                                                         field_values)
         vocab_notes = [WaniVocabNote(note) for note in notes]
         return vocab_notes

@@ -120,7 +120,3 @@ def test_ignores_noise_characters() -> None:
 def test_something() -> None:
     result = identify_words("知ってる人があんまりいない高校に行って")
     print(result)
-
-def test_token_formatting() -> None:
-    result = _tokenizer.tokenize("知ってる人があんまりいない高校に行って")
-    result = [str(tok) for tok in result.tokens]

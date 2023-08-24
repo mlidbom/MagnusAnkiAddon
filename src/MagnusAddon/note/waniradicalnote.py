@@ -10,11 +10,11 @@ class WaniRadicalNote(WaniNote):
     def __init__(self, note: Note):
         super().__init__(note)
 
-    def get_q(self) -> str: return super().get_field(Wani.RadicalFields.Q)
-    def set_q(self, value: str) -> None: super().set_field(Wani.RadicalFields.Q, value)
+    def get_q(self) -> str: return super().get_field(Wani.RadicalFields.question)
+    def set_q(self, value: str) -> None: super().set_field(Wani.RadicalFields.question, value)
 
-    def get_a(self) -> str: return super().get_field(Wani.RadicalFields.A)
-    def set_a(self, value: str) -> None: super().set_field(Wani.RadicalFields.A, value)
+    def get_a(self) -> str: return super().get_field(Wani.RadicalFields.answer)
+    def set_a(self, value: str) -> None: super().set_field(Wani.RadicalFields.answer, value)
 
     def get_meaning_mnemonic(self) -> str: return super().get_field(Wani.RadicalFields.Radical_Meaning)
     def set_meaning_mnemonic(self, value: str) -> None: super().set_field(Wani.RadicalFields.Radical_Meaning, value)

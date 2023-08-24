@@ -1,5 +1,6 @@
 from typing import *
 
+from note.sentencenote import SentenceNote
 from parsing.textparser import DictLookup
 from sysutils import kana_utils
 from parsing import janomeutils
@@ -38,7 +39,7 @@ def set_vocab_uk_from_dictionary() -> None:
 
 def _update_vocab_parsed_parts_of_speech(all_vocabulary: list[WaniVocabNote]) -> None:
     for vocab in all_vocabulary:
-        vocab.set_parsed_type_of_speech(janomeutils.get_word_parts_of_speech(vocab.get_q()))
+        vocab.set_parsed_type_of_speech(janomeutils.get_word_parts_of_speech(vocab.get_question()))
 
 def update_sentences() -> None:
     UIUtils.run_ui_action(lambda: _update_sentences(WaniCollection.list_sentence_notes()))
@@ -53,20 +54,24 @@ def _sort_vocab_list(vocabs: List[WaniVocabNote]) -> list[WaniVocabNote]:
     vocabs.sort(key=lambda vocab: (vocab.get_level(), vocab.get_lesson_position()))
     return vocabs
 
-def _update_sentences(sentences) -> None:
-    for sentence in sentences: sentence.update_parsed_words()
+def _update_sentences(sentences: list[SentenceNote]) -> None:
+    for sentence in sentences: sentence.update_generated_data()
 
 def _update_vocab(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanjiNote]) -> None:
+    def update_generated_data() -> None:
+        for vocab in all_vocabulary:
+            vocab.update_generated_data()
+
     def update_kanji_names() -> None:
         def prepare_kanji_meaning(kanji: WaniKanjiNote) -> str:
-            meaning = kanji.get_a()
+            meaning = kanji.get_active_answer()
             meaning = StringUtils.strip_markup(meaning)
             meaning = meaning.strip().replace(",", "/").replace(" ", "")
             return meaning
 
-        kanji_dict = {kanji.get_q(): prepare_kanji_meaning(kanji) for kanji in all_kanji}
+        kanji_dict = {kanji.get_question(): prepare_kanji_meaning(kanji) for kanji in all_kanji}
         for vocab_note in all_vocabulary:
-            kanji_list = StringUtils.extract_characters(vocab_note.get_q())
+            kanji_list = StringUtils.extract_characters(vocab_note.get_question())
             kanji_list = [item for item in kanji_list if item in kanji_dict]
             kanji_meanings = [kanji_dict[kanji] for kanji in kanji_list]
             kanji_names_string = " # ".join(kanji_meanings)
@@ -76,7 +81,7 @@ def _update_vocab(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanji
         for vocab in all_vocabulary:
             def format_sentence(html_sentence: str):
                 clean_sentence = StringUtils.strip_markup(html_sentence)
-                word = vocab.get_q()
+                word = vocab.get_question()
                 if word in clean_sentence:
                     return clean_sentence.replace(word, f"""<span class="vocabInContext">{word}</span>""")
                 else:
@@ -92,7 +97,7 @@ def _update_vocab(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanji
 
     def fill_empty_reading_for_uk_vocab() -> None:
         for vocab in all_vocabulary:
-            q = vocab.get_q().strip()
+            q = vocab.get_question().strip()
             readings = ",".join(vocab.get_readings())
 
             if q == readings:
@@ -114,10 +119,10 @@ def _update_vocab(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanji
         for read, vocabs in reading_dict.items():
             if len(vocabs) > 1:
                 for vocab in vocabs:
-                    homonyms = [voc.get_q() for voc in vocabs if voc is not vocab]
+                    homonyms = [voc.get_question() for voc in vocabs if voc is not vocab]
                     vocab.set_related_homophones(homonyms if read else [])
 
-
+    update_generated_data()
     update_kanji_names()
     format_context_sentences()
     fill_empty_reading_for_uk_vocab()
@@ -126,28 +131,34 @@ def _update_vocab(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanji
 
 def _update_kanji(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanjiNote]):
     def generate_vocab_html_list(note: WaniKanjiNote, vocabs: List[WaniVocabNote]):
-
         return f'''
                 <div class="kanjiVocabList">
                     <div>
                     
                     {StringUtils.newline().join([f"""
                     <div class="kanjiVocabEntry">
-                        <span class="kanji clipboard">{vocab.get_q()}</span>
+                        <span class="kanji clipboard">{vocab.get_question()}</span>
                         (<span class="clipboard vocabReading">{note.tag_readings_in_string(", ".join(vocab.get_readings()), lambda read: f'<span class="kanjiReading">{read}</span>')}</span>)
-                        <span class="meaning"> {StringUtils.strip_markup(vocab.get_a())}</span>
+                        <span class="meaning"> {StringUtils.strip_markup(vocab.get_active_answer())}</span>
                     </div>
                     """ for vocab in vocabs])}
                     
                     </div>
                 </div>
                 '''
+
+    def update_generated_data() -> None:
+        for kanji in all_kanji:
+            kanji.update_generated_data()
+
+    update_generated_data()
+
     all_vocabulary = _sort_vocab_list(all_vocabulary)  # we want a specific order in the kanji entries etc
-    kanji_dict: Dict[str, WaniKanjiNote] = {kanji.get_q(): kanji for kanji in all_kanji}
-    kanji_vocab_dict: Dict[str, List[WaniVocabNote]] = {kanji.get_q(): [] for kanji in all_kanji}
+    kanji_dict: Dict[str, WaniKanjiNote] = {kanji.get_question(): kanji for kanji in all_kanji}
+    kanji_vocab_dict: Dict[str, List[WaniVocabNote]] = {kanji.get_question(): [] for kanji in all_kanji}
 
     for voc in all_vocabulary:
-        for char in voc.get_q():
+        for char in voc.get_question():
             if char in kanji_vocab_dict:
                 kanji_vocab_dict[char].append(voc)
 
@@ -155,15 +166,15 @@ def _update_kanji(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanji
         kanji_note = kanji_dict[kanji]
         html = generate_vocab_html_list(kanji_note, vocabulary_entries)
         kanji_note.set_vocabs(html)
-        kanji_note.set_vocabs_raw([vo.get_q() for vo in vocabulary_entries])
+        kanji_note.set_vocabs_raw([vo.get_question() for vo in vocabulary_entries])
 
     kanji_with_vocab = [kanji for kanji in all_kanji if kanji.get_primary_vocab()]
     for kanji in kanji_with_vocab:
-        kanji_vocab = kanji_vocab_dict[kanji.get_q()]
+        kanji_vocab = kanji_vocab_dict[kanji.get_question()]
         primary_vocabs: List[str] = [StringUtils.strip_markup(vocab).strip() for vocab in kanji.get_primary_vocab().split(",")]
         if len(primary_vocabs) > 0:
             found_vocab: list[WaniVocabNote] = list[WaniVocabNote]()
-            vocab_to_vocab: dict[str, WaniVocabNote] = {vo.get_q(): vo for vo in kanji_vocab}
+            vocab_to_vocab: dict[str, WaniVocabNote] = {vo.get_question(): vo for vo in kanji_vocab}
             reading_to_vocab: dict[str, WaniVocabNote] = dict[str, WaniVocabNote]()
 
             for vocab in kanji_vocab:

@@ -12,14 +12,15 @@ class SentenceNote(MyNote):
     def __init__(self, note: Note):
         super().__init__(note)
 
-    def get_q(self) -> str: return super().get_field(SentenceNoteFields.Q)
-    def set_q(self, value: str) -> None: super().set_field(SentenceNoteFields.Q, value)
+    def _get_source_answer(self) -> str: return super().get_field(SentenceNoteFields.source_answer)
+    def _get_user_answer(self) -> str: return super().get_field(SentenceNoteFields.user_answer)
 
-    def _get_q__(self) -> str: return super().get_field(SentenceNoteFields.Q__)
-    def get_active_q(self) -> str:
-        return self._get_q__() or self.get_q()
+    def _get_source_question(self) -> str: return super().get_field(SentenceNoteFields.source_question)
 
-    def parse_words_from_expression(self) -> list[ParsedWord]: return textparser.identify_words(self.get_active_q())
+    def _get_user_question(self) -> str: return super().get_field(SentenceNoteFields.user_question)
+    def get_active_question(self) -> str: return self._get_user_question() or self._get_source_question()
+
+    def parse_words_from_expression(self) -> list[ParsedWord]: return textparser.identify_words(self.get_active_question())
     def _set_parsed_words(self, value: list[str]) -> None:
         value.append(str(timeutil.one_second_from_now()))
         super().set_field(SentenceNoteFields.ParsedWords, ",".join(value))
@@ -30,10 +31,15 @@ class SentenceNote(MyNote):
 
     def _needs_words_reparsed(self) -> bool: return self._note.mod > self._parsed_words_timestamp()
 
-    def update_parsed_words(self) -> None:
+    def update_generated_data(self) -> None:
+        self._update_parsed_words()
+        super().set_field(SentenceNoteFields.active_answer, self._get_user_answer() or self._get_source_answer())
+        super().set_field(SentenceNoteFields.active_question, self._get_user_question() or self._get_source_question())
+
+    def _update_parsed_words(self) -> None:
         if self._needs_words_reparsed():
             self._set_parsed_words([word.word for word in self.parse_words_from_expression()])
 
     def extract_kanji(self) -> list[str]:
-        clean = StringUtils.strip_markup(self.get_q())
+        clean = StringUtils.strip_markup(self._get_source_question())
         return [char for char in clean if not kana_utils.is_kana(char)]

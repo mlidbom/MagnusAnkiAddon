@@ -6,7 +6,7 @@ from unittest.mock import MagicMock
 
 def vocab_mock(word: str, readings: list[str]) -> WaniVocabNote:
     mock_instance = MagicMock(spec=WaniVocabNote)
-    mock_instance.get_q.return_value = word
+    mock_instance.get_question.return_value = word
     mock_instance.get_readings.return_value = readings
     return mock_instance
 

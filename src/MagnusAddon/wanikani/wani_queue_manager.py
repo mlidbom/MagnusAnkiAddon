@@ -36,13 +36,13 @@ def visit_note_dependencies(note: Note, callback: Callable[[WaniNote, str], None
 
 
 def visit_vocab_with_dependencies(vocab_note: WaniVocabNote, callback: Callable[[WaniNote, str], None]) -> None:
-    kanji_list = StringUtils.extract_characters(vocab_note.get_q())
+    kanji_list = StringUtils.extract_characters(vocab_note.get_question())
     kanji_notes = WaniCollection.fetch_kanji_notes(kanji_list)
 
     for kanji_note in kanji_notes:
         visit_kanji_with_dependencies(kanji_note, None, callback)
 
-    callback(vocab_note, vocab_note.get_a())
+    callback(vocab_note, vocab_note.get_active_answer())
 
 
 def visit_kanji_with_dependencies(kanji_note: WaniKanjiNote,
@@ -60,7 +60,7 @@ def visit_kanji_with_dependencies(kanji_note: WaniKanjiNote,
         if calling_radical_note is None or radical.get_a() != calling_radical_note.get_a():
             visit_radical_with_dependencies(radical, kanji_note, callback)
 
-    callback(kanji_note, kanji_note.get_a())
+    callback(kanji_note, kanji_note.get_active_answer())
 
 
 def visit_radical_with_dependencies(radical_note: WaniRadicalNote,
@@ -68,7 +68,7 @@ def visit_radical_with_dependencies(radical_note: WaniRadicalNote,
                                     callback: Callable[[WaniNote, str], None]):
     kanji_dependencies_notes = WaniCollection.fetch_kanji_notes([radical_note.get_q()])
     for kanji_note in kanji_dependencies_notes:
-        if calling_kanji_note is None or kanji_note.get_q() != calling_kanji_note.get_q():
+        if calling_kanji_note is None or kanji_note.get_question() != calling_kanji_note.get_question():
             visit_kanji_with_dependencies(kanji_note, radical_note, callback)
 
     callback(radical_note, radical_note.get_a())

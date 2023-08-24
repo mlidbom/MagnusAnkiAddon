@@ -6,8 +6,12 @@ class MyNoteFields:
     Vocab5 = "__vocab5"
 
 class SentenceNoteFields:
-    Q = "Q"
-    Q__ = "__expression"
+    active_question = "Q"
+    source_question = "source_question"
+    user_question = "__question"
+    active_answer = "A"
+    source_answer = "source_answer"
+    user_answer = "__answer"
     ParsedWords = "ParsedWords"
 
 class Wani:
@@ -38,8 +42,8 @@ class Wani:
         auxiliary_meanings_blacklist = "auxiliary_meanings_blacklist"
 
     class RadicalFields:
-        Q = "Q"
-        A = "A"
+        question = "Q"
+        answer = "A"
         Radical_Meaning = "Radical_Meaning"
         Radical_Icon = "Radical_Icon"
         sort_id = "sort_id"
@@ -47,8 +51,10 @@ class Wani:
         amalgamation_subject_ids = "amalgamation_subject_ids"
 
     class KanjiFields:
-        Q = "Q"
-        A = "A"
+        question = "Q"
+        active_answer = "A"
+        source_answer = "source_answer"
+        user_answer = "__answer"
         Reading_On = "Reading_On"
         Reading_Kun = "Reading_Kun"
         Radicals = "Radicals"
@@ -59,7 +65,6 @@ class Wani:
         Meaning_Info = "Meaning_Info"
         Reading_Mnemonic = "Reading_Mnemonic"
         Reading_Info = "Reading_Info"
-        A__ = "__meaning"
         PrimaryVocab = "__primary_Vocab"
         Audio__ = "__audio"
 
@@ -72,9 +77,10 @@ class Wani:
         VocabsRaw = "VocabsRaw"
 
     class KanaVocabFields:
-        Q = "Q"
-        A = "A"
-        Meaning__ = "__meaning"
+        question = "Q"
+        active_answer = "A"
+        source_answer = "source_answer"
+        user_answer = "__answer"
         Reading = "Reading"
         Speech_Type = "Speech_Type"
         Context_jp = "Context_jp"

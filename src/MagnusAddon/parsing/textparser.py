@@ -60,7 +60,7 @@ class DictLookup:
 
     @classmethod
     def try_lookup_vocab_word_or_name(cls, word: WaniVocabNote) -> 'DictLookup':
-        return cls.try_lookup_word_or_name(word.get_q(), word.get_readings())
+        return cls.try_lookup_word_or_name(word.get_question(), word.get_readings())
 
     @classmethod
     def lookup_word_or_name(cls, word: str, readings: list[str]) -> 'DictLookup':

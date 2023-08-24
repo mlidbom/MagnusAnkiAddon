@@ -34,7 +34,7 @@ class WaniDownloader:
     @classmethod
     def fetch_audio_from_wanikani(cls, vocab: WaniVocabNote) -> None:
         wani_client: WanikaniClient = WanikaniClient.get_instance()
-        wani_vocab = wani_client.get_vocab(vocab.get_q())
+        wani_vocab = wani_client.get_vocab(vocab.get_question())
         female_audio_mp3 = [audio for audio in wani_vocab.pronunciation_audios if audio.metadata.gender == "female" and audio.content_type == "audio/mpeg"]
         male_audio_mp3 = [audio for audio in wani_vocab.pronunciation_audios if audio.metadata.gender == "male" and audio.content_type == "audio/mpeg"]
 

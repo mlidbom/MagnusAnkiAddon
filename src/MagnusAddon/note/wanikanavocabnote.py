@@ -10,18 +10,19 @@ class WaniKanaVocabNote(WaniNote):
     def __init__(self, note: Note):
         super().__init__(note)
 
-    def get_q(self) -> str: return super().get_field(Wani.KanaVocabFields.Q)
-    def set_q(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Q, value)
+    def get_question(self) -> str: return super().get_field(Wani.KanaVocabFields.question)
+    def _set_question(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.question, value)
 
-    def get_a(self) -> str:
-        meaning = self.get_override_meaning()
-        if meaning != "": return meaning
-        return super().get_field(Wani.KanaVocabFields.A)
+    def get_active_answer(self) -> str:
+        return self.get_user_answer() or super().get_field(Wani.KanaVocabFields.source_answer)
 
-    def set_a(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.A, value)
+    def _set_source_answer(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.source_answer, value)
 
-    def get_override_meaning(self) -> str: return super().get_field(Wani.KanaVocabFields.Meaning__)
-    def set_override_meaning(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Meaning__, value)
+    def update_generated_data(self) -> None:
+        super().set_field(Wani.KanaVocabFields.active_answer, self.get_active_answer())
+
+    def get_user_answer(self) -> str: return super().get_field(Wani.KanaVocabFields.user_answer)
+    def set_user_answer(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.user_answer, value)
 
     def get_related_homophones(self) -> list[str]: return super().get_field(Wani.KanaVocabFields.Related_homophones).split(", ")
     def set_related_homophones(self, value: list[str]) -> None:
@@ -80,6 +81,6 @@ class WaniKanaVocabNote(WaniNote):
         self.set_meaning_mnemonic(wani_vocab.meaning_mnemonic)
 
         meanings = ', '.join(str(meaning.meaning) for meaning in wani_vocab.meanings)
-        self.set_a(meanings)
+        self._set_source_answer(meanings)
 
         self.set_speech_type(", ".join(wani_vocab.parts_of_speech))

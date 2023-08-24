@@ -23,17 +23,19 @@ class WaniKanjiNote(WaniNote):
                 return vocabulary.replace(reading, tagger(reading), 1)
         return vocabulary
 
-    def get_q(self) -> str: return super().get_field(Wani.KanjiFields.Q)
-    def set_q(self, value: str) -> None: super().set_field(Wani.KanjiFields.Q, value)
+    def get_question(self) -> str: return super().get_field(Wani.KanjiFields.question)
+    def set_question(self, value: str) -> None: super().set_field(Wani.KanjiFields.question, value)
 
-    def get_a(self) -> str:
-        meaning = self.get_a__()
-        if meaning != "":
-            return meaning
-        return super().get_field(Wani.KanjiFields.A)
+    def get_active_answer(self) -> str:
+        return self.get_user_answer() or super().get_field(Wani.KanjiFields.source_answer)
 
-    def get_a__(self) -> str: return super().get_field(Wani.KanjiFields.A__)
-    def set_a__(self, value: str) -> None: super().set_field(Wani.KanjiFields.A__, value)
+    def get_user_answer(self) -> str: return super().get_field(Wani.KanjiFields.user_answer)
+    def set_user_answer(self, value:str) -> None: return super().set_field(Wani.KanjiFields.user_answer, value)
+
+    def _set_source_answer(self, value: str) -> None: super().set_field(Wani.KanjiFields.source_answer, value)
+
+    def update_generated_data(self) -> None:
+        super().set_field(Wani.KanjiFields.active_answer, self.get_active_answer())
 
     def override_meaning_mnemonic(self) -> None:
         if not self.get_mnemonics_override():
@@ -45,8 +47,6 @@ class WaniKanjiNote(WaniNote):
 
     def get_mnemonics_override(self) -> str: return super().get_field(Wani.KanjiFields.Mnemonic__)
     def set_mnemonics_override(self, value: str) -> None: super().set_field(Wani.KanjiFields.Mnemonic__, value)
-
-    def set_kanji_meaning(self, value: str) -> None: super().set_field(Wani.KanjiFields.A, value)
 
     def get_reading_on(self) -> str: return super().get_field(Wani.KanjiFields.Reading_On)
     def set_reading_on(self, value: str) -> None: super().set_field(Wani.KanjiFields.Reading_On, value)
@@ -108,7 +108,7 @@ class WaniKanjiNote(WaniNote):
         meanings = [f"<primary>{meaning.meaning}</primary>" if meaning.primary else meaning.meaning
                     for meaning in wani_kanji.meanings]
 
-        self.set_kanji_meaning(", ".join(meanings))
+        self._set_source_answer(", ".join(meanings))
 
         onyomi_readings = [f"<primary>{reading.reading}</primary>" if reading.primary else reading.reading
                            for reading in wani_kanji.readings if reading.type == "onyomi"]
@@ -162,5 +162,5 @@ class WaniKanjiNote(WaniNote):
         note.add_tag(Mine.Tags.Wani)
         kanji_note = WaniKanjiNote(note)
         mw.col.addNote(note)
-        kanji_note.set_q(wani_kanji.characters)
+        kanji_note.set_question(wani_kanji.characters)
         kanji_note.update_from_wani(wani_kanji)
