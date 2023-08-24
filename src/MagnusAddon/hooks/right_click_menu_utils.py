@@ -30,7 +30,7 @@ def add_single_vocab_lookup_action(menu: QMenu, name:str, vocab:str) -> None:
 
 def add_text_vocab_lookup(menu: QMenu, name:str, text:str) -> None:
     def voc_clause(voc: ParsedWord) -> str:
-        return f'(tag:_uk AND Reading:{voc.word})' if voc.is_kana_only() else f'Vocab:{voc.word}'
+        return f'(tag:_uk AND Reading:{voc.word})' if voc.is_kana_only() else f'Q:{voc.word}'
 
     def create_search_string() -> str:
         dictionary_forms = textparser.identify_words(text)
@@ -40,17 +40,17 @@ def add_text_vocab_lookup(menu: QMenu, name:str, text:str) -> None:
 
 def add_vocab_dependencies_lookup(menu: QMenu, name: str, vocab: WaniVocabNote):
     def single_vocab_clause(voc: ParsedWord) -> str:
-        return f'(tag:_uk AND Reading:{voc.word})' if voc.is_kana_only() else f'Vocab:{voc.word}'
+        return f'(tag:_uk AND Reading:{voc.word})' if voc.is_kana_only() else f'Q:{voc.word}'
 
     def create_vocab_clause(text:str) -> str:
         dictionary_forms = textparser.identify_words(text)
         return f"deck:*Vocab* deck:*Read* ({' OR '.join([single_vocab_clause(voc) for voc in dictionary_forms])})"
 
     def create_vocab_vocab_clause() -> str:
-        return create_vocab_clause(vocab.get_vocab())
+        return create_vocab_clause(vocab.get_q())
 
     def create_kanji_clause() -> str:
-        return f"note:{Wani.NoteType.Kanji} ( {' OR '.join([f'{Wani.KanjiFields.Kanji}:{char}' for char in vocab.get_vocab()])} )"
+        return f"note:{Wani.NoteType.Kanji} ( {' OR '.join([f'{Wani.KanjiFields.Q}:{char}' for char in vocab.get_q()])} )"
 
     def create_dependencies_lookup_query() -> str:
         return f'''({create_vocab_vocab_clause()}) OR ({create_kanji_clause()})'''
@@ -69,5 +69,5 @@ def anki_lookup(search: Callable[[], str]) -> Callable[[],None]:
 
 
 def add_sentence_lookup(menu, name: str, search):
-    add_lookup_action(menu, name, f"(deck:*sentence* deck:*listen*) (Expression:*{search}* OR Reading:*{search}* OR ParsedWords:re:\b{search}\b)")
+    add_lookup_action(menu, name, f"(deck:*sentence* deck:*listen*) (Q:*{search}* OR Reading:*{search}* OR ParsedWords:re:\b{search}\b)")
 

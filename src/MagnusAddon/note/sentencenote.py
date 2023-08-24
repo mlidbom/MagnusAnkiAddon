@@ -12,14 +12,14 @@ class SentenceNote(MyNote):
     def __init__(self, note: Note):
         super().__init__(note)
 
-    def get_expression(self) -> str: return super().get_field(SentenceNoteFields.Expression)
-    def set_expression(self, value: str) -> None: super().set_field(SentenceNoteFields.Expression, value)
+    def get_q(self) -> str: return super().get_field(SentenceNoteFields.Q)
+    def set_q(self, value: str) -> None: super().set_field(SentenceNoteFields.Q, value)
 
-    def _get_expression__(self) -> str: return super().get_field(SentenceNoteFields.Expression__)
-    def get_active_expression(self) -> str:
-        return self._get_expression__() or self.get_expression()
+    def _get_q__(self) -> str: return super().get_field(SentenceNoteFields.Q__)
+    def get_active_q(self) -> str:
+        return self._get_q__() or self.get_q()
 
-    def parse_words_from_expression(self) -> list[ParsedWord]: return textparser.identify_words(self.get_active_expression())
+    def parse_words_from_expression(self) -> list[ParsedWord]: return textparser.identify_words(self.get_active_q())
     def _set_parsed_words(self, value: list[str]) -> None:
         value.append(str(timeutil.one_second_from_now()))
         super().set_field(SentenceNoteFields.ParsedWords, ",".join(value))
@@ -35,5 +35,5 @@ class SentenceNote(MyNote):
             self._set_parsed_words([word.word for word in self.parse_words_from_expression()])
 
     def extract_kanji(self) -> list[str]:
-        clean = StringUtils.strip_markup(self.get_expression())
+        clean = StringUtils.strip_markup(self.get_q())
         return [char for char in clean if not kana_utils.is_kana(char)]

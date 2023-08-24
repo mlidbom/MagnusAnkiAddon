@@ -10,15 +10,15 @@ class WaniKanaVocabNote(WaniNote):
     def __init__(self, note: Note):
         super().__init__(note)
 
-    def get_vocab(self) -> str: return super().get_field(Wani.KanaVocabFields.Vocab)
-    def set_vocab(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Vocab, value)
+    def get_q(self) -> str: return super().get_field(Wani.KanaVocabFields.Q)
+    def set_q(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Q, value)
 
-    def get_vocab_meaning(self) -> str:
+    def get_a(self) -> str:
         meaning = self.get_override_meaning()
         if meaning != "": return meaning
-        return super().get_field(Wani.KanaVocabFields.Vocab_Meaning)
+        return super().get_field(Wani.KanaVocabFields.A)
 
-    def set_vocab_meaning(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Vocab_Meaning, value)
+    def set_a(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.A, value)
 
     def get_override_meaning(self) -> str: return super().get_field(Wani.KanaVocabFields.Meaning__)
     def set_override_meaning(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Meaning__, value)
@@ -80,6 +80,6 @@ class WaniKanaVocabNote(WaniNote):
         self.set_meaning_mnemonic(wani_vocab.meaning_mnemonic)
 
         meanings = ', '.join(str(meaning.meaning) for meaning in wani_vocab.meanings)
-        self.set_vocab_meaning(meanings)
+        self.set_a(meanings)
 
         self.set_speech_type(", ".join(wani_vocab.parts_of_speech))

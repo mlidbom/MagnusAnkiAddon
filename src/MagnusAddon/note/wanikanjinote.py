@@ -23,17 +23,17 @@ class WaniKanjiNote(WaniNote):
                 return vocabulary.replace(reading, tagger(reading), 1)
         return vocabulary
 
-    def get_kanji(self) -> str: return super().get_field(Wani.KanjiFields.Kanji)
-    def set_kanji(self, value: str) -> None: super().set_field(Wani.KanjiFields.Kanji, value)
+    def get_q(self) -> str: return super().get_field(Wani.KanjiFields.Q)
+    def set_q(self, value: str) -> None: super().set_field(Wani.KanjiFields.Q, value)
 
-    def get_kanji_meaning(self) -> str:
-        meaning = self.get_override_meaning()
+    def get_a(self) -> str:
+        meaning = self.get_a__()
         if meaning != "":
             return meaning
-        return super().get_field(Wani.KanjiFields.Kanji_Meaning)
+        return super().get_field(Wani.KanjiFields.A)
 
-    def get_override_meaning(self) -> str: return super().get_field(Wani.KanjiFields.Meaning__)
-    def set_override_meaning(self, value: str) -> None: super().set_field(Wani.KanjiFields.Meaning__, value)
+    def get_a__(self) -> str: return super().get_field(Wani.KanjiFields.A__)
+    def set_a__(self, value: str) -> None: super().set_field(Wani.KanjiFields.A__, value)
 
     def override_meaning_mnemonic(self) -> None:
         if not self.get_mnemonics_override():
@@ -46,7 +46,7 @@ class WaniKanjiNote(WaniNote):
     def get_mnemonics_override(self) -> str: return super().get_field(Wani.KanjiFields.Mnemonic__)
     def set_mnemonics_override(self, value: str) -> None: super().set_field(Wani.KanjiFields.Mnemonic__, value)
 
-    def set_kanji_meaning(self, value: str) -> None: super().set_field(Wani.KanjiFields.Kanji_Meaning, value)
+    def set_kanji_meaning(self, value: str) -> None: super().set_field(Wani.KanjiFields.A, value)
 
     def get_reading_on(self) -> str: return super().get_field(Wani.KanjiFields.Reading_On)
     def set_reading_on(self, value: str) -> None: super().set_field(Wani.KanjiFields.Reading_On, value)
@@ -162,5 +162,5 @@ class WaniKanjiNote(WaniNote):
         note.add_tag(Mine.Tags.Wani)
         kanji_note = WaniKanjiNote(note)
         mw.col.addNote(note)
-        kanji_note.set_kanji(wani_kanji.characters)
+        kanji_note.set_q(wani_kanji.characters)
         kanji_note.update_from_wani(wani_kanji)

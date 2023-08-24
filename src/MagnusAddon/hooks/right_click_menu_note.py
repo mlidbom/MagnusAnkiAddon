@@ -27,17 +27,17 @@ def setup_note_menu(note, root_menu, sel_clip, selection, view: AnkiWebView):
         add_ui_action(add_vocab_menu, "&5", lambda: note.set_field(MyNoteFields.Vocab5, sel_clip))
 
     if isinstance(note, SentenceNote):
-        add_text_vocab_lookup(note_lookup_menu, "&Vocabulary words", note.get_active_expression())
-        add_lookup_action(note_lookup_menu, "&Kanji", f"""note:{Wani.NoteType.Kanji} ({" OR ".join([f"{Wani.KanjiFields.Kanji}:{kan}" for kan in note.extract_kanji()])})""")
+        add_text_vocab_lookup(note_lookup_menu, "&Vocabulary words", note.get_active_q())
+        add_lookup_action(note_lookup_menu, "&Kanji", f"""note:{Wani.NoteType.Kanji} ({" OR ".join([f"{Wani.KanjiFields.Q}:{kan}" for kan in note.extract_kanji()])})""")
 
     if isinstance(note, WaniRadicalNote):
-        add_lookup_action(note_lookup_menu, "&Kanji", f"note:{Wani.NoteType.Kanji} {Wani.KanjiFields.Radicals_Names}:re:\\b{note.get_radical_name()}\\b")
+        add_lookup_action(note_lookup_menu, "&Kanji", f"note:{Wani.NoteType.Kanji} {Wani.KanjiFields.Radicals_Names}:re:\\b{note.get_a()}\\b")
 
     if isinstance(note, WaniKanjiNote):
         kanji = note
-        add_lookup_action(note_lookup_menu, "&Vocabs", f"deck:*Vocab* deck:*Read* (Vocab:*{note.get_kanji()}*)")
+        add_lookup_action(note_lookup_menu, "&Vocabs", f"deck:*Vocab* deck:*Read* (Q:*{note.get_q()}*)")
         radicals = [rad.strip() for rad in note.get_radicals_names().split(",")]
-        radicals_clause = " OR ".join([f"{Wani.RadicalFields.Radical_Name}:{rad}" for rad in radicals])
+        radicals_clause = " OR ".join([f"{Wani.RadicalFields.A}:{rad}" for rad in radicals])
         add_lookup_action(note_lookup_menu, "&Radicals", f"note:{Wani.NoteType.Radical} ({radicals_clause})")
         add_sentence_lookup(note_lookup_menu, "&Sentences", sel_clip)
 
@@ -45,8 +45,8 @@ def setup_note_menu(note, root_menu, sel_clip, selection, view: AnkiWebView):
             add_ui_action(note_hide_menu, "&Mnemonic", lambda: kanji.override_meaning_mnemonic())
         if kanji.get_mnemonics_override() == "-":
             add_ui_action(note_restore_menu, "&Mnemonic", lambda: kanji.restore_meaning_mnemonic())
-        if not kanji.get_override_meaning():
-            add_ui_action(note_menu, "Accept &meaning", lambda: kanji.set_override_meaning(format_kanji_meaning(kanji.get_kanji_meaning())))
+        if not kanji.get_a__():
+            add_ui_action(note_menu, "Accept &meaning", lambda: kanji.set_a__(format_kanji_meaning(kanji.get_a())))
 
         if selection:
             add_ui_action(note_add_menu, "&Primary vocab", lambda: add_kanji_primary_vocab(kanji, selection, view))
@@ -54,12 +54,12 @@ def setup_note_menu(note, root_menu, sel_clip, selection, view: AnkiWebView):
 
     if isinstance(note, WaniVocabNote):
         vocab = note
-        add_lookup_action(note_lookup_menu, "&Kanji", f"note:{Wani.NoteType.Kanji} ( {' OR '.join([f'{Wani.KanjiFields.Kanji}:{char}' for char in note.get_vocab()])} )")
+        add_lookup_action(note_lookup_menu, "&Kanji", f"note:{Wani.NoteType.Kanji} ( {' OR '.join([f'{Wani.KanjiFields.Q}:{char}' for char in note.get_q()])} )")
         if vocab.get_related_ergative_twin():
             add_single_vocab_lookup_action(note_lookup_menu, "&Ergative twin", vocab.get_related_ergative_twin())
 
-        add_lookup_action(note_lookup_menu, "&Sentence", f"(deck:*sentence* deck:*listen*) ({SentenceNoteFields.ParsedWords}:re:\\b{note.get_vocab()}\\b OR Expression:*{note.get_vocab()}*)")
-        add_text_vocab_lookup(note_lookup_menu, "&Compounds", note.get_vocab())
+        add_lookup_action(note_lookup_menu, "&Sentence", f"(deck:*sentence* deck:*listen*) ({SentenceNoteFields.ParsedWords}:re:\\b{note.get_q()}\\b OR Q:*{note.get_q()}*)")
+        add_text_vocab_lookup(note_lookup_menu, "&Compounds", note.get_q())
         add_vocab_dependencies_lookup(note_lookup_menu, "&Dependencies", note)
 
         if not vocab.get_mnemonics_override():
@@ -67,7 +67,7 @@ def setup_note_menu(note, root_menu, sel_clip, selection, view: AnkiWebView):
         if vocab.get_mnemonics_override() == "-":
             add_ui_action(note_restore_menu, "&Mnemonic", lambda: vocab.restore_meaning_mnemonic())
         if not vocab.get_override_meaning():
-            add_ui_action(note_menu, "Accept &meaning", lambda: vocab.set_override_meaning(format_vocab_meaning(vocab.get_vocab_meaning())))
+            add_ui_action(note_menu, "Accept &meaning", lambda: vocab.set_override_meaning(format_vocab_meaning(vocab.get_a())))
 
         add_ui_action(note_set_menu, "&Meaning", lambda: vocab.set_override_meaning(sel_clip))
         add_ui_action(note_set_menu, "&Similar vocab", lambda: vocab.set_related_similar_vocab(sel_clip))

@@ -6,8 +6,8 @@ class MyNoteFields:
     Vocab5 = "__vocab5"
 
 class SentenceNoteFields:
-    Expression = "Expression"
-    Expression__ = "__expression"
+    Q = "Q"
+    Q__ = "__expression"
     ParsedWords = "ParsedWords"
 
 class Wani:
@@ -18,9 +18,9 @@ class Wani:
             Recognition = "Recognition"
 
     class NoteType:
-        Kanji = "WaniKanji"
-        Vocab = "WaniVocab"
-        Radical = "WaniRadical"
+        Kanji = "_Kanji"
+        Vocab = "_Vocab"
+        Radical = "_Radical"
 
     class NoteFields:
         sort_id = "sort_id"
@@ -38,8 +38,8 @@ class Wani:
         auxiliary_meanings_blacklist = "auxiliary_meanings_blacklist"
 
     class RadicalFields:
-        Radical = "Radical"
-        Radical_Name = "Radical_Name"
+        Q = "Q"
+        A = "A"
         Radical_Meaning = "Radical_Meaning"
         Radical_Icon = "Radical_Icon"
         sort_id = "sort_id"
@@ -47,8 +47,8 @@ class Wani:
         amalgamation_subject_ids = "amalgamation_subject_ids"
 
     class KanjiFields:
-        Kanji = "Kanji"
-        Kanji_Meaning = "Kanji_Meaning"
+        Q = "Q"
+        A = "A"
         Reading_On = "Reading_On"
         Reading_Kun = "Reading_Kun"
         Radicals = "Radicals"
@@ -59,7 +59,7 @@ class Wani:
         Meaning_Info = "Meaning_Info"
         Reading_Mnemonic = "Reading_Mnemonic"
         Reading_Info = "Reading_Info"
-        Meaning__ = "__meaning"
+        A__ = "__meaning"
         PrimaryVocab = "__primary_Vocab"
         Audio__ = "__audio"
 
@@ -72,8 +72,8 @@ class Wani:
         VocabsRaw = "VocabsRaw"
 
     class KanaVocabFields:
-        Vocab = "Vocab"
-        Vocab_Meaning = "Vocab_Meaning"
+        Q = "Q"
+        A = "A"
         Meaning__ = "__meaning"
         Reading = "Reading"
         Speech_Type = "Speech_Type"

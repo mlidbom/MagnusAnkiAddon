@@ -36,13 +36,13 @@ def visit_note_dependencies(note: Note, callback: Callable[[WaniNote, str], None
 
 
 def visit_vocab_with_dependencies(vocab_note: WaniVocabNote, callback: Callable[[WaniNote, str], None]) -> None:
-    kanji_list = StringUtils.extract_characters(vocab_note.get_vocab())
+    kanji_list = StringUtils.extract_characters(vocab_note.get_q())
     kanji_notes = WaniCollection.fetch_kanji_notes(kanji_list)
 
     for kanji_note in kanji_notes:
         visit_kanji_with_dependencies(kanji_note, None, callback)
 
-    callback(vocab_note, vocab_note.get_vocab_meaning())
+    callback(vocab_note, vocab_note.get_a())
 
 
 def visit_kanji_with_dependencies(kanji_note: WaniKanjiNote,
@@ -52,26 +52,26 @@ def visit_kanji_with_dependencies(kanji_note: WaniKanjiNote,
         kanji_note.get_radicals_names()) + StringUtils.extract_comma_separated_values(
         kanji_note.get_radicals_icons_names())
 
-    if calling_radical_note is not None and calling_radical_note.get_radical_name() in radical_dependencies_names:
+    if calling_radical_note is not None and calling_radical_note.get_a() in radical_dependencies_names:
         return  # We do not want to unsuspend the kanji that depends on the radical, only kanji upon which the radical depends
 
     radical_dependencies_notes = WaniCollection.fetch_radical_notes(radical_dependencies_names)
     for radical in radical_dependencies_notes:
-        if calling_radical_note is None or radical.get_radical_name() != calling_radical_note.get_radical_name():
+        if calling_radical_note is None or radical.get_a() != calling_radical_note.get_a():
             visit_radical_with_dependencies(radical, kanji_note, callback)
 
-    callback(kanji_note, kanji_note.get_kanji_meaning())
+    callback(kanji_note, kanji_note.get_a())
 
 
 def visit_radical_with_dependencies(radical_note: WaniRadicalNote,
                                     calling_kanji_note: Optional[WaniKanjiNote],
                                     callback: Callable[[WaniNote, str], None]):
-    kanji_dependencies_notes = WaniCollection.fetch_kanji_notes([radical_note.get_radical()])
+    kanji_dependencies_notes = WaniCollection.fetch_kanji_notes([radical_note.get_q()])
     for kanji_note in kanji_dependencies_notes:
-        if calling_kanji_note is None or kanji_note.get_kanji() != calling_kanji_note.get_kanji():
+        if calling_kanji_note is None or kanji_note.get_q() != calling_kanji_note.get_q():
             visit_kanji_with_dependencies(kanji_note, radical_note, callback)
 
-    callback(radical_note, radical_note.get_radical_name())
+    callback(radical_note, radical_note.get_a())
 
 
 def refresh_search() -> None:

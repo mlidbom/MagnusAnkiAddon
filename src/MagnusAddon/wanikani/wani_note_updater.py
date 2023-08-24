@@ -16,13 +16,13 @@ def update_from_wanikani(note: Note):
     note_type = note._note_type['name']
     if note_type == Wani.NoteType.Vocab:
         vocab_note = WaniVocabNote(note)
-        vocab_note.update_from_wani(waniClient.get_vocab(vocab_note.get_vocab()))
+        vocab_note.update_from_wani(waniClient.get_vocab(vocab_note.get_q()))
     if note_type == Wani.NoteType.Kanji:
         kanji_note = WaniKanjiNote(note)
-        kanji_note.update_from_wani(waniClient.get_kanji_by_name(kanji_note.get_kanji()))
+        kanji_note.update_from_wani(waniClient.get_kanji_by_name(kanji_note.get_q()))
     if note_type == Wani.NoteType.Radical:
         radical_note = WaniRadicalNote(note)
-        radical_note.update_from_wani(waniClient.get_radical(radical_note.get_radical_name()))
+        radical_note.update_from_wani(waniClient.get_radical(radical_note.get_a()))
 
 
 def update_radical() -> None:
@@ -31,11 +31,11 @@ def update_radical() -> None:
     failed: str = ""
     for radical_note in all_radicals:
         try:
-            wani_radical = waniClient.get_radical(radical_note.get_radical_name())
+            wani_radical = waniClient.get_radical(radical_note.get_a())
             radical_note.update_from_wani(wani_radical)
             fetched += 1
         except KeyError:
-            failed = failed + "," + radical_note.get_radical_name()
+            failed = failed + "," + radical_note.get_a()
 
     message = "Successfully matched {} radical notes.\n Failed:{}".format(fetched, failed)
     print(message)
@@ -48,11 +48,11 @@ def update_kanji() -> None:
     failed: str = ""
     for kanji_note in all_kanji:
         try:
-            wani_kanji = waniClient.get_kanji_by_name(kanji_note.get_kanji())
+            wani_kanji = waniClient.get_kanji_by_name(kanji_note.get_q())
             kanji_note.update_from_wani(wani_kanji)
             fetched += 1
         except KeyError:
-            failed = failed + "," + kanji_note.get_kanji()
+            failed = failed + "," + kanji_note.get_q()
 
     message = "Successfully matched {} kanji notes.\n Failed:{}".format(fetched, failed)
     print(message)
@@ -65,11 +65,11 @@ def update_vocab() -> None:
     failed: str = ""
     for vocab_note in all_vocabulary:
         try:
-            wani_vocab = waniClient.get_vocab(vocab_note.get_vocab())
+            wani_vocab = waniClient.get_vocab(vocab_note.get_q())
             vocab_note.update_from_wani(wani_vocab)
             updated += 1
         except KeyError:
-            failed = failed + "," + vocab_note.get_vocab()
+            failed = failed + "," + vocab_note.get_q()
 
     message = "Successfully matched {} vocab notes.\n Failed:{}".format(updated, failed)
     print(message)
@@ -82,10 +82,10 @@ def delete_missing_radicals() -> None:
     deleted_radicals: str = ""
     for radical_note in all_radicals:
         try:
-            waniClient.get_radical(radical_note.get_radical_name())
+            waniClient.get_radical(radical_note.get_a())
         except KeyError:
             deleted += 1
-            deleted_radicals = deleted_radicals + "," + radical_note.get_radical_name()
+            deleted_radicals = deleted_radicals + "," + radical_note.get_a()
 
     message = "Deleted {} radical notes.".format(deleted, deleted_radicals)
     print(message)
@@ -98,10 +98,10 @@ def delete_missing_kanji() -> None:
     deleted_kanji: str = ""
     for kanji_note in all_kanji:
         try:
-            waniClient.get_kanji_by_name(kanji_note.get_kanji())
+            waniClient.get_kanji_by_name(kanji_note.get_q())
         except KeyError:
             deleted += 1
-            deleted_kanji = deleted_kanji + "," + kanji_note.get_kanji()
+            deleted_kanji = deleted_kanji + "," + kanji_note.get_q()
 
     message = "Deleted {} kanji notes.".format(deleted, deleted_kanji)
     print(message)
@@ -114,10 +114,10 @@ def delete_missing_vocab() -> None:
     deleted_vocab: str = ""
     for vocab_note in all_vocabulary:
         try:
-            waniClient.get_vocab(vocab_note.get_vocab())
+            waniClient.get_vocab(vocab_note.get_q())
         except KeyError:
             deleted += 1
-            deleted_vocab = deleted_vocab + "," + vocab_note.get_vocab()
+            deleted_vocab = deleted_vocab + "," + vocab_note.get_q()
             vocab_note.delete()
 
     message = "Deleted {} vocab notes.".format(deleted, deleted_vocab)

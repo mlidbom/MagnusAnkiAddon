@@ -69,7 +69,7 @@ class WaniVocabNote(WaniKanaVocabNote):
         note.add_tag(Mine.Tags.Wani)
         kanji_note = WaniVocabNote(note)
         mw.col.addNote(note)
-        kanji_note.set_vocab(wani_vocab.characters)
+        kanji_note.set_q(wani_vocab.characters)
         kanji_note.update_from_wani(wani_vocab)
 
         #Do not move to update method or we will wipe out local changes made to the context sentences.

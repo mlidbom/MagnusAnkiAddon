@@ -16,9 +16,9 @@ def setup_search_menu(root_menu: QMenu, sel_clip: str) -> None:
 
 def setup_anki_search_menu(search_menu: QMenu, sel_clip: str) -> None:
     search_anki_menu = search_menu.addMenu("&Anki")
-    add_lookup_action(search_anki_menu, "&Kanji", f"note:{Wani.NoteType.Kanji} ( {' OR '.join([f'{Wani.KanjiFields.Kanji}:{char}' for char in sel_clip])} )")
-    add_lookup_action(search_anki_menu, "&Vocab", f"deck:*Vocab* deck:*Read* (Vocab:{sel_clip} OR Reading:re:\\b{sel_clip}\\b OR Vocab_Meaning:re:\\b{sel_clip}\\b )")
-    add_lookup_action(search_anki_menu, "Vocab &Wildcard", f"deck:*Vocab* deck:*Read* (Vocab:*{sel_clip}* OR Reading:*{sel_clip}* OR Vocab_Meaning:*{sel_clip}*)")
+    add_lookup_action(search_anki_menu, "&Kanji", f"note:{Wani.NoteType.Kanji} ( {' OR '.join([f'{Wani.KanjiFields.Q}:{char}' for char in sel_clip])} )")
+    add_lookup_action(search_anki_menu, "&Vocab", f"deck:*Vocab* deck:*Read* (Q:{sel_clip} OR Reading:re:\\b{sel_clip}\\b OR A:re:\\b{sel_clip}\\b )")
+    add_lookup_action(search_anki_menu, "Vocab &Wildcard", f"deck:*Vocab* deck:*Read* (Q:*{sel_clip}* OR Reading:*{sel_clip}* OR A:*{sel_clip}*)")
     add_lookup_action(search_anki_menu, "&Radical", build_radical_search_string(sel_clip))
     add_sentence_lookup(search_anki_menu, "&Sentence", sel_clip)
     add_text_vocab_lookup(search_anki_menu, "Text &words", sel_clip)
@@ -46,6 +46,6 @@ def add_web_lookup(menu: QMenu, name: str, url: str, search: str):
 
 
 def build_radical_search_string(selected: str) -> str:
-    start = f"{Wani.RadicalFields.Radical_Name}:{selected} OR"
-    clauses = " OR ".join([f"{Wani.RadicalFields.Radical}:{char}" for char in selected])
+    start = f"{Wani.RadicalFields.A}:{selected} OR"
+    clauses = " OR ".join([f"{Wani.RadicalFields.Q}:{char}" for char in selected])
     return f"note:{Wani.NoteType.Radical} ( {start} {clauses} )"
