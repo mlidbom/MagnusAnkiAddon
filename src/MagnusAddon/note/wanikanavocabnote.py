@@ -10,7 +10,7 @@ class WaniKanaVocabNote(WaniNote):
     def __init__(self, note: Note):
         super().__init__(note)
 
-    def get_vocab(self) -> str: return super().get_field(Wani.KanaVocabFields.Vocab).replace("〜", "")#Wanikani inserts a spurious ~ for suffixes and/or prefixes
+    def get_vocab(self) -> str: return super().get_field(Wani.KanaVocabFields.Vocab)
     def set_vocab(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Vocab, value)
 
     def get_vocab_meaning(self) -> str:
