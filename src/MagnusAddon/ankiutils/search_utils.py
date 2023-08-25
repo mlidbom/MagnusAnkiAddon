@@ -32,8 +32,8 @@ def vocab_dependencies_lookup_query(vocab: WaniVocabNote) -> str:
         return f'(tag:_uk AND Reading:{voc.word})' if voc.is_kana_only() else f'Q:{voc.word}'
 
     def create_vocab_clause(text:str) -> str:
-        dictionary_forms = textparser.identify_words(text)
-        return f"{vocab_read} ({' OR '.join([single_vocab_clause(voc) for voc in dictionary_forms])})"
+        dictionary_forms = [voc for voc in textparser.identify_words(text) if voc.word != vocab.get_question()]
+        return f"({vocab_read} ({' OR '.join([single_vocab_clause(voc) for voc in dictionary_forms])})) OR " if dictionary_forms else ""
 
     def create_vocab_vocab_clause() -> str:
         return create_vocab_clause(vocab.get_question())
@@ -41,7 +41,7 @@ def vocab_dependencies_lookup_query(vocab: WaniVocabNote) -> str:
     def create_kanji_clause() -> str:
         return f"note:{Wani.NoteType.Kanji} ( {' OR '.join([f'{Wani.KanjiFields.question}:{char}' for char in vocab.get_question()])} )"
 
-    return f'''({create_vocab_vocab_clause()}) OR ({create_kanji_clause()})'''
+    return f'''{create_vocab_vocab_clause()} ({create_kanji_clause()})'''
 
 def do_lookup_and_show_previewer(text: str) -> None:
     do_lookup(text)
@@ -80,5 +80,6 @@ def lookup_dependencies(note: MyNote):
 
     search = type_map[type(note)]()
     if search:
+        UIUtils.deactivate_preview()
         do_lookup(search)
         UIUtils.activate_reviewer()

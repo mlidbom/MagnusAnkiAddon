@@ -59,6 +59,13 @@ class UIUtils:
         else:
             browser._previewer.activateWindow() # noqa
 
+    @staticmethod
+    def deactivate_preview() -> None:
+        browser: Browser = aqt.dialogs.open('Browser', aqt.mw) # noqa
+        mw.app.processEvents()
+        if browser._previewer: # noqa
+            browser.onTogglePreview()
+
     @classmethod
     def activate_reviewer(cls) -> None:
         mw.activateWindow()
