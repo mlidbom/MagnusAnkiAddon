@@ -126,18 +126,27 @@ def _update_vocab(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanji
 
 
 def _update_kanji(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanjiNote]):
-
-
     def generate_vocab_html_list(note: WaniKanjiNote, vocabs: List[WaniVocabNote]):
         def sort_vocab_list() -> None:
+            def prefer_primary_vocab_in_order(vocab: WaniVocabNote):
+                for index, primary in enumerate(primary_voc):
+                    if vocab.get_question() == primary or vocab.get_readings()[0] == primary:
+                        return index
+
+                return 100
+
             def prefer_non_compound(vocab: WaniVocabNote) -> str:
                 return "A" if kana_utils.is_only_kana(vocab.get_question()[1:]) else "B"
 
             def prefer_starts_with_vocab(vocab: WaniVocabNote) -> str:
                 return "A" if vocab.get_question()[0] == note.get_question() else "B"
 
-            vocabs.sort(key=lambda vocab: (prefer_non_compound(vocab), prefer_starts_with_vocab(vocab), voc.get_question()))
+            vocabs.sort(key=lambda vocab: (prefer_primary_vocab_in_order(vocab),
+                                           prefer_non_compound(vocab),
+                                           prefer_starts_with_vocab(vocab),
+                                           voc.get_question()))
 
+        primary_voc = note.get_primary_vocab()
         sort_vocab_list()
 
         return f'''
@@ -179,7 +188,7 @@ def _update_kanji(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanji
     kanji_with_vocab = [kanji for kanji in all_kanji if kanji.get_primary_vocab()]
     for kanji in kanji_with_vocab:
         kanji_vocab = kanji_vocab_dict[kanji.get_question()]
-        primary_vocabs: List[str] = [StringUtils.strip_markup(vocab).strip() for vocab in kanji.get_primary_vocab().split(",")]
+        primary_vocabs: List[str] = kanji.get_primary_vocab()
         if len(primary_vocabs) > 0:
             found_vocab: list[WaniVocabNote] = list[WaniVocabNote]()
             vocab_to_vocab: dict[str, WaniVocabNote] = {vo.get_question(): vo for vo in kanji_vocab}

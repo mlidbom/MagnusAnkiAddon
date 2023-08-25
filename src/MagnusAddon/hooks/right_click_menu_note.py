@@ -77,13 +77,12 @@ def setup_note_menu(note, root_menu, sel_clip, selection, view: AnkiWebView):
 
 
 def add_kanji_primary_vocab(note: WaniKanjiNote, selection: str, _view: AnkiWebView):
-    primary_vocabs = [voc for voc in [note.get_primary_vocab(), note.tag_readings_in_string(selection, lambda read: f"<read>{read}</read>")] if voc]
-    note.set_primary_vocab(", ".join(primary_vocabs))
+    note.set_primary_vocab(note.get_primary_vocab() + [selection])
     local_note_updater.update_kanji(note)
 
 
 def set_kanji_primary_vocab(note: WaniKanjiNote, selection: str, view: AnkiWebView):
-    note.set_primary_vocab("")
+    note.set_primary_vocab([])
     add_kanji_primary_vocab(note, selection, view)
 
 def format_vocab_meaning(meaning:str) -> str:

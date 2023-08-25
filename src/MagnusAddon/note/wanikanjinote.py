@@ -90,8 +90,13 @@ class WaniKanjiNote(WaniNote):
     def get_vocabs_raw(self) -> list[str]: return super().get_field(Wani.KanjiFields.VocabsRaw).split(",")
     def set_vocabs_raw(self, value: list[str]) -> None: super().set_field(Wani.KanjiFields.VocabsRaw, ",".join(value))
 
-    def get_primary_vocab(self) -> str: return super().get_field(Wani.KanjiFields.PrimaryVocab)
-    def set_primary_vocab(self, value: str) -> None: super().set_field(Wani.KanjiFields.PrimaryVocab, value)
+    def get_primary_vocab(self) -> list[str]:
+        return [voc for voc in
+                (StringUtils.strip_markup(vocab).strip() for vocab in super().get_field(Wani.KanjiFields.PrimaryVocab).split(","))
+                if voc]
+    def set_primary_vocab(self, value: list[str]) -> None:
+        formatted = [self.tag_readings_in_string(voc, lambda read: f"<read>{read}</read>") for voc in value]
+        super().set_field(Wani.KanjiFields.PrimaryVocab, ", ".join(formatted))
 
     def get_primary_vocab_audio(self) -> str: return super().get_field(Wani.KanjiFields.Audio__)
     def set_primary_vocab_audio(self, value: str) -> None: super().set_field(Wani.KanjiFields.Audio__, value)
