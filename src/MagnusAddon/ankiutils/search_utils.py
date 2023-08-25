@@ -3,6 +3,10 @@ from typing import Callable
 import aqt
 from aqt.browser import Browser
 
+from note.mynote import MyNote
+from note.sentencenote import SentenceNote
+from note.wanikanjinote import WaniKanjiNote
+from note.waniradicalnote import WaniRadicalNote
 from note.wanivocabnote import WaniVocabNote
 from parsing import textparser
 from parsing.janome_extensions.parsed_word import ParsedWord
@@ -39,10 +43,42 @@ def vocab_dependencies_lookup_query(vocab: WaniVocabNote) -> str:
 
     return f'''({create_vocab_vocab_clause()}) OR ({create_kanji_clause()})'''
 
-def do_lookup(text: str) -> None:
+def do_lookup_and_show_previewer(text: str) -> None:
+    do_lookup(text)
+    UIUtils.activate_preview()
+
+
+def do_lookup(text) -> None:
     browser: Browser = aqt.dialogs.open('Browser', aqt.mw)
     browser.form.searchEdit.lineEdit().setText(text)
     browser.onSearchActivated()
-    UIUtils.activate_preview()
 
-def lookup_promise(search: Callable[[], str]) -> Callable[[],None]: return lambda: do_lookup(search())
+
+def lookup_promise(search: Callable[[], str]) -> Callable[[],None]: return lambda: do_lookup_and_show_previewer(search())
+
+def sentence_vocab_lookup(sentence:SentenceNote) -> str: return text_vocab_lookup(sentence.get_active_question())
+
+def vocab_with_kanji(note:WaniKanjiNote) -> str: return f"{vocab_read} Q:*{note.get_question()}*"
+
+def text_vocab_lookup(text:str) -> str:
+    def voc_clause(voc: ParsedWord) -> str:
+        return f'(tag:_uk AND Reading:{voc.word})' if voc.is_kana_only() else f'Q:{voc.word}'
+
+    dictionary_forms = textparser.identify_words(text)
+    return f"{vocab_read} ({' OR '.join([voc_clause(voc) for voc in dictionary_forms])})"
+
+
+def lookup_dependencies(note: MyNote):
+    # noinspection PyTypeChecker
+    type_map: dict[type, Callable[[], str]] = {
+        WaniVocabNote: lambda: vocab_dependencies_lookup_query(note),
+        WaniKanjiNote: lambda: vocab_with_kanji(note),
+        SentenceNote: lambda: sentence_vocab_lookup(note),
+        WaniRadicalNote: lambda: "",
+        MyNote: lambda: ""
+    }
+
+    search = type_map[type(note)]()
+    if search:
+        do_lookup(search)
+        UIUtils.activate_reviewer()

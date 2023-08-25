@@ -58,3 +58,7 @@ class UIUtils:
             browser.onTogglePreview()
         else:
             browser._previewer.activateWindow() # noqa
+
+    @classmethod
+    def activate_reviewer(cls) -> None:
+        mw.activateWindow()

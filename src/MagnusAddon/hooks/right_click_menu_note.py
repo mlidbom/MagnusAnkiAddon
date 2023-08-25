@@ -35,7 +35,7 @@ def setup_note_menu(note, root_menu, sel_clip, selection, view: AnkiWebView):
 
     if isinstance(note, WaniKanjiNote):
         kanji = note
-        add_lookup_action(note_lookup_menu, "&Vocabs", f"{su.vocab_read} (Q:*{note.get_question()}*)")
+        add_lookup_action(note_lookup_menu, "&Vocabs", su.vocab_with_kanji(note))
         radicals = [rad.strip() for rad in note.get_radicals_names().split(",")]
         radicals_clause = " OR ".join([f"{Wani.RadicalFields.answer}:{rad}" for rad in radicals])
         add_lookup_action(note_lookup_menu, "&Radicals", f"note:{Wani.NoteType.Radical} ({radicals_clause})")

@@ -1,6 +1,8 @@
 from anki.cards import Card
 from aqt import gui_hooks
 
+from ankiutils import search_utils
+from note.mynote import MyNote
 from sysutils import my_clipboard
 from sysutils.collections.recent_items import RecentItems
 from sysutils.utils import StringUtils
@@ -25,7 +27,7 @@ def copy_card_sort_field_to_clipboard(card: Card) -> None:
 
 
 def show_dependencies_in_browser(card: Card) -> None:
-    pass
+    search_utils.lookup_dependencies(MyNote.note_from_card(card))
 
 def init() -> None:
     gui_hooks.reviewer_did_show_answer.append(copy_card_sort_field_to_clipboard)
