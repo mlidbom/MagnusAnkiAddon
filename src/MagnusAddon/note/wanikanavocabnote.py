@@ -10,6 +10,8 @@ class WaniKanaVocabNote(WaniNote):
     def __init__(self, note: Note):
         super().__init__(note)
 
+    def _on_edited(self) -> None: self.update_generated_data()
+
     def get_question(self) -> str: return super().get_field(Wani.KanaVocabFields.question)
     def _set_question(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.question, value)
 

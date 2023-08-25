@@ -12,6 +12,8 @@ class SentenceNote(MyNote):
     def __init__(self, note: Note):
         super().__init__(note)
 
+    def _on_edited(self) -> None: self.update_generated_data()
+
     def _get_source_answer(self) -> str: return super().get_field(SentenceNoteFields.source_answer)
     def _get_user_answer(self) -> str: return super().get_field(SentenceNoteFields.user_answer)
 

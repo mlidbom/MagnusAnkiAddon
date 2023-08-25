@@ -25,6 +25,7 @@ class Wani:
         Kanji = "_Kanji"
         Vocab = "_Vocab"
         Radical = "_Radical"
+        Sentence = "_japanese_sentence"
 
     class NoteFields:
         sort_id = "sort_id"

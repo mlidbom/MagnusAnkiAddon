@@ -10,7 +10,6 @@ from aqt.webview import AnkiWebView, AnkiWebViewKind
 from hooks.right_click_menu_note import setup_note_menu
 from hooks.right_click_menu_search import setup_search_menu
 from note.mynote import MyNote
-from wanikani.utils.wani_utils import NoteUtils
 from sysutils import my_clipboard
 
 
@@ -24,7 +23,7 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu):
 
         card = get_card_inner()
         if card:
-            return NoteUtils.create_note(card)
+            return MyNote.note_from_card(card)
 
     selection = view.page().selectedText().strip()
     sel_clip = selection
