@@ -67,12 +67,21 @@ def text_vocab_lookup(text:str) -> str:
     dictionary_forms = textparser.identify_words(text)
     return f"{vocab_read} ({' OR '.join([voc_clause(voc) for voc in dictionary_forms])})"
 
+def vocab_compounds_lookup(note:WaniVocabNote) -> str:
+    def voc_clause(voc: ParsedWord) -> str:
+        return f'(tag:_uk AND Reading:{voc.word})' if voc.is_kana_only() else f'Q:{voc.word}'
+
+    vocab_word = note.get_question()
+    dictionary_forms = [comp for comp in textparser.identify_words(vocab_word) if comp.word != vocab_word]
+
+    return f"{vocab_read} ({' OR '.join([voc_clause(voc) for voc in dictionary_forms])})" if dictionary_forms else ""
+
 
 def lookup_dependencies(note: MyNote):
     # noinspection PyTypeChecker
     type_map: dict[type, Callable[[], str]] = {
-        WaniVocabNote: lambda: vocab_dependencies_lookup_query(note),
-        WaniKanjiNote: lambda: vocab_with_kanji(note),
+        WaniVocabNote: lambda: vocab_compounds_lookup(note),
+        WaniKanjiNote: lambda: "", #vocab_with_kanji(note),
         SentenceNote: lambda: sentence_vocab_lookup(note),
         WaniRadicalNote: lambda: "",
         MyNote: lambda: ""

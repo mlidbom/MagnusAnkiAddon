@@ -114,7 +114,7 @@ def word_is_in_dictionary(word: str) -> bool:
     result = DictLookup.lookup_word_shallow(word)
     return result.found_words()
 
-_max_lookahead = 4
+_max_lookahead = 12
 def identify_words(sentence: str) -> list[ParsedWord]:
     def add_word_if_it_is_in_dictionary(word: str) -> None:
         if word_is_in_dictionary(word) and word not in found_words:
