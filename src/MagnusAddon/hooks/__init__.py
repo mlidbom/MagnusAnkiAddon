@@ -1,6 +1,6 @@
 from . import \
     browser_right_click_menu, \
-    copy_card_sort_field_to_clipboard, \
+    on_show_answer, \
     editor_buttons, \
     right_click_menu, \
     right_click_menu_utils,\

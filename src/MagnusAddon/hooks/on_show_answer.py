@@ -24,6 +24,10 @@ def copy_card_sort_field_to_clipboard(card: Card) -> None:
     my_clipboard.set_text(clean_string)
 
 
+def show_dependencies_in_browser(card: Card) -> None:
+    pass
+
 def init() -> None:
     gui_hooks.reviewer_did_show_answer.append(copy_card_sort_field_to_clipboard)
+    gui_hooks.reviewer_did_show_answer.append(show_dependencies_in_browser)
     gui_hooks.card_will_show.append(copy_previewer_sort_field_to_windows_clipboard)
