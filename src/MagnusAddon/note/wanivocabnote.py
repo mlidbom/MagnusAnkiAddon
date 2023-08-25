@@ -11,6 +11,8 @@ class WaniVocabNote(WaniKanaVocabNote):
     def __init__(self, note: Note):
         super().__init__(note)
 
+    def __repr__(self) -> str: return f"""{self.get_question()}"""
+
     def get_kanji(self) -> str: return super().get_field(Wani.VocabFields.Kanji)
     def set_kanji(self, value: str) -> None: super().set_field(Wani.VocabFields.Kanji, value)
 

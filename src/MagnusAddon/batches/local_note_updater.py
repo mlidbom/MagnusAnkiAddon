@@ -50,10 +50,6 @@ def update_kanji(_kanji_note: WaniKanjiNote) -> None:
 def update_vocab() -> None:
     UIUtils.run_ui_action(lambda: _update_vocab(WaniCollection.fetch_all_vocab_notes(), WaniCollection.fetch_all_kanji_notes()))
 
-def _sort_vocab_list(vocabs: List[WaniVocabNote]) -> list[WaniVocabNote]:
-    vocabs.sort(key=lambda vocab: (vocab.get_level(), vocab.get_lesson_position()))
-    return vocabs
-
 def _update_sentences(sentences: list[SentenceNote]) -> None:
     for sentence in sentences: sentence.update_generated_data()
 
@@ -130,7 +126,22 @@ def _update_vocab(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanji
 
 
 def _update_kanji(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanjiNote]):
+
+
     def generate_vocab_html_list(note: WaniKanjiNote, vocabs: List[WaniVocabNote]):
+        def sort_vocab_list() -> list[WaniVocabNote]:
+            def prefer_non_compound(vocab: WaniVocabNote) -> str:
+                return "A" if kana_utils.is_only_kana(vocab.get_question()[1:]) else "B"
+
+            def prefer_starts_with_vocab(vocab: WaniVocabNote) -> str:
+                return "A" if vocab.get_question()[0] == note.get_question() else "B"
+
+            vocabs.sort(key=lambda vocab: (prefer_non_compound(vocab), prefer_starts_with_vocab(vocab), voc.get_question()))
+            return vocabs
+        if note.get_question() == "降":
+            something = 1
+        sort_vocab_list()
+
         return f'''
                 <div class="kanjiVocabList">
                     <div>
@@ -153,7 +164,6 @@ def _update_kanji(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanji
 
     update_generated_data()
 
-    all_vocabulary = _sort_vocab_list(all_vocabulary)  # we want a specific order in the kanji entries etc
     kanji_dict: Dict[str, WaniKanjiNote] = {kanji.get_question(): kanji for kanji in all_kanji}
     kanji_vocab_dict: Dict[str, List[WaniVocabNote]] = {kanji.get_question(): [] for kanji in all_kanji}
 

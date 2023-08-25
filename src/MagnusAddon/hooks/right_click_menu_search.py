@@ -4,7 +4,7 @@ from PyQt6.QtWidgets import QMenu
 from aqt.utils import openLink
 
 from hooks.right_click_menu_utils import add_sentence_lookup, add_lookup_action, add_text_vocab_lookup
-from wanikani.wani_constants import Wani, Mine
+from wanikani.wani_constants import Wani
 from ankiutils import search_utils as su
 
 
