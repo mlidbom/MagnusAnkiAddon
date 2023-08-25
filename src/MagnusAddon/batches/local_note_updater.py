@@ -129,7 +129,7 @@ def _update_kanji(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanji
 
 
     def generate_vocab_html_list(note: WaniKanjiNote, vocabs: List[WaniVocabNote]):
-        def sort_vocab_list() -> list[WaniVocabNote]:
+        def sort_vocab_list() -> None:
             def prefer_non_compound(vocab: WaniVocabNote) -> str:
                 return "A" if kana_utils.is_only_kana(vocab.get_question()[1:]) else "B"
 
@@ -137,9 +137,7 @@ def _update_kanji(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanji
                 return "A" if vocab.get_question()[0] == note.get_question() else "B"
 
             vocabs.sort(key=lambda vocab: (prefer_non_compound(vocab), prefer_starts_with_vocab(vocab), voc.get_question()))
-            return vocabs
-        if note.get_question() == "降":
-            something = 1
+
         sort_vocab_list()
 
         return f'''
