@@ -7,6 +7,7 @@ import _lib # noqa
 import hooks
 from _addon_copies import refresh_media_references # noqa
 
+hooks.timing_hacks.init()
 hooks.on_note_edited.init()
 hooks.browser_right_click_menu.init()
 hooks.editor_buttons.init()

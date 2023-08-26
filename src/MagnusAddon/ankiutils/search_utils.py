@@ -80,8 +80,8 @@ def vocab_compounds_lookup(note:WaniVocabNote) -> str:
 def lookup_dependencies(note: MyNote):
     # noinspection PyTypeChecker
     type_map: dict[type, Callable[[], str]] = {
-        WaniVocabNote: lambda: vocab_compounds_lookup(note),
-        WaniKanjiNote: lambda: "", #vocab_with_kanji(note),
+        WaniVocabNote: lambda: vocab_dependencies_lookup_query(note),
+        WaniKanjiNote: lambda: vocab_with_kanji(note),
         SentenceNote: lambda: sentence_vocab_lookup(note),
         WaniRadicalNote: lambda: "",
         MyNote: lambda: ""

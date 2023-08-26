@@ -9,4 +9,5 @@ from . import \
     show_previewer, \
     suppress_audio_on_typing, \
     tools_menu, \
-    on_note_edited
+    on_note_edited, \
+    timing_hacks

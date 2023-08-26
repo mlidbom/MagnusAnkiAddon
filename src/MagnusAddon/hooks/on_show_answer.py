@@ -3,6 +3,7 @@ from anki.notes import Note
 from aqt import gui_hooks
 
 from ankiutils import search_utils
+from hooks.timing_hacks import ugly_timing_hacks
 from note.mynote import MyNote
 from sysutils import my_clipboard
 from sysutils.collections.recent_items import RecentItems
@@ -14,7 +15,8 @@ recent_previewer_cards = RecentItems[int](2)
 def copy_previewer_sort_field_to_windows_clipboard(html:str, card: Card, type_of_display:str) -> str:
     if (type_of_display == 'previewAnswer'
             and not UIUtils.is_edit_current_open()
-            and not recent_previewer_cards.is_recent(card.note().id)):
+            and not recent_previewer_cards.is_recent(card.note().id))\
+            and not ugly_timing_hacks.reviewer_just_showed_answer():
         copy_card_sort_field_to_clipboard(card.note())
     return html
 
