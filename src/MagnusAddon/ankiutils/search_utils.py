@@ -89,6 +89,5 @@ def lookup_dependencies(note: MyNote):
 
     search = type_map[type(note)]()
     if search:
-        UIUtils.deactivate_preview()
-        do_lookup(search)
+        do_lookup_and_show_previewer(search)
         UIUtils.activate_reviewer()
