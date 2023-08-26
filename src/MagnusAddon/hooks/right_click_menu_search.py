@@ -34,7 +34,9 @@ def setup_web_search_menu(search_menu: QMenu, sel_clip: str) -> None:
     add_web_lookup(search_web_menu, "&Merriam Webster", u"https://www.merriam-webster.com/dictionary/%s", sel_clip)
     add_web_lookup(search_web_menu, "&Immersion Kit", u"https://www.immersionkit.com/dictionary?exact=true&sort=shortness&keyword=%s", sel_clip)
     add_web_lookup(search_web_menu, "Japanese verb &conjugator", u"https://www.japaneseverbconjugator.com/VerbDetails.asp?Go=Conjugate&txtVerb=%s", sel_clip)
-    add_web_lookup(search_web_menu, "&Kanshudo", u"https://www.kanshudo.com/searchw?q=%s", sel_clip)
+    add_web_lookup(search_web_menu, "&Kanshudo Word Search", u"https://www.kanshudo.com/searchw?q=%s", sel_clip)
+    add_web_lookup(search_web_menu, "&Kanshudo Sentence Translate", u"https://www.kanshudo.com/sentence_translate?q=%s", sel_clip)
+
     add_web_lookup(search_web_menu, "&Deepl", u"https://www.deepl.com/en/translator#ja/en/%s", sel_clip),
     add_web_lookup(search_web_menu, "&Jisho", u"https://jisho.org/search/%s", sel_clip)
     add_web_lookup(search_web_menu, "&Wanikani", u"https://www.wanikani.com/search?query=%s", sel_clip)
