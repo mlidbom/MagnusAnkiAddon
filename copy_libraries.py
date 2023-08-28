@@ -9,8 +9,7 @@ source_dir = os.path.join(script_dir, './venv/lib/site-packages')
 target_dir = os.path.join(script_dir, './src/MagnusAddon/_lib')
 
 # One line per library and its dependencies
-libraries_to_copy = ['dateutil',
-                     'wanikani_api',
+libraries_to_copy = ['wanikani_api', 'dateutil', 'six.py',
                      'janome',
                      'jamdict', 'jamdict_data', 'puchikarui', 'chirptext']
 
@@ -19,14 +18,16 @@ os.makedirs(target_dir, exist_ok=True)
 
 # Copy the libraries
 for library in libraries_to_copy:
-    src_path = os.path.join(source_dir, library)
-    dst_path = os.path.join(target_dir, library)
+    source_path = os.path.join(source_dir, library)
+    target_path = os.path.join(target_dir, library)
+
+    is_dir = os.path.isdir(source_path)
 
     # Remove the existing directory if it exists
-    if os.path.exists(dst_path):
-        shutil.rmtree(dst_path)
+    if os.path.exists(target_path):
+        shutil.rmtree(target_path) if is_dir else os.remove(target_path)
 
     # Copy the directory
-    shutil.copytree(src_path, dst_path)
+    shutil.copytree(source_path, target_path) if is_dir else shutil.copy2(source_path, target_path)
 
 print("Libraries copied successfully!")
