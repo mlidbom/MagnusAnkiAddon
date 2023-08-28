@@ -4,7 +4,7 @@ import anki
 from anki.notes import NoteId
 from aqt import mw
 
-from ankiutils.search_utils import SearchTags
+from ankiutils.search_utils import Builtin
 from note.sentencenote import SentenceNote
 from sysutils.utils import ListUtils
 from note.waninote import WaniNote
@@ -24,7 +24,7 @@ class WaniCollection:
     def fetch_notes_by_note_type_and_field_value(note_type: str, field: str,
                                                  field_values: List) -> List[anki.notes.Note]:
         note_ids = [mw.col.find_notes(
-            f"{SearchTags.Note}:{note_type} {field}:{field_value}")
+            f"{Builtin.Note}:{note_type} {field}:{field_value}")
             for field_value in field_values]
 
         note_ids = ListUtils.flatten_list(note_ids)
@@ -33,7 +33,7 @@ class WaniCollection:
 
     @staticmethod
     def fetch_notes_by_note_type(note_type: str) -> List[anki.notes.Note]:
-        note_ids = [mw.col.find_notes("{}:{}".format(SearchTags.Note, note_type))]
+        note_ids = [mw.col.find_notes("{}:{}".format(Builtin.Note, note_type))]
         note_ids = ListUtils.flatten_list(note_ids)
         notes = WaniCollection.fetch_notes_by_id(note_ids)
         return notes

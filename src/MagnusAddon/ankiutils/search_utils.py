@@ -13,23 +13,39 @@ from parsing.janome_extensions.parsed_word import ParsedWord
 from sysutils.ui_utils import UIUtils
 from wanikani.wani_constants import Wani, Mine
 
-class SearchTags:
+
+class Builtin:
     Note = "note"
     Tag = "tag"
     Deck = "deck"
     Card = "card"
 
-def vocab_uk_by_reading(reading: str) -> str: return f"""(tag:_uk AND Reading:{reading})"""
+question = "Q"
+reading = "Reading"
+answer = "A"
 
-deck_listen = f"{SearchTags.Deck}:{Mine.DeckFilters.Listen}"
-kanji_filter = f"{SearchTags.Note}:{Wani.NoteType.Kanji}"
-vocab_read = f"({SearchTags.Note}:{Wani.NoteType.Vocab} {SearchTags.Deck}:*Read*)"
+card_listen = f"{Builtin.Card}:{Wani.WaniVocabNoteType.Card.Listening}"
+card_read = f"{Builtin.Card}:{Wani.WaniVocabNoteType.Card.Reading}"
 
-def single_vocab_wildcard(vocab:str) -> str: return f"{vocab_read} (Q:*{vocab}* OR Reading:*{vocab}* OR A:*{vocab}*)"
+note_kanji = f"{Builtin.Note}:{Wani.NoteType.Kanji}"
+note_vocab = f"{Builtin.Note}:{Wani.NoteType.Vocab}"
+
+tag_uk = f"tag:{Mine.Tags.UsuallyKanaOnly}"
+
+vocab_read = f"({note_vocab} {card_read})"
+
+def question_wildcard(query:str) -> str: return f"{question}:*{query}"
+def reading_wildcard(query:str) -> str: return f"{reading}:*{query}"
+def answer_wildcard(query:str) -> str: return f"{answer}:*{query}"
+
+def single_vocab_wildcard(query:str) -> str: return f"{vocab_read} ({question}:*{query}* OR {reading}:*{query}* OR {answer}:*{query}*)"
+def single_vocab_exact(query) -> str:return f"{vocab_read} ({question}:{query} OR {reading}:re:\\b{query}\\b OR {answer}:re:\\b{query}\\b )"
+
+def kanji_in_string(query) -> str: return f"{note_kanji} ( {' OR '.join([f'{question}:{char}' for char in query])} )"
 
 def vocab_dependencies_lookup_query(vocab: WaniVocabNote) -> str:
     def single_vocab_clause(voc: ParsedWord) -> str:
-        return f'(tag:_uk AND Reading:{voc.word})' if voc.is_kana_only() else f'Q:{voc.word}'
+        return f'({tag_uk} AND {reading}:{voc.word})' if voc.is_kana_only() else f'{question}:{voc.word}'
 
     def create_vocab_clause(text:str) -> str:
         dictionary_forms = [voc for voc in textparser.identify_words(text) if voc.word != vocab.get_question()]
@@ -62,14 +78,14 @@ def vocab_with_kanji(note:WaniKanjiNote) -> str: return f"{vocab_read} Q:*{note.
 
 def text_vocab_lookup(text:str) -> str:
     def voc_clause(voc: ParsedWord) -> str:
-        return f'(tag:_uk AND Reading:{voc.word})' if voc.is_kana_only() else f'Q:{voc.word}'
+        return f'({tag_uk} AND Reading:{voc.word})' if voc.is_kana_only() else f'Q:{voc.word}'
 
     dictionary_forms = textparser.identify_words(text)
     return f"{vocab_read} ({' OR '.join([voc_clause(voc) for voc in dictionary_forms])})"
 
 def vocab_compounds_lookup(note:WaniVocabNote) -> str:
     def voc_clause(voc: ParsedWord) -> str:
-        return f'(tag:_uk AND Reading:{voc.word})' if voc.is_kana_only() else f'Q:{voc.word}'
+        return f'({tag_uk} AND Reading:{voc.word})' if voc.is_kana_only() else f'Q:{voc.word}'
 
     vocab_word = note.get_question()
     dictionary_forms = [comp for comp in textparser.identify_words(vocab_word) if comp.word != vocab_word]

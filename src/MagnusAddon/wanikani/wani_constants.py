@@ -117,7 +117,3 @@ class Mine:
         Sentence = "_sentence"
         Wani = "_wani"
         UsuallyKanaOnly = "_uk"
-
-    class DeckFilters:
-        Listen = "*listen*"
-        Sentence = "*sentence*"

@@ -86,7 +86,7 @@ def set_kanji_primary_vocab(note: WaniKanjiNote, selection: str, view: AnkiWebVi
     add_kanji_primary_vocab(note, selection, view)
 
 def format_vocab_meaning(meaning:str) -> str:
-    return StringUtils.strip_markup(meaning.lower().replace(", ", "/"))
+    return StringUtils.strip_markup(meaning.lower().replace(", ", "/").replace(" ", "-"))
 
 def format_kanji_meaning(meaning:str) -> str:
     return StringUtils.strip_markup(meaning.lower().replace(", ", "/").replace(" ", "-"))
