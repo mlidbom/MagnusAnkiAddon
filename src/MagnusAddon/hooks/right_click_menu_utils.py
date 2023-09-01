@@ -6,6 +6,8 @@ from ankiutils import search_utils as su
 from ankiutils.search_utils import lookup_promise
 from note.wanivocabnote import WaniVocabNote
 from sysutils.ui_utils import UIUtils
+from wanikani.wani_constants import SentenceNoteFields
+
 
 def add_ui_action(menu: QMenu, name: str, callback: Callable[[], None]) -> None:
     menu.addAction(name, lambda: run_ui_action())
@@ -31,4 +33,4 @@ def add_vocab_dependencies_lookup(menu: QMenu, name: str, vocab: WaniVocabNote):
 
 
 def add_sentence_lookup(menu, name: str, search):
-    add_lookup_action(menu, name, f"(deck:*sentence* deck:*listen*) (Q:*{search}* OR Reading:*{search}* OR ParsedWords:re:\b{search}\b)")
+    add_lookup_action(menu, name, f"(deck:*sentence* deck:*listen*) (Q:*{search}* OR Reading:*{search}* OR {su.field_word(SentenceNoteFields.ParsedWords, search)}")

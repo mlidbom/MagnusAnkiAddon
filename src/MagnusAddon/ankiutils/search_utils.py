@@ -34,12 +34,14 @@ tag_uk = f"tag:{Mine.Tags.UsuallyKanaOnly}"
 
 vocab_read = f"({note_vocab} {card_read})"
 
+def field_word(field:str, query:str) -> str: return f"""{field}:re:\\b{query}\\b"""
+
 def question_wildcard(query:str) -> str: return f"{question}:*{query}"
 def reading_wildcard(query:str) -> str: return f"{reading}:*{query}"
 def answer_wildcard(query:str) -> str: return f"{answer}:*{query}"
 
 def single_vocab_wildcard(query:str) -> str: return f"{vocab_read} ({question}:*{query}* OR {reading}:*{query}* OR {answer}:*{query}*)"
-def single_vocab_exact(query) -> str:return f"{vocab_read} ({question}:{query} OR {reading}:re:\\b{query}\\b OR {answer}:re:\\b{query}\\b )"
+def single_vocab_exact(query) -> str:return f"{vocab_read} ({question}:{query} OR {field_word(reading, query)} OR {field_word(answer, query)})"
 
 def kanji_in_string(query) -> str: return f"{note_kanji} ( {' OR '.join([f'{question}:{char}' for char in query])} )"
 
@@ -78,14 +80,14 @@ def vocab_with_kanji(note:WaniKanjiNote) -> str: return f"{vocab_read} Q:*{note.
 
 def text_vocab_lookup(text:str) -> str:
     def voc_clause(voc: ParsedWord) -> str:
-        return f'({tag_uk} AND Reading:{voc.word})' if voc.is_kana_only() else f'Q:{voc.word}'
+        return f"""({tag_uk} AND {field_word(reading, voc.word)})""" if voc.is_kana_only() else f"""Q:{voc.word}"""
 
     dictionary_forms = textparser.identify_words(text)
     return f"{vocab_read} ({' OR '.join([voc_clause(voc) for voc in dictionary_forms])})"
 
 def vocab_compounds_lookup(note:WaniVocabNote) -> str:
     def voc_clause(voc: ParsedWord) -> str:
-        return f'({tag_uk} AND Reading:{voc.word})' if voc.is_kana_only() else f'Q:{voc.word}'
+        return f"""({tag_uk} AND {field_word(reading, voc.word)})""" if voc.is_kana_only() else f"""Q:{voc.word}"""
 
     vocab_word = note.get_question()
     dictionary_forms = [comp for comp in textparser.identify_words(vocab_word) if comp.word != vocab_word]
@@ -105,5 +107,5 @@ def lookup_dependencies(note: MyNote):
 
     search = type_map[type(note)]()
     if search:
-        do_lookup_and_show_previewer(search)
+        do_lookup(search)
         UIUtils.activate_reviewer()

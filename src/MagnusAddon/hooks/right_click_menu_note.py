@@ -31,7 +31,7 @@ def setup_note_menu(note, root_menu, sel_clip, selection, view: AnkiWebView):
         add_lookup_action(note_lookup_menu, "&Kanji", f"""note:{Wani.NoteType.Kanji} ({" OR ".join([f"{Wani.KanjiFields.question}:{kan}" for kan in note.extract_kanji()])})""")
 
     if isinstance(note, WaniRadicalNote):
-        add_lookup_action(note_lookup_menu, "&Kanji", f"note:{Wani.NoteType.Kanji} {Wani.KanjiFields.Radicals_Names}:re:\\b{note.get_a()}\\b")
+        add_lookup_action(note_lookup_menu, "&Kanji", f"note:{Wani.NoteType.Kanji} {su.field_word(Wani.KanjiFields.Radicals_Names, note.get_a())}")
 
     if isinstance(note, WaniKanjiNote):
         kanji = note
@@ -58,7 +58,7 @@ def setup_note_menu(note, root_menu, sel_clip, selection, view: AnkiWebView):
         if vocab.get_related_ergative_twin():
             add_single_vocab_lookup_action(note_lookup_menu, "&Ergative twin", vocab.get_related_ergative_twin())
 
-        add_lookup_action(note_lookup_menu, "&Sentence", f"(deck:*sentence* deck:*listen*) ({SentenceNoteFields.ParsedWords}:re:\\b{note.get_question()}\\b OR Q:*{note.get_question()}*)")
+        add_lookup_action(note_lookup_menu, "&Sentence", f"(deck:*sentence* deck:*listen*) ({su.field_word(SentenceNoteFields.ParsedWords, note.get_question())} OR Q:*{note.get_question()}*)")
         add_text_vocab_lookup(note_lookup_menu, "&Compounds", note.get_question())
         add_vocab_dependencies_lookup(note_lookup_menu, "&Dependencies", note)
 
