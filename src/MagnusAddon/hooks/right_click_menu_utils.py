@@ -33,4 +33,4 @@ def add_vocab_dependencies_lookup(menu: QMenu, name: str, vocab: WaniVocabNote):
 
 
 def add_sentence_lookup(menu, name: str, search):
-    add_lookup_action(menu, name, f"(deck:*sentence* deck:*listen*) (Q:*{search}* OR Reading:*{search}* OR {su.field_word(SentenceNoteFields.ParsedWords, search)}")
+    add_lookup_action(menu, name, f"(deck:*sentence* deck:*listen*) (Q:*{search}* OR Reading:*{search}* OR {su.field_word(SentenceNoteFields.ParsedWords, search)})")
