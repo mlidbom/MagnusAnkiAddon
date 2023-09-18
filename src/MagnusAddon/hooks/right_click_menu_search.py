@@ -29,6 +29,8 @@ def setup_web_search_menu(search_menu: QMenu, sel_clip: str) -> None:
     add_web_lookup(search_web_menu, "&Takoboto", u"https://takoboto.jp/?q=%s", sel_clip)
     add_web_lookup(search_web_menu, "&Japanese with anime", "https://www.google.com/search?q=site:www.japanesewithanime.com+%s", sel_clip)
 
+    add_web_lookup(search_web_menu, "&Google images", "https://www.google.com/images?q=%s", sel_clip)
+
     add_web_lookup(search_web_menu, "&Merriam Webster", u"https://www.merriam-webster.com/dictionary/%s", sel_clip)
     add_web_lookup(search_web_menu, "&Immersion Kit", u"https://www.immersionkit.com/dictionary?exact=true&sort=shortness&keyword=%s", sel_clip)
     add_web_lookup(search_web_menu, "Japanese verb &conjugator", u"https://www.japaneseverbconjugator.com/VerbDetails.asp?Go=Conjugate&txtVerb=%s", sel_clip)
