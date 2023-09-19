@@ -16,7 +16,7 @@ def setup_note_menu(note, root_menu, sel_clip, selection, view: AnkiWebView):
     note_lookup_menu = note_menu.addMenu("&Lookup")
     note_add_menu = note_menu.addMenu("&Add")
     note_set_menu = note_menu.addMenu("&Set")
-    note_hide_menu = note_menu.addMenu("&Hide")
+    note_hide_menu = note_menu.addMenu("&Hide/Remove")
     note_restore_menu = note_menu.addMenu("&Restore")
 
     if sel_clip:
@@ -26,6 +26,21 @@ def setup_note_menu(note, root_menu, sel_clip, selection, view: AnkiWebView):
         add_ui_action(add_vocab_menu, "&3", lambda: note.set_field(MyNoteFields.Vocab3, sel_clip))
         add_ui_action(add_vocab_menu, "&4", lambda: note.set_field(MyNoteFields.Vocab4, sel_clip))
         add_ui_action(add_vocab_menu, "&5", lambda: note.set_field(MyNoteFields.Vocab5, sel_clip))
+
+
+    remove_vocab_menu = note_hide_menu.addMenu("&Vocab")
+    add_ui_action(remove_vocab_menu, "&1", lambda: note.set_field(MyNoteFields.Vocab1, ""))
+    add_ui_action(remove_vocab_menu, "&2", lambda: note.set_field(MyNoteFields.Vocab2, ""))
+    add_ui_action(remove_vocab_menu, "&3", lambda: note.set_field(MyNoteFields.Vocab3, ""))
+    add_ui_action(remove_vocab_menu, "&4", lambda: note.set_field(MyNoteFields.Vocab4, ""))
+    add_ui_action(remove_vocab_menu, "&5", lambda: note.set_field(MyNoteFields.Vocab5, ""))
+
+    def clear_all_vocabs() -> None:
+        for field in [MyNoteFields.Vocab1, MyNoteFields.Vocab2, MyNoteFields.Vocab3, MyNoteFields.Vocab4, MyNoteFields.Vocab5]:
+            note.set_field(field, "")
+
+    add_ui_action(remove_vocab_menu, "&All", clear_all_vocabs)
+
 
     if isinstance(note, SentenceNote):
         add_ui_action(note_menu, "Populate &breakdown", lambda: sentence_content_builder.build_breakdown_html(note))
