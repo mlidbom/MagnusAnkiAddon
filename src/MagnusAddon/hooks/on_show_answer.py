@@ -39,7 +39,7 @@ def on_reviewer_show_answer(card: Card) -> None:
     if UIUtils.is_edit_current_open() or recent_review_answers.is_recent(note.id):
         return
 
-    #show_dependencies_in_browser(note)
+    show_dependencies_in_browser(note)
     copy_card_sort_field_to_clipboard(note)
 
 recent_reviewer_cards = RecentItems[int](1)
