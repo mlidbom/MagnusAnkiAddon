@@ -34,10 +34,10 @@ def set_vocab_uk_from_dictionary() -> None:
 
     UIUtils.run_ui_action(inner)
 
-def _set_vocab_uk_from_dictionary(all_vocabulary) -> None:
+def _set_vocab_uk_from_dictionary(all_vocabulary: list[WaniVocabNote]) -> None:
     for vocab in all_vocabulary:
         lookup = DictLookup.try_lookup_vocab_word_or_name(vocab)
-        if lookup.is_uk():
+        if lookup.is_uk() and not vocab.has_tag(Mine.Tags.DisableKanaOnly):
             vocab.set_tag(Mine.Tags.UsuallyKanaOnly)
 
 def _update_vocab_parsed_parts_of_speech(all_vocabulary: list[WaniVocabNote]) -> None:

@@ -117,4 +117,5 @@ class Mine:
     class Tags:
         Sentence = "_sentence"
         Wani = "_wani"
+        DisableKanaOnly = "_disable_uk"
         UsuallyKanaOnly = "_uk"
