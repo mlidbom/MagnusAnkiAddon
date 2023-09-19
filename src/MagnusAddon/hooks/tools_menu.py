@@ -5,6 +5,7 @@ from PyQt6.QtWidgets import QMenu
 from aqt import mw, qconnect
 
 from batches import local_note_updater
+from note_content_building import sentence_content_builder
 from sysutils.ui_utils import UIUtils
 from wanikani import note_importer
 from wanikani import wani_note_updater
@@ -21,6 +22,7 @@ def build_main_menu() -> None:
     my_menu = QMenu("Magnu&s", mw)
     tools_menu = mw.form.menuTools
     add_menu_action(tools_menu, "Refresh UI", lambda: UIUtils.refresh(), "F5")
+    add_menu_action(tools_menu, "Deep update UI", lambda: sentence_content_builder.deep_refresh_ui(), "Ctrl+F5")
 
     tools_menu.addMenu(my_menu)
 
