@@ -39,6 +39,13 @@ class WaniCollection:
         return notes
 
     @staticmethod
+    def search_vocab_notes(query: str) -> list[WaniVocabNote]:
+        note_ids = [mw.col.find_notes(query)]
+        note_ids = ListUtils.flatten_list(note_ids)
+        notes = WaniCollection.fetch_notes_by_id(note_ids)
+        return [WaniVocabNote(note) for note in notes]
+
+    @staticmethod
     def fetch_kanji_notes(field_values: List) -> List[WaniKanjiNote]:
         notes = WaniCollection.fetch_notes_by_note_type_and_field_value(Wani.NoteType.Kanji, Wani.KanjiFields.question,
                                                                         field_values)

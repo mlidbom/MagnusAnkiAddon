@@ -28,7 +28,7 @@ def setup_note_menu(note, root_menu, sel_clip, selection, view: AnkiWebView):
         add_ui_action(add_vocab_menu, "&5", lambda: note.set_field(MyNoteFields.Vocab5, sel_clip))
 
     if isinstance(note, SentenceNote):
-        add_ui_action(note_menu, "populate breakdown", lambda: sentence_content_builder.build_breakdown_html(note))
+        add_ui_action(note_menu, "Populate &breakdown", lambda: sentence_content_builder.build_breakdown_html(note))
         add_text_vocab_lookup(note_lookup_menu, "&Vocabulary words", note.get_active_question())
         add_lookup_action(note_lookup_menu, "&Kanji", f"""note:{Wani.NoteType.Kanji} ({" OR ".join([f"{Wani.KanjiFields.question}:{kan}" for kan in note.extract_kanji()])})""")
 

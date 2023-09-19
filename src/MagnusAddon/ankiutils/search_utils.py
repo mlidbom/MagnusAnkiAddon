@@ -78,21 +78,24 @@ def sentence_vocab_lookup(sentence:SentenceNote) -> str: return text_vocab_looku
 
 def vocab_with_kanji(note:WaniKanjiNote) -> str: return f"{vocab_read} Q:*{note.get_question()}*"
 
-def text_vocab_lookup(text:str) -> str:
-    def voc_clause(voc: ParsedWord) -> str:
-        return f"""({tag_uk} AND {field_word(reading, voc.word)})""" if voc.is_kana_only() else f"""Q:{voc.word}"""
+def vocab_clause(voc: ParsedWord) -> str:
+    return f"""({tag_uk} AND {field_word(reading, voc.word)})""" if voc.is_kana_only() else f"""Q:{voc.word}"""
 
+def text_vocab_lookup(text:str) -> str:
     dictionary_forms = textparser.identify_words(text)
-    return f"{vocab_read} ({' OR '.join([voc_clause(voc) for voc in dictionary_forms])})"
+    return vocabs_lookup(dictionary_forms)
+
+def vocab_lookup(vocab:ParsedWord) -> str: return vocabs_lookup([vocab])
+
+def vocabs_lookup(dictionary_forms: list[ParsedWord]) -> str:
+    return f"{vocab_read} ({' OR '.join([vocab_clause(voc) for voc in dictionary_forms])})"
+
 
 def vocab_compounds_lookup(note:WaniVocabNote) -> str:
-    def voc_clause(voc: ParsedWord) -> str:
-        return f"""({tag_uk} AND {field_word(reading, voc.word)})""" if voc.is_kana_only() else f"""Q:{voc.word}"""
-
     vocab_word = note.get_question()
     dictionary_forms = [comp for comp in textparser.identify_words(vocab_word) if comp.word != vocab_word]
 
-    return f"{vocab_read} ({' OR '.join([voc_clause(voc) for voc in dictionary_forms])})" if dictionary_forms else ""
+    return f"{vocab_read} ({' OR '.join([vocab_clause(voc) for voc in dictionary_forms])})" if dictionary_forms else ""
 
 
 def lookup_dependencies(note: MyNote):
