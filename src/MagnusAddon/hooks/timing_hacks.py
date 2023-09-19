@@ -3,6 +3,8 @@ from anki.notes import Note
 import time
 from aqt import gui_hooks
 
+from ankiutils.audio_suppressor import audio_suppressor
+
 
 class UglyUITimingBasedHacksData:
     def __init__(self) -> None:
@@ -11,10 +13,12 @@ class UglyUITimingBasedHacksData:
         self._last_editor_typing_note = None
 
     def typed_in_note(self, note: Note) -> None:
+        audio_suppressor.suppress_for_seconds(.1)
         self._last_editor_typing_time = time.time()
         self._last_editor_typing_note = note
 
     def reviewer_showed_answer(self, _card:Card) -> None:
+        audio_suppressor.suppress_for_seconds(.1)
         self._last_reviewer_showed_answer_time = time.time()
 
     def reviewer_just_showed_answer(self) -> bool:

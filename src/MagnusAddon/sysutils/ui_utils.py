@@ -8,6 +8,7 @@ from aqt.editcurrent import EditCurrent
 from aqt.reviewer import RefreshNeeded
 from aqt.utils import tooltip
 
+from ankiutils.audio_suppressor import audio_suppressor
 from sysutils import timeutil
 
 
@@ -32,6 +33,7 @@ class UIUtils:
 
     @staticmethod
     def refresh() -> None:
+        audio_suppressor.suppress_for_seconds(.1)
         if mw.reviewer.card:
             mw.reviewer._refresh_needed = RefreshNeeded.NOTE_TEXT
             mw.reviewer.refresh_if_needed()

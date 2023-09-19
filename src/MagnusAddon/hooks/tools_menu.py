@@ -23,7 +23,7 @@ def deep_refresh() -> None:
 
     if isinstance(note, SentenceNote):
         sentence_content_builder.build_breakdown_html(note)
-        
+
     if isinstance(note, WaniKanjiNote):
         local_note_updater.update_kanji(note)
 

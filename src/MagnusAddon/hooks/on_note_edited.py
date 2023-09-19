@@ -2,7 +2,6 @@ from anki.notes import Note
 from aqt import gui_hooks
 
 from note.mynote import MyNote
-from sysutils.ui_utils import UIUtils
 
 
 def init() -> None:

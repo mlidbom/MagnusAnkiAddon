@@ -1,7 +1,7 @@
-from aqt import gui_hooks
-from aqt.editor import Editor, EditorMode
+#from aqt import gui_hooks
+#from aqt.editor import Editor, EditorMode
 
-from sysutils.ui_utils import UIUtils
+#from sysutils.ui_utils import UIUtils
 
 
 # def init() -> None:

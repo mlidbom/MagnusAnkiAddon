@@ -1,14 +1,8 @@
-from aqt import mw
-
 from ankiutils import search_utils
-from batches import local_note_updater
-from note.mynote import MyNote
 from note.sentencenote import SentenceNote
 from note.wanivocabnote import WaniVocabNote
 from parsing import textparser
-from sysutils.ui_utils import UIUtils
 from sysutils.utils import StringUtils, ListUtils
-from wanikani import wani_collection
 from wanikani.wani_collection import WaniCollection
 
 

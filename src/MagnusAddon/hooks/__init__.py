@@ -7,7 +7,6 @@ from . import \
     right_click_menu_search,\
     right_click_menu_note, \
     show_previewer, \
-    suppress_audio_on_typing, \
     tools_menu, \
     on_note_edited, \
     timing_hacks

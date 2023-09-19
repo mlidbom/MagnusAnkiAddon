@@ -139,23 +139,23 @@ def _update_vocab(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanji
 def _update_kanji(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanjiNote]):
     def generate_vocab_html_list(note: WaniKanjiNote, vocabs: List[WaniVocabNote]):
         def sort_vocab_list() -> None:
-            def prefer_primary_vocab_in_order(vocab: WaniVocabNote):
+            def prefer_primary_vocab_in_order(local_vocab: WaniVocabNote):
                 for index, primary in enumerate(primary_voc):
-                    if vocab.get_question() == primary or vocab.get_readings()[0] == primary:
+                    if local_vocab.get_question() == primary or local_vocab.get_readings()[0] == primary:
                         return index
 
                 return 100
 
-            def prefer_non_compound(vocab: WaniVocabNote) -> str:
-                return "A" if kana_utils.is_only_kana(vocab.get_question()[1:]) else "B"
+            def prefer_non_compound(local_vocab: WaniVocabNote) -> str:
+                return "A" if kana_utils.is_only_kana(local_vocab.get_question()[1:]) else "B"
 
-            def prefer_starts_with_vocab(vocab: WaniVocabNote) -> str:
-                return "A" if vocab.get_question()[0] == note.get_question() else "B"
+            def prefer_starts_with_vocab(local_vocab: WaniVocabNote) -> str:
+                return "A" if local_vocab.get_question()[0] == note.get_question() else "B"
 
-            vocabs.sort(key=lambda vocab: (prefer_primary_vocab_in_order(vocab),
-                                           prefer_non_compound(vocab),
-                                           prefer_starts_with_vocab(vocab),
-                                           voc.get_question()))
+            vocabs.sort(key=lambda local_vocab: (prefer_primary_vocab_in_order(local_vocab),
+                                                 prefer_non_compound(local_vocab),
+                                                 prefer_starts_with_vocab(local_vocab),
+                                                 voc.get_question()))
 
         primary_voc = note.get_primary_vocab()
         sort_vocab_list()
@@ -166,11 +166,11 @@ def _update_kanji(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanji
                     
                     {StringUtils.newline().join([f"""
                     <div class="kanjiVocabEntry">
-                        <span class="kanji clipboard">{vocab.get_question()}</span>
-                        (<span class="clipboard vocabReading">{note.tag_readings_in_string(", ".join(vocab.get_readings()), lambda read: f'<span class="kanjiReading">{read}</span>')}</span>)
-                        <span class="meaning"> {StringUtils.strip_markup(vocab.get_active_answer())}</span>
+                        <span class="kanji clipboard">{inner_vocab.get_question()}</span>
+                        (<span class="clipboard vocabReading">{note.tag_readings_in_string(", ".join(inner_vocab.get_readings()), lambda read: f'<span class="kanjiReading">{read}</span>')}</span>)
+                        <span class="meaning"> {StringUtils.strip_markup(inner_vocab.get_active_answer())}</span>
                     </div>
-                    """ for vocab in vocabs])}
+                    """ for inner_vocab in vocabs])}
                     
                     </div>
                 </div>
