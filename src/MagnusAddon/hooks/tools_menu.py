@@ -37,6 +37,8 @@ def build_local_menu(sub_menu: QMenu) -> None:
     add_menu_action(sub_menu, "Update &Vocab", local_note_updater.update_vocab)
     add_menu_action(sub_menu, "Update &Kanji", local_note_updater.update_kanji)
     add_menu_action(sub_menu, "Update &Sentences", local_note_updater.update_sentences)
+
+    add_menu_action(sub_menu, "Update sentence &breakdown", local_note_updater.update_sentence_breakdown)
     add_menu_action(sub_menu, "Set Vocab UK from dictionary", local_note_updater.set_vocab_uk_from_dictionary)
 
 
