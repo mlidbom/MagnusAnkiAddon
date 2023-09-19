@@ -18,7 +18,7 @@ from wanikani.wani_constants import Wani
 class WaniCollection:
     @staticmethod
     def list_sentence_notes() -> list[SentenceNote]:
-        return [SentenceNote(note) for note in WaniCollection.fetch_notes_by_note_type("_japanese_sentence")]
+        return [SentenceNote(note) for note in WaniCollection.fetch_notes_by_note_type(Wani.NoteType.Sentence)]
 
     @staticmethod
     def fetch_notes_by_note_type_and_field_value(note_type: str, field: str,
@@ -37,6 +37,13 @@ class WaniCollection:
         note_ids = ListUtils.flatten_list(note_ids)
         notes = WaniCollection.fetch_notes_by_id(note_ids)
         return notes
+
+    @staticmethod
+    def search_vocab_notes(query: str) -> list[WaniVocabNote]:
+        note_ids = [mw.col.find_notes(query)]
+        note_ids = ListUtils.flatten_list(note_ids)
+        notes = WaniCollection.fetch_notes_by_id(note_ids)
+        return [WaniVocabNote(note) for note in notes]
 
     @staticmethod
     def fetch_kanji_notes(field_values: List) -> List[WaniKanjiNote]:

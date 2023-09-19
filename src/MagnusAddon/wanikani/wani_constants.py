@@ -13,6 +13,7 @@ class SentenceNoteFields:
     source_answer = "source_answer"
     user_answer = "__answer"
     ParsedWords = "ParsedWords"
+    break_down = "BreakDown"
 
 class Wani:
     class WaniVocabNoteType:

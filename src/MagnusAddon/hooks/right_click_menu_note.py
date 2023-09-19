@@ -6,6 +6,7 @@ from note.sentencenote import SentenceNote
 from note.wanikanjinote import WaniKanjiNote
 from note.waniradicalnote import WaniRadicalNote
 from note.wanivocabnote import WaniVocabNote
+from note_content_building import sentence_content_builder
 from sysutils.utils import StringUtils
 from wanikani.wani_constants import MyNoteFields, Wani, SentenceNoteFields
 from ankiutils import search_utils as su
@@ -27,6 +28,7 @@ def setup_note_menu(note, root_menu, sel_clip, selection, view: AnkiWebView):
         add_ui_action(add_vocab_menu, "&5", lambda: note.set_field(MyNoteFields.Vocab5, sel_clip))
 
     if isinstance(note, SentenceNote):
+        add_ui_action(note_menu, "Populate &breakdown", lambda: sentence_content_builder.build_breakdown_html(note))
         add_text_vocab_lookup(note_lookup_menu, "&Vocabulary words", note.get_active_question())
         add_lookup_action(note_lookup_menu, "&Kanji", f"""note:{Wani.NoteType.Kanji} ({" OR ".join([f"{Wani.KanjiFields.question}:{kan}" for kan in note.extract_kanji()])})""")
 
