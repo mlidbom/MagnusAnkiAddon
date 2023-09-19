@@ -22,13 +22,17 @@ class SentenceNote(MyNote):
     def _get_user_question(self) -> str: return super().get_field(SentenceNoteFields.user_question)
     def get_active_question(self) -> str: return self._get_user_question() or self._get_source_question()
 
+    def set_break_down(self, value: str) -> None: super().set_field(SentenceNoteFields.break_down, value)
+
+
     def parse_words_from_expression(self) -> list[ParsedWord]: return textparser.identify_words(self.get_active_question())
+    def get_parsed_words(self) -> list[str]: return super().get_field(SentenceNoteFields.ParsedWords).split(",")
     def _set_parsed_words(self, value: list[str]) -> None:
         value.append(str(timeutil.one_second_from_now()))
         super().set_field(SentenceNoteFields.ParsedWords, ",".join(value))
 
     def _parsed_words_timestamp(self) -> int:
-        words = super().get_field(SentenceNoteFields.ParsedWords).split(",")
+        words = self.get_parsed_words()
         return int(words[-1]) if words and words[-1].isdigit() else 0
 
     def _needs_words_reparsed(self) -> bool: return self._note.mod > self._parsed_words_timestamp()
