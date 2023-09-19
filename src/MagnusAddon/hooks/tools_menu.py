@@ -5,12 +5,29 @@ from PyQt6.QtWidgets import QMenu
 from aqt import mw, qconnect
 
 from batches import local_note_updater
+from note.mynote import MyNote
+from note.sentencenote import SentenceNote
+from note.wanikanjinote import WaniKanjiNote
+from note.wanivocabnote import WaniVocabNote
 from note_content_building import sentence_content_builder
 from sysutils.ui_utils import UIUtils
 from wanikani import note_importer
 from wanikani import wani_note_updater
 from wanikani.wani_downloader import WaniDownloader
 
+def deep_refresh() -> None:
+    note = MyNote.note_from_card(mw.reviewer.card)
+
+    if isinstance(note, WaniVocabNote) or isinstance(note, SentenceNote):
+        local_note_updater.update_vocab()
+
+    if isinstance(note, SentenceNote):
+        sentence_content_builder.build_breakdown_html(note)
+        
+    if isinstance(note, WaniKanjiNote):
+        local_note_updater.update_kanji(note)
+
+    UIUtils.refresh()
 
 def add_menu_action(sub_menu: QMenu, heading: str, callback: Callable, shortcut: str = ""):
     action = QAction(heading, mw)
@@ -22,7 +39,7 @@ def build_main_menu() -> None:
     my_menu = QMenu("Magnu&s", mw)
     tools_menu = mw.form.menuTools
     add_menu_action(tools_menu, "Refresh UI", lambda: UIUtils.refresh(), "F5")
-    add_menu_action(tools_menu, "Deep update UI", lambda: sentence_content_builder.deep_refresh_ui(), "Ctrl+F5")
+    add_menu_action(tools_menu, "Deep update UI", deep_refresh, "Ctrl+F5")
 
     tools_menu.addMenu(my_menu)
 

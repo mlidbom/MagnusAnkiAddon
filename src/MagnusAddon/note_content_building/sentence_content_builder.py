@@ -36,12 +36,4 @@ def build_breakdown_html(sentence: SentenceNote) -> None:
     html = build_html(top_level_word_notes_flattened)
     sentence.set_break_down(html)
 
-def deep_refresh_ui() -> None:
-    local_note_updater.update_vocab()
-    if mw.reviewer.card:
-        note = MyNote.note_from_card(mw.reviewer.card)
-        if isinstance(note, SentenceNote):
-            build_breakdown_html(note)
-    UIUtils.refresh()
-
 
