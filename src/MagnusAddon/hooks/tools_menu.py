@@ -20,6 +20,7 @@ def deep_refresh() -> None:
 
     if isinstance(note, WaniVocabNote) or isinstance(note, SentenceNote):
         local_note_updater.update_vocab()
+        local_note_updater.set_vocab_uk_from_dictionary()
 
     if isinstance(note, SentenceNote):
         sentence_content_builder.build_breakdown_html(note)

@@ -72,7 +72,7 @@ def _update_vocab(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanji
     def update_kanji_names() -> None:
         def prepare_kanji_meaning(kanji: WaniKanjiNote) -> str:
             meaning = kanji.get_active_answer()
-            meaning = StringUtils.strip_markup(meaning)
+            meaning = StringUtils.strip_html_and_bracket_markup(meaning)
             meaning = meaning.strip().replace(",", "/").replace(" ", "")
             return meaning
 
@@ -87,7 +87,7 @@ def _update_vocab(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanji
     def format_context_sentences() -> None:
         for vocab in all_vocabulary:
             def format_sentence(html_sentence: str):
-                clean_sentence = StringUtils.strip_markup(html_sentence)
+                clean_sentence = StringUtils.strip_html_and_bracket_markup(html_sentence)
                 word = vocab.get_question()
                 if word in clean_sentence:
                     return clean_sentence.replace(word, f"""<span class="vocabInContext">{word}</span>""")
@@ -168,7 +168,7 @@ def _update_kanji(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanji
                     <div class="kanjiVocabEntry">
                         <span class="kanji clipboard">{inner_vocab.get_question()}</span>
                         (<span class="clipboard vocabReading">{note.tag_readings_in_string(", ".join(inner_vocab.get_readings()), lambda read: f'<span class="kanjiReading">{read}</span>')}</span>)
-                        <span class="meaning"> {StringUtils.strip_markup(inner_vocab.get_active_answer())}</span>
+                        <span class="meaning"> {StringUtils.strip_html_markup(inner_vocab.get_active_answer())}</span>
                     </div>
                     """ for inner_vocab in vocabs])}
                     

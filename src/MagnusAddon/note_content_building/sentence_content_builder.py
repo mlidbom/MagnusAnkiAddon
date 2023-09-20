@@ -27,10 +27,6 @@ def build_breakdown_html(sentence: SentenceNote) -> None:
 
     tokens = textparser.identify_words(sentence.get_active_question())
 
-    low_priority = [token for token in tokens if token.word in _ignored_tokens]
-    high_priority = [token for token in tokens if token.word not in _ignored_tokens]
-    tokens = high_priority + low_priority
-
     user_excluded = sentence.get_user_excluded_vocab()
     excluded = user_excluded | _ignored_vocab
 
@@ -42,9 +38,15 @@ def build_breakdown_html(sentence: SentenceNote) -> None:
     notes = [WaniCollection.search_vocab_notes(word) for word in queries]
 
 
-    notes_flattened:list[WaniVocabNote] = ListUtils.flatten_list(notes)
-    notes_flattened = [word for word in notes_flattened if word.get_question() not in excluded]
-    html = build_html(notes_flattened)
+    vocabs_flattened:list[WaniVocabNote] = ListUtils.flatten_list(notes)
+    vocabs_flattened = [word for word in vocabs_flattened if word.get_question() not in excluded]
+
+    if len(vocabs_flattened) > 10: #Having it in order is nice for shorter sentences, but painful for long ones
+        low_priority = [vocab for vocab in vocabs_flattened if vocab.get_question() in _ignored_tokens]
+        high_priority = [vocab for vocab in vocabs_flattened if vocab.get_question() not in _ignored_tokens]
+        vocabs_flattened = high_priority + low_priority
+
+    html = build_html(vocabs_flattened)
     sentence.set_break_down(html)
 
 

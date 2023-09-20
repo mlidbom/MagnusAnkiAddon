@@ -41,12 +41,16 @@ class StringUtils:
         return [item for item in (item.strip() for item in string.strip().split(",")) if item]
 
     @staticmethod
-    def strip_markup(string: str) -> str:
+    def strip_html_and_bracket_markup(string: str) -> str:
         return re.sub('<.*?>|\[.*?\]', '', string) # noqa
+
+    @staticmethod
+    def strip_html_markup(string: str) -> str:
+        return re.sub('<.*?>', '', string) # noqa
 
 
     @staticmethod
-    def strip_markup_and_noise_characters(string: str) -> str:
+    def strip_html_and_bracket_markup_and_noise_characters(string: str) -> str:
         return re.sub('<.*?>|\[.*?\]|[〜]', '', string)  # noqa
 
 

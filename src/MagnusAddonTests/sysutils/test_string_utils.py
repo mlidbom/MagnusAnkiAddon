@@ -8,7 +8,7 @@ from sysutils.utils import StringUtils
     ("[bah]something〜[aeu]", "something〜")
 ])
 def test_strip_(inp: str, output: str) -> None:
-    assert output == StringUtils.strip_markup(inp)
+    assert output == StringUtils.strip_html_and_bracket_markup(inp)
 
 @pytest.mark.parametrize('inp, output', [
     ("<div>something</div>", "something"),
@@ -16,4 +16,4 @@ def test_strip_(inp: str, output: str) -> None:
     ("[bah]something〜[aeu]", "something")
 ])
 def test_strip_markup(inp: str, output: str) -> None:
-    assert output == StringUtils.strip_markup_and_noise_characters(inp)
+    assert output == StringUtils.strip_html_and_bracket_markup_and_noise_characters(inp)
