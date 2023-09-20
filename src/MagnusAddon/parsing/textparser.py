@@ -143,4 +143,3 @@ def identify_words(sentence: str) -> list[ParsedWord]:
 
     return [ParsedWord(word) for word in found_words_list]
 
-
