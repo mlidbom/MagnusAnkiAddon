@@ -11,7 +11,7 @@ class Node:
         self.children = children if children else []
 
     def __repr__(self) -> str:
-        return f"""Node('{self.surface}','{self.base}' {"," + str(self.children) if self.children else ""})"""
+        return f"""Node('{self.surface}','{self.base}'{"," + str(self.children) if self.children else ""})"""
 
     def __eq__(self, other: any) -> bool:
         return (isinstance(other, Node)

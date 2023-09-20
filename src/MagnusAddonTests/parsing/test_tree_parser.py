@@ -5,11 +5,12 @@ from parsing.tree_parsing.parse_tree_node import Node
 
 
 @pytest.mark.parametrize('sentence, expected', [
+    ("知らない", [Node('知らない','',[Node('知ら','知る'), Node('ない','')])]),
     ("いつまでも来ないと知らないからね", [
         Node('いつまでも', '', [Node('いつまで', '', [Node('いつ', ''), Node('まで', '')]), Node('も', '')]),
         Node('来', '来る'),
         Node('ないと', '', [Node('ない', ''), Node('と', '')]),
-        Node('知らない', '', [Node('知ら', '知る')]),
+        Node('知らない', '', [Node('知ら', '知る'), Node('ない','')]),
         Node('から', ''),
         Node('ね', '')])
 ])

@@ -21,11 +21,19 @@ def temp_test_method(sentence: str) -> list[list[TokenExt]]:
 
 def parse_tree(sentence:str) -> list[Node]:
     tokens = _tokenizer.tokenize(sentence).tokens
+    if _is_in_dictionary(tokens): return [Node.create(tokens)]
     return internal_parse(tokens)
 
 
 def internal_parse(tokens) -> list[Node]:
     return [Node.create(tokens) for tokens in list_compounds(tokens)]
+
+
+def _is_in_dictionary(compound_tokens: list[TokenExt]) -> bool:
+    compound_root = "".join([tok.surface for tok in compound_tokens])
+    compound_base = "".join([tok.surface for tok in compound_tokens[:-1]]) + compound_tokens[-1].base_form
+    return (DictLookup.lookup_word_shallow(compound_root).found_words()
+            or DictLookup.lookup_word_shallow(compound_base).found_words())
 
 
 def list_compounds(tokens: list[TokenExt]) -> list[list[TokenExt]]:
@@ -36,9 +44,8 @@ def list_compounds(tokens: list[TokenExt]) -> list[list[TokenExt]]:
         max_lookahead = min(_max_lookahead, len(tokens)) - 1
         current_index = max_lookahead
         while current_index > 0:
-            compound_tokens = [tok for tok in tokens[:current_index]]
-            compound_root = "".join([tok.surface for tok in compound_tokens])
-            if DictLookup.lookup_word_shallow(compound_root).found_words():
+            compound_tokens = tokens[:current_index]
+            if _is_in_dictionary(compound_tokens):
                 compounds.append(compound_tokens)
                 tokens = tokens[current_index:]
                 break
