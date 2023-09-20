@@ -39,12 +39,13 @@ def _is_in_dictionary(compound_tokens: list[TokenExt], excluded:set[str]) -> boo
 def list_compounds(tokens: list[TokenExt], excluded:set[str]) -> list[list[TokenExt]]:
     compounds: list[list[TokenExt]] = []
 
+    identity_index = len(tokens)
     while len(tokens) > 0:
-        max_lookahead = min(_max_lookahead, len(tokens)) - 1
+        max_lookahead = min(_max_lookahead, len(tokens))
         current_index = max_lookahead
         while current_index > 0:
             compound_tokens = tokens[:current_index]
-            if _is_in_dictionary(compound_tokens, excluded):
+            if current_index != identity_index and _is_in_dictionary(compound_tokens, excluded):
                 compounds.append(compound_tokens)
                 tokens = tokens[current_index:]
                 break

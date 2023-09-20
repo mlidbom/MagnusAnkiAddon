@@ -44,15 +44,17 @@ from parsing.tree_parsing.parse_tree_node import Node
         Node('捨てる',''),
         Node('ようだ','ような',[Node('よう',''), Node('だ','な')]),
         Node('人',''),
-        Node('じゃ',''),
-        Node('ない','')])
+        Node('じゃない','',[Node('じゃ',''), Node('ない','')])])
 ])
 def test_stuff(sentence: str, excluded:set[str], expected: list[Node]) -> None:
     result = tree_parser.parse_tree(sentence, excluded)
     assert result == expected
 
 @pytest.mark.parametrize('sentence, excluded, expected', [
-    ("なかったかな", {"たか"}, [])
+    ("なかったかな", {"たか", "たかな"}, [
+        Node('ない','なかっ'),
+        Node('た',''),
+        Node('かな','',[Node('か',''), Node('な','')])])
 ])
 def test_temp(sentence: str, excluded:set[str], expected: list[Node]) -> None:
     result = tree_parser.parse_tree(sentence, excluded)
