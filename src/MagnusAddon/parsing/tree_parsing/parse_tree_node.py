@@ -1,6 +1,7 @@
 from parsing.jamdict_extensions.dict_lookup import DictLookup
 from parsing.janome_extensions.token_ext import TokenExt
 from parsing.tree_parsing import tree_parser
+from sysutils import kana_utils
 
 
 class Node:
@@ -28,3 +29,6 @@ class Node:
         base = "".join(tok.surface for tok in tokens[:-1]) + tokens[-1].base_form
         surface = surface if base != surface else ""
         return Node(base, surface, children)
+
+    def is_kana_only(self) -> bool:
+        return kana_utils.is_only_kana(self.base)

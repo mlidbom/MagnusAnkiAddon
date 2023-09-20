@@ -26,13 +26,33 @@ from parsing.tree_parsing.parse_tree_node import Node
         Node('素晴らしい',''),
         Node('女性',''),
         Node('に',''),
-        Node('逢える', '逢え')]),
+        Node('逢える', '逢え'),
+        Node('た', '')]),
     ("ついに素晴らしい女性に逢えた。", {"逢える"}, [
         Node('ついに', ''),
         Node('素晴らしい', ''),
         Node('女性', ''),
-        Node('に', '')])
+        Node('に', ''),
+        Node('た','')])
 ])
-def test_draft(sentence: str, excluded:set[str], expected: list[Node]) -> None:
+def test_stuff(sentence: str, excluded:set[str], expected: list[Node]) -> None:
+    result = tree_parser.parse_tree(sentence, excluded)
+    assert result == expected
+
+@pytest.mark.parametrize('sentence, excluded, expected', [
+    ("ううん藤宮さんは日記を捨てるような人じゃない", set(),[
+        Node('ううん',''),
+        Node('藤宮',''),
+        Node('さん',''),
+        Node('は',''),
+        Node('日記',''),
+        Node('を',''),
+        Node('捨てる',''),
+        Node('ようだ','ような',[Node('よう',''), Node('だ','な')]),
+        Node('人',''),
+        Node('じゃ',''),
+        Node('ない','')])
+])
+def test_temp(sentence: str, excluded:set[str], expected: list[Node]) -> None:
     result = tree_parser.parse_tree(sentence, excluded)
     assert result == expected

@@ -45,7 +45,7 @@ def list_compounds(tokens: list[TokenExt], excluded:set[str]) -> list[list[Token
     compounds: list[list[TokenExt]] = []
 
     current_index = 1
-    while current_index > 0:
+    while len(tokens) > 0:
         max_lookahead = min(_max_lookahead, len(tokens)) - 1
         current_index = max_lookahead
         while current_index > 0:
@@ -57,7 +57,9 @@ def list_compounds(tokens: list[TokenExt], excluded:set[str]) -> list[list[Token
 
             current_index -= 1
 
-        if current_index == 0 and tokens[0].base_form not in excluded and tokens[0].surface not in excluded:
-            compounds.append([tokens[0]])
+        if current_index == 0:
+            if tokens[0].base_form not in excluded and tokens[0].surface not in excluded:
+                compounds.append([tokens[0]])
+            tokens = tokens[1:]
 
     return compounds

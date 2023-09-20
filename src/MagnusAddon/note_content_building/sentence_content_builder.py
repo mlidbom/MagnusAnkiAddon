@@ -15,10 +15,26 @@ def create_html_from_nodes(nodes: list[Node]) -> str:
     html = "<ul>\n"
 
     for node in nodes:
-        html += f"<li>Base: {node.base}, Surface: {node.surface}\n"
-        if node.children:
-            html += create_html_from_nodes(node.children)
-        html += "</li>\n"
+        vocabs = WaniCollection.search_vocab_notes(search_utils.node_vocab_lookup(node))
+
+        if vocabs:
+            for vocab in vocabs:
+                html += f"""
+<li>
+    <span class="vocabQuestion clipboard">{vocab.get_question()}</span>
+    <span class="vocabAnswer">{vocab.get_active_answer()}</span>
+    {create_html_from_nodes(node.children)}
+</li>
+"""
+        else:
+            html += f"""
+<li>
+    <span class="vocabQuestion clipboard">{node.base}</span>
+    <span class="vocabAnswer">NO VOCAB FOUND</span>
+    {create_html_from_nodes(node.children)}
+</li>
+"""
+
 
     html += "</ul>\n"
 
@@ -33,11 +49,3 @@ def build_breakdown_html(sentence: SentenceNote) -> None:
 
     html = create_html_from_nodes(nodes)
     sentence.set_break_down(html)
-
-
-
-
-
-
-
-

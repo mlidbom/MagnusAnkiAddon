@@ -3,6 +3,8 @@ from typing import Callable
 import aqt
 from aqt.browser import Browser
 
+import parsing.tree_parsing.tree_parser #noqa
+from parsing.tree_parsing.parse_tree_node import Node
 from note.mynote import MyNote
 from note.sentencenote import SentenceNote
 from note.wanikanjinote import WaniKanjiNote
@@ -81,11 +83,19 @@ def vocab_with_kanji(note:WaniKanjiNote) -> str: return f"{vocab_read} Q:*{note.
 def vocab_clause(voc: ParsedWord) -> str:
     return f"""({tag_uk} AND {field_word(reading, voc.word)})""" if voc.is_kana_only() else f"""Q:{voc.word}"""
 
+def node_vocab_clause(voc: Node) -> str:
+    return f"""({tag_uk} AND {field_word(reading, voc.base)})""" if voc.is_kana_only() else f"""Q:{voc.base}"""
+
 def text_vocab_lookup(text:str) -> str:
     dictionary_forms = textparser.identify_words(text)
     return vocabs_lookup(dictionary_forms)
 
 def vocab_lookup(vocab:ParsedWord) -> str: return vocabs_lookup([vocab])
+
+def node_vocab_lookup(node:Node) -> str: return node_vocabs_lookup([node])
+
+def node_vocabs_lookup(dictionary_forms: list[Node]) -> str:
+    return f"{vocab_read} ({' OR '.join([node_vocab_clause(voc) for voc in dictionary_forms])})"
 
 def vocabs_lookup(dictionary_forms: list[ParsedWord]) -> str:
     return f"{vocab_read} ({' OR '.join([vocab_clause(voc) for voc in dictionary_forms])})"
