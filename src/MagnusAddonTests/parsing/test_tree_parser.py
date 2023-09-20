@@ -1,14 +1,18 @@
 import pytest
 
 from parsing.tree_parsing import tree_parser
+from parsing.tree_parsing.parse_tree_node import Node
 
 
-@pytest.mark.parametrize('sentence', [
-    "いつまでも来ないと知らないからね"
+@pytest.mark.parametrize('sentence, expected', [
+    ("いつまでも来ないと知らないからね", [
+        Node('いつまでも', '', [Node('いつまで', '', [Node('いつ', ''), Node('まで', '')]), Node('も', '')]),
+        Node('来', '来る'),
+        Node('ないと', '', [Node('ない', ''), Node('と', '')]),
+        Node('知らない', '', [Node('知ら', '知る')]),
+        Node('から', ''),
+        Node('ね', '')])
 ])
-def test_draft(sentence: str) -> None:
+def test_draft(sentence: str, expected: list[Node]) -> None:
     result = tree_parser.parse_tree(sentence)
-    for something in result:
-        print(something)
-
-
+    assert result == expected

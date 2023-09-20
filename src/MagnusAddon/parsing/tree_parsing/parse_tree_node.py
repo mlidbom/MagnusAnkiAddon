@@ -5,12 +5,13 @@ from parsing.tree_parsing import tree_parser
 
 class Node:
     _max_lookahead = 12
-    def __init__(self, surface: str, children=None) -> None:
+    def __init__(self, surface: str, base: str, children=None) -> None:
         self.surface = surface
+        self.base = base
         self.children = children if children else []
 
     def __repr__(self) -> str:
-        return f"""Node('{self.surface}'{"," + str(self.children) if self.children else ""})"""
+        return f"""Node('{self.surface}','{self.base}' {"," + str(self.children) if self.children else ""})"""
 
     def __eq__(self, other: any) -> bool:
         return (isinstance(other, Node)
@@ -24,4 +25,6 @@ class Node:
     def create(cls, tokens: list[TokenExt]) -> 'Node':
         children = tree_parser.internal_parse(tokens) if len(tokens) > 1 else None
         surface = "".join(tok.surface for tok in tokens)
-        return Node(surface, children)
+        base = "".join(tok.surface for tok in tokens[:-1]) + tokens[-1].base_form
+        base = base if base != surface else ""
+        return Node(surface, base, children)
