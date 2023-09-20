@@ -20,7 +20,18 @@ from parsing.tree_parsing.parse_tree_node import Node
         Node('と', ''),
         Node('知らない', '', [Node('知ら', '知る'), Node('ない', '')]),
         Node('から', ''),
-        Node('ね', '')])
+        Node('ね', '')]),
+    ("ついに素晴らしい女性に逢えた。", set(), [
+        Node('ついに',''),
+        Node('素晴らしい',''),
+        Node('女性',''),
+        Node('に',''),
+        Node('逢え','逢える')]),
+    ("ついに素晴らしい女性に逢えた。", {"逢える"}, [
+        Node('ついに', ''),
+        Node('素晴らしい', ''),
+        Node('女性', ''),
+        Node('に', '')])
 ])
 def test_draft(sentence: str, excluded:set[str], expected: list[Node]) -> None:
     result = tree_parser.parse_tree(sentence, excluded)

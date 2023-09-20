@@ -35,6 +35,11 @@ def _is_in_dictionary(compound_tokens: list[TokenExt], excluded:set[str]) -> boo
     return (DictLookup.lookup_word_shallow(compound_surface).found_words()
             or DictLookup.lookup_word_shallow(compound_base).found_words())
 
+def _is_excluded(compound_tokens: list[TokenExt], excluded:set[str]):
+    compound_surface = "".join([tok.surface for tok in compound_tokens])
+    compound_base = "".join([tok.surface for tok in compound_tokens[:-1]]) + compound_tokens[-1].base_form
+    return compound_base in excluded or compound_surface in excluded
+
 
 def list_compounds(tokens: list[TokenExt], excluded:set[str]) -> list[list[TokenExt]]:
     compounds: list[list[TokenExt]] = []
@@ -52,7 +57,7 @@ def list_compounds(tokens: list[TokenExt], excluded:set[str]) -> list[list[Token
 
             current_index -= 1
 
-        if current_index == 0:
+        if current_index == 0 and tokens[0].base_form not in excluded and tokens[0].surface not in excluded:
             compounds.append([tokens[0]])
 
     return compounds
