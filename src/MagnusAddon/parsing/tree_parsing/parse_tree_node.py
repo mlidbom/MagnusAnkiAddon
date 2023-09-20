@@ -24,7 +24,7 @@ class Node:
 
     @classmethod
     def create(cls, tokens: list[TokenExt], excluded:set[str]) -> 'Node':
-        children = tree_parser.internal_parse(tokens, excluded) if len(tokens) > 1 else None
+        children = tree_parser._internal_parse(tokens, excluded) if len(tokens) > 1 else None # noqa
         surface = "".join(tok.surface for tok in tokens)
         base = "".join(tok.surface for tok in tokens[:-1]) + tokens[-1].base_form
         surface = surface if base != surface else ""

@@ -3,7 +3,7 @@ from typing import Callable
 import aqt
 from aqt.browser import Browser
 
-import parsing.tree_parsing.tree_parser #noqa
+import parsing.tree_parsing.tree_parser # noqa
 from parsing.tree_parsing.parse_tree_node import Node
 from note.mynote import MyNote
 from note.sentencenote import SentenceNote

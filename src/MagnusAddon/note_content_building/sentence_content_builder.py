@@ -1,5 +1,3 @@
-import io
-
 from ankiutils import search_utils
 from note.sentencenote import SentenceNote
 from note.wanivocabnote import WaniVocabNote
