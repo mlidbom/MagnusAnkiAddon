@@ -6,17 +6,11 @@ from parsing.tree_parsing.parse_tree_node import Node
 
 _tokenizer = TokenizerExt()
 
-def build_tree(sentence: str) -> Node:
-    tokens = _tokenizer.tokenize(sentence).tokens
-    return Node.create(tokens, set())
-
-
 _max_lookahead = 12
-
 
 def parse_tree(sentence:str, excluded:set[str]) -> list[Node]:
     tokens = _tokenizer.tokenize(sentence).tokens
-    if _is_in_dictionary(tokens, set()): return [Node.create(tokens, excluded)]
+    if _is_in_dictionary(tokens, excluded): return [Node.create(tokens, excluded)]
     stage1 = _list_compounds(tokens, excluded)
     _restore_verb_forms(stage1, excluded)
     return [Node.create(compounds, excluded) for compounds in stage1]

@@ -30,5 +30,11 @@ class Node:
         surface = surface if base != surface else ""
         return Node(base, surface, children)
 
-    def is_kana_only(self) -> bool:
+    def is_base_kana_only(self) -> bool:
         return kana_utils.is_only_kana(self.base)
+
+    def is_surface_kana_only(self) -> bool:
+        return self.surface and kana_utils.is_only_kana(self.surface)
+
+    def is_surface_dictionary_word(self) -> bool:
+        return self.surface and DictLookup.lookup_word_shallow(self.surface).found_words()

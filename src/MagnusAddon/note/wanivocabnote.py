@@ -16,6 +16,12 @@ class WaniVocabNote(WaniKanaVocabNote):
     def get_kanji(self) -> str: return super().get_field(Wani.VocabFields.Kanji)
     def set_kanji(self, value: str) -> None: super().set_field(Wani.VocabFields.Kanji, value)
 
+
+    def is_uk(self) -> bool: return self.has_tag(Mine.Tags.UsuallyKanaOnly)
+
+    def get_display_question(self) -> str:
+        return self.get_readings()[0] if self.is_uk() else self.get_question()
+
     def get_kanji_name(self) -> str: return super().get_field(Wani.VocabFields.Kanji_Name)
     def set_kanji_name(self, value: str) -> None: super().set_field(Wani.VocabFields.Kanji_Name, value)
 
@@ -86,3 +92,4 @@ class WaniVocabNote(WaniKanaVocabNote):
         if len(wani_vocab.context_sentences) > 2:
             kanji_note.set_context_en_3(wani_vocab.context_sentences[2].english)
             kanji_note.set_context_jp_3(wani_vocab.context_sentences[2].japanese)
+

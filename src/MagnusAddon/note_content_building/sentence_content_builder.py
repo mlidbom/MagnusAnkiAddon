@@ -13,18 +13,32 @@ def create_html_from_nodes(nodes: list[Node], excluded: set[str], depth:int) -> 
     html = f"""<ul class="sentenceVocabList depth{depth}">\n"""
 
     for node in nodes:
+        if node.surface in excluded or node.base in excluded:
+            continue
+
         vocabs = WaniCollection.search_vocab_notes(search_utils.node_vocab_lookup(node))
         vocabs = [voc for voc in vocabs if voc.get_question() not in excluded]
+
+        found_words = set((voc.get_question() for voc in vocabs)) | set(ListUtils.flatten_list([voc.get_readings() for voc in vocabs]))
 
         if vocabs:
             for vocab in vocabs:
                 html += f"""
 <li class="sentenceVocabEntry depth{depth}">
-    <span class="vocabQuestion clipboard">{vocab.get_question()}</span>
+    <span class="vocabQuestion clipboard">{vocab.get_display_question()}</span>
     <span class="vocabAnswer">{vocab.get_active_answer()}</span>
     {create_html_from_nodes(node.children, excluded, depth + 1)}
 </li>
 """
+            if node.surface and node.is_surface_dictionary_word() and node.surface not in found_words:
+                html += f"""
+<li class="sentenceVocabEntry depth{depth}">
+    <span class="vocabQuestion clipboard">{node.surface}</span>
+    <span class="vocabAnswer">-</span>
+    {create_html_from_nodes(node.children, excluded, depth + 1)}
+</li>
+"""
+
         else:
             html += f"""
 <li class="sentenceVocabEntry depth{depth}">
@@ -33,7 +47,7 @@ def create_html_from_nodes(nodes: list[Node], excluded: set[str], depth:int) -> 
     {create_html_from_nodes(node.children, excluded, depth + 1)}
 </li>
 """
-            if node.surface:
+            if node.is_surface_dictionary_word():
                 html += f"""
 <li class="sentenceVocabEntry depth{depth}">
     <span class="vocabQuestion clipboard">{node.surface}</span>
@@ -41,6 +55,8 @@ def create_html_from_nodes(nodes: list[Node], excluded: set[str], depth:int) -> 
     {create_html_from_nodes(node.children, excluded, depth + 1)}
 </li>
 """
+
+
 
 
     html += "</ul>\n"
