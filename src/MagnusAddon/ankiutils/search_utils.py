@@ -86,7 +86,7 @@ def vocab_clause(voc: ParsedWord) -> str:
 
 def node_vocab_clause(voc: Node) -> str:
     base_query = f"""({tag_uk} AND {field_word(reading, voc.base)})""" if kana_utils.is_only_kana(voc.base) else f"""Q:{voc.base}"""
-    if not voc.surface:
+    if not voc.surface or not voc.is_surface_dictionary_word():
         return base_query
 
     surface_query = f"""({tag_uk} AND {field_word(reading, voc.surface)})""" if kana_utils.is_only_kana(voc.surface) else f"""Q:{voc.surface}"""
