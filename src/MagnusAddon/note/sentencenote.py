@@ -17,9 +17,9 @@ class SentenceNote(MyNote):
     def _get_source_answer(self) -> str: return super().get_field(SentenceNoteFields.source_answer)
     def _get_user_answer(self) -> str: return super().get_field(SentenceNoteFields.user_answer)
 
-    def _get_source_question(self) -> str: return super().get_field(SentenceNoteFields.source_question)
+    def _get_source_question(self) -> str: return StringUtils.strip_html_markup(super().get_field(SentenceNoteFields.source_question))
 
-    def _get_user_question(self) -> str: return super().get_field(SentenceNoteFields.user_question)
+    def _get_user_question(self) -> str: return StringUtils.strip_html_markup(super().get_field(SentenceNoteFields.user_question))
     def get_active_question(self) -> str: return self._get_user_question() or self._get_source_question()
 
     def get_user_extra_vocab(self) -> list[str]: return StringUtils.extract_comma_separated_values(super().get_field(SentenceNoteFields.user_extra_vocab))
