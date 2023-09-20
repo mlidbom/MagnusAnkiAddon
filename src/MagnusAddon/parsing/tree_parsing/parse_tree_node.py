@@ -22,8 +22,8 @@ class Node:
         return hash(self.surface) + hash(self.children)
 
     @classmethod
-    def create(cls, tokens: list[TokenExt]) -> 'Node':
-        children = tree_parser.internal_parse(tokens) if len(tokens) > 1 else None
+    def create(cls, tokens: list[TokenExt], excluded:set[str]) -> 'Node':
+        children = tree_parser.internal_parse(tokens, excluded) if len(tokens) > 1 else None
         surface = "".join(tok.surface for tok in tokens)
         base = "".join(tok.surface for tok in tokens[:-1]) + tokens[-1].base_form
         base = base if base != surface else ""

@@ -1,5 +1,3 @@
-from typing import List
-
 from parsing.jamdict_extensions.dict_lookup import DictLookup
 from parsing.janome_extensions.token_ext import TokenExt
 from parsing.janome_extensions.tokenizer_ext import TokenizerExt
@@ -9,7 +7,7 @@ _tokenizer = TokenizerExt()
 
 def build_tree(sentence: str) -> Node:
     tokens = _tokenizer.tokenize(sentence).tokens
-    return Node.create(tokens)
+    return Node.create(tokens, set())
 
 
 _max_lookahead = 12
@@ -17,26 +15,28 @@ _max_lookahead = 12
 
 def temp_test_method(sentence: str) -> list[list[TokenExt]]:
     tokens = _tokenizer.tokenize(sentence).tokens
-    return list_compounds(tokens)
+    return list_compounds(tokens, set())
 
-def parse_tree(sentence:str) -> list[Node]:
+def parse_tree(sentence:str, excluded:set[str]) -> list[Node]:
     tokens = _tokenizer.tokenize(sentence).tokens
-    if _is_in_dictionary(tokens): return [Node.create(tokens)]
-    return internal_parse(tokens)
+    if _is_in_dictionary(tokens, set()): return [Node.create(tokens, excluded)]
+    return internal_parse(tokens, excluded)
 
 
-def internal_parse(tokens) -> list[Node]:
-    return [Node.create(tokens) for tokens in list_compounds(tokens)]
+def internal_parse(tokens, excluded:set[str]) -> list[Node]:
+    return [Node.create(tokens, excluded) for tokens in list_compounds(tokens, excluded)]
 
-
-def _is_in_dictionary(compound_tokens: list[TokenExt]) -> bool:
-    compound_root = "".join([tok.surface for tok in compound_tokens])
+def _is_in_dictionary(compound_tokens: list[TokenExt], excluded:set[str]) -> bool:
+    compound_surface = "".join([tok.surface for tok in compound_tokens])
     compound_base = "".join([tok.surface for tok in compound_tokens[:-1]]) + compound_tokens[-1].base_form
-    return (DictLookup.lookup_word_shallow(compound_root).found_words()
+
+    if compound_base in excluded or compound_surface in excluded: return False
+
+    return (DictLookup.lookup_word_shallow(compound_surface).found_words()
             or DictLookup.lookup_word_shallow(compound_base).found_words())
 
 
-def list_compounds(tokens: list[TokenExt]) -> list[list[TokenExt]]:
+def list_compounds(tokens: list[TokenExt], excluded:set[str]) -> list[list[TokenExt]]:
     compounds: list[list[TokenExt]] = []
 
     current_index = 1
@@ -45,7 +45,7 @@ def list_compounds(tokens: list[TokenExt]) -> list[list[TokenExt]]:
         current_index = max_lookahead
         while current_index > 0:
             compound_tokens = tokens[:current_index]
-            if _is_in_dictionary(compound_tokens):
+            if _is_in_dictionary(compound_tokens, excluded):
                 compounds.append(compound_tokens)
                 tokens = tokens[current_index:]
                 break
