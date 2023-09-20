@@ -14,6 +14,8 @@ class SentenceNoteFields:
     user_answer = "__answer"
     ParsedWords = "ParsedWords"
     break_down = "BreakDown"
+    user_excluded_vocab = "__excluded_vocab"
+    user_extra_vocab = "__extra_vocab"
 
 class Wani:
     class WaniVocabNoteType:
