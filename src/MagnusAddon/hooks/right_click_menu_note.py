@@ -1,6 +1,9 @@
+from PyQt6.QtWidgets import QMenu
+from aqt.utils import SubMenu
 from aqt.webview import AnkiWebView
 
 from batches import local_note_updater
+from hooks import tools_menu
 from hooks.right_click_menu_utils import add_ui_action, add_lookup_action, add_sentence_lookup, add_single_vocab_lookup_action, add_text_vocab_lookup, add_vocab_dependencies_lookup
 from note.sentencenote import SentenceNote
 from note.wanikanjinote import WaniKanjiNote
@@ -12,12 +15,12 @@ from wanikani.wani_constants import MyNoteFields, Wani, SentenceNoteFields
 from ankiutils import search_utils as su
 
 def setup_note_menu(note, root_menu, sel_clip, selection, view: AnkiWebView):
-    note_menu = root_menu.addMenu("&Note")
-    note_lookup_menu = note_menu.addMenu("&Lookup")
-    note_add_menu = note_menu.addMenu("&Add")
-    note_set_menu = note_menu.addMenu("&Set")
-    note_hide_menu = note_menu.addMenu("&Hide/Remove")
-    note_restore_menu = note_menu.addMenu("&Restore")
+    note_menu:QMenu = root_menu.addMenu("&Note")
+    note_lookup_menu:QMenu = note_menu.addMenu("&Lookup")
+    note_add_menu:QMenu = note_menu.addMenu("&Add")
+    note_set_menu:QMenu = note_menu.addMenu("&Set")
+    note_hide_menu:QMenu = note_menu.addMenu("&Hide/Remove")
+    note_restore_menu:QMenu = note_menu.addMenu("&Restore")
 
     if sel_clip:
         add_vocab_menu = note_set_menu.addMenu("&Vocab")
@@ -46,6 +49,13 @@ def setup_note_menu(note, root_menu, sel_clip, selection, view: AnkiWebView):
         add_ui_action(note_menu, "Populate &breakdown", lambda: sentence_content_builder.build_breakdown_html(note))
         add_text_vocab_lookup(note_lookup_menu, "&Vocabulary words", note.get_active_question())
         add_lookup_action(note_lookup_menu, "&Kanji", f"""note:{Wani.NoteType.Kanji} ({" OR ".join([f"{Wani.KanjiFields.question}:{kan}" for kan in note.extract_kanji()])})""")
+
+        def exclude_vocab() -> None:
+            note.exclude_vocab(sel_clip)
+            sentence_content_builder.build_breakdown_html(note)
+
+        if sel_clip:
+            add_ui_action(note_hide_menu, "&Exclude vocab", exclude_vocab)
 
     if isinstance(note, WaniRadicalNote):
         add_lookup_action(note_lookup_menu, "&Kanji", f"note:{Wani.NoteType.Kanji} {su.field_word(Wani.KanjiFields.Radicals_Names, note.get_a())}")

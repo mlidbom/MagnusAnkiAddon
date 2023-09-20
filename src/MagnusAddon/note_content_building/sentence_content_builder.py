@@ -9,27 +9,36 @@ from wanikani.wani_collection import WaniCollection
 _ignored_tokens: set[str] = set("しもよかとたてでをなのにだがは")
 _ignored_vocab: set[str] = {"擦る"}
 
-def create_html_from_nodes(nodes: list[Node]) -> str:
-    html = "<ul>\n"
+def create_html_from_nodes(nodes: list[Node], excluded: set[str], depth:int) -> str:
+    html = f"""<ul class="sentenceVocabList depth{depth}">\n"""
 
     for node in nodes:
         vocabs = WaniCollection.search_vocab_notes(search_utils.node_vocab_lookup(node))
+        vocabs = [voc for voc in vocabs if voc.get_question() not in excluded]
 
         if vocabs:
             for vocab in vocabs:
                 html += f"""
-<li>
+<li class="sentenceVocabEntry depth{depth}">
     <span class="vocabQuestion clipboard">{vocab.get_question()}</span>
     <span class="vocabAnswer">{vocab.get_active_answer()}</span>
-    {create_html_from_nodes(node.children)}
+    {create_html_from_nodes(node.children, excluded, depth + 1)}
 </li>
 """
         else:
             html += f"""
-<li>
+<li class="sentenceVocabEntry depth{depth}">
     <span class="vocabQuestion clipboard">{node.base}</span>
-    <span class="vocabAnswer">NO VOCAB FOUND</span>
-    {create_html_from_nodes(node.children)}
+    <span class="vocabAnswer">-</span>
+    {create_html_from_nodes(node.children, excluded, depth + 1)}
+</li>
+"""
+            if node.surface:
+                html += f"""
+<li class="sentenceVocabEntry depth{depth}">
+    <span class="vocabQuestion clipboard">{node.surface}</span>
+    <span class="vocabAnswer">-</span>
+    {create_html_from_nodes(node.children, excluded, depth + 1)}
 </li>
 """
 
@@ -45,5 +54,5 @@ def build_breakdown_html(sentence: SentenceNote) -> None:
     question = sentence.get_active_question()
     nodes = tree_parser.parse_tree(question, user_excluded)
 
-    html = create_html_from_nodes(nodes)
+    html = create_html_from_nodes(nodes, excluded, 1)
     sentence.set_break_down(html)
