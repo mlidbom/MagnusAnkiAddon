@@ -3,6 +3,7 @@ from aqt import mw
 from anki.notes import Note
 
 from note.wanikanavocabnote import WaniKanaVocabNote
+from sysutils.utils import StringUtils
 from wanikani.wani_constants import Wani, Mine
 from wanikani.wanikani_api_client import WanikaniClient
 
@@ -15,6 +16,11 @@ class WaniVocabNote(WaniKanaVocabNote):
 
     def get_kanji(self) -> str: return super().get_field(Wani.VocabFields.Kanji)
     def set_kanji(self, value: str) -> None: super().set_field(Wani.VocabFields.Kanji, value)
+
+    def get_forms(self) -> set[str]: return set(StringUtils.extract_comma_separated_values(self._get_forms()))
+    def set_forms(self, forms: set[str]) -> None: self._set_forms(", ".join([form.strip() for form in forms]))
+    def _get_forms(self) -> str: return super().get_field(Wani.VocabFields.Forms)
+    def _set_forms(self, value: str) -> None: super().set_field(Wani.VocabFields.Forms, value)
 
 
     def is_uk(self) -> bool: return self.has_tag(Mine.Tags.UsuallyKanaOnly)

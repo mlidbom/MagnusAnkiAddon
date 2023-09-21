@@ -22,23 +22,27 @@ def update_all() -> None:
         _update_sentences(all_sentences)
         _update_kanji(all_vocabulary, all_kanji)
         _update_vocab(all_vocabulary, all_kanji)
-        _set_vocab_uk_from_dictionary(all_vocabulary)
+        _set_vocab_uk_and_forms_from_dictionary(all_vocabulary)
         _update_vocab_parsed_parts_of_speech(all_vocabulary)
 
     UIUtils.run_ui_action(update_all_inner)
 
-def set_vocab_uk_from_dictionary() -> None:
+def set_vocab_uk_and_forms_from_dictionary() -> None:
     def inner() -> None:
         all_vocabulary: list[WaniVocabNote] = WaniCollection.fetch_all_vocab_notes()
-        _set_vocab_uk_from_dictionary(all_vocabulary)
+        _set_vocab_uk_and_forms_from_dictionary(all_vocabulary)
 
     UIUtils.run_ui_action(inner)
 
-def _set_vocab_uk_from_dictionary(all_vocabulary: list[WaniVocabNote]) -> None:
+def _set_vocab_uk_and_forms_from_dictionary(all_vocabulary: list[WaniVocabNote]) -> None:
     for vocab in all_vocabulary:
         lookup = DictLookup.try_lookup_vocab_word_or_name(vocab)
         if lookup.is_uk() and not vocab.has_tag(Mine.Tags.DisableKanaOnly):
             vocab.set_tag(Mine.Tags.UsuallyKanaOnly)
+
+        if not vocab.get_forms():
+            vocab.set_forms(lookup.valid_forms())
+
 
 def _update_vocab_parsed_parts_of_speech(all_vocabulary: list[WaniVocabNote]) -> None:
     for vocab in all_vocabulary:

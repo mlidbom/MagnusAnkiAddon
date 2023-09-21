@@ -106,6 +106,7 @@ class Wani:
 
     class VocabFields(KanaVocabFields):
         Kanji = "Kanji"
+        Forms = "F"
         Kanji_Name = "Kanji_Name"
         Reading_Exp = "Reading_Exp"
         Homophones = "Homophones"

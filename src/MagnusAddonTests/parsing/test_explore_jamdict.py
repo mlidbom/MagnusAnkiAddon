@@ -70,4 +70,14 @@ def test_names(word: str, readings: list[str]) -> None:
     dict_entry = DictLookup.try_lookup_vocab_word_or_name(mock_instance)
     assert dict_entry.found_words_count() == 1
 
+@pytest.mark.parametrize('word, readings, forms', [
+    ("怪我", ["けが"], {"怪我", "ケガ", "けが"}),
+    ("部屋", ["へや"], {"部屋"})
+])
+def test_valid_forms(word: str, readings:list[str], forms: set[str]) -> None:
+    mock_vocab = vocab_mock(word, readings)
+    dict_entry = DictLookup.try_lookup_vocab_word_or_name(mock_vocab)
+    assert dict_entry.found_words_count() == 1
+    assert dict_entry.valid_forms() == forms
+
 
