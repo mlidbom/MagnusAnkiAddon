@@ -57,6 +57,7 @@ class TokenExt:
             POS.Particle.conjunctive,
             POS.Particle.adverbial,
             POS.Particle.binding,
+            POS.Adjective.non_independent,
             POS.Noun.NonSelfReliant.adv_possible,
             POS.bound_auxiliary,
             POS.Noun.NonSelfReliant.general
