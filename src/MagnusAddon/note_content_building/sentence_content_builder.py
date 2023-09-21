@@ -24,9 +24,6 @@ def create_html_from_nodes(nodes: list[Node], excluded: set[str], depth:int) -> 
     html = f"""<ul class="sentenceVocabList depth{depth}">\n"""
 
     for node in nodes:
-        if node.surface in excluded or node.base in excluded:
-            continue
-
         vocabs = WaniCollection.search_vocab_notes(search_utils.node_vocab_lookup(node))
         vocabs = [voc for voc in vocabs if voc.get_question() not in excluded]
 
@@ -36,12 +33,12 @@ def create_html_from_nodes(nodes: list[Node], excluded: set[str], depth:int) -> 
             for vocab in vocabs:
                 html += vocab_html(node, excluded, vocab.get_display_question(), vocab.get_active_answer(), depth)
 
-            if node.surface and node.is_surface_dictionary_word() and node.surface not in found_words:
+            if node.surface and node.is_surface_dictionary_word() and node.surface not in found_words and node.surface not in excluded:
                 html += vocab_html(node, excluded, node.surface, "-", depth)
 
         else:
             html += vocab_html(node, excluded, node.base, "-", depth)
-            if node.is_surface_dictionary_word():
+            if node.is_surface_dictionary_word() and node.surface not in excluded:
                 html += vocab_html(node, excluded, node.surface, "-", depth)
 
     html += "</ul>\n"

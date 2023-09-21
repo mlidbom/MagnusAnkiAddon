@@ -45,19 +45,25 @@ from parsing.tree_parsing.parse_tree_node import Node
     ]),
     ("としたら", {"とする"}, [Node('とした','としたら',[Node('と',''), Node('した','したら',[Node('する','し'), Node('た','たら')])])]),
     ("離れていくよ", set(), [
-        Node('離れていく', '', [Node('離れる', '離れ'), Node('て', ''), Node('いく', '')]), Node('よ', '')])
+        Node('離れていく', '', [Node('離れる', '離れ'), Node('て', ''), Node('いく', '')]), Node('よ', '')]),
+    ("いつまでも来ないと知らないからね", set(), [
+        Node('いつまでも', '', [Node('いつまで', '', [Node('いつ', ''), Node('まで', '')]), Node('も', '')]),
+        Node('来ないと', '', [Node('来る', '来'), Node('ないと', '', [Node('ない', ''), Node('と', '')])]),
+        Node('知らない', '', [Node('知る', '知ら'), Node('ない', '')]),
+        Node('から', ''),
+        Node('ね', '')])
 ])
 def test_stuff(sentence: str, excluded:set[str], expected: list[Node]) -> None:
     result = tree_parser.parse_tree(sentence, excluded)
     assert result == expected
 
 @pytest.mark.parametrize('sentence, excluded, expected', [
-    ("いつまでも来ないと知らないからね", set(), [
-        Node('いつまでも', '', [Node('いつまで', '', [Node('いつ', ''), Node('まで', '')]), Node('も', '')]),
-        Node('来ないと', '', [Node('来る', '来'), Node('ないと', '', [Node('ない', ''), Node('と', '')])]),
-        Node('知らない', '', [Node('知る', '知ら'), Node('ない', '')]),
-        Node('から', ''),
-        Node('ね', '')]),
+    ("ダメダメ私を殺して", {"殺し"}, [
+        Node('ダメダメ',''),
+        Node('私',''),
+        Node('を',''),
+        Node('殺して','',[Node('殺す','殺し'), Node('て','')])
+    ])
 ])
 def test_temp(sentence: str, excluded:set[str], expected: list[Node]) -> None:
     result = tree_parser.parse_tree(sentence, excluded)
