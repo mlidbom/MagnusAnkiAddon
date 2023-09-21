@@ -61,7 +61,11 @@ from parsing.tree_parsing.parse_tree_node import Node
     ("夢を見た", set(),[Node('夢を見た','',[Node('夢を見る','夢を見',[Node('夢',''), Node('を',''), Node('見る','見')]), Node('た','')])]),
     ("言われるまで気づかなかった", set(), [
         Node('言われるまで','',[Node('言う','言わ'), Node('れる',''), Node('まで','')]),
-        Node('気づかなかった','',[Node('気づく','気づか'), Node('ない','なかっ'), Node('た','')])])
+        Node('気づかなかった','',[Node('気づく','気づか'), Node('ない','なかっ'), Node('た','')])]),
+    ("行きたい所全部行こう", set(), [
+        Node('行きたい所', '', [Node('行く', '行き'), Node('たい', ''), Node('所', '')]),
+        Node('全部', ''),
+        Node('行こう', '', [Node('行く', '行こ'), Node('う', '')])])
 ])
 def test_stuff(sentence: str, excluded:set[str], expected: list[Node]) -> None:
     result = tree_parser.parse_tree(sentence, excluded)
