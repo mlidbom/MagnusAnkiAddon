@@ -26,8 +26,8 @@ def _restore_verb_forms(start_compounds: list[list[TokenExt]], excluded:set[str]
     compound_count = len(compounds)
     while verb_compound_index < compound_count:
         verb_compound = compounds[verb_compound_index]
-        if len(verb_compound) == 1:
-            candidate_verb = verb_compound[0]
+        if len(verb_compound) > 0:
+            candidate_verb = verb_compound[-1]
             if candidate_verb.is_independent_verb():
                 auxiliary_index = verb_compound_index + 1
                 while auxiliary_index < compound_count:
