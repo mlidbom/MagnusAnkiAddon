@@ -14,7 +14,7 @@ from parsing import textparser
 from parsing.janome_extensions.parsed_word import ParsedWord
 from sysutils import kana_utils
 from sysutils.ui_utils import UIUtils
-from wanikani.wani_constants import Wani, Mine
+from wanikani.wani_constants import Wani, Mine, MyNoteFields
 
 
 class Builtin:
@@ -23,9 +23,10 @@ class Builtin:
     Deck = "deck"
     Card = "card"
 
-question = "Q"
-reading = "Reading"
-answer = "A"
+question = MyNoteFields.question
+reading = Wani.VocabFields.Reading
+answer = MyNoteFields.answer
+forms = Wani.VocabFields.Forms
 
 card_listen = f"{Builtin.Card}:{Wani.WaniVocabNoteType.Card.Listening}"
 card_read = f"{Builtin.Card}:{Wani.WaniVocabNoteType.Card.Reading}"
@@ -43,24 +44,24 @@ def question_wildcard(query:str) -> str: return f"{question}:*{query}"
 def reading_wildcard(query:str) -> str: return f"{reading}:*{query}"
 def answer_wildcard(query:str) -> str: return f"{answer}:*{query}"
 
-def single_vocab_wildcard(query:str) -> str: return f"{vocab_read} ({question}:*{query}* OR {reading}:*{query}* OR {answer}:*{query}*)"
-def single_vocab_exact(query) -> str:return f"{vocab_read} ({question}:{query} OR {field_word(reading, query)} OR {field_word(answer, query)})"
+def single_vocab_wildcard(query:str) -> str: return f"{vocab_read} ({forms}:*{query}* OR {reading}:*{query}* OR {answer}:*{query}*)"
+def single_vocab_exact(query) -> str:return f"{vocab_read} ({field_word(forms, query)} OR {field_word(reading, query)} OR {field_word(answer, query)})"
 
 def kanji_in_string(query) -> str: return f"{note_kanji} ( {' OR '.join([f'{question}:{char}' for char in query])} )"
 
 def vocab_dependencies_lookup_query(vocab: WaniVocabNote) -> str:
     def single_vocab_clause(voc: ParsedWord) -> str:
-        return f'({tag_uk} AND {reading}:{voc.word})' if voc.is_kana_only() else f'{question}:{voc.word}'
+        return f'{field_word(forms, voc.word)}'
 
     def create_vocab_clause(text:str) -> str:
-        dictionary_forms = [voc for voc in textparser.identify_words(text) if voc.word != vocab.get_question()]
+        dictionary_forms = [voc for voc in textparser.identify_words(text)]
         return f"({vocab_read} ({' OR '.join([single_vocab_clause(voc) for voc in dictionary_forms])})) OR " if dictionary_forms else ""
 
     def create_vocab_vocab_clause() -> str:
         return create_vocab_clause(vocab.get_question())
 
     def create_kanji_clause() -> str:
-        return f"note:{Wani.NoteType.Kanji} ( {' OR '.join([f'{Wani.KanjiFields.question}:{char}' for char in vocab.get_question()])} )"
+        return f"{note_kanji} ( {' OR '.join([f'{question}:{char}' for char in vocab.get_question()])} )"
 
     return f'''{create_vocab_vocab_clause()} ({create_kanji_clause()})'''
 
@@ -79,22 +80,24 @@ def lookup_promise(search: Callable[[], str]) -> Callable[[],None]: return lambd
 
 def sentence_vocab_lookup(sentence:SentenceNote) -> str: return text_vocab_lookup(sentence.get_active_question())
 
-def vocab_with_kanji(note:WaniKanjiNote) -> str: return f"{vocab_read} Q:*{note.get_question()}*"
+def vocab_with_kanji(note:WaniKanjiNote) -> str: return f"{vocab_read} {forms}:*{note.get_question()}*"
 
 def vocab_clause(voc: ParsedWord) -> str:
-    return f"""({tag_uk} AND {field_word(reading, voc.word)})""" if voc.is_kana_only() else f"""Q:{voc.word}"""
+    return f"""{field_word(forms, voc.word)}"""
 
 def node_vocab_clause(voc: Node) -> str:
     search_base = voc.is_show_base_in_sentence_breakdown()
     search_surface = voc.is_show_surface_in_sentence_breakdown()
 
+    base_query = f"""{field_word(forms, voc.base)}"""
+    surface_query = f"""{field_word(forms, voc.surface)}"""
+
     if not search_base and not search_surface: raise Exception("Asked to search, but both base and surface excluded")
 
-    base_query = f"""({tag_uk} AND {field_word(reading, voc.base)})""" if kana_utils.is_only_kana(voc.base) else f"""Q:{voc.base}"""
     if search_base and not search_surface:
         return base_query
 
-    surface_query = f"""({tag_uk} AND {field_word(reading, voc.surface)})""" if kana_utils.is_only_kana(voc.surface) else f"""Q:{voc.surface}"""
+
     return f"""({base_query} OR {surface_query})""" if search_base else surface_query
 
 def text_vocab_lookup(text:str) -> str:
