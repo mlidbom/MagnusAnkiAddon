@@ -33,7 +33,7 @@ class Node:
         return Node(base, surface, children, tokens)
 
     def get_sentence_display_text(self) -> str:
-        return self.surface if self.surface and self._is_verb_compound() else self.base
+        return self.surface if self.surface and self.is_verb_compound() else self.base
 
 
     def is_base_kana_only(self) -> bool:
@@ -52,7 +52,7 @@ class Node:
                 and not self._is_surface_manually_excluded()
                 and DictLookup.lookup_word_shallow(self.surface).found_words())
 
-    def _is_verb_compound(self) -> bool:
+    def is_verb_compound(self) -> bool:
         if self.tokens[0].is_independent_verb():
             auxiliaries = [tok for tok in (self.tokens[1:]) if tok.is_verb_auxiliary()]
             if len(auxiliaries) == len(self.tokens) - 1:

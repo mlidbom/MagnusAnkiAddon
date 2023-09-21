@@ -37,10 +37,12 @@ def create_html_from_nodes(nodes: list[Node], excluded: set[str], depth:int) -> 
                     and node.surface not in found_words
                     and node.surface not in excluded
                     and node.is_show_surface_in_sentence_breakdown()):
-                html += vocab_html(node, excluded, node.surface, "-", depth)
+
+                html += vocab_html(node, excluded, node.surface, "---", depth)
 
         else:
-            html += vocab_html(node, excluded, node.get_sentence_display_text(), "-", depth)
+            text = "" if node.is_verb_compound() else "---"
+            html += vocab_html(node, excluded, node.get_sentence_display_text(), text, depth)
             if node.is_show_surface_in_sentence_breakdown() and node.surface not in excluded:
                 html += vocab_html(node, excluded, node.surface, "-", depth)
 
