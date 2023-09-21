@@ -1,4 +1,5 @@
 from parsing.jamdict_extensions.dict_lookup import DictLookup
+from parsing.janome_extensions.parts_of_speech import POS
 from parsing.janome_extensions.token_ext import TokenExt
 from parsing.tree_parsing import tree_parser
 from sysutils import kana_utils
@@ -39,3 +40,6 @@ class Node:
 
     def is_surface_dictionary_word(self) -> bool:
         return self.surface and DictLookup.lookup_word_shallow(self.surface).found_words()
+
+    def is_standalone_verb(self) -> bool:
+        return self.tokens[0].parts_of_speech == POS.Verb.independent
