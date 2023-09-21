@@ -6,7 +6,7 @@ from sysutils import kana_utils
 
 class Node:
     _max_lookahead = 12
-    def __init__(self, base: str, surface: str, tokens: list[TokenExt], children=None) -> None:
+    def __init__(self, base: str, surface: str, children=None, tokens: list[TokenExt] = None) -> None:
         self.base = base
         self.surface = surface
         self.tokens = tokens
@@ -29,7 +29,7 @@ class Node:
         surface = "".join(tok.surface for tok in tokens)
         base = "".join(tok.surface for tok in tokens[:-1]) + tokens[-1].base_form
         surface = surface if base != surface else ""
-        return Node(base, surface, tokens, children)
+        return Node(base, surface, children, tokens)
 
     def is_base_kana_only(self) -> bool:
         return kana_utils.is_only_kana(self.base)
@@ -38,8 +38,4 @@ class Node:
         return self.surface and kana_utils.is_only_kana(self.surface)
 
     def is_surface_dictionary_word(self) -> bool:
-        if self.surface:
-            if self.tokens[-1].parts_of_speech.is_verb():
-                return False
-
-            return DictLookup.lookup_word_shallow(self.surface).found_words()
+        return self.surface and DictLookup.lookup_word_shallow(self.surface).found_words()
