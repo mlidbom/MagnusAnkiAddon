@@ -51,5 +51,6 @@ class TokenExt:
         return self.parts_of_speech in {
             POS.Verb.non_independent,
             POS.Particle.conjunctive,
+            POS.bound_auxiliary,
             POS.Noun.NonSelfReliant.general
         }
