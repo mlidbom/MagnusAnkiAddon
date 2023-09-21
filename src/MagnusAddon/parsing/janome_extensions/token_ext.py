@@ -47,12 +47,16 @@ class TokenExt:
     def is_independent_verb(self) -> bool:
         return self.parts_of_speech == POS.Verb.independent
 
+    def is_verb(self) -> bool:
+        return self.parts_of_speech.is_verb()
+
     def is_verb_auxiliary(self) -> bool:
         return self.parts_of_speech in {
             POS.Verb.non_independent,
             POS.Verb.suffix,
             POS.Particle.conjunctive,
             POS.Particle.adverbial,
+            POS.Particle.binding,
             POS.Noun.NonSelfReliant.adv_possible,
             POS.bound_auxiliary,
             POS.Noun.NonSelfReliant.general
