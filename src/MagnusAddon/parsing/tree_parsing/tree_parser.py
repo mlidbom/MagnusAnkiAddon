@@ -10,6 +10,8 @@ _max_lookahead = 12
 
 def parse_tree(sentence:str, excluded:set[str]) -> list[Node]:
     tokens = _tokenizer.tokenize(sentence).tokens
+    if not tokens:
+        return []
     if _is_in_dictionary(tokens, excluded): return [Node.create(tokens, excluded)]
     stage1 = _list_compounds(tokens, excluded)
     stage2 = _restore_verb_forms(stage1, excluded)
