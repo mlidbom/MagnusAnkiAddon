@@ -52,6 +52,7 @@ class TokenExt:
             POS.Verb.non_independent,
             POS.Verb.suffix,
             POS.Particle.conjunctive,
+            POS.Particle.adverbial,
             POS.bound_auxiliary,
             POS.Noun.NonSelfReliant.general
         }
