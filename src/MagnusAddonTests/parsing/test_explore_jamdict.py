@@ -1,6 +1,6 @@
 import pytest
 from note.wanivocabnote import WaniVocabNote
-from parsing.textparser import DictLookup
+from parsing.jamdict_extensions.dict_lookup import DictLookup
 from unittest.mock import MagicMock
 
 

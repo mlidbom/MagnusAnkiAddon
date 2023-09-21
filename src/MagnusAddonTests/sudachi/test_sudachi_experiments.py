@@ -2,7 +2,8 @@
 # from sudachipy import Dictionary, SplitMode
 #
 # @pytest.mark.parametrize('text', [
-#     "いつまでも来ないと知らないからね",
+#     "な…何をそんなに一生懸命探しているんですか",
+#     #"いつまでも来ないと知らないからね",
 #     #"彼の日本語のレベルは私と同じ位だ"
 #     # "これをください",
 #     # "ハート形",

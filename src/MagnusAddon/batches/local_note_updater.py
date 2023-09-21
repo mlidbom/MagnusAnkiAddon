@@ -2,7 +2,7 @@ from typing import *
 
 from note.sentencenote import SentenceNote
 from note_content_building import sentence_content_builder
-from parsing.textparser import DictLookup
+from parsing.jamdict_extensions.dict_lookup import DictLookup
 from sysutils import kana_utils
 from parsing import janomeutils
 from sysutils.utils import StringUtils

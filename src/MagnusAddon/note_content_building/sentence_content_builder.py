@@ -1,52 +1,56 @@
 from ankiutils import search_utils
 from note.sentencenote import SentenceNote
 from note.wanivocabnote import WaniVocabNote
-from parsing import textparser
+from parsing.tree_parsing import tree_parser
+from parsing.tree_parsing.parse_tree_node import Node
 from sysutils.utils import StringUtils, ListUtils
 from wanikani.wani_collection import WaniCollection
 
-_ignored_tokens:set[str] = set("しもよかとたてでをなのにだがは")
-_ignored_vocab:set[str] = {"擦る"}
+_ignored_tokens: set[str] = set("しもよかとたてでをなのにだがは")
+_ignored_vocab: set[str] = {"擦る"}
+
+def vocab_html(node: Node, excluded:set[str], question:str, answer:str, depth:int) -> str:
+    html = f"""
+    <li class="sentenceVocabEntry depth{depth}">
+        <span class="vocabQuestion clipboard">{question}</span>
+        <span class="vocabAnswer">{answer}</span>
+        {create_html_from_nodes(node.children, excluded, depth + 1)}
+    </li>
+    """
+
+    return html
+
+def create_html_from_nodes(nodes: list[Node], excluded: set[str], depth:int) -> str:
+    html = f"""<ul class="sentenceVocabList depth{depth}">\n"""
+
+    for node in nodes:
+        vocabs = WaniCollection.search_vocab_notes(search_utils.node_vocab_lookup(node))
+        vocabs = [voc for voc in vocabs if voc.get_question() not in excluded]
+
+        found_words = set((voc.get_question() for voc in vocabs)) | set(ListUtils.flatten_list([voc.get_readings() for voc in vocabs]))
+
+        if vocabs:
+            for vocab in vocabs:
+                html += vocab_html(node, excluded, vocab.get_display_question(), vocab.get_active_answer(), depth)
+
+            if node.surface and node.is_surface_dictionary_word() and node.surface not in found_words and node.surface not in excluded:
+                html += vocab_html(node, excluded, node.surface, "-", depth)
+
+        else:
+            html += vocab_html(node, excluded, node.base, "-", depth)
+            if node.is_surface_dictionary_word() and node.surface not in excluded:
+                html += vocab_html(node, excluded, node.surface, "-", depth)
+
+    html += "</ul>\n"
+
+    return html
 
 def build_breakdown_html(sentence: SentenceNote) -> None:
-    def build_html(vocab_list: list[WaniVocabNote]) -> str:
-        return f'''
-    <div class="sentenceVocabList">
-        <div>
-    
-        {StringUtils.newline().join([f"""
-        <div class="sentenceVocabEntry">
-            <span class="vocabQuestion clipboard">{vocab.get_question()}</span>
-            <span class="vocabAnswer">{vocab.get_active_answer()}</span>
-        </div>
-        """ for vocab in vocab_list])}
-    
-        </div>
-    </div>
-'''
-
-    tokens = textparser.identify_words(sentence.get_active_question())
-
     user_excluded = sentence.get_user_excluded_vocab()
     excluded = user_excluded | _ignored_vocab
 
-    tokens = [token for token in tokens if token.word not in excluded]
+    question = sentence.get_active_question()
+    nodes = tree_parser.parse_tree(question, user_excluded)
 
-    queries = [search_utils.vocab_lookup(parsed) for parsed in tokens]
-    user_extras_queries = [search_utils.single_vocab_exact(word) for word in sentence.get_user_extra_vocab()]
-    queries = user_extras_queries + queries
-    notes = [WaniCollection.search_vocab_notes(word) for word in queries]
-
-
-    vocabs_flattened:list[WaniVocabNote] = ListUtils.flatten_list(notes)
-    vocabs_flattened = [word for word in vocabs_flattened if word.get_question() not in excluded]
-
-    if len(vocabs_flattened) > 10: #Having it in order is nice for shorter sentences, but painful for long ones
-        low_priority = [vocab for vocab in vocabs_flattened if vocab.get_question() in _ignored_tokens]
-        high_priority = [vocab for vocab in vocabs_flattened if vocab.get_question() not in _ignored_tokens]
-        vocabs_flattened = high_priority + low_priority
-
-    html = build_html(vocabs_flattened)
+    html = create_html_from_nodes(nodes, excluded, 1)
     sentence.set_break_down(html)
-
-

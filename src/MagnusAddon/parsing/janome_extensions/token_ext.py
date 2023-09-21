@@ -1,4 +1,4 @@
-from parsing.janome_extensions.parts_of_speech import PartsOfSpeech
+from parsing.janome_extensions.parts_of_speech import PartsOfSpeech, POS
 from sysutils import typed, kana_utils
 
 class TokenExt:
@@ -43,3 +43,14 @@ class TokenExt:
                     #self.node_type == other.node_type and
                     self.parts_of_speech == other.parts_of_speech)
         return False
+
+    def is_independent_verb(self) -> bool:
+        return self.parts_of_speech == POS.Verb.independent
+
+    def is_verb_auxiliary(self) -> bool:
+        return self.parts_of_speech in {
+            POS.Verb.non_independent,
+            POS.Particle.conjunctive,
+            POS.bound_auxiliary,
+            POS.Noun.NonSelfReliant.general
+        }
