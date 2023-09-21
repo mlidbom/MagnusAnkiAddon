@@ -11,7 +11,7 @@ class Node:
         self.base = base
         self.surface = surface
         self.tokens = tokens
-        self.children = children if children else []
+        self.children:list[Node] = children if children else []
 
     def __repr__(self) -> str:
         return f"""Node('{self.base}','{self.surface}'{"," + str(self.children) if self.children else ""})"""
@@ -53,11 +53,18 @@ class Node:
                 and DictLookup.lookup_word_shallow(self.surface).found_words())
 
     def is_verb_compound(self) -> bool:
-        if self.tokens[0].is_independent_verb():
-            auxiliaries = [tok for tok in (self.tokens[1:]) if tok.is_verb_auxiliary()]
-            if len(auxiliaries) == len(self.tokens) - 1:
-                return True
-        return False
+        if not self.children:
+            return False
+
+        reversed_tokens = self.tokens[::-1]
+        if not reversed_tokens[0].is_verb_auxiliary():
+            return False
+
+        for token in reversed_tokens:
+            if not token.is_verb_auxiliary():
+                return token.is_independent_verb()
+
+
 
     def _is_surface_manually_excluded(self) -> bool:
         return False
