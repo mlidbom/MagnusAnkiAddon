@@ -47,11 +47,10 @@ class Node:
 
     def is_show_surface_in_sentence_breakdown(self) -> bool:
         return (self.surface
+                and not self.tokens[0].parts_of_speech == POS.Verb.independent
+                and not self.tokens[0].parts_of_speech == POS.Verb.non_independent
                 and not self._is_surface_manually_excluded()
                 and DictLookup.lookup_word_shallow(self.surface).found_words())
-
-    def is_standalone_verb(self) -> bool:
-        return self.tokens[0].parts_of_speech == POS.Verb.independent
 
     def _is_verb_compound(self) -> bool:
         if self.tokens[0].is_independent_verb():

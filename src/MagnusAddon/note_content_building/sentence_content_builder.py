@@ -36,7 +36,6 @@ def create_html_from_nodes(nodes: list[Node], excluded: set[str], depth:int) -> 
             if (node.surface
                     and node.surface not in found_words
                     and node.surface not in excluded
-                    and not node.is_standalone_verb()
                     and node.is_show_surface_in_sentence_breakdown()):
                 html += vocab_html(node, excluded, node.surface, "-", depth)
 
