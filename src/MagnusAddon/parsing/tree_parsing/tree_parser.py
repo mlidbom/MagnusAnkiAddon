@@ -48,6 +48,9 @@ def _restore_verb_forms(start_compounds: list[list[TokenExt]], excluded:set[str]
                     for found in found_auxiliaries:
                         candidate_auxiliary_compound.pop(found)
 
+                    if len(candidate_auxiliary_compound) > 0:
+                        break
+
                     auxiliary_index += 1
         verb_compound_index += 1
 
