@@ -9,6 +9,17 @@ from wanikani.wani_collection import WaniCollection
 _ignored_tokens: set[str] = set("しもよかとたてでをなのにだがは")
 _ignored_vocab: set[str] = {"擦る"}
 
+def vocab_html(node: Node, excluded:set[str], question:str, answer:str, depth:int) -> str:
+    html = f"""
+    <li class="sentenceVocabEntry depth{depth}">
+        <span class="vocabQuestion clipboard">{question}</span>
+        <span class="vocabAnswer">{answer}</span>
+        {create_html_from_nodes(node.children, excluded, depth + 1)}
+    </li>
+    """
+
+    return html
+
 def create_html_from_nodes(nodes: list[Node], excluded: set[str], depth:int) -> str:
     html = f"""<ul class="sentenceVocabList depth{depth}">\n"""
 
@@ -23,41 +34,15 @@ def create_html_from_nodes(nodes: list[Node], excluded: set[str], depth:int) -> 
 
         if vocabs:
             for vocab in vocabs:
-                html += f"""
-<li class="sentenceVocabEntry depth{depth}">
-    <span class="vocabQuestion clipboard">{vocab.get_display_question()}</span>
-    <span class="vocabAnswer">{vocab.get_active_answer()}</span>
-    {create_html_from_nodes(node.children, excluded, depth + 1)}
-</li>
-"""
+                html += vocab_html(node, excluded, vocab.get_display_question(), vocab.get_active_answer(), depth)
+
             if node.surface and node.is_surface_dictionary_word() and node.surface not in found_words:
-                html += f"""
-<li class="sentenceVocabEntry depth{depth}">
-    <span class="vocabQuestion clipboard">{node.surface}</span>
-    <span class="vocabAnswer">-</span>
-    {create_html_from_nodes(node.children, excluded, depth + 1)}
-</li>
-"""
+                html += vocab_html(node, excluded, node.surface, "-", depth)
 
         else:
-            html += f"""
-<li class="sentenceVocabEntry depth{depth}">
-    <span class="vocabQuestion clipboard">{node.base}</span>
-    <span class="vocabAnswer">-</span>
-    {create_html_from_nodes(node.children, excluded, depth + 1)}
-</li>
-"""
+            html += vocab_html(node, excluded, node.base, "-", depth)
             if node.is_surface_dictionary_word():
-                html += f"""
-<li class="sentenceVocabEntry depth{depth}">
-    <span class="vocabQuestion clipboard">{node.surface}</span>
-    <span class="vocabAnswer">-</span>
-    {create_html_from_nodes(node.children, excluded, depth + 1)}
-</li>
-"""
-
-
-
+                html += vocab_html(node, excluded, node.surface, "-", depth)
 
     html += "</ul>\n"
 
