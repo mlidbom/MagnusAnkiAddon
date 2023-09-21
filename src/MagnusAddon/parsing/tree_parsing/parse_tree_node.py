@@ -32,14 +32,37 @@ class Node:
         surface = surface if base != surface else ""
         return Node(base, surface, children, tokens)
 
+    def get_sentence_display_text(self) -> str:
+        return self.surface if self.surface and self._is_verb_compound() else self.base
+
+
     def is_base_kana_only(self) -> bool:
         return kana_utils.is_only_kana(self.base)
 
     def is_surface_kana_only(self) -> bool:
         return self.surface and kana_utils.is_only_kana(self.surface)
 
-    def is_surface_dictionary_word(self) -> bool:
-        return self.surface and DictLookup.lookup_word_shallow(self.surface).found_words()
+    def is_show_base_in_sentence_breakdown(self) -> bool:
+        return not self._is_base_manually_excluded()
+
+    def is_show_surface_in_sentence_breakdown(self) -> bool:
+        return (self.surface
+                and not self._is_surface_manually_excluded()
+                and DictLookup.lookup_word_shallow(self.surface).found_words())
 
     def is_standalone_verb(self) -> bool:
         return self.tokens[0].parts_of_speech == POS.Verb.independent
+
+    def _is_verb_compound(self) -> bool:
+        if self.tokens[0].is_independent_verb():
+            auxiliaries = [tok for tok in (self.tokens[1:]) if tok.is_verb_auxiliary()]
+            if len(auxiliaries) == len(self.tokens) - 1:
+                return True
+        return False
+
+    def _is_surface_manually_excluded(self) -> bool:
+        return False
+
+    def _is_base_manually_excluded(self) -> bool:
+        if self.base == "だ" and self.surface == "な": return True
+        return False

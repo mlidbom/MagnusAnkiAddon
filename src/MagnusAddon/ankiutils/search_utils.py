@@ -85,12 +85,17 @@ def vocab_clause(voc: ParsedWord) -> str:
     return f"""({tag_uk} AND {field_word(reading, voc.word)})""" if voc.is_kana_only() else f"""Q:{voc.word}"""
 
 def node_vocab_clause(voc: Node) -> str:
+    search_base = voc.is_show_base_in_sentence_breakdown()
+    search_surface = voc.is_show_surface_in_sentence_breakdown()
+
+    if not search_base and not search_surface: raise Exception("Asked to search, but both base and surface excluded")
+
     base_query = f"""({tag_uk} AND {field_word(reading, voc.base)})""" if kana_utils.is_only_kana(voc.base) else f"""Q:{voc.base}"""
-    if not voc.surface or not voc.is_surface_dictionary_word():
+    if search_base and not search_surface:
         return base_query
 
     surface_query = f"""({tag_uk} AND {field_word(reading, voc.surface)})""" if kana_utils.is_only_kana(voc.surface) else f"""Q:{voc.surface}"""
-    return f"""({base_query} OR {surface_query})"""
+    return f"""({base_query} OR {surface_query})""" if search_base else surface_query
 
 def text_vocab_lookup(text:str) -> str:
     dictionary_forms = textparser.identify_words(text)
