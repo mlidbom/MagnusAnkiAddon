@@ -78,8 +78,7 @@ def test_stuff(sentence: str, excluded:set[str], expected: list[Node]) -> None:
     result = tree_parser.parse_tree(sentence, excluded)
     assert result == expected
 
-@pytest.mark.parametrize('sentence, excluded, expected', [
-])
+@pytest.mark.parametrize('sentence, excluded, expected', [])
 def test_temp(sentence: str, excluded:set[str], expected: list[Node]) -> None:
     result = tree_parser.parse_tree(sentence, excluded)
     something = 1
