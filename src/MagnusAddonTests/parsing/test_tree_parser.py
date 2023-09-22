@@ -79,7 +79,14 @@ def test_stuff(sentence: str, excluded:set[str], expected: list[Node]) -> None:
     assert result == expected
 
 @pytest.mark.parametrize('sentence, excluded, expected', [
-    ("", set(), [])
+    ("そんな食べ方したら味が分かりませんよ", set(), [
+        Node('そんな',''),
+        Node('食べ方','',[Node('食べる','食べ'), Node('方','')]),
+        Node('した','したら',[Node('する','し'), Node('た','たら')]),
+        Node('味',''),
+        Node('が',''),
+        Node('分かりません','',[Node('分かる','分かり'), Node('ません','',[Node('ます','ませ'), Node('ん','')])]),
+        Node('よ','')])
 ])
 def test_temp(sentence: str, excluded:set[str], expected: list[Node]) -> None:
     result = tree_parser.parse_tree(sentence, excluded)

@@ -1,5 +1,5 @@
 from parsing.jamdict_extensions.dict_lookup import DictLookup
-from parsing.janome_extensions.parts_of_speech import POS
+from parsing.janome_extensions.parts_of_speech import POS, PartsOfSpeech
 from parsing.janome_extensions.token_ext import TokenExt
 from parsing.tree_parsing import tree_parser
 from sysutils import kana_utils
@@ -73,15 +73,27 @@ class Node:
             if not token.is_verb_auxiliary():
                 return token.is_independent_verb()
 
-
-
     def _is_surface_manually_excluded(self) -> bool:
-        if self.base == "ます" and self.surface == "ませ": return True
-        if self.base == "です" and self.surface == "でし": return True
-        if self.base == "ない" and self.surface == "なく": return True
+        global excluded_surface_pos
+        pos = self.tokens[0].parts_of_speech
+
+        if (self.base == "ます" and self.surface == "ませ"
+                or self.base == "です" and self.surface == "でし"
+                or self.base == "ない" and self.surface == "なく"):
+            excluded_surface_pos.add(pos)
+            return True
         return False
 
     def _is_base_manually_excluded(self) -> bool:
-        if self.base == "だ" and self.surface == "な": return True
-        if self.base == "だ" and self.surface == "で": return True
+        global excluded_base_pos
+        pos = self.tokens[0].parts_of_speech
+
+        if (self.base == "だ" and self.surface == "な"
+                or self.base == "だ" and self.surface == "で"
+                or self.base == "た" and self.surface == "たら"):
+            excluded_base_pos.add(pos)
+            return True
         return False
+
+excluded_surface_pos: set[PartsOfSpeech] = set()
+excluded_base_pos: set[PartsOfSpeech] = set()
