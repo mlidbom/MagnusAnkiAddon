@@ -79,6 +79,7 @@ class Node:
 
         if (self.base == "ます" and self.surface == "ませ"
                 or self.base == "です" and self.surface == "でし"
+                or self.base == "たい" and self.surface == "たく"
                 or self.base == "ている" and self.surface == "てい"
                 or self.base == "ない" and self.surface == "なく"):
             excluded_surface_pos.add(pos)
