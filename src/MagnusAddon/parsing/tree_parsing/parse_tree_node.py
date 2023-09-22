@@ -26,7 +26,12 @@ class Node:
 
     @classmethod
     def create(cls, tokens: list[TokenExt], excluded:set[str]) -> 'Node':
-        children = tree_parser._internal_parse(tokens, excluded) if len(tokens) > 1 else None # noqa
+        children = tree_parser._internal_parse(tokens, excluded) if len(tokens) > 1 else tree_parser._find_compounds(tokens[0], excluded) # noqa
+        return cls.create_non_recursive(tokens, children)
+
+    @classmethod
+    def create_non_recursive(cls, tokens: list[TokenExt], children:list['Node'] = None) -> 'Node':
+        children = children if children else []
         surface = "".join(tok.surface for tok in tokens)
         base = "".join(tok.surface for tok in tokens[:-1]) + tokens[-1].base_form
         surface = surface if base != surface else ""
