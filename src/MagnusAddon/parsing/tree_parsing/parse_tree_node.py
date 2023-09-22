@@ -59,9 +59,6 @@ class Node:
         return self.base and DictLookup.lookup_word_shallow(self.base).found_words()
 
     def is_verb_compound_not_dictionary_word(self) -> bool:
-        if self._is_surface_in_dictionary() or self._is_base_in_dictionary():
-            return False
-
         if not self.children:
             return False
 
@@ -79,6 +76,7 @@ class Node:
 
         if (self.base == "ます" and self.surface == "ませ"
                 or self.base == "です" and self.surface == "でし"
+                or self.base == "ている" and self.surface == "てい"
                 or self.base == "ない" and self.surface == "なく"):
             excluded_surface_pos.add(pos)
             return True
