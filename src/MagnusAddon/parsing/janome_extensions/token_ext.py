@@ -58,6 +58,7 @@ class TokenExt:
             POS.Particle.coordinating_conjunction,
             POS.Particle.adverbial,
             POS.Particle.binding,
+            POS.Particle.CaseMarking.general,
             POS.Adjective.non_independent,
             POS.Noun.NonSelfReliant.adv_possible,
             POS.bound_auxiliary,

@@ -25,7 +25,7 @@ def create_html_from_nodes(nodes: list[Node], excluded: set[str], depth:int) -> 
 
     for node in nodes:
         vocabs = WaniCollection.search_vocab_notes(search_utils.node_vocab_lookup(node))
-        vocabs = [voc for voc in vocabs if voc.get_question() not in excluded]
+        vocabs = [voc for voc in vocabs if voc.get_display_question() not in excluded]
 
         found_words = set((voc.get_question() for voc in vocabs)) | set(ListUtils.flatten_list([voc.get_readings() for voc in vocabs]))
 
