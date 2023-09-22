@@ -78,6 +78,7 @@ class Node:
     def _is_surface_manually_excluded(self) -> bool:
         if self.base == "ます" and self.surface == "ませ": return True
         if self.base == "です" and self.surface == "でし": return True
+        if self.base == "ない" and self.surface == "なく": return True
         return False
 
     def _is_base_manually_excluded(self) -> bool:

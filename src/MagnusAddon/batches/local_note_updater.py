@@ -41,7 +41,10 @@ def _set_vocab_uk_and_forms_from_dictionary(all_vocabulary: list[WaniVocabNote])
             vocab.set_tag(Mine.Tags.UsuallyKanaOnly)
 
         if not vocab.get_forms():
-            vocab.set_forms(lookup.valid_forms())
+            if lookup.found_words():
+                vocab.set_forms(lookup.valid_forms(vocab.is_uk()))
+            else:
+                vocab.set_forms(set(vocab.get_readings()))
 
 
 def _update_vocab_parsed_parts_of_speech(all_vocabulary: list[WaniVocabNote]) -> None:

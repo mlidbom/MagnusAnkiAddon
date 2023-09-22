@@ -22,8 +22,8 @@ class DictLookup:
                                          in self.entries
                                          if ent.is_kana_only()))
 
-    def valid_forms(self) -> set[str]:
-        return set().union(*[entry.valid_forms() for entry in self.entries])
+    def valid_forms(self, force_allow_kana_only: bool = False) -> set[str]:
+        return set().union(*[entry.valid_forms(force_allow_kana_only) for entry in self.entries])
 
     @classmethod
     def try_lookup_vocab_word_or_name(cls, word: WaniVocabNote) -> 'DictLookup':
