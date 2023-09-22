@@ -41,8 +41,9 @@ def create_html_from_nodes(nodes: list[Node], excluded: set[str], depth:int) -> 
                 html += vocab_html(node, excluded, node.surface, "---", depth)
 
         else:
-            text = "" if node.is_verb_compound_not_dictionary_word() else "---"
-            html += vocab_html(node, excluded, node.get_sentence_display_text(), text, depth)
+            text = "" if node.is_verb_compound() else "---"
+            display_text = node.surface if depth == 1 and node.surface and node.is_verb_compound() else node.base
+            html += vocab_html(node, excluded, display_text, text, depth)
             if node.is_show_surface_in_sentence_breakdown() and node.surface not in excluded:
                 html += vocab_html(node, excluded, node.surface, "-", depth)
 
