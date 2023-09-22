@@ -12,17 +12,19 @@ def parse_tree(sentence:str, excluded:set[str]) -> list[Node]:
     tokens = _tokenizer.tokenize(sentence).tokens
     if not tokens:
         return []
-    if _is_in_dictionary(tokens, excluded): return [Node.create(tokens, excluded)]
-    stage1 = _list_compounds(tokens, excluded)
-    stage2 = _restore_verb_forms(stage1, excluded)
-    return [Node.create(compounds, excluded) for compounds in stage2]
+    if _is_in_dictionary(tokens, excluded):
+        return [Node.create(tokens, excluded)]
+    
+    dictionary_compounds_added = _build_dictionary_compounds(tokens, excluded)
+    verb_compounds_added = _build_verb_compounds(dictionary_compounds_added, excluded)
+    return [Node.create(compounds, excluded) for compounds in verb_compounds_added]
 
 
 def _internal_parse(tokens, excluded:set[str]) -> list[Node]:
-    stage1 = _list_compounds(tokens, excluded)
-    return [Node.create(compounds, excluded) for compounds in stage1]
+    dictionary_compounds = _build_dictionary_compounds(tokens, excluded)
+    return [Node.create(compounds, excluded) for compounds in dictionary_compounds]
 
-def _restore_verb_forms(start_compounds: list[list[TokenExt]], excluded:set[str]) -> list[list[TokenExt]]:
+def _build_verb_compounds(start_compounds: list[list[TokenExt]], excluded:set[str]) -> list[list[TokenExt]]:
     compounds = start_compounds
     verb_compound_index = 0
     compound_count = len(compounds)
@@ -69,7 +71,7 @@ def _is_in_dictionary(compound_tokens: list[TokenExt], excluded:set[str]) -> boo
             or DictLookup.lookup_word_shallow(compound_surface).found_words())
 
 
-def _list_compounds(tokens: list[TokenExt], excluded:set[str]) -> list[list[TokenExt]]:
+def _build_dictionary_compounds(tokens: list[TokenExt], excluded:set[str]) -> list[list[TokenExt]]:
     compounds: list[list[TokenExt]] = []
 
     identity_index = len(tokens)
