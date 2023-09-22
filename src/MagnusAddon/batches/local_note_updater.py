@@ -42,9 +42,8 @@ def _set_vocab_uk_and_forms_from_dictionary(all_vocabulary: list[WaniVocabNote])
 
         if not vocab.get_forms():
             if lookup.found_words():
-                vocab.set_forms(lookup.valid_forms(vocab.is_uk()))
-            else:
-                vocab.set_forms(set(vocab.get_readings()))
+                all_forms = lookup.valid_forms(vocab.is_uk()) | set(vocab.get_readings())
+                vocab.set_forms(all_forms)
 
 
 def _update_vocab_parsed_parts_of_speech(all_vocabulary: list[WaniVocabNote]) -> None:
