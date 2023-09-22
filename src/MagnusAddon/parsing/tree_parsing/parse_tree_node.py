@@ -33,7 +33,7 @@ class Node:
         return Node(base, surface, children, tokens)
 
     def get_sentence_display_text(self) -> str:
-        return self.surface if self.surface and self.is_verb_compound() else self.base
+        return self.surface if self.surface and self.is_verb_compound_not_dictionary_word() else self.base
 
 
     def is_base_kana_only(self) -> bool:
@@ -50,9 +50,18 @@ class Node:
                 and not self.tokens[0].parts_of_speech == POS.Verb.independent
                 and not self.tokens[0].parts_of_speech == POS.Verb.non_independent
                 and not self._is_surface_manually_excluded()
-                and DictLookup.lookup_word_shallow(self.surface).found_words())
+                and self._is_surface_in_dictionary())
 
-    def is_verb_compound(self) -> bool:
+    def _is_surface_in_dictionary(self) -> bool:
+        return self.surface and DictLookup.lookup_word_shallow(self.surface).found_words()
+
+    def _is_base_in_dictionary(self) -> bool:
+        return self.base and DictLookup.lookup_word_shallow(self.base).found_words()
+
+    def is_verb_compound_not_dictionary_word(self) -> bool:
+        if self._is_surface_in_dictionary() or self._is_base_in_dictionary():
+            return False
+
         if not self.children:
             return False
 
