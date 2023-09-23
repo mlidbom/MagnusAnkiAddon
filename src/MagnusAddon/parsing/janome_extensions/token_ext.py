@@ -51,7 +51,23 @@ class TokenExt:
         return self.parts_of_speech.is_verb()
 
     def is_verb_auxiliary(self) -> bool:
-        return self.parts_of_speech in {
+        return self.parts_of_speech in _verb_auxiliary_parts_of_speech
+
+    def is_adjective(self) -> bool:
+        return self.parts_of_speech in _adjective_parts_of_speech
+
+    def is_adjective_auxiliary(self) -> bool:
+        return self.parts_of_speech in _adjective_auxiliary_parts_of_speech
+
+_adjective_auxiliary_parts_of_speech = {
+    POS.bound_auxiliary,
+}
+
+_adjective_parts_of_speech = {
+    POS.Adjective.independent
+}
+_verb_auxiliary_parts_of_speech = {
+            POS.bound_auxiliary,
             POS.Verb.non_independent,
             POS.Verb.suffix,
             POS.Particle.conjunctive,
@@ -60,6 +76,5 @@ class TokenExt:
             POS.Particle.binding,
             POS.Particle.CaseMarking.general,
             POS.Adjective.non_independent,
-            POS.bound_auxiliary,
             POS.Noun.NonSelfReliant.general
         }
