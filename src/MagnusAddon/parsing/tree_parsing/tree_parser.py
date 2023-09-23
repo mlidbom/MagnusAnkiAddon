@@ -29,26 +29,33 @@ def _build_verb_compounds(start_compounds: list[list[TokenExt]], excluded:set[st
     compound_count = len(compounds)
     while verb_compound_index < compound_count:
         verb_compound = compounds[verb_compound_index]
-        if len(verb_compound) > 0:
-            candidate_verb = verb_compound[-1]
-            if candidate_verb.is_verb():
+        if verb_compound:
+            if verb_compound[-1].is_verb():
                 auxiliary_index = verb_compound_index + 1
+                candidate_compound: list[TokenExt] = []
                 while auxiliary_index < compound_count:
                     candidate_auxiliary_compound = compounds[auxiliary_index]
-
-                    candidate_base_form = "".join((v.surface for v in candidate_auxiliary_compound[:-1])) + candidate_auxiliary_compound[-1].base_form
-
-                    if candidate_base_form in excluded:
-                        break
 
                     if not all(token.is_verb_auxiliary() for token in candidate_auxiliary_compound):
                         break
 
                     for cand in candidate_auxiliary_compound:
-                        verb_compound.append(cand)
+                        candidate_compound.append(cand)
 
-                    candidate_auxiliary_compound.clear()
                     auxiliary_index += 1
+
+                if candidate_compound:
+                    verb_surface_form = "".join((v.surface for v in candidate_compound[:-1]))
+                    candidate_base_form = "".join((v.surface for v in candidate_compound[:-1])) + candidate_compound[-1].base_form
+                    verb_compound_candidate_base_form = verb_surface_form + candidate_base_form
+
+                    if verb_compound_candidate_base_form in excluded:
+                        break
+
+                    for cand in candidate_compound: verb_compound.append(cand)
+                    for index in range(verb_compound_index + 1, auxiliary_index): compounds[index].clear()
+
+
         verb_compound_index += 1
 
     result_compounds = [comp for comp in compounds if len(comp) > 0]
