@@ -22,8 +22,12 @@ def parse_tree(sentence:str, excluded:set[str]) -> list[Node]:
     return [Node.create(compounds, excluded) for compounds in adjective_compounds_added]
 
 
-def _internal_parse(tokens, excluded:set[str]) -> list[Node]:
+def _recursing_parse(tokens, excluded:set[str]) -> list[Node]:
     dictionary_compounds = _build_dictionary_compounds(tokens, excluded)
+    adjective_compounds_added = _build_compounds(_is_adjective, _is_adjective_auxiliary, dictionary_compounds, excluded)
+    if len(adjective_compounds_added) > 1 and len(adjective_compounds_added) != len(dictionary_compounds):
+        return [Node.create(compounds, excluded) for compounds in adjective_compounds_added]
+
     return [Node.create(compounds, excluded) for compounds in dictionary_compounds]
 
 def _is_verb(compound: list[TokenExt]):

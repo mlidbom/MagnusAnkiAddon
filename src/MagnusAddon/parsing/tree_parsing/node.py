@@ -28,7 +28,7 @@ class Node:
 
     @classmethod
     def create(cls, tokens: list[TokenExt], excluded:set[str]) -> 'Node':
-        children = tree_parser._internal_parse(tokens, excluded) if len(tokens) > 1 else [] # tree_parser._find_compounds(tokens[0], excluded) # noqa
+        children = tree_parser._recursing_parse(tokens, excluded) if len(tokens) > 1 else [] # tree_parser._find_compounds(tokens[0], excluded) # noqa
         return cls.create_non_recursive(tokens, children)
 
     @classmethod

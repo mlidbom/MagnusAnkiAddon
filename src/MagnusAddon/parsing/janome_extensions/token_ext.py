@@ -64,7 +64,8 @@ _adjective_auxiliary_parts_of_speech = {
 }
 
 _adjective_parts_of_speech = {
-    POS.Adjective.independent
+    POS.Adjective.independent,
+    POS.Adjective.dependent
 }
 _verb_auxiliary_parts_of_speech = {
             POS.bound_auxiliary,
@@ -75,6 +76,6 @@ _verb_auxiliary_parts_of_speech = {
             POS.Particle.adverbial,
             POS.Particle.binding,
             POS.Particle.CaseMarking.general,
-            POS.Adjective.non_independent,
+            POS.Adjective.dependent,
             POS.Noun.NonSelfReliant.general
         }

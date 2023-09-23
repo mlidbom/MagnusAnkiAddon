@@ -209,7 +209,7 @@ class POS:
     class Adjective:
         suffix = _add_full_part_of_speech('形容詞', '接尾')
         independent = _add_full_part_of_speech('形容詞', '自立')
-        non_independent = _add_full_part_of_speech('形容詞', '非自立')
+        dependent = _add_full_part_of_speech('形容詞', '非自立')
 
     class Prefix:
         noun = _add_full_part_of_speech('接頭詞', '名詞接続')

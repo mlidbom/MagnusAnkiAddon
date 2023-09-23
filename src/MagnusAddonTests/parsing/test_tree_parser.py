@@ -36,15 +36,17 @@ def test_various_stuff(sentence: str, excluded: set[str], expected: list[Node]) 
     ("よかった", set(), [Node('よかった','',[Node('よい','よかっ'), Node('た','')])]),
     ("良ければ", set(), [Node('良ければ','',[Node('良い','良けれ'), Node('ば','')])]),
     ("良かったら", set(), [Node('良かった','良かったら',[Node('良い','良かっ'), Node('た','たら')])]),
-    ("良くない", set(), [Node('良くない','',[Node('良い','良く'), Node('ない','')])])
+    ("良くない", set(), [Node('良くない','',[Node('良い','良く'), Node('ない','')])]),
+    ("よかったじゃん", {"よかったじゃん"}, [Node('よかった','',[Node('よい','よかっ'), Node('た','')]), Node('じゃん','')]),
+    # adjective within verb compound
+    ("言えばよかった", set(), [Node('言えばよかった', '', [Node('言う', '言え'), Node('ば', ''), Node('よかった', '', [Node('よい', 'よかっ'), Node('た', '')])])])
 ])
 def test_adjective_compounds(sentence: str, excluded: set[str], expected: list[Node]) -> None:
     result = tree_parser.parse_tree(sentence, excluded)
     assert result == expected
 
-
 @pytest.mark.parametrize('sentence, excluded, expected', [
-    #("よかった", set(), [Node('よかった','',[Node('よい','よかっ'), Node('た','')])])
+
 ])
 def test_temp(sentence: str, excluded: set[str], expected: list[Node]) -> None:
     result = tree_parser.parse_tree(sentence, excluded)
