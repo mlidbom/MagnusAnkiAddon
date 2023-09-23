@@ -103,10 +103,12 @@ class Node:
         if question != self.surface and question != self.base:
             return priorities.unknown
 
-        if question == self.surface and question in _Statics.low_priority_surfaces:
-            return priorities.low
-        if question == self.base and question in _Statics.low_priority_bases:
-            return priorities.low
+        if question == self.surface:
+            if question in _Statics.hard_coded_surface_priorities:
+                return _Statics.hard_coded_surface_priorities[question]
+        if question == self.base:
+            if question in _Statics.hard_coded_base_priorities:
+                return _Statics.hard_coded_base_priorities[question]
 
         if not self.children:
             if all(token.is_verb_auxiliary() for token in self.tokens):
@@ -122,15 +124,24 @@ class Node:
 class Priorities:
     def __init__(self) -> None:
         self.unknown = "unknown"
+        self.very_low = "very_low"
         self.low = "low"
         self.medium = "medium"
+        self.high = "high"
+        self.very_high = "very_high"
 
 priorities = Priorities()
 
 
 class _Statics:
-    low_priority_surfaces: set[str] = set()
-    low_priority_bases: set[str] = set("しもよかとたてでをなのにだがは") | {"する", "です", "私"}
+    hard_coded_base_priorities: dict[str, str] = dict()
+    hard_coded_surface_priorities: dict[str, str] = dict()
+
+    lowest_priority_surfaces: set[str] = set()
+    for particle in "しもよかとたてでをなのにだがは": hard_coded_base_priorities[particle] = priorities.very_low
+    for word in ["する", "です", "私"]: hard_coded_base_priorities[word] = priorities.low
+
+
 
 excluded_surface_pos: set[PartsOfSpeech] = set()
 excluded_base_pos: set[PartsOfSpeech] = set()

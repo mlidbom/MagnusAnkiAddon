@@ -8,7 +8,7 @@ p = priorities
 
 @pytest.mark.parametrize('sentence, expected_priorities', [
     ("言われるまで気づかなかった", {
-        'た': 'low',
+        'た': 'very_low',
         'ない': 'low',
         'まで': 'low',
         'れる': 'low',
@@ -17,6 +17,11 @@ p = priorities
         '言う': 'medium',
         '言われるまで': 'medium'}),
     ("いつまでも来ないと知らないからね", {
+        'も': 'very_low',
+        'と': 'very_low',
+        'から': 'low',
+        'ない': 'low',
+        'まで': 'low',
         'いつ': 'medium',
         'いつまで': 'medium',
         'いつまでも': 'medium',
@@ -25,12 +30,7 @@ p = priorities
         '来る': 'medium',
         '知らない': 'medium',
         '知る': 'medium',
-        'ね': 'medium',
-        'から': 'low',
-        'と': 'low',
-        'ない': 'low',
-        'まで': 'low',
-        'も': 'low'})
+        'ね': 'medium'})
 ])
 def test_priorities(sentence: str, expected_priorities: dict[str, str]) -> None:
     real_priorities: dict[str, str] = dict()
