@@ -1,4 +1,6 @@
 import pytest
+from janome.analyzer import Analyzer
+from janome.tokenizer import Tokenizer
 
 from parsing.tree_parsing import tree_parser
 from parsing.tree_parsing.node import Node
@@ -33,6 +35,7 @@ def test_various_stuff(sentence: str, excluded: set[str], expected: list[Node]) 
     assert result == expected
 
 @pytest.mark.parametrize('sentence, excluded, expected', [
+    #various conjugations
     ("よかった", set(), [Node('よかった','',[Node('よい','よかっ'), Node('た','')])]),
     ("良ければ", set(), [Node('良ければ','',[Node('良い','良けれ'), Node('ば','')])]),
     ("良かったら", set(), [Node('良かった','良かったら',[Node('良い','良かっ'), Node('た','たら')])]),
@@ -46,8 +49,27 @@ def test_adjective_compounds(sentence: str, excluded: set[str], expected: list[N
     assert result == expected
 
 @pytest.mark.parametrize('sentence, excluded, expected', [
-
+    ("よかった", set(), [Node('よかった','',[Node('よい','よかっ'), Node('た','')])]),
+    ("良かった", set(), [Node('良かった', '', [Node('よい', 'よかっ'), Node('た', '')])]),
 ])
 def test_temp(sentence: str, excluded: set[str], expected: list[Node]) -> None:
     result = tree_parser.parse_tree(sentence, excluded)
     assert result == expected
+
+
+@pytest.mark.parametrize('sentence', [
+    "よかった",
+    "良かった",
+    "ある",
+    "有る"
+])
+def test_temp_remove_me_explore_janome(sentence: str) -> None:
+    tokenizer = Tokenizer()
+    tokens = [tok for tok in tokenizer.tokenize("よかった")]
+
+def test_temp_remove_me_explore_janome_analyzer() -> None:
+    analyzer = Analyzer()
+    tokens = [tok for tok in analyzer.analyze("よかった")]
+    first_token = tokens[0]
+
+
