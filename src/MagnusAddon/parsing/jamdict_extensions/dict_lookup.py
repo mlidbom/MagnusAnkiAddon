@@ -4,8 +4,6 @@ from jamdict import Jamdict
 
 from parsing.jamdict_extensions.dict_entry import DictEntry
 from sysutils import kana_utils
-from sysutils.utils import ListUtils
-
 
 class DictLookup:
     from note.wanivocabnote import WaniVocabNote

@@ -97,5 +97,27 @@ class Node:
             return True
         return False
 
+    def get_priority_class(self, question) -> str:
+        if question != self.surface and question != self.base:
+            return ""
+
+        if question == self.surface and question in _Statics.low_priority_surfaces:
+            return _Statics.Class.low
+        if question == self.base and question in _Statics.low_priority_bases:
+            return _Statics.Class.low
+
+        if not self.children:
+            if all(token.is_verb_auxiliary() for token in self.tokens):
+                return _Statics.Class.low
+
+        return ""
+
+class _Statics:
+    class Class:
+        low = "word_priority_low"
+
+    low_priority_surfaces: set[str] = set()
+    low_priority_bases: set[str] = set("しもよかとたてでをなのにだがは") | {"する", "です", "私"}
+
 excluded_surface_pos: set[PartsOfSpeech] = set()
 excluded_base_pos: set[PartsOfSpeech] = set()

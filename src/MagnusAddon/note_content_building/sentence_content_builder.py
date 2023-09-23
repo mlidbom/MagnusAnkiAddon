@@ -1,19 +1,17 @@
 from ankiutils import search_utils
 from note.sentencenote import SentenceNote
-from note.wanivocabnote import WaniVocabNote
 from parsing.tree_parsing import tree_parser
 from parsing.tree_parsing.parse_tree_node import Node
-from sysutils.utils import StringUtils, ListUtils
+from sysutils.utils import ListUtils
 from wanikani.wani_collection import WaniCollection
-
-_ignored_tokens: set[str] = set("しもよかとたてでをなのにだがは")
-_ignored_vocab: set[str] = {"擦る"}
 
 _vocab_missing_string = "---"
 
 def _vocab_node_html(node: Node, excluded:set[str], question:str, answer:str, depth:int) -> str:
+    priority_class = node.get_priority_class(question)
+
     html = f"""
-    <li class="sentenceVocabEntry depth{depth}">
+    <li class="sentenceVocabEntry depth{depth} {priority_class}">
         <span class="vocabQuestion clipboard">{question}</span>
         <span class="vocabAnswer">{answer}</span>
         {_create_html_from_nodes(node.children, excluded, depth + 1)}
@@ -82,16 +80,14 @@ def _build_user_extra_list(extra_words: list[str], excluded:set[str]) -> str:
 
 def build_breakdown_html(sentence: SentenceNote) -> None:
     user_excluded = sentence.get_user_excluded_vocab()
-    excluded = user_excluded | _ignored_vocab
-
     extra_words = sentence.get_user_extra_vocab()
     html = ""
     if extra_words:
-        html += _build_user_extra_list(extra_words, excluded)
+        html += _build_user_extra_list(extra_words, user_excluded)
         html += """\n<hr class="afterUserExtraWordsHR">\n"""
 
     question = sentence.get_active_question()
     nodes = tree_parser.parse_tree(question, user_excluded)
 
-    html += _create_html_from_nodes(nodes, excluded, 1)
+    html += _create_html_from_nodes(nodes, user_excluded, 1)
     sentence.set_break_down(html)

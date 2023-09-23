@@ -82,5 +82,4 @@ def test_stuff(sentence: str, excluded:set[str], expected: list[Node]) -> None:
 ])
 def test_temp(sentence: str, excluded:set[str], expected: list[Node]) -> None:
     result = tree_parser.parse_tree(sentence, excluded)
-    something = 1
     assert result == expected

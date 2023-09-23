@@ -12,7 +12,6 @@ from note.waniradicalnote import WaniRadicalNote
 from note.wanivocabnote import WaniVocabNote
 from parsing import textparser
 from parsing.janome_extensions.parsed_word import ParsedWord
-from sysutils import kana_utils
 from sysutils.ui_utils import UIUtils
 from wanikani.wani_constants import Wani, Mine, MyNoteFields
 

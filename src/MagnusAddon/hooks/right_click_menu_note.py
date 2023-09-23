@@ -1,9 +1,7 @@
 from PyQt6.QtWidgets import QMenu
-from aqt.utils import SubMenu
 from aqt.webview import AnkiWebView
 
 from batches import local_note_updater
-from hooks import tools_menu
 from hooks.right_click_menu_utils import add_ui_action, add_lookup_action, add_sentence_lookup, add_single_vocab_lookup_action, add_text_vocab_lookup, add_vocab_dependencies_lookup
 from note.sentencenote import SentenceNote
 from note.wanikanjinote import WaniKanjiNote
