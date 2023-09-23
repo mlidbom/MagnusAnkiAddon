@@ -1,7 +1,7 @@
 from ankiutils import search_utils
 from note.sentencenote import SentenceNote
 from parsing.tree_parsing import tree_parser
-from parsing.tree_parsing.parse_tree_node import Node
+from parsing.tree_parsing.parse_tree_node import Node, priorities
 from sysutils.utils import ListUtils
 from wanikani.wani_collection import WaniCollection
 
@@ -61,7 +61,7 @@ def _build_user_extra_list(extra_words: list[str], excluded:set[str]) -> str:
         if vocabs:
             for vocab in vocabs:
                 html += f"""
-                    <li class="sentenceVocabEntry depth1">
+                    <li class="sentenceVocabEntry depth1 word_priority_{priorities.very_high}">
                         <span class="vocabQuestion clipboard">{vocab.get_display_question()}</span>
                         <span class="vocabAnswer">{vocab.get_active_answer()}</span>
                     </li>

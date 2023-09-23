@@ -190,7 +190,7 @@ class POS:
             suru_verb_connection = _add_full_part_of_speech('名詞', '接尾', 'サ変接続')
             general = _add_full_part_of_speech('名詞', '接尾', '一般')
             persons_name = _add_full_part_of_speech('名詞', '接尾', '人名')
-            adv_possible = _add_full_part_of_speech('名詞', '接尾', '副詞可能')
+            adverbial = _add_full_part_of_speech('名詞', '接尾', '副詞可能')
             auxiliary_verb_stem = _add_full_part_of_speech('名詞', '接尾', '助動詞語幹')
             counter = _add_full_part_of_speech('名詞', '接尾', '助数詞')
             region = _add_full_part_of_speech('名詞', '接尾', '地域')
@@ -202,7 +202,7 @@ class POS:
 
         class NonSelfReliant:
             general = _add_full_part_of_speech('名詞', '非自立', '一般')
-            adv_possible = _add_full_part_of_speech('名詞', '非自立', '副詞可能')
+            adverbial = _add_full_part_of_speech('名詞', '非自立', '副詞可能')
             auxiliary_verb_stem = _add_full_part_of_speech('名詞', '非自立', '助動詞語幹')
             na_adjective_stem = _add_full_part_of_speech('名詞', '非自立', '形容動詞語幹')
 
