@@ -68,14 +68,12 @@ _adjective_parts_of_speech = {
     POS.Adjective.dependent
 }
 _verb_auxiliary_parts_of_speech = {
-            POS.bound_auxiliary,
-            POS.Verb.non_independent,
-            POS.Verb.suffix,
-            POS.Particle.conjunctive,
-            POS.Particle.coordinating_conjunction,
-            POS.Particle.adverbial,
-            POS.Particle.binding,
-            POS.Particle.CaseMarking.general,
-            POS.Adjective.dependent,
-            POS.Noun.NonSelfReliant.general
+            POS.bound_auxiliary, # た, ない past, negation
+            POS.Verb.non_independent, # いる progressive/perfect, いく
+            POS.Verb.suffix, # れる passive
+            POS.Particle.conjunctive, # て, と
+            POS.Particle.coordinating_conjunction, # たり
+            POS.Particle.adverbial, # まで todo: not sure about this one
+            POS.Adjective.dependent, # よかった
+            POS.Noun.NonSelfReliant.general # こと
         }
