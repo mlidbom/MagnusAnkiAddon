@@ -114,6 +114,14 @@ class Node:
             if all(token.is_verb_auxiliary() for token in self.tokens):
                 return priorities.low
 
+        kanji = [char for char in self.base if not kana_utils.is_kana(char)]
+
+        if len(kanji) > 2:
+            return priorities.very_high
+
+        if len(kanji) > 1:
+            return priorities.high
+
         return priorities.medium
 
     def visit(self, callback: Callable[['Node'],None]) -> None:
