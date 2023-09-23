@@ -26,6 +26,7 @@ from parsing.tree_parsing.node import Node
     ("するためでした", set(), [Node('する', ''), Node('ため', ''), Node('です', 'でし'), Node('た', '')]),
     ("ように言ったのも", {"ように言ったのも", "ように言ったの", "たのも", "たの"}, [Node('ように言った', '', [Node('ように言う', 'ように言っ', [Node('ように', '', [Node('よう', ''), Node('に', '')]), Node('言う', '言っ')]), Node('た', '')]), Node('の', ''), Node('も', '')]),
     ("探しているんですか", {"探しているんです"}, [Node('探している', '', [Node('探す', '探し'), Node('て', ''), Node('いる', '')]), Node('んです', '', [Node('ん', ''), Node('です', '')]), Node('か', '')]),
+    ("一度聞いたことがある", set(), [Node('一度', ''), Node('聞いたことがある', '', [Node('聞く', '聞い'), Node('た', ''), Node('ことがある', '', [Node('こと', ''), Node('が', ''), Node('ある', '')])])])
 
 ])
 def test_stuff(sentence: str, excluded: set[str], expected: list[Node]) -> None:
@@ -34,7 +35,6 @@ def test_stuff(sentence: str, excluded: set[str], expected: list[Node]) -> None:
 
 
 @pytest.mark.parametrize('sentence, excluded, expected', [
-    ("一度聞いたことがある", set(), [Node('一度', ''), Node('聞いた', '', [Node('聞く', '聞い'), Node('た', '')]), Node('ことがある', '', [Node('こと', ''), Node('が', ''), Node('ある', '')])])
 
 ])
 def test_temp(sentence: str, excluded: set[str], expected: list[Node]) -> None:

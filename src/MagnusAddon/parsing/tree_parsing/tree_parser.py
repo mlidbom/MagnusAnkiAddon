@@ -38,7 +38,7 @@ def _build_verb_compounds(start_compounds: list[list[TokenExt]], excluded:set[st
                     verb_surface_form = "".join((v.surface for v in verb_compound))
                     accepted_auxiliaries_surface = "".join((v.surface for v in accepted_auxiliaries))
 
-                    if not all(token.is_verb_auxiliary() for token in candidate_auxiliaries):
+                    if not candidate_auxiliaries[0].is_verb_auxiliary():
                         break
 
                     candidate_base_form = "".join((v.surface for v in candidate_auxiliaries[:-1])) + candidate_auxiliaries[-1].base_form
