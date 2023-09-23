@@ -32,27 +32,28 @@ def _build_verb_compounds(start_compounds: list[list[TokenExt]], excluded:set[st
         if verb_compound:
             if verb_compound[-1].is_verb():
                 auxiliary_index = verb_compound_index + 1
-                candidate_compound: list[TokenExt] = []
+                accepted_auxiliaries: list[TokenExt] = []
                 while auxiliary_index < compound_count:
-                    candidate_auxiliary_compound = compounds[auxiliary_index]
+                    candidate_auxiliaries = compounds[auxiliary_index]
+                    verb_surface_form = "".join((v.surface for v in verb_compound))
+                    accepted_auxiliaries_surface = "".join((v.surface for v in accepted_auxiliaries))
 
-                    if not all(token.is_verb_auxiliary() for token in candidate_auxiliary_compound):
+                    if not all(token.is_verb_auxiliary() for token in candidate_auxiliaries):
                         break
 
-                    for cand in candidate_auxiliary_compound:
-                        candidate_compound.append(cand)
-
-                    auxiliary_index += 1
-
-                if candidate_compound:
-                    verb_surface_form = "".join((v.surface for v in candidate_compound[:-1]))
-                    candidate_base_form = "".join((v.surface for v in candidate_compound[:-1])) + candidate_compound[-1].base_form
-                    verb_compound_candidate_base_form = verb_surface_form + candidate_base_form
+                    candidate_base_form = "".join((v.surface for v in candidate_auxiliaries[:-1])) + candidate_auxiliaries[-1].base_form
+                    verb_compound_candidate_base_form = verb_surface_form + accepted_auxiliaries_surface + candidate_base_form
 
                     if verb_compound_candidate_base_form in excluded:
                         break
 
-                    for cand in candidate_compound: verb_compound.append(cand)
+                    for cand in candidate_auxiliaries:
+                        accepted_auxiliaries.append(cand)
+
+                    auxiliary_index += 1
+
+                if accepted_auxiliaries:
+                    for cand in accepted_auxiliaries: verb_compound.append(cand)
                     for index in range(verb_compound_index + 1, auxiliary_index): compounds[index].clear()
 
 

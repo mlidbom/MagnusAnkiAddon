@@ -11,7 +11,7 @@ from parsing.tree_parsing.node import Node
     ("ついに素晴らしい女性に逢えた。", set(), [Node('ついに', ''), Node('素晴らしい', ''), Node('女性', ''), Node('に', ''), Node('逢えた', '', [Node('逢える', '逢え'), Node('た', '')])]), ("ついに素晴らしい女性に逢えた。", {"逢える"}, [Node('ついに', ''), Node('素晴らしい', ''), Node('女性', ''), Node('に', ''), Node('た', '')]),
     ("ううん藤宮さんは日記を捨てるような人じゃない", set(), [Node('ううん', ''), Node('藤宮', ''), Node('さん', ''), Node('は', ''), Node('日記', ''), Node('を', ''), Node('捨てる', ''), Node('ようだ', 'ような', [Node('よう', ''), Node('だ', 'な')]), Node('人', ''), Node('じゃない', '', [Node('じゃ', ''), Node('ない', '')])]),
     ("なかったかな", {"たか", "たかな"}, [Node('ない', 'なかっ'), Node('た', ''), Node('かな', '', [Node('か', ''), Node('な', '')])]),
-    ("探しているんですか", set(), [Node('探している', '', [Node('探す', '探し'), Node('て', ''), Node('いる', '')]), Node('んです', '', [Node('ん', ''), Node('です', '')]), Node('か', '')]),
+    ("探しているんですか", {"探しているんです"}, [Node('探している', '', [Node('探す', '探し'), Node('て', ''), Node('いる', '')]), Node('んです', '', [Node('ん', ''), Node('です', '')]), Node('か', '')]),
     ("としたら", {"とする"}, [Node('とした', 'としたら', [Node('と', ''), Node('した', 'したら', [Node('する', 'し'), Node('た', 'たら')])])]),
     ("離れていくよ", {"いくよ"}, [Node('離れていく', '', [Node('離れる', '離れ'), Node('て', ''), Node('いく', '')]), Node('よ', '')]),
     ("いつまでも来ないと知らないからね", set(), [Node('いつまでも', '', [Node('いつまで', '', [Node('いつ', ''), Node('まで', '')]), Node('も', '')]), Node('来ないと', '', [Node('来る', '来'), Node('ないと', '', [Node('ない', ''), Node('と', '')])]), Node('知らない', '', [Node('知る', '知ら'), Node('ない', '')]), Node('から', ''), Node('ね', '')]),
@@ -22,9 +22,11 @@ from parsing.tree_parsing.node import Node
     ("当てられても", set(), [Node('当てられても', '', [Node('当てられる', '当てられ', [Node('当てる', '当て'), Node('られる', 'られ')]), Node('ても', '', [Node('て', ''), Node('も', '')])])]),
     ("食べてもいいけど", set(), [Node('食べてもいいけど', '', [Node('食べる', '食べ'), Node('てもいい', '', [Node('ても', '', [Node('て', ''), Node('も', '')]), Node('いい', '')]), Node('けど', '')])]),
     ("逃げたり", set(), [Node('逃げたり', '', [Node('逃げる', '逃げ'), Node('たり', '')])]),
-    ("いるのにキス", set(), [Node('いる', ''), Node('のに', '', [Node('の', ''), Node('に', '')]), Node('キス', '')]),
+    ("いるのにキス", {"いるのに"}, [Node('いる', ''), Node('のに', '', [Node('の', ''), Node('に', '')]), Node('キス', '')]),
     ("するためでした", set(), [Node('する', ''), Node('ため', ''), Node('です', 'でし'), Node('た', '')]),
-    ("ように言ったのも", {"たのも", "たの"}, [Node('ように言った', '', [Node('ように言う', 'ように言っ', [Node('ように', '', [Node('よう', ''), Node('に', '')]), Node('言う', '言っ')]), Node('た', '')]), Node('の', ''), Node('も', '')])
+    ("ように言ったのも", {"ように言ったのも", "ように言ったの", "たのも", "たの"}, [Node('ように言った', '', [Node('ように言う', 'ように言っ', [Node('ように', '', [Node('よう', ''), Node('に', '')]), Node('言う', '言っ')]), Node('た', '')]), Node('の', ''), Node('も', '')]),
+    ("探しているんですか", {"探しているんです"}, [Node('探している', '', [Node('探す', '探し'), Node('て', ''), Node('いる', '')]), Node('んです', '', [Node('ん', ''), Node('です', '')]), Node('か', '')]),
+
 ])
 def test_stuff(sentence: str, excluded: set[str], expected: list[Node]) -> None:
     result = tree_parser.parse_tree(sentence, excluded)
@@ -32,10 +34,8 @@ def test_stuff(sentence: str, excluded: set[str], expected: list[Node]) -> None:
 
 
 @pytest.mark.parametrize('sentence, excluded, expected', [
-    ("一度聞いたことがある", set(), [
-        Node('一度', ''),
-        Node('聞いた', '', [Node('聞く', '聞い'), Node('た', '')]),
-        Node('ことがある', '', [Node('こと', ''), Node('が', ''), Node('ある', '')])])
+    ("一度聞いたことがある", set(), [Node('一度', ''), Node('聞いた', '', [Node('聞く', '聞い'), Node('た', '')]), Node('ことがある', '', [Node('こと', ''), Node('が', ''), Node('ある', '')])])
+
 ])
 def test_temp(sentence: str, excluded: set[str], expected: list[Node]) -> None:
     result = tree_parser.parse_tree(sentence, excluded)

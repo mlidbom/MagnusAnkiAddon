@@ -61,5 +61,5 @@ class TokenExt:
             POS.Particle.CaseMarking.general,
             POS.Adjective.non_independent,
             POS.bound_auxiliary,
-            #POS.Noun.NonSelfReliant.general
+            POS.Noun.NonSelfReliant.general
         }
