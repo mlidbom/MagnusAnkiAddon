@@ -35,25 +35,19 @@ def _build_verb_compounds(start_compounds: list[list[TokenExt]], excluded:set[st
                 auxiliary_index = verb_compound_index + 1
                 while auxiliary_index < compound_count:
                     candidate_auxiliary_compound = compounds[auxiliary_index]
-                    candidate_auxiliary_compound_copy = [v for v in candidate_auxiliary_compound]
 
-                    found_auxiliaries:list[int] = []
-                    for candidate_index, cand in enumerate(candidate_auxiliary_compound_copy):
-                        if not cand.is_verb_auxiliary():
-                            break
+                    candidate_base_form = "".join((v.surface for v in candidate_auxiliary_compound[:-1])) + candidate_auxiliary_compound[-1].base_form
+
+                    if candidate_base_form in excluded:
+                        break
+
+                    if not all(token.is_verb_auxiliary() for token in candidate_auxiliary_compound):
+                        break
+
+                    for cand in candidate_auxiliary_compound:
                         verb_compound.append(cand)
-                        found_auxiliaries.append(candidate_index)
 
-                    if len(found_auxiliaries) == 0:
-                        break
-
-                    found_auxiliaries.reverse()
-                    for found in found_auxiliaries:
-                        candidate_auxiliary_compound.pop(found)
-
-                    if len(candidate_auxiliary_compound) > 0:
-                        break
-
+                    candidate_auxiliary_compound.clear()
                     auxiliary_index += 1
         verb_compound_index += 1
 
