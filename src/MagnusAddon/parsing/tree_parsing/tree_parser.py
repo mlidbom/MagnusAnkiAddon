@@ -1,7 +1,7 @@
 from parsing.jamdict_extensions.dict_lookup import DictLookup
 from parsing.janome_extensions.token_ext import TokenExt
 from parsing.janome_extensions.tokenizer_ext import TokenizerExt
-from parsing.tree_parsing.parse_tree_node import Node
+from parsing.tree_parsing.node import Node
 
 _tokenizer = TokenizerExt()
 

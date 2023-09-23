@@ -1,7 +1,7 @@
 import pytest
 
 from parsing.tree_parsing import tree_parser
-from parsing.tree_parsing.parse_tree_node import Node, priorities
+from parsing.tree_parsing.node import Node, priorities
 
 p = priorities
 
