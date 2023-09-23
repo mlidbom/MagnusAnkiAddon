@@ -12,8 +12,10 @@ def _vocab_node_html(node: Node, excluded:set[str], question:str, answer:str, de
 
     html = f"""
     <li class="sentenceVocabEntry depth{depth} {priority_class}">
-        <span class="vocabQuestion clipboard">{question}</span>
-        <span class="vocabAnswer">{answer}</span>
+        <div class="sentenceVocabEntryDiv">
+            <span class="vocabQuestion clipboard">{question}</span>
+            <span class="vocabAnswer">{answer}</span>
+        </div>
         {_create_html_from_nodes(node.children, excluded, depth + 1)}
     </li>
     """
@@ -21,6 +23,9 @@ def _vocab_node_html(node: Node, excluded:set[str], question:str, answer:str, de
     return html
 
 def _create_html_from_nodes(nodes: list[Node], excluded: set[str], depth:int) -> str:
+    if not nodes:
+        return ""
+
     html = f"""<ul class="sentenceVocabList depth{depth}">\n"""
 
     for node in nodes:
@@ -62,15 +67,19 @@ def _build_user_extra_list(extra_words: list[str], excluded:set[str]) -> str:
             for vocab in vocabs:
                 html += f"""
                     <li class="sentenceVocabEntry depth1 word_priority_{priorities.very_high}">
-                        <span class="vocabQuestion clipboard">{vocab.get_display_question()}</span>
-                        <span class="vocabAnswer">{vocab.get_active_answer()}</span>
+                        <div class="sentenceVocabEntryDiv">
+                            <span class="vocabQuestion clipboard">{vocab.get_display_question()}</span>
+                            <span class="vocabAnswer">{vocab.get_active_answer()}</span>
+                        </div>
                     </li>
                     """
         else:
             html += f"""
                 <li class="sentenceVocabEntry depth1">
-                    <span class="vocabQuestion clipboard">{word}</span>
-                    <span class="vocabAnswer">{_vocab_missing_string}</span>
+                    <div class="sentenceVocabEntryDiv">
+                        <span class="vocabQuestion clipboard">{word}</span>
+                        <span class="vocabAnswer">{_vocab_missing_string}</span>
+                    </div>
                 </li>
                 """
 
