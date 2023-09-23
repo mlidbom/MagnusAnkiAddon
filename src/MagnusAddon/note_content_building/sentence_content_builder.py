@@ -9,54 +9,89 @@ from wanikani.wani_collection import WaniCollection
 _ignored_tokens: set[str] = set("しもよかとたてでをなのにだがは")
 _ignored_vocab: set[str] = {"擦る"}
 
-def vocab_html(node: Node, excluded:set[str], question:str, answer:str, depth:int) -> str:
+_vocab_missing_string = "---"
+
+def _vocab_node_html(node: Node, excluded:set[str], question:str, answer:str, depth:int) -> str:
     html = f"""
     <li class="sentenceVocabEntry depth{depth}">
         <span class="vocabQuestion clipboard">{question}</span>
         <span class="vocabAnswer">{answer}</span>
-        {create_html_from_nodes(node.children, excluded, depth + 1)}
+        {_create_html_from_nodes(node.children, excluded, depth + 1)}
     </li>
     """
 
     return html
 
-def create_html_from_nodes(nodes: list[Node], excluded: set[str], depth:int) -> str:
+def _create_html_from_nodes(nodes: list[Node], excluded: set[str], depth:int) -> str:
     html = f"""<ul class="sentenceVocabList depth{depth}">\n"""
 
     for node in nodes:
         vocabs = WaniCollection.search_vocab_notes(search_utils.node_vocab_lookup(node))
         vocabs = [voc for voc in vocabs if voc.get_display_question() not in excluded]
-
         found_words = set((voc.get_question() for voc in vocabs)) | set(ListUtils.flatten_list([voc.get_readings() for voc in vocabs]))
 
         if vocabs:
             for vocab in vocabs:
-                html += vocab_html(node, excluded, vocab.get_display_question(), vocab.get_active_answer(), depth)
+                html += _vocab_node_html(node, excluded, vocab.get_display_question(), vocab.get_active_answer(), depth)
 
             if (node.surface
                     and node.surface not in found_words
                     and node.surface not in excluded
                     and node.is_show_surface_in_sentence_breakdown()):
 
-                html += vocab_html(node, excluded, node.surface, "---", depth)
+                html += _vocab_node_html(node, excluded, node.surface, _vocab_missing_string, depth)
 
         else:
-            text = "" if node.is_verb_compound() else "---"
+            text = "" if node.is_verb_compound() else _vocab_missing_string
             display_text = node.surface if depth == 1 and node.surface and node.is_verb_compound() else node.base
-            html += vocab_html(node, excluded, display_text, text, depth)
+            html += _vocab_node_html(node, excluded, display_text, text, depth)
             if node.is_show_surface_in_sentence_breakdown() and node.surface not in excluded:
-                html += vocab_html(node, excluded, node.surface, "-", depth)
+                html += _vocab_node_html(node, excluded, node.surface, _vocab_missing_string, depth)
 
     html += "</ul>\n"
 
     return html
 
+
+
+def _build_user_extra_list(extra_words: list[str], excluded:set[str]) -> str:
+    html = f"""<ul class="sentenceVocabList depth1">\n"""
+    for word in extra_words:
+        vocabs = WaniCollection.search_vocab_notes(search_utils.single_vocab_by_form_exact(word))
+        vocabs = [voc for voc in vocabs if voc.get_display_question() not in excluded]
+
+        if vocabs:
+            for vocab in vocabs:
+                html += f"""
+                    <li class="sentenceVocabEntry depth1">
+                        <span class="vocabQuestion clipboard">{vocab.get_display_question()}</span>
+                        <span class="vocabAnswer">{vocab.get_active_answer()}</span>
+                    </li>
+                    """
+        else:
+            html += f"""
+                <li class="sentenceVocabEntry depth1">
+                    <span class="vocabQuestion clipboard">{word}</span>
+                    <span class="vocabAnswer">{_vocab_missing_string}</span>
+                </li>
+                """
+
+    html += "</ul>\n"
+    return html
+
+
 def build_breakdown_html(sentence: SentenceNote) -> None:
     user_excluded = sentence.get_user_excluded_vocab()
     excluded = user_excluded | _ignored_vocab
 
+    extra_words = sentence.get_user_extra_vocab()
+    html = ""
+    if extra_words:
+        html += _build_user_extra_list(extra_words, excluded)
+        html += """\n<hr class="afterUserExtraWordsHR">\n"""
+
     question = sentence.get_active_question()
     nodes = tree_parser.parse_tree(question, user_excluded)
 
-    html = create_html_from_nodes(nodes, excluded, 1)
+    html += _create_html_from_nodes(nodes, excluded, 1)
     sentence.set_break_down(html)

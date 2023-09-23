@@ -18,7 +18,7 @@ def setup_search_menu(root_menu: QMenu, sel_clip: str) -> None:
 def setup_anki_search_menu(search_menu: QMenu, sel_clip: str) -> None:
     search_anki_menu = search_menu.addMenu("&Anki")
     add_lookup_action(search_anki_menu, "&Kanji", su.kanji_in_string(sel_clip))
-    add_lookup_action(search_anki_menu, "&Vocab", su.single_vocab_exact(sel_clip))
+    add_lookup_action(search_anki_menu, "&Vocab", su.single_vocab_by_question_reading_or_answer_exact(sel_clip))
     add_lookup_action(search_anki_menu, "Vocab &Wildcard", su.single_vocab_wildcard(sel_clip))
     add_lookup_action(search_anki_menu, "&Radical", build_radical_search_string(sel_clip))
     add_sentence_lookup(search_anki_menu, "&Sentence", sel_clip)

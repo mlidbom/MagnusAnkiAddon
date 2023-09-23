@@ -34,7 +34,7 @@ def build_breakdown_html(sentence: SentenceNote) -> None:
     tokens = [token for token in tokens if token.word not in excluded]
 
     queries = [search_utils.vocab_lookup(parsed) for parsed in tokens]
-    user_extras_queries = [search_utils.single_vocab_exact(word) for word in sentence.get_user_extra_vocab()]
+    user_extras_queries = [search_utils.single_vocab_by_question_reading_or_answer_exact(word) for word in sentence.get_user_extra_vocab()]
     queries = user_extras_queries + queries
     notes = [WaniCollection.search_vocab_notes(word) for word in queries]
 

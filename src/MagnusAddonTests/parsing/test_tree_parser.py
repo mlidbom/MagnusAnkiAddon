@@ -16,21 +16,21 @@ from parsing.tree_parsing.parse_tree_node import Node
     ("ついに素晴らしい女性に逢えた。", set(), [
         Node('ついに', ''),
         Node('素晴らしい', ''),
-        Node('女性','',[Node('女',''), Node('性','')]),
+        Node('女性', ''),
         Node('に', ''),
         Node('逢えた', '', [Node('逢える', '逢え'), Node('た', '')])]),
     ("ついに素晴らしい女性に逢えた。", {"逢える"}, [
         Node('ついに', ''),
         Node('素晴らしい', ''),
-        Node('女性','',[Node('女',''), Node('性','')]),
+        Node('女性', ''),
         Node('に', ''),
         Node('た','')]),
     ("ううん藤宮さんは日記を捨てるような人じゃない", set(),[
         Node('ううん',''),
-        Node('藤宮', '', [Node('藤', ''), Node('宮', '')]),
-        Node('さん', ''),
-        Node('は', ''),
-        Node('日記', '', [Node('日', ''), Node('記', '')]),
+        Node('藤宮',''),
+        Node('さん',''),
+        Node('は',''),
+        Node('日記',''),
         Node('を',''),
         Node('捨てる',''),
         Node('ようだ','ような',[Node('よう',''), Node('だ','な')]),
@@ -65,7 +65,7 @@ from parsing.tree_parsing.parse_tree_node import Node
         Node('気づかなかった','',[Node('気づく','気づか'), Node('ない','なかっ'), Node('た','')])]),
     ("行きたい所全部行こう", set(), [
         Node('行きたい所', '', [Node('行く', '行き'), Node('たい', ''), Node('所', '')]),
-        Node('全部','',[Node('全',''), Node('部','')]),
+        Node('全部', ''),
         Node('行こう', '', [Node('行く', '行こ'), Node('う', '')])]),
     ("当てられても", set(), [Node('当てられても','',[Node('当てられる','当てられ',[Node('当てる','当て'), Node('られる','られ')]), Node('ても','',[Node('て',''), Node('も','')])])]),
     ("食べてもいいけど", set(), [Node('食べてもいいけど','',[Node('食べる','食べ'), Node('てもいい','',[Node('ても','',[Node('て',''), Node('も','')]), Node('いい','')]), Node('けど','')])]),
@@ -79,8 +79,8 @@ def test_stuff(sentence: str, excluded:set[str], expected: list[Node]) -> None:
     assert result == expected
 
 @pytest.mark.parametrize('sentence, excluded, expected', [
-
 ])
 def test_temp(sentence: str, excluded:set[str], expected: list[Node]) -> None:
     result = tree_parser.parse_tree(sentence, excluded)
+    something = 1
     assert result == expected

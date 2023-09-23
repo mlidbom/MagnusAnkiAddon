@@ -3,8 +3,6 @@ from parsing.janome_extensions.parts_of_speech import POS
 from parsing.janome_extensions.token_ext import TokenExt
 from parsing.janome_extensions.tokenizer_ext import TokenizerExt
 from parsing.tree_parsing.parse_tree_node import Node
-from sysutils import kana_utils
-from sysutils.utils import ListUtils
 
 _tokenizer = TokenizerExt()
 
@@ -22,7 +20,7 @@ def parse_tree(sentence:str, excluded:set[str]) -> list[Node]:
     return [Node.create(compounds, excluded) for compounds in verb_compounds_added]
 
 
-def _internal_parse(tokens: list[TokenExt], excluded:set[str]) -> list[Node]:
+def _internal_parse(tokens, excluded:set[str]) -> list[Node]:
     dictionary_compounds = _build_dictionary_compounds(tokens, excluded)
     return [Node.create(compounds, excluded) for compounds in dictionary_compounds]
 
@@ -95,20 +93,3 @@ def _build_dictionary_compounds(tokens: list[TokenExt], excluded:set[str]) -> li
             tokens = tokens[1:]
 
     return compounds
-
-def _find_compounds(token: TokenExt, excluded:set[str]) -> list[Node]:
-    for index, character in enumerate(token.base_form):
-        part_1 = token.base_form[:index]
-        part_2 = token.base_form[index:]
-        if (part_1
-                and part_2
-                and not kana_utils.is_only_kana(part_1)
-                and not kana_utils.is_only_kana(part_2)):
-            tokens_1 = _tokenizer.tokenize(part_1)
-            if tokens_1.tokens and _is_in_dictionary(tokens_1.tokens, excluded):
-                tokens_2 = _tokenizer.tokenize(part_2)
-                if tokens_2.tokens and _is_in_dictionary(tokens_2.tokens, excluded):
-                    return [Node.create_non_recursive(tokens_1.tokens), Node.create_non_recursive(tokens_2.tokens)]
-
-
-    return []

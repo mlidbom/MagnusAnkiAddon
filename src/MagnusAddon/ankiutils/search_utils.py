@@ -45,7 +45,9 @@ def reading_wildcard(query:str) -> str: return f"{reading}:*{query}"
 def answer_wildcard(query:str) -> str: return f"{answer}:*{query}"
 
 def single_vocab_wildcard(query:str) -> str: return f"{vocab_read} ({forms}:*{query}* OR {reading}:*{query}* OR {answer}:*{query}*)"
-def single_vocab_exact(query) -> str:return f"{vocab_read} ({field_word(forms, query)} OR {field_word(reading, query)} OR {field_word(answer, query)})"
+def single_vocab_by_question_reading_or_answer_exact(query) -> str:return f"{vocab_read} ({field_word(forms, query)} OR {field_word(reading, query)} OR {field_word(answer, query)})"
+def single_vocab_by_form_exact(query) -> str:return f"{vocab_read} {field_word(forms, query)}"
+
 
 def kanji_in_string(query) -> str: return f"{note_kanji} ( {' OR '.join([f'{question}:{char}' for char in query])} )"
 
