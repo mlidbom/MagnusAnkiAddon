@@ -1,3 +1,5 @@
+from typing import Callable
+
 from parsing.jamdict_extensions.dict_lookup import DictLookup
 from parsing.janome_extensions.parts_of_speech import POS, PartsOfSpeech
 from parsing.janome_extensions.token_ext import TokenExt
@@ -99,23 +101,34 @@ class Node:
 
     def get_priority_class(self, question) -> str:
         if question != self.surface and question != self.base:
-            return ""
+            return priorities.unknown
 
         if question == self.surface and question in _Statics.low_priority_surfaces:
-            return _Statics.Class.low
+            return priorities.low
         if question == self.base and question in _Statics.low_priority_bases:
-            return _Statics.Class.low
+            return priorities.low
 
         if not self.children:
             if all(token.is_verb_auxiliary() for token in self.tokens):
-                return _Statics.Class.low
+                return priorities.low
 
-        return ""
+        return priorities.medium
+
+    def visit(self, callback: Callable[['Node'],None]) -> None:
+        callback(self)
+        for node in self.children:
+            node.visit(callback)
+
+class Priorities:
+    def __init__(self) -> None:
+        self.unknown = "unknown"
+        self.low = "low"
+        self.medium = "medium"
+
+priorities = Priorities()
+
 
 class _Statics:
-    class Class:
-        low = "word_priority_low"
-
     low_priority_surfaces: set[str] = set()
     low_priority_bases: set[str] = set("しもよかとたてでをなのにだがは") | {"する", "です", "私"}
 

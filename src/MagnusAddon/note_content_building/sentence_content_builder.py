@@ -8,7 +8,7 @@ from wanikani.wani_collection import WaniCollection
 _vocab_missing_string = "---"
 
 def _vocab_node_html(node: Node, excluded:set[str], question:str, answer:str, depth:int) -> str:
-    priority_class = node.get_priority_class(question)
+    priority_class = f"word_priority_{node.get_priority_class(question)}"
 
     html = f"""
     <li class="sentenceVocabEntry depth{depth} {priority_class}">
