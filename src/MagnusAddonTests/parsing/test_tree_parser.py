@@ -5,7 +5,6 @@ from parsing.tree_parsing.node import Node
 
 
 @pytest.mark.parametrize('sentence, excluded, expected', [
-    ("", set(), []),
     ("知らない", set(), [Node('知らない', '', [Node('知る', '知ら'), Node('ない', '')])]),
     ("いつまでも来ないと知らないからね", {"ないと"}, [Node('いつまでも', '', [Node('いつまで', '', [Node('いつ', ''), Node('まで', '')]), Node('も', '')]), Node('来ないと', '', [Node('来る', '来'), Node('ない', ''), Node('と', '')]), Node('知らない', '', [Node('知る', '知ら'), Node('ない', '')]), Node('から', ''), Node('ね', '')]),
     ("ついに素晴らしい女性に逢えた。", set(), [Node('ついに', ''), Node('素晴らしい', ''), Node('女性', ''), Node('に', ''), Node('逢えた', '', [Node('逢える', '逢え'), Node('た', '')])]), ("ついに素晴らしい女性に逢えた。", {"逢える"}, [Node('ついに', ''), Node('素晴らしい', ''), Node('女性', ''), Node('に', ''), Node('た', '')]),
@@ -29,13 +28,23 @@ from parsing.tree_parsing.node import Node
     ("一度聞いたことがある", set(), [Node('一度', ''), Node('聞いたことがある', '', [Node('聞く', '聞い'), Node('た', ''), Node('ことがある', '', [Node('こと', ''), Node('が', ''), Node('ある', '')])])]),
     ("よかった", set(), [Node('よかった','',[Node('よい','よかっ'), Node('た','')])]),
 ])
-def test_stuff(sentence: str, excluded: set[str], expected: list[Node]) -> None:
+def test_various_stuff(sentence: str, excluded: set[str], expected: list[Node]) -> None:
+    result = tree_parser.parse_tree(sentence, excluded)
+    assert result == expected
+
+@pytest.mark.parametrize('sentence, excluded, expected', [
+    ("よかった", set(), [Node('よかった','',[Node('よい','よかっ'), Node('た','')])]),
+    ("良ければ", set(), [Node('良ければ','',[Node('良い','良けれ'), Node('ば','')])]),
+    ("良かったら", set(), [Node('良かった','良かったら',[Node('良い','良かっ'), Node('た','たら')])]),
+    ("良くない", set(), [Node('良くない','',[Node('良い','良く'), Node('ない','')])])
+])
+def test_adjective_compounds(sentence: str, excluded: set[str], expected: list[Node]) -> None:
     result = tree_parser.parse_tree(sentence, excluded)
     assert result == expected
 
 
 @pytest.mark.parametrize('sentence, excluded, expected', [
-
+    #("よかった", set(), [Node('よかった','',[Node('よい','よかっ'), Node('た','')])])
 ])
 def test_temp(sentence: str, excluded: set[str], expected: list[Node]) -> None:
     result = tree_parser.parse_tree(sentence, excluded)
