@@ -60,7 +60,7 @@ class TokenExt:
         return self.parts_of_speech in _adjective_auxiliary_parts_of_speech
 
 _adjective_auxiliary_parts_of_speech = {
-    POS.bound_auxiliary,
+    POS.bound_auxiliary, # た, ない past, negation
 }
 
 _adjective_parts_of_speech = {
