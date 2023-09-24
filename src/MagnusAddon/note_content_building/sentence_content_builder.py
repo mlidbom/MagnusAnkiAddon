@@ -1,5 +1,6 @@
 from ankiutils import search_utils
 from note.sentencenote import SentenceNote
+from note.wanivocabnote import WaniVocabNote
 from parsing.tree_parsing import tree_parser
 from parsing.tree_parsing.node import Node, priorities
 from sysutils.utils import ListUtils
@@ -29,9 +30,12 @@ def _create_html_from_nodes(nodes: list[Node], excluded: set[str], depth:int) ->
     html = f"""<ul class="sentenceVocabList depth{depth}">\n"""
 
     for node in nodes:
-        vocabs = WaniCollection.search_vocab_notes(search_utils.node_vocab_lookup(node))
-        vocabs = [voc for voc in vocabs if voc.get_display_question() not in excluded]
-        found_words = set((voc.get_question() for voc in vocabs)) | set(ListUtils.flatten_list([voc.get_readings() for voc in vocabs]))
+        vocabs:list[WaniVocabNote] = []
+        found_words: set[str] = set()
+        if node.is_show_at_all_in_sentence_breakdown():
+            vocabs = WaniCollection.search_vocab_notes(search_utils.node_vocab_lookup(node))
+            vocabs = [voc for voc in vocabs if voc.get_display_question() not in excluded]
+            found_words = set((voc.get_question() for voc in vocabs)) | set(ListUtils.flatten_list([voc.get_readings() for voc in vocabs]))
 
         if vocabs:
             for vocab in vocabs:
@@ -45,8 +49,8 @@ def _create_html_from_nodes(nodes: list[Node], excluded: set[str], depth:int) ->
                 html += _vocab_node_html(node, excluded, node.surface, _vocab_missing_string, depth)
 
         else:
-            text = "" if node.is_verb_compound() else _vocab_missing_string
-            display_text = node.surface if depth == 1 and node.surface and node.is_verb_compound() else node.base
+            text = "" if node.is_probably_not_dictionary_word() else _vocab_missing_string
+            display_text = node.surface if depth == 1 and node.surface and node.is_probably_not_dictionary_word() else node.base
             html += _vocab_node_html(node, excluded, display_text, text, depth)
             if node.is_show_surface_in_sentence_breakdown() and node.surface not in excluded:
                 html += _vocab_node_html(node, excluded, node.surface, _vocab_missing_string, depth)

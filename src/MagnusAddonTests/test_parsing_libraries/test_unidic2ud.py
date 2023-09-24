@@ -52,3 +52,13 @@ def run_tests(sentence) -> None:
 ])
 def test_unidic2ud_temp(sentence: str, expected: list[str]) -> None:
     run_tests(sentence)
+
+
+def test_something() -> None:
+    def find_first_index(the_list: list, criteria: callable) -> int:
+        return next((i for i, item in enumerate(the_list) if criteria(item)), -1)
+
+    lst = [1, 4, 7, 10, 13]
+    index = find_first_index(lst, lambda x: x > 500)
+
+    assert index == 2

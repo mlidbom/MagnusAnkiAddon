@@ -45,8 +45,11 @@ class Node:
     def is_surface_kana_only(self) -> bool:
         return self.surface and kana_utils.is_only_kana(self.surface)
 
+    def is_show_at_all_in_sentence_breakdown(self) -> bool:
+        return self.is_show_base_in_sentence_breakdown() or self.is_show_surface_in_sentence_breakdown()
+
     def is_show_base_in_sentence_breakdown(self) -> bool:
-        return not self._is_base_manually_excluded()
+        return not self._is_base_manually_excluded() and self._is_base_in_dictionary()
 
     def is_show_surface_in_sentence_breakdown(self) -> bool:
         return (self.surface
@@ -61,19 +64,14 @@ class Node:
     def _is_base_in_dictionary(self) -> bool:
         return self.base and DictLookup.lookup_word_shallow(self.base).found_words()
 
-    def is_verb_compound(self) -> bool:
-        if not self.children:
-            return False
-
-        reversed_tokens = self.tokens[::-1]
-        if not reversed_tokens[0].is_verb_auxiliary():
-            return False
-
-        for token in reversed_tokens:
-            if not token.is_verb_auxiliary():
-                return token.is_independent_verb()
+    def is_probably_not_dictionary_word(self) -> bool:
+        verb_index = next((i for i, item in enumerate(self.tokens) if tree_parser.is_verb([item])), -1)
+        if verb_index > -1:
+            if tree_parser.is_verb_auxiliary(self.tokens[verb_index + 1:]):
+                if not self._is_base_in_dictionary():
+                    return True
         
-        return True
+        return False
 
     def _is_surface_manually_excluded(self) -> bool:
         global excluded_surface_pos
