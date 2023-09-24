@@ -59,6 +59,23 @@ class TokenExt:
     def is_adjective_auxiliary(self) -> bool:
         return self.parts_of_speech in _adjective_auxiliary_parts_of_speech
 
+    def is_noun(self) -> bool:
+        return self.parts_of_speech in _noun_parts_of_speech
+
+    def is_noun_auxiliary(self) -> bool:
+        return self.parts_of_speech in _noun_auxiliary_parts_of_speech
+
+_noun_parts_of_speech = {
+    POS.Noun.Pronoun.general, # あいつ
+    POS.Noun.suru_verb # 話
+}
+
+_noun_auxiliary_parts_of_speech = {
+    POS.Particle.CaseMarking.general, # が
+    POS.Particle.adnominalization, # の
+    POS.Noun.Dependent.adverbial # なか
+}
+
 _adjective_auxiliary_parts_of_speech = {
     POS.bound_auxiliary, # た, ない past, negation
 }
@@ -69,12 +86,12 @@ _adjective_parts_of_speech = {
 }
 _verb_auxiliary_parts_of_speech = {
             POS.bound_auxiliary, # た, ない past, negation
-            POS.Verb.non_independent, # いる progressive/perfect, いく
+            POS.Verb.dependent, # いる progressive/perfect, いく
             POS.Verb.suffix, # れる passive
             POS.Particle.conjunctive, # て, と
             POS.Particle.coordinating_conjunction, # たり
             POS.Particle.adverbial, # まで todo: not sure about this one
             POS.Adjective.dependent, # よかった
-            POS.Noun.NonSelfReliant.general, # こと
+            POS.Noun.Dependent.general, # こと
             POS.Noun.general
         }

@@ -8,14 +8,14 @@ from parsing.tree_parsing.node import Node
     ("知らない", set(), [Node('知らない', '', [Node('知る', '知ら'), Node('ない', '')])]),
     ("いつまでも来ないと知らないからね", {"ないと"}, [Node('いつまでも', '', [Node('いつまで', '', [Node('いつ', ''), Node('まで', '')]), Node('も', '')]), Node('来ないと', '', [Node('来る', '来'), Node('ない', ''), Node('と', '')]), Node('知らない', '', [Node('知る', '知ら'), Node('ない', '')]), Node('から', ''), Node('ね', '')]),
     ("ついに素晴らしい女性に逢えた。", set(), [Node('ついに', ''), Node('素晴らしい', ''), Node('女性', ''), Node('に', ''), Node('逢えた', '', [Node('逢える', '逢え'), Node('た', '')])]),
-    ("ついに素晴らしい女性に逢えた。", {"逢える"}, [Node('ついに',''), Node('素晴らしい',''), Node('女性',''), Node('に',''), Node('逢',''), Node('え',''), Node('た','')]),
+    ("ついに素晴らしい女性に逢えた。", {"逢える"}, [Node('ついに', ''), Node('素晴らしい', ''), Node('女性', ''), Node('に', ''), Node('逢', ''), Node('え', ''), Node('た', '')]),
     ("ううん藤宮さんは日記を捨てるような人じゃない", set(), [Node('ううん', ''), Node('藤宮', ''), Node('さん', ''), Node('は', ''), Node('日記', ''), Node('を', ''), Node('捨てる', ''), Node('ようだ', 'ような', [Node('よう', ''), Node('だ', 'な')]), Node('人', ''), Node('じゃない', '', [Node('じゃ', ''), Node('ない', '')])]),
-    ("なかったかな", {"たか", "たかな"}, [Node('なかった','',[Node('ない','なかっ'), Node('た','')]), Node('かな','',[Node('か',''), Node('な','')])]),
+    ("なかったかな", {"たか", "たかな"}, [Node('なかった', '', [Node('ない', 'なかっ'), Node('た', '')]), Node('かな', '', [Node('か', ''), Node('な', '')])]),
     ("探しているんですか", {"探しているんです"}, [Node('探している', '', [Node('探す', '探し'), Node('て', ''), Node('いる', '')]), Node('んです', '', [Node('ん', ''), Node('です', '')]), Node('か', '')]),
     ("としたら", {"とする"}, [Node('とした', 'としたら', [Node('と', ''), Node('した', 'したら', [Node('する', 'し'), Node('た', 'たら')])])]),
     ("離れていくよ", {"いくよ"}, [Node('離れていく', '', [Node('離れる', '離れ'), Node('て', ''), Node('いく', '')]), Node('よ', '')]),
     ("いつまでも来ないと知らないからね", set(), [Node('いつまでも', '', [Node('いつまで', '', [Node('いつ', ''), Node('まで', '')]), Node('も', '')]), Node('来ないと', '', [Node('来る', '来'), Node('ないと', '', [Node('ない', ''), Node('と', '')])]), Node('知らない', '', [Node('知る', '知ら'), Node('ない', '')]), Node('から', ''), Node('ね', '')]),
-    ("ダメダメ私を殺して", {"殺し"}, [Node('ダメダメ', ''), Node('私', ''), Node('を', ''), Node('殺して', '', [Node('殺す', '殺し'), Node('て', '')])]),
+    ("ダメダメ私を殺して", {"殺し"}, [Node('ダメダメ',''), Node('私を','',[Node('私',''), Node('を','')]), Node('殺して','',[Node('殺す','殺し'), Node('て','')])]),
     ("夢を見た", set(), [Node('夢を見た', '', [Node('夢を見る', '夢を見', [Node('夢', ''), Node('を', ''), Node('見る', '見')]), Node('た', '')])]),
     ("言われるまで気づかなかった", set(), [Node('言われるまで', '', [Node('言う', '言わ'), Node('れる', ''), Node('まで', '')]), Node('気づかなかった', '', [Node('気づく', '気づか'), Node('ない', 'なかっ'), Node('た', '')])]),
     ("行きたい所全部行こう", set(), [Node('行きたい', '', [Node('行く', '行き'), Node('たい', '')]), Node('所', ''), Node('全部', ''), Node('行こう', '', [Node('行く', '行こ'), Node('う', '')])]),
@@ -27,20 +27,21 @@ from parsing.tree_parsing.node import Node
     ("ように言ったのも", {"ように言ったのも", "ように言ったの", "たのも", "たの"}, [Node('ように言った', '', [Node('ように言う', 'ように言っ', [Node('ように', '', [Node('よう', ''), Node('に', '')]), Node('言う', '言っ')]), Node('た', '')]), Node('の', ''), Node('も', '')]),
     ("探しているんですか", {"探しているんです"}, [Node('探している', '', [Node('探す', '探し'), Node('て', ''), Node('いる', '')]), Node('んです', '', [Node('ん', ''), Node('です', '')]), Node('か', '')]),
     ("一度聞いたことがある", set(), [Node('一度', ''), Node('聞いたことがある', '', [Node('聞く', '聞い'), Node('た', ''), Node('ことがある', '', [Node('こと', ''), Node('が', ''), Node('ある', '')])])]),
-    ("よかった", set(), [Node('よかった','',[Node('よい','よかっ'), Node('た','')])]),
+    ("よかった", set(), [Node('よかった', '', [Node('よい', 'よかっ'), Node('た', '')])]),
 ])
 def test_various_stuff(sentence: str, excluded: set[str], expected: list[Node]) -> None:
     result = tree_parser.parse_tree(sentence, excluded)
     assert result == expected
 
+
 @pytest.mark.parametrize('sentence, excluded, expected', [
-    #various conjugations
-    ("よかった", set(), [Node('よかった','',[Node('よい','よかっ'), Node('た','')])]),
+    # various conjugations
+    ("よかった", set(), [Node('よかった', '', [Node('よい', 'よかっ'), Node('た', '')])]),
     ("良かった", set(), [Node('良かった', '', [Node('良い', 'よかっ'), Node('た', '')])]),
-    ("良くない", set(), [Node('良くない','',[Node('良い','良く'), Node('ない','')])]),
-    ("良ければ", set(), [Node('良ければ','',[Node('良い','良けれ'), Node('ば','')])]),
-    ("良かったら", set(), [Node('良かった','良かったら',[Node('良い','良かっ'), Node('た','たら')])]),
-    ("よかったじゃん", {"よかったじゃん"}, [Node('よかった','',[Node('よい','よかっ'), Node('た','')]), Node('じゃん','')]),
+    ("良くない", set(), [Node('良くない', '', [Node('良い', '良く'), Node('ない', '')])]),
+    ("良ければ", set(), [Node('良ければ', '', [Node('良い', '良けれ'), Node('ば', '')])]),
+    ("良かったら", set(), [Node('良かった', '良かったら', [Node('良い', '良かっ'), Node('た', 'たら')])]),
+    ("よかったじゃん", {"よかったじゃん"}, [Node('よかった', '', [Node('よい', 'よかっ'), Node('た', '')]), Node('じゃん', '')]),
 
     # adjective within verb compound
     ("言えばよかった", set(), [Node('言えばよかった', '', [Node('言う', '言え'), Node('ば', ''), Node('よかった', '', [Node('よい', 'よかっ'), Node('た', '')])])])
@@ -49,10 +50,17 @@ def test_adjective_compounds(sentence: str, excluded: set[str], expected: list[N
     result = tree_parser.parse_tree(sentence, excluded)
     assert result == expected
 
+
 @pytest.mark.parametrize('sentence, excluded, expected', [
-    ("普段どうやって日記読んでたんだ", {"たんだ", "たん"}, [Node('普段',''), Node('どうやって','',[Node('どう',''), Node('やって','',[Node('やる','やっ'), Node('て','')])]), Node('日記',''), Node('読んでた','',[Node('読む','読ん'), Node('で',''), Node('た','')]), Node('ん',''), Node('だ','')])
+    ("あいつが話の中に出てくるのが", set(), [Node('あいつが','',[Node('あいつ',''), Node('が','')]), Node('話の中に','',[Node('話',''), Node('の',''), Node('中',''), Node('に','')]), Node('出てくるの','',[Node('出てくる','',[Node('出る','出'), Node('て',''), Node('くる','')]), Node('の','')]), Node('が','')])
+])
+def test_noun_compounds(sentence: str, excluded: set[str], expected: list[Node]) -> None:
+    result = tree_parser.parse_tree(sentence, excluded)
+    assert result == expected
+
+
+@pytest.mark.parametrize('sentence, excluded, expected', [
 ])
 def test_temp(sentence: str, excluded: set[str], expected: list[Node]) -> None:
     result = tree_parser.parse_tree(sentence, excluded)
     assert result == expected
-

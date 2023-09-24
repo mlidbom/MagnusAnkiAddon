@@ -19,7 +19,8 @@ def parse_tree(sentence:str, excluded:set[str]) -> list[Node]:
     dictionary_compounds_added = _build_dictionary_compounds(tokens, excluded)
     verb_compounds_added = _build_compounds(is_verb, is_verb_auxiliary, dictionary_compounds_added, excluded)
     adjective_compounds_added = _build_compounds(_is_adjective, _is_adjective_auxiliary, verb_compounds_added, excluded)
-    return [Node.create(compounds, excluded) for compounds in adjective_compounds_added]
+    noun_compounds_added = _build_compounds(_is_noun, _is_noun_auxiliary, adjective_compounds_added, excluded)
+    return [Node.create(compounds, excluded) for compounds in noun_compounds_added]
 
 
 def _recursing_parse(tokens, excluded:set[str]) -> list[Node]:
@@ -47,6 +48,12 @@ def _is_adjective(compound: list[TokenExt]):
 
 def _is_adjective_auxiliary(compound: list[TokenExt]):
     return all(c.is_adjective_auxiliary() for c in compound)
+
+def _is_noun(compound: list[TokenExt]):
+    return compound[-1].is_noun()
+
+def _is_noun_auxiliary(compound: list[TokenExt]):
+    return all(c.is_noun_auxiliary() for c in compound)
 
 def _build_compounds(compound_filter: Callable[[list[TokenExt]],bool], auxiliary_filter: Callable[[list[TokenExt]],bool], start_compounds: list[list[TokenExt]], excluded:set[str]) -> list[list[TokenExt]]:
     compounds = [inner_list.copy() for inner_list in start_compounds]

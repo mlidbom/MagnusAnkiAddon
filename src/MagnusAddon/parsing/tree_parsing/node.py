@@ -49,12 +49,12 @@ class Node:
         return self.is_show_base_in_sentence_breakdown() or self.is_show_surface_in_sentence_breakdown()
 
     def is_show_base_in_sentence_breakdown(self) -> bool:
-        return not self._is_base_manually_excluded() and self._is_base_in_dictionary()
+        return not self._is_base_manually_excluded()
 
     def is_show_surface_in_sentence_breakdown(self) -> bool:
         return (self.surface
                 and not self.tokens[0].parts_of_speech == POS.Verb.independent
-                and not self.tokens[0].parts_of_speech == POS.Verb.non_independent
+                and not self.tokens[0].parts_of_speech == POS.Verb.dependent
                 and not self._is_surface_manually_excluded()
                 and self._is_surface_in_dictionary())
 

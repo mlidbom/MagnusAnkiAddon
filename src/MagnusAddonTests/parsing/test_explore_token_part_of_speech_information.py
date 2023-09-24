@@ -12,12 +12,12 @@ _tokenizer = TokenizerExt()
         TokenExt(POS.Adverb.particle_connection, "こんなに", "こんなに"),
         TokenExt(POS.Verb.independent,           "疲れる",   "疲れ", "一段", "連用形"),
         TokenExt(POS.Particle.conjunctive,       "て",      "て"),
-        TokenExt(POS.Verb.non_independent,       "いる",    "いる", "一段", "基本形")]),
+        TokenExt(POS.Verb.dependent, "いる", "いる", "一段", "基本形")]),
     ("こんなに食べている", [
         TokenExt(POS.Adverb.particle_connection, "こんなに", "こんなに"),
         TokenExt(POS.Verb.independent,           "食べる",   "食べ", "一段", "連用形"),
         TokenExt(POS.Particle.conjunctive,       "て",      "て"),
-        TokenExt(POS.Verb.non_independent,       "いる",    "いる", "一段", "基本形")]),
+        TokenExt(POS.Verb.dependent, "いる", "いる", "一段", "基本形")]),
     ("こんなにする",      [
         TokenExt(POS.pre_noun_adjectival,          "こんな", "こんな"),
         TokenExt(POS.Particle.CaseMarking.general, "に",    "に"),
