@@ -66,6 +66,7 @@ class TokenExt:
         return self.parts_of_speech in _noun_auxiliary_parts_of_speech
 
 _noun_parts_of_speech = {
+    POS.Noun.general, # 自分
     POS.Noun.Pronoun.general, # あいつ
     POS.Noun.suru_verb # 話
 }

@@ -162,7 +162,7 @@ class POS:
     class Noun:
         suru_verb = _add_full_part_of_speech('名詞', 'サ変接続') # 話
         negative_adjective_stem = _add_full_part_of_speech('名詞', 'ナイ形容詞語幹')
-        general = _add_full_part_of_speech('名詞', '一般')
+        general = _add_full_part_of_speech('名詞', '一般') # 自分
         adverbial = _add_full_part_of_speech('名詞', '副詞可能')
         auxiliary_verb = _add_full_part_of_speech('名詞', '動詞非自立的')
         na_adjective_stem = _add_full_part_of_speech('名詞', '形容動詞語幹')
