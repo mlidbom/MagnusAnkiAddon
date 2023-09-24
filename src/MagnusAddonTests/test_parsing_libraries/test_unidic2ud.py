@@ -47,7 +47,8 @@ def run_tests(sentence) -> None:
             print(result.to_tree())
 
 @pytest.mark.parametrize('sentence, expected', [
-    ("そんなに気になるなら あの時俺も友達だって言えばよかったじゃん", [])
+    ("そんなに気になるなら あの時俺も友達だって言えばよかったじゃん", []),
+    ("普段どうやって日記読んでたんだ", [])
 ])
 def test_unidic2ud_temp(sentence: str, expected: list[str]) -> None:
     run_tests(sentence)

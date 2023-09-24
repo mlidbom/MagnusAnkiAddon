@@ -1,4 +1,4 @@
-#top condenders:
+#top contenders:
 
 #UniDic2UD https://github.com/KoichiYasuoka/UniDic2UD
 #Slower than I would like for sure, but seems to do everything I want.

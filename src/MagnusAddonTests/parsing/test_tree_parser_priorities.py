@@ -22,7 +22,7 @@ p = priorities
         'から': 'low',
         'ない': 'low',
         'まで': 'low',
-        'いつ': 'medium',
+        'いつ': 'low',
         'いつまで': 'medium',
         'いつまでも': 'medium',
         'ないと': 'medium',
@@ -30,7 +30,7 @@ p = priorities
         '来る': 'medium',
         '知らない': 'medium',
         '知る': 'medium',
-        'ね': 'medium'})
+        'ね': 'very_low'})
 ])
 def test_priorities(sentence: str, expected_priorities: dict[str, str]) -> None:
     real_priorities: dict[str, str] = dict()

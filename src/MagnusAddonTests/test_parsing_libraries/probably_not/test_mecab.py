@@ -1,12 +1,7 @@
 #Fast but output nothing but text and has no dependency information I can find and does not seem too intelligent in parsing compared to competitors.
 
-from typing import List, Any, Tuple
-
 import MeCab
 import pytest
-
-from sysutils import kana_utils
-
 
 class MecabToken:
     def __init__(self, token_string: str) -> None:
@@ -28,7 +23,7 @@ class MecabToken:
 
 class MecabTokenizer:
     def __init__(self) -> None:
-        self._tagger = tagger = MeCab.Tagger()
+        self._tagger = MeCab.Tagger()
 
     def tokenize(self, text: str) -> list[MecabToken]:
         parsed: str = self._tagger.parse(text)

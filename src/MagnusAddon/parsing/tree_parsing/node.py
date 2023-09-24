@@ -103,6 +103,15 @@ class Node:
         if question != self.surface and question != self.base:
             return priorities.unknown
 
+        kanji_count = len([char for char in self.base if not kana_utils.is_kana(char)])
+
+        #todo: if this works out well, remove the code with hard coded values below
+        if kanji_count == 0:
+            if len(self.base) == 1:
+                return priorities.very_low
+            if len(self.base) == 2:
+                return priorities.low
+
         if question == self.surface:
             if question in _Statics.hard_coded_surface_priorities:
                 return _Statics.hard_coded_surface_priorities[question]
@@ -114,12 +123,12 @@ class Node:
             if all(token.is_verb_auxiliary() for token in self.tokens):
                 return priorities.low
 
-        kanji = [char for char in self.base if not kana_utils.is_kana(char)]
 
-        if len(kanji) > 2:
+
+        if kanji_count > 2:
             return priorities.very_high
 
-        if len(kanji) > 1:
+        if kanji_count > 1:
             return priorities.high
 
         return priorities.medium
@@ -146,8 +155,8 @@ class _Statics:
     hard_coded_surface_priorities: dict[str, str] = dict()
 
     lowest_priority_surfaces: set[str] = set()
-    for particle in "しもよかとたてでをなのにだがは": hard_coded_base_priorities[particle] = priorities.very_low
-    for word in ["する", "です", "私"]: hard_coded_base_priorities[word] = priorities.low
+    # for particle in "しもよかとたてでをなのにだがは": hard_coded_base_priorities[particle] = priorities.very_low
+    # for word in "する|です|私|なる|この|あの|その|いる|ある".split("|"): hard_coded_base_priorities[word] = priorities.low
 
 
 

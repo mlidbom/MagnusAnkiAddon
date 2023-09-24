@@ -75,5 +75,6 @@ _verb_auxiliary_parts_of_speech = {
             POS.Particle.coordinating_conjunction, # たり
             POS.Particle.adverbial, # まで todo: not sure about this one
             POS.Adjective.dependent, # よかった
-            POS.Noun.NonSelfReliant.general # こと
+            POS.Noun.NonSelfReliant.general, # こと
+            POS.Noun.general
         }
