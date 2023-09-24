@@ -6,7 +6,7 @@ from parsing.tree_parsing.node import Node, priorities
 from sysutils.utils import ListUtils
 from wanikani.wani_collection import WaniCollection
 
-_vocab_missing_string = "---"
+_vocab_missing_string = "" # for new just show nothing to reduce my frustration with this feature :)
 
 def _vocab_node_html(node: Node, excluded:set[str], question:str, answer:str, depth:int) -> str:
     if question in excluded:
