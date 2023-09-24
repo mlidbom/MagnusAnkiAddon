@@ -74,33 +74,45 @@ class TokenExt:
 
 _noun_parts_of_speech = {
     POS.Noun.general, # 自分
-    POS.Noun.Pronoun.general, # あいつ
-    POS.Noun.suru_verb # 話
-}
 
-_noun_auxiliary_parts_of_speech = {
-    POS.Particle.CaseMarking.general, # が
-    POS.Particle.adnominalization, # の
-    POS.Noun.Dependent.adverbial, # なか
-    POS.Noun.Dependent.general # こと
+    POS.Noun.Pronoun.general, # あいつ
+    POS.Noun.suru_verb, # 話
+    POS.Noun.adverbial, # 今
 }
 
 _adjective_auxiliary_parts_of_speech = {
     POS.bound_auxiliary, # た, ない past, negation
+    POS.Particle.conjunctive, # て,と,し
+    #POS.Adverb.general, # もう
 }
 
 _adjective_parts_of_speech = {
     POS.Adjective.independent,
     POS.Adjective.dependent
 }
+
+_noun_auxiliary_parts_of_speech = {
+    POS.Noun.general, # 自分
+
+    POS.Particle.CaseMarking.general, # が
+    POS.Particle.adnominalization, # の
+    POS.Particle.binding, # は
+    POS.Noun.Dependent.adverbial, # なか
+    POS.Noun.Dependent.general, # こと
+    POS.Particle.adverbial  # まで
+} | _adjective_parts_of_speech | _adjective_auxiliary_parts_of_speech
+
 _verb_auxiliary_parts_of_speech = {
             POS.bound_auxiliary, # た, ない past, negation
+            POS.Particle.binding, # は, も
+            POS.Particle.sentence_ending, # な
             POS.Verb.dependent, # いる progressive/perfect, いく
             POS.Verb.suffix, # れる passive
-            POS.Particle.conjunctive, # て, と
+            POS.Particle.conjunctive, # て,と,し
             POS.Particle.coordinating_conjunction, # たり
             POS.Particle.adverbial, # まで todo: not sure about this one
             POS.Adjective.dependent, # よかった
+            POS.Adjective.independent, # ない
             POS.Noun.Dependent.general, # こと
             POS.Noun.general
         }

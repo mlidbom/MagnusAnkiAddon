@@ -135,18 +135,18 @@ class POS:
         interjection = _add_full_part_of_speech('その他', '間投')
 
     class Adverb:
-        general = _add_full_part_of_speech('副詞', '一般')
+        general = _add_full_part_of_speech('副詞', '一般') # もう
         particle_connection = _add_full_part_of_speech('副詞', '助詞類接続')
 
     class Particle:
         coordinating_conjunction = _add_full_part_of_speech('助詞', '並立助詞') # たり
-        binding = _add_full_part_of_speech('助詞', '係助詞')
+        binding = _add_full_part_of_speech('助詞', '係助詞') # は, も
         adverbial = _add_full_part_of_speech('助詞', '副助詞') # まで
         adverbial_coordinating_ending = _add_full_part_of_speech('助詞', '副助詞／並立助詞／終助詞')
         adverbialization = _add_full_part_of_speech('助詞', '副詞化')
-        conjunctive = _add_full_part_of_speech('助詞', '接続助詞')  # て, と
+        conjunctive = _add_full_part_of_speech('助詞', '接続助詞')  # て,と,し
         special = _add_full_part_of_speech('助詞', '特殊')
-        sentence_ending = _add_full_part_of_speech('助詞', '終助詞')
+        sentence_ending = _add_full_part_of_speech('助詞', '終助詞') # な
         adnominalization = _add_full_part_of_speech('助詞', '連体化') # の
 
         class CaseMarking:
@@ -163,7 +163,7 @@ class POS:
         suru_verb = _add_full_part_of_speech('名詞', 'サ変接続') # 話
         negative_adjective_stem = _add_full_part_of_speech('名詞', 'ナイ形容詞語幹')
         general = _add_full_part_of_speech('名詞', '一般') # 自分
-        adverbial = _add_full_part_of_speech('名詞', '副詞可能')
+        adverbial = _add_full_part_of_speech('名詞', '副詞可能') # 今
         auxiliary_verb = _add_full_part_of_speech('名詞', '動詞非自立的')
         na_adjective_stem = _add_full_part_of_speech('名詞', '形容動詞語幹')
         numeric = _add_full_part_of_speech('名詞', '数')
