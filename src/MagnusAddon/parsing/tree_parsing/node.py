@@ -66,7 +66,7 @@ class Node:
 
     def is_probably_not_dictionary_word(self) -> bool:
         verb_index = next((i for i, item in enumerate(self.tokens) if tree_parser.is_verb([item])), -1)
-        if verb_index > -1:
+        if -1 < verb_index < len(self.tokens) - 1:
             if tree_parser.is_verb_auxiliary(self.tokens[verb_index + 1:]):
                 if not self._is_base_in_dictionary():
                     return True

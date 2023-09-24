@@ -9,6 +9,9 @@ from wanikani.wani_collection import WaniCollection
 _vocab_missing_string = "---"
 
 def _vocab_node_html(node: Node, excluded:set[str], question:str, answer:str, depth:int) -> str:
+    if question in excluded:
+        return ""
+
     priority_class = f"word_priority_{node.get_priority_class(question)}"
 
     html = f"""
@@ -20,7 +23,6 @@ def _vocab_node_html(node: Node, excluded:set[str], question:str, answer:str, de
         {_create_html_from_nodes(node.children, excluded, depth + 1)}
     </li>
     """
-
     return html
 
 def _create_html_from_nodes(nodes: list[Node], excluded: set[str], depth:int) -> str:
