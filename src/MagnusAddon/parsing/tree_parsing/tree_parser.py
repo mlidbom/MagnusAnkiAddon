@@ -97,8 +97,9 @@ def _is_in_dictionary(compound_tokens: list[TokenExt], excluded:set[str]) -> boo
             or DictLookup.lookup_word_shallow(compound_surface).found_words())
 
 
-def _build_dictionary_compounds(tokens: list[TokenExt], excluded:set[str]) -> list[list[TokenExt]]:
+def _build_dictionary_compounds(tokens_param: list[TokenExt], excluded:set[str]) -> list[list[TokenExt]]:
     compounds: list[list[TokenExt]] = []
+    tokens = [tok for tok in tokens_param]
 
     identity_index = len(tokens)
     while len(tokens) > 0:
@@ -114,8 +115,24 @@ def _build_dictionary_compounds(tokens: list[TokenExt], excluded:set[str]) -> li
             current_index -= 1
 
         if current_index == 0:
-            if tokens[0].base_form not in excluded and tokens[0].surface not in excluded:
+            left_over_token = tokens[0]
+            if left_over_token.base_form in excluded or left_over_token.surface in excluded:
+                # we are in bad shape here. We don't want to exclude single tokens or a part of the sentence just disappears for the user. Most likely the tokenizer has made a mistake that the user is trying to correct by excluding the word. So let's see if we can jiggle the tokenizer to make a choice the user likes better.
+                if len(left_over_token.surface) == 1: # for whatever reason the user does not want to display this single character as a separate word. That's fine, but we handle that on the UI level by excluding it there, here we want it preserved for the verb and adjective compound logic to make use of.
+                    compounds.append([left_over_token])
+                elif len(left_over_token.surface) > 1: # Try and see what happens if we just give this tiny thing to the tokenizer, it ain't pretty but we're desperate here.
+                    tokenized_text = _tokenizer.tokenize(left_over_token.surface)
+                    if len(tokenized_text.tokens) > 1:
+                        for token in tokenized_text.tokens:
+                            compounds.append([token])# Try and see what happens if we just give this tiny thing to the tokenizer, it ain't pretty but we're desperate
+                    else: # OK. Now we are at the very bottom of the barrel. We'll just split it manually and give the parts to the tokenizer. Hold your nose and squeeze your eyes shut. This is some truly ugly code.
+                        characters = list(left_over_token.surface)
+                        tokenized_single_characters = [_tokenizer.tokenize(char).tokens for char in characters]
+                        if not all(len(c) == 1 for c in tokenized_single_characters): raise Exception("Somehow a single character resulted in i multi token result??")
+                        compounds.extend(tokenized_single_characters)
+            else:
                 compounds.append([tokens[0]])
+
             tokens = tokens[1:]
 
     return compounds

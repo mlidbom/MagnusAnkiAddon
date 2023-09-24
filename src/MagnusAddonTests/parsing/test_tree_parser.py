@@ -1,6 +1,4 @@
 import pytest
-from janome.analyzer import Analyzer
-from janome.tokenizer import Tokenizer
 
 from parsing.tree_parsing import tree_parser
 from parsing.tree_parsing.node import Node
@@ -9,7 +7,8 @@ from parsing.tree_parsing.node import Node
 @pytest.mark.parametrize('sentence, excluded, expected', [
     ("知らない", set(), [Node('知らない', '', [Node('知る', '知ら'), Node('ない', '')])]),
     ("いつまでも来ないと知らないからね", {"ないと"}, [Node('いつまでも', '', [Node('いつまで', '', [Node('いつ', ''), Node('まで', '')]), Node('も', '')]), Node('来ないと', '', [Node('来る', '来'), Node('ない', ''), Node('と', '')]), Node('知らない', '', [Node('知る', '知ら'), Node('ない', '')]), Node('から', ''), Node('ね', '')]),
-    ("ついに素晴らしい女性に逢えた。", set(), [Node('ついに', ''), Node('素晴らしい', ''), Node('女性', ''), Node('に', ''), Node('逢えた', '', [Node('逢える', '逢え'), Node('た', '')])]), ("ついに素晴らしい女性に逢えた。", {"逢える"}, [Node('ついに', ''), Node('素晴らしい', ''), Node('女性', ''), Node('に', ''), Node('た', '')]),
+    ("ついに素晴らしい女性に逢えた。", set(), [Node('ついに', ''), Node('素晴らしい', ''), Node('女性', ''), Node('に', ''), Node('逢えた', '', [Node('逢える', '逢え'), Node('た', '')])]),
+    ("ついに素晴らしい女性に逢えた。", {"逢える"}, [Node('ついに',''), Node('素晴らしい',''), Node('女性',''), Node('に',''), Node('逢',''), Node('え',''), Node('た','')]),
     ("ううん藤宮さんは日記を捨てるような人じゃない", set(), [Node('ううん', ''), Node('藤宮', ''), Node('さん', ''), Node('は', ''), Node('日記', ''), Node('を', ''), Node('捨てる', ''), Node('ようだ', 'ような', [Node('よう', ''), Node('だ', 'な')]), Node('人', ''), Node('じゃない', '', [Node('じゃ', ''), Node('ない', '')])]),
     ("なかったかな", {"たか", "たかな"}, [Node('なかった','',[Node('ない','なかっ'), Node('た','')]), Node('かな','',[Node('か',''), Node('な','')])]),
     ("探しているんですか", {"探しているんです"}, [Node('探している', '', [Node('探す', '探し'), Node('て', ''), Node('いる', '')]), Node('んです', '', [Node('ん', ''), Node('です', '')]), Node('か', '')]),
@@ -37,10 +36,12 @@ def test_various_stuff(sentence: str, excluded: set[str], expected: list[Node]) 
 @pytest.mark.parametrize('sentence, excluded, expected', [
     #various conjugations
     ("よかった", set(), [Node('よかった','',[Node('よい','よかっ'), Node('た','')])]),
+    ("良かった", set(), [Node('良かった', '', [Node('良い', 'よかっ'), Node('た', '')])]),
+    ("良くない", set(), [Node('良くない','',[Node('良い','良く'), Node('ない','')])]),
     ("良ければ", set(), [Node('良ければ','',[Node('良い','良けれ'), Node('ば','')])]),
     ("良かったら", set(), [Node('良かった','良かったら',[Node('良い','良かっ'), Node('た','たら')])]),
-    ("良くない", set(), [Node('良くない','',[Node('良い','良く'), Node('ない','')])]),
     ("よかったじゃん", {"よかったじゃん"}, [Node('よかった','',[Node('よい','よかっ'), Node('た','')]), Node('じゃん','')]),
+
     # adjective within verb compound
     ("言えばよかった", set(), [Node('言えばよかった', '', [Node('言う', '言え'), Node('ば', ''), Node('よかった', '', [Node('よい', 'よかっ'), Node('た', '')])])])
 ])
@@ -49,27 +50,9 @@ def test_adjective_compounds(sentence: str, excluded: set[str], expected: list[N
     assert result == expected
 
 @pytest.mark.parametrize('sentence, excluded, expected', [
-    #("よかった", set(), [Node('よかった', '', [Node('よい', 'よかっ'), Node('た', '')])]),
-    ("良かった", set(), [Node('良かった', '', [Node('良い', 'よかっ'), Node('た', '')])]),
+    ("普段どうやって日記読んでたんだ", {"たんだ", "たん"}, [Node('普段',''), Node('どうやって','',[Node('どう',''), Node('やって','',[Node('やる','やっ'), Node('て','')])]), Node('日記',''), Node('読んでた','',[Node('読む','読ん'), Node('で',''), Node('た','')]), Node('ん',''), Node('だ','')])
 ])
 def test_temp(sentence: str, excluded: set[str], expected: list[Node]) -> None:
     result = tree_parser.parse_tree(sentence, excluded)
     assert result == expected
-
-
-@pytest.mark.parametrize('sentence', [
-    "よかった",
-    "良かった",
-    "ある",
-    "有る"
-])
-def test_temp_remove_me_explore_janome(sentence: str) -> None:
-    tokenizer = Tokenizer()
-    tokens = [tok for tok in tokenizer.tokenize("よかった")]
-
-def test_temp_remove_me_explore_janome_analyzer() -> None:
-    analyzer = Analyzer()
-    tokens = [tok for tok in analyzer.analyze("よかった")]
-    first_token = tokens[0]
-
 
