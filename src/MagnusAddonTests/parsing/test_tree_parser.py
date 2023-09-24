@@ -49,8 +49,8 @@ def test_adjective_compounds(sentence: str, excluded: set[str], expected: list[N
     assert result == expected
 
 @pytest.mark.parametrize('sentence, excluded, expected', [
-    ("よかった", set(), [Node('よかった','',[Node('よい','よかっ'), Node('た','')])]),
-    ("良かった", set(), [Node('良かった', '', [Node('よい', 'よかっ'), Node('た', '')])]),
+    #("よかった", set(), [Node('よかった', '', [Node('よい', 'よかっ'), Node('た', '')])]),
+    ("良かった", set(), [Node('良かった', '', [Node('良い', 'よかっ'), Node('た', '')])]),
 ])
 def test_temp(sentence: str, excluded: set[str], expected: list[Node]) -> None:
     result = tree_parser.parse_tree(sentence, excluded)

@@ -40,29 +40,14 @@ def run_tests(sentence) -> None:
     default_result = default(sentence)
     cabocha_result = cabocha.parse(sentence)
 
-    print("kindai")
-    print(kindai_result)
-
-    print("default")
-    print(default_result)
-
-    print("cabocha")
-    print(cabocha_result)
-
-
-    print("kindai")
-    print(kindai_result.to_tree())
-
-    print("default")
-    print(default_result.to_tree())
-
-    print("cabocha")
-    print(cabocha_result.toString())
-
-    #assert kindai_result == default_result
+    for name, result in [("kindai", kindai_result), ("default", default_result), ("cabocha", cabocha_result)]:
+        print(name)
+        print(result)
+        if hasattr(result, "to_tree") and callable(result.to_tree):
+            print(result.to_tree())
 
 @pytest.mark.parametrize('sentence, expected', [
-    ("aoeu","")
+    ("そんなに気になるなら あの時俺も友達だって言えばよかったじゃん", [])
 ])
 def test_unidic2ud_temp(sentence: str, expected: list[str]) -> None:
     run_tests(sentence)
