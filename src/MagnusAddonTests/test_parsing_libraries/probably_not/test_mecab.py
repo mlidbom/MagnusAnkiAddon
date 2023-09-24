@@ -1,3 +1,5 @@
+#Fast but output nothing but text and has no dependency information I can find and does not seem too intelligent in parsing compared to competitors.
+
 from typing import List, Any, Tuple
 
 import MeCab
