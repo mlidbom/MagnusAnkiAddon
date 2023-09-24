@@ -74,7 +74,8 @@ _noun_parts_of_speech = {
 _noun_auxiliary_parts_of_speech = {
     POS.Particle.CaseMarking.general, # が
     POS.Particle.adnominalization, # の
-    POS.Noun.Dependent.adverbial # なか
+    POS.Noun.Dependent.adverbial, # なか
+    POS.Noun.Dependent.general # こと
 }
 
 _adjective_auxiliary_parts_of_speech = {

@@ -52,7 +52,8 @@ def test_adjective_compounds(sentence: str, excluded: set[str], expected: list[N
 
 
 @pytest.mark.parametrize('sentence, excluded, expected', [
-    ("あいつが話の中に出てくるのが", set(), [Node('あいつが','',[Node('あいつ',''), Node('が','')]), Node('話の中に','',[Node('話',''), Node('の',''), Node('中',''), Node('に','')]), Node('出てくるの','',[Node('出てくる','',[Node('出る','出'), Node('て',''), Node('くる','')]), Node('の','')]), Node('が','')])
+    ("あいつが話の中に出てくるのが", set(), [Node('あいつが','',[Node('あいつ',''), Node('が','')]), Node('話の中に','',[Node('話',''), Node('の',''), Node('中',''), Node('に','')]), Node('出てくるの','',[Node('出てくる','',[Node('出る','出'), Node('て',''), Node('くる','')]), Node('の','')]), Node('が','')]),
+("自分のことを知ってもらえてない人に", set(), [Node('自分のことを','',[Node('自分',''), Node('の',''), Node('こと',''), Node('を','')]), Node('知ってもらえてない人に','',[Node('知ってもらえてない人','',[Node('知る','知っ'), Node('て',''), Node('もらう','もらえ'), Node('てる','て'), Node('ない',''), Node('人','')]), Node('に','')])])
 ])
 def test_noun_compounds(sentence: str, excluded: set[str], expected: list[Node]) -> None:
     result = tree_parser.parse_tree(sentence, excluded)
@@ -60,14 +61,7 @@ def test_noun_compounds(sentence: str, excluded: set[str], expected: list[Node])
 
 
 @pytest.mark.parametrize('sentence, excluded, expected', [
-    ("自分のことを知ってもらえてない人に話しかけたりするのって", set(), [Node('自分の','',[Node('自分',''), Node('の','')]),
- Node('こと',''),
- Node('を',''),
- Node('知ってもらえてない人に','',[Node('知ってもらえてない人','',[Node('知る','知っ'), Node('て',''), Node('もらう','もらえ'), Node('てる','て'), Node('ない',''), Node('人','')]), Node('に','')]),
- Node('話しかけたり','',[Node('話しかける','話しかけ'), Node('たり','')]),
- Node('するの','',[Node('する',''), Node('の','')]),
- Node('って','')]
-     )
+
 ])
 def test_temp(sentence: str, excluded: set[str], expected: list[Node]) -> None:
     result = tree_parser.parse_tree(sentence, excluded)
