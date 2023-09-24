@@ -6,7 +6,8 @@ from parsing.tree_parsing.node import Node, priorities
 from sysutils.utils import ListUtils
 from wanikani.wani_collection import WaniCollection
 
-_vocab_missing_string = "" # for new just show nothing to reduce my frustration with this feature :)
+def _vocab_missing_string(node:Node, display_text: str) -> str:
+    return "---" if node.is_dictionary_word(display_text) else ""
 
 def _vocab_node_html(node: Node, excluded:set[str], question:str, answer:str, depth:int) -> str:
     if question in excluded:
@@ -48,14 +49,13 @@ def _create_html_from_nodes(nodes: list[Node], excluded: set[str], depth:int) ->
                     and node.surface not in excluded
                     and node.is_show_surface_in_sentence_breakdown()):
 
-                html += _vocab_node_html(node, excluded, node.surface, _vocab_missing_string, depth)
+                html += _vocab_node_html(node, excluded, node.surface, _vocab_missing_string(node, node.surface), depth)
 
         else:
-            text = "" if node.is_probably_not_dictionary_word() else _vocab_missing_string
-            display_text = node.surface if depth == 1 and node.surface and node.is_probably_not_dictionary_word() else node.base
-            html += _vocab_node_html(node, excluded, display_text, text, depth)
+            question_text = node.surface if depth == 1 and node.surface and node.is_probably_not_dictionary_word() else node.base
+            html += _vocab_node_html(node, excluded, question_text, _vocab_missing_string(node, question_text), depth)
             if node.is_show_surface_in_sentence_breakdown() and node.surface not in excluded:
-                html += _vocab_node_html(node, excluded, node.surface, _vocab_missing_string, depth)
+                html += _vocab_node_html(node, excluded, node.surface, _vocab_missing_string(node, node.surface), depth)
 
     html += "</ul>\n"
 

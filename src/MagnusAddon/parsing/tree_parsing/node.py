@@ -73,6 +73,14 @@ class Node:
         
         return False
 
+    def is_dictionary_word(self, display_text: str) -> bool:
+        if self.base and display_text == self.base and self._is_base_in_dictionary():
+            return True
+        if self.surface and display_text == self.surface and self._is_surface_in_dictionary():
+            return True
+
+        return False
+
     def _is_surface_manually_excluded(self) -> bool:
         global excluded_surface_pos
         pos = self.tokens[0].parts_of_speech
