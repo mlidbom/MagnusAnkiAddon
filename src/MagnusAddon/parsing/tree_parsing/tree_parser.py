@@ -9,6 +9,16 @@ _tokenizer = TokenizerExt()
 
 _max_lookahead = 12
 
+def parse_tree_ui(sentence:str, excluded:set[str]) -> list[Node]:
+    nodes = parse_tree(sentence, excluded)
+    if len(nodes) == 1:
+        node = nodes[0]
+        if node.base and DictLookup.lookup_word_shallow(node.base).found_words() or node.surface and DictLookup.lookup_word_shallow(node.surface).found_words():
+            return nodes
+        else:
+            return node.children
+    return nodes
+
 def parse_tree(sentence:str, excluded:set[str]) -> list[Node]:
     tokens = _tokenizer.tokenize(sentence).tokens
     if not tokens:
@@ -40,17 +50,17 @@ def _recursing_parse(tokens, excluded:set[str]) -> list[Node]:
 def is_verb(compound: list[TokenExt]):
     return compound[-1].is_verb()
 
-def is_verb_auxiliary(compound: list[TokenExt]):
-    return compound[0].is_verb_auxiliary()
-
 def _is_adjective(compound: list[TokenExt]):
     return compound[-1].is_adjective()
 
-def _is_adjective_auxiliary(compound: list[TokenExt]):
-    return all(c.is_adjective_auxiliary() for c in compound)
-
 def _is_noun(compound: list[TokenExt]):
     return compound[-1].is_noun()
+
+def is_verb_auxiliary(compound: list[TokenExt]):
+    return compound[0].is_verb_auxiliary()
+
+def _is_adjective_auxiliary(compound: list[TokenExt]):
+    return all(c.is_adjective_auxiliary() for c in compound)
 
 def _is_noun_auxiliary(compound: list[TokenExt]):
     return all(c.is_noun_auxiliary() for c in compound)
@@ -94,6 +104,10 @@ def _build_compounds(compound_filter: Callable[[list[TokenExt]],bool], auxiliary
     result_compounds = [comp for comp in compounds if len(comp) > 0]
     return result_compounds
 
+def _is_excluded(compound_tokens: list[TokenExt], excluded:set[str]) -> bool:
+    compound_base = "".join([tok.surface for tok in compound_tokens[:-1]]) + compound_tokens[-1].base_form
+    return compound_base in excluded
+
 def _is_in_dictionary(compound_tokens: list[TokenExt], excluded:set[str]) -> bool:
     compound_surface = "".join([tok.surface for tok in compound_tokens])
     compound_base = "".join([tok.surface for tok in compound_tokens[:-1]]) + compound_tokens[-1].base_form
@@ -114,6 +128,7 @@ def _build_dictionary_compounds(tokens_param: list[TokenExt], excluded:set[str])
         current_index = max_lookahead
         while current_index > 0:
             compound_tokens = tokens[:current_index]
+
             if current_index != identity_index and _is_in_dictionary(compound_tokens, excluded):
                 compounds.append(compound_tokens)
                 tokens = tokens[current_index:]

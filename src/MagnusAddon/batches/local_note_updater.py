@@ -1,7 +1,6 @@
 from typing import *
 
 from note.sentencenote import SentenceNote
-from note_content_building import sentence_content_builder
 from parsing.jamdict_extensions.dict_lookup import DictLookup
 from sysutils import kana_utils
 from parsing import janomeutils
@@ -52,9 +51,6 @@ def _update_vocab_parsed_parts_of_speech(all_vocabulary: list[WaniVocabNote]) ->
 def update_sentences() -> None:
     UIUtils.run_ui_action(lambda: _update_sentences(WaniCollection.list_sentence_notes()))
 
-def update_sentence_breakdown() -> None:
-    UIUtils.run_ui_action(lambda: _update_sentence_breakdown(WaniCollection.list_sentence_notes()))
-
 def update_kanji(_kanji_note: WaniKanjiNote) -> None:
     UIUtils.run_ui_action(lambda: _update_kanji(WaniCollection.fetch_all_vocab_notes(), WaniCollection.fetch_all_kanji_notes()))
 
@@ -64,10 +60,6 @@ def update_vocab() -> None:
 
 def _update_sentences(sentences: list[SentenceNote]) -> None:
     for sentence in sentences: sentence.update_generated_data()
-
-def _update_sentence_breakdown(sentences: list[SentenceNote]) -> None:
-    first_few = sentences[:100]
-    for sentence in first_few: sentence_content_builder.build_breakdown_html(sentence)
 
 def _update_vocab(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanjiNote]) -> None:
     def update_generated_data() -> None:

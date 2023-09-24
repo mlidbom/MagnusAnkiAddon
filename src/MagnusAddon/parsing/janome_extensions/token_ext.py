@@ -57,7 +57,14 @@ class TokenExt:
         return self.parts_of_speech in _adjective_parts_of_speech
 
     def is_adjective_auxiliary(self) -> bool:
-        return self.parts_of_speech in _adjective_auxiliary_parts_of_speech
+        if self.parts_of_speech in _adjective_auxiliary_parts_of_speech:
+            return True
+
+        if self.inflection_type == "サ変・スル" and self.inflected_form == "連用形": # irregular conjugations of する like し
+            return True
+
+        return False
+
 
     def is_noun(self) -> bool:
         return self.parts_of_speech in _noun_parts_of_speech
