@@ -119,12 +119,6 @@ class Node:
             if question in _Statics.hard_coded_base_priorities:
                 return _Statics.hard_coded_base_priorities[question]
 
-        if not self.children:
-            if all(token.is_verb_auxiliary() for token in self.tokens):
-                return priorities.low
-
-
-
         if kanji_count > 2:
             return priorities.very_high
 
