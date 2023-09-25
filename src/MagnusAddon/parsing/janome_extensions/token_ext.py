@@ -70,13 +70,18 @@ class TokenExt:
         return self.parts_of_speech in _noun_auxiliary_parts_of_speech
 
     def is_end_of_phrase_particle(self) -> bool:
-        return self.parts_of_speech in _end_of_phrase_particles
+        if self.parts_of_speech in _end_of_phrase_particles:
+            return True
+
+        if self.parts_of_speech == POS.Particle.conjunctive and self.surface != "て":
+            return True
 
 
 _end_of_phrase_particles = {
     POS.Particle.CaseMarking.general,
     POS.Particle.CaseMarking.compound,
-    POS.Particle.CaseMarking.quotation
+    POS.Particle.CaseMarking.quotation,
+    POS.Particle.adverbial # まで : this feels strange, but works so far.
 }
 
 _noun_parts_of_speech = {
@@ -128,4 +133,4 @@ _verb_auxiliary_parts_of_speech = {
             POS.Adjective.independent, # ない
             POS.Noun.Dependent.general, # こと
             POS.Noun.general
-        }
+        } | _verb_parts_of_speech

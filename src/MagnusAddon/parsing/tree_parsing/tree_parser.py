@@ -96,6 +96,10 @@ def _build_compounds(compound_filter: Callable[[list[TokenExt]],bool], auxiliary
 
                     auxiliary_index += 1
 
+                    if accepted_auxiliaries:
+                        if accepted_auxiliaries[-1].is_end_of_phrase_particle():
+                            break
+
                 if accepted_auxiliaries:
                     for cand in accepted_auxiliaries: compound.append(cand)
                     for index in range(compound_index + 1, auxiliary_index): compounds[index].clear()
