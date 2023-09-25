@@ -2,10 +2,20 @@ import pytest
 import unidic2ud
 from unidic2ud import cabocha
 
-kindai = unidic2ud.load("kindai")
-cabocha = cabocha.Parser()
+_parsers = [("default", (unidic2ud.load())),
+            ("kindai", (unidic2ud.load("kindai"))),
+            #("gendai", (unidic2ud.load("gendai"))),
+            #("spoken", (unidic2ud.load("spoken"))),
+            #("novel", (unidic2ud.load("novel"))),
+            #("qkana", (unidic2ud.load("qkana"))),
+            #("kinsei_kindai_bungo", (unidic2ud.load("kinsei\\60a_kindai-bungo"))),
+            #("kinsei_edo", (unidic2ud.load("kinsei\\50c_kinsei-edo"))),
+            #("kyogen", (unidic2ud.load("kyogen"))),
+            ("wakan", (unidic2ud.load("wakan"))),
+            #("wabun", (unidic2ud.load("wabun"))), #oddness abounds
+            #("manyo", (unidic2ud.load("manyo"))) # seems to usually give some truly strange results
+            ]
 
-default = unidic2ud.load()
 @pytest.mark.parametrize('sentence, expected', [
     ("知らない", []),
     ("いつまでも来ないと知らないからね", []),
@@ -36,19 +46,26 @@ def test_unidic2ud(sentence: str, expected: list[str]) -> None:
 
 
 def run_tests(sentence) -> None:
-    kindai_result = kindai(sentence)
-    default_result = default(sentence)
-    cabocha_result = cabocha.parse(sentence)
+    results = [(name, parser(sentence)) for name, parser in _parsers]
 
-    for name, result in [("kindai", kindai_result), ("default", default_result), ("cabocha", cabocha_result)]:
-        print(name)
-        print(result)
+    print()
+    for name, result in results:
         if hasattr(result, "to_tree") and callable(result.to_tree):
+            print(name)
+            print(sentence)
             print(result.to_tree())
+        else:
+            print(f"""{name} has no to_tree() method""")
+
+    for name, result in results:
+        print(name)
+        print(sentence)
+        print(result)
 
 @pytest.mark.parametrize('sentence, expected', [
     ("そんなに気になるなら あの時俺も友達だって言えばよかったじゃん", []),
-    ("普段どうやって日記読んでたんだ", [])
+    ("普段どうやって日記読んでたんだ", []),
+    ("何か意味があるんだと思う", [])
 ])
 def test_unidic2ud_temp(sentence: str, expected: list[str]) -> None:
     run_tests(sentence)
