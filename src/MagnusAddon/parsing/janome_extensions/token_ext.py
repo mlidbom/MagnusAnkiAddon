@@ -44,11 +44,8 @@ class TokenExt:
                     self.parts_of_speech == other.parts_of_speech)
         return False
 
-    def is_independent_verb(self) -> bool:
-        return self.parts_of_speech == POS.Verb.independent
-
     def is_verb(self) -> bool:
-        return self.parts_of_speech.is_verb()
+        return self.parts_of_speech in _verb_parts_of_speech
 
     def is_verb_auxiliary(self) -> bool:
         return self.parts_of_speech in _verb_auxiliary_parts_of_speech
@@ -101,6 +98,12 @@ _noun_auxiliary_parts_of_speech = {
     POS.Noun.Dependent.general, # こと
     POS.Particle.adverbial  # まで
 } | _adjective_parts_of_speech | _adjective_auxiliary_parts_of_speech
+
+_verb_parts_of_speech = {
+    POS.Verb.independent,
+    POS.Verb.dependent,
+    POS.Verb.suffix
+}
 
 _verb_auxiliary_parts_of_speech = {
             POS.bound_auxiliary, # た, ない past, negation

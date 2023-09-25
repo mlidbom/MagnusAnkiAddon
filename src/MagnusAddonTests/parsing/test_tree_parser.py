@@ -65,7 +65,7 @@ def test_noun_compounds(sentence: str, excluded: set[str], expected: list[TreePa
 
 
 @pytest.mark.parametrize('sentence, excluded, expected', [
-
+    ("気になっちゃうんだよ", set(), [N('気になる','気になっ',[N('気',''), N('に',''), N('なる','なっ')]), N('ちゃうんだよ','',[N('ちゃう',''), N('んだ','',[N('ん',''), N('だ','')]), N('よ','')])])
 ])
 def test_temp(sentence: str, excluded: set[str], expected: list[TreeParserNode]) -> None:
     result = tree_parser.parse_tree(sentence, excluded)
