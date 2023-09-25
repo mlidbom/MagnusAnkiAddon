@@ -15,7 +15,7 @@ def parse_tree_ui(sentence:str, excluded:set[str]) -> TreeParseResult:
     result = parse_tree(sentence, excluded)
     if len(result.nodes) == 1:
         node = result.nodes[0]
-        if node.base and DictLookup.lookup_word_shallow(node.base).found_words() or node.surface and DictLookup.lookup_word_shallow(node.surface).found_words():
+        if node.is_inflected() and DictLookup.lookup_word_shallow(node.base).found_words() or DictLookup.lookup_word_shallow(node.surface).found_words():
             return result
         else:
             return TreeParseResult(*node.children)

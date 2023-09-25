@@ -44,7 +44,7 @@ def _create_html_from_nodes(nodes: list[TreeParserNode], excluded: set[str], dep
             for vocab in vocabs:
                 html += _vocab_node_html(node, excluded, vocab.get_display_question(), vocab.get_active_answer(), depth)
 
-            if (node.surface
+            if (node.is_inflected()
                     and node.surface not in found_words
                     and node.surface not in excluded
                     and node.is_show_surface_in_sentence_breakdown()):
@@ -52,7 +52,7 @@ def _create_html_from_nodes(nodes: list[TreeParserNode], excluded: set[str], dep
                 html += _vocab_node_html(node, excluded, node.surface, _vocab_missing_string(node, node.surface), depth)
 
         else:
-            question_text = node.surface if depth == 1 and node.surface and node.is_probably_not_dictionary_word() else node.base
+            question_text = node.surface if depth == 1 and node.is_inflected() and node.is_probably_not_dictionary_word() else node.base
             html += _vocab_node_html(node, excluded, question_text, _vocab_missing_string(node, question_text), depth)
             if node.is_show_surface_in_sentence_breakdown() and node.surface not in excluded:
                 html += _vocab_node_html(node, excluded, node.surface, _vocab_missing_string(node, node.surface), depth)

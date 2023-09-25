@@ -10,8 +10,8 @@ from sysutils import kana_utils
 class TreeParserNode:
     _max_lookahead = 12
     def __init__(self, surface: str, base: str, children: list['TreeParserNode'] = None, tokens: list[TokenExt] = None) -> None:
-        self.base = base
         self.surface = surface
+        self.base = base if base else surface
         self.tokens = tokens
         self.children:list[TreeParserNode] = children if children else []
 
@@ -23,7 +23,7 @@ class TreeParserNode:
         return f""",[\n{indent}{children_string}]"""
 
     def _repr(self, level: int):
-        return f"""N('{self.surface}', '{self.base}'{self._children_repr(level + 1)})"""
+        return f"""N('{self.surface}', '{self.base if self.is_inflected() else ""}'{self._children_repr(level + 1)})"""
 
     def __repr__(self) -> str:
         return self._repr(0)
@@ -31,10 +31,13 @@ class TreeParserNode:
     def __eq__(self, other: any) -> bool:
         return (isinstance(other, TreeParserNode)
                 and self.base == other.base
+                and self.surface == other.surface
                 and self.children == other.children)
 
     def __hash__(self) -> int:
         return hash(self.surface) + hash(self.children)
+
+    def is_inflected(self) -> bool: return self.base != self.surface
 
     @classmethod
     def create(cls, tokens: list[TokenExt], excluded:set[str]) -> 'TreeParserNode':
@@ -46,14 +49,13 @@ class TreeParserNode:
         children = children if children else []
         surface = "".join(tok.surface for tok in tokens)
         base = "".join(tok.surface for tok in tokens[:-1]) + tokens[-1].base_form
-        surface = surface if base != surface else ""
         return TreeParserNode(surface, base, children, tokens)
 
     def is_base_kana_only(self) -> bool:
         return kana_utils.is_only_kana(self.base)
 
     def is_surface_kana_only(self) -> bool:
-        return self.surface and kana_utils.is_only_kana(self.surface)
+        return kana_utils.is_only_kana(self.surface)
 
     def is_show_at_all_in_sentence_breakdown(self) -> bool:
         return self.is_show_base_in_sentence_breakdown() or self.is_show_surface_in_sentence_breakdown()
@@ -62,56 +64,48 @@ class TreeParserNode:
         return not self._is_base_manually_excluded()
 
     def is_show_surface_in_sentence_breakdown(self) -> bool:
-        return (self.surface
+        return (self.is_inflected()
                 and not self.tokens[0].parts_of_speech == POS.Verb.independent
                 and not self.tokens[0].parts_of_speech == POS.Verb.dependent
                 and not self._is_surface_manually_excluded()
                 and self._is_surface_in_dictionary())
 
     def _is_surface_in_dictionary(self) -> bool:
-        return self.surface and DictLookup.lookup_word_shallow(self.surface).found_words()
+        return DictLookup.lookup_word_shallow(self.surface).found_words()
 
-    def _is_base_in_dictionary(self) -> bool:
-        return self.base and DictLookup.lookup_word_shallow(self.base).found_words()
+    def _is_inflected_and_base_is_in_dictionary(self) -> bool:
+        return self.is_inflected() and DictLookup.lookup_word_shallow(self.base).found_words()
 
     def is_probably_not_dictionary_word(self) -> bool:
         verb_index = next((i for i, item in enumerate(self.tokens) if tree_parser.is_verb([item])), -1)
         if -1 < verb_index < len(self.tokens) - 1:
             if tree_parser.is_verb_auxiliary(self.tokens[verb_index + 1:]):
-                if not self._is_base_in_dictionary():
+                if not self._is_inflected_and_base_is_in_dictionary():
                     return True
         
         return False
 
     def is_dictionary_word(self, display_text: str) -> bool:
-        if self.base and display_text == self.base and self._is_base_in_dictionary():
+        if self.is_inflected() and display_text == self.base and self._is_inflected_and_base_is_in_dictionary():
             return True
-        if self.surface and display_text == self.surface and self._is_surface_in_dictionary():
+        if display_text == self.surface and self._is_surface_in_dictionary():
             return True
 
         return False
 
     def _is_surface_manually_excluded(self) -> bool:
-        global excluded_surface_pos
-        pos = self.tokens[0].parts_of_speech
-
         if (self.base == "ます" and self.surface == "ませ"
                 or self.base == "です" and self.surface == "でし"
                 or self.base == "たい" and self.surface == "たく"
                 or self.base == "ている" and self.surface == "てい"
                 or self.base == "ない" and self.surface == "なく"):
-            excluded_surface_pos.add(pos)
             return True
         return False
 
     def _is_base_manually_excluded(self) -> bool:
-        global excluded_base_pos
-        pos = self.tokens[0].parts_of_speech
-
         if (self.base == "だ" and self.surface == "な"
                 or self.base == "だ" and self.surface == "で"
                 or self.base == "た" and self.surface == "たら"):
-            excluded_base_pos.add(pos)
             return True
         return False
 
@@ -119,13 +113,13 @@ class TreeParserNode:
         if question != self.surface and question != self.base:
             return priorities.unknown
 
-        kanji_count = len([char for char in self.base if not kana_utils.is_kana(char)])
+        kanji_count = len([char for char in self.surface if not kana_utils.is_kana(char)])
 
         #todo: if this works out well, remove the code with hard coded values below
         if kanji_count == 0:
-            if len(self.base) == 1:
+            if len(self.surface) == 1:
                 return priorities.very_low
-            if len(self.base) == 2:
+            if len(self.surface) == 2:
                 return priorities.low
 
         if question == self.surface:
@@ -167,8 +161,3 @@ class _Statics:
     lowest_priority_surfaces: set[str] = set()
     # for particle in "しもよかとたてでをなのにだがは": hard_coded_base_priorities[particle] = priorities.very_low
     # for word in "する|です|私|なる|この|あの|その|いる|ある".split("|"): hard_coded_base_priorities[word] = priorities.low
-
-
-
-excluded_surface_pos: set[PartsOfSpeech] = set()
-excluded_base_pos: set[PartsOfSpeech] = set()
