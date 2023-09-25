@@ -7,19 +7,19 @@ from parsing.tree_parsing import tree_parser
 from sysutils import kana_utils
 
 
-class Node:
+class TreeParserNode:
     _max_lookahead = 12
     def __init__(self, base: str, surface: str, children=None, tokens: list[TokenExt] = None) -> None:
         self.base = base
         self.surface = surface
         self.tokens = tokens
-        self.children:list[Node] = children if children else []
+        self.children:list[TreeParserNode] = children if children else []
 
     def __repr__(self) -> str:
         return f"""Node('{self.base}','{self.surface}'{"," + str(self.children) if self.children else ""})"""
 
     def __eq__(self, other: any) -> bool:
-        return (isinstance(other, Node)
+        return (isinstance(other, TreeParserNode)
                 and self.base == other.base
                 and self.children == other.children)
 
@@ -27,17 +27,17 @@ class Node:
         return hash(self.surface) + hash(self.children)
 
     @classmethod
-    def create(cls, tokens: list[TokenExt], excluded:set[str]) -> 'Node':
+    def create(cls, tokens: list[TokenExt], excluded:set[str]) -> 'TreeParserNode':
         children = tree_parser._recursing_parse(tokens, excluded) if len(tokens) > 1 else [] # tree_parser._find_compounds(tokens[0], excluded) # noqa
         return cls.create_non_recursive(tokens, children)
 
     @classmethod
-    def create_non_recursive(cls, tokens: list[TokenExt], children:list['Node'] = None) -> 'Node':
+    def create_non_recursive(cls, tokens: list[TokenExt], children:list['TreeParserNode'] = None) -> 'TreeParserNode':
         children = children if children else []
         surface = "".join(tok.surface for tok in tokens)
         base = "".join(tok.surface for tok in tokens[:-1]) + tokens[-1].base_form
         surface = surface if base != surface else ""
-        return Node(base, surface, children, tokens)
+        return TreeParserNode(base, surface, children, tokens)
 
     def is_base_kana_only(self) -> bool:
         return kana_utils.is_only_kana(self.base)
@@ -133,7 +133,7 @@ class Node:
 
         return priorities.medium
 
-    def visit(self, callback: Callable[['Node'],None]) -> None:
+    def visit(self, callback: Callable[['TreeParserNode'],None]) -> None:
         callback(self)
         for node in self.children:
             node.visit(callback)

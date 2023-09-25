@@ -2,14 +2,14 @@ from ankiutils import search_utils
 from note.sentencenote import SentenceNote
 from note.wanivocabnote import WaniVocabNote
 from parsing.tree_parsing import tree_parser
-from parsing.tree_parsing.node import Node, priorities
+from parsing.tree_parsing.treeparsernode import TreeParserNode, priorities
 from sysutils.utils import ListUtils
 from wanikani.wani_collection import WaniCollection
 
-def _vocab_missing_string(node:Node, display_text: str) -> str:
+def _vocab_missing_string(node:TreeParserNode, display_text: str) -> str:
     return "---" if node.is_dictionary_word(display_text) else ""
 
-def _vocab_node_html(node: Node, excluded:set[str], question:str, answer:str, depth:int) -> str:
+def _vocab_node_html(node: TreeParserNode, excluded:set[str], question:str, answer:str, depth:int) -> str:
     if question in excluded:
         return ""
 
@@ -26,7 +26,7 @@ def _vocab_node_html(node: Node, excluded:set[str], question:str, answer:str, de
     """
     return html
 
-def _create_html_from_nodes(nodes: list[Node], excluded: set[str], depth:int) -> str:
+def _create_html_from_nodes(nodes: list[TreeParserNode], excluded: set[str], depth:int) -> str:
     if not nodes:
         return ""
 

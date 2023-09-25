@@ -126,8 +126,8 @@ def _add_full_part_of_speech(level1:str, level2:str = "*", level3:str = "*", lev
 
 class POS:
     filler = _add_full_part_of_speech('フィラー')
-    bound_auxiliary = _add_full_part_of_speech('助動詞') # た, ない past, negation
-    pre_noun_adjectival = _add_full_part_of_speech('連体詞')
+    bound_auxiliary = _add_full_part_of_speech('助動詞') # た, ない, だ
+    pre_noun_adjectival = _add_full_part_of_speech('連体詞') # こんな
     interjection = _add_full_part_of_speech('感動詞')
     conjunction = _add_full_part_of_speech('接続詞')
 
@@ -135,8 +135,8 @@ class POS:
         interjection = _add_full_part_of_speech('その他', '間投')
 
     class Adverb:
-        general = _add_full_part_of_speech('副詞', '一般') # もう
-        particle_connection = _add_full_part_of_speech('副詞', '助詞類接続')
+        general = _add_full_part_of_speech('副詞', '一般') # もう, そんなに
+        particle_connection = _add_full_part_of_speech('副詞', '助詞類接続') # こんなに
 
     class Particle:
         coordinating_conjunction = _add_full_part_of_speech('助詞', '並立助詞') # たり
@@ -144,19 +144,19 @@ class POS:
         adverbial = _add_full_part_of_speech('助詞', '副助詞') # まで
         adverbial_coordinating_ending = _add_full_part_of_speech('助詞', '副助詞／並立助詞／終助詞')
         adverbialization = _add_full_part_of_speech('助詞', '副詞化')
-        conjunctive = _add_full_part_of_speech('助詞', '接続助詞')  # て,と,し
+        conjunctive = _add_full_part_of_speech('助詞', '接続助詞')  # て, と, し
         special = _add_full_part_of_speech('助詞', '特殊')
         sentence_ending = _add_full_part_of_speech('助詞', '終助詞') # な
         adnominalization = _add_full_part_of_speech('助詞', '連体化') # の
 
         class CaseMarking:
-            general = _add_full_part_of_speech('助詞', '格助詞', '一般') # が
+            general = _add_full_part_of_speech('助詞', '格助詞', '一般') # が, に
             quotation = _add_full_part_of_speech('助詞', '格助詞', '引用')
             compound = _add_full_part_of_speech('助詞', '格助詞', '連語')
 
     class Verb:
         suffix = _add_full_part_of_speech('動詞', '接尾') # れる passive
-        independent = _add_full_part_of_speech('動詞', '自立')
+        independent = _add_full_part_of_speech('動詞', '自立') # 疲れる, する, 走る
         dependent = _add_full_part_of_speech('動詞', '非自立') # いる progressive/perfect, いく
 
     class Noun:
@@ -165,7 +165,7 @@ class POS:
         general = _add_full_part_of_speech('名詞', '一般') # 自分
         adverbial = _add_full_part_of_speech('名詞', '副詞可能') # 今
         auxiliary_verb = _add_full_part_of_speech('名詞', '動詞非自立的')
-        na_adjective_stem = _add_full_part_of_speech('名詞', '形容動詞語幹')
+        na_adjective_stem = _add_full_part_of_speech('名詞', '形容動詞語幹') # 好き
         numeric = _add_full_part_of_speech('名詞', '数')
         conjunctive = _add_full_part_of_speech('名詞', '接続詞的')
 

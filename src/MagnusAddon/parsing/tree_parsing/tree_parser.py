@@ -4,14 +4,14 @@ from typing import Callable
 from parsing.jamdict_extensions.dict_lookup import DictLookup
 from parsing.janome_extensions.token_ext import TokenExt
 from parsing.janome_extensions.tokenizer_ext import TokenizerExt
-from parsing.tree_parsing.node import Node
+from parsing.tree_parsing.treeparsernode import TreeParserNode
 from sysutils.utils import ListUtils
 
 _tokenizer = TokenizerExt()
 
 _max_lookahead = 12
 
-def parse_tree_ui(sentence:str, excluded:set[str]) -> list[Node]:
+def parse_tree_ui(sentence:str, excluded:set[str]) -> list[TreeParserNode]:
     nodes = parse_tree(sentence, excluded)
     if len(nodes) == 1:
         node = nodes[0]
@@ -21,33 +21,33 @@ def parse_tree_ui(sentence:str, excluded:set[str]) -> list[Node]:
             return node.children
     return nodes
 
-def parse_tree(sentence:str, excluded:set[str]) -> list[Node]:
+def parse_tree(sentence:str, excluded:set[str]) -> list[TreeParserNode]:
     tokens = _tokenizer.tokenize(sentence).tokens
     if not tokens:
         return []
     if _is_in_dictionary(tokens, excluded):
-        return [Node.create(tokens, excluded)]
+        return [TreeParserNode.create(tokens, excluded)]
     
     dictionary_compounds_added = _build_dictionary_compounds(tokens, excluded)
     verb_compounds_added = _build_compounds(is_verb, is_verb_auxiliary, dictionary_compounds_added, excluded)
     adjective_compounds_added = _build_compounds(_is_adjective, _is_adjective_auxiliary, verb_compounds_added, excluded)
     noun_compounds_added = _build_compounds(_is_noun, _is_noun_auxiliary, adjective_compounds_added, excluded)
-    return [Node.create(compounds, excluded) for compounds in noun_compounds_added]
+    return [TreeParserNode.create(compounds, excluded) for compounds in noun_compounds_added]
 
 
-def _recursing_parse(tokens, excluded:set[str]) -> list[Node]:
+def _recursing_parse(tokens, excluded:set[str]) -> list[TreeParserNode]:
     dictionary_compounds = _build_dictionary_compounds(tokens, excluded)
     adjective_compounds_added = _build_compounds(_is_adjective, _is_adjective_auxiliary, dictionary_compounds, excluded)
     if len(adjective_compounds_added) > 1:
         if len(adjective_compounds_added) != len(dictionary_compounds):
-            return [Node.create(compounds, excluded) for compounds in adjective_compounds_added]
+            return [TreeParserNode.create(compounds, excluded) for compounds in adjective_compounds_added]
 
     verb_compounds_added = _build_compounds(is_verb, is_verb_auxiliary, dictionary_compounds, excluded)
     if len(verb_compounds_added) > 1:
         if len(verb_compounds_added) != len(dictionary_compounds):
-            return [Node.create(compounds, excluded) for compounds in verb_compounds_added]
+            return [TreeParserNode.create(compounds, excluded) for compounds in verb_compounds_added]
 
-    return [Node.create(compounds, excluded) for compounds in dictionary_compounds]
+    return [TreeParserNode.create(compounds, excluded) for compounds in dictionary_compounds]
 
 def is_verb(compound: list[TokenExt]):
     return compound[-1].is_verb()

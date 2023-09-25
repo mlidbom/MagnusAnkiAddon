@@ -4,7 +4,7 @@ import aqt
 from aqt.browser import Browser
 
 import parsing.tree_parsing.tree_parser # noqa
-from parsing.tree_parsing.node import Node
+from parsing.tree_parsing.treeparsernode import TreeParserNode
 from note.mynote import MyNote
 from note.sentencenote import SentenceNote
 from note.wanikanjinote import WaniKanjiNote
@@ -86,7 +86,7 @@ def vocab_with_kanji(note:WaniKanjiNote) -> str: return f"{vocab_read} {forms}:*
 def vocab_clause(voc: ParsedWord) -> str:
     return f"""{field_word(forms, voc.word)}"""
 
-def node_vocab_clause(voc: Node) -> str:
+def node_vocab_clause(voc: TreeParserNode) -> str:
     search_base = voc.is_show_base_in_sentence_breakdown()
     search_surface = voc.is_show_surface_in_sentence_breakdown()
 
@@ -107,9 +107,9 @@ def text_vocab_lookup(text:str) -> str:
 
 def vocab_lookup(vocab:ParsedWord) -> str: return vocabs_lookup([vocab])
 
-def node_vocab_lookup(node:Node) -> str: return node_vocabs_lookup([node])
+def node_vocab_lookup(node:TreeParserNode) -> str: return node_vocabs_lookup([node])
 
-def node_vocabs_lookup(dictionary_forms: list[Node]) -> str:
+def node_vocabs_lookup(dictionary_forms: list[TreeParserNode]) -> str:
     return f"{vocab_read} ({' OR '.join([node_vocab_clause(voc) for voc in dictionary_forms])})"
 
 def vocabs_lookup(dictionary_forms: list[ParsedWord]) -> str:
