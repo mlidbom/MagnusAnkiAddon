@@ -9,7 +9,7 @@ from sysutils import kana_utils
 
 class TreeParserNode:
     _max_lookahead = 12
-    def __init__(self, base: str, surface: str, children: list['TreeParserNode'] = None, tokens: list[TokenExt] = None) -> None:
+    def __init__(self, surface: str, base: str, children: list['TreeParserNode'] = None, tokens: list[TokenExt] = None) -> None:
         self.base = base
         self.surface = surface
         self.tokens = tokens
@@ -23,7 +23,7 @@ class TreeParserNode:
         return f""",[\n{indent}{children_string}]"""
 
     def _repr(self, level: int):
-        return f"""N('{self.base}', '{self.surface}'{self._children_repr(level + 1)})"""
+        return f"""N('{self.surface}', '{self.base}'{self._children_repr(level + 1)})"""
 
     def __repr__(self) -> str:
         return self._repr(0)
@@ -47,7 +47,7 @@ class TreeParserNode:
         surface = "".join(tok.surface for tok in tokens)
         base = "".join(tok.surface for tok in tokens[:-1]) + tokens[-1].base_form
         surface = surface if base != surface else ""
-        return TreeParserNode(base, surface, children, tokens)
+        return TreeParserNode(surface, base, children, tokens)
 
     def is_base_kana_only(self) -> bool:
         return kana_utils.is_only_kana(self.base)
