@@ -29,7 +29,7 @@ def parse_tree(sentence:str, excluded:set[str]) -> list[TreeParserNode]:
         return [TreeParserNode.create(tokens, excluded)]
     
     dictionary_compounds_added = _build_dictionary_compounds(tokens, excluded)
-    verb_compounds_added = _build_compounds(is_verb, is_verb_auxiliary, dictionary_compounds_added, excluded)
+    verb_compounds_added = _build_compounds(is_verb, is_verb_auxiliary_or_end_of_phrase, dictionary_compounds_added, excluded)
     adjective_compounds_added = _build_compounds(_is_adjective, _is_adjective_auxiliary, verb_compounds_added, excluded)
     noun_compounds_added = _build_compounds(_is_noun, _is_noun_auxiliary, adjective_compounds_added, excluded)
     return [TreeParserNode.create(compounds, excluded) for compounds in noun_compounds_added]
@@ -57,6 +57,9 @@ def _is_adjective(compound: list[TokenExt]):
 
 def _is_noun(compound: list[TokenExt]):
     return compound[-1].is_noun()
+
+def is_verb_auxiliary_or_end_of_phrase(compound: list[TokenExt]):
+    return is_verb_auxiliary(compound) or compound[0].is_end_of_phrase_particle()
 
 def is_verb_auxiliary(compound: list[TokenExt]):
     return compound[0].is_verb_auxiliary()
