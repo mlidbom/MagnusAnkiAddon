@@ -6,6 +6,7 @@ from parsing.tree_parsing.tree_parser_node import TreeParserNode
 N = TreeParserNode
 R = TreeParseResult
 
+def only_string_params(param) -> str: return param if isinstance(param, str) else ""
 
 @pytest.mark.parametrize('sentence, excluded, expected', [
     ("知らない", set(), R(N('知らない', '', [N('知る', '知ら'), N('ない', '')]))),
@@ -35,7 +36,7 @@ R = TreeParseResult
     ("明るいしもう", {"しもう", "しも"}, R(N('明るいする', '明るいし', [N('明るい', ''), N('する', 'し')]), N('もう', '', [N('も', ''), N('う', '')]))),
     ("今じゃ町は夜でも明るいしもう会うこともないかもな", {"しもう"}, R(N('今じゃ', '', [N('今', ''), N('じゃ', '')]), N('町は', '', [N('町', ''), N('は', '')]), N('夜でも', '', [N('夜', ''), N('でも', '')]), N('明るいし', '', [N('明るい', ''), N('し', '')]), N('もう', ''), N('会うこともないかも', '', [N('会う', ''), N('こと', ''), N('も', ''), N('ない', ''), N('かも', '')]), N('な', ''))),
     ("友達だから余計に気になっちゃうんだよ", set(), R(N('友達だから', '', [N('友達', ''), N('だから', '', [N('だ', ''), N('から', '')])]), N('余計に', '', [N('余計', ''), N('に', '')]), N('気になっちゃうんだよ', '', [N('気になる', '気になっ', [N('気', ''), N('に', ''), N('なる', 'なっ')]), N('ちゃう', ''), N('んだ', '', [N('ん', ''), N('だ', '')]), N('よ', '')])))
-])
+], ids=only_string_params)
 def test_various_stuff(sentence: str, excluded: set[str], expected: TreeParseResult) -> None:
     result = tree_parser.parse_tree(sentence, excluded)
     assert result == expected
@@ -52,7 +53,7 @@ def test_various_stuff(sentence: str, excluded: set[str], expected: TreeParseRes
 
     # adjective within verb compound
     ("言えばよかった", set(), R(N('言えば', '', [N('言う', '言え'), N('ば', '')]), N('よかった', '', [N('よい', 'よかっ'), N('た', '')])))
-])
+], ids=only_string_params)
 def test_adjective_compounds(sentence: str, excluded: set[str], expected: TreeParseResult) -> None:
     result = tree_parser.parse_tree(sentence, excluded)
     assert result == expected
@@ -61,7 +62,7 @@ def test_adjective_compounds(sentence: str, excluded: set[str], expected: TreePa
 @pytest.mark.parametrize('sentence, excluded, expected', [
     ("あいつが話の中に出てくるのが", set(), R(N('あいつが', '', [N('あいつ', ''), N('が', '')]), N('話の中に', '', [N('話', ''), N('の', ''), N('中', ''), N('に', '')]), N('出てくるのが', '', [N('出てくるの', '', [N('出てくる', '', [N('出る', '出'), N('て', ''), N('くる', '')]), N('の', '')]), N('が', '')]))),
     ("自分のことを知ってもらえてない人に", set(), R(N('自分のことを', '', [N('自分', ''), N('の', ''), N('こと', ''), N('を', '')]), N('知ってもらえてない人に', '', [N('知ってもらえてない人', '', [N('知る', '知っ'), N('て', ''), N('もらう', 'もらえ'), N('てる', 'て'), N('ない', ''), N('人', '')]), N('に', '')])))
-])
+], ids=only_string_params)
 def test_noun_compounds(sentence: str, excluded: set[str], expected: TreeParseResult) -> None:
     result = tree_parser.parse_tree(sentence, excluded)
     assert result == expected
@@ -69,7 +70,7 @@ def test_noun_compounds(sentence: str, excluded: set[str], expected: TreeParseRe
 
 @pytest.mark.parametrize('sentence, excluded, expected', [
     ("今じゃ町は夜でも明るいしもう会うこともないかもな", {"しもう"},R(N('今じゃ', '', [N('今', ''), N('じゃ', '')]), N('町は', '', [N('町', ''), N('は', '')]), N('夜でも', '', [N('夜', ''), N('でも', '')]), N('明るいし', '', [N('明るい', ''), N('し', '')]), N('もう', ''), N('会うこともないかも', '', [N('会う', ''), N('こと', ''), N('も', ''), N('ない', ''), N('かも', '')]), N('な', ''))),
-])
+], ids=only_string_params)
 def test_temp(sentence: str, excluded: set[str], expected: TreeParseResult) -> None:
     result = tree_parser.parse_tree(sentence, excluded)
     assert result == expected
