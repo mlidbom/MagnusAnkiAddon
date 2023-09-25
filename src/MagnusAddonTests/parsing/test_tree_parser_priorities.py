@@ -40,7 +40,6 @@ def test_priorities(sentence: str, expected_priorities: dict[str, str]) -> None:
         real_priorities[own_node.base] = own_node.get_priority_class(own_node.base)
 
     result = tree_parser.parse_tree(sentence, set())
-    for node in result:
-        node.visit(register_priority)
+    result.visit(register_priority)
 
     assert real_priorities == expected_priorities

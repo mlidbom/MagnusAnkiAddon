@@ -102,7 +102,7 @@ def build_breakdown_html(sentence: SentenceNote) -> None:
         html += """\n<hr class="afterUserExtraWordsHR">\n"""
 
     question = sentence.get_active_question()
-    nodes = tree_parser.parse_tree(question, user_excluded)
+    nodes = tree_parser.parse_tree(question, user_excluded).nodes
 
     html += _create_html_from_nodes(nodes, user_excluded, 1)
     sentence.set_break_down(html)

@@ -9,14 +9,24 @@ from sysutils import kana_utils
 
 class TreeParserNode:
     _max_lookahead = 12
-    def __init__(self, base: str, surface: str, children=None, tokens: list[TokenExt] = None) -> None:
+    def __init__(self, base: str, surface: str, children: list['TreeParserNode'] = None, tokens: list[TokenExt] = None) -> None:
         self.base = base
         self.surface = surface
         self.tokens = tokens
         self.children:list[TreeParserNode] = children if children else []
 
+    def _children_repr(self, level=1) -> str:
+        if not self.children:
+            return ""
+        indent = "  " * level
+        children_string = ', '.join(child._repr(level) for child in self.children)
+        return f""",[\n{indent}{children_string}]"""
+
+    def _repr(self, level: int):
+        return f"""N('{self.base}', '{self.surface}'{self._children_repr(level + 1)})"""
+
     def __repr__(self) -> str:
-        return f"""N('{self.base}', '{self.surface}'{", " + str(self.children) if self.children else ""})"""
+        return self._repr(0)
 
     def __eq__(self, other: any) -> bool:
         return (isinstance(other, TreeParserNode)

@@ -1,9 +1,9 @@
-from builtins import Exception
 from typing import Callable
 
 from parsing.jamdict_extensions.dict_lookup import DictLookup
 from parsing.janome_extensions.token_ext import TokenExt
 from parsing.janome_extensions.tokenizer_ext import TokenizerExt
+from parsing.tree_parsing.tree_parse_result import TreeParseResult
 from parsing.tree_parsing.treeparsernode import TreeParserNode
 from sysutils.utils import ListUtils
 
@@ -11,28 +11,28 @@ _tokenizer = TokenizerExt()
 
 _max_lookahead = 12
 
-def parse_tree_ui(sentence:str, excluded:set[str]) -> list[TreeParserNode]:
-    nodes = parse_tree(sentence, excluded)
-    if len(nodes) == 1:
-        node = nodes[0]
+def parse_tree_ui(sentence:str, excluded:set[str]) -> TreeParseResult:
+    result = parse_tree(sentence, excluded)
+    if len(result.nodes) == 1:
+        node = result.nodes[0]
         if node.base and DictLookup.lookup_word_shallow(node.base).found_words() or node.surface and DictLookup.lookup_word_shallow(node.surface).found_words():
-            return nodes
+            return result
         else:
-            return node.children
-    return nodes
+            return TreeParseResult(*node.children)
+    return result
 
-def parse_tree(sentence:str, excluded:set[str]) -> list[TreeParserNode]:
+def parse_tree(sentence:str, excluded:set[str]) -> TreeParseResult:
     tokens = _tokenizer.tokenize(sentence).tokens
     if not tokens:
-        return []
+        return TreeParseResult()
     if _is_in_dictionary(tokens, excluded):
-        return [TreeParserNode.create(tokens, excluded)]
+        return TreeParseResult(TreeParserNode.create(tokens, excluded))
     
     dictionary_compounds_added = _build_dictionary_compounds(tokens, excluded)
     verb_compounds_added = _build_compounds(is_verb, is_verb_auxiliary_or_end_of_phrase, dictionary_compounds_added, excluded)
     adjective_compounds_added = _build_compounds(_is_adjective, _is_adjective_auxiliary_or_end_of_phrase, verb_compounds_added, excluded)
     noun_compounds_added = _build_compounds(_is_noun, _is_noun_auxiliary_or_end_of_phrase, adjective_compounds_added, excluded)
-    return [TreeParserNode.create(compounds, excluded) for compounds in noun_compounds_added]
+    return TreeParseResult(*[TreeParserNode.create(compounds, excluded) for compounds in noun_compounds_added])
 
 
 def _recursing_parse(tokens, excluded:set[str]) -> list[TreeParserNode]:
