@@ -16,7 +16,7 @@ class TreeParserNode:
         self.children:list[TreeParserNode] = children if children else []
 
     def __repr__(self) -> str:
-        return f"""N('{self.base}','{self.surface}'{"," + str(self.children) if self.children else ""})"""
+        return f"""N('{self.base}', '{self.surface}'{", " + str(self.children) if self.children else ""})"""
 
     def __eq__(self, other: any) -> bool:
         return (isinstance(other, TreeParserNode)
