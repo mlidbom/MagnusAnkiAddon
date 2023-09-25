@@ -143,7 +143,7 @@ class POS:
         binding = _add_full_part_of_speech('助詞', '係助詞') # は, も
         adverbial = _add_full_part_of_speech('助詞', '副助詞') # まで
         adverbial_coordinating_ending = _add_full_part_of_speech('助詞', '副助詞／並立助詞／終助詞')
-        adverbialization = _add_full_part_of_speech('助詞', '副詞化')
+        adverbialization = _add_full_part_of_speech('助詞', '副詞化') # に
         conjunctive = _add_full_part_of_speech('助詞', '接続助詞')  # て, と, し
         special = _add_full_part_of_speech('助詞', '特殊')
         sentence_ending = _add_full_part_of_speech('助詞', '終助詞') # な

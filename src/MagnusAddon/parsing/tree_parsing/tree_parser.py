@@ -30,8 +30,8 @@ def parse_tree(sentence:str, excluded:set[str]) -> list[TreeParserNode]:
     
     dictionary_compounds_added = _build_dictionary_compounds(tokens, excluded)
     verb_compounds_added = _build_compounds(is_verb, is_verb_auxiliary_or_end_of_phrase, dictionary_compounds_added, excluded)
-    adjective_compounds_added = _build_compounds(_is_adjective, _is_adjective_auxiliary, verb_compounds_added, excluded)
-    noun_compounds_added = _build_compounds(_is_noun, _is_noun_auxiliary, adjective_compounds_added, excluded)
+    adjective_compounds_added = _build_compounds(_is_adjective, _is_adjective_auxiliary_or_end_of_phrase, verb_compounds_added, excluded)
+    noun_compounds_added = _build_compounds(_is_noun, _is_noun_auxiliary_or_end_of_phrase, adjective_compounds_added, excluded)
     return [TreeParserNode.create(compounds, excluded) for compounds in noun_compounds_added]
 
 
@@ -49,26 +49,35 @@ def _recursing_parse(tokens, excluded:set[str]) -> list[TreeParserNode]:
 
     return [TreeParserNode.create(compounds, excluded) for compounds in dictionary_compounds]
 
-def is_verb(compound: list[TokenExt]):
+def is_verb(compound: list[TokenExt]) -> bool:
     return compound[-1].is_verb()
 
-def _is_adjective(compound: list[TokenExt]):
+def _is_adjective(compound: list[TokenExt]) -> bool:
     return compound[-1].is_adjective()
 
-def _is_noun(compound: list[TokenExt]):
+def _is_noun(compound: list[TokenExt]) -> bool:
     return compound[-1].is_noun()
 
 def is_verb_auxiliary_or_end_of_phrase(compound: list[TokenExt]):
-    return is_verb_auxiliary(compound) or compound[0].is_end_of_phrase_particle()
+    return is_verb_auxiliary(compound) or _is_end_of_phrase(compound)
 
-def is_verb_auxiliary(compound: list[TokenExt]):
+def is_verb_auxiliary(compound: list[TokenExt]) -> bool:
     return compound[0].is_verb_auxiliary()
 
-def _is_adjective_auxiliary(compound: list[TokenExt]):
+def _is_adjective_auxiliary_or_end_of_phrase(compound: list[TokenExt]) -> bool:
+    return _is_adjective_auxiliary(compound) or _is_end_of_phrase(compound)
+
+def _is_adjective_auxiliary(compound: list[TokenExt]) -> bool:
     return all(c.is_adjective_auxiliary() for c in compound)
 
-def _is_noun_auxiliary(compound: list[TokenExt]):
+def _is_noun_auxiliary_or_end_of_phrase(compound: list[TokenExt]) -> bool:
+    return _is_noun_auxiliary(compound) or _is_end_of_phrase(compound)
+
+def _is_noun_auxiliary(compound: list[TokenExt]) -> bool:
     return all(c.is_noun_auxiliary() for c in compound)
+
+def _is_end_of_phrase(compound: list[TokenExt]) -> bool:
+    return compound[0].is_end_of_phrase_particle()
 
 def _build_compounds(compound_filter: Callable[[list[TokenExt]],bool], auxiliary_filter: Callable[[list[TokenExt]],bool], start_compounds: list[list[TokenExt]], excluded:set[str]) -> list[list[TokenExt]]:
     compounds = [inner_list.copy() for inner_list in start_compounds]

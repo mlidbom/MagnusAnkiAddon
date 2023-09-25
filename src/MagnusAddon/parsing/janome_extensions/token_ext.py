@@ -64,7 +64,9 @@ class TokenExt:
 
 
     def is_noun(self) -> bool:
-        return self.parts_of_speech in _noun_parts_of_speech
+        if self.parts_of_speech in _noun_parts_of_speech:
+            return True
+        return False
 
     def is_noun_auxiliary(self) -> bool:
         return self.parts_of_speech in _noun_auxiliary_parts_of_speech
@@ -76,6 +78,8 @@ class TokenExt:
         if self.parts_of_speech == POS.Particle.conjunctive and self.surface != "て":
             return True
 
+        return False
+
 
 _end_of_phrase_particles = {
     POS.Particle.CaseMarking.general,
@@ -86,10 +90,10 @@ _end_of_phrase_particles = {
 
 _noun_parts_of_speech = {
     POS.Noun.general, # 自分
-
     POS.Noun.Pronoun.general, # あいつ
     POS.Noun.suru_verb, # 話
     POS.Noun.adverbial, # 今
+    POS.Noun.na_adjective_stem # 余慶
 }
 
 _adjective_auxiliary_parts_of_speech = {
@@ -111,7 +115,8 @@ _noun_auxiliary_parts_of_speech = {
     POS.Particle.binding, # は
     POS.Noun.Dependent.adverbial, # なか
     POS.Noun.Dependent.general, # こと
-    POS.Particle.adverbial  # まで
+    POS.Particle.adverbial,  # まで
+    POS.Particle.adverbialization # に
 } | _adjective_parts_of_speech | _adjective_auxiliary_parts_of_speech
 
 _verb_parts_of_speech = {
