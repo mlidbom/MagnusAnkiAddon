@@ -4,7 +4,7 @@ import aqt
 from aqt.browser import Browser
 
 import parsing.tree_parsing.tree_parser # noqa
-from parsing.tree_parsing.treeparsernode import TreeParserNode
+from parsing.tree_parsing.tree_parser_node import TreeParserNode
 from note.mynote import MyNote
 from note.sentencenote import SentenceNote
 from note.wanikanjinote import WaniKanjiNote

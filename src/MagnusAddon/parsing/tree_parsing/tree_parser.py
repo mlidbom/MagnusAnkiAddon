@@ -4,7 +4,7 @@ from parsing.jamdict_extensions.dict_lookup import DictLookup
 from parsing.janome_extensions.token_ext import TokenExt
 from parsing.janome_extensions.tokenizer_ext import TokenizerExt
 from parsing.tree_parsing.tree_parse_result import TreeParseResult
-from parsing.tree_parsing.treeparsernode import TreeParserNode
+from parsing.tree_parsing.tree_parser_node import TreeParserNode
 from sysutils.utils import ListUtils
 
 _tokenizer = TokenizerExt()

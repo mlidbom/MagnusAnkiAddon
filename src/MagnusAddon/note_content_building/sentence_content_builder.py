@@ -2,7 +2,7 @@ from ankiutils import search_utils
 from note.sentencenote import SentenceNote
 from note.wanivocabnote import WaniVocabNote
 from parsing.tree_parsing import tree_parser
-from parsing.tree_parsing.treeparsernode import TreeParserNode, priorities
+from parsing.tree_parsing.tree_parser_node import TreeParserNode, priorities
 from sysutils.utils import ListUtils
 from wanikani.wani_collection import WaniCollection
 

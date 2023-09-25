@@ -1,6 +1,6 @@
 from typing import Callable
 
-from parsing.tree_parsing.treeparsernode import TreeParserNode
+from parsing.tree_parsing.tree_parser_node import TreeParserNode
 
 class TreeParseResult:
     def __init__(self, *args: TreeParserNode) -> None:
