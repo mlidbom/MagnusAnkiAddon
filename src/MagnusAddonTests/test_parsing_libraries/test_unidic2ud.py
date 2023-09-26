@@ -61,20 +61,20 @@ def run_tests(sentence) -> None:
     for name, result in results:
         print()
         print(f"{name}: {sentence}")
-        print(format_output(result, name))
+        print(format_output(result))
 
     reference_name, reference_result = results[0]
     current_name, current_result = results[1]
 
-    assert format_output_for_comparing_ignore_space_after_and_features(current_result, current_name) == format_output_for_comparing_ignore_space_after_and_features(reference_result, reference_name)
+    assert format_output_for_comparing_ignore_space_after_and_features(current_result) == format_output_for_comparing_ignore_space_after_and_features(reference_result)
 
 
 
-def format_output(entry: 'UniDic2UDEntry', name:str) -> str:  # Replace 'UniDic2UDEntry' with your actual type
+def format_output(entry: 'UniDic2UDEntry') -> str:  # Replace 'UniDic2UDEntry' with your actual type
     line_rows = get_line_rows(entry)
     return align_tab_separated_values(line_rows)
 
-def format_output_for_comparing_ignore_space_after_and_features(entry: 'UniDic2UDEntry', name:str) -> str:  # Replace 'UniDic2UDEntry' with your actual type
+def format_output_for_comparing_ignore_space_after_and_features(entry: 'UniDic2UDEntry') -> str:  # Replace 'UniDic2UDEntry' with your actual type
     line_rows = get_line_rows(entry)
     line_rows = [line[:-2] for line in line_rows]
     return align_tab_separated_values(line_rows, "＿")
