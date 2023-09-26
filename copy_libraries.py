@@ -11,7 +11,8 @@ target_dir = os.path.join(script_dir, './src/MagnusAddon/_lib')
 # One line per library and its dependencies
 libraries_to_copy = ['wanikani_api', 'dateutil', 'six.py',
                      'janome',
-                     'jamdict', 'jamdict_data', 'puchikarui', 'chirptext']
+                     'jamdict', 'jamdict_data', 'puchikarui', 'chirptext',
+                     'unidic2ud', 'ufal', 'fugashi']
 
 # Create the target directory if it doesn't exist
 os.makedirs(target_dir, exist_ok=True)
