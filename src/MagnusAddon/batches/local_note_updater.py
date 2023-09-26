@@ -43,6 +43,11 @@ def _set_vocab_uk_and_forms_from_dictionary(all_vocabulary: list[WaniVocabNote])
             if lookup.found_words():
                 vocab.set_forms(lookup.valid_forms(vocab.is_uk()))
 
+            if vocab.get_question() not in vocab.get_forms():
+                vocab.set_forms(vocab.get_forms() | {vocab.get_question()})
+
+            if vocab.is_uk() and vocab.get_readings()[0] not in vocab.get_forms():
+                vocab.set_forms(vocab.get_forms() | set(vocab.get_readings()))
 
 def _update_vocab_parsed_parts_of_speech(all_vocabulary: list[WaniVocabNote]) -> None:
     for vocab in all_vocabulary:
