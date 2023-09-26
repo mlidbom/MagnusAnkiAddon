@@ -1,2 +1,4 @@
 /mpv.exe
 __pycache__/
+/src/MagnusAddon/_lib/unidic2ud/download/
+/src/MagnusAddon/_lib/jamdict_data/jamdict.db
