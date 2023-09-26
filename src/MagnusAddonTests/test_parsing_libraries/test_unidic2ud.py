@@ -82,11 +82,15 @@ def format_output_for_comparing_ignore_space_after_and_features(entry: 'UniDic2U
 
 def get_line_rows(entry) -> list[list[str]]:
     output = repr(entry)
+    return get_lines_from_output(output)
+
+
+def get_lines_from_output(output:str) -> list[list[str]]:
     output = output.replace("-", "－")  # use a full width character instead to keep the alignment working.
     lines = output.strip().split('\n')  # Split the multiline string into lines
     lines = [line for line in lines if "\t" in line]  # Skip lines that are not the true output
     line_rows = [line.split('\t') for line in lines]  # Split each line by tab and create a list of lists
-    for line in line_rows: line.append(line.pop(5)) # move the features line that often differs to the end.
+    for line in line_rows: line.append(line.pop(5))  # move the features line that often differs to the end.
     return line_rows
 
 

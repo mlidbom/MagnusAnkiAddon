@@ -1,7 +1,6 @@
 #top contenders:
 
-#UniDic2UD https://github.com/KoichiYasuoka/UniDic2UD
-#Slower than I would like for sure, but seems to do everything I want.
+#UniDic2UD https://github.com/KoichiYasuoka/UniDic2UD Seems to do everything I want and quite well.
 
 #alternatives:
 # SuPar-UniDic https://github.com/KoichiYasuoka/SuPar-UniDic
