@@ -12,7 +12,8 @@ class WaniKanaVocabNote(WaniNote):
 
     def _on_edited(self) -> None: self.update_generated_data()
 
-    def get_question(self) -> str: return super().get_field(Wani.KanaVocabFields.question).replace("〜","").strip()
+    def get_question_without_noise_characters(self) -> str: return self.get_question().replace("〜","")
+    def get_question(self) -> str: return super().get_field(Wani.KanaVocabFields.question).strip()
     def _set_question(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.question, value)
 
     def get_active_answer(self) -> str:
