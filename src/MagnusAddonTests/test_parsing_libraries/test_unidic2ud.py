@@ -2,18 +2,18 @@ import pytest
 import unidic2ud
 from unidic2ud import cabocha
 
-_parsers = [("default", (unidic2ud.load())),
-            ("kindai", (unidic2ud.load("kindai"))),
-            #("gendai", (unidic2ud.load("gendai"))),
-            #("spoken", (unidic2ud.load("spoken"))),
-            #("novel", (unidic2ud.load("novel"))),
-            #("qkana", (unidic2ud.load("qkana"))),
-            #("kinsei_kindai_bungo", (unidic2ud.load("kinsei\\60a_kindai-bungo"))),
-            #("kinsei_edo", (unidic2ud.load("kinsei\\50c_kinsei-edo"))),
-            #("kyogen", (unidic2ud.load("kyogen"))),
-            ("wakan", (unidic2ud.load("wakan"))),
-            #("wabun", (unidic2ud.load("wabun"))), #oddness abounds
-            #("manyo", (unidic2ud.load("manyo"))) # seems to usually give some truly strange results
+_parsers = [("default", (unidic2ud.load())), # Often most intuitive results. Polarity negative feature. Good for something?
+            ("kindai", (unidic2ud.load("kindai"))), # pretty similar to default, sometimes default does better, somtimes kindai. Maybe just maybe kindai does better over-all
+            #("spoken", (unidic2ud.load("spoken"))), # A candidate, similar to kindai, but some differences that may be good for some sentences at least
+            #("kinsei_edo", (unidic2ud.load("kinsei\\50c_kinsei-edo"))), # quite similar to kindai it seems to me.
+            #("kinsei_kindai_bungo", (unidic2ud.load("kinsei\\60a_kindai-bungo"))), # quite similar to kindai it seems to me.
+            ("gendai", (unidic2ud.load("gendai"))),
+            #("novel", (unidic2ud.load("novel"))), # quite similar to kindai it seems to me.
+            #("qkana", (unidic2ud.load("qkana"))), # quite similar to kindai it seems to me.
+            #("kyogen", (unidic2ud.load("kyogen"))), #Probably No. recognizes ない as an i-adjective and mapped it to the correct kanji, unlike standard and kindai which just calls it 助動詞. Then in it's eagerness to find kanji it maps the particle ね to 音 and calls it a noun.... Ouch
+            #("wakan", (unidic2ud.load("wakan"))), #No. wakan gives wack results
+            #("wabun", (unidic2ud.load("wabun"))), #No. oddness abounds
+            #("manyo", (unidic2ud.load("manyo"))) #No. seems to usually give some truly strange results
             ]
 
 @pytest.mark.parametrize('sentence, expected', [
@@ -40,6 +40,7 @@ _parsers = [("default", (unidic2ud.load())),
     ("ダメダメ私を殺して", []),
     ("離れていくよ", []),
     ("言われるまで気づかなかった", []),
+    ("何か意味があるんだと思う", [])
 ])
 def test_unidic2ud(sentence: str, expected: list[str]) -> None:
     run_tests(sentence)
