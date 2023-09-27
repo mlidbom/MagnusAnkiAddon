@@ -1,14 +1,13 @@
 #loading a single instance takes several seconds.
 import pytest
 
-import srsly
 import spacy
 from spacy import Language
 from spacy.tokens import Doc
 
-from test_parsing_libraries.test_unidic2ud import get_lines_from_output, align_tab_separated_values
+from src.ExploratoryTests.test_parsing_libraries.test_unidic2ud import get_lines_from_output, align_tab_separated_values
 
-pytestmark = pytest.mark.skip(reason="Running exploratory code constantly is just distracting.")
+#pytestmark = pytest.mark.skip(reason="Running exploratory code constantly is just distracting.")
 
 nlp:Language
 

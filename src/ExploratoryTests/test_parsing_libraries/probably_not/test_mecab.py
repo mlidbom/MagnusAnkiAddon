@@ -3,7 +3,7 @@
 import MeCab
 import pytest
 
-pytestmark = pytest.mark.skip(reason="Running exploratory code constantly is just distracting.")
+#pytestmark = pytest.mark.skip(reason="Running exploratory code constantly is just distracting.")
 
 class MecabToken:
     def __init__(self, token_string: str) -> None:

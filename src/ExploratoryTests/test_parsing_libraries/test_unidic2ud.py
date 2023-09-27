@@ -2,7 +2,7 @@ import pytest
 import unidic2ud
 from unidic2ud import cabocha, UniDic2UDEntry, UniDic2UD
 
-pytestmark = pytest.mark.skip(reason="Running exploratory code constantly is just distracting.")
+#pytestmark = pytest.mark.skip(reason="Running exploratory code constantly is just distracting.")
 
 _parsers:list[tuple[str, UniDic2UD]] = []
 
