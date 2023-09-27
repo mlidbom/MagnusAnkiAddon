@@ -12,7 +12,7 @@ from ankiutils import anki_shim
 _thread_local = threading.local()
 
 
-def get_global_object() -> Collection:
+def get_threadlocal_collection() -> Collection:
     return _thread_local.anki_collection
 
 @contextmanager
@@ -21,7 +21,7 @@ def replace_anki_collection_for_testing() -> Generator[None, None, None]:
         collection_file = path.join(tmp_dirname, "collection.anki2")
         collection = create_collection(collection_file)
         _thread_local.anki_collection = collection
-        anki_shim.facade.col = get_global_object
+        anki_shim.facade.col = get_threadlocal_collection
         yield
 
         collection.close()
