@@ -16,6 +16,7 @@ _parsers = [("kindai", (unidic2ud.load("kindai"))), # The leader so for
             #("manyo", (unidic2ud.load("manyo"))) #No. seems to usually give some truly strange results
             ]
 
+@pytest.mark.skip(reason="Running exploratory code constantly is just distracting.")
 @pytest.mark.parametrize('sentence, expected', [
     ("そんなに気になるなら あの時俺も友達だって言えばよかったじゃん", []),
     ("普段どうやって日記読んでたんだ", []),
