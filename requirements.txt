@@ -1,4 +1,5 @@
 aqt==2.1.66
+anki==2.1.66
 PyQt6-WebEngine==6.5.0
 wanikani-api==0.6.1
 
