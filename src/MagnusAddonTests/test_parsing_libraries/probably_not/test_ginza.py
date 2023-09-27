@@ -1,3 +1,4 @@
+#loading a single instance takes several seconds.
 import pytest
 
 import srsly
