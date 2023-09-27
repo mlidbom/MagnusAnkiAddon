@@ -94,6 +94,7 @@ def setup_note_menu(note, root_menu, sel_clip, selection, view: AnkiWebView):
         if not vocab.get_user_answer():
             add_ui_action(note_menu, "Accept &meaning", lambda: vocab.set_user_answer(format_vocab_meaning(vocab.get_active_answer())))
 
+        add_ui_action(note_set_menu, "&Generate answer", lambda: vocab.generate_and_set_answer())
         add_ui_action(note_set_menu, "&Meaning", lambda: vocab.set_user_answer(sel_clip))
         add_ui_action(note_set_menu, "&Confused with", lambda: vocab.set_related_confused_with(sel_clip))
         add_ui_action(note_set_menu, "&Derived from", lambda: vocab.set_related_derived_from(sel_clip))

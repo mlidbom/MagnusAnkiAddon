@@ -99,3 +99,11 @@ class WaniVocabNote(WaniKanaVocabNote):
             kanji_note.set_context_en_3(wani_vocab.context_sentences[2].english)
             kanji_note.set_context_jp_3(wani_vocab.context_sentences[2].japanese)
 
+    def generate_and_set_answer(self) -> None:
+        from parsing.jamdict_extensions.dict_lookup import DictLookup
+        dict_lookup = DictLookup.try_lookup_vocab_word_or_name(self)
+        if dict_lookup.found_words():
+            generated = dict_lookup.entries[0].generate_answer()
+            self.set_user_answer(generated)
+
+
