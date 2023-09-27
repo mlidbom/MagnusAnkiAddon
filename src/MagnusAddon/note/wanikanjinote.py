@@ -2,9 +2,8 @@ from typing import Callable
 
 from wanikani_api import models
 from anki.notes import Note
-from aqt import mw
 
-from ankiutils.anki_shim import get_anki_collection
+from ankiutils.anki_shim import facade
 from sysutils.utils import StringUtils
 from note.waninote import WaniNote
 from wanikani.wani_constants import Wani, Mine
@@ -165,10 +164,10 @@ class WaniKanjiNote(WaniNote):
 
     @staticmethod
     def create_from_wani_kanji(wani_kanji: models.Kanji):
-        note = Note(get_anki_collection(), get_anki_collection().models.byName(Wani.NoteType.Kanji))
+        note = Note(facade.col(), facade.col().models.byName(Wani.NoteType.Kanji))
         note.add_tag("__imported")
         note.add_tag(Mine.Tags.Wani)
         kanji_note = WaniKanjiNote(note)
-        get_anki_collection().addNote(note) # todo static access to col
+        facade.col().addNote(note) # todo static access to col
         kanji_note.set_question(wani_kanji.characters)
         kanji_note.update_from_wani(wani_kanji)

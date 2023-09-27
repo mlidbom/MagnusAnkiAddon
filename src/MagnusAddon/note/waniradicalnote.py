@@ -1,8 +1,7 @@
 from wanikani_api import models
 from anki.notes import Note
-from aqt import mw
 
-from ankiutils.anki_shim import get_anki_collection
+from ankiutils.anki_shim import facade
 from note.waninote import WaniNote
 from wanikani.wani_constants import Wani, Mine
 
@@ -38,10 +37,10 @@ class WaniRadicalNote(WaniNote):
 
     @staticmethod
     def create_from_wani_radical(wani_radical: models.Radical):
-        note = Note(get_anki_collection(), get_anki_collection().models.byName(Wani.NoteType.Radical))
+        note = Note(facade.col(), facade.col().models.byName(Wani.NoteType.Radical))
         note.add_tag("__imported")
         note.add_tag(Mine.Tags.Wani)
         radical_note = WaniRadicalNote(note)
-        get_anki_collection().addNote(note)
+        facade.col().addNote(note)
         radical_note.set_q(wani_radical.characters)
         radical_note.update_from_wani(wani_radical)

@@ -24,12 +24,12 @@ from PyQt6.QtGui import QAction, QKeySequence
 from aqt import mw, qconnect
 from aqt.utils import tooltip
 
-from ankiutils.anki_shim import get_anki_collection
+from ankiutils.anki_shim import facade
 
 
 def refresh_media() -> None:
     # write a dummy file to update collection.media modtime and force sync
-    media_dir = get_anki_collection().media.dir()
+    media_dir = facade.col().media.dir()
     fpath = os.path.join(media_dir, "syncdummy.txt")
     if not os.path.isfile(fpath):
         with open(fpath, "w") as f:
