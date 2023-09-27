@@ -3,12 +3,19 @@ import pytest
 
 import srsly
 import spacy
+from spacy import Language
 from spacy.tokens import Doc
 
 from test_parsing_libraries.test_unidic2ud import get_lines_from_output, align_tab_separated_values
 
-nlp = spacy.load('ja_ginza')
+pytestmark = pytest.mark.skip(reason="Running exploratory code constantly is just distracting.")
 
+nlp:Language
+
+@pytest.fixture(scope='module', autouse=True)
+def setup() -> None:
+    global nlp
+    nlp = spacy.load('ja_ginza')
 
 @pytest.mark.parametrize('sentence, expected', [
     ("そんなに気になるなら あの時俺も友達だって言えばよかったじゃん", []),

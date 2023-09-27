@@ -1,22 +1,29 @@
 import pytest
 import unidic2ud
-from unidic2ud import cabocha, UniDic2UDEntry
+from unidic2ud import cabocha, UniDic2UDEntry, UniDic2UD
 
-_parsers = [("kindai", (unidic2ud.load("kindai"))), # The leader so for
-            ("gendai", (unidic2ud.load("gendai"))), # seems neck and neck with kindai.
-            ("default", (unidic2ud.load())), #As alternative? When differing from kindai, usually seems worse but significantly different. Polarity negative feature. Good for something?
-            #("spoken", (unidic2ud.load("spoken"))), # todo Recheck
-            #("kinsei_edo", (unidic2ud.load("kinsei\\50c_kinsei-edo"))), # todo Recheck
-            #("kinsei_kindai_bungo", (unidic2ud.load("kinsei\\60a_kindai-bungo"))), # todo Recheck
-            #("novel", (unidic2ud.load("novel"))), # todo Recheck
-            #("qkana", (unidic2ud.load("qkana"))), # todo Recheck
-            #("kyogen", (unidic2ud.load("kyogen"))), # todo Recheck
-            #("wakan", (unidic2ud.load("wakan"))), #No. wakan gives wack results
-            #("wabun", (unidic2ud.load("wabun"))), #No. oddness abounds
-            #("manyo", (unidic2ud.load("manyo"))) #No. seems to usually give some truly strange results
-            ]
+pytestmark = pytest.mark.skip(reason="Running exploratory code constantly is just distracting.")
 
-@pytest.mark.skip(reason="Running exploratory code constantly is just distracting.")
+_parsers:list[tuple[str, UniDic2UD]] = []
+
+@pytest.fixture(scope='module', autouse=True)
+def setup() -> None:
+    global _parsers
+    _parsers = [("kindai", (unidic2ud.load("kindai"))),  # The leader so for
+                ("gendai", (unidic2ud.load("gendai"))),  # seems neck and neck with kindai.
+                ("default", (unidic2ud.load())),  # As alternative? When differing from kindai, usually seems worse but significantly different. Polarity negative feature. Good for something?
+                # ("spoken", (unidic2ud.load("spoken"))), # todo Recheck
+                # ("kinsei_edo", (unidic2ud.load("kinsei\\50c_kinsei-edo"))), # todo Recheck
+                # ("kinsei_kindai_bungo", (unidic2ud.load("kinsei\\60a_kindai-bungo"))), # todo Recheck
+                # ("novel", (unidic2ud.load("novel"))), # todo Recheck
+                # ("qkana", (unidic2ud.load("qkana"))), # todo Recheck
+                # ("kyogen", (unidic2ud.load("kyogen"))), # todo Recheck
+                # ("wakan", (unidic2ud.load("wakan"))), #No. wakan gives wack results
+                # ("wabun", (unidic2ud.load("wabun"))), #No. oddness abounds
+                # ("manyo", (unidic2ud.load("manyo"))) #No. seems to usually give some truly strange results
+                ]
+
+
 @pytest.mark.parametrize('sentence, expected', [
     ("そんなに気になるなら あの時俺も友達だって言えばよかったじゃん", []),
     ("普段どうやって日記読んでたんだ", []),

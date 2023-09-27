@@ -3,6 +3,8 @@
 import MeCab
 import pytest
 
+pytestmark = pytest.mark.skip(reason="Running exploratory code constantly is just distracting.")
+
 class MecabToken:
     def __init__(self, token_string: str) -> None:
         token_and_info = token_string.split("\t")
@@ -36,7 +38,12 @@ class MecabTokenizer:
         result = "".join(kanji_only)
         return result
 
-tokenizer = MecabTokenizer()
+tokenizer:MecabTokenizer
+
+@pytest.fixture(scope='module', autouse=True)
+def setup() -> None:
+    global tokenizer
+    tokenizer = MecabTokenizer()
 
 @pytest.mark.parametrize('sentence, expected', [
     ("探しているんですか", ['探す', 'て', '居る', 'の', 'です', 'か']), #good: 居る

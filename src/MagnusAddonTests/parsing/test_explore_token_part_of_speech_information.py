@@ -4,7 +4,12 @@ from parsing.janome_extensions.parts_of_speech import POS
 from parsing.janome_extensions.token_ext import TokenExt
 from parsing.janome_extensions.tokenizer_ext import TokenizerExt
 
-_tokenizer = TokenizerExt()
+_tokenizer:TokenizerExt
+
+@pytest.fixture(scope='module', autouse=True)
+def setup() -> None:
+    global _tokenizer
+    _tokenizer = TokenizerExt()
 
 @pytest.mark.parametrize('sentence, expected_tokens', [
     ("こんなに", [TokenExt(POS.Adverb.particle_connection, "こんなに", "こんなに")]),

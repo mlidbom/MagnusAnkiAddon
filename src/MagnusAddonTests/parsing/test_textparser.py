@@ -4,7 +4,12 @@ from parsing.janome_extensions.parsed_word import ParsedWord
 from parsing.janome_extensions.tokenizer_ext import TokenizerExt
 from parsing.textparser import identify_words
 
-_tokenizer = TokenizerExt()
+_tokenizer:TokenizerExt
+
+@pytest.fixture(scope='module', autouse=True)
+def setup() -> None:
+    global _tokenizer
+    _tokenizer = TokenizerExt()
 
 #TODO: See if we can't find a way to parse suru out of sentences such that the verbalizing suffix can be
 # handled separately from the stand-alone word.
