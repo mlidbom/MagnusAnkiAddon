@@ -1,6 +1,6 @@
 import pytest
 import unidic2ud
-from unidic2ud import cabocha, UniDic2UDEntry, UniDic2UD
+from unidic2ud import UniDic2UDEntry, UniDic2UD
 
 #pytestmark = pytest.mark.skip(reason="Running exploratory code constantly is just distracting.")
 

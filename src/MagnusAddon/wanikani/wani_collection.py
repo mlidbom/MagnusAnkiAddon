@@ -2,8 +2,8 @@ from typing import List, Sequence
 
 import anki
 from anki.notes import NoteId
-from aqt import mw
 
+from ankiutils.anki_shim import get_anki_collection
 from ankiutils.search_utils import Builtin
 from note.sentencenote import SentenceNote
 from sysutils.utils import ListUtils
@@ -23,7 +23,7 @@ class WaniCollection:
     @staticmethod
     def fetch_notes_by_note_type_and_field_value(note_type: str, field: str,
                                                  field_values: List) -> List[anki.notes.Note]:
-        note_ids = [mw.col.find_notes(
+        note_ids = [get_anki_collection().find_notes(
             f"{Builtin.Note}:{note_type} {field}:{field_value}")
             for field_value in field_values]
 
@@ -33,14 +33,14 @@ class WaniCollection:
 
     @staticmethod
     def fetch_notes_by_note_type(note_type: str) -> List[anki.notes.Note]:
-        note_ids = [mw.col.find_notes("{}:{}".format(Builtin.Note, note_type))]
+        note_ids = [get_anki_collection().find_notes("{}:{}".format(Builtin.Note, note_type))]
         note_ids = ListUtils.flatten_list(note_ids)
         notes = WaniCollection.fetch_notes_by_id(note_ids)
         return notes
 
     @staticmethod
     def search_vocab_notes(query: str) -> list[WaniVocabNote]:
-        note_ids = [mw.col.find_notes(query)]
+        note_ids = [get_anki_collection().find_notes(query)]
         note_ids = ListUtils.flatten_list(note_ids)
         notes = WaniCollection.fetch_notes_by_id(note_ids)
         return [WaniVocabNote(note) for note in notes]
@@ -97,15 +97,15 @@ class WaniCollection:
 
     @staticmethod
     def fetch_notes_by_id(note_ids: Sequence[NoteId]) -> List[anki.notes.Note]:
-        return [mw.col.get_note(note_id) for note_id in note_ids]
+        return [get_anki_collection().get_note(note_id) for note_id in note_ids]
 
     @staticmethod
     def unsuspend_note_cards(note: WaniNote, name: str) -> None:
         print("Unsuspending {}: {}".format(WaniNote.get_note_type_name(note), name))
-        mw.col.sched.unsuspend_cards(note.card_ids())
+        get_anki_collection().sched.unsuspend_cards(note.card_ids())
 
     @staticmethod
     def prioritize_note_cards(note: WaniNote) -> None:
-        cards = [mw.col.get_card(card_id) for card_id in note.card_ids()]
+        cards = [get_anki_collection().get_card(card_id) for card_id in note.card_ids()]
         for card in cards:
             CardUtils.prioritize(card)

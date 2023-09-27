@@ -2,8 +2,8 @@ import os
 from typing import List
 
 import requests
-from aqt import mw
 
+from ankiutils.anki_shim import get_anki_collection
 from note.wanivocabnote import WaniVocabNote
 from wanikani.wani_collection import WaniCollection
 from wanikani.wanikani_api_client import WanikaniClient
@@ -16,7 +16,7 @@ class FileDownloadError(Exception):
 class WaniDownloader:
     @staticmethod
     def media_dir() -> str:
-        return mw.col.media.dir()
+        return get_anki_collection().media.dir()
 
     @classmethod
     def download_file(cls, url, filename) -> str:

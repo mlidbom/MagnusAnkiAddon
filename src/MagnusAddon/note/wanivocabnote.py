@@ -2,6 +2,7 @@ from wanikani_api import models
 from aqt import mw
 from anki.notes import Note
 
+from ankiutils.anki_shim import get_anki_collection
 from note.wanikanavocabnote import WaniKanaVocabNote
 from sysutils.utils import StringUtils
 from wanikani.wani_constants import Wani, Mine
@@ -78,11 +79,11 @@ class WaniVocabNote(WaniKanaVocabNote):
 
     @staticmethod
     def create_from_wani_vocabulary(wani_vocab: models.Vocabulary):
-        note = Note(mw.col, mw.col.models.byName(Wani.NoteType.Vocab))
+        note = Note(get_anki_collection(), get_anki_collection().models.byName(Wani.NoteType.Vocab))
         note.add_tag("__imported")
         note.add_tag(Mine.Tags.Wani)
         kanji_note = WaniVocabNote(note)
-        mw.col.addNote(note)
+        get_anki_collection().addNote(note)
         kanji_note._set_question(wani_vocab.characters)
         kanji_note.update_from_wani(wani_vocab)
 

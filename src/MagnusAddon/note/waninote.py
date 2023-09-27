@@ -2,8 +2,8 @@ from typing import Sequence
 
 from wanikani_api import models
 from anki.notes import Note
-from aqt import mw
 
+from ankiutils.anki_shim import get_anki_collection
 from note.mynote import MyNote
 from wanikani.wani_constants import Mine, Wani
 
@@ -93,8 +93,8 @@ class WaniNote(MyNote):
         self.set_auxiliary_meanings_blacklist(", ".join(auxiliary_meanings_blacklist))
 
     def delete(self) -> None:
-        mw.col.remNotes([self._note.id])
-        mw.col.save()
+        get_anki_collection().remNotes([self._note.id])
+        get_anki_collection().save()
 
     def card_ids(self) -> Sequence[int]:
         return self._note.card_ids()

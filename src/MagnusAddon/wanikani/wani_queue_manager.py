@@ -3,7 +3,7 @@ from typing import Optional, Callable
 import aqt.browser
 from anki.notes import Note
 
-from aqt import dialogs
+from aqt import dialogs, mw
 
 from sysutils.utils import StringUtils
 from wanikani.wani_collection import *
@@ -80,7 +80,7 @@ def refresh_search() -> None:
 
 
 def prioritize_selected_cards(card_ids: Sequence[int]):
-    cards = [mw.col.get_card(card_id) for card_id in card_ids]
+    cards = [get_anki_collection().get_card(card_id) for card_id in card_ids]
     for card in cards:
         CardUtils.prioritize(card)
 

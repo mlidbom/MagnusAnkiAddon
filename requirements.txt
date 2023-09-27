@@ -13,3 +13,5 @@ pipdeptree==2.13.0
 puchikarui==0.2a2.post5
 pytest==7.4.2
 spacy==3.6.1
+PyQt6~=6.5.2
+requests==2.31.0

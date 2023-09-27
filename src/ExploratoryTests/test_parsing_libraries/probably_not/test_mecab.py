@@ -1,6 +1,6 @@
 #Fast but output nothing but text and has no dependency information I can find and does not seem too intelligent in parsing compared to competitors.
 
-import MeCab
+import MeCab # noqa
 import pytest
 
 #pytestmark = pytest.mark.skip(reason="Running exploratory code constantly is just distracting.")

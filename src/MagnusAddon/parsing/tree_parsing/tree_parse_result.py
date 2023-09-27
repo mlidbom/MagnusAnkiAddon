@@ -4,11 +4,11 @@ from parsing.tree_parsing.tree_parser_node import TreeParserNode
 
 class TreeParseResult:
     def __init__(self, *args: TreeParserNode) -> None:
-        self.nodes = args
+        self.nodes = list(args)
 
     def __repr__(self) -> str:
         _argument_separator = ",\n  "
-        return f"""R({_argument_separator.join(node._repr(1) for node in self.nodes)})"""
+        return f"""R({_argument_separator.join(node._repr(1) for node in self.nodes)})""" # noqa
 
     def __eq__(self, other) -> bool:
         return (isinstance(other, TreeParseResult)

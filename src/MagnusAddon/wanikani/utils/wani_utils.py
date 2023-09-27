@@ -1,8 +1,7 @@
 from anki.cards import *
 from anki.consts import QUEUE_TYPE_NEW
-from aqt import mw
 
-
+from ankiutils.anki_shim import get_anki_collection
 from note.waninote import WaniNote
 from wanikani.wani_constants import Wani
 
@@ -35,18 +34,18 @@ class CardUtils:
 
     @classmethod
     def prioritize_note_cards(cls, note: WaniNote, name: str):
-        cards = [mw.col.get_card(card_id) for card_id in note.card_ids()]
+        cards = [get_anki_collection().get_card(card_id) for card_id in note.card_ids()]
         for card in cards:
             print("Prioritizing {}: {}".format(WaniNote.get_note_type_name(note), name))
             CardUtils.prioritize(card)
 
     @classmethod
     def answer_again_with_zero_interval_for_new_note_cards(cls, note: WaniNote, name: str):
-        cards = [mw.col.get_card(card_id) for card_id in note.card_ids()]
+        cards = [get_anki_collection().get_card(card_id) for card_id in note.card_ids()]
         for card in cards:
             if CardUtils.is_new(card):
                 print("Answering new card again {}: {}".format(WaniNote.get_note_type_name(note), name))
                 card.start_timer()  # answerCard crashes unless I do this.
-                mw.col.sched.answerCard(card, 1)
+                get_anki_collection().sched.answerCard(card, 1)
                 card.due = int(time.time())
                 card.flush()
