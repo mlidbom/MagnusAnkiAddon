@@ -1,6 +1,7 @@
 import pytest
 import unidic2ud
-from unidic2ud import UniDic2UDEntry, UniDic2UD
+from _pytest.fixtures import FixtureRequest
+from unidic2ud import UniDic2UDEntry, UniDic2UD, UDPipeEntry
 
 #pytestmark = pytest.mark.skip(reason="Running exploratory code constantly is just distracting.")
 
@@ -24,34 +25,81 @@ def setup() -> None:
                 ]
 
 
-@pytest.mark.parametrize('sentence, expected', [
-    ("そんなに気になるなら あの時俺も友達だって言えばよかったじゃん", []),
-    ("普段どうやって日記読んでたんだ", []),
-    ("何か意味があるんだと思う", []),
-    ("いつまでも来ないと知らないからね", []),
-    ("離れていくよ", []),
-    ("ああだからあの時忘れんなって言ったのに", []),
-    ("ダメダメ私を助けて", []),
-    ("ついに素晴らしい女性に逢えた。", []),
-    ("ううん藤宮さんは日記を捨てるような人じゃない", []),
-    ("探しているんですか", []),
-    ("行きたい所全部行こう", []),
-    ("一度聞いたことがある", []),
-    ("よかったじゃん", []),
-    ("言えばよかった", []),
-    ("言われるまで気づかなかった", []),
-    ("夢を見た", []),
-    ("知らない", []),
+@pytest.fixture(params=[
+    "朝、近所をぶらぶらした。",
+    "そんなに気になるなら あの時俺も友達だって言えばよかったじゃん",
+    "普段どうやって日記読んでたんだ",
+    "何か意味があるんだと思う",
+    "いつまでも来ないと知らないからね",
+    "離れていくよ",
+    "ああだからあの時忘れんなって言ったのに",
+    "ダメダメ私を助けて",
+    "ついに素晴らしい女性に逢えた。",
+    "ううん藤宮さんは日記を捨てるような人じゃない",
+    "探しているんですか",
+    "行きたい所全部行こう",
+    "一度聞いたことがある",
+    "よかったじゃん",
+    "言えばよかった",
+    "言われるまで気づかなかった",
+    "夢を見た",
+    "知らない"
 ])
-def test_just_display_various_sentences(sentence: str, expected: list[str]) -> None:
-    run_tests(sentence)
+def common_sentence(request) -> str: return request.param
 
-@pytest.mark.parametrize('sentence, expected', [
 
-])
-def test_unidic2ud_temp(sentence: str, expected: list[str]) -> None:
-    run_tests(sentence)
+def test_just_display_various_sentences(common_sentence: str) -> None:
+    run_tests(common_sentence)
 
+def test_build_tree(common_sentence: str) -> None:
+    parser = _parsers[0][1]
+    parser_name = _parsers[0][0]
+    print()
+    print(parser_name)
+
+    parse_result = parser(common_sentence)
+    print(parse_result.to_tree())
+
+    result_tokens:list[UDPipeEntry] = [tok for tok in parse_result]
+    print(result_tokens)
+
+    tree:list[str] = []
+
+    remaining_tokens = result_tokens[1:] #The first is some empty thingy we don't want.
+    while remaining_tokens:
+        first_remaining = remaining_tokens[0]
+        target_head:UDPipeEntry = _head(first_remaining)
+
+        token_index = 1
+
+        for token in remaining_tokens[1:]: #consume tokens that have first_remaining as their head
+            if _head(token).id != first_remaining.id:
+                break
+
+            token_index += 1
+
+        for token in remaining_tokens[1:]: #consume tokens up until we find the target head
+            token_index += 1
+            if token.id == target_head.id: # we found our target head, continue only through tokens with this head
+                for tail_token in remaining_tokens[token_index:]:
+                    if _head(tail_token).id != target_head.id:
+                        break
+                    token_index += 1
+
+                break
+
+        consumed_tokens = remaining_tokens[:token_index]
+        remaining_tokens = remaining_tokens[token_index:]
+        consumed_forms = [f.form for f in consumed_tokens]
+        tree.append("".join(consumed_forms))
+
+
+    print("Here's the tree")
+    for line in tree:
+        print(line)
+
+def _head(token:UDPipeEntry) -> UDPipeEntry:
+    return token.head # noqa
 
 def run_tests(sentence) -> None:
     results = [(name, parser(sentence)) for name, parser in _parsers]
