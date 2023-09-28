@@ -64,31 +64,45 @@ def test_build_tree(common_sentence: str) -> None:
     result_tokens:list[UDPipeEntry] = [tok for tok in parse_result]
     print(result_tokens)
 
-    tree:list[str] = []
-    remaining_tokens = result_tokens[1:] #The first is some empty thingy we don't want.
+    print_tree("phrase: True, always_continue_if_target_reached:True", tree_parse_algorithm_1(result_tokens, phrase_mode=True, always_continue_if_target_reached=True))
+    print_tree("phrase: True, always_continue_if_target_reached:False", tree_parse_algorithm_1(result_tokens, phrase_mode=True, always_continue_if_target_reached=False))
+    print_tree("phrase: False, always_continue_if_target_reached:True", tree_parse_algorithm_1(result_tokens, phrase_mode=False, always_continue_if_target_reached=True))
+    print_tree("phrase: False, always_continue_if_target_reached:False", tree_parse_algorithm_1(result_tokens, phrase_mode=False, always_continue_if_target_reached=False))
+
+
+def print_tree(name:str, tree:list[str]) -> None:
+    print(name)
+    for line in tree:
+        print(line)
+    print()
+
+
+def tree_parse_algorithm_1(result_tokens, phrase_mode: bool, always_continue_if_target_reached:bool) -> list[str]:
+    tree: list[str] = []
+    remaining_tokens = result_tokens[1:]  # The first is some empty thingy we don't want.
     while remaining_tokens:
         first_remaining = remaining_tokens[0]
-        target_token:UDPipeEntry = _head(first_remaining)
+        target_token: UDPipeEntry = _head(first_remaining)
 
         token_index = 1
 
-        for token in remaining_tokens[token_index:]: #consume tokens that have first_remaining as their head
+        for token in remaining_tokens[token_index:]:  # consume tokens that have first_remaining as their head
             if _head(token).id != first_remaining.id:
                 break
 
             token_index += 1
 
-        always_continue_to_target_token:bool = False
-
-        if always_continue_to_target_token:
+        if phrase_mode:
             for token in remaining_tokens[token_index:]:
-                if token.id == target_token.id: # consume tokens up until we find the target head
+                if token.id == target_token.id:  # consume tokens up until we find the target head
                     break
 
                 token_index += 1
 
-        if always_continue_to_target_token or target_token.id == first_remaining.id + 1:
-            if len(remaining_tokens) > token_index:
+        if len(remaining_tokens) > token_index:
+            if (phrase_mode
+                    or always_continue_if_target_reached
+                    or target_token.id == first_remaining.id + 1):
                 current_token = remaining_tokens[token_index]
                 if current_token.id == target_token.id:
                     token_index += 1
@@ -101,11 +115,8 @@ def test_build_tree(common_sentence: str) -> None:
         remaining_tokens = remaining_tokens[token_index:]
         consumed_forms = [f.form for f in consumed_tokens]
         tree.append("".join(consumed_forms))
+    return tree
 
-
-    print("Here's the tree")
-    for line in tree:
-        print(line)
 
 def _head(token:UDPipeEntry) -> UDPipeEntry:
     return token.head # noqa
