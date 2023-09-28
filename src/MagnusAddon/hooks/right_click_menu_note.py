@@ -13,6 +13,9 @@ from wanikani.wani_constants import MyNoteFields, Wani, SentenceNoteFields
 from ankiutils import search_utils as su
 
 def setup_note_menu(note, root_menu, sel_clip, selection, view: AnkiWebView):
+    if sel_clip:
+        add_lookup_action(root_menu, "&Open", su.lookup_text_object(sel_clip))
+
     note_menu:QMenu = root_menu.addMenu("&Note")
     note_lookup_menu:QMenu = note_menu.addMenu("&Lookup")
     note_add_menu:QMenu = note_menu.addMenu("&Add")

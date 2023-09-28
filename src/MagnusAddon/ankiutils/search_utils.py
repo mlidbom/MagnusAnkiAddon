@@ -143,3 +143,5 @@ def fetch_kanji_by_kanji(kanji: Iterable[str]) -> str:
     return f"""note:{Wani.NoteType.Kanji} ({" OR ".join([f"{Wani.KanjiFields.question}:{kan}" for kan in kanji])})"""
 
 
+def lookup_text_object(text: str):
+    return f"""{question}:{text}"""
