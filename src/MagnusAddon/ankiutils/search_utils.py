@@ -144,4 +144,4 @@ def fetch_kanji_by_kanji(kanji: Iterable[str]) -> str:
 
 
 def lookup_text_object(text: str):
-    return f"""{question}:{text}"""
+    return " OR ".join(f"{question}:{search.strip()}" for search in text.split(","))
