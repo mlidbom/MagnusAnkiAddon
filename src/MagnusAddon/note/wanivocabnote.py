@@ -23,6 +23,19 @@ class WaniVocabNote(WaniKanaVocabNote):
     def _get_forms(self) -> str: return super().get_field(Wani.VocabFields.Forms)
     def _set_forms(self, value: str) -> None: super().set_field(Wani.VocabFields.Forms, value)
 
+    def update_generated_data(self) -> None:
+        super().update_generated_data()
+
+        question = self.get_question().strip()
+        readings = ",".join(self.get_readings())
+
+        if question == readings:
+            self.set_tag(Mine.Tags.UsuallyKanaOnly)
+
+        if not readings:
+            if kana_utils.is_only_kana(question):
+                self.set_readings([question])
+                self.set_tag(Mine.Tags.UsuallyKanaOnly)
 
     def extract_kanji(self) -> list[str]:
         clean = StringUtils.strip_html_and_bracket_markup(self.get_question())

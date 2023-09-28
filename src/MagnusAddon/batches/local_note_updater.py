@@ -104,19 +104,6 @@ def _update_vocab(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanji
                     formatted = format_sentence(sentence)
                     set_contex_japanese(formatted)
 
-    def fill_empty_reading_for_uk_vocab() -> None:
-        for vocab in all_vocabulary:
-            q = vocab.get_question().strip()
-            readings = ",".join(vocab.get_readings())
-
-            if q == readings:
-                vocab.set_tag(Mine.Tags.UsuallyKanaOnly)
-
-            if not readings:
-                if kana_utils.is_only_kana(q):
-                    vocab.set_readings([q])
-                    vocab.set_tag(Mine.Tags.UsuallyKanaOnly)
-
 
     def populate_homophones() -> None:
         reading_dict = dict[str, list[WaniVocabNote]]()
@@ -134,7 +121,6 @@ def _update_vocab(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanji
     update_generated_data()
     update_kanji_names()
     format_context_sentences()
-    fill_empty_reading_for_uk_vocab()
     populate_homophones()
 
 
