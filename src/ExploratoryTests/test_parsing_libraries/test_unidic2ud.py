@@ -64,10 +64,10 @@ def test_build_tree(common_sentence: str) -> None:
     result_tokens:list[UDPipeEntry] = [tok for tok in parse_result]
     print(result_tokens)
 
-    print_tree("phrase: True, always_continue_if_target_reached:True", tree_parse_algorithm_1(result_tokens, phrase_mode=True, always_continue_if_target_reached=True))
-    print_tree("phrase: True, always_continue_if_target_reached:False", tree_parse_algorithm_1(result_tokens, phrase_mode=True, always_continue_if_target_reached=False))
-    print_tree("phrase: False, always_continue_if_target_reached:True", tree_parse_algorithm_1(result_tokens, phrase_mode=False, always_continue_if_target_reached=True))
-    print_tree("phrase: False, always_continue_if_target_reached:False", tree_parse_algorithm_1(result_tokens, phrase_mode=False, always_continue_if_target_reached=False))
+    print_tree("phrase: True, continue_on_connected_head:True", tree_parse_algorithm_1(result_tokens, phrase_mode=True, continue_on_connected_head=True))
+    print_tree("phrase: True, continue_on_connected_head:False", tree_parse_algorithm_1(result_tokens, phrase_mode=True, continue_on_connected_head=False))
+    print_tree("phrase: False, continue_on_connected_head:True", tree_parse_algorithm_1(result_tokens, phrase_mode=False, continue_on_connected_head=True))
+    print_tree("phrase: False, continue_on_connected_head:False", tree_parse_algorithm_1(result_tokens, phrase_mode=False, continue_on_connected_head=False))
 
 
 def print_tree(name:str, tree:list[str]) -> None:
@@ -77,7 +77,7 @@ def print_tree(name:str, tree:list[str]) -> None:
     print()
 
 
-def tree_parse_algorithm_1(result_tokens, phrase_mode: bool, always_continue_if_target_reached:bool) -> list[str]:
+def tree_parse_algorithm_1(result_tokens, phrase_mode: bool, continue_on_connected_head:bool) -> list[str]:
     tree: list[str] = []
     remaining_tokens = result_tokens[1:]  # The first is some empty thingy we don't want.
     while remaining_tokens:
@@ -101,7 +101,7 @@ def tree_parse_algorithm_1(result_tokens, phrase_mode: bool, always_continue_if_
 
         if len(remaining_tokens) > token_index:
             if (phrase_mode
-                    or always_continue_if_target_reached
+                    or continue_on_connected_head
                     or target_token.id == first_remaining.id + 1):
                 current_token = remaining_tokens[token_index]
                 if current_token.id == target_token.id:
