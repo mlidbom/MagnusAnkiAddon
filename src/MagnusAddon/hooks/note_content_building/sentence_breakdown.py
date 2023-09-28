@@ -99,7 +99,7 @@ def _build_user_extra_list(extra_words: list[str], excluded:set[str]) -> str:
     return html
 
 
-def build_breakdown_html(sentence: SentenceNote) -> None:
+def build_breakdown_html(sentence: SentenceNote) -> str:
     user_excluded = sentence.get_user_excluded_vocab()
     extra_words = sentence.get_user_extra_vocab()
     html = ""
@@ -115,14 +115,18 @@ def build_breakdown_html(sentence: SentenceNote) -> None:
 
     user_extra = set(extra_words)
     html += _create_html_from_nodes(nodes, user_excluded, user_extra, 1)
-    sentence.set_break_down(html)
+
+    return html
 
 recent_reviewer_cards = RecentItems[int](1)
-def on_reviewer_show_question(card: Card) -> None:
+
+def render_breakdown(html:str, card: Card, _type_of_display:str) -> str:
     note = MyNote.note_from_note(card.note())
-    if isinstance(note, SentenceNote) and not recent_reviewer_cards.is_recent(card.note().id):
-        build_breakdown_html(note)
-        UIUtils.refresh()
+    if isinstance(note, SentenceNote):
+        breakdown_html = build_breakdown_html(note)
+        html = html.replace("##VOCAB_BREAKDOWN##", breakdown_html)
+
+    return html
 
 def init() -> None:
-    gui_hooks.reviewer_did_show_question.append(on_reviewer_show_question)
+    gui_hooks.card_will_show.append(render_breakdown)
