@@ -1,7 +1,6 @@
 from typing import *
 
 from note.sentencenote import SentenceNote
-from parsing.jamdict_extensions.dict_lookup import DictLookup
 from sysutils import kana_utils
 from parsing import janomeutils
 from sysutils.utils import StringUtils
@@ -9,7 +8,6 @@ from sysutils.ui_utils import UIUtils
 from note.wanikanjinote import WaniKanjiNote
 from note.wanivocabnote import WaniVocabNote
 from wanikani.wani_collection import WaniCollection
-from wanikani.wani_constants import Mine
 
 
 def update_all() -> None:
@@ -21,33 +19,9 @@ def update_all() -> None:
         _update_sentences(all_sentences)
         _update_kanji(all_vocabulary, all_kanji)
         _update_vocab(all_vocabulary, all_kanji)
-        _set_vocab_uk_and_forms_from_dictionary(all_vocabulary)
         _update_vocab_parsed_parts_of_speech(all_vocabulary)
 
     UIUtils.run_ui_action(update_all_inner)
-
-def set_vocab_uk_and_forms_from_dictionary() -> None:
-    def inner() -> None:
-        all_vocabulary: list[WaniVocabNote] = WaniCollection.fetch_all_vocab_notes()
-        _set_vocab_uk_and_forms_from_dictionary(all_vocabulary)
-
-    UIUtils.run_ui_action(inner)
-
-def _set_vocab_uk_and_forms_from_dictionary(all_vocabulary: list[WaniVocabNote]) -> None:
-    for vocab in all_vocabulary:
-        lookup = DictLookup.try_lookup_vocab_word_or_name(vocab)
-        if lookup.is_uk() and not vocab.has_tag(Mine.Tags.DisableKanaOnly):
-            vocab.set_tag(Mine.Tags.UsuallyKanaOnly)
-
-        if not vocab.get_forms():
-            if lookup.found_words():
-                vocab.set_forms(lookup.valid_forms(vocab.is_uk()))
-
-            if vocab.get_question() not in vocab.get_forms():
-                vocab.set_forms(vocab.get_forms() | {vocab.get_question()})
-
-            if vocab.is_uk() and vocab.get_readings()[0] not in vocab.get_forms():
-                vocab.set_forms(vocab.get_forms() | set(vocab.get_readings()))
 
 def _update_vocab_parsed_parts_of_speech(all_vocabulary: list[WaniVocabNote]) -> None:
     for vocab in all_vocabulary:

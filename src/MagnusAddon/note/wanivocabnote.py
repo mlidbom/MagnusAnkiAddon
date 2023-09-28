@@ -24,6 +24,8 @@ class WaniVocabNote(WaniKanaVocabNote):
     def _set_forms(self, value: str) -> None: super().set_field(Wani.VocabFields.Forms, value)
 
     def update_generated_data(self) -> None:
+        from parsing.jamdict_extensions.dict_lookup import DictLookup
+
         super().update_generated_data()
 
         question = self.get_question().strip()
@@ -36,6 +38,20 @@ class WaniVocabNote(WaniKanaVocabNote):
             if kana_utils.is_only_kana(question):
                 self.set_readings([question])
                 self.set_tag(Mine.Tags.UsuallyKanaOnly)
+
+        lookup = DictLookup.try_lookup_vocab_word_or_name(self)
+        if lookup.is_uk() and not self.has_tag(Mine.Tags.DisableKanaOnly):
+            self.set_tag(Mine.Tags.UsuallyKanaOnly)
+
+        if not self.get_forms():
+            if lookup.found_words():
+                self.set_forms(lookup.valid_forms(self.is_uk()))
+
+            if self.get_question() not in self.get_forms():
+                self.set_forms(self.get_forms() | {self.get_question()})
+
+            if self.is_uk() and self.get_readings()[0] not in self.get_forms():
+                self.set_forms(self.get_forms() | set(self.get_readings()))
 
     def extract_kanji(self) -> list[str]:
         clean = StringUtils.strip_html_and_bracket_markup(self.get_question())

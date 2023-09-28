@@ -1,7 +1,6 @@
 from functools import lru_cache
 
 from jamdict import Jamdict
-from jamdict.jmdict import JMDEntry
 
 from parsing.jamdict_extensions.dict_entry import DictEntry
 from sysutils import kana_utils

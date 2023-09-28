@@ -20,7 +20,6 @@ def deep_refresh() -> None:
 
     if isinstance(note, WaniVocabNote) or isinstance(note, SentenceNote):
         local_note_updater.update_vocab()
-        local_note_updater.set_vocab_uk_and_forms_from_dictionary()
 
     if isinstance(note, SentenceNote):
         sentence_breakdown.build_breakdown_html(note)
@@ -57,9 +56,6 @@ def build_local_menu(sub_menu: QMenu) -> None:
     add_menu_action(sub_menu, "Update &Vocab", local_note_updater.update_vocab)
     add_menu_action(sub_menu, "Update &Kanji", local_note_updater.update_kanji)
     add_menu_action(sub_menu, "Update &Sentences", local_note_updater.update_sentences)
-
-    add_menu_action(sub_menu, "Set Vocab UK and forms from dictionary", local_note_updater.set_vocab_uk_and_forms_from_dictionary)
-
 
 def build_wani_menu(sub_menu: QMenu) -> None:
     add_menu_action(sub_menu, "Update Radicals", wani_note_updater.update_radical)

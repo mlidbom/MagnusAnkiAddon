@@ -8,7 +8,6 @@ from note.wanivocabnote import WaniVocabNote
 from parsing.tree_parsing import tree_parser
 from parsing.tree_parsing.tree_parser_node import TreeParserNode, priorities
 from sysutils.collections.recent_items import RecentItems
-from sysutils.ui_utils import UIUtils
 from sysutils.utils import ListUtils
 from wanikani.wani_collection import WaniCollection
 
