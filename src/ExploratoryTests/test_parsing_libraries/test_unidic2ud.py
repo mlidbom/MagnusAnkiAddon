@@ -43,7 +43,8 @@ def setup() -> None:
     "言えばよかった",
     "言われるまで気づかなかった",
     "夢を見た",
-    "知らない"
+    "知らない",
+    "何よあの態度偉そうに"
 ])
 def common_sentence(request) -> str: return request.param
 
@@ -64,29 +65,37 @@ def test_build_tree(common_sentence: str) -> None:
     print(result_tokens)
 
     tree:list[str] = []
-
     remaining_tokens = result_tokens[1:] #The first is some empty thingy we don't want.
     while remaining_tokens:
         first_remaining = remaining_tokens[0]
-        target_head:UDPipeEntry = _head(first_remaining)
+        target_token:UDPipeEntry = _head(first_remaining)
 
         token_index = 1
 
-        for token in remaining_tokens[1:]: #consume tokens that have first_remaining as their head
+        for token in remaining_tokens[token_index:]: #consume tokens that have first_remaining as their head
             if _head(token).id != first_remaining.id:
                 break
 
             token_index += 1
 
-        for token in remaining_tokens[1:]: #consume tokens up until we find the target head
-            token_index += 1
-            if token.id == target_head.id: # we found our target head, continue only through tokens with this head
-                for tail_token in remaining_tokens[token_index:]:
-                    if _head(tail_token).id != target_head.id:
-                        break
-                    token_index += 1
+        always_continue_to_target_token:bool = False
 
-                break
+        if always_continue_to_target_token:
+            for token in remaining_tokens[token_index:]:
+                if token.id == target_token.id: # consume tokens up until we find the target head
+                    break
+
+                token_index += 1
+
+        if always_continue_to_target_token or target_token.id == first_remaining.id + 1:
+            if len(remaining_tokens) > token_index:
+                current_token = remaining_tokens[token_index]
+                if current_token.id == target_token.id:
+                    token_index += 1
+                    for tail_token in remaining_tokens[token_index:]:
+                        if _head(tail_token).id != target_token.id:
+                            break
+                        token_index += 1
 
         consumed_tokens = remaining_tokens[:token_index]
         remaining_tokens = remaining_tokens[token_index:]
