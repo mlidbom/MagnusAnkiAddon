@@ -71,7 +71,7 @@ def _update_vocab(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanji
         for vocab in all_vocabulary:
             vocab.update_generated_data()
 
-    def update_kanji_names() -> None:
+    def update_kanji_names() -> None: # todo move to a rendering step
         def prepare_kanji_meaning(kanji: WaniKanjiNote) -> str:
             meaning = kanji.get_active_answer()
             meaning = StringUtils.strip_html_and_bracket_markup(meaning)
@@ -86,7 +86,7 @@ def _update_vocab(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanji
             kanji_names_string = " # ".join(kanji_meanings)
             vocab_note.set_kanji_name(kanji_names_string)
 
-    def format_context_sentences() -> None:
+    def format_context_sentences() -> None: # todo move to a rendering step
         for vocab in all_vocabulary:
             def format_sentence(html_sentence: str):
                 clean_sentence = StringUtils.strip_html_and_bracket_markup(html_sentence)
@@ -105,7 +105,7 @@ def _update_vocab(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanji
                     set_contex_japanese(formatted)
 
 
-    def populate_homophones() -> None:
+    def populate_homophones() -> None: # todo move to a rendering step
         reading_dict = dict[str, list[WaniVocabNote]]()
         for vocab in all_vocabulary:
             for reading in vocab.get_readings():
@@ -144,7 +144,7 @@ def _update_kanji(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanji
         kanji_note.set_vocabs_raw([vo.get_question() for vo in vocabulary_entries])
 
     kanji_with_vocab = [kanji for kanji in all_kanji if kanji.get_primary_vocab()]
-    for kanji in kanji_with_vocab:
+    for kanji in kanji_with_vocab: # todo move to an update_generated_data step on edit in UI? Maybe too slow since it will do lookups?
         kanji_vocab = kanji_vocab_dict[kanji.get_question()]
         primary_vocabs: List[str] = kanji.get_primary_vocab()
         if len(primary_vocabs) > 0:
