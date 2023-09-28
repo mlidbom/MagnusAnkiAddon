@@ -53,4 +53,14 @@ class StringUtils:
     def strip_html_and_bracket_markup_and_noise_characters(string: str) -> str:
         return re.sub('<.*?>|\[.*?\]|[〜]', '', string)  # noqa
 
+    @staticmethod
+    def remove_duplicates_characters(input_str: str) -> str:
+        seen = set()
+        output_str = ""
+        for char in input_str:
+            if char not in seen:
+                seen.add(char)
+                output_str += char
+        return output_str
+
 

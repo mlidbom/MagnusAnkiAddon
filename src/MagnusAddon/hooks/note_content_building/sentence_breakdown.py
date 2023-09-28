@@ -1,8 +1,14 @@
+from anki.cards import Card
+from aqt import gui_hooks
+
 from ankiutils import search_utils
+from note.mynote import MyNote
 from note.sentencenote import SentenceNote
 from note.wanivocabnote import WaniVocabNote
 from parsing.tree_parsing import tree_parser
 from parsing.tree_parsing.tree_parser_node import TreeParserNode, priorities
+from sysutils.collections.recent_items import RecentItems
+from sysutils.ui_utils import UIUtils
 from sysutils.utils import ListUtils
 from wanikani.wani_collection import WaniCollection
 
@@ -106,3 +112,13 @@ def build_breakdown_html(sentence: SentenceNote) -> None:
 
     html += _create_html_from_nodes(nodes, user_excluded, 1)
     sentence.set_break_down(html)
+
+recent_reviewer_cards = RecentItems[int](1)
+def on_reviewer_show_question(card: Card) -> None:
+    note = MyNote.note_from_note(card.note())
+    if isinstance(note, SentenceNote) and not recent_reviewer_cards.is_recent(card.note().id):
+        build_breakdown_html(note)
+        UIUtils.refresh()
+
+def init() -> None:
+    gui_hooks.reviewer_did_show_question.append(on_reviewer_show_question)

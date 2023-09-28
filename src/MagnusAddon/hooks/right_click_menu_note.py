@@ -7,7 +7,7 @@ from note.sentencenote import SentenceNote
 from note.wanikanjinote import WaniKanjiNote
 from note.waniradicalnote import WaniRadicalNote
 from note.wanivocabnote import WaniVocabNote
-from note_content_building import sentence_content_builder
+from hooks.note_content_building import sentence_breakdown
 from sysutils.utils import StringUtils
 from wanikani.wani_constants import MyNoteFields, Wani, SentenceNoteFields
 from ankiutils import search_utils as su
@@ -44,13 +44,13 @@ def setup_note_menu(note, root_menu, sel_clip, selection, view: AnkiWebView):
 
 
     if isinstance(note, SentenceNote):
-        add_ui_action(note_menu, "Populate &breakdown", lambda: sentence_content_builder.build_breakdown_html(note))
+        add_ui_action(note_menu, "Populate &breakdown", lambda: sentence_breakdown.build_breakdown_html(note))
         add_text_vocab_lookup(note_lookup_menu, "&Vocabulary words", note.get_active_question())
         add_lookup_action(note_lookup_menu, "&Kanji", f"""note:{Wani.NoteType.Kanji} ({" OR ".join([f"{Wani.KanjiFields.question}:{kan}" for kan in note.extract_kanji()])})""")
 
         def exclude_vocab() -> None:
             note.exclude_vocab(sel_clip)
-            sentence_content_builder.build_breakdown_html(note)
+            sentence_breakdown.build_breakdown_html(note)
 
         if sel_clip:
             add_ui_action(note_hide_menu, "&Exclude vocab", exclude_vocab)

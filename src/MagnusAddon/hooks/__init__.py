@@ -1,6 +1,6 @@
 from . import \
     browser_right_click_menu, \
-    on_show_answer, \
+    show_dependencies_in_browser, \
     editor_buttons, \
     right_click_menu, \
     right_click_menu_utils,\
@@ -8,5 +8,6 @@ from . import \
     right_click_menu_note, \
     show_previewer, \
     tools_menu, \
-    on_note_edited, \
-    timing_hacks
+    update_note_on_edit, \
+    timing_hacks, \
+    note_content_building

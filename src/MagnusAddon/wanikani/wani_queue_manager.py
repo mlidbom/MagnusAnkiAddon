@@ -1,8 +1,6 @@
 from typing import Optional, Callable
 
 import aqt.browser
-from anki.notes import Note
-
 from aqt import dialogs, mw
 
 from sysutils.utils import StringUtils

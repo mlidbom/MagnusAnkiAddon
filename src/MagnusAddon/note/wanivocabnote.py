@@ -3,6 +3,7 @@ from anki.notes import Note
 
 from ankiutils.anki_shim import facade
 from note.wanikanavocabnote import WaniKanaVocabNote
+from sysutils import kana_utils
 from sysutils.utils import StringUtils
 from wanikani.wani_constants import Wani, Mine
 from wanikani.wanikani_api_client import WanikaniClient
@@ -22,6 +23,10 @@ class WaniVocabNote(WaniKanaVocabNote):
     def _get_forms(self) -> str: return super().get_field(Wani.VocabFields.Forms)
     def _set_forms(self, value: str) -> None: super().set_field(Wani.VocabFields.Forms, value)
 
+
+    def extract_kanji(self) -> list[str]:
+        clean = StringUtils.strip_html_and_bracket_markup(self.get_question())
+        return [char for char in clean if not kana_utils.is_kana(char)]
 
     def is_uk(self) -> bool: return self.has_tag(Mine.Tags.UsuallyKanaOnly)
 

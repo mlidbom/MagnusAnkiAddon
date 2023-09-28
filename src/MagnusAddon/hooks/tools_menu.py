@@ -9,7 +9,7 @@ from note.mynote import MyNote
 from note.sentencenote import SentenceNote
 from note.wanikanjinote import WaniKanjiNote
 from note.wanivocabnote import WaniVocabNote
-from note_content_building import sentence_content_builder
+from hooks.note_content_building import sentence_breakdown
 from sysutils.ui_utils import UIUtils
 from wanikani import note_importer
 from wanikani import wani_note_updater
@@ -23,7 +23,7 @@ def deep_refresh() -> None:
         local_note_updater.set_vocab_uk_and_forms_from_dictionary()
 
     if isinstance(note, SentenceNote):
-        sentence_content_builder.build_breakdown_html(note)
+        sentence_breakdown.build_breakdown_html(note)
 
     if isinstance(note, WaniKanjiNote):
         local_note_updater.update_kanji(note)

@@ -1,7 +1,7 @@
 from typing import List, Sequence
 
 import anki
-from anki.notes import NoteId
+from anki.notes import NoteId, Note
 
 from ankiutils.anki_shim import facade
 from ankiutils.search_utils import Builtin
@@ -33,17 +33,23 @@ class WaniCollection:
 
     @staticmethod
     def fetch_notes_by_note_type(note_type: str) -> List[anki.notes.Note]:
-        note_ids = [facade.col().find_notes("{}:{}".format(Builtin.Note, note_type))]
-        note_ids = ListUtils.flatten_list(note_ids)
-        notes = WaniCollection.fetch_notes_by_id(note_ids)
+        notes = WaniCollection._search_notes("{}:{}".format(Builtin.Note, note_type))
         return notes
 
+    @classmethod
+    def search_vocab_notes(cls, query: str) -> list[WaniVocabNote]:
+        return [WaniVocabNote(note) for note in (cls._search_notes(query))]
+
+    @classmethod
+    def search_kanji_notes(cls, query: str) -> list[WaniKanjiNote]:
+        return [WaniKanjiNote(note) for note in cls._search_notes(query)]
+
     @staticmethod
-    def search_vocab_notes(query: str) -> list[WaniVocabNote]:
+    def _search_notes(query: str) -> list[Note]:
         note_ids = [facade.col().find_notes(query)]
         note_ids = ListUtils.flatten_list(note_ids)
         notes = WaniCollection.fetch_notes_by_id(note_ids)
-        return [WaniVocabNote(note) for note in notes]
+        return notes
 
     @staticmethod
     def fetch_kanji_notes(field_values: List) -> List[WaniKanjiNote]:

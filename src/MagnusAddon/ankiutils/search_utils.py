@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, Iterable
 
 import aqt
 from aqt.browser import Browser
@@ -137,3 +137,9 @@ def lookup_dependencies(note: MyNote):
     if search:
         do_lookup(search)
         UIUtils.activate_reviewer()
+
+
+def fetch_kanji_by_kanji(kanji: Iterable[str]) -> str:
+    return f"""note:{Wani.NoteType.Kanji} ({" OR ".join([f"{Wani.KanjiFields.question}:{kan}" for kan in kanji])})"""
+
+
