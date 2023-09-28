@@ -2,9 +2,7 @@ from anki.cards import Card
 from anki.notes import Note
 from aqt import gui_hooks
 
-from ankiutils import search_utils
 from hooks.timing_hacks import ugly_timing_hacks
-from note.mynote import MyNote
 from sysutils import my_clipboard
 from sysutils.collections.recent_items import RecentItems
 from sysutils.utils import StringUtils

@@ -48,12 +48,17 @@ def setup_note_menu(note, root_menu, sel_clip, selection, view: AnkiWebView):
         add_text_vocab_lookup(note_lookup_menu, "&Vocabulary words", note.get_active_question())
         add_lookup_action(note_lookup_menu, "&Kanji", f"""note:{Wani.NoteType.Kanji} ({" OR ".join([f"{Wani.KanjiFields.question}:{kan}" for kan in note.extract_kanji()])})""")
 
-        def exclude_vocab() -> None:
-            note.exclude_vocab(sel_clip)
+        def exclude_vocab(sentence: SentenceNote, text: str) -> None:
+            sentence.exclude_vocab(text)
+            sentence_breakdown.build_breakdown_html(note)
+
+        def add_extra_vocab(sentence: SentenceNote, text: str) -> None:
+            sentence.add_extra_vocab(text)
             sentence_breakdown.build_breakdown_html(note)
 
         if sel_clip:
-            add_ui_action(note_hide_menu, "&Exclude vocab", exclude_vocab)
+            add_ui_action(note_hide_menu, "&Exclude vocab", lambda: exclude_vocab(note, sel_clip))
+            add_ui_action(note_add_menu, "&Extra vocab", lambda: add_extra_vocab(note, sel_clip))
 
     if isinstance(note, WaniRadicalNote):
         add_lookup_action(note_lookup_menu, "&Kanji", f"note:{Wani.NoteType.Kanji} {su.field_word(Wani.KanjiFields.Radicals_Names, note.get_a())}")

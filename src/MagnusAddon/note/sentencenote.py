@@ -23,7 +23,13 @@ class SentenceNote(MyNote):
     def get_active_question(self) -> str: return self._get_user_question() or self._get_source_question()
 
     def get_user_extra_vocab(self) -> list[str]: return StringUtils.extract_comma_separated_values(super().get_field(SentenceNoteFields.user_extra_vocab))
+    def _set_user_extra_vocab(self, extra: list[str]) -> None: return super().set_field(SentenceNoteFields.user_extra_vocab, ",".join(extra))
+
     def get_user_excluded_vocab(self) -> set[str]: return set(StringUtils.extract_comma_separated_values(super().get_field(SentenceNoteFields.user_excluded_vocab)))
+
+    def add_extra_vocab(self, vocab:str) -> None:
+        self._set_user_extra_vocab(self.get_user_extra_vocab() + [vocab.strip()])
+
 
     def exclude_vocab(self, vocab:str) -> None:
         excluded = self.get_user_excluded_vocab()

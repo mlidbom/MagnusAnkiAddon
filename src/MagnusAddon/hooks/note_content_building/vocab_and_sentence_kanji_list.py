@@ -28,9 +28,9 @@ def render_kanji_list(html:str, card: Card, _type_of_display:str) -> str:
 <div id="kanji_list">
 {StringUtils.newline().join(f'''
     <div class="kanji_item">
-        <span class="kanji_kanji">{kanji.get_question()}</span>
-        <span class="kanji_readings">{kanji.get_reading_kun()}, {kana_utils.to_katakana(kanji.get_reading_on())}</span>
+        <span class="kanji_kanji clipboard">{kanji.get_question()}</span>
         <span class="kanji_answer">{kanji.get_active_answer()}</span>
+        <span class="kanji_readings">{kanji.get_reading_kun()}, {kana_utils.to_katakana(kanji.get_reading_on())}</span>
     </div>
     <div class="kanji_mnemonic">{kanji.get_mnemonics_override() if kanji.get_mnemonics_override() not in {"-", ""} else ""}</div>
 ''' for kanji in kanji_list)}

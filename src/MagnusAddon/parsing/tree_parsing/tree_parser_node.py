@@ -109,7 +109,10 @@ class TreeParserNode:
             return True
         return False
 
-    def get_priority_class(self, question) -> str:
+    def get_priority_class(self, question, highlighted:set[str]) -> str:
+        if question in highlighted:
+            return priorities.very_high
+
         if question != self.surface and question != self.base:
             return priorities.unknown
 
@@ -128,9 +131,6 @@ class TreeParserNode:
         if question == self.base:
             if question in _Statics.hard_coded_base_priorities:
                 return _Statics.hard_coded_base_priorities[question]
-
-        if kanji_count > 2:
-            return priorities.very_high
 
         if kanji_count > 1:
             return priorities.high
