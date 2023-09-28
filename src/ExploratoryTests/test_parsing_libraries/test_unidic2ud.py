@@ -80,8 +80,8 @@ def print_tree(name:str, tree:list[UDPipeEntry]) -> None:
 
 def _consume_children_of(entry:UDPipeEntry, tokens:list[UDPipeEntry]) -> int:
     index = 0
-    for current_toke in tokens:
-        if _head(current_toke).id != entry.id:
+    for current_token in tokens:
+        if _head(current_token).id != entry.id:
             break
         index += 1
     return index
@@ -89,7 +89,7 @@ def _consume_children_of(entry:UDPipeEntry, tokens:list[UDPipeEntry]) -> int:
 def _consume_until(entry:UDPipeEntry, tokens:list[UDPipeEntry]) -> int:
     index = 0
     for current_token in tokens:
-        if _head(current_token).id == entry.id:
+        if current_token.id == entry.id:
             break
         index += 1
     return index
@@ -100,25 +100,22 @@ def tree_parse_algorithm_1(result_tokens:list[UDPipeEntry], phrase_mode: bool, c
     remaining_tokens = result_tokens[1:]  # The first is some empty thingy we don't want.
     while remaining_tokens:
         first_remaining = remaining_tokens[0]
-        target_token: UDPipeEntry = _head(first_remaining)
+        first_remaining_head: UDPipeEntry = _head(first_remaining)
         token_index = 1
 
         token_index += _consume_children_of(first_remaining, remaining_tokens[token_index:])
 
         if phrase_mode:
-            for token in remaining_tokens[token_index:]:
-                if token.id == target_token.id:  # consume tokens until we find the head token
-                    break
-                token_index += 1
+            token_index += _consume_until(first_remaining_head, remaining_tokens[token_index:])
 
         if len(remaining_tokens) > token_index:
             if (phrase_mode
                     or continue_on_connected_head
-                    or target_token.id == first_remaining.id + 1):
+                    or first_remaining_head.id == first_remaining.id + 1):
                 current_token = remaining_tokens[token_index]
-                if current_token.id == target_token.id:
+                if current_token.id == first_remaining_head.id:
                     token_index += 1
-                    token_index += _consume_children_of(target_token, remaining_tokens[token_index:])
+                    token_index += _consume_children_of(first_remaining_head, remaining_tokens[token_index:])
 
         consumed_tokens = remaining_tokens[:token_index]
         remaining_tokens = remaining_tokens[token_index:]
