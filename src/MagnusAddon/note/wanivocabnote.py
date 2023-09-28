@@ -1,7 +1,7 @@
 from wanikani_api import models
+from ankiutils.anki_shim import facade
 from anki.notes import Note
 
-from ankiutils.anki_shim import facade
 from note.wanikanavocabnote import WaniKanaVocabNote
 from sysutils import kana_utils
 from sysutils.utils import StringUtils

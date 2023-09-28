@@ -1,4 +1,5 @@
 import pytest
+
 from note.wanivocabnote import WaniVocabNote
 from parsing.jamdict_extensions.dict_entry import DictEntry
 from parsing.jamdict_extensions.dict_lookup import DictLookup
@@ -40,6 +41,13 @@ def test_multi_matches(word: str, readings: list[str]) -> None:
 def test_missing(word: str, readings: list[str]) -> None:
     dict_entry = get_dict_entry(word, readings)
     assert dict_entry.found_words_count() == 1
+
+@pytest.mark.parametrize('word, readings', [
+    ("しない", ["しない"]),
+])
+def test_should_be_missing(word: str, readings: list[str]) -> None:
+    result = DictLookup.lookup_word_shallow(word)
+    assert len(result.entries) == 0
 
 @pytest.mark.parametrize('word, readings', [
     ("田代島", ["たしろじま"])

@@ -1,6 +1,7 @@
 from functools import lru_cache
 
 from jamdict import Jamdict
+from jamdict.jmdict import JMDEntry
 
 from parsing.jamdict_extensions.dict_entry import DictEntry
 from sysutils import kana_utils
@@ -67,7 +68,8 @@ class DictLookup:
     @classmethod
     @lru_cache(maxsize=None)  # _lookup_word_shallow.cache_clear(), _lookup_word_shallow.cache_info()
     def _lookup_word(cls, word: str) -> list[DictEntry]:
-        return DictEntry.create(cls._jamdict.lookup(word, lookup_chars=False, lookup_ne=False).entries)
+        entries = DictEntry.create(cls._jamdict.lookup(word, lookup_chars=False, lookup_ne=False).entries)
+        return entries if not kana_utils.is_only_kana(word) else [ent for ent in entries if ent.is_kana_only()]
 
     @classmethod
     @lru_cache(maxsize=None)  # _lookup_word_shallow.cache_clear(), _lookup_word_shallow.cache_info()
