@@ -95,32 +95,32 @@ def _consume_until(entry:UDPipeEntry, tokens:list[UDPipeEntry]) -> int:
     return index
 
 def tree_parse_algorithm_1(result_tokens:list[UDPipeEntry], phrase_mode: bool, continue_on_connected_head:bool) -> list[UDPipeEntry]:
-    tree: list[UDPipeEntry] = []
+    compounds: list[UDPipeEntry] = []
 
     remaining_tokens = result_tokens[1:]  # The first is some empty thingy we don't want.
     while remaining_tokens:
-        first_remaining = remaining_tokens[0]
-        first_remaining_head: UDPipeEntry = _head(first_remaining)
+        compound_start = remaining_tokens[0]
+        compound_head: UDPipeEntry = _head(compound_start)
         token_index = 1
 
-        token_index += _consume_children_of(first_remaining, remaining_tokens[token_index:])
+        token_index += _consume_children_of(compound_start, remaining_tokens[token_index:])
 
         if phrase_mode:
-            token_index += _consume_until(first_remaining_head, remaining_tokens[token_index:])
+            token_index += _consume_until(compound_head, remaining_tokens[token_index:])
 
         if len(remaining_tokens) > token_index:
             if (phrase_mode
                     or continue_on_connected_head
-                    or first_remaining_head.id == first_remaining.id + 1):
+                    or compound_head.id == compound_start.id + 1):
                 current_token = remaining_tokens[token_index]
-                if current_token.id == first_remaining_head.id:
+                if current_token.id == compound_head.id:
                     token_index += 1
-                    token_index += _consume_children_of(first_remaining_head, remaining_tokens[token_index:])
+                    token_index += _consume_children_of(compound_head, remaining_tokens[token_index:])
 
         consumed_tokens = remaining_tokens[:token_index]
         remaining_tokens = remaining_tokens[token_index:]
-        tree.append(consumed_tokens)
-    return tree
+        compounds.append(consumed_tokens)
+    return compounds
 
 
 def _head(token:UDPipeEntry) -> UDPipeEntry:
