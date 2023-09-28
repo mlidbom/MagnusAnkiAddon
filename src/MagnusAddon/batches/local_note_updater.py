@@ -139,45 +139,6 @@ def _update_vocab(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanji
 
 
 def _update_kanji(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanjiNote]):
-    def generate_vocab_html_list(note: WaniKanjiNote, vocabs: List[WaniVocabNote]):
-        def sort_vocab_list() -> None:
-            def prefer_primary_vocab_in_order(local_vocab: WaniVocabNote):
-                for index, primary in enumerate(primary_voc):
-                    if local_vocab.get_question() == primary or local_vocab.get_readings()[0] == primary:
-                        return index
-
-                return 100
-
-            def prefer_non_compound(local_vocab: WaniVocabNote) -> str:
-                return "A" if kana_utils.is_only_kana(local_vocab.get_question()[1:]) else "B"
-
-            def prefer_starts_with_vocab(local_vocab: WaniVocabNote) -> str:
-                return "A" if local_vocab.get_question()[0] == note.get_question() else "B"
-
-            vocabs.sort(key=lambda local_vocab: (prefer_primary_vocab_in_order(local_vocab),
-                                                 prefer_non_compound(local_vocab),
-                                                 prefer_starts_with_vocab(local_vocab),
-                                                 voc.get_question()))
-
-        primary_voc = note.get_primary_vocab()
-        sort_vocab_list()
-
-        return f'''
-                <div class="kanjiVocabList">
-                    <div>
-                    
-                    {StringUtils.newline().join([f"""
-                    <div class="kanjiVocabEntry">
-                        <span class="kanji clipboard">{inner_vocab.get_question()}</span>
-                        (<span class="clipboard vocabReading">{note.tag_readings_in_string(", ".join(inner_vocab.get_readings()), lambda read: f'<span class="kanjiReading">{read}</span>')}</span>)
-                        <span class="meaning"> {StringUtils.strip_html_markup(inner_vocab.get_active_answer())}</span>
-                    </div>
-                    """ for inner_vocab in vocabs])}
-                    
-                    </div>
-                </div>
-                '''
-
     def update_generated_data() -> None:
         for kanji in all_kanji:
             kanji.update_generated_data()
@@ -194,8 +155,6 @@ def _update_kanji(all_vocabulary: list[WaniVocabNote], all_kanji: list[WaniKanji
 
     for kanji, vocabulary_entries in kanji_vocab_dict.items():
         kanji_note = kanji_dict[kanji]
-        html = generate_vocab_html_list(kanji_note, vocabulary_entries)
-        kanji_note.set_vocabs(html)
         kanji_note.set_vocabs_raw([vo.get_question() for vo in vocabulary_entries])
 
     kanji_with_vocab = [kanji for kanji in all_kanji if kanji.get_primary_vocab()]
