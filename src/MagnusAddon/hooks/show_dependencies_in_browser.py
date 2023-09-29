@@ -20,4 +20,5 @@ def on_reviewer_show_answer(card: Card) -> None:
     show_dependencies_in_browser(note)
 
 def init() -> None:
-    gui_hooks.reviewer_did_show_answer.append(on_reviewer_show_answer)
+    pass
+    #gui_hooks.reviewer_did_show_answer.append(on_reviewer_show_answer)

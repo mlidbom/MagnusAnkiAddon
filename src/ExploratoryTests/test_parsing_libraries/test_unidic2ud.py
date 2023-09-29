@@ -2,6 +2,8 @@ import pytest
 import unidic2ud
 from unidic2ud import UniDic2UDEntry, UniDic2UD, UDPipeEntry
 
+import unidic2ud_formatter
+
 #pytestmark = pytest.mark.skip(reason="Running exploratory code constantly is just distracting.")
 
 _parsers:list[tuple[str, UniDic2UD]] = []
@@ -10,8 +12,8 @@ _parsers:list[tuple[str, UniDic2UD]] = []
 def setup() -> None:
     global _parsers
     _parsers = [("gendai", (unidic2ud.load("gendai"))),  # The leader so far
-                #("kindai", (unidic2ud.load("kindai"))),  # seems slightly less accurate than gendai.
-                #("default", (unidic2ud.load())),  # As alternative? When differing from kindai, usually seems worse but significantly different. Polarity negative feature. Good for something?
+                ("kindai", (unidic2ud.load("kindai"))),  # seems slightly less accurate than gendai.
+                ("default", (unidic2ud.load())),  # As alternative? When differing from kindai, usually seems worse but significantly different. Polarity negative feature. Good for something?
                 # ("spoken", (unidic2ud.load("spoken"))), # todo Recheck
                 # ("kinsei_edo", (unidic2ud.load("kinsei\\50c_kinsei-edo"))), # todo Recheck
                 # ("kinsei_kindai_bungo", (unidic2ud.load("kinsei\\60a_kindai-bungo"))), # todo Recheck
@@ -68,17 +70,10 @@ def test_build_tree(common_sentence: str) -> None:
         print(parser_name)
         print(result.to_tree())
 
-    for parser_name, result_tokens in result_list_tokens:
-        print_tree(f"{parser_name} phrase: True, some_mode=True, continue_on_connected_head:True", tree_parse_algorithm_1(result_tokens, some_mode=True, phrase_mode=True, continue_on_connected_head=True))
+    for depth in [3, 2, 1, 0]:
+        for parser_name, result_tokens in result_list_tokens:
+            print_tree(f"depth: {depth} {parser_name}", tree_parse_algorithm_1(result_tokens, depth))
 
-    for parser_name, result_tokens in result_list_tokens:
-        print_tree(f"{parser_name} phrase: False, some_mode=True continue_on_connected_head:True", tree_parse_algorithm_1(result_tokens, some_mode=True, phrase_mode=False, continue_on_connected_head=True))
-
-    for parser_name, result_tokens in result_list_tokens:
-        print_tree(f"{parser_name} phrase: False, some_mode=True continue_on_connected_head:False", tree_parse_algorithm_1(result_tokens, some_mode=True, phrase_mode=False, continue_on_connected_head=False))
-
-    for parser_name, result_tokens in result_list_tokens:
-        print_tree(f"{parser_name} phrase: False, some_mode=False continue_on_connected_head:False", tree_parse_algorithm_1(result_tokens, some_mode=False, phrase_mode=False, continue_on_connected_head=False))
 
 
 def print_tree(name:str, tree:list[UDPipeEntry]) -> None:
@@ -105,7 +100,7 @@ def _consume_until(entry:UDPipeEntry, tokens:list[UDPipeEntry]) -> int:
         index += 1
     return index
 
-def tree_parse_algorithm_1(result_tokens:list[UDPipeEntry], phrase_mode: bool, some_mode:bool, continue_on_connected_head:bool) -> list[UDPipeEntry]:
+def tree_parse_algorithm_1(result_tokens:list[UDPipeEntry], depth:int) -> list[UDPipeEntry]:
     compounds: list[UDPipeEntry] = []
 
     remaining_tokens = result_tokens[1:]  # The first is some empty thingy we don't want.
@@ -116,13 +111,13 @@ def tree_parse_algorithm_1(result_tokens:list[UDPipeEntry], phrase_mode: bool, s
 
         token_index += _consume_children_of(compound_start, remaining_tokens[token_index:])
 
-        if phrase_mode:
+        if depth >= 3:
             token_index += _consume_until(compound_head, remaining_tokens[token_index:])
 
         if len(remaining_tokens) > token_index:
-            if (phrase_mode
-                    or continue_on_connected_head
-                    or some_mode and compound_head.id == compound_start.id + 1):
+            if (depth >= 3
+                    or depth >= 2
+                    or depth >= 1 and compound_head.id == compound_start.id + 1):
                 current_token = remaining_tokens[token_index]
                 if current_token.id == compound_head.id:
                     token_index += 1
@@ -152,63 +147,11 @@ def run_tests(sentence) -> None:
     for name, result in results:
         print()
         print(f"{name}: {sentence}")
-        print(format_output(result))
+        print(unidic2ud_formatter.format_output(result))
 
     reference_name, reference_result = results[0]
     current_name, current_result = results[1]
 
-    assert format_output_for_comparing_ignore_space_after_and_features(current_result) == format_output_for_comparing_ignore_space_after_and_features(reference_result)
+    assert unidic2ud_formatter.format_output_for_comparing_ignore_space_after_and_features(current_result) == unidic2ud_formatter.format_output_for_comparing_ignore_space_after_and_features(reference_result)
 
 
-
-def format_output(entry: 'UniDic2UDEntry') -> str:  # Replace 'UniDic2UDEntry' with your actual type
-    line_rows = get_line_rows(entry)
-    return align_tab_separated_values(line_rows)
-
-def format_output_for_comparing_ignore_space_after_and_features(entry: 'UniDic2UDEntry') -> str:  # Replace 'UniDic2UDEntry' with your actual type
-    line_rows = get_line_rows(entry)
-    line_rows = [line[:-2] for line in line_rows]
-    return align_tab_separated_values(line_rows, "＿")
-
-
-def get_line_rows(entry) -> list[list[str]]:
-    output = repr(entry)
-    return get_lines_from_output(output)
-
-
-def get_lines_from_output(output:str) -> list[list[str]]:
-    output = output.replace("-", "－")  # use a full width character instead to keep the alignment working.
-    lines = output.strip().split('\n')  # Split the multiline string into lines
-    lines = [line for line in lines if "\t" in line]  # Skip lines that are not the true output
-    line_rows = [line.split('\t') for line in lines]  # Split each line by tab and create a list of lists
-    for line in line_rows: line.append(line.pop(5))  # move the features line that often differs to the end.
-    return line_rows
-
-
-def align_tab_separated_values(line_rows: list[list[str]], full_width_separator:str = "　") -> str:
-    col_widths = [max(len(str(item)) + 2 for item in col) for col in zip(*line_rows)]  # Find the maximum length for each column
-
-    # Determine the type of space for each column
-    space_types = []
-    for col in zip(*line_rows):
-        if all(all(ord(' ') <= ord(c) <= ord('~') for c in item) for item in col):
-            space_types.append(' ')  # ASCII characters
-        else:
-            space_types.append(full_width_separator)  # Japanese full-width space
-
-    aligned_str = '\n'.join(
-        ''.join(f"{item + space_types[i] * (col_widths[i] - len(item))}" for i, item in enumerate(row))
-        for row in line_rows)
-
-    return aligned_str
-
-
-
-# def test_something() -> None:
-#     def find_first_index(the_list: list, criteria: callable) -> int:
-#         return next((i for i, item in enumerate(the_list) if criteria(item)), -1)
-#
-#     lst = [1, 4, 7, 10, 13]
-#     index = find_first_index(lst, lambda x: x > 500)
-#
-#     assert index == 2
