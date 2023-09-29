@@ -50,7 +50,9 @@ def setup() -> None:
     "これから本題に入るんだけど",
     "食べられるもの",
     "俺以外に友達がいなくてよかったとか　絶対思っちゃダメなのに",
-    "日代さんが 先生に知らせてくれたらしい"
+    "日代さんが 先生に知らせてくれたらしい",
+    "やっぱりあの噂ホントだったんだ",
+    "だったら記憶喪失の振りすることも簡単だよな"
 ])
 def common_sentence(request) -> str: return request.param
 
@@ -68,13 +70,15 @@ def test_tree_parser(common_sentence: str) -> None:
     for parser_name, result in results:
         print(parser_name)
         print(result.to_tree())
+        print(u2udtreeparser.parse([tok for tok in result]))
+
 
     for parser_name, result in results:
         print(parser_name)
         print(unidic2ud_formatter.format_output(result))
 
     for parser_name, result_tokens in result_list_tokens:
-        print(parser_name)
+        print(f"{parser_name} : {common_sentence}")
         print(u2udtreeparser.parse(result_tokens))
         print()
     #

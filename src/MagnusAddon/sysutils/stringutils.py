@@ -8,6 +8,11 @@ class StringUtils:
     def backslash() -> str: return "\\"
 
     @staticmethod
+    def pad_to_length(value: str, target_length: int) -> str:
+        padding = max(0, target_length - len(value))
+        return value + " " * padding
+
+    @staticmethod
     def extract_characters(string: str):
         return [char for char in string if not char.isspace()]
 

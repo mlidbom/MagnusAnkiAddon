@@ -2,6 +2,8 @@ from typing import Callable
 
 from unidic2ud import UDPipeEntry
 from src.ExploratoryTests.unidic2ud import u2udtreeparser
+from sysutils import kana_utils, stringutils
+from sysutils.stringutils import StringUtils
 
 
 class U2UdTreeNode:
@@ -23,16 +25,32 @@ class U2UdTreeNode:
     def _children_str(self, level=1) -> str:
         if not self.children:
             return ""
-        indent = "　　" * level
-        line_start = f'\n{indent}'
+
+        line_start = f'\n'
         children_string = line_start.join(child._str(level) for child in self.children)
         return f"""{line_start}{children_string}"""
 
     def _repr(self, level: int):
         return f"""N('{self.surface}', '{self.base if self.is_inflected() else ""}'{self._children_repr(level + 1)})"""
 
+    def is_leaf_node(self) -> bool: return len(self.tokens) == 1
+
+    def _str_pos(self) -> str:
+        if self.is_leaf_node():
+            token = self.tokens[0]
+            return (f"""upos:{StringUtils.pad_to_length(token.upos, 7)}""" +
+                    f"""id:{StringUtils.pad_to_length(str(token.id), 3)}""" +
+                    f"""head:{StringUtils.pad_to_length(str(token.head.id), 3)}""" + # noqa
+                    f"""deprel:{StringUtils.pad_to_length(token.deprel, 9)}""" +
+                    f"""xpos:{kana_utils.pad_to_length(token.xpos.replace("-", "－"), 14)}""" +
+                    f"""feat:{token.feats} deps:{token.deps} misc:{token.misc}""")
+        return "_"
+
     def _str(self, level: int):
-        return f"""{self.surface}{"　#　" + self.base if self.is_inflected() else ""}{self._children_str(level + 1)}"""
+        indent = "　　" * level
+        start = f"""{indent}{self.surface}{"　－　" + self.base if self.is_inflected() else ""}"""
+        start = kana_utils.pad_to_length(start, 20)
+        return f"""{start}{self._str_pos()}{self._children_str(level + 1)}"""
 
     def __repr__(self) -> str:
         return self._repr(0)
