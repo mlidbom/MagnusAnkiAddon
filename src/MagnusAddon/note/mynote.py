@@ -3,7 +3,7 @@ from anki.cards import Card
 from anki.notes import Note
 
 
-from wanikani.wani_constants import Wani
+from wanikani.wani_constants import NoteFields
 
 
 class MyNote:
@@ -22,13 +22,13 @@ class MyNote:
         from note.radicalnote import RadicalNote
         from note.vocabnote import VocabNote
 
-        if cls.get_note_type(note) == Wani.NoteType.Kanji:
+        if cls.get_note_type(note) == NoteFields.NoteType.Kanji:
             return KanjiNote(note)
-        elif cls.get_note_type(note) == Wani.NoteType.Vocab:
+        elif cls.get_note_type(note) == NoteFields.NoteType.Vocab:
             return VocabNote(note)
-        elif cls.get_note_type(note) == Wani.NoteType.Radical:
+        elif cls.get_note_type(note) == NoteFields.NoteType.Radical:
             return RadicalNote(note)
-        elif cls.get_note_type(note) == Wani.NoteType.Sentence:
+        elif cls.get_note_type(note) == NoteFields.NoteType.Sentence:
             return SentenceNote(note)
         return MyNote(note)
 

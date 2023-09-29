@@ -4,7 +4,7 @@ from PyQt6.QtWidgets import QMenu
 from aqt.utils import openLink
 
 from hooks.right_click_menu_utils import add_sentence_lookup, add_lookup_action, add_text_vocab_lookup
-from wanikani.wani_constants import Wani
+from wanikani.wani_constants import NoteFields
 from ankiutils import search_utils as su
 
 
@@ -49,6 +49,6 @@ def add_web_lookup(menu: QMenu, name: str, url: str, search: str):
 
 
 def build_radical_search_string(selected: str) -> str:
-    start = f"{Wani.RadicalFields.answer}:{selected} OR"
-    clauses = " OR ".join([f"{Wani.RadicalFields.question}:{char}" for char in selected])
-    return f"note:{Wani.NoteType.Radical} ( {start} {clauses} )"
+    start = f"{NoteFields.Radical.answer}:{selected} OR"
+    clauses = " OR ".join([f"{NoteFields.Radical.question}:{char}" for char in selected])
+    return f"note:{NoteFields.NoteType.Radical} ( {start} {clauses} )"

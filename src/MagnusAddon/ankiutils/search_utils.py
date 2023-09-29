@@ -13,7 +13,7 @@ from note.vocabnote import VocabNote
 from parsing import textparser
 from parsing.janome_extensions.parsed_word import ParsedWord
 from sysutils.ui_utils import UIUtils
-from wanikani.wani_constants import Wani, Mine, MyNoteFields
+from wanikani.wani_constants import NoteFields, Mine, MyNoteFields
 
 
 class Builtin:
@@ -23,15 +23,15 @@ class Builtin:
     Card = "card"
 
 question = MyNoteFields.question
-reading = Wani.VocabFields.Reading
+reading = NoteFields.Vocab.Reading
 answer = MyNoteFields.answer
-forms = Wani.VocabFields.Forms
+forms = NoteFields.Vocab.Forms
 
-card_listen = f"{Builtin.Card}:{Wani.WaniVocabNoteType.Card.Listening}"
-card_read = f"{Builtin.Card}:{Wani.WaniVocabNoteType.Card.Reading}"
+card_listen = f"{Builtin.Card}:{NoteFields.VocabNoteType.Card.Listening}"
+card_read = f"{Builtin.Card}:{NoteFields.VocabNoteType.Card.Reading}"
 
-note_kanji = f"{Builtin.Note}:{Wani.NoteType.Kanji}"
-note_vocab = f"{Builtin.Note}:{Wani.NoteType.Vocab}"
+note_kanji = f"{Builtin.Note}:{NoteFields.NoteType.Kanji}"
+note_vocab = f"{Builtin.Note}:{NoteFields.NoteType.Vocab}"
 
 tag_uk = f"tag:{Mine.Tags.UsuallyKanaOnly}"
 
@@ -140,7 +140,7 @@ def lookup_dependencies(note: MyNote):
 
 
 def fetch_kanji_by_kanji(kanji: Iterable[str]) -> str:
-    return f"""note:{Wani.NoteType.Kanji} ({" OR ".join([f"{Wani.KanjiFields.question}:{kan}" for kan in kanji])})"""
+    return f"""note:{NoteFields.NoteType.Kanji} ({" OR ".join([f"{NoteFields.Kanji.question}:{kan}" for kan in kanji])})"""
 
 
 def lookup_text_object(text: str):

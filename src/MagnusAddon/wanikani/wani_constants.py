@@ -19,8 +19,8 @@ class SentenceNoteFields:
     user_excluded_vocab = "__excluded_vocab"
     user_extra_vocab = "__extra_vocab"
 
-class Wani:
-    class WaniVocabNoteType:
+class NoteFields:
+    class VocabNoteType:
         class Card:
             Reading = "Reading"
             Listening = "Listening"
@@ -47,7 +47,7 @@ class Wani:
         auxiliary_meanings_whitelist = "auxiliary_meanings_whitelist"
         auxiliary_meanings_blacklist = "auxiliary_meanings_blacklist"
 
-    class RadicalFields:
+    class Radical:
         question = MyNoteFields.question
         answer = MyNoteFields.answer
         Radical_Meaning = "Radical_Meaning"
@@ -56,7 +56,7 @@ class Wani:
 
         amalgamation_subject_ids = "amalgamation_subject_ids"
 
-    class KanjiFields:
+    class Kanji:
         question = MyNoteFields.question
         active_answer = MyNoteFields.answer
         source_answer = "source_answer"
@@ -82,7 +82,7 @@ class Wani:
         Vocabs = "Vocabs"
         VocabsRaw = "VocabsRaw"
 
-    class KanaVocabFields:
+    class IgnoreThisUseVocabInstead:
         question = MyNoteFields.question
         active_answer = MyNoteFields.answer
         source_answer = "source_answer"
@@ -106,7 +106,7 @@ class Wani:
         Related_ergative_twin = "__ergative_twin"
         Related_confused_with = "__confused_with"
 
-    class VocabFields(KanaVocabFields):
+    class Vocab(IgnoreThisUseVocabInstead):
         Kanji = "Kanji"
         Forms = "F"
         Kanji_Name = "Kanji_Name"

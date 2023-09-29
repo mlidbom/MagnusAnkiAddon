@@ -6,7 +6,7 @@ from aqt import dialogs, mw
 from sysutils.utils import StringUtils
 from note.jp_collection import *
 from wanikani.utils.wani_utils import CardUtils
-from wanikani.wani_constants import Wani
+from wanikani.wani_constants import NoteFields
 
 
 def unsuspend_with_dependencies(note: Note) -> None:
@@ -23,11 +23,11 @@ def answer_again_with_zero_interval_for_new_note_cards_with_dependencies(note: N
 def visit_note_dependencies(note: Note, callback: Callable[[WaniNote, str], None]) -> None:
     # noinspection PyProtectedMember
     note_type = note._note_type['name']
-    if note_type == Wani.NoteType.Vocab:
+    if note_type == NoteFields.NoteType.Vocab:
         visit_vocab_with_dependencies(VocabNote(note), callback)
-    if note_type == Wani.NoteType.Kanji:
+    if note_type == NoteFields.NoteType.Kanji:
         visit_kanji_with_dependencies(KanjiNote(note), None, callback)
-    if note_type == Wani.NoteType.Radical:
+    if note_type == NoteFields.NoteType.Radical:
         visit_radical_with_dependencies(RadicalNote(note), None, callback)
 
     refresh_search()

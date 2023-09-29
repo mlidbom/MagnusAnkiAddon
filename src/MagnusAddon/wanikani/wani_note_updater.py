@@ -5,7 +5,7 @@ from note.kanjinote import KanjiNote
 from note.radicalnote import RadicalNote
 from note.vocabnote import VocabNote
 from note.jp_collection import JPCollection
-from wanikani.wani_constants import Wani
+from wanikani.wani_constants import NoteFields
 from wanikani.wanikani_api_client import WanikaniClient
 
 waniClient = WanikaniClient.get_instance()
@@ -14,13 +14,13 @@ waniClient = WanikaniClient.get_instance()
 def update_from_wanikani(note: Note):
     # noinspection PyProtectedMember
     note_type = note._note_type['name']
-    if note_type == Wani.NoteType.Vocab:
+    if note_type == NoteFields.NoteType.Vocab:
         vocab_note = VocabNote(note)
         vocab_note.update_from_wani(waniClient.get_vocab(vocab_note.get_question()))
-    if note_type == Wani.NoteType.Kanji:
+    if note_type == NoteFields.NoteType.Kanji:
         kanji_note = KanjiNote(note)
         kanji_note.update_from_wani(waniClient.get_kanji_by_name(kanji_note.get_question()))
-    if note_type == Wani.NoteType.Radical:
+    if note_type == NoteFields.NoteType.Radical:
         radical_note = RadicalNote(note)
         radical_note.update_from_wani(waniClient.get_radical(radical_note.get_a()))
 
