@@ -10,7 +10,7 @@ from sysutils.utils import ListUtils
 from note.waninote import WaniNote
 from note.radicalnote import RadicalNote
 from note.vocabnote import VocabNote
-from wanikani.utils.wani_utils import CardUtils
+from note.cardutils import CardUtils
 from note.kanjinote import KanjiNote
 from note.note_constants import NoteFields, NoteTypes
 

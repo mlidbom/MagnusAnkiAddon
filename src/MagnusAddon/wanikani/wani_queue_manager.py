@@ -5,7 +5,7 @@ from aqt import dialogs, mw
 
 from sysutils.utils import StringUtils
 from note.jp_collection import *
-from wanikani.utils.wani_utils import CardUtils
+from note.cardutils import CardUtils
 
 
 def unsuspend_with_dependencies(note: Note) -> None:
