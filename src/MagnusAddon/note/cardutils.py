@@ -6,12 +6,6 @@ from note.waninote import WaniNote
 from note.note_constants import NoteTypes
 
 
-class NoteUtils:
-    @staticmethod
-    def get_note_type(note: Note) -> str:
-        return note.note_type()["name"]
-
-
 class CardUtils:
     @staticmethod
     def is_new(card: Card) -> bool:
