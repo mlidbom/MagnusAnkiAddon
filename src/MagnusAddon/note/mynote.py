@@ -3,7 +3,7 @@ from anki.cards import Card
 from anki.notes import Note
 
 
-from wanikani.wani_constants import NoteFields
+from note.note_constants import NoteFields
 
 
 class MyNote:

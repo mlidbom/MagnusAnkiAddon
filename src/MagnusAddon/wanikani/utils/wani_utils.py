@@ -3,7 +3,7 @@ from anki.consts import QUEUE_TYPE_NEW
 
 from ankiutils.anki_shim import facade
 from note.waninote import WaniNote
-from wanikani.wani_constants import NoteFields
+from note.note_constants import NoteFields
 
 
 class NoteUtils:

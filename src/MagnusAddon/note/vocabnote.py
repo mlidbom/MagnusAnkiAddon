@@ -5,7 +5,7 @@ from anki.notes import Note
 from note.kanavocabnote import KanaVocabNote
 from sysutils import kana_utils
 from sysutils.utils import StringUtils
-from wanikani.wani_constants import NoteFields, Mine
+from note.note_constants import NoteFields, Mine
 from wanikani.wanikani_api_client import WanikaniClient
 
 

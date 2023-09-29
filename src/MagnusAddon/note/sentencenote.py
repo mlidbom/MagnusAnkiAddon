@@ -5,7 +5,7 @@ from parsing.janome_extensions.parsed_word import ParsedWord
 from sysutils import timeutil, kana_utils
 from parsing import textparser
 from sysutils.utils import StringUtils
-from wanikani.wani_constants import SentenceNoteFields
+from note.note_constants import SentenceNoteFields
 
 
 class SentenceNote(MyNote):

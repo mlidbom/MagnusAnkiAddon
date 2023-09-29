@@ -6,7 +6,7 @@ from ankiutils import search_utils as su
 from ankiutils.search_utils import lookup_promise
 from note.vocabnote import VocabNote
 from sysutils.ui_utils import UIUtils
-from wanikani.wani_constants import SentenceNoteFields
+from note.note_constants import SentenceNoteFields
 
 
 def add_ui_action(menu: QMenu, name: str, callback: Callable[[], None]) -> None:

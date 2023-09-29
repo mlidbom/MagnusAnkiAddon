@@ -13,7 +13,7 @@ from note.vocabnote import VocabNote
 from parsing import textparser
 from parsing.janome_extensions.parsed_word import ParsedWord
 from sysutils.ui_utils import UIUtils
-from wanikani.wani_constants import NoteFields, Mine, MyNoteFields
+from note.note_constants import NoteFields, Mine, MyNoteFields
 
 
 class Builtin:

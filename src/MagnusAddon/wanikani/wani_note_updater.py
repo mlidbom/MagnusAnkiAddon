@@ -5,7 +5,7 @@ from note.kanjinote import KanjiNote
 from note.radicalnote import RadicalNote
 from note.vocabnote import VocabNote
 from note.jp_collection import JPCollection
-from wanikani.wani_constants import NoteFields
+from note.note_constants import NoteFields
 from wanikani.wanikani_api_client import WanikaniClient
 
 waniClient = WanikaniClient.get_instance()

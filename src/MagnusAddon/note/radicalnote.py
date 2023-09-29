@@ -3,7 +3,7 @@ from anki.notes import Note
 
 from ankiutils.anki_shim import facade
 from note.waninote import WaniNote
-from wanikani.wani_constants import NoteFields, Mine
+from note.note_constants import NoteFields, Mine
 
 
 class RadicalNote(WaniNote):

@@ -12,7 +12,7 @@ from note.radicalnote import RadicalNote
 from note.vocabnote import VocabNote
 from wanikani.utils.wani_utils import CardUtils
 from note.kanjinote import KanjiNote
-from wanikani.wani_constants import NoteFields
+from note.note_constants import NoteFields
 
 
 class JPCollection:

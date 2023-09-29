@@ -3,7 +3,7 @@ from anki.notes import Note
 
 from note.waninote import WaniNote
 from sysutils.utils import StringUtils
-from wanikani.wani_constants import NoteFields
+from note.note_constants import NoteFields
 
 
 class KanaVocabNote(WaniNote):

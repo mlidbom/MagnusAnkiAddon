@@ -5,7 +5,7 @@ from anki.notes import Note
 
 from ankiutils.anki_shim import facade
 from note.mynote import MyNote
-from wanikani.wani_constants import Mine, NoteFields
+from note.note_constants import Mine, NoteFields
 
 
 class WaniNote(MyNote):

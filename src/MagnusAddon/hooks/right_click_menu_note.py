@@ -9,7 +9,7 @@ from note.radicalnote import RadicalNote
 from note.vocabnote import VocabNote
 from hooks.note_content_building import sentence_breakdown
 from sysutils.utils import StringUtils
-from wanikani.wani_constants import MyNoteFields, NoteFields, SentenceNoteFields
+from note.note_constants import MyNoteFields, NoteFields, SentenceNoteFields
 from ankiutils import search_utils as su
 
 def setup_note_menu(note, root_menu, sel_clip, selection, view: AnkiWebView):

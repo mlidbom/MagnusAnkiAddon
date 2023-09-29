@@ -6,7 +6,7 @@ from anki.notes import Note
 from ankiutils.anki_shim import facade
 from sysutils.utils import StringUtils
 from note.waninote import WaniNote
-from wanikani.wani_constants import NoteFields, Mine
+from note.note_constants import NoteFields, Mine
 from wanikani.wanikani_api_client import WanikaniClient
 
 
