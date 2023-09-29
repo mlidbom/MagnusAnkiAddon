@@ -15,6 +15,36 @@ class U2UdTreeNode:
         self.tokens = tokens
         self.children: list[U2UdTreeNode] = children if children else []
 
+    def is_leaf_node(self) -> bool:
+        return len(self.tokens) == 1
+
+    def is_inflected(self) -> bool:
+        return self.base != self.surface
+
+    def visit(self, callback: Callable[['U2UdTreeNode'],None]) -> None:
+        callback(self)
+        for node in self.children:
+            node.visit(callback)
+
+    @classmethod
+    def create(cls, tokens: list[UDPipeEntry], depth:int) -> 'U2UdTreeNode':
+        if len(tokens) > 1:
+            if depth > 1: # we may still get something of value from the token parsing
+                children = u2udtreeparser.parse_recursive(tokens, depth - 1)
+            else: # no more compounds will be found, just add the tokens as children
+                children = [cls.create_simple([token], []) for token in tokens]
+        else:
+            children = []
+
+        return cls.create_simple(tokens, children)
+
+    @classmethod
+    def create_simple(cls, tokens: list[UDPipeEntry], children: list['U2UdTreeNode']) -> 'U2UdTreeNode':
+        surface = "".join(tok.form for tok in tokens)
+        base = "".join(tok.form for tok in tokens[:-1]) + tokens[-1].lemma
+        return U2UdTreeNode(surface, base, children, tokens)
+
+
     def _children_repr(self, level=1) -> str:
         if not self.children:
             return ""
@@ -33,7 +63,7 @@ class U2UdTreeNode:
     def _repr(self, level: int):
         return f"""N('{self.surface}', '{self.base if self.is_inflected() else ""}'{self._children_repr(level + 1)})"""
 
-    def is_leaf_node(self) -> bool: return len(self.tokens) == 1
+
 
     def _str_pos(self) -> str:
         if self.is_leaf_node():
@@ -63,30 +93,3 @@ class U2UdTreeNode:
 
     def __hash__(self) -> int:
         return hash(self.surface) + hash(self.children)
-
-    def is_inflected(self) -> bool:
-        return self.base != self.surface
-
-    def visit(self, callback: Callable[['U2UdTreeNode'],None]) -> None:
-        callback(self)
-        for node in self.children:
-            node.visit(callback)
-
-    @classmethod
-    def create(cls, tokens: list[UDPipeEntry], depth:int) -> 'U2UdTreeNode':
-        if len(tokens) > 1:
-            if depth > 1: # we may still get something of value from the token parsing
-                children = u2udtreeparser.parse_recursive(tokens, depth - 1)
-            else: # no more compounds will be found, just add the tokens as children
-                children = [cls.create_simple([token], []) for token in tokens]
-        else:
-            children = []
-
-        return cls.create_simple(tokens, children)
-
-    @classmethod
-    def create_simple(cls, tokens: list[UDPipeEntry], children: list['U2UdTreeNode']) -> 'U2UdTreeNode':
-        surface = "".join(tok.form for tok in tokens)
-        base = "".join(tok.form for tok in tokens[:-1]) + tokens[-1].lemma
-        return U2UdTreeNode(surface, base, children, tokens)
-
