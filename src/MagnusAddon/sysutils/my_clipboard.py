@@ -6,7 +6,6 @@ def get_text() -> str:
         win32clipboard.OpenClipboard()
         try:
             clipboard_content = win32clipboard.GetClipboardData()
-            win32clipboard.CloseClipboard()
             return clipboard_content
         finally:
             win32clipboard.CloseClipboard()
@@ -21,7 +20,6 @@ def set_text(text) -> None:
         try:
             win32clipboard.EmptyClipboard()
             win32clipboard.SetClipboardText(text, win32clipboard.CF_UNICODETEXT)
-            win32clipboard.CloseClipboard()
         finally:
             win32clipboard.CloseClipboard()
     except: # noqa
