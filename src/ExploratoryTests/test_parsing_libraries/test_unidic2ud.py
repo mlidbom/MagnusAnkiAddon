@@ -59,26 +59,31 @@ def test_just_display_various_sentences(common_sentence: str) -> None:
     run_tests(common_sentence)
 
 def test_tree_parser(common_sentence: str) -> None:
-    # results = [(name, parser(common_sentence)) for name, parser in _parsers]
-    #
-    # result_list_tokens: list[tuple[str, list[UDPipeEntry]]] = [(name, [tok for tok in result]) for name, result in results]
-    #
-    # print()
-    # print(common_sentence)
-    # for parser_name, result in results:
-    #     print(parser_name)
-    #     print(result.to_tree())
-    #
-    # for parser_name, result_tokens in result_list_tokens:
-    #     print(parser_name)
-    #     print(u2udtreeparser.parse(result_tokens))
+    results = [(name, parser(common_sentence)) for name, parser in _parsers]
 
-    name, parser = _parsers[2]
-    step1 = parser(common_sentence)
-    parsed = u2udtreeparser.parse(step1)
+    result_list_tokens: list[tuple[str, list[UDPipeEntry]]] = [(name, [tok for tok in result]) for name, result in results]
+
     print()
-    print(step1.to_tree())
-    print(parsed)
+    print(common_sentence)
+    for parser_name, result in results:
+        print(parser_name)
+        print(result.to_tree())
+
+    for parser_name, result in results:
+        print(parser_name)
+        print(unidic2ud_formatter.format_output(result))
+
+    for parser_name, result_tokens in result_list_tokens:
+        print(parser_name)
+        print(u2udtreeparser.parse(result_tokens))
+        print()
+    #
+    # name, parser = _parsers[2]
+    # step1 = parser(common_sentence)
+    # parsed = u2udtreeparser.parse(step1)
+    # print()
+    # print(step1.to_tree())
+    # print(parsed)
 
 def test_build_tree(common_sentence: str) -> None:
     results = [(name, parser(common_sentence)) for name, parser in _parsers]

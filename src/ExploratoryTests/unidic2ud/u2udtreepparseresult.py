@@ -11,6 +11,10 @@ class U2UdParseResult:
         _argument_separator = ",\n  "
         return f"""R({_argument_separator.join(node._repr(1) for node in self.nodes)})""" # noqa
 
+    def __str__(self) -> str:
+        _argument_separator = "\n"
+        return f"""{_argument_separator.join(node._str(0) for node in self.nodes)}""" # noqa
+
     def __eq__(self, other) -> bool:
         return (isinstance(other, U2UdParseResult)
                 and self.nodes == other.nodes)
