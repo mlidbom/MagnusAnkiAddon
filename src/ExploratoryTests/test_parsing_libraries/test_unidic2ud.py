@@ -9,9 +9,9 @@ _parsers:list[tuple[str, UniDic2UD]] = []
 @pytest.fixture(scope='module', autouse=True)
 def setup() -> None:
     global _parsers
-    _parsers = [("kindai", (unidic2ud.load("kindai"))),  # The leader so for
-                ("gendai", (unidic2ud.load("gendai"))),  # seems neck and neck with kindai.
-                ("default", (unidic2ud.load())),  # As alternative? When differing from kindai, usually seems worse but significantly different. Polarity negative feature. Good for something?
+    _parsers = [("gendai", (unidic2ud.load("gendai"))),  # The leader so far
+                #("kindai", (unidic2ud.load("kindai"))),  # seems slightly less accurate than gendai.
+                #("default", (unidic2ud.load())),  # As alternative? When differing from kindai, usually seems worse but significantly different. Polarity negative feature. Good for something?
                 # ("spoken", (unidic2ud.load("spoken"))), # todo Recheck
                 # ("kinsei_edo", (unidic2ud.load("kinsei\\50c_kinsei-edo"))), # todo Recheck
                 # ("kinsei_kindai_bungo", (unidic2ud.load("kinsei\\60a_kindai-bungo"))), # todo Recheck
@@ -46,7 +46,8 @@ def setup() -> None:
     "何よあの態度偉そうに",
     "これから本題に入るんだけど",
     "食べられるもの",
-    "俺以外に友達がいなくてよかったとか　絶対思っちゃダメなのに"
+    "俺以外に友達がいなくてよかったとか　絶対思っちゃダメなのに",
+    "日代さんが 先生に知らせてくれたらしい"
 ])
 def common_sentence(request) -> str: return request.param
 
@@ -62,18 +63,22 @@ def test_build_tree(common_sentence: str) -> None:
     result_list_tokens: list[tuple[str, list[UDPipeEntry]]] = [(name, [tok for tok in result]) for name, result in results]
 
     print()
+    print(common_sentence)
     for parser_name, result in results:
         print(parser_name)
         print(result.to_tree())
 
     for parser_name, result_tokens in result_list_tokens:
-        print_tree(f"{parser_name} phrase: True, continue_on_connected_head:False", tree_parse_algorithm_1(result_tokens, phrase_mode=True, continue_on_connected_head=False))
+        print_tree(f"{parser_name} phrase: True, some_mode=True, continue_on_connected_head:True", tree_parse_algorithm_1(result_tokens, some_mode=True, phrase_mode=True, continue_on_connected_head=True))
 
     for parser_name, result_tokens in result_list_tokens:
-        print_tree(f"{parser_name} phrase: False, continue_on_connected_head:True", tree_parse_algorithm_1(result_tokens, phrase_mode=False, continue_on_connected_head=True))
+        print_tree(f"{parser_name} phrase: False, some_mode=True continue_on_connected_head:True", tree_parse_algorithm_1(result_tokens, some_mode=True, phrase_mode=False, continue_on_connected_head=True))
 
     for parser_name, result_tokens in result_list_tokens:
-        print_tree(f"{parser_name} phrase: True, continue_on_connected_head:False", tree_parse_algorithm_1(result_tokens, phrase_mode=True, continue_on_connected_head=False))
+        print_tree(f"{parser_name} phrase: False, some_mode=True continue_on_connected_head:False", tree_parse_algorithm_1(result_tokens, some_mode=True, phrase_mode=False, continue_on_connected_head=False))
+
+    for parser_name, result_tokens in result_list_tokens:
+        print_tree(f"{parser_name} phrase: False, some_mode=False continue_on_connected_head:False", tree_parse_algorithm_1(result_tokens, some_mode=False, phrase_mode=False, continue_on_connected_head=False))
 
 
 def print_tree(name:str, tree:list[UDPipeEntry]) -> None:
@@ -100,7 +105,7 @@ def _consume_until(entry:UDPipeEntry, tokens:list[UDPipeEntry]) -> int:
         index += 1
     return index
 
-def tree_parse_algorithm_1(result_tokens:list[UDPipeEntry], phrase_mode: bool, continue_on_connected_head:bool) -> list[UDPipeEntry]:
+def tree_parse_algorithm_1(result_tokens:list[UDPipeEntry], phrase_mode: bool, some_mode:bool, continue_on_connected_head:bool) -> list[UDPipeEntry]:
     compounds: list[UDPipeEntry] = []
 
     remaining_tokens = result_tokens[1:]  # The first is some empty thingy we don't want.
@@ -117,7 +122,7 @@ def tree_parse_algorithm_1(result_tokens:list[UDPipeEntry], phrase_mode: bool, c
         if len(remaining_tokens) > token_index:
             if (phrase_mode
                     or continue_on_connected_head
-                    or compound_head.id == compound_start.id + 1):
+                    or some_mode and compound_head.id == compound_start.id + 1):
                 current_token = remaining_tokens[token_index]
                 if current_token.id == compound_head.id:
                     token_index += 1
