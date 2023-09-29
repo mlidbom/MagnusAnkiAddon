@@ -3,7 +3,7 @@ import pytest
 
 from ankiutils.anki_shim import facade
 from test_collection_factory import replace_anki_collection_for_testing
-from wanikani.jp_collection import JPCollection
+from note.jp_collection import JPCollection
 
 
 @pytest.fixture(scope="function", autouse=True)

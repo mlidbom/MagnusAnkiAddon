@@ -9,7 +9,7 @@ from parsing.tree_parsing import tree_parser
 from parsing.tree_parsing.tree_parser_node import TreeParserNode, priorities
 from sysutils.collections.recent_items import RecentItems
 from sysutils.utils import ListUtils
-from wanikani.jp_collection import JPCollection
+from note.jp_collection import JPCollection
 
 def _vocab_missing_string(node:TreeParserNode, display_text: str) -> str:
     return "---" if node.is_dictionary_word(display_text) else ""

@@ -5,7 +5,7 @@ import requests
 
 from ankiutils.anki_shim import facade
 from note.vocabnote import VocabNote
-from wanikani.jp_collection import JPCollection
+from note.jp_collection import JPCollection
 from wanikani.wanikani_api_client import WanikaniClient
 
 

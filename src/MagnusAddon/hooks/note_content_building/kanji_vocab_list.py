@@ -7,7 +7,7 @@ from note.kanjinote import KanjiNote
 from note.vocabnote import VocabNote
 from sysutils import kana_utils
 from sysutils.utils import StringUtils
-from wanikani.jp_collection import JPCollection
+from note.jp_collection import JPCollection
 
 
 def sort_vocab_list(note:KanjiNote, primary_voc: list[str], vocabs: list[VocabNote]) -> None:

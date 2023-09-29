@@ -7,7 +7,7 @@ from sysutils.utils import StringUtils
 from sysutils.ui_utils import UIUtils
 from note.kanjinote import KanjiNote
 from note.vocabnote import VocabNote
-from wanikani.jp_collection import JPCollection
+from note.jp_collection import JPCollection
 
 
 def update_all() -> None:

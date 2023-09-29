@@ -8,7 +8,7 @@ from note.kanjinote import KanjiNote
 from note.vocabnote import VocabNote
 from sysutils import kana_utils
 from sysutils.utils import StringUtils, ListUtils
-from wanikani.jp_collection import JPCollection
+from note.jp_collection import JPCollection
 
 
 def render_kanji_list(html:str, card: Card, _type_of_display:str) -> str:
