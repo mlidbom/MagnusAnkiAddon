@@ -58,7 +58,7 @@ def common_sentence(request) -> str: return request.param
 def test_just_display_various_sentences(common_sentence: str) -> None:
     run_tests(common_sentence)
 
-def test_build_tree(common_sentence: str) -> None:
+def test_tree_parser(common_sentence: str) -> None:
     results = [(name, parser(common_sentence)) for name, parser in _parsers]
 
     result_list_tokens: list[tuple[str, list[UDPipeEntry]]] = [(name, [tok for tok in result]) for name, result in results]
@@ -73,6 +73,21 @@ def test_build_tree(common_sentence: str) -> None:
         for parser_name, result_tokens in result_list_tokens:
             print_tree(f"depth: {depth} {parser_name}", u2udtreeparser.tree_parse_algorithm_1(result_tokens, depth))
 
+def test_build_tree(common_sentence: str) -> None:
+    results = [(name, parser(common_sentence)) for name, parser in _parsers]
+
+    result_list_tokens: list[tuple[str, list[UDPipeEntry]]] = [(name, [tok for tok in result]) for name, result in results]
+
+    print()
+    print(common_sentence)
+    for parser_name, result in results:
+        print(parser_name)
+        print(result.to_tree())
+
+    for depth in [3, 2, 1, 0]:
+        for parser_name, result_tokens in result_list_tokens:
+            print_tree(f"depth: {depth} {parser_name}", tree_parse_algorithm_1(result_tokens, depth))
+
 
 
 def print_tree(name:str, tree:list[UDPipeEntry]) -> None:
@@ -81,7 +96,6 @@ def print_tree(name:str, tree:list[UDPipeEntry]) -> None:
         consumed_forms = [f.form for f in compound]
         print("".join(consumed_forms))
     print()
-
 
 
 def run_tests(sentence) -> None:
@@ -105,5 +119,54 @@ def run_tests(sentence) -> None:
     current_name, current_result = results[1]
 
     assert unidic2ud_formatter.format_output_for_comparing_ignore_space_after_and_features(current_result) == unidic2ud_formatter.format_output_for_comparing_ignore_space_after_and_features(reference_result)
+
+
+
+def _consume_children_of(entry:UDPipeEntry, tokens:list[UDPipeEntry]) -> int:
+    index = 0
+    for current_token in tokens:
+        if _head(current_token).id != entry.id:
+            break
+        index += 1
+    return index
+
+def _consume_until(entry:UDPipeEntry, tokens:list[UDPipeEntry]) -> int:
+    index = 0
+    for current_token in tokens:
+        if current_token.id == entry.id:
+            break
+        index += 1
+    return index
+
+def tree_parse_algorithm_1(result_tokens:list[UDPipeEntry], depth:int) -> list[UDPipeEntry]:
+    compounds: list[UDPipeEntry] = []
+
+    remaining_tokens = result_tokens[1:]  # The first is some empty thingy we don't want.
+    while remaining_tokens:
+        compound_start = remaining_tokens[0]
+        compound_head: UDPipeEntry = _head(compound_start)
+        token_index = 1
+
+        token_index += _consume_children_of(compound_start, remaining_tokens[token_index:])
+
+        if depth >= 3:
+            token_index += _consume_until(compound_head, remaining_tokens[token_index:])
+
+        if len(remaining_tokens) > token_index:
+            if (depth >= 3
+                    or depth >= 2
+                    or depth >= 1 and compound_head.id == compound_start.id + 1):
+                current_token = remaining_tokens[token_index]
+                if current_token.id == compound_head.id:
+                    token_index += 1
+                    token_index += _consume_children_of(compound_head, remaining_tokens[token_index:])
+
+        consumed_tokens = remaining_tokens[:token_index]
+        remaining_tokens = remaining_tokens[token_index:]
+        compounds.append(consumed_tokens)
+    return compounds
+
+def _head(token:UDPipeEntry) -> UDPipeEntry:
+    return token.head # noqa
 
 
