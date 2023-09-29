@@ -1,9 +1,13 @@
+from unidic2ud import UDPipeEntry
+
 from parsing.janome_extensions.token_ext import TokenExt
+from src.ExploratoryTests.unidic2ud import u2udtreeparser
+
 
 class U2UdTreeNode:
     _max_lookahead = 12
 
-    def __init__(self, surface: str, base: str, children: list['U2UdTreeNode'] = None, tokens: list[TokenExt] = None) -> None:
+    def __init__(self, surface: str, base: str, children: list['U2UdTreeNode'] = None, tokens: list[UDPipeEntry] = None) -> None:
         self.surface = surface
         self.base = base if base else surface
         self.tokens = tokens
@@ -35,13 +39,20 @@ class U2UdTreeNode:
         return self.base != self.surface
 
     @classmethod
-    def create(cls, tokens: list[TokenExt], excluded: set[str]) -> 'U2UdTreeNode':
-        children = tree_parser._recursing_parse(tokens, excluded) if len(tokens) > 1 else []  # tree_parser._find_compounds(tokens[0], excluded) # noqa
-        return cls.create_non_recursive(tokens, children)
+    def create(cls, tokens: list[UDPipeEntry], depth:int) -> 'U2UdTreeNode':
+        if len(tokens) > 1:
+            if depth > 1:
+                children = u2udtreeparser.parse_recursive(tokens, depth - 1)
+            else:
+                children = []
+        else:
+            children = []
+
+        return cls.create_simple(tokens, children)
 
     @classmethod
-    def create_non_recursive(cls, tokens: list[TokenExt], children: list['U2UdTreeNode'] = None) -> 'U2UdTreeNode':
-        children = children if children else []
-        surface = "".join(tok.surface for tok in tokens)
-        base = "".join(tok.surface for tok in tokens[:-1]) + tokens[-1].base_form
+    def create_simple(cls, tokens: list[UDPipeEntry], children: list['U2UdTreeNode']) -> 'U2UdTreeNode':
+        surface = "".join(tok.form for tok in tokens)
+        base = "".join(tok.form for tok in tokens[:-1]) + tokens[-1].lemma
         return U2UdTreeNode(surface, base, children, tokens)
+
