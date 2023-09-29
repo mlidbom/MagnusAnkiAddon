@@ -10,7 +10,7 @@ from note.sentencenote import SentenceNote
 from note.kanjinote import KanjiNote
 from note.vocabnote import VocabNote
 from hooks.note_content_building import sentence_breakdown
-from sysutils.ui_utils import UIUtils
+from ankiutils.ui_utils import UIUtils
 from wanikani import note_importer
 from wanikani import wani_note_updater
 from wanikani.wani_downloader import WaniDownloader

@@ -5,8 +5,8 @@ from aqt import gui_hooks
 from hooks.timing_hacks import ugly_timing_hacks
 from sysutils import my_clipboard
 from sysutils.collections.recent_items import RecentItems
-from sysutils.utils import StringUtils
-from sysutils.ui_utils import UIUtils
+from sysutils.stringutils import StringUtils
+from ankiutils.ui_utils import UIUtils
 
 
 recent_previewer_cards = RecentItems[int](2)

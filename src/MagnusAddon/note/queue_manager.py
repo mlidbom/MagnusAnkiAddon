@@ -3,7 +3,7 @@ from typing import Optional, Callable
 import aqt.browser
 from aqt import dialogs, mw
 
-from sysutils.utils import StringUtils
+from sysutils.stringutils import StringUtils
 from note.jp_collection import *
 from note.cardutils import CardUtils
 

@@ -2,7 +2,7 @@ from wanikani_api import models
 from anki.notes import Note
 
 from note.waninote import WaniNote
-from sysutils.utils import StringUtils
+from sysutils.stringutils import StringUtils
 from note.note_constants import NoteFields
 
 

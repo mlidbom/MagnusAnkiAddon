@@ -5,7 +5,7 @@ from PyQt6.QtWidgets import QMenu
 from ankiutils import search_utils as su
 from ankiutils.search_utils import lookup_promise
 from note.vocabnote import VocabNote
-from sysutils.ui_utils import UIUtils
+from ankiutils.ui_utils import UIUtils
 from note.note_constants import SentenceNoteFields
 
 

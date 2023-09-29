@@ -8,8 +8,9 @@ from note.vocabnote import VocabNote
 from parsing.tree_parsing import tree_parser
 from parsing.tree_parsing.tree_parser_node import TreeParserNode, priorities
 from sysutils.collections.recent_items import RecentItems
-from sysutils.utils import ListUtils
 from note.jp_collection import JPCollection
+from sysutils.listutils import ListUtils
+
 
 def _vocab_missing_string(node:TreeParserNode, display_text: str) -> str:
     return "---" if node.is_dictionary_word(display_text) else ""

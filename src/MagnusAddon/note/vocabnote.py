@@ -4,7 +4,7 @@ from anki.notes import Note
 
 from note.kanavocabnote import KanaVocabNote
 from sysutils import kana_utils
-from sysutils.utils import StringUtils
+from sysutils.stringutils import StringUtils
 from note.note_constants import NoteFields, Mine, NoteTypes
 from wanikani.wanikani_api_client import WanikaniClient
 

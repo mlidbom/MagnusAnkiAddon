@@ -6,7 +6,7 @@ from note.jpnote import JPNote
 from note.kanjinote import KanjiNote
 from note.vocabnote import VocabNote
 from sysutils import kana_utils
-from sysutils.utils import StringUtils
+from sysutils.stringutils import StringUtils
 from note.jp_collection import JPCollection
 
 

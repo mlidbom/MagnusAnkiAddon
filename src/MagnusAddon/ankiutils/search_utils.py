@@ -12,7 +12,7 @@ from note.radicalnote import RadicalNote
 from note.vocabnote import VocabNote
 from parsing import textparser
 from parsing.janome_extensions.parsed_word import ParsedWord
-from sysutils.ui_utils import UIUtils
+from ankiutils.ui_utils import UIUtils
 from note.note_constants import NoteFields, Mine, MyNoteFields, NoteTypes
 
 

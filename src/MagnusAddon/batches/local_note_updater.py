@@ -3,8 +3,8 @@ from typing import *
 from note.sentencenote import SentenceNote
 from sysutils import kana_utils
 from parsing import janomeutils
-from sysutils.utils import StringUtils
-from sysutils.ui_utils import UIUtils
+from sysutils.stringutils import StringUtils
+from ankiutils.ui_utils import UIUtils
 from note.kanjinote import KanjiNote
 from note.vocabnote import VocabNote
 from note.jp_collection import JPCollection

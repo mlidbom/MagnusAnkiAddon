@@ -7,7 +7,8 @@ from note.sentencenote import SentenceNote
 from note.kanjinote import KanjiNote
 from note.vocabnote import VocabNote
 from sysutils import kana_utils
-from sysutils.utils import StringUtils, ListUtils
+from sysutils.listutils import ListUtils
+from sysutils.stringutils import StringUtils
 from note.jp_collection import JPCollection
 
 

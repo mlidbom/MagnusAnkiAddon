@@ -4,7 +4,7 @@ from note.jpnote import JPNote
 from parsing.janome_extensions.parsed_word import ParsedWord
 from sysutils import timeutil, kana_utils
 from parsing import textparser
-from sysutils.utils import StringUtils
+from sysutils.stringutils import StringUtils
 from note.note_constants import SentenceNoteFields
 
 

@@ -6,13 +6,13 @@ from anki.notes import NoteId, Note
 from ankiutils.anki_shim import facade
 from ankiutils.search_utils import Builtin
 from note.sentencenote import SentenceNote
-from sysutils.utils import ListUtils
 from note.waninote import WaniNote
 from note.radicalnote import RadicalNote
 from note.vocabnote import VocabNote
 from note.cardutils import CardUtils
 from note.kanjinote import KanjiNote
 from note.note_constants import NoteFields, NoteTypes
+from sysutils.listutils import ListUtils
 
 
 class JPCollection:

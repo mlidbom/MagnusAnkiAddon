@@ -3,7 +3,7 @@ from typing import Sequence
 from jamdict.jmdict import JMDEntry, Sense
 
 from sysutils import kana_utils
-from sysutils.utils import ListUtils
+from sysutils.listutils import ListUtils
 
 
 class DictEntry:

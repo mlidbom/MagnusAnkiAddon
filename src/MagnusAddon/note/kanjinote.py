@@ -4,7 +4,7 @@ from wanikani_api import models
 from anki.notes import Note
 
 from ankiutils.anki_shim import facade
-from sysutils.utils import StringUtils
+from sysutils.stringutils import StringUtils
 from note.waninote import WaniNote
 from note.note_constants import NoteFields, Mine, NoteTypes
 from wanikani.wanikani_api_client import WanikaniClient

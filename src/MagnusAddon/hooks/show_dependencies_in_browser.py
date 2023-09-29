@@ -5,7 +5,7 @@ from aqt import gui_hooks
 from ankiutils import search_utils
 from note.jpnote import JPNote
 from sysutils.collections.recent_items import RecentItems
-from sysutils.ui_utils import UIUtils
+from ankiutils.ui_utils import UIUtils
 
 
 def show_dependencies_in_browser(note: Note) -> None:
