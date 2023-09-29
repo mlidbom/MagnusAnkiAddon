@@ -1,3 +1,4 @@
+# From: https://universaldependencies.org/u/pos/index.html
 # ADJ: adjective
 # ADP: adposition
 # ADV: adverb

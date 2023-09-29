@@ -23,7 +23,7 @@ def _add_tag(japanese: str, english_tag:str, english_description: str) -> UdPOST
 
 pronoun = _add_tag("代名詞", "Pron", "pronoun")
 adverb = _add_tag("副詞", "Adv", "adverb")
-auxiliary_verb = _add_tag("助動詞", "Aux", "auxiliary_verb")
+inflecting_dependent_word = _add_tag("助動詞", "Aux", "inflecting_dependent_word") #modified. Was: auxiliary_verb
 particle_binding = _add_tag("助詞-係助詞", "P.bind", "particle_binding")
 particle_adverbial = _add_tag("助詞-副助詞", "P.adv", "particle_adverbial")
 particle_conjunctive = _add_tag("助詞-接続助詞", "P.conj", "particle_conjunctive")

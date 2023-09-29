@@ -1,7 +1,7 @@
 from typing import Callable
 
 from unidic2ud import UDPipeEntry
-from src.ExploratoryTests.unidic2ud import u2udtreeparser, ud_japanese_pos_tags
+from src.ExploratoryTests.unidic2ud import u2udtreeparser, ud_japanese_pos_tags, universal_dependency_relationships
 from sysutils import kana_utils, stringutils
 from sysutils.stringutils import StringUtils
 
@@ -38,11 +38,11 @@ class U2UdTreeNode:
     def _str_pos(self) -> str:
         if self.is_leaf_node():
             token = self.tokens[0]
-            return (f"""upos:{StringUtils.pad_to_length(token.upos, 7)}""" +
-                    f"""id:{StringUtils.pad_to_length(str(token.id), 3)}""" +
+            return (f"""id:{StringUtils.pad_to_length(str(token.id), 3)}""" +
                     f"""head:{StringUtils.pad_to_length(str(token.head.id), 3)}""" + # noqa
-                    f"""deprel:{StringUtils.pad_to_length(token.deprel, 9)}""" +
+                    f"""deprel:{StringUtils.pad_to_length(universal_dependency_relationships.get_tag(token.deprel).description, 46)}""" +
                     f"""xpos:{StringUtils.pad_to_length(ud_japanese_pos_tags.get_tag(token.xpos).english_description, 30)}""" +
+                    f"""upos:{StringUtils.pad_to_length(token.upos, 7)}""" +
                     f"""feat:{token.feats} deps:{token.deps} misc:{token.misc}""")
         return "_"
 
