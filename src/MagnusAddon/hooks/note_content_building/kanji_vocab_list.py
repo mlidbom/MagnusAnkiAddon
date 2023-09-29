@@ -7,7 +7,7 @@ from note.wanikanjinote import WaniKanjiNote
 from note.wanivocabnote import WaniVocabNote
 from sysutils import kana_utils
 from sysutils.utils import StringUtils
-from wanikani.wani_collection import WaniCollection
+from wanikani.jp_collection import JPCollection
 
 
 def sort_vocab_list(note:WaniKanjiNote, primary_voc: list[str], vocabs: list[WaniVocabNote]) -> None:
@@ -53,7 +53,7 @@ def render_vocab_html_list(html:str, card: Card, _type_of_display:str) -> str:
     kanji_note = MyNote.note_from_card(card)
 
     if isinstance(kanji_note, WaniKanjiNote):
-        vocab_list = WaniCollection.search_vocab_notes(search_utils.vocab_with_kanji(kanji_note))
+        vocab_list = JPCollection.search_vocab_notes(search_utils.vocab_with_kanji(kanji_note))
         vocab_list_html = generate_vocab_html_list(kanji_note, vocab_list)
         html = html.replace("##VOCAB_LIST##", vocab_list_html)
 

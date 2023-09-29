@@ -2,14 +2,14 @@ from wanikani_api import models
 from ankiutils.anki_shim import facade
 from anki.notes import Note
 
-from note.wanikanavocabnote import WaniKanaVocabNote
+from note.vocabnote import VocabNote
 from sysutils import kana_utils
 from sysutils.utils import StringUtils
 from wanikani.wani_constants import Wani, Mine
 from wanikani.wanikani_api_client import WanikaniClient
 
 
-class WaniVocabNote(WaniKanaVocabNote):
+class WaniVocabNote(VocabNote):
     def __init__(self, note: Note):
         super().__init__(note)
 

@@ -7,14 +7,14 @@ from sysutils.utils import StringUtils
 from sysutils.ui_utils import UIUtils
 from note.wanikanjinote import WaniKanjiNote
 from note.wanivocabnote import WaniVocabNote
-from wanikani.wani_collection import WaniCollection
+from wanikani.jp_collection import JPCollection
 
 
 def update_all() -> None:
     def update_all_inner() -> None:
-        all_vocabulary: list[WaniVocabNote] = WaniCollection.fetch_all_vocab_notes()
-        all_kanji: list[WaniKanjiNote] = WaniCollection.fetch_all_kanji_notes()
-        all_sentences = WaniCollection.list_sentence_notes()
+        all_vocabulary: list[WaniVocabNote] = JPCollection.fetch_all_vocab_notes()
+        all_kanji: list[WaniKanjiNote] = JPCollection.fetch_all_kanji_notes()
+        all_sentences = JPCollection.list_sentence_notes()
 
         _update_sentences(all_sentences)
         _update_kanji(all_vocabulary, all_kanji)
@@ -28,13 +28,13 @@ def _update_vocab_parsed_parts_of_speech(all_vocabulary: list[WaniVocabNote]) ->
         vocab.set_parsed_type_of_speech(janomeutils.get_word_parts_of_speech(vocab.get_question()))
 
 def update_sentences() -> None:
-    UIUtils.run_ui_action(lambda: _update_sentences(WaniCollection.list_sentence_notes()))
+    UIUtils.run_ui_action(lambda: _update_sentences(JPCollection.list_sentence_notes()))
 
 def update_kanji(_kanji_note: WaniKanjiNote) -> None:
-    UIUtils.run_ui_action(lambda: _update_kanji(WaniCollection.fetch_all_vocab_notes(), WaniCollection.fetch_all_kanji_notes()))
+    UIUtils.run_ui_action(lambda: _update_kanji(JPCollection.fetch_all_vocab_notes(), JPCollection.fetch_all_kanji_notes()))
 
 def update_vocab() -> None:
-    UIUtils.run_ui_action(lambda: _update_vocab(WaniCollection.fetch_all_vocab_notes(), WaniCollection.fetch_all_kanji_notes()))
+    UIUtils.run_ui_action(lambda: _update_vocab(JPCollection.fetch_all_vocab_notes(), JPCollection.fetch_all_kanji_notes()))
 
 
 def _update_sentences(sentences: list[SentenceNote]) -> None:

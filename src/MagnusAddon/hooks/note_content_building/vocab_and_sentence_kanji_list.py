@@ -8,7 +8,7 @@ from note.wanikanjinote import WaniKanjiNote
 from note.wanivocabnote import WaniVocabNote
 from sysutils import kana_utils
 from sysutils.utils import StringUtils, ListUtils
-from wanikani.wani_collection import WaniCollection
+from wanikani.jp_collection import JPCollection
 
 
 def render_kanji_list(html:str, card: Card, _type_of_display:str) -> str:
@@ -22,7 +22,7 @@ def render_kanji_list(html:str, card: Card, _type_of_display:str) -> str:
 
     if question:
         question = StringUtils.remove_duplicates_characters(question)
-        kanji_list:list[WaniKanjiNote] = ListUtils.flatten_list([WaniCollection.search_kanji_notes(search_utils.fetch_kanji_by_kanji([c])) for c in question])
+        kanji_list:list[WaniKanjiNote] = ListUtils.flatten_list([JPCollection.search_kanji_notes(search_utils.fetch_kanji_by_kanji([c])) for c in question])
 
         list_html = f"""
 <div id="kanji_list">

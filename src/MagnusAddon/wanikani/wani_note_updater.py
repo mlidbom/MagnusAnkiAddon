@@ -4,7 +4,7 @@ from aqt.utils import showInfo
 from note.wanikanjinote import WaniKanjiNote
 from note.waniradicalnote import WaniRadicalNote
 from note.wanivocabnote import WaniVocabNote
-from wanikani.wani_collection import WaniCollection
+from wanikani.jp_collection import JPCollection
 from wanikani.wani_constants import Wani
 from wanikani.wanikani_api_client import WanikaniClient
 
@@ -26,7 +26,7 @@ def update_from_wanikani(note: Note):
 
 
 def update_radical() -> None:
-    all_radicals: list[WaniRadicalNote] = WaniCollection.fetch_all_radical_notes()
+    all_radicals: list[WaniRadicalNote] = JPCollection.fetch_all_radical_notes()
     fetched = 0
     failed: str = ""
     for radical_note in all_radicals:
@@ -43,7 +43,7 @@ def update_radical() -> None:
 
 
 def update_kanji() -> None:
-    all_kanji: list[WaniKanjiNote] = WaniCollection.fetch_all_kanji_notes()
+    all_kanji: list[WaniKanjiNote] = JPCollection.fetch_all_kanji_notes()
     fetched = 0
     failed: str = ""
     for kanji_note in all_kanji:
@@ -60,7 +60,7 @@ def update_kanji() -> None:
 
 
 def update_vocab() -> None:
-    all_vocabulary: list[WaniVocabNote] = WaniCollection.fetch_all_wani_vocab_notes()
+    all_vocabulary: list[WaniVocabNote] = JPCollection.fetch_all_wani_vocab_notes()
     updated = 0
     failed: str = ""
     for vocab_note in all_vocabulary:
@@ -77,7 +77,7 @@ def update_vocab() -> None:
 
 
 def delete_missing_radicals() -> None:
-    all_radicals = WaniCollection.fetch_all_radical_notes()
+    all_radicals = JPCollection.fetch_all_radical_notes()
     deleted = 0
     deleted_radicals: str = ""
     for radical_note in all_radicals:
@@ -93,7 +93,7 @@ def delete_missing_radicals() -> None:
 
 
 def delete_missing_kanji() -> None:
-    all_kanji: list[WaniKanjiNote] = WaniCollection.fetch_all_kanji_notes()
+    all_kanji: list[WaniKanjiNote] = JPCollection.fetch_all_kanji_notes()
     deleted = 0
     deleted_kanji: str = ""
     for kanji_note in all_kanji:
@@ -109,7 +109,7 @@ def delete_missing_kanji() -> None:
 
 
 def delete_missing_vocab() -> None:
-    all_vocabulary: list[WaniVocabNote] = WaniCollection.fetch_all_wani_vocab_notes()
+    all_vocabulary: list[WaniVocabNote] = JPCollection.fetch_all_wani_vocab_notes()
     deleted = 0
     deleted_vocab: str = ""
     for vocab_note in all_vocabulary:

@@ -6,7 +6,7 @@ from sysutils.utils import StringUtils
 from wanikani.wani_constants import Wani
 
 
-class WaniKanaVocabNote(WaniNote):
+class VocabNote(WaniNote):
     def __init__(self, note: Note):
         super().__init__(note)
 

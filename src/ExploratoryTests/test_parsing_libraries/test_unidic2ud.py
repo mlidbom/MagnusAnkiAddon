@@ -1,6 +1,5 @@
 import pytest
 import unidic2ud
-from _pytest.fixtures import FixtureRequest
 from unidic2ud import UniDic2UDEntry, UniDic2UD, UDPipeEntry
 
 #pytestmark = pytest.mark.skip(reason="Running exploratory code constantly is just distracting.")
