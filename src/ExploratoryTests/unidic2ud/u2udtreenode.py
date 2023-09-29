@@ -1,6 +1,6 @@
-from unidic2ud import UDPipeEntry
+from typing import Callable
 
-from parsing.janome_extensions.token_ext import TokenExt
+from unidic2ud import UDPipeEntry
 from src.ExploratoryTests.unidic2ud import u2udtreeparser
 
 
@@ -38,13 +38,15 @@ class U2UdTreeNode:
     def is_inflected(self) -> bool:
         return self.base != self.surface
 
+    def visit(self, callback: Callable[['U2UdTreeNode'],None]) -> None:
+        callback(self)
+        for node in self.children:
+            node.visit(callback)
+
     @classmethod
     def create(cls, tokens: list[UDPipeEntry], depth:int) -> 'U2UdTreeNode':
-        if len(tokens) > 1:
-            if depth > 1:
-                children = u2udtreeparser.parse_recursive(tokens, depth - 1)
-            else:
-                children = []
+        if len(tokens) > 1 and depth > 1:
+            children = u2udtreeparser.parse_recursive(tokens, depth - 1)
         else:
             children = []
 

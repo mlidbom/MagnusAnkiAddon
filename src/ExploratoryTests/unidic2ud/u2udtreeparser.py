@@ -1,6 +1,7 @@
 from unidic2ud import UDPipeEntry
 
 from src.ExploratoryTests.unidic2ud.u2udtreenode import U2UdTreeNode
+from src.ExploratoryTests.unidic2ud.u2udtreepparseresult import U2UdParseResult
 
 
 def _consume_children_of(entry:UDPipeEntry, tokens:list[UDPipeEntry]) -> int:
@@ -50,7 +51,7 @@ def tree_parse_algorithm_1(result_tokens:list[UDPipeEntry], depth:int) -> list[l
 def _head(token:UDPipeEntry) -> UDPipeEntry:
     return token.head # noqa
 
-def parse(result_tokens) -> list[U2UdTreeNode]:
+def parse(result_tokens) -> U2UdParseResult:
     result_tokens = result_tokens[1:]  # The first is some empty thingy we don't want.
     depth = 3
     compounds = tree_parse_algorithm_1(result_tokens, depth)
@@ -58,15 +59,15 @@ def parse(result_tokens) -> list[U2UdTreeNode]:
         depth -= 1
         compounds = tree_parse_algorithm_1(result_tokens, depth)
 
-    return [U2UdTreeNode.create(compound, depth) for compound in compounds]
+    return U2UdParseResult(*[U2UdTreeNode.create(compound, depth) for compound in compounds])
 
-def parse_recursive(result_tokens, depth:int) -> list[U2UdTreeNode]:
-    compounds = tree_parse_algorithm_1(result_tokens, depth)
-    while len(compounds) == 1 and depth > 1:
+def parse_recursive(parent_node_tokens, depth:int) -> list[U2UdTreeNode]:
+    compounds = []
+    while len(compounds) < 2 and depth >= 1: # if len == 1 the result is identical to the parent, go down in granularity and try again
+        compounds = tree_parse_algorithm_1(parent_node_tokens, depth)
         depth -= 1
-        compounds = tree_parse_algorithm_1(result_tokens, depth)
 
-    if len(compounds) == 1:
-        compounds = []
+    if len(compounds) == 1: # No compound children create children from the individual tokens
+        return [U2UdTreeNode.create([token], depth) for token in compounds[0]]
 
     return [U2UdTreeNode.create(phrase, depth) for phrase in compounds]
