@@ -44,7 +44,9 @@ def setup() -> None:
     "言われるまで気づかなかった",
     "夢を見た",
     "知らない",
-    "何よあの態度偉そうに"
+    "何よあの態度偉そうに",
+    "これから本題に入るんだけど",
+    "食べられるもの"
 ])
 def common_sentence(request) -> str: return request.param
 
@@ -64,7 +66,7 @@ def test_build_tree(common_sentence: str) -> None:
     result_tokens:list[UDPipeEntry] = [tok for tok in parse_result]
     print(result_tokens)
 
-    print_tree("phrase: True, continue_on_connected_head:True", tree_parse_algorithm_1(result_tokens, phrase_mode=True, continue_on_connected_head=True))
+    #print_tree("phrase: True, continue_on_connected_head:True", tree_parse_algorithm_1(result_tokens, phrase_mode=True, continue_on_connected_head=True))
     print_tree("phrase: True, continue_on_connected_head:False", tree_parse_algorithm_1(result_tokens, phrase_mode=True, continue_on_connected_head=False))
     print_tree("phrase: False, continue_on_connected_head:True", tree_parse_algorithm_1(result_tokens, phrase_mode=False, continue_on_connected_head=True))
     print_tree("phrase: False, continue_on_connected_head:False", tree_parse_algorithm_1(result_tokens, phrase_mode=False, continue_on_connected_head=False))
