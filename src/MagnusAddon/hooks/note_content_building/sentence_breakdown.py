@@ -106,15 +106,15 @@ def build_breakdown_html(sentence: SentenceNote) -> str:
     if extra_words:
         html += _build_user_extra_list(extra_words, user_excluded)
 
-    html += """
-##KANJI_LIST##
-    """
-
     question = sentence.get_active_question()
     nodes = tree_parser.parse_tree(question, user_excluded).nodes
 
     user_extra = set(extra_words)
     html += _create_html_from_nodes(nodes, user_excluded, user_extra, 1)
+
+    html += """
+    ##KANJI_LIST##
+        """
 
     return html
 
