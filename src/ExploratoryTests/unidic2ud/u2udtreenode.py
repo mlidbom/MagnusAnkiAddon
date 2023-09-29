@@ -2,7 +2,7 @@ from typing import Callable
 
 from unidic2ud import UDPipeEntry
 from src.ExploratoryTests.unidic2ud import u2udtreeparser, ud_japanese_pos_tags, universal_dependency_relationships
-from sysutils import kana_utils, stringutils
+from sysutils import kana_utils
 from sysutils.stringutils import StringUtils
 
 

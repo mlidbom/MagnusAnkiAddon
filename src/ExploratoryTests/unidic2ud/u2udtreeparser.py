@@ -50,6 +50,9 @@ def tree_parse_algorithm_1(result_tokens:list[UDPipeEntry], depth:int) -> list[l
 
 def _head(token:UDPipeEntry) -> UDPipeEntry:
     return token.head # noqa
+#
+# def parse(text: str) -> U2UdParseResult:
+#     pass
 
 def parse(result_tokens) -> U2UdParseResult:
     result_tokens = result_tokens[1:]  # The first is some empty thingy we don't want.
