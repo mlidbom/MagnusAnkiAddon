@@ -46,7 +46,8 @@ def setup() -> None:
     "知らない",
     "何よあの態度偉そうに",
     "これから本題に入るんだけど",
-    "食べられるもの"
+    "食べられるもの",
+    "俺以外に友達がいなくてよかったとか　絶対思っちゃダメなのに"
 ])
 def common_sentence(request) -> str: return request.param
 
@@ -55,21 +56,25 @@ def test_just_display_various_sentences(common_sentence: str) -> None:
     run_tests(common_sentence)
 
 def test_build_tree(common_sentence: str) -> None:
-    parser = _parsers[0][1]
-    parser_name = _parsers[0][0]
+
+
+    results = [(name, parser(common_sentence)) for name, parser in _parsers]
+
+    result_list_tokens: list[tuple[str, list[UDPipeEntry]]] = [(name, [tok for tok in result]) for name, result in results]
+
     print()
-    print(parser_name)
+    for parser_name, result in results:
+        print(parser_name)
+        print(result.to_tree())
 
-    parse_result = parser(common_sentence)
-    print(parse_result.to_tree())
+    for parser_name, result_tokens in result_list_tokens:
+        print_tree(f"{parser_name} phrase: True, continue_on_connected_head:False", tree_parse_algorithm_1(result_tokens, phrase_mode=True, continue_on_connected_head=False))
 
-    result_tokens:list[UDPipeEntry] = [tok for tok in parse_result]
-    print(result_tokens)
+    for parser_name, result_tokens in result_list_tokens:
+        print_tree(f"{parser_name} phrase: False, continue_on_connected_head:True", tree_parse_algorithm_1(result_tokens, phrase_mode=False, continue_on_connected_head=True))
 
-    #print_tree("phrase: True, continue_on_connected_head:True", tree_parse_algorithm_1(result_tokens, phrase_mode=True, continue_on_connected_head=True))
-    print_tree("phrase: True, continue_on_connected_head:False", tree_parse_algorithm_1(result_tokens, phrase_mode=True, continue_on_connected_head=False))
-    print_tree("phrase: False, continue_on_connected_head:True", tree_parse_algorithm_1(result_tokens, phrase_mode=False, continue_on_connected_head=True))
-    print_tree("phrase: False, continue_on_connected_head:False", tree_parse_algorithm_1(result_tokens, phrase_mode=False, continue_on_connected_head=False))
+    for parser_name, result_tokens in result_list_tokens:
+        print_tree(f"{parser_name} phrase: True, continue_on_connected_head:False", tree_parse_algorithm_1(result_tokens, phrase_mode=True, continue_on_connected_head=False))
 
 
 def print_tree(name:str, tree:list[UDPipeEntry]) -> None:
