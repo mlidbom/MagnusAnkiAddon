@@ -2,7 +2,7 @@ from aqt import gui_hooks
 from aqt.editor import Editor
 
 from note.vocabnote import VocabNote
-from wanikani import wani_queue_manager, wani_note_updater
+from wanikani import wani_note_updater
 from wanikani.wani_downloader import WaniDownloader
 
 

@@ -2,8 +2,6 @@ import aqt.browser
 from PyQt6.QtWidgets import QMenu
 from aqt import gui_hooks
 
-from wanikani import wani_queue_manager
-
 
 def setup_browser_context_menu(browser: aqt.browser.Browser, menu: QMenu) -> None:
     selected_cards = browser.selected_cards()
