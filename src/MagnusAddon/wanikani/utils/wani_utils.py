@@ -3,7 +3,7 @@ from anki.consts import QUEUE_TYPE_NEW
 
 from ankiutils.anki_shim import facade
 from note.waninote import WaniNote
-from note.note_constants import NoteFields
+from note.note_constants import NoteTypes
 
 
 class NoteUtils:
@@ -20,9 +20,9 @@ class CardUtils:
     @classmethod
     def get_note_type_priority(cls, card: Card):
         note_type_name = card.note_type()["name"]
-        if note_type_name == NoteFields.NoteType.Radical: return 1
-        if note_type_name == NoteFields.NoteType.Kanji: return 2
-        if note_type_name == NoteFields.NoteType.Vocab: return 3
+        if note_type_name == NoteTypes.Radical: return 1
+        if note_type_name == NoteTypes.Kanji: return 2
+        if note_type_name == NoteTypes.Vocab: return 3
 
         return 4  # It's nice to use it for other note types too so default them to 4.
 

@@ -3,7 +3,7 @@ from anki.cards import Card
 from anki.notes import Note
 
 
-from note.note_constants import NoteFields, Mine
+from note.note_constants import Mine, NoteTypes
 
 
 class JPNote:
@@ -22,13 +22,13 @@ class JPNote:
         from note.radicalnote import RadicalNote
         from note.vocabnote import VocabNote
 
-        if cls.get_note_type(note) == NoteFields.NoteType.Kanji:
+        if cls.get_note_type(note) == NoteTypes.Kanji:
             return KanjiNote(note)
-        elif cls.get_note_type(note) == NoteFields.NoteType.Vocab:
+        elif cls.get_note_type(note) == NoteTypes.Vocab:
             return VocabNote(note)
-        elif cls.get_note_type(note) == NoteFields.NoteType.Radical:
+        elif cls.get_note_type(note) == NoteTypes.Radical:
             return RadicalNote(note)
-        elif cls.get_note_type(note) == NoteFields.NoteType.Sentence:
+        elif cls.get_note_type(note) == NoteTypes.Sentence:
             return SentenceNote(note)
         return JPNote(note)
 

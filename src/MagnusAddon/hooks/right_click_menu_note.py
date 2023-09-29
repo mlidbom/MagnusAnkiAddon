@@ -9,7 +9,7 @@ from note.radicalnote import RadicalNote
 from note.vocabnote import VocabNote
 from hooks.note_content_building import sentence_breakdown
 from sysutils.utils import StringUtils
-from note.note_constants import MyNoteFields, NoteFields, SentenceNoteFields
+from note.note_constants import MyNoteFields, NoteFields, SentenceNoteFields, NoteTypes
 from ankiutils import search_utils as su
 
 def setup_note_menu(note, root_menu, sel_clip, selection, view: AnkiWebView):
@@ -48,7 +48,7 @@ def setup_note_menu(note, root_menu, sel_clip, selection, view: AnkiWebView):
 
     if isinstance(note, SentenceNote):
         add_text_vocab_lookup(note_lookup_menu, "&Vocabulary words", note.get_active_question())
-        add_lookup_action(note_lookup_menu, "&Kanji", f"""note:{NoteFields.NoteType.Kanji} ({" OR ".join([f"{NoteFields.Kanji.question}:{kan}" for kan in note.extract_kanji()])})""")
+        add_lookup_action(note_lookup_menu, "&Kanji", f"""note:{NoteTypes.Kanji} ({" OR ".join([f"{NoteFields.Kanji.question}:{kan}" for kan in note.extract_kanji()])})""")
 
         def exclude_vocab(sentence: SentenceNote, text: str) -> None:
             sentence.exclude_vocab(text)
@@ -63,14 +63,14 @@ def setup_note_menu(note, root_menu, sel_clip, selection, view: AnkiWebView):
             add_ui_action(note_add_menu, "&Extra vocab", lambda: add_extra_vocab(note, sel_clip))
 
     if isinstance(note, RadicalNote):
-        add_lookup_action(note_lookup_menu, "&Kanji", f"note:{NoteFields.NoteType.Kanji} {su.field_word(NoteFields.Kanji.Radicals_Names, note.get_a())}")
+        add_lookup_action(note_lookup_menu, "&Kanji", f"note:{NoteTypes.Kanji} {su.field_word(NoteFields.Kanji.Radicals_Names, note.get_a())}")
 
     if isinstance(note, KanjiNote):
         kanji = note
         add_lookup_action(note_lookup_menu, "&Vocabs", su.vocab_with_kanji(note))
         radicals = [rad.strip() for rad in note.get_radicals_names().split(",")]
         radicals_clause = " OR ".join([f"{NoteFields.Radical.answer}:{rad}" for rad in radicals])
-        add_lookup_action(note_lookup_menu, "&Radicals", f"note:{NoteFields.NoteType.Radical} ({radicals_clause})")
+        add_lookup_action(note_lookup_menu, "&Radicals", f"note:{NoteTypes.Radical} ({radicals_clause})")
         add_sentence_lookup(note_lookup_menu, "&Sentences", sel_clip)
 
         if not kanji.get_mnemonics_override():
@@ -86,7 +86,7 @@ def setup_note_menu(note, root_menu, sel_clip, selection, view: AnkiWebView):
 
     if isinstance(note, VocabNote):
         vocab = note
-        add_lookup_action(note_lookup_menu, "&Kanji", f"note:{NoteFields.NoteType.Kanji} ( {' OR '.join([f'{NoteFields.Kanji.question}:{char}' for char in note.get_question()])} )")
+        add_lookup_action(note_lookup_menu, "&Kanji", f"note:{NoteTypes.Kanji} ( {' OR '.join([f'{NoteFields.Kanji.question}:{char}' for char in note.get_question()])} )")
         if vocab.get_related_ergative_twin():
             add_single_vocab_lookup_action(note_lookup_menu, "&Ergative twin", vocab.get_related_ergative_twin())
 

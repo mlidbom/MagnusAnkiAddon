@@ -6,7 +6,7 @@ from anki.notes import Note
 from ankiutils.anki_shim import facade
 from sysutils.utils import StringUtils
 from note.waninote import WaniNote
-from note.note_constants import NoteFields, Mine
+from note.note_constants import NoteFields, Mine, NoteTypes
 from wanikani.wanikani_api_client import WanikaniClient
 
 
@@ -164,7 +164,7 @@ class KanjiNote(WaniNote):
 
     @staticmethod
     def create_from_wani_kanji(wani_kanji: models.Kanji):
-        note = Note(facade.col(), facade.col().models.byName(NoteFields.NoteType.Kanji))
+        note = Note(facade.col(), facade.col().models.byName(NoteTypes.Kanji))
         note.add_tag("__imported")
         note.add_tag(Mine.Tags.Wani)
         kanji_note = KanjiNote(note)

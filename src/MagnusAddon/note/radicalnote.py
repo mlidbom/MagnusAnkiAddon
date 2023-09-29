@@ -3,7 +3,7 @@ from anki.notes import Note
 
 from ankiutils.anki_shim import facade
 from note.waninote import WaniNote
-from note.note_constants import NoteFields, Mine
+from note.note_constants import NoteFields, Mine, NoteTypes
 
 
 class RadicalNote(WaniNote):
@@ -37,7 +37,7 @@ class RadicalNote(WaniNote):
 
     @staticmethod
     def create_from_wani_radical(wani_radical: models.Radical):
-        note = Note(facade.col(), facade.col().models.byName(NoteFields.NoteType.Radical))
+        note = Note(facade.col(), facade.col().models.byName(NoteTypes.Radical))
         note.add_tag("__imported")
         note.add_tag(Mine.Tags.Wani)
         radical_note = RadicalNote(note)

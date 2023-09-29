@@ -19,6 +19,12 @@ class SentenceNoteFields:
     user_excluded_vocab = "__excluded_vocab"
     user_extra_vocab = "__extra_vocab"
 
+class NoteTypes:
+    Kanji = "_Kanji"
+    Vocab = "_Vocab"
+    Radical = "_Radical"
+    Sentence = "_japanese_sentence"
+
 class NoteFields:
     class VocabNoteType:
         class Card:
@@ -26,13 +32,7 @@ class NoteFields:
             Listening = "Listening"
             Recognition = "Recognition"
 
-    class NoteType:
-        Kanji = "_Kanji"
-        Vocab = "_Vocab"
-        Radical = "_Radical"
-        Sentence = "_japanese_sentence"
-
-    class NoteFields:
+    class WaniCommon:
         sort_id = "sort_id"
 
         subject_id = "subject_id"
@@ -41,9 +41,6 @@ class NoteFields:
         document_url = "document_url"
         my_learning_order = "my_learning_order"
 
-#        hidden_at = "hidden_at"
-#        spaced_repetition_system_id = "spaced_repetition_system_id"
-#        created_at = "created_at"
         auxiliary_meanings_whitelist = "auxiliary_meanings_whitelist"
         auxiliary_meanings_blacklist = "auxiliary_meanings_blacklist"
 

@@ -13,7 +13,7 @@ from note.vocabnote import VocabNote
 from parsing import textparser
 from parsing.janome_extensions.parsed_word import ParsedWord
 from sysutils.ui_utils import UIUtils
-from note.note_constants import NoteFields, Mine, MyNoteFields
+from note.note_constants import NoteFields, Mine, MyNoteFields, NoteTypes
 
 
 class Builtin:
@@ -30,8 +30,8 @@ forms = NoteFields.Vocab.Forms
 card_listen = f"{Builtin.Card}:{NoteFields.VocabNoteType.Card.Listening}"
 card_read = f"{Builtin.Card}:{NoteFields.VocabNoteType.Card.Reading}"
 
-note_kanji = f"{Builtin.Note}:{NoteFields.NoteType.Kanji}"
-note_vocab = f"{Builtin.Note}:{NoteFields.NoteType.Vocab}"
+note_kanji = f"{Builtin.Note}:{NoteTypes.Kanji}"
+note_vocab = f"{Builtin.Note}:{NoteTypes.Vocab}"
 
 tag_uk = f"tag:{Mine.Tags.UsuallyKanaOnly}"
 
@@ -140,7 +140,7 @@ def lookup_dependencies(note: JPNote):
 
 
 def fetch_kanji_by_kanji(kanji: Iterable[str]) -> str:
-    return f"""note:{NoteFields.NoteType.Kanji} ({" OR ".join([f"{NoteFields.Kanji.question}:{kan}" for kan in kanji])})"""
+    return f"""note:{NoteTypes.Kanji} ({" OR ".join([f"{NoteFields.Kanji.question}:{kan}" for kan in kanji])})"""
 
 
 def lookup_text_object(text: str):

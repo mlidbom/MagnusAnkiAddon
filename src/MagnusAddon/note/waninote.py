@@ -5,7 +5,7 @@ from anki.notes import Note
 
 from ankiutils.anki_shim import facade
 from note.jpnote import JPNote
-from note.note_constants import Mine, NoteFields
+from note.note_constants import NoteFields
 
 
 class WaniNote(JPNote):
@@ -24,48 +24,48 @@ class WaniNote(JPNote):
         self._note.add_tag("level{:02d}".format(new_level))
         self._note.flush()
 
-    def get_sort_id(self) -> str: return self.get_field(NoteFields.NoteFields.sort_id)
-    def set_sort_id(self, value: str) -> None: self.set_field(NoteFields.NoteFields.sort_id, value)
+    def get_sort_id(self) -> str: return self.get_field(NoteFields.WaniCommon.sort_id)
+    def set_sort_id(self, value: str) -> None: self.set_field(NoteFields.WaniCommon.sort_id, value)
 
-    def get_subject_id(self) -> int: return int(self.get_field(NoteFields.NoteFields.subject_id))
-    def set_subject_id(self, value: int) -> None: self.set_field(NoteFields.NoteFields.subject_id, str(value))
+    def get_subject_id(self) -> int: return int(self.get_field(NoteFields.WaniCommon.subject_id))
+    def set_subject_id(self, value: int) -> None: self.set_field(NoteFields.WaniCommon.subject_id, str(value))
 
     def get_lesson_position(self) -> int:
         if not self.is_wani_note(): return 0
-        return int(self.get_field(NoteFields.NoteFields.lesson_position))
+        return int(self.get_field(NoteFields.WaniCommon.lesson_position))
 
     def set_lesson_position(self, value: int) -> None:
-        current_position = self.get_field(NoteFields.NoteFields.lesson_position)
+        current_position = self.get_field(NoteFields.WaniCommon.lesson_position)
 
         # Wani api does some weird stuff sometimes returning 0 as lesson positions for many subjects.
         # Possibly the ones in the current level or currently being studied.
         # Anyway, we do NOT want to overwrite valid lesson positions with zeroes!
         if value > 0:
-            self.set_field(NoteFields.NoteFields.lesson_position, str(value))
+            self.set_field(NoteFields.WaniCommon.lesson_position, str(value))
         else:
             if current_position == "0" or current_position == "" or current_position is None:
-                self.set_field(NoteFields.NoteFields.lesson_position, str(value))
+                self.set_field(NoteFields.WaniCommon.lesson_position, str(value))
             else:
                 print("Ignoring 0 as value for lesson_position for subject: {}".format(self.get_subject_id()))
 
 
-    def get_my_learning_order(self) -> str: return self.get_field(NoteFields.NoteFields.my_learning_order)
-    def _set_my_learning_order(self, value: str) -> None: self.set_field(NoteFields.NoteFields.my_learning_order, value)
+    def get_my_learning_order(self) -> str: return self.get_field(NoteFields.WaniCommon.my_learning_order)
+    def _set_my_learning_order(self, value: str) -> None: self.set_field(NoteFields.WaniCommon.my_learning_order, value)
 
-    def get_document_url(self) -> str: return self.get_field(NoteFields.NoteFields.document_url)
-    def set_document_url(self, value: str) -> None: self.set_field(NoteFields.NoteFields.document_url, value)
+    def get_document_url(self) -> str: return self.get_field(NoteFields.WaniCommon.document_url)
+    def set_document_url(self, value: str) -> None: self.set_field(NoteFields.WaniCommon.document_url, value)
 
     def get_level(self) -> int:
         if not self.is_wani_note():
             return 0 #non wani items
-        return int(self.get_field(NoteFields.NoteFields.level))
+        return int(self.get_field(NoteFields.WaniCommon.level))
 
     def set_level(self, value: int) -> None:
         self.set_level_tag(value)
-        self.set_field(NoteFields.NoteFields.level, str(value))
+        self.set_field(NoteFields.WaniCommon.level, str(value))
 
-    def set_auxiliary_meanings_whitelist(self, value:str) -> None: self.set_field(NoteFields.NoteFields.auxiliary_meanings_whitelist, value)
-    def set_auxiliary_meanings_blacklist(self, value:str) -> None: self.set_field(NoteFields.NoteFields.auxiliary_meanings_blacklist, value)
+    def set_auxiliary_meanings_whitelist(self, value:str) -> None: self.set_field(NoteFields.WaniCommon.auxiliary_meanings_whitelist, value)
+    def set_auxiliary_meanings_blacklist(self, value:str) -> None: self.set_field(NoteFields.WaniCommon.auxiliary_meanings_blacklist, value)
 
     def update_from_wani(self, wani_model: models.Subject):
         self.set_level(wani_model.level)

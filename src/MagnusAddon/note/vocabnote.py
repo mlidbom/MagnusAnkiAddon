@@ -5,7 +5,7 @@ from anki.notes import Note
 from note.kanavocabnote import KanaVocabNote
 from sysutils import kana_utils
 from sysutils.utils import StringUtils
-from note.note_constants import NoteFields, Mine
+from note.note_constants import NoteFields, Mine, NoteTypes
 from wanikani.wanikani_api_client import WanikaniClient
 
 
@@ -112,7 +112,7 @@ class VocabNote(KanaVocabNote):
 
     @staticmethod
     def create_from_wani_vocabulary(wani_vocab: models.Vocabulary):
-        note = Note(facade.col(), facade.col().models.byName(NoteFields.NoteType.Vocab))
+        note = Note(facade.col(), facade.col().models.byName(NoteTypes.Vocab))
         note.add_tag("__imported")
         note.add_tag(Mine.Tags.Wani)
         kanji_note = VocabNote(note)
