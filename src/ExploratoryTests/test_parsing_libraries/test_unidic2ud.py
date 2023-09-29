@@ -1,6 +1,6 @@
 import pytest
 import unidic2ud
-from unidic2ud import UniDic2UDEntry, UniDic2UD, UDPipeEntry
+from unidic2ud import UniDic2UD, UDPipeEntry
 
 import unidic2ud_formatter
 from src.ExploratoryTests.unidic2ud import u2udtreeparser

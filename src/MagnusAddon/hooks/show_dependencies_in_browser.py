@@ -1,6 +1,6 @@
 from anki.cards import Card
 from anki.notes import Note
-from aqt import gui_hooks
+#from aqt import gui_hooks
 
 from ankiutils import search_utils
 from note.jpnote import JPNote
