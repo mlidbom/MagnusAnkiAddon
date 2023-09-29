@@ -1,30 +1,24 @@
 import pytest
-import unidic2ud
-from unidic2ud import UniDic2UD, UDPipeEntry
+from unidic2ud import UDPipeEntry
 
 import unidic2ud_formatter
-from src.ExploratoryTests.unidic2ud import u2udtreeparser
+from src.ExploratoryTests.unidic2ud import u2udtreeparser, ud2ud_parsers
 
 #pytestmark = pytest.mark.skip(reason="Running exploratory code constantly is just distracting.")
 
-_parsers:list[tuple[str, UniDic2UD]] = []
-
-@pytest.fixture(scope='module', autouse=True)
-def setup() -> None:
-    global _parsers
-    _parsers = [("gendai", (unidic2ud.load("gendai"))),  # The leader so far
-                ("kindai", (unidic2ud.load("kindai"))),  # seems slightly less accurate than gendai.
-                ("default", (unidic2ud.load())),  # As alternative? When differing from kindai, usually seems worse but significantly different. Polarity negative feature. Good for something?
-                # ("spoken", (unidic2ud.load("spoken"))), # todo Recheck
-                # ("kinsei_edo", (unidic2ud.load("kinsei\\50c_kinsei-edo"))), # todo Recheck
-                # ("kinsei_kindai_bungo", (unidic2ud.load("kinsei\\60a_kindai-bungo"))), # todo Recheck
-                # ("novel", (unidic2ud.load("novel"))), # todo Recheck
-                # ("qkana", (unidic2ud.load("qkana"))), # todo Recheck
-                # ("kyogen", (unidic2ud.load("kyogen"))), # todo Recheck
-                # ("wakan", (unidic2ud.load("wakan"))), #No. wakan gives wack results
-                # ("wabun", (unidic2ud.load("wabun"))), #No. oddness abounds
-                # ("manyo", (unidic2ud.load("manyo"))) #No. seems to usually give some truly strange results
-                ]
+_parsers = [ud2ud_parsers.gendai,  # The leader so far
+            ud2ud_parsers.kindai,  # seems slightly less accurate than gendai.
+            ud2ud_parsers.default,  # As alternative? When differing from kindai, usually seems worse but significantly different. Polarity negative feature. Good for something?
+            # ("spoken", (unidic2ud.load("spoken"))), # todo Recheck
+            # ("kinsei_edo", (unidic2ud.load("kinsei\\50c_kinsei-edo"))), # todo Recheck
+            # ("kinsei_kindai_bungo", (unidic2ud.load("kinsei\\60a_kindai-bungo"))), # todo Recheck
+            # ("novel", (unidic2ud.load("novel"))), # todo Recheck
+            # ("qkana", (unidic2ud.load("qkana"))), # todo Recheck
+            # ("kyogen", (unidic2ud.load("kyogen"))), # todo Recheck
+            # ("wakan", (unidic2ud.load("wakan"))), #No. wakan gives wack results
+            # ("wabun", (unidic2ud.load("wabun"))), #No. oddness abounds
+            # ("manyo", (unidic2ud.load("manyo"))) #No. seems to usually give some truly strange results
+            ]
 
 
 @pytest.fixture(params=[
@@ -61,16 +55,14 @@ def test_just_display_various_sentences(common_sentence: str) -> None:
     run_tests(common_sentence)
 
 def test_tree_parser(common_sentence: str) -> None:
-    results = [(name, parser(common_sentence)) for name, parser in _parsers]
-
-    result_list_tokens: list[tuple[str, list[UDPipeEntry]]] = [(name, [tok for tok in result]) for name, result in results]
+    results = [(parser.name, parser.parse(common_sentence)) for parser in _parsers]
 
     print()
     print(common_sentence)
-    for parser_name, result in results:
-        print(parser_name)
-        print(result.to_tree())
-        print(u2udtreeparser.parse([tok for tok in result]))
+    for parser in _parsers:
+        print(parser.name)
+        print(parser.parse(common_sentence).to_tree())
+        print(u2udtreeparser.parse(parser, common_sentence))
         print()
 
 
@@ -91,7 +83,7 @@ def test_tree_parser(common_sentence: str) -> None:
     # print(parsed)
 
 def test_build_tree(common_sentence: str) -> None:
-    results = [(name, parser(common_sentence)) for name, parser in _parsers]
+    results = [(parser.name, parser.parse(common_sentence)) for parser in _parsers]
 
     result_list_tokens: list[tuple[str, list[UDPipeEntry]]] = [(name, [tok for tok in result]) for name, result in results]
 
@@ -116,7 +108,7 @@ def print_tree(name:str, tree:list[UDPipeEntry]) -> None:
 
 
 def run_tests(sentence) -> None:
-    results = [(name, parser(sentence)) for name, parser in _parsers]
+    results = [(parser.name, parser.parse(sentence)) for parser in _parsers]
 
     for name, result in results:
         if hasattr(result, "to_tree") and callable(result.to_tree):

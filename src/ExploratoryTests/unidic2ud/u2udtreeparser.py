@@ -2,6 +2,7 @@ from unidic2ud import UDPipeEntry
 
 from src.ExploratoryTests.unidic2ud.u2udtreenode import U2UdTreeNode
 from src.ExploratoryTests.unidic2ud.u2udtreepparseresult import U2UdParseResult
+from src.ExploratoryTests.unidic2ud.ud2ud_parsers import UD2UDParser
 
 
 def _consume_children_of(entry:UDPipeEntry, tokens:list[UDPipeEntry]) -> int:
@@ -50,11 +51,11 @@ def tree_parse_algorithm_1(result_tokens:list[UDPipeEntry], depth:int) -> list[l
 
 def _head(token:UDPipeEntry) -> UDPipeEntry:
     return token.head # noqa
-#
-# def parse(text: str) -> U2UdParseResult:
-#     pass
 
-def parse(result_tokens) -> U2UdParseResult:
+def parse(parser:UD2UDParser, text: str) -> U2UdParseResult:
+    return parse_internal(parser.parse(text))
+
+def parse_internal(result_tokens) -> U2UdParseResult:
     result_tokens = result_tokens[1:]  # The first is some empty thingy we don't want.
     depth = 3
     compounds = tree_parse_algorithm_1(result_tokens, depth)
