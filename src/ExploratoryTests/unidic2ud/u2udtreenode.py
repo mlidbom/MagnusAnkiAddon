@@ -45,8 +45,11 @@ class U2UdTreeNode:
 
     @classmethod
     def create(cls, tokens: list[UDPipeEntry], depth:int) -> 'U2UdTreeNode':
-        if len(tokens) > 1 and depth > 1:
-            children = u2udtreeparser.parse_recursive(tokens, depth - 1)
+        if len(tokens) > 1:
+            if depth > 1: # we may still get something of value from the token parsing
+                children = u2udtreeparser.parse_recursive(tokens, depth - 1)
+            else: # no more compounds will be found, just add the tokens as children
+                children = [cls.create_simple([token], []) for token in tokens]
         else:
             children = []
 

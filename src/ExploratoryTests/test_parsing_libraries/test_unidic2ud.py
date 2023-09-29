@@ -73,7 +73,7 @@ def test_tree_parser(common_sentence: str) -> None:
     #     print(parser_name)
     #     print(u2udtreeparser.parse(result_tokens))
 
-    name, parser = _parsers[0]
+    name, parser = _parsers[2]
     step1 = parser(common_sentence)
     parsed = u2udtreeparser.parse(step1)
     print()
