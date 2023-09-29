@@ -2,7 +2,7 @@ from anki.cards import Card
 from aqt import gui_hooks
 
 from ankiutils import search_utils
-from note.mynote import MyNote
+from note.jpnote import JPNote
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
 from parsing.tree_parsing import tree_parser
@@ -120,7 +120,7 @@ def build_breakdown_html(sentence: SentenceNote) -> str:
 recent_reviewer_cards = RecentItems[int](1)
 
 def render_breakdown(html:str, card: Card, _type_of_display:str) -> str:
-    note = MyNote.note_from_note(card.note())
+    note = JPNote.note_from_note(card.note())
     if isinstance(note, SentenceNote):
         breakdown_html = build_breakdown_html(note)
         html = html.replace("##VOCAB_BREAKDOWN##", breakdown_html)

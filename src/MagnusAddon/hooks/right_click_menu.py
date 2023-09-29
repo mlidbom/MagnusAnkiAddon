@@ -9,12 +9,12 @@ from aqt.webview import AnkiWebView, AnkiWebViewKind
 
 from hooks.right_click_menu_note import setup_note_menu
 from hooks.right_click_menu_search import setup_search_menu
-from note.mynote import MyNote
+from note.jpnote import JPNote
 from sysutils import my_clipboard
 
 
 def register_lookup_actions(view: AnkiWebView, root_menu: QMenu):
-    def get_card() -> MyNote:
+    def get_card() -> JPNote:
         def get_card_inner() -> Card:
             if view.kind == AnkiWebViewKind.MAIN:
                 return mw.reviewer.card
@@ -23,7 +23,7 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu):
 
         card = get_card_inner()
         if card:
-            return MyNote.note_from_card(card)
+            return JPNote.note_from_card(card)
 
     selection = view.page().selectedText().strip()
     sel_clip = selection

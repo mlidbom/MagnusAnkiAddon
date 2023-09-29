@@ -4,11 +4,11 @@ from wanikani_api import models
 from anki.notes import Note
 
 from ankiutils.anki_shim import facade
-from note.mynote import MyNote
+from note.jpnote import JPNote
 from note.note_constants import Mine, NoteFields
 
 
-class WaniNote(MyNote):
+class WaniNote(JPNote):
     def __init__(self, note: Note):
         super().__init__(note)
 
@@ -23,13 +23,6 @@ class WaniNote(MyNote):
             self._note.remove_tag(level)
         self._note.add_tag("level{:02d}".format(new_level))
         self._note.flush()
-
-    def is_wani_note(self) -> bool:
-        return Mine.Tags.Wani in self._note.tags
-
-    def get_note_type_name(self) -> str:
-        # noinspection PyProtectedMember
-        return self._note._note_type['name']  # Todo: find how to do this without digging into protected members
 
     def get_sort_id(self) -> str: return self.get_field(NoteFields.NoteFields.sort_id)
     def set_sort_id(self, value: str) -> None: self.set_field(NoteFields.NoteFields.sort_id, value)

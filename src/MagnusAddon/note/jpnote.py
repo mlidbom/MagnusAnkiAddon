@@ -3,20 +3,20 @@ from anki.cards import Card
 from anki.notes import Note
 
 
-from note.note_constants import NoteFields
+from note.note_constants import NoteFields, Mine
 
 
-class MyNote:
+class JPNote:
     def __init__(self, note: Note):
         self._note = note
 
     @classmethod
-    def note_from_card(cls, card: Card) -> MyNote:
+    def note_from_card(cls, card: Card) -> JPNote:
         note = card.note()
         return cls.note_from_note(note)
 
     @classmethod
-    def note_from_note(cls, note) -> MyNote:
+    def note_from_note(cls, note) -> JPNote:
         from note.sentencenote import SentenceNote
         from note.kanjinote import KanjiNote
         from note.radicalnote import RadicalNote
@@ -30,11 +30,18 @@ class MyNote:
             return RadicalNote(note)
         elif cls.get_note_type(note) == NoteFields.NoteType.Sentence:
             return SentenceNote(note)
-        return MyNote(note)
+        return JPNote(note)
 
     @staticmethod
     def get_note_type(note: Note) -> str:
         return note.note_type()["name"]
+
+    def get_note_type_name(self) -> str:
+        # noinspection PyProtectedMember
+        return self._note._note_type['name']  # Todo: find how to do this without digging into protected members
+
+    def is_wani_note(self) -> bool:
+        return Mine.Tags.Wani in self._note.tags
 
     @classmethod
     def _on_note_edited(cls, note: Note):

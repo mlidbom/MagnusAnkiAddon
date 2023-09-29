@@ -5,7 +5,7 @@ from PyQt6.QtWidgets import QMenu
 from aqt import mw, qconnect
 
 from batches import local_note_updater
-from note.mynote import MyNote
+from note.jpnote import JPNote
 from note.sentencenote import SentenceNote
 from note.kanjinote import KanjiNote
 from note.vocabnote import VocabNote
@@ -16,7 +16,7 @@ from wanikani import wani_note_updater
 from wanikani.wani_downloader import WaniDownloader
 
 def deep_refresh() -> None:
-    note = MyNote.note_from_card(mw.reviewer.card)
+    note = JPNote.note_from_card(mw.reviewer.card)
 
     if isinstance(note, VocabNote) or isinstance(note, SentenceNote):
         local_note_updater.update_vocab()

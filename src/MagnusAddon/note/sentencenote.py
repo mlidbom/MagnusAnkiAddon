@@ -1,6 +1,6 @@
 from anki.notes import Note
 
-from note.mynote import MyNote
+from note.jpnote import JPNote
 from parsing.janome_extensions.parsed_word import ParsedWord
 from sysutils import timeutil, kana_utils
 from parsing import textparser
@@ -8,7 +8,7 @@ from sysutils.utils import StringUtils
 from note.note_constants import SentenceNoteFields
 
 
-class SentenceNote(MyNote):
+class SentenceNote(JPNote):
     def __init__(self, note: Note):
         super().__init__(note)
 

@@ -2,7 +2,7 @@ from anki.cards import Card
 from aqt import gui_hooks
 
 from ankiutils import search_utils
-from note.mynote import MyNote
+from note.jpnote import JPNote
 from note.kanjinote import KanjiNote
 from note.vocabnote import VocabNote
 from sysutils import kana_utils
@@ -50,7 +50,7 @@ def generate_vocab_html_list(note: KanjiNote, vocabs: list[VocabNote]) -> str:
             '''
 
 def render_vocab_html_list(html:str, card: Card, _type_of_display:str) -> str:
-    kanji_note = MyNote.note_from_card(card)
+    kanji_note = JPNote.note_from_card(card)
 
     if isinstance(kanji_note, KanjiNote):
         vocab_list = JPCollection.search_vocab_notes(search_utils.vocab_with_kanji(kanji_note))

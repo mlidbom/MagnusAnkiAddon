@@ -2,7 +2,7 @@ from anki.cards import Card
 from aqt import gui_hooks
 
 from ankiutils import search_utils
-from note.mynote import MyNote
+from note.jpnote import JPNote
 from note.sentencenote import SentenceNote
 from note.kanjinote import KanjiNote
 from note.vocabnote import VocabNote
@@ -12,7 +12,7 @@ from note.jp_collection import JPCollection
 
 
 def render_kanji_list(html:str, card: Card, _type_of_display:str) -> str:
-    note = MyNote.note_from_card(card)
+    note = JPNote.note_from_card(card)
     question:str = ""
 
     if isinstance(note, VocabNote):

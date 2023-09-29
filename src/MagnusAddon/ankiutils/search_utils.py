@@ -5,7 +5,7 @@ from aqt.browser import Browser
 
 import parsing.tree_parsing.tree_parser # noqa
 from parsing.tree_parsing.tree_parser_node import TreeParserNode
-from note.mynote import MyNote
+from note.jpnote import JPNote
 from note.sentencenote import SentenceNote
 from note.kanjinote import KanjiNote
 from note.radicalnote import RadicalNote
@@ -123,14 +123,14 @@ def vocab_compounds_lookup(note:VocabNote) -> str:
     return f"{vocab_read} ({' OR '.join([vocab_clause(voc) for voc in dictionary_forms])})" if dictionary_forms else ""
 
 
-def lookup_dependencies(note: MyNote):
+def lookup_dependencies(note: JPNote):
     # noinspection PyTypeChecker
     type_map: dict[type, Callable[[], str]] = {
         VocabNote: lambda: vocab_dependencies_lookup_query(note),
         KanjiNote: lambda: vocab_with_kanji(note),
         SentenceNote: lambda: sentence_vocab_lookup(note),
         RadicalNote: lambda: "",
-        MyNote: lambda: ""
+        JPNote: lambda: ""
     }
 
     search = type_map[type(note)]()
