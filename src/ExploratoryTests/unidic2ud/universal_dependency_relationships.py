@@ -17,7 +17,7 @@ def _add_tag(tag: str, description: str) -> UdRelationshipTag:
     return tag_object
 
 
-acl = _add_tag("acl", "clausal_modifier_of_noun_(adnominal_clause)")
+acl = _add_tag("acl", "clausal_modifier_of_noun")
 acl_relcl = _add_tag("acl:relcl", "relative_clause_modifier")
 advcl = _add_tag("advcl", "adverbial_clause_modifier")
 advmod = _add_tag("advmod", "adverbial_modifier")
@@ -69,7 +69,7 @@ nsubj_outer = _add_tag("nsubj:outer", "outer_clause_nominal_subject")
 nsubj_pass = _add_tag("nsubj:pass", "passive_nominal_subject")
 nummod = _add_tag("nummod", "numeric_modifier")
 nummod_gov = _add_tag("nummod:gov", "numeric_modifier_governing_the_case_of_the_noun")
-obj = _add_tag("obj", "object")
+obj = _add_tag("obj", "direct_object")
 obl = _add_tag("obl", "oblique_nominal")
 obl_agent = _add_tag("obl:agent", "agent_modifier")
 obl_arg = _add_tag("obl:arg", "oblique_argument")

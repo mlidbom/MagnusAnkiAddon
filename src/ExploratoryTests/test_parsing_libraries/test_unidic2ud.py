@@ -71,16 +71,17 @@ def test_tree_parser(common_sentence: str) -> None:
         print(parser_name)
         print(result.to_tree())
         print(u2udtreeparser.parse([tok for tok in result]))
-
-
-    for parser_name, result in results:
-        print(parser_name)
-        print(unidic2ud_formatter.format_output(result))
-
-    for parser_name, result_tokens in result_list_tokens:
-        print(f"{parser_name} : {common_sentence}")
-        print(u2udtreeparser.parse(result_tokens))
         print()
+
+
+    # for parser_name, result in results:
+    #     print(parser_name)
+    #     print(unidic2ud_formatter.format_output(result))
+
+    # for parser_name, result_tokens in result_list_tokens:
+    #     print(f"{parser_name} : {common_sentence}")
+    #     print(u2udtreeparser.parse(result_tokens))
+    #     print()
     #
     # name, parser = _parsers[2]
     # step1 = parser(common_sentence)
