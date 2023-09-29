@@ -18,16 +18,16 @@ class MyNote:
     @classmethod
     def note_from_note(cls, note) -> MyNote:
         from note.sentencenote import SentenceNote
-        from note.wanikanjinote import WaniKanjiNote
-        from note.waniradicalnote import WaniRadicalNote
-        from note.wanivocabnote import WaniVocabNote
+        from note.kanjinote import KanjiNote
+        from note.radicalnote import RadicalNote
+        from note.vocabnote import VocabNote
 
         if cls.get_note_type(note) == Wani.NoteType.Kanji:
-            return WaniKanjiNote(note)
+            return KanjiNote(note)
         elif cls.get_note_type(note) == Wani.NoteType.Vocab:
-            return WaniVocabNote(note)
+            return VocabNote(note)
         elif cls.get_note_type(note) == Wani.NoteType.Radical:
-            return WaniRadicalNote(note)
+            return RadicalNote(note)
         elif cls.get_note_type(note) == Wani.NoteType.Sentence:
             return SentenceNote(note)
         return MyNote(note)

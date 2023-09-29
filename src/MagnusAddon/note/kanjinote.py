@@ -10,7 +10,7 @@ from wanikani.wani_constants import Wani, Mine
 from wanikani.wanikani_api_client import WanikaniClient
 
 
-class WaniKanjiNote(WaniNote):
+class KanjiNote(WaniNote):
     def __init__(self, note: Note):
         super().__init__(note)
 
@@ -167,7 +167,7 @@ class WaniKanjiNote(WaniNote):
         note = Note(facade.col(), facade.col().models.byName(Wani.NoteType.Kanji))
         note.add_tag("__imported")
         note.add_tag(Mine.Tags.Wani)
-        kanji_note = WaniKanjiNote(note)
+        kanji_note = KanjiNote(note)
         facade.col().addNote(note) # todo static access to col
         kanji_note.set_question(wani_kanji.characters)
         kanji_note.update_from_wani(wani_kanji)

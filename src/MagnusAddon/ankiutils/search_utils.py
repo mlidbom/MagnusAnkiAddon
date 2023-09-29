@@ -7,9 +7,9 @@ import parsing.tree_parsing.tree_parser # noqa
 from parsing.tree_parsing.tree_parser_node import TreeParserNode
 from note.mynote import MyNote
 from note.sentencenote import SentenceNote
-from note.wanikanjinote import WaniKanjiNote
-from note.waniradicalnote import WaniRadicalNote
-from note.wanivocabnote import WaniVocabNote
+from note.kanjinote import KanjiNote
+from note.radicalnote import RadicalNote
+from note.vocabnote import VocabNote
 from parsing import textparser
 from parsing.janome_extensions.parsed_word import ParsedWord
 from sysutils.ui_utils import UIUtils
@@ -50,7 +50,7 @@ def single_vocab_by_form_exact(query) -> str:return f"{vocab_read} {field_word(f
 
 def kanji_in_string(query) -> str: return f"{note_kanji} ( {' OR '.join([f'{question}:{char}' for char in query])} )"
 
-def vocab_dependencies_lookup_query(vocab: WaniVocabNote) -> str:
+def vocab_dependencies_lookup_query(vocab: VocabNote) -> str:
     def single_vocab_clause(voc: ParsedWord) -> str:
         return f'{field_word(forms, voc.word)}'
 
@@ -81,7 +81,7 @@ def lookup_promise(search: Callable[[], str]) -> Callable[[],None]: return lambd
 
 def sentence_vocab_lookup(sentence:SentenceNote) -> str: return text_vocab_lookup(sentence.get_active_question())
 
-def vocab_with_kanji(note:WaniKanjiNote) -> str: return f"{vocab_read} {forms}:*{note.get_question()}*"
+def vocab_with_kanji(note:KanjiNote) -> str: return f"{vocab_read} {forms}:*{note.get_question()}*"
 
 def vocab_clause(voc: ParsedWord) -> str:
     return f"""{field_word(forms, voc.word)}"""
@@ -116,7 +116,7 @@ def vocabs_lookup(dictionary_forms: list[ParsedWord]) -> str:
     return f"{vocab_read} ({' OR '.join([vocab_clause(voc) for voc in dictionary_forms])})"
 
 
-def vocab_compounds_lookup(note:WaniVocabNote) -> str:
+def vocab_compounds_lookup(note:VocabNote) -> str:
     vocab_word = note.get_question()
     dictionary_forms = [comp for comp in textparser.identify_words(vocab_word) if comp.word != vocab_word]
 
@@ -126,10 +126,10 @@ def vocab_compounds_lookup(note:WaniVocabNote) -> str:
 def lookup_dependencies(note: MyNote):
     # noinspection PyTypeChecker
     type_map: dict[type, Callable[[], str]] = {
-        WaniVocabNote: lambda: vocab_dependencies_lookup_query(note),
-        WaniKanjiNote: lambda: vocab_with_kanji(note),
+        VocabNote: lambda: vocab_dependencies_lookup_query(note),
+        KanjiNote: lambda: vocab_with_kanji(note),
         SentenceNote: lambda: sentence_vocab_lookup(note),
-        WaniRadicalNote: lambda: "",
+        RadicalNote: lambda: "",
         MyNote: lambda: ""
     }
 

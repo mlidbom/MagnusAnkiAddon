@@ -6,7 +6,7 @@ from note.waninote import WaniNote
 from wanikani.wani_constants import Wani, Mine
 
 
-class WaniRadicalNote(WaniNote):
+class RadicalNote(WaniNote):
     def __init__(self, note: Note):
         super().__init__(note)
 
@@ -40,7 +40,7 @@ class WaniRadicalNote(WaniNote):
         note = Note(facade.col(), facade.col().models.byName(Wani.NoteType.Radical))
         note.add_tag("__imported")
         note.add_tag(Mine.Tags.Wani)
-        radical_note = WaniRadicalNote(note)
+        radical_note = RadicalNote(note)
         facade.col().addNote(note)
         radical_note.set_q(wani_radical.characters)
         radical_note.update_from_wani(wani_radical)

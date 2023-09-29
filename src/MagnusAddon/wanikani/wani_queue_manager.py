@@ -24,16 +24,16 @@ def visit_note_dependencies(note: Note, callback: Callable[[WaniNote, str], None
     # noinspection PyProtectedMember
     note_type = note._note_type['name']
     if note_type == Wani.NoteType.Vocab:
-        visit_vocab_with_dependencies(WaniVocabNote(note), callback)
+        visit_vocab_with_dependencies(VocabNote(note), callback)
     if note_type == Wani.NoteType.Kanji:
-        visit_kanji_with_dependencies(WaniKanjiNote(note), None, callback)
+        visit_kanji_with_dependencies(KanjiNote(note), None, callback)
     if note_type == Wani.NoteType.Radical:
-        visit_radical_with_dependencies(WaniRadicalNote(note), None, callback)
+        visit_radical_with_dependencies(RadicalNote(note), None, callback)
 
     refresh_search()
 
 
-def visit_vocab_with_dependencies(vocab_note: WaniVocabNote, callback: Callable[[WaniNote, str], None]) -> None:
+def visit_vocab_with_dependencies(vocab_note: VocabNote, callback: Callable[[WaniNote, str], None]) -> None:
     kanji_list = StringUtils.extract_characters(vocab_note.get_question())
     kanji_notes = JPCollection.fetch_kanji_notes(kanji_list)
 
@@ -43,8 +43,8 @@ def visit_vocab_with_dependencies(vocab_note: WaniVocabNote, callback: Callable[
     callback(vocab_note, vocab_note.get_active_answer())
 
 
-def visit_kanji_with_dependencies(kanji_note: WaniKanjiNote,
-                                  calling_radical_note: Optional[WaniRadicalNote],
+def visit_kanji_with_dependencies(kanji_note: KanjiNote,
+                                  calling_radical_note: Optional[RadicalNote],
                                   callback: Callable[[WaniNote, str], None]) -> None:
     radical_dependencies_names = StringUtils.extract_comma_separated_values(
         kanji_note.get_radicals_names()) + StringUtils.extract_comma_separated_values(
@@ -61,8 +61,8 @@ def visit_kanji_with_dependencies(kanji_note: WaniKanjiNote,
     callback(kanji_note, kanji_note.get_active_answer())
 
 
-def visit_radical_with_dependencies(radical_note: WaniRadicalNote,
-                                    calling_kanji_note: Optional[WaniKanjiNote],
+def visit_radical_with_dependencies(radical_note: RadicalNote,
+                                    calling_kanji_note: Optional[KanjiNote],
                                     callback: Callable[[WaniNote, str], None]):
     kanji_dependencies_notes = JPCollection.fetch_kanji_notes([radical_note.get_q()])
     for kanji_note in kanji_dependencies_notes:

@@ -3,25 +3,25 @@ from aqt import gui_hooks
 
 from ankiutils import search_utils
 from note.mynote import MyNote
-from note.wanikanjinote import WaniKanjiNote
-from note.wanivocabnote import WaniVocabNote
+from note.kanjinote import KanjiNote
+from note.vocabnote import VocabNote
 from sysutils import kana_utils
 from sysutils.utils import StringUtils
 from wanikani.jp_collection import JPCollection
 
 
-def sort_vocab_list(note:WaniKanjiNote, primary_voc: list[str], vocabs: list[WaniVocabNote]) -> None:
-    def prefer_primary_vocab_in_order(local_vocab: WaniVocabNote):
+def sort_vocab_list(note:KanjiNote, primary_voc: list[str], vocabs: list[VocabNote]) -> None:
+    def prefer_primary_vocab_in_order(local_vocab: VocabNote):
         for index, primary in enumerate(primary_voc):
             if local_vocab.get_question() == primary or local_vocab.get_readings()[0] == primary:
                 return index
 
         return 100
 
-    def prefer_non_compound(local_vocab: WaniVocabNote) -> str:
+    def prefer_non_compound(local_vocab: VocabNote) -> str:
         return "A" if kana_utils.is_only_kana(local_vocab.get_question()[1:]) else "B"
 
-    def prefer_starts_with_vocab(local_vocab: WaniVocabNote) -> str:
+    def prefer_starts_with_vocab(local_vocab: VocabNote) -> str:
         return "A" if local_vocab.get_question()[0] == note.get_question() else "B"
 
     vocabs.sort(key=lambda local_vocab: (prefer_primary_vocab_in_order(local_vocab),
@@ -29,7 +29,7 @@ def sort_vocab_list(note:WaniKanjiNote, primary_voc: list[str], vocabs: list[Wan
                                          prefer_starts_with_vocab(local_vocab),
                                          local_vocab.get_question()))
 
-def generate_vocab_html_list(note: WaniKanjiNote, vocabs: list[WaniVocabNote]) -> str:
+def generate_vocab_html_list(note: KanjiNote, vocabs: list[VocabNote]) -> str:
     primary_voc = note.get_primary_vocab()
     sort_vocab_list(note, primary_voc, vocabs)
 
@@ -52,7 +52,7 @@ def generate_vocab_html_list(note: WaniKanjiNote, vocabs: list[WaniVocabNote]) -
 def render_vocab_html_list(html:str, card: Card, _type_of_display:str) -> str:
     kanji_note = MyNote.note_from_card(card)
 
-    if isinstance(kanji_note, WaniKanjiNote):
+    if isinstance(kanji_note, KanjiNote):
         vocab_list = JPCollection.search_vocab_notes(search_utils.vocab_with_kanji(kanji_note))
         vocab_list_html = generate_vocab_html_list(kanji_note, vocab_list)
         html = html.replace("##VOCAB_LIST##", vocab_list_html)

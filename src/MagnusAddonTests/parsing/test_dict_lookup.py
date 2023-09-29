@@ -1,6 +1,6 @@
 import pytest
 
-from note.wanivocabnote import WaniVocabNote
+from note.vocabnote import VocabNote
 from parsing.jamdict_extensions.dict_entry import DictEntry
 from parsing.jamdict_extensions.dict_lookup import DictLookup
 from unittest.mock import MagicMock
@@ -88,8 +88,8 @@ def get_dict_entry(word, readings) -> DictLookup:
     dict_entry = DictLookup.try_lookup_vocab_word_or_name(mock_vocab)
     return dict_entry
 
-def vocab_mock(word: str, readings: list[str]) -> WaniVocabNote:
-    mock_instance = MagicMock(spec=WaniVocabNote)
+def vocab_mock(word: str, readings: list[str]) -> VocabNote:
+    mock_instance = MagicMock(spec=VocabNote)
     mock_instance.get_question.return_value = word
     mock_instance.get_readings.return_value = readings
     return mock_instance

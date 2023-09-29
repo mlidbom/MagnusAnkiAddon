@@ -8,10 +8,10 @@ from ankiutils.search_utils import Builtin
 from note.sentencenote import SentenceNote
 from sysutils.utils import ListUtils
 from note.waninote import WaniNote
-from note.waniradicalnote import WaniRadicalNote
-from note.wanivocabnote import WaniVocabNote
+from note.radicalnote import RadicalNote
+from note.vocabnote import VocabNote
 from wanikani.utils.wani_utils import CardUtils
-from note.wanikanjinote import WaniKanjiNote
+from note.kanjinote import KanjiNote
 from wanikani.wani_constants import Wani
 
 
@@ -37,12 +37,12 @@ class JPCollection:
         return notes
 
     @classmethod
-    def search_vocab_notes(cls, query: str) -> list[WaniVocabNote]:
-        return [WaniVocabNote(note) for note in (cls._search_notes(query))]
+    def search_vocab_notes(cls, query: str) -> list[VocabNote]:
+        return [VocabNote(note) for note in (cls._search_notes(query))]
 
     @classmethod
-    def search_kanji_notes(cls, query: str) -> list[WaniKanjiNote]:
-        return [WaniKanjiNote(note) for note in cls._search_notes(query)]
+    def search_kanji_notes(cls, query: str) -> list[KanjiNote]:
+        return [KanjiNote(note) for note in cls._search_notes(query)]
 
     @staticmethod
     def _search_notes(query: str) -> list[Note]:
@@ -52,53 +52,53 @@ class JPCollection:
         return notes
 
     @staticmethod
-    def fetch_kanji_notes(field_values: List) -> List[WaniKanjiNote]:
+    def fetch_kanji_notes(field_values: List) -> List[KanjiNote]:
         notes = JPCollection.fetch_notes_by_note_type_and_field_value(Wani.NoteType.Kanji, Wani.KanjiFields.question,
                                                                       field_values)
-        kanji_notes = [WaniKanjiNote(note) for note in notes]
+        kanji_notes = [KanjiNote(note) for note in notes]
         return kanji_notes
 
     @staticmethod
-    def fetch_radical_notes(field_values: List) -> List[WaniRadicalNote]:
+    def fetch_radical_notes(field_values: List) -> List[RadicalNote]:
         notes = JPCollection.fetch_notes_by_note_type_and_field_value(Wani.NoteType.Radical,
                                                                       Wani.RadicalFields.answer, field_values)
-        radical_notes = [WaniRadicalNote(note) for note in notes]
+        radical_notes = [RadicalNote(note) for note in notes]
         return radical_notes
 
     @staticmethod
-    def fetch_vocab_notes(field_values: List) -> List[WaniVocabNote]:
+    def fetch_vocab_notes(field_values: List) -> List[VocabNote]:
         notes = JPCollection.fetch_notes_by_note_type_and_field_value(Wani.NoteType.Vocab, Wani.KanjiFields.question,
                                                                       field_values)
-        vocab_notes = [WaniVocabNote(note) for note in notes]
+        vocab_notes = [VocabNote(note) for note in notes]
         return vocab_notes
 
     @staticmethod
-    def fetch_all_radical_notes() -> List[WaniRadicalNote]:
+    def fetch_all_radical_notes() -> List[RadicalNote]:
         notes = JPCollection.fetch_notes_by_note_type(Wani.NoteType.Radical)
-        radical_notes = [WaniRadicalNote(note) for note in notes]
+        radical_notes = [RadicalNote(note) for note in notes]
         return radical_notes
 
     @staticmethod
-    def fetch_all_kanji_notes() -> List[WaniKanjiNote]:
+    def fetch_all_kanji_notes() -> List[KanjiNote]:
         notes = JPCollection.fetch_notes_by_note_type(Wani.NoteType.Kanji)
-        kanji_notes = [WaniKanjiNote(note) for note in notes]
+        kanji_notes = [KanjiNote(note) for note in notes]
         return kanji_notes
 
     @staticmethod
-    def fetch_all_wani_kanji_notes() -> list[WaniKanjiNote]:
+    def fetch_all_wani_kanji_notes() -> list[KanjiNote]:
         return [kanji for kanji in JPCollection.fetch_all_kanji_notes() if kanji.is_wani_note()]
 
     @staticmethod
-    def fetch_all_wani_vocab_notes() -> List[WaniVocabNote]:
+    def fetch_all_wani_vocab_notes() -> List[VocabNote]:
         notes = JPCollection.fetch_notes_by_note_type(Wani.NoteType.Vocab)
-        vocab_notes = [WaniVocabNote(note) for note in notes]
+        vocab_notes = [VocabNote(note) for note in notes]
         vocab_notes = [vocab for vocab in vocab_notes if vocab.is_wani_note()]
         return vocab_notes
 
     @staticmethod
-    def fetch_all_vocab_notes() -> List[WaniVocabNote]:
+    def fetch_all_vocab_notes() -> List[VocabNote]:
         notes = JPCollection.fetch_notes_by_note_type(Wani.NoteType.Vocab)
-        vocab_notes = [WaniVocabNote(note) for note in notes]
+        vocab_notes = [VocabNote(note) for note in notes]
         return vocab_notes
 
     @staticmethod

@@ -1,89 +1,143 @@
 from wanikani_api import models
+from ankiutils.anki_shim import facade
 from anki.notes import Note
 
-from note.waninote import WaniNote
+from note.kanavocabnote import KanaVocabNote
+from sysutils import kana_utils
 from sysutils.utils import StringUtils
-from wanikani.wani_constants import Wani
+from wanikani.wani_constants import Wani, Mine
+from wanikani.wanikani_api_client import WanikaniClient
 
 
-class VocabNote(WaniNote):
+class VocabNote(KanaVocabNote):
     def __init__(self, note: Note):
         super().__init__(note)
 
-    def _on_edited(self) -> None: self.update_generated_data()
+    def __repr__(self) -> str: return f"""{self.get_question()}"""
 
-    def get_question_without_noise_characters(self) -> str: return self.get_question().replace("〜","")
-    def get_question(self) -> str: return super().get_field(Wani.KanaVocabFields.question).strip()
-    def _set_question(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.question, value)
+    def get_kanji(self) -> str: return super().get_field(Wani.VocabFields.Kanji)
+    def set_kanji(self, value: str) -> None: super().set_field(Wani.VocabFields.Kanji, value)
 
-    def get_active_answer(self) -> str:
-        return self.get_user_answer() or super().get_field(Wani.KanaVocabFields.source_answer)
-
-    def _set_source_answer(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.source_answer, value)
+    def get_forms(self) -> set[str]: return set(StringUtils.extract_comma_separated_values(self._get_forms()))
+    def set_forms(self, forms: set[str]) -> None: self._set_forms(", ".join([form.strip() for form in forms]))
+    def _get_forms(self) -> str: return super().get_field(Wani.VocabFields.Forms)
+    def _set_forms(self, value: str) -> None: super().set_field(Wani.VocabFields.Forms, value)
 
     def update_generated_data(self) -> None:
-        super().set_field(Wani.KanaVocabFields.active_answer, self.get_active_answer())
+        from parsing.jamdict_extensions.dict_lookup import DictLookup
 
-    def get_user_answer(self) -> str: return super().get_field(Wani.KanaVocabFields.user_answer)
-    def set_user_answer(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.user_answer, value)
+        super().update_generated_data()
 
-    def get_related_homophones(self) -> list[str]: return super().get_field(Wani.KanaVocabFields.Related_homophones).split(", ")
-    def set_related_homophones(self, value: list[str]) -> None:
-        html = f'''<ul class="homophone">
-{StringUtils.newline().join([f'   <li class="clipboard">{val}</li>' for val in value])}
-</ul>'''
-        super().set_field(Wani.KanaVocabFields.Related_homophones, html if value else "")
+        question = self.get_question().strip()
+        readings = ",".join(self.get_readings())
 
-    def get_related_similar_meaning(self) -> str: return super().get_field(Wani.KanaVocabFields.Related_similar_meaning)
-    def set_related_similar_meaning(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Related_similar_meaning, value)
+        if question == readings:
+            self.set_tag(Mine.Tags.UsuallyKanaOnly)
 
-    def get_related_derived_from(self) -> str: return super().get_field(Wani.KanaVocabFields.Related_derived_from)
-    def set_related_derived_from(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Related_derived_from, value)
+        if not readings:
+            if kana_utils.is_only_kana(question):
+                self.set_readings([question])
+                self.set_tag(Mine.Tags.UsuallyKanaOnly)
 
-    def get_related_ergative_twin(self) -> str: return super().get_field(Wani.KanaVocabFields.Related_ergative_twin)
-    def set_related_ergative_twin(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Related_ergative_twin, value)
+        lookup = DictLookup.try_lookup_vocab_word_or_name(self)
+        if lookup.is_uk() and not self.has_tag(Mine.Tags.DisableKanaOnly):
+            self.set_tag(Mine.Tags.UsuallyKanaOnly)
 
-    def get_related_confused_with(self) -> str: return super().get_field(Wani.KanaVocabFields.Related_confused_with)
-    def set_related_confused_with(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Related_confused_with, value)
+        if not self.get_forms():
+            if lookup.found_words():
+                self.set_forms(lookup.valid_forms(self.is_uk()))
 
-    def get_speech_type(self) -> str: return super().get_field(Wani.KanaVocabFields.Speech_Type)
-    def set_speech_type(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Speech_Type, value)
+            if self.get_question() not in self.get_forms():
+                self.set_forms(self.get_forms() | {self.get_question()})
 
-    def get_context_jp(self) -> str: return super().get_field(Wani.KanaVocabFields.Context_jp)
-    def set_context_jp(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Context_jp, value)
+            if self.is_uk() and self.get_readings()[0] not in self.get_forms():
+                self.set_forms(self.get_forms() | set(self.get_readings()))
 
-    def get_context_en(self) -> str: return super().get_field(Wani.KanaVocabFields.Context_en)
-    def set_context_en(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Context_en, value)
+    def extract_kanji(self) -> list[str]:
+        clean = StringUtils.strip_html_and_bracket_markup(self.get_question())
+        return [char for char in clean if not kana_utils.is_kana(char)]
 
-    def get_context_jp_2(self) -> str: return super().get_field(Wani.KanaVocabFields.Context_jp_2)
-    def set_context_jp_2(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Context_jp_2, value)
+    def is_uk(self) -> bool: return self.has_tag(Mine.Tags.UsuallyKanaOnly)
 
-    def get_context_en_2(self) -> str: return super().get_field(Wani.KanaVocabFields.Context_en_2)
-    def set_context_en_2(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Context_en_2, value)
+    def get_display_question(self) -> str:
+        return self.get_readings()[0] if self.is_uk() else self.get_question()
 
-    def get_context_jp_3(self) -> str: return super().get_field(Wani.KanaVocabFields.Context_jp_3)
-    def set_context_jp_3(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Context_jp_3, value)
+    def get_kanji_name(self) -> str: return super().get_field(Wani.VocabFields.Kanji_Name)
+    def set_kanji_name(self, value: str) -> None: super().set_field(Wani.VocabFields.Kanji_Name, value)
 
-    def get_context_en_3(self) -> str: return super().get_field(Wani.KanaVocabFields.Context_en_3)
-    def set_context_en_3(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Context_en_3, value)
+    def get_reading_mnemonic(self) -> str: return super().get_field(Wani.VocabFields.Reading_Exp)
+    def set_reading_mnemonic(self, value: str) -> None: super().set_field(Wani.VocabFields.Reading_Exp, value)
 
-    def get_meaning_mnemonic(self) -> str: return super().get_field(Wani.KanaVocabFields.Meaning_Exp)
-    def set_meaning_mnemonic(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Meaning_Exp, value)
+    def get_readings(self) -> list[str]: return [reading.strip() for reading in self._get_reading().split(",")]
+    def set_readings(self, readings: list[str]) -> None: self._set_reading(", ".join([reading.strip() for reading in readings]))
 
-    def get_audio_male(self) -> str: return super().get_field(Wani.KanaVocabFields.Audio_b)
-    def set_audio_male(self, value: list[str]) -> None: super().set_field(Wani.KanaVocabFields.Audio_b, ''.join([f'[sound:{item}]' for item in value]))
+    def _get_reading(self) -> str: return super().get_field(Wani.KanaVocabFields.Reading)
+    def _set_reading(self, value: str) -> None: super().set_field(Wani.KanaVocabFields.Reading, value)
 
-    def get_audio_female(self) -> str: return super().get_field(Wani.KanaVocabFields.Audio_g)
-    def set_audio_female(self, value: list[str]) -> None: super().set_field(Wani.KanaVocabFields.Audio_g, ''.join([f'[sound:{item}]' for item in value]))
+    def get_component_subject_ids(self) -> str: return super().get_field(Wani.VocabFields.component_subject_ids)
+    def set_component_subject_ids(self, value: str) -> None: super().set_field(Wani.VocabFields.component_subject_ids, value)
 
-    def get_audios(self) -> str: return f"{self.get_audio_male()}{self.get_audio_female()}"
+    def override_meaning_mnemonic(self) -> None:
+        if not self.get_mnemonics_override():
+            self.set_mnemonics_override("-")
+
+    def restore_meaning_mnemonic(self) -> None:
+        if self.get_mnemonics_override() == "-":
+            self.set_mnemonics_override("")
+
+    def get_mnemonics_override(self) -> str: return super().get_field(Wani.VocabFields.Mnemonic__)
+    def set_mnemonics_override(self, value: str) -> None: super().set_field(Wani.VocabFields.Mnemonic__, value)
+
+    def get_parsed_type_of_speech(self) -> str: return super().get_field(Wani.VocabFields.ParsedTypeOfSpeech)
+    def set_parsed_type_of_speech(self, value: str) -> None: super().set_field(Wani.VocabFields.ParsedTypeOfSpeech, value)
 
     def update_from_wani(self, wani_vocab: models.Vocabulary):
         super().update_from_wani(wani_vocab)
 
-        self.set_meaning_mnemonic(wani_vocab.meaning_mnemonic)
+        self.set_reading_mnemonic(wani_vocab.reading_mnemonic)
 
-        meanings = ', '.join(str(meaning.meaning) for meaning in wani_vocab.meanings)
-        self._set_source_answer(meanings)
+        readings = [reading.reading for reading in wani_vocab.readings]
+        self._set_reading(", ".join(readings))
 
-        self.set_speech_type(", ".join(wani_vocab.parts_of_speech))
+        component_subject_ids = [str(subject_id) for subject_id in wani_vocab.component_subject_ids]
+        self.set_component_subject_ids(", ".join(component_subject_ids))
+
+        client = WanikaniClient.get_instance()
+        kanji_subjects = [client.get_kanji_by_id(kanji_id) for kanji_id in wani_vocab.component_subject_ids]
+        kanji_characters = [subject.characters for subject in kanji_subjects]
+        self.set_kanji(", ".join(kanji_characters))
+
+        kanji_names = [subject.meanings[0].meaning for subject in kanji_subjects]
+        self.set_kanji_name(", ".join(kanji_names))
+
+    @staticmethod
+    def create_from_wani_vocabulary(wani_vocab: models.Vocabulary):
+        note = Note(facade.col(), facade.col().models.byName(Wani.NoteType.Vocab))
+        note.add_tag("__imported")
+        note.add_tag(Mine.Tags.Wani)
+        kanji_note = VocabNote(note)
+        facade.col().addNote(note)
+        kanji_note._set_question(wani_vocab.characters)
+        kanji_note.update_from_wani(wani_vocab)
+
+        #Do not move to update method or we will wipe out local changes made to the context sentences.
+        if len(wani_vocab.context_sentences) > 0:
+            kanji_note.set_context_en(wani_vocab.context_sentences[0].english)
+            kanji_note.set_context_jp(wani_vocab.context_sentences[0].japanese)
+
+        if len(wani_vocab.context_sentences) > 1:
+            kanji_note.set_context_en_2(wani_vocab.context_sentences[1].english)
+            kanji_note.set_context_jp_2(wani_vocab.context_sentences[1].japanese)
+
+        if len(wani_vocab.context_sentences) > 2:
+            kanji_note.set_context_en_3(wani_vocab.context_sentences[2].english)
+            kanji_note.set_context_jp_3(wani_vocab.context_sentences[2].japanese)
+
+    def generate_and_set_answer(self) -> None:
+        from parsing.jamdict_extensions.dict_lookup import DictLookup
+        dict_lookup = DictLookup.try_lookup_vocab_word_or_name(self)
+        if dict_lookup.found_words():
+            generated = dict_lookup.entries[0].generate_answer()
+            self.set_user_answer(generated)
+
+

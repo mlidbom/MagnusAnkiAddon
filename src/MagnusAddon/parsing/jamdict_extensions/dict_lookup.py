@@ -6,7 +6,7 @@ from parsing.jamdict_extensions.dict_entry import DictEntry
 from sysutils import kana_utils
 
 class DictLookup:
-    from note.wanivocabnote import WaniVocabNote
+    from note.vocabnote import VocabNote
 
     _jamdict = Jamdict(memory_mode=True)
 
@@ -24,7 +24,7 @@ class DictLookup:
         return set().union(*[entry.valid_forms(force_allow_kana_only) for entry in self.entries])
 
     @classmethod
-    def try_lookup_vocab_word_or_name(cls, word: WaniVocabNote) -> 'DictLookup':
+    def try_lookup_vocab_word_or_name(cls, word: VocabNote) -> 'DictLookup':
         return cls.try_lookup_word_or_name(word.get_question(), word.get_readings())
 
     @classmethod

@@ -4,9 +4,9 @@ from aqt.webview import AnkiWebView
 from batches import local_note_updater
 from hooks.right_click_menu_utils import add_ui_action, add_lookup_action, add_sentence_lookup, add_single_vocab_lookup_action, add_text_vocab_lookup, add_vocab_dependencies_lookup
 from note.sentencenote import SentenceNote
-from note.wanikanjinote import WaniKanjiNote
-from note.waniradicalnote import WaniRadicalNote
-from note.wanivocabnote import WaniVocabNote
+from note.kanjinote import KanjiNote
+from note.radicalnote import RadicalNote
+from note.vocabnote import VocabNote
 from hooks.note_content_building import sentence_breakdown
 from sysutils.utils import StringUtils
 from wanikani.wani_constants import MyNoteFields, Wani, SentenceNoteFields
@@ -62,10 +62,10 @@ def setup_note_menu(note, root_menu, sel_clip, selection, view: AnkiWebView):
             add_ui_action(note_hide_menu, "&Exclude vocab", lambda: exclude_vocab(note, sel_clip))
             add_ui_action(note_add_menu, "&Extra vocab", lambda: add_extra_vocab(note, sel_clip))
 
-    if isinstance(note, WaniRadicalNote):
+    if isinstance(note, RadicalNote):
         add_lookup_action(note_lookup_menu, "&Kanji", f"note:{Wani.NoteType.Kanji} {su.field_word(Wani.KanjiFields.Radicals_Names, note.get_a())}")
 
-    if isinstance(note, WaniKanjiNote):
+    if isinstance(note, KanjiNote):
         kanji = note
         add_lookup_action(note_lookup_menu, "&Vocabs", su.vocab_with_kanji(note))
         radicals = [rad.strip() for rad in note.get_radicals_names().split(",")]
@@ -84,7 +84,7 @@ def setup_note_menu(note, root_menu, sel_clip, selection, view: AnkiWebView):
             add_ui_action(note_add_menu, "&Primary vocab", lambda: add_kanji_primary_vocab(kanji, selection, view))
             add_ui_action(note_set_menu, "&Primary vocab", lambda: set_kanji_primary_vocab(kanji, selection, view))
 
-    if isinstance(note, WaniVocabNote):
+    if isinstance(note, VocabNote):
         vocab = note
         add_lookup_action(note_lookup_menu, "&Kanji", f"note:{Wani.NoteType.Kanji} ( {' OR '.join([f'{Wani.KanjiFields.question}:{char}' for char in note.get_question()])} )")
         if vocab.get_related_ergative_twin():
@@ -109,12 +109,12 @@ def setup_note_menu(note, root_menu, sel_clip, selection, view: AnkiWebView):
         add_ui_action(note_set_menu, "&Ergative twin", lambda: vocab.set_related_ergative_twin(sel_clip))
 
 
-def add_kanji_primary_vocab(note: WaniKanjiNote, selection: str, _view: AnkiWebView):
+def add_kanji_primary_vocab(note: KanjiNote, selection: str, _view: AnkiWebView):
     note.set_primary_vocab(note.get_primary_vocab() + [selection])
     local_note_updater.update_kanji(note)
 
 
-def set_kanji_primary_vocab(note: WaniKanjiNote, selection: str, view: AnkiWebView):
+def set_kanji_primary_vocab(note: KanjiNote, selection: str, view: AnkiWebView):
     note.set_primary_vocab([])
     add_kanji_primary_vocab(note, selection, view)
 

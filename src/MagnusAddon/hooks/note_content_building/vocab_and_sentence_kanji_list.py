@@ -4,8 +4,8 @@ from aqt import gui_hooks
 from ankiutils import search_utils
 from note.mynote import MyNote
 from note.sentencenote import SentenceNote
-from note.wanikanjinote import WaniKanjiNote
-from note.wanivocabnote import WaniVocabNote
+from note.kanjinote import KanjiNote
+from note.vocabnote import VocabNote
 from sysutils import kana_utils
 from sysutils.utils import StringUtils, ListUtils
 from wanikani.jp_collection import JPCollection
@@ -15,14 +15,14 @@ def render_kanji_list(html:str, card: Card, _type_of_display:str) -> str:
     note = MyNote.note_from_card(card)
     question:str = ""
 
-    if isinstance(note, WaniVocabNote):
+    if isinstance(note, VocabNote):
         question = note.get_question()
     elif isinstance(note, SentenceNote):
         question = note.get_active_question()
 
     if question:
         question = StringUtils.remove_duplicates_characters(question)
-        kanji_list:list[WaniKanjiNote] = ListUtils.flatten_list([JPCollection.search_kanji_notes(search_utils.fetch_kanji_by_kanji([c])) for c in question])
+        kanji_list:list[KanjiNote] = ListUtils.flatten_list([JPCollection.search_kanji_notes(search_utils.fetch_kanji_by_kanji([c])) for c in question])
 
         list_html = f"""
 <div id="kanji_list">

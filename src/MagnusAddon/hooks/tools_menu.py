@@ -7,8 +7,8 @@ from aqt import mw, qconnect
 from batches import local_note_updater
 from note.mynote import MyNote
 from note.sentencenote import SentenceNote
-from note.wanikanjinote import WaniKanjiNote
-from note.wanivocabnote import WaniVocabNote
+from note.kanjinote import KanjiNote
+from note.vocabnote import VocabNote
 from hooks.note_content_building import sentence_breakdown
 from sysutils.ui_utils import UIUtils
 from wanikani import note_importer
@@ -18,13 +18,13 @@ from wanikani.wani_downloader import WaniDownloader
 def deep_refresh() -> None:
     note = MyNote.note_from_card(mw.reviewer.card)
 
-    if isinstance(note, WaniVocabNote) or isinstance(note, SentenceNote):
+    if isinstance(note, VocabNote) or isinstance(note, SentenceNote):
         local_note_updater.update_vocab()
 
     if isinstance(note, SentenceNote):
         sentence_breakdown.build_breakdown_html(note)
 
-    if isinstance(note, WaniKanjiNote):
+    if isinstance(note, KanjiNote):
         local_note_updater.update_kanji(note)
 
     UIUtils.refresh()

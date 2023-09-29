@@ -1,7 +1,7 @@
 from aqt import gui_hooks
 from aqt.editor import Editor
 
-from note.wanivocabnote import WaniVocabNote
+from note.vocabnote import VocabNote
 from wanikani import wani_queue_manager, wani_note_updater
 from wanikani.wani_downloader import WaniDownloader
 
@@ -25,7 +25,7 @@ def setup_editor_buttons(buttons, the_editor: Editor):
 
     buttons.append(the_editor.addButton("", "Fetch audio from wanikani",
                                         lambda local_editor: WaniDownloader.fetch_audio_from_wanikani(
-                                            WaniVocabNote(local_editor.note))))
+                                            VocabNote(local_editor.note))))
 
 
 def init() -> None:

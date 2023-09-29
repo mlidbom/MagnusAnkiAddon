@@ -1,9 +1,9 @@
 from anki.notes import Note
 from aqt.utils import showInfo
 
-from note.wanikanjinote import WaniKanjiNote
-from note.waniradicalnote import WaniRadicalNote
-from note.wanivocabnote import WaniVocabNote
+from note.kanjinote import KanjiNote
+from note.radicalnote import RadicalNote
+from note.vocabnote import VocabNote
 from wanikani.jp_collection import JPCollection
 from wanikani.wani_constants import Wani
 from wanikani.wanikani_api_client import WanikaniClient
@@ -15,18 +15,18 @@ def update_from_wanikani(note: Note):
     # noinspection PyProtectedMember
     note_type = note._note_type['name']
     if note_type == Wani.NoteType.Vocab:
-        vocab_note = WaniVocabNote(note)
+        vocab_note = VocabNote(note)
         vocab_note.update_from_wani(waniClient.get_vocab(vocab_note.get_question()))
     if note_type == Wani.NoteType.Kanji:
-        kanji_note = WaniKanjiNote(note)
+        kanji_note = KanjiNote(note)
         kanji_note.update_from_wani(waniClient.get_kanji_by_name(kanji_note.get_question()))
     if note_type == Wani.NoteType.Radical:
-        radical_note = WaniRadicalNote(note)
+        radical_note = RadicalNote(note)
         radical_note.update_from_wani(waniClient.get_radical(radical_note.get_a()))
 
 
 def update_radical() -> None:
-    all_radicals: list[WaniRadicalNote] = JPCollection.fetch_all_radical_notes()
+    all_radicals: list[RadicalNote] = JPCollection.fetch_all_radical_notes()
     fetched = 0
     failed: str = ""
     for radical_note in all_radicals:
@@ -43,7 +43,7 @@ def update_radical() -> None:
 
 
 def update_kanji() -> None:
-    all_kanji: list[WaniKanjiNote] = JPCollection.fetch_all_kanji_notes()
+    all_kanji: list[KanjiNote] = JPCollection.fetch_all_kanji_notes()
     fetched = 0
     failed: str = ""
     for kanji_note in all_kanji:
@@ -60,7 +60,7 @@ def update_kanji() -> None:
 
 
 def update_vocab() -> None:
-    all_vocabulary: list[WaniVocabNote] = JPCollection.fetch_all_wani_vocab_notes()
+    all_vocabulary: list[VocabNote] = JPCollection.fetch_all_wani_vocab_notes()
     updated = 0
     failed: str = ""
     for vocab_note in all_vocabulary:
@@ -93,7 +93,7 @@ def delete_missing_radicals() -> None:
 
 
 def delete_missing_kanji() -> None:
-    all_kanji: list[WaniKanjiNote] = JPCollection.fetch_all_kanji_notes()
+    all_kanji: list[KanjiNote] = JPCollection.fetch_all_kanji_notes()
     deleted = 0
     deleted_kanji: str = ""
     for kanji_note in all_kanji:
@@ -109,7 +109,7 @@ def delete_missing_kanji() -> None:
 
 
 def delete_missing_vocab() -> None:
-    all_vocabulary: list[WaniVocabNote] = JPCollection.fetch_all_wani_vocab_notes()
+    all_vocabulary: list[VocabNote] = JPCollection.fetch_all_wani_vocab_notes()
     deleted = 0
     deleted_vocab: str = ""
     for vocab_note in all_vocabulary:

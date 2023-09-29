@@ -4,7 +4,7 @@ from aqt import gui_hooks
 from ankiutils import search_utils
 from note.mynote import MyNote
 from note.sentencenote import SentenceNote
-from note.wanivocabnote import WaniVocabNote
+from note.vocabnote import VocabNote
 from parsing.tree_parsing import tree_parser
 from parsing.tree_parsing.tree_parser_node import TreeParserNode, priorities
 from sysutils.collections.recent_items import RecentItems
@@ -38,7 +38,7 @@ def _create_html_from_nodes(nodes: list[TreeParserNode], excluded: set[str], ext
     html = f"""<ul class="sentenceVocabList depth{depth}">\n"""
 
     for node in nodes:
-        vocabs:list[WaniVocabNote] = []
+        vocabs:list[VocabNote] = []
         found_words: set[str] = set()
         if node.is_show_at_all_in_sentence_breakdown():
             vocabs = JPCollection.search_vocab_notes(search_utils.node_vocab_lookup(node))

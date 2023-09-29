@@ -4,7 +4,7 @@ from typing import List
 import requests
 
 from ankiutils.anki_shim import facade
-from note.wanivocabnote import WaniVocabNote
+from note.vocabnote import VocabNote
 from wanikani.jp_collection import JPCollection
 from wanikani.wanikani_api_client import WanikaniClient
 
@@ -32,7 +32,7 @@ class WaniDownloader:
             raise FileDownloadError("{} -> {}".format(url, cls.media_dir()))
 
     @classmethod
-    def fetch_audio_from_wanikani(cls, vocab: WaniVocabNote) -> None:
+    def fetch_audio_from_wanikani(cls, vocab: VocabNote) -> None:
         wani_client: WanikaniClient = WanikaniClient.get_instance()
         wani_vocab = wani_client.get_vocab(vocab.get_question())
         female_audio_mp3 = [audio for audio in wani_vocab.pronunciation_audios if audio.metadata.gender == "female" and audio.content_type == "audio/mpeg"]
@@ -46,7 +46,7 @@ class WaniDownloader:
 
     @classmethod
     def fetch_missing_vocab_audio(cls) -> None:
-        vocab_missing_audio: List[WaniVocabNote] = [vocab for vocab in JPCollection.fetch_all_wani_vocab_notes() if
-                                                    vocab.get_audio_female() == ""]
+        vocab_missing_audio: List[VocabNote] = [vocab for vocab in JPCollection.fetch_all_wani_vocab_notes() if
+                                                vocab.get_audio_female() == ""]
         for vocab in vocab_missing_audio:
             cls.fetch_audio_from_wanikani(vocab)
