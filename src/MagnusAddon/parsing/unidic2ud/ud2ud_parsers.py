@@ -4,7 +4,7 @@ from sysutils.lazy import Lazy
 
 
 class UD2UDParser:
-    def __init__(self, name: str ):
+    def __init__(self, name: str):
         self.name = name
         self._lazy_parser = Lazy(lambda: unidic2ud.load(name if name != "built-in" else None))
 
@@ -18,8 +18,7 @@ best = gendai
 kindai = UD2UDParser("kindai")  # seems slightly less accurate than gendai.
 default = UD2UDParser("built-in")  # As alternative? When differing from kindai, usually seems worse but significantly different. Polarity negative feature. Good for something?
 spoken = UD2UDParser("spoken") # todo Recheck
-kinsei_edo = UD2UDParser("kinsei\\50c_kinsei-edo") # todo Recheck
-kinsei_kindai_bungo = UD2UDParser("kinsei\\60a_kindai-bungo") # todo Recheck
+kinsei = UD2UDParser("kinsei") # todo Recheck
 novel = UD2UDParser("novel") # todo Recheck
 qkana = UD2UDParser("qkana") # todo Recheck
 kyogen = UD2UDParser("kyogen") # todo Recheck

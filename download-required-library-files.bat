@@ -1,8 +1,6 @@
-python -m unidic download
 python -m unidic2ud download kindai
 python -m unidic2ud download gendai
 python -m unidic2ud download spoken
-python -m unidic2ud download kinsei
 python -m unidic2ud download kinsei
 python -m unidic2ud download novel
 python -m unidic2ud download qkana

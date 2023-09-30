@@ -1,7 +1,7 @@
 from typing import Callable
 
 from unidic2ud import UDPipeEntry
-from src.ExploratoryTests.unidic2ud import u2udtreeparser, ud_japanese_pos_tags, universal_dependency_relationships
+from parsing.unidic2ud import universal_dependency_relationships, ud_japanese_pos_tags, u2udtreeparser
 from sysutils import kana_utils
 from sysutils.stringutils import StringUtils
 
@@ -69,7 +69,7 @@ class U2UdTreeNode:
         if self.is_leaf_node():
             token = self.tokens[0]
             return (f"""{StringUtils.pad_to_length(str(token.id), 3)}""" +
-                    f"""{StringUtils.pad_to_length(str(token.head.id), 3)}""" + # noqa
+                    f"""{StringUtils.pad_to_length(str(token.head.id), 3)}""" +  # noqa
                     f"""{StringUtils.pad_to_length(universal_dependency_relationships.get_tag(token.deprel).description, 28)}""" +
                     f"""{StringUtils.pad_to_length(ud_japanese_pos_tags.get_tag(token.xpos).english_description, 30)}""" +
                     f"""{StringUtils.pad_to_length(token.upos, 7)}""" +

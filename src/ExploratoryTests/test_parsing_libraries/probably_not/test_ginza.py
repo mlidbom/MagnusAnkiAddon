@@ -5,7 +5,7 @@ import spacy
 from spacy import Language
 from spacy.tokens import Doc
 
-import unidic2ud_formatter
+from test_parsing import unidic2ud_formatter
 
 #pytestmark = pytest.mark.skip(reason="Running exploratory code constantly is just distracting.")
 

@@ -10,4 +10,5 @@ from . import \
     tools_menu, \
     update_note_on_edit, \
     timing_hacks, \
-    note_content_building
+    note_content_building, \
+    copy_sort_field_to_clipboard

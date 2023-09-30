@@ -1,6 +1,6 @@
 from typing import Callable
 
-from src.ExploratoryTests.unidic2ud.u2udtreenode import U2UdTreeNode
+from parsing.unidic2ud.u2udtreenode import U2UdTreeNode
 
 
 class U2UdParseResult:
