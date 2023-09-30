@@ -1,5 +1,4 @@
 #top contenders:
-
 #UniDic2UD https://github.com/KoichiYasuoka/UniDic2UD Seems to do everything I want and quite well.
 
 #alternatives:
@@ -22,3 +21,4 @@
 #
 #Mecab: Outputs only text and does not seem to have dependency analysis.
 #Janome, fast, but no dependency analysis and no mapping to the kanji representations so that one can find the correct words.
+#Sudachi, no dependency analysis

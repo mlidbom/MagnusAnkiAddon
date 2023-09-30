@@ -1,3 +1,4 @@
+# No dependency analysis
 # import pytest
 # from sudachipy import Dictionary, SplitMode
 #
