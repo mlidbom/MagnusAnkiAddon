@@ -67,6 +67,7 @@ def parse_internal(result_tokens) -> UD2UDParseResult:
 
 def parse_recursive(parent_node_tokens, depth:int) -> list[UD2UDTreeNode]:
     compounds = _tree_parse_algorithm_1(parent_node_tokens, depth)
+    #todo using depth > 1 here instead often avoids nesting compound levels (e.g. さんは, 私を, 女性に, OBS:自分から is counter example...) that may not be desired by the user. Maybe expose as option?
     while len(compounds) < 2 and depth >= 1: # if len == 1 the result is identical to the parent, go down in granularity and try again
         depth -= 1
         compounds = _tree_parse_algorithm_1(parent_node_tokens, depth)
