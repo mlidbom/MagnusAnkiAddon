@@ -1,4 +1,3 @@
-#loading a single instance takes several seconds.
 import pytest
 
 import spacy
@@ -7,7 +6,7 @@ from spacy.tokens import Doc
 
 from parsing.unidic2ud import ud2ud_formatter
 
-#pytestmark = pytest.mark.skip(reason="Running exploratory code constantly is just distracting.")
+#Since spacy seems like it might have any number of useful japanese plugins, and the API is very similar to ud2ud it might be nice as an alternative that could be supported with just a shim between the output classes. Look a bit closer.
 
 nlp:Language
 
@@ -35,6 +34,7 @@ def setup() -> None:
     ("言われるまで気づかなかった", []),
     ("夢を見た", []),
     ("知らない", []),
+    ("今じゃ町は夜でも明るいしもう会うこともないかもな", [])
 ])
 def test_just_display_various_sentences(sentence: str, expected: list[str]) -> None:
     doc = nlp(sentence)
@@ -49,7 +49,9 @@ def doc_to_standard(doc: Doc) -> str:
     string = ""
     for sent in doc.sents:
         string += f"""# text =", {sent.text}"""
-        for i, token in enumerate(sent):
+        i = 0
+        for token in sent:
+            i += 1
             string += f"\n{i + 1}\t{token.text}\t{token.lemma_}\t{token.pos_}\t{token.tag_}\t_\t{token.head.i + 1}\t{token.dep_}\t_\t{token.morph}"
 
     return string
