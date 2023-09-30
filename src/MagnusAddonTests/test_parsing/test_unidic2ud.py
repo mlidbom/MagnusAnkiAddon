@@ -1,7 +1,7 @@
 import pytest
 from unidic2ud import UDPipeEntry
 
-from parsing.unidic2ud import u2udtreeparser, ud2ud_parsers
+from parsing.unidic2ud import ud2ud_parsers, ud2ud_tree_parser
 from test_parsing import unidic2ud_formatter
 
 #pytestmark = pytest.mark.skip(reason="Running exploratory code constantly is just distracting.")
@@ -66,7 +66,7 @@ def test_tree_parser(common_sentence: str) -> None:
 
     for parser in _parsers:
         print(f"{parser.name} : {common_sentence}")
-        print(u2udtreeparser.parse(parser, common_sentence))
+        print(ud2ud_tree_parser.parse(parser, common_sentence))
         print()
 
 def print_tree(name:str, tree:list[UDPipeEntry]) -> None:

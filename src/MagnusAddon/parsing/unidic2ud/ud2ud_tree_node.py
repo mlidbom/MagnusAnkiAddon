@@ -1,19 +1,20 @@
 from typing import Callable
 
 from unidic2ud import UDPipeEntry
-from parsing.unidic2ud import universal_dependency_relationships, ud_japanese_pos_tags, u2udtreeparser
+
+from parsing.unidic2ud import ud2ud_tree_parser, ud_relationship_tag, ud_japanese_part_of_speech_tag
 from sysutils import kana_utils
 from sysutils.stringutils import StringUtils
 
 
-class U2UdTreeNode:
+class UD2UDTreeNode:
     _max_lookahead = 12
 
-    def __init__(self, surface: str, base: str, children: list['U2UdTreeNode'] = None, tokens: list[UDPipeEntry] = None) -> None:
+    def __init__(self, surface: str, base: str, children: list['UD2UDTreeNode'] = None, tokens: list[UDPipeEntry] = None) -> None:
         self.surface = surface
         self.base = base if base else surface
         self.tokens = tokens
-        self.children: list[U2UdTreeNode] = children if children else []
+        self.children: list[UD2UDTreeNode] = children if children else []
 
     def is_leaf_node(self) -> bool:
         return len(self.tokens) == 1
@@ -21,16 +22,16 @@ class U2UdTreeNode:
     def is_inflected(self) -> bool:
         return self.base != self.surface
 
-    def visit(self, callback: Callable[['U2UdTreeNode'],None]) -> None:
+    def visit(self, callback: Callable[['UD2UDTreeNode'],None]) -> None:
         callback(self)
         for node in self.children:
             node.visit(callback)
 
     @classmethod
-    def create(cls, tokens: list[UDPipeEntry], depth:int) -> 'U2UdTreeNode':
+    def create(cls, tokens: list[UDPipeEntry], depth:int) -> 'UD2UDTreeNode':
         if len(tokens) > 1:
             if depth > 1: # we may still get something of value from the token parsing
-                children = u2udtreeparser.parse_recursive(tokens, depth - 1)
+                children = ud2ud_tree_parser.parse_recursive(tokens, depth - 1)
             else: # no more compounds will be found, just add the tokens as children
                 children = [cls.create_simple([token], []) for token in tokens]
         else:
@@ -39,10 +40,10 @@ class U2UdTreeNode:
         return cls.create_simple(tokens, children)
 
     @classmethod
-    def create_simple(cls, tokens: list[UDPipeEntry], children: list['U2UdTreeNode']) -> 'U2UdTreeNode':
+    def create_simple(cls, tokens: list[UDPipeEntry], children: list['UD2UDTreeNode']) -> 'UD2UDTreeNode':
         surface = "".join(tok.form for tok in tokens)
         base = "".join(tok.form for tok in tokens[:-1]) + tokens[-1].lemma
-        return U2UdTreeNode(surface, base, children, tokens)
+        return UD2UDTreeNode(surface, base, children, tokens)
 
 
     def _children_repr(self, level=1) -> str:
@@ -70,8 +71,8 @@ class U2UdTreeNode:
             token = self.tokens[0]
             return (f"""{StringUtils.pad_to_length(str(token.id), 3)}""" +
                     f"""{StringUtils.pad_to_length(str(token.head.id), 3)}""" +  # noqa
-                    f"""{StringUtils.pad_to_length(universal_dependency_relationships.get_tag(token.deprel).description, 28)}""" +
-                    f"""{StringUtils.pad_to_length(ud_japanese_pos_tags.get_tag(token.xpos).english_description, 30)}""" +
+                    f"""{StringUtils.pad_to_length(ud_relationship_tag.get_tag(token.deprel).description, 28)}""" +
+                    f"""{StringUtils.pad_to_length(ud_japanese_part_of_speech_tag.get_tag(token.xpos).english_description, 30)}""" +
                     f"""{StringUtils.pad_to_length(token.upos, 7)}""" +
                     f"""feat:{token.feats} deps:{token.deps} misc:{token.misc}""")
         return "_"
@@ -86,7 +87,7 @@ class U2UdTreeNode:
         return self._repr(0)
 
     def __eq__(self, other: any) -> bool:
-        return (isinstance(other, U2UdTreeNode)
+        return (isinstance(other, UD2UDTreeNode)
                 and self.base == other.base
                 and self.surface == other.surface
                 and self.children == other.children)

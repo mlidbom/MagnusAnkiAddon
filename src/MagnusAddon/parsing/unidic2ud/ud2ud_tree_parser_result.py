@@ -1,10 +1,10 @@
 from typing import Callable
 
-from parsing.unidic2ud.u2udtreenode import U2UdTreeNode
+from parsing.unidic2ud.ud2ud_tree_node import UD2UDTreeNode
 
 
-class U2UdParseResult:
-    def __init__(self, *args: U2UdTreeNode) -> None:
+class UD2UDParseResult:
+    def __init__(self, *args: UD2UDTreeNode) -> None:
         self.nodes = list(args)
 
     def __repr__(self) -> str:
@@ -16,9 +16,9 @@ class U2UdParseResult:
         return f"""{_argument_separator.join(node._str(0) for node in self.nodes)}""" # noqa
 
     def __eq__(self, other) -> bool:
-        return (isinstance(other, U2UdParseResult)
+        return (isinstance(other, UD2UDParseResult)
                 and self.nodes == other.nodes)
 
-    def visit(self, callback: Callable[['U2UdTreeNode'], None]) -> None:
+    def visit(self, callback: Callable[['UD2UDTreeNode'], None]) -> None:
         for node in self.nodes:
             node.visit(callback)

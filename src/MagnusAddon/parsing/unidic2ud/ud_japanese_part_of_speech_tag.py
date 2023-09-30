@@ -2,21 +2,21 @@
 #Universal POS Tags: https://universaldependencies.org/u/pos/index.html
 #Universal Dependency Relations https://universaldependencies.org/u/dep/index.html
 
-class UdPOSTag:
+class UdJapanesePartOfSpeechTag:
     def __init__(self, japanese: str, english_tag:str, english_description: str) -> None:
         self.japanese = japanese
         self.english_tag = english_tag
         self.english_description = english_description
 
-_english_pos_tag_dictionary: dict[str, UdPOSTag] = dict()
-_japanese_pos_tag_dictionary: dict[str, UdPOSTag] = dict()
+_english_pos_tag_dictionary: dict[str, UdJapanesePartOfSpeechTag] = dict()
+_japanese_pos_tag_dictionary: dict[str, UdJapanesePartOfSpeechTag] = dict()
 
 def get_tag(japanese:str):
     return _japanese_pos_tag_dictionary[japanese]
 
 
-def _add_tag(japanese: str, english_tag:str, english_description: str) -> UdPOSTag:
-    tag = UdPOSTag(japanese, english_tag, english_description)
+def _add_tag(japanese: str, english_tag:str, english_description: str) -> UdJapanesePartOfSpeechTag:
+    tag = UdJapanesePartOfSpeechTag(japanese, english_tag, english_description)
     _english_pos_tag_dictionary[english_description] = tag
     _japanese_pos_tag_dictionary[japanese] = tag
     return tag
