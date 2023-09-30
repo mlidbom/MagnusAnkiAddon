@@ -12,16 +12,22 @@ class UD2UDParser:
         return self._lazy_parser.instance()(text)
 
 
-gendai = UD2UDParser("gendai")  # the leader so far
-best = gendai
+gendai = UD2UDParser("gendai") # The leader so far, quite accurate
+spoken = UD2UDParser("spoken") # ??. Zero differences compared to gendai so far...
 
-kindai = UD2UDParser("kindai")  # seems slightly less accurate than gendai.
-default = UD2UDParser("built-in")  # As alternative? When differing from kindai, usually seems worse but significantly different. Polarity negative feature. Good for something?
-spoken = UD2UDParser("spoken") # todo Recheck
-kinsei = UD2UDParser("kinsei") # todo Recheck
-novel = UD2UDParser("novel") # todo Recheck
-qkana = UD2UDParser("qkana") # todo Recheck
-kyogen = UD2UDParser("kyogen") # todo Recheck
-wakan = UD2UDParser("wakan") #No. wakan gives wack results
-wabun = UD2UDParser("wabun") #No. oddness abounds
-manyo = UD2UDParser("manyo") #No. seems to usually give some truly strange results
+#alternatives?
+kindai = UD2UDParser("kindai")  # Yes. 8 Differences. Two used in tests. 60+% of the times it differs from gendai, gendai is better.
+default = UD2UDParser("built-in")  # Maybe. 14 differences. 80-90% worse, but different in ways that may sometimes be what one wants...
+kinsei = UD2UDParser("kinsei") # Maybe. 6 differences. 1 better, 1 arguably better
+
+novel = UD2UDParser("novel") # NO. 1 difference with gendai and it was worse. Not worth the odds to try for the user.
+qkana = UD2UDParser("qkana") # NO. 1 difference with gendai and it was worse.
+
+
+
+kyogen = UD2UDParser("kyogen") # NO. 18 differences. Consistently strange. Did often pick up kanji 無い but that was the only upside.
+wakan = UD2UDParser("wakan") #NO. 27 differences. Consistently strange.
+wabun = UD2UDParser("wabun") #NO. 27 differences. Consistently strange.
+manyo = UD2UDParser("manyo") #NO. 25 differences. Consistently strange.
+
+best = gendai
