@@ -46,26 +46,6 @@ class UD2UDTreeNode:
         return UD2UDTreeNode(surface, base, children, tokens)
 
 
-    def _children_repr(self, level=1) -> str:
-        if not self.children:
-            return ""
-        indent = "  " * level
-        children_string = ', '.join(child._repr(level) for child in self.children)
-        return f""",[\n{indent}{children_string}]"""
-
-    def _children_str(self, level=1) -> str:
-        if not self.children:
-            return ""
-
-        line_start = f'\n'
-        children_string = line_start.join(child._str(level) for child in self.children)
-        return f"""{line_start}{children_string}"""
-
-    def _repr(self, level: int):
-        return f"""N('{self.surface}', '{self.base if self.is_inflected() else ""}'{self._children_repr(level + 1)})"""
-
-
-
     def _str_pos(self) -> str:
         if self.is_leaf_node():
             token = self.tokens[0]
@@ -76,6 +56,24 @@ class UD2UDTreeNode:
                     f"""{StringUtils.pad_to_length(token.upos, 7)}""" +
                     f"""feat:{token.feats} deps:{token.deps} misc:{token.misc}""")
         return "_"
+
+    def _children_repr(self, level=1) -> str:
+        if not self.children:
+            return ""
+        children_string = ', \n'.join(child._repr(level) for child in self.children)
+        return f""", [\n{children_string}]"""
+
+    def _repr(self, level: int):
+        indent = "　　" * level
+        return f"""{indent}N('{self.surface}', '{self.base if self.is_inflected() else ""}'{self._children_repr(level + 1)})"""
+
+    def _children_str(self, level=1) -> str:
+        if not self.children:
+            return ""
+
+        line_start = f'\n'
+        children_string = line_start.join(child._str(level) for child in self.children)
+        return f"""{line_start}{children_string}"""
 
     def _str(self, level: int):
         indent = "　　" * level

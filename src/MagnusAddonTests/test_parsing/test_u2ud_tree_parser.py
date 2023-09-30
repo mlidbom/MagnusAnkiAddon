@@ -8,10 +8,10 @@ N = UD2UDTreeNode
 R = UD2UDParseResult
 def only_string_params(param) -> str: return param if isinstance(param, str) else ""
 
-@pytest.mark.parametrize('sentence, excluded, expected', [
-    ("知らない", set(), R(N('知らない', '',[N('知ら', '知る'), N('ない', '')]))),
-    #("いつまでも来ないと知らないからね", {"ないと"}, R(N('いつまでも', '',[N('いつまで', '',[N('いつ', ''), N('まで', '')]), N('も', '')]), N('来ないと', '',[N('来', '来る'), N('ない', ''), N('と', '')]), N('知らない', '',[N('知ら', '知る'), N('ない', '')]), N('から', ''), N('ね', ''))),
-    #("ついに素晴らしい女性に逢えた。", set(), R(N('ついに', ''), N('素晴らしい', ''), N('女性に', '',[N('女性', ''), N('に', '')]), N('逢えた', '',[N('逢え', '逢える'), N('た', '')]))),
+@pytest.mark.parametrize('sentence, expected', [
+    ("知らない", R(N('知らない', '',[N('知ら', '知る'), N('ない', '')]))),
+    ("いつまでも来ないと知らないからね", R(N('いつまでも来ないと', '', [N('いつまでも', '', [N('いつ', '何時'), N('まで', ''), N('も', '')]), N('来ないと', '', [N('来', '来る'), N('ない', ''), N('と', '')])]),N('知らないからね', '', [N('知ら', '知る'), N('ない', ''), N('から', ''), N('ね', '')]))),
+    ("ついに素晴らしい女性に逢えた。", R(N('ついに', '遂に'),N('素晴らしい女性に', '', [N('素晴らしい', ''), N('女性に', '', [N('女性', ''), N('に', '')])]),N('逢えた。', '', [N('逢え', '会う'), N('た', ''), N('。', '')]))),
     #("ついに素晴らしい女性に逢えた。", {"逢える", "えた"}, R(N('ついに', ''), N('素晴らしい', ''), N('女性に', '',[N('女性', ''), N('に', '')]), N('逢', ''), N('え', ''), N('た', ''))),
     #("ううん藤宮さんは日記を捨てるような人じゃない", set(), R(N('ううん', ''), N('藤宮', ''), N('さん', ''), N('は', ''), N('日記を', '',[N('日記', ''), N('を', '')]), N('捨てる', ''), N('ような', 'ようだ',[N('よう', ''), N('な', 'だ')]), N('人じゃない', '',[N('人', ''), N('じゃない', '',[N('じゃ', ''), N('ない', '')])]))),
     #("なかったかな", {"たか", "たかな"}, R(N('なかった', '',[N('なかっ', 'ない'), N('た', '')]), N('かな', '',[N('か', ''), N('な', '')]))),
@@ -37,9 +37,9 @@ def only_string_params(param) -> str: return param if isinstance(param, str) els
     #("今じゃ町は夜でも明るいしもう会うこともないかもな", {"しもう"}, R(N('今じゃ', '',[N('今', ''), N('じゃ', '')]), N('町は', '',[N('町', ''), N('は', '')]), N('夜でも', '',[N('夜', ''), N('でも', '')]), N('明るいし', '',[N('明るい', ''), N('し', '')]), N('もう', ''), N('会うこともないかも', '',[N('会う', ''), N('こと', ''), N('も', ''), N('ない', ''), N('かも', '')]), N('な', ''))),
     #("友達だから余計に気になっちゃうんだよ", set(), R(N('友達だから', '',[N('友達', ''), N('だから', '',[N('だ', ''), N('から', '')])]), N('余計に', '',[N('余計', ''), N('に', '')]), N('気になっちゃうんだよ', '',[N('気になっ', '気になる',[N('気', ''), N('に', ''), N('なっ', 'なる')]), N('ちゃう', ''), N('んだ', '',[N('ん', ''), N('だ', '')]), N('よ', '')]))),
 ], ids=only_string_params)
-def test_various_stuff(sentence: str, excluded: set[str], expected: UD2UDParseResult) -> None: run_tests(excluded, expected, sentence)
+def test_various_stuff(sentence: str, expected: UD2UDParseResult) -> None: run_tests(expected, sentence)
 
-@pytest.mark.parametrize('sentence, excluded, expected', [
+@pytest.mark.parametrize('sentence, expected', [
     # various conjugations
     #("よかった", set(), R(N('よかった', '',[N('よかっ', 'よい'), N('た', '')]))),
     #("良かった", set(), R(N('良かった', '',[N('良かっ', '良い'), N('た', '')]))),
@@ -51,23 +51,28 @@ def test_various_stuff(sentence: str, excluded: set[str], expected: UD2UDParseRe
     # adjective within verb compound
     #("言えばよかった", set(), R(N('言えば', '',[N('言え', '言う'), N('ば', '')]), N('よかった', '',[N('よかっ', 'よい'), N('た', '')]))),
 ], ids=only_string_params)
-def test_adjective_compounds(sentence: str, excluded: set[str], expected: UD2UDParseResult) -> None: run_tests(excluded, expected, sentence)
+def test_adjective_compounds(sentence: str, expected: UD2UDParseResult) -> None: run_tests(expected, sentence)
 
 
-@pytest.mark.parametrize('sentence, excluded, expected', [
+@pytest.mark.parametrize('sentence, expected', [
     #("あいつが話の中に出てくるのが", set(), R(N('あいつが', '',[N('あいつ', ''), N('が', '')]), N('話の中に', '',[N('話', ''), N('の', ''), N('中', ''), N('に', '')]), N('出てくるのが', '',[N('出てくるの', '',[N('出てくる', '',[N('出', '出る'), N('て', ''), N('くる', '')]), N('の', '')]), N('が', '')]))),
     #("自分のことを知ってもらえてない人に", set(), R(N('自分のことを', '',[N('自分', ''), N('の', ''), N('こと', ''), N('を', '')]), N('知ってもらえてない人に', '',[N('知ってもらえてない人', '',[N('知っ', '知る'), N('て', ''), N('もらえ', 'もらう'), N('て', 'てる'), N('ない', ''), N('人', '')]), N('に', '')]))),
 ], ids=only_string_params)
-def test_noun_compounds(sentence: str, excluded: set[str], expected: UD2UDParseResult) -> None: run_tests(excluded, expected, sentence)
+def test_noun_compounds(sentence: str, expected: UD2UDParseResult) -> None: run_tests(expected, sentence)
 
-@pytest.mark.parametrize('sentence, excluded, expected', [
+@pytest.mark.parametrize('sentence, expected', [
     #("今じゃ町は夜でも明るいしもう会うこともないかもな", {"しもう"}, R(N('今じゃ', '',[N('今', ''), N('じゃ', '')]), N('町は', '',[N('町', ''), N('は', '')]), N('夜でも', '',[N('夜', ''), N('でも', '')]), N('明るいし', '',[N('明るい', ''), N('し', '')]), N('もう', ''), N('会うこともないかも', '',[N('会う', ''), N('こと', ''), N('も', ''), N('ない', ''), N('かも', '')]), N('な', '')))
 ], ids=only_string_params)
-def test_temp(sentence: str, excluded: set[str], expected: UD2UDParseResult) -> None: run_tests(excluded, expected, sentence)
+def test_temp(sentence: str, excluded: set[str], expected: UD2UDParseResult) -> None: run_tests(expected, sentence)
 
 
-def run_tests(excluded, expected, sentence) -> None:
+def run_tests(expected, sentence) -> None:
     print()
     result = ud2ud_tree_parser.parse(ud2ud_parsers.best, sentence)
-    print(result)
+    print("str:")
+    print(str(result))
+    print("repr:")
+    print(repr(result))
+    print("repr-single-line:")
+    print(repr(result).replace("\n", "").replace("　", ""))
     assert result == expected

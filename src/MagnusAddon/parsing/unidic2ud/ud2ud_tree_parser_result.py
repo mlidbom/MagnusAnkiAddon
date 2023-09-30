@@ -8,8 +8,8 @@ class UD2UDParseResult:
         self.nodes = list(args)
 
     def __repr__(self) -> str:
-        _argument_separator = ",\n  "
-        return f"""R({_argument_separator.join(node._repr(1) for node in self.nodes)})""" # noqa
+        _argument_separator = ",\n"
+        return f"""R(\n{_argument_separator.join(node._repr(0) for node in self.nodes)})""" # noqa
 
     def __str__(self) -> str:
         _argument_separator = "\n"
