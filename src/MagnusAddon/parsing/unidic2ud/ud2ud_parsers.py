@@ -16,7 +16,7 @@ gendai = UD2UDParser("gendai") # The leader so far, quite accurate
 spoken = UD2UDParser("spoken") # ??. Zero differences compared to gendai so far...
 
 #alternatives?
-kindai = UD2UDParser("kindai")  # Yes. 8 Differences. Two used in tests. 60+% of the times it differs from gendai, gendai is better.
+kindai = UD2UDParser("kindai")  # Yes. 8 Differences. One clearly better and used in tests. 60+% of the times it differs from gendai, gendai is better.
 default = UD2UDParser("built-in")  # Maybe. 14 differences. 80-90% worse, but different in ways that may sometimes be what one wants...
 kinsei = UD2UDParser("kinsei") # Maybe. 6 differences. 1 better, 1 arguably better
 
