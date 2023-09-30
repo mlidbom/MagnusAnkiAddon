@@ -72,7 +72,7 @@ def parse_recursive(parent_node_tokens, depth:int) -> list[UD2UDTreeNode]:
         depth -= 1
         compounds = _tree_parse_algorithm_1(parent_node_tokens, depth)
 
-    if len(compounds) == 1: # No compound children create children from the individual tokens
+    if len(compounds) == 1: # No compound children. Create children from the individual tokens
         return [UD2UDTreeNode.create([token], depth) for token in compounds[0]]
 
     return [UD2UDTreeNode.create(phrase, depth) for phrase in compounds]
