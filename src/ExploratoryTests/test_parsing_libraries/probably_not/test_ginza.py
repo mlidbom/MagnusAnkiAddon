@@ -5,7 +5,7 @@ import spacy
 from spacy import Language
 from spacy.tokens import Doc
 
-from test_parsing import unidic2ud_formatter
+from parsing.unidic2ud import ud2ud_formatter
 
 #pytestmark = pytest.mark.skip(reason="Running exploratory code constantly is just distracting.")
 
@@ -56,5 +56,5 @@ def doc_to_standard(doc: Doc) -> str:
 
 def format_output(doc:Doc) -> str:
     output = doc_to_standard(doc)
-    line_rows = unidic2ud_formatter.get_lines_from_output(output)
-    return unidic2ud_formatter.align_tab_separated_values(line_rows)
+    line_rows = ud2ud_formatter.get_lines_from_output(output)
+    return ud2ud_formatter.align_tab_separated_values(line_rows)

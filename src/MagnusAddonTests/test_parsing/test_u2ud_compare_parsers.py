@@ -1,8 +1,7 @@
 import pytest
 from unidic2ud import UDPipeEntry
 
-from parsing.unidic2ud import ud2ud_parsers, ud2ud_tree_parser
-from test_parsing import unidic2ud_formatter
+from parsing.unidic2ud import ud2ud_parsers, ud2ud_tree_parser, ud2ud_formatter
 
 #pytestmark = pytest.mark.skip(reason="Running exploratory code constantly is just distracting.")
 
@@ -92,11 +91,11 @@ def run_tests(sentence) -> None:
     for name, result in results:
         print()
         print(f"{name}: {sentence}")
-        print(unidic2ud_formatter.format_output(result))
+        print(ud2ud_formatter.format_output(result))
 
     reference_name, reference_result = results[0]
     current_name, current_result = results[1]
 
-    assert unidic2ud_formatter.format_output_for_comparing_ignore_space_after_and_features(current_result) == unidic2ud_formatter.format_output_for_comparing_ignore_space_after_and_features(reference_result)
+    assert ud2ud_formatter.format_output_for_comparing_ignore_space_after_and_features(current_result) == ud2ud_formatter.format_output_for_comparing_ignore_space_after_and_features(reference_result)
 
 
