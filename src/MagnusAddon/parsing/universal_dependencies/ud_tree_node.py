@@ -1,19 +1,19 @@
 from typing import Callable
 
-from parsing.universal_dependencies import ud2ud_tree_parser
-from parsing.universal_dependencies.universal_dependencies_token import UDToken
+from parsing.universal_dependencies import ud_tree_parser
+from parsing.universal_dependencies.core.ud_token import UDToken
 from sysutils import kana_utils
 from sysutils.stringutils import StringUtils
 
 
-class UD2UDTreeNode:
+class UDTreeNode:
     _max_lookahead = 12
 
-    def __init__(self, surface: str, base: str, children: list['UD2UDTreeNode'] = None, tokens: list[UDToken] = None) -> None:
+    def __init__(self, surface: str, base: str, children: list['UDTreeNode'] = None, tokens: list[UDToken] = None) -> None:
         self.surface = surface
         self.base = base if base else surface
         self.tokens = tokens
-        self.children: list[UD2UDTreeNode] = children if children else []
+        self.children: list[UDTreeNode] = children if children else []
 
     def is_morpheme(self) -> bool:
         return not self.children
@@ -21,18 +21,18 @@ class UD2UDTreeNode:
     def is_inflected(self) -> bool:
         return self.base != self.surface
 
-    def visit(self, callback: Callable[['UD2UDTreeNode'],None]) -> None:
+    def visit(self, callback: Callable[['UDTreeNode'],None]) -> None:
         callback(self)
         for node in self.children:
             node.visit(callback)
 
     @classmethod
-    def create(cls, tokens: list[UDToken], depth:int) -> 'UD2UDTreeNode':
+    def create(cls, tokens: list[UDToken], depth:int) -> 'UDTreeNode':
         # noinspection PyProtectedMember
-        children = ud2ud_tree_parser._parse_recursive(tokens, depth + 1) if len(tokens) > 1 else []
+        children = ud_tree_parser._parse_recursive(tokens, depth + 1) if len(tokens) > 1 else []
         surface = "".join(tok.form for tok in tokens)
         base = "".join(tok.form for tok in tokens[:-1]) + tokens[-1].lemma
-        return UD2UDTreeNode(surface, base, children, tokens)
+        return UDTreeNode(surface, base, children, tokens)
 
 
     def _str_pos(self) -> str:
@@ -74,7 +74,7 @@ class UD2UDTreeNode:
         return self._repr(0)
 
     def __eq__(self, other: any) -> bool:
-        return (isinstance(other, UD2UDTreeNode)
+        return (isinstance(other, UDTreeNode)
                 and self.base == other.base
                 and self.surface == other.surface
                 and self.children == other.children)

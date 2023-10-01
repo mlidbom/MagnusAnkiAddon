@@ -3,11 +3,11 @@ from typing import Union
 from spacy.tokens import Doc, Token
 from unidic2ud import UniDic2UDEntry, UDPipeEntry
 
-from parsing.universal_dependencies.universal_dependencies_token import UDToken
+from parsing.universal_dependencies.core.ud_token import UDToken
 from sysutils.listutils import ListUtils
 
 
-class UniversalDependenciesParseResult:
+class UDParseResult:
     def __init__(self, wrapped: Union[UniDic2UDEntry, Doc]):
 
         if isinstance(wrapped, Doc):

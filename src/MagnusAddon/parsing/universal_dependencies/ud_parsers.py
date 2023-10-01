@@ -1,32 +1,6 @@
-import spacy
-from unidic2ud import unidic2ud
-
-from parsing.universal_dependencies.universal_dependencies_parse_result import UniversalDependenciesParseResult
-from sysutils.lazy import Lazy
-
-class UDParser:
-    def __init__(self, name: str):
-        self.name = name
-    def parse(self, text: str) -> UniversalDependenciesParseResult:
-        pass
-
-class UD2UDParser(UDParser):
-    def __init__(self, name: str):
-        super().__init__(name)
-        self._lazy_parser = Lazy(lambda: unidic2ud.load(name if name != "built-in" else None))
-
-    def parse(self, text: str) -> UniversalDependenciesParseResult:
-        return UniversalDependenciesParseResult(self._lazy_parser.instance()(text))
-
-class GinzaParser(UDParser):
-    def __init__(self) -> None:
-        super().__init__("ginza")
-        self._lazy_parser = Lazy(lambda: spacy.load("ja_ginza"))
-
-    def parse(self, text: str) -> UniversalDependenciesParseResult:
-        text = text.replace(" ", "").replace("　", "")
-        return UniversalDependenciesParseResult(self._lazy_parser.instance()(text))
-
+from parsing.universal_dependencies.ginza.ginza_parser import GinzaParser
+from parsing.universal_dependencies.core.ud_parser import UDParser
+from parsing.universal_dependencies.unidic2ud.unidic2ud_parser import UD2UDParser
 
 ginza = GinzaParser() # Yes. 15 Differences to gendai. 8 Better, 6 worse, one unclear.
 best = ginza
@@ -45,12 +19,12 @@ kinsei = UD2UDParser("kinsei")  # Maybe. 6 differences with gendai. One clearly 
 # manyo = UD2UDParser("manyo") #NO. 25 differences with gendai. Consistently strange.
 
 
-all_parsers:list[UDParser] = [gendai,
+all_parsers:list[UDParser] = [ginza,
+                              gendai,
                               spoken,
                               qkana,
                               kindai,
                               default,
                               kinsei,
-                              ginza,
                               # novel, kyogen, wakan, wabun, manyo
                               ]

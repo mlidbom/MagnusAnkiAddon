@@ -1,7 +1,7 @@
-from parsing.universal_dependencies.ud2ud_tree_node import UD2UDTreeNode
-from parsing.universal_dependencies.ud2ud_tree_parser_result import UD2UDParseResult
-from parsing.universal_dependencies.ud2ud_parsers import UDParser
-from parsing.universal_dependencies.universal_dependencies_token import UDToken
+from parsing.universal_dependencies.ud_tree_node import UDTreeNode
+from parsing.universal_dependencies.ud_tree_parse_result import UDTreeParseResult
+from parsing.universal_dependencies.core.ud_parser import UDParser
+from parsing.universal_dependencies.core.ud_token import UDToken
 
 
 def _consume_children_of(entry:UDToken, tokens:list[UDToken]) -> int:
@@ -57,20 +57,20 @@ class _Depth:
     depth_3 = 3
     morphemes_4 = 4
 
-def parse(parser:UDParser, text: str) -> UD2UDParseResult:
+def parse(parser:UDParser, text: str) -> UDTreeParseResult:
     tokens = parser.parse(text).tokens
     depth = 0
     compounds = _build_compounds(tokens, depth)
     while len(compounds) == 1 and depth < _Depth.depth_2:  # making the whole text into a compound is not usually desired, but above depth 2 we loose words, so don't go that deep.
         depth += 1
         compounds = _build_compounds(tokens, depth)
-    return UD2UDParseResult(*[UD2UDTreeNode.create(compound, depth) for compound in compounds])
+    return UDTreeParseResult(*[UDTreeNode.create(compound, depth) for compound in compounds])
 
 
-def _parse_recursive(parent_node_tokens, depth:int) -> list[UD2UDTreeNode]:
+def _parse_recursive(parent_node_tokens, depth:int) -> list[UDTreeNode]:
     compounds = _build_compounds(parent_node_tokens, depth)
     while len(compounds) < 2 and depth <= _Depth.morphemes_4: # if len == 1 the result is identical to the parent, go down in granularity and try again
         depth += 1
         compounds = _build_compounds(parent_node_tokens, depth)
 
-    return [UD2UDTreeNode.create(phrase, depth) for phrase in compounds]
+    return [UDTreeNode.create(phrase, depth) for phrase in compounds]
