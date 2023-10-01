@@ -25,7 +25,7 @@ class UDToken:
             self.xpos = ud_japanese_part_of_speech_tag.get_tag(typed.str_(token.tag_)) if token.tag_ != _missing_value else None
             self.deprel = ud_relationship_tag.get_tag(typed.str_(token.dep_).lower()) if token.dep_ != _missing_value else None
             self.feats = str(token.morph)
-            self._head_id = typed.int_(token.i)
+            self._head_id = typed.int_(token.head.i)
             self.head = self  # ugly hack to get python typing working in spite of the recursive nature of this class. Will be replaced with correct value by parent object.
 
         if isinstance(token, UDPipeEntry):
