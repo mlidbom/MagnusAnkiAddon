@@ -1,7 +1,7 @@
 from typing import Callable
 
 from parsing.universal_dependencies import ud2ud_tree_parser
-from parsing.universal_dependencies.universal_dependencies_token import UD2UDToken
+from parsing.universal_dependencies.universal_dependencies_token import UDToken
 from sysutils import kana_utils
 from sysutils.stringutils import StringUtils
 
@@ -9,7 +9,7 @@ from sysutils.stringutils import StringUtils
 class UD2UDTreeNode:
     _max_lookahead = 12
 
-    def __init__(self, surface: str, base: str, children: list['UD2UDTreeNode'] = None, tokens: list[UD2UDToken] = None) -> None:
+    def __init__(self, surface: str, base: str, children: list['UD2UDTreeNode'] = None, tokens: list[UDToken] = None) -> None:
         self.surface = surface
         self.base = base if base else surface
         self.tokens = tokens
@@ -27,7 +27,7 @@ class UD2UDTreeNode:
             node.visit(callback)
 
     @classmethod
-    def create(cls, tokens: list[UD2UDToken], depth:int) -> 'UD2UDTreeNode':
+    def create(cls, tokens: list[UDToken], depth:int) -> 'UD2UDTreeNode':
         # noinspection PyProtectedMember
         children = ud2ud_tree_parser._parse_recursive(tokens, depth + 1) if len(tokens) > 1 else []
         surface = "".join(tok.form for tok in tokens)

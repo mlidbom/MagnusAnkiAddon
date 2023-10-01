@@ -1,10 +1,10 @@
 from parsing.universal_dependencies.ud2ud_tree_node import UD2UDTreeNode
 from parsing.universal_dependencies.ud2ud_tree_parser_result import UD2UDParseResult
 from parsing.universal_dependencies.ud2ud_parsers import UD2UDParser
-from parsing.universal_dependencies.universal_dependencies_token import UD2UDToken
+from parsing.universal_dependencies.universal_dependencies_token import UDToken
 
 
-def _consume_children_of(entry:UD2UDToken, tokens:list[UD2UDToken]) -> int:
+def _consume_children_of(entry:UDToken, tokens:list[UDToken]) -> int:
     index = 0
     for current_token in tokens:
         if current_token.head.id != entry.id:
@@ -12,7 +12,7 @@ def _consume_children_of(entry:UD2UDToken, tokens:list[UD2UDToken]) -> int:
         index += 1
     return index
 
-def _consume_until(entry:UD2UDToken, tokens:list[UD2UDToken]) -> int:
+def _consume_until(entry:UDToken, tokens:list[UDToken]) -> int:
     index = 0
     for current_token in tokens:
         if current_token.id == entry.id:
@@ -20,11 +20,11 @@ def _consume_until(entry:UD2UDToken, tokens:list[UD2UDToken]) -> int:
         index += 1
     return index
 
-def _build_compounds(tokens:list[UD2UDToken], depth:int) -> list[list[UD2UDToken]]:
+def _build_compounds(tokens:list[UDToken], depth:int) -> list[list[UDToken]]:
     if depth == _Depth.morphemes_4:
         return [[token] for token in tokens]
 
-    compounds: list[list[UD2UDToken]] = []
+    compounds: list[list[UDToken]] = []
     remaining_tokens = tokens.copy()
     while remaining_tokens:
         compound_start = remaining_tokens[0]
