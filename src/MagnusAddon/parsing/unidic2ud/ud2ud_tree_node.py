@@ -16,8 +16,8 @@ class UD2UDTreeNode:
         self.tokens = tokens
         self.children: list[UD2UDTreeNode] = children if children else []
 
-    def is_leaf_node(self) -> bool:
-        return len(self.tokens) == 1
+    def is_morpheme(self) -> bool:
+        return not self.children
 
     def is_inflected(self) -> bool:
         return self.base != self.surface
@@ -29,25 +29,14 @@ class UD2UDTreeNode:
 
     @classmethod
     def create(cls, tokens: list[UDPipeEntry], depth:int) -> 'UD2UDTreeNode':
-        if len(tokens) > 1:
-            if depth <= 2: # we may still get something of value from the token parsing
-                children = ud2ud_tree_parser.parse_recursive(tokens, depth + 1)
-            else: # no more compounds will be found, just add the tokens as children
-                children = [cls.create_simple([token], []) for token in tokens]
-        else:
-            children = []
-
-        return cls.create_simple(tokens, children)
-
-    @classmethod
-    def create_simple(cls, tokens: list[UDPipeEntry], children: list['UD2UDTreeNode']) -> 'UD2UDTreeNode':
+        children = ud2ud_tree_parser.parse_recursive(tokens, depth + 1) if len(tokens) > 1 else []
         surface = "".join(tok.form for tok in tokens)
         base = "".join(tok.form for tok in tokens[:-1]) + tokens[-1].lemma
         return UD2UDTreeNode(surface, base, children, tokens)
 
 
     def _str_pos(self) -> str:
-        if self.is_leaf_node():
+        if self.is_morpheme():
             token = self.tokens[0]
             return (f"""{StringUtils.pad_to_length(str(token.id), 3)}""" +
                     f"""{StringUtils.pad_to_length(str(token.head.id), 3)}""" +  # noqa
