@@ -42,7 +42,7 @@ class UD2UDTreeNode:
                     f"""{StringUtils.pad_to_length(str(token.head.id), 3)}""" +  # noqa
                     f"""{StringUtils.pad_to_length(token.deprel.description, 28)}""" +
                     f"""{StringUtils.pad_to_length(token.xpos.description, 30)}""" +
-                    f"""{StringUtils.pad_to_length(token.upos.description, 7)}""" +
+                    f"""{StringUtils.pad_to_length(token.upos.description, 26)}""" +
                     f"""feat:{token.feats} deps:{token.deps} misc:{token.misc}""")
         return "_"
 
