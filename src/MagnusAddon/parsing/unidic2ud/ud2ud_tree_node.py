@@ -29,7 +29,8 @@ class UD2UDTreeNode:
 
     @classmethod
     def create(cls, tokens: list[UDPipeEntry], depth:int) -> 'UD2UDTreeNode':
-        children = ud2ud_tree_parser.parse_recursive(tokens, depth + 1) if len(tokens) > 1 else []
+        # noinspection PyProtectedMember
+        children = ud2ud_tree_parser._parse_recursive(tokens, depth + 1) if len(tokens) > 1 else []
         surface = "".join(tok.form for tok in tokens)
         base = "".join(tok.form for tok in tokens[:-1]) + tokens[-1].lemma
         return UD2UDTreeNode(surface, base, children, tokens)
