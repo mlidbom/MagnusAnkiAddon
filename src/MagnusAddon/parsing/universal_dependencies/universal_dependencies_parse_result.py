@@ -4,6 +4,7 @@ from spacy.tokens import Doc, Token
 from unidic2ud import UniDic2UDEntry, UDPipeEntry
 
 from parsing.universal_dependencies.universal_dependencies_token import UDToken
+from sysutils.listutils import ListUtils
 
 
 class UniversalDependenciesParseResult:
@@ -13,10 +14,8 @@ class UniversalDependenciesParseResult:
             self._wrapped = wrapped
 
             sents = [sent for sent in wrapped.sents]
-            if len(sents) != 1:
-                raise Exception(f"No idea how to handle {len(sents)} sents")
-
-            self._wrapped_tokens:list[Token] = [token for token in sents[0]]
+            self._wrapped_sent_tokens:list[list[Token]] = [[token for token in sent] for sent in sents]
+            self._wrapped_tokens:list[Token] = ListUtils.flatten_list(self._wrapped_sent_tokens)
 
             self.tokens = [UDToken(token) for token in self._wrapped_tokens]
 
