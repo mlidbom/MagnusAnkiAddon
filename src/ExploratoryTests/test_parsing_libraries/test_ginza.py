@@ -4,7 +4,7 @@ import spacy
 from spacy import Language
 from spacy.tokens import Doc
 
-from parsing.unidic2ud import ud2ud_formatter
+from parsing.universal_dependencies import ud2ud_formatter
 
 #Since spacy seems like it might have any number of useful japanese plugins, and the API is very similar to ud2ud it might be nice as an alternative that could be supported with just a shim between the output classes. Look a bit closer.
 

@@ -1,9 +1,9 @@
 import pytest
 
-from parsing.unidic2ud import ud2ud_tree_parser, ud2ud_parsers
-from parsing.unidic2ud.ud2ud_parsers import UD2UDParser
-from parsing.unidic2ud.ud2ud_tree_parser_result import UD2UDParseResult
-from parsing.unidic2ud.ud2ud_tree_node import UD2UDTreeNode
+from parsing.universal_dependencies import ud2ud_tree_parser, ud2ud_parsers
+from parsing.universal_dependencies.ud2ud_parsers import UD2UDParser
+from parsing.universal_dependencies.ud2ud_tree_parser_result import UD2UDParseResult
+from parsing.universal_dependencies.ud2ud_tree_node import UD2UDTreeNode
 
 N = UD2UDTreeNode
 R = UD2UDParseResult

@@ -1,8 +1,8 @@
 from unidic2ud import UDPipeEntry
 
-from parsing.unidic2ud.ud2ud_tree_node import UD2UDTreeNode
-from parsing.unidic2ud.ud2ud_tree_parser_result import UD2UDParseResult
-from parsing.unidic2ud.ud2ud_parsers import UD2UDParser
+from parsing.universal_dependencies.ud2ud_tree_node import UD2UDTreeNode
+from parsing.universal_dependencies.ud2ud_tree_parser_result import UD2UDParseResult
+from parsing.universal_dependencies.ud2ud_parsers import UD2UDParser
 
 
 def _consume_children_of(entry:UDPipeEntry, tokens:list[UDPipeEntry]) -> int:

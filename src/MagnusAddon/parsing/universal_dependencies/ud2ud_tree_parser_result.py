@@ -1,6 +1,6 @@
 from typing import Callable
 
-from parsing.unidic2ud.ud2ud_tree_node import UD2UDTreeNode
+from parsing.universal_dependencies.ud2ud_tree_node import UD2UDTreeNode
 
 
 class UD2UDParseResult:

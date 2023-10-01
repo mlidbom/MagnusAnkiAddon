@@ -2,7 +2,7 @@ from typing import Callable
 
 from unidic2ud import UDPipeEntry
 
-from parsing.unidic2ud import ud2ud_tree_parser, ud_relationship_tag, ud_japanese_part_of_speech_tag
+from parsing.universal_dependencies import ud2ud_tree_parser, ud_relationship_tag, ud_japanese_part_of_speech_tag
 from sysutils import kana_utils
 from sysutils.stringutils import StringUtils
 
