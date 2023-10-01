@@ -1,11 +1,14 @@
 import sys
 import os
 
-
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+import _lib_patched # noqa NOTE: this line sets up lib paths, lib imports before here do not work when running in anki
+import _lib # noqa NOTE: this line sets up lib paths, lib imports before here do not work when running in anki
 
-import _lib # noqa
 import hooks
+
+from parsing.universal_dependencies import ud2ud_parsers
+
 from _addon_copies import refresh_media_references # noqa
 
 hooks.timing_hacks.init()
@@ -19,3 +22,5 @@ hooks.note_content_building.sentence_breakdown.init() #needs to be before vocab_
 hooks.note_content_building.vocab_and_sentence_kanji_list.init()
 hooks.note_content_building.kanji_vocab_list.init()
 hooks.copy_sort_field_to_clipboard.init()
+
+ud2ud_parsers.best.parse("")

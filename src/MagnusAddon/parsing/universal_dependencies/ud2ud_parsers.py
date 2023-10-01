@@ -1,5 +1,9 @@
 import spacy
 from unidic2ud import unidic2ud
+import ginza
+import ja_ginza
+
+from ja_ginza import load
 
 from parsing.universal_dependencies.universal_dependencies_parse_result import UniversalDependenciesParseResult
 from sysutils.lazy import Lazy
@@ -21,6 +25,7 @@ class UD2UDParser(UDParser):
 class GinzaParser(UDParser):
     def __init__(self) -> None:
         super().__init__("ja_ginza")
+        test = spacy.load("ja_ginza")
         self._lazy_parser = Lazy(lambda: spacy.load("ja_ginza"))
 
     def parse(self, text: str) -> UniversalDependenciesParseResult:
