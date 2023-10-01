@@ -6,7 +6,9 @@ class UdJapanesePartOfSpeechTag:
     def __init__(self, japanese: str, english_tag:str, english_description: str) -> None:
         self.japanese = japanese
         self.english_tag = english_tag
-        self.english_description = english_description
+        self.description = english_description
+
+    def __str__(self) -> str: return self.description
 
 _english_pos_tag_dictionary: dict[str, UdJapanesePartOfSpeechTag] = dict()
 _japanese_pos_tag_dictionary: dict[str, UdJapanesePartOfSpeechTag] = dict()

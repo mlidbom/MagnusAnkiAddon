@@ -42,7 +42,7 @@ class UD2UDTreeNode:
             return (f"""{StringUtils.pad_to_length(str(token.id), 3)}""" +
                     f"""{StringUtils.pad_to_length(str(token.head.id), 3)}""" +  # noqa
                     f"""{StringUtils.pad_to_length(ud_relationship_tag.get_tag(token.deprel).description, 28)}""" +
-                    f"""{StringUtils.pad_to_length(ud_japanese_part_of_speech_tag.get_tag(token.xpos).english_description, 30)}""" +
+                    f"""{StringUtils.pad_to_length(ud_japanese_part_of_speech_tag.get_tag(token.xpos).description, 30)}""" +
                     f"""{StringUtils.pad_to_length(token.upos, 7)}""" +
                     f"""feat:{token.feats} deps:{token.deps} misc:{token.misc}""")
         return "_"

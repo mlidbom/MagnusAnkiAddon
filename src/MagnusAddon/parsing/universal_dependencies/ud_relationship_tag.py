@@ -3,6 +3,8 @@ class UdRelationshipTag:
         self.tag = tag
         self.description = description
 
+    def __str__(self) -> str: return self.description
+
 
 _tag_to_tag_dict: dict[str, UdRelationshipTag] = dict()
 
