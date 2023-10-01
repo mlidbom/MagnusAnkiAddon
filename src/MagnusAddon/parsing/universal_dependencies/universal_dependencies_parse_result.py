@@ -17,4 +17,7 @@ class UniversalDependenciesParseResult:
             token.head = self.tokens[token.head_id]
 
     def to_tree(self) -> str:
-        return self._wrapped.to_tree()
+        if isinstance(self._wrapped, UniDic2UDEntry):
+            return self._wrapped.to_tree()
+        else:
+            return "to_tree_UNSUPPORTED"
