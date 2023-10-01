@@ -9,11 +9,11 @@ class UDTreeParseResult:
 
     def __repr__(self) -> str:
         _argument_separator = ",\n"
-        return f"""R(\n{_argument_separator.join(node._repr(0) for node in self.nodes)})""" # noqa
+        return f"""R(\n{_argument_separator.join(repr(node) for node in self.nodes)})"""
 
     def __str__(self) -> str:
         _argument_separator = "\n"
-        return f"""{_argument_separator.join(node._str(0) for node in self.nodes)}""" # noqa
+        return f"""{_argument_separator.join(str(node) for node in self.nodes)}"""
 
     def __eq__(self, other) -> bool:
         return (isinstance(other, UDTreeParseResult)
