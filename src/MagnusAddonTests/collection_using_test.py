@@ -3,7 +3,7 @@ import pytest
 
 from ankiutils.anki_shim import facade
 from test_collection_factory import replace_anki_collection_for_testing
-from note.jp_collection import JPCollection
+from note.jp_collection import JPLegacyCollection
 
 
 @pytest.fixture(scope="function", autouse=True)
@@ -20,6 +20,6 @@ def test_function(something: str) -> None:
     print(collection.path)
     assert collection.path not in _paths
     _paths.add(collection.path)
-    kanji = JPCollection.fetch_all_wani_kanji_notes()[:10]
+    kanji = JPLegacyCollection.fetch_all_wani_kanji_notes()[:10]
     for kan in kanji:
         print(kan.get_question())

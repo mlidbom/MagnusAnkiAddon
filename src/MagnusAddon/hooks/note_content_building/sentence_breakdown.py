@@ -8,7 +8,7 @@ from note.vocabnote import VocabNote
 from parsing.tree_parsing import tree_parser
 from parsing.tree_parsing.tree_parser_node import TreeParserNode, priorities
 from sysutils.collections.recent_items import RecentItems
-from note.jp_collection import JPCollection
+from note.jp_collection import JPLegacyCollection
 from sysutils.listutils import ListUtils
 
 
@@ -42,7 +42,7 @@ def _create_html_from_nodes(nodes: list[TreeParserNode], excluded: set[str], ext
         vocabs:list[VocabNote] = []
         found_words: set[str] = set()
         if node.is_show_at_all_in_sentence_breakdown():
-            vocabs = JPCollection.search_vocab_notes(search_utils.node_vocab_lookup(node))
+            vocabs = JPLegacyCollection.search_vocab_notes(search_utils.node_vocab_lookup(node))
             vocabs = [voc for voc in vocabs if voc.get_display_question() not in excluded]
             found_words = set((voc.get_question() for voc in vocabs)) | set(ListUtils.flatten_list([voc.get_readings() for voc in vocabs]))
 
@@ -72,7 +72,7 @@ def _create_html_from_nodes(nodes: list[TreeParserNode], excluded: set[str], ext
 def _build_user_extra_list(extra_words: list[str], excluded:set[str]) -> str:
     html = f"""<ul class="sentenceVocabList userExtra depth1">\n"""
     for word in extra_words:
-        vocabs = JPCollection.search_vocab_notes(search_utils.single_vocab_by_form_exact(word))
+        vocabs = JPLegacyCollection.search_vocab_notes(search_utils.single_vocab_by_form_exact(word))
         vocabs = [voc for voc in vocabs if voc.get_display_question() not in excluded]
 
         if vocabs:

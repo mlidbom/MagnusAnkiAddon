@@ -3,14 +3,14 @@ from aqt.utils import showInfo
 from note.kanjinote import KanjiNote
 from note.radicalnote import RadicalNote
 from note.vocabnote import VocabNote
-from note.jp_collection import JPCollection
+from note.jp_collection import JPLegacyCollection
 from wanikani.wanikani_api_client import WanikaniClient
 
 waniClient = WanikaniClient.get_instance()
 
 
 def import_missing_radicals() -> None:
-    all_radicals: list[RadicalNote] = JPCollection.fetch_all_radical_notes()
+    all_radicals: list[RadicalNote] = JPLegacyCollection.fetch_all_radical_notes()
     local_radicals_dictionary = {radical.get_subject_id(): radical for radical in all_radicals}
     all_wani_radicals = waniClient.list_radicals()
     imported = 0
@@ -24,7 +24,7 @@ def import_missing_radicals() -> None:
 
 
 def import_missing_kanji() -> None:
-    all_kanji: list[KanjiNote] = JPCollection.fetch_all_wani_kanji_notes()
+    all_kanji: list[KanjiNote] = JPLegacyCollection.fetch_all_wani_kanji_notes()
     local_kanji_dictionary = {kanji.get_subject_id(): kanji for kanji in all_kanji}
     all_wani_kanji = waniClient.list_kanji()
     imported = 0
@@ -38,7 +38,7 @@ def import_missing_kanji() -> None:
 
 
 def import_missing_vocab() -> None:
-    all_vocabulary: list[VocabNote] = JPCollection.fetch_all_wani_vocab_notes()
+    all_vocabulary: list[VocabNote] = JPLegacyCollection.fetch_all_wani_vocab_notes()
     local_vocabulary_dictionary = {vocab.get_question(): vocab for vocab in all_vocabulary}
     all_wani_vocabulary = waniClient.list_vocabulary()
     imported = 0
