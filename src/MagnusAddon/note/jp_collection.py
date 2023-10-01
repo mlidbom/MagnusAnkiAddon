@@ -44,6 +44,10 @@ class JPLegacyCollection:
     def search_kanji_notes(cls, query: str) -> list[KanjiNote]:
         return [KanjiNote(note) for note in cls._search_notes(query)]
 
+    @classmethod
+    def search_sentence_notes(cls, query: str) -> list[SentenceNote]:
+        return [SentenceNote(note) for note in cls._search_notes(query)]
+
     @staticmethod
     def _search_notes(query: str) -> list[Note]:
         note_ids = [facade.anki_collection().find_notes(query)]

@@ -32,6 +32,7 @@ card_read = f"{Builtin.Card}:{NoteFields.VocabNoteType.Card.Reading}"
 
 note_kanji = f"{Builtin.Note}:{NoteTypes.Kanji}"
 note_vocab = f"{Builtin.Note}:{NoteTypes.Vocab}"
+note_sentence = f"{Builtin.Note}:{NoteTypes.Sentence}"
 
 tag_uk = f"tag:{Mine.Tags.UsuallyKanaOnly}"
 
@@ -78,6 +79,9 @@ def do_lookup(text) -> None:
 
 
 def lookup_promise(search: Callable[[], str]) -> Callable[[],None]: return lambda: do_lookup_and_show_previewer(search())
+
+def sentence_exact(sentence: str) -> str:
+    return f"""{note_sentence} {question}:"{sentence}" """
 
 def sentence_vocab_lookup(sentence:SentenceNote) -> str: return text_vocab_lookup(sentence.get_active_question())
 

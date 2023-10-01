@@ -11,6 +11,7 @@ def setup_object() -> Generator[None, None, None]:
     with replace_anki_collection_for_testing():
         yield
 
+
 def test_kanji_list_viewmodel() -> None:
     sentences = JPLegacyCollection.list_sentence_notes()[:1]
     for sentence in sentences:
