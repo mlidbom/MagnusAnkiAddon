@@ -1,13 +1,27 @@
+import spacy
 from unidic2ud import unidic2ud
 
 from parsing.universal_dependencies.universal_dependencies_parse_result import UniversalDependenciesParseResult
 from sysutils.lazy import Lazy
 
-
-class UD2UDParser:
+class UDParser:
     def __init__(self, name: str):
         self.name = name
+    def parse(self, text: str) -> UniversalDependenciesParseResult:
+        pass
+
+class UD2UDParser(UDParser):
+    def __init__(self, name: str):
+        super().__init__(name)
         self._lazy_parser = Lazy(lambda: unidic2ud.load(name if name != "built-in" else None))
+
+    def parse(self, text: str) -> UniversalDependenciesParseResult:
+        return UniversalDependenciesParseResult(self._lazy_parser.instance()(text))
+
+class GinzaParser(UDParser):
+    def __init__(self) -> None:
+        super().__init__("ja_ginza")
+        self._lazy_parser = Lazy(lambda: spacy.load("ja_ginza"))
 
     def parse(self, text: str) -> UniversalDependenciesParseResult:
         return UniversalDependenciesParseResult(self._lazy_parser.instance()(text))
@@ -27,13 +41,16 @@ kinsei = UD2UDParser("kinsei")  # Maybe. 6 differences. One clearly better and u
 # wabun = UD2UDParser("wabun") #NO. 27 differences. Consistently strange.
 # manyo = UD2UDParser("manyo") #NO. 25 differences. Consistently strange.
 
-best = gendai
+ginza = GinzaParser()
 
-all_parsers = [gendai,
-               spoken,
-               qkana,
-               kindai,
-               default,
-               kinsei,
-               # novel, kyogen, wakan, wabun, manyo
-               ]
+best:UDParser = gendai
+
+all_parsers:list[UDParser] = [gendai,
+                              spoken,
+                              qkana,
+                              kindai,
+                              default,
+                              kinsei,
+                              ginza,
+                              # novel, kyogen, wakan, wabun, manyo
+                              ]

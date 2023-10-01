@@ -1,6 +1,6 @@
 from parsing.universal_dependencies.ud2ud_tree_node import UD2UDTreeNode
 from parsing.universal_dependencies.ud2ud_tree_parser_result import UD2UDParseResult
-from parsing.universal_dependencies.ud2ud_parsers import UD2UDParser
+from parsing.universal_dependencies.ud2ud_parsers import UDParser
 from parsing.universal_dependencies.universal_dependencies_token import UDToken
 
 
@@ -57,7 +57,7 @@ class _Depth:
     depth_3 = 3
     morphemes_4 = 4
 
-def parse(parser:UD2UDParser, text: str) -> UD2UDParseResult:
+def parse(parser:UDParser, text: str) -> UD2UDParseResult:
     tokens = parser.parse(text).tokens[1:]  # The first token always empty.
     depth = 0
     compounds = _build_compounds(tokens, depth)

@@ -1,7 +1,7 @@
 import pytest
 
 from parsing.universal_dependencies import ud2ud_tree_parser, ud2ud_parsers
-from parsing.universal_dependencies.ud2ud_parsers import UD2UDParser
+from parsing.universal_dependencies.ud2ud_parsers import UDParser
 from parsing.universal_dependencies.ud2ud_tree_parser_result import UD2UDParseResult
 from parsing.universal_dependencies.ud2ud_tree_node import UD2UDTreeNode
 
@@ -49,7 +49,7 @@ def only_string_params(param) -> str: return param if isinstance(param, str) els
     ("よかった", None, R(N('よかった', '', [N('よかっ', '良い'), N('た', '')]))),
     ("友達だから余計に気になっちゃうんだよ", None, R(N('友達だから余計に', '友達だから余計だ', [N('友達だから', '', [N('友達', ''), N('だ', ''), N('から', '')]), N('余計に', '余計だ', [N('余計', ''), N('に', 'だ')])]),N('気になっちゃうんだよ', '', [N('気に', '', [N('気', ''), N('に', '')]), N('なっちゃうんだよ', '', [N('なっ', '成る'), N('ちゃう', ''), N('ん', 'の'), N('だ', ''), N('よ', '')])]))),
    ], ids=only_string_params)
-def test_various_stuff(sentence: str, parser: UD2UDParser, expected: UD2UDParseResult) -> None: run_tests(expected, parser, sentence)
+def test_various_stuff(sentence: str, parser: UDParser, expected: UD2UDParseResult) -> None: run_tests(expected, parser, sentence)
 
 @pytest.mark.parametrize('sentence, parser, expected', [
     # various conjugations
@@ -63,21 +63,21 @@ def test_various_stuff(sentence: str, parser: UD2UDParser, expected: UD2UDParseR
     # adjective within verb compound
     ("言えばよかった", None, R(N('言えば', '', [N('言え', '言う'), N('ば', '')]),N('よかった', '', [N('よかっ', '良い'), N('た', '')]))),
 ], ids=only_string_params)
-def test_adjective_compounds(sentence: str, parser: UD2UDParser, expected: UD2UDParseResult) -> None: run_tests(expected, parser, sentence)
+def test_adjective_compounds(sentence: str, parser: UDParser, expected: UD2UDParseResult) -> None: run_tests(expected, parser, sentence)
 
 
 @pytest.mark.parametrize('sentence, parser, expected', [
     ("あいつが話の中に出てくるのが", None, R(N('あいつが', '', [N('あいつ', '彼奴'), N('が', '')]),N('話の中に', '', [N('話の', '', [N('話', ''), N('の', '')]), N('中に', '', [N('中', ''), N('に', '')])]),N('出てくるのが', '', [N('出', '出る'), N('て', ''), N('くる', '来る'), N('の', ''), N('が', '')]))),
     ("自分のことを知ってもらえてない人に", None, R(N('自分のことを', '', [N('自分の', '', [N('自分', ''), N('の', '')]), N('ことを', '', [N('こと', '事'), N('を', '')])]),N('知ってもらえてない人に', '', [N('知ってもらえてない', '', [N('知っ', '知る'), N('て', ''), N('もらえ', '貰う'), N('て', 'てる'), N('ない', '')]), N('人に', '', [N('人', ''), N('に', '')])]))),
 ], ids=only_string_params)
-def test_noun_compounds(sentence: str, parser: UD2UDParser, expected: UD2UDParseResult) -> None: run_tests(expected, parser, sentence)
+def test_noun_compounds(sentence: str, parser: UDParser, expected: UD2UDParseResult) -> None: run_tests(expected, parser, sentence)
 
 @pytest.mark.parametrize('sentence, parser, expected', [
 ], ids=only_string_params)
-def test_temp(sentence: str, parser: UD2UDParser, expected: UD2UDParseResult) -> None: run_tests(expected, parser, sentence)
+def test_temp(sentence: str, parser: UDParser, expected: UD2UDParseResult) -> None: run_tests(expected, parser, sentence)
 
 
-def run_tests(expected:UD2UDParseResult, parser: UD2UDParser, sentence:str) -> None:
+def run_tests(expected:UD2UDParseResult, parser: UDParser, sentence:str) -> None:
     print()
     parser = parser if parser else ud2ud_parsers.best
     result = ud2ud_tree_parser.parse(parser, sentence)
