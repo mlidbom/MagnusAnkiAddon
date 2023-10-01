@@ -1,9 +1,5 @@
-from typing import Sequence
-
 from wanikani_api import models
 from anki.notes import Note
-
-from ankiutils.anki_shim import facade
 from note.jpnote import JPNote
 from note.note_constants import NoteFields
 
@@ -17,7 +13,7 @@ class WaniNote(JPNote):
         level_int = int(level_tag[5:])
         return level_int
 
-    def set_level_tag(self, new_level: int) -> None:
+    def _set_level_tag(self, new_level: int) -> None:
         level_tags = [level for level in self._note.tags if level.startswith('level')]
         for level in level_tags:
             self._note.remove_tag(level)
@@ -25,16 +21,15 @@ class WaniNote(JPNote):
         self._note.flush()
 
     def get_sort_id(self) -> str: return self.get_field(NoteFields.WaniCommon.sort_id)
-    def set_sort_id(self, value: str) -> None: self.set_field(NoteFields.WaniCommon.sort_id, value)
 
     def get_subject_id(self) -> int: return int(self.get_field(NoteFields.WaniCommon.subject_id))
-    def set_subject_id(self, value: int) -> None: self.set_field(NoteFields.WaniCommon.subject_id, str(value))
+    def _set_subject_id(self, value: int) -> None: self.set_field(NoteFields.WaniCommon.subject_id, str(value))
 
     def get_lesson_position(self) -> int:
         if not self.is_wani_note(): return 0
         return int(self.get_field(NoteFields.WaniCommon.lesson_position))
 
-    def set_lesson_position(self, value: int) -> None:
+    def _set_lesson_position(self, value: int) -> None:
         current_position = self.get_field(NoteFields.WaniCommon.lesson_position)
 
         # Wani api does some weird stuff sometimes returning 0 as lesson positions for many subjects.
@@ -60,17 +55,17 @@ class WaniNote(JPNote):
             return 0 #non wani items
         return int(self.get_field(NoteFields.WaniCommon.level))
 
-    def set_level(self, value: int) -> None:
-        self.set_level_tag(value)
+    def _set_level(self, value: int) -> None:
+        self._set_level_tag(value)
         self.set_field(NoteFields.WaniCommon.level, str(value))
 
     def set_auxiliary_meanings_whitelist(self, value:str) -> None: self.set_field(NoteFields.WaniCommon.auxiliary_meanings_whitelist, value)
     def set_auxiliary_meanings_blacklist(self, value:str) -> None: self.set_field(NoteFields.WaniCommon.auxiliary_meanings_blacklist, value)
 
     def update_from_wani(self, wani_model: models.Subject):
-        self.set_level(wani_model.level)
-        self.set_subject_id(wani_model.id)
-        self.set_lesson_position(wani_model.lesson_position)
+        self._set_level(wani_model.level)
+        self._set_subject_id(wani_model.id)
+        self._set_lesson_position(wani_model.lesson_position)
         self.set_document_url(wani_model.document_url)
 
         my_learning_order = "level:{:02d}-lesson_position:{:03d}".format(self.get_level(), self.get_lesson_position())

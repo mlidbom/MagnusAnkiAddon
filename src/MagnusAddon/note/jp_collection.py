@@ -5,8 +5,8 @@ from anki.notes import NoteId, Note
 
 from ankiutils.anki_shim import facade
 from ankiutils.search_utils import Builtin
+from note.jpnote import JPNote
 from note.sentencenote import SentenceNote
-from note.waninote import WaniNote
 from note.radicalnote import RadicalNote
 from note.vocabnote import VocabNote
 from note.cardutils import CardUtils
@@ -106,12 +106,12 @@ class JPCollection:
         return [facade.anki_collection().get_note(note_id) for note_id in note_ids]
 
     @staticmethod
-    def unsuspend_note_cards(note: WaniNote, name: str) -> None:
-        print("Unsuspending {}: {}".format(WaniNote.get_note_type_name(note), name))
+    def unsuspend_note_cards(note: JPNote, name: str) -> None:
+        print("Unsuspending {}: {}".format(JPNote.get_note_type_name(note), name))
         facade.anki_collection().sched.unsuspend_cards(note.card_ids())
 
     @staticmethod
-    def prioritize_note_cards(note: WaniNote) -> None:
+    def prioritize_note_cards(note: JPNote) -> None:
         cards = [facade.anki_collection().get_card(card_id) for card_id in note.card_ids()]
         for card in cards:
             CardUtils.prioritize(card)

@@ -1,4 +1,3 @@
-from ankiutils import anki_shim
 from note.jp_collection import JPCollection
 from note.kanjinote import KanjiNote
 from note.sentencenote import SentenceNote
