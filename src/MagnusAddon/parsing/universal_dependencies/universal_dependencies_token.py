@@ -6,12 +6,18 @@ from sysutils import typed
 def _head(token:UDPipeEntry) -> UDPipeEntry:
     return token.head # noqa
 
+_missing_value = "_"
+
 class UD2UDToken:
     def __init__(self, token: UDPipeEntry) -> None:
+        self.id = typed.int_(token.id)
+        self.deps = typed.str_(token.deps)
+        self.misc = typed.str_(token.misc)
         self.lemma = typed.str_(token.lemma)
         self.form = typed.str_(token.form)
-        self.upos = ud_universal_part_of_speech_tag.get_tag(typed.str_(token.upos))
-        self.xpos = ud_japanese_part_of_speech_tag.get_tag(typed.str_(token.xpos))
-        self.deprel = ud_relationship_tag.get_tag(type.__str__(token.deprel))
+        self.upos = ud_universal_part_of_speech_tag.get_tag(typed.str_(token.upos)) if token.upos != _missing_value else None
+        self.xpos = ud_japanese_part_of_speech_tag.get_tag(typed.str_(token.xpos)) if token.xpos != _missing_value else None
+        self.deprel = ud_relationship_tag.get_tag(typed.str_(token.deprel)) if token.deprel != _missing_value else None
         self.feats = typed.str_(token.feats)
         self.head_id = typed.int_(_head(token).id)
+        self.head = self #ugly hack to get python typing working in spite of the recursive nature of this class. Will be replaced with correct value by parent object.

@@ -1,8 +1,7 @@
 from typing import Callable
 
-from unidic2ud import UDPipeEntry
-
-from parsing.universal_dependencies import ud2ud_tree_parser, ud_relationship_tag, ud_japanese_part_of_speech_tag
+from parsing.universal_dependencies import ud2ud_tree_parser
+from parsing.universal_dependencies.universal_dependencies_token import UD2UDToken
 from sysutils import kana_utils
 from sysutils.stringutils import StringUtils
 
@@ -10,7 +9,7 @@ from sysutils.stringutils import StringUtils
 class UD2UDTreeNode:
     _max_lookahead = 12
 
-    def __init__(self, surface: str, base: str, children: list['UD2UDTreeNode'] = None, tokens: list[UDPipeEntry] = None) -> None:
+    def __init__(self, surface: str, base: str, children: list['UD2UDTreeNode'] = None, tokens: list[UD2UDToken] = None) -> None:
         self.surface = surface
         self.base = base if base else surface
         self.tokens = tokens
@@ -28,7 +27,7 @@ class UD2UDTreeNode:
             node.visit(callback)
 
     @classmethod
-    def create(cls, tokens: list[UDPipeEntry], depth:int) -> 'UD2UDTreeNode':
+    def create(cls, tokens: list[UD2UDToken], depth:int) -> 'UD2UDTreeNode':
         # noinspection PyProtectedMember
         children = ud2ud_tree_parser._parse_recursive(tokens, depth + 1) if len(tokens) > 1 else []
         surface = "".join(tok.form for tok in tokens)
@@ -41,9 +40,9 @@ class UD2UDTreeNode:
             token = self.tokens[0]
             return (f"""{StringUtils.pad_to_length(str(token.id), 3)}""" +
                     f"""{StringUtils.pad_to_length(str(token.head.id), 3)}""" +  # noqa
-                    f"""{StringUtils.pad_to_length(ud_relationship_tag.get_tag(token.deprel).description, 28)}""" +
-                    f"""{StringUtils.pad_to_length(ud_japanese_part_of_speech_tag.get_tag(token.xpos).description, 30)}""" +
-                    f"""{StringUtils.pad_to_length(token.upos, 7)}""" +
+                    f"""{StringUtils.pad_to_length(token.deprel.description, 28)}""" +
+                    f"""{StringUtils.pad_to_length(token.xpos.description, 30)}""" +
+                    f"""{StringUtils.pad_to_length(token.upos.description, 7)}""" +
                     f"""feat:{token.feats} deps:{token.deps} misc:{token.misc}""")
         return "_"
 

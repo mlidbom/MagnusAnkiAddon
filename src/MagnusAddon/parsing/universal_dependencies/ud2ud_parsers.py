@@ -1,5 +1,6 @@
-from unidic2ud import unidic2ud, UniDic2UDEntry
+from unidic2ud import unidic2ud
 
+from parsing.universal_dependencies.universal_dependencies_parse_result import UniversalDependenciesParseResult
 from sysutils.lazy import Lazy
 
 
@@ -8,8 +9,8 @@ class UD2UDParser:
         self.name = name
         self._lazy_parser = Lazy(lambda: unidic2ud.load(name if name != "built-in" else None))
 
-    def parse(self, text: str) -> UniDic2UDEntry:
-        return self._lazy_parser.instance()(text)
+    def parse(self, text: str) -> UniversalDependenciesParseResult:
+        return UniversalDependenciesParseResult(self._lazy_parser.instance()(text))
 
 
 gendai = UD2UDParser("gendai")  # The leader so far, quite accurate

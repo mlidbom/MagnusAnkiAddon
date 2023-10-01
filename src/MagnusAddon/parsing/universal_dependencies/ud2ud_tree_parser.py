@@ -1,19 +1,18 @@
-from unidic2ud import UDPipeEntry
-
 from parsing.universal_dependencies.ud2ud_tree_node import UD2UDTreeNode
 from parsing.universal_dependencies.ud2ud_tree_parser_result import UD2UDParseResult
 from parsing.universal_dependencies.ud2ud_parsers import UD2UDParser
+from parsing.universal_dependencies.universal_dependencies_token import UD2UDToken
 
 
-def _consume_children_of(entry:UDPipeEntry, tokens:list[UDPipeEntry]) -> int:
+def _consume_children_of(entry:UD2UDToken, tokens:list[UD2UDToken]) -> int:
     index = 0
     for current_token in tokens:
-        if _head(current_token).id != entry.id:
+        if current_token.head.id != entry.id:
             break
         index += 1
     return index
 
-def _consume_until(entry:UDPipeEntry, tokens:list[UDPipeEntry]) -> int:
+def _consume_until(entry:UD2UDToken, tokens:list[UD2UDToken]) -> int:
     index = 0
     for current_token in tokens:
         if current_token.id == entry.id:
@@ -21,15 +20,15 @@ def _consume_until(entry:UDPipeEntry, tokens:list[UDPipeEntry]) -> int:
         index += 1
     return index
 
-def _build_compounds(tokens:list[UDPipeEntry], depth:int) -> list[list[UDPipeEntry]]:
+def _build_compounds(tokens:list[UD2UDToken], depth:int) -> list[list[UD2UDToken]]:
     if depth == _Depth.morphemes_4:
         return [[token] for token in tokens]
 
-    compounds: list[list[UDPipeEntry]] = []
+    compounds: list[list[UD2UDToken]] = []
     remaining_tokens = tokens.copy()
     while remaining_tokens:
         compound_start = remaining_tokens[0]
-        compound_head: UDPipeEntry = _head(compound_start)
+        compound_head = compound_start.head
         token_index = 1
 
         token_index += _consume_children_of(compound_start, remaining_tokens[token_index:])
@@ -58,11 +57,8 @@ class _Depth:
     depth_3 = 3
     morphemes_4 = 4
 
-def _head(token:UDPipeEntry) -> UDPipeEntry:
-    return token.head # noqa
-
 def parse(parser:UD2UDParser, text: str) -> UD2UDParseResult:
-    tokens = parser.parse(text)[1:]  # The first token always empty.
+    tokens = parser.parse(text).tokens[1:]  # The first token always empty.
     depth = 0
     compounds = _build_compounds(tokens, depth)
     while len(compounds) == 1 and depth < _Depth.depth_2:  # making the whole text into a compound is not usually desired, but above depth 2 we loose words, so don't go that deep.
