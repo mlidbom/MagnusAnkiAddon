@@ -34,13 +34,13 @@ def _tree_parse_algorithm_1(result_tokens:list[UDPipeEntry], depth:int) -> list[
 
         token_index += _consume_children_of(compound_start, remaining_tokens[token_index:])
 
-        if depth == 0:
+        if depth == Depth.surface_0:
             token_index += _consume_until(compound_head, remaining_tokens[token_index:])
 
         if len(remaining_tokens) > token_index:
             if (depth == Depth.surface_0
-                    or depth == 1
-                    or depth == 2 and compound_head.id == compound_start.id + 1):
+                    or depth == Depth.depth_1
+                    or depth == Depth.depth_2 and compound_head.id == compound_start.id + 1):
                 current_token = remaining_tokens[token_index]
                 if current_token.id == compound_head.id:
                     token_index += 1
@@ -55,6 +55,7 @@ class Depth:
     surface_0 = 0
     depth_1 = 1
     depth_2 = 2
+    depth_3 = 3
     morphemes_4 = 4
 
 def _head(token:UDPipeEntry) -> UDPipeEntry:
@@ -66,8 +67,8 @@ def parse(parser:UD2UDParser, text: str) -> UD2UDParseResult:
 def parse_internal(result_tokens) -> UD2UDParseResult:
     result_tokens = result_tokens[1:]  # The first is some empty thingy we don't want.
     depth = 0
-    compounds = _tree_parse_algorithm_1(result_tokens, depth)
-    while len(compounds) == 1 and depth < 2: # making the whole text into a compound is not usually desired, but above depth 2 we loose words, so don't go that deep.
+    compounds: list[list[UDPipeEntry]] = _tree_parse_algorithm_1(result_tokens, depth)
+    while len(compounds) == 1 and depth < Depth.depth_2: # making the whole text into a compound is not usually desired, but above depth 2 we loose words, so don't go that deep.
         depth += 1
         compounds = _tree_parse_algorithm_1(result_tokens, depth)
 
