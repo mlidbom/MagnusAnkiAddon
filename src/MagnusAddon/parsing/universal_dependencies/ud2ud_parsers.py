@@ -1,9 +1,5 @@
 import spacy
 from unidic2ud import unidic2ud
-import ginza
-import ja_ginza
-
-from ja_ginza import load
 
 from parsing.universal_dependencies.universal_dependencies_parse_result import UniversalDependenciesParseResult
 from sysutils.lazy import Lazy
@@ -24,8 +20,7 @@ class UD2UDParser(UDParser):
 
 class GinzaParser(UDParser):
     def __init__(self) -> None:
-        super().__init__("ja_ginza")
-        test = spacy.load("ja_ginza")
+        super().__init__("ginza")
         self._lazy_parser = Lazy(lambda: spacy.load("ja_ginza"))
 
     def parse(self, text: str) -> UniversalDependenciesParseResult:
@@ -34,13 +29,14 @@ class GinzaParser(UDParser):
 
 
 ginza = GinzaParser() # Yes. 15 Differences to gendai. 8 Better, 6 worse, one unclear.
+best = ginza
 gendai = UD2UDParser("gendai")  # Yes. 15 Differences to ginza. 6 Better, 8 worse, one unclear.
 spoken = UD2UDParser("spoken")  # ??. Zero differences compared to gendai so far...
 
-qkana = UD2UDParser("qkana")  # Maybe. 2 difference with gendai. One clearly better and used in tests(But would likely be caught by dictionary compounding that we want anyway.).
-kindai = UD2UDParser("kindai")  # Maybe. 8 Differences with gendai. One clearly better and used in tests(But would likely be caught by dictionary compounding that we want anyway.).
-default = UD2UDParser("built-in")  # Maybe. 14 differences with gendai. One clearly better and used in tests(But would likely be caught by dictionary compounding that we want anyway.).
-kinsei = UD2UDParser("kinsei")  # Maybe. 6 differences with gendai. One clearly better and used in tests(But would likely be caught by dictionary compounding that we want anyway.). 1 arguably better
+qkana = UD2UDParser("qkana")  # Maybe. 2 difference with gendai. One clearly better and used in tests(Not any more. Ginza, the current winner handled this case fine.).
+kindai = UD2UDParser("kindai")  # Maybe. 8 Differences with gendai. One clearly better and used in tests(Not any more. Ginza, the current winner handled this case fine.).
+default = UD2UDParser("built-in")  # Maybe. 14 differences with gendai. One clearly better and used in tests(Not any more. Ginza, the current winner handled this case fine.).
+kinsei = UD2UDParser("kinsei")  # Maybe. 6 differences with gendai. One clearly better and used in tests(Not any more. Ginza, the current winner handled this case fine.). 1 arguably better
 
 # novel = UD2UDParser("novel") # NO. 2 difference with gendai. Both worse. Not worth the odds to try for the user.
 # kyogen = UD2UDParser("kyogen") # NO. 18 differences with gendai. Consistently strange. Did often pick up kanji 無い but that was the only upside.
@@ -48,9 +44,6 @@ kinsei = UD2UDParser("kinsei")  # Maybe. 6 differences with gendai. One clearly 
 # wabun = UD2UDParser("wabun") #NO. 27 differences with gendai. Consistently strange.
 # manyo = UD2UDParser("manyo") #NO. 25 differences with gendai. Consistently strange.
 
-
-
-best:UDParser = ginza
 
 all_parsers:list[UDParser] = [gendai,
                               spoken,
