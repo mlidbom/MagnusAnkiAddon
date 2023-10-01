@@ -37,10 +37,10 @@ class RadicalNote(WaniNote):
 
     @staticmethod
     def create_from_wani_radical(wani_radical: models.Radical):
-        note = Note(facade.col(), facade.col().models.byName(NoteTypes.Radical))
+        note = Note(facade.anki_collection(), facade.anki_collection().models.byName(NoteTypes.Radical))
         note.add_tag("__imported")
         note.add_tag(Mine.Tags.Wani)
         radical_note = RadicalNote(note)
-        facade.col().addNote(note)
+        facade.anki_collection().addNote(note)
         radical_note.set_q(wani_radical.characters)
         radical_note.update_from_wani(wani_radical)

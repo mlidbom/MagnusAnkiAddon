@@ -164,10 +164,10 @@ class KanjiNote(WaniNote):
 
     @staticmethod
     def create_from_wani_kanji(wani_kanji: models.Kanji):
-        note = Note(facade.col(), facade.col().models.byName(NoteTypes.Kanji))
+        note = Note(facade.anki_collection(), facade.anki_collection().models.byName(NoteTypes.Kanji))
         note.add_tag("__imported")
         note.add_tag(Mine.Tags.Wani)
         kanji_note = KanjiNote(note)
-        facade.col().addNote(note) # todo static access to col
+        facade.anki_collection().addNote(note) # todo static access to col
         kanji_note.set_question(wani_kanji.characters)
         kanji_note.update_from_wani(wani_kanji)

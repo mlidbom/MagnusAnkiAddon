@@ -1,8 +1,11 @@
 from __future__ import annotations
+
+from typing import Sequence
+
 from anki.cards import Card
 from anki.notes import Note
 
-
+from ankiutils.anki_shim import facade
 from note.note_constants import Mine, NoteTypes
 
 
@@ -39,6 +42,13 @@ class JPNote:
     def get_note_type_name(self) -> str:
         # noinspection PyProtectedMember
         return self._note._note_type['name']  # Todo: find how to do this without digging into protected members
+
+    def delete(self) -> None:
+        facade.anki_collection().remNotes([self._note.id])
+        facade.anki_collection().save()
+
+    def card_ids(self) -> Sequence[int]:
+        return self._note.card_ids()
 
     def is_wani_note(self) -> bool:
         return Mine.Tags.Wani in self._note.tags

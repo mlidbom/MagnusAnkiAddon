@@ -2,7 +2,7 @@ from anki.cards import *
 from anki.consts import QUEUE_TYPE_NEW
 
 from ankiutils.anki_shim import facade
-from note.waninote import WaniNote
+from note.jpnote import JPNote
 from note.note_constants import NoteTypes
 
 
@@ -27,19 +27,19 @@ class CardUtils:
             card.flush()
 
     @classmethod
-    def prioritize_note_cards(cls, note: WaniNote, name: str):
-        cards = [facade.col().get_card(card_id) for card_id in note.card_ids()]
+    def prioritize_note_cards(cls, note: JPNote, name: str):
+        cards = [facade.anki_collection().get_card(card_id) for card_id in note.card_ids()]
         for card in cards:
-            print("Prioritizing {}: {}".format(WaniNote.get_note_type_name(note), name))
+            print("Prioritizing {}: {}".format(JPNote.get_note_type_name(note), name))
             CardUtils.prioritize(card)
 
     @classmethod
-    def answer_again_with_zero_interval_for_new_note_cards(cls, note: WaniNote, name: str):
-        cards = [facade.col().get_card(card_id) for card_id in note.card_ids()]
+    def answer_again_with_zero_interval_for_new_note_cards(cls, note: JPNote, name: str):
+        cards = [facade.anki_collection().get_card(card_id) for card_id in note.card_ids()]
         for card in cards:
             if CardUtils.is_new(card):
-                print("Answering new card again {}: {}".format(WaniNote.get_note_type_name(note), name))
+                print("Answering new card again {}: {}".format(JPNote.get_note_type_name(note), name))
                 card.start_timer()  # answerCard crashes unless I do this.
-                facade.col().sched.answerCard(card, 1)
+                facade.anki_collection().sched.answerCard(card, 1)
                 card.due = int(time.time())
                 card.flush()

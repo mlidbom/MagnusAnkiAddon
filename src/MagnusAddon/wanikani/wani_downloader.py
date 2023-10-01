@@ -16,7 +16,7 @@ class FileDownloadError(Exception):
 class WaniDownloader:
     @staticmethod
     def media_dir() -> str:
-        return facade.col().media.dir()
+        return facade.anki_collection().media.dir()
 
     @classmethod
     def download_file(cls, url, filename) -> str:

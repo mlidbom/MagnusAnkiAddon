@@ -15,7 +15,7 @@ def setup_object() -> Generator[None, None, None]:
 _paths: set[str] = set()
 @pytest.mark.parametrize('something', ["string1", "string2", "string3","string4","string5","string6","string7","string8","string9","string10","string11"])
 def test_function(something: str) -> None:
-    collection = facade.col()
+    collection = facade.anki_collection()
     print()
     print(collection.path)
     assert collection.path not in _paths

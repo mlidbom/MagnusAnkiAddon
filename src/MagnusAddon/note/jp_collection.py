@@ -23,7 +23,7 @@ class JPCollection:
     @staticmethod
     def fetch_notes_by_note_type_and_field_value(note_type: str, field: str,
                                                  field_values: List) -> List[anki.notes.Note]:
-        note_ids = [facade.col().find_notes(
+        note_ids = [facade.anki_collection().find_notes(
             f"{Builtin.Note}:{note_type} {field}:{field_value}")
             for field_value in field_values]
 
@@ -46,7 +46,7 @@ class JPCollection:
 
     @staticmethod
     def _search_notes(query: str) -> list[Note]:
-        note_ids = [facade.col().find_notes(query)]
+        note_ids = [facade.anki_collection().find_notes(query)]
         note_ids = ListUtils.flatten_list(note_ids)
         notes = JPCollection.fetch_notes_by_id(note_ids)
         return notes
@@ -103,15 +103,15 @@ class JPCollection:
 
     @staticmethod
     def fetch_notes_by_id(note_ids: Sequence[NoteId]) -> List[anki.notes.Note]:
-        return [facade.col().get_note(note_id) for note_id in note_ids]
+        return [facade.anki_collection().get_note(note_id) for note_id in note_ids]
 
     @staticmethod
     def unsuspend_note_cards(note: WaniNote, name: str) -> None:
         print("Unsuspending {}: {}".format(WaniNote.get_note_type_name(note), name))
-        facade.col().sched.unsuspend_cards(note.card_ids())
+        facade.anki_collection().sched.unsuspend_cards(note.card_ids())
 
     @staticmethod
     def prioritize_note_cards(note: WaniNote) -> None:
-        cards = [facade.col().get_card(card_id) for card_id in note.card_ids()]
+        cards = [facade.anki_collection().get_card(card_id) for card_id in note.card_ids()]
         for card in cards:
             CardUtils.prioritize(card)

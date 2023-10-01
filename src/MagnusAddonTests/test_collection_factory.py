@@ -21,7 +21,7 @@ def replace_anki_collection_for_testing() -> Generator[None, None, None]:
         collection_file = path.join(tmp_dirname, "collection.anki2")
         collection = create_collection(collection_file)
         _thread_local.anki_collection = collection
-        anki_shim.facade.col = get_thread_local_collection
+        anki_shim.facade.anki_collection = get_thread_local_collection
         yield
 
         collection.close()

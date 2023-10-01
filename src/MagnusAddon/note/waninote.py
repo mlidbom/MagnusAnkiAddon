@@ -84,10 +84,3 @@ class WaniNote(JPNote):
 
         self.set_auxiliary_meanings_whitelist(", ".join(auxiliary_meanings_whitelist))
         self.set_auxiliary_meanings_blacklist(", ".join(auxiliary_meanings_blacklist))
-
-    def delete(self) -> None:
-        facade.col().remNotes([self._note.id])
-        facade.col().save()
-
-    def card_ids(self) -> Sequence[int]:
-        return self._note.card_ids()

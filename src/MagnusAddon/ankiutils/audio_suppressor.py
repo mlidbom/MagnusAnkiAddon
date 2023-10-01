@@ -20,4 +20,4 @@ class AudioSuppressor:
         av_player.play_tags = null_op
         threading.Timer(time, self.restore_play_tags_method).start()
 
-audio_suppressor = AudioSuppressor()
+audio_suppressor: AudioSuppressor = AudioSuppressor()

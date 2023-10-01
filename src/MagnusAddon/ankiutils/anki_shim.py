@@ -2,7 +2,10 @@ from anki.collection import Collection
 from aqt import mw
 
 class Facade:
-    def col(self) -> Collection: # noqa
-        return mw.col
+    def __init__(self) -> None:
+        self._anki_collection = mw.col
 
-facade = Facade()
+    def anki_collection(self) -> Collection:
+        return self._anki_collection
+
+facade: Facade = Facade()
