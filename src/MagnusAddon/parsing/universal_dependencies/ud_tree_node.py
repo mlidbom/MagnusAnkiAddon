@@ -26,14 +26,6 @@ class UDTreeNode:
         for node in self.children:
             node.visit(callback)
 
-    @classmethod
-    def create(cls, tokens: list[UDToken], depth:int) -> 'UDTreeNode':
-        # noinspection PyProtectedMember
-        children = ud_tree_parser._parse_recursive(tokens, depth + 1) if len(tokens) > 1 else []
-        surface = "".join(tok.form for tok in tokens)
-        base = "".join(tok.form for tok in tokens[:-1]) + tokens[-1].lemma
-        return UDTreeNode(surface, base, children, tokens)
-
 
     def _str_pos(self) -> str:
         if self.is_morpheme():

@@ -64,7 +64,7 @@ def parse(parser:UDParser, text: str) -> UDTreeParseResult:
     while len(compounds) == 1 and depth < _Depth.depth_2:  # making the whole text into a compound is not usually desired, but above depth 2 we loose words, so don't go that deep.
         depth += 1
         compounds = _build_compounds(tokens, depth)
-    return UDTreeParseResult(*[UDTreeNode.create(compound, depth) for compound in compounds])
+    return UDTreeParseResult(*[_create_node(compound, depth) for compound in compounds])
 
 
 def _parse_recursive(parent_node_tokens, depth:int) -> list[UDTreeNode]:
@@ -73,4 +73,11 @@ def _parse_recursive(parent_node_tokens, depth:int) -> list[UDTreeNode]:
         depth += 1
         compounds = _build_compounds(parent_node_tokens, depth)
 
-    return [UDTreeNode.create(phrase, depth) for phrase in compounds]
+    return [_create_node(phrase, depth) for phrase in compounds]
+
+
+def _create_node(tokens: list[UDToken], depth:int) -> 'UDTreeNode':
+    children = _parse_recursive(tokens, depth + 1) if len(tokens) > 1 else []
+    surface = "".join(tok.form for tok in tokens)
+    base = "".join(tok.form for tok in tokens[:-1]) + tokens[-1].lemma
+    return UDTreeNode(surface, base, children, tokens)
