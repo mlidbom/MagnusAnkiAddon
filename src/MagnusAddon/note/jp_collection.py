@@ -1,10 +1,10 @@
 from typing import List, Sequence
 
 import anki
-from anki.notes import NoteId, Note
 
 from ankiutils.anki_shim import facade
 from ankiutils.search_utils import Builtin
+from anki.notes import NoteId, Note
 from note.jpnote import JPNote
 from note.sentencenote import SentenceNote
 from note.radicalnote import RadicalNote

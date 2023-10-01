@@ -5,7 +5,7 @@ from note.jpnote import JPNote
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
 from sysutils.stringutils import StringUtils
-from viewmodels import sentence_kanji_list_viewmodel
+from viewmodels.kanji_list import sentence_kanji_list_viewmodel
 
 
 def render_kanji_list(html:str, card: Card, _type_of_display:str) -> str:
