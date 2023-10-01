@@ -23,11 +23,14 @@ class UniversalDependenciesParseResult:
         if isinstance(wrapped, UniDic2UDEntry):
             self._wrapped = wrapped
             self._wrapped_tokens:list[UDPipeEntry] = [token for token in wrapped]
-            self.tokens = [UDToken(token) for token in self._wrapped_tokens]
+            self.tokens = [UDToken(token) for token in self._wrapped_tokens] # The first is always empty
 
         for token in self.tokens:
             # noinspection PyProtectedMember
             token.head = self.tokens[token._head_id]
+
+        if isinstance(wrapped, UniDic2UDEntry):
+            self.tokens = self.tokens[1:] # The first is always empty so get rid of it
 
     def to_tree(self) -> str:
         if isinstance(self._wrapped, UniDic2UDEntry):
