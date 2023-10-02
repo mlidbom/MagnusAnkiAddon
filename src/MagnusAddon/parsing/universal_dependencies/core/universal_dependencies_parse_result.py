@@ -11,15 +11,17 @@ class UDParseResult:
     def __init__(self, wrapped: Union[UniDic2UDEntry, Doc]):
         self._wrapped = wrapped
 
+        self._wrapped_tokens: Union[list[UDPipeEntry], list[Token]]
+
         if isinstance(wrapped, Doc):
             sents = [sent for sent in wrapped.sents]
             self._wrapped_sent_tokens:list[list[Token]] = [[token for token in sent] for sent in sents]
-            self._wrapped_tokens:list[Token] = ListUtils.flatten_list(self._wrapped_sent_tokens)
+            self._wrapped_tokens = ListUtils.flatten_list(self._wrapped_sent_tokens)
 
             self.tokens = [UDToken(token) for token in self._wrapped_tokens]
 
         if isinstance(wrapped, UniDic2UDEntry):
-            self._wrapped_tokens:list[UDPipeEntry] = [token for token in wrapped]
+            self._wrapped_tokens = [token for token in wrapped]
             self.tokens = [UDToken(token) for token in self._wrapped_tokens] # The first is always empty
 
         for token in self.tokens:
