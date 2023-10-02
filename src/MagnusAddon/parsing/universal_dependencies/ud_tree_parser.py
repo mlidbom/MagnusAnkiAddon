@@ -67,7 +67,7 @@ def parse(parser:UDParser, text: str) -> UDTreeParseResult:
     return UDTreeParseResult(*[_create_node(compound, depth) for compound in compounds])
 
 
-def _parse_recursive(parent_node_tokens, depth:int) -> list[UDTreeNode]:
+def _parse_recursive(parent_node_tokens:list[UDToken], depth:int) -> list[UDTreeNode]:
     compounds = _build_compounds(parent_node_tokens, depth)
     while len(compounds) < 2 and depth <= _Depth.morphemes_4: # if len == 1 the result is identical to the parent, go down in granularity and try again
         depth += 1

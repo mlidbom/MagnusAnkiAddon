@@ -13,7 +13,7 @@ class StringUtils:
         return value + " " * padding
 
     @staticmethod
-    def extract_characters(string: str):
+    def extract_characters(string: str) -> list[str]:
         return [char for char in string if not char.isspace()]
 
     @staticmethod

@@ -13,7 +13,7 @@ class UdJapanesePartOfSpeechTag:
 _english_pos_tag_dictionary: dict[str, UdJapanesePartOfSpeechTag] = dict()
 _japanese_pos_tag_dictionary: dict[str, UdJapanesePartOfSpeechTag] = dict()
 
-def get_tag(japanese:str):
+def get_tag(japanese:str) -> UdJapanesePartOfSpeechTag:
     return _japanese_pos_tag_dictionary[japanese]
 
 

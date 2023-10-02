@@ -1,5 +1,5 @@
 class UdUniversalPartOfSpeechTag:
-    def __init__(self, tag: str, description):
+    def __init__(self, tag: str, description: str):
         self.tag = tag
         self.description = description
 

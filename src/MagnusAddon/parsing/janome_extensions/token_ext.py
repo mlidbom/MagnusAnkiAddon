@@ -1,3 +1,5 @@
+from typing import Any
+
 from parsing.janome_extensions.parts_of_speech import PartsOfSpeech, POS
 from sysutils import typed, kana_utils
 
@@ -32,7 +34,7 @@ class TokenExt:
             #", " + kana_utils.pad_to_length(f"'{self.node_type}'", 10),
             ", " + str(self.parts_of_speech)])
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: Any) -> bool:
         if isinstance(other, TokenExt):
             return (self.base_form == other.base_form and
                     self.surface == other.surface and

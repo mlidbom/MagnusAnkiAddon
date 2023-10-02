@@ -1,4 +1,4 @@
-from wanikani_api import models  # type: ignore
+from wanikani_api import models
 from anki.notes import Note
 
 from ankiutils.anki_shim import facade
@@ -25,7 +25,7 @@ class RadicalNote(WaniNote):
     def get_amalgamation_subject_ids(self) -> str: return super().get_field(NoteFields.Radical.amalgamation_subject_ids)
     def set_amalgamation_subject_ids(self, value: str) -> None: super().set_field(NoteFields.Radical.amalgamation_subject_ids, value)
 
-    def update_from_wani(self, wani_radical: models.Radical):
+    def update_from_wani(self, wani_radical: models.Radical) -> None:
         super().update_from_wani(wani_radical)
         self.set_meaning_mnemonic(wani_radical.meaning_mnemonic)
         self.set_a(wani_radical.meanings[0].meaning)
@@ -34,7 +34,7 @@ class RadicalNote(WaniNote):
         self.set_amalgamation_subject_ids(", ".join(amalgamation_subject_ids))
 
     @staticmethod
-    def create_from_wani_radical(wani_radical: models.Radical):
+    def create_from_wani_radical(wani_radical: models.Radical) -> None:
         note = Note(facade.anki_collection(), facade.anki_collection().models.by_name(NoteTypes.Radical))
         note.add_tag("__imported")
         note.add_tag(Mine.Tags.Wani)

@@ -20,19 +20,19 @@ def _str_pos(self: UDTreeNode) -> str:
     return "_"
 
 
-def _children_repr(self: UDTreeNode, level=1) -> str:
+def _children_repr(self: UDTreeNode, level:int = 1) -> str:
     if not self.children:
         return ""
     children_string = ', \n'.join(repr_(child, level) for child in self.children)
     return f""", [\n{children_string}]"""
 
 
-def repr_(self: UDTreeNode, level: int):
+def repr_(self: UDTreeNode, level: int) -> str:
     indent = "　　" * level
     return f"""{indent}N('{self.surface}', '{self.base if self.is_inflected() else ""}'{_children_repr(self, level + 1)})"""
 
 
-def _children_str(self: UDTreeNode, level=1) -> str:
+def _children_str(self: UDTreeNode, level:int = 1) -> str:
     if not self.children:
         return ""
 
@@ -41,7 +41,7 @@ def _children_str(self: UDTreeNode, level=1) -> str:
     return f"""{line_start}{children_string}"""
 
 
-def str_(self: UDTreeNode, level: int):
+def str_(self: UDTreeNode, level: int) -> str:
     indent = "　　" * level
     start = f"""{indent}{self.surface}{"　－　" + self.base if self.is_inflected() else ""}"""
     start = kana_utils.pad_to_length(start, 20)

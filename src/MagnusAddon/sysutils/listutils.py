@@ -1,4 +1,4 @@
-from typing import Iterable, TypeVar, Callable, List
+from typing import Iterable, TypeVar, Callable, Sequence
 
 T = TypeVar('T')
 
@@ -11,5 +11,5 @@ class ListUtils:
         return False
 
     @staticmethod
-    def flatten_list(the_list: List):
+    def flatten_list(the_list: Sequence[Sequence[T]]) -> list[T]:
         return [item for sub_list in the_list for item in sub_list]

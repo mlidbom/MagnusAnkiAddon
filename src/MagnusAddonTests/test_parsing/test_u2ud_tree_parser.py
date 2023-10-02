@@ -1,3 +1,5 @@
+from typing import Any
+
 import pytest
 
 from parsing.universal_dependencies import ud_tree_parser, ud_parsers
@@ -7,7 +9,7 @@ from parsing.universal_dependencies.ud_tree_node import UDTreeNode
 
 N = UDTreeNode
 R = UDTreeParseResult
-def only_string_params(param) -> str: return param if isinstance(param, str) else ""
+def only_string_params(param:Any) -> str: return param if isinstance(param, str) else ""
 
 @pytest.mark.parametrize('sentence, expected', [
     # todo　でも, かも

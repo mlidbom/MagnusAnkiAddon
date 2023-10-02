@@ -1,5 +1,5 @@
 from anki.collection import Collection
-from aqt import mw, AnkiQt
+from aqt import mw, AnkiQt  # type: ignore
 
 from sysutils.typed import checked_cast
 

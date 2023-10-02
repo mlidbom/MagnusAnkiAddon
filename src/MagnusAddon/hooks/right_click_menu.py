@@ -13,7 +13,7 @@ from sysutils import my_clipboard
 from sysutils.typed import checked_cast
 
 
-def register_lookup_actions(view: AnkiWebView, root_menu: QMenu):
+def register_lookup_actions(view: AnkiWebView, root_menu: QMenu) -> None:
     def get_note() -> JPNote:
         def get_card_inner() -> Card:
             if view.kind == AnkiWebViewKind.MAIN:

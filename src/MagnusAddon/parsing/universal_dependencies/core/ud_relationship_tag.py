@@ -9,7 +9,7 @@ class UdRelationshipTag:
 _tag_to_tag_dict: dict[str, UdRelationshipTag] = dict()
 
 
-def get_tag(tag: str):
+def get_tag(tag: str) -> UdRelationshipTag:
     return _tag_to_tag_dict[tag]
 
 

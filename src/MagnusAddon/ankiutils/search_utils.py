@@ -1,7 +1,8 @@
 from typing import Callable, Iterable
 
 import aqt
-from aqt.browser import Browser
+from PyQt6.QtWidgets import QLineEdit
+from aqt.browser import Browser # type: ignore
 
 import parsing.tree_parsing.tree_parser # noqa
 from parsing.tree_parsing.tree_parser_node import TreeParserNode
@@ -46,11 +47,11 @@ def reading_wildcard(query:str) -> str: return f"{reading}:*{query}"
 def answer_wildcard(query:str) -> str: return f"{answer}:*{query}"
 
 def single_vocab_wildcard(query:str) -> str: return f"{vocab_read} ({forms}:*{query}* OR {reading}:*{query}* OR {answer}:*{query}*)"
-def single_vocab_by_question_reading_or_answer_exact(query) -> str:return f"{vocab_read} ({field_word(forms, query)} OR {field_word(reading, query)} OR {field_word(answer, query)})"
-def single_vocab_by_form_exact(query) -> str:return f"{vocab_read} {field_word(forms, query)}"
+def single_vocab_by_question_reading_or_answer_exact(query: str) -> str:return f"{vocab_read} ({field_word(forms, query)} OR {field_word(reading, query)} OR {field_word(answer, query)})"
+def single_vocab_by_form_exact(query: str) -> str:return f"{vocab_read} {field_word(forms, query)}"
 
 
-def kanji_in_string(query) -> str: return f"{note_kanji} ( {' OR '.join([f'{question}:{char}' for char in query])} )"
+def kanji_in_string(query: str) -> str: return f"{note_kanji} ( {' OR '.join([f'{question}:{char}' for char in query])} )"
 
 def vocab_dependencies_lookup_query(vocab: VocabNote) -> str:
     def single_vocab_clause(voc: ParsedWord) -> str:
@@ -73,9 +74,9 @@ def do_lookup_and_show_previewer(text: str) -> None:
     UIUtils.activate_preview()
 
 
-def do_lookup(text) -> None:
+def do_lookup(text: str) -> None:
     browser: Browser = aqt.dialogs.open('Browser', aqt.mw)
-    browser.form.searchEdit.lineEdit().setText(text)
+    checked_cast(QLineEdit, browser.form.searchEdit.lineEdit()).setText(text)
     browser.onSearchActivated()
 
 
@@ -128,7 +129,7 @@ def vocab_compounds_lookup(note:VocabNote) -> str:
     return f"{vocab_read} ({' OR '.join([vocab_clause(voc) for voc in dictionary_forms])})" if dictionary_forms else ""
 
 
-def lookup_dependencies(note: JPNote):
+def lookup_dependencies(note: JPNote) -> None:
     # noinspection PyTypeChecker
     type_map: dict[type, Callable[[], str]] = {
         VocabNote: lambda: vocab_dependencies_lookup_query(checked_cast(VocabNote, note)),
@@ -148,5 +149,5 @@ def fetch_kanji_by_kanji(kanji: Iterable[str]) -> str:
     return f"""note:{NoteTypes.Kanji} ({" OR ".join([f"{NoteFields.Kanji.question}:{kan}" for kan in kanji])})"""
 
 
-def lookup_text_object(text: str):
+def lookup_text_object(text: str) -> str:
     return " OR ".join(f"{question}:{search.strip()}" for search in text.split(","))

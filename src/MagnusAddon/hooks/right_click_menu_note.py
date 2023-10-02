@@ -15,7 +15,7 @@ from ankiutils import search_utils as su
 from sysutils.typed import checked_cast
 
 
-def setup_note_menu(note: JPNote, root_menu: QMenu, sel_clip: str, selection, view: AnkiWebView):
+def setup_note_menu(note: JPNote, root_menu: QMenu, sel_clip: str, selection: str, view: AnkiWebView) -> None:
     if sel_clip:
         add_lookup_action(root_menu, "&Open", su.lookup_text_object(sel_clip))
 
@@ -113,12 +113,12 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, sel_clip: str, selection, vi
         add_ui_action(note_set_menu, "&Ergative twin", lambda: vocab.set_related_ergative_twin(sel_clip))
 
 
-def add_kanji_primary_vocab(note: KanjiNote, selection: str, _view: AnkiWebView):
+def add_kanji_primary_vocab(note: KanjiNote, selection: str, _view: AnkiWebView) -> None:
     note.set_primary_vocab(note.get_primary_vocab() + [selection])
-    local_note_updater.update_kanji(note)
+    local_note_updater.update_kanji()
 
 
-def set_kanji_primary_vocab(note: KanjiNote, selection: str, view: AnkiWebView):
+def set_kanji_primary_vocab(note: KanjiNote, selection: str, view: AnkiWebView) -> None:
     note.set_primary_vocab([])
     add_kanji_primary_vocab(note, selection, view)
 

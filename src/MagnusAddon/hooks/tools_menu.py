@@ -28,11 +28,11 @@ def deep_refresh() -> None:
         sentence_breakdown.build_breakdown_html(note)
 
     if isinstance(note, KanjiNote):
-        local_note_updater.update_kanji(note)
+        local_note_updater.update_kanji()
 
     UIUtils.refresh()
 
-def add_menu_action(sub_menu: QMenu, heading: str, callback: Callable, shortcut: str = ""):
+def add_menu_action(sub_menu: QMenu, heading: str, callback: Callable[[],None], shortcut: str = "") -> None:
     action = QAction(heading, facade.main_window())
     if shortcut: action.setShortcut(shortcut)
     qconnect(action.triggered, callback)

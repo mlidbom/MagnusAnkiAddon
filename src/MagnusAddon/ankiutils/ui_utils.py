@@ -1,7 +1,7 @@
 from typing import Callable
 
 import aqt
-from aqt.browser import Browser
+from aqt.browser import Browser  # type: ignore
 from aqt.browser.previewer import Previewer
 from aqt.editcurrent import EditCurrent
 from aqt.reviewer import RefreshNeeded

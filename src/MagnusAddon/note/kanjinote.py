@@ -103,7 +103,7 @@ class KanjiNote(WaniNote):
     def get_primary_vocab_audio(self) -> str: return super().get_field(NoteFields.Kanji.Audio__)
     def set_primary_vocab_audio(self, value: str) -> None: super().set_field(NoteFields.Kanji.Audio__, value)
 
-    def update_from_wani(self, wani_kanji: models.Kanji):
+    def update_from_wani(self, wani_kanji: models.Kanji) -> None:
         super().update_from_wani(wani_kanji)
 
         self.set_meaning_mnemonic(wani_kanji.meaning_mnemonic)
@@ -163,7 +163,7 @@ class KanjiNote(WaniNote):
         self.set_vocabs(vocab_html)
 
     @staticmethod
-    def create_from_wani_kanji(wani_kanji: models.Kanji):
+    def create_from_wani_kanji(wani_kanji: models.Kanji) -> None:
         note = Note(facade.anki_collection(), facade.anki_collection().models.by_name(NoteTypes.Kanji))
         note.add_tag("__imported")
         note.add_tag(Mine.Tags.Wani)

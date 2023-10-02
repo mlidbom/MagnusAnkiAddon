@@ -28,9 +28,9 @@ def add_single_vocab_lookup_action(menu: QMenu, name:str, vocab:str) -> None:
 def add_text_vocab_lookup(menu: QMenu, name:str, text:str) -> None:
     add_lookup_action_lambda(menu, name, lambda: su.text_vocab_lookup(text))
 
-def add_vocab_dependencies_lookup(menu: QMenu, name: str, vocab: VocabNote):
+def add_vocab_dependencies_lookup(menu: QMenu, name: str, vocab: VocabNote) -> None:
     add_lookup_action_lambda(menu, name, lambda: su.vocab_dependencies_lookup_query(vocab))
 
 
-def add_sentence_lookup(menu, name: str, search):
+def add_sentence_lookup(menu: QMenu, name: str, search: str) -> None:
     add_lookup_action(menu, name, f"(deck:*sentence* deck:*listen*) (Q:*{search}* OR Reading:*{search}* OR {su.field_word(SentenceNoteFields.ParsedWords, search)})")

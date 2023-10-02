@@ -78,7 +78,7 @@ class KanaVocabNote(WaniNote):
 
     def get_audios(self) -> str: return f"{self.get_audio_male()}{self.get_audio_female()}"
 
-    def update_from_wani(self, wani_vocab: models.Vocabulary):
+    def update_from_wani(self, wani_vocab: models.Vocabulary) -> None:
         super().update_from_wani(wani_vocab)
 
         self.set_meaning_mnemonic(wani_vocab.meaning_mnemonic)

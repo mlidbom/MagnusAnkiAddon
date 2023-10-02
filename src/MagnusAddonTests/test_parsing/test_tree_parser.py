@@ -1,3 +1,5 @@
+from typing import Any
+
 import pytest
 from parsing.tree_parsing import tree_parser
 from parsing.tree_parsing.tree_parse_result import TreeParseResult
@@ -5,7 +7,7 @@ from parsing.tree_parsing.tree_parser_node import TreeParserNode
 
 N = TreeParserNode
 R = TreeParseResult
-def only_string_params(param) -> str: return param if isinstance(param, str) else ""
+def only_string_params(param:Any) -> str: return param if isinstance(param, str) else ""
 
 @pytest.mark.parametrize('sentence, excluded, expected', [
     ("知らない", set(), R(N('知らない', '',[N('知ら', '知る'), N('ない', '')]))),
@@ -65,7 +67,7 @@ def test_noun_compounds(sentence: str, excluded: set[str], expected: TreeParseRe
 def test_temp(sentence: str, excluded: set[str], expected: TreeParseResult) -> None: run_tests(excluded, expected, sentence)
 
 
-def run_tests(excluded, expected, sentence) -> None:
+def run_tests(excluded: set[str], expected: TreeParseResult, sentence: str) -> None:
     print()
     result = tree_parser.parse_tree(sentence, excluded)
     print(result)

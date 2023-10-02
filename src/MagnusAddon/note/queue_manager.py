@@ -1,13 +1,24 @@
-from typing import Optional, Callable
+# noinspection PyUnresolvedReferences
+from typing import Optional, Callable, Sequence
 
-import aqt.browser
+# noinspection PyUnresolvedReferences
+from ankiutils.anki_shim import facade
+from aqt.browser import Browser  # type: ignore
 from anki.cards import CardId
 from aqt import dialogs, mw
 
 from note.waninote import WaniNote
+# noinspection PyUnresolvedReferences
+from note.vocabnote import VocabNote
+# noinspection PyUnresolvedReferences
+from note.kanjinote import KanjiNote
+# noinspection PyUnresolvedReferences
+from note.radicalnote import RadicalNote
 from sysutils.stringutils import StringUtils
 from note.jp_collection import *
 from note.cardutils import CardUtils
+from anki.notes import Note
+from note.note_constants import NoteTypes
 
 
 def unsuspend_with_dependencies(note: Note) -> None:
@@ -64,7 +75,7 @@ def visit_kanji_with_dependencies(kanji_note: KanjiNote,
 
 def visit_radical_with_dependencies(radical_note: RadicalNote,
                                     calling_kanji_note: Optional[KanjiNote],
-                                    callback: Callable[[WaniNote, str], None]):
+                                    callback: Callable[[WaniNote, str], None]) -> None:
     kanji_dependencies_notes = JPLegacyCollection.fetch_kanji_notes([radical_note.get_q()])
     for kanji_note in kanji_dependencies_notes:
         if calling_kanji_note is None or kanji_note.get_question() != calling_kanji_note.get_question():
@@ -74,11 +85,11 @@ def visit_radical_with_dependencies(radical_note: RadicalNote,
 
 
 def refresh_search() -> None:
-    browser: aqt.browser.Browser = dialogs.open('Browser', mw)
+    browser: Browser = dialogs.open('Browser', mw)
     browser.onSearchActivated()
 
 
-def prioritize_selected_cards(card_ids: Sequence[CardId]):
+def prioritize_selected_cards(card_ids: Sequence[CardId]) -> None:
     cards = [facade.anki_collection().get_card(card_id) for card_id in card_ids]
     for card in cards:
         CardUtils.prioritize(card)

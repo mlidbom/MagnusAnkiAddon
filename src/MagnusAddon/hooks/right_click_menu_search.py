@@ -38,13 +38,13 @@ def setup_web_search_menu(search_menu: QMenu, sel_clip: str) -> None:
     add_web_lookup(search_web_menu, "&Kanshudo Word Search", u"https://www.kanshudo.com/searchw?q=%s", sel_clip)
     add_web_lookup(search_web_menu, "&Kanshudo Sentence Translate", u"https://www.kanshudo.com/sentence_translate?q=%s", sel_clip)
 
-    add_web_lookup(search_web_menu, "&Deepl", u"https://www.deepl.com/en/translator#ja/en/%s", sel_clip),
+    add_web_lookup(search_web_menu, "&Deepl", u"https://www.deepl.com/en/translator#ja/en/%s", sel_clip)
     add_web_lookup(search_web_menu, "&Jisho", u"https://jisho.org/search/%s", sel_clip)
     add_web_lookup(search_web_menu, "&Wanikani", u"https://www.wanikani.com/search?query=%s", sel_clip)
     add_web_lookup(search_web_menu, "&Verbix conjugate", u"https://www.verbix.com/webverbix/japanese/%s", sel_clip)
 
 
-def add_web_lookup(menu: QMenu, name: str, url: str, search: str):
+def add_web_lookup(menu: QMenu, name: str, url: str, search: str) -> None:
     search = parse.quote(search, encoding='utf8')
     menu.addAction(name, lambda: openLink(url % search))
 

@@ -3,13 +3,8 @@ from __future__ import annotations
 from typing import Any, TypeVar
 
 
-def str_(value: Any) -> str: return _assert_type(value, str)
-def int_(value: Any) -> int: return _assert_type(value, int)
-
-def _assert_type(value: Any, value_type: type) -> Any:
-    if not isinstance(value, value_type): raise TypeError(f"Expected type {value_type}, but got {type(value)}")
-    return value
-
+def str_(value: Any) -> str: return checked_cast(str, value)
+def int_(value: Any) -> int: return checked_cast(int, value)
 
 CastT = TypeVar('CastT')
 def checked_cast(cls: type[CastT], var: object) -> CastT:

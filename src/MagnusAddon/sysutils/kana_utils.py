@@ -13,7 +13,7 @@ def is_katakana(char:str) -> bool:
 def is_kana(char: str) -> bool:
     return is_hiragana(char) or is_katakana(char)
 
-def get_conjugation_base(word) -> str:
+def get_conjugation_base(word:str) -> str:
     if word.endswith(('う', 'く', 'ぐ', 'す', 'つ', 'ぬ', 'ふ', 'む', 'る', 'い')): #verb endings and i-adjective ending
         return word[:-1]
     return word

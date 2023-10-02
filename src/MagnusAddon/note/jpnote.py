@@ -26,24 +26,24 @@ class JPNote:
         return cls.note_from_note(note)
 
     @classmethod
-    def note_from_note(cls, note) -> JPNote:
+    def note_from_note(cls, note: Note) -> JPNote:
         if cls.get_note_type(note) == NoteTypes.Kanji:
-            return KanjiNote(note)  # type: ignore
+            return KanjiNote(note)
         elif cls.get_note_type(note) == NoteTypes.Vocab:
-            return VocabNote(note)  # type: ignore
+            return VocabNote(note)
         elif cls.get_note_type(note) == NoteTypes.Radical:
-            return RadicalNote(note)  # type: ignore
+            return RadicalNote(note)
         elif cls.get_note_type(note) == NoteTypes.Sentence:
-            return SentenceNote(note)  # type: ignore
+            return SentenceNote(note)
         return JPNote(note)
 
     @staticmethod
     def get_note_type(note: Note) -> str:
-        return checked_cast(NotetypeDict, note.note_type())["name"]
+        return checked_cast(str, checked_cast(NotetypeDict, note.note_type())["name"])
 
     def get_note_type_name(self) -> str:
         # noinspection PyProtectedMember
-        return self._note._note_type['name']  # Todo: find how to do this without digging into protected members
+        return checked_cast(str, self._note._note_type['name'])  # Todo: find how to do this without digging into protected members
 
     def delete(self) -> None:
         facade.anki_collection().remNotes([self._note.id])
@@ -56,7 +56,7 @@ class JPNote:
         return Mine.Tags.Wani in self._note.tags
 
     @classmethod
-    def _on_note_edited(cls, note: Note):
+    def _on_note_edited(cls, note: Note) -> None:
         cls.note_from_note(note)._on_edited()
 
     def _on_edited(self) -> None: pass

@@ -5,7 +5,7 @@ from note.jpnote import JPNote
 
 
 def init() -> None:
-    def handle_update(note: Note):
+    def handle_update(note: Note) -> None:
         # noinspection PyProtectedMember
         JPNote._on_note_edited(note)
 

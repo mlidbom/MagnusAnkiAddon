@@ -5,6 +5,7 @@ from unidic2ud import UniDic2UDEntry, UDPipeEntry # type: ignore
 
 from parsing.universal_dependencies.core.ud_token import UDToken
 from sysutils.listutils import ListUtils
+from sysutils.typed import checked_cast
 
 
 class UDParseResult:
@@ -35,6 +36,6 @@ class UDParseResult:
 
     def to_tree(self) -> str:
         if isinstance(self._wrapped, UniDic2UDEntry):
-            return self._wrapped.to_tree()
+            return checked_cast(str, self._wrapped.to_tree())
         else:
             return "to_tree_UNSUPPORTED"

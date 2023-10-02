@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, Any
 
 from parsing.universal_dependencies.ud_tree_node import UDTreeNode
 
@@ -15,7 +15,7 @@ class UDTreeParseResult:
         _argument_separator = "\n"
         return f"""{_argument_separator.join(str(node) for node in self.nodes)}"""
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: Any) -> bool:
         return (isinstance(other, UDTreeParseResult)
                 and self.nodes == other.nodes)
 

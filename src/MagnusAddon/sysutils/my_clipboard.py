@@ -1,12 +1,14 @@
 import win32clipboard  # type: ignore
 
+from sysutils.typed import checked_cast
+
 
 def get_text() -> str:
     try:
         win32clipboard.OpenClipboard()
         try:
             clipboard_content = win32clipboard.GetClipboardData()
-            return clipboard_content
+            return checked_cast(str, clipboard_content)
         finally:
             win32clipboard.CloseClipboard()
     except: # noqa
@@ -14,7 +16,7 @@ def get_text() -> str:
 
     return ""
 
-def set_text(text) -> None:
+def set_text(text:str) -> None:
     try:
         win32clipboard.OpenClipboard()
         try:

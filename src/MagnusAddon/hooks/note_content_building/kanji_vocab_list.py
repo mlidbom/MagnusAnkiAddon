@@ -11,7 +11,7 @@ from note.jp_collection import JPLegacyCollection
 
 
 def sort_vocab_list(note:KanjiNote, primary_voc: list[str], vocabs: list[VocabNote]) -> None:
-    def prefer_primary_vocab_in_order(local_vocab: VocabNote):
+    def prefer_primary_vocab_in_order(local_vocab: VocabNote) -> int:
         for index, primary in enumerate(primary_voc):
             if local_vocab.get_question() == primary or local_vocab.get_readings()[0] == primary:
                 return index

@@ -22,7 +22,7 @@ class JPLegacyCollection:
 
     @staticmethod
     def fetch_notes_by_note_type_and_field_value(note_type: str, field: str,
-                                                 field_values: List) -> List[anki.notes.Note]:
+                                                 field_values: list[str]) -> List[anki.notes.Note]:
         note_ids = [facade.anki_collection().find_notes(
             f"{Builtin.Note}:{note_type} {field}:{field_value}")
             for field_value in field_values]
@@ -56,21 +56,21 @@ class JPLegacyCollection:
         return notes
 
     @staticmethod
-    def fetch_kanji_notes(field_values: List) -> List[KanjiNote]:
+    def fetch_kanji_notes(field_values: list[str]) -> List[KanjiNote]:
         notes = JPLegacyCollection.fetch_notes_by_note_type_and_field_value(NoteTypes.Kanji, NoteFields.Kanji.question,
                                                                             field_values)
         kanji_notes = [KanjiNote(note) for note in notes]
         return kanji_notes
 
     @staticmethod
-    def fetch_radical_notes(field_values: List) -> List[RadicalNote]:
+    def fetch_radical_notes(field_values: list[str]) -> List[RadicalNote]:
         notes = JPLegacyCollection.fetch_notes_by_note_type_and_field_value(NoteTypes.Radical,
                                                                             NoteFields.Radical.answer, field_values)
         radical_notes = [RadicalNote(note) for note in notes]
         return radical_notes
 
     @staticmethod
-    def fetch_vocab_notes(field_values: List) -> List[VocabNote]:
+    def fetch_vocab_notes(field_values: list[str]) -> List[VocabNote]:
         notes = JPLegacyCollection.fetch_notes_by_note_type_and_field_value(NoteTypes.Vocab, NoteFields.Kanji.question,
                                                                             field_values)
         vocab_notes = [VocabNote(note) for note in notes]

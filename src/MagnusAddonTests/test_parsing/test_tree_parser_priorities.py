@@ -36,7 +36,7 @@ p = priorities
 def test_priorities(sentence: str, expected_priorities: dict[str, str]) -> None:
     real_priorities: dict[str, str] = dict()
 
-    def register_priority(own_node: TreeParserNode):
+    def register_priority(own_node: TreeParserNode) -> None:
         real_priorities[own_node.surface] = own_node.get_priority_class(own_node.surface, set())
 
     result = tree_parser.parse_tree(sentence, set())

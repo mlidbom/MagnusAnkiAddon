@@ -7,7 +7,7 @@ from wanikani import wani_note_updater
 from wanikani.wani_downloader import WaniDownloader
 
 
-def setup_editor_buttons(buttons, the_editor: Editor):
+def setup_editor_buttons(buttons:list[str], the_editor: Editor) -> None:
     buttons.append(the_editor.addButton("", "Unsuspend with dependencies",
                                             lambda local_editor: queue_manager.unsuspend_with_dependencies(
                                                 local_editor.note)))  # type: ignore

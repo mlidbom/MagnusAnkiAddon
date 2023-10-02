@@ -62,7 +62,7 @@ class WaniNote(JPNote):
     def set_auxiliary_meanings_whitelist(self, value:str) -> None: self.set_field(NoteFields.WaniCommon.auxiliary_meanings_whitelist, value)
     def set_auxiliary_meanings_blacklist(self, value:str) -> None: self.set_field(NoteFields.WaniCommon.auxiliary_meanings_blacklist, value)
 
-    def update_from_wani(self, wani_model: models.Subject):
+    def update_from_wani(self, wani_model: models.Subject) -> None:
         self._set_level(wani_model.level)
         self._set_subject_id(wani_model.id)
         self._set_lesson_position(wani_model.lesson_position)

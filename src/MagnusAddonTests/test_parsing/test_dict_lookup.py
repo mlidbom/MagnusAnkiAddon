@@ -78,12 +78,12 @@ def test_generate_answer(word: str, readings:list[str], answer: str) -> None:
     assert generated_answer == answer
 
 
-def get_single_dict_entry(word, readings) -> DictEntry:
+def get_single_dict_entry(word: str, readings: list[str]) -> DictEntry:
     dict_entry = get_dict_entry(word, readings)
     assert dict_entry.found_words_count() == 1
     return dict_entry.entries[0]
 
-def get_dict_entry(word, readings) -> DictLookup:
+def get_dict_entry(word: str, readings: list[str]) -> DictLookup:
     mock_vocab = vocab_mock(word, readings)
     dict_entry = DictLookup.try_lookup_vocab_word_or_name(mock_vocab)
     return dict_entry

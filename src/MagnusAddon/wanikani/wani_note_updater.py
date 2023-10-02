@@ -11,7 +11,7 @@ from wanikani.wanikani_api_client import WanikaniClient
 waniClient = WanikaniClient.get_instance()
 
 
-def update_from_wanikani(note: Note):
+def update_from_wanikani(note: Note) -> None:
     # noinspection PyProtectedMember
     note_type = note._note_type['name']
     if note_type == NoteTypes.Vocab:

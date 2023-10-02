@@ -30,7 +30,7 @@ def _update_vocab_parsed_parts_of_speech(all_vocabulary: list[VocabNote]) -> Non
 def update_sentences() -> None:
     UIUtils.run_ui_action(lambda: _update_sentences(JPLegacyCollection.list_sentence_notes()))
 
-def update_kanji(_kanji_note: KanjiNote) -> None:
+def update_kanji() -> None:
     UIUtils.run_ui_action(lambda: _update_kanji(JPLegacyCollection.fetch_all_vocab_notes(), JPLegacyCollection.fetch_all_kanji_notes()))
 
 def update_vocab() -> None:
@@ -62,7 +62,7 @@ def _update_vocab(all_vocabulary: list[VocabNote], all_kanji: list[KanjiNote]) -
 
     def format_context_sentences() -> None: # todo move to a rendering step
         for vocab in all_vocabulary:
-            def format_sentence(html_sentence: str):
+            def format_sentence(html_sentence: str) -> str:
                 clean_sentence = StringUtils.strip_html_and_bracket_markup(html_sentence)
                 word = vocab.get_question()
                 if word in clean_sentence:
@@ -98,7 +98,7 @@ def _update_vocab(all_vocabulary: list[VocabNote], all_kanji: list[KanjiNote]) -
     populate_homophones()
 
 
-def _update_kanji(all_vocabulary: list[VocabNote], all_kanji: list[KanjiNote]):
+def _update_kanji(all_vocabulary: list[VocabNote], all_kanji: list[KanjiNote]) -> None:
     def update_generated_data() -> None:
         for kanji in all_kanji:
             kanji.update_generated_data()

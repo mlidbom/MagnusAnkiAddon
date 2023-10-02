@@ -91,7 +91,7 @@ class VocabNote(KanaVocabNote):
     def get_parsed_type_of_speech(self) -> str: return super().get_field(NoteFields.Vocab.ParsedTypeOfSpeech)
     def set_parsed_type_of_speech(self, value: str) -> None: super().set_field(NoteFields.Vocab.ParsedTypeOfSpeech, value)
 
-    def update_from_wani(self, wani_vocab: models.Vocabulary):
+    def update_from_wani(self, wani_vocab: models.Vocabulary) -> None:
         super().update_from_wani(wani_vocab)
 
         self.set_reading_mnemonic(wani_vocab.reading_mnemonic)
@@ -111,7 +111,7 @@ class VocabNote(KanaVocabNote):
         self.set_kanji_name(", ".join(kanji_names))
 
     @staticmethod
-    def create_from_wani_vocabulary(wani_vocab: models.Vocabulary):
+    def create_from_wani_vocabulary(wani_vocab: models.Vocabulary) -> None:
         note = Note(facade.anki_collection(), facade.anki_collection().models.by_name(NoteTypes.Vocab))
         note.add_tag("__imported")
         note.add_tag(Mine.Tags.Wani)

@@ -19,7 +19,7 @@ class WaniDownloader:
         return facade.anki_collection().media.dir()
 
     @classmethod
-    def download_file(cls, url, filename) -> str:
+    def download_file(cls, url:str, filename:str) -> str:
         response = requests.get(url)
 
         if response.status_code == 200:

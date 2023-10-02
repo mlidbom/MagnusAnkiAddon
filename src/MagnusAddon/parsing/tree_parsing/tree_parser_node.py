@@ -16,14 +16,14 @@ class TreeParserNode:
         self.tokens = tokens if tokens else []
         self.children:list[TreeParserNode] = children if children else []
 
-    def _children_repr(self, level=1) -> str:
+    def _children_repr(self, level:int = 1) -> str:
         if not self.children:
             return ""
         indent = "  " * level
         children_string = ', '.join(child._repr(level) for child in self.children)
         return f""",[\n{indent}{children_string}]"""
 
-    def _repr(self, level: int):
+    def _repr(self, level: int) -> str:
         return f"""N('{self.surface}', '{self.base if self.is_inflected() else ""}'{self._children_repr(level + 1)})"""
 
     def __repr__(self) -> str:
@@ -110,7 +110,7 @@ class TreeParserNode:
             return True
         return False
 
-    def get_priority_class(self, question, highlighted:set[str]) -> str:
+    def get_priority_class(self, question: str, highlighted:set[str]) -> str:
         if question in highlighted:
             return priorities.very_high
 

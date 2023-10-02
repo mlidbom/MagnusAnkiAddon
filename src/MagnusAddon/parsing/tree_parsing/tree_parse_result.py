@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, Any
 
 from parsing.tree_parsing.tree_parser_node import TreeParserNode
 
@@ -10,7 +10,7 @@ class TreeParseResult:
         _argument_separator = ",\n  "
         return f"""R({_argument_separator.join(node._repr(1) for node in self.nodes)})""" # noqa
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other:Any) -> bool:
         return (isinstance(other, TreeParseResult)
                 and self.nodes == other.nodes)
 
