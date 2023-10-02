@@ -1,12 +1,15 @@
 from __future__ import annotations
-
 from typing import Sequence
-
 from anki.cards import Card
 from anki.notes import Note
-
 from ankiutils.anki_shim import facade
 from note.note_constants import Mine, NoteTypes
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from note.sentencenote import SentenceNote
+    from note.kanjinote import KanjiNote
+    from note.radicalnote import RadicalNote
+    from note.vocabnote import VocabNote
 
 
 class JPNote:
@@ -20,11 +23,6 @@ class JPNote:
 
     @classmethod
     def note_from_note(cls, note) -> JPNote:
-        from note.sentencenote import SentenceNote
-        from note.kanjinote import KanjiNote
-        from note.radicalnote import RadicalNote
-        from note.vocabnote import VocabNote
-
         if cls.get_note_type(note) == NoteTypes.Kanji:
             return KanjiNote(note)
         elif cls.get_note_type(note) == NoteTypes.Vocab:
