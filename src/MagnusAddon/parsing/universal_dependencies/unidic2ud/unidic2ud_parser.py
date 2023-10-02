@@ -1,4 +1,4 @@
-from unidic2ud import unidic2ud
+from unidic2ud import unidic2ud  # type: ignore
 
 from parsing.universal_dependencies.core.ud_parser import UDParser
 from parsing.universal_dependencies.core.universal_dependencies_parse_result import UDParseResult

@@ -38,7 +38,7 @@ class DictEntry:
     def kana_forms(self) -> list[str]: return [ent.text for ent in self.entry.kana_forms]
     def kanji_forms(self) -> list[str]: return [ent.text for ent in self.entry.kanji_forms]
     def valid_forms(self, force_allow_kana_only: bool = False) -> set[str]:
-        return set(self.kana_forms()) | set(self.kanji_forms()) if self.is_kana_only() or force_allow_kana_only else self.kanji_forms()
+        return set(self.kana_forms()) | set(self.kanji_forms()) if self.is_kana_only() or force_allow_kana_only else set(self.kanji_forms())
 
     def _is_verb(self) -> bool:
         return any("verb" in s.pos[0] for s in self.entry.senses)

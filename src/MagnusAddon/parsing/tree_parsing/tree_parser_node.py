@@ -1,4 +1,5 @@
-from typing import Callable
+from __future__ import annotations
+from typing import Callable, Optional, Any
 
 from parsing.jamdict_extensions.dict_lookup import DictLookup
 from parsing.janome_extensions.parts_of_speech import POS
@@ -9,10 +10,10 @@ from sysutils import kana_utils
 
 class TreeParserNode:
     _max_lookahead = 12
-    def __init__(self, surface: str, base: str, children: list['TreeParserNode'] = None, tokens: list[TokenExt] = None) -> None:
+    def __init__(self, surface: str, base: str, children: Optional[list[TreeParserNode]] = None, tokens: Optional[list[TokenExt]] = None) -> None:
         self.surface = surface
         self.base = base if base else surface
-        self.tokens = tokens
+        self.tokens = tokens if tokens else []
         self.children:list[TreeParserNode] = children if children else []
 
     def _children_repr(self, level=1) -> str:
@@ -28,7 +29,7 @@ class TreeParserNode:
     def __repr__(self) -> str:
         return self._repr(0)
 
-    def __eq__(self, other: any) -> bool:
+    def __eq__(self, other: Any) -> bool:
         return (isinstance(other, TreeParserNode)
                 and self.base == other.base
                 and self.surface == other.surface
@@ -40,12 +41,12 @@ class TreeParserNode:
     def is_inflected(self) -> bool: return self.base != self.surface
 
     @classmethod
-    def create(cls, tokens: list[TokenExt], excluded:set[str]) -> 'TreeParserNode':
+    def create(cls, tokens: list[TokenExt], excluded:set[str]) -> TreeParserNode:
         children = tree_parser._recursing_parse(tokens, excluded) if len(tokens) > 1 else [] # tree_parser._find_compounds(tokens[0], excluded) # noqa
         return cls.create_non_recursive(tokens, children)
 
     @classmethod
-    def create_non_recursive(cls, tokens: list[TokenExt], children:list['TreeParserNode'] = None) -> 'TreeParserNode':
+    def create_non_recursive(cls, tokens: list[TokenExt], children: Optional[list[TreeParserNode]] = None) -> TreeParserNode:
         children = children if children else []
         surface = "".join(tok.surface for tok in tokens)
         base = "".join(tok.surface for tok in tokens[:-1]) + tokens[-1].base_form
@@ -137,7 +138,7 @@ class TreeParserNode:
 
         return priorities.medium
 
-    def visit(self, callback: Callable[['TreeParserNode'],None]) -> None:
+    def visit(self, callback: Callable[[TreeParserNode],None]) -> None:
         callback(self)
         for node in self.children:
             node.visit(callback)

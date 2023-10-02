@@ -29,7 +29,7 @@ def identify_words(sentence: str) -> list[ParsedWord]:
 
     tokens = _tokenizer.tokenize(sentence).tokens
     found_words = set[str]()
-    found_words_list = []
+    found_words_list:list[str] = []
 
     for token_index, token in enumerate(tokens):
         add_word_if_it_is_in_dictionary(token.base_form)

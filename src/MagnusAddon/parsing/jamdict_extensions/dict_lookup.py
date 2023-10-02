@@ -1,3 +1,4 @@
+from __future__ import annotations
 from functools import lru_cache
 
 from jamdict import Jamdict
@@ -24,23 +25,23 @@ class DictLookup:
         return set().union(*[entry.valid_forms(force_allow_kana_only) for entry in self.entries])
 
     @classmethod
-    def try_lookup_vocab_word_or_name(cls, word: VocabNote) -> 'DictLookup':
+    def try_lookup_vocab_word_or_name(cls, word: VocabNote) -> DictLookup:
         return cls.try_lookup_word_or_name(word.get_question(), word.get_readings())
 
     @classmethod
-    def lookup_word_or_name(cls, word: str, readings: list[str]) -> 'DictLookup':
+    def lookup_word_or_name(cls, word: str, readings: list[str]) -> DictLookup:
         result = cls.try_lookup_word_or_name(word, readings)
         if not result.found_words():
             raise KeyError("No matching entries")
         return result
 
     @classmethod
-    def try_lookup_word_or_name(cls, word: str, readings: list[str]) -> 'DictLookup':
+    def try_lookup_word_or_name(cls, word: str, readings: list[str]) -> DictLookup:
         return cls._try_lookup_word_or_name(word, tuple(readings))
 
     @classmethod
     @lru_cache(maxsize=None)
-    def _try_lookup_word_or_name(cls, word: str, readings: tuple[str]) -> 'DictLookup':
+    def _try_lookup_word_or_name(cls, word: str, readings: tuple[str]) -> DictLookup:
         def kanji_form_matches() -> list[DictEntry]:
             return [ent for ent in lookup
                     if any(ent.has_matching_kana_form(reading) for reading in readings)
@@ -52,7 +53,7 @@ class DictLookup:
                     if any(ent.has_matching_kana_form(reading) for reading in readings)
                     and ent.is_kana_only()]
 
-        lookup = cls._lookup_word(word)
+        lookup:list[DictEntry] = cls._lookup_word(word)
         if not lookup:
             lookup = cls._lookup_name(word)
 
@@ -61,7 +62,7 @@ class DictLookup:
         return DictLookup(matching)
 
     @classmethod
-    def lookup_word_shallow(cls, word: str) -> 'DictLookup':
+    def lookup_word_shallow(cls, word: str) -> DictLookup:
         return DictLookup(cls._lookup_word(word))
 
     @classmethod

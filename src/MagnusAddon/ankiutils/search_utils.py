@@ -14,6 +14,7 @@ from parsing import textparser
 from parsing.janome_extensions.parsed_word import ParsedWord
 from ankiutils.ui_utils import UIUtils
 from note.note_constants import NoteFields, Mine, MyNoteFields, NoteTypes
+from sysutils.typed import checked_cast
 
 
 class Builtin:
@@ -130,9 +131,9 @@ def vocab_compounds_lookup(note:VocabNote) -> str:
 def lookup_dependencies(note: JPNote):
     # noinspection PyTypeChecker
     type_map: dict[type, Callable[[], str]] = {
-        VocabNote: lambda: vocab_dependencies_lookup_query(note),
-        KanjiNote: lambda: vocab_with_kanji(note),
-        SentenceNote: lambda: sentence_vocab_lookup(note),
+        VocabNote: lambda: vocab_dependencies_lookup_query(checked_cast(VocabNote, note)),
+        KanjiNote: lambda: vocab_with_kanji(checked_cast(KanjiNote, note)),
+        SentenceNote: lambda: sentence_vocab_lookup(checked_cast(SentenceNote, note)),
         RadicalNote: lambda: "",
         JPNote: lambda: ""
     }

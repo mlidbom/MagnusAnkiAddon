@@ -1,7 +1,7 @@
 from typing import Union
 
 from spacy.tokens import Doc, Token
-from unidic2ud import UniDic2UDEntry, UDPipeEntry
+from unidic2ud import UniDic2UDEntry, UDPipeEntry # type: ignore
 
 from parsing.universal_dependencies.core.ud_token import UDToken
 from sysutils.listutils import ListUtils
@@ -9,10 +9,9 @@ from sysutils.listutils import ListUtils
 
 class UDParseResult:
     def __init__(self, wrapped: Union[UniDic2UDEntry, Doc]):
+        self._wrapped = wrapped
 
         if isinstance(wrapped, Doc):
-            self._wrapped = wrapped
-
             sents = [sent for sent in wrapped.sents]
             self._wrapped_sent_tokens:list[list[Token]] = [[token for token in sent] for sent in sents]
             self._wrapped_tokens:list[Token] = ListUtils.flatten_list(self._wrapped_sent_tokens)
@@ -20,7 +19,6 @@ class UDParseResult:
             self.tokens = [UDToken(token) for token in self._wrapped_tokens]
 
         if isinstance(wrapped, UniDic2UDEntry):
-            self._wrapped = wrapped
             self._wrapped_tokens:list[UDPipeEntry] = [token for token in wrapped]
             self.tokens = [UDToken(token) for token in self._wrapped_tokens] # The first is always empty
 

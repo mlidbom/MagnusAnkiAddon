@@ -1,10 +1,14 @@
 from __future__ import annotations
 from typing import Sequence
-from anki.cards import Card
+from anki.cards import Card, CardId
+from anki.models import NotetypeDict
 from anki.notes import Note
 from ankiutils.anki_shim import facade
 from note.note_constants import Mine, NoteTypes
 from typing import TYPE_CHECKING
+
+from sysutils.typed import checked_cast
+
 if TYPE_CHECKING:
     from note.sentencenote import SentenceNote
     from note.kanjinote import KanjiNote
@@ -24,18 +28,18 @@ class JPNote:
     @classmethod
     def note_from_note(cls, note) -> JPNote:
         if cls.get_note_type(note) == NoteTypes.Kanji:
-            return KanjiNote(note)
+            return KanjiNote(note)  # type: ignore
         elif cls.get_note_type(note) == NoteTypes.Vocab:
-            return VocabNote(note)
+            return VocabNote(note)  # type: ignore
         elif cls.get_note_type(note) == NoteTypes.Radical:
-            return RadicalNote(note)
+            return RadicalNote(note)  # type: ignore
         elif cls.get_note_type(note) == NoteTypes.Sentence:
-            return SentenceNote(note)
+            return SentenceNote(note)  # type: ignore
         return JPNote(note)
 
     @staticmethod
     def get_note_type(note: Note) -> str:
-        return note.note_type()["name"]
+        return checked_cast(NotetypeDict, note.note_type())["name"]
 
     def get_note_type_name(self) -> str:
         # noinspection PyProtectedMember
@@ -45,7 +49,7 @@ class JPNote:
         facade.anki_collection().remNotes([self._note.id])
         facade.anki_collection().save()
 
-    def card_ids(self) -> Sequence[int]:
+    def card_ids(self) -> Sequence[CardId]:
         return self._note.card_ids()
 
     def is_wani_note(self) -> bool:

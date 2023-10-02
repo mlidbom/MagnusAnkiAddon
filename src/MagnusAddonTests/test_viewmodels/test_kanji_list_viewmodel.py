@@ -15,7 +15,7 @@ def setup_object() -> Generator[None, None, None]:
 def test_kanji_list_viewmodel() -> None:
     sentences = JPLegacyCollection.list_sentence_notes()[:1]
     for sentence in sentences:
-        view_model = sentence_kanji_list_viewmodel.create(sentence)
+        view_model = sentence_kanji_list_viewmodel.create(sentence.extract_kanji())
         print()
         print(sentence.get_active_question())
         print(view_model)

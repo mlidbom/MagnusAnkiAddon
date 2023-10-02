@@ -87,7 +87,7 @@ def delete_missing_radicals() -> None:
             deleted += 1
             deleted_radicals = deleted_radicals + "," + radical_note.get_a()
 
-    message = "Deleted {} radical notes.".format(deleted, deleted_radicals)
+    message = f"Deleted {deleted} radical notes."
     print(message)
     showInfo(message)
 
@@ -103,7 +103,7 @@ def delete_missing_kanji() -> None:
             deleted += 1
             deleted_kanji = deleted_kanji + "," + kanji_note.get_question()
 
-    message = "Deleted {} kanji notes.".format(deleted, deleted_kanji)
+    message = f"Deleted {deleted} kanji notes."
     print(message)
     showInfo(message)
 
@@ -120,6 +120,6 @@ def delete_missing_vocab() -> None:
             deleted_vocab = deleted_vocab + "," + vocab_note.get_question()
             vocab_note.delete()
 
-    message = "Deleted {} vocab notes.".format(deleted, deleted_vocab)
+    message = f"Deleted {deleted} vocab notes."
     print(message)
     showInfo(message)

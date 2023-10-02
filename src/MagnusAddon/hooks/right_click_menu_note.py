@@ -3,6 +3,7 @@ from aqt.webview import AnkiWebView
 
 from batches import local_note_updater
 from hooks.right_click_menu_utils import add_ui_action, add_lookup_action, add_sentence_lookup, add_single_vocab_lookup_action, add_text_vocab_lookup, add_vocab_dependencies_lookup
+from note.jpnote import JPNote
 from note.sentencenote import SentenceNote
 from note.kanjinote import KanjiNote
 from note.radicalnote import RadicalNote
@@ -11,20 +12,22 @@ from hooks.note_content_building import sentence_breakdown
 from sysutils.stringutils import StringUtils
 from note.note_constants import MyNoteFields, NoteFields, SentenceNoteFields, NoteTypes
 from ankiutils import search_utils as su
+from sysutils.typed import checked_cast
 
-def setup_note_menu(note, root_menu, sel_clip, selection, view: AnkiWebView):
+
+def setup_note_menu(note: JPNote, root_menu: QMenu, sel_clip: str, selection, view: AnkiWebView):
     if sel_clip:
         add_lookup_action(root_menu, "&Open", su.lookup_text_object(sel_clip))
 
-    note_menu:QMenu = root_menu.addMenu("&Note")
-    note_lookup_menu:QMenu = note_menu.addMenu("&Lookup")
-    note_add_menu:QMenu = note_menu.addMenu("&Add")
-    note_set_menu:QMenu = note_menu.addMenu("&Set")
-    note_hide_menu:QMenu = note_menu.addMenu("&Hide/Remove")
-    note_restore_menu:QMenu = note_menu.addMenu("&Restore")
+    note_menu:QMenu = checked_cast(QMenu, root_menu.addMenu("&Note"))
+    note_lookup_menu:QMenu = checked_cast(QMenu, note_menu.addMenu("&Lookup"))
+    note_add_menu:QMenu = checked_cast(QMenu, note_menu.addMenu("&Add"))
+    note_set_menu:QMenu = checked_cast(QMenu, note_menu.addMenu("&Set"))
+    note_hide_menu:QMenu = checked_cast(QMenu, note_menu.addMenu("&Hide/Remove"))
+    note_restore_menu:QMenu = checked_cast(QMenu, note_menu.addMenu("&Restore"))
 
     if sel_clip:
-        add_vocab_menu = note_set_menu.addMenu("&Vocab")
+        add_vocab_menu = checked_cast(QMenu, note_set_menu.addMenu("&Vocab"))
         add_ui_action(add_vocab_menu, "&1", lambda: note.set_field(MyNoteFields.Vocab1, sel_clip))
         add_ui_action(add_vocab_menu, "&2", lambda: note.set_field(MyNoteFields.Vocab2, sel_clip))
         add_ui_action(add_vocab_menu, "&3", lambda: note.set_field(MyNoteFields.Vocab3, sel_clip))
@@ -32,7 +35,7 @@ def setup_note_menu(note, root_menu, sel_clip, selection, view: AnkiWebView):
         add_ui_action(add_vocab_menu, "&5", lambda: note.set_field(MyNoteFields.Vocab5, sel_clip))
 
 
-    remove_vocab_menu = note_hide_menu.addMenu("&Vocab")
+    remove_vocab_menu = checked_cast(QMenu, note_hide_menu.addMenu("&Vocab"))
     add_ui_action(remove_vocab_menu, "&1", lambda: note.set_field(MyNoteFields.Vocab1, ""))
     add_ui_action(remove_vocab_menu, "&2", lambda: note.set_field(MyNoteFields.Vocab2, ""))
     add_ui_action(remove_vocab_menu, "&3", lambda: note.set_field(MyNoteFields.Vocab3, ""))
@@ -47,20 +50,21 @@ def setup_note_menu(note, root_menu, sel_clip, selection, view: AnkiWebView):
 
 
     if isinstance(note, SentenceNote):
+        sentence_note = checked_cast(SentenceNote, note)
         add_text_vocab_lookup(note_lookup_menu, "&Vocabulary words", note.get_active_question())
         add_lookup_action(note_lookup_menu, "&Kanji", f"""note:{NoteTypes.Kanji} ({" OR ".join([f"{NoteFields.Kanji.question}:{kan}" for kan in note.extract_kanji()])})""")
 
         def exclude_vocab(sentence: SentenceNote, text: str) -> None:
             sentence.exclude_vocab(text)
-            sentence_breakdown.build_breakdown_html(note)
+            sentence_breakdown.build_breakdown_html(sentence_note)
 
         def add_extra_vocab(sentence: SentenceNote, text: str) -> None:
             sentence.add_extra_vocab(text)
-            sentence_breakdown.build_breakdown_html(note)
+            sentence_breakdown.build_breakdown_html(sentence_note)
 
         if sel_clip:
-            add_ui_action(note_hide_menu, "&Exclude vocab", lambda: exclude_vocab(note, sel_clip))
-            add_ui_action(note_add_menu, "&Extra vocab", lambda: add_extra_vocab(note, sel_clip))
+            add_ui_action(note_hide_menu, "&Exclude vocab", lambda: exclude_vocab(sentence_note, sel_clip))
+            add_ui_action(note_add_menu, "&Extra vocab", lambda: add_extra_vocab(sentence_note, sel_clip))
 
     if isinstance(note, RadicalNote):
         add_lookup_action(note_lookup_menu, "&Kanji", f"note:{NoteTypes.Kanji} {su.field_word(NoteFields.Kanji.Radicals_Names, note.get_a())}")

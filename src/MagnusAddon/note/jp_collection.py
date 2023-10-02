@@ -27,8 +27,8 @@ class JPLegacyCollection:
             f"{Builtin.Note}:{note_type} {field}:{field_value}")
             for field_value in field_values]
 
-        note_ids = ListUtils.flatten_list(note_ids)
-        notes = JPLegacyCollection.fetch_notes_by_id(note_ids)
+        note_ids_flat = ListUtils.flatten_list(note_ids)
+        notes = JPLegacyCollection.fetch_notes_by_id(note_ids_flat)
         return notes
 
     @staticmethod
@@ -51,8 +51,8 @@ class JPLegacyCollection:
     @staticmethod
     def _search_notes(query: str) -> list[Note]:
         note_ids = [facade.anki_collection().find_notes(query)]
-        note_ids = ListUtils.flatten_list(note_ids)
-        notes = JPLegacyCollection.fetch_notes_by_id(note_ids)
+        note_ids_flat = ListUtils.flatten_list(note_ids)
+        notes = JPLegacyCollection.fetch_notes_by_id(note_ids_flat)
         return notes
 
     @staticmethod

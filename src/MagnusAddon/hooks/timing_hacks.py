@@ -1,3 +1,4 @@
+from typing import Optional, Any
 from anki.cards import Card
 from anki.notes import Note
 import time
@@ -10,7 +11,7 @@ class UglyUITimingBasedHacksData:
     def __init__(self) -> None:
         self._last_editor_typing_time = 0.0
         self._last_reviewer_showed_answer_time = 0.0
-        self._last_editor_typing_note = None
+        self._last_editor_typing_note:Optional[Note] = None
 
     def typed_in_note(self, note: Note) -> None:
         audio_suppressor.suppress_for_seconds(.1)
@@ -29,7 +30,7 @@ class UglyUITimingBasedHacksData:
 
 ugly_timing_hacks = UglyUITimingBasedHacksData()
 
-def on_reviewer_show_answer(_card: any) -> None: ugly_timing_hacks.reviewer_showed_answer(_card)
+def on_reviewer_show_answer(_card: Any) -> None: ugly_timing_hacks.reviewer_showed_answer(_card)
 def typed_in_editor(note:Note) -> None: ugly_timing_hacks.typed_in_note(note)
 
 def init() -> None:

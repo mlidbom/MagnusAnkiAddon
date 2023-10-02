@@ -8,7 +8,7 @@ from sysutils import kana_utils
 from sysutils.stringutils import StringUtils
 
 
-def _str_pos(self: UDTreeNode) -> str_:
+def _str_pos(self: UDTreeNode) -> str:
     if self.is_morpheme():
         token = self.tokens[0]
         return (f"""{StringUtils.pad_to_length(str(token.id), 3)}""" +
@@ -20,7 +20,7 @@ def _str_pos(self: UDTreeNode) -> str_:
     return "_"
 
 
-def _children_repr(self: UDTreeNode, level=1) -> str_:
+def _children_repr(self: UDTreeNode, level=1) -> str:
     if not self.children:
         return ""
     children_string = ', \n'.join(repr_(child, level) for child in self.children)
@@ -32,7 +32,7 @@ def repr_(self: UDTreeNode, level: int):
     return f"""{indent}N('{self.surface}', '{self.base if self.is_inflected() else ""}'{_children_repr(self, level + 1)})"""
 
 
-def _children_str(self: UDTreeNode, level=1) -> str_:
+def _children_str(self: UDTreeNode, level=1) -> str:
     if not self.children:
         return ""
 

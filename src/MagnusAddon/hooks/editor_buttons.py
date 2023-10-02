@@ -10,23 +10,23 @@ from wanikani.wani_downloader import WaniDownloader
 def setup_editor_buttons(buttons, the_editor: Editor):
     buttons.append(the_editor.addButton("", "Unsuspend with dependencies",
                                             lambda local_editor: queue_manager.unsuspend_with_dependencies(
-                                                local_editor.note)))
+                                                local_editor.note)))  # type: ignore
 
     buttons.append(the_editor.addButton("", "prioritize with dependencies",
                                             lambda local_editor: queue_manager.prioritize_with_dependencies(
-                                                local_editor.note)))
+                                                local_editor.note)))  # type: ignore
 
     buttons.append(the_editor.addButton("", "answer again with zero interval with dependencies",
                                             lambda local_editor: queue_manager.answer_again_with_zero_interval_for_new_note_cards_with_dependencies(
-                                                local_editor.note)))
+                                                local_editor.note)))  # type: ignore
 
     buttons.append(the_editor.addButton("", "Update from wanikani",
                                         lambda local_editor: wani_note_updater.update_from_wanikani(
-                                             local_editor.note)))
+                                             local_editor.note)))  # type: ignore
 
     buttons.append(the_editor.addButton("", "Fetch audio from wanikani",
                                         lambda local_editor: WaniDownloader.fetch_audio_from_wanikani(
-                                            VocabNote(local_editor.note))))
+                                            VocabNote(local_editor.note))))  # type: ignore
 
 
 def init() -> None:

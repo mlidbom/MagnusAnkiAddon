@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import List
 
 from wanikani_api import models
@@ -8,7 +9,7 @@ class WanikaniClient:
     _instance = None
 
     @classmethod
-    def get_instance(cls) -> 'WanikaniClient':
+    def get_instance(cls) -> WanikaniClient:
         if not cls._instance:
             cls._instance = WanikaniClient()
         return cls._instance
@@ -17,7 +18,7 @@ class WanikaniClient:
         self._is_initialized = False
 
 
-    def _init(self) -> 'WanikaniClient':
+    def _init(self) -> WanikaniClient:
         if self._is_initialized is False:
             self.v2_api_key = "ebeda84c-2f6a-423e-bfc7-3068796ed50a"
             client = Client(self.v2_api_key)
@@ -40,7 +41,7 @@ class WanikaniClient:
 
 
             self._is_initialized = True
-            return self
+        return self
 
     def list_radicals(self) -> List[models.Radical]:
         self._init()

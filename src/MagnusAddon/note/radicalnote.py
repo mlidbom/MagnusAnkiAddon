@@ -1,4 +1,4 @@
-from wanikani_api import models
+from wanikani_api import models  # type: ignore
 from anki.notes import Note
 
 from ankiutils.anki_shim import facade
@@ -35,7 +35,7 @@ class RadicalNote(WaniNote):
 
     @staticmethod
     def create_from_wani_radical(wani_radical: models.Radical):
-        note = Note(facade.anki_collection(), facade.anki_collection().models.byName(NoteTypes.Radical))
+        note = Note(facade.anki_collection(), facade.anki_collection().models.by_name(NoteTypes.Radical))
         note.add_tag("__imported")
         note.add_tag(Mine.Tags.Wani)
         radical_note = RadicalNote(note)

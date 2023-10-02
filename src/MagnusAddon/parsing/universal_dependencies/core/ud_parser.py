@@ -4,5 +4,4 @@ from parsing.universal_dependencies.core.universal_dependencies_parse_result imp
 class UDParser:
     def __init__(self, name: str):
         self.name = name
-    def parse(self, text: str) -> UDParseResult:
-        pass
+    def parse(self, text: str) -> UDParseResult: raise Exception("Should have been overridden")

@@ -10,15 +10,18 @@ from viewmodels.kanji_list import sentence_kanji_list_viewmodel
 
 def render_kanji_list(html:str, card: Card, _type_of_display:str) -> str:
     note = JPNote.note_from_card(card)
+    kanjis:list[str] = []
     question:str = ""
 
     if isinstance(note, VocabNote):
         question = note.get_question()
+        kanjis = note.extract_kanji()
     elif isinstance(note, SentenceNote):
         question = note.get_active_question()
+        kanjis = note.extract_kanji()
 
     if question:
-        viewmodel = sentence_kanji_list_viewmodel.create(note)
+        viewmodel = sentence_kanji_list_viewmodel.create(kanjis)
 
         list_html = f"""
 <div id="kanji_list">

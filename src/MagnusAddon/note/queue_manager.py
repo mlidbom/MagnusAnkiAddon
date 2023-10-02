@@ -1,6 +1,7 @@
 from typing import Optional, Callable
 
 import aqt.browser
+from anki.cards import CardId
 from aqt import dialogs, mw
 
 from note.waninote import WaniNote
@@ -77,7 +78,7 @@ def refresh_search() -> None:
     browser.onSearchActivated()
 
 
-def prioritize_selected_cards(card_ids: Sequence[int]):
+def prioritize_selected_cards(card_ids: Sequence[CardId]):
     cards = [facade.anki_collection().get_card(card_id) for card_id in card_ids]
     for card in cards:
         CardUtils.prioritize(card)

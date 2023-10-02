@@ -35,7 +35,7 @@ def refresh_media() -> None:
             f.write("anki sync dummy")
     os.remove(fpath)
     # reset Anki
-    mw.reset()
+    facade.main_window().reset()
     tooltip("Media References Updated")
 
 
@@ -43,4 +43,4 @@ def refresh_media() -> None:
 refresh_media_action = QAction("Refresh &Media", mw)
 refresh_media_action.setShortcut(QKeySequence("Ctrl+Alt+M"))
 qconnect(refresh_media_action.triggered, refresh_media)
-mw.form.menuTools.addAction(refresh_media_action)
+facade.main_window().form.menuTools.addAction(refresh_media_action)

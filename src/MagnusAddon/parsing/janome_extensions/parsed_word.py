@@ -1,9 +1,11 @@
+from typing import Union, Any
+
 from parsing.janome_extensions.parts_of_speech import PartOfSpeechDescription
 from sysutils import kana_utils
 
 
 class ParsedWord:
-    def __init__(self, word: str, parts_of_speech: PartOfSpeechDescription = None) -> None:
+    def __init__(self, word: str, parts_of_speech: Union[PartOfSpeechDescription, None] = None) -> None:
         self.word = word
         self.parts_of_speech = parts_of_speech
 
@@ -13,7 +15,7 @@ class ParsedWord:
     def __repr__(self) -> str:
         return f"ParsedWord('{self.word}')"
 
-    def __eq__(self, other: any) -> bool:
+    def __eq__(self, other: Any) -> bool:
         if isinstance(other, ParsedWord):
             return self.word == other.word
         return False
