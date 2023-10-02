@@ -79,7 +79,7 @@ class NoteFields:
         Vocabs = "Vocabs"
         VocabsRaw = "VocabsRaw"
 
-    class IgnoreThisUseVocabInstead:
+    class Vocab:
         question = MyNoteFields.question
         active_answer = MyNoteFields.answer
         source_answer = "source_answer"
@@ -103,7 +103,6 @@ class NoteFields:
         Related_ergative_twin = "__ergative_twin"
         Related_confused_with = "__confused_with"
 
-    class Vocab(IgnoreThisUseVocabInstead):
         Kanji = "Kanji"
         Forms = "F"
         Kanji_Name = "Kanji_Name"

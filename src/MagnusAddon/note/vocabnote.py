@@ -71,8 +71,8 @@ class VocabNote(KanaVocabNote):
     def get_readings(self) -> list[str]: return [reading.strip() for reading in self._get_reading().split(",")]
     def set_readings(self, readings: list[str]) -> None: self._set_reading(", ".join([reading.strip() for reading in readings]))
 
-    def _get_reading(self) -> str: return super().get_field(NoteFields.IgnoreThisUseVocabInstead.Reading)
-    def _set_reading(self, value: str) -> None: super().set_field(NoteFields.IgnoreThisUseVocabInstead.Reading, value)
+    def _get_reading(self) -> str: return super().get_field(NoteFields.Vocab.Reading)
+    def _set_reading(self, value: str) -> None: super().set_field(NoteFields.Vocab.Reading, value)
 
     def get_component_subject_ids(self) -> str: return super().get_field(NoteFields.Vocab.component_subject_ids)
     def set_component_subject_ids(self, value: str) -> None: super().set_field(NoteFields.Vocab.component_subject_ids, value)
