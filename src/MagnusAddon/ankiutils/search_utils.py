@@ -1,7 +1,6 @@
 from typing import Callable, Iterable
 
 import aqt
-from PyQt6.QtWidgets import QLineEdit
 from aqt.browser import Browser # type: ignore
 
 import parsing.tree_parsing.tree_parser # noqa
@@ -76,7 +75,7 @@ def do_lookup_and_show_previewer(text: str) -> None:
 
 def do_lookup(text: str) -> None:
     browser: Browser = aqt.dialogs.open('Browser', aqt.mw)
-    checked_cast(QLineEdit, browser.form.searchEdit.lineEdit()).setText(text)
+    browser.form.searchEdit.lineEdit().setText(text)  # type: ignore
     browser.onSearchActivated()
 
 

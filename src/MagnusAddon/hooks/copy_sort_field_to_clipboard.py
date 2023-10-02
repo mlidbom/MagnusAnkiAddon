@@ -1,3 +1,5 @@
+from typing import cast
+
 from anki.cards import Card
 from anki.models import NotetypeDict
 from anki.notes import Note
@@ -8,7 +10,6 @@ from sysutils import my_clipboard
 from sysutils.collections.recent_items import RecentItems
 from sysutils.stringutils import StringUtils
 from ankiutils.ui_utils import UIUtils
-from sysutils.typed import checked_cast
 
 recent_previewer_cards = RecentItems[int](2)
 def copy_previewer_sort_field_to_windows_clipboard(html:str, card: Card, type_of_display:str) -> str:
@@ -20,7 +21,7 @@ def copy_previewer_sort_field_to_windows_clipboard(html:str, card: Card, type_of
     return html
 
 def copy_card_sort_field_to_clipboard(note: Note) -> None:
-    model = checked_cast(NotetypeDict, note.note_type())
+    model = cast(NotetypeDict, note.note_type())
     sort_field = model['sortf']
     sort_value = note.fields[sort_field]
     clean_string = StringUtils.strip_html_and_bracket_markup_and_noise_characters(sort_value)

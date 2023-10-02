@@ -1,19 +1,12 @@
 from __future__ import annotations
-from typing import Sequence
+from typing import Sequence, cast
 from anki.cards import Card, CardId
 from anki.models import NotetypeDict
 from anki.notes import Note
 from ankiutils.anki_shim import facade
 from note.note_constants import Mine, NoteTypes
-from typing import TYPE_CHECKING
 
 from sysutils.typed import checked_cast
-
-if TYPE_CHECKING:
-    from note.sentencenote import SentenceNote
-    from note.kanjinote import KanjiNote
-    from note.radicalnote import RadicalNote
-    from note.vocabnote import VocabNote
 
 
 class JPNote:
@@ -27,6 +20,11 @@ class JPNote:
 
     @classmethod
     def note_from_note(cls, note: Note) -> JPNote:
+        from note.sentencenote import SentenceNote
+        from note.kanjinote import KanjiNote
+        from note.radicalnote import RadicalNote
+        from note.vocabnote import VocabNote
+
         if cls.get_note_type(note) == NoteTypes.Kanji:
             return KanjiNote(note)
         elif cls.get_note_type(note) == NoteTypes.Vocab:
@@ -39,7 +37,7 @@ class JPNote:
 
     @staticmethod
     def get_note_type(note: Note) -> str:
-        return checked_cast(str, checked_cast(NotetypeDict, note.note_type())["name"])
+        return checked_cast(str, cast(NotetypeDict, note.note_type())["name"])
 
     def get_note_type_name(self) -> str:
         # noinspection PyProtectedMember

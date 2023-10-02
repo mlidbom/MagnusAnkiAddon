@@ -8,9 +8,7 @@ def int_(value: Any) -> int: return checked_cast(int, value)
 
 CastT = TypeVar('CastT')
 def checked_cast(cls: type[CastT], var: object) -> CastT:
-    """
-    Runtime-check an object for a specific type and return it cast as such
-    """
+    """ Runtime-check an object for a specific type and return it cast as such """
     if not isinstance(var, cls):
         msg = f"{var}: expected {cls.__name__}, not {var.__class__.__name__}"
         raise TypeError(msg)
