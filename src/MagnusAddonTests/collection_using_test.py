@@ -2,7 +2,7 @@ from typing import Generator
 import pytest
 
 from ankiutils.anki_shim import facade
-from test_collection_factory import replace_anki_collection_for_testing
+from fixtures.test_collection_factory import replace_anki_collection_for_testing
 from note.jp_collection import JPLegacyCollection
 
 

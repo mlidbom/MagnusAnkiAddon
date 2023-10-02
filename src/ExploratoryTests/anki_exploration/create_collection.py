@@ -3,10 +3,6 @@ from os import path
 
 from anki.collection import Collection
 
-from anki_extentions.notetype_ex.note_type_ex import NoteTypeEx
-from anki_extentions.notetype_ex.note_type_field import NoteFieldEx
-from anki_extentions.notetype_ex.note_type_template import NoteTemplateEx
-from note.note_constants import NoteTypes, NoteFields
 
 
 def test_create_collection() -> None:
@@ -273,38 +269,7 @@ def add_note_type(col: Collection) -> None:
     col.save()
 
 
-def create_vocab() -> NoteTypeEx:
-    return NoteTypeEx(NoteTypes.Vocab,
-                      [NoteFieldEx(NoteFields.Vocab.question),
-                       NoteFieldEx(NoteFields.Vocab.active_answer),
-                       NoteFieldEx(NoteFields.Vocab.source_answer),
-                       NoteFieldEx(NoteFields.Vocab.user_answer),
-                       NoteFieldEx(NoteFields.Vocab.Reading),
-                       NoteFieldEx(NoteFields.Vocab.Speech_Type),
-                       NoteFieldEx(NoteFields.Vocab.Context_jp),
-                       NoteFieldEx(NoteFields.Vocab.Context_en),
-                       NoteFieldEx(NoteFields.Vocab.Context_jp_2),
-                       NoteFieldEx(NoteFields.Vocab.Context_en_2),
-                       NoteFieldEx(NoteFields.Vocab.Context_jp_3),
-                       NoteFieldEx(NoteFields.Vocab.Context_en_3),
-                       NoteFieldEx(NoteFields.Vocab.Meaning_Exp),
-                       NoteFieldEx(NoteFields.Vocab.Audio_b),
-                       NoteFieldEx(NoteFields.Vocab.Audio_g),
-                       NoteFieldEx(NoteFields.Vocab.sort_id),
-                       NoteFieldEx(NoteFields.Vocab.Related_homophones),
-                       NoteFieldEx(NoteFields.Vocab.Related_similar_meaning),
-                       NoteFieldEx(NoteFields.Vocab.Related_derived_from),
-                       NoteFieldEx(NoteFields.Vocab.Related_ergative_twin),
-                       NoteFieldEx(NoteFields.Vocab.Related_confused_with),
-                       NoteFieldEx(NoteFields.Vocab.Kanji),
-                       NoteFieldEx(NoteFields.Vocab.Forms),
-                       NoteFieldEx(NoteFields.Vocab.Kanji_Name),
-                       NoteFieldEx(NoteFields.Vocab.Reading_Exp),
-                       NoteFieldEx(NoteFields.Vocab.Homophones),
-                       NoteFieldEx(NoteFields.Vocab.ParsedTypeOfSpeech),
-                       NoteFieldEx(NoteFields.Vocab.Mnemonic__),
-                       NoteFieldEx(NoteFields.Vocab.component_subject_ids)],
-                      [NoteTemplateEx("listening")])
+
 
 
 _minimal_note_type = {'id': 0,
@@ -343,12 +308,11 @@ _minimal_note_type = {'id': 0,
                      'tags': []}  # noqa
 
 def test_create_minimal_note_type() -> None:
-    created = create_vocab()
     with tempfile.TemporaryDirectory() as tmp_dirname:
         collection_file = path.join(tmp_dirname, "collection.anki2")
         col = Collection(collection_file)
 
         try:
-            col.models.add_dict(created.to_dict())
+            col.models.add_dict(_minimal_note_type)
         finally:
             col.close()

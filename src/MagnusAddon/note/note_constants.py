@@ -30,7 +30,6 @@ class NoteFields:
         class Card:
             Reading = "Reading"
             Listening = "Listening"
-            Recognition = "Recognition"
 
     class WaniCommon:
         sort_id = "sort_id"

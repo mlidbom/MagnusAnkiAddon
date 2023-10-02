@@ -3,7 +3,7 @@ from typing import Generator
 import pytest
 
 from note.jp_collection import JPLegacyCollection
-from test_collection_factory import replace_anki_collection_for_testing
+from fixtures.test_collection_factory import replace_anki_collection_for_testing
 from viewmodels.kanji_list import sentence_kanji_list_viewmodel
 
 @pytest.fixture(scope="function", autouse=True)
