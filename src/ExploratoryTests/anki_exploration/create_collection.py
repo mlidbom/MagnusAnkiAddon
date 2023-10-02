@@ -1,10 +1,11 @@
 import tempfile
 from os import path
-from typing import Any
 
 from anki.collection import Collection
-from anki.models import NotetypeDict
 
+from anki_extentions.notetype_ex.note_type_ex import NoteTypeEx
+from anki_extentions.notetype_ex.note_type_field import NoteFieldEx
+from anki_extentions.notetype_ex.note_type_template import NoteTemplateEx
 from note.note_constants import NoteTypes, NoteFields
 
 
@@ -19,109 +20,6 @@ def test_create_collection() -> None:
             print(cards)
         finally:
             col.close()
-
-
-class MyNoteTemplate:
-    def __init__(self, name: str):
-        self.name = name
-        self.ord = 0
-        self.qfmt = "{{Tags}}"
-        self.afmt = "{{Tags}}"
-        self.bqfmt = ""
-        self.bafmt = ""
-        self.did = 0
-        self.bfont = "Arial"
-        self.bsize = 30
-
-    def to_dict(self) -> dict[str, Any]:
-        return {'name': self.name,
-                'ord': self.ord,
-                'qfmt': self.qfmt,
-                'afmt': self.afmt,
-                'bqfmt': self.bqfmt,
-                'bafmt': self.bafmt,
-                'did': self.did,
-                'bfont': self.bfont,
-                'bsize': self.bsize}
-
-
-class MyNoteField:
-    def __init__(self, name: str):
-        self.name = name
-        self.ord = 0
-        self.sticky = False
-        self.rtl = False
-        self.font = 'Arial'
-        self.size = 20
-        self.description = ""
-        self.plainText = False
-        self.collapsed = False
-        self.excludeFromSearch = False
-        self.media: list[Any] = []
-
-    def to_dict(self) -> dict[str, Any]:
-        return {
-            'name': self.name,
-            'ord': self.ord,
-            'sticky': self.sticky,
-            'rtl': self.rtl,
-            'font': self.font,
-            'size': self.size,
-            'description': self.description,
-            'plainText': self.plainText,
-            'collapsed': self.collapsed,
-            'excludeFromSearch': self.excludeFromSearch,
-            'media': self.media}
-
-
-class MyNoteType:
-    def __init__(self, name: str, fields: list[MyNoteField], templates: list[MyNoteTemplate]):
-        self.name = name
-        self.id = 0
-        self.flds = fields
-        self.tmpls = templates
-        self.type = 0
-        self.mod = 0
-        self.usn = 0
-        self.sortf = 0
-        self.did = 0
-        self.css = ''
-        self.latexPre = '\\documentclass[12pt]{article}\n\\special{papersize=3in,5in}\n\\usepackage{amssymb,amsmath}\n\\pagestyle{empty}\n\\setlength{\\parindent}{0in}\n\\begin{document}\n'  # No clue, but 3 templates had this value
-        self.latexPost = '\\end{document}'
-        self.latexsvg = False
-        self.req:list[Any] = []  # I have utterly no idea what this means. It is different for every note type. Seems to work empty even though no note type had these empty
-        self.vers: list[Any] = []
-        self.tags: list[Any] = []
-
-        index = 0
-        for field in self.flds:
-            field.ord = index
-            index += 1
-
-        index = 0
-        for template in self.tmpls:
-            template.ord = index
-            index += 1
-
-    def to_dict(self) -> NotetypeDict:
-        return {
-            'id': self.id,
-            'name': self.name,
-            'type': self.type,
-            'mod': self.mod,
-            'usn': self.usn,
-            'sortf': self.sortf,
-            'did': self.did,
-            'tmpls': [t.to_dict() for t in self.tmpls],
-            'flds': [f.to_dict() for f in self.flds],
-            'css': self.css,
-            'latexPre': self.latexPre,
-            'latexPost': self.latexPost,
-            'latexsvg': self.latexsvg,
-            'req': self.req,
-            'vers': self.vers,
-            'tags': self.tags
-        }
 
 
 japanese_sentence = {'id': 0,
@@ -375,38 +273,38 @@ def add_note_type(col: Collection) -> None:
     col.save()
 
 
-def create_vocab() -> MyNoteType:
-    return MyNoteType(NoteTypes.Vocab,
-                      [MyNoteField(NoteFields.Vocab.question),
-                       MyNoteField(NoteFields.Vocab.active_answer),
-                       MyNoteField(NoteFields.Vocab.source_answer),
-                       MyNoteField(NoteFields.Vocab.user_answer),
-                       MyNoteField(NoteFields.Vocab.Reading),
-                       MyNoteField(NoteFields.Vocab.Speech_Type),
-                       MyNoteField(NoteFields.Vocab.Context_jp),
-                       MyNoteField(NoteFields.Vocab.Context_en),
-                       MyNoteField(NoteFields.Vocab.Context_jp_2),
-                       MyNoteField(NoteFields.Vocab.Context_en_2),
-                       MyNoteField(NoteFields.Vocab.Context_jp_3),
-                       MyNoteField(NoteFields.Vocab.Context_en_3),
-                       MyNoteField(NoteFields.Vocab.Meaning_Exp),
-                       MyNoteField(NoteFields.Vocab.Audio_b),
-                       MyNoteField(NoteFields.Vocab.Audio_g),
-                       MyNoteField(NoteFields.Vocab.sort_id),
-                       MyNoteField(NoteFields.Vocab.Related_homophones),
-                       MyNoteField(NoteFields.Vocab.Related_similar_meaning),
-                       MyNoteField(NoteFields.Vocab.Related_derived_from),
-                       MyNoteField(NoteFields.Vocab.Related_ergative_twin),
-                       MyNoteField(NoteFields.Vocab.Related_confused_with),
-                       MyNoteField(NoteFields.Vocab.Kanji),
-                       MyNoteField(NoteFields.Vocab.Forms),
-                       MyNoteField(NoteFields.Vocab.Kanji_Name),
-                       MyNoteField(NoteFields.Vocab.Reading_Exp),
-                       MyNoteField(NoteFields.Vocab.Homophones),
-                       MyNoteField(NoteFields.Vocab.ParsedTypeOfSpeech),
-                       MyNoteField(NoteFields.Vocab.Mnemonic__),
-                       MyNoteField(NoteFields.Vocab.component_subject_ids)],
-                      [MyNoteTemplate("listening")])
+def create_vocab() -> NoteTypeEx:
+    return NoteTypeEx(NoteTypes.Vocab,
+                      [NoteFieldEx(NoteFields.Vocab.question),
+                       NoteFieldEx(NoteFields.Vocab.active_answer),
+                       NoteFieldEx(NoteFields.Vocab.source_answer),
+                       NoteFieldEx(NoteFields.Vocab.user_answer),
+                       NoteFieldEx(NoteFields.Vocab.Reading),
+                       NoteFieldEx(NoteFields.Vocab.Speech_Type),
+                       NoteFieldEx(NoteFields.Vocab.Context_jp),
+                       NoteFieldEx(NoteFields.Vocab.Context_en),
+                       NoteFieldEx(NoteFields.Vocab.Context_jp_2),
+                       NoteFieldEx(NoteFields.Vocab.Context_en_2),
+                       NoteFieldEx(NoteFields.Vocab.Context_jp_3),
+                       NoteFieldEx(NoteFields.Vocab.Context_en_3),
+                       NoteFieldEx(NoteFields.Vocab.Meaning_Exp),
+                       NoteFieldEx(NoteFields.Vocab.Audio_b),
+                       NoteFieldEx(NoteFields.Vocab.Audio_g),
+                       NoteFieldEx(NoteFields.Vocab.sort_id),
+                       NoteFieldEx(NoteFields.Vocab.Related_homophones),
+                       NoteFieldEx(NoteFields.Vocab.Related_similar_meaning),
+                       NoteFieldEx(NoteFields.Vocab.Related_derived_from),
+                       NoteFieldEx(NoteFields.Vocab.Related_ergative_twin),
+                       NoteFieldEx(NoteFields.Vocab.Related_confused_with),
+                       NoteFieldEx(NoteFields.Vocab.Kanji),
+                       NoteFieldEx(NoteFields.Vocab.Forms),
+                       NoteFieldEx(NoteFields.Vocab.Kanji_Name),
+                       NoteFieldEx(NoteFields.Vocab.Reading_Exp),
+                       NoteFieldEx(NoteFields.Vocab.Homophones),
+                       NoteFieldEx(NoteFields.Vocab.ParsedTypeOfSpeech),
+                       NoteFieldEx(NoteFields.Vocab.Mnemonic__),
+                       NoteFieldEx(NoteFields.Vocab.component_subject_ids)],
+                      [NoteTemplateEx("listening")])
 
 
 _minimal_note_type = {'id': 0,
