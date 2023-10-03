@@ -3,7 +3,7 @@ from typing import Sequence
 from jamdict.jmdict import JMDEntry, Sense
 
 from sysutils import kana_utils
-from sysutils.listutils import ListUtils
+from sysutils import listutils
 
 
 class DictEntry:
@@ -52,7 +52,7 @@ class DictEntry:
         if not self._is_verb():
             return False
 
-        glosses_text:list[str] = ListUtils.flatten_list([[str(gloss.text) for gloss in sense.gloss] for sense in self.entry.senses])
+        glosses_text:list[str] = listutils.flatten([[str(gloss.text) for gloss in sense.gloss] for sense in self.entry.senses])
         return all(gloss.startswith("to be ") for gloss in glosses_text)
 
     def format_sense(self, sense:Sense) -> str:

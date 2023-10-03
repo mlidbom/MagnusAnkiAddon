@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Callable
 
 from wanikani_api import models
@@ -168,6 +170,18 @@ class KanjiNote(WaniNote):
         note.add_tag("__imported")
         note.add_tag(Mine.Tags.Wani)
         kanji_note = KanjiNote(note)
-        facade.anki_collection().addNote(note) # todo static access to col
+        facade.anki_collection().addNote(note)
         kanji_note.set_question(wani_kanji.characters)
         kanji_note.update_from_wani(wani_kanji)
+
+    @classmethod
+    def create(cls, question: str, answer: str, on_readings:str, kun_reading:str) -> KanjiNote:
+        note = Note(facade.anki_collection(), facade.anki_collection().models.by_name(NoteTypes.Kanji))
+        kanji_note = KanjiNote(note)
+        facade.anki_collection().addNote(note)
+        kanji_note.set_question(question)
+        kanji_note.set_user_answer(answer)
+        kanji_note.set_reading_on(on_readings)
+        kanji_note.set_reading_kun(kun_reading)
+        return kanji_note
+

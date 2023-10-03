@@ -6,6 +6,7 @@ from note.note_constants import NoteTypes, NoteFields
 def create_kanji() -> NoteTypeEx:
     return NoteTypeEx(NoteTypes.Kanji,
                       [
+                          NoteFieldEx(NoteFields.Kanji.question),
                           NoteFieldEx(NoteFields.Kanji.active_answer),
                           NoteFieldEx(NoteFields.Kanji.source_answer),
                           NoteFieldEx(NoteFields.Kanji.user_answer),

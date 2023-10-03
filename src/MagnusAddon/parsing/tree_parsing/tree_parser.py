@@ -5,7 +5,7 @@ from parsing.janome_extensions.token_ext import TokenExt
 from parsing.janome_extensions.tokenizer_ext import TokenizerExt
 from parsing.tree_parsing.tree_parse_result import TreeParseResult
 from parsing.tree_parsing.tree_parser_node import TreeParserNode
-from sysutils.listutils import ListUtils
+from sysutils import listutils
 
 _tokenizer = TokenizerExt()
 
@@ -151,10 +151,10 @@ def split_excluded_single_tokens(tokens_param: list[TokenExt], excluded:set[str]
             else:  # We'll just split it manually and give the parts to the tokenizer.
                 characters = list(token.surface)
                 tokenized_single_characters = [_tokenizer.tokenize(char).tokens for char in characters]
-                return ListUtils.flatten_list(tokenized_single_characters)  # replace the leftover token with this token array and let the method try again
+                return listutils.flatten(tokenized_single_characters)  # replace the leftover token with this token array and let the method try again
 
     to_replace = [split_token_if_excluded(t) for t in tokens_param]
-    return ListUtils.flatten_list(to_replace)
+    return listutils.flatten(to_replace)
 
 
 

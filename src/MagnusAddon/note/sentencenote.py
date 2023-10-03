@@ -19,10 +19,12 @@ class SentenceNote(JPNote):
 
     def _get_source_answer(self) -> str: return super().get_field(SentenceNoteFields.source_answer)
     def _get_user_answer(self) -> str: return super().get_field(SentenceNoteFields.user_answer)
-    def _get_active_answer(self) -> str: return self._get_user_answer() or self._get_source_answer()
+    def get_active_answer(self) -> str: return self._get_user_answer() or self._get_source_answer()
+    def _set_user_answer(self, question: str) -> None: return super().set_field(SentenceNoteFields.user_answer, question)
 
     def _get_source_question(self) -> str: return StringUtils.strip_html_markup(super().get_field(SentenceNoteFields.source_question))
     def _set_source_question(self, question: str) -> None: return super().set_field(SentenceNoteFields.source_question, question)
+
 
     def _get_user_question(self) -> str: return StringUtils.strip_html_markup(super().get_field(SentenceNoteFields.user_question))
     def get_active_question(self) -> str: return self._get_user_question() or self._get_source_question()
@@ -61,7 +63,7 @@ class SentenceNote(JPNote):
 
     def update_generated_data(self) -> None:
         self._update_parsed_words()
-        super().set_field(SentenceNoteFields.active_answer, self._get_active_answer())
+        super().set_field(SentenceNoteFields.active_answer, self.get_active_answer())
         super().set_field(SentenceNoteFields.active_question, self.get_active_question())
 
     def _update_parsed_words(self) -> None:
@@ -73,10 +75,11 @@ class SentenceNote(JPNote):
         return [char for char in clean if not kana_utils.is_kana(char)]
 
     @classmethod
-    def create(cls, question:str) -> SentenceNote:
+    def create(cls, question: str, answer: str) -> SentenceNote:
         inner_note = Note(facade.anki_collection(), facade.anki_collection().models.by_name(NoteTypes.Sentence))
         facade.anki_collection().addNote(inner_note)
         note = SentenceNote(inner_note)
         note._set_source_question(question)
+        note._set_user_answer(answer)
         return note
 

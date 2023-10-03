@@ -12,7 +12,7 @@ from note.vocabnote import VocabNote
 from note.cardutils import CardUtils
 from note.kanjinote import KanjiNote
 from note.note_constants import NoteFields, NoteTypes
-from sysutils.listutils import ListUtils
+from sysutils import listutils
 
 
 def list_sentence_notes() -> list[SentenceNote]:
@@ -25,7 +25,7 @@ def fetch_notes_by_note_type_and_field_value(note_type: str, field: str,
         f"{Builtin.Note}:{note_type} {field}:{field_value}")
         for field_value in field_values]
 
-    note_ids_flat = ListUtils.flatten_list(note_ids)
+    note_ids_flat = listutils.flatten(note_ids)
     notes = fetch_notes_by_id(note_ids_flat)
     return notes
 
@@ -49,7 +49,7 @@ def search_sentence_notes(query: str) -> list[SentenceNote]:
 
 def _search_notes(query: str) -> list[Note]:
     note_ids = [facade.anki_collection().find_notes(query)]
-    note_ids_flat = ListUtils.flatten_list(note_ids)
+    note_ids_flat = listutils.flatten(note_ids)
     notes = fetch_notes_by_id(note_ids_flat)
     return notes
 

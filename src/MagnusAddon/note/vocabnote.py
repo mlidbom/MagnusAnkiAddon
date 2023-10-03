@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from wanikani_api import models
 from ankiutils.anki_shim import facade
 from anki.notes import Note
@@ -7,7 +9,6 @@ from sysutils import kana_utils
 from sysutils.stringutils import StringUtils
 from note.note_constants import NoteFields, Mine, NoteTypes
 from wanikani.wanikani_api_client import WanikaniClient
-
 
 class VocabNote(KanaVocabNote):
     def __init__(self, note: Note):
@@ -120,7 +121,7 @@ class VocabNote(KanaVocabNote):
         kanji_note._set_question(wani_vocab.characters)
         kanji_note.update_from_wani(wani_vocab)
 
-        #Do not move to update method or we will wipe out local changes made to the context sentences.
+        # Do not move to update method or we will wipe out local changes made to the context sentences.
         if len(wani_vocab.context_sentences) > 0:
             kanji_note.set_context_en(wani_vocab.context_sentences[0].english)
             kanji_note.set_context_jp(wani_vocab.context_sentences[0].japanese)
@@ -140,4 +141,13 @@ class VocabNote(KanaVocabNote):
             generated = dict_lookup.entries[0].generate_answer()
             self.set_user_answer(generated)
 
+    @classmethod
+    def create(cls, question:str, answer:str, readings:list[str]) -> VocabNote:
+        backend_note = Note(facade.anki_collection(), facade.anki_collection().models.by_name(NoteTypes.Vocab))
+        facade.anki_collection().addNote(backend_note)
+        note = VocabNote(backend_note)
+        note._set_question(question)
+        note.set_user_answer(answer)
+        note.set_readings(readings)
 
+        return note

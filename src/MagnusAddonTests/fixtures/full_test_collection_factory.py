@@ -28,7 +28,7 @@ def inject_full_anki_collection_for_testing() -> Generator[None, None, None]:
         collection.close()
 
 def create_collection(collection_file_path: str) -> Collection:
-    script_dir = os.path.dirname(os.path.abspath(__file__))
+    script_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..\\")
     source_file = os.path.join(script_dir, "collection.anki2")
     shutil.copyfile(source_file, collection_file_path)
     print()

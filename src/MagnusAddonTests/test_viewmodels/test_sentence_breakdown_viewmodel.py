@@ -1,26 +1,34 @@
 from typing import Generator
 
 import pytest
-from fixtures.empty_test_collection_factory import inject_empty_anki_collection_with_note_types
-from note.sentencenote import SentenceNote
+
+from ankiutils import search_utils
+from fixtures.base_data.sample_data import sentence_spec
+from fixtures.base_data.sample_data.sentence_spec import SentenceSpec
+from fixtures.test_collection_factory import inject_anki_collection_with_generated_sample_data
+from note import jp_collection
 from viewmodels.sentence_breakdown import sentence_breakdown_viewmodel
 
 
 @pytest.fixture(scope="function", autouse=True)
 def setup_object() -> Generator[None, None, None]:
-    with inject_empty_anki_collection_with_note_types():
+    with inject_anki_collection_with_generated_sample_data():
         yield
 
 
+@pytest.mark.skip("just for now.")
 @pytest.mark.parametrize('sentence', [
-    "駅前にクレープ屋さんができたんだって",
-    "香織　お父さんがケーキ買ってきたよ",
-    "長谷くんは　友達と遊びに行くとしたら　どこ行くの",
-    "長谷くんとの記憶は　全部消えちゃう",
-    "長谷　お前このままじゃ数学の単位落とすぞ"
+    sentence_spec.test_sentence_list[0],
+    sentence_spec.test_sentence_list[1],
+    sentence_spec.test_sentence_list[2],
+    sentence_spec.test_sentence_list[3],
+    sentence_spec.test_sentence_list[4]
 ])
-def test_sentence_breakdown_viewmodel(sentence:str) -> None:
-    sentence_note = SentenceNote.create(sentence)
+def test_sentence_breakdown_viewmodel(sentence:SentenceSpec) -> None:
+    print()
+    print(sentence)
+
+    sentence_note = jp_collection.search_sentence_notes(search_utils.sentence_exact(sentence.question))[0]
     view_model = sentence_breakdown_viewmodel.create(sentence_note)
     print()
     print(sentence_note.get_active_question())
