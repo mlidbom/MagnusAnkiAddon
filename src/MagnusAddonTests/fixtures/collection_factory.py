@@ -1,14 +1,14 @@
+import tempfile
 import threading
 from contextlib import contextmanager
-from typing import Generator
-from anki.collection import Collection
-import tempfile
 from os import path
+from typing import Generator
+
+from anki.collection import Collection
 
 from ankiutils import anki_shim
-from ankiutils.anki_shim import facade
 from fixtures.base_data import note_type_factory
-from fixtures.base_data.sample_data import kanji_spec, sentence_spec, vocab_spec, vocab_spec
+from fixtures.base_data.sample_data import kanji_spec, sentence_spec, vocab_spec
 from note.kanjinote import KanjiNote
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
@@ -26,12 +26,13 @@ def inject_empty_anki_collection_with_note_types() -> Generator[None, None, None
     with tempfile.TemporaryDirectory() as tmp_dirname:
         collection_file = path.join(tmp_dirname, "collection.anki2")
         collection = Collection(collection_file)
-        populate_collection(collection)
-        _thread_local.anki_collection = collection
-        anki_shim.facade.anki_collection = get_thread_local_collection  # type: ignore
-        yield
-
-        collection.close()
+        try:
+            populate_collection(collection)
+            _thread_local.anki_collection = collection
+            anki_shim.facade.anki_collection = get_thread_local_collection  # type: ignore
+            yield
+        finally:
+            collection.close()
 
 
 def populate_collection(collection: Collection) -> None:

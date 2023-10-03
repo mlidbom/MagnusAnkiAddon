@@ -1,11 +1,10 @@
-from functools import reduce
-from typing import cast, Generator
+from typing import Generator
 import pytest
-
 from ankiutils import search_utils
 from fixtures.full_test_collection_factory import inject_full_anki_collection_for_testing
 from note import jp_collection
 from note.sentencenote import SentenceNote
+from note.vocabnote import VocabNote
 from sysutils import kana_utils, listutils
 from sysutils.stringutils import StringUtils
 
@@ -15,11 +14,6 @@ shtml = StringUtils.strip_html_markup
 def setup() -> Generator[None, None, None]:
     with (inject_full_anki_collection_for_testing()):
         yield
-
-
-
-
-
 
 _sentences = ["今じゃ町は夜でも明るいしもう会うこともないかもな",
               "食べてもいいけど",
@@ -52,7 +46,7 @@ _sentences = ["今じゃ町は夜でも明るいしもう会うこともない�
 su = search_utils
 @pytest.mark.skip("Only used to generate test data, so no reason to run this slow code all the time.")
 def test_create_sample_data() -> None:
-    sentence_notes:list[SentenceNote] = []
+    sentence_notes: list[SentenceNote] = []
     for sentence_text in _sentences:
         matching = jp_collection.search_sentence_notes(f"{su.note_sentence} {su.question}:*{sentence_text}*")
         with_active_answer = [m for m in matching if m.get_active_answer()]
@@ -60,9 +54,18 @@ def test_create_sample_data() -> None:
         for sentence in with_active_answer:
             print(f"""SentenceSpec("{shtml(sentence.get_active_question())}", "{shtml(sentence.get_active_answer())}"),"""),
 
-    needed_vocab_words = listutils.flatten([s.parse_words_from_expression() for s in sentence_notes])
-    vocab_notes = listutils.flatten([jp_collection.search_vocab_notes(su.single_vocab_by_form_exact(word.word)) for word in needed_vocab_words])
-    for vocab in vocab_notes:
+    needed_vocab_parsed_words = listutils.flatten([s.parse_words_from_expression() for s in sentence_notes])
+    need_vocab_strings = set([f.word for f in needed_vocab_parsed_words])
+    vocab_notes = listutils.flatten([jp_collection.search_vocab_notes(su.single_vocab_by_form_exact(word)) for word in need_vocab_strings])
+
+    non_duplicate_vocab_notes:list[VocabNote] = []
+    added_words:set[str] = set()
+    for candidate in vocab_notes:
+        if candidate.get_question() not in added_words:
+            added_words.add(candidate.get_question())
+            non_duplicate_vocab_notes.append(candidate)
+
+    for vocab in non_duplicate_vocab_notes:
         print(f"""VocabSpec("{vocab.get_question()}", "{vocab.get_active_answer()}", {vocab.get_readings()}),""")
 
     word_forms = "".join(listutils.flatten([list(n.get_forms()) for n in vocab_notes]))
