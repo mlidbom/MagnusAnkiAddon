@@ -149,5 +149,6 @@ class VocabNote(KanaVocabNote):
         note._set_question(question)
         note.set_user_answer(answer)
         note.set_readings(readings)
+        note.update_generated_data()
 
         return note

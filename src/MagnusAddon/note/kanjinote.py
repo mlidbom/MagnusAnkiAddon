@@ -176,12 +176,13 @@ class KanjiNote(WaniNote):
 
     @classmethod
     def create(cls, question: str, answer: str, on_readings:str, kun_reading:str) -> KanjiNote:
-        note = Note(facade.anki_collection(), facade.anki_collection().models.by_name(NoteTypes.Kanji))
-        kanji_note = KanjiNote(note)
-        facade.anki_collection().addNote(note)
-        kanji_note.set_question(question)
-        kanji_note.set_user_answer(answer)
-        kanji_note.set_reading_on(on_readings)
-        kanji_note.set_reading_kun(kun_reading)
-        return kanji_note
+        backend_note = Note(facade.anki_collection(), facade.anki_collection().models.by_name(NoteTypes.Kanji))
+        note = KanjiNote(backend_note)
+        facade.anki_collection().addNote(backend_note)
+        note.set_question(question)
+        note.set_user_answer(answer)
+        note.set_reading_on(on_readings)
+        note.set_reading_kun(kun_reading)
+        note.update_generated_data()
+        return note
 

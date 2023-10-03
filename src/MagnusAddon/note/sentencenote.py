@@ -81,5 +81,6 @@ class SentenceNote(JPNote):
         note = SentenceNote(inner_note)
         note._set_source_question(question)
         note._set_user_answer(answer)
+        note.update_generated_data()
         return note
 
