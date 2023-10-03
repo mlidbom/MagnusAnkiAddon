@@ -79,7 +79,7 @@ def run_tests(expected:UDTreeParseResult, parser: UDParser, sentence:str) -> Non
     print("repr-single-line:")
     print(repr(result).replace("\n", "").replace("　", ""))
 
-    #These are neck and neck. Let's find out where and how they differ by catching it here.
+    #These seem identical. Let's find out where and how they differ by catching it here.
     assert ud_tree_parser.parse(ud_parsers.spoken, sentence) == ud_tree_parser.parse(ud_parsers.gendai, sentence)
     assert result == expected
 

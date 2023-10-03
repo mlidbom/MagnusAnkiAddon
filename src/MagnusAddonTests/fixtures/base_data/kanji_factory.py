@@ -1,9 +1,7 @@
-from anki.collection import Collection
-
 from anki_extentions.notetype_ex.note_type_ex import NoteTypeEx
 from anki_extentions.notetype_ex.note_type_field import NoteFieldEx
 from anki_extentions.notetype_ex.note_type_template import NoteTemplateEx
-from note.note_constants import NoteTypes, NoteFields, SentenceNoteFields
+from note.note_constants import NoteTypes, NoteFields
 
 def create_kanji() -> NoteTypeEx:
     return NoteTypeEx(NoteTypes.Kanji,
