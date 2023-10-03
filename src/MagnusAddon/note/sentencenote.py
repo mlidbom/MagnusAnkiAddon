@@ -77,10 +77,10 @@ class SentenceNote(JPNote):
     @classmethod
     def create(cls, question: str, answer: str) -> SentenceNote:
         inner_note = Note(facade.anki_collection(), facade.anki_collection().models.by_name(NoteTypes.Sentence))
-        facade.anki_collection().addNote(inner_note)
         note = SentenceNote(inner_note)
         note._set_source_question(question)
         note._set_user_answer(answer)
         note.update_generated_data()
+        facade.anki_collection().addNote(inner_note)
         return note
 

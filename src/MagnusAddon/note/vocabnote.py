@@ -144,11 +144,10 @@ class VocabNote(KanaVocabNote):
     @classmethod
     def create(cls, question:str, answer:str, readings:list[str]) -> VocabNote:
         backend_note = Note(facade.anki_collection(), facade.anki_collection().models.by_name(NoteTypes.Vocab))
-        facade.anki_collection().addNote(backend_note)
         note = VocabNote(backend_note)
         note._set_question(question)
         note.set_user_answer(answer)
         note.set_readings(readings)
         note.update_generated_data()
-
+        facade.anki_collection().addNote(backend_note)
         return note

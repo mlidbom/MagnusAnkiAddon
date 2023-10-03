@@ -16,9 +16,9 @@ def setup_object() -> Generator[None, None, None]:
         yield
 
 
-@pytest.mark.parametrize('sentence', sentence_spec.test_sentence_list)
-def test_sentence_breakdown_viewmodel(sentence:SentenceSpec) -> None:
-    sentence_note = jp_collection.search_sentence_notes(search_utils.sentence_exact(sentence.question))[0]
+@pytest.mark.parametrize('sentence', [f.question for f in sentence_spec.test_sentence_list])
+def test_sentence_breakdown_viewmodel(sentence:str) -> None:
+    sentence_note = jp_collection.search_sentence_notes(search_utils.sentence_exact(sentence))[0]
     view_model = sentence_breakdown_viewmodel.create(sentence_note)
     print()
     print(sentence_note.get_active_question())
