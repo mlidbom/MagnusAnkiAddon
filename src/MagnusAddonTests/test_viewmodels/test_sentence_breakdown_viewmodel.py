@@ -1,10 +1,8 @@
 from typing import Generator
 
 import pytest
-
-from ankiutils import search_utils
-from note.jp_collection import JPLegacyCollection
 from fixtures.test_collection_factory import replace_anki_collection_for_testing
+from note.sentencenote import SentenceNote
 from viewmodels.sentence_breakdown import sentence_breakdown_viewmodel
 
 
@@ -14,7 +12,6 @@ def setup_object() -> Generator[None, None, None]:
         yield
 
 
-@pytest.mark.skip("TODO")
 @pytest.mark.parametrize('sentence', [
     "駅前にクレープ屋さんができたんだって",
     "香織　お父さんがケーキ買ってきたよ",
@@ -23,11 +20,7 @@ def setup_object() -> Generator[None, None, None]:
     "長谷　お前このままじゃ数学の単位落とすぞ"
 ])
 def test_sentence_breakdown_viewmodel(sentence:str) -> None:
-    sentences = JPLegacyCollection.search_sentence_notes(search_utils.sentence_exact(sentence))
-
-    assert len(sentences) == 1
-
-    sentence_note = sentences[0]
+    sentence_note = SentenceNote.create(sentence)
     view_model = sentence_breakdown_viewmodel.create(sentence_note)
     print()
     print(sentence_note.get_active_question())
