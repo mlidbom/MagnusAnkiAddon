@@ -5,7 +5,7 @@ import pytest
 from ankiutils import search_utils
 from fixtures.base_data.sample_data import sentence_spec
 from fixtures.base_data.sample_data.sentence_spec import SentenceSpec
-from fixtures.test_collection_factory import inject_anki_collection_with_generated_sample_data
+from fixtures.collection_factory import inject_anki_collection_with_generated_sample_data
 from note import jp_collection
 from viewmodels.sentence_breakdown import sentence_breakdown_viewmodel
 

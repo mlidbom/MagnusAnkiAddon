@@ -3,7 +3,7 @@ import pytest
 
 from batches import local_note_updater
 from fixtures.stub_factory import stub_ui_utils
-from fixtures.test_collection_factory import inject_empty_anki_collection_with_note_types, inject_anki_collection_with_generated_sample_data
+from fixtures.collection_factory import inject_empty_anki_collection_with_note_types, inject_anki_collection_with_generated_sample_data
 from note.sentencenote import SentenceNote
 
 
