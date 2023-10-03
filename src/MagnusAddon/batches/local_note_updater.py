@@ -1,6 +1,5 @@
 from typing import *
 
-from ankiutils.anki_shim import facade
 from note.sentencenote import SentenceNote
 from sysutils import kana_utils
 from parsing import janomeutils
@@ -11,31 +10,28 @@ from note import jp_collection
 
 
 def update_all() -> None:
-    def update_all_inner() -> None:
-        all_vocabulary: list[VocabNote] = jp_collection.fetch_all_vocab_notes()
-        all_kanji: list[KanjiNote] = jp_collection.fetch_all_kanji_notes()
-        all_sentences = jp_collection.list_sentence_notes()
+    all_vocabulary: list[VocabNote] = jp_collection.fetch_all_vocab_notes()
+    all_kanji: list[KanjiNote] = jp_collection.fetch_all_kanji_notes()
+    all_sentences = jp_collection.list_sentence_notes()
 
-        _update_sentences(all_sentences)
-        _update_kanji(all_vocabulary, all_kanji)
-        _update_vocab(all_vocabulary, all_kanji)
-        _update_vocab_parsed_parts_of_speech(all_vocabulary)
+    _update_sentences(all_sentences)
+    _update_kanji(all_vocabulary, all_kanji)
+    _update_vocab(all_vocabulary, all_kanji)
+    _update_vocab_parsed_parts_of_speech(all_vocabulary)
 
-    facade.ui_utils().run_ui_action(update_all_inner)
 
 def _update_vocab_parsed_parts_of_speech(all_vocabulary: list[VocabNote]) -> None:
     for vocab in all_vocabulary:
         vocab.set_parsed_type_of_speech(janomeutils.get_word_parts_of_speech(vocab.get_question()))
 
 def update_sentences() -> None:
-    facade.ui_utils().run_ui_action(lambda: _update_sentences(jp_collection.list_sentence_notes()))
+    _update_sentences(jp_collection.list_sentence_notes())
 
 def update_kanji() -> None:
-    facade.ui_utils().run_ui_action(lambda: _update_kanji(jp_collection.fetch_all_vocab_notes(), jp_collection.fetch_all_kanji_notes()))
+    _update_kanji(jp_collection.fetch_all_vocab_notes(), jp_collection.fetch_all_kanji_notes())
 
 def update_vocab() -> None:
-    facade.ui_utils().run_ui_action(lambda: _update_vocab(jp_collection.fetch_all_vocab_notes(), jp_collection.fetch_all_kanji_notes()))
-
+    _update_vocab(jp_collection.fetch_all_vocab_notes(), jp_collection.fetch_all_kanji_notes())
 
 def _update_sentences(sentences: list[SentenceNote]) -> None:
     for sentence in sentences: sentence.update_generated_data()

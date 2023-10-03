@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from anki.notes import Note
-
 from ankiutils.anki_shim import facade
 from note.jpnote import JPNote
 from parsing.janome_extensions.parsed_word import ParsedWord
@@ -9,6 +7,7 @@ from sysutils import timeutil, kana_utils
 from parsing import textparser
 from sysutils.stringutils import StringUtils
 from note.note_constants import SentenceNoteFields, NoteTypes
+from anki.notes import Note
 
 
 class SentenceNote(JPNote):
