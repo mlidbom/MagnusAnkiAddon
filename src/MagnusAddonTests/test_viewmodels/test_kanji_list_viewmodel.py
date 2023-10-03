@@ -3,12 +3,12 @@ from typing import Generator
 import pytest
 
 from note import jp_collection
-from fixtures.test_collection_factory import replace_anki_collection_for_testing
+from fixtures.test_collection_factory import inject_empty_anki_collection_with_note_types
 from viewmodels.kanji_list import sentence_kanji_list_viewmodel
 
 @pytest.fixture(scope="function", autouse=True)
 def setup_object() -> Generator[None, None, None]:
-    with replace_anki_collection_for_testing():
+    with inject_empty_anki_collection_with_note_types():
         yield
 
 

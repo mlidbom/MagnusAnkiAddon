@@ -17,7 +17,7 @@ def get_thread_local_collection() -> Collection:
 
 
 @contextmanager
-def replace_anki_collection_for_testing() -> Generator[None, None, None]:
+def inject_empty_anki_collection_with_note_types() -> Generator[None, None, None]:
     with tempfile.TemporaryDirectory() as tmp_dirname:
         collection_file = path.join(tmp_dirname, "collection.anki2")
         collection = Collection(collection_file)

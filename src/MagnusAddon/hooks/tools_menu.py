@@ -12,7 +12,6 @@ from note.sentencenote import SentenceNote
 from note.kanjinote import KanjiNote
 from note.vocabnote import VocabNote
 from hooks.note_content_building import sentence_breakdown
-from ankiutils.ui_utils import UIUtils
 from sysutils.typed import checked_cast
 from wanikani import note_importer
 from wanikani import wani_note_updater
@@ -30,7 +29,7 @@ def deep_refresh() -> None:
     if isinstance(note, KanjiNote):
         local_note_updater.update_kanji()
 
-    UIUtils.refresh()
+    facade.ui_utils().refresh()
 
 def add_menu_action(sub_menu: QMenu, heading: str, callback: Callable[[],None], shortcut: str = "") -> None:
     action = QAction(heading, facade.main_window())
@@ -41,7 +40,7 @@ def add_menu_action(sub_menu: QMenu, heading: str, callback: Callable[[],None], 
 def build_main_menu() -> None:
     my_menu = QMenu("Magnu&s", facade.main_window())
     tools_menu = facade.main_window().form.menuTools
-    add_menu_action(tools_menu, "Refresh UI", lambda: UIUtils.refresh(), "F5")
+    add_menu_action(tools_menu, "Refresh UI", lambda: facade.ui_utils().refresh(), "F5")
     add_menu_action(tools_menu, "Deep update UI", deep_refresh, "Ctrl+F5")
 
     tools_menu.addMenu(my_menu)

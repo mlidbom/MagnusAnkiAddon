@@ -10,5 +10,5 @@
 #
 # def register_show_previewer(editor: Editor):
 #     if editor.editorMode == EditorMode.EDIT_CURRENT:
-#         UIUtils.show_current_review_in_preview()
+#         facade.ui_utils().show_current_review_in_preview()
 #         editor.parentWindow.activateWindow()

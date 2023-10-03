@@ -3,9 +3,9 @@ from anki.notes import Note
 #from aqt import gui_hooks
 
 from ankiutils import search_utils
+from ankiutils.anki_shim import facade
 from note.jpnote import JPNote
 from sysutils.collections.recent_items import RecentItems
-from ankiutils.ui_utils import UIUtils
 
 
 def show_dependencies_in_browser(note: Note) -> None:
@@ -14,7 +14,7 @@ def show_dependencies_in_browser(note: Note) -> None:
 recent_review_answers = RecentItems[int](1)
 def on_reviewer_show_answer(card: Card) -> None:
     note = card.note()
-    if UIUtils.is_edit_current_open() or recent_review_answers.is_recent(note.id):
+    if facade.ui_utils().is_edit_current_open() or recent_review_answers.is_recent(note.id):
         return
 
     show_dependencies_in_browser(note)

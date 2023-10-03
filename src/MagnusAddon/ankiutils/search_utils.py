@@ -4,6 +4,7 @@ import aqt
 from aqt.browser import Browser # type: ignore
 
 import parsing.tree_parsing.tree_parser # noqa
+from ankiutils.anki_shim import facade
 from parsing.tree_parsing.tree_parser_node import TreeParserNode
 from note.jpnote import JPNote
 from note.sentencenote import SentenceNote
@@ -12,7 +13,6 @@ from note.radicalnote import RadicalNote
 from note.vocabnote import VocabNote
 from parsing import textparser
 from parsing.janome_extensions.parsed_word import ParsedWord
-from ankiutils.ui_utils import UIUtils
 from note.note_constants import NoteFields, Mine, MyNoteFields, NoteTypes
 from sysutils.typed import checked_cast
 
@@ -70,7 +70,7 @@ def vocab_dependencies_lookup_query(vocab: VocabNote) -> str:
 
 def do_lookup_and_show_previewer(text: str) -> None:
     do_lookup(text)
-    UIUtils.activate_preview()
+    facade.ui_utils().activate_preview()
 
 
 def do_lookup(text: str) -> None:
@@ -141,7 +141,7 @@ def lookup_dependencies(note: JPNote) -> None:
     search = type_map[type(note)]()
     if search:
         do_lookup(search)
-        UIUtils.activate_reviewer()
+        facade.ui_utils().activate_reviewer()
 
 
 def fetch_kanji_by_kanji(kanji: Iterable[str]) -> str:
