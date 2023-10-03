@@ -5,7 +5,7 @@ import requests
 
 from ankiutils.anki_shim import facade
 from note.vocabnote import VocabNote
-from note.jp_collection import JPLegacyCollection
+from note import jp_collection
 from wanikani.wanikani_api_client import WanikaniClient
 
 
@@ -46,7 +46,7 @@ class WaniDownloader:
 
     @classmethod
     def fetch_missing_vocab_audio(cls) -> None:
-        vocab_missing_audio: List[VocabNote] = [vocab for vocab in JPLegacyCollection.fetch_all_wani_vocab_notes() if
+        vocab_missing_audio: List[VocabNote] = [vocab for vocab in jp_collection.fetch_all_wani_vocab_notes() if
                                                 vocab.get_audio_female() == ""]
         for vocab in vocab_missing_audio:
             cls.fetch_audio_from_wanikani(vocab)

@@ -19,10 +19,11 @@ from note.jp_collection import *
 from note.cardutils import CardUtils
 from anki.notes import Note
 from note.note_constants import NoteTypes
+from note import jp_collection
 
 
 def unsuspend_with_dependencies(note: Note) -> None:
-    visit_note_dependencies(note, JPLegacyCollection.unsuspend_note_cards)
+    visit_note_dependencies(note, jp_collection.unsuspend_note_cards)
 
 def prioritize_with_dependencies(note: Note) -> None:
     visit_note_dependencies(note, CardUtils.prioritize_note_cards)
@@ -47,7 +48,7 @@ def visit_note_dependencies(note: Note, callback: Callable[[WaniNote, str], None
 
 def visit_vocab_with_dependencies(vocab_note: VocabNote, callback: Callable[[WaniNote, str], None]) -> None:
     kanji_list = StringUtils.extract_characters(vocab_note.get_question())
-    kanji_notes = JPLegacyCollection.fetch_kanji_notes(kanji_list)
+    kanji_notes = jp_collection.fetch_kanji_notes(kanji_list)
 
     for kanji_note in kanji_notes:
         visit_kanji_with_dependencies(kanji_note, None, callback)
@@ -65,7 +66,7 @@ def visit_kanji_with_dependencies(kanji_note: KanjiNote,
     if calling_radical_note is not None and calling_radical_note.get_a() in radical_dependencies_names:
         return  # We do not want to unsuspend the kanji that depends on the radical, only kanji upon which the radical depends
 
-    radical_dependencies_notes = JPLegacyCollection.fetch_radical_notes(radical_dependencies_names)
+    radical_dependencies_notes = jp_collection.fetch_radical_notes(radical_dependencies_names)
     for radical in radical_dependencies_notes:
         if calling_radical_note is None or radical.get_a() != calling_radical_note.get_a():
             visit_radical_with_dependencies(radical, kanji_note, callback)
@@ -76,7 +77,7 @@ def visit_kanji_with_dependencies(kanji_note: KanjiNote,
 def visit_radical_with_dependencies(radical_note: RadicalNote,
                                     calling_kanji_note: Optional[KanjiNote],
                                     callback: Callable[[WaniNote, str], None]) -> None:
-    kanji_dependencies_notes = JPLegacyCollection.fetch_kanji_notes([radical_note.get_q()])
+    kanji_dependencies_notes = jp_collection.fetch_kanji_notes([radical_note.get_q()])
     for kanji_note in kanji_dependencies_notes:
         if calling_kanji_note is None or kanji_note.get_question() != calling_kanji_note.get_question():
             visit_kanji_with_dependencies(kanji_note, radical_note, callback)

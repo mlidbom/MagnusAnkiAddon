@@ -7,14 +7,14 @@ from sysutils.stringutils import StringUtils
 from ankiutils.ui_utils import UIUtils
 from note.kanjinote import KanjiNote
 from note.vocabnote import VocabNote
-from note.jp_collection import JPLegacyCollection
+from note import jp_collection
 
 
 def update_all() -> None:
     def update_all_inner() -> None:
-        all_vocabulary: list[VocabNote] = JPLegacyCollection.fetch_all_vocab_notes()
-        all_kanji: list[KanjiNote] = JPLegacyCollection.fetch_all_kanji_notes()
-        all_sentences = JPLegacyCollection.list_sentence_notes()
+        all_vocabulary: list[VocabNote] = jp_collection.fetch_all_vocab_notes()
+        all_kanji: list[KanjiNote] = jp_collection.fetch_all_kanji_notes()
+        all_sentences = jp_collection.list_sentence_notes()
 
         _update_sentences(all_sentences)
         _update_kanji(all_vocabulary, all_kanji)
@@ -28,13 +28,13 @@ def _update_vocab_parsed_parts_of_speech(all_vocabulary: list[VocabNote]) -> Non
         vocab.set_parsed_type_of_speech(janomeutils.get_word_parts_of_speech(vocab.get_question()))
 
 def update_sentences() -> None:
-    UIUtils.run_ui_action(lambda: _update_sentences(JPLegacyCollection.list_sentence_notes()))
+    UIUtils.run_ui_action(lambda: _update_sentences(jp_collection.list_sentence_notes()))
 
 def update_kanji() -> None:
-    UIUtils.run_ui_action(lambda: _update_kanji(JPLegacyCollection.fetch_all_vocab_notes(), JPLegacyCollection.fetch_all_kanji_notes()))
+    UIUtils.run_ui_action(lambda: _update_kanji(jp_collection.fetch_all_vocab_notes(), jp_collection.fetch_all_kanji_notes()))
 
 def update_vocab() -> None:
-    UIUtils.run_ui_action(lambda: _update_vocab(JPLegacyCollection.fetch_all_vocab_notes(), JPLegacyCollection.fetch_all_kanji_notes()))
+    UIUtils.run_ui_action(lambda: _update_vocab(jp_collection.fetch_all_vocab_notes(), jp_collection.fetch_all_kanji_notes()))
 
 
 def _update_sentences(sentences: list[SentenceNote]) -> None:
