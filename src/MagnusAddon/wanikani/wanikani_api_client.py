@@ -71,7 +71,7 @@ class WanikaniClient:
         self._init()
         return self._kanji_id_dictionary[kanji_id]
 
-    def get_vocab_by_id(self, vocab_id: int) -> models.Kanji:
+    def get_vocab_by_id(self, vocab_id: int) -> models.Vocabulary:
         self._init()
         return self._vocab_id_dictionary[vocab_id]
 

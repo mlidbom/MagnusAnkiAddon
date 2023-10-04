@@ -3,6 +3,7 @@ from typing import Callable, Iterable, TYPE_CHECKING
 
 if TYPE_CHECKING:
     import parsing.tree_parsing.tree_parser  # noqa
+    from parsing.tree_parsing.tree_parser_node import TreeParserNode
 
 import aqt
 from aqt.browser import Browser # type: ignore

@@ -11,7 +11,6 @@ from note.radicalnote import RadicalNote
 from note.vocabnote import VocabNote
 from note.kanjinote import KanjiNote
 from note.note_constants import NoteFields, NoteTypes, Builtin
-from sysutils import listutils
 
 
 class BackEndFacade:

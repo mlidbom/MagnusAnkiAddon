@@ -4,7 +4,7 @@ from spacy.tokens import Doc, Token
 from unidic2ud import UniDic2UDEntry, UDPipeEntry # type: ignore
 
 from parsing.universal_dependencies.core.ud_token import UDToken
-from sysutils import listutils
+from sysutils import ex_sequence
 from sysutils.typed import checked_cast
 
 
@@ -17,7 +17,7 @@ class UDParseResult:
         if isinstance(wrapped, Doc):
             sents = [sent for sent in wrapped.sents]
             self._wrapped_sent_tokens:list[list[Token]] = [[token for token in sent] for sent in sents]
-            self._wrapped_tokens = listutils.flatten(self._wrapped_sent_tokens)
+            self._wrapped_tokens = ex_sequence.flatten(self._wrapped_sent_tokens)
 
             self.tokens = [UDToken(token) for token in self._wrapped_tokens]
 

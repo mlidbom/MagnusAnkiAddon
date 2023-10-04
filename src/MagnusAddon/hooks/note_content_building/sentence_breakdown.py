@@ -9,7 +9,7 @@ from parsing.tree_parsing import tree_parser
 from parsing.tree_parsing.tree_parser_node import TreeParserNode, priorities
 from sysutils.collections.recent_items import RecentItems
 from ankiutils import app
-from sysutils import listutils
+from sysutils import ex_sequence
 
 
 def _vocab_missing_string(node:TreeParserNode, display_text: str) -> str:
@@ -44,7 +44,7 @@ def _create_html_from_nodes(nodes: list[TreeParserNode], excluded: set[str], ext
         if node.is_show_at_all_in_sentence_breakdown():
             vocabs = app.col().vocab.search(search_utils.node_vocab_lookup(node))
             vocabs = [voc for voc in vocabs if voc.get_display_question() not in excluded]
-            found_words = set((voc.get_question() for voc in vocabs)) | set(listutils.flatten([voc.get_readings() for voc in vocabs]))
+            found_words = set((voc.get_question() for voc in vocabs)) | set(ex_sequence.flatten([voc.get_readings() for voc in vocabs]))
 
         if vocabs:
             for vocab in vocabs:

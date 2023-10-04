@@ -2,23 +2,17 @@ from parsing.universal_dependencies.ud_tree_node import UDTreeNode
 from parsing.universal_dependencies.ud_tree_parse_result import UDTreeParseResult
 from parsing.universal_dependencies.core.ud_parser import UDParser
 from parsing.universal_dependencies.core.ud_token import UDToken
-
+from sysutils import ex_sequence
 
 def _consume_children_of(entry:UDToken, tokens:list[UDToken]) -> int:
-    index = 0
-    for current_token in tokens:
-        if current_token.head.id != entry.id:
-            break
-        index += 1
-    return index
+    def is_child_of(token:UDToken) -> bool: return token.head == entry
+    consumed_tokens = ex_sequence.count_while(tokens, is_child_of)
+    return consumed_tokens
 
 def _consume_until(entry:UDToken, tokens:list[UDToken]) -> int:
-    index = 0
-    for current_token in tokens:
-        if current_token.id == entry.id:
-            break
-        index += 1
-    return index
+    def is_same_token(token:UDToken) -> bool: return token == entry
+    consumed_tokens = ex_sequence.count_until(tokens, is_same_token)
+    return consumed_tokens
 
 def _build_compounds(tokens:list[UDToken], depth:int) -> list[list[UDToken]]:
     if depth == _Depth.morphemes_4:
