@@ -43,6 +43,8 @@ _sentences = ["今じゃ町は夜でも明るいしもう会うこともない�
               "としたら",
               "あいつが話の中に出てくるのが"]
 
+#missing: 逢
+
 su = search_utils
 @pytest.mark.skip("Only used to generate test data, so no reason to run this slow code all the time.")
 def test_create_sample_data() -> None:
@@ -69,7 +71,10 @@ def test_create_sample_data() -> None:
         print(f"""VocabSpec("{vocab.get_question()}", "{vocab.get_active_answer()}", {vocab.get_readings()}),""")
 
     word_forms = "".join(listutils.flatten([list(n.get_forms()) for n in vocab_notes]))
-    all_kani_as_string = "".join(list(set([char for char in list(word_forms) if not kana_utils.is_only_kana(char)])))
-    kanji_notes = app.col().kanji.search(su.kanji_in_string(all_kani_as_string))
+    sentences_combined = "".join(_sentences)
+    big_fat_string = word_forms + sentences_combined
+    only_kanji = "".join(char for char in list(big_fat_string) if kana_utils.is_kanji(char))
+    search_string = su.kanji_in_string(only_kanji)
+    kanji_notes = app.col().kanji.search(search_string)
     for kanji_note in kanji_notes:
         print(f"""KanjiSpec("{shtml(kanji_note.get_question())}", "{shtml(kanji_note.get_active_answer())}", "{shtml(kanji_note.get_reading_kun())}", "{shtml(kanji_note.get_reading_on())}"),"""),

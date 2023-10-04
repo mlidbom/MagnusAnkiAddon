@@ -1,10 +1,12 @@
 from __future__ import annotations
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from parsing.janome_extensions.parsed_word import ParsedWord
 
 from ankiutils import app
 from note.jpnote import JPNote
-from parsing.janome_extensions.parsed_word import ParsedWord
 from sysutils import timeutil, kana_utils
-from parsing import textparser
 from sysutils.stringutils import StringUtils
 from note.note_constants import SentenceNoteFields, NoteTypes
 from anki.notes import Note
@@ -48,7 +50,9 @@ class SentenceNote(JPNote):
     def set_break_down(self, value: str) -> None: super().set_field(SentenceNoteFields.break_down, value)
 
 
-    def parse_words_from_expression(self) -> list[ParsedWord]: return textparser.identify_words(self.get_active_question())
+    def parse_words_from_expression(self) -> list[ParsedWord]:
+        from parsing import textparser
+        return textparser.identify_words(self.get_active_question())
     def get_parsed_words(self) -> list[str]: return super().get_field(SentenceNoteFields.ParsedWords).split(",")
     def _set_parsed_words(self, value: list[str]) -> None:
         value.append(str(timeutil.one_second_from_now()))
@@ -71,7 +75,7 @@ class SentenceNote(JPNote):
 
     def extract_kanji(self) -> list[str]:
         clean = StringUtils.strip_html_and_bracket_markup(self._get_source_question())
-        return [char for char in clean if not kana_utils.is_kana(char)]
+        return [char for char in clean if kana_utils.is_kanji(char)]
 
     @classmethod
     def create(cls, question: str, answer: str) -> SentenceNote:

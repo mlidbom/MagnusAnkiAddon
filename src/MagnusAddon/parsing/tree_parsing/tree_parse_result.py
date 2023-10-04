@@ -1,6 +1,8 @@
-from typing import Callable, Any
+from __future__ import annotations
+from typing import Callable, Any, TYPE_CHECKING
 
-from parsing.tree_parsing.tree_parser_node import TreeParserNode
+if TYPE_CHECKING:
+    from parsing.tree_parsing.tree_parser_node import TreeParserNode
 
 class TreeParseResult:
     def __init__(self, *args: TreeParserNode) -> None:
@@ -14,6 +16,6 @@ class TreeParseResult:
         return (isinstance(other, TreeParseResult)
                 and self.nodes == other.nodes)
 
-    def visit(self, callback: Callable[['TreeParserNode'], None]) -> None:
+    def visit(self, callback: Callable[[TreeParserNode], None]) -> None:
         for node in self.nodes:
             node.visit(callback)

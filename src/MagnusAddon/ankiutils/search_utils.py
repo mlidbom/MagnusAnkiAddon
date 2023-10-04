@@ -1,11 +1,13 @@
-from typing import Callable, Iterable
+from __future__ import annotations
+from typing import Callable, Iterable, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    import parsing.tree_parsing.tree_parser  # noqa
 
 import aqt
 from aqt.browser import Browser # type: ignore
 
-import parsing.tree_parsing.tree_parser # noqa
 from ankiutils import app
-from parsing.tree_parsing.tree_parser_node import TreeParserNode
 from note.jpnote import JPNote
 from note.sentencenote import SentenceNote
 from note.kanjinote import KanjiNote

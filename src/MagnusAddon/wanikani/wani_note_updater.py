@@ -43,7 +43,7 @@ def update_radical() -> None:
 
 
 def update_kanji() -> None:
-    all_kanji: list[KanjiNote] = app.col().kanji.all()
+    all_kanji = app.col().kanji.all()
     fetched = 0
     failed: str = ""
     for kanji_note in all_kanji:
