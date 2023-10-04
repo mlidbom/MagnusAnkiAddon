@@ -3,9 +3,8 @@ from typing import List
 
 import requests
 
-from ankiutils.anki_shim import facade
 from note.vocabnote import VocabNote
-from note import jp_collection
+from ankiutils import app
 from wanikani.wanikani_api_client import WanikaniClient
 
 
@@ -16,7 +15,7 @@ class FileDownloadError(Exception):
 class WaniDownloader:
     @staticmethod
     def media_dir() -> str:
-        return facade.anki_collection().media.dir()
+        return app.anki_collection().media.dir()
 
     @classmethod
     def download_file(cls, url:str, filename:str) -> str:
@@ -46,7 +45,7 @@ class WaniDownloader:
 
     @classmethod
     def fetch_missing_vocab_audio(cls) -> None:
-        vocab_missing_audio: List[VocabNote] = [vocab for vocab in jp_collection.fetch_all_wani_vocab_notes() if
+        vocab_missing_audio: List[VocabNote] = [vocab for vocab in app.col().fetch_all_wani_vocab_notes() if
                                                 vocab.get_audio_female() == ""]
         for vocab in vocab_missing_audio:
             cls.fetch_audio_from_wanikani(vocab)

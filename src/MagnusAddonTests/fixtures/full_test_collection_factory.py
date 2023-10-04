@@ -7,7 +7,7 @@ from anki.collection import Collection
 import tempfile
 from os import path
 
-from ankiutils import anki_shim
+from ankiutils import app
 from sysutils.typed import checked_cast
 
 _thread_local = threading.local()
@@ -22,7 +22,7 @@ def inject_full_anki_collection_for_testing() -> Generator[None, None, None]:
         collection_file = path.join(tmp_dirname, "collection.anki2")
         collection = create_collection(collection_file)
         _thread_local.anki_collection = collection
-        anki_shim.facade.anki_collection = get_thread_local_collection  # type: ignore
+        app.facade.anki_collection = get_thread_local_collection  # type: ignore
         yield
 
         collection.close()

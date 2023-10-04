@@ -3,7 +3,7 @@ from typing import Callable
 from PyQt6.QtWidgets import QMenu
 
 from ankiutils import search_utils as su
-from ankiutils.anki_shim import facade
+from ankiutils.app import ui_utils
 from ankiutils.search_utils import lookup_promise
 from note.vocabnote import VocabNote
 from note.note_constants import SentenceNoteFields
@@ -14,7 +14,7 @@ def add_ui_action(menu: QMenu, name: str, callback: Callable[[], None]) -> None:
 
     def run_ui_action() -> None:
         callback()
-        facade.ui_utils().refresh()
+        ui_utils().refresh()
 
 def add_lookup_action_lambda(menu: QMenu, name: str, search: Callable[[],str]) -> None:
     menu.addAction(name, lookup_promise(search))

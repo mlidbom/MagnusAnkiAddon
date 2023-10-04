@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from ankiutils.anki_shim import facade
+from ankiutils import app
 from note.jpnote import JPNote
 from parsing.janome_extensions.parsed_word import ParsedWord
 from sysutils import timeutil, kana_utils
@@ -75,11 +75,11 @@ class SentenceNote(JPNote):
 
     @classmethod
     def create(cls, question: str, answer: str) -> SentenceNote:
-        inner_note = Note(facade.anki_collection(), facade.anki_collection().models.by_name(NoteTypes.Sentence))
+        inner_note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Sentence))
         note = SentenceNote(inner_note)
         note._set_source_question(question)
         note._set_user_answer(answer)
         note.update_generated_data()
-        facade.anki_collection().addNote(inner_note)
+        app.anki_collection().addNote(inner_note)
         return note
 

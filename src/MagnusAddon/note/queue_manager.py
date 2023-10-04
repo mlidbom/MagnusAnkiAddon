@@ -2,7 +2,7 @@
 from typing import Optional, Callable, Sequence
 
 # noinspection PyUnresolvedReferences
-from ankiutils.anki_shim import facade
+from ankiutils import app
 from aqt.browser import Browser  # type: ignore
 from anki.cards import CardId
 from aqt import dialogs, mw
@@ -19,11 +19,11 @@ from note.jp_collection import *
 from note.cardutils import CardUtils
 from anki.notes import Note
 from note.note_constants import NoteTypes
-from note import jp_collection
+from ankiutils import app
 
 
 def unsuspend_with_dependencies(note: Note) -> None:
-    visit_note_dependencies(note, jp_collection.unsuspend_note_cards)
+    visit_note_dependencies(note, app.col().unsuspend_note_cards)
 
 def prioritize_with_dependencies(note: Note) -> None:
     visit_note_dependencies(note, CardUtils.prioritize_note_cards)
@@ -48,7 +48,7 @@ def visit_note_dependencies(note: Note, callback: Callable[[WaniNote, str], None
 
 def visit_vocab_with_dependencies(vocab_note: VocabNote, callback: Callable[[WaniNote, str], None]) -> None:
     kanji_list = StringUtils.extract_characters(vocab_note.get_question())
-    kanji_notes = jp_collection.fetch_kanji_notes(kanji_list)
+    kanji_notes = app.col().fetch_kanji_notes(kanji_list)
 
     for kanji_note in kanji_notes:
         visit_kanji_with_dependencies(kanji_note, None, callback)
@@ -66,7 +66,7 @@ def visit_kanji_with_dependencies(kanji_note: KanjiNote,
     if calling_radical_note is not None and calling_radical_note.get_a() in radical_dependencies_names:
         return  # We do not want to unsuspend the kanji that depends on the radical, only kanji upon which the radical depends
 
-    radical_dependencies_notes = jp_collection.fetch_radical_notes(radical_dependencies_names)
+    radical_dependencies_notes = app.col().fetch_radical_notes(radical_dependencies_names)
     for radical in radical_dependencies_notes:
         if calling_radical_note is None or radical.get_a() != calling_radical_note.get_a():
             visit_radical_with_dependencies(radical, kanji_note, callback)
@@ -77,7 +77,7 @@ def visit_kanji_with_dependencies(kanji_note: KanjiNote,
 def visit_radical_with_dependencies(radical_note: RadicalNote,
                                     calling_kanji_note: Optional[KanjiNote],
                                     callback: Callable[[WaniNote, str], None]) -> None:
-    kanji_dependencies_notes = jp_collection.fetch_kanji_notes([radical_note.get_q()])
+    kanji_dependencies_notes = app.col().fetch_kanji_notes([radical_note.get_q()])
     for kanji_note in kanji_dependencies_notes:
         if calling_kanji_note is None or kanji_note.get_question() != calling_kanji_note.get_question():
             visit_kanji_with_dependencies(kanji_note, radical_note, callback)
@@ -91,7 +91,7 @@ def refresh_search() -> None:
 
 
 def prioritize_selected_cards(card_ids: Sequence[CardId]) -> None:
-    cards = [facade.anki_collection().get_card(card_id) for card_id in card_ids]
+    cards = [app.anki_collection().get_card(card_id) for card_id in card_ids]
     for card in cards:
         CardUtils.prioritize(card)
 

@@ -3,7 +3,7 @@ import time
 from anki.cards import *
 from anki.consts import QUEUE_TYPE_NEW
 
-from ankiutils.anki_shim import facade
+from ankiutils import app
 from note.jpnote import JPNote
 from note.note_constants import NoteTypes
 
@@ -30,18 +30,18 @@ class CardUtils:
 
     @classmethod
     def prioritize_note_cards(cls, note: JPNote, name: str) -> None:
-        cards = [facade.anki_collection().get_card(card_id) for card_id in note.card_ids()]
+        cards = [app.anki_collection().get_card(card_id) for card_id in note.card_ids()]
         for card in cards:
             print("Prioritizing {}: {}".format(JPNote.get_note_type_name(note), name))
             CardUtils.prioritize(card)
 
     @classmethod
     def answer_again_with_zero_interval_for_new_note_cards(cls, note: JPNote, name: str) -> None:
-        cards = [facade.anki_collection().get_card(card_id) for card_id in note.card_ids()]
+        cards = [app.anki_collection().get_card(card_id) for card_id in note.card_ids()]
         for card in cards:
             if CardUtils.is_new(card):
                 print("Answering new card again {}: {}".format(JPNote.get_note_type_name(note), name))
                 card.start_timer()  # answerCard crashes unless I do this.
-                facade.anki_collection().sched.answerCard(card, 1)
+                app.anki_collection().sched.answerCard(card, 1)
                 card.due = int(time.time())
                 card.flush()

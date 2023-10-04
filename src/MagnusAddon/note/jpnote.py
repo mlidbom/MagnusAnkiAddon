@@ -3,7 +3,8 @@ from typing import Sequence, cast
 from anki.cards import Card, CardId
 from anki.models import NotetypeDict
 from anki.notes import Note
-from ankiutils.anki_shim import facade
+
+from ankiutils import app
 from note.note_constants import Mine, NoteTypes
 
 from sysutils.typed import checked_cast
@@ -44,8 +45,7 @@ class JPNote:
         return checked_cast(str, self._note._note_type['name'])  # Todo: find how to do this without digging into protected members
 
     def delete(self) -> None:
-        facade.anki_collection().remNotes([self._note.id])
-        facade.anki_collection().save()
+        app.anki_collection().remove_notes([self._note.id])
 
     def card_ids(self) -> Sequence[CardId]:
         return self._note.card_ids()

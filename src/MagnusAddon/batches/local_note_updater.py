@@ -1,18 +1,19 @@
 from typing import *
 
+from ankiutils import app
 from note.sentencenote import SentenceNote
 from sysutils import kana_utils
 from parsing import janomeutils
 from sysutils.stringutils import StringUtils
 from note.kanjinote import KanjiNote
 from note.vocabnote import VocabNote
-from note import jp_collection
+
 
 
 def update_all() -> None:
-    all_vocabulary: list[VocabNote] = jp_collection.fetch_all_vocab_notes()
-    all_kanji: list[KanjiNote] = jp_collection.fetch_all_kanji_notes()
-    all_sentences = jp_collection.list_sentence_notes()
+    all_vocabulary: list[VocabNote] = app.col().fetch_all_vocab_notes()
+    all_kanji: list[KanjiNote] = app.col().fetch_all_kanji_notes()
+    all_sentences = app.col().list_sentence_notes()
 
     _update_sentences(all_sentences)
     _update_kanji(all_vocabulary, all_kanji)
@@ -25,13 +26,13 @@ def _update_vocab_parsed_parts_of_speech(all_vocabulary: list[VocabNote]) -> Non
         vocab.set_parsed_type_of_speech(janomeutils.get_word_parts_of_speech(vocab.get_question()))
 
 def update_sentences() -> None:
-    _update_sentences(jp_collection.list_sentence_notes())
+    _update_sentences(app.col().list_sentence_notes())
 
 def update_kanji() -> None:
-    _update_kanji(jp_collection.fetch_all_vocab_notes(), jp_collection.fetch_all_kanji_notes())
+    _update_kanji(app.col().fetch_all_vocab_notes(), app.col().fetch_all_kanji_notes())
 
 def update_vocab() -> None:
-    _update_vocab(jp_collection.fetch_all_vocab_notes(), jp_collection.fetch_all_kanji_notes())
+    _update_vocab(app.col().fetch_all_vocab_notes(), app.col().fetch_all_kanji_notes())
 
 def _update_sentences(sentences: list[SentenceNote]) -> None:
     for sentence in sentences: sentence.update_generated_data()

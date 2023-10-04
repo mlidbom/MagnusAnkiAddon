@@ -5,7 +5,7 @@ from typing import Callable
 from wanikani_api import models
 from anki.notes import Note
 
-from ankiutils.anki_shim import facade
+from ankiutils import app
 from sysutils.stringutils import StringUtils
 from note.waninote import WaniNote
 from note.note_constants import NoteFields, Mine, NoteTypes
@@ -166,23 +166,23 @@ class KanjiNote(WaniNote):
 
     @staticmethod
     def create_from_wani_kanji(wani_kanji: models.Kanji) -> None:
-        note = Note(facade.anki_collection(), facade.anki_collection().models.by_name(NoteTypes.Kanji))
+        note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Kanji))
         note.add_tag("__imported")
         note.add_tag(Mine.Tags.Wani)
         kanji_note = KanjiNote(note)
-        facade.anki_collection().addNote(note)
+        app.anki_collection().addNote(note)
         kanji_note.set_question(wani_kanji.characters)
         kanji_note.update_from_wani(wani_kanji)
 
     @classmethod
     def create(cls, question: str, answer: str, on_readings:str, kun_reading:str) -> KanjiNote:
-        backend_note = Note(facade.anki_collection(), facade.anki_collection().models.by_name(NoteTypes.Kanji))
+        backend_note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Kanji))
         note = KanjiNote(backend_note)
         note.set_question(question)
         note.set_user_answer(answer)
         note.set_reading_on(on_readings)
         note.set_reading_kun(kun_reading)
         note.update_generated_data()
-        facade.anki_collection().addNote(backend_note)
+        app.anki_collection().addNote(backend_note)
         return note
 

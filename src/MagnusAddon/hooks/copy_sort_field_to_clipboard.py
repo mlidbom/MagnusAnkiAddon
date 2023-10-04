@@ -5,7 +5,7 @@ from anki.models import NotetypeDict
 from anki.notes import Note
 from aqt import gui_hooks
 
-from ankiutils.anki_shim import facade
+from ankiutils.app import ui_utils
 from hooks.timing_hacks import ugly_timing_hacks
 from sysutils import my_clipboard
 from sysutils.collections.recent_items import RecentItems
@@ -14,7 +14,7 @@ from sysutils.stringutils import StringUtils
 recent_previewer_cards = RecentItems[int](2)
 def copy_previewer_sort_field_to_windows_clipboard(html:str, card: Card, type_of_display:str) -> str:
     if ((type_of_display == 'previewAnswer'
-            and not facade.ui_utils().is_edit_current_open()
+            and not ui_utils().is_edit_current_open()
             and not recent_previewer_cards.is_recent(card.note().id))
             and not ugly_timing_hacks.reviewer_just_showed_answer()):
         copy_card_sort_field_to_clipboard(card.note())
@@ -30,7 +30,7 @@ def copy_card_sort_field_to_clipboard(note: Note) -> None:
 recent_review_answers = RecentItems[int](1)
 def on_reviewer_show_answer(card: Card) -> None:
     note = card.note()
-    if facade.ui_utils().is_edit_current_open() or recent_review_answers.is_recent(note.id):
+    if ui_utils().is_edit_current_open() or recent_review_answers.is_recent(note.id):
         return
 
     copy_card_sort_field_to_clipboard(note)

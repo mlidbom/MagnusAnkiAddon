@@ -7,7 +7,7 @@ from note.kanjinote import KanjiNote
 from note.vocabnote import VocabNote
 from sysutils import kana_utils
 from sysutils.stringutils import StringUtils
-from note import jp_collection
+from ankiutils import app
 
 
 def sort_vocab_list(note:KanjiNote, primary_voc: list[str], vocabs: list[VocabNote]) -> None:
@@ -53,7 +53,7 @@ def render_vocab_html_list(html:str, card: Card, _type_of_display:str) -> str:
     kanji_note = JPNote.note_from_card(card)
 
     if isinstance(kanji_note, KanjiNote):
-        vocab_list = jp_collection.search_vocab_notes(search_utils.vocab_with_kanji(kanji_note))
+        vocab_list = app.col().search_vocab_notes(search_utils.vocab_with_kanji(kanji_note))
         vocab_list_html = generate_vocab_html_list(kanji_note, vocab_list)
         html = html.replace("##VOCAB_LIST##", vocab_list_html)
 

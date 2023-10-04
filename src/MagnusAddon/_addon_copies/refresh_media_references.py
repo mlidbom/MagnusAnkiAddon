@@ -24,18 +24,18 @@ from PyQt6.QtGui import QAction, QKeySequence
 from aqt import mw, qconnect
 from aqt.utils import tooltip
 
-from ankiutils.anki_shim import facade
+from ankiutils import app
 
 def refresh_media() -> None:
     # write a dummy file to update collection.media modtime and force sync
-    media_dir = facade.anki_collection().media.dir()
+    media_dir = app.anki_collection().media.dir()
     fpath = os.path.join(media_dir, "syncdummy.txt")
     if not os.path.isfile(fpath):
         with open(fpath, "w") as f:
             f.write("anki sync dummy")
     os.remove(fpath)
     # reset Anki
-    facade.main_window().reset()
+    app.main_window().reset()
     tooltip("Media References Updated")
 
 
@@ -43,4 +43,4 @@ def refresh_media() -> None:
 refresh_media_action = QAction("Refresh &Media", mw)
 refresh_media_action.setShortcut(QKeySequence("Ctrl+Alt+M"))
 qconnect(refresh_media_action.triggered, refresh_media)
-facade.main_window().form.menuTools.addAction(refresh_media_action)
+app.main_window().form.menuTools.addAction(refresh_media_action)

@@ -5,7 +5,7 @@ from aqt import gui_hooks
 from aqt.browser.previewer import Previewer
 from aqt.webview import AnkiWebView, AnkiWebViewKind
 
-from ankiutils.anki_shim import facade
+from ankiutils.app import main_window
 from hooks.right_click_menu_note import setup_note_menu
 from hooks.right_click_menu_search import setup_search_menu
 from note.jpnote import JPNote
@@ -17,9 +17,9 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu) -> None:
     def get_note() -> JPNote:
         def get_card_inner() -> Card:
             if view.kind == AnkiWebViewKind.MAIN:
-                return checked_cast(Card, facade.main_window().reviewer.card)
+                return checked_cast(Card, main_window().reviewer.card)
             if view.kind == AnkiWebViewKind.PREVIEWER:
-                return checked_cast(Card, [window for window in facade.main_window().app.topLevelWidgets() if isinstance(window, Previewer)][0].card())
+                return checked_cast(Card, [window for window in main_window().app.topLevelWidgets() if isinstance(window, Previewer)][0].card())
 
             raise Exception("Failed to find card")
 

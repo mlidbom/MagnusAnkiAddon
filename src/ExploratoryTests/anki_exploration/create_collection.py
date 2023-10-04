@@ -266,7 +266,6 @@ def add_note_type(col: Collection) -> None:
     col.models.add(kanji)
     col.models.add(radical)
     col.models.add(vocab)
-    col.save()
 
 
 

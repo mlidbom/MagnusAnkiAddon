@@ -6,9 +6,10 @@ from typing import Generator
 
 from anki.collection import Collection
 
-from ankiutils import anki_shim
+from ankiutils import app
 from fixtures.base_data import note_type_factory
 from fixtures.base_data.sample_data import kanji_spec, sentence_spec, vocab_spec
+from note.jp_collection import JPCollection
 from note.kanjinote import KanjiNote
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
@@ -17,22 +18,23 @@ from sysutils.typed import checked_cast
 _thread_local = threading.local()
 
 
-def get_thread_local_collection() -> Collection:
-    return checked_cast(Collection, _thread_local.anki_collection)
+def get_thread_local_collection() -> JPCollection:
+    return checked_cast(JPCollection, _thread_local.jp_collection)
 
 
 @contextmanager
 def inject_empty_anki_collection_with_note_types() -> Generator[None, None, None]:
     with tempfile.TemporaryDirectory() as tmp_dirname:
         collection_file = path.join(tmp_dirname, "collection.anki2")
-        collection = Collection(collection_file)
+        anki_collection = Collection(collection_file)
+        jp_collection = JPCollection(anki_collection)
         try:
-            populate_collection(collection)
-            _thread_local.anki_collection = collection
-            anki_shim.facade.anki_collection = get_thread_local_collection  # type: ignore
+            populate_collection(anki_collection)
+            _thread_local.jp_collection = jp_collection
+            app.col = get_thread_local_collection
             yield
         finally:
-            collection.close()
+            anki_collection.close()
 
 
 def populate_collection(collection: Collection) -> None:

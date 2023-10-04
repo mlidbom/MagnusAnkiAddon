@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from wanikani_api import models
-from ankiutils.anki_shim import facade
+from ankiutils import app
 from anki.notes import Note
 
 from note.kanavocabnote import KanaVocabNote
@@ -113,11 +113,11 @@ class VocabNote(KanaVocabNote):
 
     @staticmethod
     def create_from_wani_vocabulary(wani_vocab: models.Vocabulary) -> None:
-        note = Note(facade.anki_collection(), facade.anki_collection().models.by_name(NoteTypes.Vocab))
+        note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Vocab))
         note.add_tag("__imported")
         note.add_tag(Mine.Tags.Wani)
         kanji_note = VocabNote(note)
-        facade.anki_collection().addNote(note)
+        app.anki_collection().addNote(note)
         kanji_note._set_question(wani_vocab.characters)
         kanji_note.update_from_wani(wani_vocab)
 
@@ -143,11 +143,11 @@ class VocabNote(KanaVocabNote):
 
     @classmethod
     def create(cls, question:str, answer:str, readings:list[str]) -> VocabNote:
-        backend_note = Note(facade.anki_collection(), facade.anki_collection().models.by_name(NoteTypes.Vocab))
+        backend_note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Vocab))
         note = VocabNote(backend_note)
         note._set_question(question)
         note.set_user_answer(answer)
         note.set_readings(readings)
         note.update_generated_data()
-        facade.anki_collection().addNote(backend_note)
+        app.anki_collection().addNote(backend_note)
         return note

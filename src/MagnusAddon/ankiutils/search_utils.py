@@ -4,7 +4,7 @@ import aqt
 from aqt.browser import Browser # type: ignore
 
 import parsing.tree_parsing.tree_parser # noqa
-from ankiutils.anki_shim import facade
+from ankiutils import app
 from parsing.tree_parsing.tree_parser_node import TreeParserNode
 from note.jpnote import JPNote
 from note.sentencenote import SentenceNote
@@ -70,7 +70,7 @@ def vocab_dependencies_lookup_query(vocab: VocabNote) -> str:
 
 def do_lookup_and_show_previewer(text: str) -> None:
     do_lookup(text)
-    facade.ui_utils().activate_preview()
+    app.ui_utils().activate_preview()
 
 
 def do_lookup(text: str) -> None:
@@ -141,7 +141,7 @@ def lookup_dependencies(note: JPNote) -> None:
     search = type_map[type(note)]()
     if search:
         do_lookup(search)
-        facade.ui_utils().activate_reviewer()
+        app.ui_utils().activate_reviewer()
 
 
 def fetch_kanji_by_kanji(kanji: Iterable[str]) -> str:
