@@ -2,13 +2,13 @@ from typing import Any
 
 import pytest
 
-from parsing.universal_dependencies import ud_tree_parser, ud_parsers
+from parsing.universal_dependencies import ud_tree_builder, ud_parsers
 from parsing.universal_dependencies.core.ud_parser import UDParser
-from parsing.universal_dependencies.ud_tree_parse_result import UDTreeParseResult
-from parsing.universal_dependencies.ud_tree_node import UDTreeNode
+from parsing.universal_dependencies.ud_tree_parse_result import UDTextTree
+from parsing.universal_dependencies.ud_tree_node import UDTextTreeNode
 
-N = UDTreeNode
-R = UDTreeParseResult
+N = UDTextTreeNode
+R = UDTextTree
 def only_string_params(param:Any) -> str: return param if isinstance(param, str) else ""
 
 @pytest.mark.parametrize('sentence, expected', [
@@ -48,7 +48,7 @@ def only_string_params(param:Any) -> str: return param if isinstance(param, str)
     ("よかったじゃん", R(N('よかったじゃん', '', [N('よかっ', '良い'), N('た', ''), N('じゃん', '')]))),
     ("言えばよかった", R(N('言えば', '', [N('言え', '言う'), N('ば', '')]), N('よかった', '', [N('よかっ', '良い'), N('た', '')]))),
    ], ids=only_string_params)
-def test_sentences_the_best_parser_does_well(sentence: str, expected: UDTreeParseResult) -> None: run_tests(expected, ud_parsers.best, sentence)
+def test_sentences_the_best_parser_does_well(sentence: str, expected: UDTextTree) -> None: run_tests(expected, ud_parsers.best, sentence)
 
 @pytest.mark.parametrize('sentence, parser, expected', [
     ("ううん藤宮さんは日記を捨てるような人じゃない", ud_parsers.gendai, R(N('ううん藤宮さんは', '', [N('ううん', ''), N('藤宮さんは', '', [N('藤宮', 'フジミヤ'), N('さんは', '', [N('さん', ''), N('は', '')])])]),N('日記を捨てるような', '日記を捨てるようだ', [N('日記を', '', [N('日記', ''), N('を', '')]), N('捨てるような', '捨てるようだ', [N('捨てる', ''), N('よう', '様'), N('な', 'だ')])]),N('人じゃない', '人じゃ無い', [N('人', ''), N('じゃ', 'だ'), N('ない', '無い')]))),
@@ -56,17 +56,17 @@ def test_sentences_the_best_parser_does_well(sentence: str, expected: UDTreePars
     ("あいつが話の中に出てくるのが", ud_parsers.gendai, R(N('あいつが', '', [N('あいつ', '彼奴'), N('が', '')]), N('話の中に', '', [N('話の', '', [N('話', ''), N('の', '')]), N('中に', '', [N('中', ''), N('に', '')])]), N('出てくるのが', '', [N('出', '出る'), N('て', ''), N('くる', '来る'), N('の', ''), N('が', '')]))),
 
 ], ids=only_string_params)
-def test_sentences_done_better_by_alternative_parser(sentence: str, parser: UDParser, expected: UDTreeParseResult) -> None: run_tests(expected, parser, sentence)
+def test_sentences_done_better_by_alternative_parser(sentence: str, parser: UDParser, expected: UDTextTree) -> None: run_tests(expected, parser, sentence)
 
 @pytest.mark.parametrize('sentence, parser, expected', [
 ], ids=only_string_params)
-def test_temp(sentence: str, parser: UDParser, expected: UDTreeParseResult) -> None: run_tests(expected, parser, sentence)
+def test_temp(sentence: str, parser: UDParser, expected: UDTextTree) -> None: run_tests(expected, parser, sentence)
 
 
-def run_tests(expected:UDTreeParseResult, parser: UDParser, sentence:str) -> None:
+def run_tests(expected:UDTextTree, parser: UDParser, sentence:str) -> None:
     print()
     parser = parser if parser else ud_parsers.best
-    result = ud_tree_parser.parse(parser, sentence)
+    result = ud_tree_builder.build_tree(parser, sentence)
     print(f"{parser.name} : {sentence}")
     print(parser.parse(sentence).to_tree())
     print()
@@ -80,7 +80,7 @@ def run_tests(expected:UDTreeParseResult, parser: UDParser, sentence:str) -> Non
     print(repr(result).replace("\n", "").replace("　", ""))
 
     #These seem identical. Let's find out where and how they differ by catching it here.
-    assert ud_tree_parser.parse(ud_parsers.spoken, sentence) == ud_tree_parser.parse(ud_parsers.gendai, sentence)
+    assert ud_tree_builder.build_tree(ud_parsers.spoken, sentence) == ud_tree_builder.build_tree(ud_parsers.gendai, sentence)
     assert result == expected
 
 
@@ -128,5 +128,5 @@ def test_compare_parsers(sentence: str) -> None:
 
     for parser in ud_parsers.all_parsers:
         print(f"{parser.name} : {sentence}")
-        print(ud_tree_parser.parse(parser, sentence))
+        print(ud_tree_builder.build_tree(parser, sentence))
         print()

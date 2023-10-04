@@ -1,10 +1,10 @@
 from typing import Callable, Any
 
-from parsing.universal_dependencies.ud_tree_node import UDTreeNode
+from parsing.universal_dependencies.ud_tree_node import UDTextTreeNode
 
 
-class UDTreeParseResult:
-    def __init__(self, *args: UDTreeNode) -> None:
+class UDTextTree:
+    def __init__(self, *args: UDTextTreeNode) -> None:
         self.nodes = list(args)
 
     def __repr__(self) -> str:
@@ -16,9 +16,9 @@ class UDTreeParseResult:
         return f"""{_argument_separator.join(str(node) for node in self.nodes)}"""
 
     def __eq__(self, other: Any) -> bool:
-        return (isinstance(other, UDTreeParseResult)
+        return (isinstance(other, UDTextTree)
                 and self.nodes == other.nodes)
 
-    def visit(self, callback: Callable[['UDTreeNode'], None]) -> None:
+    def visit(self, callback: Callable[['UDTextTreeNode'], None]) -> None:
         for node in self.nodes:
             node.visit(callback)

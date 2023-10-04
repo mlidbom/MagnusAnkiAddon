@@ -2,13 +2,13 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from parsing.universal_dependencies.ud_tree_node import UDTreeNode
+    from parsing.universal_dependencies.ud_tree_node import UDTextTreeNode
 
 from sysutils import kana_utils
 from sysutils.stringutils import StringUtils
 
 
-def _str_pos(self: UDTreeNode) -> str:
+def _str_pos(self: UDTextTreeNode) -> str:
     if self.is_morpheme():
         token = self.tokens[0]
         return (f"""{StringUtils.pad_to_length(str(token.id), 3)}""" +
@@ -20,7 +20,7 @@ def _str_pos(self: UDTreeNode) -> str:
     return "_"
 
 
-def _children_repr(self: UDTreeNode, level:int = 1) -> str:
+def _children_repr(self: UDTextTreeNode, level:int = 1) -> str:
     if not self.children:
         return ""
     children_string = ', \n'.join(repr_(child, level) for child in self.children)
@@ -28,11 +28,11 @@ def _children_repr(self: UDTreeNode, level:int = 1) -> str:
 
 def _indent(level: int) -> str: return "　　" * level
 
-def repr_(self: UDTreeNode, level: int) -> str:
+def repr_(self: UDTextTreeNode, level: int) -> str:
     return f"""{_indent(level)}N('{self.surface}', '{self.base if self.is_inflected() else ""}'{_children_repr(self, level + 1)})"""
 
 
-def _children_str(self: UDTreeNode, level:int = 1) -> str:
+def _children_str(self: UDTextTreeNode, level:int = 1) -> str:
     if not self.children:
         return ""
 
@@ -41,7 +41,7 @@ def _children_str(self: UDTreeNode, level:int = 1) -> str:
     return f"""{line_start}{children_string}"""
 
 
-def str_(self: UDTreeNode, level: int) -> str:
+def str_(self: UDTextTreeNode, level: int) -> str:
     indent = "　　" * level
     start = f"""{indent}{self.surface}{"　－　" + self.base if self.is_inflected() else ""}"""
     start = kana_utils.pad_to_length(start, 20)

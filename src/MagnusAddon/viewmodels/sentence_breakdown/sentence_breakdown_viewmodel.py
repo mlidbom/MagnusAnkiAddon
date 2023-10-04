@@ -1,12 +1,12 @@
 from note.sentencenote import SentenceNote
-from parsing.universal_dependencies import ud_parsers, ud_tree_parser
-from parsing.universal_dependencies.ud_tree_node import UDTreeNode
-from parsing.universal_dependencies.ud_tree_parse_result import UDTreeParseResult
+from parsing.universal_dependencies import ud_parsers, ud_tree_builder
+from parsing.universal_dependencies.ud_tree_node import UDTextTreeNode
+from parsing.universal_dependencies.ud_tree_parse_result import UDTextTree
 from sysutils.stringutils import StringUtils
 
 
 class NodeViewModel:
-    def __init__(self, node: UDTreeNode):
+    def __init__(self, node: UDTextTreeNode):
         self._node = node
         self.children = [NodeViewModel(nod) for nod in node.children]
 
@@ -21,7 +21,7 @@ class NodeViewModel:
 
 
 class BreakDownViewModel:
-    def __init__(self, parse_result: UDTreeParseResult):
+    def __init__(self, parse_result: UDTextTree):
         self._parse_result = parse_result
         self.nodes = [NodeViewModel(node) for node in parse_result.nodes]
 
@@ -30,7 +30,7 @@ class BreakDownViewModel:
 
 def create(sentence: SentenceNote) -> BreakDownViewModel:
     question = sentence.get_active_question()
-    parse_result = ud_tree_parser.parse(ud_parsers.best, question)
+    parse_result = ud_tree_builder.build_tree(ud_parsers.best, question)
 
     return BreakDownViewModel(parse_result)
 
