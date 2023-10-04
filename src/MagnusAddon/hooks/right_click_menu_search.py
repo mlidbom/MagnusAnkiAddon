@@ -5,7 +5,7 @@ from aqt.utils import openLink
 
 from hooks.right_click_menu_utils import add_sentence_lookup, add_lookup_action, add_text_vocab_lookup
 from note.note_constants import NoteFields, NoteTypes
-from ankiutils import search_utils as su
+from ankiutils import query_builder as su
 from sysutils.typed import checked_cast
 
 

@@ -1,7 +1,7 @@
 from anki.cards import Card
 from aqt import gui_hooks
 
-from ankiutils import search_utils
+from ankiutils import query_builder
 from note.jpnote import JPNote
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
@@ -42,7 +42,7 @@ def _create_html_from_nodes(nodes: list[TreeParserNode], excluded: set[str], ext
         vocabs:list[VocabNote] = []
         found_words: set[str] = set()
         if node.is_show_at_all_in_sentence_breakdown():
-            vocabs = app.col().vocab.search(search_utils.node_vocab_lookup(node))
+            vocabs = app.col().vocab.search(query_builder.node_vocab_lookup(node))
             vocabs = [voc for voc in vocabs if voc.get_display_question() not in excluded]
             found_words = set((voc.get_question() for voc in vocabs)) | set(ex_sequence.flatten([voc.get_readings() for voc in vocabs]))
 
@@ -72,7 +72,7 @@ def _create_html_from_nodes(nodes: list[TreeParserNode], excluded: set[str], ext
 def _build_user_extra_list(extra_words: list[str], excluded:set[str]) -> str:
     html = f"""<ul class="sentenceVocabList userExtra depth1">\n"""
     for word in extra_words:
-        vocabs = app.col().vocab.search(search_utils.single_vocab_by_form_exact(word))
+        vocabs = app.col().vocab.search(query_builder.single_vocab_by_form_exact(word))
         vocabs = [voc for voc in vocabs if voc.get_display_question() not in excluded]
 
         if vocabs:

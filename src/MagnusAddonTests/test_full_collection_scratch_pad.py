@@ -1,6 +1,6 @@
 from typing import Generator
 import pytest
-from ankiutils import search_utils
+from ankiutils import query_builder
 from fixtures.full_test_collection_factory import inject_full_anki_collection_for_testing
 from ankiutils import app
 from note.sentencenote import SentenceNote
@@ -45,7 +45,7 @@ _sentences = ["今じゃ町は夜でも明るいしもう会うこともない�
 
 #missing: 逢
 
-su = search_utils
+su = query_builder
 @pytest.mark.skip("Only used to generate test data, so no reason to run this slow code all the time.")
 def test_create_sample_data() -> None:
     sentence_notes: list[SentenceNote] = []

@@ -2,9 +2,9 @@ from typing import Callable
 
 from PyQt6.QtWidgets import QMenu
 
-from ankiutils import search_utils as su
+from ankiutils import query_builder as su
 from ankiutils.app import ui_utils
-from ankiutils.search_utils import lookup_promise
+from ankiutils.search_executor import lookup_promise
 from note.vocabnote import VocabNote
 from note.note_constants import SentenceNoteFields
 

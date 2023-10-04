@@ -2,14 +2,14 @@ from anki.cards import Card
 from anki.notes import Note
 #from aqt import gui_hooks
 
-from ankiutils import search_utils
+from ankiutils import search_executor
 from ankiutils.app import ui_utils
 from note.jpnote import JPNote
 from sysutils.collections.recent_items import RecentItems
 
 
 def show_dependencies_in_browser(note: Note) -> None:
-    search_utils.lookup_dependencies(JPNote.note_from_note(note))
+    search_executor.lookup_dependencies(JPNote.note_from_note(note))
 
 recent_review_answers = RecentItems[int](1)
 def on_reviewer_show_answer(card: Card) -> None:

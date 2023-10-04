@@ -11,7 +11,7 @@ from note.vocabnote import VocabNote
 from hooks.note_content_building import sentence_breakdown
 from sysutils.stringutils import StringUtils
 from note.note_constants import MyNoteFields, NoteFields, SentenceNoteFields, NoteTypes
-from ankiutils import search_utils as su
+from ankiutils import query_builder as su
 from sysutils.typed import checked_cast
 
 

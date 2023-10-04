@@ -1,23 +1,16 @@
 from __future__ import annotations
-from typing import Callable, Iterable, TYPE_CHECKING
+from typing import Iterable, TYPE_CHECKING
 
 if TYPE_CHECKING:
     import parsing.tree_parsing.tree_parser  # noqa
     from parsing.tree_parsing.tree_parser_node import TreeParserNode
 
-import aqt
-from aqt.browser import Browser # type: ignore
-
-from ankiutils import app
-from note.jpnote import JPNote
 from note.sentencenote import SentenceNote
 from note.kanjinote import KanjiNote
-from note.radicalnote import RadicalNote
 from note.vocabnote import VocabNote
 from parsing import textparser
 from parsing.janome_extensions.parsed_word import ParsedWord
 from note.note_constants import NoteFields, Mine, MyNoteFields, NoteTypes, Builtin
-from sysutils.typed import checked_cast
 
 
 question = MyNoteFields.question
@@ -37,10 +30,6 @@ tag_uk = f"tag:{Mine.Tags.UsuallyKanaOnly}"
 vocab_read = f"({note_vocab} {card_read})"
 
 def field_word(field:str, query:str) -> str: return f"""{field}:re:\\b{query}\\b"""
-
-def question_wildcard(query:str) -> str: return f"{question}:*{query}"
-def reading_wildcard(query:str) -> str: return f"{reading}:*{query}"
-def answer_wildcard(query:str) -> str: return f"{answer}:*{query}"
 
 def single_vocab_wildcard(query:str) -> str: return f"{vocab_read} ({forms}:*{query}* OR {reading}:*{query}* OR {answer}:*{query}*)"
 def single_vocab_by_question_reading_or_answer_exact(query: str) -> str:return f"{vocab_read} ({field_word(forms, query)} OR {field_word(reading, query)} OR {field_word(answer, query)})"
@@ -65,18 +54,6 @@ def vocab_dependencies_lookup_query(vocab: VocabNote) -> str:
 
     return f'''{create_vocab_vocab_clause()} ({create_kanji_clause()})'''
 
-def do_lookup_and_show_previewer(text: str) -> None:
-    do_lookup(text)
-    app.ui_utils().activate_preview()
-
-
-def do_lookup(text: str) -> None:
-    browser: Browser = aqt.dialogs.open('Browser', aqt.mw)
-    browser.form.searchEdit.lineEdit().setText(text)  # type: ignore
-    browser.onSearchActivated()
-
-
-def lookup_promise(search: Callable[[], str]) -> Callable[[],None]: return lambda: do_lookup_and_show_previewer(search())
 
 def sentence_exact(sentence: str) -> str:
     return f"""{note_sentence} {question}:"{sentence}" """
@@ -124,21 +101,6 @@ def vocab_compounds_lookup(note:VocabNote) -> str:
 
     return f"{vocab_read} ({' OR '.join([vocab_clause(voc) for voc in dictionary_forms])})" if dictionary_forms else ""
 
-
-def lookup_dependencies(note: JPNote) -> None:
-    # noinspection PyTypeChecker
-    type_map: dict[type, Callable[[], str]] = {
-        VocabNote: lambda: vocab_dependencies_lookup_query(checked_cast(VocabNote, note)),
-        KanjiNote: lambda: vocab_with_kanji(checked_cast(KanjiNote, note)),
-        SentenceNote: lambda: sentence_vocab_lookup(checked_cast(SentenceNote, note)),
-        RadicalNote: lambda: "",
-        JPNote: lambda: ""
-    }
-
-    search = type_map[type(note)]()
-    if search:
-        do_lookup(search)
-        app.ui_utils().activate_reviewer()
 
 
 def fetch_kanji_by_kanji(kanji: Iterable[str]) -> str:
