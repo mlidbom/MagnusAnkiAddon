@@ -13,7 +13,7 @@ def setup_object() -> Generator[None, None, None]:
 
 
 def test_kanji_list_viewmodel() -> None:
-    sentences = app.col().list_sentence_notes()[:1]
+    sentences = app.col().sentences.all()[:1]
     for sentence in sentences:
         view_model = sentence_kanji_list_viewmodel.create(sentence.extract_kanji())
         print()

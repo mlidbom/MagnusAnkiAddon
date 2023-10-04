@@ -17,15 +17,15 @@ def setup_object() -> Generator[None, None, None]:
 
 def test_kanji_added_correctly() -> None:
     expected_kanji = set(kanji_spec.test_kanji_list)
-    saved_kanji = set(KanjiSpec(k.get_question(), k.get_active_answer(), k.get_reading_kun(), k.get_reading_on()) for k in app.col().fetch_all_kanji_notes())
+    saved_kanji = set(KanjiSpec(k.get_question(), k.get_active_answer(), k.get_reading_kun(), k.get_reading_on()) for k in app.col().kanji.all())
     assert expected_kanji == saved_kanji
 
 def test_vocab_added_correctly() -> None:
     expected_vocab = set(vocab_spec.test_vocab_list)
-    saved_vocab = set(VocabSpec(k.get_question(), k.get_active_answer(), k.get_readings()) for k in app.col().fetch_all_vocab_notes())
+    saved_vocab = set(VocabSpec(k.get_question(), k.get_active_answer(), k.get_readings()) for k in app.col().vocab.all())
     assert expected_vocab == saved_vocab
 
 def test_sentences_added_correctly() -> None:
     expected_sentences = set(sentence_spec.test_sentence_list)
-    saved_vocab = set(SentenceSpec(k.get_active_question(), k.get_active_answer()) for k in app.col().list_sentence_notes())
+    saved_vocab = set(SentenceSpec(k.get_active_question(), k.get_active_answer()) for k in app.col().sentences.all())
     assert expected_sentences == saved_vocab

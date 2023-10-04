@@ -19,6 +19,6 @@ def test_function(something: str) -> None:
     print(collection.path)
     assert collection.path not in _paths
     _paths.add(collection.path)
-    kanji = app.col().fetch_all_wani_kanji_notes()[:10]
+    kanji = app.col().kanji.all_wani()[:10]
     for kan in kanji:
         print(kan.get_question())

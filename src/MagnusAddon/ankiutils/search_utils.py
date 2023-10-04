@@ -13,15 +13,9 @@ from note.radicalnote import RadicalNote
 from note.vocabnote import VocabNote
 from parsing import textparser
 from parsing.janome_extensions.parsed_word import ParsedWord
-from note.note_constants import NoteFields, Mine, MyNoteFields, NoteTypes
+from note.note_constants import NoteFields, Mine, MyNoteFields, NoteTypes, Builtin
 from sysutils.typed import checked_cast
 
-
-class Builtin:
-    Note = "note"
-    Tag = "tag"
-    Deck = "deck"
-    Card = "card"
 
 question = MyNoteFields.question
 reading = NoteFields.Vocab.Reading

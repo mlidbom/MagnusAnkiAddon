@@ -48,7 +48,7 @@ su = search_utils
 def test_create_sample_data() -> None:
     sentence_notes: list[SentenceNote] = []
     for sentence_text in _sentences:
-        matching = app.col().search_sentence_notes(f"{su.note_sentence} {su.question}:*{sentence_text}*")
+        matching = app.col().sentences.search(f"{su.note_sentence} {su.question}:*{sentence_text}*")
         with_active_answer = [m for m in matching if m.get_active_answer()]
         sentence_notes += with_active_answer
         for sentence in with_active_answer:
@@ -56,7 +56,7 @@ def test_create_sample_data() -> None:
 
     needed_vocab_parsed_words = listutils.flatten([s.parse_words_from_expression() for s in sentence_notes])
     need_vocab_strings = set([f.word for f in needed_vocab_parsed_words])
-    vocab_notes = listutils.flatten([app.col().search_vocab_notes(su.single_vocab_by_form_exact(word)) for word in need_vocab_strings])
+    vocab_notes = listutils.flatten([app.col().vocab.search(su.single_vocab_by_form_exact(word)) for word in need_vocab_strings])
 
     non_duplicate_vocab_notes:list[VocabNote] = []
     added_words:set[str] = set()
@@ -70,6 +70,6 @@ def test_create_sample_data() -> None:
 
     word_forms = "".join(listutils.flatten([list(n.get_forms()) for n in vocab_notes]))
     all_kani_as_string = "".join(list(set([char for char in list(word_forms) if not kana_utils.is_only_kana(char)])))
-    kanji_notes = app.col().search_kanji_notes(su.kanji_in_string(all_kani_as_string))
+    kanji_notes = app.col().kanji.search(su.kanji_in_string(all_kani_as_string))
     for kanji_note in kanji_notes:
         print(f"""KanjiSpec("{shtml(kanji_note.get_question())}", "{shtml(kanji_note.get_active_answer())}", "{shtml(kanji_note.get_reading_kun())}", "{shtml(kanji_note.get_reading_on())}"),"""),

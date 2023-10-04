@@ -26,7 +26,7 @@ def update_from_wanikani(note: Note) -> None:
 
 
 def update_radical() -> None:
-    all_radicals: list[RadicalNote] = app.col().fetch_all_radical_notes()
+    all_radicals: list[RadicalNote] = app.col().radicals.all()
     fetched = 0
     failed: str = ""
     for radical_note in all_radicals:
@@ -43,7 +43,7 @@ def update_radical() -> None:
 
 
 def update_kanji() -> None:
-    all_kanji: list[KanjiNote] = app.col().fetch_all_kanji_notes()
+    all_kanji: list[KanjiNote] = app.col().kanji.all()
     fetched = 0
     failed: str = ""
     for kanji_note in all_kanji:
@@ -60,7 +60,7 @@ def update_kanji() -> None:
 
 
 def update_vocab() -> None:
-    all_vocabulary: list[VocabNote] = app.col().fetch_all_wani_vocab_notes()
+    all_vocabulary: list[VocabNote] = app.col().vocab.all_wani()
     updated = 0
     failed: str = ""
     for vocab_note in all_vocabulary:
@@ -77,7 +77,7 @@ def update_vocab() -> None:
 
 
 def delete_missing_radicals() -> None:
-    all_radicals = app.col().fetch_all_radical_notes()
+    all_radicals = app.col().radicals.all()
     deleted = 0
     deleted_radicals: str = ""
     for radical_note in all_radicals:
@@ -93,7 +93,7 @@ def delete_missing_radicals() -> None:
 
 
 def delete_missing_kanji() -> None:
-    all_kanji: list[KanjiNote] = app.col().fetch_all_kanji_notes()
+    all_kanji: list[KanjiNote] = app.col().kanji.all()
     deleted = 0
     deleted_kanji: str = ""
     for kanji_note in all_kanji:
@@ -109,7 +109,7 @@ def delete_missing_kanji() -> None:
 
 
 def delete_missing_vocab() -> None:
-    all_vocabulary: list[VocabNote] = app.col().fetch_all_wani_vocab_notes()
+    all_vocabulary: list[VocabNote] = app.col().vocab.all_wani()
     deleted = 0
     deleted_vocab: str = ""
     for vocab_note in all_vocabulary:

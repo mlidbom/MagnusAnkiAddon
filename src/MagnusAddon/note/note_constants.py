@@ -1,3 +1,9 @@
+class Builtin:
+    Note = "note"
+    Tag = "tag"
+    Deck = "deck"
+    Card = "card"
+
 class MyNoteFields:
     Vocab1 = "__vocab1"
     Vocab2 = "__vocab2"

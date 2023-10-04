@@ -8,7 +8,7 @@ from sysutils.lazy import Lazy
 from sysutils.typed import checked_cast
 
 
-_collection = Lazy(lambda: JPCollection(mw.col))
+_collection = Lazy(lambda: JPCollection(mw.col))  # type: ignore
 
 def col() -> JPCollection: return _collection.instance()
 def anki_collection() -> Collection: return col().anki_collection
