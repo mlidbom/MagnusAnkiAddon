@@ -8,7 +8,7 @@ import tempfile
 from os import path
 
 from ankiutils import app
-from note.jp_collection import JPCollection
+from note.collection.jp_collection import JPCollection
 from sysutils.typed import checked_cast
 
 _thread_local = threading.local()

@@ -9,7 +9,7 @@ from anki.collection import Collection
 from ankiutils import app
 from fixtures.base_data import note_type_factory
 from fixtures.base_data.sample_data import kanji_spec, sentence_spec, vocab_spec
-from note.jp_collection import JPCollection
+from note.collection.jp_collection import JPCollection
 from note.kanjinote import KanjiNote
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote

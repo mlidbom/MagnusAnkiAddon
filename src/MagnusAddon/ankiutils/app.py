@@ -3,7 +3,7 @@ from aqt import mw, AnkiQt  # type: ignore
 
 from ankiutils.ui_utils import UIUtils
 from ankiutils.ui_utils_interface import UIUtilsInterface
-from note.jp_collection import JPCollection
+from note.collection.jp_collection import JPCollection
 from sysutils.lazy import Lazy
 from sysutils.typed import checked_cast
 

@@ -15,7 +15,7 @@ from note.kanjinote import KanjiNote
 # noinspection PyUnresolvedReferences
 from note.radicalnote import RadicalNote
 from sysutils.stringutils import StringUtils
-from note.jp_collection import *
+from note.collection.jp_collection import *
 from note.cardutils import CardUtils
 from anki.notes import Note
 from note.note_constants import NoteTypes
