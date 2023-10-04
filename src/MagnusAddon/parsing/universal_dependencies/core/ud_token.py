@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import Union
 
 from spacy.tokens import Token
@@ -53,3 +54,5 @@ class UDToken:
             self._head_id = typed.int_(_head(token).id)
             self.head = self #ugly hack to get python typing working in spite of the recursive nature of this class. Will be replaced with correct value by parent object.
 
+    def is_parent_of(self, candidate: UDToken) -> bool: return self == candidate.head
+    def is_child_of(self, candidate: UDToken) -> bool: return self.head == candidate

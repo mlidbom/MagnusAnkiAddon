@@ -12,7 +12,7 @@ def _str_pos(self: UDTreeNode) -> str:
     if self.is_morpheme():
         token = self.tokens[0]
         return (f"""{StringUtils.pad_to_length(str(token.id), 3)}""" +
-                f"""{StringUtils.pad_to_length(str(token.head.id), 3)}""" +  # noqa
+                f"""{StringUtils.pad_to_length(str(token.head.id), 3)}""" +
                 f"""{StringUtils.pad_to_length(token.deprel.description, 28)}""" +
                 f"""{StringUtils.pad_to_length(token.xpos.description, 30)}""" +
                 f"""{StringUtils.pad_to_length(token.upos.description, 26)}""" +
@@ -26,10 +26,10 @@ def _children_repr(self: UDTreeNode, level:int = 1) -> str:
     children_string = ', \n'.join(repr_(child, level) for child in self.children)
     return f""", [\n{children_string}]"""
 
+def _indent(level: int) -> str: return "　　" * level
 
 def repr_(self: UDTreeNode, level: int) -> str:
-    indent = "　　" * level
-    return f"""{indent}N('{self.surface}', '{self.base if self.is_inflected() else ""}'{_children_repr(self, level + 1)})"""
+    return f"""{_indent(level)}N('{self.surface}', '{self.base if self.is_inflected() else ""}'{_children_repr(self, level + 1)})"""
 
 
 def _children_str(self: UDTreeNode, level:int = 1) -> str:
