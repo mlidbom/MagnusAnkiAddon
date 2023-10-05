@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import Callable, Generic, Iterator, Sequence, TypeVar
 
-import anki
 from anki.collection import Collection
 from anki.notes import Note, NoteId
 
