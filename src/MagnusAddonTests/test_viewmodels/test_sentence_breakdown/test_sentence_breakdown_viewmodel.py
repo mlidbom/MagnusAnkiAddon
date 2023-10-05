@@ -4,9 +4,9 @@ from typing import Generator, TypeAlias
 
 import pytest
 
+from ankiutils import app
 from fixtures.collection_factory import inject_anki_collection_with_generated_sample_data
 from note.sentencenote import SentenceNote
-from sysutils.stringutils import StringUtils
 from test_viewmodels.test_sentence_breakdown.breakdown_viewmodel_spec import NodeViewModelSpec, SentenceBreakdownViewModelSpec
 from viewmodels.sentence_breakdown import sentence_breakdown_viewmodel
 
@@ -25,7 +25,7 @@ def setup_object() -> Generator[None, None, None]:
 ])
 def test_sentence_breakdown_viewmodel(sentence:str, expected: SentenceBreakdownViewModelSpec) -> None:
     sentence_note:SentenceNote = SentenceNote.create(sentence, "")
-    view_model = sentence_breakdown_viewmodel.create(sentence_note)
+    view_model = sentence_breakdown_viewmodel.create(sentence_note, app.col())
 
     result = SentenceBreakdownViewModelSpec.from_view_model(view_model)
 

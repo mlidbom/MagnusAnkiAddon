@@ -1,11 +1,11 @@
 import re
 
+
+newline = "\n"
+
 class StringUtils:
     @staticmethod
-    def newline() -> str: return "\n"
-
-    @staticmethod
-    def backslash() -> str: return "\\"
+    def newline() -> str: return newline
 
     @staticmethod
     def pad_to_length(value: str, target_length: int) -> str:

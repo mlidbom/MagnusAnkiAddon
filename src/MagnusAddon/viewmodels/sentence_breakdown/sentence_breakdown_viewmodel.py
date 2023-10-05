@@ -1,14 +1,14 @@
+from note.collection.jp_collection import JPCollection
 from note.sentencenote import SentenceNote
 from parsing.universal_dependencies import ud_parsers, ud_tree_builder
 from parsing.universal_dependencies.ud_tree_node import UDTextTreeNode
 from parsing.universal_dependencies.ud_tree_parse_result import UDTextTree
-from sysutils.stringutils import StringUtils
-
 
 class NodeViewModel:
-    def __init__(self, node: UDTextTreeNode):
+    def __init__(self, node: UDTextTreeNode, collection: JPCollection):
         self._node = node
-        self.children = [NodeViewModel(nod) for nod in node.children]
+        self._collection = collection
+        self.children = [NodeViewModel(nod, collection) for nod in node.children]
 
 
     def surface(self) -> str: return self._node.surface
@@ -16,13 +16,13 @@ class NodeViewModel:
 
 
 class BreakDownViewModel:
-    def __init__(self, parse_result: UDTextTree):
+    def __init__(self, parse_result: UDTextTree, collection: JPCollection):
         self._parse_result = parse_result
-        self.nodes = [NodeViewModel(node) for node in parse_result.nodes]
+        self.nodes = [NodeViewModel(node, collection) for node in parse_result.nodes]
 
-def create(sentence: SentenceNote) -> BreakDownViewModel:
+def create(sentence: SentenceNote, collection: JPCollection) -> BreakDownViewModel:
     question = sentence.get_question()
     parse_result = ud_tree_builder.build_tree(ud_parsers.best, question)
 
-    return BreakDownViewModel(parse_result)
+    return BreakDownViewModel(parse_result, collection)
 
