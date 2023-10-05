@@ -16,13 +16,7 @@ class _KanjiCache(NoteCache[KanjiNote, _KanjiSnapshot]):
     def __init__(self, all_kanji: list[KanjiNote]):
         super().__init__(all_kanji, KanjiNote)
 
-    def all(self) -> list[KanjiNote]: return list(self._merged_self()._by_id.values())
-    def with_kanji(self, kanji: str) -> list[KanjiNote]: return list(self._merged_self()._by_question[kanji])
-
     def _create_snapshot(self, note: KanjiNote) -> _KanjiSnapshot: return _KanjiSnapshot(note)
-
-    def _inheritor_remove_from_cache(self, note: KanjiNote, cached:_KanjiSnapshot) -> None: pass
-    def _inheritor_add_to_cache(self, note: KanjiNote) -> None: pass
 
 class KanjiCollection:
     def __init__(self, collection: BackEndFacade):
@@ -37,5 +31,5 @@ class KanjiCollection:
     def all_wani(self) -> list[KanjiNote]:
         return [kanji for kanji in self.all() if kanji.is_wani_note()]
 
-    def by_kanji(self, kanji_list: list[str]) -> List[KanjiNote]:
-        return ex_sequence.flatten([self._cache.with_kanji(kanji) for kanji in kanji_list])
+    def with_any_kanji(self, kanji_list: list[str]) -> List[KanjiNote]:
+        return ex_sequence.flatten([self._cache.with_question(kanji) for kanji in kanji_list])

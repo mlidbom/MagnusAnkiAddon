@@ -11,7 +11,6 @@ from note.vocabnote import VocabNote
 class _VocabSnapshot(CachedNote):
     def __init__(self, note: VocabNote):
         super().__init__(note)
-        self.question = note.get_question()
         self.forms = note.get_forms()
         self.kanji = note.extract_kanji()
 

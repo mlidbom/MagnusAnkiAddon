@@ -13,10 +13,10 @@ class JPCollection:
     def __init__(self, anki_collection: Collection):
         backend_facade = BackEndFacade(anki_collection)
         self.anki_collection = anki_collection
-        self.vocab = VocabCollection(backend_facade)
-        self.kanji = KanjiCollection(backend_facade)
-        self.sentences = SentenceCollection(backend_facade)
-        self.radicals = RadicalCollection(backend_facade)
+        self.vocab:VocabCollection = VocabCollection(backend_facade)
+        self.kanji:KanjiCollection = KanjiCollection(backend_facade)
+        self.sentences:SentenceCollection = SentenceCollection(backend_facade)
+        self.radicals:RadicalCollection = RadicalCollection(backend_facade)
 
     def unsuspend_note_cards(self, note: JPNote, name: str) -> None:
         print("Unsuspending {}: {}".format(JPNote.get_note_type_name(note), name))
