@@ -12,7 +12,7 @@ class UDTextTreeNode:
         self.tokens:list[UDToken] = tokens if tokens else []
         self.children: list[UDTextTreeNode] = children if children else []
         if tokens:
-            self._check_for_conjugated_dictionary_phrase()
+            self._check_for_inflected_dictionary_phrase()
 
     def is_morpheme(self) -> bool: return not self.children
     def is_inflected(self) -> bool: return self.base != self.surface
@@ -42,8 +42,8 @@ class UDTextTreeNode:
 
     def __hash__(self) -> int: return hash(self.surface)
 
-    #todo this does not feel great. Works for the only case I've found so far, but does not feel great.
-    def _check_for_conjugated_dictionary_phrase(self) -> None:
+    #todo this does not feel great. Works for the only case I've found so far, but does not feel great. It might be a better approach to try and ensure that a phrase that ends with inflection get separated from the inflection on the tree level.
+    def _check_for_inflected_dictionary_phrase(self) -> None:
         if len(self.tokens) > 2 and self.tokens[-1].xpos == ud_japanese_part_of_speech_tag.inflecting_dependent_word:
             if self.tokens[-2].upos == ud_universal_part_of_speech_tag.verb:
                 from parsing.jamdict_extensions.dict_lookup import DictLookup
