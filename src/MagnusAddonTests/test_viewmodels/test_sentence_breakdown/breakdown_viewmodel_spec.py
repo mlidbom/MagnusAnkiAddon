@@ -29,13 +29,14 @@ class NodeViewModelSpec:
     def __init__(self, surface: str, base: str | None, *children: NodeViewModelSpec | VocabHitViewModelSpec):
         self.surface = surface
         self.base = base
-        self.surface_hits = [surface_hit for surface_hit in children if isinstance(surface_hit, VocabHitViewModelSpec)]
+        self.vocab_hits = [surface_hit for surface_hit in children if isinstance(surface_hit, VocabHitViewModelSpec)]
         self.children = [node for node in children if isinstance(node, NodeViewModelSpec)]
 
     def __eq__(self, other: Any) -> bool:
         return (isinstance(other, NodeViewModelSpec)
                 and other.surface == self.surface
                 and other.base == self.base
+                and other.vocab_hits == self.vocab_hits
                 and other.children == self.children)
 
     @classmethod
@@ -60,9 +61,9 @@ class NodeViewModelSpec:
         return f""", \n{separator.join([m.repr_(depth + 1) for m in self.children])}"""
 
     def _repr_vocab_hits(self, depth: int) -> str:
-        if not self.surface_hits: return ""
+        if not self.vocab_hits: return ""
         separator = f", \n"
-        return f""", \n{separator.join([m.repr_(depth + 1) for m in self.surface_hits])}"""
+        return f""", \n{separator.join([m.repr_(depth + 1) for m in self.vocab_hits])}"""
 
 
 class SentenceBreakdownViewModelSpec:

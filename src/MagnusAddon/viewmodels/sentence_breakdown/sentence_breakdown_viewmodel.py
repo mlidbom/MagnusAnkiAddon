@@ -55,9 +55,16 @@ class NodeViewModel:
     def surface(self) -> str: return self._node.surface
     def base(self) -> str: return self._node.base if self._node.is_inflected() else ""
 
+    @staticmethod
+    def _sort_hits(hits: list[VocabHit]) -> None:
+        def question(hit:VocabHit) -> str: return hit.hit_form()
+        hits.sort(key=question)
+
+
     def surface_vocab_hits(self) -> list[VocabHit]:
         hits = [VocabHit.surface_from_vocab(self, v) for v in self._collection.vocab.with_form(self.surface())]
         if hits:
+            self._sort_hits(hits)
             return hits
 
         if self._node.is_surface_dictionary_word():
@@ -69,6 +76,7 @@ class NodeViewModel:
         if not self._node.is_inflected(): return []
         hits = [VocabHit.surface_from_vocab(self, v) for v in self._collection.vocab.with_form(self.base())]
         if hits:
+            self._sort_hits(hits)
             return hits
 
         if self._node.is_surface_dictionary_word():

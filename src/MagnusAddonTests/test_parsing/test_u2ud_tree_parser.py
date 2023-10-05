@@ -48,6 +48,7 @@ def only_string_params(param:Any) -> str: return param if isinstance(param, str)
     ("良かったら", R(N('良かったら', '良かった', [N('良かっ', '良い'), N('たら', 'た')]))),
     ("よかったじゃん", R(N('よかったじゃん', '', [N('よかっ', '良い'), N('た', ''), N('じゃん', '')]))),
     ("言えばよかった", R(N('言えば', '', [N('言え', '言う'), N('ば', '')]), N('よかった', '', [N('よかっ', '良い'), N('た', '')]))),
+    ("一度夢を見た", R(N('一度', ''),N('夢を見た', '夢を見る', [N('夢を', '', [N('夢', ''), N('を', '')]), N('見た', '', [N('見', '見る'), N('た', '')])]))),
    ], ids=only_string_params)
 def test_sentences_the_best_parser_does_well(sentence: str, expected: UDTextTree) -> None: run_tests(expected, ud_parsers.best, sentence)
 

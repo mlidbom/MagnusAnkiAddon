@@ -1,5 +1,9 @@
 from __future__ import annotations
 from functools import lru_cache
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from note.vocabnote import VocabNote
 
 from jamdict import Jamdict
 
@@ -7,8 +11,6 @@ from parsing.jamdict_extensions.dict_entry import DictEntry
 from sysutils import kana_utils
 
 class DictLookup:
-    from note.vocabnote import VocabNote
-
     _jamdict = Jamdict(memory_mode=True)
 
     def __init__(self, entries: list[DictEntry]):
