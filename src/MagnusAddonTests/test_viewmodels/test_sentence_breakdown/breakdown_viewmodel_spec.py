@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from sysutils.ex_str import full_width_space
+quad_space = "    "
 from viewmodels.sentence_breakdown.sentence_breakdown_viewmodel import VocabHit, BreakDownViewModel, NodeViewModel
 
 class VocabHitViewModelSpec:
@@ -17,7 +17,7 @@ class VocabHitViewModelSpec:
                 and other.answer == self.answer)
 
     def repr_(self, depth: int) -> str:
-        padding = full_width_space * 2 * depth
+        padding = quad_space * depth
         return f"""{padding}V("{self.form}", "{self.hit_form}", "{self.answer}")"""
 
     @staticmethod
@@ -52,8 +52,8 @@ class NodeViewModelSpec:
         return [cls.from_view_model(view_model) for view_model in children]
 
     def repr_(self, depth: int) -> str:
-        padding = full_width_space * 2 * depth
-        return f"""{padding}N("{self.surface}", "{self.base}"{self._repr_children(depth)}{self._repr_vocab_hits(depth)})"""
+        padding = quad_space * depth
+        return f"""{padding}N("{self.surface}", "{self.base}"{self._repr_vocab_hits(depth)}{self._repr_children(depth)})"""
 
     def _repr_children(self, depth: int) -> str:
         if not self.children: return ""
@@ -76,7 +76,7 @@ class SentenceBreakdownViewModelSpec:
 {separator.join([m.repr_(1) for m in self.nodes])})"""
 
     def repr_single_line(self) -> str:
-        return "".join(repr(self).split("\n")).replace(full_width_space, "")
+        return "".join(repr(self).split("\n")).replace(quad_space, "")
 
     def __eq__(self, other: Any) -> bool:
         return (isinstance(other, SentenceBreakdownViewModelSpec)
