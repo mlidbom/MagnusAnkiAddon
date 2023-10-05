@@ -33,7 +33,7 @@ class NodeViewModelSpec:
     def str_children(self, depth: int) -> str:
         if not self.children: return ""
 
-        separator = f", {newline}"
+        separator = f", \n"
         return f""", \n{separator.join([m.repr_(depth + 1) for m in self.children])}"""
 
 class SentenceBreakdownViewModelSpec:
