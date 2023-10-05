@@ -14,17 +14,16 @@ from note.note_constants import MyNoteFields, NoteFields, SentenceNoteFields, No
 from ankiutils import query_builder as su
 from sysutils.typed import checked_cast
 
-
 def setup_note_menu(note: JPNote, root_menu: QMenu, sel_clip: str, selection: str, view: AnkiWebView) -> None:
     if sel_clip:
         add_lookup_action(root_menu, "&Open", su.lookup_text_object(sel_clip))
 
-    note_menu:QMenu = checked_cast(QMenu, root_menu.addMenu("&Note"))
-    note_lookup_menu:QMenu = checked_cast(QMenu, note_menu.addMenu("&Lookup"))
-    note_add_menu:QMenu = checked_cast(QMenu, note_menu.addMenu("&Add"))
-    note_set_menu:QMenu = checked_cast(QMenu, note_menu.addMenu("&Set"))
-    note_hide_menu:QMenu = checked_cast(QMenu, note_menu.addMenu("&Hide/Remove"))
-    note_restore_menu:QMenu = checked_cast(QMenu, note_menu.addMenu("&Restore"))
+    note_menu: QMenu = checked_cast(QMenu, root_menu.addMenu("&Note"))
+    note_lookup_menu: QMenu = checked_cast(QMenu, note_menu.addMenu("&Lookup"))
+    note_add_menu: QMenu = checked_cast(QMenu, note_menu.addMenu("&Add"))
+    note_set_menu: QMenu = checked_cast(QMenu, note_menu.addMenu("&Set"))
+    note_hide_menu: QMenu = checked_cast(QMenu, note_menu.addMenu("&Hide/Remove"))
+    note_restore_menu: QMenu = checked_cast(QMenu, note_menu.addMenu("&Restore"))
 
     if sel_clip:
         add_vocab_menu = checked_cast(QMenu, note_set_menu.addMenu("&Vocab"))
@@ -33,7 +32,6 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, sel_clip: str, selection: st
         add_ui_action(add_vocab_menu, "&3", lambda: note.set_field(MyNoteFields.Vocab3, sel_clip))
         add_ui_action(add_vocab_menu, "&4", lambda: note.set_field(MyNoteFields.Vocab4, sel_clip))
         add_ui_action(add_vocab_menu, "&5", lambda: note.set_field(MyNoteFields.Vocab5, sel_clip))
-
 
     remove_vocab_menu = checked_cast(QMenu, note_hide_menu.addMenu("&Vocab"))
     add_ui_action(remove_vocab_menu, "&1", lambda: note.set_field(MyNoteFields.Vocab1, ""))
@@ -47,7 +45,6 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, sel_clip: str, selection: st
             note.set_field(field, "")
 
     add_ui_action(remove_vocab_menu, "&All", clear_all_vocabs)
-
 
     if isinstance(note, SentenceNote):
         sentence_note = checked_cast(SentenceNote, note)
@@ -112,22 +109,20 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, sel_clip: str, selection: st
         add_ui_action(note_set_menu, "S&imilar meaning", lambda: vocab.set_related_similar_meaning(sel_clip))
         add_ui_action(note_set_menu, "&Ergative twin", lambda: vocab.set_related_ergative_twin(sel_clip))
 
-
 def add_kanji_primary_vocab(note: KanjiNote, selection: str, _view: AnkiWebView) -> None:
     note.set_primary_vocab(note.get_primary_vocab() + [selection])
     local_note_updater.update_kanji()
-
 
 def set_kanji_primary_vocab(note: KanjiNote, selection: str, view: AnkiWebView) -> None:
     note.set_primary_vocab([])
     add_kanji_primary_vocab(note, selection, view)
 
-def format_vocab_meaning(meaning:str) -> str:
+def format_vocab_meaning(meaning: str) -> str:
     return ex_str.strip_html_and_bracket_markup(meaning
-                                                     .replace(" SOURCE", "")
-                                                     .replace(", ", "/")
-                                                     .replace(" ", "-")
-                                                     .lower())
+                                                .replace(" SOURCE", "")
+                                                .replace(", ", "/")
+                                                .replace(" ", "-")
+                                                .lower())
 
-def format_kanji_meaning(meaning:str) -> str:
+def format_kanji_meaning(meaning: str) -> str:
     return ex_str.strip_html_and_bracket_markup(meaning.lower().replace(", ", "/").replace(" ", "-"))

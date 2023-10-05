@@ -12,7 +12,7 @@ class NodeViewModel:
 
 
     def surface(self) -> str: return self._node.surface
-    def base(self) -> str: return self._node.base if self._node.base != self._node.surface else ""
+    def base(self) -> str: return self._node.base if self._node.is_inflected() else ""
 
 
 class BreakDownViewModel:
