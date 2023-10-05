@@ -3,7 +3,8 @@ from __future__ import annotations
 from anki.collection import Collection
 
 from note.collection.backend_facade import BackEndFacade
-from note.collection.kanji_collection import KanjiCollection, RadicalCollection
+from note.collection.kanji_collection import KanjiCollection
+from note.collection.radical_collection import RadicalCollection
 from note.collection.sentence_collection import SentenceCollection
 from note.collection.vocab_collection import VocabCollection
 from note.jpnote import JPNote
