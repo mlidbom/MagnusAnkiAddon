@@ -1,8 +1,8 @@
 from __future__ import annotations
-from typing import Sequence, cast
+from typing import Any, Sequence, cast
 from anki.cards import Card, CardId
 from anki.models import NotetypeDict
-from anki.notes import Note
+from anki.notes import Note, NoteId
 
 from ankiutils import app
 from note.note_constants import Mine, NoteTypes
@@ -13,6 +13,11 @@ from sysutils.typed import checked_cast
 class JPNote:
     def __init__(self, note: Note):
         self._note = note
+
+    def __eq__(self, other: Any) -> bool:
+        return isinstance(other, JPNote) and other.get_id() == self.get_id()
+
+    def __hash__(self) -> int: return hash(self.get_id())
 
     @classmethod
     def note_from_card(cls, card: Card) -> JPNote:
@@ -46,6 +51,8 @@ class JPNote:
 
     def delete(self) -> None:
         app.anki_collection().remove_notes([self._note.id])
+
+    def get_id(self) -> NoteId: return self._note.id
 
     def card_ids(self) -> Sequence[CardId]:
         return self._note.card_ids()
