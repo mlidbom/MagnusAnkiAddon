@@ -1,34 +1,33 @@
 import tempfile
-import threading
+import unittest.mock
 from contextlib import contextmanager
 from os import path
 from typing import Generator
 
 from anki.collection import Collection
-
-from ankiutils import app
 from fixtures.base_data import note_type_factory
 from fixtures.base_data.sample_data import kanji_spec, sentence_spec, vocab_spec
-from note.collection.jp_collection import JPCollection
 from note.kanjinote import KanjiNote
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
 
 
-jp_collection:JPCollection
-def get_jp_collection() -> JPCollection: return jp_collection
+
 
 @contextmanager
 def inject_empty_anki_collection_with_note_types() -> Generator[None, None, None]:
-    global jp_collection
+    from note.collection.jp_collection import JPCollection
+    jp_collection: JPCollection
+    def get_jp_collection() -> JPCollection: return jp_collection
+
     with tempfile.TemporaryDirectory() as tmp_dirname:
         collection_file = path.join(tmp_dirname, "collection.anki2")
         anki_collection = Collection(collection_file)
         jp_collection = JPCollection(anki_collection)
         try:
             populate_collection(anki_collection)
-            app.col = get_jp_collection
-            yield
+            with unittest.mock.patch('ankiutils.app.col', new=get_jp_collection):
+                yield
         finally:
             anki_collection.close()
 

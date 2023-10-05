@@ -44,10 +44,8 @@ _sentences = ["今じゃ町は夜でも明るいしもう会うこともない�
               "としたら",
               "あいつが話の中に出てくるのが"]
 
-#missing: 逢
-
 su = query_builder
-@pytest.mark.skip("Only used to generate test data, so no reason to run this slow code all the time.")
+#@pytest.mark.skip("Only used to generate test data, so no reason to run this slow code all the time.")
 def test_create_sample_data() -> None:
     sentence_notes: list[SentenceNote] = []
     for sentence_text in _sentences:

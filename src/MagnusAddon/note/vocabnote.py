@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from wanikani_api import models
-from ankiutils import app
 from anki.notes import Note
 
 from note.kanavocabnote import KanaVocabNote
@@ -143,6 +142,7 @@ class VocabNote(KanaVocabNote):
 
     @classmethod
     def create(cls, question:str, answer:str, readings:list[str]) -> VocabNote:
+        from ankiutils import app
         backend_note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Vocab))
         note = VocabNote(backend_note)
         note._set_question(question)

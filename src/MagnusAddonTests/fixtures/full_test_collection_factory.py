@@ -1,32 +1,29 @@
 import os
 import shutil
-import threading
-from contextlib import contextmanager
-from typing import Generator
-from anki.collection import Collection
 import tempfile
+import unittest.mock
+from contextlib import contextmanager
 from os import path
+from typing import Generator
 
-from ankiutils import app
-from note.collection.jp_collection import JPCollection
-from sysutils.typed import checked_cast
-
+from anki.collection import Collection
 
 
-jp_collection:JPCollection
-def get_jp_collection() -> JPCollection: return jp_collection
 
 
 @contextmanager
 def inject_full_anki_collection_for_testing() -> Generator[None, None, None]:
-    global jp_collection
+    from note.collection.jp_collection import JPCollection
+    jp_collection: JPCollection
+    def get_jp_collection() -> JPCollection: return jp_collection
+
     with tempfile.TemporaryDirectory() as tmp_dirname:
         collection_file = path.join(tmp_dirname, "collection.anki2")
         anki_collection = create_collection(collection_file)
         jp_collection = JPCollection(anki_collection)
         try:
-            app.col = get_jp_collection
-            yield
+            with unittest.mock.patch('ankiutils.app.col', new=get_jp_collection):
+                yield
         finally:
             anki_collection.close()
 

@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from parsing.janome_extensions.parsed_word import ParsedWord
 
-from ankiutils import app
 from note.jpnote import JPNote
 from sysutils import timeutil, kana_utils
 from sysutils.stringutils import StringUtils
@@ -82,6 +81,7 @@ class SentenceNote(JPNote):
 
     @classmethod
     def create(cls, question: str, answer: str) -> SentenceNote:
+        from ankiutils import app
         inner_note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Sentence))
         note = SentenceNote(inner_note)
         note._set_source_question(question)

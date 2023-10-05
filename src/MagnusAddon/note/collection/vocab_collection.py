@@ -8,14 +8,14 @@ from note.kanjinote import KanjiNote
 from note.note_constants import NoteTypes
 from note.vocabnote import VocabNote
 
-class _CachedVocab(CachedNote):
+class _VocabSnapshot(CachedNote):
     def __init__(self, note: VocabNote):
         super().__init__(note)
         self.question = note.get_question()
         self.forms = note.get_forms()
         self.kanji = note.extract_kanji()
 
-class _VocabCache(NoteCache[VocabNote, _CachedVocab]):
+class _VocabCache(NoteCache[VocabNote, _VocabSnapshot]):
     def __init__(self, all_vocab: list[VocabNote]):
         self._by_form: dict[str, set[VocabNote]] = defaultdict(set)
         self._by_kanji: dict[str, set[VocabNote]] = defaultdict(set)
@@ -25,9 +25,9 @@ class _VocabCache(NoteCache[VocabNote, _CachedVocab]):
     def with_form(self, form: str) -> list[VocabNote]: return list(self._merged_self()._by_form[form])
     def with_kanji(self, kanji: str) -> list[VocabNote]: return list(self._merged_self()._by_kanji[kanji])
 
-    def _create_cached_note(self, note: VocabNote) -> _CachedVocab: return _CachedVocab(note)
+    def _create_snapshot(self, note: VocabNote) -> _VocabSnapshot: return _VocabSnapshot(note)
 
-    def _inheritor_remove_from_cache(self, note: VocabNote, cached:_CachedVocab) -> None:
+    def _inheritor_remove_from_cache(self, note: VocabNote, cached:_VocabSnapshot) -> None:
         for form in cached.forms: self._by_form[form].discard(note)
         for kanji in cached.kanji: self._by_kanji[kanji].discard(note)
 

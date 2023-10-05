@@ -4,8 +4,6 @@ from typing import Callable
 
 from wanikani_api import models
 from anki.notes import Note
-
-from ankiutils import app
 from sysutils.stringutils import StringUtils
 from note.waninote import WaniNote
 from note.note_constants import NoteFields, Mine, NoteTypes
@@ -166,6 +164,7 @@ class KanjiNote(WaniNote):
 
     @staticmethod
     def create_from_wani_kanji(wani_kanji: models.Kanji) -> None:
+        from ankiutils import app
         note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Kanji))
         note.add_tag("__imported")
         note.add_tag(Mine.Tags.Wani)
@@ -176,6 +175,7 @@ class KanjiNote(WaniNote):
 
     @classmethod
     def create(cls, question: str, answer: str, on_readings:str, kun_reading:str) -> KanjiNote:
+        from ankiutils import app
         backend_note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Kanji))
         note = KanjiNote(backend_note)
         note.set_question(question)

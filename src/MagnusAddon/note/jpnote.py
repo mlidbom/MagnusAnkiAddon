@@ -5,9 +5,7 @@ from anki.cards import Card, CardId
 from anki.models import NotetypeDict
 from anki.notes import Note, NoteId
 
-from ankiutils import app
 from note.note_constants import Mine, NoteTypes
-
 from sysutils.typed import checked_cast
 
 
@@ -59,6 +57,7 @@ class JPNote(ABC):
         return checked_cast(str, self._note._note_type['name'])  # Todo: find how to do this without digging into protected members
 
     def delete(self) -> None:
+        from ankiutils import app
         app.anki_collection().remove_notes([self._note.id])
 
     def get_id(self) -> NoteId: return self._note.id

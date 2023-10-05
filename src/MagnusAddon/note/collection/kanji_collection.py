@@ -8,26 +8,26 @@ from note.kanjinote import KanjiNote
 from note.note_constants import NoteTypes
 from sysutils import ex_sequence
 
-class _CachedKanji(CachedNote):
+class _KanjiSnapshot(CachedNote):
     def __init__(self, note: KanjiNote):
         super().__init__(note)
 
-class _Cache(NoteCache[KanjiNote, _CachedKanji]):
+class _KanjiCache(NoteCache[KanjiNote, _KanjiSnapshot]):
     def __init__(self, all_kanji: list[KanjiNote]):
         super().__init__(all_kanji, KanjiNote)
 
     def all(self) -> list[KanjiNote]: return list(self._merged_self()._by_id.values())
     def with_kanji(self, kanji: str) -> list[KanjiNote]: return list(self._merged_self()._by_question[kanji])
 
-    def _create_cached_note(self, note: KanjiNote) -> _CachedKanji: return _CachedKanji(note)
+    def _create_snapshot(self, note: KanjiNote) -> _KanjiSnapshot: return _KanjiSnapshot(note)
 
-    def _inheritor_remove_from_cache(self, note: KanjiNote, cached:_CachedKanji) -> None: pass
+    def _inheritor_remove_from_cache(self, note: KanjiNote, cached:_KanjiSnapshot) -> None: pass
     def _inheritor_add_to_cache(self, note: KanjiNote) -> None: pass
 
 class KanjiCollection:
     def __init__(self, collection: BackEndFacade):
         self.collection = collection
-        self._cache = _Cache([KanjiNote(note) for note in (self.collection.fetch_notes_by_note_type(NoteTypes.Kanji))])
+        self._cache = _KanjiCache([KanjiNote(note) for note in (self.collection.fetch_notes_by_note_type(NoteTypes.Kanji))])
 
     def search(self, query: str) -> list[KanjiNote]:
         return [KanjiNote(note) for note in self.collection.search_notes(query)]

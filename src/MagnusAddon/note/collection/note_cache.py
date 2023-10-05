@@ -34,7 +34,7 @@ class NoteCache(ABC, Generic[TNote, TCachedNote]):
     def with_id(self, note_id: NoteId) -> TNote: return self._by_id[note_id]
 
     @abstractmethod
-    def _create_cached_note(self, note: TNote) -> TCachedNote: pass
+    def _create_snapshot(self, note: TNote) -> TCachedNote: pass
 
     def _merge_pending(self) -> None:
         added_vocab = [v for v in self._pending_add if v.get_id()]
@@ -80,6 +80,6 @@ class NoteCache(ABC, Generic[TNote, TCachedNote]):
     def _add_to_cache(self, note: TNote) -> None:
         assert note.get_id()
         self._by_id[note.get_id()] = note
-        self._cached_by_id[note.get_id()] = self._create_cached_note(note)
+        self._cached_by_id[note.get_id()] = self._create_snapshot(note)
         self._by_question[note.get_question()].add(note)
         self._inheritor_add_to_cache(note)
