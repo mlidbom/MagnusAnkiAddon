@@ -7,9 +7,9 @@ from note.kanjinote import KanjiNote
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
 from sysutils import kana_utils, ex_sequence
-from sysutils.stringutils import StringUtils
+from sysutils import ex_str
 
-shtml = StringUtils.strip_html_markup
+shtml = ex_str.strip_html_markup
 
 @pytest.fixture(scope="function", autouse=True)
 def setup() -> Generator[None, None, None]:

@@ -2,9 +2,8 @@ from typing import *
 
 from ankiutils import app
 from note.sentencenote import SentenceNote
-from sysutils import kana_utils
+from sysutils import ex_str, kana_utils
 from parsing import janomeutils
-from sysutils.stringutils import StringUtils
 from note.kanjinote import KanjiNote
 from note.vocabnote import VocabNote
 
@@ -45,13 +44,13 @@ def _update_vocab(all_vocabulary: list[VocabNote], all_kanji: list[KanjiNote]) -
     def update_kanji_names() -> None: # todo move to a rendering step
         def prepare_kanji_meaning(kanji: KanjiNote) -> str:
             meaning = kanji.get_answer()
-            meaning = StringUtils.strip_html_and_bracket_markup(meaning)
+            meaning = ex_str.strip_html_and_bracket_markup(meaning)
             meaning = meaning.strip().replace(",", "/").replace(" ", "")
             return meaning
 
         kanji_dict = {kanji.get_question(): prepare_kanji_meaning(kanji) for kanji in all_kanji}
         for vocab_note in all_vocabulary:
-            kanji_list = StringUtils.extract_characters(vocab_note.get_question())
+            kanji_list = ex_str.extract_characters(vocab_note.get_question())
             kanji_list = [item for item in kanji_list if item in kanji_dict]
             kanji_meanings = [kanji_dict[kanji] for kanji in kanji_list]
             kanji_names_string = " # ".join(kanji_meanings)
@@ -60,7 +59,7 @@ def _update_vocab(all_vocabulary: list[VocabNote], all_kanji: list[KanjiNote]) -
     def format_context_sentences() -> None: # todo move to a rendering step
         for vocab in all_vocabulary:
             def format_sentence(html_sentence: str) -> str:
-                clean_sentence = StringUtils.strip_html_and_bracket_markup(html_sentence)
+                clean_sentence = ex_str.strip_html_and_bracket_markup(html_sentence)
                 word = vocab.get_question()
                 if word in clean_sentence:
                     return clean_sentence.replace(word, f"""<span class="vocabInContext">{word}</span>""")

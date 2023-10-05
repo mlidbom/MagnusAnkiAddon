@@ -5,7 +5,7 @@ from anki.notes import Note
 
 from note.kanavocabnote import KanaVocabNote
 from sysutils import kana_utils
-from sysutils.stringutils import StringUtils
+from sysutils import ex_str
 from note.note_constants import NoteFields, Mine, NoteTypes
 from wanikani.wanikani_api_client import WanikaniClient
 
@@ -18,7 +18,7 @@ class VocabNote(KanaVocabNote):
     def get_kanji(self) -> str: return self.get_field(NoteFields.Vocab.Kanji)
     def set_kanji(self, value: str) -> None: self.set_field(NoteFields.Vocab.Kanji, value)
 
-    def get_forms(self) -> set[str]: return set(StringUtils.extract_comma_separated_values(self._get_forms()))
+    def get_forms(self) -> set[str]: return set(ex_str.extract_comma_separated_values(self._get_forms()))
     def set_forms(self, forms: set[str]) -> None: self._set_forms(", ".join([form.strip() for form in forms]))
     def _get_forms(self) -> str: return self.get_field(NoteFields.Vocab.Forms)
     def _set_forms(self, value: str) -> None: self.set_field(NoteFields.Vocab.Forms, value)
@@ -54,7 +54,7 @@ class VocabNote(KanaVocabNote):
                 self.set_forms(self.get_forms() | set(self.get_readings()))
 
     def extract_kanji(self) -> list[str]:
-        clean = StringUtils.strip_html_and_bracket_markup(self.get_question())
+        clean = ex_str.strip_html_and_bracket_markup(self.get_question())
         return [char for char in clean if not kana_utils.is_kana(char)]
 
     def is_uk(self) -> bool: return self.has_tag(Mine.Tags.UsuallyKanaOnly)

@@ -6,7 +6,7 @@ if TYPE_CHECKING:
 
 from note.jpnote import JPNote
 from sysutils import timeutil, kana_utils
-from sysutils.stringutils import StringUtils
+from sysutils import ex_str
 from note.note_constants import SentenceNoteFields, NoteTypes
 from anki.notes import Note
 
@@ -25,17 +25,17 @@ class SentenceNote(JPNote):
 
     def _set_user_answer(self, question: str) -> None: return self.set_field(SentenceNoteFields.user_answer, question)
 
-    def _get_source_question(self) -> str: return StringUtils.strip_html_markup(self.get_field(SentenceNoteFields.source_question))
+    def _get_source_question(self) -> str: return ex_str.strip_html_markup(self.get_field(SentenceNoteFields.source_question))
     def _set_source_question(self, question: str) -> None: return self.set_field(SentenceNoteFields.source_question, question)
 
 
-    def _get_user_question(self) -> str: return StringUtils.strip_html_markup(self.get_field(SentenceNoteFields.user_question))
+    def _get_user_question(self) -> str: return ex_str.strip_html_markup(self.get_field(SentenceNoteFields.user_question))
 
 
-    def get_user_extra_vocab(self) -> list[str]: return StringUtils.extract_comma_separated_values(self.get_field(SentenceNoteFields.user_extra_vocab))
+    def get_user_extra_vocab(self) -> list[str]: return ex_str.extract_comma_separated_values(self.get_field(SentenceNoteFields.user_extra_vocab))
     def _set_user_extra_vocab(self, extra: list[str]) -> None: return self.set_field(SentenceNoteFields.user_extra_vocab, ",".join(extra))
 
-    def get_user_excluded_vocab(self) -> set[str]: return set(StringUtils.extract_comma_separated_values(self.get_field(SentenceNoteFields.user_excluded_vocab)))
+    def get_user_excluded_vocab(self) -> set[str]: return set(ex_str.extract_comma_separated_values(self.get_field(SentenceNoteFields.user_excluded_vocab)))
 
     def add_extra_vocab(self, vocab:str) -> None:
         self._set_user_extra_vocab(self.get_user_extra_vocab() + [vocab.strip()])
@@ -76,7 +76,7 @@ class SentenceNote(JPNote):
             self._set_parsed_words([word.word for word in self.parse_words_from_expression()])
 
     def extract_kanji(self) -> list[str]:
-        clean = StringUtils.strip_html_and_bracket_markup(self._get_source_question())
+        clean = ex_str.strip_html_and_bracket_markup(self._get_source_question())
         return [char for char in clean if kana_utils.is_kanji(char)]
 
     @classmethod

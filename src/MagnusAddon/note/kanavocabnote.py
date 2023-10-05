@@ -2,7 +2,7 @@ from wanikani_api import models
 from anki.notes import Note
 
 from note.waninote import WaniNote
-from sysutils.stringutils import StringUtils
+from sysutils import ex_str
 from note.note_constants import NoteFields
 
 
@@ -30,7 +30,7 @@ class KanaVocabNote(WaniNote):
     def get_related_homophones(self) -> list[str]: return self.get_field(NoteFields.Vocab.Related_homophones).split(", ")
     def set_related_homophones(self, value: list[str]) -> None:
         html = f'''<ul class="homophone">
-{StringUtils.newline().join([f'   <li class="clipboard">{val}</li>' for val in value])}
+{ex_str.newline.join([f'   <li class="clipboard">{val}</li>' for val in value])}
 </ul>'''
         self.set_field(NoteFields.Vocab.Related_homophones, html if value else "")
 

@@ -9,7 +9,7 @@ from ankiutils.app import ui_utils
 from hooks.timing_hacks import ugly_timing_hacks
 from sysutils import my_clipboard
 from sysutils.collections.recent_items import RecentItems
-from sysutils.stringutils import StringUtils
+from sysutils import ex_str
 
 recent_previewer_cards = RecentItems[int](2)
 def copy_previewer_sort_field_to_windows_clipboard(html:str, card: Card, type_of_display:str) -> str:
@@ -24,7 +24,7 @@ def copy_card_sort_field_to_clipboard(note: Note) -> None:
     model = cast(NotetypeDict, note.note_type())
     sort_field = model['sortf']
     sort_value = note.fields[sort_field]
-    clean_string = StringUtils.strip_html_and_bracket_markup_and_noise_characters(sort_value)
+    clean_string = ex_str.strip_html_and_bracket_markup_and_noise_characters(sort_value)
     my_clipboard.set_text(clean_string)
 
 recent_review_answers = RecentItems[int](1)

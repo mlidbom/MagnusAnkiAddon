@@ -5,17 +5,17 @@ if TYPE_CHECKING:
     from parsing.universal_dependencies.ud_tree_node import UDTextTreeNode
 
 from sysutils import kana_utils
-from sysutils.stringutils import StringUtils
+from sysutils import ex_str
 
 
 def _str_pos(self: UDTextTreeNode) -> str:
     if self.is_morpheme():
         token = self.tokens[0]
-        return (f"""{StringUtils.pad_to_length(str(token.id), 3)}""" +
-                f"""{StringUtils.pad_to_length(str(token.head.id), 3)}""" +
-                f"""{StringUtils.pad_to_length(token.deprel.description, 28)}""" +
-                f"""{StringUtils.pad_to_length(token.xpos.description, 30)}""" +
-                f"""{StringUtils.pad_to_length(token.upos.description, 26)}""" +
+        return (f"""{ex_str.pad_to_length(str(token.id), 3)}""" +
+                f"""{ex_str.pad_to_length(str(token.head.id), 3)}""" +
+                f"""{ex_str.pad_to_length(token.deprel.description, 28)}""" +
+                f"""{ex_str.pad_to_length(token.xpos.description, 30)}""" +
+                f"""{ex_str.pad_to_length(token.upos.description, 26)}""" +
                 f"""feat:{token.feats} deps:{token.deps} misc:{token.misc}""")
     return "_"
 

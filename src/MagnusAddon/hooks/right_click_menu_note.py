@@ -9,7 +9,7 @@ from note.kanjinote import KanjiNote
 from note.radicalnote import RadicalNote
 from note.vocabnote import VocabNote
 from hooks.note_content_building import sentence_breakdown
-from sysutils.stringutils import StringUtils
+from sysutils import ex_str
 from note.note_constants import MyNoteFields, NoteFields, SentenceNoteFields, NoteTypes
 from ankiutils import query_builder as su
 from sysutils.typed import checked_cast
@@ -123,11 +123,11 @@ def set_kanji_primary_vocab(note: KanjiNote, selection: str, view: AnkiWebView) 
     add_kanji_primary_vocab(note, selection, view)
 
 def format_vocab_meaning(meaning:str) -> str:
-    return StringUtils.strip_html_and_bracket_markup(meaning
+    return ex_str.strip_html_and_bracket_markup(meaning
                                                      .replace(" SOURCE", "")
                                                      .replace(", ", "/")
                                                      .replace(" ", "-")
                                                      .lower())
 
 def format_kanji_meaning(meaning:str) -> str:
-    return StringUtils.strip_html_and_bracket_markup(meaning.lower().replace(", ", "/").replace(" ", "-"))
+    return ex_str.strip_html_and_bracket_markup(meaning.lower().replace(", ", "/").replace(" ", "-"))

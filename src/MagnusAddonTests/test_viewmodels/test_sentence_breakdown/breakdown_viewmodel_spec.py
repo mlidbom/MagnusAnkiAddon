@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from sysutils.stringutils import StringUtils
+from sysutils.ex_str import newline
 from viewmodels.sentence_breakdown.sentence_breakdown_viewmodel import BreakDownViewModel, NodeViewModel
 
 class NodeViewModelSpec:
@@ -18,7 +18,7 @@ class NodeViewModelSpec:
     def str_children(self, depth: int) -> str:
         if not self.children: return ""
 
-        separator = f", {StringUtils.newline()}"
+        separator = f", {newline}"
         return f""", \n{separator.join([m.repr_(depth + 1) for m in self.children])}"""
 
     def __eq__(self, other: Any) -> bool:

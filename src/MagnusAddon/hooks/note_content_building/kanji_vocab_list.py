@@ -4,9 +4,9 @@ from note.jpnote import JPNote
 from note.kanjinote import KanjiNote
 from note.vocabnote import VocabNote
 from sysutils import kana_utils
-from sysutils.stringutils import StringUtils
+from sysutils import ex_str
 from ankiutils import app
-
+from sysutils.ex_str import newline
 
 def sort_vocab_list(note:KanjiNote, primary_voc: list[str], vocabs: list[VocabNote]) -> None:
     def prefer_primary_vocab_in_order(local_vocab: VocabNote) -> int:
@@ -35,11 +35,11 @@ def generate_vocab_html_list(note: KanjiNote, vocabs: list[VocabNote]) -> str:
             <div class="kanjiVocabList">
                 <div>
 
-                {StringUtils.newline().join([f"""
+                {newline.join([f"""
                 <div class="kanjiVocabEntry">
                     <span class="kanji clipboard">{inner_vocab.get_question()}</span>
                     (<span class="clipboard vocabReading">{note.tag_readings_in_string(", ".join(inner_vocab.get_readings()), lambda read: f'<span class="kanjiReading">{read}</span>')}</span>)
-                    <span class="meaning"> {StringUtils.strip_html_markup(inner_vocab.get_answer())}</span>
+                    <span class="meaning"> {ex_str.strip_html_markup(inner_vocab.get_answer())}</span>
                 </div>
                 """ for inner_vocab in vocabs])}
 

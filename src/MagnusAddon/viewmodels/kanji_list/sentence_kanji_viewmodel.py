@@ -1,6 +1,6 @@
 from note.kanjinote import KanjiNote
 from sysutils import kana_utils
-from sysutils.stringutils import StringUtils
+from sysutils import ex_str
 
 
 class KanjiViewModel:
@@ -16,4 +16,4 @@ class KanjiViewModel:
         return self._kanji.get_mnemonics_override() if self._kanji.get_mnemonics_override() not in {"-", ""} else ""
 
     def __str__(self) -> str:
-        return f"{self.question()}      {StringUtils.pad_to_length(self.answer(), 60)}: {self.readings()}"
+        return f"{self.question()}      {ex_str.pad_to_length(self.answer(), 60)}: {self.readings()}"

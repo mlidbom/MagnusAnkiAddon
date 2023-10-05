@@ -14,7 +14,7 @@ from note.vocabnote import VocabNote
 from note.kanjinote import KanjiNote
 # noinspection PyUnresolvedReferences
 from note.radicalnote import RadicalNote
-from sysutils.stringutils import StringUtils
+from sysutils import ex_str
 from note.cardutils import CardUtils
 from anki.notes import Note
 from note.note_constants import NoteTypes
@@ -46,7 +46,7 @@ def visit_note_dependencies(note: Note, callback: Callable[[WaniNote, str], None
 
 
 def visit_vocab_with_dependencies(vocab_note: VocabNote, callback: Callable[[WaniNote, str], None]) -> None:
-    kanji_list = StringUtils.extract_characters(vocab_note.get_question())
+    kanji_list = ex_str.extract_characters(vocab_note.get_question())
     kanji_notes = app.col().kanji.with_any_kanji(kanji_list)
 
     for kanji_note in kanji_notes:
@@ -58,8 +58,8 @@ def visit_vocab_with_dependencies(vocab_note: VocabNote, callback: Callable[[Wan
 def visit_kanji_with_dependencies(kanji_note: KanjiNote,
                                   calling_radical_note: Optional[RadicalNote],
                                   callback: Callable[[WaniNote, str], None]) -> None:
-    radical_dependencies_names = StringUtils.extract_comma_separated_values(
-        kanji_note.get_radicals_names()) + StringUtils.extract_comma_separated_values(
+    radical_dependencies_names = ex_str.extract_comma_separated_values(
+        kanji_note.get_radicals_names()) + ex_str.extract_comma_separated_values(
         kanji_note.get_radicals_icons_names())
 
     if calling_radical_note is not None and calling_radical_note.get_answer() in radical_dependencies_names:

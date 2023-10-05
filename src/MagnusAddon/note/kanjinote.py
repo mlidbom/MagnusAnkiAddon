@@ -4,9 +4,9 @@ from typing import Callable
 
 from wanikani_api import models
 from anki.notes import Note
-from sysutils.stringutils import StringUtils
 from note.waninote import WaniNote
 from note.note_constants import NoteFields, Mine, NoteTypes
+from sysutils import ex_str
 from wanikani.wanikani_api_client import WanikaniClient
 
 
@@ -18,7 +18,7 @@ class KanjiNote(WaniNote):
 
     def tag_readings_in_string(self, vocabulary: str, tagger: Callable[[str], str]) -> str:
         readings = f"{self.get_reading_kun()}, {self.get_reading_on()}"
-        readings_list = [s.split(".")[0].strip() for s in (StringUtils.strip_html_and_bracket_markup(readings).split(","))]
+        readings_list = [s.split(".")[0].strip() for s in (ex_str.strip_html_and_bracket_markup(readings).split(","))]
         readings_list.sort(key=len, reverse=True)
         for reading in readings_list:
             if reading and reading in vocabulary:
@@ -94,7 +94,7 @@ class KanjiNote(WaniNote):
 
     def get_primary_vocab(self) -> list[str]:
         return [voc for voc in
-                (StringUtils.strip_html_and_bracket_markup(vocab).strip() for vocab in self.get_field(NoteFields.Kanji.PrimaryVocab).split(","))
+                (ex_str.strip_html_and_bracket_markup(vocab).strip() for vocab in self.get_field(NoteFields.Kanji.PrimaryVocab).split(","))
                 if voc]
     def set_primary_vocab(self, value: list[str]) -> None:
         formatted = [self.tag_readings_in_string(voc, lambda read: f"<read>{read}</read>") for voc in value]
