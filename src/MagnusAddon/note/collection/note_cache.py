@@ -1,14 +1,14 @@
 from __future__ import annotations
+
 from abc import ABC, abstractmethod
 from collections import defaultdict
-from typing import Any, cast, Self, Sequence
+from typing import Generic, Self, Sequence, TypeVar
+
 from anki import hooks
 from anki.collection import Collection
 from anki.notes import Note, NoteId
-from note.jpnote import JPNote
-from typing import TypeVar, Generic
 
-from sysutils import ex_sequence
+from note.jpnote import JPNote
 
 class CachedNote:
     def __init__(self, note: JPNote):

@@ -3,6 +3,9 @@ from __future__ import annotations
 from collections import defaultdict
 from typing import List
 
+from anki.collection import Collection
+from anki.notes import Note
+
 from note.collection.backend_facade import BackEndFacade
 from note.collection.note_cache import CachedNote, NoteCache
 from note.note_constants import NoteTypes
@@ -20,9 +23,10 @@ class _RadicalCache(NoteCache[RadicalNote, _RadicalSnapshot]):
     def _create_snapshot(self, note: RadicalNote) -> _RadicalSnapshot: return _RadicalSnapshot(note)
 
 class RadicalCollection:
-    def __init__(self, collection: BackEndFacade):
-        self.collection = collection
-        self._cache = _RadicalCache([RadicalNote(note) for note in (self.collection.with_note_type(NoteTypes.Radical))])
+    def __init__(self, collection: Collection):
+        def radical_constructor(note: Note) -> RadicalNote: return RadicalNote(note)
+        self.collection = BackEndFacade[RadicalNote](collection, radical_constructor, NoteTypes.Radical)
+        self._cache = _RadicalCache(list(self.collection.all()))
 
     def all(self) -> List[RadicalNote]: return self._cache.all()
 

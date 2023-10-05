@@ -2,6 +2,9 @@ from __future__ import annotations
 
 from typing import List
 
+from anki.collection import Collection
+from anki.notes import Note
+
 from note.collection.backend_facade import BackEndFacade
 from note.collection.note_cache import CachedNote, NoteCache
 from note.kanjinote import KanjiNote
@@ -19,12 +22,13 @@ class _KanjiCache(NoteCache[KanjiNote, _KanjiSnapshot]):
     def _create_snapshot(self, note: KanjiNote) -> _KanjiSnapshot: return _KanjiSnapshot(note)
 
 class KanjiCollection:
-    def __init__(self, collection: BackEndFacade):
-        self.collection = collection
-        self._cache = _KanjiCache([KanjiNote(note) for note in (self.collection.with_note_type(NoteTypes.Kanji))])
+    def __init__(self, collection: Collection):
+        def kanji_constructor(note: Note) -> KanjiNote: return KanjiNote(note)
+        self.collection = BackEndFacade[KanjiNote](collection, kanji_constructor, NoteTypes.Kanji)
+        self._cache = _KanjiCache(list(self.collection.all()))
 
     def search(self, query: str) -> list[KanjiNote]:
-        return [KanjiNote(note) for note in self.collection.search(query)]
+        return list(self.collection.search(query))
 
     def all(self) -> list[KanjiNote]: return self._cache.all()
 

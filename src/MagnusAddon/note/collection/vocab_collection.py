@@ -2,6 +2,9 @@ from __future__ import annotations
 
 from collections import defaultdict
 
+from anki.collection import Collection
+from anki.notes import Note
+
 from note.collection.backend_facade import BackEndFacade
 from note.collection.note_cache import CachedNote, NoteCache
 from note.kanjinote import KanjiNote
@@ -20,7 +23,6 @@ class _VocabCache(NoteCache[VocabNote, _VocabSnapshot]):
         self._by_kanji: dict[str, set[VocabNote]] = defaultdict(set)
         super().__init__(all_vocab, VocabNote)
 
-    def all(self) -> list[VocabNote]: return list(self._merged_self()._by_id.values())
     def with_form(self, form: str) -> list[VocabNote]: return list(self._merged_self()._by_form[form])
     def with_kanji(self, kanji: str) -> list[VocabNote]: return list(self._merged_self()._by_kanji[kanji])
 
@@ -35,12 +37,12 @@ class _VocabCache(NoteCache[VocabNote, _VocabSnapshot]):
         for kanji in note.extract_kanji(): self._by_kanji[kanji].add(note)
 
 class VocabCollection:
-    def __init__(self, collection: BackEndFacade):
-        self.collection = collection
-        self._cache = _VocabCache([VocabNote(note) for note in (self.collection.with_note_type(NoteTypes.Vocab))])
+    def __init__(self, collection: Collection):
+        def vocab_constructor(note: Note) -> VocabNote: return VocabNote(note)
+        self.collection = BackEndFacade[VocabNote](collection, vocab_constructor, NoteTypes.Vocab)
+        self._cache = _VocabCache(list(self.collection.all()))
 
-    def search(self, query: str) -> list[VocabNote]:
-        return [VocabNote(note) for note in (self.collection.search(query))]
+    def search(self, query: str) -> list[VocabNote]: return list(self.collection.search(query))
 
     def all_wani(self) -> list[VocabNote]:
         return [vocab for vocab in self.all() if vocab.is_wani_note()]
