@@ -15,13 +15,13 @@ class VocabNote(KanaVocabNote):
 
     def __repr__(self) -> str: return f"""{self.get_question()}"""
 
-    def get_kanji(self) -> str: return super().get_field(NoteFields.Vocab.Kanji)
-    def set_kanji(self, value: str) -> None: super().set_field(NoteFields.Vocab.Kanji, value)
+    def get_kanji(self) -> str: return self.get_field(NoteFields.Vocab.Kanji)
+    def set_kanji(self, value: str) -> None: self.set_field(NoteFields.Vocab.Kanji, value)
 
     def get_forms(self) -> set[str]: return set(StringUtils.extract_comma_separated_values(self._get_forms()))
     def set_forms(self, forms: set[str]) -> None: self._set_forms(", ".join([form.strip() for form in forms]))
-    def _get_forms(self) -> str: return super().get_field(NoteFields.Vocab.Forms)
-    def _set_forms(self, value: str) -> None: super().set_field(NoteFields.Vocab.Forms, value)
+    def _get_forms(self) -> str: return self.get_field(NoteFields.Vocab.Forms)
+    def _set_forms(self, value: str) -> None: self.set_field(NoteFields.Vocab.Forms, value)
 
     def update_generated_data(self) -> None:
         from parsing.jamdict_extensions.dict_lookup import DictLookup
@@ -62,20 +62,20 @@ class VocabNote(KanaVocabNote):
     def get_display_question(self) -> str:
         return self.get_readings()[0] if self.is_uk() else self.get_question()
 
-    def get_kanji_name(self) -> str: return super().get_field(NoteFields.Vocab.Kanji_Name)
-    def set_kanji_name(self, value: str) -> None: super().set_field(NoteFields.Vocab.Kanji_Name, value)
+    def get_kanji_name(self) -> str: return self.get_field(NoteFields.Vocab.Kanji_Name)
+    def set_kanji_name(self, value: str) -> None: self.set_field(NoteFields.Vocab.Kanji_Name, value)
 
-    def get_reading_mnemonic(self) -> str: return super().get_field(NoteFields.Vocab.Reading_Exp)
-    def set_reading_mnemonic(self, value: str) -> None: super().set_field(NoteFields.Vocab.Reading_Exp, value)
+    def get_reading_mnemonic(self) -> str: return self.get_field(NoteFields.Vocab.Reading_Exp)
+    def set_reading_mnemonic(self, value: str) -> None: self.set_field(NoteFields.Vocab.Reading_Exp, value)
 
     def get_readings(self) -> list[str]: return [reading.strip() for reading in self._get_reading().split(",")]
     def set_readings(self, readings: list[str]) -> None: self._set_reading(", ".join([reading.strip() for reading in readings]))
 
-    def _get_reading(self) -> str: return super().get_field(NoteFields.Vocab.Reading)
-    def _set_reading(self, value: str) -> None: super().set_field(NoteFields.Vocab.Reading, value)
+    def _get_reading(self) -> str: return self.get_field(NoteFields.Vocab.Reading)
+    def _set_reading(self, value: str) -> None: self.set_field(NoteFields.Vocab.Reading, value)
 
-    def get_component_subject_ids(self) -> str: return super().get_field(NoteFields.Vocab.component_subject_ids)
-    def set_component_subject_ids(self, value: str) -> None: super().set_field(NoteFields.Vocab.component_subject_ids, value)
+    def get_component_subject_ids(self) -> str: return self.get_field(NoteFields.Vocab.component_subject_ids)
+    def set_component_subject_ids(self, value: str) -> None: self.set_field(NoteFields.Vocab.component_subject_ids, value)
 
     def override_meaning_mnemonic(self) -> None:
         if not self.get_mnemonics_override():
@@ -85,11 +85,11 @@ class VocabNote(KanaVocabNote):
         if self.get_mnemonics_override() == "-":
             self.set_mnemonics_override("")
 
-    def get_mnemonics_override(self) -> str: return super().get_field(NoteFields.Vocab.Mnemonic__)
-    def set_mnemonics_override(self, value: str) -> None: super().set_field(NoteFields.Vocab.Mnemonic__, value)
+    def get_mnemonics_override(self) -> str: return self.get_field(NoteFields.Vocab.Mnemonic__)
+    def set_mnemonics_override(self, value: str) -> None: self.set_field(NoteFields.Vocab.Mnemonic__, value)
 
-    def get_parsed_type_of_speech(self) -> str: return super().get_field(NoteFields.Vocab.ParsedTypeOfSpeech)
-    def set_parsed_type_of_speech(self, value: str) -> None: super().set_field(NoteFields.Vocab.ParsedTypeOfSpeech, value)
+    def get_parsed_type_of_speech(self) -> str: return self.get_field(NoteFields.Vocab.ParsedTypeOfSpeech)
+    def set_parsed_type_of_speech(self, value: str) -> None: self.set_field(NoteFields.Vocab.ParsedTypeOfSpeech, value)
 
     def update_from_wani(self, wani_vocab: models.Vocabulary) -> None:
         super().update_from_wani(wani_vocab)

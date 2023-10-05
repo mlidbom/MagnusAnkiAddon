@@ -10,20 +10,20 @@ class RadicalNote(WaniNote):
     def __init__(self, note: Note):
         super().__init__(note)
 
-    def get_question(self) -> str: return super().get_field(NoteFields.Radical.question)
-    def set_q(self, value: str) -> None: super().set_field(NoteFields.Radical.question, value)
+    def get_question(self) -> str: return self.get_field(NoteFields.Radical.question)
+    def set_q(self, value: str) -> None: self.set_field(NoteFields.Radical.question, value)
 
-    def get_answer(self) -> str: return super().get_field(NoteFields.Radical.answer)
-    def set_a(self, value: str) -> None: super().set_field(NoteFields.Radical.answer, value)
+    def get_answer(self) -> str: return self.get_field(NoteFields.Radical.answer)
+    def set_a(self, value: str) -> None: self.set_field(NoteFields.Radical.answer, value)
 
-    def get_meaning_mnemonic(self) -> str: return super().get_field(NoteFields.Radical.Radical_Meaning)
-    def set_meaning_mnemonic(self, value: str) -> None: super().set_field(NoteFields.Radical.Radical_Meaning, value)
+    def get_meaning_mnemonic(self) -> str: return self.get_field(NoteFields.Radical.Radical_Meaning)
+    def set_meaning_mnemonic(self, value: str) -> None: self.set_field(NoteFields.Radical.Radical_Meaning, value)
 
-    def get_radical_icon(self) -> str: return super().get_field(NoteFields.Radical.Radical_Icon)
-    def set_radical_icon(self, value: str) -> None: super().set_field(NoteFields.Radical.Radical_Icon, value)
+    def get_radical_icon(self) -> str: return self.get_field(NoteFields.Radical.Radical_Icon)
+    def set_radical_icon(self, value: str) -> None: self.set_field(NoteFields.Radical.Radical_Icon, value)
 
-    def get_amalgamation_subject_ids(self) -> str: return super().get_field(NoteFields.Radical.amalgamation_subject_ids)
-    def set_amalgamation_subject_ids(self, value: str) -> None: super().set_field(NoteFields.Radical.amalgamation_subject_ids, value)
+    def get_amalgamation_subject_ids(self) -> str: return self.get_field(NoteFields.Radical.amalgamation_subject_ids)
+    def set_amalgamation_subject_ids(self, value: str) -> None: self.set_field(NoteFields.Radical.amalgamation_subject_ids, value)
 
     def update_from_wani(self, wani_radical: models.Radical) -> None:
         super().update_from_wani(wani_radical)
