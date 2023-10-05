@@ -112,6 +112,7 @@ class VocabNote(KanaVocabNote):
 
     @staticmethod
     def create_from_wani_vocabulary(wani_vocab: models.Vocabulary) -> None:
+        from ankiutils import app
         note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Vocab))
         note.add_tag("__imported")
         note.add_tag(Mine.Tags.Wani)

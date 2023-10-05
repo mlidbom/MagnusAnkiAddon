@@ -1,13 +1,14 @@
 from __future__ import annotations
-from abc import ABC, abstractmethod
-from typing import Any, Sequence, cast
+
+from abc import ABC
+from typing import Any, cast, Sequence
+
 from anki.cards import Card, CardId
 from anki.models import NotetypeDict
 from anki.notes import Note, NoteId
 
-from note.note_constants import Mine, NoteTypes
+from note.note_constants import Mine, MyNoteFields, NoteTypes
 from sysutils.typed import checked_cast
-
 
 class JPNote(ABC):
     def __init__(self, note: Note):
@@ -18,13 +19,8 @@ class JPNote(ABC):
 
     def __hash__(self) -> int: return hash(self.get_id())
 
-    @abstractmethod
-    def get_question(self) -> str:
-        pass
-
-    @abstractmethod
-    def get_answer(self) -> str:
-        pass
+    def get_question(self) -> str: return self.get_field(MyNoteFields.question)
+    def get_answer(self) -> str: return self.get_field(MyNoteFields.answer)
 
     @classmethod
     def note_from_card(cls, card: Card) -> JPNote:
@@ -38,35 +34,25 @@ class JPNote(ABC):
         from note.radicalnote import RadicalNote
         from note.vocabnote import VocabNote
 
-        if cls.get_note_type(note) == NoteTypes.Kanji:
-            return KanjiNote(note)
-        elif cls.get_note_type(note) == NoteTypes.Vocab:
-            return VocabNote(note)
-        elif cls.get_note_type(note) == NoteTypes.Radical:
-            return RadicalNote(note)
-        elif cls.get_note_type(note) == NoteTypes.Sentence:
-            return SentenceNote(note)
+        if cls.get_note_type(note) == NoteTypes.Kanji: return KanjiNote(note)
+        elif cls.get_note_type(note) == NoteTypes.Vocab: return VocabNote(note)
+        elif cls.get_note_type(note) == NoteTypes.Radical: return RadicalNote(note)
+        elif cls.get_note_type(note) == NoteTypes.Sentence: return SentenceNote(note)
         return JPNote(note)
 
     @staticmethod
     def get_note_type(note: Note) -> str:
         return checked_cast(str, cast(NotetypeDict, note.note_type())["name"])
 
-    def get_note_type_name(self) -> str:
-        # noinspection PyProtectedMember
-        return checked_cast(str, self._note._note_type['name'])  # Todo: find how to do this without digging into protected members
+    def get_note_type_name(self) -> str: return self.get_note_type(self._note)
 
     def delete(self) -> None:
         from ankiutils import app
         app.anki_collection().remove_notes([self._note.id])
 
     def get_id(self) -> NoteId: return self._note.id
-
-    def card_ids(self) -> Sequence[CardId]:
-        return self._note.card_ids()
-
-    def is_wani_note(self) -> bool:
-        return Mine.Tags.Wani in self._note.tags
+    def card_ids(self) -> Sequence[CardId]: return self._note.card_ids()
+    def is_wani_note(self) -> bool: return Mine.Tags.Wani in self._note.tags
 
     @classmethod
     def _on_note_edited(cls, note: Note) -> None:
@@ -88,9 +74,9 @@ class JPNote(ABC):
             self._note[field_name] = value
             self._flush()
 
-    def has_tag(self, tag:str) -> bool: return tag in self._note.tags
+    def has_tag(self, tag: str) -> bool: return tag in self._note.tags
 
-    def set_tag(self, tag:str) -> None:
+    def set_tag(self, tag: str) -> None:
         if not self.has_tag(tag):
             self._note.tags.append(tag)
             self._flush()
