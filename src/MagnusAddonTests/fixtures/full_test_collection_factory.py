@@ -11,21 +11,21 @@ from ankiutils import app
 from note.collection.jp_collection import JPCollection
 from sysutils.typed import checked_cast
 
-_thread_local = threading.local()
 
 
-def get_thread_local_collection() -> JPCollection:
-    return checked_cast(JPCollection, _thread_local.jp_collection)
+jp_collection:JPCollection
+def get_jp_collection() -> JPCollection: return jp_collection
+
 
 @contextmanager
 def inject_full_anki_collection_for_testing() -> Generator[None, None, None]:
+    global jp_collection
     with tempfile.TemporaryDirectory() as tmp_dirname:
         collection_file = path.join(tmp_dirname, "collection.anki2")
         anki_collection = create_collection(collection_file)
         jp_collection = JPCollection(anki_collection)
         try:
-            _thread_local.jp_collection = jp_collection
-            app.col = get_thread_local_collection
+            app.col = get_jp_collection
             yield
         finally:
             anki_collection.close()
