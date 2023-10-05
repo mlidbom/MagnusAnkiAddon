@@ -77,8 +77,8 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
         assert note.get_id()
         cached = self._snapshot_by_id.pop(note.get_id())
         self._by_id.pop(note.get_id())
-        self._by_question[cached.question].discard(note)
-        self._by_answer[cached.answer].discard(note)
+        self._by_question[cached.question].remove(note)
+        self._by_answer[cached.answer].remove(note)
         self._inheritor_remove_from_cache(note, cached)
 
 

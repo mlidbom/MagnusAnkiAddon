@@ -27,8 +27,8 @@ class _VocabCache(NoteCache[VocabNote, _VocabSnapshot]):
     def _create_snapshot(self, note: VocabNote) -> _VocabSnapshot: return _VocabSnapshot(note)
 
     def _inheritor_remove_from_cache(self, note: VocabNote, cached:_VocabSnapshot) -> None:
-        for form in cached.forms: self._by_form[form].discard(note)
-        for kanji in cached.kanji: self._by_kanji[kanji].discard(note)
+        for form in cached.forms: self._by_form[form].remove(note)
+        for kanji in cached.kanji: self._by_kanji[kanji].remove(note)
 
     def _inheritor_add_to_cache(self, note: VocabNote) -> None:
         for form in note.get_forms(): self._by_form[form].add(note)
