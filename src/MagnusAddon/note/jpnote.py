@@ -15,9 +15,12 @@ class JPNote(ABC):
         self._note = note
 
     def __eq__(self, other: Any) -> bool:
+        assert self.get_id(), "You cannot compare or hash a note that has not been saved yet since it has no id"
         return isinstance(other, JPNote) and other.get_id() == self.get_id()
 
-    def __hash__(self) -> int: return hash(self.get_id())
+    def __hash__(self) -> int:
+        assert self.get_id(), "You cannot compare or hash a note that has not been saved yet since it has no id"
+        return hash(self.get_id())
 
     def get_question(self) -> str: return self.get_field(MyNoteFields.question)
     def get_answer(self) -> str: return self.get_field(MyNoteFields.answer)
