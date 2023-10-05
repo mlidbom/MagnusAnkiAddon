@@ -1,9 +1,9 @@
 from typing import Callable
 
-from ankiutils.ui_utils_interface import UIUtilsInterface
+from ankiutils.ui_utils_interface import IUIUtils
 
 
-class UIUtilsStub(UIUtilsInterface):
+class UIUtilsStub(IUIUtils):
     def run_ui_action(self, callback: Callable[[], None]) -> None:
         callback()
 

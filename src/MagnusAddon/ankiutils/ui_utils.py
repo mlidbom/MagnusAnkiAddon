@@ -9,11 +9,11 @@ from aqt.reviewer import RefreshNeeded
 from aqt.utils import tooltip
 
 from ankiutils.audio_suppressor import audio_suppressor
-from ankiutils.ui_utils_interface import UIUtilsInterface
+from ankiutils.ui_utils_interface import IUIUtils
 from sysutils import timeutil
 
 
-class UIUtils(UIUtilsInterface):
+class UIUtils(IUIUtils):
     def __init__(self, mw: AnkiQt):
         self._mw = mw
 

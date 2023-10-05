@@ -2,14 +2,14 @@ import threading
 from contextlib import contextmanager
 from typing import Generator
 from ankiutils import app
-from ankiutils.ui_utils_interface import UIUtilsInterface
+from ankiutils.ui_utils_interface import IUIUtils
 from fixtures.stubs.ui_utils_stub import UIUtilsStub
 from sysutils.typed import checked_cast
 
 _thread_local = threading.local()
 
 
-def get_thread_local_ui_utils() -> UIUtilsInterface:
+def get_thread_local_ui_utils() -> IUIUtils:
     return checked_cast(UIUtilsStub, _thread_local.ui_utils)
 
 
