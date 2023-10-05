@@ -22,7 +22,7 @@ def update_from_wanikani(note: Note) -> None:
         kanji_note.update_from_wani(waniClient.get_kanji_by_name(kanji_note.get_question()))
     if note_type == NoteTypes.Radical:
         radical_note = RadicalNote(note)
-        radical_note.update_from_wani(waniClient.get_radical(radical_note.get_a()))
+        radical_note.update_from_wani(waniClient.get_radical(radical_note.get_answer()))
 
 
 def update_radical() -> None:
@@ -31,11 +31,11 @@ def update_radical() -> None:
     failed: str = ""
     for radical_note in all_radicals:
         try:
-            wani_radical = waniClient.get_radical(radical_note.get_a())
+            wani_radical = waniClient.get_radical(radical_note.get_answer())
             radical_note.update_from_wani(wani_radical)
             fetched += 1
         except KeyError:
-            failed = failed + "," + radical_note.get_a()
+            failed = failed + "," + radical_note.get_answer()
 
     message = "Successfully matched {} radical notes.\n Failed:{}".format(fetched, failed)
     print(message)
@@ -77,15 +77,15 @@ def update_vocab() -> None:
 
 
 def delete_missing_radicals() -> None:
-    all_radicals = app.col().radicals.all()
+    all_radicals:list[RadicalNote] = app.col().radicals.all()
     deleted = 0
     deleted_radicals: str = ""
     for radical_note in all_radicals:
         try:
-            waniClient.get_radical(radical_note.get_a())
+            waniClient.get_radical(radical_note.get_answer())
         except KeyError:
             deleted += 1
-            deleted_radicals = deleted_radicals + "," + radical_note.get_a()
+            deleted_radicals = deleted_radicals + "," + radical_note.get_answer()
 
     message = f"Deleted {deleted} radical notes."
     print(message)

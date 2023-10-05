@@ -1,11 +1,7 @@
 from __future__ import annotations
 
-from typing import List
-
-from note.note_constants import NoteFields
-
 from collections import defaultdict
-from typing import Self, Sequence
+from typing import List, Self, Sequence
 
 from anki import hooks
 from anki.collection import Collection

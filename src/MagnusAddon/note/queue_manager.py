@@ -62,12 +62,12 @@ def visit_kanji_with_dependencies(kanji_note: KanjiNote,
         kanji_note.get_radicals_names()) + StringUtils.extract_comma_separated_values(
         kanji_note.get_radicals_icons_names())
 
-    if calling_radical_note is not None and calling_radical_note.get_a() in radical_dependencies_names:
+    if calling_radical_note is not None and calling_radical_note.get_answer() in radical_dependencies_names:
         return  # We do not want to unsuspend the kanji that depends on the radical, only kanji upon which the radical depends
 
-    radical_dependencies_notes = app.col().radicals.by_answer(radical_dependencies_names)
+    radical_dependencies_notes:list[RadicalNote] = app.col().radicals.by_answer(radical_dependencies_names)
     for radical in radical_dependencies_notes:
-        if calling_radical_note is None or radical.get_a() != calling_radical_note.get_a():
+        if calling_radical_note is None or radical.get_answer() != calling_radical_note.get_answer():
             visit_radical_with_dependencies(radical, kanji_note, callback)
 
     callback(kanji_note, kanji_note.get_active_answer())
@@ -76,12 +76,12 @@ def visit_kanji_with_dependencies(kanji_note: KanjiNote,
 def visit_radical_with_dependencies(radical_note: RadicalNote,
                                     calling_kanji_note: Optional[KanjiNote],
                                     callback: Callable[[WaniNote, str], None]) -> None:
-    kanji_dependencies_notes = app.col().kanji.by_kanji([radical_note.get_q()])
+    kanji_dependencies_notes = app.col().kanji.by_kanji([radical_note.get_question()])
     for kanji_note in kanji_dependencies_notes:
         if calling_kanji_note is None or kanji_note.get_question() != calling_kanji_note.get_question():
             visit_kanji_with_dependencies(kanji_note, radical_note, callback)
 
-    callback(radical_note, radical_note.get_a())
+    callback(radical_note, radical_note.get_answer())
 
 
 def refresh_search() -> None:
