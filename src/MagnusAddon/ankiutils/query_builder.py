@@ -1,13 +1,13 @@
 from __future__ import annotations
-from typing import Iterable, TYPE_CHECKING
 
-from note.sentencenote import SentenceNote
+from typing import Iterable
+
 from note.kanjinote import KanjiNote
+from note.note_constants import Builtin, Mine, MyNoteFields, NoteFields, NoteTypes
+from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
 from parsing import textparser
 from parsing.janome_extensions.parsed_word import ParsedWord
-from note.note_constants import NoteFields, Mine, MyNoteFields, NoteTypes, Builtin
-
 
 question = MyNoteFields.question
 reading = NoteFields.Vocab.Reading

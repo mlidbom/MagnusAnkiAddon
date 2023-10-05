@@ -35,10 +35,9 @@ class _Cache:
 
         self._setup_hooks()
 
-
     def all(self) -> list[VocabNote]: return list(self._merged_self()._by_id.values())
-    def with_form(self, form:str) -> list[VocabNote]: return list(self._merged_self()._by_form[form])
-    def with_kanji(self, kanji:str) -> list[VocabNote]: return list(self._merged_self()._by_kanji[kanji])
+    def with_form(self, form: str) -> list[VocabNote]: return list(self._merged_self()._by_form[form])
+    def with_kanji(self, kanji: str) -> list[VocabNote]: return list(self._merged_self()._by_kanji[kanji])
 
     def _merge_pending(self) -> None:
         added_vocab = [v for v in self._pending_add if v.get_id()]
@@ -59,6 +58,7 @@ class _Cache:
         for cached in cached_notes:
             self._remove_from_cache(cached)
 
+    # noinspection DuplicatedCode
     def _on_will_flush(self, backend_note: Note) -> None:
         note = JPNote.note_from_note(backend_note)
         if isinstance(note, VocabNote):
@@ -105,7 +105,5 @@ class VocabCollection:
         return vocab_notes
 
     def all(self) -> list[VocabNote]: return self._cache().all()
-    def with_form(self, form:str) -> list[VocabNote]: return self._cache().with_form(form)
+    def with_form(self, form: str) -> list[VocabNote]: return self._cache().with_form(form)
     def with_kanji(self, kanji: KanjiNote) -> list[VocabNote]: return self._cache().with_kanji(kanji.get_question())
-
-
