@@ -2,14 +2,35 @@ from __future__ import annotations
 
 from typing import Any
 
-from sysutils.ex_str import full_width_space, newline
-from viewmodels.sentence_breakdown.sentence_breakdown_viewmodel import BreakDownViewModel, NodeViewModel
+from sysutils.ex_str import full_width_space
+from viewmodels.sentence_breakdown.sentence_breakdown_viewmodel import VocabHit, BreakDownViewModel, NodeViewModel
+
+class VocabHitViewModelSpec:
+    def __init__(self, form:str, hit_form: str, answer: str):
+        self.form = form
+        self.hit_form = hit_form
+        self.answer = answer
+
+    def __eq__(self, other: Any) -> bool:
+        return (isinstance(other, VocabHitViewModelSpec)
+                and other.hit_form == self.hit_form
+                and other.answer == self.answer)
+
+    def repr_(self, depth: int) -> str:
+        padding = full_width_space * 2 * depth
+        return f"""{padding}V("{self.form}", "{self.hit_form}", "{self.answer}")"""
+
+    @staticmethod
+    def from_viewmodel(view_model: VocabHit) -> VocabHitViewModelSpec:
+        return VocabHitViewModelSpec(view_model.form(), view_model.hit_form() if view_model.show_hit_form() else "", view_model.answer())
+
 
 class NodeViewModelSpec:
-    def __init__(self, surface: str, base: str | None, *children: NodeViewModelSpec):
+    def __init__(self, surface: str, base: str | None, *children: NodeViewModelSpec | VocabHitViewModelSpec):
         self.surface = surface
         self.base = base
-        self.children = list(children)
+        self.surface_hits = [surface_hit for surface_hit in children if isinstance(surface_hit, VocabHitViewModelSpec)]
+        self.children = [node for node in children if isinstance(node, NodeViewModelSpec)]
 
     def __eq__(self, other: Any) -> bool:
         return (isinstance(other, NodeViewModelSpec)
@@ -19,8 +40,11 @@ class NodeViewModelSpec:
 
     @classmethod
     def from_view_model(cls, model: NodeViewModel) -> NodeViewModelSpec:
-        children: list[NodeViewModelSpec] = cls.create_children(model.children) if model.children else []
-        return NodeViewModelSpec(model.surface(), model.base(), *children)
+        children = cls.create_children(model.children) if model.children else []
+        surface_hits = [VocabHitViewModelSpec.from_viewmodel(sh) for sh in model.surface_vocab_hits()]
+        base_hits = [VocabHitViewModelSpec.from_viewmodel(bh) for bh in model.base_vocab_hits()]
+        other = children + surface_hits + base_hits
+        return NodeViewModelSpec(model.surface(), model.base(), *other)
 
     @classmethod
     def create_children(cls, children: list[NodeViewModel]) -> list[NodeViewModelSpec]:
@@ -28,13 +52,18 @@ class NodeViewModelSpec:
 
     def repr_(self, depth: int) -> str:
         padding = full_width_space * 2 * depth
-        return f"""{padding}N("{self.surface}", "{self.base}"{self.str_children(depth)})"""
+        return f"""{padding}N("{self.surface}", "{self.base}"{self._repr_children(depth)}{self._repr_vocab_hits(depth)})"""
 
-    def str_children(self, depth: int) -> str:
+    def _repr_children(self, depth: int) -> str:
         if not self.children: return ""
-
         separator = f", \n"
         return f""", \n{separator.join([m.repr_(depth + 1) for m in self.children])}"""
+
+    def _repr_vocab_hits(self, depth: int) -> str:
+        if not self.surface_hits: return ""
+        separator = f", \n"
+        return f""", \n{separator.join([m.repr_(depth + 1) for m in self.surface_hits])}"""
+
 
 class SentenceBreakdownViewModelSpec:
     def __init__(self, *nodes: NodeViewModelSpec):
@@ -42,7 +71,7 @@ class SentenceBreakdownViewModelSpec:
 
     def __repr__(self) -> str:
         separator = ", \n"
-        return f"""S(
+        return f"""SB(
 {separator.join([m.repr_(1) for m in self.nodes])})"""
 
     def repr_single_line(self) -> str:
