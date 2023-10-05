@@ -52,7 +52,7 @@ def visit_vocab_with_dependencies(vocab_note: VocabNote, callback: Callable[[Wan
     for kanji_note in kanji_notes:
         visit_kanji_with_dependencies(kanji_note, None, callback)
 
-    callback(vocab_note, vocab_note.get_active_answer())
+    callback(vocab_note, vocab_note.get_answer())
 
 
 def visit_kanji_with_dependencies(kanji_note: KanjiNote,
@@ -70,7 +70,7 @@ def visit_kanji_with_dependencies(kanji_note: KanjiNote,
         if calling_radical_note is None or radical.get_answer() != calling_radical_note.get_answer():
             visit_radical_with_dependencies(radical, kanji_note, callback)
 
-    callback(kanji_note, kanji_note.get_active_answer())
+    callback(kanji_note, kanji_note.get_answer())
 
 
 def visit_radical_with_dependencies(radical_note: RadicalNote,

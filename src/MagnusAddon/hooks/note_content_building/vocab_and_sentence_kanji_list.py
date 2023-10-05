@@ -17,7 +17,7 @@ def render_kanji_list(html:str, card: Card, _type_of_display:str) -> str:
         question = note.get_question()
         kanjis = note.extract_kanji()
     elif isinstance(note, SentenceNote):
-        question = note.get_active_question()
+        question = note.get_question()
         kanjis = note.extract_kanji()
 
     if question:

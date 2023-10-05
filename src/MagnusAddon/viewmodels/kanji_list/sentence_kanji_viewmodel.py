@@ -8,7 +8,7 @@ class KanjiViewModel:
         self._kanji = kanji
 
     def question(self) -> str: return self._kanji.get_question()
-    def answer(self) -> str: return self._kanji.get_active_answer()
+    def answer(self) -> str: return self._kanji.get_answer()
     def readings(self) -> str:
         return f"{self._kanji.get_reading_kun()}, {kana_utils.to_katakana(self._kanji.get_reading_on())}"
 

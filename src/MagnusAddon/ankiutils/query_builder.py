@@ -54,7 +54,7 @@ def vocab_dependencies_lookup_query(vocab: VocabNote) -> str:
 def sentence_exact(sentence: str) -> str:
     return f"""{note_sentence} {question}:"{sentence}" """
 
-def sentence_vocab_lookup(sentence:SentenceNote) -> str: return text_vocab_lookup(sentence.get_active_question())
+def sentence_vocab_lookup(sentence:SentenceNote) -> str: return text_vocab_lookup(sentence.get_question())
 
 def vocab_with_kanji(note:KanjiNote) -> str: return f"{vocab_read} {forms}:*{note.get_question()}*"
 

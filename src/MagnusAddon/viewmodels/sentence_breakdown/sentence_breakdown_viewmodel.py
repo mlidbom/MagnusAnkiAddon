@@ -29,7 +29,7 @@ class BreakDownViewModel:
         return "\n".join([m.str_(0) for m in self.nodes])
 
 def create(sentence: SentenceNote) -> BreakDownViewModel:
-    question = sentence.get_active_question()
+    question = sentence.get_question()
     parse_result = ud_tree_builder.build_tree(ud_parsers.best, question)
 
     return BreakDownViewModel(parse_result)

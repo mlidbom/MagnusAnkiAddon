@@ -51,7 +51,7 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, sel_clip: str, selection: st
 
     if isinstance(note, SentenceNote):
         sentence_note = checked_cast(SentenceNote, note)
-        add_text_vocab_lookup(note_lookup_menu, "&Vocabulary words", note.get_active_question())
+        add_text_vocab_lookup(note_lookup_menu, "&Vocabulary words", note.get_question())
         add_lookup_action(note_lookup_menu, "&Kanji", f"""note:{NoteTypes.Kanji} ({" OR ".join([f"{NoteFields.Kanji.question}:{kan}" for kan in note.extract_kanji()])})""")
 
         def exclude_vocab(sentence: SentenceNote, text: str) -> None:
@@ -82,7 +82,7 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, sel_clip: str, selection: st
         if kanji.get_mnemonics_override() == "-":
             add_ui_action(note_restore_menu, "&Mnemonic", lambda: kanji.restore_meaning_mnemonic())
         if not kanji.get_user_answer():
-            add_ui_action(note_menu, "Accept &meaning", lambda: kanji.set_user_answer(format_kanji_meaning(kanji.get_active_answer())))
+            add_ui_action(note_menu, "Accept &meaning", lambda: kanji.set_user_answer(format_kanji_meaning(kanji.get_answer())))
 
         if selection:
             add_ui_action(note_add_menu, "&Primary vocab", lambda: add_kanji_primary_vocab(kanji, selection, view))
@@ -103,7 +103,7 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, sel_clip: str, selection: st
         if vocab.get_mnemonics_override() == "-":
             add_ui_action(note_restore_menu, "&Mnemonic", lambda: vocab.restore_meaning_mnemonic())
         if not vocab.get_user_answer():
-            add_ui_action(note_menu, "Accept &meaning", lambda: vocab.set_user_answer(format_vocab_meaning(vocab.get_active_answer())))
+            add_ui_action(note_menu, "Accept &meaning", lambda: vocab.set_user_answer(format_vocab_meaning(vocab.get_answer())))
 
         add_ui_action(note_set_menu, "&Generate answer", lambda: vocab.generate_and_set_answer())
         add_ui_action(note_set_menu, "&Meaning", lambda: vocab.set_user_answer(sel_clip))

@@ -51,7 +51,7 @@ def _create_html_from_nodes(nodes: list[TreeParserNode], excluded: set[str], ext
 
         if vocabs:
             for vocab in vocabs:
-                html += _vocab_node_html(node, excluded, extra, vocab.get_display_question(), vocab.get_active_answer(), depth)
+                html += _vocab_node_html(node, excluded, extra, vocab.get_display_question(), vocab.get_answer(), depth)
 
             if (node.is_inflected()
                     and node.surface not in found_words
@@ -75,7 +75,7 @@ def _create_html_from_nodes(nodes: list[TreeParserNode], excluded: set[str], ext
 def _build_user_extra_list(extra_words: list[str], excluded:set[str]) -> str:
     html = f"""<ul class="sentenceVocabList userExtra depth1">\n"""
     for word in extra_words:
-        vocabs = app.col().vocab.with_form(word)
+        vocabs:list[VocabNote] = app.col().vocab.with_form(word)
         vocabs = [voc for voc in vocabs if voc.get_display_question() not in excluded]
 
         if vocabs:
@@ -84,7 +84,7 @@ def _build_user_extra_list(extra_words: list[str], excluded:set[str]) -> str:
                     <li class="sentenceVocabEntry depth1 word_priority_{priorities.very_high}">
                         <div class="sentenceVocabEntryDiv">
                             <span class="vocabQuestion clipboard">{vocab.get_display_question()}</span>
-                            <span class="vocabAnswer">{vocab.get_active_answer()}</span>
+                            <span class="vocabAnswer">{vocab.get_answer()}</span>
                         </div>
                     </li>
                     """
@@ -109,7 +109,7 @@ def build_breakdown_html(sentence: SentenceNote) -> str:
     if extra_words:
         html += _build_user_extra_list(extra_words, user_excluded)
 
-    question = sentence.get_active_question()
+    question = sentence.get_question()
     nodes = tree_parser.parse_tree(question, user_excluded).nodes
 
     user_extra = set(extra_words)

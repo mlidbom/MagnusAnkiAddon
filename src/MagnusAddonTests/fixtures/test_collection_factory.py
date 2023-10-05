@@ -8,6 +8,9 @@ from fixtures.base_data.sample_data.kanji_spec import KanjiSpec
 from fixtures.base_data.sample_data.sentence_spec import SentenceSpec
 from fixtures.base_data.sample_data.vocab_spec import VocabSpec
 from fixtures.collection_factory import inject_anki_collection_with_generated_sample_data
+from note.kanjinote import KanjiNote
+from note.sentencenote import SentenceNote
+from note.vocabnote import VocabNote
 
 @pytest.fixture(scope="function", autouse=True)
 def setup_object() -> Generator[None, None, None]:
@@ -16,16 +19,19 @@ def setup_object() -> Generator[None, None, None]:
 
 
 def test_kanji_added_correctly() -> None:
-    expected_kanji = set(kanji_spec.test_kanji_list)
-    saved_kanji = set(KanjiSpec(k.get_question(), k.get_active_answer(), k.get_reading_kun(), k.get_reading_on()) for k in app.col().kanji.all())
+    expected_kanji:set[KanjiSpec] = set(kanji_spec.test_kanji_list)
+    kanji_all:list[KanjiNote] = app.col().kanji.all()
+    saved_kanji = set(KanjiSpec(kanji.get_question(), kanji.get_answer(), kanji.get_reading_kun(), kanji.get_reading_on()) for kanji in kanji_all)
     assert expected_kanji == saved_kanji
 
 def test_vocab_added_correctly() -> None:
-    expected_vocab = set(vocab_spec.test_vocab_list)
-    saved_vocab = set(VocabSpec(k.get_question(), k.get_active_answer(), k.get_readings()) for k in app.col().vocab.all())
+    expected_vocab:set[VocabSpec] = set(vocab_spec.test_vocab_list)
+    vocab_all:list[VocabNote] = app.col().vocab.all()
+    saved_vocab = set(VocabSpec(vocab.get_question(), vocab.get_answer(), vocab.get_readings()) for vocab in vocab_all)
     assert expected_vocab == saved_vocab
 
 def test_sentences_added_correctly() -> None:
     expected_sentences = set(sentence_spec.test_sentence_list)
-    saved_vocab = set(SentenceSpec(k.get_active_question(), k.get_active_answer()) for k in app.col().sentences.all())
+    sentences_all:list[SentenceNote] = app.col().sentences.all()
+    saved_vocab = set(SentenceSpec(sentence.get_question(), sentence.get_answer()) for sentence in sentences_all)
     assert expected_sentences == saved_vocab

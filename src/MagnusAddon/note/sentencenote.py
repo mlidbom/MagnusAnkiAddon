@@ -16,11 +16,14 @@ class SentenceNote(JPNote):
     def __init__(self, note: Note):
         super().__init__(note)
 
+    def get_question(self) -> str: return self._get_user_question() or self._get_source_question()
+    def get_answer(self) -> str: return self._get_user_answer() or self._get_source_answer()
+
     def _on_edited(self) -> None: self.update_generated_data()
 
     def _get_source_answer(self) -> str: return super().get_field(SentenceNoteFields.source_answer)
     def _get_user_answer(self) -> str: return super().get_field(SentenceNoteFields.user_answer)
-    def get_active_answer(self) -> str: return self._get_user_answer() or self._get_source_answer()
+
     def _set_user_answer(self, question: str) -> None: return super().set_field(SentenceNoteFields.user_answer, question)
 
     def _get_source_question(self) -> str: return StringUtils.strip_html_markup(super().get_field(SentenceNoteFields.source_question))
@@ -28,7 +31,7 @@ class SentenceNote(JPNote):
 
 
     def _get_user_question(self) -> str: return StringUtils.strip_html_markup(super().get_field(SentenceNoteFields.user_question))
-    def get_active_question(self) -> str: return self._get_user_question() or self._get_source_question()
+
 
     def get_user_extra_vocab(self) -> list[str]: return StringUtils.extract_comma_separated_values(super().get_field(SentenceNoteFields.user_extra_vocab))
     def _set_user_extra_vocab(self, extra: list[str]) -> None: return super().set_field(SentenceNoteFields.user_extra_vocab, ",".join(extra))
@@ -52,7 +55,7 @@ class SentenceNote(JPNote):
 
     def parse_words_from_expression(self) -> list[ParsedWord]:
         from parsing import textparser
-        return textparser.identify_words(self.get_active_question())
+        return textparser.identify_words(self.get_question())
     def get_parsed_words(self) -> list[str]: return super().get_field(SentenceNoteFields.ParsedWords).split(",")
     def _set_parsed_words(self, value: list[str]) -> None:
         value.append(str(timeutil.one_second_from_now()))
@@ -66,8 +69,8 @@ class SentenceNote(JPNote):
 
     def update_generated_data(self) -> None:
         self._update_parsed_words()
-        super().set_field(SentenceNoteFields.active_answer, self.get_active_answer())
-        super().set_field(SentenceNoteFields.active_question, self.get_active_question())
+        super().set_field(SentenceNoteFields.active_answer, self.get_answer())
+        super().set_field(SentenceNoteFields.active_question, self.get_question())
 
     def _update_parsed_words(self) -> None:
         if self._needs_words_reparsed():

@@ -44,7 +44,7 @@ def _update_vocab(all_vocabulary: list[VocabNote], all_kanji: list[KanjiNote]) -
 
     def update_kanji_names() -> None: # todo move to a rendering step
         def prepare_kanji_meaning(kanji: KanjiNote) -> str:
-            meaning = kanji.get_active_answer()
+            meaning = kanji.get_answer()
             meaning = StringUtils.strip_html_and_bracket_markup(meaning)
             meaning = meaning.strip().replace(",", "/").replace(" ", "")
             return meaning

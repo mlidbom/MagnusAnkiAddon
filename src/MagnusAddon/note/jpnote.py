@@ -1,4 +1,5 @@
 from __future__ import annotations
+from abc import ABC, abstractmethod
 from typing import Any, Sequence, cast
 from anki.cards import Card, CardId
 from anki.models import NotetypeDict
@@ -10,7 +11,7 @@ from note.note_constants import Mine, NoteTypes
 from sysutils.typed import checked_cast
 
 
-class JPNote:
+class JPNote(ABC):
     def __init__(self, note: Note):
         self._note = note
 
@@ -18,6 +19,14 @@ class JPNote:
         return isinstance(other, JPNote) and other.get_id() == self.get_id()
 
     def __hash__(self) -> int: return hash(self.get_id())
+
+    @abstractmethod
+    def get_question(self) -> str:
+        pass
+
+    @abstractmethod
+    def get_answer(self) -> str:
+        pass
 
     @classmethod
     def note_from_card(cls, card: Card) -> JPNote:

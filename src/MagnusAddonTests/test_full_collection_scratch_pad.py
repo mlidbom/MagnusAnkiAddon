@@ -3,6 +3,7 @@ import pytest
 from ankiutils import query_builder
 from fixtures.full_test_collection_factory import inject_full_anki_collection_for_testing
 from ankiutils import app
+from note.kanjinote import KanjiNote
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
 from sysutils import kana_utils, ex_sequence
@@ -50,11 +51,11 @@ su = query_builder
 def test_create_sample_data() -> None:
     sentence_notes: list[SentenceNote] = []
     for sentence_text in _sentences:
-        matching = app.col().sentences.search(f"{su.note_sentence} {su.question}:*{sentence_text}*")
-        with_active_answer = [m for m in matching if m.get_active_answer()]
+        matching:list[SentenceNote] = app.col().sentences.search(f"{su.note_sentence} {su.question}:*{sentence_text}*")
+        with_active_answer:list[SentenceNote] = [m for m in matching if m.get_answer()]
         sentence_notes += with_active_answer
         for sentence in with_active_answer:
-            print(f"""SentenceSpec("{shtml(sentence.get_active_question())}", "{shtml(sentence.get_active_answer())}"),"""),
+            print(f"""SentenceSpec("{shtml(sentence.get_question())}", "{shtml(sentence.get_answer())}"),"""),
 
     needed_vocab_parsed_words = ex_sequence.flatten([s.parse_words_from_expression() for s in sentence_notes])
     need_vocab_strings = set([f.word for f in needed_vocab_parsed_words])
@@ -68,13 +69,13 @@ def test_create_sample_data() -> None:
             non_duplicate_vocab_notes.append(candidate)
 
     for vocab in non_duplicate_vocab_notes:
-        print(f"""VocabSpec("{vocab.get_question()}", "{vocab.get_active_answer()}", {vocab.get_readings()}),""")
+        print(f"""VocabSpec("{vocab.get_question()}", "{vocab.get_answer()}", {vocab.get_readings()}),""")
 
     word_forms = "".join(ex_sequence.flatten([list(n.get_forms()) for n in vocab_notes]))
     sentences_combined = "".join(_sentences)
     big_fat_string = word_forms + sentences_combined
     only_kanji = "".join(char for char in list(big_fat_string) if kana_utils.is_kanji(char))
     search_string = su.kanji_in_string(only_kanji)
-    kanji_notes = app.col().kanji.search(search_string)
+    kanji_notes:list[KanjiNote] = app.col().kanji.search(search_string)
     for kanji_note in kanji_notes:
-        print(f"""KanjiSpec("{shtml(kanji_note.get_question())}", "{shtml(kanji_note.get_active_answer())}", "{shtml(kanji_note.get_reading_kun())}", "{shtml(kanji_note.get_reading_on())}"),"""),
+        print(f"""KanjiSpec("{shtml(kanji_note.get_question())}", "{shtml(kanji_note.get_answer())}", "{shtml(kanji_note.get_reading_kun())}", "{shtml(kanji_note.get_reading_on())}"),"""),

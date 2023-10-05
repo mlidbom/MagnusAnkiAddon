@@ -39,7 +39,7 @@ def generate_vocab_html_list(note: KanjiNote, vocabs: list[VocabNote]) -> str:
                 <div class="kanjiVocabEntry">
                     <span class="kanji clipboard">{inner_vocab.get_question()}</span>
                     (<span class="clipboard vocabReading">{note.tag_readings_in_string(", ".join(inner_vocab.get_readings()), lambda read: f'<span class="kanjiReading">{read}</span>')}</span>)
-                    <span class="meaning"> {StringUtils.strip_html_markup(inner_vocab.get_active_answer())}</span>
+                    <span class="meaning"> {StringUtils.strip_html_markup(inner_vocab.get_answer())}</span>
                 </div>
                 """ for inner_vocab in vocabs])}
 

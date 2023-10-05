@@ -30,7 +30,7 @@ class KanjiNote(WaniNote):
     def get_question(self) -> str: return super().get_field(NoteFields.Kanji.question)
     def set_question(self, value: str) -> None: super().set_field(NoteFields.Kanji.question, value)
 
-    def get_active_answer(self) -> str:
+    def get_answer(self) -> str:
         return self.get_user_answer() or super().get_field(NoteFields.Kanji.source_answer)
 
     def get_user_answer(self) -> str: return super().get_field(NoteFields.Kanji.user_answer)
@@ -39,7 +39,7 @@ class KanjiNote(WaniNote):
     def _set_source_answer(self, value: str) -> None: super().set_field(NoteFields.Kanji.source_answer, value)
 
     def update_generated_data(self) -> None:
-        super().set_field(NoteFields.Kanji.active_answer, self.get_active_answer())
+        super().set_field(NoteFields.Kanji.active_answer, self.get_answer())
 
     def override_meaning_mnemonic(self) -> None:
         if not self.get_mnemonics_override():

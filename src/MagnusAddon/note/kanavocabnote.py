@@ -16,13 +16,13 @@ class KanaVocabNote(WaniNote):
     def get_question(self) -> str: return super().get_field(NoteFields.Vocab.question).strip()
     def _set_question(self, value: str) -> None: super().set_field(NoteFields.Vocab.question, value)
 
-    def get_active_answer(self) -> str:
+    def get_answer(self) -> str:
         return self.get_user_answer() or super().get_field(NoteFields.Vocab.source_answer)
 
     def _set_source_answer(self, value: str) -> None: super().set_field(NoteFields.Vocab.source_answer, value)
 
     def update_generated_data(self) -> None:
-        super().set_field(NoteFields.Vocab.active_answer, self.get_active_answer())
+        super().set_field(NoteFields.Vocab.active_answer, self.get_answer())
 
     def get_user_answer(self) -> str: return super().get_field(NoteFields.Vocab.user_answer)
     def set_user_answer(self, value: str) -> None: super().set_field(NoteFields.Vocab.user_answer, value)
