@@ -21,10 +21,10 @@ class _KanjiCache(NoteCache[KanjiNote, _KanjiSnapshot]):
 class KanjiCollection:
     def __init__(self, collection: BackEndFacade):
         self.collection = collection
-        self._cache = _KanjiCache([KanjiNote(note) for note in (self.collection.fetch_notes_by_note_type(NoteTypes.Kanji))])
+        self._cache = _KanjiCache([KanjiNote(note) for note in (self.collection.with_note_type(NoteTypes.Kanji))])
 
     def search(self, query: str) -> list[KanjiNote]:
-        return [KanjiNote(note) for note in self.collection.search_notes(query)]
+        return [KanjiNote(note) for note in self.collection.search(query)]
 
     def all(self) -> list[KanjiNote]: return self._cache.all()
 

@@ -37,10 +37,10 @@ class _VocabCache(NoteCache[VocabNote, _VocabSnapshot]):
 class VocabCollection:
     def __init__(self, collection: BackEndFacade):
         self.collection = collection
-        self._cache = _VocabCache([VocabNote(note) for note in (self.collection.fetch_notes_by_note_type(NoteTypes.Vocab))])
+        self._cache = _VocabCache([VocabNote(note) for note in (self.collection.with_note_type(NoteTypes.Vocab))])
 
     def search(self, query: str) -> list[VocabNote]:
-        return [VocabNote(note) for note in (self.collection.search_notes(query))]
+        return [VocabNote(note) for note in (self.collection.search(query))]
 
     def all_wani(self) -> list[VocabNote]:
         return [vocab for vocab in self.all() if vocab.is_wani_note()]

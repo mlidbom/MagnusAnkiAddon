@@ -22,7 +22,7 @@ class _RadicalCache(NoteCache[RadicalNote, _RadicalSnapshot]):
 class RadicalCollection:
     def __init__(self, collection: BackEndFacade):
         self.collection = collection
-        self._cache = _RadicalCache([RadicalNote(note) for note in (self.collection.fetch_notes_by_note_type(NoteTypes.Radical))])
+        self._cache = _RadicalCache([RadicalNote(note) for note in (self.collection.with_note_type(NoteTypes.Radical))])
 
     def all(self) -> List[RadicalNote]: return self._cache.all()
 
