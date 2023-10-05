@@ -9,12 +9,12 @@ from parsing.universal_dependencies.ud_tree_parse_result import UDTextTree
 missing_vocab_answer = "---"
 class VocabHit:
     def __init__(self, form: str, hit_form: str, show_hit_form: bool, answer: str):
-        self._form = form
+        self._lookup_form = form
         self._hit_form = hit_form
         self._show_hit_form = show_hit_form
         self._answer = answer
 
-    def form(self) -> str: return self._form
+    def form(self) -> str: return self._lookup_form
     def hit_form(self) -> str: return self._hit_form
     def show_hit_form(self) -> bool: return self._show_hit_form
     def answer(self) -> str: return self._answer
@@ -74,7 +74,7 @@ class NodeViewModel:
 
     def base_vocab_hits(self) -> list[VocabHit]:
         if not self._node.is_inflected(): return []
-        hits = [VocabHit.surface_from_vocab(self, v) for v in self._collection.vocab.with_form(self.base())]
+        hits = [VocabHit.base_from_vocab(self, v) for v in self._collection.vocab.with_form(self.base())]
         if hits:
             self._sort_hits(hits)
             return hits

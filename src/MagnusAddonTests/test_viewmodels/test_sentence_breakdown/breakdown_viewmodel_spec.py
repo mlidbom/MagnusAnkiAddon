@@ -13,6 +13,7 @@ class VocabHitViewModelSpec:
 
     def __eq__(self, other: Any) -> bool:
         return (isinstance(other, VocabHitViewModelSpec)
+                and other.form == self.form
                 and other.hit_form == self.hit_form
                 and other.answer == self.answer)
 
