@@ -79,7 +79,7 @@ def test_mecab(sentence:str, expected:list[str]) -> None:
     ("なかったかな", ['ない', 'た', 'か', 'な']),  # todo nai...
     ("ついに素晴らしい女性に逢えた。", ['遂に', '素晴らしい', '女性', 'に', '会う', 'た', '。']), #todo it switches kanji's here....
     ("ううん藤宮さんは日記を捨てるような人じゃない", ['ううん', 'フジミヤ', 'さん', 'は', '日記', 'を', '捨てる', '様', 'だ', '人', 'だ', '無い']), #todo it switches kanji for katakana here
-    ("食べてもいいけど", ['食べる', 'て', 'も', '良い', 'けれど']),#good: 良い　todo: けど -> けれど
+    ("食べてもいいけど", ['食べる', 'て', 'も', '良い', 'けれど']),#good: 良い todo: けど -> けれど
     ("ように言ったのも", ['様', 'だ', '言う', 'た', 'の', 'も']), #good: 様 todo: だ
 ])
 def test_tmp(sentence:str, expected:list[str]) -> None:

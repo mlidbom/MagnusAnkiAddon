@@ -2,6 +2,7 @@ import re
 
 
 newline = "\n"
+full_width_space = "　"
 
 def pad_to_length(value: str, target_length: int) -> str:
     padding = max(0, target_length - len(value))

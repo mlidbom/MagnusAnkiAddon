@@ -1,8 +1,8 @@
+from sysutils.ex_str import full_width_space
+
 def pad_to_length(value: str, target_length: int) -> str:
     padding = max(0, target_length - len(value))
-    return value + full_width_space() * padding
-
-def full_width_space() -> str: return '　'
+    return value + full_width_space * padding
 
 def is_hiragana(char: str) -> bool:
     return 0x3040 <= ord(char) <= 0x309F

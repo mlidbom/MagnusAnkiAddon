@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from sysutils.ex_str import newline
+from sysutils.ex_str import full_width_space, newline
 from viewmodels.sentence_breakdown.sentence_breakdown_viewmodel import BreakDownViewModel, NodeViewModel
 
 class NodeViewModelSpec:
@@ -10,16 +10,6 @@ class NodeViewModelSpec:
         self.surface = surface
         self.base = base
         self.children = list(children)
-
-    def repr_(self, depth: int) -> str:
-        padding = "　　" * depth
-        return f"""{padding}N("{self.surface}", "{self.base}"{self.str_children(depth)})"""
-
-    def str_children(self, depth: int) -> str:
-        if not self.children: return ""
-
-        separator = f", {newline}"
-        return f""", \n{separator.join([m.repr_(depth + 1) for m in self.children])}"""
 
     def __eq__(self, other: Any) -> bool:
         return (isinstance(other, NodeViewModelSpec)
@@ -36,6 +26,16 @@ class NodeViewModelSpec:
     def create_children(cls, children: list[NodeViewModel]) -> list[NodeViewModelSpec]:
         return [cls.from_view_model(view_model) for view_model in children]
 
+    def repr_(self, depth: int) -> str:
+        padding = full_width_space * 2 * depth
+        return f"""{padding}N("{self.surface}", "{self.base}"{self.str_children(depth)})"""
+
+    def str_children(self, depth: int) -> str:
+        if not self.children: return ""
+
+        separator = f", {newline}"
+        return f""", \n{separator.join([m.repr_(depth + 1) for m in self.children])}"""
+
 class SentenceBreakdownViewModelSpec:
     def __init__(self, *nodes: NodeViewModelSpec):
         self.nodes = list(nodes)
@@ -46,7 +46,7 @@ class SentenceBreakdownViewModelSpec:
 {separator.join([m.repr_(1) for m in self.nodes])})"""
 
     def repr_single_line(self) -> str:
-        return "".join(repr(self).split("\n")).replace("　", "")
+        return "".join(repr(self).split("\n")).replace(full_width_space, "")
 
     def __eq__(self, other: Any) -> bool:
         return (isinstance(other, SentenceBreakdownViewModelSpec)

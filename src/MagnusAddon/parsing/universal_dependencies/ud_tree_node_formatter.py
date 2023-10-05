@@ -1,6 +1,8 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
+from sysutils.ex_str import full_width_space
+
 if TYPE_CHECKING:
     from parsing.universal_dependencies.ud_tree_node import UDTextTreeNode
 
@@ -26,7 +28,7 @@ def _children_repr(self: UDTextTreeNode, level:int = 1) -> str:
     children_string = ', \n'.join(repr_(child, level) for child in self.children)
     return f""", [\n{children_string}]"""
 
-def _indent(level: int) -> str: return "　　" * level
+def _indent(level: int) -> str: return full_width_space * 2 * level
 
 def repr_(self: UDTextTreeNode, level: int) -> str:
     return f"""{_indent(level)}N('{self.surface}', '{self.base if self.is_inflected() else ""}'{_children_repr(self, level + 1)})"""
@@ -42,7 +44,7 @@ def _children_str(self: UDTextTreeNode, level:int = 1) -> str:
 
 
 def str_(self: UDTextTreeNode, level: int) -> str:
-    indent = "　　" * level
-    start = f"""{indent}{self.surface}{"　－　" + self.base if self.is_inflected() else ""}"""
+    indent = full_width_space * 2 * level
+    start = f"""{indent}{self.surface}{f"{full_width_space}－{full_width_space}" + self.base if self.is_inflected() else ""}"""
     start = kana_utils.pad_to_length(start, 20)
     return f"""{start}{_str_pos(self)}{_children_str(self, level + 1)}"""

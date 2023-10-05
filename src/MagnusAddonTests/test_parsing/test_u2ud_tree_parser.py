@@ -6,13 +6,14 @@ from parsing.universal_dependencies import ud_tree_builder, ud_parsers
 from parsing.universal_dependencies.core.ud_parser import UDParser
 from parsing.universal_dependencies.ud_tree_parse_result import UDTextTree
 from parsing.universal_dependencies.ud_tree_node import UDTextTreeNode
+from sysutils.ex_str import full_width_space
 
 N = UDTextTreeNode
 R = UDTextTree
 def only_string_params(param:Any) -> str: return param if isinstance(param, str) else ""
 
 @pytest.mark.parametrize('sentence, expected', [
-    # todo　でも, かも
+    # todo でも, かも
     ("今じゃ町は夜でも明るいしもう会うこともないかもな",  R(N('今じゃ町は', '', [N('今じゃ', '', [N('今', ''), N('じゃ', '')]), N('町は', '', [N('町', ''), N('は', '')])]),N('夜でも明るいし', '', [N('夜でも', '', [N('夜', ''), N('で', ''), N('も', '')]), N('明るいし', '', [N('明るい', ''), N('し', '')])]),N('もう会うこと', '', [N('もう', ''), N('会うこと', '', [N('会う', ''), N('こと', '')])]),N('もないかもな', '', [N('も', ''), N('ない', '無い'), N('か', ''), N('も', ''), N('な', '')]))),
     # todo てもいい, ても
     ("食べてもいいけど", R(N('食べて', '', [N('食べ', '食べる'), N('て', '')]),N('も', ''),N('いい', '良い'),N('けど', ''))),
@@ -77,7 +78,7 @@ def run_tests(expected:UDTextTree, parser: UDParser, sentence:str) -> None:
     print("repr:")
     print(repr(result))
     print("repr-single-line:")
-    print(repr(result).replace("\n", "").replace("　", ""))
+    print(repr(result).replace("\n", "").replace(full_width_space, ""))
 
     #These seem identical. Let's find out where and how they differ by catching it here.
     assert ud_tree_builder.build_tree(ud_parsers.spoken, sentence) == ud_tree_builder.build_tree(ud_parsers.gendai, sentence)
