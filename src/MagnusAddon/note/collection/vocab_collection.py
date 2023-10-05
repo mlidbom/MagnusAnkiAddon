@@ -19,19 +19,14 @@ class _CachedVocab(CachedNote):
 
 class _VocabCache(NoteCache[VocabNote, _CachedVocab]):
     def __init__(self, all_vocab: list[VocabNote]):
-        super().__init__(all_vocab)
+        super().__init__(all_vocab, VocabNote)
         self._by_form: dict[str, set[VocabNote]] = defaultdict(set)
         self._by_kanji: dict[str, set[VocabNote]] = defaultdict(set)
-        for vocab in all_vocab:
-            self._add_to_cache(vocab)
-
-        self._setup_hooks()
 
     def all(self) -> list[VocabNote]: return list(self._merged_self()._by_id.values())
     def with_form(self, form: str) -> list[VocabNote]: return list(self._merged_self()._by_form[form])
     def with_kanji(self, kanji: str) -> list[VocabNote]: return list(self._merged_self()._by_kanji[kanji])
 
-    def _is_instance_note_type(self, instance: Any) -> bool: return isinstance(instance, VocabNote)
     def _create_cached_note(self, note: VocabNote) -> _CachedVocab: return _CachedVocab(note)
 
     def _inheritor_remove_from_cache(self, note: VocabNote, cached:_CachedVocab) -> None:

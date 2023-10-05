@@ -18,7 +18,8 @@ TNote = TypeVar('TNote', bound=JPNote)
 TCachedNote = TypeVar('TCachedNote', bound=CachedNote)
 
 class NoteCache(ABC, Generic[TNote, TCachedNote]):
-    def __init__(self, all_notes: list[TNote]):
+    def __init__(self, all_notes: list[TNote], cached_note_type: type[TNote]):
+        self._note_type = cached_note_type
         self._by_question: dict[str, set[TNote]] = defaultdict(set)
         self._by_id: dict[NoteId, TNote] = {}
         self._cached_by_id: dict[NoteId, TCachedNote] = {}
@@ -31,9 +32,6 @@ class NoteCache(ABC, Generic[TNote, TCachedNote]):
 
     def all(self) -> list[TNote]: return list(self._merged_self()._by_id.values())
     def with_id(self, note_id: NoteId) -> TNote: return self._by_id[note_id]
-
-    @abstractmethod
-    def _is_instance_note_type(self, instance: Any) -> bool: pass
 
     @abstractmethod
     def _create_cached_note(self, note: TNote) -> TCachedNote: pass
@@ -59,15 +57,14 @@ class NoteCache(ABC, Generic[TNote, TCachedNote]):
 
     def _on_will_flush(self, backend_note: Note) -> None:
         note = JPNote.note_from_note(backend_note)
-        if self._is_instance_note_type(note):
-            tnote = cast(TNote, note)
+        if isinstance(note, self._note_type):
             if note.get_id():
                 if note.get_id() in self._by_id:
-                    self._remove_from_cache(tnote)
+                    self._remove_from_cache(note)
 
-                self._add_to_cache(tnote)
+                self._add_to_cache(note)
             else:
-                self._pending_add.append(tnote)
+                self._pending_add.append(note)
 
     @abstractmethod
     def _inheritor_remove_from_cache(self, note: TNote, cached: TCachedNote) -> None: pass

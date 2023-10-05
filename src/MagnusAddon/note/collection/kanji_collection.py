@@ -15,12 +15,11 @@ class _CachedKanji(CachedNote):
 
 class _Cache(NoteCache[KanjiNote, _CachedKanji]):
     def __init__(self, all_kanji: list[KanjiNote]):
-        super().__init__(all_kanji)
+        super().__init__(all_kanji, KanjiNote)
 
     def all(self) -> list[KanjiNote]: return list(self._merged_self()._by_id.values())
     def with_kanji(self, kanji: str) -> list[KanjiNote]: return list(self._merged_self()._by_question[kanji])
 
-    def _is_instance_note_type(self, instance: Any) -> bool: return isinstance(instance, KanjiNote)
     def _create_cached_note(self, note: KanjiNote) -> _CachedKanji: return _CachedKanji(note)
 
     def _inheritor_remove_from_cache(self, note: KanjiNote, cached:_CachedKanji) -> None: pass
