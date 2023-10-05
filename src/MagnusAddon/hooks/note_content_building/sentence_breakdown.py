@@ -1,16 +1,14 @@
 from anki.cards import Card
 from aqt import gui_hooks
 
-from ankiutils import query_builder
+from ankiutils import app
 from note.jpnote import JPNote
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
 from parsing.tree_parsing import tree_parser
-from parsing.tree_parsing.tree_parser_node import TreeParserNode, priorities
-from sysutils.collections.recent_items import RecentItems
-from ankiutils import app
+from parsing.tree_parsing.tree_parser_node import priorities, TreeParserNode
 from sysutils import ex_sequence
-
+from sysutils.collections.recent_items import RecentItems
 
 def _vocab_missing_string(node:TreeParserNode, display_text: str) -> str:
     return "---" if node.is_dictionary_word(display_text) else ""
@@ -42,7 +40,12 @@ def _create_html_from_nodes(nodes: list[TreeParserNode], excluded: set[str], ext
         vocabs:list[VocabNote] = []
         found_words: set[str] = set()
         if node.is_show_at_all_in_sentence_breakdown():
-            vocabs = app.col().vocab.search(query_builder.node_vocab_lookup(node))
+            if node.is_show_base_in_sentence_breakdown():
+                vocabs += app.col().vocab.with_form(node.base)
+
+            if node.is_show_surface_in_sentence_breakdown():
+                vocabs += app.col().vocab.with_form(node.surface)
+
             vocabs = [voc for voc in vocabs if voc.get_display_question() not in excluded]
             found_words = set((voc.get_question() for voc in vocabs)) | set(ex_sequence.flatten([voc.get_readings() for voc in vocabs]))
 
@@ -72,7 +75,7 @@ def _create_html_from_nodes(nodes: list[TreeParserNode], excluded: set[str], ext
 def _build_user_extra_list(extra_words: list[str], excluded:set[str]) -> str:
     html = f"""<ul class="sentenceVocabList userExtra depth1">\n"""
     for word in extra_words:
-        vocabs = app.col().vocab.search(query_builder.single_vocab_by_form_exact(word))
+        vocabs = app.col().vocab.with_form(word)
         vocabs = [voc for voc in vocabs if voc.get_display_question() not in excluded]
 
         if vocabs:

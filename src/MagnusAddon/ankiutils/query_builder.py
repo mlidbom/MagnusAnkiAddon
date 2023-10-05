@@ -1,10 +1,6 @@
 from __future__ import annotations
 from typing import Iterable, TYPE_CHECKING
 
-if TYPE_CHECKING:
-    import parsing.tree_parsing.tree_parser  # noqa
-    from parsing.tree_parsing.tree_parser_node import TreeParserNode
-
 from note.sentencenote import SentenceNote
 from note.kanjinote import KanjiNote
 from note.vocabnote import VocabNote
@@ -65,31 +61,11 @@ def vocab_with_kanji(note:KanjiNote) -> str: return f"{vocab_read} {forms}:*{not
 def vocab_clause(voc: ParsedWord) -> str:
     return f"""{field_word(forms, voc.word)}"""
 
-def node_vocab_clause(voc: TreeParserNode) -> str:
-    search_base = voc.is_show_base_in_sentence_breakdown()
-    search_surface = voc.is_show_surface_in_sentence_breakdown()
-
-    base_query = f"""{field_word(forms, voc.base)}"""
-    surface_query = f"""{field_word(forms, voc.surface)}"""
-
-    if not search_base and not search_surface: raise Exception("Asked to search, but both base and surface excluded")
-
-    if search_base and not search_surface:
-        return base_query
-
-
-    return f"""({base_query} OR {surface_query})""" if search_base else surface_query
-
 def text_vocab_lookup(text:str) -> str:
     dictionary_forms = textparser.identify_words(text)
     return vocabs_lookup(dictionary_forms)
 
 def vocab_lookup(vocab:ParsedWord) -> str: return vocabs_lookup([vocab])
-
-def node_vocab_lookup(node:TreeParserNode) -> str: return node_vocabs_lookup([node])
-
-def node_vocabs_lookup(dictionary_forms: list[TreeParserNode]) -> str:
-    return f"{vocab_read} ({' OR '.join([node_vocab_clause(voc) for voc in dictionary_forms])})"
 
 def vocabs_lookup(dictionary_forms: list[ParsedWord]) -> str:
     return f"{vocab_read} ({' OR '.join([vocab_clause(voc) for voc in dictionary_forms])})"

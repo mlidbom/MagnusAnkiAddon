@@ -43,7 +43,7 @@ def populate_collection(collection: Collection) -> None:
 @contextmanager
 def inject_anki_collection_with_generated_sample_data() -> Generator[None, None, None]:
     with inject_empty_anki_collection_with_note_types():
-        vocabs = app.col().vocab.all() #A little trick to make sure the cache is initalized
+        app.col().vocab.all() #A little trick to make sure the cache is initalized and properly excercized by the tests
         for kanji in kanji_spec.test_kanji_list:
             KanjiNote.create(kanji.question, kanji.answer, kanji.on_readings, kanji.kun_reading)
 

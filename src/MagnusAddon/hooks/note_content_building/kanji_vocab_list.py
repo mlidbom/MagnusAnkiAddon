@@ -1,7 +1,5 @@
 from anki.cards import Card
 from aqt import gui_hooks
-
-from ankiutils import query_builder
 from note.jpnote import JPNote
 from note.kanjinote import KanjiNote
 from note.vocabnote import VocabNote
@@ -53,7 +51,7 @@ def render_vocab_html_list(html:str, card: Card, _type_of_display:str) -> str:
     kanji_note = JPNote.note_from_card(card)
 
     if isinstance(kanji_note, KanjiNote):
-        vocab_list = app.col().vocab.search(query_builder.vocab_with_kanji(kanji_note))
+        vocab_list = app.col().vocab.with_kanji(kanji_note)
         vocab_list_html = generate_vocab_html_list(kanji_note, vocab_list)
         html = html.replace("##VOCAB_LIST##", vocab_list_html)
 
