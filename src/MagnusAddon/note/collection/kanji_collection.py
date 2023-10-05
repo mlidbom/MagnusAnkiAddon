@@ -1,81 +1,30 @@
 from __future__ import annotations
 
-from collections import defaultdict
-from typing import List, Self, Sequence
-
-from anki import hooks
-from anki.collection import Collection
-from anki.notes import Note, NoteId
+from typing import Any, List
 
 from note.collection.backend_facade import BackEndFacade
-from note.jpnote import JPNote
+from note.collection.note_cache import CachedNote, NoteCache
 from note.kanjinote import KanjiNote
 from note.note_constants import NoteTypes
 from sysutils import ex_sequence
 from sysutils.lazy import Lazy
 
-class _CachedKanji:
+class _CachedKanji(CachedNote):
     def __init__(self, note: KanjiNote):
-        self.id = note.get_id()
-        self.question = note.get_question()
+        super().__init__(note)
 
-class _Cache:
+class _Cache(NoteCache[KanjiNote, _CachedKanji]):
     def __init__(self, all_kanji: list[KanjiNote]):
-        self._by_question: dict[str, set[KanjiNote]] = defaultdict(set)
-        self._by_id: dict[NoteId, KanjiNote] = {}
-        self._cached_by_id: dict[NoteId, _CachedKanji] = {}
-        self._pending_add: list[KanjiNote] = []
-
-        for kanji in all_kanji:
-            self._add_to_cache(kanji)
-
-        self._setup_hooks()
+        super().__init__(all_kanji)
 
     def all(self) -> list[KanjiNote]: return list(self._merged_self()._by_id.values())
     def with_kanji(self, kanji: str) -> list[KanjiNote]: return list(self._merged_self()._by_question[kanji])
 
-    def _merge_pending(self) -> None:
-        added_kanji = [v for v in self._pending_add if v.get_id()]
-        self._pending_add = [v for v in self._pending_add if not v.get_id()]
-        for kanji in added_kanji:
-            self._add_to_cache(kanji)
+    def _is_instance_note_type(self, instance: Any) -> bool: return isinstance(instance, KanjiNote)
+    def _create_cached_note(self, note: KanjiNote) -> _CachedKanji: return _CachedKanji(note)
 
-    def _merged_self(self) -> Self:
-        self._merge_pending()
-        return self
-
-    def _setup_hooks(self) -> None:
-        hooks.notes_will_be_deleted.append(self._on_will_be_removed)
-        hooks.note_will_flush.append(self._on_will_flush)
-
-    def _on_will_be_removed(self, _: Collection, note_ids: Sequence[NoteId]) -> None:
-        cached_notes = [self._by_id[note_id] for note_id in note_ids if note_id in self._cached_by_id]
-        for cached in cached_notes:
-            self._remove_from_cache(cached)
-
-    # noinspection DuplicatedCode
-    def _on_will_flush(self, backend_note: Note) -> None:
-        note = JPNote.note_from_note(backend_note)
-        if isinstance(note, KanjiNote):
-            if note.get_id():
-                if note.get_id() in self._by_id:
-                    self._remove_from_cache(note)
-
-                self._add_to_cache(note)
-            else:
-                self._pending_add.append(note)
-
-    def _remove_from_cache(self, note: KanjiNote) -> None:
-        assert note.get_id()
-        cached = self._cached_by_id.pop(note.get_id())
-        self._by_id.pop(note.get_id())
-        self._by_question[cached.question].discard(note)
-
-    def _add_to_cache(self, note: KanjiNote) -> None:
-        assert note.get_id()
-        self._by_id[note.get_id()] = note
-        self._cached_by_id[note.get_id()] = _CachedKanji(note)
-        self._by_question[note.get_question()].add(note)
+    def _inheritor_remove_from_cache(self, note: KanjiNote, cached:_CachedKanji) -> None: pass
+    def _inheritor_add_to_cache(self, note: KanjiNote) -> None: pass
 
 class KanjiCollection:
     def __init__(self, collection: BackEndFacade):

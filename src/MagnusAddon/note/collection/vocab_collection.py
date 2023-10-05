@@ -1,15 +1,10 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from typing import Any, Self, Sequence
-
-from anki import hooks
-from anki.collection import Collection
-from anki.notes import Note, NoteId
+from typing import Any
 
 from note.collection.backend_facade import BackEndFacade
 from note.collection.note_cache import CachedNote, NoteCache
-from note.jpnote import JPNote
 from note.kanjinote import KanjiNote
 from note.note_constants import NoteTypes
 from note.vocabnote import VocabNote
@@ -35,7 +30,6 @@ class _VocabCache(NoteCache[VocabNote, _CachedVocab]):
     def all(self) -> list[VocabNote]: return list(self._merged_self()._by_id.values())
     def with_form(self, form: str) -> list[VocabNote]: return list(self._merged_self()._by_form[form])
     def with_kanji(self, kanji: str) -> list[VocabNote]: return list(self._merged_self()._by_kanji[kanji])
-
 
     def _is_instance_note_type(self, instance: Any) -> bool: return isinstance(instance, VocabNote)
     def _create_cached_note(self, note: VocabNote) -> _CachedVocab: return _CachedVocab(note)
