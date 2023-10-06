@@ -1,6 +1,6 @@
 import pytest
 
-from language_services.janome_ex.tree_building import tree_parser
+from language_services.janome_ex.tree_building import jn_tree_builder
 from language_services.janome_ex.tree_building.tree_parser_node import TreeParserNode, priorities
 
 p = priorities
@@ -39,7 +39,7 @@ def test_priorities(sentence: str, expected_priorities: dict[str, str]) -> None:
     def register_priority(own_node: TreeParserNode) -> None:
         real_priorities[own_node.surface] = own_node.get_priority_class(own_node.surface, set())
 
-    result = tree_parser.parse_tree(sentence, set())
+    result = jn_tree_builder.parse_tree(sentence, set())
     result.visit(register_priority)
 
     assert real_priorities == expected_priorities

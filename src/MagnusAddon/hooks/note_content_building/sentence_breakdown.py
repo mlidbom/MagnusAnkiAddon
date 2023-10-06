@@ -6,7 +6,7 @@ from ankiutils import app
 from note.jpnote import JPNote
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
-from language_services.janome_ex.tree_building import tree_parser
+from language_services.janome_ex.tree_building import jn_tree_builder
 from language_services.janome_ex.tree_building.tree_parser_node import priorities, TreeParserNode
 from sysutils import ex_sequence
 from sysutils.collections.recent_items import RecentItems
@@ -107,7 +107,7 @@ def build_breakdown_html(sentence: SentenceNote) -> str:
         html += _build_user_extra_list(extra_words, user_excluded)
 
     question = sentence.get_question()
-    nodes = tree_parser.parse_tree(question, user_excluded).nodes
+    nodes = jn_tree_builder.parse_tree(question, user_excluded).nodes
 
     user_extra = set(extra_words)
     html += _create_html_from_nodes(nodes, user_excluded, user_extra, 1)

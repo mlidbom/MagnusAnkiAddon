@@ -3,7 +3,7 @@ from typing import *
 from ankiutils import app
 from note.sentencenote import SentenceNote
 from sysutils import ex_str, kana_utils
-from language_services.janome_ex.tokenizing import janomeutils
+from language_services.janome_ex.tokenizing import janome_ex
 from note.kanjinote import KanjiNote
 from note.vocabnote import VocabNote
 
@@ -22,7 +22,7 @@ def update_all() -> None:
 
 def _update_vocab_parsed_parts_of_speech(all_vocabulary: list[VocabNote]) -> None:
     for vocab in all_vocabulary:
-        vocab.set_parsed_type_of_speech(janomeutils.get_word_parts_of_speech(vocab.get_question()))
+        vocab.set_parsed_type_of_speech(janome_ex.get_word_parts_of_speech(vocab.get_question()))
 
 def update_sentences() -> None:
     _update_sentences(app.col().sentences.all())

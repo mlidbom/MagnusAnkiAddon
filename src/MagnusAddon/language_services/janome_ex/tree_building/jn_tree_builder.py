@@ -1,13 +1,13 @@
 from typing import Callable
 
 from language_services.jamdict_ex.dict_lookup import DictLookup
-from language_services.janome_ex.tokenizing.token_ext import TokenExt
-from language_services.janome_ex.tokenizing.tokenizer_ext import TokenizerExt
+from language_services.janome_ex.tokenizing.jn_token import JNToken
+from language_services.janome_ex.tokenizing.jn_tokenizer import JNTokenizer
 from language_services.janome_ex.tree_building.tree_parse_result import TreeParseResult
 from language_services.janome_ex.tree_building.tree_parser_node import TreeParserNode
 from sysutils import ex_sequence
 
-_tokenizer = TokenizerExt()
+_tokenizer = JNTokenizer()
 
 _max_lookahead = 12
 
@@ -35,7 +35,7 @@ def parse_tree(sentence:str, excluded:set[str]) -> TreeParseResult:
     return TreeParseResult(*[TreeParserNode.create(compounds, excluded) for compounds in noun_compounds_added])
 
 
-def _recursing_parse(tokens:list[TokenExt], excluded:set[str]) -> list[TreeParserNode]:
+def _recursing_parse(tokens:list[JNToken], excluded:set[str]) -> list[TreeParserNode]:
     dictionary_compounds = _build_dictionary_compounds(tokens, excluded)
     adjective_compounds_added = _build_compounds(_is_adjective, _is_adjective_auxiliary, dictionary_compounds, excluded)
     if len(adjective_compounds_added) > 1:
@@ -49,37 +49,37 @@ def _recursing_parse(tokens:list[TokenExt], excluded:set[str]) -> list[TreeParse
 
     return [TreeParserNode.create(compounds, excluded) for compounds in dictionary_compounds]
 
-def is_verb(compound: list[TokenExt]) -> bool:
+def is_verb(compound: list[JNToken]) -> bool:
     return compound[-1].is_verb()
 
-def _is_adjective(compound: list[TokenExt]) -> bool:
+def _is_adjective(compound: list[JNToken]) -> bool:
     return compound[-1].is_adjective()
 
-def _is_noun(compound: list[TokenExt]) -> bool:
+def _is_noun(compound: list[JNToken]) -> bool:
     return compound[-1].is_noun()
 
-def is_verb_auxiliary_or_end_of_phrase(compound: list[TokenExt]) -> bool:
+def is_verb_auxiliary_or_end_of_phrase(compound: list[JNToken]) -> bool:
     return is_verb_auxiliary(compound) or _is_end_of_phrase(compound)
 
-def is_verb_auxiliary(compound: list[TokenExt]) -> bool:
+def is_verb_auxiliary(compound: list[JNToken]) -> bool:
     return compound[0].is_verb_auxiliary()
 
-def _is_adjective_auxiliary_or_end_of_phrase(compound: list[TokenExt]) -> bool:
+def _is_adjective_auxiliary_or_end_of_phrase(compound: list[JNToken]) -> bool:
     return _is_adjective_auxiliary(compound) or _is_end_of_phrase(compound)
 
-def _is_adjective_auxiliary(compound: list[TokenExt]) -> bool:
+def _is_adjective_auxiliary(compound: list[JNToken]) -> bool:
     return all(c.is_adjective_auxiliary() for c in compound)
 
-def _is_noun_auxiliary_or_end_of_phrase(compound: list[TokenExt]) -> bool:
+def _is_noun_auxiliary_or_end_of_phrase(compound: list[JNToken]) -> bool:
     return _is_noun_auxiliary(compound) or _is_end_of_phrase(compound)
 
-def _is_noun_auxiliary(compound: list[TokenExt]) -> bool:
+def _is_noun_auxiliary(compound: list[JNToken]) -> bool:
     return all(c.is_noun_auxiliary() for c in compound)
 
-def _is_end_of_phrase(compound: list[TokenExt]) -> bool:
+def _is_end_of_phrase(compound: list[JNToken]) -> bool:
     return compound[0].is_end_of_phrase_particle()
 
-def _build_compounds(compound_filter: Callable[[list[TokenExt]],bool], auxiliary_filter: Callable[[list[TokenExt]],bool], start_compounds: list[list[TokenExt]], excluded:set[str]) -> list[list[TokenExt]]:
+def _build_compounds(compound_filter: Callable[[list[JNToken]],bool], auxiliary_filter: Callable[[list[JNToken]],bool], start_compounds: list[list[JNToken]], excluded:set[str]) -> list[list[JNToken]]:
     compounds = [inner_list.copy() for inner_list in start_compounds]
     compound_index = 0
     compound_count = len(compounds)
@@ -88,7 +88,7 @@ def _build_compounds(compound_filter: Callable[[list[TokenExt]],bool], auxiliary
         if compound:
             if compound_filter(compound):
                 auxiliary_index = compound_index + 1
-                accepted_auxiliaries: list[TokenExt] = []
+                accepted_auxiliaries: list[JNToken] = []
                 while auxiliary_index < compound_count:
                     candidate_auxiliaries = compounds[auxiliary_index]
                     compound_surface_form = "".join((v.surface for v in compound))
@@ -122,11 +122,11 @@ def _build_compounds(compound_filter: Callable[[list[TokenExt]],bool], auxiliary
     result_compounds = [comp for comp in compounds if len(comp) > 0]
     return result_compounds
 
-def _is_excluded(compound_tokens: list[TokenExt], excluded:set[str]) -> bool:
+def _is_excluded(compound_tokens: list[JNToken], excluded:set[str]) -> bool:
     compound_base = "".join([tok.surface for tok in compound_tokens[:-1]]) + compound_tokens[-1].base_form
     return compound_base in excluded
 
-def _is_in_dictionary(compound_tokens: list[TokenExt], excluded:set[str]) -> bool:
+def _is_in_dictionary(compound_tokens: list[JNToken], excluded:set[str]) -> bool:
     compound_surface = "".join([tok.surface for tok in compound_tokens])
     compound_base = "".join([tok.surface for tok in compound_tokens[:-1]]) + compound_tokens[-1].base_form
 
@@ -136,8 +136,8 @@ def _is_in_dictionary(compound_tokens: list[TokenExt], excluded:set[str]) -> boo
             or DictLookup.lookup_word_shallow(compound_surface).found_words())
 
 
-def split_excluded_single_tokens(tokens_param: list[TokenExt], excluded:set[str]) -> list[TokenExt]:
-    def split_token_if_excluded(token: TokenExt) -> list[TokenExt]:
+def split_excluded_single_tokens(tokens_param: list[JNToken], excluded:set[str]) -> list[JNToken]:
+    def split_token_if_excluded(token: JNToken) -> list[JNToken]:
         if not _is_excluded([token], excluded):
             return [token]
 
@@ -158,8 +158,8 @@ def split_excluded_single_tokens(tokens_param: list[TokenExt], excluded:set[str]
 
 
 
-def _build_dictionary_compounds(tokens_param: list[TokenExt], excluded:set[str]) -> list[list[TokenExt]]:
-    compounds: list[list[TokenExt]] = []
+def _build_dictionary_compounds(tokens_param: list[JNToken], excluded:set[str]) -> list[list[JNToken]]:
+    compounds: list[list[JNToken]] = []
     tokens = split_excluded_single_tokens(tokens_param, excluded)
 
     identity_index = len(tokens)

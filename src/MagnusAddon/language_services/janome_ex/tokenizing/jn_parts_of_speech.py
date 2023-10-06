@@ -1,8 +1,8 @@
 from sysutils import kana_utils
 
-class PartsOfSpeech:
+class JNPartsOfSpeech:
     @staticmethod
-    def fetch(unparsed: str) -> 'PartsOfSpeech':
+    def fetch(unparsed: str) -> 'JNPartsOfSpeech':
         return _full_parts_of_speech_dictionary[unparsed]
 
     def __init__(self, level1:str, level2:str = "*", level3:str = "*", level4:str = "*") -> None:
@@ -116,11 +116,11 @@ _all_parts_of_speech = _level_1 + _level_2 + _level_3 + _level_4
 _japanese_to_part_of_speech: dict[str, PartOfSpeechDescription] = {pos.japanese: pos for pos in _all_parts_of_speech}
 _part_of_speech_string_translation = {pos.japanese: pos.english for pos in _all_parts_of_speech}
 
-_full_parts_of_speech_dictionary = dict[str, PartsOfSpeech]()
+_full_parts_of_speech_dictionary = dict[str, JNPartsOfSpeech]()
 
-def _add_full_part_of_speech(level1:str, level2:str = "*", level3:str = "*", level4:str = "*") -> PartsOfSpeech:
+def _add_full_part_of_speech(level1:str, level2:str = "*", level3:str = "*", level4:str = "*") -> JNPartsOfSpeech:
     combined = f"{level1},{level2},{level3},{level4}"
-    parts_of_speech = PartsOfSpeech(level1, level2, level3, level4)
+    parts_of_speech = JNPartsOfSpeech(level1, level2, level3, level4)
     _full_parts_of_speech_dictionary[combined] = parts_of_speech
     return parts_of_speech
 

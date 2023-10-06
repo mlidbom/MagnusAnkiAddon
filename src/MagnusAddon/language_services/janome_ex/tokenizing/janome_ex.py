@@ -1,6 +1,6 @@
-from language_services.janome_ex.tokenizing.tokenizer_ext import TokenizerExt
+from language_services.janome_ex.tokenizing.jn_tokenizer import JNTokenizer
 
-_tokenizer = TokenizerExt()
+_tokenizer = JNTokenizer()
 
 
 def get_word_parts_of_speech(word: str) -> str:

@@ -1,11 +1,11 @@
 from typing import Any
 
-from language_services.janome_ex.tokenizing.parts_of_speech import PartsOfSpeech, POS
+from language_services.janome_ex.tokenizing.jn_parts_of_speech import JNPartsOfSpeech, POS
 from sysutils import typed, kana_utils
 
-class TokenExt:
+class JNToken:
     def __init__(self,
-                 parts_of_speech: PartsOfSpeech,
+                 parts_of_speech: JNPartsOfSpeech,
                  base_form: str,
                  surface: str,
                  inflection_type: str = "",
@@ -35,7 +35,7 @@ class TokenExt:
             ", " + str(self.parts_of_speech)])
 
     def __eq__(self, other: Any) -> bool:
-        if isinstance(other, TokenExt):
+        if isinstance(other, JNToken):
             return (self.base_form == other.base_form and
                     self.surface == other.surface and
                     self.inflection_type == other.inflection_type and

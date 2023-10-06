@@ -1,8 +1,8 @@
 from language_services.jamdict_ex.dict_lookup import DictLookup
 from language_services.janome_ex.word_extraction.extracted_word import ExtractedWord
-from language_services.janome_ex.tokenizing.tokenizer_ext import TokenizerExt
+from language_services.janome_ex.tokenizing.jn_tokenizer import JNTokenizer
 
-_tokenizer = TokenizerExt()
+_tokenizer = JNTokenizer()
 
 
 def _word_is_in_dictionary(word: str) -> bool:

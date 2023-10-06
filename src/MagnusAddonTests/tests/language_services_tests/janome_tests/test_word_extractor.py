@@ -1,15 +1,15 @@
 import pytest
 
 from language_services.janome_ex.word_extraction.extracted_word import ExtractedWord
-from language_services.janome_ex.tokenizing.tokenizer_ext import TokenizerExt
-from language_services.janome_ex.word_extraction.word_extractor import extract_words
+from language_services.janome_ex.tokenizing.jn_tokenizer import JNTokenizer
+from language_services.janome_ex.word_extraction import word_extractor
 
-_tokenizer:TokenizerExt
+_tokenizer:JNTokenizer
 
 @pytest.fixture(scope='module', autouse=True)
 def setup() -> None:
     global _tokenizer
-    _tokenizer = TokenizerExt()
+    _tokenizer = JNTokenizer()
 
 #TODO: See if we can't find a way to parse suru out of sentences such that the verbalizing suffix can be
 # handled separately from the stand-alone word.
@@ -115,13 +115,13 @@ def setup() -> None:
      )
 ])
 def test_identify_words(sentence: str, expected_output: list[ExtractedWord]) -> None:
-    result = extract_words(sentence)
+    result = word_extractor.extract_words(sentence)
     assert result == expected_output
 
 def test_ignores_noise_characters() -> None:
-    result = extract_words(".,:;/|。、ー")
+    result = word_extractor.extract_words(".,:;/|。、ー")
     assert result == [ExtractedWord("ー")]
 
 def test_something() -> None:
-    result = extract_words("知ってる人があんまりいない高校に行って")
+    result = word_extractor.extract_words("知ってる人があんまりいない高校に行って")
     print(result)

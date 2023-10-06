@@ -1,6 +1,6 @@
 from typing import Union, Any
 
-from language_services.janome_ex.tokenizing.parts_of_speech import PartOfSpeechDescription
+from language_services.janome_ex.tokenizing.jn_parts_of_speech import PartOfSpeechDescription
 from sysutils import kana_utils
 
 

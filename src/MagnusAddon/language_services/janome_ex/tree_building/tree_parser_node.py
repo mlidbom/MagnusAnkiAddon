@@ -2,15 +2,15 @@ from __future__ import annotations
 from typing import Callable, Optional, Any
 
 from language_services.jamdict_ex.dict_lookup import DictLookup
-from language_services.janome_ex.tokenizing.parts_of_speech import POS
-from language_services.janome_ex.tokenizing.token_ext import TokenExt
-from language_services.janome_ex.tree_building import tree_parser
+from language_services.janome_ex.tokenizing.jn_parts_of_speech import POS
+from language_services.janome_ex.tokenizing.jn_token import JNToken
+from language_services.janome_ex.tree_building import jn_tree_builder
 from sysutils import kana_utils
 
 
 class TreeParserNode:
     _max_lookahead = 12
-    def __init__(self, surface: str, base: str, children: Optional[list[TreeParserNode]] = None, tokens: Optional[list[TokenExt]] = None) -> None:
+    def __init__(self, surface: str, base: str, children: Optional[list[TreeParserNode]] = None, tokens: Optional[list[JNToken]] = None) -> None:
         self.surface = surface
         self.base = base if base else surface
         self.tokens = tokens if tokens else []
@@ -41,12 +41,12 @@ class TreeParserNode:
     def is_inflected(self) -> bool: return self.base != self.surface
 
     @classmethod
-    def create(cls, tokens: list[TokenExt], excluded:set[str]) -> TreeParserNode:
-        children = tree_parser._recursing_parse(tokens, excluded) if len(tokens) > 1 else [] # tree_parser._find_compounds(tokens[0], excluded) # noqa
+    def create(cls, tokens: list[JNToken], excluded:set[str]) -> TreeParserNode:
+        children = jn_tree_builder._recursing_parse(tokens, excluded) if len(tokens) > 1 else [] # jn_tree_builder._find_compounds(tokens[0], excluded) # noqa
         return cls.create_non_recursive(tokens, children)
 
     @classmethod
-    def create_non_recursive(cls, tokens: list[TokenExt], children: Optional[list[TreeParserNode]] = None) -> TreeParserNode:
+    def create_non_recursive(cls, tokens: list[JNToken], children: Optional[list[TreeParserNode]] = None) -> TreeParserNode:
         children = children if children else []
         surface = "".join(tok.surface for tok in tokens)
         base = "".join(tok.surface for tok in tokens[:-1]) + tokens[-1].base_form
@@ -78,9 +78,9 @@ class TreeParserNode:
         return self.is_inflected() and DictLookup.lookup_word_shallow(self.base).found_words()
 
     def is_probably_not_dictionary_word(self) -> bool:
-        verb_index = next((i for i, item in enumerate(self.tokens) if tree_parser.is_verb([item])), -1)
+        verb_index = next((i for i, item in enumerate(self.tokens) if jn_tree_builder.is_verb([item])), -1)
         if -1 < verb_index < len(self.tokens) - 1:
-            if tree_parser.is_verb_auxiliary(self.tokens[verb_index + 1:]):
+            if jn_tree_builder.is_verb_auxiliary(self.tokens[verb_index + 1:]):
                 if not self._is_inflected_and_base_is_in_dictionary():
                     return True
         

@@ -1,7 +1,7 @@
 from typing import Any
 
 import pytest
-from language_services.janome_ex.tree_building import tree_parser
+from language_services.janome_ex.tree_building import jn_tree_builder
 from language_services.janome_ex.tree_building.tree_parse_result import TreeParseResult
 from language_services.janome_ex.tree_building.tree_parser_node import TreeParserNode
 
@@ -69,6 +69,6 @@ def test_temp(sentence: str, excluded: set[str], expected: TreeParseResult) -> N
 
 def run_tests(excluded: set[str], expected: TreeParseResult, sentence: str) -> None:
     print()
-    result = tree_parser.parse_tree(sentence, excluded)
+    result = jn_tree_builder.parse_tree(sentence, excluded)
     print(result)
     assert result == expected
