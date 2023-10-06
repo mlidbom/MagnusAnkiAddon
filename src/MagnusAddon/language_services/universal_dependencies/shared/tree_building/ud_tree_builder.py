@@ -1,3 +1,4 @@
+from __future__ import annotations
 from language_services.universal_dependencies.shared.tree_building.ud_tree_node import UDTreeNode
 from language_services.universal_dependencies.shared.tree_building.ud_tree import UDTree
 from language_services.universal_dependencies.shared.tokenizing.ud_tokenizer import UDTokenizer
@@ -20,57 +21,71 @@ def build_tree(parser: UDTokenizer, text: str) -> UDTree:
         compounds = _build_compounds(tokens, depth)
     return UDTree(*[_create_node(compound, depth) for compound in compounds])
 
+class CompoundBuilder:
+    def __init__(self, source_token: list[UDToken], compound_tokens: list[UDToken]):
+        self.source_tokens = source_token
+        self.compound_tokens = compound_tokens
 
-class Consumer:
-    def __init__(self, tokens: list[UDToken]):
-        self.tokens = tokens
+    @property
+    def next(self) -> UDToken: return self.source_tokens[0]
+    @property
+    def first(self) -> UDToken: return self.compound_tokens[0]
+    @property
+    def has_next(self) -> bool: return len(self.source_tokens) > 0
 
+    def consume_next(self) -> None:
+        self.compound_tokens.append(self.source_tokens.pop(0))
 
+    def consume_while_child_of_first(self) -> None:
+        self.compound_tokens += ex_list.consume_while(self.first.is_head_of, self.source_tokens)
 
+    def consume_while_child_of(self, token: UDToken) -> None:
+        self.compound_tokens += ex_list.consume_while(token.is_head_of, self.source_tokens)
+
+    def consume_while_child_of_next(self) -> None:
+        self.consume_while_child_of(self.next)
+
+    def consume_until_and_including(self, token: UDToken) -> None:
+        self.compound_tokens += ex_list.consume_until_and_including(ex_predicate.eq_(token), self.source_tokens)
+
+    @staticmethod
+    def start_compound_by_consuming_first_from(source_tokens: list[UDToken]) -> CompoundBuilder:
+        compound_tokens = [source_tokens.pop(0)]
+        return CompoundBuilder(source_tokens, compound_tokens)
 
 def _build_compounds(tokens: list[UDToken], depth: int) -> list[list[UDToken]]:
     assert depth <= _Depth.morphemes_4
     if depth == _Depth.morphemes_4:
         return [[token] for token in tokens]
 
-    created_compounds: list[list[UDToken]] = []
+    created_compounds: list[CompoundBuilder] = []
     unconsumed_tokens = tokens.copy()
 
-    def consume_while_child_of(token: UDToken) -> list[UDToken]:
-        return ex_list.consume_while(token.is_head_of, unconsumed_tokens)
-
-    def consume_until_and_including(token: UDToken) -> list[UDToken]:
-        return ex_list.consume_until_and_including(ex_predicate.eq_(token), unconsumed_tokens)
-
     while unconsumed_tokens:
-        compound = [unconsumed_tokens.pop(0)]
+        compound = CompoundBuilder.start_compound_by_consuming_first_from(unconsumed_tokens)
         created_compounds.append(compound)
 
         if depth == _Depth.depth_3:
-            compound += consume_while_child_of(compound[0])
+            compound.consume_while_child_of(compound.first)
 
-        if depth == _Depth.depth_2:
-            compound += consume_while_child_of(compound[0])
-            if compound[0].head.id == compound[0].id + 1:  # head is second token
-                compound.append(unconsumed_tokens.pop(0))
-                compound += consume_while_child_of(compound[0].head)
-            continue
+        elif depth == _Depth.depth_2:
+            compound.consume_while_child_of(compound.first)
+            if compound.first.head.id == compound.first.id + 1:  # head of first is second token
+                compound.consume_next()
+                compound.consume_while_child_of(compound.first.head)
 
-        if depth == _Depth.depth_1:
-            compound += consume_while_child_of(compound[0])
-            if (unconsumed_tokens
-                    and unconsumed_tokens[0] == compound[0].head):
-                compound.append(unconsumed_tokens.pop(0))
-                compound += consume_while_child_of(compound[0].head)
-            continue
+        elif depth == _Depth.depth_1:
+            compound.consume_while_child_of(compound.first)
+            if compound.has_next and compound.next == compound.first.head:
+                compound.consume_next()
+                compound.consume_while_child_of(compound.first.head)
 
-        if depth == _Depth.surface_0:
-            compound += consume_while_child_of(compound[0])
-            compound += consume_until_and_including(compound[0].head)
-            compound += consume_while_child_of(compound[0].head)
-            continue
+        elif depth == _Depth.surface_0:
+            compound.consume_while_child_of(compound.first)
+            compound.consume_until_and_including(compound.first.head)
+            compound.consume_while_child_of(compound.first.head)
 
-    return created_compounds
+    return [cb.compound_tokens for cb in created_compounds]
 
 def _create_node(tokens: list[UDToken], depth: int) -> 'UDTreeNode':
     children = _build_child_compounds(tokens, depth + 1) if len(tokens) > 1 else []
