@@ -20,6 +20,14 @@ def build_tree(parser: UDTokenizer, text: str) -> UDTree:
         compounds = _build_compounds(tokens, depth)
     return UDTree(*[_create_node(compound, depth) for compound in compounds])
 
+
+class Consumer:
+    def __init__(self, tokens: list[UDToken]):
+        self.tokens = tokens
+
+
+
+
 def _build_compounds(tokens: list[UDToken], depth: int) -> list[list[UDToken]]:
     assert depth <= _Depth.morphemes_4
     if depth == _Depth.morphemes_4:
@@ -27,34 +35,39 @@ def _build_compounds(tokens: list[UDToken], depth: int) -> list[list[UDToken]]:
 
     created_compounds: list[list[UDToken]] = []
     unconsumed_tokens = tokens.copy()
+
+    def consume_while_child_of(token: UDToken) -> list[UDToken]:
+        return ex_list.consume_while(token.is_head_of, unconsumed_tokens)
+
+    def consume_until_and_including(token: UDToken) -> list[UDToken]:
+        return ex_list.consume_until_and_including(ex_predicate.eq_(token), unconsumed_tokens)
+
     while unconsumed_tokens:
         compound = [unconsumed_tokens.pop(0)]
         created_compounds.append(compound)
 
         if depth == _Depth.depth_3:
-            compound += ex_list.consume_while(compound[0].is_head_of, unconsumed_tokens)
+            compound += consume_while_child_of(compound[0])
 
         if depth == _Depth.depth_2:
-            compound += ex_list.consume_while(compound[0].is_head_of, unconsumed_tokens)
-            if (unconsumed_tokens
-                    and unconsumed_tokens[0] == compound[0].head
-                    and compound[0].head.id == compound[0].id + 1):
+            compound += consume_while_child_of(compound[0])
+            if compound[0].head.id == compound[0].id + 1:  # head is second token
                 compound.append(unconsumed_tokens.pop(0))
-                compound += ex_list.consume_while(compound[0].head.is_head_of, unconsumed_tokens)
+                compound += consume_while_child_of(compound[0].head)
             continue
 
         if depth == _Depth.depth_1:
-            compound += ex_list.consume_while(compound[0].is_head_of, unconsumed_tokens)
+            compound += consume_while_child_of(compound[0])
             if (unconsumed_tokens
                     and unconsumed_tokens[0] == compound[0].head):
                 compound.append(unconsumed_tokens.pop(0))
-                compound += ex_list.consume_while(compound[0].head.is_head_of, unconsumed_tokens)
+                compound += consume_while_child_of(compound[0].head)
             continue
 
         if depth == _Depth.surface_0:
-            compound += ex_list.consume_while(compound[0].is_head_of, unconsumed_tokens)
-            compound += ex_list.consume_until_and_including(ex_predicate.eq_(compound[0].head), unconsumed_tokens)
-            compound += ex_list.consume_while(compound[0].head.is_head_of, unconsumed_tokens)
+            compound += consume_while_child_of(compound[0])
+            compound += consume_until_and_including(compound[0].head)
+            compound += consume_while_child_of(compound[0].head)
             continue
 
     return created_compounds
