@@ -8,7 +8,7 @@ from note.sentencenote import SentenceNote
 from note.kanjinote import KanjiNote
 from note.radicalnote import RadicalNote
 from note.vocabnote import VocabNote
-from hooks.note_content_building import sentence_breakdown
+from hooks.note_content_building import jn_sentence_breakdown
 from sysutils import ex_str
 from note.note_constants import MyNoteFields, NoteFields, SentenceNoteFields, NoteTypes
 from ankiutils import query_builder as su
@@ -53,11 +53,11 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, sel_clip: str, selection: st
 
         def exclude_vocab(sentence: SentenceNote, text: str) -> None:
             sentence.exclude_vocab(text)
-            sentence_breakdown.build_breakdown_html(sentence_note)
+            jn_sentence_breakdown.build_breakdown_html(sentence_note)
 
         def add_extra_vocab(sentence: SentenceNote, text: str) -> None:
             sentence.add_extra_vocab(text)
-            sentence_breakdown.build_breakdown_html(sentence_note)
+            jn_sentence_breakdown.build_breakdown_html(sentence_note)
 
         if sel_clip:
             add_ui_action(note_hide_menu, "&Exclude vocab", lambda: exclude_vocab(sentence_note, sel_clip))

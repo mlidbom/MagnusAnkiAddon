@@ -7,7 +7,7 @@ from PyQt6.QtWidgets import QMenu
 
 from ankiutils.app import main_window, ui_utils
 from batches import local_note_updater
-from hooks.note_content_building import sentence_breakdown
+from hooks.note_content_building import jn_sentence_breakdown
 from note.jpnote import JPNote
 from note.kanjinote import KanjiNote
 from note.sentencenote import SentenceNote
@@ -23,7 +23,7 @@ def deep_refresh() -> None:
         local_note_updater.update_vocab()
 
     if isinstance(note, SentenceNote):
-        sentence_breakdown.build_breakdown_html(note)
+        jn_sentence_breakdown.build_breakdown_html(note)
 
     if isinstance(note, KanjiNote):
         local_note_updater.update_kanji()
