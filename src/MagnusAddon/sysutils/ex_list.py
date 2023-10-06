@@ -16,3 +16,9 @@ def consume_until_before(predicate: Callable[[T], bool], this: list[T]) -> list[
     consumed = list(ex_iterable.take_until_before(predicate, this))
     del this[:len(consumed)]
     return consumed
+
+def consume_until_and_including(predicate: Callable[[T], bool], this: list[T]) -> list[T]:
+    """while `condition` is false, removes the item from `this`. `return`: the removed items in order"""
+    consumed = list(ex_iterable.take_until_including(predicate, this))
+    del this[:len(consumed)]
+    return consumed

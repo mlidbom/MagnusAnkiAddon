@@ -65,7 +65,7 @@ class NodeViewModel:
         surface_vocab_notes = self._collection.vocab.with_form(self.surface)
 
         base_vocab_notes:list[VocabNote] = []
-        if self._node.base_differs_from_surface():
+        if self._node.base_should_be_shown_separately_in_breakdown():
             base_vocab_notes = self._collection.vocab.with_form(self.base)
 
         found_base_vocab = len(base_vocab_notes) > 0
@@ -79,7 +79,7 @@ class NodeViewModel:
         if not surface_vocab and self._node.is_surface_dictionary_word():
             surface_vocab.append(VocabHit.missing_surface(self))
 
-        if not found_base_vocab and self._node.is_base_dictionary_word():
+        if not found_base_vocab and self._node.base_should_be_shown_separately_in_breakdown():
             base_vocab.append(VocabHit.missing_base(self))
 
 

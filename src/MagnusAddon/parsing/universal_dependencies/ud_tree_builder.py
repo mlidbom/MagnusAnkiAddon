@@ -27,7 +27,7 @@ def _build_compounds(tokens: list[UDToken], depth: int) -> list[list[UDToken]]:
     unconsumed_tokens = tokens.copy()
     while unconsumed_tokens:
         compound = [unconsumed_tokens.pop(0)]
-        compound += ex_list.consume_while(compound[0].is_parent_of, unconsumed_tokens)
+        compound += ex_list.consume_while(compound[0].is_head_of, unconsumed_tokens)
 
         if depth == _Depth.surface_0:
             compound += ex_list.consume_until_before(ex_predicate.eq_(compound[0].head), unconsumed_tokens)
@@ -38,7 +38,7 @@ def _build_compounds(tokens: list[UDToken], depth: int) -> list[list[UDToken]]:
                     or depth == _Depth.depth_2 and compound[0].head.id == compound[0].id + 1):
                 if unconsumed_tokens[0] == compound[0].head:
                     compound.append(unconsumed_tokens.pop(0))
-                    compound += ex_list.consume_while(compound[0].head.is_parent_of, unconsumed_tokens)
+                    compound += ex_list.consume_while(compound[0].head.is_head_of, unconsumed_tokens)
                     
         created_compounds.append(compound)
 

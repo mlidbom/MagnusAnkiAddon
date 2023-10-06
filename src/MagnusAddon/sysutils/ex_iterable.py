@@ -13,6 +13,13 @@ def take_until_before(predicate: Callable[[T], bool], iterable: Iterable[T]) -> 
     def inverted_condition(item:T) -> bool: return not predicate(item)
     return itertools.takewhile(inverted_condition, iterable)
 
+def take_until_including(predicate: Callable[[T], bool], iterable: Iterable[T]) -> Iterable[T]:
+    """`returns` an iterable containing the items in `iterable` until and including the first item when `condition` returns true"""
+    for item in iterable:
+        yield item
+        if predicate(item):
+            break
+
 def take_while(predicate: Callable[[T], bool], iterable: Iterable[T]) -> Iterable[T]:
     """`returns` an iterable containing the items in `iterable` until (exclusive) `condition` returns false"""
     return itertools.takewhile(predicate, iterable)

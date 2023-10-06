@@ -60,10 +60,10 @@ def test_sentences_the_best_parser_does_well(sentence: str, expected: UDTextTree
 ], ids=only_string_params)
 def test_sentences_done_better_by_alternative_parser(sentence: str, parser: UDParser, expected: UDTextTree) -> None: run_tests(expected, parser, sentence)
 
-@pytest.mark.parametrize('sentence, parser, expected', [
-    #("朝、近所をぶらぶらした", ud_parsers.best, R())
-], ids=only_string_params)
-def test_temp(sentence: str, parser: UDParser, expected: UDTextTree) -> None: run_tests(expected, parser, sentence)
+# @pytest.mark.parametrize('sentence, parser, expected', [
+#     ("カバンに入れっぱなしだった", ud_parsers.best, R())
+# ], ids=only_string_params)
+# def test_temp(sentence: str, parser: UDParser, expected: UDTextTree) -> None: run_tests(expected, parser, sentence)
 
 
 def run_tests(expected:UDTextTree, parser: UDParser, sentence:str) -> None:
@@ -121,7 +121,11 @@ def run_tests(expected:UDTextTree, parser: UDParser, sentence:str) -> None:
     # "だったら記憶喪失の振りすることも簡単だよな"¨
     #"食べてもいいけど",
     #"ケータイ持ってるやつは自宅に連絡しておけ",
-    #"なぜかというと"
+    #"なぜかというと",
+    #"あり得るか",
+    #"二千九百円",
+    #"じゃ　神経衰弱をやろう",
+    "この前の　放課後"
 ])
 def test_compare_parsers(sentence: str) -> None:
     print()

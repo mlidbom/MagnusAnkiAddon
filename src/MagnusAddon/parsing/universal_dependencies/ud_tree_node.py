@@ -35,7 +35,10 @@ class UDTextTreeNode:
         from parsing.jamdict_extensions.dict_lookup import DictLookup
         return DictLookup.lookup_word_shallow(self.surface).found_words()
 
-    def is_base_dictionary_word(self) -> bool:
+    def base_should_be_shown_separately_in_breakdown(self) -> bool:
+        if self.is_morpheme() and self.tokens[0].xpos == ud_japanese_part_of_speech_tag.inflecting_dependent_word:
+            return False # todo trying this out. It should get rid of fetching だ for な and such. Not sure what other effects it might have...
+
         from parsing.jamdict_extensions.dict_lookup import DictLookup
         return self.base_differs_from_surface() and DictLookup.lookup_word_shallow(self.base).found_words()
 

@@ -1,3 +1,4 @@
+# todo remove this file
 from anki.cards import Card
 from aqt import gui_hooks
 
@@ -10,10 +11,10 @@ from parsing.tree_parsing.tree_parser_node import priorities, TreeParserNode
 from sysutils import ex_sequence
 from sysutils.collections.recent_items import RecentItems
 
-def _vocab_missing_string(node:TreeParserNode, display_text: str) -> str:
+def _vocab_missing_string(node: TreeParserNode, display_text: str) -> str:
     return "---" if node.is_dictionary_word(display_text) else ""
 
-def _vocab_node_html(node: TreeParserNode, excluded:set[str], extra: set[str], question:str, answer:str, depth:int) -> str:
+def _vocab_node_html(node: TreeParserNode, excluded: set[str], extra: set[str], question: str, answer: str, depth: int) -> str:
     if question in excluded:
         return ""
 
@@ -30,14 +31,14 @@ def _vocab_node_html(node: TreeParserNode, excluded:set[str], extra: set[str], q
     """
     return html
 
-def _create_html_from_nodes(nodes: list[TreeParserNode], excluded: set[str], extra: set[str], depth:int) -> str:
+def _create_html_from_nodes(nodes: list[TreeParserNode], excluded: set[str], extra: set[str], depth: int) -> str:
     if not nodes:
         return ""
 
     html = f"""<ul class="sentenceVocabList depth{depth}">\n"""
 
     for node in nodes:
-        vocabs:list[VocabNote] = []
+        vocabs: list[VocabNote] = []
         found_words: set[str] = set()
         if node.is_show_at_all_in_sentence_breakdown():
             if node.is_show_base_in_sentence_breakdown():
@@ -57,7 +58,6 @@ def _create_html_from_nodes(nodes: list[TreeParserNode], excluded: set[str], ext
                     and node.surface not in found_words
                     and node.surface not in excluded
                     and node.is_show_surface_in_sentence_breakdown()):
-
                 html += _vocab_node_html(node, excluded, extra, node.surface, _vocab_missing_string(node, node.surface), depth)
 
         else:
@@ -70,12 +70,10 @@ def _create_html_from_nodes(nodes: list[TreeParserNode], excluded: set[str], ext
 
     return html
 
-
-
-def _build_user_extra_list(extra_words: list[str], excluded:set[str]) -> str:
+def _build_user_extra_list(extra_words: list[str], excluded: set[str]) -> str:
     html = f"""<ul class="sentenceVocabList userExtra depth1">\n"""
     for word in extra_words:
-        vocabs:list[VocabNote] = app.col().vocab.with_form(word)
+        vocabs: list[VocabNote] = app.col().vocab.with_form(word)
         vocabs = [voc for voc in vocabs if voc.get_display_question() not in excluded]
 
         if vocabs:
@@ -101,7 +99,6 @@ def _build_user_extra_list(extra_words: list[str], excluded:set[str]) -> str:
     html += "</ul>\n"
     return html
 
-
 def build_breakdown_html(sentence: SentenceNote) -> str:
     user_excluded = sentence.get_user_excluded_vocab()
     extra_words = sentence.get_user_extra_vocab()
@@ -123,7 +120,7 @@ def build_breakdown_html(sentence: SentenceNote) -> str:
 
 recent_reviewer_cards = RecentItems[int](1)
 
-def render_breakdown(html:str, card: Card, _type_of_display:str) -> str:
+def render_breakdown(html: str, card: Card, _type_of_display: str) -> str:
     note = JPNote.note_from_note(card.note())
     if isinstance(note, SentenceNote):
         breakdown_html = build_breakdown_html(note)
@@ -131,5 +128,5 @@ def render_breakdown(html:str, card: Card, _type_of_display:str) -> str:
 
     return html
 
-# def init() -> None:
-#     gui_hooks.card_will_show.append(render_breakdown)
+def init() -> None:
+    gui_hooks.card_will_show.append(render_breakdown)
