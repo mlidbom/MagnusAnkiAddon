@@ -7,7 +7,7 @@ import pytest
 from ankiutils import app
 from fixtures.collection_factory import inject_anki_collection_with_generated_sample_data
 from note.sentencenote import SentenceNote
-from test_viewmodels.test_sentence_breakdown.breakdown_viewmodel_spec import NodeViewModelSpec, SentenceBreakdownViewModelSpec, VocabHitViewModelSpec
+from tests.ui_tests.viewmodels_tests.sentence_breakdown_tests.breakdown_viewmodel_spec import NodeViewModelSpec, SentenceBreakdownViewModelSpec, VocabHitViewModelSpec
 from viewmodels.sentence_breakdown import sentence_breakdown_viewmodel
 
 V: TypeAlias = VocabHitViewModelSpec

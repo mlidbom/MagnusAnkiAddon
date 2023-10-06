@@ -16,9 +16,9 @@
       <excludeFolder url="file://$MODULE_DIR$/src/.pytest_cache" />
       <excludeFolder url="file://$MODULE_DIR$/src/ExploratoryTests/anki_exploration/.pytest_cache" />
       <excludeFolder url="file://$MODULE_DIR$/src/ExploratoryTests/test_parsing_libraries/.pytest_cache" />
-      <excludeFolder url="file://$MODULE_DIR$/src/MagnusAddonTests/test_parsing/.pytest_cache" />
       <excludeFolder url="file://$MODULE_DIR$/src/MagnusAddon/_lib_patched" />
       <excludeFolder url="file://$MODULE_DIR$/venv311" />
+      <excludeFolder url="file://$MODULE_DIR$/src/MagnusAddonTests/tests/language_services_tests/.pytest_cache" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.11 (MagnusAnkiAddon)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
