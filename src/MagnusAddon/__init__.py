@@ -16,7 +16,7 @@ hooks.editor_buttons.init()
 hooks.tools_menu.init()
 hooks.show_dependencies_in_browser.init()
 hooks.right_click_menu.init()
-hooks.note_content_building.sentence_breakdown.init() #needs to be before vocab_and_sentence_kanji_list
+hooks.note_content_building.ud_sentence_breakdown.init() #needs to be before vocab_and_sentence_kanji_list
 hooks.note_content_building.vocab_and_sentence_kanji_list.init()
 hooks.note_content_building.kanji_vocab_list.init()
 hooks.copy_sort_field_to_clipboard.init()

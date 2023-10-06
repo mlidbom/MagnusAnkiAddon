@@ -131,5 +131,5 @@ def render_breakdown(html:str, card: Card, _type_of_display:str) -> str:
 
     return html
 
-def init() -> None:
-    gui_hooks.card_will_show.append(render_breakdown)
+# def init() -> None:
+#     gui_hooks.card_will_show.append(render_breakdown)

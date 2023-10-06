@@ -8,42 +8,39 @@ from parsing.universal_dependencies.ud_tree_parse_result import UDTextTree
 
 missing_vocab_answer = "---"
 class VocabHit:
-    def __init__(self, form: str, hit_form: str, show_hit_form: bool, answer: str):
-        self._lookup_form = form
-        self._hit_form = hit_form
-        self._show_hit_form = show_hit_form
-        self._answer = answer
+    def __init__(self, surface_form: str, lookup_form: str, hit_form: str, answer: str):
+        self.surface_form = surface_form
+        self.lookup_form = lookup_form if lookup_form != surface_form else ""
+        self.hit_form = hit_form if hit_form != surface_form and hit_form != lookup_form else ""
+        self.answer = answer
 
-    def form(self) -> str: return self._lookup_form
-    def hit_form(self) -> str: return self._hit_form
-    def show_hit_form(self) -> bool: return self._show_hit_form
-    def answer(self) -> str: return self._answer
+    def __repr__(self) -> str: return f"""surface:{self.surface_form} lookup:{self.lookup_form}   hit:{self.hit_form}    answer:{self.answer}"""
 
     @staticmethod
     def surface_from_vocab(parent: NodeViewModel, vocab: VocabNote) -> VocabHit:
-        return VocabHit(form=parent.surface(),
+        return VocabHit(surface_form=parent.surface,
+                        lookup_form=parent.surface,
                         hit_form=vocab.get_question(),
-                        show_hit_form=vocab.get_question() != parent.surface(),
                         answer=vocab.get_answer())
 
     @staticmethod
     def base_from_vocab(parent: NodeViewModel, vocab: VocabNote) -> VocabHit:
-        return VocabHit(form=parent.base(),
+        return VocabHit(surface_form=parent.surface,
+                        lookup_form=parent.base,
                         hit_form=vocab.get_question(),
-                        show_hit_form=True,
                         answer=vocab.get_answer())
     @classmethod
     def missing_surface(cls, parent: NodeViewModel) -> VocabHit:
-        return VocabHit(form=parent.surface(),
-                        hit_form="",
-                        show_hit_form=False,
+        return VocabHit(surface_form=parent.surface,
+                        lookup_form=parent.surface,
+                        hit_form=parent.surface,
                         answer=missing_vocab_answer)
 
     @classmethod
     def missing_base(cls, parent: NodeViewModel) -> VocabHit:
-        return VocabHit(form=parent.base(),
-                        hit_form="",
-                        show_hit_form=False,
+        return VocabHit(surface_form=parent.surface,
+                        lookup_form=parent.base,
+                        hit_form=parent.base,
                         answer=missing_vocab_answer)
 
 class NodeViewModel:
@@ -51,18 +48,22 @@ class NodeViewModel:
         self._node = node
         self._collection = collection
         self.children = [NodeViewModel(nod, collection) for nod in node.children]
+        self.surface = self._node.surface
+        self.base = node.base if node.base_differs_from_surface() else ""
+        self.base_vocab_hits = self._base_vocab_hits()
+        self.surface_vocab_hits = self._surface_vocab_hits()
 
-    def surface(self) -> str: return self._node.surface
-    def base(self) -> str: return self._node.base if self._node.is_inflected() else ""
+
+    def __repr__(self) -> str:
+        return f"""surface:{self.surface} base:{self.base}   children:{" # ".join([repr(c) for c in self.children])}"""
 
     @staticmethod
     def _sort_hits(hits: list[VocabHit]) -> None:
-        def question(hit:VocabHit) -> str: return hit.hit_form()
+        def question(hit: VocabHit) -> str: return hit.hit_form
         hits.sort(key=question)
 
-
-    def surface_vocab_hits(self) -> list[VocabHit]:
-        hits = [VocabHit.surface_from_vocab(self, v) for v in self._collection.vocab.with_form(self.surface())]
+    def _surface_vocab_hits(self) -> list[VocabHit]:
+        hits = [VocabHit.surface_from_vocab(self, v) for v in self._collection.vocab.with_form(self.surface)]
         if hits:
             self._sort_hits(hits)
             return hits
@@ -72,14 +73,14 @@ class NodeViewModel:
 
         return []
 
-    def base_vocab_hits(self) -> list[VocabHit]:
-        if not self._node.is_inflected(): return []
-        hits = [VocabHit.base_from_vocab(self, v) for v in self._collection.vocab.with_form(self.base())]
+    def _base_vocab_hits(self) -> list[VocabHit]:
+        if not self._node.base_differs_from_surface(): return []
+        hits = [VocabHit.base_from_vocab(self, v) for v in self._collection.vocab.with_form(self.base)]
         if hits:
             self._sort_hits(hits)
             return hits
 
-        if self._node.is_surface_dictionary_word():
+        if self._node.is_base_dictionary_word():
             return [VocabHit.missing_base(self)]
 
         return []

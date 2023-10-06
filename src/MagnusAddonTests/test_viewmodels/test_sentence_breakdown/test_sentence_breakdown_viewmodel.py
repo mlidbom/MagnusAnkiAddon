@@ -20,7 +20,7 @@ def setup_object() -> Generator[None, None, None]:
         yield
 
 @pytest.mark.parametrize('sentence, expected', [
-    ("一度夢を見た", SB(N("一度", "", V("一度", "", "once/on-one-occation")), N("夢を見た", "夢を見る", V("夢を見る", "夢を見る", "to: dream"), N("夢を", "", N("夢", "", V("夢", "", "dream")), N("を", "", V("を", "", "{marks: direct-object | subject(caus:expr)}"))), N("見た", "", N("見", "見る", V("見", "", "---"), V("見る", "みる", "to: aux: try/have-a-go-at | {see/find}-that"), V("見る", "見る", "to{}: see/look | examine | aux{try}"), V("見る", "観る", "To View, To Watch, To See")), N("た", "", V("た", "", "{past-tense} | (please)do")))))),
+    ("一度夢を見た", SB(N("一度", "", V("一度", "", "", "once/on-one-occation")), N("夢を見た", "夢を見る", V("夢を見た", "夢を見る", "", "to: dream"), N("夢を", "", N("夢", "", V("夢", "", "", "dream")), N("を", "", V("を", "", "", "{marks: direct-object | subject(caus:expr)}"))), N("見た", "", N("見", "見る", V("見", "", "", "---"), V("見", "見る", "", "to{}: see/look | examine | aux{try}"), V("見", "見る", "みる", "to: aux: try/have-a-go-at | {see/find}-that"), V("見", "見る", "観る", "To View, To Watch, To See")), N("た", "", V("た", "", "", "{past-tense} | (please)do")))))),
 ])
 def test_sentence_breakdown_viewmodel(sentence: str, expected: SentenceBreakdownViewModelSpec) -> None:
     sentence_note: SentenceNote = SentenceNote.create(sentence, "")

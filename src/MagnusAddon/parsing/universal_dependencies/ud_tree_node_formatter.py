@@ -31,7 +31,7 @@ def _children_repr(self: UDTextTreeNode, level:int = 1) -> str:
 def _indent(level: int) -> str: return full_width_space * 2 * level
 
 def repr_(self: UDTextTreeNode, level: int) -> str:
-    return f"""{_indent(level)}N('{self.surface}', '{self.base if self.is_inflected() else ""}'{_children_repr(self, level + 1)})"""
+    return f"""{_indent(level)}N('{self.surface}', '{self.base if self.base_differs_from_surface() else ""}'{_children_repr(self, level + 1)})"""
 
 
 def _children_str(self: UDTextTreeNode, level:int = 1) -> str:
@@ -45,6 +45,6 @@ def _children_str(self: UDTextTreeNode, level:int = 1) -> str:
 
 def str_(self: UDTextTreeNode, level: int) -> str:
     indent = full_width_space * 2 * level
-    start = f"""{indent}{self.surface}{f"{full_width_space}－{full_width_space}" + self.base if self.is_inflected() else ""}"""
+    start = f"""{indent}{self.surface}{f"{full_width_space}－{full_width_space}" + self.base if self.base_differs_from_surface() else ""}"""
     start = kana_utils.pad_to_length(start, 20)
     return f"""{start}{_str_pos(self)}{_children_str(self, level + 1)}"""

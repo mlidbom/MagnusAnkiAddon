@@ -4,6 +4,7 @@ from typing import Callable, Optional, Any
 from parsing.universal_dependencies import ud_tree_node_formatter
 from parsing.universal_dependencies.core import ud_japanese_part_of_speech_tag, ud_universal_part_of_speech_tag
 from parsing.universal_dependencies.core.ud_token import UDToken
+from sysutils import kana_utils
 
 class UDTextTreeNode:
     def __init__(self, surface: str, base: str, children: Optional[list[UDTextTreeNode]] = None, tokens: Optional[list[UDToken]] = None) -> None:
@@ -15,7 +16,19 @@ class UDTextTreeNode:
             self._check_for_inflected_dictionary_phrase()
 
     def is_morpheme(self) -> bool: return not self.children
-    def is_inflected(self) -> bool: return self.base != self.surface
+    def base_differs_from_surface(self) -> bool:
+        return self.base != self.surface
+
+    def is_really_inflected(self) -> bool:
+        if self.base == self.surface:
+            return False
+
+        if kana_utils.is_only_kana(self.base) != kana_utils.is_only_kana(self.surface):
+            return False # some tokenizers do us the favor of finding the kanji representation for some words. That does not equal inflection though.
+
+        return True
+
+
     def is_compound(self) -> bool: return len(self.children) > 0
 
     def is_surface_dictionary_word(self) -> bool:
@@ -24,7 +37,7 @@ class UDTextTreeNode:
 
     def is_base_dictionary_word(self) -> bool:
         from parsing.jamdict_extensions.dict_lookup import DictLookup
-        return self.is_inflected() and DictLookup.lookup_word_shallow(self.base).found_words()
+        return self.base_differs_from_surface() and DictLookup.lookup_word_shallow(self.base).found_words()
 
     def visit(self, callback: Callable[[UDTextTreeNode],None]) -> None:
         callback(self)
@@ -49,5 +62,4 @@ class UDTextTreeNode:
                 from parsing.jamdict_extensions.dict_lookup import DictLookup
                 candidate_base = "".join(tok.form for tok in self.tokens[:-2]) + self.tokens[-2].lemma
                 if DictLookup.lookup_word_shallow(candidate_base).found_words():
-                    something = 1
                     self.base = candidate_base
