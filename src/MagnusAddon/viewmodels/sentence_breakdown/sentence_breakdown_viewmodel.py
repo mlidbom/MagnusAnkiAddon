@@ -50,8 +50,7 @@ class NodeViewModel:
         self.children = [NodeViewModel(nod, collection) for nod in node.children]
         self.surface = self._node.surface
         self.base = node.base if node.base_differs_from_surface() else ""
-        self.base_vocab_hits = self._base_vocab_hits()
-        self.surface_vocab_hits = self._surface_vocab_hits()
+        self.surface_vocab_hits, self.base_vocab_hits = self._vocab_hits()
 
 
     def __repr__(self) -> str:
@@ -62,28 +61,31 @@ class NodeViewModel:
         def question(hit: VocabHit) -> str: return hit.hit_form
         hits.sort(key=question)
 
-    def _surface_vocab_hits(self) -> list[VocabHit]:
-        hits = [VocabHit.surface_from_vocab(self, v) for v in self._collection.vocab.with_form(self.surface)]
-        if hits:
-            self._sort_hits(hits)
-            return hits
+    def _vocab_hits(self) -> tuple[list[VocabHit], list[VocabHit]]:
+        surface_vocab_notes = self._collection.vocab.with_form(self.surface)
 
-        if self._node.is_surface_dictionary_word():
-            return [VocabHit.missing_surface(self)]
+        base_vocab_notes:list[VocabNote] = []
+        if self._node.base_differs_from_surface():
+            base_vocab_notes = self._collection.vocab.with_form(self.base)
 
-        return []
+        found_base_vocab = len(base_vocab_notes) > 0
+        surface_vocab_ids = set(n.get_id() for n in surface_vocab_notes)
+        base_vocab_notes = [b for b in base_vocab_notes if b.get_id() not in surface_vocab_ids]
 
-    def _base_vocab_hits(self) -> list[VocabHit]:
-        if not self._node.base_differs_from_surface(): return []
-        hits = [VocabHit.base_from_vocab(self, v) for v in self._collection.vocab.with_form(self.base)]
-        if hits:
-            self._sort_hits(hits)
-            return hits
+        surface_vocab = [VocabHit.surface_from_vocab(self, vocab) for vocab in surface_vocab_notes]
+        base_vocab = [VocabHit.base_from_vocab(self, vocab) for vocab in base_vocab_notes]
 
-        if self._node.is_base_dictionary_word():
-            return [VocabHit.missing_base(self)]
 
-        return []
+        if not surface_vocab and self._node.is_surface_dictionary_word():
+            surface_vocab.append(VocabHit.missing_surface(self))
+
+        if not found_base_vocab and self._node.is_base_dictionary_word():
+            base_vocab.append(VocabHit.missing_base(self))
+
+
+        self._sort_hits(surface_vocab)
+        self._sort_hits(base_vocab)
+        return surface_vocab, base_vocab
 
 class BreakDownViewModel:
     def __init__(self, parse_result: UDTextTree, collection: JPCollection):

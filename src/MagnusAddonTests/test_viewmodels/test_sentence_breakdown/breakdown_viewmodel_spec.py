@@ -44,8 +44,8 @@ class NodeViewModelSpec:
     @classmethod
     def from_view_model(cls, model: NodeViewModel) -> NodeViewModelSpec:
         children = cls.create_children(model.children) if model.children else []
-        surface_hits = [VocabHitViewModelSpec.from_viewmodel(sh) for sh in model._surface_vocab_hits()]
-        base_hits = [VocabHitViewModelSpec.from_viewmodel(bh) for bh in model._base_vocab_hits()]
+        surface_hits = [VocabHitViewModelSpec.from_viewmodel(sh) for sh in model.surface_vocab_hits]
+        base_hits = [VocabHitViewModelSpec.from_viewmodel(bh) for bh in model.base_vocab_hits]
         other = children + surface_hits + base_hits
         return NodeViewModelSpec(model.surface, model.base, *other)
 
