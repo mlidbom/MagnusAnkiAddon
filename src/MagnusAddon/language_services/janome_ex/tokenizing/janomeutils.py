@@ -1,4 +1,4 @@
-from parsing.janome_extensions.tokenizer_ext import TokenizerExt
+from language_services.janome_ex.tokenizing.tokenizer_ext import TokenizerExt
 
 _tokenizer = TokenizerExt()
 

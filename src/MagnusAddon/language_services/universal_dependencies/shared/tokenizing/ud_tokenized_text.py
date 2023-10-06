@@ -3,12 +3,12 @@ from typing import Union
 from spacy.tokens import Doc, Token
 from unidic2ud import UniDic2UDEntry, UDPipeEntry # type: ignore
 
-from parsing.universal_dependencies.core.ud_token import UDToken
+from language_services.universal_dependencies.shared.tokenizing.ud_token import UDToken
 from sysutils import ex_sequence
 from sysutils.typed import checked_cast
 
 
-class UDParseResult:
+class UDTokenizedText:
     def __init__(self, wrapped: Union[UniDic2UDEntry, Doc]):
         self._wrapped = wrapped
 

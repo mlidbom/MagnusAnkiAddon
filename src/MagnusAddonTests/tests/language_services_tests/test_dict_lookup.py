@@ -1,8 +1,8 @@
 import pytest
 
 from note.vocabnote import VocabNote
-from parsing.jamdict_extensions.dict_entry import DictEntry
-from parsing.jamdict_extensions.dict_lookup import DictLookup
+from language_services.jamdict_ex.dict_entry import DictEntry
+from language_services.jamdict_ex.dict_lookup import DictLookup
 from unittest.mock import MagicMock
 
 @pytest.mark.parametrize('word, readings', [

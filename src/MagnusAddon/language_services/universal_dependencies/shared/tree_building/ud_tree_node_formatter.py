@@ -4,13 +4,13 @@ from typing import TYPE_CHECKING
 from sysutils.ex_str import full_width_space
 
 if TYPE_CHECKING:
-    from parsing.universal_dependencies.ud_tree_node import UDTextTreeNode
+    from language_services.universal_dependencies.shared.tree_building.ud_tree_node import UDTreeNode
 
 from sysutils import kana_utils
 from sysutils import ex_str
 
 
-def _str_pos(self: UDTextTreeNode) -> str:
+def _str_pos(self: UDTreeNode) -> str:
     if self.is_morpheme():
         token = self.tokens[0]
         return (f"""{ex_str.pad_to_length(str(token.id), 3)}""" +
@@ -22,7 +22,7 @@ def _str_pos(self: UDTextTreeNode) -> str:
     return "_"
 
 
-def _children_repr(self: UDTextTreeNode, level:int = 1) -> str:
+def _children_repr(self: UDTreeNode, level:int = 1) -> str:
     if not self.children:
         return ""
     children_string = ', \n'.join(repr_(child, level) for child in self.children)
@@ -30,11 +30,11 @@ def _children_repr(self: UDTextTreeNode, level:int = 1) -> str:
 
 def _indent(level: int) -> str: return full_width_space * 2 * level
 
-def repr_(self: UDTextTreeNode, level: int) -> str:
+def repr_(self: UDTreeNode, level: int) -> str:
     return f"""{_indent(level)}N('{self.surface}', '{self.base if self.base_differs_from_surface() else ""}'{_children_repr(self, level + 1)})"""
 
 
-def _children_str(self: UDTextTreeNode, level:int = 1) -> str:
+def _children_str(self: UDTreeNode, level:int = 1) -> str:
     if not self.children:
         return ""
 
@@ -43,7 +43,7 @@ def _children_str(self: UDTextTreeNode, level:int = 1) -> str:
     return f"""{line_start}{children_string}"""
 
 
-def str_(self: UDTextTreeNode, level: int) -> str:
+def str_(self: UDTreeNode, level: int) -> str:
     indent = full_width_space * 2 * level
     start = f"""{indent}{self.surface}{f"{full_width_space}－{full_width_space}" + self.base if self.base_differs_from_surface() else ""}"""
     start = kana_utils.pad_to_length(start, 20)

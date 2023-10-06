@@ -1,8 +1,8 @@
 import pytest
 
-from parsing.janome_extensions.parts_of_speech import POS
-from parsing.janome_extensions.token_ext import TokenExt
-from parsing.janome_extensions.tokenizer_ext import TokenizerExt
+from language_services.janome_ex.tokenizing.parts_of_speech import POS
+from language_services.janome_ex.tokenizing.token_ext import TokenExt
+from language_services.janome_ex.tokenizing.tokenizer_ext import TokenizerExt
 
 _tokenizer:TokenizerExt
 

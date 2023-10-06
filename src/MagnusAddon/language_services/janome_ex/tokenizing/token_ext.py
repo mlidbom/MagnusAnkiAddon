@@ -1,6 +1,6 @@
 from typing import Any
 
-from parsing.janome_extensions.parts_of_speech import PartsOfSpeech, POS
+from language_services.janome_ex.tokenizing.parts_of_speech import PartsOfSpeech, POS
 from sysutils import typed, kana_utils
 
 class TokenExt:

@@ -1,6 +1,6 @@
-from parsing.jamdict_extensions.dict_lookup import DictLookup
-from parsing.janome_extensions.parsed_word import ParsedWord
-from parsing.janome_extensions.tokenizer_ext import TokenizerExt
+from language_services.jamdict_ex.dict_lookup import DictLookup
+from language_services.janome_ex.word_extraction.extracted_word import ExtractedWord
+from language_services.janome_ex.tokenizing.tokenizer_ext import TokenizerExt
 
 _tokenizer = TokenizerExt()
 
@@ -10,7 +10,7 @@ def _word_is_in_dictionary(word: str) -> bool:
     return result.found_words()
 
 _max_lookahead = 12
-def identify_words(sentence: str) -> list[ParsedWord]:
+def extract_words(sentence: str) -> list[ExtractedWord]:
     def add_word_if_it_is_in_dictionary(word: str) -> None:
         if _word_is_in_dictionary(word) and word not in found_words:
             found_words.add(word)
@@ -36,5 +36,5 @@ def identify_words(sentence: str) -> list[ParsedWord]:
         add_word_if_it_is_in_dictionary(token.surface)
         check_for_compound_words()
 
-    return [ParsedWord(word) for word in found_words_list]
+    return [ExtractedWord(word) for word in found_words_list]
 

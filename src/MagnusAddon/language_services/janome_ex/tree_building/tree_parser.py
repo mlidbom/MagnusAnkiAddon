@@ -1,10 +1,10 @@
 from typing import Callable
 
-from parsing.jamdict_extensions.dict_lookup import DictLookup
-from parsing.janome_extensions.token_ext import TokenExt
-from parsing.janome_extensions.tokenizer_ext import TokenizerExt
-from parsing.tree_parsing.tree_parse_result import TreeParseResult
-from parsing.tree_parsing.tree_parser_node import TreeParserNode
+from language_services.jamdict_ex.dict_lookup import DictLookup
+from language_services.janome_ex.tokenizing.token_ext import TokenExt
+from language_services.janome_ex.tokenizing.tokenizer_ext import TokenizerExt
+from language_services.janome_ex.tree_building.tree_parse_result import TreeParseResult
+from language_services.janome_ex.tree_building.tree_parser_node import TreeParserNode
 from sysutils import ex_sequence
 
 _tokenizer = TokenizerExt()

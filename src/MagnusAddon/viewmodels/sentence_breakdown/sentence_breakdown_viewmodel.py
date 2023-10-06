@@ -2,9 +2,10 @@ from __future__ import annotations
 from note.collection.jp_collection import JPCollection
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
-from parsing.universal_dependencies import ud_parsers, ud_tree_builder
-from parsing.universal_dependencies.ud_tree_node import UDTextTreeNode
-from parsing.universal_dependencies.ud_tree_parse_result import UDTextTree
+from language_services.universal_dependencies import ud_parsers
+from language_services.universal_dependencies.shared.tree_building import ud_tree_builder
+from language_services.universal_dependencies.shared.tree_building.ud_tree_node import UDTreeNode
+from language_services.universal_dependencies.shared.tree_building.ud_tree import UDTree
 
 missing_vocab_answer = "---"
 class VocabHit:
@@ -44,7 +45,7 @@ class VocabHit:
                         answer=missing_vocab_answer)
 
 class NodeViewModel:
-    def __init__(self, node: UDTextTreeNode, collection: JPCollection):
+    def __init__(self, node: UDTreeNode, collection: JPCollection):
         self._node = node
         self._collection = collection
         self.children = [NodeViewModel(nod, collection) for nod in node.children]
@@ -88,7 +89,7 @@ class NodeViewModel:
         return surface_vocab, base_vocab
 
 class BreakDownViewModel:
-    def __init__(self, parse_result: UDTextTree, collection: JPCollection):
+    def __init__(self, parse_result: UDTree, collection: JPCollection):
         self._parse_result = parse_result
         self.nodes = [NodeViewModel(node, collection) for node in parse_result.nodes]
 

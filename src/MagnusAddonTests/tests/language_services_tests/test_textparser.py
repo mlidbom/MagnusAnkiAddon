@@ -1,8 +1,8 @@
 import pytest
 
-from parsing.janome_extensions.parsed_word import ParsedWord
-from parsing.janome_extensions.tokenizer_ext import TokenizerExt
-from parsing.textparser import identify_words
+from language_services.janome_ex.word_extraction.extracted_word import ExtractedWord
+from language_services.janome_ex.tokenizing.tokenizer_ext import TokenizerExt
+from language_services.janome_ex.word_extraction.word_extractor import extract_words
 
 _tokenizer:TokenizerExt
 
@@ -37,91 +37,91 @@ def setup() -> None:
 
 @pytest.mark.parametrize('sentence, expected_output', [
     ("走る",
-     [ParsedWord('走る')]),
+     [ExtractedWord('走る')]),
     ("走って",
-     [ParsedWord('走る'),
-      ParsedWord('て')]),
+     [ExtractedWord('走る'),
+      ExtractedWord('て')]),
     ("これをください。",
-     [ParsedWord('これ'),
-      ParsedWord('を'),
-      ParsedWord('くださる'),
-      ParsedWord('ください')]),
+     [ExtractedWord('これ'),
+      ExtractedWord('を'),
+      ExtractedWord('くださる'),
+      ExtractedWord('ください')]),
     ("ハート形",
-     [ParsedWord('ハート'),
-      ParsedWord('ハート形'),
-      ParsedWord('形')]),
+     [ExtractedWord('ハート'),
+      ExtractedWord('ハート形'),
+      ExtractedWord('形')]),
     ("私が行きましょう。",
-     [ParsedWord('私'),
-      ParsedWord('が'),
-      ParsedWord('行く'),
-      ParsedWord('行き'),
-      ParsedWord('ます'),
-      ParsedWord('ましょ'),
-      ParsedWord('ましょう'),
-      ParsedWord('う')]),
+     [ExtractedWord('私'),
+      ExtractedWord('が'),
+      ExtractedWord('行く'),
+      ExtractedWord('行き'),
+      ExtractedWord('ます'),
+      ExtractedWord('ましょ'),
+      ExtractedWord('ましょう'),
+      ExtractedWord('う')]),
     ("１人でいる時間がこれほどまでに長く感じるとは",
-     [ParsedWord('１'),
-      ParsedWord('１人'),
-      ParsedWord('１人で'),
-      ParsedWord('人'),
-      ParsedWord('で'),
-      ParsedWord('いる'),
-      ParsedWord('時間'),
-      ParsedWord('が'),
-      ParsedWord('これ'),
-      ParsedWord('これほど'),
-      ParsedWord('ほど'),
-      ParsedWord('まで'),
-      ParsedWord('までに'),
-      ParsedWord('に'),
-      ParsedWord('長い'),
-      ParsedWord('感じる'),
-      ParsedWord('と'),
-      ParsedWord('とは'),
-      ParsedWord('は')]),
+     [ExtractedWord('１'),
+      ExtractedWord('１人'),
+      ExtractedWord('１人で'),
+      ExtractedWord('人'),
+      ExtractedWord('で'),
+      ExtractedWord('いる'),
+      ExtractedWord('時間'),
+      ExtractedWord('が'),
+      ExtractedWord('これ'),
+      ExtractedWord('これほど'),
+      ExtractedWord('ほど'),
+      ExtractedWord('まで'),
+      ExtractedWord('までに'),
+      ExtractedWord('に'),
+      ExtractedWord('長い'),
+      ExtractedWord('感じる'),
+      ExtractedWord('と'),
+      ExtractedWord('とは'),
+      ExtractedWord('は')]),
     ("どうやってここを知った。",
-     [ParsedWord('どう'),
-      ParsedWord('どうやって'),
-      ParsedWord('やる'),
-      ParsedWord('て'),
-      ParsedWord('ここ'),
-      ParsedWord('を'),
-      ParsedWord('知る'),
-      ParsedWord('た')]),
+     [ExtractedWord('どう'),
+      ExtractedWord('どうやって'),
+      ExtractedWord('やる'),
+      ExtractedWord('て'),
+      ExtractedWord('ここ'),
+      ExtractedWord('を'),
+      ExtractedWord('知る'),
+      ExtractedWord('た')]),
     ("声出したら駄目だからね",
-     [ParsedWord('声'),
-      ParsedWord('出す'),
-      ParsedWord('出し'),
-      ParsedWord('た'),
-      ParsedWord('たら'),
-      ParsedWord('駄目'),
-      ParsedWord('だ'),
-      ParsedWord('だから'),
-      ParsedWord('から'),
-      ParsedWord('ね')]),
+     [ExtractedWord('声'),
+      ExtractedWord('出す'),
+      ExtractedWord('出し'),
+      ExtractedWord('た'),
+      ExtractedWord('たら'),
+      ExtractedWord('駄目'),
+      ExtractedWord('だ'),
+      ExtractedWord('だから'),
+      ExtractedWord('から'),
+      ExtractedWord('ね')]),
     ("彼の日本語のレベルは私と同じ位だ。",
-     [ParsedWord('彼'),
-      ParsedWord('彼の'),
-      ParsedWord('の'),
-      ParsedWord('日本語'),
-      ParsedWord('レベル'),
-      ParsedWord('は'),
-      ParsedWord('私'),
-      ParsedWord('と'),
-      ParsedWord('同じ'),
-      ParsedWord('同じ位'),
-      ParsedWord('位'),
-      ParsedWord('だ')]
+     [ExtractedWord('彼'),
+      ExtractedWord('彼の'),
+      ExtractedWord('の'),
+      ExtractedWord('日本語'),
+      ExtractedWord('レベル'),
+      ExtractedWord('は'),
+      ExtractedWord('私'),
+      ExtractedWord('と'),
+      ExtractedWord('同じ'),
+      ExtractedWord('同じ位'),
+      ExtractedWord('位'),
+      ExtractedWord('だ')]
      )
 ])
-def test_identify_words(sentence: str, expected_output: list[ParsedWord]) -> None:
-    result = identify_words(sentence)
+def test_identify_words(sentence: str, expected_output: list[ExtractedWord]) -> None:
+    result = extract_words(sentence)
     assert result == expected_output
 
 def test_ignores_noise_characters() -> None:
-    result = identify_words(".,:;/|。、ー")
-    assert result == [ParsedWord("ー")]
+    result = extract_words(".,:;/|。、ー")
+    assert result == [ExtractedWord("ー")]
 
 def test_something() -> None:
-    result = identify_words("知ってる人があんまりいない高校に行って")
+    result = extract_words("知ってる人があんまりいない高校に行って")
     print(result)

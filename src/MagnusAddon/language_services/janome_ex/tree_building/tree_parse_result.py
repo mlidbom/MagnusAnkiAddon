@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import Callable, Any, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from parsing.tree_parsing.tree_parser_node import TreeParserNode
+    from language_services.janome_ex.tree_building.tree_parser_node import TreeParserNode
 
 class TreeParseResult:
     def __init__(self, *args: TreeParserNode) -> None:

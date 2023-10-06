@@ -4,7 +4,7 @@ from typing import Union
 from spacy.tokens import Token
 from unidic2ud import UDPipeEntry  # type: ignore
 
-from parsing.universal_dependencies.core import ud_japanese_part_of_speech_tag, ud_universal_part_of_speech_tag, ud_relationship_tag
+from language_services.universal_dependencies.shared.tokenizing import ud_japanese_part_of_speech_tag, ud_relationship_tag, ud_universal_part_of_speech_tag
 from sysutils import typed, kana_utils
 
 

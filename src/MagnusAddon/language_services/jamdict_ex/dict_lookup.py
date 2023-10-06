@@ -7,7 +7,7 @@ if TYPE_CHECKING:
 
 from jamdict import Jamdict
 
-from parsing.jamdict_extensions.dict_entry import DictEntry
+from language_services.jamdict_ex.dict_entry import DictEntry
 from sysutils import kana_utils
 
 class DictLookup:

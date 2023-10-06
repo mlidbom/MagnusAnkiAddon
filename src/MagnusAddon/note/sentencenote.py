@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from parsing.janome_extensions.parsed_word import ParsedWord
+    from language_services.janome_ex.word_extraction.extracted_word import ExtractedWord
 
 from note.jpnote import JPNote
 from sysutils import timeutil, kana_utils
@@ -52,9 +52,9 @@ class SentenceNote(JPNote):
     def set_break_down(self, value: str) -> None: self.set_field(SentenceNoteFields.break_down, value)
 
 
-    def parse_words_from_expression(self) -> list[ParsedWord]:
-        from parsing import textparser
-        return textparser.identify_words(self.get_question())
+    def parse_words_from_expression(self) -> list[ExtractedWord]:
+        from language_services.janome_ex.word_extraction import word_extractor
+        return word_extractor.extract_words(self.get_question())
     def get_parsed_words(self) -> list[str]: return self.get_field(SentenceNoteFields.ParsedWords).split(",")
     def _set_parsed_words(self, value: list[str]) -> None:
         value.append(str(timeutil.one_second_from_now()))

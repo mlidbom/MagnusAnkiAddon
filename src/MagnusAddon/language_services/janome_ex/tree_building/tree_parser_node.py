@@ -1,10 +1,10 @@
 from __future__ import annotations
 from typing import Callable, Optional, Any
 
-from parsing.jamdict_extensions.dict_lookup import DictLookup
-from parsing.janome_extensions.parts_of_speech import POS
-from parsing.janome_extensions.token_ext import TokenExt
-from parsing.tree_parsing import tree_parser
+from language_services.jamdict_ex.dict_lookup import DictLookup
+from language_services.janome_ex.tokenizing.parts_of_speech import POS
+from language_services.janome_ex.tokenizing.token_ext import TokenExt
+from language_services.janome_ex.tree_building import tree_parser
 from sysutils import kana_utils
 
 

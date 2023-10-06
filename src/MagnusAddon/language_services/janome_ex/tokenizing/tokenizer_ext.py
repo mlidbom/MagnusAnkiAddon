@@ -1,7 +1,7 @@
 from janome.tokenizer import Tokenizer
 
-from parsing.janome_extensions.parts_of_speech import PartsOfSpeech
-from parsing.janome_extensions.token_ext import TokenExt
+from language_services.janome_ex.tokenizing.parts_of_speech import PartsOfSpeech
+from language_services.janome_ex.tokenizing.token_ext import TokenExt
 from sysutils import typed
 
 

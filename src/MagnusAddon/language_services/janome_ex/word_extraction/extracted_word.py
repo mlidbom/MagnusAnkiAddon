@@ -1,10 +1,10 @@
 from typing import Union, Any
 
-from parsing.janome_extensions.parts_of_speech import PartOfSpeechDescription
+from language_services.janome_ex.tokenizing.parts_of_speech import PartOfSpeechDescription
 from sysutils import kana_utils
 
 
-class ParsedWord:
+class ExtractedWord:
     def __init__(self, word: str, parts_of_speech: Union[PartOfSpeechDescription, None] = None) -> None:
         self.word = word
         self.parts_of_speech = parts_of_speech
@@ -16,7 +16,7 @@ class ParsedWord:
         return f"ParsedWord('{self.word}')"
 
     def __eq__(self, other: Any) -> bool:
-        if isinstance(other, ParsedWord):
+        if isinstance(other, ExtractedWord):
             return self.word == other.word
         return False
 

@@ -1,7 +1,7 @@
 import pytest
 
-from parsing.tree_parsing import tree_parser
-from parsing.tree_parsing.tree_parser_node import TreeParserNode, priorities
+from language_services.janome_ex.tree_building import tree_parser
+from language_services.janome_ex.tree_building.tree_parser_node import TreeParserNode, priorities
 
 p = priorities
 
