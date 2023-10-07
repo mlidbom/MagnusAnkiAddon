@@ -81,7 +81,8 @@ class UDTreeNode:
 # It would be nice to find a logical pattern rather than hardcoded exclusions, but nothing has turned up yet
 _excluded_lemmas = {
     (ud_japanese_part_of_speech_tag.inflecting_dependent_word, "たら", "た"),
-    (ud_japanese_part_of_speech_tag.inflecting_dependent_word, "に", "だ")
+    (ud_japanese_part_of_speech_tag.inflecting_dependent_word, "に", "だ"),
+    (ud_japanese_part_of_speech_tag.inflecting_dependent_word, "な", "だ")
 }
 
 _excluded_norms = _excluded_lemmas
