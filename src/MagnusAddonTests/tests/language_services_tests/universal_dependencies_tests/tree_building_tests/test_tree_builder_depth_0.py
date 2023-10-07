@@ -99,7 +99,7 @@ def run_tests(expected:R, parser: UDTokenizer, sentence:str) -> None:
     print(f"{parser.name} : {sentence}")
     print(parser.parse(sentence).to_tree())
     print()
-    print("str:")
+    print(f"str: {sentence}")
     print(str(spec_result))
     print("expected-repr:")
     print(repr(expected))
