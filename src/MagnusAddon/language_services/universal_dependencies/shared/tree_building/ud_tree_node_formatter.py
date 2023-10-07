@@ -22,17 +22,7 @@ def _str_pos(node: UDTreeNode) -> str:
     return "_"
 
 
-def _children_repr(node: UDTreeNode, level:int = 1) -> str:
-    if not node.children:
-        return ""
-    children_string = ', \n'.join(repr_(child, level) for child in node.children)
-    return f""", [\n{children_string}]"""
-
 def _indent(level: int) -> str: return full_width_space * 2 * level
-
-def repr_(node: UDTreeNode, level: int) -> str:
-    return f"""{_indent(level)}N('{node.surface}', '{node.lemma if node.base_differs_from_surface() else ""}'{_children_repr(node, level + 1)})"""
-
 
 def _children_str(node: UDTreeNode, level:int = 1) -> str:
     if not node.children:
