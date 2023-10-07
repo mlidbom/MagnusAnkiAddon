@@ -29,7 +29,7 @@ class UDTreeNodeSpec:
     def from_node(cls, node:UDTreeNode) -> UDTreeNodeSpec:
         spec = UDTreeNodeSpec(node.surface,
                               node.lemma if node.lemma != node.surface else "",
-                              node.tokens[0].norm if node.is_morpheme() and node.tokens[0].norm != node.lemma else "",
+                              node.norm if node.norm != node.lemma else "",
                               [cls.from_node(child) for child in node.children])
         if node.is_morpheme():
             spec.token = node.tokens[0]

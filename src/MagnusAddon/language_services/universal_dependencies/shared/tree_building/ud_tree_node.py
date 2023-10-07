@@ -5,7 +5,6 @@ from typing import Callable
 from language_services.universal_dependencies.shared.tokenizing import ud_japanese_part_of_speech_tag, ud_universal_part_of_speech_tag
 from language_services.universal_dependencies.shared.tokenizing.ud_token import UDToken
 from language_services.universal_dependencies.shared.tree_building import ud_tree_node_formatter
-from language_services.universal_dependencies.shared.tree_building.form_exclusion_specification import FormExclusionSpecification
 from sysutils import kana_utils
 
 class UDTreeNode:
@@ -13,7 +12,7 @@ class UDTreeNode:
         self.surface = "".join(tok.form for tok in tokens)
         self.tokens = tokens
         self.children = children
-        self.norm = tokens[0].norm if not children else ""
+        self.norm = self.build_norm()
         self.lemma = self.build_lemma()
 
     def is_morpheme(self) -> bool: return not self.children
@@ -51,6 +50,14 @@ class UDTreeNode:
                 and self.tokens[-1].xpos == ud_japanese_part_of_speech_tag.inflecting_dependent_word
                 and self.tokens[-2].upos == ud_universal_part_of_speech_tag.verb)
 
+    def build_norm(self) -> str:
+        if self.children: return ""
+
+        if self.is_excluded_norm(self.tokens[0]):
+            return self.surface
+
+        return self.tokens[0].norm
+
     def build_lemma(self) -> str:
         if self.is_morpheme() and not self.is_excluded_lemma(self.tokens[0]):
             return self.tokens[0].lemma
@@ -65,9 +72,15 @@ class UDTreeNode:
 
     @staticmethod
     def is_excluded_lemma(token: UDToken) -> bool:
-        return FormExclusionSpecification.from_token(token) in _excluded_lemmas
+        return (token.xpos, token.form, token.lemma) in _excluded_lemmas
 
-#It would be nice to find a logical pattern rather than hardcoded exclusions, but nothing has turned up yet
+    @staticmethod
+    def is_excluded_norm(token: UDToken) -> bool:
+        return (token.xpos, token.form, token.norm) in _excluded_norms
+
+# It would be nice to find a logical pattern rather than hardcoded exclusions, but nothing has turned up yet
 _excluded_lemmas = {
-    FormExclusionSpecification(ud_japanese_part_of_speech_tag.inflecting_dependent_word, "たら", "た")
+    (ud_japanese_part_of_speech_tag.inflecting_dependent_word, "たら", "た")
 }
+
+_excluded_norms = _excluded_lemmas
