@@ -1,11 +1,9 @@
 from __future__ import annotations
-from note.collection.jp_collection import JPCollection
-from note.sentencenote import SentenceNote
-from note.vocabnote import VocabNote
-from language_services.universal_dependencies import ud_parsers
-from language_services.universal_dependencies.shared.tree_building import ud_tree_builder
-from language_services.universal_dependencies.shared.tree_building.ud_tree_node import UDTreeNode
+
 from language_services.universal_dependencies.shared.tree_building.ud_tree import UDTree
+from language_services.universal_dependencies.shared.tree_building.ud_tree_node import UDTreeNode
+from note.collection.jp_collection import JPCollection
+from note.vocabnote import VocabNote
 
 missing_vocab_answer = "---"
 class VocabHit:
