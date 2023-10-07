@@ -88,7 +88,9 @@ class UDTreeNode:
 _excluded_lemmas = {
     (ud_japanese_part_of_speech_tag.inflecting_dependent_word, "たら", "た"),
     (ud_japanese_part_of_speech_tag.inflecting_dependent_word, "に", "だ"),
-    (ud_japanese_part_of_speech_tag.inflecting_dependent_word, "な", "だ")
+    (ud_japanese_part_of_speech_tag.inflecting_dependent_word, "な", "だ"),
+    (ud_japanese_part_of_speech_tag.inflecting_dependent_word, "だろう", "だ"),
+    (ud_japanese_part_of_speech_tag.inflecting_dependent_word, "だろ", "だ"),
 }
 
 _excluded_norms = _excluded_lemmas
