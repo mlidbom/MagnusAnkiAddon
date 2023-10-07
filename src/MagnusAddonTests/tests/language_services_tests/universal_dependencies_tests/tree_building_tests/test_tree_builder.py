@@ -6,11 +6,12 @@ from language_services.universal_dependencies import ud_parsers
 from language_services.universal_dependencies.shared.tree_building import ud_tree_builder
 from language_services.universal_dependencies.shared.tokenizing.ud_tokenizer import UDTokenizer
 from language_services.universal_dependencies.shared.tree_building.ud_tree import UDTree
-from language_services.universal_dependencies.shared.tree_building.ud_tree_node import UDTreeNode
 from sysutils.ex_str import full_width_space
+from tests.language_services_tests.universal_dependencies_tests.tree_building_tests.ud_tree_node_spec import UDTreeNodeSpec
+from tests.language_services_tests.universal_dependencies_tests.tree_building_tests.ud_tree_spec import UDTreeSpec
 
-N = UDTreeNode
-R = UDTree
+N = UDTreeNodeSpec
+R = UDTreeSpec
 def only_string_params(param:Any) -> str: return param if isinstance(param, str) else ""
 
 @pytest.mark.parametrize('sentence, expected', [
@@ -51,7 +52,7 @@ def only_string_params(param:Any) -> str: return param if isinstance(param, str)
     ("言えばよかった", R(N('言えば', '', [N('言え', '言う'), N('ば', '')]), N('よかった', '', [N('よかっ', '良い'), N('た', '')]))),
     ("一度夢を見た", R(N('一度', ''),N('夢を見た', '夢を見る', [N('夢を', '', [N('夢', ''), N('を', '')]), N('見た', '', [N('見', '見る'), N('た', '')])]))),
    ], ids=only_string_params)
-def test_sentences_the_best_parser_does_well(sentence: str, expected: UDTree) -> None: run_tests(expected, ud_parsers.best, sentence)
+def test_sentences_the_best_parser_does_well(sentence: str, expected: UDTreeSpec) -> None: run_tests(expected, ud_parsers.best, sentence)
 
 @pytest.mark.parametrize('sentence, parser, expected', [
     ("ううん藤宮さんは日記を捨てるような人じゃない", ud_parsers.gendai, R(N('ううん藤宮さんは', '', [N('ううん', ''), N('藤宮さんは', '', [N('藤宮', 'フジミヤ'), N('さんは', '', [N('さん', ''), N('は', '')])])]),N('日記を捨てるような', '日記を捨てるようだ', [N('日記を', '', [N('日記', ''), N('を', '')]), N('捨てるような', '捨てるようだ', [N('捨てる', ''), N('よう', '様'), N('な', 'だ')])]),N('人じゃない', '人じゃ無い', [N('人', ''), N('じゃ', 'だ'), N('ない', '無い')]))),
@@ -59,7 +60,7 @@ def test_sentences_the_best_parser_does_well(sentence: str, expected: UDTree) ->
     ("あいつが話の中に出てくるのが", ud_parsers.gendai, R(N('あいつが', '', [N('あいつ', '彼奴'), N('が', '')]), N('話の中に', '', [N('話の', '', [N('話', ''), N('の', '')]), N('中に', '', [N('中', ''), N('に', '')])]), N('出てくるのが', '', [N('出', '出る'), N('て', ''), N('くる', '来る'), N('の', ''), N('が', '')]))),
 
 ], ids=only_string_params)
-def test_sentences_done_better_by_alternative_parser(sentence: str, parser: UDTokenizer, expected: UDTree) -> None: run_tests(expected, parser, sentence)
+def test_sentences_done_better_by_alternative_parser(sentence: str, parser: UDTokenizer, expected: UDTreeSpec) -> None: run_tests(expected, parser, sentence)
 
 # @pytest.mark.parametrize('sentence, parser, expected', [
 #     ("カバンに入れっぱなしだった", ud_parsers.best, R())
@@ -67,25 +68,26 @@ def test_sentences_done_better_by_alternative_parser(sentence: str, parser: UDTo
 # def test_temp(sentence: str, parser: UDParser, expected: UDTextTree) -> None: run_tests(expected, parser, sentence)
 
 
-def run_tests(expected:UDTree, parser: UDTokenizer, sentence:str) -> None:
+def run_tests(expected:UDTreeSpec, parser: UDTokenizer, sentence:str) -> None:
     print()
     parser = parser if parser else ud_parsers.best
-    result = ud_tree_builder.build_tree(parser, sentence)
+    real_result = ud_tree_builder.build_tree(parser, sentence)
+    spec_result = UDTreeSpec.from_ud_tree(real_result)
     print(f"{parser.name} : {sentence}")
     print(parser.parse(sentence).to_tree())
     print()
     print("str:")
-    print(str(result))
+    print(str(spec_result))
     print("expected-repr:")
     print(repr(expected))
     print("repr:")
-    print(repr(result))
+    print(repr(spec_result))
     print("repr-single-line:")
-    print(repr(result).replace("\n", "").replace(full_width_space, ""))
+    print(repr(spec_result).replace("\n", "").replace(full_width_space, ""))
 
     #These seem identical. Let's find out where and how they differ by catching it here.
-    assert ud_tree_builder.build_tree(ud_parsers.spoken, sentence) == ud_tree_builder.build_tree(ud_parsers.gendai, sentence)
-    assert result == expected
+    assert UDTreeSpec.from_ud_tree(ud_tree_builder.build_tree(ud_parsers.spoken, sentence)) == UDTreeSpec.from_ud_tree(ud_tree_builder.build_tree(ud_parsers.gendai, sentence))
+    assert spec_result == expected
 
 
 

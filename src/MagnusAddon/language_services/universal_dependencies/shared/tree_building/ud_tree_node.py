@@ -50,14 +50,6 @@ class UDTreeNode:
     def __str__(self) -> str: return ud_tree_node_formatter.str_(self, 0)
     def __repr__(self) -> str: return ud_tree_node_formatter.repr_(self, 0)
 
-    def __eq__(self, other: Any) -> bool:
-        return (isinstance(other, UDTreeNode)
-                and self.lemma == other.lemma
-                and self.surface == other.surface
-                and self.children == other.children)
-
-    def __hash__(self) -> int: return hash(self.surface)
-
     #todo this does not feel great. Works for the only case I've found so far, but does not feel great. It might be a better approach to try and ensure that a phrase that ends with inflection get separated from the inflection on the tree level.
     def _check_for_inflected_dictionary_phrase(self) -> None:
         if len(self.tokens) > 2 and self.tokens[-1].xpos == ud_japanese_part_of_speech_tag.inflecting_dependent_word:
