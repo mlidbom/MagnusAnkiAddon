@@ -48,7 +48,7 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, sel_clip: str, selection: st
 
     if isinstance(note, SentenceNote):
         sentence_note = checked_cast(SentenceNote, note)
-        add_text_vocab_lookup(note_lookup_menu, "&Vocabulary words", note.get_question())
+        add_lookup_action(note_lookup_menu, "&Vocabulary words", su.notes_by_id([voc.get_id() for voc in note.ud_extract_vocab()]))
         add_lookup_action(note_lookup_menu, "&Kanji", f"""note:{NoteTypes.Kanji} ({" OR ".join([f"{NoteFields.Kanji.question}:{kan}" for kan in note.extract_kanji()])})""")
 
         def exclude_vocab(sentence: SentenceNote, text: str) -> None:
