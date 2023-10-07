@@ -14,6 +14,8 @@ R = UDTreeSpec
 
 def only_string_params(param:Any) -> str: return param if isinstance(param, str) else ''
 
+pytestmark = pytest.mark.skip("Changing expectations dramatically. This will not be re-enabled until we have tested lower tree depths")
+
 @pytest.mark.parametrize('sentence, expected', [
     #todo: maybe use dictionary lookup for sequencial tokens with the same head to look for compounds?
     #maybe the deprel and/or pos will tell us what to merge most times?

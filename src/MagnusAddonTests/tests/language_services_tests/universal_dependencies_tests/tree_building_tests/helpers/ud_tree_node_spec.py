@@ -35,7 +35,7 @@ class UDTreeNodeSpec:
         spec = UDTreeNodeSpec(node.form,
                               node.lemma if node.lemma != node.form else "",
                               node.norm if node.norm != node.lemma else "",
-                              [cls._from_node(child, depth, max_depth) for child in node.children if node.depth <= max_depth])
+                              [cls._from_node(child, depth, max_depth) for child in node.children if node.depth < max_depth])
         spec.depth = node.depth
         if node.is_morpheme():
             spec.token = node.tokens[0]
