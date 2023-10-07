@@ -96,7 +96,8 @@ def test_sentences_done_better_by_alternative_parser(sentence: str, parser: UDTo
 def run_tests(expected:R, parser: UDTokenizer, sentence:str) -> None:
     print()
     parser = parser if parser else ud_parsers.best
-    real_result = ud_tree_builder.build_tree(parser, sentence)
+    # noinspection PyArgumentEqualDefault
+    real_result = ud_tree_builder.build_tree(parser, sentence, collapse_identical_levels=True)
     spec_result = R.from_ud_tree(real_result)
     print(f"{parser.name} : {sentence}")
     print(parser.parse(sentence).to_tree())
