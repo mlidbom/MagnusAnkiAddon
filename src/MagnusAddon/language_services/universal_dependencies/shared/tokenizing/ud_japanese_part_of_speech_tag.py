@@ -1,6 +1,7 @@
 #Japanese POS Tags: https://gist.github.com/masayu-a/e3eee0637c07d4019ec9
 #Universal POS Tags: https://universaldependencies.org/u/pos/index.html
 #Universal Dependency Relations https://universaldependencies.org/u/dep/index.html
+from typing import Any
 
 class UdJapanesePartOfSpeechTag:
     def __init__(self, japanese: str, english_tag:str, english_description: str) -> None:
@@ -9,6 +10,13 @@ class UdJapanesePartOfSpeechTag:
         self.description = english_description
 
     def __str__(self) -> str: return self.description
+
+    def __eq__(self, other:Any) -> bool:
+        return (isinstance(other, UdJapanesePartOfSpeechTag)
+                and other.japanese == self.japanese)
+
+    def __hash__(self) -> int: return hash(self.japanese)
+
 
 _english_pos_tag_dictionary: dict[str, UdJapanesePartOfSpeechTag] = dict()
 _japanese_pos_tag_dictionary: dict[str, UdJapanesePartOfSpeechTag] = dict()

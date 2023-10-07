@@ -2,6 +2,8 @@ from anki.cards import Card
 from aqt import gui_hooks
 
 from ankiutils import app
+from language_services.universal_dependencies import ud_parsers
+from language_services.universal_dependencies.shared.tree_building import ud_tree_builder
 from note.jpnote import JPNote
 from note.sentencenote import SentenceNote
 from viewmodels.sentence_breakdown import sentence_breakdown_viewmodel
@@ -57,7 +59,9 @@ def build_breakdown_html(sentence: SentenceNote) -> str:
     extra_words = sentence.get_user_extra_vocab()
     html = ""
 
-    view_model = sentence_breakdown_viewmodel.create(sentence, app.col())
+    question = sentence.get_question()
+    tree = ud_tree_builder.build_tree(ud_parsers.best, question)
+    view_model = sentence_breakdown_viewmodel.create(tree, app.col())
 
     user_extra = set(extra_words)
     html += _create_html_from_nodes(view_model.nodes, user_excluded, user_extra, 1)

@@ -5,6 +5,7 @@ from typing import Callable
 from language_services.universal_dependencies.shared.tokenizing import ud_japanese_part_of_speech_tag, ud_universal_part_of_speech_tag
 from language_services.universal_dependencies.shared.tokenizing.ud_token import UDToken
 from language_services.universal_dependencies.shared.tree_building import ud_tree_node_formatter
+from language_services.universal_dependencies.shared.tree_building.form_exclusion_specification import FormExclusionSpecification
 from sysutils import kana_utils
 
 class UDTreeNode:
@@ -35,10 +36,6 @@ class UDTreeNode:
         return DictLookup.lookup_word_shallow(self.surface).found_words()
 
     def base_should_be_shown_in_breakdown(self) -> bool:
-        if self.tokens[-1].xpos == ud_japanese_part_of_speech_tag.inflecting_dependent_word:
-            if self.is_morpheme() or self.tokens[-2].upos != ud_universal_part_of_speech_tag.verb:
-                return False  # todo trying this out. It should get rid of fetching だ for な and such. Not sure what other effects it might have...
-
         from language_services.jamdict_ex.dict_lookup import DictLookup
         return self.base_differs_from_surface() and DictLookup.lookup_word_shallow(self.lemma).found_words()
 
@@ -55,7 +52,7 @@ class UDTreeNode:
                 and self.tokens[-2].upos == ud_universal_part_of_speech_tag.verb)
 
     def build_lemma(self) -> str:
-        if self.is_morpheme():
+        if self.is_morpheme() and not self.is_excluded_lemma(self.tokens[0]):
             return self.tokens[0].lemma
 
         if self._node_appears_to_be_inflected_phrase():
@@ -65,3 +62,12 @@ class UDTreeNode:
                 return candidate_lemma
 
         return self.surface
+
+    @staticmethod
+    def is_excluded_lemma(token: UDToken) -> bool:
+        return FormExclusionSpecification.from_token(token) in _excluded_lemmas
+
+#It would be nice to find a logical pattern rather than hardcoded exclusions, but nothing has turned up yet
+_excluded_lemmas = {
+    FormExclusionSpecification(ud_japanese_part_of_speech_tag.inflecting_dependent_word, "たら", "た")
+}

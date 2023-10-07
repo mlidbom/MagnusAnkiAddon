@@ -93,8 +93,5 @@ class BreakDownViewModel:
         self._parse_result = parse_result
         self.nodes = [NodeViewModel(node, collection) for node in parse_result.nodes]
 
-def create(sentence: SentenceNote, collection: JPCollection) -> BreakDownViewModel:
-    question = sentence.get_question()
-    parse_result = ud_tree_builder.build_tree(ud_parsers.best, question)
-
-    return BreakDownViewModel(parse_result, collection)
+def create(tree: UDTree, collection: JPCollection) -> BreakDownViewModel:
+    return BreakDownViewModel(tree, collection)
