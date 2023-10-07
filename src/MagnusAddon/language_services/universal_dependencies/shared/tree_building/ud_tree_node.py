@@ -9,7 +9,7 @@ from sysutils import kana_utils
 class UDTreeNode:
     def __init__(self, surface: str, base: str, children: Optional[list[UDTreeNode]] = None, tokens: Optional[list[UDToken]] = None) -> None:
         self.surface = surface
-        self.base = base if base else surface
+        self.lemma = base if base else surface
         self.tokens:list[UDToken] = tokens if tokens else []
         self.children: list[UDTreeNode] = children if children else []
         if tokens:
@@ -17,13 +17,13 @@ class UDTreeNode:
 
     def is_morpheme(self) -> bool: return not self.children
     def base_differs_from_surface(self) -> bool:
-        return self.base != self.surface
+        return self.lemma != self.surface
 
     def is_really_inflected(self) -> bool:
-        if self.base == self.surface:
+        if self.lemma == self.surface:
             return False
 
-        if kana_utils.is_only_kana(self.base) != kana_utils.is_only_kana(self.surface):
+        if kana_utils.is_only_kana(self.lemma) != kana_utils.is_only_kana(self.surface):
             return False # some tokenizers do us the favor of finding the kanji representation for some words. That does not equal inflection though.
 
         return True
@@ -40,7 +40,7 @@ class UDTreeNode:
             return False # todo trying this out. It should get rid of fetching だ for な and such. Not sure what other effects it might have...
 
         from language_services.jamdict_ex.dict_lookup import DictLookup
-        return self.base_differs_from_surface() and DictLookup.lookup_word_shallow(self.base).found_words()
+        return self.base_differs_from_surface() and DictLookup.lookup_word_shallow(self.lemma).found_words()
 
     def visit(self, callback: Callable[[UDTreeNode],None]) -> None:
         callback(self)
@@ -52,7 +52,7 @@ class UDTreeNode:
 
     def __eq__(self, other: Any) -> bool:
         return (isinstance(other, UDTreeNode)
-                and self.base == other.base
+                and self.lemma == other.lemma
                 and self.surface == other.surface
                 and self.children == other.children)
 
@@ -65,4 +65,4 @@ class UDTreeNode:
                 from language_services.jamdict_ex.dict_lookup import DictLookup
                 candidate_base = "".join(tok.form for tok in self.tokens[:-2]) + self.tokens[-2].lemma
                 if DictLookup.lookup_word_shallow(candidate_base).found_words():
-                    self.base = candidate_base
+                    self.lemma = candidate_base

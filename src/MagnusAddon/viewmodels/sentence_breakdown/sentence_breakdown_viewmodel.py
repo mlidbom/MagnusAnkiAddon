@@ -50,7 +50,7 @@ class NodeViewModel:
         self._collection = collection
         self.children = [NodeViewModel(nod, collection) for nod in node.children]
         self.surface = self._node.surface
-        self.base = node.base if node.base_differs_from_surface() else ""
+        self.base = node.lemma if node.base_differs_from_surface() else ""
         self.surface_vocab_hits, self.base_vocab_hits = self._vocab_hits()
 
 
