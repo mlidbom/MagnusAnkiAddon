@@ -35,8 +35,12 @@ class UDTreeNode:
         return DictLookup.lookup_word_shallow(self.form).found_words()
 
     def form_should_be_shown_in_breakdown(self) -> bool:
-        if self.is_morpheme() and self.tokens[0].upos == ud_universal_part_of_speech_tag.verb:
-            return False
+        if self.is_morpheme():
+            if self.tokens[0].upos == ud_universal_part_of_speech_tag.verb:
+                return False
+            if self.is_excluded_surface(self.tokens[0]):
+                return False
+
 
         return self.is_form_dictionary_word()
 
@@ -77,6 +81,10 @@ class UDTreeNode:
         return self.form
 
     @staticmethod
+    def is_excluded_surface(token: UDToken) -> bool:
+        return (token.xpos, token.form, token.lemma) in _excluded_surfaces
+
+    @staticmethod
     def is_excluded_lemma(token: UDToken) -> bool:
         return (token.xpos, token.form, token.lemma) in _excluded_lemmas
 
@@ -85,6 +93,10 @@ class UDTreeNode:
         return (token.xpos, token.form, token.norm) in _excluded_norms
 
 # It would be nice to find a logical pattern rather than hardcoded exclusions, but nothing has turned up yet
+_excluded_surfaces = {
+    (ud_japanese_part_of_speech_tag.inflecting_dependent_word, "て", "てる"),
+}
+
 _excluded_lemmas = {
     (ud_japanese_part_of_speech_tag.inflecting_dependent_word, "たら", "た"),
     (ud_japanese_part_of_speech_tag.inflecting_dependent_word, "に", "だ"),

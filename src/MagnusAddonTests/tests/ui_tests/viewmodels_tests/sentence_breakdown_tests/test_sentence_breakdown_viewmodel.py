@@ -28,6 +28,7 @@ def setup_object() -> Generator[None, None, None]:
     ("だったら", SB(N("だったら", "", V("だったら", "", "", "---"), N("だっ", "だ", V("だっ", "だ", "", "cop{be/is} aux{past-tense | please/do}")), N("たら", "", V("たら", "", "", "conj{if/when} prt{as-for | why-not..  | I-said!/I-tell-you!}"))))),
     ("気づかなかった", SB(N("気づかなかった", "", N("気づか", "気づく", V("気づか", "気づく", "", "to: notice/realize | come-to-one's-senses"), V("気づか", "気づく", "気付く", "to: realize/notice")), N("なかっ", "ない", V("なかっ", "ない", "無い", "{negation} | nonexistent | unowned | impossible/won't-happen")), N("た", "", V("た", "", "", "{past-tense} | (please)do"))))),
     ("出しといて", SB(N("出しといて", "", N("出し", "出す", V("出し", "出す", "", "---")), N("とい", "とく", V("とい", "とく", "", "---")), N("て", "", V("て", "", "", "{continuing-action}"), V("て", "", "って", "{quotes(speech|thoughts|implications)} | {topic-marker}"))))),
+    ("してた", SB(N("してた", "", N("し", "する", V("し", "する", "", "{verbalizes-noun} #to: do | make-into | serve-as | wear")), N("て", "てる", V("て", "てる", "", "{continuing-{activity | state}} / {progressive | perfect}")), N("た", "", V("た", "", "", "{past-tense} | (please)do"))))),
 
 ])
 def test_sentence_breakdown_viewmodel(sentence: str, expected: SentenceBreakdownViewModelSpec) -> None:
