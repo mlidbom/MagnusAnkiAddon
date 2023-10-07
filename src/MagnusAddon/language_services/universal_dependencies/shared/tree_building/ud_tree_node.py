@@ -9,34 +9,40 @@ from sysutils import kana_utils
 
 class UDTreeNode:
     def __init__(self, children: list[UDTreeNode], tokens: list[UDToken]) -> None:
-        self.surface = "".join(tok.form for tok in tokens)
+        self.form = "".join(tok.form for tok in tokens)
         self.tokens = tokens
         self.children = children
         self.norm = self.build_norm()
         self.lemma = self.build_lemma()
 
     def is_morpheme(self) -> bool: return not self.children
-    def base_differs_from_surface(self) -> bool:
-        return self.lemma != self.surface
+    def lemma_differs_from_form(self) -> bool:
+        return self.lemma != self.form
 
     def is_really_inflected(self) -> bool:
-        if self.lemma == self.surface:
+        if self.lemma == self.form:
             return False
 
-        if kana_utils.is_only_kana(self.lemma) != kana_utils.is_only_kana(self.surface):
+        if kana_utils.is_only_kana(self.lemma) != kana_utils.is_only_kana(self.form):
             return False  # some tokenizers do us the favor of finding the kanji representation for some words. That does not equal inflection though.
 
         return True
 
     def is_compound(self) -> bool: return len(self.children) > 0
 
-    def is_surface_dictionary_word(self) -> bool:
+    def is_form_dictionary_word(self) -> bool:
         from language_services.jamdict_ex.dict_lookup import DictLookup
-        return DictLookup.lookup_word_shallow(self.surface).found_words()
+        return DictLookup.lookup_word_shallow(self.form).found_words()
 
-    def base_should_be_shown_in_breakdown(self) -> bool:
+    def form_should_be_shown_in_breakdown(self) -> bool:
+        if self.is_morpheme() and self.tokens[0].upos == ud_universal_part_of_speech_tag.verb:
+            return False
+
+        return self.is_form_dictionary_word()
+
+    def lemma_should_be_shown_in_breakdown(self) -> bool:
         from language_services.jamdict_ex.dict_lookup import DictLookup
-        return self.base_differs_from_surface() and DictLookup.lookup_word_shallow(self.lemma).found_words()
+        return self.lemma_differs_from_form() and DictLookup.lookup_word_shallow(self.lemma).found_words()
 
     def visit(self, callback: Callable[[UDTreeNode], None]) -> None:
         callback(self)
@@ -54,7 +60,7 @@ class UDTreeNode:
         if self.children: return ""
 
         if self.is_excluded_norm(self.tokens[0]):
-            return self.surface
+            return self.form
 
         return self.tokens[0].norm
 
@@ -68,7 +74,7 @@ class UDTreeNode:
             if DictLookup.lookup_word_shallow(candidate_lemma).found_words():
                 return candidate_lemma
 
-        return self.surface
+        return self.form
 
     @staticmethod
     def is_excluded_lemma(token: UDToken) -> bool:

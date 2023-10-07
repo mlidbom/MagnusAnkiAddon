@@ -27,8 +27,8 @@ class UDTreeNodeSpec:
 
     @classmethod
     def from_node(cls, node:UDTreeNode) -> UDTreeNodeSpec:
-        spec = UDTreeNodeSpec(node.surface,
-                              node.lemma if node.lemma != node.surface else "",
+        spec = UDTreeNodeSpec(node.form,
+                              node.lemma if node.lemma != node.form else "",
                               node.norm if node.norm != node.lemma else "",
                               [cls.from_node(child) for child in node.children])
         if node.is_morpheme():

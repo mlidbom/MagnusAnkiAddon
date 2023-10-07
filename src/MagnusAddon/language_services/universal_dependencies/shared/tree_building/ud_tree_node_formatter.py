@@ -35,6 +35,6 @@ def _children_str(node: UDTreeNode, level:int = 1) -> str:
 
 def str_(node: UDTreeNode, level: int) -> str:
     indent = full_width_space * 2 * level
-    start = f"""{indent}{node.surface}{f"{full_width_space}－{full_width_space}" + node.lemma if node.base_differs_from_surface() else ""}"""
+    start = f"""{indent}{node.form}{f"{full_width_space}－{full_width_space}" + node.lemma if node.lemma_differs_from_form() else ""}"""
     start = kana_utils.pad_to_length(start, 20)
     return f"""{start}{_str_pos(node)}{_children_str(node, level + 1)}"""

@@ -49,8 +49,8 @@ class NodeViewModel:
         self._node = node
         self._collection = collection
         self.children = [NodeViewModel(nod, collection) for nod in node.children]
-        self.surface = self._node.surface
-        self.base = node.lemma if node.base_differs_from_surface() else ""
+        self.surface = self._node.form
+        self.base = node.lemma if node.lemma_differs_from_form() else ""
         self.surface_vocab_hits, self.base_vocab_hits = self._vocab_hits()
 
 
@@ -63,24 +63,25 @@ class NodeViewModel:
         hits.sort(key=question)
 
     def _vocab_hits(self) -> tuple[list[VocabHit], list[VocabHit]]:
-        surface_vocab_notes = self._collection.vocab.with_form(self.surface)
+
+        form_vocab_notes:list[VocabNote] = self._collection.vocab.with_form(self.surface) if self._node.form_should_be_shown_in_breakdown() else []
 
         base_vocab_notes:list[VocabNote] = []
-        if self._node.base_should_be_shown_in_breakdown():
+        if self._node.lemma_should_be_shown_in_breakdown():
             base_vocab_notes = self._collection.vocab.with_form(self.base)
 
         found_base_vocab = len(base_vocab_notes) > 0
-        surface_vocab_ids = set(n.get_id() for n in surface_vocab_notes)
+        surface_vocab_ids = set(n.get_id() for n in form_vocab_notes)
         base_vocab_notes = [b for b in base_vocab_notes if b.get_id() not in surface_vocab_ids]
 
-        surface_vocab = [VocabHit.surface_from_vocab(self, vocab) for vocab in surface_vocab_notes]
+        surface_vocab = [VocabHit.surface_from_vocab(self, vocab) for vocab in form_vocab_notes]
         base_vocab = [VocabHit.base_from_vocab(self, vocab) for vocab in base_vocab_notes]
 
 
-        if not surface_vocab and self._node.is_surface_dictionary_word():
+        if not surface_vocab and self._node.form_should_be_shown_in_breakdown():
             surface_vocab.append(VocabHit.missing_surface(self))
 
-        if not found_base_vocab and self._node.base_should_be_shown_in_breakdown():
+        if not found_base_vocab and self._node.lemma_should_be_shown_in_breakdown():
             base_vocab.append(VocabHit.missing_base(self))
 
 

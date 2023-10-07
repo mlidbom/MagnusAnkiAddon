@@ -55,6 +55,7 @@ def only_string_params(param:Any) -> str: return param if isinstance(param, str)
     ("そっちへ行ったぞ", R(N('そっちへ', '', '', [N('そっち', '', '其方'), N('へ', '', '')]),N('行ったぞ', '', '', [N('行っ', '行く', ''), N('た', '', ''), N('ぞ', '', '')]))),
     ("だったら", R(N('だったら', '', '', [N('だっ', 'だ', ''), N('たら', '', '')]))),
 
+
    ], ids=only_string_params)
 def test_sentences_the_best_parser_does_well(sentence: str, expected: R) -> None: run_tests(expected, ud_parsers.best, sentence)
 

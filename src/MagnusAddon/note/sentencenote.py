@@ -61,8 +61,8 @@ class SentenceNote(JPNote):
         word_forms: set[str] = set()
 
         def get_node_forms(node: UDTreeNode) -> None:
-            word_forms.add(node.surface)
-            if node.base_should_be_shown_in_breakdown():
+            word_forms.add(node.form)
+            if node.lemma_should_be_shown_in_breakdown():
                 word_forms.add(node.lemma)
 
         tree.visit(get_node_forms)
