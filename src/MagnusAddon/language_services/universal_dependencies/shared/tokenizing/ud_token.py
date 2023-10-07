@@ -54,5 +54,6 @@ class UDToken:
                 f"""{ex_str.pad_to_length_ui_font(str(self.head.id), 3)}""" +
                 f"""{ex_str.pad_to_length_ui_font(self.deprel.description, 30)}""" +
                 f"""{ex_str.pad_to_length_ui_font(self.xpos.description, 30)}""" +
-                f"""{ex_str.pad_to_length_ui_font(self.upos.description, 26)}""" +
-                f"""feat:{self.feats} deps:{self.deps} misc:{self.misc}""")
+                f"""{ex_str.pad_to_length_ui_font(self.upos.description, 30)}""" +
+                f"""feat:{ex_str.pad_to_length_ui_font(self.feats, 40)}""" +
+                f"""deps:{self.deps} misc:{self.misc}""")
