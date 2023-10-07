@@ -20,17 +20,8 @@ class UDToken:
             self.deps = typed.str_(token.dep_).lower()
             self.misc = "UNKNOWN_FIX_ME" # typed.str_(token.misc)
             self.form = typed.str_(token.text)
-
-            # todo: think about this. it has lemma_ but that does not seem to map to kanji, while norm_ does...
-            # lemma is often empty and I always LIKE that it is when it is. It is only populated when I would not find the correct value in a dictionary based on the surface.
-            # norm_ on the other hand seems to always be populated whenever it can be figured out.
-            # for now. let's try to populated lemma with the norm_ but only if lemma_ differs from form or norm_ contains kanji
             self.norm = typed.str_(token.norm_)
-            self.lemma_real = typed.str_(token.lemma_)
-            self.lemma = self.norm if self.lemma_real != self.form else self.lemma_real
-
-
-
+            self.lemma = typed.str_(token.lemma_)
             self.upos = ud_universal_part_of_speech_tag.get_tag(typed.str_(token.pos_))
             self.xpos = ud_japanese_part_of_speech_tag.get_tag(typed.str_(token.tag_))
             self.deprel = ud_relationship_tag.get_tag(typed.str_(token.dep_).lower())
@@ -44,7 +35,6 @@ class UDToken:
             self.deps = typed.str_(token.deps)
             self.misc = typed.str_(token.misc)
             self.form = typed.str_(token.form)
-
             self.norm = typed.str_(token.lemma)
             self.lemma = typed.str_(token.lemma)
             self.upos = ud_universal_part_of_speech_tag.get_tag(typed.str_(token.upos))

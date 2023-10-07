@@ -26,7 +26,7 @@ def setup_object() -> Generator[None, None, None]:
     ("そっちへ行ったぞ", SB(N("そっちへ", "", N("そっち", "", V("そっち", "", "", "---")), N("へ", "", V("へ", "", "", "---"))), N("行ったぞ", "", N("行っ", "行く", V("行っ", "行く", "", "to: go(wide.lit.fig)")), N("た", "", V("た", "", "", "{past-tense} | (please)do")), N("ぞ", "", V("ぞ", "", "", "---"))))),
     #todo: the V("たら", "た"... is bad
     ("だったら", SB(N("だったら", "", V("だったら", "", "", "---"), N("だっ", "だ", V("だっ", "だ", "", "cop{be/is} aux{past-tense | please/do}")), N("たら", "", V("たら", "", "", "conj{if/when} prt{as-for | why-not..  | I-said!/I-tell-you!}"))))),
-    ("気づかなかった", SB(N("気づかなかった", "", N("気づか", "気付く", V("気づか", "気付く", "", "to: realize/notice"), V("気づか", "気付く", "気づく", "to: notice/realize | come-to-one's-senses")), N("なかっ", "ない", V("なかっ", "ない", "無い", "{negation} | nonexistent | unowned | impossible/won't-happen")), N("た", "", V("た", "", "", "{past-tense} | (please)do"))))),
+    ("気づかなかった", SB(N("気づかなかった", "", N("気づか", "気づく", V("気づか", "気づく", "", "to: notice/realize | come-to-one's-senses"), V("気づか", "気づく", "気付く", "to: realize/notice")), N("なかっ", "ない", V("なかっ", "ない", "無い", "{negation} | nonexistent | unowned | impossible/won't-happen")), N("た", "", V("た", "", "", "{past-tense} | (please)do"))))),
 
 ])
 def test_sentence_breakdown_viewmodel(sentence: str, expected: SentenceBreakdownViewModelSpec) -> None:
