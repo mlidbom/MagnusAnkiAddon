@@ -10,11 +10,10 @@ from sysutils import kana_utils
 class UDTreeNode:
     def __init__(self, children: list[UDTreeNode], tokens: list[UDToken]) -> None:
         self.surface = "".join(tok.form for tok in tokens)
-        self.lemma = "".join(tok.form for tok in tokens[:-1]) + tokens[-1].lemma
-        self.tokens: list[UDToken] = tokens if tokens else []
-        self.children: list[UDTreeNode] = children if children else []
-        if tokens:
-            self._check_for_inflected_dictionary_phrase()
+        self.tokens = tokens
+        self.children = children
+
+        self.lemma = self.build_lemma()
 
     def is_morpheme(self) -> bool: return not self.children
     def base_differs_from_surface(self) -> bool:
@@ -49,11 +48,18 @@ class UDTreeNode:
 
     def __str__(self) -> str: return ud_tree_node_formatter.str_(self, 0)
 
-    # todo this does not feel great. Works for the only case I've found so far, but does not feel great. It might be a better approach to try and ensure that a phrase that ends with inflection get separated from the inflection on the tree level.
-    def _check_for_inflected_dictionary_phrase(self) -> None:
-        if len(self.tokens) > 2 and self.tokens[-1].xpos == ud_japanese_part_of_speech_tag.inflecting_dependent_word:
-            if self.tokens[-2].upos == ud_universal_part_of_speech_tag.verb:
-                from language_services.jamdict_ex.dict_lookup import DictLookup
-                candidate_base = "".join(tok.form for tok in self.tokens[:-2]) + self.tokens[-2].lemma
-                if DictLookup.lookup_word_shallow(candidate_base).found_words():
-                    self.lemma = candidate_base
+    def _node_appears_to_be_inflected_phrase(self) -> bool:
+        return (len(self.tokens) > 2
+                and self.tokens[-1].xpos == ud_japanese_part_of_speech_tag.inflecting_dependent_word
+                and self.tokens[-2].upos == ud_universal_part_of_speech_tag.verb)
+
+    def build_lemma(self) -> str:
+        # todo this does not feel great. Works for the only case I've found so far, but does not feel great. It might be a better approach to try and ensure that a phrase that ends with inflection get separated from the inflection on the tree level.
+        if self._node_appears_to_be_inflected_phrase():
+            from language_services.jamdict_ex.dict_lookup import DictLookup
+            candidate_lemma = "".join(tok.form for tok in self.tokens[:-2]) + self.tokens[-2].lemma
+            if DictLookup.lookup_word_shallow(candidate_lemma).found_words():
+                return candidate_lemma
+
+        # the default lemma
+        return "".join(tok.form for tok in self.tokens[:-1]) + self.tokens[-1].lemma
