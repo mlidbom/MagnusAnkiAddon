@@ -31,7 +31,7 @@ def _children_repr(node: UDTreeNodeSpec, level:int = 1) -> str:
 def _indent(level: int) -> str: return full_width_space * 2 * level
 
 def repr_(node: UDTreeNodeSpec, level: int) -> str:
-    return f"""{_indent(level)}N('{node.surface}', '{node.lemma if node.surface != node.lemma else ""}'{_children_repr(node, level + 1)})"""
+    return f"""{_indent(level)}N('{node.surface}', '{node.lemma if node.surface != node.lemma else ""}', '{node.norm}'{_children_repr(node, level + 1)})"""
 
 
 def _children_str(node: UDTreeNodeSpec, level:int = 1) -> str:
@@ -44,7 +44,15 @@ def _children_str(node: UDTreeNodeSpec, level:int = 1) -> str:
 
 
 def str_(node: UDTreeNodeSpec, level: int) -> str:
+    padding = 20
     indent = full_width_space * 2 * level
-    start = f"""{indent}{node.surface}{f"{full_width_space}－{full_width_space}" + node.lemma if node.surface != node.lemma else ""}"""
-    start = kana_utils.pad_to_length(start, 20)
+    lemma = f" ({node.lemma})" if node.surface != node.lemma else ""
+    norm = f" [{node.norm}]" if node.norm else ""
+    start = f"""{indent}{node.surface}{lemma}{norm}"""
+
+    if lemma: padding += 1
+    if norm: padding += 1
+
+    start = kana_utils.pad_to_length(start, padding)
+
     return f"""{start}{_str_pos(node)}{_children_str(node, level + 1)}"""

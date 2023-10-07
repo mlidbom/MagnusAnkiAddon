@@ -12,7 +12,7 @@ class UDTreeNode:
         self.surface = "".join(tok.form for tok in tokens)
         self.tokens = tokens
         self.children = children
-
+        self.norm = tokens[0].norm if not children else ""
         self.lemma = self.build_lemma()
 
     def is_morpheme(self) -> bool: return not self.children
