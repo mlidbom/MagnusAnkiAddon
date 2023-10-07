@@ -82,6 +82,9 @@ def _build_compounds(tokens: list[UDToken], depth: int) -> list[list[UDToken]]:
 
         elif depth == _Depth.surface_0:
             compound.consume_while_child_of(compound.first)
+            # todo Maybe we have this all wrong. Maybe we should be looking ahead for more children of first,
+            #  and children of firsts children.
+            #  Why would we want to go searching for our parent?
             compound.consume_until_and_including(compound.first.head)
             compound.consume_while_child_of(compound.first.head)
 

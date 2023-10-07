@@ -15,21 +15,34 @@ R = UDTreeSpec
 def only_string_params(param:Any) -> str: return param if isinstance(param, str) else ''
 
 @pytest.mark.parametrize('sentence, expected', [
-    # todo でも, かも
+    #todo: maybe use dictionary lookup for sequencial tokens with the same head to look for compounds?
+    #maybe the deprel and/or pos will tell us what to merge most times?
+    #sequential items with the same head(usually previous) are interesting.
+    #do they also need other attributes to me "mergeable"?
+    #deprels of interest
+    # fixed_multiword_expression seems a no-brainer, these go together with each other if sequential. How do they relate to their head?
+    # compound should be compounded  with head? 会う(こと:compound)
+    # then fixed-multiword attaches to compound? to form a larger contiuation:
+    #  (聞か(なかっ:aux/infl|た:aux/infl|こと:compound/noun(に:multi/case|し:multi/verb_bound)))) then as we recurse we want to first drop the 聞か, then the こと
+    #
+    #todo (夜)でも(case marking, 夜-head), かも(marker/case_marking, 会う-head)
     ("今じゃ町は夜でも明るいしもう会うこともないかもな", R(N('今じゃ町は', '', '', [N('今じゃ', '', '', [N('今', '', ''), N('じゃ', '', 'で')]), N('町は', '', '', [N('町', '', ''), N('は', '', '')])]),N('夜でも明るいし', '', '', [N('夜でも', '', '', [N('夜', '', ''), N('で', '', ''), N('も', '', '')]), N('明るいし', '', '', [N('明るい', '', ''), N('し', '', '')])]),N('もう会うこと', '', '', [N('もう', '', ''), N('会うこと', '', '', [N('会う', '', ''), N('こと', '', '')])]),N('もないかもな', '', '', [N('も', '', ''), N('ない', '', '無い'), N('か', '', ''), N('も', '', ''), N('な', '', '')]))),
-    # todo てもいい, ても
+    #todo ても, てもいい (も,いい: fixed_multiword_expression, て-head)
     ("食べてもいいけど", R(N('食べて', '', '', [N('食べ', '食べる', ''), N('て', '', '')]),N('も', '', ''),N('いい', '', '良い'),N('けど', '', 'けれど'))),
-    # todo のに
+    #todo (いる)のに(marker,case_marking: いる-head)
     ("いるのにキス", R(N('いるのに', '', '', [N('いる', '', '居る'), N('の', '', ''), N('に', '', '')]), N('キス', '', ''))),
-    # todo なかったことにして
+    #todo (聞か)なかった:ことにし(-て) (なかっ:auxiliary, た:auxiliary, こと:compound  聞か-head) (に,し fixed_multiword こと-head)
     ("聞かなかったことにしてあげる", R(N('聞かなかったこと', '', '', [N('聞か', '聞く', ''), N('なかっ', 'ない', ''), N('た', '', ''), N('こと', '', '')]),N('に', '', ''),N('し', 'する', '為る'),N('て', '', ''),N('あげる', '', '上げる'))),
     #todo volitional form..
-    ("と…とりあえず　ご飯食べよう", R(N('と…', '', '', [N('と', '', ''), N('…', '.', '')]),N('とりあえず', '', '取り敢えず'),N('ご飯食べよう', '', '', [N('ご飯', '', '御飯'), N('食べよう', '食べる', '')]))),
+    ("とりあえず　ご飯食べよう", R(N('とりあえず', '', '取り敢えず'),N('ご飯食べよう', '', '', [N('ご飯', '', '御飯'), N('食べよう', '食べる', '')]))),
     #todo いいよう
     ("先生にいいように言って", R(N('先生に', '', '', [N('先生', '', ''), N('に', '', '')]),N('いいように言って', '', '', [N('いいように', '', '', [N('いい', '', '良い'), N('よう', '', ''), N('に', '', '')]), N('言って', '', '', [N('言っ', '言う', ''), N('て', '', '')])]))),
     #todo: かっこいい
     ("意外とかっこいいな", R(N('意外と', '', '', [N('意外', '', ''), N('と', '', '')]),N('かっこいいな', '', '', [N('かっこ', '', '格好'), N('いいな', '', '', [N('いい', '', '良い'), N('な', '', '')])]))),
+   ], ids=only_string_params)
+def test_sentences_we_are_unsatisfied_with(sentence: str, expected: R) -> None: run_tests(expected, ud_parsers.best, sentence)
 
+@pytest.mark.parametrize('sentence, expected', [
     ("ように言ったのも", R(N('ように', '', '', [N('よう', '', ''), N('に', '', '')]),N('言ったのも', '', '', [N('言っ', '言う', ''), N('た', '', ''), N('の', '', ''), N('も', '', '')]))),
     ("ごめん　自分から誘っといて ちゃんと調べておけばよかった", R(N('ごめん自分から誘っといてちゃんと調べて', '', '', [N('ごめん', '', '御免'), N('自分から誘っといて', '', '', [N('自分から', '', '', [N('自分', '', ''), N('から', '', '')]), N('誘っといて', '', '', [N('誘っ', '誘う', ''), N('とい', 'とく', ''), N('て', '', '')])]), N('ちゃんと調べて', '', '', [N('ちゃんと', '', ''), N('調べて', '', '', [N('調べ', '調べる', ''), N('て', '', '')])])]),N('おけばよかった', '', '', [N('おけ', 'おく', ''), N('ば', '', ''), N('よかった', '', '', [N('よかっ', 'よい', '良い'), N('た', '', '')])]))),
     ("探しているんですか", R(N('探して', '', '', [N('探し', '探す', ''), N('て', '', '')]),N('いる', '', '居る'),N('んです', '', '', [N('ん', '', 'の'), N('です', '', '')]),N('か', '', ''))),
