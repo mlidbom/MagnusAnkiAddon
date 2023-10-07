@@ -22,16 +22,16 @@ def _str_pos(node: UDTreeNodeSpec) -> str:
     return "_"
 
 
-def _children_repr(node: UDTreeNodeSpec, level:int = 1) -> str:
+def _children_repr(node: UDTreeNodeSpec) -> str:
     if not node.children:
         return ""
-    children_string = ', \n'.join(repr_(child, level) for child in node.children)
+    children_string = ', \n'.join(repr_(child) for child in node.children)
     return f""", [\n{children_string}]"""
 
-def _indent(level: int) -> str: return full_width_space * 2 * level
+def _indent(depth: int) -> str: return full_width_space * 2 * depth
 
-def repr_(node: UDTreeNodeSpec, level: int) -> str:
-    return f"""{_indent(level)}N('{node.surface}', '{node.lemma if node.surface != node.lemma else ""}', '{node.norm}'{_children_repr(node, level + 1)})"""
+def repr_(node: UDTreeNodeSpec) -> str:
+    return f"""{_indent(node.depth)}N('{node.surface}', '{node.lemma if node.surface != node.lemma else ""}', '{node.norm}'{_children_repr(node)})"""
 
 
 def _children_str(node: UDTreeNodeSpec, level:int = 1) -> str:
@@ -39,13 +39,13 @@ def _children_str(node: UDTreeNodeSpec, level:int = 1) -> str:
         return ""
 
     line_start = f'\n'
-    children_string = line_start.join(str_(child, level) for child in node.children)
+    children_string = line_start.join(str_(child) for child in node.children)
     return f"""{line_start}{children_string}"""
 
 
-def str_(node: UDTreeNodeSpec, level: int) -> str:
+def str_(node: UDTreeNodeSpec) -> str:
     padding = 20
-    indent = full_width_space * 2 * level
+    indent = full_width_space * 2 * node.depth
     depth = ex_str.pad_to_length(str(node.depth), 3)
     lemma = f" ({node.lemma})" if node.surface != node.lemma else ""
     norm = f" [{node.norm}]" if node.norm else ""
@@ -56,4 +56,4 @@ def str_(node: UDTreeNodeSpec, level: int) -> str:
 
     start = kana_utils.pad_to_length(start, padding)
 
-    return f"""{depth}{start}{_str_pos(node)}{_children_str(node, level + 1)}"""
+    return f"""{depth}{start}{_str_pos(node)}{_children_str(node)}"""

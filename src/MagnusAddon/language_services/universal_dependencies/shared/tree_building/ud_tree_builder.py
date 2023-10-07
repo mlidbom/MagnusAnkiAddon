@@ -28,6 +28,8 @@ class CompoundBuilder:
         self.compound_tokens = compound_tokens
 
     @property
+    def current(self) -> UDToken: return self.compound_tokens[-1]
+    @property
     def next(self) -> UDToken: return self.source_tokens[0]
     @property
     def first(self) -> UDToken: return self.compound_tokens[0]
@@ -48,6 +50,12 @@ class CompoundBuilder:
 
     def consume_until_and_including(self, token: UDToken) -> None:
         self.compound_tokens += ex_list.consume_until_and_including(ex_predicate.eq_(token), self.source_tokens)
+
+    def consume_all_descendents_of_current(self) -> None:
+        parents:set[UDToken] = {self.current}
+        while self.has_next and self.next.head in parents:
+            parents.add(self.next)
+            self.consume_next()
 
     @staticmethod
     def start_compound_by_consuming_first_from(source_tokens: list[UDToken]) -> CompoundBuilder:
@@ -82,12 +90,7 @@ def _build_compounds(tokens: list[UDToken], depth: int) -> list[list[UDToken]]:
                 compound.consume_while_child_of(compound.first.head)
 
         elif depth == _Depth.surface_0:
-            compound.consume_while_child_of(compound.first)
-            # todo Maybe we have this all wrong. Maybe we should be looking ahead for more children of first,
-            #  and children of firsts children.
-            #  Why would we want to go searching for our parent?
-            compound.consume_until_and_including(compound.first.head)
-            compound.consume_while_child_of(compound.first.head)
+            compound.consume_all_descendents_of_current()
 
     return [cb.compound_tokens for cb in created_compounds]
 
