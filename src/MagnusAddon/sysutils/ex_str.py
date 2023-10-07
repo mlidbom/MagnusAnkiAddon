@@ -4,9 +4,12 @@ import re
 newline = "\n"
 full_width_space = "　"
 
-def pad_to_length(value: str, target_length: int) -> str:
+def pad_to_length(value: str, target_length: int, space_scaling:float = 1.0) -> str:
     padding = max(0, target_length - len(value))
-    return value + " " * padding
+    return value + " " * int(padding * space_scaling)
+
+def pad_to_length_ui_font(text:str, length: int) -> str:
+    return pad_to_length(text, length, 1.5)
 
 def extract_characters(string: str) -> list[str]:
     return [char for char in string if not char.isspace()]
@@ -32,5 +35,3 @@ def remove_duplicates_characters(input_str: str) -> str:
             seen.add(char)
             output_str += char
     return output_str
-
-
