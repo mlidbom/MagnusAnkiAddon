@@ -55,4 +55,3 @@ class UDToken:
             self.head = self #ugly hack to get python typing working in spite of the recursive nature of this class. Will be replaced with correct value by parent object.
 
     def is_head_of(self, candidate: UDToken) -> bool: return self == candidate.head
-    def is_child_of(self, candidate: UDToken) -> bool: return self.head == candidate
