@@ -6,8 +6,8 @@ from language_services.universal_dependencies import ud_parsers
 from language_services.universal_dependencies.shared.tokenizing.ud_tokenizer import UDTokenizer
 from language_services.universal_dependencies.shared.tree_building import ud_tree_builder
 from sysutils.ex_str import full_width_space
-from tests.language_services_tests.universal_dependencies_tests.tree_building_tests.ud_tree_node_spec import UDTreeNodeSpec
-from tests.language_services_tests.universal_dependencies_tests.tree_building_tests.ud_tree_spec import UDTreeSpec
+from tests.language_services_tests.universal_dependencies_tests.tree_building_tests.helpers.ud_tree_node_spec import UDTreeNodeSpec
+from tests.language_services_tests.universal_dependencies_tests.tree_building_tests.helpers.ud_tree_spec import UDTreeSpec
 
 N = UDTreeNodeSpec
 R = UDTreeSpec

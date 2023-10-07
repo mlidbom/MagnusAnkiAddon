@@ -4,7 +4,7 @@ from typing import Any
 
 from language_services.universal_dependencies.shared.tokenizing.ud_token import UDToken
 from language_services.universal_dependencies.shared.tree_building.ud_tree_node import UDTreeNode
-from tests.language_services_tests.universal_dependencies_tests.tree_building_tests import ud_tree_node_spec_formatter
+from tests.language_services_tests.universal_dependencies_tests.tree_building_tests.helpers import ud_tree_node_spec_formatter
 
 class UDTreeNodeSpec:
     def __init__(self, surface: str, lemma: str, norm: str, children: list[UDTreeNodeSpec] | None = None) -> None:
@@ -27,11 +27,15 @@ class UDTreeNodeSpec:
                 and other.norm == self.norm)
 
     @classmethod
-    def from_node(cls, node:UDTreeNode) -> UDTreeNodeSpec:
+    def from_node(cls, node:UDTreeNode, max_depth:int) -> UDTreeNodeSpec:
+        return cls._from_node(node, 0, max_depth)
+
+    @classmethod
+    def _from_node(cls, node:UDTreeNode, depth:int, max_depth:int) -> UDTreeNodeSpec:
         spec = UDTreeNodeSpec(node.form,
                               node.lemma if node.lemma != node.form else "",
                               node.norm if node.norm != node.lemma else "",
-                              [cls.from_node(child) for child in node.children])
+                              [cls._from_node(child, depth, max_depth) for child in node.children if node.depth <= max_depth])
         spec.depth = node.depth
         if node.is_morpheme():
             spec.token = node.tokens[0]

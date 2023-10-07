@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 from sysutils.ex_str import full_width_space
 
 if TYPE_CHECKING:
-    from tests.language_services_tests.universal_dependencies_tests.tree_building_tests.ud_tree_node_spec import UDTreeNodeSpec
+    from tests.language_services_tests.universal_dependencies_tests.tree_building_tests.helpers.ud_tree_node_spec import UDTreeNodeSpec
 
 from sysutils import kana_utils
 from sysutils import ex_str
