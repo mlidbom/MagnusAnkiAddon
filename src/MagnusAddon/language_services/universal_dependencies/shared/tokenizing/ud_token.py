@@ -27,7 +27,7 @@ class UDToken:
             # for now. let's try to populated lemma with the norm_ but only if lemma_ differs from form or norm_ contains kanji
             self.norm = typed.str_(token.norm_)
             self.lemma_real = typed.str_(token.lemma_)
-            self.lemma = self.norm if self.lemma_real != self.form or not kana_utils.is_only_kana(self.norm) else self.lemma_real
+            self.lemma = self.norm if self.lemma_real != self.form else self.lemma_real
 
 
 
