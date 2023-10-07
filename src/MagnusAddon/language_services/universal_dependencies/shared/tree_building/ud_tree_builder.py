@@ -89,7 +89,7 @@ def _build_compounds(tokens: list[UDToken], depth: int) -> list[list[UDToken]]:
 
 def _create_node(tokens: list[UDToken], depth: int) -> 'UDTreeNode':
     children = _build_child_compounds(tokens, depth + 1) if len(tokens) > 1 else []
-    return UDTreeNode(children, tokens)
+    return UDTreeNode(depth, children, tokens)
 
 def _build_child_compounds(parent_node_tokens: list[UDToken], depth: int) -> list[UDTreeNode]:
     compounds = _build_compounds(parent_node_tokens, depth)

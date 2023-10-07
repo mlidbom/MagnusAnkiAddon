@@ -8,7 +8,8 @@ from language_services.universal_dependencies.shared.tree_building import ud_tre
 from sysutils import kana_utils
 
 class UDTreeNode:
-    def __init__(self, children: list[UDTreeNode], tokens: list[UDToken]) -> None:
+    def __init__(self, depth: int, children: list[UDTreeNode], tokens: list[UDToken]) -> None:
+        self.depth = depth
         self.form = "".join(tok.form for tok in tokens)
         self.tokens = tokens
         self.children = children

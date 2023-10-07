@@ -13,6 +13,7 @@ class UDTreeNodeSpec:
         self.children = children if children else []
         self.token: UDToken | None = None
         self.norm = norm
+        self.depth: int = -1
 
 
     def __str__(self) -> str: return ud_tree_node_spec_formatter.str_(self, 0)
@@ -31,6 +32,7 @@ class UDTreeNodeSpec:
                               node.lemma if node.lemma != node.form else "",
                               node.norm if node.norm != node.lemma else "",
                               [cls.from_node(child) for child in node.children])
+        spec.depth = node.depth
         if node.is_morpheme():
             spec.token = node.tokens[0]
 
