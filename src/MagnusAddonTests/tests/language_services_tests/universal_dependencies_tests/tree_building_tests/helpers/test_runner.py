@@ -42,7 +42,7 @@ repr-single-line:
 
 def assert_no_nodes_at_level(parser: UDTokenizer, sentence: str, depth: int) -> None:
     real_result = ud_tree_builder.build_tree(parser, sentence)
-    spec_result = UDTreeSpec.from_ud_tree(real_result, max_depth=depth)
+    spec_result = UDTreeSpec.from_ud_tree(real_result, max_depth=98)
 
     print(f"""
 {parser.name} : {sentence}
