@@ -91,6 +91,7 @@ class Level0CompoundBuilder(CompoundBuilder):
             return False
 
         if token.deprel in {ud_deprel.compound,
+                            ud_deprel.direct_object,
                             ud_deprel.clausal_modifier_of_noun,
                             ud_deprel.case_marking}:
             return True

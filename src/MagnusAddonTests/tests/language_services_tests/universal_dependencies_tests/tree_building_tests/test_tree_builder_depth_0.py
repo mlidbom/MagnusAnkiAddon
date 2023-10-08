@@ -33,18 +33,16 @@ def test_unsatisfied_sequential_identical_heads_not_compounded(sentence: str, pa
     # on the other hand, we DO have the information. The previous tokens do have the later tokens as their heads
     # on the third hand, if we always fetch all heads in both directions that's always the whole string, right?
     ("ごめん　自分から誘っといて ちゃんと調べておけばよかった", None, R(N('ごめん', '', '御免'), N('自分から', '', ''), N('誘っといて', '', ''), N('ちゃんと', '', ''), N('調べておけば', '', ''), N('よかった', '', ''))),
-    ("夢を見た", None, R(N('夢を', '', ''), N('見た', '', ''))),
-    ("一度夢を見た", None, R(N('一度', '', ''), N('夢を', '', ''), N('見た', '', ''))),
     ("友達だから余計に気になっちゃうんだよ", None, R(N('友達だから', '', ''), N('余計に', '', ''), N('気に', '', ''), N('なっちゃうんだよ', '', ''))),
     # todo いいよう
     ("先生にいいように言って", None, R(N('先生に', '', ''), N('いいように言って', '', ''))),
     # not a disaster, but I do miss 話の中に
     ("あいつが話の中に出てくるのが", ud_parsers.gendai, R(N('あいつが', '', ''), N('話の', '', ''), N('中に', '', ''), N('出てくるのが', '', ''))),
     # 自分のこと
-    ("自分のことを知ってもらえてない人に", None, R(N('自分の', '', ''),N('ことを', '', ''),N('知ってもらえてない人に', '', ''))),
+    ("自分のことを知ってもらえてない人に", None, R(N('自分の', '', ''),N('ことを知ってもらえてない人に', '', ''))),
     # ように言った
     ("ように言ったのも", None, R(N('ように', '', ''), N('言ったのも', '', ''))),
-])
+], ids=only_string_params)
 def test_unsatisfied_dictionary_expression_missing(sentence: str, parser: UDTokenizer | None, expected: R) -> None:
     run_tests(expected, parser if parser else ud_parsers.best, sentence)
 
@@ -76,13 +74,14 @@ def test_sentences_we_are_unsatisfied_with(sentence: str, expected: R) -> None:
     run_tests(expected, ud_parsers.best, sentence)
 
 @pytest.mark.parametrize('sentence, tokenizer, expected', [
-    ("ううん藤宮さんは日記を捨てるような人じゃない", ud_parsers.gendai, R(N('ううん', '', ''),N('藤宮さんは', '', ''),N('日記を', '', ''),N('捨てるような人じゃない', '', ''))),
+    ("ううん藤宮さんは日記を捨てるような人じゃない", ud_parsers.gendai, R(N('ううん', '', ''),N('藤宮さんは', '', ''),N('日記を捨てるような人じゃない', '', ''))),
 ], ids=only_string_params)
 def test_sentences_alternative_tokenizer_does_better(sentence: str, tokenizer: UDTokenizer, expected: R) -> None:
     run_tests(expected, tokenizer, sentence)
 
 @pytest.mark.parametrize('sentence, expected', [
-    ("ダメダメ私を助けて", R(N('ダメダメ', '', ''), N('私を', '', ''), N('助けて', '', ''))),
+    ("ダメダメ私を助けて", R(N('ダメダメ', '', ''),N('私を助けて', '', ''))),
+    ("一度夢を見た", R(N('一度', '', ''),N('夢を見た', '夢を見る', ''))),
     ("いつまでも来ないと知らないからね", R(N('いつまでも', '', ''), N('来ないと', '', ''), N('知らないからね', '', ''))),
     ("ついに素晴らしい女性に逢えた。", R(N('ついに', '', '遂に'),N('素晴らしい女性に', '', ''),N('逢えた。', '', ''))),
     ("言われるまで気づかなかった", R(N('言われるまで', '', ''), N('気づかなかった', '', ''))),
@@ -94,6 +93,7 @@ def test_sentences_the_best_parser_does_well(sentence: str, expected: R) -> None
     run_tests(expected, ud_parsers.best, sentence)
 
 @pytest.mark.parametrize('sentence', [
+    "夢を見た",
     "としたら",
     "良くない",
     "食べてもいいけど",
