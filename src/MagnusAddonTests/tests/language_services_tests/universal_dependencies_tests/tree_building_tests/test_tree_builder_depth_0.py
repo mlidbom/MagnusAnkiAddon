@@ -15,13 +15,13 @@ def only_string_params(param: Any) -> str: return param if isinstance(param, str
 
 @pytest.mark.parametrize('sentence, parser, expected', [
     ("意外とかっこいいな", None, R(N('意外と', '', ''),N('かっこいいな', '', ''))),
-    ("としたら", ud_parsers.gendai, R(N('としたら', '', ''))),
+    ("としたら", ud_parsers.gendai, R()),
 ], ids=only_string_params)
 def test_unsatisfied_dictionary_word_missing(sentence: str, parser: UDTokenizer | None, expected: R) -> None:
     run_tests(expected, parser if parser else ud_parsers.best, sentence)
 
 @pytest.mark.parametrize('sentence, parser, expected', [
-    ("良くない", None, R(N('良くない', '', ''))),
+    ("良くない", None, R()),
     ("行きたい所全部行こう", None, R(N('行きたい所', '', ''),N('全部', '', ''),N('行こう', '行く', ''))),
 ], ids=only_string_params)
 def test_unsatisfied_sequential_identical_heads_not_compounded(sentence: str, parser: UDTokenizer | None, expected: R) -> None:
@@ -68,7 +68,7 @@ def test_unsatisfied_dictionary_expression_missing(sentence: str, parser: UDToke
     # todo (夜)でも(case marking, 夜-head), かも(marker/case_marking, 会う-head)
     ("今じゃ町は夜でも明るいしもう会うこともないかもな", R(N('今じゃ', '', ''), N('町は', '', ''), N('夜でも', '', ''), N('明るいし', '', ''), N('もう', '', ''), N('会うこともないかもな', '', ''))),
     # todo ても, てもいい (も,いい: fixed_multiword_expression, て-head)
-    ("食べてもいいけど", R(N('食べてもいいけど', '', ''))),
+    ("食べてもいいけど", R()),
     # todo (いる)のに(marker,case_marking: いる-head)
     ("いるのにキス", R(N('いるのに', '', ''), N('キス', '', ''))),
     # todo (聞か)なかった:ことにし(-て) (なかっ:auxiliary, た:auxiliary, こと:compound  聞か-head) (に,し fixed_multiword こと-head)
@@ -80,27 +80,27 @@ def test_sentences_we_are_unsatisfied_with(sentence: str, expected: R) -> None:
     run_tests(expected, ud_parsers.best, sentence)
 
 @pytest.mark.parametrize('sentence, expected', [
-    ("探しているんですか", R(N('探しているんですか', '', ''))),
+    ("探しているんですか", R()),
     ("ダメダメ私を助けて", R(N('ダメダメ', '', ''), N('私を', '', ''), N('助けて', '', ''))),
-    ("知らない", R(N('知らない', '', ''))),
+    ("知らない", R()),
     ("いつまでも来ないと知らないからね", R(N('いつまでも', '', ''), N('来ないと', '', ''), N('知らないからね', '', ''))),
     ("ついに素晴らしい女性に逢えた。", R(N('ついに', '', '遂に'), N('素晴らしい', '', ''), N('女性に', '', ''), N('逢えた。', '', ''))),
-    ("するためでした", R(N('するためでした', '', ''))),
-    ("なかったかな", R(N('なかったかな', '', ''))),
-    ("離れていくよ", R(N('離れていくよ', '', ''))),
+    ("するためでした", R()),
+    ("なかったかな", R()),
+    ("離れていくよ", R()),
     ("言われるまで気づかなかった", R(N('言われるまで', '', ''), N('気づかなかった', '', ''))),
-    ("当てられても", R(N('当てられても', '', ''))),
-    ("逃げたり", R(N('逃げたり', '', ''))),
+    ("当てられても", R()),
+    ("逃げたり", R()),
     ("一度聞いたことがある", R(N('一度', '', ''), N('聞いたことがある', '', ''))),
-    ("よかった", R(N('よかった', '', ''))),
-    ("良かった", R(N('良かった', '', ''))),
-    ("良ければ", R(N('良ければ', '', ''))),
-    ("良かったら", R(N('良かったら', '', ''))),
-    ("よかったじゃん", R(N('よかったじゃん', '', ''))),
+    ("よかった", R()),
+    ("良かった", R()),
+    ("良ければ", R()),
+    ("良かったら", R()),
+    ("よかったじゃん", R()),
     ("言えばよかった", R(N('言えば', '', ''), N('よかった', '', ''))),
     ("そっちへ行ったぞ", R(N('そっちへ', '', ''), N('行ったぞ', '', ''))),
-    ("だったら", R(N('だったら', '', ''))),
-    ("だろう", R(N('だろう', '', ''))),
+    ("だったら", R()),
+    ("だろう", R()),
 
 ], ids=only_string_params)
 def test_sentences_the_best_parser_does_well(sentence: str, expected: R) -> None:
