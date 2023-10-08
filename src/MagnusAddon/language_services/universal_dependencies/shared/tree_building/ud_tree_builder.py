@@ -32,13 +32,14 @@ class ConsumingPredicates:
     def __init__(self, compound: CompoundBuilder):
         self.compound = compound
 
-    def is_descendent_of_any_token(self) -> bool:
+    def is_descendent_of_a_compound_token(self) -> bool:
         if self.compound.next.head in set(self.compound.compound_tokens):
             return True
         return False
 
-    def shares_head_with_current(self) -> bool:
-        if self.compound.current.head == self.compound.next.head:
+    def shares_past_head_with_current(self) -> bool:
+        if (self.compound.current.head == self.compound.next.head
+                and self.compound.current.head.id <= self.compound.current.id):
             return True
         return False
 
@@ -111,8 +112,8 @@ class Level0CompoundBuilder(CompoundBuilder):
         super().__init__(target, source_token)
         predicates = ConsumingPredicates(self)
         self.go_rules = [
-            predicates.shares_head_with_current,
-            predicates.is_descendent_of_any_token,
+            predicates.shares_past_head_with_current,
+            predicates.is_descendent_of_a_compound_token,
             self.required_forward_head_is_missing
         ]
 
@@ -135,10 +136,8 @@ class Level0CompoundBuilder(CompoundBuilder):
                             ud_deprel.case_marking}:
             return True
 
-        if (token.deprel, token.xpos) in {
-            (ud_deprel.adverbial_clause_modifier, ud_japanese_part_of_speech_tag.adjective_i_bound),
-            (ud_deprel.clausal_modifier_of_noun, ud_japanese_part_of_speech_tag.verb_bound)
-        }:
+        if (token.deprel, token.xpos) in {(ud_deprel.adverbial_clause_modifier, ud_japanese_part_of_speech_tag.adjective_i_bound),
+                                          (ud_deprel.clausal_modifier_of_noun, ud_japanese_part_of_speech_tag.verb_bound)}:
             return True
 
         return False

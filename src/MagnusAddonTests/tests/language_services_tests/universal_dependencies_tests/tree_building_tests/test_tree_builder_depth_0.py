@@ -20,7 +20,7 @@ def test_unsatisfied_dictionary_word_missing(sentence: str, parser: UDTokenizer 
     run_tests(expected, parser if parser else ud_parsers.best, sentence)
 
 @pytest.mark.parametrize('sentence, parser, expected', [
-    ("行きたい所全部行こう", None, R()),
+    ("行きたい所全部行こう", None, R(N('行きたい所', '', ''),N('全部', '', ''),N('行こう', '行く', ''))),
 ], ids=only_string_params)
 def test_unsatisfied_sequential_identical_heads_not_compounded(sentence: str, parser: UDTokenizer | None, expected: R) -> None:
     run_tests(expected, parser if parser else ud_parsers.best, sentence)
@@ -60,7 +60,7 @@ def test_unsatisfied_dictionary_expression_missing(sentence: str, parser: UDToke
     #
 
     # todo (夜)でも(case marking, 夜-head), かも(marker/case_marking, 会う-head)
-    ("今じゃ町は夜でも明るいしもう会うこともないかもな", R(N('今じゃ', '', ''),N('町は', '', ''),N('夜でも', '', ''),N('明るいし', '', ''),N('もう会うこともないかも', '', ''),N('な', '', ''))),
+    ("今じゃ町は夜でも明るいしもう会うこともないかもな", R(N('今じゃ', '', ''),N('町は', '', ''),N('夜でも', '', ''),N('明るいし', '', ''),N('もう', '', ''),N('会うこともないかも', '', ''),N('な', '', ''))),
     # todo ても, てもいい (も,いい: fixed_multiword_expression, て-head)
 
     # todo (いる)のに(marker,case_marking: いる-head)
@@ -68,24 +68,24 @@ def test_unsatisfied_dictionary_expression_missing(sentence: str, parser: UDToke
     # todo (聞か)なかった:ことにし(-て) (なかっ:auxiliary, た:auxiliary, こと:compound  聞か-head) (に,し fixed_multiword こと-head)
     ("聞かなかったことにしてあげる", R(N('聞かなかったことにして', '', ''), N('あげる', '', '上げる'))),
     # todo volitional form..
-    ("とりあえず　ご飯食べよう", R()),
+    ("とりあえず　ご飯食べよう", R(N('とりあえず', '', '取り敢えず'),N('ご飯', '', '御飯'),N('食べよう', '食べる', ''))),
 ], ids=only_string_params)
 def test_sentences_we_are_unsatisfied_with(sentence: str, expected: R) -> None:
     run_tests(expected, ud_parsers.best, sentence)
 
 @pytest.mark.parametrize('sentence, tokenizer, expected', [
-    ("ううん藤宮さんは日記を捨てるような人じゃない", ud_parsers.gendai, R(N('ううん藤宮さんは', '', ''),N('日記を捨てるような人じゃない', '', ''))),
+    ("ううん藤宮さんは日記を捨てるような人じゃない", ud_parsers.gendai, R(N('ううん', '', ''),N('藤宮さんは', '', ''),N('日記を捨てるような人じゃない', '', ''))),
 ], ids=only_string_params)
 def test_sentences_alternative_tokenizer_does_better(sentence: str, tokenizer: UDTokenizer, expected: R) -> None:
     run_tests(expected, tokenizer, sentence)
 
 @pytest.mark.parametrize('sentence, expected', [
-    ("ダメダメ私を助けて", R()),
-    ("一度夢を見た", R()),
+    ("ダメダメ私を助けて", R(N('ダメダメ', '', ''),N('私を助けて', '', ''))),
+    ("一度夢を見た", R(N('一度', '', ''),N('夢を見た', '夢を見る', ''))),
     ("いつまでも来ないと知らないからね", R(N('いつまでも', '', ''), N('来ないと', '', ''), N('知らないから', '', ''), N('ね', '', ''))),
     ("ついに素晴らしい女性に逢えた。", R(N('ついに', '', '遂に'), N('素晴らしい女性に', '', ''), N('逢えた。', '', ''))),
     ("言われるまで気づかなかった", R(N('言われるまで', '', ''), N('気づかなかった', '', ''))),
-    ("一度聞いたことがある", R()),
+    ("一度聞いたことがある", R(N('一度', '', ''),N('聞いたことがある', '', ''))),
     ("言えばよかった", R(N('言えば', '', ''), N('よかった', '', ''))),
     ("そっちへ行ったぞ", R(N('そっちへ', '', ''), N('行った', '', ''), N('ぞ', '', ''))),
 ], ids=only_string_params)
