@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from mypy.nodes import abstractmethod
-
 import sysutils.functional.predicate
 from language_services.universal_dependencies.shared.tokenizing import ud_japanese_part_of_speech_tag, ud_deprel
 from language_services.universal_dependencies.shared.tokenizing.ud_token import UDToken
@@ -109,6 +107,13 @@ class Level0CompoundBuilder(CompoundBuilder):
     def tokens_needed_to_be_compounded_with_forward_head(self) -> list[UDToken]:
         return self._tokens_where(self._should_be_compounded_with_forward_root)
 
+    def build(self) -> None:
+        self.consume_all_allowed_descendents_of_compound_tokens()
+        while self.tokens_needed_to_be_compounded_with_forward_head():
+            token_to_compound_head_for = self.tokens_needed_to_be_compounded_with_forward_head()[0]
+            self.consume_until_and_including(token_to_compound_head_for.head)
+            self.consume_all_allowed_descendents_of_compound_tokens()
+
 class Level1CompoundBuilder(Level0CompoundBuilder):
     def __init__(self, source_token: list[UDToken]):
         super().__init__(source_token)
@@ -123,8 +128,11 @@ class Level1CompoundBuilder(Level0CompoundBuilder):
     def is_phrase_end_particle(token:UDToken) -> bool:
         return token.xpos in {ud_japanese_part_of_speech_tag.particle_phrase_final}
 
-    def consume_sentence_end_particles(self) -> None:
-        self.consume_while(self.is_phrase_end_particle)
+    def build(self) -> None:
+        if self.is_phrase_end_particle(self.current):
+            self.consume_while(self.is_phrase_end_particle)
+        else:
+            super().build()
 
 
 def _build_compounds(tokens: list[UDToken], depth: int) -> list[list[UDToken]]:
@@ -152,24 +160,12 @@ def _build_compounds(tokens: list[UDToken], depth: int) -> list[list[UDToken]]:
         elif depth == _Depth.depth_1:
             level1compound = Level1CompoundBuilder(unconsumed_tokens)
             created_compounds.append(level1compound)
-            if level1compound.is_phrase_end_particle(level1compound.current):
-                level1compound.consume_sentence_end_particles()
-            else:
-                level1compound.consume_all_allowed_descendents_of_compound_tokens()
-                while level1compound.tokens_needed_to_be_compounded_with_forward_head():
-                    token_to_compound_head_for = level1compound.tokens_needed_to_be_compounded_with_forward_head()[0]
-                    level1compound.consume_until_and_including(token_to_compound_head_for.head)
-                    if not level1compound.consume_all_allowed_descendents_of_compound_tokens():
-                        break
+            level1compound.build()
 
         elif depth == _Depth.surface_0:
             level0compound = Level0CompoundBuilder(unconsumed_tokens)
             created_compounds.append(level0compound)
-            level0compound.consume_all_allowed_descendents_of_compound_tokens()
-            while level0compound.tokens_needed_to_be_compounded_with_forward_head():
-                token_to_compound_head_for = level0compound.tokens_needed_to_be_compounded_with_forward_head()[0]
-                level0compound.consume_until_and_including(token_to_compound_head_for.head)
-                level0compound.consume_all_allowed_descendents_of_compound_tokens()
+            level0compound.build()
 
     return [cb.compound_tokens for cb in created_compounds]
 
