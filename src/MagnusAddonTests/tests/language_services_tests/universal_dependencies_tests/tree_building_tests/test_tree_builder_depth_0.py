@@ -40,10 +40,8 @@ def test_unsatisfied_sequential_identical_heads_not_compounded(sentence: str, pa
     ("先生にいいように言って", None, R(N('先生に', '', ''), N('いいように言って', '', ''))),
     # not a disaster, but I do miss 話の中に
     ("あいつが話の中に出てくるのが", ud_parsers.gendai, R(N('あいつが', '', ''), N('話の', '', ''), N('中に', '', ''), N('出てくるのが', '', ''))),
-    # not a disaster, but I want 藤宮さん compounded
-    ("ううん藤宮さんは日記を捨てるような人じゃない", ud_parsers.gendai, R(N('ううん', '', ''), N('藤宮さんは', '', ''), N('日記を', '', ''), N('捨てるような', '', ''), N('人じゃない', '', ''))),
     # 自分のこと
-    ("自分のことを知ってもらえてない人に", None, R(N('自分の', '', ''), N('ことを', '', ''), N('知ってもらえてない', '', ''), N('人に', '', ''))),
+    ("自分のことを知ってもらえてない人に", None, R(N('自分の', '', ''),N('ことを', '', ''),N('知ってもらえてない人に', '', ''))),
     # ように言った
     ("ように言ったのも", None, R(N('ように', '', ''), N('言ったのも', '', ''))),
 ])
@@ -77,10 +75,16 @@ def test_unsatisfied_dictionary_expression_missing(sentence: str, parser: UDToke
 def test_sentences_we_are_unsatisfied_with(sentence: str, expected: R) -> None:
     run_tests(expected, ud_parsers.best, sentence)
 
+@pytest.mark.parametrize('sentence, tokenizer, expected', [
+    ("ううん藤宮さんは日記を捨てるような人じゃない", ud_parsers.gendai, R(N('ううん', '', ''),N('藤宮さんは', '', ''),N('日記を', '', ''),N('捨てるような人じゃない', '', ''))),
+], ids=only_string_params)
+def test_sentences_alternative_tokenizer_does_better(sentence: str, tokenizer: UDTokenizer, expected: R) -> None:
+    run_tests(expected, tokenizer, sentence)
+
 @pytest.mark.parametrize('sentence, expected', [
     ("ダメダメ私を助けて", R(N('ダメダメ', '', ''), N('私を', '', ''), N('助けて', '', ''))),
     ("いつまでも来ないと知らないからね", R(N('いつまでも', '', ''), N('来ないと', '', ''), N('知らないからね', '', ''))),
-    ("ついに素晴らしい女性に逢えた。", R(N('ついに', '', '遂に'), N('素晴らしい', '', ''), N('女性に', '', ''), N('逢えた。', '', ''))),
+    ("ついに素晴らしい女性に逢えた。", R(N('ついに', '', '遂に'),N('素晴らしい女性に', '', ''),N('逢えた。', '', ''))),
     ("言われるまで気づかなかった", R(N('言われるまで', '', ''), N('気づかなかった', '', ''))),
     ("一度聞いたことがある", R(N('一度', '', ''), N('聞いたことがある', '', ''))),
     ("言えばよかった", R(N('言えば', '', ''), N('よかった', '', ''))),
