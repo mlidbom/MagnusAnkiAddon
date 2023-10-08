@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from mypy.nodes import abstractmethod
+
 import sysutils.functional.predicate
 from language_services.universal_dependencies.shared.tokenizing import ud_japanese_part_of_speech_tag, ud_deprel
 from language_services.universal_dependencies.shared.tokenizing.ud_token import UDToken
@@ -61,11 +63,15 @@ class CompoundBuilder:
             parents.add(self.next)
             self.consume_next()
 
-    def consume_all_descendents_of_compound_tokens(self) -> None:
+    def consume_all_allowed_descendents_of_compound_tokens(self) -> None:
         parents: set[UDToken] = set(self.compound_tokens)
         while self.has_next and self.next.head in parents:
-            parents.add(self.next)
-            self.consume_next()
+            if self._is_next_allowed_descendent():
+                parents.add(self.next)
+                self.consume_next()
+
+    def _is_next_allowed_descendent(self) -> bool:
+        return True
 
     def _tokens_where(self, predicate: Predicate[UDToken]) -> list[UDToken]:
         return ex_list.where(predicate, self.compound_tokens)
@@ -90,8 +96,18 @@ class Level0CompoundBuilder(CompoundBuilder):
 
         return False
 
+    def _is_next_allowed_descendent(self) -> bool:
+        return True
+
     def tokens_needed_to_be_compounded_with_forward_head(self) -> list[UDToken]:
         return self._tokens_where(self._should_be_compounded_with_forward_root)
+
+class Level1CompoundBuilder(Level0CompoundBuilder):
+    def __init__(self, source_token: list[UDToken]):
+        super().__init__(source_token)
+
+    def _is_next_allowed_descendent(self) -> bool:
+        return True
 
 def _build_compounds(tokens: list[UDToken], depth: int) -> list[list[UDToken]]:
     assert depth <= _Depth.morphemes_4
@@ -111,26 +127,27 @@ def _build_compounds(tokens: list[UDToken], depth: int) -> list[list[UDToken]]:
             compound = CompoundBuilder(unconsumed_tokens)
             created_compounds.append(compound)
             compound.consume_while_child_of(compound.first)
-            if compound.first.head.id == compound.first.id + 1:  # head of first is second token
+            if compound.first.head.id == compound.first.id + 1 and compound.has_next:  # head of first is second token
                 compound.consume_next()
                 compound.consume_while_child_of(compound.first.head)
 
         elif depth == _Depth.depth_1:
-            compound = CompoundBuilder(unconsumed_tokens)
-            created_compounds.append(compound)
-            compound.consume_while_child_of(compound.first)
-            if compound.has_next and compound.next == compound.first.head:
-                compound.consume_next()
-                compound.consume_while_child_of(compound.first.head)
+            level1compound = Level0CompoundBuilder(unconsumed_tokens)
+            created_compounds.append(level1compound)
+            level1compound.consume_all_allowed_descendents_of_compound_tokens()
+            while level1compound.tokens_needed_to_be_compounded_with_forward_head():
+                token_to_compound_head_for = level1compound.tokens_needed_to_be_compounded_with_forward_head()[0]
+                level1compound.consume_until_and_including(token_to_compound_head_for.head)
+                level1compound.consume_all_allowed_descendents_of_compound_tokens()
 
         elif depth == _Depth.surface_0:
-            compound = Level0CompoundBuilder(unconsumed_tokens)
-            created_compounds.append(compound)
-            compound.consume_all_descendents_of_compound_tokens()
-            while compound.tokens_needed_to_be_compounded_with_forward_head():
-                token_to_compound_head_for = compound.tokens_needed_to_be_compounded_with_forward_head()[0]
-                compound.consume_until_and_including(token_to_compound_head_for.head)
-                compound.consume_all_descendents_of_compound_tokens()
+            level0compound = Level0CompoundBuilder(unconsumed_tokens)
+            created_compounds.append(level0compound)
+            level0compound.consume_all_allowed_descendents_of_compound_tokens()
+            while level0compound.tokens_needed_to_be_compounded_with_forward_head():
+                token_to_compound_head_for = level0compound.tokens_needed_to_be_compounded_with_forward_head()[0]
+                level0compound.consume_until_and_including(token_to_compound_head_for.head)
+                level0compound.consume_all_allowed_descendents_of_compound_tokens()
 
     return [cb.compound_tokens for cb in created_compounds]
 
@@ -141,7 +158,8 @@ def _create_node(tokens: list[UDToken], depth: int, collapse_identical_levels_ab
     return UDTreeNode(depth, children, tokens)
 
 def _build_child_compounds(parent_node_tokens: list[UDToken], depth: int, collapse_identical_levels_above_level: int) -> list[UDTreeNode]:
-    if depth > _Depth.morphemes_4 or len(parent_node_tokens) == 1:
+    if (depth > _Depth.morphemes_4
+            or depth > collapse_identical_levels_above_level and len(parent_node_tokens) == 1):
         return []
 
     compounds = _build_compounds(parent_node_tokens, depth)

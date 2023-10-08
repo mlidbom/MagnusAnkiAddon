@@ -16,7 +16,6 @@ class UDTreeNode:
         self.norm = self.build_norm()
         self.lemma = self.build_lemma()
 
-    def is_morpheme(self) -> bool: return not self.children
     def lemma_differs_from_form(self) -> bool:
         return self.lemma != self.form
 
@@ -29,7 +28,8 @@ class UDTreeNode:
 
         return True
 
-    def is_compound(self) -> bool: return len(self.children) > 0
+    def is_morpheme(self) -> bool: return not self.is_compound()
+    def is_compound(self) -> bool: return len(self.tokens) > 1
 
     def is_form_dictionary_word(self) -> bool:
         from language_services.jamdict_ex.dict_lookup import DictLookup
@@ -62,7 +62,7 @@ class UDTreeNode:
                 and self.tokens[-2].upos == ud_universal_part_of_speech_tag.verb)
 
     def build_norm(self) -> str:
-        if self.children: return ""
+        if self.is_compound(): return ""
 
         if self.is_excluded_norm(self.tokens[0]):
             return self.form

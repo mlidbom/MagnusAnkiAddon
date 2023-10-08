@@ -41,3 +41,8 @@ class UDTreeNodeSpec:
             spec.token = node.tokens[0]
 
         return spec
+
+    def clone_as_level(self, as_depth:int) -> UDTreeNodeSpec:
+        spec = UDTreeNodeSpec(self.surface, self.lemma, self.norm, [c.clone_as_level(as_depth + 1) for c in self.children])
+        spec.depth = as_depth
+        return spec

@@ -20,7 +20,7 @@ def only_string_params(param: Any) -> str: return param if isinstance(param, str
     ("としたら", ud_parsers.gendai, R(N('としたら', '', ''))),
 ], ids=only_string_params)
 def test_unsatisfied_dictionary_word_missing(sentence: str, parser: UDTokenizer | None, expected: R) -> None:
-    run_tests(expected, parser if parser else ud_parsers.best, sentence)
+    run_tests_with_level_0_cloned_to_level_1(expected, parser if parser else ud_parsers.best, sentence)
 
 @pytest.mark.parametrize('sentence, parser, expected', [
     # todo here we have sequential tokens with the same head, but not compounded because the head is the last token...
@@ -29,7 +29,7 @@ def test_unsatisfied_dictionary_word_missing(sentence: str, parser: UDTokenizer 
     ("行きたい所全部行こう", None, R(N('行きたい所', '', ''),N('全部', '', ''),N('行こう', '行く', ''))),
 ], ids=only_string_params)
 def test_unsatisfied_sequential_identical_heads_not_compounded(sentence: str, parser: UDTokenizer | None, expected: R) -> None:
-    run_tests(expected, parser if parser else ud_parsers.best, sentence)
+    run_tests_with_level_0_cloned_to_level_1(expected, parser if parser else ud_parsers.best, sentence)
 
 @pytest.mark.parametrize('sentence, parser, expected', [
     # todo. only fetching descendents does not play well with expressions...
@@ -54,7 +54,7 @@ def test_unsatisfied_sequential_identical_heads_not_compounded(sentence: str, pa
     ("ように言ったのも", None, R(N('ように', '', ''), N('言ったのも', '', ''))),
 ])
 def test_unsatisfied_dictionary_expression_missing(sentence: str, parser: UDTokenizer | None, expected: R) -> None:
-    run_tests(expected, parser if parser else ud_parsers.best, sentence)
+    run_tests_with_level_0_cloned_to_level_1(expected, parser if parser else ud_parsers.best, sentence)
 
 @pytest.mark.parametrize('sentence, expected', [
     # todo: maybe use dictionary lookup for sequencial tokens with the same head to look for compounds?
@@ -81,7 +81,7 @@ def test_unsatisfied_dictionary_expression_missing(sentence: str, parser: UDToke
     ("とりあえず　ご飯食べよう", R(N('とりあえず', '', '取り敢えず'), N('ご飯', '', '御飯'), N('食べよう', '食べる', ''))),
 ], ids=only_string_params)
 def test_sentences_we_are_unsatisfied_with(sentence: str, expected: R) -> None:
-    run_tests(expected, ud_parsers.best, sentence)
+    run_tests_with_level_0_cloned_to_level_1(expected, ud_parsers.best, sentence)
 
 @pytest.mark.parametrize('sentence, expected', [
     ("探しているんですか", R(N('探しているんですか', '', ''))),
@@ -108,8 +108,8 @@ def test_sentences_we_are_unsatisfied_with(sentence: str, expected: R) -> None:
 
 ], ids=only_string_params)
 def test_sentences_the_best_parser_does_well(sentence: str, expected: R) -> None:
-    run_tests(expected, ud_parsers.best, sentence)
+    run_tests_with_level_0_cloned_to_level_1(expected, ud_parsers.best, sentence)
 
-def run_tests(expected: UDTreeSpec, parser: UDTokenizer, sentence: str) -> None:
-    test_runner.run_tests(expected, parser, sentence, 0)
+def run_tests_with_level_0_cloned_to_level_1(expected: UDTreeSpec, parser: UDTokenizer, sentence: str) -> None:
+    test_runner.run_tests(expected.clone_level_0_to_level_1(), parser, sentence, 1)
 

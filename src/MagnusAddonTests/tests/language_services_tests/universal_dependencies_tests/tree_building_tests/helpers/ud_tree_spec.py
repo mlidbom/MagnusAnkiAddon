@@ -20,6 +20,12 @@ class UDTreeSpec:
         return (isinstance(other, UDTreeSpec)
                 and self.nodes == other.nodes)
 
+    def clone_level_0_to_level_1(self) -> UDTreeSpec:
+        cloned_nodes = [node.clone_as_level(0) for node in self.nodes]
+        for node in cloned_nodes:
+            node.children.append(node.clone_as_level(1))
+        return UDTreeSpec(*cloned_nodes)
+
     @staticmethod
     def from_ud_tree(tree: UDTree, max_depth:int = 99) -> UDTreeSpec:
         return UDTreeSpec(*[UDTreeNodeSpec.from_node(node, max_depth) for node in tree.nodes])
