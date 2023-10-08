@@ -63,15 +63,22 @@ class CompoundBuilder:
             parents.add(self.next)
             self.consume_next()
 
-    def consume_all_allowed_descendents_of_compound_tokens(self) -> None:
+    def consume_all_allowed_descendents_of_compound_tokens(self) -> bool:
         parents: set[UDToken] = set(self.compound_tokens)
         while self.has_next and self.next.head in parents:
             if self._is_next_allowed_descendent():
                 parents.add(self.next)
                 self.consume_next()
+            else:
+                return False
+
+        return True
 
     def _is_next_allowed_descendent(self) -> bool:
         return True
+
+    def consume_while(self, predicate: Predicate[UDToken]) -> None:
+        self.compound_tokens += ex_list.consume_while(predicate, self.source_tokens)
 
     def _tokens_where(self, predicate: Predicate[UDToken]) -> list[UDToken]:
         return ex_list.where(predicate, self.compound_tokens)
@@ -107,7 +114,18 @@ class Level1CompoundBuilder(Level0CompoundBuilder):
         super().__init__(source_token)
 
     def _is_next_allowed_descendent(self) -> bool:
+        if self.is_phrase_end_particle(self.next) and not self.is_phrase_end_particle(self.current):
+            return False
+
         return True
+
+    @staticmethod
+    def is_phrase_end_particle(token:UDToken) -> bool:
+        return token.xpos in {ud_japanese_part_of_speech_tag.particle_phrase_final}
+
+    def consume_sentence_end_particles(self) -> None:
+        self.consume_while(self.is_phrase_end_particle)
+
 
 def _build_compounds(tokens: list[UDToken], depth: int) -> list[list[UDToken]]:
     assert depth <= _Depth.morphemes_4
@@ -132,13 +150,17 @@ def _build_compounds(tokens: list[UDToken], depth: int) -> list[list[UDToken]]:
                 compound.consume_while_child_of(compound.first.head)
 
         elif depth == _Depth.depth_1:
-            level1compound = Level0CompoundBuilder(unconsumed_tokens)
+            level1compound = Level1CompoundBuilder(unconsumed_tokens)
             created_compounds.append(level1compound)
-            level1compound.consume_all_allowed_descendents_of_compound_tokens()
-            while level1compound.tokens_needed_to_be_compounded_with_forward_head():
-                token_to_compound_head_for = level1compound.tokens_needed_to_be_compounded_with_forward_head()[0]
-                level1compound.consume_until_and_including(token_to_compound_head_for.head)
+            if level1compound.is_phrase_end_particle(level1compound.current):
+                level1compound.consume_sentence_end_particles()
+            else:
                 level1compound.consume_all_allowed_descendents_of_compound_tokens()
+                while level1compound.tokens_needed_to_be_compounded_with_forward_head():
+                    token_to_compound_head_for = level1compound.tokens_needed_to_be_compounded_with_forward_head()[0]
+                    level1compound.consume_until_and_including(token_to_compound_head_for.head)
+                    if not level1compound.consume_all_allowed_descendents_of_compound_tokens():
+                        break
 
         elif depth == _Depth.surface_0:
             level0compound = Level0CompoundBuilder(unconsumed_tokens)
