@@ -17,7 +17,7 @@ def only_string_params(param: Any) -> str: return param if isinstance(param, str
 @pytest.mark.parametrize('sentence, parser, expected', [
     # todo: (かっこ:compound, head:いい(いい:root))
     ("意外とかっこいいな", None, R(N('意外と', '', ''),N('かっこいいな', '', ''))),
-    ("としたら", ud_parsers.gendai, R(N('と', '', ''),N('したら', '', ''))),
+    ("としたら", ud_parsers.gendai, R(N('としたら', '', ''))),
 ], ids=only_string_params)
 def test_unsatisfied_dictionary_word_missing(sentence: str, parser: UDTokenizer | None, expected: R) -> None:
     run_tests(expected, parser if parser else ud_parsers.best, sentence)

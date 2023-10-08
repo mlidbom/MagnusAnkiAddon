@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import sysutils.functional.predicate
-from language_services.universal_dependencies.shared.tokenizing import ud_japanese_part_of_speech_tag, ud_relationship_tag
+from language_services.universal_dependencies.shared.tokenizing import ud_japanese_part_of_speech_tag, ud_deprel
 from language_services.universal_dependencies.shared.tokenizing.ud_token import UDToken
 from language_services.universal_dependencies.shared.tokenizing.ud_tokenizer import UDTokenizer
 from language_services.universal_dependencies.shared.tree_building.ud_tree import UDTree
@@ -78,7 +78,8 @@ class Level0CompoundBuilder(CompoundBuilder):
         if token.head.id <= self.current.id:
             return False
 
-        if token.deprel == ud_relationship_tag.compound:
+        if token.deprel in {ud_deprel.compound,
+                            ud_deprel.case_marking}:
             return True
 
         return False

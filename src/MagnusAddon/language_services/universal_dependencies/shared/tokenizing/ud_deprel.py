@@ -19,17 +19,17 @@ def _add_tag(tag: str, description: str) -> UdRelationshipTag:
     return tag_object
 
 
-acl = _add_tag("acl", "clausal_modifier_of_noun")
-acl_relcl = _add_tag("acl:relcl", "relative_clause_modifier")
-advcl = _add_tag("advcl", "adverbial_clause_modifier")
-advmod = _add_tag("advmod", "adverbial_modifier")
-advmod_emph = _add_tag("advmod:emph", "emphasizing_word,intensifier")
+clausal_modifier_of_noun = _add_tag("acl", "clausal_modifier_of_noun")
+relative_clause_modifier = _add_tag("acl:relcl", "relative_clause_modifier")
+adverbial_clause_modifier = _add_tag("advcl", "adverbial_clause_modifier")
+adverbial_modifier = _add_tag("advmod", "adverbial_modifier")
+advmod_emph = _add_tag("advmod:emph", "emphasizing_word_intensifier")
 advmod_lmod = _add_tag("advmod:lmod", "locative_adverbial_modifier")
 amod = _add_tag("amod", "adjectival_modifier")
 appos = _add_tag("appos", "appositional_modifier")
 aux = _add_tag("aux", "auxiliary")
 aux_pass = _add_tag("aux:pass", "passive_auxiliary")
-case = _add_tag("case", "case_marking")
+case_marking = _add_tag("case", "case_marking")
 cc = _add_tag("cc", "coordinating_conjunction")
 cc_preconj = _add_tag("cc:preconj", "preconjunct")
 ccomp = _add_tag("ccomp", "clausal_complement")
