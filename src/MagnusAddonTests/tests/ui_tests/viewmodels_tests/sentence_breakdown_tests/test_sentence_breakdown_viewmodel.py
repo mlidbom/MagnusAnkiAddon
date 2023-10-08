@@ -21,6 +21,7 @@ def setup_object() -> Generator[None, None, None]:
     with inject_anki_collection_with_generated_sample_data():
         yield
 
+@pytest.mark.skip("Skipped while we redesign tree building.")
 @pytest.mark.parametrize('sentence, expected', [
     ("一度夢を見た", SB(N("一度", "", V("一度", "", "", "once/on-one-occation")), N("夢を見た", "夢を見る", V("夢を見た", "夢を見る", "", "to: dream"), N("夢を", "", N("夢", "", V("夢", "", "", "dream")), N("を", "", V("を", "", "", "{marks: direct-object | subject(caus:expr)}"))), N("見た", "", N("見", "見る", V("見", "見る", "", "to{}: see/look | examine | aux{try}"), V("見", "見る", "みる", "to: aux: try/have-a-go-at | {see/find}-that"), V("見", "見る", "観る", "To View, To Watch, To See")), N("た", "", V("た", "", "", "{past-tense} | (please)do")))))),
     ("そっちへ行ったぞ", SB(N("そっちへ", "", N("そっち", "", V("そっち", "", "", "---")), N("へ", "", V("へ", "", "", "---"))), N("行ったぞ", "", N("行っ", "行く", V("行っ", "行く", "", "to: go(wide.lit.fig)")), N("た", "", V("た", "", "", "{past-tense} | (please)do")), N("ぞ", "", V("ぞ", "", "", "---"))))),

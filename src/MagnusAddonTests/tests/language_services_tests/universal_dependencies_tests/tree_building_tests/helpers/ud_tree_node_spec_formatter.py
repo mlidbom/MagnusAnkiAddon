@@ -34,7 +34,7 @@ def repr_(node: UDTreeNodeSpec) -> str:
     return f"""{_indent(node.depth)}N('{node.surface}', '{node.lemma if node.surface != node.lemma else ""}', '{node.norm}'{_children_repr(node)})"""
 
 
-def _children_str(node: UDTreeNodeSpec, level:int = 1) -> str:
+def _children_str(node: UDTreeNodeSpec) -> str:
     if not node.children:
         return ""
 

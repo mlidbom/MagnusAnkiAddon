@@ -97,7 +97,7 @@ def run_tests(expected:R, parser: UDTokenizer, sentence:str) -> None:
     print()
     parser = parser if parser else ud_parsers.best
     # noinspection PyArgumentEqualDefault
-    real_result = ud_tree_builder.build_tree(parser, sentence, collapse_identical_levels=True)
+    real_result = ud_tree_builder.build_tree(parser, sentence, collapse_identical_levels_above_level=-1)
     spec_result = R.from_ud_tree(real_result)
     print(f"{parser.name} : {sentence}")
     print(parser.parse(sentence).to_tree())

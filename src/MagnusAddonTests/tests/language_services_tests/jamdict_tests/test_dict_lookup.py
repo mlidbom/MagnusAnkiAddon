@@ -1,8 +1,8 @@
 import pytest
 
-from note.vocabnote import VocabNote
 from language_services.jamdict_ex.dict_entry import DictEntry
 from language_services.jamdict_ex.dict_lookup import DictLookup
+from note.vocabnote import VocabNote
 from unittest.mock import MagicMock
 
 @pytest.mark.parametrize('word, readings', [
@@ -36,7 +36,8 @@ def test_multi_matches(word: str, readings: list[str]) -> None:
     ("に", ["に"]),
     ("しか", ["しか"]),
     ("ローマ字", ["ろーまじ"]),
-    ("狩り", ["かり"])
+    ("狩り", ["かり"]),
+    ("おけばよかった", ["おけばよかった"])
 ])
 def test_missing(word: str, readings: list[str]) -> None:
     dict_entry = get_dict_entry(word, readings)
