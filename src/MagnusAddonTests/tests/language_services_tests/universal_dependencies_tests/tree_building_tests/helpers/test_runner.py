@@ -10,26 +10,36 @@ def run_tests_for_level(expected: UDTreeSpec, parser: UDTokenizer, sentence: str
     real_result = ud_tree_builder.build_tree(parser, sentence)
 
     full_spec_result = UDTreeSpec.from_ud_tree(real_result, max_depth=98)
-    print(f"str full: {sentence}")
-    print(str(full_spec_result))
+    print(f"""
+str full: {sentence}
+{str(full_spec_result)}
+""")
 
     spec_result = UDTreeSpec.from_ud_tree(real_result, max_depth=depth)
 
-    print(f"""
-{parser.name} : {sentence}
-{parser.parse(sentence).to_tree()}
+#     print(f"""
+# {parser.name} : {sentence}
+# {parser.parse(sentence).to_tree()}
+# """)
 
-str: {sentence}
-{str(spec_result)}
-
-expected-repr:
-{repr(expected)}
-
-repr:
-{repr(spec_result)}
-
-repr-single-line:
-{repr(spec_result).replace(newline, '').replace(full_width_space, '')}
-""")
+#     print(f"""
+# str: {sentence}
+# {str(spec_result)}
+# """)
+#
+#     print(f"""
+# expected-repr:
+# {repr(expected)}
+# """)
+#
+#     print(f"""
+# repr:
+# {repr(spec_result)}
+# """)
+#
+#     print(f"""
+# repr-single-line:
+# {repr(spec_result).replace(newline, '').replace(full_width_space, '')}
+# """)
 
     assert spec_result == expected
