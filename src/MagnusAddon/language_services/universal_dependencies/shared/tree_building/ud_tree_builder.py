@@ -27,7 +27,8 @@ def build_tree(parser: UDTokenizer, text: str, collapse_identical_levels_above_l
     return UDTree(*[_create_node(compound, depth, collapse_identical_levels_above_level) for compound in compounds])
 
 class CompoundBuilder:
-    def __init__(self, source_tokens: list[UDToken]):
+    def __init__(self, target: list[CompoundBuilder], source_tokens: list[UDToken]):
+        target.append(self)
         self.source_tokens = source_tokens
         self.compound_tokens = [source_tokens.pop(0)]
 
@@ -82,8 +83,8 @@ class CompoundBuilder:
         return ex_list.where(predicate, self.compound_tokens)
 
 class Level0CompoundBuilder(CompoundBuilder):
-    def __init__(self, source_token: list[UDToken]):
-        super().__init__(source_token)
+    def __init__(self, target: list[CompoundBuilder], source_token: list[UDToken]):
+        super().__init__(target, source_token)
 
     def _should_be_compounded_with_forward_root(self, token: UDToken) -> bool:
         if token.head.id <= self.current.id:
@@ -114,9 +115,9 @@ class Level0CompoundBuilder(CompoundBuilder):
             self.consume_until_and_including(token_to_compound_head_for.head)
             self.consume_all_allowed_descendents_of_compound_tokens()
 
-class Level1CompoundBuilder(Level0CompoundBuilder):
-    def __init__(self, source_token: list[UDToken]):
-        super().__init__(source_token)
+class Level1SplitPhraseEndParticleCompoundBuilder(Level0CompoundBuilder):
+    def __init__(self, target: list[CompoundBuilder], source_token: list[UDToken]):
+        super().__init__(target, source_token)
 
     def _is_next_allowed_descendent(self) -> bool:
         if self.is_phrase_end_particle(self.next) and not self.is_phrase_end_particle(self.current):
@@ -145,27 +146,21 @@ def _build_compounds(tokens: list[UDToken], depth: int) -> list[list[UDToken]]:
 
     while unconsumed_tokens:
         if depth == _Depth.depth_3:
-            compound = CompoundBuilder(unconsumed_tokens)
-            created_compounds.append(compound)
+            compound = CompoundBuilder(created_compounds, unconsumed_tokens)
             compound.consume_while_child_of(compound.first)
 
         elif depth == _Depth.depth_2:
-            compound = CompoundBuilder(unconsumed_tokens)
-            created_compounds.append(compound)
+            compound = CompoundBuilder(created_compounds, unconsumed_tokens)
             compound.consume_while_child_of(compound.first)
             if compound.first.head.id == compound.first.id + 1 and compound.has_next:  # head of first is second token
                 compound.consume_next()
                 compound.consume_while_child_of(compound.first.head)
 
         elif depth == _Depth.depth_1:
-            level1compound = Level1CompoundBuilder(unconsumed_tokens)
-            created_compounds.append(level1compound)
-            level1compound.build()
+            Level1SplitPhraseEndParticleCompoundBuilder(created_compounds, unconsumed_tokens).build()
 
         elif depth == _Depth.surface_0:
-            level0compound = Level0CompoundBuilder(unconsumed_tokens)
-            created_compounds.append(level0compound)
-            level0compound.build()
+            Level0CompoundBuilder(created_compounds, unconsumed_tokens).build()
 
     return [cb.compound_tokens for cb in created_compounds]
 
