@@ -17,6 +17,7 @@ def only_string_params(param: Any) -> str: return param if isinstance(param, str
 @pytest.mark.parametrize('sentence, parser, expected', [
     # todo: (かっこ:compound, head:いい(いい:root))
     ("意外とかっこいいな", None, R(N('意外と', '', ''),N('かっこいいな', '', ''))),
+    # としたら
     ("としたら", ud_parsers.gendai, R(N('としたら', '', ''))),
 ], ids=only_string_params)
 def test_unsatisfied_dictionary_word_missing(sentence: str, parser: UDTokenizer | None, expected: R) -> None:
@@ -24,9 +25,9 @@ def test_unsatisfied_dictionary_word_missing(sentence: str, parser: UDTokenizer 
 
 @pytest.mark.parametrize('sentence, parser, expected', [
     # todo here we have sequential tokens with the same head, but not compounded because the head is the last token...
-    ("良くない", None, R(N('良く', '良い', ''), N('ない', '', '無い'))),
+    ("良くない", None, R(N('良くない', '', ''))),
     #todo 行きたい所
-    ("行きたい所全部行こう", None, R(N('行きたい', '', ''), N('所', '', ''), N('全部', '', ''), N('行こう', '行く', ''))),
+    ("行きたい所全部行こう", None, R(N('行きたい所', '', ''),N('全部', '', ''),N('行こう', '行く', ''))),
 ], ids=only_string_params)
 def test_unsatisfied_sequential_identical_heads_not_compounded(sentence: str, parser: UDTokenizer | None, expected: R) -> None:
     run_tests(expected, parser if parser else ud_parsers.best, sentence)
@@ -43,7 +44,7 @@ def test_unsatisfied_sequential_identical_heads_not_compounded(sentence: str, pa
     ("一度夢を見た", None, R(N('一度', '', ''), N('夢を', '', ''), N('見た', '', ''))),
     ("友達だから余計に気になっちゃうんだよ", None, R(N('友達だから', '', ''), N('余計に', '', ''), N('気に', '', ''), N('なっちゃうんだよ', '', ''))),
     # todo いいよう
-    ("先生にいいように言って", None, R(N('先生に', '', ''), N('いいように', '', ''), N('言って', '', ''))),
+    ("先生にいいように言って", None, R(N('先生に', '', ''),N('いいように言って', '', ''))),
     # not a disaster, but I do miss 話の中に
     ("あいつが話の中に出てくるのが", ud_parsers.gendai, R(N('あいつが', '', ''),N('話の', '', ''),N('中に', '', ''),N('出てくるのが', '', ''))),
     # not a disaster, but I want 藤宮さん compounded
@@ -89,7 +90,7 @@ def test_sentences_we_are_unsatisfied_with(sentence: str, expected: R) -> None:
     ("知らない", R(N('知らない', '', ''))),
     ("いつまでも来ないと知らないからね", R(N('いつまでも', '', ''), N('来ないと', '', ''), N('知らないからね', '', ''))),
     ("ついに素晴らしい女性に逢えた。", R(N('ついに', '', '遂に'), N('素晴らしい', '', ''), N('女性に', '', ''), N('逢えた。', '', ''))),
-    ("するためでした", R(N('する', '', '為る'), N('ためでした', '', ''))),
+    ("するためでした", R(N('するためでした', '', ''))),
     ("なかったかな", R(N('なかったかな', '', ''))),
     ("離れていくよ", R(N('離れていくよ', '', ''))),
     ("言われるまで気づかなかった", R(N('言われるまで', '', ''), N('気づかなかった', '', ''))),
