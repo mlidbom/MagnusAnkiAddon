@@ -31,8 +31,7 @@ def test_remove_particle_phrase_final(sentence: str, expected: R) -> None:
 
 
 @pytest.mark.parametrize('sentence, parser, expected', [
-    # としたら
-    ("としたら", ud_parsers.gendai, R(N('としたら', '', ''))),
+     ("としたら", ud_parsers.gendai, R(N('としたら', '', ''))),
 ], ids=only_string_params)
 def test_unsatisfied_dictionary_word_missing(sentence: str, parser: UDTokenizer | None, expected: R) -> None:
     run_tests_with_level_0_cloned_to_level_1(expected, parser if parser else ud_parsers.best, sentence)

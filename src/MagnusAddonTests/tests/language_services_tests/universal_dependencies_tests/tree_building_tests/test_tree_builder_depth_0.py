@@ -14,18 +14,14 @@ R = UDTreeSpec
 def only_string_params(param: Any) -> str: return param if isinstance(param, str) else ''
 
 @pytest.mark.parametrize('sentence, parser, expected', [
-    # todo: (かっこ:compound, head:いい(いい:root))
     ("意外とかっこいいな", None, R(N('意外と', '', ''),N('かっこいいな', '', ''))),
-    # としたら
     ("としたら", ud_parsers.gendai, R(N('としたら', '', ''))),
 ], ids=only_string_params)
 def test_unsatisfied_dictionary_word_missing(sentence: str, parser: UDTokenizer | None, expected: R) -> None:
     run_tests(expected, parser if parser else ud_parsers.best, sentence)
 
 @pytest.mark.parametrize('sentence, parser, expected', [
-    # todo here we have sequential tokens with the same head, but not compounded because the head is the last token...
     ("良くない", None, R(N('良くない', '', ''))),
-    #todo 行きたい所
     ("行きたい所全部行こう", None, R(N('行きたい所', '', ''),N('全部', '', ''),N('行こう', '行く', ''))),
 ], ids=only_string_params)
 def test_unsatisfied_sequential_identical_heads_not_compounded(sentence: str, parser: UDTokenizer | None, expected: R) -> None:
