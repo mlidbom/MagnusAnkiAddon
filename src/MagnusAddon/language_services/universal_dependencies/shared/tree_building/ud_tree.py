@@ -22,3 +22,11 @@ class UDTree:
     def visit(self, callback: Callable[['UDTreeNode'], None]) -> None:
         for node in self.nodes:
             node.visit(callback)
+
+    def flatten(self) -> list[UDTreeNode]:
+        nodes:list[UDTreeNode] = []
+        def add_node(node: UDTreeNode) -> None:
+            nodes.append(node)
+
+        self.visit(add_node)
+        return nodes

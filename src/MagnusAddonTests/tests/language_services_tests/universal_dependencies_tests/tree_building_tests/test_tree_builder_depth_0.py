@@ -5,6 +5,7 @@ import pytest
 from language_services.universal_dependencies import ud_parsers
 from language_services.universal_dependencies.shared.tokenizing.ud_tokenizer import UDTokenizer
 from tests.language_services_tests.universal_dependencies_tests.tree_building_tests.helpers import test_runner
+from tests.language_services_tests.universal_dependencies_tests.tree_building_tests.helpers.test_runner import assert_no_nodes_at_level
 from tests.language_services_tests.universal_dependencies_tests.tree_building_tests.helpers.ud_tree_node_spec import UDTreeNodeSpec
 from tests.language_services_tests.universal_dependencies_tests.tree_building_tests.helpers.ud_tree_spec import UDTreeSpec
 
@@ -112,8 +113,8 @@ def test_sentences_the_best_parser_does_well(sentence: str, expected: R) -> None
     "当てられても",
     "逃げたり",
 ], ids=only_string_params)
-def test_sentences_swallowed_whole_at_this_level(sentence: str) -> None:
-    run_tests(R(), ud_parsers.best, sentence)
+def test_sentences_with_no_nodes_at_this_depth(sentence: str) -> None:
+    assert_no_nodes_at_level(ud_parsers.best, sentence, 0)
 
 def run_tests(expected: UDTreeSpec, parser: UDTokenizer, sentence: str) -> None:
-    test_runner.run_tests(expected, parser, sentence, 0)
+    test_runner.run_tests_for_level(expected, parser, sentence, 0)
