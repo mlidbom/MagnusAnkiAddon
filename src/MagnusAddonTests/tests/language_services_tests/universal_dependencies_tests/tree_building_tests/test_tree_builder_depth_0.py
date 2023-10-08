@@ -111,12 +111,6 @@ def test_sentences_we_are_unsatisfied_with(sentence: str, expected: R) -> None:
 def test_sentences_the_best_parser_does_well(sentence: str, expected: R) -> None:
     run_tests(expected, ud_parsers.best, sentence)
 
-# @pytest.mark.parametrize('sentence, parser, expected', [
-#
-# ], ids=only_string_params)
-# def test_sentences_done_better_by_alternative_parser(sentence: str, parser: UDTokenizer, expected: R) -> None:
-#     run_tests(expected, parser, sentence)
-
 
 def run_tests(expected: R, parser: UDTokenizer, sentence: str) -> None:
     print()
@@ -143,54 +137,3 @@ def run_tests(expected: R, parser: UDTokenizer, sentence: str) -> None:
     print(repr(spec_result).replace("\n", '').replace(full_width_space, ''))
 
     assert spec_result == expected
-
-@pytest.mark.parametrize("sentence", [
-    # "朝、近所をぶらぶらした",
-    # "そんなに気になるなら あの時俺も友達だって言えばよかったじゃん",
-    # "普段どうやって日記読んでたんだ",
-    # "何か意味があるんだと思う",
-    # "いつまでも来ないと知らないからね",
-    # "離れていくよ",
-    # "ああだからあの時忘れんなって言ったのに",
-    # "ダメダメ私を助けて",
-    # "ついに素晴らしい女性に逢えた。",
-    # "ううん藤宮さんは日記を捨てるような人じゃない",
-    # "探しているんですか",
-    # "行きたい所全部行こう",
-    # "当てられても",
-    # "一度聞いたことがある",
-    # "よかったじゃん",
-    # "言えばよかった",
-    # "言われるまで気づかなかった",
-    # "夢を見た",
-    # "知らない",
-    # "何よあの態度偉そうに",
-    # "これから本題に入るんだけど",
-    # "食べられるもの",
-    # "俺以外に友達がいなくてよかったとか　絶対思っちゃダメなのに",
-    # "日代さんが 先生に知らせてくれたらしい",
-    # "やっぱりあの噂ホントだったんだ",
-    # "だったら記憶喪失の振りすることも簡単だよな",
-    # "だったら記憶喪失の振りすることも簡単だよな"¨
-    # "食べてもいいけど",
-    # "ケータイ持ってるやつは自宅に連絡しておけ",
-    # "なぜかというと",
-    # "あり得るか",
-    # "二千九百円",
-    # "じゃ　神経衰弱をやろう",
-    # "この前の　放課後"
-    # "と…とりあえず　ご飯食べよう"
-    # "意外とかっこいいな"
-])
-def test_compare_parsers(sentence: str) -> None:
-    print()
-    print(sentence)
-    for parser in ud_parsers.all_parsers:
-        print(f"{parser.name} : {sentence}")
-        print(parser.parse(sentence).to_tree())
-        print()
-
-    for parser in ud_parsers.all_parsers:
-        print(f"{parser.name} : {sentence}")
-        print(ud_tree_builder.build_tree(parser, sentence))
-        print()

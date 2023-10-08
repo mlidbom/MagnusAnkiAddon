@@ -84,7 +84,8 @@ class Level0CompoundBuilder(CompoundBuilder):
 
         if (token.deprel, token.xpos) in {
             (ud_deprel.adverbial_clause_modifier, ud_japanese_part_of_speech_tag.adjective_i_bound),
-            (ud_deprel.clausal_modifier_of_noun, ud_japanese_part_of_speech_tag.verb_bound)}:
+            (ud_deprel.clausal_modifier_of_noun, ud_japanese_part_of_speech_tag.verb_bound)
+        }:
             return True
 
         return False
