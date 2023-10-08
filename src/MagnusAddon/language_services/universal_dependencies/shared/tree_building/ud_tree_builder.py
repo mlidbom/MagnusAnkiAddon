@@ -4,6 +4,8 @@ from typing import Callable
 
 import sysutils.functional.predicate
 from language_services.universal_dependencies.shared.tokenizing import ud_japanese_part_of_speech_tag, ud_deprel
+from language_services.universal_dependencies.shared.tokenizing.ud_deprel import UdRelationshipTag
+from language_services.universal_dependencies.shared.tokenizing.ud_japanese_part_of_speech_tag import UdJapanesePartOfSpeechTag
 from language_services.universal_dependencies.shared.tokenizing.ud_token import UDToken
 from language_services.universal_dependencies.shared.tokenizing.ud_tokenizer import UDTokenizer
 from language_services.universal_dependencies.shared.tree_building.ud_tree import UDTree
@@ -28,26 +30,35 @@ def build_tree(parser: UDTokenizer, text: str, collapse_identical_levels_above_l
             compounds = _build_compounds(tokens, depth)
     return UDTree(*[_create_node(compound, depth, collapse_identical_levels_above_level) for compound in compounds])
 
-class ConsumingPredicates:
+class CompoundPredicates:
     def __init__(self, compound: CompoundBuilder):
         self.compound = compound
 
-    def is_descendent_of_a_compound_token(self) -> bool:
-        if self.compound.next.head in set(self.compound.compound_tokens):
-            return True
-        return False
+    def nexts_head_is_compound_token(self) -> bool:
+        return self.compound.next.head in set(self.compound.compound_tokens)
 
-    def shares_past_head_with_current(self) -> bool:
-        if (self.compound.current.head == self.compound.next.head
-                and self.compound.current.head.id <= self.compound.current.id):
-            return True
-        return False
+    def next_shares_earlier_head_with_current(self) -> bool:
+        return (self.compound.current.head == self.compound.next.head
+                and self.compound.current.head.id <= self.compound.current.id)
 
-    def is_first_phrase_end_particle(self) -> bool:
+    def current_is_last_sequential_deprel(self, deprel: UdRelationshipTag) -> Callable[[], bool]:
+        return lambda: self.compound.current.deprel == deprel and self.compound.next.deprel != deprel
+
+    def next_is_fixed_multiword_expression_with_current(self) -> bool:
+        return self.compound.next.head == self.compound.current and self.compound.next.deprel == ud_deprel.fixed_multiword_expression
+
+    def next_is_first_phrase_end_particle(self) -> bool:
         phrase_end_pos_set = {ud_japanese_part_of_speech_tag.particle_phrase_final}
-        if self.compound.next.xpos in phrase_end_pos_set and self.compound.current.xpos not in phrase_end_pos_set:
-            return True
-        return False
+        return self.compound.next.xpos in phrase_end_pos_set and self.compound.current.xpos not in phrase_end_pos_set
+
+    def _tokens_missing_heads(self) -> list[UDToken]:
+        return [tok for tok in self.compound.compound_tokens if tok.head.id > self.compound.current.id]
+
+    def missing_deprel(self, *deprel: UdRelationshipTag) -> Callable[[], bool]:
+        return lambda: any(t for t in self._tokens_missing_heads() if t.deprel in deprel)
+
+    def missing_deprel_xpos_combo(self, *combo: tuple[UdRelationshipTag, UdJapanesePartOfSpeechTag]) -> Callable[[], bool]:
+        return lambda: any(t for t in self._tokens_missing_heads() if (t.deprel, t.xpos) in combo)
 
 class CompoundBuilder:
     def __init__(self, target: list[CompoundBuilder], source_tokens: list[UDToken]):
@@ -110,40 +121,27 @@ class CompoundBuilder:
 class Level0CompoundBuilder(CompoundBuilder):
     def __init__(self, target: list[CompoundBuilder], source_token: list[UDToken]):
         super().__init__(target, source_token)
-        predicates = ConsumingPredicates(self)
+        predicates = CompoundPredicates(self)
         self.go_rules = [
-            predicates.shares_past_head_with_current,
-            predicates.is_descendent_of_a_compound_token,
-            self.required_forward_head_is_missing
+            predicates.next_shares_earlier_head_with_current,
+            predicates.nexts_head_is_compound_token,
+
+            predicates.missing_deprel(ud_deprel.compound,
+                                      ud_deprel.direct_object,
+                                      ud_deprel.clausal_modifier_of_noun,
+                                      ud_deprel.case_marking),
+
+            predicates.missing_deprel_xpos_combo(
+                (ud_deprel.adverbial_clause_modifier, ud_japanese_part_of_speech_tag.adjective_i_bound),
+                #(ud_deprel.adverbial_clause_modifier, ud_japanese_part_of_speech_tag.adjectival_noun_general)
+            ),
         ]
 
         self.stop_rules = [
-            predicates.is_first_phrase_end_particle
+            predicates.next_is_first_phrase_end_particle,
+            #predicates.current_is_last_sequential_deprel(ud_deprel.case_marking)
         ]
 
-    def required_forward_head_is_missing(self) -> bool:
-        if len(self.tokens_needed_to_be_compounded_with_forward_head()) > 0:
-            return True
-        return False
-
-    def _should_be_compounded_with_forward_head(self, token: UDToken) -> bool:
-        if token.head.id <= self.current.id:
-            return False
-
-        if token.deprel in {ud_deprel.compound,
-                            ud_deprel.direct_object,
-                            ud_deprel.clausal_modifier_of_noun,
-                            ud_deprel.case_marking}:
-            return True
-
-        if (token.deprel, token.xpos) in {(ud_deprel.adverbial_clause_modifier, ud_japanese_part_of_speech_tag.adjective_i_bound),
-                                          (ud_deprel.clausal_modifier_of_noun, ud_japanese_part_of_speech_tag.verb_bound)}:
-            return True
-
-        return False
-
-    def tokens_needed_to_be_compounded_with_forward_head(self) -> list[UDToken]:
-        return self.tokens_where(self._should_be_compounded_with_forward_head)
 
     def build(self) -> None:
         self.consume_rule_based()
