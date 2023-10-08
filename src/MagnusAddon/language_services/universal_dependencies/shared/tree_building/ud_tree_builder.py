@@ -1,9 +1,14 @@
 from __future__ import annotations
+
+from typing import Callable
+
+import sysutils.functional.predicate
 from language_services.universal_dependencies.shared.tree_building.ud_tree_node import UDTreeNode
 from language_services.universal_dependencies.shared.tree_building.ud_tree import UDTree
 from language_services.universal_dependencies.shared.tokenizing.ud_tokenizer import UDTokenizer
 from language_services.universal_dependencies.shared.tokenizing.ud_token import UDToken
-from sysutils import ex_list, ex_predicate
+from sysutils import ex_list
+from sysutils.functional.predicate import Predicate
 
 class _Depth:
     surface_0 = 0
@@ -23,9 +28,9 @@ def build_tree(parser: UDTokenizer, text: str, collapse_identical_levels_above_l
     return UDTree(*[_create_node(compound, depth, collapse_identical_levels_above_level) for compound in compounds])
 
 class CompoundBuilder:
-    def __init__(self, source_token: list[UDToken], compound_tokens: list[UDToken]):
-        self.source_tokens = source_token
-        self.compound_tokens = compound_tokens
+    def __init__(self, source_tokens: list[UDToken]):
+        self.source_tokens = source_tokens
+        self.compound_tokens = [source_tokens.pop(0)]
 
     @property
     def current(self) -> UDToken: return self.compound_tokens[-1]
@@ -49,7 +54,7 @@ class CompoundBuilder:
         self.consume_while_child_of(self.next)
 
     def consume_until_and_including(self, token: UDToken) -> None:
-        self.compound_tokens += ex_list.consume_until_and_including(ex_predicate.eq_(token), self.source_tokens)
+        self.compound_tokens += ex_list.consume_until_and_including(sysutils.functional.predicate.eq_(token), self.source_tokens)
 
     def consume_all_descendents_of_current(self) -> None:
         parents: set[UDToken] = {self.current}
@@ -63,10 +68,18 @@ class CompoundBuilder:
             parents.add(self.next)
             self.consume_next()
 
-    @staticmethod
-    def start_compound_by_consuming_first_from(source_tokens: list[UDToken]) -> CompoundBuilder:
-        compound_tokens = [source_tokens.pop(0)]
-        return CompoundBuilder(source_tokens, compound_tokens)
+    def _tokens_where(self, predicate: Predicate[UDToken]) -> list[UDToken]:
+        return ex_list.where(predicate, self.compound_tokens)
+
+class Level0CompoundBuilder(CompoundBuilder):
+    def __init__(self, source_token: list[UDToken]):
+        super().__init__(source_token)
+
+    def should_be_compounded_with_forward_root(self, token: UDToken) -> bool:
+        if token.head.id <= self.current.head.id:
+            return False
+
+        return False
 
 def _build_compounds(tokens: list[UDToken], depth: int) -> list[list[UDToken]]:
     assert depth <= _Depth.morphemes_4
@@ -77,33 +90,37 @@ def _build_compounds(tokens: list[UDToken], depth: int) -> list[list[UDToken]]:
     unconsumed_tokens = tokens.copy()
 
     while unconsumed_tokens:
-        compound = CompoundBuilder.start_compound_by_consuming_first_from(unconsumed_tokens)
-        created_compounds.append(compound)
-
         if depth == _Depth.depth_3:
+            compound = CompoundBuilder(unconsumed_tokens)
+            created_compounds.append(compound)
             compound.consume_while_child_of(compound.first)
 
         elif depth == _Depth.depth_2:
+            compound = CompoundBuilder(unconsumed_tokens)
+            created_compounds.append(compound)
             compound.consume_while_child_of(compound.first)
             if compound.first.head.id == compound.first.id + 1:  # head of first is second token
                 compound.consume_next()
                 compound.consume_while_child_of(compound.first.head)
 
         elif depth == _Depth.depth_1:
+            compound = CompoundBuilder(unconsumed_tokens)
+            created_compounds.append(compound)
             compound.consume_while_child_of(compound.first)
             if compound.has_next and compound.next == compound.first.head:
                 compound.consume_next()
                 compound.consume_while_child_of(compound.first.head)
 
         elif depth == _Depth.surface_0:
+            compound = Level0CompoundBuilder(unconsumed_tokens)
+            created_compounds.append(compound)
             compound.consume_all_descendents_of_compound_tokens()
 
     return [cb.compound_tokens for cb in created_compounds]
 
 def _create_node(tokens: list[UDToken], depth: int, collapse_identical_levels_above_level: int) -> 'UDTreeNode':
     children = [] if collapse_identical_levels_above_level < depth and len(tokens) == 1 \
-                      else _build_child_compounds(tokens, depth + 1, collapse_identical_levels_above_level)
-
+        else _build_child_compounds(tokens, depth + 1, collapse_identical_levels_above_level)
 
     return UDTreeNode(depth, children, tokens)
 

@@ -46,10 +46,12 @@ def test_unsatisfied_sequential_identical_heads_not_compounded(sentence: str, pa
     ("先生にいいように言って", None, R(N('先生に', '', ''), N('いいように', '', ''), N('言って', '', ''))),
     # not a disaster, but I do miss 話の中に
     ("あいつが話の中に出てくるのが", ud_parsers.gendai, R(N('あいつが', '', ''),N('話の', '', ''),N('中に', '', ''),N('出てくるのが', '', ''))),
-    # not a disaster, but I want 藤宮さんは compounded
+    # not a disaster, but I want 藤宮さん compounded
     ("ううん藤宮さんは日記を捨てるような人じゃない", ud_parsers.gendai, R(N('ううん', '', ''),N('藤宮', 'フジミヤ', ''),N('さんは', '', ''),N('日記を', '', ''),N('捨てるような', '', ''),N('人じゃない', '', ''))),
     # 自分のこと
     ("自分のことを知ってもらえてない人に", None, R(N('自分の', '', ''),N('ことを', '', ''),N('知ってもらえてない', '', ''),N('人に', '', ''))),
+    # ように言った
+    ("ように言ったのも", None, R(N('ように', '', ''), N('言ったのも', '', ''))),
 ])
 def test_unsatisfied_dictionary_expression_missing(sentence: str, parser: UDTokenizer | None, expected: R) -> None:
     run_tests(expected, parser if parser else ud_parsers.best, sentence)
@@ -82,8 +84,6 @@ def test_sentences_we_are_unsatisfied_with(sentence: str, expected: R) -> None:
     run_tests(expected, ud_parsers.best, sentence)
 
 @pytest.mark.parametrize('sentence, expected', [
-
-    ("ように言ったのも", R(N('ように', '', ''), N('言ったのも', '', ''))),
     ("探しているんですか", R(N('探しているんですか', '', ''))),
     ("ダメダメ私を助けて", R(N('ダメダメ', '', ''), N('私を', '', ''), N('助けて', '', ''))),
     ("知らない", R(N('知らない', '', ''))),
