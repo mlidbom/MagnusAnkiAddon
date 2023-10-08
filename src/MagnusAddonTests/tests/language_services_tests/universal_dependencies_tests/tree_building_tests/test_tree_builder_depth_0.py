@@ -16,7 +16,7 @@ def only_string_params(param: Any) -> str: return param if isinstance(param, str
 
 @pytest.mark.parametrize('sentence, parser, expected', [
     # todo: (かっこ:compound, head:いい(いい:root))
-    ("意外とかっこいいな", None, R(N('意外と', '', ''), N('かっこ', '', '格好'), N('いいな', '', ''))),
+    ("意外とかっこいいな", None, R(N('意外と', '', ''),N('かっこいいな', '', ''))),
     ("としたら", ud_parsers.gendai, R(N('と', '', ''),N('したら', '', ''))),
 ], ids=only_string_params)
 def test_unsatisfied_dictionary_word_missing(sentence: str, parser: UDTokenizer | None, expected: R) -> None:
@@ -47,7 +47,7 @@ def test_unsatisfied_sequential_identical_heads_not_compounded(sentence: str, pa
     # not a disaster, but I do miss 話の中に
     ("あいつが話の中に出てくるのが", ud_parsers.gendai, R(N('あいつが', '', ''),N('話の', '', ''),N('中に', '', ''),N('出てくるのが', '', ''))),
     # not a disaster, but I want 藤宮さん compounded
-    ("ううん藤宮さんは日記を捨てるような人じゃない", ud_parsers.gendai, R(N('ううん', '', ''),N('藤宮', 'フジミヤ', ''),N('さんは', '', ''),N('日記を', '', ''),N('捨てるような', '', ''),N('人じゃない', '', ''))),
+    ("ううん藤宮さんは日記を捨てるような人じゃない", ud_parsers.gendai, R(N('ううん', '', ''),N('藤宮さんは', '', ''),N('日記を', '', ''),N('捨てるような', '', ''),N('人じゃない', '', ''))),
     # 自分のこと
     ("自分のことを知ってもらえてない人に", None, R(N('自分の', '', ''),N('ことを', '', ''),N('知ってもらえてない', '', ''),N('人に', '', ''))),
     # ように言った

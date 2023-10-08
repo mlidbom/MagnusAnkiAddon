@@ -1,12 +1,11 @@
 from __future__ import annotations
 
-from typing import Callable
-
 import sysutils.functional.predicate
-from language_services.universal_dependencies.shared.tree_building.ud_tree_node import UDTreeNode
-from language_services.universal_dependencies.shared.tree_building.ud_tree import UDTree
-from language_services.universal_dependencies.shared.tokenizing.ud_tokenizer import UDTokenizer
+from language_services.universal_dependencies.shared.tokenizing import ud_japanese_part_of_speech_tag, ud_relationship_tag
 from language_services.universal_dependencies.shared.tokenizing.ud_token import UDToken
+from language_services.universal_dependencies.shared.tokenizing.ud_tokenizer import UDTokenizer
+from language_services.universal_dependencies.shared.tree_building.ud_tree import UDTree
+from language_services.universal_dependencies.shared.tree_building.ud_tree_node import UDTreeNode
 from sysutils import ex_list
 from sysutils.functional.predicate import Predicate
 
@@ -75,11 +74,17 @@ class Level0CompoundBuilder(CompoundBuilder):
     def __init__(self, source_token: list[UDToken]):
         super().__init__(source_token)
 
-    def should_be_compounded_with_forward_root(self, token: UDToken) -> bool:
-        if token.head.id <= self.current.head.id:
+    def _should_be_compounded_with_forward_root(self, token: UDToken) -> bool:
+        if token.head.id <= self.current.id:
             return False
 
+        if token.deprel == ud_relationship_tag.compound:
+            return True
+
         return False
+
+    def tokens_needed_to_be_compounded_with_forward_head(self) -> list[UDToken]:
+        return self._tokens_where(self._should_be_compounded_with_forward_root)
 
 def _build_compounds(tokens: list[UDToken], depth: int) -> list[list[UDToken]]:
     assert depth <= _Depth.morphemes_4
@@ -115,6 +120,10 @@ def _build_compounds(tokens: list[UDToken], depth: int) -> list[list[UDToken]]:
             compound = Level0CompoundBuilder(unconsumed_tokens)
             created_compounds.append(compound)
             compound.consume_all_descendents_of_compound_tokens()
+            while compound.tokens_needed_to_be_compounded_with_forward_head():
+                token_to_compound_head_for = compound.tokens_needed_to_be_compounded_with_forward_head()[0]
+                compound.consume_until_and_including(token_to_compound_head_for.head)
+                compound.consume_all_descendents_of_compound_tokens()
 
     return [cb.compound_tokens for cb in created_compounds]
 
