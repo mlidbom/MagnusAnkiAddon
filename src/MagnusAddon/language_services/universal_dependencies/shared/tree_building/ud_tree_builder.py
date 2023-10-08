@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Callable
+
 import sysutils.functional.predicate
 from language_services.universal_dependencies.shared.tokenizing import ud_japanese_part_of_speech_tag, ud_deprel
 from language_services.universal_dependencies.shared.tokenizing.ud_token import UDToken
@@ -26,11 +28,33 @@ def build_tree(parser: UDTokenizer, text: str, collapse_identical_levels_above_l
             compounds = _build_compounds(tokens, depth)
     return UDTree(*[_create_node(compound, depth, collapse_identical_levels_above_level) for compound in compounds])
 
+class ConsumingPredicates:
+    def __init__(self, compound: CompoundBuilder):
+        self.compound = compound
+
+    def is_descendent_of_any_token(self) -> bool:
+        if self.compound.next.head in set(self.compound.compound_tokens):
+            return True
+        return False
+
+    def shares_head_with_current(self) -> bool:
+        if self.compound.current.head == self.compound.next.head:
+            return True
+        return False
+
+    def is_first_phrase_end_particle(self) -> bool:
+        phrase_end_pos_set = {ud_japanese_part_of_speech_tag.particle_phrase_final}
+        if self.compound.next.xpos in phrase_end_pos_set and self.compound.current.xpos not in phrase_end_pos_set:
+            return True
+        return False
+
 class CompoundBuilder:
     def __init__(self, target: list[CompoundBuilder], source_tokens: list[UDToken]):
         target.append(self)
         self.source_tokens = source_tokens
         self.compound_tokens = [source_tokens.pop(0)]
+        self.stop_rules: list[Callable[[], bool]] = []
+        self.go_rules: list[Callable[[], bool]] = []
 
     @property
     def current(self) -> UDToken: return self.compound_tokens[-1]
@@ -62,31 +86,46 @@ class CompoundBuilder:
             parents.add(self.next)
             self.consume_next()
 
-    def consume_all_allowed_descendents_of_compound_tokens(self) -> bool:
-        parents: set[UDToken] = set(self.compound_tokens)
-        while self.has_next and self.next.head in parents:
-            if self._is_next_allowed_descendent():
-                parents.add(self.next)
-                self.consume_next()
-            else:
-                return False
-
-        return True
-
-    def _is_next_allowed_descendent(self) -> bool:
-        return True
-
     def consume_while(self, predicate: Predicate[UDToken]) -> None:
         self.compound_tokens += ex_list.consume_while(predicate, self.source_tokens)
 
-    def _tokens_where(self, predicate: Predicate[UDToken]) -> list[UDToken]:
+    def tokens_where(self, predicate: Predicate[UDToken]) -> list[UDToken]:
         return ex_list.where(predicate, self.compound_tokens)
+
+    def consume_rule_based(self) -> None:
+        while self.has_next:
+            for rule in self.stop_rules:
+                if rule():
+                    return
+            consumed: bool = False
+            for rule in self.go_rules:
+                if rule():
+                    self.consume_next()
+                    consumed = True
+                    break
+            if not consumed:
+                return
 
 class Level0CompoundBuilder(CompoundBuilder):
     def __init__(self, target: list[CompoundBuilder], source_token: list[UDToken]):
         super().__init__(target, source_token)
+        predicates = ConsumingPredicates(self)
+        self.go_rules = [
+            predicates.shares_head_with_current,
+            predicates.is_descendent_of_any_token,
+            self.required_forward_head_is_missing
+        ]
 
-    def _should_be_compounded_with_forward_root(self, token: UDToken) -> bool:
+        self.stop_rules = [
+            predicates.is_first_phrase_end_particle
+        ]
+
+    def required_forward_head_is_missing(self) -> bool:
+        if len(self.tokens_needed_to_be_compounded_with_forward_head()) > 0:
+            return True
+        return False
+
+    def _should_be_compounded_with_forward_head(self, token: UDToken) -> bool:
         if token.head.id <= self.current.id:
             return False
 
@@ -104,18 +143,11 @@ class Level0CompoundBuilder(CompoundBuilder):
 
         return False
 
-    def _is_next_allowed_descendent(self) -> bool:
-        return True
-
     def tokens_needed_to_be_compounded_with_forward_head(self) -> list[UDToken]:
-        return self._tokens_where(self._should_be_compounded_with_forward_root)
+        return self.tokens_where(self._should_be_compounded_with_forward_head)
 
     def build(self) -> None:
-        self.consume_all_allowed_descendents_of_compound_tokens()
-        while self.tokens_needed_to_be_compounded_with_forward_head():
-            token_to_compound_head_for = self.tokens_needed_to_be_compounded_with_forward_head()[0]
-            self.consume_until_and_including(token_to_compound_head_for.head)
-            self.consume_all_allowed_descendents_of_compound_tokens()
+        self.consume_rule_based()
 
 class Level1SplitPhraseEndParticleCompoundBuilder(Level0CompoundBuilder):
     def __init__(self, target: list[CompoundBuilder], source_token: list[UDToken]):
@@ -128,7 +160,7 @@ class Level1SplitPhraseEndParticleCompoundBuilder(Level0CompoundBuilder):
         return True
 
     @staticmethod
-    def is_phrase_end_particle(token:UDToken) -> bool:
+    def is_phrase_end_particle(token: UDToken) -> bool:
         return token.xpos in {ud_japanese_part_of_speech_tag.particle_phrase_final}
 
     def build(self) -> None:
@@ -136,7 +168,6 @@ class Level1SplitPhraseEndParticleCompoundBuilder(Level0CompoundBuilder):
             self.consume_while(self.is_phrase_end_particle)
         else:
             super().build()
-
 
 def _build_compounds(tokens: list[UDToken], depth: int) -> list[list[UDToken]]:
     assert depth <= _Depth.morphemes_4
