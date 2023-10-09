@@ -88,8 +88,8 @@ class CompoundBuilder:
         target.append(self)
         self.source_tokens = source_tokens
         self.compound_tokens = [source_tokens.pop(0)]
-        self.stop_rules: list[Callable[[], bool]] = []
-        self.go_rules: list[Callable[[], bool]] = []
+        self.split_when: list[Callable[[], bool]] = []
+        self.join_when: list[Callable[[], bool]] = []
 
     @property
     def current(self) -> UDToken: return self.compound_tokens[-1]
@@ -129,17 +129,22 @@ class CompoundBuilder:
 
     def consume_rule_based(self) -> None:
         while self.has_next:
-            for rule in self.stop_rules:
+            for rule in self.split_when:
                 if rule():
                     return
             consumed: bool = False
-            for rule in self.go_rules:
+            for rule in self.join_when:
                 if rule():
                     self.consume_next()
                     consumed = True
                     break
             if not consumed:
                 return
+
+class CompoundingRule:
+    def __init__(self, join_when: list[Callable[[], bool]], split_when: list[Callable[[], bool]]):
+        self.join_rules = join_when
+        self.split_rules = split_when
 
 class RulesBasedCompoundBuilder(CompoundBuilder):
     def __init__(self, target: list[CompoundBuilder], source_token: list[UDToken], depth: int):
@@ -148,42 +153,55 @@ class RulesBasedCompoundBuilder(CompoundBuilder):
 
         self.depth = depth
 
-        self.rule_sets: list[tuple[list[Callable[[], bool]], list[Callable[[], bool]]]] = [
-            ([predicates.nexts_head_is_compound_token,
-              predicates.missing_deprel(ud_deprel.compound),
-              predicates.next_shares_earlier_head_with_current]
+        self.depth_rules: list[CompoundingRule] = []
 
-             , [predicates.next_is_first_xpos(ud_japanese_part_of_speech_tag.particle_phrase_final)]
-             ),
+        self.depth_rules.append(
+            CompoundingRule(
+                join_when=[
+                    predicates.nexts_head_is_compound_token,
+                    predicates.missing_deprel(ud_deprel.compound),
+                    predicates.next_shares_earlier_head_with_current]
 
-            ([predicates.next_is_child_of(self.first),
-              predicates.next_is_compound_dependent_on_current,
-              predicates.next_is_fixed_multiword_expression_with_compound_token,
-              predicates.next_shares_earlier_head_with_current]
+                , split_when=[
+                    predicates.next_is_first_xpos(ud_japanese_part_of_speech_tag.particle_phrase_final)]))
 
-             , []
-             ),
+        self.depth_rules.append(
+            CompoundingRule(
+                join_when=[
+                    predicates.next_is_child_of(self.first),
+                    predicates.next_is_compound_dependent_on_current,
+                    predicates.next_is_fixed_multiword_expression_with_compound_token,
+                    predicates.next_shares_earlier_head_with_current]
 
-            ([predicates.next_is_fixed_multiword_expression_with_compound_token,
-              predicates.next_shares_earlier_head_with_current,
-              predicates.next_is_head_of_compound_token]
+                , split_when=[]
+            ))
 
-             , []
-             ),
+        self.depth_rules.append(
+            CompoundingRule(
+                join_when=[
+                    predicates.next_is_fixed_multiword_expression_with_compound_token,
+                    predicates.next_shares_earlier_head_with_current,
+                    predicates.next_is_head_of_compound_token]
 
-            ([predicates.next_is_compound_dependent_on_current,
-              predicates.next_is_fixed_multiword_expression_with_compound_token]
+                , split_when=[]
+            ))
 
-             , []
-             )
-        ]
+        self.depth_rules.append(
+            CompoundingRule(
+                join_when=[
+                    predicates.next_is_compound_dependent_on_current,
+                    predicates.next_is_fixed_multiword_expression_with_compound_token]
+
+                , split_when=[]
+            ))
 
     def build(self) -> None:
-        if self.depth < len(self.rule_sets):
-            self.go_rules, self.stop_rules = self.rule_sets[self.depth]
+        if self.depth < len(self.depth_rules):
+            self.join_when = self.depth_rules[self.depth].join_rules
+            self.split_when = self.depth_rules[self.depth].split_rules
         else:
-            self.go_rules = []
-            self.stop_rules = []
+            self.join_when = []
+            self.split_when = []
 
         self.consume_rule_based()
 
