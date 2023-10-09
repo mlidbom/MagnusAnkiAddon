@@ -20,15 +20,11 @@ class _Depth:
     depth_3 = 3
     morphemes_10 = 10
 
-def build_tree(parser: UDTokenizer, text: str, collapse_identical_levels_above_level: int = -1) -> UDTree:
+def build_tree(parser: UDTokenizer, text: str) -> UDTree:
     tokens = parser.parse(text).tokens
     depth = 0
     compounds = _build_compounds(tokens, depth)
-    if collapse_identical_levels_above_level < depth:
-        while len(compounds) == 1 and depth < _Depth.depth_2:  # making the whole text into a compound is not usually desired, but above depth 2 we loose words, so don't go that deep.
-            depth += 1
-            compounds = _build_compounds(tokens, depth)
-    return UDTree(*[_create_node(compound, depth, collapse_identical_levels_above_level) for compound in compounds])
+    return UDTree(*[_create_node(compound, depth) for compound in compounds])
 
 class CompoundPredicates:
     def __init__(self, compound: CompoundBuilder):
@@ -168,10 +164,10 @@ class RulesBasedCompoundBuilder(CompoundBuilder):
              , []
              ),
 
-            ([predicates.true]
-
-             , []
-             ),
+            # ([predicates.true]
+            #
+            #  , []
+            #  ),
 
             ([predicates.next_is_fixed_multiword_expression_with_compound_token,
               predicates.next_shares_earlier_head_with_current,
@@ -209,21 +205,19 @@ def _build_compounds(tokens: list[UDToken], depth: int) -> list[list[UDToken]]:
 
     return [cb.compound_tokens for cb in created_compounds]
 
-def _create_node(tokens: list[UDToken], depth: int, collapse_identical_levels_above_level: int) -> 'UDTreeNode':
-    children = [] if collapse_identical_levels_above_level < depth and len(tokens) == 1 \
-        else _build_child_compounds(tokens, depth + 1, collapse_identical_levels_above_level)
+def _create_node(tokens: list[UDToken], depth: int) -> 'UDTreeNode':
+    children = [] if len(tokens) == 1 else _build_child_compounds(tokens, depth + 1)
 
     return UDTreeNode(depth, children, tokens)
 
-def _build_child_compounds(parent_node_tokens: list[UDToken], depth: int, collapse_identical_levels_above_level: int) -> list[UDTreeNode]:
-    if (depth > _Depth.morphemes_10
-            or depth > collapse_identical_levels_above_level and len(parent_node_tokens) == 1):
+def _build_child_compounds(parent_node_tokens: list[UDToken], depth: int) -> list[UDTreeNode]:
+    if depth > _Depth.morphemes_10 or len(parent_node_tokens) == 1:
         return []
 
     compounds = _build_compounds(parent_node_tokens, depth)
-    if collapse_identical_levels_above_level < depth:
-        while len(compounds) == 1 and depth <= _Depth.morphemes_10:  # if len == 1 the result is identical to the parent, go down in granularity and try again
-            depth += 1
-            compounds = _build_compounds(parent_node_tokens, depth)
 
-    return [_create_node(phrase, depth, collapse_identical_levels_above_level) for phrase in compounds]
+    while len(compounds) == 1 and depth <= _Depth.morphemes_10:  # if len == 1 the result is identical to the parent, go down in granularity and try again
+        depth += 1
+        compounds = _build_compounds(parent_node_tokens, depth)
+
+    return [_create_node(phrase, depth) for phrase in compounds]
