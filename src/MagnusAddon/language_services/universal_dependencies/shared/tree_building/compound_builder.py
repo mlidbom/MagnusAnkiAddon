@@ -12,8 +12,6 @@ class CompoundBuilder:
         target.append(self)
         self.source_tokens = source_tokens
         self.compound_tokens = [source_tokens.pop(0)]
-        self.split_when: list[Callable[[], bool]] = []
-        self.join_when: list[Callable[[], bool]] = []
 
     @property
     def current(self) -> UDToken: return self.compound_tokens[-1]
@@ -50,17 +48,3 @@ class CompoundBuilder:
 
     def tokens_where(self, predicate: Predicate[UDToken]) -> list[UDToken]:
         return ex_list.where(predicate, self.compound_tokens)
-
-    def consume_rule_based(self) -> None:
-        while self.has_next:
-            for rule in self.split_when:
-                if rule():
-                    return
-            consumed: bool = False
-            for rule in self.join_when:
-                if rule():
-                    self.consume_next()
-                    consumed = True
-                    break
-            if not consumed:
-                return

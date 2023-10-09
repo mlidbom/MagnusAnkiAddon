@@ -59,10 +59,21 @@ class RulesBasedCompoundBuilder(CompoundBuilder):
 
     def build(self) -> None:
         if self.depth < len(self.depth_rules):
-            self.join_when = self.depth_rules[self.depth].join_rules
-            self.split_when = self.depth_rules[self.depth].split_rules
+            join_when = self.depth_rules[self.depth].join_rules
+            split_when = self.depth_rules[self.depth].split_rules
         else:
-            self.join_when = []
-            self.split_when = []
+            join_when = []
+            split_when = []
 
-        self.consume_rule_based()
+        while self.has_next:
+            for rule in split_when:
+                if rule():
+                    return
+            consumed: bool = False
+            for rule in join_when:
+                if rule():
+                    self.consume_next()
+                    consumed = True
+                    break
+            if not consumed:
+                return
