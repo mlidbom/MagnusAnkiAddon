@@ -25,6 +25,7 @@ class UDTree:
 
     def flatten(self) -> list[UDTreeNode]:
         nodes:list[UDTreeNode] = []
+
         def add_node(node: UDTreeNode) -> None:
             nodes.append(node)
 

@@ -151,8 +151,8 @@ class RulesBasedCompoundBuilder(CompoundBuilder):
             ]
             self.stop_rules = [predicates.next_is_first_phrase_end_particle]
         elif depth == 1:
-            self.go_rules = [predicates.true]
-            self.stop_rules = [predicates.current_is_last_sequential_deprel(ud_deprel.case_marking)]
+            self.go_rules = [predicates.nexts_head_is_compound_token]
+            self.stop_rules = []
         elif depth == 2:
             self.go_rules = [predicates.true]
             self.stop_rules = [predicates.current_is_last_sequential_deprel_xpos((ud_deprel.marker, ud_japanese_part_of_speech_tag.particle_conjunctive))]
@@ -161,7 +161,7 @@ class RulesBasedCompoundBuilder(CompoundBuilder):
                              predicates.next_is_head_of_compound_token]
             self.stop_rules = []
         elif depth == 4:
-            self.go_rules = []
+            self.go_rules = [predicates.next_is_fixed_multiword_expression_with_current]
             self.stop_rules = []
         elif depth == 5:
             self.go_rules = []
