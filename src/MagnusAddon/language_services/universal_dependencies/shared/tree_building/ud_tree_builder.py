@@ -160,7 +160,7 @@ class RulesBasedCompoundBuilder(CompoundBuilder):
                     predicates.missing_deprel(deprel.compound),
                     predicates.next_shares_earlier_head_with_current],
                 split_when=[
-                    predicates.next_is_first_xpos(xpos.particle_phrase_final)]
+                    predicates.next_is_first_xpos(xpos.particle_phrase_ending)]
             ),
             CompoundingDepth(
                 join_when=[
