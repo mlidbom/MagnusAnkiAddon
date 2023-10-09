@@ -150,52 +150,51 @@ class RulesBasedCompoundBuilder(CompoundBuilder):
         super().__init__(target, source_token)
         predicates = CompoundPredicates(self)
 
-        if depth == 0:
-            self.go_rules = [
-                predicates.nexts_head_is_compound_token,
-                predicates.missing_deprel(ud_deprel.compound),
-                predicates.next_shares_earlier_head_with_current,
-                #predicates.next_shares_head_with_current
-            ]
-            self.stop_rules = [predicates.next_is_first_xpos(ud_japanese_part_of_speech_tag.particle_phrase_final)]
-        elif depth == 1:
-            self.go_rules = [predicates.next_is_child_of(self.first),
-                             predicates.next_is_compound_dependent_on_current,
-                             predicates.next_is_fixed_multiword_expression_with_compound_token,
-                             predicates.next_shares_earlier_head_with_current,
-                             ]
-            self.stop_rules = []
-        elif depth == 2:
-            self.go_rules = [predicates.true]
-            self.stop_rules = []
-        elif depth == 3:
-            self.go_rules = [predicates.next_is_fixed_multiword_expression_with_compound_token,
-                             predicates.next_shares_earlier_head_with_current,
-                             predicates.next_is_head_of_compound_token]
-            self.stop_rules = []
-        elif depth == 4:
-            self.go_rules = [predicates.next_is_compound_dependent_on_current,
-                             predicates.next_is_fixed_multiword_expression_with_compound_token]
-            self.stop_rules = []
-        elif depth == 5:
-            self.go_rules = []
-            self.stop_rules = []
-        elif depth == 6:
-            self.go_rules = []
-            self.stop_rules = []
-        elif depth == 7:
-            self.go_rules = []
-            self.stop_rules = []
-        elif depth == 8:
-            self.go_rules = []
-            self.stop_rules = []
-        elif depth == 9:
+        self.depth = depth
+
+        self.rule_sets: list[tuple[list[Callable[[], bool]], list[Callable[[], bool]]]] = [
+            ([predicates.nexts_head_is_compound_token,
+              predicates.missing_deprel(ud_deprel.compound),
+              predicates.next_shares_earlier_head_with_current]
+
+             , [predicates.next_is_first_xpos(ud_japanese_part_of_speech_tag.particle_phrase_final)]
+             ),
+
+            ([predicates.next_is_child_of(self.first),
+              predicates.next_is_compound_dependent_on_current,
+              predicates.next_is_fixed_multiword_expression_with_compound_token,
+              predicates.next_shares_earlier_head_with_current]
+
+             , []
+             ),
+
+            ([predicates.true]
+
+             , []
+             ),
+
+            ([predicates.next_is_fixed_multiword_expression_with_compound_token,
+              predicates.next_shares_earlier_head_with_current,
+              predicates.next_is_head_of_compound_token]
+
+             , []
+             ),
+
+            ([predicates.next_is_compound_dependent_on_current,
+              predicates.next_is_fixed_multiword_expression_with_compound_token]
+
+             , []
+             )
+        ]
+
+    def build(self) -> None:
+        if self.depth < len(self.rule_sets):
+            self.go_rules, self.stop_rules = self.rule_sets[self.depth]
+        else:
             self.go_rules = []
             self.stop_rules = []
 
-        # predicates.next_is_first_phrase_end_particle,
-        # predicates.current_is_last_sequential_deprel(ud_deprel.case_marking),
-        # predicates.current_is_last_sequential_deprel_xpos((ud_deprel.marker, ud_japanese_part_of_speech_tag.particle_conjunctive))
+        self.consume_rule_based()
 
 def _build_compounds(tokens: list[UDToken], depth: int) -> list[list[UDToken]]:
     assert depth <= _Depth.morphemes_10
@@ -206,7 +205,7 @@ def _build_compounds(tokens: list[UDToken], depth: int) -> list[list[UDToken]]:
     unconsumed_tokens = tokens.copy()
 
     while unconsumed_tokens:
-        RulesBasedCompoundBuilder(created_compounds, unconsumed_tokens, depth).consume_rule_based()
+        RulesBasedCompoundBuilder(created_compounds, unconsumed_tokens, depth).build()
 
     return [cb.compound_tokens for cb in created_compounds]
 
