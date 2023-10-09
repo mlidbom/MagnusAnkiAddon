@@ -141,7 +141,7 @@ class CompoundBuilder:
             if not consumed:
                 return
 
-class CompoundingRule:
+class CompoundingDepth:
     def __init__(self, join_when: list[Callable[[], bool]], split_when: list[Callable[[], bool]]):
         self.join_rules = join_when
         self.split_rules = split_when
@@ -153,20 +153,16 @@ class RulesBasedCompoundBuilder(CompoundBuilder):
 
         self.depth = depth
 
-        self.depth_rules: list[CompoundingRule] = []
-
-        self.depth_rules.append(
-            CompoundingRule(
+        self.depth_rules: list[CompoundingDepth] = [
+            CompoundingDepth(
                 join_when=[
                     predicates.nexts_head_is_compound_token,
                     predicates.missing_deprel(ud_deprel.compound),
                     predicates.next_shares_earlier_head_with_current]
 
                 , split_when=[
-                    predicates.next_is_first_xpos(ud_japanese_part_of_speech_tag.particle_phrase_final)]))
-
-        self.depth_rules.append(
-            CompoundingRule(
+                    predicates.next_is_first_xpos(ud_japanese_part_of_speech_tag.particle_phrase_final)]),
+            CompoundingDepth(
                 join_when=[
                     predicates.next_is_child_of(self.first),
                     predicates.next_is_compound_dependent_on_current,
@@ -174,26 +170,22 @@ class RulesBasedCompoundBuilder(CompoundBuilder):
                     predicates.next_shares_earlier_head_with_current]
 
                 , split_when=[]
-            ))
-
-        self.depth_rules.append(
-            CompoundingRule(
+            ),
+            CompoundingDepth(
                 join_when=[
                     predicates.next_is_fixed_multiword_expression_with_compound_token,
                     predicates.next_shares_earlier_head_with_current,
                     predicates.next_is_head_of_compound_token]
 
                 , split_when=[]
-            ))
-
-        self.depth_rules.append(
-            CompoundingRule(
+            ),
+            CompoundingDepth(
                 join_when=[
                     predicates.next_is_compound_dependent_on_current,
                     predicates.next_is_fixed_multiword_expression_with_compound_token]
 
                 , split_when=[]
-            ))
+            )]
 
     def build(self) -> None:
         if self.depth < len(self.depth_rules):
