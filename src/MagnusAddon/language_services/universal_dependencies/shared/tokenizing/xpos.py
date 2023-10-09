@@ -37,10 +37,10 @@ adverb = _add_tag("副詞", "Adv", "adverb")
 
 inflecting_dependent_word = _add_tag("助動詞", "Aux", "inflecting_dependent_word") #modified. Was: auxiliary_verb
 
-particle_binding = _add_tag("助詞-係助詞", "P.bind", "particle_binding")
-particle_adverbial = _add_tag("助詞-副助詞", "P.adv", "particle_adverbial")
+particle_binding = _add_tag("助詞-係助詞", "P.bind", "particle_binding") # は,　も
+particle_adverbial = _add_tag("助詞-副助詞", "P.adv", "particle_adverbial") # ばっか, まで, たり
 particle_conjunctive = _add_tag("助詞-接続助詞", "P.conj", "particle_conjunctive")
-particle_case = _add_tag("助詞-格助詞", "P.case", "particle_case")
+particle_case_marking = _add_tag("助詞-格助詞", "P.case", "particle_case_marking") # で, に, と, を, が, の, へ,  から          じゃ(で)
 particle_nominal = _add_tag("助詞-準体助詞", "P.nom", "particle_nominal")
 particle_phrase_ending = _add_tag("助詞-終助詞", "P.fin", "particle_phrase_final")
 
@@ -67,6 +67,7 @@ noun_numeral = _add_tag("名詞-数詞", "N.num", "noun_numeral")
 
 adjective_i_general = _add_tag("形容詞-一般", "Ai.g", "adjective_i_general")
 adjective_i_bound = _add_tag("形容詞-非自立可能", "Ai.bnd", "adjective_i_bound")
+
 adjectival_noun_tari = _add_tag("形状詞-タリ", "Ana.tari", "adjectival_noun_tari")
 adjectival_noun_general = _add_tag("形状詞-一般", "Ana.g", "adjectival_noun_general")
 adjectival_noun_auxiliary = _add_tag("形状詞-助動詞語幹", "Ana.aux", "adjectival_noun_auxiliary")
