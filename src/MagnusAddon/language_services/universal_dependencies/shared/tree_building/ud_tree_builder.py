@@ -164,11 +164,6 @@ class RulesBasedCompoundBuilder(CompoundBuilder):
              , []
              ),
 
-            # ([predicates.true]
-            #
-            #  , []
-            #  ),
-
             ([predicates.next_is_fixed_multiword_expression_with_compound_token,
               predicates.next_shares_earlier_head_with_current,
               predicates.next_is_head_of_compound_token]
