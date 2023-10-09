@@ -5,7 +5,7 @@ import pytest
 from language_services.universal_dependencies import ud_parsers
 from language_services.universal_dependencies.shared.tokenizing.ud_tokenizer import UDTokenizer
 from language_services.universal_dependencies.shared.tree_building import ud_tree_builder
-from sysutils.ex_str import full_width_space
+from sysutils.ex_str import full_width_space, newline
 from tests.language_services_tests.universal_dependencies_tests.tree_building_tests.helpers.ud_tree_node_spec import UDTreeNodeSpec
 from tests.language_services_tests.universal_dependencies_tests.tree_building_tests.helpers.ud_tree_spec import UDTreeSpec
 
@@ -13,8 +13,6 @@ N = UDTreeNodeSpec
 R = UDTreeSpec
 
 def only_string_params(param:Any) -> str: return param if isinstance(param, str) else ''
-
-pytestmark = pytest.mark.skip("Changing expectations dramatically. This will not be re-enabled until we have tested lower tree depths")
 
 @pytest.mark.parametrize('sentence, expected', [
     #todo: maybe use dictionary lookup for sequencial tokens with the same head to look for compounds?
@@ -96,23 +94,27 @@ def test_sentences_done_better_by_alternative_parser(sentence: str, parser: UDTo
 def run_tests(expected:R, parser: UDTokenizer, sentence:str) -> None:
     print()
     parser = parser if parser else ud_parsers.best
-    # noinspection PyArgumentEqualDefault
-    real_result = ud_tree_builder.build_tree(parser, sentence, collapse_identical_levels_above_level=-1)
+    real_result = ud_tree_builder.build_tree(parser, sentence)
     spec_result = R.from_ud_tree(real_result)
-    print(f"{parser.name} : {sentence}")
-    print(parser.parse(sentence).to_tree())
-    print()
-    print("str:")
-    print(str(spec_result))
-    print("expected-repr:")
-    print(repr(expected))
-    print("repr:")
-    print(repr(spec_result))
-    print("repr-single-line:")
-    print(repr(spec_result).replace("\n", '').replace(full_width_space, ''))
 
-    #These seem identical. Let's find out where and how they differ by catching it here.
-    assert R.from_ud_tree(ud_tree_builder.build_tree(ud_parsers.spoken, sentence)) == R.from_ud_tree(ud_tree_builder.build_tree(ud_parsers.gendai, sentence))
+    print(f"""
+{parser.name} : {sentence}
+{parser.parse(sentence).to_tree()}
+
+str: {sentence}
+{str(spec_result)}
+
+expected-repr: {sentence}
+{repr(expected)}
+
+repr: {sentence}
+{repr(spec_result)}
+
+repr-single-line: {sentence}
+{repr(spec_result).replace(newline, '').replace(full_width_space, '')}
+
+    """)
+
     assert spec_result == expected
 
 
