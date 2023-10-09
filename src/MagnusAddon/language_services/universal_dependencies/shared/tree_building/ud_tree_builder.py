@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Callable
-
 from language_services.universal_dependencies.shared.tokenizing.ud_token import UDToken
 from language_services.universal_dependencies.shared.tokenizing.ud_tokenizer import UDTokenizer
 from language_services.universal_dependencies.shared.tree_building.compound_builder import CompoundBuilder
@@ -24,8 +22,6 @@ def build_tree(parser: UDTokenizer, text: str) -> UDTree:
 
 def _build_compounds(tokens: list[UDToken], depth: int) -> list[list[UDToken]]:
     assert depth <= _Depth.morphemes_10
-    if depth == _Depth.morphemes_10:
-        return [[token] for token in tokens]
 
     created_compounds: list[CompoundBuilder] = []
     unconsumed_tokens = tokens.copy()
