@@ -37,7 +37,7 @@ class UDTreeNode:
 
     def form_should_be_shown_in_breakdown(self) -> bool:
         if self.is_morpheme():
-            if self.tokens[0].upos == ud_universal_part_of_speech_tag.verb:
+            if self.tokens[0].upos == ud_universal_part_of_speech_tag.verb and self.lemma_differs_from_form():
                 return False
             if self.is_excluded_surface(self.tokens[0]):
                 return False
