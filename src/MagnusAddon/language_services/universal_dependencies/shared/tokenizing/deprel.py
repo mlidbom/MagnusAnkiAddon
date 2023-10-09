@@ -1,3 +1,4 @@
+"""deprel is the relationship between a token and the token's head"""
 class UdRelationshipTag:
     def __init__(self, tag: str, description: str) -> None:
         self.tag = tag

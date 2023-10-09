@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Callable
 
-from language_services.universal_dependencies.shared.tokenizing import ud_xpos, ud_universal_part_of_speech_tag
+from language_services.universal_dependencies.shared.tokenizing import xpos, ud_universal_part_of_speech_tag
 from language_services.universal_dependencies.shared.tokenizing.ud_token import UDToken
 from language_services.universal_dependencies.shared.tree_building import ud_tree_node_formatter
 from sysutils import kana_utils
@@ -58,7 +58,7 @@ class UDTreeNode:
 
     def _node_appears_to_be_inflected_phrase(self) -> bool:
         return (len(self.tokens) > 2
-                and self.tokens[-1].xpos == ud_xpos.inflecting_dependent_word
+                and self.tokens[-1].xpos == xpos.inflecting_dependent_word
                 and self.tokens[-2].upos == ud_universal_part_of_speech_tag.verb)
 
     def build_norm(self) -> str:
@@ -95,15 +95,15 @@ class UDTreeNode:
 
 # It would be nice to find a logical pattern rather than hardcoded exclusions, but nothing has turned up yet
 _excluded_surfaces = {
-    (ud_xpos.inflecting_dependent_word, "て", "てる"),
+    (xpos.inflecting_dependent_word, "て", "てる"),
 }
 
 _excluded_lemmas = {
-    (ud_xpos.inflecting_dependent_word, "たら", "た"),
-    (ud_xpos.inflecting_dependent_word, "に", "だ"),
-    (ud_xpos.inflecting_dependent_word, "な", "だ"),
-    (ud_xpos.inflecting_dependent_word, "だろう", "だ"),
-    (ud_xpos.inflecting_dependent_word, "だろ", "だ"),
+    (xpos.inflecting_dependent_word, "たら", "た"),
+    (xpos.inflecting_dependent_word, "に", "だ"),
+    (xpos.inflecting_dependent_word, "な", "だ"),
+    (xpos.inflecting_dependent_word, "だろう", "だ"),
+    (xpos.inflecting_dependent_word, "だろ", "だ"),
 }
 
 _excluded_norms = _excluded_lemmas

@@ -1,3 +1,5 @@
+"""xpos is the extended part of speech tag used for language specific information."""
+
 #Japanese POS Tags: https://gist.github.com/masayu-a/e3eee0637c07d4019ec9
 #Universal POS Tags: https://universaldependencies.org/u/pos/index.html
 #Universal Dependency Relations https://universaldependencies.org/u/dep/index.html

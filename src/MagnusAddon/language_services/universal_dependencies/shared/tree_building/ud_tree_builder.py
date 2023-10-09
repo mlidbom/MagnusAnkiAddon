@@ -3,9 +3,9 @@ from __future__ import annotations
 from typing import Callable
 
 import sysutils.functional.predicate
-from language_services.universal_dependencies.shared.tokenizing import ud_xpos, ud_deprel
-from language_services.universal_dependencies.shared.tokenizing.ud_deprel import UdRelationshipTag
-from language_services.universal_dependencies.shared.tokenizing.ud_xpos import UdJapanesePartOfSpeechTag
+from language_services.universal_dependencies.shared.tokenizing import xpos, deprel
+from language_services.universal_dependencies.shared.tokenizing.deprel import UdRelationshipTag
+from language_services.universal_dependencies.shared.tokenizing.xpos import UdJapanesePartOfSpeechTag
 from language_services.universal_dependencies.shared.tokenizing.ud_token import UDToken
 from language_services.universal_dependencies.shared.tokenizing.ud_tokenizer import UDTokenizer
 from language_services.universal_dependencies.shared.tree_building.ud_tree import UDTree
@@ -37,16 +37,16 @@ class CompoundPredicates:
         return self.compound.next in set(token.head for token in self.compound.compound_tokens)
 
     def next_is_compound_dependent_on_current(self) -> bool:
-        return self.compound.next.deprel == ud_deprel.compound and self.compound.next.head == self.compound.current
+        return self.compound.next.deprel == deprel.compound and self.compound.next.head == self.compound.current
 
     # noinspection PyMethodMayBeStatic
     def true(self) -> bool: return True
 
-    def next_is_first_xpos(self, xpos: UdJapanesePartOfSpeechTag) -> Callable[[], bool]:
-        return lambda: self.compound.next.xpos == xpos and self.compound.current.xpos != xpos
+    def next_is_first_xpos(self, _xpos: UdJapanesePartOfSpeechTag) -> Callable[[], bool]:
+        return lambda: self.compound.next.xpos == _xpos and self.compound.current.xpos != _xpos
 
-    def current_is_last_sequential_deprel(self, deprel: UdRelationshipTag) -> Callable[[], bool]:
-        return lambda: self.compound.current.deprel == deprel and self.compound.next.deprel != deprel
+    def current_is_last_sequential_deprel(self, deprel_: UdRelationshipTag) -> Callable[[], bool]:
+        return lambda: self.compound.current.deprel == deprel_ and self.compound.next.deprel != deprel_
 
     def current_is_last_sequential_deprel_xpos(self, combo: tuple[UdRelationshipTag, UdJapanesePartOfSpeechTag]) -> Callable[[], bool]:
         return lambda: ((self.compound.current.deprel, self.compound.current.xpos) == combo
@@ -63,10 +63,10 @@ class CompoundPredicates:
         return self.compound.next == self.compound.current.head
 
     def next_is_fixed_multiword_expression_with_compound_token(self) -> bool:
-        return self.compound.next.head.id <= self.compound.current.id and self.compound.next.deprel == ud_deprel.fixed_multiword_expression
+        return self.compound.next.head.id <= self.compound.current.id and self.compound.next.deprel == deprel.fixed_multiword_expression
 
-    def next_is_first_deprel(self, deprel: UdRelationshipTag) -> Callable[[], bool]:
-        return lambda: self.compound.next.deprel == deprel and self.compound.current.deprel != deprel
+    def next_is_first_deprel(self, _deprel: UdRelationshipTag) -> Callable[[], bool]:
+        return lambda: self.compound.next.deprel == _deprel and self.compound.current.deprel != _deprel
 
     def _tokens_missing_heads(self) -> list[UDToken]:
         return [tok for tok in self.compound.compound_tokens if tok.head.id > self.compound.current.id]
@@ -77,8 +77,8 @@ class CompoundPredicates:
     def next_is_child_of(self, token: UDToken) -> Callable[[], bool]:
         return lambda: self.compound.next.head == token
 
-    def missing_deprel(self, *deprel: UdRelationshipTag) -> Callable[[], bool]:
-        return lambda: any(t for t in self._tokens_missing_heads() if t.deprel in deprel)
+    def missing_deprel(self, *_deprel: UdRelationshipTag) -> Callable[[], bool]:
+        return lambda: any(t for t in self._tokens_missing_heads() if t.deprel in _deprel)
 
     def missing_deprel_xpos_combo(self, *combo: tuple[UdRelationshipTag, UdJapanesePartOfSpeechTag]) -> Callable[[], bool]:
         return lambda: any(t for t in self._tokens_missing_heads() if (t.deprel, t.xpos) in combo)
@@ -157,34 +157,31 @@ class RulesBasedCompoundBuilder(CompoundBuilder):
             CompoundingDepth(
                 join_when=[
                     predicates.nexts_head_is_compound_token,
-                    predicates.missing_deprel(ud_deprel.compound),
-                    predicates.next_shares_earlier_head_with_current]
-
-                , split_when=[
-                    predicates.next_is_first_xpos(ud_xpos.particle_phrase_final)]),
+                    predicates.missing_deprel(deprel.compound),
+                    predicates.next_shares_earlier_head_with_current],
+                split_when=[
+                    predicates.next_is_first_xpos(xpos.particle_phrase_final)]
+            ),
             CompoundingDepth(
                 join_when=[
                     predicates.next_is_child_of(self.first),
                     predicates.next_is_compound_dependent_on_current,
                     predicates.next_is_fixed_multiword_expression_with_compound_token,
-                    predicates.next_shares_earlier_head_with_current]
-
-                , split_when=[]
+                    predicates.next_shares_earlier_head_with_current],
+                split_when=[]
             ),
             CompoundingDepth(
                 join_when=[
                     predicates.next_is_fixed_multiword_expression_with_compound_token,
                     predicates.next_shares_earlier_head_with_current,
-                    predicates.next_is_head_of_compound_token]
-
-                , split_when=[]
+                    predicates.next_is_head_of_compound_token],
+                split_when=[]
             ),
             CompoundingDepth(
                 join_when=[
                     predicates.next_is_compound_dependent_on_current,
-                    predicates.next_is_fixed_multiword_expression_with_compound_token]
-
-                , split_when=[]
+                    predicates.next_is_fixed_multiword_expression_with_compound_token],
+                split_when=[]
             )]
 
     def build(self) -> None:
