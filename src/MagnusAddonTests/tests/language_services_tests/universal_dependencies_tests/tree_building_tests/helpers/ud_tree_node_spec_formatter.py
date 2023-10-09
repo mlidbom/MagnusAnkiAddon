@@ -22,30 +22,30 @@ def _str_pos(node: UDTreeNodeSpec) -> str:
     return "_"
 
 
-def _children_repr(node: UDTreeNodeSpec) -> str:
+def _children_repr(node: UDTreeNodeSpec, level:int = 1) -> str:
     if not node.children:
         return ""
-    children_string = ', \n'.join(repr_(child) for child in node.children)
+    children_string = ', \n'.join(repr_(child, level) for child in node.children)
     return f""", [\n{children_string}]"""
 
-def _indent(depth: int) -> str: return full_width_space * 2 * depth
+def _indent(level: int) -> str: return full_width_space * 2 * level
 
-def repr_(node: UDTreeNodeSpec) -> str:
-    return f"""{_indent(node.depth)}N('{node.surface}', '{node.lemma if node.surface != node.lemma else ""}', '{node.norm}'{_children_repr(node)})"""
+def repr_(node: UDTreeNodeSpec, level: int) -> str:
+    return f"""{_indent(level)}N('{node.surface}', '{node.lemma if node.surface != node.lemma else ""}', '{node.norm}'{_children_repr(node, level + 1)})"""
 
 
-def _children_str(node: UDTreeNodeSpec) -> str:
+def _children_str(node: UDTreeNodeSpec, level:int = 1) -> str:
     if not node.children:
         return ""
 
     line_start = f'\n'
-    children_string = line_start.join(str_(child) for child in node.children)
+    children_string = line_start.join(str_(child, level) for child in node.children)
     return f"""{line_start}{children_string}"""
 
 
-def str_(node: UDTreeNodeSpec) -> str:
-    padding = 40
-    indent = full_width_space * 2 * node.depth
+def str_(node: UDTreeNodeSpec, level: int) -> str:
+    padding = 20
+    indent = full_width_space * 2 * level
     depth = ex_str.pad_to_length(str(node.depth), 3)
     lemma = f" ({node.lemma})" if node.surface != node.lemma else ""
     norm = f" [{node.norm}]" if node.norm else ""
@@ -56,4 +56,4 @@ def str_(node: UDTreeNodeSpec) -> str:
 
     start = kana_utils.pad_to_length(start, padding)
 
-    return f"""{depth}{start}{_str_pos(node)}{_children_str(node)}"""
+    return f"""{depth}{start}{_str_pos(node)}{_children_str(node, level + 1)}"""

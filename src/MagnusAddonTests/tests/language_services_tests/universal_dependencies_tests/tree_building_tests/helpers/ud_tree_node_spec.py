@@ -23,8 +23,8 @@ class UDTreeNodeSpec:
             child._set_depth(depth + 1)
 
 
-    def __str__(self) -> str: return ud_tree_node_spec_formatter.str_(self)
-    def __repr__(self) -> str: return ud_tree_node_spec_formatter.repr_(self)
+    def __str__(self) -> str: return ud_tree_node_spec_formatter.str_(self, 0)
+    def __repr__(self) -> str: return ud_tree_node_spec_formatter.repr_(self, 0)
 
     def __eq__(self, other:Any) -> bool:
         return (isinstance(other, UDTreeNodeSpec)

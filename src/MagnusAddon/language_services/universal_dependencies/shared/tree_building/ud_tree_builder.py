@@ -40,8 +40,14 @@ class CompoundPredicates:
     def next_is_head_of_compound_token(self) -> bool:
         return self.compound.next in set(token.head for token in self.compound.compound_tokens)
 
+    def next_is_compound_dependent_on_current(self) -> bool:
+        return self.compound.next.deprel == ud_deprel.compound and self.compound.next.head == self.compound.current
+
     # noinspection PyMethodMayBeStatic
     def true(self) -> bool: return True
+
+    def next_is_first_xpos(self, xpos: UdJapanesePartOfSpeechTag) -> Callable[[], bool]:
+        return lambda: self.compound.next.xpos == xpos and self.compound.current.xpos != xpos
 
     def current_is_last_sequential_deprel(self, deprel: UdRelationshipTag) -> Callable[[], bool]:
         return lambda: self.compound.current.deprel == deprel and self.compound.next.deprel != deprel
@@ -60,15 +66,20 @@ class CompoundPredicates:
     def next_is_currents_head(self) -> bool:
         return self.compound.next == self.compound.current.head
 
-    def next_is_fixed_multiword_expression_with_current(self) -> bool:
-        return self.compound.next.head == self.compound.current and self.compound.next.deprel == ud_deprel.fixed_multiword_expression
+    def next_is_fixed_multiword_expression_with_compound_token(self) -> bool:
+        return self.compound.next.head.id <= self.compound.current.id and self.compound.next.deprel == ud_deprel.fixed_multiword_expression
 
-    def next_is_first_phrase_end_particle(self) -> bool:
-        phrase_end_pos_set = {ud_japanese_part_of_speech_tag.particle_phrase_final}
-        return self.compound.next.xpos in phrase_end_pos_set and self.compound.current.xpos not in phrase_end_pos_set
+    def next_is_first_deprel(self, deprel: UdRelationshipTag) -> Callable[[], bool]:
+        return lambda: self.compound.next.deprel == deprel and self.compound.current.deprel != deprel
 
     def _tokens_missing_heads(self) -> list[UDToken]:
         return [tok for tok in self.compound.compound_tokens if tok.head.id > self.compound.current.id]
+
+    def missing_token(self, token: UDToken) -> Callable[[], bool]:
+        return lambda: token not in self.compound.compound_tokens
+
+    def next_is_child_of(self, token: UDToken) -> Callable[[], bool]:
+        return lambda: self.compound.next.head == token
 
     def missing_deprel(self, *deprel: UdRelationshipTag) -> Callable[[], bool]:
         return lambda: any(t for t in self._tokens_missing_heads() if t.deprel in deprel)
@@ -142,26 +153,29 @@ class RulesBasedCompoundBuilder(CompoundBuilder):
         if depth == 0:
             self.go_rules = [
                 predicates.nexts_head_is_compound_token,
+                predicates.missing_deprel(ud_deprel.compound),
                 predicates.next_shares_earlier_head_with_current,
-                predicates.missing_deprel(ud_deprel.compound,
-                                          ud_deprel.clausal_modifier_of_noun,
-                                          ud_deprel.direct_object),
-
-                predicates.missing_deprel_xpos_combo((ud_deprel.adverbial_clause_modifier, ud_japanese_part_of_speech_tag.adjective_i_bound))
+                #predicates.next_shares_head_with_current
             ]
-            self.stop_rules = [predicates.next_is_first_phrase_end_particle]
+            self.stop_rules = [predicates.next_is_first_xpos(ud_japanese_part_of_speech_tag.particle_phrase_final)]
         elif depth == 1:
-            self.go_rules = [predicates.nexts_head_is_compound_token]
+            self.go_rules = [predicates.next_is_child_of(self.first),
+                             predicates.next_is_compound_dependent_on_current,
+                             predicates.next_is_fixed_multiword_expression_with_compound_token,
+                             predicates.next_shares_earlier_head_with_current,
+                             ]
             self.stop_rules = []
         elif depth == 2:
             self.go_rules = [predicates.true]
-            self.stop_rules = [predicates.current_is_last_sequential_deprel_xpos((ud_deprel.marker, ud_japanese_part_of_speech_tag.particle_conjunctive))]
+            self.stop_rules = []
         elif depth == 3:
-            self.go_rules = [predicates.next_is_fixed_multiword_expression_with_current,
+            self.go_rules = [predicates.next_is_fixed_multiword_expression_with_compound_token,
+                             predicates.next_shares_earlier_head_with_current,
                              predicates.next_is_head_of_compound_token]
             self.stop_rules = []
         elif depth == 4:
-            self.go_rules = [predicates.next_is_fixed_multiword_expression_with_current]
+            self.go_rules = [predicates.next_is_compound_dependent_on_current,
+                             predicates.next_is_fixed_multiword_expression_with_compound_token]
             self.stop_rules = []
         elif depth == 5:
             self.go_rules = []
