@@ -3,9 +3,9 @@ from __future__ import annotations
 from typing import Callable
 
 import sysutils.functional.predicate
-from language_services.universal_dependencies.shared.tokenizing import ud_japanese_part_of_speech_tag, ud_deprel
+from language_services.universal_dependencies.shared.tokenizing import ud_xpos, ud_deprel
 from language_services.universal_dependencies.shared.tokenizing.ud_deprel import UdRelationshipTag
-from language_services.universal_dependencies.shared.tokenizing.ud_japanese_part_of_speech_tag import UdJapanesePartOfSpeechTag
+from language_services.universal_dependencies.shared.tokenizing.ud_xpos import UdJapanesePartOfSpeechTag
 from language_services.universal_dependencies.shared.tokenizing.ud_token import UDToken
 from language_services.universal_dependencies.shared.tokenizing.ud_tokenizer import UDTokenizer
 from language_services.universal_dependencies.shared.tree_building.ud_tree import UDTree
@@ -161,7 +161,7 @@ class RulesBasedCompoundBuilder(CompoundBuilder):
                     predicates.next_shares_earlier_head_with_current]
 
                 , split_when=[
-                    predicates.next_is_first_xpos(ud_japanese_part_of_speech_tag.particle_phrase_final)]),
+                    predicates.next_is_first_xpos(ud_xpos.particle_phrase_final)]),
             CompoundingDepth(
                 join_when=[
                     predicates.next_is_child_of(self.first),

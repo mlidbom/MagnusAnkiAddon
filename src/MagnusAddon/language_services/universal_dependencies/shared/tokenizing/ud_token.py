@@ -5,7 +5,7 @@ from typing import Union
 from spacy.tokens import Token
 from unidic2ud import UDPipeEntry  # type: ignore
 
-from language_services.universal_dependencies.shared.tokenizing import ud_japanese_part_of_speech_tag, ud_deprel, ud_universal_part_of_speech_tag
+from language_services.universal_dependencies.shared.tokenizing import ud_xpos, ud_deprel, ud_universal_part_of_speech_tag
 from sysutils import ex_str, kana_utils, typed
 
 def _head(token: UDPipeEntry) -> UDPipeEntry:
@@ -22,7 +22,7 @@ class UDToken:
             self.norm = typed.str_(token.norm_)
             self.lemma = typed.str_(token.lemma_)
             self.upos = ud_universal_part_of_speech_tag.get_tag(typed.str_(token.pos_))
-            self.xpos = ud_japanese_part_of_speech_tag.get_tag(typed.str_(token.tag_))
+            self.xpos = ud_xpos.get_tag(typed.str_(token.tag_))
             self.deprel = ud_deprel.get_tag(typed.str_(token.dep_).lower())
             self.feats = str(token.morph)
             self._head_id = typed.int_(token.head.i)
@@ -37,7 +37,7 @@ class UDToken:
             self.norm = typed.str_(token.lemma)
             self.lemma = typed.str_(token.lemma)
             self.upos = ud_universal_part_of_speech_tag.get_tag(typed.str_(token.upos))
-            self.xpos = ud_japanese_part_of_speech_tag.get_tag(typed.str_(token.xpos))
+            self.xpos = ud_xpos.get_tag(typed.str_(token.xpos))
             self.deprel = ud_deprel.get_tag(typed.str_(token.deprel))
             self.feats = typed.str_(token.feats)
             self._head_id = typed.int_(_head(token).id)
