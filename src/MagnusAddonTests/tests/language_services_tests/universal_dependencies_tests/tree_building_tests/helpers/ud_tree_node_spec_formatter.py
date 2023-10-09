@@ -44,7 +44,7 @@ def _children_str(node: UDTreeNodeSpec) -> str:
 
 
 def str_(node: UDTreeNodeSpec) -> str:
-    padding = 20
+    padding = 40
     indent = full_width_space * 2 * node.depth
     depth = ex_str.pad_to_length(str(node.depth), 3)
     lemma = f" ({node.lemma})" if node.surface != node.lemma else ""

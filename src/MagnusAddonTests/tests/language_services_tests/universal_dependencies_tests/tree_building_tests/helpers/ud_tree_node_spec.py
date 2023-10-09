@@ -17,7 +17,7 @@ class UDTreeNodeSpec:
         if self.depth == -1:
             self._set_depth(0)
 
-    def _set_depth(self, depth: int):
+    def _set_depth(self, depth: int) -> None:
         self.depth = depth
         for child in self.children:
             child._set_depth(depth + 1)

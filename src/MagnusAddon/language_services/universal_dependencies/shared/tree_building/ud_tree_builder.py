@@ -18,7 +18,7 @@ class _Depth:
     depth_1 = 1
     depth_2 = 2
     depth_3 = 3
-    morphemes_4 = 4
+    morphemes_10 = 10
 
 def build_tree(parser: UDTokenizer, text: str, collapse_identical_levels_above_level: int = -1) -> UDTree:
     tokens = parser.parse(text).tokens
@@ -37,12 +37,28 @@ class CompoundPredicates:
     def nexts_head_is_compound_token(self) -> bool:
         return self.compound.next.head in set(self.compound.compound_tokens)
 
+    def next_is_head_of_compound_token(self) -> bool:
+        return self.compound.next in set(token.head for token in self.compound.compound_tokens)
+
+    # noinspection PyMethodMayBeStatic
+    def true(self) -> bool: return True
+
+    def current_is_last_sequential_deprel(self, deprel: UdRelationshipTag) -> Callable[[], bool]:
+        return lambda: self.compound.current.deprel == deprel and self.compound.next.deprel != deprel
+
+    def current_is_last_sequential_deprel_xpos(self, combo: tuple[UdRelationshipTag, UdJapanesePartOfSpeechTag]) -> Callable[[], bool]:
+        return lambda: ((self.compound.current.deprel, self.compound.current.xpos) == combo
+                        and (self.compound.next.deprel, self.compound.next.xpos) != combo)
+
     def next_shares_earlier_head_with_current(self) -> bool:
         return (self.compound.current.head == self.compound.next.head
                 and self.compound.current.head.id <= self.compound.current.id)
 
-    def current_is_last_sequential_deprel(self, deprel: UdRelationshipTag) -> Callable[[], bool]:
-        return lambda: self.compound.current.deprel == deprel and self.compound.next.deprel != deprel
+    def next_shares_head_with_current(self) -> bool:
+        return self.compound.current.head == self.compound.next.head
+
+    def next_is_currents_head(self) -> bool:
+        return self.compound.next == self.compound.current.head
 
     def next_is_fixed_multiword_expression_with_current(self) -> bool:
         return self.compound.next.head == self.compound.current and self.compound.next.deprel == ud_deprel.fixed_multiword_expression
@@ -118,79 +134,65 @@ class CompoundBuilder:
             if not consumed:
                 return
 
-class Level0CompoundBuilder(CompoundBuilder):
-    def __init__(self, target: list[CompoundBuilder], source_token: list[UDToken]):
+class RulesBasedCompoundBuilder(CompoundBuilder):
+    def __init__(self, target: list[CompoundBuilder], source_token: list[UDToken], depth: int):
         super().__init__(target, source_token)
         predicates = CompoundPredicates(self)
-        self.go_rules = [
-            predicates.next_shares_earlier_head_with_current,
-            predicates.nexts_head_is_compound_token,
 
-            predicates.missing_deprel(ud_deprel.compound,
-                                      ud_deprel.direct_object,
-                                      ud_deprel.clausal_modifier_of_noun,
-                                      ud_deprel.case_marking),
+        if depth == 0:
+            self.go_rules = [
+                predicates.nexts_head_is_compound_token,
+                predicates.next_shares_earlier_head_with_current,
+                predicates.missing_deprel(ud_deprel.compound,
+                                          ud_deprel.clausal_modifier_of_noun,
+                                          ud_deprel.direct_object),
 
-            predicates.missing_deprel_xpos_combo(
-                (ud_deprel.adverbial_clause_modifier, ud_japanese_part_of_speech_tag.adjective_i_bound),
-                #(ud_deprel.adverbial_clause_modifier, ud_japanese_part_of_speech_tag.adjectival_noun_general)
-            ),
-        ]
+                predicates.missing_deprel_xpos_combo((ud_deprel.adverbial_clause_modifier, ud_japanese_part_of_speech_tag.adjective_i_bound))
+            ]
+            self.stop_rules = [predicates.next_is_first_phrase_end_particle]
+        elif depth == 1:
+            self.go_rules = [predicates.true]
+            self.stop_rules = [predicates.current_is_last_sequential_deprel(ud_deprel.case_marking)]
+        elif depth == 2:
+            self.go_rules = [predicates.true]
+            self.stop_rules = [predicates.current_is_last_sequential_deprel_xpos((ud_deprel.marker, ud_japanese_part_of_speech_tag.particle_conjunctive))]
+        elif depth == 3:
+            self.go_rules = [predicates.next_is_fixed_multiword_expression_with_current,
+                             predicates.next_is_head_of_compound_token]
+            self.stop_rules = []
+        elif depth == 4:
+            self.go_rules = []
+            self.stop_rules = []
+        elif depth == 5:
+            self.go_rules = []
+            self.stop_rules = []
+        elif depth == 6:
+            self.go_rules = []
+            self.stop_rules = []
+        elif depth == 7:
+            self.go_rules = []
+            self.stop_rules = []
+        elif depth == 8:
+            self.go_rules = []
+            self.stop_rules = []
+        elif depth == 9:
+            self.go_rules = []
+            self.stop_rules = []
 
-        self.stop_rules = [
-            predicates.next_is_first_phrase_end_particle,
-            #predicates.current_is_last_sequential_deprel(ud_deprel.case_marking)
-        ]
-
-
-    def build(self) -> None:
-        self.consume_rule_based()
-
-class Level1SplitPhraseEndParticleCompoundBuilder(Level0CompoundBuilder):
-    def __init__(self, target: list[CompoundBuilder], source_token: list[UDToken]):
-        super().__init__(target, source_token)
-
-    def _is_next_allowed_descendent(self) -> bool:
-        if self.is_phrase_end_particle(self.next) and not self.is_phrase_end_particle(self.current):
-            return False
-
-        return True
-
-    @staticmethod
-    def is_phrase_end_particle(token: UDToken) -> bool:
-        return token.xpos in {ud_japanese_part_of_speech_tag.particle_phrase_final}
-
-    def build(self) -> None:
-        if self.is_phrase_end_particle(self.current):
-            self.consume_while(self.is_phrase_end_particle)
-        else:
-            super().build()
+        # predicates.next_is_first_phrase_end_particle,
+        # predicates.current_is_last_sequential_deprel(ud_deprel.case_marking),
+        # predicates.current_is_last_sequential_deprel_xpos((ud_deprel.marker, ud_japanese_part_of_speech_tag.particle_conjunctive))
 
 def _build_compounds(tokens: list[UDToken], depth: int) -> list[list[UDToken]]:
-    assert depth <= _Depth.morphemes_4
-    if depth == _Depth.morphemes_4:
+    assert depth <= _Depth.morphemes_10
+    if depth == _Depth.morphemes_10:
         return [[token] for token in tokens]
 
     created_compounds: list[CompoundBuilder] = []
     unconsumed_tokens = tokens.copy()
 
     while unconsumed_tokens:
-        if depth == _Depth.depth_3:
-            compound = CompoundBuilder(created_compounds, unconsumed_tokens)
-            compound.consume_while_child_of(compound.first)
-
-        elif depth == _Depth.depth_2:
-            compound = CompoundBuilder(created_compounds, unconsumed_tokens)
-            compound.consume_while_child_of(compound.first)
-            if compound.first.head.id == compound.first.id + 1 and compound.has_next:  # head of first is second token
-                compound.consume_next()
-                compound.consume_while_child_of(compound.first.head)
-
-        elif depth == _Depth.depth_1:
-            Level1SplitPhraseEndParticleCompoundBuilder(created_compounds, unconsumed_tokens).build()
-
-        elif depth == _Depth.surface_0:
-            Level0CompoundBuilder(created_compounds, unconsumed_tokens).build()
+        RulesBasedCompoundBuilder(created_compounds, unconsumed_tokens, depth).consume_rule_based()
 
     return [cb.compound_tokens for cb in created_compounds]
 
@@ -201,13 +203,13 @@ def _create_node(tokens: list[UDToken], depth: int, collapse_identical_levels_ab
     return UDTreeNode(depth, children, tokens)
 
 def _build_child_compounds(parent_node_tokens: list[UDToken], depth: int, collapse_identical_levels_above_level: int) -> list[UDTreeNode]:
-    if (depth > _Depth.morphemes_4
+    if (depth > _Depth.morphemes_10
             or depth > collapse_identical_levels_above_level and len(parent_node_tokens) == 1):
         return []
 
     compounds = _build_compounds(parent_node_tokens, depth)
     if collapse_identical_levels_above_level < depth:
-        while len(compounds) == 1 and depth <= _Depth.morphemes_4:  # if len == 1 the result is identical to the parent, go down in granularity and try again
+        while len(compounds) == 1 and depth <= _Depth.morphemes_10:  # if len == 1 the result is identical to the parent, go down in granularity and try again
             depth += 1
             compounds = _build_compounds(parent_node_tokens, depth)
 

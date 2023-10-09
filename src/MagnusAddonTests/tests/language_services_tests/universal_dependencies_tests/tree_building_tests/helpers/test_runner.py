@@ -17,29 +17,29 @@ str full: {sentence}
 
     spec_result = UDTreeSpec.from_ud_tree(real_result, max_depth=depth)
 
-#     print(f"""
-# {parser.name} : {sentence}
-# {parser.parse(sentence).to_tree()}
-# """)
+    print(f"""
+{parser.name} : {sentence}
+{parser.parse(sentence).to_tree()}
+""")
 
-#     print(f"""
-# str: {sentence}
-# {str(spec_result)}
-# """)
-#
-#     print(f"""
-# expected-repr:
-# {repr(expected)}
-# """)
-#
-#     print(f"""
-# repr:
-# {repr(spec_result)}
-# """)
-#
-#     print(f"""
-# repr-single-line:
-# {repr(spec_result).replace(newline, '').replace(full_width_space, '')}
-# """)
+    print(f"""
+str: {sentence}
+{str(spec_result)}
+""")
+
+    print(f"""
+expected-repr:
+{repr(expected)}
+""")
+
+    print(f"""
+repr:
+{repr(spec_result)}
+""")
+
+    print(f"""
+repr-single-line:
+{repr(spec_result).replace(newline, '').replace(full_width_space, '')}
+""")
 
     assert spec_result == expected
