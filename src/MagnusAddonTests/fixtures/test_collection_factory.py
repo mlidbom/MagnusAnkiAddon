@@ -35,3 +35,9 @@ def test_sentences_added_correctly() -> None:
     sentences_all:list[SentenceNote] = app.col().sentences.all()
     saved_vocab = set(SentenceSpec(sentence.get_question(), sentence.get_answer()) for sentence in sentences_all)
     assert expected_sentences == saved_vocab
+
+def test_sentences_added_correctly() -> None:
+    expected_sentences = set(sentence_spec.test_sentence_list)
+    sentences_all:list[SentenceNote] = app.col().sentences.all()
+    saved_vocab = set(SentenceSpec(sentence.get_question(), sentence.get_answer()) for sentence in sentences_all)
+    assert expected_sentences == sav

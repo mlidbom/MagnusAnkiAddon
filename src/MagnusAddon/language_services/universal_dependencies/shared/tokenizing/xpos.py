@@ -38,9 +38,9 @@ adverb = _add_tag("副詞", "Adv", "adverb")
 inflecting_dependent_word = _add_tag("助動詞", "Aux", "inflecting_dependent_word") #modified. Was: auxiliary_verb
 
 particle_binding = _add_tag("助詞-係助詞", "P.bind", "particle_binding") # case_marking{は,　も} fixed_multiword_expression{も}
-particle_adverbial = _add_tag("助詞-副助詞", "P.adv", "particle_adverbial") # ばっか, まで, たり
-particle_conjunctive = _add_tag("助詞-接続助詞", "P.conj", "particle_conjunctive") # し, て, けど, ば, から
-particle_case_marking = _add_tag("助詞-格助詞", "P.case", "particle_case_marking") # marker: で(じゃ), に, と, を, が, の, へ, から
+particle_adverbial = _add_tag("助詞-副助詞", "P.adv", "particle_adverbial") # case_marking{まで, たり, か} marker{まで, か} compound{ ばかり(ばっか) }
+particle_conjunctive = _add_tag("助詞-接続助詞", "P.conj", "particle_conjunctive") # marker{し, て, けど, ば, から}
+particle_case_marking = _add_tag("助詞-格助詞", "P.case", "particle_case_marking") # case_marking{で(じゃ), に, と, を, が, の, から}  へ  fixed_multiword_expression{に}
 particle_nominal = _add_tag("助詞-準体助詞", "P.nom", "particle_nominal") # の(ん)
 particle_phrase_ending = _add_tag("助詞-終助詞", "P.fin", "particle_phrase_final")
 
