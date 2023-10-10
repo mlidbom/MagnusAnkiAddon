@@ -42,7 +42,6 @@ class UDTreeNode:
             if self.is_excluded_surface(self.tokens[0]):
                 return False
 
-
         return self.is_form_dictionary_word()
 
     def lemma_should_be_shown_in_breakdown(self) -> bool:
@@ -56,11 +55,6 @@ class UDTreeNode:
 
     def __str__(self) -> str: return ud_tree_node_formatter.str_(self, 0)
 
-    def _node_appears_to_be_inflected_phrase(self) -> bool:
-        return (len(self.tokens) > 2
-                and self.tokens[-1].xpos == xpos.inflecting_dependent_word
-                and self.tokens[-2].upos == ud_universal_part_of_speech_tag.verb)
-
     def build_norm(self) -> str:
         if self.is_compound(): return ""
 
@@ -69,15 +63,15 @@ class UDTreeNode:
 
         return self.tokens[0].norm
 
+    def _appears_to_be_suru_verb(self) -> bool:
+        return len(self.tokens) > 1 and self.tokens[-1].xpos == xpos.verb_bound and (self.tokens[-1].norm == "為る" or self.tokens[-1].lemma == "する")
+
     def build_lemma(self) -> str:
         if self.is_morpheme() and not self.is_excluded_lemma(self.tokens[0]):
             return self.tokens[0].lemma
 
-        if self._node_appears_to_be_inflected_phrase():
-            from language_services.jamdict_ex.dict_lookup import DictLookup
-            candidate_lemma = "".join(tok.form for tok in self.tokens[:-2]) + self.tokens[-2].lemma
-            if DictLookup.lookup_word_shallow(candidate_lemma).found_words():
-                return candidate_lemma
+        if self._appears_to_be_suru_verb() and self.tokens[-1].form != self.tokens[-1].lemma:
+            return "".join(tok.form for tok in self.tokens[:-1]) + self.tokens[-1].lemma
 
         return self.form
 
