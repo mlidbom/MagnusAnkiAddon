@@ -20,8 +20,6 @@ def build_tree(parser: UDTokenizer, text: str) -> UDTree:
     return UDTree(*[_create_node(compound, depth) for compound in compounds])
 
 def _build_compounds(tokens: list[UDToken], depth: int) -> list[list[UDToken]]:
-    assert depth <= _Depth.morphemes_10
-
     created_compounds: list[list[UDToken]] = []
     unconsumed_tokens = tokens.copy()
 
