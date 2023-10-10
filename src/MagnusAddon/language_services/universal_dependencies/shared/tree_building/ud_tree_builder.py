@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from language_services.universal_dependencies.shared.tokenizing.ud_token import UDToken
 from language_services.universal_dependencies.shared.tokenizing.ud_tokenizer import UDTokenizer
-from language_services.universal_dependencies.shared.tree_building.compound_builder import CompoundBuilder
 from language_services.universal_dependencies.shared.tree_building.rules_based_compound_builder import RulesBasedCompoundBuilder
 from language_services.universal_dependencies.shared.tree_building.ud_tree import UDTree
 from language_services.universal_dependencies.shared.tree_building.ud_tree_node import UDTreeNode
@@ -23,13 +22,13 @@ def build_tree(parser: UDTokenizer, text: str) -> UDTree:
 def _build_compounds(tokens: list[UDToken], depth: int) -> list[list[UDToken]]:
     assert depth <= _Depth.morphemes_10
 
-    created_compounds: list[CompoundBuilder] = []
+    created_compounds: list[list[UDToken]] = []
     unconsumed_tokens = tokens.copy()
 
     while unconsumed_tokens:
-        RulesBasedCompoundBuilder(created_compounds, unconsumed_tokens, depth).build()
+        created_compounds.append(RulesBasedCompoundBuilder(unconsumed_tokens, depth).build())
 
-    return [cb.compound_tokens for cb in created_compounds]
+    return created_compounds
 
 def _create_node(tokens: list[UDToken], depth: int) -> 'UDTreeNode':
     children = [] if len(tokens) == 1 else _build_child_compounds(tokens, depth + 1)
@@ -37,12 +36,12 @@ def _create_node(tokens: list[UDToken], depth: int) -> 'UDTreeNode':
     return UDTreeNode(depth, children, tokens)
 
 def _build_child_compounds(parent_node_tokens: list[UDToken], depth: int) -> list[UDTreeNode]:
-    if depth > _Depth.morphemes_10 or len(parent_node_tokens) == 1:
+    if len(parent_node_tokens) == 1:
         return []
 
     compounds = _build_compounds(parent_node_tokens, depth)
 
-    while len(compounds) == 1 and depth <= _Depth.morphemes_10:  # if len == 1 the result is identical to the parent, go down in granularity and try again
+    while len(compounds) == 1:  # if len == 1 the result is identical to the parent, go down in granularity and try again
         depth += 1
         compounds = _build_compounds(parent_node_tokens, depth)
 
