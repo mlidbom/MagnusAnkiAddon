@@ -29,7 +29,7 @@ class CompoundPredicates(CompoundPredicatesBase):
                 #and self._current.head.xpos in {xpos.adjective_i_bound}
                 )
 
-    def current_is_last_sequential_deprel(self, deprel_: UdRelationshipTag) -> Callable[[], bool]:
+    def current_is_last_sequential(self, deprel_: UdRelationshipTag) -> Callable[[], bool]:
         return lambda: self.compound.current.deprel == deprel_ and self.compound.next.deprel != deprel_
 
     def current_is_last_sequential_deprel_xpos(self, combo: tuple[UdRelationshipTag, UdJapanesePartOfSpeechTag]) -> Callable[[], bool]:
@@ -62,8 +62,8 @@ class CompoundPredicates(CompoundPredicatesBase):
     def next_shares_head_with_current(self) -> bool:
         return self.compound.current.head == self.compound.next.head
 
-    def next_is_first_deprel(self, _deprel: UdRelationshipTag) -> Callable[[], bool]:
-        return lambda: self.compound.next.deprel == _deprel and self.compound.current.deprel != _deprel
+    def next_is_first(self, *_deprel: UdRelationshipTag) -> Callable[[], bool]:
+        return lambda: self.compound.next.deprel == _deprel and self.compound.current.deprel in _deprel
 
     def next_is_head_of_current(self, *_deprel: UdRelationshipTag) -> Callable[[], bool]:
         return lambda: self._current.head == self._next and (not _deprel or self._current.deprel in _deprel)
