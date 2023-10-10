@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Callable
 
-from language_services.universal_dependencies.shared.tokenizing import deprel, xpos
+from language_services.universal_dependencies.shared.tokenizing import deprel
 from language_services.universal_dependencies.shared.tokenizing.deprel import UdRelationshipTag
 from language_services.universal_dependencies.shared.tokenizing.ud_token import UDToken
 from language_services.universal_dependencies.shared.tokenizing.xpos import UdJapanesePartOfSpeechTag
@@ -14,16 +14,20 @@ class CompoundPredicates(CompoundPredicatesBase):
     def compound_is_missing_token(self, token: UDToken) -> Callable[[], bool]:
         return lambda: token not in self.compound.tokens
 
+    def compound_is_missing_dependent(self, *_deprel: UdRelationshipTag) -> Callable[[], bool]:
+        return lambda: any(t for t in self._source_tokens if t.head in self._tokens or not _deprel)
+
     def compound_is_missing_head(self, *_deprel: UdRelationshipTag) -> Callable[[], bool]:
         return lambda: any(t for t in self._tokens_missing_heads() if not _deprel or t.deprel in _deprel)
 
-    def compound_is_missing_deprel_xpos_combo(self, *combo: tuple[UdRelationshipTag, UdJapanesePartOfSpeechTag]) -> Callable[[], bool]:
+    def compound_is_missing_head_with_deprel_xpos_combo(self, *combo: tuple[UdRelationshipTag, UdJapanesePartOfSpeechTag]) -> Callable[[], bool]:
         return lambda: any(t for t in self._tokens_missing_heads() if (t.deprel, t.xpos) in combo)
 
     def current_is_nominal_subject_or_oblique_nominal_of_next_that_is_adjective_i_bound(self) -> bool:
         return (self._current.deprel in {deprel.nominal_subject, deprel.oblique_nominal}
                 and self._current.head == self._next
-                and self._current.head.xpos in {xpos.adjective_i_bound})
+                #and self._current.head.xpos in {xpos.adjective_i_bound}
+                )
 
     def current_is_last_sequential_deprel(self, deprel_: UdRelationshipTag) -> Callable[[], bool]:
         return lambda: self.compound.current.deprel == deprel_ and self.compound.next.deprel != deprel_
