@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Callable
 
+from language_services.jamdict_ex.dict_lookup import DictLookup
 from language_services.universal_dependencies.shared.tokenizing import xpos, ud_universal_part_of_speech_tag
 from language_services.universal_dependencies.shared.tokenizing.ud_token import UDToken
 from language_services.universal_dependencies.shared.tree_building import ud_tree_node_formatter
@@ -63,20 +64,23 @@ class UDTreeNode:
 
         return self.tokens[0].norm
 
-    def build_lemma(self) -> str:
-        if self.is_morpheme() and not self.is_excluded_lemma(self.tokens[0]):
-            return self.tokens[0].lemma
+    def _last_token_is_not_inflected(self) -> bool:
+        return self.tokens[-1].form == self.tokens[-1].lemma
 
-        if self._appears_to_be_suru_verb() and self.tokens[-1].form != self.tokens[-1].lemma:
-            return "".join(tok.form for tok in self.tokens[:-1]) + self.tokens[-1].lemma
+    def build_lemma(self) -> str:
+        if self._last_token_is_not_inflected():
+            return self.form
+        elif self.is_morpheme():
+            if not self.is_excluded_lemma(self.tokens[0]):
+                return self.tokens[0].lemma
+        elif self.tokens[-1].xpos == xpos.verb_bound:
+            candidate = "".join(tok.form for tok in self.tokens[:-1]) + self.tokens[-1].lemma
+            if DictLookup.lookup_word_shallow(candidate).found_words():
+                return candidate
 
         return self.form
 
-
-    #Below here are special case exceptions that we have not (yet?) found a better way to handle.
-    def _appears_to_be_suru_verb(self) -> bool:
-        return len(self.tokens) > 1 and self.tokens[-1].xpos == xpos.verb_bound and (self.tokens[-1].norm == "為る" or self.tokens[-1].lemma == "する")
-
+    # Below here are special case exceptions that we have not (yet?) found a better way to handle.
     @staticmethod
     def is_excluded_surface(token: UDToken) -> bool:
         return (token.xpos, token.form, token.lemma) in _excluded_surfaces
