@@ -13,11 +13,11 @@ class RulesBasedCompoundBuilder(CompoundBuilderBase):
         self.depth_rules: list[CompoundingRuleSet] = [
             CompoundingRuleSet(
                 join_when=[
-                    predicates.next_is_dependent_of_compound,
-                    predicates.compound_is_missing_head_with_deprel(deprel.compound,
-                                                                    deprel.numeric_modifier),
+                    predicates.next_is_dependent_of_compound(),
 
+                    predicates.next_is_head_of_current(deprel.compound),
                     predicates.current_is_nominal_subject_or_oblique_nominal_of_next_that_is_adjective_i_bound,
+
                     predicates.next_shares_head_with_current_and_head_is_in_compound,
                     predicates.next_shares_head_and_xpos_with_current(xpos.particle_phrase_ending)
                 ],
@@ -27,20 +27,20 @@ class RulesBasedCompoundBuilder(CompoundBuilderBase):
             ),
             CompoundingRuleSet(
                 join_when=[
-                    predicates.next_is_fixed_multiword_expression_dependent_on_compound,
-                    predicates.next_is_dependent_of_current_with_head(deprel.compound),
+                    predicates.next_is_dependent_of_compound(deprel.fixed_multiword_expression),
+                    predicates.next_is_dependent_of_current(deprel.compound),
 
                     predicates.next_shares_head_with_current_and_head_is_past_token,
-                    predicates.next_is_head_of_current
+                    predicates.next_is_head_of_current()
                 ],
                 split_when=[
-                    predicates.current_is_dependent_of_next_with_deprel(deprel.numeric_modifier)
+                    predicates.next_is_head_of_current(deprel.numeric_modifier)
                 ]
             ),
             CompoundingRuleSet(
                 join_when=[
-                    predicates.next_is_fixed_multiword_expression_dependent_on_compound,
-                    predicates.next_is_dependent_of_current_with_head(deprel.compound),
+                    predicates.next_is_dependent_of_compound(deprel.fixed_multiword_expression),
+                    predicates.next_is_dependent_of_current(deprel.compound),
                 ],
                 split_when=[
                 ]
