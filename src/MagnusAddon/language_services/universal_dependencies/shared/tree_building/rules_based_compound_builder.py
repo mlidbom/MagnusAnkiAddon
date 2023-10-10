@@ -15,7 +15,7 @@ class RulesBasedCompoundBuilder(CompoundBuilderBase):
                 join_when=[
                     predicates.next_is_dependent_of_compound(),
 
-                    predicates.next_is_head_of_current(deprel.compound,deprel.nominal_subject, deprel.oblique_nominal),
+                    predicates.next_is_head_of_current(deprel.compound, deprel.nominal_subject, deprel.oblique_nominal),
                     predicates.next_shares_head_with_current_and_head_is_in_compound,
                     predicates.next_shares_head_and_xpos_with_current(xpos.particle_phrase_ending)
                 ],
@@ -61,7 +61,7 @@ class RulesBasedCompoundBuilder(CompoundBuilderBase):
             CompoundingRuleSet(join_when=[predicates.true], split_when=[]),
             CompoundingRuleSet(join_when=[predicates.true], split_when=[]),
 
-            #if nothing else matches, just split into individual tokens.
-            #I sort of feel we should never reach here, but we sure do at the moment.
+            # if nothing else matches, just split into individual tokens.
+            # I sort of feel we should never reach here, but we sure do at the moment.
             CompoundingRuleSet(join_when=[], split_when=[predicates.true])
         ]
