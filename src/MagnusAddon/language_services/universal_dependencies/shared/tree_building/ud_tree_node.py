@@ -63,9 +63,6 @@ class UDTreeNode:
 
         return self.tokens[0].norm
 
-    def _appears_to_be_suru_verb(self) -> bool:
-        return len(self.tokens) > 1 and self.tokens[-1].xpos == xpos.verb_bound and (self.tokens[-1].norm == "為る" or self.tokens[-1].lemma == "する")
-
     def build_lemma(self) -> str:
         if self.is_morpheme() and not self.is_excluded_lemma(self.tokens[0]):
             return self.tokens[0].lemma
@@ -74,6 +71,11 @@ class UDTreeNode:
             return "".join(tok.form for tok in self.tokens[:-1]) + self.tokens[-1].lemma
 
         return self.form
+
+
+    #Below here are special case exceptions that we have not (yet?) found a better way to handle.
+    def _appears_to_be_suru_verb(self) -> bool:
+        return len(self.tokens) > 1 and self.tokens[-1].xpos == xpos.verb_bound and (self.tokens[-1].norm == "為る" or self.tokens[-1].lemma == "する")
 
     @staticmethod
     def is_excluded_surface(token: UDToken) -> bool:
