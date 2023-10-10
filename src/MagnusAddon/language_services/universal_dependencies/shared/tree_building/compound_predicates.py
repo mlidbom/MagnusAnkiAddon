@@ -20,8 +20,8 @@ class CompoundPredicates(CompoundPredicatesBase):
     def next_is_head_of_compound_token(self) -> bool:
         return self.compound.next in set(token.head for token in self.compound.tokens)
 
-    def next_is_deprel_compound_with_current_as_head(self) -> bool:
-        return self.compound.next.deprel == deprel.compound and self.compound.next.head == self.compound.current
+    def current_is_head_of_next_with_deprel(self, _deprel: UdRelationshipTag) -> Callable[[], bool]:
+        return lambda: self.compound.next.head == self.compound.current and self.compound.next.deprel == _deprel
 
     def true(self) -> bool: return True  # noqa
 
@@ -65,3 +65,9 @@ class CompoundPredicates(CompoundPredicatesBase):
 
     def missing_deprel_xpos_combo(self, *combo: tuple[UdRelationshipTag, UdJapanesePartOfSpeechTag]) -> Callable[[], bool]:
         return lambda: any(t for t in self._tokens_missing_heads() if (t.deprel, t.xpos) in combo)
+
+    def next_is_head_of_current(self) -> bool:
+        return self._current.head == self._next
+
+    def next_is_head_of_current_with_deprel(self, _deprel:UdRelationshipTag) -> Callable[[], bool]:
+        return lambda: self.next_is_head_of_current() and self._current.deprel == _deprel

@@ -14,7 +14,8 @@ class RulesBasedCompoundBuilder(CompoundBuilderBase):
             CompoundingRuleSet(
                 join_when=[
                     predicates.nexts_head_is_in_compound,
-                    predicates.compound_is_missing_head_with_deprel(deprel.compound),
+                    predicates.compound_is_missing_head_with_deprel(deprel.compound,
+                                                                    deprel.numeric_modifier),
 
                     predicates.current_is_nominal_subject_or_oblique_nominal_of_next_that_is_adjective_i_bound,
                     predicates.next_shares_head_with_current_and_head_is_in_compound,
@@ -26,23 +27,24 @@ class RulesBasedCompoundBuilder(CompoundBuilderBase):
             CompoundingRuleSet(
                 join_when=[
                     predicates.next_is_fixed_multiword_expression_with_compound_token_as_head,
-                    predicates.next_is_deprel_compound_with_current_as_head,
+                    predicates.current_is_head_of_next_with_deprel(deprel.compound),
 
                     predicates.next_shares_head_with_current_and_head_is_in_compound,
-                    predicates.next_is_head_of_compound_token
+                    predicates.next_is_head_of_current
                 ],
                 split_when=[
+                    predicates.next_is_head_of_current_with_deprel(deprel.numeric_modifier)
                 ]
             ),
             CompoundingRuleSet(
                 join_when=[
                     predicates.next_is_fixed_multiword_expression_with_compound_token_as_head,
-                    predicates.next_is_deprel_compound_with_current_as_head,
+                    predicates.current_is_head_of_next_with_deprel(deprel.compound),
                 ],
                 split_when=[
                 ]
             ),
-            #below here is just there to make debugging and understanding easier.
+            # below here is just there to make debugging and understanding easier.
             # When the level is around 10 we know that none of our rules are in play anymore.
             CompoundingRuleSet(join_when=[predicates.true], split_when=[]),
             CompoundingRuleSet(join_when=[predicates.true], split_when=[]),
