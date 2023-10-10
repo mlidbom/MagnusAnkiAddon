@@ -41,4 +41,14 @@ class RulesBasedCompoundBuilder(CompoundBuilderBase):
                 ],
                 split_when=[
                 ]
-            )]
+            ),
+            #below here is just there to make debugging and understanding easier.
+            # When the level is around 10 we know that none of our rules are in play anymore.
+            CompoundingRuleSet(join_when=[predicates.true], split_when=[]),
+            CompoundingRuleSet(join_when=[predicates.true], split_when=[]),
+            CompoundingRuleSet(join_when=[predicates.true], split_when=[]),
+            CompoundingRuleSet(join_when=[predicates.true], split_when=[]),
+            CompoundingRuleSet(join_when=[predicates.true], split_when=[]),
+            CompoundingRuleSet(join_when=[predicates.true], split_when=[]),
+            CompoundingRuleSet(join_when=[predicates.true], split_when=[])
+        ]

@@ -15,16 +15,7 @@ R = UDTreeSpec
 def only_string_params(param:Any) -> str: return param if isinstance(param, str) else ''
 
 @pytest.mark.parametrize('sentence, expected', [
-    #todo: maybe use dictionary lookup for sequencial tokens with the same head to look for compounds?
-    #maybe the deprel and/or pos will tell us what to merge most times?
-    #sequential items with the same head(usually previous) are interesting.
-    #do they also need other attributes to me "mergeable"?
-    #deprels of interest
-    # fixed_multiword_expression seems a no-brainer, these go together with each other if sequential. How do they relate to their head?
-    # compound should be compounded  with head? 会う(こと:compound)
-    # then fixed-multiword attaches to compound? to form a larger contiuation:
-    #  (聞か(なかっ:aux/infl|た:aux/infl|こと:compound/noun(に:multi/case|し:multi/verb_bound)))) then as we recurse we want to first drop the 聞か, then the こと
-    #
+    #todo: maybe utilize dictionary lookup somehow to look for compounds? Can we improve odds by inspecting token data somehow?
     ("今じゃ町は夜でも明るいしもう会うこともないかもな", R(N('今じゃ', '', '', [N('今', '', ''), N('じゃ', '', 'で')]),N('町は', '', '', [N('町', '', ''), N('は', '', '')]),N('夜でも', '', '', [N('夜', '', ''), N('でも', '', '', [N('で', '', ''), N('も', '', '')])]),N('明るいし', '', '', [N('明るい', '', ''), N('し', '', '')]),N('もう', '', ''),N('会うこともないかも', '', '', [N('会うこともない', '', '', [N('会う', '', ''), N('こと', '', ''), N('も', '', ''), N('ない', '', '無い')]), N('かも', '', '', [N('か', '', ''), N('も', '', '')])]),N('な', '', ''))),
     ("食べてもいいけど", R(N('食べてもいいけど', '', '', [N('食べてもいい', '', '', [N('食べ', '食べる', ''), N('てもいい', '', '', [N('て', '', ''), N('も', '', ''), N('いい', '', '良い')])]), N('けど', '', 'けれど')]))),
     ("いるのにキス", R(N('いるのに', '', '', [N('いる', '', '居る'), N('のに', '', '', [N('の', '', ''), N('に', '', '')])]),N('キス', '', ''))),
