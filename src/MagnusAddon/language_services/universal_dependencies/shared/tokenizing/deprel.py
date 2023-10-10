@@ -41,6 +41,7 @@ preconjunct = _add_tag("cc:preconj", "preconjunct") # https://universaldependenc
 clausal_complement = _add_tag("ccomp", "clausal_complement") # https://universaldependencies.org/u/dep/ccomp.html
 classifier = _add_tag("clf", "classifier") # https://universaldependencies.org/u/dep/clf.html
 
+compound = _add_tag("compound", "compound") # https://universaldependencies.org/u/dep/compound.html
 compound_light_verb_construction = _add_tag("compound:lvc", "compound_light_verb_construction") # https://universaldependencies.org/u/dep/compound-lvc.html
 compound_phrasal_verb_particle = _add_tag("compound:prt", "compound_phrasal_verb_particle") # https://universaldependencies.org/u/dep/compound-prt.html
 compound_reduplicated_compounds = _add_tag("compound:redup", "compound_reduplicated_compounds") # https://universaldependencies.org/u/dep/compound-redup.html

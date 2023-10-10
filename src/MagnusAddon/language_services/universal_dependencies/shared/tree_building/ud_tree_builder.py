@@ -14,7 +14,7 @@ class _Depth:
     morphemes_10 = 10
 
 def build_tree(parser: UDTokenizer, text: str) -> UDTree:
-    tokens = parser.parse(text).tokens
+    tokens = parser.tokenize(text).tokens
     depth = 0
     compounds = _build_compounds(tokens, depth)
     return UDTree(*[_create_node(compound, depth) for compound in compounds])

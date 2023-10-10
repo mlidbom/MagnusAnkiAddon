@@ -31,7 +31,7 @@ str full: {sentence}
 
     print(f"""
 {parser.name} : {sentence}
-{parser.parse(sentence).to_tree()}
+{parser.tokenize(sentence).to_tree()}
 """)
 
     print(f"""

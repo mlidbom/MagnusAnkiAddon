@@ -11,6 +11,6 @@ class GinzaTokenizer(UDTokenizer):
         super().__init__("ginza")
         self._lazy_parser = Lazy(lambda: spacy.load("ja_ginza"))
 
-    def parse(self, text: str) -> UDTokenizedText:
+    def tokenize(self, text: str) -> UDTokenizedText:
         text = text.replace(" ", "").replace(full_width_space, "")
         return UDTokenizedText(self._lazy_parser.instance()(text))

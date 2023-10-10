@@ -87,7 +87,7 @@ def run_tests(expected: R, parser: UDTokenizer, sentence: str) -> None:
 
     print(f"""
 {parser.name} : {sentence}
-{parser.parse(sentence).to_tree()}
+{parser.tokenize(sentence).to_tree()}
 
 str: {sentence}
 {str(spec_result)}
@@ -148,7 +148,7 @@ def test_compare_parsers(sentence: str) -> None:
     print(sentence)
     for parser in ud_parsers.all_parsers:
         print(f"{parser.name} : {sentence}")
-        print(parser.parse(sentence).to_tree())
+        print(parser.tokenize(sentence).to_tree())
         print()
 
     for parser in ud_parsers.all_parsers:
