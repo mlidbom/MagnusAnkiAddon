@@ -60,5 +60,8 @@ class RulesBasedCompoundBuilder(CompoundBuilderBase):
             CompoundingRuleSet(join_when=[predicates.true], split_when=[]),
             CompoundingRuleSet(join_when=[predicates.true], split_when=[]),
             CompoundingRuleSet(join_when=[predicates.true], split_when=[]),
+
+            #if nothing else matches, just split into individual tokens.
+            #I sort of feel we should never reach here, but we sure do at the moment.
             CompoundingRuleSet(join_when=[], split_when=[predicates.true])
         ]
