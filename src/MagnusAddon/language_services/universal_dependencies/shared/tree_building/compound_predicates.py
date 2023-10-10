@@ -12,6 +12,8 @@ class CompoundPredicates(CompoundPredicatesBase):
     def next_is_dependent_of_compound(self) -> bool:
         return self._next.head in self.compound.tokens
 
+    def true(self) -> bool: return True  # noqa
+
     def current_is_nominal_subject_or_oblique_nominal_of_next_that_is_adjective_i_bound(self) -> bool:
         return (self._current.deprel in {deprel.nominal_subject, deprel.oblique_nominal}
                 and self._current.head == self._next
@@ -22,8 +24,6 @@ class CompoundPredicates(CompoundPredicatesBase):
 
     def current_is_head_of_next_with_deprel(self, _deprel: UdRelationshipTag) -> Callable[[], bool]:
         return lambda: self.compound.next.head == self.compound.current and self.compound.next.deprel == _deprel
-
-    def true(self) -> bool: return True  # noqa
 
     def next_is_first_token_with_xpos(self, _xpos: UdJapanesePartOfSpeechTag) -> Callable[[], bool]:
         return lambda: self.compound.next.xpos == _xpos and self.compound.current.xpos != _xpos
@@ -46,11 +46,11 @@ class CompoundPredicates(CompoundPredicatesBase):
     def next_shares_head_with_current(self) -> bool:
         return self.compound.current.head == self.compound.next.head
 
-    def next_is_currents_head(self) -> bool:
+    def current_is_dependent_of_next(self) -> bool:
         return self.compound.next == self.compound.current.head
 
-    def next_is_fixed_multiword_expression_with_compound_token_as_head(self) -> bool:
-        return self.compound.next.head.id <= self.compound.current.id and self.compound.next.deprel == deprel.fixed_multiword_expression
+    def next_is_fixed_multiword_expression_dependent_on_compound(self) -> bool:
+        return self.compound.next.head in self.compound.tokens and self.compound.next.deprel == deprel.fixed_multiword_expression
 
     def next_is_first_deprel(self, _deprel: UdRelationshipTag) -> Callable[[], bool]:
         return lambda: self.compound.next.deprel == _deprel and self.compound.current.deprel != _deprel
@@ -61,7 +61,7 @@ class CompoundPredicates(CompoundPredicatesBase):
     def missing_token(self, token: UDToken) -> Callable[[], bool]:
         return lambda: token not in self.compound.tokens
 
-    def nexts_head_is(self, token: UDToken) -> Callable[[], bool]:
+    def next_is_dependent_on(self, token: UDToken) -> Callable[[], bool]:
         return lambda: self.compound.next.head == token
 
     def compound_is_missing_head_with_deprel(self, *_deprel: UdRelationshipTag) -> Callable[[], bool]:
@@ -73,5 +73,8 @@ class CompoundPredicates(CompoundPredicatesBase):
     def next_is_head_of_current(self) -> bool:
         return self._current.head == self._next
 
-    def next_is_head_of_current_with_deprel(self, _deprel:UdRelationshipTag) -> Callable[[], bool]:
+    def current_is_dependent_of_next_with_deprel(self, _deprel:UdRelationshipTag) -> Callable[[], bool]:
         return lambda: self.next_is_head_of_current() and self._current.deprel == _deprel
+
+    def current_shares_head_and_xpos_with_next(self, _xpos: UdJapanesePartOfSpeechTag) -> Callable[[], bool]:
+        return lambda: self._current.head == self._next.head and self._current.xpos == _xpos and self._next.xpos == _xpos
