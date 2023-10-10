@@ -1,7 +1,6 @@
 from collections import defaultdict
 
 from language_services.universal_dependencies import ud_parsers
-from language_services.universal_dependencies.shared.tokenizing import deprel, xpos
 from language_services.universal_dependencies.shared.tokenizing.deprel import UdRelationshipTag
 from language_services.universal_dependencies.shared.tokenizing.ud_token import UDToken
 from language_services.universal_dependencies.shared.tokenizing.xpos import UdJapanesePartOfSpeechTag
@@ -95,7 +94,8 @@ def test_generate_upos_xpos_mapping() -> None:
 
     all_tokens: list[UDToken] = []
 
-    xpos_deprel_word_mappings: dict[UdJapanesePartOfSpeechTag, dict[deprel.UdRelationshipTag, set[str]]] = defaultdict(lambda: defaultdict(set))
+    xpos_deprel_word_mappings: dict[UdJapanesePartOfSpeechTag, dict[UdRelationshipTag, set[str]]] = defaultdict(lambda: defaultdict(set))
+    deprel_xpos_word_mappings: dict[UdRelationshipTag, dict[UdJapanesePartOfSpeechTag, set[str]]] = defaultdict(lambda: defaultdict(set))
 
     for sentence in sentences:
         for parser in [ud_parsers.best]:
@@ -103,7 +103,11 @@ def test_generate_upos_xpos_mapping() -> None:
 
     for token in all_tokens:
         xpos_deprel_word_mappings[token.xpos][token.deprel].add(token.form)
+        deprel_xpos_word_mappings[token.deprel][token.xpos].add(token.form)
 
+    print("""
+xpos to deprel mappings
+    """)
     for _xpos in xpos_deprel_word_mappings:
         _deprel_words = xpos_deprel_word_mappings[_xpos]
         _deprels = [dep for dep in _deprel_words]
@@ -112,3 +116,17 @@ def test_generate_upos_xpos_mapping() -> None:
             return f"""{_deprel.description}{{{", ".join(d for d in _deprel_words[_deprel])}}}"""
 
         print(f"""{_xpos.description}: {", ".join((deprel_with_words(depr) for depr in _deprels))}""")
+
+    print("""
+    
+    
+deprel to xpos mappings
+    """)
+    for _deprel in deprel_xpos_word_mappings:
+        _xpos_words = deprel_xpos_word_mappings[_deprel]
+        _xposes = [dep for dep in _xpos_words]
+
+        def xpos_with_words(_xpos: UdJapanesePartOfSpeechTag) -> str:
+            return f"""{_xpos.description}{{{", ".join(d for d in _xpos_words[_xpos])}}}"""
+
+        print(f"""{_deprel.description}: {", ".join((xpos_with_words(depr) for depr in _xposes))}""")
