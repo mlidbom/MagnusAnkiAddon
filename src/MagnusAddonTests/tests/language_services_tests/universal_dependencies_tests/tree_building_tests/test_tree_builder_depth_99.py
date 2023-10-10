@@ -86,11 +86,16 @@ def run_tests(expected: R, parser: UDTokenizer, sentence: str) -> None:
     spec_result = R.from_ud_tree(real_result)
 
     print(f"""
-{parser.name} : {sentence}
-{parser.tokenize(sentence).to_tree()}
-
 str: {sentence}
 {str(spec_result)}
+    """)
+
+    try:
+        assert spec_result == expected
+    except Exception as e:
+        print(f"""
+{parser.name} : {sentence}
+{parser.tokenize(sentence).to_tree()}
 
 expected-repr: {sentence}
 {repr(expected)}
@@ -103,7 +108,7 @@ repr-single-line: {sentence}
 
     """)
 
-    assert spec_result == expected
+        raise
 
 @pytest.mark.parametrize("sentence", [
     # "朝、近所をぶらぶらした",

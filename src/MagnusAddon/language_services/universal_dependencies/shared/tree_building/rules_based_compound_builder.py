@@ -16,6 +16,8 @@ class RulesBasedCompoundBuilder(CompoundBuilderBase):
                     predicates.next_is_dependent_of_compound(),
 
                     predicates.next_is_head_of_current(deprel.compound, deprel.nominal_subject, deprel.oblique_nominal),
+
+                    #keeps the particle_phrase_ending we split off below together in one compound.
                     predicates.next_shares_head_and_xpos_with_current(xpos.particle_phrase_ending)
                 ],
                 split_when=[
