@@ -15,7 +15,7 @@ class CompoundPredicates(CompoundPredicatesBase):
         return lambda: token not in self.compound.tokens
 
     def compound_is_missing_dependent(self, *_deprel: UdRelationshipTag) -> Callable[[], bool]:
-        return lambda: any(t for t in self._source_tokens if t.head in self._tokens or not _deprel)
+        return lambda: any(t for t in self._source_tokens if not _deprel or t.head in self._tokens)
 
     def compound_is_missing_head(self, *_deprel: UdRelationshipTag) -> Callable[[], bool]:
         return lambda: any(t for t in self._tokens_missing_heads() if not _deprel or t.deprel in _deprel)
@@ -43,7 +43,7 @@ class CompoundPredicates(CompoundPredicatesBase):
         return lambda: self.compound.next.head == token and (not _deprel or self._next.deprel in _deprel)
 
     def next_is_head_of_compound_token(self, *_deprel: UdRelationshipTag) -> Callable[[], bool]:
-        return lambda: self._next in set(token.head for token in self.compound.tokens) and (not _deprel or self._next.deprel in _deprel)
+        return lambda: self._next in set(token.head for token in self.compound.tokens if not _deprel or token.deprel in _deprel)
 
     def next_is_dependent_of_current(self, *_deprel: UdRelationshipTag) -> Callable[[], bool]:
         return lambda: self.compound.next.head == self.compound.current and self.compound.next.deprel in _deprel
