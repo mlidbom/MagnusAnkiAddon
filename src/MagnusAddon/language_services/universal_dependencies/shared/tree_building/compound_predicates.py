@@ -15,7 +15,7 @@ class CompoundPredicates(CompoundPredicatesBase):
     def current_is_nominal_subject_or_oblique_nominal_of_next_that_is_adjective_i_bound(self) -> bool:
         return (self._current.deprel in {deprel.nominal_subject, deprel.oblique_nominal}
                 and self._current.head == self._next
-                and self._current.head.xpos in {xpos.adjective_i_bound })
+                and self._current.head.xpos in {xpos.adjective_i_bound})
 
     def next_is_head_of_compound_token(self) -> bool:
         return self.compound.next in set(token.head for token in self.compound.tokens)
@@ -23,7 +23,7 @@ class CompoundPredicates(CompoundPredicatesBase):
     def next_is_deprel_compound_with_current_as_head(self) -> bool:
         return self.compound.next.deprel == deprel.compound and self.compound.next.head == self.compound.current
 
-    def true(self) -> bool: return True # noqa
+    def true(self) -> bool: return True  # noqa
 
     def next_is_first_token_with_xpos(self, _xpos: UdJapanesePartOfSpeechTag) -> Callable[[], bool]:
         return lambda: self.compound.next.xpos == _xpos and self.compound.current.xpos != _xpos
