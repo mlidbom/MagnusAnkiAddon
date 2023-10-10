@@ -6,9 +6,9 @@ from typing import Callable
 from language_services.universal_dependencies.shared.tokenizing.ud_token import UDToken
 
 class CompoundingRuleSet:
-    def __init__(self, join_when: list[Callable[[], bool]], split_when: list[Callable[[], bool]]):
+    def __init__(self, join_when: list[Callable[[], bool]], split_when: list[Callable[[], bool]] | None = None):
         self.join_rules = join_when
-        self.split_rules = split_when
+        self.split_rules = split_when if split_when else []
 
 
 class CompoundBuilderBase:

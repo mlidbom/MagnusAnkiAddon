@@ -17,7 +17,7 @@ class RulesBasedCompoundBuilder(CompoundBuilderBase):
 
                     predicates.next_is_head_of_current(deprel.compound, deprel.nominal_subject, deprel.oblique_nominal),
 
-                    #keeps the particle_phrase_ending we split off below together in one compound.
+                    # keeps the particle_phrase_ending we split off below together in one compound.
                     predicates.next_shares_head_and_xpos_with_current(xpos.particle_phrase_ending)
                 ],
                 split_when=[
@@ -31,43 +31,33 @@ class RulesBasedCompoundBuilder(CompoundBuilderBase):
                     predicates.next_is_head_of_current(deprel.compound),
 
                     predicates.next_shares_head_with_current_and_head_is_past_token,
-
-                ],
-                split_when=[
-                    predicates.next_is_head_of_current(deprel.numeric_modifier)
                 ]
             ),
             CompoundingRuleSet(
                 join_when=[
-                    predicates.next_is_dependent_of_compound(deprel.fixed_multiword_expression),
-                    predicates.compound_is_missing_dependent(deprel.compound)
-                ],
-                split_when=[
+                    predicates.next_is_dependent_of_compound(deprel.fixed_multiword_expression,
+                                                             deprel.compound),
                 ]
             ),
             CompoundingRuleSet(
                 join_when=[
                     predicates.next_is_dependent_of_compound(deprel.fixed_multiword_expression),
                     predicates.next_is_dependent_of_current(deprel.compound),
-                ],
-                split_when=[
                 ]
             ),
             CompoundingRuleSet(
                 join_when=[
                     predicates.next_is_dependent_of_current(deprel.compound)
-                ],
-                split_when=[
                 ]
             ),
 
             # below here is just there to make debugging and understanding easier.
             # When the level is around 10 we know that none of our rules are in play anymore.
-            CompoundingRuleSet(join_when=[predicates.true], split_when=[]),
-            CompoundingRuleSet(join_when=[predicates.true], split_when=[]),
-            CompoundingRuleSet(join_when=[predicates.true], split_when=[]),
-            CompoundingRuleSet(join_when=[predicates.true], split_when=[]),
-            CompoundingRuleSet(join_when=[predicates.true], split_when=[]),
+            CompoundingRuleSet(join_when=[predicates.true]),
+            CompoundingRuleSet(join_when=[predicates.true]),
+            CompoundingRuleSet(join_when=[predicates.true]),
+            CompoundingRuleSet(join_when=[predicates.true]),
+            CompoundingRuleSet(join_when=[predicates.true]),
 
             # if nothing else matches, just split into individual tokens.
             # I sort of feel we should never reach here, but we sure do at the moment.
