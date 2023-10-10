@@ -13,12 +13,12 @@ class RulesBasedCompoundBuilder(CompoundBuilderBase):
         self.depth_rules: list[CompoundingRuleSet] = [
             CompoundingRuleSet(
                 join_when=[
-                    predicates.nexts_head_is_in_compound,
+                    predicates.next_is_dependent_of_compound,
                     predicates.compound_is_missing_head_with_deprel(deprel.compound,
                                                                     deprel.numeric_modifier),
 
                     predicates.current_is_nominal_subject_or_oblique_nominal_of_next_that_is_adjective_i_bound,
-                    predicates.next_shares_head_with_current_and_head_is_in_compound,
+                    predicates.next_shares_head_with_current_and_head_is_past_token,
                 ],
                 split_when=[
                     predicates.next_is_first_token_with_xpos(xpos.particle_phrase_ending)
@@ -29,7 +29,7 @@ class RulesBasedCompoundBuilder(CompoundBuilderBase):
                     predicates.next_is_fixed_multiword_expression_with_compound_token_as_head,
                     predicates.current_is_head_of_next_with_deprel(deprel.compound),
 
-                    predicates.next_shares_head_with_current_and_head_is_in_compound,
+                    predicates.next_shares_head_with_current_and_head_is_past_token,
                     predicates.next_is_head_of_current
                 ],
                 split_when=[

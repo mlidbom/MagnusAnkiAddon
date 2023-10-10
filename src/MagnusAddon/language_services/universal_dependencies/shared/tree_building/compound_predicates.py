@@ -9,8 +9,8 @@ from language_services.universal_dependencies.shared.tokenizing.xpos import UdJa
 from language_services.universal_dependencies.shared.tree_building.compound_predicates_base import CompoundPredicatesBase
 
 class CompoundPredicates(CompoundPredicatesBase):
-    def nexts_head_is_in_compound(self) -> bool:
-        return self.compound.next.head in set(self.compound.tokens)
+    def next_is_dependent_of_compound(self) -> bool:
+        return self._next.head in self.compound.tokens
 
     def current_is_nominal_subject_or_oblique_nominal_of_next_that_is_adjective_i_bound(self) -> bool:
         return (self._current.deprel in {deprel.nominal_subject, deprel.oblique_nominal}
@@ -35,9 +35,13 @@ class CompoundPredicates(CompoundPredicatesBase):
         return lambda: ((self.compound.current.deprel, self.compound.current.xpos) == combo
                         and (self.compound.next.deprel, self.compound.next.xpos) != combo)
 
-    def next_shares_head_with_current_and_head_is_in_compound(self) -> bool:
+    def next_shares_head_with_current_and_head_is_past_token(self) -> bool:
         return (self.compound.current.head == self.compound.next.head
                 and self.compound.current.head.id <= self.compound.current.id)
+
+    def next_shares_head_with_current_and_head_is_in_compound(self) -> bool:
+        return (self.compound.current.head == self.compound.next.head
+                and self.compound.current.head in self.compound.tokens)
 
     def next_shares_head_with_current(self) -> bool:
         return self.compound.current.head == self.compound.next.head
