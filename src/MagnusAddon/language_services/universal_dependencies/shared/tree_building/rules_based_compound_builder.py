@@ -19,7 +19,7 @@ class RulesBasedCompoundBuilder(CompoundBuilderBase):
 
                     predicates.current_is_nominal_subject_or_oblique_nominal_of_next_that_is_adjective_i_bound,
                     predicates.next_shares_head_with_current_and_head_is_in_compound,
-                    predicates.current_shares_head_and_xpos_with_next(xpos.particle_phrase_ending)
+                    predicates.next_shares_head_and_xpos_with_current(xpos.particle_phrase_ending)
                 ],
                 split_when=[
                     predicates.next_is_first_token_with_xpos(xpos.particle_phrase_ending)
@@ -28,7 +28,7 @@ class RulesBasedCompoundBuilder(CompoundBuilderBase):
             CompoundingRuleSet(
                 join_when=[
                     predicates.next_is_fixed_multiword_expression_dependent_on_compound,
-                    predicates.current_is_head_of_next_with_deprel(deprel.compound),
+                    predicates.next_is_dependent_of_current_with_head(deprel.compound),
 
                     predicates.next_shares_head_with_current_and_head_is_past_token,
                     predicates.next_is_head_of_current
@@ -40,7 +40,7 @@ class RulesBasedCompoundBuilder(CompoundBuilderBase):
             CompoundingRuleSet(
                 join_when=[
                     predicates.next_is_fixed_multiword_expression_dependent_on_compound,
-                    predicates.current_is_head_of_next_with_deprel(deprel.compound),
+                    predicates.next_is_dependent_of_current_with_head(deprel.compound),
                 ],
                 split_when=[
                 ]
