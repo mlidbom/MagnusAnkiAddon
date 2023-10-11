@@ -1,3 +1,5 @@
+from anki.notes import Note
+from aqt.clayout import CardLayout
 from PyQt6.QtWidgets import QMenu
 from anki.cards import Card
 from aqt import gui_hooks
@@ -15,15 +17,17 @@ from sysutils.typed import checked_cast
 
 def register_lookup_actions(view: AnkiWebView, root_menu: QMenu) -> None:
     def get_note() -> JPNote:
-        def get_card_inner() -> Card:
+        def get_note_inner() -> Note:
             if view.kind == AnkiWebViewKind.MAIN:
-                return checked_cast(Card, main_window().reviewer.card)
-            if view.kind == AnkiWebViewKind.PREVIEWER:
-                return checked_cast(Card, [window for window in main_window().app.topLevelWidgets() if isinstance(window, Previewer)][0].card())
+                return checked_cast(Card, main_window().reviewer.card).note()
+            elif view.kind == AnkiWebViewKind.PREVIEWER:
+                return checked_cast(Card, [window for window in main_window().app.topLevelWidgets() if isinstance(window, Previewer)][0].card()).note()
+            elif view.kind == AnkiWebViewKind.CARD_LAYOUT:
+                return checked_cast(Note, [window for window in main_window().app.topLevelWidgets() if isinstance(window, CardLayout)][0].note)
 
             raise Exception("Failed to find card")
 
-        return JPNote.note_from_card(get_card_inner())
+        return JPNote.note_from_note(get_note_inner())
 
 
     selection = view.page().selectedText().strip()
