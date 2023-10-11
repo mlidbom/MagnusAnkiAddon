@@ -24,5 +24,18 @@ def consume_until_and_including(predicate: Predicate[TItem], this: list[TItem]) 
     del this[:len(consumed)]
     return consumed
 
+def remove_items_where(predicate: Predicate[TItem], this: list[TItem]) -> list[TItem]:
+    """while `condition` is true, removes the item from `this`. `return`: the removed items in order"""
+    removed_items: list[TItem] = []
+    index: int = 0  # index to keep track of the current position
+    while index < len(this):
+        item: TItem = this[index]
+        if predicate(item):
+            removed_items.append(this.pop(index))  # remove item and add to removed_items
+        else:
+            index += 1  # only increment index if item was not removed to prevent skipping
+    return removed_items
+
+
 def where(predicate: Predicate[TItem], this: list[TItem]) -> list[TItem]:
     return [item for item in this if predicate(item)]

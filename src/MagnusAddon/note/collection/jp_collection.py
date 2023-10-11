@@ -12,7 +12,7 @@ class JPCollection:
     def __init__(self, anki_collection: Collection):
         self.anki_collection = anki_collection
         self.vocab:VocabCollection = VocabCollection(anki_collection)
-        self.kanji:KanjiCollection = KanjiCollection(anki_collection)
+        self.kanji:KanjiCollection = KanjiCollection(anki_collection, self)
         self.sentences:SentenceCollection = SentenceCollection(anki_collection)
         self.radicals:RadicalCollection = RadicalCollection(anki_collection)
 

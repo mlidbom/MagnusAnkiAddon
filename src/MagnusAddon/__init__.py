@@ -19,3 +19,4 @@ hooks.note_content_building.ud_sentence_breakdown.init() #needs to be before voc
 hooks.note_content_building.vocab_and_sentence_kanji_list.init()
 hooks.note_content_building.kanji_vocab_list.init()
 hooks.copy_sort_field_to_clipboard.init()
+hooks.note_content_building.kanji_radical_and_kanji_dependencies_list.init()

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from wanikani_api import models
 from anki.notes import Note
 
@@ -42,3 +44,14 @@ class RadicalNote(WaniNote):
         app.anki_collection().addNote(note)
         radical_note.set_q(wani_radical.characters)
         radical_note.update_from_wani(wani_radical)
+
+    @staticmethod
+    def predicates() -> _Predicates:
+        return _Predicates()
+
+
+
+class _Predicates:
+    @staticmethod
+    def is_replaced_by_kanji(radical:RadicalNote) -> bool:
+        return radical.get_meaning_mnemonic().upper() == "kanji"

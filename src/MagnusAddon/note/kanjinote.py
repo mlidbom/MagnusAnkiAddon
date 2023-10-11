@@ -9,7 +9,6 @@ from note.note_constants import NoteFields, Mine, NoteTypes
 from sysutils import ex_str
 from wanikani.wanikani_api_client import WanikaniClient
 
-
 class KanjiNote(WaniNote):
     def __init__(self, note: Note):
         super().__init__(note)
@@ -32,7 +31,7 @@ class KanjiNote(WaniNote):
         return self.get_user_answer() or self.get_field(NoteFields.Kanji.source_answer)
 
     def get_user_answer(self) -> str: return self.get_field(NoteFields.Kanji.user_answer)
-    def set_user_answer(self, value:str) -> None: return self.set_field(NoteFields.Kanji.user_answer, value)
+    def set_user_answer(self, value: str) -> None: return self.set_field(NoteFields.Kanji.user_answer, value)
 
     def _set_source_answer(self, value: str) -> None: self.set_field(NoteFields.Kanji.source_answer, value)
 
@@ -56,11 +55,16 @@ class KanjiNote(WaniNote):
     def get_reading_kun(self) -> str: return self.get_field(NoteFields.Kanji.Reading_Kun)
     def set_reading_kun(self, value: str) -> None: self.set_field(NoteFields.Kanji.Reading_Kun, value)
 
-    def get_radicals(self) -> str: return self.get_field(NoteFields.Kanji.Radicals)
+    def get_radicals(self) -> list[str]: return ex_str.extract_comma_separated_values(self.get_field(NoteFields.Kanji.Radicals))
     def set_radicals(self, value: str) -> None: self.set_field(NoteFields.Kanji.Radicals, value)
 
     def get_radicals_icons(self) -> str: return self.get_field(NoteFields.Kanji.Radicals_Icons)
     def set_radicals_icons(self, value: str) -> None: self.set_field(NoteFields.Kanji.Radicals_Icons, value)
+
+    def get_radical_dependencies_names(self) -> list[str]:
+        return ex_str.extract_comma_separated_values(
+            self.get_radicals_names()) + ex_str.extract_comma_separated_values(
+            self.get_radicals_icons_names())
 
     def get_radicals_names(self) -> str: return self.get_field(NoteFields.Kanji.Radicals_Names)
     def set_radicals_names(self, value: str) -> None: self.set_field(NoteFields.Kanji.Radicals_Names, value)
@@ -174,7 +178,7 @@ class KanjiNote(WaniNote):
         kanji_note.update_from_wani(wani_kanji)
 
     @classmethod
-    def create(cls, question: str, answer: str, on_readings:str, kun_reading:str) -> KanjiNote:
+    def create(cls, question: str, answer: str, on_readings: str, kun_reading: str) -> KanjiNote:
         from ankiutils import app
         backend_note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Kanji))
         note = KanjiNote(backend_note)
@@ -185,4 +189,3 @@ class KanjiNote(WaniNote):
         note.update_generated_data()
         app.anki_collection().addNote(backend_note)
         return note
-

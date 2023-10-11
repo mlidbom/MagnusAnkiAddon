@@ -23,6 +23,9 @@ class JPNote(ABC):
         assert self.get_id(), "You cannot compare or hash a note that has not been saved yet since it has no id"
         return hash(self.get_id())
 
+    def __repr__(self) -> str:
+        return f"""{self.get_question()} : {self.get_answer()}"""
+
     def get_question(self) -> str: return self.get_field(MyNoteFields.question)
     def get_answer(self) -> str: return self.get_field(MyNoteFields.answer)
 

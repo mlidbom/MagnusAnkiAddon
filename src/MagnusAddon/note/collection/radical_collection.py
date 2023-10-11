@@ -29,5 +29,8 @@ class RadicalCollection:
 
     def all(self) -> List[RadicalNote]: return self._cache.all()
 
-    def with_any_answer_in(self, field_values: list[str]) -> List[RadicalNote]:
-        return ex_sequence.flatten([self._cache.with_answer(answer) for answer in field_values])
+    def with_any_answer_in(self, answers: list[str]) -> List[RadicalNote]:
+        return ex_sequence.flatten([self._cache.with_answer(answer) for answer in answers])
+
+    def with_any_question_in(self, questions: list[str]) -> List[RadicalNote]:
+        return ex_sequence.flatten([self._cache.with_question(question) for question in questions])

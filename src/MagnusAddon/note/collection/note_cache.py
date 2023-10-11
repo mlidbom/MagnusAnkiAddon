@@ -9,6 +9,7 @@ from anki.collection import Collection
 from anki.notes import Note, NoteId
 
 from note.jpnote import JPNote
+from sysutils.collections.default_dict_case_insensitive import DefaultDictCaseInsensitive
 
 class CachedNote:
     def __init__(self, note: JPNote):
@@ -22,10 +23,10 @@ TSnapshot = TypeVar('TSnapshot', bound=CachedNote)
 class NoteCache(ABC, Generic[TNote, TSnapshot]):
     def __init__(self, all_notes: list[TNote], cached_note_type: type[TNote]):
         self._note_type = cached_note_type
-        self._by_question: dict[str, set[TNote]] = defaultdict(set)
+        self._by_question: DefaultDictCaseInsensitive[set[TNote]] = DefaultDictCaseInsensitive(set)
         self._by_id: dict[NoteId, TNote] = {}
         self._snapshot_by_id: dict[NoteId, TSnapshot] = {}
-        self._by_answer: dict[str, set[TNote]] = defaultdict(set)
+        self._by_answer: DefaultDictCaseInsensitive[set[TNote]] = DefaultDictCaseInsensitive(set)
         self._pending_add: list[TNote] = []
 
         for note in all_notes:
