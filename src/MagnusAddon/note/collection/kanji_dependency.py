@@ -15,11 +15,11 @@ class KanjiDependency:
         return KanjiDependency(name=radical.get_answer(),
                                character=radical.get_question(),
                                icon_substitute_for_character=radical.get_radical_icon(),
-                               mnemonic=radical.get_meaning_mnemonic())
+                               mnemonic=radical.get_active_mnemonic())
 
     @staticmethod
     def from_kanji(kanji: KanjiNote) -> KanjiDependency:
         return KanjiDependency(name=kanji.get_answer(),
                                character=kanji.get_question(),
                                icon_substitute_for_character="",
-                               mnemonic=kanji.get_meaning_mnemonic())
+                               mnemonic=kanji.get_active_mnemonic())

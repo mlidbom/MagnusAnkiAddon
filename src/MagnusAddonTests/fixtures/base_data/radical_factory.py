@@ -7,7 +7,7 @@ def create_radical() -> NoteTypeEx:
     return NoteTypeEx(NoteTypes.Radical,
                       [NoteFieldEx(NoteFields.Radical.question),
                        NoteFieldEx(NoteFields.Radical.answer),
-                       NoteFieldEx(NoteFields.Radical.Radical_Meaning),
+                       NoteFieldEx(NoteFields.Radical.source_mnemonic),
                        NoteFieldEx(NoteFields.Radical.Radical_Icon),
                        NoteFieldEx(NoteFields.Radical.sort_id),
                        NoteFieldEx(NoteFields.Radical.amalgamation_subject_ids)],

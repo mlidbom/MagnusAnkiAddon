@@ -52,7 +52,8 @@ class NoteFields:
     class Radical:
         question = MyNoteFields.question
         answer = MyNoteFields.answer
-        Radical_Meaning = "Radical_Meaning"
+        source_mnemonic = "Radical_Meaning"
+        user_mnemonic = "__mnemonic"
         Radical_Icon = "Radical_Icon"
         sort_id = "sort_id"
 
@@ -69,14 +70,14 @@ class NoteFields:
         Radicals_Icons = "Radicals_Icons"
         Radicals_Names = "Radicals_Names"
         Radicals_Icons_Names = "Radicals_Icons_Names"
-        Meaning_Mnemonic = "Meaning_Mnemonic"
+        Source_Meaning_Mnemonic = "Meaning_Mnemonic"
         Meaning_Info = "Meaning_Info"
         Reading_Mnemonic = "Reading_Mnemonic"
         Reading_Info = "Reading_Info"
         PrimaryVocab = "__primary_Vocab"
         Audio__ = "__audio"
 
-        Mnemonic__ = "__mnemonic"
+        user_mnemonic = "__mnemonic"
 
         amalgamation_subject_ids = "amalgamation_subject_ids"
         component_subject_ids = "component_subject_ids"

@@ -10,7 +10,7 @@ def render_dependencies_list(html: str, card: Card, _type_of_display: str) -> st
     note = JPNote.note_from_card(card)
 
     if isinstance(note, KanjiNote):
-        dependencies = app.col().kanji.dependencies_of(note)
+        dependencies = app.col().kanji.display_dependencies_of(note)
 
         list_html = f"""
 <div id="dependencies_list">

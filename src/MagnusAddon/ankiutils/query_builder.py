@@ -4,6 +4,7 @@ from typing import Iterable
 
 from anki.notes import NoteId
 
+from note.jpnote import JPNote
 from note.kanjinote import KanjiNote
 from note.note_constants import Builtin, Mine, MyNoteFields, NoteFields, NoteTypes
 from note.sentencenote import SentenceNote
@@ -90,3 +91,6 @@ def lookup_text_object(text: str) -> str:
 
 def notes_by_id(note_ids:list[NoteId]) -> str:
     return f"""nid:{",".join([str(note_id) for note_id in note_ids])}"""
+
+def notes_by_note(notes:list[JPNote]) -> str:
+    return notes_by_id([n.get_id() for n in notes])

@@ -39,15 +39,15 @@ class KanjiNote(WaniNote):
         self.set_field(NoteFields.Kanji.active_answer, self.get_answer())
 
     def override_meaning_mnemonic(self) -> None:
-        if not self.get_mnemonics_override():
-            self.set_mnemonics_override("-")
+        if not self.get_user_mnemonic():
+            self.set_user_mnemonic("-")
 
     def restore_meaning_mnemonic(self) -> None:
-        if self.get_mnemonics_override() == "-":
-            self.set_mnemonics_override("")
+        if self.get_user_mnemonic() == "-":
+            self.set_user_mnemonic("")
 
-    def get_mnemonics_override(self) -> str: return self.get_field(NoteFields.Kanji.Mnemonic__)
-    def set_mnemonics_override(self, value: str) -> None: self.set_field(NoteFields.Kanji.Mnemonic__, value)
+    def get_user_mnemonic(self) -> str: return self.get_field(NoteFields.Kanji.user_mnemonic)
+    def set_user_mnemonic(self, value: str) -> None: self.set_field(NoteFields.Kanji.user_mnemonic, value)
 
     def get_reading_on(self) -> str: return self.get_field(NoteFields.Kanji.Reading_On)
     def set_reading_on(self, value: str) -> None: self.set_field(NoteFields.Kanji.Reading_On, value)
@@ -72,8 +72,11 @@ class KanjiNote(WaniNote):
     def get_radicals_icons_names(self) -> str: return self.get_field(NoteFields.Kanji.Radicals_Icons_Names)
     def set_radicals_icons_names(self, value: str) -> None: self.set_field(NoteFields.Kanji.Radicals_Icons_Names, value)
 
-    def get_meaning_mnemonic(self) -> str: return self.get_field(NoteFields.Kanji.Meaning_Mnemonic)
-    def set_meaning_mnemonic(self, value: str) -> None: self.set_field(NoteFields.Kanji.Meaning_Mnemonic, value)
+    def get_active_mnemonic(self) -> str:
+        return self.get_user_mnemonic() if self.get_user_mnemonic() else self.get_source_meaning_mnemonic()
+
+    def get_source_meaning_mnemonic(self) -> str: return self.get_field(NoteFields.Kanji.Source_Meaning_Mnemonic)
+    def set_source_meaning_mnemonic(self, value: str) -> None: self.set_field(NoteFields.Kanji.Source_Meaning_Mnemonic, value)
 
     def get_meaning_hint(self) -> str: return self.get_field(NoteFields.Kanji.Meaning_Info)
     def set_meaning_hint(self, value: str) -> None: self.set_field(NoteFields.Kanji.Meaning_Info, value if value is not None else "")
@@ -110,7 +113,7 @@ class KanjiNote(WaniNote):
     def update_from_wani(self, wani_kanji: models.Kanji) -> None:
         super().update_from_wani(wani_kanji)
 
-        self.set_meaning_mnemonic(wani_kanji.meaning_mnemonic)
+        self.set_source_meaning_mnemonic(wani_kanji.meaning_mnemonic)
         self.set_meaning_hint(wani_kanji.meaning_hint)
 
         self.set_reading_mnemonic(wani_kanji.reading_mnemonic)

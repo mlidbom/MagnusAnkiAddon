@@ -17,8 +17,13 @@ class RadicalNote(WaniNote):
     def get_answer(self) -> str: return self.get_field(NoteFields.Radical.answer)
     def set_a(self, value: str) -> None: self.set_field(NoteFields.Radical.answer, value)
 
-    def get_meaning_mnemonic(self) -> str: return self.get_field(NoteFields.Radical.Radical_Meaning)
-    def set_meaning_mnemonic(self, value: str) -> None: self.set_field(NoteFields.Radical.Radical_Meaning, value)
+    def get_source_mnemonic(self) -> str: return self.get_field(NoteFields.Radical.source_mnemonic)
+    def set_source_mnemonic(self, value: str) -> None: self.set_field(NoteFields.Radical.source_mnemonic, value)
+
+    def get_user_mnemonic(self) -> str: return self.get_field(NoteFields.Radical.user_mnemonic)
+
+    def get_active_mnemonic(self) -> str:
+        return self.get_user_mnemonic() if self.get_user_mnemonic() else self.get_source_mnemonic()
 
     def get_radical_icon(self) -> str: return self.get_field(NoteFields.Radical.Radical_Icon)
     def set_radical_icon(self, value: str) -> None: self.set_field(NoteFields.Radical.Radical_Icon, value)
@@ -28,7 +33,7 @@ class RadicalNote(WaniNote):
 
     def update_from_wani(self, wani_radical: models.Radical) -> None:
         super().update_from_wani(wani_radical)
-        self.set_meaning_mnemonic(wani_radical.meaning_mnemonic)
+        self.set_source_mnemonic(wani_radical.meaning_mnemonic)
         self.set_a(wani_radical.meanings[0].meaning)
 
         amalgamation_subject_ids = [str(subject_id) for subject_id in wani_radical.amalgamation_subject_ids]
@@ -54,4 +59,4 @@ class RadicalNote(WaniNote):
 class _Predicates:
     @staticmethod
     def is_replaced_by_kanji(radical:RadicalNote) -> bool:
-        return radical.get_meaning_mnemonic().upper() == "kanji"
+        return radical.get_active_mnemonic().upper() == "KANJI"

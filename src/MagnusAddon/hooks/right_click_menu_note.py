@@ -11,7 +11,7 @@ from note.vocabnote import VocabNote
 from hooks.note_content_building import jn_sentence_breakdown
 from sysutils import ex_str
 from note.note_constants import MyNoteFields, NoteFields, SentenceNoteFields, NoteTypes
-from ankiutils import query_builder as su
+from ankiutils import app, query_builder as su
 from sysutils.typed import checked_cast
 
 def setup_note_menu(note: JPNote, root_menu: QMenu, sel_clip: str, selection: str, view: AnkiWebView) -> None:
@@ -69,14 +69,12 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, sel_clip: str, selection: st
     if isinstance(note, KanjiNote):
         kanji = note
         add_lookup_action(note_lookup_menu, "&Vocabs", su.vocab_with_kanji(note))
-        radicals = [rad.strip() for rad in note.get_radicals_names().split(",")]
-        radicals_clause = " OR ".join([f"{NoteFields.Radical.answer}:{rad}" for rad in radicals])
-        add_lookup_action(note_lookup_menu, "&Radicals", f"note:{NoteTypes.Radical} ({radicals_clause})")
+        add_lookup_action(note_lookup_menu, "&Dependencies", su.notes_by_note(app.col().kanji.dependencies_of(kanji)))
         add_sentence_lookup(note_lookup_menu, "&Sentences", sel_clip)
 
-        if not kanji.get_mnemonics_override():
+        if not kanji.get_user_mnemonic():
             add_ui_action(note_hide_menu, "&Mnemonic", lambda: kanji.override_meaning_mnemonic())
-        if kanji.get_mnemonics_override() == "-":
+        if kanji.get_user_mnemonic() == "-":
             add_ui_action(note_restore_menu, "&Mnemonic", lambda: kanji.restore_meaning_mnemonic())
         if not kanji.get_user_answer():
             add_ui_action(note_menu, "Accept &meaning", lambda: kanji.set_user_answer(format_kanji_meaning(kanji.get_answer())))
