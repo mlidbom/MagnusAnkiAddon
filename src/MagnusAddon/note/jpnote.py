@@ -13,6 +13,7 @@ from sysutils.typed import checked_cast
 class JPNote(ABC):
     def __init__(self, note: Note):
         self._note = note
+        self._is_flushing: bool = False
 
     def __eq__(self, other: Any) -> bool:
         assert self.get_id(), "You cannot compare or hash a note that has not been saved yet since it has no id"
@@ -57,11 +58,7 @@ class JPNote(ABC):
     def card_ids(self) -> Sequence[CardId]: return self._note.card_ids()
     def is_wani_note(self) -> bool: return Mine.Tags.Wani in self._note.tags
 
-    @classmethod
-    def _on_note_edited(cls, note: Note) -> None:
-        cls.note_from_note(note)._on_edited()
-
-    def _on_edited(self) -> None: pass
+    def _on_before_flush(self) -> None: pass
 
     def get_field(self, field_name: str) -> str: return self._note[field_name]
 
@@ -69,7 +66,12 @@ class JPNote(ABC):
 
     def _flush(self) -> None:
         if self._is_persisted():
-            self._note.flush()
+            if not self._is_flushing: # We need to cancel infinite recursion here somehow...
+                self._is_flushing = True
+                try:
+                    self._note.flush()
+                finally:
+                    self._is_flushing = False
 
     def set_field(self, field_name: str, value: str) -> None:
         field_value = self._note[field_name]

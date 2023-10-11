@@ -2,7 +2,8 @@ from __future__ import annotations
 
 from typing import Callable
 
-from language_services.universal_dependencies.shared.tokenizing import ud_japanese_part_of_speech_tag, ud_universal_part_of_speech_tag
+from language_services.jamdict_ex.dict_lookup import DictLookup
+from language_services.universal_dependencies.shared.tokenizing import xpos, ud_universal_part_of_speech_tag
 from language_services.universal_dependencies.shared.tokenizing.ud_token import UDToken
 from language_services.universal_dependencies.shared.tree_building import ud_tree_node_formatter
 from sysutils import kana_utils
@@ -16,7 +17,6 @@ class UDTreeNode:
         self.norm = self.build_norm()
         self.lemma = self.build_lemma()
 
-    def is_morpheme(self) -> bool: return not self.children
     def lemma_differs_from_form(self) -> bool:
         return self.lemma != self.form
 
@@ -29,7 +29,8 @@ class UDTreeNode:
 
         return True
 
-    def is_compound(self) -> bool: return len(self.children) > 0
+    def is_morpheme(self) -> bool: return not self.is_compound()
+    def is_compound(self) -> bool: return len(self.tokens) > 1
 
     def is_form_dictionary_word(self) -> bool:
         from language_services.jamdict_ex.dict_lookup import DictLookup
@@ -37,11 +38,10 @@ class UDTreeNode:
 
     def form_should_be_shown_in_breakdown(self) -> bool:
         if self.is_morpheme():
-            if self.tokens[0].upos == ud_universal_part_of_speech_tag.verb:
+            if self.tokens[0].upos == ud_universal_part_of_speech_tag.verb and self.lemma_differs_from_form():
                 return False
             if self.is_excluded_surface(self.tokens[0]):
                 return False
-
 
         return self.is_form_dictionary_word()
 
@@ -56,31 +56,31 @@ class UDTreeNode:
 
     def __str__(self) -> str: return ud_tree_node_formatter.str_(self, 0)
 
-    def _node_appears_to_be_inflected_phrase(self) -> bool:
-        return (len(self.tokens) > 2
-                and self.tokens[-1].xpos == ud_japanese_part_of_speech_tag.inflecting_dependent_word
-                and self.tokens[-2].upos == ud_universal_part_of_speech_tag.verb)
-
     def build_norm(self) -> str:
-        if self.children: return ""
+        if self.is_compound(): return ""
 
         if self.is_excluded_norm(self.tokens[0]):
             return self.form
 
         return self.tokens[0].norm
 
-    def build_lemma(self) -> str:
-        if self.is_morpheme() and not self.is_excluded_lemma(self.tokens[0]):
-            return self.tokens[0].lemma
+    def _last_token_is_not_inflected(self) -> bool:
+        return self.tokens[-1].form == self.tokens[-1].lemma
 
-        if self._node_appears_to_be_inflected_phrase():
-            from language_services.jamdict_ex.dict_lookup import DictLookup
-            candidate_lemma = "".join(tok.form for tok in self.tokens[:-2]) + self.tokens[-2].lemma
-            if DictLookup.lookup_word_shallow(candidate_lemma).found_words():
-                return candidate_lemma
+    def build_lemma(self) -> str:
+        if self._last_token_is_not_inflected():
+            return self.form
+        elif self.is_morpheme():
+            if not self.is_excluded_lemma(self.tokens[0]):
+                return self.tokens[0].lemma
+        elif self.tokens[-1].xpos == xpos.verb_bound:
+            candidate = "".join(tok.form for tok in self.tokens[:-1]) + self.tokens[-1].lemma
+            if DictLookup.lookup_word_shallow(candidate).found_words():
+                return candidate
 
         return self.form
 
+    # Below here are special case exceptions that we have not (yet?) found a better way to handle.
     @staticmethod
     def is_excluded_surface(token: UDToken) -> bool:
         return (token.xpos, token.form, token.lemma) in _excluded_surfaces
@@ -95,15 +95,15 @@ class UDTreeNode:
 
 # It would be nice to find a logical pattern rather than hardcoded exclusions, but nothing has turned up yet
 _excluded_surfaces = {
-    (ud_japanese_part_of_speech_tag.inflecting_dependent_word, "て", "てる"),
+    (xpos.inflecting_dependent_word, "て", "てる"),
 }
 
 _excluded_lemmas = {
-    (ud_japanese_part_of_speech_tag.inflecting_dependent_word, "たら", "た"),
-    (ud_japanese_part_of_speech_tag.inflecting_dependent_word, "に", "だ"),
-    (ud_japanese_part_of_speech_tag.inflecting_dependent_word, "な", "だ"),
-    (ud_japanese_part_of_speech_tag.inflecting_dependent_word, "だろう", "だ"),
-    (ud_japanese_part_of_speech_tag.inflecting_dependent_word, "だろ", "だ"),
+    (xpos.inflecting_dependent_word, "たら", "た"),
+    (xpos.inflecting_dependent_word, "に", "だ"),
+    (xpos.inflecting_dependent_word, "な", "だ"),
+    (xpos.inflecting_dependent_word, "だろう", "だ"),
+    (xpos.inflecting_dependent_word, "だろ", "だ"),
 }
 
 _excluded_norms = _excluded_lemmas

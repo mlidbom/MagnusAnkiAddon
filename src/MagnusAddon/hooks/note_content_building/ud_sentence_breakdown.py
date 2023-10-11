@@ -10,7 +10,7 @@ from viewmodels.sentence_breakdown import sentence_breakdown_viewmodel
 from viewmodels.sentence_breakdown.sentence_breakdown_viewmodel import NodeViewModel
 
 def _node_html(node: NodeViewModel, excluded: set[str], extra: set[str], depth: int) -> str:
-    priority_class = "word_priority_medium" #todo fix this
+    priority_class = "word_priority_medium"  # todo fix this
 
     html = ""
 
@@ -22,8 +22,8 @@ def _node_html(node: NodeViewModel, excluded: set[str], extra: set[str], depth: 
             <li class="sentenceVocabEntry depth{depth} {priority_class}">
                 <div class="sentenceVocabEntryDiv">
                     <span class="vocabQuestion clipboard">{vocab_entry.surface_form}</span>
-                    { f'''<span class="vocabLookupForm clipboard">{vocab_entry.lookup_form}</span>''' if vocab_entry.lookup_form else "" }
-                    { f'''<span class="vocabHitForm clipboard">{vocab_entry.hit_form}</span>''' if vocab_entry.hit_form else "" }
+                    {f'''<span class="vocabLookupForm clipboard">{vocab_entry.lookup_form}</span>''' if vocab_entry.lookup_form else ""}
+                    {f'''<span class="vocabHitForm clipboard">{vocab_entry.hit_form}</span>''' if vocab_entry.hit_form else ""}
                     <span class="vocabAnswer">{vocab_entry.answer}</span>
                 </div>
                 {_create_html_from_nodes(node.children, excluded, extra, depth + 1)}
@@ -75,7 +75,7 @@ def build_breakdown_html(sentence: SentenceNote) -> str:
 # noinspection DuplicatedCode
 def render_breakdown(html: str, card: Card, _type_of_display: str) -> str:
     note = JPNote.note_from_note(card.note())
-    if isinstance(note, SentenceNote) and _type_of_display == 'reviewAnswer':
+    if isinstance(note, SentenceNote) and _type_of_display in {'reviewAnswer', 'previewAnswer'}:
         breakdown_html = build_breakdown_html(note)
         html = html.replace("##VOCAB_BREAKDOWN##", breakdown_html)
 

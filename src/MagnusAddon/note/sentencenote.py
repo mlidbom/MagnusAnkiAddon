@@ -18,7 +18,7 @@ class SentenceNote(JPNote):
     def get_question(self) -> str: return self._get_user_question() or self._get_source_question()
     def get_answer(self) -> str: return self._get_user_answer() or self._get_source_answer()
 
-    def _on_edited(self) -> None: self.update_generated_data()
+    def _on_before_flush(self) -> None: self.update_generated_data()
 
     def _get_source_answer(self) -> str: return self.get_field(SentenceNoteFields.source_answer)
     def _get_user_answer(self) -> str: return self.get_field(SentenceNoteFields.user_answer)

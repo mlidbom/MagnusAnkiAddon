@@ -22,4 +22,4 @@ class UDTreeSpec:
 
     @staticmethod
     def from_ud_tree(tree: UDTree, max_depth:int = 99) -> UDTreeSpec:
-        return UDTreeSpec(*[UDTreeNodeSpec.from_node(node, max_depth) for node in tree.nodes])
+        return UDTreeSpec(*[UDTreeNodeSpec.from_node(node, max_depth) for node in tree.nodes if node.depth <= max_depth])

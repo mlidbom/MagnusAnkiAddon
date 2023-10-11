@@ -14,7 +14,7 @@ class KanjiNote(WaniNote):
     def __init__(self, note: Note):
         super().__init__(note)
 
-    def _on_edited(self) -> None: self.update_generated_data()
+    def _on_before_flush(self) -> None: self.update_generated_data()
 
     def tag_readings_in_string(self, vocabulary: str, tagger: Callable[[str], str]) -> str:
         readings = f"{self.get_reading_kun()}, {self.get_reading_on()}"

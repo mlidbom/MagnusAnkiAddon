@@ -10,5 +10,5 @@ class UD2UDTokenizer(UDTokenizer):
         super().__init__(name)
         self._lazy_parser = Lazy(lambda: unidic2ud.load(name if name != "built-in" else None))
 
-    def parse(self, text: str) -> UDTokenizedText:
+    def tokenize(self, text: str) -> UDTokenizedText:
         return UDTokenizedText(self._lazy_parser.instance()(text))
