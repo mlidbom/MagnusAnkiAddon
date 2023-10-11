@@ -19,12 +19,10 @@ class RulesBasedCompoundBuilder(CompoundBuilderBase):
                     predicates.next_is_head_of_compound_token(deprel.nominal_subject),
 
                     # keeps the particle_phrase_ending we split off below together in one compound.
-                    predicates.next_shares_head_and_xpos_with_current(xpos.particle_phrase_ending),
-                    #predicates.next_shares_head_with_current_and_current_is_deprel(deprel.copula)
+                    predicates.next_shares_head_and_xpos_with_current(xpos.particle_phrase_ending)
                 ],
                 split_when=[
-                    predicates.next_is_first_token_with_xpos(xpos.particle_phrase_ending),
-                    #predicates.next_is_dependent_of_current(deprel.copula)
+                    predicates.next_is_first_token_with_xpos(xpos.particle_phrase_ending)
                 ]
             ),
             CompoundingRuleSet(
