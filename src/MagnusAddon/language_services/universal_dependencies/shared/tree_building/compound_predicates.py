@@ -48,6 +48,9 @@ class CompoundPredicates(CompoundPredicatesBase):
     def current_has_deprel(self, *_deprel: UdRelationshipTag) -> Callable[[], bool]:
         return lambda: self._current.deprel in _deprel
 
+    def next_is_particle_conjunctive_and_previous_is_not_copula(self) -> bool:
+        return self._next.xpos == xpos.particle_conjunctive and self._current.deprel != deprel.copula
+
 
     def next_is_dependent_of_compound(self, *_deprel: UdRelationshipTag) -> Callable[[], bool]:
         return lambda: self._next.head in self.compound.tokens and (not _deprel or self._next.deprel in _deprel)

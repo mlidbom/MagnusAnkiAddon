@@ -29,11 +29,12 @@ class RulesBasedCompoundBuilder(CompoundBuilderBase):
                 join_when=[
                     predicates.next_shares_head_with_current_and_head_is_past_token,
                     predicates.next_is_head_of_compound_token(deprel.nominal_subject),
+                    predicates.next_shares_head_with_current_and_current_is_deprel(deprel.copula),
                     predicates.next_is_dependent_of_compound(deprel.fixed_multiword_expression),
                     predicates.next_is_dependent_of_current(deprel.compound, deprel.case_marking),
                     predicates.next_is_head_of_current(deprel.compound),
                 ],
-                split_when=[predicates.next_is_first_token_with_xpos(xpos.particle_conjunctive)]
+                split_when=[predicates.next_is_particle_conjunctive_and_previous_is_not_copula]
             ),
             CompoundingRuleSet(
                 join_when=[
