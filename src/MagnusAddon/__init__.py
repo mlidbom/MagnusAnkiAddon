@@ -10,7 +10,6 @@ import hooks
 from _addon_copies import refresh_media_references # noqa
 
 hooks.timing_hacks.init()
-hooks.update_note_on_edit.init()
 hooks.browser_right_click_menu.init()
 hooks.editor_buttons.init()
 hooks.tools_menu.init()

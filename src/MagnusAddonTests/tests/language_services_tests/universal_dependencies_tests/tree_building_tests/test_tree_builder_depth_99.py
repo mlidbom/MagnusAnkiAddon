@@ -92,7 +92,7 @@ str: {sentence}
 
     try:
         assert spec_result == expected
-    except Exception as e:
+    except Exception:
         print(f"""
 {parser.name} : {sentence}
 {parser.tokenize(sentence).to_tree()}

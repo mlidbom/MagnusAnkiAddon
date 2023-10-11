@@ -64,6 +64,7 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
 
     def _on_will_flush(self, backend_note: Note) -> None:
         note = JPNote.note_from_note(backend_note)
+        note._on_before_flush()
         if isinstance(note, self._note_type):
             if note.get_id():
                 if note.get_id() in self._by_id:
