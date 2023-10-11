@@ -38,10 +38,6 @@ class RulesBasedCompoundBuilder(CompoundBuilderBase):
                 split_when=[predicates.next_is_first_token_with_xpos(xpos.particle_conjunctive)]
             ),
             CompoundingRuleSet(
-                join_when=[predicates.true],
-                split_when=[]
-            ),
-            CompoundingRuleSet(
                 join_when=[
                     predicates.next_is_dependent_of_compound(deprel.fixed_multiword_expression,
                                                              deprel.compound),
