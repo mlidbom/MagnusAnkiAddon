@@ -13,7 +13,7 @@ class KanjiViewModel:
         return f"{self._kanji.get_reading_kun()}, {kana_utils.to_katakana(self._kanji.get_reading_on())}"
 
     def mnemonic(self) -> str:
-        return self._kanji.get_user_mnemonic() if self._kanji.get_user_mnemonic() not in {"-", ""} else ""
+        return self._kanji.get_active_mnemonic()
 
     def __str__(self) -> str:
         return f"{self.question()}      {ex_str.pad_to_length(self.answer(), 60)}: {self.readings()}"
