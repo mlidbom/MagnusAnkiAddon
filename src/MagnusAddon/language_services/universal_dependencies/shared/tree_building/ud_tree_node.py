@@ -40,10 +40,16 @@ class UDTreeNode:
         if self.is_morpheme():
             if self.tokens[0].upos == ud_universal_part_of_speech_tag.verb and self.lemma_differs_from_form():
                 return False
-            if self.is_excluded_surface(self.tokens[0]):
+            if self.is_excluded_morpheme_surface(self.tokens[0]):
                 return False
+            return True
 
         return self.is_form_dictionary_word()
+
+    def _appears_to_be_inflected_phrase(self) -> bool:
+        return (len(self.tokens) >= 2
+                and self.tokens[-1].xpos == xpos.inflecting_dependent_word
+                and self.tokens[-2].upos == ud_universal_part_of_speech_tag.verb)
 
     def lemma_should_be_shown_in_breakdown(self) -> bool:
         from language_services.jamdict_ex.dict_lookup import DictLookup
@@ -59,19 +65,19 @@ class UDTreeNode:
     def build_norm(self) -> str:
         if self.is_compound(): return ""
 
-        if self.is_excluded_norm(self.tokens[0]):
+        if self._is_excluded_morpheme_norm(self.tokens[0]):
             return self.form
 
         return self.tokens[0].norm
 
-    def _last_token_is_not_inflected(self) -> bool:
-        return self.tokens[-1].form == self.tokens[-1].lemma
+    def _last_token_is_inflected(self) -> bool:
+        return self.tokens[-1].form != self.tokens[-1].lemma
 
     def build_lemma(self) -> str:
-        if self._last_token_is_not_inflected():
+        if not self._last_token_is_inflected():
             return self.form
         elif self.is_morpheme():
-            if not self.is_excluded_lemma(self.tokens[0]):
+            if not self._is_excluded_morpheme_lemma(self.tokens[0]):
                 return self.tokens[0].lemma
         elif self.tokens[-1].xpos == xpos.verb_bound:
             candidate = "".join(tok.form for tok in self.tokens[:-1]) + self.tokens[-1].lemma
@@ -82,25 +88,29 @@ class UDTreeNode:
 
     # Below here are special case exceptions that we have not (yet?) found a better way to handle.
     @staticmethod
-    def is_excluded_surface(token: UDToken) -> bool:
-        return (token.xpos, token.form, token.lemma) in _excluded_surfaces
+    def is_excluded_morpheme_surface(token: UDToken) -> bool:
+        return (token.xpos, token.form, token.lemma) in _excluded_morpheme_surfaces
 
     @staticmethod
-    def is_excluded_lemma(token: UDToken) -> bool:
-        return (token.xpos, token.form, token.lemma) in _excluded_lemmas
+    def _is_excluded_morpheme_lemma(token: UDToken) -> bool:
+        return (token.xpos, token.form, token.lemma) in _excluded_morpheme_lemmas
 
     @staticmethod
-    def is_excluded_norm(token: UDToken) -> bool:
-        return (token.xpos, token.form, token.norm) in _excluded_norms
+    def _is_excluded_morpheme_norm(token: UDToken) -> bool:
+        return (token.xpos, token.form, token.norm) in _excluded_morpheme_norms
 
 # It would be nice to find a logical pattern rather than hardcoded exclusions, but nothing has turned up yet
-_excluded_surfaces = {
+_excluded_morpheme_surfaces = {
     #xpos, form, lemma
+    (xpos.inflecting_dependent_word, "だっ", "だ"),
+    (xpos.inflecting_dependent_word, "なかっ", "ない"),
+    (xpos.inflecting_dependent_word, "とい", "とく"),
     (xpos.inflecting_dependent_word, "て", "てる"),
+    (xpos.inflecting_dependent_word, "でし", "です"),
     (xpos.verb_bound, "し", "する"),
 }
 
-_excluded_lemmas = {
+_excluded_morpheme_lemmas = {
     #xpos, form, lemma
     (xpos.inflecting_dependent_word, "たら", "た"),
     (xpos.inflecting_dependent_word, "に", "だ"),
@@ -109,4 +119,4 @@ _excluded_lemmas = {
     (xpos.inflecting_dependent_word, "だろ", "だ"),
 }
 
-_excluded_norms = _excluded_lemmas
+_excluded_morpheme_norms = _excluded_morpheme_lemmas
