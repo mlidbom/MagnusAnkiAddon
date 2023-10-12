@@ -2,15 +2,18 @@ from anki.cards import Card
 from aqt import gui_hooks
 
 from ankiutils import app
+from language_services.shared import priorities
 from language_services.universal_dependencies import ud_parsers
 from language_services.universal_dependencies.shared.tree_building import ud_tree_builder
 from note.jpnote import JPNote
 from note.sentencenote import SentenceNote
+from note.vocabnote import VocabNote
 from viewmodels.sentence_breakdown import sentence_breakdown_viewmodel
 from viewmodels.sentence_breakdown.sentence_breakdown_viewmodel import NodeViewModel
 
-def _node_html(node: NodeViewModel, excluded: set[str], extra: set[str], depth: int) -> str:
-    priority_class = "word_priority_medium"  # todo fix this
+def _node_html(node: NodeViewModel, excluded: set[str], highlighted: set[str], depth: int) -> str:
+    def priority_class(question: str) -> str:
+        return "word_priority_" + node.get_priority_class(question, highlighted)
 
     html = ""
 
@@ -19,26 +22,44 @@ def _node_html(node: NodeViewModel, excluded: set[str], extra: set[str], depth: 
     if vocab_hits:
         for vocab_entry in vocab_hits:
             html += f"""
-            <li class="sentenceVocabEntry depth{depth} {priority_class}">
+            <li class="sentenceVocabEntry depth{depth} {priority_class(vocab_entry.lookup_form if vocab_entry.lookup_form else vocab_entry.surface_form)}">
                 <div class="sentenceVocabEntryDiv">
                     <span class="vocabQuestion clipboard">{vocab_entry.surface_form}</span>
                     {f'''<span class="vocabLookupForm clipboard">{vocab_entry.lookup_form}</span>''' if vocab_entry.lookup_form else ""}
                     {f'''<span class="vocabHitForm clipboard">{vocab_entry.hit_form}</span>''' if vocab_entry.hit_form else ""}
                     <span class="vocabAnswer">{vocab_entry.answer}</span>
                 </div>
-                {_create_html_from_nodes(node.children, excluded, extra, depth + 1)}
+                {_create_html_from_nodes(node.children, excluded, highlighted, depth + 1)}
             </li>
             """
     else:
         html += f"""
-            <li class="sentenceVocabEntry depth{depth} {priority_class}">
+            <li class="sentenceVocabEntry depth{depth} {priority_class(node.surface)}">
                 <div class="sentenceVocabEntryDiv">
                     <span class="vocabQuestion clipboard">{node.surface}</span>
                 </div>
-                {_create_html_from_nodes(node.children, excluded, extra, depth + 1)}
+                {_create_html_from_nodes(node.children, excluded, highlighted, depth + 1)}
             </li>
             """
 
+    return html
+
+def _build_user_extra_list(extra_words: list[str]) -> str:
+    html = f"""<ul class="sentenceVocabList userExtra depth1">\n"""
+    for word in extra_words:
+        vocabs: list[VocabNote] = app.col().vocab.with_form(word)
+
+        for vocab in vocabs:
+            html += f"""
+                <li class="sentenceVocabEntry depth1 word_priority_{priorities.very_high}">
+                    <div class="sentenceVocabEntryDiv">
+                        <span class="vocabQuestion clipboard">{vocab.get_display_question()}</span>
+                        <span class="vocabAnswer">{vocab.get_answer()}</span>
+                    </div>
+                </li>
+                """
+
+    html += "</ul>\n"
     return html
 
 def _create_html_from_nodes(nodes: list[NodeViewModel], excluded: set[str], extra: set[str], depth: int) -> str:
@@ -63,8 +84,11 @@ def build_breakdown_html(sentence: SentenceNote) -> str:
     tree = ud_tree_builder.build_tree(ud_parsers.best, question)
     view_model = sentence_breakdown_viewmodel.create(tree, app.col())
 
-    user_extra = set(extra_words)
-    html += _create_html_from_nodes(view_model.nodes, user_excluded, user_extra, 1)
+    if extra_words:
+        html += _build_user_extra_list(extra_words)
+
+    user_higlighted = set(extra_words)
+    html += _create_html_from_nodes(view_model.nodes, user_excluded, user_higlighted, 1)
 
     html += """
     ##KANJI_LIST##

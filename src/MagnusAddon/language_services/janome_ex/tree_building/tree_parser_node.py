@@ -5,6 +5,7 @@ from language_services.jamdict_ex.dict_lookup import DictLookup
 from language_services.janome_ex.tokenizing.jn_parts_of_speech import POS
 from language_services.janome_ex.tokenizing.jn_token import JNToken
 from language_services.janome_ex.tree_building import jn_tree_builder
+from language_services.shared import priorities
 from sysutils import kana_utils
 
 
@@ -127,11 +128,11 @@ class TreeParserNode:
                 return priorities.low
 
         if question == self.surface:
-            if question in _Statics.hard_coded_surface_priorities:
-                return _Statics.hard_coded_surface_priorities[question]
+            if question in priorities.hard_coded_surface_priorities:
+                return priorities.hard_coded_surface_priorities[question]
         if question == self.base:
-            if question in _Statics.hard_coded_base_priorities:
-                return _Statics.hard_coded_base_priorities[question]
+            if question in priorities.hard_coded_base_priorities:
+                return priorities.hard_coded_base_priorities[question]
 
         if kanji_count > 1:
             return priorities.high
@@ -142,23 +143,3 @@ class TreeParserNode:
         callback(self)
         for node in self.children:
             node.visit(callback)
-
-class Priorities:
-    def __init__(self) -> None:
-        self.unknown = "unknown"
-        self.very_low = "very_low"
-        self.low = "low"
-        self.medium = "medium"
-        self.high = "high"
-        self.very_high = "very_high"
-
-priorities = Priorities()
-
-
-class _Statics:
-    hard_coded_base_priorities: dict[str, str] = dict()
-    hard_coded_surface_priorities: dict[str, str] = dict()
-
-    lowest_priority_surfaces: set[str] = set()
-    # for particle in "しもよかとたてでをなのにだがは": hard_coded_base_priorities[particle] = priorities.very_low
-    # for word in "する|です|私|なる|この|あの|その|いる|ある".split("|"): hard_coded_base_priorities[word] = priorities.low

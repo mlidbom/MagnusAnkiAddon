@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+from language_services.shared import priorities
 from language_services.universal_dependencies.shared.tree_building.ud_tree import UDTree
 from language_services.universal_dependencies.shared.tree_building.ud_tree_node import UDTreeNode
 from note.collection.jp_collection import JPCollection
 from note.vocabnote import VocabNote
+from sysutils import kana_utils
 
 missing_vocab_answer = "---"
 class VocabHit:
@@ -86,6 +88,34 @@ class NodeViewModel:
         self._sort_hits(surface_vocab)
         self._sort_hits(base_vocab)
         return surface_vocab, base_vocab
+
+    def get_priority_class(self, question: str, highlighted: set[str]) -> str:
+        if question in highlighted:
+            return priorities.very_high
+
+        if question != self.surface and question != self.base:
+            return priorities.unknown
+
+        kanji_count = len([char for char in self.surface if not kana_utils.is_kana(char)])
+
+        # todo: if this works out well, remove the code with hard coded values below
+        if kanji_count == 0:
+            if len(self.surface) == 1:
+                return priorities.very_low
+            if len(self.surface) == 2:
+                return priorities.low
+
+        if question == self.surface:
+            if question in priorities.hard_coded_surface_priorities:
+                return priorities.hard_coded_surface_priorities[question]
+        if question == self.base:
+            if question in priorities.hard_coded_base_priorities:
+                return priorities.hard_coded_base_priorities[question]
+
+        if kanji_count > 1:
+            return priorities.high
+
+        return priorities.medium
 
 class BreakDownViewModel:
     def __init__(self, parse_result: UDTree, collection: JPCollection):

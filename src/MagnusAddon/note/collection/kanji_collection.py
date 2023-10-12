@@ -4,7 +4,6 @@ from typing import cast, List, TYPE_CHECKING
 
 from note.jpnote import JPNote
 from note.radicalnote import RadicalNote
-from sysutils.typed import checked_cast
 
 if TYPE_CHECKING:
     from note.collection.jp_collection import JPCollection

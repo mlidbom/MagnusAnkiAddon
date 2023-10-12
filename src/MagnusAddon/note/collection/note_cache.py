@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from collections import defaultdict
 from typing import Generic, Self, Sequence, TypeVar
 
 from anki import hooks
@@ -65,6 +64,7 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
 
     def _on_will_flush(self, backend_note: Note) -> None:
         note = JPNote.note_from_note(backend_note)
+        # noinspection PyProtectedMember
         note._on_before_flush()
         if isinstance(note, self._note_type):
             if note.get_id():

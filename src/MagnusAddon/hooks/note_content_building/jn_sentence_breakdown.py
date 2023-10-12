@@ -7,7 +7,8 @@ from note.jpnote import JPNote
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
 from language_services.janome_ex.tree_building import jn_tree_builder
-from language_services.janome_ex.tree_building.tree_parser_node import priorities, TreeParserNode
+from language_services.janome_ex.tree_building.tree_parser_node import TreeParserNode
+from language_services.shared import priorities
 from sysutils import ex_sequence
 from sysutils.collections.recent_items import RecentItems
 
