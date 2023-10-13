@@ -8,6 +8,7 @@ from language_services.universal_dependencies.shared.tree_building import ud_tre
 from note.jpnote import JPNote
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
+from sysutils.ex_str import newline
 from viewmodels.sentence_breakdown import sentence_breakdown_viewmodel
 from viewmodels.sentence_breakdown.sentence_breakdown_viewmodel import NodeViewModel
 
@@ -49,15 +50,25 @@ def _build_user_extra_list(extra_words: list[str]) -> str:
     for word in extra_words:
         vocabs: list[VocabNote] = app.col().vocab.with_form(word)
 
-        for vocab in vocabs:
+        if vocabs:
+            for vocab in vocabs:
+                html += f"""
+                        <li class="sentenceVocabEntry depth1 word_priority_{priorities.very_high}">
+                            <div class="sentenceVocabEntryDiv">
+                                <span class="vocabQuestion clipboard">{vocab.get_display_question()}</span>
+                                <span class="vocabAnswer">{vocab.get_answer()}</span>
+                            </div>
+                        </li>
+                        """
+        else:
             html += f"""
-                <li class="sentenceVocabEntry depth1 word_priority_{priorities.very_high}">
-                    <div class="sentenceVocabEntryDiv">
-                        <span class="vocabQuestion clipboard">{vocab.get_display_question()}</span>
-                        <span class="vocabAnswer">{vocab.get_answer()}</span>
-                    </div>
-                </li>
-                """
+                        <li class="sentenceVocabEntry depth1 word_priority_{priorities.very_high}">
+                           <div class="sentenceVocabEntryDiv">
+                               <span class="vocabQuestion clipboard">{word}</span>
+                               <span class="vocabAnswer">---</span>
+                           </div>
+                        </li>
+                        """
 
     html += "</ul>\n"
     return html
@@ -74,6 +85,28 @@ def _create_html_from_nodes(nodes: list[NodeViewModel], excluded: set[str], extr
     html += "</ul>\n"
 
     return html
+
+def print_debug_information_for_analysis(sentence: str) -> str:
+    html = f"""<div id="debug_output">\n"""
+
+
+    for parser in ud_parsers.all_parsers:
+        html += f"""{parser.name} : {sentence}
+{parser.tokenize(sentence).to_tree()}
+
+"""
+
+    for parser in ud_parsers.all_parsers:
+        html += f"""{parser.name} : {sentence}")
+{ud_tree_builder.build_tree(parser, sentence)}
+
+"""
+
+    html += """</div>\n"""
+
+    return html
+
+
 
 def build_breakdown_html(sentence: SentenceNote) -> str:
     user_excluded = sentence.get_user_excluded_vocab()
@@ -93,6 +126,11 @@ def build_breakdown_html(sentence: SentenceNote) -> str:
     html += """
     ##KANJI_LIST##
         """
+
+    html += f"""
+    
+    {print_debug_information_for_analysis(sentence.get_question())}
+    """
 
     return html
 

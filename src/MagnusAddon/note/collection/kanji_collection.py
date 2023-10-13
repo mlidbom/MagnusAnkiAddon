@@ -4,6 +4,7 @@ from typing import cast, List, TYPE_CHECKING
 
 from note.jpnote import JPNote
 from note.radicalnote import RadicalNote
+from sysutils.typed import checked_cast
 
 if TYPE_CHECKING:
     from note.collection.jp_collection import JPCollection
@@ -59,6 +60,8 @@ class KanjiCollection:
         radical_dependencies_notes = ex_sequence.remove_duplicates_while_retaining_order(radical_dependencies_notes)
 
         radicals_exchanged_for_kanji = ex_list.remove_items_where(RadicalNote.predicates().is_replaced_by_kanji, radical_dependencies_notes)
+
         kanji_dependencies_notes = self.jp_collection.kanji.with_any_kanji_in([radical.get_question() for radical in radicals_exchanged_for_kanji])
+        ex_list.remove_items_where(lambda item: checked_cast(KanjiNote, item) == kanji_note, kanji_dependencies_notes)
 
         return cast(list[JPNote], radical_dependencies_notes) + cast(list[JPNote], kanji_dependencies_notes)

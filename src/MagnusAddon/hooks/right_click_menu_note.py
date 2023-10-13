@@ -53,15 +53,13 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, sel_clip: str, selection: st
 
         def exclude_vocab(sentence: SentenceNote, text: str) -> None:
             sentence.exclude_vocab(text)
-            jn_sentence_breakdown.build_breakdown_html(sentence_note)
 
-        def add_extra_vocab(sentence: SentenceNote, text: str) -> None:
+        def add_highlighted_vocab(sentence: SentenceNote, text: str) -> None:
             sentence.add_extra_vocab(text)
-            jn_sentence_breakdown.build_breakdown_html(sentence_note)
 
         if sel_clip:
             add_ui_action(note_hide_menu, "&Exclude vocab", lambda: exclude_vocab(sentence_note, sel_clip))
-            add_ui_action(note_add_menu, "&Extra vocab", lambda: add_extra_vocab(sentence_note, sel_clip))
+            add_ui_action(note_add_menu, "&Highlighted vocab", lambda: add_highlighted_vocab(sentence_note, sel_clip))
 
     if isinstance(note, RadicalNote):
         add_lookup_action(note_lookup_menu, "&Kanji", f"note:{NoteTypes.Kanji} {su.field_word(NoteFields.Kanji.Radicals_Names, note.get_answer())}")

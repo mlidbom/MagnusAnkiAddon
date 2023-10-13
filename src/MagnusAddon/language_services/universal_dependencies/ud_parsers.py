@@ -21,10 +21,10 @@ kinsei: UD2UDTokenizer = UD2UDTokenizer("kinsei")  # Maybe. 6 differences with g
 
 all_parsers:list[UDTokenizer] = [ginza,
                                  gendai,
-                                 spoken,
+                                 #spoken,
+                                 default,
                                  qkana,
                                  kindai,
-                                 default,
                                  kinsei,
                                  # novel, kyogen, wakan, wabun, manyo
                                  ]

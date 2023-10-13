@@ -36,12 +36,20 @@ class UDTreeNode:
         from language_services.jamdict_ex.dict_lookup import DictLookup
         return DictLookup.lookup_word_shallow(self.form).found_words()
 
-    def form_should_be_shown_in_breakdown(self) -> bool:
+    def form_should_be_excluded_from_breakdown(self) -> bool:
         if self.is_morpheme():
             if self.tokens[0].upos == ud_universal_part_of_speech_tag.verb and self.lemma_differs_from_form():
-                return False
+                return True
             if self.is_excluded_morpheme_surface(self.tokens[0]):
-                return False
+                return True
+
+        return False
+
+    def form_is_required_in_breakdown(self) -> bool:
+        if self.form_should_be_excluded_from_breakdown():
+            return False
+
+        if self.is_morpheme():
             return True
 
         return self.is_form_dictionary_word()

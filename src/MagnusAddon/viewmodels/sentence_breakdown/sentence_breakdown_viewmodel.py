@@ -64,7 +64,7 @@ class NodeViewModel:
 
     def _vocab_hits(self) -> tuple[list[VocabHit], list[VocabHit]]:
 
-        form_vocab_notes:list[VocabNote] = self._collection.vocab.with_form(self.surface) if self._node.form_should_be_shown_in_breakdown() else []
+        form_vocab_notes:list[VocabNote] = self._collection.vocab.with_form(self.surface) if not self._node.form_should_be_excluded_from_breakdown() else []
 
         base_vocab_notes:list[VocabNote] = []
         if self._node.lemma_should_be_shown_in_breakdown():
@@ -78,7 +78,7 @@ class NodeViewModel:
         base_vocab = [VocabHit.base_from_vocab(self, vocab) for vocab in base_vocab_notes]
 
 
-        if not surface_vocab and self._node.form_should_be_shown_in_breakdown():
+        if not surface_vocab and self._node.form_is_required_in_breakdown():
             surface_vocab.append(VocabHit.missing_surface(self))
 
         if not found_base_vocab and self._node.lemma_should_be_shown_in_breakdown():
