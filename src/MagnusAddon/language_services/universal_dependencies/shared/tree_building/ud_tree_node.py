@@ -110,8 +110,11 @@ class UDTreeNode:
 # It would be nice to find a logical pattern rather than hardcoded exclusions, but nothing has turned up yet
 _excluded_morpheme_surfaces = {
     #xpos, form, lemma
+    #these form a pattern of some sort.
     (xpos.inflecting_dependent_word, "だっ", "だ"),
     (xpos.inflecting_dependent_word, "なかっ", "ない"),
+    (xpos.inflecting_dependent_word, "ちゃっ", "ちゃう"),
+
     (xpos.inflecting_dependent_word, "とい", "とく"),
     (xpos.inflecting_dependent_word, "て", "てる"),
     (xpos.inflecting_dependent_word, "でし", "です"),

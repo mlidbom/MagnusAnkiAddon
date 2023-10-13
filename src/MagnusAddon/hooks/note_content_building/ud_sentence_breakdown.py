@@ -8,7 +8,6 @@ from language_services.universal_dependencies.shared.tree_building import ud_tre
 from note.jpnote import JPNote
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
-from sysutils.ex_str import newline
 from viewmodels.sentence_breakdown import sentence_breakdown_viewmodel
 from viewmodels.sentence_breakdown.sentence_breakdown_viewmodel import NodeViewModel
 
@@ -90,14 +89,20 @@ def print_debug_information_for_analysis(sentence: str) -> str:
     html = f"""<div id="debug_output">\n"""
 
     for parser in ud_parsers.all_parsers:
-        html += f"""{parser.name} : {sentence}")
-{ud_tree_builder.build_tree(parser, sentence)}
+        html += f"""{parser.name} : {sentence}
+{parser.tokenize(sentence).str_()}
 
 """
 
     for parser in ud_parsers.all_parsers:
         html += f"""{parser.name} : {sentence}
 {parser.tokenize(sentence).to_tree()}
+
+"""
+
+    for parser in ud_parsers.all_parsers:
+        html += f"""{parser.name} : {sentence}")
+{ud_tree_builder.build_tree(parser, sentence)}
 
 """
 

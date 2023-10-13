@@ -67,8 +67,8 @@ class UDToken:
                    f"""{padder(self.deprel.description, 30)}""" +
                    f"""{padder(self.xpos.description, 30)}""" +
                    f"""{padder(self.upos.description, 30)}""" +
-                   f"""feat:{padder(self.feats, 40)}""")
+                   f"""feat:{padder(self.feats, 40)}""" +
+                   f"""deps:{self.deps}""" +
+                   f"""misc:{self.misc}""")
 
         return result
-        # I've yet to see deps or misc contain anything of interest and space is at a premium...
-        # f"""deps:{self.deps} misc:{self.misc}""")
