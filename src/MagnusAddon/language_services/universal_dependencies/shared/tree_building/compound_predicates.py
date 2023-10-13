@@ -39,14 +39,23 @@ class CompoundPredicates(CompoundPredicatesBase):
         return lambda: ((self.compound.current.deprel, self.compound.current.xpos) == combo
                         and (self.compound.next.deprel, self.compound.next.xpos) != combo)
 
+    def next_is_head_of_first(self, *_deprel: UdRelationshipTag) -> Callable[[], bool]:
+        return lambda: self._first.head == self._next and (not _deprel or self._first.deprel in _deprel)
+
     def current_is_particle_conjunctive_and_next_is_verb_bound(self) -> bool:
         return self._current.xpos == xpos.particle_conjunctive and self._next.xpos == xpos.verb_bound
 
     def next_shares_head_with_current_and_current_is_deprel(self, *_deprel: UdRelationshipTag) -> Callable[[], bool]:
         return lambda: self.next_shares_head_with_current()() and self.current_has_deprel(*_deprel)()
 
+    def next_shares_head_and_deprel_with_current(self, *_deprel: UdRelationshipTag) -> Callable[[], bool]:
+        return lambda: self.next_shares_head_with_current()() and self.current_has_deprel(*_deprel)() and self.next_has_deprel(*_deprel)()
+
     def current_has_deprel(self, *_deprel: UdRelationshipTag) -> Callable[[], bool]:
         return lambda: self._current.deprel in _deprel
+
+    def next_has_deprel(self, *_deprel: UdRelationshipTag) -> Callable[[], bool]:
+        return lambda: self._next.deprel in _deprel
 
     def next_is_particle_conjunctive_and_previous_is_not_copula(self) -> bool:
         return self._next.xpos == xpos.particle_conjunctive and self._current.deprel != deprel.copula
@@ -55,7 +64,7 @@ class CompoundPredicates(CompoundPredicatesBase):
     def next_is_dependent_of_compound(self, *_deprel: UdRelationshipTag) -> Callable[[], bool]:
         return lambda: self._next.head in self.compound.tokens and (not _deprel or self._next.deprel in _deprel)
 
-    def next_is_dependent_on(self, token: UDToken, *_deprel: UdRelationshipTag) -> Callable[[], bool]:
+    def next_is_dependent_of(self, token: UDToken, *_deprel: UdRelationshipTag) -> Callable[[], bool]:
         return lambda: self.compound.next.head == token and (not _deprel or self._next.deprel in _deprel)
 
     def next_is_head_of_compound_token(self, *_deprel: UdRelationshipTag) -> Callable[[], bool]:
@@ -63,6 +72,9 @@ class CompoundPredicates(CompoundPredicatesBase):
 
     def next_is_dependent_of_current(self, *_deprel: UdRelationshipTag) -> Callable[[], bool]:
         return lambda: self.compound.next.head == self.compound.current and self.compound.next.deprel in _deprel
+
+    def next_has_xpos(self, _xpos: UdJapanesePartOfSpeechTag) -> Callable[[], bool]:
+        return lambda: self.compound.next.xpos == _xpos
 
     def next_is_first_token_with_xpos(self, _xpos: UdJapanesePartOfSpeechTag) -> Callable[[], bool]:
         return lambda: self.compound.next.xpos == _xpos and self.compound.current.xpos != _xpos

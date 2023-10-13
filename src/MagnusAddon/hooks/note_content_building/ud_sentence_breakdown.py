@@ -4,7 +4,10 @@ from aqt import gui_hooks
 from ankiutils import app
 from language_services.shared import priorities
 from language_services.universal_dependencies import ud_parsers
+from language_services.universal_dependencies.shared.tokenizing.ud_tokenizer import UDTokenizer
 from language_services.universal_dependencies.shared.tree_building import ud_tree_builder
+from language_services.universal_dependencies.shared.tree_building.bottom_up_compound_builder import BottomUpdCompoundBuilder
+from language_services.universal_dependencies.shared.tree_building.ud_tree_builder import BuilderFactory
 from note.jpnote import JPNote
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
@@ -85,7 +88,7 @@ def _create_html_from_nodes(nodes: list[NodeViewModel], excluded: set[str], extr
 
     return html
 
-def print_debug_information_for_analysis(sentence: str) -> str:
+def print_debug_information_for_analysis(sentence: str, builder_factory: BuilderFactory) -> str:
     html = f"""<div id="debug_output">\n"""
 
     for parser in ud_parsers.all_parsers:
@@ -102,7 +105,7 @@ def print_debug_information_for_analysis(sentence: str) -> str:
 
     for parser in ud_parsers.all_parsers:
         html += f"""{parser.name} : {sentence}")
-{ud_tree_builder.build_tree(parser, sentence)}
+{ud_tree_builder.build_tree(parser, sentence, builder_factory)}
 
 """
 
@@ -112,13 +115,13 @@ def print_debug_information_for_analysis(sentence: str) -> str:
 
 
 
-def build_breakdown_html(sentence: SentenceNote) -> str:
+def build_breakdown_html(sentence: SentenceNote, tokenizer: UDTokenizer, builder_factory: BuilderFactory) -> str:
     user_excluded = sentence.get_user_excluded_vocab()
     extra_words = sentence.get_user_extra_vocab()
     html = ""
 
     question = sentence.get_question()
-    tree = ud_tree_builder.build_tree(ud_parsers.best, question)
+    tree = ud_tree_builder.build_tree(tokenizer, question, builder_factory)
     view_model = sentence_breakdown_viewmodel.create(tree, app.col())
 
     if extra_words:
@@ -133,7 +136,7 @@ def build_breakdown_html(sentence: SentenceNote) -> str:
 
     html += f"""
     
-    {print_debug_information_for_analysis(sentence.get_question())}
+    {print_debug_information_for_analysis(sentence.get_question(), builder_factory)}
     """
 
     return html
@@ -142,7 +145,7 @@ def build_breakdown_html(sentence: SentenceNote) -> str:
 def render_breakdown(html: str, card: Card, _type_of_display: str) -> str:
     note = JPNote.note_from_note(card.note())
     if isinstance(note, SentenceNote) and _type_of_display in {'reviewAnswer', 'previewAnswer'}:
-        breakdown_html = build_breakdown_html(note)
+        breakdown_html = build_breakdown_html(note, ud_parsers.gendai, BottomUpdCompoundBuilder.create)
         html = html.replace("##VOCAB_BREAKDOWN##", breakdown_html)
 
     return html

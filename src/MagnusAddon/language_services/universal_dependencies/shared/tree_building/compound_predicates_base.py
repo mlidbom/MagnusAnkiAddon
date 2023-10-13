@@ -10,6 +10,8 @@ class CompoundPredicatesBase:
     @property
     def _current(self) -> UDToken: return self.compound.current
     @property
+    def _first(self) -> UDToken: return self.compound.first
+    @property
     def _tokens(self) -> list[UDToken]: return self.compound.tokens
     @property
     def _next(self) -> UDToken: return self.compound.next

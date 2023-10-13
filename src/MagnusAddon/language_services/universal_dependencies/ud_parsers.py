@@ -2,7 +2,7 @@ from language_services.universal_dependencies.ginza.ginza_tokenizer import Ginza
 from language_services.universal_dependencies.shared.tokenizing.ud_tokenizer import UDTokenizer
 from language_services.universal_dependencies.unidic2ud.unidic2ud_tokenizer import UD2UDTokenizer
 
-ginza: GinzaTokenizer = GinzaTokenizer() # Yes. 15 Differences to gendai. 8 Better, 6 worse, one unclear.
+ginza: GinzaTokenizer = GinzaTokenizer()  # Yes. 15 Differences to gendai. 8 Better, 6 worse, one unclear.
 best: GinzaTokenizer = ginza
 gendai: UD2UDTokenizer = UD2UDTokenizer("gendai")  # Yes. 15 Differences to ginza. 6 Better, 8 worse, one unclear.
 spoken: UD2UDTokenizer = UD2UDTokenizer("spoken")  # ??. Zero differences compared to gendai so far...
@@ -19,12 +19,12 @@ kinsei: UD2UDTokenizer = UD2UDTokenizer("kinsei")  # Maybe. 6 differences with g
 # manyo = UD2UDParser("manyo") #NO. 25 differences with gendai. Consistently strange.
 
 
-all_parsers:list[UDTokenizer] = [ginza,
-                                 gendai,
-                                 #spoken,
-                                 default,
-                                 qkana,
-                                 kindai,
-                                 kinsei,
-                                 # novel, kyogen, wakan, wabun, manyo
-                                 ]
+all_parsers: list[UDTokenizer] = [gendai,
+                                  #spoken,
+                                  ginza,
+                                  kindai,
+                                  kinsei,
+                                  default,
+                                  qkana,
+                                  # novel, kyogen, wakan, wabun, manyo
+                                  ]
