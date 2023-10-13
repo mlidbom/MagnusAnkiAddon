@@ -91,7 +91,7 @@ def print_debug_information_for_analysis(sentence: str) -> str:
 
     for parser in ud_parsers.all_parsers:
         html += f"""{parser.name} : {sentence}")
-    {ud_tree_builder.build_tree(parser, sentence)}
+{ud_tree_builder.build_tree(parser, sentence)}
 
 """
 
