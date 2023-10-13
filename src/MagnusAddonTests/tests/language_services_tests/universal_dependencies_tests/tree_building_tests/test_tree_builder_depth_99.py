@@ -158,6 +158,13 @@ repr-single-line: {sentence}
 def test_display_interesting_sentences_we_should_add_real_tests_for(sentence: str) -> None:
     print()
     print(sentence)
+
+    for parser in ud_parsers.all_parsers:
+        print(f"{parser.name} : {sentence}")
+        print(parser.tokenize(sentence).str_(exclude_lemma_and_norm=True))
+        print()
+
+
     for parser in ud_parsers.all_parsers:
         print(f"{parser.name} : {sentence}")
         print(parser.tokenize(sentence).to_tree())

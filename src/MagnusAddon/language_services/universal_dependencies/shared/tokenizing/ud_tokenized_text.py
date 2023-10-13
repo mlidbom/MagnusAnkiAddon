@@ -4,7 +4,7 @@ from spacy.tokens import Doc, Token
 from unidic2ud import UniDic2UDEntry, UDPipeEntry # type: ignore
 
 from language_services.universal_dependencies.shared.tokenizing.ud_token import UDToken
-from sysutils import ex_sequence
+from sysutils import ex_sequence, ex_str
 from sysutils.typed import checked_cast
 
 
@@ -32,6 +32,12 @@ class UDTokenizedText:
             for token in self.tokens:
                 # noinspection PyProtectedMember
                 token.head = self.tokens[token._head_id - 1]
+
+    def __str__(self) -> str:
+        return self.__str__()
+
+    def str_(self, exclude_lemma_and_norm:bool = False) -> str:
+        return "\n".join([tok.str_(ex_str.pad_to_length, exclude_lemma_and_norm) for tok in self.tokens])
 
 
     def to_tree(self) -> str:

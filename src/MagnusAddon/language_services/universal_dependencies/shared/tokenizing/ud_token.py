@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Union
+from typing import Callable, Union
 
 from spacy.tokens import Token
 from unidic2ud import UDPipeEntry  # type: ignore
@@ -45,15 +45,30 @@ class UDToken:
 
     def is_head_of(self, candidate: UDToken) -> bool: return self == candidate.head
 
+    def __str__(self) -> str:
+        return self.str_(ex_str.pad_to_length)
+
     # noinspection DuplicatedCode
     def __repr__(self) -> str:
-        return (f"""{kana_utils.pad_to_length(str(self.form), 5)}""" +
-                f"""{kana_utils.pad_to_length(str(self.lemma), 5)}""" +
-                f"""{kana_utils.pad_to_length(str(self.norm), 5)}""" +
-                f"""{ex_str.pad_to_length_ui_font(str(self.id), 3)}""" +
-                f"""{ex_str.pad_to_length_ui_font(str(self.head.id), 3)}""" +
-                f"""{ex_str.pad_to_length_ui_font(self.deprel.description, 30)}""" +
-                f"""{ex_str.pad_to_length_ui_font(self.xpos.description, 30)}""" +
-                f"""{ex_str.pad_to_length_ui_font(self.upos.description, 30)}""" +
-                f"""feat:{ex_str.pad_to_length_ui_font(self.feats, 40)}""" +
-                f"""deps:{self.deps} misc:{self.misc}""")
+        return self.str_(ex_str.pad_to_length_ui_font)
+
+    def str_(self, padder: Callable[[str, int], str], exclude_lemma_and_norm:bool = False) -> str:
+        lemma = self.lemma if self.lemma != self.form else ""
+        norm = self.norm if lemma and self.norm != lemma else ""
+
+        result = f"""{kana_utils.pad_to_length(str(self.form), 5)}"""
+
+        if not exclude_lemma_and_norm:
+            result += (f"""{kana_utils.pad_to_length(lemma, 5)}""" +
+                       f"""{kana_utils.pad_to_length(norm, 5)}""")
+
+        result += (f"""{padder(str(self.id), 3)}""" +
+                   f"""{padder(str(self.head.id), 3)}""" +
+                   f"""{padder(self.deprel.description, 30)}""" +
+                   f"""{padder(self.xpos.description, 30)}""" +
+                   f"""{padder(self.upos.description, 30)}""" +
+                   f"""feat:{padder(self.feats, 40)}""")
+
+        return result
+        # I've yet to see deps or misc contain anything of interest and space is at a premium...
+        # f"""deps:{self.deps} misc:{self.misc}""")
