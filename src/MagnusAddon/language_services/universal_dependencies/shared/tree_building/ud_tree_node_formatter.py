@@ -34,18 +34,14 @@ def _children_str(node: UDTreeNode, level:int = 1) -> str:
 
 
 def str_(node: UDTreeNode, level: int) -> str:
-    start_padding = 20
     indent = full_width_space * 2 * level
     depth = ex_str.pad_to_length(str(node.depth), 3)
 
-    lemma = f" ({node.lemma})" if node.lemma_differs_from_form() else ""
-    norm = f" [{node.norm}]" if node.norm != node.lemma else ""
+    lemma = f"　－　{node.lemma}" if node.lemma_differs_from_form() else "　－　"
+    norm = f"　－　{node.norm}" if node.lemma_differs_from_form() and node.norm != node.lemma else "　－　"
 
     start = f"""{indent}{node.form}{lemma}{norm}"""
 
-    if lemma: start_padding += 1
-    if norm: start_padding += 1
-
-    start = kana_utils.pad_to_length(start, start_padding)
+    start = kana_utils.pad_to_length(start, 20)
 
     return f"""{depth}{start}{_str_pos(node)}{_children_str(node, level + 1)}"""

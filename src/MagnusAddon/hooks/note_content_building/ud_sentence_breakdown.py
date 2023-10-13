@@ -89,16 +89,15 @@ def _create_html_from_nodes(nodes: list[NodeViewModel], excluded: set[str], extr
 def print_debug_information_for_analysis(sentence: str) -> str:
     html = f"""<div id="debug_output">\n"""
 
-
     for parser in ud_parsers.all_parsers:
-        html += f"""{parser.name} : {sentence}
-{parser.tokenize(sentence).to_tree()}
+        html += f"""{parser.name} : {sentence}")
+    {ud_tree_builder.build_tree(parser, sentence)}
 
 """
 
     for parser in ud_parsers.all_parsers:
-        html += f"""{parser.name} : {sentence}")
-{ud_tree_builder.build_tree(parser, sentence)}
+        html += f"""{parser.name} : {sentence}
+{parser.tokenize(sentence).to_tree()}
 
 """
 
