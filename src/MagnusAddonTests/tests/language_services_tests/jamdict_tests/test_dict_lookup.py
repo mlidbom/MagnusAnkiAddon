@@ -5,6 +5,8 @@ from language_services.jamdict_ex.dict_lookup import DictLookup
 from note.vocabnote import VocabNote
 from unittest.mock import MagicMock
 
+from sysutils import ex_str
+
 @pytest.mark.parametrize('word, readings', [
     ("為る", ["する"]),
     ("為る", ["なる"])
@@ -31,6 +33,17 @@ def test_multi_readings(word: str, readings: list[str]) -> None:
 def test_multi_matches(word: str, readings: list[str]) -> None:
     dict_entry = get_dict_entry(word, readings)
     assert dict_entry.found_words_count() > 1
+
+@pytest.mark.parametrize('word, readings, expected', [
+    ("元", ["もと"], 3),
+    ("角", ["かく","かど"], 3),
+    ("これ", ["これ"], 1),
+    ("正す", ["ただす"], 3),
+    ("て", ["て"], 1)
+])
+def test_priorities(word: str, readings: list[str], expected:int) -> None:
+    dict_entry = get_dict_entry(word, readings)
+    assert dict_entry.common_ness() == expected
 
 @pytest.mark.parametrize('word, readings', [
     ("に", ["に"]),

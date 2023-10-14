@@ -7,8 +7,10 @@ from sysutils import ex_sequence
 
 
 class DictEntry:
-    def __init__(self, entry: JMDEntry) -> None:
+    def __init__(self, entry: JMDEntry, lookup_word: str, lookup_readings: list[str]) -> None:
         self.entry = entry
+        self.lookup_word = lookup_word
+        self.lookup_readings = lookup_readings
 
     def is_kana_only(self) -> bool:
         return not self.entry.kanji_forms or any((sense for sense
@@ -16,8 +18,8 @@ class DictEntry:
                                                   if 'word usually written using kana alone' in sense.misc))
 
     @classmethod
-    def create(cls, entries: Sequence[JMDEntry]) -> list['DictEntry']:
-        return [cls(entry) for entry in entries]
+    def create(cls, entries: Sequence[JMDEntry], lookup_word: str, lookup_reading: list[str]) -> list['DictEntry']:
+        return [cls(entry, lookup_word, lookup_reading) for entry in entries]
 
     def has_matching_kana_form(self, search: str) -> bool:
         search = kana_utils.to_hiragana(search) # todo: this converting to hiragana is worrisome. Is this really the behavior we want? What false positives might we run into?
@@ -39,6 +41,15 @@ class DictEntry:
     def kanji_forms(self) -> list[str]: return [ent.text for ent in self.entry.kanji_forms]
     def valid_forms(self, force_allow_kana_only: bool = False) -> set[str]:
         return set(self.kana_forms()) | set(self.kanji_forms()) if self.is_kana_only() or force_allow_kana_only else set(self.kanji_forms())
+
+    def common_ness(self) -> int:
+        kanji_priorities:list[str] = ex_sequence.flatten([form.pri for form in self.entry.kanji_forms if form.text == self.lookup_word])
+        kana_priorities: list[str] = ex_sequence.flatten([form.pri for form in self.entry.kana_forms if form.text in self.lookup_readings])
+
+        kanji_priority = len(kanji_priorities)
+        kana_priority = len(kana_priorities)
+
+        return max(kana_priority, kanji_priority)
 
     def _is_verb(self) -> bool:
         return any("verb" in s.pos[0] for s in self.entry.senses)

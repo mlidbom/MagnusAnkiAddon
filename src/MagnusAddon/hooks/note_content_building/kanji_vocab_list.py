@@ -1,5 +1,7 @@
 from anki.cards import Card
 from aqt import gui_hooks
+
+from language_services.jamdict_ex.dict_lookup import DictLookup
 from note.jpnote import JPNote
 from note.kanjinote import KanjiNote
 from note.vocabnote import VocabNote
@@ -27,6 +29,12 @@ def sort_vocab_list(note:KanjiNote, primary_voc: list[str], vocabs: list[VocabNo
                                          prefer_starts_with_vocab(local_vocab),
                                          local_vocab.get_question()))
 
+def _create_tags(vocab: VocabNote) -> set[str]:
+    tags: set[str] = set()
+    lookup_result = DictLookup.try_lookup_vocab_word_or_name(vocab)
+    if lookup_result.found_words():
+        something = 1
+
 def generate_vocab_html_list(note: KanjiNote, vocabs: list[VocabNote]) -> str:
     primary_voc = note.get_primary_vocab()
     sort_vocab_list(note, primary_voc, vocabs)
@@ -37,11 +45,11 @@ def generate_vocab_html_list(note: KanjiNote, vocabs: list[VocabNote]) -> str:
 
                 {newline.join([f"""
                 <div class="kanjiVocabEntry">
-                    <span class="kanji clipboard">{inner_vocab.get_question()}</span>
-                    (<span class="clipboard vocabReading">{note.tag_readings_in_string(", ".join(inner_vocab.get_readings()), lambda read: f'<span class="kanjiReading">{read}</span>')}</span>)
-                    <span class="meaning"> {ex_str.strip_html_markup(inner_vocab.get_answer())}</span>
+                    <span class="kanji clipboard">{vocab.get_question()}</span>
+                    (<span class="clipboard vocabReading">{note.tag_readings_in_string(", ".join(vocab.get_readings()), lambda read: f'<span class="kanjiReading">{read}</span>')}</span>)
+                    <span class="meaning"> {ex_str.strip_html_markup(vocab.get_answer())}</span>
                 </div>
-                """ for inner_vocab in vocabs])}
+                """ for vocab in vocabs])}
 
                 </div>
             </div>

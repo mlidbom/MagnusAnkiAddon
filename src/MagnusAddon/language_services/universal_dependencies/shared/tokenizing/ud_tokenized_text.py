@@ -34,7 +34,7 @@ class UDTokenizedText:
                 token.head = self.tokens[token._head_id - 1]
 
     def __str__(self) -> str:
-        return self.__str__()
+        return self.str_()
 
     def str_(self, exclude_lemma_and_norm:bool = False) -> str:
         return "\n".join([tok.str_(ex_str.pad_to_length, exclude_lemma_and_norm) for tok in self.tokens])
