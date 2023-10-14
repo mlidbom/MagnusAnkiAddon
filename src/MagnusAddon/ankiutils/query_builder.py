@@ -87,7 +87,10 @@ def fetch_kanji_by_kanji(kanji: Iterable[str]) -> str:
 
 
 def lookup_text_object(text: str) -> str:
-    return " OR ".join(f"{question}:{search.strip()}" for search in text.split(","))
+    if text.isascii(): #probably radical answer
+        return " OR ".join(f"{answer}:{search.strip()}" for search in text.split(","))
+    else:
+        return " OR ".join(f"{question}:{search.strip()}" for search in text.split(","))
 
 def notes_by_id(note_ids:list[NoteId]) -> str:
     return f"""nid:{",".join([str(note_id) for note_id in note_ids])}"""

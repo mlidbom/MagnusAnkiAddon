@@ -19,10 +19,10 @@ def render_dependencies_list(html: str, card: Card, _type_of_display: str) -> st
         <div class="dependency_heading">
             {f'<div class="dependency_character clipboard">{dependency.character}</div>'
             if dependency.character
-            else f'<div class="dependency_icon clipboard">{dependency.icon_substitute_for_character}</div>'}
+            else f'<div class="dependency_icon">{dependency.icon_substitute_for_character}</div>'}
             
         
-            <div class="dependency_name">{dependency.name}</div>
+            <div class="dependency_name clipboard">{dependency.name}</div>
         </div>
         <div class="dependency_mnemonic">{dependency.mnemonic}</div>
     </div>
