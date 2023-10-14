@@ -8,6 +8,7 @@ from language_services.universal_dependencies.shared.tree_building import ud_tre
 from note.jpnote import JPNote
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
+from sysutils import kana_utils
 from viewmodels.sentence_breakdown import sentence_breakdown_viewmodel
 from viewmodels.sentence_breakdown.sentence_breakdown_viewmodel import NodeViewModel
 
@@ -21,12 +22,16 @@ def _node_html(node: NodeViewModel, excluded: set[str], highlighted: set[str], d
 
     if vocab_hits:
         for vocab_entry in vocab_hits:
+            needs_reading = True #I need to practice katakana #kana_utils.contains_kanji(vocab_entry.lookup_form) and (not vocab_entry.hit_form or kana_utils.contains_kanji(vocab_entry.hit_form))
+            readings = ", ".join(vocab_entry.readings) if needs_reading else ""
+            readings = kana_utils.to_katakana(readings)
             html += f"""
             <li class="sentenceVocabEntry depth{depth} {priority_class(vocab_entry.lookup_form if vocab_entry.lookup_form else vocab_entry.surface_form)}">
                 <div class="sentenceVocabEntryDiv">
                     <span class="vocabQuestion clipboard">{vocab_entry.surface_form}</span>
                     {f'''<span class="vocabLookupForm clipboard">{vocab_entry.lookup_form}</span>''' if vocab_entry.lookup_form else ""}
                     {f'''<span class="vocabHitForm clipboard">{vocab_entry.hit_form}</span>''' if vocab_entry.hit_form else ""}
+                    {f'''<span class="vocabHitReadings clipboard">{readings}</span>''' if readings else ""}
                     <span class="vocabAnswer">{vocab_entry.answer}</span>
                 </div>
                 {_create_html_from_nodes(node.children, excluded, highlighted, depth + 1)}
@@ -51,10 +56,16 @@ def _build_user_extra_list(extra_words: list[str]) -> str:
 
         if vocabs:
             for vocab in vocabs:
+                hit_form = vocab.get_question() if vocab.get_question() != word else ""
+                needs_reading = True #I need to practice katakana # kana_utils.contains_kanji(word) and (not hit_form or kana_utils.contains_kanji(hit_form))
+                readings = ", ".join(vocab.get_readings()) if needs_reading else ""
+                readings = kana_utils.to_katakana(readings)
                 html += f"""
                         <li class="sentenceVocabEntry depth1 word_priority_{priorities.very_high}">
                             <div class="sentenceVocabEntryDiv">
-                                <span class="vocabQuestion clipboard">{vocab.get_display_question()}</span>
+                                <span class="vocabQuestion clipboard">{word}</span>
+                                {f'''<span class="vocabHitForm clipboard">{hit_form}</span>''' if hit_form else ""}
+                                {f'''<span class="vocabHitReadings clipboard">{readings}</span>''' if readings else ""}
                                 <span class="vocabAnswer">{vocab.get_answer()}</span>
                             </div>
                         </li>
