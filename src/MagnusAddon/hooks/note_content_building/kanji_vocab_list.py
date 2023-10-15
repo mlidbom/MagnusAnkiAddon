@@ -23,16 +23,20 @@ def sort_vocab_list(note:KanjiNote, primary_voc: list[str], vocabs: list[VocabNo
     def prefer_starts_with_vocab(local_vocab: VocabNote) -> str:
         return "A" if local_vocab.get_question()[0] == note.get_question() else "B"
 
+    def prefer_high_priority(_vocab: VocabNote) -> int:
+        return _vocab.priority_spec().priority
+
     vocabs.sort(key=lambda local_vocab: (prefer_primary_vocab_in_order(local_vocab),
                                          prefer_non_compound(local_vocab),
                                          prefer_starts_with_vocab(local_vocab),
+                                         prefer_high_priority(local_vocab),
                                          local_vocab.get_question()))
 
 def _create_classes(vocab: VocabNote) -> str:
     tags = list(vocab.priority_spec().tags)
     tags.sort()
     priority_classes = " ".join([f"""common_ness_{prio}""" for prio in (tags)])
-    return  f"""{vocab.priority_spec().priority()} {priority_classes}"""
+    return  f"""{vocab.priority_spec().priority_string} {priority_classes}"""
 
 def generate_vocab_html_list(note: KanjiNote, vocabs: list[VocabNote]) -> str:
     primary_voc = note.get_primary_vocab()

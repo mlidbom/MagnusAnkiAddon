@@ -7,15 +7,18 @@ class PrioritySpec:
     def __init__(self, tags: set[str]):
         self.tags = tags
 
-
-    def priority(self) -> str:
         if self.tags & _maximum_tags:
-            return "priority_maximum"
+            self.priority_string = "priority_maximum"
+            self.priority = 0
         elif self.tags & _high_tags:
-            return "priority_high"
+            self.priority_string = "priority_high"
+            self.priority = 1
         elif self.tags & _common_tags:
-            return "priority_medium"
+            self.priority_string = "priority_medium"
+            self.priority = 2
         elif len(self.tags) > 0:
-            return "priority_low"
-
-        return "priority_very_low"
+            self.priority_string = "priority_low"
+            self.priority = 3
+        else:
+            self.priority_string = "priority_very_low"
+            self.priority = 4
