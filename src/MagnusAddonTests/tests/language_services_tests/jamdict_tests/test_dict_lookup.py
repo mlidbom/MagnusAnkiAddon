@@ -46,7 +46,8 @@ def test_multi_matches(word: str, readings: list[str]) -> None:
 ])
 def test_priorities(word: str, readings: list[str], expected:str) -> None:
     dict_entry = get_dict_entry(word, readings)
-    assert dict_entry.priority_spec().priority_string == expected
+    spec = dict_entry.priority_spec()
+    assert spec.priority_string == expected
 
 @pytest.mark.parametrize('word, readings', [
     ("に", ["に"]),
