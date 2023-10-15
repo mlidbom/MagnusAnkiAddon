@@ -49,6 +49,9 @@ class KanjiNote(WaniNote):
     def get_user_mnemonic(self) -> str: return self.get_field(NoteFields.Kanji.user_mnemonic)
     def set_user_mnemonic(self, value: str) -> None: self.set_field(NoteFields.Kanji.user_mnemonic, value)
 
+    def get_reading_on_list(self) -> list[str]: return ex_str.extract_comma_separated_values(self.get_reading_on())
+    def get_reading_kun_list(self) -> list[str]: return ex_str.extract_comma_separated_values(self.get_reading_kun())
+
     def get_reading_on(self) -> str: return self.get_field(NoteFields.Kanji.Reading_On)
     def set_reading_on(self, value: str) -> None: self.set_field(NoteFields.Kanji.Reading_On, value)
 

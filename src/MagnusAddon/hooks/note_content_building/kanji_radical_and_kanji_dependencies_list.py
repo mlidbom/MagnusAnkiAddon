@@ -23,6 +23,7 @@ def render_dependencies_list(html: str, card: Card, _type_of_display: str) -> st
             
         
             <div class="dependency_name clipboard">{dependency.name}</div>
+            <div class="dependency_readings">{", ".join(dependency.readings)}</div>
         </div>
         <div class="dependency_mnemonic">{dependency.mnemonic}</div>
     </div>
