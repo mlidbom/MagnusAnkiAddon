@@ -42,14 +42,13 @@ class DictEntry:
     def valid_forms(self, force_allow_kana_only: bool = False) -> set[str]:
         return set(self.kana_forms()) | set(self.kanji_forms()) if self.is_kana_only() or force_allow_kana_only else set(self.kanji_forms())
 
-    def common_ness(self) -> int:
+    def priority_tags(self) -> set[str]:
         kanji_priorities:list[str] = ex_sequence.flatten([form.pri for form in self.entry.kanji_forms if form.text == self.lookup_word])
         kana_priorities: list[str] = ex_sequence.flatten([form.pri for form in self.entry.kana_forms if form.text in self.lookup_readings])
 
-        kanji_priority = len(kanji_priorities)
-        kana_priority = len(kana_priorities)
+        tags = set(kanji_priorities + kana_priorities)
 
-        return max(kana_priority, kanji_priority)
+        return tags
 
     def _is_verb(self) -> bool:
         return any("verb" in s.pos[0] for s in self.entry.senses)

@@ -4,6 +4,7 @@ from ankiutils import anki_module_import_issues_fix_just_import_this_module_befo
 from wanikani_api import models
 from anki.notes import Note
 
+from language_services.jamdict_ex.priority_spec import PrioritySpec
 from note.kanavocabnote import KanaVocabNote
 from sysutils import kana_utils
 from sysutils import ex_str
@@ -77,6 +78,12 @@ class VocabNote(KanaVocabNote):
 
     def get_component_subject_ids(self) -> str: return self.get_field(NoteFields.Vocab.component_subject_ids)
     def set_component_subject_ids(self, value: str) -> None: self.set_field(NoteFields.Vocab.component_subject_ids, value)
+
+    def priority_spec(self) -> PrioritySpec:
+        from language_services.jamdict_ex.dict_lookup import DictLookup
+        lookup = DictLookup.try_lookup_vocab_word_or_name(self)
+        return lookup.priority_spec() if lookup else set()
+
 
     def override_meaning_mnemonic(self) -> None:
         if not self.get_mnemonics_override():

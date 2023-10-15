@@ -4,13 +4,15 @@ from typing import TYPE_CHECKING
 
 from jamdict.jmdict import JMDEntry
 
+from language_services.jamdict_ex.priority_spec import PrioritySpec
+
 if TYPE_CHECKING:
     from note.vocabnote import VocabNote
 
 from jamdict import Jamdict
 
 from language_services.jamdict_ex.dict_entry import DictEntry
-from sysutils import kana_utils
+from sysutils import ex_iterable, ex_sequence, kana_utils
 
 class DictLookup:
     _jamdict = Jamdict(memory_mode=True)
@@ -30,8 +32,9 @@ class DictLookup:
     def valid_forms(self, force_allow_kana_only: bool = False) -> set[str]:
         return set().union(*[entry.valid_forms(force_allow_kana_only) for entry in self.entries])
 
-    def common_ness(self) -> int:
-        return max((entry.common_ness() for entry in self.entries))
+
+    def priority_spec(self) -> PrioritySpec:
+        return PrioritySpec(set(ex_iterable.flatten((entry.priority_tags() for entry in self.entries))))
 
     @classmethod
     def try_lookup_vocab_word_or_name(cls, vocab: VocabNote) -> DictLookup:

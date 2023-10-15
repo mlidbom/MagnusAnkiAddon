@@ -35,15 +35,18 @@ def test_multi_matches(word: str, readings: list[str]) -> None:
     assert dict_entry.found_words_count() > 1
 
 @pytest.mark.parametrize('word, readings, expected', [
-    ("元", ["もと"], 3),
-    ("角", ["かく","かど"], 3),
-    ("これ", ["これ"], 1),
-    ("正す", ["ただす"], 3),
-    ("て", ["て"], 1)
+    ("元", ["もと"], "priority_maximum"),
+    ("角", ["かく","かど"], "priority_maximum"),
+    ("不可分", ["ふかぶん"], "priority_high"),
+    ("て", ["て"], "priority_medium"),
+    ("不人気", ["ふにんき"], "priority_medium"),
+    ("これ", ["これ"], "priority_low"),
+    ("正す", ["ただす"], "priority_low"),
+    ("力不足", ["ちからぶそく"], "priority_very_low"),
 ])
-def test_priorities(word: str, readings: list[str], expected:int) -> None:
+def test_priorities(word: str, readings: list[str], expected:str) -> None:
     dict_entry = get_dict_entry(word, readings)
-    assert dict_entry.common_ness() == expected
+    assert dict_entry.priority_spec().priority() == expected
 
 @pytest.mark.parametrize('word, readings', [
     ("に", ["に"]),
