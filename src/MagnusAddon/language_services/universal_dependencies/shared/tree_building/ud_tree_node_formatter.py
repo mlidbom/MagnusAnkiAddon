@@ -17,8 +17,11 @@ def _str_pos(node: UDTreeNode) -> str:
                 f"""{ex_str.pad_to_length(str(token.head.id), 3)}""" +
                 f"""{ex_str.pad_to_length(token.deprel.description, 28)}""" +
                 f"""{ex_str.pad_to_length(token.xpos.description, 30)}""" +
-                f"""{ex_str.pad_to_length(token.upos.description, 26)}""" +
-                f"""feat:{token.feats} deps:{token.deps} misc:{token.misc}""")
+                f"""{ex_str.pad_to_length(token.upos.description, 26)}""" # +
+                # f"""feat:{token.feats}""" +
+                # f""" deps:{token.deps} misc:{token.misc}""" +
+                # f""" misc:{token.misc}"""
+                )
     return "_"
 
 

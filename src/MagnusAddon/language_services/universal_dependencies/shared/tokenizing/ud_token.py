@@ -66,9 +66,10 @@ class UDToken:
                    f"""{padder(str(self.head.id), 3)}""" +
                    f"""{padder(self.deprel.description, 30)}""" +
                    f"""{padder(self.xpos.description, 30)}""" +
-                   f"""{padder(self.upos.description, 30)}""" +
-                   f"""feat:{padder(self.feats, 40)}""" +
-                   f"""deps:{self.deps}""" +
-                   f"""misc:{self.misc}""")
+                   f"""{padder(self.upos.description, 30)}""" #+
+                   # f"""feat:{padder(self.feats, 40)}""" +
+                   # f"""deps:{self.deps}""" +
+                   # f"""misc:{self.misc}"""
+                   )
 
         return result
