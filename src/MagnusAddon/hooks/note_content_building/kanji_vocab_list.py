@@ -32,27 +32,32 @@ def sort_vocab_list(note: KanjiNote, primary_voc: list[str], vocabs: list[VocabN
                                          prefer_starts_with_kanji(local_vocab),
                                          local_vocab.get_question()))
 
-def _create_classes(vocab: VocabNote) -> str:
-    tags = list(vocab.priority_spec().tags)
-    tags.sort()
-    priority_classes = " ".join([f"""common_ness_{prio}""" for prio in tags])
-    return f"""{vocab.priority_spec().priority_string} {priority_classes}"""
 
-def generate_vocab_html_list(note: KanjiNote, vocabs: list[VocabNote]) -> str:
-    primary_voc = note.get_primary_vocab()
-    sort_vocab_list(note, primary_voc, vocabs)
+def _create_classes(_kanji:KanjiNote, _vocab: VocabNote) -> str:
+    tags = list(_vocab.priority_spec().tags)
+    tags.sort()
+    classes = " ".join([f"""common_ness_{prio}""" for prio in tags])
+    classes += f""" {_vocab.priority_spec().priority_string}"""
+    if _vocab.get_question() in _kanji.get_primary_vocab() or _vocab.get_readings()[0] in _kanji.get_primary_vocab():
+        classes += " primary_vocab"
+
+    return  classes
+
+def generate_vocab_html_list(_kanji_note: KanjiNote, vocabs: list[VocabNote]) -> str:
+    primary_voc = _kanji_note.get_primary_vocab()
+    sort_vocab_list(_kanji_note, primary_voc, vocabs)
 
     return f'''
             <div class="kanjiVocabList">
                 <div>
 
                 {newline.join([f"""
-                <div class="kanjiVocabEntry {_create_classes(vocab)}">
-                    <span class="kanji clipboard">{vocab.get_question()}</span>
-                    (<span class="clipboard vocabReading">{note.tag_readings_in_string(", ".join(vocab.get_readings()), lambda read: f'<span class="kanjiReading">{read}</span>')}</span>)
-                    <span class="meaning"> {ex_str.strip_html_markup(vocab.get_answer())}</span>
+                <div class="kanjiVocabEntry {_create_classes(_kanji_note, _vocab_note)}">
+                    <span class="kanji clipboard">{_vocab_note.get_question()}</span>
+                    (<span class="clipboard vocabReading">{_kanji_note.tag_readings_in_string(", ".join(_vocab_note.get_readings()), lambda read: f'<span class="kanjiReading">{read}</span>')}</span>)
+                    <span class="meaning"> {ex_str.strip_html_markup(_vocab_note.get_answer())}</span>
                 </div>
-                """ for vocab in vocabs])}
+                """ for _vocab_note in vocabs])}
 
                 </div>
             </div>
