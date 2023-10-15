@@ -1,11 +1,10 @@
+from unittest.mock import MagicMock
+
 import pytest
 
 from language_services.jamdict_ex.dict_entry import DictEntry
 from language_services.jamdict_ex.dict_lookup import DictLookup
 from note.vocabnote import VocabNote
-from unittest.mock import MagicMock
-
-from sysutils import ex_str
 
 @pytest.mark.parametrize('word, readings', [
     ("為る", ["する"]),

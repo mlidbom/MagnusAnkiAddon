@@ -11,31 +11,30 @@ _tokenizer = JNTokenizer()
 
 _max_lookahead = 12
 
-def parse_tree_ui(sentence:str, excluded:set[str]) -> TreeParseResult:
+def parse_tree_ui(sentence: str, excluded: set[str]) -> TreeParseResult:
     result = parse_tree(sentence, excluded)
     if len(result.nodes) == 1:
-        node:TreeParserNode = result.nodes[0]
+        node: TreeParserNode = result.nodes[0]
         if node.is_inflected() and DictLookup.lookup_word_shallow(node.base).found_words() or DictLookup.lookup_word_shallow(node.surface).found_words():
             return result
         else:
             return TreeParseResult(*node.children)
     return result
 
-def parse_tree(sentence:str, excluded:set[str]) -> TreeParseResult:
+def parse_tree(sentence: str, excluded: set[str]) -> TreeParseResult:
     tokens = _tokenizer.tokenize(sentence).tokens
     if not tokens:
         return TreeParseResult()
     if _is_in_dictionary(tokens, excluded):
         return TreeParseResult(TreeParserNode.create(tokens, excluded))
-    
+
     dictionary_compounds_added = _build_dictionary_compounds(tokens, excluded)
     verb_compounds_added = _build_compounds(is_verb, is_verb_auxiliary_or_end_of_phrase, dictionary_compounds_added, excluded)
     adjective_compounds_added = _build_compounds(_is_adjective, _is_adjective_auxiliary_or_end_of_phrase, verb_compounds_added, excluded)
     noun_compounds_added = _build_compounds(_is_noun, _is_noun_auxiliary_or_end_of_phrase, adjective_compounds_added, excluded)
     return TreeParseResult(*[TreeParserNode.create(compounds, excluded) for compounds in noun_compounds_added])
 
-
-def _recursing_parse(tokens:list[JNToken], excluded:set[str]) -> list[TreeParserNode]:
+def _recursing_parse(tokens: list[JNToken], excluded: set[str]) -> list[TreeParserNode]:
     dictionary_compounds = _build_dictionary_compounds(tokens, excluded)
     adjective_compounds_added = _build_compounds(_is_adjective, _is_adjective_auxiliary, dictionary_compounds, excluded)
     if len(adjective_compounds_added) > 1:
@@ -79,7 +78,7 @@ def _is_noun_auxiliary(compound: list[JNToken]) -> bool:
 def _is_end_of_phrase(compound: list[JNToken]) -> bool:
     return compound[0].is_end_of_phrase_particle()
 
-def _build_compounds(compound_filter: Callable[[list[JNToken]],bool], auxiliary_filter: Callable[[list[JNToken]],bool], start_compounds: list[list[JNToken]], excluded:set[str]) -> list[list[JNToken]]:
+def _build_compounds(compound_filter: Callable[[list[JNToken]], bool], auxiliary_filter: Callable[[list[JNToken]], bool], start_compounds: list[list[JNToken]], excluded: set[str]) -> list[list[JNToken]]:
     compounds = [inner_list.copy() for inner_list in start_compounds]
     compound_index = 0
     compound_count = len(compounds)
@@ -116,17 +115,16 @@ def _build_compounds(compound_filter: Callable[[list[JNToken]],bool], auxiliary_
                     for cand in accepted_auxiliaries: compound.append(cand)
                     for index in range(compound_index + 1, auxiliary_index): compounds[index].clear()
 
-
         compound_index += 1
 
     result_compounds = [comp for comp in compounds if len(comp) > 0]
     return result_compounds
 
-def _is_excluded(compound_tokens: list[JNToken], excluded:set[str]) -> bool:
+def _is_excluded(compound_tokens: list[JNToken], excluded: set[str]) -> bool:
     compound_base = "".join([tok.surface for tok in compound_tokens[:-1]]) + compound_tokens[-1].base_form
     return compound_base in excluded
 
-def _is_in_dictionary(compound_tokens: list[JNToken], excluded:set[str]) -> bool:
+def _is_in_dictionary(compound_tokens: list[JNToken], excluded: set[str]) -> bool:
     compound_surface = "".join([tok.surface for tok in compound_tokens])
     compound_base = "".join([tok.surface for tok in compound_tokens[:-1]]) + compound_tokens[-1].base_form
 
@@ -135,15 +133,14 @@ def _is_in_dictionary(compound_tokens: list[JNToken], excluded:set[str]) -> bool
     return (DictLookup.lookup_word_shallow(compound_base).found_words()
             or DictLookup.lookup_word_shallow(compound_surface).found_words())
 
-
-def split_excluded_single_tokens(tokens_param: list[JNToken], excluded:set[str]) -> list[JNToken]:
+def split_excluded_single_tokens(tokens_param: list[JNToken], excluded: set[str]) -> list[JNToken]:
     def split_token_if_excluded(token: JNToken) -> list[JNToken]:
         if not _is_excluded([token], excluded):
             return [token]
 
         # Probably the tokenizer has made a mistake that the user is trying to correct by excluding the token. So let's see if we can jiggle the tokenizer to make a choice the user likes better.
         if len(token.surface) == 1:  # The user does not want to display this single character as a separate word. We handle that on the UI level. Here we want it preserved for the verb and adjective compound logic to make use of.
-            return[token]
+            return [token]
         else:
             tokenized_text = _tokenizer.tokenize(token.surface)  # Try and see what happens if we just give this tiny thing to the tokenizer.
             if len(tokenized_text.tokens) > 1:  # phew, saved in the nick of time. The tokenizer changed it's mind
@@ -156,9 +153,7 @@ def split_excluded_single_tokens(tokens_param: list[JNToken], excluded:set[str])
     to_replace = [split_token_if_excluded(t) for t in tokens_param]
     return ex_sequence.flatten(to_replace)
 
-
-
-def _build_dictionary_compounds(tokens_param: list[JNToken], excluded:set[str]) -> list[list[JNToken]]:
+def _build_dictionary_compounds(tokens_param: list[JNToken], excluded: set[str]) -> list[list[JNToken]]:
     compounds: list[list[JNToken]] = []
     tokens = split_excluded_single_tokens(tokens_param, excluded)
 

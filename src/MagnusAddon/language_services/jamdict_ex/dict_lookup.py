@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from functools import lru_cache
 from typing import TYPE_CHECKING
 
@@ -12,7 +13,7 @@ if TYPE_CHECKING:
 from jamdict import Jamdict
 
 from language_services.jamdict_ex.dict_entry import DictEntry
-from sysutils import ex_iterable, ex_sequence, kana_utils
+from sysutils import ex_iterable, kana_utils
 
 class DictLookup:
     _jamdict = Jamdict(memory_mode=True)

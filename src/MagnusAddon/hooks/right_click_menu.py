@@ -16,7 +16,7 @@ from sysutils.typed import checked_cast
 
 def register_lookup_actions(view: AnkiWebView, root_menu: QMenu) -> None:
     def get_note() -> JPNote | None:
-        inner_note: Note | None = None
+        inner_note: Note | None
 
         if view.kind == AnkiWebViewKind.MAIN:
             card = main_window().reviewer.card

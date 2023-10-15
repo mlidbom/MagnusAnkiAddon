@@ -9,7 +9,7 @@ from sysutils import ex_str
 from ankiutils import app
 from sysutils.ex_str import newline
 
-def sort_vocab_list(note:KanjiNote, primary_voc: list[str], vocabs: list[VocabNote]) -> None:
+def sort_vocab_list(note: KanjiNote, primary_voc: list[str], vocabs: list[VocabNote]) -> None:
     def prefer_primary_vocab_in_order(local_vocab: VocabNote) -> int:
         for index, primary in enumerate(primary_voc):
             if local_vocab.get_question() == primary or local_vocab.get_readings()[0] == primary:
@@ -36,7 +36,7 @@ def _create_classes(vocab: VocabNote) -> str:
     tags = list(vocab.priority_spec().tags)
     tags.sort()
     priority_classes = " ".join([f"""common_ness_{prio}""" for prio in tags])
-    return  f"""{vocab.priority_spec().priority_string} {priority_classes}"""
+    return f"""{vocab.priority_spec().priority_string} {priority_classes}"""
 
 def generate_vocab_html_list(note: KanjiNote, vocabs: list[VocabNote]) -> str:
     primary_voc = note.get_primary_vocab()
@@ -58,7 +58,7 @@ def generate_vocab_html_list(note: KanjiNote, vocabs: list[VocabNote]) -> str:
             </div>
             '''
 
-def render_vocab_html_list(html:str, card: Card, _type_of_display:str) -> str:
+def render_vocab_html_list(html: str, card: Card, _type_of_display: str) -> str:
     kanji_note = JPNote.note_from_card(card)
 
     if isinstance(kanji_note, KanjiNote):

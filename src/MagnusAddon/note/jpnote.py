@@ -61,7 +61,15 @@ class JPNote(ABC):
     def card_ids(self) -> Sequence[CardId]: return self._note.card_ids()
     def is_wani_note(self) -> bool: return Mine.Tags.Wani in self._note.tags
 
-    def _on_before_flush(self) -> None: pass
+    def update_generated_data(self) -> None:
+        pass
+
+    def _on_before_flush(self) -> None:
+        self._is_flushing = True
+        try:
+            self.update_generated_data()
+        finally:
+            self._is_flushing = False
 
     def get_field(self, field_name: str) -> str: return self._note[field_name]
 

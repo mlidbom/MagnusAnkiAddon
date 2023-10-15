@@ -57,7 +57,7 @@ class VocabNote(KanaVocabNote):
 
     def extract_kanji(self) -> list[str]:
         clean = ex_str.strip_html_and_bracket_markup(self.get_question())
-        return [char for char in clean if not kana_utils.is_kana(char)]
+        return [char for char in clean if kana_utils.is_kanji(char)]
 
     def is_uk(self) -> bool: return self.has_tag(Mine.Tags.UsuallyKanaOnly)
 
@@ -82,7 +82,7 @@ class VocabNote(KanaVocabNote):
     def priority_spec(self) -> PrioritySpec:
         from language_services.jamdict_ex.dict_lookup import DictLookup
         lookup = DictLookup.try_lookup_vocab_word_or_name(self)
-        return lookup.priority_spec() if lookup else set()
+        return lookup.priority_spec() if lookup else PrioritySpec(set())
 
 
     def override_meaning_mnemonic(self) -> None:

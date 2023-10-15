@@ -10,8 +10,6 @@ class KanaVocabNote(WaniNote):
     def __init__(self, note: Note):
         super().__init__(note)
 
-    def _on_before_flush(self) -> None: self.update_generated_data()
-
     def get_question_without_noise_characters(self) -> str: return self.get_question().replace("〜","")
     def get_question(self) -> str: return self.get_field(NoteFields.Vocab.question).strip()
     def _set_question(self, value: str) -> None: self.set_field(NoteFields.Vocab.question, value)

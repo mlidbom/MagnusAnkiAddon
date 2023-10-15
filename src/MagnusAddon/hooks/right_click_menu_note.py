@@ -1,17 +1,16 @@
-from PyQt6.QtWidgets import QMenu
 from aqt.webview import AnkiWebView
+from PyQt6.QtWidgets import QMenu
 
-from batches import local_note_updater
-from hooks.right_click_menu_utils import add_ui_action, add_lookup_action, add_sentence_lookup, add_single_vocab_lookup_action, add_text_vocab_lookup, add_vocab_dependencies_lookup
-from note.jpnote import JPNote
-from note.sentencenote import SentenceNote
-from note.kanjinote import KanjiNote
-from note.radicalnote import RadicalNote
-from note.vocabnote import VocabNote
-from hooks.note_content_building import jn_sentence_breakdown
-from sysutils import ex_str
-from note.note_constants import MyNoteFields, NoteFields, SentenceNoteFields, NoteTypes
 from ankiutils import app, query_builder as su
+from batches import local_note_updater
+from hooks.right_click_menu_utils import add_lookup_action, add_sentence_lookup, add_single_vocab_lookup_action, add_text_vocab_lookup, add_ui_action, add_vocab_dependencies_lookup
+from note.jpnote import JPNote
+from note.kanjinote import KanjiNote
+from note.note_constants import MyNoteFields, NoteFields, NoteTypes, SentenceNoteFields
+from note.radicalnote import RadicalNote
+from note.sentencenote import SentenceNote
+from note.vocabnote import VocabNote
+from sysutils import ex_str
 from sysutils.typed import checked_cast
 
 def setup_note_menu(note: JPNote, root_menu: QMenu, sel_clip: str, selection: str, view: AnkiWebView) -> None:
