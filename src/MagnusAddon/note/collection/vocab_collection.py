@@ -15,8 +15,8 @@ from sysutils import ex_sequence
 class _VocabSnapshot(CachedNote):
     def __init__(self, note: VocabNote):
         super().__init__(note)
-        self.forms = note.get_forms()
-        self.kanji = note.extract_kanji()
+        self.forms = set(note.get_forms())
+        self.kanji = set(note.extract_kanji())
 
 class _VocabCache(NoteCache[VocabNote, _VocabSnapshot]):
     def __init__(self, all_vocab: list[VocabNote]):
