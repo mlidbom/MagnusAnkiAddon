@@ -1,6 +1,8 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
+from sysutils.ex_str import newline
+
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.extracted_word import ExtractedWord
     from note.vocabnote import VocabNote
@@ -28,10 +30,11 @@ class SentenceNote(JPNote):
 
     def _get_user_question(self) -> str: return ex_str.strip_html_markup(self.get_field(SentenceNoteFields.user_question))
 
-    def get_user_extra_vocab(self) -> list[str]: return ex_str.extract_comma_separated_values(self.get_field(SentenceNoteFields.user_extra_vocab))
-    def _set_user_extra_vocab(self, extra: list[str]) -> None: return self.set_field(SentenceNoteFields.user_extra_vocab, ",".join(extra))
+    def get_user_extra_vocab(self) -> list[str]: return ex_str.extract_newline_separated_values(self.get_field(SentenceNoteFields.user_extra_vocab))
+    def _set_user_extra_vocab(self, extra: list[str]) -> None: return self.set_field(SentenceNoteFields.user_extra_vocab, newline.join(extra))
 
-    def get_user_excluded_vocab(self) -> set[str]: return set(ex_str.extract_comma_separated_values(self.get_field(SentenceNoteFields.user_excluded_vocab)))
+    def get_user_excluded_vocab(self) -> set[str]: return set(ex_str.extract_newline_separated_values(self.get_field(SentenceNoteFields.user_excluded_vocab)))
+    def _set_user_excluded_vocab(self, excluded: set[str]) -> None: self.set_field(SentenceNoteFields.user_excluded_vocab, newline.join(excluded))
 
     def add_extra_vocab(self, vocab: str) -> None:
         self._set_user_extra_vocab(self.get_user_extra_vocab() + [vocab.strip()])
@@ -40,9 +43,6 @@ class SentenceNote(JPNote):
         excluded = self.get_user_excluded_vocab()
         excluded.add(vocab.strip())
         self._set_user_excluded_vocab(excluded)
-
-    def _set_user_excluded_vocab(self, excluded: set[str]) -> None:
-        self.set_field(SentenceNoteFields.user_excluded_vocab, ",".join(excluded))
 
     def set_break_down(self, value: str) -> None: self.set_field(SentenceNoteFields.break_down, value)
 
