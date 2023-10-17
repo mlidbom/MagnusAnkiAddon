@@ -19,12 +19,13 @@ kinsei: UDTokenizer = UD2UDTokenizer("kinsei")  # Maybe. 6 differences with gend
 # manyo = UD2UDParser("manyo") #NO. 25 differences with gendai. Consistently strange.
 
 
-all_tokenizers: list[UDTokenizer] = [gendai,
-                                     spoken,
-                                     ginza,
-                                     built_in,
-                                     qkana,
-                                     kindai,
-                                     kinsei,
-                                     # novel, kyogen, wakan, wabun, manyo
-                                     ]
+all_tokenizers: list[UDTokenizer] = [
+    ginza,
+    gendai,
+    spoken,
+    built_in,
+    qkana,
+    kindai,
+    kinsei,
+    # novel, kyogen, wakan, wabun, manyo
+]
