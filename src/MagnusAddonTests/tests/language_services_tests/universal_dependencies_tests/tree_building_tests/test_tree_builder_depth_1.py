@@ -2,7 +2,7 @@ from typing import Any
 
 import pytest
 
-from language_services.universal_dependencies import ud_parsers
+from language_services.universal_dependencies import ud_tokenizers
 from language_services.universal_dependencies.shared.tokenizing.ud_tokenizer import UDTokenizer
 from tests.language_services_tests.universal_dependencies_tests.tree_building_tests.helpers import test_runner
 from tests.language_services_tests.universal_dependencies_tests.tree_building_tests.helpers.ud_tree_node_spec import UDTreeNodeSpec
@@ -27,7 +27,7 @@ def only_string_params(param: Any) -> str: return param if isinstance(param, str
     ("いつまでも来ないと知らないからね", None, R()),
 ], ids=only_string_params)
 def test_sentences(sentence: str, tokenizer: UDTokenizer, expected: R) -> None:
-    run_tests(expected, tokenizer if tokenizer else ud_parsers.best, sentence)
+    run_tests(expected, tokenizer if tokenizer else ud_tokenizers.default, sentence)
 
 @pytest.mark.parametrize('sentence, expected', [
     ("夢を見た", R(N('夢を', '', ''),N('見た', '', ''))),
@@ -60,11 +60,11 @@ def test_sentences(sentence: str, tokenizer: UDTokenizer, expected: R) -> None:
     ("言えばよかった", R()),
 ], ids=only_string_params)
 def test_sentences_with_no_nodes_at_this_depth(sentence: str, expected: R) -> None:
-    run_tests(expected, ud_parsers.best, sentence)
+    run_tests(expected, ud_tokenizers.default, sentence)
 
 @pytest.mark.parametrize('sentence, tokenizer, expected', [
-    ("あいつが話の中に出てくるのが", ud_parsers.gendai, R()),
-    ("ううん藤宮さんは日記を捨てるような人じゃない", ud_parsers.gendai, R(N('ううん', '', ''),N('藤宮さんは', '', '', [N('藤宮', 'フジミヤ', ''), N('さんは', '', '')]),N('日記を捨てるような人じゃない', '', '', [N('日記を', '', ''), N('捨てるような', '', ''), N('人じゃない', '', '')]))),
+    ("あいつが話の中に出てくるのが", ud_tokenizers.gendai, R()),
+    ("ううん藤宮さんは日記を捨てるような人じゃない", ud_tokenizers.gendai, R(N('ううん', '', ''),N('藤宮さんは', '', '', [N('藤宮', 'フジミヤ', ''), N('さんは', '', '')]),N('日記を捨てるような人じゃない', '', '', [N('日記を', '', ''), N('捨てるような', '', ''), N('人じゃない', '', '')]))),
 ], ids=only_string_params)
 def test_sentences_with_no_nodes_at_this_depth_using_alt_tokenizer(sentence: str, tokenizer: UDTokenizer, expected: R) -> None:
     run_tests(expected, tokenizer, sentence)

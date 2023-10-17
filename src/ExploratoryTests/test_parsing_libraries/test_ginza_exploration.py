@@ -2,7 +2,7 @@ import pytest
 import spacy
 from spacy.tokens import Token
 
-from language_services.universal_dependencies import ud_parsers
+from language_services.universal_dependencies import ud_tokenizers
 from sysutils import ex_sequence, ex_str
 
 ginza = spacy.load("ja_ginza")
@@ -55,7 +55,7 @@ def test_display_interesting_sentences_we_should_add_real_tests_for(sentence: st
     print(sentence)
 
 
-    ud_tokens = ud_parsers.ginza.tokenize(sentence)
+    ud_tokens = ud_tokenizers.ginza.tokenize(sentence)
     print(ud_tokens.str_(exclude_lemma_and_norm=True))
 
     doc = ginza(sentence)

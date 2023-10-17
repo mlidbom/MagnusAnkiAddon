@@ -2,7 +2,7 @@ from typing import Any
 
 import pytest
 
-from language_services.universal_dependencies import ud_parsers
+from language_services.universal_dependencies import ud_tokenizers
 from language_services.universal_dependencies.shared.tokenizing.ud_tokenizer import UDTokenizer
 from tests.language_services_tests.universal_dependencies_tests.tree_building_tests.helpers import test_runner
 from tests.language_services_tests.universal_dependencies_tests.tree_building_tests.helpers.ud_tree_node_spec import UDTreeNodeSpec
@@ -19,13 +19,13 @@ def only_string_params(param: Any) -> str: return param if isinstance(param, str
     ("意外とかっこいいな", None, R(N('意外と', '', ''), N('かっこいい', '', ''), N('な', '', ''))),
 ], ids=only_string_params)
 def test_unsatisfied_dictionary_word_missing(sentence: str, parser: UDTokenizer | None, expected: R) -> None:
-    run_tests(expected, parser if parser else ud_parsers.best, sentence)
+    run_tests(expected, parser if parser else ud_tokenizers.default, sentence)
 
 @pytest.mark.parametrize('sentence, parser, expected', [
     ("行きたい所全部行こう", None, R(N('行きたい所', '', ''),N('全部', '', ''),N('行こう', '行く', ''))),
 ], ids=only_string_params)
 def test_unsatisfied_sequential_identical_heads_not_compounded(sentence: str, parser: UDTokenizer | None, expected: R) -> None:
-    run_tests(expected, parser if parser else ud_parsers.best, sentence)
+    run_tests(expected, parser if parser else ud_tokenizers.default, sentence)
 
 @pytest.mark.parametrize('sentence, parser, expected', [
     # todo. only fetching descendents does not play well with expressions...
@@ -39,14 +39,14 @@ def test_unsatisfied_sequential_identical_heads_not_compounded(sentence: str, pa
     # todo いいよう
     ("先生にいいように言って", None, R(N('先生に', '', ''), N('いいように言って', '', ''))),
     # not a disaster, but I do miss 話の中に
-    ("あいつが話の中に出てくるのが", ud_parsers.gendai, R(N('あいつが', '', ''), N('話の', '', ''), N('中に', '', ''), N('出てくるのが', '', ''))),
+    ("あいつが話の中に出てくるのが", ud_tokenizers.gendai, R(N('あいつが', '', ''), N('話の', '', ''), N('中に', '', ''), N('出てくるのが', '', ''))),
     # 自分のこと
     ("自分のことを知ってもらえてない人に", None, R(N('自分の', '', ''), N('ことを知ってもらえてない人に', '', ''))),
     # ように言った
     ("ように言ったのも", None, R(N('ように', '', ''), N('言ったのも', '', ''))),
 ], ids=only_string_params)
 def test_unsatisfied_dictionary_expression_missing(sentence: str, parser: UDTokenizer | None, expected: R) -> None:
-    run_tests(expected, parser if parser else ud_parsers.best, sentence)
+    run_tests(expected, parser if parser else ud_tokenizers.default, sentence)
 
 @pytest.mark.parametrize('sentence, expected', [
     # todo: maybe use dictionary lookup for sequencial tokens with the same head to look for compounds?
@@ -73,10 +73,10 @@ def test_unsatisfied_dictionary_expression_missing(sentence: str, parser: UDToke
     ("とりあえず　ご飯食べよう", R(N('とりあえず', '', '取り敢えず'),N('ご飯', '', '御飯'),N('食べよう', '食べる', ''))),
 ], ids=only_string_params)
 def test_sentences_we_are_unsatisfied_with(sentence: str, expected: R) -> None:
-    run_tests(expected, ud_parsers.best, sentence)
+    run_tests(expected, ud_tokenizers.default, sentence)
 
 @pytest.mark.parametrize('sentence, tokenizer, expected', [
-    ("ううん藤宮さんは日記を捨てるような人じゃない", ud_parsers.gendai, R(N('ううん', '', ''),N('藤宮さんは', '', ''),N('日記を捨てるような人じゃない', '', ''))),
+    ("ううん藤宮さんは日記を捨てるような人じゃない", ud_tokenizers.gendai, R(N('ううん', '', ''),N('藤宮さんは', '', ''),N('日記を捨てるような人じゃない', '', ''))),
 ], ids=only_string_params)
 def test_sentences_alternative_tokenizer_does_better(sentence: str, tokenizer: UDTokenizer, expected: R) -> None:
     run_tests(expected, tokenizer, sentence)
@@ -92,7 +92,7 @@ def test_sentences_alternative_tokenizer_does_better(sentence: str, tokenizer: U
     ("そっちへ行ったぞ", R(N('そっちへ', '', ''), N('行った', '', ''), N('ぞ', '', ''))),
 ], ids=only_string_params)
 def test_sentences_the_best_parser_does_well(sentence: str, expected: R) -> None:
-    run_tests(expected, ud_parsers.best, sentence)
+    run_tests(expected, ud_tokenizers.default, sentence)
 
 @pytest.mark.parametrize('sentence, expected', [
     ("夢を見た", R()),
@@ -115,7 +115,7 @@ def test_sentences_the_best_parser_does_well(sentence: str, expected: R) -> None
     ("逃げたり", R()),
 ], ids=only_string_params)
 def test_sentences_with_no_nodes_at_this_depth(sentence: str, expected: R) -> None:
-    run_tests(expected, ud_parsers.best, sentence)
+    run_tests(expected, ud_tokenizers.default, sentence)
 
 def run_tests(expected: UDTreeSpec, parser: UDTokenizer, sentence: str) -> None:
     test_runner.run_tests_for_level(expected, parser, sentence, 0)

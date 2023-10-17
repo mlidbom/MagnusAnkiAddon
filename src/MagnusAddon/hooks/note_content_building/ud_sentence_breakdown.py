@@ -3,7 +3,7 @@ from aqt import gui_hooks
 
 from ankiutils import app
 from language_services.shared import priorities
-from language_services.universal_dependencies import ud_parsers
+from language_services.universal_dependencies import ud_tokenizers
 from language_services.universal_dependencies.shared.tree_building import ud_tree_builder
 from note.jpnote import JPNote
 from note.sentencenote import SentenceNote
@@ -99,19 +99,19 @@ def _create_html_from_nodes(nodes: list[NodeViewModel], excluded: set[str], extr
 def print_debug_information_for_analysis(sentence: str) -> str:
     html = f"""<div id="debug_output">\n"""
 
-    for parser in ud_parsers.all_parsers:
+    for parser in ud_tokenizers.all_tokenizers:
         html += f"""{parser.name} : {sentence}
 {parser.tokenize(sentence).str_()}
 
 """
 
-    for parser in ud_parsers.all_parsers:
+    for parser in ud_tokenizers.all_tokenizers:
         html += f"""{parser.name} : {sentence}
 {parser.tokenize(sentence).to_tree()}
 
 """
 
-    for parser in ud_parsers.all_parsers:
+    for parser in ud_tokenizers.all_tokenizers:
         html += f"""{parser.name} : {sentence}")
 {ud_tree_builder.build_tree(parser, sentence)}
 
@@ -129,7 +129,7 @@ def build_breakdown_html(sentence: SentenceNote) -> str:
     html = ""
 
     question = sentence.get_question()
-    tree = ud_tree_builder.build_tree(ud_parsers.best, question)
+    tree = ud_tree_builder.build_tree(ud_tokenizers.default, question)
     view_model = sentence_breakdown_viewmodel.create(tree, app.col())
 
     if extra_words:

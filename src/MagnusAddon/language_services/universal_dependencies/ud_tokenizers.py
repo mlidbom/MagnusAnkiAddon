@@ -2,14 +2,14 @@ from language_services.universal_dependencies.ginza.ginza_tokenizer import Ginza
 from language_services.universal_dependencies.shared.tokenizing.ud_tokenizer import UDTokenizer
 from language_services.universal_dependencies.unidic2ud.unidic2ud_tokenizer import UD2UDTokenizer
 
-ginza: GinzaTokenizer = GinzaTokenizer() # Yes. 15 Differences to gendai. 8 Better, 6 worse, one unclear.
-best: GinzaTokenizer = ginza
+ginza: GinzaTokenizer = GinzaTokenizer()  # Yes. 15 Differences to gendai. 8 Better, 6 worse, one unclear.
 gendai: UD2UDTokenizer = UD2UDTokenizer("gendai")  # Yes. 15 Differences to ginza. 6 Better, 8 worse, one unclear.
+default: UD2UDTokenizer = gendai
 spoken: UD2UDTokenizer = UD2UDTokenizer("spoken")  # ??. Zero differences compared to gendai so far...
 
 qkana: UD2UDTokenizer = UD2UDTokenizer("qkana")  # Maybe. 2 difference with gendai. One clearly better and used in tests(Not any more. Ginza, the current winner handled this case fine.).
 kindai: UD2UDTokenizer = UD2UDTokenizer("kindai")  # Maybe. 8 Differences with gendai. One clearly better and used in tests(Not any more. Ginza, the current winner handled this case fine.).
-default: UD2UDTokenizer = UD2UDTokenizer("built-in")  # Maybe. 14 differences with gendai. One clearly better and used in tests(Not any more. Ginza, the current winner handled this case fine.).
+built_in: UD2UDTokenizer = UD2UDTokenizer("built-in")  # Maybe. 14 differences with gendai. One clearly better and used in tests(Not any more. Ginza, the current winner handled this case fine.).
 kinsei: UD2UDTokenizer = UD2UDTokenizer("kinsei")  # Maybe. 6 differences with gendai. One clearly better and used in tests(Not any more. Ginza, the current winner handled this case fine.). 1 arguably better
 
 # novel = UD2UDParser("novel") # NO. 2 difference with gendai. Both worse. Not worth the odds to try for the user.
@@ -19,12 +19,12 @@ kinsei: UD2UDTokenizer = UD2UDTokenizer("kinsei")  # Maybe. 6 differences with g
 # manyo = UD2UDParser("manyo") #NO. 25 differences with gendai. Consistently strange.
 
 
-all_parsers:list[UDTokenizer] = [ginza,
-                                 gendai,
-                                 #spoken,
-                                 default,
-                                 qkana,
-                                 kindai,
-                                 kinsei,
-                                 # novel, kyogen, wakan, wabun, manyo
-                                 ]
+all_tokenizers: list[UDTokenizer] = [gendai,
+                                     spoken,
+                                     ginza,
+                                     built_in,
+                                     qkana,
+                                     kindai,
+                                     kinsei,
+                                     # novel, kyogen, wakan, wabun, manyo
+                                     ]

@@ -1,6 +1,6 @@
 from collections import defaultdict
 
-from language_services.universal_dependencies import ud_parsers
+from language_services.universal_dependencies import ud_tokenizers
 from language_services.universal_dependencies.shared.tokenizing.deprel import UdRelationshipTag
 from language_services.universal_dependencies.shared.tokenizing.ud_token import UDToken
 from language_services.universal_dependencies.shared.tokenizing.xpos import UdJapanesePartOfSpeechTag
@@ -98,7 +98,7 @@ def test_generate_upos_xpos_mapping() -> None:
     deprel_xpos_word_mappings: dict[UdRelationshipTag, dict[UdJapanesePartOfSpeechTag, set[str]]] = defaultdict(lambda: defaultdict(set))
 
     for sentence in sentences:
-        for parser in [ud_parsers.best]:
+        for parser in [ud_tokenizers.default]:
             all_tokens += parser.tokenize(sentence).tokens
 
     for token in all_tokens:

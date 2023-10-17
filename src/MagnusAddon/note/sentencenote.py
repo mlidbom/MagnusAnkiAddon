@@ -51,11 +51,11 @@ class SentenceNote(JPNote):
         return word_extractor.extract_words(self.get_question())
 
     def ud_extract_word_forms(self) -> list[str]:
-        from language_services.universal_dependencies import ud_parsers
+        from language_services.universal_dependencies import ud_tokenizers
         from language_services.universal_dependencies.shared.tree_building import ud_tree_builder
         from language_services.universal_dependencies.shared.tree_building.ud_tree_node import UDTreeNode
 
-        tree = ud_tree_builder.build_tree(ud_parsers.best, self.get_question())
+        tree = ud_tree_builder.build_tree(ud_tokenizers.default, self.get_question())
         word_forms: set[str] = set()
 
         def get_node_forms(node: UDTreeNode) -> None:

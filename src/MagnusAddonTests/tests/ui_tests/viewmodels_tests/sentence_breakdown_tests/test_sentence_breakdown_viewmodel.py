@@ -6,7 +6,7 @@ import pytest
 
 from ankiutils import app
 from fixtures.collection_factory import inject_anki_collection_with_generated_sample_data
-from language_services.universal_dependencies import ud_parsers
+from language_services.universal_dependencies import ud_tokenizers
 from language_services.universal_dependencies.shared.tree_building import ud_tree_builder
 from note.sentencenote import SentenceNote
 from tests.ui_tests.viewmodels_tests.sentence_breakdown_tests.breakdown_viewmodel_spec import NodeViewModelSpec, SentenceBreakdownViewModelSpec, VocabHitViewModelSpec
@@ -35,7 +35,7 @@ def setup_object() -> Generator[None, None, None]:
 def test_sentence_breakdown_viewmodel_smoke_tests_only(sentence: str, expected: SentenceBreakdownViewModelSpec) -> None:
     sentence_note: SentenceNote = SentenceNote.create(sentence, "")
     question = sentence_note.get_question()
-    tree = ud_tree_builder.build_tree(ud_parsers.best, question)
+    tree = ud_tree_builder.build_tree(ud_tokenizers.default, question)
     print()
     print(tree)
     view_model = sentence_breakdown_viewmodel.create(tree, app.col())

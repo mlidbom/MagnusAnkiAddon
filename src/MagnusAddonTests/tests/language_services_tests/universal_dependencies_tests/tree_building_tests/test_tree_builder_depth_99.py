@@ -2,7 +2,7 @@ from typing import Any
 
 import pytest
 
-from language_services.universal_dependencies import ud_parsers
+from language_services.universal_dependencies import ud_tokenizers
 from language_services.universal_dependencies.shared.tokenizing.ud_tokenizer import UDTokenizer
 from language_services.universal_dependencies.shared.tree_building import ud_tree_builder
 from sysutils.ex_str import full_width_space, newline
@@ -28,7 +28,7 @@ def only_string_params(param: Any) -> str: return param if isinstance(param, str
     # todo: 気がする
     ("そう　相変わらず無表情ばっかの気がするけど", R(N('そう', '', ''),N('相変わらず', '', ''),N('無表情', '', ''),N('ばっか', '', 'ばかり'),N('の', '', ''),N('気がするけど', '', '', [N('気がする', '', '', [N('気', '', ''), N('が', '', ''), N('する', '', '為る')]), N('けど', '', 'けれど')]))),
 ], ids=only_string_params)
-def test_sentences_we_are_unsatisfied_with_smoke_tests_only(sentence: str, expected: R) -> None: run_tests(expected, ud_parsers.best, sentence)
+def test_sentences_we_are_unsatisfied_with_smoke_tests_only(sentence: str, expected: R) -> None: run_tests(expected, ud_tokenizers.default, sentence)
 
 @pytest.mark.parametrize('sentence, expected', [
     ("ように言ったのも", R(N('ように', '', '', [N('よう', '', ''), N('に', '', '')]), N('言ったのも', '', '', [N('言っ', '言う', ''), N('た', '', ''), N('の', '', ''), N('も', '', '')]))),
@@ -63,12 +63,12 @@ def test_sentences_we_are_unsatisfied_with_smoke_tests_only(sentence: str, expec
     ("だろう", R(N('だろう', '', ''))),
 
 ], ids=only_string_params)
-def test_sentences_the_best_parser_does_well_smoke_tests_only(sentence: str, expected: R) -> None: run_tests(expected, ud_parsers.best, sentence)
+def test_sentences_the_best_parser_does_well_smoke_tests_only(sentence: str, expected: R) -> None: run_tests(expected, ud_tokenizers.default, sentence)
 
 @pytest.mark.parametrize('sentence, parser, expected', [
-    ("ううん藤宮さんは日記を捨てるような人じゃない", ud_parsers.gendai, R(N('ううん', '', ''), N('藤宮さんは', '', '', [N('藤宮さん', '', '', [N('藤宮', 'フジミヤ', ''), N('さん', '', '')]), N('は', '', '')]), N('日記を', '', '', [N('日記', '', ''), N('を', '', '')]), N('捨てるような', '', '', [N('捨てる', '', ''), N('ような', '', '', [N('よう', '様', ''), N('な', '', '')])]), N('人じゃない', '', '', [N('人', '', ''), N('じゃ', 'だ', ''), N('ない', '無い', '')]))),
-    ("としたら", ud_parsers.gendai, R(N('と', '', ''), N('したら', '', '', [N('し', '為る', ''), N('たら', '', '')]))),
-    ("あいつが話の中に出てくるのが", ud_parsers.gendai, R(N('あいつが', '', '', [N('あいつ', '彼奴', ''), N('が', '', '')]),N('話の', '', '', [N('話', '', ''), N('の', '', '')]),N('中に', '', '', [N('中', '', ''), N('に', '', '')]),N('出てくるのが', '', '', [N('出', '出る', ''), N('てくるのが', '', '', [N('て', '', ''), N('くる', '来る', ''), N('の', '', ''), N('が', '', '')])]))),
+    ("ううん藤宮さんは日記を捨てるような人じゃない", ud_tokenizers.gendai, R(N('ううん', '', ''), N('藤宮さんは', '', '', [N('藤宮さん', '', '', [N('藤宮', 'フジミヤ', ''), N('さん', '', '')]), N('は', '', '')]), N('日記を', '', '', [N('日記', '', ''), N('を', '', '')]), N('捨てるような', '', '', [N('捨てる', '', ''), N('ような', '', '', [N('よう', '様', ''), N('な', '', '')])]), N('人じゃない', '', '', [N('人', '', ''), N('じゃ', 'だ', ''), N('ない', '無い', '')]))),
+    ("としたら", ud_tokenizers.gendai, R(N('と', '', ''), N('したら', '', '', [N('し', '為る', ''), N('たら', '', '')]))),
+    ("あいつが話の中に出てくるのが", ud_tokenizers.gendai, R(N('あいつが', '', '', [N('あいつ', '彼奴', ''), N('が', '', '')]),N('話の', '', '', [N('話', '', ''), N('の', '', '')]),N('中に', '', '', [N('中', '', ''), N('に', '', '')]),N('出てくるのが', '', '', [N('出', '出る', ''), N('てくるのが', '', '', [N('て', '', ''), N('くる', '来る', ''), N('の', '', ''), N('が', '', '')])]))),
 
 ], ids=only_string_params)
 def test_sentences_done_better_by_alternative_parser_smoke_tests_only(sentence: str, parser: UDTokenizer, expected: R) -> None: run_tests(expected, parser, sentence)
@@ -78,7 +78,7 @@ def run_tests(expected: R, parser: UDTokenizer, sentence: str) -> None:
     # return
 
     print()
-    parser = parser if parser else ud_parsers.best
+    parser = parser if parser else ud_tokenizers.default
     real_result = ud_tree_builder.build_tree(parser, sentence)
     spec_result = R.from_ud_tree(real_result)
 
@@ -110,6 +110,7 @@ repr-single-line: {sentence}
         raise
 
 @pytest.mark.parametrize("sentence", [
+    "大した進歩だと思うぜ 月曜日の時の悩みと比べたらさ",
     "なんというか 事情を分ってくれる人は少しでも多い方がいいと思うんだ",
     "悪くなさそうね良かった",
     "朝、近所をぶらぶらした",
@@ -155,18 +156,18 @@ def test_display_interesting_sentences_we_should_add_real_tests_for(sentence: st
     print()
     print(sentence)
 
-    for parser in ud_parsers.all_parsers:
+    for parser in ud_tokenizers.all_tokenizers:
         print(f"{parser.name} : {sentence}")
         print(parser.tokenize(sentence).str_(exclude_lemma_and_norm=True))
         print()
 
 
-    for parser in ud_parsers.all_parsers:
+    for parser in ud_tokenizers.all_tokenizers:
         print(f"{parser.name} : {sentence}")
         print(parser.tokenize(sentence).to_tree())
         print()
 
-    for parser in ud_parsers.all_parsers:
+    for parser in ud_tokenizers.all_tokenizers:
         print(f"{parser.name} : {sentence}")
         print(ud_tree_builder.build_tree(parser, sentence))
         print()
