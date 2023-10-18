@@ -61,7 +61,7 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, sel_clip: str, selection: st
             add_ui_action(note_add_menu, "&Highlighted vocab", lambda: add_highlighted_vocab(sentence_note, sel_clip))
 
     if isinstance(note, RadicalNote):
-        add_lookup_action(note_lookup_menu, "&Kanji", f"note:{NoteTypes.Kanji} {su.field_word(NoteFields.Kanji.Radicals_Names, note.get_answer())}")
+        add_lookup_action(note_lookup_menu, "&Kanji", f"note:{NoteTypes.Kanji} {su.field_contains_word(NoteFields.Kanji.Radicals_Names, note.get_answer())}")
 
     if isinstance(note, KanjiNote):
         kanji = note
@@ -86,7 +86,7 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, sel_clip: str, selection: st
         if vocab.get_related_ergative_twin():
             add_single_vocab_lookup_action(note_lookup_menu, "&Ergative twin", vocab.get_related_ergative_twin())
 
-        add_lookup_action(note_lookup_menu, "&Sentence", f"(deck:*sentence* deck:*listen*) ({su.field_word(SentenceNoteFields.ParsedWords, note.get_question())} OR Q:*{note.get_question()}*)")
+        add_lookup_action(note_lookup_menu, "&Sentence", f"(deck:*sentence* deck:*listen*) ({su.field_contains_word(SentenceNoteFields.ParsedWords, note.get_question())} OR Q:*{note.get_question()}*)")
         add_text_vocab_lookup(note_lookup_menu, "&Compounds", note.get_question())
         add_vocab_dependencies_lookup(note_lookup_menu, "&Dependencies", note)
 

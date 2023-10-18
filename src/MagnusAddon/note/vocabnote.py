@@ -24,6 +24,7 @@ class VocabNote(KanaVocabNote):
     def set_forms(self, forms: set[str]) -> None: self._set_forms(", ".join([form.strip() for form in forms]))
     def _get_forms(self) -> str: return self.get_field(NoteFields.Vocab.Forms)
     def _set_forms(self, value: str) -> None: self.set_field(NoteFields.Vocab.Forms, value)
+    def get_user_compounds(self) -> list[str]: return ex_str.extract_comma_separated_values(self.get_field(NoteFields.Vocab.user_compounds))
 
     def update_generated_data(self) -> None:
         from language_services.jamdict_ex.dict_lookup import DictLookup

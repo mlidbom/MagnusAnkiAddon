@@ -90,6 +90,7 @@ class NoteFields:
         active_answer = MyNoteFields.answer
         source_answer = "source_answer"
         user_answer = "__answer"
+        user_compounds = "__compounds"
         Reading = "Reading"
         Speech_Type = "Speech_Type"
         Context_jp = "Context_jp"
