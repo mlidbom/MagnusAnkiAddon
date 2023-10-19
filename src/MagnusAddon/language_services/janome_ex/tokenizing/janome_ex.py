@@ -4,5 +4,6 @@ _tokenizer = JNTokenizer()
 
 
 def get_word_parts_of_speech(word: str) -> str:
-    return _tokenizer.tokenize(word).tokens[0].parts_of_speech.translate()
+    tokenized = _tokenizer.tokenize(word)
+    return tokenized.tokens[0].parts_of_speech.translate() if tokenized.tokens else ""
 
