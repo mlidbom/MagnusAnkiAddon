@@ -61,7 +61,7 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, sel_clip: str, selection: st
             add_ui_action(note_add_menu, "&Highlighted vocab", lambda: add_highlighted_vocab(sentence_note, sel_clip))
 
     if isinstance(note, RadicalNote):
-        add_lookup_action(note_lookup_menu, "&Kanji", f"note:{NoteTypes.Kanji} {su.field_contains_word(NoteFields.Kanji.Radicals_Names, note.get_answer())}")
+        add_lookup_action(note_lookup_menu, "&Kanji", f"note:{NoteTypes.Kanji} ( {su.field_contains_word(NoteFields.Kanji.Radicals_Names, note.get_answer())} OR {su.field_contains_word(NoteFields.Kanji.Radicals_Icons_Names, note.get_answer())} )")
 
     if isinstance(note, KanjiNote):
         kanji = note
