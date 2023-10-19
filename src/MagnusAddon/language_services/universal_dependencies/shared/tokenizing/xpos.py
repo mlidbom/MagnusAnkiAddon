@@ -116,3 +116,5 @@ latin_alphabet = _add_tag("ローマ字文", "Lat", "latin_alphabet")
 
 unknown_words = _add_tag("未知語", "Unknown", "unknown_words")
 new_unknown_words = _add_tag("新規未知語", "NewUnknown", "new_unknown_words")
+
+foreign_languge = _add_tag("外国語", "foreign_languge", "foreign_languge")
