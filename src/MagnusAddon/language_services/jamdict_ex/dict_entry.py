@@ -5,6 +5,11 @@ from jamdict.jmdict import JMDEntry, Sense
 from sysutils import kana_utils
 from sysutils import ex_sequence
 
+def _sense_is_transitive_verb(sense: Sense):
+    return any("transitive verb" == pos_item for pos_item in sense.pos)
+
+def _sense_is_intransitive_verb(sense: Sense):
+    return any("intransitive verb" == pos_item for pos_item in sense.pos)
 
 class DictEntry:
     def __init__(self, entry: JMDEntry, lookup_word: str, lookup_readings: list[str]) -> None:
@@ -50,12 +55,30 @@ class DictEntry:
 
         return tags
 
+
+
+    def _is_transitive_verb(self) -> bool:
+        return all(_sense_is_transitive_verb(sense) for sense in self.entry.senses)
+
+    def _is_intransitive_verb(self) -> bool:
+        return all(_sense_is_intransitive_verb(sense) for sense in self.entry.senses)
+
     def _is_verb(self) -> bool:
-        return any("verb" in s.pos[0] for s in self.entry.senses)
+        return (any(_sense_is_intransitive_verb(sense) for sense in self.entry.senses)
+                or any(_sense_is_transitive_verb(sense) for sense in self.entry.senses)
+                or any(" verb " in s.pos[0] for s in self.entry.senses))
 
     def _answer_prefix(self) -> str:
         if self._is_verb():
-            return "to? be: " if self._is_to_be_verb() else "to? "
+            if self._is_intransitive_verb():
+                return "to: "
+            if self._is_transitive_verb():
+                return "to{} "
+            if self._is_to_be_verb():
+                return "to: be: "
+
+            return "to? "
+
         return ""
 
     def _is_to_be_verb(self) -> bool:

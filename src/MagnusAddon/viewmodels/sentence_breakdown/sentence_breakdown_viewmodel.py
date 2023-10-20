@@ -101,10 +101,11 @@ class NodeViewModel:
         if question != self.surface and question != self.base:
             return priorities.unknown
 
-        kanji_count = len([char for char in self.surface if not kana_utils.is_kana(char)])
+        kanji_count = len([char for char in self.surface if kana_utils.is_kanji(char)])
+        katakana_count = len([char for char in self.surface if kana_utils.is_katakana(char)])
 
         # todo: if this works out well, remove the code with hard coded values below
-        if kanji_count == 0:
+        if kanji_count == 0 and katakana_count == 0:
             if len(self.surface) == 1:
                 return priorities.very_low
             if len(self.surface) == 2:

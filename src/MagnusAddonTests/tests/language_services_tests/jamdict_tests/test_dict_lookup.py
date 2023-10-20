@@ -86,7 +86,9 @@ def test_valid_forms(word: str, readings:list[str], forms: set[str]) -> None:
 @pytest.mark.parametrize('word, readings, answer', [
     ("張り切る", ["はりきる"], "to? be-in-high-spirits/be-full-of-vigor-(vigour)/be-enthusiastic/be-eager/stretch-to-breaking-point"),
     ("部屋", ["へや"], "room/chamber | apartment/flat/pad | stable"),
-    ("付く", ["つく"], "to? be-attached/be-connected-with/adhere/stick/cling | remain-imprinted/scar/stain/dye | bear-(fruit,-interest,-etc.) | be-acquired-(of-a-habit,-ability,-etc.)/increase-(of-strength,-etc.) | take-root | accompany/attend/follow/study-with | side-with/belong-to | possess/haunt | lit/lighted | settled/resolved/decided | given-(of-a-name,-price,-etc.) | sensed/perceived | lucky | become-(a-state,-condition,-etc.)")
+    ("付く", ["つく"], "to? be-attached/be-connected-with/adhere/stick/cling | remain-imprinted/scar/stain/dye | bear-(fruit,-interest,-etc.) | be-acquired-(of-a-habit,-ability,-etc.)/increase-(of-strength,-etc.) | take-root | accompany/attend/follow/study-with | side-with/belong-to | possess/haunt | lit/lighted | settled/resolved/decided | given-(of-a-name,-price,-etc.) | sensed/perceived | lucky | become-(a-state,-condition,-etc.)"),
+    ("拭く", ["ふく"], "to{} wipe/dry"),
+    ("歩く", ["あるく"], "to: walk")
 ])
 def test_generate_answer(word: str, readings:list[str], answer: str) -> None:
     dict_entry = get_single_dict_entry(word, readings)
