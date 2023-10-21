@@ -55,7 +55,7 @@ def generate_vocab_html_list(_kanji_note: KanjiNote, vocabs: list[VocabNote]) ->
                 <div class="kanjiVocabEntry {_create_classes(_kanji_note, _vocab_note)}">
                     <span class="kanji clipboard">{_vocab_note.get_question()}</span>
                     (<span class="clipboard vocabReading">{_kanji_note.tag_readings_in_string(", ".join(_vocab_note.get_readings()), lambda read: f'<span class="kanjiReading">{read}</span>')}</span>)
-                    <span class="meaning"> {ex_str.strip_html_markup(_vocab_note.get_answer())}</span>
+                    <span class="meaning"> {_vocab_note.get_answer()}</span>
                 </div>
                 """ for _vocab_note in vocabs])}
 
