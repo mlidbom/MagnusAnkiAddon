@@ -19,4 +19,4 @@ ginza==5.1.3
 ja-ginza==5.1.3
 pytest
 pytest-xdist
-mypy
+mypy==1.7.0

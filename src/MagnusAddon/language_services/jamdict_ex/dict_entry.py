@@ -5,10 +5,10 @@ from jamdict.jmdict import JMDEntry, Sense
 from sysutils import kana_utils
 from sysutils import ex_sequence
 
-def _sense_is_transitive_verb(sense: Sense):
+def _sense_is_transitive_verb(sense: Sense) -> bool:
     return any("transitive verb" == pos_item for pos_item in sense.pos)
 
-def _sense_is_intransitive_verb(sense: Sense):
+def _sense_is_intransitive_verb(sense: Sense) -> bool:
     return any("intransitive verb" == pos_item for pos_item in sense.pos)
 
 class DictEntry:

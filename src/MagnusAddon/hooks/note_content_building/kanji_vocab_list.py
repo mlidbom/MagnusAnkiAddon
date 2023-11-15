@@ -1,12 +1,11 @@
 from anki.cards import Card
 from aqt import gui_hooks
 
+from ankiutils import app
 from note.jpnote import JPNote
 from note.kanjinote import KanjiNote
 from note.vocabnote import VocabNote
 from sysutils import kana_utils
-from sysutils import ex_str
-from ankiutils import app
 from sysutils.ex_str import newline
 
 def sort_vocab_list(note: KanjiNote, primary_voc: list[str], vocabs: list[VocabNote]) -> None:
@@ -32,8 +31,7 @@ def sort_vocab_list(note: KanjiNote, primary_voc: list[str], vocabs: list[VocabN
                                          prefer_starts_with_kanji(local_vocab),
                                          local_vocab.get_question()))
 
-
-def _create_classes(_kanji:KanjiNote, _vocab: VocabNote) -> str:
+def _create_classes(_kanji: KanjiNote, _vocab: VocabNote) -> str:
     tags = list(_vocab.priority_spec().tags)
     tags.sort()
     classes = " ".join([f"""common_ness_{prio}""" for prio in tags])
@@ -41,7 +39,7 @@ def _create_classes(_kanji:KanjiNote, _vocab: VocabNote) -> str:
     if _vocab.get_question() in _kanji.get_primary_vocab() or _vocab.get_readings()[0] in _kanji.get_primary_vocab():
         classes += " primary_vocab"
 
-    return  classes
+    return classes
 
 def generate_vocab_html_list(_kanji_note: KanjiNote, vocabs: list[VocabNote]) -> str:
     primary_voc = _kanji_note.get_primary_vocab()

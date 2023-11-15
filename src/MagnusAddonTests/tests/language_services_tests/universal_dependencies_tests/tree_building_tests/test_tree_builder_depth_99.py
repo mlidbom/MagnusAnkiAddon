@@ -88,7 +88,7 @@ str: {sentence}
     """)
 
     try:
-        something = 1
+        pass
         #todo restore assertion. For now we do smoke tests only as the current strategy for creating a break-down is being replaced.
         #assert spec_result == expected
     except Exception:
