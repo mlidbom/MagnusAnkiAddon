@@ -65,6 +65,7 @@ noun_proper_name_firstname = _add_tag("名詞-固有名詞-人名-名", "N.prop.
 noun_proper_name_surname = _add_tag("名詞-固有名詞-人名-姓", "N.prop.n.s", "noun_proper_name_surname") # compound{藤宮}
 noun_proper_place_general = _add_tag("名詞-固有名詞-地名-一般", "N.prop.p.g", "noun_proper_place_general") # compound{日代}
 noun_proper_place_country = _add_tag("名詞-固有名詞-地名-国", "N.prop.p.c", "noun_proper_place_country")
+noun_proper_organisation = _add_tag("名詞-固有名詞-組織名", "N.prop.o", "noun_proper_organisation")
 noun_numeral = _add_tag("名詞-数詞", "N.num", "noun_numeral") # compound{二千九百}
 
 adjective_i_general = _add_tag("形容詞-一般", "Ai.g", "adjective_i_general") # adverbial_clause_modifier{明るい}, clausal_modifier_of_noun{素晴らしい}, root{偉}
