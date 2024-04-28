@@ -1,5 +1,5 @@
-aqt==23.12.1
-anki==23.12.1
+aqt==24.04.1
+anki==24.04.1
 PyQt6-WebEngine==6.6
 PyQt6==6.6
 wanikani-api==0.6.1
