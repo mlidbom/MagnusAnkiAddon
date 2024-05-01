@@ -4,5 +4,6 @@ from . import (
     kanji_vocab_list,
     ud_sentence_breakdown,
     kanji_radical_and_kanji_dependencies_list,
+    kanji_katakana_onyomi,
     vocab_compounds
 )
