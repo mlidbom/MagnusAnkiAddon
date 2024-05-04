@@ -1,24 +1,37 @@
-_maximum_tags = set([f"nf{num:02}" for num in range(1,9)])
-_high_tags = set([f"nf{num}" for num in range(10,20)])
-_common_tags = {"news1", "spec1"}
-_semi_common_tags = {"news2", "ichi1", "spec2"}
+_frequency_maximum = set([f"nf{num:02}" for num in range(1, 10)])
+_frequency_high = set([f"nf{num}" for num in range(11, 20)])
+_frequency_medium = set([f"nf{num}" for num in range(21, 40)])
+_frequency_low = set([f"nf{num}" for num in range(41, 60)])
+
+_tags_maximum = {"ichi1"}
+_tags_high = {"news1", "spec1"}
+_tags_medium = {"news2", "spec2"}
 
 class PrioritySpec:
     def __init__(self, tags: set[str]):
         self.tags = tags
 
-        if self.tags & _maximum_tags:
+        if self.tags & _tags_maximum:
             self.priority_string = "priority_maximum"
-            self.priority = int(list(self.tags & _maximum_tags)[0][-1]) #the actual number from the nf tag
-        elif self.tags & _high_tags:
+            self.priority = 1
+        elif self.tags & _tags_high:
             self.priority_string = "priority_high"
-            self.priority = int(list(self.tags & _high_tags)[0][-2:]) #the actual number from the nf tag
-        elif self.tags & _common_tags:
+            self.priority = 11
+        elif self.tags & _tags_medium:
             self.priority_string = "priority_medium"
-            self.priority = 30
-        elif len(self.tags) > 0:
+            self.priority = 21
+        elif self.tags & _frequency_maximum:
+            self.priority_string = "priority_maximum"
+            self.priority = int(list(self.tags & _frequency_maximum)[0][-1]) #the actual number from the nf tag
+        elif self.tags & _frequency_high:
+            self.priority_string = "priority_high"
+            self.priority = int(list(self.tags & _frequency_high)[0][-2:]) #the actual number from the nf tag
+        elif self.tags & _frequency_medium:
+            self.priority_string = "priority_medium"
+            self.priority = int(list(self.tags & _frequency_high)[0][-2:]) #the actual number from the nf tag
+        elif self.tags & _frequency_low:
             self.priority_string = "priority_low"
-            self.priority = 40
+            self.priority = int(list(self.tags & _frequency_high)[0][-2:]) #the actual number from the nf tag
         else:
-            self.priority_string = "priority_very_low"
+            self.priority_string = "priority_low"
             self.priority = 50
