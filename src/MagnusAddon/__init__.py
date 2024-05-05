@@ -8,6 +8,7 @@ import _lib # noqa NOTE: this line sets up lib paths, lib imports before here do
 import hooks
 
 from _addon_copies import refresh_media_references # noqa
+from _addon_copies import custom_shortcuts # noqa
 
 hooks.timing_hacks.init()
 hooks.browser_right_click_menu.init()
