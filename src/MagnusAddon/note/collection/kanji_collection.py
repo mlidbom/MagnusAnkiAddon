@@ -1,10 +1,8 @@
 from __future__ import annotations
 
-from typing import cast, List, TYPE_CHECKING
+from typing import List, TYPE_CHECKING
 
-from note.jpnote import JPNote
 from note.radicalnote import RadicalNote
-from sysutils.typed import checked_cast
 
 if TYPE_CHECKING:
     from note.collection.jp_collection import JPCollection
@@ -46,22 +44,18 @@ class KanjiCollection:
     def with_any_kanji_in(self, kanji_list: list[str]) -> List[KanjiNote]:
         return ex_sequence.flatten([self._cache.with_question(kanji) for kanji in kanji_list])
 
+    def with_question(self, kanji: str) -> KanjiNote:
+        return ex_list.single(self._cache.with_question(kanji))
+
     def display_dependencies_of(self, kanji_note: KanjiNote) -> list[KanjiDependency]:
-        dependencies = self.dependencies_of(kanji_note)
+        return [KanjiDependency.from_radical(rad) if isinstance(rad, RadicalNote)
+                else KanjiDependency.from_kanji(rad)
+                for rad in self.dependencies_of(kanji_note)]
 
-        radical_dependencies = [KanjiDependency.from_radical(rad) for rad in dependencies if isinstance(rad, RadicalNote)]
-        kanji_dependencies = [KanjiDependency.from_kanji(rad) for rad in dependencies if isinstance(rad, KanjiNote)]
+    def dependencies_of(self, kanji_note: KanjiNote) -> list[RadicalNote | KanjiNote]:
+        radical_dependency_notes = self.jp_collection.radicals.with_any_question_in(kanji_note.get_radicals())
+        radical_dependency_notes += self.jp_collection.radicals.with_any_answer_in(kanji_note.get_radical_dependencies_names())
+        radical_dependency_notes = ex_sequence.remove_duplicates_while_retaining_order(radical_dependency_notes)
+        dependency_notes = [rad if not rad.is_replaced_by_kanji() else self.with_question(rad.get_question()) for rad in radical_dependency_notes]
 
-        return radical_dependencies + kanji_dependencies
-
-    def dependencies_of(self, kanji_note: KanjiNote) -> list[JPNote]:
-        radical_dependencies_notes = self.jp_collection.radicals.with_any_question_in(kanji_note.get_radicals())
-        radical_dependencies_notes += self.jp_collection.radicals.with_any_answer_in(kanji_note.get_radical_dependencies_names())
-        radical_dependencies_notes = ex_sequence.remove_duplicates_while_retaining_order(radical_dependencies_notes)
-
-        radicals_exchanged_for_kanji = ex_list.remove_items_where(RadicalNote.predicates().is_replaced_by_kanji, radical_dependencies_notes)
-
-        kanji_dependencies_notes = self.jp_collection.kanji.with_any_kanji_in([radical.get_question() for radical in radicals_exchanged_for_kanji])
-        ex_list.remove_items_where(lambda item: checked_cast(KanjiNote, item) == kanji_note, kanji_dependencies_notes)
-
-        return cast(list[JPNote], radical_dependencies_notes) + cast(list[JPNote], kanji_dependencies_notes)
+        return dependency_notes

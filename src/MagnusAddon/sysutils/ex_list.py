@@ -39,3 +39,7 @@ def remove_items_where(predicate: Predicate[TItem], this: list[TItem]) -> list[T
 
 def where(predicate: Predicate[TItem], this: list[TItem]) -> list[TItem]:
     return [item for item in this if predicate(item)]
+
+def single(this: list[TItem]) -> TItem:
+    assert len(this) == 1, "List must contain exactly one item"
+    return this[0]

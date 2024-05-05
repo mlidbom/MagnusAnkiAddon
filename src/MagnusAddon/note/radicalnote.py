@@ -25,6 +25,9 @@ class RadicalNote(WaniNote):
 
     def get_user_mnemonic(self) -> str: return self.get_field(NoteFields.Radical.user_mnemonic)
 
+    def is_replaced_by_kanji(self) ->bool :
+        return self.get_active_mnemonic().upper() == "KANJI"
+
     def get_active_mnemonic(self) -> str:
         return self.get_user_mnemonic() if self.get_user_mnemonic() else self.get_source_mnemonic()
 
@@ -62,4 +65,4 @@ class RadicalNote(WaniNote):
 class _Predicates:
     @staticmethod
     def is_replaced_by_kanji(radical:RadicalNote) -> bool:
-        return radical.get_active_mnemonic().upper() == "KANJI"
+        return radical.is_replaced_by_kanji()
