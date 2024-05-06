@@ -4,6 +4,7 @@ from typing import Callable
 
 from wanikani_api import models
 from anki.notes import Note
+
 from note.waninote import WaniNote
 from note.note_constants import NoteFields, Mine, NoteTypes
 from sysutils import ex_str
@@ -34,7 +35,25 @@ class KanjiNote(WaniNote):
     def _set_source_answer(self, value: str) -> None: self.set_field(NoteFields.Kanji.source_answer, value)
 
     def update_generated_data(self) -> None:
+        def update_primary_audios() -> None:
+            from ankiutils import app
+            from note.vocabnote import VocabNote
+            found_vocab: list[VocabNote] = list[VocabNote]()
+            for vocab_str in self.get_primary_vocab():
+                vocab_notes = app.col().vocab.with_question(vocab_str)
+                if vocab_notes:
+                    found_vocab += vocab_notes
+                else:
+                    vocab_notes = app.col().vocab.with_reading(vocab_str)
+                    if vocab_notes:
+                        found_vocab += vocab_notes
+
+            if len(found_vocab) > 0:
+                audios = "".join([vo.get_dual_audios() for vo in found_vocab])
+                self.set_primary_vocab_audio(audios)
+
         self.set_field(NoteFields.Kanji.active_answer, self.get_answer())
+        update_primary_audios()
 
     def override_meaning_mnemonic(self) -> None:
         if not self.get_user_mnemonic():
@@ -96,9 +115,6 @@ class KanjiNote(WaniNote):
 
     def get_vocabs(self) -> str: return self.get_field(NoteFields.Kanji.Vocabs)
     def set_vocabs(self, value: str) -> None: self.set_field(NoteFields.Kanji.Vocabs, value)
-
-    def get_vocabs_raw(self) -> list[str]: return self.get_field(NoteFields.Kanji.VocabsRaw).split(",")
-    def set_vocabs_raw(self, value: list[str]) -> None: self.set_field(NoteFields.Kanji.VocabsRaw, ",".join(value))
 
     def get_primary_vocab(self) -> list[str]:
         return [voc for voc in

@@ -101,37 +101,3 @@ def _update_kanji(all_vocabulary: list[VocabNote], all_kanji: list[KanjiNote]) -
 
     update_generated_data()
 
-    kanji_dict: Dict[str, KanjiNote] = {kanji.get_question(): kanji for kanji in all_kanji}
-    kanji_vocab_dict: Dict[str, List[VocabNote]] = {kanji.get_question(): [] for kanji in all_kanji}
-
-    for voc in all_vocabulary:
-        for char in voc.get_question():
-            if char in kanji_vocab_dict:
-                kanji_vocab_dict[char].append(voc)
-
-    for kanji_str, vocabulary_entries in kanji_vocab_dict.items():
-        kanji_note = kanji_dict[kanji_str]
-        kanji_note.set_vocabs_raw([vo.get_question() for vo in vocabulary_entries])
-
-    kanji_with_vocab = [kanji for kanji in all_kanji if kanji.get_primary_vocab()]
-    for kanji in kanji_with_vocab: # todo move to an update_generated_data step on edit in UI? Maybe too slow since it will do lookups?
-        kanji_vocab = kanji_vocab_dict[kanji.get_question()]
-        primary_vocabs: List[str] = kanji.get_primary_vocab()
-        if len(primary_vocabs) > 0:
-            found_vocab: list[VocabNote] = list[VocabNote]()
-            vocab_to_vocab: dict[str, VocabNote] = {vo.get_question(): vo for vo in kanji_vocab}
-            reading_to_vocab: dict[str, VocabNote] = dict[str, VocabNote]()
-
-            for vocab_note in kanji_vocab:
-                for reading in vocab_note.get_readings():
-                    reading_to_vocab[reading] = vocab_note
-
-            for vocab_str in primary_vocabs:
-                if vocab_str in vocab_to_vocab:
-                    found_vocab.append(vocab_to_vocab[vocab_str])
-                elif vocab_str in reading_to_vocab:
-                    found_vocab.append(reading_to_vocab[vocab_str])
-
-            if len(found_vocab) > 0:
-                audios = "".join([vo.get_audios() for vo in found_vocab])
-                kanji.set_primary_vocab_audio(audios)

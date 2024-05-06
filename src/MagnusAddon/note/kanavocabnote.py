@@ -74,8 +74,6 @@ class KanaVocabNote(WaniNote):
     def get_audio_female(self) -> str: return self.get_field(NoteFields.Vocab.Audio_g)
     def set_audio_female(self, value: list[str]) -> None: self.set_field(NoteFields.Vocab.Audio_g, ''.join([f'[sound:{item}]' for item in value]))
 
-    def get_audios(self) -> str: return f"{self.get_audio_male()}{self.get_audio_female()}"
-
     def update_from_wani(self, wani_vocab: models.Vocabulary) -> None:
         super().update_from_wani(wani_vocab)
 
