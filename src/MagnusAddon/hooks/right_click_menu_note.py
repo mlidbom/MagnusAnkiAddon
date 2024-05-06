@@ -106,7 +106,6 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, sel_clip: str, selection: st
 
 def add_kanji_primary_vocab(note: KanjiNote, selection: str, _view: AnkiWebView) -> None:
     note.set_primary_vocab(note.get_primary_vocab() + [selection])
-    local_note_updater.update_kanji()
 
 def set_kanji_primary_vocab(note: KanjiNote, selection: str, view: AnkiWebView) -> None:
     note.set_primary_vocab([])
