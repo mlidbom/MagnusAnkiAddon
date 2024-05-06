@@ -67,7 +67,7 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, sel_clip: str, selection: st
         kanji = note
         add_lookup_action(note_lookup_menu, "&Vocabs", su.vocab_with_kanji(note))
         add_lookup_action(note_lookup_menu, "&Dependencies", su.notes_by_note(app.col().kanji.dependencies_of(kanji)))
-        add_sentence_lookup(note_lookup_menu, "&Sentences", sel_clip)
+        add_sentence_lookup(note_lookup_menu, "&Sentences", kanji.get_question())
 
         if not kanji.get_user_mnemonic():
             add_ui_action(note_hide_menu, "&Mnemonic", lambda: kanji.override_meaning_mnemonic())
