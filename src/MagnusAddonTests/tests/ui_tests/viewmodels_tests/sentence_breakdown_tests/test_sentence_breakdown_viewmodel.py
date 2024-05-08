@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Generator, TypeAlias
+from typing import Generator
 
 import pytest
 
@@ -12,9 +12,9 @@ from note.sentencenote import SentenceNote
 from tests.ui_tests.viewmodels_tests.sentence_breakdown_tests.breakdown_viewmodel_spec import NodeViewModelSpec, SentenceBreakdownViewModelSpec, VocabHitViewModelSpec
 from viewmodels.sentence_breakdown import sentence_breakdown_viewmodel
 
-V: TypeAlias = VocabHitViewModelSpec
-SB: TypeAlias = SentenceBreakdownViewModelSpec
-N: TypeAlias = NodeViewModelSpec
+V= VocabHitViewModelSpec
+SB = SentenceBreakdownViewModelSpec
+N = NodeViewModelSpec
 
 @pytest.fixture(scope="function", autouse=True)
 def setup_object() -> Generator[None, None, None]:

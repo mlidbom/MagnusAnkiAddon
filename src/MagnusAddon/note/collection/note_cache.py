@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Generic, Self, Sequence, TypeVar
+from typing import Generic, Sequence, TypeVar
 
 from anki import hooks
 from anki.collection import Collection
@@ -9,6 +9,9 @@ from anki.notes import Note, NoteId
 
 from note.jpnote import JPNote
 from sysutils.collections.default_dict_case_insensitive import DefaultDictCaseInsensitive
+
+TNoteCache = TypeVar("TNoteCache", bound="NoteCache")
+
 
 class CachedNote:
     def __init__(self, note: JPNote):
@@ -49,7 +52,7 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
         for vocab in added_vocab:
             self._add_to_cache(vocab)
 
-    def _merged_self(self) -> Self:
+    def _merged_self(self) -> TNoteCache:
         self._merge_pending()
         return self
 

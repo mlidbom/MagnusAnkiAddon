@@ -1,7 +1,7 @@
-from typing import Callable, TypeAlias, TypeVar
+from typing import Callable, TypeVar
 
 T = TypeVar('T')
-Predicate: TypeAlias = Callable[[T], bool]
+Predicate = Callable[[T], bool]
 
 def eq_(this: T) -> Callable[[T], bool]:
     """`returns` a predicate that returns argument == `this` """
