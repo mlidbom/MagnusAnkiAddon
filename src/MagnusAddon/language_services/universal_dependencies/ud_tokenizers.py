@@ -4,7 +4,7 @@ from language_services.universal_dependencies.unidic2ud.unidic2ud_tokenizer impo
 
 ginza: UDTokenizer = GinzaTokenizer()  # Yes. 15 Differences to gendai. 8 Better, 6 worse, one unclear.
 gendai: UDTokenizer = UD2UDTokenizer("gendai")  # Yes. 15 Differences to ginza. 6 Better, 8 worse, one unclear.
-default: UDTokenizer = ginza
+default: UDTokenizer = gendai
 spoken: UDTokenizer = UD2UDTokenizer("spoken")  # ??. Zero differences compared to gendai so far...
 
 qkana: UDTokenizer = UD2UDTokenizer("qkana")  # Maybe. 2 difference with gendai. One clearly better and used in tests(Not any more. Ginza, the current winner handled this case fine.).
