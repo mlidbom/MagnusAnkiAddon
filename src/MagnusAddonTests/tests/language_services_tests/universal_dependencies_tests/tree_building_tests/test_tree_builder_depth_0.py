@@ -7,7 +7,7 @@ from language_services.universal_dependencies.shared.tokenizing.ud_tokenizer imp
 from tests.language_services_tests.universal_dependencies_tests.tree_building_tests.helpers import test_runner
 from tests.language_services_tests.universal_dependencies_tests.tree_building_tests.helpers.ud_tree_node_spec import UDTreeNodeSpec
 from tests.language_services_tests.universal_dependencies_tests.tree_building_tests.helpers.ud_tree_spec import UDTreeSpec
-
+from typing import Optional
 N = UDTreeNodeSpec
 R = UDTreeSpec
 
@@ -18,13 +18,13 @@ def only_string_params(param: Any) -> str: return param if isinstance(param, str
 @pytest.mark.parametrize('sentence, parser, expected', [
     ("意外とかっこいいな", None, R(N('意外と', '', ''), N('かっこいい', '', ''), N('な', '', ''))),
 ], ids=only_string_params)
-def test_unsatisfied_dictionary_word_missing(sentence: str, parser: UDTokenizer | None, expected: R) -> None:
+def test_unsatisfied_dictionary_word_missing(sentence: str, parser: Optional[UDTokenizer], expected: R) -> None:
     run_tests(expected, parser if parser else ud_tokenizers.default, sentence)
 
 @pytest.mark.parametrize('sentence, parser, expected', [
     ("行きたい所全部行こう", None, R(N('行きたい所', '', ''),N('全部', '', ''),N('行こう', '行く', ''))),
 ], ids=only_string_params)
-def test_unsatisfied_sequential_identical_heads_not_compounded(sentence: str, parser: UDTokenizer | None, expected: R) -> None:
+def test_unsatisfied_sequential_identical_heads_not_compounded(sentence: str, parser: Optional[UDTokenizer], expected: R) -> None:
     run_tests(expected, parser if parser else ud_tokenizers.default, sentence)
 
 @pytest.mark.parametrize('sentence, parser, expected', [
@@ -45,7 +45,7 @@ def test_unsatisfied_sequential_identical_heads_not_compounded(sentence: str, pa
     # ように言った
     ("ように言ったのも", None, R(N('ように', '', ''), N('言ったのも', '', ''))),
 ], ids=only_string_params)
-def test_unsatisfied_dictionary_expression_missing(sentence: str, parser: UDTokenizer | None, expected: R) -> None:
+def test_unsatisfied_dictionary_expression_missing(sentence: str, parser: Optional[UDTokenizer], expected: R) -> None:
     run_tests(expected, parser if parser else ud_tokenizers.default, sentence)
 
 @pytest.mark.parametrize('sentence, expected', [

@@ -12,7 +12,7 @@ from note.sentencenote import SentenceNote
 from tests.ui_tests.viewmodels_tests.sentence_breakdown_tests.breakdown_viewmodel_spec import NodeViewModelSpec, SentenceBreakdownViewModelSpec, VocabHitViewModelSpec
 from viewmodels.sentence_breakdown import sentence_breakdown_viewmodel
 
-V= VocabHitViewModelSpec
+V = VocabHitViewModelSpec
 SB = SentenceBreakdownViewModelSpec
 N = NodeViewModelSpec
 

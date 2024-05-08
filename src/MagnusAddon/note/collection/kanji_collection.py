@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List, TYPE_CHECKING
+from typing import List, Union, TYPE_CHECKING
 
 from note.radicalnote import RadicalNote
 
@@ -52,10 +52,10 @@ class KanjiCollection:
                 else KanjiDependency.from_kanji(rad)
                 for rad in self.dependencies_of(kanji_note)]
 
-    def dependencies_of(self, kanji_note: KanjiNote) -> list[RadicalNote | KanjiNote]:
+    def dependencies_of(self, kanji_note: KanjiNote) -> list[Union[RadicalNote, KanjiNote]]:
         radical_dependency_notes = self.jp_collection.radicals.with_any_question_in(kanji_note.get_radicals())
         radical_dependency_notes += self.jp_collection.radicals.with_any_answer_in(kanji_note.get_radical_dependencies_names())
         radical_dependency_notes = ex_sequence.remove_duplicates_while_retaining_order(radical_dependency_notes)
-        dependency_notes = [rad if not rad.is_replaced_by_kanji() else self.with_question(rad.get_question()) for rad in radical_dependency_notes]
+        dependency_notes: list[Union[RadicalNote, KanjiNote]] = [rad if not rad.is_replaced_by_kanji() else self.with_question(rad.get_question()) for rad in radical_dependency_notes]
 
         return dependency_notes

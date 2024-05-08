@@ -14,9 +14,11 @@ from note.jpnote import JPNote
 from sysutils import my_clipboard
 from sysutils.typed import checked_cast
 
+from typing import Optional
+
 def register_lookup_actions(view: AnkiWebView, root_menu: QMenu) -> None:
-    def get_note() -> JPNote | None:
-        inner_note: Note | None
+    def get_note() -> Optional[JPNote]:
+        inner_note: Optional[Note]
 
         if view.kind == AnkiWebViewKind.MAIN:
             card = main_window().reviewer.card

@@ -1,17 +1,17 @@
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Optional
 
 from language_services.universal_dependencies.shared.tokenizing.ud_token import UDToken
 from language_services.universal_dependencies.shared.tree_building.ud_tree_node import UDTreeNode
 from tests.language_services_tests.universal_dependencies_tests.tree_building_tests.helpers import ud_tree_node_spec_formatter
 
 class UDTreeNodeSpec:
-    def __init__(self, surface: str, lemma: str, norm: str, children: list[UDTreeNodeSpec] | None = None, depth:int = -1) -> None:
+    def __init__(self, surface: str, lemma: str, norm: str, children: Optional[list[UDTreeNodeSpec]] = None, depth:int = -1) -> None:
         self.surface = surface
         self.lemma = lemma if lemma else surface
         self.children = children if children else []
-        self.token: UDToken | None = None
+        self.token: Optional[UDToken] = None
         self.norm = norm
         self.depth = depth
         if self.depth == -1:

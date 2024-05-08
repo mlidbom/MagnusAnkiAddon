@@ -2,7 +2,6 @@ from aqt.webview import AnkiWebView
 from PyQt6.QtWidgets import QMenu
 
 from ankiutils import app, query_builder as su
-from batches import local_note_updater
 from hooks.right_click_menu_utils import add_lookup_action, add_sentence_lookup, add_single_vocab_lookup_action, add_text_vocab_lookup, add_ui_action, add_vocab_dependencies_lookup
 from note.jpnote import JPNote
 from note.kanjinote import KanjiNote

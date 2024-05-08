@@ -10,9 +10,6 @@ from anki.notes import Note, NoteId
 from note.jpnote import JPNote
 from sysutils.collections.default_dict_case_insensitive import DefaultDictCaseInsensitive
 
-TNoteCache = TypeVar("TNoteCache", bound="NoteCache")
-
-
 class CachedNote:
     def __init__(self, note: JPNote):
         self.id = note.get_id()
@@ -36,10 +33,21 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
 
         self._setup_hooks()
 
-    def all(self) -> list[TNote]: return list(self._merged_self()._by_id.values())
-    def with_id(self, note_id: NoteId) -> TNote: return self._merged_self()._by_id[note_id]
-    def with_question(self, question: str) -> list[TNote]: return list(self._merged_self()._by_question[question])
-    def with_answer(self, answer: str) -> list[TNote]: return list(self._merged_self()._by_answer[answer])
+    def all(self) -> list[TNote]:
+        self._merge_pending()
+        return list(self._by_id.values())
+
+    def with_id(self, note_id: NoteId) -> TNote:
+        self._merge_pending()
+        return self._by_id[note_id]
+
+    def with_question(self, question: str) -> list[TNote]:
+        self._merge_pending()
+        return list(self._by_question[question])
+
+    def with_answer(self, answer: str) -> list[TNote]:
+        self._merge_pending()
+        return list(self._by_answer[answer])
 
     @abstractmethod
     def _create_snapshot(self, note: TNote) -> TSnapshot: pass
@@ -51,10 +59,6 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
         self._pending_add = [v for v in self._pending_add if not v.get_id()]
         for vocab in added_vocab:
             self._add_to_cache(vocab)
-
-    def _merged_self(self) -> TNoteCache:
-        self._merge_pending()
-        return self
 
     def _setup_hooks(self) -> None:
         hooks.notes_will_be_deleted.append(self._on_will_be_removed)

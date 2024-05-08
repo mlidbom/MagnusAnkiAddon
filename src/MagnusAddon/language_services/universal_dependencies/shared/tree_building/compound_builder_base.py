@@ -1,12 +1,12 @@
 """Really only exists to keep supporting logic out of the real compound builder so that it can be as readable as we're able to make it"""
 from __future__ import annotations
 
-from typing import Callable
+from typing import Callable, Optional
 
 from language_services.universal_dependencies.shared.tokenizing.ud_token import UDToken
 
 class CompoundingRuleSet:
-    def __init__(self, join_when: list[Callable[[], bool]], split_when: list[Callable[[], bool]] | None = None):
+    def __init__(self, join_when: list[Callable[[], bool]], split_when: Optional[list[Callable[[], bool]]] = None):
         self.join_rules = join_when
         self.split_rules = split_when if split_when else []
 

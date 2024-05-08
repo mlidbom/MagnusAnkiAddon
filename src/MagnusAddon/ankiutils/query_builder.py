@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Iterable
+from typing import Iterable, Sequence
 
 from anki.notes import NoteId
 
@@ -104,5 +104,5 @@ def lookup_text_object(text: str) -> str:
 def notes_by_id(note_ids:list[NoteId]) -> str:
     return f"""nid:{",".join([str(note_id) for note_id in note_ids])}"""
 
-def notes_by_note(notes:list[JPNote]) -> str:
+def notes_by_note(notes:Sequence[JPNote]) -> str:
     return notes_by_id([n.get_id() for n in notes])

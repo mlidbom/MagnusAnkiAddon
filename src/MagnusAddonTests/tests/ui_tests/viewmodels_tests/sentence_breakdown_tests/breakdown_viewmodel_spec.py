@@ -1,7 +1,7 @@
 from __future__ import annotations
 from viewmodels.sentence_breakdown.sentence_breakdown_viewmodel import VocabHit, BreakDownViewModel, NodeViewModel
 
-from typing import Any
+from typing import Any, Optional
 
 quad_space = "    "
 
@@ -28,7 +28,7 @@ class VocabHitViewModelSpec:
         return VocabHitViewModelSpec(view_model.surface_form, view_model.lookup_form, view_model.hit_form, view_model.answer)
 
 class NodeViewModelSpec:
-    def __init__(self, surface: str, base: str | None, *children: NodeViewModelSpec | VocabHitViewModelSpec):
+    def __init__(self, surface: str, base: Optional[str], *children: NodeViewModelSpec | VocabHitViewModelSpec):
         self.surface = surface
         self.base = base
         self.vocab_hits = [surface_hit for surface_hit in children if isinstance(surface_hit, VocabHitViewModelSpec)]

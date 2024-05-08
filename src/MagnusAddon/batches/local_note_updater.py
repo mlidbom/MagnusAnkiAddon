@@ -1,5 +1,3 @@
-from typing import *
-
 from ankiutils import app
 from note.sentencenote import SentenceNote
 from sysutils import ex_str, kana_utils
@@ -15,7 +13,7 @@ def update_all() -> None:
     all_sentences = app.col().sentences.all()
 
     _update_sentences(all_sentences)
-    _update_kanji(all_vocabulary, all_kanji)
+    _update_kanji(all_kanji)
     _update_vocab(all_vocabulary, all_kanji)
     _update_vocab_parsed_parts_of_speech(all_vocabulary)
 
@@ -28,7 +26,7 @@ def update_sentences() -> None:
     _update_sentences(app.col().sentences.all())
 
 def update_kanji() -> None:
-    _update_kanji(app.col().vocab.all(), app.col().kanji.all())
+    _update_kanji(app.col().kanji.all())
 
 def update_vocab() -> None:
     _update_vocab(app.col().vocab.all(), app.col().kanji.all())
@@ -94,7 +92,7 @@ def _update_vocab(all_vocabulary: list[VocabNote], all_kanji: list[KanjiNote]) -
     populate_homophones()
 
 
-def _update_kanji(all_vocabulary: list[VocabNote], all_kanji: list[KanjiNote]) -> None:
+def _update_kanji(all_kanji: list[KanjiNote]) -> None:
     def update_generated_data() -> None:
         for kanji in all_kanji:
             kanji.update_generated_data()
