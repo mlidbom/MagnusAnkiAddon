@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import time
 from typing import Callable
 
 from wanikani_api import models
@@ -48,9 +49,7 @@ class KanjiNote(WaniNote):
                     if vocab_notes:
                         found_vocab += vocab_notes
 
-            if len(found_vocab) > 0:
-                audios = "".join([vo.get_dual_audios() for vo in found_vocab])
-                self.set_primary_vocab_audio(audios)
+            self.set_primary_vocab_audio("".join([vo.get_dual_audios() for vo in found_vocab]) if found_vocab else "")
 
         self.set_field(NoteFields.Kanji.active_answer, self.get_answer())
         update_primary_audios()
