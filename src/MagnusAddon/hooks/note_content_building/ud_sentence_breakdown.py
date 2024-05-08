@@ -142,10 +142,11 @@ def build_breakdown_html(sentence: SentenceNote) -> str:
     ##KANJI_LIST##
         """
 
-    html += f"""
-    
-    {print_debug_information_for_analysis(sentence.get_question())}
-    """
+    #todo: restore this or remove the related code
+    # html += f"""
+    #
+    # {print_debug_information_for_analysis(sentence.get_question())}
+    # """
 
     return html
 
