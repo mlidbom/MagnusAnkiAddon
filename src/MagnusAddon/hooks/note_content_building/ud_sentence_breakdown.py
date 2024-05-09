@@ -32,6 +32,9 @@ def _node_html(node: NodeViewModel, excluded: set[str], highlighted: set[str], d
                     {f'''<span class="vocabLookupForm clipboard">{vocab_entry.lookup_form}</span>''' if vocab_entry.lookup_form else ""}
                     {f'''<span class="vocabHitForm clipboard">{vocab_entry.hit_form}</span>''' if vocab_entry.hit_form else ""}
                     {f'''<span class="vocabHitReadings clipboard">{readings}</span>''' if readings else ""}
+                    {vocab_entry.meta_tags}
+                    
+                    
                     <span class="vocabAnswer">{vocab_entry.answer}</span>
                 </div>
                 {_create_html_from_nodes(node.children, excluded, highlighted, depth + 1)}
@@ -66,6 +69,7 @@ def _build_user_extra_list(extra_words: list[str]) -> str:
                                 <span class="vocabQuestion clipboard">{word}</span>
                                 {f'''<span class="vocabHitForm clipboard">{hit_form}</span>''' if hit_form else ""}
                                 {f'''<span class="vocabHitReadings clipboard">{readings}</span>''' if readings else ""}
+                                {vocab.get_meta_tags()}
                                 <span class="vocabAnswer">{vocab.get_answer()}</span>
                             </div>
                         </li>

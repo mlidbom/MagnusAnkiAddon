@@ -83,6 +83,7 @@ def _build_user_extra_list(extra_words: list[str], excluded: set[str]) -> str:
                     <li class="sentenceVocabEntry depth1 word_priority_{priorities.very_high}">
                         <div class="sentenceVocabEntryDiv">
                             <span class="vocabQuestion clipboard">{vocab.get_display_question()}</span>
+                            {vocab.get_meta_tags()}
                             <span class="vocabAnswer">{vocab.get_answer()}</span>
                         </div>
                     </li>

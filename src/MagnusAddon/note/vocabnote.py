@@ -126,14 +126,14 @@ class VocabNote(KanaVocabNote):
         if "_uk" in tags: meta.append(VocabMetaTag("uk", "uk", "usually kana only"))
 
         #verbs
-        if "ichidan" in tos: meta.append(VocabMetaTag("ichidan", "1", "ichidan verb"))
-        if "godan" in tos: meta.append(VocabMetaTag("godan", "5", "godan verb"))
+        if "ichidan verb" in tos: meta.append(VocabMetaTag("ichidan", "1", "ichidan verb"))
+        if "godan verb" in tos: meta.append(VocabMetaTag("godan", "5", "godan verb"))
         if "suru verb" in tos or "verbal noun" in tos: meta.append(VocabMetaTag("suru-verb", "s", "suru verb"))
         if "kuru verb" in tos: meta.append(VocabMetaTag("kuru-verb", "k-v", "kuru verb"))
         if "auxiliary verb" in tos: meta.append(VocabMetaTag("auxiliary-verb", "aux-v", "auxiliary verb"))
 
-        if "intransitive verb" in tos: meta.append(VocabMetaTag("intransitive", "t", "transitive"))
-        if "transitive verb" in tos: meta.append(VocabMetaTag("transitive", "i", "intransitive"))
+        if "intransitive verb" in tos: meta.append(VocabMetaTag("intransitive", "t", "intransitive verb"))
+        if "transitive verb" in tos: meta.append(VocabMetaTag("transitive", "i", "transitive verb"))
 
         if "adverb" in tos: meta.append(VocabMetaTag("adverb", "a", "adverb"))
 
