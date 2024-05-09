@@ -132,8 +132,8 @@ class VocabNote(KanaVocabNote):
         if "kuru verb" in tos: meta.append(VocabMetaTag("kuru-verb", "k-v", "kuru verb"))
         if "auxiliary verb" in tos: meta.append(VocabMetaTag("auxiliary-verb", "aux-v", "auxiliary verb"))
 
-        if "intransitive verb" in tos: meta.append(VocabMetaTag("intransitive", "t", "intransitive verb"))
-        if "transitive verb" in tos: meta.append(VocabMetaTag("transitive", "i", "transitive verb"))
+        if "intransitive verb" in tos: meta.append(VocabMetaTag("intransitive", "i", "intransitive verb"))
+        if "transitive verb" in tos: meta.append(VocabMetaTag("transitive", "t", "transitive verb"))
 
         if "adverb" in tos: meta.append(VocabMetaTag("adverb", "a", "adverb"))
 
