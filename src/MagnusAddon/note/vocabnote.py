@@ -117,29 +117,41 @@ class VocabNote(KanaVocabNote):
         else:
             return ""
 
+
+    @staticmethod
+    def _create_verb_meta_tag(name: str, display: str, tooltip: str, tos:set[str]) -> VocabMetaTag:
+        tag = VocabMetaTag(name, display, tooltip)
+
+        if "intransitive verb" in tos:
+            tag.display += "i"
+            tag.tooltip = "intransitive " + tag.tooltip
+        if "transitive verb" in tos:
+            tag.display += "t"
+            tag.tooltip = "transitive " + tag.tooltip
+
+        return tag
+
+
     def get_meta_tags(self) -> str:
         tags = set(self.get_tags())
         meta: list[VocabMetaTag] = []
-        tos = [t.lower().strip() for t in self.get_speech_type().split(",")]
+        tos = set([t.lower().strip() for t in self.get_speech_type().split(",")])
 
         #writing
         if "_uk" in tags: meta.append(VocabMetaTag("uk", "uk", "usually kana only"))
 
         #verbs
-        if "ichidan verb" in tos: meta.append(VocabMetaTag("ichidan", "1", "ichidan verb"))
-        if "godan verb" in tos: meta.append(VocabMetaTag("godan", "5", "godan verb"))
-        if "suru verb" in tos or "verbal noun" in tos: meta.append(VocabMetaTag("suru-verb", "s", "suru verb"))
-        if "kuru verb" in tos: meta.append(VocabMetaTag("kuru-verb", "k-v", "kuru verb"))
-        if "auxiliary verb" in tos: meta.append(VocabMetaTag("auxiliary-verb", "aux-v", "auxiliary verb"))
-
-        if "intransitive verb" in tos: meta.append(VocabMetaTag("intransitive", "i", "intransitive verb"))
-        if "transitive verb" in tos: meta.append(VocabMetaTag("transitive", "t", "transitive verb"))
+        if "ichidan verb" in tos: meta.append(self._create_verb_meta_tag("ichidan", "1", "ichidan verb", tos))
+        if "godan verb" in tos: meta.append(self._create_verb_meta_tag("godan", "5", "godan verb", tos))
+        if "suru verb" in tos or "verbal noun" in tos: meta.append(self._create_verb_meta_tag("suru-verb", "s", "suru verb", tos))
+        if "kuru verb" in tos: meta.append(self._create_verb_meta_tag("kuru-verb", "k-v", "kuru verb", tos))
+        if "auxiliary verb" in tos: meta.append(self._create_verb_meta_tag("auxiliary-verb", "aux-v", "auxiliary verb", tos))
 
         if "adverb" in tos: meta.append(VocabMetaTag("adverb", "a", "adverb"))
 
         #nouns
-        if "proper noun" in tos: meta.append(VocabMetaTag("proper-noun", "pn", "proper noun"))
-        if "pronoun" in tos: meta.append(VocabMetaTag("pronoun", "pr", "pronoun"))
+        if "proper noun" in tos: meta.append(VocabMetaTag("proper-noun", "p-n", "proper noun"))
+        if "pronoun" in tos: meta.append(VocabMetaTag("pronoun", "pro", "pronoun"))
         elif "noun" in tos: meta.append(VocabMetaTag("noun", "n", "noun"))
         if "adverbial noun" in tos: meta.append(VocabMetaTag("adverbial-noun", "adv-n", "adverbial noun"))
         if "independent noun" in tos: meta.append(VocabMetaTag("independent-noun", "i-n", "independent noun"))
@@ -148,7 +160,7 @@ class VocabNote(KanaVocabNote):
         if "い adjective" in tos or "i-adjective" in tos: meta.append(VocabMetaTag("i-adjective", "い", "い adjective"))
         if "の adjective" in tos: meta.append(VocabMetaTag("no-adjective", "の", "の adjective"))
         if "な adjective" in tos or "na adjective" in tos: meta.append(VocabMetaTag("na-adjective", "な", "な adjective"))
-        if "auxiliary adjective" in tos: meta.append(VocabMetaTag("auxiliary-adjective", "aa", "auxiliary adjective"))
+        if "auxiliary adjective" in tos: meta.append(VocabMetaTag("auxiliary-adjective", "aux-adj", "auxiliary adjective"))
 
 
         #???
@@ -162,9 +174,9 @@ class VocabNote(KanaVocabNote):
         if "auxiliary" in tos: meta.append(VocabMetaTag("auxiliary", "aux", "auxiliary"))
         if "interjection" in tos: meta.append(VocabMetaTag("interjection", "int", "interjection"))
         if "conjunction" in tos: meta.append(VocabMetaTag("conjunction", "conj", "conjunction"))
-        if "particle" in tos: meta.append(VocabMetaTag("particle", "part", "particle"))
-        if "prefix" in tos: meta.append(VocabMetaTag("prefix", "p", "prefix"))
-        if "suff" in tos: meta.append(VocabMetaTag("suffix", "s", "suffix"))
+        if "particle" in tos: meta.append(VocabMetaTag("particle", "prt", "particle"))
+        if "prefix" in tos: meta.append(VocabMetaTag("prefix", "pre", "prefix"))
+        if "suffix" in tos: meta.append(VocabMetaTag("suffix", "suf", "suffix"))
         if "expression" in tos: meta.append(VocabMetaTag("expression", "x", "expression"))
 
         return """<ol class="vocab_tag_list">""" +  "".join([f"""<li class="vocab_tag {tag.name}" title="{tag.tooltip}">{tag.display}</li>""" for tag in meta]) + "</ol>"
