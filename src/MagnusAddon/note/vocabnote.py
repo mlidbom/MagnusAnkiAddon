@@ -11,6 +11,13 @@ from sysutils import ex_str
 from note.note_constants import NoteFields, Mine, NoteTypes
 from wanikani.wanikani_api_client import WanikaniClient
 
+class VocabMetaTag:
+    def __init__(self, name: str, display: str, tooltip: str):
+        self.name = name
+        self.display = display
+        self.tooltip = tooltip
+
+
 class VocabNote(KanaVocabNote):
     def __init__(self, note: Note):
         super().__init__(note)
@@ -109,6 +116,58 @@ class VocabNote(KanaVocabNote):
             return f"{self.get_audio_female()}{self.get_audio_female()}"
         else:
             return ""
+
+    def get_meta_tags(self) -> str:
+        tags = set(self.get_tags())
+        meta: list[VocabMetaTag] = []
+        tos = [t.lower().strip() for t in self.get_speech_type().split(",")]
+
+        #writing
+        if "_uk" in tags: meta.append(VocabMetaTag("uk", "uk", "usually kana only"))
+
+        #verbs
+        if "ichidan" in tos: meta.append(VocabMetaTag("ichidan", "1", "ichidan verb"))
+        if "godan" in tos: meta.append(VocabMetaTag("godan", "5", "godan verb"))
+        if "suru verb" in tos or "verbal noun" in tos: meta.append(VocabMetaTag("suru-verb", "s", "suru verb"))
+        if "kuru verb" in tos: meta.append(VocabMetaTag("kuru-verb", "k-v", "kuru verb"))
+        if "auxiliary verb" in tos: meta.append(VocabMetaTag("auxiliary-verb", "aux-v", "auxiliary verb"))
+
+        if "intransitive verb" in tos: meta.append(VocabMetaTag("intransitive", "t", "transitive"))
+        if "transitive verb" in tos: meta.append(VocabMetaTag("transitive", "i", "intransitive"))
+
+        if "adverb" in tos: meta.append(VocabMetaTag("adverb", "a", "adverb"))
+
+        #nouns
+        if "proper noun" in tos: meta.append(VocabMetaTag("proper-noun", "pn", "proper noun"))
+        if "pronoun" in tos: meta.append(VocabMetaTag("pronoun", "pr", "pronoun"))
+        elif "noun" in tos: meta.append(VocabMetaTag("noun", "n", "noun"))
+        if "adverbial noun" in tos: meta.append(VocabMetaTag("adverbial-noun", "adv-n", "adverbial noun"))
+        if "independent noun" in tos: meta.append(VocabMetaTag("independent-noun", "i-n", "independent noun"))
+
+        #adjectives
+        if "い adjective" in tos or "i-adjective" in tos: meta.append(VocabMetaTag("i-adjective", "い", "い adjective"))
+        if "の adjective" in tos: meta.append(VocabMetaTag("no-adjective", "の", "の adjective"))
+        if "な adjective" in tos or "na adjective" in tos: meta.append(VocabMetaTag("na-adjective", "な", "な adjective"))
+        if "auxiliary adjective" in tos: meta.append(VocabMetaTag("auxiliary-adjective", "aa", "auxiliary adjective"))
+
+
+        #???
+        if "in compounds" in tos: meta.append(VocabMetaTag("in-compounds", "i-c", "in compounds"))
+        if "n-adv" in tos: meta.append(VocabMetaTag("n-adv", "n-adv", "n-adv"))
+
+
+        #misc
+        if "counter" in tos: meta.append(VocabMetaTag("counter", "ctr", "counter"))
+        if "numeral" in tos: meta.append(VocabMetaTag("numeral", "num", "numeral"))
+        if "auxiliary" in tos: meta.append(VocabMetaTag("auxiliary", "aux", "auxiliary"))
+        if "interjection" in tos: meta.append(VocabMetaTag("interjection", "int", "interjection"))
+        if "conjunction" in tos: meta.append(VocabMetaTag("conjunction", "conj", "conjunction"))
+        if "particle" in tos: meta.append(VocabMetaTag("particle", "part", "particle"))
+        if "prefix" in tos: meta.append(VocabMetaTag("prefix", "p", "prefix"))
+        if "suff" in tos: meta.append(VocabMetaTag("suffix", "s", "suffix"))
+        if "expression" in tos: meta.append(VocabMetaTag("expression", "x", "expression"))
+
+        return """<ol class="vocab_tag_list">""" +  "".join([f"""<li class="vocab_tag {tag.name}" title="{tag.tooltip}">{tag.display}</li>""" for tag in meta]) + "</ol>"
 
     def update_from_wani(self, wani_vocab: models.Vocabulary) -> None:
         super().update_from_wani(wani_vocab)
