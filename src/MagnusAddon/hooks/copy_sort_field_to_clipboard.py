@@ -12,13 +12,6 @@ from sysutils.collections.recent_items import RecentItems
 from sysutils import ex_str
 
 recent_previewer_cards = RecentItems[int](2)
-def copy_previewer_sort_field_to_windows_clipboard(html:str, card: Card, type_of_display:str) -> str:
-    if ((type_of_display == 'previewAnswer'
-            and not ui_utils().is_edit_current_open()
-            and not recent_previewer_cards.is_recent(card.note().id))
-            and not ugly_timing_hacks.reviewer_just_showed_answer()):
-        copy_card_sort_field_to_clipboard(card.note())
-    return html
 
 def copy_card_sort_field_to_clipboard(note: Note) -> None:
     model = cast(NotetypeDict, note.note_type())
@@ -37,4 +30,3 @@ def on_reviewer_show_answer(card: Card) -> None:
 
 def init() -> None:
     gui_hooks.reviewer_did_show_answer.append(on_reviewer_show_answer)
-    gui_hooks.card_will_show.append(copy_previewer_sort_field_to_windows_clipboard)
