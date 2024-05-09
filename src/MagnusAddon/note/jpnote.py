@@ -90,6 +90,8 @@ class JPNote(ABC):
             self._note[field_name] = value
             self._flush()
 
+    def get_tags(self) -> list[str]: return self._note.tags
+
     def has_tag(self, tag: str) -> bool: return tag in self._note.tags
 
     def set_tag(self, tag: str) -> None:
