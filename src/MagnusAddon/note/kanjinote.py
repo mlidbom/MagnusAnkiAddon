@@ -122,6 +122,12 @@ class KanjiNote(WaniNote):
         formatted = [self.tag_readings_in_string(voc, lambda read: f"<read>{read}</read>") for voc in value]
         self.set_field(NoteFields.Kanji.PrimaryVocab, ", ".join(formatted))
 
+    def add_primary_vocab(self, vocab:str) -> None:
+        self.set_primary_vocab(self.get_primary_vocab() + [vocab])
+
+    def remove_primary_vocab(self, vocab:str) -> None:
+        self.set_primary_vocab([v for v in self.get_primary_vocab() if not v == vocab])
+
     def get_primary_vocab_audio(self) -> str: return self.get_field(NoteFields.Kanji.Audio__)
     def set_primary_vocab_audio(self, value: str) -> None: self.set_field(NoteFields.Kanji.Audio__, value)
 

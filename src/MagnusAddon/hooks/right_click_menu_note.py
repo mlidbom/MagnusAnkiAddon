@@ -76,8 +76,9 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, sel_clip: str, selection: st
             add_ui_action(note_menu, "Accept &meaning", lambda: kanji.set_user_answer(format_kanji_meaning(kanji.get_answer())))
 
         if selection:
-            add_ui_action(note_add_menu, "&Primary vocab", lambda: add_kanji_primary_vocab(kanji, selection, view))
-            add_ui_action(note_set_menu, "&Primary vocab", lambda: set_kanji_primary_vocab(kanji, selection, view))
+            add_ui_action(note_add_menu, "&Primary vocab", lambda: kanji.add_primary_vocab(selection))
+            add_ui_action(note_set_menu, "&Primary vocab", lambda: kanji.set_primary_vocab([selection]))
+            add_ui_action(note_hide_menu, "&Primary vocab", lambda: kanji.remove_primary_vocab(selection))
 
     if isinstance(note, VocabNote):
         vocab = note
@@ -102,13 +103,6 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, sel_clip: str, selection: st
         add_ui_action(note_set_menu, "&Derived from", lambda: vocab.set_related_derived_from(sel_clip))
         add_ui_action(note_set_menu, "S&imilar meaning", lambda: vocab.set_related_similar_meaning(sel_clip))
         add_ui_action(note_set_menu, "&Ergative twin", lambda: vocab.set_related_ergative_twin(sel_clip))
-
-def add_kanji_primary_vocab(note: KanjiNote, selection: str, _view: AnkiWebView) -> None:
-    note.set_primary_vocab(note.get_primary_vocab() + [selection])
-
-def set_kanji_primary_vocab(note: KanjiNote, selection: str, view: AnkiWebView) -> None:
-    note.set_primary_vocab([])
-    add_kanji_primary_vocab(note, selection, view)
 
 def format_vocab_meaning(meaning: str) -> str:
     return ex_str.strip_html_and_bracket_markup(meaning
