@@ -36,16 +36,16 @@ def _or_clauses(clauses:list[str]) -> str:
 def field_contains_word(field:str, *words:str) -> str:
     return _or_clauses([f'''"{field}:re:\\b{query}\\b"''' for query in words])
 
-def sentence_search(query:str) -> str:
-    from ankiutils import app
-    vocabs = app.col().vocab.with_form(query)
-    query = "(deck:*sentence* deck:*listen*) "
-    if vocabs:
-        forms = set().union(*[v.get_forms() for v in vocabs])
-        query += "(" + "　OR ".join([f"""{f_question}:*{form}* OR {field_contains_word(SentenceNoteFields.ParsedWords, form)}""" for form in forms]) + ")"
-    else:
-        query += f"""({f_question}:*{query}* OR Reading:*{query}* OR {field_contains_word(SentenceNoteFields.ParsedWords, query)})"""
-    return query
+def sentence_search(query:str, exact:bool = False) -> str:
+    result = "(deck:*sentence* deck:*listen*) "
+    if not exact:
+        from ankiutils import app
+        vocabs = app.col().vocab.with_form(query)
+        if vocabs:
+            forms = set().union(*[v.get_forms() for v in vocabs])
+            return result + "(" + "　OR ".join([f"""{f_question}:*{form}* OR {field_contains_word(SentenceNoteFields.ParsedWords, form)}""" for form in forms]) + ")"
+
+    return result + f"""({f_question}:*{query}* OR Reading:*{query}* OR {field_contains_word(SentenceNoteFields.ParsedWords, query)})"""
 
 def field_value_exact(field:str, *queries:str) -> str:
     return _or_clauses([f'''"{field}:{query}"''' for query in queries])

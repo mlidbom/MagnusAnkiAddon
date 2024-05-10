@@ -2,7 +2,7 @@ from aqt.webview import AnkiWebView
 from PyQt6.QtWidgets import QMenu
 
 from ankiutils import app, query_builder as su
-from hooks.right_click_menu_utils import add_lookup_action, add_sentence_lookup, add_single_vocab_lookup_action, add_text_vocab_lookup, add_ui_action, add_vocab_dependencies_lookup
+from hooks.right_click_menu_utils import add_lookup_action, add_single_vocab_lookup_action, add_text_vocab_lookup, add_ui_action, add_vocab_dependencies_lookup
 from note.jpnote import JPNote
 from note.kanjinote import KanjiNote
 from note.note_constants import MyNoteFields, NoteFields, NoteTypes
@@ -66,7 +66,7 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, sel_clip: str, selection: st
         kanji = note
         add_lookup_action(note_lookup_menu, "&Vocabs", su.vocab_with_kanji(note))
         add_lookup_action(note_lookup_menu, "&Dependencies", su.notes_by_note(app.col().kanji.dependencies_of(kanji)))
-        add_sentence_lookup(note_lookup_menu, "&Sentences", kanji.get_question())
+        add_lookup_action(note_lookup_menu, "&Sentences", su.sentence_search(kanji.get_question(), exact=True))
 
         if not kanji.get_user_mnemonic():
             add_ui_action(note_hide_menu, "&Mnemonic", lambda: kanji.override_meaning_mnemonic())

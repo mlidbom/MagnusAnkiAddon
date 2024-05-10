@@ -30,7 +30,3 @@ def add_text_vocab_lookup(menu: QMenu, name:str, text:str) -> None:
 
 def add_vocab_dependencies_lookup(menu: QMenu, name: str, vocab: VocabNote) -> None:
     add_lookup_action_lambda(menu, name, lambda: su.vocab_dependencies_lookup_query(vocab))
-
-
-def add_sentence_lookup(menu: QMenu, name: str, search: str) -> None:
-    add_lookup_action(menu, name, su.sentence_search(search))

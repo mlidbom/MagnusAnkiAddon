@@ -3,7 +3,7 @@ from urllib import parse
 from PyQt6.QtWidgets import QMenu
 from aqt.utils import openLink
 
-from hooks.right_click_menu_utils import add_sentence_lookup, add_lookup_action, add_text_vocab_lookup
+from hooks.right_click_menu_utils import add_lookup_action, add_text_vocab_lookup
 from note.note_constants import NoteFields, NoteTypes
 from ankiutils import query_builder as su
 from sysutils.typed import checked_cast
@@ -22,7 +22,8 @@ def setup_anki_search_menu(search_menu: QMenu, sel_clip: str) -> None:
     add_lookup_action(search_anki_menu, "&Vocab", su.single_vocab_by_question_reading_or_answer_exact(sel_clip))
     add_lookup_action(search_anki_menu, "Vocab &Wildcard", su.single_vocab_wildcard(sel_clip))
     add_lookup_action(search_anki_menu, "&Radical", build_radical_search_string(sel_clip))
-    add_sentence_lookup(search_anki_menu, "&Sentence", sel_clip)
+    add_lookup_action(search_anki_menu, "&Sentence - Parse Vocabulary", su.sentence_search(sel_clip))
+    add_lookup_action(search_anki_menu, "&Sentence - Exact String", su.sentence_search(sel_clip, exact=True))
     add_text_vocab_lookup(search_anki_menu, "Text &words", sel_clip)
 
 def setup_web_search_menu(search_menu: QMenu, sel_clip: str) -> None:
