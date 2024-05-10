@@ -6,7 +6,7 @@ from anki.notes import NoteId
 
 from note.jpnote import JPNote
 from note.kanjinote import KanjiNote
-from note.note_constants import Builtin, Mine, MyNoteFields, NoteFields, NoteTypes
+from note.note_constants import Builtin, Mine, MyNoteFields, NoteFields, NoteTypes, SentenceNoteFields
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
 from language_services.janome_ex.word_extraction import word_extractor
@@ -35,6 +35,10 @@ def _or_clauses(clauses:list[str]) -> str:
 
 def field_contains_word(field:str, *words:str) -> str:
     return _or_clauses([f'''"{field}:re:\\b{query}\\b"''' for query in words])
+
+def sentences_with_vocab(vocab: VocabNote) -> str:
+    forms = vocab.get_forms()
+    return "(deck:*sentence* deck:*listen*) ( " + "　OR ".join([f"""{field_contains_word(SentenceNoteFields.ParsedWords, form)} OR {question}:*{form}*""" for form in forms]) + ")"
 
 def field_value_exact(field:str, *queries:str) -> str:
     return _or_clauses([f'''"{field}:{query}"''' for query in queries])
