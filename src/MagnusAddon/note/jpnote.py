@@ -4,6 +4,7 @@ from abc import ABC
 from typing import Any, cast, Sequence
 
 from anki.cards import Card, CardId
+from anki.consts import QUEUE_TYPE_NEW, QUEUE_TYPE_SUSPENDED
 from anki.models import NotetypeDict
 from anki.notes import Note, NoteId
 
@@ -28,6 +29,9 @@ class JPNote(ABC):
 
     def get_question(self) -> str: return self.get_field(MyNoteFields.question)
     def get_answer(self) -> str: return self.get_field(MyNoteFields.answer)
+
+    def is_studying(self) -> bool:
+        return any([card for card in self._note.cards() if card.queue != QUEUE_TYPE_SUSPENDED and card.queue != QUEUE_TYPE_NEW])
 
     @classmethod
     def note_from_card(cls, card: Card) -> JPNote:

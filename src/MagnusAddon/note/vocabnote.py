@@ -11,6 +11,11 @@ from sysutils import ex_str
 from note.note_constants import NoteFields, Mine, NoteTypes
 from wanikani.wanikani_api_client import WanikaniClient
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from note.sentencenote import SentenceNote
+
 class VocabMetaTag:
     def __init__(self, name: str, display: str, tooltip: str):
         self.name = name
@@ -132,10 +137,28 @@ class VocabNote(KanaVocabNote):
         return tag
 
 
+    def get_sentences(self) -> list[SentenceNote]:
+        from ankiutils import app
+        return [sentence for sentence in app.col().sentences.with_vocab(self)]
+
+    def get_active_sentences(self) -> list[SentenceNote]:
+        return [sentence for sentence in self.get_sentences() if sentence.is_studying()]
+
+
     def get_meta_tags(self) -> str:
         tags = set(self.get_tags())
         meta: list[VocabMetaTag] = []
         tos = set([t.lower().strip() for t in self.get_speech_type().split(",")])
+
+        sentences = self.get_sentences()
+        if sentences:
+            studying_sentences = len([sentence for sentence in sentences if sentence.is_studying()])
+            if studying_sentences:
+                meta.append(VocabMetaTag("in_studying_sentences", f"""{len(sentences)}""", f"""in {len(sentences)} sentences {studying_sentences} of which are being studied"""))
+            else:
+                meta.append(VocabMetaTag("in_sentences", f"""{len(sentences)}""", f"""in {len(sentences)} sentences"""))
+        else:
+            meta.append(VocabMetaTag("in_no_sentences", f"""{len(sentences)}""", f"""in {len(sentences)} sentences"""))
 
         #overarching info
         if "_uk" in tags: meta.append(VocabMetaTag("uk", "uk", "usually kana only"))

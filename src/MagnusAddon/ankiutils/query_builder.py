@@ -18,7 +18,7 @@ f_reading = NoteFields.Vocab.Reading
 f_answer = MyNoteFields.answer
 f_forms = NoteFields.Vocab.Forms
 
-card_listen = f"{Builtin.Card}:{NoteFields.VocabNoteType.Card.Listening}"
+card_listening = f"{Builtin.Card}:{NoteFields.VocabNoteType.Card.Listening}"
 card_read = f"{Builtin.Card}:{NoteFields.VocabNoteType.Card.Reading}"
 
 note_kanji = f"{Builtin.Note}:{NoteTypes.Kanji}"
@@ -37,7 +37,7 @@ def field_contains_word(field:str, *words:str) -> str:
     return _or_clauses([f'''"{field}:re:\\b{query}\\b"''' for query in words])
 
 def sentence_search(query:str, exact:bool = False) -> str:
-    result = "(deck:*sentence* deck:*listen*) "
+    result = f"""{note_sentence} {card_listening} """
     if not exact:
         from ankiutils import app
         vocabs = app.col().vocab.with_form(query)

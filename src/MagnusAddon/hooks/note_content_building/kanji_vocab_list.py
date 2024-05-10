@@ -16,6 +16,9 @@ def sort_vocab_list(note: KanjiNote, primary_voc: list[str], vocabs: list[VocabN
 
         return 100
 
+    def prefer_more_sentences(local_vocab: VocabNote) -> int:
+        return -len(local_vocab.get_sentences())
+
     def prefer_non_compound(local_vocab: VocabNote) -> str:
         return "A" if kana_utils.is_only_kana(local_vocab.get_question()[1:]) else "B"
 
@@ -26,6 +29,7 @@ def sort_vocab_list(note: KanjiNote, primary_voc: list[str], vocabs: list[VocabN
         return _vocab.priority_spec().priority
 
     vocabs.sort(key=lambda local_vocab: (prefer_primary_vocab_in_order(local_vocab),
+                                         prefer_more_sentences(local_vocab),
                                          prefer_high_priority(local_vocab),
                                          prefer_non_compound(local_vocab),
                                          prefer_starts_with_kanji(local_vocab),
