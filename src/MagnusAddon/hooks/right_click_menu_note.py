@@ -73,13 +73,14 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, sel_clip: str, selection: st
         if not kanji.get_user_answer():
             add_ui_action(note_menu, "Accept &meaning", lambda: kanji.set_user_answer(format_kanji_meaning(kanji.get_answer())))
 
+        add_ui_action(note_menu, "Reset Primary Vocabs", lambda : kanji.set_primary_vocab([]))
+
         if sel_clip:
             primary_vocab_menu: QMenu = checked_cast(QMenu, root_menu.addMenu("&Primary Vocab"))
             if sel_clip in kanji.get_primary_vocab():
                 add_ui_action(primary_vocab_menu, "&Remove", lambda: kanji.remove_primary_vocab(sel_clip))
             else:
                 add_ui_action(primary_vocab_menu, "&Add", lambda: kanji.add_primary_vocab(sel_clip))
-            add_ui_action(primary_vocab_menu, "&Set", lambda: kanji.set_primary_vocab([sel_clip]))
 
 
     if isinstance(note, VocabNote):
