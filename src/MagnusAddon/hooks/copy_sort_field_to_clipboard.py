@@ -6,7 +6,6 @@ from anki.notes import Note
 from aqt import gui_hooks
 
 from ankiutils.app import ui_utils
-from hooks.timing_hacks import ugly_timing_hacks
 from sysutils import my_clipboard
 from sysutils.collections.recent_items import RecentItems
 from sysutils import ex_str

@@ -49,7 +49,7 @@ su = query_builder
 def test_create_sample_data() -> None:
     sentence_notes: list[SentenceNote] = []
     for sentence_text in _sentences:
-        matching:list[SentenceNote] = app.col().sentences.search(f"{su.note_sentence} {su.question}:*{sentence_text}*")
+        matching:list[SentenceNote] = app.col().sentences.search(f"{su.note_sentence} {su.f_question}:*{sentence_text}*")
         with_active_answer:list[SentenceNote] = [m for m in matching if m.get_answer()]
         sentence_notes += with_active_answer
         for sentence in with_active_answer:

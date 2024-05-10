@@ -5,7 +5,7 @@ from ankiutils import app, query_builder as su
 from hooks.right_click_menu_utils import add_lookup_action, add_sentence_lookup, add_single_vocab_lookup_action, add_text_vocab_lookup, add_ui_action, add_vocab_dependencies_lookup
 from note.jpnote import JPNote
 from note.kanjinote import KanjiNote
-from note.note_constants import MyNoteFields, NoteFields, NoteTypes, SentenceNoteFields
+from note.note_constants import MyNoteFields, NoteFields, NoteTypes
 from note.radicalnote import RadicalNote
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
@@ -85,7 +85,7 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, sel_clip: str, selection: st
         if vocab.get_related_ergative_twin():
             add_single_vocab_lookup_action(note_lookup_menu, "&Ergative twin", vocab.get_related_ergative_twin())
 
-        add_lookup_action(note_lookup_menu, "&Sentence", su.sentences_with_vocab(vocab))
+        add_lookup_action(note_lookup_menu, "&Sentence", su.sentence_search(vocab.get_question()))
         add_text_vocab_lookup(note_lookup_menu, "&Compounds", note.get_question())
         add_vocab_dependencies_lookup(note_lookup_menu, "&Dependencies", note)
 

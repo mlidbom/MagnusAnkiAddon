@@ -13,10 +13,10 @@ from language_services.janome_ex.word_extraction import word_extractor
 from language_services.janome_ex.word_extraction.extracted_word import ExtractedWord
 from sysutils import ex_str
 
-question = MyNoteFields.question
-reading = NoteFields.Vocab.Reading
-answer = MyNoteFields.answer
-forms = NoteFields.Vocab.Forms
+f_question = MyNoteFields.question
+f_reading = NoteFields.Vocab.Reading
+f_answer = MyNoteFields.answer
+f_forms = NoteFields.Vocab.Forms
 
 card_listen = f"{Builtin.Card}:{NoteFields.VocabNoteType.Card.Listening}"
 card_read = f"{Builtin.Card}:{NoteFields.VocabNoteType.Card.Reading}"
@@ -36,23 +36,30 @@ def _or_clauses(clauses:list[str]) -> str:
 def field_contains_word(field:str, *words:str) -> str:
     return _or_clauses([f'''"{field}:re:\\b{query}\\b"''' for query in words])
 
-def sentences_with_vocab(vocab: VocabNote) -> str:
-    forms = vocab.get_forms()
-    return "(deck:*sentence* deck:*listen*) ( " + "　OR ".join([f"""{field_contains_word(SentenceNoteFields.ParsedWords, form)} OR {question}:*{form}*""" for form in forms]) + ")"
+def sentence_search(query:str) -> str:
+    from ankiutils import app
+    vocabs = app.col().vocab.with_form(query)
+    query = "(deck:*sentence* deck:*listen*) "
+    if vocabs:
+        forms = set().union(*[v.get_forms() for v in vocabs])
+        query += "(" + "　OR ".join([f"""{f_question}:*{form}* OR {field_contains_word(SentenceNoteFields.ParsedWords, form)}""" for form in forms]) + ")"
+    else:
+        query += f"""({f_question}:*{query}* OR Reading:*{query}* OR {field_contains_word(SentenceNoteFields.ParsedWords, query)})"""
+    return query
 
 def field_value_exact(field:str, *queries:str) -> str:
     return _or_clauses([f'''"{field}:{query}"''' for query in queries])
 
-def single_vocab_wildcard(query:str) -> str: return f"{vocab_read} ({forms}:*{query}* OR {reading}:*{query}* OR {answer}:*{query}*)"
-def single_vocab_by_question_reading_or_answer_exact(query: str) -> str:return f"{vocab_read} ({field_contains_word(forms, query)} OR {field_contains_word(reading, query)} OR {field_contains_word(answer, query)})"
-def single_vocab_by_form_exact(query: str) -> str:return f"{vocab_read} {field_contains_word(forms, query)}"
+def single_vocab_wildcard(query:str) -> str: return f"{vocab_read} ({f_forms}:*{query}* OR {f_reading}:*{query}* OR {f_answer}:*{query}*)"
+def single_vocab_by_question_reading_or_answer_exact(query: str) -> str:return f"{vocab_read} ({field_contains_word(f_forms, query)} OR {field_contains_word(f_reading, query)} OR {field_contains_word(f_answer, query)})"
+def single_vocab_by_form_exact(query: str) -> str:return f"{vocab_read} {field_contains_word(f_forms, query)}"
 
 
-def kanji_in_string(query: str) -> str: return f"{note_kanji} ( {' OR '.join([f'{question}:{char}' for char in query])} )"
+def kanji_in_string(query: str) -> str: return f"{note_kanji} ( {' OR '.join([f'{f_question}:{char}' for char in query])} )"
 
 def vocab_dependencies_lookup_query(vocab: VocabNote) -> str:
     def single_vocab_clause(voc: ExtractedWord) -> str:
-        return f'{field_contains_word(forms, voc.word)}'
+        return f'{field_contains_word(f_forms, voc.word)}'
 
     def create_vocab_clause(text:str) -> str:
         dictionary_forms = [voc for voc in word_extractor.extract_words(text)]
@@ -62,20 +69,20 @@ def vocab_dependencies_lookup_query(vocab: VocabNote) -> str:
         return create_vocab_clause(vocab.get_question())
 
     def create_kanji_clause() -> str:
-        return f"{note_kanji} ( {' OR '.join([f'{question}:{char}' for char in vocab.get_question()])} )"
+        return f"{note_kanji} ( {' OR '.join([f'{f_question}:{char}' for char in vocab.get_question()])} )"
 
     return f'''{create_vocab_vocab_clause()} ({create_kanji_clause()})'''
 
 
 def sentence_exact(sentence: str) -> str:
-    return f"""{note_sentence} {question}:"{sentence}" """
+    return f"""{note_sentence} {f_question}:"{sentence}" """
 
 def sentence_vocab_lookup(sentence:SentenceNote) -> str: return text_vocab_lookup(sentence.get_question())
 
-def vocab_with_kanji(note:KanjiNote) -> str: return f"{vocab_read} {forms}:*{note.get_question()}*"
+def vocab_with_kanji(note:KanjiNote) -> str: return f"{vocab_read} {f_forms}:*{note.get_question()}*"
 
 def vocab_clause(voc: ExtractedWord) -> str:
-    return f"""{field_contains_word(forms, voc.word)}"""
+    return f"""{field_contains_word(f_forms, voc.word)}"""
 
 def text_vocab_lookup(text:str) -> str:
     dictionary_forms = word_extractor.extract_words(text)
@@ -101,9 +108,9 @@ def fetch_kanji_by_kanji(kanji: Iterable[str]) -> str:
 def lookup_text_object(text: str) -> str:
     words = ex_str.extract_comma_separated_values(text)
     if text.isascii(): #probably radical answer
-        return field_value_exact(answer, *words)
+        return field_value_exact(f_answer, *words)
     else:
-        return _or_clauses([field_value_exact(question, *words), field_contains_word(forms, *words)])
+        return _or_clauses([field_value_exact(f_question, *words), field_contains_word(f_forms, *words)])
 
 def notes_by_id(note_ids:list[NoteId]) -> str:
     return f"""nid:{",".join([str(note_id) for note_id in note_ids])}"""
