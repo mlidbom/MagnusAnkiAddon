@@ -79,7 +79,7 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, sel_clip: str, selection: st
                 add_ui_action(primary_vocab_menu, "&Remove", lambda: kanji.remove_primary_vocab(sel_clip))
             else:
                 add_ui_action(primary_vocab_menu, "&Add", lambda: kanji.add_primary_vocab(sel_clip))
-                add_ui_action(primary_vocab_menu, "&Set", lambda: kanji.set_primary_vocab([sel_clip]))
+            add_ui_action(primary_vocab_menu, "&Set", lambda: kanji.set_primary_vocab([sel_clip]))
 
 
     if isinstance(note, VocabNote):

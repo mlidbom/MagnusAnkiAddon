@@ -122,10 +122,10 @@ class VocabNote(KanaVocabNote):
     def _create_verb_meta_tag(name: str, display: str, tooltip: str, tos:set[str]) -> VocabMetaTag:
         tag = VocabMetaTag(name, display, tooltip)
 
-        if "intransitive verb" in tos:
+        if "intransitive verb" in tos or "intransitive" in tos:
             tag.display += "i"
             tag.tooltip = "intransitive " + tag.tooltip
-        if "transitive verb" in tos:
+        if "transitive verb" in tos or "transitive" in tos:
             tag.display += "t"
             tag.tooltip = "transitive " + tag.tooltip
 
@@ -145,6 +145,13 @@ class VocabNote(KanaVocabNote):
         if "prefix" in tos: meta.append(VocabMetaTag("prefix", "pre", "prefix"))
         if "suffix" in tos: meta.append(VocabMetaTag("suffix", "suf", "suffix"))
 
+        #nouns
+        if "proper noun" in tos: meta.append(VocabMetaTag("proper-noun", "p-n", "proper noun"))
+        if "pronoun" in tos: meta.append(VocabMetaTag("pronoun", "pro", "pronoun"))
+        elif "noun" in tos: meta.append(VocabMetaTag("noun", "n", "noun"))
+        if "adverbial noun" in tos: meta.append(VocabMetaTag("adverbial-noun", "adv-n", "adverbial noun"))
+        if "independent noun" in tos: meta.append(VocabMetaTag("independent-noun", "i-n", "independent noun"))
+
         #verbs
         if "ichidan verb" in tos: meta.append(self._create_verb_meta_tag("ichidan", "1", "ichidan verb", tos))
         if "godan verb" in tos: meta.append(self._create_verb_meta_tag("godan", "5", "godan verb", tos))
@@ -154,13 +161,6 @@ class VocabNote(KanaVocabNote):
 
         if "と adverb" in tos: meta.append(VocabMetaTag("to-adverb", "t-a", "to adverb"))
         if "adverb" in tos: meta.append(VocabMetaTag("adverb", "a", "adverb"))
-
-        #nouns
-        if "proper noun" in tos: meta.append(VocabMetaTag("proper-noun", "p-n", "proper noun"))
-        if "pronoun" in tos: meta.append(VocabMetaTag("pronoun", "pro", "pronoun"))
-        elif "noun" in tos: meta.append(VocabMetaTag("noun", "n", "noun"))
-        if "adverbial noun" in tos: meta.append(VocabMetaTag("adverbial-noun", "adv-n", "adverbial noun"))
-        if "independent noun" in tos: meta.append(VocabMetaTag("independent-noun", "i-n", "independent noun"))
 
         #adjectives
         if "い adjective" in tos or "i-adjective" in tos: meta.append(VocabMetaTag("i-adjective", "い", "い adjective"))
