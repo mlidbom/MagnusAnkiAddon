@@ -11,13 +11,12 @@ from sysutils.typed import checked_cast
 
 def setup_search_menu(root_menu: QMenu, sel_clip: str) -> None:
     if sel_clip:
-        search_menu = checked_cast(QMenu, root_menu.addMenu("&Search"))
-        setup_anki_search_menu(search_menu, sel_clip)
-        setup_web_search_menu(search_menu, sel_clip)
+        setup_anki_search_menu(root_menu, sel_clip)
+        setup_web_search_menu(root_menu, sel_clip)
 
 
 def setup_anki_search_menu(search_menu: QMenu, sel_clip: str) -> None:
-    search_anki_menu = checked_cast(QMenu, search_menu.addMenu("&Anki"))
+    search_anki_menu = checked_cast(QMenu, search_menu.addMenu("Search &Anki"))
     add_lookup_action(search_anki_menu, "&Kanji", su.kanji_in_string(sel_clip))
     add_lookup_action(search_anki_menu, "&Vocab", su.single_vocab_by_question_reading_or_answer_exact(sel_clip))
     add_lookup_action(search_anki_menu, "Vocab &Wildcard", su.single_vocab_wildcard(sel_clip))
@@ -27,7 +26,7 @@ def setup_anki_search_menu(search_menu: QMenu, sel_clip: str) -> None:
     add_text_vocab_lookup(search_anki_menu, "Text &words", sel_clip)
 
 def setup_web_search_menu(search_menu: QMenu, sel_clip: str) -> None:
-    search_web_menu = checked_cast(QMenu, search_menu.addMenu("&Web"))
+    search_web_menu = checked_cast(QMenu, search_menu.addMenu("Search &Web"))
     add_web_lookup(search_web_menu, "&Takoboto", u"https://takoboto.jp/?q=%s", sel_clip)
     add_web_lookup(search_web_menu, "&Japanese with anime", "https://www.google.com/search?q=site:www.japanesewithanime.com+%s", sel_clip)
 

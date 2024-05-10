@@ -23,15 +23,18 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, sel_clip: str, selection: st
     note_hide_menu: QMenu = checked_cast(QMenu, note_menu.addMenu("&Hide/Remove"))
     note_restore_menu: QMenu = checked_cast(QMenu, note_menu.addMenu("&Restore"))
 
+    vocab_menu: QMenu = checked_cast(QMenu, root_menu.addMenu("&Vocab"))
+    primary_vocab_menu: QMenu = checked_cast(QMenu, root_menu.addMenu("&Primary Vocab"))
+
     if sel_clip:
-        add_vocab_menu = checked_cast(QMenu, note_set_menu.addMenu("&Vocab"))
+        add_vocab_menu = checked_cast(QMenu, vocab_menu.addMenu("&Set"))
         add_ui_action(add_vocab_menu, "&1", lambda: note.set_field(MyNoteFields.Vocab1, sel_clip))
         add_ui_action(add_vocab_menu, "&2", lambda: note.set_field(MyNoteFields.Vocab2, sel_clip))
         add_ui_action(add_vocab_menu, "&3", lambda: note.set_field(MyNoteFields.Vocab3, sel_clip))
         add_ui_action(add_vocab_menu, "&4", lambda: note.set_field(MyNoteFields.Vocab4, sel_clip))
         add_ui_action(add_vocab_menu, "&5", lambda: note.set_field(MyNoteFields.Vocab5, sel_clip))
 
-    remove_vocab_menu = checked_cast(QMenu, note_hide_menu.addMenu("&Vocab"))
+    remove_vocab_menu = checked_cast(QMenu, vocab_menu.addMenu("&Remove"))
     add_ui_action(remove_vocab_menu, "&1", lambda: note.set_field(MyNoteFields.Vocab1, ""))
     add_ui_action(remove_vocab_menu, "&2", lambda: note.set_field(MyNoteFields.Vocab2, ""))
     add_ui_action(remove_vocab_menu, "&3", lambda: note.set_field(MyNoteFields.Vocab3, ""))
@@ -76,9 +79,9 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, sel_clip: str, selection: st
             add_ui_action(note_menu, "Accept &meaning", lambda: kanji.set_user_answer(format_kanji_meaning(kanji.get_answer())))
 
         if selection:
-            add_ui_action(note_add_menu, "&Primary vocab", lambda: kanji.add_primary_vocab(selection))
-            add_ui_action(note_set_menu, "&Primary vocab", lambda: kanji.set_primary_vocab([selection]))
-            add_ui_action(note_hide_menu, "&Primary vocab", lambda: kanji.remove_primary_vocab(selection))
+            add_ui_action(primary_vocab_menu, "&Add", lambda: kanji.add_primary_vocab(selection))
+            add_ui_action(primary_vocab_menu, "&Set", lambda: kanji.set_primary_vocab([selection]))
+            add_ui_action(primary_vocab_menu, "&Remove", lambda: kanji.remove_primary_vocab(selection))
 
     if isinstance(note, VocabNote):
         vocab = note
