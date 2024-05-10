@@ -137,8 +137,13 @@ class VocabNote(KanaVocabNote):
         meta: list[VocabMetaTag] = []
         tos = set([t.lower().strip() for t in self.get_speech_type().split(",")])
 
-        #writing
+        #overarching info
         if "_uk" in tags: meta.append(VocabMetaTag("uk", "uk", "usually kana only"))
+        if "expression" in tos: meta.append(VocabMetaTag("expression", "x", "expression"))
+        if "abbreviation" in tos: meta.append(VocabMetaTag("abbreviation", "abbr", "abbreviation"))
+        if "auxiliary" in tos: meta.append(VocabMetaTag("auxiliary", "aux", "auxiliary"))
+        if "prefix" in tos: meta.append(VocabMetaTag("prefix", "pre", "prefix"))
+        if "suffix" in tos: meta.append(VocabMetaTag("suffix", "suf", "suffix"))
 
         #verbs
         if "ichidan verb" in tos: meta.append(self._create_verb_meta_tag("ichidan", "1", "ichidan verb", tos))
@@ -147,6 +152,7 @@ class VocabNote(KanaVocabNote):
         if "kuru verb" in tos: meta.append(self._create_verb_meta_tag("kuru-verb", "k-v", "kuru verb", tos))
         if "auxiliary verb" in tos: meta.append(self._create_verb_meta_tag("auxiliary-verb", "aux-v", "auxiliary verb", tos))
 
+        if "と adverb" in tos: meta.append(VocabMetaTag("to-adverb", "t-a", "to adverb"))
         if "adverb" in tos: meta.append(VocabMetaTag("adverb", "a", "adverb"))
 
         #nouns
@@ -158,8 +164,8 @@ class VocabNote(KanaVocabNote):
 
         #adjectives
         if "い adjective" in tos or "i-adjective" in tos: meta.append(VocabMetaTag("i-adjective", "い", "い adjective"))
-        if "の adjective" in tos: meta.append(VocabMetaTag("no-adjective", "の", "の adjective"))
         if "な adjective" in tos or "na adjective" in tos: meta.append(VocabMetaTag("na-adjective", "な", "な adjective"))
+        if "の adjective" in tos: meta.append(VocabMetaTag("no-adjective", "の", "の adjective"))
         if "auxiliary adjective" in tos: meta.append(VocabMetaTag("auxiliary-adjective", "aux-adj", "auxiliary adjective"))
 
 
@@ -169,17 +175,14 @@ class VocabNote(KanaVocabNote):
 
 
         #misc
+
         if "counter" in tos: meta.append(VocabMetaTag("counter", "ctr", "counter"))
         if "numeral" in tos: meta.append(VocabMetaTag("numeral", "num", "numeral"))
-        if "auxiliary" in tos: meta.append(VocabMetaTag("auxiliary", "aux", "auxiliary"))
         if "interjection" in tos: meta.append(VocabMetaTag("interjection", "int", "interjection"))
         if "conjunction" in tos: meta.append(VocabMetaTag("conjunction", "conj", "conjunction"))
         if "particle" in tos: meta.append(VocabMetaTag("particle", "prt", "particle"))
-        if "prefix" in tos: meta.append(VocabMetaTag("prefix", "pre", "prefix"))
-        if "suffix" in tos: meta.append(VocabMetaTag("suffix", "suf", "suffix"))
-        if "expression" in tos: meta.append(VocabMetaTag("expression", "x", "expression"))
 
-        return """<ol class="vocab_tag_list">""" +  "".join([f"""<li class="vocab_tag {tag.name}" title="{tag.tooltip}">{tag.display}</li>""" for tag in meta]) + "</ol>"
+        return """<ol class="vocab_tag_list">""" + "".join([f"""<li class="vocab_tag vocab_tag_{tag.name}" title="{tag.tooltip}">{tag.display}</li>""" for tag in meta]) + "</ol>"
 
     def update_from_wani(self, wani_vocab: models.Vocabulary) -> None:
         super().update_from_wani(wani_vocab)
