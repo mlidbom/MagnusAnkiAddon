@@ -142,7 +142,7 @@ class VocabNote(KanaVocabNote):
         return [sentence for sentence in app.col().sentences.with_vocab(self)]
 
     def get_active_sentences(self) -> list[SentenceNote]:
-        return [sentence for sentence in self.get_sentences() if sentence.is_studying()]
+        return [sentence for sentence in self.get_sentences() if sentence.is_studying_cached()]
 
 
     def get_meta_tags(self) -> str:
@@ -152,7 +152,7 @@ class VocabNote(KanaVocabNote):
 
         sentences = self.get_sentences()
         if sentences:
-            studying_sentences = len([sentence for sentence in sentences if sentence.is_studying()])
+            studying_sentences = len([sentence for sentence in sentences if sentence.is_studying_cached()])
             if studying_sentences:
                 meta.append(VocabMetaTag("in_studying_sentences", f"""{len(sentences)}""", f"""in {len(sentences)} sentences {studying_sentences} of which are being studied"""))
             else:
