@@ -141,7 +141,7 @@ class VocabNote(KanaVocabNote):
         from ankiutils import app
         return [sentence for sentence in app.col().sentences.with_vocab(self)]
 
-    def get_active_sentences(self) -> list[SentenceNote]:
+    def get_sentences_studying(self) -> list[SentenceNote]:
         return [sentence for sentence in self.get_sentences() if sentence.is_studying_cached()]
 
 
@@ -178,7 +178,7 @@ class VocabNote(KanaVocabNote):
         #verbs
         if "ichidan verb" in tos: meta.append(self._create_verb_meta_tag("ichidan", "1", "ichidan verb", tos))
         if "godan verb" in tos: meta.append(self._create_verb_meta_tag("godan", "5", "godan verb", tos))
-        if "suru verb" in tos or "verbal noun" in tos: meta.append(self._create_verb_meta_tag("suru-verb", "s", "suru verb", tos))
+        if "suru verb" in tos or "verbal noun" in tos or "する verb" in tos: meta.append(self._create_verb_meta_tag("suru-verb", "s", "suru verb", tos))
         if "kuru verb" in tos: meta.append(self._create_verb_meta_tag("kuru-verb", "k-v", "kuru verb", tos))
         if "auxiliary verb" in tos: meta.append(self._create_verb_meta_tag("auxiliary-verb", "aux-v", "auxiliary verb", tos))
 

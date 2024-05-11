@@ -16,36 +16,39 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, sel_clip: str, selection: st
     if sel_clip:
         add_lookup_action(root_menu, "&Open", su.lookup_text_object(sel_clip))
 
-    note_menu: QMenu = checked_cast(QMenu, root_menu.addMenu("&Note"))
-    note_lookup_menu: QMenu = checked_cast(QMenu, note_menu.addMenu("&Lookup"))
-    note_set_menu: QMenu = checked_cast(QMenu, note_menu.addMenu("&Set"))
-    note_hide_menu: QMenu = checked_cast(QMenu, note_menu.addMenu("&Hide/Remove"))
-    note_restore_menu: QMenu = checked_cast(QMenu, note_menu.addMenu("&Restore"))
+    note_menu: QMenu
+    note_lookup_menu: QMenu
+    note_hide_menu: QMenu
 
-    vocab_menu: QMenu = checked_cast(QMenu, root_menu.addMenu("&Vocab"))
+    def setup_vocab_menu() -> None:
+        vocab_menu: QMenu = checked_cast(QMenu, root_menu.addMenu("&Vocab"))
+        if sel_clip:
+            add_vocab_menu = checked_cast(QMenu, vocab_menu.addMenu("&Set"))
+            add_ui_action(add_vocab_menu, "&1", lambda: note.set_field(MyNoteFields.Vocab1, sel_clip))
+            add_ui_action(add_vocab_menu, "&2", lambda: note.set_field(MyNoteFields.Vocab2, sel_clip))
+            add_ui_action(add_vocab_menu, "&3", lambda: note.set_field(MyNoteFields.Vocab3, sel_clip))
+            add_ui_action(add_vocab_menu, "&4", lambda: note.set_field(MyNoteFields.Vocab4, sel_clip))
+            add_ui_action(add_vocab_menu, "&5", lambda: note.set_field(MyNoteFields.Vocab5, sel_clip))
 
-    if sel_clip:
-        add_vocab_menu = checked_cast(QMenu, vocab_menu.addMenu("&Set"))
-        add_ui_action(add_vocab_menu, "&1", lambda: note.set_field(MyNoteFields.Vocab1, sel_clip))
-        add_ui_action(add_vocab_menu, "&2", lambda: note.set_field(MyNoteFields.Vocab2, sel_clip))
-        add_ui_action(add_vocab_menu, "&3", lambda: note.set_field(MyNoteFields.Vocab3, sel_clip))
-        add_ui_action(add_vocab_menu, "&4", lambda: note.set_field(MyNoteFields.Vocab4, sel_clip))
-        add_ui_action(add_vocab_menu, "&5", lambda: note.set_field(MyNoteFields.Vocab5, sel_clip))
+        remove_vocab_menu = checked_cast(QMenu, vocab_menu.addMenu("&Remove"))
+        add_ui_action(remove_vocab_menu, "&1", lambda: note.set_field(MyNoteFields.Vocab1, ""))
+        add_ui_action(remove_vocab_menu, "&2", lambda: note.set_field(MyNoteFields.Vocab2, ""))
+        add_ui_action(remove_vocab_menu, "&3", lambda: note.set_field(MyNoteFields.Vocab3, ""))
+        add_ui_action(remove_vocab_menu, "&4", lambda: note.set_field(MyNoteFields.Vocab4, ""))
+        add_ui_action(remove_vocab_menu, "&5", lambda: note.set_field(MyNoteFields.Vocab5, ""))
 
-    remove_vocab_menu = checked_cast(QMenu, vocab_menu.addMenu("&Remove"))
-    add_ui_action(remove_vocab_menu, "&1", lambda: note.set_field(MyNoteFields.Vocab1, ""))
-    add_ui_action(remove_vocab_menu, "&2", lambda: note.set_field(MyNoteFields.Vocab2, ""))
-    add_ui_action(remove_vocab_menu, "&3", lambda: note.set_field(MyNoteFields.Vocab3, ""))
-    add_ui_action(remove_vocab_menu, "&4", lambda: note.set_field(MyNoteFields.Vocab4, ""))
-    add_ui_action(remove_vocab_menu, "&5", lambda: note.set_field(MyNoteFields.Vocab5, ""))
+        def clear_all_vocabs() -> None:
+            for field in [MyNoteFields.Vocab1, MyNoteFields.Vocab2, MyNoteFields.Vocab3, MyNoteFields.Vocab4, MyNoteFields.Vocab5]:
+                note.set_field(field, "")
 
-    def clear_all_vocabs() -> None:
-        for field in [MyNoteFields.Vocab1, MyNoteFields.Vocab2, MyNoteFields.Vocab3, MyNoteFields.Vocab4, MyNoteFields.Vocab5]:
-            note.set_field(field, "")
-
-    add_ui_action(remove_vocab_menu, "&All", clear_all_vocabs)
+        add_ui_action(remove_vocab_menu, "&All", clear_all_vocabs)
 
     if isinstance(note, SentenceNote):
+        setup_vocab_menu()
+        note_menu = checked_cast(QMenu, root_menu.addMenu("&Note"))
+        note_lookup_menu: QMenu = checked_cast(QMenu, note_menu.addMenu("&Lookup"))
+        note_hide_menu: QMenu = checked_cast(QMenu, note_menu.addMenu("&Hide/Remove"))
+
         sentence_note = checked_cast(SentenceNote, note)
         add_lookup_action(note_lookup_menu, "&Vocabulary words", su.notes_by_id([voc.get_id() for voc in note.ud_extract_vocab()]))
         add_lookup_action(note_lookup_menu, "&Kanji", f"""note:{NoteTypes.Kanji} ({" OR ".join([f"{NoteFields.Kanji.question}:{kan}" for kan in note.extract_kanji()])})""")
@@ -54,21 +57,30 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, sel_clip: str, selection: st
             add_ui_action(note_hide_menu, "&Exclude vocab", lambda: sentence_note.exclude_vocab( sel_clip))
 
             highlighted_vocab_menu: QMenu = checked_cast(QMenu, root_menu.addMenu("&Highlighted Vocab"))
-            add_ui_action(highlighted_vocab_menu, "&Add", lambda: sentence_note.add_extra_vocab(sel_clip))
-            add_ui_action(highlighted_vocab_menu, "&Remove", lambda: sentence_note.add_extra_vocab(sel_clip))
+            if sel_clip in sentence_note.get_user_extra_vocab():
+                add_ui_action(highlighted_vocab_menu, "&Remove", lambda: sentence_note.remove_extra_vocab(sel_clip))
+            else:
+                add_ui_action(highlighted_vocab_menu, "&Add", lambda: sentence_note.add_extra_vocab(sel_clip))
 
     if isinstance(note, RadicalNote):
+        note_menu = checked_cast(QMenu, root_menu.addMenu("&Note"))
+        note_lookup_menu = checked_cast(QMenu, note_menu.addMenu("&Lookup"))
         add_lookup_action(note_lookup_menu, "&Kanji", f"note:{NoteTypes.Kanji} ( {su.field_contains_word(NoteFields.Kanji.Radicals_Names, note.get_answer())} OR {su.field_contains_word(NoteFields.Kanji.Radicals_Icons_Names, note.get_answer())} )")
 
     if isinstance(note, KanjiNote):
+        note_menu = checked_cast(QMenu, root_menu.addMenu("&Note"))
+        note_lookup_menu = checked_cast(QMenu, note_menu.addMenu("&Lookup"))
+
         kanji = note
         add_lookup_action(note_lookup_menu, "&Vocabs", su.vocab_with_kanji(note))
         add_lookup_action(note_lookup_menu, "&Dependencies", su.notes_by_note(app.col().kanji.dependencies_of(kanji)))
         add_lookup_action(note_lookup_menu, "&Sentences", su.sentence_search(kanji.get_question(), exact=True))
 
         if not kanji.get_user_mnemonic():
+            note_hide_menu = checked_cast(QMenu, note_menu.addMenu("&Hide/Remove"))
             add_ui_action(note_hide_menu, "&Mnemonic", lambda: kanji.override_meaning_mnemonic())
         if kanji.get_user_mnemonic() == "-":
+            note_restore_menu: QMenu = checked_cast(QMenu, note_menu.addMenu("&Restore"))
             add_ui_action(note_restore_menu, "&Mnemonic", lambda: kanji.restore_meaning_mnemonic())
         if not kanji.get_user_answer():
             add_ui_action(note_menu, "Accept &meaning", lambda: kanji.set_user_answer(format_kanji_meaning(kanji.get_answer())))
@@ -85,6 +97,12 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, sel_clip: str, selection: st
 
     if isinstance(note, VocabNote):
         vocab = note
+
+        note_menu = checked_cast(QMenu, root_menu.addMenu("&Note"))
+        note_lookup_menu = checked_cast(QMenu, note_menu.addMenu("&Lookup"))
+        note_hide_menu = checked_cast(QMenu, note_menu.addMenu("&Hide/Remove"))
+        note_restore_menu = checked_cast(QMenu, note_menu.addMenu("&Restore"))
+
         add_lookup_action(note_lookup_menu, "&Kanji", f"note:{NoteTypes.Kanji} ( {' OR '.join([f'{NoteFields.Kanji.question}:{char}' for char in note.get_question()])} )")
         if vocab.get_related_ergative_twin():
             add_single_vocab_lookup_action(note_lookup_menu, "&Ergative twin", vocab.get_related_ergative_twin())
@@ -100,6 +118,7 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, sel_clip: str, selection: st
         if not vocab.get_user_answer():
             add_ui_action(note_menu, "Accept &meaning", lambda: vocab.set_user_answer(format_vocab_meaning(vocab.get_answer())))
 
+        note_set_menu: QMenu = checked_cast(QMenu, note_menu.addMenu("&Set"))
         add_ui_action(note_set_menu, "&Generate answer", lambda: vocab.generate_and_set_answer())
         add_ui_action(note_set_menu, "&Meaning", lambda: vocab.set_user_answer(sel_clip))
         add_ui_action(note_set_menu, "&Confused with", lambda: vocab.set_related_confused_with(sel_clip))
