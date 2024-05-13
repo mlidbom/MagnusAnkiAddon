@@ -14,7 +14,7 @@ from sysutils import ex_sequence
 class _SentenceSnapshot(CachedNote):
     def __init__(self, note: SentenceNote):
         super().__init__(note)
-        self.words = note.get_parsed_words()
+        self.words = note.get_words()
 
 class _SentenceCache(NoteCache[SentenceNote, _SentenceSnapshot]):
     def __init__(self, all_kanji: list[SentenceNote]):
