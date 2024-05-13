@@ -49,7 +49,8 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, sel_clip: str, selection: st
         note_hide_menu = checked_cast(QMenu, note_menu.addMenu("&Hide/Remove"))
 
         sentence_note = checked_cast(SentenceNote, note)
-        add_lookup_action(note_lookup_menu, "&Vocabulary words", su.notes_by_id([voc.get_id() for voc in note.ud_extract_vocab()]))
+        add_lookup_action(note_lookup_menu, "&Parsed words", su.notes_by_id([voc.get_id() for voc in note.ud_extract_vocab()]))
+        add_lookup_action(note_lookup_menu, "&Highlighted words", su.vocabs_lookup_strings(note.get_user_extra_vocab()))
         add_lookup_action(note_lookup_menu, "&Kanji", f"""note:{NoteTypes.Kanji} ({" OR ".join([f"{NoteFields.Kanji.question}:{kan}" for kan in note.extract_kanji()])})""")
 
         if sel_clip:

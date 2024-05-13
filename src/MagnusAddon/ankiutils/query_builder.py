@@ -97,6 +97,9 @@ def vocab_lookup(vocab:ExtractedWord) -> str: return vocabs_lookup([vocab])
 def vocabs_lookup(dictionary_forms: list[ExtractedWord]) -> str:
     return f"{vocab_read} ({' OR '.join([vocab_clause(voc) for voc in dictionary_forms])})"
 
+def vocabs_lookup_strings(words: list[str]) -> str:
+    return f'''{vocab_read} ({' OR '.join([f"""{field_contains_word(f_forms, voc)}""" for voc in words])})'''
+
 
 def vocab_compounds_lookup(note:VocabNote) -> str:
     vocab_word = note.get_question()
