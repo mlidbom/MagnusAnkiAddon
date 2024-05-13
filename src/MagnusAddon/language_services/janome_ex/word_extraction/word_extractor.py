@@ -12,7 +12,11 @@ def _word_is_in_dictionary(word: str) -> bool:
 _max_lookahead = 12
 def extract_words(sentence: str) -> list[ExtractedWord]:
     def add_word_if_it_is_in_dictionary(word: str) -> None:
-        if _word_is_in_dictionary(word) and word not in found_words:
+        if _word_is_in_dictionary(word):
+            add_word(word)
+
+    def add_word(word: str) -> None:
+        if word not in found_words:
             found_words.add(word)
             found_words_list.append(word)
 
@@ -32,8 +36,8 @@ def extract_words(sentence: str) -> list[ExtractedWord]:
     found_words_list:list[str] = []
 
     for token_index, token in enumerate(tokens):
-        add_word_if_it_is_in_dictionary(token.base_form)
-        add_word_if_it_is_in_dictionary(token.surface)
+        add_word(token.base_form)
+        add_word(token.surface)
         check_for_compound_words()
 
     return [ExtractedWord(word) for word in found_words_list]
