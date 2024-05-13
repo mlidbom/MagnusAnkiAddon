@@ -44,10 +44,9 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, sel_clip: str, selection: st
         add_ui_action(remove_vocab_menu, "&All", clear_all_vocabs)
 
     if isinstance(note, SentenceNote):
-        setup_vocab_menu()
         note_menu = checked_cast(QMenu, root_menu.addMenu("&Note"))
-        note_lookup_menu: QMenu = checked_cast(QMenu, note_menu.addMenu("&Lookup"))
-        note_hide_menu: QMenu = checked_cast(QMenu, note_menu.addMenu("&Hide/Remove"))
+        note_lookup_menu = checked_cast(QMenu, note_menu.addMenu("&Lookup"))
+        note_hide_menu = checked_cast(QMenu, note_menu.addMenu("&Hide/Remove"))
 
         sentence_note = checked_cast(SentenceNote, note)
         add_lookup_action(note_lookup_menu, "&Vocabulary words", su.notes_by_id([voc.get_id() for voc in note.ud_extract_vocab()]))
@@ -61,6 +60,8 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, sel_clip: str, selection: st
                 add_ui_action(highlighted_vocab_menu, "&Remove", lambda: sentence_note.remove_extra_vocab(sel_clip))
             else:
                 add_ui_action(highlighted_vocab_menu, "&Add", lambda: sentence_note.add_extra_vocab(sel_clip))
+
+        setup_vocab_menu()
 
     if isinstance(note, RadicalNote):
         note_menu = checked_cast(QMenu, root_menu.addMenu("&Note"))
@@ -97,6 +98,7 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, sel_clip: str, selection: st
 
     if isinstance(note, VocabNote):
         vocab = note
+        setup_vocab_menu()
 
         note_menu = checked_cast(QMenu, root_menu.addMenu("&Note"))
         note_lookup_menu = checked_cast(QMenu, note_menu.addMenu("&Lookup"))
