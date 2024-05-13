@@ -75,6 +75,7 @@ class SentenceNote(JPNote):
         return app.col().vocab.with_forms(self.ud_extract_word_forms())
 
     def _get_parsed_words(self) -> list[str]: return self.get_field(SentenceNoteFields.ParsedWords).split(",")
+    def get_words(self) -> set[str]: return self.get_parsed_words() | set(self.get_user_extra_vocab()) & set(self.get_user_excluded_vocab())
     def get_parsed_words(self) -> set[str]: return set(self._get_parsed_words())
     def _set_parsed_words(self, value: list[str]) -> None:
         value.append(str(timeutil.one_second_from_now()))

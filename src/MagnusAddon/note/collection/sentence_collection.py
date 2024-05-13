@@ -14,7 +14,7 @@ from sysutils import ex_sequence
 class _SentenceSnapshot(CachedNote):
     def __init__(self, note: SentenceNote):
         super().__init__(note)
-        self.parsed_words = note.get_parsed_words()
+        self.words = note.get_parsed_words()
 
 class _SentenceCache(NoteCache[SentenceNote, _SentenceSnapshot]):
     def __init__(self, all_kanji: list[SentenceNote]):
@@ -30,10 +30,10 @@ class _SentenceCache(NoteCache[SentenceNote, _SentenceSnapshot]):
     def with_vocab_form(self, form: str) -> list[SentenceNote]: return list(self._merged_self()._by_vocab_form[form])
     
     def _inheritor_remove_from_cache(self, sentence: SentenceNote, cached:_SentenceSnapshot) -> None:
-        for vocab_form in cached.parsed_words: self._by_vocab_form[vocab_form].remove(sentence)
+        for vocab_form in cached.words: self._by_vocab_form[vocab_form].remove(sentence)
 
     def _inheritor_add_to_cache(self, sentence: SentenceNote) -> None:
-        for vocab_form in sentence.get_parsed_words(): self._by_vocab_form[vocab_form].add(sentence)
+        for vocab_form in sentence.get_words(): self._by_vocab_form[vocab_form].add(sentence)
 
 
 class SentenceCollection:
