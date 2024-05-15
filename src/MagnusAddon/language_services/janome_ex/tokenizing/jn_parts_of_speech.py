@@ -92,7 +92,8 @@ _level_2 = _level_2_3_4 + _level_2_3 + [
     PartOfSpeechDescription('名詞接続', 'noun-connection', "Noun connectors"),
     PartOfSpeechDescription('終助詞', 'sentence-ending', "Ends the sentence"),
     PartOfSpeechDescription('固有名詞', 'proper-noun', "Names of specific entities, like Tokyo"),
-    PartOfSpeechDescription('並立助詞', 'coordinating-conjunction', "Connects equal grammatical items, e.g., and, or")
+    PartOfSpeechDescription('並立助詞', 'coordinating-conjunction', "Connects equal grammatical items, e.g., and, or"),
+    PartOfSpeechDescription('引用文字列', 'quoted-character-string', "quoted-character-string")
 ]
 
 _level_3 = _level_2_3_4 + _level_2_3 + [
@@ -168,6 +169,7 @@ class POS:
         na_adjective_stem = _add_full_part_of_speech('名詞', '形容動詞語幹') # 好き
         numeric = _add_full_part_of_speech('名詞', '数')
         conjunctive = _add_full_part_of_speech('名詞', '接続詞的')
+        quoted_character_string = _add_full_part_of_speech('名詞', '引用文字列') # ???
 
         class Pronoun:
             general = _add_full_part_of_speech('名詞', '代名詞', '一般') # あいつ
