@@ -16,6 +16,9 @@ def sort_vocab_list(note: KanjiNote, primary_voc: list[str], vocabs: list[VocabN
 
         return 100
 
+    def prefer_studying_vocab(local_vocab: VocabNote) -> int:
+        return 1 if local_vocab.is_studying_cached() else 2
+
     def prefer_studying_sentences(local_vocab: VocabNote) -> int:
         return 1 if local_vocab.get_sentences_studying() else 2
 
@@ -33,6 +36,7 @@ def sort_vocab_list(note: KanjiNote, primary_voc: list[str], vocabs: list[VocabN
 
     vocabs.sort(key=lambda local_vocab: (prefer_primary_vocab_in_order(local_vocab),
                                          prefer_studying_sentences(local_vocab),
+                                         prefer_studying_vocab(local_vocab),
                                          prefer_more_sentences(local_vocab),
                                          prefer_high_priority(local_vocab),
                                          prefer_non_compound(local_vocab),
