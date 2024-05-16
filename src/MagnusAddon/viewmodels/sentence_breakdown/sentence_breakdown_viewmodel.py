@@ -26,7 +26,7 @@ class VocabHit:
                         hit_form=vocab.get_question(),
                         answer=vocab.get_answer(),
                         readings=vocab.get_readings(),
-                        meta_tags=vocab.get_meta_tags())
+                        meta_tags=vocab.get_meta_tags_html())
 
     @staticmethod
     def base_from_vocab(parent: NodeViewModel, vocab: VocabNote) -> VocabHit:
@@ -35,7 +35,7 @@ class VocabHit:
                         hit_form=vocab.get_question(),
                         answer=vocab.get_answer(),
                         readings=vocab.get_readings(),
-                        meta_tags=vocab.get_meta_tags())
+                        meta_tags=vocab.get_meta_tags_html())
     @classmethod
     def missing_surface(cls, parent: NodeViewModel) -> VocabHit:
         return VocabHit(surface_form=parent.surface,

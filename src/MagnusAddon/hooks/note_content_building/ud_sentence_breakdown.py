@@ -69,7 +69,7 @@ def _build_user_extra_list(extra_words: list[str]) -> str:
                                 <span class="vocabQuestion clipboard">{word}</span>
                                 {f'''<span class="vocabHitForm clipboard">{hit_form}</span>''' if hit_form else ""}
                                 {f'''<span class="vocabHitReadings clipboard">{readings}</span>''' if readings else ""}
-                                {vocab.get_meta_tags()}
+                                {vocab.get_meta_tags_html()}
                                 <span class="vocabAnswer">{vocab.get_answer()}</span>
                             </div>
                         </li>

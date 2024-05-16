@@ -142,8 +142,10 @@ class VocabNote(KanaVocabNote):
     def get_sentences_studying(self) -> list[SentenceNote]:
         return [sentence for sentence in self.get_sentences() if sentence.is_studying_cached()]
 
-
     def get_meta_tags(self) -> str:
+        return "is_studying" if self.is_studying_cached() else ""
+
+    def get_meta_tags_html(self) -> str:
         tags = set(self.get_tags())
         meta: list[VocabMetaTag] = []
         tos = set([t.lower().strip() for t in self.get_speech_type().split(",")])
