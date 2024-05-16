@@ -112,13 +112,11 @@ class VocabNote(KanaVocabNote):
     def get_parsed_type_of_speech(self) -> str: return self.get_field(NoteFields.Vocab.ParsedTypeOfSpeech)
     def set_parsed_type_of_speech(self, value: str) -> None: self.set_field(NoteFields.Vocab.ParsedTypeOfSpeech, value)
 
-    def get_dual_audios(self) -> str:
-        if self.get_audio_male() and self.get_audio_female():
-            return f"{self.get_audio_male()}{self.get_audio_female()}"
-        elif self.get_audio_male():
-            return f"{self.get_audio_male()}{self.get_audio_male()}"
+    def get_primary_audio(self) -> str:
+        if self.get_audio_male():
+            return self.get_audio_male()
         elif self.get_audio_female():
-            return f"{self.get_audio_female()}{self.get_audio_female()}"
+            return self.get_audio_female()
         else:
             return ""
 

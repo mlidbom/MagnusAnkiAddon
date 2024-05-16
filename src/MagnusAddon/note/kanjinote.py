@@ -48,7 +48,7 @@ class KanjiNote(WaniNote):
                     if vocab_notes:
                         found_vocab += vocab_notes
 
-            self.set_primary_vocab_audio("".join([vo.get_dual_audios() for vo in found_vocab]) if found_vocab else "")
+            self.set_primary_vocab_audio("".join([vo.get_primary_audio() for vo in found_vocab]) if found_vocab else "")
 
         self.set_field(NoteFields.Kanji.active_answer, self.get_answer())
         update_primary_audios()
