@@ -9,13 +9,14 @@ from sysutils import kana_utils
 
 missing_vocab_answer = "---"
 class VocabHit:
-    def __init__(self, surface_form: str, lookup_form: str, hit_form: str, answer: str, readings:list[str], meta_tags: str):
+    def __init__(self, surface_form: str, lookup_form: str, hit_form: str, answer: str, readings:list[str], meta_tags:str,  meta_tags_html: str):
         self.surface_form = surface_form
         self.lookup_form = lookup_form if lookup_form != surface_form else ""
         self.hit_form = hit_form if hit_form != surface_form and hit_form != lookup_form else ""
         self.answer = answer
         self.readings = readings
         self.meta_tags = meta_tags
+        self.meta_tags_html = meta_tags_html
 
     def __repr__(self) -> str: return f"""surface:{self.surface_form} lookup:{self.lookup_form}   hit:{self.hit_form}    answer:{self.answer}"""
 
@@ -26,7 +27,8 @@ class VocabHit:
                         hit_form=vocab.get_question(),
                         answer=vocab.get_answer(),
                         readings=vocab.get_readings(),
-                        meta_tags=vocab.get_meta_tags_html())
+                        meta_tags=vocab.get_meta_tags(),
+                        meta_tags_html=vocab.get_meta_tags_html())
 
     @staticmethod
     def base_from_vocab(parent: NodeViewModel, vocab: VocabNote) -> VocabHit:
@@ -35,7 +37,8 @@ class VocabHit:
                         hit_form=vocab.get_question(),
                         answer=vocab.get_answer(),
                         readings=vocab.get_readings(),
-                        meta_tags=vocab.get_meta_tags_html())
+                        meta_tags=vocab.get_meta_tags(),
+                        meta_tags_html=vocab.get_meta_tags_html())
     @classmethod
     def missing_surface(cls, parent: NodeViewModel) -> VocabHit:
         return VocabHit(surface_form=parent.surface,
@@ -43,7 +46,8 @@ class VocabHit:
                         hit_form=parent.surface,
                         answer=missing_vocab_answer,
                         readings=[],
-                        meta_tags="")
+                        meta_tags="",
+                        meta_tags_html="")
 
     @classmethod
     def missing_base(cls, parent: NodeViewModel) -> VocabHit:
@@ -52,7 +56,8 @@ class VocabHit:
                         hit_form=parent.base,
                         answer=missing_vocab_answer,
                         readings=[],
-                        meta_tags="")
+                        meta_tags="",
+                        meta_tags_html="")
 
 class NodeViewModel:
     def __init__(self, node: UDTreeNode, collection: JPCollection):

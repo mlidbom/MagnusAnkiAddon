@@ -7,7 +7,6 @@ from PyQt6.QtWidgets import QMenu
 
 from ankiutils.app import main_window, ui_utils
 from batches import local_note_updater
-from hooks.note_content_building import jn_sentence_breakdown
 from note.jpnote import JPNote
 from note.kanjinote import KanjiNote
 from note.sentencenote import SentenceNote
