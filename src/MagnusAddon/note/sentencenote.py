@@ -47,8 +47,6 @@ class SentenceNote(JPNote):
         excluded.add(vocab.strip())
         self._set_user_excluded_vocab(excluded)
 
-    def set_break_down(self, value: str) -> None: self.set_field(SentenceNoteFields.break_down, value)
-
     def parse_words_from_expression(self) -> list[ExtractedWord]:
         from language_services.janome_ex.word_extraction import word_extractor
         return word_extractor.extract_words(self.get_question())

@@ -22,9 +22,6 @@ def deep_refresh() -> None:
     if isinstance(note, VocabNote) or isinstance(note, SentenceNote):
         local_note_updater.update_vocab()
 
-    if isinstance(note, SentenceNote):
-        jn_sentence_breakdown.build_breakdown_html(note)
-
     if isinstance(note, KanjiNote):
         local_note_updater.update_kanji()
 

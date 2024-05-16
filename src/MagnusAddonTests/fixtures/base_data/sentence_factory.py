@@ -13,7 +13,6 @@ def create_sentence() -> NoteTypeEx:
                           NoteFieldEx(SentenceNoteFields.source_answer),
                           NoteFieldEx(SentenceNoteFields.user_answer),
                           NoteFieldEx(SentenceNoteFields.ParsedWords),
-                          NoteFieldEx(SentenceNoteFields.break_down),
                           NoteFieldEx(SentenceNoteFields.user_excluded_vocab),
                           NoteFieldEx(SentenceNoteFields.user_extra_vocab)],
                       [NoteTemplateEx("reading")])

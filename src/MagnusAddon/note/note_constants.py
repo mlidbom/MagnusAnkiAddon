@@ -21,7 +21,6 @@ class SentenceNoteFields:
     source_answer = "source_answer"
     user_answer = "__answer"
     ParsedWords = "ParsedWords"
-    break_down = "BreakDown"
     user_excluded_vocab = "__excluded_vocab"
     user_extra_vocab = "__extra_vocab"
 

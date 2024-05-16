@@ -125,40 +125,26 @@ def print_debug_information_for_analysis(sentence: str) -> str:
 
     return html
 
-
-
-def build_breakdown_html(sentence: SentenceNote) -> str:
-    user_excluded = sentence.get_user_excluded_vocab()
-    extra_words = sentence.get_user_extra_vocab()
-    html = ""
-
-    question = sentence.get_question()
-    tree = ud_tree_builder.build_tree(ud_tokenizers.default, question)
-    view_model = sentence_breakdown_viewmodel.create(tree, app.col())
-
-    if extra_words:
-        html += _build_user_extra_list(extra_words)
-
-    user_higlighted = set(extra_words)
-    html += _create_html_from_nodes(view_model.nodes, user_excluded, user_higlighted, 1)
-
-    html += """
-    ##KANJI_LIST##
-        """
-
-    #todo: restore this or remove the related code
-    # html += f"""
-    #
-    # {print_debug_information_for_analysis(sentence.get_question())}
-    # """
-
-    return html
-
 # noinspection DuplicatedCode
 def render_breakdown(html: str, card: Card, _type_of_display: str) -> str:
     note = JPNote.note_from_note(card.note())
     if isinstance(note, SentenceNote) and _type_of_display in {'reviewAnswer', 'previewAnswer'}:
-        breakdown_html = build_breakdown_html(note)
+        user_excluded = note.get_user_excluded_vocab()
+        extra_words = note.get_user_extra_vocab()
+        question = note.get_question()
+        tree = ud_tree_builder.build_tree(ud_tokenizers.default, question)
+        view_model = sentence_breakdown_viewmodel.create(tree, app.col())
+        if extra_words:
+            user_extra_html = _build_user_extra_list(extra_words)
+            html = html.replace("##USER_EXTRA_VOCAB##", user_extra_html)
+
+        user_higlighted = set(extra_words)
+        breakdown_html = _create_html_from_nodes(view_model.nodes, user_excluded, user_higlighted, 1)
+        #todo: restore this or remove the related code
+        # html += f"""
+        #
+        # {print_debug_information_for_analysis(sentence.get_question())}
+        # """
         html = html.replace("##VOCAB_BREAKDOWN##", breakdown_html)
 
     return html
