@@ -134,9 +134,9 @@ def render_breakdown(html: str, card: Card, _type_of_display: str) -> str:
         question = note.get_question()
         tree = ud_tree_builder.build_tree(ud_tokenizers.default, question)
         view_model = sentence_breakdown_viewmodel.create(tree, app.col())
-        if extra_words:
-            user_extra_html = _build_user_extra_list(extra_words)
-            html = html.replace("##USER_EXTRA_VOCAB##", user_extra_html)
+
+        user_extra_html = _build_user_extra_list(extra_words)
+        html = html.replace("##USER_EXTRA_VOCAB##", user_extra_html)
 
         user_higlighted = set(extra_words)
         breakdown_html = _create_html_from_nodes(view_model.nodes, user_excluded, user_higlighted, 1)
