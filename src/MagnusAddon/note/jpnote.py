@@ -30,8 +30,8 @@ class JPNote(ABC):
     def get_question(self) -> str: return self.get_field(MyNoteFields.question)
     def get_answer(self) -> str: return self.get_field(MyNoteFields.answer)
 
-    def is_studying_cached(self) -> bool:
-        return noteutils.has_card_being_studied_cached(self._note)
+    def is_studying_cached(self, card:str = "") -> bool:
+        return noteutils.has_card_being_studied_cached(self._note, card)
 
     @classmethod
     def note_from_card(cls, card: Card) -> JPNote:

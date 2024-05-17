@@ -143,7 +143,10 @@ class VocabNote(KanaVocabNote):
         return [sentence for sentence in self.get_sentences() if sentence.is_studying_cached()]
 
     def get_meta_tags(self) -> str:
-        return "is_studying" if self.is_studying_cached() else ""
+        tags = ""
+        if self.is_studying_cached(NoteFields.VocabNoteType.Card.Reading): tags += " is_studying_reading "
+        if self.is_studying_cached(NoteFields.VocabNoteType.Card.Listening): tags += " is_studying_listening "
+        return tags
 
     def get_meta_tags_html(self) -> str:
         tags = set(self.get_tags())

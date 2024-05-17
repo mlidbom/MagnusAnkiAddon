@@ -7,6 +7,7 @@ from PyQt6.QtWidgets import QMenu
 
 from ankiutils.app import main_window, ui_utils
 from batches import local_note_updater
+from note import noteutils
 from note.jpnote import JPNote
 from note.kanjinote import KanjiNote
 from note.sentencenote import SentenceNote
@@ -16,6 +17,8 @@ from wanikani import note_importer, wani_note_updater
 from wanikani.wani_downloader import WaniDownloader
 
 def deep_refresh() -> None:
+    noteutils.clear_studying_cache()
+
     note = JPNote.note_from_card(checked_cast(Card, main_window().reviewer.card))
 
     if isinstance(note, VocabNote) or isinstance(note, SentenceNote):
