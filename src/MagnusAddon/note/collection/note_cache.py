@@ -67,6 +67,7 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
     def _on_will_be_removed(self, _: Collection, note_ids: Sequence[NoteId]) -> None:
         cached_notes = [self._by_id[note_id] for note_id in note_ids if note_id in self._snapshot_by_id]
         for cached in cached_notes:
+            self._pending_add = [pending for pending in self._pending_add if pending.get_id() != cached.get_id()]
             self._remove_from_cache(cached)
 
     def _on_will_flush(self, backend_note: Note) -> None:
