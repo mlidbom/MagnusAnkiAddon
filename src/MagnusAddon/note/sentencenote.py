@@ -86,6 +86,7 @@ class SentenceNote(JPNote):
     def _needs_words_reparsed(self) -> bool: return self._note.mod > self._parsed_words_timestamp()
 
     def update_generated_data(self) -> None:
+        super().update_generated_data()
         self._update_parsed_words()
         self.set_field(SentenceNoteFields.active_answer, self.get_answer())
         self.set_field(SentenceNoteFields.active_question, self.get_question())

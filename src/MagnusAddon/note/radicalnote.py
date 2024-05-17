@@ -12,7 +12,7 @@ class RadicalNote(WaniNote):
         super().__init__(note)
 
     def update_generated_data(self) -> None:
-        pass
+        super().update_generated_data()
 
     def get_question(self) -> str: return self.get_field(NoteFields.Radical.question)
     def set_q(self, value: str) -> None: self.set_field(NoteFields.Radical.question, value)

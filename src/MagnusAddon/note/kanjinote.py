@@ -35,6 +35,8 @@ class KanjiNote(WaniNote):
     def _set_source_answer(self, value: str) -> None: self.set_field(NoteFields.Kanji.source_answer, value)
 
     def update_generated_data(self) -> None:
+        super().update_generated_data()
+
         def update_primary_audios() -> None:
             from ankiutils import app
             from note.vocabnote import VocabNote

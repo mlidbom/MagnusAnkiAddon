@@ -20,6 +20,7 @@ class KanaVocabNote(WaniNote):
     def _set_source_answer(self, value: str) -> None: self.set_field(NoteFields.Vocab.source_answer, value)
 
     def update_generated_data(self) -> None:
+        super().update_generated_data()
         self.set_field(NoteFields.Vocab.active_answer, self.get_answer())
 
     def get_user_answer(self) -> str: return self.get_field(NoteFields.Vocab.user_answer)
