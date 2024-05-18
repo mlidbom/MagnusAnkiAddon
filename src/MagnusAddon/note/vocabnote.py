@@ -54,19 +54,20 @@ class VocabNote(KanaVocabNote):
                 self.set_readings([question])
                 self.set_tag(Mine.Tags.UsuallyKanaOnly)
 
-        lookup = DictLookup.try_lookup_vocab_word_or_name(self)
-        if lookup.is_uk() and not self.has_tag(Mine.Tags.DisableKanaOnly):
-            self.set_tag(Mine.Tags.UsuallyKanaOnly)
+        if self.get_question():
+            lookup = DictLookup.try_lookup_vocab_word_or_name(self)
+            if lookup.is_uk() and not self.has_tag(Mine.Tags.DisableKanaOnly):
+                self.set_tag(Mine.Tags.UsuallyKanaOnly)
 
-        if not self.get_forms():
-            if lookup.found_words():
-                self.set_forms(lookup.valid_forms(self.is_uk()))
+            if not self.get_forms():
+                if lookup.found_words():
+                    self.set_forms(lookup.valid_forms(self.is_uk()))
 
-            if self.get_question() not in self.get_forms():
-                self.set_forms(self.get_forms() | {self.get_question()})
+                if self.get_question() not in self.get_forms():
+                    self.set_forms(self.get_forms() | {self.get_question()})
 
-            if self.is_uk() and self.get_readings()[0] not in self.get_forms():
-                self.set_forms(self.get_forms() | set(self.get_readings()))
+                if self.is_uk() and self.get_readings()[0] not in self.get_forms():
+                    self.set_forms(self.get_forms() | set(self.get_readings()))
 
     def extract_kanji(self) -> list[str]:
         clean = ex_str.strip_html_and_bracket_markup(self.get_question())
