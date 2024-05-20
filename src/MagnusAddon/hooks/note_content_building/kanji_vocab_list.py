@@ -8,41 +8,6 @@ from note.vocabnote import VocabNote
 from sysutils import kana_utils
 from sysutils.ex_str import newline
 
-def sort_vocab_list(note: KanjiNote, primary_voc: list[str], vocabs: list[VocabNote]) -> None:
-    def prefer_primary_vocab_in_order(local_vocab: VocabNote) -> int:
-        for index, primary in enumerate(primary_voc):
-            if local_vocab.get_question() == primary or local_vocab.get_readings()[0] == primary:
-                return index
-
-        return 100
-
-    def prefer_studying_vocab(local_vocab: VocabNote) -> int:
-        return 1 if local_vocab.is_studying_cached() else 2
-
-    def prefer_studying_sentences(local_vocab: VocabNote) -> int:
-        return 1 if local_vocab.get_sentences_studying() else 2
-
-    def prefer_more_sentences(local_vocab: VocabNote) -> int:
-        return -len(local_vocab.get_sentences())
-
-    def prefer_non_compound(local_vocab: VocabNote) -> str:
-        return "A" if kana_utils.is_only_kana(local_vocab.get_question()[1:]) else "B"
-
-    def prefer_starts_with_kanji(local_vocab: VocabNote) -> str:
-        return "A" if local_vocab.get_question()[0] == note.get_question() else "B"
-
-    def prefer_high_priority(_vocab: VocabNote) -> int:
-        return _vocab.priority_spec().priority
-
-    vocabs.sort(key=lambda local_vocab: (prefer_primary_vocab_in_order(local_vocab),
-                                         prefer_studying_sentences(local_vocab),
-                                         prefer_studying_vocab(local_vocab),
-                                         prefer_more_sentences(local_vocab),
-                                         prefer_high_priority(local_vocab),
-                                         prefer_non_compound(local_vocab),
-                                         prefer_starts_with_kanji(local_vocab),
-                                         local_vocab.get_question()))
-
 def _create_classes(_kanji: KanjiNote, _vocab: VocabNote) -> str:
     tags = list(_vocab.priority_spec().tags)
     tags.sort()
@@ -54,9 +19,9 @@ def _create_classes(_kanji: KanjiNote, _vocab: VocabNote) -> str:
 
     return classes
 
-def generate_vocab_html_list(_kanji_note: KanjiNote, vocabs: list[VocabNote]) -> str:
+def generate_vocab_html_list(_kanji_note: KanjiNote) -> str:
     primary_voc = _kanji_note.get_primary_vocab()
-    sort_vocab_list(_kanji_note, primary_voc, vocabs)
+    vocabs = _kanji_note.get_vocab_notes_sorted()
 
     return f'''
             <div class="kanjiVocabList">
@@ -79,8 +44,7 @@ def render_vocab_html_list(html: str, card: Card, _type_of_display: str) -> str:
     kanji_note = JPNote.note_from_card(card)
 
     if isinstance(kanji_note, KanjiNote):
-        vocab_list = app.col().vocab.with_kanji(kanji_note)
-        vocab_list_html = generate_vocab_html_list(kanji_note, vocab_list)
+        vocab_list_html = generate_vocab_html_list(kanji_note)
         html = html.replace("##VOCAB_LIST##", vocab_list_html)
 
     return html

@@ -149,23 +149,27 @@ class VocabNote(KanaVocabNote):
         if self.is_studying_cached(NoteFields.VocabNoteType.Card.Listening): tags += " is_studying_listening "
         return tags
 
+    def get_studying_sentence_count(self) -> int:
+        return len([sentence for sentence in self.get_sentences() if sentence.is_studying_cached()])
+
     def get_meta_tags_html(self) -> str:
         tags = set(self.get_tags())
         meta: list[VocabMetaTag] = []
         tos = set([t.lower().strip() for t in self.get_speech_type().split(",")])
 
         sentences = self.get_sentences()
-        if sentences:
-            studying_sentences = len([sentence for sentence in sentences if sentence.is_studying_cached()])
-            if studying_sentences:
+        if self.get_sentences():
+            studying_sentences = self.get_studying_sentence_count()
+            if self.get_studying_sentence_count():
                 meta.append(VocabMetaTag("in_studying_sentences", f"""{len(sentences)}""", f"""in {len(sentences)} sentences {studying_sentences} of which are being studied"""))
             else:
                 meta.append(VocabMetaTag("in_sentences", f"""{len(sentences)}""", f"""in {len(sentences)} sentences"""))
         else:
             meta.append(VocabMetaTag("in_no_sentences", f"""{len(sentences)}""", f"""in {len(sentences)} sentences"""))
 
+
         #overarching info
-        if "_uk" in tags: meta.append(VocabMetaTag("uk", "uk", "usually kana only"))
+        if "_uk" in tags: meta.append(VocabMetaTag("uk", "uk", "usually written using kana only"))
         if "expression" in tos: meta.append(VocabMetaTag("expression", "x", "expression"))
         if "abbreviation" in tos: meta.append(VocabMetaTag("abbreviation", "abbr", "abbreviation"))
         if "auxiliary" in tos: meta.append(VocabMetaTag("auxiliary", "aux", "auxiliary"))
@@ -206,6 +210,9 @@ class VocabNote(KanaVocabNote):
         if "interjection" in tos: meta.append(VocabMetaTag("interjection", "int", "interjection"))
         if "conjunction" in tos: meta.append(VocabMetaTag("conjunction", "conj", "conjunction"))
         if "particle" in tos: meta.append(VocabMetaTag("particle", "prt", "particle"))
+
+        #my own inventions
+        if "masu-suffix" in tos: meta.append(VocabMetaTag("masu-suffix", "連", "follows the 連用形/masu-stem form of a verb"))
 
         return """<ol class="vocab_tag_list">""" + "".join([f"""<li class="vocab_tag vocab_tag_{tag.name}" title="{tag.tooltip}">{tag.display}</li>""" for tag in meta]) + "</ol>"
 

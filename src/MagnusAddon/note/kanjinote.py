@@ -1,13 +1,16 @@
 from __future__ import annotations
 
-from typing import Callable
+from typing import Callable, TYPE_CHECKING
 
 from wanikani_api import models
 from anki.notes import Note
 
+if TYPE_CHECKING:
+    from note.vocabnote import VocabNote
+
 from note.waninote import WaniNote
 from note.note_constants import NoteFields, Mine, NoteTypes
-from sysutils import ex_str
+from sysutils import ex_str, kana_utils
 from wanikani.wanikani_api_client import WanikaniClient
 
 class KanjiNote(WaniNote):
@@ -38,22 +41,60 @@ class KanjiNote(WaniNote):
         super().update_generated_data()
 
         def update_primary_audios() -> None:
-            from ankiutils import app
-            from note.vocabnote import VocabNote
-            found_vocab: list[VocabNote] = list[VocabNote]()
-            for vocab_str in self.get_primary_vocab():
-                vocab_notes = app.col().vocab.with_question(vocab_str)
-                if vocab_notes:
-                    found_vocab += vocab_notes
-                else:
-                    vocab_notes = app.col().vocab.with_reading(vocab_str)
-                    if vocab_notes:
-                        found_vocab += vocab_notes
-
-            self.set_primary_vocab_audio("".join([vo.get_primary_audio() for vo in found_vocab]) if found_vocab else "")
+            vocab_we_should_play = [vocab for vocab in self.get_vocab_notes_sorted() if vocab.is_studying_cached() or vocab.get_studying_sentence_count()]
+            self.set_primary_vocab_audio("".join([vo.get_primary_audio() for vo in vocab_we_should_play]) if vocab_we_should_play else "")
 
         self.set_field(NoteFields.Kanji.active_answer, self.get_answer())
         update_primary_audios()
+
+
+    def get_vocab_notes_sorted(self) -> list[VocabNote]:
+        from ankiutils import app
+
+        def sort_vocab_list(note: KanjiNote, primary_voc: list[str], vocabs: list[VocabNote]) -> None:
+            def prefer_primary_vocab_in_order(local_vocab: VocabNote) -> int:
+                for index, primary in enumerate(primary_voc):
+                    if local_vocab.get_question() == primary or local_vocab.get_readings()[0] == primary:
+                        return index
+
+                return 100
+
+            def prefer_has_audio(local_vocab: VocabNote) -> int:
+                return 1 if local_vocab.get_audio_male() or local_vocab.get_audio_female() else 2
+
+
+            def prefer_studying_vocab(local_vocab: VocabNote) -> int:
+                return 1 if local_vocab.is_studying_cached() else 2
+
+            def prefer_studying_sentences(local_vocab: VocabNote) -> int:
+                return 1 if local_vocab.get_sentences_studying() else 2
+
+            def prefer_more_sentences(local_vocab: VocabNote) -> int:
+                return -len(local_vocab.get_sentences())
+
+            def prefer_non_compound(local_vocab: VocabNote) -> str:
+                return "A" if kana_utils.is_only_kana(local_vocab.get_question()[1:]) else "B"
+
+            def prefer_starts_with_kanji(local_vocab: VocabNote) -> str:
+                return "A" if local_vocab.get_question()[0] == note.get_question() else "B"
+
+            def prefer_high_priority(_vocab: VocabNote) -> int:
+                return _vocab.priority_spec().priority
+
+            vocabs.sort(key=lambda local_vocab: (prefer_has_audio(local_vocab),
+                                                 prefer_primary_vocab_in_order(local_vocab),
+                                                 prefer_studying_sentences(local_vocab),
+                                                 prefer_studying_vocab(local_vocab),
+                                                 prefer_more_sentences(local_vocab),
+                                                 prefer_high_priority(local_vocab),
+                                                 prefer_non_compound(local_vocab),
+                                                 prefer_starts_with_kanji(local_vocab),
+                                                 local_vocab.get_question()))
+
+        vocab_list = app.col().vocab.with_kanji(self)
+        sort_vocab_list(self, self.get_primary_vocab(), vocab_list)
+
+        return vocab_list
 
     def override_meaning_mnemonic(self) -> None:
         if not self.get_user_mnemonic():
