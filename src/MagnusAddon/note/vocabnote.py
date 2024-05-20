@@ -186,20 +186,18 @@ class VocabNote(KanaVocabNote):
         if "kuru verb" in tos: meta.append(self._create_verb_meta_tag("kuru-verb", "k-v", "kuru verb", tos))
         if "auxiliary verb" in tos: meta.append(self._create_verb_meta_tag("auxiliary-verb", "aux-v", "auxiliary verb", tos))
 
-        if "と adverb" in tos: meta.append(VocabMetaTag("to-adverb", "t-a", "to adverb"))
+        if "と adverb" in tos or "to-adverb" in tos: meta.append(VocabMetaTag("to-adverb", "と", "と adverb"))
         if "adverb" in tos: meta.append(VocabMetaTag("adverb", "a", "adverb"))
 
         #adjectives
         if "い adjective" in tos or "i-adjective" in tos: meta.append(VocabMetaTag("i-adjective", "い", "い adjective"))
-        if "な adjective" in tos or "na adjective" in tos: meta.append(VocabMetaTag("na-adjective", "な", "な adjective"))
-        if "の adjective" in tos: meta.append(VocabMetaTag("no-adjective", "の", "の adjective"))
+        if "な adjective" in tos or "na-adjective" in tos: meta.append(VocabMetaTag("na-adjective", "な", "な adjective"))
+        if "の adjective" in tos or "no-adjective" in tos: meta.append(VocabMetaTag("no-adjective", "の", "の adjective"))
         if "auxiliary adjective" in tos: meta.append(VocabMetaTag("auxiliary-adjective", "aux-adj", "auxiliary adjective"))
 
 
         #???
         if "in compounds" in tos: meta.append(VocabMetaTag("in-compounds", "i-c", "in compounds"))
-        if "n-adv" in tos: meta.append(VocabMetaTag("n-adv", "n-adv", "n-adv"))
-
 
         #misc
 
