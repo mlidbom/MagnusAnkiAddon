@@ -41,7 +41,11 @@ class KanjiNote(WaniNote):
         super().update_generated_data()
 
         def update_primary_audios() -> None:
-            vocab_we_should_play = [vocab for vocab in self.get_vocab_notes_sorted() if vocab.is_studying_cached() or vocab.get_studying_sentence_count()]
+            primary_vocabs = set(self.get_primary_vocab())
+            vocab_we_should_play = [vocab for vocab in self.get_vocab_notes_sorted()
+                                    if vocab.get_question() in primary_vocabs
+                                    or vocab.is_studying()
+                                    or vocab.get_studying_sentence_count()]
             self.set_primary_vocab_audio("".join([vo.get_primary_audio() for vo in vocab_we_should_play]) if vocab_we_should_play else "")
 
         self.set_field(NoteFields.Kanji.active_answer, self.get_answer())
@@ -64,7 +68,7 @@ class KanjiNote(WaniNote):
 
 
             def prefer_studying_vocab(local_vocab: VocabNote) -> int:
-                return 1 if local_vocab.is_studying_cached() else 2
+                return 1 if local_vocab.is_studying() else 2
 
             def prefer_studying_sentences(local_vocab: VocabNote) -> int:
                 return 1 if local_vocab.get_sentences_studying() else 2
@@ -72,23 +76,15 @@ class KanjiNote(WaniNote):
             def prefer_more_sentences(local_vocab: VocabNote) -> int:
                 return -len(local_vocab.get_sentences())
 
-            def prefer_non_compound(local_vocab: VocabNote) -> str:
-                return "A" if kana_utils.is_only_kana(local_vocab.get_question()[1:]) else "B"
-
-            def prefer_starts_with_kanji(local_vocab: VocabNote) -> str:
-                return "A" if local_vocab.get_question()[0] == note.get_question() else "B"
-
             def prefer_high_priority(_vocab: VocabNote) -> int:
                 return _vocab.priority_spec().priority
 
             vocabs.sort(key=lambda local_vocab: (prefer_has_audio(local_vocab),
                                                  prefer_primary_vocab_in_order(local_vocab),
-                                                 prefer_studying_sentences(local_vocab),
                                                  prefer_studying_vocab(local_vocab),
+                                                 prefer_studying_sentences(local_vocab),
                                                  prefer_more_sentences(local_vocab),
                                                  prefer_high_priority(local_vocab),
-                                                 prefer_non_compound(local_vocab),
-                                                 prefer_starts_with_kanji(local_vocab),
                                                  local_vocab.get_question()))
 
         vocab_list = app.col().vocab.with_kanji(self)

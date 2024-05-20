@@ -141,16 +141,16 @@ class VocabNote(KanaVocabNote):
         return [sentence for sentence in app.col().sentences.with_vocab(self)]
 
     def get_sentences_studying(self) -> list[SentenceNote]:
-        return [sentence for sentence in self.get_sentences() if sentence.is_studying_cached()]
+        return [sentence for sentence in self.get_sentences() if sentence.is_studying()]
 
     def get_meta_tags(self) -> str:
         tags = ""
-        if self.is_studying_cached(NoteFields.VocabNoteType.Card.Reading): tags += " is_studying_reading "
-        if self.is_studying_cached(NoteFields.VocabNoteType.Card.Listening): tags += " is_studying_listening "
+        if self.is_studying(NoteFields.VocabNoteType.Card.Reading): tags += " is_studying_reading "
+        if self.is_studying(NoteFields.VocabNoteType.Card.Listening): tags += " is_studying_listening "
         return tags
 
     def get_studying_sentence_count(self) -> int:
-        return len([sentence for sentence in self.get_sentences() if sentence.is_studying_cached()])
+        return len([sentence for sentence in self.get_sentences() if sentence.is_studying()])
 
     def get_meta_tags_html(self) -> str:
         tags = set(self.get_tags())
