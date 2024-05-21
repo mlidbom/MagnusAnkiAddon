@@ -52,10 +52,12 @@ def _node_html(node: NodeViewModel, excluded: set[str], highlighted: set[str], d
 
     return html
 
-def _build_user_extra_list(extra_words: list[str]) -> str:
+def _build_user_extra_list(extra_words: list[str], user_excluded:set[str]) -> str:
     html = f"""<ul class="sentenceVocabList userExtra depth1">\n"""
     for word in extra_words:
         vocabs: list[VocabNote] = app.col().vocab.with_form(word)
+
+        vocabs = [voc for voc in vocabs if not voc.get_question() in user_excluded]
 
         if vocabs:
             for vocab in vocabs:
@@ -135,7 +137,7 @@ def render_breakdown(html: str, card: Card, _type_of_display: str) -> str:
         tree = ud_tree_builder.build_tree(ud_tokenizers.default, question)
         view_model = sentence_breakdown_viewmodel.create(tree, app.col())
 
-        user_extra_html = _build_user_extra_list(extra_words)
+        user_extra_html = _build_user_extra_list(extra_words, user_excluded)
         html = html.replace("##USER_EXTRA_VOCAB##", user_extra_html)
 
         user_higlighted = set(extra_words)
