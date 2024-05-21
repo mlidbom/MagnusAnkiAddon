@@ -1,11 +1,9 @@
 from anki.cards import Card
 from aqt import gui_hooks
 
-from ankiutils import app
 from note.jpnote import JPNote
 from note.kanjinote import KanjiNote
 from note.vocabnote import VocabNote
-from sysutils import kana_utils
 from sysutils.ex_str import newline
 
 def _create_classes(_kanji: KanjiNote, _vocab: VocabNote) -> str:
@@ -20,7 +18,6 @@ def _create_classes(_kanji: KanjiNote, _vocab: VocabNote) -> str:
     return classes
 
 def generate_vocab_html_list(_kanji_note: KanjiNote) -> str:
-    primary_voc = _kanji_note.get_primary_vocab()
     vocabs = _kanji_note.get_vocab_notes_sorted()
 
     return f'''

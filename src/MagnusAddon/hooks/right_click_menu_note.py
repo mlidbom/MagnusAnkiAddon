@@ -54,7 +54,7 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, sel_clip: str, selection: st
         add_lookup_action(note_lookup_menu, "&Kanji", f"""note:{NoteTypes.Kanji} ({" OR ".join([f"{NoteFields.Kanji.question}:{kan}" for kan in note.extract_kanji()])})""")
 
         if sel_clip:
-            add_ui_action(note_hide_menu, "&Exclude vocab", lambda: sentence_note.exclude_vocab( sel_clip))
+            add_ui_action(note_hide_menu, "&Exclude vocab", lambda: sentence_note.exclude_vocab(sel_clip))
 
             highlighted_vocab_menu: QMenu = checked_cast(QMenu, root_menu.addMenu("&Highlighted Vocab"))
             if sel_clip in sentence_note.get_user_extra_vocab():
@@ -87,7 +87,7 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, sel_clip: str, selection: st
         if not kanji.get_user_answer():
             add_ui_action(note_menu, "Accept &meaning", lambda: kanji.set_user_answer(format_kanji_meaning(kanji.get_answer())))
 
-        add_ui_action(note_menu, "Reset Primary Vocabs", lambda : kanji.set_primary_vocab([]))
+        add_ui_action(note_menu, "Reset Primary Vocabs", lambda: kanji.set_primary_vocab([]))
 
         if sel_clip:
             primary_vocab_menu: QMenu = checked_cast(QMenu, root_menu.addMenu("&Primary Vocab"))

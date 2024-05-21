@@ -40,7 +40,7 @@ class SentenceNote(JPNote):
         self._set_user_extra_vocab(self.get_user_extra_vocab() + [vocab.strip()])
 
     def remove_extra_vocab(self, vocab: str) -> None:
-        self._set_user_extra_vocab([v for v in self.get_user_extra_vocab() if not v == vocab] )
+        self._set_user_extra_vocab([v for v in self.get_user_extra_vocab() if not v == vocab])
 
     def exclude_vocab(self, vocab: str) -> None:
         excluded = self.get_user_excluded_vocab()
