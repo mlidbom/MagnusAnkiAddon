@@ -74,6 +74,7 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, sel_clip: str, selection: st
         note_lookup_menu = checked_cast(QMenu, note_menu.addMenu("&Lookup"))
 
         kanji = note
+        add_lookup_action(note_lookup_menu, "&Primary Vocabs", su.vocabs_lookup_strings(note.get_primary_vocab()))
         add_lookup_action(note_lookup_menu, "&Vocabs", su.vocab_with_kanji(note))
         add_lookup_action(note_lookup_menu, "&Dependencies", su.notes_by_note(app.col().kanji.dependencies_of(kanji)))
         add_lookup_action(note_lookup_menu, "&Sentences", su.sentence_search(kanji.get_question(), exact=True))

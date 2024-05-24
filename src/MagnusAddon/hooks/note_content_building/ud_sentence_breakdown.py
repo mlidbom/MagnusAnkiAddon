@@ -63,6 +63,10 @@ def _build_user_extra_list(extra_words: list[str], user_excluded:set[str]) -> st
 
         vocabs = [voc for voc in vocabs if not voc.get_question() in user_excluded]
 
+        exact_match = [voc for voc in vocabs if voc.get_question() == word]
+        if exact_match:
+            vocabs = exact_match
+
         if vocabs:
             for vocab in vocabs:
                 hit_form = vocab.get_question() if vocab.get_question() != word else ""
