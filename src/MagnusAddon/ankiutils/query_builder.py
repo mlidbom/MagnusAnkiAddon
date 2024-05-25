@@ -27,7 +27,7 @@ note_sentence = f"{Builtin.Note}:{NoteTypes.Sentence}"
 
 tag_uk = f"tag:{Mine.Tags.UsuallyKanaOnly}"
 
-vocab_read = f"({note_vocab} {card_read})"
+note_vocab = note_vocab
 
 def _or_clauses(clauses:list[str]) -> str:
     return clauses[0] if len(clauses) == 1 else f"""({" OR ".join(clauses)})"""
@@ -54,9 +54,9 @@ def sentence_search(word:str, exact:bool = False) -> str:
 def field_value_exact(field:str, *queries:str) -> str:
     return _or_clauses([f'''"{field}:{query}"''' for query in queries])
 
-def single_vocab_wildcard(query:str) -> str: return f"{vocab_read} ({f_forms}:*{query}* OR {f_reading}:*{query}* OR {f_answer}:*{query}*)"
+def single_vocab_wildcard(query:str) -> str: return f"{note_vocab} ({f_forms}:*{query}* OR {f_reading}:*{query}* OR {f_answer}:*{query}*)"
 def single_vocab_by_question_reading_or_answer_exact(query: str) -> str:return f"{note_vocab} ({field_contains_word(f_forms, query)} OR {field_contains_word(f_reading, query)} OR {field_contains_word(f_answer, query)})"
-def single_vocab_by_form_exact(query: str) -> str:return f"{vocab_read} {field_contains_word(f_forms, query)}"
+def single_vocab_by_form_exact(query: str) -> str:return f"{note_vocab} {field_contains_word(f_forms, query)}"
 
 
 def kanji_in_string(query: str) -> str: return f"{note_kanji} ( {' OR '.join([f'{f_question}:{char}' for char in query])} )"
@@ -67,7 +67,7 @@ def vocab_dependencies_lookup_query(vocab: VocabNote) -> str:
 
     def create_vocab_clause(text:str) -> str:
         dictionary_forms = [voc for voc in word_extractor.extract_words(text)]
-        return f"({vocab_read} ({' OR '.join([single_vocab_clause(voc) for voc in dictionary_forms])})) OR " if dictionary_forms else ""
+        return f"({note_vocab} ({' OR '.join([single_vocab_clause(voc) for voc in dictionary_forms])})) OR " if dictionary_forms else ""
 
     def create_vocab_vocab_clause() -> str:
         return create_vocab_clause(vocab.get_question())
@@ -83,7 +83,7 @@ def sentence_exact(sentence: str) -> str:
 
 def sentence_vocab_lookup(sentence:SentenceNote) -> str: return text_vocab_lookup(sentence.get_question())
 
-def vocab_with_kanji(note:KanjiNote) -> str: return f"{vocab_read} {f_forms}:*{note.get_question()}*"
+def vocab_with_kanji(note:KanjiNote) -> str: return f"{note_vocab} {f_forms}:*{note.get_question()}*"
 
 def vocab_clause(voc: ExtractedWord) -> str:
     return f"""{field_contains_word(f_forms, voc.word)}"""
@@ -95,7 +95,7 @@ def text_vocab_lookup(text:str) -> str:
 def vocab_lookup(vocab:ExtractedWord) -> str: return vocabs_lookup([vocab])
 
 def vocabs_lookup(dictionary_forms: list[ExtractedWord]) -> str:
-    return f"{vocab_read} ({' OR '.join([vocab_clause(voc) for voc in dictionary_forms])})"
+    return f"{note_vocab} ({' OR '.join([vocab_clause(voc) for voc in dictionary_forms])})"
 
 def vocabs_lookup_strings(words: list[str]) -> str:
     return f'''{note_vocab} ({' OR '.join([f"""{field_contains_word(f_forms, voc)}""" for voc in words])})'''
@@ -105,7 +105,7 @@ def vocab_compounds_lookup(note:VocabNote) -> str:
     vocab_word = note.get_question()
     dictionary_forms = [comp for comp in word_extractor.extract_words(vocab_word) if comp.word != vocab_word]
 
-    return f"{vocab_read} ({' OR '.join([vocab_clause(voc) for voc in dictionary_forms])})" if dictionary_forms else ""
+    return f"{note_vocab} ({' OR '.join([vocab_clause(voc) for voc in dictionary_forms])})" if dictionary_forms else ""
 
 
 
