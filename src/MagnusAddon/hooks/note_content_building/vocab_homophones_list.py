@@ -2,6 +2,7 @@ from anki.cards import Card
 from aqt import gui_hooks
 
 from ankiutils import app, ui_utils
+from note import vocabnote
 from note.jpnote import JPNote
 from note.vocabnote import VocabNote
 from sysutils import ex_sequence
@@ -18,6 +19,7 @@ def _create_classes(_vocab: VocabNote) -> str:
 def generate_vocab_html_list(_vocab_note: VocabNote) -> str:
     homophones = ex_sequence.flatten([app.col().vocab.with_reading(reading) for reading in _vocab_note.get_readings()])
     homophones = [homophone for homophone in homophones if homophone.get_id() != _vocab_note.get_id()]
+    homophones = vocabnote.sort_vocab_list_by_studying_status(homophones)
 
     if not homophones:
         return ""

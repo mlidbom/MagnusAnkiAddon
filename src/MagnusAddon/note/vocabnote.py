@@ -11,10 +11,47 @@ from sysutils import ex_str
 from note.note_constants import NoteFields, Mine, NoteTypes
 from wanikani.wanikani_api_client import WanikaniClient
 
-from typing import TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from note.sentencenote import SentenceNote
+
+def sort_vocab_list_by_studying_status(vocabs: list[VocabNote], primary_voc: Optional[list[str]] = None) -> list[VocabNote]:
+    def prefer_primary_vocab_in_order(local_vocab: VocabNote) -> int:
+        for index, primary in enumerate(_primary_voc):
+            if local_vocab.get_question() == primary or local_vocab.get_readings()[0] == primary:
+                return index
+
+        return 1000
+
+    def prefer_has_audio(local_vocab: VocabNote) -> int:
+        return 1 if local_vocab.get_audio_male() or local_vocab.get_audio_female() else 2
+
+    def prefer_studying_vocab(local_vocab: VocabNote) -> int:
+        return 1 if local_vocab.is_studying() else 2
+
+    def prefer_studying_sentences(local_vocab: VocabNote) -> int:
+        return 1 if local_vocab.get_sentences_studying() else 2
+
+    def prefer_more_sentences(local_vocab: VocabNote) -> int:
+        return -len(local_vocab.get_sentences())
+
+    def prefer_high_priority(_vocab: VocabNote) -> int:
+        return _vocab.priority_spec().priority
+
+    _primary_voc = primary_voc if primary_voc else []
+
+    result = vocabs.copy()
+
+    result.sort(key=lambda local_vocab: (prefer_has_audio(local_vocab),
+                                         prefer_primary_vocab_in_order(local_vocab),
+                                         prefer_studying_vocab(local_vocab),
+                                         prefer_studying_sentences(local_vocab),
+                                         prefer_more_sentences(local_vocab),
+                                         prefer_high_priority(local_vocab),
+                                         local_vocab.get_question()))
+
+    return result
 
 class VocabMetaTag:
     def __init__(self, name: str, display: str, tooltip: str):

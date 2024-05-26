@@ -54,41 +54,10 @@ class KanjiNote(WaniNote):
 
     def get_vocab_notes_sorted(self) -> list[VocabNote]:
         from ankiutils import app
-
-        def sort_vocab_list(note: KanjiNote, primary_voc: list[str], vocabs: list[VocabNote]) -> None:
-            def prefer_primary_vocab_in_order(local_vocab: VocabNote) -> int:
-                for index, primary in enumerate(primary_voc):
-                    if local_vocab.get_question() == primary or local_vocab.get_readings()[0] == primary:
-                        return index
-
-                return 100
-
-            def prefer_has_audio(local_vocab: VocabNote) -> int:
-                return 1 if local_vocab.get_audio_male() or local_vocab.get_audio_female() else 2
-
-
-            def prefer_studying_vocab(local_vocab: VocabNote) -> int:
-                return 1 if local_vocab.is_studying() else 2
-
-            def prefer_studying_sentences(local_vocab: VocabNote) -> int:
-                return 1 if local_vocab.get_sentences_studying() else 2
-
-            def prefer_more_sentences(local_vocab: VocabNote) -> int:
-                return -len(local_vocab.get_sentences())
-
-            def prefer_high_priority(_vocab: VocabNote) -> int:
-                return _vocab.priority_spec().priority
-
-            vocabs.sort(key=lambda local_vocab: (prefer_has_audio(local_vocab),
-                                                 prefer_primary_vocab_in_order(local_vocab),
-                                                 prefer_studying_vocab(local_vocab),
-                                                 prefer_studying_sentences(local_vocab),
-                                                 prefer_more_sentences(local_vocab),
-                                                 prefer_high_priority(local_vocab),
-                                                 local_vocab.get_question()))
+        from note import vocabnote
 
         vocab_list = app.col().vocab.with_kanji(self)
-        sort_vocab_list(self, self.get_primary_vocab(), vocab_list)
+        vocab_list = vocabnote.sort_vocab_list_by_studying_status(vocab_list, self.get_primary_vocab())
 
         return vocab_list
 
