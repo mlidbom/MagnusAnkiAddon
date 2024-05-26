@@ -103,7 +103,6 @@ class NoteFields:
         Audio_g = "Audio_g"
         sort_id = "sort_id"
 
-        Related_homophones = "Homophones"
         Related_similar_meaning = "__similar_meaning"
         Related_derived_from = "__derivedFrom"
         Related_ergative_twin = "__ergative_twin"

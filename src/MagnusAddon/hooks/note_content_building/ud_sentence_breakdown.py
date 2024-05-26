@@ -1,7 +1,7 @@
 from anki.cards import Card
 from aqt import gui_hooks
 
-from ankiutils import app
+from ankiutils import app, ui_utils
 from language_services.shared import priorities
 from language_services.universal_dependencies import ud_tokenizers
 from language_services.universal_dependencies.shared.tree_building import ud_tree_builder
@@ -138,7 +138,7 @@ def print_debug_information_for_analysis(sentence: str) -> str:
 # noinspection DuplicatedCode
 def render_breakdown(html: str, card: Card, _type_of_display: str) -> str:
     note = JPNote.note_from_note(card.note())
-    if isinstance(note, SentenceNote) and _type_of_display in {'reviewAnswer', 'previewAnswer'}:
+    if isinstance(note, SentenceNote) and ui_utils.is_displaytype_displaying_answer(_type_of_display):
         user_excluded = note.get_user_excluded_vocab()
         extra_words = note.get_user_extra_vocab()
         question = note.get_question()

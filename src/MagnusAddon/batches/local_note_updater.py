@@ -73,23 +73,9 @@ def _update_vocab(all_vocabulary: list[VocabNote], all_kanji: list[KanjiNote]) -
                     set_contex_japanese(formatted)
 
 
-    def populate_homophones() -> None: # todo move to a rendering step
-        reading_dict = dict[str, list[VocabNote]]()
-        for vocab in all_vocabulary:
-            for reading in vocab.get_readings():
-                if reading not in reading_dict: reading_dict[reading] = list[VocabNote]()
-                reading_dict[reading].append(vocab)
-
-        for read, vocabs in reading_dict.items():
-            if len(vocabs) > 1:
-                for vocab in vocabs:
-                    homonyms = [voc.get_question() for voc in vocabs if voc is not vocab]
-                    vocab.set_related_homophones(homonyms if read else [])
-
     update_generated_data()
     update_kanji_names()
     format_context_sentences()
-    populate_homophones()
 
 
 def _update_kanji(all_kanji: list[KanjiNote]) -> None:

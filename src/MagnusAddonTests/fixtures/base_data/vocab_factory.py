@@ -21,7 +21,6 @@ def create_vocab() -> NoteTypeEx:
                        NoteFieldEx(NoteFields.Vocab.Audio_b),
                        NoteFieldEx(NoteFields.Vocab.Audio_g),
                        NoteFieldEx(NoteFields.Vocab.sort_id),
-                       NoteFieldEx(NoteFields.Vocab.Related_homophones),
                        NoteFieldEx(NoteFields.Vocab.Related_similar_meaning),
                        NoteFieldEx(NoteFields.Vocab.Related_derived_from),
                        NoteFieldEx(NoteFields.Vocab.Related_ergative_twin),

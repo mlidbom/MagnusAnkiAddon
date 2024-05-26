@@ -1,7 +1,7 @@
 from anki.cards import Card
 from aqt import gui_hooks
 
-from ankiutils import app
+from ankiutils import app, ui_utils
 from language_services.shared import priorities
 from note.jpnote import JPNote
 from note.vocabnote import VocabNote
@@ -45,7 +45,7 @@ def _build_compound_list(compounds: list[str]) -> str:
 
 def render_compound_list(html: str, card: Card, _type_of_display: str) -> str:
     vocab_note = JPNote.note_from_note(card.note())
-    if isinstance(vocab_note, VocabNote) and _type_of_display in {'reviewAnswer', 'previewAnswer'}:
+    if isinstance(vocab_note, VocabNote) and ui_utils.is_displaytype_displaying_answer(_type_of_display):
         compounds = vocab_note.get_user_compounds()
         compound_list_html = _build_compound_list(compounds)
         html = html.replace("##VOCAB_COMPOUNDS##", compound_list_html)

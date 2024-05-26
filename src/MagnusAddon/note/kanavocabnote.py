@@ -26,13 +26,6 @@ class KanaVocabNote(WaniNote):
     def get_user_answer(self) -> str: return self.get_field(NoteFields.Vocab.user_answer)
     def set_user_answer(self, value: str) -> None: self.set_field(NoteFields.Vocab.user_answer, value)
 
-    def get_related_homophones(self) -> list[str]: return self.get_field(NoteFields.Vocab.Related_homophones).split(", ")
-    def set_related_homophones(self, value: list[str]) -> None:
-        html = f'''<ul class="homophone">
-{ex_str.newline.join([f'   <li class="clipboard">{val}</li>' for val in value])}
-</ul>'''
-        self.set_field(NoteFields.Vocab.Related_homophones, html if value else "")
-
     def get_related_similar_meaning(self) -> str: return self.get_field(NoteFields.Vocab.Related_similar_meaning)
     def set_related_similar_meaning(self, value: str) -> None: self.set_field(NoteFields.Vocab.Related_similar_meaning, value)
 
