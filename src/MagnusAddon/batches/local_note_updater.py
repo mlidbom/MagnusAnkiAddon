@@ -14,7 +14,7 @@ def update_all() -> None:
 
     _update_sentences(all_sentences)
     _update_kanji(all_kanji)
-    _update_vocab(all_vocabulary, all_kanji)
+    _update_vocab(all_vocabulary)
     _update_vocab_parsed_parts_of_speech(all_vocabulary)
 
 
@@ -29,30 +29,15 @@ def update_kanji() -> None:
     _update_kanji(app.col().kanji.all())
 
 def update_vocab() -> None:
-    _update_vocab(app.col().vocab.all(), app.col().kanji.all())
+    _update_vocab(app.col().vocab.all())
 
 def _update_sentences(sentences: list[SentenceNote]) -> None:
     for sentence in sentences: sentence.update_generated_data()
 
-def _update_vocab(all_vocabulary: list[VocabNote], all_kanji: list[KanjiNote]) -> None:
+def _update_vocab(all_vocabulary: list[VocabNote]) -> None:
     def update_generated_data() -> None:
         for vocab in all_vocabulary:
             vocab.update_generated_data()
-
-    def update_kanji_names() -> None: # todo move to a rendering step
-        def prepare_kanji_meaning(kanji: KanjiNote) -> str:
-            meaning = kanji.get_answer()
-            meaning = ex_str.strip_html_and_bracket_markup(meaning)
-            meaning = meaning.strip().replace(",", "/").replace(" ", "")
-            return meaning
-
-        kanji_dict = {kanji.get_question(): prepare_kanji_meaning(kanji) for kanji in all_kanji}
-        for vocab_note in all_vocabulary:
-            kanji_list = ex_str.extract_characters(vocab_note.get_question())
-            kanji_list = [item for item in kanji_list if item in kanji_dict]
-            kanji_meanings = [kanji_dict[kanji] for kanji in kanji_list]
-            kanji_names_string = " # ".join(kanji_meanings)
-            vocab_note.set_kanji_name(kanji_names_string)
 
     def format_context_sentences() -> None: # todo move to a rendering step
         for vocab in all_vocabulary:
@@ -74,7 +59,6 @@ def _update_vocab(all_vocabulary: list[VocabNote], all_kanji: list[KanjiNote]) -
 
 
     update_generated_data()
-    update_kanji_names()
     format_context_sentences()
 
 

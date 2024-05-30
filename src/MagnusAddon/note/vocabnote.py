@@ -115,9 +115,6 @@ class VocabNote(KanaVocabNote):
     def get_display_question(self) -> str:
         return self.get_readings()[0] if self.is_uk() else self.get_question()
 
-    def get_kanji_name(self) -> str: return self.get_field(NoteFields.Vocab.Kanji_Name)
-    def set_kanji_name(self, value: str) -> None: self.set_field(NoteFields.Vocab.Kanji_Name, value)
-
     def get_reading_mnemonic(self) -> str: return self.get_field(NoteFields.Vocab.Reading_Exp)
     def set_reading_mnemonic(self, value: str) -> None: self.set_field(NoteFields.Vocab.Reading_Exp, value)
 

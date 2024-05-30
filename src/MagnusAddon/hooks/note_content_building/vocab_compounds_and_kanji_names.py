@@ -4,8 +4,9 @@ from aqt import gui_hooks
 from ankiutils import app, ui_utils
 from language_services.shared import priorities
 from note.jpnote import JPNote
+from note.kanjinote import KanjiNote
 from note.vocabnote import VocabNote
-from sysutils import kana_utils
+from sysutils import ex_str, kana_utils
 
 # noinspection DuplicatedCode
 def _build_compound_list(compounds: list[str]) -> str:
@@ -49,6 +50,30 @@ def render_compound_list(html: str, card: Card, _type_of_display: str) -> str:
         compounds = vocab_note.get_user_compounds()
         compound_list_html = _build_compound_list(compounds)
         html = html.replace("##VOCAB_COMPOUNDS##", compound_list_html)
+
+        html = render_kanji_names(vocab_note, html)
+
+    return html
+
+
+def render_kanji_names(vocab_note: VocabNote, html: str) -> str:
+    def prepare_kanji_meaning(kanji: KanjiNote) -> str:
+        meaning = kanji.get_answer()
+        meaning = ex_str.strip_html_and_bracket_markup(meaning)
+        meaning = meaning.strip().replace(",", "/").replace(" ", "")
+        return meaning
+
+    kanji_list = [char for char in ex_str.extract_characters(vocab_note.get_question()) if kana_utils.is_kanji(char)]
+
+    kanji_names:list[str] = list()
+    for kanji_character in kanji_list:
+        kanji_note = app.col().kanji.with_kanji(kanji_character)
+        if kanji_note:
+            kanji_names.append(prepare_kanji_meaning(kanji_note))
+        else:
+            kanji_names.append("MISSING KANJI")
+
+    html = html.replace("##KANJI_NAMES##", " # ".join(kanji_names))
 
     return html
 

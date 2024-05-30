@@ -27,7 +27,6 @@ def create_vocab() -> NoteTypeEx:
                        NoteFieldEx(NoteFields.Vocab.Related_confused_with),
                        NoteFieldEx(NoteFields.Vocab.Kanji),
                        NoteFieldEx(NoteFields.Vocab.Forms),
-                       NoteFieldEx(NoteFields.Vocab.Kanji_Name),
                        NoteFieldEx(NoteFields.Vocab.Reading_Exp),
                        NoteFieldEx(NoteFields.Vocab.Homophones),
                        NoteFieldEx(NoteFields.Vocab.ParsedTypeOfSpeech),

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List, Union, TYPE_CHECKING
+from typing import List, Optional, Union, TYPE_CHECKING
 
 from note.radicalnote import RadicalNote
 
@@ -43,6 +43,10 @@ class KanjiCollection:
 
     def with_any_kanji_in(self, kanji_list: list[str]) -> List[KanjiNote]:
         return ex_sequence.flatten([self._cache.with_question(kanji) for kanji in kanji_list])
+
+    def with_kanji(self, kanji: str) -> Optional[KanjiNote]:
+        found = self._cache.with_question(kanji)
+        return found[0] if found else None
 
     def with_question(self, kanji: str) -> KanjiNote:
         return ex_list.single(self._cache.with_question(kanji))
