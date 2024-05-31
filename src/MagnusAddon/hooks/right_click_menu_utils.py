@@ -21,7 +21,7 @@ def add_lookup_action(menu: QMenu, name: str, search: str) -> None:
     menu.addAction(name, lookup_promise(lambda: search))
 
 def add_single_vocab_lookup_action(menu: QMenu, name:str, vocab:str) -> None:
-    menu.addAction(name, lookup_promise(lambda: f"{su.vocab_read} Vocab:{vocab}"))
+    menu.addAction(name, lookup_promise(lambda: f"{su.note_vocab} Vocab:{vocab}"))
 
 def add_text_vocab_lookup(menu: QMenu, name:str, text:str) -> None:
     add_lookup_action_lambda(menu, name, lambda: su.text_vocab_lookup(text))

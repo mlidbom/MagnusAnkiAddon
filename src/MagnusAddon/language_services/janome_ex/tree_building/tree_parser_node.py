@@ -127,13 +127,6 @@ class TreeParserNode:
             if len(self.surface) == 2:
                 return priorities.low
 
-        if question == self.surface:
-            if question in priorities.hard_coded_surface_priorities:
-                return priorities.hard_coded_surface_priorities[question]
-        if question == self.base:
-            if question in priorities.hard_coded_base_priorities:
-                return priorities.hard_coded_base_priorities[question]
-
         if kanji_count > 1:
             return priorities.high
 

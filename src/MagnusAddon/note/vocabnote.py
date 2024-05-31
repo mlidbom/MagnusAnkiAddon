@@ -266,9 +266,6 @@ class VocabNote(KanaVocabNote):
         kanji_characters = [subject.characters for subject in kanji_subjects]
         self.set_kanji(", ".join(kanji_characters))
 
-        kanji_names = [subject.meanings[0].meaning for subject in kanji_subjects]
-        self.set_kanji_name(", ".join(kanji_names))
-
     @staticmethod
     def create_from_wani_vocabulary(wani_vocab: models.Vocabulary) -> None:
         from ankiutils import app

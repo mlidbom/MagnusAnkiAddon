@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 from note.waninote import WaniNote
 from note.note_constants import NoteFields, Mine, NoteTypes
-from sysutils import ex_str, kana_utils
+from sysutils import ex_str
 from wanikani.wanikani_api_client import WanikaniClient
 
 class KanjiNote(WaniNote):

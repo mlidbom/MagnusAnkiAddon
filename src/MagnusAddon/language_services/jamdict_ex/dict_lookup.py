@@ -50,7 +50,7 @@ class DictLookup:
 
     @classmethod
     def try_lookup_word_or_name(cls, word: str, readings: list[str]) -> DictLookup:
-        return cls._try_lookup_word_or_name(word, tuple(readings))
+        return cls._try_lookup_word_or_name(word, *readings)
 
     @classmethod
     @lru_cache(maxsize=None)

@@ -1,5 +1,6 @@
 from anki.notes import Note
 from aqt.clayout import CardLayout
+from PyQt6.QtWebEngineCore import QWebEnginePage
 from PyQt6.QtWidgets import QMenu
 from anki.cards import Card
 from aqt import gui_hooks
@@ -35,14 +36,14 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu) -> None:
 
         return JPNote.note_from_note(inner_note)
 
-    selection = view.page().selectedText().strip()
+    selection = checked_cast(QWebEnginePage, view.page()).selectedText().strip()
     sel_clip = selection
     if not sel_clip:
         sel_clip = my_clipboard.get_text().strip()
 
     note = get_note()
     if note:
-        setup_note_menu(note, root_menu, sel_clip, selection, view)
+        setup_note_menu(note, root_menu, sel_clip)
 
     if sel_clip:
         setup_search_menu(root_menu, sel_clip)

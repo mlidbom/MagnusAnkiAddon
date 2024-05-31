@@ -2,7 +2,6 @@ from wanikani_api import models
 from anki.notes import Note
 
 from note.waninote import WaniNote
-from sysutils import ex_str
 from note.note_constants import NoteFields
 
 
