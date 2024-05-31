@@ -67,7 +67,7 @@ class KanjiCollection:
                     dependency_notes.append(radical_dependency[0])
                     continue
 
-            kanji_dependency = self.jp_collection.kanji.with_any_kanji_in([character])
+            kanji_dependency = [k for k in self.jp_collection.kanji.with_any_kanji_in([character]) if k.get_id() != kanji_note.get_id()]
             if kanji_dependency:
                 dependency_notes.append(kanji_dependency[0])
 
