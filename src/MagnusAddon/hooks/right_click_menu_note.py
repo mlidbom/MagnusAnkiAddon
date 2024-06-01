@@ -66,7 +66,7 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, sel_clip: str) -> None:
     if isinstance(note, RadicalNote):
         note_menu = checked_cast(QMenu, root_menu.addMenu("&Note"))
         note_lookup_menu = checked_cast(QMenu, note_menu.addMenu("&Lookup"))
-        add_lookup_action(note_lookup_menu, "&Kanji", f"note:{NoteTypes.Kanji} ( {su.field_contains_word(NoteFields.Kanji.Radicals_Names, note.get_answer())} OR {su.field_contains_word(NoteFields.Kanji.Radicals_Icons_Names, note.get_answer())} )")
+        add_lookup_action(note_lookup_menu, "&Kanji", su.kanji_with_radical(note))
 
     if isinstance(note, KanjiNote):
         note_menu = checked_cast(QMenu, root_menu.addMenu("&Note"))

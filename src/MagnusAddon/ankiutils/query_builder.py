@@ -7,6 +7,7 @@ from anki.notes import NoteId
 from note.jpnote import JPNote
 from note.kanjinote import KanjiNote
 from note.note_constants import Builtin, Mine, MyNoteFields, NoteFields, NoteTypes, SentenceNoteFields
+from note.radicalnote import RadicalNote
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
 from language_services.janome_ex.word_extraction import word_extractor
@@ -124,3 +125,9 @@ def notes_by_id(note_ids:list[NoteId]) -> str:
 
 def notes_by_note(notes:Sequence[JPNote]) -> str:
     return notes_by_id([n.get_id() for n in notes])
+
+def kanji_with_radical(radical: RadicalNote):
+    if radical.get_question():
+        return f"note:{NoteTypes.Kanji} {NoteFields.Kanji.Radicals}:*{radical.get_question()}*"
+    else:
+        return f"note:{NoteTypes.Kanji} ({field_contains_word(NoteFields.Kanji.Radicals_Names, radical.get_answer())} OR {field_contains_word(NoteFields.Kanji.Radicals_Icons_Names, radical.get_answer())} )"
