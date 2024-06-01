@@ -28,8 +28,8 @@ def render_kanji_list(html:str, card: Card, _type_of_display:str) -> str:
 {ex_str.newline.join(f'''
     <div class="kanji_item">
         <span class="kanji_kanji clipboard">{kanji.question()}</span>
-        <span class="kanji_answer">{kanji.answer()}</span>
         <span class="kanji_readings">{kanji.readings()}</span>
+        <span class="kanji_answer">{kanji.answer()}</span>        
     </div>
     <div class="kanji_mnemonic">{kanji.mnemonic()}</div>
 ''' for kanji in viewmodel.kanji_list)}
