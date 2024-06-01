@@ -7,7 +7,7 @@ import _lib # noqa NOTE: this line sets up lib paths, lib imports before here do
 
 import hooks # noqa
 
-from _addon_copies import refresh_media_references # noqa
+from _addon_copies import refresh_media_references # I'm leaving this warning on purpose so that I don't have to use multiple steps to run inspections in this tiring, tiring IDE I'm using.
 
 hooks.timing_hacks.init()
 hooks.browser_right_click_menu.init()

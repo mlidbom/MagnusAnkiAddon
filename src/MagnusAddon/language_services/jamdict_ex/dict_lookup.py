@@ -50,11 +50,11 @@ class DictLookup:
 
     @classmethod
     def try_lookup_word_or_name(cls, word: str, readings: list[str]) -> DictLookup:
-        return cls._try_lookup_word_or_name(word, *readings)
+        return cls._try_lookup_word_or_name(word, tuple(readings))
 
     @classmethod
     @lru_cache(maxsize=None)
-    def _try_lookup_word_or_name(cls, word: str, readings: tuple[str]) -> DictLookup:
+    def _try_lookup_word_or_name(cls, word: str, readings: tuple[str, ...]) -> DictLookup:
         def kanji_form_matches() -> list[DictEntry]:
             return [ent for ent in lookup
                     if any(ent.has_matching_kana_form(reading) for reading in readings)
