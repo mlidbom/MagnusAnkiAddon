@@ -9,6 +9,7 @@ def _word_is_in_dictionary(word: str) -> bool:
     result = DictLookup.lookup_word_shallow(word)
     return result.found_words()
 
+_noise_characters = {'.',',',':',';','/','|','。','、'}
 _max_lookahead = 12
 def extract_words(sentence: str) -> list[ExtractedWord]:
     def add_word_if_it_is_in_dictionary(word: str) -> None:
@@ -16,7 +17,7 @@ def extract_words(sentence: str) -> list[ExtractedWord]:
             add_word(word)
 
     def add_word(word: str) -> None:
-        if word not in found_words:
+        if word not in found_words and word not in _noise_characters:
             found_words.add(word)
             found_words_list.append(word)
 

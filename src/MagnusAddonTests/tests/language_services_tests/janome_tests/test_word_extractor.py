@@ -40,6 +40,7 @@ def setup() -> None:
      [ExtractedWord('走る')]),
     ("走って",
      [ExtractedWord('走る'),
+      ExtractedWord('走っ'),
       ExtractedWord('て')]),
     ("これをください。",
      [ExtractedWord('これ'),
@@ -75,6 +76,7 @@ def setup() -> None:
       ExtractedWord('までに'),
       ExtractedWord('に'),
       ExtractedWord('長い'),
+      ExtractedWord('長く'),
       ExtractedWord('感じる'),
       ExtractedWord('と'),
       ExtractedWord('とは'),
@@ -83,10 +85,12 @@ def setup() -> None:
      [ExtractedWord('どう'),
       ExtractedWord('どうやって'),
       ExtractedWord('やる'),
+      ExtractedWord('やっ'),
       ExtractedWord('て'),
       ExtractedWord('ここ'),
       ExtractedWord('を'),
       ExtractedWord('知る'),
+      ExtractedWord('知っ'),
       ExtractedWord('た')]),
     ("声出したら駄目だからね",
      [ExtractedWord('声'),
@@ -119,7 +123,7 @@ def test_identify_words(sentence: str, expected_output: list[ExtractedWord]) -> 
     assert result == expected_output
 
 def test_ignores_noise_characters() -> None:
-    result = word_extractor.extract_words(".,:;/|。、ー")
+    result = word_extractor.extract_words(". , : ; / | 。 、 ー")
     assert result == [ExtractedWord("ー")]
 
 def test_something() -> None:

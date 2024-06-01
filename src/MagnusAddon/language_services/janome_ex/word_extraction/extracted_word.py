@@ -13,7 +13,7 @@ class ExtractedWord:
     def to_hiragana(self) -> str: return kana_utils.to_hiragana(self.word)
 
     def __repr__(self) -> str:
-        return f"ParsedWord('{self.word}')"
+        return f"ExtractedWord('{self.word}')"
 
     def __eq__(self, other: Any) -> bool:
         if isinstance(other, ExtractedWord):
