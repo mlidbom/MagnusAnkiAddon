@@ -126,7 +126,7 @@ def notes_by_id(note_ids:list[NoteId]) -> str:
 def notes_by_note(notes:Sequence[JPNote]) -> str:
     return notes_by_id([n.get_id() for n in notes])
 
-def kanji_with_radical(radical: RadicalNote):
+def kanji_with_radical(radical: RadicalNote) -> str:
     if radical.get_question():
         return f"note:{NoteTypes.Kanji} {NoteFields.Kanji.Radicals}:*{radical.get_question()}*"
     else:
