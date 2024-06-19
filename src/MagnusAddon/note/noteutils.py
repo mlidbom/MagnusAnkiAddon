@@ -7,7 +7,7 @@ from sysutils.typed import checked_cast
 _card_is_studying_cache: dict[NoteId, dict[str, bool]] = dict()
 
 def _is_being_studied(card: Card) -> bool:
-    return card.queue != QUEUE_TYPE_SUSPENDED and card.queue != QUEUE_TYPE_NEW
+    return card.queue != QUEUE_TYPE_SUSPENDED #and card.queue != QUEUE_TYPE_NEW
 
 def _card_type(card: Card) -> str:
     return checked_cast(str, card.template()['name'])
