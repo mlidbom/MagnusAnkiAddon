@@ -17,6 +17,7 @@ from wanikani import note_importer, wani_note_updater
 from wanikani.wani_downloader import WaniDownloader
 
 def deep_refresh() -> None:
+    refresh()
     noteutils.clear_studying_cache()
 
     note = JPNote.note_from_card(checked_cast(Card, main_window().reviewer.card))
@@ -26,6 +27,12 @@ def deep_refresh() -> None:
 
     if isinstance(note, KanjiNote):
         local_note_updater.update_kanji()
+
+def refresh() -> None:
+    note = JPNote.note_from_card(checked_cast(Card, main_window().reviewer.card))
+
+    if isinstance(note, JPNote):
+        note.update_generated_data()
 
 def add_menu_ui_action(sub_menu: QMenu, heading: str, callback: Callable[[],None], shortcut: str = "") -> None:
     action = QAction(heading, main_window())
@@ -40,7 +47,7 @@ def add_menu_ui_action(sub_menu: QMenu, heading: str, callback: Callable[[],None
 def build_main_menu() -> None:
     my_menu = QMenu("Magnu&s", main_window())
     tools_menu = main_window().form.menuTools
-    add_menu_ui_action(tools_menu, "Refresh UI", lambda: ui_utils().refresh(), "F5")
+    add_menu_ui_action(tools_menu, "Refresh UI", refresh, "F5")
     add_menu_ui_action(tools_menu, "Deep update UI", deep_refresh, "Ctrl+F5")
 
     tools_menu.addMenu(my_menu)
