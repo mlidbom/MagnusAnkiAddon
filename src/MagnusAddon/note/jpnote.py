@@ -66,7 +66,7 @@ class JPNote(ABC):
     def is_wani_note(self) -> bool: return Mine.Tags.Wani in self._note.tags
 
     def update_generated_data(self) -> None:
-        noteutils.remove_from_cache(self.get_id())
+        noteutils.remove_from_studying_cache(self.get_id())
 
     def _on_before_flush(self) -> None:
         self._is_flushing = True

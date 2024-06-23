@@ -12,7 +12,7 @@ def _is_being_studied(card: Card) -> bool:
 def _card_type(card: Card) -> str:
     return checked_cast(str, card.template()['name'])
 
-def remove_from_cache(note_id: NoteId) -> None:
+def remove_from_studying_cache(note_id: NoteId) -> None:
     if note_id in _card_is_studying_cache:
         _card_is_studying_cache.pop(note_id)
 
