@@ -36,4 +36,4 @@ def _monkey_patch(_something:Any) -> None:
 
 def init() -> None:
     gui_hooks.collection_did_load.append(_monkey_patch)
-    gui_hooks.browser_will_show.append(_monkey_patch)
+    gui_hooks.browser_will_show.append(_monkey_patch) #should not be needed, but for some reason fixes a bug where the cache is not updated, my best guess is the scheduler is replaced for some reason. It ONLY happens with my personal profile, not the development profile...
