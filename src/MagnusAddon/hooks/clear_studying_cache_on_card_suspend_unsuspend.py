@@ -7,7 +7,7 @@ from aqt import gui_hooks, mw
 from note import noteutils
 
 
-def _monkey_patch(_something:Any) -> None:
+def _monkey_patch(html:str, _card:Any, _something_else_again:Any) -> str:
     def remove_cards_from_cache(ids: Sequence[CardId]) -> None:
         cards = [mw.col.get_card(card_id) for card_id in ids]  # type: ignore
         for card in cards:
@@ -31,9 +31,10 @@ def _monkey_patch(_something:Any) -> None:
         scheduler.unsuspend_cards = _monkey_patched_unsuspend_cards  # type: ignore
         scheduler.is_patched_by_magnus_addon = True # type: ignore
 
+    return html
+
 
 
 
 def init() -> None:
-    gui_hooks.collection_did_load.append(_monkey_patch)
-    gui_hooks.browser_will_show.append(_monkey_patch) #should not be needed, but for some reason fixes a bug where the cache is not updated, my best guess is the scheduler is replaced for some reason. It ONLY happens with my personal profile, not the development profile...
+    gui_hooks.card_will_show.append(_monkey_patch) #should not be needed, but for some reason fixes a bug where the cache is not updated, my best guess is the scheduler is replaced for some reason. It ONLY happens with my personal profile, not the development profile...
