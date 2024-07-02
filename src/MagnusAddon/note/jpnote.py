@@ -15,6 +15,7 @@ class JPNote(ABC):
     def __init__(self, note: Note):
         self._note = note
         self._is_flushing: bool = False
+        self._updated_during_preflush = False
 
     def __eq__(self, other: Any) -> bool:
         assert self.get_id(), "You cannot compare or hash a note that has not been saved yet since it has no id"
@@ -68,12 +69,19 @@ class JPNote(ABC):
     def update_generated_data(self) -> None:
         noteutils.remove_from_studying_cache(self.get_id())
 
-    def _on_before_flush(self) -> None:
+    def _on_before_flush(self) -> bool:
         self._is_flushing = True
+        self._updated_during_preflush = False
         try:
             self.update_generated_data()
         finally:
             self._is_flushing = False
+
+        updates = self._updated_during_preflush
+        if updates:
+            self._updated_during_preflush = False
+            self._flush()
+        return updates
 
     def get_field(self, field_name: str) -> str: return self._note[field_name]
 
@@ -81,12 +89,15 @@ class JPNote(ABC):
 
     def _flush(self) -> None:
         if self._is_persisted():
-            if not self._is_flushing: # We need to cancel infinite recursion here somehow...
-                self._is_flushing = True
-                try:
-                    self._note.flush()
-                finally:
-                    self._is_flushing = False
+            if self._is_flushing: # We need to cancel infinite recursion here somehow...
+                self._updated_during_preflush = True
+                return
+
+            self._is_flushing = True
+            try:
+                self._note.flush()
+            finally:
+                self._is_flushing = False
 
     def set_field(self, field_name: str, value: str) -> None:
         field_value = self._note[field_name]

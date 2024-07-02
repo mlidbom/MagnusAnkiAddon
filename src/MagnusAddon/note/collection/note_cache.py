@@ -6,7 +6,10 @@ from typing import Generic, Sequence, TypeVar
 from anki import hooks
 from anki.collection import Collection
 from anki.notes import Note, NoteId
+from aqt import mw, qconnect
+from PyQt6.QtCore import QTimer
 
+from ankiutils import app
 from note.jpnote import JPNote
 from sysutils.collections.default_dict_case_insensitive import DefaultDictCaseInsensitive
 
@@ -27,6 +30,8 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
         self._snapshot_by_id: dict[NoteId, TSnapshot] = {}
         self._by_answer: DefaultDictCaseInsensitive[set[TNote]] = DefaultDictCaseInsensitive(set)
         self._pending_add: list[TNote] = []
+        self._updates: dict[NoteId, Note] = {}
+        self._flushing = False
 
         for note in all_notes:
             self._add_to_cache(note)
@@ -34,19 +39,15 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
         self._setup_hooks()
 
     def all(self) -> list[TNote]:
-        self._merge_pending()
         return list(self._by_id.values())
 
     def with_id(self, note_id: NoteId) -> TNote:
-        self._merge_pending()
         return self._by_id[note_id]
 
     def with_question(self, question: str) -> list[TNote]:
-        self._merge_pending()
         return list(self._by_question[question])
 
     def with_answer(self, answer: str) -> list[TNote]:
-        self._merge_pending()
         return list(self._by_answer[answer])
 
     @abstractmethod
@@ -64,25 +65,39 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
         hooks.notes_will_be_deleted.append(self._on_will_be_removed)
         hooks.note_will_flush.append(self._on_will_flush)
 
+        timer = QTimer(mw)
+        qconnect(timer.timeout, self._flush_updates)
+        timer.start(1000)  # 1000 milliseconds = 1 second
+
     def _on_will_be_removed(self, _: Collection, note_ids: Sequence[NoteId]) -> None:
         cached_notes = [self._by_id[note_id] for note_id in note_ids if note_id in self._snapshot_by_id]
         for cached in cached_notes:
             self._pending_add = [pending for pending in self._pending_add if pending.get_id() != cached.get_id()]
             self._remove_from_cache(cached)
 
-    def _on_will_flush(self, backend_note: Note) -> None:
-        note = JPNote.note_from_note(backend_note)
-
-        if isinstance(note, self._note_type):
-            # noinspection PyProtectedMember
-            note._on_before_flush()
-            if note.get_id():
+    def _flush_updates(self) -> None:
+        self._merge_pending()
+        updates = list(self._updates.values())
+        self._updates = {}
+        notes_were_updated = False
+        for backend_note_old in updates:
+            backend_note = app.col().anki_collection.get_note(backend_note_old.id)  # our instance is surely outdated, get a new one.
+            note = JPNote.note_from_note(backend_note)
+            if isinstance(note, self._note_type):
+                # noinspection PyProtectedMember
+                notes_were_updated = notes_were_updated or note._on_before_flush()
                 if note.get_id() in self._by_id:
                     self._remove_from_cache(note)
+                    self._add_to_cache(note)
+                else:
+                    self._pending_add.append(note)
 
-                self._add_to_cache(note)
-            else:
-                self._pending_add.append(note)
+        if notes_were_updated:
+            app.ui_utils().refresh()
+
+    def _on_will_flush(self, backend_note: Note) -> None:
+        if backend_note.id:
+            self._updates[backend_note.id] = backend_note
 
     def _remove_from_cache(self, note: TNote) -> None:
         assert note.get_id()

@@ -23,11 +23,7 @@ class _SentenceCache(NoteCache[SentenceNote, _SentenceSnapshot]):
 
     def _create_snapshot(self, note: SentenceNote) -> _SentenceSnapshot: return _SentenceSnapshot(note)
 
-    def _merged_self(self) -> _SentenceCache:
-        self._merge_pending()
-        return self
-
-    def with_vocab_form(self, form: str) -> list[SentenceNote]: return list(self._merged_self()._by_vocab_form[form])
+    def with_vocab_form(self, form: str) -> list[SentenceNote]: return list(self._by_vocab_form[form])
     
     def _inheritor_remove_from_cache(self, sentence: SentenceNote, cached:_SentenceSnapshot) -> None:
         for vocab_form in cached.words: self._by_vocab_form[vocab_form].remove(sentence)

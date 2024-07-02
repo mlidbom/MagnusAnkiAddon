@@ -26,13 +26,9 @@ class _VocabCache(NoteCache[VocabNote, _VocabSnapshot]):
         self._by_reading: dict[str, set[VocabNote]] = defaultdict(set)
         super().__init__(all_vocab, VocabNote)
 
-    def _merged_self(self) -> _VocabCache:
-        self._merge_pending()
-        return self
-
-    def with_form(self, form: str) -> list[VocabNote]: return list(self._merged_self()._by_form[form])
-    def with_kanji(self, kanji: str) -> list[VocabNote]: return list(self._merged_self()._by_kanji[kanji])
-    def with_reading(self, reading: str) -> list[VocabNote]: return list(self._merged_self()._by_reading[reading])
+    def with_form(self, form: str) -> list[VocabNote]: return list(self._by_form[form])
+    def with_kanji(self, kanji: str) -> list[VocabNote]: return list(self._by_kanji[kanji])
+    def with_reading(self, reading: str) -> list[VocabNote]: return list(self._by_reading[reading])
 
     def _create_snapshot(self, note: VocabNote) -> _VocabSnapshot: return _VocabSnapshot(note)
 
