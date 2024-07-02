@@ -59,7 +59,6 @@ def render_compound_list(html: str, card: Card, _type_of_display: str) -> str:
 def render_kanji_names(vocab_note: VocabNote, html: str) -> str:
     def prepare_kanji_meaning(kanji: KanjiNote) -> str:
         meaning = kanji.get_answer()
-        meaning = ex_str.strip_html_and_bracket_markup(meaning)
         meaning = meaning.strip().replace(",", "/").replace(" ", "")
         return meaning
 

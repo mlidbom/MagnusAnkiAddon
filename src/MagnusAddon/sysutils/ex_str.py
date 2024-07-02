@@ -14,11 +14,12 @@ def pad_to_length_ui_font(text:str, length: int) -> str:
 def extract_characters(string: str) -> list[str]:
     return [char for char in string if not char.isspace()]
 
-def extract_token_separated_values(string: str, token: str) -> list[str]:
-    return [item for item in (item.strip() for item in string.strip().split(token)) if item]
+def extract_token_separated_values(string: str, *delimiters: str) -> list[str]:
+    pattern = f"[{''.join(map(re.escape, delimiters))}]"
+    return [item for item in (item.strip() for item in re.split(pattern, string.strip())) if item]
 
 def extract_comma_separated_values(string: str) -> list[str]:
-    return extract_token_separated_values(string, ",")
+    return extract_token_separated_values(string, ",", "、")
 
 def extract_newline_separated_values(string: str) -> list[str]:
     return extract_token_separated_values(string, newline)

@@ -96,7 +96,7 @@ class SentenceNote(JPNote):
             self._set_parsed_words([word.word for word in self.parse_words_from_expression()])
 
     def extract_kanji(self) -> list[str]:
-        clean = ex_str.strip_html_and_bracket_markup(self._get_source_question())
+        clean = ex_str.strip_html_and_bracket_markup(self.get_question())
         return [char for char in clean if kana_utils.is_kanji(char)]
 
     @classmethod
