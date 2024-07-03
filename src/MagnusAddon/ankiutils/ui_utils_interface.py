@@ -9,7 +9,7 @@ class IUIUtils(metaclass=ABCMeta):
     def is_edit_current_active(self) -> bool: pass
 
     @abstractmethod
-    def refresh(self) -> None: pass
+    def refresh(self, refresh_browser:bool = True) -> None: pass
 
     @abstractmethod
     def run_ui_action(self, callback: Callable[[],None]) -> None: pass

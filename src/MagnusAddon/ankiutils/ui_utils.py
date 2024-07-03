@@ -34,7 +34,7 @@ class UIUtils(IUIUtils):
         self.refresh()
         tooltip(f"done in {time}")
 
-    def refresh(self) -> None:
+    def refresh(self, refresh_browser:bool = True) -> None:
         audio_suppressor.suppress_for_seconds(.1)
         if self._mw.reviewer.card:
             self._mw.reviewer._refresh_needed = RefreshNeeded.NOTE_TEXT
@@ -44,9 +44,10 @@ class UIUtils(IUIUtils):
         if len(previewer) > 0:
             previewer[0].render_card()
 
-        browser: list[Browser] = [window for window in self._mw.app.topLevelWidgets() if isinstance(window, Browser)]
-        if len(browser) > 0:
-            browser[0].onSearchActivated()
+        if refresh_browser:
+            browser: list[Browser] = [window for window in self._mw.app.topLevelWidgets() if isinstance(window, Browser)]
+            if len(browser) > 0:
+                browser[0].onSearchActivated()
 
     def show_current_review_in_preview(self) -> None:
         self._mw.onBrowse()

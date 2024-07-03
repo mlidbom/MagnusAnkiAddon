@@ -93,7 +93,7 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
                     self._pending_add.append(note)
 
         if notes_were_updated:
-            app.ui_utils().refresh()
+            app.ui_utils().refresh(refresh_browser=False)
 
     def _on_will_flush(self, backend_note: Note) -> None:
         if backend_note.id:
