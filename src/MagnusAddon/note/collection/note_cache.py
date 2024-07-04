@@ -31,6 +31,7 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
         self._by_answer: DefaultDictCaseInsensitive[set[TNote]] = DefaultDictCaseInsensitive(set)
         self._pending_add: list[TNote] = []
         self._updates: dict[NoteId, Note] = {}
+        self._deleted: set[NoteId] = set()
         self._flushing = False
 
         for note in all_notes:
@@ -70,6 +71,7 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
         timer.start(1000)  # 1000 milliseconds = 1 second
 
     def _on_will_be_removed(self, _: Collection, note_ids: Sequence[NoteId]) -> None:
+        self._deleted.update(note_ids)
         cached_notes = [self._by_id[note_id] for note_id in note_ids if note_id in self._snapshot_by_id]
         for cached in cached_notes:
             self._pending_add = [pending for pending in self._pending_add if pending.get_id() != cached.get_id()]
@@ -77,7 +79,7 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
 
     def _flush_updates(self) -> None:
         self._merge_pending()
-        updates = list(self._updates.values())
+        updates = list(note for note in self._updates.values() if note.id not in self._deleted)
         self._updates = {}
         notes_were_updated = False
         for backend_note_old in updates:
