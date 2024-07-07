@@ -27,22 +27,25 @@ def setup_anki_search_menu(search_menu: QMenu, sel_clip: str) -> None:
 
 def setup_web_search_menu(search_menu: QMenu, sel_clip: str) -> None:
     search_web_menu = checked_cast(QMenu, search_menu.addMenu("Search &Web"))
-    add_web_lookup(search_web_menu, "&Takoboto", u"https://takoboto.jp/?q=%s", sel_clip)
-    add_web_lookup(search_web_menu, "&Japanese with anime", "https://www.google.com/search?q=site:www.japanesewithanime.com+%s", sel_clip)
 
-    add_web_lookup(search_web_menu, "&Google images", "https://www.google.com/images?q=%s", sel_clip)
+    add_web_lookup(search_web_menu, "English: &Merriam Webster", u"https://www.merriam-webster.com/dictionary/%s", sel_clip)
+    add_web_lookup(search_web_menu, "Sentences: &Immersion Kit", u"https://www.immersionkit.com/dictionary?exact=true&sort=shortness&keyword=%s", sel_clip)
 
-    add_web_lookup(search_web_menu, "&Merriam Webster", u"https://www.merriam-webster.com/dictionary/%s", sel_clip)
-    add_web_lookup(search_web_menu, "&Immersion Kit", u"https://www.immersionkit.com/dictionary?exact=true&sort=shortness&keyword=%s", sel_clip)
-    add_web_lookup(search_web_menu, "Japanese verb &conjugator", u"https://www.japaneseverbconjugator.com/VerbDetails.asp?Go=Conjugate&txtVerb=%s", sel_clip)
-    add_web_lookup(search_web_menu, "&Kanshudo Word Search", u"https://www.kanshudo.com/searchw?q=%s", sel_clip)
-    add_web_lookup(search_web_menu, "&Kanshudo Sentence Translate", u"https://www.kanshudo.com/sentence_translate?q=%s", sel_clip)
+    add_web_lookup(search_web_menu, "Images: &Google", "https://www.google.com/search?udm=2&tbs=sur:cl&q=%s", sel_clip)
+    add_web_lookup(search_web_menu, "Images: &Bing", "https://www.bing.com/images/search?qft=+filterui:licenseType-Any&q=%s", sel_clip)
 
-    add_web_lookup(search_web_menu, "&Deepl", u"https://www.deepl.com/en/translator#ja/en/%s", sel_clip)
-    add_web_lookup(search_web_menu, "&Jisho", u"https://jisho.org/search/%s", sel_clip)
-    add_web_lookup(search_web_menu, "&Wanikani", u"https://www.wanikani.com/search?query=%s", sel_clip)
-    add_web_lookup(search_web_menu, "&Verbix conjugate", u"https://www.verbix.com/webverbix/japanese/%s", sel_clip)
+    add_web_lookup(search_web_menu, "Lookup: &Takoboto", u"https://takoboto.jp/?q=%s", sel_clip)
+    add_web_lookup(search_web_menu, "Lookup: &Kanshudo", u"https://www.kanshudo.com/searchw?q=%s", sel_clip)
+    add_web_lookup(search_web_menu, "Lookup: &Jisho", u"https://jisho.org/search/%s", sel_clip)
+    add_web_lookup(search_web_menu, "Lookup: &Wanikani", u"https://www.wanikani.com/search?query=%s", sel_clip)
 
+    add_web_lookup(search_web_menu, "Conjugate: Japanese verb &conjugator", u"https://www.japaneseverbconjugator.com/VerbDetails.asp?Go=Conjugate&txtVerb=%s", sel_clip)
+    add_web_lookup(search_web_menu, "Conjugate: &Verbix", u"https://www.verbix.com/webverbix/japanese/%s", sel_clip)
+
+    add_web_lookup(search_web_menu, "Translate: &Deepl", u"https://www.deepl.com/en/translator#ja/en/%s", sel_clip)
+    add_web_lookup(search_web_menu, "Translate: &Kanshudo", u"https://www.kanshudo.com/sentence_translate?q=%s", sel_clip)
+
+    add_web_lookup(search_web_menu, "Grammar: &Japanese with anime", "https://www.google.com/search?q=site:www.japanesewithanime.com+%s", sel_clip)
 
 def add_web_lookup(menu: QMenu, name: str, url: str, search: str) -> None:
     search = parse.quote(search, encoding='utf8')
