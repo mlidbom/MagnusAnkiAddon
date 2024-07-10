@@ -11,14 +11,13 @@ class UglyUITimingBasedHacksData:
     def __init__(self) -> None:
         self._last_editor_typing_time = 0.0
         self._last_reviewer_showed_answer_time = 0.0
-        self._last_editor_typing_note:Optional[Note] = None
 
-    def typed_in_note(self, note: Note) -> None:
+    def typed_in_note(self, _note: Note) -> None:
         audio_suppressor.suppress_for_seconds(.3)
         self._last_editor_typing_time = time.time()
-        self._last_editor_typing_note = note
 
     def reviewer_showed_answer(self, _card:Card) -> None:
+        audio_suppressor.suppress_for_seconds(.3)
         self._last_reviewer_showed_answer_time = time.time()
 
     def reviewer_just_showed_answer(self) -> bool:
