@@ -12,8 +12,10 @@ from ankiutils.audio_suppressor import audio_suppressor
 from ankiutils.ui_utils_interface import IUIUtils
 from sysutils import timeutil
 
+_ANSWER_DISPLAY_TYPES = {'reviewAnswer', 'previewAnswer', 'clayoutAnswer'}
+
 def is_displaytype_displaying_answer(display_type: str) -> bool:
-    return display_type in {'reviewAnswer', 'previewAnswer'}
+    return display_type in _ANSWER_DISPLAY_TYPES
 
 class UIUtils(IUIUtils):
     def __init__(self, mw: AnkiQt):
