@@ -29,6 +29,7 @@ def setup_web_search_menu(search_menu: QMenu, sel_clip: str) -> None:
     search_web_menu = checked_cast(QMenu, search_menu.addMenu("Search &Web"))
 
     add_web_lookup(search_web_menu, "English: &Merriam Webster", u"https://www.merriam-webster.com/dictionary/%s", sel_clip)
+
     add_web_lookup(search_web_menu, "Sentences: &Immersion Kit", u"https://www.immersionkit.com/dictionary?exact=true&sort=shortness&keyword=%s", sel_clip)
 
     add_web_lookup(search_web_menu, "Images: &Google", "https://www.google.com/search?udm=2&tbs=sur:cl&q=%s", sel_clip)
