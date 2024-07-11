@@ -20,6 +20,7 @@ def generate_vocab_html_list(_vocab_note: VocabNote) -> str:
     homophones = ex_sequence.flatten([app.col().vocab.with_reading(reading) for reading in _vocab_note.get_readings()])
     homophones = [homophone for homophone in homophones if homophone.get_id() != _vocab_note.get_id()]
     homophones = vocabnote.sort_vocab_list_by_studying_status(homophones)
+    homophones = [_vocab_note] + homophones
 
     if not homophones:
         return ""
