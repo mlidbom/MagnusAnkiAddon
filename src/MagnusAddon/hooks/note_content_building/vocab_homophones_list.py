@@ -43,24 +43,15 @@ def generate_vocab_html_list(_vocab_note: VocabNote) -> str:
             </div>
             '''
 
-
-def generate_answer(_vocab_note: VocabNote) -> str:
-    return f'''
-            <div id="answer" class="{_create_classes(_vocab_note)}">                                            
-                {_vocab_note.get_meta_tags_html()}
-                <span class="meaning"> {_vocab_note.get_answer()}</span>
-            </div>
-            '''
-
 def render_homophones_html_list(html: str, card: Card, _type_of_display: str) -> str:
     vocab_note = JPNote.note_from_card(card)
 
-    if isinstance(vocab_note, VocabNote): #and ui_utils.is_displaytype_displaying_answer(_type_of_display)
+    if isinstance(vocab_note, VocabNote) and ui_utils.is_displaytype_displaying_answer(_type_of_display):
         homophones_list_html = generate_vocab_html_list(vocab_note)
         html = html.replace("##HOMOPHONES_LIST##", homophones_list_html)
 
-        answer = generate_answer(vocab_note)
-        html = html.replace("##ANSWER##", answer)
+        html = html.replace("##VOCAB_META_TAGS_HTML##", vocab_note.get_meta_tags_html())
+        html = html.replace("##VOCAB_CLASSES##", _create_classes(vocab_note))
 
     return html
 
