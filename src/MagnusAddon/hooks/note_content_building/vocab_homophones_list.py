@@ -20,10 +20,11 @@ def generate_vocab_html_list(_vocab_note: VocabNote) -> str:
     homophones = ex_sequence.flatten([app.col().vocab.with_reading(reading) for reading in _vocab_note.get_readings()])
     homophones = [homophone for homophone in homophones if homophone.get_id() != _vocab_note.get_id()]
     homophones = vocabnote.sort_vocab_list_by_studying_status(homophones)
-    homophones = [_vocab_note] + homophones
 
     if not homophones:
         return ""
+
+    homophones = [_vocab_note] + homophones
 
     return f'''
              <div id="homophonesDiv">
@@ -42,12 +43,24 @@ def generate_vocab_html_list(_vocab_note: VocabNote) -> str:
             </div>
             '''
 
-def render_homophones_html_list(html: str, card: Card, type_of_display: str) -> str:
+
+def generate_answer(_vocab_note: VocabNote) -> str:
+    return f'''
+            <div id="answer" class="{_create_classes(_vocab_note)}">                                            
+                {_vocab_note.get_meta_tags_html()}
+                <span class="meaning"> {_vocab_note.get_answer()}</span>
+            </div>
+            '''
+
+def render_homophones_html_list(html: str, card: Card, _type_of_display: str) -> str:
     vocab_note = JPNote.note_from_card(card)
 
-    if isinstance(vocab_note, VocabNote) and ui_utils.is_displaytype_displaying_answer(type_of_display):
+    if isinstance(vocab_note, VocabNote): #and ui_utils.is_displaytype_displaying_answer(_type_of_display)
         homophones_list_html = generate_vocab_html_list(vocab_note)
         html = html.replace("##HOMOPHONES_LIST##", homophones_list_html)
+
+        answer = generate_answer(vocab_note)
+        html = html.replace("##ANSWER##", answer)
 
     return html
 
