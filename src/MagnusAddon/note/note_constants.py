@@ -31,6 +31,7 @@ class NoteTypes:
     Sentence = "_japanese_sentence"
 
 class NoteFields:
+    note_id = "nid"
     class VocabNoteType:
         class Card:
             Reading = "Reading"

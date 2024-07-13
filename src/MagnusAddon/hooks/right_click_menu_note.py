@@ -110,7 +110,9 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, sel_clip: str) -> None:
         if vocab.get_related_ergative_twin():
             add_single_vocab_lookup_action(note_lookup_menu, "&Ergative twin", vocab.get_related_ergative_twin())
 
-        add_lookup_action(note_lookup_menu, "&Sentence", su.sentence_search(vocab.get_question()))
+        add_lookup_action(note_lookup_menu, "&Sentences", su.sentence_search(vocab.get_question()))
+        add_lookup_action(note_lookup_menu, "Sentences I'm S&tudying", su.notes_lookup(vocab.get_sentences_studying()))
+
         add_text_vocab_lookup(note_lookup_menu, "&Compounds", note.get_question())
         add_vocab_dependencies_lookup(note_lookup_menu, "&Dependencies", note)
 

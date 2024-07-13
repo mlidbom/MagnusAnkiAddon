@@ -52,6 +52,9 @@ def sentence_search(word:str, exact:bool = False) -> str:
 
     return result + f"""({form_query(word)})"""
 
+def notes_lookup(notes: Sequence[JPNote]) -> str:
+    return f"""{NoteFields.note_id}:{",".join(str(note.get_id()) for note in notes)}"""
+
 def field_value_exact(field:str, *queries:str) -> str:
     return _or_clauses([f'''"{field}:{query}"''' for query in queries])
 
