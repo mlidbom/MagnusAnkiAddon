@@ -13,7 +13,8 @@ def render_dependencies_list(html: str, card: Card, _type_of_display: str) -> st
         dependencies = app.col().kanji.display_dependencies_of(note)
 
         list_html = f"""
-<div id="dependencies_list">
+<div id="dependencies_list" class="page_section">
+    <div class="page_section_title">radicals</div>
 {ex_str.newline.join(f'''
     <div class="dependency">
         <div class="dependency_heading">

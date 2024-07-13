@@ -21,7 +21,8 @@ def generate_vocab_html_list(_kanji_note: KanjiNote) -> str:
     vocabs = _kanji_note.get_vocab_notes_sorted()
 
     return f'''
-            <div class="kanjiVocabList">
+            <div class="kanjiVocabList page_section">
+                <div class="page_section_title">vocabulary</div>
                 <div>
 
                 {newline.join([f"""
