@@ -145,11 +145,22 @@ def render_breakdown(html: str, card: Card, _type_of_display: str) -> str:
         tree = ud_tree_builder.build_tree(ud_tokenizers.default, question)
         view_model = sentence_breakdown_viewmodel.create(tree, app.col())
 
-        user_extra_html = _build_user_extra_list(extra_words, user_excluded)
-        html = html.replace("##USER_EXTRA_VOCAB##", user_extra_html)
+        if extra_words:
+            user_extra_html = f"""
+    <div class="breakdown page_section">
+        <div class="page_section_title">extra vocab</div>
+        {_build_user_extra_list(extra_words, user_excluded)}
+    </div>
+    """
+            html = html.replace("##USER_EXTRA_VOCAB##", user_extra_html)
 
         user_higlighted = set(extra_words)
-        breakdown_html = _create_html_from_nodes(view_model.nodes, user_excluded, user_higlighted, 1)
+        breakdown_html = f"""
+<div class="breakdown page_section">
+    <div class="page_section_title">breakdown</div>
+    {_create_html_from_nodes(view_model.nodes, user_excluded, user_higlighted, 1)}
+</div>
+"""
         #todo: restore this or remove the related code
         # html += f"""
         #

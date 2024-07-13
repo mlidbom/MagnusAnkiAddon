@@ -27,8 +27,8 @@ def generate_vocab_html_list(_vocab_note: VocabNote) -> str:
     homophones = [_vocab_note] + homophones
 
     return f'''
-             <div id="homophonesDiv">
-                <div id="homophonesDivTitle">Homophones</div>
+             <div id="homophonesDiv" class="page_section">
+                <div class="page_section_title" >Homophones</div>
                 <div class="vocabHomophonesList">
                     <div>
                         {newline.join([f"""
