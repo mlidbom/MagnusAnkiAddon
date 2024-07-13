@@ -153,6 +153,8 @@ def render_breakdown(html: str, card: Card, _type_of_display: str) -> str:
     </div>
     """
             html = html.replace("##USER_EXTRA_VOCAB##", user_extra_html)
+        else:
+            html = html.replace("##USER_EXTRA_VOCAB##", "")
 
         user_higlighted = set(extra_words)
         breakdown_html = f"""

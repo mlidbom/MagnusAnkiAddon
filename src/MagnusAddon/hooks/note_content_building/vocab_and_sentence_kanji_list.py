@@ -23,7 +23,7 @@ def render_kanji_list(html:str, card: Card, _type_of_display:str) -> str:
 
         list_html += f"""
 <div id="kanji_list" class="page_section">
-    <div class="page_section_title" >Kanji</div>
+    <div class="page_section_title">kanji</div>
 {ex_str.newline.join(f'''
     <div class="kanji_item">
         <span class="kanji_kanji clipboard">{kanji.question()}</span>
