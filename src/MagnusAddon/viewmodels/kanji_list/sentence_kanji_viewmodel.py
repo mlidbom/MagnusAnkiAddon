@@ -10,7 +10,11 @@ class KanjiViewModel:
     def question(self) -> str: return self._kanji.get_question()
     def answer(self) -> str: return self._kanji.get_answer()
     def readings(self) -> str:
-        return f"""{kana_utils.to_katakana(self._kanji.get_reading_on())} <span class="readingsSeparator">|</span> {self._kanji.get_reading_kun()}"""
+        readings = f"""{kana_utils.to_katakana(self._kanji.get_reading_on())} <span class="readingsSeparator">|</span> {self._kanji.get_reading_kun()}"""
+        if self._kanji.get_reading_nan():
+            readings += f""" <span class="readingsSeparator">|</span> {self._kanji.get_reading_nan()}"""
+
+        return readings
 
     def mnemonic(self) -> str:
         return self._kanji.get_active_mnemonic()

@@ -66,6 +66,7 @@ class NoteFields:
         user_answer = "__answer"
         Reading_On = "Reading_On"
         Reading_Kun = "Reading_Kun"
+        Reading_Nan = "__reading_Nan"
         Radicals = "Radicals"
         Radicals_Icons = "Radicals_Icons"
         Radicals_Names = "Radicals_Names"
