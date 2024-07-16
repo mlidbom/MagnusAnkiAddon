@@ -73,7 +73,7 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
 
         timer = QTimer(mw)
         qconnect(timer.timeout, self._flush_updates)
-        timer.start(1000)  # 1000 milliseconds = 1 second
+        timer.start(10)  # 1000 milliseconds = 1 second
 
     def _on_will_be_removed(self, _: Collection, note_ids: Sequence[NoteId]) -> None:
         self._deleted.update(note_ids)
@@ -100,7 +100,7 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
                 else:
                     self._pending_add.append(note)
         if updated_notes:
-            op = aqt.operations.note.update_notes(parent=checked_cast(QWidget, mw), notes=updated_notes)
+            op = aqt.operations.note.update_notes(parent=checked_cast(QWidget, mw), notes=updated_notes).success(None)
             audio_suppressor.suppress_for_seconds(.3)
             op.run_in_background()
 
