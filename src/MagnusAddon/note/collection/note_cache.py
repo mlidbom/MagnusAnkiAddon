@@ -99,10 +99,12 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
                     self._add_to_cache(note)
                 else:
                     self._pending_add.append(note)
-        if updated_notes:
-            op = aqt.operations.note.update_notes(parent=checked_cast(QWidget, mw), notes=updated_notes).success(None)
+        if updates:
             audio_suppressor.suppress_for_seconds(.3)
-            op.run_in_background()
+            if updated_notes:
+                app.anki_collection().update_notes(updated_notes)
+            #     op = aqt.operations.note.update_notes(parent=checked_cast(QWidget, mw), notes=updated_notes).success(None)
+            #     op.run_in_background()
 
     def _on_will_flush(self, backend_note: Note) -> None:
         if backend_note.id:
