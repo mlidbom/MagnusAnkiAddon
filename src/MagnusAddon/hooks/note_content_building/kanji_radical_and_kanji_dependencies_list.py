@@ -12,27 +12,30 @@ def render_dependencies_list(html: str, card: Card, _type_of_display: str) -> st
     if isinstance(note, KanjiNote):
         dependencies = app.col().kanji.display_dependencies_of(note)
 
-        list_html = f"""
-<div id="dependencies_list" class="page_section">
-    <div class="page_section_title">radicals</div>
-{ex_str.newline.join(f'''
-    <div class="dependency">
-        <div class="dependency_heading">
-            {f'<div class="dependency_character clipboard">{dependency.character}</div>'
-            if dependency.character
-            else f'<div class="dependency_icon">{dependency.icon_substitute_for_character}</div>'}
+        if dependencies:
+            list_html = f"""
+    <div id="dependencies_list" class="page_section">
+        <div class="page_section_title">radicals</div>
+    {ex_str.newline.join(f'''
+        <div class="dependency">
+            <div class="dependency_heading">
+                {f'<div class="dependency_character clipboard">{dependency.character}</div>'
+                if dependency.character
+                else f'<div class="dependency_icon">{dependency.icon_substitute_for_character}</div>'}
+                
             
-        
-            <div class="dependency_name clipboard">{dependency.name}</div>
-            <div class="dependency_readings">{", ".join(dependency.readings)}</div>
+                <div class="dependency_name clipboard">{dependency.name}</div>
+                <div class="dependency_readings">{", ".join(dependency.readings)}</div>
+            </div>
+            <div class="dependency_mnemonic">{dependency.mnemonic}</div>
         </div>
-        <div class="dependency_mnemonic">{dependency.mnemonic}</div>
+    ''' for dependency in dependencies)}
     </div>
-''' for dependency in dependencies)}
-</div>
-        """
+            """
 
-        html = html.replace("##DEPENDENCIES_LIST##", list_html)
+            html = html.replace("##DEPENDENCIES_LIST##", list_html)
+        else:
+            html = html.replace("##DEPENDENCIES_LIST##", "")
 
     return html
 
