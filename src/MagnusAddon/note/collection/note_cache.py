@@ -3,15 +3,20 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Generic, Sequence, TypeVar
 
+import aqt.operations.note
 from anki import hooks
 from anki.collection import Collection
 from anki.notes import Note, NoteId
 from aqt import mw, qconnect
+from aqt.operations import CollectionOp
 from PyQt6.QtCore import QTimer
+from PyQt6.QtWidgets import QWidget
 
 from ankiutils import app
+from ankiutils.audio_suppressor import audio_suppressor
 from note.jpnote import JPNote
 from sysutils.collections.default_dict_case_insensitive import DefaultDictCaseInsensitive
+from sysutils.typed import checked_cast
 
 class CachedNote:
     def __init__(self, note: JPNote):
@@ -81,21 +86,23 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
         self._merge_pending()
         updates = list(note for note in self._updates.values() if note.id not in self._deleted)
         self._updates = {}
-        notes_were_updated = False
+        updated_notes:list[Note] = list()
         for backend_note_old in updates:
             backend_note = app.col().anki_collection.get_note(backend_note_old.id)  # our instance is surely outdated, get a new one.
             note = JPNote.note_from_note(backend_note)
             if isinstance(note, self._note_type):
                 # noinspection PyProtectedMember
-                notes_were_updated = notes_were_updated or note._on_before_flush()
+                if note._internal_update_generated_data():
+                    updated_notes.append(backend_note)
                 if note.get_id() in self._by_id:
                     self._remove_from_cache(note)
                     self._add_to_cache(note)
                 else:
                     self._pending_add.append(note)
-
-        if notes_were_updated:
-            app.ui_utils().refresh(refresh_browser=False)
+        if updated_notes:
+            op = aqt.operations.note.update_notes(parent=checked_cast(QWidget, mw), notes=updated_notes)
+            audio_suppressor.suppress_for_seconds(.3)
+            op.run_in_background()
 
     def _on_will_flush(self, backend_note: Note) -> None:
         if backend_note.id:

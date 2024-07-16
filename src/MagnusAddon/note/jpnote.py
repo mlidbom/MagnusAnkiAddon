@@ -14,8 +14,8 @@ from sysutils.typed import checked_cast
 class JPNote(ABC):
     def __init__(self, note: Note):
         self._note = note
-        self._is_flushing: bool = False
-        self._updated_during_preflush = False
+        self._is_updating_generated_data: bool = False
+        self._generated_data_was_updated = False
 
     def __eq__(self, other: Any) -> bool:
         assert self.get_id(), "You cannot compare or hash a note that has not been saved yet since it has no id"
@@ -69,19 +69,18 @@ class JPNote(ABC):
     def update_generated_data(self) -> None:
         noteutils.remove_from_studying_cache(self.get_id())
 
-    def _on_before_flush(self) -> bool:
-        self._is_flushing = True
-        self._updated_during_preflush = False
+    def _internal_update_generated_data(self) -> bool:
+        self._is_updating_generated_data = True
+        self._generated_data_was_updated = False
         try:
             self.update_generated_data()
         finally:
-            self._is_flushing = False
+            self._is_updating_generated_data = False
 
-        updates = self._updated_during_preflush
-        if updates:
-            self._updated_during_preflush = False
-            self._flush()
-        return updates
+        data_was_updated = self._generated_data_was_updated
+        if data_was_updated:
+            self._generated_data_was_updated = False
+        return data_was_updated
 
     def get_field(self, field_name: str) -> str: return self._note[field_name]
 
@@ -89,15 +88,15 @@ class JPNote(ABC):
 
     def _flush(self) -> None:
         if self._is_persisted():
-            if self._is_flushing: # We need to cancel infinite recursion here somehow...
-                self._updated_during_preflush = True
+            if self._is_updating_generated_data: # We need to cancel infinite recursion here somehow...
+                self._generated_data_was_updated = True
                 return
 
-            self._is_flushing = True
+            self._is_updating_generated_data = True
             try:
                 self._note.flush()
             finally:
-                self._is_flushing = False
+                self._is_updating_generated_data = False
 
     def set_field(self, field_name: str, value: str) -> None:
         field_value = self._note[field_name]
