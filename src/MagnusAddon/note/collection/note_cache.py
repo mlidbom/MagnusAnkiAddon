@@ -103,6 +103,7 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
             audio_suppressor.suppress_for_seconds(.3)
             if updated_notes:
                 app.anki_collection().update_notes(updated_notes)
+                app.ui_utils().refresh(refresh_browser=False)
             #     op = aqt.operations.note.update_notes(parent=checked_cast(QWidget, mw), notes=updated_notes).success(None)
             #     op.run_in_background()
 
