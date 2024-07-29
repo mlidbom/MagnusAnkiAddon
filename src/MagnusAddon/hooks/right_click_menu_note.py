@@ -116,6 +116,9 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, sel_clip: str) -> None:
         add_text_vocab_lookup(note_lookup_menu, "&Compounds", note.get_question())
         add_vocab_dependencies_lookup(note_lookup_menu, "&Dependencies", note)
 
+        for reading in note.get_readings():
+            add_lookup_action(note_lookup_menu, f"&Homonyms: {reading}", su.notes_lookup(app.col().vocab.with_reading(reading)))
+
         if not vocab.get_mnemonics_override():
             add_ui_action(note_hide_menu, "&Mnemonic", lambda: vocab.override_meaning_mnemonic())
         if vocab.get_mnemonics_override() == "-":
