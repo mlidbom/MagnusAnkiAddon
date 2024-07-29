@@ -32,6 +32,9 @@ def setup_web_search_menu(search_menu: QMenu, sel_clip: str) -> None:
 
     add_web_lookup(search_web_menu, "Sentences: &Immersion Kit", u"https://www.immersionkit.com/dictionary?exact=true&sort=shortness&keyword=%s", sel_clip)
 
+    add_web_lookup(search_web_menu, "Grammar: &Google", "https://www.google.com/search?q=japanese+grammar+%s", sel_clip)
+    add_web_lookup(search_web_menu, "Grammar: &Japanese with anime", "https://www.google.com/search?q=site:www.japanesewithanime.com+%s", sel_clip)
+
     add_web_lookup(search_web_menu, "Images: &Google", "https://www.google.com/search?udm=2&tbs=sur:cl&q=%s", sel_clip)
     add_web_lookup(search_web_menu, "Images: &Bing", "https://www.bing.com/images/search?qft=+filterui:licenseType-Any&q=%s", sel_clip)
 
@@ -45,8 +48,6 @@ def setup_web_search_menu(search_menu: QMenu, sel_clip: str) -> None:
 
     add_web_lookup(search_web_menu, "Translate: &Deepl", u"https://www.deepl.com/en/translator#ja/en/%s", sel_clip)
     add_web_lookup(search_web_menu, "Translate: &Kanshudo", u"https://www.kanshudo.com/sentence_translate?q=%s", sel_clip)
-
-    add_web_lookup(search_web_menu, "Grammar: &Japanese with anime", "https://www.google.com/search?q=site:www.japanesewithanime.com+%s", sel_clip)
 
 def add_web_lookup(menu: QMenu, name: str, url: str, search: str) -> None:
     search = parse.quote(search, encoding='utf8')
