@@ -212,16 +212,16 @@ class VocabNote(KanaVocabNote):
         if "suffix" in tos: meta.append(VocabMetaTag("suffix", "suf", "suffix"))
 
         #nouns
-        if "proper noun" in tos: meta.append(VocabMetaTag("proper-noun", "p-n", "proper noun"))
-        if "pronoun" in tos: meta.append(VocabMetaTag("pronoun", "pro", "pronoun"))
-        elif "noun" in tos: meta.append(VocabMetaTag("noun", "n", "noun"))
-        if "adverbial noun" in tos: meta.append(VocabMetaTag("adverbial-noun", "adv-n", "adverbial noun"))
-        if "independent noun" in tos: meta.append(VocabMetaTag("independent-noun", "i-n", "independent noun"))
+        if "proper noun" in tos: meta.append(VocabMetaTag("proper-noun", "p-名", "proper noun"))
+        if "pronoun" in tos: meta.append(VocabMetaTag("pronoun", "pr-名", "pronoun"))
+        elif "noun" in tos: meta.append(VocabMetaTag("noun", "名", "noun"))
+        if "adverbial noun" in tos: meta.append(VocabMetaTag("adverbial-noun", "adv-名", "adverbial noun"))
+        if "independent noun" in tos: meta.append(VocabMetaTag("independent-noun", "i-名", "independent noun"))
 
         #verbs
         if "ichidan verb" in tos: meta.append(self._create_verb_meta_tag("ichidan", "1", "ichidan verb", tos))
         if "godan verb" in tos: meta.append(self._create_verb_meta_tag("godan", "5", "godan verb", tos))
-        if "suru verb" in tos or "verbal noun" in tos or "する verb" in tos: meta.append(self._create_verb_meta_tag("suru-verb", "s", "suru verb", tos))
+        if "suru verb" in tos or "verbal noun" in tos or "する verb" in tos: meta.append(self._create_verb_meta_tag("suru-verb", "為", "suru verb", tos))
         if "kuru verb" in tos: meta.append(self._create_verb_meta_tag("kuru-verb", "k-v", "kuru verb", tos))
         if "auxiliary verb" in tos: meta.append(self._create_verb_meta_tag("auxiliary-verb", "aux-v", "auxiliary verb", tos))
 
