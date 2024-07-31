@@ -208,14 +208,14 @@ class VocabNote(KanaVocabNote):
         if "expression" in tos: meta.append(VocabMetaTag("expression", "x", "expression"))
         if "abbreviation" in tos: meta.append(VocabMetaTag("abbreviation", "abbr", "abbreviation"))
         if "auxiliary" in tos: meta.append(VocabMetaTag("auxiliary", "aux", "auxiliary"))
-        if "prefix" in tos: meta.append(VocabMetaTag("prefix", "pre", "prefix"))
-        if "suffix" in tos: meta.append(VocabMetaTag("suffix", "suf", "suffix"))
+        if "prefix" in tos: meta.append(VocabMetaTag("prefix", "頭", "prefix"))
+        if "suffix" in tos: meta.append(VocabMetaTag("suffix", "尾", "suffix"))
 
         #nouns
         if "proper noun" in tos: meta.append(VocabMetaTag("proper-noun", "p-名", "proper noun"))
-        if "pronoun" in tos: meta.append(VocabMetaTag("pronoun", "pr-名", "pronoun"))
+        elif "pronoun" in tos: meta.append(VocabMetaTag("pronoun", "pr-名", "pronoun"))
         elif "noun" in tos: meta.append(VocabMetaTag("noun", "名", "noun"))
-        if "adverbial noun" in tos: meta.append(VocabMetaTag("adverbial-noun", "adv-名", "adverbial noun"))
+        if "adverbial noun" in tos: meta.append(VocabMetaTag("adverbial-noun", "副-名", "adverbial noun"))
         if "independent noun" in tos: meta.append(VocabMetaTag("independent-noun", "i-名", "independent noun"))
 
         #verbs
@@ -225,8 +225,9 @@ class VocabNote(KanaVocabNote):
         if "kuru verb" in tos: meta.append(self._create_verb_meta_tag("kuru-verb", "k-v", "kuru verb", tos))
         if "auxiliary verb" in tos: meta.append(self._create_verb_meta_tag("auxiliary-verb", "aux-v", "auxiliary verb", tos))
 
+        #adverbs
         if "と adverb" in tos or "to-adverb" in tos: meta.append(VocabMetaTag("to-adverb", "と", "と adverb"))
-        if "adverb" in tos: meta.append(VocabMetaTag("adverb", "a", "adverb"))
+        elif "adverb" in tos: meta.append(VocabMetaTag("adverb", "副", "adverb"))
 
         #adjectives
         if "い adjective" in tos or "i-adjective" in tos: meta.append(VocabMetaTag("i-adjective", "い", "い adjective"))
