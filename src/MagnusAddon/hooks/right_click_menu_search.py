@@ -34,12 +34,15 @@ def setup_web_search_menu(search_menu: QMenu, sel_clip: str) -> None:
 
     add_web_lookup(search_web_menu, "Grammar: &Google", "https://www.google.com/search?q=japanese+grammar+%s", sel_clip)
     add_web_lookup(search_web_menu, "Grammar: &Japanese with anime", "https://www.google.com/search?q=site:www.japanesewithanime.com+%s", sel_clip)
+    add_web_lookup(search_web_menu, "Grammar: &Wiktionary", "https://en.wiktionary.org/wiki/%s", sel_clip)
+
 
     add_web_lookup(search_web_menu, "Images: &Google", "https://www.google.com/search?udm=2&tbs=sur:cl&q=%s", sel_clip)
     add_web_lookup(search_web_menu, "Images: &Bing", "https://www.bing.com/images/search?qft=+filterui:licenseType-Any&q=%s", sel_clip)
 
     add_web_lookup(search_web_menu, "Lookup: &Takoboto", u"https://takoboto.jp/?q=%s", sel_clip)
-    add_web_lookup(search_web_menu, "Lookup: &Kanshudo", u"https://www.kanshudo.com/searchw?q=%s", sel_clip)
+    add_web_lookup(search_web_menu, "Lookup: Word &Kanshudo", u"https://www.kanshudo.com/searchw?q=%s", sel_clip)
+    add_web_lookup(search_web_menu, "Lookup: Kanji &Kanshudo", u"https://www.kanshudo.com/search?q=%s", sel_clip)
     add_web_lookup(search_web_menu, "Lookup: &Jisho", u"https://jisho.org/search/%s", sel_clip)
     add_web_lookup(search_web_menu, "Lookup: &Wanikani", u"https://www.wanikani.com/search?query=%s", sel_clip)
 
