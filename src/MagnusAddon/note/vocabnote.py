@@ -115,8 +115,8 @@ class VocabNote(KanaVocabNote):
     def get_display_question(self) -> str:
         return self.get_readings()[0] if self.is_uk() else self.get_question()
 
-    def get_reading_mnemonic(self) -> str: return self.get_field(NoteFields.Vocab.Reading_Exp)
-    def set_reading_mnemonic(self, value: str) -> None: self.set_field(NoteFields.Vocab.Reading_Exp, value)
+    def get_reading_mnemonic(self) -> str: return self.get_field(NoteFields.Vocab.source_reading_mnemonic)
+    def set_reading_mnemonic(self, value: str) -> None: self.set_field(NoteFields.Vocab.source_reading_mnemonic, value)
 
     def get_readings(self) -> list[str]: return [reading.strip() for reading in self._get_reading().split(",")]
     def set_readings(self, readings: list[str]) -> None: self._set_reading(", ".join([reading.strip() for reading in readings]))
