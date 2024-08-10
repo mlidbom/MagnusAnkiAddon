@@ -228,6 +228,7 @@ class VocabNote(KanaVocabNote):
         #adverbs
         if "と adverb" in tos or "to-adverb" in tos: meta.append(VocabMetaTag("to-adverb", "と", "adverbial noun taking the と particle to act as adverb"))
         elif "adverb" in tos: meta.append(VocabMetaTag("adverb", "副", "adverb"))
+        elif "adverbial" in tos: meta.append(VocabMetaTag("adverbial", "副", "adverbial"))
 
         #adjectives
         if "い adjective" in tos or "i-adjective" in tos: meta.append(VocabMetaTag("i-adjective", "い", "true adjective ending on the い copula"))
