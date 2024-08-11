@@ -32,7 +32,12 @@ class KanaVocabNote(WaniNote):
     def set_related_derived_from(self, value: str) -> None: self.set_field(NoteFields.Vocab.Related_derived_from, value)
 
     def get_related_ergative_twin(self) -> str: return self.get_field(NoteFields.Vocab.Related_ergative_twin)
-    def set_related_ergative_twin(self, value: str) -> None: self.set_field(NoteFields.Vocab.Related_ergative_twin, value)
+    def set_related_ergative_twin(self, value: str) -> None:
+        self.set_field(NoteFields.Vocab.Related_ergative_twin, value)
+
+        from ankiutils import app
+        for twin in app.col().vocab.with_question(value):
+            twin.set_field(NoteFields.Vocab.Related_ergative_twin, self.get_question())
 
     def get_related_confused_with(self) -> str: return self.get_field(NoteFields.Vocab.Related_confused_with)
     def set_related_confused_with(self, value: str) -> None: self.set_field(NoteFields.Vocab.Related_confused_with, value)
