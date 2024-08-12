@@ -132,7 +132,7 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, sel_clip: str) -> None:
         add_ui_action(note_set_menu, "&Meaning", lambda: vocab.set_user_answer(sel_clip))
         add_ui_action(note_set_menu, "&Confused with", lambda: vocab.set_related_confused_with(sel_clip))
         add_ui_action(note_set_menu, "&Derived from", lambda: vocab.set_related_derived_from(sel_clip))
-        add_ui_action(note_set_menu, "S&imilar meaning", lambda: vocab.set_related_similar_meaning(sel_clip))
+        add_ui_action(note_set_menu, "S&imilar meaning", lambda: vocab.add_related_similar_meaning(sel_clip))
         add_ui_action(note_set_menu, "&Ergative twin", lambda: vocab.set_related_ergative_twin(sel_clip))
 
 def format_vocab_meaning(meaning: str) -> str:

@@ -3,7 +3,7 @@ from anki.notes import Note
 
 from note.waninote import WaniNote
 from note.note_constants import NoteFields
-
+from sysutils import ex_str
 
 class KanaVocabNote(WaniNote):
     def __init__(self, note: Note):
@@ -25,8 +25,17 @@ class KanaVocabNote(WaniNote):
     def get_user_answer(self) -> str: return self.get_field(NoteFields.Vocab.user_answer)
     def set_user_answer(self, value: str) -> None: self.set_field(NoteFields.Vocab.user_answer, value)
 
-    def get_related_similar_meaning(self) -> str: return self.get_field(NoteFields.Vocab.Related_similar_meaning)
-    def set_related_similar_meaning(self, value: str) -> None: self.set_field(NoteFields.Vocab.Related_similar_meaning, value)
+    def get_related_similar_meaning(self) -> set[str]: return set(ex_str.extract_comma_separated_values(self.get_field(NoteFields.Vocab.Related_similar_meaning)))
+    def add_related_similar_meaning(self, new_similar: str, _is_recursive_call:bool = False) -> None:
+        similar_vocab_questions = self.get_related_similar_meaning()
+        similar_vocab_questions.add(new_similar)
+
+        self.set_field(NoteFields.Vocab.Related_similar_meaning, ", ".join(similar_vocab_questions))
+
+        if not _is_recursive_call:
+            from ankiutils import app
+            for similar in app.col().vocab.with_question(new_similar):
+                similar.add_related_similar_meaning(self.get_question(), _is_recursive_call=True)
 
     def get_related_derived_from(self) -> str: return self.get_field(NoteFields.Vocab.Related_derived_from)
     def set_related_derived_from(self, value: str) -> None: self.set_field(NoteFields.Vocab.Related_derived_from, value)
