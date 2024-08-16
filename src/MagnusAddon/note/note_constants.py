@@ -79,6 +79,7 @@ class NoteFields:
         Audio__ = "__audio"
 
         user_mnemonic = "__mnemonic"
+        user_near_identical_onyomi_and_meaning = "__near_identical_onyomi_and_meaning"
 
         amalgamation_subject_ids = "amalgamation_subject_ids"
         component_subject_ids = "component_subject_ids"
@@ -118,7 +119,6 @@ class NoteFields:
         Mnemonic__ = "__mnemonic"
 
         component_subject_ids = "component_subject_ids"
-
 
 class Mine:
     class Tags:

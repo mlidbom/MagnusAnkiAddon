@@ -97,6 +97,9 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, sel_clip: str) -> None:
             else:
                 add_ui_action(primary_vocab_menu, "&Add", lambda: kanji.add_primary_vocab(sel_clip))
 
+            kanji_add_menu: QMenu = checked_cast(QMenu, note_menu.addMenu("&Add"))
+            add_ui_action(kanji_add_menu, "N&ear identical in onyomi and meaning", lambda: kanji.add_user_near_identical_onyomi_and_meaning(sel_clip))
+
 
     if isinstance(note, VocabNote):
         vocab = note
@@ -127,8 +130,8 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, sel_clip: str) -> None:
         if not vocab.get_user_answer():
             add_ui_action(note_menu, "Accept &meaning", lambda: vocab.set_user_answer(format_vocab_meaning(vocab.get_answer())))
 
-        note_add_menu: QMenu = checked_cast(QMenu, note_menu.addMenu("&Add"))
-        add_ui_action(note_add_menu, "S&imilar meaning", lambda: vocab.add_related_similar_meaning(sel_clip))
+        vocab_add_menu: QMenu = checked_cast(QMenu, note_menu.addMenu("&Add"))
+        add_ui_action(vocab_add_menu, "S&imilar meaning", lambda: vocab.add_related_similar_meaning(sel_clip))
 
         note_set_menu: QMenu = checked_cast(QMenu, note_menu.addMenu("&Set"))
         add_ui_action(note_set_menu, "&Generate answer", lambda: vocab.generate_and_set_answer())
