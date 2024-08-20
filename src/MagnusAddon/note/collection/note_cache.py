@@ -2,21 +2,18 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from typing import Generic, Sequence, TypeVar
+import time
 
-import aqt.operations.note
 from anki import hooks
 from anki.collection import Collection
 from anki.notes import Note, NoteId
 from aqt import mw, qconnect
-from aqt.operations import CollectionOp
 from PyQt6.QtCore import QTimer
-from PyQt6.QtWidgets import QWidget
 
 from ankiutils import app
 from ankiutils.audio_suppressor import audio_suppressor
 from note.jpnote import JPNote
 from sysutils.collections.default_dict_case_insensitive import DefaultDictCaseInsensitive
-from sysutils.typed import checked_cast
 
 class CachedNote:
     def __init__(self, note: JPNote):
@@ -38,6 +35,8 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
         self._updates: dict[NoteId, Note] = {}
         self._deleted: set[NoteId] = set()
         self._flushing = False
+        self._last_deleted_note_time = 0.0
+
 
         for note in all_notes:
             self._add_to_cache(note)
@@ -73,10 +72,11 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
 
         timer = QTimer(mw)
         qconnect(timer.timeout, self._flush_updates)
-        timer.start(10)  # 1000 milliseconds = 1 second
+        timer.start(100)  # 1000 milliseconds = 1 second
 
     def _on_will_be_removed(self, _: Collection, note_ids: Sequence[NoteId]) -> None:
         self._deleted.update(note_ids)
+        self._last_deleted_note_time = time.time()
         cached_notes = [self._by_id[note_id] for note_id in note_ids if note_id in self._snapshot_by_id]
         for cached in cached_notes:
             self._pending_add = [pending for pending in self._pending_add if pending.get_id() != cached.get_id()]
@@ -103,9 +103,9 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
             audio_suppressor.suppress_for_seconds(.3)
             if updated_notes:
                 app.anki_collection().update_notes(updated_notes)
-                app.ui_utils().refresh(refresh_browser=False)
-            #     op = aqt.operations.note.update_notes(parent=checked_cast(QWidget, mw), notes=updated_notes).success(None)
-            #     op.run_in_background()
+                current_time = time.time()
+                if current_time - self._last_deleted_note_time > 2: #We do no refreshes within two seconds of a deletion because this may crash anki
+                    app.ui_utils().refresh(refresh_browser=False)
 
     def _on_will_flush(self, backend_note: Note) -> None:
         if backend_note.id:
