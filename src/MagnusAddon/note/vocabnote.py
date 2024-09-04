@@ -83,9 +83,6 @@ class VocabNote(KanaVocabNote):
         question = self.get_question().strip()
         readings = ",".join(self.get_readings())
 
-        if question == readings:
-            self.set_tag(Mine.Tags.UsuallyKanaOnly)
-
         if not readings:
             if kana_utils.is_only_kana(question):
                 self.set_readings([question])
