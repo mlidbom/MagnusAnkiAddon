@@ -13,7 +13,7 @@ from sysutils.typed import checked_cast
 
 def do_lookup_and_show_previewer(text: str) -> None:
     do_lookup(text)
-    app.ui_utils().activate_preview()
+    #app.ui_utils().activate_preview()
 
 def do_lookup(text: str) -> None:
     browser: Browser = aqt.dialogs.open('Browser', aqt.mw)

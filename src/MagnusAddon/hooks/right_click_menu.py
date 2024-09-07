@@ -10,7 +10,7 @@ from aqt.webview import AnkiWebView, AnkiWebViewKind
 
 from ankiutils.app import main_window
 from hooks.right_click_menu_note import setup_note_menu
-from hooks.right_click_menu_search import setup_search_menu
+from hooks.right_click_menu_search import setup_anki_open_menu, setup_web_search_menu
 from note.jpnote import JPNote
 from sysutils import my_clipboard
 from sysutils.typed import checked_cast
@@ -42,11 +42,15 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu) -> None:
         sel_clip = my_clipboard.get_text().strip()
 
     note = get_note()
+
+    if sel_clip:
+        setup_anki_open_menu(root_menu, sel_clip)
+
     if note:
         setup_note_menu(note, root_menu, sel_clip)
 
     if sel_clip:
-        setup_search_menu(root_menu, sel_clip)
+        setup_web_search_menu(root_menu, sel_clip)
 
 def init() -> None:
     gui_hooks.webview_will_show_context_menu.append(register_lookup_actions)

@@ -12,9 +12,6 @@ from sysutils import ex_str
 from sysutils.typed import checked_cast
 
 def setup_note_menu(note: JPNote, root_menu: QMenu, sel_clip: str) -> None:
-    if sel_clip:
-        add_lookup_action(root_menu, "&Open", su.lookup_text_object(sel_clip))
-
     note_menu: QMenu
     note_lookup_menu: QMenu
     note_hide_menu: QMenu
