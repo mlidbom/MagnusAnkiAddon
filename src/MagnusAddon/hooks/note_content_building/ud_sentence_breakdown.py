@@ -82,6 +82,7 @@ def _build_user_extra_list(extra_words: list[str], user_excluded:set[str]) -> st
                                 {vocab.get_meta_tags_html()}
                                 <span class="vocabAnswer">{vocab.get_answer()}</span>
                             </div>
+                            {f'''<div class="sentenceVocabEntryMnemonic">{ vocab.get_mnemonics_override() }</div>''' if vocab.get_mnemonics_override() and vocab.get_mnemonics_override() != '-' else '' }
                         </li>
                         """
         else:
