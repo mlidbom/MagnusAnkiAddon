@@ -1,5 +1,4 @@
 from anki.notes import Note
-from aqt.browser import Browser
 from aqt.clayout import CardLayout
 from aqt.editor import Editor
 from PyQt6.QtWebEngineCore import QWebEnginePage
@@ -30,8 +29,8 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu) -> None:
             else:
                 return None
         elif view.kind == AnkiWebViewKind.EDITOR:
-            browser: list[Browser] = [window for window in main_window().app.topLevelWidgets() if isinstance(window, Browser)]
-            card = checked_cast(Card, checked_cast(Editor, browser[0].editor).card)
+            editor = checked_cast(Editor,view._bridge_context) # noqa
+            card = checked_cast(Card, editor.card)
             inner_note = checked_cast(Note, card.note())
         elif view.kind == AnkiWebViewKind.PREVIEWER:
             inner_note = checked_cast(Card, [window for window in main_window().app.topLevelWidgets() if isinstance(window, Previewer)][0].card()).note()
