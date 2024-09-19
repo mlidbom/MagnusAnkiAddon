@@ -43,9 +43,7 @@ class KanjiNote(WaniNote):
         def update_primary_audios() -> None:
             primary_vocabs = set(self.get_primary_vocab())
             vocab_we_should_play = [vocab for vocab in self.get_vocab_notes_sorted()
-                                    if vocab.get_question() in primary_vocabs
-                                    or vocab.is_studying()
-                                    or vocab.get_studying_sentence_count()]
+                                    if vocab.get_question() in primary_vocabs]
             self.set_primary_vocab_audio("".join([vo.get_primary_audio() for vo in vocab_we_should_play]) if vocab_we_should_play else "")
 
         self.set_field(NoteFields.Kanji.active_answer, self.get_answer())
