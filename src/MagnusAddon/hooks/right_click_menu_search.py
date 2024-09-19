@@ -30,6 +30,11 @@ def setup_web_search_menu(search_menu: QMenu, sel_clip: str) -> None:
 
     add_web_lookup(search_web_menu, "Sentences: &Immersion Kit", u"https://www.immersionkit.com/dictionary?exact=true&sort=shortness&keyword=%s", sel_clip)
 
+    kanji_lookup_menu = checked_cast(QMenu, search_web_menu.addMenu("&Kanji"))
+    add_web_lookup(kanji_lookup_menu, "Kanji Explosion", u"https://www.kurumi.com/jp/kjbh/?k=%s", sel_clip)
+    add_web_lookup(kanji_lookup_menu, "&Kanshudo", u"https://www.kanshudo.com/search?q=%s", sel_clip)
+    add_web_lookup(kanji_lookup_menu, "Kanji map", u"https://thekanjimap.com/%s", sel_clip)
+
     add_web_lookup(search_web_menu, "Grammar: &Google", "https://www.google.com/search?q=japanese+grammar+%s", sel_clip)
     add_web_lookup(search_web_menu, "Grammar: &Japanese with anime", "https://www.google.com/search?q=site:www.japanesewithanime.com+%s", sel_clip)
     add_web_lookup(search_web_menu, "Grammar: &Wiktionary", "https://en.wiktionary.org/wiki/%s", sel_clip)
@@ -40,7 +45,7 @@ def setup_web_search_menu(search_menu: QMenu, sel_clip: str) -> None:
 
     add_web_lookup(search_web_menu, "Lookup: &Takoboto", u"https://takoboto.jp/?q=%s", sel_clip)
     add_web_lookup(search_web_menu, "Lookup: Word &Kanshudo", u"https://www.kanshudo.com/searchw?q=%s", sel_clip)
-    add_web_lookup(search_web_menu, "Lookup: Kanji &Kanshudo", u"https://www.kanshudo.com/search?q=%s", sel_clip)
+
     add_web_lookup(search_web_menu, "Lookup: &Jisho", u"https://jisho.org/search/%s", sel_clip)
     add_web_lookup(search_web_menu, "Lookup: &Wanikani", u"https://www.wanikani.com/search?query=%s", sel_clip)
 
