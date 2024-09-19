@@ -105,12 +105,12 @@ class KanjiNote(WaniNote):
     def get_active_mnemonic(self) -> str:
         return self.get_user_mnemonic() if self.get_user_mnemonic() else self.get_source_meaning_mnemonic()
 
-    def get_user_near_identical_onyomi_and_meaning(self) -> set[str]: return set(ex_str.extract_comma_separated_values(self.get_field(NoteFields.Kanji.user_near_identical_onyomi_and_meaning)))
+    def get_user_near_identical_onyomi_and_meaning(self) -> set[str]: return set(ex_str.extract_comma_separated_values(self.get_field(NoteFields.Kanji.user_similar_meaning)))
     def add_user_near_identical_onyomi_and_meaning(self, new_synonym_question: str, _is_recursive_call:bool = False) -> None:
         near_synonyms_questions = self.get_user_near_identical_onyomi_and_meaning()
         near_synonyms_questions.add(new_synonym_question)
 
-        self.set_field(NoteFields.Kanji.user_near_identical_onyomi_and_meaning, ", ".join(near_synonyms_questions))
+        self.set_field(NoteFields.Kanji.user_similar_meaning, ", ".join(near_synonyms_questions))
 
         if not _is_recursive_call:
             from ankiutils import app
