@@ -38,8 +38,15 @@ class SentenceNote(JPNote):
     def _set_user_extra_vocab(self, extra: list[str]) -> None: return self.set_field(SentenceNoteFields.user_extra_vocab, newline.join(extra))
     def position_extra_vocab(self, vocab: str, index:int = -1) -> None:
         vocab = vocab.strip()
-        self.remove_extra_vocab(vocab)
         vocab_list = self.get_user_extra_vocab()
+        if vocab in vocab_list:
+            old_index = vocab_list.index(vocab)
+            vocab_list.remove(vocab)
+            if index != -1 and index > old_index:
+                index -= 1
+
+
+
         if index == -1:
             vocab_list.append(vocab)
         else:
