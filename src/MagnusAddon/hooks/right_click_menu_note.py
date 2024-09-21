@@ -53,10 +53,15 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, sel_clip: str) -> None:
             add_ui_action(note_hide_menu, "&Exclude vocab", lambda: sentence_note.exclude_vocab(sel_clip))
 
             highlighted_vocab_menu: QMenu = checked_cast(QMenu, root_menu.addMenu("&Highlighted Vocab"))
+
+            before_vocab_menu: QMenu = checked_cast(QMenu, highlighted_vocab_menu.addMenu("&Position"))
+            for index, _vocab in enumerate(sentence_note.get_user_extra_vocab()):
+                add_ui_action(before_vocab_menu, f"{_vocab}", lambda _index=index: sentence_note.position_extra_vocab(sel_clip, _index))  # type: ignore
+
+            add_ui_action(before_vocab_menu, f"[Last]", lambda: sentence_note.position_extra_vocab(sel_clip))
+
             if sel_clip in sentence_note.get_user_extra_vocab():
                 add_ui_action(highlighted_vocab_menu, "&Remove", lambda: sentence_note.remove_extra_vocab(sel_clip))
-            else:
-                add_ui_action(highlighted_vocab_menu, "&Add", lambda: sentence_note.add_extra_vocab(sel_clip))
 
         setup_vocab_menu()
 

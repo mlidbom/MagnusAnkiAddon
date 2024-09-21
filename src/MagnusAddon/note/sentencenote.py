@@ -30,14 +30,23 @@ class SentenceNote(JPNote):
 
     def _get_user_question(self) -> str: return ex_str.strip_html_markup(self.get_field(SentenceNoteFields.user_question))
 
-    def get_user_extra_vocab(self) -> list[str]: return ex_str.extract_newline_separated_values(self.get_field(SentenceNoteFields.user_extra_vocab))
-    def _set_user_extra_vocab(self, extra: list[str]) -> None: return self.set_field(SentenceNoteFields.user_extra_vocab, newline.join(extra))
-
     def get_user_excluded_vocab(self) -> set[str]: return set(ex_str.extract_newline_separated_values(self.get_field(SentenceNoteFields.user_excluded_vocab)))
     def _set_user_excluded_vocab(self, excluded: set[str]) -> None: self.set_field(SentenceNoteFields.user_excluded_vocab, newline.join(excluded))
 
-    def add_extra_vocab(self, vocab: str) -> None:
-        self._set_user_extra_vocab(self.get_user_extra_vocab() + [vocab.strip()])
+
+    def get_user_extra_vocab(self) -> list[str]: return ex_str.extract_newline_separated_values(self.get_field(SentenceNoteFields.user_extra_vocab))
+    def _set_user_extra_vocab(self, extra: list[str]) -> None: return self.set_field(SentenceNoteFields.user_extra_vocab, newline.join(extra))
+    def position_extra_vocab(self, vocab: str, index:int = -1) -> None:
+        vocab = vocab.strip()
+        self.remove_extra_vocab(vocab)
+        vocab_list = self.get_user_extra_vocab()
+        if index == -1:
+            vocab_list.append(vocab)
+        else:
+            vocab_list.insert(index, vocab)
+
+        self._set_user_extra_vocab(vocab_list)
+
 
     def remove_extra_vocab(self, vocab: str) -> None:
         self._set_user_extra_vocab([v for v in self.get_user_extra_vocab() if not v == vocab])
