@@ -49,19 +49,24 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, sel_clip: str) -> None:
         add_lookup_action(note_lookup_menu, "&Highlighted words", su.vocabs_lookup_strings(note.get_user_extra_vocab()))
         add_lookup_action(note_lookup_menu, "&Kanji", f"""note:{NoteTypes.Kanji} ({" OR ".join([f"{NoteFields.Kanji.question}:{kan}" for kan in note.extract_kanji()])})""")
 
+        highlighted_vocab_menu: QMenu = checked_cast(QMenu, root_menu.addMenu("&Highlighted Vocab"))
+
+        def position_vocab_menu(_vocab_to_add: str, _title: str) -> None:
+            before_vocab_menu: QMenu = checked_cast(QMenu, highlighted_vocab_menu.addMenu(_title))
+            for index, _vocab in enumerate(sentence_note.get_user_extra_vocab()):
+                add_ui_action(before_vocab_menu, f"{_vocab}", lambda _index=index: sentence_note.position_extra_vocab(_vocab_to_add, _index))  # type: ignore
+
+            add_ui_action(before_vocab_menu, f"[Last]", lambda: sentence_note.position_extra_vocab(_vocab_to_add))
+
         if sel_clip:
             add_ui_action(note_hide_menu, "&Exclude vocab", lambda: sentence_note.exclude_vocab(sel_clip))
 
-            highlighted_vocab_menu: QMenu = checked_cast(QMenu, root_menu.addMenu("&Highlighted Vocab"))
-
-            before_vocab_menu: QMenu = checked_cast(QMenu, highlighted_vocab_menu.addMenu("&Position"))
-            for index, _vocab in enumerate(sentence_note.get_user_extra_vocab()):
-                add_ui_action(before_vocab_menu, f"{_vocab}", lambda _index=index: sentence_note.position_extra_vocab(sel_clip, _index))  # type: ignore
-
-            add_ui_action(before_vocab_menu, f"[Last]", lambda: sentence_note.position_extra_vocab(sel_clip))
+            position_vocab_menu(sel_clip, "&Position")
 
             if sel_clip in sentence_note.get_user_extra_vocab():
                 add_ui_action(highlighted_vocab_menu, "&Remove", lambda: sentence_note.remove_extra_vocab(sel_clip))
+
+        position_vocab_menu("-", "&Add separator")
 
         setup_vocab_menu()
 
