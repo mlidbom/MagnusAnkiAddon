@@ -52,11 +52,14 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu) -> None:
     if clipboard:
         string_menus.append((checked_cast(QMenu, root_menu.addMenu(f'''&Clipboard: "{clipboard[:40]}"''')), clipboard))
 
-    for string_menu, menu_string in string_menus:
-        setup_anki_open_menu(string_menu, menu_string)
-
     if note:
         setup_note_menu(note, root_menu, string_menus)
+
+    for string_menu, menu_string in string_menus:
+        string_menu.addSeparator()
+
+    for string_menu, menu_string in string_menus:
+        setup_anki_open_menu(string_menu, menu_string)
 
     for string_menu, menu_string in string_menus:
         setup_web_search_menu(string_menu, menu_string)
