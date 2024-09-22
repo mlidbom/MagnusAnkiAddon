@@ -16,8 +16,8 @@ def setup_anki_open_menu(string_menu:QMenu, menu_string:str) -> None:
     add_lookup_action(search_anki_menu, "&Kanji", su.kanji_in_string(menu_string))
     add_lookup_action(search_anki_menu, "&Radical", build_radical_search_string(menu_string))
 
-
-    add_lookup_action(search_anki_menu, "&Vocab", su.single_vocab_by_question_reading_or_answer_exact(menu_string))
+    add_lookup_action(search_anki_menu, "&Vocab form", su.single_vocab_by_form_exact(menu_string))
+    add_lookup_action(search_anki_menu, "Vocab form, reading or &answer", su.single_vocab_by_question_reading_or_answer_exact(menu_string))
     add_lookup_action(search_anki_menu, "Vocab &Wildcard", su.single_vocab_wildcard(menu_string))
     add_lookup_action(search_anki_menu, "&Sentence - Parse Vocabulary", su.sentence_search(menu_string))
     add_lookup_action(search_anki_menu, "Sentence - &Exact String", su.sentence_search(menu_string, exact=True))
