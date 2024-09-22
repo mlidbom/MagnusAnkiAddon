@@ -8,7 +8,6 @@ from typing import Sequence
 from anki.cards import Card
 
 from note.jpnote import JPNote
-from sysutils import my_clipboard
 from sysutils.typed import checked_cast
 
 def spread_due_dates(cards: Sequence[int], start_day: int, days: int) -> None:
@@ -30,7 +29,7 @@ def setup_browser_context_menu(browser: Browser, menu: QMenu) -> None:
 
         card = app.anki_collection().get_card(selected_cards[0])
         note = JPNote.note_from_card(card)
-        setup_note_menu(note, magnus_menu, my_clipboard.get_text().strip())
+        setup_note_menu(note, magnus_menu, [])
 
     if len(selected_cards) > 0:
         spread_menu: QMenu = checked_cast(QMenu, magnus_menu.addMenu("&Spread selected cards"))
