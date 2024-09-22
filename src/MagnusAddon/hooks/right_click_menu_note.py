@@ -43,7 +43,6 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, string_menus: list[tuple[QMe
     if isinstance(note, SentenceNote):
         note_menu = checked_cast(QMenu, root_menu.addMenu("&Note"))
         note_lookup_menu = checked_cast(QMenu, note_menu.addMenu("&Lookup"))
-        note_hide_menu = checked_cast(QMenu, note_menu.addMenu("&Hide/Remove"))
 
         sentence_note = checked_cast(SentenceNote, note)
         add_lookup_action(note_lookup_menu, "&Parsed words", su.notes_by_id([voc.get_id() for voc in note.ud_extract_vocab()]))
@@ -61,7 +60,7 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, string_menus: list[tuple[QMe
                 add_ui_action(before_vocab_menu, f"[Last]", lambda: sentence_note.position_extra_vocab(_vocab_to_add))
 
 
-            add_ui_action(note_hide_menu, "&Exclude vocab", lambda _menu_string=menu_string: sentence_note.exclude_vocab(_menu_string)) # type: ignore
+            add_ui_action(string_menu, "&Exclude vocab", lambda _menu_string=menu_string: sentence_note.exclude_vocab(_menu_string)) # type: ignore
 
             position_vocab_menu(menu_string, "&Position")
 
