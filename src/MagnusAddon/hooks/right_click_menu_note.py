@@ -49,25 +49,25 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, string_menus: list[tuple[QMe
         add_lookup_action(note_lookup_menu, "&Highlighted words", su.vocabs_lookup_strings(note.get_user_extra_vocab()))
         add_lookup_action(note_lookup_menu, "&Kanji", f"""note:{NoteTypes.Kanji} ({" OR ".join([f"{NoteFields.Kanji.question}:{kan}" for kan in note.extract_kanji()])})""")
 
+        def position_vocab_menu(_highlighted_vocab_menu: QMenu, _vocab_to_add: str, _title: str) -> None:
+            before_vocab_menu: QMenu = checked_cast(QMenu, _highlighted_vocab_menu.addMenu(_title))
+            for index, _vocab in enumerate(sentence_note.get_user_extra_vocab()):
+                add_ui_action(before_vocab_menu, f"{_vocab}", lambda _index=index: sentence_note.position_extra_vocab(_vocab_to_add, _index))  # type: ignore
+
+            add_ui_action(before_vocab_menu, f"[Last]", lambda: sentence_note.position_extra_vocab(_vocab_to_add))
+
         for string_menu, menu_string in string_menus:
             highlighted_vocab_menu: QMenu = checked_cast(QMenu, string_menu.addMenu("&Highlighted Vocab"))
 
-            def position_vocab_menu(_vocab_to_add: str, _title: str) -> None:
-                before_vocab_menu: QMenu = checked_cast(QMenu, highlighted_vocab_menu.addMenu(_title))
-                for index, _vocab in enumerate(sentence_note.get_user_extra_vocab()):
-                    add_ui_action(before_vocab_menu, f"{_vocab}", lambda _index=index: sentence_note.position_extra_vocab(_vocab_to_add, _index))  # type: ignore
-
-                add_ui_action(before_vocab_menu, f"[Last]", lambda: sentence_note.position_extra_vocab(_vocab_to_add))
-
-
             add_ui_action(string_menu, "&Exclude vocab", lambda _menu_string=menu_string: sentence_note.exclude_vocab(_menu_string)) # type: ignore
 
-            position_vocab_menu(menu_string, "&Position")
+            position_vocab_menu(highlighted_vocab_menu, menu_string, "&Position")
 
             if menu_string in sentence_note.get_user_extra_vocab():
                 add_ui_action(highlighted_vocab_menu, "&Remove", lambda _menu_string=menu_string: sentence_note.remove_extra_vocab(_menu_string)) # type: ignore
 
-            position_vocab_menu("-", "&Add separator")
+        highlighted_vocab_menu = checked_cast(QMenu, note_menu.addMenu("&Highlighted Vocab"))
+        position_vocab_menu(highlighted_vocab_menu, "-", "&Add separator")
 
         setup_vocab_menu()
 
