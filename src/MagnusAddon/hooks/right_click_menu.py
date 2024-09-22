@@ -42,20 +42,24 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu) -> None:
         return JPNote.note_from_note(inner_note)
 
     selection = checked_cast(QWebEnginePage, view.page()).selectedText().strip()
-    sel_clip = selection
-    if not sel_clip:
-        sel_clip = my_clipboard.get_text().strip()
+    clipboard = my_clipboard.get_text().strip()
 
     note = get_note()
 
-    if sel_clip:
-        setup_anki_open_menu(root_menu, sel_clip)
+    string_menus: list[tuple[QMenu, str]] = []
+    if selection:
+        string_menus.append((checked_cast(QMenu, root_menu.addMenu(f'''&Selection: "{selection[:40]}"''')), selection))
+    if clipboard:
+        string_menus.append((checked_cast(QMenu, root_menu.addMenu(f'''&Clipboard: "{clipboard[:40]}"''')), clipboard))
+
+    for string_menu, menu_string in string_menus:
+        setup_anki_open_menu(string_menu, menu_string)
 
     if note:
-        setup_note_menu(note, root_menu, sel_clip)
+        setup_note_menu(note, root_menu, string_menus)
 
-    if sel_clip:
-        setup_web_search_menu(root_menu, sel_clip)
+    for string_menu, menu_string in string_menus:
+        setup_web_search_menu(string_menu, menu_string)
 
 def init() -> None:
     gui_hooks.webview_will_show_context_menu.append(register_lookup_actions)
