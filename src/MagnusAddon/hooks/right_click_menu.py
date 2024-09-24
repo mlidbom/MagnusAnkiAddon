@@ -50,10 +50,11 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu) -> None:
     if selection:
         string_menus.append((checked_cast(QMenu, root_menu.addMenu(f'''Selecti&on: "{selection[:40]}"''')), selection))
     if clipboard:
-        string_menus.append((checked_cast(QMenu, root_menu.addMenu(f'''&Clipboard: "{clipboard[:40]}"''')), clipboard))
+        string_menus.append((checked_cast(QMenu, root_menu.addMenu(f'''Cl&ipboard: "{clipboard[:40]}"''')), clipboard))
 
     if note:
-        setup_note_menu(note, root_menu, string_menus)
+        note_menu = checked_cast(QMenu, root_menu.addMenu("Not&e"))
+        setup_note_menu(note, note_menu, string_menus)
 
     for string_menu, menu_string in string_menus:
         string_menu.addSeparator()

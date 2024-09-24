@@ -11,8 +11,7 @@ from note.vocabnote import VocabNote
 from sysutils import ex_str
 from sysutils.typed import checked_cast
 
-def setup_note_menu(note: JPNote, root_menu: QMenu, string_menus: list[tuple[QMenu, str]]) -> None:
-    note_menu: QMenu
+def setup_note_menu(note: JPNote, note_menu: QMenu, string_menus: list[tuple[QMenu, str]]) -> None:
     note_lookup_menu: QMenu
     note_hide_menu: QMenu
 
@@ -27,7 +26,7 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, string_menus: list[tuple[QMe
             add_ui_action(add_vocab_menu, "&5", lambda: note.set_field(MyNoteFields.Vocab5, _menu_string))
 
         if note.get_field(MyNoteFields.Vocab1) or note.get_field(MyNoteFields.Vocab2) or note.get_field(MyNoteFields.Vocab3) or note.get_field(MyNoteFields.Vocab4) or note.get_field(MyNoteFields.Vocab5):
-            remove_vocab_menu = checked_cast(QMenu, root_menu.addMenu("&Remove vocab"))
+            remove_vocab_menu = checked_cast(QMenu, note_menu.addMenu("&Remove vocab"))
             add_ui_action(remove_vocab_menu, "&1", lambda: note.set_field(MyNoteFields.Vocab1, ""))
             add_ui_action(remove_vocab_menu, "&2", lambda: note.set_field(MyNoteFields.Vocab2, ""))
             add_ui_action(remove_vocab_menu, "&3", lambda: note.set_field(MyNoteFields.Vocab3, ""))
@@ -41,7 +40,6 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, string_menus: list[tuple[QMe
             add_ui_action(remove_vocab_menu, "&All", clear_all_vocabs)
 
     if isinstance(note, SentenceNote):
-        note_menu = checked_cast(QMenu, root_menu.addMenu("&Note"))
         note_lookup_menu = checked_cast(QMenu, note_menu.addMenu("&Open"))
 
         sentence_note = checked_cast(SentenceNote, note)
@@ -54,26 +52,24 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, string_menus: list[tuple[QMe
             for index, _vocab in enumerate(sentence_note.get_user_extra_vocab()):
                 add_ui_action(highlighted_vocab_menu, f"&{index + 1}. {_vocab}", lambda _index=index: sentence_note.position_extra_vocab(_vocab_to_add, _index))  # type: ignore
 
-            add_ui_action(highlighted_vocab_menu, f"[&Last]", lambda: sentence_note.position_extra_vocab(_vocab_to_add))
+            add_ui_action(highlighted_vocab_menu, f"[L&ast]", lambda: sentence_note.position_extra_vocab(_vocab_to_add))
 
             if menu_string in sentence_note.get_user_extra_vocab():
-                add_ui_action(highlighted_vocab_menu, "&Remove", lambda _menu_string=menu_string: sentence_note.remove_extra_vocab(_menu_string)) # type: ignore
+                add_ui_action(highlighted_vocab_menu, "R&emove", lambda _menu_string=menu_string: sentence_note.remove_extra_vocab(_menu_string)) # type: ignore
 
         for string_menu, menu_string in string_menus:
             position_vocab_menu(string_menu, menu_string, "H&ighlighted Vocab")
-            add_ui_action(string_menu, "&Exclude vocab", lambda _menu_string=menu_string: sentence_note.exclude_vocab(_menu_string)) # type: ignore
+            add_ui_action(string_menu, "E&xclude vocab", lambda _menu_string=menu_string: sentence_note.exclude_vocab(_menu_string)) # type: ignore
 
-        position_vocab_menu(note_menu, "-", "&Highlighted Vocab Separator")
+        position_vocab_menu(note_menu, "-", "H&ighlighted Vocab Separator")
 
         setup_vocab_menu()
 
     if isinstance(note, RadicalNote):
-        note_menu = checked_cast(QMenu, root_menu.addMenu("&Note"))
         note_lookup_menu = checked_cast(QMenu, note_menu.addMenu("&Open"))
         add_lookup_action(note_lookup_menu, "&Kanji", su.kanji_with_radical(note))
 
     if isinstance(note, KanjiNote):
-        note_menu = checked_cast(QMenu, root_menu.addMenu("&Note"))
         note_lookup_menu = checked_cast(QMenu, note_menu.addMenu("&Open"))
 
         kanji = note
@@ -109,7 +105,6 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, string_menus: list[tuple[QMe
         vocab = note
         setup_vocab_menu()
 
-        note_menu = checked_cast(QMenu, root_menu.addMenu("&Note"))
         note_lookup_menu = checked_cast(QMenu, note_menu.addMenu("&Open"))
         note_hide_menu = checked_cast(QMenu, note_menu.addMenu("&Hide/Remove"))
         note_restore_menu = checked_cast(QMenu, note_menu.addMenu("&Restore"))
