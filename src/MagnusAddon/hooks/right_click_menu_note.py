@@ -42,19 +42,19 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, string_menus: list[tuple[QMe
 
     if isinstance(note, SentenceNote):
         note_menu = checked_cast(QMenu, root_menu.addMenu("&Note"))
-        note_lookup_menu = checked_cast(QMenu, note_menu.addMenu("&Lookup"))
+        note_lookup_menu = checked_cast(QMenu, note_menu.addMenu("&Open"))
 
         sentence_note = checked_cast(SentenceNote, note)
-        add_lookup_action(note_lookup_menu, "&Parsed words", su.notes_by_id([voc.get_id() for voc in note.ud_extract_vocab()]))
-        add_lookup_action(note_lookup_menu, "&Highlighted words", su.vocabs_lookup_strings(note.get_user_extra_vocab()))
+        add_lookup_action(note_lookup_menu, "Highlighted &Vocab", su.vocabs_lookup_strings(note.get_user_extra_vocab()))
         add_lookup_action(note_lookup_menu, "&Kanji", f"""note:{NoteTypes.Kanji} ({" OR ".join([f"{NoteFields.Kanji.question}:{kan}" for kan in note.extract_kanji()])})""")
+        add_lookup_action(note_lookup_menu, "&Parsed words", su.notes_by_id([voc.get_id() for voc in note.ud_extract_vocab()]))
 
         def position_vocab_menu(_menu:QMenu, _vocab_to_add: str, _title: str) -> None:
             highlighted_vocab_menu: QMenu = checked_cast(QMenu, _menu.addMenu(_title))
             for index, _vocab in enumerate(sentence_note.get_user_extra_vocab()):
-                add_ui_action(highlighted_vocab_menu, f"{_vocab}", lambda _index=index: sentence_note.position_extra_vocab(_vocab_to_add, _index))  # type: ignore
+                add_ui_action(highlighted_vocab_menu, f"&{index + 1}. {_vocab}", lambda _index=index: sentence_note.position_extra_vocab(_vocab_to_add, _index))  # type: ignore
 
-            add_ui_action(highlighted_vocab_menu, f"[Last]", lambda: sentence_note.position_extra_vocab(_vocab_to_add))
+            add_ui_action(highlighted_vocab_menu, f"[&Last]", lambda: sentence_note.position_extra_vocab(_vocab_to_add))
 
             if menu_string in sentence_note.get_user_extra_vocab():
                 add_ui_action(highlighted_vocab_menu, "&Remove", lambda _menu_string=menu_string: sentence_note.remove_extra_vocab(_menu_string)) # type: ignore
@@ -69,12 +69,12 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, string_menus: list[tuple[QMe
 
     if isinstance(note, RadicalNote):
         note_menu = checked_cast(QMenu, root_menu.addMenu("&Note"))
-        note_lookup_menu = checked_cast(QMenu, note_menu.addMenu("&Lookup"))
+        note_lookup_menu = checked_cast(QMenu, note_menu.addMenu("&Open"))
         add_lookup_action(note_lookup_menu, "&Kanji", su.kanji_with_radical(note))
 
     if isinstance(note, KanjiNote):
         note_menu = checked_cast(QMenu, root_menu.addMenu("&Note"))
-        note_lookup_menu = checked_cast(QMenu, note_menu.addMenu("&Lookup"))
+        note_lookup_menu = checked_cast(QMenu, note_menu.addMenu("&Open"))
 
         kanji = note
         add_lookup_action(note_lookup_menu, "&Primary Vocabs", su.vocabs_lookup_strings(note.get_primary_vocab()))
@@ -110,16 +110,16 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, string_menus: list[tuple[QMe
         setup_vocab_menu()
 
         note_menu = checked_cast(QMenu, root_menu.addMenu("&Note"))
-        note_lookup_menu = checked_cast(QMenu, note_menu.addMenu("&Lookup"))
+        note_lookup_menu = checked_cast(QMenu, note_menu.addMenu("&Open"))
         note_hide_menu = checked_cast(QMenu, note_menu.addMenu("&Hide/Remove"))
         note_restore_menu = checked_cast(QMenu, note_menu.addMenu("&Restore"))
 
         add_lookup_action(note_lookup_menu, "&Kanji", f"note:{NoteTypes.Kanji} ( {' OR '.join([f'{NoteFields.Kanji.question}:{char}' for char in note.get_question()])} )")
         if vocab.get_related_ergative_twin():
-            add_single_vocab_lookup_action(note_lookup_menu, "&Ergative twin", vocab.get_related_ergative_twin())
+            add_single_vocab_lookup_action(note_lookup_menu, "Ergative &twin", vocab.get_related_ergative_twin())
 
-        add_lookup_action(note_lookup_menu, "&Sentences", su.sentence_search(vocab.get_question()))
-        add_lookup_action(note_lookup_menu, "Sentences I'm S&tudying", su.notes_lookup(vocab.get_sentences_studying()))
+        add_lookup_action(note_lookup_menu, "&Sentences I'm Studying", su.notes_lookup(vocab.get_sentences_studying()))
+        add_lookup_action(note_lookup_menu, "S&entences", su.sentence_search(vocab.get_question()))
 
         add_text_vocab_lookup(note_lookup_menu, "&Compounds", note.get_question())
         add_vocab_dependencies_lookup(note_lookup_menu, "&Dependencies", note)

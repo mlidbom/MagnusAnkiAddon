@@ -85,6 +85,7 @@ def vocab_dependencies_lookup_query(vocab: VocabNote) -> str:
 def sentence_exact(sentence: str) -> str:
     return f"""{note_sentence} {f_question}:"{sentence}" """
 
+
 def sentence_vocab_lookup(sentence:SentenceNote) -> str: return text_vocab_lookup(sentence.get_question())
 
 def vocab_with_kanji(note:KanjiNote) -> str: return f"{note_vocab} {f_forms}:*{note.get_question()}*"
@@ -137,3 +138,6 @@ def kanji_with_radical(radical: RadicalNote) -> str:
 
 def kanji_with_kanji_radical(radical: KanjiNote) -> str:
     return f"note:{NoteTypes.Kanji} {NoteFields.Kanji.Radicals}:*{radical.get_question()}*"
+
+def exact_matches(question: str) -> str:
+    return f'''{f_question}:{question} OR {field_contains_word(f_forms, question)}'''

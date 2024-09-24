@@ -5,13 +5,15 @@ from aqt.utils import openLink
 
 from hooks.right_click_menu_utils import add_lookup_action, add_text_vocab_lookup
 from note.note_constants import NoteFields, NoteTypes
-from ankiutils import query_builder as su
+from ankiutils import app, query_builder as su
 from sysutils.typed import checked_cast
 
 
 def setup_anki_open_menu(string_menu:QMenu, menu_string:str) -> None:
     search_anki_menu = checked_cast(QMenu, string_menu.addMenu("&Open in Anki"))
-    #add_lookup_action(search_anki_menu, "&Any", su.lookup_text_object(menu_string))
+
+
+    add_lookup_action(search_anki_menu, "Exact matches", su.exact_matches(menu_string))
 
     add_lookup_action(search_anki_menu, "&Kanji", su.kanji_in_string(menu_string))
     add_lookup_action(search_anki_menu, "&Radical", build_radical_search_string(menu_string))
@@ -20,7 +22,7 @@ def setup_anki_open_menu(string_menu:QMenu, menu_string:str) -> None:
     add_lookup_action(search_anki_menu, "Vocab form, reading or &answer", su.single_vocab_by_question_reading_or_answer_exact(menu_string))
     add_lookup_action(search_anki_menu, "Vocab &Wildcard", su.single_vocab_wildcard(menu_string))
     add_lookup_action(search_anki_menu, "&Sentence - Parse Vocabulary", su.sentence_search(menu_string))
-    add_lookup_action(search_anki_menu, "Sentence - &Exact String", su.sentence_search(menu_string, exact=True))
+    add_lookup_action(search_anki_menu, "Sentence - Exact String", su.sentence_search(menu_string, exact=True))
     add_text_vocab_lookup(search_anki_menu, "Text &words", menu_string)
 
 def setup_web_search_menu(string_menu:QMenu, menu_string:str) -> None:
@@ -31,9 +33,9 @@ def setup_web_search_menu(string_menu:QMenu, menu_string:str) -> None:
     add_web_lookup(search_web_menu, "Sentences: &Immersion Kit", u"https://www.immersionkit.com/dictionary?exact=true&sort=shortness&keyword=%s", menu_string)
 
     kanji_lookup_menu = checked_cast(QMenu, search_web_menu.addMenu("&Kanji"))
-    add_web_lookup(kanji_lookup_menu, "Kanji Explosion", u"https://www.kurumi.com/jp/kjbh/?k=%s", menu_string)
+    add_web_lookup(kanji_lookup_menu, "Kanji &explosion", u"https://www.kurumi.com/jp/kjbh/?k=%s", menu_string)
     add_web_lookup(kanji_lookup_menu, "&Kanshudo", u"https://www.kanshudo.com/search?q=%s", menu_string)
-    add_web_lookup(kanji_lookup_menu, "Kanji map", u"https://thekanjimap.com/%s", menu_string)
+    add_web_lookup(kanji_lookup_menu, "Kanji &map", u"https://thekanjimap.com/%s", menu_string)
 
     add_web_lookup(search_web_menu, "Grammar: &Google", "https://www.google.com/search?q=japanese+grammar+%s", menu_string)
     add_web_lookup(search_web_menu, "Grammar: &Japanese with anime", "https://www.google.com/search?q=site:www.japanesewithanime.com+%s", menu_string)
