@@ -60,7 +60,7 @@ def setup_note_menu(note: JPNote, root_menu: QMenu, string_menus: list[tuple[QMe
                 add_ui_action(highlighted_vocab_menu, "&Remove", lambda _menu_string=menu_string: sentence_note.remove_extra_vocab(_menu_string)) # type: ignore
 
         for string_menu, menu_string in string_menus:
-            position_vocab_menu(string_menu, menu_string, "&Highlighted Vocab")
+            position_vocab_menu(string_menu, menu_string, "H&ighlighted Vocab")
             add_ui_action(string_menu, "&Exclude vocab", lambda _menu_string=menu_string: sentence_note.exclude_vocab(_menu_string)) # type: ignore
 
         position_vocab_menu(note_menu, "-", "&Highlighted Vocab Separator")

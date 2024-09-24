@@ -48,7 +48,7 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu) -> None:
 
     string_menus: list[tuple[QMenu, str]] = []
     if selection:
-        string_menus.append((checked_cast(QMenu, root_menu.addMenu(f'''&Selection: "{selection[:40]}"''')), selection))
+        string_menus.append((checked_cast(QMenu, root_menu.addMenu(f'''Selecti&on: "{selection[:40]}"''')), selection))
     if clipboard:
         string_menus.append((checked_cast(QMenu, root_menu.addMenu(f'''&Clipboard: "{clipboard[:40]}"''')), clipboard))
 
