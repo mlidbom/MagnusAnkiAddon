@@ -44,12 +44,11 @@ _sentences = ["今じゃ町は夜でも明るいしもう会うこともない�
               "としたら",
               "あいつが話の中に出てくるのが"]
 
-su = query_builder
 @pytest.mark.skip("Only used to generate test data, so no reason to run this slow code all the time.")
 def test_create_sample_data() -> None:
     sentence_notes: list[SentenceNote] = []
     for sentence_text in _sentences:
-        matching:list[SentenceNote] = app.col().sentences.search(f"{su.note_sentence} {su.f_question}:*{sentence_text}*")
+        matching:list[SentenceNote] = app.col().sentences.search(f"{query_builder.note_sentence} {query_builder.f_question}:*{sentence_text}*")
         with_active_answer:list[SentenceNote] = [m for m in matching if m.get_answer()]
         sentence_notes += with_active_answer
         for sentence in with_active_answer:
@@ -57,7 +56,7 @@ def test_create_sample_data() -> None:
 
     needed_vocab_parsed_words = ex_sequence.flatten([s.parse_words_from_expression() for s in sentence_notes])
     need_vocab_strings = set([f.word for f in needed_vocab_parsed_words])
-    vocab_notes = ex_sequence.flatten([app.col().vocab.search(su.single_vocab_by_form_exact(word)) for word in need_vocab_strings])
+    vocab_notes = ex_sequence.flatten([app.col().vocab.search(query_builder.single_vocab_by_form_exact(word)) for word in need_vocab_strings])
 
     non_duplicate_vocab_notes:list[VocabNote] = []
     added_words:set[str] = set()
@@ -73,7 +72,7 @@ def test_create_sample_data() -> None:
     sentences_combined = "".join(_sentences)
     big_fat_string = word_forms + sentences_combined
     only_kanji = "".join(char for char in list(big_fat_string) if kana_utils.is_kanji(char))
-    search_string = su.kanji_in_string(only_kanji)
+    search_string = query_builder.kanji_in_string(only_kanji)
     kanji_notes:list[KanjiNote] = app.col().kanji.search(search_string)
     for kanji_note in kanji_notes:
         print(f"""KanjiSpec("{shtml(kanji_note.get_question())}", "{shtml(kanji_note.get_answer())}", "{shtml(kanji_note.get_reading_kun())}", "{shtml(kanji_note.get_reading_on())}"),"""),

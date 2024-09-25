@@ -1,5 +1,5 @@
 from anki.cards import Card
-from anki.consts import QUEUE_TYPE_NEW, QUEUE_TYPE_SUSPENDED
+from anki.consts import QUEUE_TYPE_SUSPENDED
 from anki.notes import Note, NoteId
 
 from sysutils.typed import checked_cast

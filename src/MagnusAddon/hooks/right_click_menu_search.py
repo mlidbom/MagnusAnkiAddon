@@ -5,7 +5,7 @@ from aqt.utils import openLink
 
 from hooks.right_click_menu_utils import add_lookup_action, add_text_vocab_lookup
 from note.note_constants import NoteFields, NoteTypes
-from ankiutils import query_builder as su
+from ankiutils import query_builder
 from sysutils.typed import checked_cast
 
 
@@ -13,19 +13,19 @@ def setup_anki_open_menu(string_menu:QMenu, menu_string:str) -> None:
     search_anki_menu = checked_cast(QMenu, string_menu.addMenu("&Open in Anki"))
 
 
-    add_lookup_action(search_anki_menu, "&Open Exact matches | no sentences | reading cards", su.exact_matches_no_sentences_reading_cards(menu_string))
-    add_lookup_action(search_anki_menu, "Open E&xact matches with sentences", su.exact_matches(menu_string))
+    add_lookup_action(search_anki_menu, "&Open Exact matches | no sentences | reading cards", query_builder.exact_matches_no_sentences_reading_cards(menu_string))
+    add_lookup_action(search_anki_menu, "Open E&xact matches with sentences", query_builder.exact_matches(menu_string))
 
-    add_lookup_action(search_anki_menu, "&Kanji", su.kanji_in_string(menu_string))
+    add_lookup_action(search_anki_menu, "&Kanji", query_builder.kanji_in_string(menu_string))
     add_lookup_action(search_anki_menu, "&Radical", build_radical_search_string(menu_string))
 
-    add_lookup_action(search_anki_menu, "&Vocab form -", su.single_vocab_by_form_exact(menu_string))
-    add_lookup_action(search_anki_menu, "Voc&ab form - read card only", su.single_vocab_by_form_exact_read_card_only(menu_string))
+    add_lookup_action(search_anki_menu, "&Vocab form -", query_builder.single_vocab_by_form_exact(menu_string))
+    add_lookup_action(search_anki_menu, "Voc&ab form - read card only", query_builder.single_vocab_by_form_exact_read_card_only(menu_string))
 
-    add_lookup_action(search_anki_menu, "Vocab form, reading or answer", su.single_vocab_by_question_reading_or_answer_exact(menu_string))
-    add_lookup_action(search_anki_menu, "Vocab &Wildcard", su.single_vocab_wildcard(menu_string))
-    add_lookup_action(search_anki_menu, "&Sentence - Parse Vocabulary", su.sentence_search(menu_string))
-    add_lookup_action(search_anki_menu, "Sentence - Exact String", su.sentence_search(menu_string, exact=True))
+    add_lookup_action(search_anki_menu, "Vocab form, reading or answer", query_builder.single_vocab_by_question_reading_or_answer_exact(menu_string))
+    add_lookup_action(search_anki_menu, "Vocab &Wildcard", query_builder.single_vocab_wildcard(menu_string))
+    add_lookup_action(search_anki_menu, "&Sentence - Parse Vocabulary", query_builder.sentence_search(menu_string))
+    add_lookup_action(search_anki_menu, "Sentence - Exact String", query_builder.sentence_search(menu_string, exact=True))
     add_text_vocab_lookup(search_anki_menu, "Text &words", menu_string)
 
 def setup_web_search_menu(string_menu:QMenu, menu_string:str) -> None:

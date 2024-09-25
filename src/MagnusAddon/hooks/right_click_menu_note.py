@@ -1,6 +1,6 @@
 from PyQt6.QtWidgets import QMenu
 
-from ankiutils import app, query_builder as su
+from ankiutils import app, query_builder
 from hooks.right_click_menu_utils import add_lookup_action, add_single_vocab_lookup_action, add_text_vocab_lookup, add_ui_action, add_vocab_dependencies_lookup
 from note.jpnote import JPNote
 from note.kanjinote import KanjiNote
@@ -43,10 +43,10 @@ def setup_note_menu(note: JPNote, note_menu: QMenu, string_menus: list[tuple[QMe
         note_lookup_menu = checked_cast(QMenu, note_menu.addMenu("&Open"))
 
         sentence_note = checked_cast(SentenceNote, note)
-        add_lookup_action(note_lookup_menu, "Highlighted V&ocab", su.vocabs_lookup_strings(note.get_user_extra_vocab()))
-        add_lookup_action(note_lookup_menu, "Highlighted Vocab Read C&ard", su.vocabs_lookup_strings_read_card(note.get_user_extra_vocab()))
+        add_lookup_action(note_lookup_menu, "Highlighted V&ocab", query_builder.vocabs_lookup_strings(note.get_user_extra_vocab()))
+        add_lookup_action(note_lookup_menu, "Highlighted Vocab Read C&ard", query_builder.vocabs_lookup_strings_read_card(note.get_user_extra_vocab()))
         add_lookup_action(note_lookup_menu, "&Kanji", f"""note:{NoteTypes.Kanji} ({" OR ".join([f"{NoteFields.Kanji.question}:{kan}" for kan in note.extract_kanji()])})""")
-        add_lookup_action(note_lookup_menu, "&Parsed words", su.notes_by_id([voc.get_id() for voc in note.ud_extract_vocab()]))
+        add_lookup_action(note_lookup_menu, "&Parsed words", query_builder.notes_by_id([voc.get_id() for voc in note.ud_extract_vocab()]))
 
         def position_vocab_menu(_menu:QMenu, _vocab_to_add: str, _title: str) -> None:
             highlighted_vocab_menu: QMenu = checked_cast(QMenu, _menu.addMenu(_title))
@@ -68,17 +68,17 @@ def setup_note_menu(note: JPNote, note_menu: QMenu, string_menus: list[tuple[QMe
 
     if isinstance(note, RadicalNote):
         note_lookup_menu = checked_cast(QMenu, note_menu.addMenu("&Open"))
-        add_lookup_action(note_lookup_menu, "&Kanji", su.kanji_with_radical(note))
+        add_lookup_action(note_lookup_menu, "&Kanji", query_builder.kanji_with_radical(note))
 
     if isinstance(note, KanjiNote):
         note_lookup_menu = checked_cast(QMenu, note_menu.addMenu("&Open"))
 
         kanji = note
-        add_lookup_action(note_lookup_menu, "&Primary Vocabs", su.vocabs_lookup_strings(note.get_primary_vocab()))
-        add_lookup_action(note_lookup_menu, "&Vocabs", su.vocab_with_kanji(note))
-        add_lookup_action(note_lookup_menu, "&Radicals", su.notes_by_note(app.col().kanji.dependencies_of(kanji)))
-        add_lookup_action(note_lookup_menu, "&Kanji", su.kanji_with_kanji_radical(note))
-        add_lookup_action(note_lookup_menu, "&Sentences", su.sentence_search(kanji.get_question(), exact=True))
+        add_lookup_action(note_lookup_menu, "&Primary Vocabs", query_builder.vocabs_lookup_strings(note.get_primary_vocab()))
+        add_lookup_action(note_lookup_menu, "&Vocabs", query_builder.vocab_with_kanji(note))
+        add_lookup_action(note_lookup_menu, "&Radicals", query_builder.notes_by_note(app.col().kanji.dependencies_of(kanji)))
+        add_lookup_action(note_lookup_menu, "&Kanji", query_builder.kanji_with_kanji_radical(note))
+        add_lookup_action(note_lookup_menu, "&Sentences", query_builder.sentence_search(kanji.get_question(), exact=True))
 
         if not kanji.get_user_mnemonic():
             note_hide_menu = checked_cast(QMenu, note_menu.addMenu("&Hide/Remove"))
@@ -114,14 +114,14 @@ def setup_note_menu(note: JPNote, note_menu: QMenu, string_menus: list[tuple[QMe
         if vocab.get_related_ergative_twin():
             add_single_vocab_lookup_action(note_lookup_menu, "Ergative &twin", vocab.get_related_ergative_twin())
 
-        add_lookup_action(note_lookup_menu, "&Sentences I'm Studying", su.notes_lookup(vocab.get_sentences_studying()))
-        add_lookup_action(note_lookup_menu, "S&entences", su.sentence_search(vocab.get_question()))
+        add_lookup_action(note_lookup_menu, "&Sentences I'm Studying", query_builder.notes_lookup(vocab.get_sentences_studying()))
+        add_lookup_action(note_lookup_menu, "S&entences", query_builder.sentence_search(vocab.get_question()))
 
         add_text_vocab_lookup(note_lookup_menu, "&Compounds", note.get_question())
         add_vocab_dependencies_lookup(note_lookup_menu, "&Dependencies", note)
 
         for reading in note.get_readings():
-            add_lookup_action(note_lookup_menu, f"&Homonyms: {reading}", su.notes_lookup(app.col().vocab.with_reading(reading)))
+            add_lookup_action(note_lookup_menu, f"&Homonyms: {reading}", query_builder.notes_lookup(app.col().vocab.with_reading(reading)))
 
         if not vocab.get_mnemonics_override():
             add_ui_action(note_hide_menu, "&Mnemonic", lambda: vocab.override_meaning_mnemonic())
