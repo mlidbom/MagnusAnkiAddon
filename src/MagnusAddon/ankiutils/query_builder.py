@@ -25,6 +25,8 @@ card_read = f"{Builtin.Card}:{NoteFields.VocabNoteType.Card.Reading}"
 note_kanji = f"{Builtin.Note}:{NoteTypes.Kanji}"
 note_vocab = f"{Builtin.Note}:{NoteTypes.Vocab}"
 note_sentence = f"{Builtin.Note}:{NoteTypes.Sentence}"
+excluded_deck_substring = "*Excluded*"
+deck_excluded = f'''{Builtin.Deck}:{excluded_deck_substring}'''
 
 tag_uk = f"tag:{Mine.Tags.UsuallyKanaOnly}"
 
@@ -149,3 +151,6 @@ def exact_matches(question: str) -> str:
 
 def exact_matches_no_sentences(question: str) -> str:
     return f'''({exact_matches(question)}) -{note_sentence}'''
+
+def exact_matches_no_sentences_reading_cards(question: str) -> str:
+    return f'''({exact_matches_no_sentences(question)}) {card_read} -{deck_excluded}'''

@@ -13,7 +13,7 @@ def setup_anki_open_menu(string_menu:QMenu, menu_string:str) -> None:
     search_anki_menu = checked_cast(QMenu, string_menu.addMenu("&Open in Anki"))
 
 
-    add_lookup_action(search_anki_menu, "&Open Exact matches no sentences", su.exact_matches_no_sentences(menu_string))
+    add_lookup_action(search_anki_menu, "&Open Exact matches | no sentences | reading cards", su.exact_matches_no_sentences_reading_cards(menu_string))
     add_lookup_action(search_anki_menu, "Open E&xact matches with sentences", su.exact_matches(menu_string))
 
     add_lookup_action(search_anki_menu, "&Kanji", su.kanji_in_string(menu_string))
