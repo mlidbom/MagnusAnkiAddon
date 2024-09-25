@@ -43,7 +43,8 @@ def setup_note_menu(note: JPNote, note_menu: QMenu, string_menus: list[tuple[QMe
         note_lookup_menu = checked_cast(QMenu, note_menu.addMenu("&Open"))
 
         sentence_note = checked_cast(SentenceNote, note)
-        add_lookup_action(note_lookup_menu, "Highlighted &Vocab", su.vocabs_lookup_strings(note.get_user_extra_vocab()))
+        add_lookup_action(note_lookup_menu, "Highlighted V&ocab", su.vocabs_lookup_strings(note.get_user_extra_vocab()))
+        add_lookup_action(note_lookup_menu, "Highlighted Vocab Read C&ard", su.vocabs_lookup_strings_read_card(note.get_user_extra_vocab()))
         add_lookup_action(note_lookup_menu, "&Kanji", f"""note:{NoteTypes.Kanji} ({" OR ".join([f"{NoteFields.Kanji.question}:{kan}" for kan in note.extract_kanji()])})""")
         add_lookup_action(note_lookup_menu, "&Parsed words", su.notes_by_id([voc.get_id() for voc in note.ud_extract_vocab()]))
 

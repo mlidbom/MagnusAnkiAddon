@@ -62,6 +62,8 @@ def single_vocab_wildcard(query:str) -> str: return f"{note_vocab} ({f_forms}:*{
 def single_vocab_by_question_reading_or_answer_exact(query: str) -> str:return f"{note_vocab} ({field_contains_word(f_forms, query)} OR {field_contains_word(f_reading, query)} OR {field_contains_word(f_answer, query)})"
 def single_vocab_by_form_exact(query: str) -> str:return f"{note_vocab} {field_contains_word(f_forms, query)}"
 
+def single_vocab_by_form_exact_read_card_only(query: str) -> str:return f"({single_vocab_by_form_exact(query)}) {card_read}"
+
 
 def kanji_in_string(query: str) -> str: return f"{note_kanji} ( {' OR '.join([f'{f_question}:{char}' for char in query])} )"
 
@@ -104,6 +106,9 @@ def vocabs_lookup(dictionary_forms: list[ExtractedWord]) -> str:
 
 def vocabs_lookup_strings(words: list[str]) -> str:
     return f'''{note_vocab} ({' OR '.join([f"""{field_contains_word(f_forms, voc)}""" for voc in words])})'''
+
+def vocabs_lookup_strings_read_card(words: list[str]) -> str:
+    return f'''{vocabs_lookup_strings(words)} {card_read}'''
 
 
 def vocab_compounds_lookup(note:VocabNote) -> str:
