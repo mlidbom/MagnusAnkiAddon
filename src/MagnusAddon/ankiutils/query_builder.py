@@ -141,3 +141,6 @@ def kanji_with_kanji_radical(radical: KanjiNote) -> str:
 
 def exact_matches(question: str) -> str:
     return f'''{f_question}:{question} OR {field_contains_word(f_forms, question)}'''
+
+def exact_matches_no_sentences(question: str) -> str:
+    return f'''({exact_matches(question)}) -{note_sentence}'''

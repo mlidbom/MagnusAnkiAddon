@@ -5,7 +5,7 @@ from aqt.utils import openLink
 
 from hooks.right_click_menu_utils import add_lookup_action, add_text_vocab_lookup
 from note.note_constants import NoteFields, NoteTypes
-from ankiutils import app, query_builder as su
+from ankiutils import query_builder as su
 from sysutils.typed import checked_cast
 
 
@@ -13,7 +13,8 @@ def setup_anki_open_menu(string_menu:QMenu, menu_string:str) -> None:
     search_anki_menu = checked_cast(QMenu, string_menu.addMenu("&Open in Anki"))
 
 
-    add_lookup_action(search_anki_menu, "&Open Exact matches", su.exact_matches(menu_string))
+    add_lookup_action(search_anki_menu, "&Open Exact matches no sentences", su.exact_matches_no_sentences(menu_string))
+    add_lookup_action(search_anki_menu, "Open E&xact matches with sentences", su.exact_matches(menu_string))
 
     add_lookup_action(search_anki_menu, "&Kanji", su.kanji_in_string(menu_string))
     add_lookup_action(search_anki_menu, "&Radical", build_radical_search_string(menu_string))
