@@ -114,8 +114,8 @@ def setup_note_menu(note: JPNote, note_menu: QMenu, string_menus: list[tuple[QMe
         if vocab.get_related_ergative_twin():
             add_single_vocab_lookup_action(note_lookup_menu, "Ergative &twin", vocab.get_related_ergative_twin())
 
-        add_lookup_action(note_lookup_menu, "&Sentences I'm Studying", query_builder.notes_lookup(vocab.get_sentences_studying()))
-        add_lookup_action(note_lookup_menu, "S&entences", query_builder.sentence_search(vocab.get_question()))
+        add_lookup_action(note_lookup_menu, "S&entences I'm Studying", query_builder.notes_lookup(vocab.get_sentences_studying()))
+        add_lookup_action(note_lookup_menu, "&Sentences", query_builder.sentence_search(vocab.get_question()))
 
         add_text_vocab_lookup(note_lookup_menu, "&Compounds", note.get_question())
         add_vocab_dependencies_lookup(note_lookup_menu, "&Dependencies", note)
