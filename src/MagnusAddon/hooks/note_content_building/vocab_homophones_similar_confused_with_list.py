@@ -77,7 +77,7 @@ def render_homophones_html_list(html: str, card: Card, _type_of_display: str) ->
         forms_set = set(forms) | {vocab_note}
 
         html = html.replace("##ERGATIVE_TWIN##", generate_ergative_twin_html(vocab_note))
-        html = html.replace("##DERIVED_FROM##", generate_ergative_twin_html(vocab_note))
+        html = html.replace("##DERIVED_FROM##", generate_derived_from(vocab_note))
         html = html.replace("##HOMOPHONES_LIST##", generate_homophones_html_list(vocab_note, forms_set))
         html = html.replace("##SIMILAR_MEANING_LIST##", generate_similar_meaning_html_list(vocab_note))
         html = html.replace("##CONFUSED_WITH_LIST##", generate_confused_with_html_list(vocab_note))
