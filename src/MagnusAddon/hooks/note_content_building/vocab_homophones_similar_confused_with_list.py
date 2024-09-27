@@ -36,9 +36,10 @@ def render_vocab_list(vocab_list: list[VocabNote], title:str) -> str:
             </div>
             '''
 
-def generate_vocab_html_list(_vocab_note: VocabNote) -> str:
+
+def generate_homophones_html_list(_vocab_note: VocabNote, forms_to_ignore:set[VocabNote]) -> str:
     homophones = ex_sequence.flatten([app.col().vocab.with_reading(reading) for reading in _vocab_note.get_readings()])
-    homophones = [homophone for homophone in homophones if homophone.get_id() != _vocab_note.get_id()]
+    homophones = [homophone for homophone in homophones if homophone not in forms_to_ignore]
     homophones = vocabnote.sort_vocab_list_by_studying_status(homophones)
 
     return render_vocab_list([_vocab_note] + homophones, "homophones") if homophones else ""
@@ -59,7 +60,15 @@ def render_homophones_html_list(html: str, card: Card, _type_of_display: str) ->
     vocab_note = JPNote.note_from_card(card)
 
     if isinstance(vocab_note, VocabNote) and ui_utils.is_displaytype_displaying_answer(_type_of_display):
-        html = html.replace("##HOMOPHONES_LIST##", generate_vocab_html_list(vocab_note))
+        #forms list
+        forms = ex_sequence.flatten([app.col().vocab.with_question(reading) for reading in vocab_note.get_forms()])
+        forms = [form for form in forms if form.get_id() != vocab_note.get_id()]
+        forms = vocabnote.sort_vocab_list_by_studying_status(forms)
+        html = html.replace("##FORMS_LIST##", render_vocab_list([vocab_note] + forms, "forms") if forms else "")
+
+        forms_set = set(forms) | {vocab_note}
+
+        html = html.replace("##HOMOPHONES_LIST##", generate_homophones_html_list(vocab_note, forms_set))
         html = html.replace("##SIMILAR_MEANING_LIST##", generate_similar_meaning_html_list(vocab_note))
         html = html.replace("##CONFUSED_WITH_LIST##", generate_confused_with_html_list(vocab_note))
 
