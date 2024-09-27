@@ -15,13 +15,19 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
         forms = [_vocab_note.get_question()] + list(_vocab_note.get_forms())
         forms = ex_sequence.remove_duplicates_while_retaining_order(forms)
 
+        primary_form = _vocab_note.get_question()
+
+        def create_form_class(_form:str) -> str:
+            return "primaryForm" if _form == primary_form else "secondaryForm"
+
+
         for form in forms:
             if form in clean_sentence:
-                return clean_sentence.replace(form, f"""<span class="vocabInContext">{form}</span>""")
+                return clean_sentence.replace(form, f"""<span class="vocabInContext {create_form_class(form)}">{form}</span>""")
             else:
-                form = kana_utils.get_conjugation_base(form)
-                if form in clean_sentence:
-                    return clean_sentence.replace(form, f"""<span class="vocabInContext">{form}</span>""")
+                conjugation_base_form = kana_utils.get_conjugation_base(form)
+                if conjugation_base_form in clean_sentence:
+                    return clean_sentence.replace(conjugation_base_form, f"""<span class="vocabInContext {create_form_class(form)}">{conjugation_base_form}</span>""")
 
         return clean_sentence
 
