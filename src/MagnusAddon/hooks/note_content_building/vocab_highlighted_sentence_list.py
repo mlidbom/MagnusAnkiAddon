@@ -26,45 +26,36 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
 
         return clean_sentence
 
-    def create_highlighted_sentences_html_list(sentences: list[SentenceNote], title:str) -> str:
-        return f'''
-                 <div id="highlightedSentencesSection" class="page_section">
-                    <div class="page_section_title">{title} sentences</div>
-                    <div id="highlightedSentencesList">
-                        <div>
-                            {newline.join([f"""
-                            <div class="highlightedSentence">
-                                <div class="sentenceQuestion clipboard">{format_sentence(_sentence.get_question())}</div>
-                                <div class="sentenceAnswer"> {_sentence.get_answer()}</div>
-                            </div>
-                            """ for _sentence in sentences])}
-                        </div>
-                    </div>
-                </div>
-                '''
 
     highlighted_sentences = _vocab_note.get_user_highlighted_sentences()
-
-    html = ""
-    if highlighted_sentences:
-        html = create_highlighted_sentences_html_list(highlighted_sentences, "highlighted")
+    sentences = [(sent, "highlighted") for sent in highlighted_sentences]
 
     wanted_sentences = 10
-    displayed_sentences = len(highlighted_sentences)
-    if displayed_sentences < wanted_sentences:
+    if len(sentences) < wanted_sentences:
         studying_sentences = [sent for sent in _vocab_note.get_sentences_studying() if sent not in highlighted_sentences]
-        studying_sentences = studying_sentences[:(wanted_sentences - displayed_sentences)]
-        if studying_sentences:
-            html += create_highlighted_sentences_html_list(studying_sentences, "studying")
-            displayed_sentences += len(studying_sentences)
+        studying_sentences = studying_sentences[:(wanted_sentences - len(highlighted_sentences))]
+        sentences += [(sent, "studying") for sent in studying_sentences]
 
-        if displayed_sentences < wanted_sentences:
+        if len(highlighted_sentences) + len(studying_sentences) < wanted_sentences:
             any_sentences = [sent for sent in _vocab_note.get_sentences() if sent not in highlighted_sentences and sent not in studying_sentences]
-            any_sentences = any_sentences[:(wanted_sentences - displayed_sentences)]
-            if any_sentences:
-                html += create_highlighted_sentences_html_list(any_sentences, "any")
+            any_sentences = any_sentences[:(wanted_sentences - len(highlighted_sentences) - len(studying_sentences))]
+            sentences += [(sent, "any") for sent in any_sentences]
 
-    return html
+    return f'''
+             <div id="highlightedSentencesSection" class="page_section">
+                <div class="page_section_title">sentences</div>
+                <div id="highlightedSentencesList">
+                    <div>
+                        {newline.join([f"""
+                        <div class="highlightedSentence {_class}">
+                            <div class="sentenceQuestion clipboard">{format_sentence(_sentence.get_question())}</div>
+                            <div class="sentenceAnswer"> {_sentence.get_answer()}</div>
+                        </div>
+                        """ for _sentence, _class in sentences])}
+                    </div>
+                </div>
+            </div>
+            '''
 
 
 
