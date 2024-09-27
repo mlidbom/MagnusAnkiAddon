@@ -133,11 +133,11 @@ def setup_note_menu(note: JPNote, note_menu: QMenu, string_menus: list[tuple[QMe
         for string_menu, menu_string in string_menus:
             vocab_add_menu: QMenu = checked_cast(QMenu, string_menu.addMenu("&Add"))
             add_ui_action(vocab_add_menu, "S&imilar meaning", lambda _menu_string=menu_string: vocab.add_related_similar_meaning(_menu_string)) # type: ignore
+            add_ui_action(vocab_add_menu, "&Confused with", lambda _menu_string=menu_string: vocab.add_related_confused_with(_menu_string))  # type: ignore
 
         for string_menu, menu_string in string_menus:
             note_set_menu: QMenu = checked_cast(QMenu, string_menu.addMenu("&Set"))
             add_ui_action(note_set_menu, "&Meaning", lambda _menu_string=menu_string: vocab.set_user_answer(_menu_string)) # type: ignore
-            add_ui_action(note_set_menu, "&Confused with", lambda _menu_string=menu_string: vocab.set_related_confused_with(_menu_string)) # type: ignore
             add_ui_action(note_set_menu, "&Derived from", lambda _menu_string=menu_string: vocab.set_related_derived_from(_menu_string)) # type: ignore
             add_ui_action(note_set_menu, "&Ergative twin", lambda _menu_string=menu_string: vocab.set_related_ergative_twin(_menu_string)) # type: ignore
 

@@ -48,8 +48,11 @@ class KanaVocabNote(WaniNote):
         for twin in app.col().vocab.with_question(value):
             twin.set_field(NoteFields.Vocab.Related_ergative_twin, self.get_question())
 
-    def get_related_confused_with(self) -> str: return self.get_field(NoteFields.Vocab.Related_confused_with)
-    def set_related_confused_with(self, value: str) -> None: self.set_field(NoteFields.Vocab.Related_confused_with, value)
+    def get_related_confused_with(self) -> set[str]: return set(ex_str.extract_comma_separated_values(self.get_field(NoteFields.Vocab.Related_confused_with)))
+    def add_related_confused_with(self, new_confused_with: str) -> None:
+        confused_with = self.get_related_confused_with()
+        confused_with.add(new_confused_with)
+        self.set_field(NoteFields.Vocab.Related_confused_with, ", ".join(confused_with))
 
     def get_speech_type(self) -> str: return self.get_field(NoteFields.Vocab.Speech_Type)
     def set_speech_type(self, value: str) -> None: self.set_field(NoteFields.Vocab.Speech_Type, value)
