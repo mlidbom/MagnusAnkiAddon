@@ -56,6 +56,14 @@ def generate_confused_with_html_list(_vocab_note: VocabNote) -> str:
 
     return render_vocab_list([_vocab_note] + confused_with, "confused_with") if confused_with else ""
 
+def generate_ergative_twin_html(_vocab_note: VocabNote) -> str:
+    ergative_twin = app.col().vocab.with_form(_vocab_note.get_related_ergative_twin())
+    return render_vocab_list(ergative_twin, "ergative twin") if ergative_twin else ""
+
+def generate_derived_from(_vocab_note: VocabNote) -> str:
+    ergative_twin = app.col().vocab.with_form(_vocab_note.get_related_derived_from())
+    return render_vocab_list(ergative_twin, "derived from") if ergative_twin else ""
+
 def render_homophones_html_list(html: str, card: Card, _type_of_display: str) -> str:
     vocab_note = JPNote.note_from_card(card)
 
@@ -68,6 +76,8 @@ def render_homophones_html_list(html: str, card: Card, _type_of_display: str) ->
 
         forms_set = set(forms) | {vocab_note}
 
+        html = html.replace("##ERGATIVE_TWIN##", generate_ergative_twin_html(vocab_note))
+        html = html.replace("##DERIVED_FROM##", generate_ergative_twin_html(vocab_note))
         html = html.replace("##HOMOPHONES_LIST##", generate_homophones_html_list(vocab_note, forms_set))
         html = html.replace("##SIMILAR_MEANING_LIST##", generate_similar_meaning_html_list(vocab_note))
         html = html.replace("##CONFUSED_WITH_LIST##", generate_confused_with_html_list(vocab_note))
