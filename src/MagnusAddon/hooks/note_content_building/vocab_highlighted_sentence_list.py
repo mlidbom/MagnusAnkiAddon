@@ -3,7 +3,6 @@ from aqt import gui_hooks
 
 from ankiutils import ui_utils
 from note.jpnote import JPNote
-from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
 from sysutils import ex_sequence, ex_str, kana_utils
 from sysutils.ex_str import newline
@@ -28,16 +27,19 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
 
 
     highlighted_sentences = _vocab_note.get_user_highlighted_sentences()
+    highlighted_sentences = sorted(highlighted_sentences, key=lambda x: len(x.get_question()))
     sentences = [(sent, "highlighted") for sent in highlighted_sentences]
 
     wanted_sentences = 10
     if len(sentences) < wanted_sentences:
         studying_sentences = [sent for sent in _vocab_note.get_sentences_studying() if sent not in highlighted_sentences]
+        studying_sentences = sorted(studying_sentences, key=lambda x: len(x.get_question()))
         studying_sentences = studying_sentences[:(wanted_sentences - len(highlighted_sentences))]
         sentences += [(sent, "studying") for sent in studying_sentences]
 
         if len(highlighted_sentences) + len(studying_sentences) < wanted_sentences:
             any_sentences = [sent for sent in _vocab_note.get_sentences() if sent not in highlighted_sentences and sent not in studying_sentences]
+            any_sentences = sorted(any_sentences, key=lambda x: len(x.get_question()))
             any_sentences = any_sentences[:(wanted_sentences - len(highlighted_sentences) - len(studying_sentences))]
             sentences += [(sent, "any") for sent in any_sentences]
 
