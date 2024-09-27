@@ -50,7 +50,7 @@ def generate_similar_meaning_html_list(_vocab_note: VocabNote) -> str:
     return render_vocab_list([_vocab_note] + similar, "similar") if similar else ""
 
 def generate_confused_with_html_list(_vocab_note: VocabNote) -> str:
-    confused_with = ex_sequence.flatten([app.col().vocab.with_question(question) for question in _vocab_note.get_related_confused_with()])
+    confused_with = ex_sequence.flatten([app.col().vocab.with_form(question) for question in _vocab_note.get_related_confused_with()])
     confused_with = vocabnote.sort_vocab_list_by_studying_status(confused_with)
 
     return render_vocab_list([_vocab_note] + confused_with, "confused_with") if confused_with else ""
