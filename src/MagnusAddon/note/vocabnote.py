@@ -152,6 +152,17 @@ class VocabNote(KanaVocabNote):
         else:
             return ""
 
+    def get_primary_audio_path(self) -> str:
+        primary_audio = self.get_primary_audio().strip()
+        if not primary_audio:
+            return ""
+
+        primary_list = primary_audio.replace("[sound:", "").split("]")
+        return primary_list[0]
+
+
+
+
 
     @staticmethod
     def _create_verb_meta_tag(name: str, display: str, tooltip: str, tos:set[str]) -> VocabMetaTag:

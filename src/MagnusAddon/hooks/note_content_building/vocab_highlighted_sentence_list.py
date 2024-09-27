@@ -48,7 +48,7 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
                     <div>
                         {newline.join([f"""
                         <div class="highlightedSentence {_class}">                            
-                            <div class="sentenceQuestion clipboard"><audio src="{_sentence.get_audio_path()}"></audio>{format_sentence(_sentence.get_question())}</div>
+                            <div><audio src="{_sentence.get_audio_path()}"></audio><span class="sentenceQuestion clipboard">{format_sentence(_sentence.get_question())}</span></div>
                             <div class="sentenceAnswer"> {_sentence.get_answer()}</div>
                         </div>
                         """ for _sentence, _class in sentences])}

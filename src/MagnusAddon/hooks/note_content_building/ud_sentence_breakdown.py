@@ -76,6 +76,7 @@ def _build_user_extra_list(extra_words: list[str], user_excluded:set[str]) -> st
                 html += f"""
                         <li class="sentenceVocabEntry depth1 word_priority_{priorities.very_high} {vocab.get_meta_tags()}">
                             <div class="sentenceVocabEntryDiv">
+                                <audio src="{vocab.get_primary_audio_path()}"></audio>
                                 <span class="vocabQuestion clipboard">{word}</span>
                                 {f'''<span class="vocabHitForm clipboard">{hit_form}</span>''' if hit_form else ""}
                                 {f'''<span class="vocabHitReadings clipboard">{readings}</span>''' if readings else ""}
