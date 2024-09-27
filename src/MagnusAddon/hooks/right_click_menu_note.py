@@ -43,19 +43,19 @@ def setup_note_menu(note: JPNote, note_menu: QMenu, string_menus: list[tuple[QMe
         note_lookup_menu = checked_cast(QMenu, note_menu.addMenu("&Open"))
 
         sentence_note = checked_cast(SentenceNote, note)
-        add_lookup_action(note_lookup_menu, "Highlighted V&ocab", query_builder.vocabs_lookup_strings(note.get_user_extra_vocab()))
-        add_lookup_action(note_lookup_menu, "Highlighted Vocab Read C&ard", query_builder.vocabs_lookup_strings_read_card(note.get_user_extra_vocab()))
+        add_lookup_action(note_lookup_menu, "Highlighted V&ocab", query_builder.vocabs_lookup_strings(note.get_user_highlighted_vocab()))
+        add_lookup_action(note_lookup_menu, "Highlighted Vocab Read C&ard", query_builder.vocabs_lookup_strings_read_card(note.get_user_highlighted_vocab()))
         add_lookup_action(note_lookup_menu, "&Kanji", f"""note:{NoteTypes.Kanji} ({" OR ".join([f"{NoteFields.Kanji.question}:{kan}" for kan in note.extract_kanji()])})""")
         add_lookup_action(note_lookup_menu, "&Parsed words", query_builder.notes_by_id([voc.get_id() for voc in note.ud_extract_vocab()]))
 
         def position_vocab_menu(_menu:QMenu, _vocab_to_add: str, _title: str) -> None:
             highlighted_vocab_menu: QMenu = checked_cast(QMenu, _menu.addMenu(_title))
-            for index, _vocab in enumerate(sentence_note.get_user_extra_vocab()):
+            for index, _vocab in enumerate(sentence_note.get_user_highlighted_vocab()):
                 add_ui_action(highlighted_vocab_menu, f"&{index + 1}. {_vocab}", lambda _index=index: sentence_note.position_extra_vocab(_vocab_to_add, _index))  # type: ignore
 
             add_ui_action(highlighted_vocab_menu, f"[L&ast]", lambda: sentence_note.position_extra_vocab(_vocab_to_add))
 
-            if menu_string in sentence_note.get_user_extra_vocab():
+            if menu_string in sentence_note.get_user_highlighted_vocab():
                 add_ui_action(highlighted_vocab_menu, "R&emove", lambda _menu_string=menu_string: sentence_note.remove_extra_vocab(_menu_string)) # type: ignore
 
         for string_menu, menu_string in string_menus:

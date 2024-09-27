@@ -15,21 +15,26 @@ class _SentenceSnapshot(CachedNote):
     def __init__(self, note: SentenceNote):
         super().__init__(note)
         self.words = note.get_words()
+        self.user_highlighted_vocab = note.get_user_highlighted_vocab()
 
 class _SentenceCache(NoteCache[SentenceNote, _SentenceSnapshot]):
     def __init__(self, all_kanji: list[SentenceNote]):
         self._by_vocab_form: dict[str, set[SentenceNote]] = defaultdict(set)
+        self._by_user_highlighted_vocab: dict[str, set[SentenceNote]] = defaultdict(set)
         super().__init__(all_kanji, SentenceNote)
 
     def _create_snapshot(self, note: SentenceNote) -> _SentenceSnapshot: return _SentenceSnapshot(note)
 
     def with_vocab_form(self, form: str) -> list[SentenceNote]: return list(self._by_vocab_form[form])
+    def with_user_highlighted_vocab(self, form: str) -> list[SentenceNote]: return list(self._by_user_highlighted_vocab[form])
     
     def _inheritor_remove_from_cache(self, sentence: SentenceNote, cached:_SentenceSnapshot) -> None:
         for vocab_form in cached.words: self._by_vocab_form[vocab_form].remove(sentence)
+        for vocab_form in cached.user_highlighted_vocab: self._by_user_highlighted_vocab[vocab_form].remove(sentence)
 
     def _inheritor_add_to_cache(self, sentence: SentenceNote) -> None:
         for vocab_form in sentence.get_words(): self._by_vocab_form[vocab_form].add(sentence)
+        for vocab_form in sentence.get_user_highlighted_vocab(): self._by_user_highlighted_vocab[vocab_form].add(sentence)
 
 
 class SentenceCollection:
@@ -42,5 +47,8 @@ class SentenceCollection:
 
     def with_vocab(self, vocab_note: VocabNote) -> list[SentenceNote]:
         return ex_sequence.flatten([self._cache.with_vocab_form(form) for form in vocab_note.get_forms()])
+
+    def with_highlighted_vocab(self, vocab_note: VocabNote) -> list[SentenceNote]:
+        return ex_sequence.flatten([self._cache.with_user_highlighted_vocab(form) for form in vocab_note.get_forms()])
 
     def search(self, query: str) -> list[SentenceNote]: return list(self.collection.search(query))

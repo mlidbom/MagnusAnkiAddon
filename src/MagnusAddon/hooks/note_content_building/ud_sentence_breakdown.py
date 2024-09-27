@@ -141,7 +141,7 @@ def render_breakdown(html: str, card: Card, _type_of_display: str) -> str:
     note = JPNote.note_from_note(card.note())
     if isinstance(note, SentenceNote) and ui_utils.is_displaytype_displaying_answer(_type_of_display):
         user_excluded = note.get_user_excluded_vocab()
-        extra_words = note.get_user_extra_vocab()
+        extra_words = note.get_user_highlighted_vocab()
         question = note.get_question()
         tree = ud_tree_builder.build_tree(ud_tokenizers.default, question)
         view_model = sentence_breakdown_viewmodel.create(tree, app.col())

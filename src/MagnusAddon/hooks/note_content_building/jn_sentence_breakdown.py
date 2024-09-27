@@ -107,7 +107,7 @@ def render_breakdown(html: str, card: Card, _type_of_display: str) -> str:
     note = JPNote.note_from_note(card.note())
     if isinstance(note, SentenceNote):
         user_excluded = note.get_user_excluded_vocab()
-        extra_words = note.get_user_extra_vocab()
+        extra_words = note.get_user_highlighted_vocab()
         if extra_words:
             user_extra_html = _build_user_extra_list(extra_words, user_excluded)
             html = html.replace("##USER_EXTRA_VOCAB##", user_extra_html)

@@ -34,11 +34,11 @@ class SentenceNote(JPNote):
     def _set_user_excluded_vocab(self, excluded: set[str]) -> None: self.set_field(SentenceNoteFields.user_excluded_vocab, newline.join(excluded))
 
 
-    def get_user_extra_vocab(self) -> list[str]: return ex_str.extract_newline_separated_values(self.get_field(SentenceNoteFields.user_extra_vocab))
+    def get_user_highlighted_vocab(self) -> list[str]: return ex_str.extract_newline_separated_values(self.get_field(SentenceNoteFields.user_extra_vocab))
     def _set_user_extra_vocab(self, extra: list[str]) -> None: return self.set_field(SentenceNoteFields.user_extra_vocab, newline.join(extra))
     def position_extra_vocab(self, vocab: str, index:int = -1) -> None:
         vocab = vocab.strip()
-        vocab_list = self.get_user_extra_vocab()
+        vocab_list = self.get_user_highlighted_vocab()
         if vocab in vocab_list:
             old_index = vocab_list.index(vocab)
             vocab_list.remove(vocab)
@@ -56,7 +56,7 @@ class SentenceNote(JPNote):
 
 
     def remove_extra_vocab(self, vocab: str) -> None:
-        self._set_user_extra_vocab([v for v in self.get_user_extra_vocab() if not v == vocab])
+        self._set_user_extra_vocab([v for v in self.get_user_highlighted_vocab() if not v == vocab])
 
     def exclude_vocab(self, vocab: str) -> None:
         excluded = self.get_user_excluded_vocab()
@@ -89,7 +89,7 @@ class SentenceNote(JPNote):
         return app.col().vocab.with_forms(self.ud_extract_word_forms())
 
     def _get_parsed_words(self) -> list[str]: return self.get_field(SentenceNoteFields.ParsedWords).split(",")
-    def get_words(self) -> set[str]: return (self.get_parsed_words() | set(self.get_user_extra_vocab())) - self.get_user_excluded_vocab()
+    def get_words(self) -> set[str]: return (self.get_parsed_words() | set(self.get_user_highlighted_vocab())) - self.get_user_excluded_vocab()
     def get_parsed_words(self) -> set[str]: return set(self._get_parsed_words())
     def _set_parsed_words(self, value: list[str]) -> None:
         value.append(str(timeutil.one_second_from_now()))

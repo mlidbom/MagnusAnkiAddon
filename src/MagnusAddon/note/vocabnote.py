@@ -171,6 +171,10 @@ class VocabNote(KanaVocabNote):
         from ankiutils import app
         return [sentence for sentence in app.col().sentences.with_vocab(self)]
 
+    def get_user_highlighted_sentences(self) -> list[SentenceNote]:
+        from ankiutils import app
+        return [sentence for sentence in app.col().sentences.with_highlighted_vocab(self)]
+
     def get_sentences_studying(self) -> list[SentenceNote]:
         return [sentence for sentence in self.get_sentences() if sentence.is_studying()]
 
