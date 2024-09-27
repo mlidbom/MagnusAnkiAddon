@@ -10,7 +10,9 @@ from sysutils import ex_str, kana_utils
 
 # noinspection DuplicatedCode
 def _build_compound_list(compounds: list[str]) -> str:
-    html = f"""<ul class="vocabCompoundList">\n"""
+    html = f"""<ul class="vocabCompoundList page_section">
+                    <div class="page_section_title">compounds</div>
+"""
     for word in compounds:
         vocabs: list[VocabNote] = app.col().vocab.with_form(word)
 
