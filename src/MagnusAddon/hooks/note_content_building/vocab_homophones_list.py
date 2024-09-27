@@ -33,7 +33,7 @@ def generate_vocab_html_list(_vocab_note: VocabNote) -> str:
                     <div>
                         {newline.join([f"""
                         <div class="homophone {_create_classes(_vocab_note)}">
-                            <audio src="{_vocab_note.get_primary_audio_path()}"></audio>
+                            <audio src="{_vocab_note.get_primary_audio_path()}"></audio><a class="play-button"></a>
                             <span class="question clipboard">{_vocab_note.get_question()}</span>                            
                             {_vocab_note.get_meta_tags_html()}
                             <span class="meaning"> {_vocab_note.get_answer()}</span>
