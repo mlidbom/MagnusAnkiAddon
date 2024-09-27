@@ -33,11 +33,11 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
     return f'''
              <div id="highlightedSentencesSection" class="page_section">
                 <div class="page_section_title">highlighted sentences</div>
-                <div class="highlightedSentencesList context list">
+                <div id="highlightedSentencesList">
                     <div>
                         {newline.join([f"""
-                        <div class="highlightedSencence context">
-                            <div class="sentenceQuestion clipboard context_jp">{format_sentence(_sentence.get_question())}</div>
+                        <div class="highlightedSentence">
+                            <div class="sentenceQuestion clipboard">{format_sentence(_sentence.get_question())}</div>
                             <div class="sentenceAnswer"> {_sentence.get_answer()}</div>
                         </div>
                         """ for _sentence in sentences])}
