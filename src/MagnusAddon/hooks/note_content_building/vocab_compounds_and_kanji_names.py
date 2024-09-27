@@ -10,6 +10,8 @@ from sysutils import ex_str, kana_utils
 
 # noinspection DuplicatedCode
 def _build_compound_list(compounds: list[str]) -> str:
+    if not compounds: return ""
+
     html = f"""<ul class="vocabCompoundList page_section">
                     <div class="page_section_title">compounds</div>
 """
