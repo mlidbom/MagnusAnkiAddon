@@ -3,19 +3,20 @@ from aqt import gui_hooks
 
 from ankiutils import ui_utils
 from note.jpnote import JPNote
+from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
 from sysutils import ex_sequence, ex_str, kana_utils
 from sysutils.ex_str import newline
 
 
 def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
+    forms = [_vocab_note.get_question()] + list(_vocab_note.get_forms())
+    forms = ex_sequence.remove_duplicates_while_retaining_order(forms)
+    primary_form = _vocab_note.get_question()
+    conjugation_base_form = kana_utils.get_conjugation_base(primary_form)
+
     def format_sentence(html_sentence: str) -> str:
         clean_sentence = ex_str.strip_html_and_bracket_markup(html_sentence)
-
-        forms = [_vocab_note.get_question()] + list(_vocab_note.get_forms())
-        forms = ex_sequence.remove_duplicates_while_retaining_order(forms)
-
-        primary_form = _vocab_note.get_question()
 
         def create_form_class(_form:str) -> str:
             return "primaryForm" if _form == primary_form else "secondaryForm"
@@ -25,27 +26,34 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
             if form in clean_sentence:
                 return clean_sentence.replace(form, f"""<span class="vocabInContext {create_form_class(form)}">{form}</span>""")
             else:
-                conjugation_base_form = kana_utils.get_conjugation_base(form)
-                if conjugation_base_form in clean_sentence:
-                    return clean_sentence.replace(conjugation_base_form, f"""<span class="vocabInContext {create_form_class(form)}">{conjugation_base_form}</span>""")
+                _conjugation_base_form = kana_utils.get_conjugation_base(form)
+                if _conjugation_base_form in clean_sentence:
+                    return clean_sentence.replace(_conjugation_base_form, f"""<span class="vocabInContext {create_form_class(form)}">{_conjugation_base_form}</span>""")
 
         return clean_sentence
 
+    def sort_sentences(_sentences:list[SentenceNote]) -> list[SentenceNote]:
+
+        def contains_primary_form(_sentence:SentenceNote) -> bool:
+            clean_sentence = ex_str.strip_html_and_bracket_markup(_sentence.get_question())
+            return primary_form in clean_sentence or conjugation_base_form in clean_sentence
+
+        return sorted(_sentences, key=lambda x: (1 if contains_primary_form(x) else 2, len(x.get_question())))
 
     highlighted_sentences = _vocab_note.get_user_highlighted_sentences()
-    highlighted_sentences = sorted(highlighted_sentences, key=lambda x: len(x.get_question()))
+    highlighted_sentences = sort_sentences(highlighted_sentences)
     sentences = [(sent, "highlighted") for sent in highlighted_sentences]
 
     wanted_sentences = 10
     if len(sentences) < wanted_sentences:
         studying_sentences = [sent for sent in _vocab_note.get_sentences_studying() if sent not in highlighted_sentences]
-        studying_sentences = sorted(studying_sentences, key=lambda x: len(x.get_question()))
+        studying_sentences = sort_sentences(studying_sentences)
         studying_sentences = studying_sentences[:(wanted_sentences - len(highlighted_sentences))]
         sentences += [(sent, "studying") for sent in studying_sentences]
 
         if len(highlighted_sentences) + len(studying_sentences) < wanted_sentences:
             any_sentences = [sent for sent in _vocab_note.get_sentences() if sent not in highlighted_sentences and sent not in studying_sentences]
-            any_sentences = sorted(any_sentences, key=lambda x: len(x.get_question()))
+            any_sentences = sort_sentences(any_sentences)
             any_sentences = any_sentences[:(wanted_sentences - len(highlighted_sentences) - len(studying_sentences))]
             sentences += [(sent, "any") for sent in any_sentences]
 
