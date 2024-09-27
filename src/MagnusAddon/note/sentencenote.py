@@ -30,6 +30,8 @@ class SentenceNote(JPNote):
 
     def _get_user_question(self) -> str: return ex_str.strip_html_markup(self.get_field(SentenceNoteFields.user_question))
 
+    def get_audio_path(self) -> str: return self.get_field(SentenceNoteFields.audio).strip()[7:-1]
+
     def get_user_excluded_vocab(self) -> set[str]: return set(ex_str.extract_newline_separated_values(self.get_field(SentenceNoteFields.user_excluded_vocab)))
     def _set_user_excluded_vocab(self, excluded: set[str]) -> None: self.set_field(SentenceNoteFields.user_excluded_vocab, newline.join(excluded))
 

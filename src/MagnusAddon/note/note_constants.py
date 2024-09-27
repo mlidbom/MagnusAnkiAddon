@@ -23,6 +23,7 @@ class SentenceNoteFields:
     ParsedWords = "ParsedWords"
     user_excluded_vocab = "__excluded_vocab"
     user_extra_vocab = "__extra_vocab"
+    audio = "Audio Sentence"
 
 class NoteTypes:
     Kanji = "_Kanji"
