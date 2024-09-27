@@ -42,19 +42,19 @@ def generate_homophones_html_list(_vocab_note: VocabNote, forms_to_ignore:set[Vo
     homophones = [homophone for homophone in homophones if homophone not in forms_to_ignore]
     homophones = vocabnote.sort_vocab_list_by_studying_status(homophones)
 
-    return render_vocab_list([_vocab_note] + homophones, "homophones") if homophones else ""
+    return render_vocab_list(homophones, "homophones") if homophones else ""
 
 def generate_similar_meaning_html_list(_vocab_note: VocabNote) -> str:
     similar = ex_sequence.flatten([app.col().vocab.with_question(question) for question in _vocab_note.get_related_similar_meaning()])
     similar = vocabnote.sort_vocab_list_by_studying_status(similar)
 
-    return render_vocab_list([_vocab_note] + similar, "similar") if similar else ""
+    return render_vocab_list(similar, "similar") if similar else ""
 
 def generate_confused_with_html_list(_vocab_note: VocabNote) -> str:
     confused_with = ex_sequence.flatten([app.col().vocab.with_form(question) for question in _vocab_note.get_related_confused_with()])
     confused_with = vocabnote.sort_vocab_list_by_studying_status(confused_with)
 
-    return render_vocab_list([_vocab_note] + confused_with, "confused_with") if confused_with else ""
+    return render_vocab_list(confused_with, "confused_with") if confused_with else ""
 
 def generate_ergative_twin_html(_vocab_note: VocabNote) -> str:
     ergative_twin = app.col().vocab.with_form(_vocab_note.get_related_ergative_twin())
