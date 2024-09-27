@@ -58,7 +58,7 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
                     </div>
                 </div>
             </div>
-            '''
+            ''' if sentences else ""
 
 
 
