@@ -74,7 +74,7 @@ def setup_note_menu(note: JPNote, note_menu: QMenu, string_menus: list[tuple[QMe
         note_lookup_menu = checked_cast(QMenu, note_menu.addMenu("&Open"))
 
         kanji = note
-        add_lookup_action(note_lookup_menu, "&Primary Vocabs", query_builder.vocabs_lookup_strings(note.get_primary_vocab()))
+        add_lookup_action(note_lookup_menu, "Primary Vocabs", query_builder.vocabs_lookup_strings(note.get_primary_vocab()))
         add_lookup_action(note_lookup_menu, "&Vocabs", query_builder.vocab_with_kanji(note))
         add_lookup_action(note_lookup_menu, "&Radicals", query_builder.notes_by_note(app.col().kanji.dependencies_of(kanji)))
         add_lookup_action(note_lookup_menu, "&Kanji", query_builder.kanji_with_kanji_radical(note))
@@ -92,9 +92,9 @@ def setup_note_menu(note: JPNote, note_menu: QMenu, string_menus: list[tuple[QMe
         add_ui_action(note_menu, "Reset Primary Vocabs", lambda: kanji.set_primary_vocab([]))
 
         for string_menu, menu_string in string_menus:
-            primary_vocab_menu: QMenu = checked_cast(QMenu, string_menu.addMenu("&Primary Vocab"))
+            primary_vocab_menu: QMenu = checked_cast(QMenu, string_menu.addMenu("Pr&imary Vocab"))
             if menu_string in kanji.get_primary_vocab():
-                add_ui_action(primary_vocab_menu, "&Remove", lambda _menu_string=menu_string: kanji.remove_primary_vocab(_menu_string)) # type: ignore
+                add_ui_action(primary_vocab_menu, "R&emove", lambda _menu_string=menu_string: kanji.remove_primary_vocab(_menu_string)) # type: ignore
             else:
                 add_ui_action(primary_vocab_menu, "&Add", lambda _menu_string=menu_string: kanji.add_primary_vocab(_menu_string)) # type: ignore
 
