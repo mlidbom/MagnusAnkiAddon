@@ -13,6 +13,8 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
     forms = [_vocab_note.get_question()] + list(_vocab_note.get_forms())
     forms = ex_sequence.remove_duplicates_while_retaining_order(forms)
     primary_form = _vocab_note.get_question()
+    secondary_forms = [form for form in forms if form != primary_form]
+    secondary_forms_conjugation_base_form = [kana_utils.get_conjugation_base(form) for form in secondary_forms]
     conjugation_base_form = kana_utils.get_conjugation_base(primary_form)
 
     def format_sentence(html_sentence: str) -> str:
@@ -34,11 +36,15 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
 
     def sort_sentences(_sentences:list[SentenceNote]) -> list[SentenceNote]:
 
-        def contains_primary_form(_sentence:SentenceNote) -> bool:
+        def contains_primary_form(_sentence:SentenceNote) -> int:
             clean_sentence = ex_str.strip_html_and_bracket_markup(_sentence.get_question())
-            return primary_form in clean_sentence or conjugation_base_form in clean_sentence
+            return 1 if conjugation_base_form in clean_sentence else 2
 
-        return sorted(_sentences, key=lambda x: (1 if contains_primary_form(x) else 2, len(x.get_question())))
+        def contains_secondary_form(_sentence:SentenceNote) -> int:
+            clean_sentence = ex_str.strip_html_and_bracket_markup(_sentence.get_question())
+            return 2 if any((_base_form in clean_sentence for _base_form in secondary_forms_conjugation_base_form)) else 1
+
+        return sorted(_sentences, key=lambda x: (contains_primary_form(x) + contains_secondary_form(x), len(x.get_question())))
 
     highlighted_sentences = _vocab_note.get_user_highlighted_sentences()
     highlighted_sentences = sort_sentences(highlighted_sentences)
