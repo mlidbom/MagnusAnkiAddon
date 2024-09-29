@@ -15,7 +15,7 @@ class _SentenceSnapshot(CachedNote):
     def __init__(self, note: SentenceNote):
         super().__init__(note)
         self.words = note.get_words()
-        self.user_highlighted_vocab = note.get_user_highlighted_vocab()
+        self.user_highlighted_vocab = set(note.get_user_highlighted_vocab())
 
 class _SentenceCache(NoteCache[SentenceNote, _SentenceSnapshot]):
     def __init__(self, all_kanji: list[SentenceNote]):
