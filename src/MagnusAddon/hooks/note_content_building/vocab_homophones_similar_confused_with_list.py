@@ -72,12 +72,12 @@ def render_homophones_html_list(html: str, card: Card, _type_of_display: str) ->
         forms = ex_sequence.flatten([app.col().vocab.with_question(reading) for reading in vocab_note.get_forms()])
         forms = [form for form in forms if form.get_id() != vocab_note.get_id()]
         forms = vocabnote.sort_vocab_list_by_studying_status(forms)
+        html = html.replace("##DERIVED_FROM##", generate_derived_from(vocab_note))
         html = html.replace("##FORMS_LIST##", render_vocab_list([vocab_note] + forms, "forms") if forms else "")
 
         forms_set = set(forms) | {vocab_note}
 
         html = html.replace("##ERGATIVE_TWIN##", generate_ergative_twin_html(vocab_note))
-        html = html.replace("##DERIVED_FROM##", generate_derived_from(vocab_note))
         html = html.replace("##HOMOPHONES_LIST##", generate_homophones_html_list(vocab_note, forms_set))
         html = html.replace("##SIMILAR_MEANING_LIST##", generate_similar_meaning_html_list(vocab_note))
         html = html.replace("##CONFUSED_WITH_LIST##", generate_confused_with_html_list(vocab_note))
