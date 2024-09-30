@@ -76,7 +76,7 @@ def render_homophones_html_list(html: str, card: Card, _type_of_display: str) ->
 
         forms_set = set(forms) | {vocab_note}
 
-        #todo homonyms and homographs
+        #todo: part-of-compound, homonyms, homographs
         html = html.replace("##ERGATIVE_TWIN##", generate_ergative_twin_html(vocab_note))
         html = html.replace("##DERIVED_FROM##", generate_derived_from(vocab_note))
         html = html.replace("##HOMOPHONES_LIST##", generate_homophones_html_list(vocab_note, forms_set))
