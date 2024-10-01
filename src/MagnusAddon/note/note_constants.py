@@ -123,6 +123,7 @@ class NoteFields:
 
 class Mine:
     class Tags:
+        NoSentences = "_nosentences"
         Sentence = "_sentence"
         Wani = "_wani"
         DisableKanaOnly = "_disable_uk"

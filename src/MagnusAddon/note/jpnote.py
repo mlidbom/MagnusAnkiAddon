@@ -106,7 +106,11 @@ class JPNote(ABC):
 
     def get_tags(self) -> list[str]: return self._note.tags
 
-    def has_tag(self, tag: str) -> bool: return tag in self._note.tags
+    def has_tag(self, tag: str) -> bool: return self._note.has_tag(tag)
+    def remove_tag(self, tag: str) -> None:
+        if self.has_tag(tag):
+            self._note.remove_tag(tag)
+            self._flush()
 
     def set_tag(self, tag: str) -> None:
         if not self.has_tag(tag):
