@@ -55,8 +55,8 @@ def setup_note_menu(note: JPNote, note_menu: QMenu, string_menus: list[tuple[QMe
 
             add_ui_action(highlighted_vocab_menu, f"[L&ast]", lambda: sentence_note.position_extra_vocab(_vocab_to_add))
 
-            if menu_string in sentence_note.get_user_highlighted_vocab():
-                add_ui_action(highlighted_vocab_menu, "R&emove", lambda _menu_string=menu_string: sentence_note.remove_extra_vocab(_menu_string)) # type: ignore
+            if _vocab_to_add in sentence_note.get_user_highlighted_vocab():
+                add_ui_action(highlighted_vocab_menu, "R&emove", lambda __vocab_to_add=_vocab_to_add: sentence_note.remove_extra_vocab(__vocab_to_add)) # type: ignore
 
         for string_menu, menu_string in string_menus:
             position_vocab_menu(string_menu, menu_string, "H&ighlighted Vocab")
