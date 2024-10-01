@@ -17,7 +17,10 @@ def _create_classes(_vocab: VocabNote) -> str:
     return classes
 
 
-def render_vocab_list(vocab_list: list[VocabNote], title:str) -> str:
+def render_vocab_list(vocab_list: list[VocabNote], title:str, reading:bool = True) -> str:
+    def render_readings(_vocab_note: VocabNote) -> str:
+        return f"""<span class="clipboard vocabReading">{", ".join(_vocab_note.get_readings())}</span>""" if reading else ""
+
     return f'''
              <div id="homophonesDiv" class="page_section">
                 <div class="page_section_title">{title}</div>
@@ -26,7 +29,8 @@ def render_vocab_list(vocab_list: list[VocabNote], title:str) -> str:
                         {newline.join([f"""
                         <div class="homophone {_create_classes(_vocab_note)}">
                             <audio src="{_vocab_note.get_primary_audio_path()}"></audio><a class="play-button"></a>
-                            <span class="question clipboard">{_vocab_note.get_question()}</span>                            
+                            <span class="question clipboard">{_vocab_note.get_question()}</span>
+                            {render_readings(_vocab_note)}                            
                             {_vocab_note.get_meta_tags_html()}
                             <span class="meaning"> {_vocab_note.get_answer()}</span>
                         </div>
