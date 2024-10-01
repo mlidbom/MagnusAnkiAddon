@@ -12,7 +12,7 @@ from sysutils.ex_str import newline
 def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
     forms = [_vocab_note.get_question()] + list(_vocab_note.get_forms())
     forms = ex_sequence.remove_duplicates_while_retaining_order(forms)
-    primary_form = _vocab_note.get_question()
+    primary_form = _vocab_note.get_question_without_noise_characters()
     secondary_forms = [form for form in forms if form != primary_form]
     secondary_forms_conjugation_base_form = [kana_utils.get_conjugation_base(form) for form in secondary_forms]
     conjugation_base_form = kana_utils.get_conjugation_base(primary_form)

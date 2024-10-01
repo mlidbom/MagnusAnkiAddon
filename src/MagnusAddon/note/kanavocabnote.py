@@ -2,14 +2,14 @@ from wanikani_api import models
 from anki.notes import Note
 
 from note.waninote import WaniNote
-from note.note_constants import NoteFields
+from note.note_constants import Mine, NoteFields
 from sysutils import ex_str
 
 class KanaVocabNote(WaniNote):
     def __init__(self, note: Note):
         super().__init__(note)
 
-    def get_question_without_noise_characters(self) -> str: return self.get_question().replace("〜","")
+    def get_question_without_noise_characters(self) -> str: return self.get_question().replace(Mine.VocabPrefixSuffixMarker, "")
     def get_question(self) -> str: return self.get_field(NoteFields.Vocab.question).strip()
     def _set_question(self, value: str) -> None: self.set_field(NoteFields.Vocab.question, value)
 

@@ -122,6 +122,7 @@ class NoteFields:
         component_subject_ids = "component_subject_ids"
 
 class Mine:
+    VocabPrefixSuffixMarker = "〜"
     class Tags:
         NoSentences = "_nosentences"
         Sentence = "_sentence"
