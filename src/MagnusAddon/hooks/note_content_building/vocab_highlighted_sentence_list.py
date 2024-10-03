@@ -77,7 +77,7 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
 
     return f'''
              <div id="highlightedSentencesSection" class="page_section">
-                <div class="page_section_title">sentences: {primary_form_matches}</div>
+                <div class="page_section_title" title="primary form hits: {primary_form_matches}">sentences: {primary_form_matches}</div>
                 <div id="highlightedSentencesList">
                     <div>
                         {newline.join([f"""
