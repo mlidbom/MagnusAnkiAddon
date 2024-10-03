@@ -38,7 +38,14 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
 
         return clean_sentence
 
+    sorted_sentences: set[str] = set()
+
     def sort_sentences(_sentences:list[SentenceNote]) -> list[SentenceNote]:
+
+        def is_a_duplicate(_sentence:SentenceNote) -> int:
+            if _sentence.get_question() in sorted_sentences: return 2
+            sorted_sentences.add(_sentence.get_question())
+            return 1
 
         def _contains_primary_form(_sentence:SentenceNote) -> int:
             return 1 if contains_primary_form(_sentence) else 2
@@ -47,7 +54,7 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
             clean_sentence = ex_str.strip_html_and_bracket_markup(_sentence.get_question())
             return 2 if any((_base_form in clean_sentence for _base_form in secondary_forms_conjugation_base_form)) else 1
 
-        return sorted(_sentences, key=lambda x: (_contains_primary_form(x) + contains_secondary_form(x), len(x.get_question())))
+        return sorted(_sentences, key=lambda x: (_contains_primary_form(x), is_a_duplicate(x), contains_secondary_form(x), len(x.get_question())))
 
     highlighted_sentences = _vocab_note.get_user_highlighted_sentences()
     highlighted_sentences = sort_sentences(highlighted_sentences)
