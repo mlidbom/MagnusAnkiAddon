@@ -56,11 +56,11 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
 
         return sorted(_sentences, key=lambda x: (_contains_primary_form(x), is_a_duplicate(x), contains_secondary_form(x), len(x.get_question())))
 
+    wanted_sentences = 10
     highlighted_sentences = _vocab_note.get_user_highlighted_sentences()
-    highlighted_sentences = sort_sentences(highlighted_sentences)
+    highlighted_sentences = sort_sentences(highlighted_sentences)[:wanted_sentences]
     sentences = [(sent, "highlighted") for sent in highlighted_sentences]
 
-    wanted_sentences = 10
     if len(sentences) < wanted_sentences:
         studying_sentences = [sent for sent in _vocab_note.get_sentences_studying() if sent not in highlighted_sentences]
         studying_sentences = sort_sentences(studying_sentences)
