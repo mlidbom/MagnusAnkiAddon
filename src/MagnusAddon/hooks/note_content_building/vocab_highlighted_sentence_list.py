@@ -30,11 +30,11 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
 
         for form in forms:
             if form in clean_sentence:
-                clean_sentence = clean_sentence.replace(form, f"""<span class="vocabInContext {create_form_class(form)}">{form}</span>""")
+                return clean_sentence.replace(form, f"""<span class="vocabInContext {create_form_class(form)}">{form}</span>""")
             else:
                 _conjugation_base_form = kana_utils.get_conjugation_base(form)
                 if _conjugation_base_form in clean_sentence:
-                    clean_sentence = clean_sentence.replace(_conjugation_base_form, f"""<span class="vocabInContext {create_form_class(form)}">{_conjugation_base_form}</span>""")
+                    return clean_sentence.replace(_conjugation_base_form, f"""<span class="vocabInContext {create_form_class(form)}">{_conjugation_base_form}</span>""")
 
         return clean_sentence
 
