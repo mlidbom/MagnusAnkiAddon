@@ -17,6 +17,10 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
     secondary_forms_conjugation_base_form = [kana_utils.get_conjugation_base(form) for form in secondary_forms]
     conjugation_base_form = kana_utils.get_conjugation_base(primary_form)
 
+    def contains_primary_form(_sentence: SentenceNote) -> bool:
+        clean_sentence = ex_str.strip_html_and_bracket_markup(_sentence.get_question())
+        return conjugation_base_form in clean_sentence
+
     def format_sentence(html_sentence: str) -> str:
         clean_sentence = ex_str.strip_html_and_bracket_markup(html_sentence)
 
@@ -36,15 +40,14 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
 
     def sort_sentences(_sentences:list[SentenceNote]) -> list[SentenceNote]:
 
-        def contains_primary_form(_sentence:SentenceNote) -> int:
-            clean_sentence = ex_str.strip_html_and_bracket_markup(_sentence.get_question())
-            return 1 if conjugation_base_form in clean_sentence else 2
+        def _contains_primary_form(_sentence:SentenceNote) -> int:
+            return 1 if contains_primary_form(_sentence) else 2
 
         def contains_secondary_form(_sentence:SentenceNote) -> int:
             clean_sentence = ex_str.strip_html_and_bracket_markup(_sentence.get_question())
             return 2 if any((_base_form in clean_sentence for _base_form in secondary_forms_conjugation_base_form)) else 1
 
-        return sorted(_sentences, key=lambda x: (contains_primary_form(x) + contains_secondary_form(x), len(x.get_question())))
+        return sorted(_sentences, key=lambda x: (_contains_primary_form(x) + contains_secondary_form(x), len(x.get_question())))
 
     highlighted_sentences = _vocab_note.get_user_highlighted_sentences()
     highlighted_sentences = sort_sentences(highlighted_sentences)
@@ -63,9 +66,11 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
             any_sentences = any_sentences[:(wanted_sentences - len(highlighted_sentences) - len(studying_sentences))]
             sentences += [(sent, "any") for sent in any_sentences]
 
+    primary_form_matches = len([x for x in _vocab_note.get_sentences() if contains_primary_form(x)])
+
     return f'''
              <div id="highlightedSentencesSection" class="page_section">
-                <div class="page_section_title">sentences</div>
+                <div class="page_section_title">sentences: {primary_form_matches}</div>
                 <div id="highlightedSentencesList">
                     <div>
                         {newline.join([f"""
