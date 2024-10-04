@@ -142,6 +142,8 @@ def setup_note_menu(note: JPNote, note_menu: QMenu, string_menus: list[tuple[QMe
             add_ui_action(note_set_menu, "&Ergative twin", lambda _menu_string=menu_string: vocab.set_related_ergative_twin(_menu_string)) # type: ignore
 
         add_ui_action(note_menu, "&Generate answer", lambda: vocab.generate_and_set_answer())
+        if vocab.can_generate_sentences_from_context_sentences(require_audio=False):
+            add_ui_action(note_menu, "&Generate sentences", lambda: vocab.generate_sentences_from_context_sentences(require_audio=False))
 
 def format_vocab_meaning(meaning: str) -> str:
     return ex_str.strip_html_and_bracket_markup(meaning

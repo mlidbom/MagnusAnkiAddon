@@ -317,6 +317,16 @@ class VocabNote(KanaVocabNote):
             generated = dict_lookup.entries[0].generate_answer()
             self.set_user_answer(generated)
 
+    def can_generate_sentences_from_context_sentences(self, require_audio:bool) -> bool:
+        from ankiutils import app
+
+        def can_create_sentence(question: str, audio: str) -> bool:
+            return question != "" and (audio or not require_audio) and not app.col().sentences.with_question(question)
+
+        return ((can_create_sentence(question=self.get_context_jp(), audio=self.get_context_jp_audio()) or
+                can_create_sentence(question=self.get_context_jp_2(), audio=self.get_context_jp_2_audio())) or
+                can_create_sentence(question=self.get_context_jp_3(), audio=self.get_context_jp_3_audio()))
+
     def generate_sentences_from_context_sentences(self, require_audio:bool) -> None:
         from ankiutils import app
         from note.sentencenote import SentenceNote
