@@ -27,7 +27,7 @@ class _SentenceCache(NoteCache[SentenceNote, _SentenceSnapshot]):
 
     def with_vocab_form(self, form: str) -> list[SentenceNote]: return list(self._by_vocab_form[form])
     def with_user_highlighted_vocab(self, form: str) -> list[SentenceNote]: return list(self._by_user_highlighted_vocab[form])
-    
+
     def _inheritor_remove_from_cache(self, sentence: SentenceNote, cached:_SentenceSnapshot) -> None:
         for vocab_form in cached.words: self._by_vocab_form[vocab_form].remove(sentence)
         for vocab_form in cached.user_highlighted_vocab: self._by_user_highlighted_vocab[vocab_form].remove(sentence)
@@ -44,6 +44,9 @@ class SentenceCollection:
         self._cache = _SentenceCache(list(self.collection.all()))
 
     def all(self) -> list[SentenceNote]: return self._cache.all()
+
+    def with_question(self, question: str) -> list[SentenceNote]:
+        return self._cache.with_question(question)
 
     def with_vocab(self, vocab_note: VocabNote) -> list[SentenceNote]:
         return ex_sequence.flatten([self._cache.with_vocab_form(form) for form in vocab_note.get_forms()])

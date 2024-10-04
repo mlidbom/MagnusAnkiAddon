@@ -21,6 +21,12 @@ class SentenceNote(JPNote):
     def get_answer(self) -> str: return self._get_user_answer() or self._get_source_answer()
 
     def _get_source_answer(self) -> str: return self.get_field(SentenceNoteFields.source_answer)
+    def _set_source_answer(self, question: str) -> None: return self.set_field(SentenceNoteFields.source_answer, question)
+
+    def _set_screenshot(self, screenshot: str) -> None: return self.set_field(SentenceNoteFields.screenshot, screenshot)
+
+    def _set_audio(self, audio: str) -> None: return self.set_field(SentenceNoteFields.audio, audio)
+
     def _get_user_answer(self) -> str: return self.get_field(SentenceNoteFields.user_answer)
 
     def _set_user_answer(self, question: str) -> None: return self.set_field(SentenceNoteFields.user_answer, question)
@@ -124,6 +130,19 @@ class SentenceNote(JPNote):
         note = SentenceNote(inner_note)
         note._set_source_question(question)
         note._set_user_answer(answer)
+        note.update_generated_data()
+        app.anki_collection().addNote(inner_note)
+        return note
+
+    @classmethod
+    def add_sentence(cls, question: str, answer:str, audio:str = "", screenshot:str = "") -> SentenceNote:
+        from ankiutils import app
+        inner_note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Sentence))
+        note = SentenceNote(inner_note)
+        note._set_source_question(question)
+        note._set_source_answer(answer)
+        note._set_audio(audio)
+        note._set_screenshot(screenshot)
         note.update_generated_data()
         app.anki_collection().addNote(inner_note)
         return note

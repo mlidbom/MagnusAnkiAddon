@@ -65,6 +65,7 @@ def build_local_menu(sub_menu: QMenu) -> None:
     add_menu_ui_action(sub_menu, "Update &Vocab", local_note_updater.update_vocab)
     add_menu_ui_action(sub_menu, "Update &Kanji", local_note_updater.update_kanji)
     add_menu_ui_action(sub_menu, "Update &Sentences", local_note_updater.update_sentences)
+    add_menu_ui_action(sub_menu, "TMP: Create Sentences from Context Sentences", local_note_updater.tmp_generate_context_sentences)
 
 def build_wani_menu(sub_menu: QMenu) -> None:
     add_menu_ui_action(sub_menu, "Update Radicals", wani_note_updater.update_radical)

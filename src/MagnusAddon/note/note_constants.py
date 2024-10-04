@@ -24,6 +24,7 @@ class SentenceNoteFields:
     user_excluded_vocab = "__excluded_vocab"
     user_extra_vocab = "__extra_vocab"
     audio = "Audio Sentence"
+    screenshot = "Screenshot"
 
 class NoteTypes:
     Kanji = "_Kanji"
@@ -127,6 +128,7 @@ class NoteFields:
 class Mine:
     VocabPrefixSuffixMarker = "〜"
     class Tags:
+        TTSAudio = "_tts_audio"
         NoSentences = "_nosentences"
         Sentence = "_sentence"
         Wani = "_wani"
