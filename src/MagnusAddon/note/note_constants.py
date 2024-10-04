@@ -90,6 +90,7 @@ class NoteFields:
         VocabsRaw = "VocabsRaw"
 
     class Vocab:
+        sentence_count = "sentence_count"
         question = MyNoteFields.question
         active_answer = MyNoteFields.answer
         source_answer = "source_answer"
@@ -129,7 +130,6 @@ class Mine:
     VocabPrefixSuffixMarker = "〜"
     class Tags:
         TTSAudio = "_tts_audio"
-        NoSentences = "_nosentences"
         Sentence = "_sentence"
         Wani = "_wani"
         DisableKanaOnly = "_disable_uk"

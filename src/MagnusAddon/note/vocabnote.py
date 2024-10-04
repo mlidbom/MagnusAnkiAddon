@@ -76,10 +76,7 @@ class VocabNote(KanaVocabNote):
     def get_user_compounds(self) -> list[str]: return ex_str.extract_comma_separated_values(self.get_field(NoteFields.Vocab.user_compounds))
 
     def update_generated_data(self) -> None:
-        if self.get_sentences():
-            self.remove_tag(Mine.Tags.NoSentences)
-        else:
-            self.set_tag(Mine.Tags.NoSentences)
+        self.set_field(NoteFields.Vocab.sentence_count, str(len(self.get_sentences())))
 
         from language_services.jamdict_ex.dict_lookup import DictLookup
 
