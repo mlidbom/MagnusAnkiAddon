@@ -282,7 +282,7 @@ class VocabNote(KanaVocabNote):
         self.set_component_subject_ids(", ".join(component_subject_ids))
 
         client = WanikaniClient.get_instance()
-        kanji_subjects = [client.get_kanji_by_id(kanji_id) for kanji_id in wani_vocab.component_subject_ids]
+        kanji_subjects = [client.get_kanji_by_id(int(kanji_id)) for kanji_id in wani_vocab.component_subject_ids]
         kanji_characters = [subject.characters for subject in kanji_subjects]
         self.set_kanji(", ".join(kanji_characters))
 
@@ -316,6 +316,20 @@ class VocabNote(KanaVocabNote):
         if dict_lookup.found_words():
             generated = dict_lookup.entries[0].generate_answer()
             self.set_user_answer(generated)
+
+    def generate_sentences_from_context_sentences(self, require_audio:bool) -> None:
+        from ankiutils import app
+        from note.sentencenote import SentenceNote
+
+        def create_sentence_if_not_present(question:str, answer:str, audio:str) -> None:
+            if question and (audio or not require_audio) and not app.col().sentences.with_question(question):
+                created = SentenceNote.add_sentence(question=question, answer=answer, audio=audio)
+                created.position_extra_vocab(self.get_question())
+                created.set_tag(Mine.Tags.TTSAudio)
+
+        create_sentence_if_not_present(question=self.get_context_jp(), answer=self.get_context_en(), audio=self.get_context_jp_audio())
+        create_sentence_if_not_present(question=self.get_context_jp_2(), answer=self.get_context_en_2(), audio=self.get_context_jp_2_audio())
+        create_sentence_if_not_present(question=self.get_context_jp_3(), answer=self.get_context_en_3(), audio=self.get_context_jp_3_audio())
 
     @classmethod
     def create(cls, question:str, answer:str, readings:list[str]) -> VocabNote:
