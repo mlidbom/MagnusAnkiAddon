@@ -13,7 +13,17 @@ class MyNoteFields:
     question = "Q"
     answer = "A"
 
+class ImmersionKitSentenceNoteFields:
+    audio = "Audio Sentence"
+    id = "ID"
+    screenshot = "Screenshot"
+    reading = "Reading"
+    answer = "English"
+    question = "Expression"
+
 class SentenceNoteFields:
+    reading = "Reading"
+    id = "ID"
     active_question = MyNoteFields.question
     source_question = "source_question"
     user_question = "__question"
@@ -27,6 +37,7 @@ class SentenceNoteFields:
     screenshot = "Screenshot"
 
 class NoteTypes:
+    immersion_kit = "Immersion Kit Sentence"
     Kanji = "_Kanji"
     Vocab = "_Vocab"
     Radical = "_Radical"

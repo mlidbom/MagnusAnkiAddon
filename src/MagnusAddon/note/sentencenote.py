@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 from note.jpnote import JPNote
 from sysutils import timeutil, kana_utils
 from sysutils import ex_str
-from note.note_constants import SentenceNoteFields, NoteTypes
+from note.note_constants import ImmersionKitSentenceNoteFields, SentenceNoteFields, NoteTypes
 from anki.notes import Note
 
 class SentenceNote(JPNote):
@@ -146,3 +146,15 @@ class SentenceNote(JPNote):
         note.update_generated_data()
         app.anki_collection().addNote(inner_note)
         return note
+
+    @classmethod
+    def import_immersion_kit_sentence(cls, immersion_kit_note: Note) -> SentenceNote:
+        created = cls.add_sentence(question=immersion_kit_note[ImmersionKitSentenceNoteFields.question],
+                                   answer=immersion_kit_note[ImmersionKitSentenceNoteFields.answer],
+                                   audio=immersion_kit_note[ImmersionKitSentenceNoteFields.audio],
+                                   screenshot=immersion_kit_note[ImmersionKitSentenceNoteFields.screenshot])
+
+        created.set_field(SentenceNoteFields.id, immersion_kit_note[ImmersionKitSentenceNoteFields.id])
+        created.set_field(SentenceNoteFields.reading, immersion_kit_note[ImmersionKitSentenceNoteFields.reading])
+
+        return created

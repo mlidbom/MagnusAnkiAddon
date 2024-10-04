@@ -154,3 +154,6 @@ def exact_matches_no_sentences(question: str) -> str:
 
 def exact_matches_no_sentences_reading_cards(question: str) -> str:
     return f'''({exact_matches_no_sentences(question)}) {card_read} -{deck_excluded}'''
+
+def immersion_kit_sentences() -> str:
+    return f'''"{Builtin.Note}:{NoteTypes.immersion_kit}"'''
