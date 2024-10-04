@@ -1,6 +1,5 @@
 from ankiutils import app, query_builder
 from language_services.janome_ex.tokenizing import janome_ex
-from note.note_constants import ImmersionKitSentenceNoteFields
 from note.sentencenote import SentenceNote
 
 def update_all() -> None:
