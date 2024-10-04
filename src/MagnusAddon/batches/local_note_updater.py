@@ -39,27 +39,7 @@ def _update_vocab(all_vocabulary: list[VocabNote]) -> None:
         for vocab in all_vocabulary:
             vocab.update_generated_data()
 
-    def format_context_sentences() -> None: # todo move to a rendering step
-        for vocab in all_vocabulary:
-            def format_sentence(html_sentence: str) -> str:
-                clean_sentence = ex_str.strip_html_and_bracket_markup(html_sentence)
-                word = vocab.get_question()
-                if word in clean_sentence:
-                    return clean_sentence.replace(word, f"""<span class="vocabInContext">{word}</span>""")
-                else:
-                    word = kana_utils.get_conjugation_base(word)
-                    return clean_sentence.replace(word, f"""<span class="vocabInContext">{word}</span>""")
-
-            for get_context_japanese, set_contex_japanese in [(vocab.get_context_jp, vocab.set_context_jp), (vocab.get_context_jp_2, vocab.set_context_jp_2),
-                                                              (vocab.get_context_jp_3, vocab.set_context_jp_3)]:
-                sentence = get_context_japanese()
-                if sentence:
-                    formatted = format_sentence(sentence)
-                    set_contex_japanese(formatted)
-
-
     update_generated_data()
-    format_context_sentences()
 
 
 def _update_kanji(all_kanji: list[KanjiNote]) -> None:
