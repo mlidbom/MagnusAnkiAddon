@@ -25,7 +25,7 @@ def update_vocab() -> None:
     for vocab in app.col().vocab.all(): vocab.update_generated_data()
 
 
-def tmp_generate_context_sentences() -> None:
+def generate_sentences_for_context_sentences_with_audio() -> None:
     for vocab in app.col().vocab.all():
         vocab.generate_sentences_from_context_sentences(require_audio=True)
 
