@@ -94,7 +94,7 @@ class JPNote(ABC):
 
             self._is_updating_generated_data = True
             try:
-                self._note.flush()
+                self._note.col.update_note(self._note)
             finally:
                 self._is_updating_generated_data = False
 
