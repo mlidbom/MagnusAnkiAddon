@@ -60,17 +60,23 @@ class KanaVocabNote(WaniNote):
     def get_context_jp(self) -> str: return self.get_field(NoteFields.Vocab.Context_jp)
     def set_context_jp(self, value: str) -> None: self.set_field(NoteFields.Vocab.Context_jp, value)
 
+    def get_context_jp_audio(self) -> str: return self.get_field(NoteFields.Vocab.Context_jp_audio)
+
     def get_context_en(self) -> str: return self.get_field(NoteFields.Vocab.Context_en)
     def set_context_en(self, value: str) -> None: self.set_field(NoteFields.Vocab.Context_en, value)
 
     def get_context_jp_2(self) -> str: return self.get_field(NoteFields.Vocab.Context_jp_2)
     def set_context_jp_2(self, value: str) -> None: self.set_field(NoteFields.Vocab.Context_jp_2, value)
 
+    def get_context_jp_2_audio(self) -> str: return self.get_field(NoteFields.Vocab.Context_jp_2_audio)
+
     def get_context_en_2(self) -> str: return self.get_field(NoteFields.Vocab.Context_en_2)
     def set_context_en_2(self, value: str) -> None: self.set_field(NoteFields.Vocab.Context_en_2, value)
 
     def get_context_jp_3(self) -> str: return self.get_field(NoteFields.Vocab.Context_jp_3)
     def set_context_jp_3(self, value: str) -> None: self.set_field(NoteFields.Vocab.Context_jp_3, value)
+
+    def get_context_jp_3_audio(self) -> str: return self.get_field(NoteFields.Vocab.Context_jp_3_audio)
 
     def get_context_en_3(self) -> str: return self.get_field(NoteFields.Vocab.Context_en_3)
     def set_context_en_3(self, value: str) -> None: self.set_field(NoteFields.Vocab.Context_en_3, value)

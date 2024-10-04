@@ -7,5 +7,6 @@ from . import (
     kanji_katakana_onyomi,
     vocab_compounds_and_kanji_names,
     vocab_homophones_similar_confused_with_list,
-    vocab_highlighted_sentence_list
+    vocab_highlighted_sentence_list,
+    vocab_context_sentences
 )
