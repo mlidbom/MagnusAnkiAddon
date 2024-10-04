@@ -34,11 +34,7 @@ def _update_sentences(sentences: list[SentenceNote]) -> None:
     for sentence in sentences: sentence.update_generated_data()
 
 def _update_vocab(all_vocabulary: list[VocabNote]) -> None:
-    def update_generated_data() -> None:
-        for vocab in all_vocabulary:
-            vocab.update_generated_data()
-
-    update_generated_data()
+    for vocab in all_vocabulary: vocab.update_generated_data()
 
 
 def _update_kanji(all_kanji: list[KanjiNote]) -> None:
