@@ -1,6 +1,5 @@
 from ankiutils import app
 from note.sentencenote import SentenceNote
-from sysutils import ex_str, kana_utils
 from language_services.janome_ex.tokenizing import janome_ex
 from note.kanjinote import KanjiNote
 from note.vocabnote import VocabNote
