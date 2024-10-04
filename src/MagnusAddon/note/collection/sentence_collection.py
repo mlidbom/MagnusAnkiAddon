@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from anki.collection import Collection
-from anki.notes import Note
+from anki.notes import Note, NoteId
 from collections import defaultdict
 
 from note.collection.backend_facade import BackEndFacade
@@ -44,6 +44,9 @@ class SentenceCollection:
         self._cache = _SentenceCache(list(self.collection.all()))
 
     def all(self) -> list[SentenceNote]: return self._cache.all()
+
+    def with_id(self, note_id:NoteId) -> SentenceNote:
+        return self._cache.with_id(note_id)
 
     def with_question(self, question: str) -> list[SentenceNote]:
         return self._cache.with_question(question)

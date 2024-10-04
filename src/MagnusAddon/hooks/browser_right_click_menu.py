@@ -8,6 +8,7 @@ from typing import Sequence
 from anki.cards import Card
 
 from note.jpnote import JPNote
+from note.vocabnote import VocabNote
 from sysutils.typed import checked_cast
 
 def spread_due_dates(cards: Sequence[int], start_day: int, days: int) -> None:
@@ -37,6 +38,17 @@ def setup_browser_context_menu(browser: Browser, menu: QMenu) -> None:
             start_day_menu: QMenu = checked_cast(QMenu, spread_menu.addMenu(f"First card in {start_day} days"))
             for days in [1,2,3,4,5,6,7,8,9]:
                 start_day_menu.addAction(f"{days} days apart", lambda _start_day=start_day, _days_apart=days: spread_due_dates(selected_cards, _start_day, _days_apart))
+
+    selected_notes = set(app.col().note_from_note_id(note_id) for note_id in browser.selectedNotes())
+    selected_vocab:set[VocabNote] = set(note for note in selected_notes if isinstance(note, VocabNote))
+    vocab_that_can_generate_audio = [note for note in selected_vocab if note.can_generate_sentences_from_context_sentences(require_audio=False)]
+    if vocab_that_can_generate_audio:
+        def generate_sentences() -> None:
+            for vocab in vocab_that_can_generate_audio:
+                vocab.generate_sentences_from_context_sentences(require_audio=False)
+
+        magnus_menu.addAction("Generate sentences from context sentences for vocab", generate_sentences)
+
 
 def init() -> None:
     gui_hooks.browser_will_show_context_menu.append(setup_browser_context_menu)

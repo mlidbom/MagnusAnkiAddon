@@ -3,7 +3,7 @@ from __future__ import annotations
 from collections import defaultdict
 
 from anki.collection import Collection
-from anki.notes import Note
+from anki.notes import Note, NoteId
 
 from note.collection.backend_facade import BackEndFacade
 from note.collection.note_cache import CachedNote, NoteCache
@@ -60,6 +60,7 @@ class VocabCollection:
         return [vocab for vocab in self.all() if vocab.is_wani_note()]
 
     def all(self) -> list[VocabNote]: return self._cache.all()
+    def with_id(self, note_id:NoteId) -> VocabNote: return self._cache.with_id(note_id)
     def with_form(self, form: str) -> list[VocabNote]: return self._cache.with_form(form)
     def with_forms(self, forms: list[str]) -> list[VocabNote]: return ex_sequence.flatten([self.with_form(form) for form in forms])
     def with_kanji(self, kanji: KanjiNote) -> list[VocabNote]: return self._cache.with_kanji(kanji.get_question())

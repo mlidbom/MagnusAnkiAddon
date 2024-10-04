@@ -2,13 +2,15 @@ from __future__ import annotations
 
 from typing import List, Optional, Union, TYPE_CHECKING
 
+from wanikani_api.models import Kanji
+
 from note.radicalnote import RadicalNote
 
 if TYPE_CHECKING:
     from note.collection.jp_collection import JPCollection
 
 from anki.collection import Collection
-from anki.notes import Note
+from anki.notes import Note, NoteId
 from note.collection.backend_facade import BackEndFacade
 from note.collection.kanji_dependency import KanjiDependency
 from note.collection.note_cache import CachedNote, NoteCache
@@ -37,6 +39,9 @@ class KanjiCollection:
         return list(self.collection.search(query))
 
     def all(self) -> list[KanjiNote]: return self._cache.all()
+
+    def with_id(self, note_id:NoteId) -> KanjiNote:
+        return self._cache.with_id(note_id)
 
     def all_wani(self) -> list[KanjiNote]:
         return [kanji for kanji in self.all() if kanji.is_wani_note()]

@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import List
 
 from anki.collection import Collection
-from anki.notes import Note
+from anki.notes import Note, NoteId
 
 from note.collection.backend_facade import BackEndFacade
 from note.collection.note_cache import CachedNote, NoteCache
@@ -28,6 +28,9 @@ class RadicalCollection:
         self._cache = _RadicalCache(list(self.collection.all()))
 
     def all(self) -> List[RadicalNote]: return self._cache.all()
+
+    def with_id(self, note_id:NoteId) -> RadicalNote:
+        return self._cache.with_id(note_id)
 
     def with_any_answer_in(self, answers: list[str]) -> List[RadicalNote]:
         return ex_sequence.flatten([self._cache.with_answer(answer) for answer in answers])
