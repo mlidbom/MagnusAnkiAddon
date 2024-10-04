@@ -1,0 +1,1 @@
+ Robocopy.exe c:\Users\magnu\AppData\Roaming\Anki2\Magnus\collection.media\ c:\Users\magnu\AppData\Roaming\Anki2\Anki-Development\collection.media\ /MIR
