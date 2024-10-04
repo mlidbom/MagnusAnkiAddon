@@ -2,7 +2,6 @@ from ankiutils import app
 from language_services.janome_ex.tokenizing import janome_ex
 from note.note_constants import Mine
 from note.sentencenote import SentenceNote
-from sysutils import ex_str
 
 def update_all() -> None:
     update_sentences()
