@@ -62,7 +62,7 @@ def render_highlighted_sentence_list(html: str, card: Card, _type_of_display: st
 
     if isinstance(vocab_note, VocabNote) and ui_utils.is_displaytype_displaying_answer(_type_of_display):
         highlighted_sentences_html = generate_highlighted_sentences_html_list(vocab_note)
-        html = html.replace("CONTEXT_SENTENCES##", highlighted_sentences_html)
+        html = html.replace("##CONTEXT_SENTENCES##", highlighted_sentences_html)
 
     return html
 
