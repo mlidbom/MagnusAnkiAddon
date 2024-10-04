@@ -42,7 +42,7 @@ def inject_anki_collection_with_generated_sample_data() -> Generator[None, None,
             KanjiNote.create(kanji.question, kanji.answer, kanji.on_readings, kanji.kun_reading)
 
         for sentence in sentence_spec.test_sentence_list:
-            SentenceNote.create(sentence.question, sentence.answer)
+            SentenceNote.create_test_note(sentence.question, sentence.answer)
 
         for vocab in vocab_spec.test_vocab_list:
             VocabNote.create(vocab.question, vocab.answer, vocab.readings)

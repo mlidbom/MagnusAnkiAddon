@@ -118,7 +118,7 @@ class SentenceNote(JPNote):
         return [char for char in clean if kana_utils.is_kanji(char)]
 
     @classmethod
-    def create(cls, question: str, answer: str) -> SentenceNote:
+    def create_test_note(cls, question: str, answer: str) -> SentenceNote:
         from ankiutils import app
         inner_note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Sentence))
         note = SentenceNote(inner_note)
