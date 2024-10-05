@@ -43,33 +43,28 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
 
     def sort_sentences(_sentences:list[SentenceNote]) -> list[SentenceNote]:
 
-        def prefer_highlighted(_sentence:SentenceNote) -> int:
-            return 0 if _sentence in highlighted_sentences else 1
-
-        def prefer_studying(_sentence:SentenceNote) -> int:
-            return 0 if _sentence in studying_sentences else 1
+        def prefer_highlighted(_sentence:SentenceNote) -> int: return 0 if _sentence in highlighted_sentences else 1
+        def prefer_studying(_sentence:SentenceNote) -> int: return 0 if _sentence in studying_sentences else 1
+        def prefer_primary_form(_sentence:SentenceNote) -> int: return 0 if contains_primary_form(_sentence) else 1
+        def dislike_tts_sentences(_sentence:SentenceNote) -> int: return 1 if _sentence.has_tag(Mine.Tags.TTSAudio) else 0
+        def prefer_short_questions(_sentence:SentenceNote) -> int: return len(_sentence.get_question())
+        def prefer_high_priority_tag(_sentence: SentenceNote) -> int: return 0 if _sentence.has_tag(Mine.Tags.high_priority) else 1
+        def dislike_low_priority_tag(_sentence: SentenceNote) -> int: return 1 if _sentence.has_tag(Mine.Tags.low_priority) else 0
 
         def prefer_non_duplicates(_sentence:SentenceNote) -> int:
             if _sentence.get_question() in sorted_sentences: return 1
             sorted_sentences.add(_sentence.get_question())
             return 0
 
-        def prefer_primary_form(_sentence:SentenceNote) -> int:
-            return 0 if contains_primary_form(_sentence) else 1
-
-        def dislike_tts_sentences(_sentence:SentenceNote) -> int:
-            return 1 if _sentence.has_tag(Mine.Tags.TTSAudio) else 0
-
         def dislike_sentences_containing_secondary_form(_sentence:SentenceNote) -> int:
             clean_sentence = ex_str.strip_html_and_bracket_markup(_sentence.get_question())
             return 1 if any((_base_form in clean_sentence for _base_form in secondary_forms_conjugation_base_form)) else 0
 
-        def prefer_short_questions(_sentence:SentenceNote) -> int:
-            return len(_sentence.get_question())
-
         return sorted(_sentences, key=lambda x: (dislike_tts_sentences(x),
                                                  prefer_highlighted(x),
                                                  prefer_studying(x),
+                                                 dislike_low_priority_tag(x),
+                                                 prefer_high_priority_tag(x),
                                                  prefer_primary_form(x),
                                                  prefer_non_duplicates(x),
                                                  dislike_sentences_containing_secondary_form(x),

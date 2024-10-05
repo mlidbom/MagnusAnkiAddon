@@ -141,6 +141,8 @@ class Mine:
     VocabPrefixSuffixMarker = "〜"
     class Tags:
         TTSAudio = "_tts_audio"
+        high_priority = "_high_priority"
+        low_priority = "_low_priority"
         Sentence = "_sentence"
         Wani = "_wani"
         DisableKanaOnly = "_disable_uk"
