@@ -81,8 +81,8 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
     primary_form_matches = len([x for x in _vocab_note.get_sentences() if contains_primary_form(x)])
 
     return f'''
-             <div id="highlightedSentencesSection" class="page_section">
-                <div class="page_section_title" title="primary form hits: {primary_form_matches}">sentences: {primary_form_matches}</div>
+             <div id="highlightedSentencesSection" class="page_section {"" if studying_sentences else "no_studying_sentences"}">
+                <div class="page_section_title" title="primary form hits: {primary_form_matches}">sentences: {primary_form_matches}, <span class="studing_sentence_count">studying: {len(studying_sentences)}</span></div>
                 <div id="highlightedSentencesList">
                     <div>
                         {newline.join([f"""
