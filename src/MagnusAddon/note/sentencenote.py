@@ -45,12 +45,16 @@ class SentenceNote(JPNote):
     def _set_user_excluded_vocab(self, excluded: set[str]) -> None: self.set_field(SentenceNoteFields.user_excluded_vocab, newline.join(excluded))
 
 
+    def is_studying_read(self) -> bool: return self.is_studying(NoteFields.SentencesNoteType.Card.Reading)
+    def is_studying_listening(self) -> bool: return self.is_studying(NoteFields.SentencesNoteType.Card.Listening)
+
     def get_meta_tags(self) -> str:
         tags = ""
-        if self.is_studying(NoteFields.SentencesNoteType.Card.Reading): tags += " is_studying_reading "
-        if self.is_studying(NoteFields.SentencesNoteType.Card.Listening): tags += " is_studying_listening "
+        if self.is_studying_read(): tags += " is_studying_reading "
+        if self.is_studying_listening(): tags += " is_studying_listening "
         if self.has_tag(Mine.Tags.high_priority): tags += " high_priority"
         if self.has_tag(Mine.Tags.low_priority): tags += " low_priority"
+        if self.has_tag(Mine.Tags.TTSAudio): tags += " tts_audio"
 
         return tags
 
