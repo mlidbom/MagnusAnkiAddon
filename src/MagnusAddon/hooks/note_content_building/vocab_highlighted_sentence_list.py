@@ -1,13 +1,11 @@
 from anki.cards import Card
 from aqt import gui_hooks
-
 from ankiutils import ui_utils
 from note.jpnote import JPNote
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
 from sysutils import ex_sequence, ex_str, kana_utils
 from sysutils.ex_str import newline
-
 
 def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
     forms = [_vocab_note.get_question()] + list(_vocab_note.get_forms())
@@ -80,9 +78,7 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
 
     sentences = sort_sentences(_vocab_note.get_sentences())[:10]
 
-
     primary_form_matches = len([x for x in _vocab_note.get_sentences() if contains_primary_form(x)])
-
 
     return f'''
              <div id="highlightedSentencesSection" class="page_section">
@@ -102,8 +98,6 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
                 </div>
             </div>
             ''' if sentences else ""
-
-
 
 def render_highlighted_sentence_list(html: str, card: Card, _type_of_display: str) -> str:
     vocab_note = JPNote.note_from_card(card)
