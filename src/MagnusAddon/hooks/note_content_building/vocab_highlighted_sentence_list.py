@@ -2,6 +2,7 @@ from anki.cards import Card
 from aqt import gui_hooks
 from ankiutils import ui_utils
 from note.jpnote import JPNote
+from note.note_constants import Mine
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
 from sysutils import ex_sequence, ex_str, kana_utils
@@ -56,6 +57,9 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
         def prefer_primary_form(_sentence:SentenceNote) -> int:
             return 0 if contains_primary_form(_sentence) else 1
 
+        def dislike_tts_sentences(_sentence:SentenceNote) -> int:
+            return 1 if _sentence.has_tag(Mine.Tags.TTSAudio) else 0
+
         def dislike_sentences_containing_secondary_form(_sentence:SentenceNote) -> int:
             clean_sentence = ex_str.strip_html_and_bracket_markup(_sentence.get_question())
             return 1 if any((_base_form in clean_sentence for _base_form in secondary_forms_conjugation_base_form)) else 0
@@ -63,7 +67,8 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
         def prefer_short_questions(_sentence:SentenceNote) -> int:
             return len(_sentence.get_question())
 
-        return sorted(_sentences, key=lambda x: (prefer_highlighted(x),
+        return sorted(_sentences, key=lambda x: (dislike_tts_sentences(x),
+                                                 prefer_highlighted(x),
                                                  prefer_studying(x),
                                                  prefer_primary_form(x),
                                                  prefer_non_duplicates(x),
