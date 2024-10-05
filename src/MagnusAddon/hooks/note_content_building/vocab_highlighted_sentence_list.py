@@ -39,41 +39,50 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
         return clean_sentence
 
     sorted_sentences: set[str] = set()
+    highlighted_sentences = set(_vocab_note.get_user_highlighted_sentences())
+    studying_sentences = set(_vocab_note.get_sentences_studying())
 
     def sort_sentences(_sentences:list[SentenceNote]) -> list[SentenceNote]:
 
-        def is_a_duplicate(_sentence:SentenceNote) -> int:
-            if _sentence.get_question() in sorted_sentences: return 2
+        def prefer_highlighted(_sentence:SentenceNote) -> int:
+            return 0 if _sentence in highlighted_sentences else 1
+
+        def prefer_studying(_sentence:SentenceNote) -> int:
+            return 0 if _sentence in studying_sentences else 1
+
+        def prefer_non_duplicates(_sentence:SentenceNote) -> int:
+            if _sentence.get_question() in sorted_sentences: return 1
             sorted_sentences.add(_sentence.get_question())
-            return 1
+            return 0
 
-        def _contains_primary_form(_sentence:SentenceNote) -> int:
-            return 1 if contains_primary_form(_sentence) else 2
+        def prefer_primary_form(_sentence:SentenceNote) -> int:
+            return 0 if contains_primary_form(_sentence) else 1
 
-        def contains_secondary_form(_sentence:SentenceNote) -> int:
+        def dislike_sentences_containing_secondary_form(_sentence:SentenceNote) -> int:
             clean_sentence = ex_str.strip_html_and_bracket_markup(_sentence.get_question())
-            return 2 if any((_base_form in clean_sentence for _base_form in secondary_forms_conjugation_base_form)) else 1
+            return 1 if any((_base_form in clean_sentence for _base_form in secondary_forms_conjugation_base_form)) else 0
 
-        return sorted(_sentences, key=lambda x: (_contains_primary_form(x), is_a_duplicate(x), contains_secondary_form(x), len(x.get_question())))
+        def prefer_short_questions(_sentence:SentenceNote) -> int:
+            return len(_sentence.get_question())
 
-    wanted_sentences = 10
-    highlighted_sentences = _vocab_note.get_user_highlighted_sentences()
-    highlighted_sentences = sort_sentences(highlighted_sentences)[:wanted_sentences]
-    sentences = [(sent, "highlighted") for sent in highlighted_sentences]
+        return sorted(_sentences, key=lambda x: (prefer_highlighted(x),
+                                                 prefer_studying(x),
+                                                 prefer_primary_form(x),
+                                                 prefer_non_duplicates(x),
+                                                 dislike_sentences_containing_secondary_form(x),
+                                                 prefer_short_questions(x)))
 
-    if len(sentences) < wanted_sentences:
-        studying_sentences = [sent for sent in _vocab_note.get_sentences_studying() if sent not in highlighted_sentences]
-        studying_sentences = sort_sentences(studying_sentences)
-        studying_sentences = studying_sentences[:(wanted_sentences - len(highlighted_sentences))]
-        sentences += [(sent, "studying") for sent in studying_sentences]
+    def sentence_classes(sentence: SentenceNote) -> str:
+        classes = ""
+        if sentence in highlighted_sentences: classes += "highlighted "
+        if sentence in studying_sentences: classes += "studying "
+        return classes if classes else "any"
 
-        if len(highlighted_sentences) + len(studying_sentences) < wanted_sentences:
-            any_sentences = [sent for sent in _vocab_note.get_sentences() if sent not in highlighted_sentences and sent not in studying_sentences]
-            any_sentences = sort_sentences(any_sentences)
-            any_sentences = any_sentences[:(wanted_sentences - len(highlighted_sentences) - len(studying_sentences))]
-            sentences += [(sent, "any") for sent in any_sentences]
+    sentences = sort_sentences(_vocab_note.get_sentences())[:10]
+
 
     primary_form_matches = len([x for x in _vocab_note.get_sentences() if contains_primary_form(x)])
+
 
     return f'''
              <div id="highlightedSentencesSection" class="page_section">
@@ -81,14 +90,14 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
                 <div id="highlightedSentencesList">
                     <div>
                         {newline.join([f"""
-                        <div class="highlightedSentenceDiv">
+                        <div class="highlightedSentenceDiv {sentence_classes(_sentence)}">
                             <audio src="{_sentence.get_audio_path()}"></audio><a class="play-button"></a>
-                            <div class="highlightedSentence {_class}">                            
-                                <div class="sentenceQuestion clipboard">{format_sentence(_sentence.get_question())} <span class="deck_indicator">{_sentence.get_read_card_deck()}</div>
+                            <div class="highlightedSentence">                            
+                                <div class="sentenceQuestion"><span class="clipboard">{format_sentence(_sentence.get_question())}</span> <span class="deck_indicator">{_sentence.get_read_card_deck()}</div>
                                 <div class="sentenceAnswer"> {_sentence.get_answer()}</span></div>
                             </div>
                         </div>
-                        """ for _sentence, _class in sentences])}
+                        """ for _sentence in sentences])}
                     </div>
                 </div>
             </div>
