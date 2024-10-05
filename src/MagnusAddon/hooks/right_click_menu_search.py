@@ -34,6 +34,7 @@ def setup_web_search_menu(string_menu:QMenu, menu_string:str) -> None:
     add_web_lookup(search_web_menu, "English: &Merriam Webster", u"https://www.merriam-webster.com/dictionary/%s", menu_string)
 
     add_web_lookup(search_web_menu, "Sentences: &Immersion Kit", u"https://www.immersionkit.com/dictionary?exact=true&sort=shortness&keyword=%s", menu_string)
+    add_web_lookup(search_web_menu, "Sentences: Tat&oeba", u"https://tatoeba.org/en/sentences/search?from=jpn&to=eng&query=%s", menu_string)
 
     kanji_lookup_menu = checked_cast(QMenu, search_web_menu.addMenu("&Kanji"))
     add_web_lookup(kanji_lookup_menu, "Kanji &explosion", u"https://www.kurumi.com/jp/kjbh/?k=%s", menu_string)
