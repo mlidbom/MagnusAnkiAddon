@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 from note.jpnote import JPNote
 from sysutils import timeutil, kana_utils
 from sysutils import ex_str
-from note.note_constants import ImmersionKitSentenceNoteFields, NoteFields, SentenceNoteFields, NoteTypes
+from note.note_constants import ImmersionKitSentenceNoteFields, Mine, NoteFields, SentenceNoteFields, NoteTypes
 from anki.notes import Note
 
 class SentenceNote(JPNote):
@@ -43,6 +43,17 @@ class SentenceNote(JPNote):
 
     def get_user_excluded_vocab(self) -> set[str]: return set(ex_str.extract_newline_separated_values(self.get_field(SentenceNoteFields.user_excluded_vocab)))
     def _set_user_excluded_vocab(self, excluded: set[str]) -> None: self.set_field(SentenceNoteFields.user_excluded_vocab, newline.join(excluded))
+
+
+    def get_meta_tags(self) -> str:
+        tags = ""
+        if self.is_studying(NoteFields.SentencesNoteType.Card.Reading): tags += " is_studying_reading "
+        if self.is_studying(NoteFields.SentencesNoteType.Card.Listening): tags += " is_studying_listening "
+        if self.has_tag(Mine.Tags.high_priority): tags += " high_priority"
+        if self.has_tag(Mine.Tags.low_priority): tags += " low_priority"
+
+        return tags
+
 
     def get_read_card_deck(self) -> str:
         from ankiutils import app

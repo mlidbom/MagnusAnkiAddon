@@ -73,8 +73,9 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
     def sentence_classes(sentence: SentenceNote) -> str:
         classes = ""
         if sentence in highlighted_sentences: classes += "highlighted "
-        if sentence in studying_sentences: classes += "studying "
-        return classes if classes else "any"
+        classes += sentence.get_meta_tags()
+        return classes
+
 
     sentences = sort_sentences(_vocab_note.get_sentences())[:10]
 

@@ -50,6 +50,11 @@ class NoteFields:
             Reading = "Reading"
             Listening = "Listening"
 
+    class SentencesNoteType:
+        class Card:
+            Reading = "Reading"
+            Listening = "Listening"
+
     class WaniCommon:
         sort_id = "sort_id"
 
