@@ -1,7 +1,7 @@
 from anki.cards import Card
 from aqt import gui_hooks
 
-from ankiutils import ui_utils
+from ankiutils import app, ui_utils
 from note.jpnote import JPNote
 from note.vocabnote import VocabNote
 from sysutils import ex_str, kana_utils
@@ -29,6 +29,8 @@ def generate_highlighted_sentences_html_list(_vocab_note:VocabNote) -> str:
 
     if _vocab_note.get_context_jp_3():
         sentences.append(ContextSentence(_vocab_note.get_context_jp_3(), _vocab_note.get_context_en_3(), _vocab_note.get_context_jp_3_audio()))
+
+    sentences = [sent for sent in sentences if not app.col().sentences.with_question(sent.japanese)] #If we generated a real sentence for this sentence, don't show it
 
 
     def format_sentence(html_sentence: str) -> str:
