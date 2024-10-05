@@ -1,7 +1,10 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING
+from typing import cast, TYPE_CHECKING
+
+from anki.decks import DeckDict
 
 from sysutils.ex_str import newline
+from sysutils.typed import checked_cast
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.extracted_word import ExtractedWord
@@ -10,7 +13,7 @@ if TYPE_CHECKING:
 from note.jpnote import JPNote
 from sysutils import timeutil, kana_utils
 from sysutils import ex_str
-from note.note_constants import ImmersionKitSentenceNoteFields, SentenceNoteFields, NoteTypes
+from note.note_constants import ImmersionKitSentenceNoteFields, NoteFields, SentenceNoteFields, NoteTypes
 from anki.notes import Note
 
 class SentenceNote(JPNote):
@@ -40,6 +43,14 @@ class SentenceNote(JPNote):
 
     def get_user_excluded_vocab(self) -> set[str]: return set(ex_str.extract_newline_separated_values(self.get_field(SentenceNoteFields.user_excluded_vocab)))
     def _set_user_excluded_vocab(self, excluded: set[str]) -> None: self.set_field(SentenceNoteFields.user_excluded_vocab, newline.join(excluded))
+
+    def get_read_card_deck(self) -> str:
+        from ankiutils import app
+        col = app.anki_collection()
+
+        read_card = [card for card in self._note.cards() if card.template()["name"] == "Reading"][0]
+        deck_name = checked_cast(str, cast(DeckDict, col.decks.get(read_card.current_deck_id()))["name"])
+        return deck_name
 
 
     def get_user_highlighted_vocab(self) -> list[str]: return ex_str.extract_newline_separated_values(self.get_field(SentenceNoteFields.user_extra_vocab))
