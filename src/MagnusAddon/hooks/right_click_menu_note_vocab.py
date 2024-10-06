@@ -54,7 +54,7 @@ def setup_note_menu(vocab: VocabNote, note_menu: QMenu, string_menus: list[tuple
             if vocab.get_question() in sentence.get_user_highlighted_vocab():
                 add_ui_action(sentence_menu, "R&emove highlight", lambda _sentence=sentence: _sentence.remove_extra_vocab(vocab.get_question()))  # type: ignore
             else:
-                add_ui_action(sentence_menu, "H&ighlight", lambda _sentence=sentence: _sentence.position_extra_vocab(vocab.get_question()))  # type: ignore
+                add_ui_action(sentence_menu, "&Add Highlight", lambda _sentence=sentence: _sentence.position_extra_vocab(vocab.get_question()))  # type: ignore
 
             add_ui_action(sentence_menu, "Excl&ude this vocab", lambda _sentence=sentence: _sentence.exclude_vocab(vocab.get_question()))  # type: ignore
 
