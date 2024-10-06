@@ -122,9 +122,9 @@ def setup_note_menu(note: JPNote, note_menu: QMenu, string_menus: list[tuple[QMe
 
                 sentence_menu: QMenu = checked_cast(QMenu, string_menu.addMenu("S&entence"))
                 if vocab.get_question() in sentence.get_user_highlighted_vocab():
-                    add_ui_action(sentence_menu, "&Remove highlight", lambda _sentence=sentence: _sentence.remove_extra_vocab(vocab.get_question()))  # type: ignore
+                    add_ui_action(sentence_menu, "R&emove highlight", lambda _sentence=sentence: _sentence.remove_extra_vocab(vocab.get_question()))  # type: ignore
                 else:
-                    add_ui_action(sentence_menu, "&Highlight", lambda _sentence=sentence: _sentence.position_extra_vocab(vocab.get_question()))  # type: ignore
+                    add_ui_action(sentence_menu, "H&ighlight", lambda _sentence=sentence: _sentence.position_extra_vocab(vocab.get_question()))  # type: ignore
 
 
         add_ui_action(note_menu, "&Generate answer", lambda: vocab.generate_and_set_answer())
