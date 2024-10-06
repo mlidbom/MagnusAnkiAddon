@@ -182,7 +182,11 @@ class VocabNote(KanaVocabNote):
 
     def get_sentences(self) -> list[SentenceNote]:
         from ankiutils import app
-        return [sentence for sentence in app.col().sentences.with_vocab(self)]
+        return app.col().sentences.with_vocab(self)
+
+    def get_sentences_with_primary_form(self) -> list[SentenceNote]:
+        from ankiutils import app
+        return app.col().sentences.with_form(self.get_question())
 
     def get_user_highlighted_sentences(self) -> list[SentenceNote]:
         from ankiutils import app

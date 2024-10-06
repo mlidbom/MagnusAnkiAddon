@@ -52,9 +52,11 @@ class SentenceCollection:
         return self._cache.with_question(question)
 
     def with_vocab(self, vocab_note: VocabNote) -> list[SentenceNote]:
-        return ex_sequence.flatten([self._cache.with_vocab_form(form) for form in vocab_note.get_forms()])
+        return ex_sequence.remove_duplicates(ex_sequence.flatten([self._cache.with_vocab_form(form) for form in vocab_note.get_forms()]))
+
+    def with_form(self, form:str) -> list[SentenceNote]: return self._cache.with_vocab_form(form)
 
     def with_highlighted_vocab(self, vocab_note: VocabNote) -> list[SentenceNote]:
-        return ex_sequence.flatten([self._cache.with_user_highlighted_vocab(form) for form in vocab_note.get_forms()])
+        return ex_sequence.remove_duplicates(ex_sequence.flatten([self._cache.with_user_highlighted_vocab(form) for form in vocab_note.get_forms()]))
 
     def search(self, query: str) -> list[SentenceNote]: return list(self.collection.search(query))

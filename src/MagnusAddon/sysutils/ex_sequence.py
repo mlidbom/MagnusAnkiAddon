@@ -15,3 +15,5 @@ def remove_duplicates_while_retaining_order(sequence:Sequence[T]) -> list[T]:
             seen.add(item)
             result.append(item)
     return result
+
+def remove_duplicates(sequence:Sequence[T]) -> list[T]: return list(set(sequence))
