@@ -1,4 +1,4 @@
-from typing import Optional, Any
+from typing import Any
 from anki.cards import Card
 from anki.notes import Note
 import time

@@ -2,7 +2,7 @@ from aqt.browser import Browser  # type: ignore
 from PyQt6.QtWidgets import QMenu
 from aqt import gui_hooks
 from ankiutils import app
-from hooks.right_click_menu_note import setup_note_menu
+from hooks.right_click_menu import setup_note_menu
 from note import queue_manager
 from typing import Sequence
 from anki.cards import Card
