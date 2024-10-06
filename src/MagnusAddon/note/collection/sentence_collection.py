@@ -53,7 +53,8 @@ class SentenceCollection:
 
     def with_vocab(self, vocab_note: VocabNote) -> list[SentenceNote]:
         matches = ex_sequence.remove_duplicates(ex_sequence.flatten([self._cache.with_vocab_form(form) for form in vocab_note.get_forms()]))
-        return [match for match in matches if not vocab_note.get_question() in match.get_user_excluded_vocab()]
+        question = vocab_note.get_question()
+        return [match for match in matches if question not in match.get_user_excluded_vocab()]
 
     def with_form(self, form:str) -> list[SentenceNote]: return self._cache.with_vocab_form(form)
 

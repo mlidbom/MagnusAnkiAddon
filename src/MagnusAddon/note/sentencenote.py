@@ -19,6 +19,7 @@ from anki.notes import Note
 class SentenceNote(JPNote):
     def __init__(self, note: Note):
         super().__init__(note)
+        self._user_excluded_cache:set[str] = set(ex_str.extract_newline_separated_values(self.get_field(SentenceNoteFields.user_excluded_vocab)))
 
     def get_question(self) -> str: return self._get_user_question() or self._get_source_question()
     def get_answer(self) -> str: return self._get_user_answer() or self._get_source_answer()
@@ -41,8 +42,10 @@ class SentenceNote(JPNote):
 
     def get_audio_path(self) -> str: return self.get_field(SentenceNoteFields.audio).strip()[7:-1]
 
-    def get_user_excluded_vocab(self) -> set[str]: return set(ex_str.extract_newline_separated_values(self.get_field(SentenceNoteFields.user_excluded_vocab)))
-    def _set_user_excluded_vocab(self, excluded: set[str]) -> None: self.set_field(SentenceNoteFields.user_excluded_vocab, newline.join(excluded))
+    def get_user_excluded_vocab(self) -> set[str]: return self._user_excluded_cache
+    def _set_user_excluded_vocab(self, excluded: set[str]) -> None:
+        self._user_excluded_cache = excluded
+        self.set_field(SentenceNoteFields.user_excluded_vocab, newline.join(self._user_excluded_cache))
 
 
     def is_studying_read(self) -> bool: return self.is_studying(NoteFields.SentencesNoteType.Card.Reading)
