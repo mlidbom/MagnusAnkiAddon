@@ -61,13 +61,13 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
             clean_sentence = ex_str.strip_html_and_bracket_markup(_sentence.get_question())
             return 1 if any((_base_form in clean_sentence for _base_form in secondary_forms_conjugation_base_form)) else 0
 
-        return sorted(_sentences, key=lambda x: (dislike_tts_sentences(x),
+        return sorted(_sentences, key=lambda x: (prefer_primary_form(x),
                                                  prefer_highlighted(x),
                                                  prefer_studying_read(x),
                                                  prefer_studying_listening(x),
                                                  dislike_low_priority_tag(x),
                                                  prefer_high_priority_tag(x),
-                                                 prefer_primary_form(x),
+                                                 dislike_tts_sentences(x),
                                                  prefer_non_duplicates(x),
                                                  dislike_sentences_containing_secondary_form(x),
                                                  prefer_short_questions(x)))
@@ -85,7 +85,7 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
 
     return f'''
              <div id="highlightedSentencesSection" class="page_section {"" if studying_sentences else "no_studying_sentences"}">
-                <div class="page_section_title" title="primary form hits: {primary_form_matches}">sentences: {primary_form_matches}, <span class="studing_sentence_count">studying: {len(studying_sentences)}</span></div>
+                <div class="page_section_title" title="primary form hits: {primary_form_matches}">sentences: primary form hits: {primary_form_matches}, <span class="studing_sentence_count">studying: {len(studying_sentences)}</span></div>
                 <div id="highlightedSentencesList">
                     <div>
                         {newline.join([f"""
