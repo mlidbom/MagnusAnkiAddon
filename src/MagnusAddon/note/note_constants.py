@@ -5,11 +5,6 @@ class Builtin:
     Card = "card"
 
 class MyNoteFields:
-    Vocab1 = "__vocab1"
-    Vocab2 = "__vocab2"
-    Vocab3 = "__vocab3"
-    Vocab4 = "__vocab4"
-    Vocab5 = "__vocab5"
     question = "Q"
     answer = "A"
 

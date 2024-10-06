@@ -4,7 +4,7 @@ from ankiutils import app, query_builder
 from hooks.right_click_menu_utils import add_lookup_action, add_single_vocab_lookup_action, add_text_vocab_lookup, add_ui_action, add_vocab_dependencies_lookup
 from note.jpnote import JPNote
 from note.kanjinote import KanjiNote
-from note.note_constants import MyNoteFields, NoteFields, NoteTypes
+from note.note_constants import NoteFields, NoteTypes
 from note.radicalnote import RadicalNote
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
@@ -14,30 +14,6 @@ from sysutils.typed import checked_cast
 def setup_note_menu(note: JPNote, note_menu: QMenu, string_menus: list[tuple[QMenu, str]]) -> None:
     note_lookup_menu: QMenu
     note_hide_menu: QMenu
-
-    def setup_vocab_menu() -> None:
-        for _string_menu, _menu_string in string_menus:
-            vocab_menu: QMenu = checked_cast(QMenu, _string_menu.addMenu("&Vocab"))
-            add_vocab_menu = checked_cast(QMenu, vocab_menu.addMenu("&Set"))
-            add_ui_action(add_vocab_menu, "&1", lambda: note.set_field(MyNoteFields.Vocab1, _menu_string))
-            add_ui_action(add_vocab_menu, "&2", lambda: note.set_field(MyNoteFields.Vocab2, _menu_string))
-            add_ui_action(add_vocab_menu, "&3", lambda: note.set_field(MyNoteFields.Vocab3, _menu_string))
-            add_ui_action(add_vocab_menu, "&4", lambda: note.set_field(MyNoteFields.Vocab4, _menu_string))
-            add_ui_action(add_vocab_menu, "&5", lambda: note.set_field(MyNoteFields.Vocab5, _menu_string))
-
-        if note.get_field(MyNoteFields.Vocab1) or note.get_field(MyNoteFields.Vocab2) or note.get_field(MyNoteFields.Vocab3) or note.get_field(MyNoteFields.Vocab4) or note.get_field(MyNoteFields.Vocab5):
-            remove_vocab_menu = checked_cast(QMenu, note_menu.addMenu("&Remove vocab"))
-            add_ui_action(remove_vocab_menu, "&1", lambda: note.set_field(MyNoteFields.Vocab1, ""))
-            add_ui_action(remove_vocab_menu, "&2", lambda: note.set_field(MyNoteFields.Vocab2, ""))
-            add_ui_action(remove_vocab_menu, "&3", lambda: note.set_field(MyNoteFields.Vocab3, ""))
-            add_ui_action(remove_vocab_menu, "&4", lambda: note.set_field(MyNoteFields.Vocab4, ""))
-            add_ui_action(remove_vocab_menu, "&5", lambda: note.set_field(MyNoteFields.Vocab5, ""))
-
-            def clear_all_vocabs() -> None:
-                for field in [MyNoteFields.Vocab1, MyNoteFields.Vocab2, MyNoteFields.Vocab3, MyNoteFields.Vocab4, MyNoteFields.Vocab5]:
-                    note.set_field(field, "")
-
-            add_ui_action(remove_vocab_menu, "&All", clear_all_vocabs)
 
     if isinstance(note, SentenceNote):
         note_lookup_menu = checked_cast(QMenu, note_menu.addMenu("&Open"))
@@ -63,8 +39,6 @@ def setup_note_menu(note: JPNote, note_menu: QMenu, string_menus: list[tuple[QMe
             add_ui_action(string_menu, "E&xclude vocab", lambda _menu_string=menu_string: sentence_note.exclude_vocab(_menu_string)) # type: ignore
 
         position_vocab_menu(note_menu, "-", "H&ighlighted Vocab Separator")
-
-        setup_vocab_menu()
 
     if isinstance(note, RadicalNote):
         note_lookup_menu = checked_cast(QMenu, note_menu.addMenu("&Open"))
@@ -104,7 +78,6 @@ def setup_note_menu(note: JPNote, note_menu: QMenu, string_menus: list[tuple[QMe
 
     if isinstance(note, VocabNote):
         vocab = note
-        setup_vocab_menu()
 
         note_lookup_menu = checked_cast(QMenu, note_menu.addMenu("&Open"))
         note_hide_menu = checked_cast(QMenu, note_menu.addMenu("&Hide/Remove"))
