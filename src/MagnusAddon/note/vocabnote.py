@@ -201,8 +201,9 @@ class VocabNote(KanaVocabNote):
         if self.is_studying(NoteFields.VocabNoteType.Card.Listening): tags += " is_studying_listening "
         return tags
 
-    def get_studying_sentence_count(self, card: str = "") -> int:
-        return len([sentence for sentence in self.get_sentences() if sentence.is_studying(card)])
+    @staticmethod
+    def _get_studying_sentence_count(sentences:list[SentenceNote], card: str = "") -> int:
+        return len([sentence for sentence in sentences if sentence.is_studying(card)])
 
     def get_meta_tags_html(self) -> str:
         tags = set(self.get_tags())
@@ -210,9 +211,9 @@ class VocabNote(KanaVocabNote):
         tos = set([t.lower().strip() for t in self.get_speech_type().split(",")])
 
         sentences = self.get_sentences()
-        if self.get_sentences():
-            studying_sentences_reading = self.get_studying_sentence_count(NoteFields.VocabNoteType.Card.Reading)
-            studying_sentences_listening = self.get_studying_sentence_count(NoteFields.VocabNoteType.Card.Listening)
+        if sentences:
+            studying_sentences_reading = self._get_studying_sentence_count(sentences, NoteFields.VocabNoteType.Card.Reading)
+            studying_sentences_listening = self._get_studying_sentence_count(sentences, NoteFields.VocabNoteType.Card.Listening)
             if studying_sentences_reading or studying_sentences_listening:
                 meta.append(VocabMetaTag("in_studying_sentences", f"""{studying_sentences_listening}:{studying_sentences_reading}/{len(sentences)}""", f"""in {len(sentences)} sentences {studying_sentences_reading} of which are being studied"""))
             else:
