@@ -115,7 +115,8 @@ def setup_note_menu(note: JPNote, note_menu: QMenu, string_menus: list[tuple[QMe
             add_single_vocab_lookup_action(note_lookup_menu, "Ergative &twin", vocab.get_related_ergative_twin())
 
         add_lookup_action(note_lookup_menu, "S&entences I'm Studying", query_builder.notes_lookup(vocab.get_sentences_studying()))
-        add_lookup_action(note_lookup_menu, "&Sentences", query_builder.sentence_search(vocab.get_question()))
+        add_lookup_action(note_lookup_menu, "&Sentences", query_builder.notes_lookup(vocab.get_sentences()))
+        add_lookup_action(note_lookup_menu, "Sentences with &primary form", query_builder.notes_lookup(vocab.get_sentences_with_primary_form()))
 
         add_text_vocab_lookup(note_lookup_menu, "&Compounds", note.get_question())
         add_vocab_dependencies_lookup(note_lookup_menu, "&Dependencies", note)
@@ -140,6 +141,18 @@ def setup_note_menu(note: JPNote, note_menu: QMenu, string_menus: list[tuple[QMe
             add_ui_action(note_set_menu, "&Meaning", lambda _menu_string=menu_string: vocab.set_user_answer(_menu_string)) # type: ignore
             add_ui_action(note_set_menu, "&Derived from", lambda _menu_string=menu_string: vocab.set_related_derived_from(_menu_string)) # type: ignore
             add_ui_action(note_set_menu, "&Ergative twin", lambda _menu_string=menu_string: vocab.set_related_ergative_twin(_menu_string)) # type: ignore
+
+        for string_menu, menu_string in string_menus:
+            sentences = app.col().sentences.with_question(menu_string)
+            if sentences:
+                sentence = sentences[0]
+
+                sentence_menu: QMenu = checked_cast(QMenu, string_menu.addMenu("S&entence"))
+                if vocab.get_question() in sentence.get_user_highlighted_vocab():
+                    add_ui_action(sentence_menu, "&Remove highlight", lambda _sentence=sentence: _sentence.remove_extra_vocab(vocab.get_question()))  # type: ignore
+                else:
+                    add_ui_action(sentence_menu, "&Highlight", lambda _sentence=sentence: _sentence.position_extra_vocab(vocab.get_question()))  # type: ignore
+
 
         add_ui_action(note_menu, "&Generate answer", lambda: vocab.generate_and_set_answer())
         if vocab.can_generate_sentences_from_context_sentences(require_audio=False):
