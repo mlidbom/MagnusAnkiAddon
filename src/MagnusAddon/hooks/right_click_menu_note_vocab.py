@@ -50,11 +50,13 @@ def setup_note_menu(vocab: VocabNote, note_menu: QMenu, string_menus: list[tuple
             sentence = sentences[0]
 
             sentence_menu: QMenu = checked_cast(QMenu, string_menu.addMenu("S&entence"))
+
             if vocab.get_question() in sentence.get_user_highlighted_vocab():
                 add_ui_action(sentence_menu, "R&emove highlight", lambda _sentence=sentence: _sentence.remove_extra_vocab(vocab.get_question()))  # type: ignore
             else:
                 add_ui_action(sentence_menu, "H&ighlight", lambda _sentence=sentence: _sentence.position_extra_vocab(vocab.get_question()))  # type: ignore
 
+            add_ui_action(sentence_menu, "Excl&ude this vocab", lambda _sentence=sentence: _sentence.exclude_vocab(vocab.get_question()))  # type: ignore
 
     add_ui_action(note_menu, "&Generate answer", lambda: vocab.generate_and_set_answer())
     if vocab.can_generate_sentences_from_context_sentences(require_audio=False):

@@ -93,6 +93,7 @@ class SentenceNote(JPNote):
         self._set_user_extra_vocab([v for v in self.get_user_highlighted_vocab() if not v == vocab])
 
     def exclude_vocab(self, vocab: str) -> None:
+        self.remove_extra_vocab(vocab)
         excluded = self.get_user_excluded_vocab()
         excluded.add(vocab.strip())
         self._set_user_excluded_vocab(excluded)
