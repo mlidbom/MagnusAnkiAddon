@@ -16,14 +16,18 @@ class JPNote(ABC):
         self._note = note
         self._is_updating_generated_data: bool = False
         self._generated_data_was_updated = False
+        self.__hash_value = 0
 
     def __eq__(self, other: Any) -> bool:
         assert self.get_id(), "You cannot compare or hash a note that has not been saved yet since it has no id"
         return isinstance(other, JPNote) and other.get_id() == self.get_id()
 
+
     def __hash__(self) -> int:
-        assert self.get_id(), "You cannot compare or hash a note that has not been saved yet since it has no id"
-        return hash(self.get_id())
+        if not self.__hash_value:
+            assert self.get_id(), "You cannot compare or hash a note that has not been saved yet since it has no id"
+            self.__hash_value = hash(self.get_id())
+        return self.__hash_value
 
     def __repr__(self) -> str:
         return f"""{self.get_question()} : {self.get_answer()}"""
