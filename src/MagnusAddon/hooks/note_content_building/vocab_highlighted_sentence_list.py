@@ -79,7 +79,7 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
         return classes
 
 
-    sentences = sort_sentences(_vocab_note.get_sentences())[:10]
+    sentences = sort_sentences(_vocab_note.get_sentences())[:30]
 
     primary_form_matches = len([x for x in _vocab_note.get_sentences() if contains_primary_form(x)])
 
