@@ -65,9 +65,9 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
                                                  prefer_highlighted(x),
                                                  prefer_studying_read(x),
                                                  prefer_studying_listening(x),
-                                                 dislike_low_priority_tag(x),
                                                  prefer_high_priority_tag(x),
                                                  dislike_tts_sentences(x),
+                                                 dislike_low_priority_tag(x),
                                                  prefer_non_duplicates(x),
                                                  dislike_sentences_containing_secondary_form(x),
                                                  prefer_short_questions(x)))
