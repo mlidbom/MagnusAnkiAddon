@@ -45,11 +45,11 @@ def import_missing_vocab() -> None:
     for wani_vocab in all_wani_vocabulary:
         question = str(wani_vocab.characters)
         if not app.col().vocab.with_question(question):
-            print("Importing: {}".format(wani_vocab.slug))
+            print(f"""Importing: {wani_vocab.slug}""")
             VocabNote.create_from_wani_vocabulary(wani_vocab)
             imported += 1
 
-    showInfo("Imported {} vocabulary notes".format(imported))
+    showInfo(f"""Imported {imported} vocabulary notes""")
 
 def import_missing_context_sentences() -> None:
     sentence_collection = app.col().sentences

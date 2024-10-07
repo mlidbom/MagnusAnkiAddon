@@ -18,8 +18,7 @@ class WaniNote(JPNote):
         level_tags = [level for level in self._note.tags if level.startswith(self._wani_level_tag_name)]
         for level in level_tags:
             self._note.remove_tag(level)
-        self._note.add_tag(f"""{self._wani_level_tag_name}{"{:02d}".format(new_level)}""")
-        self._note.flush()
+        self.set_tag(f"""{self._wani_level_tag_name}{"{:02d}".format(new_level)}""")
 
     def get_sort_id(self) -> str: return self.get_field(NoteFields.WaniCommon.sort_id)
 
