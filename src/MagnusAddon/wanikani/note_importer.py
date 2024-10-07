@@ -1,6 +1,7 @@
 from aqt.utils import showInfo
 
 from note.kanjinote import KanjiNote
+from note.note_constants import Mine
 from note.radicalnote import RadicalNote
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
@@ -63,7 +64,7 @@ def import_missing_context_sentences() -> None:
             answer = str(sentence.english).strip()
             if not sentence_collection.with_question(question) and not sentence_collection.with_question(question.strip()):
                 print(f"""Importing {vocab} :: {question} || {answer}""")
-                SentenceNote.add_sentence(question=question.strip(), answer=answer, highlighted_vocab={vocab})
+                SentenceNote.add_sentence(question=question.strip(), answer=answer, highlighted_vocab={vocab}, tags={Mine.Tags.Wani})
                 imported += 1
             else:
                 present += 1

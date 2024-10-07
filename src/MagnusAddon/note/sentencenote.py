@@ -165,7 +165,7 @@ class SentenceNote(JPNote):
         return note
 
     @classmethod
-    def add_sentence(cls, question: str, answer:str, audio:str = "", screenshot:str = "", highlighted_vocab: set[str] | None = None) -> SentenceNote:
+    def add_sentence(cls, question: str, answer:str, audio:str = "", screenshot:str = "", highlighted_vocab: set[str] | None = None, tags: set[str] | None = None) -> SentenceNote:
         from ankiutils import app
         inner_note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Sentence))
         note = SentenceNote(inner_note)
@@ -180,6 +180,10 @@ class SentenceNote(JPNote):
         if highlighted_vocab:
             for vocab in highlighted_vocab:
                 note.position_extra_vocab(vocab)
+
+        if tags:
+            for tag in tags:
+                note.set_tag(tag)
 
         app.anki_collection().addNote(inner_note)
         return note
