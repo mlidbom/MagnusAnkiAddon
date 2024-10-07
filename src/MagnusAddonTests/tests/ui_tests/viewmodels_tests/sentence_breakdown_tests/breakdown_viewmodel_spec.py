@@ -25,7 +25,7 @@ class VocabHitViewModelSpec:
 
     @staticmethod
     def from_viewmodel(view_model: VocabHit) -> VocabHitViewModelSpec:
-        return VocabHitViewModelSpec(view_model.surface_form, view_model.lookup_form, view_model.question_form, view_model.answer)
+        return VocabHitViewModelSpec(view_model.surface_form, view_model.lookup_form, view_model.hit_form, view_model.answer)
 
 class NodeViewModelSpec:
     def __init__(self, surface: str, base: Optional[str], *children: NodeViewModelSpec | VocabHitViewModelSpec):

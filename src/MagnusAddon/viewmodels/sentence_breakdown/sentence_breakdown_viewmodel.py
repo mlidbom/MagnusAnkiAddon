@@ -9,25 +9,25 @@ from sysutils import kana_utils
 
 missing_vocab_answer = "---"
 class VocabHit:
-    def __init__(self, surface_form: str, lookup_form: str, question_form: str, answer: str, readings:list[str], meta_tags:str, meta_tags_html: str):
+    def __init__(self, surface_form: str, lookup_form: str, hit_form: str, answer: str, readings:list[str], meta_tags:str, meta_tags_html: str):
         self.surface_form = surface_form
         self.lookup_form = lookup_form if lookup_form != surface_form else ""
-        self.question_form = question_form if question_form != surface_form and question_form != lookup_form else ""
+        self.hit_form = hit_form if hit_form != surface_form and hit_form != lookup_form else ""
         self.answer = answer
         self.readings = readings
         self.meta_tags = meta_tags
         self.meta_tags_html = meta_tags_html
 
-    def __repr__(self) -> str: return f"""surface:{self.surface_form} lookup:{self.lookup_form}   hit:{self.question_form}    answer:{self.answer}"""
+    def __repr__(self) -> str: return f"""surface:{self.surface_form} lookup:{self.lookup_form}   hit:{self.hit_form}    answer:{self.answer}"""
 
     def is_exact_match(self) -> bool:
-        return self.question_form == "" and self.answer != missing_vocab_answer
+        return self.hit_form == "" and self.answer != missing_vocab_answer
 
     @staticmethod
     def surface_from_vocab(parent: NodeViewModel, vocab: VocabNote) -> VocabHit:
         return VocabHit(surface_form=parent.surface,
                         lookup_form=parent.surface,
-                        question_form=vocab.get_question(),
+                        hit_form=vocab.get_question(),
                         answer=vocab.get_answer(),
                         readings=vocab.get_readings(),
                         meta_tags=vocab.get_meta_tags(),
@@ -37,7 +37,7 @@ class VocabHit:
     def base_from_vocab(parent: NodeViewModel, vocab: VocabNote) -> VocabHit:
         return VocabHit(surface_form=parent.surface,
                         lookup_form=parent.base,
-                        question_form=vocab.get_question(),
+                        hit_form=vocab.get_question(),
                         answer=vocab.get_answer(),
                         readings=vocab.get_readings(),
                         meta_tags=vocab.get_meta_tags(),
@@ -46,7 +46,7 @@ class VocabHit:
     def missing_surface(cls, parent: NodeViewModel) -> VocabHit:
         return VocabHit(surface_form=parent.surface,
                         lookup_form=parent.surface,
-                        question_form=parent.surface,
+                        hit_form=parent.surface,
                         answer=missing_vocab_answer,
                         readings=[],
                         meta_tags="",
@@ -56,7 +56,7 @@ class VocabHit:
     def missing_base(cls, parent: NodeViewModel) -> VocabHit:
         return VocabHit(surface_form=parent.surface,
                         lookup_form=parent.base,
-                        question_form=parent.base,
+                        hit_form=parent.base,
                         answer=missing_vocab_answer,
                         readings=[],
                         meta_tags="",
@@ -77,7 +77,7 @@ class NodeViewModel:
 
     @staticmethod
     def _sort_hits(hits: list[VocabHit]) -> None:
-        def question(hit: VocabHit) -> str: return hit.question_form
+        def question(hit: VocabHit) -> str: return hit.hit_form
         hits.sort(key=question)
 
     def _vocab_hits(self) -> tuple[list[VocabHit], list[VocabHit]]:

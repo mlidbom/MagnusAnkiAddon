@@ -19,7 +19,7 @@ def _node_html(node: NodeViewModel, excluded: set[str], highlighted: set[str], d
     html = ""
 
     vocab_hits = node.surface_vocab_hits + node.base_vocab_hits
-    vocab_hits = [voc for voc in vocab_hits if voc.question_form not in excluded]
+    vocab_hits = [voc for voc in vocab_hits if voc.hit_form not in excluded]
     exact_match = [voc for voc in vocab_hits if voc.is_exact_match()]
     if exact_match:
         vocab_hits = [exact_match[0]]
@@ -33,8 +33,8 @@ def _node_html(node: NodeViewModel, excluded: set[str], highlighted: set[str], d
             <li class="sentenceVocabEntry depth{depth} {vocab_entry.meta_tags} {priority_class(vocab_entry.lookup_form if vocab_entry.lookup_form else vocab_entry.surface_form)}">
                 <div class="sentenceVocabEntryDiv">
                     <span class="vocabQuestion clipboard">{vocab_entry.surface_form}</span>
-                    {f'''<span class="vocabLookupForm clipboard">{vocab_entry.lookup_form}</span>''' if vocab_entry.lookup_form else ""}
-                    {f'''<span class="vocabHitForm clipboard">{vocab_entry.question_form}</span>''' if vocab_entry.question_form else ""}
+                    {f'''<span class="vocabLookupForm {'' if vocab_entry.hit_form else 'vocabHitForm' } clipboard">{vocab_entry.lookup_form}</span>''' if vocab_entry.lookup_form else ""}
+                    {f'''<span class="vocabHitForm clipboard">{vocab_entry.hit_form}</span>''' if vocab_entry.hit_form else ""}
                     {f'''<span class="vocabHitReadings clipboard">{readings}</span>''' if readings else ""}
                     {vocab_entry.meta_tags_html}
                     
