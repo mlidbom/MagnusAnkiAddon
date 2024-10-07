@@ -335,9 +335,7 @@ class VocabNote(KanaVocabNote):
 
         def create_sentence_if_not_present(question:str, answer:str, audio:str) -> None:
             if question and (audio or not require_audio) and not app.col().sentences.with_question(question):
-                created = SentenceNote.add_sentence(question=question, answer=answer, audio=audio)
-                created.position_extra_vocab(self.get_question())
-                created.set_tag(Mine.Tags.TTSAudio)
+                SentenceNote.add_sentence(question=question, answer=answer, audio=audio, highlighted_vocab={self.get_question()})
 
         create_sentence_if_not_present(question=self.get_context_jp(), answer=self.get_context_en(), audio=self.get_context_jp_audio())
         create_sentence_if_not_present(question=self.get_context_jp_2(), answer=self.get_context_en_2(), audio=self.get_context_jp_2_audio())

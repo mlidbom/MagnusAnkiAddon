@@ -2,6 +2,7 @@ from aqt.utils import showInfo
 
 from note.kanjinote import KanjiNote
 from note.radicalnote import RadicalNote
+from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
 from ankiutils import app
 from wanikani.wanikani_api_client import WanikaniClient
@@ -50,3 +51,22 @@ def import_missing_vocab() -> None:
 
     showInfo("Imported {} vocabulary notes".format(imported))
 
+def import_missing_context_sentences() -> None:
+    sentence_collection = app.col().sentences
+    all_wani_vocabulary = waniClient.list_vocabulary()
+    imported = 0
+    present = 0
+    for wani_vocab in all_wani_vocabulary:
+        for sentence in wani_vocab.context_sentences:
+            vocab = str(wani_vocab.characters)
+            question = str(sentence.japanese)
+            answer = str(sentence.english).strip()
+            if not sentence_collection.with_question(question) and not sentence_collection.with_question(question.strip()):
+                print(f"""Importing {vocab} :: {question} || {answer}""")
+                SentenceNote.add_sentence(question=question.strip(), answer=answer, highlighted_vocab={vocab})
+                imported += 1
+            else:
+                present += 1
+
+    print(f'''Imported: {imported} sentences.''')
+    print(f'''Already present: {present} sentences.''')
