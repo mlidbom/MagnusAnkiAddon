@@ -205,21 +205,25 @@ class VocabNote(KanaVocabNote):
     def _get_studying_sentence_count(sentences:list[SentenceNote], card: str = "") -> int:
         return len([sentence for sentence in sentences if sentence.is_studying(card)])
 
-    def get_meta_tags_html(self) -> str:
+    def get_meta_tags_html(self, include_studying_sentence_statistics:bool = True) -> str:
         tags = set(self.get_tags())
         meta: list[VocabMetaTag] = []
         tos = set([t.lower().strip() for t in self.get_speech_type().split(",")])
 
         sentences = self.get_sentences()
         if sentences:
-            studying_sentences_reading = self._get_studying_sentence_count(sentences, NoteFields.VocabNoteType.Card.Reading)
-            studying_sentences_listening = self._get_studying_sentence_count(sentences, NoteFields.VocabNoteType.Card.Listening)
-            if studying_sentences_reading or studying_sentences_listening:
-                meta.append(VocabMetaTag("in_studying_sentences", f"""{studying_sentences_listening}:{studying_sentences_reading}/{len(sentences)}""", f"""in {len(sentences)} sentences {studying_sentences_reading} of which are being studied"""))
+            if include_studying_sentence_statistics:
+                studying_sentences_reading = self._get_studying_sentence_count(sentences, NoteFields.VocabNoteType.Card.Reading)
+                studying_sentences_listening = self._get_studying_sentence_count(sentences, NoteFields.VocabNoteType.Card.Listening)
+                if studying_sentences_reading or studying_sentences_listening:
+                    meta.append(VocabMetaTag("in_studying_sentences", f"""{studying_sentences_listening}:{studying_sentences_reading}/{len(sentences)}""", f"""in {len(sentences)} sentences {studying_sentences_reading} of which are being studied"""))
+                else:
+                    meta.append(VocabMetaTag("in_sentences", f"""{len(sentences)}""", f"""in {len(sentences)} sentences"""))
             else:
                 meta.append(VocabMetaTag("in_sentences", f"""{len(sentences)}""", f"""in {len(sentences)} sentences"""))
         else:
             meta.append(VocabMetaTag("in_no_sentences", f"""{len(sentences)}""", f"""in {len(sentences)} sentences"""))
+
 
 
         #overarching info
