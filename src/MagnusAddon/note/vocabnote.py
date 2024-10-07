@@ -294,23 +294,23 @@ class VocabNote(KanaVocabNote):
         note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Vocab))
         note.add_tag("__imported")
         note.add_tag(Mine.Tags.Wani)
-        kanji_note = VocabNote(note)
+        vocab_note = VocabNote(note)
         app.anki_collection().addNote(note)
-        kanji_note._set_question(wani_vocab.characters)
-        kanji_note.update_from_wani(wani_vocab)
+        vocab_note._set_question(wani_vocab.characters)
+        vocab_note.update_from_wani(wani_vocab)
 
         # Do not move to update method or we will wipe out local changes made to the context sentences.
         if len(wani_vocab.context_sentences) > 0:
-            kanji_note.set_context_en(wani_vocab.context_sentences[0].english)
-            kanji_note.set_context_jp(wani_vocab.context_sentences[0].japanese)
+            vocab_note.set_context_en(wani_vocab.context_sentences[0].english)
+            vocab_note.set_context_jp(wani_vocab.context_sentences[0].japanese)
 
         if len(wani_vocab.context_sentences) > 1:
-            kanji_note.set_context_en_2(wani_vocab.context_sentences[1].english)
-            kanji_note.set_context_jp_2(wani_vocab.context_sentences[1].japanese)
+            vocab_note.set_context_en_2(wani_vocab.context_sentences[1].english)
+            vocab_note.set_context_jp_2(wani_vocab.context_sentences[1].japanese)
 
         if len(wani_vocab.context_sentences) > 2:
-            kanji_note.set_context_en_3(wani_vocab.context_sentences[2].english)
-            kanji_note.set_context_jp_3(wani_vocab.context_sentences[2].japanese)
+            vocab_note.set_context_en_3(wani_vocab.context_sentences[2].english)
+            vocab_note.set_context_jp_3(wani_vocab.context_sentences[2].japanese)
 
     def generate_and_set_answer(self) -> None:
         from language_services.jamdict_ex.dict_lookup import DictLookup

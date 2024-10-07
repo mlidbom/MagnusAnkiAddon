@@ -40,12 +40,11 @@ def import_missing_kanji() -> None:
 
 
 def import_missing_vocab() -> None:
-    all_vocabulary: list[VocabNote] = app.col().vocab.all_wani()
-    local_vocabulary_dictionary = {vocab.get_question(): vocab for vocab in all_vocabulary}
     all_wani_vocabulary = waniClient.list_vocabulary()
     imported = 0
     for wani_vocab in all_wani_vocabulary:
-        if wani_vocab.characters not in local_vocabulary_dictionary:
+        question = str(wani_vocab.characters)
+        if not app.col().vocab.with_question(question):
             print("Importing: {}".format(wani_vocab.slug))
             VocabNote.create_from_wani_vocabulary(wani_vocab)
             imported += 1
