@@ -2,6 +2,8 @@ from ankiutils import app, query_builder
 from language_services.janome_ex.tokenizing import janome_ex
 from note.sentencenote import SentenceNote
 
+from sysutils import progress_display_runner
+
 def update_all() -> None:
     update_sentences()
     update_kanji()
@@ -15,7 +17,11 @@ def update_vocab_parsed_parts_of_speech() -> None:
         vocab.set_parsed_type_of_speech(janome_ex.get_word_parts_of_speech(vocab.get_question()))
 
 def update_sentences() -> None:
-    for sentence in app.col().sentences.all(): sentence.update_generated_data()
+    def update_sentence(sentence: SentenceNote) -> None:
+        sentence.update_generated_data()
+
+    progress_display_runner.process_with_progress(app.col().sentences.all(), update_sentence, "Updating sentences", allow_cancel=True, delay_display=False)
+
 
 def update_kanji() -> None:
     for kanji in app.col().kanji.all(): kanji.update_generated_data()

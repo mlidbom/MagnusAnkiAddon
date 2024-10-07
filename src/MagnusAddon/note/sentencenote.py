@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from note.vocabnote import VocabNote
 
 from note.jpnote import JPNote
-from sysutils import timeutil, kana_utils
+from sysutils import kana_utils
 from sysutils import ex_str
 from note.note_constants import ImmersionKitSentenceNoteFields, Mine, NoteFields, SentenceNoteFields, NoteTypes
 from anki.notes import Note
@@ -129,9 +129,6 @@ class SentenceNote(JPNote):
     def _get_parsed_words(self) -> list[str]: return self.get_field(SentenceNoteFields.ParsedWords).split(",")
     def get_words(self) -> set[str]: return (self.get_parsed_words() | set(self.get_user_highlighted_vocab())) - self.get_user_excluded_vocab()
     def get_parsed_words(self) -> set[str]: return set(self._get_parsed_words())
-    def _set_parsed_words(self, value: list[str]) -> None:
-        value.append(str(timeutil.one_second_from_now()))
-        self.set_field(SentenceNoteFields.ParsedWords, ",".join(value))
 
     def _parsed_words_timestamp(self) -> int:
         words = self._get_parsed_words()
@@ -146,8 +143,14 @@ class SentenceNote(JPNote):
         self.set_field(SentenceNoteFields.active_question, self.get_question())
 
     def _update_parsed_words(self) -> None:
-        if self._needs_words_reparsed():
-            self._set_parsed_words([word.word for word in self.parse_words_from_expression()])
+        words = self._get_parsed_words()
+        old_parsed_sentence = words[-1] if words else ""
+        current_storable_sentence = self.get_question().replace(",", "").strip()
+
+        if old_parsed_sentence != current_storable_sentence:
+            value = [parsed_word.word for parsed_word in self.parse_words_from_expression()]
+            value.append(current_storable_sentence)
+            self.set_field(SentenceNoteFields.ParsedWords, ",".join(value))
 
     def extract_kanji(self) -> list[str]:
         clean = ex_str.strip_html_and_bracket_markup(self.get_question())

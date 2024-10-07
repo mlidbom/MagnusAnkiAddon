@@ -145,5 +145,7 @@ class Mine:
         low_priority = "_low_priority"
         Sentence = "_sentence"
         Wani = "_wani"
+        wani_sentence_current = "_wani::sentence_current"
+        wani_sentence_removed_on_wani = "_wani::sentence_removed_on_wani"
         DisableKanaOnly = "_disable_uk"
         UsuallyKanaOnly = "_uk"

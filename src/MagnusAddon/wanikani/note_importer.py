@@ -54,19 +54,31 @@ def import_missing_vocab() -> None:
 def import_missing_context_sentences() -> None:
     sentence_collection = app.col().sentences
     all_wani_vocabulary = waniClient.list_vocabulary()
-    imported = 0
+    imported_sentences:set[SentenceNote] = set()
     present = 0
     for wani_vocab in all_wani_vocabulary:
         for sentence in wani_vocab.context_sentences:
             vocab = str(wani_vocab.characters)
             question = str(sentence.japanese)
             answer = str(sentence.english).strip()
-            if not sentence_collection.with_question(question) and not sentence_collection.with_question(question.strip()):
+
+            existing_sentences = sentence_collection.with_question(question)
+            if not existing_sentences:
+                sentence_collection.with_question(question.strip())
+
+            if not existing_sentences:
                 print(f"""Importing {vocab} :: {question} || {answer}""")
-                SentenceNote.add_sentence(question=question.strip(), answer=answer, highlighted_vocab={vocab}, tags={Mine.Tags.Wani})
-                imported += 1
+                imported_sentences.add(SentenceNote.add_sentence(question=question.strip(), answer=answer, highlighted_vocab={vocab}, tags={Mine.Tags.Wani, Mine.Tags.wani_sentence_current}))
             else:
+                for existing in existing_sentences:
+                    existing.set_tag(Mine.Tags.wani_sentence_current)
                 present += 1
 
-    print(f'''Imported: {imported} sentences.''')
+    old_sentences = [sent for sent in app.col().sentences.all() if sent.has_tag(Mine.Tags.Wani) and not sent.has_tag(Mine.Tags.wani_sentence_current)]
+    for old_sentence in old_sentences:
+        old_sentence.remove_tag(Mine.Tags.wani_sentence_current)
+        old_sentence.set_tag(Mine.Tags.wani_sentence_removed_on_wani)
+
+    print(f'''Imported: {len(imported_sentences)} sentences.''')
     print(f'''Already present: {present} sentences.''')
+    print(f'''Marked as removed: {len(old_sentences)} sentences.''')

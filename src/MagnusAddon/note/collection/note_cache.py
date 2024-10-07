@@ -13,6 +13,7 @@ from PyQt6.QtCore import QTimer
 from ankiutils import app
 from ankiutils.audio_suppressor import audio_suppressor
 from note.jpnote import JPNote
+from sysutils import progress_display_runner
 from sysutils.collections.default_dict_case_insensitive import DefaultDictCaseInsensitive
 
 class CachedNote:
@@ -37,9 +38,7 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
         self._flushing = False
         self._last_deleted_note_time = 0.0
 
-
-        for note in all_notes:
-            self._add_to_cache(note)
+        progress_display_runner.process_with_progress(all_notes, self._add_to_cache, "initializing japanese cache", allow_cancel=False, delay_display=False)
 
         self._setup_hooks()
 
@@ -87,7 +86,8 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
         updates = list(note for note in self._updates.values() if note.id not in self._deleted)
         self._updates = {}
         updated_notes:list[Note] = list()
-        for backend_note_old in updates:
+
+        def update_note(backend_note_old    :Note) -> None:
             backend_note = app.col().anki_collection.get_note(backend_note_old.id)  # our instance is surely outdated, get a new one.
             note = JPNote.note_from_note(backend_note)
             if isinstance(note, self._note_type):
@@ -99,6 +99,10 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
                     self._add_to_cache(note)
                 else:
                     self._pending_add.append(note)
+
+        progress_display_runner.process_with_progress(updates, update_note, "Updating cache", allow_cancel=False, delay_display=True)
+
+
         if updates:
             audio_suppressor.suppress_for_seconds(.3)
             if updated_notes:
