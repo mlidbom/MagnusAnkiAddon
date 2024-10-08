@@ -51,7 +51,7 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
         def prefer_short_questions(_sentence:SentenceNote) -> int: return len(_sentence.get_question())
         def prefer_high_priority_tag(_sentence: SentenceNote) -> int: return 0 if _sentence.has_tag(Mine.Tags.high_priority) else 1
         def dislike_low_priority_tag(_sentence: SentenceNote) -> int: return 1 if _sentence.has_tag(Mine.Tags.low_priority) else 0
-        def dislike_no_translation(_sentence: SentenceNote) -> int: return 1 if not _sentence.get_question().strip() else 0
+        def dislike_no_translation(_sentence: SentenceNote) -> int: return 1 if not _sentence.get_answer().strip() else 0
 
         def prefer_non_duplicates(_sentence:SentenceNote) -> int:
             if _sentence.get_question() in sorted_sentences: return 1
@@ -62,10 +62,10 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
             clean_sentence = ex_str.strip_html_and_bracket_markup(_sentence.get_question())
             return 1 if any((_base_form in clean_sentence for _base_form in secondary_forms_conjugation_base_form)) else 0
 
-        return sorted(_sentences, key=lambda x: (prefer_primary_form(x),
-                                                 prefer_highlighted(x),
-                                                 prefer_studying_read(x),
+        return sorted(_sentences, key=lambda x: (prefer_studying_read(x),
                                                  prefer_studying_listening(x),
+                                                 prefer_primary_form(x),
+                                                 prefer_highlighted(x),
                                                  prefer_high_priority_tag(x),
                                                  dislike_no_translation(x),
                                                  dislike_tts_sentences(x),
