@@ -22,7 +22,7 @@ def _reset() -> None:
         _collection.instance().destruct()
 
     gc.collect()
-    _collection = Lazy(lambda: JPCollection(cast(Collection, mw.col)))
+    _collection = Lazy(lambda: JPCollection(cast(AnkiQt,mw).col))
 
 
 gui_hooks.collection_did_load.append(_init_collection)
