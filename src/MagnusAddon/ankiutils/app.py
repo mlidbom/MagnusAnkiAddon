@@ -1,3 +1,5 @@
+from typing import cast
+
 from anki.collection import Collection
 from aqt import gui_hooks, mw, AnkiQt  # type: ignore
 
@@ -13,7 +15,12 @@ def _init_collection(collection: Collection) -> None:
     global _collection
     _collection = Lazy(lambda: JPCollection(collection))
 
+def _reset() -> None:
+    global _collection
+    _collection = Lazy(lambda: JPCollection(cast(AnkiQt, mw).col))
+
 gui_hooks.collection_did_load.append(_init_collection)
+gui_hooks.sync_did_finish.append(_reset)
 
 def col() -> JPCollection: return _collection.instance()
 def anki_collection() -> Collection: return col().anki_collection

@@ -7,16 +7,14 @@ from sysutils import timeutil
 
 T = TypeVar('T')
 
-def indefinite_progress_dialog(action: Callable[[], T], message: str) -> T:
+def open_spinning_progress_dialog(message: str) -> QProgressDialog:
     progress_dialog = QProgressDialog(f"{message}", None, 0, 0)
     progress_dialog.setWindowTitle(f"{message}")
     progress_dialog.setWindowModality(Qt.WindowModality.ApplicationModal)
     progress_dialog.setRange(0, 0)  # Indeterminate range for spinning effect
     progress_dialog.show()
-    result = action()
-    progress_dialog.close()
 
-    return result
+    return progress_dialog
 
 def process_with_progress(items: List[T], process_item: Callable[[T], None], message:str, allow_cancel: bool, delay_display: bool = False) -> None:
     total_items = len(items)
