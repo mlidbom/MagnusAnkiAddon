@@ -20,7 +20,7 @@ def update_sentences() -> None:
     def update_sentence(sentence: SentenceNote) -> None:
         sentence.update_generated_data()
 
-    progress_display_runner.process_with_progress(app.col().sentences.all(), update_sentence, "Updating sentences", allow_cancel=True, delay_display=False)
+    progress_display_runner.process_with_progress(app.col().sentences.all(), update_sentence, "Updating sentences", allow_cancel=True)
 
 
 def update_kanji() -> None:

@@ -38,7 +38,7 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
         self._flushing = False
         self._last_deleted_note_time = 0.0
 
-        progress_display_runner.process_with_progress(all_notes, self._add_to_cache, "initializing japanese cache", allow_cancel=False, delay_display=False)
+        progress_display_runner.process_with_progress(all_notes, self._add_to_cache, "initializing cache", allow_cancel=False)
 
         self._setup_hooks()
 
