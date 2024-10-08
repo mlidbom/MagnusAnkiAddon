@@ -17,7 +17,7 @@ def _init_collection(collection: Collection) -> None:
 
 def _reset() -> None:
     global _collection
-    _collection = Lazy(lambda: JPCollection(cast(AnkiQt, mw).col))
+    _collection.instance().reset(mw.col)
 
 gui_hooks.collection_did_load.append(_init_collection)
 gui_hooks.sync_did_finish.append(_reset)
