@@ -75,7 +75,7 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
     def _inheritor_remove_from_cache(self, note: TNote, cached: TSnapshot) -> None: pass
     def _inheritor_add_to_cache(self, note: TNote) -> None: pass
 
-    def _merge_pending(self) -> None:
+    def _merge_pending_added_notes(self) -> None:
         completely_added_list = [pending for pending in self._pending_add if pending.id]
         for backend_note in completely_added_list:
             self._pending_add.remove(backend_note)
@@ -87,8 +87,10 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
     def _on_will_flush(self, backend_note: Note) -> None:
         if backend_note.id:
             if backend_note.id in self._by_id:
+                note = self._create_note(backend_note)
                 assert backend_note.id not in self._deleted
-                self._refresh_in_cache(backend_note)
+                self._refresh_in_cache(note)
+                self._pending_generated_data_updates.add(note)
 
     def _on_will_be_added(self, _ignore1:Any, backend_note: Note, _ignore_2:Any) -> None:
         note = JPNote.note_from_note(backend_note)
@@ -103,7 +105,7 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
             self._remove_from_cache(cached)
 
     def run_background_tasks(self) -> None:
-        self._merge_pending()
+        self._merge_pending_added_notes()
         self.update_and_persist_generated_data()
 
     def _create_note(self, backend_note: Note) -> TNote:
@@ -112,35 +114,30 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
     def update_and_persist_generated_data(self) -> None:
         updates = list(note for note in self._pending_generated_data_updates if note.get_id() not in self._deleted)
         self._pending_generated_data_updates = set()
-        updated_notes:list[Note] = list()
+        notes_with_updated_generated_data:list[Note] = list()
 
         def update_generated_data(old_note:TNote) -> None:
-            backend_note = app.col().anki_collection.get_note(old_note.get_id())  # our instance is surely outdated, get a new one.
+            backend_note = app.col().anki_collection.get_note(old_note.get_id())  # make sure we are working with the most current data
             note = self._create_note(backend_note)
             # noinspection PyProtectedMember
             if note._internal_update_generated_data():
-                updated_notes.append(backend_note)
-            if note.get_id() in self._by_id:
-                self._remove_from_cache(note)
-
-            self._add_to_cache(note)
+                notes_with_updated_generated_data.append(backend_note)
+                self._refresh_in_cache(note)
 
         progress_display_runner.process_with_progress(updates, update_generated_data, "Updating generated data for cache updates", allow_cancel=False, delay_display=True, pause_cache_updates=False)
 
         if updates:
             audio_suppressor.suppress_for_seconds(.3)
-            if updated_notes:
-                app.anki_collection().update_notes(updated_notes)
+            if notes_with_updated_generated_data:
+                app.anki_collection().update_notes(notes_with_updated_generated_data)
                 current_time = time.time()
                 if current_time - self._last_deleted_note_time > 2: #We do no refreshes within two seconds of a deletion because this may crash anki
                     app.ui_utils().refresh(refresh_browser=False)
 
 
-    def _refresh_in_cache(self, backend_note: Note) -> None:
-        note =  self._create_note(backend_note)
+    def _refresh_in_cache(self, note: TNote) -> None:
         self._remove_from_cache(note)
         self._add_to_cache(note)
-        self._pending_generated_data_updates.add(self._by_id[backend_note.id])
 
     def _remove_from_cache(self, note: TNote) -> None:
         assert note.get_id()
