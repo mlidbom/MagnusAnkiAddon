@@ -6,6 +6,7 @@ from anki.collection import Collection
 from anki.notes import Note, NoteId
 
 from note.collection.backend_facade import BackEndFacade
+from note.collection.cache_runner import CacheRunner
 from note.collection.note_cache import CachedNote, NoteCache
 from note.kanjinote import KanjiNote
 from note.note_constants import NoteTypes
@@ -20,11 +21,11 @@ class _VocabSnapshot(CachedNote):
         self.readings = set(note.get_readings())
 
 class _VocabCache(NoteCache[VocabNote, _VocabSnapshot]):
-    def __init__(self, all_vocab: list[VocabNote]):
+    def __init__(self, all_vocab: list[VocabNote], cache_manager: CacheRunner):
         self._by_form: dict[str, set[VocabNote]] = defaultdict(set)
         self._by_kanji: dict[str, set[VocabNote]] = defaultdict(set)
         self._by_reading: dict[str, set[VocabNote]] = defaultdict(set)
-        super().__init__(all_vocab, VocabNote)
+        super().__init__(all_vocab, VocabNote, cache_manager)
 
     def with_form(self, form: str) -> list[VocabNote]: return list(self._by_form[form])
     def with_kanji(self, kanji: str) -> list[VocabNote]: return list(self._by_kanji[kanji])
@@ -49,20 +50,15 @@ class _VocabCache(NoteCache[VocabNote, _VocabSnapshot]):
         for reading in note.get_readings(): self._by_reading[reading].add(note)
 
 class VocabCollection:
-    def __init__(self, collection: Collection):
+    def __init__(self, collection: Collection, cache_manager: CacheRunner):
         def vocab_constructor(note: Note) -> VocabNote: return VocabNote(note)
         self.collection = BackEndFacade[VocabNote](collection, vocab_constructor, NoteTypes.Vocab)
-        self._cache = _VocabCache(list(self.collection.all()))
+        self._cache = _VocabCache(list(self.collection.all()), cache_manager)
 
     def search(self, query: str) -> list[VocabNote]: return list(self.collection.search(query))
 
     def all_wani(self) -> list[VocabNote]:
         return [vocab for vocab in self.all() if vocab.is_wani_note()]
-
-    def destruct(self) -> None: self._cache.destruct()
-    def flush_cache_updates(self) -> None: self._cache.flush_updates()
-    def pause_cache_updates(self) -> None: self._cache.pause_cache_updates()
-    def resume_cache_updates(self) -> None: self._cache.resume_cache_updates()
 
     def all(self) -> list[VocabNote]: return self._cache.all()
     def with_id(self, note_id:NoteId) -> VocabNote: return self._cache.with_id(note_id)

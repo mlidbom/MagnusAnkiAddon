@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import List, Optional, Union, TYPE_CHECKING
 
+from note.collection.cache_runner import CacheRunner
 from note.radicalnote import RadicalNote
 
 if TYPE_CHECKING:
@@ -21,22 +22,17 @@ class _KanjiSnapshot(CachedNote):
         super().__init__(note)
 
 class _KanjiCache(NoteCache[KanjiNote, _KanjiSnapshot]):
-    def __init__(self, all_kanji: list[KanjiNote]):
-        super().__init__(all_kanji, KanjiNote)
+    def __init__(self, all_kanji: list[KanjiNote], cache_manager: CacheRunner):
+        super().__init__(all_kanji, KanjiNote, cache_manager)
 
     def _create_snapshot(self, note: KanjiNote) -> _KanjiSnapshot: return _KanjiSnapshot(note)
 
 class KanjiCollection:
-    def __init__(self, collection: Collection, jp_collection: JPCollection):
+    def __init__(self, collection: Collection, jp_collection: JPCollection, cache_manager: CacheRunner):
         def kanji_constructor(note: Note) -> KanjiNote: return KanjiNote(note)
         self.jp_collection = jp_collection
         self.collection = BackEndFacade[KanjiNote](collection, kanji_constructor, NoteTypes.Kanji)
-        self._cache = _KanjiCache(list(self.collection.all()))
-
-    def destruct(self) -> None: self._cache.destruct()
-    def flush_cache_updates(self) -> None: self._cache.flush_updates()
-    def pause_cache_updates(self) -> None: self._cache.pause_cache_updates()
-    def resume_cache_updates(self) -> None: self._cache.resume_cache_updates()
+        self._cache = _KanjiCache(list(self.collection.all()), cache_manager)
 
     def search(self, query: str) -> list[KanjiNote]:
         return list(self.collection.search(query))

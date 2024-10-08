@@ -8,11 +8,9 @@ import time
 from anki import hooks
 from anki.collection import Collection
 from anki.notes import Note, NoteId
-from aqt import mw, qconnect
-from PyQt6.QtCore import QTimer
-
 from ankiutils import app
 from ankiutils.audio_suppressor import audio_suppressor
+from note.collection.cache_runner import CacheRunner
 from note.jpnote import JPNote
 from sysutils import progress_display_runner
 from sysutils.collections.default_dict_case_insensitive import DefaultDictCaseInsensitive
@@ -27,7 +25,7 @@ TNote = TypeVar('TNote', bound=JPNote)
 TSnapshot = TypeVar('TSnapshot', bound=CachedNote)
 
 class NoteCache(ABC, Generic[TNote, TSnapshot]):
-    def __init__(self, all_notes: list[TNote], cached_note_type: type[TNote]):
+    def __init__(self, all_notes: list[TNote], cached_note_type: type[TNote], cache_manager: CacheRunner):
         self._note_type = cached_note_type
         self._by_question: DefaultDictCaseInsensitive[set[TNote]] = DefaultDictCaseInsensitive(set)
         self._by_id: dict[NoteId, TNote] = {}
@@ -39,7 +37,6 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
 
         self._flushing = False
         self._last_deleted_note_time = 0.0
-        self._updates_paused = False
         self._pending_add: list[Note] = list()
 
         progress_display_runner.process_with_progress(all_notes, self._add_to_cache, "initializing cache", allow_cancel=False, pause_cache_updates=False)
@@ -48,19 +45,13 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
         hooks.note_will_be_added.append(self._on_will_be_added)
         hooks.note_will_flush.append(self._on_will_flush)
 
-        self._timer = QTimer(mw)
-        qconnect(self._timer.timeout, self.flush_updates)
-        self._timer.start(100)  # 1000 milliseconds = 1 second
+        cache_manager.connect_flush_timer(self.flush_updates)
+        cache_manager.connect_destruct(self.destruct)
 
 
     def destruct(self) -> None:
-        self.pause_cache_updates()
-
         while self._flushing:
             sleep(.01)
-
-        self._timer.stop()
-        self._timer.disconnect()
 
         hooks.notes_will_be_deleted.remove(self._on_will_be_removed)
         hooks.note_will_flush.remove(self._on_will_flush)
@@ -77,12 +68,6 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
 
     def with_answer(self, answer: str) -> list[TNote]:
         return list(self._by_answer[answer])
-
-    def pause_cache_updates(self) -> None:
-        self._updates_paused = True
-
-    def resume_cache_updates(self) -> None:
-        self._updates_paused = False
 
     @abstractmethod
     def _create_snapshot(self, note: TNote) -> TSnapshot: pass
@@ -116,8 +101,6 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
             self._remove_from_cache(cached)
 
     def flush_updates(self) -> None:
-        if self._updates_paused: return
-
         self._merge_pending()
         updates = list(note for note in self._updates if note.get_id() not in self._deleted)
         self._updates = set()
@@ -135,7 +118,7 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
 
             self._add_to_cache(note)
 
-        progress_display_runner.process_with_progress(updates, update_note, "Updating cache", allow_cancel=False, delay_display=True , pause_cache_updates=False)
+        progress_display_runner.process_with_progress(updates, update_note, "Updating cache", allow_cancel=False, delay_display=True, pause_cache_updates=False)
 
 
         if updates:

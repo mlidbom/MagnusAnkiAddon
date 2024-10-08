@@ -87,7 +87,7 @@ def import_missing_context_sentences() -> None:
         old_sentence.remove_tag(Mine.Tags.wani_sentence_current)
         old_sentence.set_tag(Mine.Tags.wani_sentence_removed_on_wani)
 
-    progress_display_runner.show_dismissable_message(window_title="Import completed", message= f'''
+    progress_display_runner.show_dismissable_message(window_title="Import completed", message=f'''
     Imported: {len(imported_sentences)} sentences.
     Already present: {len(present)} sentences.
     Marked as removed: {len(old_sentences)} sentences.''')

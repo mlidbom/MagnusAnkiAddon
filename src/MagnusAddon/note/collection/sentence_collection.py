@@ -5,6 +5,7 @@ from anki.notes import Note, NoteId
 from collections import defaultdict
 
 from note.collection.backend_facade import BackEndFacade
+from note.collection.cache_runner import CacheRunner
 from note.collection.note_cache import CachedNote, NoteCache
 from note.note_constants import NoteTypes
 from note.sentencenote import SentenceNote
@@ -18,10 +19,10 @@ class _SentenceSnapshot(CachedNote):
         self.user_highlighted_vocab = set(note.get_user_highlighted_vocab())
 
 class _SentenceCache(NoteCache[SentenceNote, _SentenceSnapshot]):
-    def __init__(self, all_kanji: list[SentenceNote]):
+    def __init__(self, all_kanji: list[SentenceNote], cache_manager: CacheRunner):
         self._by_vocab_form: dict[str, set[SentenceNote]] = defaultdict(set)
         self._by_user_highlighted_vocab: dict[str, set[SentenceNote]] = defaultdict(set)
-        super().__init__(all_kanji, SentenceNote)
+        super().__init__(all_kanji, SentenceNote, cache_manager)
 
     def _create_snapshot(self, note: SentenceNote) -> _SentenceSnapshot: return _SentenceSnapshot(note)
 
@@ -38,15 +39,10 @@ class _SentenceCache(NoteCache[SentenceNote, _SentenceSnapshot]):
 
 
 class SentenceCollection:
-    def __init__(self, collection: Collection):
+    def __init__(self, collection: Collection, cache_manager: CacheRunner):
         def sentence_constructor(note: Note) -> SentenceNote: return SentenceNote(note)
         self.collection = BackEndFacade[SentenceNote](collection, sentence_constructor, NoteTypes.Sentence)
-        self._cache = _SentenceCache(list(self.collection.all()))
-
-    def destruct(self) -> None: self._cache.destruct()
-    def flush_cache_updates(self) -> None: self._cache.flush_updates()
-    def pause_cache_updates(self) -> None: self._cache.pause_cache_updates()
-    def resume_cache_updates(self) -> None: self._cache.resume_cache_updates()
+        self._cache = _SentenceCache(list(self.collection.all()), cache_manager)
 
     def all(self) -> list[SentenceNote]: return self._cache.all()
 

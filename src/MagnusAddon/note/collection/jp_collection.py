@@ -3,6 +3,7 @@ from __future__ import annotations
 from anki.collection import Collection
 from anki.notes import NoteId
 
+from note.collection.cache_runner import CacheRunner
 from note.collection.kanji_collection import KanjiCollection
 from note.collection.radical_collection import RadicalCollection
 from note.collection.sentence_collection import SentenceCollection
@@ -14,15 +15,18 @@ from sysutils import progress_display_runner
 class JPCollection:
     def __init__(self, anki_collection: Collection):
         self.anki_collection = anki_collection
+        self.cache_manager = CacheRunner()
 
         spinner = progress_display_runner.open_spinning_progress_dialog("Loading caches")
         try:
-            self.vocab:VocabCollection = VocabCollection(anki_collection)
-            self.kanji:KanjiCollection = KanjiCollection(anki_collection, self)
-            self.sentences:SentenceCollection = SentenceCollection(anki_collection)
-            self.radicals:RadicalCollection = RadicalCollection(anki_collection)
+            self.vocab:VocabCollection = VocabCollection(anki_collection, self.cache_manager)
+            self.kanji:KanjiCollection = KanjiCollection(anki_collection, self, self.cache_manager)
+            self.sentences:SentenceCollection = SentenceCollection(anki_collection, self.cache_manager)
+            self.radicals:RadicalCollection = RadicalCollection(anki_collection, self.cache_manager)
         finally:
             spinner.close()
+
+        self.cache_manager.start()
 
     def unsuspend_note_cards(self, note: JPNote, name: str) -> None:
         print("Unsuspending {}: {}".format(JPNote.get_note_type_name(note), name))
@@ -39,26 +43,8 @@ class JPCollection:
         elif JPNote.get_note_type(note) == NoteTypes.Sentence: return app.col().sentences.with_id(note.id)
         return JPNote(note)
 
-    def destruct(self) -> None:
-        self.vocab.destruct()
-        self.kanji.destruct()
-        self.sentences.destruct()
-        self.radicals.destruct()
+    def destruct(self) -> None: self.cache_manager.destruct()
 
-    def flush_cache_updates(self) -> None:
-        self.vocab.flush_cache_updates()
-        self.kanji.flush_cache_updates()
-        self.sentences.flush_cache_updates()
-        self.radicals.flush_cache_updates()
-
-    def pause_cache_updates(self) -> None:
-        self.vocab.pause_cache_updates()
-        self.kanji.pause_cache_updates()
-        self.sentences.pause_cache_updates()
-        self.radicals.pause_cache_updates()
-
-    def resume_cache_updates(self) -> None:
-        self.vocab.resume_cache_updates()
-        self.kanji.resume_cache_updates()
-        self.sentences.resume_cache_updates()
-        self.radicals.resume_cache_updates()
+    def flush_cache_updates(self) -> None: self.cache_manager.flush_cache_updates()
+    def pause_cache_updates(self) -> None: self.cache_manager.pause_cache_updates()
+    def resume_cache_updates(self) -> None: self.cache_manager.resume_cache_updates()
