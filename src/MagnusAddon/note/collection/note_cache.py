@@ -116,8 +116,8 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
         self._pending_generated_data_updates = set()
         notes_with_updated_generated_data:list[Note] = list()
 
-        def update_generated_data(old_note:TNote) -> None:
-            backend_note = app.col().anki_collection.get_note(old_note.get_id())  # make sure we are working with the most current data
+        def update_generated_data(cached_note:TNote) -> None:
+            backend_note = app.col().anki_collection.get_note(cached_note.get_id())  # make sure we are working with the most current data
             note = self._create_note(backend_note)
             # noinspection PyProtectedMember
             if note._internal_update_generated_data():
