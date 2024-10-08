@@ -17,8 +17,8 @@ class _RadicalSnapshot(CachedNote):
         super().__init__(note)
 
 class _RadicalCache(NoteCache[RadicalNote, _RadicalSnapshot]):
-    def __init__(self, all_kanji: list[RadicalNote], cache_manager: CacheRunner):
-        super().__init__(all_kanji, RadicalNote, cache_manager)
+    def __init__(self, all_kanji: list[RadicalNote], cache_runner: CacheRunner):
+        super().__init__(all_kanji, RadicalNote, cache_runner)
 
     def _create_snapshot(self, note: RadicalNote) -> _RadicalSnapshot: return _RadicalSnapshot(note)
 

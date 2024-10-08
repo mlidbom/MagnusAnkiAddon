@@ -22,8 +22,8 @@ class _KanjiSnapshot(CachedNote):
         super().__init__(note)
 
 class _KanjiCache(NoteCache[KanjiNote, _KanjiSnapshot]):
-    def __init__(self, all_kanji: list[KanjiNote], cache_manager: CacheRunner):
-        super().__init__(all_kanji, KanjiNote, cache_manager)
+    def __init__(self, all_kanji: list[KanjiNote], cache_runner: CacheRunner):
+        super().__init__(all_kanji, KanjiNote, cache_runner)
 
     def _create_snapshot(self, note: KanjiNote) -> _KanjiSnapshot: return _KanjiSnapshot(note)
 

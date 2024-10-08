@@ -19,10 +19,10 @@ class _SentenceSnapshot(CachedNote):
         self.user_highlighted_vocab = set(note.get_user_highlighted_vocab())
 
 class _SentenceCache(NoteCache[SentenceNote, _SentenceSnapshot]):
-    def __init__(self, all_kanji: list[SentenceNote], cache_manager: CacheRunner):
+    def __init__(self, all_kanji: list[SentenceNote], cache_runner: CacheRunner):
         self._by_vocab_form: dict[str, set[SentenceNote]] = defaultdict(set)
         self._by_user_highlighted_vocab: dict[str, set[SentenceNote]] = defaultdict(set)
-        super().__init__(all_kanji, SentenceNote, cache_manager)
+        super().__init__(all_kanji, SentenceNote, cache_runner)
 
     def _create_snapshot(self, note: SentenceNote) -> _SentenceSnapshot: return _SentenceSnapshot(note)
 

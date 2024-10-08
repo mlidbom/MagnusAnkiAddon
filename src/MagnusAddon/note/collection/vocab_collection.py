@@ -21,11 +21,11 @@ class _VocabSnapshot(CachedNote):
         self.readings = set(note.get_readings())
 
 class _VocabCache(NoteCache[VocabNote, _VocabSnapshot]):
-    def __init__(self, all_vocab: list[VocabNote], cache_manager: CacheRunner):
+    def __init__(self, all_vocab: list[VocabNote], cache_runner: CacheRunner):
         self._by_form: dict[str, set[VocabNote]] = defaultdict(set)
         self._by_kanji: dict[str, set[VocabNote]] = defaultdict(set)
         self._by_reading: dict[str, set[VocabNote]] = defaultdict(set)
-        super().__init__(all_vocab, VocabNote, cache_manager)
+        super().__init__(all_vocab, VocabNote, cache_runner)
 
     def with_form(self, form: str) -> list[VocabNote]: return list(self._by_form[form])
     def with_kanji(self, kanji: str) -> list[VocabNote]: return list(self._by_kanji[kanji])

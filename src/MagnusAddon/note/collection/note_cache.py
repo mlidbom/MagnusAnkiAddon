@@ -1,12 +1,9 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from time import sleep
-from typing import Any, Generic, Sequence, TypeVar
+from typing import Generic, Sequence, TypeVar
 import time
 
-from anki import hooks
-from anki.collection import Collection
 from anki.notes import Note, NoteId
 from ankiutils import app
 from ankiutils.audio_suppressor import audio_suppressor
@@ -26,7 +23,7 @@ TNote = TypeVar('TNote', bound=JPNote)
 TSnapshot = TypeVar('TSnapshot', bound=CachedNote)
 
 class NoteCache(ABC, Generic[TNote, TSnapshot]):
-    def __init__(self, all_notes: list[TNote], cached_note_type: type[TNote], cache_manager: CacheRunner):
+    def __init__(self, all_notes: list[TNote], cached_note_type: type[TNote], cache_runner: CacheRunner):
         self._note_type = cached_note_type
         self._by_question: DefaultDictCaseInsensitive[set[TNote]] = DefaultDictCaseInsensitive(set)
         self._by_id: dict[NoteId, TNote] = {}
@@ -42,21 +39,12 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
 
         progress_display_runner.process_with_progress(all_notes, self._add_to_cache, "initializing cache", allow_cancel=False, pause_cache_updates=False)
 
-        hooks.notes_will_be_deleted.append(self._on_will_be_removed)
-        hooks.note_will_be_added.append(self._on_will_be_added)
-        hooks.note_will_flush.append(self._on_will_flush)
 
-        cache_manager.connect_flush_timer(self.run_background_tasks)
-        cache_manager.connect_destruct(self.destruct)
-
-
-    def destruct(self) -> None:
-        while self._flushing:
-            sleep(.01)
-
-        hooks.notes_will_be_deleted.remove(self._on_will_be_removed)
-        hooks.note_will_flush.remove(self._on_will_flush)
-        hooks.note_will_be_added.remove(self._on_will_be_added)
+        cache_runner.connect_generate_data_timer(self._update_and_persist_generated_data)
+        cache_runner.connect_merge_pending_adds(self._merge_pending_added_notes)
+        cache_runner.connect_will_remove(self._on_will_be_removed)
+        cache_runner.connect_will_add(self._on_will_be_added)
+        cache_runner.connect_will_flush(self._on_will_flush)
 
     def all(self) -> list[TNote]:
         return list(self._by_id.values())
@@ -92,26 +80,22 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
                 self._refresh_in_cache(note)
                 self._pending_generated_data_updates.add(note)
 
-    def _on_will_be_added(self, _ignore1:Any, backend_note: Note, _ignore_2:Any) -> None:
+    def _on_will_be_added(self, backend_note: Note) -> None:
         note = JPNote.note_from_note(backend_note)
         if isinstance(note, self._note_type):
             self._pending_add.append(backend_note)
 
-    def _on_will_be_removed(self, _: Collection, note_ids: Sequence[NoteId]) -> None:
+    def _on_will_be_removed(self, note_ids: Sequence[NoteId]) -> None:
         self._deleted.update(note_ids)
         self._last_deleted_note_time = time.time()
         cached_notes = [self._by_id[note_id] for note_id in note_ids if note_id in self._snapshot_by_id]
         for cached in cached_notes:
             self._remove_from_cache(cached)
 
-    def run_background_tasks(self) -> None:
-        self._merge_pending_added_notes()
-        self.update_and_persist_generated_data()
-
     def _create_note(self, backend_note: Note) -> TNote:
         return checked_cast(self._note_type, JPNote.note_from_note(backend_note))
 
-    def update_and_persist_generated_data(self) -> None:
+    def _update_and_persist_generated_data(self) -> None:
         updates = list(note for note in self._pending_generated_data_updates if note.get_id() not in self._deleted)
         self._pending_generated_data_updates = set()
         notes_with_updated_generated_data:list[Note] = list()
