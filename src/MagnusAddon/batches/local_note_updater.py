@@ -42,7 +42,7 @@ def generate_sentences_for_context_sentences_with_audio() -> None:
     def generate_sentences(vocab: VocabNote) -> None:
         vocab.generate_sentences_from_context_sentences(require_audio=True)
 
-    progress_display_runner.process_with_progress(app.col().vocab.all(), generate_sentences, "Generating sentences", allow_cancel=True)
+    progress_display_runner.process_with_progress(app.col().vocab.all(), generate_sentences, "Generating sentence notes from context sentences", allow_cancel=True)
 
 def convert_immersion_kit_sentences() -> None:
     immersion_kit_sences = app.anki_collection().find_notes(query_builder.immersion_kit_sentences())
