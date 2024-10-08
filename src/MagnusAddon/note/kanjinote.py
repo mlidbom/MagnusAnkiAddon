@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 from note.waninote import WaniNote
 from note.note_constants import NoteFields, Mine, NoteTypes
-from sysutils import ex_str
+from sysutils import ex_sequence, ex_str
 from wanikani.wanikani_api_client import WanikaniClient
 
 class KanjiNote(WaniNote):
@@ -41,9 +41,8 @@ class KanjiNote(WaniNote):
         super().update_generated_data()
 
         def update_primary_audios() -> None:
-            primary_vocabs = set(self.get_primary_vocab())
-            vocab_we_should_play = [vocab for vocab in self.get_vocab_notes_sorted()
-                                    if vocab.get_question() in primary_vocabs]
+            from ankiutils import app
+            vocab_we_should_play = ex_sequence.flatten([app.col().vocab.with_question(vocab) for vocab in self.get_primary_vocab()])
             self.set_primary_vocab_audio("".join([vo.get_primary_audio() for vo in vocab_we_should_play]) if vocab_we_should_play else "")
 
         self.set_field(NoteFields.Kanji.active_answer, self.get_answer())
