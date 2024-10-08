@@ -49,7 +49,7 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
         hooks.note_will_flush.append(self._on_will_flush)
 
         self._timer = QTimer(mw)
-        qconnect(self._timer.timeout, self._flush_updates)
+        qconnect(self._timer.timeout, self.flush_updates)
         self._timer.start(100)  # 1000 milliseconds = 1 second
 
 
@@ -115,7 +115,7 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
         for cached in cached_notes:
             self._remove_from_cache(cached)
 
-    def _flush_updates(self) -> None:
+    def flush_updates(self) -> None:
         if self._updates_paused: return
 
         self._merge_pending()

@@ -44,6 +44,7 @@ class SentenceCollection:
         self._cache = _SentenceCache(list(self.collection.all()))
 
     def destruct(self) -> None: self._cache.destruct()
+    def flush_cache_updates(self) -> None: self._cache.flush_updates()
     def pause_cache_updates(self) -> None: self._cache.pause_cache_updates()
     def resume_cache_updates(self) -> None: self._cache.resume_cache_updates()
 

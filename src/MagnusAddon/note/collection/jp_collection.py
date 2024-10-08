@@ -45,6 +45,12 @@ class JPCollection:
         self.sentences.destruct()
         self.radicals.destruct()
 
+    def flush_cache_updates(self) -> None:
+        self.vocab.flush_cache_updates()
+        self.kanji.flush_cache_updates()
+        self.sentences.flush_cache_updates()
+        self.radicals.flush_cache_updates()
+
     def pause_cache_updates(self) -> None:
         self.vocab.pause_cache_updates()
         self.kanji.pause_cache_updates()

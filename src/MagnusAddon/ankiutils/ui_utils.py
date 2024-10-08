@@ -37,6 +37,8 @@ class UIUtils(IUIUtils):
         tooltip(f"done in {time}")
 
     def refresh(self, refresh_browser:bool = True) -> None:
+        from ankiutils import app
+        app.col().flush_cache_updates()
         audio_suppressor.suppress_for_seconds(.3)
         if self._mw.reviewer.card:
             self._mw.reviewer._refresh_needed = RefreshNeeded.NOTE_TEXT

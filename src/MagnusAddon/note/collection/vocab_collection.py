@@ -60,6 +60,7 @@ class VocabCollection:
         return [vocab for vocab in self.all() if vocab.is_wani_note()]
 
     def destruct(self) -> None: self._cache.destruct()
+    def flush_cache_updates(self) -> None: self._cache.flush_updates()
     def pause_cache_updates(self) -> None: self._cache.pause_cache_updates()
     def resume_cache_updates(self) -> None: self._cache.resume_cache_updates()
 
