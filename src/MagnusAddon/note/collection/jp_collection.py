@@ -38,3 +38,15 @@ class JPCollection:
         elif JPNote.get_note_type(note) == NoteTypes.Radical: return app.col().radicals.with_id(note.id)
         elif JPNote.get_note_type(note) == NoteTypes.Sentence: return app.col().sentences.with_id(note.id)
         return JPNote(note)
+
+    def pause_cache_updates(self) -> None:
+        self.vocab.pause_cache_updates()
+        self.kanji.pause_cache_updates()
+        self.sentences.pause_cache_updates()
+        self.radicals.pause_cache_updates()
+
+    def resume_cache_updates(self) -> None:
+        self.vocab.resume_cache_updates()
+        self.kanji.resume_cache_updates()
+        self.sentences.resume_cache_updates()
+        self.radicals.resume_cache_updates()

@@ -37,8 +37,9 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
         self._deleted: set[NoteId] = set()
         self._flushing = False
         self._last_deleted_note_time = 0.0
+        self._updates_paused = False
 
-        progress_display_runner.process_with_progress(all_notes, self._add_to_cache, "initializing cache", allow_cancel=False)
+        progress_display_runner.process_with_progress(all_notes, self._add_to_cache, "initializing cache", allow_cancel=False, pause_cache_updates=False)
 
         self._setup_hooks()
 
@@ -53,6 +54,12 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
 
     def with_answer(self, answer: str) -> list[TNote]:
         return list(self._by_answer[answer])
+
+    def pause_cache_updates(self) -> None:
+        self._updates_paused = True
+
+    def resume_cache_updates(self) -> None:
+        self._updates_paused = False
 
     @abstractmethod
     def _create_snapshot(self, note: TNote) -> TSnapshot: pass
@@ -82,6 +89,8 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
             self._remove_from_cache(cached)
 
     def _flush_updates(self) -> None:
+        if self._updates_paused: return
+
         self._merge_pending()
         updates = list(note for note in self._updates.values() if note.id not in self._deleted)
         self._updates = {}
@@ -100,7 +109,7 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
                 else:
                     self._pending_add.append(note)
 
-        progress_display_runner.process_with_progress(updates, update_note, "Updating cache", allow_cancel=False, delay_display=True)
+        progress_display_runner.process_with_progress(updates, update_note, "Updating cache", allow_cancel=False, delay_display=True , pause_cache_updates=False)
 
 
         if updates:

@@ -43,6 +43,9 @@ class SentenceCollection:
         self.collection = BackEndFacade[SentenceNote](collection, sentence_constructor, NoteTypes.Sentence)
         self._cache = _SentenceCache(list(self.collection.all()))
 
+    def pause_cache_updates(self) -> None: self._cache.pause_cache_updates()
+    def resume_cache_updates(self) -> None: self._cache.resume_cache_updates()
+
     def all(self) -> list[SentenceNote]: return self._cache.all()
 
     def with_id(self, note_id:NoteId) -> SentenceNote:

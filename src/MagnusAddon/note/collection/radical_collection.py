@@ -27,6 +27,9 @@ class RadicalCollection:
         self.collection = BackEndFacade[RadicalNote](collection, radical_constructor, NoteTypes.Radical)
         self._cache = _RadicalCache(list(self.collection.all()))
 
+    def pause_cache_updates(self) -> None: self._cache.pause_cache_updates()
+    def resume_cache_updates(self) -> None: self._cache.resume_cache_updates()
+
     def all(self) -> List[RadicalNote]: return self._cache.all()
 
     def with_id(self, note_id:NoteId) -> RadicalNote:
