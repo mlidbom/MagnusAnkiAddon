@@ -17,7 +17,7 @@ def open_spinning_progress_dialog(message: str) -> QProgressDialog:
 
     return progress_dialog
 
-def process_with_progress(items: List[T], process_item: Callable[[T], None], message:str, allow_cancel: bool, delay_display: bool = False, pause_cache_updates: bool = True) -> None:
+def process_with_progress(items: List[T], process_item: Callable[[T], None], message:str, allow_cancel: bool = True, delay_display: bool = False, pause_cache_updates: bool = True) -> None:
     total_items = len(items)
     start_time = time.time()
     progress_dialog: QProgressDialog | None = None
