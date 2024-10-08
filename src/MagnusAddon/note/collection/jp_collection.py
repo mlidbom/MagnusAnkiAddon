@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from anki.collection import Collection
 from anki.notes import NoteId
-from PyQt6.QtWidgets import QMessageBox
 
 from note.collection.kanji_collection import KanjiCollection
 from note.collection.radical_collection import RadicalCollection

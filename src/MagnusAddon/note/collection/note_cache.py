@@ -87,7 +87,7 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
         self._updates = {}
         updated_notes:list[Note] = list()
 
-        def update_note(backend_note_old    :Note) -> None:
+        def update_note(backend_note_old:Note) -> None:
             backend_note = app.col().anki_collection.get_note(backend_note_old.id)  # our instance is surely outdated, get a new one.
             note = JPNote.note_from_note(backend_note)
             if isinstance(note, self._note_type):
