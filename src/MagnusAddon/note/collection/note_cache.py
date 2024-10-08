@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from time import sleep
-from typing import Any, Generic, MutableMapping, Sequence, TypeVar
+from typing import Generic, Sequence, TypeVar
 import time
 
 from anki import hooks
@@ -25,17 +25,15 @@ class CachedNote:
 
 TNote = TypeVar('TNote', bound=JPNote)
 TSnapshot = TypeVar('TSnapshot', bound=CachedNote)
-TDict = TypeVar('TDict', bound=MutableMapping[Any, Any])
 
 class NoteCache(ABC, Generic[TNote, TSnapshot]):
     def __init__(self, all_notes: list[TNote], cached_note_type: type[TNote]):
-        self._mappings: list[MutableMapping[Any, Any]] = list()
         self._note_type = cached_note_type
-        self._by_question: DefaultDictCaseInsensitive[set[TNote]] = self._add_dict(DefaultDictCaseInsensitive(set))
-        self._by_id: dict[NoteId, TNote] = self._add_dict({})
-        self._snapshot_by_id: dict[NoteId, TSnapshot] = self._add_dict({})
-        self._by_answer: DefaultDictCaseInsensitive[set[TNote]] = self._add_dict(DefaultDictCaseInsensitive(set))
-        self._updates: dict[NoteId, Note] = self._add_dict({})
+        self._by_question: DefaultDictCaseInsensitive[set[TNote]] = DefaultDictCaseInsensitive(set)
+        self._by_id: dict[NoteId, TNote] = {}
+        self._snapshot_by_id: dict[NoteId, TSnapshot] = {}
+        self._by_answer: DefaultDictCaseInsensitive[set[TNote]] = DefaultDictCaseInsensitive(set)
+        self._updates: dict[NoteId, Note] = {}
 
         self._deleted: set[NoteId] = set()
         self._pending_add: list[TNote] = []
@@ -52,10 +50,6 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
         self._timer = QTimer(mw)
         qconnect(self._timer.timeout, self._flush_updates)
         self._timer.start(100)  # 1000 milliseconds = 1 second
-
-    def _add_dict(self, dictionary: TDict) -> TDict:
-        self._mappings.append(dictionary)
-        return dictionary
 
 
     def destruct(self) -> None:
