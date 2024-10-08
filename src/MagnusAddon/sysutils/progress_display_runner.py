@@ -27,6 +27,7 @@ def process_with_progress(items: List[T], process_item: Callable[[T], None], mes
             progress_dialog = QProgressDialog(f"""{message}...""", "Cancel" if allow_cancel else None, 0, total_items)
             progress_dialog.setWindowTitle(f"""{message}""")
             progress_dialog.setWindowModality(Qt.WindowModality.ApplicationModal)
+            progress_dialog.show()
 
         if progress_dialog and progress_dialog.wasCanceled(): break
         process_item(item)
@@ -40,3 +41,5 @@ def process_with_progress(items: List[T], process_item: Callable[[T], None], mes
                 if progress_dialog: progress_dialog.setLabelText(f"{message} {current_item} of {total_items} Remaining: {timeutil.format_seconds_as_hh_mm_ss(estimated_remaining_time)}")
 
             QApplication.processEvents()
+
+    if progress_dialog: progress_dialog.close()
