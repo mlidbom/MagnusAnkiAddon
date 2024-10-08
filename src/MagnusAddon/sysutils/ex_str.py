@@ -21,7 +21,7 @@ def extract_comma_separated_values(string: str) -> list[str]:
 def extract_newline_separated_values(string: str) -> list[str]:
     return [item for item in string.split(newline) if item]
 
-_html_bracket_pattern = re.compile('<.*?>|\[.*?\]')
+_html_bracket_pattern = re.compile('<.*?>|\[.*?\]') # noqa
 def strip_html_and_bracket_markup(string: str) -> str:
     return _html_bracket_pattern.sub('', string)
 
@@ -29,7 +29,7 @@ _html_pattern = re.compile('<.*?>|&nbsp;')
 def strip_html_markup(string: str) -> str:
     return _html_pattern.sub('', string)
 
-html_bracket_noise_pattern = re.compile('<.*?>|\[.*?\]|[〜]')
+html_bracket_noise_pattern = re.compile('<.*?>|\[.*?\]|[〜]') # noqa
 def strip_html_and_bracket_markup_and_noise_characters(string: str) -> str:
     return html_bracket_noise_pattern.sub('', string)
 
