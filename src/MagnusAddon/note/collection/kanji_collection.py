@@ -33,7 +33,7 @@ class KanjiCollection:
         self.collection = BackEndFacade[KanjiNote](collection, kanji_constructor, NoteTypes.Kanji)
         self._cache = _KanjiCache(list(self.collection.all()))
 
-    def reset(self, anki_collection: Collection) -> None: self._cache.reset(anki_collection)
+    def destruct(self) -> None: self._cache.destruct()
     def pause_cache_updates(self) -> None: self._cache.pause_cache_updates()
     def resume_cache_updates(self) -> None: self._cache.resume_cache_updates()
 

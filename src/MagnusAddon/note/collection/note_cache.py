@@ -44,10 +44,10 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
         self._last_deleted_note_time = 0.0
         self._updates_paused = False
 
+        progress_display_runner.process_with_progress(all_notes, self._add_to_cache, "initializing cache", allow_cancel=False, pause_cache_updates=False)
+
         hooks.notes_will_be_deleted.append(self._on_will_be_removed)
         hooks.note_will_flush.append(self._on_will_flush)
-
-        self.reset(all_notes)
 
         self._timer = QTimer(mw)
         qconnect(self._timer.timeout, self._flush_updates)
@@ -58,19 +58,17 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
         return dictionary
 
 
-    def reset(self, all_notes: list[TNote]) -> None:
+    def destruct(self) -> None:
         self.pause_cache_updates()
 
         while self._flushing:
             sleep(.01)
 
-        for mapping in self._mappings:
-            mapping.clear()
+        self._timer.stop()
+        self._timer.disconnect()
 
-        self._deleted.clear()
-        self._pending_add.clear()
-
-        progress_display_runner.process_with_progress(all_notes, self._add_to_cache, "initializing cache", allow_cancel=False, pause_cache_updates=False)
+        hooks.notes_will_be_deleted.remove(self._on_will_be_removed)
+        hooks.note_will_flush.remove(self._on_will_flush)
 
     def all(self) -> list[TNote]:
         return list(self._by_id.values())

@@ -39,11 +39,11 @@ class JPCollection:
         elif JPNote.get_note_type(note) == NoteTypes.Sentence: return app.col().sentences.with_id(note.id)
         return JPNote(note)
 
-    def reset(self, anki_collection: Collection) -> None:
-        self.vocab.reset(anki_collection)
-        self.kanji.reset(anki_collection)
-        self.sentences.reset(anki_collection)
-        self.radicals.reset(anki_collection)
+    def destruct(self) -> None:
+        self.vocab.destruct()
+        self.kanji.destruct()
+        self.sentences.destruct()
+        self.radicals.destruct()
 
     def pause_cache_updates(self) -> None:
         self.vocab.pause_cache_updates()

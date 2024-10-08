@@ -27,7 +27,7 @@ class RadicalCollection:
         self.collection = BackEndFacade[RadicalNote](collection, radical_constructor, NoteTypes.Radical)
         self._cache = _RadicalCache(list(self.collection.all()))
 
-    def reset(self, anki_collection: Collection) -> None: self._cache.reset(anki_collection)
+    def destruct(self) -> None: self._cache.destruct()
     def pause_cache_updates(self) -> None: self._cache.pause_cache_updates()
     def resume_cache_updates(self) -> None: self._cache.resume_cache_updates()
 
