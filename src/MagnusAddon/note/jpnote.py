@@ -32,7 +32,7 @@ class JPNote(ABC):
     def __repr__(self) -> str:
         return f"""{self.get_question()} : {self.get_answer()}"""
 
-    def get_question(self) -> str: return self.get_field(MyNoteFields.question)
+    def get_question(self) -> str: return self.get_field(MyNoteFields.question).strip()
     def get_answer(self) -> str: return self.get_field(MyNoteFields.answer)
 
     def is_studying(self, card:str = "") -> bool:

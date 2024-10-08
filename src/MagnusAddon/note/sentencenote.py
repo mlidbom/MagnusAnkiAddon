@@ -35,10 +35,10 @@ class SentenceNote(JPNote):
 
     def _set_user_answer(self, question: str) -> None: return self.set_field(SentenceNoteFields.user_answer, question)
 
-    def _get_source_question(self) -> str: return ex_str.strip_html_markup(self.get_field(SentenceNoteFields.source_question))
+    def _get_source_question(self) -> str: return ex_str.strip_html_markup(self.get_field(SentenceNoteFields.source_question)).strip()
     def _set_source_question(self, question: str) -> None: return self.set_field(SentenceNoteFields.source_question, question)
 
-    def _get_user_question(self) -> str: return ex_str.strip_html_markup(self.get_field(SentenceNoteFields.user_question))
+    def _get_user_question(self) -> str: return ex_str.strip_html_markup(self.get_field(SentenceNoteFields.user_question)).strip()
 
     def get_audio_path(self) -> str: return ex_str.strip_html_markup(self.get_field(SentenceNoteFields.audio)).strip()[7:-1]
 

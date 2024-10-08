@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from time import sleep
-from typing import Generic, Sequence, TypeVar
+from typing import Any, Generic, Sequence, TypeVar
 import time
 
 from anki import hooks
@@ -33,18 +33,19 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
         self._by_id: dict[NoteId, TNote] = {}
         self._snapshot_by_id: dict[NoteId, TSnapshot] = {}
         self._by_answer: DefaultDictCaseInsensitive[set[TNote]] = DefaultDictCaseInsensitive(set)
-        self._updates: dict[NoteId, Note] = {}
+        self._updates: set[TNote] = set()
 
         self._deleted: set[NoteId] = set()
-        self._pending_add: list[TNote] = []
 
         self._flushing = False
         self._last_deleted_note_time = 0.0
         self._updates_paused = False
+        self._pending_add: list[Note] = list()
 
         progress_display_runner.process_with_progress(all_notes, self._add_to_cache, "initializing cache", allow_cancel=False, pause_cache_updates=False)
 
         hooks.notes_will_be_deleted.append(self._on_will_be_removed)
+        hooks.note_will_be_added.append(self._on_will_be_added)
         hooks.note_will_flush.append(self._on_will_flush)
 
         self._timer = QTimer(mw)
@@ -63,6 +64,7 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
 
         hooks.notes_will_be_deleted.remove(self._on_will_be_removed)
         hooks.note_will_flush.remove(self._on_will_flush)
+        hooks.note_will_be_added.remove(self._on_will_be_added)
 
     def all(self) -> list[TNote]:
         return list(self._by_id.values())
@@ -88,39 +90,50 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
     def _inheritor_add_to_cache(self, note: TNote) -> None: pass
 
     def _merge_pending(self) -> None:
-        added_vocab = [v for v in self._pending_add if v.get_id()]
-        self._pending_add = [v for v in self._pending_add if not v.get_id()]
-        for vocab in added_vocab:
-            self._add_to_cache(vocab)
+        completely_added_list = [pending for pending in self._pending_add if pending.id]
+        for backend_note in completely_added_list:
+            self._pending_add.remove(backend_note)
+            note = JPNote.note_from_note(backend_note)
+            assert isinstance(note, self._note_type)
+            self._updates.add(note)
+
+
+    def _on_will_flush(self, backend_note: Note) -> None:
+        if backend_note.id:
+            if backend_note.id in self._by_id:
+                self._updates.add(self._by_id[backend_note.id])
+
+    def _on_will_be_added(self, _ignore1:Any, backend_note: Note, _ignore_2:Any) -> None:
+        note = JPNote.note_from_note(backend_note)
+        if isinstance(note, self._note_type):
+            self._pending_add.append(backend_note)
 
     def _on_will_be_removed(self, _: Collection, note_ids: Sequence[NoteId]) -> None:
         self._deleted.update(note_ids)
         self._last_deleted_note_time = time.time()
         cached_notes = [self._by_id[note_id] for note_id in note_ids if note_id in self._snapshot_by_id]
         for cached in cached_notes:
-            self._pending_add = [pending for pending in self._pending_add if pending.get_id() != cached.get_id()]
             self._remove_from_cache(cached)
 
     def _flush_updates(self) -> None:
         if self._updates_paused: return
 
         self._merge_pending()
-        updates = list(note for note in self._updates.values() if note.id not in self._deleted)
-        self._updates = {}
+        updates = list(note for note in self._updates if note.get_id() not in self._deleted)
+        self._updates = set()
         updated_notes:list[Note] = list()
 
-        def update_note(backend_note_old:Note) -> None:
-            backend_note = app.col().anki_collection.get_note(backend_note_old.id)  # our instance is surely outdated, get a new one.
+        def update_note(old_note:TNote) -> None:
+            backend_note = app.col().anki_collection.get_note(old_note.get_id())  # our instance is surely outdated, get a new one.
             note = JPNote.note_from_note(backend_note)
-            if isinstance(note, self._note_type):
-                # noinspection PyProtectedMember
-                if note._internal_update_generated_data():
-                    updated_notes.append(backend_note)
-                if note.get_id() in self._by_id:
-                    self._remove_from_cache(note)
-                    self._add_to_cache(note)
-                else:
-                    self._pending_add.append(note)
+            assert isinstance(note, self._note_type)
+            # noinspection PyProtectedMember
+            if note._internal_update_generated_data():
+                updated_notes.append(backend_note)
+            if note.get_id() in self._by_id:
+                self._remove_from_cache(note)
+
+            self._add_to_cache(note)
 
         progress_display_runner.process_with_progress(updates, update_note, "Updating cache", allow_cancel=False, delay_display=True , pause_cache_updates=False)
 
@@ -132,10 +145,6 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
                 current_time = time.time()
                 if current_time - self._last_deleted_note_time > 2: #We do no refreshes within two seconds of a deletion because this may crash anki
                     app.ui_utils().refresh(refresh_browser=False)
-
-    def _on_will_flush(self, backend_note: Note) -> None:
-        if backend_note.id:
-            self._updates[backend_note.id] = backend_note
 
     def _remove_from_cache(self, note: TNote) -> None:
         assert note.get_id()

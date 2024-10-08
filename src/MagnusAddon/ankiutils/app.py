@@ -11,22 +11,24 @@ from sysutils.lazy import Lazy
 from sysutils.typed import checked_cast
 
 
-_collection:Lazy[JPCollection]
-def _init_collection(collection: Collection) -> None:
-    global _collection
-    _collection = Lazy(lambda: JPCollection(collection))
+def _always_failing_init() -> JPCollection:
+    raise Exception("should never be called")
 
-def _reset() -> None:
+_collection:Lazy[JPCollection] = Lazy(_always_failing_init)
+def _reset1(_collection: Collection) -> None:
+    _reset2()
+
+def _reset2() -> None:
     global _collection
     if _collection.is_initialized():
         _collection.instance().destruct()
+        gc.collect()
 
-    gc.collect()
     _collection = Lazy(lambda: JPCollection(cast(AnkiQt,mw).col))
 
 
-gui_hooks.collection_did_load.append(_init_collection)
-gui_hooks.sync_did_finish.append(_reset)
+gui_hooks.collection_did_load.append(_reset1)
+gui_hooks.sync_did_finish.append(_reset2)
 
 def col() -> JPCollection: return _collection.instance()
 def anki_collection() -> Collection: return col().anki_collection

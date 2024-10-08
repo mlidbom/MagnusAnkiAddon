@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QProgressDialog, QApplication
+from PyQt6.QtWidgets import QMessageBox, QProgressDialog, QApplication
 from PyQt6.QtCore import Qt
 import time
 from typing import Callable, List, TypeVar
@@ -49,3 +49,10 @@ def process_with_progress(items: List[T], process_item: Callable[[T], None], mes
     finally:
         if pause_cache_updates: app.col().resume_cache_updates()
         if progress_dialog: progress_dialog.close()
+
+def show_dismissable_message(window_title: str, message:str) -> None:
+    msg_box = QMessageBox()
+    msg_box.setWindowTitle(window_title)
+    msg_box.setText(message)
+    msg_box.setStandardButtons(QMessageBox.StandardButton.Ok)
+    msg_box.exec()
