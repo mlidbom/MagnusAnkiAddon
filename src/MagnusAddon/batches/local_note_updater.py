@@ -1,6 +1,8 @@
 from ankiutils import app, query_builder
 from language_services.janome_ex.tokenizing import janome_ex
+from note.kanjinote import KanjiNote
 from note.sentencenote import SentenceNote
+from note.vocabnote import VocabNote
 
 from sysutils import progress_display_runner
 
@@ -24,15 +26,23 @@ def update_sentences() -> None:
 
 
 def update_kanji() -> None:
-    for kanji in app.col().kanji.all(): kanji.update_generated_data()
+    def _update_kanji(kanji: KanjiNote) -> None:
+        kanji.update_generated_data()
+
+    progress_display_runner.process_with_progress(app.col().kanji.all(), _update_kanji, "Updating kanji", allow_cancel=True)
 
 def update_vocab() -> None:
-    for vocab in app.col().vocab.all(): vocab.update_generated_data()
+    def _update_vocab(vocab: VocabNote) -> None:
+        vocab.update_generated_data()
+
+    progress_display_runner.process_with_progress(app.col().vocab.all(), _update_vocab, "Updating vocab", allow_cancel=True)
 
 
 def generate_sentences_for_context_sentences_with_audio() -> None:
-    for vocab in app.col().vocab.all():
+    def generate_sentences(vocab: VocabNote) -> None:
         vocab.generate_sentences_from_context_sentences(require_audio=True)
+
+    progress_display_runner.process_with_progress(app.col().vocab.all(), generate_sentences, "Generating sentences", allow_cancel=True)
 
 def convert_immersion_kit_sentences() -> None:
     immersion_kit_sences = app.anki_collection().find_notes(query_builder.immersion_kit_sentences())
