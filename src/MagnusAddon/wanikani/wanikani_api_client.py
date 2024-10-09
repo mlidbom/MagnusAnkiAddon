@@ -3,7 +3,7 @@ from typing import List
 
 from wanikani_api import models
 from wanikani_api.client import Client
-
+from sysutils import progress_display_runner
 
 class WanikaniClient:
     _instance = None
@@ -20,24 +20,28 @@ class WanikaniClient:
 
     def _init(self) -> WanikaniClient:
         if self._is_initialized is False:
-            self.v2_api_key = "ebeda84c-2f6a-423e-bfc7-3068796ed50a"
-            client = Client(self.v2_api_key)
+            progress = progress_display_runner.open_spinning_progress_dialog("Fetching Wanikani data")
+            try:
+                self.v2_api_key = "ebeda84c-2f6a-423e-bfc7-3068796ed50a"
+                client = Client(self.v2_api_key)
 
-            self._radical_list: List[models.Radical] = list(client.subjects(types="radical", fetch_all=True))
-            self._kanji_list: List[models.Kanji] = list(client.subjects(types="kanji", fetch_all=True))
-            self._vocab_list: List[models.Vocabulary] = list(client.subjects(types="vocabulary", fetch_all=True))
+                self._radical_list: List[models.Radical] = list(client.subjects(types="radical", fetch_all=True))
+                self._kanji_list: List[models.Kanji] = list(client.subjects(types="kanji", fetch_all=True))
+                self._vocab_list: List[models.Vocabulary] = list(client.subjects(types="vocabulary", fetch_all=True))
 
-            self._radical_list = [radical for radical in self._radical_list if radical.hidden_at is None]
-            self._kanji_list = [kanji for kanji in self._kanji_list if kanji.hidden_at is None]
-            self._vocab_list = [vocab for vocab in self._vocab_list if vocab.hidden_at is None]
+                self._radical_list = [radical for radical in self._radical_list if radical.hidden_at is None]
+                self._kanji_list = [kanji for kanji in self._kanji_list if kanji.hidden_at is None]
+                self._vocab_list = [vocab for vocab in self._vocab_list if vocab.hidden_at is None]
 
-            self._radical_dictionary = {radical.slug: radical for radical in self._radical_list}
-            self._kanji_dictionary = {kanji.characters: kanji for kanji in self._kanji_list}
-            self._vocab_dictionary = {vocab.characters: vocab for vocab in self._vocab_list}
+                self._radical_dictionary = {radical.slug: radical for radical in self._radical_list}
+                self._kanji_dictionary = {kanji.characters: kanji for kanji in self._kanji_list}
+                self._vocab_dictionary = {vocab.characters: vocab for vocab in self._vocab_list}
 
-            self._radical_id_dictionary = {radical.id: radical for radical in self._radical_list}
-            self._kanji_id_dictionary = {kanji.id: kanji for kanji in self._kanji_list}
-            self._vocab_id_dictionary = {vocab.id: vocab for vocab in self._vocab_list}
+                self._radical_id_dictionary = {radical.id: radical for radical in self._radical_list}
+                self._kanji_id_dictionary = {kanji.id: kanji for kanji in self._kanji_list}
+                self._vocab_id_dictionary = {vocab.id: vocab for vocab in self._vocab_list}
+            finally:
+                progress.close()
 
 
             self._is_initialized = True
