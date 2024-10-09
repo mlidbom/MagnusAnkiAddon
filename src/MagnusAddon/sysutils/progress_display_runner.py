@@ -21,6 +21,7 @@ def open_spinning_progress_dialog(message: str) -> Closable:
     progress_dialog.setWindowModality(Qt.WindowModality.ApplicationModal)
     progress_dialog.setRange(0, 0)  # Indeterminate range for spinning effect
     progress_dialog.show()
+    QApplication.processEvents()
 
     def close() -> None:
         progress_dialog.close()
