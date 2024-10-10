@@ -1,3 +1,5 @@
+# noqa
+
 import functools
 import operator
 import pprint
@@ -8,6 +10,8 @@ from wanikani_api import constants
 from wanikani_api.exceptions import UnknownResourceException
 
 
+
+# noinspection PyMissingTypeHints
 class Resource:
     def __init__(self, json_data, *args, **kwargs):
         self.resource = json_data["object"]
@@ -25,7 +29,7 @@ class Resource:
     def raw_json(self):
         return pprint.pformat(self._raw)
 
-
+# noinspection PyMissingTypeHints
 class Iterator:
     def __init__(self, current_page, api_request, max_results=None, fetch_all=False):
         self.current_page = current_page
@@ -66,7 +70,7 @@ class Iterator:
     def __len__(self):
         return functools.reduce(operator.add, [len(page) for page in self.pages])
 
-
+# noinspection PyMissingTypeHints
 class Page(Resource):
     resource = "collection"
 
@@ -91,7 +95,7 @@ class Page(Resource):
     def __len__(self):
         return len(self.data)
 
-
+# noinspection PyMissingTypeHints
 class Subjectable:
     """
     A Mixin allowing a model to quickly fetch related subjects.
@@ -126,7 +130,7 @@ class Subjectable:
         else:
             raise AttributeError("no attribute named subjects!")
 
-
+# noinspection PyMissingTypeHints
 class Preferences():
     def __init__(self, preferences_json):
         self.default_voice_actor_id = preferences_json.get("default_voice_actor_id")
@@ -136,6 +140,7 @@ class Preferences():
         self.lessons_presentation_order = preferences_json["lessons_presentation_order"]
         self.reviews_display_srs_indicator = preferences_json["reviews_display_srs_indicator"]
 
+# noinspection PyMissingTypeHints
 class UserInformation(Resource):
     """
     This is a simple container for information returned from the ``/user/`` endpoint. This is all information related to
@@ -167,7 +172,7 @@ class UserInformation(Resource):
             self.current_vacation_started_at,
         )
 
-
+# noinspection PyMissingTypeHints
 class Subject(Resource):
     """
     This is the base Subject for Wanikani. This contains information common to Kanji, Vocabulary, and Radicals.
@@ -203,7 +208,7 @@ class Subject(Resource):
     def __str__(self) -> str:
         return f"{['['+meaning.meaning+']' if meaning.primary else meaning.meaning for meaning in self.meanings]}:{[character for character in self.characters] if self.characters else 'UNAVAILABLE'}"
 
-
+# noinspection PyMissingTypeHints
 class Radical(Subject):
     """
     A model for the Radical object.
@@ -227,7 +232,7 @@ class Radical(Subject):
 
 
 
-
+# noinspection PyMissingTypeHints
 class Vocabulary(Subject):
     """
     A model for the Vocabulary Resource
@@ -258,7 +263,31 @@ class Vocabulary(Subject):
     def __str__(self):
         return f"Vocabulary: {super(Vocabulary, self).__str__()}"
 
+# noinspection PyMissingTypeHints
+class KanaVocabulary(Subject):
+    """
+    A model for the Vocabulary Resource
+    """
 
+    resource = "kana_vocabulary"
+
+    def __init__(self, json_data, *args, **kwargs):
+        super().__init__(json_data, *args, **kwargs)
+        self.parts_of_speech = self._resource[
+            "parts_of_speech"
+        ]  #: A list of strings, each of which is a part of speech.
+
+        self.context_sentences = [
+            ContextSentence(context_sentence_json) for context_sentence_json in self._resource["context_sentences"]
+        ]
+        self.pronunciation_audios = [
+            PronunciationAudio(pronunciation_json) for pronunciation_json in self._resource["pronunciation_audios"]
+        ]
+
+    def __str__(self):
+        return f"Vocabulary: {super(KanaVocabulary, self).__str__()}"
+
+# noinspection PyMissingTypeHints
 class Kanji(Subject):
     """
     A model for the Kanji Resource
@@ -284,6 +313,7 @@ class Kanji(Subject):
     def __str__(self):
         return f"Kanji: {super(Kanji, self).__str__()}"
 
+# noinspection PyMissingTypeHints
 class AuxiliaryMeaning:
     """
     Simple data class for handling auxiliary meanings
@@ -295,6 +325,7 @@ class AuxiliaryMeaning:
     def __str__(self) -> str:
         return f"{self.meaning}({type})"
 
+# noinspection PyMissingTypeHints
 class Subscription:
     def __init__(self, subscription_json):
         self.active = subscription_json["active"]
@@ -305,6 +336,7 @@ class Subscription:
     def __str__(self) -> str:
         return f"{'active' if self.active else 'inactive'}:{self.type}:{self.max_level_granted}:{self.period_ends_at}"
 
+# noinspection PyMissingTypeHints
 class Meaning:
     """
     Simple class holding information about a given meaning of a vocabulary/Kanji
@@ -323,6 +355,7 @@ class Meaning:
         return self.meaning
 
 
+# noinspection PyMissingTypeHints
 class PronunciationAudio:
     """
     This class holds the link to the pronunciation audio, as well as the related metadata.
@@ -342,7 +375,7 @@ class PronunciationAudio:
 
 
 
-
+# noinspection PyMissingTypeHints
 class ContextSentence:
     """
     Class to hold english and japanese context sentence information
@@ -351,7 +384,7 @@ class ContextSentence:
         self.english = sentence_json["en"]
         self.japanese = sentence_json["ja"]
 
-
+# noinspection PyMissingTypeHints
 class Reading:
     """
     Simple class holding information about a given reading of a vocabulary/kanji
@@ -365,7 +398,7 @@ class Reading:
             "accepted_answer"
         ]  #: Whether this answer is accepted as correct by Wanikani during review.
 
-
+# noinspection PyMissingTypeHints
 class Assignment(Resource, Subjectable):
     """
     Simple class holding information about Assignmetns.
@@ -388,7 +421,7 @@ class Assignment(Resource, Subjectable):
         self.resurrected_at_at = parse8601(self._resource["resurrected_at"])
         self.hidden = self._resource["hidden"]
 
-
+# noinspection PyMissingTypeHints
 class Reset(Resource):
     """
     Simple model holding resource information
@@ -403,7 +436,7 @@ class Reset(Resource):
         self.target_level = self._resource["target_level"]
         self.confirmed_at = parse8601(self._resource["confirmed_at"])
 
-
+# noinspection PyMissingTypeHints
 class ReviewStatistic(Resource):
     """
     Simple model holding ReviewStatistic Information
@@ -427,7 +460,7 @@ class ReviewStatistic(Resource):
         self.percentage_correct = self._resource["percentage_correct"]
         self.hidden = self._resource["hidden"]
 
-
+# noinspection PyMissingTypeHints
 class StudyMaterial(Resource, Subjectable):
     """
     Simple model holding information about Study Materials
@@ -446,13 +479,13 @@ class StudyMaterial(Resource, Subjectable):
         self.meaning_synonyms = self._resource["meaning_synonyms"]
         self.hidden = self._resource["hidden"]
 
-
+# noinspection PyMissingTypeHints
 class Lessons(object):
     def __init__(self, json_data, *args, **kwargs):
         self.subject_ids = json_data["subject_ids"]
         self.available_at = parse8601(json_data["available_at"])
 
-
+# noinspection PyMissingTypeHints
 class UpcomingReview(Subjectable):
     def __init__(self, json_data, *args, **kwargs):
         super().__init__(json_data, *args, **kwargs)
@@ -460,7 +493,7 @@ class UpcomingReview(Subjectable):
         self.subject_ids = json_data["subject_ids"]
         self.available_at = parse8601(json_data["available_at"])
 
-
+# noinspection PyMissingTypeHints
 class Summary(Resource):
     resource = "report"
 
@@ -475,7 +508,7 @@ class Summary(Resource):
             for review_json in self._resource["reviews"]
         ]
 
-
+# noinspection PyMissingTypeHints
 class Review(Resource, Subjectable):
     resource = "review"
 
@@ -490,7 +523,7 @@ class Review(Resource, Subjectable):
         self.incorrect_meaning_answers = self._resource["incorrect_meaning_answers"]
         self.incorrect_reading_answers = self._resource["incorrect_reading_answers"]
 
-
+# noinspection PyMissingTypeHints
 class LevelProgression(Resource):
     resource = "level_progression"
 
@@ -503,7 +536,7 @@ class LevelProgression(Resource):
         self.passed_at = parse8601(self._resource["passed_at"])
         self.completed_at = parse8601(self._resource["completed_at"])
 
-
+# noinspection PyMissingTypeHints
 def parse8601(time_field):
     if time_field:
         return dateutil.parser.parse(time_field)
@@ -521,12 +554,13 @@ resources = {
     Reset.resource: Reset,
     Kanji.resource: Kanji,
     Vocabulary.resource: Vocabulary,
+    KanaVocabulary.resource: KanaVocabulary,
     Radical.resource: Radical,
     Summary.resource: Summary,
     Page.resource: Page,
 }
 
-
+# noinspection PyMissingTypeHints
 def factory(resource_json, *args, **kwargs):
     try:
         return resources[resource_json["object"]](resource_json, *args, **kwargs)

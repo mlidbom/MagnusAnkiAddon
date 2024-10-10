@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import List
+from typing import Any, List
 
 from wanikani_api import models
 from wanikani_api.client import Client
@@ -15,15 +15,15 @@ class WanikaniClient:
 
     def __init__(self) -> None:
         self._is_initialized = False
-
+        v2_api_key = "ebeda84c-2f6a-423e-bfc7-3068796ed50a"
+        self._client = Client(v2_api_key)  # type: ignore
 
     def _init(self) -> WanikaniClient:
         if self._is_initialized is False:
             from sysutils import progress_display_runner
             progress = progress_display_runner.open_spinning_progress_dialog("Fetching Wanikani data")
             try:
-                self.v2_api_key = "ebeda84c-2f6a-423e-bfc7-3068796ed50a"
-                client = Client(self.v2_api_key)
+                client = self._client
 
                 self._radical_list: List[models.Radical] = list(client.subjects(types="radical", fetch_all=True))
                 self._kanji_list: List[models.Kanji] = list(client.subjects(types="kanji", fetch_all=True))
@@ -58,6 +58,27 @@ class WanikaniClient:
     def list_vocabulary(self) -> List[models.Vocabulary]:
         self._init()
         return self._vocab_list
+
+    _kana_vocab_list: List[models.Vocabulary] = list()
+    _kana_vocab_dictionary: dict[Any, models.Vocabulary] = {}
+    _kana_vocab_id_dictionary: dict[Any,models.Vocabulary] = {}
+    def list_kana_vocabulary(self) -> List[models.Vocabulary]:
+        if not self._kana_vocab_list:
+            from sysutils import progress_display_runner
+            progress = progress_display_runner.open_spinning_progress_dialog("Fetching Wanikani data")
+            try:
+                client = self._client
+
+                self._kana_vocab_list: List[models.Vocabulary] = list(client.subjects(types="kana_vocabulary", fetch_all=True))
+
+                self._kana_vocab_list = [kana_vocab for kana_vocab in self._kana_vocab_list if kana_vocab.hidden_at is None]
+                self._kana_vocab_dictionary = {vocab.characters: vocab for vocab in self._kana_vocab_list}
+                self._kana_vocab_id_dictionary = {vocab.id: vocab for vocab in self._kana_vocab_list}
+            finally:
+                progress.close()
+
+
+        return self._kana_vocab_list
 
     def get_radical(self, radical_name: str) -> models.Radical:
         self._init()

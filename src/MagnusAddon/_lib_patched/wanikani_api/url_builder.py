@@ -1,6 +1,6 @@
 import datetime
 
-
+# noinspection PyMissingTypeHints
 class UrlBuilder:
     def __init__(self, api_root):
         self.api_root = api_root

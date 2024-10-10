@@ -1,0 +1,1 @@
+import _lib_patched # noqa NOTE: this line sets up lib paths, lib imports before here do not work when running in anki

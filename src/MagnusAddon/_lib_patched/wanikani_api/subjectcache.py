@@ -1,4 +1,8 @@
+# noqa
+
+# noinspection PyMissingTypeHints
 class SubjectCache:
+    # noinspection PyMissingTypeHints
     class __SubjectCache:
         def __init__(self, subjects):
 
