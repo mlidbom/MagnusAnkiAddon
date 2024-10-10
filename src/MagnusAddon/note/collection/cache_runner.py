@@ -30,7 +30,7 @@ class CacheRunner:
         assert len(self._note_types) == len(NoteTypes.ALL)
 
         self._timer = QTimer(mw)
-        qconnect(self._timer.timeout, self._on_timer)
+        qconnect(self._timer.timeout, self.flush_updates)
 
         hooks.notes_will_be_deleted.append(self._on_will_be_removed)
         hooks.note_will_be_added.append(self._on_will_be_added)
@@ -48,7 +48,7 @@ class CacheRunner:
         self._timer.disconnect()
         for destructor in self._destructors: destructor()
 
-    def _on_timer(self) -> None:
+    def flush_updates(self) -> None:
         self._check_for_updated_note_types_and_reset_app_if_found()
         for subscriber in self._merge_pending_subscribers: subscriber()
 
