@@ -49,7 +49,7 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
         def prefer_primary_form(_sentence:SentenceNote) -> int: return 0 if contains_primary_form(_sentence) else 1
         def dislike_tts_sentences(_sentence:SentenceNote) -> int: return 1 if _sentence.has_tag(Mine.Tags.TTSAudio) else 0
         def prefer_short_questions(_sentence:SentenceNote) -> int: return len(_sentence.get_question())
-        def prefer_high_priority_tag(_sentence: SentenceNote) -> int: return 0 if _sentence.has_tag(Mine.Tags.high_priority) else 1
+        def sort_by_priority_tag(_sentence: SentenceNote) -> int: return _sentence.priority_tag_value()
         def dislike_low_priority_tag(_sentence: SentenceNote) -> int: return 1 if _sentence.has_tag(Mine.Tags.low_priority) else 0
         def dislike_no_translation(_sentence: SentenceNote) -> int: return 1 if not _sentence.get_answer().strip() else 0
 
@@ -64,7 +64,7 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
 
         return sorted(_sentences, key=lambda x: (prefer_studying_read(x),
                                                  prefer_studying_listening(x),
-                                                 prefer_high_priority_tag(x),
+                                                 sort_by_priority_tag(x),
                                                  dislike_tts_sentences(x),
                                                  prefer_primary_form(x),
                                                  prefer_highlighted(x),

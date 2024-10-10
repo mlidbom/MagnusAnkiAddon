@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import sys
 from abc import ABC
 from typing import Any, cast, Sequence
 
@@ -130,6 +131,13 @@ class JPNote(ABC):
     def get_tags(self) -> list[str]: return self._note.tags
 
     def has_tag(self, tag: str) -> bool: return self._note.has_tag(tag)
+
+    def priority_tag_value(self) -> int:
+        for tag in self._note.tags:
+            if tag.startswith("_::priority::"):
+                return int(tag.replace("_::priority::", ""))
+        return sys.maxsize
+
     def remove_tag(self, tag: str) -> None:
         if self.has_tag(tag):
             self._note.remove_tag(tag)
