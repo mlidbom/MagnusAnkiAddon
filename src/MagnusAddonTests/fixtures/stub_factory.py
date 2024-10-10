@@ -16,13 +16,18 @@ def get_thread_local_ui_utils() -> IUIUtils:
 
 
 @contextmanager
-def stub_ui_utils() -> Generator[None, None, None]:
+def _stub_ui_utils_real() -> Generator[None, None, None]:
     _thread_local.ui_utils = UIUtilsStub()
     app.ui_utils = get_thread_local_ui_utils
     yield
 
 @contextmanager
-def stub_progress_runner() -> Generator[None, None, None]:
+def stub_ui_dependencies() -> Generator[None, None, None]:
+    with (_stub_ui_utils_real(), _stub_progress_runner()):
+        yield
+
+@contextmanager
+def _stub_progress_runner() -> Generator[None, None, None]:
 
     def _open_spinning_progress_dialog(message: str) -> Closable:
         print("#####################HELLLOOOOOO######################")

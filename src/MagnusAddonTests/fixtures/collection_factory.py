@@ -7,7 +7,7 @@ from typing import Generator
 from anki.collection import Collection
 from fixtures.base_data import note_type_factory
 from fixtures.base_data.sample_data import kanji_spec, sentence_spec, vocab_spec
-from fixtures.stub_factory import stub_progress_runner, stub_ui_utils
+from fixtures.stub_factory import stub_ui_dependencies
 from note.kanjinote import KanjiNote
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
@@ -21,7 +21,7 @@ def inject_empty_anki_collection_with_note_types() -> Generator[None, None, None
     jp_collection: JPCollection
     def get_jp_collection() -> JPCollection: return jp_collection
 
-    with tempfile.TemporaryDirectory() as tmp_dirname:
+    with (tempfile.TemporaryDirectory() as tmp_dirname, stub_ui_dependencies()):
         collection_file = path.join(tmp_dirname, "collection.anki2")
         anki_collection = Collection(collection_file)
         jp_collection = JPCollection(anki_collection)
@@ -39,7 +39,7 @@ def populate_collection(collection: Collection) -> None:
 @contextmanager
 def inject_anki_collection_with_generated_sample_data() -> Generator[None, None, None]:
     from ankiutils import app
-    with (stub_progress_runner(), stub_ui_utils(), inject_empty_anki_collection_with_note_types()):
+    with inject_empty_anki_collection_with_note_types():
         for kanji in kanji_spec.test_kanji_list:
             KanjiNote.create(kanji.question, kanji.answer, kanji.on_readings, kanji.kun_reading)
 

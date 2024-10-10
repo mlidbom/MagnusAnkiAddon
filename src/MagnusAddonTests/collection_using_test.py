@@ -3,11 +3,10 @@ import pytest
 
 from fixtures.collection_factory import inject_empty_anki_collection_with_note_types
 from ankiutils import app
-from fixtures.stub_factory import stub_progress_runner
 
 @pytest.fixture(scope="function", autouse=True)
 def setup_object() -> Generator[None, None, None]:
-    with (stub_progress_runner(), inject_empty_anki_collection_with_note_types()):
+    with inject_empty_anki_collection_with_note_types():
         yield
 
 
