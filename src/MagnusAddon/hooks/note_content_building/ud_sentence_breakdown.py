@@ -10,7 +10,7 @@ from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
 from sysutils import kana_utils
 from viewmodels.sentence_breakdown import sentence_breakdown_viewmodel
-from viewmodels.sentence_breakdown.sentence_breakdown_viewmodel import NodeViewModel
+from viewmodels.sentence_breakdown.sentence_breakdown_viewmodel import NodeViewModel, VocabHit
 
 def _node_html(node: NodeViewModel, excluded: set[str], highlighted: set[str], depth: int) -> str:
     def priority_class(question: str) -> str:
@@ -18,7 +18,7 @@ def _node_html(node: NodeViewModel, excluded: set[str], highlighted: set[str], d
 
     html = ""
 
-    vocab_hits = node.surface_vocab_hits + node.base_vocab_hits
+    vocab_hits:list[VocabHit] = node.surface_vocab_hits + node.base_vocab_hits
     vocab_hits = [voc for voc in vocab_hits if voc.hit_form not in excluded]
     exact_match = [voc for voc in vocab_hits if voc.is_exact_match()]
     if exact_match:

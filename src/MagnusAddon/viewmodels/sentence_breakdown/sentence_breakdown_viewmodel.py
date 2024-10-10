@@ -9,7 +9,7 @@ from sysutils import kana_utils
 
 missing_vocab_answer = "---"
 class VocabHit:
-    def __init__(self, surface_form: str, lookup_form: str, hit_form: str, answer: str, readings:list[str], meta_tags:str, meta_tags_html: str):
+    def __init__(self, surface_form: str, lookup_form: str, hit_form: str, answer: str, readings:list[str], meta_tags:str, meta_tags_html: str, vocab: VocabNote | None = None) -> None:
         self.surface_form = surface_form
         self.lookup_form = lookup_form if lookup_form != surface_form else ""
         self.hit_form = hit_form if hit_form != surface_form and hit_form != lookup_form else ""
@@ -17,6 +17,7 @@ class VocabHit:
         self.readings = readings
         self.meta_tags = meta_tags
         self.meta_tags_html = meta_tags_html
+        self.vocab = vocab
 
     def __repr__(self) -> str: return f"""surface:{self.surface_form} lookup:{self.lookup_form}   hit:{self.hit_form}    answer:{self.answer}"""
 
@@ -31,7 +32,8 @@ class VocabHit:
                         answer=vocab.get_answer(),
                         readings=vocab.get_readings(),
                         meta_tags=vocab.get_meta_tags(),
-                        meta_tags_html=vocab.get_meta_tags_html(include_studying_sentence_statistics=False))
+                        meta_tags_html=vocab.get_meta_tags_html(include_studying_sentence_statistics=False),
+                        vocab=vocab)
 
     @staticmethod
     def base_from_vocab(parent: NodeViewModel, vocab: VocabNote) -> VocabHit:
@@ -41,7 +43,8 @@ class VocabHit:
                         answer=vocab.get_answer(),
                         readings=vocab.get_readings(),
                         meta_tags=vocab.get_meta_tags(),
-                        meta_tags_html=vocab.get_meta_tags_html(include_studying_sentence_statistics=False))
+                        meta_tags_html=vocab.get_meta_tags_html(include_studying_sentence_statistics=False),
+                        vocab=vocab)
     @classmethod
     def missing_surface(cls, parent: NodeViewModel) -> VocabHit:
         return VocabHit(surface_form=parent.surface,
