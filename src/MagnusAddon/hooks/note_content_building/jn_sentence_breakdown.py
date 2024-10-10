@@ -52,8 +52,8 @@ def _create_html_from_nodes(nodes: list[TreeParserNode], excluded: set[str], ext
             found_words = set((voc.get_question() for voc in vocabs)) | set(ex_sequence.flatten([voc.get_readings() for voc in vocabs]))
 
         if vocabs:
-            for vocab in vocabs:
-                html += _vocab_node_html(node, excluded, extra, vocab.get_display_question(), vocab.get_answer(), depth)
+            for voc in vocabs:
+                html += _vocab_node_html(node, excluded, extra, voc.get_display_question(), voc.get_answer(), depth)
 
             if (node.is_inflected()
                     and node.surface not in found_words
