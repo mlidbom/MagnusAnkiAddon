@@ -7,6 +7,7 @@ from typing import Generator
 from anki.collection import Collection
 from fixtures.base_data import note_type_factory
 from fixtures.base_data.sample_data import kanji_spec, sentence_spec, vocab_spec
+from fixtures.stub_factory import stub_progress_runner
 from note.kanjinote import KanjiNote
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
@@ -37,7 +38,7 @@ def populate_collection(collection: Collection) -> None:
 
 @contextmanager
 def inject_anki_collection_with_generated_sample_data() -> Generator[None, None, None]:
-    with inject_empty_anki_collection_with_note_types():
+    with (stub_progress_runner(), inject_empty_anki_collection_with_note_types()):
         for kanji in kanji_spec.test_kanji_list:
             KanjiNote.create(kanji.question, kanji.answer, kanji.on_readings, kanji.kun_reading)
 

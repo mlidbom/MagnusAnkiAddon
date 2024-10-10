@@ -8,14 +8,24 @@ from sysutils import timeutil
 
 T = TypeVar('T')
 
-def open_spinning_progress_dialog(message: str) -> QProgressDialog:
+class Closable:
+    def __init__(self, close_action: Callable[[], None]) -> None:
+        self.close_action = close_action
+
+    def close(self) -> None: self.close_action()
+
+
+def open_spinning_progress_dialog(message: str) -> Closable:
     progress_dialog = QProgressDialog(f"{message}", None, 0, 0)
     progress_dialog.setWindowTitle(f"{message}")
     progress_dialog.setWindowModality(Qt.WindowModality.ApplicationModal)
     progress_dialog.setRange(0, 0)  # Indeterminate range for spinning effect
     progress_dialog.show()
 
-    return progress_dialog
+    def close() -> None:
+        progress_dialog.close()
+
+    return Closable(close)
 
 def process_with_progress(items: List[T], process_item: Callable[[T], None], message:str, allow_cancel: bool = True, delay_display: bool = False, pause_cache_updates: bool = True) -> None:
     total_items = len(items)
