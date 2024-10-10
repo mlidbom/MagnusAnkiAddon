@@ -1,5 +1,4 @@
 import gc
-from typing import cast
 
 from anki.collection import Collection
 from aqt import gui_hooks, mw, AnkiQt  # type: ignore
@@ -24,7 +23,7 @@ def reset() -> None:
         _collection.instance().destruct()
         gc.collect()
 
-    _collection = Lazy(lambda: JPCollection(cast(AnkiQt,mw).col))
+    _collection = Lazy(lambda: JPCollection(checked_cast(AnkiQt,mw).col))
 
 
 gui_hooks.collection_will_temporarily_close.append(_reset1)
