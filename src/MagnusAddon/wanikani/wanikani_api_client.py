@@ -59,17 +59,17 @@ class WanikaniClient:
         self._init()
         return self._vocab_list
 
-    _kana_vocab_list: List[models.KanaVocabulary] = list()
-    _kana_vocab_dictionary: dict[Any, models.KanaVocabulary] = {}
-    _kana_vocab_id_dictionary: dict[Any,models.KanaVocabulary] = {}
-    def list_kana_vocabulary(self) -> List[models.KanaVocabulary]:
+    _kana_vocab_list: List[models.Vocabulary] = list()
+    _kana_vocab_dictionary: dict[Any, models.Vocabulary] = {}
+    _kana_vocab_id_dictionary: dict[Any,models.Vocabulary] = {}
+    def list_kana_vocabulary(self) -> List[models.Vocabulary]:
         if not self._kana_vocab_list:
             from sysutils import progress_display_runner
             progress = progress_display_runner.open_spinning_progress_dialog("Fetching Wanikani data")
             try:
                 client = self._client
 
-                self._kana_vocab_list: List[models.KanaVocabulary] = list(client.subjects(types="kana_vocabulary", fetch_all=True))
+                self._kana_vocab_list: List[models.Vocabulary] = list(client.subjects(types="kana_vocabulary", fetch_all=True))
 
                 self._kana_vocab_list = [kana_vocab for kana_vocab in self._kana_vocab_list if kana_vocab.hidden_at is None]
                 self._kana_vocab_dictionary = {vocab.characters: vocab for vocab in self._kana_vocab_list}
