@@ -33,8 +33,9 @@ def _stub_progress_runner() -> Generator[None, None, None]:
         print("#####################HELLLOOOOOO######################")
         return Closable(lambda: None)
 
-    T = TypeVar('T')
-    def _process_with_progress(items: List[T], process_item: Callable[[T], None], message: str, allow_cancel: bool = True, delay_display: bool = False, pause_cache_updates: bool = True) -> None:
+    t = TypeVar('t')
+
+    def _process_with_progress(items: List[t], process_item: Callable[[t], None], message: str, allow_cancel: bool = True, delay_display: bool = False, pause_cache_updates: bool = True) -> None:
         for item in items:
             process_item(item)
 
