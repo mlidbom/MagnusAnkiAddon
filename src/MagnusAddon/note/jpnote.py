@@ -66,9 +66,28 @@ class JPNote(ABC):
         from ankiutils import app
         app.anki_collection().remove_notes([self._note.id])
 
+    def anki_note(self) -> Note: return self._note
     def get_id(self) -> NoteId: return self._note.id
     def card_ids(self) -> Sequence[CardId]: return self._note.card_ids()
     def is_wani_note(self) -> bool: return Mine.Tags.Wani in self._note.tags
+
+
+    def schema_matches(self, note: Note) -> bool:
+        own_schema = self._note._fmap # noqa
+        other_schema = note._fmap # noqa
+        if len(own_schema) != len(other_schema): return False
+        for key, value in own_schema.items():
+            if key not in other_schema:
+                return False
+
+            own_index = value[0]
+            other_index = other_schema[key][0]
+
+            if own_index != other_index: return False
+
+        return True
+
+
 
     def update_generated_data(self) -> None:
         noteutils.remove_from_studying_cache(self.get_id())

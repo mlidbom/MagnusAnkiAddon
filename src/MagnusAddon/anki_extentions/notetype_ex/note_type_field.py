@@ -1,5 +1,7 @@
+from __future__ import annotations
 from typing import Any
 
+from sysutils import typed
 
 class NoteFieldEx:
     def __init__(self, name: str):
@@ -28,3 +30,21 @@ class NoteFieldEx:
             'collapsed': self.collapsed,
             'excludeFromSearch': self.excludeFromSearch,
             'media': self.media}
+
+    @classmethod
+    def from_dict(cls, d: dict[str, Any]) -> NoteFieldEx:
+        instance = NoteFieldEx(d['name'])
+
+        instance.ord = typed.int_(d['ord'])
+        instance.sticky = typed.bool_(d['sticky'])
+        instance.rtl = typed.bool_(d['rtl'])
+        instance.font = typed.str_(d['font'])
+        instance.size = typed.int_(d['size'])
+        instance.description = typed.str_(d['description'])
+        instance.plainText = typed.bool_(d['plainText'])
+        instance.collapsed = typed.bool_(d['collapsed'])
+        instance.excludeFromSearch = typed.bool_(d['excludeFromSearch'])
+        instance.media = d['media']
+
+        return instance
+

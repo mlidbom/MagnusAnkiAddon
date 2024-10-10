@@ -5,6 +5,8 @@ from typing import Any, TypeVar
 
 def str_(value: Any) -> str: return checked_cast(str, value)
 def int_(value: Any) -> int: return checked_cast(int, value)
+def bool_(value: Any) -> bool: return checked_cast(bool, value)
+
 
 CastT = TypeVar('CastT')
 def checked_cast(cls: type[CastT], var: object) -> CastT:

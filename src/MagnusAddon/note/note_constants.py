@@ -38,6 +38,8 @@ class NoteTypes:
     Radical = "_Radical"
     Sentence = "_japanese_sentence"
 
+    ALL = {Kanji, Vocab, Radical, Sentence}
+
 class NoteFields:
     note_id = "nid"
     class VocabNoteType:
