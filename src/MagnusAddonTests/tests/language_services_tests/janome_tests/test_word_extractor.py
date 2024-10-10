@@ -46,130 +46,45 @@ def setup_object() -> Generator[None, None, None]:
 
 @pytest.mark.parametrize('sentence, expected_output', [
     ("走る",
-     [ExtractedWord('走る')]),
+     ['走る']),
     ("走って",
-     [ExtractedWord('走る'),
-      ExtractedWord('て')]),
+     ['走る', 'て']),
     ("これをください。",
-     [ExtractedWord('これ'),
-      ExtractedWord('を'),
-      ExtractedWord('くださる'),
-      ExtractedWord('ください')]),
+     ['これ', 'を', 'くださる', 'ください']),
     ("ハート形",
-     [ExtractedWord('ハート'),
-      ExtractedWord('ハート形'),
-      ExtractedWord('形')]),
+     ['ハート', 'ハート形', '形']),
     ("私が行きましょう。",
-     [ExtractedWord('私'),
-      ExtractedWord('が'),
-      ExtractedWord('行く'),
-      ExtractedWord('行き'),
-      ExtractedWord('ます'),
-      ExtractedWord('ましょ'),
-      ExtractedWord('ましょう'),
-      ExtractedWord('う')]),
+     ['私', 'が', '行く', '行き', 'ます', 'ましょ', 'ましょう', 'う']),
     ("１人でいる時間がこれほどまでに長く感じるとは",
-     [ExtractedWord('１'),
-      ExtractedWord('１人'),
-      ExtractedWord('１人で'),
-      ExtractedWord('人'),
-      ExtractedWord('で'),
-      ExtractedWord('いる'),
-      ExtractedWord('時間'),
-      ExtractedWord('が'),
-      ExtractedWord('これ'),
-      ExtractedWord('これほど'),
-      ExtractedWord('ほど'),
-      ExtractedWord('まで'),
-      ExtractedWord('までに'),
-      ExtractedWord('に'),
-      ExtractedWord('長い'),
-      ExtractedWord('長く'),
-      ExtractedWord('感じる'),
-      ExtractedWord('と'),
-      ExtractedWord('とは'),
-      ExtractedWord('は')]),
+     ['１', '１人', '１人で', '人', 'で', 'いる', '時間', 'が', 'これ', 'これほど', 'ほど', 'まで', 'までに', 'に', '長い', '長く', '感じる', 'と', 'とは', 'は']),
     ("どうやってここを知った。",
-     [ExtractedWord('どう'),
-      ExtractedWord('どうやって'),
-      ExtractedWord('やる'),
-      ExtractedWord('て'),
-      ExtractedWord('ここ'),
-      ExtractedWord('を'),
-      ExtractedWord('知る'),
-      ExtractedWord('た')]),
+     ['どう', 'どうやって', 'やる', 'て', 'ここ', 'を', '知る', 'た']),
     ("声出したら駄目だからね",
-     [ExtractedWord('声'),
-      ExtractedWord('出す'),
-      ExtractedWord('出し'),
-      ExtractedWord('た'),
-      ExtractedWord('たら'),
-      ExtractedWord('駄目'),
-      ExtractedWord('だ'),
-      ExtractedWord('だから'),
-      ExtractedWord('から'),
-      ExtractedWord('ね')]),
+     ['声', '出す', '出し', 'た', 'たら', '駄目', 'だ', 'だから', 'から', 'ね']),
     ("彼の日本語のレベルは私と同じ位だ。",
-     [ExtractedWord('彼'),
-      ExtractedWord('彼の'),
-      ExtractedWord('の'),
-      ExtractedWord('日本語'),
-      ExtractedWord('レベル'),
-      ExtractedWord('は'),
-      ExtractedWord('私'),
-      ExtractedWord('と'),
-      ExtractedWord('同じ'),
-      ExtractedWord('同じ位'),
-      ExtractedWord('位'),
-      ExtractedWord('だ')]
-     ),
+     ['彼', '彼の', 'の', '日本語', 'レベル', 'は', '私', 'と', '同じ', '同じ位', '位', 'だ']),
     ("それなのに 周りは化け物が出ることで有名だと聞き",
-     [ExtractedWord('それなのに'),
-      ExtractedWord('周り'),
-      ExtractedWord('は'),
-      ExtractedWord('化け物'),
-      ExtractedWord('が'),
-      ExtractedWord('出る'),
-      ExtractedWord('こと'),
-      ExtractedWord('で'),
-      ExtractedWord('有名'),
-      ExtractedWord('だ'),
-      ExtractedWord('と'),
-      ExtractedWord('聞く'),
-      ExtractedWord('聞き')]
-     )
+     ['それなのに', '周り', 'は', '化け物', 'が', '出る', 'こと', 'で', '有名', 'だ', 'と', '聞く', '聞き'] )
 ])
-def test_identify_words(sentence: str, expected_output: list[ExtractedWord]) -> None:
-    result = word_extractor.extract_words(sentence)
+def test_identify_words(sentence: str, expected_output: list[str]) -> None:
+    result = [w.word for w in  word_extractor.extract_words(sentence)]
+
     assert result == expected_output
 
 @pytest.mark.parametrize('sentence, custom_words, expected_output', [
     ("彼の日本語のレベルは私と同じ位だ。",
      ["彼の日本語", "日本語のレベル"],
-     [ExtractedWord('彼'),
-      ExtractedWord('彼の'),
-      ExtractedWord('彼の日本語'),
-      ExtractedWord('の'),
-      ExtractedWord('日本語'),
-      ExtractedWord('日本語のレベル'),
-      ExtractedWord('レベル'),
-      ExtractedWord('は'),
-      ExtractedWord('私'),
-      ExtractedWord('と'),
-      ExtractedWord('同じ'),
-      ExtractedWord('同じ位'),
-      ExtractedWord('位'),
-      ExtractedWord('だ')]
+     ['彼', '彼の', '彼の日本語', 'の', '日本語', '日本語のレベル', 'レベル', 'は', '私', 'と', '同じ', '同じ位', '位', 'だ']
      )
 ])
-def test_custom_vocab_characters(sentence: str, custom_words:list[str], expected_output: list[ExtractedWord]) -> None:
+def test_custom_vocab_words(sentence: str, custom_words:list[str], expected_output: list[str]) -> None:
     from ankiutils import app
 
     for custom_word in custom_words:
         VocabNote.create(custom_word, "", [""])
-
     app.col().flush_cache_updates()
-    result = word_extractor.extract_words(sentence)
+
+    result = [w.word for w in  word_extractor.extract_words(sentence)]
     assert result == expected_output
 
 def test_ignores_noise_characters() -> None:
