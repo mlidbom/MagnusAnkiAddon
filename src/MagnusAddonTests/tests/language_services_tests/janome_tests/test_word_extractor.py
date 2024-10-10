@@ -1,15 +1,24 @@
+from typing import Generator
+
 import pytest
 
+from fixtures.collection_factory import inject_empty_anki_collection_with_note_types
 from language_services.janome_ex.word_extraction.extracted_word import ExtractedWord
 from language_services.janome_ex.tokenizing.jn_tokenizer import JNTokenizer
 from language_services.janome_ex.word_extraction import word_extractor
+from note.vocabnote import VocabNote
 
-_tokenizer:JNTokenizer
+_tokenizer: JNTokenizer
 
 @pytest.fixture(scope='module', autouse=True)
 def setup() -> None:
     global _tokenizer
     _tokenizer = JNTokenizer()
+
+@pytest.fixture(scope="function", autouse=True)
+def setup_object() -> Generator[None, None, None]:
+    with inject_empty_anki_collection_with_note_types():
+        yield
 
 #TODO: See if we can't find a way to parse suru out of sentences such that the verbalizing suffix can be
 # handled separately from the stand-alone word.
@@ -119,6 +128,35 @@ def setup() -> None:
      )
 ])
 def test_identify_words(sentence: str, expected_output: list[ExtractedWord]) -> None:
+    result = word_extractor.extract_words(sentence)
+    assert result == expected_output
+
+@pytest.mark.parametrize('sentence, custom_words, expected_output', [
+    ("彼の日本語のレベルは私と同じ位だ。",
+     ["彼の日本語", "日本語のレベル"],
+     [ExtractedWord('彼'),
+      ExtractedWord('彼の'),
+      ExtractedWord('彼の日本語'),
+      ExtractedWord('の'),
+      ExtractedWord('日本語'),
+      ExtractedWord('日本語のレベル'),
+      ExtractedWord('レベル'),
+      ExtractedWord('は'),
+      ExtractedWord('私'),
+      ExtractedWord('と'),
+      ExtractedWord('同じ'),
+      ExtractedWord('同じ位'),
+      ExtractedWord('位'),
+      ExtractedWord('だ')]
+     )
+])
+def test_custom_vocab_characters(sentence: str, custom_words:list[str], expected_output: list[ExtractedWord]) -> None:
+    from ankiutils import app
+
+    for custom_word in custom_words:
+        VocabNote.create(custom_word, "", [""])
+
+    app.col().flush_cache_updates()
     result = word_extractor.extract_words(sentence)
     assert result == expected_output
 

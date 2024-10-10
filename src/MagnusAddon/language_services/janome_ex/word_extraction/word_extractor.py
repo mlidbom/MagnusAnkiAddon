@@ -11,9 +11,14 @@ def _word_is_in_dictionary(word: str) -> bool:
 
 _noise_characters = {'.',',',':',';','/','|','。','、'}
 _max_lookahead = 12
+
+version = 1
 def extract_words(sentence: str) -> list[ExtractedWord]:
+    from ankiutils import app
+    anki_vocab = app.col().vocab
+
     def add_word_if_it_is_in_dictionary(word: str) -> None:
-        if _word_is_in_dictionary(word):
+        if anki_vocab.with_form(word) or _word_is_in_dictionary(word):
             add_word(word)
 
     def add_word(word: str) -> None:

@@ -143,12 +143,13 @@ class SentenceNote(JPNote):
         self.set_field(SentenceNoteFields.active_question, self.get_question())
 
     def _update_parsed_words(self) -> None:
+        from language_services.janome_ex.word_extraction import word_extractor
         words = self._get_parsed_words()
         old_parsed_sentence = words[-1] if words else ""
-        current_storable_sentence = self.get_question().replace(",", "").strip()
+        current_storable_sentence = f"""{self.get_question().replace(",", "").strip()}-parser_version-{word_extractor.version}"""
 
         if old_parsed_sentence != current_storable_sentence:
-            value = [parsed_word.word for parsed_word in self.parse_words_from_expression()]
+            value = [parsed_word.word for parsed_word in word_extractor.extract_words(self.get_question())]
             value.append(current_storable_sentence)
             self.set_field(SentenceNoteFields.ParsedWords, ",".join(value))
 
