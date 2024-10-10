@@ -35,7 +35,7 @@ class NoteTemplateEx:
         instance.afmt = typed.str_(d['afmt'])
         instance.bqfmt = typed.str_(d['bqfmt'])
         instance.bafmt = typed.str_(d['bafmt'])
-        instance.did = typed.int_(d['did'])
+        #todo: wth is this None? instance.did = typed.int_(d['did'])
         instance.bfont = typed.str_(d['bfont'])
         instance.bsize = typed.int_(d['bsize'])
         return instance

@@ -8,6 +8,7 @@ from anki.notes import Note, NoteId
 from aqt import qconnect
 from PyQt6.QtCore import QTimer
 
+from anki_extentions.notetype_ex.note_type_ex import NoteTypeEx
 from note.note_constants import NoteTypes
 
 class CacheRunner:
@@ -20,12 +21,13 @@ class CacheRunner:
         self._will_flush_subscribers: list[Callable[[Note], None]] = []
         self._will_remove_subscribers: list[Callable[[Sequence[NoteId]], None]] = []
         self._destructors: list[Callable[[], None]] = []
+        self._anki_collection = anki_collection
 
 
         model_manager = anki_collection.models
-        all_models = model_manager.all()
-        our_models = [model for model in all_models if model["name"] in NoteTypes.ALL]
-#        assert len(our_models) == len(NoteTypes.ALL)
+        all_note_types = [NoteTypeEx.from_dict(model) for model in model_manager.all()]
+        self._note_types = [note_type for note_type in all_note_types if note_type.name in NoteTypes.ALL]
+        assert len(self._note_types) == len(NoteTypes.ALL)
 
         self._timer = QTimer(mw)
         qconnect(self._timer.timeout, self._on_timer)
@@ -47,6 +49,7 @@ class CacheRunner:
         for destructor in self._destructors: destructor()
 
     def _on_timer(self) -> None:
+        self._check_for_updated_note_types_and_reset_app_if_found()
         for subscriber in self._merge_pending_subscribers: subscriber()
 
         if self._pause_data_generation: return
@@ -86,25 +89,21 @@ class CacheRunner:
     def connect_will_remove(self, _merge_pending_added_notes: Callable[[Sequence[NoteId]], None]) -> None:
         self._will_remove_subscribers.append(_merge_pending_added_notes)
 
-    def _check_for_updated_note_types(self) -> None:
-        from ankiutils import app
-
-        def schema_matches(own_schema, other_schema) -> bool:
-            if len(own_schema) != len(other_schema): return False
-            for key, value in own_schema.items():
-                if key not in other_schema:
-                    return False
-
-                own_index = value[0]
-                other_index = other_schema[key][0]
-
-                if own_index != other_index: return False
-
-            return True
-
+    def _check_for_updated_note_types_and_reset_app_if_found(self) -> None:
+        all_note_types = {model.name: model for model in [NoteTypeEx.from_dict(model) for model in self._anki_collection.models.all()]}
         for cached_note_type in self._note_types:
-            current_note_type = [nt for nt in app.anki_collection().models.all() if nt["name"] == cached_note_type["name"]][0]
-            assert schema_matches(cached_note_type["flds"], current_note_type["flds"])
+            current = all_note_types[cached_note_type.name]
+            try:
+                current.assert_schema_matches(cached_note_type)
+            except AssertionError:
+                from ankiutils import app
+                app.reset()
+
+
+
+
+
+
 
 
 

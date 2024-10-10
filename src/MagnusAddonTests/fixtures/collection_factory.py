@@ -24,9 +24,9 @@ def inject_empty_anki_collection_with_note_types() -> Generator[None, None, None
     with (tempfile.TemporaryDirectory() as tmp_dirname, stub_ui_dependencies()):
         collection_file = path.join(tmp_dirname, "collection.anki2")
         anki_collection = Collection(collection_file)
-        jp_collection = JPCollection(anki_collection)
         try:
             populate_collection(anki_collection)
+            jp_collection = JPCollection(anki_collection)
             with unittest.mock.patch('ankiutils.app.col', new=get_jp_collection):
                 yield
         finally:

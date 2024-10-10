@@ -16,9 +16,9 @@ def _always_failing_init() -> JPCollection:
 
 _collection:Lazy[JPCollection] = Lazy(_always_failing_init)
 def _reset1(_collection: Collection) -> None:
-    _reset2()
+    reset()
 
-def _reset2() -> None:
+def reset() -> None:
     global _collection
     if _collection.is_initialized():
         _collection.instance().destruct()
@@ -27,8 +27,11 @@ def _reset2() -> None:
     _collection = Lazy(lambda: JPCollection(cast(AnkiQt,mw).col))
 
 
+gui_hooks.collection_will_temporarily_close.append(_reset1)
+gui_hooks.collection_did_temporarily_close.append(_reset1)
+gui_hooks.profile_will_close.append(reset)
 gui_hooks.collection_did_load.append(_reset1)
-gui_hooks.sync_did_finish.append(_reset2)
+gui_hooks.sync_did_finish.append(reset)
 
 def col() -> JPCollection: return _collection.instance()
 def anki_collection() -> Collection: return col().anki_collection
