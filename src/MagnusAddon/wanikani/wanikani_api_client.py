@@ -3,7 +3,6 @@ from typing import List
 
 from wanikani_api import models
 from wanikani_api.client import Client
-from sysutils import progress_display_runner
 
 class WanikaniClient:
     _instance = None
@@ -19,6 +18,7 @@ class WanikaniClient:
 
 
     def _init(self) -> WanikaniClient:
+        from sysutils import progress_display_runner
         if self._is_initialized is False:
             progress = progress_display_runner.open_spinning_progress_dialog("Fetching Wanikani data")
             try:
