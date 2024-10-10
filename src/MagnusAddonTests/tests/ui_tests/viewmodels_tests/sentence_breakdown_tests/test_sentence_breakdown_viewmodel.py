@@ -6,7 +6,6 @@ import pytest
 
 from ankiutils import app
 from fixtures.collection_factory import inject_anki_collection_with_generated_sample_data
-from fixtures.stub_factory import _stub_progress_runner
 from language_services.universal_dependencies import ud_tokenizers
 from language_services.universal_dependencies.shared.tree_building import ud_tree_builder
 from note.sentencenote import SentenceNote

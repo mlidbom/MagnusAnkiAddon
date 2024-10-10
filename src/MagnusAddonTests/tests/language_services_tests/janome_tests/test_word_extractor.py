@@ -45,7 +45,7 @@ def setup_object() -> Generator[None, None, None]:
     ("さっさと傷を清めてこい", ['さっさと', '傷', 'を', '清める', '清め', 'て', 'くる', 'こい'])
 ])
 def test_identify_words(sentence: str, expected_output: list[str]) -> None:
-    result = [w.word for w in  word_extractor.extract_words(sentence)]
+    result = [w.word for w in word_extractor.extract_words(sentence)]
 
     assert result == expected_output
 
@@ -62,7 +62,7 @@ def test_custom_vocab_words(sentence: str, custom_words:list[str], expected_outp
         VocabNote.create(custom_word, "", [""])
     app.col().flush_cache_updates()
 
-    result = [w.word for w in  word_extractor.extract_words(sentence)]
+    result = [w.word for w in word_extractor.extract_words(sentence)]
     assert result == expected_output
 
 def test_ignores_noise_characters() -> None:

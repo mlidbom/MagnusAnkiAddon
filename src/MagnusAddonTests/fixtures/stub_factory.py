@@ -28,13 +28,13 @@ def stub_ui_dependencies() -> Generator[None, None, None]:
 
 @contextmanager
 def _stub_progress_runner() -> Generator[None, None, None]:
-
+    # noinspection PyUnusedLocal
     def _open_spinning_progress_dialog(message: str) -> Closable:
-        print("#####################HELLLOOOOOO######################")
         return Closable(lambda: None)
 
     t = TypeVar('t')
 
+    # noinspection PyUnusedLocal
     def _process_with_progress(items: List[t], process_item: Callable[[t], None], message: str, allow_cancel: bool = True, delay_display: bool = False, pause_cache_updates: bool = True) -> None:
         for item in items:
             process_item(item)

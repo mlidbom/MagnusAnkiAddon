@@ -4,7 +4,6 @@ import pytest
 
 from ankiutils import app
 from fixtures.collection_factory import inject_anki_collection_with_generated_sample_data
-from fixtures.stub_factory import _stub_progress_runner
 from note.sentencenote import SentenceNote
 from viewmodels.kanji_list import sentence_kanji_list_viewmodel
 
