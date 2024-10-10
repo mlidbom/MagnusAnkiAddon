@@ -20,30 +20,6 @@ def setup_object() -> Generator[None, None, None]:
     with inject_empty_anki_collection_with_note_types():
         yield
 
-#TODO: See if we can't find a way to parse suru out of sentences such that the verbalizing suffix can be
-# handled separately from the stand-alone word.
-# Now that we have reasonably good POS handling this should be no harder than checking if the previous token
-# is a suru verb once we find an instance of suru right?
-# It's a word specific hack, but for suru, maybe it is OK since it is one heck of a special word.
-#
-#
-# todo:
-#  Check out SudachiPy
-#  https://pypi.org/project/SudachiDict-full/
-#  https://github.com/polm/fugashi
-#  https://github.com/nakagami/janomecabdic
-#  https://pypi.org/project/unidic2ud/
-#
-# def test_suffix_suru_recognized_as_suffix() -> None:
-#     result = list(_tokenizer.tokenize("心配する"))
-#     print(result)
-#     assert result == "NOT HAPPENING"
-#
-# def test_stand_alone_suru_recognized_as_stand_alone() -> None:
-#     result = list(_tokenizer.tokenize("する"))
-#     print(result)
-#     assert result == "NOT HAPPENING"
-
 @pytest.mark.parametrize('sentence, expected_output', [
     ("走る",
      ['走る']),
@@ -64,7 +40,9 @@ def setup_object() -> Generator[None, None, None]:
     ("彼の日本語のレベルは私と同じ位だ。",
      ['彼', '彼の', 'の', '日本語', 'レベル', 'は', '私', 'と', '同じ', '同じ位', '位', 'だ']),
     ("それなのに 周りは化け物が出ることで有名だと聞き",
-     ['それなのに', '周り', 'は', '化け物', 'が', '出る', 'こと', 'で', '有名', 'だ', 'と', '聞く', '聞き'] )
+     ['それなのに', '周り', 'は', '化け物', 'が', '出る', 'こと', 'で', '有名', 'だ', 'と', '聞く', '聞き']),
+    ("清めの一波", ['清める', '清め', 'の', '一波']),
+    ("さっさと傷を清めてこい", ['さっさと', '傷', 'を', '清める', '清め', 'て', 'くる', 'こい'])
 ])
 def test_identify_words(sentence: str, expected_output: list[str]) -> None:
     result = [w.word for w in  word_extractor.extract_words(sentence)]
