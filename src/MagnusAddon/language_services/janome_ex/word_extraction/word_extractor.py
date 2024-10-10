@@ -12,7 +12,7 @@ def _word_is_in_dictionary(word: str) -> bool:
 _noise_characters = {'.',',',':',';','/','|','。','、'}
 _max_lookahead = 12
 
-version = 1
+version = "janome_extractor_1"
 def extract_words(sentence: str) -> list[ExtractedWord]:
     from ankiutils import app
     anki_vocab = app.col().vocab
