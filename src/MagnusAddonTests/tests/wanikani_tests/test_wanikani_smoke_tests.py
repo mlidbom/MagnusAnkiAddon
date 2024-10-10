@@ -15,3 +15,6 @@ def test_fetch_data_doesnt_crash() -> None:
     client = wanikani_api_client.WanikaniClient.get_instance()
 
     kana_vocab = client.list_kana_vocabulary()
+
+    for vocab in kana_vocab:
+        print(vocab.characters)
