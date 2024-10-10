@@ -12,7 +12,7 @@ from copy import deepcopy
 This is the primary point of entry for accessing the Wanikani API.
 """
 
-
+# noinspection PyMissingTypeHints
 class Client:
     """
     This is the only object you can instantiate. It provides access to each
