@@ -43,7 +43,9 @@ def extract_words(sentence: str) -> list[ExtractedWord]:
 
     for token_index, token in enumerate(tokens):
         add_word(token.base_form)
-        add_word(token.surface)
+
+        if not (token.parts_of_speech.is_verb() and token.inflected_form == "連用タ接続"): #if the surface is the stem of an inflected verb, don't use it, it's not a word in its own right in this sentence.
+            add_word(token.surface)
         check_for_compound_words()
 
     return [ExtractedWord(word) for word in found_words_list]

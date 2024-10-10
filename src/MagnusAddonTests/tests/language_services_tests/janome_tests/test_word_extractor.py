@@ -125,6 +125,21 @@ def setup_object() -> Generator[None, None, None]:
       ExtractedWord('同じ位'),
       ExtractedWord('位'),
       ExtractedWord('だ')]
+     ),
+    ("それなのに 周りは化け物が出ることで有名だと聞き",
+     [ExtractedWord('それなのに'),
+      ExtractedWord('周り'),
+      ExtractedWord('は'),
+      ExtractedWord('化け物'),
+      ExtractedWord('が'),
+      ExtractedWord('出る'),
+      ExtractedWord('こと'),
+      ExtractedWord('で'),
+      ExtractedWord('有名'),
+      ExtractedWord('だ'),
+      ExtractedWord('と'),
+      ExtractedWord('聞く'),
+      ExtractedWord('聞き')]
      )
 ])
 def test_identify_words(sentence: str, expected_output: list[ExtractedWord]) -> None:
