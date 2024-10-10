@@ -20,6 +20,7 @@ class WanikaniClient:
     def _init(self) -> WanikaniClient:
         from sysutils import progress_display_runner
         if self._is_initialized is False:
+            from sysutils import progress_display_runner
             progress = progress_display_runner.open_spinning_progress_dialog("Fetching Wanikani data")
             try:
                 self.v2_api_key = "ebeda84c-2f6a-423e-bfc7-3068796ed50a"

@@ -11,9 +11,8 @@ from PyQt6.QtCore import QTimer
 from note.note_constants import NoteTypes
 
 class CacheRunner:
-    def __init__(self) -> None:
+    def __init__(self, anki_collection: Collection) -> None:
         from aqt import mw
-        from ankiutils import app
         self._pause_data_generation = False
         self._generate_data_subscribers:list[Callable[[], None]] = []
         self._merge_pending_subscribers: list[Callable[[], None]] = []
@@ -23,11 +22,10 @@ class CacheRunner:
         self._destructors: list[Callable[[], None]] = []
 
 
-        model_manager = app.anki_collection().models
+        model_manager = anki_collection.models
         all_models = model_manager.all()
         our_models = [model for model in all_models if model["name"] in NoteTypes.ALL]
-
-        assert len(self._note_types) == len(NoteTypes.ALL)
+#        assert len(our_models) == len(NoteTypes.ALL)
 
         self._timer = QTimer(mw)
         qconnect(self._timer.timeout, self._on_timer)

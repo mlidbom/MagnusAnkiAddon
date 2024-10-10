@@ -15,7 +15,7 @@ from sysutils import progress_display_runner
 class JPCollection:
     def __init__(self, anki_collection: Collection):
         self.anki_collection = anki_collection
-        self.cache_manager = CacheRunner()
+        self.cache_manager = CacheRunner(anki_collection)
 
         spinner = progress_display_runner.open_spinning_progress_dialog("Loading caches")
         try:
