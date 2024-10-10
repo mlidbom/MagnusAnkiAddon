@@ -12,6 +12,7 @@ def create_kanji() -> NoteTypeEx:
                           NoteFieldEx(NoteFields.Kanji.user_answer),
                           NoteFieldEx(NoteFields.Kanji.Reading_On),
                           NoteFieldEx(NoteFields.Kanji.Reading_Kun),
+                          NoteFieldEx(NoteFields.Kanji.Reading_Nan),
                           NoteFieldEx(NoteFields.Kanji.Radicals),
                           NoteFieldEx(NoteFields.Kanji.Radicals_Icons),
                           NoteFieldEx(NoteFields.Kanji.Radicals_Names),

@@ -1,6 +1,6 @@
 import threading
 from contextlib import contextmanager
-from typing import Generator
+from typing import Callable, Generator, List, TypeVar
 from ankiutils import app
 from ankiutils.ui_utils_interface import IUIUtils
 from fixtures.stubs.ui_utils_stub import UIUtilsStub
@@ -28,6 +28,12 @@ def stub_progress_runner() -> Generator[None, None, None]:
         print("#####################HELLLOOOOOO######################")
         return Closable(lambda: None)
 
+    T = TypeVar('T')
+    def _process_with_progress(items: List[T], process_item: Callable[[T], None], message: str, allow_cancel: bool = True, delay_display: bool = False, pause_cache_updates: bool = True) -> None:
+        for item in items:
+            process_item(item)
+
     progress_display_runner.open_spinning_progress_dialog = _open_spinning_progress_dialog
+    progress_display_runner.process_with_progress = _process_with_progress
 
     yield

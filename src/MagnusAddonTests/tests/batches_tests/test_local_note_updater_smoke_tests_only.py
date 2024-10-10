@@ -2,7 +2,6 @@ from typing import Generator
 
 import pytest
 
-from batches import local_note_updater
 from fixtures.collection_factory import inject_anki_collection_with_generated_sample_data
 from fixtures.stub_factory import stub_progress_runner, stub_ui_utils
 
@@ -13,4 +12,5 @@ def setup() -> Generator[None, None, None]:
 
 
 def test_smoke_update_all() -> None:
+    from batches import local_note_updater
     local_note_updater.update_all()
