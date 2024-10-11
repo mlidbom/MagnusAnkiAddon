@@ -42,14 +42,17 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
     studying_sentences = set(_vocab_note.get_sentences_studying())
 
     def sort_sentences(_sentences:list[SentenceNote]) -> list[SentenceNote]:
+        is_low_reliability_matching = kana_utils.is_only_kana(primary_form) and len(primary_form) <= 2
 
+        #todo: downprioritize matches for forms with their own vocabnote. Also for such forms, exclude those forms from the matches shown in the vocab metadata
+        def prefer_highlighted_for_low_reliability_matches(_sentence: SentenceNote) -> int: return 0 if is_low_reliability_matching and _sentence in highlighted_sentences else 1
         def prefer_highlighted(_sentence:SentenceNote) -> int: return 0 if _sentence in highlighted_sentences else 1
         def prefer_studying_read(_sentence:SentenceNote) -> int: return 0 if _sentence.is_studying_read() else 1
         def prefer_studying_listening(_sentence: SentenceNote) -> int: return 0 if _sentence.is_studying_listening() else 1
         def prefer_primary_form(_sentence:SentenceNote) -> int: return 0 if contains_primary_form(_sentence) else 1
         def dislike_tts_sentences(_sentence:SentenceNote) -> int: return 1 if _sentence.has_tag(Mine.Tags.TTSAudio) else 0
         def prefer_short_questions(_sentence:SentenceNote) -> int: return len(_sentence.get_question())
-        def prefer_higher_priority_tag_values(_sentence: SentenceNote) -> int: return -_sentence.priority_tag_value()
+        def prefer_lower_priority_tag_values(_sentence: SentenceNote) -> int: return _sentence.priority_tag_value()
         def dislike_no_translation(_sentence: SentenceNote) -> int: return 1 if not _sentence.get_answer().strip() else 0
 
         def prefer_non_duplicates(_sentence:SentenceNote) -> int:
@@ -61,9 +64,10 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
             clean_sentence = ex_str.strip_html_and_bracket_markup(_sentence.get_question())
             return 1 if any((_base_form in clean_sentence for _base_form in secondary_forms_conjugation_base_form)) else 0
 
-        return sorted(_sentences, key=lambda x: (prefer_studying_read(x),
+        return sorted(_sentences, key=lambda x: (prefer_highlighted_for_low_reliability_matches(x),
+                                                 prefer_studying_read(x),
                                                  prefer_studying_listening(x),
-                                                 prefer_higher_priority_tag_values(x),
+                                                 prefer_lower_priority_tag_values(x),
                                                  dislike_tts_sentences(x),
                                                  prefer_primary_form(x),
                                                  prefer_highlighted(x),

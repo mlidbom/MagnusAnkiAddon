@@ -210,6 +210,7 @@ class VocabNote(KanaVocabNote):
         meta: list[VocabMetaTag] = []
         tos = set([t.lower().strip() for t in self.get_speech_type().split(",")])
 
+        #todo: If a form has it's own VocabNote, exclude it from these statistics
         sentences = self.get_sentences()
         if sentences:
             if include_studying_sentence_statistics:

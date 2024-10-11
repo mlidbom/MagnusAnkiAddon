@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import sys
 from abc import ABC
 from typing import Any, cast, Sequence
 
@@ -136,7 +137,7 @@ class JPNote(ABC):
         for tag in self._note.tags:
             if tag.startswith(Mine.Tags.priority_folder):
                 return int(ex_str.first_number(tag))
-        return 0
+        return sys.maxsize
 
     def get_meta_tags(self) -> set[str]:
         tags:set[str] = set()
