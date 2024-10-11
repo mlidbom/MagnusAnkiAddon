@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import sys
 from abc import ABC
 from typing import Any, cast, Sequence
 
