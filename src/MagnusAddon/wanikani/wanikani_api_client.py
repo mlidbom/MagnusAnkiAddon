@@ -16,7 +16,7 @@ class WanikaniClient:
     def __init__(self) -> None:
         self._is_initialized = False
         v2_api_key = "ebeda84c-2f6a-423e-bfc7-3068796ed50a"
-        self._client = Client(v2_api_key)  # type: ignore
+        self._client = Client(v2_api_key)
 
     def _init(self) -> WanikaniClient:
         if self._is_initialized is False:
