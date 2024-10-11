@@ -205,15 +205,15 @@ class VocabNote(KanaVocabNote):
     def _get_studying_sentence_count(sentences:list[SentenceNote], card: str = "") -> int:
         return len([sentence for sentence in sentences if sentence.is_studying(card)])
 
-    def get_meta_tags_html(self, include_studying_sentence_statistics:bool = True) -> str:
+    def get_meta_tags_html(self, include_sentence_statistics:bool = True) -> str:
         tags = set(self.get_tags())
         meta: list[VocabMetaTag] = []
         tos = set([t.lower().strip() for t in self.get_speech_type().split(",")])
 
-        #todo: If a form has it's own VocabNote, exclude it from these statistics
-        sentences = self.get_sentences()
-        if sentences:
-            if include_studying_sentence_statistics:
+        if include_sentence_statistics:
+            # todo: If a form has it's own VocabNote, exclude it from these statistics
+            sentences = self.get_sentences()
+            if sentences:
                 studying_sentences_reading = self._get_studying_sentence_count(sentences, NoteFields.VocabNoteType.Card.Reading)
                 studying_sentences_listening = self._get_studying_sentence_count(sentences, NoteFields.VocabNoteType.Card.Listening)
                 if studying_sentences_reading or studying_sentences_listening:
@@ -221,9 +221,7 @@ class VocabNote(KanaVocabNote):
                 else:
                     meta.append(VocabMetaTag("in_sentences", f"""{len(sentences)}""", f"""in {len(sentences)} sentences"""))
             else:
-                meta.append(VocabMetaTag("in_sentences", f"""{len(sentences)}""", f"""in {len(sentences)} sentences"""))
-        else:
-            meta.append(VocabMetaTag("in_no_sentences", f"""{len(sentences)}""", f"""in {len(sentences)} sentences"""))
+                meta.append(VocabMetaTag("in_no_sentences", f"""{len(sentences)}""", f"""in {len(sentences)} sentences"""))
 
 
 
