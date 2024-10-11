@@ -5,13 +5,13 @@ from ankiutils import app
 from hooks.right_click_menu import setup_note_menu
 from note import queue_manager
 from typing import Sequence
-from anki.cards import Card
+from anki.cards import Card, CardId
 
 from note.jpnote import JPNote
 from note.vocabnote import VocabNote
 from sysutils.typed import checked_cast
 
-def spread_due_dates(cards: Sequence[int], start_day: int, days: int) -> None:
+def spread_due_dates(cards: Sequence[CardId], start_day: int, days: int) -> None:
     anki_col = app.col().anki_collection
     scheduler = anki_col.sched
     for index, card_id in enumerate(cards):
