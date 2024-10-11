@@ -13,7 +13,7 @@ def _create_classes(_vocab: VocabNote) -> str:
     tags.sort()
     classes = " ".join([f"""common_ness_{prio}""" for prio in tags])
     classes += f""" {_vocab.priority_spec().priority_string}"""
-    classes += " " + _vocab.get_meta_tags()
+    classes += " " + " ".join(_vocab.get_meta_tags())
     return classes
 
 

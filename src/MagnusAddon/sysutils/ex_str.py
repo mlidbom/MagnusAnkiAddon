@@ -33,6 +33,11 @@ html_bracket_noise_pattern = re.compile('<.*?>|\[.*?\]|[〜]') # noqa
 def strip_html_and_bracket_markup_and_noise_characters(string: str) -> str:
     return html_bracket_noise_pattern.sub('', string)
 
+_first_number_pattern = re.compile(r'\d+')
+def first_number(string:str) -> int:
+    match = _first_number_pattern.search(string)
+    return int(match.group()) if match else None
+
 def remove_duplicates_characters(input_str: str) -> str:
     seen = set()
     output_str = ""

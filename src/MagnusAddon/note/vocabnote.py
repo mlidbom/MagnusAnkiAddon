@@ -195,10 +195,10 @@ class VocabNote(KanaVocabNote):
     def get_sentences_studying(self) -> list[SentenceNote]:
         return [sentence for sentence in self.get_sentences() if sentence.is_studying()]
 
-    def get_meta_tags(self) -> str:
-        tags = ""
-        if self.is_studying(NoteFields.VocabNoteType.Card.Reading): tags += " is_studying_reading "
-        if self.is_studying(NoteFields.VocabNoteType.Card.Listening): tags += " is_studying_listening "
+    def get_meta_tags(self) -> set[str]:
+        tags:set[str] = set()
+        if self.is_studying(NoteFields.VocabNoteType.Card.Reading): tags.add("is_studying_reading")
+        if self.is_studying(NoteFields.VocabNoteType.Card.Listening): tags.add("is_studying_listening")
         return tags
 
     @staticmethod

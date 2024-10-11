@@ -31,7 +31,7 @@ class VocabHit:
                         hit_form=vocab.get_question(),
                         answer=vocab.get_answer(),
                         readings=vocab.get_readings(),
-                        meta_tags=vocab.get_meta_tags(),
+                        meta_tags=" ".join(vocab.get_meta_tags()),
                         meta_tags_html=vocab.get_meta_tags_html(include_studying_sentence_statistics=False),
                         vocab=vocab)
 
@@ -42,7 +42,7 @@ class VocabHit:
                         hit_form=vocab.get_question(),
                         answer=vocab.get_answer(),
                         readings=vocab.get_readings(),
-                        meta_tags=vocab.get_meta_tags(),
+                        meta_tags=" ".join(vocab.get_meta_tags()),
                         meta_tags_html=vocab.get_meta_tags_html(include_studying_sentence_statistics=False),
                         vocab=vocab)
     @classmethod

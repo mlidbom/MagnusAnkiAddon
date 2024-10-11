@@ -49,8 +49,7 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
         def prefer_primary_form(_sentence:SentenceNote) -> int: return 0 if contains_primary_form(_sentence) else 1
         def dislike_tts_sentences(_sentence:SentenceNote) -> int: return 1 if _sentence.has_tag(Mine.Tags.TTSAudio) else 0
         def prefer_short_questions(_sentence:SentenceNote) -> int: return len(_sentence.get_question())
-        def sort_by_priority_tag(_sentence: SentenceNote) -> int: return _sentence.priority_tag_value()
-        def dislike_low_priority_tag(_sentence: SentenceNote) -> int: return 1 if _sentence.has_tag(Mine.Tags.low_priority) else 0
+        def prefer_higher_priority_tag_values(_sentence: SentenceNote) -> int: return -_sentence.priority_tag_value()
         def dislike_no_translation(_sentence: SentenceNote) -> int: return 1 if not _sentence.get_answer().strip() else 0
 
         def prefer_non_duplicates(_sentence:SentenceNote) -> int:
@@ -64,20 +63,19 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
 
         return sorted(_sentences, key=lambda x: (prefer_studying_read(x),
                                                  prefer_studying_listening(x),
-                                                 sort_by_priority_tag(x),
+                                                 prefer_higher_priority_tag_values(x),
                                                  dislike_tts_sentences(x),
                                                  prefer_primary_form(x),
                                                  prefer_highlighted(x),
                                                  dislike_no_translation(x),
                                                  prefer_non_duplicates(x),
-                                                 dislike_low_priority_tag(x),
                                                  dislike_sentences_containing_secondary_form(x),
                                                  prefer_short_questions(x)))
 
     def sentence_classes(sentence: SentenceNote) -> str:
         classes = ""
         if sentence in highlighted_sentences: classes += "highlighted "
-        classes += sentence.get_meta_tags()
+        classes += " ".join(sentence.get_meta_tags())
         return classes
 
 

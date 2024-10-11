@@ -11,7 +11,7 @@ def _create_classes(_kanji: KanjiNote, _vocab: VocabNote) -> str:
     tags.sort()
     classes = " ".join([f"""common_ness_{prio}""" for prio in tags])
     classes += f""" {_vocab.priority_spec().priority_string}"""
-    classes += " " + _vocab.get_meta_tags()
+    classes += " " + " ".join(_vocab.get_meta_tags())
     if _vocab.get_question() in _kanji.get_primary_vocab() or _vocab.get_readings()[0] in _kanji.get_primary_vocab():
         classes += " primary_vocab"
 

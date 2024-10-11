@@ -10,6 +10,7 @@ from anki.notes import Note, NoteId
 
 from note import noteutils
 from note.note_constants import Mine, MyNoteFields, NoteTypes
+from sysutils import ex_str
 from sysutils.typed import checked_cast
 
 class JPNote(ABC):
@@ -134,9 +135,18 @@ class JPNote(ABC):
 
     def priority_tag_value(self) -> int:
         for tag in self._note.tags:
-            if tag.startswith("_::priority::"):
-                return int(tag.replace("_::priority::", ""))
-        return sys.maxsize
+            if tag.startswith(Mine.Tags.priority_folder):
+                return int(ex_str.first_number(tag))
+        return 0
+
+    def get_meta_tags(self) -> set[str]:
+        tags:set[str] = set()
+        for tag in self._note.tags:
+            if tag.startswith(Mine.Tags.priority_folder):
+                if "high" in tag: tags.add("high_priority")
+                if "low" in tag: tags.add("low_priority")
+
+        return tags
 
     def remove_tag(self, tag: str) -> None:
         if self.has_tag(tag):

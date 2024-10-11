@@ -142,12 +142,13 @@ class NoteFields:
 class Mine:
     VocabPrefixSuffixMarker = "〜"
     class Tags:
+        base_folder = "_::"
+        priority_folder = f"{base_folder}priority::"
         TTSAudio = "_tts_audio"
-        high_priority = "_high_priority"
-        low_priority = "_low_priority"
         Sentence = "_sentence"
         Wani = "_wani"
         wani_sentence_current = "_wani::sentence_current"
         wani_sentence_removed_on_wani = "_wani::sentence_removed_on_wani"
         DisableKanaOnly = "_disable_uk"
         UsuallyKanaOnly = "_uk"
+
