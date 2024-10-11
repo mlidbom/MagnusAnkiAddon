@@ -1,9 +1,10 @@
 from collections.abc import Callable
-from typing import Sequence
+from typing import cast, Sequence
 
 from anki import hooks
 from anki.collection import Collection
 from anki.decks import DeckId
+from anki.models import NotetypeDict
 from anki.notes import Note, NoteId
 from aqt import qconnect
 from PyQt6.QtCore import QTimer
@@ -90,9 +91,8 @@ class CacheRunner:
         self._will_remove_subscribers.append(_merge_pending_added_notes)
 
     def _check_for_updated_note_types_and_reset_app_if_found(self) -> None:
-        all_note_types = {model.name: model for model in [NoteTypeEx.from_dict(model) for model in self._anki_collection.models.all()]}
         for cached_note_type in self._note_types:
-            current = all_note_types[cached_note_type.name]
+            current = NoteTypeEx.from_dict(cast(NotetypeDict, self._anki_collection.models.get(cached_note_type.id)))
             try:
                 current.assert_schema_matches(cached_note_type)
             except AssertionError:

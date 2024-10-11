@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, cast
 
-from anki.models import NotetypeDict
+from anki.models import NotetypeDict, NotetypeId
 
 from anki_extentions.notetype_ex.note_type_field import NoteFieldEx
 from anki_extentions.notetype_ex.note_type_template import NoteTemplateEx
@@ -11,7 +11,7 @@ from sysutils import typed
 class NoteTypeEx:
     def __init__(self, name: str, fields: list[NoteFieldEx], templates: list[NoteTemplateEx]):
         self.name = name
-        self.id = 0
+        self.id:NotetypeId = NotetypeId(0)
         self.flds = fields
         self.tmpls = templates
         self.type = 0
@@ -69,7 +69,7 @@ class NoteTypeEx:
         created.flds = [NoteFieldEx.from_dict(d) for d in note_type_dict['flds']]
         created.tmpls = [NoteTemplateEx.from_dict(t) for t in note_type_dict['tmpls']]
 
-        created.id = typed.int_(note_type_dict['id'])
+        created.id = cast(NotetypeId, typed.checked_cast(int, note_type_dict['id']))
         created.type = typed.int_(note_type_dict['type'])
         created.mod = typed.int_(note_type_dict['mod'])
         created.usn = typed.int_(note_type_dict['usn'])
