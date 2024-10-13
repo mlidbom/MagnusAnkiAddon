@@ -5,6 +5,7 @@ from aqt import qconnect
 from PyQt6.QtGui import QAction
 from PyQt6.QtWidgets import QMenu
 
+from ankiutils import app
 from ankiutils.app import main_window, ui_utils
 from batches import local_note_updater
 from note import noteutils
@@ -47,11 +48,8 @@ def add_menu_ui_action(sub_menu: QMenu, heading: str, callback: Callable[[],None
 def build_main_menu() -> None:
     my_menu = QMenu("Magnu&s", main_window())
     tools_menu = main_window().form.menuTools
-    add_menu_ui_action(tools_menu, "Refresh UI", refresh, "F5")
-    add_menu_ui_action(tools_menu, "Deep update UI", deep_refresh, "Ctrl+F5")
 
     tools_menu.addMenu(my_menu)
-
     local_menu = QMenu("Local Action&s", main_window())
     my_menu.addMenu(local_menu)
     build_local_menu(local_menu)
@@ -59,6 +57,10 @@ def build_main_menu() -> None:
     wani_menu = QMenu("&Wanikani Actions", main_window())
     my_menu.addMenu(wani_menu)
     build_wani_menu(wani_menu)
+
+    add_menu_ui_action(tools_menu, "Refresh UI", refresh, "F5")
+    add_menu_ui_action(tools_menu, "Deep update UI", deep_refresh, "Ctrl+F5")
+    my_menu.addAction("&Reset", lambda: app.reset())
 
 def build_local_menu(sub_menu: QMenu) -> None:
     add_menu_ui_action(sub_menu, "Update &All", local_note_updater.update_all)
