@@ -144,11 +144,17 @@ class Mine:
     class Tags:
         base_folder = "_::"
         priority_folder = f"{base_folder}priority::"
-        TTSAudio = "_tts_audio"
-        Sentence = "_sentence"
-        Wani = "_wani"
-        wani_sentence_current = "_wani::sentence_current"
-        wani_sentence_removed_on_wani = "_wani::sentence_removed_on_wani"
+
+        source_folder = f"source::"
+        Wani = f"{source_folder}wani"
+        immersion_kit = f"{source_folder}immersion_kit"
+
+        wani_sentence_current = f"{Wani}::sentence_current"
+        wani_sentence_removed_on_wani = f"{Wani}::sentence_removed_on_wani"
+
+
+
         DisableKanaOnly = "_disable_uk"
         UsuallyKanaOnly = "_uk"
-
+        TTSAudio = "_tts_audio"
+        Sentence = "_sentence"

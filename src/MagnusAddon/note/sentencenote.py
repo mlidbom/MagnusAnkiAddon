@@ -198,7 +198,8 @@ class SentenceNote(JPNote):
         created = cls.add_sentence(question=immersion_kit_note[ImmersionKitSentenceNoteFields.question],
                                    answer=immersion_kit_note[ImmersionKitSentenceNoteFields.answer],
                                    audio=immersion_kit_note[ImmersionKitSentenceNoteFields.audio],
-                                   screenshot=immersion_kit_note[ImmersionKitSentenceNoteFields.screenshot])
+                                   screenshot=immersion_kit_note[ImmersionKitSentenceNoteFields.screenshot],
+                                   tags={Mine.Tags.immersion_kit})
 
         created.set_field(SentenceNoteFields.id, immersion_kit_note[ImmersionKitSentenceNoteFields.id])
         created.set_field(SentenceNoteFields.reading, immersion_kit_note[ImmersionKitSentenceNoteFields.reading])
