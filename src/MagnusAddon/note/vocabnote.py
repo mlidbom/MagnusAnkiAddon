@@ -205,12 +205,16 @@ class VocabNote(KanaVocabNote):
     def _get_studying_sentence_count(sentences:list[SentenceNote], card: str = "") -> int:
         return len([sentence for sentence in sentences if sentence.is_studying(card)])
 
-    def get_meta_tags_html(self, include_sentence_statistics:bool = True) -> str:
+    def get_meta_tags_html(self, include_extended_sentence_statistics:bool = True) -> str:
         tags = set(self.get_tags())
         meta: list[VocabMetaTag] = []
         tos = set([t.lower().strip() for t in self.get_speech_type().split(",")])
 
-        if include_sentence_statistics:
+        highlighted_in = self.get_user_highlighted_sentences()
+        if highlighted_in:
+            meta.append(VocabMetaTag("highlighted_in_sentences", f"""{len(highlighted_in)}""", f"""highlighted in {len(highlighted_in)} sentences"""))
+
+        if include_extended_sentence_statistics:
             # todo: If a form has it's own VocabNote, exclude it from these statistics
             sentences = self.get_sentences()
             if sentences:
@@ -222,7 +226,6 @@ class VocabNote(KanaVocabNote):
                     meta.append(VocabMetaTag("in_sentences", f"""{len(sentences)}""", f"""in {len(sentences)} sentences"""))
             else:
                 meta.append(VocabMetaTag("in_no_sentences", f"""{len(sentences)}""", f"""in {len(sentences)} sentences"""))
-
 
 
         #overarching info

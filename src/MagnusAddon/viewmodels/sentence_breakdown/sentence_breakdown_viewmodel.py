@@ -32,7 +32,7 @@ class VocabHit:
                         answer=vocab.get_answer(),
                         readings=vocab.get_readings(),
                         meta_tags=" ".join(vocab.get_meta_tags()),
-                        meta_tags_html=vocab.get_meta_tags_html(include_sentence_statistics=False),
+                        meta_tags_html=vocab.get_meta_tags_html(include_extended_sentence_statistics=False),
                         vocab=vocab)
 
     @staticmethod
@@ -43,7 +43,7 @@ class VocabHit:
                         answer=vocab.get_answer(),
                         readings=vocab.get_readings(),
                         meta_tags=" ".join(vocab.get_meta_tags()),
-                        meta_tags_html=vocab.get_meta_tags_html(include_sentence_statistics=False),
+                        meta_tags_html=vocab.get_meta_tags_html(include_extended_sentence_statistics=False),
                         vocab=vocab)
     @classmethod
     def missing_surface(cls, parent: NodeViewModel) -> VocabHit:
