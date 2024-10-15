@@ -44,25 +44,25 @@ def setup_web_search_menu(string_menu:QMenu, menu_string:str) -> None:
     add_web_lookup(kanji_lookup_menu, shortcutfinger.home2("Kanshudo"), u"https://www.kanshudo.com/search?q=%s", menu_string)
     add_web_lookup(kanji_lookup_menu, shortcutfinger.home3("Kanji map"), u"https://thekanjimap.com/%s", menu_string)
 
-    add_web_lookup(search_web_menu, shortcutfinger.home4("Grammar: Google"), "https://www.google.com/search?q=japanese+grammar+%s", menu_string)
-    add_web_lookup(search_web_menu, shortcutfinger.home5("Grammar: Japanese with anime"), "https://www.google.com/search?q=site:www.japanesewithanime.com+%s", menu_string)
-    add_web_lookup(search_web_menu, shortcutfinger.up1("Grammar: Wiktionary"), "https://en.wiktionary.org/wiki/%s", menu_string)
+    add_web_lookup(search_web_menu, shortcutfinger.home5("Grammar: Google"), "https://www.google.com/search?q=japanese+grammar+%s", menu_string)
+    add_web_lookup(search_web_menu, shortcutfinger.up1("Grammar: Japanese with anime"), "https://www.google.com/search?q=site:www.japanesewithanime.com+%s", menu_string)
+    add_web_lookup(search_web_menu, shortcutfinger.up2("Grammar: Wiktionary"), "https://en.wiktionary.org/wiki/%s", menu_string)
 
 
-    add_web_lookup(search_web_menu, shortcutfinger.up2("Images: Google"), "https://www.google.com/search?udm=2&tbs=sur:cl&q=%s", menu_string)
-    add_web_lookup(search_web_menu, shortcutfinger.up3("Images: Bing"), "https://www.bing.com/images/search?qft=+filterui:licenseType-Any&q=%s", menu_string)
+    add_web_lookup(search_web_menu, shortcutfinger.up3("Images: Google"), "https://www.google.com/search?udm=2&tbs=sur:cl&q=%s", menu_string)
+    add_web_lookup(search_web_menu, shortcutfinger.up4("Images: Bing"), "https://www.bing.com/images/search?qft=+filterui:licenseType-Any&q=%s", menu_string)
 
-    add_web_lookup(search_web_menu, shortcutfinger.up4("Lookup: Takoboto"), u"https://takoboto.jp/?q=%s", menu_string)
-    add_web_lookup(search_web_menu, shortcutfinger.up5("Lookup: Word Kanshudo"), u"https://www.kanshudo.com/searchw?q=%s", menu_string)
+    add_web_lookup(search_web_menu, shortcutfinger.up5("Lookup: Takoboto"), u"https://takoboto.jp/?q=%s", menu_string)
+    add_web_lookup(search_web_menu, shortcutfinger.down1("Lookup: Word Kanshudo"), u"https://www.kanshudo.com/searchw?q=%s", menu_string)
 
-    add_web_lookup(search_web_menu, shortcutfinger.down1("Lookup: Jisho"), u"https://jisho.org/search/%s", menu_string)
-    add_web_lookup(search_web_menu, shortcutfinger.down2("Lookup: Wanikani"), u"https://www.wanikani.com/search?query=%s", menu_string)
+    add_web_lookup(search_web_menu, shortcutfinger.down2("Lookup: Jisho"), u"https://jisho.org/search/%s", menu_string)
+    add_web_lookup(search_web_menu, shortcutfinger.down3("Lookup: Wanikani"), u"https://www.wanikani.com/search?query=%s", menu_string)
 
-    add_web_lookup(search_web_menu, shortcutfinger.down3("Conjugate: Japanese verb conjugator"), u"https://www.japaneseverbconjugator.com/VerbDetails.asp?Go=Conjugate&txtVerb=%s", menu_string)
-    add_web_lookup(search_web_menu, shortcutfinger.down5("Conjugate: Verbix"), u"https://www.verbix.com/webverbix/japanese/%s", menu_string)
+    add_web_lookup(search_web_menu, shortcutfinger.down5("Conjugate: Japanese verb conjugator"), u"https://www.japaneseverbconjugator.com/VerbDetails.asp?Go=Conjugate&txtVerb=%s", menu_string)
+    add_web_lookup(search_web_menu, shortcutfinger.home6("Conjugate: Verbix"), u"https://www.verbix.com/webverbix/japanese/%s", menu_string)
 
-    add_web_lookup(search_web_menu, shortcutfinger.none("Translate: Deepl"), u"https://www.deepl.com/en/translator#ja/en/%s", menu_string)
-    add_web_lookup(search_web_menu, shortcutfinger.none("Translate: Kanshudo"), u"https://www.kanshudo.com/sentence_translate?q=%s", menu_string)
+    add_web_lookup(search_web_menu, shortcutfinger.up6("Translate: Deepl"), u"https://www.deepl.com/en/translator#ja/en/%s", menu_string)
+    add_web_lookup(search_web_menu, shortcutfinger.down6("Translate: Kanshudo"), u"https://www.kanshudo.com/sentence_translate?q=%s", menu_string)
 
 def add_web_lookup(menu: QMenu, name: str, url: str, search: str) -> None:
     search = parse.quote(search, encoding='utf8')
