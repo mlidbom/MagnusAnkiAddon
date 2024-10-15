@@ -18,12 +18,12 @@ def setup_note_menu(sentence: SentenceNote, note_menu: QMenu, string_menus: list
     def position_vocab_menu(_menu:QMenu, _vocab_to_add: str, _title: str) -> None:
         highlighted_vocab_menu: QMenu = checked_cast(QMenu, _menu.addMenu(_title))
         for index, _vocab in enumerate(sentence.get_user_highlighted_vocab()):
-            add_ui_action(highlighted_vocab_menu, shortcutfinger.index(index, f"{_vocab}"), lambda _index=index: sentence.position_extra_vocab(_vocab_to_add, _index))  # type: ignore
+            add_ui_action(highlighted_vocab_menu, shortcutfinger.numpad(index, f"{_vocab}"), lambda _index=index: sentence.position_extra_vocab(_vocab_to_add, _index))  # type: ignore
 
-        add_ui_action(highlighted_vocab_menu, shortcutfinger.home5(f"[Last]"), lambda: sentence.position_extra_vocab(_vocab_to_add))
+        add_ui_action(highlighted_vocab_menu, shortcutfinger.down1(f"[Last]"), lambda: sentence.position_extra_vocab(_vocab_to_add))
 
         if _vocab_to_add in sentence.get_user_highlighted_vocab():
-            add_ui_action(highlighted_vocab_menu, "R&emove", lambda __vocab_to_add=_vocab_to_add: sentence.remove_extra_vocab(__vocab_to_add)) # type: ignore
+            add_ui_action(highlighted_vocab_menu, shortcutfinger.down2("Remove"), lambda __vocab_to_add=_vocab_to_add: sentence.remove_extra_vocab(__vocab_to_add)) # type: ignore
 
     for string_menu, menu_string in string_menus:
         position_vocab_menu(string_menu, menu_string, shortcutfinger.home1("Highlighted Vocab"))
