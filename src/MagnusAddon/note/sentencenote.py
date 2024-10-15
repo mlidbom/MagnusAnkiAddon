@@ -61,15 +61,6 @@ class SentenceNote(JPNote):
         return tags
 
 
-    def get_read_card_deck(self) -> str:
-        from ankiutils import app
-        col = app.anki_collection()
-
-        read_card = [card for card in self._note.cards() if card.template()["name"] == "Reading"][0]
-        deck_name = checked_cast(str, cast(DeckDict, col.decks.get(read_card.current_deck_id()))["name"])
-        return deck_name
-
-
     def get_user_highlighted_vocab(self) -> list[str]: return ex_str.extract_newline_separated_values(self.get_field(SentenceNoteFields.user_extra_vocab))
     def _set_user_extra_vocab(self, extra: list[str]) -> None: return self.set_field(SentenceNoteFields.user_extra_vocab, newline.join(extra))
     def position_extra_vocab(self, vocab: str, index:int = -1) -> None:

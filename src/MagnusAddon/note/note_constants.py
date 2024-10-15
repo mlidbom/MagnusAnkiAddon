@@ -146,11 +146,13 @@ class Mine:
         priority_folder = f"{base_folder}priority::"
 
         source_folder = f"source::"
-        Wani = f"{source_folder}wani"
-        immersion_kit = f"{source_folder}immersion_kit"
 
-        wani_sentence_current = f"{Wani}::sentence_current"
-        wani_sentence_removed_on_wani = f"{Wani}::sentence_removed_on_wani"
+        Wani = f"{source_folder}wani"
+        wani_level = f"{Wani}::level::"
+        wani_sentence_current = f"{Wani}::current"
+        wani_sentence_removed_on_wani = f"{Wani}::removed"
+
+        immersion_kit = f"{source_folder}immersion_kit"
 
 
 

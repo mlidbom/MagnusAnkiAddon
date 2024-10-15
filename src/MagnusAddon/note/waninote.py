@@ -1,24 +1,23 @@
 from wanikani_api import models
 from anki.notes import Note
 from note.jpnote import JPNote
-from note.note_constants import NoteFields
+from note.note_constants import Mine, NoteFields
 
 
 class WaniNote(JPNote):
     def __init__(self, note: Note):
         super().__init__(note)
-        self._wani_level_tag_name = "wani::level"
 
     def get_level_tag(self) -> int:
-        level_tag = [level for level in self._note.tags if level.startswith(self._wani_level_tag_name)][0]
+        level_tag = [level for level in self._note.tags if level.startswith(Mine.Tags.wani_level)][0]
         level_int = int(level_tag[5:])
         return level_int
 
     def _set_level_tag(self, new_level: int) -> None:
-        level_tags = [level for level in self._note.tags if level.startswith(self._wani_level_tag_name)]
+        level_tags = [level for level in self._note.tags if level.startswith(Mine.Tags.wani_level)]
         for level in level_tags:
             self._note.remove_tag(level)
-        self.set_tag(f"""{self._wani_level_tag_name}{"{:02d}".format(new_level)}""")
+        self.set_tag(f"""{Mine.Tags.wani_level}{"{:02d}".format(new_level)}""")
 
     def get_sort_id(self) -> str: return self.get_field(NoteFields.WaniCommon.sort_id)
 

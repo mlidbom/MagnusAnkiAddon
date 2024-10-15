@@ -148,6 +148,14 @@ class JPNote(ABC):
 
         return tags
 
+    def get_source_tag(self) -> str:
+        source_tags = [t for t in self.get_tags() if t.startswith(Mine.Tags.source_folder)]
+        if source_tags:
+            source_tags = sorted(source_tags, key=lambda tag: len(tag))
+            return source_tags[0][len(Mine.Tags.source_folder):]
+        return ""
+
+
     def remove_tag(self, tag: str) -> None:
         if self.has_tag(tag):
             self._note.remove_tag(tag)

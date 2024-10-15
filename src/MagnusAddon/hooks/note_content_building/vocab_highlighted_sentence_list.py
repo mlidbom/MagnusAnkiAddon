@@ -96,7 +96,7 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
                         <div class="highlightedSentenceDiv {sentence_classes(_sentence)}">
                             <audio src="{_sentence.get_audio_path()}"></audio><a class="play-button"></a>
                             <div class="highlightedSentence">                            
-                                <div class="sentenceQuestion"><span class="clipboard">{format_sentence(_sentence.get_question())}</span> <span class="deck_indicator">{_sentence.get_read_card_deck()}</div>
+                                <div class="sentenceQuestion"><span class="clipboard">{format_sentence(_sentence.get_question())}</span> <span class="deck_indicator">{_sentence.get_source_tag()}</div>
                                 <div class="sentenceAnswer"> {_sentence.get_answer()}</span></div>
                             </div>
                         </div>

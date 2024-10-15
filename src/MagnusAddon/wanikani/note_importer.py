@@ -71,7 +71,7 @@ def import_missing_context_sentences() -> None:
 
             if not existing_sentences:
                 print(f"""Importing {vocab} :: {question} || {answer}""")
-                imported_sentences.append(SentenceNote.add_sentence(question=question, answer=answer, highlighted_vocab={vocab}, tags={Mine.Tags.Wani, Mine.Tags.wani_sentence_current}))
+                imported_sentences.append(SentenceNote.add_sentence(question=question, answer=answer, highlighted_vocab={vocab}, tags={Mine.Tags.wani_sentence_current}))
             else:
                 for existing in existing_sentences:
                     existing.set_tag(Mine.Tags.wani_sentence_current)
