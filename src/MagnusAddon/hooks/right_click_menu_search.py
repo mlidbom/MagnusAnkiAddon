@@ -1,5 +1,6 @@
 from urllib import parse
 
+from PyQt6.QtGui import QAction, QKeySequence
 from PyQt6.QtWidgets import QMenu
 from aqt.utils import openLink
 
@@ -58,13 +59,14 @@ def setup_web_search_menu(string_menu:QMenu, menu_string:str) -> None:
     add_web_lookup(search_web_menu, shortcutfinger.down2("Lookup: Wanikani"), u"https://www.wanikani.com/search?query=%s", menu_string)
 
     add_web_lookup(search_web_menu, shortcutfinger.down3("Conjugate: Japanese verb conjugator"), u"https://www.japaneseverbconjugator.com/VerbDetails.asp?Go=Conjugate&txtVerb=%s", menu_string)
-    add_web_lookup(search_web_menu, shortcutfinger.down4("Conjugate: Verbix"), u"https://www.verbix.com/webverbix/japanese/%s", menu_string)
+    add_web_lookup(search_web_menu, shortcutfinger.down5("Conjugate: Verbix"), u"https://www.verbix.com/webverbix/japanese/%s", menu_string)
 
-    add_web_lookup(search_web_menu, shortcutfinger.down5("Translate: Deepl"), u"https://www.deepl.com/en/translator#ja/en/%s", menu_string)
+    add_web_lookup(search_web_menu, shortcutfinger.none("Translate: Deepl"), u"https://www.deepl.com/en/translator#ja/en/%s", menu_string)
     add_web_lookup(search_web_menu, shortcutfinger.none("Translate: Kanshudo"), u"https://www.kanshudo.com/sentence_translate?q=%s", menu_string)
 
 def add_web_lookup(menu: QMenu, name: str, url: str, search: str) -> None:
     search = parse.quote(search, encoding='utf8')
+
     menu.addAction(name, lambda: openLink(url % search))
 
 
