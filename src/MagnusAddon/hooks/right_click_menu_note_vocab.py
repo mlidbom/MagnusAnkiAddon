@@ -20,8 +20,9 @@ def setup_note_menu(vocab: VocabNote, note_menu: QMenu, string_menus: list[tuple
     add_lookup_action(note_lookup_menu, shortcutfinger.home3("Sentences I'm Studying"), query_builder.notes_lookup(vocab.get_sentences_studying()))
     add_lookup_action(note_lookup_menu, shortcutfinger.home4("Sentences"), query_builder.notes_lookup(vocab.get_sentences()))
     add_lookup_action(note_lookup_menu, shortcutfinger.up1("Sentences with primary form"), query_builder.notes_lookup(vocab.get_sentences_with_primary_form()))
+    add_lookup_action(note_lookup_menu, shortcutfinger.up2("Sentences with this word highlighted"), query_builder.notes_lookup(vocab.get_user_highlighted_sentences()))
 
-    add_text_vocab_lookup(note_lookup_menu, shortcutfinger.up2("Compounds"), vocab.get_question())
+    add_text_vocab_lookup(note_lookup_menu, shortcutfinger.up3("Compounds"), vocab.get_question())
     add_vocab_dependencies_lookup(note_lookup_menu, shortcutfinger.up3("Dependencies"), vocab)
 
     for reading in vocab.get_readings():
@@ -35,28 +36,29 @@ def setup_note_menu(vocab: VocabNote, note_menu: QMenu, string_menus: list[tuple
         add_ui_action(note_menu, shortcutfinger.home4("Accept meaning"), lambda: vocab.set_user_answer(format_vocab_meaning(vocab.get_answer())))
 
     for string_menu, menu_string in string_menus:
-        vocab_add_menu: QMenu = checked_cast(QMenu, string_menu.addMenu(shortcutfinger.home1("Add")))
+        sentences = app.col().sentences.with_question(menu_string)
+        if sentences:
+            sentence = sentences[0]
+            sentence_menu: QMenu = checked_cast(QMenu, string_menu.addMenu(shortcutfinger.home1("Sentence")))
+
+            if vocab.get_question() not in sentence.get_user_highlighted_vocab():
+                add_ui_action(sentence_menu, shortcutfinger.home1("Add Highlight"), lambda _sentence=sentence: _sentence.position_extra_vocab(vocab.get_question()))  # type: ignore
+            else:
+                add_ui_action(sentence_menu, shortcutfinger.home2("Remove highlight"), lambda _sentence=sentence: _sentence.remove_extra_vocab(vocab.get_question()))  # type: ignore
+
+
+            add_ui_action(sentence_menu, shortcutfinger.home3("Exclude this vocab"), lambda _sentence=sentence: _sentence.exclude_vocab(vocab.get_question()))  # type: ignore
+
+    for string_menu, menu_string in string_menus:
+        vocab_add_menu: QMenu = checked_cast(QMenu, string_menu.addMenu(shortcutfinger.home2("Add")))
         add_ui_action(vocab_add_menu, shortcutfinger.home1("Similar meaning"), lambda _menu_string=menu_string: vocab.add_related_similar_meaning(_menu_string)) # type: ignore
         add_ui_action(vocab_add_menu, shortcutfinger.home2("Confused with"), lambda _menu_string=menu_string: vocab.add_related_confused_with(_menu_string))  # type: ignore
 
     for string_menu, menu_string in string_menus:
-        note_set_menu: QMenu = checked_cast(QMenu, string_menu.addMenu(shortcutfinger.home2("Set")))
+        note_set_menu: QMenu = checked_cast(QMenu, string_menu.addMenu(shortcutfinger.home3("Set")))
         add_ui_action(note_set_menu, shortcutfinger.home1("Meaning"), lambda _menu_string=menu_string: vocab.set_user_answer(_menu_string)) # type: ignore
         add_ui_action(note_set_menu, shortcutfinger.home2("Derived from"), lambda _menu_string=menu_string: vocab.set_related_derived_from(_menu_string)) # type: ignore
         add_ui_action(note_set_menu, shortcutfinger.home3("Ergative twin"), lambda _menu_string=menu_string: vocab.set_related_ergative_twin(_menu_string)) # type: ignore
-
-    for string_menu, menu_string in string_menus:
-        sentences = app.col().sentences.with_question(menu_string)
-        if sentences:
-            sentence = sentences[0]
-            sentence_menu: QMenu = checked_cast(QMenu, string_menu.addMenu(shortcutfinger.home3("Sentence")))
-
-            if vocab.get_question() in sentence.get_user_highlighted_vocab():
-                add_ui_action(sentence_menu, shortcutfinger.home1("Remove highlight"), lambda _sentence=sentence: _sentence.remove_extra_vocab(vocab.get_question()))  # type: ignore
-            else:
-                add_ui_action(sentence_menu, shortcutfinger.home2("Add Highlight"), lambda _sentence=sentence: _sentence.position_extra_vocab(vocab.get_question()))  # type: ignore
-
-            add_ui_action(sentence_menu, shortcutfinger.home3("Exclude this vocab"), lambda _sentence=sentence: _sentence.exclude_vocab(vocab.get_question()))  # type: ignore
 
     add_ui_action(note_menu, shortcutfinger.up1("Generate answer"), lambda: vocab.generate_and_set_answer())
     if vocab.can_generate_sentences_from_context_sentences(require_audio=False):
