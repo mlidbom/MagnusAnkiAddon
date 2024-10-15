@@ -21,6 +21,7 @@ from sysutils import my_clipboard
 from sysutils.typed import checked_cast
 
 from typing import Optional
+from hooks import shortcutfinger
 
 def register_lookup_actions(view: AnkiWebView, root_menu: QMenu) -> None:
     def get_note() -> Optional[JPNote]:
@@ -52,9 +53,9 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu) -> None:
 
     string_menus: list[tuple[QMenu, str]] = []
     if selection:
-        string_menus.append((checked_cast(QMenu, root_menu.addMenu(f'''Selecti&on: "{selection[:40]}"''')), selection))
+        string_menus.append((checked_cast(QMenu, root_menu.addMenu(shortcutfinger.home1(f'''Selection: "{selection[:40]}"'''))), selection))
     if clipboard:
-        string_menus.append((checked_cast(QMenu, root_menu.addMenu(f'''Cl&ipboard: "{clipboard[:40]}"''')), clipboard))
+        string_menus.append((checked_cast(QMenu, root_menu.addMenu(shortcutfinger.home2(f'''Clipboard: "{clipboard[:40]}"'''))), clipboard))
 
     if note:
         setup_note_menu(note, root_menu, string_menus)
@@ -69,7 +70,7 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu) -> None:
         setup_web_search_menu(string_menu, menu_string)
 
 def setup_note_menu(note: JPNote, root_menu: QMenu, string_menus: list[tuple[QMenu, str]]) -> None:
-    note_menu = checked_cast(QMenu, root_menu.addMenu("Not&e"))
+    note_menu = checked_cast(QMenu, root_menu.addMenu(shortcutfinger.home3("Note")))
     if isinstance(note, RadicalNote):
         right_click_menu_note_radical.setup_note_menu(note, note_menu, string_menus)
     if isinstance(note, KanjiNote):
