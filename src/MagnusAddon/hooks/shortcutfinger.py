@@ -22,7 +22,7 @@ def down5(text: str) -> str: return _format_finger("x", text)
 
 def none(text:str) -> str: return text
 
-_index_functions: list[Callable[[str], str]] = [home1, home2, home3, home4, up1, up2, up3, up4, down1, down2, down3]
+_index_functions: list[Callable[[str], str]] = [home1, home2, home3, home4, home5, up1, up2, up3, up4, up5, down1, down2, down3, down5]
 def index(index:int, text:str) -> str:
     if index < len(_index_functions): return _index_functions[index](text)
     return none(text)
