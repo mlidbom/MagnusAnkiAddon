@@ -142,7 +142,12 @@ class NoteFields:
 class Mine:
     VocabPrefixSuffixMarker = "〜"
     class Tags:
+
         base_folder = "_::"
+        kanji_with_no_studying_vocab = f"{base_folder}kanji_with_no_studying_vocab"
+        kanji_with_no_primary_on_readings = f"{base_folder}kanji_with_no_primary_on_readings"
+        kanji_with_no_studying_vocab_with_primary_on_reading = f"{base_folder}kanji_with_no_studying_vocab_with_primary_on_reading"
+
         priority_folder = f"{base_folder}priority::"
 
         source_folder = f"source::"
