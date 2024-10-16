@@ -20,10 +20,10 @@ def setup_note_menu(sentence: SentenceNote, note_menu: QMenu, string_menus: list
         for index, _vocab in enumerate(sentence.get_user_highlighted_vocab()):
             add_ui_action(highlighted_vocab_menu, shortcutfinger.numpad(index, f"{_vocab}"), lambda _index=index: sentence.position_extra_vocab(_vocab_to_add, _index))  # type: ignore
 
-        add_ui_action(highlighted_vocab_menu, shortcutfinger.down1(f"[Last]"), lambda: sentence.position_extra_vocab(_vocab_to_add))
+        add_ui_action(highlighted_vocab_menu, shortcutfinger.home1(f"[Last]"), lambda: sentence.position_extra_vocab(_vocab_to_add))
 
         if _vocab_to_add in sentence.get_user_highlighted_vocab():
-            add_ui_action(highlighted_vocab_menu, shortcutfinger.down2("Remove"), lambda __vocab_to_add=_vocab_to_add: sentence.remove_extra_vocab(__vocab_to_add)) # type: ignore
+            add_ui_action(highlighted_vocab_menu, shortcutfinger.home2("Remove"), lambda __vocab_to_add=_vocab_to_add: sentence.remove_extra_vocab(__vocab_to_add)) # type: ignore
 
     for string_menu, menu_string in string_menus:
         position_vocab_menu(string_menu, menu_string, shortcutfinger.home1("Highlighted Vocab"))

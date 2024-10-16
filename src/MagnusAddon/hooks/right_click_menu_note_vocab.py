@@ -56,9 +56,8 @@ def setup_note_menu(vocab: VocabNote, note_menu: QMenu, string_menus: list[tuple
 
     for string_menu, menu_string in string_menus:
         note_set_menu: QMenu = checked_cast(QMenu, string_menu.addMenu(shortcutfinger.home3("Set")))
-        add_ui_action(note_set_menu, shortcutfinger.home1("Meaning"), lambda _menu_string=menu_string: vocab.set_user_answer(_menu_string)) # type: ignore
-        add_ui_action(note_set_menu, shortcutfinger.home2("Derived from"), lambda _menu_string=menu_string: vocab.set_related_derived_from(_menu_string)) # type: ignore
-        add_ui_action(note_set_menu, shortcutfinger.home3("Ergative twin"), lambda _menu_string=menu_string: vocab.set_related_ergative_twin(_menu_string)) # type: ignore
+        add_ui_action(note_set_menu, shortcutfinger.home1("Derived from"), lambda _menu_string=menu_string: vocab.set_related_derived_from(_menu_string)) # type: ignore
+        add_ui_action(note_set_menu, shortcutfinger.home2("Ergative twin"), lambda _menu_string=menu_string: vocab.set_related_ergative_twin(_menu_string)) # type: ignore
 
     add_ui_action(note_menu, shortcutfinger.up1("Generate answer"), lambda: vocab.generate_and_set_answer())
     if vocab.can_generate_sentences_from_context_sentences(require_audio=False):

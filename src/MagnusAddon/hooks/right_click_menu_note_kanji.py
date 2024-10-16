@@ -28,10 +28,10 @@ def setup_note_menu(kanji: KanjiNote, note_menu: QMenu, string_menus: list[tuple
 
     for string_menu, menu_string in string_menus:
         primary_vocab_menu: QMenu = checked_cast(QMenu, string_menu.addMenu(shortcutfinger.home1("Primary Vocab")))
-        if menu_string in kanji.get_primary_vocab():
-            add_ui_action(primary_vocab_menu, shortcutfinger.home1("Remove"), lambda _menu_string=menu_string: kanji.remove_primary_vocab(_menu_string)) # type: ignore
+        if menu_string not in kanji.get_primary_vocab():
+            add_ui_action(primary_vocab_menu, shortcutfinger.home1("Add"), lambda _menu_string=menu_string: kanji.add_primary_vocab(_menu_string))  # type: ignore
         else:
-            add_ui_action(primary_vocab_menu, shortcutfinger.home2("Add"), lambda _menu_string=menu_string: kanji.add_primary_vocab(_menu_string)) # type: ignore
+            add_ui_action(primary_vocab_menu, shortcutfinger.home2("Remove"), lambda _menu_string=menu_string: kanji.remove_primary_vocab(_menu_string))  # type: ignore
 
         kanji_add_menu: QMenu = checked_cast(QMenu, string_menu.addMenu(shortcutfinger.home2("Add")))
         add_ui_action(kanji_add_menu, shortcutfinger.home1("Similar meaning"), lambda _menu_string=menu_string: kanji.add_user_similar_meaning(_menu_string)) # type: ignore

@@ -25,7 +25,7 @@ def down6(text: str) -> str: return _format_finger("b", text)
 
 def none(text:str) -> str: return text
 
-_numpad_functions: list[Callable[[str], str]] = [up4, up3, up2, up1, up5, home4, home3, home2, home1, home5]
+_numpad_functions: list[Callable[[str], str]] = [up4, up3, up2, up1, up5, down3, down2, down1, down5, down6]
 def numpad(index:int, text:str) -> str:
     if index < len(_numpad_functions): return _numpad_functions[index](f"""{index + 1} {text}""")
     return none(text)
