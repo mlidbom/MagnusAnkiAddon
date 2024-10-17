@@ -139,8 +139,11 @@ def print_debug_information_for_analysis(sentence: str) -> str:
 
 # noinspection DuplicatedCode
 def render_breakdown(html: str, card: Card, _type_of_display: str) -> str:
+    if not ui_utils.is_displaytype_displaying_answer(_type_of_display):
+        return html
+
     note = JPNote.note_from_note(card.note())
-    if isinstance(note, SentenceNote) and ui_utils.is_displaytype_displaying_answer(_type_of_display):
+    if isinstance(note, SentenceNote):
         user_excluded = note.get_user_excluded_vocab()
         extra_words = note.get_user_highlighted_vocab()
         question = note.get_question()

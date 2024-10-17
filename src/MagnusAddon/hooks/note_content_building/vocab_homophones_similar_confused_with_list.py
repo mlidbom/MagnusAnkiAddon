@@ -73,8 +73,11 @@ def generate_compounds(_vocab_note: VocabNote) -> str:
     return render_vocab_list(compound_parts, "compound parts", css_class="compound_parts") if compound_parts else ""
 
 def render_homophones_html_list(html: str, card: Card, _type_of_display: str) -> str:
+    if not ui_utils.is_displaytype_displaying_answer(_type_of_display):
+        return html
+
     vocab_note = JPNote.note_from_card(card)
-    if not (isinstance(vocab_note, VocabNote) and ui_utils.is_displaytype_displaying_answer(_type_of_display)):
+    if not (isinstance(vocab_note, VocabNote)):
         return html
 
     forms = ex_sequence.flatten([app.col().vocab.with_question(reading) for reading in vocab_note.get_forms()])

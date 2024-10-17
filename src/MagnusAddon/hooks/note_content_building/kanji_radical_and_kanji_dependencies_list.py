@@ -1,12 +1,15 @@
 from anki.cards import Card
 from aqt import gui_hooks
 
-from ankiutils import app
+from ankiutils import app, ui_utils
 from note.jpnote import JPNote
 from note.kanjinote import KanjiNote
 from sysutils import ex_str
 
 def render_dependencies_list(html: str, card: Card, _type_of_display: str) -> str:
+    if not ui_utils.is_displaytype_displaying_answer(_type_of_display):
+        return html
+
     note = JPNote.note_from_card(card)
 
     if isinstance(note, KanjiNote):

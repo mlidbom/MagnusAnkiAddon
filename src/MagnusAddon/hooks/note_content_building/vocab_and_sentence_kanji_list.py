@@ -1,6 +1,7 @@
 from anki.cards import Card
 from aqt import gui_hooks
 
+from ankiutils import ui_utils
 from note.jpnote import JPNote
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
@@ -9,6 +10,9 @@ from viewmodels.kanji_list import sentence_kanji_list_viewmodel
 
 
 def render_kanji_list(html:str, card: Card, _type_of_display:str) -> str:
+    if not ui_utils.is_displaytype_displaying_answer(_type_of_display):
+        return html
+
     note = JPNote.note_from_card(card)
     kanjis:list[str] = []
 

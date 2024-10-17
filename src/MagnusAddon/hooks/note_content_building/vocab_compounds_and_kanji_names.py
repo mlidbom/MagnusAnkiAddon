@@ -9,8 +9,11 @@ from sysutils import ex_str, kana_utils
 
 
 def render_compound_list(html: str, card: Card, _type_of_display: str) -> str:
+    if not ui_utils.is_displaytype_displaying_answer(_type_of_display):
+        return html
+
     vocab_note = JPNote.note_from_note(card.note())
-    if isinstance(vocab_note, VocabNote) and ui_utils.is_displaytype_displaying_answer(_type_of_display):
+    if isinstance(vocab_note, VocabNote):
         html = render_kanji_names(vocab_note, html)
 
     return html

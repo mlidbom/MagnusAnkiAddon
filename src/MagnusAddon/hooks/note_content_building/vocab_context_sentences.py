@@ -60,9 +60,12 @@ def generate_highlighted_sentences_html_list(_vocab_note:VocabNote) -> str:
 
 
 def render_highlighted_sentence_list(html: str, card: Card, _type_of_display: str) -> str:
+    if not ui_utils.is_displaytype_displaying_answer(_type_of_display):
+        return html
+
     vocab_note = JPNote.note_from_card(card)
 
-    if isinstance(vocab_note, VocabNote) and ui_utils.is_displaytype_displaying_answer(_type_of_display):
+    if isinstance(vocab_note, VocabNote):
         highlighted_sentences_html = generate_highlighted_sentences_html_list(vocab_note)
         html = html.replace("##CONTEXT_SENTENCES##", highlighted_sentences_html)
 

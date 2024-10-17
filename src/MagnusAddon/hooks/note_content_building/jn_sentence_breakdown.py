@@ -2,7 +2,8 @@
 from anki.cards import Card
 from aqt import gui_hooks
 
-from ankiutils import app
+from ankiutils import app, ui_utils
+from ankiutils.app import ui_utils
 from note.jpnote import JPNote
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
@@ -104,6 +105,9 @@ def _build_user_extra_list(extra_words: list[str], excluded: set[str]) -> str:
 recent_reviewer_cards = RecentItems[int](1)
 
 def render_breakdown(html: str, card: Card, _type_of_display: str) -> str:
+    if not ui_utils.is_displaytype_displaying_answer(_type_of_display):
+        return html
+
     note = JPNote.note_from_note(card.note())
     if isinstance(note, SentenceNote):
         user_excluded = note.get_user_excluded_vocab()

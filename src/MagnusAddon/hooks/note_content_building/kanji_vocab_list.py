@@ -1,6 +1,7 @@
 from anki.cards import Card
 from aqt import gui_hooks
 
+from ankiutils import ui_utils
 from note.jpnote import JPNote
 from note.kanjinote import KanjiNote
 from note.vocabnote import VocabNote
@@ -43,6 +44,9 @@ def generate_vocab_html_list(_kanji_note: KanjiNote) -> str:
         return ''
 
 def render_vocab_html_list(html: str, card: Card, _type_of_display: str) -> str:
+    if not ui_utils.is_displaytype_displaying_answer(_type_of_display):
+        return html
+
     kanji_note = JPNote.note_from_card(card)
 
     if isinstance(kanji_note, KanjiNote):
