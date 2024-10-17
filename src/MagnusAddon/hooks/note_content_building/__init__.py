@@ -8,5 +8,6 @@ from . import (
     vocab_compounds_and_kanji_names,
     vocab_homophones_similar_confused_with_list,
     vocab_highlighted_sentence_list,
-    vocab_context_sentences
+    vocab_context_sentences,
+    radical_and_kanji_kanji_kanji_list
 )

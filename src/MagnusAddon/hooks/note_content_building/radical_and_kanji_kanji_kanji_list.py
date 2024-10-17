@@ -3,8 +3,8 @@ from aqt import gui_hooks
 
 from ankiutils import ui_utils
 from note.jpnote import JPNote
-from note.sentencenote import SentenceNote
-from note.vocabnote import VocabNote
+from note.kanjinote import KanjiNote
+from note.radicalnote import RadicalNote
 from sysutils import ex_str
 from viewmodels.kanji_list import sentence_kanji_list_viewmodel
 
@@ -13,21 +13,21 @@ def render_kanji_list(html:str, card: Card, _type_of_display:str) -> str:
     if not ui_utils.is_displaytype_displaying_answer(_type_of_display):
         return html
 
+    from ankiutils import app
     note = JPNote.note_from_card(card)
     kanjis:list[str] = []
 
-    if isinstance(note, VocabNote):
-        kanjis = note.extract_kanji()
-    elif isinstance(note, SentenceNote):
-        kanjis = note.extract_kanji()
+    if isinstance(note, KanjiNote):
+        kanjis = [n.get_question() for n in app.col().kanji.with_radical(note.get_question())]
+    elif isinstance(note, RadicalNote):
+        kanjis = [n.get_question() for n in app.col().kanji.with_radical(note.get_question())] if note.get_question() else []
     else:
         return html
 
-    list_html = ""
     if kanjis:
         viewmodel = sentence_kanji_list_viewmodel.create(kanjis)
 
-        list_html += f"""
+        list_html = f"""
 <div id="kanji_list" class="page_section">
     <div class="page_section_title">kanji</div>
 {ex_str.newline.join(f'''
@@ -41,8 +41,7 @@ def render_kanji_list(html:str, card: Card, _type_of_display:str) -> str:
 </div>
         """
 
-    html = html.replace("##KANJI_LIST##", list_html)
-
+        html = html.replace("##KANJI_LIST##", list_html)
 
     return html
 

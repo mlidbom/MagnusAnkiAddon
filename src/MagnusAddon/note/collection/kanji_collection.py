@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections import defaultdict
 from typing import List, Optional, Union, TYPE_CHECKING
 
 from note.collection.cache_runner import CacheRunner
@@ -20,12 +21,22 @@ from sysutils import ex_list, ex_sequence
 class _KanjiSnapshot(CachedNote):
     def __init__(self, note: KanjiNote):
         super().__init__(note)
+        self.radicals = note.get_radicals()
 
 class _KanjiCache(NoteCache[KanjiNote, _KanjiSnapshot]):
     def __init__(self, all_kanji: list[KanjiNote], cache_runner: CacheRunner):
+        self._by_radical: dict[str, set[KanjiNote]] = defaultdict(set)
         super().__init__(all_kanji, KanjiNote, cache_runner)
 
     def _create_snapshot(self, note: KanjiNote) -> _KanjiSnapshot: return _KanjiSnapshot(note)
+
+    def _inheritor_remove_from_cache(self, note: KanjiNote, cached:_KanjiSnapshot) -> None:
+        for form in cached.radicals: self._by_radical[form].remove(note)
+
+    def _inheritor_add_to_cache(self, note: KanjiNote) -> None:
+        for form in note.get_radicals(): self._by_radical[form].add(note)
+
+    def with_radical(self, radical: str) -> list[KanjiNote]: return list(self._by_radical[radical])
 
 class KanjiCollection:
     def __init__(self, collection: Collection, jp_collection: JPCollection, cache_manager: CacheRunner):
@@ -52,6 +63,8 @@ class KanjiCollection:
         found = self._cache.with_question(kanji)
         return found[0] if found else None
 
+    def with_radical(self, radical:str) -> list[KanjiNote]: return self._cache.with_radical(radical)
+
     def with_question(self, kanji: str) -> KanjiNote:
         return ex_list.single(self._cache.with_question(kanji))
 
@@ -65,7 +78,7 @@ class KanjiCollection:
 
         dependency_characters = kanji_note.get_radicals()
         for character in dependency_characters:
-            radical_dependency = self.jp_collection.radicals.with_any_question_in([character])
+            radical_dependency:list[RadicalNote] = self.jp_collection.radicals.with_any_question_in([character])
             if radical_dependency:
                 if not radical_dependency[0].is_replaced_by_kanji():
                     dependency_notes.append(radical_dependency[0])
