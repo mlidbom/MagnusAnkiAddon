@@ -24,10 +24,12 @@ def render_kanji_list(html:str, card: Card, _type_of_display:str) -> str:
     else:
         return html
 
-    if kanjis:
-        viewmodel = sentence_kanji_list_viewmodel.create(kanjis)
+    if not kanjis:
+        return html.replace("##KANJI_LIST##", "")
 
-        list_html = f"""
+    viewmodel = sentence_kanji_list_viewmodel.create(kanjis)
+
+    list_html = f"""
 <div id="kanji_list" class="page_section">
     <div class="page_section_title">kanji</div>
 {ex_str.newline.join(f'''
@@ -42,7 +44,6 @@ def render_kanji_list(html:str, card: Card, _type_of_display:str) -> str:
         """
 
     html = html.replace("##KANJI_LIST##", list_html)
-
     return html
 
 
