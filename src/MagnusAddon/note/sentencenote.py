@@ -1,10 +1,7 @@
 from __future__ import annotations
-from typing import cast, TYPE_CHECKING
-
-from anki.decks import DeckDict
+from typing import TYPE_CHECKING
 
 from sysutils.ex_str import newline
-from sysutils.typed import checked_cast
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.extracted_word import ExtractedWord
