@@ -29,7 +29,7 @@ def render_kanji_list(html:str, card: Card, _type_of_display:str) -> str:
     def prefer__studying_kanji(kan: KanjiNote) -> int:
         return 0 if kan.is_studying() else 1
 
-    kanjis = sorted(kanjis, key= lambda kan: prefer__studying_kanji(kan))
+    kanjis = sorted(kanjis, key=lambda kan: prefer__studying_kanji(kan))
 
     viewmodels = [KanjiViewModel(kanji) for kanji in kanjis]
 
@@ -38,11 +38,13 @@ def render_kanji_list(html:str, card: Card, _type_of_display:str) -> str:
     <div class="page_section_title">kanji</div>
 {ex_str.newline.join(f'''
     <div class="kanji_item {"studying" if kanji.kanji.is_studying() else ""}">
-        <span class="kanji_kanji clipboard">{kanji.question()}</span>
-        <span class="kanji_readings">{kanji.readings()}</span>
-        <span class="kanji_answer">{kanji.answer()}</span>        
+        <div class="kanji_main">
+            <span class="kanji_kanji clipboard">{kanji.question()}</span>
+            <span class="kanji_readings">{kanji.readings()}</span>
+            <span class="kanji_answer">{kanji.answer()}</span>        
+        </div>
+        <div class="kanji_mnemonic">{kanji.mnemonic()}</div>
     </div>
-    <div class="kanji_mnemonic">{kanji.mnemonic()}</div>
 ''' for kanji in viewmodels)}
 </div>
         """

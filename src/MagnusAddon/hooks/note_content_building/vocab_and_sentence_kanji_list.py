@@ -31,12 +31,14 @@ def render_kanji_list(html:str, card: Card, _type_of_display:str) -> str:
 <div id="kanji_list" class="page_section">
     <div class="page_section_title">kanji</div>
 {ex_str.newline.join(f'''
-    <div class="kanji_item">
-        <span class="kanji_kanji clipboard">{kanji.question()}</span>
-        <span class="kanji_readings">{kanji.readings()}</span>
-        <span class="kanji_answer">{kanji.answer()}</span>        
+    <div class="kanji_item {"studying" if kanji.kanji.is_studying() else ""}">
+        <div class="kanji_main">
+            <span class="kanji_kanji clipboard">{kanji.question()}</span>
+            <span class="kanji_readings">{kanji.readings()}</span>
+            <span class="kanji_answer">{kanji.answer()}</span>        
+        </div>
+        <div class="kanji_mnemonic">{kanji.mnemonic()}</div>
     </div>
-    <div class="kanji_mnemonic">{kanji.mnemonic()}</div>
 ''' for kanji in viewmodel.kanji_list)}
 </div>
         """
