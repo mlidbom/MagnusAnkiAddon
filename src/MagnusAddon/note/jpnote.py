@@ -5,11 +5,12 @@ from abc import ABC
 from typing import Any, cast, Sequence
 
 from anki.cards import Card, CardId
+from anki.consts import CardType
 from anki.models import NotetypeDict
 from anki.notes import Note, NoteId
 
 from note import noteutils
-from note.note_constants import Mine, MyNoteFields, NoteTypes
+from note.note_constants import CardTypes, Mine, MyNoteFields, NoteTypes
 from sysutils import ex_str
 from sysutils.typed import checked_cast
 
@@ -145,6 +146,11 @@ class JPNote(ABC):
             if tag.startswith(Mine.Tags.priority_folder):
                 if "high" in tag: tags.add("high_priority")
                 if "low" in tag: tags.add("low_priority")
+
+        if self.is_studying(CardTypes.reading) or self.is_studying(CardTypes.listening): tags.add("is_studying")
+        if self.is_studying(CardTypes.reading): tags.add("is_studying_reading")
+        if self.is_studying(CardTypes.listening): tags.add("is_studying_listening")
+        if self.has_tag(Mine.Tags.TTSAudio): tags.add("tts_audio")
 
         return tags
 

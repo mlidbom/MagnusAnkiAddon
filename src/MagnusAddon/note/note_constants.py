@@ -31,6 +31,10 @@ class SentenceNoteFields:
     audio = "Audio Sentence"
     screenshot = "Screenshot"
 
+class CardTypes:
+    reading = "Reading"
+    listening = "Listening"
+
 class NoteTypes:
     immersion_kit = "Immersion Kit Sentence"
     Kanji = "_Kanji"
@@ -44,13 +48,13 @@ class NoteFields:
     note_id = "nid"
     class VocabNoteType:
         class Card:
-            Reading = "Reading"
-            Listening = "Listening"
+            Reading = CardTypes.reading
+            Listening = CardTypes.listening
 
     class SentencesNoteType:
         class Card:
-            Reading = "Reading"
-            Listening = "Listening"
+            Reading = CardTypes.reading
+            Listening = CardTypes.listening
 
     class WaniCommon:
         sort_id = "sort_id"

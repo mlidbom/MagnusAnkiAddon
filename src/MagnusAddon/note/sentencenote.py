@@ -48,15 +48,6 @@ class SentenceNote(JPNote):
     def is_studying_read(self) -> bool: return self.is_studying(NoteFields.SentencesNoteType.Card.Reading)
     def is_studying_listening(self) -> bool: return self.is_studying(NoteFields.SentencesNoteType.Card.Listening)
 
-    def get_meta_tags(self) -> set[str]:
-        tags = super().get_meta_tags()
-
-        if self.is_studying_read(): tags.add("is_studying_reading")
-        if self.is_studying_listening(): tags.add("is_studying_listening")
-        if self.has_tag(Mine.Tags.TTSAudio): tags.add("tts_audio")
-
-        return tags
-
 
     def get_user_highlighted_vocab(self) -> list[str]: return ex_str.extract_newline_separated_values(self.get_field(SentenceNoteFields.user_extra_vocab))
     def _set_user_extra_vocab(self, extra: list[str]) -> None: return self.set_field(SentenceNoteFields.user_extra_vocab, newline.join(extra))
