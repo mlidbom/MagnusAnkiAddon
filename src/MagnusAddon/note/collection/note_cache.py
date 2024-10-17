@@ -78,7 +78,7 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
                 assert backend_note.id not in self._deleted
 
                 cached = self._by_id[backend_note.id]
-                if cached.anki_note() == backend_note:
+                if cached.anki_note() is backend_note:
                     return
 
                 note = self._create_note(backend_note)
