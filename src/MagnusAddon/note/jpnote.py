@@ -5,7 +5,6 @@ from abc import ABC
 from typing import Any, cast, Sequence
 
 from anki.cards import Card, CardId
-from anki.consts import CardType
 from anki.models import NotetypeDict
 from anki.notes import Note, NoteId
 
@@ -153,6 +152,20 @@ class JPNote(ABC):
         if self.has_tag(Mine.Tags.TTSAudio): tags.add("tts_audio")
 
         return tags
+
+    def data_differs_from(self, other: JPNote) -> bool:
+        if self.__class__ != other.__class__: return True
+
+        for index in range(len(self._note.fields)):
+            if self._note.fields[index] != other._note.fields[index]: return True
+
+        my_tags = self.get_tags()
+        other_tags = other.get_tags()
+        if len(my_tags) != len(other_tags): return True
+        for index in range(len(my_tags)):
+            if my_tags[index] != other_tags[index]: return True
+
+        return False
 
     def get_source_tag(self) -> str:
         source_tags = [t for t in self.get_tags() if t.startswith(Mine.Tags.source_folder)]
