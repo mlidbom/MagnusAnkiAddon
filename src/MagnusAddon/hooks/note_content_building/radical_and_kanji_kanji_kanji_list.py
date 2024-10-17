@@ -41,7 +41,7 @@ def render_kanji_list(html:str, card: Card, _type_of_display:str) -> str:
 </div>
         """
 
-        html = html.replace("##KANJI_LIST##", list_html)
+    html = html.replace("##KANJI_LIST##", list_html)
 
     return html
 
