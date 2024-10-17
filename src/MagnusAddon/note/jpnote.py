@@ -154,6 +154,9 @@ class JPNote(ABC):
         return tags
 
     def data_differs_from(self, other: JPNote) -> bool:
+        if self._note is other._note:
+            return False
+
         if self.__class__ != other.__class__: return True
 
         for index in range(len(self._note.fields)):

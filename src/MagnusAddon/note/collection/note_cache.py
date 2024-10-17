@@ -75,10 +75,13 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
     def _on_will_flush(self, backend_note: Note) -> None:
         if backend_note.id:
             if backend_note.id in self._by_id:
-                note = self._create_note(backend_note)
                 assert backend_note.id not in self._deleted
 
                 cached = self._by_id[backend_note.id]
+                if cached.anki_note() == backend_note:
+                    return
+
+                note = self._create_note(backend_note)
                 if cached.data_differs_from(note):
                     self._refresh_in_cache(note)
                     self._pending_generated_data_updates.add(note)
