@@ -29,6 +29,7 @@ def render_kanji_list(html:str, card: Card, _type_of_display:str) -> str:
     def prefer__studying_kanji(kan: KanjiNote) -> int:
         return 0 if kan.is_studying() else 1
 
+    kanjis = [kan for kan in kanjis if kan != note]
     kanjis = sorted(kanjis, key=lambda kan: prefer__studying_kanji(kan))
 
     viewmodels = [KanjiViewModel(kanji) for kanji in kanjis]
