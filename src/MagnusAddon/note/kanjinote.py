@@ -53,7 +53,7 @@ class KanjiNote(WaniNote):
         from ankiutils import app
         from note import vocabnote
 
-        vocab_list = app.col().vocab.with_kanji(self)
+        vocab_list = app.col().vocab.with_kanji_in_main_form(self)
         vocab_list = vocabnote.sort_vocab_list_by_studying_status(vocab_list, self.get_primary_vocab())
 
         return vocab_list

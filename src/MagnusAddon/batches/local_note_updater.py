@@ -64,12 +64,18 @@ def tag_kanji_metadata() -> None:
     primary_reading = re.compile(r'<primary>(.*?)</primary>')
 
     def tag_kanji(kanji: KanjiNote) -> None:
-        vocab_with_kanji = app.col().vocab.with_kanji(kanji)
+        vocab_with_kanji_in_main_form = app.col().vocab.with_kanji_in_main_form(kanji)
+        vocab_with_kanji_in_any_form = app.col().vocab.with_kanji_in_any_form(kanji)
 
-        kanji.toggle_tag(Mine.Tags.kanji_purely_radical_use, not vocab_with_kanji and app.col().kanji.with_radical(kanji.get_question()))
+        kanji_with_this_kanji_as_a_radical = app.col().kanji.with_radical(kanji.get_question())
+        kanji.toggle_tag(Mine.Tags.kanji_not_in_any_vocab_main_form, bool(not vocab_with_kanji_in_main_form and kanji_with_this_kanji_as_a_radical))
+        kanji.toggle_tag(Mine.Tags.kanji_not_in_any_vocab_form, bool(not vocab_with_kanji_in_any_form and kanji_with_this_kanji_as_a_radical))
 
-        studying_vocab = [voc for voc in vocab_with_kanji if voc.is_studying()]
+        studying_vocab = [voc for voc in vocab_with_kanji_in_main_form if voc.is_studying()]
         kanji.toggle_tag(Mine.Tags.kanji_with_no_studying_vocab, not studying_vocab)
+
+        primary_readings: list[str] = primary_reading.findall(f"{kanji.get_reading_on()} {kanji.get_reading_kun()} {kanji.get_reading_nan()}")
+        kanji.toggle_tag(Mine.Tags.kanji_with_no_primary_readings, not primary_readings)
 
         primary_on_readings:list[str] = primary_reading.findall(kanji.get_reading_on())
         kanji.toggle_tag(Mine.Tags.kanji_with_no_primary_on_readings, not primary_on_readings)
@@ -83,23 +89,20 @@ def tag_kanji_metadata() -> None:
 
 
     def tag_has_single_kanji_vocab_with_reading_different_from_kanji_primary_reading(kanji: KanjiNote) -> None:
-        vocabs = app.col().vocab.with_kanji(kanji)
+        vocabs = app.col().vocab.with_kanji_in_main_form(kanji)
         single_kanji_vocab = [v for v in vocabs if v.get_question() == kanji.get_question()]
         if single_kanji_vocab:
             kanji.set_tag(Mine.Tags.kanji_with_single_kanji_vocab)
-            primary_on_readings: list[str] = primary_reading.findall(kanji.get_reading_on())
-            primary_kun_readings: list[str] = primary_reading.findall(kanji.get_reading_kun())
-            primary_readings:set[str] = set(primary_on_readings + primary_kun_readings)
+            primary_readings: list[str] = primary_reading.findall(f"{kanji.get_reading_on()} {kanji.get_reading_kun()} {kanji.get_reading_nan()}")
 
+            kanji.remove_tag(Mine.Tags.kanji_with_single_kanji_vocab_with_different_reading)
+            kanji.remove_tag(Mine.Tags.kanji_with_studying_single_kanji_vocab_with_different_reading)
             for vocab in single_kanji_vocab:
                 for reading in vocab.get_readings():
                     if reading not in primary_readings:
                         kanji.set_tag(Mine.Tags.kanji_with_single_kanji_vocab_with_different_reading)
                         if vocab.is_studying(reading):
                             kanji.set_tag(Mine.Tags.kanji_with_studying_single_kanji_vocab_with_different_reading)
-
-
-
 
     all_kanji = app.col().kanji.all()
     progress_display_runner.process_with_progress(all_kanji, tag_kanji, "Tagging kanji with studying metadata")

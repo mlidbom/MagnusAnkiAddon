@@ -17,7 +17,7 @@ def render_kanji_list(html:str, card: Card, _type_of_display:str) -> str:
     kanjis:list[str] = []
 
     if isinstance(note, VocabNote):
-        kanjis = note.extract_kanji()
+        kanjis = note.extract_main_form_kanji()
     elif isinstance(note, SentenceNote):
         kanjis = note.extract_kanji()
     else:

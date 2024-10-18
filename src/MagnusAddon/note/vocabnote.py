@@ -105,9 +105,13 @@ class VocabNote(KanaVocabNote):
                 if self.is_uk() and self.get_readings()[0] not in self.get_forms():
                     self.set_forms(self.get_forms() | set(self.get_readings()))
 
-    def extract_kanji(self) -> list[str]:
+    def extract_main_form_kanji(self) -> list[str]:
         clean = ex_str.strip_html_and_bracket_markup(self.get_question())
         return [char for char in clean if kana_utils.is_kanji(char)]
+
+    def extract_all_kanji(self) -> set[str]:
+        clean = ex_str.strip_html_and_bracket_markup(self.get_question() + self._get_forms())
+        return set(char for char in clean if kana_utils.is_kanji(char))
 
     def is_uk(self) -> bool: return self.has_tag(Mine.Tags.UsuallyKanaOnly)
 
