@@ -70,14 +70,14 @@ def tag_kanji_metadata() -> None:
         else:
             kanji.remove_tag(Mine.Tags.kanji_with_no_studying_vocab)
 
-            primary_on_readings:list[str] = primary_reading.findall(kanji.get_reading_on())
-            if not primary_on_readings:
-                kanji.set_tag(Mine.Tags.kanji_with_no_primary_on_readings)
-            else:
-                first_primary_on_reading = primary_on_readings[0]
-                vocab_with_first_primary_on_reading = [voc for voc in studying_vocab if any(reading for reading in voc.get_readings() if first_primary_on_reading in reading)]
-                if not vocab_with_first_primary_on_reading:
-                    kanji.set_tag(Mine.Tags.kanji_with_no_studying_vocab_with_primary_on_reading)
+        primary_on_readings:list[str] = primary_reading.findall(kanji.get_reading_on())
+        if not primary_on_readings:
+            kanji.set_tag(Mine.Tags.kanji_with_no_primary_on_readings)
+        else:
+            first_primary_on_reading = primary_on_readings[0]
+            vocab_with_first_primary_on_reading = [voc for voc in studying_vocab if any(reading for reading in voc.get_readings() if first_primary_on_reading in reading)]
+            if not vocab_with_first_primary_on_reading:
+                kanji.set_tag(Mine.Tags.kanji_with_no_studying_vocab_with_primary_on_reading)
 
     def tag_has_single_kanji_vocab_with_reading_different_from_kanji_primary_reading(kanji: KanjiNote) -> None:
         vocabs = app.col().vocab.with_kanji(kanji)
