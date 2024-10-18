@@ -82,8 +82,8 @@ class KanjiNote(WaniNote):
     def get_reading_nan(self) -> str: return self.get_field(NoteFields.Kanji.Reading_Nan)
     def set_reading_nan(self, value: str) -> None: self.set_field(NoteFields.Kanji.Reading_Nan, value)
 
-    def get_radicals(self) -> list[str]: return ex_str.extract_comma_separated_values(self.get_field(NoteFields.Kanji.Radicals))
-    def set_radicals(self, value: str) -> None: self.set_field(NoteFields.Kanji.Radicals, value)
+    def get_radicals(self) -> set[str]: return set(ex_str.extract_comma_separated_values(self.get_field(NoteFields.Kanji.Radicals)))
+    def _set_radicals(self, value: str) -> None: self.set_field(NoteFields.Kanji.Radicals, value)
 
     def get_radicals_icons(self) -> str: return self.get_field(NoteFields.Kanji.Radicals_Icons)
     def set_radicals_icons(self, value: str) -> None: self.set_field(NoteFields.Kanji.Radicals_Icons, value)
@@ -188,7 +188,7 @@ class KanjiNote(WaniNote):
         radicals_without_characters = [radical for radical in radicals if radical.characters is None]
 
         radical_characters = [radical.characters for radical in radicals_with_characters]
-        self.set_radicals(", ".join(radical_characters))
+        self._set_radicals(", ".join(radical_characters))
 
         radical_names = [radical.meanings[0].meaning for radical in radicals_with_characters]
         self.set_radicals_names(", ".join(radical_names))
