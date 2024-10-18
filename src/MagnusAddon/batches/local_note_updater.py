@@ -64,20 +64,23 @@ def tag_kanji_metadata() -> None:
     primary_reading = re.compile(r'<primary>(.*?)</primary>')
 
     def tag_kanji(kanji: KanjiNote) -> None:
-        studying_vocab = [voc for voc in app.col().vocab.with_kanji(kanji) if voc.is_studying()]
-        if not studying_vocab:
-            kanji.set_tag(Mine.Tags.kanji_with_no_studying_vocab)
-        else:
-            kanji.remove_tag(Mine.Tags.kanji_with_no_studying_vocab)
+        vocab_with_kanji = app.col().vocab.with_kanji(kanji)
+
+        kanji.toggle_tag(Mine.Tags.kanji_purely_radical_use, not vocab_with_kanji and app.col().kanji.with_radical(kanji.get_question()))
+
+        studying_vocab = [voc for voc in vocab_with_kanji if voc.is_studying()]
+        kanji.toggle_tag(Mine.Tags.kanji_with_no_studying_vocab, not studying_vocab)
 
         primary_on_readings:list[str] = primary_reading.findall(kanji.get_reading_on())
-        if not primary_on_readings:
-            kanji.set_tag(Mine.Tags.kanji_with_no_primary_on_readings)
-        else:
+        kanji.toggle_tag(Mine.Tags.kanji_with_no_primary_on_readings, not primary_on_readings)
+        if primary_on_readings:
             first_primary_on_reading = primary_on_readings[0]
             vocab_with_first_primary_on_reading = [voc for voc in studying_vocab if any(reading for reading in voc.get_readings() if first_primary_on_reading in reading)]
-            if not vocab_with_first_primary_on_reading:
-                kanji.set_tag(Mine.Tags.kanji_with_no_studying_vocab_with_primary_on_reading)
+            kanji.toggle_tag(Mine.Tags.kanji_with_no_studying_vocab_with_primary_on_reading, not vocab_with_first_primary_on_reading)
+
+
+
+
 
     def tag_has_single_kanji_vocab_with_reading_different_from_kanji_primary_reading(kanji: KanjiNote) -> None:
         vocabs = app.col().vocab.with_kanji(kanji)

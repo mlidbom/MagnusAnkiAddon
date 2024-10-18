@@ -188,5 +188,11 @@ class JPNote(ABC):
             self._note.tags.append(tag)
             self._flush()
 
+    def toggle_tag(self, tag:str, on:bool) -> None:
+        if on:
+            self.set_tag(tag)
+        else:
+            self.remove_tag(tag)
+
     def last_edit_time(self) -> int:
         return self._note.mod

@@ -152,6 +152,7 @@ class Mine:
         kanji_folder = f"{base_folder}kanji::"
         kanji_with_no_studying_vocab = f"{kanji_folder}no_studying_vocab"
         kanji_with_single_kanji_vocab = f"{kanji_folder}single_kanji_vocab"
+        kanji_purely_radical_use = f"{kanji_folder}kanji_purely_radical_use"
         kanji_with_single_kanji_vocab_with_different_reading = f"{kanji_folder}single_kanji_vocab_with_different_reading"
         kanji_with_studying_single_kanji_vocab_with_different_reading = f"{kanji_folder}studying_single_kanji_vocab_with_different_reading"
         kanji_with_no_primary_on_readings = f"{kanji_folder}no_primary_on_readings"
