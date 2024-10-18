@@ -117,7 +117,7 @@ class VocabNote(KanaVocabNote):
     def get_reading_mnemonic(self) -> str: return self.get_field(NoteFields.Vocab.source_reading_mnemonic)
     def set_reading_mnemonic(self, value: str) -> None: self.set_field(NoteFields.Vocab.source_reading_mnemonic, value)
 
-    def get_readings(self) -> list[str]: return [reading.strip() for reading in self._get_reading().split(",")]
+    def get_readings(self) -> list[str]: return ex_str.extract_comma_separated_values(self._get_reading())
     def set_readings(self, readings: list[str]) -> None: self._set_reading(", ".join([reading.strip() for reading in readings]))
 
     def _get_reading(self) -> str: return self.get_field(NoteFields.Vocab.Reading)
