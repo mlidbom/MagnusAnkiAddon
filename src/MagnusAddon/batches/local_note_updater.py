@@ -60,7 +60,7 @@ def convert_immersion_kit_sentences() -> None:
     immersion_kit_sences = list(app.anki_collection().find_notes(query_builder.immersion_kit_sentences()))
     progress_display_runner.process_with_progress(immersion_kit_sences, convert_note, "Converting immersion kit sentences")
 
-def tag_kanji_with_no_studying_words() -> None:
+def tag_kanji_metadata() -> None:
     primary_reading = re.compile(r'<primary>(.*?)</primary>')
 
     def tag_kanji(kanji: KanjiNote) -> None:
@@ -79,6 +79,25 @@ def tag_kanji_with_no_studying_words() -> None:
                 if not vocab_with_first_primary_on_reading:
                     kanji.set_tag(Mine.Tags.kanji_with_no_studying_vocab_with_primary_on_reading)
 
+    def tag_has_single_kanji_vocab_with_reading_different_from_kanji_primary_reading(kanji: KanjiNote) -> None:
+        vocabs = app.col().vocab.with_kanji(kanji)
+        single_kanji_vocab = [v for v in vocabs if v.get_question() == kanji.get_question()]
+        if single_kanji_vocab:
+            kanji.set_tag(Mine.Tags.kanji_with_single_kanji_vocab)
+            primary_on_readings: list[str] = primary_reading.findall(kanji.get_reading_on())
+            primary_kun_readings: list[str] = primary_reading.findall(kanji.get_reading_kun())
+            primary_readings:set[str] = set(primary_on_readings + primary_kun_readings)
 
-    kanji = app.col().kanji.all()
-    progress_display_runner.process_with_progress(kanji, tag_kanji, "Tagging kanji with no studying vocab")
+            for vocab in single_kanji_vocab:
+                for reading in vocab.get_readings():
+                    if reading not in primary_readings:
+                        kanji.set_tag(Mine.Tags.kanji_with_single_kanji_vocab_with_different_reading)
+                        if vocab.is_studying(reading):
+                            kanji.set_tag(Mine.Tags.kanji_with_studying_single_kanji_vocab_with_different_reading)
+
+
+
+
+    all_kanji = app.col().kanji.all()
+    progress_display_runner.process_with_progress(all_kanji, tag_kanji, "Tagging kanji with studying metadata")
+    progress_display_runner.process_with_progress(all_kanji, tag_has_single_kanji_vocab_with_reading_different_from_kanji_primary_reading, "Tagging kanji with single kanji vocab")

@@ -148,9 +148,15 @@ class Mine:
     class Tags:
 
         base_folder = "_::"
-        kanji_with_no_studying_vocab = f"{base_folder}kanji_with_no_studying_vocab"
-        kanji_with_no_primary_on_readings = f"{base_folder}kanji_with_no_primary_on_readings"
-        kanji_with_no_studying_vocab_with_primary_on_reading = f"{base_folder}kanji_with_no_studying_vocab_with_primary_on_reading"
+
+        kanji_folder = f"{base_folder}kanji::"
+        kanji_with_no_studying_vocab = f"{kanji_folder}no_studying_vocab"
+        kanji_with_single_kanji_vocab = f"{kanji_folder}single_kanji_vocab"
+        kanji_with_single_kanji_vocab_with_different_reading = f"{kanji_folder}single_kanji_vocab_with_different_reading"
+        kanji_with_studying_single_kanji_vocab_with_different_reading = f"{kanji_folder}studying_single_kanji_vocab_with_different_reading"
+        kanji_with_no_primary_on_readings = f"{kanji_folder}no_primary_on_readings"
+        kanji_with_no_studying_vocab_with_primary_on_reading = f"{kanji_folder}no_studying_vocab_with_primary_on_reading"
+
 
         priority_folder = f"{base_folder}priority::"
 
