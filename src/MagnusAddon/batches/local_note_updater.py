@@ -1,5 +1,4 @@
 import re
-
 from anki.notes import NoteId
 
 from ankiutils import app, query_builder
@@ -9,7 +8,7 @@ from note.note_constants import Mine
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
 
-from sysutils import progress_display_runner
+from sysutils import kana_utils, progress_display_runner
 
 def update_all() -> None:
     update_sentences()
@@ -107,3 +106,38 @@ def tag_kanji_metadata() -> None:
     all_kanji = app.col().kanji.all()
     progress_display_runner.process_with_progress(all_kanji, tag_kanji, "Tagging kanji with studying metadata")
     progress_display_runner.process_with_progress(all_kanji, tag_has_single_kanji_vocab_with_reading_different_from_kanji_primary_reading, "Tagging kanji with single kanji vocab")
+
+
+def adjust_kanji_primary_readings() -> None:
+    primary_reading_pattern = re.compile(r'<primary>(.*?)</primary>')
+
+
+    def adjust_kanji_readings(kanji: KanjiNote) -> None:
+        def make_on_reading_primary(primary_reading: str) -> None:
+            new_reading = re.sub(rf'\b{re.escape(primary_reading)}\b', f'<primary>{primary_reading}</primary>', kanji.get_reading_on())
+            print(f"{kanji.get_question()}: {new_reading}")
+            kanji.set_reading_on(new_reading)
+
+        primary_readings: list[str] = primary_reading_pattern.findall(f"{kanji.get_reading_on()} {kanji.get_reading_kun()}")
+        if not primary_readings:
+            on_readings = kanji.get_reading_on_list()
+            if len(on_readings) == 1:
+                make_on_reading_primary(on_readings[0])
+                return
+
+            # main_form_vocabs = app.col().vocab.with_kanji_in_main_form(kanji)
+            # studying_vocabs = [voc for voc in main_form_vocabs if voc.is_studying()]
+
+
+
+
+
+    progress_display_runner.process_with_progress(app.col().kanji.all(), adjust_kanji_readings, "Adjusting kanji readings")
+
+def make_yomitan_on_readings_hiragana() -> None:
+    yomitan_kanji = [kan for kan in app.col().kanji.all() if kan.has_tag(Mine.Tags.source_yomitan)]
+    for kanji in yomitan_kanji:
+        on_reading = kanji.get_reading_on()
+        if kana_utils.contains_katakana(on_reading):
+            print(f"""{on_reading} : {kana_utils.to_hiragana(on_reading)}""")
+            kanji.set_reading_on(kana_utils.to_hiragana(on_reading) )
