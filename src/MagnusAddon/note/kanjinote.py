@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 from note.waninote import WaniNote
 from note.note_constants import NoteFields, Mine, NoteTypes
-from sysutils import ex_sequence, ex_str
+from sysutils import ex_sequence, ex_str, kana_utils
 from wanikani.wanikani_api_client import WanikaniClient
 
 class KanjiNote(WaniNote):
@@ -39,6 +39,8 @@ class KanjiNote(WaniNote):
 
     def update_generated_data(self) -> None:
         super().update_generated_data()
+
+        self.set_reading_on(kana_utils.to_hiragana(self.get_reading_on()))#Katakana sneaks in via yomitan etc
 
         def update_primary_audios() -> None:
             from ankiutils import app
