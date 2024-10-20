@@ -118,15 +118,13 @@ def adjust_kanji_primary_readings() -> None:
             print(f"{kanji.get_question()}: {new_reading}")
             kanji.set_reading_on(new_reading)
 
-        primary_readings: list[str] = primary_reading_pattern.findall(f"{kanji.get_reading_on()} {kanji.get_reading_kun()}")
+        primary_readings: list[str] = primary_reading_pattern.findall(kanji.get_reading_on())
         if not primary_readings:
             on_readings = kanji.get_reading_on_list()
-            if len(on_readings) == 1:
+            if len(on_readings) > 0:
                 make_on_reading_primary(on_readings[0])
+                kanji.set_field("_primary_readings_tts_audio", "")
                 return
-
-            # main_form_vocabs = app.col().vocab.with_kanji_in_main_form(kanji)
-            # studying_vocabs = [voc for voc in main_form_vocabs if voc.is_studying()]
 
 
 
