@@ -149,6 +149,22 @@ class KanjiNote(WaniNote):
     def add_primary_vocab(self, vocab:str) -> None:
         self.set_primary_vocab(self.get_primary_vocab() + [vocab])
 
+    def position_primary_vocab(self, vocab: str, new_index:int = -1) -> None:
+        vocab = vocab.strip()
+        primary_vocab_list = self.get_primary_vocab()
+        if vocab in primary_vocab_list:
+            current_index = primary_vocab_list.index(vocab)
+            primary_vocab_list.remove(vocab)
+            if new_index != -1 and new_index > current_index:
+                new_index -= 1
+
+        if new_index == -1:
+            primary_vocab_list.append(vocab)
+        else:
+            primary_vocab_list.insert(new_index, vocab)
+
+        self.set_primary_vocab(primary_vocab_list)
+
     def remove_primary_vocab(self, vocab:str) -> None:
         self.set_primary_vocab([v for v in self.get_primary_vocab() if not v == vocab])
 

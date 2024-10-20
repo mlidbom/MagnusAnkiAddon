@@ -26,12 +26,18 @@ def setup_note_menu(kanji: KanjiNote, note_menu: QMenu, string_menus: list[tuple
 
     add_ui_action(note_menu, shortcutfinger.home5("Reset Primary Vocabs"), lambda: kanji.set_primary_vocab([]))
 
+    def position_primary_vocab_menu(_menu: QMenu, _vocab_to_add: str, _title: str) -> None:
+        highlighted_vocab_menu: QMenu = checked_cast(QMenu, _menu.addMenu(_title))
+        for index, _vocab in enumerate(kanji.get_primary_vocab()):
+            add_ui_action(highlighted_vocab_menu, shortcutfinger.numpad(index, f"{_vocab}"), lambda _index=index: kanji.position_primary_vocab(_vocab_to_add, _index))  # type: ignore
+
+        add_ui_action(highlighted_vocab_menu, shortcutfinger.home1(f"[Last]"), lambda: kanji.position_primary_vocab(_vocab_to_add))
+
+        if _vocab_to_add in kanji.get_primary_vocab():
+            add_ui_action(highlighted_vocab_menu, shortcutfinger.home2("Remove"), lambda __vocab_to_add=_vocab_to_add: kanji.remove_primary_vocab(__vocab_to_add))  # type: ignore
+
     for string_menu, menu_string in string_menus:
-        primary_vocab_menu: QMenu = checked_cast(QMenu, string_menu.addMenu(shortcutfinger.home1("Primary Vocab")))
-        if menu_string not in kanji.get_primary_vocab():
-            add_ui_action(primary_vocab_menu, shortcutfinger.home1("Add"), lambda _menu_string=menu_string: kanji.add_primary_vocab(_menu_string))  # type: ignore
-        else:
-            add_ui_action(primary_vocab_menu, shortcutfinger.home2("Remove"), lambda _menu_string=menu_string: kanji.remove_primary_vocab(_menu_string))  # type: ignore
+        position_primary_vocab_menu(string_menu, menu_string, shortcutfinger.home1("Primary Vocab"))
 
         kanji_add_menu: QMenu = checked_cast(QMenu, string_menu.addMenu(shortcutfinger.home2("Add")))
         add_ui_action(kanji_add_menu, shortcutfinger.home1("Similar meaning"), lambda _menu_string=menu_string: kanji.add_user_similar_meaning(_menu_string)) # type: ignore
