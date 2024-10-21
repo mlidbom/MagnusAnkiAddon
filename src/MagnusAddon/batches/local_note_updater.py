@@ -107,3 +107,9 @@ def tag_kanji_metadata() -> None:
     all_kanji = app.col().kanji.all()
     progress_display_runner.process_with_progress(all_kanji, tag_kanji, "Tagging kanji with studying metadata")
     progress_display_runner.process_with_progress(all_kanji, tag_has_single_kanji_vocab_with_reading_different_from_kanji_primary_reading, "Tagging kanji with single kanji vocab")
+
+def reparse_sentence_words() -> None:
+    def reparse_sentence(sentence: SentenceNote) ->None:
+        sentence.update_parsed_words(force=True)
+
+    progress_display_runner.process_with_progress(app.col().sentences.all(), reparse_sentence, "Reparsing sentences.")
