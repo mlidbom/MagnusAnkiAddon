@@ -15,7 +15,7 @@ def render_dependencies_list(html: str, card: Card, _type_of_display: str) -> st
     note = JPNote.note_from_card(card)
 
     if isinstance(note, KanjiNote):
-        readings = note.get_readings()
+        readings = [ex_str.strip_html_markup(reading) for reading in note.get_readings()]
 
         def highlight_primary_reading_sources(text: str) -> str:
             for reading in readings:
