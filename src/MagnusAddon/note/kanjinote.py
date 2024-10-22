@@ -75,6 +75,8 @@ class KanjiNote(WaniNote):
     def get_reading_on_list(self) -> list[str]: return ex_str.extract_comma_separated_values(self.get_reading_on())
     def get_reading_kun_list(self) -> list[str]: return ex_str.extract_comma_separated_values(self.get_reading_kun())
     def get_reading_nan_list(self) -> list[str]: return ex_str.extract_comma_separated_values(self.get_reading_nan())
+    def get_readings(self) -> list[str]:
+        return self.get_reading_on_list() + self.get_reading_kun_list() + self.get_reading_nan_list()
 
     def get_reading_on(self) -> str: return self.get_field(NoteFields.Kanji.Reading_On)
     def set_reading_on(self, value: str) -> None: self.set_field(NoteFields.Kanji.Reading_On, value)
