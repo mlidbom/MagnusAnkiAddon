@@ -37,12 +37,6 @@ class _VocabCache(NoteCache[VocabNote, _VocabSnapshot]):
     def _create_snapshot(self, note: VocabNote) -> _VocabSnapshot: return _VocabSnapshot(note)
 
     def _inheritor_remove_from_cache(self, note: VocabNote, cached:_VocabSnapshot) -> None:
-        #todo: this should really be handled by an event or something but...
-        from ankiutils import app
-        kanji_notes = app.col().kanji.with_any_kanji_in(note.extract_main_form_kanji())
-        for kanji_note in kanji_notes:
-            kanji_note.update_generated_data()
-
         for form in cached.forms: self._by_form[form].remove(note)
         for kanji in cached.main_form_kanji: self._by_kanji_in_main_form[kanji].remove(note)
         for kanji in cached.all_kanji: self._by_kanji_in_any_form[kanji].remove(note)
