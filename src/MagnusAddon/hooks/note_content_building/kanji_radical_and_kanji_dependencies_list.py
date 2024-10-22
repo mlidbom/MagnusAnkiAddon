@@ -1,10 +1,12 @@
+import re
+
 from anki.cards import Card
 from aqt import gui_hooks
 
 from ankiutils import app, ui_utils
 from note.jpnote import JPNote
 from note.kanjinote import KanjiNote
-from sysutils import ex_str
+from sysutils import ex_str, kana_utils
 
 def render_dependencies_list(html: str, card: Card, _type_of_display: str) -> str:
     if not ui_utils.is_displaytype_displaying_answer(_type_of_display):
@@ -13,6 +15,14 @@ def render_dependencies_list(html: str, card: Card, _type_of_display: str) -> st
     note = JPNote.note_from_card(card)
 
     if isinstance(note, KanjiNote):
+        primary_readings = note.get_primary_readings()
+
+        def highlight_primary_reading_sources(text: str) -> str:
+            for primary_reading in primary_readings:
+                text = re.sub(rf'\b{kana_utils.to_hiragana(primary_reading)}|{kana_utils.to_katakana(primary_reading)}\b', f"<primary-reading-source>{primary_reading}</primary-reading-source>", text)
+
+            return text
+
         dependencies = app.col().kanji.display_dependencies_of(note)
 
         if dependencies:
@@ -28,7 +38,7 @@ def render_dependencies_list(html: str, card: Card, _type_of_display: str) -> st
                 
             
                 <div class="dependency_name clipboard">{dependency.name}</div>
-                <div class="dependency_readings">{", ".join(dependency.readings)}</div>
+                <div class="dependency_readings">{highlight_primary_reading_sources(", ".join(dependency.readings))}</div>
             </div>
             <div class="dependency_mnemonic">{dependency.mnemonic}</div>
         </div>

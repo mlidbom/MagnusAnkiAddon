@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from typing import Callable, TYPE_CHECKING
 
 from wanikani_api import models
@@ -77,6 +78,10 @@ class KanjiNote(WaniNote):
 
     def get_reading_on(self) -> str: return self.get_field(NoteFields.Kanji.Reading_On)
     def set_reading_on(self, value: str) -> None: self.set_field(NoteFields.Kanji.Reading_On, value)
+
+    primary_reading_pattern = re.compile(r'<primary>(.*?)</primary>')
+    def get_primary_readings(self) -> list[str]:
+        return KanjiNote.primary_reading_pattern.findall(kana_utils.to_katakana(self.get_reading_on()) + " " + self.get_reading_kun())
 
     def get_reading_kun(self) -> str: return self.get_field(NoteFields.Kanji.Reading_Kun)
     def set_reading_kun(self, value: str) -> None: self.set_field(NoteFields.Kanji.Reading_Kun, value)
