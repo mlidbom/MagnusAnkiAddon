@@ -85,6 +85,12 @@ def tag_kanji_metadata() -> None:
             kanji.toggle_tag(Mine.Tags.kanji_with_no_studying_vocab_with_primary_on_reading, not vocab_with_first_primary_on_reading)
 
 
+        kanji.toggle_tag(Mine.Tags.kanji_is_radical, any(app.col().kanji.with_radical(kanji.get_question())))
+        kanji.toggle_tag(Mine.Tags.kanji_is_radical_purely, not any(vocab_with_kanji_in_any_form) and any(app.col().kanji.with_radical(kanji.get_question())))
+        kanji.toggle_tag(Mine.Tags.kanji_is_radical_silent, not any(primary_readings) and any(app.col().kanji.with_radical(kanji.get_question())))
+
+
+
 
 
 
