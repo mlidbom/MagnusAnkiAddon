@@ -2,6 +2,9 @@ import time
 from typing import Callable
 
 
+SECONDS_PER_DAY = 24 * 60 * 60
+MILLISECONDS_PER_SECOND = 1000
+
 def one_second_from_now() -> int: return int(time.time()) + 1
 
 def time_execution(callback: Callable[[], None]) -> str:
