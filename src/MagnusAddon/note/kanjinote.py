@@ -19,7 +19,7 @@ class KanjiNote(WaniNote):
         super().__init__(note)
 
     def tag_readings_in_string(self, vocabulary: str, tagger: Callable[[str], str]) -> str:
-        readings = f"{self.get_reading_kun()}, {self.get_reading_on()}"
+        readings = f"{self.get_reading_kun()}, {self.get_reading_on_html()}"
         readings_list = [s.split(".")[0].strip() for s in (ex_str.strip_html_and_bracket_markup(readings).split(","))]
         readings_list.sort(key=len, reverse=True)
         for reading in readings_list:
@@ -41,7 +41,7 @@ class KanjiNote(WaniNote):
     def update_generated_data(self) -> None:
         super().update_generated_data()
 
-        self.set_reading_on(kana_utils.to_hiragana(self.get_reading_on()))#Katakana sneaks in via yomitan etc
+        self.set_reading_on(kana_utils.to_hiragana(self.get_reading_on_html()))#Katakana sneaks in via yomitan etc
 
         def update_primary_audios() -> None:
             from ankiutils import app
@@ -72,19 +72,19 @@ class KanjiNote(WaniNote):
     def get_user_mnemonic(self) -> str: return self.get_field(NoteFields.Kanji.user_mnemonic)
     def set_user_mnemonic(self, value: str) -> None: self.set_field(NoteFields.Kanji.user_mnemonic, value)
 
-    def get_reading_on_list(self) -> list[str]: return ex_str.extract_comma_separated_values(self.get_reading_on())
-    def get_reading_kun_list(self) -> list[str]: return ex_str.extract_comma_separated_values(self.get_reading_kun())
-    def get_reading_nan_list(self) -> list[str]: return ex_str.extract_comma_separated_values(self.get_reading_nan())
+    def get_reading_on_list_html(self) -> list[str]: return ex_str.extract_comma_separated_values(self.get_reading_on_html())
+    def get_reading_kun_list_html(self) -> list[str]: return ex_str.extract_comma_separated_values(self.get_reading_kun())
+    def get_reading_nan_list_html(self) -> list[str]: return ex_str.extract_comma_separated_values(self.get_reading_nan())
 
     def get_readings_clean(self) -> list[str]:
-        return [ex_str.strip_html_markup(reading) for reading in self.get_reading_on_list() + self.get_reading_kun_list() + self.get_reading_nan_list()]
+        return [ex_str.strip_html_markup(reading) for reading in self.get_reading_on_list_html() + self.get_reading_kun_list_html() + self.get_reading_nan_list_html()]
 
-    def get_reading_on(self) -> str: return self.get_field(NoteFields.Kanji.Reading_On)
+    def get_reading_on_html(self) -> str: return self.get_field(NoteFields.Kanji.Reading_On)
     def set_reading_on(self, value: str) -> None: self.set_field(NoteFields.Kanji.Reading_On, value)
 
     primary_reading_pattern = re.compile(r'<primary>(.*?)</primary>')
-    def get_primary_readings(self) -> list[str]:
-        return KanjiNote.primary_reading_pattern.findall(kana_utils.to_katakana(self.get_reading_on()) + " " + self.get_reading_kun())
+    def get_primary_readings_html(self) -> list[str]:
+        return KanjiNote.primary_reading_pattern.findall(kana_utils.to_katakana(self.get_reading_on_html()) + " " + self.get_reading_kun())
 
     def get_reading_kun(self) -> str: return self.get_field(NoteFields.Kanji.Reading_Kun)
     def set_reading_kun(self, value: str) -> None: self.set_field(NoteFields.Kanji.Reading_Kun, value)
