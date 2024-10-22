@@ -15,11 +15,12 @@ def render_dependencies_list(html: str, card: Card, _type_of_display: str) -> st
     note = JPNote.note_from_card(card)
 
     if isinstance(note, KanjiNote):
-        primary_readings = note.get_primary_readings()
+        readings = note.get_readings()
 
         def highlight_primary_reading_sources(text: str) -> str:
-            for primary_reading in primary_readings:
-                text = re.sub(rf'\b{kana_utils.to_hiragana(primary_reading)}|{kana_utils.to_katakana(primary_reading)}\b', f"<primary-reading-source>{primary_reading}</primary-reading-source>", text)
+            for reading in readings:
+                text = re.sub(rf'\b{re.escape(kana_utils.to_hiragana(reading))}\b', f"<primary-reading-source>{kana_utils.to_hiragana(reading)}</primary-reading-source>", text)
+                text = re.sub(rf'\b{re.escape(kana_utils.to_katakana(reading))}\b', f"<primary-reading-source>{kana_utils.to_katakana(reading)}</primary-reading-source>", text)
 
             return text
 

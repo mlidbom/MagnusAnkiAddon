@@ -31,8 +31,9 @@ def render_kanji_list(html:str, card: Card, _type_of_display:str) -> str:
         return html.replace("##KANJI_LIST##", "")
 
     def highlight_inherited_reading(text: str) -> str:
-        for primary_reading in kanji_readings:
-            text = re.sub(rf'\b{kana_utils.to_hiragana(primary_reading)}|{kana_utils.to_katakana(primary_reading)}\b', f"<inherited-reading>{primary_reading}</inherited-reading>", text)
+        for reading in kanji_readings:
+            text = re.sub(rf'\b{re.escape(kana_utils.to_hiragana(reading))}\b', f"<inherited-reading>{kana_utils.to_hiragana(reading)}</inherited-reading>", text)
+            text = re.sub(rf'\b{re.escape(kana_utils.to_katakana(reading))}\b', f"<inherited-reading>{kana_utils.to_katakana(reading)}</inherited-reading>", text)
 
         return text
 
