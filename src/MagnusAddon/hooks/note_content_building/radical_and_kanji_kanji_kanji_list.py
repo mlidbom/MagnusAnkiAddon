@@ -21,7 +21,7 @@ def render_kanji_list(html:str, card: Card, _type_of_display:str) -> str:
 
     if isinstance(note, KanjiNote):
         kanjis = app.col().kanji.with_radical(note.get_question())
-        kanji_readings = [ex_str.strip_html_markup(reading) for reading in note.get_readings()]
+        kanji_readings = note.get_readings_clean()
     elif isinstance(note, RadicalNote):
         kanjis = app.col().kanji.with_radical(note.get_question()) if note.get_question() else []
     else:
