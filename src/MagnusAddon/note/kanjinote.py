@@ -163,8 +163,6 @@ class KanjiNote(WaniNote):
         if vocab in primary_vocab_list:
             current_index = primary_vocab_list.index(vocab)
             primary_vocab_list.remove(vocab)
-            if new_index != -1 and new_index > current_index:
-                new_index -= 1
 
         if new_index == -1:
             primary_vocab_list.append(vocab)

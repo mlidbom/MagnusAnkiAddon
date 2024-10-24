@@ -57,10 +57,6 @@ class SentenceNote(JPNote):
         if vocab in vocab_list:
             old_index = vocab_list.index(vocab)
             vocab_list.remove(vocab)
-            if index != -1 and index > old_index:
-                index -= 1
-
-
 
         if index == -1:
             vocab_list.append(vocab)
