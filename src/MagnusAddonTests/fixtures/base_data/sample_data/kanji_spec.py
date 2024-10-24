@@ -161,6 +161,6 @@ test_kanji_list = [
     KanjiSpec("緒", "Together", "お", "しょ, ちょ"),
     KanjiSpec("免", "Excuse", "まぬか", "めん"),
     KanjiSpec("御", "honorable", "お, おん, み", "ご, ぎょ"),
-    KanjiSpec("貰", "get/obtain", "もら.う", "セイ, シャ"),
-    KanjiSpec("逢", "meetingtrystdate", "あ.う, むか.える", "ホウ")
+    KanjiSpec("貰", "get/obtain", "もら.う", "せい, しゃ"),
+    KanjiSpec("逢", "meetingtrystdate", "あ.う, むか.える", "ほう")
 ]
