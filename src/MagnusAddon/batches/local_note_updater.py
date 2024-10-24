@@ -4,8 +4,9 @@ from anki.notes import NoteId
 
 from ankiutils import app, query_builder
 from language_services.janome_ex.tokenizing import janome_ex
+from note.jpnote import JPNote
 from note.kanjinote import KanjiNote
-from note.note_constants import Mine
+from note.note_constants import CardTypes, Mine
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
 
@@ -119,3 +120,12 @@ def reparse_sentence_words() -> None:
         sentence.update_parsed_words(force=True)
 
     progress_display_runner.process_with_progress(app.col().sentences.all(), reparse_sentence, "Reparsing sentences.")
+
+def precache_studying_status() -> None:
+    def cache_studying_status(note: JPNote) -> None:
+        note.is_studying(CardTypes.reading)
+        note.is_studying(CardTypes.listening)
+
+    progress_display_runner.process_with_progress(app.col().kanji.all(), cache_studying_status, "Precaching kanji")
+    progress_display_runner.process_with_progress(app.col().vocab.all(), cache_studying_status, "Precaching vocabulary")
+    progress_display_runner.process_with_progress(app.col().sentences.all(), cache_studying_status, "Precaching sentences")
