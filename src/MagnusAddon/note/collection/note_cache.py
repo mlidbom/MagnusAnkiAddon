@@ -109,7 +109,7 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
                 notes_with_updated_generated_data.append(backend_note)
                 self._refresh_in_cache(note)
 
-        progress_display_runner.process_with_progress(updates, update_generated_data, "Updating generated data for cache updates", allow_cancel=False, pause_cache_updates=False)
+        progress_display_runner.process_with_progress(updates, update_generated_data, "Updating generated data for cache updates", allow_cancel=False, pause_cache_updates=False, display_delay_seconds=.2)
 
         if updates:
             audio_suppressor.suppress_for_seconds(.3)
