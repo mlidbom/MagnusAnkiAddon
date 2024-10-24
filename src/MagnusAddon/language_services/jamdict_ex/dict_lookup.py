@@ -95,3 +95,7 @@ class DictLookup:
         return not entry.kanji_forms or any((sense for sense
                                              in entry.senses
                                              if 'word usually written using kana alone' in sense.misc))
+
+    @classmethod
+    def is_word(cls, word:str) -> bool:
+        return cls.lookup_word_shallow(word).found_words()
