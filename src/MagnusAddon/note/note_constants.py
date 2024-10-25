@@ -147,9 +147,13 @@ class Mine:
     VocabPrefixSuffixMarker = "〜"
     class Tags:
 
+
         base_folder = "_::"
 
         kanji_folder = f"{base_folder}kanji::"
+        kanji_is_radical = f"{kanji_folder}is_radical"
+        kanji_is_radical_purely = f"{kanji_folder}is_radical_purely"
+        kanji_is_radical_silent = f"{kanji_folder}is_radical_silent"
         kanji_with_no_studying_vocab = f"{kanji_folder}no_studying_vocab"
         kanji_with_single_kanji_vocab = f"{kanji_folder}single_kanji_vocab"
         kanji_not_in_any_vocab_main_form = f"{kanji_folder}not_in_any_vocab_main_form"

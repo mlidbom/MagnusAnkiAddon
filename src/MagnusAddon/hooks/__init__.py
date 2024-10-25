@@ -14,5 +14,6 @@ from . import (
     timing_hacks,
     note_content_building,
     copy_sort_field_to_clipboard,
-    clear_studying_cache_on_card_suspend_unsuspend
+    clear_studying_cache_on_card_suspend_unsuspend,
+    auto_bury_multiple_failures
 )

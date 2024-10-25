@@ -57,10 +57,6 @@ class SentenceNote(JPNote):
         if vocab in vocab_list:
             old_index = vocab_list.index(vocab)
             vocab_list.remove(vocab)
-            if index != -1 and index > old_index:
-                index -= 1
-
-
 
         if index == -1:
             vocab_list.append(vocab)
@@ -116,20 +112,21 @@ class SentenceNote(JPNote):
 
     def update_generated_data(self) -> None:
         super().update_generated_data()
-        self._update_parsed_words()
+        self.update_parsed_words()
         self.set_field(SentenceNoteFields.active_answer, self.get_answer())
         self.set_field(SentenceNoteFields.active_question, self.get_question())
 
-    def _update_parsed_words(self) -> None:
+    def update_parsed_words(self, force:bool = False) -> None:
         from language_services.janome_ex.word_extraction import word_extractor
         words = self._get_parsed_words()
         old_parsed_sentence = words[-1] if words else ""
         current_storable_sentence = f"""{self.get_question().replace(",", "").strip()}-parser_version-{word_extractor.version}"""
 
-        if old_parsed_sentence != current_storable_sentence:
+        if force or old_parsed_sentence != current_storable_sentence:
             value = [parsed_word.word for parsed_word in word_extractor.extract_words(self.get_question())]
             value.append(current_storable_sentence)
             self.set_field(SentenceNoteFields.ParsedWords, ",".join(value))
+
 
     def extract_kanji(self) -> list[str]:
         clean = ex_str.strip_html_and_bracket_markup(self.get_question())

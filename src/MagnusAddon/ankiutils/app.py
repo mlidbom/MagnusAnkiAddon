@@ -1,6 +1,8 @@
 import gc
 
 from anki.collection import Collection
+from anki.dbproxy import DBProxy
+from anki.scheduler.v3 import Scheduler
 from aqt import gui_hooks, mw, AnkiQt  # type: ignore
 
 from ankiutils.ui_utils import UIUtils
@@ -34,5 +36,7 @@ gui_hooks.sync_did_finish.append(reset)
 
 def col() -> JPCollection: return _collection.instance()
 def anki_collection() -> Collection: return col().anki_collection
+def anki_db() -> DBProxy: return checked_cast(DBProxy, col().anki_collection.db)
+def anki_scheduler() -> Scheduler: return checked_cast(Scheduler, col().anki_collection.sched)
 def main_window() -> AnkiQt: return checked_cast(AnkiQt, mw)
 def ui_utils() -> IUIUtils: return UIUtils(main_window())

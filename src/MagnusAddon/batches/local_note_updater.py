@@ -1,14 +1,16 @@
 import re
+
 from anki.notes import NoteId
 
 from ankiutils import app, query_builder
 from language_services.janome_ex.tokenizing import janome_ex
+from note.jpnote import JPNote
 from note.kanjinote import KanjiNote
-from note.note_constants import Mine
+from note.note_constants import CardTypes, Mine
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
 
-from sysutils import kana_utils, progress_display_runner
+from sysutils import progress_display_runner
 
 def update_all() -> None:
     update_sentences()
@@ -73,15 +75,21 @@ def tag_kanji_metadata() -> None:
         studying_vocab = [voc for voc in vocab_with_kanji_in_main_form if voc.is_studying()]
         kanji.toggle_tag(Mine.Tags.kanji_with_no_studying_vocab, not studying_vocab)
 
-        primary_readings: list[str] = primary_reading.findall(f"{kanji.get_reading_on()} {kanji.get_reading_kun()} {kanji.get_reading_nan()}")
+        primary_readings: list[str] = primary_reading.findall(f"{kanji.get_reading_on_html()} {kanji.get_reading_kun()} {kanji.get_reading_nan()}")
         kanji.toggle_tag(Mine.Tags.kanji_with_no_primary_readings, not primary_readings)
 
-        primary_on_readings:list[str] = primary_reading.findall(kanji.get_reading_on())
+        primary_on_readings:list[str] = primary_reading.findall(kanji.get_reading_on_html())
         kanji.toggle_tag(Mine.Tags.kanji_with_no_primary_on_readings, not primary_on_readings)
         if primary_on_readings:
             first_primary_on_reading = primary_on_readings[0]
             vocab_with_first_primary_on_reading = [voc for voc in studying_vocab if any(reading for reading in voc.get_readings() if first_primary_on_reading in reading)]
             kanji.toggle_tag(Mine.Tags.kanji_with_no_studying_vocab_with_primary_on_reading, not vocab_with_first_primary_on_reading)
+
+
+        kanji.toggle_tag(Mine.Tags.kanji_is_radical, any(app.col().kanji.with_radical(kanji.get_question())))
+        kanji.toggle_tag(Mine.Tags.kanji_is_radical_purely, not any(vocab_with_kanji_in_any_form) and any(app.col().kanji.with_radical(kanji.get_question())))
+        kanji.toggle_tag(Mine.Tags.kanji_is_radical_silent, not any(primary_readings) and any(app.col().kanji.with_radical(kanji.get_question())))
+
 
 
 
@@ -92,7 +100,7 @@ def tag_kanji_metadata() -> None:
         single_kanji_vocab = [v for v in vocabs if v.get_question() == kanji.get_question()]
         if single_kanji_vocab:
             kanji.set_tag(Mine.Tags.kanji_with_single_kanji_vocab)
-            primary_readings: list[str] = primary_reading.findall(f"{kanji.get_reading_on()} {kanji.get_reading_kun()} {kanji.get_reading_nan()}")
+            primary_readings: list[str] = primary_reading.findall(f"{kanji.get_reading_on_html()} {kanji.get_reading_kun()} {kanji.get_reading_nan()}")
 
             kanji.remove_tag(Mine.Tags.kanji_with_single_kanji_vocab_with_different_reading)
             kanji.remove_tag(Mine.Tags.kanji_with_studying_single_kanji_vocab_with_different_reading)
@@ -107,6 +115,20 @@ def tag_kanji_metadata() -> None:
     progress_display_runner.process_with_progress(all_kanji, tag_kanji, "Tagging kanji with studying metadata")
     progress_display_runner.process_with_progress(all_kanji, tag_has_single_kanji_vocab_with_reading_different_from_kanji_primary_reading, "Tagging kanji with single kanji vocab")
 
+def reparse_sentence_words() -> None:
+    def reparse_sentence(sentence: SentenceNote) ->None:
+        sentence.update_parsed_words(force=True)
+
+    progress_display_runner.process_with_progress(app.col().sentences.all(), reparse_sentence, "Reparsing sentences.")
+
+def precache_studying_status() -> None:
+    def cache_studying_status(note: JPNote) -> None:
+        note.is_studying(CardTypes.reading)
+        note.is_studying(CardTypes.listening)
+
+    progress_display_runner.process_with_progress(app.col().kanji.all(), cache_studying_status, "Precaching kanji")
+    progress_display_runner.process_with_progress(app.col().vocab.all(), cache_studying_status, "Precaching vocabulary")
+    progress_display_runner.process_with_progress(app.col().sentences.all(), cache_studying_status, "Precaching sentences")
 
 def adjust_kanji_primary_readings() -> None:
     primary_reading_pattern = re.compile(r'<primary>(.*?)</primary>')
@@ -125,9 +147,6 @@ def adjust_kanji_primary_readings() -> None:
                 make_on_reading_primary(on_readings[0])
                 kanji.set_field("_primary_readings_tts_audio", "")
                 return
-
-
-
 
 
     progress_display_runner.process_with_progress(app.col().kanji.all(), adjust_kanji_readings, "Adjusting kanji readings")

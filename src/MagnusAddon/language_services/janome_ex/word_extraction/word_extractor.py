@@ -5,20 +5,18 @@ from language_services.janome_ex.tokenizing.jn_tokenizer import JNTokenizer
 _tokenizer = JNTokenizer()
 
 
-def _word_is_in_dictionary(word: str) -> bool:
-    result = DictLookup.lookup_word_shallow(word)
-    return result.found_words()
-
 _noise_characters = {'.',',',':',';','/','|','。','、'}
 _max_lookahead = 12
 
 version = "janome_extractor_1"
 def extract_words(sentence: str) -> list[ExtractedWord]:
     from ankiutils import app
-    anki_vocab = app.col().vocab
+
+    def _is_word(word: str) -> bool:
+        return any(app.col().vocab.with_form(word)) or DictLookup.is_word(word)
 
     def add_word_if_it_is_in_dictionary(word: str) -> None:
-        if anki_vocab.with_form(word) or _word_is_in_dictionary(word):
+        if _is_word(word):
             add_word(word)
 
     def add_word(word: str) -> None:

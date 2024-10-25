@@ -11,6 +11,7 @@ from PyQt6.QtCore import QTimer
 
 from anki_extentions.notetype_ex.note_type_ex import NoteTypeEx
 from note.note_constants import NoteTypes
+from sysutils import timeutil
 
 class CacheRunner:
     def __init__(self, anki_collection: Collection) -> None:
@@ -50,17 +51,23 @@ class CacheRunner:
         for destructor in self._destructors: destructor()
 
     def flush_updates(self) -> None:
+        stopwatch = timeutil.start_stop_watch()
         self._check_for_updated_note_types_and_reset_app_if_found()
         for subscriber in self._merge_pending_subscribers: subscriber()
 
         if self._pause_data_generation: return
         for callback in self._generate_data_subscribers: callback()
+        if stopwatch.elapsed_seconds() > 0.002:
+            print(f"###################################################### cache flush completed in {stopwatch.elapsed_formatted()}")
 
     def _on_will_be_added(self, _collection:Collection, backend_note: Note, _deck_id: DeckId) -> None:
         for subscriber in self._will_add_subscribers: subscriber(backend_note)
 
     def _on_will_flush(self, backend_note: Note) -> None:
+        stopwatch = timeutil.start_stop_watch()
         for subscriber in self._will_flush_subscribers: subscriber(backend_note)
+        if stopwatch.elapsed_seconds() > 0.002:
+            print(f"###################################################### on will flush completed in {stopwatch.elapsed_formatted()}")
 
     def _on_will_be_removed(self, _: Collection, note_ids: Sequence[NoteId]) -> None:
         for subscriber in self._will_remove_subscribers: subscriber(note_ids)

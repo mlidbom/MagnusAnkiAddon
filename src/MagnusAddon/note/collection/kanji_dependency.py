@@ -26,4 +26,4 @@ class KanjiDependency:
                                character=kanji.get_question(),
                                icon_substitute_for_character="",
                                mnemonic=kanji.get_active_mnemonic(),
-                               readings=[kana_utils.to_katakana(reading) for reading in kanji.get_reading_on_list()] + kanji.get_reading_kun_list())
+                               readings=[kana_utils.to_katakana(reading) for reading in kanji.get_reading_on_list_html()] + kanji.get_reading_kun_list_html())

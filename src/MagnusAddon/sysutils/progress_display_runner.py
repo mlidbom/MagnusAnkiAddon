@@ -28,7 +28,7 @@ def open_spinning_progress_dialog(message: str) -> Closable:
 
     return Closable(close)
 
-def process_with_progress(items: List[T], process_item: Callable[[T], None], message:str, allow_cancel: bool = True, delay_display: bool = False, pause_cache_updates: bool = True) -> None:
+def process_with_progress(items: List[T], process_item: Callable[[T], None], message:str, allow_cancel: bool = True, display_delay_seconds: float = 0.0, pause_cache_updates: bool = True) -> None:
     total_items = len(items)
     start_time = time.time()
     progress_dialog: QProgressDialog | None = None
@@ -39,7 +39,7 @@ def process_with_progress(items: List[T], process_item: Callable[[T], None], mes
     try:
 
         for current_item, item in enumerate(items):
-            if not progress_dialog and (time.time() - start_time > 0.2 or not delay_display):
+            if not progress_dialog and (time.time() - start_time >= display_delay_seconds):
                 progress_dialog = QProgressDialog(f"""{message}...""", "Cancel" if allow_cancel else None, 0, total_items)
                 progress_dialog.setWindowTitle(f"""{message}""")
                 progress_dialog.setWindowModality(Qt.WindowModality.ApplicationModal)
