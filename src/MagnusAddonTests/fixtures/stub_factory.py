@@ -26,16 +26,15 @@ def stub_ui_dependencies() -> Generator[None, None, None]:
     with (_stub_ui_utils_real(), _stub_progress_runner()):
         yield
 
+T = TypeVar('T')
 @contextmanager
 def _stub_progress_runner() -> Generator[None, None, None]:
     # noinspection PyUnusedLocal
     def _open_spinning_progress_dialog(message: str) -> Closable:
         return Closable(lambda: None)
 
-    t = TypeVar('t')
-
     # noinspection PyUnusedLocal
-    def _process_with_progress(items: List[t], process_item: Callable[[t], None], message: str, allow_cancel: bool = True, delay_display: bool = False, pause_cache_updates: bool = True) -> None:
+    def _process_with_progress(items: List[T], process_item: Callable[[T], None], message:str, allow_cancel: bool = True, display_delay_seconds: float = 0.0, pause_cache_updates: bool = True) -> None:
         for item in items:
             process_item(item)
 
