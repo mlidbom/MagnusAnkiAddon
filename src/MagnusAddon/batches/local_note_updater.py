@@ -138,15 +138,21 @@ def adjust_kanji_primary_readings() -> None:
         def make_on_reading_primary(primary_reading: str) -> None:
             new_reading = re.sub(rf'\b{re.escape(primary_reading)}\b', f'<primary>{primary_reading}</primary>', kanji.get_reading_on_html())
             print(f"{kanji.get_question()}: {new_reading}")
-            kanji.set_reading_on(new_reading)
+            #kanji.set_reading_on(new_reading)
 
-        primary_readings: list[str] = primary_reading_pattern.findall(kanji.get_reading_on_html())
-        if not primary_readings:
-            on_readings = kanji.get_reading_on_html()
-            if len(on_readings) > 0:
-                make_on_reading_primary(on_readings[0])
-                kanji.set_field("_primary_readings_tts_audio", "")
-                return
+        def make_kun_reading_primary(primary_reading: str) -> None:
+            new_reading = re.sub(rf'\b{re.escape(primary_reading)}\b', f'<primary>{primary_reading}</primary>', kanji.get_reading_kun())
+            print(f"{kanji.get_question()}: {new_reading}")
+            kanji.set_reading_kun(new_reading)
+
+        kun_primary_readings: set[str] = set(primary_reading_pattern.findall(kanji.get_reading_kun()))
+        kun_backup_primary_readings: set[str] = set(primary_reading_pattern.findall(kanji.get_field("_kun_backup")))
+
+        missing_primary_readings = kun_backup_primary_readings - kun_primary_readings
+
+        for missing_reading in missing_primary_readings:
+            make_kun_reading_primary(missing_reading)
+            kanji.set_field("_primary_readings_tts_audio", "")
 
 
     progress_display_runner.process_with_progress(app.col().kanji.all(), adjust_kanji_readings, "Adjusting kanji readings")
