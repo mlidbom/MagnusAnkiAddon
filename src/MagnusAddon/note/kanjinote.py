@@ -146,16 +146,8 @@ class KanjiNote(WaniNote):
     def get_vocabs(self) -> str: return self.get_field(NoteFields.Kanji.Vocabs)
     def set_vocabs(self, value: str) -> None: self.set_field(NoteFields.Kanji.Vocabs, value)
 
-    def get_primary_vocab(self) -> list[str]:
-        return [voc for voc in
-                (ex_str.strip_html_and_bracket_markup(vocab).strip() for vocab in self.get_field(NoteFields.Kanji.PrimaryVocab).split(","))
-                if voc]
-    def set_primary_vocab(self, value: list[str]) -> None:
-        formatted = [self.tag_readings_in_string(voc, lambda read: f"<read>{read}</read>") for voc in value]
-        self.set_field(NoteFields.Kanji.PrimaryVocab, ", ".join(formatted))
-
-    def add_primary_vocab(self, vocab:str) -> None:
-        self.set_primary_vocab(self.get_primary_vocab() + [vocab])
+    def get_primary_vocab(self) -> list[str]: return ex_str.extract_comma_separated_values(self.get_field(NoteFields.Kanji.PrimaryVocab))
+    def set_primary_vocab(self, value: list[str]) -> None: self.set_field(NoteFields.Kanji.PrimaryVocab, ", ".join(value))
 
     def position_primary_vocab(self, vocab: str, new_index:int = -1) -> None:
         vocab = vocab.strip()
