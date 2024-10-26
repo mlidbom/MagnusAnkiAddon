@@ -133,6 +133,7 @@ def precache_studying_status() -> None:
 def adjust_kanji_primary_readings() -> None:
     primary_reading_pattern = re.compile(r'<primary>(.*?)</primary>')
 
+    updated_kanji:set[KanjiNote] = set()
 
     def adjust_kanji_readings(kanji: KanjiNote) -> None:
         def make_on_reading_primary(primary_reading: str) -> None:
@@ -142,11 +143,12 @@ def adjust_kanji_primary_readings() -> None:
 
         def make_kun_reading_primary(primary_reading: str) -> None:
             new_reading = ex_str.replace_word(primary_reading, f'<primary>{primary_reading}</primary>', kanji.get_reading_kun())
-            print(f"""{kanji.get_question()}: {new_reading}""")
-            #kanji.set_reading_kun(new_reading)
+            #print(f"""{kanji.get_question()}: {new_reading}""")
+            updated_kanji.add(kanji)
+            kanji.set_reading_kun(new_reading)
 
         def has_vocab_with_reading(reading:str) -> bool:
-            for vocab in kanji.get_vocab_notes():
+            for vocab in (x for x in kanji.get_vocab_notes() if x.is_studying()) :
                 if reading in vocab._get_reading():
                     return True
             return False
@@ -158,7 +160,8 @@ def adjust_kanji_primary_readings() -> None:
 
         for missing_reading in missing_primary_readings:
             make_kun_reading_primary(missing_reading)
-            #kanji.set_field("_primary_readings_tts_audio", "")
+            kanji.set_field("_primary_readings_tts_audio", "")
 
 
     progress_display_runner.process_with_progress(app.col().kanji.all(), adjust_kanji_readings, "Adjusting kanji readings")
+    print(f"""nid:{",".join(str(k.get_id()) for k in updated_kanji) }""")
