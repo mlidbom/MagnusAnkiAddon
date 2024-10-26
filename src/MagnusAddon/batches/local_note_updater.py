@@ -137,21 +137,17 @@ def adjust_kanji_primary_readings() -> None:
     def adjust_kanji_readings(kanji: KanjiNote) -> None:
         def make_on_reading_primary(primary_reading: str) -> None:
             new_reading = ex_str.replace_word(primary_reading, f'<primary>{primary_reading}</primary>', kanji.get_reading_on_html())
-            print(f"""{kanji.get_question()}: 
-{kanji.get_reading_on_html()}
-{new_reading}""")
+            print(f"""{kanji.get_question()}: {new_reading}""")
             #kanji.set_reading_on(new_reading)
 
         def make_kun_reading_primary(primary_reading: str) -> None:
             new_reading = ex_str.replace_word(primary_reading, f'<primary>{primary_reading}</primary>', kanji.get_reading_kun())
-            print(f"""{kanji.get_question()}: 
-{kanji.get_reading_kun()}
-{new_reading}""")
+            print(f"""{kanji.get_question()}: {new_reading}""")
             #kanji.set_reading_kun(new_reading)
 
         def has_vocab_with_reading(reading:str) -> bool:
             for vocab in kanji.get_vocab_notes():
-                if reading in vocab.get_question():
+                if reading in vocab._get_reading():
                     return True
             return False
 

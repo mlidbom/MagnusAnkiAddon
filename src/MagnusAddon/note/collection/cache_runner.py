@@ -57,7 +57,7 @@ class CacheRunner:
 
         if self._pause_data_generation: return
         for callback in self._generate_data_subscribers: callback()
-        if stopwatch.elapsed_seconds() > 0.002:
+        if stopwatch.elapsed_seconds() > 0.01:
             print(f"###################################################### cache flush completed in {stopwatch.elapsed_formatted()}")
 
     def _on_will_be_added(self, _collection:Collection, backend_note: Note, _deck_id: DeckId) -> None:
@@ -66,7 +66,7 @@ class CacheRunner:
     def _on_will_flush(self, backend_note: Note) -> None:
         stopwatch = timeutil.start_stop_watch()
         for subscriber in self._will_flush_subscribers: subscriber(backend_note)
-        if stopwatch.elapsed_seconds() > 0.002:
+        if stopwatch.elapsed_seconds() > 0.01:
             print(f"###################################################### on will flush completed in {stopwatch.elapsed_formatted()}")
 
     def _on_will_be_removed(self, _: Collection, note_ids: Sequence[NoteId]) -> None:
