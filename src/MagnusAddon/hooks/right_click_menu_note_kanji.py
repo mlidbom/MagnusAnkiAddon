@@ -40,15 +40,14 @@ def setup_note_menu(kanji: KanjiNote, note_menu: QMenu, string_menus: list[tuple
         if kana_utils.is_only_katakana(string):
             hiragana_string = kana_utils.to_hiragana(string)
             if hiragana_string in kanji.get_primary_readings_on():
-                add_ui_action(menu, "Remove primary Onyomi Reading", lambda: kanji.remove_primary_on_reading(hiragana_string))
+                add_ui_action(menu, shortcutfinger.up1("Remove primary Onyomi Reading"), lambda: kanji.remove_primary_on_reading(hiragana_string))
             elif hiragana_string in kanji.get_readings_on():
-                add_ui_action(menu, "Make primary Onyomi Reading", lambda: kanji.add_primary_on_reading(hiragana_string))
-
-        if kana_utils.is_only_hiragana(string):
+                add_ui_action(menu, shortcutfinger.up1("Make primary Onyomi Reading"), lambda: kanji.add_primary_on_reading(hiragana_string))
+        elif kana_utils.is_only_hiragana(string):
             if string in kanji.get_primary_readings_kun():
-                add_ui_action(menu, "Remove primary Kunyomi reading", lambda: kanji.remove_primary_kun_reading(string))
+                add_ui_action(menu, shortcutfinger.up1("Remove primary Kunyomi reading"), lambda: kanji.remove_primary_kun_reading(string))
             elif string in kanji.get_readings_kun():
-                add_ui_action(menu, "Make primary Kunyomi reading", lambda: kanji.add_primary_kun_reading(string))
+                add_ui_action(menu, shortcutfinger.up1("Make primary Kunyomi reading"), lambda: kanji.add_primary_kun_reading(string))
 
 
     for string_menu, menu_string in string_menus:
