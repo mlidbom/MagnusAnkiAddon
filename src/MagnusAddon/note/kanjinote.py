@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import re
-from typing import Callable, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 from wanikani_api import models
 from anki.notes import Note
@@ -14,18 +14,31 @@ from note.note_constants import NoteFields, Mine, NoteTypes
 from sysutils import ex_sequence, ex_str, kana_utils
 from wanikani.wanikani_api_client import WanikaniClient
 
+_primary_reading_pattern = re.compile(r'<primary>(.*?)</primary>')
+
 class KanjiNote(WaniNote):
     def __init__(self, note: Note):
         super().__init__(note)
 
-    def tag_readings_in_string(self, vocabulary: str, tagger: Callable[[str], str]) -> str:
+    def tag_readings_in_string(self, text: str) -> str:
+        def primary_reading(read:str) -> str: return f'<span class="kanjiReadingPrimary">{read}</span>'
+        def secondary_reading(read: str) -> str: return f'<span class="kanjiReadingSecondary">{read}</span>'
+
         readings = f"{self.get_reading_kun()}, {self.get_reading_on_html()}"
-        readings_list = [s.split(".")[0].strip() for s in (ex_str.strip_html_and_bracket_markup(readings).split(","))]
-        readings_list.sort(key=len, reverse=True)
-        for reading in readings_list:
-            if reading and reading in vocabulary:
-                return vocabulary.replace(reading, tagger(reading), 1)
-        return vocabulary
+
+        primary_readings = _primary_reading_pattern.findall(readings)
+        primary_readings.sort(key=len, reverse=True)
+        for reading in primary_readings:
+            if reading in text:
+                return text.replace(reading, primary_reading(reading), 1)
+
+        all_readings = [s.split(".")[0].strip() for s in (ex_str.strip_html_and_bracket_markup(readings).split(","))]
+        secondary_readings = [reading for reading in all_readings if reading not in primary_readings and reading]
+        secondary_readings.sort(key=len, reverse=True)
+        for reading in secondary_readings:
+            if reading in text:
+                return text.replace(reading, secondary_reading(reading), 1)
+        return text
 
     def get_question(self) -> str: return self.get_field(NoteFields.Kanji.question)
     def set_question(self, value: str) -> None: self.set_field(NoteFields.Kanji.question, value)
@@ -149,16 +162,8 @@ class KanjiNote(WaniNote):
     def get_vocabs(self) -> str: return self.get_field(NoteFields.Kanji.Vocabs)
     def set_vocabs(self, value: str) -> None: self.set_field(NoteFields.Kanji.Vocabs, value)
 
-    def get_primary_vocab(self) -> list[str]:
-        return [voc for voc in
-                (ex_str.strip_html_and_bracket_markup(vocab).strip() for vocab in self.get_field(NoteFields.Kanji.PrimaryVocab).split(","))
-                if voc]
-    def set_primary_vocab(self, value: list[str]) -> None:
-        formatted = [self.tag_readings_in_string(voc, lambda read: f"<read>{read}</read>") for voc in value]
-        self.set_field(NoteFields.Kanji.PrimaryVocab, ", ".join(formatted))
-
-    def add_primary_vocab(self, vocab:str) -> None:
-        self.set_primary_vocab(self.get_primary_vocab() + [vocab])
+    def get_primary_vocab(self) -> list[str]: return ex_str.extract_comma_separated_values(self.get_field(NoteFields.Kanji.PrimaryVocab))
+    def set_primary_vocab(self, value: list[str]) -> None: self.set_field(NoteFields.Kanji.PrimaryVocab, ", ".join(value))
 
     def position_primary_vocab(self, vocab: str, new_index:int = -1) -> None:
         vocab = vocab.strip()
