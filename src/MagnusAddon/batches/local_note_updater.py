@@ -10,7 +10,7 @@ from note.note_constants import CardTypes, Mine
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
 
-from sysutils import kana_utils, progress_display_runner
+from sysutils import ex_str, progress_display_runner
 
 def update_all() -> None:
     update_sentences()
@@ -136,23 +136,33 @@ def adjust_kanji_primary_readings() -> None:
 
     def adjust_kanji_readings(kanji: KanjiNote) -> None:
         def make_on_reading_primary(primary_reading: str) -> None:
-            new_reading = re.sub(rf'\b{re.escape(primary_reading)}\b', f'<primary>{primary_reading}</primary>', kanji.get_reading_on_html())
-            print(f"{kanji.get_question()}: {new_reading}")
+            new_reading = ex_str.replace_word(primary_reading, f'<primary>{primary_reading}</primary>', kanji.get_reading_on_html())
+            print(f"""{kanji.get_question()}: 
+{kanji.get_reading_on_html()}
+{new_reading}""")
             #kanji.set_reading_on(new_reading)
 
         def make_kun_reading_primary(primary_reading: str) -> None:
-            new_reading = re.sub(rf'\b{re.escape(primary_reading)}\b', f'<primary>{primary_reading}</primary>', kanji.get_reading_kun())
-            print(f"{kanji.get_question()}: {new_reading}")
-            kanji.set_reading_kun(new_reading)
+            new_reading = ex_str.replace_word(primary_reading, f'<primary>{primary_reading}</primary>', kanji.get_reading_kun())
+            print(f"""{kanji.get_question()}: 
+{kanji.get_reading_kun()}
+{new_reading}""")
+            #kanji.set_reading_kun(new_reading)
+
+        def has_vocab_with_reading(reading:str) -> bool:
+            for vocab in kanji.get_vocab_notes():
+                if reading in vocab.get_question():
+                    return True
+            return False
 
         kun_primary_readings: set[str] = set(primary_reading_pattern.findall(kanji.get_reading_kun()))
-        kun_backup_primary_readings: set[str] = set(primary_reading_pattern.findall(kanji.get_field("_kun_backup")))
+        kun_readings_with_vocab = set(reading for reading in kanji.get_readings_kun() if has_vocab_with_reading(reading))
 
-        missing_primary_readings = kun_backup_primary_readings - kun_primary_readings
+        missing_primary_readings = kun_readings_with_vocab - kun_primary_readings
 
         for missing_reading in missing_primary_readings:
             make_kun_reading_primary(missing_reading)
-            kanji.set_field("_primary_readings_tts_audio", "")
+            #kanji.set_field("_primary_readings_tts_audio", "")
 
 
     progress_display_runner.process_with_progress(app.col().kanji.all(), adjust_kanji_readings, "Adjusting kanji readings")

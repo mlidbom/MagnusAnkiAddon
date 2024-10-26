@@ -53,13 +53,13 @@ class KanjiNote(WaniNote):
 
 
     def get_vocab_notes_sorted(self) -> list[VocabNote]:
-        from ankiutils import app
         from note import vocabnote
-
-        vocab_list = app.col().vocab.with_kanji_in_main_form(self)
-        vocab_list = vocabnote.sort_vocab_list_by_studying_status(vocab_list, self.get_primary_vocab())
-
+        vocab_list = vocabnote.sort_vocab_list_by_studying_status(self.get_vocab_notes(), self.get_primary_vocab())
         return vocab_list
+
+    def get_vocab_notes(self) -> list[VocabNote]:
+        from ankiutils import app
+        return app.col().vocab.with_kanji_in_main_form(self)
 
     def override_meaning_mnemonic(self) -> None:
         if not self.get_user_mnemonic():
@@ -73,7 +73,10 @@ class KanjiNote(WaniNote):
     def set_user_mnemonic(self, value: str) -> None: self.set_field(NoteFields.Kanji.user_mnemonic, value)
 
     def get_reading_on_list_html(self) -> list[str]: return ex_str.extract_comma_separated_values(self.get_reading_on_html())
+
+    def get_readings_kun(self) -> list[str]: return ex_str.extract_comma_separated_values(ex_str.strip_html_markup(self.get_reading_kun()))
     def get_reading_kun_list_html(self) -> list[str]: return ex_str.extract_comma_separated_values(self.get_reading_kun())
+
     def get_reading_nan_list_html(self) -> list[str]: return ex_str.extract_comma_separated_values(self.get_reading_nan())
 
     def get_readings_clean(self) -> list[str]:
