@@ -20,7 +20,7 @@ def setup_object() -> Generator[None, None, None]:
 
 def test_kanji_added_correctly() -> None:
     kanji_all:list[KanjiNote] = app.col().kanji.all()
-    saved_kanji = [KanjiSpec(kanji.get_question(), kanji.get_answer(), kanji.get_reading_kun(), kanji.get_reading_on_html()) for kanji in kanji_all]
+    saved_kanji = [KanjiSpec(kanji.get_question(), kanji.get_answer(), kanji.get_reading_kun_html(), kanji.get_reading_on_html()) for kanji in kanji_all]
     assert kanji_spec.test_kanji_list == saved_kanji
 
 def test_vocab_added_correctly() -> None:

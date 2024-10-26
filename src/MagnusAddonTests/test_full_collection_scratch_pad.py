@@ -75,4 +75,4 @@ def test_create_sample_data() -> None:
     search_string = query_builder.kanji_in_string(only_kanji)
     kanji_notes:list[KanjiNote] = app.col().kanji.search(search_string)
     for kanji_note in kanji_notes:
-        print(f"""KanjiSpec("{shtml(kanji_note.get_question())}", "{shtml(kanji_note.get_answer())}", "{shtml(kanji_note.get_reading_kun())}", "{shtml(kanji_note.get_reading_on_html())}"),"""),
+        print(f"""KanjiSpec("{shtml(kanji_note.get_question())}", "{shtml(kanji_note.get_answer())}", "{shtml(kanji_note.get_reading_kun_html())}", "{shtml(kanji_note.get_reading_on_html())}"),"""),

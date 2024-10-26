@@ -60,8 +60,21 @@ def contains_katakana(string:str) -> bool:
 #             0x2b740 <= ordinal <= 0x2b81f or
 #             0x2b820 <= ordinal <= 0x2ceaf)
 
-def is_only_kana(word: str) -> bool:
-    for char in word:
+def is_only_kana(text: str) -> bool:
+    for char in text:
         if not is_kana(char):
             return False
     return True
+
+def is_only_hiragana(text: str) -> bool:
+    for char in text:
+        if not is_hiragana(char):
+            return False
+    return True
+
+def is_only_katakana(text: str) -> bool:
+    for char in text:
+        if not is_katakana(char):
+            return False
+    return True
+

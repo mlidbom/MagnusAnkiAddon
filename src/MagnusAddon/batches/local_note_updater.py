@@ -75,7 +75,7 @@ def tag_kanji_metadata() -> None:
         studying_vocab = [voc for voc in vocab_with_kanji_in_main_form if voc.is_studying()]
         kanji.toggle_tag(Mine.Tags.kanji_with_no_studying_vocab, not studying_vocab)
 
-        primary_readings: list[str] = primary_reading.findall(f"{kanji.get_reading_on_html()} {kanji.get_reading_kun()} {kanji.get_reading_nan()}")
+        primary_readings: list[str] = primary_reading.findall(f"{kanji.get_reading_on_html()} {kanji.get_reading_kun_html()} {kanji.get_reading_nan()}")
         kanji.toggle_tag(Mine.Tags.kanji_with_no_primary_readings, not primary_readings)
 
         primary_on_readings:list[str] = primary_reading.findall(kanji.get_reading_on_html())
@@ -100,7 +100,7 @@ def tag_kanji_metadata() -> None:
         single_kanji_vocab = [v for v in vocabs if v.get_question() == kanji.get_question()]
         if single_kanji_vocab:
             kanji.set_tag(Mine.Tags.kanji_with_single_kanji_vocab)
-            primary_readings: list[str] = primary_reading.findall(f"{kanji.get_reading_on_html()} {kanji.get_reading_kun()} {kanji.get_reading_nan()}")
+            primary_readings: list[str] = primary_reading.findall(f"{kanji.get_reading_on_html()} {kanji.get_reading_kun_html()} {kanji.get_reading_nan()}")
 
             kanji.remove_tag(Mine.Tags.kanji_with_single_kanji_vocab_with_different_reading)
             kanji.remove_tag(Mine.Tags.kanji_with_studying_single_kanji_vocab_with_different_reading)
@@ -142,7 +142,7 @@ def adjust_kanji_primary_readings() -> None:
             #kanji.set_reading_on(new_reading)
 
         def make_kun_reading_primary(primary_reading: str) -> None:
-            new_reading = ex_str.replace_word(primary_reading, f'<primary>{primary_reading}</primary>', kanji.get_reading_kun())
+            new_reading = ex_str.replace_word(primary_reading, f'<primary>{primary_reading}</primary>', kanji.get_reading_kun_html())
             #print(f"""{kanji.get_question()}: {new_reading}""")
             updated_kanji.add(kanji)
             kanji.set_reading_kun(new_reading)
@@ -153,7 +153,7 @@ def adjust_kanji_primary_readings() -> None:
                     return True
             return False
 
-        kun_primary_readings: set[str] = set(primary_reading_pattern.findall(kanji.get_reading_kun()))
+        kun_primary_readings: set[str] = set(primary_reading_pattern.findall(kanji.get_reading_kun_html()))
         kun_readings_with_vocab = set(reading for reading in kanji.get_readings_kun() if has_vocab_with_reading(reading))
 
         missing_primary_readings = kun_readings_with_vocab - kun_primary_readings
