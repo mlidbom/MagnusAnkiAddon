@@ -127,8 +127,12 @@ class KanjiNote(WaniNote):
     def remove_primary_kun_reading(self, reading: str) -> None:
         self.set_reading_kun(self.get_reading_kun_html().replace(f"<primary>{reading}</primary>", reading))
 
-    def get_radicals(self) -> set[str]: return set(ex_str.extract_comma_separated_values(self.get_field(NoteFields.Kanji.Radicals)))
+    def get_radicals(self) -> list[str]: return [rad for rad in ex_str.extract_comma_separated_values(self.get_field(NoteFields.Kanji.Radicals)) if rad != self.get_question()]
     def _set_radicals(self, value: str) -> None: self.set_field(NoteFields.Kanji.Radicals, value)
+
+    def get_radicals_notes(self) -> list[KanjiNote]:
+        from ankiutils import app
+        return [kanji_radical for kanji_radical in (app.col().kanji.with_kanji(radical) for radical in self.get_radicals()) if kanji_radical]
 
     def get_radicals_icons(self) -> str: return self.get_field(NoteFields.Kanji.Radicals_Icons)
     def set_radicals_icons(self, value: str) -> None: self.set_field(NoteFields.Kanji.Radicals_Icons, value)

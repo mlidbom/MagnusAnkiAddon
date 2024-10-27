@@ -3,7 +3,7 @@ import re
 from anki.cards import Card
 from aqt import gui_hooks
 
-from ankiutils import app, ui_utils
+from ankiutils import ui_utils
 from note.jpnote import JPNote
 from note.kanjinote import KanjiNote
 from sysutils import ex_str, kana_utils
@@ -24,7 +24,15 @@ def render_dependencies_list(html: str, card: Card, _type_of_display: str) -> st
 
             return text
 
-        dependencies = app.col().kanji.display_dependencies_of(note)
+        dependencies = note.get_radicals_notes()
+
+        def format_readings(_kanji: KanjiNote) -> str:
+            separator = """<span class="readingsSeparator">|</span>"""
+
+            readings_on = ", ".join([kana_utils.to_katakana(reading) for reading in _kanji.get_reading_on_list_html()])
+            readings_kun = ", ".join(_kanji.get_reading_kun_list_html())
+
+            return f"""{readings_on} {separator} {readings_kun}"""
 
         if dependencies:
             list_html = f"""
@@ -33,15 +41,11 @@ def render_dependencies_list(html: str, card: Card, _type_of_display: str) -> st
     {ex_str.newline.join(f'''
         <div class="dependency">
             <div class="dependency_heading">
-                {f'<div class="dependency_character clipboard">{dependency.character}</div>'
-                if dependency.character
-                else f'<div class="dependency_icon">{dependency.icon_substitute_for_character}</div>'}
-                
-            
-                <div class="dependency_name clipboard">{dependency.name}</div>
-                <div class="dependency_readings">{highlight_primary_reading_sources(", ".join(dependency.readings))}</div>
+                <div class="dependency_character clipboard">{dependency.get_question()}</div>                           
+                <div class="dependency_name clipboard">{dependency.get_answer()}</div>
+                <div class="dependency_readings">{highlight_primary_reading_sources(format_readings(dependency))}</div>
             </div>
-            <div class="dependency_mnemonic">{dependency.mnemonic}</div>
+            <div class="dependency_mnemonic">{dependency.get_user_mnemonic()}</div>
         </div>
     ''' for dependency in dependencies)}
     </div>

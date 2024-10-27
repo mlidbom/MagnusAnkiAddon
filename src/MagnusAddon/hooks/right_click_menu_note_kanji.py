@@ -11,7 +11,7 @@ def setup_note_menu(kanji: KanjiNote, note_menu: QMenu, string_menus: list[tuple
     note_lookup_menu = checked_cast(QMenu, note_menu.addMenu(shortcutfinger.home1("Open")))
     add_lookup_action(note_lookup_menu, shortcutfinger.home1("Primary Vocabs"), query_builder.vocabs_lookup_strings(kanji.get_primary_vocab()))
     add_lookup_action(note_lookup_menu, shortcutfinger.home2("Vocabs"), query_builder.vocab_with_kanji(kanji))
-    add_lookup_action(note_lookup_menu, shortcutfinger.home3("Radicals"), query_builder.notes_by_note(app.col().kanji.dependencies_of(kanji)))
+    add_lookup_action(note_lookup_menu, shortcutfinger.home3("Radicals"), query_builder.notes_by_note(kanji.get_radicals_notes()))
     add_lookup_action(note_lookup_menu, shortcutfinger.home4("Kanji"), query_builder.kanji_with_kanji_radical(kanji))
     add_lookup_action(note_lookup_menu, shortcutfinger.home5("Sentences"), query_builder.sentence_search(kanji.get_question(), exact=True))
 
