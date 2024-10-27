@@ -148,7 +148,7 @@ class Mine:
     class Tags:
 
 
-        base_folder = "_::"
+        base_folder = "-::"
 
         kanji_folder = f"{base_folder}kanji::"
         kanji_is_radical = f"{kanji_folder}is-radical"

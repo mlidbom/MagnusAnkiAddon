@@ -126,9 +126,9 @@ def precache_studying_status() -> None:
         note.is_studying(CardTypes.reading)
         note.is_studying(CardTypes.listening)
 
-    progress_display_runner.process_with_progress(app.col().kanji.all(), cache_studying_status, "Precaching kanji")
-    progress_display_runner.process_with_progress(app.col().vocab.all(), cache_studying_status, "Precaching vocabulary")
-    progress_display_runner.process_with_progress(app.col().sentences.all(), cache_studying_status, "Precaching sentences")
+    progress_display_runner.process_with_progress(app.col().kanji.all(), cache_studying_status, "Precaching studying status: Kanji")
+    progress_display_runner.process_with_progress(app.col().vocab.all(), cache_studying_status, "Precaching studying status:  Vocabulary")
+    progress_display_runner.process_with_progress(app.col().sentences.all(), cache_studying_status, "Precaching studying status: Sentences")
 
 def adjust_kanji_primary_readings() -> None:
     primary_reading_pattern = re.compile(r'<primary>(.*?)</primary>')
