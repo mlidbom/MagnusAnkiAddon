@@ -3,6 +3,7 @@ from PyQt6.QtWidgets import QMenu
 from ankiutils import app, query_builder
 from hooks.right_click_menu_utils import add_lookup_action, add_single_vocab_lookup_action, add_text_vocab_lookup, add_ui_action, add_vocab_dependencies_lookup
 from note.note_constants import NoteFields, NoteTypes
+from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
 from sysutils import ex_str
 from sysutils.typed import checked_cast
@@ -35,6 +36,14 @@ def setup_note_menu(vocab: VocabNote, note_menu: QMenu, string_menus: list[tuple
     if not vocab.get_user_answer():
         add_ui_action(note_menu, shortcutfinger.home4("Accept meaning"), lambda: vocab.set_user_answer(format_vocab_meaning(vocab.get_answer())))
 
+    def remove_highlight(_sentences: list[SentenceNote]) -> None:
+        for _sentence in _sentences:
+            _sentence.remove_extra_vocab(vocab.get_question())
+
+    def exclude(_sentences: list[SentenceNote]) -> None:
+        for _sentence in _sentences:
+            _sentence.exclude_vocab(vocab.get_question())
+
     for string_menu, menu_string in string_menus:
         sentences = app.col().sentences.with_question(menu_string)
         if sentences:
@@ -44,10 +53,9 @@ def setup_note_menu(vocab: VocabNote, note_menu: QMenu, string_menus: list[tuple
             if vocab.get_question() not in sentence.get_user_highlighted_vocab():
                 add_ui_action(sentence_menu, shortcutfinger.home1("Add Highlight"), lambda _sentence=sentence: _sentence.position_extra_vocab(vocab.get_question()))  # type: ignore
             else:
-                add_ui_action(sentence_menu, shortcutfinger.home2("Remove highlight"), lambda _sentence=sentence: _sentence.remove_extra_vocab(vocab.get_question()))  # type: ignore
+                add_ui_action(sentence_menu, shortcutfinger.home2("Remove highlight"), lambda _sentences=sentences: remove_highlight(_sentences))  # type: ignore
 
-
-            add_ui_action(sentence_menu, shortcutfinger.home3("Exclude this vocab"), lambda _sentence=sentence: _sentence.exclude_vocab(vocab.get_question()))  # type: ignore
+            add_ui_action(sentence_menu, shortcutfinger.home3("Exclude this vocab"), lambda _sentences=sentences: exclude(_sentences))  # type: ignore
 
     for string_menu, menu_string in string_menus:
         vocab_add_menu: QMenu = checked_cast(QMenu, string_menu.addMenu(shortcutfinger.home2("Add")))
