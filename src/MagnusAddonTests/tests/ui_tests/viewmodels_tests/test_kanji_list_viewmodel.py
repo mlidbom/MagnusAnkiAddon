@@ -14,7 +14,7 @@ def setup_object() -> Generator[None, None, None]:
 
 
 def test_kanji_list_viewmodel() -> None:
-    sentences:list[SentenceNote] = app.col().sentences.all()[:10]
+    sentences:list[SentenceNote] = app.col().sentences.all()
     for sentence in sentences:
         extracted_kanji = sentence.extract_kanji()
         view_model = sentence_kanji_list_viewmodel.create(extracted_kanji)
