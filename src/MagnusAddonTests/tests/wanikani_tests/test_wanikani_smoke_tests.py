@@ -11,6 +11,7 @@ def setup_object() -> Generator[None, None, None]:
         yield
 
 
+@pytest.mark.skip("Really, fetching a ton of data from wanikani every time I run the tests is a bit overboard...")
 def test_fetch_data_doesnt_crash() -> None:
     client = wanikani_api_client.WanikaniClient.get_instance()
 
