@@ -5,8 +5,6 @@ from typing import Generic, Sequence, TypeVar
 import time
 
 from anki.notes import Note, NoteId
-from ankiutils import app
-from ankiutils.audio_suppressor import audio_suppressor
 from note.collection.cache_runner import CacheRunner
 from note.jpnote import JPNote
 from sysutils import progress_display_runner
@@ -99,25 +97,12 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
     def _update_and_persist_generated_data(self) -> None:
         updates = list(note for note in self._pending_generated_data_updates if note.get_id() not in self._deleted)
         self._pending_generated_data_updates = set()
-        notes_with_updated_generated_data:list[Note] = list()
 
-        def update_generated_data(cached_note:TNote) -> None:
-            backend_note = app.col().anki_collection.get_note(cached_note.get_id())  # make sure we are working with the most current data
-            note = self._create_note(backend_note)
-            # noinspection PyProtectedMember
-            if note._internal_update_generated_data():
-                notes_with_updated_generated_data.append(backend_note)
-                self._refresh_in_cache(note)
+        def update_generated_data(note:TNote) -> None:
+            note.update_generated_data()
+            self._refresh_in_cache(note)
 
         progress_display_runner.process_with_progress(updates, update_generated_data, "Updating generated data for cache updates", allow_cancel=False, pause_cache_updates=False, display_delay_seconds=.2)
-
-        if updates:
-            audio_suppressor.suppress_for_seconds(.3)
-            if notes_with_updated_generated_data:
-                app.anki_collection().update_notes(notes_with_updated_generated_data)
-                current_time = time.time()
-                if current_time - self._last_deleted_note_time > 2: #We do no refreshes within two seconds of a deletion because this may crash anki
-                    app.ui_utils().refresh(refresh_browser=False)
 
 
     def _refresh_in_cache(self, note: TNote) -> None:
