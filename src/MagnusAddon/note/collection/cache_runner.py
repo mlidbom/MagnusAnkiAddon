@@ -12,6 +12,7 @@ from PyQt6.QtCore import QTimer
 from anki_extentions.notetype_ex.note_type_ex import NoteTypeEx
 from note.note_constants import NoteTypes
 from sysutils import timeutil
+import threading
 
 class CacheRunner:
     def __init__(self, anki_collection: Collection) -> None:
@@ -24,6 +25,7 @@ class CacheRunner:
         self._will_remove_subscribers: list[Callable[[Sequence[NoteId]], None]] = []
         self._destructors: list[Callable[[], None]] = []
         self._anki_collection = anki_collection
+        self._lock = threading.RLock()
 
 
         model_manager = anki_collection.models
@@ -42,42 +44,51 @@ class CacheRunner:
         self._timer.start(100)
 
     def destruct(self) -> None:
-        hooks.notes_will_be_deleted.remove(self._on_will_be_removed)
-        hooks.note_will_be_added.remove(self._on_will_be_added)
-        hooks.note_will_flush.remove(self._on_will_flush)
+        with self._lock:
+            hooks.notes_will_be_deleted.remove(self._on_will_be_removed)
+            hooks.note_will_be_added.remove(self._on_will_be_added)
+            hooks.note_will_flush.remove(self._on_will_flush)
 
-        self._timer.stop()
-        self._timer.disconnect()
-        for destructor in self._destructors: destructor()
+            self._timer.stop()
+            self._timer.disconnect()
+            for destructor in self._destructors: destructor()
 
     def flush_updates(self) -> None:
-        stopwatch = timeutil.start_stop_watch()
-        self._check_for_updated_note_types_and_reset_app_if_found()
-        for subscriber in self._merge_pending_subscribers: subscriber()
+        with self._lock:
+            stopwatch = timeutil.start_stop_watch()
+            self._check_for_updated_note_types_and_reset_app_if_found()
+            for subscriber in self._merge_pending_subscribers: subscriber()
 
-        if self._pause_data_generation: return
-        for callback in self._generate_data_subscribers: callback()
-        if stopwatch.elapsed_seconds() > 0.01:
-            print(f"###################################################### cache flush completed in {stopwatch.elapsed_formatted()}")
+            if self._pause_data_generation: return
+            for callback in self._generate_data_subscribers: callback()
+            if stopwatch.elapsed_seconds() > 0.01:
+                print(f"###################################################### cache flush completed in {stopwatch.elapsed_formatted()}")
 
     def _on_will_be_added(self, _collection:Collection, backend_note: Note, _deck_id: DeckId) -> None:
-        for subscriber in self._will_add_subscribers: subscriber(backend_note)
+        with self._lock:
+            for subscriber in self._will_add_subscribers: subscriber(backend_note)
 
     def _on_will_flush(self, backend_note: Note) -> None:
-        stopwatch = timeutil.start_stop_watch()
-        for subscriber in self._will_flush_subscribers: subscriber(backend_note)
-        if stopwatch.elapsed_seconds() > 0.01:
-            print(f"###################################################### on will flush completed in {stopwatch.elapsed_formatted()}")
+        with self._lock:
+            stopwatch = timeutil.start_stop_watch()
+            for subscriber in self._will_flush_subscribers: subscriber(backend_note)
+            if stopwatch.elapsed_seconds() > 0.01:
+                print(f"###################################################### on will flush completed in {stopwatch.elapsed_formatted()}")
 
     def _on_will_be_removed(self, _: Collection, note_ids: Sequence[NoteId]) -> None:
-        for subscriber in self._will_remove_subscribers: subscriber(note_ids)
+        with self._lock:
+            for subscriber in self._will_remove_subscribers: subscriber(note_ids)
 
 
     def pause_data_generation(self) -> None:
-        self._pause_data_generation = True
+        with self._lock:
+            assert not self._pause_data_generation
+            self._pause_data_generation = True
 
     def resume_data_generation(self) -> None:
-        self._pause_data_generation = False
+        with self._lock:
+            assert self._pause_data_generation
+            self._pause_data_generation = False
 
     def connect_generate_data_timer(self, flush_updates: Callable[[], None]) -> None:
         self._generate_data_subscribers.append(flush_updates)
