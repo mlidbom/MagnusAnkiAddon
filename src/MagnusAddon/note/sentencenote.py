@@ -2,7 +2,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from anki.cards import Card
+from chirptext.texttaglib import Sentence
 
+from note import difficulty_calculator
+from note.difficulty_calculator import DifficultyCalculator
 from sysutils.ex_str import newline
 
 if TYPE_CHECKING:
@@ -130,36 +133,15 @@ class SentenceNote(JPNote):
             self.set_field(SentenceNoteFields.ParsedWords, ",".join(value))
 
 
-    def get_reading_card(self) -> Card:
-        return [card for card in  self._note.cards() if card.template()['name'] == CardTypes.reading][0]
-
-    def get_listening_card(self) -> Card:
-        return [card for card in  self._note.cards() if card.template()['name'] == CardTypes.listening][0]
-
-
     def extract_kanji(self) -> list[str]:
         clean = ex_str.strip_html_and_bracket_markup(self.get_question())
         return [char for char in clean if kana_utils.is_kanji(char)]
 
     levels = list(range(1, 10))
-    level_difficulties = [1.25 ** (level - 1) * 6 for level in levels]
+    _level_difficulties = [1.25 ** (level - 1) * 6 for level in levels]
+    _difficulty_calculator = DifficultyCalculator(levels, _level_difficulties)
     def get_level(self) -> int:
-        def find_difficulty() -> int:
-            kanji_weight = 4
-            katakana_weight = 1.5
-            kanji_characters = ex_sequence.count(self.get_question(), kana_utils.is_kanji)
-            katakana_characters = ex_sequence.count(self.get_question(), kana_utils.is_katakana)
-            hiragana_characters = ex_sequence.count(self.get_question(), kana_utils.is_hiragana)
-            return int(kanji_characters * kanji_weight + katakana_characters * katakana_weight + hiragana_characters)
-
-        _difficulty = find_difficulty()
-        if _difficulty <= SentenceNote.level_difficulties[0]: return SentenceNote.levels[0]
-
-        for level in SentenceNote.levels[1:]:
-            if SentenceNote.level_difficulties[level-2] < _difficulty <= SentenceNote.level_difficulties[level-1]:
-                return level
-
-        return SentenceNote.levels[-1]
+        return SentenceNote._difficulty_calculator.find_level(self.get_question())
 
     @classmethod
     def create_test_note(cls, question: str, answer: str) -> SentenceNote:

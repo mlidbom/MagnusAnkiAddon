@@ -196,3 +196,9 @@ class JPNote(ABC):
 
     def last_edit_time(self) -> int:
         return self._note.mod
+
+    def get_reading_card(self) -> Card:
+        return [card for card in  self._note.cards() if card.template()['name'] == CardTypes.reading][0]
+
+    def get_listening_card(self) -> Card:
+        return [card for card in  self._note.cards() if card.template()['name'] == CardTypes.listening][0]

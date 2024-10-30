@@ -187,3 +187,19 @@ def organize_sentences_by_difficulty() -> None:
 
     progress_display_runner.process_with_progress(app.col().sentences.all(), find_sentence_difficulty, "Calculating sentence levels")
     progress_display_runner.process_with_progress(SentenceNote.levels, move_level_cards, "Moving cards")
+
+def organize_vocab_by_difficulty() -> None:
+    read_sentence_folder_common = "-JP::Read::​Vocab::level-"
+
+    read_deck_id_by_level = {level: app.anki_collection().decks.add_normal_deck_with_name(f"{read_sentence_folder_common}{level}").id for level in VocabNote.levels}
+    read_card_ids_by_level: dict[int, list[CardId]] = {level: [] for level in VocabNote.levels}
+
+    def find_vocab_difficulty(vocab: VocabNote) -> None:
+        vocab_level = vocab.get_level()
+        read_card_ids_by_level[vocab_level].append(vocab.get_reading_card().id)
+
+    def move_level_cards(level:int) -> None:
+        app.anki_collection().set_deck(read_card_ids_by_level[level], read_deck_id_by_level[level])
+
+    progress_display_runner.process_with_progress(app.col().vocab.all(), find_vocab_difficulty, "Calculating vocab levels")
+    progress_display_runner.process_with_progress(VocabNote.levels, move_level_cards, "Moving cards")
