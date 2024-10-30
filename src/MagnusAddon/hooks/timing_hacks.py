@@ -13,7 +13,7 @@ class UglyUITimingBasedHacksData:
         self._last_reviewer_showed_answer_time = 0.0
 
     def typed_in_note(self, _note: Note) -> None:
-        audio_suppressor.suppress_for_seconds(.3)
+        audio_suppressor.suppress_for_seconds(.1)
         self._last_editor_typing_time = time.time()
 
     def reviewer_showed_answer(self, _card:Card) -> None:

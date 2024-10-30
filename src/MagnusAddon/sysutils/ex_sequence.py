@@ -1,5 +1,5 @@
 """extensions to the built in Sequence type"""
-from typing import Sequence, TypeVar
+from typing import Callable, Sequence, TypeVar
 
 T = TypeVar('T')
 
@@ -17,3 +17,6 @@ def remove_duplicates_while_retaining_order(sequence:Sequence[T]) -> list[T]:
     return result
 
 def remove_duplicates(sequence:Sequence[T]) -> list[T]: return list(set(sequence))
+
+def count(sequence:Sequence[T], predicate:Callable[[T], bool]) -> int:
+    return len([t for t in sequence if predicate(t)])

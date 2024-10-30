@@ -10,7 +10,7 @@ from note.note_constants import CardTypes, Mine
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
 
-from sysutils import ex_str, progress_display_runner
+from sysutils import ex_sequence, ex_str, kana_utils, progress_display_runner, typed
 
 def update_all() -> None:
     update_sentences()
@@ -165,3 +165,65 @@ def adjust_kanji_primary_readings() -> None:
 
     progress_display_runner.process_with_progress(app.col().kanji.all(), adjust_kanji_readings, "Adjusting kanji readings")
     print(f"""nid:{",".join(str(k.get_id()) for k in updated_kanji) }""")
+
+def tag_sentence_metadata() -> None:
+    def tag_sentence(sentence: SentenceNote) -> None:
+        def find_difficulty() -> int:
+            kanji_weight = 8
+            kanji_count = ex_sequence.count(sentence.get_question(), kana_utils.is_kanji)
+            kana_count = len(sentence.get_question()) - kanji_count
+            return kana_count + (kanji_count * kanji_weight)
+
+        multiplier = 1.5
+        level_1 = 10
+        level_2 = level_1 * multiplier
+        level_3 = level_2 * multiplier
+        level_4 = level_3 * multiplier
+        level_5 = level_4 * multiplier
+        level_6 = level_5 * multiplier
+        level_7 = level_6 * multiplier
+        level_8 = level_7 * multiplier
+
+        difficulty = find_difficulty()
+
+        sentence.toggle_tag(Mine.Tags.sentence_difficulty_1, difficulty <= level_1)
+        sentence.toggle_tag(Mine.Tags.sentence_difficulty_2, level_1 < difficulty <= level_2)
+        sentence.toggle_tag(Mine.Tags.sentence_difficulty_3, level_2 < difficulty <= level_3)
+        sentence.toggle_tag(Mine.Tags.sentence_difficulty_4, level_3 < difficulty <= level_4)
+        sentence.toggle_tag(Mine.Tags.sentence_difficulty_5, level_4 < difficulty <= level_5)
+        sentence.toggle_tag(Mine.Tags.sentence_difficulty_6, level_5 < difficulty <= level_6)
+        sentence.toggle_tag(Mine.Tags.sentence_difficulty_7, level_6 < difficulty <= level_7)
+        sentence.toggle_tag(Mine.Tags.sentence_difficulty_8, level_7 < difficulty <= level_8)
+        sentence.toggle_tag(Mine.Tags.sentence_difficulty_9, level_8 < difficulty)
+
+        
+    progress_display_runner.process_with_progress(app.col().sentences.all(), tag_sentence, "Tagging sentences")
+
+def place_sentence_cards_in_difficulty_deck() -> None:
+    read_sentence_folder_common = "-JP::Read::​​Sent::level-"
+
+    read_deckid_1 = typed.int_(app.anki_collection().decks.id_for_name(f"{read_sentence_folder_common}1"))
+    read_deckid_2 = typed.int_(app.anki_collection().decks.id_for_name(f"{read_sentence_folder_common}2"))
+    read_deckid_3 = typed.int_(app.anki_collection().decks.id_for_name(f"{read_sentence_folder_common}3"))
+    read_deckid_4 = typed.int_(app.anki_collection().decks.id_for_name(f"{read_sentence_folder_common}4"))
+    read_deckid_5 = typed.int_(app.anki_collection().decks.id_for_name(f"{read_sentence_folder_common}5"))
+    read_deckid_6 = typed.int_(app.anki_collection().decks.id_for_name(f"{read_sentence_folder_common}6-"))
+
+    read_level_1_cards = [sent.get_reading_card().id for sent in app.col().sentences.all() if sent.has_tag(Mine.Tags.sentence_difficulty_1)]
+    read_level_2_cards = [sent.get_reading_card().id for sent in app.col().sentences.all() if sent.has_tag(Mine.Tags.sentence_difficulty_2)]
+    read_level_3_cards = [sent.get_reading_card().id for sent in app.col().sentences.all() if sent.has_tag(Mine.Tags.sentence_difficulty_3)]
+    read_level_4_cards = [sent.get_reading_card().id for sent in app.col().sentences.all() if sent.has_tag(Mine.Tags.sentence_difficulty_4)]
+    read_level_5_cards = [sent.get_reading_card().id for sent in app.col().sentences.all() if sent.has_tag(Mine.Tags.sentence_difficulty_5)]
+    read_level_6_cards = [sent.get_reading_card().id for sent in app.col().sentences.all() if sent.has_tag(Mine.Tags.sentence_difficulty_6) or sent.has_tag(Mine.Tags.sentence_difficulty_7) or sent.has_tag(Mine.Tags.sentence_difficulty_8) or sent.has_tag(Mine.Tags.sentence_difficulty_9)]
+
+    app.anki_collection().set_deck(read_level_1_cards, read_deckid_1)
+    app.anki_collection().set_deck(read_level_2_cards, read_deckid_2)
+    app.anki_collection().set_deck(read_level_3_cards, read_deckid_3)
+    app.anki_collection().set_deck(read_level_4_cards, read_deckid_4)
+    app.anki_collection().set_deck(read_level_5_cards, read_deckid_5)
+    app.anki_collection().set_deck(read_level_6_cards, read_deckid_6)
+
+
+
+
+

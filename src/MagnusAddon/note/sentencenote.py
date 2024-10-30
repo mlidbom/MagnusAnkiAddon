@@ -1,6 +1,8 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
+from anki.cards import Card
+
 from sysutils.ex_str import newline
 
 if TYPE_CHECKING:
@@ -10,7 +12,7 @@ if TYPE_CHECKING:
 from note.jpnote import JPNote
 from sysutils import kana_utils
 from sysutils import ex_str
-from note.note_constants import ImmersionKitSentenceNoteFields, Mine, NoteFields, SentenceNoteFields, NoteTypes
+from note.note_constants import CardTypes, ImmersionKitSentenceNoteFields, Mine, NoteFields, SentenceNoteFields, NoteTypes
 from anki.notes import Note
 
 class SentenceNote(JPNote):
@@ -126,6 +128,13 @@ class SentenceNote(JPNote):
             value = [parsed_word.word for parsed_word in word_extractor.extract_words(self.get_question())]
             value.append(current_storable_sentence)
             self.set_field(SentenceNoteFields.ParsedWords, ",".join(value))
+
+
+    def get_reading_card(self) -> Card:
+        return [card for card in  self._note.cards() if card.template()['name'] == CardTypes.reading][0]
+
+    def get_listening_card(self) -> Card:
+        return [card for card in  self._note.cards() if card.template()['name'] == CardTypes.listening][0]
 
 
     def extract_kanji(self) -> list[str]:

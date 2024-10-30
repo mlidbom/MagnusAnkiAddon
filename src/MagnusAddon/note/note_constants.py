@@ -182,4 +182,16 @@ class Mine:
         DisableKanaOnly = "_disable_uk"
         UsuallyKanaOnly = "_uk"
         TTSAudio = "_tts_audio"
-        Sentence = "_sentence"
+
+        sentence_folder = f"{base_folder}sentence::"
+        sentence_difficulty_1 = f"{sentence_folder}difficulty::1"
+        sentence_difficulty_2 = f"{sentence_folder}difficulty::2"
+        sentence_difficulty_3 = f"{sentence_folder}difficulty::3"
+        sentence_difficulty_4 = f"{sentence_folder}difficulty::4"
+        sentence_difficulty_5 = f"{sentence_folder}difficulty::5"
+        sentence_difficulty_6 = f"{sentence_folder}difficulty::6"
+        sentence_difficulty_7 = f"{sentence_folder}difficulty::7"
+        sentence_difficulty_8 = f"{sentence_folder}difficulty::8"
+        sentence_difficulty_9 = f"{sentence_folder}difficulty::9"
+
+
