@@ -141,8 +141,8 @@ class SentenceNote(JPNote):
         clean = ex_str.strip_html_and_bracket_markup(self.get_question())
         return [char for char in clean if kana_utils.is_kanji(char)]
 
-    levels = list(range(0, 9))
-    level_difficulties = [1.5 ** level * 10 for level in levels]
+    levels = list(range(1, 9))
+    level_difficulties = [1.5 ** (level - 1) * 10 for level in levels]
     def get_level(self) -> int:
         def find_difficulty() -> int:
             kanji_weight = 8
@@ -151,10 +151,10 @@ class SentenceNote(JPNote):
             return kana_count + (kanji_count * kanji_weight)
 
         _difficulty = find_difficulty()
-        if _difficulty <= SentenceNote.level_difficulties[0]: return 0
+        if _difficulty <= SentenceNote.level_difficulties[0]: return SentenceNote.levels[0]
 
         for level in SentenceNote.levels[1:]:
-            if SentenceNote.level_difficulties[level-1] < _difficulty <= SentenceNote.level_difficulties[level]:
+            if SentenceNote.level_difficulties[level-2] < _difficulty <= SentenceNote.level_difficulties[level-1]:
                 return level
 
         return SentenceNote.levels[-1]

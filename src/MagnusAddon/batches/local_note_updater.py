@@ -171,10 +171,10 @@ def organize_sentences_by_difficulty() -> None:
     read_sentence_folder_common = "-JP::Read::​​Sent::level-"
     listen_sentence_folder_common = "-JP::​Listen::level-"
 
-    read_deck_id_by_level = [app.anki_collection().decks.add_normal_deck_with_name(f"{read_sentence_folder_common}{level + 1}").id for level in SentenceNote.levels]
-    listen_deck_id_by_level = [app.anki_collection().decks.add_normal_deck_with_name(f"{listen_sentence_folder_common}{level + 1}").id for level in SentenceNote.levels]
-    read_card_ids_by_level: list[list[CardId]] = [[] for level in SentenceNote.levels]
-    listen_card_ids_by_level: list[list[CardId]] = [[] for level in SentenceNote.levels]
+    read_deck_id_by_level = {level: app.anki_collection().decks.add_normal_deck_with_name(f"{read_sentence_folder_common}{level}").id for level in SentenceNote.levels}
+    listen_deck_id_by_level = {level: app.anki_collection().decks.add_normal_deck_with_name(f"{listen_sentence_folder_common}{level}").id for level in SentenceNote.levels}
+    read_card_ids_by_level: dict[int, list[CardId]] = {level: [] for level in SentenceNote.levels}
+    listen_card_ids_by_level: dict[int, list[CardId]] = {level: [] for level in SentenceNote.levels}
 
     def find_sentence_difficulty(sentence: SentenceNote) -> None:
         sentence_level = sentence.get_level()
