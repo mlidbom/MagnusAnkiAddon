@@ -142,7 +142,7 @@ class SentenceNote(JPNote):
         return [char for char in clean if kana_utils.is_kanji(char)]
 
     levels = list(range(1, 10))
-    level_difficulties = [1.25 ** (level - 1) * 10 for level in levels]
+    level_difficulties = [1.25 ** (level - 1) * 6 for level in levels]
     def get_level(self) -> int:
         def find_difficulty() -> int:
             kanji_weight = 4
