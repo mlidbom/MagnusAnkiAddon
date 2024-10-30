@@ -145,10 +145,12 @@ class SentenceNote(JPNote):
     level_difficulties = [1.5 ** (level - 1) * 10 for level in levels]
     def get_level(self) -> int:
         def find_difficulty() -> int:
-            kanji_weight = 8
-            kanji_count = ex_sequence.count(self.get_question(), kana_utils.is_kanji)
-            kana_count = len(self.get_question()) - kanji_count
-            return kana_count + (kanji_count * kanji_weight)
+            kanji_weight = 4
+            katakana_weight = 1.5
+            kanji_characters = ex_sequence.count(self.get_question(), kana_utils.is_kanji)
+            katakana_characters = ex_sequence.count(self.get_question(), kana_utils.is_katakana)
+            hiragana_characters = ex_sequence.count(self.get_question(), kana_utils.is_hiragana)
+            return int(kanji_characters * kanji_weight + katakana_characters * katakana_weight + hiragana_characters)
 
         _difficulty = find_difficulty()
         if _difficulty <= SentenceNote.level_difficulties[0]: return SentenceNote.levels[0]
