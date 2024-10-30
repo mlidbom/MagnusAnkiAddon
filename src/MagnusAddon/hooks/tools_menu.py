@@ -72,8 +72,6 @@ def build_local_menu(sub_menu: QMenu) -> None:
     add_menu_ui_action(sub_menu, "Create Sentences from Context Sentences With Audio", local_note_updater.generate_sentences_for_context_sentences_with_audio)
     add_menu_ui_action(sub_menu, "Convert &Immersion Kit sentences", local_note_updater.convert_immersion_kit_sentences)
     add_menu_ui_action(sub_menu, "Tag kanji metadata", local_note_updater.tag_kanji_metadata)
-    add_menu_ui_action(sub_menu, "Organize vocab by difficulty", local_note_updater.organize_vocab_by_difficulty)
-    add_menu_ui_action(sub_menu, "Organize sentences by difficulty", local_note_updater.organize_sentences_by_difficulty)
     #add_menu_ui_action(sub_menu, "Adjust kanji primary readings", local_note_updater.adjust_kanji_primary_readings)
 
 def build_wani_menu(sub_menu: QMenu) -> None:
