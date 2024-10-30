@@ -141,7 +141,7 @@ class SentenceNote(JPNote):
         clean = ex_str.strip_html_and_bracket_markup(self.get_question())
         return [char for char in clean if kana_utils.is_kanji(char)]
 
-    levels = list(range(1, 9))
+    levels = list(range(1, 10))
     level_difficulties = [1.5 ** (level - 1) * 10 for level in levels]
     def get_level(self) -> int:
         def find_difficulty() -> int:
