@@ -11,7 +11,7 @@ from note.note_constants import CardTypes, Mine
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
 
-from sysutils import ex_sequence, ex_str, kana_utils, progress_display_runner
+from sysutils import  ex_str, progress_display_runner
 
 def update_all() -> None:
     update_sentences()
@@ -170,47 +170,20 @@ def adjust_kanji_primary_readings() -> None:
 def organize_sentences_by_difficulty() -> None:
     read_sentence_folder_common = "-JP::Read::​​Sent::level-"
     listen_sentence_folder_common = "-JP::​Listen::level-"
-    levels = list(range(0, 9))
 
-    read_deck_id_by_level = [app.anki_collection().decks.add_normal_deck_with_name(f"{read_sentence_folder_common}{level + 1}").id for level in levels]
-    listen_deck_id_by_level = [app.anki_collection().decks.add_normal_deck_with_name(f"{listen_sentence_folder_common}{level + 1}").id for level in levels]
-    read_card_ids_by_level:list[list[CardId]] = [[] for level in levels]
-    listen_card_ids_by_level: list[list[CardId]] = [[] for level in levels]
-
-    level_difficulties = [1.5 ** level * 10 for level in levels]
+    read_deck_id_by_level = [app.anki_collection().decks.add_normal_deck_with_name(f"{read_sentence_folder_common}{level + 1}").id for level in SentenceNote.levels]
+    listen_deck_id_by_level = [app.anki_collection().decks.add_normal_deck_with_name(f"{listen_sentence_folder_common}{level + 1}").id for level in SentenceNote.levels]
+    read_card_ids_by_level: list[list[CardId]] = [[] for level in SentenceNote.levels]
+    listen_card_ids_by_level: list[list[CardId]] = [[] for level in SentenceNote.levels]
 
     def find_sentence_difficulty(sentence: SentenceNote) -> None:
-        def find_difficulty() -> int:
-            kanji_weight = 8
-            kanji_count = ex_sequence.count(sentence.get_question(), kana_utils.is_kanji)
-            kana_count = len(sentence.get_question()) - kanji_count
-            return kana_count + (kanji_count * kanji_weight)
-
-        def find_level() -> int:
-            _difficulty = find_difficulty()
-            if _difficulty <= level_difficulties[0]: return 0
-
-            for level in levels[1:]:
-                if level_difficulties[level-1] < _difficulty <= level_difficulties[level]:
-                    return level
-
-            return levels[-1]
-
-        sentence_level = find_level()
-
-        for _level in levels:
-            if _level == sentence_level:
-                read_card_ids_by_level[_level].append(sentence.get_reading_card().id)
-                listen_card_ids_by_level[_level].append(sentence.get_listening_card().id)
+        sentence_level = sentence.get_level()
+        read_card_ids_by_level[sentence_level].append(sentence.get_reading_card().id)
+        listen_card_ids_by_level[sentence_level].append(sentence.get_listening_card().id)
 
     def move_level_cards(level:int) -> None:
         app.anki_collection().set_deck(read_card_ids_by_level[level], read_deck_id_by_level[level])
         app.anki_collection().set_deck(listen_card_ids_by_level[level], listen_deck_id_by_level[level])
 
     progress_display_runner.process_with_progress(app.col().sentences.all(), find_sentence_difficulty, "Calculating sentence levels")
-    progress_display_runner.process_with_progress(levels, move_level_cards, "Moving cards")
-
-
-
-
-
+    progress_display_runner.process_with_progress(SentenceNote.levels, move_level_cards, "Moving cards")
