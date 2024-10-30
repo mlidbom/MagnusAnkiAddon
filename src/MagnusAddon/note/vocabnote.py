@@ -332,7 +332,7 @@ class VocabNote(KanaVocabNote):
         return VocabNote._difficulty_calculator.find_level(self.get_question())
 
     _milliseconds_per_difficulty_point = 500
-    _minimum_allowed_milliseconds = 1500
+    _minimum_allowed_milliseconds = 3000
     def get_allowed_read_review_time_milliseconds(self) -> int:
         return int(VocabNote._minimum_allowed_milliseconds +  difficulty_calculator.find_difficulty(self.get_question()) * VocabNote._milliseconds_per_difficulty_point)
 
