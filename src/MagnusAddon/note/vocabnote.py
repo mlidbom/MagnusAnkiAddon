@@ -5,6 +5,7 @@ from wanikani_api import models
 from anki.notes import Note
 
 from language_services.jamdict_ex.priority_spec import PrioritySpec
+from note import difficulty_calculator
 from note.difficulty_calculator import DifficultyCalculator
 from note.kanavocabnote import KanaVocabNote
 from sysutils import kana_utils
@@ -329,6 +330,11 @@ class VocabNote(KanaVocabNote):
     _difficulty_calculator = DifficultyCalculator(levels, _level_difficulties)
     def get_level(self) -> int:
         return VocabNote._difficulty_calculator.find_level(self.get_question())
+
+    _milliseconds_per_difficulty_point = 500
+    _minimum_allowed_milliseconds = 1500
+    def get_allowed_read_review_time_milliseconds(self) -> int:
+        return int(VocabNote._minimum_allowed_milliseconds +  difficulty_calculator.find_difficulty(self.get_question()) * VocabNote._milliseconds_per_difficulty_point)
 
     def can_generate_sentences_from_context_sentences(self, require_audio:bool) -> bool:
         from ankiutils import app

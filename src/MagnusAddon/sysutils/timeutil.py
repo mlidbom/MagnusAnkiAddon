@@ -29,6 +29,11 @@ def format_seconds_as_hh_mm_ss_ttt(seconds: float) -> str:
     milliseconds = int((seconds - int(seconds)) * 1000)
     return f'{hours:02}:{minutes:02}:{sec:02} {milliseconds:03}'
 
+def format_seconds_as_ss_ttt(seconds: float) -> str:
+    sec = int(seconds / 1000)
+    milliseconds = int(seconds - (sec * 1000))
+    return f'{sec:02} {milliseconds:03}'
+
 def start_stop_watch() -> StopWatch:
     return StopWatch()
 

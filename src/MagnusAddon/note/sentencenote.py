@@ -1,9 +1,6 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
-from anki.cards import Card
-from chirptext.texttaglib import Sentence
-
 from note import difficulty_calculator
 from note.difficulty_calculator import DifficultyCalculator
 from sysutils.ex_str import newline
@@ -13,9 +10,9 @@ if TYPE_CHECKING:
     from note.vocabnote import VocabNote
 
 from note.jpnote import JPNote
-from sysutils import ex_sequence, kana_utils
+from sysutils import kana_utils
 from sysutils import ex_str
-from note.note_constants import CardTypes, ImmersionKitSentenceNoteFields, Mine, NoteFields, SentenceNoteFields, NoteTypes
+from note.note_constants import ImmersionKitSentenceNoteFields, Mine, NoteFields, SentenceNoteFields, NoteTypes
 from anki.notes import Note
 
 class SentenceNote(JPNote):
@@ -142,6 +139,11 @@ class SentenceNote(JPNote):
     _difficulty_calculator = DifficultyCalculator(levels, _level_difficulties)
     def get_level(self) -> int:
         return SentenceNote._difficulty_calculator.find_level(self.get_question())
+
+    _milliseconds_per_difficulty_point = 500
+    _minimum_allowed_milliseconds = 3000
+    def get_allowed_read_review_time_milliseconds(self) -> int:
+        return int(SentenceNote._minimum_allowed_milliseconds + difficulty_calculator.find_difficulty(self.get_question()) * SentenceNote._milliseconds_per_difficulty_point)
 
     @classmethod
     def create_test_note(cls, question: str, answer: str) -> SentenceNote:
