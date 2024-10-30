@@ -16,9 +16,6 @@ from note.note_constants import CardTypes, ImmersionKitSentenceNoteFields, Mine,
 from anki.notes import Note
 
 class SentenceNote(JPNote):
-    levels = list(range(0, 9))
-    level_difficulties = [1.5 ** level * 10 for level in (levels)]
-
     def __init__(self, note: Note):
         super().__init__(note)
         self._user_excluded_cache:set[str] = set(ex_str.extract_newline_separated_values(self.get_field(SentenceNoteFields.user_excluded_vocab)))
@@ -144,6 +141,8 @@ class SentenceNote(JPNote):
         clean = ex_str.strip_html_and_bracket_markup(self.get_question())
         return [char for char in clean if kana_utils.is_kanji(char)]
 
+    levels = list(range(0, 9))
+    level_difficulties = [1.5 ** level * 10 for level in levels]
     def get_level(self) -> int:
         def find_difficulty() -> int:
             kanji_weight = 8
@@ -151,17 +150,14 @@ class SentenceNote(JPNote):
             kana_count = len(self.get_question()) - kanji_count
             return kana_count + (kanji_count * kanji_weight)
 
-        def find_level() -> int:
-            _difficulty = find_difficulty()
-            if _difficulty <= SentenceNote.level_difficulties[0]: return 0
+        _difficulty = find_difficulty()
+        if _difficulty <= SentenceNote.level_difficulties[0]: return 0
 
-            for level in SentenceNote.levels[1:]:
-                if SentenceNote.level_difficulties[level-1] < _difficulty <= SentenceNote.level_difficulties[level]:
-                    return level
+        for level in SentenceNote.levels[1:]:
+            if SentenceNote.level_difficulties[level-1] < _difficulty <= SentenceNote.level_difficulties[level]:
+                return level
 
-            return SentenceNote.levels[-1]
-
-        return find_level()
+        return SentenceNote.levels[-1]
 
     @classmethod
     def create_test_note(cls, question: str, answer: str) -> SentenceNote:
