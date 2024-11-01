@@ -1,10 +1,9 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from typing import List, Optional, Union, TYPE_CHECKING
+from typing import List, Optional, TYPE_CHECKING
 
 from note.collection.cache_runner import CacheRunner
-from note.radicalnote import RadicalNote
 
 if TYPE_CHECKING:
     from note.collection.jp_collection import JPCollection
@@ -20,7 +19,7 @@ from sysutils import ex_list, ex_sequence
 class _KanjiSnapshot(CachedNote):
     def __init__(self, note: KanjiNote):
         super().__init__(note)
-        self.radicals = note.get_radicals()
+        self.radicals = set(note.get_radicals())
 
 class _KanjiCache(NoteCache[KanjiNote, _KanjiSnapshot]):
     def __init__(self, all_kanji: list[KanjiNote], cache_runner: CacheRunner):

@@ -1,6 +1,5 @@
 import re
 
-from anki.cards import CardId
 from anki.notes import NoteId
 
 from ankiutils import app, query_builder
@@ -69,42 +68,40 @@ def tag_kanji_metadata() -> None:
         vocab_with_kanji_in_main_form = app.col().vocab.with_kanji_in_main_form(kanji)
         vocab_with_kanji_in_any_form = app.col().vocab.with_kanji_in_any_form(kanji)
 
-        kanji_with_this_kanji_as_a_radical = app.col().kanji.with_radical(kanji.get_question())
-        kanji.toggle_tag(Mine.Tags.kanji_not_in_any_vocab_main_form, bool(not vocab_with_kanji_in_main_form and kanji_with_this_kanji_as_a_radical))
-        kanji.toggle_tag(Mine.Tags.kanji_not_in_any_vocab_form, bool(not vocab_with_kanji_in_any_form and kanji_with_this_kanji_as_a_radical))
+        is_radical = any(app.col().kanji.with_radical(kanji.get_question()))
+        kanji.toggle_tag(Mine.Tags.kanji_in_vocab_main_form, any(vocab_with_kanji_in_main_form))
+        kanji.toggle_tag(Mine.Tags.kanji_in_any_vocab_form, any(vocab_with_kanji_in_any_form))
 
-        studying_vocab = [voc for voc in vocab_with_kanji_in_main_form if voc.is_studying()]
-        kanji.toggle_tag(Mine.Tags.kanji_with_no_studying_vocab, not studying_vocab)
+        studying_reading_vocab = [voc for voc in vocab_with_kanji_in_main_form if voc.is_studying(CardTypes.reading)]
+        kanji.toggle_tag(Mine.Tags.kanji_with_studying_vocab, any(studying_reading_vocab))
 
         primary_readings: list[str] = primary_reading.findall(f"{kanji.get_reading_on_html()} {kanji.get_reading_kun_html()} {kanji.get_reading_nan()}")
         kanji.toggle_tag(Mine.Tags.kanji_with_no_primary_readings, not primary_readings)
 
         primary_on_readings:list[str] = primary_reading.findall(kanji.get_reading_on_html())
         kanji.toggle_tag(Mine.Tags.kanji_with_no_primary_on_readings, not primary_on_readings)
-        if primary_on_readings:
-            first_primary_on_reading = primary_on_readings[0]
-            vocab_with_first_primary_on_reading = [voc for voc in studying_vocab if any(reading for reading in voc.get_readings() if first_primary_on_reading in reading)]
-            kanji.toggle_tag(Mine.Tags.kanji_with_no_studying_vocab_with_primary_on_reading, not vocab_with_first_primary_on_reading)
 
 
-        kanji.toggle_tag(Mine.Tags.kanji_is_radical, any(app.col().kanji.with_radical(kanji.get_question())))
-        kanji.toggle_tag(Mine.Tags.kanji_is_radical_purely, not any(vocab_with_kanji_in_any_form) and any(app.col().kanji.with_radical(kanji.get_question())))
-        kanji.toggle_tag(Mine.Tags.kanji_is_radical_silent, not any(primary_readings) and any(app.col().kanji.with_radical(kanji.get_question())))
+        def has_studying_vocab_with_reading(kanji_reading:str) -> bool: return any(voc for voc in studying_reading_vocab if any(vocab_reading for vocab_reading in voc.get_readings() if kanji_reading in vocab_reading))
+
+        kanji.toggle_tag(Mine.Tags.kanji_with_studying_vocab_with_primary_on_reading, any(primary_on_readings) and has_studying_vocab_with_reading(primary_on_readings[0]))
+        kanji.toggle_tag(Mine.Tags.kanji_has_studying_vocab_for_each_primary_reading, any(primary_readings) and not any(reading for reading in primary_readings if not has_studying_vocab_with_reading(reading)))
 
 
-
-
-
+        kanji.toggle_tag(Mine.Tags.kanji_is_radical, is_radical)
+        kanji.toggle_tag(Mine.Tags.kanji_is_radical_purely, is_radical and not any(vocab_with_kanji_in_any_form))
+        kanji.toggle_tag(Mine.Tags.kanji_is_radical_silent, is_radical and not any(primary_readings))
 
     def tag_has_single_kanji_vocab_with_reading_different_from_kanji_primary_reading(kanji: KanjiNote) -> None:
         vocabs = app.col().vocab.with_kanji_in_main_form(kanji)
         single_kanji_vocab = [v for v in vocabs if v.get_question() == kanji.get_question()]
+        kanji.toggle_tag(Mine.Tags.kanji_with_single_kanji_vocab, any(single_kanji_vocab))
         if single_kanji_vocab:
-            kanji.set_tag(Mine.Tags.kanji_with_single_kanji_vocab)
             primary_readings: list[str] = primary_reading.findall(f"{kanji.get_reading_on_html()} {kanji.get_reading_kun_html()} {kanji.get_reading_nan()}")
 
             kanji.remove_tag(Mine.Tags.kanji_with_single_kanji_vocab_with_different_reading)
             kanji.remove_tag(Mine.Tags.kanji_with_studying_single_kanji_vocab_with_different_reading)
+
             for vocab in single_kanji_vocab:
                 for reading in vocab.get_readings():
                     if reading not in primary_readings:
