@@ -4,6 +4,7 @@ from anki.cards import Card
 from aqt import gui_hooks, mw
 
 from note import cardutils
+from note.difficulty_calculator import DifficultyCalculator
 from note.jpnote import JPNote
 from note.kanjinote import KanjiNote
 from note.note_constants import CardTypes
@@ -11,7 +12,10 @@ from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
 from sysutils import timeutil, typed
 
-def _monkey_patch(html:str, _card:Any, _something_else_again:Any) -> str:
+def _monkey_patch(html:str, _card:Any, display_type:str) -> str:
+    if not display_type.startswith('review'):
+        return html
+
     def is_handled_card() -> bool:
         if cardutils.card_type(typed.checked_cast(Card, mw.reviewer.card)) != CardTypes.reading:
             return False
@@ -19,15 +23,15 @@ def _monkey_patch(html:str, _card:Any, _something_else_again:Any) -> str:
         note = JPNote.note_from_card(typed.checked_cast(Card, mw.reviewer.card))
         return isinstance(note, SentenceNote) or isinstance(note, VocabNote) or isinstance(note, KanjiNote)
 
-    def milliseconds_to_show_question() -> int:
+    def seconds_to_show_question() -> float:
         card = typed.checked_cast(Card, mw.reviewer.card)
         note = JPNote.note_from_card(card)
         if isinstance(note, SentenceNote):
-            return note.get_allowed_read_review_time_milliseconds()
+            return DifficultyCalculator(starting_seconds=2.0, hiragana_seconds=0.5, katakata_weight=1.5, kanji_weight=3.0).allowed_seconds(note.get_question())
         elif isinstance(note, VocabNote):
-            return note.get_allowed_read_review_time_milliseconds()
+            return DifficultyCalculator(starting_seconds=2.0, hiragana_seconds=0.5, katakata_weight=1.5, kanji_weight=3.0).allowed_seconds(note.get_question())
         elif isinstance(note, KanjiNote):
-            return int(mw.reviewer.mw.col.decks.config_dict_for_deck_id(card.current_deck_id())["secondsToShowQuestion"] * 1000)
+            return int(mw.reviewer.mw.col.decks.config_dict_for_deck_id(card.current_deck_id())["secondsToShowQuestion"])
 
         raise Exception("We should never get here")
 
@@ -38,7 +42,7 @@ def _monkey_patch(html:str, _card:Any, _something_else_again:Any) -> str:
             return
 
         mw.reviewer._clear_auto_advance_timers() # noqa
-        allowed_milliseconds = milliseconds_to_show_question()
+        allowed_milliseconds = int(seconds_to_show_question() * 1000)
 
         mw.reviewer._show_answer_timer = mw.reviewer.mw.progress.timer(
             allowed_milliseconds,

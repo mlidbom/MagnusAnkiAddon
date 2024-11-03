@@ -1,8 +1,6 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
-from note import difficulty_calculator
-from note.difficulty_calculator import DifficultyCalculator
 from sysutils.ex_str import newline
 
 if TYPE_CHECKING:
@@ -57,7 +55,6 @@ class SentenceNote(JPNote):
         vocab = vocab.strip()
         vocab_list = self.get_user_highlighted_vocab()
         if vocab in vocab_list:
-            old_index = vocab_list.index(vocab)
             vocab_list.remove(vocab)
 
         if index == -1:
@@ -133,17 +130,6 @@ class SentenceNote(JPNote):
     def extract_kanji(self) -> list[str]:
         clean = ex_str.strip_html_and_bracket_markup(self.get_question())
         return [char for char in clean if kana_utils.is_kanji(char)]
-
-    levels = list(range(1, 10))
-    _level_difficulties = [1.25 ** (level - 1) * 6 for level in levels]
-    _difficulty_calculator = DifficultyCalculator(levels, _level_difficulties)
-    def get_level(self) -> int:
-        return SentenceNote._difficulty_calculator.find_level(self.get_question())
-
-    _milliseconds_per_difficulty_point = 500
-    _minimum_allowed_milliseconds = 3000
-    def get_allowed_read_review_time_milliseconds(self) -> int:
-        return int(SentenceNote._minimum_allowed_milliseconds + difficulty_calculator.find_difficulty(self.get_question()) * SentenceNote._milliseconds_per_difficulty_point)
 
     @classmethod
     def create_test_note(cls, question: str, answer: str) -> SentenceNote:

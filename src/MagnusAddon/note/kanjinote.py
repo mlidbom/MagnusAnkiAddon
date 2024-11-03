@@ -192,7 +192,6 @@ class KanjiNote(WaniNote):
         vocab = vocab.strip()
         primary_vocab_list = self.get_primary_vocab()
         if vocab in primary_vocab_list:
-            current_index = primary_vocab_list.index(vocab)
             primary_vocab_list.remove(vocab)
 
         if new_index == -1:

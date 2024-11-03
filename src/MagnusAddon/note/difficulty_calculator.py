@@ -10,14 +10,15 @@ def find_difficulty(string: str) -> float:
     return kanji_characters * KANJI_WEIGHT + katakana_characters * KATAKANA_WEIGHT + hiragana_characters
 
 class DifficultyCalculator:
-    def __init__(self, levels: list[int], difficulties: list[float]) -> None:
-        self.levels = levels
-        self.difficulties = difficulties
+    def __init__(self, starting_seconds:float, hiragana_seconds:float, katakata_weight:float, kanji_weight:float) -> None:
+        self.starting_seconds = starting_seconds
+        self.hiragana_seconds = hiragana_seconds
+        self.katakata_weight = katakata_weight
+        self.kanji_weight = kanji_weight
 
-    def find_level(self, string: str) -> int:
-        difficulty = find_difficulty(string)
-        if difficulty <= self.difficulties[0]: return self.levels[0]
-        for level in self.levels[1:]:
-            if self.difficulties[level - 2] < difficulty <= self.difficulties[level - 1]:
-                return level
-        return self.levels[-1]
+    def allowed_seconds(self, string:str) -> float:
+        hiragana_seconds = ex_sequence.count(string, kana_utils.is_hiragana) * self.hiragana_seconds
+        katakana_seconds = ex_sequence.count(string, kana_utils.is_katakana) * self.hiragana_seconds * self.katakata_weight
+        kanji_seconds = ex_sequence.count(string, kana_utils.is_kanji) * self.hiragana_seconds * self.kanji_weight
+
+        return self.starting_seconds + hiragana_seconds + katakana_seconds + kanji_seconds

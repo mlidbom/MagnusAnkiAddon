@@ -1,6 +1,6 @@
 from PyQt6.QtWidgets import QMenu
 
-from ankiutils import app, query_builder
+from ankiutils import query_builder
 from hooks.right_click_menu_utils import add_lookup_action, add_ui_action
 from note.kanjinote import KanjiNote
 from sysutils import ex_str, kana_utils

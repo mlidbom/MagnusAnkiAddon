@@ -48,9 +48,5 @@ def remove_duplicates_characters(input_str: str) -> str:
             output_str += char
     return output_str
 
-
 def replace_word(word:str, replacement:str, text:str) -> str:
     return re.sub(rf'\b{re.escape(word)}\b', replacement, text)
-
-def contains_word(word:str, replacement:str, text:str) -> bool:
-    return re.search(rf'\b{re.escape(word)}\b', text) is not None

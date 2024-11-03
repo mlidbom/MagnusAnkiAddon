@@ -162,6 +162,7 @@ class Mine:
         kanji_with_no_primary_on_readings = f"{kanji_folder}no-primary-on-readings"
         kanji_with_no_primary_readings = f"{kanji_folder}no-primary-readings"
         kanji_with_studying_vocab = f"{kanji_folder}studying-vocab"
+        kanji_with_vocab_with_primary_on_reading = f"{kanji_folder}has-vocab-with-primary-on-reading"
         kanji_with_studying_vocab_with_primary_on_reading = f"{kanji_folder}studying-vocab-with-primary-on-reading"
         kanji_has_studying_vocab_for_each_primary_reading = f"{kanji_folder}has-studying-vocab-for-each-primary-reading"
 

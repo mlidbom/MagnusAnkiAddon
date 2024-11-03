@@ -10,7 +10,7 @@ from note.note_constants import CardTypes, Mine
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
 
-from sysutils import  ex_str, progress_display_runner
+from sysutils import ex_str, progress_display_runner
 
 def update_all() -> None:
     update_sentences()
@@ -81,9 +81,10 @@ def tag_kanji_metadata() -> None:
         primary_on_readings:list[str] = primary_reading.findall(kanji.get_reading_on_html())
         kanji.toggle_tag(Mine.Tags.kanji_with_no_primary_on_readings, not primary_on_readings)
 
+        def has_vocab_with_reading(kanji_reading: str) -> bool: return any(voc for voc in vocab_with_kanji_in_main_form if any(vocab_reading for vocab_reading in voc.get_readings() if kanji_reading in vocab_reading))
+        kanji.toggle_tag(Mine.Tags.kanji_with_vocab_with_primary_on_reading, any(primary_on_readings) and has_vocab_with_reading(primary_on_readings[0]))
 
         def has_studying_vocab_with_reading(kanji_reading:str) -> bool: return any(voc for voc in studying_reading_vocab if any(vocab_reading for vocab_reading in voc.get_readings() if kanji_reading in vocab_reading))
-
         kanji.toggle_tag(Mine.Tags.kanji_with_studying_vocab_with_primary_on_reading, any(primary_on_readings) and has_studying_vocab_with_reading(primary_on_readings[0]))
         kanji.toggle_tag(Mine.Tags.kanji_has_studying_vocab_for_each_primary_reading, any(primary_readings) and not any(reading for reading in primary_readings if not has_studying_vocab_with_reading(reading)))
 
@@ -114,7 +115,7 @@ def tag_kanji_metadata() -> None:
     progress_display_runner.process_with_progress(all_kanji, tag_has_single_kanji_vocab_with_reading_different_from_kanji_primary_reading, "Tagging kanji with single kanji vocab")
 
 def reparse_sentence_words() -> None:
-    def reparse_sentence(sentence: SentenceNote) ->None:
+    def reparse_sentence(sentence: SentenceNote) -> None:
         sentence.update_parsed_words(force=True)
 
     progress_display_runner.process_with_progress(app.col().sentences.all(), reparse_sentence, "Reparsing sentences.")
@@ -146,7 +147,7 @@ def adjust_kanji_primary_readings() -> None:
             kanji.set_reading_kun(new_reading)
 
         def has_vocab_with_reading(reading:str) -> bool:
-            for vocab in (x for x in kanji.get_vocab_notes() if x.is_studying()) :
+            for vocab in (x for x in kanji.get_vocab_notes() if x.is_studying()):
                 if reading in vocab._get_reading():
                     return True
             return False

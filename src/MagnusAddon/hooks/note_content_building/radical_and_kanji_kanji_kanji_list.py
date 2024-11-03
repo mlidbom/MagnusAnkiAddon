@@ -16,7 +16,7 @@ def render_kanji_list(html:str, card: Card, _type_of_display:str) -> str:
 
     from ankiutils import app
     note = JPNote.note_from_card(card)
-    kanjis:list[KanjiNote] = []
+    kanjis:list[KanjiNote]
     kanji_readings: list[str] = []
 
     if isinstance(note, KanjiNote):
