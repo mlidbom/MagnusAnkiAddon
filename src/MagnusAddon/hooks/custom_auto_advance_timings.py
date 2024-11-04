@@ -27,9 +27,9 @@ def _monkey_patch(html:str, _card:Any, display_type:str) -> str:
         card = typed.checked_cast(Card, mw.reviewer.card)
         note = JPNote.note_from_card(card)
         if isinstance(note, SentenceNote):
-            return DifficultyCalculator(starting_seconds=2.0, hiragana_seconds=0.5, katakata_weight=1.5, kanji_weight=3.0).allowed_seconds(note.get_question())
+            return DifficultyCalculator(starting_seconds=3.0, hiragana_seconds=0.5, katakata_weight=1.5, kanji_weight=2.5).allowed_seconds(note.get_question())
         elif isinstance(note, VocabNote):
-            return DifficultyCalculator(starting_seconds=2.0, hiragana_seconds=0.5, katakata_weight=1.5, kanji_weight=3.0).allowed_seconds(note.get_question())
+            return DifficultyCalculator(starting_seconds=3.0, hiragana_seconds=0.5, katakata_weight=1.5, kanji_weight=2.5).allowed_seconds(note.get_question())
         elif isinstance(note, KanjiNote):
             return int(mw.reviewer.mw.col.decks.config_dict_for_deck_id(card.current_deck_id())["secondsToShowQuestion"])
 
