@@ -39,15 +39,15 @@ def render_dependencies_list(html: str, card: Card, _type_of_display: str) -> st
     <div id="dependencies_list" class="page_section">
         <div class="page_section_title">radicals</div>
     {ex_str.newline.join(f'''
-        <div class="dependency">
+        <div class="dependency {" ".join(kanji.get_meta_tags())}">
             <div class="dependency_heading">
-                <div class="dependency_character clipboard">{dependency.get_question()}</div>                           
-                <div class="dependency_name clipboard">{dependency.get_answer()}</div>
-                <div class="dependency_readings">{highlight_primary_reading_sources(format_readings(dependency))}</div>
+                <div class="dependency_character clipboard">{kanji.get_question()}</div>                           
+                <div class="dependency_name clipboard">{kanji.get_answer()}</div>
+                <div class="dependency_readings">{highlight_primary_reading_sources(format_readings(kanji))}</div>
             </div>
-            <div class="dependency_mnemonic">{dependency.get_user_mnemonic()}</div>
+            <div class="dependency_mnemonic">{kanji.get_user_mnemonic()}</div>
         </div>
-    ''' for dependency in dependencies)}
+    ''' for kanji in dependencies)}
     </div>
             """
 
