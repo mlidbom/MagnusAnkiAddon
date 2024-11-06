@@ -1,6 +1,6 @@
 from anki.cards import Card
 from aqt import gui_hooks
-from ankiutils import ui_utils
+from ankiutils import app, ui_utils
 from note.jpnote import JPNote
 from note.note_constants import Mine
 from note.sentencenote import SentenceNote
@@ -14,11 +14,19 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
     primary_form = _vocab_note.get_question_without_noise_characters()
     secondary_forms = [form for form in forms if form != primary_form]
     secondary_forms_conjugation_base_form = [kana_utils.get_conjugation_base(form) for form in secondary_forms]
+
+    secondary_forms_with_their_own_vocab = [form for form in secondary_forms if any(app.col().vocab.with_question(form))]
+    secondary_forms_with_their_own_vocab_conjugation_bases = [kana_utils.get_conjugation_base(form) for form in secondary_forms_with_their_own_vocab]
+
     conjugation_base_form = kana_utils.get_conjugation_base(primary_form)
 
     def contains_primary_form(_sentence: SentenceNote) -> bool:
         clean_sentence = ex_str.strip_html_and_bracket_markup(_sentence.get_question())
         return conjugation_base_form in clean_sentence
+
+    def contains_secondary_form_with_its_own_vocabulary_note(_sentence: SentenceNote) -> bool:
+        clean_sentence = ex_str.strip_html_and_bracket_markup(_sentence.get_question())
+        return any(base_form for base_form in secondary_forms_conjugation_base_form if base_form in clean_sentence)
 
     def format_sentence(html_sentence: str) -> str:
         clean_sentence = ex_str.strip_html_and_bracket_markup(html_sentence)
@@ -49,6 +57,7 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
         def prefer_highlighted(_sentence:SentenceNote) -> int: return 0 if _sentence in highlighted_sentences else 1
         def prefer_studying_read(_sentence:SentenceNote) -> int: return 0 if _sentence.is_studying_read() else 1
         def prefer_studying_listening(_sentence: SentenceNote) -> int: return 0 if _sentence.is_studying_listening() else 1
+        def dislike_secondary_form_with_vocab(_sentence: SentenceNote) -> int: return 1 if not contains_primary_form(_sentence) and contains_secondary_form_with_its_own_vocabulary_note(_sentence) else 0
         def prefer_primary_form(_sentence:SentenceNote) -> int: return 0 if contains_primary_form(_sentence) else 1
         def dislike_tts_sentences(_sentence:SentenceNote) -> int: return 1 if _sentence.has_tag(Mine.Tags.TTSAudio) else 0
         def prefer_short_questions(_sentence:SentenceNote) -> int: return len(_sentence.get_question())
@@ -64,7 +73,8 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
             clean_sentence = ex_str.strip_html_and_bracket_markup(_sentence.get_question())
             return 1 if any((_base_form in clean_sentence for _base_form in secondary_forms_conjugation_base_form)) else 0
 
-        return sorted(_sentences, key=lambda x: (prefer_highlighted_for_low_reliability_matches(x),
+        return sorted(_sentences, key=lambda x: (dislike_secondary_form_with_vocab(x),
+                                                 prefer_highlighted_for_low_reliability_matches(x),
                                                  prefer_studying_read(x),
                                                  prefer_studying_listening(x),
                                                  dislike_no_translation(x),
