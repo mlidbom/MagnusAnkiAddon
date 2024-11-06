@@ -107,7 +107,7 @@ def tag_kanji_metadata() -> None:
         def vocab_matches_reading(_vocab:VocabNote) -> bool:
             return any(_reading for _reading in all_readings if any(_vocab_reading for _vocab_reading in _vocab.get_readings() if _reading in _vocab_reading))
 
-        kanji.toggle_tag(Mine.Tags.kanji_has_studying_vocab_with_no_matching_primary_reading, any(_vocab for _vocab in studying_reading_vocab if (not vocab_matches_primary_reading(_vocab) and vocab_matches_reading(_vocab) )))
+        kanji.toggle_tag(Mine.Tags.kanji_has_studying_vocab_with_no_matching_primary_reading, any(_vocab for _vocab in studying_reading_vocab if (not vocab_matches_primary_reading(_vocab) and vocab_matches_reading(_vocab))))
 
 
         kanji.toggle_tag(Mine.Tags.kanji_is_radical, is_radical)
