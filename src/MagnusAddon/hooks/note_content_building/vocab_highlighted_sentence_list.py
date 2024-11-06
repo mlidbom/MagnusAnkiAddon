@@ -26,7 +26,7 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
 
     def contains_secondary_form_with_its_own_vocabulary_note(_sentence: SentenceNote) -> bool:
         clean_sentence = ex_str.strip_html_and_bracket_markup(_sentence.get_question())
-        return any(base_form for base_form in secondary_forms_conjugation_base_form if base_form in clean_sentence)
+        return any(base_form for base_form in secondary_forms_with_their_own_vocab_conjugation_bases if base_form in clean_sentence)
 
     def format_sentence(html_sentence: str) -> str:
         clean_sentence = ex_str.strip_html_and_bracket_markup(html_sentence)
