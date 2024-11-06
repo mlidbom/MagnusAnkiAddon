@@ -81,20 +81,10 @@ def tag_kanji_metadata() -> None:
         primary_on_readings:list[str] = primary_reading.findall(kanji.get_reading_on_html())
         kanji.toggle_tag(Mine.Tags.kanji_with_no_primary_on_readings, not primary_on_readings)
 
-        kanji_character = kanji.get_question()
-
-        def reading_in_vocab_reading(kanji_reading: str, vocab_reading:str, vocab_form: str) -> bool:
-            if vocab_form.startswith(kanji_character):
-                return vocab_reading.startswith(kanji_reading)
-            elif vocab_form.endswith(kanji_character):
-                return vocab_reading.endswith(kanji_reading)
-            else:
-                return kanji_reading in vocab_reading[1:-1]
-
-        def has_vocab_with_reading(kanji_reading: str) -> bool: return any(voc for voc in vocab_with_kanji_in_main_form if any(vocab_reading for vocab_reading in voc.get_readings() if reading_in_vocab_reading(kanji_reading, vocab_reading, voc.get_question())))
+        def has_vocab_with_reading(kanji_reading: str) -> bool: return any(voc for voc in vocab_with_kanji_in_main_form if any(vocab_reading for vocab_reading in voc.get_readings() if reading_in_vocab_reading(kanji, kanji_reading, vocab_reading, voc.get_question())))
         kanji.toggle_tag(Mine.Tags.kanji_with_vocab_with_primary_on_reading, any(primary_on_readings) and has_vocab_with_reading(primary_on_readings[0]))
 
-        def has_studying_vocab_with_reading(kanji_reading:str) -> bool: return any(voc for voc in studying_reading_vocab if any(vocab_reading for vocab_reading in voc.get_readings() if reading_in_vocab_reading(kanji_reading, vocab_reading, voc.get_question())))
+        def has_studying_vocab_with_reading(kanji_reading:str) -> bool: return any(voc for voc in studying_reading_vocab if any(vocab_reading for vocab_reading in voc.get_readings() if reading_in_vocab_reading(kanji, kanji_reading, vocab_reading, voc.get_question())))
         kanji.toggle_tag(Mine.Tags.kanji_with_studying_vocab_with_primary_on_reading, any(primary_on_readings) and has_studying_vocab_with_reading(primary_on_readings[0]))
         kanji.toggle_tag(Mine.Tags.kanji_has_studying_vocab_for_each_primary_reading, any(primary_readings) and not any(reading for reading in primary_readings if not has_studying_vocab_with_reading(reading)))
         kanji.toggle_tag(Mine.Tags.kanji_has_primary_reading_with_no_studying_vocab, any(primary_readings) and any(studying_reading_vocab) and any(reading for reading in primary_readings if not has_studying_vocab_with_reading(reading)))
@@ -186,26 +176,26 @@ def adjust_kanji_primary_readings() -> None:
     progress_display_runner.process_with_progress(app.col().kanji.all(), adjust_kanji_readings, "Adjusting kanji readings")
     print(f"""nid:{",".join(str(k.get_id()) for k in updated_kanji) }""")
 
+def reading_in_vocab_reading(kanji:KanjiNote, kanji_reading: str, vocab_reading: str, vocab_form: str) -> bool:
+    vocab_form = ex_str.strip_html_and_bracket_markup_and_noise_characters(vocab_form)
+    if vocab_form.startswith(kanji.get_question()):
+        return vocab_reading.startswith(kanji_reading)
+    elif vocab_form.endswith(kanji.get_question()):
+        return vocab_reading.endswith(kanji_reading)
+    else:
+        return kanji_reading in vocab_reading[1:-1]
+
 def auto_select_kanji_primary_vocab() -> None:
     def adjust_kanji_vocab(kanji: KanjiNote) -> None:
         kanji.set_primary_vocab([])
-        kanji_character = kanji.get_question()
 
         def sort_key(_vocab: VocabNote) -> int:
             return -len(_vocab.get_sentences_studying())
 
-        def reading_in_vocab_reading(kanji_reading: str, vocab_reading:str, vocab_form: str) -> bool:
-            if vocab_form.startswith(kanji_character):
-                return vocab_reading.startswith(kanji_reading)
-            elif vocab_form.endswith(kanji_character):
-                return vocab_reading.endswith(kanji_reading)
-            else:
-                return kanji_reading in vocab_reading[1:-1]
-
         studying_reading_vocab_in_descending_studying_sentences_order = sorted((voc for voc in kanji.get_vocab_notes() if voc.is_studying(CardTypes.reading)), key=sort_key)
         for primary_reading in kanji.get_primary_readings():
             for vocab in studying_reading_vocab_in_descending_studying_sentences_order:
-                if any(vocab.get_readings()) and reading_in_vocab_reading(primary_reading, vocab.get_readings()[0], vocab.get_question()):
+                if any(vocab.get_readings()) and reading_in_vocab_reading(kanji, primary_reading, vocab.get_readings()[0], vocab.get_question()):
                     kanji.position_primary_vocab(vocab.get_question())
                     break
 
