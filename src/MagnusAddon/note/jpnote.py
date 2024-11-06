@@ -9,6 +9,7 @@ from anki.models import NotetypeDict
 from anki.notes import Note, NoteId
 
 from note import noteutils
+from note.jpcard import JPCard
 from note.note_constants import CardTypes, Mine, MyNoteFields, NoteTypes
 from sysutils import ex_str
 from sysutils.typed import checked_cast
@@ -72,6 +73,17 @@ class JPNote(ABC):
     def get_id(self) -> NoteId: return self._note.id
     def card_ids(self) -> Sequence[CardId]: return self._note.card_ids()
     def is_wani_note(self) -> bool: return Mine.Tags.Wani in self._note.tags
+
+    def cards(self) -> list[JPCard]: return [JPCard(card) for card in self._note.cards()]
+    def has_suspended_cards(self) -> bool: return any(_card for _card in self.cards() if _card.is_suspended())
+    def has_active_cards(self) -> bool: return any(_card for _card in self.cards() if not _card.is_suspended())
+
+
+    def unsuspend_all_cards(self) -> None:
+        for card in self.cards(): card.un_suspend()
+
+    def suspend_all_cards(self) -> None:
+        for card in self.cards(): card.suspend()
 
 
     def schema_matches(self, note: Note) -> bool:

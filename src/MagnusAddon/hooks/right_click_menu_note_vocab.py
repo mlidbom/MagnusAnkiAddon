@@ -57,6 +57,12 @@ def setup_note_menu(vocab: VocabNote, note_menu: QMenu, string_menus: list[tuple
 
             add_ui_action(sentence_menu, shortcutfinger.home3("Exclude this vocab"), lambda _sentences=sentences: exclude(_sentences))  # type: ignore
 
+            if sentence.has_suspended_cards():
+                add_ui_action(sentence_menu, shortcutfinger.up1("Unsuspend all cards"), sentence.unsuspend_all_cards)
+
+            if sentence.has_active_cards():
+                add_ui_action(sentence_menu, shortcutfinger.up2("Suspend all cards"), sentence.suspend_all_cards)
+
     for string_menu, menu_string in string_menus:
         vocab_add_menu: QMenu = checked_cast(QMenu, string_menu.addMenu(shortcutfinger.home2("Add")))
         add_ui_action(vocab_add_menu, shortcutfinger.home1("Similar meaning"), lambda _menu_string=menu_string: vocab.add_related_similar_meaning(_menu_string)) # type: ignore

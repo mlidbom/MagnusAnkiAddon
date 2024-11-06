@@ -25,8 +25,22 @@ def setup_note_menu(sentence: SentenceNote, note_menu: QMenu, string_menus: list
         if _vocab_to_add in sentence.get_user_highlighted_vocab():
             add_ui_action(highlighted_vocab_menu, shortcutfinger.home2("Remove"), lambda __vocab_to_add=_vocab_to_add: sentence.remove_extra_vocab(__vocab_to_add)) # type: ignore
 
+    def add_suspend_unsuspend_vocab_actions(menu: QMenu, string:str) -> None:
+        from ankiutils import app
+        vocabs = app.col().vocab.with_question(string)
+        if any(vocabs):
+            vocab = vocabs[0]
+
+            if vocab.has_suspended_cards():
+                add_ui_action(menu, shortcutfinger.up1("Unsuspend all vocab cards"), vocab.unsuspend_all_cards)
+
+            if vocab.has_active_cards():
+                add_ui_action(menu, shortcutfinger.up2("Suspend all vocab cards"), vocab.suspend_all_cards)
+
     for string_menu, menu_string in string_menus:
         position_vocab_menu(string_menu, menu_string, shortcutfinger.home1("Highlighted Vocab"))
         add_ui_action(string_menu, shortcutfinger.home2("Exclude vocab"), lambda _menu_string=menu_string: sentence.exclude_vocab(_menu_string)) # type: ignore
+
+        add_suspend_unsuspend_vocab_actions(string_menu, menu_string)
 
     position_vocab_menu(note_menu, "-", shortcutfinger.home2("Highlighted Vocab Separator"))
