@@ -192,9 +192,9 @@ def auto_select_kanji_primary_vocab() -> None:
             else:
                 return kanji_reading in vocab_reading[1:-1]
 
-        vocab_in_descending_studying_sentences_order = sorted(kanji.get_vocab_notes(), key=sort_key)
+        studying_reading_vocab_in_descending_studying_sentences_order = sorted((voc for voc in kanji.get_vocab_notes() if voc.is_studying(CardTypes.reading)), key=sort_key)
         for primary_reading in kanji.get_primary_readings():
-            for vocab in vocab_in_descending_studying_sentences_order:
+            for vocab in studying_reading_vocab_in_descending_studying_sentences_order:
                 if any(vocab.get_readings()) and reading_in_vocab_reading(primary_reading, vocab.get_readings()[0], vocab.get_question()):
                     kanji.position_primary_vocab(vocab.get_question())
                     break
