@@ -23,6 +23,7 @@ from sysutils.typed import checked_cast
 
 from typing import Optional
 from hooks import shortcutfinger
+from ankiutils import query_builder, search_executor
 
 def register_lookup_actions(view: AnkiWebView, root_menu: QMenu) -> None:
     def get_note() -> Optional[JPNote]:
@@ -92,26 +93,29 @@ def setup_matching_note_menu(string_menu: QMenu, string:str) -> None:
 
     kanjis = app.col().kanji.with_any_kanji_in([string]) if len(string) == 1 else []
 
-    def add_suspend_unsuspend_actions(note:JPNote, menu: QMenu) -> None:
+    def add_note_actions(note:JPNote, menu: QMenu) -> None:
+        menu.addAction(shortcutfinger.home1("Open"), search_executor.lookup_promise(lambda: query_builder.notes_lookup([note])))
+        menu.addAction(shortcutfinger.home2("Open in previewer"), search_executor.lookup_and_show_previewer_promise(lambda: query_builder.notes_lookup([note])))
+
         if note.has_suspended_cards():
-            add_ui_action(menu, shortcutfinger.home1("Unsuspend all cards"), note.unsuspend_all_cards)
+            add_ui_action(menu, shortcutfinger.home3("Unsuspend all cards"), note.unsuspend_all_cards)
 
         if note.has_active_cards():
-            add_ui_action(menu, shortcutfinger.home2("Suspend all cards"), note.suspend_all_cards)
+            add_ui_action(menu, shortcutfinger.home4("Suspend all cards"), note.suspend_all_cards)
 
     if vocabs or sentences or kanjis:
         note_menu = checked_cast(QMenu, string_menu.addMenu(shortcutfinger.up1("Notes")))
         if any(vocabs):
             vocab = vocabs[0]
-            add_suspend_unsuspend_actions(vocab, checked_cast(QMenu, note_menu.addMenu(shortcutfinger.home1("Vocab"))))
-
-        if any(kanjis):
-            kanji = kanjis[0]
-            add_suspend_unsuspend_actions(kanji, checked_cast(QMenu, note_menu.addMenu(shortcutfinger.home2("Kanji"))))
+            add_note_actions(vocab, checked_cast(QMenu, note_menu.addMenu(shortcutfinger.home1("Vocab"))))
 
         if any(sentences):
             sentence = sentences[0]
-            add_suspend_unsuspend_actions(sentence, checked_cast(QMenu, note_menu.addMenu(shortcutfinger.home3("Sentence"))))
+            add_note_actions(sentence, checked_cast(QMenu, note_menu.addMenu(shortcutfinger.home2("Sentence"))))
+
+        if any(kanjis):
+            kanji = kanjis[0]
+            add_note_actions(kanji, checked_cast(QMenu, note_menu.addMenu(shortcutfinger.home3("Kanji"))))
 
 def init() -> None:
     gui_hooks.webview_will_show_context_menu.append(register_lookup_actions)
