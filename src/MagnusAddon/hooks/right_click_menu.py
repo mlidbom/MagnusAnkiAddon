@@ -66,13 +66,13 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu) -> None:
         string_menu.addSeparator()
 
     for string_menu, menu_string in string_menus:
+        setup_matching_note_menu(string_menu, menu_string)
+
+    for string_menu, menu_string in string_menus:
         setup_anki_open_menu(string_menu, menu_string)
 
     for string_menu, menu_string in string_menus:
         setup_web_search_menu(string_menu, menu_string)
-
-    for string_menu, menu_string in string_menus:
-        setup_matching_note_menu(string_menu, menu_string)
 
 def setup_note_menu(note: JPNote, root_menu: QMenu, string_menus: list[tuple[QMenu, str]]) -> None:
     note_menu = checked_cast(QMenu, root_menu.addMenu(shortcutfinger.home3("Note")))
@@ -104,7 +104,7 @@ def setup_matching_note_menu(string_menu: QMenu, string:str) -> None:
             add_ui_action(menu, shortcutfinger.home4("Suspend all cards"), note.suspend_all_cards)
 
     if vocabs or sentences or kanjis:
-        note_menu = checked_cast(QMenu, string_menu.addMenu(shortcutfinger.up1("Notes")))
+        note_menu = checked_cast(QMenu, string_menu.addMenu(shortcutfinger.home4("Notes")))
         if any(vocabs):
             vocab = vocabs[0]
             add_note_actions(vocab, checked_cast(QMenu, note_menu.addMenu(shortcutfinger.home1("Vocab"))))

@@ -12,7 +12,7 @@ from hooks import shortcutfinger
 
 
 def setup_anki_open_menu(string_menu:QMenu, menu_string:str) -> None:
-    search_anki_menu = checked_cast(QMenu, string_menu.addMenu(shortcutfinger.home4("Open in Anki")))
+    search_anki_menu = checked_cast(QMenu, string_menu.addMenu(shortcutfinger.up1("Open in Anki")))
 
 
     add_lookup_action(search_anki_menu, shortcutfinger.home1("Open Exact matches | no sentences | reading cards"), query_builder.exact_matches_no_sentences_reading_cards(menu_string))
