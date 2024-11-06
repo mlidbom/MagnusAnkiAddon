@@ -89,6 +89,11 @@ def tag_kanji_metadata() -> None:
         kanji.toggle_tag(Mine.Tags.kanji_has_studying_vocab_for_each_primary_reading, any(primary_readings) and not any(reading for reading in primary_readings if not has_studying_vocab_with_reading(reading)))
         kanji.toggle_tag(Mine.Tags.kanji_has_primary_reading_with_no_studying_vocab, any(primary_readings) and any(studying_reading_vocab) and any(reading for reading in primary_readings if not has_studying_vocab_with_reading(reading)))
 
+        def vocab_matches_any_reading(_vocab:VocabNote) -> bool:
+            return any(_primary_reading for _primary_reading in primary_readings if any(_vocab_reading for _vocab_reading in _vocab.get_readings() if _primary_reading in _vocab_reading))
+
+        kanji.toggle_tag(Mine.Tags.kanji_has_studying_vocab_with_no_matching_primary_reading, any(_vocab for _vocab in studying_reading_vocab if not vocab_matches_any_reading(_vocab)))
+
 
         kanji.toggle_tag(Mine.Tags.kanji_is_radical, is_radical)
         kanji.toggle_tag(Mine.Tags.kanji_is_radical_purely, is_radical and not any(vocab_with_kanji_in_any_form))
