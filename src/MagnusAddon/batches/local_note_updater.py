@@ -195,7 +195,7 @@ def auto_select_kanji_primary_vocab() -> None:
         vocab_in_descending_studying_sentences_order = sorted(kanji.get_vocab_notes(), key=sort_key)
         for primary_reading in kanji.get_primary_readings():
             for vocab in vocab_in_descending_studying_sentences_order:
-                if any(vocab_reading for vocab_reading in vocab.get_readings() if reading_in_vocab_reading(primary_reading, vocab_reading, vocab.get_question())):
+                if any(vocab.get_readings()) and reading_in_vocab_reading(primary_reading, vocab.get_readings()[0], vocab.get_question()):
                     kanji.position_primary_vocab(vocab.get_question())
                     break
 
