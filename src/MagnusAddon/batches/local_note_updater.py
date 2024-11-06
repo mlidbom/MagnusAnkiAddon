@@ -75,7 +75,7 @@ def tag_kanji_metadata() -> None:
         studying_reading_vocab = [voc for voc in vocab_with_kanji_in_main_form if voc.is_studying(CardTypes.reading)]
         kanji.toggle_tag(Mine.Tags.kanji_with_studying_vocab, any(studying_reading_vocab))
 
-        primary_readings: list[str] = primary_reading.findall(f"{kanji.get_reading_on_html()} {kanji.get_reading_kun_html()} {kanji.get_reading_nan()}")
+        primary_readings: list[str] = primary_reading.findall(f"{kanji.get_reading_on_html()} {kanji.get_reading_kun_html()} {kanji.get_reading_nan_html()}")
         kanji.toggle_tag(Mine.Tags.kanji_with_no_primary_readings, not primary_readings)
 
         primary_on_readings:list[str] = primary_reading.findall(kanji.get_reading_on_html())
@@ -109,7 +109,7 @@ def tag_kanji_metadata() -> None:
         single_kanji_vocab = [v for v in vocabs if v.get_question() == kanji.get_question()]
         kanji.toggle_tag(Mine.Tags.kanji_with_single_kanji_vocab, any(single_kanji_vocab))
         if single_kanji_vocab:
-            primary_readings: list[str] = primary_reading.findall(f"{kanji.get_reading_on_html()} {kanji.get_reading_kun_html()} {kanji.get_reading_nan()}")
+            primary_readings: list[str] = primary_reading.findall(f"{kanji.get_reading_on_html()} {kanji.get_reading_kun_html()} {kanji.get_reading_nan_html()}")
 
             kanji.remove_tag(Mine.Tags.kanji_with_single_kanji_vocab_with_different_reading)
             kanji.remove_tag(Mine.Tags.kanji_with_studying_single_kanji_vocab_with_different_reading)
@@ -175,3 +175,19 @@ def adjust_kanji_primary_readings() -> None:
 
     progress_display_runner.process_with_progress(app.col().kanji.all(), adjust_kanji_readings, "Adjusting kanji readings")
     print(f"""nid:{",".join(str(k.get_id()) for k in updated_kanji) }""")
+
+def auto_select_kanji_primary_vocab() -> None:
+    def adjust_kanji_vocab(kanji: KanjiNote) -> None:
+        kanji.set_primary_vocab([])
+
+        def sort_key(_vocab: VocabNote) -> int:
+            return -len(_vocab.get_sentences_studying())
+
+        vocab_in_descending_studying_sentences_order = sorted(kanji.get_vocab_notes(), key=sort_key)
+        for primary_reading in kanji.get_primary_readings():
+            for vocab in vocab_in_descending_studying_sentences_order:
+                if any(vocab_reading for vocab_reading in vocab.get_readings() if primary_reading in vocab_reading):
+                    kanji.position_primary_vocab(vocab.get_question())
+                    break
+
+    progress_display_runner.process_with_progress(app.col().kanji.all(), adjust_kanji_vocab, "Automatically setting kanji primary vocabs")

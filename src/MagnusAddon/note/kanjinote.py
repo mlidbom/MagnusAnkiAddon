@@ -91,7 +91,7 @@ class KanjiNote(WaniNote):
     def get_readings_kun(self) -> list[str]: return ex_str.extract_comma_separated_values(ex_str.strip_html_markup(self.get_reading_kun_html()))
     def get_reading_kun_list_html(self) -> list[str]: return ex_str.extract_comma_separated_values(self.get_reading_kun_html())
 
-    def get_reading_nan_list_html(self) -> list[str]: return ex_str.extract_comma_separated_values(self.get_reading_nan())
+    def get_reading_nan_list_html(self) -> list[str]: return ex_str.extract_comma_separated_values(self.get_reading_nan_html())
 
     def get_readings_clean(self) -> list[str]:
         return [ex_str.strip_html_markup(reading) for reading in self.get_reading_on_list_html() + self.get_reading_kun_list_html() + self.get_reading_nan_list_html()]
@@ -103,16 +103,22 @@ class KanjiNote(WaniNote):
     def get_primary_readings_html(self) -> list[str]:
         return KanjiNote.primary_reading_pattern.findall(kana_utils.to_katakana(self.get_reading_on_html()) + " " + self.get_reading_kun_html())
 
+    def get_primary_readings(self) -> list[str]:
+        return self.get_primary_readings_on() + self.get_primary_readings_kun() + self.get_primary_readings_nan()
+
     def get_primary_readings_on(self) -> list[str]:
         return [ex_str.strip_html_markup(reading) for reading in KanjiNote.primary_reading_pattern.findall(self.get_reading_on_html())]
 
     def get_primary_readings_kun(self) -> list[str]:
         return [ex_str.strip_html_markup(reading) for reading in KanjiNote.primary_reading_pattern.findall(self.get_reading_kun_html())]
 
+    def get_primary_readings_nan(self) -> list[str]:
+        return [ex_str.strip_html_markup(reading) for reading in KanjiNote.primary_reading_pattern.findall(self.get_reading_nan_html())]
+
     def get_reading_kun_html(self) -> str: return self.get_field(NoteFields.Kanji.Reading_Kun)
     def set_reading_kun(self, value: str) -> None: self.set_field(NoteFields.Kanji.Reading_Kun, value)
 
-    def get_reading_nan(self) -> str: return self.get_field(NoteFields.Kanji.Reading_Nan)
+    def get_reading_nan_html(self) -> str: return self.get_field(NoteFields.Kanji.Reading_Nan)
     def set_reading_nan(self, value: str) -> None: self.set_field(NoteFields.Kanji.Reading_Nan, value)
 
     def add_primary_on_reading(self, reading: str) -> None:
