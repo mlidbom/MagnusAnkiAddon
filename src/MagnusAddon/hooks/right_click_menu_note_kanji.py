@@ -49,18 +49,6 @@ def setup_note_menu(kanji: KanjiNote, note_menu: QMenu, string_menus: list[tuple
             elif string in kanji.get_readings_kun():
                 add_ui_action(menu, shortcutfinger.up1("Make primary Kunyomi reading"), lambda: kanji.add_primary_kun_reading(string))
 
-    def add_suspend_unsuspend_vocab_actions(menu: QMenu, string:str) -> None:
-        from ankiutils import app
-        vocabs = app.col().vocab.with_question(string)
-        if any(vocabs):
-            vocab = vocabs[0]
-
-            if vocab.has_suspended_cards():
-                add_ui_action(menu, shortcutfinger.up1("Unsuspend all vocab cards"), vocab.unsuspend_all_cards)
-
-            if vocab.has_active_cards():
-                add_ui_action(menu, shortcutfinger.up2("Suspend all vocab cards"), vocab.suspend_all_cards)
-
     for string_menu, menu_string in string_menus:
         position_primary_vocab_menu(string_menu, menu_string, shortcutfinger.home1("Primary Vocab"))
 
@@ -68,7 +56,6 @@ def setup_note_menu(kanji: KanjiNote, note_menu: QMenu, string_menus: list[tuple
         add_ui_action(kanji_add_menu, shortcutfinger.home1("Similar meaning"), lambda _menu_string=menu_string: kanji.add_user_similar_meaning(_menu_string)) # type: ignore
 
         add_primary_readings_actions(string_menu, menu_string)
-        add_suspend_unsuspend_vocab_actions(string_menu, menu_string)
 
 
 def format_vocab_meaning(meaning: str) -> str:
