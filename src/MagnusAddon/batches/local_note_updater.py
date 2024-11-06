@@ -81,10 +81,20 @@ def tag_kanji_metadata() -> None:
         primary_on_readings:list[str] = primary_reading.findall(kanji.get_reading_on_html())
         kanji.toggle_tag(Mine.Tags.kanji_with_no_primary_on_readings, not primary_on_readings)
 
-        def has_vocab_with_reading(kanji_reading: str) -> bool: return any(voc for voc in vocab_with_kanji_in_main_form if any(vocab_reading for vocab_reading in voc.get_readings() if kanji_reading in vocab_reading))
+        kanji_character = kanji.get_question()
+
+        def reading_in_vocab_reading(kanji_reading: str, vocab_reading:str, vocab_form: str) -> bool:
+            if vocab_form.startswith(kanji_character):
+                return vocab_reading.startswith(kanji_reading)
+            elif vocab_form.endswith(kanji_character):
+                return vocab_reading.endswith(kanji_reading)
+            else:
+                return kanji_reading in vocab_reading[1:-1]
+
+        def has_vocab_with_reading(kanji_reading: str) -> bool: return any(voc for voc in vocab_with_kanji_in_main_form if any(vocab_reading for vocab_reading in voc.get_readings() if reading_in_vocab_reading(kanji_reading, vocab_reading, voc.get_question())))
         kanji.toggle_tag(Mine.Tags.kanji_with_vocab_with_primary_on_reading, any(primary_on_readings) and has_vocab_with_reading(primary_on_readings[0]))
 
-        def has_studying_vocab_with_reading(kanji_reading:str) -> bool: return any(voc for voc in studying_reading_vocab if any(vocab_reading for vocab_reading in voc.get_readings() if kanji_reading in vocab_reading))
+        def has_studying_vocab_with_reading(kanji_reading:str) -> bool: return any(voc for voc in studying_reading_vocab if any(vocab_reading for vocab_reading in voc.get_readings() if reading_in_vocab_reading(kanji_reading, vocab_reading, voc.get_question())))
         kanji.toggle_tag(Mine.Tags.kanji_with_studying_vocab_with_primary_on_reading, any(primary_on_readings) and has_studying_vocab_with_reading(primary_on_readings[0]))
         kanji.toggle_tag(Mine.Tags.kanji_has_studying_vocab_for_each_primary_reading, any(primary_readings) and not any(reading for reading in primary_readings if not has_studying_vocab_with_reading(reading)))
         kanji.toggle_tag(Mine.Tags.kanji_has_primary_reading_with_no_studying_vocab, any(primary_readings) and any(studying_reading_vocab) and any(reading for reading in primary_readings if not has_studying_vocab_with_reading(reading)))
