@@ -184,15 +184,3 @@ def reading_in_vocab_reading(kanji:KanjiNote, kanji_reading: str, vocab_reading:
         return vocab_reading.endswith(kanji_reading)
     else:
         return kanji_reading in vocab_reading[1:-1]
-
-def clear_kanji_primary_vocab() -> None:
-    def clear_primary_vocabs(kanji: KanjiNote) -> None:
-        kanji.set_primary_vocab([])
-
-    progress_display_runner.process_with_progress(app.col().kanji.all(), clear_primary_vocabs, "Automatically setting kanji primary vocabs")
-
-def auto_select_kanji_primary_vocab() -> None:
-    def adjust_kanji_vocab(kanji: KanjiNote) -> None:
-        kanji.set_primary_vocab(kanji.generate_default_primary_vocab())
-
-    progress_display_runner.process_with_progress(app.col().kanji.all(), adjust_kanji_vocab, "Automatically setting kanji primary vocabs")
