@@ -197,6 +197,11 @@ class KanjiNote(WaniNote):
     def generate_default_primary_vocab(self) -> list[str]:
         def reading_in_vocab_reading(kanji_reading: str, vocab_reading: str, vocab_form: str) -> bool:
             vocab_form = ex_str.strip_html_and_bracket_markup_and_noise_characters(vocab_form)
+            covering_readings = [covering_reading for covering_reading in primary_readings if kanji_reading != covering_reading and kanji_reading in covering_reading]
+
+            if any(covering_reading for covering_reading in covering_readings if reading_in_vocab_reading(covering_reading, vocab_reading, vocab_form)):
+                return False
+
             if vocab_form.startswith(self.get_question()):
                 return vocab_reading.startswith(kanji_reading)
             elif vocab_form.endswith(self.get_question()):
@@ -210,7 +215,9 @@ class KanjiNote(WaniNote):
             return -len(_vocab.get_sentences_studying())
 
         studying_reading_vocab_in_descending_studying_sentences_order = sorted((voc for voc in self.get_vocab_notes() if voc.is_studying(CardTypes.reading)), key=sort_key)
-        for primary_reading in self.get_primary_readings():
+
+        primary_readings = ex_sequence.remove_duplicates_while_retaining_order(self.get_primary_readings())
+        for primary_reading in primary_readings:
             for vocab in studying_reading_vocab_in_descending_studying_sentences_order:
                 if any(vocab.get_readings()) and reading_in_vocab_reading(primary_reading, vocab.get_readings()[0], vocab.get_question()):
                     result.append(vocab.get_question())
