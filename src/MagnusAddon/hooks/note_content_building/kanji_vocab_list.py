@@ -17,12 +17,13 @@ def generate_vocab_html_list(_kanji_note: KanjiNote) -> str:
         classes += " " + " ".join(_vocab.get_meta_tags())
 
         if _vocab.get_question() in primary_vocab or (_vocab.get_readings() and _vocab.get_readings()[0] in _kanji.get_primary_vocab()):
-            classes += " primary_vocab"
+            classes += " primary_vocab" if has_real_primary_vocabs else " default_primary_vocab"
 
         return classes
 
     vocabs = _kanji_note.get_vocab_notes_sorted()
     primary_vocab = _kanji_note.get_primary_vocabs_or_defaults()
+    has_real_primary_vocabs = any(_kanji_note.get_primary_vocab())
 
     if vocabs:
         return f'''
