@@ -76,6 +76,7 @@ def build_local_menu(sub_menu: QMenu) -> None:
     danger_zone = QMenu("Danger Zone. No warnings given before executing!", main_window())
     sub_menu.addMenu(danger_zone)
     add_menu_ui_action(danger_zone, "Autoselect kanji primary vocab", local_note_updater.auto_select_kanji_primary_vocab)
+    add_menu_ui_action(danger_zone, "Clear kanji primary vocab", local_note_updater.clear_kanji_primary_vocab)
     #add_menu_ui_action(danger_zone, "Adjust kanji primary readings", local_note_updater.adjust_kanji_primary_readings)
 
 def build_wani_menu(sub_menu: QMenu) -> None:

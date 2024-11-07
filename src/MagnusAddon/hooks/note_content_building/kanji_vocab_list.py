@@ -7,19 +7,22 @@ from note.kanjinote import KanjiNote
 from note.vocabnote import VocabNote
 from sysutils.ex_str import newline
 
-def _create_classes(_kanji: KanjiNote, _vocab: VocabNote) -> str:
-    tags = list(_vocab.priority_spec().tags)
-    tags.sort()
-    classes = " ".join([f"""common_ness_{prio}""" for prio in tags])
-    classes += f""" {_vocab.priority_spec().priority_string}"""
-    classes += " " + " ".join(_vocab.get_meta_tags())
-    if _vocab.get_question() in _kanji.get_primary_vocab() or (_vocab.get_readings() and _vocab.get_readings()[0] in _kanji.get_primary_vocab()):
-        classes += " primary_vocab"
-
-    return classes
 
 def generate_vocab_html_list(_kanji_note: KanjiNote) -> str:
+    def _create_classes(_kanji: KanjiNote, _vocab: VocabNote) -> str:
+        tags = list(_vocab.priority_spec().tags)
+        tags.sort()
+        classes = " ".join([f"""common_ness_{prio}""" for prio in tags])
+        classes += f""" {_vocab.priority_spec().priority_string}"""
+        classes += " " + " ".join(_vocab.get_meta_tags())
+
+        if _vocab.get_question() in primary_vocab or (_vocab.get_readings() and _vocab.get_readings()[0] in _kanji.get_primary_vocab()):
+            classes += " primary_vocab"
+
+        return classes
+
     vocabs = _kanji_note.get_vocab_notes_sorted()
+    primary_vocab = _kanji_note.get_primary_vocabs_or_defaults()
 
     if vocabs:
         return f'''

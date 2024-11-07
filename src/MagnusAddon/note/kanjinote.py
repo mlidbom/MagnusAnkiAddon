@@ -78,7 +78,7 @@ class KanjiNote(WaniNote):
 
     def get_vocab_notes_sorted(self) -> list[VocabNote]:
         from note import vocabnote
-        vocab_list = vocabnote.sort_vocab_list_by_studying_status(self.get_vocab_notes(), self.get_primary_vocab())
+        vocab_list = vocabnote.sort_vocab_list_by_studying_status(self.get_vocab_notes(), self.get_primary_vocabs_or_defaults())
         return vocab_list
 
     def get_vocab_notes(self) -> list[VocabNote]:
@@ -201,6 +201,8 @@ class KanjiNote(WaniNote):
 
     def get_vocabs(self) -> str: return self.get_field(NoteFields.Kanji.Vocabs)
     def set_vocabs(self, value: str) -> None: self.set_field(NoteFields.Kanji.Vocabs, value)
+
+    def get_primary_vocabs_or_defaults(self) -> list[str]: return self.get_primary_vocab() if self.get_primary_vocab() else self.generate_default_primary_vocab()
 
     def get_primary_vocab(self) -> list[str]: return ex_str.extract_comma_separated_values(self.get_field(NoteFields.Kanji.PrimaryVocab))
     def set_primary_vocab(self, value: list[str]) -> None: self.set_field(NoteFields.Kanji.PrimaryVocab, ", ".join(value))
