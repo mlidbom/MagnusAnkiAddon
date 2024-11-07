@@ -20,25 +20,36 @@ class KanjiNote(WaniNote):
     def __init__(self, note: Note):
         super().__init__(note)
 
-    def tag_readings_in_string(self, text: str) -> str:
+    def tag_vocab_readings(self, vocab: VocabNote) -> list[str]:
         def primary_reading(read:str) -> str: return f'<span class="kanjiReadingPrimary">{read}</span>'
         def secondary_reading(read: str) -> str: return f'<span class="kanjiReadingSecondary">{read}</span>'
 
-        readings = f"{self.get_reading_kun_html()}, {self.get_reading_on_html()}"
+        primary_readings = self.get_primary_readings()
+        secondary_readings = [reading for reading in self.get_readings_clean() if reading not in primary_readings and reading]
 
-        primary_readings = _primary_reading_pattern.findall(readings)
-        primary_readings.sort(key=len, reverse=True)
-        for reading in primary_readings:
-            if reading in text:
-                return text.replace(reading, primary_reading(reading), 1)
+        result:list[str] = []
 
-        all_readings = [s.split(".")[0].strip() for s in (ex_str.strip_html_and_bracket_markup(readings).split(","))]
-        secondary_readings = [reading for reading in all_readings if reading not in primary_readings and reading]
-        secondary_readings.sort(key=len, reverse=True)
-        for reading in secondary_readings:
-            if reading in text:
-                return text.replace(reading, secondary_reading(reading), 1)
-        return text
+        vocab_form = vocab.get_question()
+        for vocab_reading in vocab.get_readings():
+            found = False
+            for kanji_reading in primary_readings:
+                if self.reading_in_vocab_reading(kanji_reading, vocab_reading, vocab_form):
+                    result.append(vocab_reading.replace(kanji_reading, primary_reading(kanji_reading)))
+                    found = True
+                    break
+
+            if not found:
+                for kanji_reading in secondary_readings:
+                    if self.reading_in_vocab_reading(kanji_reading, vocab_reading, vocab_form):
+                        result.append(vocab_reading.replace(kanji_reading, secondary_reading(kanji_reading)))
+                        found = True
+                        break
+
+                if not found:
+                    result.append(vocab_reading)
+
+        return result
+
 
     def get_question(self) -> str: return self.get_field(NoteFields.Kanji.question)
     def set_question(self, value: str) -> None: self.set_field(NoteFields.Kanji.question, value)
@@ -101,7 +112,7 @@ class KanjiNote(WaniNote):
 
     primary_reading_pattern = re.compile(r'<primary>(.*?)</primary>')
     def get_primary_readings_html(self) -> list[str]:
-        return KanjiNote.primary_reading_pattern.findall(kana_utils.to_katakana(self.get_reading_on_html()) + " " + self.get_reading_kun_html())
+        return KanjiNote.primary_reading_pattern.findall(f"""{kana_utils.to_katakana(self.get_reading_on_html())} {self.get_reading_kun_html()} {self.get_reading_nan_html()}""")
 
     def get_primary_readings(self) -> list[str]:
         return self.get_primary_readings_on() + self.get_primary_readings_kun() + self.get_primary_readings_nan()
@@ -194,21 +205,21 @@ class KanjiNote(WaniNote):
     def get_primary_vocab(self) -> list[str]: return ex_str.extract_comma_separated_values(self.get_field(NoteFields.Kanji.PrimaryVocab))
     def set_primary_vocab(self, value: list[str]) -> None: self.set_field(NoteFields.Kanji.PrimaryVocab, ", ".join(value))
 
+    def reading_in_vocab_reading(self, kanji_reading: str, vocab_reading: str, vocab_form: str) -> bool:
+        vocab_form = ex_str.strip_html_and_bracket_markup_and_noise_characters(vocab_form)
+        covering_readings = [covering_reading for covering_reading in self.get_primary_readings() if kanji_reading != covering_reading and kanji_reading in covering_reading]
+
+        if any(covering_reading for covering_reading in covering_readings if self.reading_in_vocab_reading(covering_reading, vocab_reading, vocab_form)):
+            return False
+
+        if vocab_form.startswith(self.get_question()):
+            return vocab_reading.startswith(kanji_reading)
+        elif vocab_form.endswith(self.get_question()):
+            return vocab_reading.endswith(kanji_reading)
+        else:
+            return kanji_reading in vocab_reading[1:-1]
+
     def generate_default_primary_vocab(self) -> list[str]:
-        def reading_in_vocab_reading(kanji_reading: str, vocab_reading: str, vocab_form: str) -> bool:
-            vocab_form = ex_str.strip_html_and_bracket_markup_and_noise_characters(vocab_form)
-            covering_readings = [covering_reading for covering_reading in primary_readings if kanji_reading != covering_reading and kanji_reading in covering_reading]
-
-            if any(covering_reading for covering_reading in covering_readings if reading_in_vocab_reading(covering_reading, vocab_reading, vocab_form)):
-                return False
-
-            if vocab_form.startswith(self.get_question()):
-                return vocab_reading.startswith(kanji_reading)
-            elif vocab_form.endswith(self.get_question()):
-                return vocab_reading.endswith(kanji_reading)
-            else:
-                return kanji_reading in vocab_reading[1:-1]
-
         result: list[str] = []
 
         def sort_key(_vocab: VocabNote) -> int:
@@ -219,7 +230,7 @@ class KanjiNote(WaniNote):
         primary_readings = ex_sequence.remove_duplicates_while_retaining_order(self.get_primary_readings())
         for primary_reading in primary_readings:
             for vocab in studying_reading_vocab_in_descending_studying_sentences_order:
-                if any(vocab.get_readings()) and reading_in_vocab_reading(primary_reading, vocab.get_readings()[0], vocab.get_question()):
+                if any(vocab.get_readings()) and self.reading_in_vocab_reading(primary_reading, vocab.get_readings()[0], vocab.get_question()):
                     result.append(vocab.get_question())
                     break
 
