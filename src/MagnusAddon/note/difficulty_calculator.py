@@ -10,15 +10,15 @@ def find_difficulty(string: str) -> float:
     return kanji_characters * KANJI_WEIGHT + katakana_characters * KATAKANA_WEIGHT + hiragana_characters
 
 class DifficultyCalculator:
-    def __init__(self, starting_seconds:float, hiragana_seconds:float, katakata_weight:float, kanji_weight:float) -> None:
+    def __init__(self, starting_seconds:float, hiragana_seconds:float, katakata_seconds:float, kanji_seconds:float) -> None:
         self.starting_seconds = starting_seconds
         self.hiragana_seconds = hiragana_seconds
-        self.katakata_weight = katakata_weight
-        self.kanji_weight = kanji_weight
+        self.katakata_seconds = katakata_seconds
+        self.kanji_seconds = kanji_seconds
 
     def allowed_seconds(self, string:str) -> float:
         hiragana_seconds = ex_sequence.count(string, kana_utils.is_hiragana) * self.hiragana_seconds
-        katakana_seconds = ex_sequence.count(string, kana_utils.is_katakana) * self.hiragana_seconds * self.katakata_weight
-        kanji_seconds = ex_sequence.count(string, kana_utils.is_kanji) * self.hiragana_seconds * self.kanji_weight
+        katakana_seconds = ex_sequence.count(string, kana_utils.is_katakana) * self.katakata_seconds
+        kanji_seconds = ex_sequence.count(string, kana_utils.is_kanji) * self.kanji_seconds
 
         return self.starting_seconds + hiragana_seconds + katakana_seconds + kanji_seconds
