@@ -224,8 +224,8 @@ class KanjiNote(WaniNote):
     def generate_default_primary_vocab(self) -> list[str]:
         result: list[str] = []
 
-        def sort_key(_vocab: VocabNote) -> int:
-            return -len(_vocab.get_sentences_studying())
+        def sort_key(_vocab: VocabNote) -> (int, int):
+            return (-len(_vocab.get_sentences_studying()), len(_vocab.get_question()))
 
         studying_reading_vocab_in_descending_studying_sentences_order = sorted((voc for voc in self.get_vocab_notes() if voc.is_studying(CardTypes.reading)), key=sort_key)
 
