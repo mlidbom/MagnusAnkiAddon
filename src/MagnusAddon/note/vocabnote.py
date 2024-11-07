@@ -43,8 +43,7 @@ def sort_vocab_list_by_studying_status(vocabs: list[VocabNote], primary_voc: Opt
 
     result = vocabs.copy()
 
-    result.sort(key=lambda local_vocab: (prefer_has_audio(local_vocab),
-                                         prefer_primary_vocab_in_order(local_vocab),
+    result.sort(key=lambda local_vocab: (prefer_primary_vocab_in_order(local_vocab),
                                          prefer_studying_vocab(local_vocab),
                                          prefer_studying_sentences(local_vocab),
                                          prefer_more_sentences(local_vocab),
