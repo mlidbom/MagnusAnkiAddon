@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from note.vocabnote import VocabNote
 
 from note.waninote import WaniNote
-from note.note_constants import NoteFields, Mine, NoteTypes
+from note.note_constants import CardTypes, NoteFields, Mine, NoteTypes
 from sysutils import ex_sequence, ex_str, kana_utils
 from wanikani.wanikani_api_client import WanikaniClient
 
@@ -193,6 +193,30 @@ class KanjiNote(WaniNote):
 
     def get_primary_vocab(self) -> list[str]: return ex_str.extract_comma_separated_values(self.get_field(NoteFields.Kanji.PrimaryVocab))
     def set_primary_vocab(self, value: list[str]) -> None: self.set_field(NoteFields.Kanji.PrimaryVocab, ", ".join(value))
+
+    def generate_default_primary_vocab(self) -> list[str]:
+        def reading_in_vocab_reading(kanji_reading: str, vocab_reading: str, vocab_form: str) -> bool:
+            vocab_form = ex_str.strip_html_and_bracket_markup_and_noise_characters(vocab_form)
+            if vocab_form.startswith(self.get_question()):
+                return vocab_reading.startswith(kanji_reading)
+            elif vocab_form.endswith(self.get_question()):
+                return vocab_reading.endswith(kanji_reading)
+            else:
+                return kanji_reading in vocab_reading[1:-1]
+
+        result: list[str] = []
+
+        def sort_key(_vocab: VocabNote) -> int:
+            return -len(_vocab.get_sentences_studying())
+
+        studying_reading_vocab_in_descending_studying_sentences_order = sorted((voc for voc in self.get_vocab_notes() if voc.is_studying(CardTypes.reading)), key=sort_key)
+        for primary_reading in self.get_primary_readings():
+            for vocab in studying_reading_vocab_in_descending_studying_sentences_order:
+                if any(vocab.get_readings()) and reading_in_vocab_reading(primary_reading, vocab.get_readings()[0], vocab.get_question()):
+                    result.append(vocab.get_question())
+                    break
+
+        return result
 
     def position_primary_vocab(self, vocab: str, new_index:int = -1) -> None:
         vocab = vocab.strip()

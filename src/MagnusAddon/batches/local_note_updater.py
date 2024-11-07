@@ -187,16 +187,6 @@ def reading_in_vocab_reading(kanji:KanjiNote, kanji_reading: str, vocab_reading:
 
 def auto_select_kanji_primary_vocab() -> None:
     def adjust_kanji_vocab(kanji: KanjiNote) -> None:
-        kanji.set_primary_vocab([])
-
-        def sort_key(_vocab: VocabNote) -> int:
-            return -len(_vocab.get_sentences_studying())
-
-        studying_reading_vocab_in_descending_studying_sentences_order = sorted((voc for voc in kanji.get_vocab_notes() if voc.is_studying(CardTypes.reading)), key=sort_key)
-        for primary_reading in kanji.get_primary_readings():
-            for vocab in studying_reading_vocab_in_descending_studying_sentences_order:
-                if any(vocab.get_readings()) and reading_in_vocab_reading(kanji, primary_reading, vocab.get_readings()[0], vocab.get_question()):
-                    kanji.position_primary_vocab(vocab.get_question())
-                    break
+        kanji.set_primary_vocab(kanji.generate_default_primary_vocab())
 
     progress_display_runner.process_with_progress(app.col().kanji.all(), adjust_kanji_vocab, "Automatically setting kanji primary vocabs")
