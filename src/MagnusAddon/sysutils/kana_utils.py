@@ -20,19 +20,13 @@ def get_conjugation_base(word: str) -> str:
 
 def to_katakana(hiragana: str) -> str:
     def char_to_katakana(char: str) -> str:
-        if is_hiragana(char):
-            return chr(ord(char) + 96)
-        else:
-            return char
+        return chr(ord(char) + 96) if is_hiragana(char) else char
 
     return ''.join([char_to_katakana(char) for char in hiragana])
 
 def to_hiragana(hiragana: str) -> str:
     def char_to_hiragana(char: str) -> str:
-        if is_katakana(char):
-            return chr(ord(char) - 96)
-        else:
-            return char
+        return chr(ord(char) - 96) if is_katakana(char) else char
 
     return ''.join([char_to_hiragana(char) for char in hiragana])
 
@@ -61,20 +55,11 @@ def contains_katakana(string:str) -> bool:
 #             0x2b820 <= ordinal <= 0x2ceaf)
 
 def is_only_kana(text: str) -> bool:
-    for char in text:
-        if not is_kana(char):
-            return False
-    return True
+    return not any(not is_kana(char) for char in text)
 
 def is_only_hiragana(text: str) -> bool:
-    for char in text:
-        if not is_hiragana(char):
-            return False
-    return True
+    return not any(not is_hiragana(char) for char in text)
 
 def is_only_katakana(text: str) -> bool:
-    for char in text:
-        if not is_katakana(char):
-            return False
-    return True
+    return not any(not is_katakana(char) for char in text)
 
