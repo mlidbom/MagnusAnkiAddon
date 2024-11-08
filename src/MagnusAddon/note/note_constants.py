@@ -99,6 +99,7 @@ class NoteFields:
 
         user_mnemonic = "__mnemonic"
         user_similar_meaning = "__similar_meaning"
+        related_confused_with = "__confused_with"
 
         amalgamation_subject_ids = "amalgamation_subject_ids"
         component_subject_ids = "component_subject_ids"

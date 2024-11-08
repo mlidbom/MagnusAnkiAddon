@@ -184,6 +184,12 @@ class KanjiNote(WaniNote):
     def get_source_meaning_mnemonic(self) -> str: return self.get_field(NoteFields.Kanji.Source_Meaning_Mnemonic)
     def set_source_meaning_mnemonic(self, value: str) -> None: self.set_field(NoteFields.Kanji.Source_Meaning_Mnemonic, value)
 
+    def get_related_confused_with(self) -> set[str]: return set(ex_str.extract_comma_separated_values(self.get_field(NoteFields.Kanji.related_confused_with)))
+    def add_related_confused_with(self, new_confused_with: str) -> None:
+        confused_with = self.get_related_confused_with()
+        confused_with.add(new_confused_with)
+        self.set_field(NoteFields.Kanji.related_confused_with, ", ".join(confused_with))
+
     def get_meaning_hint(self) -> str: return self.get_field(NoteFields.Kanji.Meaning_Info)
     def set_meaning_hint(self, value: str) -> None: self.set_field(NoteFields.Kanji.Meaning_Info, value if value is not None else "")
 

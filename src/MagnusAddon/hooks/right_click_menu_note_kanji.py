@@ -54,6 +54,7 @@ def setup_note_menu(kanji: KanjiNote, note_menu: QMenu, string_menus: list[tuple
 
         kanji_add_menu: QMenu = checked_cast(QMenu, string_menu.addMenu(shortcutfinger.home2("Add")))
         add_ui_action(kanji_add_menu, shortcutfinger.home1("Similar meaning"), lambda _menu_string=menu_string: kanji.add_user_similar_meaning(_menu_string)) # type: ignore
+        add_ui_action(kanji_add_menu, shortcutfinger.home2("Confused with"), lambda _menu_string=menu_string: kanji.add_related_confused_with(_menu_string))  # type: ignore
 
         add_primary_readings_actions(string_menu, menu_string)
 
