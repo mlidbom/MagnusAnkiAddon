@@ -1,7 +1,7 @@
-aqt==24.10rc2
-anki==24.10rc2
-PyQt6-WebEngine==6.7
-PyQt6==6.7
+aqt==24.11rc1
+anki==24.11rc1
+PyQt6-WebEngine==6.7.0
+PyQt6==6.7.1
 wanikani-api==0.6.1
 
 unidic==1.1.0
@@ -20,3 +20,4 @@ ja-ginza==5.1.3
 pytest
 pytest-xdist
 mypy==1.11.2
+pyperclip
