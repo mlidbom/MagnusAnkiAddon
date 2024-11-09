@@ -1,4 +1,4 @@
-import pyperclip
+import pyperclip  # type: ignore
 from anki.cards import Card
 from aqt import gui_hooks
 
