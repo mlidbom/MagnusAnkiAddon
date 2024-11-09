@@ -6,7 +6,6 @@ from anki.collection import Collection
 from anki.dbproxy import DBProxy
 from anki.scheduler.v3 import Scheduler
 from aqt import gui_hooks, mw, AnkiQt  # type: ignore
-from plac_ext import raise_
 
 from ankiutils.ui_utils import UIUtils
 from ankiutils.ui_utils_interface import IUIUtils
@@ -25,10 +24,12 @@ def reset(anki_collection: Collection) -> None:
 
     _collection = BackgroundInitialingLazy(lambda: JPCollection(anki_collection))
 
+def reset_1() -> None:
+    reset(mw.col)
 
 gui_hooks.collection_did_temporarily_close.append(reset)
 gui_hooks.collection_did_load.append(reset)
-gui_hooks.sync_did_finish.append(reset)
+gui_hooks.sync_did_finish.append(reset_1)
 
 thread_pool_executor = ThreadPoolExecutor()
 def ensure_initialized() -> None:

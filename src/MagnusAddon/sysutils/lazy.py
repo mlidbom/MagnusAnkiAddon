@@ -1,5 +1,6 @@
-from concurrent.futures import ThreadPoolExecutor
 from typing import Callable, Generic, TypeVar, Optional
+
+from sysutils import app_thread_pool
 
 T = TypeVar('T')
 
@@ -16,10 +17,9 @@ class Lazy(Generic[T]):
         return self._instance
 
 
-_thread_pool_executor = ThreadPoolExecutor()
 class BackgroundInitialingLazy(Generic[T]):
     def __init__(self, factory: Callable[[], T]):
-        self._instance = _thread_pool_executor.submit(factory)
+        self._instance = app_thread_pool.pool.submit(factory)
 
     def is_initialized(self) -> bool: return self._instance.done() and not self._instance.cancelled()
 

@@ -7,7 +7,8 @@ import time
 from anki.notes import Note, NoteId
 from note.collection.cache_runner import CacheRunner
 from note.jpnote import JPNote
-from sysutils import progress_display_runner
+from note.note_constants import CardTypes
+from sysutils import app_thread_pool, progress_display_runner
 from sysutils.collections.default_dict_case_insensitive import DefaultDictCaseInsensitive
 from sysutils.typed import checked_cast
 
@@ -44,6 +45,13 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
         cache_runner.connect_will_remove(self._on_will_be_removed)
         cache_runner.connect_will_add(self._on_will_be_added)
         cache_runner.connect_will_flush(self._on_will_flush)
+
+        def cache_studying_status() -> None:
+            for note in all_notes:
+                note.is_studying(CardTypes.reading)
+                note.is_studying(CardTypes.listening)
+
+        app_thread_pool.pool.submit(cache_studying_status)
 
     def all(self) -> list[TNote]:
         return list(self._by_id.values())
