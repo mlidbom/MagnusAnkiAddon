@@ -16,20 +16,20 @@ from sysutils.typed import checked_cast
 
 _collection:Optional[BackgroundInitialingLazy[JPCollection]] = None
 
-def reset(anki_collection: Collection) -> None:
+def _reset(_anki_collection: Collection) -> None:
     global _collection
     if _collection:
         _collection.instance().destruct()
         gc.collect()
 
-    _collection = BackgroundInitialingLazy(lambda: JPCollection(anki_collection))
+    _collection = BackgroundInitialingLazy(lambda: JPCollection(_anki_collection))
 
-def reset_1() -> None:
-    reset(mw.col)
+def reset() -> None:
+    _reset(mw.col)
 
-gui_hooks.collection_did_temporarily_close.append(reset)
-gui_hooks.collection_did_load.append(reset)
-gui_hooks.sync_did_finish.append(reset_1)
+gui_hooks.collection_did_temporarily_close.append(_reset)
+gui_hooks.collection_did_load.append(_reset)
+gui_hooks.sync_did_finish.append(reset)
 
 thread_pool_executor = ThreadPoolExecutor()
 def ensure_initialized() -> None:

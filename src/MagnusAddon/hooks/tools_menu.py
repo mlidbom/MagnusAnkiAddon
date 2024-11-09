@@ -61,7 +61,7 @@ def build_main_menu() -> None:
     add_menu_ui_action(my_menu, "Refresh UI", refresh, "F5")
     add_menu_ui_action(my_menu, "Deep update UI", deep_refresh, "Ctrl+F5")
     add_menu_ui_action(my_menu, "Precache studying status", local_note_updater.precache_studying_status)
-    my_menu.addAction("&Reset", lambda: app.reset())
+    my_menu.addAction("&Reset", lambda: app._reset())
 
 def build_local_menu(sub_menu: QMenu) -> None:
     add_menu_ui_action(sub_menu, "Update &All", local_note_updater.update_all)
