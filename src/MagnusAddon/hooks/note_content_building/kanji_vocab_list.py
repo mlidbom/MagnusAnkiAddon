@@ -1,8 +1,6 @@
-from anki.cards import Card
 from aqt import gui_hooks
 
-from ankiutils import ui_utils
-from note.jpnote import JPNote
+from hooks.note_content_building.content_renderer import PrerenderingAnswerSingleTagContentRenderer
 from note.kanjinote import KanjiNote
 from note.vocabnote import VocabNote
 from sysutils.ex_str import newline
@@ -47,17 +45,5 @@ def generate_vocab_html_list(_kanji_note: KanjiNote) -> str:
     else:
         return ''
 
-def render_vocab_html_list(html: str, card: Card, _type_of_display: str) -> str:
-    if not ui_utils.is_displaytype_displaying_answer(_type_of_display):
-        return html
-
-    kanji_note = JPNote.note_from_card(card)
-
-    if isinstance(kanji_note, KanjiNote):
-        vocab_list_html = generate_vocab_html_list(kanji_note)
-        html = html.replace("##VOCAB_LIST##", vocab_list_html)
-
-    return html
-
 def init() -> None:
-    gui_hooks.card_will_show.append(render_vocab_html_list)
+    gui_hooks.card_will_show.append(PrerenderingAnswerSingleTagContentRenderer(KanjiNote, "##VOCAB_LIST##", generate_vocab_html_list).render)

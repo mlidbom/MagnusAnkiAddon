@@ -1,11 +1,10 @@
-from anki.cards import Card
 from aqt import gui_hooks
 
-from ankiutils import app, ui_utils
+from ankiutils import app
+from hooks.note_content_building.content_renderer import PrerenderingAnswerContentRenderer
 from language_services.shared import priorities
 from language_services.universal_dependencies import ud_tokenizers
 from language_services.universal_dependencies.shared.tree_building import ud_tree_builder
-from note.jpnote import JPNote
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
 from sysutils import kana_utils
@@ -138,44 +137,41 @@ def print_debug_information_for_analysis(sentence: str) -> str:
     return html
 
 # noinspection DuplicatedCode
-def render_breakdown(html: str, card: Card, _type_of_display: str) -> str:
-    if not ui_utils.is_displaytype_displaying_answer(_type_of_display):
-        return html
+def render_breakdown(note: SentenceNote) -> dict[str, str]:
+    replacements:dict[str, str] = {}
 
-    note = JPNote.note_from_note(card.note())
-    if isinstance(note, SentenceNote):
-        user_excluded = note.get_user_excluded_vocab()
-        extra_words = note.get_user_highlighted_vocab()
-        question = note.get_question()
-        tree = ud_tree_builder.build_tree(ud_tokenizers.default, question)
-        view_model = sentence_breakdown_viewmodel.create(tree, app.col())
+    user_excluded = note.get_user_excluded_vocab()
+    extra_words = note.get_user_highlighted_vocab()
+    question = note.get_question()
+    tree = ud_tree_builder.build_tree(ud_tokenizers.default, question)
+    view_model = sentence_breakdown_viewmodel.create(tree, app.col())
 
-        if extra_words:
-            user_extra_html = f"""
-    <div class="breakdown page_section">
-        <div class="page_section_title">extra vocab</div>
-        {_build_user_extra_list(extra_words, user_excluded)}
-    </div>
-    """
-            html = html.replace("##USER_EXTRA_VOCAB##", user_extra_html)
-        else:
-            html = html.replace("##USER_EXTRA_VOCAB##", "")
-
-        user_higlighted = set(extra_words)
-        breakdown_html = f"""
+    if extra_words:
+        user_extra_html = f"""
 <div class="breakdown page_section">
-    <div class="page_section_title">breakdown</div>
-    {_create_html_from_nodes(view_model.nodes, user_excluded, user_higlighted, 1)}
+    <div class="page_section_title">extra vocab</div>
+    {_build_user_extra_list(extra_words, user_excluded)}
 </div>
 """
-        #todo: restore this or remove the related code
-        # html += f"""
-        #
-        # {print_debug_information_for_analysis(sentence.get_question())}
-        # """
-        html = html.replace("##VOCAB_BREAKDOWN##", breakdown_html)
+        replacements["##USER_EXTRA_VOCAB##"] = user_extra_html
+    else:
+        replacements["##USER_EXTRA_VOCAB##"] =  ""
 
-    return html
+    user_higlighted = set(extra_words)
+    breakdown_html = f"""
+<div class="breakdown page_section">
+<div class="page_section_title">breakdown</div>
+{_create_html_from_nodes(view_model.nodes, user_excluded, user_higlighted, 1)}
+</div>
+"""
+    #todo: restore this or remove the related code
+    # html += f"""
+    #
+    # {print_debug_information_for_analysis(sentence.get_question())}
+    # """
+    replacements["##VOCAB_BREAKDOWN##"] = breakdown_html
+
+    return replacements
 
 def init() -> None:
-    gui_hooks.card_will_show.append(render_breakdown)
+    gui_hooks.card_will_show.append(PrerenderingAnswerContentRenderer(SentenceNote, render_breakdown).render)

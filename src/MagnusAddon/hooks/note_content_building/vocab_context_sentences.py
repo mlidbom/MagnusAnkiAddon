@@ -5,6 +5,7 @@ from anki.cards import Card
 from aqt import gui_hooks
 
 from ankiutils import app, ui_utils
+from hooks.note_content_building.content_renderer import PrerenderingAnswerSingleTagContentRenderer
 from note.jpnote import JPNote
 from note.vocabnote import VocabNote
 from sysutils import ex_str, kana_utils
@@ -60,21 +61,5 @@ def generate_highlighted_sentences_html_list(_vocab_note:VocabNote) -> str:
             </div>
             ''' if sentences else ""
 
-_promise:Future[str]
-def render_highlighted_sentence_list(html: str, card: Card, _type_of_display: str) -> str:
-    global _promise
-    global _promise
-    vocab_note = JPNote.note_from_card(card)
-
-    if isinstance(vocab_note, VocabNote):
-        if ui_utils.is_displaytype_displaying_review_question(_type_of_display):
-            _promise = app.thread_pool_executor.submit(lambda: generate_highlighted_sentences_html_list(checked_cast(VocabNote, vocab_note)))
-        elif ui_utils.is_displaytype_displaying_review_answer(_type_of_display):
-            return html.replace("##CONTEXT_SENTENCES##", _promise.result())
-        elif ui_utils.is_displaytype_displaying_answer(_type_of_display):
-            return html.replace("##CONTEXT_SENTENCES##", generate_highlighted_sentences_html_list(vocab_note))
-
-    return html
-
 def init() -> None:
-    gui_hooks.card_will_show.append(render_highlighted_sentence_list)
+    gui_hooks.card_will_show.append(PrerenderingAnswerSingleTagContentRenderer(VocabNote, "##CONTEXT_SENTENCES##", generate_highlighted_sentences_html_list).render)

@@ -1,34 +1,17 @@
 import re
 
-from anki.cards import Card
 from aqt import gui_hooks
-
-from ankiutils import ui_utils
+from hooks.note_content_building.content_renderer import PrerenderingAnswerSingleTagContentRenderer
 from note.jpnote import JPNote
 from note.kanjinote import KanjiNote
 from note.radicalnote import RadicalNote
 from sysutils import ex_str, kana_utils
 from viewmodels.kanji_list.sentence_kanji_viewmodel import KanjiViewModel
+from ankiutils import app
 
-def render_kanji_list(html:str, card: Card, _type_of_display:str) -> str:
-    if not ui_utils.is_displaytype_displaying_answer(_type_of_display):
-        return html
-
-    from ankiutils import app
-    note = JPNote.note_from_card(card)
-    kanjis:list[KanjiNote]
-    kanji_readings: list[str] = []
-
-    if isinstance(note, KanjiNote):
-        kanjis = app.col().kanji.with_radical(note.get_question())
-        kanji_readings = note.get_readings_clean()
-    elif isinstance(note, RadicalNote):
-        kanjis = app.col().kanji.with_radical(note.get_question()) if note.get_question() else []
-    else:
-        return html
-
+def render_list(note:JPNote, kanjis:list[KanjiNote], kanji_readings:list[str]) -> str:
     if not kanjis:
-        return html.replace("##KANJI_LIST##", "")
+        return ""
 
     def highlight_inherited_reading(text: str) -> str:
         for reading in kanji_readings:
@@ -46,24 +29,34 @@ def render_kanji_list(html:str, card: Card, _type_of_display:str) -> str:
     viewmodels = [KanjiViewModel(kanji) for kanji in kanjis]
 
     list_html = f"""
-<div id="kanji_list" class="page_section">
-    <div class="page_section_title">kanji</div>
-{ex_str.newline.join(f'''
-    <div class="kanji_item {" ".join(kanji.kanji.get_meta_tags())}">
-        <div class="kanji_main">
-            <span class="kanji_kanji clipboard">{kanji.question()}</span>
-            <span class="kanji_readings">{highlight_inherited_reading(kanji.readings())}</span>
-            <span class="kanji_answer">{kanji.answer()}</span>        
+    <div id="kanji_list" class="page_section">
+        <div class="page_section_title">kanji</div>
+    {ex_str.newline.join(f'''
+        <div class="kanji_item {" ".join(kanji.kanji.get_meta_tags())}">
+            <div class="kanji_main">
+                <span class="kanji_kanji clipboard">{kanji.question()}</span>
+                <span class="kanji_readings">{highlight_inherited_reading(kanji.readings())}</span>
+                <span class="kanji_answer">{kanji.answer()}</span>        
+            </div>
+            <div class="kanji_mnemonic">{kanji.mnemonic()}</div>
         </div>
-        <div class="kanji_mnemonic">{kanji.mnemonic()}</div>
+    ''' for kanji in viewmodels)}
     </div>
-''' for kanji in viewmodels)}
-</div>
-        """
+            """
 
-    html = html.replace("##KANJI_LIST##", list_html)
-    return html
+    return list_html
+
+def kanji_kanji_list(kanji:KanjiNote) -> str:
+    kanjis = app.col().kanji.with_radical(kanji.get_question())
+    kanji_readings = kanji.get_readings_clean()
+
+    return render_list(kanji, kanjis, kanji_readings)
+
+def radical_kanji_list(radical: RadicalNote) -> str:
+    kanjis = app.col().kanji.with_radical(radical.get_question()) if radical.get_question() else []
+    return render_list(radical, kanjis, [])
 
 
 def init() -> None:
-    gui_hooks.card_will_show.append(render_kanji_list)
+    gui_hooks.card_will_show.append(PrerenderingAnswerSingleTagContentRenderer(KanjiNote, "##KANJI_LIST##", kanji_kanji_list).render)
+    gui_hooks.card_will_show.append(PrerenderingAnswerSingleTagContentRenderer(RadicalNote, "##KANJI_LIST##", radical_kanji_list).render)

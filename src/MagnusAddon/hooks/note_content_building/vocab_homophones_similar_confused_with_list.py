@@ -1,9 +1,8 @@
-from anki.cards import Card
 from aqt import gui_hooks
 
-from ankiutils import app, ui_utils
+from ankiutils import app
+from hooks.note_content_building.content_renderer import PrerenderingAnswerContentRenderer
 from note import vocabnote
-from note.jpnote import JPNote
 from note.vocabnote import VocabNote
 from sysutils import ex_sequence
 from sysutils.ex_str import newline
@@ -72,33 +71,26 @@ def generate_compounds(_vocab_note: VocabNote) -> str:
     compound_parts = app.col().vocab.with_forms(_vocab_note.get_user_compounds())
     return render_vocab_list(compound_parts, "compound parts", css_class="compound_parts") if compound_parts else ""
 
-def render_homophones_html_list(html: str, card: Card, _type_of_display: str) -> str:
-    if not ui_utils.is_displaytype_displaying_answer(_type_of_display):
-        return html
-
-    vocab_note = JPNote.note_from_card(card)
-    if not (isinstance(vocab_note, VocabNote)):
-        return html
-
+def render_homophones_html_list(vocab_note: VocabNote) -> dict[str, str]:
     forms = ex_sequence.flatten([app.col().vocab.with_question(reading) for reading in vocab_note.get_forms()])
     forms = [form for form in forms if form.get_id() != vocab_note.get_id()]
     forms = vocabnote.sort_vocab_list_by_studying_status(forms)
-    html = html.replace("##FORMS_LIST##", render_vocab_list([vocab_note] + forms, "forms", css_class="forms") if forms else "")
 
     forms_set = set(forms) | {vocab_note}
+    # todo: part-of-compound, variation/derived/closely-related, homonyms, homographs, antonym
+    replacements:dict[str, str] = {
+        "##FORMS_LIST##": render_vocab_list([vocab_note] + forms, "forms", css_class="forms") if forms else "",
+        "##VOCAB_COMPOUNDS##": generate_compounds(vocab_note),
+        "##ERGATIVE_TWIN##": generate_ergative_twin_html(vocab_note),
+        "##DERIVED_FROM##": generate_derived_from(vocab_note),
+        "##HOMOPHONES_LIST##": generate_homophones_html_list(vocab_note, forms_set),
+        "##SIMILAR_MEANING_LIST##": generate_similar_meaning_html_list(vocab_note),
+        "##CONFUSED_WITH_LIST##": generate_confused_with_html_list(vocab_note),
+        "##VOCAB_META_TAGS_HTML##": vocab_note.get_meta_tags_html(),
+        "##VOCAB_CLASSES##": _create_classes(vocab_note)
+    }
 
-    #todo: part-of-compound, variation/derived/closely-related, homonyms, homographs, antonym
-    html = html.replace("##VOCAB_COMPOUNDS##", generate_compounds(vocab_note))
-    html = html.replace("##ERGATIVE_TWIN##", generate_ergative_twin_html(vocab_note))
-    html = html.replace("##DERIVED_FROM##", generate_derived_from(vocab_note))
-    html = html.replace("##HOMOPHONES_LIST##", generate_homophones_html_list(vocab_note, forms_set))
-    html = html.replace("##SIMILAR_MEANING_LIST##", generate_similar_meaning_html_list(vocab_note))
-    html = html.replace("##CONFUSED_WITH_LIST##", generate_confused_with_html_list(vocab_note))
-
-    html = html.replace("##VOCAB_META_TAGS_HTML##", vocab_note.get_meta_tags_html())
-    html = html.replace("##VOCAB_CLASSES##", _create_classes(vocab_note))
-
-    return html
+    return replacements
 
 def init() -> None:
-    gui_hooks.card_will_show.append(render_homophones_html_list)
+    gui_hooks.card_will_show.append(PrerenderingAnswerContentRenderer(VocabNote, render_homophones_html_list).render)
