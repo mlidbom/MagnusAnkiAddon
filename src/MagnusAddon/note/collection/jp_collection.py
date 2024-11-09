@@ -10,21 +10,16 @@ from note.collection.sentence_collection import SentenceCollection
 from note.collection.vocab_collection import VocabCollection
 from note.jpnote import JPNote
 from note.note_constants import NoteTypes
-from sysutils import progress_display_runner
 
 class JPCollection:
     def __init__(self, anki_collection: Collection):
         self.anki_collection = anki_collection
         self.cache_manager = CacheRunner(anki_collection)
 
-        spinner = progress_display_runner.open_spinning_progress_dialog("Loading caches")
-        try:
-            self.vocab:VocabCollection = VocabCollection(anki_collection, self.cache_manager)
-            self.kanji:KanjiCollection = KanjiCollection(anki_collection, self, self.cache_manager)
-            self.sentences:SentenceCollection = SentenceCollection(anki_collection, self.cache_manager)
-            self.radicals:RadicalCollection = RadicalCollection(anki_collection, self.cache_manager)
-        finally:
-            spinner.close()
+        self.vocab:VocabCollection = VocabCollection(anki_collection, self.cache_manager)
+        self.kanji:KanjiCollection = KanjiCollection(anki_collection, self, self.cache_manager)
+        self.sentences:SentenceCollection = SentenceCollection(anki_collection, self.cache_manager)
+        self.radicals:RadicalCollection = RadicalCollection(anki_collection, self.cache_manager)
 
         self.cache_manager.start()
 

@@ -35,7 +35,8 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
         self._last_deleted_note_time = 0.0
         self._pending_add: list[Note] = list()
 
-        progress_display_runner.process_with_progress(all_notes, self._add_to_cache, "initializing cache", allow_cancel=False, pause_cache_updates=False)
+        for note in all_notes:
+            self._add_to_cache(note)
 
 
         cache_runner.connect_generate_data_timer(self._update_and_persist_generated_data)
