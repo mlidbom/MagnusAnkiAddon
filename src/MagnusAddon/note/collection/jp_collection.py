@@ -48,3 +48,7 @@ class JPCollection:
     def flush_cache_updates(self) -> None: self.cache_manager.flush_updates()
     def pause_cache_updates(self) -> None: self.cache_manager.pause_data_generation()
     def resume_cache_updates(self) -> None: self.cache_manager.resume_data_generation()
+    def note_by_id(self, id: NoteId) -> JPNote | None:
+        return self.vocab.with_id(id) or self.kanji.with_id(id) or self.sentences.with_id(id) or None
+
+
