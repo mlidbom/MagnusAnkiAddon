@@ -1,3 +1,6 @@
+from concurrent.futures import Future
+from typing import Callable, Generic, Optional, TypeVar
+
 from anki.cards import Card
 from aqt import gui_hooks
 from ankiutils import app, ui_utils
@@ -7,6 +10,7 @@ from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
 from sysutils import ex_sequence, ex_str, kana_utils
 from sysutils.ex_str import newline
+from sysutils.typed import checked_cast
 
 def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
     forms = [_vocab_note.get_question()] + list(_vocab_note.get_forms())
@@ -116,15 +120,39 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
             </div>
             ''' if sentences else ""
 
-def render_highlighted_sentence_list(html: str, card: Card, _type_of_display: str) -> str:
-    if not ui_utils.is_displaytype_displaying_answer(_type_of_display):
-        return html
+TNote = TypeVar('TNote', bound=JPNote)
+class PrerenderingContentRenderer(Generic[TNote]):
+    def __init__(self, cls: type[TNote], render_method:Callable[[TNote], str]) -> None:
+        self._cls = cls
+        self._render_method = render_method
+        self._promise:Optional[Future[str]] = None
 
+    def render(self, card: Card, _type_of_display: str) -> str:
+        note = JPNote.note_from_card(card)
+
+        if isinstance(note, self._cls):
+            if ui_utils.is_displaytype_displaying_review_question(_type_of_display):
+                self._promise = app.thread_pool_executor.submit(lambda: self._render_method(checked_cast(self._cls, note)))
+            elif ui_utils.is_displaytype_displaying_review_answer(_type_of_display):
+                return checked_cast(Future[str], self._promise).result()
+            elif ui_utils.is_displaytype_displaying_answer(_type_of_display):
+                return  self._render_method(checked_cast(self._cls, note))
+
+        return ""
+
+
+_promise:Future[str]
+def render_highlighted_sentence_list(html: str, card: Card, _type_of_display: str) -> str:
+    global _promise
     vocab_note = JPNote.note_from_card(card)
 
     if isinstance(vocab_note, VocabNote):
-        highlighted_sentences_html = generate_highlighted_sentences_html_list(vocab_note)
-        html = html.replace("##HIGHLIGHTED_SENTENCES##", highlighted_sentences_html)
+        if ui_utils.is_displaytype_displaying_review_question(_type_of_display):
+            _promise = app.thread_pool_executor.submit(lambda: generate_highlighted_sentences_html_list(checked_cast(VocabNote, vocab_note)))
+        elif ui_utils.is_displaytype_displaying_review_answer(_type_of_display):
+            return html.replace("##HIGHLIGHTED_SENTENCES##", _promise.result())
+        elif ui_utils.is_displaytype_displaying_answer(_type_of_display):
+            return html.replace("##HIGHLIGHTED_SENTENCES##", generate_highlighted_sentences_html_list(vocab_note))
 
     return html
 

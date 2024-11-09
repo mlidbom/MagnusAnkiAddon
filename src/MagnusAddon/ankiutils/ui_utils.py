@@ -19,6 +19,12 @@ _ANSWER_DISPLAY_TYPES = {'reviewAnswer', 'previewAnswer', 'clayoutAnswer'}
 def is_displaytype_displaying_answer(display_type: str) -> bool:
     return display_type in _ANSWER_DISPLAY_TYPES
 
+def is_displaytype_displaying_review_question(display_type: str) -> bool:
+    return display_type == "reviewQuestion"
+
+def is_displaytype_displaying_review_answer(display_type: str) -> bool:
+    return display_type == "reviewAnswer"
+
 class UIUtils(IUIUtils):
     def __init__(self, mw: AnkiQt):
         self._mw = mw
