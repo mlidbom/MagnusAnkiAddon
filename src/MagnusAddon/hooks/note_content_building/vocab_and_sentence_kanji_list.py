@@ -1,33 +1,20 @@
-from anki.cards import Card
 from aqt import gui_hooks
 
-from ankiutils import ui_utils
-from note.jpnote import JPNote
+from hooks.note_content_building.content_renderer import PrerenderingAnswerSingleTagContentRenderer
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
 from sysutils import ex_str
 from viewmodels.kanji_list import sentence_kanji_list_viewmodel
 
 
-def render_kanji_list(html:str, card: Card, _type_of_display:str) -> str:
-    if not ui_utils.is_displaytype_displaying_answer(_type_of_display):
-        return html
 
-    note = JPNote.note_from_card(card)
-    kanjis:list[str]
+def render_kanji_list_from_kanji(kanjis:list[str]) -> str:
+    if not kanjis:
+        return ""
 
-    if isinstance(note, VocabNote):
-        kanjis = note.extract_main_form_kanji()
-    elif isinstance(note, SentenceNote):
-        kanjis = note.extract_kanji()
-    else:
-        return html
+    viewmodel = sentence_kanji_list_viewmodel.create(kanjis)
 
-    list_html = ""
-    if kanjis:
-        viewmodel = sentence_kanji_list_viewmodel.create(kanjis)
-
-        list_html += f"""
+    return f"""
 <div id="kanji_list" class="page_section">
     <div class="page_section_title">kanji</div>
 {ex_str.newline.join(f'''
@@ -43,11 +30,13 @@ def render_kanji_list(html:str, card: Card, _type_of_display:str) -> str:
 </div>
         """
 
-    html = html.replace("##KANJI_LIST##", list_html)
+def render_vocab_kanji_list(vocab: VocabNote) -> str:
+    return render_kanji_list_from_kanji(vocab.extract_main_form_kanji())
 
-
-    return html
+def render_sentence_kanji_list(sentence: SentenceNote) -> str:
+    return render_kanji_list_from_kanji(sentence.extract_kanji())
 
 
 def init() -> None:
-    gui_hooks.card_will_show.append(render_kanji_list)
+    gui_hooks.card_will_show.append(PrerenderingAnswerSingleTagContentRenderer(VocabNote, "##KANJI_LIST##", render_vocab_kanji_list).render)
+    gui_hooks.card_will_show.append(PrerenderingAnswerSingleTagContentRenderer(SentenceNote, "##KANJI_LIST##", render_sentence_kanji_list).render)

@@ -1,4 +1,5 @@
 import gc
+from concurrent.futures.thread import ThreadPoolExecutor
 
 from anki.collection import Collection
 from anki.dbproxy import DBProxy
@@ -33,6 +34,10 @@ gui_hooks.collection_did_temporarily_close.append(_reset1)
 gui_hooks.profile_will_close.append(reset)
 gui_hooks.collection_did_load.append(_reset1)
 gui_hooks.sync_did_finish.append(reset)
+
+thread_pool_executor = ThreadPoolExecutor()
+def ensure_initialized() -> None:
+    col() #If the first call to this happens on a background threads things go south.
 
 def col() -> JPCollection: return _collection.instance()
 def anki_collection() -> Collection: return col().anki_collection

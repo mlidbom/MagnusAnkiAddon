@@ -1,12 +1,16 @@
+from concurrent.futures import Future
+from concurrent.futures.thread import ThreadPoolExecutor
+
 from anki.cards import Card
 from aqt import gui_hooks
 
 from ankiutils import app, ui_utils
+from hooks.note_content_building.content_renderer import PrerenderingAnswerSingleTagContentRenderer
 from note.jpnote import JPNote
 from note.vocabnote import VocabNote
 from sysutils import ex_str, kana_utils
 from sysutils.ex_str import newline
-
+from sysutils.typed import checked_cast
 
 class ContextSentence:
     def __init__(self, japanese:str, english:str, audio:str) -> None:
@@ -57,19 +61,5 @@ def generate_highlighted_sentences_html_list(_vocab_note:VocabNote) -> str:
             </div>
             ''' if sentences else ""
 
-
-
-def render_highlighted_sentence_list(html: str, card: Card, _type_of_display: str) -> str:
-    if not ui_utils.is_displaytype_displaying_answer(_type_of_display):
-        return html
-
-    vocab_note = JPNote.note_from_card(card)
-
-    if isinstance(vocab_note, VocabNote):
-        highlighted_sentences_html = generate_highlighted_sentences_html_list(vocab_note)
-        html = html.replace("##CONTEXT_SENTENCES##", highlighted_sentences_html)
-
-    return html
-
 def init() -> None:
-    gui_hooks.card_will_show.append(render_highlighted_sentence_list)
+    gui_hooks.card_will_show.append(PrerenderingAnswerSingleTagContentRenderer(VocabNote, "##CONTEXT_SENTENCES##", generate_highlighted_sentences_html_list).render)
