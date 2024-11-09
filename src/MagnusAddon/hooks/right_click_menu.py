@@ -1,3 +1,4 @@
+import pyperclip  # type: ignore
 from anki.notes import Note
 from aqt.clayout import CardLayout
 from aqt.editor import Editor
@@ -18,7 +19,6 @@ from note.kanjinote import KanjiNote
 from note.radicalnote import RadicalNote
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
-from sysutils import my_clipboard
 from sysutils.typed import checked_cast
 
 from typing import Optional
@@ -49,7 +49,7 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu) -> None:
         return JPNote.note_from_note(inner_note)
 
     selection = checked_cast(QWebEnginePage, view.page()).selectedText().strip()
-    clipboard = my_clipboard.get_text().strip()
+    clipboard = pyperclip.paste().strip()
 
     note = get_note()
 
