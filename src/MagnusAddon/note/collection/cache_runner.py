@@ -1,4 +1,3 @@
-from collections.abc import Callable
 from typing import cast, Sequence
 
 from anki import hooks
@@ -11,8 +10,37 @@ from PyQt6.QtCore import QTimer
 
 from anki_extentions.notetype_ex.note_type_ex import NoteTypeEx
 from note.note_constants import NoteTypes
-from sysutils import timeutil
-import threading
+
+from threading import Thread, Event
+from queue import Queue
+from dataclasses import dataclass
+from typing import Callable, Optional
+
+@dataclass
+class Task:
+    func: Callable[[], None]
+    completion_event: Optional[Event] = None
+
+class DedicatedThread:
+    def __init__(self) -> None:
+        self.queue: Queue[Task] = Queue()
+        self.thread: Thread = Thread(target=self._worker, daemon=True)
+        self.thread.start()
+
+    def _worker(self) -> None:
+        while True:
+            task: Task = self.queue.get()
+            task.func()
+            if task.completion_event is not None:
+                task.completion_event.set()
+            self.queue.task_done()
+
+    def submit(self, task: Callable[[], None], wait: bool = False) -> None:
+        completion_event = Event() if wait else None
+        self.queue.put(Task(task, completion_event))
+        if wait:
+            completion_event.wait()  # type: ignore
+
 
 class CacheRunner:
     def __init__(self, anki_collection: Collection) -> None:
@@ -25,7 +53,7 @@ class CacheRunner:
         self._will_remove_subscribers: list[Callable[[Sequence[NoteId]], None]] = []
         self._destructors: list[Callable[[], None]] = []
         self._anki_collection = anki_collection
-        self._lock = threading.RLock()
+        self._dedicated_thread = DedicatedThread()
 
 
         model_manager = anki_collection.models
@@ -44,51 +72,48 @@ class CacheRunner:
         self._timer.start(100)
 
     def destruct(self) -> None:
-        with self._lock:
-            hooks.notes_will_be_deleted.remove(self._on_will_be_removed)
-            hooks.note_will_be_added.remove(self._on_will_be_added)
-            hooks.note_will_flush.remove(self._on_will_flush)
+        hooks.notes_will_be_deleted.remove(self._on_will_be_removed)
+        hooks.note_will_be_added.remove(self._on_will_be_added)
+        hooks.note_will_flush.remove(self._on_will_flush)
 
-            self._timer.stop()
-            self._timer.disconnect()
-            for destructor in self._destructors: destructor()
+        for destructor in self._destructors: destructor()
+
+    def _internal_flush_updates(self) -> None:
+        self._check_for_updated_note_types_and_reset_app_if_found()
+        for subscriber in self._merge_pending_subscribers: subscriber()
+
+        if self._pause_data_generation: return
+        for callback in self._generate_data_subscribers: callback()
 
     def flush_updates(self) -> None:
-        with self._lock:
-            stopwatch = timeutil.start_stop_watch()
-            self._check_for_updated_note_types_and_reset_app_if_found()
-            for subscriber in self._merge_pending_subscribers: subscriber()
-
-            if self._pause_data_generation: return
-            for callback in self._generate_data_subscribers: callback()
-            if stopwatch.elapsed_seconds() > 0.01:
-                print(f"###################################################### cache flush completed in {stopwatch.elapsed_formatted()}")
+        self._dedicated_thread.submit(self._internal_flush_updates, wait=True)
 
     def _on_will_be_added(self, _collection:Collection, backend_note: Note, _deck_id: DeckId) -> None:
-        with self._lock:
+        def task() -> None:
             for subscriber in self._will_add_subscribers: subscriber(backend_note)
 
+        self._dedicated_thread.submit(task)
+
     def _on_will_flush(self, backend_note: Note) -> None:
-        with self._lock:
-            stopwatch = timeutil.start_stop_watch()
+        def task() -> None:
             for subscriber in self._will_flush_subscribers: subscriber(backend_note)
-            if stopwatch.elapsed_seconds() > 0.01:
-                print(f"###################################################### on will flush completed in {stopwatch.elapsed_formatted()}")
+
+        self._dedicated_thread.submit(task)
 
     def _on_will_be_removed(self, _: Collection, note_ids: Sequence[NoteId]) -> None:
-        with self._lock:
+        def task() -> None:
             for subscriber in self._will_remove_subscribers: subscriber(note_ids)
+
+        self._dedicated_thread.submit(task)
 
 
     def pause_data_generation(self) -> None:
-        with self._lock:
-            assert not self._pause_data_generation
-            self._pause_data_generation = True
+        assert not self._pause_data_generation
+        self._pause_data_generation = True
 
     def resume_data_generation(self) -> None:
-        with self._lock:
-            assert self._pause_data_generation
-            self._pause_data_generation = False
+        assert self._pause_data_generation
+        self._pause_data_generation = False
 
     def connect_generate_data_timer(self, flush_updates: Callable[[], None]) -> None:
         self._generate_data_subscribers.append(flush_updates)
@@ -116,13 +141,3 @@ class CacheRunner:
             except AssertionError:
                 from ankiutils import app
                 app.reset()
-
-
-
-
-
-
-
-
-
-

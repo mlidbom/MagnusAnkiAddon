@@ -16,7 +16,7 @@ from language_services.jamdict_ex.dict_entry import DictEntry
 from sysutils import ex_iterable, kana_utils
 
 class DictLookup:
-    _jamdict = Jamdict(memory_mode=True)
+    _jamdict = Jamdict(reuse_ctx=False)
 
     def __init__(self, entries: list[DictEntry], lookup_word: str, lookup_reading: list[str]):
         self.lookup_word = lookup_word
