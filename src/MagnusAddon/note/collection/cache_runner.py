@@ -72,6 +72,9 @@ class CacheRunner:
         self._timer.start(100)
 
     def destruct(self) -> None:
+        self._timer.stop()
+        self._timer.disconnect()
+
         hooks.notes_will_be_deleted.remove(self._on_will_be_removed)
         hooks.note_will_be_added.remove(self._on_will_be_added)
         hooks.note_will_flush.remove(self._on_will_flush)
