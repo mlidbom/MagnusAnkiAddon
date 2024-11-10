@@ -3,7 +3,6 @@ from anki.cards import Card
 from aqt import gui_hooks
 
 from ankiutils import app, ui_utils
-from ankiutils.app import ui_utils
 from note.jpnote import JPNote
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote

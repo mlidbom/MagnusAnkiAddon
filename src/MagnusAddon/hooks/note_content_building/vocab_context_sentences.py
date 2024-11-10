@@ -1,16 +1,10 @@
-from concurrent.futures import Future
-from concurrent.futures.thread import ThreadPoolExecutor
-
-from anki.cards import Card
 from aqt import gui_hooks
 
-from ankiutils import app, ui_utils
+from ankiutils import app
 from hooks.note_content_building.content_renderer import PrerenderingAnswerSingleTagContentRenderer
-from note.jpnote import JPNote
 from note.vocabnote import VocabNote
 from sysutils import ex_str, kana_utils
 from sysutils.ex_str import newline
-from sysutils.typed import checked_cast
 
 class ContextSentence:
     def __init__(self, japanese:str, english:str, audio:str) -> None:

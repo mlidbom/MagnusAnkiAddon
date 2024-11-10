@@ -155,7 +155,7 @@ def render_breakdown(note: SentenceNote) -> dict[str, str]:
 """
         replacements["##USER_EXTRA_VOCAB##"] = user_extra_html
     else:
-        replacements["##USER_EXTRA_VOCAB##"] =  ""
+        replacements["##USER_EXTRA_VOCAB##"] = ""
 
     user_higlighted = set(extra_words)
     breakdown_html = f"""

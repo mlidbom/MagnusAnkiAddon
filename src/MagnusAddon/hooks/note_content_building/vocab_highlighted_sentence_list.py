@@ -1,17 +1,11 @@
-from concurrent.futures import Future
-from typing import Callable, cast, Generic, Optional, TypeVar
-
-from anki.cards import Card
 from aqt import gui_hooks
-from ankiutils import app, ui_utils
+from ankiutils import app
 from hooks.note_content_building.content_renderer import PrerenderingAnswerSingleTagContentRenderer
-from note.jpnote import JPNote
 from note.note_constants import Mine
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
 from sysutils import ex_sequence, ex_str, kana_utils
 from sysutils.ex_str import newline
-from sysutils.typed import checked_cast
 
 def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
     forms = [_vocab_note.get_question()] + list(_vocab_note.get_forms())

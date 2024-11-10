@@ -24,9 +24,6 @@ def sort_vocab_list_by_studying_status(vocabs: list[VocabNote], primary_voc: Opt
 
         return 1000
 
-    def prefer_has_audio(local_vocab: VocabNote) -> int:
-        return 1 if local_vocab.get_audio_male() or local_vocab.get_audio_female() else 2
-
     def prefer_studying_vocab(local_vocab: VocabNote) -> int:
         return 1 if local_vocab.is_studying() else 2
 

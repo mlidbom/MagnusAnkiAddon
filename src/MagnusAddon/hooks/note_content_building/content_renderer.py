@@ -2,7 +2,7 @@ from concurrent.futures import Future
 from typing import Callable, Generic, Optional, TypeVar
 
 from anki.cards import Card
-from ankiutils import app, ui_utils
+from ankiutils import ui_utils
 from note.jpnote import JPNote
 from sysutils import app_thread_pool
 from sysutils.typed import checked_cast
@@ -40,6 +40,6 @@ class PrerenderingAnswerContentRenderer(Generic[TNote]):
 class PrerenderingAnswerSingleTagContentRenderer(PrerenderingAnswerContentRenderer[TNote]):
     def __init__(self, cls: type[TNote], tag_to_replace:str, render_method:Callable[[TNote], str]) -> None:
         def wrapped_render_method(note:TNote) -> dict[str, str]:
-            return { tag_to_replace: render_method(note) }
+            return {tag_to_replace: render_method(note)}
 
         super().__init__(cls, wrapped_render_method)

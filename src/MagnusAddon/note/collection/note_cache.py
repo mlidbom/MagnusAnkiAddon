@@ -47,9 +47,9 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
         cache_runner.connect_will_flush(self._on_will_flush)
 
         def cache_studying_status() -> None:
-            for _note in all_notes:
-                _note.is_studying(CardTypes.reading)
-                _note.is_studying(CardTypes.listening)
+            for note in all_notes:
+                note.is_studying(CardTypes.reading)
+                note.is_studying(CardTypes.listening)
 
         app_thread_pool.pool.submit(cache_studying_status)
 

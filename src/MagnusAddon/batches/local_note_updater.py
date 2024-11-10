@@ -146,10 +146,10 @@ def adjust_kanji_primary_readings() -> None:
     updated_kanji:set[KanjiNote] = set()
 
     def adjust_kanji_readings(kanji: KanjiNote) -> None:
-        def make_on_reading_primary(primary_reading: str) -> None:
-            new_reading = ex_str.replace_word(primary_reading, f'<primary>{primary_reading}</primary>', kanji.get_reading_on_html())
-            print(f"""{kanji.get_question()}: {new_reading}""")
-            #kanji.set_reading_on(new_reading)
+        # def make_on_reading_primary(primary_reading: str) -> None:
+        #     new_reading = ex_str.replace_word(primary_reading, f'<primary>{primary_reading}</primary>', kanji.get_reading_on_html())
+        #     print(f"""{kanji.get_question()}: {new_reading}""")
+        #     kanji.set_reading_on(new_reading)
 
         def make_kun_reading_primary(primary_reading: str) -> None:
             new_reading = ex_str.replace_word(primary_reading, f'<primary>{primary_reading}</primary>', kanji.get_reading_kun_html())

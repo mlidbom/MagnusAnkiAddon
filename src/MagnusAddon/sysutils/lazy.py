@@ -1,6 +1,6 @@
 import threading
 from concurrent.futures import Future
-from typing import Callable, Generic, TypeVar, Optional
+from typing import Callable, cast, Generic, TypeVar, Optional
 
 from sysutils import app_thread_pool
 
@@ -54,8 +54,8 @@ class BackgroundInitialingLazy(Generic[T]):
             from sysutils import progress_display_runner
 
             def init() -> None:
-                self._instance.result()
+                cast(Future[T], self._instance).result()
 
             progress_display_runner.with_spinning_progress_dialog("Populating cache", init)
 
-        return self._instance.result()
+        return cast(Future[T], self._instance).result()

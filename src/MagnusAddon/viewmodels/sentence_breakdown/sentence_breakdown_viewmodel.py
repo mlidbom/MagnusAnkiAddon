@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Optional
+
 from language_services.shared import priorities
 from language_services.universal_dependencies.shared.tree_building.ud_tree import UDTree
 from language_services.universal_dependencies.shared.tree_building.ud_tree_node import UDTreeNode
@@ -9,7 +11,7 @@ from sysutils import kana_utils
 
 missing_vocab_answer = "---"
 class VocabHit:
-    def __init__(self, surface_form: str, lookup_form: str, hit_form: str, answer: str, readings:list[str], meta_tags:str, meta_tags_html: str, vocab: VocabNote | None = None) -> None:
+    def __init__(self, surface_form: str, lookup_form: str, hit_form: str, answer: str, readings:list[str], meta_tags:str, meta_tags_html: str, vocab: Optional[VocabNote] = None) -> None:
         self.surface_form = surface_form
         self.lookup_form = lookup_form if lookup_form != surface_form else ""
         self.hit_form = hit_form if hit_form != surface_form and hit_form != lookup_form else ""
