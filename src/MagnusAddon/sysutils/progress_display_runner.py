@@ -23,6 +23,7 @@ def with_spinning_progress_dialog(message:str, action: Callable[[], None]) -> No
 
     while not future.done():
         QApplication.processEvents()
+        time.sleep(0.1)
 
     dialog.close()
 

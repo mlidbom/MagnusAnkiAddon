@@ -1,5 +1,4 @@
 import gc
-from concurrent.futures.thread import ThreadPoolExecutor
 from typing import Optional
 
 from anki.collection import Collection
@@ -18,22 +17,26 @@ _collection:Optional[BackgroundInitialingLazy[JPCollection]] = None
 
 def _reset(_anki_collection: Collection) -> None:
     global _collection
-    if _collection:
-        _collection.instance().destruct()
-        gc.collect()
+    _destruct()
 
     _collection = BackgroundInitialingLazy(lambda: JPCollection(_anki_collection))
+
+def _destruct(_: Optional[Collection] = None) ->None:
+    global _collection
+    if _collection:
+        _collection.instance().destruct()
+        _collection = None
+        gc.collect()
 
 def reset() -> None:
     _reset(mw.col)
 
+gui_hooks.collection_will_temporarily_close.append(_destruct)
+gui_hooks.profile_will_close.append(_destruct)
+
 gui_hooks.collection_did_temporarily_close.append(_reset)
 gui_hooks.collection_did_load.append(_reset)
 gui_hooks.sync_did_finish.append(reset)
-
-thread_pool_executor = ThreadPoolExecutor()
-def ensure_initialized() -> None:
-    col() #If the first call to this happens on a background threads things go south.
 
 def col() -> JPCollection:
     assert _collection

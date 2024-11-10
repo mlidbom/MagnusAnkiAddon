@@ -25,8 +25,6 @@ class PrerenderingAnswerContentRenderer(Generic[TNote]):
         note = JPNote.note_from_card(card)
 
         if isinstance(note, self._cls):
-            app.ensure_initialized()
-
             if ui_utils.is_displaytype_displaying_review_question(type_of_display):
                 self._promise = app_thread_pool.pool.submit(lambda: self._render_method(checked_cast(self._cls, note)))
             elif ui_utils.is_displaytype_displaying_review_answer(type_of_display) and self._promise:
