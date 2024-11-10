@@ -26,10 +26,11 @@ class DedicatedThread:
     def __init__(self) -> None:
         self.queue: Queue[Task] = Queue()
         self.thread: Thread = Thread(target=self._worker, daemon=True)
+        self._running = True
         self.thread.start()
 
     def _worker(self) -> None:
-        while True:
+        while self._running:
             task: Task = self.queue.get()
             task.func()
             if task.completion_event is not None:
@@ -41,6 +42,14 @@ class DedicatedThread:
         self.queue.put(Task(task, completion_event))
         if wait:
             completion_event.wait()  # type: ignore
+
+    def destruct(self) -> None:
+        self._running = False
+
+        def null_op() -> None:
+            pass
+        self.submit(null_op)#Prevents deadlock
+        self.thread.join()
 
 
 class CacheRunner:
@@ -79,6 +88,8 @@ class CacheRunner:
 
     def destruct(self) -> None:
         self._running = False
+        self._dedicated_thread.destruct()
+        self._internal_flush_updates()
 
         hooks.notes_will_be_deleted.remove(self._on_will_be_removed)
         hooks.note_will_be_added.remove(self._on_will_be_added)
