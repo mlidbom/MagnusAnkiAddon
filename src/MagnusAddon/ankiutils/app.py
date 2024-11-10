@@ -34,7 +34,7 @@ def _destruct() -> None:
         gc.collect()
 
 gui_hooks.profile_will_close.append(_destruct)
-gui_hooks.sync_will_start.append(lambda: reset(delay_seconds=5.0))
+gui_hooks.sync_will_start.append(lambda: reset(delay_seconds=9999))#unless forced to by the user we don't want to initialize the cache until the sync is done.
 
 gui_hooks.profile_did_open.append(lambda: _init(delay_seconds=1.0))
 gui_hooks.sync_did_finish.append(_init)
