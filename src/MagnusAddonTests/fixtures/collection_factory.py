@@ -29,6 +29,7 @@ def inject_empty_anki_collection_with_note_types() -> Generator[None, None, None
             jp_collection = JPCollection(anki_collection)
             with unittest.mock.patch('ankiutils.app.col', new=get_jp_collection):
                 yield
+                jp_collection.destruct()
         finally:
             anki_collection.close()
 
@@ -52,4 +53,3 @@ def inject_anki_collection_with_generated_sample_data() -> Generator[None, None,
         app.col().flush_cache_updates()
 
         yield
-        app.col().destruct()
