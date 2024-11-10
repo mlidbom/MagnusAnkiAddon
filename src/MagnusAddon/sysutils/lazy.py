@@ -24,8 +24,12 @@ class BackgroundInitialingLazy(Generic[T]):
     def is_initialized(self) -> bool: return self._instance.done() and not self._instance.cancelled()
 
     def instance(self) -> T:
-        if not self.is_initialized():
+        if not self.is_initialized() and app_thread_pool.current_is_ui_thread():
             from sysutils import progress_display_runner
-            progress_display_runner.with_spinning_progress_dialog("Populating cache", self._instance.result)
+
+            def init() -> None:
+                self._instance.result()
+
+            progress_display_runner.with_spinning_progress_dialog("Populating cache", init)
 
         return self._instance.result()
