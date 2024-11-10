@@ -52,3 +52,4 @@ def inject_anki_collection_with_generated_sample_data() -> Generator[None, None,
         app.col().flush_cache_updates()
 
         yield
+        app.col().destruct()
