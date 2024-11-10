@@ -8,7 +8,7 @@ from anki.notes import Note, NoteId
 from note.collection.cache_runner import CacheRunner
 from note.jpnote import JPNote
 from note.note_constants import CardTypes
-from sysutils import app_thread_pool, progress_display_runner
+from sysutils import app_thread_pool
 from sysutils.collections.default_dict_case_insensitive import DefaultDictCaseInsensitive
 from sysutils.typed import checked_cast
 
@@ -36,8 +36,8 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
         self._last_deleted_note_time = 0.0
         self._pending_add: list[Note] = list()
 
-        for note in all_notes:
-            self._add_to_cache(note)
+        for _note in all_notes:
+            self._add_to_cache(_note)
 
 
         cache_runner.connect_generate_data_timer(self._update_and_persist_generated_data)
@@ -47,9 +47,9 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
         cache_runner.connect_will_flush(self._on_will_flush)
 
         def cache_studying_status() -> None:
-            for note in all_notes:
-                note.is_studying(CardTypes.reading)
-                note.is_studying(CardTypes.listening)
+            for _note in all_notes:
+                _note.is_studying(CardTypes.reading)
+                _note.is_studying(CardTypes.listening)
 
         app_thread_pool.pool.submit(cache_studying_status)
 
@@ -103,15 +103,15 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
     def _create_note(self, backend_note: Note) -> TNote:
         return checked_cast(self._note_type, JPNote.note_from_note(backend_note))
 
-    def _update_and_persist_generated_data(self) -> None:
-        updates = list(note for note in self._pending_generated_data_updates if note.get_id() not in self._deleted)
+    def _consume_pending_data_updates(self) -> set[TNote]:
+        update_set = self._pending_generated_data_updates
         self._pending_generated_data_updates = set()
+        return {note for note in update_set if note.get_id() not in self._deleted}
 
-        def update_generated_data(note:TNote) -> None:
+    def _update_and_persist_generated_data(self) -> None:
+        for note in self._consume_pending_data_updates():
             note.update_generated_data()
             self._refresh_in_cache(note)
-
-        progress_display_runner.process_with_progress(updates, update_generated_data, "Updating generated data for cache updates", allow_cancel=False, pause_cache_updates=False, display_delay_seconds=.2)
 
 
     def _refresh_in_cache(self, note: TNote) -> None:
