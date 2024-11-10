@@ -8,6 +8,7 @@ from sysutils import ex_str, kana_utils
 def render_dependencies_list(note: KanjiNote) -> str:
     readings = note.get_readings_clean()
 
+    # noinspection DuplicatedCode
     def highlight_primary_reading_sources(text: str) -> str:
         for reading in readings:
             text = re.sub(rf'\b{re.escape(kana_utils.to_hiragana(reading))}\b', f"<primary-reading-source>{kana_utils.to_hiragana(reading)}</primary-reading-source>", text)

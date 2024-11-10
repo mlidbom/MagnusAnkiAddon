@@ -52,7 +52,7 @@ class UIUtils(IUIUtils):
             previewers: list[Previewer] = [window for window in self._mw.app.topLevelWidgets() if isinstance(window, Previewer)]
             if len(previewers) > 0:
                 previewer = previewers[0]
-                previewer._last_state = [previewer._state, checked_cast(Card, previewer.card()).id, 0]  # noqa
+                previewer._last_state = (previewer._state, checked_cast(Card, previewer.card()).id, 0)  # noqa
                 previewer.render_card()
 
         def force_reviewer_rerender() -> None:

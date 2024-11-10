@@ -13,6 +13,7 @@ def render_list(note:JPNote, kanjis:list[KanjiNote], kanji_readings:list[str]) -
     if not kanjis:
         return ""
 
+    # noinspection DuplicatedCode
     def highlight_inherited_reading(text: str) -> str:
         for reading in kanji_readings:
             text = re.sub(rf'\b{re.escape(kana_utils.to_hiragana(reading))}\b', f"<inherited-reading>{kana_utils.to_hiragana(reading)}</inherited-reading>", text)

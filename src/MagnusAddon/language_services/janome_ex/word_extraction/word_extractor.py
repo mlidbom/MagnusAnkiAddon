@@ -9,6 +9,7 @@ _noise_characters = {'.',',',':',';','/','|','。','、'}
 _max_lookahead = 12
 
 version = "janome_extractor_1"
+# noinspection DuplicatedCode
 def extract_words(sentence: str) -> list[ExtractedWord]:
     from ankiutils import app
 
