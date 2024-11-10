@@ -8,26 +8,10 @@ from PyQt6.QtWidgets import QMenu
 from ankiutils import app
 from ankiutils.app import main_window, ui_utils
 from batches import local_note_updater
-from note import noteutils
 from note.jpnote import JPNote
-from note.kanjinote import KanjiNote
-from note.sentencenote import SentenceNote
-from note.vocabnote import VocabNote
 from sysutils.typed import checked_cast
 from wanikani import note_importer, wani_note_updater
 from wanikani.wani_downloader import WaniDownloader
-
-def deep_refresh() -> None:
-    refresh()
-    noteutils.clear_studying_cache()
-
-    note = JPNote.note_from_card(checked_cast(Card, main_window().reviewer.card))
-
-    if isinstance(note, VocabNote) or isinstance(note, SentenceNote):
-        local_note_updater.update_vocab()
-
-    if isinstance(note, KanjiNote):
-        local_note_updater.update_kanji()
 
 def refresh() -> None:
     note = JPNote.note_from_card(checked_cast(Card, main_window().reviewer.card))
@@ -59,9 +43,7 @@ def build_main_menu() -> None:
     build_wani_menu(wani_menu)
 
     add_menu_ui_action(my_menu, "Refresh UI", refresh, "F5")
-    add_menu_ui_action(my_menu, "Deep update UI", deep_refresh, "Ctrl+F5")
-    add_menu_ui_action(my_menu, "Precache studying status", local_note_updater.precache_studying_status)
-    my_menu.addAction("&Reset", lambda: app.reset())
+    my_menu.addAction("&Reset", app.reset)
 
 def build_local_menu(sub_menu: QMenu) -> None:
     add_menu_ui_action(sub_menu, "Update &All", local_note_updater.update_all)
