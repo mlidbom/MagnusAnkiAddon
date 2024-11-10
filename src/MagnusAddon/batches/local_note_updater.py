@@ -159,6 +159,7 @@ def adjust_kanji_primary_readings() -> None:
 
         def has_vocab_with_reading(reading:str) -> bool:
             for vocab in (x for x in kanji.get_vocab_notes() if x.is_studying()):
+                # noinspection PyProtectedMember
                 if reading in vocab._get_reading():
                     return True
             return False

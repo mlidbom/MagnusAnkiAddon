@@ -19,6 +19,7 @@ def extract_words(sentence: str) -> list[str]:
         if anki_vocab.with_form(word) or DictLookup.lookup_word_shallow(word).found_words():
             add_word(word)
 
+    # noinspection DuplicatedCode
     def add_word(word: str) -> None:
         if word not in found_words and word not in _noise_characters:
             found_words.add(word)
