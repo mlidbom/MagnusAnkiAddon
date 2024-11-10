@@ -1,3 +1,4 @@
+import time
 from typing import cast, Sequence
 
 from anki import hooks
@@ -5,8 +6,6 @@ from anki.collection import Collection
 from anki.decks import DeckId
 from anki.models import NotetypeDict
 from anki.notes import Note, NoteId
-from aqt import qconnect
-from PyQt6.QtCore import QTimer
 
 from anki_extentions.notetype_ex.note_type_ex import NoteTypeEx
 from note.note_constants import NoteTypes
@@ -15,6 +14,8 @@ from threading import Thread, Event
 from queue import Queue
 from dataclasses import dataclass
 from typing import Callable, Optional
+
+from sysutils import app_thread_pool
 
 @dataclass
 class Task:
@@ -44,7 +45,6 @@ class DedicatedThread:
 
 class CacheRunner:
     def __init__(self, anki_collection: Collection) -> None:
-        from aqt import mw
         self._pause_data_generation = False
         self._generate_data_subscribers:list[Callable[[], None]] = []
         self._merge_pending_subscribers: list[Callable[[], None]] = []
@@ -54,6 +54,7 @@ class CacheRunner:
         self._destructors: list[Callable[[], None]] = []
         self._anki_collection = anki_collection
         self._dedicated_thread = DedicatedThread()
+        self._running = False
 
 
         model_manager = anki_collection.models
@@ -61,19 +62,23 @@ class CacheRunner:
         self._note_types = [note_type for note_type in all_note_types if note_type.name in NoteTypes.ALL]
         assert len(self._note_types) == len(NoteTypes.ALL)
 
-        self._timer = QTimer(mw)
-        qconnect(self._timer.timeout, self.flush_updates)
-
         hooks.notes_will_be_deleted.append(self._on_will_be_removed)
         hooks.note_will_be_added.append(self._on_will_be_added)
         hooks.note_will_flush.append(self._on_will_flush)
 
     def start(self) -> None:
-        self._timer.start(100)
+        assert not self._running
+        self._running = True
+        app_thread_pool.pool.submit(self._run_periodic_flushes)
+
+
+    def _run_periodic_flushes(self) -> None:
+        while self._running:
+            self.flush_updates()
+            time.sleep(0.1)
 
     def destruct(self) -> None:
-        self._timer.stop()
-        self._timer.disconnect()
+        self._running = False
 
         hooks.notes_will_be_deleted.remove(self._on_will_be_removed)
         hooks.note_will_be_added.remove(self._on_will_be_added)

@@ -1,10 +1,10 @@
 from PyQt6.QtWidgets import QMessageBox, QProgressDialog, QApplication
 from PyQt6.QtCore import Qt
 import time
-from typing import Callable, List, TypeVar
+from typing import Callable, List, Optional, TypeVar
 
 from ankiutils import app
-from sysutils import timeutil
+from sysutils import app_thread_pool, timeutil
 
 T = TypeVar('T')
 
@@ -15,12 +15,21 @@ class Closable:
     def close(self) -> None: self.close_action()
 
 
+
+def with_spinning_progress_dialog(message:str, action: Callable[[], None]) -> None:
+    dialog = _create_spinning_progress_dialog(message)
+
+    future = app_thread_pool.pool.submit(action)
+
+    while not future.done():
+        QApplication.processEvents()
+        time.sleep(0.1)
+
+    dialog.close()
+
+
 def open_spinning_progress_dialog(message: str) -> Closable:
-    progress_dialog = QProgressDialog(f"{message}", None, 0, 0)
-    progress_dialog.setWindowTitle(f"{message}")
-    progress_dialog.setWindowModality(Qt.WindowModality.ApplicationModal)
-    progress_dialog.setRange(0, 0)  # Indeterminate range for spinning effect
-    progress_dialog.show()
+    progress_dialog = _create_spinning_progress_dialog(message)
     QApplication.processEvents()
 
     def close() -> None:
@@ -28,10 +37,18 @@ def open_spinning_progress_dialog(message: str) -> Closable:
 
     return Closable(close)
 
+def _create_spinning_progress_dialog(message: str) -> QProgressDialog:
+    progress_dialog = QProgressDialog(f"{message}", None, 0, 0)
+    progress_dialog.setWindowTitle(f"{message}")
+    progress_dialog.setWindowModality(Qt.WindowModality.ApplicationModal)
+    progress_dialog.setRange(0, 0)  # Indeterminate range for spinning effect
+    progress_dialog.show()
+    return progress_dialog
+
 def process_with_progress(items: List[T], process_item: Callable[[T], None], message:str, allow_cancel: bool = True, display_delay_seconds: float = 0.0, pause_cache_updates: bool = True) -> None:
     total_items = len(items)
     start_time = time.time()
-    progress_dialog: QProgressDialog | None = None
+    progress_dialog: Optional[QProgressDialog] = None
     last_refresh = 0.0
 
     if pause_cache_updates: app.col().pause_cache_updates()

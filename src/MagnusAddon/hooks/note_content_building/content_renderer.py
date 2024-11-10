@@ -4,6 +4,7 @@ from typing import Callable, Generic, Optional, TypeVar
 from anki.cards import Card
 from ankiutils import app, ui_utils
 from note.jpnote import JPNote
+from sysutils import app_thread_pool
 from sysutils.typed import checked_cast
 
 TNote = TypeVar('TNote', bound=JPNote)
@@ -24,10 +25,8 @@ class PrerenderingAnswerContentRenderer(Generic[TNote]):
         note = JPNote.note_from_card(card)
 
         if isinstance(note, self._cls):
-            app.ensure_initialized()
-
             if ui_utils.is_displaytype_displaying_review_question(type_of_display):
-                self._promise = app.thread_pool_executor.submit(lambda: self._render_method(checked_cast(self._cls, note)))
+                self._promise = app_thread_pool.pool.submit(lambda: self._render_method(checked_cast(self._cls, note)))
             elif ui_utils.is_displaytype_displaying_review_answer(type_of_display) and self._promise:
                 value = self._promise.result()
                 self._promise = None # We need to clear it or editing the current card will not show any updates
