@@ -22,9 +22,9 @@ def _init(delay_seconds: float = 0) -> None:
 
     _collection = BackgroundInitialingLazy(lambda: JPCollection(mw.col), delay_seconds=delay_seconds)
 
-def reset() -> None:
+def reset(delay_seconds: float = 0) -> None:
     _destruct()
-    _init()
+    _init(delay_seconds)
 
 def _destruct() -> None:
     global _collection
@@ -34,7 +34,7 @@ def _destruct() -> None:
         gc.collect()
 
 gui_hooks.profile_will_close.append(_destruct)
-gui_hooks.sync_will_start.append(_destruct)
+gui_hooks.sync_will_start.append(lambda: reset(delay_seconds=5.0))
 
 gui_hooks.profile_did_open.append(lambda: _init(delay_seconds=1.0))
 gui_hooks.sync_did_finish.append(_init)
