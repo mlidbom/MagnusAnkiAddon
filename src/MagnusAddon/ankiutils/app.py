@@ -33,11 +33,22 @@ def _destruct() -> None:
         _collection = None
         gc.collect()
 
-gui_hooks.profile_will_close.append(_destruct)
-gui_hooks.sync_will_start.append(lambda: reset(delay_seconds=9999))#unless forced to by the user we don't want to initialize the cache until the sync is done.
+def _sync_starting() -> None:
+    reset(delay_seconds=9999) #Unless forced by the user we don't actually want to run an initialization here
 
-gui_hooks.profile_did_open.append(lambda: _init(delay_seconds=1.0))
-gui_hooks.sync_did_finish.append(_init)
+def _profile_closing() -> None:
+    gui_hooks.sync_will_start.remove(_sync_starting)
+    gui_hooks.sync_did_finish.remove(_init)
+    _destruct()
+
+def _profile_opened() -> None:
+    gui_hooks.sync_will_start.append(_sync_starting)
+    gui_hooks.sync_did_finish.append(_init)
+    _init(delay_seconds=1.0)
+
+gui_hooks.profile_will_close.append(_profile_closing)
+gui_hooks.profile_did_open.append(_profile_opened)
+
 
 def col() -> JPCollection:
     assert _collection
