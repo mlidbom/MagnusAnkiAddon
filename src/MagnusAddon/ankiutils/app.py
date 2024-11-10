@@ -1,6 +1,5 @@
 import gc
 from typing import Optional
-import threading
 
 from anki.collection import Collection
 from anki.dbproxy import DBProxy
@@ -15,26 +14,13 @@ from sysutils.lazy import BackgroundInitialingLazy
 from sysutils.typed import checked_cast
 
 _collection: Optional[BackgroundInitialingLazy[JPCollection]] = None
-_init_lock = threading.RLock()
-_pending_init_timer: Optional[threading.Timer] = None
 
-def _cancel_pending_init() -> None:
-    global _pending_init_timer
-    if _pending_init_timer:
-        _pending_init_timer.cancel()
-        _pending_init_timer = None
+def _init(delay_seconds: float = 0) -> None:
+    global _collection
+    if _collection and not _collection.try_cancel_scheduled_init():
+        return
 
-def _schedule_init() -> None:
-    global _pending_init_timer
-    _pending_init_timer = threading.Timer(1.0, lambda: _init())
-    _pending_init_timer.start()
-
-def _init() -> None:
-    global _pending_init_timer, _collection
-    with _init_lock:
-        _cancel_pending_init()
-        assert not _collection
-        _collection = BackgroundInitialingLazy(lambda: JPCollection(mw.col))
+    _collection = BackgroundInitialingLazy(lambda: JPCollection(mw.col), delay_seconds=delay_seconds)
 
 def reset() -> None:
     _destruct()
@@ -42,18 +28,15 @@ def reset() -> None:
 
 def _destruct() -> None:
     global _collection
-    with _init_lock:
-        _cancel_pending_init()
-
-        if _collection:
-            _collection.instance().destruct()
-            _collection = None
-            gc.collect()
+    if _collection and not _collection.try_cancel_scheduled_init():
+        _collection.instance().destruct()
+        _collection = None
+        gc.collect()
 
 gui_hooks.profile_will_close.append(_destruct)
 gui_hooks.sync_will_start.append(_destruct)
 
-gui_hooks.profile_did_open.append(_schedule_init)
+gui_hooks.profile_did_open.append(lambda: _init(delay_seconds=1.0))
 gui_hooks.sync_did_finish.append(_init)
 
 def col() -> JPCollection:
