@@ -86,6 +86,9 @@ class CacheRunner:
 
         for destructor in self._destructors: destructor()
 
+        from note import noteutils
+        noteutils.clear_studying_cache()
+
     def _internal_flush_updates(self) -> None:
         self._check_for_updated_note_types_and_reset_app_if_found()
         for subscriber in self._merge_pending_subscribers: subscriber()

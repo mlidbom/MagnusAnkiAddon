@@ -26,6 +26,6 @@ class BackgroundInitialingLazy(Generic[T]):
     def instance(self) -> T:
         if not self.is_initialized():
             from sysutils import progress_display_runner
-            progress_display_runner.with_spinning_progress_dialog("Waiting for cache initialization", self._instance.result)
+            progress_display_runner.with_spinning_progress_dialog("Populating cache", self._instance.result)
 
         return self._instance.result()
