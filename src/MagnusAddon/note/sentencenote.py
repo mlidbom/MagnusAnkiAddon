@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     from note.vocabnote import VocabNote
 
 from note.jpnote import JPNote
-from sysutils import ex_list, ex_sequence, kana_utils
+from sysutils import ex_sequence, kana_utils
 from sysutils import ex_str
 from note.note_constants import ImmersionKitSentenceNoteFields, Mine, NoteFields, SentenceNoteFields, NoteTypes
 from anki.notes import Note
@@ -113,12 +113,11 @@ class SentenceNote(JPNote):
         from ankiutils import app
         return app.col().vocab.with_forms(self.ud_extract_word_forms())
 
-    def _get_parsed_words(self) -> list[str]: return self.get_field(SentenceNoteFields.ParsedWords).split(",")
-    def get_words(self) -> set[str]: return (self.get_parsed_words() | set(self.get_user_highlighted_vocab())) - self.get_user_excluded_vocab()
-    def get_parsed_words(self) -> set[str]: return set(self._get_parsed_words())
+    def get_parsed_words(self) -> list[str]: return self.get_field(SentenceNoteFields.ParsedWords).split(",")
+    def get_words(self) -> set[str]: return (set(self.get_parsed_words()) | set(self.get_user_highlighted_vocab())) - self.get_user_excluded_vocab()
 
     def _parsed_words_timestamp(self) -> int:
-        words = self._get_parsed_words()
+        words = self.get_parsed_words()
         return int(words[-1]) if words and words[-1].isdigit() else 0
 
     def _needs_words_reparsed(self) -> bool: return self._note.mod > self._parsed_words_timestamp()
@@ -131,7 +130,7 @@ class SentenceNote(JPNote):
 
     def update_parsed_words(self, force:bool = False) -> None:
         from language_services.janome_ex.word_extraction import word_extractor
-        words = self._get_parsed_words()
+        words = self.get_parsed_words()
         old_parsed_sentence = words[-1] if words else ""
         current_storable_sentence = f"""{self.get_question().replace(",", "").strip()}-parser_version-{word_extractor.version}"""
 

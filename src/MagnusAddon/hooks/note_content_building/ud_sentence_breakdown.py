@@ -56,7 +56,11 @@ def _node_html(node: NodeViewModel, excluded: set[str], highlighted: set[str], d
     return html
 
 def _build_user_extra_list(extra_words: list[str], user_excluded:set[str]) -> str:
-    html = f"""<ul class="sentenceVocabList userExtra depth1">\n"""
+    html = f"""
+    <div class="breakdown page_section">
+        <div class="page_section_title">extra vocab</div>
+        <ul class="sentenceVocabList userExtra depth1">
+"""
     for word in extra_words:
         vocabs: list[VocabNote] = app.col().vocab.with_form(word)
 
@@ -95,7 +99,9 @@ def _build_user_extra_list(extra_words: list[str], user_excluded:set[str]) -> st
                         </li>
                         """
 
-    html += "</ul>\n"
+    html += """</ul>
+        </div>
+    """
     return html
 
 def _create_html_from_nodes(nodes: list[NodeViewModel], excluded: set[str], extra: set[str], depth: int) -> str:
@@ -136,6 +142,13 @@ def print_debug_information_for_analysis(sentence: str) -> str:
 
     return html
 
+def render_parsed_words(note: SentenceNote) -> dict[str, str]:
+    detected_words = note.get_parsed_words()
+
+
+
+    return {}
+
 # noinspection DuplicatedCode
 def render_breakdown(note: SentenceNote) -> dict[str, str]:
     replacements:dict[str, str] = {}
@@ -146,16 +159,7 @@ def render_breakdown(note: SentenceNote) -> dict[str, str]:
     tree = ud_tree_builder.build_tree(ud_tokenizers.default, question)
     view_model = sentence_breakdown_viewmodel.create(tree, app.col())
 
-    if extra_words:
-        user_extra_html = f"""
-<div class="breakdown page_section">
-    <div class="page_section_title">extra vocab</div>
-    {_build_user_extra_list(extra_words, user_excluded)}
-</div>
-"""
-        replacements["##USER_EXTRA_VOCAB##"] = user_extra_html
-    else:
-        replacements["##USER_EXTRA_VOCAB##"] = ""
+    replacements["##USER_EXTRA_VOCAB##"] = _build_user_extra_list(extra_words, user_excluded) if extra_words else ""
 
     user_higlighted = set(extra_words)
     breakdown_html = f"""
