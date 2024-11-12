@@ -34,7 +34,7 @@ def setup_note_menu(sentence: SentenceNote, note_menu: QMenu, string_menus: list
         excluded = [w for w in current_words if potential_exclusion.excludes(w)]
         if any(excluded):
             if len(excluded) == 1:
-                add_ui_action(string_menu, shortcutfinger.home2("Exclude vocab"), lambda _matched=excluded[0]: sentence.exclude_vocab(_matched.to_exclusion().as_string())) # type: ignore
+                add_ui_action(string_menu, shortcutfinger.home2("Exclude vocab"), lambda _menu_string=menu_string: sentence.exclude_vocab(_menu_string)) # type: ignore
             else:
                 exclude_menu: QMenu = checked_cast(QMenu, string_menu.addMenu(shortcutfinger.home2("Exclude vocab")))
                 for excluded_index, matched in enumerate(excluded):
