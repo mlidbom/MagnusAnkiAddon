@@ -87,7 +87,10 @@ def test_something() -> None:
      ['厳密に言えば', '俺', '一人', 'が', '友達', 'だけど', 'だけど']),
     ("厳密に言えばだけど俺一人が友達だけど",
      [WordExclusion("だけど", 4)],
-     ['厳密に言えば', '俺', '一人', 'が', '友達', 'だけど'])
+     ['厳密に言えば', '俺', '一人', 'が', '友達', 'だけど']),
+    ("幼すぎて よく覚えていないけど",
+     [],
+     ['幼い', '幼', 'すぎる', 'すぎ', 'て', 'よく', '覚える', '覚え', 'て', 'いる', 'い', 'ない', 'けど'])
 ])
 def test_hierarchical_extraction(sentence: str, excluded:list[WordExclusion], expected_output: list[str]) -> None:
     hierarchical = word_extractor.extract_words_hierarchical(sentence, excluded)

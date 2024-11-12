@@ -53,14 +53,14 @@ class HierarchicalWord:
         self.children:list[HierarchicalWord] = []
         self.start_index = self.word.start_index
         self.end_index = self.word.lookahead_index
-        self.length = self.end_index - self.start_index + 1
+        self.may_have_children = self.start_index < self.end_index
 
     def add_child(self, child:HierarchicalWord) -> None:
         self.children.append(child)
         child.parent = self
 
     def is_parent_of(self, other: HierarchicalWord ) -> bool:
-        return other != self and self.start_index <= other.start_index <= self.end_index and other.end_index <= self.end_index
+        return self.may_have_children and other != self and self.start_index <= other.start_index <= self.end_index and other.end_index <= self.end_index
 
     def __repr__(self) -> str:
         return f"HierarchicalWord('{self.start_index}:{self.end_index}, {self.word.word}: parent:{self.parent.word.word if self.parent else ''}')"
