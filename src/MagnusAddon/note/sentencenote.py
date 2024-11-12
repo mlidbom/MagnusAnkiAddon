@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     from note.vocabnote import VocabNote
 
 from note.jpnote import JPNote
-from sysutils import kana_utils
+from sysutils import ex_list, ex_sequence, kana_utils
 from sysutils import ex_str
 from note.note_constants import ImmersionKitSentenceNoteFields, Mine, NoteFields, SentenceNoteFields, NoteTypes
 from anki.notes import Note
@@ -17,6 +17,12 @@ class SentenceNote(JPNote):
     def __init__(self, note: Note):
         super().__init__(note)
         self._user_excluded_cache:set[str] = set(ex_str.extract_newline_separated_values(self.get_field(SentenceNoteFields.user_excluded_vocab)))
+
+
+    def get_direct_dependencies(self) -> set[JPNote]:
+        vocab = set(ex_sequence.flatten([self.collection.vocab.with_question(vocab) for vocab in self.get_user_highlighted_vocab()]))
+        kanji = set(self.collection.kanji.with_any_kanji_in(self.extract_kanji()))
+        return vocab | kanji
 
     def get_question(self) -> str: return self._get_user_question() or self._get_source_question()
     def get_answer(self) -> str: return self._get_user_answer() or self._get_source_answer()

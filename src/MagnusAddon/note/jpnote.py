@@ -1,4 +1,7 @@
 from __future__ import annotations
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from note.collection.jp_collection import JPCollection
 
 import sys
 from abc import ABC
@@ -35,6 +38,11 @@ class JPNote(ABC):
     def __repr__(self) -> str:
         return f"""{self.get_question()} : {self.get_answer()}"""
 
+    @property
+    def collection(self) -> JPCollection:
+        from ankiutils import app
+        return app.col()
+
     def get_question(self) -> str: return self.get_field(MyNoteFields.question).strip()
     def get_answer(self) -> str: return self.get_field(MyNoteFields.answer)
 
@@ -65,9 +73,19 @@ class JPNote(ABC):
 
     def get_note_type_name(self) -> str: return self.get_note_type(self._note)
 
-    def delete(self) -> None:
-        from ankiutils import app
-        app.anki_collection().remove_notes([self._note.id])
+    def get_direct_dependencies(self) -> set[JPNote]:
+        return set()
+
+    def _get_dependencies_recursive(self, found: set[JPNote]) -> set[JPNote]:
+        if self in found:
+            return found
+        found.add(self)
+        for dependency in self.get_direct_dependencies():
+            dependency._get_dependencies_recursive(found)
+        return found
+
+    def get_dependencies_recursive(self) -> set[JPNote]:
+        return self._get_dependencies_recursive(set())
 
     def anki_note(self) -> Note: return self._note
     def get_id(self) -> NoteId: return self._note.id
@@ -81,6 +99,10 @@ class JPNote(ABC):
 
     def unsuspend_all_cards(self) -> None:
         for card in self.cards(): card.un_suspend()
+
+    def unsuspend_all_cards_and_dependencies(self) -> None:
+        for note in self.get_dependencies_recursive():
+            note.unsuspend_all_cards()
 
     def suspend_all_cards(self) -> None:
         for card in self.cards(): card.suspend()

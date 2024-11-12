@@ -5,6 +5,7 @@ from wanikani_api import models
 from anki.notes import Note
 
 from language_services.jamdict_ex.priority_spec import PrioritySpec
+from note.jpnote import JPNote
 from note.kanavocabnote import KanaVocabNote
 from sysutils import kana_utils
 from sysutils import ex_str
@@ -70,6 +71,9 @@ class VocabNote(KanaVocabNote):
     def _get_forms(self) -> str: return self.get_field(NoteFields.Vocab.Forms)
     def _set_forms(self, value: str) -> None: self.set_field(NoteFields.Vocab.Forms, value)
     def get_user_compounds(self) -> list[str]: return ex_str.extract_comma_separated_values(self.get_field(NoteFields.Vocab.user_compounds))
+
+    def get_direct_dependencies(self) -> set[JPNote]:
+        return set(self.collection.kanji.with_any_kanji_in(list(self.extract_all_kanji())))
 
     def update_generated_data(self) -> None:
         self.set_field(NoteFields.Vocab.sentence_count, str(len(self.get_sentences())))

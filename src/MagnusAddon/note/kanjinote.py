@@ -6,6 +6,8 @@ from typing import Tuple, TYPE_CHECKING
 from wanikani_api import models
 from anki.notes import Note
 
+from note.jpnote import JPNote
+
 if TYPE_CHECKING:
     from note.vocabnote import VocabNote
 
@@ -19,6 +21,9 @@ _primary_reading_pattern = re.compile(r'<primary>(.*?)</primary>')
 class KanjiNote(WaniNote):
     def __init__(self, note: Note):
         super().__init__(note)
+
+    def get_direct_dependencies(self) -> set[JPNote]:
+        return set(self.get_radicals_notes())
 
     def tag_vocab_readings(self, vocab: VocabNote) -> list[str]:
         def primary_reading(read:str) -> str: return f'<span class="kanjiReadingPrimary">{read}</span>'

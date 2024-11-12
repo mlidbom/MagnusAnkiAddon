@@ -99,9 +99,10 @@ def setup_matching_note_menu(string_menu: QMenu, string:str) -> None:
 
         if note.has_suspended_cards():
             add_ui_action(menu, shortcutfinger.home3("Unsuspend all cards"), note.unsuspend_all_cards)
+        elif note.has_active_cards():
+            add_ui_action(menu, shortcutfinger.home3("Suspend all cards"), note.suspend_all_cards)
 
-        if note.has_active_cards():
-            add_ui_action(menu, shortcutfinger.home4("Suspend all cards"), note.suspend_all_cards)
+        add_ui_action(menu, shortcutfinger.home4("Unsuspend all cards and dependencies"), note.unsuspend_all_cards_and_dependencies)
 
     if vocabs or sentences or kanjis:
         note_menu = checked_cast(QMenu, string_menu.addMenu(shortcutfinger.home4("Notes")))

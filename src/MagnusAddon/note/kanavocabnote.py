@@ -37,8 +37,10 @@ class KanaVocabNote(WaniNote):
             for similar in app.col().vocab.with_question(new_similar):
                 similar.add_related_similar_meaning(self.get_question(), _is_recursive_call=True)
 
+
     def get_related_derived_from(self) -> str: return self.get_field(NoteFields.Vocab.Related_derived_from)
     def set_related_derived_from(self, value: str) -> None: self.set_field(NoteFields.Vocab.Related_derived_from, value)
+
 
     def get_related_ergative_twin(self) -> str: return self.get_field(NoteFields.Vocab.Related_ergative_twin)
     def set_related_ergative_twin(self, value: str) -> None:
