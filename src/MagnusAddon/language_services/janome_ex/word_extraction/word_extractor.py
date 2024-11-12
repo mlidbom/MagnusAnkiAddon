@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Optional
+from typing import Any, Optional
 
 from language_services.jamdict_ex.dict_lookup import DictLookup
 from language_services.janome_ex.word_extraction.extracted_word import ExtractedWord
@@ -15,40 +15,77 @@ _max_lookahead = 12
 version = "janome_extractor_1"
 
 
+class WordExclusion:
+    _separator = "####"
+    _no_index = -1
+    def __init__(self, word:str, index:int = _no_index) -> None:
+        self.word = word
+        self.index = index
+
+    def excludes(self, word:HierarchicalWord) -> bool:
+        return word.word.word == self.word and (self.index == WordExclusion._no_index or self.index == word.word.start_index)
+
+    @classmethod
+    def from_string(cls, exclusion:str) -> WordExclusion:
+        if cls._separator in exclusion:
+            parts = exclusion.split(cls._separator)
+            return WordExclusion(parts[1].strip(), int(parts[0].strip()))
+        return WordExclusion(exclusion.strip())
+
+    def as_string(self) -> str:
+        return self.word if self.index == WordExclusion._no_index else f"""{self.index}{self._separator}{self.word}"""
+
+    def __eq__(self, other: Any) -> bool:
+        if isinstance(other, WordExclusion):
+            return self.word == other.word and self.index == other.index
+        return False
+
+    def __hash__(self) -> int:
+        return hash((self.word, self.index))
+
+    def covers(self, other:WordExclusion) -> bool:
+        return self.word == other.word and (self.index == WordExclusion._no_index or self.index == other.index)
+
 class HierarchicalWord:
     def __init__(self, word: ExtractedWord):
         self.word = word
         self.parent:Optional[HierarchicalWord] = None
         self.children:list[HierarchicalWord] = []
-        self.start = self.word.start_index
-        self.end = self.word.lookahead_index
-        self.length = self.end - self.start + 1
+        self.start_index = self.word.start_index
+        self.end_index = self.word.lookahead_index
+        self.length = self.end_index - self.start_index + 1
 
     def add_child(self, child:HierarchicalWord) -> None:
         self.children.append(child)
         child.parent = self
 
     def is_parent_of(self, other: HierarchicalWord ) -> bool:
-        return other != self and self.start <= other.start <= self.end and other.end <= self.end
+        return other != self and self.start_index <= other.start_index <= self.end_index and other.end_index <= self.end_index
 
     def __repr__(self) -> str:
-        return f"HierarchicalWord('{self.start}:{self.end}, {self.word.word}: parent:{self.parent.word.word if self.parent else ''}')"
+        return f"HierarchicalWord('{self.start_index}:{self.end_index}, {self.word.word}: parent:{self.parent.word.word if self.parent else ''}')"
 
-def extract_words_hierarchical(sentence: str, excluded_words:set[str]) -> list[HierarchicalWord]:
+    def to_exclusion(self) -> WordExclusion:
+        return WordExclusion(self.word.word, self.start_index)
 
+def extract_words_hierarchical(sentence: str, excluded_words:list[WordExclusion]) -> list[HierarchicalWord]:
+    only_non_children = [w for w in extract_words_hierarchical_all(sentence, excluded_words) if not w.parent]
+    return only_non_children
+
+def extract_words_hierarchical_all(sentence: str, excluded_words:list[WordExclusion]) -> list[HierarchicalWord]:
     def sort_key(word:ExtractedWord) -> tuple[int, int]: return word.start_index, -word.length()
+    def is_excluded(word:HierarchicalWord) -> bool: return any(exclusion for exclusion in excluded_words if exclusion.excludes(word))
 
-    starting_point = [HierarchicalWord(word) for word in sorted(extract_words(sentence, allow_duplicates=True), key=sort_key) if word.word not in excluded_words]
+    starting_point = [HierarchicalWord(word) for word in sorted(extract_words(sentence, allow_duplicates=True), key=sort_key)]
 
-    for word in starting_point:
-        children = [w for w in starting_point if word.is_parent_of(w)]
+    without_exclusions = [word for word in starting_point if not is_excluded(word)]
+
+    for word in without_exclusions:
+        children = [w for w in without_exclusions if word.is_parent_of(w)]
         for child in children:
             word.add_child(child)
 
-
-    only_non_children = [w for w in starting_point if not w.parent]
-
-    return only_non_children
+    return without_exclusions
 
 # noinspection DuplicatedCode
 def extract_words(sentence: str, allow_duplicates:bool = False) -> list[ExtractedWord]:

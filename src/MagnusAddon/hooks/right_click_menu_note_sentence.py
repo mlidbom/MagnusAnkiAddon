@@ -2,6 +2,7 @@ from PyQt6.QtWidgets import QMenu
 
 from ankiutils import query_builder
 from hooks.right_click_menu_utils import add_lookup_action, add_ui_action
+from language_services.janome_ex.word_extraction.word_extractor import WordExclusion
 from note.note_constants import NoteFields, NoteTypes
 from note.sentencenote import SentenceNote
 from sysutils.typed import checked_cast
@@ -27,9 +28,30 @@ def setup_note_menu(sentence: SentenceNote, note_menu: QMenu, string_menus: list
 
     for string_menu, menu_string in string_menus:
         position_vocab_menu(string_menu, menu_string, shortcutfinger.home1("Highlighted Vocab"))
-        if menu_string in sentence.get_user_excluded_vocab():
-            add_ui_action(string_menu, shortcutfinger.home2("Remove exclusion"), lambda _menu_string=menu_string: sentence.remove_excluded_vocab(_menu_string)) # type: ignore
+
+        potential_exclusion = WordExclusion.from_string(menu_string)
+        current_words = sentence.get_valid_parsed_non_child_words()
+        excluded = [w for w in current_words if potential_exclusion.excludes(w)]
+        if any(excluded):
+            if len(excluded) == 1:
+                add_ui_action(string_menu, shortcutfinger.home2("Exclude vocab"), lambda _matched=excluded[0]: sentence.exclude_vocab(_matched.to_exclusion().as_string()))
+            else:
+                exclude_menu: QMenu = checked_cast(QMenu, string_menu.addMenu(shortcutfinger.home2("Exclude vocab")))
+                for excluded_index, matched in enumerate(excluded):
+                    add_ui_action(exclude_menu, shortcutfinger.numpad(excluded_index, f"{matched.start_index}:{matched.word}"), lambda _matched=matched: sentence.exclude_vocab(_matched.to_exclusion().as_string()))
         else:
             add_ui_action(string_menu, shortcutfinger.home2("Exclude vocab"), lambda _menu_string=menu_string: sentence.exclude_vocab(_menu_string))  # type: ignore
+
+        current_exclusions = sentence.get_user_word_exclusions()
+        covered_existing_exclusions = [x for x in current_exclusions if potential_exclusion.covers(x)]
+        if any(covered_existing_exclusions):
+            if len(covered_existing_exclusions) == 1:
+                add_ui_action(string_menu, shortcutfinger.home3("Remove exclusion"), lambda _menu_string=menu_string: sentence.remove_excluded_vocab(_menu_string)) # type: ignore
+            else:
+                remove_exclution_menu: QMenu = checked_cast(QMenu, string_menu.addMenu(shortcutfinger.home3("Remove exclusion")))
+                for excluded_index, matched_exclusion in enumerate(covered_existing_exclusions):
+                    add_ui_action(remove_exclution_menu, shortcutfinger.numpad(excluded_index, f"{matched_exclusion.index}:{matched_exclusion.word}"), lambda _matched_exclusion=matched_exclusion: sentence.remove_excluded_vocab(_matched_exclusion.as_string()))
+
+
 
     position_vocab_menu(note_menu, "-", shortcutfinger.home2("Highlighted Vocab Separator"))

@@ -1,6 +1,7 @@
 from __future__ import annotations
 from typing import Optional, TYPE_CHECKING
 
+from language_services.janome_ex.word_extraction.word_extractor import HierarchicalWord, WordExclusion
 from sysutils.ex_str import newline
 
 if TYPE_CHECKING:
@@ -16,12 +17,12 @@ from anki.notes import Note
 class SentenceNote(JPNote):
     def __init__(self, note: Note):
         super().__init__(note)
-        self._user_excluded_cache:set[str] = set(ex_str.extract_newline_separated_values(self.get_field(SentenceNoteFields.user_excluded_vocab)))
+        self._user_excluded_cache:set[str] = self._get_user_word_exclusions_strings()
 
 
     def get_direct_dependencies(self) -> set[JPNote]:
         highlighted = set(ex_sequence.flatten([self.collection.vocab.with_question(vocab) for vocab in self.get_user_highlighted_vocab()]))
-        valid_parsed_roots = set(ex_sequence.flatten([self.collection.vocab.with_question(vocab) for vocab in self.get_valid_parsed_non_child_words()]))
+        valid_parsed_roots = set(ex_sequence.flatten([self.collection.vocab.with_question(vocab) for vocab in self.get_valid_parsed_non_child_words_strings()]))
         kanji = set(self.collection.kanji.with_any_kanji_in(self.extract_kanji()))
         return highlighted | valid_parsed_roots | kanji
 
@@ -47,20 +48,32 @@ class SentenceNote(JPNote):
     def get_audio_path(self) -> str: return ex_str.strip_html_markup(self.get_field(SentenceNoteFields.audio)).strip()[7:-1]
 
     def get_user_excluded_vocab(self) -> set[str]: return self._user_excluded_cache
-    def _set_user_excluded_vocab(self, excluded: set[str]) -> None:
-        self._user_excluded_cache = excluded
-        self.set_field(SentenceNoteFields.user_excluded_vocab, newline.join(self._user_excluded_cache))
 
+    def get_user_word_exclusions(self) -> list[WordExclusion]:
+        strings = ex_str.extract_newline_separated_values(self.get_field(SentenceNoteFields.user_excluded_vocab))
+        return [WordExclusion.from_string(s) for s in strings]
+
+    def _get_user_word_exclusions_strings(self) -> set[str]:
+        word_exclusions = set(x.word for x in self.get_user_word_exclusions())
+        valid_words = set(self.get_parsed_words())
+        return word_exclusions - valid_words
+
+    def _set_user_word_exclusions(self, exclusions: set[WordExclusion]) -> None:
+        sorted_exclusions = sorted(exclusions, key=lambda x: x.index)
+        self.set_field(SentenceNoteFields.user_excluded_vocab, newline.join([e.as_string() for e in sorted_exclusions]))
+        self.update_parsed_words(force=True)
+        self._user_excluded_cache = self._get_user_word_exclusions_strings()
 
     def is_studying_read(self) -> bool: return self.is_studying(NoteFields.SentencesNoteType.Card.Reading)
     def is_studying_listening(self) -> bool: return self.is_studying(NoteFields.SentencesNoteType.Card.Listening)
 
 
-    def get_valid_parsed_non_child_words(self) -> list[str]:
-        from language_services.janome_ex.word_extraction import word_extractor
-        roots = word_extractor.extract_words_hierarchical(self.get_question(), self.get_user_excluded_vocab())
+    def get_valid_parsed_non_child_words_strings(self) -> list[str]:
+        return [w.word.word for w in self.get_valid_parsed_non_child_words()]
 
-        return [w.word.word for w in roots]
+    def get_valid_parsed_non_child_words(self) -> list[HierarchicalWord]:
+        from language_services.janome_ex.word_extraction import word_extractor
+        return word_extractor.extract_words_hierarchical(self.get_question(), list(self.get_user_word_exclusions()))
 
     def get_user_highlighted_vocab(self) -> list[str]: return ex_str.extract_newline_separated_values(self.get_field(SentenceNoteFields.user_extra_vocab))
     def _set_user_extra_vocab(self, extra: list[str]) -> None: return self.set_field(SentenceNoteFields.user_extra_vocab, newline.join(extra))
@@ -83,17 +96,17 @@ class SentenceNote(JPNote):
         self._set_user_extra_vocab([v for v in self.get_user_highlighted_vocab() if not v == vocab])
 
     def remove_excluded_vocab(self, vocab: str) -> None:
-        excluded = self.get_user_excluded_vocab()
-        if vocab in excluded:
-            excluded.remove(vocab.strip())
-
-        self._set_user_excluded_vocab(excluded)
+        exclusion = WordExclusion.from_string(vocab)
+        excluded = self.get_user_word_exclusions()
+        new_excluded = {e for e in excluded if not exclusion.covers(e)}
+        self._set_user_word_exclusions(new_excluded)
 
     def exclude_vocab(self, vocab: str) -> None:
-        self.remove_extra_vocab(vocab)
-        excluded = self.get_user_excluded_vocab()
-        excluded.add(vocab.strip())
-        self._set_user_excluded_vocab(excluded)
+        exclusion = WordExclusion.from_string(vocab)
+        self.remove_extra_vocab(exclusion.word)
+        excluded = set(self.get_user_word_exclusions())
+        excluded.add(exclusion)
+        self._set_user_word_exclusions(excluded)
 
     def parse_words_from_expression(self) -> list[ExtractedWord]:
         from language_services.janome_ex.word_extraction import word_extractor
@@ -137,7 +150,7 @@ class SentenceNote(JPNote):
         current_storable_sentence = f"""{self.get_question().replace(",", "").strip()}-parser_version-{word_extractor.version}"""
 
         if force or old_parsed_sentence != current_storable_sentence:
-            value = [parsed_word.word for parsed_word in word_extractor.extract_words(self.get_question())]
+            value = [parsed_word.word.word for parsed_word in word_extractor.extract_words_hierarchical_all(self.get_question(), list(self.get_user_word_exclusions()))]
             value.append(current_storable_sentence)
             self.set_field(SentenceNoteFields.ParsedWords, ",".join(value))
 

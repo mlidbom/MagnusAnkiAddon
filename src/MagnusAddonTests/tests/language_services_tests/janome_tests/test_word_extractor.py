@@ -5,6 +5,7 @@ import pytest
 from fixtures.collection_factory import inject_empty_anki_collection_with_note_types
 from language_services.janome_ex.tokenizing.jn_tokenizer import JNTokenizer
 from language_services.janome_ex.word_extraction import word_extractor
+from language_services.janome_ex.word_extraction.word_extractor import WordExclusion
 from note.vocabnote import VocabNote
 
 _tokenizer: JNTokenizer
@@ -76,16 +77,19 @@ def test_something() -> None:
 
 @pytest.mark.parametrize('sentence, excluded, expected_output', [
     ("厳密に言えば　俺一人が友達だけど",
-     {},
+     [],
      ["厳密に言えば", "俺", "一人", "が", "友達", "だけど"]),
     ("厳密に言えば　俺一人が友達だけど",
-     {"厳密に言えば", "言え", 'だけど'},
+     [WordExclusion("厳密に言えば"), WordExclusion("言え"), WordExclusion('だけど')],
      ['厳密', 'に', '言う', 'ば', '俺', '一人', 'が', '友達', 'だ', 'けど']),
     ("厳密に言えば　俺一人が友達だけどだけど",
-     {},
-     ['厳密に言えば', '俺', '一人', 'が', '友達', 'だけど', 'だけど'])
+     [],
+     ['厳密に言えば', '俺', '一人', 'が', '友達', 'だけど', 'だけど']),
+    ("厳密に言えばだけど俺一人が友達だけど",
+     [WordExclusion("だけど", 4)],
+     ['厳密に言えば', '俺', '一人', 'が', '友達', 'だけど'])
 ])
-def test_hierarchical_extraction(sentence: str, excluded:set[str], expected_output: list[str]) -> None:
+def test_hierarchical_extraction(sentence: str, excluded:list[WordExclusion], expected_output: list[str]) -> None:
     hierarchical = word_extractor.extract_words_hierarchical(sentence, excluded)
     root_words = [w.word.word for w in hierarchical]
     assert root_words == expected_output
