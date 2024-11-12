@@ -3,7 +3,6 @@ from typing import Generator
 import pytest
 
 from fixtures.collection_factory import inject_empty_anki_collection_with_note_types
-from language_services.janome_ex.word_extraction.extracted_word import ExtractedWord
 from language_services.janome_ex.tokenizing.jn_tokenizer import JNTokenizer
 from language_services.janome_ex.word_extraction import word_extractor
 from note.vocabnote import VocabNote
@@ -67,8 +66,23 @@ def test_custom_vocab_words(sentence: str, custom_words:list[str], expected_outp
 
 def test_ignores_noise_characters() -> None:
     result = word_extractor.extract_words(". , : ; / | 。 、 ー")
-    assert result == [ExtractedWord("ー")]
+    assert len(result) == 1
+    assert result[0].word == "ー"
 
 def test_something() -> None:
     result = word_extractor.extract_words("知ってる人があんまりいない高校に行って")
     print(result)
+
+
+@pytest.mark.parametrize('sentence, excluded, expected_output', [
+    ("厳密に言えば　俺一人が友達だけど",
+     {},
+     ["厳密に言えば", "俺", "一人", "が", "友達", "だけど"]),
+    ("厳密に言えば　俺一人が友達だけど",
+     {"厳密に言えば", "言え", 'だけど'},
+     ['厳密', 'に', '言う', 'ば', '俺', '一人', 'が', '友達', 'だ', 'けど'])
+])
+def test_hierarchical_extraction(sentence: str, excluded:set[str], expected_output: list[str]) -> None:
+    hierarchical = word_extractor.extract_words_hierarchical(sentence, excluded)
+    root_words = [w.word.word for w in hierarchical]
+    assert root_words == expected_output

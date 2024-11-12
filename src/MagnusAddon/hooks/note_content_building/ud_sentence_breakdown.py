@@ -2,6 +2,7 @@ from aqt import gui_hooks
 
 from ankiutils import app
 from hooks.note_content_building.content_renderer import PrerenderingAnswerContentRenderer
+from language_services.janome_ex.word_extraction import word_extractor
 from language_services.shared import priorities
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
@@ -56,7 +57,10 @@ def _build_vocab_list(word_to_show: list[str], excluded_words:set[str], title:st
     return html
 
 def render_parsed_words(note: SentenceNote, replacements:dict[str, str]) ->None:
-    replacements["##PARSED_WORDS##"] = _build_vocab_list(note.get_parsed_words(), note.get_user_excluded_vocab(), "parsed words")
+    hierarchy = word_extractor.extract_words_hierarchical(note.get_question(), note.get_user_excluded_vocab())
+    only_roots = [w.word.word for w in hierarchy]
+
+    replacements["##PARSED_WORDS##"] = _build_vocab_list(only_roots, note.get_user_excluded_vocab(), "parsed words")
 
 def render_excluded_words(note: SentenceNote, replacements:dict[str, str]) ->None:
     replacements["##EXCLUDED_WORDS##"] = _build_vocab_list(list(note.get_user_excluded_vocab()), set(), "incorrectly matched words")

@@ -5,12 +5,16 @@ from sysutils import kana_utils
 
 
 class ExtractedWord:
-    def __init__(self, word: str, parts_of_speech: Union[PartOfSpeechDescription, None] = None) -> None:
+    def __init__(self, word: str, start_index:int, lookahead_index:int, parts_of_speech: Union[PartOfSpeechDescription, None] = None) -> None:
         self.word = word
+        self.start_index = start_index
+        self.lookahead_index = lookahead_index
         self.parts_of_speech = parts_of_speech
 
     def is_kana_only(self) -> bool: return kana_utils.is_only_kana(self.word)
     def to_hiragana(self) -> str: return kana_utils.to_hiragana(self.word)
+
+    def length(self) -> int: return len(self.word)
 
     def __repr__(self) -> str:
         return f"ExtractedWord('{self.word}')"
