@@ -38,7 +38,7 @@ def extract_words_hierarchical(sentence: str, excluded_words:set[str]) -> list[H
 
     def sort_key(word:ExtractedWord) -> tuple[int, int]: return word.start_index, -word.length()
 
-    starting_point = [HierarchicalWord(word) for word in sorted(extract_words(sentence), key=sort_key) if word.word not in excluded_words]
+    starting_point = [HierarchicalWord(word) for word in sorted(extract_words(sentence, allow_duplicates=True), key=sort_key) if word.word not in excluded_words]
 
     for word in starting_point:
         children = [w for w in starting_point if word.is_parent_of(w)]
@@ -50,11 +50,8 @@ def extract_words_hierarchical(sentence: str, excluded_words:set[str]) -> list[H
 
     return only_non_children
 
-
-
-
 # noinspection DuplicatedCode
-def extract_words(sentence: str) -> list[ExtractedWord]:
+def extract_words(sentence: str, allow_duplicates:bool = False) -> list[ExtractedWord]:
     from ankiutils import app
 
     def _is_word(word: str) -> bool:
@@ -66,7 +63,7 @@ def extract_words(sentence: str) -> list[ExtractedWord]:
 
     # noinspection DuplicatedCode
     def add_word(word: str, lookahead_index: int) -> None:
-        if word not in found_words and word not in _noise_characters:
+        if (allow_duplicates or word not in found_words) and word not in _noise_characters:
             found_words.add(word)
             found_words_list.append(ExtractedWord(word, token_index, lookahead_index))
 
@@ -89,7 +86,7 @@ def extract_words(sentence: str) -> list[ExtractedWord]:
     for token_index, token in enumerate(tokens):
         add_word(token.base_form, 0)
 
-        if not (token.parts_of_speech.is_verb() and token.inflected_form == "連用タ接続"): #if the surface is the stem of an inflected verb, don't use it, it's not a word in its own right in this sentence.
+        if token.surface != token.base_form and not (token.parts_of_speech.is_verb() and token.inflected_form == "連用タ接続"): #if the surface is the stem of an inflected verb, don't use it, it's not a word in its own right in this sentence.
             add_word(token.surface, 0)
         check_for_compound_words()
 
