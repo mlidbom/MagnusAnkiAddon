@@ -53,6 +53,7 @@ class SentenceNote(JPNote):
     def _set_user_extra_vocab(self, extra: list[str]) -> None: return self.set_field(SentenceNoteFields.user_extra_vocab, newline.join(extra))
     def position_extra_vocab(self, vocab: str, index:int = -1) -> None:
         vocab = vocab.strip()
+        self.remove_excluded_vocab(vocab)
         vocab_list = self.get_user_highlighted_vocab()
         if vocab in vocab_list:
             vocab_list.remove(vocab)
@@ -67,6 +68,13 @@ class SentenceNote(JPNote):
 
     def remove_extra_vocab(self, vocab: str) -> None:
         self._set_user_extra_vocab([v for v in self.get_user_highlighted_vocab() if not v == vocab])
+
+    def remove_excluded_vocab(self, vocab: str) -> None:
+        excluded = self.get_user_excluded_vocab()
+        if vocab in excluded:
+            excluded.remove(vocab.strip())
+
+        self._set_user_excluded_vocab(excluded)
 
     def exclude_vocab(self, vocab: str) -> None:
         self.remove_extra_vocab(vocab)
