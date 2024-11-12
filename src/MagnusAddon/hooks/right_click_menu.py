@@ -86,7 +86,8 @@ def create_note_actions_menu(note_menu: QMenu, note:JPNote, title:str) -> None:
     elif note.has_active_cards():
         add_ui_action(menu, shortcutfinger.home3("Suspend all cards"), note.suspend_all_cards)
 
-    add_ui_action(menu, shortcutfinger.home4("Unsuspend all cards and dependencies"), note.unsuspend_all_cards_and_dependencies, confirm=True)
+    if note.has_suspended_cards_or_depencies_suspended_cards():
+        add_ui_action(menu, shortcutfinger.home4("Unsuspend all cards and dependencies' cards"), note.unsuspend_all_cards_and_dependencies, confirm=True)
 
 def setup_note_menu(note: JPNote, root_menu: QMenu, string_menus: list[tuple[QMenu, str]]) -> None:
     note_menu = checked_cast(QMenu, root_menu.addMenu(shortcutfinger.home3("Note")))
