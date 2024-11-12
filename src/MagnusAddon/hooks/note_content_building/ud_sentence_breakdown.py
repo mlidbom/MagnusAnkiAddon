@@ -2,13 +2,12 @@ from aqt import gui_hooks
 
 from ankiutils import app
 from hooks.note_content_building.content_renderer import PrerenderingAnswerContentRenderer
-from language_services.janome_ex.word_extraction import word_extractor
 from language_services.shared import priorities
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
 from sysutils import kana_utils
 
-def _build_vocab_list(word_to_show: list[str], excluded_words:set[str], title:str, include_extended_sentence_statistics:bool = False) -> str:
+def _build_vocab_list(word_to_show: list[str], excluded_words:set[str], title:str, include_mnemonics:bool=False, include_extended_sentence_statistics:bool = False) -> str:
     html = f"""
     <div class="breakdown page_section">
         <div class="page_section_title">{title}</div>
@@ -19,9 +18,9 @@ def _build_vocab_list(word_to_show: list[str], excluded_words:set[str], title:st
 
         vocabs = [voc for voc in vocabs if not voc.get_question() in excluded_words]
 
-        exact_match = [voc for voc in vocabs if voc.get_question() == word]
-        if exact_match:
-            vocabs = exact_match
+        # exact_match = [voc for voc in vocabs if voc.get_question() == word]
+        # if exact_match:
+        #     vocabs = exact_match
 
         if vocabs:
             for vocab in vocabs:
@@ -38,7 +37,7 @@ def _build_vocab_list(word_to_show: list[str], excluded_words:set[str], title:st
                                 {vocab.get_meta_tags_html(include_extended_sentence_statistics)}
                                 <span class="vocabAnswer">{vocab.get_answer()}</span>
                             </div>
-                            {f'''<div class="sentenceVocabEntryMnemonic">{ vocab.get_mnemonics_override() }</div>''' if vocab.get_mnemonics_override() and vocab.get_mnemonics_override() != '-' else '' }
+                            {f'''<div class="sentenceVocabEntryMnemonic">{ vocab.get_mnemonics_override() }</div>''' if include_mnemonics and vocab.get_mnemonics_override() and vocab.get_mnemonics_override() != '-' else '' }
                         </li>
                         """
         else:
@@ -64,7 +63,7 @@ def render_excluded_words(note: SentenceNote, replacements:dict[str, str]) ->Non
     replacements["##EXCLUDED_WORDS##"] = _build_vocab_list(excluded_vocab, set(), "incorrectly matched words") if excluded_vocab else ""
 
 def render_user_extra_list(note: SentenceNote, replacements:dict[str, str]) ->None:
-    replacements["##USER_EXTRA_VOCAB##"] = _build_vocab_list(note.get_user_highlighted_vocab(), note.get_user_excluded_vocab(), "highlighted words", include_extended_sentence_statistics=True) if note.get_user_highlighted_vocab() else ""
+    replacements["##USER_EXTRA_VOCAB##"] = _build_vocab_list(note.get_user_highlighted_vocab(), note.get_user_excluded_vocab(), "highlighted words", include_mnemonics=True, include_extended_sentence_statistics=True) if note.get_user_highlighted_vocab() else ""
 
 
 def render(note: SentenceNote) -> dict[str, str]:
