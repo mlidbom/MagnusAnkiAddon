@@ -56,7 +56,9 @@ def _build_vocab_list(word_to_show: list[str], excluded_words:set[str], title:st
     return html
 
 def render_parsed_words(note: SentenceNote, replacements:dict[str, str]) -> None:
-    replacements["##PARSED_WORDS##"] = _build_vocab_list(note.get_valid_parsed_non_child_words_strings(), note.get_user_excluded_vocab(), "parsed words")
+    words = note.get_valid_parsed_non_child_words_strings()
+    excluded = note.get_user_excluded_vocab()
+    replacements["##PARSED_WORDS##"] = _build_vocab_list(words, excluded, "parsed words")
 
 def render_excluded_words(note: SentenceNote, replacements:dict[str, str]) -> None:
     excluded_words = {x.word for x in note.get_user_word_exclusions()}
