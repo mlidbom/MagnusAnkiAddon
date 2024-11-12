@@ -30,4 +30,8 @@ def numpad(index:int, text:str) -> str:
     if index < len(_numpad_functions): return _numpad_functions[index](f"""{index + 1} {text}""")
     return none(text)
 
+def numpad_no_numbers(index:int, text:str) -> str:
+    if index < len(_numpad_functions): return _numpad_functions[index](f"""{text}""")
+    return none(text)
+
 def remove_shortcut_text(string:str) -> str: return " " .join(string.split(" ")[1:])
