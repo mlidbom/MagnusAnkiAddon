@@ -10,6 +10,7 @@ from aqt import gui_hooks
 from aqt.browser.previewer import Previewer
 from aqt.webview import AnkiWebView, AnkiWebViewKind
 
+from ankiutils import query_builder, search_executor
 from ankiutils.app import main_window
 from hooks import right_click_menu_note_radical, right_click_menu_note_kanji, right_click_menu_note_vocab, right_click_menu_note_sentence
 from hooks.right_click_menu_search import setup_anki_open_menu, setup_web_search_menu
@@ -23,7 +24,6 @@ from sysutils.typed import checked_cast
 
 from typing import Optional
 from hooks import shortcutfinger
-from ankiutils import query_builder, search_executor
 
 def register_lookup_actions(view: AnkiWebView, root_menu: QMenu) -> None:
     def get_note() -> Optional[JPNote]:
@@ -74,49 +74,47 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu) -> None:
     for string_menu, menu_string in string_menus:
         setup_web_search_menu(string_menu, menu_string)
 
+
+def create_note_actions_menu(note_menu: QMenu, note:JPNote, title:str) -> None:
+    menu = checked_cast(QMenu, note_menu.addMenu(title))
+
+    menu.addAction(shortcutfinger.home1("Open"), search_executor.lookup_promise(lambda: query_builder.notes_lookup([note])))
+    menu.addAction(shortcutfinger.home2("Open in previewer"), search_executor.lookup_and_show_previewer_promise(lambda: query_builder.notes_lookup([note])))
+
+    if note.has_suspended_cards():
+        add_ui_action(menu, shortcutfinger.home3("Unsuspend all cards"), note.unsuspend_all_cards)
+    elif note.has_active_cards():
+        add_ui_action(menu, shortcutfinger.home3("Suspend all cards"), note.suspend_all_cards)
+
+    add_ui_action(menu, shortcutfinger.home4("Unsuspend all cards and dependencies"), note.unsuspend_all_cards_and_dependencies, confirm=True)
+
 def setup_note_menu(note: JPNote, root_menu: QMenu, string_menus: list[tuple[QMenu, str]]) -> None:
     note_menu = checked_cast(QMenu, root_menu.addMenu(shortcutfinger.home3("Note")))
     if isinstance(note, RadicalNote):
         right_click_menu_note_radical.setup_note_menu(note, note_menu, string_menus)
-    if isinstance(note, KanjiNote):
+    elif isinstance(note, KanjiNote):
         right_click_menu_note_kanji.setup_note_menu(note, note_menu, string_menus)
-    if isinstance(note, VocabNote):
+    elif isinstance(note, VocabNote):
         right_click_menu_note_vocab.setup_note_menu(note, note_menu, string_menus)
-    if isinstance(note, SentenceNote):
+    elif isinstance(note, SentenceNote):
         right_click_menu_note_sentence.setup_note_menu(note, note_menu, string_menus)
 
+    create_note_actions_menu(note_menu, note, shortcutfinger.home4("Note actions"))
 
 def setup_matching_note_menu(string_menu: QMenu, string:str) -> None:
     from ankiutils import app
     vocabs = app.col().vocab.with_question(string)
     sentences = app.col().sentences.with_question(string)
-
     kanjis = app.col().kanji.with_any_kanji_in([string]) if len(string) == 1 else []
 
-    def add_note_actions(note:JPNote, menu: QMenu) -> None:
-        menu.addAction(shortcutfinger.home1("Open"), search_executor.lookup_promise(lambda: query_builder.notes_lookup([note])))
-        menu.addAction(shortcutfinger.home2("Open in previewer"), search_executor.lookup_and_show_previewer_promise(lambda: query_builder.notes_lookup([note])))
-
-        if note.has_suspended_cards():
-            add_ui_action(menu, shortcutfinger.home3("Unsuspend all cards"), note.unsuspend_all_cards)
-        elif note.has_active_cards():
-            add_ui_action(menu, shortcutfinger.home3("Suspend all cards"), note.suspend_all_cards)
-
-        add_ui_action(menu, shortcutfinger.home4("Unsuspend all cards and dependencies"), note.unsuspend_all_cards_and_dependencies)
-
-    if vocabs or sentences or kanjis:
+    if any(vocabs) or any(sentences) or any(kanjis):
         note_menu = checked_cast(QMenu, string_menu.addMenu(shortcutfinger.home4("Notes")))
         if any(vocabs):
-            vocab = vocabs[0]
-            add_note_actions(vocab, checked_cast(QMenu, note_menu.addMenu(shortcutfinger.home1("Vocab"))))
-
+            create_note_actions_menu(note_menu, vocabs[0], shortcutfinger.home1("Vocab Actions"))
         if any(sentences):
-            sentence = sentences[0]
-            add_note_actions(sentence, checked_cast(QMenu, note_menu.addMenu(shortcutfinger.home2("Sentence"))))
-
+            create_note_actions_menu(note_menu, sentences[0], shortcutfinger.home2("Sentence Actions"))
         if any(kanjis):
-            kanji = kanjis[0]
-            add_note_actions(kanji, checked_cast(QMenu, note_menu.addMenu(shortcutfinger.home3("Kanji"))))
+            create_note_actions_menu(note_menu, kanjis[0], shortcutfinger.home3("Kanji Actions"))
 
 def init() -> None:
     gui_hooks.webview_will_show_context_menu.append(register_lookup_actions)

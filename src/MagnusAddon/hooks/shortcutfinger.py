@@ -29,3 +29,5 @@ _numpad_functions: list[Callable[[str], str]] = [up4, up3, up2, up1, up5, down3,
 def numpad(index:int, text:str) -> str:
     if index < len(_numpad_functions): return _numpad_functions[index](f"""{index + 1} {text}""")
     return none(text)
+
+def remove_shortcut_text(string:str) -> str: return " " .join(string.split(" ")[1:])
