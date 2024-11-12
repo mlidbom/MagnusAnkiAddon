@@ -29,7 +29,7 @@ def setup_note_menu(sentence: SentenceNote, note_menu: QMenu, string_menus: list
         position_vocab_menu(string_menu, menu_string, shortcutfinger.home1("Highlighted Vocab"))
         if menu_string in sentence.get_user_excluded_vocab():
             add_ui_action(string_menu, shortcutfinger.home2("Remove exclusion"), lambda _menu_string=menu_string: sentence.remove_excluded_vocab(_menu_string)) # type: ignore
-        elif menu_string in sentence.get_parsed_words():
+        else:
             add_ui_action(string_menu, shortcutfinger.home2("Exclude vocab"), lambda _menu_string=menu_string: sentence.exclude_vocab(_menu_string))  # type: ignore
 
     position_vocab_menu(note_menu, "-", shortcutfinger.home2("Highlighted Vocab Separator"))

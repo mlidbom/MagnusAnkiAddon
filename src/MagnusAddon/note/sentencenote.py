@@ -20,9 +20,10 @@ class SentenceNote(JPNote):
 
 
     def get_direct_dependencies(self) -> set[JPNote]:
-        vocab = set(ex_sequence.flatten([self.collection.vocab.with_question(vocab) for vocab in self.get_user_highlighted_vocab()]))
+        highlighted = set(ex_sequence.flatten([self.collection.vocab.with_question(vocab) for vocab in self.get_user_highlighted_vocab()]))
+        valid_parsed_roots = set(ex_sequence.flatten([self.collection.vocab.with_question(vocab) for vocab in self.get_valid_parsed_non_child_words()]))
         kanji = set(self.collection.kanji.with_any_kanji_in(self.extract_kanji()))
-        return vocab | kanji
+        return highlighted | valid_parsed_roots | kanji
 
     def get_question(self) -> str: return self._get_user_question() or self._get_source_question()
     def get_answer(self) -> str: return self._get_user_answer() or self._get_source_answer()
@@ -54,6 +55,12 @@ class SentenceNote(JPNote):
     def is_studying_read(self) -> bool: return self.is_studying(NoteFields.SentencesNoteType.Card.Reading)
     def is_studying_listening(self) -> bool: return self.is_studying(NoteFields.SentencesNoteType.Card.Listening)
 
+
+    def get_valid_parsed_non_child_words(self) -> list[str]:
+        from language_services.janome_ex.word_extraction import word_extractor
+        roots = word_extractor.extract_words_hierarchical(self.get_question(), self.get_user_excluded_vocab())
+
+        return [w.word.word for w in roots]
 
     def get_user_highlighted_vocab(self) -> list[str]: return ex_str.extract_newline_separated_values(self.get_field(SentenceNoteFields.user_extra_vocab))
     def _set_user_extra_vocab(self, extra: list[str]) -> None: return self.set_field(SentenceNoteFields.user_extra_vocab, newline.join(extra))
