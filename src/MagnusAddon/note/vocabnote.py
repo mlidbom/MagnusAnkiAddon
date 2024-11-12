@@ -73,7 +73,7 @@ class VocabNote(KanaVocabNote):
     def get_user_compounds(self) -> list[str]: return ex_str.extract_comma_separated_values(self.get_field(NoteFields.Vocab.user_compounds))
 
     def get_direct_dependencies(self) -> set[JPNote]:
-        return (set(self.collection.kanji.with_any_kanji_in(list(self.extract_all_kanji()))) |
+        return (set(self.collection.kanji.with_any_kanji_in(list(self.extract_main_form_kanji()))) |
                 set(ex_sequence.flatten([self.collection.vocab.with_question(compound_part) for compound_part in self.get_user_compounds()])))
 
     def update_generated_data(self) -> None:
