@@ -4,7 +4,6 @@ from anki.notes import NoteId
 
 from ankiutils import app, query_builder
 from language_services.janome_ex.tokenizing import janome_ex
-from note.jpnote import JPNote
 from note.kanjinote import KanjiNote
 from note.note_constants import CardTypes, Mine
 from note.sentencenote import SentenceNote
@@ -64,6 +63,8 @@ def convert_immersion_kit_sentences() -> None:
 def tag_kanji_metadata() -> None:
     primary_reading = re.compile(r'<primary>(.*?)</primary>')
 
+    known_kanji = {kanji.get_question() for kanji in app.col().kanji.all() if kanji.is_studying()}
+
     def tag_kanji(kanji: KanjiNote) -> None:
         vocab_with_kanji_in_main_form = app.col().vocab.with_kanji_in_main_form(kanji)
         vocab_with_kanji_in_any_form = app.col().vocab.with_kanji_in_any_form(kanji)
@@ -79,15 +80,24 @@ def tag_kanji_metadata() -> None:
         kanji.toggle_tag(Mine.Tags.kanji_with_no_primary_readings, not primary_readings)
 
         primary_on_readings:list[str] = primary_reading.findall(kanji.get_reading_on_html())
+        non_primary_on_readings:list[str] = [reading for reading in kanji.get_readings_on() if not reading in primary_readings]
+
         kanji.toggle_tag(Mine.Tags.kanji_with_no_primary_on_readings, not primary_on_readings)
 
+        def reading_is_in_vocab_readings(kanji_reading: str, voc:VocabNote) -> bool: return any(vocab_reading for vocab_reading in voc.get_readings() if reading_in_vocab_reading(kanji, kanji_reading, vocab_reading, voc.get_question()))
         def has_vocab_with_reading(kanji_reading: str) -> bool: return any(voc for voc in vocab_with_kanji_in_main_form if any(vocab_reading for vocab_reading in voc.get_readings() if reading_in_vocab_reading(kanji, kanji_reading, vocab_reading, voc.get_question())))
+
+        def vocab_has_only_known_kanji(voc:VocabNote) -> bool: return not any(kan for kan in voc.extract_all_kanji() if kan not in known_kanji)
+        def has_vocab_with_reading_and_no_unknown_kanji(kanji_reading: str) -> bool: return any(voc for voc in vocab_with_kanji_in_main_form if reading_is_in_vocab_readings(kanji_reading, voc) and vocab_has_only_known_kanji(voc))
+
         kanji.toggle_tag(Mine.Tags.kanji_with_vocab_with_primary_on_reading, any(primary_on_readings) and has_vocab_with_reading(primary_on_readings[0]))
 
         def has_studying_vocab_with_reading(kanji_reading:str) -> bool: return any(voc for voc in studying_reading_vocab if any(vocab_reading for vocab_reading in voc.get_readings() if reading_in_vocab_reading(kanji, kanji_reading, vocab_reading, voc.get_question())))
         kanji.toggle_tag(Mine.Tags.kanji_with_studying_vocab_with_primary_on_reading, any(primary_on_readings) and has_studying_vocab_with_reading(primary_on_readings[0]))
         kanji.toggle_tag(Mine.Tags.kanji_has_studying_vocab_for_each_primary_reading, any(primary_readings) and not any(reading for reading in primary_readings if not has_studying_vocab_with_reading(reading)))
         kanji.toggle_tag(Mine.Tags.kanji_has_primary_reading_with_no_studying_vocab, any(primary_readings) and any(studying_reading_vocab) and any(reading for reading in primary_readings if not has_studying_vocab_with_reading(reading)))
+        kanji.toggle_tag(Mine.Tags.kanji_has_non_primary_on_reading_vocab, any(reading for reading in non_primary_on_readings if has_vocab_with_reading(reading)))
+        kanji.toggle_tag(Mine.Tags.kanji_has_non_primary_on_reading_vocab_with_only_known_kanji, any(reading for reading in non_primary_on_readings if has_vocab_with_reading_and_no_unknown_kanji(reading)))
 
         all_readings = kanji.get_readings_clean()
 

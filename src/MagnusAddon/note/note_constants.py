@@ -168,6 +168,8 @@ class Mine:
         kanji_has_studying_vocab_with_no_matching_primary_reading = f"{kanji_folder}has-studying-vocab-with-no-matching-primary-reading"
         kanji_has_studying_vocab_for_each_primary_reading = f"{kanji_folder}has-studying-vocab-for-each-primary-reading"
         kanji_has_primary_reading_with_no_studying_vocab = f"{kanji_folder}has-primary-reading-with-no-studying-vocab"
+        kanji_has_non_primary_on_reading_vocab = f"{kanji_folder}has-non-primary-on-reading-vocab"
+        kanji_has_non_primary_on_reading_vocab_with_only_known_kanji = f"{kanji_folder}has-non-primary-on-reading-vocab-with-only-known-kanji"
 
 
         priority_folder = f"{base_folder}priority::"

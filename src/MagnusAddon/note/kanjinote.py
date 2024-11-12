@@ -215,7 +215,7 @@ class KanjiNote(WaniNote):
 
     def reading_in_vocab_reading(self, kanji_reading: str, vocab_reading: str, vocab_form: str) -> bool:
         vocab_form = ex_str.strip_html_and_bracket_markup_and_noise_characters(vocab_form)
-        covering_readings = [covering_reading for covering_reading in self.get_primary_readings() if kanji_reading != covering_reading and kanji_reading in covering_reading]
+        covering_readings = [covering_reading for covering_reading in self.get_readings_clean() if kanji_reading != covering_reading and kanji_reading in covering_reading]
 
         if any(covering_reading for covering_reading in covering_readings if self.reading_in_vocab_reading(covering_reading, vocab_reading, vocab_form)):
             return False
