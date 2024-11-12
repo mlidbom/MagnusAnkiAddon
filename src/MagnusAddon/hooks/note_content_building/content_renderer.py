@@ -6,6 +6,7 @@ from ankiutils import ui_utils
 from note.jpnote import JPNote
 from sysutils import app_thread_pool
 from sysutils.typed import checked_cast
+from ankiutils import app
 
 TNote = TypeVar('TNote', bound=JPNote)
 
@@ -22,6 +23,7 @@ class PrerenderingAnswerContentRenderer(Generic[TNote]):
         return html
 
     def render(self, html: str, card: Card, type_of_display: str) -> str:
+        app.wait_for_initialization()
         note = JPNote.note_from_card(card)
 
         if isinstance(note, self._cls):

@@ -49,6 +49,8 @@ def _profile_opened() -> None:
 gui_hooks.profile_will_close.append(_profile_closing)
 gui_hooks.profile_did_open.append(_profile_opened)
 
+def wait_for_initialization() -> None:
+    col()
 
 def col() -> JPCollection:
     assert _collection
