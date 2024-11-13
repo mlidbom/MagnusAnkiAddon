@@ -34,7 +34,7 @@ def setup_note_menu(vocab: VocabNote, note_menu: QMenu, string_menus: list[tuple
     if vocab.get_mnemonics_override() == "-":
         add_ui_action(note_restore_menu, shortcutfinger.home1("Mnemonic"), lambda: vocab.restore_meaning_mnemonic())
     if not vocab.get_user_answer():
-        add_ui_action(note_menu, shortcutfinger.home4("Accept meaning"), lambda: vocab.set_user_answer(format_vocab_meaning(vocab.get_answer())))
+        add_ui_action(note_menu, shortcutfinger.up1("Accept meaning"), lambda: vocab.set_user_answer(format_vocab_meaning(vocab.get_answer())))
 
     def remove_highlight(_sentences: list[SentenceNote]) -> None:
         for _sentence in _sentences:
@@ -69,9 +69,9 @@ def setup_note_menu(vocab: VocabNote, note_menu: QMenu, string_menus: list[tuple
         add_ui_action(note_set_menu, shortcutfinger.home1("Derived from"), lambda _menu_string=menu_string: vocab.set_related_derived_from(_menu_string)) # type: ignore
         add_ui_action(note_set_menu, shortcutfinger.home2("Ergative twin"), lambda _menu_string=menu_string: vocab.set_related_ergative_twin(_menu_string)) # type: ignore
 
-    add_ui_action(note_menu, shortcutfinger.up1("Generate answer"), lambda: vocab.generate_and_set_answer())
+    add_ui_action(note_menu, shortcutfinger.up2("Generate answer"), lambda: vocab.generate_and_set_answer())
     if vocab.can_generate_sentences_from_context_sentences(require_audio=False):
-        add_ui_action(note_menu, shortcutfinger.up2("Generate sentences"), lambda: vocab.generate_sentences_from_context_sentences(require_audio=False))
+        add_ui_action(note_menu, shortcutfinger.up3("Generate sentences"), lambda: vocab.generate_sentences_from_context_sentences(require_audio=False))
 
 def format_vocab_meaning(meaning: str) -> str:
     return ex_str.strip_html_and_bracket_markup(meaning

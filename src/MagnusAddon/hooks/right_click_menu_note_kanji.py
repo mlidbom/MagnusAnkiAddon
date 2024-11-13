@@ -22,7 +22,7 @@ def setup_note_menu(kanji: KanjiNote, note_menu: QMenu, string_menus: list[tuple
         note_restore_menu: QMenu = checked_cast(QMenu, note_menu.addMenu(shortcutfinger.home3("Restore")))
         add_ui_action(note_restore_menu, shortcutfinger.home1("Mnemonic"), lambda: kanji.restore_meaning_mnemonic())
     if not kanji.get_user_answer():
-        add_ui_action(note_menu, shortcutfinger.home4("Accept meaning"), lambda: kanji.set_user_answer(format_kanji_meaning(kanji.get_answer())))
+        add_ui_action(note_menu, shortcutfinger.up1("Accept meaning"), lambda: kanji.set_user_answer(format_kanji_meaning(kanji.get_answer())))
 
     add_ui_action(note_menu, shortcutfinger.home5("Reset Primary Vocabs"), lambda: kanji.set_primary_vocab([]))
 
