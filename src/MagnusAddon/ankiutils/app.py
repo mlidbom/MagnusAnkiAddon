@@ -9,11 +9,14 @@ from aqt import gui_hooks, mw
 
 from ankiutils.ui_utils import UIUtils
 from ankiutils.ui_utils_interface import IUIUtils
+from configuration.configuration import JapaneseConfig
 from note.collection.jp_collection import JPCollection
 from sysutils.lazy import BackgroundInitialingLazy
 from sysutils.typed import checked_cast
 
 _collection: Optional[BackgroundInitialingLazy[JPCollection]] = None
+
+config:JapaneseConfig = JapaneseConfig()
 
 def _init(delay_seconds: float = 0) -> None:
     global _collection

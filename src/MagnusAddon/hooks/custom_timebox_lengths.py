@@ -1,6 +1,5 @@
 from typing import Dict, Tuple
 
-import anki
 import aqt.utils
 from anki.cards import CardId
 from anki.decks import DeckDict
@@ -32,7 +31,7 @@ def adjust_timebox(_web_content: WebContent, context: object) -> None:
                 (NoteTypes.Vocab, CardTypes.reading): 10,
                 (NoteTypes.Vocab, CardTypes.listening): 5,
 
-                (NoteTypes.Kanji, CardTypes.reading): 5,
+                (NoteTypes.Kanji, CardTypes.reading): 15,
             }
 
             key = (typed.str_(notetype["name"]), typed.str_(card.template()["name"]))

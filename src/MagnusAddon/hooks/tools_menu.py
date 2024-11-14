@@ -8,6 +8,8 @@ from PyQt6.QtWidgets import QMenu
 from ankiutils import app
 from ankiutils.app import main_window, ui_utils
 from batches import local_note_updater
+from configuration.configuration import show_japanese_options
+from configuration.configuration_value import ConfigurationValueBool
 from note.jpnote import JPNote
 from sysutils.typed import checked_cast
 from wanikani import note_importer, wani_note_updater
@@ -18,6 +20,14 @@ def refresh() -> None:
 
     if isinstance(note, JPNote):
         note.update_generated_data()
+
+def add_checkbox_config(menu: QMenu, config_value:ConfigurationValueBool) -> None:
+    checkbox_action = QAction(config_value.title, main_window())
+    checkbox_action.setCheckable(True)
+    checkbox_action.setChecked(config_value.get_value())
+    qconnect(checkbox_action.triggered, config_value.set_value)
+    menu.addAction(checkbox_action)
+
 
 def add_menu_ui_action(sub_menu: QMenu, heading: str, callback: Callable[[],None], shortcut: str = "") -> None:
     action = QAction(heading, main_window())
@@ -34,6 +44,11 @@ def build_main_menu() -> None:
     tools_menu = main_window().form.menuTools
 
     tools_menu.addMenu(my_menu)
+
+    config_menu = checked_cast(QMenu, my_menu.addMenu("Config"))
+    add_checkbox_config(config_menu, app.config.yomitan_integration_copy_answer_to_clipboard)
+    config_menu.addAction("Options", show_japanese_options)
+
     local_menu = QMenu("Local Action&s", main_window())
     my_menu.addMenu(local_menu)
     build_local_menu(local_menu)
