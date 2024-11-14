@@ -36,7 +36,7 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu) -> None:
             else:
                 return None
         elif view.kind == AnkiWebViewKind.EDITOR:
-            editor = checked_cast(Editor,view._bridge_context) # noqa
+            editor = checked_cast(Editor, view._bridge_context) # noqa
             card = checked_cast(Card, editor.card)
             inner_note = checked_cast(Note, card.note())
         elif view.kind == AnkiWebViewKind.PREVIEWER:
