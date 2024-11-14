@@ -1,5 +1,9 @@
+from __future__ import annotations
 import gc
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from configuration.configuration import JapaneseConfig
 
 from anki.collection import Collection
 from anki.dbproxy import DBProxy
@@ -9,14 +13,19 @@ from aqt import gui_hooks, mw
 
 from ankiutils.ui_utils import UIUtils
 from ankiutils.ui_utils_interface import IUIUtils
-from configuration.configuration import JapaneseConfig
 from note.collection.jp_collection import JPCollection
 from sysutils.lazy import BackgroundInitialingLazy
 from sysutils.typed import checked_cast, non_optional
 
+
+
 _collection: Optional[BackgroundInitialingLazy[JPCollection]] = None
 
-config:JapaneseConfig = JapaneseConfig()
+
+def config() -> JapaneseConfig:
+    from configuration import configuration
+    return configuration.config
+
 
 def _init(delay_seconds: float = 0) -> None:
     global _collection
@@ -61,6 +70,6 @@ def col() -> JPCollection:
 
 def anki_collection() -> Collection: return col().anki_collection
 def anki_db() -> DBProxy: return non_optional(col().anki_collection.db)
-def anki_scheduler() -> Scheduler: return non_optional(col().anki_collection.sched)
+def anki_scheduler() -> Scheduler: return checked_cast(Scheduler, col().anki_collection.sched)
 def main_window() -> AnkiQt: return non_optional(mw)
 def ui_utils() -> IUIUtils: return UIUtils(main_window())

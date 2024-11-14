@@ -6,7 +6,7 @@ from configuration.configuration_value import *
 class JapaneseOptionsDialog(QDialog):
     def __init__(self, parent: Optional[QWidget] = None):
         super().__init__(parent)
-        self.config = app.config
+        self.config = app.config()
 
         self.setWindowTitle("Japanese Options")
         self.setMinimumWidth(300)

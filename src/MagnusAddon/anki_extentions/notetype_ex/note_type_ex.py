@@ -69,7 +69,7 @@ class NoteTypeEx:
         created.flds = [NoteFieldEx.from_dict(d) for d in note_type_dict['flds']]
         created.tmpls = [NoteTemplateEx.from_dict(t) for t in note_type_dict['tmpls']]
 
-        created.id = cast(NotetypeId, typed.int_(int, note_type_dict['id']))
+        created.id = cast(NotetypeId, typed.int_(note_type_dict['id']))
         created.type = typed.int_(note_type_dict['type'])
         created.mod = typed.int_(note_type_dict['mod'])
         created.usn = typed.int_(note_type_dict['usn'])

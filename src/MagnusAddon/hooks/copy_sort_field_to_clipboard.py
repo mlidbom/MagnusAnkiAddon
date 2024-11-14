@@ -14,7 +14,7 @@ from sysutils import app_thread_pool, ex_str
 recent_previewer_cards = RecentItems[int](2)
 
 def copy_card_sort_field_to_clipboard(note: Note) -> None:
-    if app.config.yomitan_integration_copy_answer_to_clipboard.get_value():
+    if app.config().yomitan_integration_copy_answer_to_clipboard.get_value():
         model = cast(NotetypeDict, note.note_type())
         sort_field = model['sortf']
         sort_value = note.fields[sort_field]

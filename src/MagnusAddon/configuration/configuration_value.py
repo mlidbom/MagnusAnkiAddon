@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import Any, Generic, TypeVar
 from aqt import mw
 import os
@@ -37,3 +38,6 @@ class ConfigurationValue(Generic[T]):
 ConfigurationValueInt = ConfigurationValue[int]
 ConfigurationValueStr = ConfigurationValue[str]
 ConfigurationValueBool = ConfigurationValue[bool]
+
+
+config = JapaneseConfig()

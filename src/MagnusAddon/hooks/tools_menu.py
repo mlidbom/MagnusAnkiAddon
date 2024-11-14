@@ -43,7 +43,7 @@ def build_main_menu() -> None:
     my_menu = non_optional(main_window().form.menuTools.addMenu("Magnu&s"))
 
     config_menu = non_optional(my_menu.addMenu("Config"))
-    add_checkbox_config(config_menu, app.config.yomitan_integration_copy_answer_to_clipboard)
+    add_checkbox_config(config_menu, app.config().yomitan_integration_copy_answer_to_clipboard)
     config_menu.addAction("Options", show_japanese_options)
 
     build_local_menu(my_menu)
