@@ -7,14 +7,14 @@ from aqt.editor import Editor
 from ankiutils import app
 from note import queue_manager
 from note.vocabnote import VocabNote
-from sysutils.typed import checked_cast
+from sysutils.typed import checked_cast, non_optional
 from wanikani import wani_note_updater
 from wanikani.wani_downloader import WaniDownloader
 
 def setup_editor_buttons(buttons: list[str], the_editor: Editor) -> None:
     def ui_action_button(button_text: str, action: Callable[[Note], None]) -> None:
         def inner_action(editor: Editor) -> None:
-            action(checked_cast(Note, editor.note))
+            action(non_optional(editor.note))
             app.ui_utils().refresh()
 
         buttons.append(the_editor.addButton("", button_text, inner_action))

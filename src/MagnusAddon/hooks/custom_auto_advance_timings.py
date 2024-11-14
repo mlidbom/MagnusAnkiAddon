@@ -11,20 +11,21 @@ from note.note_constants import CardTypes
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
 from sysutils import timeutil, typed
+from sysutils.typed import non_optional
 
 def _monkey_patch(html:str, _card:Any, display_type:str) -> str:
     if not display_type.startswith('review'):
         return html
 
     def is_handled_card() -> bool:
-        if cardutils.card_type(typed.checked_cast(Card, mw.reviewer.card)) != CardTypes.reading:
+        if cardutils.card_type(non_optional(mw.reviewer.card)) != CardTypes.reading:
             return False
 
-        note = JPNote.note_from_card(typed.checked_cast(Card, mw.reviewer.card))
+        note = JPNote.note_from_card(non_optional(mw.reviewer.card))
         return isinstance(note, SentenceNote) or isinstance(note, VocabNote) or isinstance(note, KanjiNote)
 
     def seconds_to_show_question() -> float:
-        card = typed.checked_cast(Card, mw.reviewer.card)
+        card = non_optional(mw.reviewer.card)
         note = JPNote.note_from_card(card)
         if isinstance(note, SentenceNote):
             return DifficultyCalculator(starting_seconds=3.0, hiragana_seconds=0.7, katakata_seconds=1.0, kanji_seconds=1.5).allowed_seconds(note.get_question())

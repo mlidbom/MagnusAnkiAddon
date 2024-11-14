@@ -6,13 +6,13 @@ from note.note_constants import NoteFields, NoteTypes
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
 from sysutils import ex_str
-from sysutils.typed import checked_cast
+from sysutils.typed import checked_cast, non_optional
 from hooks import shortcutfinger
 
 def setup_note_menu(vocab: VocabNote, note_menu: QMenu, string_menus: list[tuple[QMenu, str]]) -> None:
-    note_lookup_menu: QMenu = checked_cast(QMenu, note_menu.addMenu(shortcutfinger.home1("Open")))
-    note_hide_menu: QMenu = checked_cast(QMenu, note_menu.addMenu(shortcutfinger.home2("Hide/Remove")))
-    note_restore_menu = checked_cast(QMenu, note_menu.addMenu(shortcutfinger.home3("Restore")))
+    note_lookup_menu: QMenu = non_optional(note_menu.addMenu(shortcutfinger.home1("Open")))
+    note_hide_menu: QMenu = non_optional(note_menu.addMenu(shortcutfinger.home2("Hide/Remove")))
+    note_restore_menu = non_optional(note_menu.addMenu(shortcutfinger.home3("Restore")))
 
     add_lookup_action(note_lookup_menu, shortcutfinger.home1("Kanji"), f"note:{NoteTypes.Kanji} ( {' OR '.join([f'{NoteFields.Kanji.question}:{char}' for char in vocab.get_question()])} )")
     if vocab.get_related_ergative_twin():
@@ -48,7 +48,7 @@ def setup_note_menu(vocab: VocabNote, note_menu: QMenu, string_menus: list[tuple
         sentences = app.col().sentences.with_question(menu_string)
         if sentences:
             sentence = sentences[0]
-            sentence_menu: QMenu = checked_cast(QMenu, string_menu.addMenu(shortcutfinger.home1("Sentence")))
+            sentence_menu: QMenu = non_optional(string_menu.addMenu(shortcutfinger.home1("Sentence")))
 
             if vocab.get_question() not in sentence.get_user_highlighted_vocab():
                 add_ui_action(sentence_menu, shortcutfinger.home1("Add Highlight"), lambda _sentence=sentence: _sentence.position_extra_vocab(vocab.get_question()))  # type: ignore
@@ -60,12 +60,12 @@ def setup_note_menu(vocab: VocabNote, note_menu: QMenu, string_menus: list[tuple
             add_ui_action(sentence_menu, shortcutfinger.home3("Exclude this vocab"), lambda _sentences=sentences: exclude(_sentences))  # type: ignore
 
     for string_menu, menu_string in string_menus:
-        vocab_add_menu: QMenu = checked_cast(QMenu, string_menu.addMenu(shortcutfinger.home2("Add")))
+        vocab_add_menu: QMenu = non_optional(string_menu.addMenu(shortcutfinger.home2("Add")))
         add_ui_action(vocab_add_menu, shortcutfinger.home1("Similar meaning"), lambda _menu_string=menu_string: vocab.add_related_similar_meaning(_menu_string)) # type: ignore
         add_ui_action(vocab_add_menu, shortcutfinger.home2("Confused with"), lambda _menu_string=menu_string: vocab.add_related_confused_with(_menu_string))  # type: ignore
 
     for string_menu, menu_string in string_menus:
-        note_set_menu: QMenu = checked_cast(QMenu, string_menu.addMenu(shortcutfinger.home3("Set")))
+        note_set_menu: QMenu = non_optional(string_menu.addMenu(shortcutfinger.home3("Set")))
         add_ui_action(note_set_menu, shortcutfinger.home1("Derived from"), lambda _menu_string=menu_string: vocab.set_related_derived_from(_menu_string)) # type: ignore
         add_ui_action(note_set_menu, shortcutfinger.home2("Ergative twin"), lambda _menu_string=menu_string: vocab.set_related_ergative_twin(_menu_string)) # type: ignore
 

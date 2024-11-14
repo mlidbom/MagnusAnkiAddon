@@ -15,7 +15,7 @@ from note import noteutils
 from note.jpcard import JPCard
 from note.note_constants import CardTypes, Mine, MyNoteFields, NoteTypes
 from sysutils import ex_str
-from sysutils.typed import checked_cast
+from sysutils.typed import checked_cast, str_
 
 class JPNote(ABC):
     def __init__(self, note: Note):
@@ -69,7 +69,7 @@ class JPNote(ABC):
 
     @staticmethod
     def get_note_type(note: Note) -> str:
-        return checked_cast(str, cast(NotetypeDict, note.note_type())["name"])
+        return str_(cast(NotetypeDict, note.note_type())["name"])
 
     def get_note_type_name(self) -> str: return self.get_note_type(self._note)
 

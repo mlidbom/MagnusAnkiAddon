@@ -2,7 +2,7 @@ from anki.cards import Card
 from anki.consts import QUEUE_TYPE_SUSPENDED
 from anki.notes import Note, NoteId
 
-from sysutils.typed import checked_cast
+from sysutils.typed import checked_cast, str_
 
 _card_is_studying_cache: dict[NoteId, dict[str, bool]] = dict()
 
@@ -10,7 +10,7 @@ def _is_being_studied(card: Card) -> bool:
     return card.queue != QUEUE_TYPE_SUSPENDED #and card.queue != QUEUE_TYPE_NEW
 
 def _card_type(card: Card) -> str:
-    return checked_cast(str, card.template()['name'])
+    return str_(card.template()['name'])
 
 def remove_from_studying_cache(note_id: NoteId) -> None:
     if note_id in _card_is_studying_cache:

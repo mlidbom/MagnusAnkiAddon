@@ -9,7 +9,7 @@ from anki.cards import Card, CardId
 
 from note.jpnote import JPNote
 from note.vocabnote import VocabNote
-from sysutils.typed import checked_cast
+from sysutils.typed import checked_cast, non_optional
 
 def spread_due_dates(cards: Sequence[CardId], start_day: int, days: int) -> None:
     anki_col = app.col().anki_collection
@@ -22,7 +22,7 @@ def spread_due_dates(cards: Sequence[CardId], start_day: int, days: int) -> None
     app.ui_utils().refresh()
 
 def setup_browser_context_menu(browser: Browser, menu: QMenu) -> None:
-    magnus_menu: QMenu = checked_cast(QMenu, menu.addMenu("&Magnus"))
+    magnus_menu: QMenu = non_optional(menu.addMenu("&Magnus"))
     selected_cards = browser.selected_cards()
 
     if len(selected_cards) == 1:
@@ -33,9 +33,9 @@ def setup_browser_context_menu(browser: Browser, menu: QMenu) -> None:
         setup_note_menu(note, magnus_menu, [])
 
     if len(selected_cards) > 0:
-        spread_menu: QMenu = checked_cast(QMenu, magnus_menu.addMenu("&Spread selected cards"))
+        spread_menu: QMenu = non_optional(magnus_menu.addMenu("&Spread selected cards"))
         for start_day in [0,1,2,3,4,5,6,7,8,9]:
-            start_day_menu: QMenu = checked_cast(QMenu, spread_menu.addMenu(f"First card in {start_day} days"))
+            start_day_menu: QMenu = non_optional(spread_menu.addMenu(f"First card in {start_day} days"))
             for days in [1,2,3,4,5,6,7,8,9]:
                 start_day_menu.addAction(f"{days} days apart", lambda _start_day=start_day, _days_apart=days: spread_due_dates(selected_cards, _start_day, _days_apart))
 

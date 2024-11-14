@@ -4,11 +4,11 @@ from ankiutils import query_builder
 from hooks.right_click_menu_utils import add_lookup_action, add_ui_action
 from note.kanjinote import KanjiNote
 from sysutils import ex_str, kana_utils
-from sysutils.typed import checked_cast
+from sysutils.typed import checked_cast, non_optional
 from hooks import shortcutfinger
 
 def setup_note_menu(kanji: KanjiNote, note_menu: QMenu, string_menus: list[tuple[QMenu, str]]) -> None:
-    note_lookup_menu = checked_cast(QMenu, note_menu.addMenu(shortcutfinger.home1("Open")))
+    note_lookup_menu = non_optional(note_menu.addMenu(shortcutfinger.home1("Open")))
     add_lookup_action(note_lookup_menu, shortcutfinger.home1("Primary Vocabs"), query_builder.vocabs_lookup_strings(kanji.get_primary_vocab()))
     add_lookup_action(note_lookup_menu, shortcutfinger.home2("Vocabs"), query_builder.vocab_with_kanji(kanji))
     add_lookup_action(note_lookup_menu, shortcutfinger.home3("Radicals"), query_builder.notes_by_note(kanji.get_radicals_notes()))
@@ -16,10 +16,10 @@ def setup_note_menu(kanji: KanjiNote, note_menu: QMenu, string_menus: list[tuple
     add_lookup_action(note_lookup_menu, shortcutfinger.home5("Sentences"), query_builder.sentence_search(kanji.get_question(), exact=True))
 
     if not kanji.get_user_mnemonic():
-        note_hide_menu = checked_cast(QMenu, note_menu.addMenu(shortcutfinger.home2("Hide/Remove")))
+        note_hide_menu = non_optional(note_menu.addMenu(shortcutfinger.home2("Hide/Remove")))
         add_ui_action(note_hide_menu, shortcutfinger.home1("Mnemonic"), lambda: kanji.override_meaning_mnemonic())
     if kanji.get_user_mnemonic() == "-":
-        note_restore_menu: QMenu = checked_cast(QMenu, note_menu.addMenu(shortcutfinger.home3("Restore")))
+        note_restore_menu: QMenu = non_optional(note_menu.addMenu(shortcutfinger.home3("Restore")))
         add_ui_action(note_restore_menu, shortcutfinger.home1("Mnemonic"), lambda: kanji.restore_meaning_mnemonic())
     if not kanji.get_user_answer():
         add_ui_action(note_menu, shortcutfinger.up1("Accept meaning"), lambda: kanji.set_user_answer(format_kanji_meaning(kanji.get_answer())))
@@ -27,7 +27,7 @@ def setup_note_menu(kanji: KanjiNote, note_menu: QMenu, string_menus: list[tuple
     add_ui_action(note_menu, shortcutfinger.home5("Reset Primary Vocabs"), lambda: kanji.set_primary_vocab([]))
 
     def position_primary_vocab_menu(_menu: QMenu, _vocab_to_add: str, _title: str) -> None:
-        highlighted_vocab_menu: QMenu = checked_cast(QMenu, _menu.addMenu(_title))
+        highlighted_vocab_menu: QMenu = non_optional(_menu.addMenu(_title))
         for index, _vocab in enumerate(kanji.get_primary_vocab()):
             add_ui_action(highlighted_vocab_menu, shortcutfinger.numpad(index, f"{_vocab}"), lambda _index=index: kanji.position_primary_vocab(_vocab_to_add, _index))  # type: ignore
 
@@ -52,7 +52,7 @@ def setup_note_menu(kanji: KanjiNote, note_menu: QMenu, string_menus: list[tuple
     for string_menu, menu_string in string_menus:
         position_primary_vocab_menu(string_menu, menu_string, shortcutfinger.home1("Primary Vocab"))
 
-        kanji_add_menu: QMenu = checked_cast(QMenu, string_menu.addMenu(shortcutfinger.home2("Add")))
+        kanji_add_menu: QMenu = non_optional(string_menu.addMenu(shortcutfinger.home2("Add")))
         add_ui_action(kanji_add_menu, shortcutfinger.home1("Similar meaning"), lambda _menu_string=menu_string: kanji.add_user_similar_meaning(_menu_string)) # type: ignore
         add_ui_action(kanji_add_menu, shortcutfinger.home2("Confused with"), lambda _menu_string=menu_string: kanji.add_related_confused_with(_menu_string))  # type: ignore
 

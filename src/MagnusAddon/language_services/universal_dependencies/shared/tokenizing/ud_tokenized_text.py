@@ -5,8 +5,7 @@ from unidic2ud import UniDic2UDEntry, UDPipeEntry # type: ignore
 
 from language_services.universal_dependencies.shared.tokenizing.ud_token import UDToken
 from sysutils import ex_sequence, ex_str
-from sysutils.typed import checked_cast
-
+from sysutils.typed import checked_cast, str_
 
 class UDTokenizedText:
     def __init__(self, wrapped: Union[UniDic2UDEntry, Doc]):
@@ -42,6 +41,6 @@ class UDTokenizedText:
 
     def to_tree(self) -> str:
         if isinstance(self._wrapped, UniDic2UDEntry):
-            return checked_cast(str, self._wrapped.to_tree())
+            return str_(self._wrapped.to_tree())
         else:
             return "to_tree_UNSUPPORTED"

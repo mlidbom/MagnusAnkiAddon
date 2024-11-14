@@ -12,7 +12,7 @@ from ankiutils.ui_utils_interface import IUIUtils
 from configuration.configuration import JapaneseConfig
 from note.collection.jp_collection import JPCollection
 from sysutils.lazy import BackgroundInitialingLazy
-from sysutils.typed import checked_cast
+from sysutils.typed import checked_cast, non_optional
 
 _collection: Optional[BackgroundInitialingLazy[JPCollection]] = None
 
@@ -60,7 +60,7 @@ def col() -> JPCollection:
     return _collection.instance()
 
 def anki_collection() -> Collection: return col().anki_collection
-def anki_db() -> DBProxy: return checked_cast(DBProxy, col().anki_collection.db)
-def anki_scheduler() -> Scheduler: return checked_cast(Scheduler, col().anki_collection.sched)
-def main_window() -> AnkiQt: return checked_cast(AnkiQt, mw)
+def anki_db() -> DBProxy: return non_optional(col().anki_collection.db)
+def anki_scheduler() -> Scheduler: return non_optional(col().anki_collection.sched)
+def main_window() -> AnkiQt: return non_optional(mw)
 def ui_utils() -> IUIUtils: return UIUtils(main_window())

@@ -5,11 +5,11 @@ from hooks.right_click_menu_utils import add_lookup_action, add_ui_action
 from language_services.janome_ex.word_extraction.word_extractor import WordExclusion
 from note.note_constants import NoteFields, NoteTypes
 from note.sentencenote import SentenceNote
-from sysutils.typed import checked_cast
+from sysutils.typed import checked_cast, non_optional
 from hooks import shortcutfinger
 
 def setup_note_menu(sentence: SentenceNote, note_menu: QMenu, string_menus: list[tuple[QMenu, str]]) -> None:
-    note_lookup_menu: QMenu = checked_cast(QMenu, note_menu.addMenu(shortcutfinger.home1("Open")))
+    note_lookup_menu: QMenu = non_optional(note_menu.addMenu(shortcutfinger.home1("Open")))
 
     add_lookup_action(note_lookup_menu, shortcutfinger.home1("Highlighted Vocab"), query_builder.vocabs_lookup_strings(sentence.get_user_highlighted_vocab()))
     add_lookup_action(note_lookup_menu, shortcutfinger.home2("Highlighted Vocab Read Card"), query_builder.vocabs_lookup_strings_read_card(sentence.get_user_highlighted_vocab()))
@@ -17,7 +17,7 @@ def setup_note_menu(sentence: SentenceNote, note_menu: QMenu, string_menus: list
     add_lookup_action(note_lookup_menu, shortcutfinger.home4("Parsed words"), query_builder.notes_by_id([voc.get_id() for voc in sentence.ud_extract_vocab()]))
 
     def position_vocab_menu(_menu:QMenu, _vocab_to_add: str, _title: str) -> None:
-        highlighted_vocab_menu: QMenu = checked_cast(QMenu, _menu.addMenu(_title))
+        highlighted_vocab_menu: QMenu = non_optional(_menu.addMenu(_title))
         for index, _vocab in enumerate(sentence.get_user_highlighted_vocab()):
             add_ui_action(highlighted_vocab_menu, shortcutfinger.numpad(index, f"{_vocab}"), lambda _index=index: sentence.position_extra_vocab(_vocab_to_add, _index))  # type: ignore
 
@@ -36,7 +36,7 @@ def setup_note_menu(sentence: SentenceNote, note_menu: QMenu, string_menus: list
             if len(excluded) == 1:
                 add_ui_action(string_menu, shortcutfinger.home2("Exclude vocab"), lambda _menu_string=menu_string: sentence.exclude_vocab(_menu_string)) # type: ignore
             else:
-                exclude_menu: QMenu = checked_cast(QMenu, string_menu.addMenu(shortcutfinger.home2("Exclude vocab")))
+                exclude_menu: QMenu = non_optional(string_menu.addMenu(shortcutfinger.home2("Exclude vocab")))
                 for excluded_index, matched in enumerate(excluded):
                     add_ui_action(exclude_menu, shortcutfinger.numpad_no_numbers(excluded_index, f"{matched.start_index}: {matched.word.word}"), lambda _matched=matched: sentence.exclude_vocab(_matched.to_exclusion().as_string())) # type: ignore
         else:
@@ -48,7 +48,7 @@ def setup_note_menu(sentence: SentenceNote, note_menu: QMenu, string_menus: list
             if len(covered_existing_exclusions) == 1:
                 add_ui_action(string_menu, shortcutfinger.home3("Remove exclusion"), lambda _menu_string=menu_string: sentence.remove_excluded_vocab(_menu_string)) # type: ignore
             else:
-                remove_exclution_menu: QMenu = checked_cast(QMenu, string_menu.addMenu(shortcutfinger.home3("Remove exclusion")))
+                remove_exclution_menu: QMenu = non_optional(string_menu.addMenu(shortcutfinger.home3("Remove exclusion")))
                 for excluded_index, matched_exclusion in enumerate(covered_existing_exclusions):
                     add_ui_action(remove_exclution_menu, shortcutfinger.numpad_no_numbers(excluded_index, f"{matched_exclusion.index}:{matched_exclusion.word}"), lambda _matched_exclusion=matched_exclusion: sentence.remove_excluded_vocab(_matched_exclusion.as_string())) # type: ignore
 

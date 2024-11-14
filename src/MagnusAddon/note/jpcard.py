@@ -3,7 +3,7 @@ from anki.cards import Card
 from anki import consts
 from typing import TYPE_CHECKING
 
-from sysutils.typed import checked_cast
+from sysutils.typed import checked_cast, str_
 
 if TYPE_CHECKING:
     from ankiutils import app
@@ -30,4 +30,4 @@ class JPCard:
             self._scheduler().unsuspend_cards([self.card.id])
 
     def type(self) -> str:
-        return checked_cast(str, self.card.template()['name'])
+        return str_(self.card.template()['name'])

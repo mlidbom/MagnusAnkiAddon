@@ -6,13 +6,13 @@ from aqt.utils import openLink
 from hooks.right_click_menu_utils import add_lookup_action, add_text_vocab_lookup
 from note.note_constants import NoteFields, NoteTypes
 from ankiutils import query_builder
-from sysutils.typed import checked_cast
+from sysutils.typed import checked_cast, non_optional
 
 from hooks import shortcutfinger
 
 
 def setup_anki_open_menu(string_menu:QMenu, menu_string:str) -> None:
-    search_anki_menu = checked_cast(QMenu, string_menu.addMenu(shortcutfinger.up1("Open in Anki")))
+    search_anki_menu = non_optional(string_menu.addMenu(shortcutfinger.up1("Open in Anki")))
 
 
     add_lookup_action(search_anki_menu, shortcutfinger.home1("Open Exact matches | no sentences | reading cards"), query_builder.exact_matches_no_sentences_reading_cards(menu_string))
@@ -31,14 +31,14 @@ def setup_anki_open_menu(string_menu:QMenu, menu_string:str) -> None:
     add_text_vocab_lookup(search_anki_menu, shortcutfinger.down3("Text words"), menu_string)
 
 def setup_web_search_menu(string_menu:QMenu, menu_string:str) -> None:
-    search_web_menu = checked_cast(QMenu, string_menu.addMenu(shortcutfinger.down1("Search Web")))
+    search_web_menu = non_optional(string_menu.addMenu(shortcutfinger.down1("Search Web")))
 
     add_web_lookup(search_web_menu, shortcutfinger.home1("English: Merriam Webster"), u"https://www.merriam-webster.com/dictionary/%s", menu_string)
 
     add_web_lookup(search_web_menu, shortcutfinger.home2("Sentences: Immersion Kit"), u"https://www.immersionkit.com/dictionary?exact=true&sort=shortness&keyword=%s", menu_string)
     add_web_lookup(search_web_menu, shortcutfinger.home3("Sentences: Tatoeba"), u"https://tatoeba.org/en/sentences/search?from=jpn&to=eng&query=%s", menu_string)
 
-    kanji_lookup_menu = checked_cast(QMenu, search_web_menu.addMenu(shortcutfinger.home4("Kanji")))
+    kanji_lookup_menu = non_optional(search_web_menu.addMenu(shortcutfinger.home4("Kanji")))
     add_web_lookup(kanji_lookup_menu, shortcutfinger.home1("Kanji explosion"), u"https://www.kurumi.com/jp/kjbh/?k=%s", menu_string)
     add_web_lookup(kanji_lookup_menu, shortcutfinger.home2("Kanshudo"), u"https://www.kanshudo.com/search?q=%s", menu_string)
     add_web_lookup(kanji_lookup_menu, shortcutfinger.home3("Kanji map"), u"https://thekanjimap.com/%s", menu_string)
