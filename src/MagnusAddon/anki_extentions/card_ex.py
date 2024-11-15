@@ -2,6 +2,9 @@ from __future__ import annotations
 from anki import consts
 from typing import TYPE_CHECKING
 
+from anki_extentions.deck_ex import DeckEx
+from sysutils.typed import non_optional
+
 if TYPE_CHECKING:
     from anki_extentions.notetype_ex.note_type_template import NoteTemplateEx
     from ankiutils import app
@@ -63,3 +66,7 @@ class CardEx:
     def note(self) -> JPNote:
         from note.jpnote import JPNote
         return JPNote.note_from_card(self.card)
+
+    def get_deck(self) -> DeckEx:
+        from ankiutils import app
+        return DeckEx(non_optional(app.anki_collection().decks.get(self.card.current_deck_id())))

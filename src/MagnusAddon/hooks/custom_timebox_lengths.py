@@ -16,7 +16,7 @@ from sysutils import typed
 def adjust_timebox(_web_content: WebContent, context: object) -> None:
     if isinstance(context, Overview):
         deck = DeckEx(mw.col.decks.current())
-        deck_card_ids = mw.col.find_cards(f"deck:{deck.name()}")
+        deck_card_ids = mw.col.find_cards(f"deck:{deck.name}")
         if deck_card_ids:
             first_card_id: CardId = deck_card_ids[0]
 

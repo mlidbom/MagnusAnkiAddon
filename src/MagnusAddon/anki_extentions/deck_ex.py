@@ -1,9 +1,15 @@
-from anki.decks import DeckDict
+from anki.decks import DeckDict, DeckId
 
-from sysutils.typed import str_
+from anki_extentions.deck_configdict_ex import DeckConfigDictEx
+from sysutils.typed import *
 
 class DeckEx:
     def __init__(self, deck_dict: DeckDict) -> None:
         self.deck_dict = deck_dict
+        self.name = str_(deck_dict['name'])
+        self.id = checked_cast_generics(DeckId, deck_dict['id'])
 
-    def name(self) -> str: return str_(self.deck_dict['name'])
+
+    def get_config(self) -> DeckConfigDictEx:
+        from ankiutils import app
+        return DeckConfigDictEx(app.anki_collection().decks.config_dict_for_deck_id(self.id))
