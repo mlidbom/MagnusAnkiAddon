@@ -2,9 +2,7 @@ import pyperclip  # type: ignore
 from anki.notes import Note
 from aqt.clayout import CardLayout
 from aqt.editor import Editor
-from PyQt6.QtWebEngineCore import QWebEnginePage
 from PyQt6.QtWidgets import QMenu
-from anki.cards import Card
 from aqt import gui_hooks
 
 from aqt.browser.previewer import Previewer
@@ -36,7 +34,8 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu) -> None:
             else:
                 return None
         elif view.kind == AnkiWebViewKind.EDITOR:
-            editor = non_optional(view._bridge_context) # noqa
+            # noinspection PyProtectedMember
+            editor = checked_cast(Editor, view._bridge_context)
             card = non_optional(editor.card)
             inner_note = non_optional(card.note())
         elif view.kind == AnkiWebViewKind.PREVIEWER:

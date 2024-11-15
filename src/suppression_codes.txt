@@ -1,3 +1,4 @@
+# noinspection PyProtectedMember
 # noinspection DuplicatedCode
 # noinspection PyAbstractClass
 # noinspection PyArgumentEqualDefault
@@ -42,7 +43,6 @@
 # noinspection PyPep8Naming
 # noinspection PyPropertyAccess
 # noinspection PyPropertyDefinition
-# noinspection PyProtectedMember
 # noinspection PyRaisingNewStyleClass
 # noinspection PyRedeclaration
 # noinspection PyRedundantParentheses

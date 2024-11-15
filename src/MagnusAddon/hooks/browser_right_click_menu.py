@@ -9,7 +9,7 @@ from anki.cards import Card, CardId
 
 from note.jpnote import JPNote
 from note.vocabnote import VocabNote
-from sysutils.typed import checked_cast, non_optional
+from sysutils.typed import non_optional
 
 def spread_due_dates(cards: Sequence[CardId], start_day: int, days: int) -> None:
     anki_col = app.col().anki_collection

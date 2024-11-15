@@ -5,7 +5,7 @@ from hooks.right_click_menu_utils import add_lookup_action, add_ui_action
 from language_services.janome_ex.word_extraction.word_extractor import WordExclusion
 from note.note_constants import NoteFields, NoteTypes
 from note.sentencenote import SentenceNote
-from sysutils.typed import checked_cast, non_optional
+from sysutils.typed import non_optional
 from hooks import shortcutfinger
 
 def setup_note_menu(sentence: SentenceNote, note_menu: QMenu, string_menus: list[tuple[QMenu, str]]) -> None:

@@ -80,7 +80,7 @@ def tag_kanji_metadata() -> None:
         kanji.toggle_tag(Mine.Tags.kanji_with_no_primary_readings, not primary_readings)
 
         primary_on_readings:list[str] = primary_reading.findall(kanji.get_reading_on_html())
-        non_primary_on_readings:list[str] = [reading for reading in kanji.get_readings_on() if not reading in primary_readings]
+        non_primary_on_readings:list[str] = [reading for reading in kanji.get_readings_on() if reading not in primary_readings]
 
         kanji.toggle_tag(Mine.Tags.kanji_with_no_primary_on_readings, not primary_on_readings)
 

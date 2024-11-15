@@ -7,13 +7,13 @@ from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
 from sysutils import kana_utils
 
-def _build_vocab_list(word_to_show: list[str], excluded_words:set[str], title:str, include_mnemonics:bool=False, include_extended_sentence_statistics:bool = False) -> str:
+def _build_vocab_list(word_to_show: list[str], excluded_words:set[str], title:str, include_mnemonics:bool = False, include_extended_sentence_statistics:bool = False) -> str:
     html = f"""
     <div class="breakdown page_section">
         <div class="page_section_title">{title}</div>
         <ul class="sentenceVocabList userExtra depth1">
 """
-    for word in (w for w in word_to_show if not w in excluded_words):
+    for word in (w for w in word_to_show if w not in excluded_words):
         vocabs: list[VocabNote] = app.col().vocab.with_form(word)
 
         vocabs = [voc for voc in vocabs if not voc.get_question() in excluded_words]
@@ -65,7 +65,7 @@ def render_excluded_words(note: SentenceNote, replacements:dict[str, str]) -> No
     excluded_vocab = list(excluded_words)
     replacements["##EXCLUDED_WORDS##"] = _build_vocab_list(excluded_vocab, set(), "incorrectly matched words") if excluded_vocab else ""
 
-def render_user_extra_list(note: SentenceNote, replacements:dict[str, str]) ->None:
+def render_user_extra_list(note: SentenceNote, replacements:dict[str, str]) -> None:
     replacements["##USER_EXTRA_VOCAB##"] = _build_vocab_list(note.get_user_highlighted_vocab(), note.get_user_excluded_vocab(), "highlighted words", include_mnemonics=True, include_extended_sentence_statistics=True) if note.get_user_highlighted_vocab() else ""
 
 

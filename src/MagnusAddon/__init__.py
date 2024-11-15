@@ -5,7 +5,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 import _lib_patched # noqa NOTE: this line sets up lib paths, lib imports before here do not work when running in anki
 import _lib # noqa NOTE: this line sets up lib paths, lib imports before here do not work when running in anki
 
-import hooks # I'm leaving this warning on purpose so that I don't have to use multiple steps to run inspections in this tiring, tiring IDE I'm using.
+import hooks # noqa
 
 hooks.timing_hacks.init()
 hooks.browser_right_click_menu.init()

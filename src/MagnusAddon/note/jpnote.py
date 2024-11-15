@@ -15,7 +15,7 @@ from note import noteutils
 from note.jpcard import JPCard
 from note.note_constants import CardTypes, Mine, MyNoteFields, NoteTypes
 from sysutils import ex_str
-from sysutils.typed import checked_cast, str_
+from sysutils.typed import str_
 
 class JPNote(ABC):
     def __init__(self, note: Note):
@@ -96,7 +96,7 @@ class JPNote(ABC):
     def has_suspended_cards(self) -> bool: return any(_card for _card in self.cards() if _card.is_suspended())
     def has_active_cards(self) -> bool: return any(_card for _card in self.cards() if not _card.is_suspended())
 
-    def has_suspended_cards_or_depencies_suspended_cards(self) -> bool: return any(note for note in self.get_dependencies_recursive() if note.has_suspended_cards() )
+    def has_suspended_cards_or_depencies_suspended_cards(self) -> bool: return any(note for note in self.get_dependencies_recursive() if note.has_suspended_cards())
 
 
     def unsuspend_all_cards(self) -> None:

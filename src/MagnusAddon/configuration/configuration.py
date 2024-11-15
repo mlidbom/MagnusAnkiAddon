@@ -1,7 +1,7 @@
-from typing import Optional
 from aqt.qt import *
 from ankiutils import app
 from configuration.configuration_value import *
+from typing import Optional
 
 class JapaneseOptionsDialog(QDialog):
     def __init__(self, parent: Optional[QWidget] = None):

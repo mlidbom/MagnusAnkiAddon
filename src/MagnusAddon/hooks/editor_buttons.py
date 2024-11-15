@@ -7,7 +7,7 @@ from aqt.editor import Editor
 from ankiutils import app
 from note import queue_manager
 from note.vocabnote import VocabNote
-from sysutils.typed import checked_cast, non_optional
+from sysutils.typed import non_optional
 from wanikani import wani_note_updater
 from wanikani.wani_downloader import WaniDownloader
 

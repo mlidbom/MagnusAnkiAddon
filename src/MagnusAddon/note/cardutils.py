@@ -6,7 +6,7 @@ from anki.consts import QUEUE_TYPE_NEW
 from ankiutils import app
 from note.jpnote import JPNote
 from note.note_constants import NoteTypes
-from sysutils.typed import checked_cast, str_
+from sysutils.typed import str_
 
 def card_type(card: Card) -> str:
     return str_(card.template()['name'])

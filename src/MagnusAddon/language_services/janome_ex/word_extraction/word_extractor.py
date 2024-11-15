@@ -59,7 +59,7 @@ class HierarchicalWord:
         self.children.append(child)
         child.parent = self
 
-    def is_parent_of(self, other: HierarchicalWord ) -> bool:
+    def is_parent_of(self, other: HierarchicalWord) -> bool:
         return self.may_have_children and other != self and self.start_index <= other.start_index <= self.end_index and other.end_index < self.end_index
 
     def __repr__(self) -> str:

@@ -18,7 +18,7 @@ def _confirm(menu: QMenu, message:str) -> bool:
         QMessageBox.StandardButton.Yes
     ) == QMessageBox.StandardButton.Yes
 
-def add_ui_action(menu: QMenu, name: str, callback: Callable[[], None], confirm:bool=False) -> None:
+def add_ui_action(menu: QMenu, name: str, callback: Callable[[], None], confirm:bool = False) -> None:
     def run_ui_action() -> None:
         if not confirm or _confirm(menu, name):
             callback()

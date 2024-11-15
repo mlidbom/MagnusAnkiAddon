@@ -5,7 +5,7 @@ from unidic2ud import UniDic2UDEntry, UDPipeEntry # type: ignore
 
 from language_services.universal_dependencies.shared.tokenizing.ud_token import UDToken
 from sysutils import ex_sequence, ex_str
-from sysutils.typed import checked_cast, str_
+from sysutils.typed import str_
 
 class UDTokenizedText:
     def __init__(self, wrapped: Union[UniDic2UDEntry, Doc]):

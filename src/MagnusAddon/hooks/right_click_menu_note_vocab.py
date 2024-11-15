@@ -6,7 +6,7 @@ from note.note_constants import NoteFields, NoteTypes
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
 from sysutils import ex_str
-from sysutils.typed import checked_cast, non_optional
+from sysutils.typed import non_optional
 from hooks import shortcutfinger
 
 def setup_note_menu(vocab: VocabNote, note_menu: QMenu, string_menus: list[tuple[QMenu, str]]) -> None:

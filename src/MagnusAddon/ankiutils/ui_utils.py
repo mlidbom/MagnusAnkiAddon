@@ -1,7 +1,6 @@
 from typing import Callable
 
 import aqt
-from anki.cards import Card
 from aqt import AnkiQt  # type: ignore
 from aqt.browser import Browser  # type: ignore
 from aqt.browser.previewer import Previewer
@@ -12,7 +11,7 @@ from aqt.utils import tooltip
 from ankiutils.audio_suppressor import audio_suppressor
 from ankiutils.ui_utils_interface import IUIUtils
 from sysutils import timeutil
-from sysutils.typed import checked_cast
+from sysutils.typed import non_optional
 
 _ANSWER_DISPLAY_TYPES = {'reviewAnswer', 'previewAnswer', 'clayoutAnswer'}
 
@@ -52,7 +51,8 @@ class UIUtils(IUIUtils):
             previewers: list[Previewer] = [window for window in self._mw.app.topLevelWidgets() if isinstance(window, Previewer)]
             if len(previewers) > 0:
                 previewer = previewers[0]
-                previewer._last_state = (previewer._state, non_optional(previewer.card()).id, 0)  # noqa
+                # noinspection PyProtectedMember
+                previewer._last_state = (previewer._state, non_optional(previewer.card()).id, 0)
                 previewer.render_card()
 
         def force_reviewer_rerender() -> None:

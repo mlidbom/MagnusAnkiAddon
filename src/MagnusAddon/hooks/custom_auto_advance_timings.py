@@ -1,6 +1,5 @@
 from typing import Any
 
-from anki.cards import Card
 from aqt import gui_hooks, mw
 
 from note import cardutils
@@ -10,7 +9,7 @@ from note.kanjinote import KanjiNote
 from note.note_constants import CardTypes
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
-from sysutils import timeutil, typed
+from sysutils import timeutil
 from sysutils.typed import non_optional
 
 def _monkey_patch(html:str, _card:Any, display_type:str) -> str:
