@@ -1,5 +1,8 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
+
+from anki_extentions.notetype_ex.note_type_ex import NoteTypeEx
+
 if TYPE_CHECKING:
     from note.collection.jp_collection import JPCollection
 
@@ -12,10 +15,10 @@ from anki.models import NotetypeDict
 from anki.notes import Note, NoteId
 
 from note import noteutils
-from note.jpcard import JPCard
+from anki_extentions.card_ex import CardEx
 from note.note_constants import CardTypes, Mine, MyNoteFields, NoteTypes
 from sysutils import ex_str
-from sysutils.typed import str_
+from sysutils.typed import non_optional, str_
 
 class JPNote(ABC):
     def __init__(self, note: Note):
@@ -71,6 +74,8 @@ class JPNote(ABC):
     def get_note_type(note: Note) -> str:
         return str_(cast(NotetypeDict, note.note_type())["name"])
 
+    def get_type(self) -> NoteTypeEx: return NoteTypeEx.from_dict(non_optional(self._note.note_type()))
+
     def get_note_type_name(self) -> str: return self.get_note_type(self._note)
 
     def get_direct_dependencies(self) -> set[JPNote]:
@@ -92,7 +97,7 @@ class JPNote(ABC):
     def card_ids(self) -> Sequence[CardId]: return self._note.card_ids()
     def is_wani_note(self) -> bool: return Mine.Tags.Wani in self._note.tags
 
-    def cards(self) -> list[JPCard]: return [JPCard(card) for card in self._note.cards()]
+    def cards(self) -> list[CardEx]: return [CardEx(card) for card in self._note.cards()]
     def has_suspended_cards(self) -> bool: return any(_card for _card in self.cards() if _card.is_suspended())
     def has_active_cards(self) -> bool: return any(_card for _card in self.cards() if not _card.is_suspended())
 

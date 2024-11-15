@@ -1,19 +1,17 @@
 from __future__ import annotations
-from anki.cards import Card
 from anki import consts
 from typing import TYPE_CHECKING
 
-from sysutils.typed import str_
-
 if TYPE_CHECKING:
+    from anki_extentions.notetype_ex.note_type_template import NoteTemplateEx
     from ankiutils import app
     from anki.scheduler.v3 import Scheduler
+    from note.jpnote import JPNote
 
 from anki.cards import Card
 from aqt.reviewer import AnswerAction
 from ankiutils import app
 from sysutils import ex_iterable, timeutil, typed
-from sysutils.typed import str_
 
 def _latest_day_cutoff_timestamp() -> int:
     from aqt import mw
@@ -32,7 +30,7 @@ def _get_answers_since_last_day_cutoff_for_card(card: Card) -> list[int]:
     answers = [typed.int_(review[0]) for review in reviews]
     return answers
 
-class JPCard:
+class CardEx:
     def __init__(self, card:Card):
         self.card = card
 
@@ -52,11 +50,16 @@ class JPCard:
         if self.is_suspended():
             self._scheduler().unsuspend_cards([self.card.id])
 
-    def type(self) -> str:
-        return str_(self.card.template()['name'])
+    def type(self) -> NoteTemplateEx:
+        from anki_extentions.notetype_ex.note_type_template import NoteTemplateEx
+        return NoteTemplateEx.from_dict(self.card.template())
 
     def last_answer_today_was_fail_db_call(self) -> bool:
         return _last_answer_today_was_fail(self.card)
 
     def answers_since_last_day_cutoff_db_call(self) -> list[int]:
         return _get_answers_since_last_day_cutoff_for_card(self.card)
+
+    def note(self) -> JPNote:
+        from note.jpnote import JPNote
+        return JPNote.note_from_card(self.card)
