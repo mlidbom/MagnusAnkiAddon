@@ -157,6 +157,7 @@ class CacheRunner:
 
     def _check_for_updated_note_types_and_reset_app_if_found(self) -> None:
         for cached_note_type in self._note_types:
+            assert self._anki_collection.db
             current = NoteTypeEx.from_dict(cast(NotetypeDict, self._anki_collection.models.get(cached_note_type.id)))
             try:
                 current.assert_schema_matches(cached_note_type)
