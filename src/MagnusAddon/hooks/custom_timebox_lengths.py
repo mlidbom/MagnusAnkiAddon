@@ -37,7 +37,7 @@ def adjust_timebox(_web_content: WebContent, context: object) -> None:
             key = (notetype.name, typed.str_(card.type().name))
             if key in card_notetype_timebox_minutes:
                 timebox = card_notetype_timebox_minutes[key]
-                mw.col.conf.set('timeLim', card_notetype_timebox_minutes[key] * 60)
+                app.anki_config().set_timebox_seconds(card_notetype_timebox_minutes[key] * 60)
                 aqt.utils.tooltip(f"Set timebox to {timebox} minutes")
 
 gui_hooks.webview_will_set_content.append(adjust_timebox)

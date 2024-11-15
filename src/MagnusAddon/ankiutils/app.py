@@ -4,6 +4,8 @@ from typing import Any, Callable, Optional, TYPE_CHECKING
 
 import anki
 
+from anki_extentions.config_manager_ex import ConfigManagerEx
+
 if TYPE_CHECKING:
     from configuration.configuration import JapaneseConfig
 
@@ -82,6 +84,9 @@ def _profile_opened() -> None:
 
 def wait_for_initialization() -> None:
     col()
+
+def anki_config() -> ConfigManagerEx:
+    return ConfigManagerEx(mw.col.conf)
 
 def col() -> JPCollection:
     assert _collection
