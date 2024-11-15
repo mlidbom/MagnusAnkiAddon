@@ -28,31 +28,34 @@ class JapaneseConfig:
                                                                                                default=False,
                                                                                                feature_toggler=set_enable_fsrs_short_term_with_steps)
 
-        self.feature_toggles = [self.yomitan_integration_copy_answer_to_clipboard, self.anki_internal_fsrs_set_enable_fsrs_short_term_with_steps]
+        self.decrease_failed_card_intervals_interval = ConfigurationValueInt("decrease_failed_card_intervals_interval", "Failed card again seconds for next again", 60)
+        self.decrease_failed_card_intervals = ConfigurationValueBool("decrease_failed_card_intervals", "Decrease failed card intervals", False)
+
+        self.feature_toggles = [self.yomitan_integration_copy_answer_to_clipboard, self.anki_internal_fsrs_set_enable_fsrs_short_term_with_steps, self.decrease_failed_card_intervals]
 
 class ConfigurationValue(Generic[T]):
     def __init__(self, name: str, title: str, default: T, feature_toggler: Optional[Callable[[T], None]] = None) -> None:
         self.title = title
         self.feature_toggler: Optional[Callable[[T], None]] = feature_toggler
         self.name = name
-        self.value: T = _config_dict.get(name, default)
+        self._value: T = _config_dict.get(name, default)
 
         if self.feature_toggler:
             from ankiutils import app
             app.add_init_hook(self.toggle_feature)
 
     def get_value(self) -> T:
-        return self.value
+        return self._value
 
     def set_value(self, value: T) -> None:
-        self.value = value
+        self._value = value
         _config_dict[self.name] = value
         self.toggle_feature()
         mw.addonManager.writeConfig(_addon_name, _config_dict)
 
     def toggle_feature(self) -> None:
         if self.feature_toggler is not None:
-            self.feature_toggler(self.value)
+            self.feature_toggler(self._value)
 
 ConfigurationValueInt = ConfigurationValue[int]
 ConfigurationValueStr = ConfigurationValue[str]

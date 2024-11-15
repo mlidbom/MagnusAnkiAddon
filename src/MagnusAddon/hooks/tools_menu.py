@@ -58,7 +58,7 @@ def build_config_menu(my_menu: QMenu, title:str) -> None:
     def build_feature_toggles_menu(_title: str) -> None:
         toggles_menu = non_optional(config_menu.addMenu(_title))
         for index, toggle in enumerate(app.config().feature_toggles):
-            add_checkbox_config(toggles_menu, toggle, shortcutfinger.numpad_no_numbers(index, _title))
+            add_checkbox_config(toggles_menu, toggle, shortcutfinger.numpad_no_numbers(index, toggle.title))
 
     build_feature_toggles_menu(shortcutfinger.home1("Feature Toggles"))
 

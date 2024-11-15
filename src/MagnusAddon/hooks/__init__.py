@@ -18,5 +18,6 @@ from . import (
     auto_bury_multiple_failures,
     custom_auto_advance_timings,
     custom_timebox_lengths,
-    timebox_end_sound
+    timebox_end_sound,
+    custom_short_term_scheduling
 )

@@ -18,10 +18,20 @@ class JapaneseOptionsDialog(QDialog):
             grid.addWidget(label, row, 0)
 
             number_input = QSpinBox()
-            number_input.setRange(0, 100)
+            number_input.setRange(0, 99999)
             number_input.setValue(config_value.get_value())
             qconnect(number_input.valueChanged, config_value.set_value)
             grid.addWidget(number_input, row, 1)
+
+        failed_card_group = QGroupBox("Decrease failed card intervals")
+        failed_card_layout = QGridLayout()
+        failed_card_layout.setColumnStretch(0, 1)  # Make the label column expandable
+        failed_card_layout.setColumnStretch(1, 0)  # Keep the spinner column fixed width
+
+        add_number_spinner_value(failed_card_layout, 0, self.config.decrease_failed_card_intervals_interval)
+
+        failed_card_group.setLayout(failed_card_layout)
+        layout.addWidget(failed_card_group)
 
         number_group = QGroupBox("Timeboxes")
         number_layout = QGridLayout()

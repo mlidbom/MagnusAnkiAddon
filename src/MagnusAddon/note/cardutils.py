@@ -11,6 +11,7 @@ from sysutils.typed import str_
 def card_type(card: Card) -> str:
     return str_(card.template()['name'])
 
+
 class CardUtils:
     @staticmethod
     def is_new(card: Card) -> bool:
