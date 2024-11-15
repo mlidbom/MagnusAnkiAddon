@@ -18,7 +18,8 @@ def _monkey_patch(html:str, _card:Any, display_type:str) -> str:
         return html
 
     def is_handled_card() -> bool:
-        if cardutils.card_type(non_optional(mw.reviewer.card)) != CardTypes.reading:
+        card = CardEx(non_optional(mw.reviewer.card))
+        if card.type().name != CardTypes.reading:
             return False
 
         note = JPNote.note_from_card(non_optional(mw.reviewer.card))
