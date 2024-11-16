@@ -15,7 +15,7 @@ def set_again_time_for_previously_failed_today_cards(queue:QueuedCards) -> V3Car
         card = CardEx(info.top_card().card)
 
         if card.last_answer_today_was_fail_db_call():
-            SchedulingStatesEx(info.states).set_again_seconds(app.config().decrease_failed_card_intervals_interval.get_value())
+            SchedulingStatesEx(info.states).again.set_seconds(app.config().decrease_failed_card_intervals_interval.get_value())
 
     return info
 

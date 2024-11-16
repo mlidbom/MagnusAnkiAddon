@@ -1,22 +1,28 @@
-from anki.scheduler.v3 import SchedulingStates
+from anki.scheduler.v3 import SchedulingState, SchedulingStates
 
 class SchedulingStatesEx:
     def __init__(self, states:SchedulingStates) -> None:
-        self.states = states
+        self._states = states
+        self.again = SchedulingStateEx(states.again)
 
-    def is_relearning(self) -> bool: return self.states.again.normal.relearning.learning.scheduled_secs > 0
-    def is_learning(self) -> bool: return self.states.again.normal.learning.scheduled_secs > 0
-    def is_filtered_learning(self) -> bool: return self.states.again.filtered.rescheduling.original_state.learning.scheduled_secs > 0
-    def is_filtered_relearning(self) -> bool: return self.states.again.filtered.rescheduling.original_state.relearning.learning.scheduled_secs > 0
 
-    def set_again_seconds(self, seconds:int) -> None:
+class SchedulingStateEx:
+    def __init__(self, state:SchedulingState) -> None:
+        self._state = state
+
+    def is_relearning(self) -> bool: return self._state.normal.relearning.learning.scheduled_secs > 0
+    def is_learning(self) -> bool: return self._state.normal.learning.scheduled_secs > 0
+    def is_filtered_learning(self) -> bool: return self._state.filtered.rescheduling.original_state.learning.scheduled_secs > 0
+    def is_filtered_relearning(self) -> bool: return self._state.filtered.rescheduling.original_state.relearning.learning.scheduled_secs > 0
+
+    def set_seconds(self, seconds:int) -> None:
         if self.is_relearning():
-            self.states.again.normal.relearning.learning.scheduled_secs = seconds
+            self._state.normal.relearning.learning.scheduled_secs = seconds
         elif self.is_learning():
-            self.states.again.normal.learning.scheduled_secs = seconds
+            self._state.normal.learning.scheduled_secs = seconds
         elif self.is_filtered_relearning():
-            self.states.again.filtered.rescheduling.original_state.relearning.learning.scheduled_secs = seconds
+            self._state.filtered.rescheduling.original_state.relearning.learning.scheduled_secs = seconds
         elif self.is_filtered_learning():
-            self.states.again.filtered.rescheduling.original_state.learning.scheduled_secs = seconds
+            self._state.filtered.rescheduling.original_state.learning.scheduled_secs = seconds
         else:
             raise Exception("May only be called on relearning or learning cards")
