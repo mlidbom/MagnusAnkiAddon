@@ -1,17 +1,29 @@
-from aqt import mw
 from aqt.sound import av_player
 from os.path import dirname
 from aqt.reviewer import Reviewer
-from anki import hooks
-from typing import Callable
+
+from aqt.utils import askUserDialog
+
+from sysutils import timeutil
 
 addon_path: str = dirname(__file__)
 sound_file: str = addon_path + "/timebox_complete.mp3"
 
-def on_timebox(self: Reviewer, _old: Callable[[Reviewer], bool]) -> bool:
-    if mw.col.timeboxReached():
+def _check_timebox(self: Reviewer) -> bool:
+    elapsed = self.mw.col.timeboxReached()
+    if elapsed:
         av_player.play_file(sound_file)
+        assert not isinstance(elapsed, bool)
+        cards_studied = elapsed[1]
+        seconds_studied = elapsed[0]
+        seconds_per_card = float(seconds_studied) / cards_studied
 
-    return _old(self)
+        askUserDialog(f"""
+Studied {cards_studied} cards in {timeutil.format_seconds_as_hh_mm_ss(seconds_studied)}.
+{seconds_per_card:.2f} seconds per card.
+""", ["OK"]).exec()
+        self.mw.moveToState("deckBrowser")
+        return True
+    return False
 
-Reviewer.check_timebox = hooks.wrap(Reviewer.check_timebox, on_timebox, "around")  # type: ignore
+Reviewer.check_timebox = _check_timebox  # type: ignore
