@@ -38,7 +38,8 @@ class UDTokenizedText:
     def str_(self, exclude_lemma_and_norm:bool = False) -> str:
         return "\n".join([tok.str_(ex_str.pad_to_length, exclude_lemma_and_norm) for tok in self.tokens])
 
-
+    #This is super useful for debugging. It's not going unless we remove unidic alltogether.
+    # noinspection PyUnusedFunction
     def to_tree(self) -> str:
         if isinstance(self._wrapped, UniDic2UDEntry):
             return str_(self._wrapped.to_tree())

@@ -112,30 +112,14 @@ class SentenceNote(JPNote):
         from language_services.janome_ex.word_extraction import word_extractor
         return word_extractor.extract_words(self.get_question())
 
-    def ud_extract_word_forms(self) -> list[str]:
-        from language_services.universal_dependencies import ud_tokenizers
-        from language_services.universal_dependencies.shared.tree_building import ud_tree_builder
-        from language_services.universal_dependencies.shared.tree_building.ud_tree_node import UDTreeNode
-
-        tree = ud_tree_builder.build_tree(ud_tokenizers.default, self.get_question())
-        word_forms: set[str] = set()
-
-        def get_node_forms(node: UDTreeNode) -> None:
-            word_forms.add(node.form)
-            if node.lemma_should_be_shown_in_breakdown():
-                word_forms.add(node.lemma)
-
-        tree.visit(get_node_forms)
-
-        return list(word_forms)
-
-    def ud_extract_vocab(self) -> list[VocabNote]:
-        from ankiutils import app
-        return app.col().vocab.with_forms(self.ud_extract_word_forms())
-
     def get_parsed_words(self) -> list[str]: return self._get_parsed_words()[:-1]
     def _get_parsed_words(self) -> list[str]: return self.get_field(SentenceNoteFields.ParsedWords).split(",")
     def get_words(self) -> set[str]: return (set(self._get_parsed_words()) | set(self.get_user_highlighted_vocab())) - self.get_user_excluded_vocab()
+
+    def get_parsed_words_notes(self) -> list[VocabNote]:
+        from ankiutils import app
+        return ex_sequence.flatten([app.col().vocab.with_question(q) for q in self.get_valid_parsed_non_child_words_strings()])
+
 
     def update_generated_data(self) -> None:
         super().update_generated_data()

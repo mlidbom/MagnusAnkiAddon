@@ -2,7 +2,6 @@ from aqt import gui_hooks
 
 from ankiutils import app
 from hooks.note_content_building.content_renderer import PrerenderingAnswerContentRenderer
-from language_services.shared import priorities
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
 from sysutils import kana_utils
@@ -28,7 +27,7 @@ def _build_vocab_list(word_to_show: list[str], excluded_words:set[str], title:st
                 needs_reading = kana_utils.contains_kanji(word) and (not hit_form or kana_utils.contains_kanji(hit_form))
                 readings = ", ".join(vocab.get_readings()) if needs_reading else ""
                 html += f"""
-                        <li class="sentenceVocabEntry depth1 word_priority_{priorities.very_high} {" ".join(vocab.get_meta_tags())}">
+                        <li class="sentenceVocabEntry depth1 word_priority_very_high {" ".join(vocab.get_meta_tags())}">
                             <div class="sentenceVocabEntryDiv">
                                 <audio src="{vocab.get_primary_audio_path()}"></audio><a class="play-button"></a>
                                 <span class="vocabQuestion clipboard">{word}</span>
@@ -42,7 +41,7 @@ def _build_vocab_list(word_to_show: list[str], excluded_words:set[str], title:st
                         """
         else:
             html += f"""
-                        <li class="sentenceVocabEntry depth1 word_priority_{priorities.very_high}">
+                        <li class="sentenceVocabEntry depth1 word_priority_very_high">
                            <div class="sentenceVocabEntryDiv">
                                <span class="vocabQuestion clipboard">{word}</span>
                                <span class="vocabAnswer">---</span>
