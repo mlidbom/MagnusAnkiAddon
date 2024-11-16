@@ -1,4 +1,5 @@
 # noinspection PyProtectedMember
+# noinspection PyUnusedLocal
 # noinspection DuplicatedCode
 # noinspection PyAbstractClass
 # noinspection PyArgumentEqualDefault
@@ -64,6 +65,5 @@
 # noinspection PyUnnecessaryBackslash
 # noinspection PyUnreachableCode
 # noinspection PyUnresolvedReferences
-# noinspection PyUnusedLocal
 # noinspection ReturnValueFromInit
 # noinspection SpellCheckingInspection

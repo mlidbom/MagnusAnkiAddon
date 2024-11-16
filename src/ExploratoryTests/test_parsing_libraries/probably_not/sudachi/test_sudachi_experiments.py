@@ -17,7 +17,9 @@ def test_sudachi(text:str) -> None:
     split_mode_c_tokens = [mo for mo in tokenizer.tokenize(text, SplitMode.C)]
 
     a_info = [mo.get_word_info() for mo in split_mode_a_tokens]
+    # noinspection PyUnusedLocal
     b_info = [mo.get_word_info() for mo in split_mode_b_tokens]
+    # noinspection PyUnusedLocal
     c_info = [mo.get_word_info() for mo in split_mode_c_tokens]
 
     for word in a_info:
