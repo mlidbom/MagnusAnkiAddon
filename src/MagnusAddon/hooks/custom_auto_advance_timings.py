@@ -3,7 +3,6 @@ from typing import Any
 from aqt import gui_hooks, mw
 
 from anki_extentions.card_ex import CardEx
-from note import cardutils
 from note.difficulty_calculator import DifficultyCalculator
 from note.jpnote import JPNote
 from note.kanjinote import KanjiNote
