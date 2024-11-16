@@ -8,7 +8,6 @@ _tokenizer = ud_tokenizers.qkana
 _noise_characters = {'.',',',':',';','/','|','。','、'}
 _max_lookahead = 12
 
-version = "ud_extractor_1"
 # noinspection DuplicatedCode
 def extract_words(sentence: str) -> list[str]:
     from ankiutils import app

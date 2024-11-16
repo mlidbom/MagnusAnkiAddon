@@ -8,18 +8,11 @@ class WaniNote(JPNote):
     def __init__(self, note: Note):
         super().__init__(note)
 
-    def get_level_tag(self) -> int:
-        level_tag = [level for level in self._note.tags if level.startswith(Mine.Tags.wani_level)][0]
-        level_int = int(level_tag[5:])
-        return level_int
-
     def _set_level_tag(self, new_level: int) -> None:
         level_tags = [level for level in self._note.tags if level.startswith(Mine.Tags.wani_level)]
         for level in level_tags:
             self._note.remove_tag(level)
         self.set_tag(f"""{Mine.Tags.wani_level}{"{:02d}".format(new_level)}""")
-
-    def get_sort_id(self) -> str: return self.get_field(NoteFields.WaniCommon.sort_id)
 
     def get_subject_id(self) -> int: return int(self.get_field(NoteFields.WaniCommon.subject_id))
     def _set_subject_id(self, value: int) -> None: self.set_field(NoteFields.WaniCommon.subject_id, str(value))
@@ -43,10 +36,7 @@ class WaniNote(JPNote):
                 print("Ignoring 0 as value for lesson_position for subject: {}".format(self.get_subject_id()))
 
 
-    def get_my_learning_order(self) -> str: return self.get_field(NoteFields.WaniCommon.my_learning_order)
     def _set_my_learning_order(self, value: str) -> None: self.set_field(NoteFields.WaniCommon.my_learning_order, value)
-
-    def get_document_url(self) -> str: return self.get_field(NoteFields.WaniCommon.document_url)
     def set_document_url(self, value: str) -> None: self.set_field(NoteFields.WaniCommon.document_url, value)
 
     def get_level(self) -> int:

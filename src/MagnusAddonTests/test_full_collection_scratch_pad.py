@@ -11,6 +11,7 @@ from sysutils import ex_str
 
 shtml = ex_str.strip_html_markup
 
+# noinspection PyUnusedFunction
 @pytest.fixture(scope="function", autouse=True)
 def setup() -> Generator[None, None, None]:
     with (inject_full_anki_collection_for_testing()):

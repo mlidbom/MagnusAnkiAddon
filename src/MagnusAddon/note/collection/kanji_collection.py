@@ -14,7 +14,7 @@ from note.collection.backend_facade import BackEndFacade
 from note.collection.note_cache import CachedNote, NoteCache
 from note.kanjinote import KanjiNote
 from note.note_constants import NoteTypes
-from sysutils import ex_list, ex_sequence
+from sysutils import ex_sequence
 
 class _KanjiSnapshot(CachedNote):
     def __init__(self, note: KanjiNote):
@@ -62,6 +62,3 @@ class KanjiCollection:
         return found[0] if found else None
 
     def with_radical(self, radical:str) -> list[KanjiNote]: return self._cache.with_radical(radical)
-
-    def with_question(self, kanji: str) -> KanjiNote:
-        return ex_list.single(self._cache.with_question(kanji))

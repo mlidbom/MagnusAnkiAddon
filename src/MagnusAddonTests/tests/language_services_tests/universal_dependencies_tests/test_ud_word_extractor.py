@@ -6,11 +6,13 @@ from fixtures.collection_factory import inject_empty_anki_collection_with_note_t
 from language_services.janome_ex.word_extraction import ud_word_extractor
 from note.vocabnote import VocabNote
 
+# noinspection PyUnusedFunction
 @pytest.fixture(scope="function", autouse=True)
 def setup_object() -> Generator[None, None, None]:
     with inject_empty_anki_collection_with_note_types():
         yield
 
+# noinspection PyUnusedName
 pytestmark = pytest.mark.skip(f"""I thought the ud tools would do a better job than janome, but these tests don't seem to bear that thought out. 
 Maybe it's time to stop trying do to magic, rip out all the attempts at magic and just use janome and have the user do the rest of the validation""")
 

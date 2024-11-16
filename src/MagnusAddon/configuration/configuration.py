@@ -8,6 +8,8 @@ class JapaneseOptionsDialog(QDialog):
         super().__init__(parent)
         self.config = app.config()
 
+        # for some reason the dead code detector breaks some logic in pycharm here. This method is just fine
+        # noinspection PyUnresolvedReferences
         self.setWindowTitle("Japanese Options")
         self.setMinimumWidth(300)
 
@@ -17,6 +19,7 @@ class JapaneseOptionsDialog(QDialog):
             label = QLabel(config_value.title)
             grid.addWidget(label, row, 0)
 
+            # noinspection PyArgumentList
             number_input = QSpinBox()
             number_input.setRange(0, 99999)
             number_input.setValue(config_value.get_value())
@@ -24,6 +27,7 @@ class JapaneseOptionsDialog(QDialog):
             grid.addWidget(number_input, row, 1)
 
         failed_card_group = QGroupBox("Decrease failed card intervals")
+        # noinspection PyArgumentList
         failed_card_layout = QGridLayout()
         failed_card_layout.setColumnStretch(0, 1)  # Make the label column expandable
         failed_card_layout.setColumnStretch(1, 0)  # Keep the spinner column fixed width
@@ -34,6 +38,7 @@ class JapaneseOptionsDialog(QDialog):
         layout.addWidget(failed_card_group)
 
         number_group = QGroupBox("Timeboxes")
+        # noinspection PyArgumentList
         number_layout = QGridLayout()
         number_layout.setColumnStretch(0, 1)  # Make the label column expandable
         number_layout.setColumnStretch(1, 0)  # Keep the spinner column fixed width

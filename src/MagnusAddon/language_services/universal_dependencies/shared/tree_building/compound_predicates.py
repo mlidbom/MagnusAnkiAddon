@@ -2,10 +2,9 @@ from __future__ import annotations
 
 from typing import Callable
 
-from language_services.universal_dependencies.shared.tokenizing import deprel, xpos
-from language_services.universal_dependencies.shared.tokenizing.deprel import UdRelationshipTag
+from language_services.universal_dependencies.shared.tokenizing.deprel import Deprel, UdRelationshipTag
 from language_services.universal_dependencies.shared.tokenizing.ud_token import UDToken
-from language_services.universal_dependencies.shared.tokenizing.xpos import UdJapanesePartOfSpeechTag
+from language_services.universal_dependencies.shared.tokenizing.xpos import UdJapanesePartOfSpeechTag, XPOS
 from language_services.universal_dependencies.shared.tree_building.compound_predicates_base import CompoundPredicatesBase
 
 class CompoundPredicates(CompoundPredicatesBase):
@@ -24,7 +23,7 @@ class CompoundPredicates(CompoundPredicatesBase):
         return lambda: any(t for t in self._tokens_missing_heads() if (t.deprel, t.xpos) in combo)
 
     def current_is_nominal_subject_or_oblique_nominal_of_next_that_is_adjective_i_bound(self) -> bool:
-        return (self._current.deprel in {deprel.nominal_subject, deprel.oblique_nominal}
+        return (self._current.deprel in {Deprel.nominal_subject, Deprel.oblique_nominal}
                 and self._current.head == self._next
                 # and self._current.head.xpos in {xpos.adjective_i_bound}
                 )
@@ -40,7 +39,7 @@ class CompoundPredicates(CompoundPredicatesBase):
                         and (self.compound.next.deprel, self.compound.next.xpos) != combo)
 
     def current_is_particle_conjunctive_and_next_is_verb_bound(self) -> bool:
-        return self._current.xpos == xpos.particle_conjunctive and self._next.xpos == xpos.verb_bound
+        return self._current.xpos == XPOS.particle_conjunctive and self._next.xpos == XPOS.verb_bound
 
     def next_shares_head_with_current_and_current_is_deprel(self, *_deprel: UdRelationshipTag) -> Callable[[], bool]:
         return lambda: self.next_shares_head_with_current()() and self.current_has_deprel(*_deprel)()
@@ -49,7 +48,7 @@ class CompoundPredicates(CompoundPredicatesBase):
         return lambda: self._current.deprel in _deprel
 
     def next_is_particle_conjunctive_and_previous_is_not_copula(self) -> bool:
-        return self._next.xpos == xpos.particle_conjunctive and self._current.deprel != deprel.copula
+        return self._next.xpos == XPOS.particle_conjunctive and self._current.deprel != Deprel.copula
 
 
     def next_is_dependent_of_compound(self, *_deprel: UdRelationshipTag) -> Callable[[], bool]:

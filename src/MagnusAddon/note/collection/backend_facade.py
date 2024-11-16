@@ -19,6 +19,7 @@ class BackEndFacade(Generic[TNote]):
     def all(self) -> Iterator[TNote]:
         return self.search(f"{Builtin.Note}:{self.note_type}")
 
+    # noinspection PySameParameterValue
     def search(self, query: str) -> Iterator[TNote]:
         return self.by_id(self.anki_collection.find_notes(query))
 

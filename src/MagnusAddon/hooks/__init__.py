@@ -1,6 +1,5 @@
 from . import (
     browser_right_click_menu,
-    show_dependencies_in_browser,
     editor_buttons,
     right_click_menu,
     right_click_menu_utils,
@@ -15,7 +14,6 @@ from . import (
     note_content_building,
     copy_sort_field_to_clipboard,
     clear_studying_cache_on_card_suspend_unsuspend,
-    auto_bury_multiple_failures,
     custom_auto_advance_timings,
     custom_timebox_lengths,
     timebox_end_sound,

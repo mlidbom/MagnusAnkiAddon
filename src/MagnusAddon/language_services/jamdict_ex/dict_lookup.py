@@ -42,13 +42,6 @@ class DictLookup:
         return cls.try_lookup_word_or_name(vocab.get_question(), vocab.get_readings())
 
     @classmethod
-    def lookup_word_or_name(cls, word: str, readings: list[str]) -> DictLookup:
-        result = cls.try_lookup_word_or_name(word, readings)
-        if not result.found_words():
-            raise KeyError("No matching entries")
-        return result
-
-    @classmethod
     def try_lookup_word_or_name(cls, word: str, readings: list[str]) -> DictLookup:
         return cls._try_lookup_word_or_name(word, tuple(readings))
 

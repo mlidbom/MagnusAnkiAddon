@@ -6,6 +6,7 @@ from language_services.janome_ex.tokenizing.jn_tokenizer import JNTokenizer
 
 _tokenizer:JNTokenizer
 
+# noinspection PyUnusedFunction
 @pytest.fixture(scope='module', autouse=True)
 def setup() -> None:
     global _tokenizer

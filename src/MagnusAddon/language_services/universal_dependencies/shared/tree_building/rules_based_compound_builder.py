@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-from language_services.universal_dependencies.shared.tokenizing import deprel, xpos
+from language_services.universal_dependencies.shared.tokenizing.deprel import Deprel
 from language_services.universal_dependencies.shared.tokenizing.ud_token import UDToken
+from language_services.universal_dependencies.shared.tokenizing.xpos import XPOS
 from language_services.universal_dependencies.shared.tree_building.compound_builder_base import CompoundBuilderBase, CompoundingRuleSet
 from language_services.universal_dependencies.shared.tree_building.compound_predicates import CompoundPredicates
 
@@ -15,24 +16,24 @@ class RulesBasedCompoundBuilder(CompoundBuilderBase):
                 join_when=[
                     predicates.next_is_dependent_of_compound(),
 
-                    predicates.compound_is_missing_head(deprel.compound),
-                    predicates.compound_is_missing_dependent(deprel.fixed_multiword_expression),
-                    predicates.next_is_head_of_current(deprel.compound, deprel.nominal_subject, deprel.oblique_nominal, deprel.adverbial_modifier, deprel.numeric_modifier),
-                    predicates.next_is_head_of_compound_token(deprel.nominal_subject, deprel.nominal_modifier),
+                    predicates.compound_is_missing_head(Deprel.compound),
+                    predicates.compound_is_missing_dependent(Deprel.fixed_multiword_expression),
+                    predicates.next_is_head_of_current(Deprel.compound, Deprel.nominal_subject, Deprel.oblique_nominal, Deprel.adverbial_modifier, Deprel.numeric_modifier),
+                    predicates.next_is_head_of_compound_token(Deprel.nominal_subject, Deprel.nominal_modifier),
 
                     # keeps the particle_phrase_ending we split off below together in one compound.
-                    predicates.next_shares_head_and_xpos_with_current(xpos.particle_phrase_ending)
+                    predicates.next_shares_head_and_xpos_with_current(XPOS.particle_phrase_ending)
                 ],
                 split_when=[
-                    predicates.next_is_first_token_with_xpos(xpos.particle_phrase_ending)
+                    predicates.next_is_first_token_with_xpos(XPOS.particle_phrase_ending)
                 ]
             ),
             # CompoundingRuleSet(
             #     join_when=[
             #         predicates.next_is_dependent_of_compound(),
             #
-            #         predicates.compound_is_missing_head(deprel.compound),
-            #         predicates.compound_is_missing_dependent(deprel.fixed_multiword_expression)
+            #         predicates.compound_is_missing_head(Deprel.compound),
+            #         predicates.compound_is_missing_dependent(Deprel.fixed_multiword_expression)
             #     ],
             #     split_when=[
             #     ]
@@ -46,31 +47,31 @@ class RulesBasedCompoundBuilder(CompoundBuilderBase):
             # CompoundingRuleSet(
             #     join_when=[
             #         predicates.next_shares_head_with_current_and_head_is_past_token,
-            #         predicates.next_is_head_of_compound_token(deprel.nominal_subject),
-            #         predicates.next_is_dependent_of_compound(deprel.fixed_multiword_expression),
-            #         predicates.next_is_dependent_of_current(deprel.compound, deprel.case_marking),
-            #         predicates.next_is_head_of_current(deprel.compound),
+            #         predicates.next_is_head_of_compound_token(Deprel.nominal_subject),
+            #         predicates.next_is_dependent_of_compound(Deprel.fixed_multiword_expression),
+            #         predicates.next_is_dependent_of_current(Deprel.compound, Deprel.case_marking),
+            #         predicates.next_is_head_of_current(Deprel.compound),
             #     ],
             #     split_when=[predicates.next_is_particle_conjunctive_and_previous_is_not_copula]
             # ),
             # CompoundingRuleSet(
             #     join_when=[
-            #         predicates.next_is_dependent_of_compound(deprel.fixed_multiword_expression,
-            #                                                  deprel.compound),
-            #         predicates.next_is_head_of_compound_token(deprel.compound),
-            #         predicates.next_shares_head_with_current(deprel.case_marking)
+            #         predicates.next_is_dependent_of_compound(Deprel.fixed_multiword_expression,
+            #                                                  Deprel.compound),
+            #         predicates.next_is_head_of_compound_token(Deprel.compound),
+            #         predicates.next_shares_head_with_current(Deprel.case_marking)
             #     ],
             #     split_when=[predicates.current_is_particle_conjunctive_and_next_is_verb_bound]
             # ),
             # CompoundingRuleSet(
             #     join_when=[
-            #         predicates.next_is_dependent_of_compound(deprel.fixed_multiword_expression),
-            #         predicates.next_is_dependent_of_current(deprel.compound),
+            #         predicates.next_is_dependent_of_compound(Deprel.fixed_multiword_expression),
+            #         predicates.next_is_dependent_of_current(Deprel.compound),
             #     ]
             # ),
             # CompoundingRuleSet(
             #     join_when=[
-            #         predicates.next_is_dependent_of_current(deprel.compound)
+            #         predicates.next_is_dependent_of_current(Deprel.compound)
             #     ]
             # ),
 

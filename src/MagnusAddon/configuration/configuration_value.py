@@ -58,7 +58,6 @@ class ConfigurationValue(Generic[T]):
             self.feature_toggler(self._value)
 
 ConfigurationValueInt = ConfigurationValue[int]
-ConfigurationValueStr = ConfigurationValue[str]
 ConfigurationValueBool = ConfigurationValue[bool]
 
 config = JapaneseConfig()

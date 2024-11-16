@@ -140,9 +140,6 @@ class CacheRunner:
     def connect_generate_data_timer(self, flush_updates: Callable[[], None]) -> None:
         self._generate_data_subscribers.append(flush_updates)
 
-    def connect_destruct(self, destruct: Callable[[], None]) -> None:
-        self._destructors.append(destruct)
-
     def connect_merge_pending_adds(self, _merge_pending_added_notes:Callable[[], None]) -> None:
         self._merge_pending_subscribers.append(_merge_pending_added_notes)
 

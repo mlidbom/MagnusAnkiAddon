@@ -16,6 +16,7 @@ V = VocabHitViewModelSpec
 SB = SentenceBreakdownViewModelSpec
 N = NodeViewModelSpec
 
+# noinspection PyUnusedFunction
 @pytest.fixture(scope="function", autouse=True)
 def setup_object() -> Generator[None, None, None]:
     with inject_anki_collection_with_generated_sample_data():

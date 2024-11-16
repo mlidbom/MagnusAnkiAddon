@@ -23,8 +23,6 @@ class CompoundBuilderBase:
     @property
     def next(self) -> UDToken: return self.source_tokens[0]
     @property
-    def first(self) -> UDToken: return self.tokens[0]
-    @property
     def has_next(self) -> bool: return len(self.source_tokens) > 0
 
     def consume_next(self) -> None:

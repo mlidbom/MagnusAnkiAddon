@@ -43,8 +43,6 @@ class UDToken:
             self._head_id = typed.int_(_head(token).id)
             self.head = self  # ugly hack to get python typing working in spite of the recursive nature of this class. Will be replaced with correct value by parent object.
 
-    def is_head_of(self, candidate: UDToken) -> bool: return self == candidate.head
-
     def __str__(self) -> str:
         return self.str_(ex_str.pad_to_length)
 

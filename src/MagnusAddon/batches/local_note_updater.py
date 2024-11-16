@@ -3,7 +3,6 @@ import re
 from anki.notes import NoteId
 
 from ankiutils import app, query_builder
-from language_services.janome_ex.tokenizing import janome_ex
 from note.kanjinote import KanjiNote
 from note.note_constants import CardTypes, Mine
 from note.sentencenote import SentenceNote
@@ -17,13 +16,6 @@ def update_all() -> None:
     update_vocab()
     #update_vocab_parsed_parts_of_speech()
 
-
-#todo: I don't think this is reliable at the moment. Review it.
-def update_vocab_parsed_parts_of_speech() -> None:
-    def update(vocab: VocabNote) -> None:
-        vocab.set_parsed_type_of_speech(janome_ex.get_word_parts_of_speech(vocab.get_question()))
-
-    progress_display_runner.process_with_progress(app.col().vocab.all(), update, "Update vocab parsed parts of speech")
 
 def update_sentences() -> None:
     def update_sentence(sentence: SentenceNote) -> None:
@@ -140,43 +132,6 @@ def reparse_sentence_words() -> None:
         sentence.update_parsed_words(force=True)
 
     progress_display_runner.process_with_progress(app.col().sentences.all(), reparse_sentence, "Reparsing sentences.")
-
-def adjust_kanji_primary_readings() -> None:
-    primary_reading_pattern = re.compile(r'<primary>(.*?)</primary>')
-
-    updated_kanji:set[KanjiNote] = set()
-
-    def adjust_kanji_readings(kanji: KanjiNote) -> None:
-        # def make_on_reading_primary(primary_reading: str) -> None:
-        #     new_reading = ex_str.replace_word(primary_reading, f'<primary>{primary_reading}</primary>', kanji.get_reading_on_html())
-        #     print(f"""{kanji.get_question()}: {new_reading}""")
-        #     kanji.set_reading_on(new_reading)
-
-        def make_kun_reading_primary(primary_reading: str) -> None:
-            new_reading = ex_str.replace_word(primary_reading, f'<primary>{primary_reading}</primary>', kanji.get_reading_kun_html())
-            #print(f"""{kanji.get_question()}: {new_reading}""")
-            updated_kanji.add(kanji)
-            kanji.set_reading_kun(new_reading)
-
-        def has_vocab_with_reading(reading:str) -> bool:
-            for vocab in (x for x in kanji.get_vocab_notes() if x.is_studying()):
-                # noinspection PyProtectedMember
-                if reading in vocab._get_reading():
-                    return True
-            return False
-
-        kun_primary_readings: set[str] = set(primary_reading_pattern.findall(kanji.get_reading_kun_html()))
-        kun_readings_with_vocab = set(reading for reading in kanji.get_readings_kun() if has_vocab_with_reading(reading))
-
-        missing_primary_readings = kun_readings_with_vocab - kun_primary_readings
-
-        for missing_reading in missing_primary_readings:
-            make_kun_reading_primary(missing_reading)
-            kanji.set_field("_primary_readings_tts_audio", "")
-
-
-    progress_display_runner.process_with_progress(app.col().kanji.all(), adjust_kanji_readings, "Adjusting kanji readings")
-    print(f"""nid:{",".join(str(k.get_id()) for k in updated_kanji) }""")
 
 def reading_in_vocab_reading(kanji:KanjiNote, kanji_reading: str, vocab_reading: str, vocab_form: str) -> bool:
     vocab_form = ex_str.strip_html_and_bracket_markup_and_noise_characters(vocab_form)

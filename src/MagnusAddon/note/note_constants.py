@@ -1,3 +1,4 @@
+# noinspection PyUnusedName
 class Builtin:
     Note = "note"
     Tag = "tag"
@@ -57,8 +58,6 @@ class NoteFields:
             Listening = CardTypes.listening
 
     class WaniCommon:
-        sort_id = "sort_id"
-
         subject_id = "subject_id"
         level = "level"
         lesson_position = "lesson_position"
@@ -72,7 +71,6 @@ class NoteFields:
         question = MyNoteFields.question
         answer = MyNoteFields.answer
         source_mnemonic = "Radical_Meaning"
-        user_mnemonic = "__mnemonic"
         Radical_Icon = "Radical_Icon"
         sort_id = "sort_id"
 
@@ -175,7 +173,6 @@ class Mine:
         priority_folder = f"{base_folder}priority::"
 
         source_folder = f"source::"
-        source_yomitan = f"{source_folder}yomitan"
 
         Wani = f"{source_folder}wani"
         wani_level = f"{Wani}::level::"
@@ -189,17 +186,5 @@ class Mine:
         DisableKanaOnly = "_disable_uk"
         UsuallyKanaOnly = "_uk"
         TTSAudio = "_tts_audio"
-
-        sentence_folder = f"{base_folder}sentence::"
-        sentence_difficulty_folder = f"{sentence_folder}difficulty::"
-        sentence_difficulty_1 = f"{sentence_difficulty_folder}::1"
-        sentence_difficulty_2 = f"{sentence_difficulty_folder}::2"
-        sentence_difficulty_3 = f"{sentence_difficulty_folder}::3"
-        sentence_difficulty_4 = f"{sentence_difficulty_folder}::4"
-        sentence_difficulty_5 = f"{sentence_difficulty_folder}::5"
-        sentence_difficulty_6 = f"{sentence_difficulty_folder}::6"
-        sentence_difficulty_7 = f"{sentence_difficulty_folder}::7"
-        sentence_difficulty_8 = f"{sentence_difficulty_folder}::8"
-        sentence_difficulty_9 = f"{sentence_difficulty_folder}::9"
 
 
