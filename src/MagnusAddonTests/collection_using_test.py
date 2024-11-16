@@ -4,6 +4,7 @@ import pytest
 from fixtures.collection_factory import inject_empty_anki_collection_with_note_types
 from ankiutils import app
 
+# noinspection PyUnusedFunction
 @pytest.fixture(scope="function", autouse=True)
 def setup_object() -> Generator[None, None, None]:
     with inject_empty_anki_collection_with_note_types():

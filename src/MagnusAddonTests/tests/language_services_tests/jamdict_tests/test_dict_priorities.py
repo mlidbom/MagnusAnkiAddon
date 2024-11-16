@@ -2,7 +2,6 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from language_services.jamdict_ex.dict_entry import DictEntry
 from language_services.jamdict_ex.dict_lookup import DictLookup
 from note.vocabnote import VocabNote
 
@@ -45,11 +44,6 @@ def run_priority_test(word: str, readings: list[str], expected:str) -> None:
     dict_entry = get_dict_entry(word, readings)
     spec = dict_entry.priority_spec()
     assert spec.priority_string == expected
-
-def get_single_dict_entry(word: str, readings: list[str]) -> DictEntry:
-    dict_entry = get_dict_entry(word, readings)
-    assert dict_entry.found_words_count() == 1
-    return dict_entry.entries[0]
 
 def get_dict_entry(word: str, readings: list[str]) -> DictLookup:
     mock_vocab = vocab_mock(word, readings)

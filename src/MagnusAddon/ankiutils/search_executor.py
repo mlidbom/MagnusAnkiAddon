@@ -23,18 +23,3 @@ def do_lookup(text: str) -> None:
 def lookup_promise(search: Callable[[], str]) -> Callable[[], None]: return lambda: do_lookup(search())
 
 def lookup_and_show_previewer_promise(search: Callable[[], str]) -> Callable[[], None]: return lambda: do_lookup_and_show_previewer(search())
-
-def lookup_dependencies(note: JPNote) -> None:
-    # noinspection PyTypeChecker
-    type_map: dict[type, Callable[[], str]] = {
-        VocabNote: lambda: query_builder.vocab_dependencies_lookup_query(checked_cast(VocabNote, note)),
-        KanjiNote: lambda: query_builder.vocab_with_kanji(checked_cast(KanjiNote, note)),
-        SentenceNote: lambda: query_builder.sentence_vocab_lookup(checked_cast(SentenceNote, note)),
-        RadicalNote: lambda: "",
-        JPNote: lambda: ""
-    }
-
-    search = type_map[type(note)]()
-    if search:
-        do_lookup(search)
-        app.ui_utils().activate_reviewer()

@@ -14,7 +14,6 @@ class MecabToken:
         self.forms = self._info[6:12]
 
     def pos_string(self) -> str: return ",".join(self.parts_of_speech)
-    def forms_string(self) -> str: return ",".join(self.forms)
 
     def kanji_form(self) -> str:
         preferred_kanji_form = self.forms[1].split("-")[0]
@@ -32,14 +31,9 @@ class MecabTokenizer:
         nodes = [token for token in parsed.split("\n") if token != 'EOS' and token != '']
         return [MecabToken(token) for token in nodes]
 
-    def use_kanji_representations(self, text: str) -> str:
-        tokens = self.tokenize(text)
-        kanji_only = [t.kanji_form() for t in tokens]
-        result = "".join(kanji_only)
-        return result
-
 tokenizer:MecabTokenizer
 
+# noinspection PyUnusedFunction
 @pytest.fixture(scope='module', autouse=True)
 def setup() -> None:
     global tokenizer

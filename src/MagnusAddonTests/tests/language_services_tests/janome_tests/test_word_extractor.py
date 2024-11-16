@@ -10,11 +10,13 @@ from note.vocabnote import VocabNote
 
 _tokenizer: JNTokenizer
 
+# noinspection PyUnusedFunction
 @pytest.fixture(scope='module', autouse=True)
 def setup() -> None:
     global _tokenizer
     _tokenizer = JNTokenizer()
 
+# noinspection PyUnusedFunction
 @pytest.fixture(scope="function", autouse=True)
 def setup_object() -> Generator[None, None, None]:
     with inject_empty_anki_collection_with_note_types():

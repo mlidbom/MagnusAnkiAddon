@@ -60,9 +60,6 @@ class CardEx:
     def last_answer_today_was_fail_db_call(self) -> bool:
         return _last_answer_today_was_fail(self.card)
 
-    def answers_since_last_day_cutoff_db_call(self) -> list[int]:
-        return _get_answers_since_last_day_cutoff_for_card(self.card)
-
     def note(self) -> JPNote:
         from note.jpnote import JPNote
         return JPNote.note_from_card(self.card)

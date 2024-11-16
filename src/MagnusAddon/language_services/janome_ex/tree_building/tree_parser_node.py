@@ -8,9 +8,7 @@ from language_services.janome_ex.tree_building import jn_tree_builder
 from language_services.shared import priorities
 from sysutils import kana_utils
 
-
 class TreeParserNode:
-    _max_lookahead = 12
     def __init__(self, surface: str, base: str, children: Optional[list[TreeParserNode]] = None, tokens: Optional[list[JNToken]] = None) -> None:
         self.surface = surface
         self.base = base if base else surface
