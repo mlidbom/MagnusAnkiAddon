@@ -9,7 +9,6 @@ unidic2ud==3.0.4
 jamdict==0.1a11.post2
 #jamdict-data==1.5
 Janome==0.5.0
-mecab-python3==1.0.8
 pipdeptree==2.13.0
 puchikarui==0.2a2.post5
 pytest==7.4.2
@@ -22,3 +21,4 @@ pytest-xdist
 mypy==1.11.2
 beartype
 pyperclip
+sudachipy
