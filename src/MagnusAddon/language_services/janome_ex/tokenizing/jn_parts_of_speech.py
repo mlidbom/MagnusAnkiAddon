@@ -15,9 +15,6 @@ class JNPartsOfSpeech:
 
     def is_noise(self) -> bool: return self.level1.japanese in ['記号']
 
-    def translate(self) -> str:
-        return ','.join([self.level1.english, self.level2.english, self.level3.english, self.level4.english])
-
     def __repr__(self) -> str:
         return "".join([
             "1:" + kana_utils.pad_to_length(self.level1.japanese, 5),

@@ -14,7 +14,7 @@ def setup_note_menu(sentence: SentenceNote, note_menu: QMenu, string_menus: list
     add_lookup_action(note_lookup_menu, shortcutfinger.home1("Highlighted Vocab"), query_builder.vocabs_lookup_strings(sentence.get_user_highlighted_vocab()))
     add_lookup_action(note_lookup_menu, shortcutfinger.home2("Highlighted Vocab Read Card"), query_builder.vocabs_lookup_strings_read_card(sentence.get_user_highlighted_vocab()))
     add_lookup_action(note_lookup_menu, shortcutfinger.home3("Kanji"), f"""note:{NoteTypes.Kanji} ({" OR ".join([f"{NoteFields.Kanji.question}:{kan}" for kan in sentence.extract_kanji()])})""")
-    add_lookup_action(note_lookup_menu, shortcutfinger.home4("Parsed words"), query_builder.notes_by_id([voc.get_id() for voc in sentence.ud_extract_vocab()]))
+    add_lookup_action(note_lookup_menu, shortcutfinger.home4("Parsed words"), query_builder.notes_by_id([voc.get_id() for voc in sentence.get_parsed_words_notes()]))
 
     def position_vocab_menu(_menu:QMenu, _vocab_to_add: str, _title: str) -> None:
         highlighted_vocab_menu: QMenu = non_optional(_menu.addMenu(_title))

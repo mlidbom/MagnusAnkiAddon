@@ -21,7 +21,7 @@ def _add_tag(tag: str, description: str) -> UdRelationshipTag:
     _tag_to_tag_dict[tag] = tag_object
     return tag_object
 
-# noinspection PyUnusedName
+# noinspection PyUnusedName,PyUnusedClass
 class Deprel:
     # verb_bound{する, 行き},
     # adjective_i_general{素晴らしい},

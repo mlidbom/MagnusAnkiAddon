@@ -3,6 +3,8 @@ from typing import Any
 from language_services.janome_ex.tokenizing.jn_parts_of_speech import JNPartsOfSpeech, POS
 from sysutils import typed, kana_utils
 
+#I want to keep this around for now. I think It might be used reconsider if you see this much later 2024-11-16
+# noinspection PyUnusedFunction
 class JNToken:
     def __init__(self,
                  parts_of_speech: JNPartsOfSpeech,
