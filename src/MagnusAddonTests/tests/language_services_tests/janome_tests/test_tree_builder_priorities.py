@@ -2,10 +2,6 @@ import pytest
 
 from language_services.janome_ex.tree_building import jn_tree_builder
 from language_services.janome_ex.tree_building.tree_parser_node import TreeParserNode
-from language_services.shared import priorities
-
-p = priorities
-
 
 @pytest.mark.parametrize('sentence, expected_priorities', [
     ("言われるまで気づかなかった", {

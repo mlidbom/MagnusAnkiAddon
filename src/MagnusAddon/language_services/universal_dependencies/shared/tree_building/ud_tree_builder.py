@@ -6,13 +6,6 @@ from language_services.universal_dependencies.shared.tree_building.rules_based_c
 from language_services.universal_dependencies.shared.tree_building.ud_tree import UDTree
 from language_services.universal_dependencies.shared.tree_building.ud_tree_node import UDTreeNode
 
-class _Depth:
-    surface_0 = 0
-    depth_1 = 1
-    depth_2 = 2
-    depth_3 = 3
-    morphemes_10 = 10
-
 def build_tree(parser: UDTokenizer, text: str) -> UDTree:
     tokens = parser.tokenize(text).tokens
     depth = 0

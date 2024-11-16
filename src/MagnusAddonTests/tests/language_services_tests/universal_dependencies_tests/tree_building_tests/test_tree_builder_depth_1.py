@@ -11,6 +11,7 @@ from tests.language_services_tests.universal_dependencies_tests.tree_building_te
 N = UDTreeNodeSpec
 R = UDTreeSpec
 
+# noinspection PyUnusedClass, PyUnusedName
 pytestmark = pytest.mark.skip("This idea about separate tests for separate depths sounded good, but in the end I think it is causing more work rather than saving work.")
 
 def only_string_params(param: Any) -> str: return param if isinstance(param, str) else ''

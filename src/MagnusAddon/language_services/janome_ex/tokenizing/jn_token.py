@@ -46,9 +46,6 @@ class JNToken:
                     self.parts_of_speech == other.parts_of_speech)
         return False
 
-    def surface_is_unlikely_to_be_a_valid_word(self) -> bool:
-        return self.is_verb() and self.inflected_form == "連用タ接続" #if the surface is the stem of an inflected verb, don't use it.
-
     def is_verb(self) -> bool:
         return self.parts_of_speech in _verb_parts_of_speech
 

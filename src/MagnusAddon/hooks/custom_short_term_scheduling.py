@@ -4,8 +4,6 @@ from aqt.reviewer import V3CardInfo
 from anki_extentions.sheduling_states_ex import SchedulingStatesEx
 from anki_extentions.card_ex import CardEx
 
-_seconds_to_schedule = 60
-
 _oldMethod = V3CardInfo.from_queue
 def set_again_time_for_previously_failed_today_cards(queue:QueuedCards) -> V3CardInfo:
     info = _oldMethod(queue)

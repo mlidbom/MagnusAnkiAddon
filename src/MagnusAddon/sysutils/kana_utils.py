@@ -42,9 +42,6 @@ def is_kanji(ch: str) -> bool:
 def contains_kanji(string:str) -> bool:
     return any(is_kanji(c) for c in string)
 
-def contains_katakana(string:str) -> bool:
-    return any(is_katakana(c) for c in string)
-
 # def is_kanji(char) -> bool:
 #     ordinal = ord(char)
 #     return (0x4e00 <= ordinal <= 0x9faf or

@@ -20,21 +20,7 @@ class RadicalNote(WaniNote):
     def get_answer(self) -> str: return self.get_field(NoteFields.Radical.answer)
     def set_a(self, value: str) -> None: self.set_field(NoteFields.Radical.answer, value)
 
-    def get_source_mnemonic(self) -> str: return self.get_field(NoteFields.Radical.source_mnemonic)
     def set_source_mnemonic(self, value: str) -> None: self.set_field(NoteFields.Radical.source_mnemonic, value)
-
-    def get_user_mnemonic(self) -> str: return self.get_field(NoteFields.Radical.user_mnemonic)
-
-    def is_replaced_by_kanji(self) -> bool:
-        return self.get_active_mnemonic().upper() == "KANJI"
-
-    def get_active_mnemonic(self) -> str:
-        return self.get_user_mnemonic() if self.get_user_mnemonic() else self.get_source_mnemonic()
-
-    def get_radical_icon(self) -> str: return self.get_field(NoteFields.Radical.Radical_Icon)
-    def set_radical_icon(self, value: str) -> None: self.set_field(NoteFields.Radical.Radical_Icon, value)
-
-    def get_amalgamation_subject_ids(self) -> str: return self.get_field(NoteFields.Radical.amalgamation_subject_ids)
     def set_amalgamation_subject_ids(self, value: str) -> None: self.set_field(NoteFields.Radical.amalgamation_subject_ids, value)
 
     def update_from_wani(self, wani_radical: models.Radical) -> None:
@@ -55,14 +41,3 @@ class RadicalNote(WaniNote):
         app.anki_collection().addNote(note)
         radical_note.set_q(wani_radical.characters)
         radical_note.update_from_wani(wani_radical)
-
-    @staticmethod
-    def predicates() -> _Predicates:
-        return _Predicates()
-
-
-
-class _Predicates:
-    @staticmethod
-    def is_replaced_by_kanji(radical:RadicalNote) -> bool:
-        return radical.is_replaced_by_kanji()

@@ -83,7 +83,6 @@ class KanaVocabNote(WaniNote):
     def get_context_en_3(self) -> str: return self.get_field(NoteFields.Vocab.Context_en_3)
     def set_context_en_3(self, value: str) -> None: self.set_field(NoteFields.Vocab.Context_en_3, value)
 
-    def get_meaning_mnemonic(self) -> str: return self.get_field(NoteFields.Vocab.source_mnemonic)
     def set_meaning_mnemonic(self, value: str) -> None: self.set_field(NoteFields.Vocab.source_mnemonic, value)
 
     def get_audio_male(self) -> str: return self.get_field(NoteFields.Vocab.Audio_b)

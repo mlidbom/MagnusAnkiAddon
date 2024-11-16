@@ -63,7 +63,6 @@ class VocabNote(KanaVocabNote):
 
     def __repr__(self) -> str: return f"""{self.get_question()}"""
 
-    def get_kanji(self) -> str: return self.get_field(NoteFields.Vocab.Kanji)
     def set_kanji(self, value: str) -> None: self.set_field(NoteFields.Vocab.Kanji, value)
 
     def get_forms(self) -> set[str]: return set(ex_str.extract_comma_separated_values(self._get_forms()))
@@ -116,10 +115,7 @@ class VocabNote(KanaVocabNote):
 
     def is_uk(self) -> bool: return self.has_tag(Mine.Tags.UsuallyKanaOnly)
 
-    def get_display_question(self) -> str:
-        return self.get_readings()[0] if self.is_uk() else self.get_question()
 
-    def get_reading_mnemonic(self) -> str: return self.get_field(NoteFields.Vocab.source_reading_mnemonic)
     def set_reading_mnemonic(self, value: str) -> None: self.set_field(NoteFields.Vocab.source_reading_mnemonic, value)
 
     def get_readings(self) -> list[str]: return ex_str.extract_comma_separated_values(self._get_reading())
@@ -128,7 +124,6 @@ class VocabNote(KanaVocabNote):
     def _get_reading(self) -> str: return self.get_field(NoteFields.Vocab.Reading)
     def _set_reading(self, value: str) -> None: self.set_field(NoteFields.Vocab.Reading, value)
 
-    def get_component_subject_ids(self) -> str: return self.get_field(NoteFields.Vocab.component_subject_ids)
     def set_component_subject_ids(self, value: str) -> None: self.set_field(NoteFields.Vocab.component_subject_ids, value)
 
     def priority_spec(self) -> PrioritySpec:
@@ -147,9 +142,6 @@ class VocabNote(KanaVocabNote):
 
     def get_mnemonics_override(self) -> str: return self.get_field(NoteFields.Vocab.Mnemonic__)
     def set_mnemonics_override(self, value: str) -> None: self.set_field(NoteFields.Vocab.Mnemonic__, value)
-
-    def get_parsed_type_of_speech(self) -> str: return self.get_field(NoteFields.Vocab.ParsedTypeOfSpeech)
-    def set_parsed_type_of_speech(self, value: str) -> None: self.set_field(NoteFields.Vocab.ParsedTypeOfSpeech, value)
 
     def get_primary_audio(self) -> str:
         if self.get_audio_male():

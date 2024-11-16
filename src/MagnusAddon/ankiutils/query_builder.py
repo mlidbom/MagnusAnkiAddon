@@ -1,25 +1,23 @@
 from __future__ import annotations
 
-from typing import Iterable, Sequence
+from typing import Sequence
 
 from anki.notes import NoteId
 
 from note.jpnote import JPNote
 from note.kanjinote import KanjiNote
-from note.note_constants import Builtin, Mine, MyNoteFields, NoteFields, NoteTypes, SentenceNoteFields
+from note.note_constants import Builtin, MyNoteFields, NoteFields, NoteTypes, SentenceNoteFields
 from note.radicalnote import RadicalNote
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
 from language_services.janome_ex.word_extraction import word_extractor
 from language_services.janome_ex.word_extraction.extracted_word import ExtractedWord
-from sysutils import ex_str
 
 f_question = MyNoteFields.question
 f_reading = NoteFields.Vocab.Reading
 f_answer = MyNoteFields.answer
 f_forms = NoteFields.Vocab.Forms
 
-card_listening = f"{Builtin.Card}:{NoteFields.VocabNoteType.Card.Listening}"
 card_read = f"{Builtin.Card}:{NoteFields.VocabNoteType.Card.Reading}"
 
 note_kanji = f"{Builtin.Note}:{NoteTypes.Kanji}"
@@ -27,8 +25,6 @@ note_vocab = f"{Builtin.Note}:{NoteTypes.Vocab}"
 note_sentence = f"{Builtin.Note}:{NoteTypes.Sentence}"
 excluded_deck_substring = "*Excluded*"
 deck_excluded = f'''{Builtin.Deck}:{excluded_deck_substring}'''
-
-tag_uk = f"tag:{Mine.Tags.UsuallyKanaOnly}"
 
 note_vocab = note_vocab
 
@@ -57,9 +53,6 @@ def sentence_search(word:str, exact:bool = False) -> str:
 def notes_lookup(notes: Sequence[JPNote]) -> str:
     return f"""{NoteFields.note_id}:{",".join(str(note.get_id()) for note in notes)}""" if notes else ""
 
-def field_value_exact(field:str, *queries:str) -> str:
-    return _or_clauses([f'''"{field}:{query}"''' for query in queries])
-
 def single_vocab_wildcard(query:str) -> str: return f"{note_vocab} ({f_forms}:*{query}* OR {f_reading}:*{query}* OR {f_answer}:*{query}*)"
 def single_vocab_by_question_reading_or_answer_exact(query: str) -> str:return f"{note_vocab} ({field_contains_word(f_forms, query)} OR {field_contains_word(f_reading, query)} OR {field_contains_word(f_answer, query)})"
 def single_vocab_by_form_exact(query: str) -> str:return f"{note_vocab} {field_contains_word(f_forms, query)}"
@@ -86,10 +79,6 @@ def vocab_dependencies_lookup_query(vocab: VocabNote) -> str:
     return f'''{create_vocab_vocab_clause()} ({create_kanji_clause()})'''
 
 
-def sentence_exact(sentence: str) -> str:
-    return f"""{note_sentence} {f_question}:"{sentence}" """
-
-
 def sentence_vocab_lookup(sentence:SentenceNote) -> str: return text_vocab_lookup(sentence.get_question())
 
 def vocab_with_kanji(note:KanjiNote) -> str: return f"{note_vocab} {f_forms}:*{note.get_question()}*"
@@ -101,8 +90,6 @@ def text_vocab_lookup(text:str) -> str:
     dictionary_forms = word_extractor.extract_words(text)
     return vocabs_lookup(dictionary_forms)
 
-def vocab_lookup(vocab:ExtractedWord) -> str: return vocabs_lookup([vocab])
-
 def vocabs_lookup(dictionary_forms: list[ExtractedWord]) -> str:
     return f"{note_vocab} ({' OR '.join([vocab_clause(voc) for voc in dictionary_forms])})"
 
@@ -111,25 +98,6 @@ def vocabs_lookup_strings(words: list[str]) -> str:
 
 def vocabs_lookup_strings_read_card(words: list[str]) -> str:
     return f'''{vocabs_lookup_strings(words)} {card_read}'''
-
-
-def vocab_compounds_lookup(note:VocabNote) -> str:
-    vocab_word = note.get_question()
-    dictionary_forms = [comp for comp in word_extractor.extract_words(vocab_word) if comp.word != vocab_word]
-
-    return f"{note_vocab} ({' OR '.join([vocab_clause(voc) for voc in dictionary_forms])})" if dictionary_forms else ""
-
-
-
-def fetch_kanji_by_kanji(kanji: Iterable[str]) -> str:
-    return f"""note:{NoteTypes.Kanji} ({" OR ".join([f"{NoteFields.Kanji.question}:{kan}" for kan in kanji])})"""
-
-def lookup_text_object(text: str) -> str:
-    words = ex_str.extract_comma_separated_values(text)
-    if text.isascii(): #probably radical answer
-        return field_value_exact(f_answer, *words)
-    else:
-        return _or_clauses([field_value_exact(f_question, *words), field_contains_word(f_forms, *words)])
 
 def notes_by_id(note_ids:list[NoteId]) -> str:
     return f"""nid:{",".join([str(note_id) for note_id in note_ids])}"""

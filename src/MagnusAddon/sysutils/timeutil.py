@@ -6,8 +6,6 @@ from typing import Callable
 SECONDS_PER_DAY = 24 * 60 * 60
 MILLISECONDS_PER_SECOND = 1000
 
-def one_second_from_now() -> int: return int(time.time()) + 1
-
 def time_execution(callback: Callable[[], None]) -> str:
     start_time = time.time()
     callback()
@@ -34,9 +32,11 @@ def format_seconds_as_ss_ttt(seconds: float) -> str:
     milliseconds = int(seconds - (sec * 1000))
     return f'{sec:2}.{milliseconds:03}'
 
+# noinspection PyUnusedFunction
 def start_stop_watch() -> StopWatch:
     return StopWatch()
 
+# noinspection PyUnusedFunction
 class StopWatch:
     def __init__(self) -> None:
         self.start_time = time.time()

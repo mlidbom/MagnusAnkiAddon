@@ -92,7 +92,6 @@ class JPNote(ABC):
     def get_dependencies_recursive(self) -> set[JPNote]:
         return self._get_dependencies_recursive(set())
 
-    def anki_note(self) -> Note: return self._note
     def get_id(self) -> NoteId: return self._note.id
     def card_ids(self) -> Sequence[CardId]: return self._note.card_ids()
     def is_wani_note(self) -> bool: return Mine.Tags.Wani in self._note.tags
@@ -114,39 +113,8 @@ class JPNote(ABC):
     def suspend_all_cards(self) -> None:
         for card in self.cards(): card.suspend()
 
-
-    def schema_matches(self, note: Note) -> bool:
-        own_schema = self._note._fmap # noqa
-        other_schema = note._fmap # noqa
-        if len(own_schema) != len(other_schema): return False
-        for key, value in own_schema.items():
-            if key not in other_schema:
-                return False
-
-            own_index = value[0]
-            other_index = other_schema[key][0]
-
-            if own_index != other_index: return False
-
-        return True
-
-
-
     def update_generated_data(self) -> None:
         noteutils.remove_from_studying_cache(self.get_id())
-
-    def _internal_update_generated_data(self) -> bool:
-        self._is_updating_generated_data = True
-        self._generated_data_was_updated = False
-        try:
-            self.update_generated_data()
-        finally:
-            self._is_updating_generated_data = False
-
-        data_was_updated = self._generated_data_was_updated
-        if data_was_updated:
-            self._generated_data_was_updated = False
-        return data_was_updated
 
     def get_field(self, field_name: str) -> str: return self._note[field_name]
 
@@ -194,23 +162,6 @@ class JPNote(ABC):
 
         return tags
 
-    def data_differs_from(self, other: JPNote) -> bool:
-        if self._note is other._note:
-            return False
-
-        if self.__class__ != other.__class__: return True
-
-        for index in range(len(self._note.fields)):
-            if self._note.fields[index] != other._note.fields[index]: return True
-
-        my_tags = self.get_tags()
-        other_tags = other.get_tags()
-        if len(my_tags) != len(other_tags): return True
-        for index in range(len(my_tags)):
-            if my_tags[index] != other_tags[index]: return True
-
-        return False
-
     def get_source_tag(self) -> str:
         source_tags = [t for t in self.get_tags() if t.startswith(Mine.Tags.source_folder)]
         if source_tags:
@@ -234,12 +185,3 @@ class JPNote(ABC):
             self.set_tag(tag)
         else:
             self.remove_tag(tag)
-
-    def last_edit_time(self) -> int:
-        return self._note.mod
-
-    def get_reading_card(self) -> Card:
-        return [card for card in self._note.cards() if card.template()['name'] == CardTypes.reading][0]
-
-    def get_listening_card(self) -> Card:
-        return [card for card in self._note.cards() if card.template()['name'] == CardTypes.listening][0]

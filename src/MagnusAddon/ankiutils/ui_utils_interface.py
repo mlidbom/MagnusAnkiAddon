@@ -6,9 +6,6 @@ class IUIUtils(metaclass=ABCMeta):
     def is_edit_current_open(self) -> bool: pass
 
     @abstractmethod
-    def is_edit_current_active(self) -> bool: pass
-
-    @abstractmethod
     def refresh(self, refresh_browser:bool = True) -> None: pass
 
     @abstractmethod
@@ -16,12 +13,6 @@ class IUIUtils(metaclass=ABCMeta):
 
     @abstractmethod
     def activate_preview(self) -> None: pass
-
-    @abstractmethod
-    def show_current_review_in_preview(self) -> None: pass
-
-    @abstractmethod
-    def deactivate_preview(self) -> None: pass
 
     @abstractmethod
     def activate_reviewer(self) -> None: pass

@@ -58,13 +58,5 @@ def setup_note_menu(kanji: KanjiNote, note_menu: QMenu, string_menus: list[tuple
 
         add_primary_readings_actions(string_menu, menu_string)
 
-
-def format_vocab_meaning(meaning: str) -> str:
-    return ex_str.strip_html_and_bracket_markup(meaning
-                                                .replace(" SOURCE", "")
-                                                .replace(", ", "/")
-                                                .replace(" ", "-")
-                                                .lower())
-
 def format_kanji_meaning(meaning: str) -> str:
     return ex_str.strip_html_and_bracket_markup(meaning.lower().replace(", ", "/").replace(" ", "-"))

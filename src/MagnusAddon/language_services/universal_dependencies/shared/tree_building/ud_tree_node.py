@@ -3,8 +3,9 @@ from __future__ import annotations
 from typing import Callable
 
 from language_services.jamdict_ex.dict_lookup import DictLookup
-from language_services.universal_dependencies.shared.tokenizing import xpos, ud_universal_part_of_speech_tag
 from language_services.universal_dependencies.shared.tokenizing.ud_token import UDToken
+from language_services.universal_dependencies.shared.tokenizing.ud_universal_part_of_speech_tag import UDPOS
+from language_services.universal_dependencies.shared.tokenizing.xpos import XPOS
 from language_services.universal_dependencies.shared.tree_building import ud_tree_node_formatter
 from sysutils import kana_utils
 
@@ -38,7 +39,7 @@ class UDTreeNode:
 
     def form_should_be_excluded_from_breakdown(self) -> bool:
         if self.is_morpheme():
-            if self.tokens[0].upos == ud_universal_part_of_speech_tag.verb and self.lemma_differs_from_form():
+            if self.tokens[0].upos == UDPOS.verb and self.lemma_differs_from_form():
                 return True
             if self.is_excluded_morpheme_surface(self.tokens[0]):
                 return True
@@ -56,8 +57,8 @@ class UDTreeNode:
 
     def _appears_to_be_inflected_phrase(self) -> bool:
         return (len(self.tokens) >= 2
-                and self.tokens[-1].xpos == xpos.inflecting_dependent_word
-                and self.tokens[-2].upos == ud_universal_part_of_speech_tag.verb)
+                and self.tokens[-1].xpos == XPOS.inflecting_dependent_word
+                and self.tokens[-2].upos == UDPOS.verb)
 
     def lemma_should_be_shown_in_breakdown(self) -> bool:
         from language_services.jamdict_ex.dict_lookup import DictLookup
@@ -87,7 +88,7 @@ class UDTreeNode:
         elif self.is_morpheme():
             if not self._is_excluded_morpheme_lemma(self.tokens[0]):
                 return self.tokens[0].lemma
-        elif self.tokens[-1].xpos == xpos.verb_bound:
+        elif self.tokens[-1].xpos == XPOS.verb_bound:
             candidate = "".join(tok.form for tok in self.tokens[:-1]) + self.tokens[-1].lemma
             if DictLookup.lookup_word_shallow(candidate).found_words():
                 return candidate
@@ -111,23 +112,23 @@ class UDTreeNode:
 _excluded_morpheme_surfaces = {
     #xpos, form, lemma
     #these form a pattern of some sort.
-    (xpos.inflecting_dependent_word, "だっ", "だ"),
-    (xpos.inflecting_dependent_word, "なかっ", "ない"),
-    (xpos.inflecting_dependent_word, "ちゃっ", "ちゃう"),
+    (XPOS.inflecting_dependent_word, "だっ", "だ"),
+    (XPOS.inflecting_dependent_word, "なかっ", "ない"),
+    (XPOS.inflecting_dependent_word, "ちゃっ", "ちゃう"),
 
-    (xpos.inflecting_dependent_word, "とい", "とく"),
-    (xpos.inflecting_dependent_word, "て", "てる"),
-    (xpos.inflecting_dependent_word, "でし", "です"),
-    (xpos.verb_bound, "し", "する"),
+    (XPOS.inflecting_dependent_word, "とい", "とく"),
+    (XPOS.inflecting_dependent_word, "て", "てる"),
+    (XPOS.inflecting_dependent_word, "でし", "です"),
+    (XPOS.verb_bound, "し", "する"),
 }
 
 _excluded_morpheme_lemmas = {
     #xpos, form, lemma
-    (xpos.inflecting_dependent_word, "たら", "た"),
-    (xpos.inflecting_dependent_word, "に", "だ"),
-    (xpos.inflecting_dependent_word, "な", "だ"),
-    (xpos.inflecting_dependent_word, "だろう", "だ"),
-    (xpos.inflecting_dependent_word, "だろ", "だ"),
+    (XPOS.inflecting_dependent_word, "たら", "た"),
+    (XPOS.inflecting_dependent_word, "に", "だ"),
+    (XPOS.inflecting_dependent_word, "な", "だ"),
+    (XPOS.inflecting_dependent_word, "だろう", "だ"),
+    (XPOS.inflecting_dependent_word, "だろ", "だ"),
 }
 
 _excluded_morpheme_norms = _excluded_morpheme_lemmas

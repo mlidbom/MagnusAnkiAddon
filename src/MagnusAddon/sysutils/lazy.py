@@ -11,8 +11,6 @@ class Lazy(Generic[T]):
         self.factory = factory
         self._instance: Optional[T] = None
 
-    def is_initialized(self) -> bool: return self._instance is not None
-
     def instance(self) -> T:
         if self._instance is None:
             self._instance = self.factory()

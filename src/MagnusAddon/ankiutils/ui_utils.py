@@ -32,12 +32,6 @@ class UIUtils(IUIUtils):
         edit_current = [window for window in self._mw.app.topLevelWidgets() if isinstance(window, EditCurrent)]
         return len(edit_current) > 0
 
-    def is_edit_current_active(self) -> bool:
-        edit_current = [window for window in self._mw.app.topLevelWidgets() if isinstance(window, EditCurrent)]
-        if len(edit_current) > 0:
-            return edit_current[0].isActiveWindow()
-        return False
-
     def run_ui_action(self, callback: Callable[[], None]) -> None:
         time = timeutil.time_execution(callback)
         self.refresh()
@@ -73,12 +67,6 @@ class UIUtils(IUIUtils):
         if refresh_browser:
             force_browser_rerender()
 
-
-    def show_current_review_in_preview(self) -> None:
-        self._mw.onBrowse()
-        self.activate_preview()
-        self._mw.activateWindow()
-
     def activate_preview(self) -> None:
         browser: Browser = aqt.dialogs.open('Browser', self._mw) # noqa
         self._mw.app.processEvents()
@@ -86,12 +74,6 @@ class UIUtils(IUIUtils):
             browser.onTogglePreview()
         else:
             browser._previewer.activateWindow() # noqa
-
-    def deactivate_preview(self) -> None:
-        browser: Browser = aqt.dialogs.open('Browser', self._mw) # noqa
-        self._mw.app.processEvents()
-        if browser._previewer: # noqa
-            browser.onTogglePreview()
 
     def activate_reviewer(self) -> None:
         self._mw.activateWindow()

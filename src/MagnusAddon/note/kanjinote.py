@@ -16,8 +16,6 @@ from note.note_constants import CardTypes, NoteFields, Mine, NoteTypes
 from sysutils import ex_sequence, ex_str, kana_utils
 from wanikani.wanikani_api_client import WanikaniClient
 
-_primary_reading_pattern = re.compile(r'<primary>(.*?)</primary>')
-
 class KanjiNote(WaniNote):
     def __init__(self, note: Note):
         super().__init__(note)
@@ -116,8 +114,6 @@ class KanjiNote(WaniNote):
     def set_reading_on(self, value: str) -> None: self.set_field(NoteFields.Kanji.Reading_On, value)
 
     primary_reading_pattern = re.compile(r'<primary>(.*?)</primary>')
-    def get_primary_readings_html(self) -> list[str]:
-        return KanjiNote.primary_reading_pattern.findall(f"""{kana_utils.to_katakana(self.get_reading_on_html())} {self.get_reading_kun_html()} {self.get_reading_nan_html()}""")
 
     def get_primary_readings(self) -> list[str]:
         return self.get_primary_readings_on() + self.get_primary_readings_kun() + self.get_primary_readings_nan()
@@ -135,7 +131,6 @@ class KanjiNote(WaniNote):
     def set_reading_kun(self, value: str) -> None: self.set_field(NoteFields.Kanji.Reading_Kun, value)
 
     def get_reading_nan_html(self) -> str: return self.get_field(NoteFields.Kanji.Reading_Nan)
-    def set_reading_nan(self, value: str) -> None: self.set_field(NoteFields.Kanji.Reading_Nan, value)
 
     def add_primary_on_reading(self, reading: str) -> None:
         self.set_reading_on(ex_str.replace_word(reading, f"<primary>{reading}</primary>", self.get_reading_on_html()))
@@ -155,9 +150,6 @@ class KanjiNote(WaniNote):
     def get_radicals_notes(self) -> list[KanjiNote]:
         from ankiutils import app
         return [kanji_radical for kanji_radical in (app.col().kanji.with_kanji(radical) for radical in self.get_radicals()) if kanji_radical]
-
-    def get_radicals_icons(self) -> str: return self.get_field(NoteFields.Kanji.Radicals_Icons)
-    def set_radicals_icons(self, value: str) -> None: self.set_field(NoteFields.Kanji.Radicals_Icons, value)
 
     def get_radical_dependencies_names(self) -> list[str]:
         return ex_str.extract_comma_separated_values(
@@ -195,24 +187,12 @@ class KanjiNote(WaniNote):
         confused_with.add(new_confused_with)
         self.set_field(NoteFields.Kanji.related_confused_with, ", ".join(confused_with))
 
-    def get_meaning_hint(self) -> str: return self.get_field(NoteFields.Kanji.Meaning_Info)
     def set_meaning_hint(self, value: str) -> None: self.set_field(NoteFields.Kanji.Meaning_Info, value if value is not None else "")
-
-    def get_reading_mnemonic(self) -> str: return self.get_field(NoteFields.Kanji.Reading_Mnemonic)
     def set_reading_mnemonic(self, value: str) -> None: self.set_field(NoteFields.Kanji.Reading_Mnemonic, value)
-
-    def get_reading_hint(self) -> str: return self.get_field(NoteFields.Kanji.Reading_Info)
     def set_reading_hint(self, value: str) -> None: self.set_field(NoteFields.Kanji.Reading_Info, value if value is not None else "")
-
-    def get_amalgamation_subject_ids(self) -> str: return self.get_field(NoteFields.Kanji.amalgamation_subject_ids)
     def set_amalgamation_subject_ids(self, value: str) -> None: self.set_field(NoteFields.Kanji.amalgamation_subject_ids, value)
-
-    def get_component_subject_ids(self) -> str: return self.get_field(NoteFields.Kanji.component_subject_ids)
     def set_component_subject_ids(self, value: str) -> None: self.set_field(NoteFields.Kanji.component_subject_ids, value)
-
-    def get_vocabs(self) -> str: return self.get_field(NoteFields.Kanji.Vocabs)
     def set_vocabs(self, value: str) -> None: self.set_field(NoteFields.Kanji.Vocabs, value)
-
     def get_primary_vocabs_or_defaults(self) -> list[str]: return self.get_primary_vocab() if self.get_primary_vocab() else self.generate_default_primary_vocab()
 
     def get_primary_vocab(self) -> list[str]: return ex_str.extract_comma_separated_values(self.get_field(NoteFields.Kanji.PrimaryVocab))
@@ -265,7 +245,6 @@ class KanjiNote(WaniNote):
     def remove_primary_vocab(self, vocab:str) -> None:
         self.set_primary_vocab([v for v in self.get_primary_vocab() if not v == vocab])
 
-    def get_primary_vocab_audio(self) -> str: return self.get_field(NoteFields.Kanji.Audio__)
     def set_primary_vocab_audio(self, value: str) -> None: self.set_field(NoteFields.Kanji.Audio__, value)
 
     def update_from_wani(self, wani_kanji: models.Kanji) -> None:

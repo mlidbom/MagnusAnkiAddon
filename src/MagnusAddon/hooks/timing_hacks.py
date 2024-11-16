@@ -20,12 +20,6 @@ class UglyUITimingBasedHacksData:
         #audio_suppressor.suppress_for_seconds(.3) #I keep not getting audio when quickly moving through audio cards
         self._last_reviewer_showed_answer_time = time.time()
 
-    def reviewer_just_showed_answer(self) -> bool:
-        return time.time() - self._last_reviewer_showed_answer_time < 1
-
-    def typed_in_editor_in_last_seconds(self, seconds: float) -> bool:
-        return time.time() - self._last_editor_typing_time < seconds
-
 ugly_timing_hacks = UglyUITimingBasedHacksData()
 
 def on_reviewer_show_answer(_card: Any) -> None: ugly_timing_hacks.reviewer_showed_answer(_card)

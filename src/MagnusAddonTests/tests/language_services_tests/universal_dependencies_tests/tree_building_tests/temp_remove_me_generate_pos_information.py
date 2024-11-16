@@ -4,11 +4,6 @@ from language_services.universal_dependencies import ud_tokenizers
 from language_services.universal_dependencies.shared.tokenizing.deprel import UdRelationshipTag
 from language_services.universal_dependencies.shared.tokenizing.ud_token import UDToken
 from language_services.universal_dependencies.shared.tokenizing.xpos import UdJapanesePartOfSpeechTag
-from tests.language_services_tests.universal_dependencies_tests.tree_building_tests.helpers.ud_tree_node_spec import UDTreeNodeSpec
-from tests.language_services_tests.universal_dependencies_tests.tree_building_tests.helpers.ud_tree_spec import UDTreeSpec
-
-N = UDTreeNodeSpec
-R = UDTreeSpec
 
 sentences = [
     "今じゃ町は夜でも明るいしもう会うこともないかもな",
