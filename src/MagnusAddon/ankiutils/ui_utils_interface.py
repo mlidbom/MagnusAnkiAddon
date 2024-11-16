@@ -13,6 +13,3 @@ class IUIUtils(metaclass=ABCMeta):
 
     @abstractmethod
     def activate_preview(self) -> None: pass
-
-    @abstractmethod
-    def activate_reviewer(self) -> None: pass

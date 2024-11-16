@@ -11,4 +11,3 @@ class UIUtilsStub(IUIUtils):
 
     def is_edit_current_open(self) -> bool: raise Exception("Unsupported by this stub")
     def activate_preview(self) -> None: raise Exception("Unsupported by this stub")
-    def activate_reviewer(self) -> None: raise Exception("Unsupported by this stub")

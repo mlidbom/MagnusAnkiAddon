@@ -8,7 +8,6 @@ from note.jpnote import JPNote
 from note.kanjinote import KanjiNote
 from note.note_constants import Builtin, MyNoteFields, NoteFields, NoteTypes, SentenceNoteFields
 from note.radicalnote import RadicalNote
-from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
 from language_services.janome_ex.word_extraction import word_extractor
 from language_services.janome_ex.word_extraction.extracted_word import ExtractedWord
@@ -77,9 +76,6 @@ def vocab_dependencies_lookup_query(vocab: VocabNote) -> str:
         return f"{note_kanji} ( {' OR '.join([f'{f_question}:{char}' for char in vocab.get_question()])} )"
 
     return f'''{create_vocab_vocab_clause()} ({create_kanji_clause()})'''
-
-
-def sentence_vocab_lookup(sentence:SentenceNote) -> str: return text_vocab_lookup(sentence.get_question())
 
 def vocab_with_kanji(note:KanjiNote) -> str: return f"{note_vocab} {f_forms}:*{note.get_question()}*"
 

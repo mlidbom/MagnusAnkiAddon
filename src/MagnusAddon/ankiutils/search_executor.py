@@ -3,13 +3,7 @@ from typing import Callable
 import aqt
 from aqt.browser import Browser  # type: ignore
 
-from ankiutils import app, query_builder
-from note.jpnote import JPNote
-from note.sentencenote import SentenceNote
-from note.kanjinote import KanjiNote
-from note.radicalnote import RadicalNote
-from note.vocabnote import VocabNote
-from sysutils.typed import checked_cast
+from ankiutils import app
 
 def do_lookup_and_show_previewer(text: str) -> None:
     do_lookup(text)
