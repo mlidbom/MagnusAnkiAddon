@@ -84,15 +84,15 @@ def _profile_opened() -> None:
     _init(delay_seconds=1.0)
 
 def wait_for_initialization() -> None:
-    with StopWatch.log_warning_if_slower_than("app.wait_for_initialization", 0.01):
-        col()
+    col()
 
 def anki_config() -> ConfigManagerEx:
     return ConfigManagerEx(mw.col.conf)
 
 def col() -> JPCollection:
-    assert _collection
-    return _collection.instance()
+    with StopWatch.log_warning_if_slower_than("app.wait_for_initialization", 0.01):
+        assert _collection
+        return _collection.instance()
 
 def anki_collection() -> Collection: return col().anki_collection
 def anki_db() -> DBProxy: return non_optional(col().anki_collection.db)
