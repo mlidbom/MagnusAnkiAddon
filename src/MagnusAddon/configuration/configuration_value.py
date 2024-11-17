@@ -3,35 +3,12 @@ from typing import Callable, Generic, Optional, TypeVar
 import os
 from aqt import mw
 
-T = TypeVar('T', int, str, bool)
+T = TypeVar('T')
 
 _addon_dir = os.path.dirname(os.path.dirname(__file__))
 _addon_name = os.path.basename(_addon_dir)
 
 _config_dict = mw.addonManager.getConfig(_addon_name) or {}
-
-class JapaneseConfig:
-    def __init__(self) -> None:
-        def set_enable_fsrs_short_term_with_steps(toggle: bool) -> None:
-            # noinspection PyProtectedMember, PyArgumentList
-            mw.col._set_enable_fsrs_short_term_with_steps(toggle)
-
-        self.timebox_vocab_read = ConfigurationValueInt("time_box_length_vocab_read", "Vocab Read", 15)
-        self.timebox_vocab_listen = ConfigurationValueInt("time_box_length_vocab_listen", "Vocab Listen", 15)
-        self.timebox_sentence_read = ConfigurationValueInt("time_box_length_sentence_read", "Sentence Read", 15)
-        self.timebox_sentence_listen = ConfigurationValueInt("time_box_length_sentence_listen", "Sentence Listen", 15)
-        self.timebox_kanji_read = ConfigurationValueInt("time_box_length_kanji", "Kanji", 15)
-        self.yomitan_integration_copy_answer_to_clipboard = ConfigurationValueBool("yomitan_integration_copy_answer_to_clipboard", "Yomitan integration: Copy reviewer answer to clipboard", False)
-
-        self.anki_internal_fsrs_set_enable_fsrs_short_term_with_steps = ConfigurationValueBool("fsrs_set_enable_fsrs_short_term_with_steps",
-                                                                                               "FSRS: Enable short term scheduler with steps",
-                                                                                               default=False,
-                                                                                               feature_toggler=set_enable_fsrs_short_term_with_steps)
-
-        self.decrease_failed_card_intervals_interval = ConfigurationValueInt("decrease_failed_card_intervals_interval", "Failed card again seconds for next again", 60)
-        self.decrease_failed_card_intervals = ConfigurationValueBool("decrease_failed_card_intervals", "Decrease failed card intervals", False)
-
-        self.feature_toggles = [self.yomitan_integration_copy_answer_to_clipboard, self.anki_internal_fsrs_set_enable_fsrs_short_term_with_steps, self.decrease_failed_card_intervals]
 
 class ConfigurationValue(Generic[T]):
     def __init__(self, name: str, title: str, default: T, feature_toggler: Optional[Callable[[T], None]] = None) -> None:
@@ -58,6 +35,35 @@ class ConfigurationValue(Generic[T]):
             self.feature_toggler(self._value)
 
 ConfigurationValueInt = ConfigurationValue[int]
+ConfigurationValueFloat = ConfigurationValue[float]
 ConfigurationValueBool = ConfigurationValue[bool]
+
+class JapaneseConfig:
+    def __init__(self) -> None:
+        def set_enable_fsrs_short_term_with_steps(toggle: bool) -> None:
+            # noinspection PyProtectedMember, PyArgumentList
+            mw.col._set_enable_fsrs_short_term_with_steps(toggle)
+
+        self.timebox_vocab_read = ConfigurationValueInt("time_box_length_vocab_read", "Vocab Read", 15)
+        self.timebox_vocab_listen = ConfigurationValueInt("time_box_length_vocab_listen", "Vocab Listen", 15)
+        self.timebox_sentence_read = ConfigurationValueInt("time_box_length_sentence_read", "Sentence Read", 15)
+        self.timebox_sentence_listen = ConfigurationValueInt("time_box_length_sentence_listen", "Sentence Listen", 15)
+        self.timebox_kanji_read = ConfigurationValueInt("time_box_length_kanji", "Kanji", 15)
+        self.yomitan_integration_copy_answer_to_clipboard = ConfigurationValueBool("yomitan_integration_copy_answer_to_clipboard", "Yomitan integration: Copy reviewer answer to clipboard", False)
+
+        self.anki_internal_fsrs_set_enable_fsrs_short_term_with_steps = ConfigurationValueBool("fsrs_set_enable_fsrs_short_term_with_steps",
+                                                                                               "FSRS: Enable short term scheduler with steps",
+                                                                                               default=False,
+                                                                                               feature_toggler=set_enable_fsrs_short_term_with_steps)
+
+        self.decrease_failed_card_intervals_interval = ConfigurationValueInt("decrease_failed_card_intervals_interval", "Failed card again seconds for next again", 60)
+        self.decrease_failed_card_intervals = ConfigurationValueBool("decrease_failed_card_intervals", "Decrease failed card intervals", False)
+
+        self.prevent_double_clicks = ConfigurationValueBool("prevent_double_clicks", "Prevent double clicks", True)
+        self.minimum_time_viewing_question = ConfigurationValueFloat("minimum_time_viewing_question", "Minimum time viewing question", 0.5)
+        self.minimum_time_viewing_answer = ConfigurationValueFloat("minimum_time_viewing_answer", "Minimum time viewing answer", 0.5)
+
+        self.feature_toggles = [self.yomitan_integration_copy_answer_to_clipboard, self.anki_internal_fsrs_set_enable_fsrs_short_term_with_steps, self.decrease_failed_card_intervals, self.prevent_double_clicks]
+
 
 config = JapaneseConfig()
