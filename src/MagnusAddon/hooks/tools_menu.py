@@ -43,7 +43,7 @@ def build_main_menu() -> None:
 def build_debug_menu(my_menu: QMenu, title:str) -> None:
     debug_menu = non_optional(my_menu.addMenu(title))
     add_menu_ui_action(debug_menu, "Refresh UI", refresh, "F5")
-    my_menu.addAction("&Reset", app.reset)
+    debug_menu.addAction("&Reset", app.reset)
 
 def build_config_menu(my_menu: QMenu, title:str) -> None:
     config_menu = non_optional(my_menu.addMenu(title))
