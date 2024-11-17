@@ -47,7 +47,7 @@ class StopWatch:
 
     @staticmethod
     @contextmanager
-    def timed(message:str) -> Iterator[None]:
+    def timed(message:str, log_if_slower_than:float = 0) -> Iterator[None]:
         watch = StopWatch() # Start timing
         try:
             yield
