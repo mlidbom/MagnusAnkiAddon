@@ -1,7 +1,7 @@
 import re
 from aqt import gui_hooks
 
-from hooks.note_content_building.content_renderer import PrerenderingAnswerSingleTagContentRenderer
+from hooks.note_content_building.content_renderer import PrerenderingAnswerContentRenderer
 from note.kanjinote import KanjiNote
 from sysutils import ex_str, kana_utils
 
@@ -49,4 +49,4 @@ def render_dependencies_list(note: KanjiNote) -> str:
 
 
 def init() -> None:
-    gui_hooks.card_will_show.append(PrerenderingAnswerSingleTagContentRenderer(KanjiNote, "##DEPENDENCIES_LIST##", render_dependencies_list).render)
+    gui_hooks.card_will_show.append(PrerenderingAnswerContentRenderer(KanjiNote, {"##DEPENDENCIES_LIST##": render_dependencies_list}).render)

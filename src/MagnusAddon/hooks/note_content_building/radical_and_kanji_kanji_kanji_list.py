@@ -1,7 +1,7 @@
 import re
 
 from aqt import gui_hooks
-from hooks.note_content_building.content_renderer import PrerenderingAnswerSingleTagContentRenderer
+from hooks.note_content_building.content_renderer import PrerenderingAnswerContentRenderer
 from note.jpnote import JPNote
 from note.kanjinote import KanjiNote
 from note.radicalnote import RadicalNote
@@ -59,5 +59,5 @@ def radical_kanji_list(radical: RadicalNote) -> str:
 
 
 def init() -> None:
-    gui_hooks.card_will_show.append(PrerenderingAnswerSingleTagContentRenderer(KanjiNote, "##KANJI_LIST##", kanji_kanji_list).render)
-    gui_hooks.card_will_show.append(PrerenderingAnswerSingleTagContentRenderer(RadicalNote, "##KANJI_LIST##", radical_kanji_list).render)
+    gui_hooks.card_will_show.append(PrerenderingAnswerContentRenderer(KanjiNote, {"##KANJI_LIST##": kanji_kanji_list}).render)
+    gui_hooks.card_will_show.append(PrerenderingAnswerContentRenderer(RadicalNote, {"##KANJI_LIST##": radical_kanji_list}).render)

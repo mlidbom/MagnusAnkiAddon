@@ -1,6 +1,6 @@
 from aqt import gui_hooks
 
-from hooks.note_content_building.content_renderer import PrerenderingAnswerSingleTagContentRenderer
+from hooks.note_content_building.content_renderer import PrerenderingAnswerContentRenderer
 from note.kanjinote import KanjiNote
 from note.vocabnote import VocabNote
 from sysutils.ex_str import newline
@@ -46,4 +46,4 @@ def generate_vocab_html_list(_kanji_note: KanjiNote) -> str:
         return ''
 
 def init() -> None:
-    gui_hooks.card_will_show.append(PrerenderingAnswerSingleTagContentRenderer(KanjiNote, "##VOCAB_LIST##", generate_vocab_html_list).render)
+    gui_hooks.card_will_show.append(PrerenderingAnswerContentRenderer(KanjiNote, {"##VOCAB_LIST##": generate_vocab_html_list}).render)

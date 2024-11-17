@@ -1,6 +1,6 @@
 from aqt import gui_hooks
 
-from hooks.note_content_building.content_renderer import PrerenderingAnswerSingleTagContentRenderer
+from hooks.note_content_building.content_renderer import PrerenderingAnswerContentRenderer
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
 from sysutils import ex_str
@@ -38,5 +38,5 @@ def render_sentence_kanji_list(sentence: SentenceNote) -> str:
 
 
 def init() -> None:
-    gui_hooks.card_will_show.append(PrerenderingAnswerSingleTagContentRenderer(VocabNote, "##KANJI_LIST##", render_vocab_kanji_list).render)
-    gui_hooks.card_will_show.append(PrerenderingAnswerSingleTagContentRenderer(SentenceNote, "##KANJI_LIST##", render_sentence_kanji_list).render)
+    gui_hooks.card_will_show.append(PrerenderingAnswerContentRenderer(VocabNote, {"##KANJI_LIST##": render_vocab_kanji_list}).render)
+    gui_hooks.card_will_show.append(PrerenderingAnswerContentRenderer(SentenceNote, {"##KANJI_LIST##": render_sentence_kanji_list}).render)

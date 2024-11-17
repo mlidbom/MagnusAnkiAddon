@@ -1,7 +1,7 @@
 from aqt import gui_hooks
 
 from ankiutils import app
-from hooks.note_content_building.content_renderer import PrerenderingAnswerSingleTagContentRenderer
+from hooks.note_content_building.content_renderer import PrerenderingAnswerContentRenderer
 from note.vocabnote import VocabNote
 from sysutils import ex_str, kana_utils
 from sysutils.ex_str import newline
@@ -56,4 +56,4 @@ def generate_highlighted_sentences_html_list(_vocab_note:VocabNote) -> str:
             ''' if sentences else ""
 
 def init() -> None:
-    gui_hooks.card_will_show.append(PrerenderingAnswerSingleTagContentRenderer(VocabNote, "##CONTEXT_SENTENCES##", generate_highlighted_sentences_html_list).render)
+    gui_hooks.card_will_show.append(PrerenderingAnswerContentRenderer(VocabNote, {"##CONTEXT_SENTENCES##": generate_highlighted_sentences_html_list}).render)

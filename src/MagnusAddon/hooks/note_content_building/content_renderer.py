@@ -12,9 +12,9 @@ from ankiutils import app
 TNote = TypeVar('TNote', bound=JPNote)
 
 class PrerenderingAnswerContentRenderer(Generic[TNote]):
-    def __init__(self, cls: type[TNote], render_method:dict[str, Callable[[TNote], str]]) -> None:
+    def __init__(self, cls: type[TNote], render_methods:dict[str, Callable[[TNote], str]]) -> None:
         self._cls = cls
-        self._render_methods = render_method
+        self._render_methods = render_methods
         self._promises:Optional[dict[str, Future[str]]] = None
 
     @staticmethod
@@ -44,8 +44,3 @@ class PrerenderingAnswerContentRenderer(Generic[TNote]):
                         html = html.replace(tag, renderer(checked_cast(self._cls, note)))
 
             return html
-
-
-class PrerenderingAnswerSingleTagContentRenderer(PrerenderingAnswerContentRenderer[TNote]):
-    def __init__(self, cls: type[TNote], tag_to_replace:str, render_method:Callable[[TNote], str]) -> None:
-        super().__init__(cls, {tag_to_replace: render_method})
