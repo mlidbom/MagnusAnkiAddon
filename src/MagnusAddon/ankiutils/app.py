@@ -90,7 +90,7 @@ def anki_config() -> ConfigManagerEx:
     return ConfigManagerEx(mw.col.conf)
 
 def col() -> JPCollection:
-    with StopWatch.log_warning_if_slower_than("app.wait_for_initialization", 0.01):
+    with StopWatch.log_warning_if_slower_than(0.01, "waiting_for_initialization"):
         assert _collection
         return _collection.instance()
 

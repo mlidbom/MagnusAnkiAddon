@@ -1,4 +1,6 @@
 from __future__ import annotations
+
+import sys
 import time
 from contextlib import contextmanager
 from typing import Callable, Iterator
@@ -47,14 +49,22 @@ class StopWatch:
 
     @staticmethod
     @contextmanager
-    def log_warning_if_slower_than(message:str, warn_if_slower_than:float) -> Iterator[None]:
+    def log_warning_if_slower_than(warn_if_slower_than:float, message:str = "") -> Iterator[None]:
         watch = StopWatch()
+
+        def get_caller_info() -> str:
+            caller_frame = sys._getframe(4) # noqa
+            module_name = caller_frame.f_globals["__name__"]
+            function_name = caller_frame.f_code.co_name
+            return f"{module_name}..{function_name}"
+
+        def get_message() -> str:
+            return f"Execution time:{watch.elapsed_formatted()} for {get_caller_info()}#{message}"
         try:
             yield
         finally:
             elapsed_seconds = watch.elapsed_seconds()
-            message = f"Execution time:{watch.elapsed_formatted()} for {message}"
             if elapsed_seconds > warn_if_slower_than:
-                mylog.log.warning(message)
+                mylog.log.warning(get_message())
             elif elapsed_seconds * 2 > warn_if_slower_than:
-                mylog.log.info(message)
+                mylog.log.info(get_message())

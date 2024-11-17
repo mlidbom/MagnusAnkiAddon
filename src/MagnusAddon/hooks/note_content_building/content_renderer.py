@@ -20,7 +20,7 @@ class PrerenderingAnswerContentRenderer(Generic[TNote]):
     @staticmethod
     def _schedule_render_method(_render_method:Callable[[TNote], str], section:str, note:TNote) -> Future[str]:
         def run_render_method() -> str:
-            with StopWatch.log_warning_if_slower_than(f"PrerenderingAnswerContentRenderer.render.rendering {section}", 0.5):
+            with StopWatch.log_warning_if_slower_than(0.5, f"rendering:{section}"):
                 return _render_method(note)
 
         return app_thread_pool.pool.submit(run_render_method)
@@ -43,10 +43,10 @@ class PrerenderingAnswerContentRenderer(Generic[TNote]):
             if ui_utils.is_displaytype_displaying_review_question(type_of_display):
                 schedule_all()
             elif ui_utils.is_displaytype_displaying_review_answer(type_of_display) and self._promises:
-                with StopWatch.log_warning_if_slower_than("PrerenderingAnswerContentRenderer.render.fetching_results", 0.01):
+                with StopWatch.log_warning_if_slower_than(0.01, "fetching_results"):
                     html = render_scheduled(html)
             elif ui_utils.is_displaytype_displaying_answer(type_of_display):
-                with StopWatch.log_warning_if_slower_than("PrerenderingAnswerContentRenderer.render.live_rendering", 0.5):
+                with StopWatch.log_warning_if_slower_than(0.5, "live_rendering"):
                     schedule_all()
                     html = render_scheduled(html)
 

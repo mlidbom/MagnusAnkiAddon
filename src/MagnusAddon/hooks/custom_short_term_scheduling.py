@@ -7,7 +7,7 @@ from sysutils.timeutil import StopWatch
 
 _oldMethod = V3CardInfo.from_queue
 def set_again_time_for_previously_failed_today_cards(queue:QueuedCards) -> V3CardInfo:
-    with StopWatch.log_warning_if_slower_than("set_again_time_for_previously_failed_today_cards", 0.001):
+    with StopWatch.log_warning_if_slower_than(0.01):
         info = _oldMethod(queue)
 
         from ankiutils import app
