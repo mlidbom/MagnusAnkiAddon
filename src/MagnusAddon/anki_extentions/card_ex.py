@@ -21,14 +21,6 @@ def _latest_day_cutoff_timestamp() -> int:
     from aqt import mw
     return mw.col.sched.day_cutoff - timeutil.SECONDS_PER_DAY
 
-def _last_answer_today_was_fail(card: Card) -> bool:
-    answers = _get_answers_since_last_day_cutoff_for_card(card)
-    sequential_again_answers = len(list(ex_iterable.take_while(lambda x: AnswerAction(x) == AnswerAction.ANSWER_AGAIN, answers)))
-    if sequential_again_answers > 0:
-        return True
-    else:
-        return False
-
 def _get_answers_since_last_day_cutoff_for_card(card: Card) -> list[int]:
     with StopWatch.log_warning_if_slower_than(0.01):
         reviews = app.anki_db().all("SELECT ease FROM revlog WHERE cid = ? AND id > ? ORDER BY id DESC", card.id, _latest_day_cutoff_timestamp() * timeutil.MILLISECONDS_PER_SECOND)
@@ -59,8 +51,12 @@ class CardEx:
         from anki_extentions.notetype_ex.note_type_template import NoteTemplateEx
         return NoteTemplateEx.from_dict(self.card.template())
 
+    def sequential_again_answers_today(self) -> int:
+        answers = _get_answers_since_last_day_cutoff_for_card(self.card)
+        return len(list(ex_iterable.take_while(lambda x: AnswerAction(x) == AnswerAction.ANSWER_AGAIN, answers)))
+
     def last_answer_today_was_fail_db_call(self) -> bool:
-        return _last_answer_today_was_fail(self.card)
+        return self.sequential_again_answers_today() > 0
 
     def note(self) -> JPNote:
         from note.jpnote import JPNote

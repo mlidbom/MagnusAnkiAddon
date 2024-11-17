@@ -55,6 +55,18 @@ class JapaneseOptionsDialog(QDialog):
             failed_card_group.setLayout(failed_card_layout)
             window_layout.addWidget(failed_card_group)
 
+        def setup_boost_failed_card_allowed_time_section() -> None:
+            failed_card_allowed_time_group = QGroupBox("Boost failed card allowed time")
+            # noinspection PyArgumentList
+            failed_card_allowed_time_layout = QGridLayout()
+            failed_card_allowed_time_layout.setColumnStretch(0, 1)  # Make the label column expandable
+            failed_card_allowed_time_layout.setColumnStretch(1, 0)  # Keep the spinner column fixed width
+
+            add_double_spinner_value(failed_card_allowed_time_layout, 0, self.config.boost_failed_card_allowed_time_by_factor)
+
+            failed_card_allowed_time_group.setLayout(failed_card_allowed_time_layout)
+            window_layout.addWidget(failed_card_allowed_time_group)
+
         def setup_timeboxes_section() -> None:
             number_group = QGroupBox("Timeboxes")
             # noinspection PyArgumentList
@@ -84,8 +96,7 @@ class JapaneseOptionsDialog(QDialog):
             number_group.setLayout(no_accidental_clicks_layout)
             window_layout.addWidget(number_group)
 
-
-
+        setup_boost_failed_card_allowed_time_section()
         setup_decrease_failed_card_interval_section()
         setup_timeboxes_section()
         setup_debounce_section()

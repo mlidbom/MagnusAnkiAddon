@@ -40,6 +40,9 @@ ConfigurationValueBool = ConfigurationValue[bool]
 
 class JapaneseConfig:
     def __init__(self) -> None:
+        self.boost_failed_card_allowed_time_by_factor = ConfigurationValueFloat("boost_failed_card_allowed_time_by_factor", "Boost Failed Card Allowed Time Factor", 1.5)
+        self.boost_failed_card_allowed_time = ConfigurationValueBool("boost_failed_card_allowed_time", "Boost failed card allowed time", True)
+
         def set_enable_fsrs_short_term_with_steps(toggle: bool) -> None:
             # noinspection PyProtectedMember, PyArgumentList
             mw.col._set_enable_fsrs_short_term_with_steps(toggle)
@@ -63,7 +66,7 @@ class JapaneseConfig:
         self.minimum_time_viewing_question = ConfigurationValueFloat("minimum_time_viewing_question", "Minimum time viewing question", 0.5)
         self.minimum_time_viewing_answer = ConfigurationValueFloat("minimum_time_viewing_answer", "Minimum time viewing answer", 0.5)
 
-        self.feature_toggles = [self.yomitan_integration_copy_answer_to_clipboard, self.anki_internal_fsrs_set_enable_fsrs_short_term_with_steps, self.decrease_failed_card_intervals, self.prevent_double_clicks]
+        self.feature_toggles = [self.yomitan_integration_copy_answer_to_clipboard, self.anki_internal_fsrs_set_enable_fsrs_short_term_with_steps, self.decrease_failed_card_intervals, self.prevent_double_clicks, self.boost_failed_card_allowed_time]
 
 
 config = JapaneseConfig()
