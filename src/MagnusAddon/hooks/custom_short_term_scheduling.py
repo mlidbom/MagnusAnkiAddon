@@ -1,15 +1,13 @@
 from anki.scheduler.v3 import QueuedCards
 from aqt.reviewer import V3CardInfo
 
-import mylog
 from anki_extentions.sheduling_states_ex import SchedulingStatesEx
 from anki_extentions.card_ex import CardEx
-from sysutils import timeutil
 from sysutils.timeutil import StopWatch
 
 _oldMethod = V3CardInfo.from_queue
 def set_again_time_for_previously_failed_today_cards(queue:QueuedCards) -> V3CardInfo:
-    with StopWatch.timed("set_again_time_for_previously_failed_today_cards"):
+    with StopWatch.log_warning_if_slower_than("set_again_time_for_previously_failed_today_cards", 0.001):
         info = _oldMethod(queue)
 
         from ankiutils import app

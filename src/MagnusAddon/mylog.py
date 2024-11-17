@@ -17,6 +17,7 @@ def log_file_path(addon: str) -> Path:
     return logs_dir / f"{addon}.log"
 
 def get_logger(module: str) -> logging.Logger:
+    addon = ""
     if is_testing():
         logger = logging.getLogger("addon")
     else:
@@ -34,12 +35,14 @@ def get_logger(module: str) -> logging.Logger:
     file_handler: Optional[RotatingFileHandler] = None
 
     # Prevent errors when deleting/updating the add-on on Windows
+    # noinspection PyUnusedLocal
     def close_log_file(manager: AddonManager, m: str, *args: Any, **kwargs: Any) -> None:
         if m == addon and file_handler:
             file_handler.close()
 
     if not is_testing():
         log_path = log_file_path(addon)
+        # noinspection PyArgumentEqualDefault
         file_handler = RotatingFileHandler(str(log_path), "a", encoding="utf-8", maxBytes=3 * 1024 * 1024, backupCount=5, )
         file_formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
         file_handler.setFormatter(file_formatter)
@@ -57,4 +60,3 @@ def get_logger(module: str) -> logging.Logger:
 
 _addon_name = os.path.basename(os.path.dirname(__file__))
 log = get_logger(_addon_name)
-

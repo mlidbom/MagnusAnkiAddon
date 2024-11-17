@@ -12,38 +12,40 @@ from ankiutils import app
 TNote = TypeVar('TNote', bound=JPNote)
 
 class PrerenderingAnswerContentRenderer(Generic[TNote]):
-    def __init__(self, cls: type[TNote], render_method:Callable[[TNote], dict[str, str]]) -> None:
+    def __init__(self, cls: type[TNote], render_method:dict[str, Callable[[TNote], str]]) -> None:
         self._cls = cls
-        self._render_method = render_method
-        self._promise:Optional[Future[dict[str, str]]] = None
+        self._render_methods = render_method
+        self._promises:Optional[dict[str, Future[str]]] = None
 
     @staticmethod
-    def _make_replacements(replacements:dict[str, str], html:str) -> str:
-        for tag, content in replacements.items():
-            html = html.replace(tag, content)
-        return html
+    def _schedule_render_method(_render_method:Callable[[TNote], str], section:str, note:TNote) -> Future[str]:
+        def run_render_method() -> str:
+            with StopWatch.log_warning_if_slower_than(f"PrerenderingAnswerContentRenderer.rendering {section}", 0.2):
+                return _render_method(note)
+
+        return app_thread_pool.pool.submit(run_render_method)
+
 
     def render(self, html: str, card: Card, type_of_display: str) -> str:
-        with StopWatch.timed("PrerenderingAnswerContentRenderer.render", log_if_slower_than=0.00000001):
+        with StopWatch.log_warning_if_slower_than("PrerenderingAnswerContentRenderer.render", 0.01):
             app.wait_for_initialization()
             note = JPNote.note_from_card(card)
 
             if isinstance(note, self._cls):
                 if ui_utils.is_displaytype_displaying_review_question(type_of_display):
-                    self._promise = app_thread_pool.pool.submit(lambda: self._render_method(checked_cast(self._cls, note)))
-                elif ui_utils.is_displaytype_displaying_review_answer(type_of_display) and self._promise:
-                    value = self._promise.result()
-                    self._promise = None # We need to clear it or editing the current card will not show any updates
-                    return self._make_replacements(value, html)
+                    self._promises = {key: self._schedule_render_method(render_method, key, note) for key, render_method in self._render_methods.items()}
+                elif ui_utils.is_displaytype_displaying_review_answer(type_of_display) and self._promises:
+                    for tag, content in self._promises.items():
+                        with StopWatch.log_warning_if_slower_than(f"PrerenderingAnswerContentRenderer.render.fetching_result {tag}", 0.001):
+                            html = html.replace(tag, content.result())
+                    self._promises = None
                 elif ui_utils.is_displaytype_displaying_answer(type_of_display):
-                    return self._make_replacements(self._render_method(checked_cast(self._cls, note)), html)
+                    for tag, renderer in self._render_methods.items():
+                        html = html.replace(tag, renderer(checked_cast(self._cls, note)))
 
             return html
 
 
 class PrerenderingAnswerSingleTagContentRenderer(PrerenderingAnswerContentRenderer[TNote]):
     def __init__(self, cls: type[TNote], tag_to_replace:str, render_method:Callable[[TNote], str]) -> None:
-        def wrapped_render_method(note:TNote) -> dict[str, str]:
-            return {tag_to_replace: render_method(note)}
-
-        super().__init__(cls, wrapped_render_method)
+        super().__init__(cls, {tag_to_replace: render_method})

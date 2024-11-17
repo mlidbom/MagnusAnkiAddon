@@ -40,9 +40,15 @@ def render_vocab_list(vocab_list: list[VocabNote], title:str, css_class:str, rea
             '''
 
 
-def generate_homophones_html_list(_vocab_note: VocabNote, forms_to_ignore:set[VocabNote]) -> str:
-    homophones = ex_sequence.flatten([app.col().vocab.with_reading(reading) for reading in _vocab_note.get_readings()])
-    homophones = [homophone for homophone in homophones if homophone not in forms_to_ignore]
+def generate_homophones_html_list(vocab_note: VocabNote) -> str:
+    forms = ex_sequence.flatten([app.col().vocab.with_question(reading) for reading in vocab_note.get_forms()])
+    forms = [form for form in forms if form.get_id() != vocab_note.get_id()]
+    forms = vocabnote.sort_vocab_list_by_studying_status(forms)
+
+    forms_set = set(forms) | {vocab_note}
+
+    homophones = ex_sequence.flatten([app.col().vocab.with_reading(reading) for reading in vocab_note.get_readings()])
+    homophones = [homophone for homophone in homophones if homophone not in forms_set]
     homophones = vocabnote.sort_vocab_list_by_studying_status(homophones)
 
     return render_vocab_list(homophones, "homophones", css_class="homophones") if homophones else ""
@@ -71,26 +77,25 @@ def generate_compounds(_vocab_note: VocabNote) -> str:
     compound_parts = app.col().vocab.with_forms(_vocab_note.get_user_compounds())
     return render_vocab_list(compound_parts, "compound parts", css_class="compound_parts") if compound_parts else ""
 
-def render_homophones_html_list(vocab_note: VocabNote) -> dict[str, str]:
+def generate_forms_list(vocab_note: VocabNote) -> str:
     forms = ex_sequence.flatten([app.col().vocab.with_question(reading) for reading in vocab_note.get_forms()])
     forms = [form for form in forms if form.get_id() != vocab_note.get_id()]
     forms = vocabnote.sort_vocab_list_by_studying_status(forms)
 
-    forms_set = set(forms) | {vocab_note}
-    # todo: part-of-compound, variation/derived/closely-related, homonyms, homographs, antonym
-    replacements:dict[str, str] = {
-        "##FORMS_LIST##": render_vocab_list([vocab_note] + forms, "forms", css_class="forms") if forms else "",
-        "##VOCAB_COMPOUNDS##": generate_compounds(vocab_note),
-        "##ERGATIVE_TWIN##": generate_ergative_twin_html(vocab_note),
-        "##DERIVED_FROM##": generate_derived_from(vocab_note),
-        "##HOMOPHONES_LIST##": generate_homophones_html_list(vocab_note, forms_set),
-        "##SIMILAR_MEANING_LIST##": generate_similar_meaning_html_list(vocab_note),
-        "##CONFUSED_WITH_LIST##": generate_confused_with_html_list(vocab_note),
-        "##VOCAB_META_TAGS_HTML##": vocab_note.get_meta_tags_html(),
-        "##VOCAB_CLASSES##": _create_classes(vocab_note)
-    }
+    return render_vocab_list([vocab_note] + forms, "forms", css_class="forms") if forms else ""
 
-    return replacements
+def generate_meta_tags(vocab_note:VocabNote) -> str:
+    return vocab_note.get_meta_tags_html()
 
 def init() -> None:
-    gui_hooks.card_will_show.append(PrerenderingAnswerContentRenderer(VocabNote, render_homophones_html_list).render)
+    gui_hooks.card_will_show.append(PrerenderingAnswerContentRenderer(VocabNote, {
+        "##FORMS_LIST##": generate_forms_list,
+        "##VOCAB_COMPOUNDS##": generate_compounds,
+        "##ERGATIVE_TWIN##": generate_ergative_twin_html,
+        "##DERIVED_FROM##": generate_derived_from,
+        "##HOMOPHONES_LIST##": generate_homophones_html_list,
+        "##SIMILAR_MEANING_LIST##": generate_similar_meaning_html_list,
+        "##CONFUSED_WITH_LIST##": generate_confused_with_html_list,
+        "##VOCAB_META_TAGS_HTML##": generate_meta_tags,
+        "##VOCAB_CLASSES##": _create_classes
+    }).render)

@@ -54,29 +54,22 @@ def _build_vocab_list(word_to_show: list[str], excluded_words:set[str], title:st
     """
     return html
 
-def render_parsed_words(note: SentenceNote, replacements:dict[str, str]) -> None:
+def render_parsed_words(note: SentenceNote) -> str:
     words = note.get_valid_parsed_non_child_words_strings()
     excluded = note.get_user_excluded_vocab()
-    replacements["##PARSED_WORDS##"] = _build_vocab_list(words, excluded, "parsed words")
+    return _build_vocab_list(words, excluded, "parsed words")
 
-def render_excluded_words(note: SentenceNote, replacements:dict[str, str]) -> None:
+def render_excluded_words(note: SentenceNote) -> str:
     excluded_words = {x.word for x in note.get_user_word_exclusions()}
     excluded_vocab = list(excluded_words)
-    replacements["##EXCLUDED_WORDS##"] = _build_vocab_list(excluded_vocab, set(), "incorrectly matched words") if excluded_vocab else ""
+    return _build_vocab_list(excluded_vocab, set(), "incorrectly matched words") if excluded_vocab else ""
 
-def render_user_extra_list(note: SentenceNote, replacements:dict[str, str]) -> None:
-    replacements["##USER_EXTRA_VOCAB##"] = _build_vocab_list(note.get_user_highlighted_vocab(), note.get_user_excluded_vocab(), "highlighted words", include_mnemonics=True, include_extended_sentence_statistics=True) if note.get_user_highlighted_vocab() else ""
-
-
-def render(note: SentenceNote) -> dict[str, str]:
-    replacements:dict[str, str] = {}
-
-    render_parsed_words(note, replacements)
-    render_user_extra_list(note, replacements)
-    render_excluded_words(note, replacements)
-
-
-    return replacements
+def render_user_extra_list(note: SentenceNote) -> str:
+    return _build_vocab_list(note.get_user_highlighted_vocab(), note.get_user_excluded_vocab(), "highlighted words", include_mnemonics=True, include_extended_sentence_statistics=True) if note.get_user_highlighted_vocab() else ""
 
 def init() -> None:
-    gui_hooks.card_will_show.append(PrerenderingAnswerContentRenderer(SentenceNote, render).render)
+    gui_hooks.card_will_show.append(PrerenderingAnswerContentRenderer(SentenceNote, {
+        "##PARSED_WORDS##": render_parsed_words,
+        "##EXCLUDED_WORDS##": render_excluded_words,
+        "##USER_EXTRA_VOCAB##": render_user_extra_list
+    }).render)

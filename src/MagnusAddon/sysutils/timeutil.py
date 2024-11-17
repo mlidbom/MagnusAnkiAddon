@@ -47,9 +47,14 @@ class StopWatch:
 
     @staticmethod
     @contextmanager
-    def timed(message:str, log_if_slower_than:float = 0) -> Iterator[None]:
-        watch = StopWatch() # Start timing
+    def log_warning_if_slower_than(message:str, warn_if_slower_than:float) -> Iterator[None]:
+        watch = StopWatch()
         try:
             yield
         finally:
-            mylog.log.info(f"Execution time:{watch.elapsed_formatted()} for {message}")
+            elapsed_seconds = watch.elapsed_seconds()
+            message = f"Execution time:{watch.elapsed_formatted()} for {message}"
+            if elapsed_seconds > warn_if_slower_than:
+                mylog.log.warning(message)
+            else:
+                mylog.log.debug(message)
