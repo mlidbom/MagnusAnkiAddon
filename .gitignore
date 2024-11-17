@@ -7,3 +7,4 @@ collection.anki2
 /src/MagnusAddon/_lib/
 !/src/MagnusAddon/_lib/__init__.py
 /src/MagnusAddon/meta.json
+/src/MagnusAddon/user_files/logs/MagnusAddon.log

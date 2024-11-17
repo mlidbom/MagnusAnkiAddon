@@ -9,7 +9,6 @@ from note.kanjinote import KanjiNote
 from note.note_constants import CardTypes
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
-from sysutils import timeutil
 from sysutils.typed import non_optional
 
 def _monkey_patch(html:str, _card:Any, display_type:str) -> str:
@@ -52,7 +51,7 @@ def _monkey_patch(html:str, _card:Any, display_type:str) -> str:
             parent=mw.reviewer.mw,
         )
 
-        print(f"Set allowed time to: {timeutil.format_seconds_as_ss_ttt(allowed_milliseconds)}")
+        #print(f"Set allowed time to: {timeutil.format_seconds_as_ss_ttt(allowed_milliseconds)}")
 
     if is_handled_card() and not mw.reviewer.auto_advance_enabled:
         mw.reviewer.toggle_auto_advance()

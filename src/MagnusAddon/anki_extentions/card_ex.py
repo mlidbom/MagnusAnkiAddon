@@ -3,6 +3,7 @@ from anki import consts
 from typing import TYPE_CHECKING
 
 from anki_extentions.deck_ex import DeckEx
+from sysutils.timeutil import StopWatch
 from sysutils.typed import non_optional
 
 if TYPE_CHECKING:
@@ -29,9 +30,10 @@ def _last_answer_today_was_fail(card: Card) -> bool:
         return False
 
 def _get_answers_since_last_day_cutoff_for_card(card: Card) -> list[int]:
-    reviews = app.anki_db().all("SELECT ease FROM revlog WHERE cid = ? AND id > ? ORDER BY id DESC", card.id, _latest_day_cutoff_timestamp() * timeutil.MILLISECONDS_PER_SECOND)
-    answers = [typed.int_(review[0]) for review in reviews]
-    return answers
+    with StopWatch.timed("fetch_review_history"):
+        reviews = app.anki_db().all("SELECT ease FROM revlog WHERE cid = ? AND id > ? ORDER BY id DESC", card.id, _latest_day_cutoff_timestamp() * timeutil.MILLISECONDS_PER_SECOND)
+        answers = [typed.int_(review[0]) for review in reviews]
+        return answers
 
 class CardEx:
     def __init__(self, card:Card):
