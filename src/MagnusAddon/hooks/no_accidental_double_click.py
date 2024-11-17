@@ -2,9 +2,9 @@ from typing import Literal
 
 from aqt.reviewer import Reviewer
 from aqt.utils import tooltip
-import time
 
 from ankiutils import app
+from sysutils.timeutil import StopWatch
 from sysutils.typed import non_optional
 
 # noinspection PyProtectedMember
@@ -12,26 +12,25 @@ _real_show_answer = Reviewer._showAnswer
 # noinspection PyProtectedMember
 _real_answer_card = Reviewer._answerCard
 
-_last_click = time.time()
+_stopwatch = StopWatch()
 
-def _show_answer(self:Reviewer) -> None:
+def _show_answer(reviewer:Reviewer) -> None:
     if app.config().prevent_double_clicks.get_value():
-        global _last_click
-        if non_optional(self.card).time_taken() < app.config().minimum_time_viewing_question.get_value() * 1000:
+        global _stopwatch
+        if non_optional(reviewer.card).time_taken() < app.config().minimum_time_viewing_question.get_value() * 1000:
             tooltip("Blocked accidental doubleclick")
             return
-        _last_click = time.time()
-    _real_show_answer(self)
+        _stopwatch = StopWatch()
+    _real_show_answer(reviewer)
 
-def _answer_card(self:Reviewer, ease: Literal[1, 2, 3, 4]) -> None:
+def _answer_card(reviewer:Reviewer, ease: Literal[1, 2, 3, 4]) -> None:
     if app.config().prevent_double_clicks.get_value():
-        global _last_click
-        waitalil = time.time() - _last_click
-        if waitalil < app.config().minimum_time_viewing_question.get_value():
+        global _stopwatch
+        if _stopwatch.elapsed_seconds() < app.config().minimum_time_viewing_answer.get_value():
             tooltip("Blocked accidental doubleclick")
             return
 
-    _real_answer_card(self, ease)
+    _real_answer_card(reviewer, ease)
 
 
 Reviewer._showAnswer = _show_answer  # type: ignore
