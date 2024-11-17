@@ -11,6 +11,8 @@
 # seem to require external tools installation
 # juman++ https://pyknp.readthedocs.io/en/latest/
 
+#Janome, fast, but no mapping to the kanji representations so that one can find the correct words.
+#Sudachi, TODO
 
 #Probably not
 #Java, with bindings..
@@ -18,9 +20,8 @@
 
 
 #Tested and Probably Not
+#Ginza, A metric ton of dependencies that will likely be hell to try and package for multiple platforms
 #unidic-combo 1.4.1 https://pypi.org/project/unidic-combo/
 #A ton of dependencies, start-up takes forever and even after that it is quite slow. As slow as, or slower than, UniDic2UD
 #
 #Mecab: Outputs only text and does not seem to have dependency analysis.
-#Janome, fast, but no dependency analysis and no mapping to the kanji representations so that one can find the correct words.
-#Sudachi, no dependency analysis
