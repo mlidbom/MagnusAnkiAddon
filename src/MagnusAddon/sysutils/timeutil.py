@@ -56,5 +56,5 @@ class StopWatch:
             message = f"Execution time:{watch.elapsed_formatted()} for {message}"
             if elapsed_seconds > warn_if_slower_than:
                 mylog.log.warning(message)
-            else:
-                mylog.log.debug(message)
+            elif elapsed_seconds * 2 > warn_if_slower_than:
+                mylog.log.info(message)

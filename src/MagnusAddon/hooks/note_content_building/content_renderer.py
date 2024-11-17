@@ -20,7 +20,7 @@ class PrerenderingAnswerContentRenderer(Generic[TNote]):
     @staticmethod
     def _schedule_render_method(_render_method:Callable[[TNote], str], section:str, note:TNote) -> Future[str]:
         def run_render_method() -> str:
-            with StopWatch.log_warning_if_slower_than(f"PrerenderingAnswerContentRenderer.rendering {section}", 0.2):
+            with StopWatch.log_warning_if_slower_than(f"PrerenderingAnswerContentRenderer.rendering {section}", 0.5):
                 return _render_method(note)
 
         return app_thread_pool.pool.submit(run_render_method)

@@ -5,6 +5,7 @@ from typing import Any, Callable, Optional, TYPE_CHECKING
 import anki
 
 from anki_extentions.config_manager_ex import ConfigManagerEx
+from sysutils.timeutil import StopWatch
 
 if TYPE_CHECKING:
     from configuration.configuration import JapaneseConfig
@@ -83,7 +84,8 @@ def _profile_opened() -> None:
     _init(delay_seconds=1.0)
 
 def wait_for_initialization() -> None:
-    col()
+    with StopWatch.log_warning_if_slower_than("app.wait_for_initialization", 0.01):
+        col()
 
 def anki_config() -> ConfigManagerEx:
     return ConfigManagerEx(mw.col.conf)
