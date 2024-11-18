@@ -2,9 +2,12 @@ from aqt import gui_hooks
 
 from ankiutils import app
 from hooks.note_content_building.content_renderer import PrerenderingAnswerContentRenderer
+from language_services.jamdict_ex.dict_entry import DictEntry
+from language_services.jamdict_ex.dict_lookup import DictLookup
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
 from sysutils import kana_utils
+from sysutils.ex_str import newline
 
 def _build_vocab_list(word_to_show: list[str], excluded_words:set[str], title:str, include_mnemonics:bool = False, include_extended_sentence_statistics:bool = False) -> str:
     html = f"""
@@ -40,14 +43,24 @@ def _build_vocab_list(word_to_show: list[str], excluded_words:set[str], title:st
                         </li>
                         """
         else:
-            html += f"""
-                        <li class="sentenceVocabEntry depth1 word_priority_very_high">
-                           <div class="sentenceVocabEntryDiv">
-                               <span class="vocabQuestion clipboard">{word}</span>
-                               <span class="vocabAnswer">---</span>
-                           </div>
+            class Hit:
+                def __init__(self, hit:DictEntry):
+                    self.forms: str = ",".join(hit.valid_forms())
+                    self.readings: str = ",".join(f.text for f in hit.entry.kana_forms)
+                    self.answer = hit.generate_answer()
+
+            dictionary_hits = [Hit(hit) for hit in DictLookup.lookup_word_shallow(word).entries]
+
+            html += newline.join(f"""
+                        <li class="sentenceVocabEntry depth1 word_priority_very_low">
+                            <div class="sentenceVocabEntryDiv">
+                                <span class="vocabQuestion clipboard">{word}</span>
+                                <span class="vocabHitForm clipboard">{hit_form}</span>
+                                <span class="vocabHitReadings clipboard">{hit.readings}</span>
+                                <span class="vocabAnswer">{hit.answer}</span>
+                            </div>
                         </li>
-                        """
+""" for hit in dictionary_hits)
 
     html += """</ul>
         </div>
