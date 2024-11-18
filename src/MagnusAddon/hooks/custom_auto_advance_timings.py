@@ -3,7 +3,7 @@ from aqt import gui_hooks, mw
 from aqt.reviewer import Reviewer
 
 from anki_extentions.card_ex import CardEx
-from ankiutils import app
+from ankiutils import app, ui_utils
 from note.difficulty_calculator import DifficultyCalculator
 from note.jpnote import JPNote
 from note.kanjinote import KanjiNote
@@ -64,8 +64,9 @@ def _auto_advance_to_answer_if_enabled(reviewer:Reviewer) -> None:
     )
 
 def _auto_start_auto_advance(html:str, anki_card:Card, _display_type:str) -> str:
-    if is_handled_card(CardEx(anki_card)) and not mw.reviewer.auto_advance_enabled:
-        mw.reviewer.toggle_auto_advance()
+    if ui_utils.is_displaytype_displaying_review_question(_display_type):
+        if is_handled_card(CardEx(anki_card)) and not mw.reviewer.auto_advance_enabled:
+            mw.reviewer.toggle_auto_advance()
 
     return html
 
