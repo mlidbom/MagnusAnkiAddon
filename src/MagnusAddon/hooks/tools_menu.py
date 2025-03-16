@@ -74,7 +74,7 @@ def build_local_menu(menu: QMenu, title:str) -> None:
     add_menu_ui_action(sub_menu, "Reparse words from sentences", local_note_updater.reparse_sentence_words)
     add_menu_ui_action(sub_menu, "Create Sentences from Context Sentences With Audio", local_note_updater.generate_sentences_for_context_sentences_with_audio)
     add_menu_ui_action(sub_menu, "Convert &Immersion Kit sentences", local_note_updater.convert_immersion_kit_sentences)
-    add_menu_ui_action(sub_menu, "Tag kanji metadata", local_note_updater.tag_kanji_metadata)
+    add_menu_ui_action(sub_menu, "Tag note metadata", local_note_updater.tag_note_metadata)
 
     danger_zone = QMenu("Danger Zone. No warnings given before executing!", main_window())
     sub_menu.addMenu(danger_zone)

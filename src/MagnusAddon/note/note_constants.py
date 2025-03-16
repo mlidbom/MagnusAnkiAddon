@@ -169,6 +169,9 @@ class Mine:
         kanji_has_non_primary_on_reading_vocab = f"{kanji_folder}has-non-primary-on-reading-vocab"
         kanji_has_non_primary_on_reading_vocab_with_only_known_kanji = f"{kanji_folder}has-non-primary-on-reading-vocab-with-only-known-kanji"
 
+        vocab_folder = f"{base_folder}vocab::"
+        vocab_has_no_studying_sentences = f"{vocab_folder}has-no-studying-sentences"
+
 
         priority_folder = f"{base_folder}priority::"
 

@@ -52,6 +52,16 @@ def convert_immersion_kit_sentences() -> None:
     immersion_kit_sences = list(app.anki_collection().find_notes(query_builder.immersion_kit_sentences()))
     progress_display_runner.process_with_progress(immersion_kit_sences, convert_note, "Converting immersion kit sentences")
 
+def tag_note_metadata() -> None:
+    tag_kanji_metadata()
+    tag_vocab_metadata()
+
+def tag_vocab_metadata() -> None:
+    def tag_note(vocab:VocabNote):
+        vocab.toggle_tag(Mine.Tags.vocab_has_no_studying_sentences, not any(vocab.get_sentences_studying()))
+
+    progress_display_runner.process_with_progress(app.col().vocab.all(), tag_note, "Tag vocab notes")
+
 def tag_kanji_metadata() -> None:
     primary_reading = re.compile(r'<primary>(.*?)</primary>')
 
