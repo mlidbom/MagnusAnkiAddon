@@ -35,7 +35,7 @@ def setup_web_search_menu(string_menu:QMenu, menu_string:str) -> None:
 
     add_web_lookup(search_web_menu, shortcutfinger.home1("English: Merriam Webster"), u"https://www.merriam-webster.com/dictionary/%s", menu_string)
 
-    add_web_lookup(search_web_menu, shortcutfinger.home2("Sentences: Immersion Kit"), u"https://www.immersionkit.com/dictionary?exact=true&sort=shortness&keyword=%s", menu_string)
+    add_web_lookup(search_web_menu, shortcutfinger.home2("Sentences: Immersion Kit"), u"https://www.immersionkit.com/dictionary?exact=true&sort=sentence_length%%3Aasc&keyword=%s", menu_string)
     add_web_lookup(search_web_menu, shortcutfinger.home3("Sentences: Tatoeba"), u"https://tatoeba.org/en/sentences/search?from=jpn&to=eng&query=%s", menu_string)
 
     kanji_lookup_menu = non_optional(search_web_menu.addMenu(shortcutfinger.home4("Kanji")))
