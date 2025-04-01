@@ -55,3 +55,5 @@ def setup_note_menu(sentence: SentenceNote, note_menu: QMenu, string_menus: list
 
 
     position_vocab_menu(note_menu, "-", shortcutfinger.home2("Highlighted Vocab Separator"))
+
+    add_ui_action(note_menu, shortcutfinger.home5("Clear highlighted vocabulary"), lambda: sentence.clear_extra_vocab())
