@@ -1,4 +1,6 @@
 from aqt.qt import *
+from spacy.lang.am.examples import sentences
+
 from ankiutils import app
 from configuration.configuration_value import *
 from typing import Optional
@@ -67,6 +69,36 @@ class JapaneseOptionsDialog(QDialog):
             failed_card_allowed_time_group.setLayout(failed_card_allowed_time_layout)
             window_layout.addWidget(failed_card_allowed_time_group)
 
+        def setup_vocab_autoadvance_timings() -> None:
+            vocab_autoadvance_timings_group = QGroupBox("Vocab autoadvance timings")
+            # noinspection PyArgumentList
+            vocab_autoadvance_timings_layout = QGridLayout()
+            vocab_autoadvance_timings_layout.setColumnStretch(0, 1)  # Make the label column expandable
+            vocab_autoadvance_timings_layout.setColumnStretch(1, 0)  # Keep the spinner column fixed width
+
+            add_double_spinner_value(vocab_autoadvance_timings_layout, 0, self.config.autoadvance_vocab_starting_seconds)
+            add_double_spinner_value(vocab_autoadvance_timings_layout, 1, self.config.autoadvance_vocab_hiragana_seconds)
+            add_double_spinner_value(vocab_autoadvance_timings_layout, 2, self.config.autoadvance_vocab_katakana_seconds)
+            add_double_spinner_value(vocab_autoadvance_timings_layout, 3, self.config.autoadvance_vocab_kanji_seconds)
+
+            vocab_autoadvance_timings_group.setLayout(vocab_autoadvance_timings_layout)
+            window_layout.addWidget(vocab_autoadvance_timings_group)
+
+        def setup_sentence_autoadvance_timings() -> None:
+            sentence_autoadvance_timings_group = QGroupBox("Sentence autoadvance timings")
+            # noinspection PyArgumentList
+            sentence_autoadvance_timings_layout = QGridLayout()
+            sentence_autoadvance_timings_layout.setColumnStretch(0, 1)  # Make the label column expandable
+            sentence_autoadvance_timings_layout.setColumnStretch(1, 0)  # Keep the spinner column fixed width
+
+            add_double_spinner_value(sentence_autoadvance_timings_layout, 0, self.config.autoadvance_sentence_starting_seconds)
+            add_double_spinner_value(sentence_autoadvance_timings_layout, 1, self.config.autoadvance_sentence_hiragana_seconds)
+            add_double_spinner_value(sentence_autoadvance_timings_layout, 2, self.config.autoadvance_sentence_katakana_seconds)
+            add_double_spinner_value(sentence_autoadvance_timings_layout, 3, self.config.autoadvance_sentence_kanji_seconds)
+
+            sentence_autoadvance_timings_group.setLayout(sentence_autoadvance_timings_layout)
+            window_layout.addWidget(sentence_autoadvance_timings_group)
+
         def setup_timeboxes_section() -> None:
             number_group = QGroupBox("Timeboxes")
             # noinspection PyArgumentList
@@ -96,6 +128,8 @@ class JapaneseOptionsDialog(QDialog):
             number_group.setLayout(no_accidental_clicks_layout)
             window_layout.addWidget(number_group)
 
+        setup_vocab_autoadvance_timings()
+        setup_sentence_autoadvance_timings()
         setup_boost_failed_card_allowed_time_section()
         setup_decrease_failed_card_interval_section()
         setup_timeboxes_section()

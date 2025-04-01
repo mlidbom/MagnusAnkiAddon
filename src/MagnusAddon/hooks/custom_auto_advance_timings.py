@@ -27,9 +27,15 @@ def seconds_to_show_question(card: CardEx) -> float:
 
     def default_time_allowed() -> float:
         if isinstance(note, SentenceNote):
-            return DifficultyCalculator(starting_seconds=3.0, hiragana_seconds=0.7, katakata_seconds=1.0, kanji_seconds=1.5).allowed_seconds(note.get_question())
+            return DifficultyCalculator(starting_seconds=app.config().autoadvance_sentence_starting_seconds.get_value(),
+                                        hiragana_seconds=app.config().autoadvance_sentence_hiragana_seconds.get_value(),
+                                        katakata_seconds=app.config().autoadvance_sentence_katakana_seconds.get_value(),
+                                        kanji_seconds=app.config().autoadvance_sentence_kanji_seconds.get_value()).allowed_seconds(note.get_question())
         elif isinstance(note, VocabNote):
-            return DifficultyCalculator(starting_seconds=3.0, hiragana_seconds=0.5, katakata_seconds=0.7, kanji_seconds=1.0).allowed_seconds(note.get_question())
+            return DifficultyCalculator(starting_seconds=app.config().autoadvance_vocab_starting_seconds.get_value(),
+                                        hiragana_seconds=app.config().autoadvance_vocab_hiragana_seconds.get_value(),
+                                        katakata_seconds=app.config().autoadvance_vocab_katakana_seconds.get_value(),
+                                        kanji_seconds=app.config().autoadvance_vocab_kanji_seconds.get_value()).allowed_seconds(note.get_question())
         elif isinstance(note, KanjiNote):
             return card.get_deck().get_config().get_seconds_to_show_question()
         raise Exception("We should never get here")

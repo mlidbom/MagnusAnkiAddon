@@ -47,6 +47,16 @@ class JapaneseConfig:
             # noinspection PyProtectedMember, PyArgumentList
             mw.col._set_enable_fsrs_short_term_with_steps(toggle)
 
+        self.autoadvance_vocab_starting_seconds = ConfigurationValueFloat("autoadvance_vocab_starting_seconds", "Starting Seconds", 3.0)
+        self.autoadvance_vocab_hiragana_seconds = ConfigurationValueFloat("autoadvance_vocab_hiragana_seconds", "Hiragana Seconds", 0.7)
+        self.autoadvance_vocab_katakana_seconds = ConfigurationValueFloat("autoadvance_vocab_katakana_seconds", "Katakana Seconds", 0.7)
+        self.autoadvance_vocab_kanji_seconds = ConfigurationValueFloat("autoadvance_vocab_kanji_seconds", "Kanji Seconds", 1.5)
+
+        self.autoadvance_sentence_starting_seconds = ConfigurationValueFloat("autoadvance_sentence_starting_seconds", "Starting Seconds", 3.0)
+        self.autoadvance_sentence_hiragana_seconds = ConfigurationValueFloat("autoadvance_sentence_hiragana_seconds", "Hiragana Seconds", 0.7)
+        self.autoadvance_sentence_katakana_seconds = ConfigurationValueFloat("autoadvance_sentence_katakana_seconds", "Katakana Seconds", 0.7)
+        self.autoadvance_sentence_kanji_seconds = ConfigurationValueFloat("autoadvance_sentence_kanji_seconds", "Kanji Seconds", 1.5)
+
         self.timebox_vocab_read = ConfigurationValueInt("time_box_length_vocab_read", "Vocab Read", 15)
         self.timebox_vocab_listen = ConfigurationValueInt("time_box_length_vocab_listen", "Vocab Listen", 15)
         self.timebox_sentence_read = ConfigurationValueInt("time_box_length_sentence_read", "Sentence Read", 15)
