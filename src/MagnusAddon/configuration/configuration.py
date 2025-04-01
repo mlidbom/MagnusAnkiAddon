@@ -1,5 +1,4 @@
 from aqt.qt import *
-from spacy.lang.am.examples import sentences
 
 from ankiutils import app
 from configuration.configuration_value import *
