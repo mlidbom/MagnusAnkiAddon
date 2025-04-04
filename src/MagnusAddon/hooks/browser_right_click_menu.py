@@ -8,7 +8,9 @@ from typing import Sequence
 from anki.cards import Card, CardId
 
 from note.jpnote import JPNote
+from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
+from sysutils import progress_display_runner
 from sysutils.typed import non_optional
 
 def spread_due_dates(cards: Sequence[CardId], start_day: int, days: int) -> None:
@@ -48,6 +50,16 @@ def setup_browser_context_menu(browser: Browser, menu: QMenu) -> None:
                 vocab.generate_sentences_from_context_sentences(require_audio=False)
 
         magnus_menu.addAction("Generate sentences from context sentences for vocab", generate_sentences)
+
+    selected_sentences:list[SentenceNote] = [note for note in selected_notes if isinstance(note, SentenceNote)]
+    if selected_sentences:
+        def reparse_words(sentence:SentenceNote) -> None:
+            sentence.update_parsed_words(force=True)
+
+        def reparse_sentences() -> None:
+            progress_display_runner.process_with_progress(selected_sentences, reparse_words, "Reparsing sentence words.")
+
+        magnus_menu.addAction("Reparse sentence words", reparse_sentences)
 
 
 def init() -> None:
