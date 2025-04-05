@@ -15,13 +15,7 @@ def _build_vocab_list(word_to_show: list[str], excluded_words:set[str], title:st
         <ul class="sentenceVocabList userExtra depth1">
 """
     for word in (w for w in word_to_show if w not in excluded_words):
-        vocabs: list[VocabNote] = app.col().vocab.with_form(word)
-
-        vocabs = [voc for voc in vocabs if not voc.get_question() in excluded_words]
-
-        exact_match = [voc for voc in vocabs if voc.get_question_without_noise_characters() == word]
-        if exact_match:
-            vocabs = exact_match
+        vocabs = lookup_vocabs(excluded_words, word)
 
         if vocabs:
             for vocab in vocabs:
@@ -50,9 +44,6 @@ def _build_vocab_list(word_to_show: list[str], excluded_words:set[str], title:st
 
             dictionary_hits = [Hit(forms=",".join(hit.valid_forms()), readings=",".join(f.text for f in hit.entry.kana_forms), answer=hit.generate_answer()) for hit in DictLookup.lookup_word_shallow(word).entries]
 
-            if not dictionary_hits:
-                dictionary_hits = [Hit(word, readings="", answer="----")]
-
             html += newline.join(f"""
                         <li class="sentenceVocabEntry depth1 word_priority_very_low">
                             <div class="sentenceVocabEntryDiv">
@@ -69,10 +60,48 @@ def _build_vocab_list(word_to_show: list[str], excluded_words:set[str], title:st
     """
     return html
 
+def lookup_vocabs(excluded_words: set[str], word:str) -> list[VocabNote]:
+    vocabs: list[VocabNote] = app.col().vocab.with_form(word)
+    vocabs = [voc for voc in vocabs if not voc.get_question() in excluded_words]
+    exact_match = [voc for voc in vocabs if voc.get_question_without_noise_characters() == word]
+    if exact_match:
+        vocabs = exact_match
+    return vocabs
+
 def render_parsed_words(note: SentenceNote) -> str:
     words = note.get_valid_parsed_non_child_words_strings()
     excluded = note.get_user_excluded_vocab()
     return _build_vocab_list(words, excluded, "parsed words")
+
+def render_words_missing_dictionary_entries(note: SentenceNote) -> str:
+    words = note.get_valid_parsed_non_child_words_strings()
+    excluded_words = note.get_user_excluded_vocab()
+
+    def has_vocab(word:str) -> bool:
+        vocabs = lookup_vocabs(excluded_words, word)
+        return len(vocabs) > 0 or len(DictLookup.lookup_word_shallow(word).entries) > 0
+
+
+    words_without_dictionary_entries = [word for word in words if not has_vocab(word)]
+
+    if not words_without_dictionary_entries:
+        return ""
+
+    return f"""
+    <div class="breakdown page_section">
+        <div class="page_section_title">words missing dictionary entries</div>
+        <ul class="sentenceVocabList userExtra depth1">
+{ newline.join(f'''
+                        <li class="sentenceVocabEntry depth1 word_priority_very_low">
+                            <div class="sentenceVocabEntryDiv">
+                                <span class="vocabQuestion clipboard">{word}</span>
+                            </div>
+                        </li>
+''' for word in words_without_dictionary_entries) }
+
+        </ul>
+    </div>
+    """
 
 def render_excluded_words(note: SentenceNote) -> str:
     excluded_words = {x.word for x in note.get_user_word_exclusions()}
@@ -86,5 +115,6 @@ def init() -> None:
     gui_hooks.card_will_show.append(PrerenderingAnswerContentRenderer(SentenceNote, {
         "##PARSED_WORDS##": render_parsed_words,
         "##EXCLUDED_WORDS##": render_excluded_words,
-        "##USER_EXTRA_VOCAB##": render_user_extra_list
+        "##USER_EXTRA_VOCAB##": render_user_extra_list,
+        "##WORDS_MISSING_DICTIONARY_ENTRIES##": render_words_missing_dictionary_entries,
     }).render)
