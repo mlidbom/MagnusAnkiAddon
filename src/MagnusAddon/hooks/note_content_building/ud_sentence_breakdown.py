@@ -8,7 +8,7 @@ from note.vocabnote import VocabNote
 from sysutils import kana_utils
 from sysutils.ex_str import newline
 
-def _build_vocab_list(word_to_show: list[str], excluded_words:set[str], title:str, include_mnemonics:bool = False, include_extended_sentence_statistics:bool = False) -> str:
+def _build_vocab_list(word_to_show: list[str], excluded_words:set[str], title:str, include_mnemonics:bool = False, show_words_missing_dictionary_entries:bool=False, include_extended_sentence_statistics:bool = False) -> str:
     html = f"""
     <div class="breakdown page_section">
         <div class="page_section_title">{title}</div>
@@ -43,6 +43,9 @@ def _build_vocab_list(word_to_show: list[str], excluded_words:set[str], title:st
                     self.answer = answer
 
             dictionary_hits = [Hit(forms=",".join(hit.valid_forms()), readings=",".join(f.text for f in hit.entry.kana_forms), answer=hit.generate_answer()) for hit in DictLookup.lookup_word_shallow(word).entries]
+
+            if not dictionary_hits and show_words_missing_dictionary_entries:
+                dictionary_hits = [Hit(word, "", "---")]
 
             html += newline.join(f"""
                         <li class="sentenceVocabEntry depth1 word_priority_very_low">
@@ -84,32 +87,15 @@ def render_words_missing_dictionary_entries(note: SentenceNote) -> str:
 
     words_without_dictionary_entries = [word for word in words if not has_vocab(word)]
 
-    if not words_without_dictionary_entries:
-        return ""
-
-    return f"""
-    <div class="breakdown page_section">
-        <div class="page_section_title">words missing dictionary entries</div>
-        <ul class="sentenceVocabList userExtra depth1">
-{ newline.join(f'''
-                        <li class="sentenceVocabEntry depth1 word_priority_very_low">
-                            <div class="sentenceVocabEntryDiv">
-                                <span class="vocabQuestion clipboard">{word}</span>
-                            </div>
-                        </li>
-''' for word in words_without_dictionary_entries) }
-
-        </ul>
-    </div>
-    """
+    return _build_vocab_list(words_without_dictionary_entries, set(), "matched words without dictionary entries", show_words_missing_dictionary_entries=True) if words_without_dictionary_entries else ""
 
 def render_excluded_words(note: SentenceNote) -> str:
     excluded_words = {x.word for x in note.get_user_word_exclusions()}
     excluded_vocab = list(excluded_words)
-    return _build_vocab_list(excluded_vocab, set(), "incorrectly matched words") if excluded_vocab else ""
+    return _build_vocab_list(excluded_vocab, set(), "incorrectly matched words", show_words_missing_dictionary_entries=True) if excluded_vocab else ""
 
 def render_user_extra_list(note: SentenceNote) -> str:
-    return _build_vocab_list(note.get_user_highlighted_vocab(), note.get_user_excluded_vocab(), "highlighted words", include_mnemonics=True, include_extended_sentence_statistics=True) if note.get_user_highlighted_vocab() else ""
+    return _build_vocab_list(note.get_user_highlighted_vocab(), note.get_user_excluded_vocab(), "highlighted words", include_mnemonics=True, show_words_missing_dictionary_entries=True, include_extended_sentence_statistics=True) if note.get_user_highlighted_vocab() else ""
 
 def init() -> None:
     gui_hooks.card_will_show.append(PrerenderingAnswerContentRenderer(SentenceNote, {
