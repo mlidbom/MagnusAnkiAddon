@@ -2,7 +2,6 @@ from aqt import gui_hooks
 
 from ankiutils import app
 from hooks.note_content_building.content_renderer import PrerenderingAnswerContentRenderer
-from language_services.jamdict_ex.dict_entry import DictEntry
 from language_services.jamdict_ex.dict_lookup import DictLookup
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
@@ -44,12 +43,15 @@ def _build_vocab_list(word_to_show: list[str], excluded_words:set[str], title:st
                         """
         else:
             class Hit:
-                def __init__(self, hit:DictEntry):
-                    self.forms: str = ",".join(hit.valid_forms())
-                    self.readings: str = ",".join(f.text for f in hit.entry.kana_forms)
-                    self.answer = hit.generate_answer()
+                def __init__(self, forms:str, readings:str, answer:str):
+                    self.forms: str = forms
+                    self.readings: str = readings
+                    self.answer = answer
 
-            dictionary_hits = [Hit(hit) for hit in DictLookup.lookup_word_shallow(word).entries]
+            dictionary_hits = [Hit(forms=",".join(hit.valid_forms()), readings=",".join(f.text for f in hit.entry.kana_forms), answer=hit.generate_answer()) for hit in DictLookup.lookup_word_shallow(word).entries]
+
+            if not dictionary_hits:
+                dictionary_hits = [Hit(word, readings="", answer="----")]
 
             html += newline.join(f"""
                         <li class="sentenceVocabEntry depth1 word_priority_very_low">
