@@ -101,7 +101,11 @@ def insert_custom_words(custom_words:list[str]) -> None:
     ("私は毎日ジョギングをすることを習慣にしています。",
      ["してい", "ている", "にする"],
      [WordExclusion("にして", 9), WordExclusion("にし", 9), WordExclusion("して", 10), WordExclusion("し", 10), WordExclusion("してい", 10)],
-     ['私', 'は', '毎日', 'ジョギング', 'を', 'する', 'こと', 'を', '習慣', 'にする', 'ている', 'ます'])
+     ['私', 'は', '毎日', 'ジョギング', 'を', 'する', 'こと', 'を', '習慣', 'にする', 'ている', 'ます']),
+    ("ばら撒かれるなんて死んでもいやだ",
+     [],
+     [],
+     ['ばら撒く', 'れる', 'なんて', '死んでも', 'いや', 'だ'])
 ])
 def test_hierarchical_extraction(sentence: str, custom_words:list[str], excluded:list[WordExclusion], expected_output: list[str]) -> None:
     insert_custom_words(custom_words)
