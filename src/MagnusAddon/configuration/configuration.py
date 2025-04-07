@@ -34,7 +34,7 @@ class JapaneseOptionsDialog(QDialog):
 
             # Create a QDoubleSpinBox for floating-point input
             double_input = QDoubleSpinBox()
-            double_input.setRange(0.0, 5.0)  # Set the range for the floating-point values
+            double_input.setRange(0.0, 100.0)  # Set the range for the floating-point values
             double_input.setDecimals(2)  # Set precision to 2 decimal places
             double_input.setValue(config_value.get_value())  # Set initial value
             double_input.setSingleStep(0.05)  # Set step size for increment/decrement
