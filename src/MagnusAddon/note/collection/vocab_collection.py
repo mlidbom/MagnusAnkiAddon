@@ -21,6 +21,7 @@ class _VocabSnapshot(CachedNote):
         self.main_form_kanji = set(note.extract_main_form_kanji())
         self.all_kanji = note.extract_all_kanji()
         self.readings = set(note.get_readings())
+        self.derived_from = note.get_related_derived_from()
 
 class _VocabCache(NoteCache[VocabNote, _VocabSnapshot]):
     def __init__(self, all_vocab: list[VocabNote], cache_runner: CacheRunner):
@@ -28,11 +29,13 @@ class _VocabCache(NoteCache[VocabNote, _VocabSnapshot]):
         self._by_kanji_in_main_form: dict[str, set[VocabNote]] = defaultdict(set)
         self._by_kanji_in_any_form: dict[str, set[VocabNote]] = defaultdict(set)
         self._by_compound_part: dict[str, set[VocabNote]] = defaultdict(set)
+        self._by_derived_from: dict[str, set[VocabNote]] = defaultdict(set)
         self._by_reading: dict[str, set[VocabNote]] = defaultdict(set)
         super().__init__(all_vocab, VocabNote, cache_runner)
 
     def with_form(self, form: str) -> list[VocabNote]: return list(self._by_form[form])
     def with_compound_part(self, form: str) -> list[VocabNote]: return list(self._by_compound_part[form])
+    def derived_from(self, form: str) -> list[VocabNote]: return list(self._by_derived_from[form])
     def with_kanji_in_main_form(self, kanji: str) -> list[VocabNote]: return list(self._by_kanji_in_main_form[kanji])
     def with_kanji_in_any_form(self, kanji: str) -> list[VocabNote]: return list(self._by_kanji_in_any_form[kanji])
     def with_reading(self, reading: str) -> list[VocabNote]: return list(self._by_reading[reading])
@@ -42,6 +45,7 @@ class _VocabCache(NoteCache[VocabNote, _VocabSnapshot]):
     def _inheritor_remove_from_cache(self, note: VocabNote, cached:_VocabSnapshot) -> None:
         for form in cached.forms: self._by_form[form].remove(note)
         for part in cached.compound_parts: self._by_compound_part[part].remove(note)
+        self._by_derived_from[cached.derived_from].remove(note)
         for kanji in cached.main_form_kanji: self._by_kanji_in_main_form[kanji].remove(note)
         for kanji in cached.all_kanji: self._by_kanji_in_any_form[kanji].remove(note)
         for kanji in cached.readings: self._by_reading[kanji].remove(note)
@@ -49,6 +53,7 @@ class _VocabCache(NoteCache[VocabNote, _VocabSnapshot]):
     def _inheritor_add_to_cache(self, note: VocabNote) -> None:
         for form in note.get_forms(): self._by_form[form].add(note)
         for compound_part in note.get_user_compounds(): self._by_compound_part[compound_part].add(note)
+        self._by_derived_from[note.get_related_derived_from()].add(note)
         for kanji in note.extract_main_form_kanji(): self._by_kanji_in_main_form[kanji].add(note)
         for kanji in note.extract_all_kanji(): self._by_kanji_in_any_form[kanji].add(note)
         for reading in note.get_readings(): self._by_reading[reading].add(note)
@@ -68,6 +73,7 @@ class VocabCollection:
     def with_id(self, note_id:NoteId) -> VocabNote: return self._cache.with_id(note_id)
     def with_form(self, form: str) -> list[VocabNote]: return self._cache.with_form(form)
     def with_compound_part(self, compound_part: str) -> list[VocabNote]: return self._cache.with_compound_part(compound_part)
+    def derived_from(self, derived_from: str) -> list[VocabNote]: return self._cache.derived_from(derived_from)
     def with_forms(self, forms: list[str]) -> list[VocabNote]: return ex_sequence.flatten([self.with_form(form) for form in forms])
     def with_kanji_in_main_form(self, kanji: KanjiNote) -> list[VocabNote]: return self._cache.with_kanji_in_main_form(kanji.get_question())
     def with_kanji_in_any_form(self, kanji: KanjiNote) -> list[VocabNote]: return self._cache.with_kanji_in_any_form(kanji.get_question())
