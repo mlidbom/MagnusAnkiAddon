@@ -34,7 +34,20 @@ class _VocabCache(NoteCache[VocabNote, _VocabSnapshot]):
         super().__init__(all_vocab, VocabNote, cache_runner)
 
     def with_form(self, form: str) -> list[VocabNote]: return list(self._by_form[form])
-    def with_compound_part(self, form: str) -> list[VocabNote]: return list(self._by_compound_part[form])
+
+    def with_compound_part(self, form: str) -> list[VocabNote]:
+        compound_parts: set[VocabNote] = set()
+
+        def fetch_parts(part_form: str) -> None:
+            for vocab in self._by_compound_part[part_form]:
+                if vocab not in compound_parts:
+                    compound_parts.add(vocab)
+                    fetch_parts(vocab.get_question())
+
+        fetch_parts(form)
+
+        return sorted(compound_parts, key=lambda part: part.get_question())
+
     def derived_from(self, form: str) -> list[VocabNote]: return list(self._by_derived_from[form])
     def with_kanji_in_main_form(self, kanji: str) -> list[VocabNote]: return list(self._by_kanji_in_main_form[kanji])
     def with_kanji_in_any_form(self, kanji: str) -> list[VocabNote]: return list(self._by_kanji_in_any_form[kanji])
