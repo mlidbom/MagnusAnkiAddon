@@ -60,7 +60,7 @@ class HierarchicalWord:
         child.parent = self
 
     def is_parent_of(self, other: HierarchicalWord) -> bool:
-        return self.may_have_children and other != self and self.start_index <= other.start_index <= self.end_index and other.end_index <= self.end_index
+        return self.may_have_children and other != self and self.start_index <= other.start_index <= self.end_index and (other.end_index < self.end_index or (other.end_index == self.end_index and other.word.word in self.word.word))
 
     def __repr__(self) -> str:
         return f"HierarchicalWord('{self.start_index}:{self.end_index}, {self.word.word}: parent:{self.parent.word.word if self.parent else ''}')"
@@ -69,7 +69,8 @@ class HierarchicalWord:
         return WordExclusion(self.word.word, self.start_index)
 
 def extract_words_hierarchical(sentence: str, excluded_words:list[WordExclusion]) -> list[HierarchicalWord]:
-    only_non_children = [w for w in extract_words_hierarchical_all(sentence, excluded_words) if not w.parent]
+    hierarchical_all = extract_words_hierarchical_all(sentence, excluded_words)
+    only_non_children = [w for w in hierarchical_all if not w.parent]
     return only_non_children
 
 def extract_words_hierarchical_all(sentence: str, excluded_words:list[WordExclusion]) -> list[HierarchicalWord]:

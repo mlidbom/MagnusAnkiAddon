@@ -105,7 +105,11 @@ def insert_custom_words(custom_words:list[str]) -> None:
     ("ばら撒かれるなんて死んでもいやだ",
      [],
      [],
-     ['ばら撒く', 'れる', 'なんて', '死んでも', 'いや', 'だ'])
+     ['ばら撒く', 'れる', 'なんて', '死んでも', 'いや', 'だ']),
+    ("ああもう　だったら普通に金貸せって言えよ",
+     [],
+     [],
+     ['ああ', 'もう', 'だったら', '普通に', '金貸', 'せる', 'て', '言える', '言えよ'])
 ])
 def test_hierarchical_extraction(sentence: str, custom_words:list[str], excluded:list[WordExclusion], expected_output: list[str]) -> None:
     insert_custom_words(custom_words)
