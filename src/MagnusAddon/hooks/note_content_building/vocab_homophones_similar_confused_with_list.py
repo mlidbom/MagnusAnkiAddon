@@ -77,6 +77,10 @@ def generate_compounds(_vocab_note: VocabNote) -> str:
     compound_parts = app.col().vocab.with_forms(_vocab_note.get_user_compounds())
     return render_vocab_list(compound_parts, "compound parts", css_class="compound_parts") if compound_parts else ""
 
+def generate_in_compounds_list(_vocab_note: VocabNote) -> str:
+    compound_parts = app.col().vocab.with_compound_part(_vocab_note.get_question())
+    return render_vocab_list(compound_parts, "part of compound", css_class="in_compound_words") if compound_parts else ""
+
 def generate_forms_list(vocab_note: VocabNote) -> str:
     forms = ex_sequence.flatten([app.col().vocab.with_question(reading) for reading in vocab_note.get_forms()])
     forms = [form for form in forms if form.get_id() != vocab_note.get_id()]
@@ -91,6 +95,7 @@ def init() -> None:
     gui_hooks.card_will_show.append(PrerenderingAnswerContentRenderer(VocabNote, {
         "##FORMS_LIST##": generate_forms_list,
         "##VOCAB_COMPOUNDS##": generate_compounds,
+        "##IN_COMPOUNDS##": generate_in_compounds_list,
         "##ERGATIVE_TWIN##": generate_ergative_twin_html,
         "##DERIVED_FROM##": generate_derived_from,
         "##HOMOPHONES_LIST##": generate_homophones_html_list,
