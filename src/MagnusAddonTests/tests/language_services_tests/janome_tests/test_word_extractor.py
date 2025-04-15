@@ -116,3 +116,23 @@ def test_hierarchical_extraction(sentence: str, custom_words:list[str], excluded
     hierarchical = word_extractor.extract_words_hierarchical(sentence, excluded)
     root_words = [w.word.word for w in hierarchical]
     assert root_words == expected_output
+
+
+
+def insert_custom_words_with_excluded_forms(custom_words:list[list[str]]) -> None:
+    from ankiutils import app
+    for custom_word in custom_words:
+        note = VocabNote.create(custom_word[0], "", [""])
+        note.set_forms(set(custom_word))
+    app.col().flush_cache_updates()
+
+@pytest.mark.parametrize('sentence, custom_words, expected_output', [
+    ("後で下に下りてらっしゃいね",
+     [["らっしゃい","[[らっしゃる]]"]],
+     ['後で', '下', '下に', 'に', '下りる', '下り', 'て', 'らっしゃい', 'ね']
+     )
+])
+def test_custom_vocab_words_with_excluded_forms(sentence: str, custom_words:list[list[str]], expected_output: list[str]) -> None:
+    insert_custom_words_with_excluded_forms(custom_words)
+    result = [w.word for w in word_extractor.extract_words(sentence)]
+    assert result == expected_output

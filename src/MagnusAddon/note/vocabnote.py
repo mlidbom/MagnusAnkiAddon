@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import re
+
 from ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules # noqa
 from wanikani_api import models
 from anki.notes import Note
@@ -65,7 +67,12 @@ class VocabNote(KanaVocabNote):
 
     def set_kanji(self, value: str) -> None: self.set_field(NoteFields.Vocab.Kanji, value)
 
-    def get_forms(self) -> set[str]: return set(ex_str.extract_comma_separated_values(self._get_forms()))
+    _forms_exclusions = re.compile(r'\[\[.*]]')
+    def _is_excluded_form(self, form:str) -> bool:
+        return bool(self._forms_exclusions.search(form))
+
+    def get_forms(self) -> set[str]: return set(form for form in ex_str.extract_comma_separated_values(self._get_forms()) if not self._is_excluded_form(form))
+    def get_excluded_forms(self) -> set[str]: return set(form.replace("[[","").replace("]]","") for form in ex_str.extract_comma_separated_values(self._get_forms()) if self._is_excluded_form(form))
     def set_forms(self, forms: set[str]) -> None: self._set_forms(", ".join([form.strip() for form in forms]))
     def _get_forms(self) -> str: return self.get_field(NoteFields.Vocab.Forms)
     def _set_forms(self, value: str) -> None: self.set_field(NoteFields.Vocab.Forms, value)
