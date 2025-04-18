@@ -29,7 +29,10 @@ class WordExclusion:
     def from_string(cls, exclusion:str) -> WordExclusion:
         if cls._separator in exclusion:
             parts = exclusion.split(cls._separator)
-            return WordExclusion(parts[1].strip(), int(parts[0].strip()))
+            try:
+                return WordExclusion(parts[1].strip(), int(parts[0].strip()))
+            except ValueError:
+                pass
         return WordExclusion(exclusion.strip())
 
     def as_string(self) -> str:
