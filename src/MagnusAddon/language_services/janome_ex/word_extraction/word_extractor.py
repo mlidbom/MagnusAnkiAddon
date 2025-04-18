@@ -118,7 +118,8 @@ def extract_words(sentence: str, allow_duplicates:bool = False) -> list[Extracte
 
             if base_compound != surface_compound and not is_excluded_form(surface_compound, base_compound):
                 add_word_if_it_is_in_dictionary(base_compound, lookahead_index)
-            add_word_if_it_is_in_dictionary(surface_compound, lookahead_index)
+            if not is_excluded_form(token.base_form, surface_compound):
+                add_word_if_it_is_in_dictionary(surface_compound, lookahead_index)
 
     tokens = _tokenizer.tokenize(sentence).tokens
     found_words = set[str]()

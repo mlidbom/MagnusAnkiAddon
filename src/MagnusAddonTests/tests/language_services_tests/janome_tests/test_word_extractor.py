@@ -133,7 +133,10 @@ def insert_custom_words_with_excluded_forms(custom_words:list[list[str]]) -> Non
      )
     ,("無理して思い出す",
      [["する","[[し]]"]],
-      ['無理', 'する', 'して', 'て', '思い出す'])
+      ['無理', 'する', 'して', 'て', '思い出す']),
+    ("リセットしても",
+     [["する","[[し]]", "[[して]]"]],
+     ['リセット', 'する', 'て', 'ても', 'も'])
 ])
 def test_custom_vocab_words_with_excluded_forms(sentence: str, custom_words:list[list[str]], expected_output: list[str]) -> None:
     insert_custom_words_with_excluded_forms(custom_words)
