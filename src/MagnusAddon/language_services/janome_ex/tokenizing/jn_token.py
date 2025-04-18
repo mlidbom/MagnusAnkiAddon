@@ -88,7 +88,7 @@ class JNToken:
         return False
 
     _verb_inflection_token_surfaces = set(["て", "てる", "た", "たら"])
-    _verb_inflection_token_bases = set(["れる", "られる"])
+    _verb_inflection_token_bases = set(["れる", "られる", "ちゃう"])
     def is_verb_inflection_word(self) -> bool:
         return (self.surface in self._verb_inflection_token_surfaces
                 or self.base_form in self._verb_inflection_token_bases)
