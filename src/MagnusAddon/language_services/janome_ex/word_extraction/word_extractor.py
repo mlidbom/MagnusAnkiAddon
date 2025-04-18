@@ -5,6 +5,8 @@ from typing import Any, Optional
 from language_services.jamdict_ex.dict_lookup import DictLookup
 from language_services.janome_ex.word_extraction.extracted_word import ExtractedWord
 from language_services.janome_ex.tokenizing.jn_tokenizer import JNTokenizer
+from note.note_constants import Mine
+from note.vocabnote import VocabNote
 
 _tokenizer = JNTokenizer()
 
@@ -102,8 +104,8 @@ def extract_words(sentence: str, allow_duplicates:bool = False) -> list[Extracte
         if _is_word(word):
             add_word(word, lookahead_index)
 
-    def is_excluded_form(surface_form:str, candidate_form:str) -> bool:
-        return any(voc for voc in (app.col().vocab.with_form(surface_form)) if candidate_form in voc.get_excluded_forms())
+    def is_excluded_form(vocab_form:str, candidate_form:str) -> bool:
+        return any(voc for voc in (app.col().vocab.with_form(vocab_form)) if candidate_form in voc.get_excluded_forms())
 
     # noinspection DuplicatedCode
     def add_word(word: str, lookahead_index: int) -> None:
@@ -111,14 +113,34 @@ def extract_words(sentence: str, allow_duplicates:bool = False) -> list[Extracte
             found_words.add(word)
             found_words_list.append(ExtractedWord(word, token_index, lookahead_index))
 
-    def is_inflected_verb(token_index: int) -> bool:
-        token = tokens[token_index]
+    def is_next_token_verb_modifier(index:int) -> bool:
+        def lookup_vocabs_prefer_exact_match(form: str) -> list[VocabNote]:
+            matches: list[VocabNote] = app.col().vocab.with_form(form)
+            exact_match = [voc for voc in matches if voc.get_question_without_noise_characters() == form]
+            return exact_match if exact_match else matches
+
+        if index >= len(tokens) - 1:
+            return False
+
+        next_token = tokens[index + 1]
+        vocab:list[VocabNote] = lookup_vocabs_prefer_exact_match(next_token.base_form)
+
+        if any([voc for voc in vocab if voc.has_tag(Mine.Tags.verb_modifier)]):
+            return True
+
+        return False
+
+    def is_inflected_verb(index: int) -> bool:
+        token = tokens[index]
         if token.is_inflected_verb():
             return True
 
-        if token.is_verb():
-            if token_index < len(tokens) -1:
-                return tokens[token_index + 1].is_verb_inflection_word()
+        if token.is_verb_for_inflection_purposes():
+            if index < len(tokens) -1:
+                # if tokens[index + 1].is_verb_inflection_word():
+                #     return True
+                if is_next_token_verb_modifier(index):
+                    return True
 
         return False
 
