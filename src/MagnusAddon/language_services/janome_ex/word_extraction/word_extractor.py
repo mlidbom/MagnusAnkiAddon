@@ -115,7 +115,7 @@ def extract_words(sentence: str, allow_duplicates:bool = False) -> list[Extracte
 
         if token.is_verb():
             if token_index < len(tokens) -1:
-                return tokens[token_index + 1].is_te_form()
+                return tokens[token_index + 1].is_verb_inflection_word()
 
         return False
 

@@ -87,13 +87,11 @@ class JNToken:
 
         return False
 
-    def is_te_form(self) -> bool:
-        if self.surface == "て":
-            return True
-        if self.surface == "てる":
-            return True
-
-        return False
+    _verb_inflection_token_surfaces = set(["て", "てる", "た", "たら"])
+    _verb_inflection_token_bases = set(["れる", "られる"])
+    def is_verb_inflection_word(self) -> bool:
+        return (self.surface in self._verb_inflection_token_surfaces
+                or self.base_form in self._verb_inflection_token_bases)
 
 _end_of_phrase_particles = {
     POS.Particle.CaseMarking.general,
