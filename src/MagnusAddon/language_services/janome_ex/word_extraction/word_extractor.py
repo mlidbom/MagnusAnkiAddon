@@ -99,8 +99,8 @@ def extract_words(sentence: str, allow_duplicates:bool = False) -> list[Extracte
         if _is_word(word):
             add_word(word, lookahead_index)
 
-    def is_excluded_base_form(surface_form:str, base_form:str) -> bool:
-        return any(voc for voc in (app.col().vocab.with_form(surface_form)) if base_form in voc.get_excluded_forms())
+    def is_excluded_form(surface_form:str, candidate_form:str) -> bool:
+        return any(voc for voc in (app.col().vocab.with_form(surface_form)) if candidate_form in voc.get_excluded_forms())
 
     # noinspection DuplicatedCode
     def add_word(word: str, lookahead_index: int) -> None:
@@ -116,7 +116,7 @@ def extract_words(sentence: str, allow_duplicates:bool = False) -> list[Extracte
             base_compound = surface_compound + look_ahead_token.base_form
             surface_compound += look_ahead_token.surface
 
-            if base_compound != surface_compound and not is_excluded_base_form(surface_compound, base_compound):
+            if base_compound != surface_compound and not is_excluded_form(surface_compound, base_compound):
                 add_word_if_it_is_in_dictionary(base_compound, lookahead_index)
             add_word_if_it_is_in_dictionary(surface_compound, lookahead_index)
 
@@ -125,10 +125,10 @@ def extract_words(sentence: str, allow_duplicates:bool = False) -> list[Extracte
     found_words_list:list[ExtractedWord] = []
 
     for token_index, token in enumerate(tokens):
-        if not is_excluded_base_form(token.surface, token.base_form):
+        if not is_excluded_form(token.surface, token.base_form):
             add_word(token.base_form, 0)
 
-        if token.surface != token.base_form and not (token.parts_of_speech.is_verb() and token.inflected_form == "連用タ接続"): #if the surface is the stem of an inflected verb, don't use it, it's not a word in its own right in this sentence.
+        if token.surface != token.base_form and not token.is_inflected_verb() and not is_excluded_form(token.base_form, token.surface): #if the surface is the stem of an inflected verb, don't use it, it's not a word in its own right in this sentence.
             add_word(token.surface, 0)
         check_for_compound_words()
 

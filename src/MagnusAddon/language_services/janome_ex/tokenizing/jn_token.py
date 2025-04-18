@@ -72,6 +72,9 @@ class JNToken:
             return True
         return False
 
+    def is_inflected_verb(self) -> bool:
+        return self.parts_of_speech.is_verb() and self.inflected_form == "連用タ接続"
+
     def is_noun_auxiliary(self) -> bool:
         return self.parts_of_speech in _noun_auxiliary_parts_of_speech
 
