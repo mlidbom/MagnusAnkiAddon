@@ -108,6 +108,17 @@ def extract_words(sentence: str, allow_duplicates:bool = False) -> list[Extracte
             found_words.add(word)
             found_words_list.append(ExtractedWord(word, token_index, lookahead_index))
 
+    def is_inflected_verb(token_index: int) -> bool:
+        token = tokens[token_index]
+        if token.is_inflected_verb():
+            return True
+
+        if token.is_verb():
+            if token_index < len(tokens) -1:
+                return tokens[token_index + 1].is_te_form()
+
+        return False
+
     # noinspection DuplicatedCode
     def check_for_compound_words() -> None:
         surface_compound = token.surface
@@ -129,7 +140,9 @@ def extract_words(sentence: str, allow_duplicates:bool = False) -> list[Extracte
         if not is_excluded_form(token.surface, token.base_form):
             add_word(token.base_form, 0)
 
-        if token.surface != token.base_form and not token.is_inflected_verb() and not is_excluded_form(token.base_form, token.surface): #if the surface is the stem of an inflected verb, don't use it, it's not a word in its own right in this sentence.
+        if (token.surface != token.base_form
+                and not is_inflected_verb(token_index)
+                and not is_excluded_form(token.base_form, token.surface)): #if the surface is the stem of an inflected verb, don't use it, it's not a word in its own right in this sentence.
             add_word(token.surface, 0)
         check_for_compound_words()
 

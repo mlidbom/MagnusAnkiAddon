@@ -44,7 +44,7 @@ def setup_object() -> Generator[None, None, None]:
     ("それなのに 周りは化け物が出ることで有名だと聞き",
      ['それなのに', '周り', 'は', '化け物', 'が', '出る', 'こと', 'で', '有名', 'だ', 'と', '聞く', '聞き']),
     ("清めの一波", ['清める', '清め', 'の', '一波']),
-    ("さっさと傷を清めてこい", ['さっさと', '傷', 'を', '清める', '清め', 'て', 'くる', 'こい'])
+    ("さっさと傷を清めてこい", ['さっさと', '傷', 'を', '清める', 'て', 'くる', 'こい'])
 ])
 def test_identify_words(sentence: str, expected_output: list[str]) -> None:
     result = [w.word for w in word_extractor.extract_words(sentence)]
@@ -93,7 +93,7 @@ def insert_custom_words(custom_words:list[str]) -> None:
      ['厳密に言えば', '俺', '一人', 'が', '友達', 'だけど']),
     ("幼すぎて よく覚えていないけど", [],
      [],
-     ['幼い', '幼', 'すぎる', 'すぎ', 'て', 'よく', '覚える', '覚え', 'て', 'いる', 'い', 'ない', 'けど']),
+     ['幼い', '幼', 'すぎる', 'て', 'よく', '覚える', 'て', 'いる', 'い', 'ない', 'けど']),
     ("私は毎日ジョギングをすることを習慣にしています。",
      ["してい", "ている", "にする"],
      [WordExclusion("にして", 9), WordExclusion("にし", 9), WordExclusion("して", 10), WordExclusion("し", 10), WordExclusion("してい", 10), WordExclusion("い", 12), WordExclusion("にする")],
@@ -109,7 +109,11 @@ def insert_custom_words(custom_words:list[str]) -> None:
     ("ああもう　だったら普通に金貸せって言えよ",
      [],
      [],
-     ['ああ', 'もう', 'だったら', '普通に', '金貸', 'せる', 'て', '言える', '言えよ'])
+     ['ああ', 'もう', 'だったら', '普通に', '金貸', 'せる', 'て', '言える', '言えよ']),
+    ("お前も色々考えてるんだなぁ",
+     [],
+     [],
+     ['お前', 'も', '色々', '考える', 'てる', 'んだ', 'なぁ'])
 ])
 def test_hierarchical_extraction(sentence: str, custom_words:list[str], excluded:list[WordExclusion], expected_output: list[str]) -> None:
     insert_custom_words(custom_words)
@@ -129,7 +133,7 @@ def insert_custom_words_with_excluded_forms(custom_words:list[list[str]]) -> Non
 @pytest.mark.parametrize('sentence, custom_words, expected_output', [
     ("後で下に下りてらっしゃいね",
      [["らっしゃい","[[らっしゃる]]"]],
-     ['後で', '下', '下に', 'に', '下りる', '下り', 'て', 'らっしゃい', 'ね']
+     ['後で', '下', '下に', 'に', '下りる', 'て', 'らっしゃい', 'ね']
      )
     ,("無理して思い出す",
      [["する","[[し]]"]],

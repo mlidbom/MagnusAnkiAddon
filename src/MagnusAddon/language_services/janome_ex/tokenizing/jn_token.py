@@ -87,6 +87,13 @@ class JNToken:
 
         return False
 
+    def is_te_form(self) -> bool:
+        if self.surface == "て":
+            return True
+        if self.surface == "てる":
+            return True
+
+        return False
 
 _end_of_phrase_particles = {
     POS.Particle.CaseMarking.general,
