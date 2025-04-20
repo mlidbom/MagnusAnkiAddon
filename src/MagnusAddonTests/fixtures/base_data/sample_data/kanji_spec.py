@@ -23,10 +23,9 @@ class KanjiSpec:
 test_kanji_list = [
     KanjiSpec("一", "one/(ground)", "ひと", "いち, いつ"),
     KanjiSpec("冂", "(head)", "", ""),
-    KanjiSpec("内", "inside", "", ""),
     KanjiSpec("人", "person", "ひと, と", "にん, じん"),
     KanjiSpec("女", "female", "おんな, め", "じょ, にょ, にょう"),
-    KanjiSpec("本", "main/true | book", "もと", "ほん"),
+    KanjiSpec("本", "true/main | book", "もと", "ほん"),
     KanjiSpec("夕", "evening", "ゆう", "せき"),
     KanjiSpec("出", "exit|take-out", "で, だ", "しゅつ"),
     KanjiSpec("中", "inside/center", "なか", "ちゅう"),
