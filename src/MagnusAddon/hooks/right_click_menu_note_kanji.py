@@ -25,6 +25,7 @@ def setup_note_menu(kanji: KanjiNote, note_menu: QMenu, string_menus: list[tuple
         add_ui_action(note_menu, shortcutfinger.up1("Accept meaning"), lambda: kanji.set_user_answer(format_kanji_meaning(kanji.get_answer())))
 
     add_ui_action(note_menu, shortcutfinger.home5("Reset Primary Vocabs"), lambda: kanji.set_primary_vocab([]))
+    add_ui_action(note_menu, shortcutfinger.up2("Populate radicals from mnemonic tags"), lambda: kanji.populate_radicals_from_mnemonic_tags())
 
     def position_primary_vocab_menu(_menu: QMenu, _vocab_to_add: str, _title: str) -> None:
         highlighted_vocab_menu: QMenu = non_optional(_menu.addMenu(_title))

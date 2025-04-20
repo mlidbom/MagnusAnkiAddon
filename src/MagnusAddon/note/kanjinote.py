@@ -7,6 +7,7 @@ from wanikani_api import models
 from anki.notes import Note
 
 from note.jpnote import JPNote
+from note.radicalnote import RadicalNote
 
 if TYPE_CHECKING:
     from note.vocabnote import VocabNote
@@ -305,6 +306,22 @@ class KanjiNote(WaniNote):
 </div>
 '''
         self.set_vocabs(vocab_html)
+
+    def populate_radicals_from_mnemonic_tags(self) -> None:
+        def detect_radicals_from_mnemonic()-> list[str]:
+            radical_names = re.findall(r'<rad>(.*?)</rad>', self.get_user_mnemonic())
+
+            from ankiutils import app
+            matching_radicals = ex_sequence.flatten([([rad for rad in app.col().kanji.all() if re.search(r'\b' + re.escape(radical_name) + r'\b', rad.get_answer())]) for radical_name in radical_names])
+            return [match.get_question() for match in matching_radicals]
+
+        radicals = self.get_radicals()
+        for radical in detect_radicals_from_mnemonic():
+            if radical not in radicals:
+                radicals += radical
+
+        self._set_radicals(", ".join(radicals))
+
 
     @staticmethod
     def create_from_wani_kanji(wani_kanji: models.Kanji) -> None:
