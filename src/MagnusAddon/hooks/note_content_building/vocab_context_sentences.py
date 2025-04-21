@@ -15,7 +15,7 @@ class ContextSentence:
 
 def generate_highlighted_sentences_html_list(_vocab_note:VocabNote) -> str:
     primary_form = _vocab_note.get_question_without_noise_characters()
-    conjugation_base_form = kana_utils.get_conjugation_base(primary_form)
+    conjugation_base_forms = kana_utils.get_highlighting_conjugation_bases(primary_form)
 
 
     sentences:list[ContextSentence] = []
@@ -33,7 +33,10 @@ def generate_highlighted_sentences_html_list(_vocab_note:VocabNote) -> str:
 
     def format_sentence(html_sentence: str) -> str:
         clean_sentence = ex_str.strip_html_and_bracket_markup(html_sentence)
-        return clean_sentence.replace(conjugation_base_form, f"""<span class="vocabInContext">{conjugation_base_form}</span>""")
+        for base_form in conjugation_base_forms:
+            if base_form in clean_sentence:
+                return clean_sentence.replace(base_form, f"""<span class="vocabInContext">{base_form}</span>""")
+        return clean_sentence
 
 
     return f'''
