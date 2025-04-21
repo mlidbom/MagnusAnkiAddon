@@ -94,13 +94,12 @@ def generate_derived_list(_vocab_note: VocabNote) -> str:
     return render_vocab_list(derived_vocabs, "derived vocabulaty", css_class="derived_vocabulary") if derived_vocabs else ""
 
 def generate_stem_vocabs(_vocab_note: VocabNote) -> str:
-    if not _vocab_note.is_verb():
-        return ""
-
-    conjugation_bases = kana_utils.get_highlighting_conjugation_bases(_vocab_note.get_question())
-
-    stem_vocabs = ex_sequence.flatten([app.col().vocab.with_question(stem) for stem in conjugation_bases])
+    stem_vocabs = ex_sequence.flatten([app.col().vocab.with_question(stem) for stem in (_vocab_note.get_stems())])
     return render_vocab_list(stem_vocabs, "stem vocabulaty", css_class="stem_vocabulary") if stem_vocabs else ""
+
+def generate_stem_of_vocabs(_vocab_note: VocabNote) -> str:
+    stem_of = app.col().vocab.with_stem(_vocab_note.get_question())
+    return render_vocab_list(stem_of, "is stem of", css_class="is_stem_of") if stem_of else ""
 
 def generate_forms_list(vocab_note: VocabNote) -> str:
     forms = ex_sequence.flatten([app.col().vocab.with_question(reading) for reading in vocab_note.get_forms()])
@@ -125,5 +124,6 @@ def init() -> None:
         "##CONFUSED_WITH_LIST##": generate_confused_with_html_list,
         "##VOCAB_META_TAGS_HTML##": generate_meta_tags,
         "##VOCAB_CLASSES##": _create_classes,
-        "##STEM_VOCABULARY##": generate_stem_vocabs
+        "##STEM_VOCABULARY##": generate_stem_vocabs,
+        "##IS_STEM_OF##": generate_stem_of_vocabs
     }).render)
