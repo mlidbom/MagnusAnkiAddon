@@ -360,6 +360,9 @@ class VocabNote(KanaVocabNote):
     def is_verb(self) -> bool:
         return "verb" in self.get_speech_type()
 
+    def is_ichidan_verb(self) -> bool:
+        return "ichidan" in self.get_speech_type()
+
     def get_stems(self) -> list[str]:
         question = self.get_question()
-        return [base for base in kana_utils.get_highlighting_conjugation_bases(question) if base != question]
+        return [base for base in kana_utils.get_highlighting_conjugation_bases(question, is_ichidan_verb=self.is_ichidan_verb()) if base != question]

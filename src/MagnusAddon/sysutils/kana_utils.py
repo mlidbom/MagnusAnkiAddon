@@ -13,15 +13,29 @@ def is_katakana(char: str) -> bool:
 def is_kana(char: str) -> bool:
     return is_hiragana(char) or is_katakana(char)
 
-def get_highlighting_conjugation_bases(word: str) -> list[str]:
-    if word.endswith('する'):  # verb endings and i-adjective ending
-        return [word[:-2] + "し"]
-    if word == 'くる':
-        return ["き", "こ"]
+_word_last_character_stem_mappings:dict[str, list[str]] = {'う': ['い','わ','え'],
+                                                           'く': ['き','か','け'],
+                                                           'ぐ': ['ぎ','が','げ'],
+                                                           'す': ['し','さ','せ'],
+                                                           'つ': ['ち','た','て'],
+                                                           'ぬ': ['に','な','ね'],
+                                                           'ぶ': ['び','ば','べ'],
+                                                           'む': ['み','ま','め'],
+                                                           'る': ['り','ら','れ'],
+                                                           'い': ['く'] }
+
+_irregular_verb_stem_mappings: dict[str, list[str]] = {'する': ['すれ', 'し'],
+                                                       'くる': ['くれ', 'き','こ']}
+def get_highlighting_conjugation_bases(word: str, is_ichidan_verb:bool = False) -> list[str]:
+    if is_ichidan_verb:
+        return [word[:-1]]
+
+    if word[-2:] in _irregular_verb_stem_mappings:
+        return [word[:-2] + end for end in _irregular_verb_stem_mappings[word[-2:]]]
     if word.endswith('てくる'):  # verb endings and i-adjective ending
         return [word[:-2] + "き", word[:-2] + "こ"]
-    if word.endswith(('う', 'く', 'ぐ', 'す', 'つ', 'ぬ', 'ふ', 'む', 'る', 'い')):  # verb endings and i-adjective ending
-        return [word[:-1]]
+    if word[-1] in _word_last_character_stem_mappings:
+        return [word[:-1] + end for end in _word_last_character_stem_mappings[word[-1]]] + [word[:-1]]
     return [word]
 
 def to_katakana(hiragana: str) -> str:
