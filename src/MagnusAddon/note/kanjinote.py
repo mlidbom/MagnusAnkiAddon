@@ -199,13 +199,13 @@ class KanjiNote(WaniNote):
     def get_primary_vocab(self) -> list[str]: return ex_str.extract_comma_separated_values(self.get_field(NoteFields.Kanji.PrimaryVocab))
     def set_primary_vocab(self, value: list[str]) -> None: self.set_field(NoteFields.Kanji.PrimaryVocab, ", ".join(value))
 
-    _any_word_pattern = re.compile(r'\b\w+\b', re.UNICODE)
+    _any_word_pattern = re.compile(r'\b[-\w]+\b', re.UNICODE)
     def get_primary_meaning(self) -> str:
         radical_meaning_match = self._any_word_pattern.search(self.get_answer())
         return radical_meaning_match.group(0) if radical_meaning_match else ""
 
 
-    _parenthesized_word_pattern = re.compile(r'\(\w+\)', re.UNICODE)
+    _parenthesized_word_pattern = re.compile(r'\([-\w]+\)', re.UNICODE)
     def get_primary_radical_meaning(self) -> str:
         def get_dedicated_radical_primary_meaning() -> str:
             radical_meaning_match = self._parenthesized_word_pattern.search(self.get_answer())
