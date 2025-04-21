@@ -356,3 +356,6 @@ class VocabNote(KanaVocabNote):
         note.update_generated_data()
         app.anki_collection().addNote(backend_note)
         return note
+
+    def is_verb(self) -> bool:
+        return "verb" in self.get_speech_type()

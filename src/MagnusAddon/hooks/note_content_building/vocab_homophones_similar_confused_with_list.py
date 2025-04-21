@@ -4,7 +4,7 @@ from ankiutils import app
 from hooks.note_content_building.content_renderer import PrerenderingAnswerContentRenderer
 from note import vocabnote
 from note.vocabnote import VocabNote
-from sysutils import ex_sequence
+from sysutils import ex_sequence, kana_utils
 from sysutils.ex_str import newline
 
 def _create_classes(_vocab: VocabNote) -> str:
@@ -93,6 +93,15 @@ def generate_derived_list(_vocab_note: VocabNote) -> str:
     derived_vocabs = app.col().vocab.derived_from(_vocab_note.get_question())
     return render_vocab_list(derived_vocabs, "derived vocabulaty", css_class="derived_vocabulary") if derived_vocabs else ""
 
+def generate_stem_vocabs(_vocab_note: VocabNote) -> str:
+    if not _vocab_note.is_verb():
+        return ""
+
+    conjugation_bases = kana_utils.get_highlighting_conjugation_bases(_vocab_note.get_question())
+
+    stem_vocabs = ex_sequence.flatten([app.col().vocab.with_question(stem) for stem in conjugation_bases])
+    return render_vocab_list(stem_vocabs, "stem vocabulaty", css_class="stem_vocabulary") if stem_vocabs else ""
+
 def generate_forms_list(vocab_note: VocabNote) -> str:
     forms = ex_sequence.flatten([app.col().vocab.with_question(reading) for reading in vocab_note.get_forms()])
     forms = [form for form in forms if form.get_id() != vocab_note.get_id()]
@@ -115,5 +124,6 @@ def init() -> None:
         "##SIMILAR_MEANING_LIST##": generate_similar_meaning_html_list,
         "##CONFUSED_WITH_LIST##": generate_confused_with_html_list,
         "##VOCAB_META_TAGS_HTML##": generate_meta_tags,
-        "##VOCAB_CLASSES##": _create_classes
+        "##VOCAB_CLASSES##": _create_classes,
+        "##STEM_VOCABULARY##": generate_stem_vocabs
     }).render)
