@@ -22,7 +22,7 @@ _word_last_character_stem_mappings:dict[str, list[str]] = {'う': ['い','わ','
                                                            'ぶ': ['び','ば','べ'],
                                                            'む': ['み','ま','め'],
                                                            'る': ['り','ら','れ'],
-                                                           'い': ['く'] }
+                                                           'い': ['く']}
 
 _irregular_verb_stem_mappings: dict[str, list[str]] = {'する': ['すれ', 'し'],
                                                        'くる': ['くれ', 'き','こ']}
