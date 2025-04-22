@@ -12,7 +12,7 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
     forms = ex_sequence.remove_duplicates_while_retaining_order(forms)
     primary_form = _vocab_note.get_question_without_noise_characters()
     secondary_forms = [form for form in forms if form != primary_form]
-    secondary_forms_conjugation_base_form = [kana_utils.get_highlighting_conjugation_bases(form) for form in secondary_forms]
+    secondary_forms_conjugation_base_forms = [kana_utils.get_highlighting_conjugation_bases(form) for form in secondary_forms]
 
     secondary_forms_with_their_own_vocab = [form for form in secondary_forms if any(app.col().vocab.with_question(form))]
     secondary_forms_with_their_own_vocab_conjugation_bases = [kana_utils.get_highlighting_conjugation_bases(form) for form in secondary_forms_with_their_own_vocab]
@@ -72,7 +72,7 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
 
         def dislike_sentences_containing_secondary_form(_sentence:SentenceNote) -> int:
             clean_sentence = ex_str.strip_html_and_bracket_markup(_sentence.get_question())
-            return any(base_forms for base_forms in secondary_forms_conjugation_base_form if any(base_form for base_form in base_forms if base_form in clean_sentence))
+            return 1 if any(base_forms for base_forms in secondary_forms_conjugation_base_forms if any(base_form for base_form in base_forms if base_form in clean_sentence)) else 0
 
         return sorted(_sentences, key=lambda x: (dislike_secondary_form_with_vocab(x),
                                                  prefer_highlighted_for_low_reliability_matches(x),
