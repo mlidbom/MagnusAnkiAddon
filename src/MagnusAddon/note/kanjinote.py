@@ -7,7 +7,6 @@ from wanikani_api import models
 from anki.notes import Note
 
 from note.jpnote import JPNote
-from note.radicalnote import RadicalNote
 
 if TYPE_CHECKING:
     from note.vocabnote import VocabNote
@@ -60,6 +59,9 @@ class KanjiNote(WaniNote):
 
     def get_answer(self) -> str:
         return self.get_user_answer() or self.get_field(NoteFields.Kanji.source_answer)
+
+    def get_answer_text(self) -> str:
+        return ex_str.strip_html_markup(self.get_answer())
 
     def get_user_answer(self) -> str: return self.get_field(NoteFields.Kanji.user_answer)
     def set_user_answer(self, value: str) -> None: return self.set_field(NoteFields.Kanji.user_answer, value)
@@ -201,14 +203,14 @@ class KanjiNote(WaniNote):
 
     _any_word_pattern = re.compile(r'\b[-\w]+\b', re.UNICODE)
     def get_primary_meaning(self) -> str:
-        radical_meaning_match = self._any_word_pattern.search(self.get_answer())
+        radical_meaning_match = self._any_word_pattern.search(self.get_answer_text())
         return radical_meaning_match.group(0) if radical_meaning_match else ""
 
 
     _parenthesized_word_pattern = re.compile(r'\([-\w]+\)', re.UNICODE)
     def get_primary_radical_meaning(self) -> str:
         def get_dedicated_radical_primary_meaning() -> str:
-            radical_meaning_match = self._parenthesized_word_pattern.search(self.get_answer())
+            radical_meaning_match = self._parenthesized_word_pattern.search(self.get_answer_text())
             return radical_meaning_match.group(0).replace("(","").replace(")","") if radical_meaning_match else ""
 
         result = get_dedicated_radical_primary_meaning()
