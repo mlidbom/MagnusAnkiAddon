@@ -31,5 +31,5 @@ def checked_cast_dynamic(cls: type[CastT], instance: object) -> CastT:
     return checked_cast(cls, instance) if _is_compatible_with_isinstance(cls) else checked_cast_generics(cls, instance)
 
 def non_optional(instance:Optional[CastT]) -> CastT:
-    assert instance is not None
+    if instance is None: raise AssertionError()
     return instance

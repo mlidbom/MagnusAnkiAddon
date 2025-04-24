@@ -2,6 +2,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from anki_extentions.notetype_ex.note_type_ex import NoteTypeEx
+from sysutils import rassert
 
 if TYPE_CHECKING:
     from note.collection.jp_collection import JPCollection
@@ -28,7 +29,7 @@ class JPNote(ABC):
         self.__hash_value = 0
 
     def __eq__(self, other: Any) -> bool:
-        assert self.get_id(), "You cannot compare or hash a note that has not been saved yet since it has no id"
+        rassert.not_none(self.get_id(), "You cannot compare or hash a note that has not been saved yet since it has no id")
         return isinstance(other, JPNote) and other.get_id() == self.get_id()
 
 

@@ -36,6 +36,7 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu) -> None:
         elif view.kind == AnkiWebViewKind.EDITOR:
             # noinspection PyProtectedMember
             editor = checked_cast(Editor, view._bridge_context)
+            if not editor.card: return None
             card = non_optional(editor.card)
             inner_note = non_optional(card.note())
         elif view.kind == AnkiWebViewKind.PREVIEWER:
