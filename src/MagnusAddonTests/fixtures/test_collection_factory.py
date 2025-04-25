@@ -13,7 +13,7 @@ from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
 
 # noinspection PyUnusedFunction
-@pytest.fixture(scope="function", autouse=True)
+@pytest.fixture(scope="module", autouse=True)
 def setup_object() -> Generator[None, None, None]:
     with inject_anki_collection_with_all_sample_data():
         yield

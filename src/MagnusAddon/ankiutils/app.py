@@ -1,7 +1,7 @@
 from __future__ import annotations
+from ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules # noqa
 import gc
 from typing import Any, Callable, Optional, TYPE_CHECKING
-
 import anki
 
 from anki_extentions.config_manager_ex import ConfigManagerEx
