@@ -58,6 +58,12 @@ class KanaVocabNote(WaniNote):
 
     def get_speech_type(self) -> str: return self.get_field(NoteFields.Vocab.Speech_Type)
     def set_speech_type(self, value: str) -> None: self.set_field(NoteFields.Vocab.Speech_Type, value)
+    def get_speech_types(self) -> set[str]: return set(ex_str.extract_comma_separated_values(self.get_field(NoteFields.Vocab.Speech_Type)))
+
+    _transitive_string_values = ["transitive", "transitive verb"]
+    _intransitive_string_values = ["intransitive", "intransitive verb"]
+    def is_transitive(self) -> bool: return any(val for val in self._transitive_string_values if val in self.get_speech_types())
+    def is_intransitive(self) -> bool: return any(val for val in self._intransitive_string_values if val in self.get_speech_types())
 
     def get_context_jp(self) -> str: return ex_str.strip_html_markup(self.get_field(NoteFields.Vocab.Context_jp))
     def set_context_jp(self, value: str) -> None: self.set_field(NoteFields.Vocab.Context_jp, value)

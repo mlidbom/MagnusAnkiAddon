@@ -1,6 +1,8 @@
+from typing import Callable
+
 from PyQt6.QtWidgets import QMenu
 
-from ankiutils import app, query_builder
+from ankiutils import app, query_builder, search_executor
 from hooks.right_click_menu_utils import add_lookup_action, add_single_vocab_lookup_action, add_text_vocab_lookup, add_ui_action, add_vocab_dependencies_lookup
 from note.note_constants import NoteFields, NoteTypes
 from note.sentencenote import SentenceNote
@@ -13,6 +15,7 @@ def setup_note_menu(vocab: VocabNote, note_menu: QMenu, string_menus: list[tuple
     note_lookup_menu: QMenu = non_optional(note_menu.addMenu(shortcutfinger.home1("Open")))
     note_hide_menu: QMenu = non_optional(note_menu.addMenu(shortcutfinger.home2("Hide/Remove")))
     note_restore_menu = non_optional(note_menu.addMenu(shortcutfinger.home3("Restore")))
+    note_create_menu = non_optional(note_menu.addMenu(shortcutfinger.up4("Create")))
 
     add_lookup_action(note_lookup_menu, shortcutfinger.home1("Kanji"), f"note:{NoteTypes.Kanji} ( {' OR '.join([f'{NoteFields.Kanji.question}:{char}' for char in vocab.get_question()])} )")
     if vocab.get_related_ergative_twin():
@@ -72,6 +75,23 @@ def setup_note_menu(vocab: VocabNote, note_menu: QMenu, string_menus: list[tuple
     add_ui_action(note_menu, shortcutfinger.up2("Generate answer"), lambda: vocab.generate_and_set_answer())
     if vocab.can_generate_sentences_from_context_sentences(require_audio=False):
         add_ui_action(note_menu, shortcutfinger.up3("Generate sentences"), lambda: vocab.generate_sentences_from_context_sentences(require_audio=False))
+
+    create_note_action(note_create_menu, "な-adjective", lambda: vocab.create_na_adjective())
+    create_note_action(note_create_menu, "に-adverb", lambda: vocab.create_ni_adverb())
+    create_note_action(note_create_menu, "to-adverb", lambda: vocab.create_to_adverb())
+    create_note_action(note_create_menu, "する-verb", lambda: vocab.create_suru_verb())
+
+    clone_to_form_menu = non_optional(note_create_menu.addMenu("Create form"))
+    forms_with_no_vocab = [form for form in vocab.get_forms() if not any(app.col().vocab.with_question(form))]
+    for form in forms_with_no_vocab:
+        create_note_action(clone_to_form_menu, form, lambda: vocab.clone_to_form(form))
+
+def create_note_action(menu: QMenu, name: str, callback: Callable[[], VocabNote]) -> None:
+    def run_ui_action() -> None:
+        new_note = callback()
+        search_executor.do_lookup(query_builder.notes_lookup([new_note]))
+
+    menu.addAction(name, lambda: run_ui_action())
 
 def format_vocab_meaning(meaning: str) -> str:
     return ex_str.strip_html_and_bracket_markup(meaning

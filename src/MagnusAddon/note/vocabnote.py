@@ -77,6 +77,8 @@ class VocabNote(KanaVocabNote):
     def _get_forms(self) -> str: return self.get_field(NoteFields.Vocab.Forms)
     def _set_forms(self, value: str) -> None: self.set_field(NoteFields.Vocab.Forms, value)
     def get_user_compounds(self) -> list[str]: return ex_str.extract_comma_separated_values(self.get_field(NoteFields.Vocab.user_compounds))
+    def set_user_compounds(self, compounds:list[str]) -> None:
+        self.set_field(NoteFields.Vocab.user_compounds, ",".join(compounds))
 
     def get_direct_dependencies(self) -> set[JPNote]:
         return (set(self.collection.kanji.with_any_kanji_in(list(self.extract_main_form_kanji()))) |
@@ -303,7 +305,7 @@ class VocabNote(KanaVocabNote):
         vocab_note._set_question(wani_vocab.characters)
         vocab_note.update_from_wani(wani_vocab)
 
-        # Do not move to update method or we will wipe out local changes made to the context sentences.
+        # Do not move to update method, or we will wipe out local changes made to the context sentences.
         if len(wani_vocab.context_sentences) > 0:
             vocab_note.set_context_en(wani_vocab.context_sentences[0].english)
             vocab_note.set_context_jp(wani_vocab.context_sentences[0].japanese)
@@ -366,3 +368,45 @@ class VocabNote(KanaVocabNote):
     def get_stems(self) -> list[str]:
         question = self.get_question()
         return [base for base in kana_utils.get_highlighting_conjugation_bases(question, is_ichidan_verb=self.is_ichidan_verb()) if base != question]
+
+    def _create_postfix_version(self, postfix:str, speech_type:str) -> VocabNote:
+        adverb = self.create(question=self.get_question() + postfix,
+                             answer=self.get_answer(),
+                             readings=[reading + postfix for reading in self.get_readings()])
+        adverb.set_user_compounds([self.get_question(), postfix])
+        adverb.set_speech_type(speech_type)
+        adverb.set_forms(set([form + postfix for form in self.get_forms()]))
+        return adverb
+
+
+    def create_na_adjective(self) -> VocabNote:
+        return self._create_postfix_version("な", "na-adjective")
+
+    def create_ni_adverb(self) -> VocabNote:
+        return self._create_postfix_version("に", "adverb")
+
+    def create_to_adverb(self) -> VocabNote:
+        return self._create_postfix_version("と", "to-adverb")
+
+    def create_suru_verb(self) -> VocabNote:
+        suru_verb = self._create_postfix_version("する", "suru verb")
+
+        if self.is_transitive(): suru_verb.set_speech_type(suru_verb.get_speech_type() + ", transitive")
+        if self.is_intransitive(): suru_verb.set_speech_type(suru_verb.get_speech_type() + ", intransitive")
+
+        return suru_verb
+
+    def _clone(self) -> VocabNote:
+        clone = self.create(self.get_question(), self.get_answer(), self.get_readings())
+
+        for i in range(len(self._note.fields)):
+            clone._note.fields[i] = self._note.fields[i]
+
+        clone._flush()
+
+        return clone
+
+    def clone_to_form(self, form:str) -> VocabNote:
+        clone = self._clone()
+        clone._set_question(form)
+        return clone
