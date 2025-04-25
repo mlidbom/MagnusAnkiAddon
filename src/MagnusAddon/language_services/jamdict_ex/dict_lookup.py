@@ -88,12 +88,15 @@ class DictLookup:
 
     @classmethod
     def lookup_word_shallow(cls, word: str) -> DictLookup:
+        if not cls.might_be_word(word): return DictLookup([], word, [])
         entries = DictEntry.create(cls._lookup_word(word), word, [])
         return DictLookup(entries, word, [])
 
     @classmethod
     @lru_cache(maxsize=None)  # _lookup_word_shallow.cache_clear(), _lookup_word_shallow.cache_info()
     def _lookup_word(cls, word: str) -> list[JMDEntry]:
+        if not cls.might_be_word(word): return []
+
         entries = list(_jamdict.lookup(word, lookup_chars=False, lookup_ne=False).entries)
         return entries if not kana_utils.is_only_kana(word) else [ent for ent in entries if cls._is_kana_only(ent)]
 
@@ -109,6 +112,10 @@ class DictLookup:
                                              if 'word usually written using kana alone' in sense.misc))
 
     @classmethod
+    def might_be_word(cls, word:str) -> bool:
+        return word in _all_word_forms.instance()
+
+    @classmethod
     def is_word(cls, word:str) -> bool:
-        return word in _all_word_forms.instance() and cls.lookup_word_shallow(word).found_words()
+        return cls.might_be_word(word) and cls.lookup_word_shallow(word).found_words()
 
