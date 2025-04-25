@@ -5,8 +5,8 @@ from sysutils import kana_utils
 @pytest.mark.parametrize("word, conjugation_bases, is_ichidan", [
     #irregular verbs
     ("くる", ['くれ', 'き', 'こ'], False),
-    ("する", ['すれ', 'し'], False),
-    ('しようとする', ['しようとすれ', 'しようとし'], False),
+    ("する", ['すれ', 'し', 'さ'], False),
+    ('しようとする', ['しようとすれ', 'しようとし', 'しようとさ'], False),
     ("おいてくる", ['おいてくれ', 'おいてき', 'おいてこ'], False),
 
     #adjectives

@@ -24,7 +24,7 @@ _word_last_character_stem_mappings:dict[str, list[str]] = {'う': ['い','わ','
                                                            'る': ['り','ら','れ'],
                                                            'い': ['く']}
 
-_irregular_verb_stem_mappings: dict[str, list[str]] = {'する': ['すれ', 'し'],
+_irregular_verb_stem_mappings: dict[str, list[str]] = {'する': ['すれ', 'し', 'さ'],
                                                        'くる': ['くれ', 'き','こ']}
 def get_highlighting_conjugation_bases(word: str, is_ichidan_verb:bool = False) -> list[str]:
     if is_ichidan_verb:
