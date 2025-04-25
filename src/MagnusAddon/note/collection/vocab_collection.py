@@ -35,7 +35,7 @@ class _VocabCache(NoteCache[VocabNote, _VocabSnapshot]):
         self._by_stem: dict[str, set[VocabNote]] = defaultdict(set)
         super().__init__(all_vocab, VocabNote, cache_runner)
 
-    def with_form(self, form: str) -> list[VocabNote]: return list(self._by_form[form])
+    def with_form(self, form: str) -> list[VocabNote]: return list(self._by_form[form]) if form in self._by_form else []
 
     def with_compound_part(self, form: str) -> list[VocabNote]:
         compound_parts: set[VocabNote] = set()
@@ -87,6 +87,7 @@ class VocabCollection:
     def all_wani(self) -> list[VocabNote]:
         return [vocab for vocab in self.all() if vocab.is_wani_note()]
 
+    def is_word(self, form: str) -> bool: return any(self._cache.with_form(form))
     def all(self) -> list[VocabNote]: return self._cache.all()
     def with_id(self, note_id:NoteId) -> VocabNote: return self._cache.with_id(note_id)
     def with_form(self, form: str) -> list[VocabNote]: return self._cache.with_form(form)

@@ -98,7 +98,7 @@ def extract_words(sentence: str, allow_duplicates:bool = False) -> list[Extracte
     from ankiutils import app
 
     def _is_word(word: str) -> bool:
-        return any(app.col().vocab.with_form(word)) or DictLookup.is_word(word)
+        return app.col().vocab.is_word(word) or DictLookup.is_word(word)
 
     def add_word_if_it_is_in_dictionary(word: str, lookahead_index: int) -> None:
         if _is_word(word):
