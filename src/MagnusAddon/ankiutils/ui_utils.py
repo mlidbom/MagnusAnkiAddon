@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Any, Callable
 
 import aqt
 from aqt import AnkiQt  # type: ignore
@@ -7,11 +7,14 @@ from aqt.browser.previewer import Previewer
 from aqt.editcurrent import EditCurrent
 from aqt.reviewer import RefreshNeeded
 from aqt.utils import tooltip
+from PyQt6.QtGui import QAction
 
 from ankiutils.audio_suppressor import audio_suppressor
 from ankiutils.ui_utils_interface import IUIUtils
 from sysutils import timeutil
 from sysutils.typed import non_optional
+from typing import Optional
+from PyQt6.QtWidgets import QPushButton, QWidget
 
 _ANSWER_DISPLAY_TYPES = {'reviewAnswer', 'previewAnswer', 'clayoutAnswer'}
 
@@ -37,6 +40,10 @@ class UIUtils(IUIUtils):
         self.refresh()
         tooltip(f"done in {time}")
 
+    def _get_browser(self) -> Browser:
+        browser: Browser = aqt.dialogs.open('Browser', self._mw)
+        self._mw.app.processEvents()
+        return browser
 
     def refresh(self, refresh_browser:bool = True) -> None:
         from ankiutils import app
@@ -74,3 +81,40 @@ class UIUtils(IUIUtils):
             browser.onTogglePreview()
         else:
             browser._previewer.activateWindow() # noqa
+
+    def find_hypertts_button(self) -> Optional[Any]:
+        """Find the HyperTTS button in the browser window by its tooltip."""
+
+        widget_tooltips = [widget.toolTip() for widget in self._get_browser().editor.widget.findChildren(QWidget)]
+        action_tooltips = [action.toolTip() for action in self._get_browser().editor.widget.actions()]
+
+
+
+        # Look for buttons directly in the browser
+        for widget in self._get_browser().findChildren(QWidget):
+            if widget.toolTip().startswith("HyperTTS:"):
+                return widget
+
+        # Look for actions in toolbar (HyperTTS might add buttons as QActions)
+        for action in self._get_browser().form.menuEdit.actions():
+            if action.toolTip().startswith("HyperTTS:"):
+                return action
+
+        return None
+
+    def trigger_hypertts_button(self) -> bool:
+        """Find and click the HyperTTS button."""
+        button = self.find_hypertts_button()
+
+        if button is None:
+            print("HyperTTS button not found")
+            return False
+
+        if isinstance(button, QPushButton):
+            button.click()
+            return True
+        elif isinstance(button, QAction):
+            button.trigger()
+            return True
+
+        return False

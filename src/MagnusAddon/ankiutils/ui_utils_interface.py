@@ -13,3 +13,6 @@ class IUIUtils(metaclass=ABCMeta):
 
     @abstractmethod
     def activate_preview(self) -> None: pass
+
+    @abstractmethod
+    def trigger_hypertts_button(self) -> None: pass

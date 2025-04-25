@@ -76,20 +76,22 @@ def setup_note_menu(vocab: VocabNote, note_menu: QMenu, string_menus: list[tuple
     if vocab.can_generate_sentences_from_context_sentences(require_audio=False):
         add_ui_action(note_menu, shortcutfinger.up3("Generate sentences"), lambda: vocab.generate_sentences_from_context_sentences(require_audio=False))
 
-    create_note_action(note_create_menu, "な-adjective", lambda: vocab.create_na_adjective())
-    create_note_action(note_create_menu, "に-adverb", lambda: vocab.create_ni_adverb())
-    create_note_action(note_create_menu, "to-adverb", lambda: vocab.create_to_adverb())
-    create_note_action(note_create_menu, "する-verb", lambda: vocab.create_suru_verb())
+    create_note_action(note_create_menu, "な-adjective", lambda: vocab.create_na_adjective(), trigger_tts=True)
+    create_note_action(note_create_menu, "に-adverb", lambda: vocab.create_ni_adverb(), trigger_tts=True)
+    create_note_action(note_create_menu, "to-adverb", lambda: vocab.create_to_adverb(), trigger_tts=True)
+    create_note_action(note_create_menu, "する-verb", lambda: vocab.create_suru_verb(), trigger_tts=True)
 
     clone_to_form_menu = non_optional(note_create_menu.addMenu("Create form"))
     forms_with_no_vocab = [form for form in vocab.get_forms() if not any(app.col().vocab.with_question(form))]
     for form in forms_with_no_vocab:
-        create_note_action(clone_to_form_menu, form, lambda _form=form: vocab.clone_to_form(_form))
+        create_note_action(clone_to_form_menu, form, lambda _form=form: vocab.clone_to_form(_form)) # type: ignore
 
-def create_note_action(menu: QMenu, name: str, callback: Callable[[], VocabNote]) -> None:
+def create_note_action(menu: QMenu, name: str, callback: Callable[[], VocabNote], trigger_tts:bool = False) -> None:
     def run_ui_action() -> None:
         new_note = callback()
         search_executor.do_lookup_and_show_previewer(query_builder.notes_lookup([new_note]))
+        if trigger_tts:
+            app.ui_utils().trigger_hypertts_button()
 
     menu.addAction(name, lambda: run_ui_action())
 
