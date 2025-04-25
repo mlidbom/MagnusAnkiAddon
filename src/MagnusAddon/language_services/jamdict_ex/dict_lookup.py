@@ -6,6 +6,8 @@ from typing import TYPE_CHECKING
 from jamdict.jmdict import JMDEntry
 
 from language_services.jamdict_ex.priority_spec import PrioritySpec
+from sysutils.lazy import BackgroundInitialingLazy
+from sysutils.typed import str_
 
 if TYPE_CHECKING:
     from note.vocabnote import VocabNote
@@ -15,9 +17,26 @@ from jamdict import Jamdict
 from language_services.jamdict_ex.dict_entry import DictEntry
 from sysutils import ex_iterable, kana_utils
 
-class DictLookup:
-    _jamdict = Jamdict(reuse_ctx=False)
+_jamdict = Jamdict(reuse_ctx=False)
+def _find_all_words() -> set[str]:
+    kanji_forms: set[str] = set()
+    kana_forms: set[str] = set()
 
+    with _jamdict.jmdict.ctx() as ctx:
+        for batch in ctx.conn.execute("SELECT distinct text FROM Kanji"):
+            for row in batch:
+                kanji_forms.add(str_(row))
+
+    with _jamdict.jmdict.ctx() as ctx:
+        for batch in ctx.conn.execute("SELECT distinct text FROM Kana"):
+            for row in batch:
+                kana_forms.add(str_(row))
+
+    return kanji_forms | kana_forms
+
+_all_word_forms = BackgroundInitialingLazy(_find_all_words)
+
+class DictLookup:
     def __init__(self, entries: list[DictEntry], lookup_word: str, lookup_reading: list[str]):
         self.lookup_word = lookup_word
         self.lookup_reading = lookup_reading
@@ -75,13 +94,13 @@ class DictLookup:
     @classmethod
     @lru_cache(maxsize=None)  # _lookup_word_shallow.cache_clear(), _lookup_word_shallow.cache_info()
     def _lookup_word(cls, word: str) -> list[JMDEntry]:
-        entries = list(cls._jamdict.lookup(word, lookup_chars=False, lookup_ne=False).entries)
+        entries = list(_jamdict.lookup(word, lookup_chars=False, lookup_ne=False).entries)
         return entries if not kana_utils.is_only_kana(word) else [ent for ent in entries if cls._is_kana_only(ent)]
 
     @classmethod
     @lru_cache(maxsize=None)  # _lookup_word_shallow.cache_clear(), _lookup_word_shallow.cache_info()
     def _lookup_name(cls, word: str) -> list[JMDEntry]:
-        return list(cls._jamdict.lookup(word, lookup_chars=False).names)
+        return list(_jamdict.lookup(word, lookup_chars=False).names)
 
     @staticmethod
     def _is_kana_only(entry: JMDEntry) -> bool:
@@ -91,4 +110,5 @@ class DictLookup:
 
     @classmethod
     def is_word(cls, word:str) -> bool:
-        return cls.lookup_word_shallow(word).found_words()
+        return word in _all_word_forms.instance() and cls.lookup_word_shallow(word).found_words()
+
