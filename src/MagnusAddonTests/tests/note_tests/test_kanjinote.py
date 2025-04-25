@@ -8,7 +8,7 @@ from ankiutils import app
 
 @pytest.fixture(scope="function", autouse=True)
 def setup() -> Generator[None, None, None]:
-    with (stub_ui_dependencies(), collection_factory.inject_anki_collection_with_all_sample_data()):
+    with (stub_ui_dependencies(), collection_factory.inject_anki_collection_with_select_data(kanji=True)):
         yield
 
 def test_inside_radical_population() -> None:
