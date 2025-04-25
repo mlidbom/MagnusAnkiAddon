@@ -84,12 +84,12 @@ def setup_note_menu(vocab: VocabNote, note_menu: QMenu, string_menus: list[tuple
     clone_to_form_menu = non_optional(note_create_menu.addMenu("Create form"))
     forms_with_no_vocab = [form for form in vocab.get_forms() if not any(app.col().vocab.with_question(form))]
     for form in forms_with_no_vocab:
-        create_note_action(clone_to_form_menu, form, lambda: vocab.clone_to_form(form))
+        create_note_action(clone_to_form_menu, form, lambda _form=form: vocab.clone_to_form(_form))
 
 def create_note_action(menu: QMenu, name: str, callback: Callable[[], VocabNote]) -> None:
     def run_ui_action() -> None:
         new_note = callback()
-        search_executor.do_lookup(query_builder.notes_lookup([new_note]))
+        search_executor.do_lookup_and_show_previewer(query_builder.notes_lookup([new_note]))
 
     menu.addAction(name, lambda: run_ui_action())
 
