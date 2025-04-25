@@ -4,7 +4,6 @@ from functools import lru_cache
 from typing import TYPE_CHECKING
 
 from jamdict.jmdict import JMDEntry
-from puchikarui import ExecutionContext
 
 from language_services.jamdict_ex.priority_spec import PrioritySpec
 from sysutils.lazy import BackgroundInitialingLazy
@@ -148,4 +147,3 @@ class DictLookup:
     @classmethod
     def is_word(cls, word:str) -> bool:
         return cls.might_be_word(word) and cls.lookup_word_shallow(word).found_words()
-
