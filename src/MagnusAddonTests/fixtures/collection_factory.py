@@ -37,24 +37,6 @@ def populate_collection(collection: Collection) -> None:
     note_type_factory.add_note_types(collection)
 
 @contextmanager
-def inject_anki_collection_with_all_sample_data() -> Generator[None, None, None]:
-    from ankiutils import app
-    with inject_empty_anki_collection_with_note_types():
-        for kanji in kanji_spec.test_kanji_list:
-            KanjiNote.create(kanji.question, kanji.answer, kanji.on_readings, kanji.kun_reading)
-
-        for sentence in sentence_spec.test_sentence_list:
-            SentenceNote.create_test_note(sentence.question, sentence.answer)
-
-        for vocab in vocab_spec.test_vocab_list:
-            vocab.create_vocab_note()
-
-
-        app.col().flush_cache_updates()
-
-        yield
-
-@contextmanager
 def inject_anki_collection_with_select_data(kanji:bool = False, special_vocab:bool = False, ordinary_vocab: bool = False, sentences:bool = False) -> Generator[None, None, None]:
     from ankiutils import app
     with inject_empty_anki_collection_with_note_types():
@@ -77,4 +59,9 @@ def inject_anki_collection_with_select_data(kanji:bool = False, special_vocab:bo
 
         app.col().flush_cache_updates()
 
+        yield
+
+@contextmanager
+def inject_anki_collection_with_all_sample_data() -> Generator[None, None, None]:
+    with inject_anki_collection_with_select_data(kanji=True, special_vocab=True, ordinary_vocab=True, sentences=True):
         yield

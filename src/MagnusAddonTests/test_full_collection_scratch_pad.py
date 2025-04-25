@@ -1,8 +1,8 @@
 from typing import Generator
 import pytest
-from ankiutils import query_builder
 from fixtures.full_test_collection_factory import inject_full_anki_collection_for_testing
 from ankiutils import app
+from ankiutils import query_builder
 from note.kanjinote import KanjiNote
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
