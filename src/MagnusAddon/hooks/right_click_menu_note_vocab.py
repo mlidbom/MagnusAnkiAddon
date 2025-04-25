@@ -82,7 +82,7 @@ def setup_note_menu(vocab: VocabNote, note_menu: QMenu, string_menus: list[tuple
     create_note_action(note_create_menu, shortcutfinger.home4("する-verb"), lambda: vocab.create_suru_verb())
     create_note_action(note_create_menu, shortcutfinger.up1("します-verb"), lambda: vocab.create_shimasu_verb())
     create_note_action(note_create_menu, shortcutfinger.up2("く-form-of-い-adjective"), lambda: vocab.create_ku_form())
-    create_note_action(note_create_menu, shortcutfinger.up2("て-prefixed"), lambda: vocab.create_te_prefixed_word())
+    create_note_action(note_create_menu, shortcutfinger.up3("て-prefixed"), lambda: vocab.create_te_prefixed_word())
 
     clone_to_form_menu = non_optional(note_create_menu.addMenu("Create form"))
     forms_with_no_vocab = [form for form in vocab.get_forms() if not any(app.col().vocab.with_question(form))]
