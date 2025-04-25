@@ -76,15 +76,18 @@ def setup_note_menu(vocab: VocabNote, note_menu: QMenu, string_menus: list[tuple
     if vocab.can_generate_sentences_from_context_sentences(require_audio=False):
         add_ui_action(note_menu, shortcutfinger.up3("Generate sentences"), lambda: vocab.generate_sentences_from_context_sentences(require_audio=False))
 
-    create_note_action(note_create_menu, "な-adjective", lambda: vocab.create_na_adjective())
-    create_note_action(note_create_menu, "に-adverb", lambda: vocab.create_ni_adverb())
-    create_note_action(note_create_menu, "to-adverb", lambda: vocab.create_to_adverb())
-    create_note_action(note_create_menu, "する-verb", lambda: vocab.create_suru_verb())
+    create_note_action(note_create_menu, shortcutfinger.home1("な-adjective"), lambda: vocab.create_na_adjective())
+    create_note_action(note_create_menu, shortcutfinger.home2("に-adverb"), lambda: vocab.create_ni_adverb())
+    create_note_action(note_create_menu, shortcutfinger.home3("to-adverb"), lambda: vocab.create_to_adverb())
+    create_note_action(note_create_menu, shortcutfinger.home4("する-verb"), lambda: vocab.create_suru_verb())
+    create_note_action(note_create_menu, shortcutfinger.up1("します-verb"), lambda: vocab.create_shimasu_verb())
+    create_note_action(note_create_menu, shortcutfinger.up2("く-form-of-い-adjective"), lambda: vocab.create_ku_form())
+    create_note_action(note_create_menu, shortcutfinger.up2("て-prefixed"), lambda: vocab.create_te_prefixed_word())
 
     clone_to_form_menu = non_optional(note_create_menu.addMenu("Create form"))
     forms_with_no_vocab = [form for form in vocab.get_forms() if not any(app.col().vocab.with_question(form))]
-    for form in forms_with_no_vocab:
-        create_note_action(clone_to_form_menu, form, lambda _form=form: vocab.clone_to_form(_form))
+    for index, form in enumerate(forms_with_no_vocab):
+        create_note_action(clone_to_form_menu, shortcutfinger.numpad(index, form), lambda _form=form: vocab.clone_to_form(_form)) # type: ignore
 
 def create_note_action(menu: QMenu, name: str, callback: Callable[[], VocabNote]) -> None:
     def run_ui_action() -> None:

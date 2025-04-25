@@ -369,32 +369,49 @@ class VocabNote(KanaVocabNote):
         question = self.get_question()
         return [base for base in kana_utils.get_highlighting_conjugation_bases(question, is_ichidan_verb=self.is_ichidan_verb()) if base != question]
 
-    def _create_postfix_version(self, postfix:str, speech_type:str) -> VocabNote:
-        adverb = self.create(question=self.get_question() + postfix,
+    def _create_postfix_prefix_version(self, addendum:str, speech_type:str, is_prefix:bool=False, set_compounds:bool = True, truncate_characters:int=0) -> VocabNote:
+
+        def append_prepend_addendum(base:str) -> str:
+            if not is_prefix:
+                return base + addendum if truncate_characters == 0 else base[0:-truncate_characters] + addendum
+            return addendum + base if truncate_characters == 0 else base[truncate_characters:] + addendum
+
+        adverb = self.create(question=append_prepend_addendum(self.get_question()),
                              answer=self.get_answer(),
-                             readings=[reading + postfix for reading in self.get_readings()])
-        adverb.set_user_compounds([self.get_question(), postfix])
+                             readings=[append_prepend_addendum(reading) for reading in self.get_readings()])
+
+        if set_compounds:
+            if not is_prefix:
+                adverb.set_user_compounds([self.get_question(), addendum])
+            else:
+                adverb.set_user_compounds([addendum, self.get_question()])
+
         adverb.set_speech_type(speech_type)
-        adverb.set_forms(set([form + postfix for form in self.get_forms()]))
+        adverb.set_forms(set([append_prepend_addendum(form) for form in self.get_forms()]))
         return adverb
 
 
     def create_na_adjective(self) -> VocabNote:
-        return self._create_postfix_version("な", "na-adjective")
+        return self._create_postfix_prefix_version("な", "na-adjective")
 
     def create_ni_adverb(self) -> VocabNote:
-        return self._create_postfix_version("に", "adverb")
+        return self._create_postfix_prefix_version("に", "adverb")
 
     def create_to_adverb(self) -> VocabNote:
-        return self._create_postfix_version("と", "to-adverb")
+        return self._create_postfix_prefix_version("と", "to-adverb")
 
-    def create_suru_verb(self) -> VocabNote:
-        suru_verb = self._create_postfix_version("する", "suru verb")
+    def create_te_prefixed_word(self) -> VocabNote:
+        return self._create_postfix_prefix_version("て", "auxiliary", is_prefix=True)
+
+    def create_suru_verb(self, shimasu:bool = False) -> VocabNote:
+        suru_verb = self._create_postfix_prefix_version("する" if not shimasu else "します", "suru verb")
 
         if self.is_transitive(): suru_verb.set_speech_type(suru_verb.get_speech_type() + ", transitive")
         if self.is_intransitive(): suru_verb.set_speech_type(suru_verb.get_speech_type() + ", intransitive")
 
         return suru_verb
+
+    def create_shimasu_verb(self) -> VocabNote: return self.create_suru_verb(shimasu=True)
 
     def _clone(self) -> VocabNote:
         clone = self.create(self.get_question(), self.get_answer(), self.get_readings())
@@ -410,3 +427,6 @@ class VocabNote(KanaVocabNote):
         clone = self._clone()
         clone._set_question(form)
         return clone
+
+    def create_ku_form(self) -> VocabNote:
+        return self._create_postfix_prefix_version("く", "adverb", set_compounds=False, truncate_characters=1)
