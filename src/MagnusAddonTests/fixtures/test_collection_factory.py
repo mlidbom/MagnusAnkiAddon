@@ -7,7 +7,7 @@ from fixtures.base_data.sample_data import kanji_spec, sentence_spec, vocab_spec
 from fixtures.base_data.sample_data.kanji_spec import KanjiSpec
 from fixtures.base_data.sample_data.sentence_spec import SentenceSpec
 from fixtures.base_data.sample_data.vocab_spec import VocabSpec
-from fixtures.collection_factory import inject_anki_collection_with_generated_sample_data
+from fixtures.collection_factory import inject_anki_collection_with_all_sample_data
 from note.kanjinote import KanjiNote
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
@@ -15,7 +15,7 @@ from note.vocabnote import VocabNote
 # noinspection PyUnusedFunction
 @pytest.fixture(scope="function", autouse=True)
 def setup_object() -> Generator[None, None, None]:
-    with inject_anki_collection_with_generated_sample_data():
+    with inject_anki_collection_with_all_sample_data():
         yield
 
 

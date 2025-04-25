@@ -10,7 +10,6 @@ from fixtures.base_data.sample_data import kanji_spec, sentence_spec, vocab_spec
 from fixtures.stub_factory import stub_ui_dependencies
 from note.kanjinote import KanjiNote
 from note.sentencenote import SentenceNote
-from note.vocabnote import VocabNote
 
 
 
@@ -38,7 +37,7 @@ def populate_collection(collection: Collection) -> None:
     note_type_factory.add_note_types(collection)
 
 @contextmanager
-def inject_anki_collection_with_generated_sample_data() -> Generator[None, None, None]:
+def inject_anki_collection_with_all_sample_data() -> Generator[None, None, None]:
     from ankiutils import app
     with inject_empty_anki_collection_with_note_types():
         for kanji in kanji_spec.test_kanji_list:
@@ -48,7 +47,33 @@ def inject_anki_collection_with_generated_sample_data() -> Generator[None, None,
             SentenceNote.create_test_note(sentence.question, sentence.answer)
 
         for vocab in vocab_spec.test_vocab_list:
-            VocabNote.create(vocab.question, vocab.answer, vocab.readings)
+            vocab.create_vocab_note()
+
+
+        app.col().flush_cache_updates()
+
+        yield
+
+@contextmanager
+def inject_anki_collection_with_select_data(kanji:bool = False, special_vocab:bool = False, ordinary_vocab: bool = False, sentences:bool = False) -> Generator[None, None, None]:
+    from ankiutils import app
+    with inject_empty_anki_collection_with_note_types():
+        if kanji:
+            for _kanji in kanji_spec.test_kanji_list:
+                KanjiNote.create(_kanji.question, _kanji.answer, _kanji.on_readings, _kanji.kun_reading)
+
+        if special_vocab:
+            for vocab in vocab_spec.test_special_vocab:
+                vocab.create_vocab_note()
+
+        if ordinary_vocab:
+            for vocab in vocab_spec.test_ordinary_vocab_list:
+                vocab.create_vocab_note()
+
+        if sentences:
+            for sentence in sentence_spec.test_sentence_list:
+                SentenceNote.create_test_note(sentence.question, sentence.answer)
+
 
         app.col().flush_cache_updates()
 

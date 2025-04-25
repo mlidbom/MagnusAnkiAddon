@@ -105,7 +105,8 @@ def extract_words(sentence: str, allow_duplicates:bool = False) -> list[Extracte
             add_word(word, lookahead_index)
 
     def is_excluded_form(vocab_form:str, candidate_form:str) -> bool:
-        return any(voc for voc in (app.col().vocab.with_form(vocab_form)) if candidate_form in voc.get_excluded_forms())
+        vocab_with_form = app.col().vocab.with_form(vocab_form)
+        return any(voc for voc in (vocab_with_form) if candidate_form in voc.get_excluded_forms())
 
     # noinspection DuplicatedCode
     def add_word(word: str, lookahead_index: int) -> None:

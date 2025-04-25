@@ -3,14 +3,14 @@ from typing import Generator
 import pytest
 
 from ankiutils import app
-from fixtures.collection_factory import inject_anki_collection_with_generated_sample_data
+from fixtures.collection_factory import inject_anki_collection_with_all_sample_data
 from note.sentencenote import SentenceNote
 from viewmodels.kanji_list import sentence_kanji_list_viewmodel
 
 # noinspection PyUnusedFunction
 @pytest.fixture(scope="function", autouse=True)
 def setup_object() -> Generator[None, None, None]:
-    with inject_anki_collection_with_generated_sample_data():
+    with inject_anki_collection_with_all_sample_data():
         yield
 
 

@@ -2,7 +2,7 @@ from typing import Generator
 
 import pytest
 
-from fixtures.collection_factory import inject_empty_anki_collection_with_note_types
+from fixtures.collection_factory import inject_anki_collection_with_select_data
 from language_services.janome_ex.tokenizing.jn_tokenizer import JNTokenizer
 from language_services.janome_ex.word_extraction import word_extractor
 from language_services.janome_ex.word_extraction.word_extractor import WordExclusion
@@ -19,7 +19,7 @@ def setup() -> None:
 # noinspection PyUnusedFunction
 @pytest.fixture(scope="function", autouse=True)
 def setup_object() -> Generator[None, None, None]:
-    with inject_empty_anki_collection_with_note_types():
+    with inject_anki_collection_with_select_data(special_vocab=True):
         yield
 
 @pytest.mark.parametrize('sentence, expected_output', [
@@ -38,13 +38,16 @@ def setup_object() -> Generator[None, None, None]:
     ("どうやってここを知った。",
      ['どう', 'どうやって', 'やる', 'て', 'ここ', 'を', '知る', 'た']),
     ("声出したら駄目だからね",
-     ['声', '出す', 'た', 'たら', '駄目', 'だ', 'だから', 'から', 'ね']),
+     ['声', '出す', 'た', 'たら', '駄目', 'だ', 'だから', 'から', 'ね']
+     #['声', '出す', '出し', 'た', 'たら', '駄目', 'だ', 'だから', 'から', 'ね']
+     ),
     ("彼の日本語のレベルは私と同じ位だ。",
      ['彼', '彼の', 'の', '日本語', 'レベル', 'は', '私', 'と', '同じ', '同じ位', '位', 'だ']),
     ("それなのに 周りは化け物が出ることで有名だと聞き",
      ['それなのに', '周り', 'は', '化け物', 'が', '出る', 'こと', 'で', '有名', 'だ', 'と', '聞く', '聞き']),
     ("清めの一波", ['清める', '清め', 'の', '一波']),
-    ("さっさと傷を清めてこい", ['さっさと', '傷', 'を', '清める', 'て', 'くる', 'こい'])
+    ("さっさと傷を清めてこい",
+     ['さっさと', '傷', 'を', '清める', 'て', 'くる', 'こい'])
 ])
 def test_identify_words(sentence: str, expected_output: list[str]) -> None:
     result = [w.word for w in word_extractor.extract_words(sentence)]
@@ -93,7 +96,9 @@ def insert_custom_words(custom_words:list[str]) -> None:
      ['厳密に言えば', '俺', '一人', 'が', '友達', 'だけど']),
     ("幼すぎて よく覚えていないけど", [],
      [],
-     ['幼い', '幼', 'すぎる', 'て', 'よく', '覚える', 'て', 'いる', 'い', 'ない', 'けど']),
+     ['幼い', '幼', 'すぎる', 'て', 'よく', '覚える', 'て', 'いる', 'い', 'ない', 'けど']
+     #['幼い', '幼', 'すぎる', 'すぎ', 'て', 'よく', '覚える', '覚え', 'て', 'いる', 'い', 'ない', 'けど']
+     ),
     ("私は毎日ジョギングをすることを習慣にしています。",
      ["してい", "ている", "にする"],
      [WordExclusion("にして", 9), WordExclusion("にし", 9), WordExclusion("して", 10), WordExclusion("し", 10), WordExclusion("してい", 10), WordExclusion("い", 12), WordExclusion("にする")],
@@ -122,15 +127,13 @@ def insert_custom_words(custom_words:list[str]) -> None:
      [],
      [],
      ['教科書', '落ちる', 'ちゃう', 'から']),
-    ("待ってました",[],[],['待つ', 'て', 'ます', 'まし', 'た'])
+    ("待ってました",[],[],['待つ', 'て', 'ます', 'た'])
 ])
 def test_hierarchical_extraction(sentence: str, custom_words:list[str], excluded:list[WordExclusion], expected_output: list[str]) -> None:
     insert_custom_words(custom_words)
     hierarchical = word_extractor.extract_words_hierarchical(sentence, excluded)
     root_words = [w.word.word for w in hierarchical]
     assert root_words == expected_output
-
-
 
 def insert_custom_words_with_excluded_forms(custom_words:list[list[str]]) -> None:
     from ankiutils import app
@@ -142,14 +145,13 @@ def insert_custom_words_with_excluded_forms(custom_words:list[list[str]]) -> Non
 @pytest.mark.parametrize('sentence, custom_words, expected_output', [
     ("後で下に下りてらっしゃいね",
      [["らっしゃい","[[らっしゃる]]"]],
-     ['後で', '下', '下に', 'に', '下りる', 'て', 'らっしゃい', 'ね']
-     )
-    ,("無理して思い出す",
+     ['後で', '下', '下に', 'に', '下りる', 'て', 'らっしゃい', 'ね']),
+    ("無理して思い出す",
      [["する","[[し]]"]],
       ['無理', 'する', 'して', 'て', '思い出す']),
     ("リセットしても",
      [["する","[[し]]", "[[して]]"]],
-     ['リセット', 'する', 'て', 'ても', 'も'])
+     ['リセット', 'する', 'て', 'ても', 'も'],)
 ])
 def test_custom_vocab_words_with_excluded_forms(sentence: str, custom_words:list[list[str]], expected_output: list[str]) -> None:
     insert_custom_words_with_excluded_forms(custom_words)
