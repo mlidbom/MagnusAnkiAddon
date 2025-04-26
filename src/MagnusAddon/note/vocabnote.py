@@ -80,6 +80,10 @@ class VocabNote(KanaVocabNote):
     def set_user_compounds(self, compounds:list[str]) -> None:
         self.set_field(NoteFields.Vocab.user_compounds, ",".join(compounds))
 
+    def in_compounds(self) -> list[VocabNote]:
+        from ankiutils import app
+        return app.col().vocab.with_compound_part(self.get_question())
+
     def get_direct_dependencies(self) -> set[JPNote]:
         return (set(self.collection.kanji.with_any_kanji_in(list(self.extract_main_form_kanji()))) |
                 set(ex_sequence.flatten([self.collection.vocab.with_question(compound_part) for compound_part in self.get_user_compounds()])))
@@ -374,7 +378,7 @@ class VocabNote(KanaVocabNote):
     def get_stems_for_all_forms(self) -> list[str]:
         return ex_sequence.flatten([self._get_stem_for_form(form) for form in self.get_forms()])
 
-    def _create_postfix_prefix_version(self, addendum:str, speech_type:str, is_prefix:bool=False, set_compounds:bool = True, truncate_characters:int=0) -> VocabNote:
+    def _create_postfix_prefix_version(self, addendum:str, speech_type:str, is_prefix:bool = False, set_compounds:bool = True, truncate_characters:int = 0) -> VocabNote:
 
         def append_prepend_addendum(base:str) -> str:
             if not is_prefix:
@@ -407,6 +411,15 @@ class VocabNote(KanaVocabNote):
 
     def create_te_prefixed_word(self) -> VocabNote:
         return self._create_postfix_prefix_version("て", "auxiliary", is_prefix=True)
+
+    def create_no_suffixed_word(self) -> VocabNote:
+        return self._create_postfix_prefix_version("の", "expression")
+
+    def create_n_suffixed_word(self) -> VocabNote:
+        return self._create_postfix_prefix_version("ん", "expression")
+
+    def create_ka_suffixed_word(self) -> VocabNote:
+        return self._create_postfix_prefix_version("か", "expression")
 
     def create_suru_verb(self, shimasu:bool = False) -> VocabNote:
         suru_verb = self._create_postfix_prefix_version("する" if not shimasu else "します", "suru verb")

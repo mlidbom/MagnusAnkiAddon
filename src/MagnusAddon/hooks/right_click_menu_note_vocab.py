@@ -26,7 +26,7 @@ def setup_note_menu(vocab: VocabNote, note_menu: QMenu, string_menus: list[tuple
     add_lookup_action(note_lookup_menu, shortcutfinger.up1("Sentences with primary form"), query_builder.notes_lookup(vocab.get_sentences_with_primary_form()))
     add_lookup_action(note_lookup_menu, shortcutfinger.up2("Sentences with this word highlighted"), query_builder.notes_lookup(vocab.get_user_highlighted_sentences()))
 
-    add_text_vocab_lookup(note_lookup_menu, shortcutfinger.up3("Compounds"), vocab.get_question())
+    add_lookup_action(note_lookup_menu, shortcutfinger.up3("Compounds"), query_builder.notes_lookup(vocab.in_compounds()))
     add_vocab_dependencies_lookup(note_lookup_menu, shortcutfinger.up3("Dependencies"), vocab)
 
     for reading in vocab.get_readings():
@@ -86,6 +86,9 @@ def setup_note_menu(vocab: VocabNote, note_menu: QMenu, string_menus: list[tuple
     create_note_action(note_create_menu, shortcutfinger.up1("します-verb"), lambda: vocab.create_shimasu_verb())
     create_note_action(note_create_menu, shortcutfinger.up2("く-form-of-い-adjective"), lambda: vocab.create_ku_form())
     create_note_action(note_create_menu, shortcutfinger.up3("て-prefixed"), lambda: vocab.create_te_prefixed_word())
+    create_note_action(note_create_menu, shortcutfinger.up4("の-suffixed"), lambda: vocab.create_no_suffixed_word())
+    create_note_action(note_create_menu, shortcutfinger.up5("ん-suffixed"), lambda: vocab.create_n_suffixed_word())
+    create_note_action(note_create_menu, shortcutfinger.down1("か-suffixed"), lambda: vocab.create_ka_suffixed_word())
 
     clone_to_form_menu = non_optional(note_create_menu.addMenu("Create form"))
     forms_with_no_vocab = [form for form in vocab.get_forms() if not any(app.col().vocab.with_question(form))]
