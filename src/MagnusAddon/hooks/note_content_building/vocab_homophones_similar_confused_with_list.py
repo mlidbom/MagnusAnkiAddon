@@ -62,7 +62,7 @@ def generate_homophones_html_list(vocab_note: VocabNote) -> str:
     return render_vocab_list(homophones, "homophones", css_class="homophones") if homophones else ""
 
 def generate_similar_meaning_html_list(_vocab_note: VocabNote) -> str:
-    similar = ex_sequence.flatten([app.col().vocab.with_question(question) for question in _vocab_note.get_related_similar_meaning()])
+    similar = lookup_vocabs_list_prefer_exact_match(list(_vocab_note.get_related_similar_meaning()))
     similar = vocabnote.sort_vocab_list_by_studying_status(similar)
 
     return render_vocab_list(similar, "similar", css_class="similar") if similar else ""
