@@ -365,9 +365,14 @@ class VocabNote(KanaVocabNote):
     def is_ichidan_verb(self) -> bool:
         return "ichidan" in self.get_speech_type()
 
+    def _get_stem_for_form(self, form:str) -> list[str]:
+        return [base for base in kana_utils.get_highlighting_conjugation_bases(form, is_ichidan_verb=self.is_ichidan_verb()) if base != form]
+
     def get_stems(self) -> list[str]:
-        question = self.get_question()
-        return [base for base in kana_utils.get_highlighting_conjugation_bases(question, is_ichidan_verb=self.is_ichidan_verb()) if base != question]
+        return self._get_stem_for_form(self.get_question())
+
+    def get_stems_for_all_forms(self) -> list[str]:
+        return ex_sequence.flatten([self._get_stem_for_form(form) for form in self.get_forms()])
 
     def _create_postfix_prefix_version(self, addendum:str, speech_type:str, is_prefix:bool=False, set_compounds:bool = True, truncate_characters:int=0) -> VocabNote:
 

@@ -138,10 +138,7 @@ def tag_kanji_metadata() -> None:
     progress_display_runner.process_with_progress(all_kanji, tag_has_single_kanji_vocab_with_reading_different_from_kanji_primary_reading, "Tagging kanji with single kanji vocab")
 
 def reparse_sentence_words() -> None:
-    def reparse_sentence(sentence: SentenceNote) -> None:
-        sentence.update_parsed_words(force=True)
-
-    progress_display_runner.process_with_progress(app.col().sentences.all(), reparse_sentence, "Reparsing sentences.")
+    reparse_sentences(app.col().sentences.all())
 
 def reading_in_vocab_reading(kanji:KanjiNote, kanji_reading: str, vocab_reading: str, vocab_form: str) -> bool:
     vocab_form = ex_str.strip_html_and_bracket_markup_and_noise_characters(vocab_form)
@@ -151,3 +148,14 @@ def reading_in_vocab_reading(kanji:KanjiNote, kanji_reading: str, vocab_reading:
         return vocab_reading.endswith(kanji_reading)
     else:
         return kanji_reading in vocab_reading[1:-1]
+
+def reparse_sentences(sentences:list[SentenceNote]) -> None:
+    def reparse_sentence(sentence: SentenceNote) -> None:
+        sentence.update_parsed_words(force=True)
+
+    progress_display_runner.process_with_progress(sentences, reparse_sentence, "Reparsing sentences.")
+
+def reparse_sentences_for_vocab(vocab:VocabNote) -> None:
+    query = query_builder.sentence_with_any_vocab_form_in_question(vocab)
+    sentences = app.col().sentences.search(query)
+    reparse_sentences(sentences)

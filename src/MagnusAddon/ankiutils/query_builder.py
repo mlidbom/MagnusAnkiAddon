@@ -34,6 +34,9 @@ def _or_clauses(clauses:list[str]) -> str:
 def field_contains_word(field:str, *words:str) -> str:
     return _or_clauses([f'''"{field}:re:\\b{query}\\b"''' for query in words])
 
+def field_contains_string(field:str, *words:str) -> str:
+    return _or_clauses([f'''"{field}:*{query}*"''' for query in words])
+
 def sentence_search(word:str, exact:bool = False) -> str:
     result = f"""{note_sentence} """
 
@@ -48,6 +51,11 @@ def sentence_search(word:str, exact:bool = False) -> str:
             return result + "(" + "　OR ".join([form_query(form) for form in forms]) + ")"
 
     return result + f"""({form_query(word)})"""
+
+def sentence_with_any_vocab_form_in_question(word:VocabNote) -> str:
+    search_strings = word.get_stems_for_all_forms() + list(word.get_forms())
+    return f"""{note_sentence} {field_contains_string(f_question,  *search_strings)}"""
+
 
 def notes_lookup(notes: Sequence[JPNote]) -> str:
     return f"""{NoteFields.note_id}:{",".join(str(note.get_id()) for note in notes)}""" if notes else ""

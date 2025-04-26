@@ -76,6 +76,9 @@ def setup_note_menu(vocab: VocabNote, note_menu: QMenu, string_menus: list[tuple
     if vocab.can_generate_sentences_from_context_sentences(require_audio=False):
         add_ui_action(note_menu, shortcutfinger.up3("Generate sentences"), lambda: vocab.generate_sentences_from_context_sentences(require_audio=False))
 
+    from batches import local_note_updater
+    add_ui_action(note_menu, shortcutfinger.up3("Reparse matching sentences"), lambda: local_note_updater.reparse_sentences_for_vocab(vocab))
+
     create_note_action(note_create_menu, shortcutfinger.home1("な-adjective"), lambda: vocab.create_na_adjective())
     create_note_action(note_create_menu, shortcutfinger.home2("に-adverb"), lambda: vocab.create_ni_adverb())
     create_note_action(note_create_menu, shortcutfinger.home3("to-adverb"), lambda: vocab.create_to_adverb())
@@ -92,6 +95,9 @@ def setup_note_menu(vocab: VocabNote, note_menu: QMenu, string_menus: list[tuple
 def create_note_action(menu: QMenu, name: str, callback: Callable[[], VocabNote]) -> None:
     def run_ui_action() -> None:
         new_note = callback()
+
+        from batches import local_note_updater
+        local_note_updater.reparse_sentences_for_vocab(new_note)
         search_executor.do_lookup_and_show_previewer(query_builder.notes_lookup([new_note]))
 
     menu.addAction(name, lambda: run_ui_action())

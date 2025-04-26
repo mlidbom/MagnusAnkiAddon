@@ -53,13 +53,9 @@ def setup_browser_context_menu(browser: Browser, menu: QMenu) -> None:
 
     selected_sentences:list[SentenceNote] = [note for note in selected_notes if isinstance(note, SentenceNote)]
     if selected_sentences:
-        def reparse_words(sentence:SentenceNote) -> None:
-            sentence.update_parsed_words(force=True)
+        from batches import  local_note_updater
 
-        def reparse_sentences() -> None:
-            progress_display_runner.process_with_progress(selected_sentences, reparse_words, "Reparsing sentence words.")
-
-        magnus_menu.addAction("Reparse sentence words", reparse_sentences)
+        magnus_menu.addAction("Reparse sentence words", lambda: local_note_updater.reparse_sentences(selected_sentences))
 
 
 def init() -> None:
