@@ -13,27 +13,29 @@ def is_katakana(char: str) -> bool:
 def is_kana(char: str) -> bool:
     return is_hiragana(char) or is_katakana(char)
 
-_word_last_character_stem_mappings:dict[str, list[str]] = {'う': ['い','わ','え'],
-                                                           'く': ['き','か','け'],
-                                                           'ぐ': ['ぎ','が','げ'],
-                                                           'す': ['し','さ','せ'],
-                                                           'つ': ['ち','た','て'],
-                                                           'ぬ': ['に','な','ね'],
-                                                           'ぶ': ['び','ば','べ'],
-                                                           'む': ['み','ま','め'],
-                                                           'る': ['り','ら','れ'],
-                                                           'い': ['く']}
+_word_last_character_mappings:dict[str, list[str]] = {'う': ['い', 'わ', 'え', 'っ'],
+                                                      'く': ['き', 'か', 'け', 'い'],
+                                                      'ぐ': ['ぎ', 'が', 'げ', 'い'],
+                                                      'す': ['し', 'さ', 'せ'],
+                                                      'つ': ['ち', 'た', 'て', 'っ'],
+                                                      'ぬ': ['に', 'な', 'ね', 'ん'],
+                                                      'ぶ': ['び', 'ば', 'べ', 'ん'],
+                                                      'む': ['み', 'ま', 'め', 'ん'],
+                                                      'る': ['り', 'ら', 'れ', 'っ'],
+                                                      'い': ['く']}
 
 _irregular_verb_stem_mappings: dict[str, list[str]] = {'する': ['すれ', 'し', 'さ'],
                                                        'くる': ['くれ', 'き','こ']}
-def get_highlighting_conjugation_bases(word: str, is_ichidan_verb:bool = False) -> list[str]:
+def get_highlighting_conjugation_bases(word: str, is_ichidan_verb:bool = False, is_godan:bool = False) -> list[str]:
     if is_ichidan_verb:
         return [word[:-1]]
-
     if word[-2:] in _irregular_verb_stem_mappings:
         return [word[:-2] + end for end in _irregular_verb_stem_mappings[word[-2:]]]
-    if word[-1] in _word_last_character_stem_mappings:
-        return [word[:-1] + end for end in _word_last_character_stem_mappings[word[-1]]]
+    if word[-1] in _word_last_character_mappings:
+        if is_godan or word[-1] != "る":
+            return [word[:-1] + end for end in _word_last_character_mappings[word[-1]]]
+        else:
+            return [word[:-1] + end for end in _word_last_character_mappings[word[-1]]] + [word[:-1]]
     return [word]
 
 def to_katakana(hiragana: str) -> str:

@@ -379,22 +379,22 @@ class VocabNote(KanaVocabNote):
         return "verb" in self.get_speech_type()
 
     def is_ichidan_verb(self) -> bool:
-        return "ichidan" in self.get_speech_type()
+        return "ichidan" in self.get_speech_type().lower()
 
-    def _get_stem_for_form(self, form:str) -> list[str]:
+    def _get_stems_for_form(self, form:str) -> list[str]:
         return [base for base in kana_utils.get_highlighting_conjugation_bases(form, is_ichidan_verb=self.is_ichidan_verb()) if base != form]
 
     def get_stems_for_primary_form(self) -> list[str]:
-        return self._get_stem_for_form(self.get_question())
+        return self._get_stems_for_form(self.get_question())
 
     def get_text_matching_forms_for_primary_form(self) -> list[str]:
-        return [self.get_question()] + self._get_stem_for_form(self.get_question())
+        return [self.get_question()] + self._get_stems_for_form(self.get_question())
 
     def get_text_matching_forms_for_all_form(self) -> list[str]:
-        return self.get_forms_list() + self._get_stem_for_form(self.get_question())
+        return self.get_forms_list() + self.get_stems_for_all_forms()
 
     def get_stems_for_all_forms(self) -> list[str]:
-        return ex_sequence.flatten([self._get_stem_for_form(form) for form in self.get_forms()])
+        return ex_sequence.flatten([self._get_stems_for_form(form) for form in self.get_forms()])
 
     def create_prefix_version(self, prefix: str, speech_type: str = "expression", set_compounds: bool = True, truncate_characters: int = 0) -> VocabNote:
         return self._create_postfix_prefix_version(prefix, speech_type, is_prefix=True, set_compounds=set_compounds, truncate_characters=truncate_characters)

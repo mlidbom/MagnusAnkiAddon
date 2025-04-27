@@ -2,28 +2,31 @@ import pytest
 
 from sysutils import kana_utils
 
-@pytest.mark.parametrize("word, conjugation_bases, is_ichidan", [
+@pytest.mark.parametrize("word, conjugation_bases, is_ichidan, is_godan", [
     #irregular verbs
-    ("くる", ['くれ', 'き', 'こ'], False),
-    ("する", ['すれ', 'し', 'さ'], False),
-    ('しようとする', ['しようとすれ', 'しようとし', 'しようとさ'], False),
-    ("おいてくる", ['おいてくれ', 'おいてき', 'おいてこ'], False),
+    ("くる", ['くれ', 'き', 'こ'], False, False),
+    ("する", ['すれ', 'し', 'さ'], False, False),
+    ('しようとする', ['しようとすれ', 'しようとし', 'しようとさ'], False, False),
+    ("おいてくる", ['おいてくれ', 'おいてき', 'おいてこ'], False, False),
 
     #adjectives
-    ("美味しい", ['美味しく'], False),
+    ("美味しい", ['美味しく'], False, False),
 
     #godan verbs
-    ("走る", ["走り","走ら", "走れ"], False),
-    ("使う", ["使い","使わ", "使え"], False),
-    ("書く", ["書き","書か", "書け"], False),
-    ("立つ", ["立ち","立た", "立て"], False),
-    ("死ぬ", ["死に","死な", "死ね"], False),
-    ("飛ぶ", ["飛び","飛ば", "飛べ"], False),
-    ("読む", ["読み","読ま", "読め"], False),
-    ("帰る", ["帰り","帰ら", "帰れ"], False),
+    ("走る", ["走り", "走ら", "走れ", "走っ", "走"], False, False),
+    ("帰る", ["帰り", "帰ら", "帰れ", "帰っ", "帰"], False, False),
+    ("走る", ["走り", "走ら", "走れ", "走っ"], False, True),
+    ("帰る", ["帰り", "帰ら", "帰れ", "帰っ"], False, True),
+    ("使う", ["使い", "使わ", "使え", "使っ"], False, False),
+    ("書く", ["書き", "書か", "書け", "書い"], False, False),
+    ("立つ", ["立ち", "立た", "立て", "立っ"], False, False),
+    ("死ぬ", ["死に", "死な", "死ね", "死ん"], False, False),
+    ("飛ぶ", ["飛び", "飛ば", "飛べ", "飛ん"], False, False),
+    ("読む", ["読み", "読ま", "読め", "読ん"], False, False),
     #ichidan verbs
-    ("食べる", ["食べ"], True)
+    ("食べる", ['食べり', '食べら', '食べれ', '食べっ', '食べ'], False, False),
+    ("食べる", ["食べ"], True, False)
 ])
-def test_identify_words(word: str, conjugation_bases: list[str], is_ichidan: bool) -> None:
-    result = kana_utils.get_highlighting_conjugation_bases(word, is_ichidan)
+def test_identify_words(word: str, conjugation_bases: list[str], is_ichidan: bool, is_godan:bool) -> None:
+    result = kana_utils.get_highlighting_conjugation_bases(word, is_ichidan, is_godan)
     assert result == conjugation_bases

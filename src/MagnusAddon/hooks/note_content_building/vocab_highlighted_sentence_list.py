@@ -11,14 +11,15 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
     forms = [_vocab_note.get_question()] + list(_vocab_note.get_forms())
     forms = ex_sequence.remove_duplicates_while_retaining_order(forms)
     primary_form = _vocab_note.get_question_without_noise_characters()
+    primary_form_forms = _vocab_note.get_text_matching_forms_for_primary_form()
     secondary_forms = [form for form in forms if form != primary_form]
-    secondary_forms_stems = [kana_utils.get_highlighting_conjugation_bases(form) for form in secondary_forms]
+    secondary_forms_forms = [form for form in _vocab_note.get_text_matching_forms_for_all_form() if form not in primary_form_forms]
 
     derived_compounds = _vocab_note.in_compounds()
     derived_compounds_stems = ex_sequence.flatten([der.get_text_matching_forms_for_all_form() for der in derived_compounds])
 
-    secondary_forms_with_their_own_vocab = [form for form in secondary_forms if any(app.col().vocab.with_question(form))]
-    secondary_forms_with_their_own_vocab_stems = [kana_utils.get_highlighting_conjugation_bases(form) for form in secondary_forms_with_their_own_vocab]
+    secondary_forms_vocab_notes = ex_sequence.flatten([app.col().vocab.with_question(v) for v in secondary_forms])
+    secondary_forms_with_their_own_vocab_forms = ex_sequence.flatten([f.get_text_matching_forms_for_primary_form() for f in secondary_forms_vocab_notes])
 
     primary_form_stems = _vocab_note.get_stems_for_primary_form()
     
@@ -28,28 +29,22 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
 
     def contains_secondary_form_with_its_own_vocabulary_note(_sentence: SentenceNote) -> bool:
         clean_sentence = ex_str.strip_html_and_bracket_markup(_sentence.get_question())
-        return any(base_forms for base_forms in secondary_forms_with_their_own_vocab_stems if any(base_form for base_form in base_forms if base_form in clean_sentence))
+        return any(base_form for base_form in secondary_forms_with_their_own_vocab_forms if base_form in clean_sentence)
 
     def format_sentence(html_sentence: str) -> str:
         clean_sentence = ex_str.strip_html_and_bracket_markup(html_sentence)
-
-        def create_form_class(_form:str) -> str:
-            return "primaryForm" if _form == primary_form else "secondaryForm"
-
 
         for form in derived_compounds_stems:
             if form in clean_sentence:
                 return clean_sentence.replace(form, f"""<span class="vocabInContext derivedCompoundForm">{form}</span>""")
 
-        for form in forms:
+        for form in primary_form_forms:
             if form in clean_sentence:
-                return clean_sentence.replace(form, f"""<span class="vocabInContext {create_form_class(form)}">{form}</span>""")
-            else:
-                _conjugation_base_forms = kana_utils.get_highlighting_conjugation_bases(form)
+                return clean_sentence.replace(form, f"""<span class="vocabInContext primaryForm">{form}</span>""")
 
-                for base_form in _conjugation_base_forms:
-                    if base_form in clean_sentence:
-                        return clean_sentence.replace(base_form, f"""<span class="vocabInContext {create_form_class(form)}">{base_form}</span>""")
+        for form in secondary_forms_forms:
+            if form in clean_sentence:
+                return clean_sentence.replace(form, f"""<span class="vocabInContext secondaryForm">{form}</span>""")
 
         return clean_sentence
 
@@ -79,7 +74,7 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
 
         def dislike_sentences_containing_secondary_form(_sentence:SentenceNote) -> int:
             clean_sentence = ex_str.strip_html_and_bracket_markup(_sentence.get_question())
-            return 1 if any(base_forms for base_forms in secondary_forms_stems if any(base_form for base_form in base_forms if base_form in clean_sentence)) else 0
+            return 1 if any(base_forms for base_forms in secondary_forms_forms if any(base_form for base_form in base_forms if base_form in clean_sentence)) else 0
 
         def dislike_contains_derived_compound(_sentence: SentenceNote) -> int:
             clean_sentence = ex_str.strip_html_and_bracket_markup(_sentence.get_question())
