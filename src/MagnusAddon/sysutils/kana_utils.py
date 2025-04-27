@@ -32,10 +32,8 @@ def get_highlighting_conjugation_bases(word: str, is_ichidan_verb:bool = False) 
 
     if word[-2:] in _irregular_verb_stem_mappings:
         return [word[:-2] + end for end in _irregular_verb_stem_mappings[word[-2:]]]
-    if word.endswith('てくる'):  # verb endings and i-adjective ending
-        return [word[:-2] + "き", word[:-2] + "こ"]
     if word[-1] in _word_last_character_stem_mappings:
-        return [word[:-1] + end for end in _word_last_character_stem_mappings[word[-1]]] + [word[:-1]]
+        return [word[:-1] + end for end in _word_last_character_stem_mappings[word[-1]]]
     return [word]
 
 def to_katakana(hiragana: str) -> str:
