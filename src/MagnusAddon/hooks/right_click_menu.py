@@ -60,7 +60,7 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu) -> None:
         string_menus.append((non_optional(root_menu.addMenu(shortcutfinger.home2(f'''Clipboard: "{clipboard[:40]}"'''))), clipboard))
 
     if note:
-        setup_note_menu(note, root_menu, string_menus)
+        setup_note_menu(note, root_menu, string_menus, selection, clipboard)
 
     for string_menu, menu_string in string_menus:
         string_menu.addSeparator()
@@ -89,14 +89,14 @@ def create_note_actions_menu(note_menu: QMenu, note:JPNote, title:str) -> None:
     if note.has_suspended_cards_or_depencies_suspended_cards():
         add_ui_action(menu, shortcutfinger.home4("Unsuspend all cards and dependencies' cards"), note.unsuspend_all_cards_and_dependencies, confirm=True)
 
-def setup_note_menu(note: JPNote, root_menu: QMenu, string_menus: list[tuple[QMenu, str]]) -> None:
+def setup_note_menu(note: JPNote, root_menu: QMenu, string_menus: list[tuple[QMenu, str]], selection:str = "", clipboard:str = "") -> None:
     note_menu = non_optional(root_menu.addMenu(shortcutfinger.home3("Note")))
     if isinstance(note, RadicalNote):
         right_click_menu_note_radical.setup_note_menu(note, note_menu, string_menus)
     elif isinstance(note, KanjiNote):
         right_click_menu_note_kanji.setup_note_menu(note, note_menu, string_menus)
     elif isinstance(note, VocabNote):
-        right_click_menu_note_vocab.setup_note_menu(note, note_menu, string_menus)
+        right_click_menu_note_vocab.setup_note_menu(note, note_menu, string_menus, selection, clipboard)
     elif isinstance(note, SentenceNote):
         right_click_menu_note_sentence.setup_note_menu(note, note_menu, string_menus)
 

@@ -11,7 +11,7 @@ from sysutils import ex_str
 from sysutils.typed import non_optional
 from hooks import shortcutfinger
 
-def setup_note_menu(vocab: VocabNote, note_menu: QMenu, string_menus: list[tuple[QMenu, str]]) -> None:
+def setup_note_menu(vocab: VocabNote, note_menu: QMenu, string_menus: list[tuple[QMenu, str]], selection:str, clipboard:str) -> None:
     note_lookup_menu: QMenu = non_optional(note_menu.addMenu(shortcutfinger.home1("Open")))
     note_hide_menu: QMenu = non_optional(note_menu.addMenu(shortcutfinger.home2("Hide/Remove")))
     note_restore_menu = non_optional(note_menu.addMenu(shortcutfinger.home3("Restore")))
@@ -79,6 +79,11 @@ def setup_note_menu(vocab: VocabNote, note_menu: QMenu, string_menus: list[tuple
     from batches import local_note_updater
     add_ui_action(note_menu, shortcutfinger.up3("Reparse matching sentences"), lambda: local_note_updater.reparse_sentences_for_vocab(vocab))
 
+    clone_to_form_menu = non_optional(note_create_menu.addMenu("Create form"))
+    forms_with_no_vocab = [form for form in vocab.get_forms() if not any(app.col().vocab.with_question(form))]
+    for index, form in enumerate(forms_with_no_vocab):
+        create_note_action(clone_to_form_menu, shortcutfinger.numpad(index, form), lambda _form=form: vocab.clone_to_form(_form)) # type: ignore
+
     create_note_action(note_create_menu, shortcutfinger.home1("な-adjective"), lambda: vocab.create_na_adjective())
     create_note_action(note_create_menu, shortcutfinger.home2("に-adverb"), lambda: vocab.create_ni_adverb())
     create_note_action(note_create_menu, shortcutfinger.home3("to-adverb"), lambda: vocab.create_to_adverb())
@@ -90,10 +95,13 @@ def setup_note_menu(vocab: VocabNote, note_menu: QMenu, string_menus: list[tuple
     create_note_action(note_create_menu, shortcutfinger.up5("ん-suffixed"), lambda: vocab.create_n_suffixed_word())
     create_note_action(note_create_menu, shortcutfinger.down1("か-suffixed"), lambda: vocab.create_ka_suffixed_word())
 
-    clone_to_form_menu = non_optional(note_create_menu.addMenu("Create form"))
-    forms_with_no_vocab = [form for form in vocab.get_forms() if not any(app.col().vocab.with_question(form))]
-    for index, form in enumerate(forms_with_no_vocab):
-        create_note_action(clone_to_form_menu, shortcutfinger.numpad(index, form), lambda _form=form: vocab.clone_to_form(_form)) # type: ignore
+    if selection:
+        create_note_action(note_create_menu, f"selection: {selection}-prefix", lambda: vocab.create_prefix_version(selection))
+        create_note_action(note_create_menu, f"selection: {selection}-suffix", lambda: vocab.create_suffix_version(selection))
+
+    if clipboard:
+        create_note_action(note_create_menu, f"clipboard: {clipboard}-prefix", lambda: vocab.create_prefix_version(selection))
+        create_note_action(note_create_menu, f"clipboard: {clipboard}-suffix", lambda: vocab.create_suffix_version(selection))
 
 def create_note_action(menu: QMenu, name: str, callback: Callable[[], VocabNote]) -> None:
     def run_ui_action() -> None:

@@ -389,6 +389,12 @@ class VocabNote(KanaVocabNote):
     def get_stems_for_all_forms(self) -> list[str]:
         return ex_sequence.flatten([self._get_stem_for_form(form) for form in self.get_forms()])
 
+    def create_prefix_version(self, prefix: str, speech_type: str = "expression", set_compounds: bool = True, truncate_characters: int = 0) -> VocabNote:
+        return self._create_postfix_prefix_version(prefix, speech_type, is_prefix=True, set_compounds=set_compounds, truncate_characters=truncate_characters)
+
+    def create_suffix_version(self, suffix: str, speech_type: str = "expression", set_compounds: bool = True, truncate_characters: int = 0) -> VocabNote:
+        return self._create_postfix_prefix_version(suffix, speech_type, is_prefix=False, set_compounds=set_compounds, truncate_characters=truncate_characters)
+
     def _create_postfix_prefix_version(self, addendum:str, speech_type:str, is_prefix:bool = False, set_compounds:bool = True, truncate_characters:int = 0) -> VocabNote:
 
         def append_prepend_addendum(base:str) -> str:
