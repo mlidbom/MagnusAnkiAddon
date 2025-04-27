@@ -209,27 +209,35 @@ class VocabNote(KanaVocabNote):
     def _get_studying_sentence_count(sentences:list[SentenceNote], card: str = "") -> int:
         return len([sentence for sentence in sentences if sentence.is_studying(card)])
 
-    def get_meta_tags_html(self, include_extended_sentence_statistics:bool = True) -> str:
+    def get_meta_tags_html(self, display_extended_sentence_statistics:bool = True) -> str:
         tags = set(self.get_tags())
         meta: list[VocabMetaTag] = []
         tos = set([t.lower().strip() for t in self.get_speech_type().split(",")])
 
+        def max_nine_number(value: int) -> str: return f"""{value}""" if value < 10 else "+"
         highlighted_in = self.get_user_highlighted_sentences()
-        if highlighted_in:
-            meta.append(VocabMetaTag("highlighted_in_sentences", f"""{len(highlighted_in)}""", f"""highlighted in {len(highlighted_in)} sentences"""))
+        meta.append(VocabMetaTag("highlighted_in_sentences", f"""{max_nine_number(len(highlighted_in))}""", f"""highlighted in {len(highlighted_in)} sentences"""))
 
-        if include_extended_sentence_statistics:
-            # todo: If a form has it's own VocabNote, exclude it from these statistics
-            sentences = self.get_sentences()
-            if sentences:
-                studying_sentences_reading = self._get_studying_sentence_count(sentences, NoteFields.VocabNoteType.Card.Reading)
-                studying_sentences_listening = self._get_studying_sentence_count(sentences, NoteFields.VocabNoteType.Card.Listening)
-                if studying_sentences_reading or studying_sentences_listening:
-                    meta.append(VocabMetaTag("in_studying_sentences", f"""{studying_sentences_listening}:{studying_sentences_reading}/{len(sentences)}""", f"""in {len(sentences)} sentences {studying_sentences_reading} of which are being studied"""))
+        # todo: If a form has it's own VocabNote, exclude it from these statistics
+        sentences = self.get_sentences()
+        if sentences:
+            studying_sentences_reading = self._get_studying_sentence_count(sentences, NoteFields.VocabNoteType.Card.Reading)
+            studying_sentences_listening = self._get_studying_sentence_count(sentences, NoteFields.VocabNoteType.Card.Listening)
+            tooltip_text = f"""in {len(sentences)} sentences. Studying-listening:{studying_sentences_listening}, Studying-reading:{studying_sentences_reading}"""
+            if studying_sentences_reading or studying_sentences_listening:
+                if display_extended_sentence_statistics:
+                    meta.append(VocabMetaTag("in_studying_sentences", f"""{studying_sentences_listening}:{studying_sentences_reading}/{len(sentences)}""", tooltip_text))
                 else:
-                    meta.append(VocabMetaTag("in_sentences", f"""{len(sentences)}""", f"""in {len(sentences)} sentences"""))
+                    def create_display_text() -> str:
+                        if studying_sentences_listening > 9 and studying_sentences_reading > 9:
+                            return "+"
+                        return f"{max_nine_number(studying_sentences_listening)}:{max_nine_number(studying_sentences_reading)}/{max_nine_number(len(sentences))}"
+
+                    meta.append(VocabMetaTag("in_studying_sentences", create_display_text(), tooltip_text))
             else:
-                meta.append(VocabMetaTag("in_no_sentences", f"""{len(sentences)}""", f"""in {len(sentences)} sentences"""))
+                meta.append(VocabMetaTag("in_sentences", f"""{len(sentences)}""", tooltip_text))
+        else:
+            meta.append(VocabMetaTag("in_no_sentences", f"""{len(sentences)}""", f"""in {len(sentences)} sentences"""))
 
 
         #overarching info
