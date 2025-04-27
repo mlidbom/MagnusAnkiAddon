@@ -114,7 +114,7 @@ def extract_words(sentence: str, allow_duplicates:bool = False) -> list[Extracte
             found_words.add(word)
             found_words_list.append(ExtractedWord(word, token_index, lookahead_index))
 
-    def is_next_token_verb_modifier(index:int) -> bool:
+    def is_next_token_inflecting_word(index:int) -> bool:
         def lookup_vocabs_prefer_exact_match(form: str) -> list[VocabNote]:
             matches: list[VocabNote] = app.col().vocab.with_form(form)
             exact_match = [voc for voc in matches if voc.get_question_without_noise_characters() == form]
@@ -126,19 +126,19 @@ def extract_words(sentence: str, allow_duplicates:bool = False) -> list[Extracte
         next_token = tokens[index + 1]
         vocab:list[VocabNote] = lookup_vocabs_prefer_exact_match(next_token.base_form)
 
-        if any([voc for voc in vocab if voc.has_tag(Mine.Tags.verb_modifier)]):
+        if any([voc for voc in vocab if voc.has_tag(Mine.Tags.inflecting_word)]):
             return True
 
         return False
 
-    def is_inflected_verb(index: int) -> bool:
+    def is_inflected_word(index: int) -> bool:
         token = tokens[index]
         if token.is_inflected_verb():
             return True
 
-        if token.is_verb_for_inflection_purposes():
+        if token.is_inflectable_word():
             if index < len(tokens) -1:
-                if is_next_token_verb_modifier(index):
+                if is_next_token_inflecting_word(index):
                     return True
 
         return False
@@ -165,7 +165,7 @@ def extract_words(sentence: str, allow_duplicates:bool = False) -> list[Extracte
             add_word(token.base_form, 0)
 
         if (token.surface != token.base_form
-                and not is_inflected_verb(token_index)
+                and not is_inflected_word(token_index)
                 and not is_excluded_form(token.base_form, token.surface)): #if the surface is the stem of an inflected verb, don't use it, it's not a word in its own right in this sentence.
             add_word(token.surface, 0)
         check_for_compound_words()

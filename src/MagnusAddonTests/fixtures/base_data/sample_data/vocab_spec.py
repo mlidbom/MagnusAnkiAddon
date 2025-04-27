@@ -38,11 +38,13 @@ class VocabSpec:
 
 
 test_special_vocab = [
-    VocabSpec("てる", "{continuing-{activity | state}} / {progressive | perfect}", ['てる'], tags=[Mine.Tags.verb_modifier]),
-    VocabSpec("た", "{past-tense} | (please)do", ['た'], tags=[Mine.Tags.verb_modifier]),
-    VocabSpec("て", "{continuing-action}", ['て'], tags=[Mine.Tags.verb_modifier]),
-    VocabSpec("たら", "conj{if/when} prt{as-for | why-not..  | I-said!/I-tell-you!}", ['たら'], extra_forms=set("[[た]]"), tags=[Mine.Tags.verb_modifier]),
-    VocabSpec("ちゃう", "to do: accidentally/unfortunately | completely", ['ちゃう'], tags=[Mine.Tags.verb_modifier])
+    VocabSpec("てる", "{continuing-{activity | state}} / {progressive | perfect}", ['てる'], tags=[Mine.Tags.inflecting_word]),
+    VocabSpec("た", "{past-tense} | (please)do", ['た'], tags=[Mine.Tags.inflecting_word]),
+    VocabSpec("て", "{continuing-action}", ['て'], tags=[Mine.Tags.inflecting_word]),
+    VocabSpec("たら", "conj{if/when} prt{as-for | why-not..  | I-said!/I-tell-you!}", ['たら'], extra_forms=set("[[た]]"), tags=[Mine.Tags.inflecting_word]),
+    VocabSpec("ちゃう", "to do: accidentally/unfortunately | completely", ['ちゃう'], tags=[Mine.Tags.inflecting_word]),
+    VocabSpec("無い", "{negation} | nonexistent | unowned | impossible/won't-happen", ['ない'], tags=[Mine.Tags.inflecting_word]),
+    VocabSpec("ても良い", "{concession/compromise} | {permission}", ['てもいい'], tags=[Mine.Tags.inflecting_word]),
 ]
 
 test_ordinary_vocab_list = [
@@ -54,7 +56,6 @@ test_ordinary_vocab_list = [
     VocabSpec("折角", "With Trouble, Valuable, Rare", ['せっかく']),
     VocabSpec("取る", "to{}: take(lit.fig.)", ['とる']),
     VocabSpec("いい", "good/pleasant | enough | beneficial | OK/no-problem", ['いい']),
-    VocabSpec("ても良い", "{concession/compromise} | {permission}", ['てもいい']),
     VocabSpec("食べる", "to{}: eat", ['たべる']),
     VocabSpec("一緒に", "together/at-the-same-time", ['いっしょに']),
     VocabSpec("話しかける", "to: address/accost/talk-to | begin-to-talk/start-a-conversation", ['はなしかける']),
@@ -159,7 +160,6 @@ test_ordinary_vocab_list = [
     VocabSpec("まで", "{until/to/as-far-as}{time|place|extent/degree} ", ['まで']),
     VocabSpec("だって", "conj{after-all/because | but} prt{even | too/as-well | I-hear/you-mean}", ['だって']),
     VocabSpec("ん", "<ja>の</ja>{nom |poss | explan } ...", ['ん']),
-    VocabSpec("無い", "{negation} | nonexistent | unowned | impossible/won't-happen", ['ない']),
     VocabSpec("一緒", "together | at-the-same-time | same/identical", ['いっしょ']),
     VocabSpec("一度", "once/on-one-occation", ['いちど']),
     VocabSpec("たい", "want to", ['たい']),

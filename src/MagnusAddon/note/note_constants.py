@@ -149,7 +149,7 @@ class Mine:
 
         base_folder = "-::"
 
-        verb_modifier = f"{base_folder}verb-modifier"
+        inflecting_word = f"{base_folder}inflecting-word"
 
         kanji_folder = f"{base_folder}kanji::"
         kanji_is_radical = f"{kanji_folder}is-radical"

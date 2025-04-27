@@ -52,8 +52,8 @@ class JNToken:
         return self.parts_of_speech in _verb_parts_of_speech
 
     _pseudo_verbs_for_inflection_purposes = set(["ます"])
-    def is_verb_for_inflection_purposes(self) -> bool:
-        return self.is_verb() or self.base_form in self._pseudo_verbs_for_inflection_purposes
+    def is_inflectable_word(self) -> bool:
+        return self.is_verb() or self.is_adjective() or self.base_form in self._pseudo_verbs_for_inflection_purposes
 
     def is_verb_auxiliary(self) -> bool:
         return self.parts_of_speech in _verb_auxiliary_parts_of_speech
