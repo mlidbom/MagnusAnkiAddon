@@ -138,8 +138,6 @@ def extract_words(sentence: str, allow_duplicates:bool = False) -> list[Extracte
 
         if token.is_verb_for_inflection_purposes():
             if index < len(tokens) -1:
-                # if tokens[index + 1].is_verb_inflection_word():
-                #     return True
                 if is_next_token_verb_modifier(index):
                     return True
 
