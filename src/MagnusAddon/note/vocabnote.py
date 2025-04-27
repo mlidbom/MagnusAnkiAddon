@@ -71,7 +71,8 @@ class VocabNote(KanaVocabNote):
     def _is_excluded_form(self, form:str) -> bool:
         return bool(self._forms_exclusions.search(form))
 
-    def get_forms(self) -> set[str]: return set(form for form in ex_str.extract_comma_separated_values(self._get_forms()) if not self._is_excluded_form(form))
+    def get_forms(self) -> set[str]: return set(self.get_forms_list())
+    def get_forms_list(self) -> list[str]: return [form for form in ex_str.extract_comma_separated_values(self._get_forms()) if not self._is_excluded_form(form)]
     def get_excluded_forms(self) -> set[str]: return set(form.replace("[[","").replace("]]","") for form in ex_str.extract_comma_separated_values(self._get_forms()) if self._is_excluded_form(form))
     def set_forms(self, forms: set[str]) -> None: self._set_forms(", ".join([form.strip() for form in forms]))
     def _get_forms(self) -> str: return self.get_field(NoteFields.Vocab.Forms)
@@ -383,8 +384,14 @@ class VocabNote(KanaVocabNote):
     def _get_stem_for_form(self, form:str) -> list[str]:
         return [base for base in kana_utils.get_highlighting_conjugation_bases(form, is_ichidan_verb=self.is_ichidan_verb()) if base != form]
 
-    def get_stems(self) -> list[str]:
+    def get_stems_for_primary_form(self) -> list[str]:
         return self._get_stem_for_form(self.get_question())
+
+    def get_text_matching_forms_for_primary_form(self) -> list[str]:
+        return [self.get_question()] + self._get_stem_for_form(self.get_question())
+
+    def get_text_matching_forms_for_all_form(self) -> list[str]:
+        return self.get_forms_list() + self._get_stem_for_form(self.get_question())
 
     def get_stems_for_all_forms(self) -> list[str]:
         return ex_sequence.flatten([self._get_stem_for_form(form) for form in self.get_forms()])

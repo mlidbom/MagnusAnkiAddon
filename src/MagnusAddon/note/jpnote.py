@@ -7,7 +7,6 @@ from sysutils import rassert
 if TYPE_CHECKING:
     from note.collection.jp_collection import JPCollection
 
-import sys
 from abc import ABC
 from typing import Any, cast, Sequence
 
@@ -147,7 +146,7 @@ class JPNote(ABC):
         for tag in self._note.tags:
             if tag.startswith(Mine.Tags.priority_folder):
                 return int(ex_str.first_number(tag))
-        return sys.maxsize
+        return 0
 
     def get_meta_tags(self) -> set[str]:
         tags:set[str] = set()
