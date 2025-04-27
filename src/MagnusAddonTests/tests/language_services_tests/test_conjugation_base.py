@@ -6,6 +6,8 @@ from sysutils import kana_utils
     #irregular verbs
     ("くる", ['くれ', 'き', 'こ'], False, False),
     ("する", ['すれ', 'し', 'さ'], False, False),
+    ("いく", ['いき', 'いか', 'いけ', 'いっ','いこ'], False, False),
+    ("行く", ['行き', '行か', '行け', '行っ','行こ'], False, False),
     ("います", ['いまし', 'いませ'], False, False),
     ('しようとする', ['しようとすれ', 'しようとし', 'しようとさ'], False, False),
     ("おいてくる", ['おいてくれ', 'おいてき', 'おいてこ'], False, False),
