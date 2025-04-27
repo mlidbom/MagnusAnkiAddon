@@ -194,6 +194,10 @@ class VocabNote(KanaVocabNote):
         from ankiutils import app
         return app.col().sentences.with_vocab(self)
 
+    def get_sentences_with_owned_form(self) -> list[SentenceNote]:
+        from ankiutils import app
+        return app.col().sentences.with_vocab_owned_form(self)
+
     def get_sentences_with_primary_form(self) -> list[SentenceNote]:
         from ankiutils import app
         return app.col().sentences.with_form(self.get_question())
@@ -218,8 +222,7 @@ class VocabNote(KanaVocabNote):
         highlighted_in = self.get_user_highlighted_sentences()
         meta.append(VocabMetaTag("highlighted_in_sentences", f"""{max_nine_number(len(highlighted_in))}""", f"""highlighted in {len(highlighted_in)} sentences"""))
 
-        # todo: If a form has it's own VocabNote, exclude it from these statistics
-        sentences = self.get_sentences()
+        sentences = self.get_sentences_with_owned_form()
         if sentences:
             studying_sentences_reading = self._get_studying_sentence_count(sentences, NoteFields.VocabNoteType.Card.Reading)
             studying_sentences_listening = self._get_studying_sentence_count(sentences, NoteFields.VocabNoteType.Card.Listening)
