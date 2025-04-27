@@ -2,8 +2,8 @@ from typing import Callable
 
 from PyQt6.QtWidgets import QMenu
 
-from ankiutils import app, query_builder, search_executor
-from hooks.right_click_menu_utils import add_lookup_action, add_single_vocab_lookup_action, add_text_vocab_lookup, add_ui_action, add_vocab_dependencies_lookup
+from ankiutils import app, query_builder
+from hooks.right_click_menu_utils import add_lookup_action, add_single_vocab_lookup_action, add_text_vocab_lookup, add_ui_action, add_vocab_dependencies_lookup, create_note_action
 from note.note_constants import NoteFields, NoteTypes
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
@@ -102,16 +102,6 @@ def setup_note_menu(vocab: VocabNote, note_menu: QMenu, string_menus: list[tuple
     if clipboard:
         create_note_action(note_create_menu, f"clipboard: {clipboard}-prefix", lambda: vocab.create_prefix_version(selection))
         create_note_action(note_create_menu, f"clipboard: {clipboard}-suffix", lambda: vocab.create_suffix_version(selection))
-
-def create_note_action(menu: QMenu, name: str, callback: Callable[[], VocabNote]) -> None:
-    def run_ui_action() -> None:
-        new_note = callback()
-
-        from batches import local_note_updater
-        local_note_updater.reparse_sentences_for_vocab(new_note)
-        search_executor.do_lookup_and_show_previewer(query_builder.notes_lookup([new_note]))
-
-    menu.addAction(name, lambda: run_ui_action())
 
 def format_vocab_meaning(meaning: str) -> str:
     return ex_str.strip_html_and_bracket_markup(meaning

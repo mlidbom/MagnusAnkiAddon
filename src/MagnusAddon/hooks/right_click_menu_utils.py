@@ -2,7 +2,7 @@ from typing import Callable
 
 from PyQt6.QtWidgets import QMenu, QMessageBox
 
-from ankiutils import query_builder
+from ankiutils import query_builder, search_executor
 from ankiutils.app import ui_utils
 from ankiutils.search_executor import lookup_promise
 from hooks import shortcutfinger
@@ -40,3 +40,13 @@ def add_text_vocab_lookup(menu: QMenu, name:str, text:str) -> None:
 
 def add_vocab_dependencies_lookup(menu: QMenu, name: str, vocab: VocabNote) -> None:
     add_lookup_action_lambda(menu, name, lambda: query_builder.vocab_dependencies_lookup_query(vocab))
+
+def create_note_action(menu: QMenu, name: str, callback: Callable[[], VocabNote]) -> None:
+    def run_ui_action() -> None:
+        new_note = callback()
+
+        from batches import local_note_updater
+        local_note_updater.reparse_sentences_for_vocab(new_note)
+        search_executor.do_lookup_and_show_previewer(query_builder.notes_lookup([new_note]))
+
+    menu.addAction(name, lambda: run_ui_action())

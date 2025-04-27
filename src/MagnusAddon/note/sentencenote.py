@@ -195,3 +195,13 @@ class SentenceNote(JPNote):
         created.set_field(SentenceNoteFields.reading, immersion_kit_note[ImmersionKitSentenceNoteFields.reading])
 
         return created
+
+    @classmethod
+    def create(cls, question:str) -> SentenceNote:
+        from ankiutils import app
+        inner_note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Sentence))
+        note = SentenceNote(inner_note)
+        note._set_source_question(question)
+        note.update_generated_data()
+        app.anki_collection().addNote(inner_note)
+        return note
