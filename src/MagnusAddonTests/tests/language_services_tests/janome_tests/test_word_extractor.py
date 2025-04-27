@@ -38,7 +38,7 @@ def setup_object() -> Generator[None, None, None]:
     ("どうやってここを知った。",
      ['どう', 'どうやって', 'やる', 'て', 'ここ', 'を', '知る', 'た']),
     ("声出したら駄目だからね",
-     ['声', '出す', 'た', 'たら', '駄目', 'だ', 'だから', 'から', 'ね']
+     ['声', '出す', 'たら', '駄目', 'だ', 'だから', 'から', 'ね']
      ),
     ("彼の日本語のレベルは私と同じ位だ。",
      ['彼', '彼の', 'の', '日本語', 'レベル', 'は', '私', 'と', '同じ', '同じ位', '位', 'だ']),
@@ -126,7 +126,7 @@ def insert_custom_words(custom_words:list[str]) -> None:
      [],
      ['教科書', '落ちる', 'ちゃう', 'から']),
     ("待ってました",[],[],['待つ', 'て', 'ます', 'た']),
-    ("怖くなくなった", [], [], ['怖い', 'なくなる', 'た'])
+    ("怖くなくなったの", [], [], ['怖い', 'なくなる', 'た', 'の'])
 ])
 def test_hierarchical_extraction(sentence: str, custom_words:list[str], excluded:list[WordExclusion], expected_output: list[str]) -> None:
     insert_custom_words(custom_words)

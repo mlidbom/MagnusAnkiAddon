@@ -8,11 +8,11 @@ if TYPE_CHECKING:
     from note.vocabnote import VocabNote
 
 class VocabSpec:
-    def __init__(self, question: str, answer: str, readings: list[str], extra_forms:set[str] = set(), tags:list[str] = []):
+    def __init__(self, question: str, answer: str, readings: list[str], extra_forms:list[str] = [], tags:list[str] = []):
         self.question = question
         self.answer = answer
         self.readings = readings
-        self.extra_forms = extra_forms
+        self.extra_forms = set(extra_forms)
         self.tags = set(tags)
 
     def __repr__(self) -> str: return f"""VocabSpec("{self.question}", "{self.answer}", {self.readings})"""
@@ -41,10 +41,11 @@ test_special_vocab = [
     VocabSpec("てる", "{continuing-{activity | state}} / {progressive | perfect}", ['てる'], tags=[Mine.Tags.inflecting_word]),
     VocabSpec("た", "{past-tense} | (please)do", ['た'], tags=[Mine.Tags.inflecting_word]),
     VocabSpec("て", "{continuing-action}", ['て'], tags=[Mine.Tags.inflecting_word]),
-    VocabSpec("たら", "conj{if/when} prt{as-for | why-not..  | I-said!/I-tell-you!}", ['たら'], extra_forms=set("[[た]]"), tags=[Mine.Tags.inflecting_word]),
+    VocabSpec("たら", "conj{if/when} prt{as-for | why-not..  | I-said!/I-tell-you!}", ['たら'], extra_forms=["[[た]]"], tags=[Mine.Tags.inflecting_word]),
     VocabSpec("ちゃう", "to do: accidentally/unfortunately | completely", ['ちゃう'], tags=[Mine.Tags.inflecting_word]),
     VocabSpec("無い", "{negation} | nonexistent | unowned | impossible/won't-happen", ['ない'], tags=[Mine.Tags.inflecting_word]),
     VocabSpec("ても良い", "{concession/compromise} | {permission}", ['てもいい'], tags=[Mine.Tags.inflecting_word]),
+    VocabSpec("たの", "{indicates-{emotion/admiration/emphasis}}", ['たの'], extra_forms=["[[たの]]"])
 ]
 
 test_ordinary_vocab_list = [
