@@ -54,32 +54,44 @@ class WordExclusion:
 class HierarchicalWord:
     def __init__(self, word: ExtractedWord):
         self.word = word
-        self.parent:Optional[HierarchicalWord] = None
-        self.children:list[HierarchicalWord] = []
+        self.length = len(word.surface)
+        self.shadowed_by:Optional[HierarchicalWord] = None
+        self.shadowed:list[HierarchicalWord] = []
         self.start_index = self.word.start_index
         self.end_index = self.word.lookahead_index
+        self.start_character_index = self.word.character_index
+        self.end_character_index = self.start_character_index + self.length -1
         self.may_have_children = self.start_index < self.end_index
 
-    def add_child(self, child:HierarchicalWord) -> None:
-        self.children.append(child)
-        child.parent = self
+    def add_shadowed(self, child:HierarchicalWord) -> None:
+        self.shadowed.append(child)
+        child.shadowed_by = self
 
-    def is_parent_of(self, other: HierarchicalWord) -> bool:
-        return self.may_have_children and other != self and self.start_index <= other.start_index <= self.end_index and (other.end_index < self.end_index or (other.end_index == self.end_index and other.word.word in self.word.word))
+    def is_shadowing(self, other: HierarchicalWord) -> bool:
+        if self == other or self.shadowed_by:
+            return False
+
+        if self.start_character_index < other.start_character_index <= self.end_character_index:
+            return True
+
+        if self.start_character_index == other.start_character_index and self.length > other.length:
+            return True
+
+        return False
 
     def __repr__(self) -> str:
-        return f"HierarchicalWord('{self.start_index}:{self.end_index}, {self.word.word}: parent:{self.parent.word.word if self.parent else ''}')"
+        return f"HierarchicalWord('{self.start_index}:{self.end_index} | {self.start_character_index}:{self.end_character_index}, {self.word.surface}:{self.word.word}: parent:{self.shadowed_by.word.word if self.shadowed_by else ''}')"
 
     def to_exclusion(self) -> WordExclusion:
         return WordExclusion(self.word.word, self.start_index)
 
 def extract_words_hierarchical(sentence: str, excluded_words:list[WordExclusion]) -> list[HierarchicalWord]:
     hierarchical_all = extract_words_hierarchical_all(sentence, excluded_words)
-    only_non_children = [w for w in hierarchical_all if not w.parent]
+    only_non_children = [w for w in hierarchical_all if not w.shadowed_by]
     return only_non_children
 
 def extract_words_hierarchical_all(sentence: str, excluded_words:list[WordExclusion]) -> list[HierarchicalWord]:
-    def sort_key(word:ExtractedWord) -> tuple[int, int]: return word.start_index, -word.length()
+    def sort_key(word:ExtractedWord) -> tuple[int, int, int]: return word.character_index, -word.surface_length(), -word.word_length()
     def is_excluded(word:HierarchicalWord) -> bool: return any(exclusion for exclusion in excluded_words if exclusion.excludes(word))
 
     starting_point = [HierarchicalWord(word) for word in sorted(extract_words(sentence, allow_duplicates=True), key=sort_key)]
@@ -87,9 +99,9 @@ def extract_words_hierarchical_all(sentence: str, excluded_words:list[WordExclus
     without_exclusions = [word for word in starting_point if not is_excluded(word)]
 
     for word in without_exclusions:
-        children = [w for w in without_exclusions if word.is_parent_of(w)]
-        for child in children:
-            word.add_child(child)
+        shadowed = [w for w in without_exclusions if word.is_shadowing(w)]
+        for child in shadowed:
+            word.add_shadowed(child)
 
     return without_exclusions
 
@@ -100,19 +112,19 @@ def extract_words(sentence: str, allow_duplicates:bool = False) -> list[Extracte
     def _is_word(word: str) -> bool:
         return app.col().vocab.is_word(word) or DictLookup.is_word(word)
 
-    def add_word_if_it_is_in_dictionary(word: str, lookahead_index: int) -> None:
+    def add_word_if_it_is_in_dictionary(word: str, surface:str, character_index:int, lookahead_index: int) -> None:
         if _is_word(word):
-            add_word(word, lookahead_index)
+            add_word(word, surface,character_index, lookahead_index)
 
     def is_excluded_form(vocab_form:str, candidate_form:str) -> bool:
         return (any(voc for voc in (app.col().vocab.with_form(vocab_form)) if candidate_form in voc.get_excluded_forms()) or
                 any(voc for voc in (app.col().vocab.with_form(candidate_form)) if candidate_form in voc.get_excluded_forms()))
 
     # noinspection DuplicatedCode
-    def add_word(word: str, lookahead_index: int) -> None:
+    def add_word(word: str, surface:str, character_index:int, lookahead_index: int) -> None:
         if (allow_duplicates or word not in found_words) and word not in _noise_characters:
             found_words.add(word)
-            found_words_list.append(ExtractedWord(word, token_index, lookahead_index))
+            found_words_list.append(ExtractedWord(word, surface, token_index, lookahead_index, character_index))
 
     def is_next_token_inflecting_word(index:int) -> bool:
         def lookup_vocabs_prefer_exact_match(form: str) -> list[VocabNote]:
@@ -152,23 +164,26 @@ def extract_words(sentence: str, allow_duplicates:bool = False) -> list[Extracte
             surface_compound += look_ahead_token.surface
 
             if base_compound != surface_compound and not is_excluded_form(surface_compound, base_compound):
-                add_word_if_it_is_in_dictionary(base_compound, lookahead_index)
+                add_word_if_it_is_in_dictionary(base_compound, surface_compound, character_index, lookahead_index)
             if not is_excluded_form(token.base_form, surface_compound):
-                add_word_if_it_is_in_dictionary(surface_compound, lookahead_index)
+                add_word_if_it_is_in_dictionary(surface_compound, surface_compound, character_index, lookahead_index)
 
     tokens = _tokenizer.tokenize(sentence).tokens
     found_words = set[str]()
     found_words_list:list[ExtractedWord] = []
 
+    character_index = 0
     for token_index, token in enumerate(tokens):
         if not is_excluded_form(token.surface, token.base_form):
-            add_word(token.base_form, 0)
+            add_word(token.base_form, token.surface, character_index, 0)
 
         if (token.surface != token.base_form
                 and not is_inflected_word(token_index)
                 and not is_excluded_form(token.base_form, token.surface)): #if the surface is the stem of an inflected verb, don't use it, it's not a word in its own right in this sentence.
-            add_word(token.surface, 0)
+            add_word(token.surface, token.surface, character_index, 0)
         check_for_compound_words()
+
+        character_index += len(token.surface)
 
     return found_words_list
 

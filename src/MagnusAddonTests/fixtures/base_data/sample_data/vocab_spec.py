@@ -45,7 +45,9 @@ test_special_vocab = [
     VocabSpec("ちゃう", "to do: accidentally/unfortunately | completely", ['ちゃう'], tags=[Mine.Tags.inflecting_word]),
     VocabSpec("無い", "{negation} | nonexistent | unowned | impossible/won't-happen", ['ない'], tags=[Mine.Tags.inflecting_word]),
     VocabSpec("ても良い", "{concession/compromise} | {permission}", ['てもいい'], tags=[Mine.Tags.inflecting_word]),
-    VocabSpec("たの", "{indicates-{emotion/admiration/emphasis}}", ['たの'], extra_forms=["[[たの]]"])
+    VocabSpec("たの", "{indicates-{emotion/admiration/emphasis}}", ['たの'], extra_forms=["[[たの]]"]),
+    VocabSpec("すぎる", "too-much", ['すぎる'], tags=[Mine.Tags.inflecting_word]),
+    VocabSpec("だったら", "if-so", ['だったら'], extra_forms=["[[だった]]"]),
 ]
 
 test_ordinary_vocab_list = [

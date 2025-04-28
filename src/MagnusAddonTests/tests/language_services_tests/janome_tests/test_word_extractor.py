@@ -95,7 +95,7 @@ def insert_custom_words(custom_words:list[str]) -> None:
      ['厳密に言えば', '俺', '一人', 'が', '友達', 'だけど']),
     ("幼すぎて よく覚えていないけど", [],
      [],
-     ['幼い', '幼', 'すぎる', 'て', 'よく', '覚える', 'て', 'いる', 'ない', 'けど']
+     ['幼い', 'すぎる', 'て', 'よく', '覚える', 'て', 'いる', 'ない', 'けど']
      ),
     ("私は毎日ジョギングをすることを習慣にしています。",
      ["してい", "ている", "にする"],
@@ -126,7 +126,8 @@ def insert_custom_words(custom_words:list[str]) -> None:
      [],
      ['教科書', '落ちる', 'ちゃう', 'から']),
     ("待ってました",[],[],['待つ', 'て', 'ます', 'た']),
-    ("怖くなくなったの", [], [], ['怖い', 'なくなる', 'た', 'の'])
+    ("怖くなくなったの", [], [], ['怖い', 'なくなる', 'た', 'の']),
+    ("落ちてないかな", [], [], ['落ちる', 'てる', 'ないか', 'な'])
 ])
 def test_hierarchical_extraction(sentence: str, custom_words:list[str], excluded:list[WordExclusion], expected_output: list[str]) -> None:
     insert_custom_words(custom_words)
