@@ -149,8 +149,6 @@ class WordExtractor:
 
         def is_inflected_word(index: int) -> bool:
             _token = tokens[index]
-            if _token.is_inflected_verb():
-                return True
 
             if _token.is_inflectable_word():
                 if index < len(tokens) - 1:

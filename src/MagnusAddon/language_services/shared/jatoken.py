@@ -9,6 +9,3 @@ class JAToken(ABC):
 
     @abstractmethod
     def is_inflectable_word(self) -> bool: pass
-
-    @abstractmethod
-    def is_inflected_verb(self) -> bool: pass
