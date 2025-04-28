@@ -4,7 +4,7 @@ from ankiutils import app
 from hooks.note_content_building.content_renderer import PrerenderingAnswerContentRenderer
 from note import vocabnote
 from note.vocabnote import VocabNote
-from sysutils import ex_sequence, kana_utils
+from sysutils import ex_sequence
 from sysutils.ex_str import newline
 
 def _create_classes(_vocab: VocabNote) -> str:

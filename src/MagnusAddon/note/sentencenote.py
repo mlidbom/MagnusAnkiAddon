@@ -72,8 +72,8 @@ class SentenceNote(JPNote):
         return [w.word.word for w in self.get_valid_parsed_non_child_words()]
 
     def get_valid_parsed_non_child_words(self) -> list[HierarchicalWord]:
-        from language_services.janome_ex.word_extraction import word_extractor
-        return word_extractor.extract_words_hierarchical(self.get_question(), list(self.get_user_word_exclusions()))
+        from language_services.janome_ex.word_extraction.word_extractor import jn_extractor
+        return jn_extractor.extract_words_hierarchical(self.get_question(), list(self.get_user_word_exclusions()))
 
     def get_user_highlighted_vocab(self) -> list[str]: return ex_str.extract_newline_separated_values(self.get_field(SentenceNoteFields.user_extra_vocab))
     def _set_user_extra_vocab(self, extra: list[str]) -> None: return self.set_field(SentenceNoteFields.user_extra_vocab, newline.join(extra))
@@ -115,8 +115,8 @@ class SentenceNote(JPNote):
         self._set_user_word_exclusions(excluded)
 
     def parse_words_from_expression(self) -> list[ExtractedWord]:
-        from language_services.janome_ex.word_extraction import word_extractor
-        return word_extractor.extract_words(self.get_question())
+        from language_services.janome_ex.word_extraction.word_extractor import jn_extractor
+        return jn_extractor.extract_words(self.get_question())
 
     def get_parsed_words(self) -> list[str]: return self._get_parsed_words()[:-1]
     def _get_parsed_words(self) -> list[str]: return self.get_field(SentenceNoteFields.ParsedWords).split(",")
@@ -134,13 +134,13 @@ class SentenceNote(JPNote):
         self.set_field(SentenceNoteFields.active_question, self.get_question())
 
     def update_parsed_words(self, force:bool = False) -> None:
-        from language_services.janome_ex.word_extraction import word_extractor
+        from language_services.janome_ex.word_extraction.word_extractor import jn_extractor
         words = self._get_parsed_words()
         old_parsed_sentence = words[-1] if words else ""
-        current_storable_sentence = f"""{self.get_question().replace(",", "").strip()}-parser_version-{word_extractor.version}"""
+        current_storable_sentence = f"""{self.get_question().replace(",", "").strip()}-parser_version-{jn_extractor.version}"""
 
         if force or old_parsed_sentence != current_storable_sentence:
-            value = [parsed_word.word.word for parsed_word in word_extractor.extract_words_hierarchical_all(self.get_question(), list(self.get_user_word_exclusions()))]
+            value = [parsed_word.word.word for parsed_word in jn_extractor.extract_words_hierarchical_all(self.get_question(), list(self.get_user_word_exclusions()))]
             value.append(current_storable_sentence)
             self.set_field(SentenceNoteFields.ParsedWords, ",".join(value))
 

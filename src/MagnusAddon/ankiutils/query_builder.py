@@ -9,7 +9,7 @@ from note.kanjinote import KanjiNote
 from note.note_constants import Builtin, MyNoteFields, NoteFields, NoteTypes, SentenceNoteFields
 from note.radicalnote import RadicalNote
 from note.vocabnote import VocabNote
-from language_services.janome_ex.word_extraction import word_extractor
+from language_services.janome_ex.word_extraction.word_extractor import jn_extractor
 from language_services.janome_ex.word_extraction.extracted_word import ExtractedWord
 
 f_question = MyNoteFields.question
@@ -78,7 +78,7 @@ def vocab_dependencies_lookup_query(vocab: VocabNote) -> str:
         return f'{field_contains_word(f_forms, voc.word)}'
 
     def create_vocab_clause(text:str) -> str:
-        dictionary_forms = [voc for voc in word_extractor.extract_words(text)]
+        dictionary_forms = [voc for voc in jn_extractor.extract_words(text)]
         return f"({note_vocab} ({' OR '.join([single_vocab_clause(voc) for voc in dictionary_forms])})) OR " if dictionary_forms else ""
 
     def create_vocab_vocab_clause() -> str:
@@ -95,7 +95,7 @@ def vocab_clause(voc: ExtractedWord) -> str:
     return f"""{field_contains_word(f_forms, voc.word)}"""
 
 def text_vocab_lookup(text:str) -> str:
-    dictionary_forms = word_extractor.extract_words(text)
+    dictionary_forms = jn_extractor.extract_words(text)
     return vocabs_lookup(dictionary_forms)
 
 def vocabs_lookup(dictionary_forms: list[ExtractedWord]) -> str:

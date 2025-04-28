@@ -10,7 +10,6 @@ from anki.cards import Card, CardId
 from note.jpnote import JPNote
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
-from sysutils import progress_display_runner
 from sysutils.typed import non_optional
 
 def spread_due_dates(cards: Sequence[CardId], start_day: int, days: int) -> None:

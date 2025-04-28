@@ -3,20 +3,14 @@ from __future__ import annotations
 from typing import Any, Optional
 
 from language_services.jamdict_ex.dict_lookup import DictLookup
-from language_services.janome_ex.word_extraction.extracted_word import ExtractedWord
 from language_services.janome_ex.tokenizing.jn_tokenizer import JNTokenizer
+from language_services.janome_ex.word_extraction.extracted_word import ExtractedWord
 from language_services.shared.jatokenizer import JATokenizer
 from note.note_constants import Mine
 from note.vocabnote import VocabNote
 
-_tokenizer:JATokenizer = JNTokenizer()
-
-
 _noise_characters = {'.',',',':',';','/','|','。','、'}
 _max_lookahead = 12
-
-version = "janome_extractor_1"
-
 
 class WordExclusion:
     _separator = "####"
@@ -90,104 +84,112 @@ class HierarchicalWord:
     def to_exclusion(self) -> WordExclusion:
         return WordExclusion(self.word.word, self.start_index)
 
-def extract_words_hierarchical(sentence: str, excluded_words:list[WordExclusion]) -> list[HierarchicalWord]:
-    hierarchical_all = extract_words_hierarchical_all(sentence, excluded_words)
-    only_non_children = [w for w in hierarchical_all if not w.shadowed_by]
-    return only_non_children
+class WordExtractor:
+    def __init__(self, tokenizer: JATokenizer) -> None:
+        self.version = "janome_extractor_1"
+        self._tokenizer = tokenizer
 
-def extract_words_hierarchical_all(sentence: str, excluded_words:list[WordExclusion]) -> list[HierarchicalWord]:
-    def sort_key(word:ExtractedWord) -> tuple[int, int, int]: return word.character_index, -word.surface_length(), -word.word_length()
-    def is_excluded(word:HierarchicalWord) -> bool: return any(exclusion for exclusion in excluded_words if exclusion.excludes(word))
+    def extract_words_hierarchical(self, sentence: str, excluded_words: list[WordExclusion]) -> list[HierarchicalWord]:
+        hierarchical_all = self.extract_words_hierarchical_all(sentence, excluded_words)
+        only_non_children = [w for w in hierarchical_all if not w.shadowed_by]
+        return only_non_children
 
-    starting_point = [HierarchicalWord(word) for word in sorted(extract_words(sentence, allow_duplicates=True), key=sort_key)]
+    def extract_words_hierarchical_all(self, sentence: str, excluded_words: list[WordExclusion]) -> list[HierarchicalWord]:
+        def sort_key(word: ExtractedWord) -> tuple[int, int, int]: return word.character_index, -word.surface_length(), -word.word_length()
+        def is_excluded(word: HierarchicalWord) -> bool: return any(exclusion for exclusion in excluded_words if exclusion.excludes(word))
 
-    without_exclusions = [word for word in starting_point if not is_excluded(word)]
+        starting_point = [HierarchicalWord(word) for word in sorted(self.extract_words(sentence, allow_duplicates=True), key=sort_key)]
 
-    for word in without_exclusions:
-        shadowed = [w for w in without_exclusions if word.is_shadowing(w)]
-        for child in shadowed:
-            word.add_shadowed(child)
+        without_exclusions = [word for word in starting_point if not is_excluded(word)]
 
-    return without_exclusions
+        for word in without_exclusions:
+            shadowed = [w for w in without_exclusions if word.is_shadowing(w)]
+            for child in shadowed:
+                word.add_shadowed(child)
 
-# noinspection DuplicatedCode
-def extract_words(sentence: str, allow_duplicates:bool = False) -> list[ExtractedWord]:
-    from ankiutils import app
-
-    def _is_word(word: str) -> bool:
-        return app.col().vocab.is_word(word) or DictLookup.is_word(word)
-
-    def add_word_if_it_is_in_dictionary(word: str, surface:str, lookahead_index: int) -> None:
-        if _is_word(word):
-            add_word(word, surface, lookahead_index)
-
-    def is_excluded_form(vocab_form:str, candidate_form:str) -> bool:
-        return (any(voc for voc in (app.col().vocab.with_form(vocab_form)) if candidate_form in voc.get_excluded_forms()) or
-                any(voc for voc in (app.col().vocab.with_form(candidate_form)) if candidate_form in voc.get_excluded_forms()))
+        return without_exclusions
 
     # noinspection DuplicatedCode
-    def add_word(word: str, surface:str, lookahead_index: int) -> None:
-        if (allow_duplicates or word not in found_words) and word not in _noise_characters:
-            found_words.add(word)
-            found_words_list.append(ExtractedWord(word, surface, token_index, lookahead_index, character_index))
+    def extract_words(self, sentence: str, allow_duplicates: bool = False) -> list[ExtractedWord]:
+        from ankiutils import app
 
-    def is_next_token_inflecting_word(index:int) -> bool:
-        def lookup_vocabs_prefer_exact_match(form: str) -> list[VocabNote]:
-            matches: list[VocabNote] = app.col().vocab.with_form(form)
-            exact_match = [voc for voc in matches if voc.get_question_without_noise_characters() == form]
-            return exact_match if exact_match else matches
+        def _is_word(word: str) -> bool:
+            return app.col().vocab.is_word(word) or DictLookup.is_word(word)
 
-        if index >= len(tokens) - 1:
+        def add_word_if_it_is_in_dictionary(word: str, surface: str, lookahead_index: int) -> None:
+            if _is_word(word):
+                add_word(word, surface, lookahead_index)
+
+        def is_excluded_form(vocab_form: str, candidate_form: str) -> bool:
+            return (any(voc for voc in (app.col().vocab.with_form(vocab_form)) if candidate_form in voc.get_excluded_forms()) or
+                    any(voc for voc in (app.col().vocab.with_form(candidate_form)) if candidate_form in voc.get_excluded_forms()))
+
+        # noinspection DuplicatedCode
+        def add_word(word: str, surface: str, lookahead_index: int) -> None:
+            if (allow_duplicates or word not in found_words) and word not in _noise_characters:
+                found_words.add(word)
+                found_words_list.append(ExtractedWord(word, surface, token_index, lookahead_index, character_index))
+
+        def is_next_token_inflecting_word(index: int) -> bool:
+            def lookup_vocabs_prefer_exact_match(form: str) -> list[VocabNote]:
+                matches: list[VocabNote] = app.col().vocab.with_form(form)
+                exact_match = [voc for voc in matches if voc.get_question_without_noise_characters() == form]
+                return exact_match if exact_match else matches
+
+            if index >= len(tokens) - 1:
+                return False
+
+            next_token = tokens[index + 1]
+            vocab: list[VocabNote] = lookup_vocabs_prefer_exact_match(next_token.get_base_form())
+
+            if any([voc for voc in vocab if voc.has_tag(Mine.Tags.inflecting_word)]):
+                return True
+
             return False
 
-        next_token = tokens[index + 1]
-        vocab:list[VocabNote] = lookup_vocabs_prefer_exact_match(next_token.get_base_form())
+        def is_inflected_word(index: int) -> bool:
+            _token = tokens[index]
+            if _token.is_inflected_verb():
+                return True
 
-        if any([voc for voc in vocab if voc.has_tag(Mine.Tags.inflecting_word)]):
-            return True
+            if _token.is_inflectable_word():
+                if index < len(tokens) - 1:
+                    if is_next_token_inflecting_word(index):
+                        return True
 
-        return False
+            return False
 
-    def is_inflected_word(index: int) -> bool:
-        _token = tokens[index]
-        if _token.is_inflected_verb():
-            return True
+        # noinspection DuplicatedCode
+        def check_for_compound_words() -> None:
+            surface_compound = token.get_surface_form()
+            for lookahead_index in range(token_index + 1, min(token_index + _max_lookahead, len(tokens))):
+                look_ahead_token = tokens[lookahead_index]
+                base_compound = surface_compound + look_ahead_token.get_base_form()
+                surface_compound += look_ahead_token.get_surface_form()
 
-        if _token.is_inflectable_word():
-            if index < len(tokens) - 1:
-                if is_next_token_inflecting_word(index):
-                    return True
+                if base_compound != surface_compound and not is_excluded_form(surface_compound, base_compound):
+                    add_word_if_it_is_in_dictionary(base_compound, surface_compound, lookahead_index)
+                if not is_excluded_form(token.get_base_form(), surface_compound):
+                    add_word_if_it_is_in_dictionary(surface_compound, surface_compound, lookahead_index)
 
-        return False
+        tokens = self._tokenizer.tokenize(sentence).get_tokens()
+        found_words = set[str]()
+        found_words_list: list[ExtractedWord] = []
 
-    # noinspection DuplicatedCode
-    def check_for_compound_words() -> None:
-        surface_compound = token.get_surface_form()
-        for lookahead_index in range(token_index + 1, min(token_index + _max_lookahead, len(tokens))):
-            look_ahead_token = tokens[lookahead_index]
-            base_compound = surface_compound + look_ahead_token.get_base_form()
-            surface_compound += look_ahead_token.get_surface_form()
+        character_index = 0
+        for token_index, token in enumerate(tokens):
+            if not is_excluded_form(token.get_surface_form(), token.get_base_form()):
+                add_word(token.get_base_form(), token.get_surface_form(), 0)
 
-            if base_compound != surface_compound and not is_excluded_form(surface_compound, base_compound):
-                add_word_if_it_is_in_dictionary(base_compound, surface_compound, lookahead_index)
-            if not is_excluded_form(token.get_base_form(), surface_compound):
-                add_word_if_it_is_in_dictionary(surface_compound, surface_compound, lookahead_index)
+            if (token.get_surface_form() != token.get_base_form()
+                    and not is_inflected_word(token_index)
+                    and not is_excluded_form(token.get_base_form(), token.get_surface_form())):  # If the surface is the stem of an inflected verb, don't use it. It's not a word in its own right in this sentence.
+                add_word(token.get_surface_form(), token.get_surface_form(), 0)
+            check_for_compound_words()
 
-    tokens = _tokenizer.tokenize(sentence).get_tokens()
-    found_words = set[str]()
-    found_words_list:list[ExtractedWord] = []
+            character_index += len(token.get_surface_form())
 
-    character_index = 0
-    for token_index, token in enumerate(tokens):
-        if not is_excluded_form(token.get_surface_form(), token.get_base_form()):
-            add_word(token.get_base_form(), token.get_surface_form(), 0)
+        return found_words_list
 
-        if (token.get_surface_form() != token.get_base_form()
-                and not is_inflected_word(token_index)
-                and not is_excluded_form(token.get_base_form(), token.get_surface_form())): #If the surface is the stem of an inflected verb, don't use it. It's not a word in its own right in this sentence.
-            add_word(token.get_surface_form(), token.get_surface_form(), 0)
-        check_for_compound_words()
 
-        character_index += len(token.get_surface_form())
-
-    return found_words_list
+jn_extractor = WordExtractor(JNTokenizer())
