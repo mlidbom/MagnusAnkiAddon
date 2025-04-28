@@ -1,13 +1,15 @@
-from typing import Union
+from typing import Sequence, Union
 
 from spacy.tokens import Doc, Token
 from unidic2ud import UniDic2UDEntry, UDPipeEntry # type: ignore
 
+from language_services.shared.jatoken import JAToken
+from language_services.shared.jatokenizedtext import JATokenizedText
 from language_services.universal_dependencies.shared.tokenizing.ud_token import UDToken
 from sysutils import ex_sequence, ex_str
 from sysutils.typed import str_
 
-class UDTokenizedText:
+class UDTokenizedText(JATokenizedText):
     def __init__(self, wrapped: Union[UniDic2UDEntry, Doc]):
         self._wrapped = wrapped
 
@@ -45,3 +47,6 @@ class UDTokenizedText:
             return str_(self._wrapped.to_tree())
         else:
             return "to_tree_UNSUPPORTED"
+
+    def get_tokens(self) -> Sequence[JAToken]:
+        return self.tokens

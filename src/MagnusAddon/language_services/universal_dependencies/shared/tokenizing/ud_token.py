@@ -5,13 +5,14 @@ from typing import Callable, Union
 from spacy.tokens import Token
 from unidic2ud import UDPipeEntry  # type: ignore
 
+from language_services.shared.jatoken import JAToken
 from language_services.universal_dependencies.shared.tokenizing import xpos, deprel, ud_universal_part_of_speech_tag
 from sysutils import ex_str, kana_utils, typed
 
 def _head(token: UDPipeEntry) -> UDPipeEntry:
     return token.head  # noqa
 
-class UDToken:
+class UDToken(JAToken):
     def __init__(self, token: Union[UDPipeEntry, Token]) -> None:
         if isinstance(token, Token):
             self._wrapped = token
@@ -49,6 +50,18 @@ class UDToken:
     # noinspection DuplicatedCode
     def __repr__(self) -> str:
         return self.str_(ex_str.pad_to_length_ui_font)
+
+    def get_base_form(self) -> str:
+        return self.norm
+
+    def get_surface_form(self) -> str:
+        return self.lemma
+
+    def is_inflectable_word(self) -> bool:
+        raise Exception("not implemented yet")
+
+    def is_inflected_verb(self) -> bool:
+        raise Exception("not implemented yet")
 
     def str_(self, padder: Callable[[str, int], str], exclude_lemma_and_norm:bool = False) -> str:
         lemma = self.lemma if self.lemma != self.form else ""

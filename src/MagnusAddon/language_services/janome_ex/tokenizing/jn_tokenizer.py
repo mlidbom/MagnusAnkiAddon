@@ -3,9 +3,10 @@ from janome.tokenizer import Tokenizer
 from language_services.janome_ex.tokenizing.jn_parts_of_speech import JNPartsOfSpeech
 from language_services.janome_ex.tokenizing.jn_token import JNToken
 from language_services.janome_ex.tokenizing.jn_tokenized_text import JNTokenizedText
+from language_services.shared.jatokenizer import JATokenizer
 from sysutils import typed
 
-class JNTokenizer:
+class JNTokenizer(JATokenizer):
     def __init__(self) -> None:
         self._tokenizer = Tokenizer()
 
