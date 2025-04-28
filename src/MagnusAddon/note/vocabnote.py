@@ -6,6 +6,7 @@ from ankiutils import anki_module_import_issues_fix_just_import_this_module_befo
 from wanikani_api import models
 from anki.notes import Note
 
+from language_services.jamdict_ex.dict_lookup import DictLookup
 from language_services.jamdict_ex.priority_spec import PrioritySpec
 from note.jpnote import JPNote
 from note.kanavocabnote import KanaVocabNote
@@ -388,6 +389,16 @@ class VocabNote(KanaVocabNote):
         create_sentence_if_not_present(question=self.get_context_jp(), answer=self.get_context_en(), audio=self.get_context_jp_audio())
         create_sentence_if_not_present(question=self.get_context_jp_2(), answer=self.get_context_en_2(), audio=self.get_context_jp_2_audio())
         create_sentence_if_not_present(question=self.get_context_jp_3(), answer=self.get_context_en_3(), audio=self.get_context_jp_3_audio())
+
+    @classmethod
+    def create_with_dictionary(cls, question: str) -> VocabNote:
+        dict_entry = DictLookup.lookup_word_shallow(question)
+        if not dict_entry.found_words(): return cls.create(question, "TODO", [])
+        readings = list(set(ex_sequence.flatten([ent.kana_forms() for ent in dict_entry.entries])))
+        created = cls.create(question, "TODO", readings)
+        created.generate_and_set_answer()
+        return created
+
 
     @classmethod
     def create(cls, question:str, answer:str, readings:list[str]) -> VocabNote:

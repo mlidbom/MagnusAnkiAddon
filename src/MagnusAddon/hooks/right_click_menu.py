@@ -80,7 +80,7 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu) -> None:
 
     for string_menu, menu_string in string_menus:
         create_menu = non_optional(string_menu.addMenu(shortcutfinger.down2("Create")))
-        create_note_action(create_menu, f"vocab: {menu_string}", lambda _string=menu_string: VocabNote.create(_string, "TODO", [])) # type: ignore
+        create_note_action(create_menu, f"vocab: {menu_string}", lambda _string=menu_string: VocabNote.create_with_dictionary(_string)) # type: ignore
         create_note_action(create_menu, f"sentence: {menu_string}", lambda _word=menu_string: SentenceNote.create(_word)) # type: ignore
         create_note_action(create_menu, f"kanji: {menu_string}", lambda _word=menu_string: KanjiNote.create(_word, "TODO", "", "")) # type: ignore
 
