@@ -1,6 +1,7 @@
 from unittest.mock import MagicMock
 
 import pytest
+from ankiutils import app # noqa
 
 from language_services.jamdict_ex.dict_entry import DictEntry
 from language_services.jamdict_ex.dict_lookup import DictLookup
@@ -81,6 +82,27 @@ def test_generate_answer(word: str, readings:list[str], answer: str) -> None:
     print(generated_answer)
     assert generated_answer == answer
 
+@pytest.mark.parametrize('word, readings, pos', [
+    ("怪我", ["けが"], {"noun", "suru verb"}),
+    ("部屋", ["へや"], {"noun"}),
+    ("確実", ["かくじつ"], {'na-adjective', 'noun'}),
+    ('式', ["しき"], {'suffix', 'noun'}),
+    ('吸う',["すう"], {'godan verb', 'transitive'}),
+    ('走る', ['はしる'], {'godan verb','intransitive'}),
+    ('帰る', ['かえる'], {'godan verb','intransitive'}),
+    ('使う', ['つかう'], {'godan verb','transitive'}),
+    ('書く', ['かく'],  {'godan verb','transitive'}),
+    ('立つ', ['たつ'],  {'godan verb','intransitive'}),
+    ('死ぬ', ['しぬ'],  {'nu verb', 'godan verb','intransitive'}),
+    ('飛ぶ', ['とぶ'],  {'godan verb','intransitive'}),
+    ('読む', ['よむ'],  {'godan verb','transitive'})
+])
+def test_pos(word: str, readings:list[str], pos: set[str]) -> None:
+    dict_entry = get_dict_entry(word, readings)
+    assert dict_entry.found_words_count() == 1
+
+    assert dict_entry.entries[0].parts_of_speech() == pos
+
 
 def get_single_dict_entry(word: str, readings: list[str]) -> DictEntry:
     dict_entry = get_dict_entry(word, readings)
@@ -97,4 +119,7 @@ def vocab_mock(word: str, readings: list[str]) -> VocabNote:
     mock_instance.get_question.return_value = word
     mock_instance.get_readings.return_value = readings
     return mock_instance
+
+
+
 

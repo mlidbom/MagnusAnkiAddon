@@ -97,3 +97,27 @@ class DictEntry:
         formatted_senses = [self.format_sense(sense) for sense in senses]
         answer_text = prefix + " | ".join(formatted_senses)
         return answer_text
+
+    _parts_of_speech_map = {
+        'noun or participle which takes the aux. verb suru': ['suru verb'],
+        'noun (common) (futsuumeishi)': ['noun'],
+        'adjectival nouns or quasi-adjectives (keiyodoshi)': ['na-adjective'],
+        'noun, used as a suffix': ['noun', 'suffix'],
+        "Godan verb with 'u' ending": ['godan verb'],
+        "Godan verb with 'ru' ending": ['godan verb'],
+        "Godan verb with 'mu' ending": ['godan verb'],
+        "Godan verb with 'nu' ending": ['godan verb'],
+        "Godan verb with 'gu' ending": ['godan verb'],
+        "Godan verb with 'ku' ending": ['godan verb'],
+        "Godan verb with 'su' ending": ['godan verb'],
+        "Godan verb with 'bu' ending": ['godan verb'],
+        "irregular nu verb": ['nu verb'],
+        "Godan verb with 'tsu' ending": ['godan verb'],
+        'transitive verb': ['transitive'],
+        'intransitive verb': ['intransitive']
+    }
+    def parts_of_speech(self) -> set[str]:
+        def try_get_pos(pos:str) -> list[str]:
+            return self._parts_of_speech_map[pos] if pos in self._parts_of_speech_map else ["unmapped-pos-" + pos]
+
+        return set(ex_sequence.flatten([ex_sequence.flatten([try_get_pos(pos) for pos in sense.pos]) for sense in self.entry.senses]))

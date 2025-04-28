@@ -30,6 +30,6 @@ from sysutils import kana_utils
     ("食べる", ['食べり', '食べら', '食べれ', '食べっ', '食べ'], False, False),
     ("食べる", ["食べ"], True, False)
 ])
-def test_identify_words(word: str, conjugation_bases: list[str], is_ichidan: bool, is_godan:bool) -> None:
+def test_identify_stems(word: str, conjugation_bases: list[str], is_ichidan: bool, is_godan:bool) -> None:
     result = kana_utils.get_highlighting_conjugation_bases(word, is_ichidan, is_godan)
     assert result == conjugation_bases
