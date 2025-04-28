@@ -41,6 +41,8 @@ test_special_vocab = [
     VocabSpec("てる", "{continuing-{activity | state}} / {progressive | perfect}", ['てる'], tags=[Mine.Tags.inflecting_word]),
     VocabSpec("た", "{past-tense} | (please)do", ['た'], tags=[Mine.Tags.inflecting_word]),
     VocabSpec("て", "{continuing-action}", ['て'], tags=[Mine.Tags.inflecting_word]),
+    VocabSpec("てた", "{was}-{_-ing|_ed}", ['てた'], tags=[Mine.Tags.inflecting_word]),
+    VocabSpec("てたら", "{was}-{_-ing|_ed}", ['てたら'], tags=[Mine.Tags.inflecting_word]),
     VocabSpec("たら", "conj{if/when} prt{as-for | why-not..  | I-said!/I-tell-you!}", ['たら'], extra_forms=["[[た]]"], tags=[Mine.Tags.inflecting_word]),
     VocabSpec("ちゃう", "to do: accidentally/unfortunately | completely", ['ちゃう'], tags=[Mine.Tags.inflecting_word]),
     VocabSpec("無い", "{negation} | nonexistent | unowned | impossible/won't-happen", ['ない'], tags=[Mine.Tags.inflecting_word]),

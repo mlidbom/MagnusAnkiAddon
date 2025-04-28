@@ -60,7 +60,7 @@ class HierarchicalWord:
         self.start_index = self.word.start_index
         self.end_index = self.word.lookahead_index
         self.start_character_index = self.word.character_index
-        self.end_character_index = self.start_character_index + self.length -1
+        self.end_character_index = self.start_character_index + self.length - 1
         self.may_have_children = self.start_index < self.end_index
 
     def add_shadowed(self, child:HierarchicalWord) -> None:
@@ -74,8 +74,12 @@ class HierarchicalWord:
         if self.start_character_index < other.start_character_index <= self.end_character_index:
             return True
 
-        if self.start_character_index == other.start_character_index and self.length > other.length:
-            return True
+        if self.start_character_index == other.start_character_index:
+            if self.length > other.length:
+                return True
+
+            if self.word.word_length() > other.word.word_length() and other.word.word in self.word.word:
+                return True
 
         return False
 
@@ -112,16 +116,16 @@ def extract_words(sentence: str, allow_duplicates:bool = False) -> list[Extracte
     def _is_word(word: str) -> bool:
         return app.col().vocab.is_word(word) or DictLookup.is_word(word)
 
-    def add_word_if_it_is_in_dictionary(word: str, surface:str, character_index:int, lookahead_index: int) -> None:
+    def add_word_if_it_is_in_dictionary(word: str, surface:str, lookahead_index: int) -> None:
         if _is_word(word):
-            add_word(word, surface,character_index, lookahead_index)
+            add_word(word, surface, lookahead_index)
 
     def is_excluded_form(vocab_form:str, candidate_form:str) -> bool:
         return (any(voc for voc in (app.col().vocab.with_form(vocab_form)) if candidate_form in voc.get_excluded_forms()) or
                 any(voc for voc in (app.col().vocab.with_form(candidate_form)) if candidate_form in voc.get_excluded_forms()))
 
     # noinspection DuplicatedCode
-    def add_word(word: str, surface:str, character_index:int, lookahead_index: int) -> None:
+    def add_word(word: str, surface:str, lookahead_index: int) -> None:
         if (allow_duplicates or word not in found_words) and word not in _noise_characters:
             found_words.add(word)
             found_words_list.append(ExtractedWord(word, surface, token_index, lookahead_index, character_index))
@@ -144,12 +148,12 @@ def extract_words(sentence: str, allow_duplicates:bool = False) -> list[Extracte
         return False
 
     def is_inflected_word(index: int) -> bool:
-        token = tokens[index]
-        if token.is_inflected_verb():
+        _token = tokens[index]
+        if _token.is_inflected_verb():
             return True
 
-        if token.is_inflectable_word():
-            if index < len(tokens) -1:
+        if _token.is_inflectable_word():
+            if index < len(tokens) - 1:
                 if is_next_token_inflecting_word(index):
                     return True
 
@@ -164,9 +168,9 @@ def extract_words(sentence: str, allow_duplicates:bool = False) -> list[Extracte
             surface_compound += look_ahead_token.surface
 
             if base_compound != surface_compound and not is_excluded_form(surface_compound, base_compound):
-                add_word_if_it_is_in_dictionary(base_compound, surface_compound, character_index, lookahead_index)
+                add_word_if_it_is_in_dictionary(base_compound, surface_compound, lookahead_index)
             if not is_excluded_form(token.base_form, surface_compound):
-                add_word_if_it_is_in_dictionary(surface_compound, surface_compound, character_index, lookahead_index)
+                add_word_if_it_is_in_dictionary(surface_compound, surface_compound, lookahead_index)
 
     tokens = _tokenizer.tokenize(sentence).tokens
     found_words = set[str]()
@@ -175,15 +179,14 @@ def extract_words(sentence: str, allow_duplicates:bool = False) -> list[Extracte
     character_index = 0
     for token_index, token in enumerate(tokens):
         if not is_excluded_form(token.surface, token.base_form):
-            add_word(token.base_form, token.surface, character_index, 0)
+            add_word(token.base_form, token.surface, 0)
 
         if (token.surface != token.base_form
                 and not is_inflected_word(token_index)
-                and not is_excluded_form(token.base_form, token.surface)): #if the surface is the stem of an inflected verb, don't use it, it's not a word in its own right in this sentence.
-            add_word(token.surface, token.surface, character_index, 0)
+                and not is_excluded_form(token.base_form, token.surface)): #If the surface is the stem of an inflected verb, don't use it. It's not a word in its own right in this sentence.
+            add_word(token.surface, token.surface, 0)
         check_for_compound_words()
 
         character_index += len(token.surface)
 
     return found_words_list
-

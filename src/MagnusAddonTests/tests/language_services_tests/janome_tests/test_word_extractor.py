@@ -127,7 +127,8 @@ def insert_custom_words(custom_words:list[str]) -> None:
      ['教科書', '落ちる', 'ちゃう', 'から']),
     ("待ってました",[],[],['待つ', 'て', 'ます', 'た']),
     ("怖くなくなったの", [], [], ['怖い', 'なくなる', 'た', 'の']),
-    ("落ちてないかな", [], [], ['落ちる', 'てる', 'ないか', 'な'])
+    ("落ちてないかな", [], [], ['落ちる', 'てる', 'ないか', 'な']),
+    ("分かってたら", [], [], ['分かる', 'てたら'])
 ])
 def test_hierarchical_extraction(sentence: str, custom_words:list[str], excluded:list[WordExclusion], expected_output: list[str]) -> None:
     insert_custom_words(custom_words)
