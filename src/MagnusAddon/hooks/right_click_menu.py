@@ -10,6 +10,7 @@ from aqt.webview import AnkiWebView, AnkiWebViewKind
 
 from ankiutils import query_builder, search_executor
 from ankiutils.app import main_window
+from batches import local_note_updater
 from hooks import right_click_menu_note_radical, right_click_menu_note_kanji, right_click_menu_note_vocab, right_click_menu_note_sentence
 from hooks.right_click_menu_search import setup_anki_open_menu, setup_web_search_menu
 from hooks.right_click_menu_utils import add_ui_action, create_note_action
@@ -73,6 +74,9 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu) -> None:
 
     for string_menu, menu_string in string_menus:
         setup_web_search_menu(string_menu, menu_string)
+
+    for string_menu, menu_string in string_menus:
+        add_ui_action(string_menu, "remove from sentence exclusions", lambda _string=menu_string: local_note_updater.clean_sentence_excluded_word(_string))# type: ignore
 
     for string_menu, menu_string in string_menus:
         create_menu = non_optional(string_menu.addMenu(shortcutfinger.down2("Create")))

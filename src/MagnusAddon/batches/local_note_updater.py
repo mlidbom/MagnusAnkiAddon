@@ -159,3 +159,11 @@ def reparse_sentences_for_vocab(vocab:VocabNote) -> None:
     query = query_builder.sentence_with_any_vocab_form_in_question(vocab)
     sentences = app.col().sentences.search(query)
     reparse_sentences(sentences)
+
+def clean_sentence_excluded_word(excluded:str) -> None:
+
+    def reparse_sentence(sentence: SentenceNote) -> None:
+        sentence.remove_excluded_vocab(excluded)
+
+    sentences_to_update = app.col().sentences.search(query_builder.sentences_with_exclusions([excluded]))
+    progress_display_runner.process_with_progress(sentences_to_update, reparse_sentence, "Reparsing sentences.")

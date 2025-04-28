@@ -56,6 +56,9 @@ def sentence_with_any_vocab_form_in_question(word:VocabNote) -> str:
     search_strings = word.get_stems_for_all_forms() + list(word.get_forms())
     return f"""{note_sentence} {field_contains_string(f_question,  *search_strings)}"""
 
+def sentences_with_exclusions(exclusions:list[str]) -> str:
+    return f"""{note_sentence} {field_contains_string(SentenceNoteFields.user_excluded_vocab,  *exclusions)}"""
+
 
 def notes_lookup(notes: Sequence[JPNote]) -> str:
     return f"""{NoteFields.note_id}:{",".join(str(note.get_id()) for note in notes)}""" if notes else ""
