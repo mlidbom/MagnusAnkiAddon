@@ -7,6 +7,9 @@ from unidic2ud import UDPipeEntry  # type: ignore
 
 from language_services.shared.jatoken import JAToken
 from language_services.universal_dependencies.shared.tokenizing import xpos, deprel, ud_universal_part_of_speech_tag
+from language_services.universal_dependencies.shared.tokenizing.ud_universal_part_of_speech_tag import UDPOS
+from language_services.universal_dependencies.shared.tokenizing.xpos import XPOS
+
 from sysutils import ex_str, kana_utils, typed
 
 def _head(token: UDPipeEntry) -> UDPipeEntry:
@@ -52,16 +55,22 @@ class UDToken(JAToken):
         return self.str_(ex_str.pad_to_length_ui_font)
 
     def get_base_form(self) -> str:
-        return self.norm
-
-    def get_surface_form(self) -> str:
         return self.lemma
 
-    def is_inflectable_word(self) -> bool:
-        raise Exception("not implemented yet")
+    def get_surface_form(self) -> str:
+        return self.form
 
-    def is_inflected_verb(self) -> bool:
-        raise Exception("not implemented yet")
+    _pseudo_verbs_for_inflection_purposes = set(["ます"])
+    def is_inflectable_word(self) -> bool:
+        if self.upos == UDPOS.adjective:
+            return True
+        if self.upos == UDPOS.verb:
+            return True
+        if self.xpos == XPOS.verb_bound:
+            return True
+        if self.lemma in self._pseudo_verbs_for_inflection_purposes:
+            return True
+        return False
 
     def str_(self, padder: Callable[[str, int], str], exclude_lemma_and_norm:bool = False) -> str:
         lemma = self.lemma if self.lemma != self.form else ""

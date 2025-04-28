@@ -47,9 +47,13 @@ test_special_vocab = [
     VocabSpec("ちゃう", "to do: accidentally/unfortunately | completely", ['ちゃう'], tags=[Mine.Tags.inflecting_word]),
     VocabSpec("無い", "{negation} | nonexistent | unowned | impossible/won't-happen", ['ない'], tags=[Mine.Tags.inflecting_word]),
     VocabSpec("ても良い", "{concession/compromise} | {permission}", ['てもいい'], tags=[Mine.Tags.inflecting_word]),
+    VocabSpec("れる", "aux: {passive} |{potential} | {spontaneous-occurence} | {honorific}", ['れる'], tags=[Mine.Tags.inflecting_word]),
     VocabSpec("たの", "{indicates-{emotion/admiration/emphasis}}", ['たの'], extra_forms=["[[たの]]"]),
     VocabSpec("すぎる", "too-much", ['すぎる'], tags=[Mine.Tags.inflecting_word]),
     VocabSpec("だったら", "if-so", ['だったら'], extra_forms=["[[だった]]"]),
+    VocabSpec("に", "{location/direction/target/reason/purpose} {adv}", ['に'],extra_forms=["[[だ]]"]),
+    VocabSpec("で", "{act-ctx{time|place|cause|means}}　| {て-form:+<ja>む/ぬ</ja>-verbs+<ja>だ</ja>} | ksb:よ", ['で'], extra_forms=["[[だ]]"]),
+    VocabSpec("な", "{attributive-copula} | な-particle ...", ['な'], extra_forms=["[[だ]]"]),
 ]
 
 test_ordinary_vocab_list = [
@@ -74,7 +78,6 @@ test_ordinary_vocab_list = [
     VocabSpec("られる", "aux: {passive} |{potential} | {spontaneous-occurence} | {honorific}", ['られる']),
     VocabSpec("夢", "dream", ['ゆめ']),
     VocabSpec("答え", "answer/response | solution", ['こたえ']),
-    VocabSpec("で", "{act-ctx{time|place|cause|means}}　| {て-form:+<ja>む/ぬ</ja>-verbs+<ja>だ</ja>} | ksb:よ", ['で']),
     VocabSpec("話す", "to{}: talk/speak | tell/explain", ['はなす']),
     VocabSpec("特別", "Special", ['とくべつ']),
     VocabSpec("女性", "Female, Woman, Lady", ['じょせい']),
@@ -87,7 +90,6 @@ test_ordinary_vocab_list = [
     VocabSpec("それなのに", "and-yet/but-even-so/despite-this", ['それなのに']),
     VocabSpec("そう", "aux{seems/looks}like | adv{in-that-way} | int{right!|really?}", ['そう']),
     VocabSpec("頭", "Head", ['あたま']),
-    VocabSpec("な", "{attributive-copula} | な-particle ...", ['な']),
     VocabSpec("ちゃんと", "diligently/seriously | perfectly/properly | sufficiently/satisfactorily", ['ちゃんと']),
     VocabSpec("泣く", "To Cry", ['なく']),
     VocabSpec("や", "{non-exhaustive-list-item} | {the-minute-thate} | ksb:だ", ['や']),
