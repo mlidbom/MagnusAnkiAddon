@@ -119,6 +119,10 @@ class VocabNote(KanaVocabNote):
                 if self.is_uk() and self.get_readings()[0] not in self.get_forms():
                     self.set_forms(self.get_forms() | set(self.get_readings()))
 
+            speech_types = self.get_speech_types() - {'Unknown'}
+            if len(speech_types) == 0:
+                self.set_speech_type(", ".join(lookup.parts_of_speech()))
+
     def extract_main_form_kanji(self) -> list[str]:
         clean = ex_str.strip_html_and_bracket_markup(self.get_question())
         return [char for char in clean if kana_utils.is_kanji(char)]

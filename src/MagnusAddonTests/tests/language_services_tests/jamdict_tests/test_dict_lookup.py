@@ -102,6 +102,7 @@ def test_pos(word: str, readings:list[str], pos: set[str]) -> None:
     assert dict_entry.found_words_count() == 1
 
     assert dict_entry.entries[0].parts_of_speech() == pos
+    assert dict_entry.parts_of_speech() == pos
 
 
 def get_single_dict_entry(word: str, readings: list[str]) -> DictEntry:

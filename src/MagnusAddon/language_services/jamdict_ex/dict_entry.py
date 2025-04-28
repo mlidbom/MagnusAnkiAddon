@@ -99,6 +99,8 @@ class DictEntry:
         return answer_text
 
     _parts_of_speech_map = {
+        'transitive verb': ['transitive'],
+        'intransitive verb': ['intransitive'],
         'noun or participle which takes the aux. verb suru': ['suru verb'],
         'noun (common) (futsuumeishi)': ['noun'],
         'adjectival nouns or quasi-adjectives (keiyodoshi)': ['na-adjective'],
@@ -111,10 +113,49 @@ class DictEntry:
         "Godan verb with 'ku' ending": ['godan verb'],
         "Godan verb with 'su' ending": ['godan verb'],
         "Godan verb with 'bu' ending": ['godan verb'],
-        "irregular nu verb": ['nu verb'],
+        "Godan verb with 'u' ending (special class)": ['godan verb', 'special-class'],
+        'Godan verb - -aru special class': ['godan verb', 'special-class-aru'],
         "Godan verb with 'tsu' ending": ['godan verb'],
-        'transitive verb': ['transitive'],
-        'intransitive verb': ['intransitive']
+        "irregular nu verb": ['nu verb'],
+        'Godan verb - Iku/Yuku special class': ['godan verb', 'special-class'],
+        "Godan verb with 'ru' ending (irregular verb)": ['godan verb', 'irregular'],
+        'Ichidan verb': ['ichidan verb'],
+        'Ichidan verb - zuru verb (alternative form of -jiru verbs)': ['ichidan verb', 'zuru verb'],
+        'Kuru verb - special class': ['kuru verb', 'special-class'],
+        "Yodan verb with 'ru' ending (archaic)": ['yodan verb'],
+        "Yodan verb with 'ku' ending (archaic)": ['yodan verb'],
+        "Nidan verb (lower class) with 'ru' ending (archaic)": ["nidan verb"],
+        "Nidan verb (upper class) with 'ru' ending (archaic)": ["nidan verb"],
+        'adjective (keiyoushi)': ['i-adjective'],
+        'adjective (keiyoushi) - yoi/ii class': ['i-adjective'],
+        'adverb (fukushi)': ['adverb'],
+        "adverb taking the 'to' particle": ['to-adverb'],
+        'auxiliary': ['auxiliary'],
+        'auxiliary adjective': ['adjective', 'auxiliary'],
+        'auxiliary verb': ['auxiliary'],
+        'conjunction': ['conjunction'],
+        'copula': ['copula'],
+        'expressions (phrases, clauses, etc.)': ['expression'],
+        'interjection (kandoushi)': ['interjection'],
+        'irregular ru verb, plain form ends with -ri': [''],
+        'noun, used as a prefix': ['prefix', 'noun'],
+        "nouns which may take the genitive case particle 'no'": ['noun', 'no-adjective'],
+        'particle': ['particle'],
+        'pre-noun adjectival (rentaishi)': [''],
+        'prefix': ['prefix'],
+        'pronoun': ['pronoun'],
+        'suffix': ['suffix'],
+        'suru verb - included': ['suru verb'],
+        'suru verb': ['suru verb'],
+        'su verb - precursor to the modern suru': ['su verb'],
+        'counter': ['counter'],
+        'numeric': ['numeric'],
+        'noun or verb acting prenominally': ['prenominal'],
+        'suru verb - special class': ['suru verb', 'special-class'],
+        'Ichidan verb - kureru special class': ['ichidan verb', 'special-class'],
+        "'taru' adjective": ['taru-adjective']
+
+
     }
     def parts_of_speech(self) -> set[str]:
         def try_get_pos(pos:str) -> list[str]:
