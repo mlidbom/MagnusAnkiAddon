@@ -96,13 +96,16 @@ class VocabNote(KanaVocabNote):
 
         super().update_generated_data()
 
-        question = self.get_question().strip()
+        question = self.get_question_without_noise_characters().strip()
         readings = ",".join(self.get_readings())
 
         if not readings:
             if kana_utils.is_only_kana(question):
                 self.set_readings([question])
                 self.set_tag(Mine.Tags.UsuallyKanaOnly)
+
+        if len(self.get_user_compounds()) == 0 and self._is_suru_verb_included():
+            self.set_user_compounds([question[:-2], "する"])
 
         if self.get_question():
             lookup = DictLookup.try_lookup_vocab_word_or_name(self)
@@ -121,7 +124,26 @@ class VocabNote(KanaVocabNote):
 
             speech_types = self.get_speech_types() - {'Unknown'}
             if len(speech_types) == 0:
-                self.set_speech_type(", ".join(lookup.parts_of_speech()))
+                self.auto_set_speech_type()
+
+    def _is_suru_verb_included(self) -> bool:
+        question = self.get_question_without_noise_characters()
+        return question[-2:] == "する"
+
+    def auto_set_speech_type(self) -> None:
+        from language_services.jamdict_ex.dict_lookup import DictLookup
+
+        lookup = DictLookup.try_lookup_vocab_word_or_name(self)
+        if lookup.found_words():
+            self.set_speech_type(", ".join(lookup.parts_of_speech()))
+        elif self._is_suru_verb_included():
+            question = self.get_question_without_noise_characters()[:-2]
+            readings = [reading[:-2] for reading in self.get_readings()]
+            lookup = DictLookup.try_lookup_word_or_name(question, readings)
+            pos = lookup.parts_of_speech() & {"transitive", "intransitive"}
+            self.set_speech_type("suru verb, " + ", ".join(pos))
+
+
 
     def extract_main_form_kanji(self) -> list[str]:
         clean = ex_str.strip_html_and_bracket_markup(self.get_question())
@@ -379,14 +401,11 @@ class VocabNote(KanaVocabNote):
         app.anki_collection().addNote(backend_note)
         return note
 
-    def is_verb(self) -> bool:
-        return "verb" in self.get_speech_type()
-
-    def is_ichidan_verb(self) -> bool:
+    def _is_ichidan_verb(self) -> bool:
         return "ichidan" in self.get_speech_type().lower()
 
     def _get_stems_for_form(self, form:str) -> list[str]:
-        return [base for base in kana_utils.get_highlighting_conjugation_bases(form, is_ichidan_verb=self.is_ichidan_verb()) if base != form]
+        return [base for base in kana_utils.get_highlighting_conjugation_bases(form, is_ichidan_verb=self._is_ichidan_verb()) if base != form]
 
     def get_stems_for_primary_form(self) -> list[str]:
         return self._get_stems_for_form(self.get_question())
@@ -451,6 +470,9 @@ class VocabNote(KanaVocabNote):
 
     def create_suru_verb(self, shimasu:bool = False) -> VocabNote:
         suru_verb = self._create_postfix_prefix_version("する" if not shimasu else "します", "suru verb")
+
+        forms = list(suru_verb.get_forms()) + [form.replace("する", "をする") for form in suru_verb.get_forms()]
+        suru_verb.set_forms(set(forms))
 
         if self.is_transitive(): suru_verb.set_speech_type(suru_verb.get_speech_type() + ", transitive")
         if self.is_intransitive(): suru_verb.set_speech_type(suru_verb.get_speech_type() + ", intransitive")
