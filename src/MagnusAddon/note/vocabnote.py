@@ -498,6 +498,9 @@ class VocabNote(KanaVocabNote):
         for i in range(len(self._note.fields)):
             clone._note.fields[i] = self._note.fields[i]
 
+        for related in clone.get_related_similar_meaning():
+            clone.add_related_similar_meaning(related)
+
         clone._flush()
 
         return clone

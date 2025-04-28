@@ -79,10 +79,10 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu) -> None:
         add_ui_action(string_menu, "remove from sentence exclusions", lambda _string=menu_string: local_note_updater.clean_sentence_excluded_word(_string))# type: ignore
 
     for string_menu, menu_string in string_menus:
-        create_menu = non_optional(string_menu.addMenu(shortcutfinger.down2("Create")))
-        create_note_action(create_menu, f"vocab: {menu_string}", lambda _string=menu_string: VocabNote.create_with_dictionary(_string)) # type: ignore
-        create_note_action(create_menu, f"sentence: {menu_string}", lambda _word=menu_string: SentenceNote.create(_word)) # type: ignore
-        create_note_action(create_menu, f"kanji: {menu_string}", lambda _word=menu_string: KanjiNote.create(_word, "TODO", "", "")) # type: ignore
+        create_menu = non_optional(string_menu.addMenu(shortcutfinger.down2(f"Create: {menu_string}")))
+        create_note_action(create_menu, shortcutfinger.home1(f"vocab"), lambda _string=menu_string: VocabNote.create_with_dictionary(_string)) # type: ignore
+        create_note_action(create_menu, shortcutfinger.home2(f"sentence"), lambda _word=menu_string: SentenceNote.create(_word)) # type: ignore
+        create_note_action(create_menu, shortcutfinger.home3(f"kanji"), lambda _word=menu_string: KanjiNote.create(_word, "TODO", "", "")) # type: ignore
 
 
 def create_note_actions_menu(note_menu: QMenu, note:JPNote, title:str) -> None:
