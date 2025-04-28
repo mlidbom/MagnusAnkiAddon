@@ -80,9 +80,9 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
             clean_sentence = ex_str.strip_html_and_bracket_markup(_sentence.get_question())
             return 1 if any(stem for stem in derived_compounds_stems if stem in clean_sentence) else 0
 
-        return sorted(_sentences, key=lambda x: (prefer_studying_read(x),
+        return sorted(_sentences, key=lambda x: (dislike_secondary_form_with_vocab(x),
+                                                 prefer_studying_read(x),
                                                  prefer_studying_listening(x),
-                                                 dislike_secondary_form_with_vocab(x),
                                                  prefer_highlighted_for_low_reliability_matches(x),
                                                  dislike_no_translation(x),
                                                  prefer_lower_priority_tag_values(x),
