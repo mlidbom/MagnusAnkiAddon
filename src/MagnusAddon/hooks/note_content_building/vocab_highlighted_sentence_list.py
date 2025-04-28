@@ -21,7 +21,7 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
     secondary_forms_vocab_notes = ex_sequence.flatten([app.col().vocab.with_question(v) for v in secondary_forms])
     secondary_forms_with_their_own_vocab_forms = ex_sequence.flatten([f.get_text_matching_forms_for_primary_form() for f in secondary_forms_vocab_notes])
 
-    primary_form_stems = _vocab_note.get_stems_for_primary_form()
+    primary_form_stems = _vocab_note.get_text_matching_forms_for_primary_form()
     
     def contains_primary_form(_sentence: SentenceNote) -> bool:
         clean_sentence = ex_str.strip_html_and_bracket_markup(_sentence.get_question())
