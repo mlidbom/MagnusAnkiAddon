@@ -86,7 +86,7 @@ def generate_compounds(_vocab_note: VocabNote) -> str:
     return render_vocab_list(compound_parts, "compound parts", css_class="compound_parts") if compound_parts else ""
 
 def generate_in_compounds_list(_vocab_note: VocabNote) -> str:
-    compound_parts = app.col().vocab.with_compound_part(_vocab_note.get_question())
+    compound_parts = app.col().vocab.with_compound_part(_vocab_note.get_question_without_noise_characters())
     return render_vocab_list(compound_parts, "part of compound", css_class="in_compound_words") if compound_parts else ""
 
 def generate_derived_list(_vocab_note: VocabNote) -> str:

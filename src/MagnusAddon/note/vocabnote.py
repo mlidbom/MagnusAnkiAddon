@@ -83,7 +83,7 @@ class VocabNote(KanaVocabNote):
 
     def in_compounds(self) -> list[VocabNote]:
         from ankiutils import app
-        return app.col().vocab.with_compound_part(self.get_question())
+        return app.col().vocab.with_compound_part(self.get_question_without_noise_characters())
 
     def get_direct_dependencies(self) -> set[JPNote]:
         return (set(self.collection.kanji.with_any_kanji_in(list(self.extract_main_form_kanji()))) |
