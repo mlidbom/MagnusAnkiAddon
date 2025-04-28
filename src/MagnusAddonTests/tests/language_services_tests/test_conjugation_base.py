@@ -13,7 +13,7 @@ from sysutils import kana_utils
     ("おいてくる", ['おいてくれ', 'おいてき', 'おいてこ'], False, False),
 
     #adjectives
-    ("美味しい", ['美味しく'], False, False),
+    ("美味しい", ['美味しく', '美味しけ','美味しか'], False, False),
 
     #godan verbs
     ("走る", ["走り", "走ら", "走れ", "走っ", "走"], False, False),
