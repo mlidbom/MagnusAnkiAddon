@@ -29,7 +29,7 @@ _irregular_verb_stem_mappings: dict[str, list[str]] = {'する': ['すれ', 'し
                                                        'ます': ['まし', 'ませ'],
                                                        'いく': ['いき', 'いか', 'いけ', 'いっ', 'いこ'],
                                                        '行く': ['行き', '行か', '行け', '行っ', '行こ']}
-def get_highlighting_conjugation_bases(word: str, is_ichidan_verb:bool = False, is_godan:bool = False) -> list[str]:
+def get_word_stems(word: str, is_ichidan_verb:bool = False, is_godan:bool = False) -> list[str]:
     if is_ichidan_verb:
         return [word[:-1]]
     if word[-2:] in _irregular_verb_stem_mappings:

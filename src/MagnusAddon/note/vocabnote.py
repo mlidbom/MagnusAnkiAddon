@@ -416,7 +416,7 @@ class VocabNote(KanaVocabNote):
         return "ichidan" in self.get_speech_type().lower()
 
     def _get_stems_for_form(self, form:str) -> list[str]:
-        return [base for base in kana_utils.get_highlighting_conjugation_bases(form, is_ichidan_verb=self._is_ichidan_verb()) if base != form]
+        return [base for base in kana_utils.get_word_stems(form, is_ichidan_verb=self._is_ichidan_verb()) if base != form]
 
     def get_stems_for_primary_form(self) -> list[str]:
         return self._get_stems_for_form(self.get_question())
