@@ -119,6 +119,7 @@ def vocab_mock(word: str, readings: list[str]) -> VocabNote:
     mock_instance = MagicMock(spec=VocabNote)
     mock_instance.get_question.return_value = word
     mock_instance.get_readings.return_value = readings
+    mock_instance.get_question_without_noise_characters.return_value = word
     return mock_instance
 
 
