@@ -1,3 +1,4 @@
+import pyperclip
 from PyQt6.QtWidgets import QMenu
 
 from ankiutils import app, query_builder
@@ -6,6 +7,7 @@ from note.note_constants import NoteFields, NoteTypes
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
 from sysutils import ex_str
+from sysutils.ex_str import newline
 from sysutils.typed import non_optional
 from hooks import shortcutfinger
 
@@ -108,9 +110,18 @@ def setup_note_menu(vocab: VocabNote, note_menu: QMenu, string_menus: list[tuple
             build_add_menu(non_optional(string_menu.addMenu(shortcutfinger.home2("Add"))))
             build_set_menu(non_optional(string_menu.addMenu(shortcutfinger.home3("Set"))))
 
+    def build_copy_menu(note_copy_menu: QMenu) -> None:
+        note_copy_menu.addAction(shortcutfinger.home1("Question"), lambda: pyperclip.copy(vocab.get_question()))
+        note_copy_menu.addAction(shortcutfinger.home2("Answer"), lambda: pyperclip.copy(vocab.get_answer()))
+        note_copy_menu.addAction(shortcutfinger.home3("Definition (question:answer)"), lambda: pyperclip.copy(f"""{vocab.get_question()}: {vocab.get_answer()}"""))
+        note_copy_menu.addAction(shortcutfinger.home4("Sentences: max 30"), lambda: pyperclip.copy(newline.join([sent.get_question() for sent in vocab.get_sentences()[0:30]])))
+
+
+
 
     build_lookup_menu(non_optional(note_menu.addMenu(shortcutfinger.home1("Open"))))
-    build_create_note_menu(non_optional(note_menu.addMenu(shortcutfinger.up2("Create"))))
+    build_create_note_menu(non_optional(note_menu.addMenu(shortcutfinger.home2("Create"))))
+    build_copy_menu(non_optional(note_menu.addMenu(shortcutfinger.home3("Copy"))))
     build_note_menu()
     build_string_menus()
 
