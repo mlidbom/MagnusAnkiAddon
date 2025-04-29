@@ -71,7 +71,7 @@ def setup_note_menu(vocab: VocabNote, note_menu: QMenu, string_menus: list[tuple
         add_ui_action(note_menu, shortcutfinger.up4("Reparse matching sentences"), lambda: local_note_updater.reparse_sentences_for_vocab(vocab))
         add_ui_action(note_menu, shortcutfinger.up5("Repopulate TOS"), lambda: vocab.auto_set_speech_type())
 
-    def build_string_menues() -> None:
+    def build_string_menus() -> None:
         for string_menu, menu_string in string_menus:
             def build_sentences_menu(sentence_menu: QMenu) -> None:
                 def remove_highlight(_sentences: list[SentenceNote]) -> None:
@@ -112,7 +112,7 @@ def setup_note_menu(vocab: VocabNote, note_menu: QMenu, string_menus: list[tuple
     build_lookup_menu(non_optional(note_menu.addMenu(shortcutfinger.home1("Open"))))
     build_create_note_menu(non_optional(note_menu.addMenu(shortcutfinger.up2("Create"))))
     build_note_menu()
-    build_string_menues()
+    build_string_menus()
 
 def format_vocab_meaning(meaning: str) -> str:
     return ex_str.strip_html_and_bracket_markup(meaning
