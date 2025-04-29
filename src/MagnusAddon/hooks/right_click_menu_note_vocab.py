@@ -76,16 +76,16 @@ def setup_note_menu(vocab: VocabNote, note_menu: QMenu, string_menus: list[tuple
         add_ui_action(note_menu, shortcutfinger.up5("Repopulate TOS"), lambda: vocab.auto_set_speech_type())
 
     def build_string_menues() -> None:
-        def remove_highlight(_sentences: list[SentenceNote]) -> None:
-            for _sentence in _sentences:
-                _sentence.remove_extra_vocab(vocab.get_question())
-
-        def exclude(_sentences: list[SentenceNote]) -> None:
-            for _sentence in _sentences:
-                _sentence.exclude_vocab(vocab.get_question())
-
         for string_menu, menu_string in string_menus:
             def build_sentences_menu(sentence_menu: QMenu) -> None:
+                def remove_highlight(_sentences: list[SentenceNote]) -> None:
+                    for _sentence in _sentences:
+                        _sentence.remove_extra_vocab(vocab.get_question())
+
+                def exclude(_sentences: list[SentenceNote]) -> None:
+                    for _sentence in _sentences:
+                        _sentence.exclude_vocab(vocab.get_question())
+
                 sentence = sentences[0]
 
                 if vocab.get_question() not in sentence.get_user_highlighted_vocab():
