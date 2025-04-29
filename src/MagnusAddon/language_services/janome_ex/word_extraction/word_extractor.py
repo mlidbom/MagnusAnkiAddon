@@ -4,6 +4,7 @@ from language_services.jamdict_ex.dict_lookup import DictLookup
 from language_services.janome_ex.tokenizing.jn_tokenizer import JNTokenizer
 from language_services.janome_ex.word_extraction.extracted_word import ExtractedWord
 from language_services.janome_ex.word_extraction.hierarchicalword import HierarchicalWord
+from language_services.janome_ex.word_extraction.sentence_analysis import TextAnalysis
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from note.note_constants import Mine
 from note.vocabnote import VocabNote
@@ -17,6 +18,8 @@ class WordExtractor:
         self._tokenizer = tokenizer
 
     def extract_words_hierarchical(self, sentence: str, excluded_words: list[WordExclusion]) -> list[HierarchicalWord]:
+        analysis = TextAnalysis(sentence, excluded_words)
+
         hierarchical_all = self.extract_words_hierarchical_all(sentence, excluded_words)
         only_non_children = [w for w in hierarchical_all if not w.shadowed_by]
         return only_non_children
