@@ -1,84 +1,15 @@
 from __future__ import annotations
 
-from typing import Any, Optional
-
 from language_services.jamdict_ex.dict_lookup import DictLookup
 from language_services.janome_ex.tokenizing.jn_tokenizer import JNTokenizer
 from language_services.janome_ex.word_extraction.extracted_word import ExtractedWord
+from language_services.janome_ex.word_extraction.hierarchicalword import HierarchicalWord
+from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from note.note_constants import Mine
 from note.vocabnote import VocabNote
 
 _noise_characters = {'.',',',':',';','/','|','。','、'}
 _max_lookahead = 12
-
-class WordExclusion:
-    _separator = "####"
-    _no_index = -1
-    def __init__(self, word:str, index:int = _no_index) -> None:
-        self.word = word
-        self.index = index
-
-    def excludes(self, word:HierarchicalWord) -> bool:
-        return word.word.word == self.word and (self.index == WordExclusion._no_index or self.index == word.word.character_index)
-
-    @classmethod
-    def from_string(cls, exclusion:str) -> WordExclusion:
-        if cls._separator in exclusion:
-            parts = exclusion.split(cls._separator)
-            try:
-                return WordExclusion(parts[1].strip(), int(parts[0].strip()))
-            except ValueError:
-                pass
-        return WordExclusion(exclusion.strip())
-
-    def as_string(self) -> str:
-        return self.word if self.index == WordExclusion._no_index else f"""{self.index}{self._separator}{self.word}"""
-
-    def __eq__(self, other: Any) -> bool:
-        if isinstance(other, WordExclusion):
-            return self.word == other.word and self.index == other.index
-        return False
-
-    def __hash__(self) -> int:
-        return hash((self.word, self.index))
-
-    def covers(self, other:WordExclusion) -> bool:
-        return self.word == other.word and (self.index == WordExclusion._no_index or self.index == other.index)
-
-class HierarchicalWord:
-    def __init__(self, word: ExtractedWord):
-        self.word = word
-        self.length = len(word.surface)
-        self.shadowed_by:Optional[HierarchicalWord] = None
-        self.shadowed:list[HierarchicalWord] = []
-        self.start_index = self.word.character_index
-        self.end_index = self.start_index + self.length - 1
-
-    def add_shadowed(self, child:HierarchicalWord) -> None:
-        self.shadowed.append(child)
-        child.shadowed_by = self
-
-    def is_shadowing(self, other: HierarchicalWord) -> bool:
-        if self == other or self.shadowed_by:
-            return False
-
-        if self.start_index < other.start_index <= self.end_index:
-            return True
-
-        if self.start_index == other.start_index:
-            if self.length > other.length:
-                return True
-
-            if self.word.word_length() > other.word.word_length() and other.word.word in self.word.word:
-                return True
-
-        return False
-
-    def __repr__(self) -> str:
-        return f"HierarchicalWord('{self.start_index}:{self.end_index}, {self.word.surface}:{self.word.word}: parent:{self.shadowed_by.word.word if self.shadowed_by else ''}')"
-
-    def to_exclusion(self) -> WordExclusion:
-        return WordExclusion(self.word.word, self.start_index)
 
 class WordExtractor:
     def __init__(self, tokenizer: JNTokenizer) -> None:

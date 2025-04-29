@@ -1,7 +1,8 @@
 from __future__ import annotations
 from typing import Optional, TYPE_CHECKING
 
-from language_services.janome_ex.word_extraction.word_extractor import HierarchicalWord, WordExclusion
+from language_services.janome_ex.word_extraction.hierarchicalword import HierarchicalWord
+from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from sysutils.ex_str import newline
 
 if TYPE_CHECKING:

@@ -2,7 +2,7 @@ from PyQt6.QtWidgets import QMenu
 
 from ankiutils import query_builder
 from hooks.right_click_menu_utils import add_lookup_action, add_ui_action
-from language_services.janome_ex.word_extraction.word_extractor import WordExclusion
+from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from note.note_constants import NoteFields, NoteTypes
 from note.sentencenote import SentenceNote
 from sysutils.typed import non_optional
