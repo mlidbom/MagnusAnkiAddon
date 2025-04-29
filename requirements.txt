@@ -1,5 +1,5 @@
-aqt==25.2
-anki==25.2
+aqt==25.5b2
+anki==25.5b2
 PyQt6-WebEngine==6.7.0
 PyQt6==6.7.1
 wanikani-api==0.6.1
@@ -13,7 +13,7 @@ pytest==7.4.2
 requests==2.32.3
 pytest
 pytest-xdist
-mypy==1.11.2
+mypy==1.15
 beartype
 pyperclip
 typing_extensions
