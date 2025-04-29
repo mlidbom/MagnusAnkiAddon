@@ -192,4 +192,5 @@ class Mine:
         UsuallyKanaOnly = "_uk"
         TTSAudio = "_tts_audio"
 
+        system_tags = {inflecting_word}
 

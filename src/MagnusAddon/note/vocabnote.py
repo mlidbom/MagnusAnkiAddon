@@ -500,6 +500,10 @@ class VocabNote(KanaVocabNote):
     def clone_to_form(self, form:str) -> VocabNote:
         clone = self._clone()
         clone._set_question(form)
+
+        for tag in [tag for tag in self.get_tags() if tag in Mine.Tags.system_tags]:
+            clone.set_tag(tag)
+
         return clone
 
     def create_ku_form(self) -> VocabNote:
