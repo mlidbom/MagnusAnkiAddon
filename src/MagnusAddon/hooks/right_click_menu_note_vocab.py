@@ -19,7 +19,7 @@ def setup_note_menu(vocab: VocabNote, note_menu: QMenu, string_menus: list[tuple
         def build_create_menu(various_forms:QMenu) -> None:
             create_vocab_note_action(various_forms, shortcutfinger.home1("な-adjective"), lambda: vocab.create_na_adjective())
             create_vocab_note_action(various_forms, shortcutfinger.home2("に-adverb"), lambda: vocab.create_ni_adverb())
-            create_vocab_note_action(various_forms, shortcutfinger.home3("to-adverb"), lambda: vocab.create_to_adverb())
+            create_vocab_note_action(various_forms, shortcutfinger.home3("と-adverb"), lambda: vocab.create_to_adverb())
             create_vocab_note_action(various_forms, shortcutfinger.home4("する-verb"), lambda: vocab.create_suru_verb())
             create_vocab_note_action(various_forms, shortcutfinger.up1("します-verb"), lambda: vocab.create_shimasu_verb())
             create_vocab_note_action(various_forms, shortcutfinger.up2("く-form-of-い-adjective"), lambda: vocab.create_ku_form())
