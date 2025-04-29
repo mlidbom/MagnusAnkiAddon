@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import QMenu
 
 from ankiutils import app, query_builder
-from hooks.right_click_menu_utils import add_lookup_action, add_single_vocab_lookup_action, add_ui_action, add_vocab_dependencies_lookup, create_note_action
+from hooks.right_click_menu_utils import add_lookup_action, add_single_vocab_lookup_action, add_ui_action, add_vocab_dependencies_lookup, create_vocab_note_action
 from note.note_constants import NoteFields, NoteTypes
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
@@ -78,29 +78,30 @@ def setup_note_menu(vocab: VocabNote, note_menu: QMenu, string_menus: list[tuple
     add_ui_action(note_menu, shortcutfinger.up3("Reparse matching sentences"), lambda: local_note_updater.reparse_sentences_for_vocab(vocab))
     add_ui_action(note_menu, shortcutfinger.up5("Repopulate TOS"), lambda: vocab.auto_set_speech_type())
 
+
     clone_to_form_menu = non_optional(note_create_menu.addMenu("Create form"))
     forms_with_no_vocab = [form for form in vocab.get_forms() if not any(app.col().vocab.with_question(form))]
     for index, form in enumerate(forms_with_no_vocab):
-        create_note_action(clone_to_form_menu, shortcutfinger.numpad(index, form), lambda _form=form: vocab.clone_to_form(_form)) # type: ignore
+        create_vocab_note_action(clone_to_form_menu, shortcutfinger.numpad(index, form), lambda _form=form: vocab.clone_to_form(_form)) # type: ignore
 
-    create_note_action(note_create_menu, shortcutfinger.home1("な-adjective"), lambda: vocab.create_na_adjective())
-    create_note_action(note_create_menu, shortcutfinger.home2("に-adverb"), lambda: vocab.create_ni_adverb())
-    create_note_action(note_create_menu, shortcutfinger.home3("to-adverb"), lambda: vocab.create_to_adverb())
-    create_note_action(note_create_menu, shortcutfinger.home4("する-verb"), lambda: vocab.create_suru_verb())
-    create_note_action(note_create_menu, shortcutfinger.up1("します-verb"), lambda: vocab.create_shimasu_verb())
-    create_note_action(note_create_menu, shortcutfinger.up2("く-form-of-い-adjective"), lambda: vocab.create_ku_form())
-    create_note_action(note_create_menu, shortcutfinger.up3("て-prefixed"), lambda: vocab.create_te_prefixed_word())
-    create_note_action(note_create_menu, shortcutfinger.up4("の-suffixed"), lambda: vocab.create_no_suffixed_word())
-    create_note_action(note_create_menu, shortcutfinger.up5("ん-suffixed"), lambda: vocab.create_n_suffixed_word())
-    create_note_action(note_create_menu, shortcutfinger.down1("か-suffixed"), lambda: vocab.create_ka_suffixed_word())
+    create_vocab_note_action(note_create_menu, shortcutfinger.home1("な-adjective"), lambda: vocab.create_na_adjective())
+    create_vocab_note_action(note_create_menu, shortcutfinger.home2("に-adverb"), lambda: vocab.create_ni_adverb())
+    create_vocab_note_action(note_create_menu, shortcutfinger.home3("to-adverb"), lambda: vocab.create_to_adverb())
+    create_vocab_note_action(note_create_menu, shortcutfinger.home4("する-verb"), lambda: vocab.create_suru_verb())
+    create_vocab_note_action(note_create_menu, shortcutfinger.up1("します-verb"), lambda: vocab.create_shimasu_verb())
+    create_vocab_note_action(note_create_menu, shortcutfinger.up2("く-form-of-い-adjective"), lambda: vocab.create_ku_form())
+    create_vocab_note_action(note_create_menu, shortcutfinger.up3("て-prefixed"), lambda: vocab.create_te_prefixed_word())
+    create_vocab_note_action(note_create_menu, shortcutfinger.up4("の-suffixed"), lambda: vocab.create_no_suffixed_word())
+    create_vocab_note_action(note_create_menu, shortcutfinger.up5("ん-suffixed"), lambda: vocab.create_n_suffixed_word())
+    create_vocab_note_action(note_create_menu, shortcutfinger.down1("か-suffixed"), lambda: vocab.create_ka_suffixed_word())
 
     if selection:
-        create_note_action(note_create_menu, f"selection: {selection}-prefix", lambda: vocab.create_prefix_version(selection))
-        create_note_action(note_create_menu, f"selection: {selection}-suffix", lambda: vocab.create_suffix_version(selection))
+        create_vocab_note_action(note_create_menu, f"selection: {selection}-prefix", lambda: vocab.create_prefix_version(selection))
+        create_vocab_note_action(note_create_menu, f"selection: {selection}-suffix", lambda: vocab.create_suffix_version(selection))
 
     if clipboard:
-        create_note_action(note_create_menu, f"clipboard: {clipboard}-prefix", lambda: vocab.create_prefix_version(selection))
-        create_note_action(note_create_menu, f"clipboard: {clipboard}-suffix", lambda: vocab.create_suffix_version(selection))
+        create_vocab_note_action(note_create_menu, f"clipboard: {clipboard}-prefix", lambda: vocab.create_prefix_version(clipboard))
+        create_vocab_note_action(note_create_menu, f"clipboard: {clipboard}-suffix", lambda: vocab.create_suffix_version(clipboard))
 
 def format_vocab_meaning(meaning: str) -> str:
     return ex_str.strip_html_and_bracket_markup(meaning

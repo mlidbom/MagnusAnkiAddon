@@ -13,19 +13,21 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
     primary_form = _vocab_note.get_question_without_noise_characters()
     primary_form_forms = _vocab_note.get_text_matching_forms_for_primary_form()
     secondary_forms = [form for form in forms if form != primary_form]
-    secondary_forms_forms = [form for form in _vocab_note.get_text_matching_forms_for_all_form() if form not in primary_form_forms]
+    secondary_forms_forms = ex_str.sort_by_length_descending([form for form in _vocab_note.get_text_matching_forms_for_all_form() if form not in primary_form_forms])
 
     derived_compounds = _vocab_note.in_compounds()
-    derived_compounds_stems = ex_sequence.flatten([der.get_text_matching_forms_for_all_form() for der in derived_compounds])
+    derived_compounds_forms = ex_str.sort_by_length_descending(ex_sequence.flatten([der.get_text_matching_forms_for_all_form() for der in derived_compounds]))
 
     secondary_forms_vocab_notes = ex_sequence.flatten([app.col().vocab.with_question(v) for v in secondary_forms])
     secondary_forms_with_their_own_vocab_forms = ex_sequence.flatten([f.get_text_matching_forms_for_primary_form() for f in secondary_forms_vocab_notes])
 
-    primary_form_stems = _vocab_note.get_text_matching_forms_for_primary_form()
-    
+    secondary_forms_with_their_own_vocab_forms = ex_str.sort_by_length_descending(secondary_forms_with_their_own_vocab_forms)
+
+    primary_form_forms = _vocab_note.get_text_matching_forms_for_primary_form()
+
     def contains_primary_form(_sentence: SentenceNote) -> bool:
         clean_sentence = ex_str.strip_html_and_bracket_markup(_sentence.get_question())
-        return any(base_form for base_form in primary_form_stems if base_form in clean_sentence)
+        return any(base_form for base_form in primary_form_forms if base_form in clean_sentence)
 
     def contains_secondary_form_with_its_own_vocabulary_note(_sentence: SentenceNote) -> bool:
         clean_sentence = ex_str.strip_html_and_bracket_markup(_sentence.get_question())
@@ -34,7 +36,7 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
     def format_sentence(html_sentence: str) -> str:
         clean_sentence = ex_str.strip_html_and_bracket_markup(html_sentence)
 
-        for form in derived_compounds_stems:
+        for form in derived_compounds_forms:
             if form in clean_sentence:
                 return clean_sentence.replace(form, f"""<span class="vocabInContext derivedCompoundForm">{form}</span>""")
 
@@ -78,7 +80,7 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
 
         def dislike_contains_derived_compound(_sentence: SentenceNote) -> int:
             clean_sentence = ex_str.strip_html_and_bracket_markup(_sentence.get_question())
-            return 1 if any(stem for stem in derived_compounds_stems if stem in clean_sentence) else 0
+            return 1 if any(stem for stem in derived_compounds_forms if stem in clean_sentence) else 0
 
         return sorted(_sentences, key=lambda x: (dislike_secondary_form_with_vocab(x),
                                                  prefer_studying_read(x),

@@ -13,7 +13,7 @@ from ankiutils.app import main_window
 from batches import local_note_updater
 from hooks import right_click_menu_note_radical, right_click_menu_note_kanji, right_click_menu_note_vocab, right_click_menu_note_sentence
 from hooks.right_click_menu_search import setup_anki_open_menu, setup_web_search_menu
-from hooks.right_click_menu_utils import add_ui_action, create_note_action
+from hooks.right_click_menu_utils import add_ui_action, create_note_action, create_vocab_note_action
 from note.jpnote import JPNote
 from note.kanjinote import KanjiNote
 from note.radicalnote import RadicalNote
@@ -80,7 +80,7 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu) -> None:
 
     for string_menu, menu_string in string_menus:
         create_menu = non_optional(string_menu.addMenu(shortcutfinger.down2(f"Create: {menu_string}")))
-        create_note_action(create_menu, shortcutfinger.home1(f"vocab"), lambda _string=menu_string: VocabNote.create_with_dictionary(_string)) # type: ignore
+        create_vocab_note_action(create_menu, shortcutfinger.home1(f"vocab"), lambda _string=menu_string: VocabNote.create_with_dictionary(_string)) # type: ignore
         create_note_action(create_menu, shortcutfinger.home2(f"sentence"), lambda _word=menu_string: SentenceNote.create(_word)) # type: ignore
         create_note_action(create_menu, shortcutfinger.home3(f"kanji"), lambda _word=menu_string: KanjiNote.create(_word, "TODO", "", "")) # type: ignore
 
