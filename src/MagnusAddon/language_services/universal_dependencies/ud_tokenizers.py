@@ -1,12 +1,8 @@
-from language_services.universal_dependencies.ginza.ginza_tokenizer import GinzaTokenizer
 from language_services.universal_dependencies.shared.tokenizing.ud_tokenizer import UDTokenizer
 from language_services.universal_dependencies.unidic2ud.unidic2ud_tokenizer import UD2UDTokenizer
 
 #gendai is the current leader, mostly because 1. It has few dependencies 2. It comes with a bunch of other tokenizers
 gendai: UDTokenizer = UD2UDTokenizer("gendai")  # Yes. 15 Differences to ginza. 6 Better, 8 worse, one unclear.
-
-#Despite being good ginza will likely be removed. It has a metric ton of dependencies that I absolutely do not want to try to deploy with a multiplatform anki plugin, also, it is not even sure to be better then gendai...
-ginza: UDTokenizer = GinzaTokenizer()  # Yes. 15 Differences to gendai. 8 Better, 6 worse, one unclear.
 
 spoken: UDTokenizer = UD2UDTokenizer("spoken")  # ??. Zero differences compared to gendai so far...
 qkana: UDTokenizer = UD2UDTokenizer("qkana")  # Maybe. 2 difference with gendai. One clearly better and used in tests(Not any more. Ginza, the current winner handled this case fine.).
@@ -21,11 +17,10 @@ kinsei: UDTokenizer = UD2UDTokenizer("kinsei")  # Maybe. 6 differences with gend
 # manyo = UD2UDParser("manyo") #NO. 25 differences with gendai. Consistently strange.
 
 
-representative_tokenizers: list[UDTokenizer] = [ginza, gendai]
+representative_tokenizers: list[UDTokenizer] = [gendai]
 
 # noinspection PyUnusedName
 all_tokenizers: list[UDTokenizer] = [
-    ginza,
     gendai,
     spoken,
     built_in,
