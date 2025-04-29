@@ -165,7 +165,9 @@ class WordExtractor:
                 base_compound = surface_compound + look_ahead_token.get_base_form()
                 surface_compound += look_ahead_token.get_surface_form()
 
-                if base_compound != surface_compound and not is_excluded_form(surface_compound, base_compound):
+                if (base_compound != surface_compound
+                        and not is_excluded_form(surface_compound, base_compound)
+                        and not is_excluded_form(look_ahead_token.get_surface_form(), look_ahead_token.get_base_form())):
                     add_word_if_it_is_in_dictionary(base_compound, surface_compound, lookahead_index)
                 if not is_excluded_form(token.get_base_form(), surface_compound):
                     add_word_if_it_is_in_dictionary(surface_compound, surface_compound, lookahead_index)
