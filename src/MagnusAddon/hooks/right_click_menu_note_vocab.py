@@ -28,21 +28,17 @@ def setup_note_menu(vocab: VocabNote, note_menu: QMenu, string_menus: list[tuple
             create_vocab_note_action(various_forms, shortcutfinger.down1("ん-suffixed"), lambda: vocab.create_n_suffixed_word())
             create_vocab_note_action(various_forms, shortcutfinger.down2("か-suffixed"), lambda: vocab.create_ka_suffixed_word())
 
-        def build_selection_menu(selection_menu: QMenu) -> None:
-            create_vocab_note_action(selection_menu, shortcutfinger.home1(f"prefix-{vocab.get_question()}{selection}"), lambda: vocab.create_prefix_version(selection))
-            create_vocab_note_action(selection_menu, shortcutfinger.home2(f"suffix-{selection}{vocab.get_question()}"), lambda: vocab.create_suffix_version(selection))
-
-        def build_clipboard_menu(clipboard_menu: QMenu) -> None:
-            create_vocab_note_action(clipboard_menu, shortcutfinger.home1(f"prefix-{clipboard}{vocab.get_question()}"), lambda: vocab.create_prefix_version(clipboard))
-            create_vocab_note_action(clipboard_menu, shortcutfinger.home2(f"suffix-{vocab.get_question()}{clipboard}"), lambda: vocab.create_suffix_version(clipboard))
+        def build_create_prefix_postfix_note_menu(prefix_postfix_note_menu: QMenu, addendum:str) -> None:
+            create_vocab_note_action(prefix_postfix_note_menu, shortcutfinger.home1(f"prefix-{vocab.get_question()}{addendum}"), lambda: vocab.create_prefix_version(selection))
+            create_vocab_note_action(prefix_postfix_note_menu, shortcutfinger.home2(f"suffix-{addendum}{vocab.get_question()}"), lambda: vocab.create_suffix_version(selection))
 
 
         build_forms_menu(non_optional(note_create_menu.addMenu(shortcutfinger.home1("Clone to form"))))
         if selection:
-            build_selection_menu(non_optional(note_create_menu.addMenu(shortcutfinger.home2("Selection"))))
+            build_create_prefix_postfix_note_menu(non_optional(note_create_menu.addMenu(shortcutfinger.home2("Selection"))), selection)
 
         if clipboard:
-            build_clipboard_menu(non_optional(note_create_menu.addMenu(shortcutfinger.home3("Clipboard"))))
+            build_create_prefix_postfix_note_menu(non_optional(note_create_menu.addMenu(shortcutfinger.home3("Clipboard"))), clipboard)
 
         build_create_menu(non_optional(note_create_menu.addMenu(shortcutfinger.home4("Misc"))))
 
