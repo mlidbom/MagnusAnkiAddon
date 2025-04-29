@@ -15,6 +15,8 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
     secondary_forms = [form for form in forms if form != primary_form]
     secondary_forms_forms = ex_str.sort_by_length_descending([form for form in _vocab_note.get_text_matching_forms_for_all_form() if form not in primary_form_forms])
 
+    secondary_forms_containing_primary_form_forms = [form for form in secondary_forms_forms if any(pform for pform in primary_form_forms if pform in form)]
+
     derived_compounds = _vocab_note.in_compounds()
     derived_compounds_forms = ex_str.sort_by_length_descending(ex_sequence.flatten([der.get_text_matching_forms_for_all_form() for der in derived_compounds]))
 
@@ -27,7 +29,10 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
 
     def contains_primary_form(_sentence: SentenceNote) -> bool:
         clean_sentence = ex_str.strip_html_and_bracket_markup(_sentence.get_question())
-        return any(base_form for base_form in primary_form_forms if base_form in clean_sentence)
+
+
+        return (not any(covering_secondary_form for covering_secondary_form in secondary_forms_containing_primary_form_forms if covering_secondary_form in clean_sentence)
+                and any(base_form for base_form in primary_form_forms if base_form in clean_sentence))
 
     def contains_secondary_form_with_its_own_vocabulary_note(_sentence: SentenceNote) -> bool:
         clean_sentence = ex_str.strip_html_and_bracket_markup(_sentence.get_question())
@@ -39,6 +44,10 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
         for form in derived_compounds_forms:
             if form in clean_sentence:
                 return clean_sentence.replace(form, f"""<span class="vocabInContext derivedCompoundForm">{form}</span>""")
+
+        for form in secondary_forms_containing_primary_form_forms:
+            if form in clean_sentence:
+                return clean_sentence.replace(form, f"""<span class="vocabInContext secondaryForm">{form}</span>""")
 
         for form in primary_form_forms:
             if form in clean_sentence:
