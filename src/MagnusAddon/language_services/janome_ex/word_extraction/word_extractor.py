@@ -20,7 +20,7 @@ class WordExclusion:
         self.index = index
 
     def excludes(self, word:HierarchicalWord) -> bool:
-        return word.word.word == self.word and (self.index == WordExclusion._no_index or self.index == word.word.start_index)
+        return word.word.word == self.word and (self.index == WordExclusion._no_index or self.index == word.word.character_index)
 
     @classmethod
     def from_string(cls, exclusion:str) -> WordExclusion:
@@ -52,11 +52,8 @@ class HierarchicalWord:
         self.length = len(word.surface)
         self.shadowed_by:Optional[HierarchicalWord] = None
         self.shadowed:list[HierarchicalWord] = []
-        self.start_index = self.word.start_index
-        self.end_index = self.word.lookahead_index
-        self.start_character_index = self.word.character_index
-        self.end_character_index = self.start_character_index + self.length - 1
-        self.may_have_children = self.start_index < self.end_index
+        self.start_index = self.word.character_index
+        self.end_index = self.start_index + self.length - 1
 
     def add_shadowed(self, child:HierarchicalWord) -> None:
         self.shadowed.append(child)
@@ -66,10 +63,10 @@ class HierarchicalWord:
         if self == other or self.shadowed_by:
             return False
 
-        if self.start_character_index < other.start_character_index <= self.end_character_index:
+        if self.start_index < other.start_index <= self.end_index:
             return True
 
-        if self.start_character_index == other.start_character_index:
+        if self.start_index == other.start_index:
             if self.length > other.length:
                 return True
 
@@ -79,7 +76,7 @@ class HierarchicalWord:
         return False
 
     def __repr__(self) -> str:
-        return f"HierarchicalWord('{self.start_index}:{self.end_index} | {self.start_character_index}:{self.end_character_index}, {self.word.surface}:{self.word.word}: parent:{self.shadowed_by.word.word if self.shadowed_by else ''}')"
+        return f"HierarchicalWord('{self.start_index}:{self.end_index}, {self.word.surface}:{self.word.word}: parent:{self.shadowed_by.word.word if self.shadowed_by else ''}')"
 
     def to_exclusion(self) -> WordExclusion:
         return WordExclusion(self.word.word, self.start_index)
@@ -128,7 +125,7 @@ class WordExtractor:
         def add_word(word: str, surface: str, lookahead_index: int) -> None:
             if (allow_duplicates or word not in found_words) and word not in _noise_characters:
                 found_words.add(word)
-                found_words_list.append(ExtractedWord(word, surface, token_index, lookahead_index, character_index))
+                found_words_list.append(ExtractedWord(word, surface, character_index))
 
         def is_next_token_inflecting_word(index: int) -> bool:
             def lookup_vocabs_prefer_exact_match(form: str) -> list[VocabNote]:

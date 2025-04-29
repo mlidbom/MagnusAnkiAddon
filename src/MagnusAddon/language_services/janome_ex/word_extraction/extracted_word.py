@@ -3,11 +3,9 @@ from typing import Union, Any
 from language_services.janome_ex.tokenizing.jn_parts_of_speech import PartOfSpeechDescription
 
 class ExtractedWord:
-    def __init__(self, word: str, surface: str, start_index:int, lookahead_index:int, character_index:int, parts_of_speech: Union[PartOfSpeechDescription, None] = None) -> None:
+    def __init__(self, word: str, surface: str, character_index:int, parts_of_speech: Union[PartOfSpeechDescription, None] = None) -> None:
         self.word = word
         self.surface = surface
-        self.start_index = start_index
-        self.lookahead_index = lookahead_index
         self.parts_of_speech = parts_of_speech
         self.character_index = character_index
 
