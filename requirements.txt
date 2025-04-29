@@ -9,7 +9,6 @@ jamdict==0.1a11.post2
 Janome==0.5.0
 pipdeptree==2.13.0
 puchikarui==0.2a2.post5
-pytest==7.4.2
 requests==2.32.3
 pytest
 pytest-xdist
