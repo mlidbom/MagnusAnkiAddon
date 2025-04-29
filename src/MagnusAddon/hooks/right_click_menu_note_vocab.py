@@ -63,14 +63,6 @@ def setup_note_menu(vocab: VocabNote, note_menu: QMenu, string_menus: list[tuple
         for reading in vocab.get_readings():
             add_lookup_action(note_lookup_menu, shortcutfinger.up4(f"Homonyms: {reading}"), query_builder.notes_lookup(app.col().vocab.with_reading(reading)))
 
-    def build_hide_menu(note_hide_menu: QMenu) -> None:
-        if not vocab.get_mnemonics_override():
-            add_ui_action(note_hide_menu, shortcutfinger.home1("Mnemonic"), lambda: vocab.override_meaning_mnemonic())
-
-    def build_restore_menu(note_restore_menu: QMenu) -> None:
-        if vocab.get_mnemonics_override() == "-":
-            add_ui_action(note_restore_menu, shortcutfinger.home1("Mnemonic"), lambda: vocab.restore_meaning_mnemonic())
-
     def build_note_menu() -> None:
         if not vocab.get_user_answer():
             add_ui_action(note_menu, shortcutfinger.up1("Accept meaning"), lambda: vocab.set_user_answer(format_vocab_meaning(vocab.get_answer())))
@@ -119,9 +111,7 @@ def setup_note_menu(vocab: VocabNote, note_menu: QMenu, string_menus: list[tuple
 
 
     build_lookup_menu(non_optional(note_menu.addMenu(shortcutfinger.home1("Open"))))
-    build_hide_menu(non_optional(note_menu.addMenu(shortcutfinger.home2("Hide/Remove"))))
-    build_restore_menu(non_optional(note_menu.addMenu(shortcutfinger.home3("Restore"))))
-    build_create_note_menu(non_optional(note_menu.addMenu(shortcutfinger.up4("Create"))))
+    build_create_note_menu(non_optional(note_menu.addMenu(shortcutfinger.up2("Create"))))
     build_note_menu()
     build_string_menues()
 
