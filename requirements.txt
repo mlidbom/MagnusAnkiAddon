@@ -18,5 +18,4 @@ pytest-xdist
 mypy==1.11.2
 beartype
 pyperclip
-sudachipy
 typing_extensions

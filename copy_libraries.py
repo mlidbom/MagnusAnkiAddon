@@ -18,7 +18,6 @@ libraries_to_copy = [
 
     #below here are used in tests but currrently not used for real.
     #'unidic2ud', 'fugashi', 'ufal', #Not sure about this line, was not added when it should have been.
-    #'sudachipy', 'sudachidict_core',
     ]
 
 # Create the target directory if it doesn't exist
