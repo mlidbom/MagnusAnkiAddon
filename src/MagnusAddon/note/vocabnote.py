@@ -174,15 +174,6 @@ class VocabNote(KanaVocabNote):
         lookup = DictLookup.try_lookup_vocab_word_or_name(self)
         return lookup.priority_spec() if lookup else PrioritySpec(set())
 
-
-    def override_meaning_mnemonic(self) -> None:
-        if not self.get_mnemonics_override():
-            self.set_mnemonics_override("-")
-
-    def restore_meaning_mnemonic(self) -> None:
-        if self.get_mnemonics_override() == "-":
-            self.set_mnemonics_override("")
-
     def get_mnemonics_override(self) -> str: return self.get_field(NoteFields.Vocab.Mnemonic__)
     def set_mnemonics_override(self, value: str) -> None: self.set_field(NoteFields.Vocab.Mnemonic__, value)
 

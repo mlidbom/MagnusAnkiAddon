@@ -113,16 +113,15 @@ class WordExtractor:
         def _is_word(word: str) -> bool:
             return app.col().vocab.is_word(word) or DictLookup.is_word(word)
 
-        def add_word_if_it_is_in_dictionary(word: str, surface: str, lookahead_index: int) -> None:
+        def add_word_if_it_is_in_dictionary(word: str, surface: str) -> None:
             if _is_word(word):
-                add_word(word, surface, lookahead_index)
+                add_word(word, surface)
 
         def is_excluded_form(vocab_form: str, candidate_form: str) -> bool:
             return (any(voc for voc in (app.col().vocab.with_form(vocab_form)) if candidate_form in voc.get_excluded_forms()) or
                     any(voc for voc in (app.col().vocab.with_form(candidate_form)) if candidate_form in voc.get_excluded_forms()))
 
-        # noinspection DuplicatedCode
-        def add_word(word: str, surface: str, lookahead_index: int) -> None:
+        def add_word(word: str, surface: str) -> None:
             if (allow_duplicates or word not in found_words) and word not in _noise_characters:
                 found_words.add(word)
                 found_words_list.append(ExtractedWord(word, surface, character_index))
@@ -154,7 +153,6 @@ class WordExtractor:
 
             return False
 
-        # noinspection DuplicatedCode
         def check_for_compound_words() -> None:
             surface_compound = token.get_surface_form()
             for lookahead_index in range(token_index + 1, min(token_index + _max_lookahead, len(tokens))):
@@ -165,9 +163,9 @@ class WordExtractor:
                 if (base_compound != surface_compound
                         and not is_excluded_form(surface_compound, base_compound)
                         and not is_excluded_form(look_ahead_token.get_surface_form(), look_ahead_token.get_base_form())):
-                    add_word_if_it_is_in_dictionary(base_compound, surface_compound, lookahead_index)
+                    add_word_if_it_is_in_dictionary(base_compound, surface_compound)
                 if not is_excluded_form(token.get_base_form(), surface_compound):
-                    add_word_if_it_is_in_dictionary(surface_compound, surface_compound, lookahead_index)
+                    add_word_if_it_is_in_dictionary(surface_compound, surface_compound)
 
         tokens = self._tokenizer.tokenize(sentence).get_tokens()
         found_words = set[str]()
@@ -176,12 +174,12 @@ class WordExtractor:
         character_index = 0
         for token_index, token in enumerate(tokens):
             if not is_excluded_form(token.get_surface_form(), token.get_base_form()):
-                add_word(token.get_base_form(), token.get_surface_form(), 0)
+                add_word(token.get_base_form(), token.get_surface_form())
 
             if (token.get_surface_form() != token.get_base_form()
                     and not is_inflected_word(token_index)
                     and not is_excluded_form(token.get_base_form(), token.get_surface_form())):  # If the surface is the stem of an inflected verb, don't use it. It's not a word in its own right in this sentence.
-                add_word(token.get_surface_form(), token.get_surface_form(), 0)
+                add_word(token.get_surface_form(), token.get_surface_form())
             check_for_compound_words()
 
             character_index += len(token.get_surface_form())

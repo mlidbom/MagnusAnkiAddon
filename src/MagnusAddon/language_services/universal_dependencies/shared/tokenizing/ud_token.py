@@ -60,7 +60,7 @@ class UDToken(JAToken):
     def get_surface_form(self) -> str:
         return self.form
 
-    _pseudo_verbs_for_inflection_purposes = set(["ます"])
+    _pseudo_verbs_for_inflection_purposes = {"ます"}
     def is_inflectable_word(self) -> bool:
         if self.upos == UDPOS.adjective:
             return True

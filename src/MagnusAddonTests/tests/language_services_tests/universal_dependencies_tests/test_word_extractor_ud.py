@@ -1,7 +1,5 @@
 from typing import Generator
 
-import pytest
-
 from fixtures.collection_factory import inject_anki_collection_with_select_data
 from language_services.janome_ex.tokenizing.jn_tokenizer import JNTokenizer
 from language_services.janome_ex.word_extraction.word_extractor import WordExtractor
@@ -10,6 +8,8 @@ from language_services.universal_dependencies import ud_tokenizers
 from note.vocabnote import VocabNote
 
 import pytest
+
+# noinspection PyUnusedName
 pytestmark = pytest.mark.skip(f"""Once more I thought the ud tools would do a better job than janome, but these tests don't seem to bear that thought out. Just like list time I had this little adventure.""")
 
 _tokenizer: JNTokenizer

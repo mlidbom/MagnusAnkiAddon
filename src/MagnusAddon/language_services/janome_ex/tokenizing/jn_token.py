@@ -57,7 +57,7 @@ class JNToken(JAToken):
     def is_verb(self) -> bool:
         return self.parts_of_speech in _verb_parts_of_speech
 
-    _pseudo_verbs_for_inflection_purposes = set(["ます"])
+    _pseudo_verbs_for_inflection_purposes = {"ます"}
     def is_inflectable_word(self) -> bool:
         return self.is_verb() or self.is_adjective() or self.base_form in self._pseudo_verbs_for_inflection_purposes
 
@@ -97,8 +97,8 @@ class JNToken(JAToken):
 
         return False
 
-    _verb_inflection_token_surfaces = set(["て", "てる", "た", "たら", "に", "たり"])
-    _verb_inflection_token_bases = set(["れる", "られる", "ちゃう", "たい", "そう"])
+    _verb_inflection_token_surfaces = {"て", "てる", "た", "たら", "に", "たり"}
+    _verb_inflection_token_bases = {"れる", "られる", "ちゃう", "たい", "そう"}
     def is_verb_inflection_word(self) -> bool:
         return (self.surface in self._verb_inflection_token_surfaces
                 or self.base_form in self._verb_inflection_token_bases)

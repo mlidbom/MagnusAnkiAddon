@@ -6,6 +6,7 @@ from fixtures.stub_factory import stub_ui_dependencies
 from sysutils.typed import non_optional
 from ankiutils import app
 
+# noinspection PyUnusedFunction
 @pytest.fixture(scope="function", autouse=True)
 def setup() -> Generator[None, None, None]:
     with (stub_ui_dependencies(), collection_factory.inject_anki_collection_with_select_data(kanji=True)):

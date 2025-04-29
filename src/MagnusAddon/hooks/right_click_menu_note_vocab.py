@@ -1,4 +1,4 @@
-import pyperclip
+import pyperclip # type: ignore
 from PyQt6.QtWidgets import QMenu
 
 from ankiutils import app, query_builder

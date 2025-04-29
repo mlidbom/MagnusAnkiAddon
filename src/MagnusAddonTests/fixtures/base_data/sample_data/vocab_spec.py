@@ -8,6 +8,7 @@ if TYPE_CHECKING:
     from note.vocabnote import VocabNote
 
 class VocabSpec:
+    # noinspection PyDefaultArgument
     def __init__(self, question: str, answer: str, readings: list[str], extra_forms:list[str] = [], tags:list[str] = []):
         self.question = question
         self.answer = answer
