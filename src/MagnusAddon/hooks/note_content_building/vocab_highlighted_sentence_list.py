@@ -19,7 +19,7 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
     derived_compounds_forms = ex_str.sort_by_length_descending(ex_sequence.flatten([der.get_text_matching_forms_for_all_form() for der in derived_compounds]))
 
     secondary_forms_vocab_notes = ex_sequence.flatten([app.col().vocab.with_question(v) for v in secondary_forms])
-    secondary_forms_with_their_own_vocab_forms = ex_sequence.flatten([f.get_text_matching_forms_for_primary_form() for f in secondary_forms_vocab_notes])
+    secondary_forms_with_their_own_vocab_forms = ex_sequence.flatten([f.get_text_matching_forms_for_all_form() for f in secondary_forms_vocab_notes])
 
     secondary_forms_with_their_own_vocab_forms = ex_str.sort_by_length_descending(secondary_forms_with_their_own_vocab_forms)
 
