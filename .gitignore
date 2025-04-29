@@ -1,6 +1,5 @@
 /mpv.exe
 __pycache__/
-/src/MagnusAddon/_lib/unidic2ud/download/
 /src/MagnusAddon/_lib/jamdict_data/jamdict.db
 /src/MagnusAddonTests/collection.anki2.bak
 collection.anki2
