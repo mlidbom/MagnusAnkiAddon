@@ -18,7 +18,7 @@ libraries_to_copy = [
 
     #below here are used in tests but currrently not used for real.
     #'unidic2ud', 'fugashi', 'ufal', #Not sure about this line, was not added when it should have been.
-    #'ginza', 'ja_ginza', 'ja_ginza-5.1.3.dist-info', 'spacy', 'spacy-3.6.1.dist-info', 'spacy_legacy-3.0.12.dist-info', 'spacy_loggers-1.0.5.dist-info', 'spacy_legacy', 'spacy_loggers', 'thinc', 'numpy', 'numpy.libs', 'catalogue', 'sudachipy', 'sudachidict_core', 'confection', 'srsly', 'pydantic', 'pydantic_core', 'typing_extensions.py', 'annotated_types', 'wasabi', 'blis', 'cymem', 'preshed', 'murmurhash', 'langcodes', 'tqdm', 'typer'
+    #'sudachipy', 'sudachidict_core',
     ]
 
 # Create the target directory if it doesn't exist

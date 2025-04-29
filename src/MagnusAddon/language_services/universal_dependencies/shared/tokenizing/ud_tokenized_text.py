@@ -1,6 +1,4 @@
 from typing import Sequence, Union
-
-from spacy.tokens import Doc, Token
 from unidic2ud import UniDic2UDEntry, UDPipeEntry # type: ignore
 
 from language_services.shared.jatoken import JAToken
@@ -10,29 +8,17 @@ from sysutils import ex_sequence, ex_str
 from sysutils.typed import str_
 
 class UDTokenizedText(JATokenizedText):
-    def __init__(self, wrapped: Union[UniDic2UDEntry, Doc]):
+    def __init__(self, wrapped: UniDic2UDEntry):
         self._wrapped = wrapped
 
-        self._wrapped_tokens: Union[list[UDPipeEntry], list[Token]]
+        self._wrapped_tokens: list[UDPipeEntry]
 
-        if isinstance(wrapped, Doc):
-            sents = [sent for sent in wrapped.sents]
-            self._wrapped_sent_tokens:list[list[Token]] = [[token for token in sent] for sent in sents]
-            self._wrapped_tokens = ex_sequence.flatten(self._wrapped_sent_tokens)
+        self._wrapped_tokens = [token for token in wrapped][1:] # The first is always empty so get rid of it
+        self.tokens = [UDToken(token) for token in self._wrapped_tokens]
 
-            self.tokens = [UDToken(token) for token in self._wrapped_tokens]
-
-            for token in self.tokens:
-                # noinspection PyProtectedMember
-                token.head = self.tokens[token._head_id]
-
-        if isinstance(wrapped, UniDic2UDEntry):
-            self._wrapped_tokens = [token for token in wrapped][1:] # The first is always empty so get rid of it
-            self.tokens = [UDToken(token) for token in self._wrapped_tokens]
-
-            for token in self.tokens:
-                # noinspection PyProtectedMember
-                token.head = self.tokens[token._head_id - 1]
+        for token in self.tokens:
+            # noinspection PyProtectedMember
+            token.head = self.tokens[token._head_id - 1]
 
     def __str__(self) -> str:
         return self.str_()

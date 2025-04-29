@@ -14,7 +14,7 @@ pytestmark = pytest.mark.skip(f"""Once more I thought the ud tools would do a be
 
 _tokenizer: JNTokenizer
 
-word_extractor = WordExtractor(ud_tokenizers.ginza)
+word_extractor = WordExtractor(ud_tokenizers.gendai)
 
 # noinspection PyUnusedFunction
 @pytest.fixture(scope='module', autouse=True)
