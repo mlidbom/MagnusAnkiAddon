@@ -61,7 +61,7 @@ class SentenceCollection:
         from ankiutils import app
 
         def is_owned_by_other_form_note(form: str) -> bool:
-            return any([v for v in app.col().vocab.with_question(form) if v != vocab_note and vocab_note.get_question() in v.get_forms()])
+            return any([owner for owner in app.col().vocab.with_question(form) if owner != vocab_note and vocab_note.get_question() in owner.get_forms()])
 
         owned_forms = [form for form in vocab_note.get_forms() if not is_owned_by_other_form_note(form)]
 
