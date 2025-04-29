@@ -5,7 +5,6 @@ from typing import Any, Optional
 from language_services.jamdict_ex.dict_lookup import DictLookup
 from language_services.janome_ex.tokenizing.jn_tokenizer import JNTokenizer
 from language_services.janome_ex.word_extraction.extracted_word import ExtractedWord
-from language_services.shared.jatokenizer import JATokenizer
 from note.note_constants import Mine
 from note.vocabnote import VocabNote
 
@@ -82,7 +81,7 @@ class HierarchicalWord:
         return WordExclusion(self.word.word, self.start_index)
 
 class WordExtractor:
-    def __init__(self, tokenizer: JATokenizer) -> None:
+    def __init__(self, tokenizer: JNTokenizer) -> None:
         self.version = "janome_extractor_1"
         self._tokenizer = tokenizer
 
@@ -136,7 +135,7 @@ class WordExtractor:
                 return False
 
             next_token = tokens[index + 1]
-            vocab: list[VocabNote] = lookup_vocabs_prefer_exact_match(next_token.get_base_form())
+            vocab: list[VocabNote] = lookup_vocabs_prefer_exact_match(next_token.base_form)
 
             if any([voc for voc in vocab if voc.has_tag(Mine.Tags.inflecting_word)]):
                 return True
@@ -154,35 +153,36 @@ class WordExtractor:
             return False
 
         def check_for_compound_words() -> None:
-            surface_compound = token.get_surface_form()
+            surface_compound = token.surface
             for lookahead_index in range(token_index + 1, min(token_index + _max_lookahead, len(tokens))):
                 look_ahead_token = tokens[lookahead_index]
-                base_compound = surface_compound + look_ahead_token.get_base_form()
-                surface_compound += look_ahead_token.get_surface_form()
+                base_compound = surface_compound + look_ahead_token.base_form
+                surface_compound += look_ahead_token.surface
 
                 if (base_compound != surface_compound
                         and not is_excluded_form(surface_compound, base_compound)
-                        and not is_excluded_form(look_ahead_token.get_surface_form(), look_ahead_token.get_base_form())):
+                        and not is_excluded_form(look_ahead_token.surface, look_ahead_token.base_form)):
                     add_word_if_it_is_in_dictionary(base_compound, surface_compound)
-                if not is_excluded_form(token.get_base_form(), surface_compound):
+                if not is_excluded_form(token.base_form, surface_compound):
                     add_word_if_it_is_in_dictionary(surface_compound, surface_compound)
 
-        tokens = self._tokenizer.tokenize(sentence).get_tokens()
+        text = self._tokenizer.tokenize(sentence)
+        tokens = text.tokens
         found_words = set[str]()
         found_words_list: list[ExtractedWord] = []
 
         character_index = 0
         for token_index, token in enumerate(tokens):
-            if not is_excluded_form(token.get_surface_form(), token.get_base_form()):
-                add_word(token.get_base_form(), token.get_surface_form())
+            if not is_excluded_form(token.surface, token.base_form):
+                add_word(token.base_form, token.surface)
 
-            if (token.get_surface_form() != token.get_base_form()
+            if (token.surface != token.base_form
                     and not is_inflected_word(token_index)
-                    and not is_excluded_form(token.get_base_form(), token.get_surface_form())):  # If the surface is the stem of an inflected verb, don't use it. It's not a word in its own right in this sentence.
-                add_word(token.get_surface_form(), token.get_surface_form())
+                    and not is_excluded_form(token.base_form, token.surface)):  # If the surface is the stem of an inflected verb, don't use it. It's not a word in its own right in this sentence.
+                add_word(token.surface, token.surface)
             check_for_compound_words()
 
-            character_index += len(token.get_surface_form())
+            character_index += len(token.surface)
 
         return found_words_list
 

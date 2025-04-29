@@ -1,11 +1,10 @@
 from typing import Any
 
 from language_services.janome_ex.tokenizing.jn_parts_of_speech import JNPartsOfSpeech, POS
-from language_services.shared.jatoken import JAToken
 from sysutils import typed, kana_utils
 
 # noinspection PyUnusedFunction
-class JNToken(JAToken):
+class JNToken:
     def __init__(self,
                  parts_of_speech: JNPartsOfSpeech,
                  base_form: str,
@@ -47,12 +46,6 @@ class JNToken(JAToken):
                     #self.node_type == other.node_type and
                     self.parts_of_speech == other.parts_of_speech)
         return False
-
-    def get_base_form(self) -> str:
-        return self.base_form
-
-    def get_surface_form(self) -> str:
-        return self.surface
 
     def is_verb(self) -> bool:
         return self.parts_of_speech in _verb_parts_of_speech
