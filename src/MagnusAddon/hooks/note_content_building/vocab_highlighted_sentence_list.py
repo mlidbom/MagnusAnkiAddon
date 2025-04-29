@@ -8,7 +8,7 @@ from sysutils import ex_sequence, ex_str, kana_utils
 from sysutils.ex_str import newline
 
 def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
-    forms = [_vocab_note.get_question()] + list(_vocab_note.get_forms())
+    forms = [_vocab_note.get_question()] + list(_vocab_note.get_forms_without_noise_characters())
     forms = ex_sequence.remove_duplicates_while_retaining_order(forms)
     primary_form = _vocab_note.get_question_without_noise_characters()
     primary_form_forms = _vocab_note.get_text_matching_forms_for_primary_form()

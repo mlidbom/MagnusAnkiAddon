@@ -11,7 +11,6 @@ from note.collection.note_cache import CachedNote, NoteCache
 from note.kanjinote import KanjiNote
 from note.note_constants import NoteTypes
 from note.vocabnote import VocabNote
-from sysutils import ex_sequence
 
 class _VocabSnapshot(CachedNote):
     def __init__(self, note: VocabNote):
@@ -93,7 +92,6 @@ class VocabCollection:
     def with_form(self, form: str) -> list[VocabNote]: return self._cache.with_form(form)
     def with_compound_part(self, compound_part: str) -> list[VocabNote]: return self._cache.with_compound_part(compound_part)
     def derived_from(self, derived_from: str) -> list[VocabNote]: return self._cache.derived_from(derived_from)
-    def with_forms(self, forms: list[str]) -> list[VocabNote]: return ex_sequence.flatten([self.with_form(form) for form in forms])
     def with_kanji_in_main_form(self, kanji: KanjiNote) -> list[VocabNote]: return self._cache.with_kanji_in_main_form(kanji.get_question())
     def with_kanji_in_any_form(self, kanji: KanjiNote) -> list[VocabNote]: return self._cache.with_kanji_in_any_form(kanji.get_question())
     def with_question(self, question: str) -> list[VocabNote]: return self._cache.with_question(question)

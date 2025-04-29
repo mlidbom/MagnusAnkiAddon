@@ -64,7 +64,6 @@ def notes_lookup(notes: Sequence[JPNote]) -> str:
     return f"""{NoteFields.note_id}:{",".join(str(note.get_id()) for note in notes)}""" if notes else ""
 
 def single_vocab_wildcard(query:str) -> str: return f"{note_vocab} ({f_forms}:*{query}* OR {f_reading}:*{query}* OR {f_answer}:*{query}*)"
-def single_vocab_by_question_exact(query: str) -> str:return f"{note_vocab} {f_question}={query}"
 def single_vocab_by_question_reading_or_answer_exact(query: str) -> str:return f"{note_vocab} ({field_contains_word(f_forms, query)} OR {field_contains_word(f_reading, query)} OR {field_contains_word(f_answer, query)})"
 def single_vocab_by_form_exact(query: str) -> str:return f"{note_vocab} {field_contains_word(f_forms, query)}"
 

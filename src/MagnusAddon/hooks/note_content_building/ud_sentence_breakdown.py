@@ -8,7 +8,7 @@ from note.vocabnote import VocabNote
 from sysutils import kana_utils
 from sysutils.ex_str import newline
 
-def _build_vocab_list(word_to_show: list[str], excluded_words:set[str], title:str, include_mnemonics:bool = False, show_words_missing_dictionary_entries:bool=False, include_extended_sentence_statistics:bool = False) -> str:
+def _build_vocab_list(word_to_show: list[str], excluded_words:set[str], title:str, include_mnemonics:bool = False, show_words_missing_dictionary_entries:bool = False, include_extended_sentence_statistics:bool = False) -> str:
     html = f"""
     <div class="breakdown page_section">
         <div class="page_section_title">{title}</div>
@@ -37,12 +37,12 @@ def _build_vocab_list(word_to_show: list[str], excluded_words:set[str], title:st
                         """
         else:
             class Hit:
-                def __init__(self, forms:str, readings:str, answer:str):
+                def __init__(self, forms:str, readings_:str, answer:str):
                     self.forms: str = forms
-                    self.readings: str = readings
+                    self.readings: str = readings_
                     self.answer = answer
 
-            dictionary_hits = [Hit(forms=",".join(hit.valid_forms()), readings=",".join(f.text for f in hit.entry.kana_forms), answer=hit.generate_answer()) for hit in DictLookup.lookup_word_shallow(word).entries]
+            dictionary_hits = [Hit(forms=",".join(hit.valid_forms()), readings_=",".join(f.text for f in hit.entry.kana_forms), answer=hit.generate_answer()) for hit in DictLookup.lookup_word_shallow(word).entries]
 
             if not dictionary_hits and show_words_missing_dictionary_entries:
                 dictionary_hits = [Hit(word, "", "---")]

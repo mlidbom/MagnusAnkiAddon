@@ -18,6 +18,7 @@ class WanikaniClient:
         v2_api_key = "ebeda84c-2f6a-423e-bfc7-3068796ed50a"
         self._client = Client(v2_api_key)
 
+    # noinspection PyTypeChecker
     def _init(self) -> WanikaniClient:
         if self._is_initialized is False:
             from sysutils import progress_display_runner
@@ -41,6 +42,7 @@ class WanikaniClient:
                 self._kanji_id_dictionary = {kanji.id: kanji for kanji in self._kanji_list}
                 self._vocab_id_dictionary = {vocab.id: vocab for vocab in self._vocab_list}
             finally:
+                # noinspection PyInconsistentReturns
                 progress.close()
 
 
@@ -62,6 +64,7 @@ class WanikaniClient:
     _kana_vocab_list: List[models.Vocabulary] = list()
     _kana_vocab_dictionary: dict[Any, models.Vocabulary] = {}
     _kana_vocab_id_dictionary: dict[Any,models.Vocabulary] = {}
+    # noinspection PyTypeChecker
     def list_kana_vocabulary(self) -> List[models.Vocabulary]:
         if not self._kana_vocab_list:
             from sysutils import progress_display_runner
@@ -75,6 +78,7 @@ class WanikaniClient:
                 self._kana_vocab_dictionary = {vocab.characters: vocab for vocab in self._kana_vocab_list}
                 self._kana_vocab_id_dictionary = {vocab.id: vocab for vocab in self._kana_vocab_list}
             finally:
+                # noinspection PyInconsistentReturns
                 progress.close()
 
 

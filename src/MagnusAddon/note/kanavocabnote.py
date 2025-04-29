@@ -9,7 +9,8 @@ class KanaVocabNote(WaniNote):
     def __init__(self, note: Note):
         super().__init__(note)
 
-    def _strip_noise_characters(self, string:str) -> str:
+    @staticmethod
+    def _strip_noise_characters(string:str) -> str:
         return string.replace(Mine.VocabPrefixSuffixMarker, "")
 
     def get_question_without_noise_characters(self) -> str: return self._strip_noise_characters(self.get_question())

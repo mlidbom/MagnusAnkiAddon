@@ -204,6 +204,7 @@ class KanjiNote(WaniNote):
     _any_word_pattern = re.compile(r'\b[-\w]+\b', re.UNICODE)
     def get_primary_meaning(self) -> str:
         radical_meaning_match = self._any_word_pattern.search(self.get_answer_text())
+        # noinspection PyArgumentEqualDefault
         return radical_meaning_match.group(0) if radical_meaning_match else ""
 
 
@@ -211,6 +212,7 @@ class KanjiNote(WaniNote):
     def get_primary_radical_meaning(self) -> str:
         def get_dedicated_radical_primary_meaning() -> str:
             radical_meaning_match = self._parenthesized_word_pattern.search(self.get_answer_text())
+            # noinspection PyArgumentEqualDefault
             return radical_meaning_match.group(0).replace("(","").replace(")","") if radical_meaning_match else ""
 
         result = get_dedicated_radical_primary_meaning()
@@ -331,7 +333,7 @@ class KanjiNote(WaniNote):
         self.set_vocabs(vocab_html)
 
     def populate_radicals_from_mnemonic_tags(self) -> None:
-        def detect_radicals_from_mnemonic()-> list[str]:
+        def detect_radicals_from_mnemonic() -> list[str]:
             radical_names = re.findall(r'<rad>(.*?)</rad>', self.get_user_mnemonic())
 
             from ankiutils import app

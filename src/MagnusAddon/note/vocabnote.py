@@ -175,7 +175,6 @@ class VocabNote(KanaVocabNote):
         return lookup.priority_spec() if lookup else PrioritySpec(set())
 
     def get_mnemonics_override(self) -> str: return self.get_field(NoteFields.Vocab.Mnemonic__)
-    def set_mnemonics_override(self, value: str) -> None: self.set_field(NoteFields.Vocab.Mnemonic__, value)
 
     def get_primary_audio(self) -> str:
         if self.get_audio_male():
@@ -427,7 +426,7 @@ class VocabNote(KanaVocabNote):
         return self._create_postfix_prefix_version(prefix, speech_type, is_prefix=True, set_compounds=set_compounds, truncate_characters=truncate_characters)
 
     def create_suffix_version(self, suffix: str, speech_type: str = "expression", set_compounds: bool = True, truncate_characters: int = 0) -> VocabNote:
-        return self._create_postfix_prefix_version(suffix, speech_type, is_prefix=False, set_compounds=set_compounds, truncate_characters=truncate_characters)
+        return self._create_postfix_prefix_version(suffix, speech_type, set_compounds=set_compounds, truncate_characters=truncate_characters)
 
     def _create_postfix_prefix_version(self, addendum:str, speech_type:str, is_prefix:bool = False, set_compounds:bool = True, truncate_characters:int = 0) -> VocabNote:
 

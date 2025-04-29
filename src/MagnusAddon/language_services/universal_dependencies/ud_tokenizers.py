@@ -23,6 +23,7 @@ kinsei: UDTokenizer = UD2UDTokenizer("kinsei")  # Maybe. 6 differences with gend
 
 representative_tokenizers: list[UDTokenizer] = [ginza, gendai]
 
+# noinspection PyUnusedName
 all_tokenizers: list[UDTokenizer] = [
     ginza,
     gendai,

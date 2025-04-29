@@ -22,6 +22,3 @@ class ExtractedWord:
 
     def __hash__(self) -> int:
         return hash((self.word, self.parts_of_speech))
-
-    def is_surface(self) -> bool:
-        return self.word == self.surface
