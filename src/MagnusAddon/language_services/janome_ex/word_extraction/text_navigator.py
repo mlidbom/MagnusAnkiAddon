@@ -6,7 +6,7 @@ if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.text_location import TextLocation
 
 
-def forward_list(node_: TextLocation, length: int) -> list[T]:
+def forward_list(node_: TextLocation, length: int) -> list[TextLocation]:
     result:list[TextLocation] = [node_]
     index = 0
     node:Optional[TextLocation] = node_

@@ -1,17 +1,16 @@
 import pytest
 
 import language_services.conjugator
-from sysutils import kana_utils
 
 @pytest.mark.parametrize("word, conjugation_bases, is_ichidan, is_godan", [
     # irregular verbs
-    ("くる", ['くれ', 'き', 'こ'], False, False),
-    ("する", ['すれ', 'し', 'さ'], False, False),
+    ("くる", ['き', 'こ', 'くれ'], False, False),
+    ("する", ['し', 'さ', 'すれ'], False, False),
     ("いく", ['いき', 'いか', 'いけ', 'いっ', 'いこ'], False, False),
     ("行く", ['行き', '行か', '行け', '行っ', '行こ'], False, False),
     ("います", ['いまし', 'いませ'], False, False),
-    ('しようとする', ['しようとすれ', 'しようとし', 'しようとさ'], False, False),
-    ("おいてくる", ['おいてくれ', 'おいてき', 'おいてこ'], False, False),
+    ('しようとする', ['しようとし', 'しようとさ', 'しようとすれ'], False, False),
+    ("おいてくる", ['おいてき', 'おいてこ', 'おいてくれ'], False, False),
 
     # adjectives
     ("美味しい", ['美味しく', '美味しけ', '美味しか'], False, False),
@@ -45,3 +44,16 @@ from sysutils import kana_utils
 def test_identify_stems(word: str, conjugation_bases: list[str], is_ichidan: bool, is_godan: bool) -> None:
     result = language_services.conjugator.get_word_stems(word, is_ichidan, is_godan)
     assert result == conjugation_bases
+
+    if len(conjugation_bases) > 1:
+        i_stem = language_services.conjugator.get_i_stem(word, is_ichidan, is_godan)
+        assert i_stem == conjugation_bases[0]
+    if len(conjugation_bases) > 2:
+        a_stem = language_services.conjugator.get_a_stem(word, is_ichidan, is_godan)
+        assert a_stem == conjugation_bases[1]
+    if len(conjugation_bases) > 3:
+        e_stem = language_services.conjugator.get_e_stem(word, is_ichidan, is_godan)
+        assert e_stem == conjugation_bases[2]
+    if len(conjugation_bases) > 4:
+        te_stem = language_services.conjugator.get_te_stem(word, is_ichidan, is_godan)
+        assert te_stem == conjugation_bases[3]

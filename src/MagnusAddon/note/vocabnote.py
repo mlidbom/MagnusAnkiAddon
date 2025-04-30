@@ -3,7 +3,7 @@ from __future__ import annotations
 import re
 
 import language_services.conjugator
-from ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules # noqa
+from ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules  # noqa
 from wanikani_api import models
 from anki.notes import Note
 
@@ -60,7 +60,6 @@ class VocabMetaTag:
         self.display = display
         self.tooltip = tooltip
 
-
 class VocabNote(KanaVocabNote):
     def __init__(self, note: Note):
         super().__init__(note)
@@ -70,19 +69,19 @@ class VocabNote(KanaVocabNote):
     def set_kanji(self, value: str) -> None: self.set_field(NoteFields.Vocab.Kanji, value)
 
     _forms_exclusions = re.compile(r'\[\[.*]]')
-    def _is_excluded_form(self, form:str) -> bool:
+    def _is_excluded_form(self, form: str) -> bool:
         return bool(self._forms_exclusions.search(form))
 
     def get_forms(self) -> set[str]: return set(self.get_forms_list())
     def get_forms_without_noise_characters(self) -> set[str]: return set(self.get_forms_list_without_noise_characters())
     def get_forms_list(self) -> list[str]: return [form for form in ex_str.extract_comma_separated_values(self._get_forms()) if not self._is_excluded_form(form)]
     def get_forms_list_without_noise_characters(self) -> list[str]: return [self._strip_noise_characters(form) for form in self.get_forms_list()]
-    def get_excluded_forms(self) -> set[str]: return set(form.replace("[[","").replace("]]","") for form in ex_str.extract_comma_separated_values(self._get_forms()) if self._is_excluded_form(form))
+    def get_excluded_forms(self) -> set[str]: return set(form.replace("[[", "").replace("]]", "") for form in ex_str.extract_comma_separated_values(self._get_forms()) if self._is_excluded_form(form))
     def set_forms(self, forms: set[str]) -> None: self._set_forms(", ".join([form.strip() for form in forms]))
     def _get_forms(self) -> str: return self.get_field(NoteFields.Vocab.Forms)
     def _set_forms(self, value: str) -> None: self.set_field(NoteFields.Vocab.Forms, value)
     def get_user_compounds(self) -> list[str]: return ex_str.extract_comma_separated_values(self.get_field(NoteFields.Vocab.user_compounds))
-    def set_user_compounds(self, compounds:list[str]) -> None:
+    def set_user_compounds(self, compounds: list[str]) -> None:
         self.set_field(NoteFields.Vocab.user_compounds, ",".join(compounds))
 
     def in_compounds(self) -> list[VocabNote]:
@@ -126,7 +125,9 @@ class VocabNote(KanaVocabNote):
                 if self.is_uk() and self.get_readings()[0] not in self.get_forms():
                     self.set_forms(self.get_forms() | set(self.get_readings()))
 
-            speech_types = self.get_speech_types() - {'Unknown'}
+            speech_types = self.get_speech_types() - {'Unknown',
+                                                      'Godan verbIchidan verb'#crap inserted by bug in yomitan
+                                                      }
             if len(speech_types) == 0:
                 self.auto_set_speech_type()
 
@@ -147,8 +148,6 @@ class VocabNote(KanaVocabNote):
             pos = lookup.parts_of_speech() & {"transitive", "intransitive"}
             self.set_speech_type("suru verb, " + ", ".join(pos))
 
-
-
     def extract_main_form_kanji(self) -> list[str]:
         clean = ex_str.strip_html_and_bracket_markup(self.get_question())
         return [char for char in clean if kana_utils.is_kanji(char)]
@@ -158,7 +157,6 @@ class VocabNote(KanaVocabNote):
         return set(char for char in clean if kana_utils.is_kanji(char))
 
     def is_uk(self) -> bool: return self.has_tag(Mine.Tags.UsuallyKanaOnly)
-
 
     def set_reading_mnemonic(self, value: str) -> None: self.set_field(NoteFields.Vocab.source_reading_mnemonic, value)
 
@@ -193,12 +191,8 @@ class VocabNote(KanaVocabNote):
         primary_list = primary_audio.replace("[sound:", "").split("]")
         return primary_list[0]
 
-
-
-
-
     @staticmethod
-    def _create_verb_meta_tag(name: str, display: str, tooltip: str, tos:set[str]) -> VocabMetaTag:
+    def _create_verb_meta_tag(name: str, display: str, tooltip: str, tos: set[str]) -> VocabMetaTag:
         tag = VocabMetaTag(name, display, tooltip)
 
         if "intransitive verb" in tos or "intransitive" in tos:
@@ -209,7 +203,6 @@ class VocabNote(KanaVocabNote):
             tag.tooltip = "transitive " + tag.tooltip
 
         return tag
-
 
     def get_sentences(self) -> list[SentenceNote]:
         from ankiutils import app
@@ -231,10 +224,10 @@ class VocabNote(KanaVocabNote):
         return [sentence for sentence in self.get_sentences() if sentence.is_studying()]
 
     @staticmethod
-    def _get_studying_sentence_count(sentences:list[SentenceNote], card: str = "") -> int:
+    def _get_studying_sentence_count(sentences: list[SentenceNote], card: str = "") -> int:
         return len([sentence for sentence in sentences if sentence.is_studying(card)])
 
-    def get_meta_tags_html(self, display_extended_sentence_statistics:bool = True) -> str:
+    def get_meta_tags_html(self, display_extended_sentence_statistics: bool = True) -> str:
         tags = set(self.get_tags())
         meta: list[VocabMetaTag] = []
         tos = set([t.lower().strip() for t in self.get_speech_type().split(",")])
@@ -263,8 +256,7 @@ class VocabNote(KanaVocabNote):
         else:
             meta.append(VocabMetaTag("in_no_sentences", f"""{len(sentences)}""", f"""in {len(sentences)} sentences"""))
 
-
-        #overarching info
+        # overarching info
         if "_uk" in tags: meta.append(VocabMetaTag("uk", "uk", "usually written using kana only"))
         if "expression" in tos: meta.append(VocabMetaTag("expression", "x", "expression"))
         if "abbreviation" in tos: meta.append(VocabMetaTag("abbreviation", "abbr", "abbreviation"))
@@ -272,36 +264,35 @@ class VocabNote(KanaVocabNote):
         if "prefix" in tos: meta.append(VocabMetaTag("prefix", "頭", "prefix"))
         if "suffix" in tos: meta.append(VocabMetaTag("suffix", "尾", "suffix"))
 
-        #nouns
+        # nouns
         if "proper noun" in tos: meta.append(VocabMetaTag("proper-noun", "p-名", "proper noun"))
         elif "pronoun" in tos: meta.append(VocabMetaTag("pronoun", "pr-名", "pronoun"))
         elif "noun" in tos: meta.append(VocabMetaTag("noun", "名", "noun"))
         if "adverbial noun" in tos: meta.append(VocabMetaTag("adverbial-noun", "副-名", "adverbial noun"))
         if "independent noun" in tos: meta.append(VocabMetaTag("independent-noun", "i-名", "independent noun"))
 
-        #verbs
+        # verbs
         if "ichidan verb" in tos: meta.append(self._create_verb_meta_tag("ichidan", "1", "ichidan verb", tos))
         if "godan verb" in tos: meta.append(self._create_verb_meta_tag("godan", "5", "godan verb", tos))
         if "suru verb" in tos or "verbal noun" in tos or "する verb" in tos: meta.append(self._create_verb_meta_tag("suru-verb", "為", "suru verb", tos))
         if "kuru verb" in tos: meta.append(self._create_verb_meta_tag("kuru-verb", "k-v", "kuru verb", tos))
         if "auxiliary verb" in tos: meta.append(self._create_verb_meta_tag("auxiliary-verb", "aux-v", "auxiliary verb", tos))
 
-        #adverbs
+        # adverbs
         if "と adverb" in tos or "to-adverb" in tos: meta.append(VocabMetaTag("to-adverb", "と", "adverbial noun taking the と particle to act as adverb"))
         elif "adverb" in tos: meta.append(VocabMetaTag("adverb", "副", "adverb"))
         elif "adverbial" in tos: meta.append(VocabMetaTag("adverbial", "副", "adverbial"))
 
-        #adjectives
+        # adjectives
         if "い adjective" in tos or "i-adjective" in tos: meta.append(VocabMetaTag("i-adjective", "い", "true adjective ending on the い copula"))
         if "な adjective" in tos or "na-adjective" in tos: meta.append(VocabMetaTag("na-adjective", "な", "adjectival noun taking the な particle to act as adjective"))
         if "の adjective" in tos or "no-adjective" in tos: meta.append(VocabMetaTag("no-adjective", "の", "adjectival noun taking the の particle to act as adjective"))
         if "auxiliary adjective" in tos: meta.append(VocabMetaTag("auxiliary-adjective", "aux-adj", "auxiliary adjective"))
 
-
-        #???
+        # ???
         if "in compounds" in tos: meta.append(VocabMetaTag("in-compounds", "i-c", "in compounds"))
 
-        #misc
+        # misc
 
         if "counter" in tos: meta.append(VocabMetaTag("counter", "ctr", "counter"))
         if "numeral" in tos: meta.append(VocabMetaTag("numeral", "num", "numeral"))
@@ -309,7 +300,7 @@ class VocabNote(KanaVocabNote):
         if "conjunction" in tos: meta.append(VocabMetaTag("conjunction", "conj", "conjunction"))
         if "particle" in tos: meta.append(VocabMetaTag("particle", "prt", "particle"))
 
-        #my own inventions
+        # my own inventions
         if "masu-suffix" in tos: meta.append(VocabMetaTag("masu-suffix", "連", "follows the 連用形/masu-stem form of a verb"))
 
         return """<ol class="vocab_tag_list">""" + "".join([f"""<li class="vocab_tag vocab_tag_{tag.name}" title="{tag.tooltip}">{tag.display}</li>""" for tag in meta]) + "</ol>"
@@ -361,21 +352,21 @@ class VocabNote(KanaVocabNote):
             generated = dict_lookup.entries[0].generate_answer()
             self.set_user_answer(generated)
 
-    def can_generate_sentences_from_context_sentences(self, require_audio:bool) -> bool:
+    def can_generate_sentences_from_context_sentences(self, require_audio: bool) -> bool:
         from ankiutils import app
 
         def can_create_sentence(question: str, audio: str) -> bool:
             return question != "" and (audio or not require_audio) and not app.col().sentences.with_question(question)
 
         return ((can_create_sentence(question=self.get_context_jp(), audio=self.get_context_jp_audio()) or
-                can_create_sentence(question=self.get_context_jp_2(), audio=self.get_context_jp_2_audio())) or
+                 can_create_sentence(question=self.get_context_jp_2(), audio=self.get_context_jp_2_audio())) or
                 can_create_sentence(question=self.get_context_jp_3(), audio=self.get_context_jp_3_audio()))
 
-    def generate_sentences_from_context_sentences(self, require_audio:bool) -> None:
+    def generate_sentences_from_context_sentences(self, require_audio: bool) -> None:
         from ankiutils import app
         from note.sentencenote import SentenceNote
 
-        def create_sentence_if_not_present(question:str, answer:str, audio:str) -> None:
+        def create_sentence_if_not_present(question: str, answer: str, audio: str) -> None:
             if question and (audio or not require_audio) and not app.col().sentences.with_question(question):
                 SentenceNote.add_sentence(question=question, answer=answer, audio=audio, highlighted_vocab={self.get_question()})
 
@@ -392,9 +383,8 @@ class VocabNote(KanaVocabNote):
         created.generate_and_set_answer()
         return created
 
-
     @classmethod
-    def create(cls, question:str, answer:str, readings:list[str]) -> VocabNote:
+    def create(cls, question: str, answer: str, readings: list[str]) -> VocabNote:
         from ankiutils import app
         backend_note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Vocab))
         note = VocabNote(backend_note)
@@ -408,7 +398,7 @@ class VocabNote(KanaVocabNote):
     def _is_ichidan_verb(self) -> bool:
         return "ichidan" in self.get_speech_type().lower()
 
-    def _get_stems_for_form(self, form:str) -> list[str]:
+    def _get_stems_for_form(self, form: str) -> list[str]:
         return [base for base in language_services.conjugator.get_word_stems(form, is_ichidan_verb=self._is_ichidan_verb()) if base != form]
 
     def get_stems_for_primary_form(self) -> list[str]:
@@ -429,9 +419,8 @@ class VocabNote(KanaVocabNote):
     def create_suffix_version(self, suffix: str, speech_type: str = "expression", set_compounds: bool = True, truncate_characters: int = 0) -> VocabNote:
         return self._create_postfix_prefix_version(suffix, speech_type, set_compounds=set_compounds, truncate_characters=truncate_characters)
 
-    def _create_postfix_prefix_version(self, addendum:str, speech_type:str, is_prefix:bool = False, set_compounds:bool = True, truncate_characters:int = 0) -> VocabNote:
-
-        def append_prepend_addendum(base:str) -> str:
+    def _create_postfix_prefix_version(self, addendum: str, speech_type: str, is_prefix: bool = False, set_compounds: bool = True, truncate_characters: int = 0) -> VocabNote:
+        def append_prepend_addendum(base: str) -> str:
             if not is_prefix:
                 return base + addendum if truncate_characters == 0 else base[0:-truncate_characters] + addendum
             return addendum + base if truncate_characters == 0 else base[truncate_characters:] + addendum
@@ -449,7 +438,6 @@ class VocabNote(KanaVocabNote):
         adverb.set_speech_type(speech_type)
         adverb.set_forms(set([append_prepend_addendum(form) for form in self.get_forms()]))
         return adverb
-
 
     def create_na_adjective(self) -> VocabNote:
         return self._create_postfix_prefix_version("な", "na-adjective")
@@ -472,7 +460,7 @@ class VocabNote(KanaVocabNote):
     def create_ka_suffixed_word(self) -> VocabNote:
         return self._create_postfix_prefix_version("か", "expression")
 
-    def create_suru_verb(self, shimasu:bool = False) -> VocabNote:
+    def create_suru_verb(self, shimasu: bool = False) -> VocabNote:
         suru_verb = self._create_postfix_prefix_version("する" if not shimasu else "します", "suru verb")
 
         forms = list(suru_verb.get_forms()) + [form.replace("する", "をする") for form in suru_verb.get_forms()]
@@ -498,7 +486,7 @@ class VocabNote(KanaVocabNote):
 
         return clone
 
-    def clone_to_form(self, form:str) -> VocabNote:
+    def clone_to_form(self, form: str) -> VocabNote:
         clone = self._clone()
         clone._set_question(form)
 
