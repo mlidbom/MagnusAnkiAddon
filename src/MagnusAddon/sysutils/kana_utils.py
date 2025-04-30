@@ -13,33 +13,44 @@ def is_katakana(char: str) -> bool:
 def is_kana(char: str) -> bool:
     return is_hiragana(char) or is_katakana(char)
 
-_word_last_character_mappings:dict[str, list[str]] = {'う': ['い', 'わ', 'え', 'っ'],
-                                                      'く': ['き', 'か', 'け', 'い'],
-                                                      'ぐ': ['ぎ', 'が', 'げ', 'い'],
-                                                      'す': ['し', 'さ', 'せ'],
-                                                      'つ': ['ち', 'た', 'て', 'っ'],
-                                                      'ぬ': ['に', 'な', 'ね', 'ん'],
-                                                      'ぶ': ['び', 'ば', 'べ', 'ん'],
-                                                      'む': ['み', 'ま', 'め', 'ん'],
-                                                      'る': ['り', 'ら', 'れ', 'っ'],
-                                                      'い': ['く', 'け', 'か']}
+_1_character_mappings: dict[str, list[str]] = {'う': ['い', 'わ', 'え', 'っ'],
+                                               'く': ['き', 'か', 'け', 'い'],
+                                               'ぐ': ['ぎ', 'が', 'げ', 'い'],
+                                               'す': ['し', 'さ', 'せ'],
+                                               'つ': ['ち', 'た', 'て', 'っ'],
+                                               'ぬ': ['に', 'な', 'ね', 'ん'],
+                                               'ぶ': ['び', 'ば', 'べ', 'ん'],
+                                               'む': ['み', 'ま', 'め', 'ん'],
+                                               'る': ['り', 'ら', 'れ', 'っ'],
+                                               'い': ['く', 'け', 'か']}
 
-_irregular_verb_stem_mappings: dict[str, list[str]] = {'する': ['すれ', 'し', 'さ'],
-                                                       'くる': ['くれ', 'き','こ'],
-                                                       'ます': ['まし', 'ませ'],
-                                                       'いく': ['いき', 'いか', 'いけ', 'いっ', 'いこ'],
-                                                       'いい': ['よく', 'よけ', 'よか'],
-                                                       '行く': ['行き', '行か', '行け', '行っ', '行こ']}
-def get_word_stems(word: str, is_ichidan_verb:bool = False, is_godan:bool = False) -> list[str]:
+_2_character_mappings: dict[str, list[str]] = {'する': ['すれ', 'し', 'さ'],
+                                               'くる': ['くれ', 'き', 'こ'],
+                                               'ます': ['まし', 'ませ'],
+                                               'いく': ['いき', 'いか', 'いけ', 'いっ', 'いこ'],
+                                               'いい': ['よく', 'よけ', 'よか'],
+                                               '行く': ['行き', '行か', '行け', '行っ', '行こ']}
+
+_aru_verbs: set[str] = {'なさる', 'くださる', 'いらっしゃる', 'おっしゃる', 'ござる','らっしゃる', 'おいでなさる', 'ご覧なさる','下さる','為さる', 'お出でなさる', 'ご覧なさる'}
+_aru_mappings: dict[str, list[str]] = {'さる': ['さい', 'さら', 'され', 'さっ'],
+                                       'ざる': ['ざい', 'ざら', 'ざれ', 'ざっ'],
+                                       'ゃる': ['ゃい', 'ゃら', 'れば', 'ゃっ']}
+
+def _is_aru_verb(word: str) -> bool:
+    return any(aru_ending for aru_ending in _aru_verbs if word.endswith(aru_ending))
+
+def get_word_stems(word: str, is_ichidan_verb: bool = False, is_godan: bool = False) -> list[str]:
+    if _is_aru_verb(word):
+        return [word[:-2] + end for end in _aru_mappings[word[-2:]]]
     if is_ichidan_verb:
         return [word[:-1]]
-    if word[-2:] in _irregular_verb_stem_mappings:
-        return [word[:-2] + end for end in _irregular_verb_stem_mappings[word[-2:]]]
-    if word[-1] in _word_last_character_mappings:
+    if word[-2:] in _2_character_mappings:
+        return [word[:-2] + end for end in _2_character_mappings[word[-2:]]]
+    if word[-1] in _1_character_mappings:
         if is_godan or word[-1] != "る":
-            return [word[:-1] + end for end in _word_last_character_mappings[word[-1]]]
+            return [word[:-1] + end for end in _1_character_mappings[word[-1]]]
         else:
-            return [word[:-1] + end for end in _word_last_character_mappings[word[-1]]] + [word[:-1]]
+            return [word[:-1] + end for end in _1_character_mappings[word[-1]]] + [word[:-1]]
     return [word]
 
 def to_katakana(hiragana: str) -> str:
@@ -54,7 +65,7 @@ def to_hiragana(hiragana: str) -> str:
 
     return ''.join([char_to_hiragana(char) for char in hiragana])
 
-#from: https://www.darrenlester.com/blog/recognising-japanese-characters-with-javascript and http://www.rikai.com/library/kanjitables/kanji_codes.unicode.shtml
+# from: https://www.darrenlester.com/blog/recognising-japanese-characters-with-javascript and http://www.rikai.com/library/kanjitables/kanji_codes.unicode.shtml
 # CJK unifed ideographs - Common and uncommon kanji ( 4e00 - 9faf)
 # CJK unified ideographs Extension A - Rare kanji ( 3400 - 4dbf)
 
@@ -63,7 +74,7 @@ def is_kanji(ch: str) -> bool:
     return (0x4E00 <= ordinal <= 0x9FAF or
             0x3400 <= ordinal <= 0x4DBF)
 
-def contains_kanji(string:str) -> bool:
+def contains_kanji(string: str) -> bool:
     return any(is_kanji(c) for c in string)
 
 # def is_kanji(char) -> bool:
@@ -83,4 +94,3 @@ def is_only_hiragana(text: str) -> bool:
 
 def is_only_katakana(text: str) -> bool:
     return not any(not is_katakana(char) for char in text)
-
