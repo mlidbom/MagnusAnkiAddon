@@ -7,6 +7,7 @@ from ankiutils import anki_module_import_issues_fix_just_import_this_module_befo
 from wanikani_api import models
 from anki.notes import Note
 
+from language_services import conjugator
 from language_services.jamdict_ex.dict_lookup import DictLookup
 from language_services.jamdict_ex.priority_spec import PrioritySpec
 from note.jpnote import JPNote
@@ -395,11 +396,14 @@ class VocabNote(KanaVocabNote):
         app.anki_collection().addNote(backend_note)
         return note
 
-    def _is_ichidan_verb(self) -> bool:
+    def is_ichidan_verb(self) -> bool:
+        return "ichidan" in self.get_speech_type().lower()
+
+    def is_godan_verb(self) -> bool:
         return "ichidan" in self.get_speech_type().lower()
 
     def _get_stems_for_form(self, form: str) -> list[str]:
-        return [base for base in language_services.conjugator.get_word_stems(form, is_ichidan_verb=self._is_ichidan_verb()) if base != form]
+        return [base for base in language_services.conjugator.get_word_stems(form, is_ichidan_verb=self.is_ichidan_verb()) if base != form]
 
     def get_stems_for_primary_form(self) -> list[str]:
         return self._get_stems_for_form(self.get_question())
@@ -497,3 +501,7 @@ class VocabNote(KanaVocabNote):
 
     def create_ku_form(self) -> VocabNote:
         return self._create_postfix_prefix_version("く", "adverb", set_compounds=False, truncate_characters=1)
+
+
+    def create_masu_form(self) -> VocabNote:
+        return self.clone_to_form(conjugator.get_masu_form(self))

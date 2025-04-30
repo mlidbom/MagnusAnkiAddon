@@ -1,3 +1,9 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from note.vocabnote import VocabNote
 
 _i_stem_index = 0
 _a_stem_index = 1
@@ -71,3 +77,6 @@ def get_e_stem(word: str, is_ichidan_verb: bool = False, is_godan: bool = False)
 
 def get_te_stem(word: str, is_ichidan_verb: bool = False, is_godan: bool = False) -> str:
     return _get_stem(word, _te_stem_index, is_ichidan_verb, is_godan)
+
+def get_masu_form(vocab:VocabNote) -> str:
+    return get_i_stem(vocab.get_question(), vocab.is_ichidan_verb(), vocab.is_godan_verb()) + "ます"
