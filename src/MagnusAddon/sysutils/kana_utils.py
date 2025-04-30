@@ -13,46 +13,6 @@ def is_katakana(char: str) -> bool:
 def is_kana(char: str) -> bool:
     return is_hiragana(char) or is_katakana(char)
 
-_1_character_mappings: dict[str, list[str]] = {'う': ['い', 'わ', 'え', 'っ'],
-                                               'く': ['き', 'か', 'け', 'い'],
-                                               'ぐ': ['ぎ', 'が', 'げ', 'い'],
-                                               'す': ['し', 'さ', 'せ'],
-                                               'つ': ['ち', 'た', 'て', 'っ'],
-                                               'ぬ': ['に', 'な', 'ね', 'ん'],
-                                               'ぶ': ['び', 'ば', 'べ', 'ん'],
-                                               'む': ['み', 'ま', 'め', 'ん'],
-                                               'る': ['り', 'ら', 'れ', 'っ'],
-                                               'い': ['く', 'け', 'か']}
-
-_2_character_mappings: dict[str, list[str]] = {'する': ['すれ', 'し', 'さ'],
-                                               'くる': ['くれ', 'き', 'こ'],
-                                               'ます': ['まし', 'ませ'],
-                                               'いく': ['いき', 'いか', 'いけ', 'いっ', 'いこ'],
-                                               'いい': ['よく', 'よけ', 'よか'],
-                                               '行く': ['行き', '行か', '行け', '行っ', '行こ']}
-
-_aru_verbs: set[str] = {'なさる', 'くださる', 'おっしゃる', 'ござる','らっしゃる', '下さる','為さる'}
-_aru_mappings: dict[str, list[str]] = {'さる': ['さい', 'さら', 'され', 'さっ'],
-                                       'ざる': ['ざい', 'ざら', 'ざれ', 'ざっ'],
-                                       'ゃる': ['ゃい', 'ゃら', 'れば', 'ゃっ']}
-
-def _is_aru_verb(word: str) -> bool:
-    return any(aru_ending for aru_ending in _aru_verbs if word.endswith(aru_ending))
-
-def get_word_stems(word: str, is_ichidan_verb: bool = False, is_godan: bool = False) -> list[str]:
-    if _is_aru_verb(word):
-        return [word[:-2] + end for end in _aru_mappings[word[-2:]]]
-    if is_ichidan_verb:
-        return [word[:-1]]
-    if word[-2:] in _2_character_mappings:
-        return [word[:-2] + end for end in _2_character_mappings[word[-2:]]]
-    if word[-1] in _1_character_mappings:
-        if is_godan or word[-1] != "る":
-            return [word[:-1] + end for end in _1_character_mappings[word[-1]]]
-        else:
-            return [word[:-1] + end for end in _1_character_mappings[word[-1]]] + [word[:-1]]
-    return [word]
-
 def to_katakana(hiragana: str) -> str:
     def char_to_katakana(char: str) -> str:
         return chr(ord(char) + 96) if is_hiragana(char) else char

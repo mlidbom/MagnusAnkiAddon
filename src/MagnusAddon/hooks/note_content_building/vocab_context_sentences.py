@@ -1,5 +1,6 @@
 from aqt import gui_hooks
 
+import language_services.conjugator
 from ankiutils import app
 from hooks.note_content_building.content_renderer import PrerenderingAnswerContentRenderer
 from note.vocabnote import VocabNote
@@ -15,7 +16,7 @@ class ContextSentence:
 
 def generate_highlighted_sentences_html_list(_vocab_note:VocabNote) -> str:
     primary_form = _vocab_note.get_question_without_noise_characters()
-    conjugation_base_forms = kana_utils.get_word_stems(primary_form)
+    conjugation_base_forms = language_services.conjugator.get_word_stems(primary_form)
 
 
     sentences:list[ContextSentence] = []

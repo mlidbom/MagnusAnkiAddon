@@ -1,5 +1,6 @@
 import pytest
 
+import language_services.conjugator
 from sysutils import kana_utils
 
 @pytest.mark.parametrize("word, conjugation_bases, is_ichidan, is_godan", [
@@ -42,5 +43,5 @@ from sysutils import kana_utils
     ('ござる', ['ござい', 'ござら', 'ござれ', 'ござっ'], False, False)
 ])
 def test_identify_stems(word: str, conjugation_bases: list[str], is_ichidan: bool, is_godan: bool) -> None:
-    result = kana_utils.get_word_stems(word, is_ichidan, is_godan)
+    result = language_services.conjugator.get_word_stems(word, is_ichidan, is_godan)
     assert result == conjugation_bases
