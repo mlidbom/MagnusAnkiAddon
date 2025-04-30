@@ -4,7 +4,7 @@ from language_services.jamdict_ex.dict_lookup import DictLookup
 from language_services.janome_ex.tokenizing.jn_tokenizer import JNTokenizer
 from language_services.janome_ex.word_extraction.extracted_word import ExtractedWord
 from language_services.janome_ex.word_extraction.hierarchicalword import HierarchicalWord
-from language_services.janome_ex.word_extraction.sentence_analysis import TextAnalysis
+from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from note.note_constants import Mine
 from note.vocabnote import VocabNote

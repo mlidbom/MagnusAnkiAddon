@@ -4,21 +4,11 @@ from typing import Optional
 
 from language_services.janome_ex.tokenizing.jn_token import JNToken
 from language_services.janome_ex.word_extraction import text_navigator
+from language_services.janome_ex.word_extraction.candidate_word import CandidateWord
 from sysutils.ex_str import newline
 
 _noise_characters = {'.',',',':',';','/','|','。','、'}
 _max_lookahead = 12
-
-
-class CandidateWord:
-    def __init__(self, locations:list[TextLocation]):
-        self.location = locations
-        self.surface = "".join([t.surface for t in locations]) + ""
-        self.base = "".join([t.surface for t in locations[:-1]]) + locations[-1].base
-
-    def __repr__(self) -> str:
-        return f"""CandidateWord('{self.surface}, {self.base}')"""
-
 
 class TextLocation:
     def __init__(self, start_index:int, surface:str, base:str):
