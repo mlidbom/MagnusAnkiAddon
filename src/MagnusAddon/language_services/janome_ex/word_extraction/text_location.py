@@ -1,4 +1,8 @@
 from __future__ import annotations
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 
 from typing import Optional
 
@@ -11,7 +15,8 @@ _noise_characters = {'.',',',':',';','/','|','。','、'}
 _max_lookahead = 12
 
 class TextLocation:
-    def __init__(self, start_index:int, surface:str, base:str):
+    def __init__(self, analysis:TextAnalysis, start_index:int, surface:str, base:str):
+        self.analysis = analysis
         self.start_index = start_index
         self.end_index = start_index + len(surface) - 1
         self.surface = surface
@@ -42,6 +47,6 @@ TextLocation('{self.start_index}-{self.end_index}, {self.surface} | {self.base} 
             self.next.run_analysis()
 
 class TokenTextLocation(TextLocation):
-    def __init__(self, token: JNToken, start_index:int):
-        super().__init__(start_index, token.surface, token.base_form)
+    def __init__(self, analysis:TextAnalysis, token: JNToken, start_index:int):
+        super().__init__(analysis, start_index, token.surface, token.base_form)
         self.token = token

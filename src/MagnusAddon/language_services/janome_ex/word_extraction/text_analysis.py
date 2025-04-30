@@ -18,7 +18,7 @@ class TextAnalysis:
 
         character_index = 0
         for token_index, token in enumerate(self.tokens):
-            locations.append(TokenTextLocation(token, character_index))
+            locations.append(TokenTextLocation(self, token, character_index))
             character_index += len(token.surface)
 
         for index, location in enumerate(locations[1:]):
