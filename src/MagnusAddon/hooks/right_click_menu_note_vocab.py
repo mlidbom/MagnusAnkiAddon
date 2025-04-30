@@ -31,8 +31,8 @@ def setup_note_menu(vocab: VocabNote, note_menu: QMenu, string_menus: list[tuple
             create_vocab_note_action(various_forms, shortcutfinger.down2("か-suffixed"), lambda: vocab.create_ka_suffixed_word())
 
         def build_create_prefix_postfix_note_menu(prefix_postfix_note_menu: QMenu, addendum:str) -> None:
-            create_vocab_note_action(prefix_postfix_note_menu, shortcutfinger.home1(f"prefix-{vocab.get_question()}{addendum}"), lambda: vocab.create_prefix_version(selection))
-            create_vocab_note_action(prefix_postfix_note_menu, shortcutfinger.home2(f"suffix-{addendum}{vocab.get_question()}"), lambda: vocab.create_suffix_version(selection))
+            create_vocab_note_action(prefix_postfix_note_menu, shortcutfinger.home1(f"prefix-{addendum}{vocab.get_question()}"), lambda: vocab.create_prefix_version(addendum))
+            create_vocab_note_action(prefix_postfix_note_menu, shortcutfinger.home2(f"suffix-{vocab.get_question()}{addendum}"), lambda: vocab.create_suffix_version(addendum))
 
 
         build_forms_menu(non_optional(note_create_menu.addMenu(shortcutfinger.home1("Clone to form"))))
