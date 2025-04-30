@@ -28,9 +28,7 @@ class TextLocation:
     def __repr__(self) -> str:
         return f"""
 TextLocation('{self.start_index}-{self.end_index}, {self.surface} | {self.base}  prev.start:{self.previous.start_index if self.previous else None}, next.start:{self.next.start_index if self.next else None})
-#####
 {newline.join([cand.__repr__() for cand in self.candidate_words])}
-####
 """
 
     def _forward_list(self, length:int) -> list[TextLocation]:

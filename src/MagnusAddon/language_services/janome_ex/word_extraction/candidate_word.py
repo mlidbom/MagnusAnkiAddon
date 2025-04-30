@@ -1,6 +1,8 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
+from sysutils.ex_str import newline
+
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.text_location import TextLocation
 
@@ -29,4 +31,14 @@ class CandidateWord:
     def has_valid_candidates(self) -> bool: return self.base_is_valid_candidate() or self.surface_is_valid_candidate()
     def is_compound(self) -> bool: return len(self.locations) > 1
 
-    def __repr__(self) -> str: return f"""CandidateWord('{self.surface}, {self.base}')"""
+    def __repr__(self) -> str: return f"""
+CandidateWord({self.surface} | {self.base},
+hvc:{self.has_valid_candidates()},  
+bivc:{self.base_is_valid_candidate()}, 
+sivc:{self.surface_is_valid_candidate()}, 
+iw:{self.is_word()} 
+siw:{self.surface_is_word()}, 
+biw:{self.base_is_word()} 
+sie:{self.surface_is_excluded()}, 
+bie:{self.base_is_excluded()} 
+ic:{self.is_compound()})""".replace(newline, "")
