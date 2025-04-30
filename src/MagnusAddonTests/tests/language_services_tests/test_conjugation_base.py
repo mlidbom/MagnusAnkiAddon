@@ -15,6 +15,9 @@ from sysutils import kana_utils
     #adjectives
     ("美味しい", ['美味しく', '美味しけ','美味しか'], False, False),
 
+    #irregular adjective
+    ("いい", ['よく', 'よけ', 'よか'], False, False),
+
     #godan verbs
     ("走る", ["走り", "走ら", "走れ", "走っ", "走"], False, False),
     ("帰る", ["帰り", "帰ら", "帰れ", "帰っ", "帰"], False, False),

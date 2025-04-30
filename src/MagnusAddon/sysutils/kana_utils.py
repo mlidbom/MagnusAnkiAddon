@@ -28,6 +28,7 @@ _irregular_verb_stem_mappings: dict[str, list[str]] = {'する': ['すれ', 'し
                                                        'くる': ['くれ', 'き','こ'],
                                                        'ます': ['まし', 'ませ'],
                                                        'いく': ['いき', 'いか', 'いけ', 'いっ', 'いこ'],
+                                                       'いい': ['よく', 'よけ', 'よか'],
                                                        '行く': ['行き', '行か', '行け', '行っ', '行こ']}
 def get_word_stems(word: str, is_ichidan_verb:bool = False, is_godan:bool = False) -> list[str]:
     if is_ichidan_verb:
