@@ -12,6 +12,7 @@ class TextAnalysis:
         self.text = sentence
         self.exclusions = exclusions
         self.tokens = self._tokenizer.tokenize(sentence).tokens
+        self.version = "janome_extractor_1"
 
         locations:list[TextLocation] = []
 
@@ -25,6 +26,11 @@ class TextAnalysis:
             locations[index + 1].previous = location
 
         self.start_location = locations[0]
+
+        self.start_location.run_analysis()
+
+        print("###################")
+        print(self)
 
     def __repr__(self) -> str:
         repr = self.text + newline

@@ -1,6 +1,24 @@
+from __future__ import annotations
+
 from typing import Optional
 
 from language_services.janome_ex.tokenizing.jn_token import JNToken
+from language_services.janome_ex.word_extraction import text_navigator
+from sysutils.ex_str import newline
+
+_noise_characters = {'.',',',':',';','/','|','。','、'}
+_max_lookahead = 12
+
+
+class CandidateWord:
+    def __init__(self, locations:list[TextLocation]):
+        self.location = locations
+        self.surface = "".join([t.surface for t in locations]) + ""
+        self.base = "".join([t.surface for t in locations[:-1]]) + locations[-1].base
+
+    def __repr__(self) -> str:
+        return f"""CandidateWord('{self.surface}, {self.base}')"""
+
 
 class TextLocation:
     def __init__(self, start_index:int, surface:str, base:str):
@@ -8,11 +26,30 @@ class TextLocation:
         self.end_index = start_index + len(surface) - 1
         self.surface = surface
         self.base = base
-        self.previous:Optional[TextLocation] = None
+        self.previous: Optional[TextLocation] = None
         self.next: Optional[TextLocation] = None
+        self.candidate_words: list[CandidateWord] = []
 
     def __repr__(self) -> str:
-        return f"TextLocation('{self.start_index}-{self.end_index}, {self.surface} | {self.base}  prev.start:{self.previous.start_index if self.previous else None}, next.start:{self.next.start_index if self.next else None})"
+        return f"""
+TextLocation('{self.start_index}-{self.end_index}, {self.surface} | {self.base}  prev.start:{self.previous.start_index if self.previous else None}, next.start:{self.next.start_index if self.next else None})
+#####
+{newline.join([cand.__repr__() for cand in self.candidate_words])}
+####
+"""
+
+    def _forward_list(self, length:int) -> list[TextLocation]:
+        return text_navigator.forward_list(self, length)
+
+    def run_analysis(self) -> None:
+        lookahead_max = min(_max_lookahead, len(self._forward_list(_max_lookahead)))
+
+        self.candidate_words = []
+        for index in range(lookahead_max - 1, -1, -1):
+            self.candidate_words.append(CandidateWord(self._forward_list(index)))
+
+        if self.next:
+            self.next.run_analysis()
 
 class TokenTextLocation(TextLocation):
     def __init__(self, token: JNToken, start_index:int):
