@@ -9,7 +9,7 @@ class CandidateWord:
         from ankiutils import app
         from language_services.jamdict_ex.dict_lookup import DictLookup
         self.analysis = locations[0].analysis
-        self.location = locations
+        self.locations = locations
         self.surface = "".join([t.surface for t in locations]) + ""
         self.base = "".join([t.surface for t in locations[:-1]]) + locations[-1].base
 
@@ -27,5 +27,6 @@ class CandidateWord:
     def base_is_valid_candidate(self) -> bool: return self.base_is_word() and not self.base_is_excluded()
     def surface_is_valid_candidate(self) -> bool: return self.surface_is_word() and not self.surface_is_excluded()
     def has_valid_candidates(self) -> bool: return self.base_is_valid_candidate() or self.surface_is_valid_candidate()
+    def is_compound(self) -> bool: return len(self.locations) > 1
 
     def __repr__(self) -> str: return f"""CandidateWord('{self.surface}, {self.base}')"""
