@@ -1,6 +1,6 @@
 from PyQt6.QtWidgets import QMenu
 
-from ankiutils import query_builder
+from ankiutils import app, query_builder
 from hooks.right_click_menu_utils import add_lookup_action, add_ui_action
 from note.kanjinote import KanjiNote
 from sysutils import ex_str, kana_utils
@@ -11,8 +11,8 @@ def setup_note_menu(kanji: KanjiNote, note_menu: QMenu, string_menus: list[tuple
     note_lookup_menu = non_optional(note_menu.addMenu(shortcutfinger.home1("Open")))
     add_lookup_action(note_lookup_menu, shortcutfinger.home1("Primary Vocabs"), query_builder.vocabs_lookup_strings(kanji.get_primary_vocab()))
     add_lookup_action(note_lookup_menu, shortcutfinger.home2("Vocabs"), query_builder.vocab_with_kanji(kanji))
-    add_lookup_action(note_lookup_menu, shortcutfinger.home3("Radicals"), query_builder.notes_by_note(kanji.get_radicals_notes()))
-    add_lookup_action(note_lookup_menu, shortcutfinger.home4("Kanji"), query_builder.kanji_with_kanji_radical(kanji))
+    add_lookup_action(note_lookup_menu, shortcutfinger.home3("Radicals"), query_builder.notes_lookup(kanji.get_radicals_notes()))
+    add_lookup_action(note_lookup_menu, shortcutfinger.home4("Kanji"), query_builder.notes_lookup(app.col().kanji.with_radical(kanji.get_question())))
     add_lookup_action(note_lookup_menu, shortcutfinger.home5("Sentences"), query_builder.sentence_search(kanji.get_question(), exact=True))
 
     if not kanji.get_user_mnemonic():

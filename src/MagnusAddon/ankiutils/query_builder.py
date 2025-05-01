@@ -61,7 +61,10 @@ def sentences_with_exclusions(exclusions:list[str]) -> str:
 
 
 def notes_lookup(notes: Sequence[JPNote]) -> str:
-    return f"""{NoteFields.note_id}:{",".join(str(note.get_id()) for note in notes)}""" if notes else ""
+    return notes_by_id([note.get_id() for note in notes])
+
+def notes_by_id(note_ids:list[NoteId]) -> str:
+    return f"""{NoteFields.note_id}:{",".join([str(note_id) for note_id in note_ids])}""" if note_ids else ""
 
 def single_vocab_wildcard(query:str) -> str: return f"{note_vocab} ({f_forms}:*{query}* OR {f_reading}:*{query}* OR {f_answer}:*{query}*)"
 def single_vocab_by_question_reading_or_answer_exact(query: str) -> str:return f"{note_vocab} ({field_contains_word(f_forms, query)} OR {field_contains_word(f_reading, query)} OR {field_contains_word(f_answer, query)})"
@@ -105,12 +108,6 @@ def vocabs_lookup_strings(words: list[str]) -> str:
 
 def vocabs_lookup_strings_read_card(words: list[str]) -> str:
     return f'''{vocabs_lookup_strings(words)} {card_read}'''
-
-def notes_by_id(note_ids:list[NoteId]) -> str:
-    return f"""nid:{",".join([str(note_id) for note_id in note_ids])}"""
-
-def notes_by_note(notes:Sequence[JPNote]) -> str:
-    return notes_by_id([n.get_id() for n in notes])
 
 def kanji_with_radical(radical: RadicalNote) -> str:
     if radical.get_question():
