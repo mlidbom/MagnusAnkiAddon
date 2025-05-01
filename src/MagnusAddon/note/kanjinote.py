@@ -7,6 +7,7 @@ from wanikani_api import models
 from anki.notes import Note
 
 from note.jpnote import JPNote
+from sysutils.ex_str import newline
 
 if TYPE_CHECKING:
     from note.vocabnote import VocabNote
@@ -269,7 +270,11 @@ class KanjiNote(WaniNote):
 
     def bootstrap_mnemonic_from_radicals(self) -> None:
         radical_names = [rad.get_primary_radical_meaning() for rad in self.get_radicals_notes()]
-        mnemonic = f"""{" ".join([f"<rad>{name}</rad>" for name in radical_names])} <kan>{self.get_primary_meaning()}</kan>"""
+        mnemonic = f"""
+{" ".join([f"<rad>{name}</rad>" for name in radical_names])} 
+<kan>{self.get_primary_meaning()}</kan> 
+{" ".join([f"<read>{kana_utils.romanize(reading).capitalize()}</read>" for reading in self.get_primary_readings()])}
+""".replace(newline, "")
         self.set_user_mnemonic(mnemonic)
 
 
