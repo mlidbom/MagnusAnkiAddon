@@ -269,11 +269,25 @@ class KanjiNote(WaniNote):
     def set_primary_vocab_audio(self, value: str) -> None: self.set_field(NoteFields.Kanji.Audio__, value)
 
     def bootstrap_mnemonic_from_radicals(self) -> None:
+        from ankiutils import app
+        mappings_text = app.config().readings_mappings.get_value()
+        readings_mappings = {
+            line.split(":", 1)[0].strip(): line.split(":", 1)[1].strip()
+            for line in mappings_text.strip().splitlines()
+            if ":" in line
+        }
+
+        def create_readings_tag(reading: str) -> str:
+            if reading in readings_mappings:
+                return readings_mappings[reading]
+
+            return f"<read>{kana_utils.romanize(reading).capitalize()}</read>"
+
         radical_names = [rad.get_primary_radical_meaning() for rad in self.get_radicals_notes()]
         mnemonic = f"""
 {" ".join([f"<rad>{name}</rad>" for name in radical_names])} 
 <kan>{self.get_primary_meaning()}</kan> 
-{" ".join([f"<read>{kana_utils.romanize(reading).capitalize()}</read>" for reading in self.get_primary_readings()])}
+{" ".join([create_readings_tag(reading) for reading in self.get_primary_readings()])}
 """.replace(newline, "")
         self.set_user_mnemonic(mnemonic)
 
