@@ -24,14 +24,14 @@ class ReadingsOptionsDialog(QDialog):
         window_layout.addWidget(self.text_edit)
 
         self.button_box = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok)
+        self.button_box.setToolTip("Save (Ctrl+S)")
+        save_shortcut = QShortcut(QKeySequence("Ctrl+S"), self)
+        qconnect(save_shortcut.activated, self.save)
         qconnect(self.button_box.clicked, self.save)
         window_layout.addWidget(self.button_box)
         self.setLayout(window_layout)
 
         #self.center_on_screen()
-
-        save_shortcut = QShortcut(QKeySequence("Ctrl+S"), self)
-        qconnect(save_shortcut.activated, self.save)
 
     def center_on_screen(self) -> None:
         available = non_optional(self.screen()).availableGeometry()
