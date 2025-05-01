@@ -5,7 +5,8 @@ from aqt.utils import openLink
 
 from hooks.right_click_menu_utils import add_lookup_action, add_text_vocab_lookup
 from note.note_constants import NoteFields, NoteTypes
-from ankiutils import query_builder
+from ankiutils import app, query_builder
+from sysutils import kana_utils
 from sysutils.typed import non_optional
 
 from hooks import shortcutfinger
@@ -18,7 +19,13 @@ def setup_anki_open_menu(string_menu:QMenu, menu_string:str) -> None:
     add_lookup_action(search_anki_menu, shortcutfinger.home1("Open Exact matches | no sentences | reading cards"), query_builder.exact_matches_no_sentences_reading_cards(menu_string))
     add_lookup_action(search_anki_menu, shortcutfinger.home2("Open Exact matches with sentences"), query_builder.exact_matches(menu_string))
 
-    add_lookup_action(search_anki_menu, shortcutfinger.home3("Kanji"), query_builder.kanji_in_string(menu_string))
+    def create_kanji_lookup() -> str:
+        hiragana = kana_utils.to_hiragana(menu_string)
+        if kana_utils.is_only_kana(hiragana):
+            return query_builder.notes_lookup(app.col().kanji.with_reading(hiragana))
+
+    add_lookup_action(search_anki_menu, shortcutfinger.home3("Kanji"), create_kanji_lookup())
+
     add_lookup_action(search_anki_menu, shortcutfinger.home4("Radical"), build_radical_search_string(menu_string))
 
     add_lookup_action(search_anki_menu, shortcutfinger.up1("Vocab form -"), query_builder.single_vocab_by_form_exact(menu_string))

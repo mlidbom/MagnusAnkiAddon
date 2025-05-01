@@ -20,19 +20,23 @@ class _KanjiSnapshot(CachedNote):
     def __init__(self, note: KanjiNote):
         super().__init__(note)
         self.radicals = set(note.get_radicals())
+        self.readings = set(note.get_readings_clean())
 
 class _KanjiCache(NoteCache[KanjiNote, _KanjiSnapshot]):
     def __init__(self, all_kanji: list[KanjiNote], cache_runner: CacheRunner):
         self._by_radical: dict[str, set[KanjiNote]] = defaultdict(set)
+        self.by_reading: dict[str, set[KanjiNote]] = defaultdict(set)
         super().__init__(all_kanji, KanjiNote, cache_runner)
 
     def _create_snapshot(self, note: KanjiNote) -> _KanjiSnapshot: return _KanjiSnapshot(note)
 
     def _inheritor_remove_from_cache(self, note: KanjiNote, cached:_KanjiSnapshot) -> None:
         for form in cached.radicals: self._by_radical[form].remove(note)
+        for reading in cached.readings: self.by_reading[reading].remove(note)
 
     def _inheritor_add_to_cache(self, note: KanjiNote) -> None:
         for form in note.get_radicals(): self._by_radical[form].add(note)
+        for reading in set(note.get_readings_clean()): self.by_reading[reading].add(note)
 
     def with_radical(self, radical: str) -> list[KanjiNote]: return list(self._by_radical[radical])
 
@@ -62,3 +66,5 @@ class KanjiCollection:
         return found[0] if found else None
 
     def with_radical(self, radical:str) -> list[KanjiNote]: return self._cache.with_radical(radical)
+    def with_reading(self, reading:str) -> set[KanjiNote]:
+        return self._cache.by_reading[reading]
