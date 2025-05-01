@@ -46,8 +46,10 @@ class ReadingsOptionsDialog(QDialog):
             return "\n".join([line for line in (sorted(self.text_edit.toPlainText().splitlines())) if line != ""])
 
         self.config.readings_mappings.set_value(sorted_value_lines_without_blank_lines())
-
         self.accept()
+
+        from ankiutils import app
+        app.ui_utils().refresh()
 
 def show_readings_mappings() -> None:
     from aqt import mw
