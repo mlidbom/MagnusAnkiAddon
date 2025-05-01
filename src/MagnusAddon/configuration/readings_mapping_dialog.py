@@ -13,7 +13,7 @@ class ReadingsOptionsDialog(QDialog):
         # for some reason the dead code detector breaks some logic in pycharm here. This method is just fine
         # noinspection PyUnresolvedReferences
         self.setWindowTitle("Readings Mappings")
-        self.setMinimumWidth(800)
+        self.setMinimumWidth(500)
 
         mappings_text = self.config.readings_mappings.get_value()
 
@@ -36,7 +36,7 @@ class ReadingsOptionsDialog(QDialog):
 
     def center_on_screen(self) -> None:
         available = non_optional(self.screen()).availableGeometry()
-        self.setGeometry(available.x() + (available.width() - self.width()) // 2,
+        self.setGeometry(available.x() + (available.width() - self.width()),
                          available.y() + 30,
                          self.width(),
                          available.height() - 60)
