@@ -15,12 +15,6 @@ def setup_note_menu(kanji: KanjiNote, note_menu: QMenu, string_menus: list[tuple
         add_lookup_action(note_lookup_menu, shortcutfinger.home4("Kanji"), query_builder.notes_lookup(app.col().kanji.with_radical(kanji.get_question())))
         add_lookup_action(note_lookup_menu, shortcutfinger.home5("Sentences"), query_builder.sentence_search(kanji.get_question(), exact=True))
 
-    def build_hide_menu(note_hide_menu: QMenu) -> None:
-        add_ui_action(note_hide_menu, shortcutfinger.home1("Mnemonic"), lambda: kanji.override_meaning_mnemonic())
-
-    def build_restore_menu(note_restore_menu: QMenu) -> None:
-        add_ui_action(note_restore_menu, shortcutfinger.home1("Mnemonic"), lambda: kanji.restore_meaning_mnemonic())
-
     def build_string_menus() -> None:
         def position_primary_vocab_menu(_menu: QMenu, _vocab_to_add: str, _title: str) -> None:
             highlighted_vocab_menu: QMenu = non_optional(_menu.addMenu(_title))
@@ -56,18 +50,14 @@ def setup_note_menu(kanji: KanjiNote, note_menu: QMenu, string_menus: list[tuple
 
     build_lookup_menu(non_optional(note_menu.addMenu(shortcutfinger.home1("Open"))))
 
-    if not kanji.get_user_mnemonic():
-        build_hide_menu(non_optional(note_menu.addMenu(shortcutfinger.home2("Hide/Remove"))))
-
-    if kanji.get_user_mnemonic() == "-":
-        build_restore_menu(non_optional(note_menu.addMenu(shortcutfinger.home3("Restore"))))
+    add_ui_action(note_menu, shortcutfinger.home5("Reset Primary Vocabs"), lambda: kanji.set_primary_vocab([]))
 
     if not kanji.get_user_answer():
         add_ui_action(note_menu, shortcutfinger.up1("Accept meaning"), lambda: kanji.set_user_answer(format_kanji_meaning(kanji.get_answer())))
 
-    add_ui_action(note_menu, shortcutfinger.home5("Reset Primary Vocabs"), lambda: kanji.set_primary_vocab([]))
     add_ui_action(note_menu, shortcutfinger.up2("Populate radicals from mnemonic tags"), lambda: kanji.populate_radicals_from_mnemonic_tags())
     add_ui_action(note_menu, shortcutfinger.up3("Bootstrap mnemonic from radicals"), lambda: kanji.bootstrap_mnemonic_from_radicals())
+    add_ui_action(note_menu, shortcutfinger.up4("Reset mnemonic"), lambda: kanji.set_user_mnemonic(""))
 
     build_string_menus()
 

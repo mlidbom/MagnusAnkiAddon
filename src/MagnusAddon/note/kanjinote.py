@@ -92,14 +92,6 @@ class KanjiNote(WaniNote):
         from ankiutils import app
         return app.col().vocab.with_kanji_in_main_form(self)
 
-    def override_meaning_mnemonic(self) -> None:
-        if not self.get_user_mnemonic():
-            self.set_user_mnemonic("-")
-
-    def restore_meaning_mnemonic(self) -> None:
-        if self.get_user_mnemonic() == "-":
-            self.set_user_mnemonic("")
-
     def get_user_mnemonic(self) -> str: return self.get_field(NoteFields.Kanji.user_mnemonic)
     def set_user_mnemonic(self, value: str) -> None: self.set_field(NoteFields.Kanji.user_mnemonic, value)
 
