@@ -279,15 +279,16 @@ class KanjiNote(WaniNote):
 
         def create_readings_tag(reading: str) -> str:
             if reading in readings_mappings:
-                return readings_mappings[reading]
+                value = readings_mappings[reading]
+                return value if "<read>" in value else f"""<read>{value}</read>"""
 
-            return f"<read>{kana_utils.romanize(reading).capitalize()}</read>"
+            return f"<read>{reading.capitalize()}</read>"
 
         radical_names = [rad.get_primary_radical_meaning() for rad in self.get_radicals_notes()]
         mnemonic = f"""
 {" ".join([f"<rad>{name}</rad>" for name in radical_names])} 
 <kan>{self.get_primary_meaning()}</kan> 
-{" ".join([create_readings_tag(reading) for reading in self.get_primary_readings()])}
+{" ".join([create_readings_tag(kana_utils.romanize(reading)) for reading in self.get_primary_readings()])}
 """.replace(newline, "")
         self.set_user_mnemonic(mnemonic)
 
