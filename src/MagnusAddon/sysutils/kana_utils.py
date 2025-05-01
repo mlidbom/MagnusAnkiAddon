@@ -58,5 +58,8 @@ def is_only_katakana(text: str) -> bool:
 
 _kakasi = pykakasi.kakasi()  # type: ignore
 def romanize(text:str) -> str:
+    if text[-1] == "っ" or text[-1] == "ッ":
+        text = text[:-1]
+
     result = _kakasi.convert(text)
     return "".join([item['hepburn'] for item in result])
