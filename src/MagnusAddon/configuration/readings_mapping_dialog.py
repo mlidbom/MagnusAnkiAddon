@@ -3,8 +3,6 @@ from aqt.qt import *
 from ankiutils import app
 from typing import Optional
 
-from sysutils.typed import non_optional
-
 class ReadingsOptionsDialog(QDialog):
     def __init__(self, parent: Optional[QWidget] = None):
         super().__init__(parent)
