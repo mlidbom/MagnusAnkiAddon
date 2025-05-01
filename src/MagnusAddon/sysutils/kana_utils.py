@@ -1,4 +1,5 @@
 from sysutils.ex_str import full_width_space
+import pykakasi
 
 def pad_to_length(value: str, target_length: int) -> str:
     padding = max(0, target_length - len(value))
@@ -54,3 +55,8 @@ def is_only_hiragana(text: str) -> bool:
 
 def is_only_katakana(text: str) -> bool:
     return not any(not is_katakana(char) for char in text)
+
+_kakasi = pykakasi.kakasi()  # type: ignore
+def romanize(text:str) -> str:
+    result = _kakasi.convert(text)
+    return "".join([item['hepburn'] for item in result])
