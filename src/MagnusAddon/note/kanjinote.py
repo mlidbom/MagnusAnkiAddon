@@ -161,7 +161,7 @@ class KanjiNote(WaniNote):
     def get_active_mnemonic(self) -> str:
         from ankiutils import app
         return self.get_user_mnemonic() if self.get_user_mnemonic() \
-            else self.create_default_mnemonic() if app.config().prefer_default_mnemocs_to_source_mnemonics.get_value() \
+            else f"# {self.create_default_mnemonic()}" if app.config().prefer_default_mnemocs_to_source_mnemonics.get_value() \
             else self.get_source_meaning_mnemonic()
 
     def get_user_or_generated_mnemonic(self) -> str:
