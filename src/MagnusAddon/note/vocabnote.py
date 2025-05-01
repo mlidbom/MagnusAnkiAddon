@@ -406,7 +406,7 @@ class VocabNote(KanaVocabNote):
         return [base for base in language_services.conjugator.get_word_stems(form, is_ichidan_verb=self.is_ichidan_verb()) if base != form]
 
     def get_stems_for_primary_form(self) -> list[str]:
-        return self._get_stems_for_form(self.get_question())
+        return ex_sequence.remove_duplicates_while_retaining_order(self._get_stems_for_form(self.get_question()))
 
     def get_text_matching_forms_for_primary_form(self) -> list[str]:
         return [self.get_question_without_noise_characters()] + self._get_stems_for_form(self.get_question_without_noise_characters())
