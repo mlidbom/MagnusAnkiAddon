@@ -268,18 +268,14 @@ class KanjiNote(WaniNote):
 
     def create_default_mnemonic(self) -> str:
         from ankiutils import app
-        mappings_text = app.config().readings_mappings.get_value()
-        readings_mappings = {
-            line.split(":", 1)[0].strip(): line.split(":", 1)[1].strip()
-            for line in mappings_text.strip().splitlines()
-            if ":" in line
-        }
+        readings_mappings = app.config().readings_mappings_dict
+
         def create_readings_tag(reading: str) -> str:
             if reading in readings_mappings:
-                value = readings_mappings[reading]
-                return value if "<read>" in value else f"""<read>{value}</read>"""
+                return readings_mappings[reading]
 
             return f"<read>{reading.capitalize()}</read>"
+
         radical_names = [rad.get_primary_radical_meaning() for rad in self.get_radicals_notes()]
         mnemonic = f"""
 {" ".join([f"<rad>{name}</rad>" for name in radical_names])} 

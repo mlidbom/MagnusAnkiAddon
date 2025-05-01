@@ -16,6 +16,7 @@ class ConfigurationValue(Generic[T]):
         self.feature_toggler: Optional[Callable[[T], None]] = feature_toggler
         self.name = name
         self._value: T = _config_dict.get(name, default)
+        self._update_callbacks: list[Callable[[], None]] = []
 
         if self.feature_toggler:
             from ankiutils import app
@@ -28,11 +29,15 @@ class ConfigurationValue(Generic[T]):
         self._value = value
         _config_dict[self.name] = value
         self.toggle_feature()
+        for callback in self._update_callbacks: callback()
         mw.addonManager.writeConfig(_addon_name, _config_dict)
 
     def toggle_feature(self) -> None:
         if self.feature_toggler is not None:
             self.feature_toggler(self._value)
+
+    def register_update_callback(self, callback: Callable[[], None]) -> None:
+        self._update_callbacks.append(callback)
 
 ConfigurationValueInt = ConfigurationValue[int]
 ConfigurationValueFloat = ConfigurationValue[float]
@@ -81,6 +86,34 @@ class JapaneseConfig:
         self.minimum_time_viewing_answer = ConfigurationValueFloat("minimum_time_viewing_answer", "Minimum time viewing answer", 0.5)
 
         self.feature_toggles = [self.yomitan_integration_copy_answer_to_clipboard, self.anki_internal_fsrs_set_enable_fsrs_short_term_with_steps, self.decrease_failed_card_intervals, self.prevent_double_clicks, self.boost_failed_card_allowed_time, self.prefer_default_mnemocs_to_source_mnemonics]
+
+        self.readings_mappings_dict = self.get_readings_mappings()
+        self.readings_mappings.register_update_callback(self._update_after_save)
+
+    def _update_after_save(self) -> None:
+        self.readings_mappings_dict = self.get_readings_mappings()
+
+    def get_readings_mappings(self) -> dict[str, str]:
+        def parse_value_part(value_part: str) -> str:
+            if "<read>" in value_part:
+                return value_part
+            if ":" in value_part:
+                parts = value_part.split(":", 1)
+                return f"""<read>{parts[0].strip()}</read>{parts[1]}"""
+            return f"<read>{value_part}</read>"
+
+
+        readings_mappings = {
+            line.split(":", 1)[0].strip(): parse_value_part(line.split(":", 1)[1].strip())
+            for line in self.readings_mappings.get_value().strip().splitlines()
+            if ":" in line
+        }
+
+        return readings_mappings
+
+
+
+
 
 
 config = JapaneseConfig()
