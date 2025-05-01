@@ -167,7 +167,13 @@ class KanjiNote(WaniNote):
     def set_radicals_icons_names(self, value: str) -> None: self.set_field(NoteFields.Kanji.Radicals_Icons_Names, value)
 
     def get_active_mnemonic(self) -> str:
-        return self.get_user_mnemonic() if self.get_user_mnemonic() else self.get_source_meaning_mnemonic()
+        from ankiutils import app
+        return self.get_user_mnemonic() if self.get_user_mnemonic() \
+            else self.create_default_mnemonic() if app.config().prefer_default_mnemocs_to_source_mnemonics.get_value() \
+            else self.get_source_meaning_mnemonic()
+
+    def get_user_or_generated_mnemonic(self) -> str:
+        return self.get_user_mnemonic() if self.get_user_mnemonic() else self.create_default_mnemonic()
 
     def get_user_similar_meaning(self) -> set[str]: return set(ex_str.extract_comma_separated_values(self.get_field(NoteFields.Kanji.user_similar_meaning)))
     def add_user_similar_meaning(self, new_synonym_question: str, _is_recursive_call:bool = False) -> None:
@@ -269,6 +275,9 @@ class KanjiNote(WaniNote):
     def set_primary_vocab_audio(self, value: str) -> None: self.set_field(NoteFields.Kanji.Audio__, value)
 
     def bootstrap_mnemonic_from_radicals(self) -> None:
+        self.set_user_mnemonic(self.create_default_mnemonic())
+
+    def create_default_mnemonic(self) -> str:
         from ankiutils import app
         mappings_text = app.config().readings_mappings.get_value()
         readings_mappings = {
@@ -276,22 +285,19 @@ class KanjiNote(WaniNote):
             for line in mappings_text.strip().splitlines()
             if ":" in line
         }
-
         def create_readings_tag(reading: str) -> str:
             if reading in readings_mappings:
                 value = readings_mappings[reading]
                 return value if "<read>" in value else f"""<read>{value}</read>"""
 
             return f"<read>{reading.capitalize()}</read>"
-
         radical_names = [rad.get_primary_radical_meaning() for rad in self.get_radicals_notes()]
         mnemonic = f"""
 {" ".join([f"<rad>{name}</rad>" for name in radical_names])} 
 <kan>{self.get_primary_meaning()}</kan> 
 {" ".join([create_readings_tag(kana_utils.romanize(reading)) for reading in self.get_primary_readings()])}
 """.replace(newline, "")
-        self.set_user_mnemonic(mnemonic)
-
+        return mnemonic
 
     def update_from_wani(self, wani_kanji: models.Kanji) -> None:
         super().update_from_wani(wani_kanji)

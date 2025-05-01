@@ -7,5 +7,6 @@ from . import (
     vocab_homophones_similar_confused_with_list,
     vocab_highlighted_sentence_list,
     vocab_context_sentences,
-    radical_and_kanji_kanji_kanji_list
+    radical_and_kanji_kanji_kanji_list,
+    kanji_mnemonic
 )

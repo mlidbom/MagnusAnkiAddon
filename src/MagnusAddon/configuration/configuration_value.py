@@ -76,10 +76,11 @@ class JapaneseConfig:
         self.decrease_failed_card_intervals = ConfigurationValueBool("decrease_failed_card_intervals", "Decrease failed card intervals", False)
 
         self.prevent_double_clicks = ConfigurationValueBool("prevent_double_clicks", "Prevent double clicks", True)
+        self.prefer_default_mnemocs_to_source_mnemonics = ConfigurationValueBool("prefer_default_mnemocs_to_source_mnemonics", "Prefer default mnemonics to source mnemonics", False)
         self.minimum_time_viewing_question = ConfigurationValueFloat("minimum_time_viewing_question", "Minimum time viewing question", 0.5)
         self.minimum_time_viewing_answer = ConfigurationValueFloat("minimum_time_viewing_answer", "Minimum time viewing answer", 0.5)
 
-        self.feature_toggles = [self.yomitan_integration_copy_answer_to_clipboard, self.anki_internal_fsrs_set_enable_fsrs_short_term_with_steps, self.decrease_failed_card_intervals, self.prevent_double_clicks, self.boost_failed_card_allowed_time]
+        self.feature_toggles = [self.yomitan_integration_copy_answer_to_clipboard, self.anki_internal_fsrs_set_enable_fsrs_short_term_with_steps, self.decrease_failed_card_intervals, self.prevent_double_clicks, self.boost_failed_card_allowed_time, self.prefer_default_mnemocs_to_source_mnemonics]
 
 
 config = JapaneseConfig()

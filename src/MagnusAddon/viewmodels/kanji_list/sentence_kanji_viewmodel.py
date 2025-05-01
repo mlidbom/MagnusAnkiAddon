@@ -1,3 +1,4 @@
+from ankiutils import app
 from note.kanjinote import KanjiNote
 from sysutils import kana_utils
 from sysutils import ex_str

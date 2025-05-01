@@ -20,6 +20,7 @@ hooks.note_content_building.vocab_highlighted_sentence_list.init()
 
 hooks.copy_sort_field_to_clipboard.init()
 hooks.note_content_building.kanji_radical_and_kanji_dependencies_list.init()
+hooks.note_content_building.kanji_mnemonic.init()
 hooks.note_content_building.kanji_katakana_onyomi.init()
 hooks.note_content_building.vocab_homophones_similar_confused_with_list.init()
 hooks.note_content_building.vocab_context_sentences.init()
