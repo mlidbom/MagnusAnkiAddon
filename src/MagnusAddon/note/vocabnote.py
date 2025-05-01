@@ -502,6 +502,12 @@ class VocabNote(KanaVocabNote):
     def create_ku_form(self) -> VocabNote:
         return self._create_postfix_prefix_version("く", "adverb", set_compounds=False, truncate_characters=1)
 
-
     def create_masu_form(self) -> VocabNote:
-        return self.clone_to_form(conjugator.get_masu_form(self))
+        clone = self.clone_to_form(conjugator.get_masu_form(self))
+        clone.set_user_compounds([self.get_question(), "ます"])
+        return clone
+
+    def create_te_form(self) -> VocabNote:
+        clone = self.clone_to_form(conjugator.get_te_form(self))
+        clone.set_user_compounds([self.get_question(), "て"])
+        return clone

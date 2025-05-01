@@ -21,12 +21,12 @@ _1_character_mappings: dict[str, list[str]] = {'う': ['い', 'わ', 'え', 'っ
                                                'る': ['り', 'ら', 'れ', 'っ'],
                                                'い': ['く', 'け', 'か']}
 
-_2_character_mappings: dict[str, list[str]] = {'する': ['し', 'さ', 'すれ'],
-                                               'くる': ['き', 'こ', 'くれ'],
-                                               'ます': ['まし', 'ませ'],
+_2_character_mappings: dict[str, list[str]] = {'する': ['し', 'さ', 'すれ', 'し'],
+                                               'くる': ['き', 'こ', 'くれ', 'き'],
                                                'いく': ['いき', 'いか', 'いけ', 'いっ', 'いこ'],
-                                               'いい': ['よく', 'よけ', 'よか'],
-                                               '行く': ['行き', '行か', '行け', '行っ', '行こ']}
+                                               '行く': ['行き', '行か', '行け', '行っ', '行こ'],
+                                               'ます': ['まし', 'ませ'],
+                                               'いい': ['よく', 'よけ', 'よか']}
 
 _aru_verbs: set[str] = {'なさる', 'くださる', 'おっしゃる', 'ござる', 'らっしゃる', '下さる', '為さる'}
 
@@ -50,8 +50,7 @@ def get_word_stems(word: str, is_ichidan_verb: bool = False, is_godan: bool = Fa
             return [word[:-1] + end for end in _1_character_mappings[word[-1]]] + [word[:-1]]
     return [word]
 
-
-def _get_stem(word: str, stem_index:int, is_ichidan_verb: bool = False, is_godan: bool = False) -> str:
+def _get_stem(word: str, stem_index: int, is_ichidan_verb: bool = False, is_godan: bool = False) -> str:
     if _is_aru_verb(word):
         return word[:-2] + _aru_mappings[word[-2:]][stem_index]
     if is_ichidan_verb:
@@ -65,7 +64,6 @@ def _get_stem(word: str, stem_index:int, is_ichidan_verb: bool = False, is_godan
             return word[:-1] + _1_character_mappings[word[-1]][stem_index]
     return word
 
-
 def get_i_stem(word: str, is_ichidan_verb: bool = False, is_godan: bool = False) -> str:
     return _get_stem(word, _i_stem_index, is_ichidan_verb, is_godan)
 
@@ -78,5 +76,8 @@ def get_e_stem(word: str, is_ichidan_verb: bool = False, is_godan: bool = False)
 def get_te_stem(word: str, is_ichidan_verb: bool = False, is_godan: bool = False) -> str:
     return _get_stem(word, _te_stem_index, is_ichidan_verb, is_godan)
 
-def get_masu_form(vocab:VocabNote) -> str:
+def get_masu_form(vocab: VocabNote) -> str:
     return get_i_stem(vocab.get_question(), vocab.is_ichidan_verb(), vocab.is_godan_verb()) + "ます"
+
+def get_te_form(vocab: VocabNote) -> str:
+    return get_te_stem(vocab.get_question(), vocab.is_ichidan_verb(), vocab.is_godan_verb()) + "て"

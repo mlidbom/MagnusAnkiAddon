@@ -29,7 +29,8 @@ def setup_note_menu(vocab: VocabNote, note_menu: QMenu, string_menus: list[tuple
             create_vocab_note_action(various_forms, shortcutfinger.up4("の-suffixed"), lambda: vocab.create_no_suffixed_word())
             create_vocab_note_action(various_forms, shortcutfinger.down1("ん-suffixed"), lambda: vocab.create_n_suffixed_word())
             create_vocab_note_action(various_forms, shortcutfinger.down2("か-suffixed"), lambda: vocab.create_ka_suffixed_word())
-            create_vocab_note_action(various_forms, shortcutfinger.down2("ます-form"), lambda: vocab.create_masu_form())
+            create_vocab_note_action(various_forms, shortcutfinger.down3("ます-form"), lambda: vocab.create_masu_form())
+            create_vocab_note_action(various_forms, shortcutfinger.down3("て-form"), lambda: vocab.create_te_form())
 
         def build_create_prefix_postfix_note_menu(prefix_postfix_note_menu: QMenu, addendum:str) -> None:
             create_vocab_note_action(prefix_postfix_note_menu, shortcutfinger.home1(f"prefix-{addendum}{vocab.get_question()}"), lambda: vocab.create_prefix_version(addendum))

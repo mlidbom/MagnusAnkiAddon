@@ -4,13 +4,13 @@ import language_services.conjugator
 
 @pytest.mark.parametrize("word, conjugation_bases, is_ichidan, is_godan", [
     # irregular verbs
-    ("くる", ['き', 'こ', 'くれ'], False, False),
-    ("する", ['し', 'さ', 'すれ'], False, False),
+    ("くる", ['き', 'こ', 'くれ', 'き'], False, False),
+    ("する", ['し', 'さ', 'すれ', 'し'], False, False),
     ("いく", ['いき', 'いか', 'いけ', 'いっ', 'いこ'], False, False),
     ("行く", ['行き', '行か', '行け', '行っ', '行こ'], False, False),
     ("います", ['いまし', 'いませ'], False, False),
-    ('しようとする', ['しようとし', 'しようとさ', 'しようとすれ'], False, False),
-    ("おいてくる", ['おいてき', 'おいてこ', 'おいてくれ'], False, False),
+    ('しようとする', ['しようとし', 'しようとさ', 'しようとすれ', 'しようとし'], False, False),
+    ("おいてくる", ['おいてき', 'おいてこ', 'おいてくれ', 'おいてき'], False, False),
 
     # adjectives
     ("美味しい", ['美味しく', '美味しけ', '美味しか'], False, False),
