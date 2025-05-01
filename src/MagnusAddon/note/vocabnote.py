@@ -446,6 +446,9 @@ class VocabNote(KanaVocabNote):
     def create_na_adjective(self) -> VocabNote:
         return self._create_postfix_prefix_version("な", "na-adjective")
 
+    def create_no_adjective(self) -> VocabNote:
+        return self._create_postfix_prefix_version("の", "expression, no-adjective")
+
     def create_ni_adverb(self) -> VocabNote:
         return self._create_postfix_prefix_version("に", "adverb")
 
@@ -454,9 +457,6 @@ class VocabNote(KanaVocabNote):
 
     def create_te_prefixed_word(self) -> VocabNote:
         return self._create_postfix_prefix_version("て", "auxiliary", is_prefix=True)
-
-    def create_no_suffixed_word(self) -> VocabNote:
-        return self._create_postfix_prefix_version("の", "expression")
 
     def create_n_suffixed_word(self) -> VocabNote:
         return self._create_postfix_prefix_version("ん", "expression")
