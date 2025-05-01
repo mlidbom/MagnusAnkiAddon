@@ -164,9 +164,6 @@ class KanjiNote(WaniNote):
             else f"# {self.create_default_mnemonic()}" if app.config().prefer_default_mnemocs_to_source_mnemonics.get_value() \
             else self.get_source_meaning_mnemonic()
 
-    def get_user_or_generated_mnemonic(self) -> str:
-        return self.get_user_mnemonic() if self.get_user_mnemonic() else self.create_default_mnemonic()
-
     def get_user_similar_meaning(self) -> set[str]: return set(ex_str.extract_comma_separated_values(self.get_field(NoteFields.Kanji.user_similar_meaning)))
     def add_user_similar_meaning(self, new_synonym_question: str, _is_recursive_call:bool = False) -> None:
         near_synonyms_questions = self.get_user_similar_meaning()
