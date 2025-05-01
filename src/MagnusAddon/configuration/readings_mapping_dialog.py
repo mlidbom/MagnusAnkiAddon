@@ -21,14 +21,11 @@ class ReadingsOptionsDialog(QDialog):
         self.text_edit.setPlainText(mappings_text)
 
         window_layout = QVBoxLayout()
+        window_layout.addWidget(self.text_edit)
+
         self.button_box = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok)
         qconnect(self.button_box.clicked, self.save)
         window_layout.addWidget(self.button_box)
-        window_layout.addWidget(self.text_edit)
-
-        self.button_box2 = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok)
-        qconnect(self.button_box2.clicked, self.save)
-        window_layout.addWidget(self.button_box2)
         self.setLayout(window_layout)
 
         #self.center_on_screen()
