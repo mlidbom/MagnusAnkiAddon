@@ -22,7 +22,8 @@ def setup_anki_open_menu(string_menu:QMenu, menu_string:str) -> None:
     def create_kanji_lookup() -> str:
         hiragana = kana_utils.to_hiragana(menu_string)
         if kana_utils.is_only_kana(hiragana):
-            return query_builder.notes_lookup(app.col().kanji.with_reading(hiragana))
+            return query_builder.notes_lookup(list(app.col().kanji.with_reading(hiragana)))
+        return query_builder.kanji_in_string(menu_string)
 
     add_lookup_action(search_anki_menu, shortcutfinger.home3("Kanji"), create_kanji_lookup())
 
