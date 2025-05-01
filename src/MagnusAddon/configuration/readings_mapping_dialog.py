@@ -3,6 +3,8 @@ from aqt.qt import *
 from ankiutils import app
 from typing import Optional
 
+from sysutils.typed import non_optional
+
 class ReadingsOptionsDialog(QDialog):
     def __init__(self, parent: Optional[QWidget] = None):
         super().__init__(parent)
@@ -22,12 +24,22 @@ class ReadingsOptionsDialog(QDialog):
         window_layout.addWidget(self.text_edit)
 
         self.button_box = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok)
-        self.button_box.setToolTip("Save (Ctrl+S)")
-        save_shortcut = QShortcut(QKeySequence("Ctrl+S"), self)
+        shortcut = "Alt+Return"
+        self.button_box.setToolTip(f"Save ({shortcut})")
+        save_shortcut = QShortcut(QKeySequence(shortcut), self)
         qconnect(save_shortcut.activated, self.save)
         qconnect(self.button_box.clicked, self.save)
         window_layout.addWidget(self.button_box)
         self.setLayout(window_layout)
+
+        self.center_on_screen()
+
+    def center_on_screen(self) -> None:
+        available = non_optional(self.screen()).availableGeometry()
+        self.setGeometry(available.x() + (available.width() - self.width()) // 2,
+                         available.y() + 30,
+                         self.width(),
+                         available.height() - 60)
 
     def save(self) -> None:
         def sorted_value_lines_without_blank_lines() -> str:
