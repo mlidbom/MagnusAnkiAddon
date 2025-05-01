@@ -8,6 +8,7 @@ from language_services.janome_ex.word_extraction.text_analysis import TextAnalys
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from note.note_constants import Mine
 from note.vocabnote import VocabNote
+from sysutils import ex_sequence
 
 _noise_characters = {'.',',',':',';','/','|','。','、'}
 _max_lookahead = 12
@@ -50,7 +51,24 @@ class WordExtractor:
             if _is_word(word):
                 add_word(word, surface)
 
+        def is_excluded_contextually(form_:str) -> bool:
+            context = ""
+            if token_index > 0:
+                context += tokens[token_index - 1].surface
+            context += token.surface
+            if token_index < len(tokens) - 1:
+                context += tokens[token_index + 1].surface
+
+            exclusions = ex_sequence.flatten([list(voc.get_excluded_forms()) for voc in app.col().vocab.with_question(form_)])
+            if any(exclusion for exclusion in exclusions if form_ in exclusion and exclusion in context):
+                return True
+            return False
+
+
         def is_excluded_form(vocab_form: str, candidate_form: str) -> bool:
+            if is_excluded_contextually(candidate_form):
+                return True
+
             return (any(voc for voc in (app.col().vocab.with_form(vocab_form)) if candidate_form in voc.get_excluded_forms()) or
                     any(voc for voc in (app.col().vocab.with_form(candidate_form)) if candidate_form in voc.get_excluded_forms()))
 

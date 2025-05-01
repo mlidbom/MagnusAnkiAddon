@@ -61,7 +61,7 @@ def test_identify_words(sentence: str, expected_output: list[str]) -> None:
      ['彼', '彼の', '彼の日本語', 'の', '日本語', '日本語のレベル', 'レベル', 'は', '私', 'と', '同じ', '同じ位', '位', 'だ']
      )
 ])
-def test_custom_vocab_words(sentence: str, custom_words:list[str], expected_output: list[str]) -> None:
+def test_custom_vocab_words(sentence: str, custom_words: list[str], expected_output: list[str]) -> None:
     insert_custom_words(custom_words)
     result = [w.word for w in word_extractor.extract_words(sentence)]
     assert result == expected_output
@@ -75,21 +75,20 @@ def test_something() -> None:
     result = word_extractor.extract_words("知ってる人があんまりいない高校に行って")
     print(result)
 
-def insert_custom_words(custom_words:list[str]) -> None:
+def insert_custom_words(custom_words: list[str]) -> None:
     from ankiutils import app
     for custom_word in custom_words:
         VocabNote.create(custom_word, "", [""])
     app.col().flush_cache_updates()
 
-
 @pytest.mark.parametrize('sentence, custom_words, excluded, expected_output', [
-    ("厳密に言えば　俺一人が友達だけど",[],
+    ("厳密に言えば　俺一人が友達だけど", [],
      [],
      ["厳密に言えば", "俺", "一人", "が", "友達", "だけど"]),
-    ("厳密に言えば　俺一人が友達だけど",[],
+    ("厳密に言えば　俺一人が友達だけど", [],
      [WordExclusion("厳密に言えば"), WordExclusion("言え"), WordExclusion('だけど')],
      ['厳密', 'に', '言う', 'ば', '俺', '一人', 'が', '友達', 'だ', 'けど']),
-    ("厳密に言えば　俺一人が友達だけどだけど",[],
+    ("厳密に言えば　俺一人が友達だけどだけど", [],
      [],
      ['厳密に言えば', '俺', '一人', 'が', '友達', 'だけど', 'だけど']),
     ("厳密に言えばだけど俺一人が友達だけど", [],
@@ -127,20 +126,21 @@ def insert_custom_words(custom_words:list[str]) -> None:
      [],
      [],
      ['教科書', '落ちる', 'ちゃう', 'から']),
-    ("待ってました",[],[],['待つ', 'て', 'ます', 'た']),
+    ("待ってました", [], [], ['待つ', 'て', 'ます', 'た']),
     ("怖くなくなったの", [], [], ['怖い', 'なくなる', 'た', 'の']),
     ("落ちてないかな", [], [], ['落ちる', 'てる', 'ないか', 'な']),
     ("分かってたら", [], [], ['分かる', 'てたら']),
     ("頑張れたというか", [], [], ['頑張れる', 'た', 'というか']),
-    ("思い出せそうな気がする",[], [], ['思い出せる', 'そう', 'な', '気がする']),
+    ("思い出せそうな気がする", [], [], ['思い出せる', 'そう', 'な', '気がする']),
+    ("私が頼んだの", [], [], ['私', 'が', '頼む', '頼ん', 'だ', 'の'])
 ])
-def test_hierarchical_extraction(sentence: str, custom_words:list[str], excluded:list[WordExclusion], expected_output: list[str]) -> None:
+def test_hierarchical_extraction(sentence: str, custom_words: list[str], excluded: list[WordExclusion], expected_output: list[str]) -> None:
     insert_custom_words(custom_words)
     hierarchical = word_extractor.extract_words_hierarchical(sentence, excluded)
     root_words = [w.word.word for w in hierarchical]
     assert root_words == expected_output
 
-def insert_custom_words_with_excluded_forms(custom_words:list[list[str]]) -> None:
+def insert_custom_words_with_excluded_forms(custom_words: list[list[str]]) -> None:
     from ankiutils import app
     for custom_word in custom_words:
         note = VocabNote.create(custom_word[0], "", [""])
@@ -149,16 +149,16 @@ def insert_custom_words_with_excluded_forms(custom_words:list[list[str]]) -> Non
 
 @pytest.mark.parametrize('sentence, custom_words, expected_output', [
     ("後で下に下りてらっしゃいね",
-     [["らっしゃい","[[らっしゃる]]"]],
+     [["らっしゃい", "[[らっしゃる]]"]],
      ['後で', '下', '下に', 'に', '下りる', 'て', 'らっしゃい', 'ね']),
     ("無理して思い出す",
-     [["する","[[し]]"]],
+     [["する", "[[し]]"]],
      ['無理', 'する', 'して', 'て', '思い出す']),
     ("リセットしても",
-     [["する","[[し]]", "[[して]]"]],
+     [["する", "[[し]]", "[[して]]"]],
      ['リセット', 'する', 'て', 'ても', 'も'],)
 ])
-def test_custom_vocab_words_with_excluded_forms(sentence: str, custom_words:list[list[str]], expected_output: list[str]) -> None:
+def test_custom_vocab_words_with_excluded_forms(sentence: str, custom_words: list[list[str]], expected_output: list[str]) -> None:
     insert_custom_words_with_excluded_forms(custom_words)
     result = [w.word for w in word_extractor.extract_words(sentence)]
     assert result == expected_output
