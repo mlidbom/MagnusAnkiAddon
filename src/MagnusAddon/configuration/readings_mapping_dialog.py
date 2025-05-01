@@ -1,8 +1,9 @@
 from aqt.qt import *
-from pkg_resources import non_empty_lines
 
 from ankiutils import app
 from typing import Optional
+
+from sysutils.typed import non_optional
 
 class ReadingsOptionsDialog(QDialog):
     def __init__(self, parent: Optional[QWidget] = None):
@@ -26,6 +27,15 @@ class ReadingsOptionsDialog(QDialog):
         window_layout.addWidget(self.button_box)
         self.setLayout(window_layout)
 
+        self.center_on_screen()
+
+    def center_on_screen(self) -> None:
+        available = non_optional(self.screen()).availableGeometry()
+        self.setGeometry(available.x() + (available.width() - self.width()) // 2,
+                         available.y() + 30,
+                         self.width(),
+                         available.height() - 60)
+
     def save(self) -> None:
         def sorted_value_lines_without_blank_lines() -> str:
             return "\n".join([line for line in (sorted(self.text_edit.toPlainText().splitlines())) if line != ""])
@@ -36,4 +46,5 @@ class ReadingsOptionsDialog(QDialog):
 
 def show_readings_mappings() -> None:
     from aqt import mw
-    ReadingsOptionsDialog(mw).exec()
+    dialog = ReadingsOptionsDialog(mw)
+    dialog.exec()
