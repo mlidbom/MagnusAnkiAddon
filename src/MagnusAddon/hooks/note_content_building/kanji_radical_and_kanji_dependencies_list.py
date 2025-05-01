@@ -37,7 +37,7 @@ def render_dependencies_list(note: KanjiNote) -> str:
             <div class="dependency_name clipboard">{kanji.get_answer()}</div>
             <div class="dependency_readings">{highlight_primary_reading_sources(format_readings(kanji))}</div>
         </div>
-        <div class="dependency_mnemonic">{kanji.get_user_mnemonic()}</div>
+        <div class="dependency_mnemonic">{kanji.get_active_mnemonic()}</div>
     </div>
 ''' for kanji in dependencies)}
 </div>
