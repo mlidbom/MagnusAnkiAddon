@@ -33,9 +33,9 @@ class TextAnalysis:
         print(self)
 
     def __repr__(self) -> str:
-        repr = self.text + newline
+        result = self.text + newline
         location:Optional[TextLocation] = self.start_location
         while location is not None:
-            repr += location.__repr__() + newline
+            result += location.__repr__() + newline
             location = location.next
-        return repr
+        return result
