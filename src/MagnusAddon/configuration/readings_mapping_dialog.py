@@ -33,6 +33,9 @@ class ReadingsOptionsDialog(QDialog):
 
         #self.center_on_screen()
 
+        save_shortcut = QShortcut(QKeySequence("Ctrl+S"), self)
+        qconnect(save_shortcut.activated, self.save)
+
     def center_on_screen(self) -> None:
         available = non_optional(self.screen()).availableGeometry()
         self.setGeometry(available.x() + (available.width() - self.width()) // 2,
