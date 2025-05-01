@@ -3,6 +3,7 @@ from aqt.qt import *
 from ankiutils import app
 from typing import Optional
 
+from sysutils.ex_str import newline
 from sysutils.typed import non_optional
 
 class ReadingsOptionsDialog(QDialog):
@@ -15,7 +16,7 @@ class ReadingsOptionsDialog(QDialog):
         self.setWindowTitle("Readings Mappings")
         self.setMinimumWidth(500)
 
-        mappings_text = self.config.readings_mappings.get_value()
+        mappings_text = newline + self.config.readings_mappings.get_value()
 
         self.text_edit = QTextEdit(self)
         self.text_edit.setPlainText(mappings_text)
