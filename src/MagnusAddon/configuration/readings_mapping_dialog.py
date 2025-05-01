@@ -1,4 +1,5 @@
 from aqt.qt import *
+from pkg_resources import non_empty_lines
 
 from ankiutils import app
 from typing import Optional
@@ -25,8 +26,12 @@ class ReadingsOptionsDialog(QDialog):
         window_layout.addWidget(self.button_box)
         self.setLayout(window_layout)
 
-    def save(self) ->None:
-        self.config.readings_mappings.set_value(self.text_edit.toPlainText())
+    def save(self) -> None:
+        def sorted_value_lines_without_blank_lines() -> str:
+            return "\n".join([line for line in (sorted(self.text_edit.toPlainText().splitlines())) if line != ""])
+
+        self.config.readings_mappings.set_value(sorted_value_lines_without_blank_lines())
+
         self.accept()
 
 def show_readings_mappings() -> None:
