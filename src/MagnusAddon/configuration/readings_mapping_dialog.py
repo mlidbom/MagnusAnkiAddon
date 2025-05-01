@@ -31,15 +31,6 @@ class ReadingsOptionsDialog(QDialog):
         window_layout.addWidget(self.button_box)
         self.setLayout(window_layout)
 
-        #self.center_on_screen()
-
-    def center_on_screen(self) -> None:
-        available = non_optional(self.screen()).availableGeometry()
-        self.setGeometry(available.x() + (available.width() - self.width()) // 2,
-                         available.y() + 30,
-                         self.width(),
-                         available.height() - 60)
-
     def save(self) -> None:
         def sorted_value_lines_without_blank_lines() -> str:
             return "\n".join([line for line in (sorted(self.text_edit.toPlainText().splitlines())) if line != ""])
