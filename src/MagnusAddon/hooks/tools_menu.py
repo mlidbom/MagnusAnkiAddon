@@ -9,6 +9,7 @@ from ankiutils.app import main_window, ui_utils
 from batches import local_note_updater
 from configuration.configuration import show_japanese_options
 from configuration.configuration_value import ConfigurationValueBool
+from configuration.readings_mapping_dialog import show_readings_mappings
 from hooks import shortcutfinger
 from note.jpnote import JPNote
 from sysutils.typed import non_optional
@@ -33,7 +34,7 @@ def add_menu_ui_action(sub_menu: QMenu, heading: str, callback: Callable[[],None
     sub_menu.addAction(action)
 
 def build_main_menu() -> None:
-    my_menu = non_optional(main_window().form.menuTools.addMenu("Magnu&s"))
+    my_menu = non_optional(main_window().form.menuTools.addMenu("M&agnus"))
 
     build_config_menu(my_menu, shortcutfinger.home1("Config"))
     build_local_menu(my_menu, shortcutfinger.home2("Local Actions"))
@@ -62,7 +63,8 @@ def build_config_menu(my_menu: QMenu, title:str) -> None:
 
     build_feature_toggles_menu(shortcutfinger.home1("Feature Toggles"))
 
-    config_menu.addAction("Options", show_japanese_options)
+    config_menu.addAction(shortcutfinger.home2("Options"), show_japanese_options)
+    config_menu.addAction(shortcutfinger.home3("Readings mappings"), show_readings_mappings)
 
 
 def build_local_menu(menu: QMenu, title:str) -> None:

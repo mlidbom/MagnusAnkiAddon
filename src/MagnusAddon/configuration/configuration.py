@@ -37,7 +37,7 @@ class JapaneseOptionsDialog(QDialog):
             double_input.setRange(0.0, 100.0)  # Set the range for the floating-point values
             double_input.setDecimals(2)  # Set precision to 2 decimal places
             double_input.setValue(config_value.get_value())  # Set initial value
-            double_input.setSingleStep(0.05)  # Set step size for increment/decrement
+            double_input.setSingleStep(0.05)  # Set step size for increment/decrementb
 
             # Connect the valueChanged signal to update the config value
             qconnect(double_input.valueChanged, config_value.set_value)

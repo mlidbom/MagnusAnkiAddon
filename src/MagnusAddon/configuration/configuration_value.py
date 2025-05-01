@@ -37,6 +37,7 @@ class ConfigurationValue(Generic[T]):
 ConfigurationValueInt = ConfigurationValue[int]
 ConfigurationValueFloat = ConfigurationValue[float]
 ConfigurationValueBool = ConfigurationValue[bool]
+ConfigurationValueString = ConfigurationValue[str]
 
 class JapaneseConfig:
     def __init__(self) -> None:
@@ -46,6 +47,8 @@ class JapaneseConfig:
         def set_enable_fsrs_short_term_with_steps(toggle: bool) -> None:
             # noinspection PyProtectedMember, PyArgumentList
             mw.col._set_enable_fsrs_short_term_with_steps(toggle)
+
+        self.readings_mappings = ConfigurationValueString("readings_mappings", "Readings Mappings", "")
 
         self.autoadvance_vocab_starting_seconds = ConfigurationValueFloat("autoadvance_vocab_starting_seconds", "Starting Seconds", 3.0)
         self.autoadvance_vocab_hiragana_seconds = ConfigurationValueFloat("autoadvance_vocab_hiragana_seconds", "Hiragana Seconds", 0.7)
