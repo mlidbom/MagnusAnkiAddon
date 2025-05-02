@@ -150,6 +150,7 @@ class Mine:
         base_folder = "-::"
 
         inflecting_word = f"{base_folder}inflecting-word"
+        requires_exact_match = f"{base_folder}requires-exact-match"
 
         kanji_folder = f"{base_folder}kanji::"
         kanji_is_radical = f"{kanji_folder}is-radical"

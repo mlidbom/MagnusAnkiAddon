@@ -396,6 +396,9 @@ class VocabNote(KanaVocabNote):
         app.anki_collection().addNote(backend_note)
         return note
 
+    def requires_exact_match(self) -> bool:
+        return self.has_tag(Mine.Tags.requires_exact_match)
+
     def is_ichidan_verb(self) -> bool:
         return "ichidan" in self.get_speech_type().lower()
 

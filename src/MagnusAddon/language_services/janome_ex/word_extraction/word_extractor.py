@@ -116,11 +116,19 @@ class WordExtractor:
                 surface_compound += look_ahead_token.surface
 
                 if (base_compound != surface_compound
+                        and passes_exact_match_requirement(base_compound, surface_compound)
                         and not is_excluded_form(surface_compound, base_compound)
                         and not is_excluded_form(look_ahead_token.surface, look_ahead_token.base_form)):
                     add_word_if_it_is_in_dictionary(base_compound, surface_compound)
                 if not is_excluded_form(token.base_form, surface_compound):
                     add_word_if_it_is_in_dictionary(surface_compound, surface_compound)
+
+        def passes_exact_match_requirement(base:str, surface:str) -> bool:
+            if base == surface:
+                return True
+
+            exact_matches = ex_sequence.flatten([app.col().vocab.with_question(form) for form in [base,surface]])
+            return not any(v for v in exact_matches if v.requires_exact_match())
 
         text = self._tokenizer.tokenize(sentence)
         tokens = text.tokens
@@ -129,7 +137,7 @@ class WordExtractor:
 
         character_index = 0
         for token_index, token in enumerate(tokens):
-            if not is_excluded_form(token.surface, token.base_form):
+            if not is_excluded_form(token.surface, token.base_form) and passes_exact_match_requirement(token.base_form, token.surface):
                 add_word(token.base_form, token.surface)
 
             if (token.surface != token.base_form
