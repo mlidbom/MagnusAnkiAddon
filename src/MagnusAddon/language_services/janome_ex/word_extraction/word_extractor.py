@@ -29,7 +29,7 @@ class WordExtractor:
         def sort_key(word: ExtractedWord) -> tuple[int, int, int]: return word.character_index, -word.surface_length(), -word.word_length()
         def is_excluded(word: HierarchicalWord) -> bool: return any(exclusion for exclusion in excluded_words if exclusion.excludes(word))
 
-        starting_point = [HierarchicalWord(word) for word in sorted(self.extract_words(sentence, allow_duplicates=True), key=sort_key)]
+        starting_point = [HierarchicalWord(word) for word in sorted(self.extract_words(sentence, allow_duplicates=True, exclusions=excluded_words), key=sort_key)]
 
         without_exclusions = [word for word in starting_point if not is_excluded(word)]
 
@@ -41,7 +41,7 @@ class WordExtractor:
         return without_exclusions
 
     # noinspection DuplicatedCode
-    def extract_words(self, sentence: str, allow_duplicates: bool = False) -> list[ExtractedWord]:
+    def extract_words(self, sentence: str, allow_duplicates: bool = False, exclusions: list[WordExclusion] = []) -> list[ExtractedWord]:
         from ankiutils import app
 
         def _is_word(word: str) -> bool:
@@ -64,13 +64,17 @@ class WordExtractor:
                 return True
             return False
 
+        def get_excluded_forms(form_:str) -> set[str]:
+            unexcluded_vocab_with_form = [voc for voc in (app.col().vocab.with_form(form_)) if not any(exclusion for exclusion in exclusions if exclusion.word == voc.get_question())]
+            excluded_forms_list_for_form = [voc.get_excluded_forms() for voc in unexcluded_vocab_with_form]
+            excluded_forms_set = set.union(*excluded_forms_list_for_form) if excluded_forms_list_for_form else set()
+            return excluded_forms_set
 
         def is_excluded_form(vocab_form: str, candidate_form: str) -> bool:
             if is_excluded_contextually(candidate_form):
                 return True
 
-            return (any(voc for voc in (app.col().vocab.with_form(vocab_form)) if candidate_form in voc.get_excluded_forms()) or
-                    any(voc for voc in (app.col().vocab.with_form(candidate_form)) if candidate_form in voc.get_excluded_forms()))
+            return candidate_form in get_excluded_forms(candidate_form) or candidate_form in get_excluded_forms(vocab_form)
 
         def add_word(word: str, surface: str) -> None:
             if (allow_duplicates or word not in found_words) and word not in _noise_characters:

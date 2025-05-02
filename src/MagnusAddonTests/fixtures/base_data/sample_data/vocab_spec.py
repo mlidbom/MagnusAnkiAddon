@@ -56,6 +56,8 @@ test_special_vocab = [
     VocabSpec("で", "{act-ctx{time|place|cause|means}}　| {て-form:+<ja>む/ぬ</ja>-verbs+<ja>だ</ja>} | ksb:よ", ['で'], extra_forms=["[[だ]]"]),
     VocabSpec("な", "{attributive-copula} | な-particle ...", ['な'], extra_forms=["[[だ]]"]),
     VocabSpec("だの", "and-the-like", ['だの'], extra_forms=["[[んだの]]"]),
+    VocabSpec("いらっしゃいませ", "welcome!", ['いらっしゃいませ'], extra_forms=["[[いらっしゃいます]]"]),
+    VocabSpec("いらっしゃいます", "to: come/be/do", ['いらっしゃいます']),
 ]
 
 test_ordinary_vocab_list = [
