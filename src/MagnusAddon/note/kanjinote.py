@@ -25,13 +25,13 @@ class KanjiNote(WaniNote):
         return set(self.get_radicals_notes())
 
     def tag_vocab_readings(self, vocab: VocabNote) -> list[str]:
-        def primary_reading(read:str) -> str: return f'<span class="kanjiReadingPrimary">{read}</span>'
+        def primary_reading(read: str) -> str: return f'<span class="kanjiReadingPrimary">{read}</span>'
         def secondary_reading(read: str) -> str: return f'<span class="kanjiReadingSecondary">{read}</span>'
 
         primary_readings = self.get_primary_readings()
         secondary_readings = [reading for reading in self.get_readings_clean() if reading not in primary_readings and reading]
 
-        result:list[str] = []
+        result: list[str] = []
 
         vocab_form = vocab.get_question()
         for vocab_reading in vocab.get_readings():
@@ -54,7 +54,6 @@ class KanjiNote(WaniNote):
 
         return result
 
-
     def get_question(self) -> str: return self.get_field(NoteFields.Kanji.question)
     def set_question(self, value: str) -> None: self.set_field(NoteFields.Kanji.question, value)
 
@@ -72,7 +71,7 @@ class KanjiNote(WaniNote):
     def update_generated_data(self) -> None:
         super().update_generated_data()
 
-        self.set_reading_on(kana_utils.to_hiragana(self.get_reading_on_html()))#Katakana sneaks in via yomitan etc
+        self.set_reading_on(kana_utils.to_hiragana(self.get_reading_on_html()))  # Katakana sneaks in via yomitan etc
 
         def update_primary_audios() -> None:
             from ankiutils import app
@@ -81,7 +80,6 @@ class KanjiNote(WaniNote):
 
         self.set_field(NoteFields.Kanji.active_answer, self.get_answer())
         update_primary_audios()
-
 
     def get_vocab_notes_sorted(self) -> list[VocabNote]:
         from note import vocabnote
@@ -165,7 +163,7 @@ class KanjiNote(WaniNote):
             else self.get_source_meaning_mnemonic()
 
     def get_user_similar_meaning(self) -> set[str]: return set(ex_str.extract_comma_separated_values(self.get_field(NoteFields.Kanji.user_similar_meaning)))
-    def add_user_similar_meaning(self, new_synonym_question: str, _is_recursive_call:bool = False) -> None:
+    def add_user_similar_meaning(self, new_synonym_question: str, _is_recursive_call: bool = False) -> None:
         near_synonyms_questions = self.get_user_similar_meaning()
         near_synonyms_questions.add(new_synonym_question)
 
@@ -203,13 +201,12 @@ class KanjiNote(WaniNote):
         # noinspection PyArgumentEqualDefault
         return radical_meaning_match.group(0) if radical_meaning_match else ""
 
-
     _parenthesized_word_pattern = re.compile(r'\([-\w]+\)', re.UNICODE)
     def get_primary_radical_meaning(self) -> str:
         def get_dedicated_radical_primary_meaning() -> str:
             radical_meaning_match = self._parenthesized_word_pattern.search(self.get_answer_text())
             # noinspection PyArgumentEqualDefault
-            return radical_meaning_match.group(0).replace("(","").replace(")","") if radical_meaning_match else ""
+            return radical_meaning_match.group(0).replace("(", "").replace(")", "") if radical_meaning_match else ""
 
         result = get_dedicated_radical_primary_meaning()
         return result or self.get_primary_meaning()
@@ -245,7 +242,7 @@ class KanjiNote(WaniNote):
 
         return result
 
-    def position_primary_vocab(self, vocab: str, new_index:int = -1) -> None:
+    def position_primary_vocab(self, vocab: str, new_index: int = -1) -> None:
         vocab = vocab.strip()
         primary_vocab_list = self.get_primary_vocab()
         if vocab in primary_vocab_list:
@@ -258,7 +255,7 @@ class KanjiNote(WaniNote):
 
         self.set_primary_vocab(primary_vocab_list)
 
-    def remove_primary_vocab(self, vocab:str) -> None:
+    def remove_primary_vocab(self, vocab: str) -> None:
         self.set_primary_vocab([v for v in self.get_primary_vocab() if not v == vocab])
 
     def set_primary_vocab_audio(self, value: str) -> None: self.set_field(NoteFields.Kanji.Audio__, value)
@@ -270,39 +267,59 @@ class KanjiNote(WaniNote):
         from ankiutils import app
         readings_mappings = app.config().readings_mappings_dict
 
-        def create_readings_tag(reading: str) -> str:
-            if reading in readings_mappings:
-                return readings_mappings[reading]
+        def create_readings_tag(kana_reading: str) -> str:
+            romaji_reading = kana_utils.romanize(kana_reading)
 
-            def find_longest_match_in_readings(part:str)-> str:
-                for end_index in range(len(part), 0, -1):
-                    portion = part[:end_index]
-                    if portion in readings_mappings:
-                        return portion
+            if romaji_reading in readings_mappings:
+                return readings_mappings[romaji_reading]
 
-                return ""
+            def try_combine_framentary_matches_into_one_reading() -> str:
+                matches_by_reading_character_index: list[list[str]] = list()
+                for index in range(0, len(kana_reading)):
+                    candidates = [kana_reading[index:sub_index] for sub_index in range(index + 1, len(kana_reading) + 1)]
+                    matches_by_reading_character_index.append([cand for cand in candidates if kana_utils.romanize(cand) in readings_mappings])
 
-            partial_readings:list[str] = []
-            parts_found:list[str] = []
-            current_part = reading
-            while True:
-                longest_match = find_longest_match_in_readings(current_part)
-                if not longest_match: break
-                partial_readings.append(readings_mappings[longest_match])
-                parts_found.append(longest_match)
-                current_part = current_part[len(longest_match):]
+                def remove_dead_end_paths() -> None:
+                    values_removed = True
+                    while values_removed:
+                        values_removed = False
+                        for path_index in range(0, len(kana_reading)):
+                            for kana_match in matches_by_reading_character_index[path_index]:
+                                if not path_index + len(kana_match) == len(kana_reading):
+                                    if not matches_by_reading_character_index[path_index + len(kana_match)]:
+                                        values_removed = True
+                                        matches_by_reading_character_index[path_index].remove(kana_match)
+
+                def find_long_path() -> list[str]:
+                    next_fragment_index = 0
+                    path: list[str] = []
+                    while next_fragment_index < len(kana_reading):
+                        candidates_ = matches_by_reading_character_index[next_fragment_index]
+                        if not candidates_:
+                            return []
+
+                        fragment = sorted(candidates_, key=lambda x: len(x), reverse=True)[0]
+                        path.append(fragment)
+                        next_fragment_index += len(fragment)
+                    return path
+
+                remove_dead_end_paths()
+                long_path = find_long_path()
+
+                if not long_path: return ""
+                return "-".join([readings_mappings[kana_utils.romanize(fragment)] for fragment in long_path])
 
 
-            if "".join(parts_found) == reading:
-                return "-".join(partial_readings)
+            combined = try_combine_framentary_matches_into_one_reading()
+            if combined: return combined
 
-            return f"<read>{reading.capitalize()}</read>"
+            return f"<read>{romaji_reading.capitalize()}</read>"
 
         radical_names = [rad.get_primary_radical_meaning() for rad in self.get_radicals_notes()]
         mnemonic = f"""
 {" ".join([f"<rad>{name}</rad>" for name in radical_names])} 
 <kan>{self.get_primary_meaning()}</kan> 
-{" ".join([create_readings_tag(kana_utils.romanize(reading)) for reading in self.get_primary_readings()])}
+{" ".join([create_readings_tag(reading) for reading in self.get_primary_readings()])}
 """.replace(newline, "")
         return mnemonic.strip()
 
@@ -379,7 +396,6 @@ class KanjiNote(WaniNote):
                 radicals += radical
 
         self._set_radicals(", ".join(radicals))
-
 
     @staticmethod
     def create_from_wani_kanji(wani_kanji: models.Kanji) -> None:
