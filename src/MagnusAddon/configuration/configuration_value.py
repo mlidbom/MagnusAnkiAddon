@@ -1,21 +1,26 @@
 from __future__ import annotations
-from typing import Callable, Generic, Optional, TypeVar
+from typing import Any, Callable, Generic, Optional, TypeVar
 import os
 from aqt import mw
+
+from sysutils.lazy import Lazy
 
 T = TypeVar('T')
 
 _addon_dir = os.path.dirname(os.path.dirname(__file__))
 _addon_name = os.path.basename(_addon_dir)
 
-_config_dict = mw.addonManager.getConfig(_addon_name) or {}
+_config_dict = Lazy(lambda : mw.addonManager.getConfig(_addon_name) or {})
+
+def _write_config_dict() -> None:
+    mw.addonManager.writeConfig(_addon_name, _config_dict.instance())
 
 class ConfigurationValue(Generic[T]):
     def __init__(self, name: str, title: str, default: T, feature_toggler: Optional[Callable[[T], None]] = None) -> None:
         self.title = title
         self.feature_toggler: Optional[Callable[[T], None]] = feature_toggler
         self.name = name
-        self._value: T = _config_dict.get(name, default)
+        self._value: T = _config_dict.instance().get(name, default)
         self._update_callbacks: list[Callable[[], None]] = []
 
         if self.feature_toggler:
@@ -27,10 +32,10 @@ class ConfigurationValue(Generic[T]):
 
     def set_value(self, value: T) -> None:
         self._value = value
-        _config_dict[self.name] = value
+        _config_dict.instance()[self.name] = value
         self.toggle_feature()
         for callback in self._update_callbacks: callback()
-        mw.addonManager.writeConfig(_addon_name, _config_dict)
+        _write_config_dict()
 
     def toggle_feature(self) -> None:
         if self.feature_toggler is not None:
@@ -116,4 +121,4 @@ class JapaneseConfig:
 
 
 
-config = JapaneseConfig()
+config = Lazy(lambda: JapaneseConfig())

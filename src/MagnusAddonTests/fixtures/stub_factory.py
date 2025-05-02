@@ -1,10 +1,11 @@
 import threading
 from contextlib import contextmanager
-from typing import Callable, Generator, List, TypeVar
+from typing import Any, Callable, Generator, List, TypeVar
 from ankiutils import app
 from ankiutils.ui_utils_interface import IUIUtils
 from fixtures.stubs.ui_utils_stub import UIUtilsStub
 from sysutils import progress_display_runner
+from sysutils.lazy import Lazy
 from sysutils.progress_display_runner import Closable
 from sysutils.typed import checked_cast
 
@@ -22,8 +23,21 @@ def _stub_ui_utils_real() -> Generator[None, None, None]:
     yield
 
 @contextmanager
+def _stub_config_dict() -> Generator[None, None, None]:
+    _config_dict:dict[str,Any] = dict()
+
+    from configuration import configuration_value
+
+    def _write_config_dict() -> None: pass
+
+    configuration_value._config_dict = Lazy(lambda : _config_dict)
+    configuration_value._write_config_dict = _write_config_dict
+
+    yield
+
+@contextmanager
 def stub_ui_dependencies() -> Generator[None, None, None]:
-    with (_stub_ui_utils_real(), _stub_progress_runner()):
+    with (_stub_ui_utils_real(), _stub_progress_runner(), _stub_config_dict()):
         yield
 
 T = TypeVar('T')

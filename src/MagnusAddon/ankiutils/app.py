@@ -39,7 +39,7 @@ def add_init_hook(hook:Callable[[], None]) -> None:
 
 def config() -> JapaneseConfig:
     from configuration import configuration
-    return configuration.config
+    return configuration.config.instance()
 
 
 def _init(_col:Optional[Any] = None, delay_seconds: float = 0) -> None:

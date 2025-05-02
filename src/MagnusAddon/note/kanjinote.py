@@ -282,7 +282,7 @@ class KanjiNote(WaniNote):
 <kan>{self.get_primary_meaning()}</kan> 
 {" ".join([create_readings_tag(kana_utils.romanize(reading)) for reading in self.get_primary_readings()])}
 """.replace(newline, "")
-        return mnemonic
+        return mnemonic.strip()
 
     def update_from_wani(self, wani_kanji: models.Kanji) -> None:
         super().update_from_wani(wani_kanji)

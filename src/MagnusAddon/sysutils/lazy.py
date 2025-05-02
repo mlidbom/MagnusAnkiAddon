@@ -6,6 +6,17 @@ from sysutils import app_thread_pool
 
 T = TypeVar('T')
 
+class Lazy(Generic[T]):
+    def __init__(self, factory: Callable[[], T]):
+        self.factory = factory
+        self._instance: Optional[T] = None
+
+    def instance(self) -> T:
+        if self._instance is None:
+            self._instance = self.factory()
+        return self._instance
+
+
 class BackgroundInitialingLazy(Generic[T]):
     def __init__(self, factory: Callable[[], T], delay_seconds: float = 0):
         self._lock = threading.Lock()
