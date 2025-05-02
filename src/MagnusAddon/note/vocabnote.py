@@ -399,14 +399,14 @@ class VocabNote(KanaVocabNote):
     def requires_exact_match(self) -> bool:
         return self.has_tag(Mine.Tags.requires_exact_match)
 
-    def is_ichidan_verb(self) -> bool:
+    def is_ichidan(self) -> bool:
         return "ichidan" in self.get_speech_type().lower()
 
-    def is_godan_verb(self) -> bool:
+    def is_godan(self) -> bool:
         return "ichidan" in self.get_speech_type().lower()
 
     def _get_stems_for_form(self, form: str) -> list[str]:
-        return [base for base in language_services.conjugator.get_word_stems(form, is_ichidan_verb=self.is_ichidan_verb()) if base != form]
+        return [base for base in language_services.conjugator.get_word_stems(form, is_ichidan_verb=self.is_ichidan()) if base != form]
 
     def get_stems_for_primary_form(self) -> list[str]:
         return ex_sequence.remove_duplicates_while_retaining_order(self._get_stems_for_form(self.get_question()))
@@ -505,8 +505,16 @@ class VocabNote(KanaVocabNote):
     def create_ku_form(self) -> VocabNote:
         return self._create_postfix_prefix_version("く", "adverb", set_compounds=False, truncate_characters=1)
 
+    def _get_masu_form(self, form: str) -> str:
+        return conjugator.get_masu_form(form, self.is_ichidan(), self.is_godan())
+
     def create_masu_form(self) -> VocabNote:
-        clone = self.clone_to_form(conjugator.get_masu_form(self))
+        clone = self.clone_to_form(self._get_masu_form(self.get_question()))
+        clone.set_forms(set([self._get_masu_form(form) for form in clone.get_forms()]))
+        clone.set_readings([self._get_masu_form(reading) for reading in clone.get_readings()])
+        clone.set_audio_male([])
+        clone.set_audio_female([])
+        clone.set_speech_type("expression")
         clone.set_user_compounds([self.get_question(), "ます"])
         return clone
 
