@@ -43,10 +43,21 @@ class ReadingsOptionsDialog(QDialog):
                          available.height() - 60)
 
     def save(self) -> None:
-        def sorted_value_lines_without_blank_lines() -> str:
-            return "\n".join([line for line in (sorted(self.text_edit.toPlainText().splitlines())) if line != ""])
+        def sorted_value_lines_without_duplicates_or_blank_lines() -> str:
+            lines = self.text_edit.toPlainText().splitlines()
+            lines.reverse() #the top latest lines are now the last lines and will overwrite earlier lines
 
-        self.config.readings_mappings.set_value(sorted_value_lines_without_blank_lines())
+            readings_mappings = {
+                line.split(":", 1)[0].strip(): line.split(":", 1)[1].strip()
+                for line in lines
+                if ":" in line
+            }
+
+            new_lines = [f"{line[0]}:{line[1]}" for line in readings_mappings.items()]
+
+            return "\n".join(sorted(new_lines))
+
+        self.config.readings_mappings.set_value(sorted_value_lines_without_duplicates_or_blank_lines())
         self.accept()
 
         from ankiutils import app
