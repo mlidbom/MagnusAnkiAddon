@@ -274,6 +274,28 @@ class KanjiNote(WaniNote):
             if reading in readings_mappings:
                 return readings_mappings[reading]
 
+            def find_longest_match_in_readings(part:str)-> str:
+                for end_index in range(len(part), 0, -1):
+                    portion = part[:end_index]
+                    if portion in readings_mappings:
+                        return portion
+
+                return ""
+
+            partial_readings:list[str] = []
+            parts_found:list[str] = []
+            current_part = reading
+            while True:
+                longest_match = find_longest_match_in_readings(current_part)
+                if not longest_match: break
+                partial_readings.append(readings_mappings[longest_match])
+                parts_found.append(longest_match)
+                current_part = current_part[len(longest_match):]
+
+
+            if "".join(parts_found) == reading:
+                return "-".join(partial_readings)
+
             return f"<read>{reading.capitalize()}</read>"
 
         radical_names = [rad.get_primary_radical_meaning() for rad in self.get_radicals_notes()]
