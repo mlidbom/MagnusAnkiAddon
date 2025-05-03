@@ -44,7 +44,7 @@ def test_get_primary_meaning() -> None:
     assert hon.get_primary_radical_meaning() == "true"
 
 
-_readings_mappings= """
+_readings_mappings = """
 
 aba:ABBA
 ai:eye
