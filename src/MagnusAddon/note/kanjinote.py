@@ -307,7 +307,8 @@ class KanjiNote(WaniNote):
                 long_path = find_long_path()
 
                 if not long_path: return ""
-                return "-".join([readings_mappings[kana_utils.romanize(fragment)] for fragment in long_path])
+                combined_reading = "-".join([readings_mappings[kana_utils.romanize(fragment)] for fragment in long_path])
+                return f"""<compound-reading>{combined_reading}</compound-reading>"""
 
 
             combined = try_combine_framentary_matches_into_one_reading()
