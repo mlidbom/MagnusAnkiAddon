@@ -8,7 +8,6 @@ from . import (
     right_click_menu_note_vocab,
     right_click_menu_note_radical,
     right_click_menu_note_kanji,
-    show_previewer,
     tools_menu,
     timing_hacks,
     note_content_building,
