@@ -22,8 +22,8 @@ def test_inside_radical_population() -> None:
 
 @pytest.mark.parametrize("kanji, radicals, mnemonic", [
     ("内", ["冂, 人"], "<rad>head</rad> <rad>person</rad> <kan>inside</kan> <read>Uchi</read>"),
-    ("病", ["疒","丙"], "<rad>sick</rad> <rad>dynamite</rad> <kan>illness</kan> <read>ya</read>nkey <read>ya</read>nkey-<read>mi</read>ce <read>BO</read>"),
-    ("品", [], "<kan>goods</kan> <read>hin</read>t <read>shi</read>t-<read>nu</read>t")
+    ("病", ["疒","丙"], "<rad>sick</rad> <rad>dynamite</rad> <kan>illness</kan> <read>ya</read>nkey <compound-reading><read>ya</read>nkey-<read>mi</read>ce</compound-reading> <read>BO</read>"),
+    ("品", [], "<kan>goods</kan> <read>hin</read>t <compound-reading><read>shi</read>t-<read>nu</read>t</compound-reading>")
 ])
 def test_bootstrap_mnemonic(kanji:str, radicals:list[str], mnemonic:str) -> None:
     kanji_note = non_optional(app.col().kanji.with_kanji(kanji))
@@ -31,6 +31,7 @@ def test_bootstrap_mnemonic(kanji:str, radicals:list[str], mnemonic:str) -> None
 
     kanji_note.bootstrap_mnemonic_from_radicals()
 
+    print()
     print(kanji_note.get_user_mnemonic())
     print(mnemonic)
     assert kanji_note.get_user_mnemonic() == mnemonic
