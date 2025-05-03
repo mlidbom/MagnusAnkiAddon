@@ -9,7 +9,8 @@ from sysutils import kana_utils
     ("ジャッツ", "jattsu"),
     ("じゃっつ", "jattsu"),
     ("ジャッ", "ja"),
-    ("じゃっ", "ja")
+    ("じゃっ", "ja"),
+    ("キャク", "kyaku"),
 ])
 def test_romanization(text: str, expected: str) -> None:
     assert kana_utils.romanize(text) == expected

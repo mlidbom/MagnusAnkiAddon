@@ -23,6 +23,7 @@ class KanjiSpec:
 test_kanji_list = [
     KanjiSpec("病", "illness", "<primary>ビョウ</primary>", "<primary>や</primary>, <primary>やまい</primary>"),
     KanjiSpec("品", "goods | elegance", "<primary>しな</primary>", "<primary>ひん</primary>"),
+    KanjiSpec("塚", "mound", "<primary>つか</primary>", on_readings="チョウ"),
     KanjiSpec("疒", "sick", "", ""),
     KanjiSpec("丙", "dynamite", "", ""),
     KanjiSpec("一", "one/(ground)", "ひと", "いち, いつ"),
