@@ -271,7 +271,8 @@ class KanjiNote(WaniNote):
             romaji_reading = kana_utils.romanize(kana_reading)
 
             if romaji_reading in readings_mappings:
-                return readings_mappings[romaji_reading]
+                read = readings_mappings[romaji_reading]
+                return read if read.count("<read>") <= 1 else f"""<compound-reading>{read}</compound-reading>"""
 
             def try_combine_framentary_matches_into_one_reading() -> str:
                 matches_by_reading_character_index: list[list[str]] = list()
