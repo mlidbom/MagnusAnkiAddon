@@ -52,46 +52,47 @@ class ReadingsOptionsDialog(QDialog):
         if not text:
             return
 
-        cursor = self.text_edit.textCursor()
-        cursor.movePosition(QTextCursor.MoveOperation.Start)
-        self.text_edit.setTextCursor(cursor)
+        document = non_optional(self.text_edit.document())
 
-        document = self.text_edit.document()
+        def reset_cursor_to_start() -> None:
+            cursor_ = self.text_edit.textCursor()
+            cursor_.movePosition(QTextCursor.MoveOperation.Start)
+            self.text_edit.setTextCursor(cursor_)
+
+        def remove_higlighting() -> None:
+            format_ = QTextCharFormat()
+            cursor_ = QTextCursor(document)
+            cursor_.select(QTextCursor.SelectionType.Document)
+            cursor_.setCharFormat(format_)
+
+        def highlight_block(block:QTextBlock) -> None:
+            cursor = QTextCursor(block)
+            self.text_edit.setTextCursor(cursor)
+            highlight_format = QTextCharFormat()
+            highlight_format.setBackground(QColor(255, 255, 0, 70))  # Light yellow highlight
+            cursor.select(QTextCursor.SelectionType.BlockUnderCursor)
+            cursor.setCharFormat(highlight_format)
+
+        def scroll_cursor_to_top() -> None:
+            self.text_edit.ensureCursorVisible()
+
+        reset_cursor_to_start()
+        remove_higlighting()
+
         found = False
-
-        # Remove any existing highlighting
-        format = QTextCharFormat()
-        cursor = QTextCursor(document)
-        cursor.select(QTextCursor.SelectionType.Document)
-        cursor.setCharFormat(format)
-
-        # Search for matching lines
         for block_num in range(document.blockCount()):
             block = document.findBlockByNumber(block_num)
             line_text = block.text().strip()
 
             if line_text.startswith(text):
-                # Found a match - move cursor there
-                cursor = QTextCursor(block)
-                self.text_edit.setTextCursor(cursor)
+                highlight_block(block)
 
-                # Highlight the matching line
-                highlight_format = QTextCharFormat()
-                highlight_format.setBackground(QColor(255, 255, 0, 70))  # Light yellow highlight
-
-                cursor.select(QTextCursor.SelectionType.BlockUnderCursor)
-                cursor.setCharFormat(highlight_format)
-
-                # Ensure the line is at the top of the visible area
-                self.text_edit.ensureCursorVisible()
+                scroll_cursor_to_top()
                 found = True
                 break
 
         if not found:
-            # Reset cursor to start if no match
-            cursor = self.text_edit.textCursor()
-            cursor.movePosition(QTextCursor.MoveOperation.Start)
-            self.text_edit.setTextCursor(cursor)
+            reset_cursor_to_start()
 
     def center_on_screen(self) -> None:
         available = non_optional(self.screen()).availableGeometry()
