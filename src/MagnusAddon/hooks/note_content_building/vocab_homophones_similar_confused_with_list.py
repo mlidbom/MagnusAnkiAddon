@@ -95,11 +95,11 @@ def generate_derived_list(_vocab_note: VocabNote) -> str:
 
 def generate_stem_vocabs(_vocab_note: VocabNote) -> str:
     stem_vocabs = ex_sequence.flatten([app.col().vocab.with_question(stem) for stem in (_vocab_note.get_stems_for_primary_form())])
-    return render_vocab_list(stem_vocabs, "stem vocabulaty", css_class="stem_vocabulary") if stem_vocabs else ""
+    return render_vocab_list(stem_vocabs, "non vocabulary form words", css_class="stem_vocabulary") if stem_vocabs else ""
 
 def generate_stem_of_vocabs(_vocab_note: VocabNote) -> str:
     stem_of = app.col().vocab.with_stem(_vocab_note.get_question())
-    return render_vocab_list(stem_of, "is stem of", css_class="is_stem_of") if stem_of else ""
+    return render_vocab_list(stem_of, "is non vocabulary form of", css_class="is_stem_of") if stem_of else ""
 
 def generate_forms_list(vocab_note: VocabNote) -> str:
     forms = ex_sequence.flatten([app.col().vocab.with_question(form) for form in vocab_note.get_forms()])
