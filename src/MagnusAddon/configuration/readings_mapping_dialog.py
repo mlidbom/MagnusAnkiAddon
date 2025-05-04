@@ -49,9 +49,6 @@ class ReadingsOptionsDialog(QDialog):
 
     def search_text(self, text: str) -> None:
         """Search for lines beginning with the search text and scroll to first match."""
-        if not text: return
-
-        document = non_optional(self.text_edit.document())
 
         def reset_cursor_to_start() -> None:
             cursor_ = self.text_edit.textCursor()
@@ -100,6 +97,8 @@ class ReadingsOptionsDialog(QDialog):
                 if text in line_text_:
                     return block_
             return None
+
+        document = non_optional(self.text_edit.document())
 
         reset_cursor_to_start()
         remove_higlighting()

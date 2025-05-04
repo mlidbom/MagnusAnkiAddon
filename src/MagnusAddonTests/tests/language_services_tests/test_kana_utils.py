@@ -11,6 +11,7 @@ from sysutils import kana_utils
     ("ジャッ", "ja"),
     ("じゃっ", "ja"),
     ("キャク", "kyaku"),
+    ("チャ", "cha")
 ])
 def test_romanization(text: str, expected: str) -> None:
     assert kana_utils.romanize(text) == expected
