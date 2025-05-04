@@ -3,6 +3,7 @@ from PyQt6.QtWidgets import QMenu
 
 from ankiutils import app, query_builder
 from hooks.right_click_menu_utils import add_lookup_action, add_single_vocab_lookup_action, add_ui_action, add_vocab_dependencies_lookup, create_vocab_note_action
+from language_services import conjugator
 from note.note_constants import NoteFields, NoteTypes
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
@@ -39,8 +40,16 @@ def setup_note_menu(vocab: VocabNote, note_menu: QMenu, string_menus: list[tuple
 
 
         def build_create_prefix_postfix_note_menu(prefix_postfix_note_menu: QMenu, addendum:str) -> None:
+            def create_suffix_note_menu(suffix_note_menu: QMenu) -> None:
+                create_vocab_note_action(suffix_note_menu, shortcutfinger.home1(f"dictionary-form"), lambda: vocab.cloner.create_suffix_version(addendum))
+                create_vocab_note_action(suffix_note_menu, shortcutfinger.home2(f"い-stem"), lambda: vocab.cloner.suffix_to_i_stem(addendum))
+                create_vocab_note_action(suffix_note_menu, shortcutfinger.home3(f"て-stem"), lambda: vocab.cloner.suffix_to_te_stem(addendum))
+                create_vocab_note_action(suffix_note_menu, shortcutfinger.home4(f"え-stem"), lambda: vocab.cloner.suffix_to_e_stem(addendum))
+                create_vocab_note_action(suffix_note_menu, shortcutfinger.up1(f"あ-stem"), lambda: vocab.cloner.suffix_to_e_stem(addendum))
+
             create_vocab_note_action(prefix_postfix_note_menu, shortcutfinger.home1(f"prefix-{addendum}{vocab.get_question()}"), lambda: vocab.cloner.create_prefix_version(addendum))
-            create_vocab_note_action(prefix_postfix_note_menu, shortcutfinger.home2(f"suffix-{vocab.get_question()}{addendum}"), lambda: vocab.cloner.create_suffix_version(addendum))
+
+            create_suffix_note_menu(non_optional(prefix_postfix_note_menu.addMenu(shortcutfinger.home1("Suffix-onto"))))
 
 
         build_forms_menu(non_optional(note_create_menu.addMenu(shortcutfinger.home1("Clone to form"))))

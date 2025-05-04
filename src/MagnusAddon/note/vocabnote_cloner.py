@@ -85,7 +85,7 @@ class VocabCloner:
     def create_ku_form(self) -> VocabNote:
         return self._create_postfix_prefix_version("く", "adverb", set_compounds=False, truncate_characters=1)
 
-    def _clone_to_derived_form(self, form_suffix: str, create_form_root: Callable[[VocabNote, str], str]) -> VocabNote:
+    def clone_to_derived_form(self, form_suffix: str, create_form_root: Callable[[VocabNote, str], str]) -> VocabNote:
         def create_full_form(form: str) -> str: return create_form_root(self.note, form) + form_suffix
 
         clone = self.note.create(question=create_full_form(self.note.get_question()), answer=self.note.get_answer(), readings=[])
@@ -95,11 +95,23 @@ class VocabCloner:
         clone.set_user_compounds([self.note.get_question(), form_suffix])
         return clone
 
+    def suffix_to_a_stem(self, form_suffix: str) -> VocabNote:
+        return self.clone_to_derived_form(form_suffix, conjugator.get_a_stem_vocab)
+
+    def suffix_to_i_stem(self, form_suffix: str) -> VocabNote:
+        return self.clone_to_derived_form(form_suffix, conjugator.get_i_stem_vocab)
+
+    def suffix_to_e_stem(self, form_suffix: str) -> VocabNote:
+        return self.clone_to_derived_form(form_suffix, conjugator.get_e_stem_vocab)
+
+    def suffix_to_te_stem(self, form_suffix: str) -> VocabNote:
+        return self.clone_to_derived_form(form_suffix, conjugator.get_te_stem_vocab)
+
     def create_masu_form(self) -> VocabNote:
-        return self._clone_to_derived_form("ます", conjugator.get_i_stem_vocab)
+        return self.suffix_to_i_stem("ます")
 
     def create_te_form(self) -> VocabNote:
-        return self._clone_to_derived_form("て", conjugator.get_te_stem_vocab)
+        return self.suffix_to_te_stem("て")
 
     def create_ta_form(self) -> VocabNote:
-        return self._clone_to_derived_form("た", conjugator.get_te_stem_vocab)
+        return self.suffix_to_te_stem("た")
