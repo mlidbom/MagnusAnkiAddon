@@ -77,7 +77,6 @@ def run_tests(word: str, conjugation_bases: list[str], is_ichidan: bool = False,
     result = language_services.conjugator.get_word_stems(word, is_ichidan, is_godan)
     assert result == conjugation_bases
     if len(conjugation_bases) > 1:
-        print(1)
         i_stem = language_services.conjugator.get_i_stem(word, is_ichidan, is_godan)
         assert i_stem == conjugation_bases[0]
 
@@ -85,14 +84,11 @@ def run_tests(word: str, conjugation_bases: list[str], is_ichidan: bool = False,
         return
 
     if len(conjugation_bases) > 2:
-        print(2)
         a_stem = language_services.conjugator.get_a_stem(word, is_ichidan, is_godan)
         assert a_stem == conjugation_bases[1]
     if len(conjugation_bases) > 3:
-        print(3)
         e_stem = language_services.conjugator.get_e_stem(word, is_ichidan, is_godan)
         assert e_stem == conjugation_bases[2]
     if len(conjugation_bases) > 4:
-        print(4)
         te_stem = language_services.conjugator.get_te_stem(word, is_ichidan, is_godan)
         assert te_stem == conjugation_bases[3]
