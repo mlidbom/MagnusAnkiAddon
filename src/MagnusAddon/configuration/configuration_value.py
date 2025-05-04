@@ -10,7 +10,7 @@ T = TypeVar('T')
 _addon_dir = os.path.dirname(os.path.dirname(__file__))
 _addon_name = os.path.basename(_addon_dir)
 
-_config_dict = Lazy(lambda : mw.addonManager.getConfig(_addon_name) or {})
+_config_dict = Lazy(lambda: mw.addonManager.getConfig(_addon_name) or {})
 
 def _write_config_dict() -> None:
     mw.addonManager.writeConfig(_addon_name, _config_dict.instance())

@@ -59,8 +59,8 @@ class WordExtractor:
             if token_index < len(tokens) - 1:
                 context += tokens[token_index + 1].surface
 
-            exclusions = ex_sequence.flatten([list(voc.get_excluded_forms()) for voc in app.col().vocab.with_question(form_)])
-            if any(exclusion for exclusion in exclusions if form_ in exclusion and exclusion in context):
+            context_exclusions = ex_sequence.flatten([list(voc.get_excluded_forms()) for voc in app.col().vocab.with_question(form_)])
+            if any(exclusion for exclusion in context_exclusions if form_ in exclusion and exclusion in context):
                 return True
             return False
 

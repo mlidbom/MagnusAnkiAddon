@@ -13,14 +13,14 @@ import language_services.conjugator
     ("おいてくる", ['おいてき', 'おいてこ', 'おいてくれ', 'おいてき']),
 ])
 def test_irregular_verbs(word: str, conjugation_bases: list[str]) -> None:
-    run_tests(word, conjugation_bases, False, False)
+    run_tests(word, conjugation_bases)
 
 @pytest.mark.parametrize("word, conjugation_bases, is_ichidan", [
     ("食べる", ['食べり', '食べら', '食べれ', '食べっ', '食べ', '食べろ', '食べな'], False),
     ("食べる", ['食べ', '食べろ', '食べな'], True),
 ])
 def test_ichidan(word: str, conjugation_bases: list[str], is_ichidan: bool) -> None:
-    run_tests(word, conjugation_bases, is_ichidan, False)
+    run_tests(word, conjugation_bases, is_ichidan)
 
 @pytest.mark.parametrize("word, conjugation_bases", [
     # adjectives
@@ -30,7 +30,7 @@ def test_ichidan(word: str, conjugation_bases: list[str], is_ichidan: bool) -> N
     ("いい", ['よく', 'よけ', 'よか']),
 ])
 def test_adjectives(word: str, conjugation_bases: list[str]) -> None:
-    run_tests(word, conjugation_bases, False, False)
+    run_tests(word, conjugation_bases)
 
 @pytest.mark.parametrize("word, conjugation_bases", [
     # aru verbs
