@@ -49,8 +49,7 @@ class ReadingsOptionsDialog(QDialog):
 
     def search_text(self, text: str) -> None:
         """Search for lines beginning with the search text and scroll to first match."""
-        if not text:
-            return
+        if not text: return
 
         document = non_optional(self.text_edit.document())
 
@@ -65,8 +64,8 @@ class ReadingsOptionsDialog(QDialog):
             cursor_.select(QTextCursor.SelectionType.Document)
             cursor_.setCharFormat(format_)
 
-        def highlight_block(block:QTextBlock) -> None:
-            cursor = QTextCursor(block)
+        def highlight_block(block_to_highlight:QTextBlock) -> None:
+            cursor = QTextCursor(block_to_highlight)
             self.text_edit.setTextCursor(cursor)
             highlight_format = QTextCharFormat()
             highlight_format.setBackground(QColor(255, 255, 0, 70))  # Light yellow highlight
@@ -80,33 +79,48 @@ class ReadingsOptionsDialog(QDialog):
                 self.text_edit.ensureCursorVisible()
                 scrollbar_position_with_cursor_at_top = scrollbar.value()
 
-                five_lines_height = self.text_edit.fontMetrics().height() * 5
-                scrollbar.setValue(scrollbar_position_with_cursor_at_top - five_lines_height)
+                if scrollbar_position_with_cursor_at_top != scrollbar.maximum():
+                    five_lines_height = self.text_edit.fontMetrics().height() * 5
+                    scrollbar.setValue(scrollbar_position_with_cursor_at_top - five_lines_height)
+
+        def find_block_starting_with_text() -> Optional[QTextBlock]:
+            for block_num_ in range(document.blockCount()):
+                block_ = document.findBlockByNumber(block_num_)
+                line_text_ = block_.text().strip()
+
+                if line_text_.startswith(text):
+                    return block_
+            return None
+
+        def find_block_containing_text() -> Optional[QTextBlock]:
+            for block_num_ in range(document.blockCount()):
+                block_ = document.findBlockByNumber(block_num_)
+                line_text_ = block_.text().strip()
+
+                if text in line_text_:
+                    return block_
+            return None
 
         reset_cursor_to_start()
         remove_higlighting()
+        block_starting_with_text = find_block_starting_with_text()
+        if block_starting_with_text:
+            highlight_block(block_starting_with_text)
+            scroll_cursor_to_top()
+            return
 
-        found = False
-        for block_num in range(document.blockCount()):
-            block = document.findBlockByNumber(block_num)
-            line_text = block.text().strip()
-
-            if line_text.startswith(text):
-                highlight_block(block)
-
-                scroll_cursor_to_top()
-                found = True
-                break
-
-        if not found:
-            reset_cursor_to_start()
+        block_containing_text = find_block_containing_text()
+        if block_containing_text:
+            highlight_block(block_containing_text)
+            scroll_cursor_to_top()
+            return
 
     def center_on_screen(self) -> None:
         available = non_optional(self.screen()).availableGeometry()
         self.setGeometry(available.x() + (available.width() - self.width()),
                          available.y() + 30,
                          self.width(),
-                         available.height() - 60)
+                         300)
 
     def save(self) -> None:
         def sorted_value_lines_without_duplicates_or_blank_lines() -> str:
