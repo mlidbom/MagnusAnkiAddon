@@ -10,6 +10,12 @@ _a_stem_index = 1
 _e_stem_index = 2
 _te_stem_index = 3
 
+
+_ichidan_endings = ['', 'ろ', 'な']
+
+_godan_ru_endings = ['り', 'ら', 'れ', 'っ']
+_godan_ru_or_ichidan_endings = _godan_ru_endings + _ichidan_endings
+
 _1_character_mappings: dict[str, list[str]] = {'う': ['い', 'わ', 'え', 'っ'],
                                                'く': ['き', 'か', 'け', 'い'],
                                                'ぐ': ['ぎ', 'が', 'げ', 'い'],
@@ -18,7 +24,7 @@ _1_character_mappings: dict[str, list[str]] = {'う': ['い', 'わ', 'え', 'っ
                                                'ぬ': ['に', 'な', 'ね', 'ん'],
                                                'ぶ': ['び', 'ば', 'べ', 'ん'],
                                                'む': ['み', 'ま', 'め', 'ん'],
-                                               'る': ['り', 'ら', 'れ', 'っ'],
+                                               'る': _godan_ru_endings,
                                                'い': ['く', 'け', 'か']}
 
 _2_character_mappings: dict[str, list[str]] = {'する': ['し', 'さ', 'すれ', 'し'],
@@ -33,6 +39,8 @@ _aru_verbs: set[str] = {'なさる', 'くださる', 'おっしゃる', 'ござ�
 _aru_mappings: dict[str, list[str]] = {'さる': ['さい', 'さら', 'され', 'さっ'],
                                        'ざる': ['ざい', 'ざら', 'ざれ', 'ざっ'],
                                        'ゃる': ['ゃい', 'ゃら', 'れば', 'ゃっ']}
+
+
 def _is_aru_verb(word: str) -> bool:
     return any(aru_ending for aru_ending in _aru_verbs if word.endswith(aru_ending))
 
@@ -40,14 +48,14 @@ def get_word_stems(word: str, is_ichidan_verb: bool = False, is_godan: bool = Fa
     if _is_aru_verb(word):
         return [word[:-2] + end for end in _aru_mappings[word[-2:]]]
     if is_ichidan_verb:
-        return [word[:-1]]
+        return [word[:-1] + end for end in _ichidan_endings]
     if word[-2:] in _2_character_mappings:
         return [word[:-2] + end for end in _2_character_mappings[word[-2:]]]
     if word[-1] in _1_character_mappings:
-        if is_godan or word[-1] != "る":
-            return [word[:-1] + end for end in _1_character_mappings[word[-1]]]
+        if not is_godan and word[-1] == "る":
+            return [word[:-1] + end for end in _godan_ru_or_ichidan_endings]
         else:
-            return [word[:-1] + end for end in _1_character_mappings[word[-1]]] + [word[:-1]]
+            return [word[:-1] + end for end in _1_character_mappings[word[-1]]]
     return [word]
 
 def _get_stem(word: str, stem_index: int, is_ichidan_verb: bool = False, is_godan: bool = False) -> str:
