@@ -197,7 +197,7 @@ class KanjiNote(WaniNote):
 
     _any_word_pattern = re.compile(r'\b[-\w]+\b', re.UNICODE)
     def get_primary_meaning(self) -> str:
-        radical_meaning_match = self._any_word_pattern.search(self.get_answer_text())
+        radical_meaning_match = self._any_word_pattern.search(self.get_answer_text().replace("{", "").replace("}", ""))
         # noinspection PyArgumentEqualDefault
         return radical_meaning_match.group(0) if radical_meaning_match else ""
 
