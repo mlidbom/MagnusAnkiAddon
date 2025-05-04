@@ -74,7 +74,14 @@ class ReadingsOptionsDialog(QDialog):
             cursor.setCharFormat(highlight_format)
 
         def scroll_cursor_to_top() -> None:
-            self.text_edit.ensureCursorVisible()
+            scrollbar = self.text_edit.verticalScrollBar()
+            if scrollbar:
+                scrollbar.setValue(scrollbar.maximum())
+                self.text_edit.ensureCursorVisible()
+                scrollbar_position_with_cursor_at_top = scrollbar.value()
+
+                five_lines_height = self.text_edit.fontMetrics().height() * 5
+                scrollbar.setValue(scrollbar_position_with_cursor_at_top - five_lines_height)
 
         reset_cursor_to_start()
         remove_higlighting()
