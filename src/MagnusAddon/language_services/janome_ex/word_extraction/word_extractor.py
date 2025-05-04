@@ -40,7 +40,7 @@ class WordExtractor:
 
         return without_exclusions
 
-    # noinspection DuplicatedCode
+    # noinspection PyDefaultArgument
     def extract_words(self, sentence: str, allow_duplicates: bool = False, exclusions: list[WordExclusion] = []) -> list[ExtractedWord]:
         from ankiutils import app
 
