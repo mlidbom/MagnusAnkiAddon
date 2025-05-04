@@ -16,25 +16,26 @@ def setup_note_menu(vocab: VocabNote, note_menu: QMenu, string_menus: list[tuple
         def build_forms_menu(clone_to_form_menu: QMenu) -> None:
             forms_with_no_vocab = [form for form in vocab.get_forms() if not any(app.col().vocab.with_question(form))]
             for index, form in enumerate(forms_with_no_vocab):
-                create_vocab_note_action(clone_to_form_menu, shortcutfinger.numpad(index, form), lambda _form=form: vocab.clone_to_form(_form))  # type: ignore
+                create_vocab_note_action(clone_to_form_menu, shortcutfinger.numpad(index, form), lambda _form=form: vocab.cloner.clone_to_form(_form))  # type: ignore
 
         def build_create_menu(various_forms:QMenu) -> None:
-            create_vocab_note_action(various_forms, shortcutfinger.home1("な-adjective"), lambda: vocab.create_na_adjective())
-            create_vocab_note_action(various_forms, shortcutfinger.home2("の-adjective"), lambda: vocab.create_no_adjective())
-            create_vocab_note_action(various_forms, shortcutfinger.home3("に-adverb"), lambda: vocab.create_ni_adverb())
-            create_vocab_note_action(various_forms, shortcutfinger.home4("と-adverb"), lambda: vocab.create_to_adverb())
-            create_vocab_note_action(various_forms, shortcutfinger.up1("する-verb"), lambda: vocab.create_suru_verb())
-            create_vocab_note_action(various_forms, shortcutfinger.up2("します-verb"), lambda: vocab.create_shimasu_verb())
-            create_vocab_note_action(various_forms, shortcutfinger.up3("く-form-of-い-adjective"), lambda: vocab.create_ku_form())
-            create_vocab_note_action(various_forms, shortcutfinger.up4("て-prefixed"), lambda: vocab.create_te_prefixed_word())
-            create_vocab_note_action(various_forms, shortcutfinger.down1("ん-suffixed"), lambda: vocab.create_n_suffixed_word())
-            create_vocab_note_action(various_forms, shortcutfinger.down2("か-suffixed"), lambda: vocab.create_ka_suffixed_word())
-            create_vocab_note_action(various_forms, shortcutfinger.down3("ます-form"), lambda: vocab.create_masu_form())
-            create_vocab_note_action(various_forms, shortcutfinger.down5("て-form"), lambda: vocab.create_te_form())
+            create_vocab_note_action(various_forms, shortcutfinger.home1("な-adjective"), lambda: vocab.cloner.create_na_adjective())
+            create_vocab_note_action(various_forms, shortcutfinger.home2("の-adjective"), lambda: vocab.cloner.create_no_adjective())
+            create_vocab_note_action(various_forms, shortcutfinger.home3("に-adverb"), lambda: vocab.cloner.create_ni_adverb())
+            create_vocab_note_action(various_forms, shortcutfinger.home4("と-adverb"), lambda: vocab.cloner.create_to_adverb())
+            create_vocab_note_action(various_forms, shortcutfinger.up1("する-verb"), lambda: vocab.cloner.create_suru_verb())
+            create_vocab_note_action(various_forms, shortcutfinger.up2("します-verb"), lambda: vocab.cloner.create_shimasu_verb())
+            create_vocab_note_action(various_forms, shortcutfinger.up3("く-form-of-い-adjective"), lambda: vocab.cloner.create_ku_form())
+            create_vocab_note_action(various_forms, shortcutfinger.up4("て-prefixed"), lambda: vocab.cloner.create_te_prefixed_word())
+            create_vocab_note_action(various_forms, shortcutfinger.down1("ん-suffixed"), lambda: vocab.cloner.create_n_suffixed_word())
+            create_vocab_note_action(various_forms, shortcutfinger.down2("か-suffixed"), lambda: vocab.cloner.create_ka_suffixed_word())
+            create_vocab_note_action(various_forms, shortcutfinger.down3("ます-form"), lambda: vocab.cloner.create_masu_form())
+            create_vocab_note_action(various_forms, shortcutfinger.down5("て-form"), lambda: vocab.cloner.create_te_form())
+            create_vocab_note_action(various_forms, shortcutfinger.down5("た-form"), lambda: vocab.cloner.create_ta_form())
 
         def build_create_prefix_postfix_note_menu(prefix_postfix_note_menu: QMenu, addendum:str) -> None:
-            create_vocab_note_action(prefix_postfix_note_menu, shortcutfinger.home1(f"prefix-{addendum}{vocab.get_question()}"), lambda: vocab.create_prefix_version(addendum))
-            create_vocab_note_action(prefix_postfix_note_menu, shortcutfinger.home2(f"suffix-{vocab.get_question()}{addendum}"), lambda: vocab.create_suffix_version(addendum))
+            create_vocab_note_action(prefix_postfix_note_menu, shortcutfinger.home1(f"prefix-{addendum}{vocab.get_question()}"), lambda: vocab.cloner.create_prefix_version(addendum))
+            create_vocab_note_action(prefix_postfix_note_menu, shortcutfinger.home2(f"suffix-{vocab.get_question()}{addendum}"), lambda: vocab.cloner.create_suffix_version(addendum))
 
 
         build_forms_menu(non_optional(note_create_menu.addMenu(shortcutfinger.home1("Clone to form"))))

@@ -10,7 +10,6 @@ _a_stem_index = 1
 _e_stem_index = 2
 _te_stem_index = 3
 
-
 _ichidan_endings = ['', 'ろ', 'な']
 
 _godan_ru_endings = ['り', 'ら', 'れ', 'っ']
@@ -39,7 +38,6 @@ _aru_verbs: set[str] = {'なさる', 'くださる', 'おっしゃる', 'ござ�
 _aru_mappings: dict[str, list[str]] = {'さる': ['さい', 'さら', 'され', 'さっ'],
                                        'ざる': ['ざい', 'ざら', 'ざれ', 'ざっ'],
                                        'ゃる': ['ゃい', 'ゃら', 'れば', 'ゃっ']}
-
 
 def _is_aru_verb(word: str) -> bool:
     return any(aru_ending for aru_ending in _aru_verbs if word.endswith(aru_ending))
@@ -84,8 +82,8 @@ def get_e_stem(word: str, is_ichidan: bool = False, is_godan: bool = False) -> s
 def get_te_stem(word: str, is_ichidan: bool = False, is_godan: bool = False) -> str:
     return _get_stem(word, _te_stem_index, is_ichidan, is_godan)
 
-def get_masu_form(dictionary_form:str, is_ichidan: bool = False, is_godan: bool = False) -> str:
-    return get_i_stem(dictionary_form, is_ichidan, is_godan) + "ます"
+def get_i_stem_vocab(vocab: VocabNote, form: str = "") -> str:
+    return get_i_stem(form if form else vocab.get_question(), vocab.is_ichidan(), vocab.is_godan())
 
-def get_te_form(vocab: VocabNote) -> str:
-    return get_te_stem(vocab.get_question(), vocab.is_ichidan(), vocab.is_godan()) + "て"
+def get_te_stem_vocab(vocab: VocabNote, form: str = "") -> str:
+    return get_te_stem(form if form else vocab.get_question(), vocab.is_ichidan(), vocab.is_godan())

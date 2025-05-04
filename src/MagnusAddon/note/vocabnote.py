@@ -7,11 +7,11 @@ from ankiutils import anki_module_import_issues_fix_just_import_this_module_befo
 from wanikani_api import models
 from anki.notes import Note
 
-from language_services import conjugator
 from language_services.jamdict_ex.dict_lookup import DictLookup
 from language_services.jamdict_ex.priority_spec import PrioritySpec
 from note.jpnote import JPNote
 from note.kanavocabnote import KanaVocabNote
+from note.vocabnote_cloner import VocabCloner
 from sysutils import ex_sequence, kana_utils
 from sysutils import ex_str
 from note.note_constants import NoteFields, Mine, NoteTypes
@@ -64,6 +64,7 @@ class VocabMetaTag:
 class VocabNote(KanaVocabNote):
     def __init__(self, note: Note):
         super().__init__(note)
+        self.cloner = VocabCloner(self)
 
     def __repr__(self) -> str: return f"""{self.get_question()}"""
 
@@ -127,7 +128,7 @@ class VocabNote(KanaVocabNote):
                     self.set_forms(self.get_forms() | set(self.get_readings()))
 
             speech_types = self.get_speech_types() - {'Unknown',
-                                                      'Godan verbIchidan verb'#crap inserted by bug in yomitan
+                                                      'Godan verbIchidan verb'  # crap inserted by bug in yomitan
                                                       }
             if len(speech_types) == 0:
                 self.auto_set_speech_type()
@@ -330,7 +331,7 @@ class VocabNote(KanaVocabNote):
         note.add_tag(Mine.Tags.Wani)
         vocab_note = VocabNote(note)
         app.anki_collection().addNote(note)
-        vocab_note._set_question(wani_vocab.characters)
+        vocab_note.set_question(wani_vocab.characters)
         vocab_note.update_from_wani(wani_vocab)
 
         # Do not move to update method, or we will wipe out local changes made to the context sentences.
@@ -389,7 +390,7 @@ class VocabNote(KanaVocabNote):
         from ankiutils import app
         backend_note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Vocab))
         note = VocabNote(backend_note)
-        note._set_question(question)
+        note.set_question(question)
         note.set_user_answer(answer)
         note.set_readings(readings)
         note.update_generated_data()
@@ -420,67 +421,7 @@ class VocabNote(KanaVocabNote):
     def get_stems_for_all_forms(self) -> list[str]:
         return ex_sequence.flatten([self._get_stems_for_form(form) for form in self.get_forms()])
 
-    def create_prefix_version(self, prefix: str, speech_type: str = "expression", set_compounds: bool = True, truncate_characters: int = 0) -> VocabNote:
-        return self._create_postfix_prefix_version(prefix, speech_type, is_prefix=True, set_compounds=set_compounds, truncate_characters=truncate_characters)
-
-    def create_suffix_version(self, suffix: str, speech_type: str = "expression", set_compounds: bool = True, truncate_characters: int = 0) -> VocabNote:
-        return self._create_postfix_prefix_version(suffix, speech_type, set_compounds=set_compounds, truncate_characters=truncate_characters)
-
-    def _create_postfix_prefix_version(self, addendum: str, speech_type: str, is_prefix: bool = False, set_compounds: bool = True, truncate_characters: int = 0) -> VocabNote:
-        def append_prepend_addendum(base: str) -> str:
-            if not is_prefix:
-                return base + addendum if truncate_characters == 0 else base[0:-truncate_characters] + addendum
-            return addendum + base if truncate_characters == 0 else base[truncate_characters:] + addendum
-
-        adverb = self.create(question=append_prepend_addendum(self.get_question()),
-                             answer=self.get_answer(),
-                             readings=[append_prepend_addendum(reading) for reading in self.get_readings()])
-
-        if set_compounds:
-            if not is_prefix:
-                adverb.set_user_compounds([self.get_question(), addendum])
-            else:
-                adverb.set_user_compounds([addendum, self.get_question()])
-
-        adverb.set_speech_type(speech_type)
-        adverb.set_forms(set([append_prepend_addendum(form) for form in self.get_forms()]))
-        return adverb
-
-    def create_na_adjective(self) -> VocabNote:
-        return self._create_postfix_prefix_version("な", "na-adjective")
-
-    def create_no_adjective(self) -> VocabNote:
-        return self._create_postfix_prefix_version("の", "expression, no-adjective")
-
-    def create_ni_adverb(self) -> VocabNote:
-        return self._create_postfix_prefix_version("に", "adverb")
-
-    def create_to_adverb(self) -> VocabNote:
-        return self._create_postfix_prefix_version("と", "to-adverb")
-
-    def create_te_prefixed_word(self) -> VocabNote:
-        return self._create_postfix_prefix_version("て", "auxiliary", is_prefix=True)
-
-    def create_n_suffixed_word(self) -> VocabNote:
-        return self._create_postfix_prefix_version("ん", "expression")
-
-    def create_ka_suffixed_word(self) -> VocabNote:
-        return self._create_postfix_prefix_version("か", "expression")
-
-    def create_suru_verb(self, shimasu: bool = False) -> VocabNote:
-        suru_verb = self._create_postfix_prefix_version("する" if not shimasu else "します", "suru verb")
-
-        forms = list(suru_verb.get_forms()) + [form.replace("する", "をする") for form in suru_verb.get_forms()]
-        suru_verb.set_forms(set(forms))
-
-        if self.is_transitive(): suru_verb.set_speech_type(suru_verb.get_speech_type() + ", transitive")
-        if self.is_intransitive(): suru_verb.set_speech_type(suru_verb.get_speech_type() + ", intransitive")
-
-        return suru_verb
-
-    def create_shimasu_verb(self) -> VocabNote: return self.create_suru_verb(shimasu=True)
-
-    def _clone(self) -> VocabNote:
+    def clone(self) -> VocabNote:
         clone = self.create(self.get_question(), self.get_answer(), self.get_readings())
 
         for i in range(len(self._note.fields)):
@@ -491,34 +432,4 @@ class VocabNote(KanaVocabNote):
 
         clone._flush()
 
-        return clone
-
-    def clone_to_form(self, form: str) -> VocabNote:
-        clone = self._clone()
-        clone._set_question(form)
-
-        for tag in [tag for tag in self.get_tags() if tag in Mine.Tags.system_tags]:
-            clone.set_tag(tag)
-
-        return clone
-
-    def create_ku_form(self) -> VocabNote:
-        return self._create_postfix_prefix_version("く", "adverb", set_compounds=False, truncate_characters=1)
-
-    def _get_masu_form(self, form: str) -> str:
-        return conjugator.get_masu_form(form, self.is_ichidan(), self.is_godan())
-
-    def create_masu_form(self) -> VocabNote:
-        clone = self.clone_to_form(self._get_masu_form(self.get_question()))
-        clone.set_forms(set([self._get_masu_form(form) for form in clone.get_forms()]))
-        clone.set_readings([self._get_masu_form(reading) for reading in clone.get_readings()])
-        clone.set_audio_male([])
-        clone.set_audio_female([])
-        clone.set_speech_type("expression")
-        clone.set_user_compounds([self.get_question(), "ます"])
-        return clone
-
-    def create_te_form(self) -> VocabNote:
-        clone = self.clone_to_form(conjugator.get_te_form(self))
-        clone.set_user_compounds([self.get_question(), "て"])
         return clone

@@ -15,7 +15,7 @@ class KanaVocabNote(WaniNote):
 
     def get_question_without_noise_characters(self) -> str: return self._strip_noise_characters(self.get_question())
     def get_question(self) -> str: return self.get_field(NoteFields.Vocab.question).strip()
-    def _set_question(self, value: str) -> None: self.set_field(NoteFields.Vocab.question, value)
+    def set_question(self, value: str) -> None: self.set_field(NoteFields.Vocab.question, value)
 
     def get_answer(self) -> str:
         return self.get_user_answer() or self.get_field(NoteFields.Vocab.source_answer)
