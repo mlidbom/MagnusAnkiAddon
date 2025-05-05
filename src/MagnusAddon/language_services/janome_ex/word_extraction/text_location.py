@@ -1,7 +1,10 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
+from note.note_constants import Mine
+
 if TYPE_CHECKING:
+    from note.vocabnote import VocabNote
     from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
     from language_services.janome_ex.word_extraction.candidate_form import CandidateForm
 
@@ -15,15 +18,20 @@ from sysutils.ex_str import newline
 _noise_characters = {'.', ',', ':', ';', '/', '|', '。', '、'}
 _max_lookahead = 12
 
-class TextLocation:
-    def __init__(self, analysis: TextAnalysis, start_index: int, surface: str, base: str):
+
+
+class TokenTextLocation:
+    def __init__(self, analysis: TextAnalysis, token: JNToken, start_index: int):
+        surface = token.surface
+        base = token.base_form
+        self.token = token
         self.analysis = analysis
         self.start_index = start_index
         self.end_index = start_index + len(surface) - 1
         self.surface = surface
         self.base = base
-        self.previous: Optional[TextLocation] = None
-        self.next: Optional[TextLocation] = None
+        self.previous: Optional[TokenTextLocation] = None
+        self.next: Optional[TokenTextLocation] = None
 
         self.all_candidates: list[CandidateWord] = []
         self.word_candidates: list[CandidateWord] = []
@@ -36,7 +44,7 @@ TextLocation('{self.start_index}-{self.end_index}, {self.surface} | {self.base} 
 {newline.join([cand.__repr__() for cand in self.word_candidates])}
 """
 
-    def forward_list(self, length: int = 99999) -> list[TextLocation]:
+    def forward_list(self, length: int = 99999) -> list[TokenTextLocation]:
         return text_navigator.forward_list(self, length)
 
     def run_analysis(self) -> None:
@@ -51,7 +59,21 @@ TextLocation('{self.start_index}-{self.end_index}, {self.surface} | {self.base} 
         if self.next:
             self.next.run_analysis()
 
-class TokenTextLocation(TextLocation):
-    def __init__(self, analysis: TextAnalysis, token: JNToken, start_index: int):
-        super().__init__(analysis, start_index, token.surface, token.base_form)
-        self.token = token
+    def is_next_location_inflecting_word(self) -> bool:
+        return self.next is not None and self.next.is_inflecting_word()
+
+    def is_inflecting_word(self) -> bool:
+        def lookup_vocabs_prefer_exact_match(form: str) -> list[VocabNote]:
+            from ankiutils import app
+            matches: list[VocabNote] = app.col().vocab.with_form(form)
+            exact_match = [voc for voc in matches if voc.get_question_without_noise_characters() == form]
+            return exact_match if exact_match else matches
+
+        vocab = lookup_vocabs_prefer_exact_match(self.base)
+        if any([voc for voc in vocab if voc.has_tag(Mine.Tags.inflecting_word)]):
+            return True
+
+        return False
+
+    def is_inflected_word(self) -> bool:
+        return self.next is not None and self.token.is_inflectable_word() and self.next.is_inflecting_word()

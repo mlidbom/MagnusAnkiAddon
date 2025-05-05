@@ -8,7 +8,7 @@ if TYPE_CHECKING:
 from sysutils.ex_str import newline
 from sysutils import ex_sequence
 from language_services.janome_ex.tokenizing.jn_tokenizer import JNTokenizer
-from language_services.janome_ex.word_extraction.text_location import TextLocation, TokenTextLocation
+from language_services.janome_ex.word_extraction.text_location import TokenTextLocation
 
 class TextAnalysis:
     _tokenizer = JNTokenizer()
@@ -19,7 +19,7 @@ class TextAnalysis:
         self.tokens = self._tokenizer.tokenize(sentence).tokens
         self.version = "text_analysis_0.1"
 
-        locations:list[TextLocation] = []
+        locations:list[TokenTextLocation] = []
 
         character_index = 0
         for token_index, token in enumerate(self.tokens):
