@@ -77,13 +77,14 @@ def test_custom_vocab_words(sentence: str, custom_words: list[str], expected_out
     assert root_words == set(expected_output)
 
 def test_ignores_noise_characters() -> None:
-    result = word_extractor.extract_words(". , : ; / | 。 、 ー")
-    assert len(result) == 1
-    assert result[0].word == "ー"
+    sentence = ". , : ; / | 。 、 ー"
+    expected = {"ー"}
+    result = set([w.word for w in word_extractor.extract_words(sentence)])
+    assert result == expected
 
-def test_something() -> None:
-    result = word_extractor.extract_words("知ってる人があんまりいない高校に行って")
-    print(result)
+    analysis = TextAnalysis(sentence, [])
+    words = set([w.form for w in analysis.all_words])
+    assert words == expected
 
 def insert_custom_words(custom_words: list[str]) -> None:
     from ankiutils import app

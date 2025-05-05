@@ -16,7 +16,6 @@ from language_services.janome_ex.word_extraction import text_navigator
 from language_services.janome_ex.word_extraction.candidate_word import CandidateWord
 from sysutils.ex_str import newline
 
-_noise_characters = {'.', ',', ':', ';', '/', '|', '。', '、'}
 _max_lookahead = 12
 
 class TokenTextLocation:

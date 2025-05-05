@@ -7,6 +7,7 @@ if TYPE_CHECKING:
 
 from sysutils.ex_str import newline
 
+_noise_characters = {'.', ',', ':', ';', '/', '|', '。', '、'}
 class CandidateForm:
     def __init__(self, candidate: CandidateWord, is_surface: bool, form: str):
         from ankiutils import app
@@ -37,6 +38,7 @@ class CandidateForm:
 
     def is_valid_candidate(self) -> bool:
         return ((self.is_word or not self.candidate.is_custom_compound)
+                and not self.form in _noise_characters
                 and not self.is_excluded_by_config
                 and not self.is_self_excluded
                 and not self.is_contextually_excluded)
