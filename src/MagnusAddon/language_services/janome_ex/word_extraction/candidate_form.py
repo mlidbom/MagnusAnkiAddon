@@ -35,6 +35,8 @@ class CandidateForm:
         self.possible_contextual_exclusions = [excluded for excluded in self.forms_excluded_by_vocab_configuration if self.form in excluded]
         self.is_contextually_excluded: bool = self._is_contextually_excluded()
 
+        #self.last_location_is_excluded_form = self.candidate.end_location.base
+
     def is_valid_candidate(self) -> bool:
         return ((self.is_word or not self.candidate.is_custom_compound)
                 and not self.is_excluded_by_config

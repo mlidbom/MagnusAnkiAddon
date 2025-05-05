@@ -25,12 +25,12 @@ class TokenTextLocation:
         surface = token.surface
         base = token.base_form
         self.is_covered_by: Optional[TokenTextLocation] = None
-        self.token = token
-        self.analysis = analysis
-        self.start_index = start_index
-        self.end_index = start_index + len(surface) - 1
-        self.surface = surface
-        self.base = base
+        self.token:JNToken = token
+        self.analysis:TextAnalysis = analysis
+        self.start_index:int = start_index
+        self.end_index:int = start_index + len(surface) - 1
+        self.surface:str = surface
+        self.base:str = base
         self.previous: Optional[TokenTextLocation] = None
         self.next: Optional[TokenTextLocation] = None
 
