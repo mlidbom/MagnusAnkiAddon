@@ -9,17 +9,16 @@ from sysutils.ex_str import newline
 from sysutils import ex_sequence
 from language_services.janome_ex.tokenizing.jn_tokenizer import JNTokenizer
 from language_services.janome_ex.word_extraction.text_location import TokenTextLocation
+_tokenizer = JNTokenizer()
 
 class TextAnalysis:
-    _tokenizer = JNTokenizer()
-
     version = "text_analysis_0.1"
 
     def __init__(self, sentence:str, exclusions:list[WordExclusion]):
         self.text = sentence
         self.exclusions = exclusions
         print(f"exclusions: {exclusions}")
-        self.tokens = self._tokenizer.tokenize(sentence).tokens
+        self.tokens = _tokenizer.tokenize(sentence).tokens
 
         locations:list[TokenTextLocation] = []
 
