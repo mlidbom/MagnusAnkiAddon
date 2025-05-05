@@ -1,6 +1,8 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
+from sysutils.typed import non_optional
+
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.candidate_word import CandidateWord
     from note.vocabnote import VocabNote
@@ -38,10 +40,19 @@ class CandidateForm:
 
         self.forms_excluded_by_compound_root_vocab_configuration: set[str] = set()
         self.is_excluded_by_compound_root_vocab_configuration: bool = False
+        self.exact_match_required_by_vocab_configuration: bool = any(v for v in self.unexcluded_vocabs if v.requires_exact_match())
+        self.exact_match_required_by_counterpart_vocab_configuration:bool = False
+        self.exact_match_required:bool = False
+        self.exact_match_requirement_fulfilled: bool = False
+
+    def _counterpart(self) -> CandidateForm: raise Exception("Not implemented")
 
     def complete_analysis(self) -> None:
         self.forms_excluded_by_compound_root_vocab_configuration = self.candidate.locations[0].all_candidates[-1].base.forms_excluded_by_vocab_configuration
         self.is_excluded_by_compound_root_vocab_configuration = self.form in self.forms_excluded_by_compound_root_vocab_configuration
+        self.exact_match_required_by_counterpart_vocab_configuration = self._counterpart().exact_match_required_by_vocab_configuration
+        self.exact_match_required = self.exact_match_required_by_vocab_configuration or self.exact_match_required_by_counterpart_vocab_configuration
+        self.exact_match_requirement_fulfilled = self.form == self._counterpart().form or not self.exact_match_required
 
     def is_valid_candidate(self) -> bool:
         return ((self.is_word or not self.candidate.is_custom_compound)
@@ -49,7 +60,8 @@ class CandidateForm:
                 and not self.is_excluded_by_config
                 and not self.is_self_excluded
                 and not self.is_contextually_excluded
-                and not self.is_excluded_by_compound_root_vocab_configuration)
+                and not self.is_excluded_by_compound_root_vocab_configuration
+                and self.exact_match_requirement_fulfilled)
 
     def _is_contextually_excluded(self) -> bool:
         for exclusion in self.possible_contextual_exclusions:
@@ -76,9 +88,13 @@ class SurfaceCandidateForm(CandidateForm):
     def __init__(self, candidate: CandidateWord):
         super().__init__(candidate, True, "".join([t.surface for t in candidate.locations]) + "")
 
+    def _counterpart(self) -> CandidateForm: return non_optional(self.candidate.base)
+
 class BaseCandidateForm(CandidateForm):
     def __init__(self, candidate: CandidateWord):
         super().__init__(candidate, False, "".join([t.surface for t in candidate.locations[:-1]]) + candidate.locations[-1].base)
+
+    def _counterpart(self) -> CandidateForm: return non_optional(self.candidate.surface)
 
     def is_valid_candidate(self) -> bool:
         return super().is_valid_candidate() and not self.last_location_is_excluded_form()
