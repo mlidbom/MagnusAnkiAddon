@@ -8,6 +8,7 @@ from language_services.janome_ex.word_extraction.text_analysis import TextAnalys
 from language_services.janome_ex.word_extraction.word_extractor import jn_extractor
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from note.vocabnote import VocabNote
+from sysutils import ex_sequence
 
 _tokenizer: JNTokenizer
 
@@ -145,7 +146,8 @@ def insert_custom_words(custom_words: list[str]) -> None:
     (True, "思い出せそうな気がする", [], [], ['思い出せる', 'そう', 'な', '気がする']),
     (True, "私が頼んだの", [], [], ['私', 'が', '頼む', '頼ん', 'だ', 'の']),
     (True, "いらっしゃいません", [], [WordExclusion('いらっしゃいませ')], ['いらっしゃいます', 'ん']),
-    (True, "代筆を頼みたいんだが", [], [], ['代筆', 'を', '頼む', '頼み', 'たい', 'んだ', 'が'])
+    (True, "代筆を頼みたいんだが", [], [], ['代筆', 'を', '頼む', '頼み', 'たい', 'んだ', 'が']),
+    (True, "飛ばされる", [], [], ['飛ばす', 'れる'])
 ])
 def test_hierarchical_extraction(run_text_analysis_test_version:bool, sentence: str, custom_words: list[str], excluded: list[WordExclusion], expected_output: list[str]) -> None:
     insert_custom_words(custom_words)
@@ -157,6 +159,10 @@ def test_hierarchical_extraction(run_text_analysis_test_version:bool, sentence: 
         analysis = TextAnalysis(sentence, excluded)
         root_words = [w.form for w in analysis.display_words]
         assert root_words == expected_output
+
+        display_words = ex_sequence.flatten([w.display_forms for w in analysis.display_words])
+        display_words_forms = [dw.parsed_form for dw in display_words]
+        assert display_words_forms == expected_output
 
 def insert_custom_words_with_excluded_forms(custom_words: list[list[str]]) -> None:
     from ankiutils import app

@@ -1,6 +1,8 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
+from language_services.janome_ex.word_extraction.display_form import DictionaryDisplayForm, DisplayForm, MissingDisplayForm, VocabDisplayForm
+from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from sysutils.typed import non_optional
 
 if TYPE_CHECKING:
@@ -15,11 +17,11 @@ class CandidateForm:
         from ankiutils import app
         from language_services.jamdict_ex.dict_lookup import DictLookup
 
-        self.start_index = candidate.locations[0].start_index
-        self.configuration_exclusions = candidate.analysis.exclusions
-        self.candidate = candidate
-        self.is_surface = is_surface
-        self.form = form
+        self.start_index:int = candidate.locations[0].start_index
+        self.configuration_exclusions:list[WordExclusion] = candidate.analysis.exclusions
+        self.candidate:CandidateWord = candidate
+        self.is_surface:bool = is_surface
+        self.form:str = form
 
         self.dict_lookup: DictLookup = DictLookup.lookup_word_shallow(form)
         self.all_vocabs: list[VocabNote] = app.col().vocab.with_form(form)
@@ -45,6 +47,8 @@ class CandidateForm:
         self.exact_match_required:bool = False
         self.exact_match_requirement_fulfilled: bool = False
 
+        self.display_forms:list[DisplayForm] = []
+
     def _counterpart(self) -> CandidateForm: raise Exception("Not implemented")
 
     def complete_analysis(self) -> None:
@@ -53,6 +57,12 @@ class CandidateForm:
         self.exact_match_required_by_counterpart_vocab_configuration = self._counterpart().exact_match_required_by_vocab_configuration
         self.exact_match_required = self.exact_match_required_by_vocab_configuration or self.exact_match_required_by_counterpart_vocab_configuration
         self.exact_match_requirement_fulfilled = self.form == self._counterpart().form or not self.exact_match_required
+
+        if self.unexcluded_vocabs:
+            self.display_forms = [VocabDisplayForm(self, voc) for voc in self.unexcluded_vocabs]
+        else:
+            self.display_forms = [MissingDisplayForm(self)]
+
 
     def is_valid_candidate(self) -> bool:
         return ((self.is_word or not self.candidate.is_custom_compound)
@@ -80,6 +90,7 @@ class CandidateForm:
                         return True
 
         return False
+
 
     def __repr__(self) -> str:
         return f"""CandidateForm: {self.form}, ivc:{self.is_valid_candidate()}, iw:{self.is_word} ie:{self.is_excluded_by_config}""".replace(newline, "")

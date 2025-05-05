@@ -152,6 +152,8 @@ class Mine:
         inflecting_word = f"{base_folder}inflecting-word"
         requires_exact_match = f"{base_folder}requires-exact-match"
         question_overrides_form = f"{base_folder}question-overrides-form"
+        requires_a_stem = f"{base_folder}requires-a-stem"
+        requires_e_stem = f"{base_folder}requires-e-stem"
 
         kanji_folder = f"{base_folder}kanji::"
         kanji_is_radical = f"{kanji_folder}is-radical"

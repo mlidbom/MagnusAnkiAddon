@@ -61,7 +61,9 @@ test_special_vocab = [
     VocabSpec("だの", "and-the-like", ['だの'], extra_forms=["[[んだの]]"]),
     VocabSpec("いらっしゃいませ", "welcome!", ['いらっしゃいませ'], extra_forms=["[[いらっしゃいます]]"]),
     VocabSpec("いらっしゃいます", "to: come/be/do", ['いらっしゃいます']),
-    VocabSpec("を頼む", "I-entrust-to-you", ["を頼む"], tags=[Mine.Tags.requires_exact_match])
+    VocabSpec("を頼む", "I-entrust-to-you", ["を頼む"], tags=[Mine.Tags.requires_exact_match]),
+    VocabSpec("あれる", "get-_/is-_", ["れる"], tags=[Mine.Tags.requires_a_stem, Mine.Tags.question_overrides_form]),
+    VocabSpec("えれる", "is-able-to-_", ["れる"], tags=[Mine.Tags.requires_e_stem, Mine.Tags.question_overrides_form]),
 ]
 
 test_ordinary_vocab_list = [
