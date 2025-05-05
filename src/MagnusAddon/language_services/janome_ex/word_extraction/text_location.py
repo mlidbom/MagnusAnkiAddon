@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
-    from language_services.janome_ex.word_extraction.display_word import DisplayWord
+    from language_services.janome_ex.word_extraction.display_word import CandidateForm
 
 from typing import Optional
 
@@ -28,7 +28,7 @@ class TextLocation:
         self.all_candidates: list[CandidateWord] = []
         self.word_candidates: list[CandidateWord] = []
         self.valid_candidates: list[CandidateWord] = []
-        self.display_words: list[DisplayWord] = []
+        self.display_words: list[CandidateForm] = []
 
     def __repr__(self) -> str:
         return f"""

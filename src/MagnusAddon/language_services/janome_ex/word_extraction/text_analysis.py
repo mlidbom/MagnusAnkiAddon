@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.display_word import DisplayWord
+    from language_services.janome_ex.word_extraction.display_word import CandidateForm
     from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 
 from sysutils.ex_str import newline
@@ -35,7 +35,7 @@ class TextAnalysis:
         self.start_location.run_analysis()
 
         self.locations = self.start_location.forward_list(9999)
-        self.display_words:list[DisplayWord] = ex_sequence.flatten([loc.display_words for loc in self.locations])
+        self.display_words:list[CandidateForm] = ex_sequence.flatten([loc.display_words for loc in self.locations])
 
         print("###################")
         print(self)
