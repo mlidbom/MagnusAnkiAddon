@@ -52,9 +52,15 @@ def setup_object() -> Generator[None, None, None]:
      ['さっさと', '傷', 'を', '清める', 'て', 'くる', 'こい'])
 ])
 def test_identify_words(sentence: str, expected_output: list[str]) -> None:
-    result = [w.word for w in word_extractor.extract_words(sentence)]
+    expected = set(expected_output)
+    result = set([w.word for w in word_extractor.extract_words(sentence)])
 
-    assert result == expected_output
+    assert result == expected
+
+    analysis = TextAnalysis(sentence, [])
+    print(analysis)
+    root_words = set([w.form for w in analysis.all_words])
+    assert root_words == expected
 
 @pytest.mark.parametrize('sentence, custom_words, expected_output', [
     ("彼の日本語のレベルは私と同じ位だ。",

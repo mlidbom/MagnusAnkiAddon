@@ -38,6 +38,7 @@ class TextAnalysis:
 
         self.locations = self.start_location.forward_list()
         self.display_words:list[CandidateForm] = ex_sequence.flatten([loc.display_words for loc in self.locations])
+        self.all_words: list[CandidateForm] = ex_sequence.flatten([loc.all_words for loc in self.locations])
 
 
     def __repr__(self) -> str:
