@@ -31,7 +31,7 @@ def setup_note_menu(sentence: SentenceNote, note_menu: QMenu, string_menus: list
 
         potential_exclusion = WordExclusion.from_string(menu_string)
         current_words = sentence.get_valid_parsed_non_child_words()
-        excluded = [w for w in current_words if potential_exclusion.excludes(w)]
+        excluded = [w for w in current_words if potential_exclusion.excludes_form_at_index(w.form, w.start_index)]
         if any(excluded):
             if len(excluded) == 1:
                 add_ui_action(string_menu, shortcutfinger.home2("Exclude vocab"), lambda _menu_string=menu_string: sentence.exclude_vocab(_menu_string)) # type: ignore

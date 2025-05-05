@@ -3,6 +3,7 @@ from aqt import gui_hooks
 from ankiutils import app
 from hooks.note_content_building.content_renderer import PrerenderingAnswerContentRenderer
 from language_services.jamdict_ex.dict_lookup import DictLookup
+from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
 from sysutils import kana_utils
@@ -73,12 +74,18 @@ def lookup_vocabs(excluded_words: set[str], word:str) -> list[VocabNote]:
     return vocabs
 
 def render_parsed_words(note: SentenceNote) -> str:
-    words = note.get_valid_parsed_non_child_words_strings()
+    analysis = TextAnalysis(note.get_question(), note.get_user_word_exclusions())
+    display_forms = analysis.display_forms
+    word_strings = [w.parsed_form for w in display_forms]
+
     excluded = note.get_user_excluded_vocab()
-    return _build_vocab_list(words, excluded, "parsed words", show_words_missing_dictionary_entries=True)
+    return _build_vocab_list(word_strings, excluded, "parsed words", show_words_missing_dictionary_entries=True)
 
 def render_words_missing_dictionary_entries(note: SentenceNote) -> str:
-    words = note.get_valid_parsed_non_child_words_strings()
+    analysis = TextAnalysis(note.get_question(), note.get_user_word_exclusions())
+    display_forms = analysis.display_forms
+    word_strings = [w.parsed_form for w in display_forms]
+
     excluded_words = note.get_user_excluded_vocab()
 
     def has_vocab(word:str) -> bool:
@@ -86,7 +93,7 @@ def render_words_missing_dictionary_entries(note: SentenceNote) -> str:
         return len(vocabs) > 0 or len(DictLookup.lookup_word_shallow(word).entries) > 0
 
 
-    words_without_dictionary_entries = [word for word in words if not has_vocab(word)]
+    words_without_dictionary_entries = [word for word in word_strings if not has_vocab(word)]
 
     return _build_vocab_list(words_without_dictionary_entries, set(), "matched words without dictionary entries", show_words_missing_dictionary_entries=True) if words_without_dictionary_entries else ""
 

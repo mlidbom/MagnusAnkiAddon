@@ -3,7 +3,6 @@ from typing import Generator
 import pytest
 
 from fixtures.collection_factory import inject_anki_collection_with_select_data
-from language_services.janome_ex.tokenizing.jn_tokenizer import JNTokenizer
 from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from note.vocabnote import VocabNote
@@ -136,8 +135,7 @@ def test_hierarchical_extraction(sentence: str, custom_words: list[str], exclude
     root_words = [w.form for w in analysis.display_words]
     assert root_words == expected_output
 
-    display_words = ex_sequence.flatten([w.display_forms for w in analysis.display_words])
-    display_words_forms = [dw.parsed_form for dw in display_words]
+    display_words_forms = [dw.parsed_form for dw in analysis.display_forms]
 
     if expected_display_output:
         assert display_words_forms == expected_display_output
@@ -164,7 +162,6 @@ def insert_custom_words_with_excluded_forms(custom_words: list[list[str]]) -> No
 ])
 def test_custom_vocab_words_with_excluded_forms(sentence: str, custom_words: list[list[str]], expected_output: list[str]) -> None:
     insert_custom_words_with_excluded_forms(custom_words)
-    expected = set(expected_output)
 
     analysis = TextAnalysis(sentence, [])
     root_words = set([w.form for w in analysis.all_words])

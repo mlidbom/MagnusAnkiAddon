@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from language_services import conjugator
-from language_services.janome_ex.word_extraction.display_form import DictionaryDisplayForm, DisplayForm, MissingDisplayForm, VocabDisplayForm
+from language_services.janome_ex.word_extraction.display_form import DisplayForm, MissingDisplayForm, VocabDisplayForm
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from note.note_constants import Mine
 from sysutils.typed import non_optional

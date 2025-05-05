@@ -13,12 +13,13 @@ from language_services.janome_ex.word_extraction.text_location import TokenTextL
 class TextAnalysis:
     _tokenizer = JNTokenizer()
 
+    version = "text_analysis_0.1"
+
     def __init__(self, sentence:str, exclusions:list[WordExclusion]):
         self.text = sentence
         self.exclusions = exclusions
         print(f"exclusions: {exclusions}")
         self.tokens = self._tokenizer.tokenize(sentence).tokens
-        self.version = "text_analysis_0.1"
 
         locations:list[TokenTextLocation] = []
 
@@ -39,6 +40,8 @@ class TextAnalysis:
         self.locations = self.start_location.forward_list()
         self.display_words:list[CandidateForm] = ex_sequence.flatten([loc.display_words for loc in self.locations])
         self.all_words: list[CandidateForm] = ex_sequence.flatten([loc.all_words for loc in self.locations])
+
+        self.display_forms = ex_sequence.flatten([w.display_forms for w in self.display_words])
 
 
     def __repr__(self) -> str:
