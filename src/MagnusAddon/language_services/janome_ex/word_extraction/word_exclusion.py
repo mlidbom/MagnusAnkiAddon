@@ -41,5 +41,8 @@ class WordExclusion:
     def __hash__(self) -> int:
         return hash((self.word, self.index))
 
+    def __repr__(self) -> str:
+        return f"WordExclusion('{self.word}', {self.index})"
+
     def covers(self, other:WordExclusion) -> bool:
         return self.word == other.word and (self.index == WordExclusion._no_index or self.index == other.index)

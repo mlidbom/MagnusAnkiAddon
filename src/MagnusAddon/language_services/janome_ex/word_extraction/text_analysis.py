@@ -16,6 +16,7 @@ class TextAnalysis:
     def __init__(self, sentence:str, exclusions:list[WordExclusion]):
         self.text = sentence
         self.exclusions = exclusions
+        print(f"exclusions: {exclusions}")
         self.tokens = self._tokenizer.tokenize(sentence).tokens
         self.version = "text_analysis_0.1"
 
@@ -36,9 +37,6 @@ class TextAnalysis:
 
         self.locations = self.start_location.forward_list()
         self.display_words:list[CandidateForm] = ex_sequence.flatten([loc.display_words for loc in self.locations])
-
-        print("###################")
-        print(self)
 
 
     def __repr__(self) -> str:

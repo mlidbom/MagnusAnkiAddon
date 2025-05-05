@@ -29,7 +29,7 @@ class CandidateForm:
         self.forms_excluded_by_vocab_configuration:set[str] = set().union(*[v.get_excluded_forms() for v in self.all_vocabs])
 
         self.is_word: bool = self.dict_lookup.found_words() or len(self.all_vocabs) > 0
-        self.is_excluded_by_config: bool = form in self.configuration_exclusions
+        self.is_excluded_by_config: bool = is_excluded_form(form)
         self.is_self_excluded: bool = form in self.forms_excluded_by_vocab_configuration
 
     def is_valid_candidate(self) -> bool: return self.is_word and not self.is_excluded_by_config
