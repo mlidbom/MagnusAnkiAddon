@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 from language_services.janome_ex.word_extraction.candidate_form import BaseCandidateForm, CandidateForm, SurfaceCandidateForm
 
 if TYPE_CHECKING:
@@ -15,6 +15,7 @@ class CandidateWord:
         self.is_custom_compound: bool = len(locations) > 1
         self.start_location = self.locations[0]
         self.end_location = self.locations[-1]
+        self.length = len(self.locations)
 
         self.surface: SurfaceCandidateForm = SurfaceCandidateForm(self)
         self.base: CandidateForm = BaseCandidateForm(self) if locations[-1].base != locations[-1].surface else self.surface

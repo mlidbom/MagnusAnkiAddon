@@ -24,6 +24,7 @@ class TokenTextLocation:
     def __init__(self, analysis: TextAnalysis, token: JNToken, start_index: int):
         surface = token.surface
         base = token.base_form
+        self.is_covered_by: Optional[TokenTextLocation] = None
         self.token = token
         self.analysis = analysis
         self.start_index = start_index
@@ -53,8 +54,12 @@ TextLocation('{self.start_index}-{self.end_index}, {self.surface} | {self.base} 
         self.word_candidates = [word for word in self.all_candidates if word.is_word]
         self.valid_candidates = [word for word in self.word_candidates if word.has_valid_candidates()]
 
-        if self.valid_candidates:
+        if self.valid_candidates and self.is_covered_by is None:
             self.display_words = self.valid_candidates[0].display_words
+            covering_forward_count = self.valid_candidates[0].length - 1
+            for location in self.forward_list(covering_forward_count)[1:]:
+                location.is_covered_by = self
+
 
         if self.next:
             self.next.run_analysis()
