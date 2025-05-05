@@ -2,6 +2,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from note.note_constants import Mine
+from sysutils import ex_sequence
 
 if TYPE_CHECKING:
     from note.vocabnote import VocabNote
@@ -38,6 +39,7 @@ class TokenTextLocation:
         self.word_candidates: list[CandidateWord] = []
         self.valid_candidates: list[CandidateWord] = []
         self.display_words: list[CandidateForm] = []
+        self.all_words: list[CandidateForm] = []
 
     def __repr__(self) -> str:
         return f"""
@@ -68,6 +70,8 @@ TextLocation('{self.start_index}-{self.end_index}, {self.surface} | {self.base} 
             covering_forward_count = self.valid_candidates[0].length - 1
             for location in self.forward_list(covering_forward_count)[1:]:
                 location.is_covered_by = self
+
+        self.all_words = ex_sequence.flatten([v.display_words for v in self.valid_candidates])
 
         if self.next:
             self.next.run_analysis_second_step()
