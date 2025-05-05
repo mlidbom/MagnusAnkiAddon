@@ -4,14 +4,14 @@ from language_services.janome_ex.word_extraction.candidate_form import BaseCandi
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
-    from language_services.janome_ex.word_extraction.text_location import TextLocation
+    from language_services.janome_ex.word_extraction.text_location import TokenTextLocation
 
 from sysutils.ex_str import newline
 
 class CandidateWord:
-    def __init__(self, locations: list[TextLocation]):
+    def __init__(self, locations: list[TokenTextLocation]):
         self.analysis: TextAnalysis = locations[0].analysis
-        self.locations: list[TextLocation] = locations
+        self.locations: list[TokenTextLocation] = locations
         self.is_custom_compound: bool = len(locations) > 1
 
         self.surface: SurfaceCandidateForm = SurfaceCandidateForm(self)
