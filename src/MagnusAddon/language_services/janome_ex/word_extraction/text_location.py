@@ -19,19 +19,17 @@ from sysutils.ex_str import newline
 _noise_characters = {'.', ',', ':', ';', '/', '|', '。', '、'}
 _max_lookahead = 12
 
-
-
 class TokenTextLocation:
     def __init__(self, analysis: TextAnalysis, token: JNToken, start_index: int):
         surface = token.surface
         base = token.base_form
         self.is_covered_by: Optional[TokenTextLocation] = None
-        self.token:JNToken = token
-        self.analysis:TextAnalysis = analysis
-        self.start_index:int = start_index
-        self.end_index:int = start_index + len(surface) - 1
-        self.surface:str = surface
-        self.base:str = base
+        self.token: JNToken = token
+        self.analysis: TextAnalysis = analysis
+        self.start_index: int = start_index
+        self.end_index: int = start_index + len(surface) - 1
+        self.surface: str = surface
+        self.base: str = base
         self.previous: Optional[TokenTextLocation] = None
         self.next: Optional[TokenTextLocation] = None
 
@@ -53,13 +51,13 @@ TextLocation('{self.start_index}-{self.end_index}, {self.surface} | {self.base} 
     def run_analysis(self) -> None:
         lookahead_max = min(_max_lookahead, len(self.forward_list(_max_lookahead)))
         self.all_candidates = [CandidateWord(self.forward_list(index)) for index in range(lookahead_max - 1, -1, -1)]
-        self.all_candidates[-1].complete_analysis() #the non-compound part needs to be completed first
+        self.all_candidates[-1].complete_analysis()  # the non-compound part needs to be completed first
 
         if self.next:
             self.next.run_analysis()
 
     def run_analysis_second_step(self) -> None:
-        for cand in self.all_candidates[:-1]: #we already have the last one completed
+        for cand in self.all_candidates[:-1]:  # we already have the last one completed
             cand.complete_analysis()
 
         self.word_candidates = [word for word in self.all_candidates if word.is_word]
@@ -67,6 +65,9 @@ TextLocation('{self.start_index}-{self.end_index}, {self.surface} | {self.base} 
 
         if self.valid_candidates and self.is_covered_by is None:
             self.display_words = self.valid_candidates[0].display_words
+            self.display_words = [covered for covered in self.display_words
+                                  if not any([covering for covering in self.display_words if covered.form in covering.form and covered != covering])]
+
             covering_forward_count = self.valid_candidates[0].length - 1
             for location in self.forward_list(covering_forward_count)[1:]:
                 location.is_covered_by = self
