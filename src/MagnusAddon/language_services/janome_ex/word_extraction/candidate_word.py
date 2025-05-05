@@ -28,16 +28,11 @@ class CandidateWord:
 
         self.display_words: list[CandidateForm] = []
         if self._should_include_base():
-            if self.surface.form == "金貸":
-                print(f"""#### INCLUDING! {self.start_location.is_covered_by}""")
             self.display_words.append(self.base)
         if self._should_include_surface():
             self.display_words.append(self.surface)
 
     def _should_include_base(self) -> bool:
-        if self.surface.form == "金貸":
-            print(f"""#### Hello {self.base.is_valid_candidate()} {self.base.form not in self.surface.forms_excluded_by_vocab_configuration}""")
-
         return (self.base.is_valid_candidate()
                 and self.base.form not in self.surface.forms_excluded_by_vocab_configuration)
 
