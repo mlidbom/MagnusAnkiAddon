@@ -22,6 +22,7 @@ class CandidateForm:
         self.is_excluded_by_config:bool = form in self.exclusions
 
     def is_valid_candidate(self) -> bool: return self.is_word and not self.is_excluded_by_config
+    def has_vocabs(self) -> bool: return len(self.vocabs) > 0
 
     def __repr__(self) -> str:
         return f"""{self.form}"""

@@ -40,9 +40,6 @@ class CandidateWord:
         if self.surface.is_valid_candidate():
             self.display_words.append(self.surface)
 
-    def surface_has_vocab(self) -> bool: return len(self.surface_vocabs) > 0
-    def base_has_vocab(self) -> bool: return len(self.base_vocabs) > 0
-
     def has_valid_candidates(self) -> bool: return self.base.is_valid_candidate() or self.surface.is_valid_candidate()
 
     def __repr__(self) -> str: return f"""
@@ -51,8 +48,8 @@ hvc:{self.has_valid_candidates()},
 bivc:{self.base.is_valid_candidate()}, 
 sivc:{self.surface.is_valid_candidate()}, 
 iw:{self.is_word} 
-siw:{self.surface_is_word}, 
-biw:{self.base_is_word} 
-sie:{self.surface_is_excluded_by_config}, 
-bie:{self.base_is_excluded_by_config} 
+siw:{self.surface.is_word}, 
+biw:{self.base.is_word} 
+sie:{self.surface.is_excluded_by_config}, 
+bie:{self.base.is_excluded_by_config} 
 icc:{self.is_custom_compound})""".replace(newline, "")
