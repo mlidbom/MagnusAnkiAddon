@@ -1,9 +1,14 @@
-from typing import Optional
+from __future__ import annotations
+from typing import TYPE_CHECKING
 
+if TYPE_CHECKING:
+    from language_services.janome_ex.word_extraction.display_word import DisplayWord
+    from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
+
+from sysutils.ex_str import newline
+from sysutils import ex_sequence
 from language_services.janome_ex.tokenizing.jn_tokenizer import JNTokenizer
 from language_services.janome_ex.word_extraction.text_location import TextLocation, TokenTextLocation
-from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
-from sysutils.ex_str import newline
 
 class TextAnalysis:
     _tokenizer = JNTokenizer()
@@ -12,7 +17,7 @@ class TextAnalysis:
         self.text = sentence
         self.exclusions = exclusions
         self.tokens = self._tokenizer.tokenize(sentence).tokens
-        self.version = "janome_extractor_1"
+        self.version = "text_analysis_0.1"
 
         locations:list[TextLocation] = []
 
@@ -29,13 +34,12 @@ class TextAnalysis:
 
         self.start_location.run_analysis()
 
+        self.locations = self.start_location.forward_list(9999)
+        self.display_words:list[DisplayWord] = ex_sequence.flatten([loc.display_words for loc in self.locations])
+
         print("###################")
         print(self)
 
+
     def __repr__(self) -> str:
-        result = self.text + newline
-        location:Optional[TextLocation] = self.start_location
-        while location is not None:
-            result += location.__repr__() + newline
-            location = location.next
-        return result
+        return newline.join([dw.__repr__() for dw in self.display_words])
