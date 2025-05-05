@@ -111,7 +111,7 @@ def insert_custom_words(custom_words: list[str]) -> None:
      [],
      [],
      ['ばら撒く', 'れる', 'なんて', '死んでも', 'いや', 'だ']),
-    (False, "ああもう　だったら普通に金貸せって言えよ",
+    (True, "ああもう　だったら普通に金貸せって言えよ",
      [],
      [],
      ['ああ', 'もう', 'だったら', '普通に', '金貸', 'せる', 'て', '言える', '言えよ']),
@@ -146,6 +146,7 @@ def test_hierarchical_extraction(run_text_analysis_test_version:bool, sentence: 
 
     if run_text_analysis_test_version:
         analysis = TextAnalysis(sentence, excluded)
+        print(analysis)
         root_words = [w.form for w in analysis.display_words]
         assert root_words == expected_output
 

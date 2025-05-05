@@ -18,7 +18,7 @@ class CandidateWord:
         self.length = len(self.locations)
 
         self.surface: SurfaceCandidateForm = SurfaceCandidateForm(self)
-        self.base: CandidateForm = BaseCandidateForm(self) if locations[-1].base != locations[-1].surface else self.surface
+        self.base: CandidateForm = BaseCandidateForm(self)
 
         self.is_word: bool = self.surface.is_word or self.base.is_word
 
@@ -39,7 +39,7 @@ class CandidateWord:
     def _should_include_surface(self) -> bool:
         return (self.surface.is_valid_candidate()
                 and not self.is_inflected_word
-                and self.surface != self.base
+                and self.surface.form != self.base.form
                 and self.surface.form not in self.base.forms_excluded_by_vocab_configuration)
 
     def has_valid_candidates(self) -> bool: return self.base.is_valid_candidate() or self.surface.is_valid_candidate()
