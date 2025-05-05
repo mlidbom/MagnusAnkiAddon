@@ -58,7 +58,6 @@ def test_identify_words(sentence: str, expected_output: list[str]) -> None:
     assert result == expected
 
     analysis = TextAnalysis(sentence, [])
-    print(analysis)
     root_words = set([w.form for w in analysis.all_words])
     assert root_words == expected
 
@@ -70,8 +69,12 @@ def test_identify_words(sentence: str, expected_output: list[str]) -> None:
 ])
 def test_custom_vocab_words(sentence: str, custom_words: list[str], expected_output: list[str]) -> None:
     insert_custom_words(custom_words)
-    result = [w.word for w in word_extractor.extract_words(sentence)]
-    assert result == expected_output
+    result = set([w.word for w in word_extractor.extract_words(sentence)])
+    assert result == set(expected_output)
+
+    analysis = TextAnalysis(sentence, [])
+    root_words = set([w.form for w in analysis.all_words])
+    assert root_words == set(expected_output)
 
 def test_ignores_noise_characters() -> None:
     result = word_extractor.extract_words(". , : ; / | 。 、 ー")
