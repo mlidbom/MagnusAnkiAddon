@@ -33,7 +33,9 @@ class CandidateForm:
         self.is_self_excluded: bool = form in self.forms_excluded_by_vocab_configuration
 
     def is_valid_candidate(self) -> bool:
-        raise NotImplementedError()
+        return ((self.is_word or not self.candidate.is_custom_compound)
+                and not self.is_excluded_by_config
+                and not self.is_self_excluded)
 
     def __repr__(self) -> str:
         return f"""CandidateForm: {self.form}, ivc:{self.is_valid_candidate()}, iw:{self.is_word} ie:{self.is_excluded_by_config}""".replace(newline, "")
@@ -42,19 +44,6 @@ class SurfaceCandidateForm(CandidateForm):
     def __init__(self, candidate: CandidateWord):
         super().__init__(candidate, True, "".join([t.surface for t in candidate.locations]) + "")
 
-    def is_valid_candidate(self) -> bool:
-        return (self.is_word
-                and not self.is_excluded_by_config
-                and not self.is_self_excluded)
-
 class BaseCandidateForm(CandidateForm):
     def __init__(self, candidate: CandidateWord):
         super().__init__(candidate, False, "".join([t.surface for t in candidate.locations[:-1]]) + candidate.locations[-1].base)
-
-    def is_valid_candidate(self) -> bool:
-        if self.candidate.is_custom_compound:
-            return (self.is_word
-                    and not self.is_excluded_by_config
-                    and not self.is_self_excluded)
-
-        return not self.is_excluded_by_config and not self.is_self_excluded
