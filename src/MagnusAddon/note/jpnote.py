@@ -46,7 +46,10 @@ class JPNote(ABC):
         from ankiutils import app
         return app.col()
 
-    def get_question(self) -> str: return self.get_field(MyNoteFields.question).strip()
+    def get_question(self) -> str:
+        value = self.get_field(MyNoteFields.question).strip()
+        return value if value else "[EMPTY]"
+
     def get_answer(self) -> str: return self.get_field(MyNoteFields.answer)
 
     def is_studying(self, card:str = "") -> bool:

@@ -14,7 +14,6 @@ class KanaVocabNote(WaniNote):
         return string.replace(Mine.VocabPrefixSuffixMarker, "")
 
     def get_question_without_noise_characters(self) -> str: return self._strip_noise_characters(self.get_question())
-    def get_question(self) -> str: return self.get_field(NoteFields.Vocab.question).strip()
     def set_question(self, value: str) -> None: self.set_field(NoteFields.Vocab.question, value)
 
     def get_answer(self) -> str:
