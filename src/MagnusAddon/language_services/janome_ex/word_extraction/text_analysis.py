@@ -34,7 +34,7 @@ class TextAnalysis:
 
         self.start_location.run_analysis()
 
-        self.locations = self.start_location.forward_list(9999)
+        self.locations = self.start_location.forward_list()
         self.display_words:list[CandidateForm] = ex_sequence.flatten([loc.display_words for loc in self.locations])
 
         print("###################")

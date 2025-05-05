@@ -36,7 +36,7 @@ TextLocation('{self.start_index}-{self.end_index}, {self.surface} | {self.base} 
 {newline.join([cand.__repr__() for cand in self.word_candidates])}
 """
 
-    def forward_list(self, length: int) -> list[TextLocation]:
+    def forward_list(self, length: int = 99999) -> list[TextLocation]:
         return text_navigator.forward_list(self, length)
 
     def run_analysis(self) -> None:
