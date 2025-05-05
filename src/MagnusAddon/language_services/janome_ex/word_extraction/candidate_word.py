@@ -13,17 +13,32 @@ class CandidateWord:
         self.analysis: TextAnalysis = locations[0].analysis
         self.locations: list[TokenTextLocation] = locations
         self.is_custom_compound: bool = len(locations) > 1
+        self.start_location = self.locations[0]
+        self.end_location = self.locations[-1]
 
         self.surface: SurfaceCandidateForm = SurfaceCandidateForm(self)
         self.base: CandidateForm = BaseCandidateForm(self) if locations[-1].base != locations[-1].surface else self.surface
 
         self.is_word: bool = self.surface.is_word or self.base.is_word
 
+        self.is_inflectable_word = self.end_location.token.is_inflectable_word()
+        self.next_token_is_inflecting_word = self.end_location.is_next_location_inflecting_word()
+        self.is_inflected_word = self.is_inflectable_word and self.next_token_is_inflecting_word
+
         self.display_words: list[CandidateForm] = []
-        if self.base.is_valid_candidate():
+        if self._should_include_base():
             self.display_words.append(self.base)
-        if self.surface.is_valid_candidate() and self.surface != self.base and self.surface.form not in self.base.forms_excluded_by_vocab_configuration:
+        if self._should_include_surface():
             self.display_words.append(self.surface)
+
+    def _should_include_base(self) -> bool:
+        return self.base.is_valid_candidate()
+
+    def _should_include_surface(self) -> bool:
+        return (self.surface.is_valid_candidate()
+                and not self.is_inflected_word
+                and self.surface != self.base
+                and self.surface.form not in self.base.forms_excluded_by_vocab_configuration)
 
     def has_valid_candidates(self) -> bool: return self.base.is_valid_candidate() or self.surface.is_valid_candidate()
 
