@@ -31,13 +31,16 @@ class CandidateWord:
         self.display_words: list[CandidateForm] = []
 
     def complete_analysis(self) -> None:
+        base_will_be_included_if_surface_is_not = (self.base.is_valid_candidate()
+                                                   and self.base.form not in self.surface.forms_excluded_by_vocab_configuration)
+
         self.should_include_surface = (self.surface.is_valid_candidate()
                                        and not self.is_inflected_word
                                        and self.surface.form != self.base.form
+                                       and not (base_will_be_included_if_surface_is_not and self.surface.form in self.base.form)
                                        and self.surface.form not in self.base.forms_excluded_by_vocab_configuration)
-        self.should_include_base = (self.base.is_valid_candidate()
-                                    and not (self.should_include_surface and self.base.form in self.surface.form)
-                                    and self.base.form not in self.surface.forms_excluded_by_vocab_configuration)
+        self.should_include_base = (base_will_be_included_if_surface_is_not
+                                    and not (self.should_include_surface and self.base.form in self.surface.form))
 
         self.display_words = []
         if self.should_include_base:
