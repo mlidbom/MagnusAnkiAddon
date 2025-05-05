@@ -92,18 +92,18 @@ def insert_custom_words(custom_words: list[str]) -> None:
     (True, "厳密に言えば　俺一人が友達だけどだけど", [],
      [],
      ['厳密に言えば', '俺', '一人', 'が', '友達', 'だけど', 'だけど']),
-    (False, "厳密に言えばだけど俺一人が友達だけど", [],
+    (True, "厳密に言えばだけど俺一人が友達だけど", [],
      [WordExclusion("だけど", 6)],
      ['厳密に言えば', '俺', '一人', 'が', '友達', 'だけど']),
     (True, "幼すぎて よく覚えていないけど", [],
      [],
      ['幼い', 'すぎる', 'て', 'よく', '覚える', 'て', 'いる', 'ない', 'けど']
      ),
-    (False, "私は毎日ジョギングをすることを習慣にしています。",
+    (True, "私は毎日ジョギングをすることを習慣にしています。",
      ["してい", "ている", "にする"],
      [WordExclusion("にして", 17), WordExclusion("にし", 17), WordExclusion("して", 18), WordExclusion("し", 18), WordExclusion("してい", 18), WordExclusion("い", 12), WordExclusion("にする")],
      ['私', 'は', '毎日', 'ジョギング', 'を', 'する', 'こと', 'を', '習慣', 'に', 'する', 'ている', 'ます']),
-    (False, "私は毎日ジョギングをすることを習慣にしています。",
+    (True, "私は毎日ジョギングをすることを習慣にしています。",
      ["してい", "ている", "にする"],
      [WordExclusion("にして", 17), WordExclusion("にし", 17), WordExclusion("して", 18), WordExclusion("し", 18), WordExclusion("してい", 18)],
      ['私', 'は', '毎日', 'ジョギング', 'を', 'する', 'こと', 'を', '習慣', 'にする', 'ている', 'ます']),
@@ -134,7 +134,7 @@ def insert_custom_words(custom_words: list[str]) -> None:
     (False, "頑張れたというか", [], [], ['頑張れる', 'た', 'というか']),
     (False, "思い出せそうな気がする", [], [], ['思い出せる', 'そう', 'な', '気がする']),
     (False, "私が頼んだの", [], [], ['私', 'が', '頼む', '頼ん', 'だ', 'の']),
-    (False, "いらっしゃいません", [], [WordExclusion('いらっしゃいませ')], ['いらっしゃいます', 'ん'])
+    (True, "いらっしゃいません", [], [WordExclusion('いらっしゃいませ')], ['いらっしゃいます', 'ん'])
 ])
 def test_hierarchical_extraction(run_text_analysis_test_version:bool, sentence: str, custom_words: list[str], excluded: list[WordExclusion], expected_output: list[str]) -> None:
     print("")
