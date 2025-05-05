@@ -17,6 +17,9 @@ class WordExclusion:
     def excludes(self, word:HierarchicalWord) -> bool:
         return word.word.word == self.word and (self.index == WordExclusion._no_index or self.index == word.word.character_index)
 
+    def excludes_form_at_index(self, form:str, index:int) -> bool:
+        return form == self.word and (self.index == WordExclusion._no_index or self.index == index)
+
     @classmethod
     def from_string(cls, exclusion:str) -> WordExclusion:
         if cls._separator in exclusion:

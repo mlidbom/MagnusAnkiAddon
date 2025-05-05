@@ -22,7 +22,7 @@ class CandidateWord:
         self.display_words: list[CandidateForm] = []
         if self.base.is_valid_candidate():
             self.display_words.append(self.base)
-        if self.surface.is_valid_candidate() and self.surface != self.base:
+        if self.surface.is_valid_candidate() and self.surface != self.base and self.surface.form not in self.base.forms_excluded_by_vocab_configuration:
             self.display_words.append(self.surface)
 
     def has_valid_candidates(self) -> bool: return self.base.is_valid_candidate() or self.surface.is_valid_candidate()
