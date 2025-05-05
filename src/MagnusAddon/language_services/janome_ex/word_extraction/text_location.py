@@ -51,8 +51,15 @@ TextLocation('{self.start_index}-{self.end_index}, {self.surface} | {self.base} 
     def run_analysis(self) -> None:
         lookahead_max = min(_max_lookahead, len(self.forward_list(_max_lookahead)))
         self.all_candidates = [CandidateWord(self.forward_list(index)) for index in range(lookahead_max - 1, -1, -1)]
+        self.all_candidates[-1].complete_analysis() #the non-compound part needs to be completed first
 
-        self.all_candidates.sort(key=lambda cand: cand.length, reverse=True)#we need the shortest parts initialized first, that's why the reverse afterwards.
+        if self.next:
+            self.next.run_analysis()
+
+    def run_analysis_second_step(self) -> None:
+        for cand in self.all_candidates[:-1]: #we already have the last one completed
+            cand.complete_analysis()
+
         self.word_candidates = [word for word in self.all_candidates if word.is_word]
         self.valid_candidates = [word for word in self.all_candidates if word.has_valid_candidates()]
 
@@ -62,9 +69,8 @@ TextLocation('{self.start_index}-{self.end_index}, {self.surface} | {self.base} 
             for location in self.forward_list(covering_forward_count)[1:]:
                 location.is_covered_by = self
 
-
         if self.next:
-            self.next.run_analysis()
+            self.next.run_analysis_second_step()
 
     def is_next_location_inflecting_word(self) -> bool:
         return self.next is not None and self.next.is_inflecting_word()

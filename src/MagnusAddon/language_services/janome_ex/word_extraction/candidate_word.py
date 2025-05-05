@@ -26,16 +26,20 @@ class CandidateWord:
         self.next_token_is_inflecting_word: bool = self.end_location.is_next_location_inflecting_word()
         self.is_inflected_word: bool = self.is_inflectable_word and self.next_token_is_inflecting_word
 
-        self.should_include_surface: bool = (self.surface.is_valid_candidate()
-                                             and not self.is_inflected_word
-                                             and self.surface.form != self.base.form
-                                             and self.surface.form not in self.base.forms_excluded_by_vocab_configuration)
-
-        self.should_include_base: bool = (self.base.is_valid_candidate()
-                                          and not (self.should_include_surface and self.base.form in self.surface.form)
-                                          and self.base.form not in self.surface.forms_excluded_by_vocab_configuration)
-
+        self.should_include_surface: bool = False
+        self.should_include_base: bool = False
         self.display_words: list[CandidateForm] = []
+
+    def complete_analysis(self) -> None:
+        self.should_include_surface = (self.surface.is_valid_candidate()
+                                       and not self.is_inflected_word
+                                       and self.surface.form != self.base.form
+                                       and self.surface.form not in self.base.forms_excluded_by_vocab_configuration)
+        self.should_include_base = (self.base.is_valid_candidate()
+                                    and not (self.should_include_surface and self.base.form in self.surface.form)
+                                    and self.base.form not in self.surface.forms_excluded_by_vocab_configuration)
+
+        self.display_words = []
         if self.should_include_base:
             self.display_words.append(self.base)
         if self.should_include_surface:
