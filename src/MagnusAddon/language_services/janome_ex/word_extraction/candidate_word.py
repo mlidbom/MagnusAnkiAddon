@@ -13,8 +13,8 @@ class CandidateWord:
         self.analysis: TextAnalysis = locations[0].analysis
         self.locations: list[TokenTextLocation] = locations
         self.is_custom_compound: bool = len(locations) > 1
-        self.start_location = self.locations[0]
-        self.end_location = self.locations[-1]
+        self.start_location:TokenTextLocation = self.locations[0]
+        self.end_location:TokenTextLocation = self.locations[-1]
         self.length = len(self.locations)
 
         self.surface: SurfaceCandidateForm = SurfaceCandidateForm(self)

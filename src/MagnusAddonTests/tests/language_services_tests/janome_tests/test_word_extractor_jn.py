@@ -133,7 +133,7 @@ def insert_custom_words(custom_words: list[str]) -> None:
     (True, "分かってたら", [], [], ['分かる', 'てたら']),
     (True, "頑張れたというか", [], [], ['頑張れる', 'た', 'というか']),
     (False, "思い出せそうな気がする", [], [], ['思い出せる', 'そう', 'な', '気がする']),
-    (False, "私が頼んだの", [], [], ['私', 'が', '頼む', '頼ん', 'だ', 'の']),
+    (True, "私が頼んだの", [], [], ['私', 'が', '頼む', '頼ん', 'だ', 'の']),
     (True, "いらっしゃいません", [], [WordExclusion('いらっしゃいませ')], ['いらっしゃいます', 'ん'])
 ])
 def test_hierarchical_extraction(run_text_analysis_test_version:bool, sentence: str, custom_words: list[str], excluded: list[WordExclusion], expected_output: list[str]) -> None:

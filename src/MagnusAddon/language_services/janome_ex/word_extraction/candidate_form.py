@@ -32,10 +32,34 @@ class CandidateForm:
         self.is_excluded_by_config: bool = is_excluded_form(form)
         self.is_self_excluded: bool = form in self.forms_excluded_by_vocab_configuration
 
+        self.possible_contextual_exclusions = [excluded for excluded in self.forms_excluded_by_vocab_configuration if self.form in excluded]
+        self.is_contextually_excluded: bool = self._is_contextually_excluded()
+
     def is_valid_candidate(self) -> bool:
         return ((self.is_word or not self.candidate.is_custom_compound)
                 and not self.is_excluded_by_config
-                and not self.is_self_excluded)
+                and not self.is_self_excluded
+                and not self.is_contextually_excluded)
+
+    def _is_contextually_excluded(self) -> bool:
+        for exclusion in self.possible_contextual_exclusions:
+            if exclusion.endswith(self.form):
+                previous_location = self.candidate.start_location.previous
+                if previous_location:
+                    extended = previous_location.surface + self.form
+                    if extended.endswith(self.form):
+                        return True
+
+            if exclusion.startswith(self.form):
+                next_location = self.candidate.start_location.previous
+                if next_location:
+                    extended = self.form + next_location.surface
+                    if extended.startswith(self.form):
+                        return True
+
+        return False
+
+
 
     def __repr__(self) -> str:
         return f"""CandidateForm: {self.form}, ivc:{self.is_valid_candidate()}, iw:{self.is_word} ie:{self.is_excluded_by_config}""".replace(newline, "")
