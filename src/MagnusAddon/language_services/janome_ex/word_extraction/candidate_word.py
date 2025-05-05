@@ -26,21 +26,20 @@ class CandidateWord:
         self.next_token_is_inflecting_word = self.end_location.is_next_location_inflecting_word()
         self.is_inflected_word = self.is_inflectable_word and self.next_token_is_inflecting_word
 
+        self.should_include_surface = (self.surface.is_valid_candidate()
+                                       and not self.is_inflected_word
+                                       and self.surface.form != self.base.form
+                                       and self.surface.form not in self.base.forms_excluded_by_vocab_configuration)
+
+        self.should_include_base = (self.base.is_valid_candidate()
+                                    and not (self.should_include_surface and self.base.form in self.surface.form)
+                                    and self.base.form not in self.surface.forms_excluded_by_vocab_configuration)
+
         self.display_words: list[CandidateForm] = []
-        if self._should_include_base():
+        if self.should_include_base:
             self.display_words.append(self.base)
-        if self._should_include_surface():
+        if self.should_include_surface:
             self.display_words.append(self.surface)
-
-    def _should_include_base(self) -> bool:
-        return (self.base.is_valid_candidate()
-                and self.base.form not in self.surface.forms_excluded_by_vocab_configuration)
-
-    def _should_include_surface(self) -> bool:
-        return (self.surface.is_valid_candidate()
-                and not self.is_inflected_word
-                and self.surface.form != self.base.form
-                and self.surface.form not in self.base.forms_excluded_by_vocab_configuration)
 
     def has_valid_candidates(self) -> bool: return len(self.display_words) > 0
 
