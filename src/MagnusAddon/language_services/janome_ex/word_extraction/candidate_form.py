@@ -62,6 +62,9 @@ class CandidateForm:
 
         if self.unexcluded_vocabs:
             self.display_forms = [VocabDisplayForm(self, voc) for voc in self.unexcluded_vocabs if self.vocab_is_matching(voc)]
+            override_form = [df for df in self.display_forms if df.parsed_form != self.form]
+            if any(override_form):
+                self.form = override_form[0].parsed_form
         else:
             self.display_forms = [MissingDisplayForm(self)]
 
