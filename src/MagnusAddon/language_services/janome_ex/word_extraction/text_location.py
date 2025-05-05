@@ -52,7 +52,10 @@ TextLocation('{self.start_index}-{self.end_index}, {self.surface} | {self.base} 
         lookahead_max = min(_max_lookahead, len(self.forward_list(_max_lookahead)))
         self.all_candidates = [CandidateWord(self.forward_list(index)) for index in range(lookahead_max - 1, -1, -1)]
         self.word_candidates = [word for word in self.all_candidates if word.is_word]
-        self.valid_candidates = [word for word in self.word_candidates if word.has_valid_candidates()]
+        self.valid_candidates = [word for word in self.all_candidates if word.has_valid_candidates()]
+
+        if self.surface == "金貸":
+            print(f"""#### hello! {self.valid_candidates}, {self.is_covered_by}""")
 
         if self.valid_candidates and self.is_covered_by is None:
             self.display_words = self.valid_candidates[0].display_words
