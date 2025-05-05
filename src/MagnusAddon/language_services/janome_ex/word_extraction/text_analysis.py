@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.display_word import CandidateForm
+    from language_services.janome_ex.word_extraction.candidate_form import CandidateForm
     from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 
 from sysutils.ex_str import newline

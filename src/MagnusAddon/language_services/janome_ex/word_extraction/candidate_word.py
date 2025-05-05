@@ -1,6 +1,6 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
-from language_services.janome_ex.word_extraction.display_word import BaseCandidateForm, CandidateForm, SurfaceCandidateForm
+from language_services.janome_ex.word_extraction.candidate_form import BaseCandidateForm, CandidateForm, SurfaceCandidateForm
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
