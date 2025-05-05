@@ -4,6 +4,7 @@ from typing import Sequence
 
 from anki.notes import NoteId
 
+from ankiutils import app
 from note.jpnote import JPNote
 from note.kanjinote import KanjiNote
 from note.note_constants import Builtin, MyNoteFields, NoteFields, NoteTypes, SentenceNoteFields
@@ -11,7 +12,7 @@ from note.radicalnote import RadicalNote
 from note.vocabnote import VocabNote
 from language_services.janome_ex.word_extraction.word_extractor import jn_extractor
 from language_services.janome_ex.word_extraction.extracted_word import ExtractedWord
-from sysutils import kana_utils
+from sysutils import ex_sequence, kana_utils
 
 f_question = MyNoteFields.question
 f_reading = NoteFields.Vocab.Reading
@@ -134,4 +135,6 @@ def immersion_kit_sentences() -> str:
 
 def kanji_with_radicals_in_string(search:str) -> str:
     radicals = search.strip().replace(",", "").replace(" ", "")
-    return " ".join([field_contains_word(NoteFields.Kanji.Radicals, char) for char in radicals])
+    notes = ex_sequence.flatten([app.col().kanji.with_radical(rad) for rad in radicals])
+    notes = [note for note in notes if not any(rad for rad in radicals if rad not in note.get_radicals())]
+    return notes_lookup(notes)
