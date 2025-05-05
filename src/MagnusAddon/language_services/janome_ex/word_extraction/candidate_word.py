@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from language_services.janome_ex.word_extraction.candidate_form import BaseCandidateForm, CandidateForm, SurfaceCandidateForm
 
 if TYPE_CHECKING:
@@ -28,11 +28,16 @@ class CandidateWord:
 
         self.display_words: list[CandidateForm] = []
         if self._should_include_base():
+            if self.surface.form == "金貸":
+                print(f"""#### INCLUDING! {self.start_location.is_covered_by}""")
             self.display_words.append(self.base)
         if self._should_include_surface():
             self.display_words.append(self.surface)
 
     def _should_include_base(self) -> bool:
+        if self.surface.form == "金貸":
+            print(f"""#### Hello {self.base.is_valid_candidate()} {self.base.form not in self.surface.forms_excluded_by_vocab_configuration}""")
+
         return (self.base.is_valid_candidate()
                 and self.base.form not in self.surface.forms_excluded_by_vocab_configuration)
 
@@ -42,7 +47,7 @@ class CandidateWord:
                 and self.surface.form != self.base.form
                 and self.surface.form not in self.base.forms_excluded_by_vocab_configuration)
 
-    def has_valid_candidates(self) -> bool: return self.base.is_valid_candidate() or self.surface.is_valid_candidate()
+    def has_valid_candidates(self) -> bool: return len(self.display_words) > 0
 
     def __repr__(self) -> str: return f"""
 surface: {self.surface.__repr__()} | base:{self.base.__repr__()},
