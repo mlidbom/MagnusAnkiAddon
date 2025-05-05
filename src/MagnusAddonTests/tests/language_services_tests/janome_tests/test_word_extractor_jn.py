@@ -180,5 +180,10 @@ def insert_custom_words_with_excluded_forms(custom_words: list[list[str]]) -> No
 ])
 def test_custom_vocab_words_with_excluded_forms(sentence: str, custom_words: list[list[str]], expected_output: list[str]) -> None:
     insert_custom_words_with_excluded_forms(custom_words)
-    result = [w.word for w in word_extractor.extract_words(sentence)]
-    assert result == expected_output
+    expected = set(expected_output)
+    result = set([w.word for w in word_extractor.extract_words(sentence)])
+    assert result == expected
+
+    analysis = TextAnalysis(sentence, [])
+    root_words = set([w.form for w in analysis.all_words])
+    assert root_words == set(expected_output)

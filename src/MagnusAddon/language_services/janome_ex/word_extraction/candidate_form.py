@@ -36,12 +36,20 @@ class CandidateForm:
         self.possible_contextual_exclusions = [excluded for excluded in self.forms_excluded_by_vocab_configuration if self.form in excluded]
         self.is_contextually_excluded: bool = self._is_contextually_excluded()
 
+        self.forms_excluded_by_compound_root_vocab_configuration: set[str] = set()
+        self.is_excluded_by_compound_root_vocab_configuration: bool = False
+
+    def complete_analysis(self) -> None:
+        self.forms_excluded_by_compound_root_vocab_configuration = self.candidate.locations[0].all_candidates[-1].base.forms_excluded_by_vocab_configuration
+        self.is_excluded_by_compound_root_vocab_configuration = self.form in self.forms_excluded_by_compound_root_vocab_configuration
+
     def is_valid_candidate(self) -> bool:
         return ((self.is_word or not self.candidate.is_custom_compound)
-                and not self.form in _noise_characters
+                and self.form not in _noise_characters
                 and not self.is_excluded_by_config
                 and not self.is_self_excluded
-                and not self.is_contextually_excluded)
+                and not self.is_contextually_excluded
+                and not self.is_excluded_by_compound_root_vocab_configuration)
 
     def _is_contextually_excluded(self) -> bool:
         for exclusion in self.possible_contextual_exclusions:
@@ -60,7 +68,6 @@ class CandidateForm:
                         return True
 
         return False
-
 
     def __repr__(self) -> str:
         return f"""CandidateForm: {self.form}, ivc:{self.is_valid_candidate()}, iw:{self.is_word} ie:{self.is_excluded_by_config}""".replace(newline, "")

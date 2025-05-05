@@ -31,6 +31,9 @@ class CandidateWord:
         self.display_words: list[CandidateForm] = []
 
     def complete_analysis(self) -> None:
+        self.base.complete_analysis()
+        self.surface.complete_analysis()
+
         self.should_include_surface = (self.surface.is_valid_candidate()
                                        and not self.is_inflected_word
                                        and self.surface.form != self.base.form
