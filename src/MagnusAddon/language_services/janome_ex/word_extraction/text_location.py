@@ -50,12 +50,13 @@ TextLocation('{self.start_index}-{self.end_index}, {self.surface} | {self.base} 
 
     def run_analysis(self) -> None:
         lookahead_max = min(_max_lookahead, len(self.forward_list(_max_lookahead)))
-        self.all_candidates = [CandidateWord(self.forward_list(index)) for index in range(lookahead_max - 1, -1, -1)]
+        self.all_candidates = []
+        for index in range(0, lookahead_max):
+            self.all_candidates.append(CandidateWord(self.forward_list(index)))
+
+        self.all_candidates.sort(key=lambda cand: cand.length, reverse=True)#we need the shortest parts initialized first, that's why the reverse afterwards.
         self.word_candidates = [word for word in self.all_candidates if word.is_word]
         self.valid_candidates = [word for word in self.all_candidates if word.has_valid_candidates()]
-
-        if self.surface == "金貸":
-            print(f"""#### hello! {self.valid_candidates}, {self.is_covered_by}""")
 
         if self.valid_candidates and self.is_covered_by is None:
             self.display_words = self.valid_candidates[0].display_words

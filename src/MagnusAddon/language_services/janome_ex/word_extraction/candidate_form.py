@@ -35,7 +35,7 @@ class CandidateForm:
         self.possible_contextual_exclusions = [excluded for excluded in self.forms_excluded_by_vocab_configuration if self.form in excluded]
         self.is_contextually_excluded: bool = self._is_contextually_excluded()
 
-        #self.last_location_is_excluded_form = self.candidate.end_location.base
+        self.last_location_is_excluded_form = self._last_location_is_excluded_form()
 
     def is_valid_candidate(self) -> bool:
         return ((self.is_word or not self.candidate.is_custom_compound)
@@ -65,6 +65,17 @@ class CandidateForm:
 
     def __repr__(self) -> str:
         return f"""CandidateForm: {self.form}, ivc:{self.is_valid_candidate()}, iw:{self.is_word} ie:{self.is_excluded_by_config}""".replace(newline, "")
+
+    def _last_location_is_excluded_form(self) -> bool:
+        if not self.is_surface:
+            if self.candidate.end_location.all_candidates:
+                #this is hacky, but we have not yet reversed the collection so the index should be 0, not -1
+                last_location_shortest_candidate = self.candidate.end_location.all_candidates[0]
+                if last_location_shortest_candidate.base.form == self.form:
+                    if not last_location_shortest_candidate.should_include_base:
+                        return True
+
+        return False
 
 class SurfaceCandidateForm(CandidateForm):
     def __init__(self, candidate: CandidateWord):
