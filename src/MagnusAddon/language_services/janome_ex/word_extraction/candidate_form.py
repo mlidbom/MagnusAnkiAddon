@@ -26,7 +26,7 @@ class CandidateForm:
 
         self.unexcluded_vocabs:list[VocabNote] = [v for v in self.all_vocabs if not is_excluded_form(v.get_question())]
 
-        self.forms_excluded_by_vocab_configuration:set[str] = set().union(*[v.get_excluded_forms() for v in self.all_vocabs])
+        self.forms_excluded_by_vocab_configuration:set[str] = set().union(*[v.get_excluded_forms() for v in self.unexcluded_vocabs])
 
         self.is_word: bool = self.dict_lookup.found_words() or len(self.all_vocabs) > 0
         self.is_excluded_by_config: bool = is_excluded_form(form)

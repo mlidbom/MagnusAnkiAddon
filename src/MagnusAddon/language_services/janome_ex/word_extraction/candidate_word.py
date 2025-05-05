@@ -33,7 +33,8 @@ class CandidateWord:
             self.display_words.append(self.surface)
 
     def _should_include_base(self) -> bool:
-        return self.base.is_valid_candidate()
+        return (self.base.is_valid_candidate()
+                and self.base.form not in self.surface.forms_excluded_by_vocab_configuration)
 
     def _should_include_surface(self) -> bool:
         return (self.surface.is_valid_candidate()
