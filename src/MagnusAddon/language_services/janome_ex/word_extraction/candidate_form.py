@@ -24,9 +24,9 @@ class CandidateForm:
         def is_excluded_form(form_: str) -> bool:
             return any(exclusion for exclusion in self.configuration_exclusions if exclusion.excludes_form_at_index(form_, self.start_index))
 
-        self.unexcluded_vocabs:list[VocabNote] = [v for v in self.all_vocabs if not is_excluded_form(v.get_question())]
+        self.unexcluded_vocabs: list[VocabNote] = [v for v in self.all_vocabs if not is_excluded_form(v.get_question())]
 
-        self.forms_excluded_by_vocab_configuration:set[str] = set().union(*[v.get_excluded_forms() for v in self.unexcluded_vocabs])
+        self.forms_excluded_by_vocab_configuration: set[str] = set().union(*[v.get_excluded_forms() for v in self.unexcluded_vocabs])
 
         self.is_word: bool = self.dict_lookup.found_words() or len(self.all_vocabs) > 0
         self.is_excluded_by_config: bool = is_excluded_form(form)
