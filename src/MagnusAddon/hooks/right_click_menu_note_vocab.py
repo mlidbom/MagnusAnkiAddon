@@ -35,8 +35,9 @@ def setup_note_menu(vocab: VocabNote, note_menu: QMenu, string_menus: list[tuple
         def build_misc_menu(misc_menu:QMenu) -> None:
             create_vocab_note_action(misc_menu, shortcutfinger.home1("く-form-of-い-adjective"), lambda: vocab.cloner.create_ku_form())
             create_vocab_note_action(misc_menu, shortcutfinger.home2("て-prefixed"), lambda: vocab.cloner.create_te_prefixed_word())
-            create_vocab_note_action(misc_menu, shortcutfinger.home3("ん-suffixed"), lambda: vocab.cloner.create_n_suffixed_word())
-            create_vocab_note_action(misc_menu, shortcutfinger.home4("か-suffixed"), lambda: vocab.cloner.create_ka_suffixed_word())
+            create_vocab_note_action(misc_menu, shortcutfinger.home3("お-prefixed"), lambda: vocab.cloner.create_o_prefixed_word())
+            create_vocab_note_action(misc_menu, shortcutfinger.home4("ん-suffixed"), lambda: vocab.cloner.create_n_suffixed_word())
+            create_vocab_note_action(misc_menu, shortcutfinger.home5("か-suffixed"), lambda: vocab.cloner.create_ka_suffixed_word())
 
 
         def build_create_prefix_postfix_note_menu(prefix_postfix_note_menu: QMenu, addendum:str) -> None:

@@ -54,6 +54,9 @@ class VocabCloner:
     def create_te_prefixed_word(self) -> VocabNote:
         return self._create_postfix_prefix_version("て", "auxiliary", is_prefix=True)
 
+    def create_o_prefixed_word(self) -> VocabNote:
+        return self._create_postfix_prefix_version("お", self.note.get_speech_type(), is_prefix=True)
+
     def create_n_suffixed_word(self) -> VocabNote:
         return self._create_postfix_prefix_version("ん", "expression")
 
