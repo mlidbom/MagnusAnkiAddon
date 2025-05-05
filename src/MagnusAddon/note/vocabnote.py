@@ -433,3 +433,5 @@ class VocabNote(KanaVocabNote):
         clone._flush()
 
         return clone
+
+    def is_question_overrides_form(self) -> bool: return self.has_tag(Mine.Tags.question_overrides_form)

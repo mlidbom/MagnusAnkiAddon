@@ -19,14 +19,15 @@ def _build_vocab_list(word_to_show: list[str], excluded_words:set[str], title:st
 
         if vocabs:
             for vocab in vocabs:
-                hit_form = vocab.get_question() if vocab.get_question() != word else ""
-                needs_reading = kana_utils.contains_kanji(word) and (not hit_form or kana_utils.contains_kanji(hit_form))
+                word_form = vocab.get_question() if vocab.is_question_overrides_form() else word
+                hit_form = vocab.get_question() if vocab.get_question() != word_form else ""
+                needs_reading = kana_utils.contains_kanji(word_form) and (not hit_form or kana_utils.contains_kanji(hit_form))
                 readings = ", ".join(vocab.get_readings()) if needs_reading else ""
                 html += f"""
                         <li class="sentenceVocabEntry depth1 word_priority_very_high {" ".join(vocab.get_meta_tags())}">
                             <div class="sentenceVocabEntryDiv">
                                 <audio src="{vocab.get_primary_audio_path()}"></audio><a class="play-button"></a>
-                                <span class="vocabQuestion clipboard">{word}</span>
+                                <span class="vocabQuestion clipboard">{word_form}</span>
                                 {f'''<span class="vocabHitForm clipboard">{hit_form}</span>''' if hit_form else ""}
                                 {f'''<span class="vocabHitReadings clipboard">{readings}</span>''' if readings else ""}
                                 {vocab.get_meta_tags_html(include_extended_sentence_statistics)}
