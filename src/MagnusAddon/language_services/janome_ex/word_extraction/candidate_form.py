@@ -93,16 +93,18 @@ class SurfaceCandidateForm(CandidateForm):
 class BaseCandidateForm(CandidateForm):
     def __init__(self, candidate: CandidateWord):
         super().__init__(candidate, False, "".join([t.surface for t in candidate.locations[:-1]]) + candidate.locations[-1].base)
+        self.last_location_is_excluded_form:bool = False
+
 
     def _counterpart(self) -> CandidateForm: return non_optional(self.candidate.surface)
 
-    def is_valid_candidate(self) -> bool:
-        return super().is_valid_candidate() and not self.last_location_is_excluded_form()
+    def complete_analysis(self) -> None:
+        super().complete_analysis()
 
-    def last_location_is_excluded_form(self) -> bool:
         if self.candidate.is_custom_compound:
             last_location_shortest_candidate = self.candidate.end_location.all_candidates[-1]
             if not last_location_shortest_candidate.should_include_base:
-                return True
+                self.last_location_is_excluded_form = True
 
-        return False
+    def is_valid_candidate(self) -> bool:
+        return super().is_valid_candidate() and not self.last_location_is_excluded_form
