@@ -51,7 +51,6 @@ test_special_vocab = [
     VocabSpec("ちゃう", "to do: accidentally/unfortunately | completely", ['ちゃう'], tags=[Mine.Tags.inflecting_word]),
     VocabSpec("無い", "{negation} | nonexistent | unowned | impossible/won't-happen", ['ない'], tags=[Mine.Tags.inflecting_word]),
     VocabSpec("ても良い", "{concession/compromise} | {permission}", ['てもいい'], tags=[Mine.Tags.inflecting_word]),
-    VocabSpec("れる", "aux: {passive} |{potential} | {spontaneous-occurence} | {honorific}", ['れる'], tags=[Mine.Tags.inflecting_word]),
     VocabSpec("たの", "{indicates-{emotion/admiration/emphasis}}", ['たの'], extra_forms=["[[たの]]"]),
     VocabSpec("すぎる", "too-much", ['すぎる'], tags=[Mine.Tags.inflecting_word]),
     VocabSpec("だったら", "if-so", ['だったら'], extra_forms=["[[だった]]"]),
@@ -62,8 +61,8 @@ test_special_vocab = [
     VocabSpec("いらっしゃいませ", "welcome!", ['いらっしゃいませ'], extra_forms=["[[いらっしゃいます]]"]),
     VocabSpec("いらっしゃいます", "to: come/be/do", ['いらっしゃいます']),
     VocabSpec("を頼む", "I-entrust-to-you", ["を頼む"], tags=[Mine.Tags.requires_exact_match]),
-    VocabSpec("あれる", "get-_/is-_", ["れる"], tags=[Mine.Tags.requires_a_stem, Mine.Tags.question_overrides_form]),
-    VocabSpec("えれる", "is-able-to-_", ["れる"], tags=[Mine.Tags.requires_e_stem, Mine.Tags.question_overrides_form]),
+    VocabSpec("あれる", "get-_/is-_", ["あれる"], extra_forms=["れる"], tags=[Mine.Tags.inflecting_word]),#Mine.Tags.requires_a_stem, Mine.Tags.question_overrides_form,
+    #VocabSpec("えれる", "is-able-to-_", ["えれる"], extra_forms=["れる"], tags=[Mine.Tags.requires_e_stem, Mine.Tags.question_overrides_form, Mine.Tags.inflecting_word]),
 ]
 
 test_ordinary_vocab_list = [

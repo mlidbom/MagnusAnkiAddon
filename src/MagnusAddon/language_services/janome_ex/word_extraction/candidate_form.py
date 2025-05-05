@@ -1,8 +1,10 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
+from language_services import conjugator
 from language_services.janome_ex.word_extraction.display_form import DictionaryDisplayForm, DisplayForm, MissingDisplayForm, VocabDisplayForm
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
+from note.note_constants import Mine
 from sysutils.typed import non_optional
 
 if TYPE_CHECKING:
@@ -59,9 +61,28 @@ class CandidateForm:
         self.exact_match_requirement_fulfilled = self.form == self._counterpart().form or not self.exact_match_required
 
         if self.unexcluded_vocabs:
-            self.display_forms = [VocabDisplayForm(self, voc) for voc in self.unexcluded_vocabs]
+            self.display_forms = [VocabDisplayForm(self, voc) for voc in self.unexcluded_vocabs if self.vocab_is_matching(voc)]
         else:
             self.display_forms = [MissingDisplayForm(self)]
+
+    def vocab_is_matching(self, vocab:VocabNote) -> bool:
+        if vocab.has_tag(Mine.Tags.requires_a_stem):
+            return self._previous_token_ends_on_a_stem()
+        if vocab.has_tag(Mine.Tags.requires_e_stem):
+            return self._previous_token_ends_on_e_stem()
+        return True
+
+    def _previous_token_ends_on_a_stem(self) -> bool:
+        previous = self.candidate.start_location.previous
+        if previous:
+            return previous.surface[-1] in conjugator.a_stem_characters
+        return False
+
+    def _previous_token_ends_on_e_stem(self) -> bool:
+        previous = self.candidate.start_location.previous
+        if previous:
+            return previous.surface[-1] in conjugator.e_stem_characters
+        return False
 
 
     def is_valid_candidate(self) -> bool:

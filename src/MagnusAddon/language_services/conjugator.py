@@ -15,6 +15,9 @@ _ichidan_endings = ['', 'ろ', 'な']
 _godan_ru_endings = ['り', 'ら', 'れ', 'っ']
 _godan_ru_or_ichidan_endings = _godan_ru_endings + _ichidan_endings
 
+e_stem_characters:set[str] = {'え', 'け', 'げ', 'せ', 'て', 'ね', 'べ', 'め'}
+a_stem_characters:set[str] = {'わ', 'か', 'が', 'さ', 'た', 'な', 'ば', 'ま'}
+
 _1_character_mappings: dict[str, list[str]] = {'う': ['い', 'わ', 'え', 'っ'],
                                                'く': ['き', 'か', 'け', 'い'],
                                                'ぐ': ['ぎ', 'が', 'げ', 'い'],

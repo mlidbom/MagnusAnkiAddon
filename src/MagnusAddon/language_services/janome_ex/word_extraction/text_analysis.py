@@ -29,7 +29,7 @@ class TextAnalysis:
 
         for index, location in enumerate(locations[1:]):
             locations[index].next = location
-            locations[index + 1].previous = location
+            location.previous = locations[index]
 
         self.start_location = locations[0]
 

@@ -22,6 +22,9 @@ class VocabDisplayForm(DisplayForm):
         self.vocab_form = vocab.get_question()
         self.answer = vocab.get_answer()
 
+        if vocab.is_question_overrides_form():
+            self.parsed_form = self.vocab.get_question()
+
 
 class DictionaryDisplayForm(DisplayForm):
     def __init__(self, candidate: CandidateForm, dictionary_entry: DictEntry):
