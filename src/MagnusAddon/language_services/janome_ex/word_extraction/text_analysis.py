@@ -42,4 +42,6 @@ class TextAnalysis:
 
 
     def __repr__(self) -> str:
-        return newline.join([dw.__repr__() for dw in self.display_words])
+        return f"""{self.text}
+{newline.join([dw.__repr__() for dw in self.display_words])}
+"""

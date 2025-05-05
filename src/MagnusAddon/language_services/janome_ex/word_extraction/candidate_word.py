@@ -15,14 +15,14 @@ class CandidateWord:
         self.is_custom_compound: bool = len(locations) > 1
 
         self.surface: SurfaceCandidateForm = SurfaceCandidateForm(self)
-        self.base: BaseCandidateForm = BaseCandidateForm(self)
+        self.base: CandidateForm = BaseCandidateForm(self) if locations[-1].base != locations[-1].surface else self.surface
 
         self.is_word: bool = self.surface.is_word or self.base.is_word
 
         self.display_words: list[CandidateForm] = []
         if self.base.is_valid_candidate():
             self.display_words.append(self.base)
-        if self.surface.is_valid_candidate():
+        if self.surface.is_valid_candidate() and self.surface != self.base:
             self.display_words.append(self.surface)
 
     def has_valid_candidates(self) -> bool: return self.base.is_valid_candidate() or self.surface.is_valid_candidate()

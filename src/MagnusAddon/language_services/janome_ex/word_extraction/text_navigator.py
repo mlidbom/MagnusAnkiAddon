@@ -7,10 +7,10 @@ if TYPE_CHECKING:
 
 
 def forward_list(node_: TextLocation, length: int) -> list[TextLocation]:
-    result:list[TextLocation] = [node_]
+    result:list[TextLocation] = []
     index = 0
     node:Optional[TextLocation] = node_
-    while node is not None and index < length:
+    while node is not None and index <= length:
         result.append(node)
         node = node.next
         index += 1

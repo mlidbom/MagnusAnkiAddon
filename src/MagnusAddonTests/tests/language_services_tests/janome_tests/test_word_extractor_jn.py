@@ -136,6 +136,8 @@ def insert_custom_words(custom_words: list[str]) -> None:
     ("いらっしゃいません", [], [WordExclusion('いらっしゃいませ')], ['いらっしゃいます', 'ん'])
 ])
 def test_hierarchical_extraction(sentence: str, custom_words: list[str], excluded: list[WordExclusion], expected_output: list[str]) -> None:
+    print("")
+    print("###### running test")
     insert_custom_words(custom_words)
     hierarchical = word_extractor.extract_words_hierarchical(sentence, excluded)
     root_words = [w.word.word for w in hierarchical]
