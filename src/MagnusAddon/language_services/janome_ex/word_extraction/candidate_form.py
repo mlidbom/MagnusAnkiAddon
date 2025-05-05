@@ -32,7 +32,9 @@ class CandidateForm:
         self.is_excluded_by_config: bool = is_excluded_form(form)
         self.is_self_excluded: bool = form in self.forms_excluded_by_vocab_configuration
 
-    def is_valid_candidate(self) -> bool: return self.is_word and not self.is_excluded_by_config
+    def is_valid_candidate(self) -> bool: return (self.is_word
+                                                  and not self.is_excluded_by_config
+                                                  and not self.is_self_excluded)
 
     def __repr__(self) -> str:
         return f"""CandidateForm: {self.form}, ivc:{self.is_valid_candidate()}, iw:{self.is_word} ie:{self.is_excluded_by_config}""".replace(newline, "")
