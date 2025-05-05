@@ -13,17 +13,17 @@ from hooks import shortcutfinger
 
 
 def setup_anki_open_menu(string_menu:QMenu, menu_string:str) -> None:
-    search_anki_menu = non_optional(string_menu.addMenu(shortcutfinger.up1("Open in Anki")))
-
-
-    add_lookup_action(search_anki_menu, shortcutfinger.home1("Open Exact matches | no sentences | reading cards"), query_builder.exact_matches_no_sentences_reading_cards(menu_string))
-    add_lookup_action(search_anki_menu, shortcutfinger.home2("Open Exact matches with sentences"), query_builder.exact_matches(menu_string))
-
     def create_kanji_lookup() -> str:
         hiragana = kana_utils.to_hiragana(menu_string)
         if kana_utils.is_only_kana(hiragana):
             return query_builder.notes_lookup(list(app.col().kanji.with_reading(hiragana)))
         return query_builder.kanji_in_string(menu_string)
+
+    search_anki_menu = non_optional(string_menu.addMenu(shortcutfinger.up1("Open in Anki")))
+
+
+    add_lookup_action(search_anki_menu, shortcutfinger.home1("Open Exact matches | no sentences | reading cards"), query_builder.exact_matches_no_sentences_reading_cards(menu_string))
+    add_lookup_action(search_anki_menu, shortcutfinger.home2("Open Exact matches with sentences"), query_builder.exact_matches(menu_string))
 
     add_lookup_action(search_anki_menu, shortcutfinger.home3("Kanji"), create_kanji_lookup())
 
@@ -37,6 +37,7 @@ def setup_anki_open_menu(string_menu:QMenu, menu_string:str) -> None:
     add_lookup_action(search_anki_menu, shortcutfinger.down1("Sentence - Parse Vocabulary"), query_builder.sentence_search(menu_string))
     add_lookup_action(search_anki_menu, shortcutfinger.down2("Sentence - Exact String"), query_builder.sentence_search(menu_string, exact=True))
     add_text_vocab_lookup(search_anki_menu, shortcutfinger.down3("Text words"), menu_string)
+    add_lookup_action(search_anki_menu, shortcutfinger.home5("Kanji with radicals"), query_builder.kanji_with_radicals_in_string(menu_string))
 
 def setup_web_search_menu(string_menu:QMenu, menu_string:str) -> None:
     search_web_menu = non_optional(string_menu.addMenu(shortcutfinger.down1("Search Web")))

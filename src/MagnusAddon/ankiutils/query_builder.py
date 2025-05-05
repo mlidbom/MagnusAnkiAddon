@@ -131,3 +131,7 @@ def exact_matches_no_sentences_reading_cards(question: str) -> str:
 
 def immersion_kit_sentences() -> str:
     return f'''"{Builtin.Note}:{NoteTypes.immersion_kit}"'''
+
+def kanji_with_radicals_in_string(search:str) -> str:
+    radicals = search.strip().replace(",", "").replace(" ", "")
+    return " ".join([field_contains_word(NoteFields.Kanji.Radicals, char) for char in radicals])
