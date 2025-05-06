@@ -68,7 +68,8 @@ test_special_vocab = [
     VocabSpec("あれる", "get-_/is-_", ["あれる"], extra_forms=["れる"], tags=[Mine.Tags.requires_a_stem, Mine.Tags.question_overrides_form, Mine.Tags.inflecting_word]),
     VocabSpec("えれる", "is-able-to-_", ["えれる"], extra_forms=["れる"], tags=[Mine.Tags.requires_e_stem, Mine.Tags.question_overrides_form, Mine.Tags.inflecting_word]),
     VocabSpec("会える", "to-be-able: to-meet", ["あえる"], compounds=["会う", "える"]),
-    VocabSpec("作れる", "to-be-able: to-make", ["つくれる"], compounds=["作る", "える"])
+    VocabSpec("作れる", "to-be-able: to-make", ["つくれる"], compounds=["作る", "える"]),
+    VocabSpec("える", "to-be-able-to", ["える"], tags=[Mine.Tags.inflecting_word]),
 ]
 
 test_ordinary_vocab_list = [
