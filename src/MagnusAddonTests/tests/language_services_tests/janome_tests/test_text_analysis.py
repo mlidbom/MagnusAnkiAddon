@@ -139,7 +139,7 @@ def test_hierarchical_extraction(sentence: str, custom_words: list[str], exclude
     ("今日会えた", [], [], ['今日', '会える', 'た'], []),
     ("今日会えた", [], [WordExclusion("会える")], ['今日', '会う', 'える', 'た'], []),
     ("今日会えないかな", [], [], ['今日', '会える', 'ないか', 'な'], []),
-    ("今日会えないかな", [], [WordExclusion("会える")], ['今日', '会う', 'える', 'ないか', 'な'], []),
+    ("今日会えないかな", [], [WordExclusion("会える")], ['今日', '会う', 'えない', 'かな'], []),
     ("この夏は　たくさん思い出を作れたなぁ", [], [], ['この', '夏', 'は', 'たくさん', '思い出', 'を', '作れる', 'た', 'なぁ'], []),
 ])
 def test_potential_verb_splitting(sentence: str, custom_words: list[str], excluded: list[WordExclusion], expected_output: list[str], expected_display_output: list[str]) -> None:

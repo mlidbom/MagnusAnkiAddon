@@ -61,6 +61,8 @@ TextLocation('{self.start_index}-{self.end_index}, {self.surface} | {self.base} 
                 potential_stem_ending = root_verb_e_stem[-1]
                 root_verb_token = SplitToken(root_verb_eru_stem, root_verb, root_verb, True)
                 eru_token = SplitToken("える", "える", "える", True)
+                final_character = "る" if self.surface[-1] == "る" else ""
+                eru_token = SplitToken(f"{potential_stem_ending}{final_character}", "える", "える", True)
 
                 print(f"""
 verb token: {root_verb_token}
