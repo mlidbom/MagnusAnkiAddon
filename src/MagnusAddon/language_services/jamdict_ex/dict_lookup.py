@@ -48,7 +48,7 @@ class JamdictThreadingWrapper:
             except Exception as e:
                 request.future.set_exception(e)
 
-    def lookup(self, word: str, lookup_chars:bool = False, lookup_ne:bool = False) -> LookupResult:
+    def lookup(self, word: str, lookup_chars:bool, lookup_ne:bool) -> LookupResult:
         future: Future[LookupResult] = Future()
 
         def do_actual_lookup(jamdict: Jamdict) -> LookupResult:
@@ -60,6 +60,7 @@ class JamdictThreadingWrapper:
 
     def shutdown(self) -> None:
         self._running = False
+        # noinspection PyUnusedLocal
         def null_op(jamdict:Jamdict) -> str: return ""
         self._queue.put(Request(null_op, Future()))#Prevents deadlock
         self._thread.join()

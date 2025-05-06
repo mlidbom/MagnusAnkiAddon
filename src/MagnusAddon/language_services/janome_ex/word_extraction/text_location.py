@@ -1,17 +1,15 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
-from language_services import conjugator
 from note.note_constants import Mine
 from sysutils import ex_sequence
-from sysutils.typed import non_optional
 
 if TYPE_CHECKING:
     from note.vocabnote import VocabNote
     from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
     from language_services.janome_ex.word_extraction.candidate_form import CandidateForm
 
-from language_services.janome_ex.tokenizing.jn_tokenized_text import ProcessedToken, SplitToken
+from language_services.janome_ex.tokenizing.jn_tokenized_text import ProcessedToken
 
 from typing import Optional
 
@@ -48,15 +46,15 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.sur
 """
 
     def forward_list(self, length: int = 99999) -> list[TokenTextLocation]:
-        list = self.analysis.locations[self.token_index: self.token_index + length + 1]
-        return list
+        locations = self.analysis.locations[self.token_index: self.token_index + length + 1]
+        return locations
 
     def run_analysis_step_1(self) -> None:
         if len(self.analysis.locations) > self.token_index + 1:
             self.next = self.analysis.locations[self.token_index + 1]
 
         if self.token_index > 0:
-            self.previous = self.analysis.locations[self.token_index -1]
+            self.previous = self.analysis.locations[self.token_index - 1]
 
         lookahead_max = min(_max_lookahead, len(self.forward_list(_max_lookahead)))
         self.all_candidates = [CandidateWord(self.forward_list(index)) for index in range(lookahead_max - 1, -1, -1)]

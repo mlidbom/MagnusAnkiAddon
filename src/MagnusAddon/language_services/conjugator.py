@@ -15,7 +15,6 @@ _ichidan_endings = ['', 'ろ', 'な']
 _godan_ru_endings = ['り', 'ら', 'れ', 'っ']
 _godan_ru_or_ichidan_endings = _godan_ru_endings + _ichidan_endings
 
-godan_potential_verb_endings :set[str] = {'える', 'ける', 'げる', 'せる', 'てる', 'ねる', 'べる', 'める', 'れる'}
 godan_potential_verb_ending_to_dictionary_form_endings: dict[str, str] = {'える': 'う', 'ける': 'く', 'げる': 'ぐ', 'せる': 'す', 'てる': 'つ', 'ねる': 'ぬ', 'べる': 'ぶ', 'める': 'む', 'れる': 'る'}
 
 e_stem_characters:set[str] = {'え', 'け', 'げ', 'せ', 'て', 'ね', 'べ', 'め', 'れ'}
