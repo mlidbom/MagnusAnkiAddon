@@ -6,11 +6,11 @@ class ProcessedToken:
     def __init__(self, surface: str, base: str, base_for_vocab: str) -> None:
         self.surface = surface
         self.base_form = base
-        self.base_form_for_vocab_matching = base_for_vocab
+        self.base_form_for_non_compound_vocab_matching = base_for_vocab
         self.is_inflectable_word: bool = False
 
     def __repr__(self) -> str:
-        return f"ProcessedToken('{self.surface}', '{self.base_form}', '{self.base_form_for_vocab_matching}', {self.is_inflectable_word})"
+        return f"ProcessedToken('{self.surface}', '{self.base_form}', '{self.base_form_for_non_compound_vocab_matching}', {self.is_inflectable_word})"
 
 class SplitToken(ProcessedToken):
     def __init__(self, surface: str, base: str, base_for_vocab: str, is_inflectable_word: bool) -> None:
