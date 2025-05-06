@@ -8,6 +8,7 @@ if TYPE_CHECKING:
     from note.vocabnote import VocabNote
     from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
     from language_services.janome_ex.word_extraction.candidate_form import CandidateForm
+    from language_services.janome_ex.tokenizing.jn_tokenized_text import ProcessedToken
 
 from typing import Optional
 
@@ -19,11 +20,11 @@ from sysutils.ex_str import newline
 _max_lookahead = 12
 
 class TokenTextLocation:
-    def __init__(self, analysis: TextAnalysis, token: JNToken, start_index: int):
+    def __init__(self, analysis: TextAnalysis, token: ProcessedToken, start_index: int):
         surface = token.surface
         base = token.base_form
         self.is_covered_by: Optional[TokenTextLocation] = None
-        self.token: JNToken = token
+        self.token: ProcessedToken = token
         self.analysis: TextAnalysis = analysis
         self.start_index: int = start_index
         self.end_index: int = start_index + len(surface) - 1

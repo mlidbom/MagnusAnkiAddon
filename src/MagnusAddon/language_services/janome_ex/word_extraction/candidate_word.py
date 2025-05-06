@@ -22,7 +22,7 @@ class CandidateWord:
 
         self.is_word: bool = self.surface.is_word or self.base.is_word
 
-        self.is_inflectable_word: bool = self.end_location.token.is_inflectable_word()
+        self.is_inflectable_word: bool = self.end_location.token.is_inflectable_word
         self.next_token_is_inflecting_word: bool = self.end_location.is_next_location_inflecting_word()
         self.is_inflected_word: bool = self.is_inflectable_word and self.next_token_is_inflecting_word
 

@@ -1,7 +1,10 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
+from language_services.janome_ex.tokenizing.jn_tokenized_text import ProcessedToken
+
 if TYPE_CHECKING:
+    from language_services.janome_ex.tokenizing.jn_token import JNToken
     from language_services.janome_ex.word_extraction.candidate_form import CandidateForm
     from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 
@@ -18,7 +21,7 @@ class TextAnalysis:
         self.text = sentence
         self.exclusions = exclusions
         print(f"exclusions: {exclusions}")
-        self.tokens = _tokenizer.tokenize(sentence).tokens
+        self.tokens:list[ProcessedToken] = _tokenizer.tokenize(sentence).pre_process()
 
         locations:list[TokenTextLocation] = []
 
