@@ -62,14 +62,14 @@ class CandidateForm:
         self.exact_match_requirement_fulfilled = self.form == self._counterpart().form or not self.exact_match_required
 
         if self.unexcluded_vocabs:
-            self.display_forms = [VocabDisplayForm(self, voc) for voc in self.unexcluded_vocabs if self.vocab_is_matching(voc)]
+            self.display_forms = [VocabDisplayForm(self, voc) for voc in self.unexcluded_vocabs if self.vocab_fulfills_stem_requirements(voc)]
             override_form = [df for df in self.display_forms if df.parsed_form != self.form]
             if any(override_form):
                 self.form = override_form[0].parsed_form
         else:
             self.display_forms = [MissingDisplayForm(self)]
 
-    def vocab_is_matching(self, vocab:VocabNote) -> bool:
+    def vocab_fulfills_stem_requirements(self, vocab:VocabNote) -> bool:
         if vocab.has_tag(Mine.Tags.requires_a_stem):
             return self._previous_token_ends_on_a_stem()
         if vocab.has_tag(Mine.Tags.requires_e_stem):
