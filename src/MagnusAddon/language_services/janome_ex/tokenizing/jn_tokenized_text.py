@@ -1,6 +1,7 @@
 from language_services import conjugator
 from language_services.jamdict_ex.dict_lookup import DictLookup
 from language_services.janome_ex.tokenizing.jn_token import JNToken
+from mylog import log
 from note.collection.vocab_collection import VocabCollection
 from sysutils import ex_sequence
 
@@ -29,61 +30,50 @@ class JNTokenWrapper(ProcessedToken):
         self.is_inflectable_word = self.token.is_inflectable_word()
 
     def pre_process(self) -> list[ProcessedToken]:
-        vocab_based_potential_verb_split = self._try_find_vocab_based_potential_verb_split()
+        vocab_based_potential_verb_split = self._try_find_vocab_based_potential_verb_compound()
         if vocab_based_potential_verb_split: return vocab_based_potential_verb_split
 
-        dictionary_based_potential_verb_split = self._try_find_dictionary_based_potential_verb_split()
+        dictionary_based_potential_verb_split = self._try_find_dictionary_based_potential_verb_compound()
         if dictionary_based_potential_verb_split: return dictionary_based_potential_verb_split
 
         return [self]
 
-    def _try_find_vocab_based_potential_verb_split(self) -> list[ProcessedToken]:
+    def _try_find_vocab_based_potential_verb_compound(self) -> list[ProcessedToken]:
         for vocab in self._vocabs.with_question(self.base_form):
             compound_parts = vocab.get_user_compounds()
             if len(compound_parts) == 2 and compound_parts[1] == "える":
-                root_verb = compound_parts[0]
-                root_verb_e_stem = conjugator.get_e_stem(root_verb, is_godan=True)
-                root_verb_eru_stem = root_verb_e_stem[:-1]
-                potential_stem_ending = root_verb_e_stem[-1]
-                root_verb_token = SplitToken(root_verb_eru_stem, root_verb, root_verb, True, True)
-                final_character = "る" if self.surface[-1] == "る" else ""
-                eru_token = SplitToken(f"{potential_stem_ending}{final_character}", f"{potential_stem_ending}る", "える", True, True)
-
-                new_surface = root_verb_token.surface + eru_token.surface
-
-                if new_surface != self.surface:
-                    raise Exception(f"################### error, combined surface should be {self.surface} but is {new_surface} ##################")
-
-                return [root_verb_token, eru_token]
+                return self._build_potential_verb_compound(compound_parts[0])
         return []
+
+    def _try_find_dictionary_based_potential_verb_compound(self) -> list[ProcessedToken]:
+        if len(self.token.base_form) >= 3 and self.token.base_form[-2:] in conjugator.godan_potential_verb_ending_to_dictionary_form_endings:
+            if not self._is_word(self.token.base_form): #the potential verbs are generally not in the dictionary this is how we know them
+                root_verb = conjugator.construct_root_verb_for_possibly_potential_godan_verb_dictionary_form(self.token.base_form)
+                if self._is_word(root_verb):
+                    return self._build_potential_verb_compound(root_verb)
+        return []
+
+    def _build_potential_verb_compound(self, root_verb: str) -> list[ProcessedToken]:
+        root_verb_e_stem = conjugator.get_e_stem(root_verb, is_godan=True)
+        root_verb_eru_stem = root_verb_e_stem[:-1]
+        potential_stem_ending = root_verb_e_stem[-1]
+        root_verb_token = SplitToken(root_verb_eru_stem, root_verb, root_verb, True, True)
+        final_character = "る" if self.surface[-1] == "る" else ""
+        eru_token = SplitToken(f"{potential_stem_ending}{final_character}", f"{potential_stem_ending}る", "える", True, True)
+        new_surface = root_verb_token.surface + eru_token.surface
+        if new_surface != self.surface:
+            log.warning(f"combined surface should be {self.surface} but is {new_surface}, bailing out")
+            return []
+        new_base = root_verb_token.surface + eru_token.base_form
+        if new_base != self.base_form:
+            log.warning(f"combined base should be {self.base_form} but is {new_base} bailing out")
+            return []
+        return [root_verb_token, eru_token]
 
     @staticmethod
     def _is_word(candidate: str) -> bool:
         from ankiutils import app
         return app.col().vocab.with_form(candidate) != [] or DictLookup.is_word(candidate)
-
-    def _try_find_dictionary_based_potential_verb_split(self) -> list[ProcessedToken]:
-        if len(self.token.base_form) >= 3 and self.token.base_form[-2:] in conjugator.godan_potential_verb_ending_to_dictionary_form_endings:
-            if not self._is_word(self.token.base_form):
-                root_verb = conjugator.construct_root_verb_for_possibly_potential_godan_verb_dictionary_form(self.token.base_form)
-                if self._is_word(root_verb):
-                    root_verb_e_stem = conjugator.get_e_stem(root_verb, is_godan=True)
-                    root_verb_eru_stem = root_verb_e_stem[:-1]
-                    potential_stem_ending = root_verb_e_stem[-1]
-                    root_verb_token = SplitToken(root_verb_eru_stem, root_verb, root_verb, True, True)
-                    final_character = "る" if self.surface[-1] == "る" else ""
-                    eru_token = SplitToken(f"{potential_stem_ending}{final_character}", f"{potential_stem_ending}る", "える", True, True)
-
-                    new_surface = root_verb_token.surface + eru_token.surface
-                    if new_surface != self.surface:
-                        raise Exception(f"################### error, combined surface should be {self.surface} but is {new_surface} ##################")
-
-                    new_base = root_verb_token.surface + eru_token.base_form
-                    if new_base != self.base_form:
-                        raise Exception(f"################### error, combined base should be {self.base_form} but is {new_base} ##################")
-
-                    return [root_verb_token, eru_token]
-        return []
 
 class JNTokenizedText:
     def __init__(self, text: str, tokens: list[JNToken]) -> None:
