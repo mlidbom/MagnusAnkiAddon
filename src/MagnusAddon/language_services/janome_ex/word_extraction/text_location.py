@@ -1,6 +1,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
+from language_services import conjugator
 from note.note_constants import Mine
 from sysutils import ex_sequence
 
@@ -8,7 +9,8 @@ if TYPE_CHECKING:
     from note.vocabnote import VocabNote
     from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
     from language_services.janome_ex.word_extraction.candidate_form import CandidateForm
-    from language_services.janome_ex.tokenizing.jn_tokenized_text import ProcessedToken
+
+from language_services.janome_ex.tokenizing.jn_tokenized_text import ProcessedToken, SplitToken
 
 from typing import Optional
 
@@ -32,12 +34,12 @@ class TokenTextLocation:
         self.previous: Optional[TokenTextLocation] = None
         self.next: Optional[TokenTextLocation] = None
 
-        self.all_candidates: list[CandidateWord] = []
         self.word_candidates: list[CandidateWord] = []
         self.valid_candidates: list[CandidateWord] = []
         self.display_words: list[CandidateForm] = []
         self.all_words: list[CandidateForm] = []
         self.root_candidate_word = CandidateWord([self])
+        self.all_candidates: list[CandidateWord] = [self.root_candidate_word]
 
     def __repr__(self) -> str:
         return f"""
@@ -48,7 +50,35 @@ TextLocation('{self.start_index}-{self.end_index}, {self.surface} | {self.base} 
     def forward_list(self, length: int = 99999) -> list[TokenTextLocation]:
         return text_navigator.forward_list(self, length)
 
-    def run_analysis_step_0(self) -> None:
+    def run_analysis_step_0_split_potential_verbs(self) -> None:
+        self.root_candidate_word.complete_analysis()
+        if len(self.root_candidate_word.display_words) == 1:
+            for vocab in self.root_candidate_word.display_words[0].unexcluded_vocabs:
+                compound_parts = vocab.get_user_compounds()
+                if len(compound_parts) == 2 and compound_parts[1] == "える":
+                    root_verb = compound_parts[0]
+                    root_verb_e_stem = conjugator.get_e_stem(root_verb, is_godan=True)
+                    root_verb_eru_stem = root_verb_e_stem[:-1]
+                    potential_stem_ending = root_verb_e_stem[-1]
+                    root_verb_token = SplitToken(root_verb_eru_stem, root_verb, root_verb, True)
+
+                    final_character = "る" if self.surface[-1] == "る" else ""
+
+                    eru_token = SplitToken(f"{potential_stem_ending}{final_character}", "える", "える", True)
+
+                    root_verb_location = TokenTextLocation(self.analysis, root_verb_token, self.start_index )
+                    eru_location = TokenTextLocation(self.analysis, eru_token, self.end_index - len(eru_token.surface) + 1)
+                    root_verb_location.next = eru_location
+                    eru_location.previous = root_verb_location
+                    eru_location.next = self.next
+                    root_verb_location.previous = self.previous
+
+                    if self.next:
+                        self.next.previous = eru_location
+
+                    break
+
+
 
         if self.next:
             self.next.run_analysis_step_1()

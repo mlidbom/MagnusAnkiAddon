@@ -35,7 +35,7 @@ class TextAnalysis:
 
         self.start_location = locations[0]
 
-        self.start_location.run_analysis_step_0()
+        self.start_location.run_analysis_step_0_split_potential_verbs()
         self.start_location.run_analysis_step_1()
         self.start_location.run_analysis_step_2()
 
