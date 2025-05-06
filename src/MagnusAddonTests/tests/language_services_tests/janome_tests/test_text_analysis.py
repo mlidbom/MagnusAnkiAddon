@@ -1,4 +1,4 @@
-from typing import Generator
+from typing import Any, Generator
 
 import pytest
 
@@ -8,7 +8,7 @@ from language_services.janome_ex.word_extraction.word_exclusion import WordExclu
 from note.vocabnote import VocabNote
 
 # noinspection PyUnusedFunction
-@pytest.fixture(scope="function", autouse=True)
+@pytest.fixture(scope="function")
 def setup_collection() -> Generator[None, None, None]:
     with inject_anki_collection_with_select_data(special_vocab=True):
         yield
@@ -39,7 +39,7 @@ def setup_collection() -> Generator[None, None, None]:
     ("さっさと傷を清めてこい",
      ['さっさと', '傷', 'を', '清める', 'て', 'くる', 'こい'])
 ])
-def test_identify_words(sentence: str, expected_output: list[str]) -> None:
+def test_identify_words(setup_collection:Any, sentence: str, expected_output: list[str]) -> None:
     expected = set(expected_output)
     analysis = TextAnalysis(sentence, [])
     root_words = set([w.form for w in analysis.all_words])
@@ -51,14 +51,14 @@ def test_identify_words(sentence: str, expected_output: list[str]) -> None:
      ['彼', '彼の', '彼の日本語', 'の', '日本語', '日本語のレベル', 'レベル', 'は', '私', 'と', '同じ', '同じ位', '位', 'だ']
      )
 ])
-def test_custom_vocab_words(sentence: str, custom_words: list[str], expected_output: list[str]) -> None:
+def test_custom_vocab_words(setup_collection:Any, sentence: str, custom_words: list[str], expected_output: list[str]) -> None:
     insert_custom_words(custom_words)
 
     analysis = TextAnalysis(sentence, [])
     root_words = set([w.form for w in analysis.all_words])
     assert root_words == set(expected_output)
 
-def test_ignores_noise_characters() -> None:
+def test_ignores_noise_characters(setup_collection:Any) -> None:
     sentence = ". , : ; / | 。 、 ー"
     expected = {"ー"}
 
@@ -125,7 +125,7 @@ def insert_custom_words(custom_words: list[str]) -> None:
     ("食べれる", [], [], ['食べる', 'えれる'], ['食べる', 'えれる']),
     ("破られたか", [], [], ['破る', 'あれる', 'たか'], ['破る', 'あれる', 'たか'])
 ])
-def test_hierarchical_extraction(sentence: str, custom_words: list[str], excluded: list[WordExclusion], expected_output: list[str], expected_display_output: list[str]) -> None:
+def test_hierarchical_extraction(setup_collection:Any, sentence: str, custom_words: list[str], excluded: list[WordExclusion], expected_output: list[str], expected_display_output: list[str]) -> None:
     _run_assertions(sentence, custom_words, excluded, expected_output, expected_display_output)
 
 @pytest.mark.parametrize('sentence, custom_words, excluded, expected_output, expected_display_output', [
@@ -142,7 +142,7 @@ def test_hierarchical_extraction(sentence: str, custom_words: list[str], exclude
     ("今日会えないかな", [], [WordExclusion("会える")], ['今日', '会う', 'えない', 'かな'], []),
     ("この夏は　たくさん思い出を作れたなぁ", [], [], ['この', '夏', 'は', 'たくさん', '思い出', 'を', '作れる', 'た', 'なぁ'], []),
 ])
-def test_potential_verb_splitting(sentence: str, custom_words: list[str], excluded: list[WordExclusion], expected_output: list[str], expected_display_output: list[str]) -> None:
+def test_potential_verb_splitting(setup_collection:Any, sentence: str, custom_words: list[str], excluded: list[WordExclusion], expected_output: list[str], expected_display_output: list[str]) -> None:
     _run_assertions(sentence, custom_words, excluded, expected_output, expected_display_output)
 
 def _run_assertions(sentence: str, custom_words: list[str], excluded: list[WordExclusion], expected_output: list[str], expected_display_output: list[str]) -> None:
@@ -174,7 +174,7 @@ def insert_custom_words_with_excluded_forms(custom_words: list[list[str]]) -> No
      [["する", "[[し]]", "[[して]]"]],
      ['リセット', 'する', 'て', 'ても', 'も'],)
 ])
-def test_custom_vocab_words_with_excluded_forms(sentence: str, custom_words: list[list[str]], expected_output: list[str]) -> None:
+def test_custom_vocab_words_with_excluded_forms(setup_collection:Any, sentence: str, custom_words: list[list[str]], expected_output: list[str]) -> None:
     insert_custom_words_with_excluded_forms(custom_words)
 
     analysis = TextAnalysis(sentence, [])
