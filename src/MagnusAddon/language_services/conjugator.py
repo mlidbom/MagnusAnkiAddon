@@ -70,10 +70,12 @@ def _get_stem(word: str, stem_index: int, is_ichidan_verb: bool = False, is_goda
         return word[:-2] + _aru_mappings[word[-2:]][stem_index]
     if is_ichidan_verb:
         return word[:-1]
+    if is_godan:
+        return word[:-1] + _1_character_mappings[word[-1]][stem_index]
     if word[-2:] in _2_character_mappings:
         return word[:-2] + _2_character_mappings[word[-2:]][stem_index]
     if word[-1] in _1_character_mappings:
-        if is_godan or word[-1] != "る":
+        if word[-1] != "る":
             return word[:-1] + _1_character_mappings[word[-1]][stem_index]
         else:
             return word[:-1] + _1_character_mappings[word[-1]][stem_index]

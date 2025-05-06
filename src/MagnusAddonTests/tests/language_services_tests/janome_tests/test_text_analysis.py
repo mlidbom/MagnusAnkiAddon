@@ -164,7 +164,8 @@ def test_potential_verb_splitting_with_vocab(setup_collection_with_select_data: 
     ("今日会えないかな", [], [], ['今日', '会う', 'える', 'ないか', 'な'], []),
     ("今日会えないかな", [], [WordExclusion("会える")], ['今日', '会う', 'える', 'ないか', 'な'], []),
     ("この夏は　たくさん思い出を作れたなぁ", [], [], ['この', '夏', 'は', 'たくさん', '思い出', 'を', '作る', 'える', 'た', 'なぁ'], []),
-    ("買えよ　私", [], [], ['買える', '買えよ', '私'], [])
+    ("買えよ　私", [], [], ['買える', '買えよ', '私'], []),
+    ("覚ませない", [], [], ['覚ます', 'える', 'ない'], [])
 ])
 def test_potential_verb_splitting_without_vocab(setup_empty_collection:Any, sentence: str, custom_words: list[str], excluded: list[WordExclusion], expected_output: list[str], expected_display_output: list[str]) -> None:
     _run_assertions(sentence, custom_words, excluded, expected_output, expected_display_output)
