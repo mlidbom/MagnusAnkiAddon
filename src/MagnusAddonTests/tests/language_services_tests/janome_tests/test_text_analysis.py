@@ -9,7 +9,7 @@ from note.vocabnote import VocabNote
 
 # noinspection PyUnusedFunction
 @pytest.fixture(scope="function", autouse=True)
-def setup_object() -> Generator[None, None, None]:
+def setup_collection() -> Generator[None, None, None]:
     with inject_anki_collection_with_select_data(special_vocab=True):
         yield
 
