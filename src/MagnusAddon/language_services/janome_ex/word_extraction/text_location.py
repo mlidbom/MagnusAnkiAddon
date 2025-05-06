@@ -56,7 +56,10 @@ TextLocation('{self.start_index}-{self.end_index}, {self.surface} | {self.base} 
             compound_parts = vocab.get_user_compounds()
             if len(compound_parts) == 2 and compound_parts[1] == "える":
                 root_verb = compound_parts[0]
-                root_verb_token = SplitToken(root_verb, root_verb, root_verb, True)
+                root_verb_e_stem = conjugator.get_e_stem(root_verb, is_godan=True)
+                root_verb_eru_stem = root_verb_e_stem[:-1]
+                potential_stem_ending = root_verb_e_stem[-1]
+                root_verb_token = SplitToken(root_verb_eru_stem, root_verb, root_verb, True)
                 eru_token = SplitToken("える", "える", "える", True)
 
                 print(f"""
@@ -75,7 +78,7 @@ eru token: {eru_token}
 
 
         if self.next:
-            self.next.run_analysis_step_1()
+            self.next.run_analysis_step_0_split_potential_verbs()
 
     def _insert_after(self, other: TokenTextLocation) -> None:
         other.previous = self
