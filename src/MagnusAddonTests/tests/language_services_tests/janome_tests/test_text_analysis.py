@@ -131,7 +131,7 @@ def test_hierarchical_extraction(sentence: str, custom_words: list[str], exclude
 @pytest.mark.parametrize('sentence, custom_words, excluded, expected_output, expected_display_output', [
     ("会える", [], [], ["会える"], []),
     ("会える", [], [WordExclusion("会える")], ['会う', 'える'], []),
-    # ("会えて", [], [WordExclusion("会える")], ['会う', 'える', 'て'], []),
+    ("会えて", [], [WordExclusion("会える")], ['会う', 'える', 'て'], []),
     ("作れる", [], [], ['作れる'], []),
     #("作れる", [], [WordExclusion("作れる")], ['作れる'], []),
     ("作れて", [], [], ['作れる', 'て'], []),

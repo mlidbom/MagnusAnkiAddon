@@ -56,14 +56,8 @@ TextLocation('{self.start_index}-{self.end_index}, {self.surface} | {self.base} 
             compound_parts = vocab.get_user_compounds()
             if len(compound_parts) == 2 and compound_parts[1] == "える":
                 root_verb = compound_parts[0]
-                root_verb_e_stem = conjugator.get_e_stem(root_verb, is_godan=True)
-                root_verb_eru_stem = root_verb_e_stem[:-1]
-                potential_stem_ending = root_verb_e_stem[-1]
-                root_verb_token = SplitToken(root_verb_eru_stem, root_verb, root_verb, True)
-
-                final_character = "る" if self.surface[-1] == "る" else ""
-
-                eru_token = SplitToken(f"{potential_stem_ending}{final_character}", "える", "える", True)
+                root_verb_token = SplitToken(root_verb, root_verb, root_verb, True)
+                eru_token = SplitToken("える", "える", "える", True)
 
                 print(f"""
 verb token: {root_verb_token}
@@ -91,6 +85,9 @@ eru token: {eru_token}
             self.next.previous = other
 
     def _replace_with(self, other: TokenTextLocation) -> None:
+        if self.analysis.start_location == self:
+            self.analysis.start_location = other
+
         other.previous = self.previous
         other.next = self.next
         if self.previous:
