@@ -1,30 +1,50 @@
+from language_services import conjugator
 from language_services.janome_ex.tokenizing.jn_token import JNToken
+from note.collection.vocab_collection import VocabCollection
+from sysutils import ex_sequence
 
 class ProcessedToken:
-    def __init__(self, surface:str, base:str) -> None:
+    def __init__(self, surface: str, base: str) -> None:
         self.surface = surface
         self.base_form = base
         self.is_inflectable_word: bool = False
 
-        self._second_level_processing()
-
-    def _second_level_processing(self) -> None: pass
+class SplitToken(ProcessedToken):
+    def __init__(self, surface: str, base: str, is_inflectable_word: bool) -> None:
+        super().__init__(surface, base)
+        self.is_inflectable_word = is_inflectable_word
 
 class JNTokenWrapper(ProcessedToken):
-    def __init__(self, token: JNToken) -> None:
-        self.token = token
-
+    def __init__(self, token: JNToken, vocabs: VocabCollection) -> None:
         super().__init__(token.surface, token.base_form)
-
-    def _second_level_processing(self) -> None:
+        self.token = token
+        self._vocabs = vocabs
         self.is_inflectable_word = self.token.is_inflectable_word()
 
+    eru_token = SplitToken("える", "える", True)
+
+    def pre_process(self) -> list[ProcessedToken]:
+        for vocab in self._vocabs.with_question(self.base_form):
+            compound_parts = vocab.get_user_compounds()
+            if len(compound_parts) == 2 and compound_parts[1] == "える":
+                root_verb = compound_parts[0]
+                root_verb_true_e_stem = conjugator.get_e_stem(root_verb, is_godan=True)
+                root_verb_eru_stem = root_verb_true_e_stem[:-1]
+                root_verb_token = SplitToken(root_verb_eru_stem, root_verb, True)
+                return [root_verb_token, self.eru_token]
+
+        return [self]
 
 class JNTokenizedText:
     def __init__(self, text: str, tokens: list[JNToken]) -> None:
         self.text = text
         self.tokens = tokens
 
-
     def pre_process(self) -> list[ProcessedToken]:
-        return [JNTokenWrapper(token) for token in self.tokens]
+        from ankiutils import app
+        vocab = app.col().vocab
+
+        step1 = [JNTokenWrapper(token, vocab) for token in self.tokens]
+        step2 = ex_sequence.flatten([token.pre_process() for token in step1])
+
+        return step2

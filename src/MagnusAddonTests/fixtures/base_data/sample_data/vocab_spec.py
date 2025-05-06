@@ -13,12 +13,14 @@ class VocabSpec:
                  answer: str,
                  readings: list[str],
                  extra_forms: list[str] = [],
-                 tags: list[str] = []):
+                 tags: list[str] = [],
+                 compounds: list[str] = []):
         self.question = question
         self.answer = answer
         self.readings = readings
         self.extra_forms = set(extra_forms)
         self.tags = set(tags)
+        self.compounds = compounds
 
     def __repr__(self) -> str: return f"""VocabSpec("{self.question}", "{self.answer}", {self.readings})"""
 
@@ -33,6 +35,8 @@ class VocabSpec:
     def create_vocab_note(self) -> VocabNote:
         from note.vocabnote import VocabNote
         vocab_note = VocabNote.create(self.question, self.answer, self.readings)
+        vocab_note.set_user_compounds(self.compounds)
+
         if self.extra_forms:
             vocab_note.set_forms(vocab_note.get_forms() | self.extra_forms)
 
@@ -63,6 +67,7 @@ test_special_vocab = [
     VocabSpec("を頼む", "I-entrust-to-you", ["を頼む"], tags=[Mine.Tags.requires_exact_match]),
     VocabSpec("あれる", "get-_/is-_", ["あれる"], extra_forms=["れる"], tags=[Mine.Tags.requires_a_stem, Mine.Tags.question_overrides_form, Mine.Tags.inflecting_word]),
     VocabSpec("えれる", "is-able-to-_", ["えれる"], extra_forms=["れる"], tags=[Mine.Tags.requires_e_stem, Mine.Tags.question_overrides_form, Mine.Tags.inflecting_word]),
+    VocabSpec("会える", "to-be-able: to-meet", ["あえる"], compounds=["会う", "える"] )
 ]
 
 test_ordinary_vocab_list = [
