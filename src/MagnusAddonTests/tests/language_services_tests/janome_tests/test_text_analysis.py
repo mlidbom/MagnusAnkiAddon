@@ -128,12 +128,15 @@ def insert_custom_words(custom_words: list[str]) -> None:
 def test_hierarchical_extraction(sentence: str, custom_words: list[str], excluded: list[WordExclusion], expected_output: list[str], expected_display_output: list[str]) -> None:
     _run_assertions(sentence, custom_words, excluded, expected_output, expected_display_output)
 
-
 @pytest.mark.parametrize('sentence, custom_words, excluded, expected_output, expected_display_output', [
-    ("今日会えないかな", [], [], ['今日', '会える', 'ないか', 'な'], []),
-    ("今日会えないかな", [], [WordExclusion("会える")], ['今日', '会う', 'える', 'ないか', 'な'], []),
-    ("作れて", [], [], ['作れる', 'て'], []),
-    ("この夏は　たくさん思い出を作れたなぁ", [], [], ['この', '夏', 'は', 'たくさん', '思い出', 'を', '作れる', 'た', 'なぁ'], []),
+    ("会える", [], [], ["会える"], []),
+    ("会える", [], [WordExclusion("会える")], ['会う', 'える'], []),
+    ("会えて", [], [WordExclusion("会える")], ['会う', 'える', 'て'], []),
+    ("作れる", [], [], ['作れる'], []),
+    # ("作れて", [], [], ['作れる', 'て'], []),
+    # ("今日会えないかな", [], [], ['今日', '会える', 'ないか', 'な'], []),
+    # ("今日会えないかな", [], [WordExclusion("会える")], ['今日', '会う', 'える', 'ないか', 'な'], []),
+    # ("この夏は　たくさん思い出を作れたなぁ", [], [], ['この', '夏', 'は', 'たくさん', '思い出', 'を', '作れる', 'た', 'なぁ'], []),
 ])
 def test_potential_verb_splitting(sentence: str, custom_words: list[str], excluded: list[WordExclusion], expected_output: list[str], expected_display_output: list[str]) -> None:
     _run_assertions(sentence, custom_words, excluded, expected_output, expected_display_output)

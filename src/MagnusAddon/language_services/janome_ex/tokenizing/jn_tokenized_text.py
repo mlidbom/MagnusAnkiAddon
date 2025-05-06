@@ -32,11 +32,10 @@ class JNTokenWrapper(ProcessedToken):
                 potential_stem_ending = root_verb_e_stem[-1]
                 root_verb_token = SplitToken(root_verb_eru_stem, root_verb, root_verb, True)
 
+                final_character = "る" if self.surface[-1] == "る" else ""
 
-                eru_token = SplitToken(f"{potential_stem_ending}る", "える", "える", True)
+                eru_token = SplitToken(f"{potential_stem_ending}{final_character}", "える", "える", True)
                 return [root_verb_token, eru_token]
-
-
 
         return [self]
 
