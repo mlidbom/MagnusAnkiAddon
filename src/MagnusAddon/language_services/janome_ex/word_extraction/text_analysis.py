@@ -22,23 +22,21 @@ class TextAnalysis:
         print(f"exclusions: {exclusions}")
         self.tokens:list[ProcessedToken] = _tokenizer.tokenize(sentence).pre_process()
 
-        locations:list[TokenTextLocation] = []
+        self.locations:list[TokenTextLocation] = []
 
         character_index = 0
         for token_index, token in enumerate(self.tokens):
-            locations.append(TokenTextLocation(self, token, character_index))
+            self.locations.append(TokenTextLocation(self, token, character_index, token_index))
             character_index += len(token.surface)
 
-        for index, location in enumerate(locations[1:]):
-            locations[index].next = location
-            location.previous = locations[index]
+        self.start_location = self.locations[0]
 
-        self.start_location = locations[0]
+        for location in self.locations:
+            location.run_analysis_step_1()
 
-        self.start_location.run_analysis_step_1()
-        self.start_location.run_analysis_step_2()
+        for location in self.locations:
+            location.run_analysis_step_2()
 
-        self.locations = self.start_location.forward_list()
         self.display_words:list[CandidateForm] = ex_sequence.flatten([loc.display_words for loc in self.locations])
         self.all_words: list[CandidateForm] = ex_sequence.flatten([loc.all_words for loc in self.locations])
 

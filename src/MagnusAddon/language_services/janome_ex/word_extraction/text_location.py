@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 from language_services import conjugator
 from note.note_constants import Mine
 from sysutils import ex_sequence
+from sysutils.typed import non_optional
 
 if TYPE_CHECKING:
     from note.vocabnote import VocabNote
@@ -14,25 +15,23 @@ from language_services.janome_ex.tokenizing.jn_tokenized_text import ProcessedTo
 
 from typing import Optional
 
-from language_services.janome_ex.word_extraction import text_navigator
 from language_services.janome_ex.word_extraction.candidate_word import CandidateWord
 from sysutils.ex_str import newline
 
 _max_lookahead = 12
 
 class TokenTextLocation:
-    def __init__(self, analysis: TextAnalysis, token: ProcessedToken, start_index: int):
+    def __init__(self, analysis: TextAnalysis, token: ProcessedToken, character_start_index: int, token_index: int):
         surface = token.surface
         base = token.base_form
         self.is_covered_by: Optional[TokenTextLocation] = None
         self.token: ProcessedToken = token
         self.analysis: TextAnalysis = analysis
-        self.start_index: int = start_index
-        self.end_index: int = start_index + len(surface) - 1
+        self.token_index: int = token_index
+        self.character_start_index: int = character_start_index
+        self.character_end_index: int = character_start_index + len(surface) - 1
         self.surface: str = surface
         self.base: str = base
-        self.previous: Optional[TokenTextLocation] = None
-        self.next: Optional[TokenTextLocation] = None
 
         self.word_candidates: list[CandidateWord] = []
         self.valid_candidates: list[CandidateWord] = []
@@ -42,20 +41,18 @@ class TokenTextLocation:
 
     def __repr__(self) -> str:
         return f"""
-TextLocation('{self.start_index}-{self.end_index}, {self.surface} | {self.base}  prev.start:{self.previous.start_index if self.previous else None}, next.start:{self.next.start_index if self.next else None})
+TextLocation('{self.character_start_index}-{self.character_end_index}, {self.surface} | {self.base})
 {newline.join([cand.__repr__() for cand in self.word_candidates])}
 """
 
     def forward_list(self, length: int = 99999) -> list[TokenTextLocation]:
-        return text_navigator.forward_list(self, length)
+        list = self.analysis.locations[self.token_index: self.token_index + length + 1]
+        return list
 
     def run_analysis_step_1(self) -> None:
         lookahead_max = min(_max_lookahead, len(self.forward_list(_max_lookahead)))
         self.all_candidates = [CandidateWord(self.forward_list(index)) for index in range(lookahead_max - 1, -1, -1)]
         self.all_candidates[-1].complete_analysis()  # the non-compound part needs to be completed first
-
-        if self.next:
-            self.next.run_analysis_step_1()
 
     def run_analysis_step_2(self) -> None:
         for cand in self.all_candidates[:-1]:  # we already have the last one completed
@@ -75,11 +72,19 @@ TextLocation('{self.start_index}-{self.end_index}, {self.surface} | {self.base} 
 
         self.all_words = ex_sequence.flatten([v.display_words for v in self.valid_candidates])
 
-        if self.next:
-            self.next.run_analysis_step_2()
+    def next(self) -> Optional[TokenTextLocation]:
+        if len(self.analysis.locations) > self.token_index + 1:
+            return self.analysis.locations[self.token_index + 1]
+        return None
+
+    def previous(self) -> Optional[TokenTextLocation]:
+        if self.token_index > 0:
+            return self.analysis.locations[self.token_index -1]
+        return None
 
     def is_next_location_inflecting_word(self) -> bool:
-        return self.next is not None and self.next.is_inflecting_word()
+        next = self.next()
+        return next is not None and next.is_inflecting_word()
 
     def is_inflecting_word(self) -> bool:
         def lookup_vocabs_prefer_exact_match(form: str) -> list[VocabNote]:
