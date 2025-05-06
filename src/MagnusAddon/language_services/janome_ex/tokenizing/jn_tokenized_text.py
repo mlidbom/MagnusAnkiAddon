@@ -9,6 +9,9 @@ class ProcessedToken:
         self.base_form_for_vocab_matching = base_for_vocab
         self.is_inflectable_word: bool = False
 
+    def __repr__(self) -> str:
+        return f"ProcessedToken('{self.surface}', '{self.base_form}', '{self.base_form_for_vocab_matching}', {self.is_inflectable_word})"
+
 class SplitToken(ProcessedToken):
     def __init__(self, surface: str, base: str, base_for_vocab: str, is_inflectable_word: bool) -> None:
         super().__init__(surface, base, base_for_vocab)

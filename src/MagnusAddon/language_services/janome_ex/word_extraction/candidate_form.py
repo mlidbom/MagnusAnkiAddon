@@ -32,6 +32,7 @@ class CandidateForm:
             return any(exclusion for exclusion in self.configuration_exclusions if exclusion.excludes_form_at_index(form_, self.start_index))
 
         self.unexcluded_vocabs: list[VocabNote] = [v for v in self.all_vocabs if not is_excluded_form(v.get_question())]
+        self.excluded_vocabs: list[VocabNote] = [v for v in self.all_vocabs if is_excluded_form(v.get_question())]
 
         self.forms_excluded_by_vocab_configuration: set[str] = set().union(*[v.get_excluded_forms() for v in self.unexcluded_vocabs])
 
