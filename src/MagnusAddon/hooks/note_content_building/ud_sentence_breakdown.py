@@ -75,16 +75,16 @@ def lookup_vocabs(excluded_words: set[str], word:str) -> list[VocabNote]:
 
 def render_parsed_words(note: SentenceNote) -> str:
     analysis = TextAnalysis(note.get_question(), note.get_user_word_exclusions())
-    display_forms = analysis.display_forms
-    word_strings = [w.parsed_form for w in display_forms]
+    display_forms = analysis.display_words
+    word_strings = [w.form for w in display_forms]
 
     excluded = note.get_user_excluded_vocab()
     return _build_vocab_list(word_strings, excluded, "parsed words", show_words_missing_dictionary_entries=True)
 
 def render_words_missing_dictionary_entries(note: SentenceNote) -> str:
     analysis = TextAnalysis(note.get_question(), note.get_user_word_exclusions())
-    display_forms = analysis.display_forms
-    word_strings = [w.parsed_form for w in display_forms]
+    display_forms = analysis.display_words
+    word_strings = [w.form for w in display_forms]
 
     excluded_words = note.get_user_excluded_vocab()
 
