@@ -38,6 +38,8 @@ class TokenTextLocation:
         self.display_words: list[CandidateForm] = []
         self.all_words: list[CandidateForm] = []
         self.all_candidates: list[CandidateWord] = []
+        self.next: Optional[TokenTextLocation] = None
+        self.previous: Optional[TokenTextLocation] = None
 
     def __repr__(self) -> str:
         return f"""
@@ -50,6 +52,9 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.sur
         return list
 
     def run_analysis_step_1(self) -> None:
+        self.next = self.next_()
+        self.previous = self.previous_()
+
         lookahead_max = min(_max_lookahead, len(self.forward_list(_max_lookahead)))
         self.all_candidates = [CandidateWord(self.forward_list(index)) for index in range(lookahead_max - 1, -1, -1)]
         self.all_candidates[-1].complete_analysis()  # the non-compound part needs to be completed first
@@ -72,18 +77,18 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.sur
 
         self.all_words = ex_sequence.flatten([v.display_words for v in self.valid_candidates])
 
-    def next(self) -> Optional[TokenTextLocation]:
+    def next_(self) -> Optional[TokenTextLocation]:
         if len(self.analysis.locations) > self.token_index + 1:
             return self.analysis.locations[self.token_index + 1]
         return None
 
-    def previous(self) -> Optional[TokenTextLocation]:
+    def previous_(self) -> Optional[TokenTextLocation]:
         if self.token_index > 0:
             return self.analysis.locations[self.token_index -1]
         return None
 
     def is_next_location_inflecting_word(self) -> bool:
-        next = self.next()
+        next = self.next_()
         return next is not None and next.is_inflecting_word()
 
     def is_inflecting_word(self) -> bool:
