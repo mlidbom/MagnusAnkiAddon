@@ -77,13 +77,13 @@ class CandidateForm:
         return True
 
     def _previous_token_ends_on_a_stem(self) -> bool:
-        previous = self.candidate.start_location.previous_()
+        previous = self.candidate.start_location.previous
         if previous is not None:
             return previous.surface[-1] in conjugator.a_stem_characters
         return False
 
     def _previous_token_ends_on_e_stem(self) -> bool:
-        previous = self.candidate.start_location.previous_()
+        previous = self.candidate.start_location.previous
         if previous is not None:
             return previous.surface[-1] in conjugator.e_stem_characters
         return False
@@ -101,14 +101,14 @@ class CandidateForm:
     def _is_contextually_excluded(self) -> bool:
         for exclusion in self.possible_contextual_exclusions:
             if exclusion.endswith(self.form):
-                previous_location = self.candidate.start_location.previous_()
+                previous_location = self.candidate.start_location.previous
                 if previous_location is not None:
                     extended = previous_location.surface + self.form
                     if extended.endswith(self.form):
                         return True
 
             if exclusion.startswith(self.form):
-                next_location = self.candidate.start_location.previous_()
+                next_location = self.candidate.start_location.previous
                 if next_location is not None:
                     extended = self.form + next_location.surface
                     if extended.startswith(self.form):

@@ -52,8 +52,11 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.sur
         return list
 
     def run_analysis_step_1(self) -> None:
-        self.next = self.next_()
-        self.previous = self.previous_()
+        if len(self.analysis.locations) > self.token_index + 1:
+            self.next = self.analysis.locations[self.token_index + 1]
+
+        if self.token_index > 0:
+            self.previous = self.analysis.locations[self.token_index -1]
 
         lookahead_max = min(_max_lookahead, len(self.forward_list(_max_lookahead)))
         self.all_candidates = [CandidateWord(self.forward_list(index)) for index in range(lookahead_max - 1, -1, -1)]
@@ -77,19 +80,8 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.sur
 
         self.all_words = ex_sequence.flatten([v.display_words for v in self.valid_candidates])
 
-    def next_(self) -> Optional[TokenTextLocation]:
-        if len(self.analysis.locations) > self.token_index + 1:
-            return self.analysis.locations[self.token_index + 1]
-        return None
-
-    def previous_(self) -> Optional[TokenTextLocation]:
-        if self.token_index > 0:
-            return self.analysis.locations[self.token_index -1]
-        return None
-
     def is_next_location_inflecting_word(self) -> bool:
-        next = self.next_()
-        return next is not None and next.is_inflecting_word()
+        return self.next is not None and self.next.is_inflecting_word()
 
     def is_inflecting_word(self) -> bool:
         def lookup_vocabs_prefer_exact_match(form: str) -> list[VocabNote]:
