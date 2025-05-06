@@ -19,7 +19,6 @@ class TextAnalysis:
     def __init__(self, sentence:str, exclusions:list[WordExclusion]):
         self.text = sentence
         self.exclusions = exclusions
-        print(f"exclusions: {exclusions}")
         self.tokens:list[ProcessedToken] = _tokenizer.tokenize(sentence).pre_process()
 
         self.locations:list[TokenTextLocation] = []
