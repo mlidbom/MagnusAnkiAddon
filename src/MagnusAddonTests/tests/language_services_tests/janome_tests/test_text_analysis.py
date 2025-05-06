@@ -42,7 +42,8 @@ def setup_empty_collection() -> Generator[None, None, None]:
      ['それなのに', '周り', 'は', '化け物', 'が', '出る', 'こと', 'で', '有名', 'だ', 'と', '聞く', '聞き']),
     ("清めの一波", ['清める', '清め', 'の', '一波']),
     ("さっさと傷を清めてこい",
-     ['さっさと', '傷', 'を', '清める', 'て', 'くる', 'こい'])
+     ['さっさと', '傷', 'を', '清める', 'て', 'くる', 'こい']),
+    ("すげえ", ['すげる', 'え', 'すげ', 'すげえ'])
 ])
 def test_identify_words(setup_collection_with_select_data: Any, sentence: str, expected_output: list[str]) -> None:
     expected = set(expected_output)
