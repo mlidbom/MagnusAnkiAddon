@@ -12,7 +12,6 @@ if TYPE_CHECKING:
 
 from typing import Optional
 
-from language_services.janome_ex.tokenizing.jn_token import JNToken
 from language_services.janome_ex.word_extraction import text_navigator
 from language_services.janome_ex.word_extraction.candidate_word import CandidateWord
 from sysutils.ex_str import newline
@@ -92,6 +91,3 @@ TextLocation('{self.start_index}-{self.end_index}, {self.surface} | {self.base} 
             return True
 
         return False
-
-    def is_inflected_word(self) -> bool:
-        return self.next is not None and self.token.is_inflectable_word() and self.next.is_inflecting_word()

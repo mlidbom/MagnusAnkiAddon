@@ -1,8 +1,6 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
-from language_services.jamdict_ex.dict_entry import DictEntry
-
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.candidate_form import CandidateForm
     from note.vocabnote import VocabNote
@@ -26,10 +24,10 @@ class VocabDisplayForm(DisplayForm):
             self.parsed_form = self.vocab.get_question()
 
 
-class DictionaryDisplayForm(DisplayForm):
-    def __init__(self, candidate: CandidateForm, dictionary_entry: DictEntry):
-        super().__init__(candidate)
-        self.dictionary_entry = dictionary_entry
+# class DictionaryDisplayForm(DisplayForm):
+#     def __init__(self, candidate: CandidateForm, dictionary_entry: DictEntry):
+#         super().__init__(candidate)
+#         self.dictionary_entry = dictionary_entry
 
 class MissingDisplayForm(DisplayForm):
     def __init__(self, candidate: CandidateForm):
