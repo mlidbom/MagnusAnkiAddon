@@ -1,3 +1,4 @@
+from language_services import conjugator
 from language_services.janome_ex.tokenizing.jn_token import JNToken
 from note.collection.vocab_collection import VocabCollection
 from sysutils import ex_sequence
@@ -25,19 +26,29 @@ class JNTokenWrapper(ProcessedToken):
         self.is_inflectable_word = self.token.is_inflectable_word()
 
     def pre_process(self) -> list[ProcessedToken]:
-        # for vocab in self._vocabs.with_question(self.base_form):
-        #     compound_parts = vocab.get_user_compounds()
-        #     if len(compound_parts) == 2 and compound_parts[1] == "える":
-        #         root_verb = compound_parts[0]
-        #         root_verb_e_stem = conjugator.get_e_stem(root_verb, is_godan=True)
-        #         root_verb_eru_stem = root_verb_e_stem[:-1]
-        #         potential_stem_ending = root_verb_e_stem[-1]
-        #         root_verb_token = SplitToken(root_verb_eru_stem, root_verb, root_verb, True)
-        #
-        #         final_character = "る" if self.surface[-1] == "る" else ""
-        #
-        #         eru_token = SplitToken(f"{potential_stem_ending}{final_character}", "える", "える", True)
-        #         return [root_verb_token, eru_token]
+        for vocab in self._vocabs.with_question(self.base_form):
+            compound_parts = vocab.get_user_compounds()
+            if len(compound_parts) == 2 and compound_parts[1] == "える":
+                root_verb = compound_parts[0]
+                root_verb_e_stem = conjugator.get_e_stem(root_verb, is_godan=True)
+                root_verb_eru_stem = root_verb_e_stem[:-1]
+                potential_stem_ending = root_verb_e_stem[-1]
+                root_verb_token = SplitToken(root_verb_eru_stem, root_verb, root_verb, True)
+                eru_token = SplitToken("える", "える", "える", True)
+                final_character = "る" if self.surface[-1] == "る" else ""
+                eru_token = SplitToken(f"{potential_stem_ending}{final_character}", f"{potential_stem_ending}る", "える", True)
+
+                new_surface = root_verb_token.surface + eru_token.surface
+
+                if new_surface != self.surface:
+                    print(f"################### error, combined surface should be {self.surface} but is {new_surface} ##################")
+
+                print(f"""
+            verb token: {root_verb_token}
+            eru token: {eru_token}
+            """)
+
+                return [root_verb_token, eru_token]
 
         return [self]
 

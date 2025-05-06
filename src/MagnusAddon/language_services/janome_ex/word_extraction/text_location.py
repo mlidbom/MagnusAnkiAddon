@@ -49,62 +49,6 @@ TextLocation('{self.start_index}-{self.end_index}, {self.surface} | {self.base} 
     def forward_list(self, length: int = 99999) -> list[TokenTextLocation]:
         return text_navigator.forward_list(self, length)
 
-    def run_analysis_step_0_split_potential_verbs(self) -> None:
-        base_candidate = CandidateWord([self])
-
-        for vocab in base_candidate.base.all_vocabs:
-            compound_parts = vocab.get_user_compounds()
-            if len(compound_parts) == 2 and compound_parts[1] == "える":
-                root_verb = compound_parts[0]
-                root_verb_e_stem = conjugator.get_e_stem(root_verb, is_godan=True)
-                root_verb_eru_stem = root_verb_e_stem[:-1]
-                potential_stem_ending = root_verb_e_stem[-1]
-                root_verb_token = SplitToken(root_verb_eru_stem, root_verb, root_verb, True)
-                eru_token = SplitToken("える", "える", "える", True)
-                final_character = "る" if self.surface[-1] == "る" else ""
-                eru_token = SplitToken(f"{potential_stem_ending}{final_character}", f"{potential_stem_ending}る", "える", True)
-
-                new_surface = root_verb_token.surface + eru_token.surface
-
-                if new_surface != self.surface:
-                    print(f"################### error, combined surface should be {self.surface} but is {new_surface} ##################")
-
-                print(f"""
-verb token: {root_verb_token}
-eru token: {eru_token}
-""")
-
-                root_verb_location = TokenTextLocation(self.analysis, root_verb_token, self.start_index )
-                eru_location = TokenTextLocation(self.analysis, eru_token, self.start_index + len(root_verb_token.surface))
-
-                self._replace_with(root_verb_location)
-                root_verb_location._insert_after(eru_location)
-
-                self.next = root_verb_location #ugly trick to keeep processing running after break
-                break
-
-
-        if self.next:
-            self.next.run_analysis_step_0_split_potential_verbs()
-
-    def _insert_after(self, other: TokenTextLocation) -> None:
-        other.previous = self
-        other.next = self.next
-        self.next = other
-        if self.next:
-            self.next.previous = other
-
-    def _replace_with(self, other: TokenTextLocation) -> None:
-        if self.analysis.start_location == self:
-            self.analysis.start_location = other
-
-        other.previous = self.previous
-        other.next = self.next
-        if self.previous:
-            self.previous.next = other
-        if self.next:
-            self.next.previous = other
-
     def run_analysis_step_1(self) -> None:
         lookahead_max = min(_max_lookahead, len(self.forward_list(_max_lookahead)))
         self.all_candidates = [CandidateWord(self.forward_list(index)) for index in range(lookahead_max - 1, -1, -1)]
