@@ -64,7 +64,7 @@ def test_custom_vocab_words(setup_collection_with_select_data: Any, sentence: st
     assert root_words == set(expected_output)
 
 def test_ignores_noise_characters(setup_collection_with_select_data: Any) -> None:
-    sentence = ". , : ; / | 。 、 ー"
+    sentence = ". , : ; / | 。 、ー ? !"
     expected = {"ー"}
 
     analysis = TextAnalysis(sentence, [])

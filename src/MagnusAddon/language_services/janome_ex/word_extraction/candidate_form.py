@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 from sysutils.ex_str import newline
 
-_noise_characters = {'.', ',', ':', ';', '/', '|', '。', '、'}
+_noise_characters = {'.', ',', ':', ';', '/', '|', '。', '、', '?', '!'}
 class CandidateForm:
     def __init__(self, candidate: CandidateWord, is_surface: bool, form: str):
         from ankiutils import app
