@@ -26,6 +26,12 @@ class JNTokenWrapper(ProcessedToken):
         self.is_inflectable_word = self.token.is_inflectable_word()
 
     def pre_process(self) -> list[ProcessedToken]:
+        vocab_based_potential_verb_split = self._try_find_vocab_based_potential_verb_split()
+        if vocab_based_potential_verb_split: return vocab_based_potential_verb_split
+
+        return [self]
+
+    def _try_find_vocab_based_potential_verb_split(self) -> list[ProcessedToken]:
         for vocab in self._vocabs.with_question(self.base_form):
             compound_parts = vocab.get_user_compounds()
             if len(compound_parts) == 2 and compound_parts[1] == "える":
@@ -43,8 +49,7 @@ class JNTokenWrapper(ProcessedToken):
                     raise Exception(f"################### error, combined surface should be {self.surface} but is {new_surface} ##################")
 
                 return [root_verb_token, eru_token]
-
-        return [self]
+        return []
 
 class JNTokenizedText:
     def __init__(self, text: str, tokens: list[JNToken]) -> None:

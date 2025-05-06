@@ -2,15 +2,20 @@ from typing import Any, Generator
 
 import pytest
 
-from fixtures.collection_factory import inject_anki_collection_with_select_data
+from fixtures.collection_factory import inject_anki_collection_with_select_data, inject_empty_anki_collection_with_note_types
 from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from note.vocabnote import VocabNote
 
 # noinspection PyUnusedFunction
 @pytest.fixture(scope="function")
-def setup_collection() -> Generator[None, None, None]:
+def setup_collection_with_select_data() -> Generator[None, None, None]:
     with inject_anki_collection_with_select_data(special_vocab=True):
+        yield
+
+@pytest.fixture(scope="function")
+def setup_empty_collection() -> Generator[None, None, None]:
+    with inject_empty_anki_collection_with_note_types():
         yield
 
 @pytest.mark.parametrize('sentence, expected_output', [
@@ -39,7 +44,7 @@ def setup_collection() -> Generator[None, None, None]:
     ("さっさと傷を清めてこい",
      ['さっさと', '傷', 'を', '清める', 'て', 'くる', 'こい'])
 ])
-def test_identify_words(setup_collection:Any, sentence: str, expected_output: list[str]) -> None:
+def test_identify_words(setup_collection_with_select_data: Any, sentence: str, expected_output: list[str]) -> None:
     expected = set(expected_output)
     analysis = TextAnalysis(sentence, [])
     root_words = set([w.form for w in analysis.all_words])
@@ -51,14 +56,14 @@ def test_identify_words(setup_collection:Any, sentence: str, expected_output: li
      ['彼', '彼の', '彼の日本語', 'の', '日本語', '日本語のレベル', 'レベル', 'は', '私', 'と', '同じ', '同じ位', '位', 'だ']
      )
 ])
-def test_custom_vocab_words(setup_collection:Any, sentence: str, custom_words: list[str], expected_output: list[str]) -> None:
+def test_custom_vocab_words(setup_collection_with_select_data: Any, sentence: str, custom_words: list[str], expected_output: list[str]) -> None:
     insert_custom_words(custom_words)
 
     analysis = TextAnalysis(sentence, [])
     root_words = set([w.form for w in analysis.all_words])
     assert root_words == set(expected_output)
 
-def test_ignores_noise_characters(setup_collection:Any) -> None:
+def test_ignores_noise_characters(setup_collection_with_select_data: Any) -> None:
     sentence = ". , : ; / | 。 、 ー"
     expected = {"ー"}
 
@@ -125,7 +130,7 @@ def insert_custom_words(custom_words: list[str]) -> None:
     ("食べれる", [], [], ['食べる', 'えれる'], ['食べる', 'えれる']),
     ("破られたか", [], [], ['破る', 'あれる', 'たか'], ['破る', 'あれる', 'たか'])
 ])
-def test_hierarchical_extraction(setup_collection:Any, sentence: str, custom_words: list[str], excluded: list[WordExclusion], expected_output: list[str], expected_display_output: list[str]) -> None:
+def test_hierarchical_extraction(setup_collection_with_select_data: Any, sentence: str, custom_words: list[str], excluded: list[WordExclusion], expected_output: list[str], expected_display_output: list[str]) -> None:
     _run_assertions(sentence, custom_words, excluded, expected_output, expected_display_output)
 
 @pytest.mark.parametrize('sentence, custom_words, excluded, expected_output, expected_display_output', [
@@ -142,7 +147,24 @@ def test_hierarchical_extraction(setup_collection:Any, sentence: str, custom_wor
     ("今日会えないかな", [], [WordExclusion("会える")], ['今日', '会う', 'えない', 'かな'], []),
     ("この夏は　たくさん思い出を作れたなぁ", [], [], ['この', '夏', 'は', 'たくさん', '思い出', 'を', '作れる', 'た', 'なぁ'], []),
 ])
-def test_potential_verb_splitting(setup_collection:Any, sentence: str, custom_words: list[str], excluded: list[WordExclusion], expected_output: list[str], expected_display_output: list[str]) -> None:
+def test_potential_verb_splitting_with_vocab(setup_collection_with_select_data: Any, sentence: str, custom_words: list[str], excluded: list[WordExclusion], expected_output: list[str], expected_display_output: list[str]) -> None:
+    _run_assertions(sentence, custom_words, excluded, expected_output, expected_display_output)
+
+@pytest.mark.parametrize('sentence, custom_words, excluded, expected_output, expected_display_output', [
+    ("会える", [], [], ["会える"], []),
+    ("会える", [], [WordExclusion("会える")], ['会う', 'える'], []),
+    ("会えて", [], [WordExclusion("会える")], ['会う', 'える', 'て'], []),
+    ("作れる", [], [], ['作れる'], []),
+    ("作れる", [], [WordExclusion("作れる")], ['作る', 'える'], []),
+    ("作れて", [], [], ['作れる', 'て'], []),
+    ("作れて", [], [WordExclusion("作れる")], ['作る', 'える', 'て'], []),
+    ("今日会えた", [], [], ['今日', '会える', 'た'], []),
+    ("今日会えた", [], [WordExclusion("会える")], ['今日', '会う', 'える', 'た'], []),
+    ("今日会えないかな", [], [], ['今日', '会える', 'ないか', 'な'], []),
+    ("今日会えないかな", [], [WordExclusion("会える")], ['今日', '会う', 'えない', 'かな'], []),
+    ("この夏は　たくさん思い出を作れたなぁ", [], [], ['この', '夏', 'は', 'たくさん', '思い出', 'を', '作れる', 'た', 'なぁ'], []),
+])
+def test_potential_verb_splitting_without_vocab(setup_empty_collection:Any, sentence: str, custom_words: list[str], excluded: list[WordExclusion], expected_output: list[str], expected_display_output: list[str]) -> None:
     _run_assertions(sentence, custom_words, excluded, expected_output, expected_display_output)
 
 def _run_assertions(sentence: str, custom_words: list[str], excluded: list[WordExclusion], expected_output: list[str], expected_display_output: list[str]) -> None:
@@ -174,7 +196,7 @@ def insert_custom_words_with_excluded_forms(custom_words: list[list[str]]) -> No
      [["する", "[[し]]", "[[して]]"]],
      ['リセット', 'する', 'て', 'ても', 'も'],)
 ])
-def test_custom_vocab_words_with_excluded_forms(setup_collection:Any, sentence: str, custom_words: list[list[str]], expected_output: list[str]) -> None:
+def test_custom_vocab_words_with_excluded_forms(setup_collection_with_select_data: Any, sentence: str, custom_words: list[list[str]], expected_output: list[str]) -> None:
     insert_custom_words_with_excluded_forms(custom_words)
 
     analysis = TextAnalysis(sentence, [])
