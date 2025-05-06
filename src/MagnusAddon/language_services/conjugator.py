@@ -56,10 +56,12 @@ def get_word_stems(word: str, is_ichidan_verb: bool = False, is_godan: bool = Fa
         return [word[:-2] + end for end in _aru_mappings[word[-2:]]]
     if is_ichidan_verb:
         return [word[:-1] + end for end in _ichidan_endings]
+    if is_godan:
+        return [word[:-1] + end for end in _1_character_mappings[word[-1]]]
     if word[-2:] in _2_character_mappings:
         return [word[:-2] + end for end in _2_character_mappings[word[-2:]]]
     if word[-1] in _1_character_mappings:
-        if not is_godan and word[-1] == "る":
+        if word[-1] == "る":
             return [word[:-1] + end for end in _godan_ru_or_ichidan_endings]
         else:
             return [word[:-1] + end for end in _1_character_mappings[word[-1]]]
