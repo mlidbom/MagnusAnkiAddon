@@ -108,10 +108,6 @@ def insert_custom_words(custom_words: list[str]) -> None:
      [],
      [],
      ['お前', 'も', '色々', '考える', 'てる', 'んだ', 'なぁ'], []),
-    ("この夏は　たくさん思い出を作れたなぁ",
-     [],
-     [],
-     ['この', '夏', 'は', 'たくさん', '思い出', 'を', '作れる', 'た', 'なぁ'], []),
     ("教科書落ちちゃうから",
      [],
      [],
@@ -127,18 +123,27 @@ def insert_custom_words(custom_words: list[str]) -> None:
     ("代筆を頼みたいんだが", [], [], ['代筆', 'を', '頼む', '頼み', 'たい', 'んだ', 'が'], []),
     ("飛ばされる", [], [], ['飛ばす', 'あれる'], ['飛ばす', 'あれる']),
     ("食べれる", [], [], ['食べる', 'えれる'], ['食べる', 'えれる']),
-    ("破られたか", [], [], ['破る', 'あれる', 'たか'], ['破る', 'あれる', 'たか']),
-    ("今日会えないかな", [], [], ['今日', '会える', 'ないか', 'な'], []),
-    ("今日会えないかな", [], [WordExclusion("会える")], ['今日', '会う', 'える', 'ないか', 'な'], [])
+    ("破られたか", [], [], ['破る', 'あれる', 'たか'], ['破る', 'あれる', 'たか'])
 ])
 def test_hierarchical_extraction(sentence: str, custom_words: list[str], excluded: list[WordExclusion], expected_output: list[str], expected_display_output: list[str]) -> None:
+    _run_assertions(sentence, custom_words, excluded, expected_output, expected_display_output)
+
+
+@pytest.mark.parametrize('sentence, custom_words, excluded, expected_output, expected_display_output', [
+    ("今日会えないかな", [], [], ['今日', '会える', 'ないか', 'な'], []),
+    ("今日会えないかな", [], [WordExclusion("会える")], ['今日', '会う', 'える', 'ないか', 'な'], []),
+    ("作れて", [], [], ['作れる', 'て'], []),
+    ("この夏は　たくさん思い出を作れたなぁ", [], [], ['この', '夏', 'は', 'たくさん', '思い出', 'を', '作れる', 'た', 'なぁ'], []),
+])
+def test_potential_verb_splitting(sentence: str, custom_words: list[str], excluded: list[WordExclusion], expected_output: list[str], expected_display_output: list[str]) -> None:
+    _run_assertions(sentence, custom_words, excluded, expected_output, expected_display_output)
+
+def _run_assertions(sentence: str, custom_words: list[str], excluded: list[WordExclusion], expected_output: list[str], expected_display_output: list[str]) -> None:
     insert_custom_words(custom_words)
     analysis = TextAnalysis(sentence, excluded)
     root_words = [w.form for w in analysis.display_words]
     assert root_words == expected_output
-
     display_words_forms = [dw.parsed_form for dw in analysis.display_forms]
-
     if expected_display_output:
         assert display_words_forms == expected_display_output
     else:

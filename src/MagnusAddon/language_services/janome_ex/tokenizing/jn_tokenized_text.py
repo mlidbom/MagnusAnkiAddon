@@ -4,34 +4,39 @@ from note.collection.vocab_collection import VocabCollection
 from sysutils import ex_sequence
 
 class ProcessedToken:
-    def __init__(self, surface: str, base: str) -> None:
+    def __init__(self, surface: str, base: str, base_for_vocab: str) -> None:
         self.surface = surface
         self.base_form = base
+        self.base_form_for_vocab_matching = base_for_vocab
         self.is_inflectable_word: bool = False
 
 class SplitToken(ProcessedToken):
-    def __init__(self, surface: str, base: str, is_inflectable_word: bool) -> None:
-        super().__init__(surface, base)
+    def __init__(self, surface: str, base: str, base_for_vocab: str, is_inflectable_word: bool) -> None:
+        super().__init__(surface, base, base_for_vocab)
         self.is_inflectable_word = is_inflectable_word
 
 class JNTokenWrapper(ProcessedToken):
     def __init__(self, token: JNToken, vocabs: VocabCollection) -> None:
-        super().__init__(token.surface, token.base_form)
+        super().__init__(token.surface, token.base_form, token.base_form)
         self.token = token
         self._vocabs = vocabs
         self.is_inflectable_word = self.token.is_inflectable_word()
-
-    eru_token = SplitToken("える", "える", True)
 
     def pre_process(self) -> list[ProcessedToken]:
         for vocab in self._vocabs.with_question(self.base_form):
             compound_parts = vocab.get_user_compounds()
             if len(compound_parts) == 2 and compound_parts[1] == "える":
                 root_verb = compound_parts[0]
-                root_verb_true_e_stem = conjugator.get_e_stem(root_verb, is_godan=True)
-                root_verb_eru_stem = root_verb_true_e_stem[:-1]
-                root_verb_token = SplitToken(root_verb_eru_stem, root_verb, True)
-                return [root_verb_token, self.eru_token]
+                root_verb_e_stem = conjugator.get_e_stem(root_verb, is_godan=True)
+                root_verb_eru_stem = root_verb_e_stem[:-1]
+                potential_stem_ending = root_verb_e_stem[-1]
+                root_verb_token = SplitToken(root_verb_eru_stem, root_verb, root_verb, True)
+
+
+                eru_token = SplitToken(f"{potential_stem_ending}る", "える", "える", True)
+                return [root_verb_token, eru_token]
+
+
 
         return [self]
 

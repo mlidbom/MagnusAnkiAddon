@@ -118,3 +118,6 @@ class VocabCloner:
 
     def create_ta_form(self) -> VocabNote:
         return self.suffix_to_te_stem("た")
+
+    def create_nai_form(self) -> VocabNote:
+        return self.suffix_to_a_stem("ない")

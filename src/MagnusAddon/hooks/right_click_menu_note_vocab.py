@@ -30,6 +30,7 @@ def setup_note_menu(vocab: VocabNote, note_menu: QMenu, string_menus: list[tuple
             create_vocab_note_action(verb_menu, shortcutfinger.home1("ます-form"), lambda: vocab.cloner.create_masu_form())
             create_vocab_note_action(verb_menu, shortcutfinger.home2("て-form"), lambda: vocab.cloner.create_te_form())
             create_vocab_note_action(verb_menu, shortcutfinger.home3("た-form"), lambda: vocab.cloner.create_ta_form())
+            create_vocab_note_action(verb_menu, shortcutfinger.home4("ない-form"), lambda: vocab.cloner.create_nai_form())
 
         def build_misc_menu(misc_menu:QMenu) -> None:
             create_vocab_note_action(misc_menu, shortcutfinger.home1("く-form-of-い-adjective"), lambda: vocab.cloner.create_ku_form())
