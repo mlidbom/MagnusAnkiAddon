@@ -4,6 +4,7 @@ from functools import lru_cache
 from typing import TYPE_CHECKING
 
 from jamdict.jmdict import JMDEntry
+from jamdict.util import LookupResult
 
 from language_services.jamdict_ex.priority_spec import PrioritySpec
 from sysutils.lazy import BackgroundInitialingLazy
@@ -12,12 +13,63 @@ from sysutils.typed import str_
 if TYPE_CHECKING:
     from note.vocabnote import VocabNote
 
-from jamdict import Jamdict
-
 from language_services.jamdict_ex.dict_entry import DictEntry
 from sysutils import ex_iterable, kana_utils
 
+import threading
+import queue
+from concurrent.futures import Future
+from typing import Callable, TypeVar, Generic, Any
+from jamdict import Jamdict
+
+T = TypeVar('T')
+
+class Request(Generic[T]):
+    def __init__(self, func: Callable[[Jamdict], T], future: Future[T]) -> None:
+        self.func = func
+        self.future = future
+
+class JamdictThreadingWrapper:
+    def __init__(self) -> None:
+        self._queue: queue.Queue[Request[Any]] = queue.Queue()
+        self._thread = threading.Thread(target=self._worker, daemon=True)
+        self._running = True
+        self._thread.start()
+
+    def _worker(self) -> None:
+        jamdict = Jamdict(memory_mode=True)
+        while self._running:
+            request = self._queue.get()
+            if request is None:
+                break
+            try:
+                result = request.func(jamdict)
+                request.future.set_result(result)
+            except Exception as e:
+                request.future.set_exception(e)
+
+    def lookup(self, word: str, lookup_chars:bool = False, lookup_ne:bool = False) -> LookupResult:
+        future: Future[LookupResult] = Future()
+
+        def do_actual_lookup(jamdict: Jamdict) -> LookupResult:
+            return jamdict.lookup(word, lookup_chars=lookup_chars, lookup_ne=lookup_ne)
+
+        self._queue.put(Request(do_actual_lookup, future))
+        return future.result()
+
+
+    def shutdown(self) -> None:
+        self._running = False
+        def null_op(jamdict:Jamdict) -> str: return ""
+        self._queue.put(Request(null_op, Future()))#Prevents deadlock
+        self._thread.join()
+
+
+_jamdict_threading_wrapper = JamdictThreadingWrapper()
+
+
 _jamdict = Jamdict(reuse_ctx=False)
+
 
 def _find_all_words() -> set[str]:
     kanji_forms: set[str] = set()
@@ -119,14 +171,14 @@ class DictLookup:
     def _lookup_word(cls, word: str) -> list[JMDEntry]:
         if not cls.might_be_word(word): return []
 
-        entries = list(_jamdict.lookup(word, lookup_chars=False, lookup_ne=False).entries)
+        entries = list(_jamdict_threading_wrapper.lookup(word, lookup_chars=False, lookup_ne=False).entries)
         return entries if not kana_utils.is_only_kana(word) else [ent for ent in entries if cls._is_kana_only(ent)]
 
     @classmethod
     @lru_cache(maxsize=None)  # _lookup_word_shallow.cache_clear(), _lookup_word_shallow.cache_info()
     def _lookup_name(cls, word: str) -> list[JMDEntry]:
         if not cls.might_be_name(word): return []
-        return list(_jamdict.lookup(word, lookup_chars=False).names)
+        return list(_jamdict_threading_wrapper.lookup(word, lookup_ne=True, lookup_chars=False).names)
 
     @staticmethod
     def _is_kana_only(entry: JMDEntry) -> bool:
