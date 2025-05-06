@@ -75,9 +75,8 @@ TextLocation('{self.start_index}-{self.end_index}, {self.surface} | {self.base} 
 
                     if self.next:
                         self.next.previous = eru_location
-
+                        
                     break
-
 
 
         if self.next:
@@ -85,7 +84,7 @@ TextLocation('{self.start_index}-{self.end_index}, {self.surface} | {self.base} 
 
     def run_analysis_step_1(self) -> None:
         lookahead_max = min(_max_lookahead, len(self.forward_list(_max_lookahead)))
-        self.all_candidates = [CandidateWord(self.forward_list(index)) for index in range(lookahead_max - 1, 0, -1)] + [self.root_candidate_word]
+        self.all_candidates = [CandidateWord(self.forward_list(index)) for index in range(lookahead_max - 1, -1, -1)]
         self.all_candidates[-1].complete_analysis()  # the non-compound part needs to be completed first
 
         if self.next:
