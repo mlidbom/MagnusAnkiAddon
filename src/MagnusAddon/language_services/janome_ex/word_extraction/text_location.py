@@ -37,6 +37,7 @@ class TokenTextLocation:
         self.valid_candidates: list[CandidateWord] = []
         self.display_words: list[CandidateForm] = []
         self.all_words: list[CandidateForm] = []
+        self.root_candidate_word = CandidateWord([self])
 
     def __repr__(self) -> str:
         return f"""
@@ -47,15 +48,20 @@ TextLocation('{self.start_index}-{self.end_index}, {self.surface} | {self.base} 
     def forward_list(self, length: int = 99999) -> list[TokenTextLocation]:
         return text_navigator.forward_list(self, length)
 
-    def run_analysis(self) -> None:
+    def run_analysis_step_0(self) -> None:
+
+        if self.next:
+            self.next.run_analysis_step_1()
+
+    def run_analysis_step_1(self) -> None:
         lookahead_max = min(_max_lookahead, len(self.forward_list(_max_lookahead)))
-        self.all_candidates = [CandidateWord(self.forward_list(index)) for index in range(lookahead_max - 1, -1, -1)]
+        self.all_candidates = [CandidateWord(self.forward_list(index)) for index in range(lookahead_max - 1, 0, -1)] + [self.root_candidate_word]
         self.all_candidates[-1].complete_analysis()  # the non-compound part needs to be completed first
 
         if self.next:
-            self.next.run_analysis()
+            self.next.run_analysis_step_1()
 
-    def run_analysis_second_step(self) -> None:
+    def run_analysis_step_2(self) -> None:
         for cand in self.all_candidates[:-1]:  # we already have the last one completed
             cand.complete_analysis()
 
@@ -74,7 +80,7 @@ TextLocation('{self.start_index}-{self.end_index}, {self.surface} | {self.base} 
         self.all_words = ex_sequence.flatten([v.display_words for v in self.valid_candidates])
 
         if self.next:
-            self.next.run_analysis_second_step()
+            self.next.run_analysis_step_2()
 
     def is_next_location_inflecting_word(self) -> bool:
         return self.next is not None and self.next.is_inflecting_word()

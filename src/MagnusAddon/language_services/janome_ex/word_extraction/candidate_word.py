@@ -17,8 +17,8 @@ class CandidateWord:
         self.end_location: TokenTextLocation = self.locations[-1]
         self.length = len(self.locations)
 
-        self.surface: SurfaceCandidateForm = SurfaceCandidateForm(self)
         self.base: CandidateForm = BaseCandidateForm(self)
+        self.surface: CandidateForm = SurfaceCandidateForm(self) if self.locations[-1].surface != self.locations[-1].base else self.base
 
         self.is_word: bool = self.surface.is_word or self.base.is_word
 

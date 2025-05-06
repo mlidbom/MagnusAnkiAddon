@@ -129,11 +129,15 @@ class BaseCandidateForm(CandidateForm):
     def __init__(self, candidate: CandidateWord):
         super().__init__(candidate, False, "".join([t.surface for t in candidate.locations[:-1]]) + candidate.locations[-1].base)
         self.last_location_is_excluded_form:bool = False
+        self.analysis_completed: bool = False
 
 
     def _counterpart(self) -> CandidateForm: return non_optional(self.candidate.surface)
 
     def complete_analysis(self) -> None:
+        if self.analysis_completed: return
+        self.analysis_completed = True
+
         super().complete_analysis()
 
         if self.candidate.is_custom_compound:
