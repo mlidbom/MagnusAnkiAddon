@@ -124,6 +124,11 @@ class SurfaceCandidateForm(CandidateForm):
     def __init__(self, candidate: CandidateWord):
         super().__init__(candidate, True, "".join([t.surface for t in candidate.locations]) + "")
 
+        if not candidate.is_custom_compound:
+            if candidate.locations[-1].token.do_not_match_surface_for_non_compound_vocab:
+                self.is_self_excluded = True
+
+
     def _counterpart(self) -> CandidateForm: return non_optional(self.candidate.base)
 
 class BaseCandidateForm(CandidateForm):

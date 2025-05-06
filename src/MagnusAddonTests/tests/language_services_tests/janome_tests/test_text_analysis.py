@@ -122,7 +122,7 @@ def insert_custom_words(custom_words: list[str]) -> None:
     ("落ちてないかな", [], [], ['落ちる', 'てる', 'ないか', 'な'], []),
     ("分かってたら", [], [], ['分かる', 'てたら'], []),
     ("頑張れたというか", [], [], ['頑張れる', 'た', 'というか'], []),
-    ("思い出せそうな気がする", [], [], ['思い出せる', 'そう', 'な', '気がする'], []),
+    ("思い出せそうな気がする", [], [], ['思い出す', 'える', 'そう', 'な', '気がする'], []),
     ("私が頼んだの", [], [], ['私', 'が', '頼む', '頼ん', 'だ', 'の'], []),
     ("いらっしゃいません", [], [WordExclusion('いらっしゃいませ')], ['いらっしゃいます', 'ん'], []),
     ("代筆を頼みたいんだが", [], [], ['代筆', 'を', '頼む', '頼み', 'たい', 'んだ', 'が'], []),
@@ -151,18 +151,18 @@ def test_potential_verb_splitting_with_vocab(setup_collection_with_select_data: 
     _run_assertions(sentence, custom_words, excluded, expected_output, expected_display_output)
 
 @pytest.mark.parametrize('sentence, custom_words, excluded, expected_output, expected_display_output', [
-    ("会える", [], [], ["会える"], []),
+    ("会える", [], [], ['会う', 'える'], []),
     ("会える", [], [WordExclusion("会える")], ['会う', 'える'], []),
     ("会えて", [], [WordExclusion("会える")], ['会う', 'える', 'て'], []),
-    ("作れる", [], [], ['作れる'], []),
+    ("作れる", [], [], ['作る', 'える'], []),
     ("作れる", [], [WordExclusion("作れる")], ['作る', 'える'], []),
-    ("作れて", [], [], ['作れる', 'て'], []),
+    ("作れて", [], [], ['作る', 'える', 'て'], []),
     ("作れて", [], [WordExclusion("作れる")], ['作る', 'える', 'て'], []),
-    ("今日会えた", [], [], ['今日', '会える', 'た'], []),
+    ("今日会えた", [], [], ['今日', '会う', 'える', 'た'], []),
     ("今日会えた", [], [WordExclusion("会える")], ['今日', '会う', 'える', 'た'], []),
-    ("今日会えないかな", [], [], ['今日', '会える', 'ないか', 'な'], []),
-    ("今日会えないかな", [], [WordExclusion("会える")], ['今日', '会う', 'えない', 'かな'], []),
-    ("この夏は　たくさん思い出を作れたなぁ", [], [], ['この', '夏', 'は', 'たくさん', '思い出', 'を', '作れる', 'た', 'なぁ'], []),
+    ("今日会えないかな", [], [], ['今日', '会う', 'える', 'ないか', 'な'], []),
+    ("今日会えないかな", [], [WordExclusion("会える")], ['今日', '会う', 'える', 'ないか', 'な'], []),
+    ("この夏は　たくさん思い出を作れたなぁ", [], [], ['この', '夏', 'は', 'たくさん', '思い出', 'を', '作る', 'える', 'た', 'なぁ'], []),
 ])
 def test_potential_verb_splitting_without_vocab(setup_empty_collection:Any, sentence: str, custom_words: list[str], excluded: list[WordExclusion], expected_output: list[str], expected_display_output: list[str]) -> None:
     _run_assertions(sentence, custom_words, excluded, expected_output, expected_display_output)

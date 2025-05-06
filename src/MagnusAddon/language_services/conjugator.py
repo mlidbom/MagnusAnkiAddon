@@ -15,6 +15,9 @@ _ichidan_endings = ['', 'ろ', 'な']
 _godan_ru_endings = ['り', 'ら', 'れ', 'っ']
 _godan_ru_or_ichidan_endings = _godan_ru_endings + _ichidan_endings
 
+godan_potential_verb_endings :set[str] = {'える', 'ける', 'げる', 'せる', 'てる', 'ねる', 'べる', 'める', 'れる'}
+godan_potential_verb_ending_to_dictionary_form_endings: dict[str, str] = {'える': 'う', 'ける': 'く', 'げる': 'ぐ', 'せる': 'す', 'てる': 'つ', 'ねる': 'ぬ', 'べる': 'ぶ', 'める': 'む', 'れる': 'る'}
+
 e_stem_characters:set[str] = {'え', 'け', 'げ', 'せ', 'て', 'ね', 'べ', 'め', 'れ'}
 a_stem_characters:set[str] = {'わ', 'か', 'が', 'さ', 'た', 'な', 'ば', 'ま', 'ら'}
 
@@ -41,6 +44,9 @@ _aru_verbs: set[str] = {'なさる', 'くださる', 'おっしゃる', 'ござ�
 _aru_mappings: dict[str, list[str]] = {'さる': ['さい', 'さら', 'され', 'さっ'],
                                        'ざる': ['ざい', 'ざら', 'ざれ', 'ざっ'],
                                        'ゃる': ['ゃい', 'ゃら', 'れば', 'ゃっ']}
+
+def construct_root_verb_for_possibly_potential_godan_verb_dictionary_form(potential_verb_form: str) -> str:
+    return potential_verb_form[:-2] + godan_potential_verb_ending_to_dictionary_form_endings[potential_verb_form[-2:]]
 
 def _is_aru_verb(word: str) -> bool:
     return any(aru_ending for aru_ending in _aru_verbs if word.endswith(aru_ending))
