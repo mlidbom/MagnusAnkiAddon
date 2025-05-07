@@ -23,7 +23,7 @@ a_stem_characters:set[str] = {'わ', 'か', 'が', 'さ', 'た', 'な', 'ば', '
 _1_character_mappings: dict[str, list[str]] = {'う': ['い', 'わ', 'え', 'っ'],
                                                'く': ['き', 'か', 'け', 'い'],
                                                'ぐ': ['ぎ', 'が', 'げ', 'い'],
-                                               'す': ['し', 'さ', 'せ'],
+                                               'す': ['し', 'さ', 'せ', 'し'],
                                                'つ': ['ち', 'た', 'て', 'っ'],
                                                'ぬ': ['に', 'な', 'ね', 'ん'],
                                                'ぶ': ['び', 'ば', 'べ', 'ん'],
@@ -36,7 +36,9 @@ _2_character_mappings: dict[str, list[str]] = {'する': ['し', 'さ', 'すれ'
                                                'いく': ['いき', 'いか', 'いけ', 'いっ', 'いこ'],
                                                '行く': ['行き', '行か', '行け', '行っ', '行こ'],
                                                'ます': ['まし', 'ませ'],
-                                               'いい': ['よく', 'よけ', 'よか']}
+                                               'いい': ['よく', 'よけ', 'よか', 'よかっ']}
+
+_masu_forms_by_index = ['まし', 'ませ', 'まし', 'まし'] #not to sure about these. To say the least....
 
 _aru_verbs: set[str] = {'なさる', 'くださる', 'おっしゃる', 'ござる', 'らっしゃる', '下さる', '為さる'}
 
@@ -73,6 +75,8 @@ def _get_stem(word: str, stem_index: int, is_ichidan_verb: bool = False, is_goda
         return word[:-1]
     if is_godan:
         return word[:-1] + _1_character_mappings[word[-1]][stem_index]
+    if word[-2:] == "ます":
+        return word[:-2] + _masu_forms_by_index[stem_index]
     if word[-2:] in _2_character_mappings:
         return word[:-2] + _2_character_mappings[word[-2:]][stem_index]
     if word[-1] in _1_character_mappings:
