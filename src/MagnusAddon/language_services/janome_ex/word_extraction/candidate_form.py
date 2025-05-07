@@ -100,19 +100,14 @@ class CandidateForm:
 
     def _is_contextually_excluded(self) -> bool:
         for exclusion in self.possible_contextual_exclusions:
-            if exclusion.endswith(self.form):
-                previous_location = self.candidate.start_location.previous
-                if previous_location is not None:
-                    extended = previous_location.surface + self.form
-                    if extended.endswith(exclusion):
-                        return True
-
-            if exclusion.startswith(self.form):
-                next_location = self.candidate.start_location.previous
-                if next_location is not None:
-                    extended = self.form + next_location.surface
-                    if extended.startswith(exclusion):
-                        return True
+            preceding_text = self.candidate.start_location.previous.surface if self.candidate.start_location.previous else ""
+            following_text = self.candidate.end_location.next.surface if self.candidate.end_location.next else ""
+            if exclusion.endswith(self.form) and (preceding_text + self.form).endswith(exclusion):
+                return True
+            elif exclusion.startswith(self.form) and (self.form + following_text).startswith(exclusion):
+                return True
+            elif exclusion in preceding_text + self.form + following_text:
+                return True
 
         return False
 
