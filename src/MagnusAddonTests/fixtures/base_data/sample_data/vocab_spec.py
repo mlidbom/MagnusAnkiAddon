@@ -71,6 +71,7 @@ test_special_vocab = [
     VocabSpec("作れる", "to-be-able: to-make", ["つくれる"], compounds=["作る", "える"]),
     VocabSpec("える", "to-be-able-to", ["える"], extra_forms=["[[れる]]"], tags=[Mine.Tags.inflecting_word]),
     VocabSpec("えない", "unable-able-to", ["えない"], compounds=["える", "ない"], tags=[Mine.Tags.inflecting_word]),
+    VocabSpec("だもの", "is-the-thing", ["だもの"], extra_forms=["[[んだもの]]"])
 ]
 
 test_ordinary_vocab_list = [

@@ -129,7 +129,9 @@ def insert_custom_words(custom_words: list[str]) -> None:
     ("代筆を頼みたいんだが", [], [], ['代筆', 'を', '頼む', '頼み', 'たい', 'んだ', 'が'], []),
     ("飛ばされる", [], [], ['飛ばす', 'あれる'], ['飛ばす', 'あれる']),
     ("食べれる", [], [], ['食べる', 'えれる'], ['食べる', 'えれる']),
-    ("破られたか", [], [], ['破る', 'あれる', 'たか'], ['破る', 'あれる', 'たか'])
+    ("破られたか", [], [], ['破る', 'あれる', 'たか'], ['破る', 'あれる', 'たか']),
+    ("大家族だもの", [], [], ['大家族', 'だもの'], []),
+    ("奪うんだもの", [], [], ['奪う', 'んだ', 'もの'], [])
 ])
 def test_hierarchical_extraction(setup_collection_with_select_data: Any, sentence: str, custom_words: list[str], excluded: list[WordExclusion], expected_output: list[str], expected_display_output: list[str]) -> None:
     _run_assertions(sentence, custom_words, excluded, expected_output, expected_display_output)

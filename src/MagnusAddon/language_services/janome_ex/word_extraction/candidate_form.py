@@ -104,14 +104,14 @@ class CandidateForm:
                 previous_location = self.candidate.start_location.previous
                 if previous_location is not None:
                     extended = previous_location.surface + self.form
-                    if extended.endswith(self.form):
+                    if extended.endswith(exclusion):
                         return True
 
             if exclusion.startswith(self.form):
                 next_location = self.candidate.start_location.previous
                 if next_location is not None:
                     extended = self.form + next_location.surface
-                    if extended.startswith(self.form):
+                    if extended.startswith(exclusion):
                         return True
 
         return False
