@@ -1,4 +1,5 @@
 import re
+from typing import Any
 
 from anki.notes import NoteId
 
@@ -154,6 +155,33 @@ def reparse_sentences(sentences:list[SentenceNote]) -> None:
         sentence.update_parsed_words(force=True)
 
     progress_display_runner.process_with_progress(sentences, reparse_sentence, "Reparsing sentences.")
+
+def run_memory_profiling_sentence_reparsing_session() -> None:
+    def reparse_sentence(sentence: SentenceNote) -> None:
+        sentence.update_parsed_words(force=True)
+
+    sentences = app.col().sentences.all()[:1000]
+
+    from pympler import tracker
+
+    tr = tracker.SummaryTracker()  # type: ignore
+    progress_display_runner.process_with_progress(sentences, reparse_sentence, "Reparsing sentences.")
+
+    tr.print_diff() # type: ignore
+
+def print_memory_usage()-> None:
+    def output_function(o:Any) -> str:
+        return str(type(o))
+
+    from pympler import muppy, summary, refbrowser
+    all_objects = muppy.get_objects()
+    root = muppy.filter(all_objects, dict)[0]
+    cb = refbrowser.ConsoleBrowser(root, maxdepth=10, str_func=output_function)  # type: ignore
+    cb.print_tree()  # type: ignore
+
+    # sum1 = summary.summarize(all_objects) # type: ignore
+    # summary.print_(sum1) # type: ignore
+
 
 def reparse_sentences_for_vocab(vocab:VocabNote) -> None:
     query = query_builder.sentence_with_any_vocab_form_in_question(vocab)
