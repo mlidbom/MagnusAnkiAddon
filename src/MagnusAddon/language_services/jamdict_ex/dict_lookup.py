@@ -199,5 +199,12 @@ class DictLookup:
         return cls.might_be_word(word) or cls.might_be_name(word)
 
     @classmethod
+    @lru_cache(maxsize=None)
     def is_word(cls, word:str) -> bool:
         return cls.might_be_word(word) and cls.lookup_word_shallow(word).found_words()
+
+    @classmethod
+    @lru_cache(maxsize=None)
+    def is_dictionary_or_collection_word(cls, word:str) -> bool:
+        from ankiutils import app
+        return app.col().vocab.is_word(word) or  cls.is_word(word)

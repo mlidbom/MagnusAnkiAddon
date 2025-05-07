@@ -92,6 +92,8 @@ def setup_note_menu(vocab: VocabNote, note_menu: QMenu, string_menus: list[tuple
         add_ui_action(note_menu, shortcutfinger.up4("Reparse matching sentences"), lambda: local_note_updater.reparse_sentences_for_vocab(vocab))
         add_ui_action(note_menu, shortcutfinger.up5("Repopulate TOS"), lambda: vocab.auto_set_speech_type())
 
+        add_ui_action(note_menu, shortcutfinger.down1("Autogenerate compounds"), lambda: vocab.auto_generate_compounds())
+
     def build_string_menus() -> None:
         for string_menu, menu_string in string_menus:
             def build_sentences_menu(sentence_menu: QMenu) -> None:
