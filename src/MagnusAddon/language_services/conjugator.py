@@ -31,7 +31,7 @@ _1_character_mappings: dict[str, list[str]] = {'う': ['い', 'わ', 'え', 'っ
                                                'る': _godan_ru_endings,
                                                'い': ['く', 'け', 'か']}
 
-_2_character_mappings: dict[str, list[str]] = {'する': ['し', 'さ', 'すれ', 'し'],
+_2_character_mappings: dict[str, list[str]] = {'する': ['し', 'さ', 'すれ', 'し', 'せ'],
                                                'くる': ['き', 'こ', 'くれ', 'き'],
                                                'いく': ['いき', 'いか', 'いけ', 'いっ', 'いこ'],
                                                '行く': ['行き', '行か', '行け', '行っ', '行こ'],
