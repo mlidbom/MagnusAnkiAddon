@@ -6,7 +6,7 @@ from hooks.right_click_menu_utils import add_lookup_action, add_single_vocab_loo
 from note.note_constants import NoteFields, NoteTypes
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
-from sysutils import ex_str
+from sysutils import ex_sequence, ex_str
 from sysutils.ex_str import newline
 from sysutils.typed import non_optional
 from hooks import shortcutfinger
@@ -65,20 +65,34 @@ def setup_note_menu(vocab: VocabNote, note_menu: QMenu, string_menus: list[tuple
 
 
     def build_lookup_menu(note_lookup_menu: QMenu) -> None:
-        add_lookup_action(note_lookup_menu, shortcutfinger.home1("Kanji"), f"note:{NoteTypes.Kanji} ( {' OR '.join([f'{NoteFields.Kanji.question}:{char}' for char in vocab.get_question()])} )")
+        def build_sentences_lookup_menu(sentences_lookup_menu: QMenu) -> None:
+            add_lookup_action(sentences_lookup_menu, shortcutfinger.home1("Sentences I'm Studying"), query_builder.notes_lookup(vocab.get_sentences_studying()))
+            add_lookup_action(sentences_lookup_menu, shortcutfinger.home2("Sentences"), query_builder.notes_lookup(vocab.get_sentences()))
+            add_lookup_action(sentences_lookup_menu, shortcutfinger.home3("Sentences with primary form"), query_builder.notes_lookup(vocab.get_sentences_with_primary_form()))
+            add_lookup_action(sentences_lookup_menu, shortcutfinger.home4("Sentences with this word highlighted"), query_builder.notes_lookup(vocab.get_user_highlighted_sentences()))
+
+        def build_vocab_lookup_menu(vocab_lookup_menu: QMenu) -> None:
+            def build_readings_menu(readings_vocab_lookup_menu: QMenu) -> None:
+                for index, reading in enumerate(vocab.get_readings()):
+                    add_lookup_action(readings_vocab_lookup_menu, shortcutfinger.numpad_no_numbers(index, f"Homonyms: {reading}"), query_builder.notes_lookup(app.col().vocab.with_reading(reading)))
+
+            add_lookup_action(vocab_lookup_menu, shortcutfinger.home1("Forms"), query_builder.notes_lookup(ex_sequence.flatten([app.col().vocab.with_question(form) for form in vocab.get_forms()])))
+            add_lookup_action(vocab_lookup_menu, shortcutfinger.home2("Compound parts"), query_builder.vocabs_lookup_strings(vocab.get_user_compounds()))
+            add_lookup_action(vocab_lookup_menu, shortcutfinger.home3("In compounds"), query_builder.notes_lookup(vocab.in_compounds()))
+            build_readings_menu(non_optional(vocab_lookup_menu.addMenu(shortcutfinger.home4("Homonyms"))))
+            add_vocab_dependencies_lookup(vocab_lookup_menu, shortcutfinger.up1("Dependencies"), vocab)
+
+
+        build_vocab_lookup_menu(non_optional(note_lookup_menu.addMenu(shortcutfinger.home1("Vocab"))))
+        build_sentences_lookup_menu(non_optional(note_lookup_menu.addMenu(shortcutfinger.home2("Sentences"))))
+
+        add_lookup_action(note_lookup_menu, shortcutfinger.home3("Kanji"), f"note:{NoteTypes.Kanji} ( {' OR '.join([f'{NoteFields.Kanji.question}:{char}' for char in vocab.get_question()])} )")
         if vocab.get_related_ergative_twin():
-            add_single_vocab_lookup_action(note_lookup_menu, shortcutfinger.home2("Ergative twin"), vocab.get_related_ergative_twin())
+            add_single_vocab_lookup_action(note_lookup_menu, shortcutfinger.home4("Ergative twin"), vocab.get_related_ergative_twin())
 
-        add_lookup_action(note_lookup_menu, shortcutfinger.home3("Sentences I'm Studying"), query_builder.notes_lookup(vocab.get_sentences_studying()))
-        add_lookup_action(note_lookup_menu, shortcutfinger.home4("Sentences"), query_builder.notes_lookup(vocab.get_sentences()))
-        add_lookup_action(note_lookup_menu, shortcutfinger.up1("Sentences with primary form"), query_builder.notes_lookup(vocab.get_sentences_with_primary_form()))
-        add_lookup_action(note_lookup_menu, shortcutfinger.up2("Sentences with this word highlighted"), query_builder.notes_lookup(vocab.get_user_highlighted_sentences()))
 
-        add_lookup_action(note_lookup_menu, shortcutfinger.up3("Compounds"), query_builder.notes_lookup(vocab.in_compounds()))
-        add_vocab_dependencies_lookup(note_lookup_menu, shortcutfinger.up3("Dependencies"), vocab)
 
-        for reading in vocab.get_readings():
-            add_lookup_action(note_lookup_menu, shortcutfinger.up4(f"Homonyms: {reading}"), query_builder.notes_lookup(app.col().vocab.with_reading(reading)))
+
 
     def build_note_menu() -> None:
         if not vocab.get_user_answer():
