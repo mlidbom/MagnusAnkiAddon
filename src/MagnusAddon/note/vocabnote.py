@@ -443,9 +443,16 @@ class VocabNote(KanaVocabNote):
         if analysis.display_words:
             self.set_user_compounds([a.form for a in analysis.display_words if a.form not in self.get_forms()])
         else:#time to brute force it
+            from ankiutils import app
             word = self.get_question()
             all_substrings = [word[i:j] for i in range(len(word)) for j in range(i + 1, len(word) + 1) if word[i:j] != word]
             all_word_substrings = [w for w in all_substrings if DictLookup.is_dictionary_or_collection_word(w)]
             only_the_largest_segments = [segment for segment in all_word_substrings if not any(parent for parent in all_word_substrings if segment in parent and parent != segment)]
+
+            segments_missing_vocab = [segment for segment in only_the_largest_segments if not app.col().vocab.is_word(segment)]
+            for missing in segments_missing_vocab:
+                created = VocabNote.create_with_dictionary(missing)
+                created.suspend_all_cards()
+
             self.set_user_compounds(only_the_largest_segments)
 
