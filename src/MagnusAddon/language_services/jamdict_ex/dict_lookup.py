@@ -69,10 +69,8 @@ class JamdictThreadingWrapper:
 _jamdict_threading_wrapper = JamdictThreadingWrapper()
 
 
-_jamdict = Jamdict(reuse_ctx=False)
-
-
 def _find_all_words() -> set[str]:
+    _jamdict = Jamdict(reuse_ctx=False)
     kanji_forms: set[str] = set()
     kana_forms: set[str] = set()
 
@@ -89,6 +87,7 @@ def _find_all_words() -> set[str]:
     return kanji_forms | kana_forms
 
 def _find_all_names() -> set[str]:
+    _jamdict = Jamdict(reuse_ctx=False)
     kanji_forms: set[str] = set()
     kana_forms: set[str] = set()
 
