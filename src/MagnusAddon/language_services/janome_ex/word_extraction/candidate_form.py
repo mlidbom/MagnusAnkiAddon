@@ -99,9 +99,9 @@ class CandidateForm:
                 and self.exact_match_requirement_fulfilled)
 
     def _is_contextually_excluded(self) -> bool:
+        preceding_text = self.candidate.start_location.previous.surface if self.candidate.start_location.previous else ""
+        following_text = self.candidate.end_location.next.surface if self.candidate.end_location.next else ""
         for exclusion in self.possible_contextual_exclusions:
-            preceding_text = self.candidate.start_location.previous.surface if self.candidate.start_location.previous else ""
-            following_text = self.candidate.end_location.next.surface if self.candidate.end_location.next else ""
             if exclusion.endswith(self.form) and (preceding_text + self.form).endswith(exclusion):
                 return True
             elif exclusion.startswith(self.form) and (self.form + following_text).startswith(exclusion):
