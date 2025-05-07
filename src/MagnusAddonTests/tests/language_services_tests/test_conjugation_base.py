@@ -27,7 +27,7 @@ def test_ichidan(word: str, conjugation_bases: list[str], is_ichidan: bool) -> N
     ("美味しい", ['美味しく', '美味しけ', '美味しか']),
 
     # irregular adjective
-    ("いい", ['よく', 'よけ', 'よか']),
+    ("いい", ['よく', 'よけ', 'よか', 'よかっ']),
 ])
 def test_adjectives(word: str, conjugation_bases: list[str]) -> None:
     run_tests(word, conjugation_bases)
