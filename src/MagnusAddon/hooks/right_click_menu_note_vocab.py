@@ -46,7 +46,7 @@ def setup_note_menu(vocab: VocabNote, note_menu: QMenu, string_menus: list[tuple
                 create_vocab_note_action(suffix_note_menu, shortcutfinger.home2(f"い-stem"), lambda: vocab.cloner.suffix_to_i_stem(addendum))
                 create_vocab_note_action(suffix_note_menu, shortcutfinger.home3(f"て-stem"), lambda: vocab.cloner.suffix_to_te_stem(addendum))
                 create_vocab_note_action(suffix_note_menu, shortcutfinger.home4(f"え-stem"), lambda: vocab.cloner.suffix_to_e_stem(addendum))
-                create_vocab_note_action(suffix_note_menu, shortcutfinger.up1(f"あ-stem"), lambda: vocab.cloner.suffix_to_e_stem(addendum))
+                create_vocab_note_action(suffix_note_menu, shortcutfinger.up1(f"あ-stem"), lambda: vocab.cloner.suffix_to_a_stem(addendum))
 
             create_vocab_note_action(prefix_postfix_note_menu, shortcutfinger.home1(f"prefix-{addendum}{vocab.get_question()}"), lambda: vocab.cloner.create_prefix_version(addendum))
 
