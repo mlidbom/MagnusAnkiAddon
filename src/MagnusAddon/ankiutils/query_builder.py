@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Sequence
 
+from anki.cards import Card
 from anki.notes import NoteId
 
 from ankiutils import app
@@ -142,3 +143,6 @@ def kanji_with_radicals_in_string(search:str) -> str:
     notes = ex_sequence.flatten([app.col().kanji.with_radical(rad) for rad in radicals])
     notes = [note for note in notes if not any(rad for rad in radicals if rad not in note.get_radicals())]
     return notes_lookup(notes)
+
+def open_card(card:Card) -> str:
+    return f"cid:{card.id}"

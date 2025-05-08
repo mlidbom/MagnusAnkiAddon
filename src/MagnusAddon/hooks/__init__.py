@@ -17,5 +17,6 @@ from . import (
     custom_timebox_lengths,
     timebox_end_sound,
     custom_short_term_scheduling,
-    no_accidental_double_click
+    no_accidental_double_click,
+    history_navigator
 )
