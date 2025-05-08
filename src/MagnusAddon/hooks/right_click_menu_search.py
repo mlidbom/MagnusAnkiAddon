@@ -55,15 +55,27 @@ def setup_web_search_menu(search_web_menu:QMenu, menu_string:str) -> None:
         add_web_lookup(sentences_lookup_menu, shortcutfinger.home2("Sentences: Tatoeba"), u"https://tatoeba.org/en/sentences/search?from=jpn&to=eng&query=%s", menu_string)
 
     def set_up_misc_menu(misc_lookup_menu:QMenu) -> None:
+        def set_up_translate_menu(translate_menu: QMenu) -> None:
+            add_web_lookup(translate_menu, shortcutfinger.home1("Translate: Deepl"), u"https://www.deepl.com/en/translator#ja/en/%s", menu_string)
+            add_web_lookup(translate_menu, shortcutfinger.home2("Translate: Kanshudo"), u"https://www.kanshudo.com/sentence_translate?q=%s", menu_string)
+
+        def set_up_images_menu(images_menu: QMenu) -> None:
+            add_web_lookup(images_menu, shortcutfinger.home1("Images: Google"), "https://www.google.com/search?udm=2&tbs=sur:cl&q=%s", menu_string)
+            add_web_lookup(images_menu, shortcutfinger.home2("Images: Bing"), "https://www.bing.com/images/search?qft=+filterui:licenseType-Any&q=%s", menu_string)
+
+        def set_up_conjugate_menu(conjugate_menu: QMenu) -> None:
+            add_web_lookup(conjugate_menu, shortcutfinger.home1("Conjugate: Japanese verb conjugator"), u"https://www.japaneseverbconjugator.com/VerbDetails.asp?Go=Conjugate&txtVerb=%s", menu_string)
+            add_web_lookup(conjugate_menu, shortcutfinger.home2("Conjugate: Verbix"), u"https://www.verbix.com/webverbix/japanese/%s", menu_string)
+
+        def set_up_grammar_menu(grammar_lookup_menu: QMenu) -> None:
+            add_web_lookup(grammar_lookup_menu, shortcutfinger.home1("Grammar: Google"), "https://www.google.com/search?q=japanese+grammar+%s", menu_string)
+            add_web_lookup(grammar_lookup_menu, shortcutfinger.home2("Grammar: Japanese with anime"), "https://www.google.com/search?q=site:www.japanesewithanime.com+%s", menu_string)
+            add_web_lookup(grammar_lookup_menu, shortcutfinger.home3("Grammar: Wiktionary"), "https://en.wiktionary.org/wiki/%s", menu_string)
+
         set_up_conjugate_menu(non_optional(misc_lookup_menu.addMenu(shortcutfinger.home1("Conjugate"))))
         set_up_translate_menu(non_optional(misc_lookup_menu.addMenu(shortcutfinger.home2("Translate"))))
         set_up_grammar_menu(non_optional(misc_lookup_menu.addMenu(shortcutfinger.home3("Grammar"))))
         set_up_images_menu(non_optional(misc_lookup_menu.addMenu(shortcutfinger.home4("Images"))))
-
-    def set_up_grammar_menu(grammar_lookup_menu:QMenu) -> None:
-        add_web_lookup(grammar_lookup_menu, shortcutfinger.home1("Grammar: Google"), "https://www.google.com/search?q=japanese+grammar+%s", menu_string)
-        add_web_lookup(grammar_lookup_menu, shortcutfinger.home2("Grammar: Japanese with anime"), "https://www.google.com/search?q=site:www.japanesewithanime.com+%s", menu_string)
-        add_web_lookup(grammar_lookup_menu, shortcutfinger.home3("Grammar: Wiktionary"), "https://en.wiktionary.org/wiki/%s", menu_string)
 
     def set_up_lookup_menu(lookup_menu:QMenu) -> None:
         add_web_lookup(lookup_menu, shortcutfinger.home1("English: Merriam Webster"), u"https://www.merriam-webster.com/dictionary/%s", menu_string)
@@ -71,18 +83,6 @@ def setup_web_search_menu(search_web_menu:QMenu, menu_string:str) -> None:
         add_web_lookup(lookup_menu, shortcutfinger.home3("Lookup: Word Kanshudo"), u"https://www.kanshudo.com/searchw?q=%s", menu_string)
         add_web_lookup(lookup_menu, shortcutfinger.home4("Lookup: Jisho"), u"https://jisho.org/search/%s", menu_string)
         add_web_lookup(lookup_menu, shortcutfinger.down1("Lookup: Wanikani"), u"https://www.wanikani.com/search?query=%s", menu_string)
-
-    def set_up_images_menu(images_menu:QMenu) -> None:
-        add_web_lookup(images_menu, shortcutfinger.home1("Images: Google"), "https://www.google.com/search?udm=2&tbs=sur:cl&q=%s", menu_string)
-        add_web_lookup(images_menu, shortcutfinger.home2("Images: Bing"), "https://www.bing.com/images/search?qft=+filterui:licenseType-Any&q=%s", menu_string)
-
-    def set_up_conjugate_menu(conjugate_menu:QMenu) -> None:
-        add_web_lookup(conjugate_menu, shortcutfinger.home1("Conjugate: Japanese verb conjugator"), u"https://www.japaneseverbconjugator.com/VerbDetails.asp?Go=Conjugate&txtVerb=%s", menu_string)
-        add_web_lookup(conjugate_menu, shortcutfinger.home2("Conjugate: Verbix"), u"https://www.verbix.com/webverbix/japanese/%s", menu_string)
-
-    def set_up_translate_menu(translate_menu:QMenu) -> None:
-        add_web_lookup(translate_menu, shortcutfinger.home1("Translate: Deepl"), u"https://www.deepl.com/en/translator#ja/en/%s", menu_string)
-        add_web_lookup(translate_menu, shortcutfinger.home2("Translate: Kanshudo"), u"https://www.kanshudo.com/sentence_translate?q=%s", menu_string)
 
     set_up_kanji_menu(non_optional(search_web_menu.addMenu(shortcutfinger.home1("Kanji"))))
     set_up_sentences_menu(non_optional(search_web_menu.addMenu(shortcutfinger.home2("Sentences"))))
