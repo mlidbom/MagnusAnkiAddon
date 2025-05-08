@@ -122,7 +122,8 @@ def kanji_with_radical(radical: RadicalNote) -> str:
 
 
 def kanji_with_reading_part(reading_part: str) -> str:
-    return f'''note:{NoteTypes.Kanji} ({f_reading_on}:*{reading_part}* OR {f_reading_kun}:*{reading_part}*)'''
+    hiragana_reading_part = kana_utils.to_hiragana(reading_part)
+    return f'''note:{NoteTypes.Kanji} ({f_reading_on}:*{hiragana_reading_part}* OR {f_reading_kun}:*{hiragana_reading_part}*)'''
 
 def exact_matches(question: str) -> str:
     return f'''{f_question}:"{question}" OR {field_contains_word(f_forms, question)}'''

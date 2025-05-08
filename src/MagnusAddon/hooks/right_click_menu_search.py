@@ -19,26 +19,21 @@ def setup_anki_open_menu(open_in_anki_menu:QMenu, menu_string:str) -> None:
 
 
     def build_kanji_menu(kanji_menu:QMenu) -> None:
-        def create_kanji_lookup() -> str:
-            hiragana = kana_utils.to_hiragana(menu_string)
-            if kana_utils.is_only_kana(hiragana):
-                return query_builder.notes_lookup(list(app.col().kanji.with_reading(hiragana)))
-            return query_builder.kanji_in_string(menu_string)
-
-        add_lookup_action(kanji_menu, shortcutfinger.home1("Kanji"), create_kanji_lookup())
-        add_lookup_action(kanji_menu, shortcutfinger.home2("Kanji by reading part"), query_builder.kanji_with_reading_part(menu_string))
-        add_lookup_action(kanji_menu, shortcutfinger.home3("Kanji with radicals"), query_builder.kanji_with_radicals_in_string(menu_string))
+        add_lookup_action(kanji_menu, shortcutfinger.home1("All kanji in string"), query_builder.kanji_in_string(menu_string))
+        add_lookup_action(kanji_menu, shortcutfinger.home2("By reading part"), query_builder.kanji_with_reading_part(menu_string))
+        add_lookup_action(kanji_menu, shortcutfinger.home3("By reading exact"), query_builder.notes_lookup(list(app.col().kanji.with_reading(menu_string))))
+        add_lookup_action(kanji_menu, shortcutfinger.home4("With radicals"), query_builder.kanji_with_radicals_in_string(menu_string))
 
     def build_vocab_menu(vocab_menu:QMenu) -> None:
-        add_lookup_action(vocab_menu, shortcutfinger.home1("Vocab form -"), query_builder.single_vocab_by_form_exact(menu_string))
-        add_lookup_action(vocab_menu, shortcutfinger.home2("Vocab form - read card only"), query_builder.single_vocab_by_form_exact_read_card_only(menu_string))
-        add_lookup_action(vocab_menu, shortcutfinger.home3("Vocab form, reading or answer"), query_builder.single_vocab_by_question_reading_or_answer_exact(menu_string))
-        add_lookup_action(vocab_menu, shortcutfinger.home4("Vocab Wildcard"), query_builder.single_vocab_wildcard(menu_string))
+        add_lookup_action(vocab_menu, shortcutfinger.home1("form -"), query_builder.single_vocab_by_form_exact(menu_string))
+        add_lookup_action(vocab_menu, shortcutfinger.home2("form - read card only"), query_builder.single_vocab_by_form_exact_read_card_only(menu_string))
+        add_lookup_action(vocab_menu, shortcutfinger.home3("form, reading or answer"), query_builder.single_vocab_by_question_reading_or_answer_exact(menu_string))
+        add_lookup_action(vocab_menu, shortcutfinger.home4("Wildcard"), query_builder.single_vocab_wildcard(menu_string))
         add_text_vocab_lookup(vocab_menu, shortcutfinger.up1("Text words"), menu_string)
 
     def build_sentence_menu(sentence_menu:QMenu) -> None:
-        add_lookup_action(sentence_menu, shortcutfinger.home1("Sentence - Parse Vocabulary"), query_builder.sentence_search(menu_string))
-        add_lookup_action(sentence_menu, shortcutfinger.home2("Sentence - Exact String"), query_builder.sentence_search(menu_string, exact=True))
+        add_lookup_action(sentence_menu, shortcutfinger.home1("Parse Vocabulary"), query_builder.sentence_search(menu_string))
+        add_lookup_action(sentence_menu, shortcutfinger.home2("Exact String"), query_builder.sentence_search(menu_string, exact=True))
 
     build_exact_menu(non_optional(open_in_anki_menu.addMenu(shortcutfinger.home1("Exact matches"))))
     build_kanji_menu(non_optional(open_in_anki_menu.addMenu(shortcutfinger.home2("Kanji"))))
