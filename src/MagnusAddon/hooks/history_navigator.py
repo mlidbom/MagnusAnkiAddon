@@ -22,8 +22,11 @@ class CardHistoryNavigator:
 
         self.is_navigating:bool = False
 
+    @staticmethod
+    def _is_browser_previewer() -> bool: return mw.state == "deckBrowser"
+
     def on_card_shown(self, html: str, card:Card, context:Any) -> str:
-        if not mw.state == "deckBrowser": return html
+        if self._is_browser_previewer(): return html
 
         if self.is_navigating:# If we're navigating through history, don't add the card again
             self.is_navigating = False
@@ -40,7 +43,7 @@ class CardHistoryNavigator:
         return html
 
     def navigate_back(self) -> None:
-        if self.current_position <= 0 or not mw.state == "review":
+        if self.current_position <= 0 or not self._is_browser_previewer():
             return
 
         self.current_position -= 1
@@ -48,7 +51,7 @@ class CardHistoryNavigator:
         self._show_card_by_id(self.card_history[self.current_position])
 
     def navigate_forward(self) -> None:
-        if self.current_position >= len(self.card_history) - 1 or not mw.state == "review":
+        if self.current_position >= len(self.card_history) - 1 or not self._is_browser_previewer():
             return
 
         self.current_position += 1
