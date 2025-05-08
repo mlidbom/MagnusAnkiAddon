@@ -1,7 +1,7 @@
 from anki.cards import Card, CardId
 from aqt import mw, gui_hooks
 from aqt.browser import Browser  # type: ignore
-from aqt.browser.previewer import BrowserPreviewer
+from aqt.browser.previewer import BrowserPreviewer, Previewer
 from aqt.qt import QKeySequence, QShortcut
 from typing import Any, List
 
@@ -13,12 +13,14 @@ class CardHistoryNavigator:
         self.card_history: List[CardId] = []  # Stores card IDs
         self.current_position: int = -1
 
-        self.back_shortcut = QShortcut(QKeySequence("Alt+Left"), mw)
-        self.back_shortcut.activated.connect(self.navigate_back)
-        self.forward_shortcut = QShortcut(QKeySequence("Alt+Right"), mw)
-        self.forward_shortcut.activated.connect(self.navigate_forward)
-
         gui_hooks.card_will_show.append(self.on_card_shown)# Hook into card display
+
+        def bind_shortcuts(previewer:Previewer) -> None:
+            QShortcut(QKeySequence("Alt+Left"), previewer).activated.connect(self.navigate_back)
+            QShortcut(QKeySequence("Alt+Right"), previewer).activated.connect(self.navigate_forward)
+
+        gui_hooks.previewer_did_init.append(bind_shortcuts)
+        gui_hooks.browser_will_show.append(bind_shortcuts)
 
         self.is_navigating:bool = False
 
@@ -26,7 +28,7 @@ class CardHistoryNavigator:
     def _is_browser_previewer() -> bool: return mw.state == "deckBrowser"
 
     def on_card_shown(self, html: str, card:Card, context:Any) -> str:
-        if self._is_browser_previewer(): return html
+        if not self._is_browser_previewer(): return html
 
         if self.is_navigating:# If we're navigating through history, don't add the card again
             self.is_navigating = False
