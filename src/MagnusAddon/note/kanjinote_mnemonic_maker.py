@@ -1,12 +1,6 @@
 from __future__ import annotations
 
-import re
-from typing import Tuple, TYPE_CHECKING
-
-from wanikani_api import models
-from anki.notes import Note
-
-from note.jpnote import JPNote
+from typing import TYPE_CHECKING
 from sysutils import kana_utils
 from sysutils.ex_str import newline
 
