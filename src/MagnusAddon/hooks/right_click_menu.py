@@ -70,10 +70,10 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu) -> None:
         setup_matching_note_menu(string_menu, menu_string)
 
     for string_menu, menu_string in string_menus:
-        setup_anki_open_menu(non_optional(string_menu.addMenu(shortcutfinger.up1("Open in Anki"))), lambda: menu_string)
+        setup_anki_open_menu(non_optional(string_menu.addMenu(shortcutfinger.up1("Open in Anki"))), lambda menu_string_=menu_string: menu_string_)  # type: ignore
 
     for string_menu, menu_string in string_menus:
-        setup_web_search_menu(non_optional(string_menu.addMenu(shortcutfinger.down1("Search Web"))), lambda: menu_string)
+        setup_web_search_menu(non_optional(string_menu.addMenu(shortcutfinger.down1("Search Web"))), lambda menu_string_=menu_string: menu_string_)  # type: ignore
 
     for string_menu, menu_string in string_menus:
         add_ui_action(string_menu, "remove from sentence exclusions", lambda _string=menu_string: local_note_updater.clean_sentence_excluded_word(_string))# type: ignore
