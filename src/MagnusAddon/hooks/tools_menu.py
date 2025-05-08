@@ -4,14 +4,14 @@ from aqt import qconnect
 from PyQt6.QtGui import QAction
 from PyQt6.QtWidgets import QMenu
 
-from ankiutils import app, query_builder
+from ankiutils import app
 from ankiutils.app import main_window, ui_utils
 from batches import local_note_updater
 from configuration.configuration import show_japanese_options
 from configuration.configuration_value import ConfigurationValueBool
 from configuration.readings_mapping_dialog import show_readings_mappings
 from hooks import shortcutfinger
-from hooks.right_click_menu_utils import add_lookup_action_lambda
+from hooks.right_click_menu_search import setup_anki_open_menu, setup_web_search_menu
 from note.jpnote import JPNote
 from sysutils.typed import non_optional
 from wanikani import note_importer
@@ -48,11 +48,8 @@ def build_lookup_menu(lookup_menu: QMenu) -> None:
         text, ok = QInputDialog.getText(None, "input", "enter text", QLineEdit.EchoMode.Normal, "" )
         return text if ok and text else ""
 
-    def build_kanji_menu(kanji_menu: QMenu) -> None:
-        add_lookup_action_lambda(kanji_menu, shortcutfinger.home2("By reading part"), lambda: query_builder.kanji_with_reading_part(get_text_input()))
-        add_lookup_action_lambda(kanji_menu, shortcutfinger.home3("By reading exact"), lambda: query_builder.notes_lookup(list(app.col().kanji.with_reading(get_text_input()))))
-
-    build_kanji_menu(non_optional(lookup_menu.addMenu(shortcutfinger.home1("Kanji"))))
+    setup_anki_open_menu(non_optional(lookup_menu.addMenu(shortcutfinger.home1("Anki"))), get_text_input)
+    setup_web_search_menu(non_optional(lookup_menu.addMenu(shortcutfinger.home2("Web"))), get_text_input)
 
 def build_misc_menu(misc_menu: QMenu) -> None:
     build_debug_menu(non_optional(misc_menu.addMenu(shortcutfinger.home1("Debug"))))
