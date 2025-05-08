@@ -1,9 +1,10 @@
 from anki.cards import Card, CardId
 from aqt import mw, gui_hooks
 from aqt.browser import Browser  # type: ignore
-from aqt.browser.previewer import Previewer
 from aqt.qt import QKeySequence, QShortcut
 from typing import Any, List
+
+from PyQt6.QtWidgets import QWidget
 
 from ankiutils import query_builder, search_executor
 
@@ -14,11 +15,12 @@ class CardHistoryNavigator:
 
         gui_hooks.card_will_show.append(self.on_card_shown)  # Hook into card display
 
-        def bind_shortcuts(previewer: Previewer) -> None:
+        def bind_shortcuts(widget: QWidget) -> None:
             self._reset_position()
-            QShortcut(QKeySequence("Alt+Left"), previewer).activated.connect(self.navigate_back)
-            QShortcut(QKeySequence("Alt+Right"), previewer).activated.connect(self.navigate_forward)
+            QShortcut(QKeySequence("Alt+Left"), widget).activated.connect(self.navigate_back)
+            QShortcut(QKeySequence("Alt+Right"), widget).activated.connect(self.navigate_forward)
 
+        bind_shortcuts(mw)
         gui_hooks.previewer_did_init.append(bind_shortcuts)
         gui_hooks.browser_will_show.append(bind_shortcuts)
 
