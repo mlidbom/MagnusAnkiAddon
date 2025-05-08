@@ -36,7 +36,7 @@ def create_default_mnemonic(kanji_note:KanjiNote) -> str:
                                     matches_removed = True
                                     segments_with_mapped_readings_by_start_index[path_index].remove(match)
 
-            def find_path_with_fewest_segments() -> list[str]:
+            def find_shortest_path() -> list[str]:
                 shortest_paths_to_position: dict[int, list[str]] = {0: []}  # Start with an empty path at position 0
 
                 def current_index_is_reachable() -> bool: return index in shortest_paths_to_position
@@ -58,10 +58,10 @@ def create_default_mnemonic(kanji_note:KanjiNote) -> str:
                 return shortest_paths_to_position.get(reading_length, []) # Return the shortest path to the end of the string, or empty list if no path exists
 
             remove_dead_end_paths()
-            long_path = find_path_with_fewest_segments()
+            shortest_path = find_shortest_path()
 
-            if not long_path: return ""
-            combined_reading = "-".join([readings_mappings[fragment] for fragment in long_path])
+            if not shortest_path: return ""
+            combined_reading = "-".join([readings_mappings[fragment] for fragment in shortest_path])
             return f"""<compound-reading>{combined_reading}</compound-reading>"""
 
 
