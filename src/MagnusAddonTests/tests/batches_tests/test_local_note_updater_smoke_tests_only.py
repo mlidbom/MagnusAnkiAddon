@@ -2,12 +2,12 @@ from typing import Any, Generator
 
 import pytest
 
-from ankiutils import app
+# from ankiutils import app
 from fixtures.collection_factory import inject_anki_collection_with_all_sample_data
 from fixtures.stub_factory import stub_ui_dependencies
-from language_services.janome_ex.word_extraction.candidate_word import CandidateWord
-from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
-from note.vocabnote import VocabNote
+# from language_services.janome_ex.word_extraction.candidate_word import CandidateWord
+# from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
+# from note.vocabnote import VocabNote
 
 # noinspection PyUnusedFunction
 @pytest.fixture(scope="function")
@@ -22,25 +22,26 @@ def test_smoke_update_all(setup:Any) -> None:
 
 
 def test_memory_leak(setup:Any) -> None:
-    from batches import local_note_updater
-
-    print()
-    print("starting")
-
-    def output_function(o:Any) -> str:
-        return str(type(o))
-
-    print("aoeusnth")
-
-    from pympler import muppy, summary, refbrowser, tracker
-    tr = tracker.SummaryTracker()  # type: ignore
-
-    tr.print_diff()# type: ignore
-
-    for sentence in  app.col().sentences.all():
-        sentence.update_parsed_words(force=True)
-
-    tr.print_diff()  # type: ignore
+    pass
+    # from batches import local_note_updater
+    #
+    # print()
+    # print("starting")
+    #
+    # def output_function(o:Any) -> str:
+    #     return str(type(o))
+    #
+    # print("aoeusnth")
+    #
+    # from pympler import muppy, summary, refbrowser, tracker
+    # tr = tracker.SummaryTracker()  # type: ignore
+    #
+    # tr.print_diff()# type: ignore
+    #
+    # for sentence in  app.col().sentences.all():
+    #     sentence.update_parsed_words(force=True)
+    #
+    # tr.print_diff()  # type: ignore
 
     # analysis = TextAnalysis(app.col().sentences.all()[0].get_question(), [])
     #

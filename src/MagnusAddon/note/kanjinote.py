@@ -276,17 +276,17 @@ class KanjiNote(WaniNote):
 
             def try_combine_framentary_matches_into_one_reading() -> str:
                 matches_by_reading_character_index: list[list[str]] = list()
-                for index in range(0, len(kana_reading)):
-                    candidates = [kana_reading[index:sub_index] for sub_index in range(index + 1, len(kana_reading) + 1)]
-                    matches_by_reading_character_index.append([cand for cand in candidates if kana_utils.romanize(cand) in readings_mappings])
+                for index in range(0, len(romaji_reading)):
+                    candidates = [romaji_reading[index:sub_index] for sub_index in range(index + 1, len(romaji_reading) + 1)]
+                    matches_by_reading_character_index.append([cand for cand in candidates if cand in readings_mappings])
 
                 def remove_dead_end_paths() -> None:
                     values_removed = True
                     while values_removed:
                         values_removed = False
-                        for path_index in range(0, len(kana_reading)):
+                        for path_index in range(0, len(romaji_reading)):
                             for kana_match in matches_by_reading_character_index[path_index]:
-                                if not path_index + len(kana_match) == len(kana_reading):
+                                if not path_index + len(kana_match) == len(romaji_reading):
                                     if not matches_by_reading_character_index[path_index + len(kana_match)]:
                                         values_removed = True
                                         matches_by_reading_character_index[path_index].remove(kana_match)
@@ -294,7 +294,7 @@ class KanjiNote(WaniNote):
                 def find_long_path() -> list[str]:
                     next_fragment_index = 0
                     path: list[str] = []
-                    while next_fragment_index < len(kana_reading):
+                    while next_fragment_index < len(romaji_reading):
                         candidates_ = matches_by_reading_character_index[next_fragment_index]
                         if not candidates_:
                             return []
@@ -308,7 +308,7 @@ class KanjiNote(WaniNote):
                 long_path = find_long_path()
 
                 if not long_path: return ""
-                combined_reading = "-".join([readings_mappings[kana_utils.romanize(fragment)] for fragment in long_path])
+                combined_reading = "-".join([readings_mappings[fragment] for fragment in long_path])
                 return f"""<compound-reading>{combined_reading}</compound-reading>"""
 
 
