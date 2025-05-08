@@ -1,46 +1,44 @@
 from anki.cards import Card, CardId
 from aqt import mw, gui_hooks
 from aqt.browser import Browser  # type: ignore
-from aqt.browser.previewer import BrowserPreviewer, Previewer
+from aqt.browser.previewer import Previewer
 from aqt.qt import QKeySequence, QShortcut
 from typing import Any, List
 
 from ankiutils import query_builder, search_executor
-from sysutils import typed
 
 class CardHistoryNavigator:
     def __init__(self) -> None:
         self.card_history: List[CardId] = []  # Stores card IDs
         self.current_position: int = -1
 
-        gui_hooks.card_will_show.append(self.on_card_shown)# Hook into card display
+        gui_hooks.card_will_show.append(self.on_card_shown)  # Hook into card display
 
-        def bind_shortcuts(previewer:Previewer) -> None:
+        def bind_shortcuts(previewer: Previewer) -> None:
+            self._reset_position()
             QShortcut(QKeySequence("Alt+Left"), previewer).activated.connect(self.navigate_back)
             QShortcut(QKeySequence("Alt+Right"), previewer).activated.connect(self.navigate_forward)
 
         gui_hooks.previewer_did_init.append(bind_shortcuts)
         gui_hooks.browser_will_show.append(bind_shortcuts)
 
-        self.is_navigating:bool = False
+        self.is_navigating: bool = False
 
     @staticmethod
     def _is_browser_previewer() -> bool: return mw.state == "deckBrowser"
+    def _reset_position(self) -> None: self.current_position = len(self.card_history) - 1
 
-    def on_card_shown(self, html: str, card:Card, context:Any) -> str:
+    def on_card_shown(self, html: str, card: Card, _: Any) -> str:
         if not self._is_browser_previewer(): return html
 
-        if self.is_navigating:# If we're navigating through history, don't add the card again
+        if self.is_navigating:
             self.is_navigating = False
             return html
 
-        if self.current_position == len(self.card_history) - 1: # If we're at the end of the history, append the new card
-            self.card_history.append(card.id)
-            self.current_position += 1
-        else: # We're in the middle of history, truncate and add new card
-            self.card_history = self.card_history[:self.current_position + 1]
-            self.card_history.append(card.id)
-            self.current_position += 1
+        if self.card_history and card.id == self.card_history[-1]: return html
+
+        self.card_history.append(card.id)
+        self._reset_position()
 
         return html
 
@@ -59,14 +57,6 @@ class CardHistoryNavigator:
         self.current_position += 1
         self.is_navigating = True
         self._show_card_by_id(self.card_history[self.current_position])
-
-    @staticmethod
-    def browser() -> Browser:
-        browser = [window for window in mw.app.topLevelWidgets() if isinstance(window, Browser)]
-        return typed.checked_cast(Browser, browser[0])
-
-    def previewer(self) -> BrowserPreviewer:
-        return typed.checked_cast(BrowserPreviewer, self.browser()._previewer) # noqa
 
     @staticmethod
     def _show_card_by_id(card_id: CardId) -> None:
