@@ -35,6 +35,9 @@ class CardHistoryNavigator:
 
         if self.card_history and card.id == self.card_history[-1]: return html
 
+        if card.id in self.card_history:
+            self.card_history.remove(card.id)
+
         self.card_history.append(card.id)
         self._reset_position()
 
