@@ -4,17 +4,19 @@ from aqt import qconnect
 from PyQt6.QtGui import QAction
 from PyQt6.QtWidgets import QMenu
 
-from ankiutils import app
+from ankiutils import app, query_builder
 from ankiutils.app import main_window, ui_utils
 from batches import local_note_updater
 from configuration.configuration import show_japanese_options
 from configuration.configuration_value import ConfigurationValueBool
 from configuration.readings_mapping_dialog import show_readings_mappings
 from hooks import shortcutfinger
+from hooks.right_click_menu_utils import add_lookup_action_lambda
 from note.jpnote import JPNote
 from sysutils.typed import non_optional
 from wanikani import note_importer
 from wanikani.wani_downloader import WaniDownloader
+from PyQt6.QtWidgets import QInputDialog, QLineEdit
 
 def refresh() -> None:
     note = JPNote.note_from_card(non_optional(main_window().reviewer.card))
@@ -34,21 +36,35 @@ def add_menu_ui_action(sub_menu: QMenu, heading: str, callback: Callable[[],None
     sub_menu.addAction(action)
 
 def build_main_menu() -> None:
-    my_menu = non_optional(main_window().form.menuTools.addMenu("M&agnus"))
+    my_menu = non_optional(main_window().form.menubar.addMenu(shortcutfinger.home1("Japanese")))
 
-    build_config_menu(my_menu, shortcutfinger.home1("Config"))
-    build_local_menu(my_menu, shortcutfinger.home2("Local Actions"))
-    build_debug_menu(my_menu, shortcutfinger.home3("Debug"))
-    build_wani_menu(my_menu, shortcutfinger.home4("Wanikani Actions"))
+    build_lookup_menu(non_optional(my_menu.addMenu(shortcutfinger.home1("Lookup"))))
+    build_config_menu(non_optional(my_menu.addMenu(shortcutfinger.home2("Config"))))
+    build_local_menu(non_optional(my_menu.addMenu(shortcutfinger.home3("Local Actions"))))
+    build_misc_menu(non_optional(my_menu.addMenu(shortcutfinger.home4("Debug"))))
 
-def build_debug_menu(my_menu: QMenu, title:str) -> None:
-    debug_menu = non_optional(my_menu.addMenu(title))
-    add_menu_ui_action(debug_menu, "Refresh UI", refresh, "F5")
+def build_lookup_menu(lookup_menu: QMenu) -> None:
+    def get_text_input() -> str:
+        text, ok = QInputDialog.getText(None, "input", "enter text", QLineEdit.EchoMode.Normal, "" )
+        return text if ok and text else ""
+
+    def build_kanji_menu(kanji_menu: QMenu) -> None:
+        add_lookup_action_lambda(kanji_menu, shortcutfinger.home2("By reading part"), lambda: query_builder.kanji_with_reading_part(get_text_input()))
+        add_lookup_action_lambda(kanji_menu, shortcutfinger.home3("By reading exact"), lambda: query_builder.notes_lookup(list(app.col().kanji.with_reading(get_text_input()))))
+
+    build_kanji_menu(non_optional(lookup_menu.addMenu(shortcutfinger.home1("Kanji"))))
+
+def build_misc_menu(misc_menu: QMenu) -> None:
+    build_debug_menu(non_optional(misc_menu.addMenu(shortcutfinger.home1("Debug"))))
+    build_wani_menu(non_optional(misc_menu.addMenu(shortcutfinger.home2("Wanikani Actions"))))
+
+def build_debug_menu(debug_menu: QMenu) -> None:
+    add_menu_ui_action(debug_menu, shortcutfinger.home1("Refresh UI"), refresh, "F5")
+    add_menu_ui_action(debug_menu, shortcutfinger.home2("Run_memory_profiling_parsing"), local_note_updater.run_memory_profiling_sentence_reparsing_session)
+    add_menu_ui_action(debug_menu, shortcutfinger.home3("Print_memory_usage"), local_note_updater.print_memory_usage)
     debug_menu.addAction("&Reset", app.reset)
 
-def build_config_menu(my_menu: QMenu, title:str) -> None:
-    config_menu = non_optional(my_menu.addMenu(title))
-
+def build_config_menu(config_menu: QMenu) -> None:
     def add_checkbox_config(menu: QMenu, config_value: ConfigurationValueBool, _title:str) -> None:
         checkbox_action = QAction(_title, main_window())
         checkbox_action.setCheckable(True)
@@ -67,15 +83,17 @@ def build_config_menu(my_menu: QMenu, title:str) -> None:
     config_menu.addAction(shortcutfinger.home3("Readings mappings"), show_readings_mappings)
 
 
-def build_local_menu(menu: QMenu, title:str) -> None:
-    sub_menu = non_optional(menu.addMenu(title))
-    add_menu_ui_action(sub_menu, "Update &All", local_note_updater.update_all)
-    add_menu_ui_action(sub_menu, "Update &Vocab", local_note_updater.update_vocab)
-    add_menu_ui_action(sub_menu, "Update &Kanji", local_note_updater.update_kanji)
-    add_menu_ui_action(sub_menu, "Update &Sentences", local_note_updater.update_sentences)
-    add_menu_ui_action(sub_menu, "Reparse words from sentences", local_note_updater.reparse_sentence_words)
-    add_menu_ui_action(sub_menu, "Run_memory_profiling_parsing", local_note_updater.run_memory_profiling_sentence_reparsing_session)
-    add_menu_ui_action(sub_menu, "Print_memory_usage", local_note_updater.print_memory_usage)
+def build_local_menu(sub_menu: QMenu) -> None:
+    def setup_update_menu(update_menu: QMenu) -> None:
+        add_menu_ui_action(update_menu, "Update &All", local_note_updater.update_all)
+        add_menu_ui_action(update_menu, "Update &Vocab", local_note_updater.update_vocab)
+        add_menu_ui_action(update_menu, "Update &Kanji", local_note_updater.update_kanji)
+        add_menu_ui_action(update_menu, "Update &Sentences", local_note_updater.update_sentences)
+        add_menu_ui_action(update_menu, "Reparse words from sentences", local_note_updater.reparse_sentence_words)
+
+    setup_update_menu(non_optional(sub_menu.addMenu(shortcutfinger.home1("Update"))))
+
+
     add_menu_ui_action(sub_menu, "Create Sentences from Context Sentences With Audio", local_note_updater.generate_sentences_for_context_sentences_with_audio)
     add_menu_ui_action(sub_menu, "Convert &Immersion Kit sentences", local_note_updater.convert_immersion_kit_sentences)
     add_menu_ui_action(sub_menu, "Tag note metadata", local_note_updater.tag_note_metadata)
@@ -84,8 +102,7 @@ def build_local_menu(menu: QMenu, title:str) -> None:
     sub_menu.addMenu(danger_zone)
     #add_menu_ui_action(danger_zone, "Adjust kanji primary readings", local_note_updater.adjust_kanji_primary_readings)
 
-def build_wani_menu(menu: QMenu, title:str) -> None:
-    sub_menu = non_optional(menu.addMenu(title))
+def build_wani_menu(sub_menu: QMenu) -> None:
     add_menu_ui_action(sub_menu, "Import Missing Radicals", note_importer.import_missing_radicals)
     add_menu_ui_action(sub_menu, "Import Missing Kanji", note_importer.import_missing_kanji)
     add_menu_ui_action(sub_menu, "Import Missing Vocabulary", note_importer.import_missing_vocab)
