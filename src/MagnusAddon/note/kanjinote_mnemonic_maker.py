@@ -55,7 +55,7 @@ def create_default_mnemonic(kanji_note:KanjiNote) -> str:
                         if segment_is_shortest_path_to_position_after_segment():
                             shortest_paths_to_position[position_after_segment] = shortest_paths_to_position[index] + [segment]
 
-                return shortest_paths_to_position.get(reading_length, []) # Return the shortest path to the end of the string, or empty list if no path exists
+                return shortest_paths_to_position.get(reading_length, [])
 
             remove_dead_end_paths()
             shortest_path = find_shortest_path()
