@@ -35,7 +35,7 @@ def create_default_mnemonic(kanji_note:KanjiNote) -> str:
                                     matches_removed = True
                                     matches_by_sub_string_start_index[path_index].remove(match)
 
-            def find_long_path() -> list[str]:
+            def find_shortest_path() -> list[str]:
                 next_fragment_index = 0
                 path: list[str] = []
                 while next_fragment_index < len(romaji_reading):
@@ -49,7 +49,7 @@ def create_default_mnemonic(kanji_note:KanjiNote) -> str:
                 return path
 
             remove_dead_end_paths()
-            long_path = find_long_path()
+            long_path = find_shortest_path()
 
             if not long_path: return ""
             combined_reading = "-".join([readings_mappings[fragment] for fragment in long_path])
