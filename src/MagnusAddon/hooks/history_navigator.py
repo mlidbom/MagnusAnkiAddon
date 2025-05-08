@@ -2,7 +2,7 @@ from anki.cards import Card, CardId
 from aqt import mw, gui_hooks
 from aqt.browser import Browser  # type: ignore
 from aqt.qt import QKeySequence, QShortcut
-from typing import Any, List
+from typing import List
 
 from PyQt6.QtWidgets import QWidget
 
@@ -26,13 +26,9 @@ class CardHistoryNavigator:
 
         self.is_navigating: bool = False
 
-    @staticmethod
-    def _is_browser_previewer() -> bool: return mw.state == "deckBrowser"
     def _reset_position(self) -> None: self.current_position = len(self.card_history) - 1
 
-    def on_card_shown(self, html: str, card: Card, _: Any) -> str:
-        if not self._is_browser_previewer(): return html
-
+    def on_card_shown(self, html: str, card: Card, _: str) -> str:
         if self.is_navigating:
             self.is_navigating = False
             return html
@@ -45,7 +41,7 @@ class CardHistoryNavigator:
         return html
 
     def navigate_back(self) -> None:
-        if self.current_position <= 0 or not self._is_browser_previewer():
+        if self.current_position <= 0:
             return
 
         self.current_position -= 1
@@ -53,7 +49,7 @@ class CardHistoryNavigator:
         self._show_card_by_id(self.card_history[self.current_position])
 
     def navigate_forward(self) -> None:
-        if self.current_position >= len(self.card_history) - 1 or not self._is_browser_previewer():
+        if self.current_position >= len(self.card_history) - 1:
             return
 
         self.current_position += 1
