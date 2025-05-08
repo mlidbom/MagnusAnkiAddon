@@ -49,9 +49,9 @@ class JNTokenWrapper(ProcessedToken):
         if (len(self.token.base_form) >= 3
                 and self.token.base_form[-2:] in conjugator.godan_potential_verb_ending_to_dictionary_form_endings
                 and self.token.is_verb()):
-            if not self._is_word(self.token.base_form): #the potential verbs are generally not in the dictionary this is how we know them
+            if not DictLookup.is_word(self.token.base_form): #the potential verbs are generally not in the dictionary this is how we know them
                 root_verb = conjugator.construct_root_verb_for_possibly_potential_godan_verb_dictionary_form(self.token.base_form)
-                if self._is_word(root_verb):
+                if DictLookup.is_word(root_verb):
                     lookup = DictLookup.lookup_word_shallow(root_verb)
                     if lookup.found_words():
                         is_godan = any(e for e in lookup.entries if "godan verb" in e.parts_of_speech())
@@ -76,11 +76,6 @@ class JNTokenWrapper(ProcessedToken):
             log.warning(f"combined base should be {self.base_form} but is {new_base} bailing out")
             return []
         return [root_verb_token, eru_token]
-
-    @staticmethod
-    def _is_word(candidate: str) -> bool:
-        from ankiutils import app
-        return app.col().vocab.with_form(candidate) != [] or DictLookup.is_word(candidate)
 
 class JNTokenizedText:
     def __init__(self, text: str, tokens: list[JNToken]) -> None:
