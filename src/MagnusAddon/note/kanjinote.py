@@ -275,27 +275,27 @@ class KanjiNote(WaniNote):
                 return read if read.count("<read>") <= 1 else f"""<compound-reading>{read}</compound-reading>"""
 
             def try_combine_framentary_matches_into_one_reading() -> str:
-                matches_by_reading_character_index: list[list[str]] = list()
-                for index in range(0, len(romaji_reading)):
-                    candidates = [romaji_reading[index:sub_index] for sub_index in range(index + 1, len(romaji_reading) + 1)]
-                    matches_by_reading_character_index.append([cand for cand in candidates if cand in readings_mappings])
+                matches_by_sub_string_start_index: list[list[str]] = list()
+                for sub_string_start_index in range(0, len(romaji_reading)):
+                    candidates = [romaji_reading[sub_string_start_index:sub_string_length] for sub_string_length in range(sub_string_start_index + 1, len(romaji_reading) + 1)]
+                    matches_by_sub_string_start_index.append([cand for cand in candidates if cand in readings_mappings])
 
                 def remove_dead_end_paths() -> None:
-                    values_removed = True
-                    while values_removed:
-                        values_removed = False
+                    matches_removed = True
+                    while matches_removed:
+                        matches_removed = False
                         for path_index in range(0, len(romaji_reading)):
-                            for kana_match in matches_by_reading_character_index[path_index]:
-                                if not path_index + len(kana_match) == len(romaji_reading):
-                                    if not matches_by_reading_character_index[path_index + len(kana_match)]:
-                                        values_removed = True
-                                        matches_by_reading_character_index[path_index].remove(kana_match)
+                            for match in matches_by_sub_string_start_index[path_index]:
+                                if not path_index + len(match) == len(romaji_reading): #this match brings us to the end of the reading
+                                    if not matches_by_sub_string_start_index[path_index + len(match)]: #There's nowhere to go after the end of this fragment
+                                        matches_removed = True
+                                        matches_by_sub_string_start_index[path_index].remove(match)
 
                 def find_long_path() -> list[str]:
                     next_fragment_index = 0
                     path: list[str] = []
                     while next_fragment_index < len(romaji_reading):
-                        candidates_ = matches_by_reading_character_index[next_fragment_index]
+                        candidates_ = matches_by_sub_string_start_index[next_fragment_index]
                         if not candidates_:
                             return []
 
