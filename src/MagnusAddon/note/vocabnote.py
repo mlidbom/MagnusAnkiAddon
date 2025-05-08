@@ -23,13 +23,16 @@ from typing import Optional, TYPE_CHECKING
 if TYPE_CHECKING:
     from note.sentencenote import SentenceNote
 
-def sort_vocab_list_by_studying_status(vocabs: list[VocabNote], primary_voc: Optional[list[str]] = None) -> list[VocabNote]:
+def sort_vocab_list_by_studying_status(vocabs: list[VocabNote], primary_voc: Optional[list[str]] = None, preferred_kanji: Optional[str] = None) -> list[VocabNote]:
     def prefer_primary_vocab_in_order(local_vocab: VocabNote) -> int:
         for index, primary in enumerate(_primary_voc):
             if local_vocab.get_question() == primary or local_vocab.get_question_without_noise_characters() == primary or (local_vocab.get_readings() and local_vocab.get_readings()[0] == primary):
                 return index
 
         return 1000
+
+    def prefer_vocab_with_kanji(local_vocab: VocabNote) -> int:
+        return 0 if preferred_kanji is None or preferred_kanji in local_vocab.get_question() else 1
 
     def prefer_studying_vocab(local_vocab: VocabNote) -> int:
         return 1 if local_vocab.is_studying() else 2
@@ -47,7 +50,8 @@ def sort_vocab_list_by_studying_status(vocabs: list[VocabNote], primary_voc: Opt
 
     result = vocabs.copy()
 
-    result.sort(key=lambda local_vocab: (prefer_primary_vocab_in_order(local_vocab),
+    result.sort(key=lambda local_vocab: (prefer_vocab_with_kanji(local_vocab),
+                                         prefer_primary_vocab_in_order(local_vocab),
                                          prefer_studying_vocab(local_vocab),
                                          prefer_studying_sentences(local_vocab),
                                          prefer_more_sentences(local_vocab),
@@ -442,7 +446,7 @@ class VocabNote(KanaVocabNote):
         analysis = TextAnalysis(self.get_question(), [WordExclusion(form) for form in self.get_forms()])
         if analysis.display_words:
             self.set_user_compounds([a.form for a in analysis.display_words if a.form not in self.get_forms()])
-        else:#time to brute force it
+        else:  # time to brute force it
             from ankiutils import app
             word = self.get_question()
             all_substrings = [word[i:j] for i in range(len(word)) for j in range(i + 1, len(word) + 1) if word[i:j] != word]
@@ -455,4 +459,3 @@ class VocabNote(KanaVocabNote):
                 created.suspend_all_cards()
 
             self.set_user_compounds(only_the_largest_segments)
-

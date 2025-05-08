@@ -83,12 +83,12 @@ class KanjiNote(WaniNote):
 
     def get_vocab_notes_sorted(self) -> list[VocabNote]:
         from note import vocabnote
-        vocab_list = vocabnote.sort_vocab_list_by_studying_status(self.get_vocab_notes(), self.get_primary_vocabs_or_defaults())
+        vocab_list = vocabnote.sort_vocab_list_by_studying_status(self.get_vocab_notes(), self.get_primary_vocabs_or_defaults(), preferred_kanji=self.get_question())
         return vocab_list
 
     def get_vocab_notes(self) -> list[VocabNote]:
         from ankiutils import app
-        return app.col().vocab.with_kanji_in_main_form(self)
+        return app.col().vocab.with_kanji_in_any_form(self)
 
     def get_user_mnemonic(self) -> str: return self.get_field(NoteFields.Kanji.user_mnemonic)
     def set_user_mnemonic(self, value: str) -> None: self.set_field(NoteFields.Kanji.user_mnemonic, value)

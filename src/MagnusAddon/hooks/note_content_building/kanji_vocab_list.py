@@ -17,6 +17,9 @@ def generate_vocab_html_list(_kanji_note: KanjiNote) -> str:
         if _vocab.get_question() in primary_vocab or (_vocab.get_readings() and _vocab.get_readings()[0] in _kanji.get_primary_vocab()):
             classes += " primary_vocab" if has_real_primary_vocabs else " default_primary_vocab"
 
+        if _kanji_note.get_question() not in _vocab.get_question():
+            classes += " not_matching_kanji"
+
         return classes
 
     vocabs = _kanji_note.get_vocab_notes_sorted()
