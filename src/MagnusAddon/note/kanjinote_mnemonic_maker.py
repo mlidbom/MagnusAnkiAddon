@@ -19,34 +19,42 @@ def create_default_mnemonic(kanji_note:KanjiNote) -> str:
             return read if read.count("<read>") <= 1 else f"""<compound-reading>{read}</compound-reading>"""
 
         def try_combine_framentary_matches_into_one_reading() -> str:
-            matches_by_sub_string_start_index: list[list[str]] = list()
+            segments_by_start_index: list[list[str]] = list()
             for sub_string_start_index in range(0, len(romaji_reading)):
                 candidates = [romaji_reading[sub_string_start_index:sub_string_length] for sub_string_length in range(sub_string_start_index + 1, len(romaji_reading) + 1)]
-                matches_by_sub_string_start_index.append([cand for cand in candidates if cand in readings_mappings])
+                segments_by_start_index.append([cand for cand in candidates if cand in readings_mappings])
 
             def remove_dead_end_paths() -> None:
                 matches_removed = True
                 while matches_removed:
                     matches_removed = False
                     for path_index in range(0, len(romaji_reading)):
-                        for match in matches_by_sub_string_start_index[path_index]:
+                        for match in segments_by_start_index[path_index]:
                             if not path_index + len(match) == len(romaji_reading): #this match brings us to the end of the reading
-                                if not matches_by_sub_string_start_index[path_index + len(match)]: #There's nowhere to go after the end of this fragment
+                                if not segments_by_start_index[path_index + len(match)]: #There's nowhere to go after the end of this fragment
                                     matches_removed = True
-                                    matches_by_sub_string_start_index[path_index].remove(match)
+                                    segments_by_start_index[path_index].remove(match)
 
             def find_path_with_fewest_segments() -> list[str]:
-                next_fragment_index = 0
-                path: list[str] = []
-                while next_fragment_index < len(romaji_reading):
-                    candidates_ = matches_by_sub_string_start_index[next_fragment_index]
-                    if not candidates_:
-                        return []
+                shortest_paths_to_position: dict[int, list[str]] = {0: []}  # Start with an empty path at position 0
 
-                    fragment = sorted(candidates_, key=lambda x: len(x), reverse=True)[0]
-                    path.append(fragment)
-                    next_fragment_index += len(fragment)
-                return path
+                def current_index_is_reachable() -> bool: return index in shortest_paths_to_position
+
+                def segment_is_shortest_path_to_position_after_segment() -> bool:
+                    return (position_after_segment not in shortest_paths_to_position or
+                            len(shortest_paths_to_position[index]) + 1 < len(shortest_paths_to_position[position_after_segment]))
+
+                index:int = 0
+                for index in range(len(romaji_reading)):
+                    if not current_index_is_reachable(): continue
+
+                    segments_starting_at_current_index = segments_by_start_index[index]
+                    for segment in segments_starting_at_current_index:
+                        position_after_segment:int = index + len(segment)
+                        if segment_is_shortest_path_to_position_after_segment():
+                            shortest_paths_to_position[position_after_segment] = shortest_paths_to_position[index] + [segment]
+
+                return shortest_paths_to_position.get(len(romaji_reading), []) # Return the shortest path to the end of the string, or empty list if no path exists
 
             remove_dead_end_paths()
             long_path = find_path_with_fewest_segments()
