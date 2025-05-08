@@ -18,6 +18,8 @@ f_question = MyNoteFields.question
 f_reading = NoteFields.Vocab.Reading
 f_answer = MyNoteFields.answer
 f_forms = NoteFields.Vocab.Forms
+f_reading_on = NoteFields.Kanji.Reading_On
+f_reading_kun = NoteFields.Kanji.Reading_Kun
 
 card_read = f"{Builtin.Card}:{NoteFields.VocabNoteType.Card.Reading}"
 
@@ -117,6 +119,10 @@ def kanji_with_radical(radical: RadicalNote) -> str:
         return f"note:{NoteTypes.Kanji} {NoteFields.Kanji.Radicals}:*{radical.get_question()}*"
     else:
         return f"note:{NoteTypes.Kanji} ({field_contains_word(NoteFields.Kanji.Radicals_Names, radical.get_answer())} OR {field_contains_word(NoteFields.Kanji.Radicals_Icons_Names, radical.get_answer())} )"
+
+
+def kanji_with_reading_part(reading_part: str) -> str:
+    return f'''note:{NoteTypes.Kanji} ({f_reading_on}:*{reading_part}* OR {f_reading_kun}:*{reading_part}*)'''
 
 def exact_matches(question: str) -> str:
     return f'''{f_question}:"{question}" OR {field_contains_word(f_forms, question)}'''
