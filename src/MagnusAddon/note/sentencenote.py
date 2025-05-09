@@ -3,6 +3,7 @@ from typing import Optional, TYPE_CHECKING
 
 from language_services.janome_ex.word_extraction.candidate_form import CandidateForm
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
+from note.notefields.string_note_field import StringField
 from note.sentencenote_configuration import SentenceConfiguration
 from sysutils.ex_str import newline
 
@@ -20,6 +21,8 @@ class SentenceNote(JPNote):
     def __init__(self, note: Note):
         super().__init__(note)
         self._user_excluded_cache:set[str] = self._get_user_word_exclusions_strings()
+        self._source_answer = StringField(self, SentenceNoteFields.source_answer)
+
 
 
     def get_direct_dependencies(self) -> set[JPNote]:
