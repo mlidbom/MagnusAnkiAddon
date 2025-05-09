@@ -68,6 +68,23 @@ class CachingSentenceConfigurationField:
     def highlighted_words(self) -> list[str]: return self._value.instance().highlighted_words
     def incorrect_matches(self) -> list[WordExclusion]: return self._value.instance().incorrect_matches
     def incorrect_matches_words(self) -> set[str]: return self._value.instance().incorrect_matches_words()
+
+    def remove_higlighted_word(self, word: str) -> None:
+        if word in self.highlighted_words():
+            self.highlighted_words().remove(word)
+
+    def set_incorrect_matches(self, exclusions: set[WordExclusion]) -> None:
+        self._value.instance().incorrect_matches = sorted(exclusions, key=lambda x: x.index)
+        self._save()
+
+    def set_highlighted_words(self, words: list[str]) -> None:
+        self._value.instance().highlighted_words = words
+        self._save()
+
+    def reset_highlighted_words(self) -> None: self.set_highlighted_words([])
+
+    def reset_incorrect_matches(self) -> None: self.set_incorrect_matches(set())
+
     def parsing_result(self) -> ParsingResult: return self._value.instance().parsing_result
     def set_parsing_result(self, analysis: TextAnalysis) -> None:
         self._value.instance().parsing_result = ParsingResult([ParsedWord(word.form) for word in analysis.all_words],

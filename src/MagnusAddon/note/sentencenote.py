@@ -31,49 +31,17 @@ class SentenceNote(JPNote):
         self._user_answer = StringField(self, SentenceNoteFields.user_answer)
         self._user_excluded_vocab = ReadOnlyNewlineSeparatedValuesField(self, SentenceNoteFields.user_excluded_vocab)
         self._configuration = CachingSentenceConfigurationField(self)
-        self._user_excluded_cache: set[str] = self._get_user_word_exclusions_strings()
 
 
     def parsing_result(self) -> ParsingResult: return self._configuration.parsing_result()
 
-    #todo: replace this with field class
-    def get_user_excluded_vocab(self) -> set[str]: return self._configuration.incorrect_matches_words()
-
     def get_question(self) -> str: return self.question.get()
     def get_answer(self) -> str: return self.answer.get()
 
-    def get_user_word_exclusions(self) -> list[WordExclusion]: return self._configuration.incorrect_matches()
-
-    def _get_user_word_exclusions_strings(self) -> set[str]:
-        word_exclusions = set(x.word for x in self.get_user_word_exclusions())
-        valid_words = set(self.get_parsed_words())
-        return word_exclusions - valid_words
-
     def _set_user_word_exclusions(self, exclusions: set[WordExclusion]) -> None:
-        sorted_exclusions = sorted(exclusions, key=lambda x: x.index)
-        self.set_field(SentenceNoteFields.user_excluded_vocab, newline.join([e.as_string() for e in sorted_exclusions]))
+        self._configuration.set_incorrect_matches(exclusions)
         self.update_parsed_words(force=True)
-        self._user_excluded_cache = self._get_user_word_exclusions_strings()
 
-    def is_studying_read(self) -> bool: return self.is_studying(NoteFields.SentencesNoteType.Card.Reading)
-    def is_studying_listening(self) -> bool: return self.is_studying(NoteFields.SentencesNoteType.Card.Listening)
-
-
-    def get_valid_parsed_non_child_words_strings(self) -> list[str]:
-        return [w.form for w in self.get_valid_parsed_non_child_words()]
-
-    def get_valid_parsed_non_child_words(self) -> list[CandidateForm]:
-        from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
-        analysis = TextAnalysis(self.get_question(), list(self.get_user_word_exclusions()))
-        return analysis.display_words
-
-    def get_direct_dependencies(self) -> set[JPNote]:
-        highlighted = set(ex_sequence.flatten([self.collection.vocab.with_question(vocab) for vocab in self.get_user_highlighted_vocab()]))
-        valid_parsed_roots = set(ex_sequence.flatten([self.collection.vocab.with_question(vocab) for vocab in self.get_valid_parsed_non_child_words_strings()]))
-        kanji = set(self.collection.kanji.with_any_kanji_in(self.extract_kanji()))
-        return highlighted | valid_parsed_roots | kanji
-
-    def get_user_highlighted_vocab(self) -> list[str]: return ex_str.extract_newline_separated_values(self.get_field(SentenceNoteFields.user_extra_vocab))
     def _set_user_extra_vocab(self, extra: list[str]) -> None: return self.set_field(SentenceNoteFields.user_extra_vocab, newline.join(extra))
     def position_extra_vocab(self, vocab: str, index:int = -1) -> None:
         vocab = vocab.strip()
@@ -89,28 +57,41 @@ class SentenceNote(JPNote):
 
         self._set_user_extra_vocab(vocab_list)
 
-
     def remove_extra_vocab(self, vocab: str) -> None:
-        self._set_user_extra_vocab([v for v in self.get_user_highlighted_vocab() if not v == vocab])
-
-    def reset_highlighted(self) -> None:
-        self._set_user_extra_vocab([])
-
-    def reset_excluded(self) -> None:
-        self._set_user_word_exclusions(set())
+        self._configuration.remove_higlighted_word(vocab)
 
     def remove_excluded_vocab(self, vocab: str) -> None:
         exclusion = WordExclusion.from_string(vocab)
-        excluded = self.get_user_word_exclusions()
+        excluded = self._configuration.incorrect_matches()
         new_excluded = {e for e in excluded if not exclusion.covers(e)}
         self._set_user_word_exclusions(new_excluded)
 
     def exclude_vocab(self, vocab: str) -> None:
         exclusion = WordExclusion.from_string(vocab)
         self.remove_extra_vocab(exclusion.word)
-        excluded = set(self.get_user_word_exclusions())
+        excluded = set(self._configuration.incorrect_matches())
         excluded.add(exclusion)
         self._set_user_word_exclusions(excluded)
+
+    def is_studying_read(self) -> bool: return self.is_studying(NoteFields.SentencesNoteType.Card.Reading)
+    def is_studying_listening(self) -> bool: return self.is_studying(NoteFields.SentencesNoteType.Card.Listening)
+
+
+    def get_valid_parsed_non_child_words_strings(self) -> list[str]:
+        return [w.form for w in self.get_valid_parsed_non_child_words()]
+
+    def get_valid_parsed_non_child_words(self) -> list[CandidateForm]:
+        from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
+        analysis = TextAnalysis(self.get_question(), list(self._configuration.incorrect_matches()))
+        return analysis.display_words
+
+    def get_direct_dependencies(self) -> set[JPNote]:
+        highlighted = set(ex_sequence.flatten([self.collection.vocab.with_question(vocab) for vocab in self.get_user_highlighted_vocab()]))
+        valid_parsed_roots = set(ex_sequence.flatten([self.collection.vocab.with_question(vocab) for vocab in self.get_valid_parsed_non_child_words_strings()]))
+        kanji = set(self.collection.kanji.with_any_kanji_in(self.extract_kanji()))
+        return highlighted | valid_parsed_roots | kanji
+
+    def get_user_highlighted_vocab(self) -> list[str]: return ex_str.extract_newline_separated_values(self.get_field(SentenceNoteFields.user_extra_vocab))
 
     def parse_words_from_expression(self) -> list[ExtractedWord]:
         from language_services.janome_ex.word_extraction.word_extractor import jn_extractor
@@ -118,7 +99,7 @@ class SentenceNote(JPNote):
 
     def get_parsed_words(self) -> list[str]: return self.parsing_result().parsed_words_strings()
 
-    def get_words(self) -> set[str]: return (set(self.get_parsed_words()) | set(self.get_user_highlighted_vocab())) - self.get_user_excluded_vocab()
+    def get_words(self) -> set[str]: return (set(self.get_parsed_words()) | set(self.get_user_highlighted_vocab())) - self._configuration.incorrect_matches_words()
 
     def get_parsed_words_notes(self) -> list[VocabNote]:
         from ankiutils import app

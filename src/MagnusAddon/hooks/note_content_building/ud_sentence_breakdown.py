@@ -74,19 +74,19 @@ def lookup_vocabs(excluded_words: set[str], word:str) -> list[VocabNote]:
     return vocabs
 
 def render_parsed_words(note: SentenceNote) -> str:
-    analysis = TextAnalysis(note.get_question(), note.get_user_word_exclusions())
+    analysis = TextAnalysis(note.get_question(), note._configuration.incorrect_matches())
     display_forms = analysis.display_words
     word_strings = [w.form for w in display_forms]
 
-    excluded = note.get_user_excluded_vocab()
+    excluded = note._configuration.incorrect_matches_words()
     return _build_vocab_list(word_strings, excluded, "parsed words", show_words_missing_dictionary_entries=True)
 
 def render_words_missing_dictionary_entries(note: SentenceNote) -> str:
-    analysis = TextAnalysis(note.get_question(), note.get_user_word_exclusions())
+    analysis = TextAnalysis(note.get_question(), note._configuration.incorrect_matches())
     display_forms = analysis.display_words
     word_strings = [w.form for w in display_forms]
 
-    excluded_words = note.get_user_excluded_vocab()
+    excluded_words = note._configuration.incorrect_matches_words()
 
     def has_vocab(word:str) -> bool:
         vocabs = lookup_vocabs(excluded_words, word)
@@ -98,12 +98,12 @@ def render_words_missing_dictionary_entries(note: SentenceNote) -> str:
     return _build_vocab_list(words_without_dictionary_entries, set(), "matched words without dictionary entries", show_words_missing_dictionary_entries=True) if words_without_dictionary_entries else ""
 
 def render_excluded_words(note: SentenceNote) -> str:
-    excluded_words = {x.word for x in note.get_user_word_exclusions()}
+    excluded_words = {x.word for x in note._configuration.incorrect_matches()}
     excluded_vocab = list(excluded_words)
     return _build_vocab_list(excluded_vocab, set(), "incorrectly matched words", show_words_missing_dictionary_entries=True) if excluded_vocab else ""
 
 def render_user_extra_list(note: SentenceNote) -> str:
-    return _build_vocab_list(note.get_user_highlighted_vocab(), note.get_user_excluded_vocab(), "highlighted words", include_mnemonics=True, show_words_missing_dictionary_entries=True, include_extended_sentence_statistics=True) if note.get_user_highlighted_vocab() else ""
+    return _build_vocab_list(note.get_user_highlighted_vocab(), note._configuration.incorrect_matches_words(), "highlighted words", include_mnemonics=True, show_words_missing_dictionary_entries=True, include_extended_sentence_statistics=True) if note.get_user_highlighted_vocab() else ""
 
 def init() -> None:
     gui_hooks.card_will_show.append(PrerenderingAnswerContentRenderer(SentenceNote, {

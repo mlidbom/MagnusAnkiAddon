@@ -16,8 +16,10 @@ def build_note_menu(note_menu: QMenu, sentence: SentenceNote) -> None:
     add_lookup_action(note_lookup_menu, shortcutfinger.home3("Kanji"), f"""note:{NoteTypes.Kanji} ({" OR ".join([f"{NoteFields.Kanji.question}:{kan}" for kan in sentence.extract_kanji()])})""")
     add_lookup_action(note_lookup_menu, shortcutfinger.home4("Parsed words"), query_builder.notes_by_id([voc.get_id() for voc in sentence.get_parsed_words_notes()]))
 
-    add_ui_action(note_menu, shortcutfinger.home5("Reset higlighted"), lambda: sentence.reset_highlighted())
-    add_ui_action(note_menu, shortcutfinger.up1("Reset excluded"), lambda: sentence.reset_excluded())
+    sentence._configuration.reset_highlighted_words()
+    add_ui_action(note_menu, shortcutfinger.home5("Reset higlighted"), lambda: None)
+    sentence._set_user_word_exclusions(set())
+    add_ui_action(note_menu, shortcutfinger.up1("Reset excluded"), lambda: None)
 
 def build_string_menu(string_menu: QMenu, sentence: SentenceNote, menu_string: str) -> None:
     build_highlighted_vocab_menu(non_optional(string_menu.addMenu(shortcutfinger.home1("Highlighted Vocab"))), sentence, menu_string)
@@ -36,7 +38,7 @@ def build_string_menu(string_menu: QMenu, sentence: SentenceNote, menu_string: s
     else:
         add_ui_action(string_menu, shortcutfinger.home2("Exclude vocab"), lambda _menu_string=menu_string: sentence.exclude_vocab(_menu_string))  # type: ignore
 
-    current_exclusions = sentence.get_user_word_exclusions()
+    current_exclusions = sentence._configuration.incorrect_matches()
     covered_existing_exclusions = [x for x in current_exclusions if potential_exclusion.covers(x)]
     if any(covered_existing_exclusions):
         if len(covered_existing_exclusions) == 1:
