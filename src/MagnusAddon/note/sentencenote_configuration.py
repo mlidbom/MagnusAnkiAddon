@@ -55,7 +55,8 @@ class SentenceConfiguration:
 
     def to_json(self) -> str:
         return ex_json.dict_to_json({'highlighted_words': self.highlighted_words,
-                                     'incorrect_matches': [exclusion.to_dict() for exclusion in self.incorrect_matches]})
+                                     'incorrect_matches': [exclusion.to_dict() for exclusion in self.incorrect_matches],
+                                     'parsing_result': self.parsing_result.to_json()})
 
     def incorrect_matches_words(self) -> set[str]:
         return {exclusion.word for exclusion in self.incorrect_matches}
