@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 
 from note.note_constants import SentenceNoteFields
 from note.notefields.string_note_field import StringField
@@ -21,17 +21,20 @@ class ParsedWord:
     def from_json(cls, reader: JsonDictReader) -> ParsedWord: return cls(reader.get_string('word'))
 
 class ParsingResult:
-    def __init__(self, words: list[ParsedWord], parser_version: str) -> None:
-        self.words = words
+    def __init__(self, words: list[ParsedWord], sentence: str, parser_version: str) -> None:
+        self.parsed_words = words
+        self.sentence = sentence
         self.parser_version = parser_version
 
-    def to_json(self) -> str: return ex_json.dict_to_json({'words': [word.to_json() for word in self.words],
+    def to_json(self) -> str: return ex_json.dict_to_json({'words': [word.to_json() for word in self.parsed_words],
+                                                           'sentence': self.sentence,
                                                            'parser_version': self.parser_version})
 
     @classmethod
-    def from_json(cls, reader: JsonDictReader) -> ParsingResult:
+    def from_json(cls, reader: Optional[JsonDictReader]) -> Optional[ParsingResult]:
         return cls([ParsedWord.from_json(word_json) for word_json in reader.get_object_list('words')],
-                   reader.get_string('parser_version'))
+                   reader.get_string('sentence'),
+                   reader.get_string('parser_version')) if reader else None
 
 class SentenceConfiguration:
     def __init__(self, json: str) -> None:
@@ -40,6 +43,7 @@ class SentenceConfiguration:
         self.incorrect_matches: list[WordExclusion] = \
             [WordExclusion.from_dict(exclusion_data)
              for exclusion_data in reader.get_object_list('incorrect_matches')] if reader else []
+        self.parsing_result: Optional[ParsingResult] = ParsingResult.from_json(reader.get_object_or_none('parsing_result')) if reader else None
 
     def to_json(self) -> str:
         return ex_json.dict_to_json({'highlighted_words': self.highlighted_words,
