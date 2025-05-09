@@ -4,8 +4,8 @@ from typing import Callable, Optional, TYPE_CHECKING
 if TYPE_CHECKING:
     from anki.notes import Note
     from aqt.clayout import CardLayout
-    from aqt.editor import Editor
 
+from aqt.editor import Editor
 from note.jpnote import JPNote
 from aqt.webview import AnkiWebView, AnkiWebViewKind
 import aqt
