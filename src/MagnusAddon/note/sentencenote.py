@@ -5,8 +5,6 @@ from language_services.janome_ex.word_extraction.candidate_form import Candidate
 from note.notefields.string_note_field import AudioField, FallbackStringField, ReadOnlyNewlineSeparatedValuesField, StringField, StripHtmlOnReadStringField
 from note.sentencenote_configuration import CachingSentenceConfigurationField, ParsingResult
 
-from sysutils.ex_str import newline
-
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.extracted_word import ExtractedWord
     from note.vocabnote import VocabNote
@@ -60,9 +58,7 @@ class SentenceNote(JPNote):
         from language_services.janome_ex.word_extraction.word_extractor import jn_extractor
         return jn_extractor.extract_words(self.get_question())
 
-    def get_parsed_words(self) -> list[str]: return self.parsing_result().parsed_words_strings()
-
-    def get_words(self) -> set[str]: return (set(self.get_parsed_words()) | set(self.get_user_highlighted_vocab())) - self.configuration.incorrect_matches_words()
+    def get_words(self) -> set[str]: return (set(self.parsing_result().parsed_words_strings()) | set(self.get_user_highlighted_vocab())) - self.configuration.incorrect_matches_words()
 
     def get_parsed_words_notes(self) -> list[VocabNote]:
         from ankiutils import app
@@ -74,7 +70,6 @@ class SentenceNote(JPNote):
         self.update_parsed_words()
         self.set_field(SentenceNoteFields.active_answer, self.get_answer())
         self.set_field(SentenceNoteFields.active_question, self.get_question())
-        self.configuration.incorrect_matches()#just trigger access to update it
 
     def update_parsed_words(self, force:bool = False) -> None:
         from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
