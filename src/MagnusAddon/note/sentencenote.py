@@ -4,7 +4,7 @@ from typing import Optional, TYPE_CHECKING
 from language_services.janome_ex.word_extraction.candidate_form import CandidateForm
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from note.notefields.string_note_field import AudioField, FallbackStringField, ReadOnlyNewlineSeparatedValuesField, StringField, StripHtmlOnReadStringField
-from note.sentencenote_configuration import CachingSentenceConfigurationField
+from note.sentencenote_configuration import CachingSentenceConfigurationField, ParsingResult
 
 from sysutils.ex_str import newline
 
@@ -21,27 +21,28 @@ from anki.notes import Note
 class SentenceNote(JPNote):
     def __init__(self, note: Note):
         super().__init__(note)
-        self._user_excluded_cache:set[str] = self._get_user_word_exclusions_strings()
         self._source_answer = StringField(self, SentenceNoteFields.source_answer)
         self._user_question = StringField(self, SentenceNoteFields.user_question)
         self._source_question = StripHtmlOnReadStringField(self, SentenceNoteFields.source_question)
         self.question = FallbackStringField(self, SentenceNoteFields.user_question, SentenceNoteFields.source_question)
         self.answer = FallbackStringField(self, SentenceNoteFields.user_answer, SentenceNoteFields.source_answer)
         self._screenshot = StringField(self, SentenceNoteFields.screenshot)
-        self._audio = AudioField(self, SentenceNoteFields.audio)
+        self.audio = AudioField(self, SentenceNoteFields.audio)
         self._user_answer = StringField(self, SentenceNoteFields.user_answer)
         self._user_excluded_vocab = ReadOnlyNewlineSeparatedValuesField(self, SentenceNoteFields.user_excluded_vocab)
         self._configuration = CachingSentenceConfigurationField(self)
+        self._user_excluded_cache: set[str] = self._get_user_word_exclusions_strings()
+
+
+    def parsing_result(self) -> ParsingResult: return self._configuration.parsing_result()
+
     #todo: replace this with field class
-    def get_user_excluded_vocab(self) -> set[str]: return self._user_excluded_cache
+    def get_user_excluded_vocab(self) -> set[str]: return self._configuration.incorrect_matches_words()
 
     def get_question(self) -> str: return self.question.get()
     def get_answer(self) -> str: return self.answer.get()
-    def get_audio_path(self) -> str: return self._audio.file_path()
 
-    def get_user_word_exclusions(self) -> list[WordExclusion]:
-        strings = ex_str.extract_newline_separated_values(self.get_field(SentenceNoteFields.user_excluded_vocab))
-        return [WordExclusion.from_string(s) for s in strings]
+    def get_user_word_exclusions(self) -> list[WordExclusion]: return self._configuration.incorrect_matches()
 
     def _get_user_word_exclusions_strings(self) -> set[str]:
         word_exclusions = set(x.word for x in self.get_user_word_exclusions())
@@ -115,9 +116,9 @@ class SentenceNote(JPNote):
         from language_services.janome_ex.word_extraction.word_extractor import jn_extractor
         return jn_extractor.extract_words(self.get_question())
 
-    def get_parsed_words(self) -> list[str]: return self._get_parsed_words()[:-1]
-    def _get_parsed_words(self) -> list[str]: return self.get_field(SentenceNoteFields.ParsedWords).split(",")
-    def get_words(self) -> set[str]: return (set(self._get_parsed_words()) | set(self.get_user_highlighted_vocab())) - self.get_user_excluded_vocab()
+    def get_parsed_words(self) -> list[str]: return self.parsing_result().parsed_words_strings()
+
+    def get_words(self) -> set[str]: return (set(self.get_parsed_words()) | set(self.get_user_highlighted_vocab())) - self.get_user_excluded_vocab()
 
     def get_parsed_words_notes(self) -> list[VocabNote]:
         from ankiutils import app
@@ -133,15 +134,12 @@ class SentenceNote(JPNote):
 
     def update_parsed_words(self, force:bool = False) -> None:
         from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
-        words = self._get_parsed_words()
-        old_parsed_sentence = words[-1] if words else ""
-        current_storable_sentence = f"""{self.get_question().replace(",", "").strip()}-parser_version-{TextAnalysis.version}"""
+        parsing_result = self.parsing_result()
+        if not force and parsing_result and parsing_result.sentence == self.get_question() and parsing_result.parser_version == TextAnalysis.version:
+            return
 
-        if force or old_parsed_sentence != current_storable_sentence:
-            analysis = TextAnalysis(self.get_question(), list(self.get_user_word_exclusions()))
-            value = [parsed_word.form for parsed_word in analysis.all_words]
-            value.append(current_storable_sentence)
-            self.set_field(SentenceNoteFields.ParsedWords, ",".join(value))
+        analysis = TextAnalysis(self.get_question(), self._configuration.incorrect_matches())
+        self._configuration.set_parsing_result(analysis)
 
 
     def extract_kanji(self) -> list[str]:
@@ -173,7 +171,7 @@ class SentenceNote(JPNote):
             note.set_tag(Mine.Tags.TTSAudio)
         else:
             audio1 = audio.strip()
-            note._audio.set(audio1)
+            note.audio.set(audio1)
 
         if highlighted_vocab:
             for vocab in highlighted_vocab:
