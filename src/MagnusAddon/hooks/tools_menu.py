@@ -48,12 +48,11 @@ def build_lookup_menu(lookup_menu: QMenu) -> None:
         text, ok = QInputDialog.getText(None, "input", "enter text", QLineEdit.EchoMode.Normal, "")
         return text if ok and text else ""
 
-    build_open_in_anki_menu(non_optional(lookup_menu.addMenu(shortcutfinger.up1("Anki"))), get_text_input)
-    build_web_search_menu(non_optional(lookup_menu.addMenu(shortcutfinger.down1("Web"))), get_text_input)
+    build_open_in_anki_menu(non_optional(lookup_menu.addMenu(shortcutfinger.home2("Anki"))), get_text_input)
+    build_web_search_menu(non_optional(lookup_menu.addMenu(shortcutfinger.home3("Web"))), get_text_input)
 
 def build_misc_menu(misc_menu: QMenu) -> None:
     build_debug_menu(non_optional(misc_menu.addMenu(shortcutfinger.home1("Debug"))))
-    build_wani_menu(non_optional(misc_menu.addMenu(shortcutfinger.home2("Wanikani Actions"))))
 
 def build_debug_menu(debug_menu: QMenu) -> None:
     add_menu_ui_action(debug_menu, shortcutfinger.home1("Refresh UI"), refresh, "F5")
@@ -80,21 +79,22 @@ def build_config_menu(config_menu: QMenu) -> None:
 
 
 def build_local_menu(sub_menu: QMenu) -> None:
-    def setup_update_menu(update_menu: QMenu) -> None:
-        add_menu_ui_action(update_menu, "Update &All", local_note_updater.update_all)
-        add_menu_ui_action(update_menu, "Update &Vocab", local_note_updater.update_vocab)
-        add_menu_ui_action(update_menu, "Update &Kanji", local_note_updater.update_kanji)
-        add_menu_ui_action(update_menu, "Update &Sentences", local_note_updater.update_sentences)
-        add_menu_ui_action(update_menu, "Reparse words from sentences", local_note_updater.reparse_sentence_words)
+    def build_update_menu(update_menu: QMenu) -> None:
+        add_menu_ui_action(update_menu, shortcutfinger.home1("All"), local_note_updater.update_all)
+        add_menu_ui_action(update_menu, shortcutfinger.home2("Vocab"), local_note_updater.update_vocab)
+        add_menu_ui_action(update_menu, shortcutfinger.home3("Kanji"), local_note_updater.update_kanji)
+        add_menu_ui_action(update_menu, shortcutfinger.home4("Sentences"), local_note_updater.update_sentences)
+        add_menu_ui_action(update_menu, shortcutfinger.up1("Reparse words from sentences"), local_note_updater.reparse_sentence_words)
 
-    def setup_danger_zone_menu(danger_zone: QMenu) -> None:
+    def build_danger_zone_menu(danger_zone: QMenu) -> None:
         add_menu_ui_action(danger_zone, "Create Sentences from Context Sentences With Audio", local_note_updater.generate_sentences_for_context_sentences_with_audio)
+        build_wani_menu(non_optional(danger_zone.addMenu("Wanikani Actions")))
 
-    setup_update_menu(non_optional(sub_menu.addMenu(shortcutfinger.home1("Update"))))
+    build_update_menu(non_optional(sub_menu.addMenu(shortcutfinger.home1("Update"))))
 
     add_menu_ui_action(sub_menu, shortcutfinger.home2("Convert &Immersion Kit sentences"), local_note_updater.convert_immersion_kit_sentences)
     add_menu_ui_action(sub_menu, shortcutfinger.home3("Tag note metadata"), local_note_updater.tag_note_metadata)
-    setup_danger_zone_menu(non_optional(sub_menu.addMenu(shortcutfinger.home4("Danger Zone"))))
+    build_danger_zone_menu(non_optional(sub_menu.addMenu(shortcutfinger.home4("Danger Zone"))))
 
 def build_wani_menu(sub_menu: QMenu) -> None:
     add_menu_ui_action(sub_menu, "Import Missing Radicals", note_importer.import_missing_radicals)
