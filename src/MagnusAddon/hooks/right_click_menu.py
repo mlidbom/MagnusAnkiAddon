@@ -5,7 +5,6 @@ from aqt import gui_hooks
 from aqt.webview import AnkiWebView
 
 from ankiutils import query_builder, search_executor, ui_utils
-from ankiutils.app import ui_utils
 from batches import local_note_updater
 from hooks import right_click_menu_note_radical, right_click_menu_note_kanji, right_click_menu_note_vocab, right_click_menu_note_sentence
 from hooks.right_click_menu_search import build_open_in_anki_menu, build_web_search_menu

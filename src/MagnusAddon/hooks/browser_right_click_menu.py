@@ -21,7 +21,7 @@ def spread_due_dates(cards: Sequence[CardId], start_day: int, days: int) -> None
         new_due = start_day + (index * days)
         scheduler.set_due_date([card.id], str(new_due))
 
-    app.ui_utils().refresh()
+    app.get_ui_utils().refresh()
 
 def setup_browser_context_menu(browser: Browser, menu: QMenu) -> None:
     magnus_menu: QMenu = non_optional(menu.addMenu("&Magnus"))

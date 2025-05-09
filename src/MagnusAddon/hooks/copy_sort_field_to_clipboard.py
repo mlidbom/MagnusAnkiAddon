@@ -7,7 +7,7 @@ from anki.notes import Note
 from aqt import gui_hooks
 
 from ankiutils import app
-from ankiutils.app import ui_utils
+from ankiutils.app import get_ui_utils
 from sysutils.collections.recent_items import RecentItems
 from sysutils import app_thread_pool, ex_str
 from sysutils.timeutil import StopWatch
@@ -24,7 +24,7 @@ def copy_card_sort_field_to_clipboard(note: Note) -> None:
 recent_review_answers = RecentItems[int](1)
 def on_reviewer_show_answer(card: Card) -> None:
     note = card.note()
-    if ui_utils().is_edit_current_open() or recent_review_answers.is_recent(note.id):
+    if get_ui_utils().is_edit_current_open() or recent_review_answers.is_recent(note.id):
         return
 
     copy_card_sort_field_to_clipboard(note)

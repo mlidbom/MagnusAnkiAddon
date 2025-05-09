@@ -3,7 +3,7 @@ from typing import Callable
 from PyQt6.QtWidgets import QMenu, QMessageBox
 
 from ankiutils import query_builder, search_executor
-from ankiutils.app import ui_utils
+from ankiutils.app import get_ui_utils
 from ankiutils.search_executor import lookup_promise
 from hooks import shortcutfinger
 from note.jpnote import JPNote
@@ -23,7 +23,7 @@ def add_ui_action(menu: QMenu, name: str, callback: Callable[[], None], confirm:
     def run_ui_action() -> None:
         if not confirm or _confirm(menu, name):
             callback()
-            ui_utils().refresh()
+            get_ui_utils().refresh()
 
     menu.addAction(name, lambda: run_ui_action())
 

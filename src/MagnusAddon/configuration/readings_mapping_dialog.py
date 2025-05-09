@@ -140,7 +140,7 @@ class ReadingsOptionsDialog(QDialog):
         self.accept()
 
         from ankiutils import app
-        app.ui_utils().refresh()
+        app.get_ui_utils().refresh()
 
 def show_readings_mappings() -> None:
     from aqt import mw

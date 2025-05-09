@@ -12,6 +12,12 @@ from sysutils.typed import non_optional
 from hooks import shortcutfinger
 
 def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboard: str) -> None:
+    def build_copy_menu(note_copy_menu: QMenu) -> None:
+        note_copy_menu.addAction(shortcutfinger.home1("Question"), lambda: pyperclip.copy(vocab.get_question()))
+        note_copy_menu.addAction(shortcutfinger.home2("Answer"), lambda: pyperclip.copy(vocab.get_answer()))
+        note_copy_menu.addAction(shortcutfinger.home3("Definition (question:answer)"), lambda: pyperclip.copy(f"""{vocab.get_question()}: {vocab.get_answer()}"""))
+        note_copy_menu.addAction(shortcutfinger.home4("Sentences: max 30"), lambda: pyperclip.copy(newline.join([sent.get_question() for sent in vocab.get_sentences()[0:30]])))
+
     def build_create_note_menu(note_create_menu: QMenu) -> None:
         def build_forms_menu(clone_to_form_menu: QMenu) -> None:
             forms_with_no_vocab = [form for form in vocab.get_forms() if not any(app.col().vocab.with_question(form))]
@@ -151,12 +157,6 @@ def build_string_menu(string_menu: QMenu, vocab: VocabNote, menu_string:str) -> 
 
     build_add_menu(non_optional(string_menu.addMenu(shortcutfinger.home2("Add"))))
     build_set_menu(non_optional(string_menu.addMenu(shortcutfinger.home3("Set"))))
-
-def build_copy_menu(note_copy_menu: QMenu) -> None:
-    note_copy_menu.addAction(shortcutfinger.home1("Question"), lambda: pyperclip.copy(vocab.get_question()))
-    note_copy_menu.addAction(shortcutfinger.home2("Answer"), lambda: pyperclip.copy(vocab.get_answer()))
-    note_copy_menu.addAction(shortcutfinger.home3("Definition (question:answer)"), lambda: pyperclip.copy(f"""{vocab.get_question()}: {vocab.get_answer()}"""))
-    note_copy_menu.addAction(shortcutfinger.home4("Sentences: max 30"), lambda: pyperclip.copy(newline.join([sent.get_question() for sent in vocab.get_sentences()[0:30]])))
 
 def format_vocab_meaning(meaning: str) -> str:
     return ex_str.strip_html_and_bracket_markup(meaning

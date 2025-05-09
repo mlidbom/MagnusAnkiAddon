@@ -5,7 +5,7 @@ from PyQt6.QtGui import QAction
 from PyQt6.QtWidgets import QMenu
 
 from ankiutils import app
-from ankiutils.app import main_window, ui_utils
+from ankiutils.app import main_window, get_ui_utils
 from batches import local_note_updater
 from configuration.configuration import show_japanese_options
 from configuration.configuration_value import ConfigurationValueBool
@@ -30,7 +30,7 @@ def add_menu_ui_action(sub_menu: QMenu, heading: str, callback: Callable[[],None
     if shortcut: action.setShortcut(shortcut)
 
     def ui_callback() -> None:
-        ui_utils().run_ui_action(callback)
+        get_ui_utils().run_ui_action(callback)
 
     qconnect(action.triggered, ui_callback)
     sub_menu.addAction(action)

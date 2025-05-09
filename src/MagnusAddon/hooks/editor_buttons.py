@@ -15,7 +15,7 @@ def setup_editor_buttons(buttons: list[str], the_editor: Editor) -> None:
     def ui_action_button(button_text: str, action: Callable[[Note], None]) -> None:
         def inner_action(editor: Editor) -> None:
             action(non_optional(editor.note))
-            app.ui_utils().refresh()
+            app.get_ui_utils().refresh()
 
         buttons.append(the_editor.addButton("", button_text, inner_action))
 

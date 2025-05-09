@@ -1,11 +1,11 @@
 from __future__ import annotations
 from typing import Callable, Optional, TYPE_CHECKING
 
-from aqt.editor import Editor
-
 if TYPE_CHECKING:
     from anki.notes import Note
     from note.jpnote import JPNote
+    from aqt.clayout import CardLayout
+    from aqt.editor import Editor
 
 from aqt.webview import AnkiWebView, AnkiWebViewKind
 import aqt

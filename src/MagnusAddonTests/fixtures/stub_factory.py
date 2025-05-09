@@ -19,7 +19,7 @@ def get_thread_local_ui_utils() -> IUIUtils:
 @contextmanager
 def _stub_ui_utils_real() -> Generator[None, None, None]:
     _thread_local.ui_utils = UIUtilsStub()
-    app.ui_utils = get_thread_local_ui_utils
+    app.get_ui_utils = get_thread_local_ui_utils
     yield
 
 @contextmanager

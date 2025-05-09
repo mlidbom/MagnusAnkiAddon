@@ -98,7 +98,7 @@ def anki_collection() -> Collection: return col().anki_collection
 def anki_db() -> DBProxy: return non_optional(col().anki_collection.db)
 def anki_scheduler() -> Scheduler: return checked_cast(Scheduler, col().anki_collection.sched)
 def main_window() -> AnkiQt: return non_optional(mw)
-def ui_utils() -> IUIUtils: return UIUtils(main_window())
+def get_ui_utils() -> IUIUtils: return UIUtils(main_window())
 
 def _collection_closed(_self: Collection, _downgrade: bool = False) -> None:
     for hook in _collection_closed_hooks:
