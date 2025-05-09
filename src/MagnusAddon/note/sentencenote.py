@@ -38,6 +38,9 @@ class SentenceNote(JPNote):
         kanji = set(self.collection.kanji.with_any_kanji_in(self.extract_kanji()))
         return highlighted | valid_parsed_roots | kanji
 
+    #todo: replace this with field class
+    def get_user_excluded_vocab(self) -> set[str]: return self._user_excluded_cache
+
     def get_question(self) -> str: return self.question.get()
     def get_answer(self) -> str: return self.answer.get()
     def _set_source_answer(self, question: str) -> None: self._source_answer.set(question)
@@ -47,7 +50,6 @@ class SentenceNote(JPNote):
     def _set_source_question(self, question: str) -> None: self._source_question.set(question)
     def get_audio_path(self) -> str: return self._audio.file_path()
 
-    def get_user_excluded_vocab(self) -> set[str]: return self._user_excluded_cache
 
     def get_user_word_exclusions(self) -> list[WordExclusion]:
         strings = ex_str.extract_newline_separated_values(self.get_field(SentenceNoteFields.user_excluded_vocab))
