@@ -38,8 +38,8 @@ def add_menu_ui_action(sub_menu: QMenu, heading: str, callback: Callable[[],None
 def build_main_menu() -> None:
     my_menu = non_optional(main_window().form.menubar.addMenu(shortcutfinger.home1("Japanese")))
 
-    build_lookup_menu(non_optional(my_menu.addMenu(shortcutfinger.home1("Lookup"))))
-    build_config_menu(non_optional(my_menu.addMenu(shortcutfinger.home2("Config"))))
+    build_config_menu(non_optional(my_menu.addMenu(shortcutfinger.home1("Config"))))
+    build_lookup_menu(non_optional(my_menu.addMenu(shortcutfinger.home2("Lookup"))))
     build_local_menu(non_optional(my_menu.addMenu(shortcutfinger.home3("Local Actions"))))
     build_misc_menu(non_optional(my_menu.addMenu(shortcutfinger.home4("Debug"))))
 
@@ -72,10 +72,9 @@ def build_config_menu(config_menu: QMenu) -> None:
         for index, toggle in enumerate(app.config().feature_toggles):
             add_checkbox_config(toggles_menu, toggle, shortcutfinger.numpad_no_numbers(index, toggle.title))
 
-    build_feature_toggles_menu(shortcutfinger.home1("Feature Toggles"))
-
-    config_menu.addAction(shortcutfinger.home2("Options"), show_japanese_options)
-    config_menu.addAction(shortcutfinger.home3("Readings mappings"), show_readings_mappings)
+    config_menu.addAction(shortcutfinger.home1("Readings mappings"), show_readings_mappings)
+    build_feature_toggles_menu(shortcutfinger.home2("Feature Toggles"))
+    config_menu.addAction(shortcutfinger.home3("Options"), show_japanese_options)
 
 
 def build_local_menu(sub_menu: QMenu) -> None:
