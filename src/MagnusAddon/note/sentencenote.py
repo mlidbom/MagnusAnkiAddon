@@ -37,13 +37,7 @@ class SentenceNote(JPNote):
 
     def get_question(self) -> str: return self.question.get()
     def get_answer(self) -> str: return self.answer.get()
-    def _set_source_answer(self, question: str) -> None: self._source_answer.set(question)
-    def _set_screenshot(self, screenshot: str) -> None: self._screenshot.set(screenshot)
-    def _set_audio(self, audio: str) -> None: self._audio.set(audio)
-    def _set_user_answer(self, answer: str) -> None: self._user_answer.set(answer)
-    def _set_source_question(self, question: str) -> None: self._source_question.set(question)
     def get_audio_path(self) -> str: return self._audio.file_path()
-
 
     def get_user_word_exclusions(self) -> list[WordExclusion]:
         strings = ex_str.extract_newline_separated_values(self.get_field(SentenceNoteFields.user_excluded_vocab))
@@ -158,8 +152,8 @@ class SentenceNote(JPNote):
         from ankiutils import app
         inner_note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Sentence))
         note = SentenceNote(inner_note)
-        note._set_source_question(question)
-        note._set_user_answer(answer)
+        note._source_question.set(question)
+        note._user_answer.set(answer)
         note.update_generated_data()
         app.anki_collection().addNote(inner_note)
         return note
@@ -169,15 +163,16 @@ class SentenceNote(JPNote):
         from ankiutils import app
         inner_note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Sentence))
         note = SentenceNote(inner_note)
-        note._set_source_question(question)
-        note._set_source_answer(answer)
-        note._set_screenshot(screenshot)
+        note._source_question.set(question)
+        note._source_answer.set(answer)
+        note._screenshot.set(screenshot)
         note.update_generated_data()
 
         if not audio.strip():
             note.set_tag(Mine.Tags.TTSAudio)
         else:
-            note._set_audio(audio.strip())
+            audio1 = audio.strip()
+            note._audio.set(audio1)
 
         if highlighted_vocab:
             for vocab in highlighted_vocab:
@@ -208,7 +203,7 @@ class SentenceNote(JPNote):
         from ankiutils import app
         inner_note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Sentence))
         note = SentenceNote(inner_note)
-        note._set_source_question(question)
+        note._source_question.set(question)
         note.update_generated_data()
         app.anki_collection().addNote(inner_note)
         return note
