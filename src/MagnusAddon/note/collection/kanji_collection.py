@@ -67,4 +67,4 @@ class KanjiCollection:
 
     def with_radical(self, radical:str) -> list[KanjiNote]: return self._cache.with_radical(radical)
     def with_reading(self, reading:str) -> set[KanjiNote]:
-        return self._cache.by_reading[kana_utils.to_hiragana(reading)]
+        return self._cache.by_reading[kana_utils.anything_to_hiragana(reading)]

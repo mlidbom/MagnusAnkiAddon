@@ -73,3 +73,6 @@ def romaji_to_hiragana(string:str) -> str:
 
 def romaji_to_katakana(string:str) -> str:
     return typed.str_(romkan.to_katakana(string))
+
+def anything_to_hiragana(string:str) -> str:
+    return to_hiragana(string) if is_kana(string) else romaji_to_hiragana(string)

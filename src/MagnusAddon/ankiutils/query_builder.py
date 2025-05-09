@@ -123,8 +123,7 @@ def kanji_with_radical(radical: RadicalNote) -> str:
 
 
 def kanji_with_reading_part(reading_part: str) -> str:
-    if kana_utils.is_kana(reading_part):
-    hiragana_reading_part = kana_utils.to_hiragana(reading_part)
+    hiragana_reading_part = kana_utils.anything_to_hiragana(reading_part)
     return f'''note:{NoteTypes.Kanji} ({f_reading_on}:*{hiragana_reading_part}* OR {f_reading_kun}:*{hiragana_reading_part}*)'''
 
 def exact_matches(question: str) -> str:
