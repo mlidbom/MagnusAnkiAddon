@@ -77,7 +77,7 @@ def build_string_menu(menu: QMenu, string: str, string_note_menu_factory: Callab
             if any(kanjis):
                 build_universal_note_actions_menu(non_optional(note_menu.addMenu(shortcutfinger.home3("Kanji Actions"))), kanjis[0])
 
-    string_note_menu_factory(non_optional(menu.addMenu(shortcutfinger.home2("Note actions"))), string)
+    string_note_menu_factory(non_optional(menu.addMenu(shortcutfinger.home1("Current note actions"))), string)
     build_matching_note_menu(shortcutfinger.home2("Exactly matching notes"), menu, string)
     build_open_in_anki_menu(non_optional(menu.addMenu(shortcutfinger.home3("Open in Anki"))), lambda menu_string_=string: menu_string_)  # type: ignore
     build_web_search_menu(non_optional(menu.addMenu(shortcutfinger.home4("Search Web"))), lambda menu_string_=string: menu_string_)  # type: ignore
