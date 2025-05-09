@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Any, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 from note.note_constants import SentenceNoteFields
 from note.notefields.string_note_field import StringField
@@ -23,12 +23,9 @@ class CachingSentenceConfigurationField:
             [WordExclusion.from_dict(exclusion_data)
              for exclusion_data in reader.get_nested_object_list(_f_incorrect_matches)] if reader else []
 
-    def to_dict(self) -> dict[str, Any]:
-        return {_f_highlighted_words: self.highlighted_words,
-                _f_incorrect_matches: [exclusion.to_dict() for exclusion in self.incorrect_matches]}
-
     def incorrect_matches_words(self) -> set[str]:
         return {exclusion.word for exclusion in self.incorrect_matches}
 
-    def to_json(self) -> str:
-        return ex_json.dict_to_json(self.to_dict())
+    def _save(self) -> None:
+        self._field.set(ex_json.dict_to_json({_f_highlighted_words: self.highlighted_words,
+                                              _f_incorrect_matches: [exclusion.to_dict() for exclusion in self.incorrect_matches]}))
