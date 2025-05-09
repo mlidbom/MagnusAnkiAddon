@@ -14,7 +14,7 @@ from note.collection.backend_facade import BackEndFacade
 from note.collection.note_cache import CachedNote, NoteCache
 from note.kanjinote import KanjiNote
 from note.note_constants import NoteTypes
-from sysutils import ex_sequence
+from sysutils import ex_sequence, kana_utils
 
 class _KanjiSnapshot(CachedNote):
     def __init__(self, note: KanjiNote):
@@ -67,4 +67,4 @@ class KanjiCollection:
 
     def with_radical(self, radical:str) -> list[KanjiNote]: return self._cache.with_radical(radical)
     def with_reading(self, reading:str) -> set[KanjiNote]:
-        return self._cache.by_reading[reading]
+        return self._cache.by_reading[kana_utils.to_hiragana(reading)]

@@ -2,6 +2,7 @@ from aqt.browser import Browser  # type: ignore
 from PyQt6.QtWidgets import QMenu
 from aqt import gui_hooks
 from ankiutils import app
+from hooks import shortcutfinger
 from hooks.right_click_menu import setup_note_menu
 from note import queue_manager
 from typing import Sequence
@@ -31,7 +32,7 @@ def setup_browser_context_menu(browser: Browser, menu: QMenu) -> None:
 
         card = app.anki_collection().get_card(selected_cards[0])
         note = JPNote.note_from_card(card)
-        setup_note_menu(note, magnus_menu, [])
+        setup_note_menu(non_optional(magnus_menu.addMenu(shortcutfinger.home3("Note"))),note, [])
 
     if len(selected_cards) > 0:
         spread_menu: QMenu = non_optional(magnus_menu.addMenu("&Spread selected cards"))

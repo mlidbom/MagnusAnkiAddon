@@ -48,8 +48,8 @@ def build_lookup_menu(lookup_menu: QMenu) -> None:
         text, ok = QInputDialog.getText(None, "input", "enter text", QLineEdit.EchoMode.Normal, "" )
         return text if ok and text else ""
 
-    setup_anki_open_menu(non_optional(lookup_menu.addMenu(shortcutfinger.home1("Anki"))), get_text_input)
-    setup_web_search_menu(non_optional(lookup_menu.addMenu(shortcutfinger.home2("Web"))), get_text_input)
+    setup_anki_open_menu(non_optional(lookup_menu.addMenu(shortcutfinger.up1("Anki"))), get_text_input)
+    setup_web_search_menu(non_optional(lookup_menu.addMenu(shortcutfinger.down1("Web"))), get_text_input)
 
 def build_misc_menu(misc_menu: QMenu) -> None:
     build_debug_menu(non_optional(misc_menu.addMenu(shortcutfinger.home1("Debug"))))
