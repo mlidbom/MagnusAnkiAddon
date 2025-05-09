@@ -37,21 +37,19 @@ def build_right_click_menu(root_menu: QMenu, note: Optional[JPNote], selection: 
     string_note_menu_factory: Callable[[QMenu, str], None] = null_op_factory
 
     if note:
-        note_menu = non_optional(root_menu.addMenu(shortcutfinger.home3("Note")))
-
         if isinstance(note, RadicalNote):
-            right_click_menu_note_radical.setup_note_menu(note_menu, note)
+            right_click_menu_note_radical.setup_note_menu(non_optional(root_menu.addMenu(shortcutfinger.home3("Radical note actions"))), note)
         elif isinstance(note, KanjiNote):
-            right_click_menu_note_kanji.build_note_menu(note_menu, note)
+            right_click_menu_note_kanji.build_note_menu(non_optional(root_menu.addMenu(shortcutfinger.home3("Kanji note actions"))), note)
             string_note_menu_factory = lambda menu, string: right_click_menu_note_kanji.build_string_menu(menu, typed.checked_cast(KanjiNote, note), string)
         elif isinstance(note, VocabNote):
-            right_click_menu_note_vocab.setup_note_menu(note_menu, note, selection, clipboard)
+            right_click_menu_note_vocab.setup_note_menu(non_optional(root_menu.addMenu(shortcutfinger.home3("Vocab note actions"))), note, selection, clipboard)
             string_note_menu_factory = lambda menu, string: right_click_menu_note_vocab.build_string_menu(menu, typed.checked_cast(VocabNote, note), string)
         elif isinstance(note, SentenceNote):
-            right_click_menu_note_sentence.build_note_menu(note_menu, note)
+            right_click_menu_note_sentence.build_note_menu(non_optional(root_menu.addMenu(shortcutfinger.home3("Sentence note actions"))), note)
             string_note_menu_factory = lambda menu, string: right_click_menu_note_sentence.build_string_menu(menu, typed.checked_cast(SentenceNote, note), string)
 
-        build_universal_note_actions_menu(non_optional(note_menu.addMenu(shortcutfinger.home4("Note actions"))), note)
+        build_universal_note_actions_menu(non_optional(root_menu.addMenu(shortcutfinger.home4("Universal note actions"))), note)
 
     if selection_menu:
         build_string_menu(selection_menu, selection, string_note_menu_factory)
@@ -87,7 +85,7 @@ def build_string_menu(menu: QMenu, string: str, string_note_menu_factory: Callab
     add_ui_action(menu, shortcutfinger.down1("remove from sentence exclusions"), lambda _string=string: local_note_updater.clean_sentence_excluded_word(_string))  # type: ignore
 
 def build_universal_note_actions_menu(note_actions_menu: QMenu, note: JPNote) -> None:
-    note_actions_menu.addAction(shortcutfinger.home1("Open"), search_executor.lookup_promise(lambda: query_builder.notes_lookup([note])))
+    note_actions_menu.addAction(shortcutfinger.home1("Find in browser"), search_executor.lookup_promise(lambda: query_builder.notes_lookup([note])))
     note_actions_menu.addAction(shortcutfinger.home2("Open in previewer"), search_executor.lookup_and_show_previewer_promise(lambda: query_builder.notes_lookup([note])))
 
     if note.has_suspended_cards():
