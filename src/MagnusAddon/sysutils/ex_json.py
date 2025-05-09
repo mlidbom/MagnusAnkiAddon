@@ -23,7 +23,7 @@ class JsonDictReader:
         return [JsonDictReader(json_dict) for json_dict in typed.checked_cast_generics(list[dict[str, Any]], self._dict[string])]
 
     def get_object(self, name: str) -> JsonDictReader:
-        return json_to_dict(typed.str_(self._dict[name]))
+        return JsonDictReader(typed.checked_cast_generics(dict[str, Any],self._dict[name]))
 
     def get_object_or_none(self, name: str) -> Optional[JsonDictReader]:
         return self.get_object(name) if name in self._dict else None
