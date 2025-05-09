@@ -3,6 +3,7 @@ from typing import Optional, TYPE_CHECKING
 
 from language_services.janome_ex.word_extraction.candidate_form import CandidateForm
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
+from note.sentencenote_configuration import SentenceConfiguration
 from sysutils.ex_str import newline
 
 if TYPE_CHECKING:
@@ -135,6 +136,8 @@ class SentenceNote(JPNote):
         self.set_field(SentenceNoteFields.active_answer, self.get_answer())
         self.set_field(SentenceNoteFields.active_question, self.get_question())
 
+        config = self.get_configuration()
+
     def update_parsed_words(self, force:bool = False) -> None:
         from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
         words = self._get_parsed_words()
@@ -211,3 +214,67 @@ class SentenceNote(JPNote):
         note.update_generated_data()
         app.anki_collection().addNote(inner_note)
         return note
+
+
+
+    def get_configuration(self) -> SentenceConfiguration:
+        config_json = self.get_field(SentenceNoteFields.configuration)
+        if not config_json:
+            # Generate configuration from existing fields for backward compatibility
+            config = SentenceConfiguration(
+                highlighted_words=self.get_user_highlighted_vocab(),
+                word_exclusions=self.get_user_word_exclusions()
+            )
+            self.set_configuration(config)
+            return config
+
+        return SentenceConfiguration.from_json(config_json)
+
+    def set_configuration(self, config: SentenceConfiguration) -> None:
+        config_json = config.to_json()
+        self.set_field(SentenceNoteFields.configuration, config_json)
+
+
+    def add_highlighted_word_to_config(self, word: str, index: int = -1) -> None:
+        config = self.get_configuration()
+        if word in config.highlighted_words:
+            config.highlighted_words.remove(word)
+
+        if index == -1:
+            config.highlighted_words.append(word)
+        else:
+            config.highlighted_words.insert(index, word)
+
+        self.set_configuration(config)
+
+    def remove_highlighted_word_from_config(self, word: str) -> None:
+        config = self.get_configuration()
+
+        if word in config.highlighted_words:
+            config.highlighted_words.remove(word)
+            self.set_configuration(config)
+
+    def add_word_exclusion_to_config(self, exclusion: WordExclusion) -> None:
+        config = self.get_configuration()
+
+        config.word_exclusions = [e for e in config.word_exclusions if e.word != exclusion.word]
+        config.word_exclusions.append(exclusion)
+        self.set_configuration(config)
+
+    def remove_word_exclusion_from_config(self, word: str) -> None:
+        config = self.get_configuration()
+
+        config.word_exclusions = [e for e in config.word_exclusions
+                                  if e.word != word]
+
+        self.set_configuration(config)
+
+    def reset_highlighted_in_config(self) -> None:
+        config = self.get_configuration()
+        config.highlighted_words = []
+        self.set_configuration(config)
+
+    def reset_exclusions_in_config(self) -> None:
+        config = self.get_configuration()
+        config.word_exclusions = []
+        self.set_configuration(config)

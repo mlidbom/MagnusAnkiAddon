@@ -6,22 +6,21 @@ if TYPE_CHECKING:
 
 from typing import Any
 
-
 class WordExclusion:
     _separator = "####"
     _no_index = -1
-    def __init__(self, word:str, index:int = _no_index) -> None:
+    def __init__(self, word: str, index: int = _no_index) -> None:
         self.word = word
         self.index = index
 
-    def excludes(self, word:HierarchicalWord) -> bool:
+    def excludes(self, word: HierarchicalWord) -> bool:
         return word.word.word == self.word and (self.index == WordExclusion._no_index or self.index == word.word.character_index)
 
-    def excludes_form_at_index(self, form:str, index:int) -> bool:
+    def excludes_form_at_index(self, form: str, index: int) -> bool:
         return form == self.word and (self.index == WordExclusion._no_index or self.index == index)
 
     @classmethod
-    def from_string(cls, exclusion:str) -> WordExclusion:
+    def from_string(cls, exclusion: str) -> WordExclusion:
         if cls._separator in exclusion:
             parts = exclusion.split(cls._separator)
             try:
@@ -44,5 +43,12 @@ class WordExclusion:
     def __repr__(self) -> str:
         return f"WordExclusion('{self.word}', {self.index})"
 
-    def covers(self, other:WordExclusion) -> bool:
+    def covers(self, other: WordExclusion) -> bool:
         return self.word == other.word and (self.index == WordExclusion._no_index or self.index == other.index)
+
+    def to_dict(self) -> dict[str, Any]:
+        return {'word': self.word, 'index': self.index}
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> 'WordExclusion':
+        return cls(word=data.get('word', ''), index=data.get('index', -1))

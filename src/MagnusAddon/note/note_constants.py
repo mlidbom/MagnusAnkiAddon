@@ -31,6 +31,7 @@ class SentenceNoteFields:
     user_extra_vocab = "__extra_vocab"
     audio = "Audio Sentence"
     screenshot = "Screenshot"
+    configuration = "__configuration"
 
 class CardTypes:
     reading = "Reading"
