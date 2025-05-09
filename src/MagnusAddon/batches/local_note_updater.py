@@ -1,6 +1,5 @@
 import gc
 import re
-from typing import Any
 
 from anki.notes import NoteId
 
@@ -157,20 +156,7 @@ def reparse_sentences(sentences:list[SentenceNote]) -> None:
 
     progress_display_runner.process_with_progress(sentences, reparse_sentence, "Reparsing sentences.")
 
-def run_memory_profiling_sentence_reparsing_session() -> None:
-    def reparse_sentence(sentence: SentenceNote) -> None:
-        sentence.update_parsed_words(force=True)
-
-    sentences = app.col().sentences.all()[:1000]
-
-    from pympler import tracker
-
-    tr = tracker.SummaryTracker()  # type: ignore
-    progress_display_runner.process_with_progress(sentences, reparse_sentence, "Reparsing sentences.")
-
-    tr.print_diff() # type: ignore
-
-def print_gc_status_and_collect()-> None:
+def print_gc_status_and_collect() -> None:
 
     print(f"""
 Gc.isenabled(): {gc.isenabled()}

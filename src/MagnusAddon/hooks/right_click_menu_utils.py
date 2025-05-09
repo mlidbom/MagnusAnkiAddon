@@ -36,9 +36,6 @@ def add_lookup_action(menu: QMenu, name: str, search: str) -> None:
 def add_single_vocab_lookup_action(menu: QMenu, name:str, vocab:str) -> None:
     menu.addAction(name, lookup_promise(lambda: query_builder.single_vocab_by_form_exact(vocab)))
 
-def add_text_vocab_lookup(menu: QMenu, name:str, text:str) -> None:
-    add_lookup_action_lambda(menu, name, lambda: query_builder.text_vocab_lookup(text))
-
 def add_vocab_dependencies_lookup(menu: QMenu, name: str, vocab: VocabNote) -> None:
     add_lookup_action_lambda(menu, name, lambda: query_builder.vocab_dependencies_lookup_query(vocab))
 

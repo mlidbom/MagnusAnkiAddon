@@ -48,7 +48,7 @@ class JamdictThreadingWrapper:
             except Exception as e:
                 request.future.set_exception(e)
 
-    def lookup(self, word: str, lookup_chars:bool, lookup_ne:bool) -> LookupResult:
+    def lookup(self, word: str, lookup_chars: bool, lookup_ne: bool) -> LookupResult:
         future: Future[LookupResult] = Future()
 
         def do_actual_lookup(jamdict: Jamdict) -> LookupResult:
@@ -57,17 +57,13 @@ class JamdictThreadingWrapper:
         self._queue.put(Request(do_actual_lookup, future))
         return future.result()
 
-
-    def shutdown(self) -> None:
-        self._running = False
-        # noinspection PyUnusedLocal
-        def null_op(jamdict:Jamdict) -> str: return ""
-        self._queue.put(Request(null_op, Future()))#Prevents deadlock
-        self._thread.join()
-
+    # def shutdown(self) -> None:
+    #     self._running = False
+    #     def null_op(jamdict:Jamdict) -> str: return ""
+    #     self._queue.put(Request(null_op, Future()))#Prevents deadlock
+    #     self._thread.join()
 
 _jamdict_threading_wrapper = JamdictThreadingWrapper()
-
 
 def _find_all_words() -> set[str]:
     _jamdict = Jamdict(reuse_ctx=False)
@@ -139,7 +135,7 @@ class DictLookup:
     @classmethod
     @lru_cache(maxsize=None)
     def _try_lookup_word_or_name(cls, word: str, readings: tuple[str, ...]) -> DictLookup:
-        if not cls.might_be_entry(word): return DictLookup([], word,[])
+        if not cls.might_be_entry(word): return DictLookup([], word, [])
 
         def kanji_form_matches() -> list[DictEntry]:
             return [ent for ent in lookup
@@ -187,24 +183,24 @@ class DictLookup:
                                              if 'word usually written using kana alone' in sense.misc))
 
     @classmethod
-    def might_be_word(cls, word:str) -> bool:
+    def might_be_word(cls, word: str) -> bool:
         return word in _all_word_forms.instance()
 
     @classmethod
-    def might_be_name(cls, word:str) -> bool:
+    def might_be_name(cls, word: str) -> bool:
         return word in _all_name_forms.instance()
 
     @classmethod
-    def might_be_entry(cls, word:str) -> bool:
+    def might_be_entry(cls, word: str) -> bool:
         return cls.might_be_word(word) or cls.might_be_name(word)
 
     @classmethod
     @lru_cache(maxsize=None)
-    def is_word(cls, word:str) -> bool:
+    def is_word(cls, word: str) -> bool:
         return cls.might_be_word(word) and cls.lookup_word_shallow(word).found_words()
 
     @classmethod
     @lru_cache(maxsize=None)
-    def is_dictionary_or_collection_word(cls, word:str) -> bool:
+    def is_dictionary_or_collection_word(cls, word: str) -> bool:
         from ankiutils import app
-        return app.col().vocab.is_word(word) or  cls.is_word(word)
+        return app.col().vocab.is_word(word) or cls.is_word(word)

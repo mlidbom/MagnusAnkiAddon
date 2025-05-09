@@ -45,7 +45,7 @@ def build_main_menu() -> None:
 
 def build_lookup_menu(lookup_menu: QMenu) -> None:
     def get_text_input() -> str:
-        text, ok = QInputDialog.getText(None, "input", "enter text", QLineEdit.EchoMode.Normal, "" )
+        text, ok = QInputDialog.getText(None, "input", "enter text", QLineEdit.EchoMode.Normal, "")
         return text if ok and text else ""
 
     setup_anki_open_menu(non_optional(lookup_menu.addMenu(shortcutfinger.up1("Anki"))), get_text_input)
