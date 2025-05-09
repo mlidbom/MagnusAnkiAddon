@@ -1,5 +1,3 @@
-import romkan
-
 from sysutils import typed
 from sysutils.ex_str import full_width_space
 import pykakasi
