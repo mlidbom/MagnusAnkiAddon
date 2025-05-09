@@ -1,7 +1,6 @@
 from __future__ import annotations
-from typing import Optional, TYPE_CHECKING
+from typing import Any, Optional, TYPE_CHECKING
 
-from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 from note.note_constants import SentenceNoteFields
 from note.notefields.string_note_field import StringField
 from sysutils import ex_json
@@ -11,12 +10,13 @@ from sysutils.lazy import Lazy
 if TYPE_CHECKING:
     from note.sentencenote import SentenceNote
     from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
+    from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 
 class ParsedWord:
     def __init__(self, word: str) -> None:
         self.word = word
 
-    def to_json(self) -> str: return ex_json.dict_to_json({'word': self.word})
+    def to_dict(self) -> dict[str, Any]: return {'word': self.word}
 
     @classmethod
     def from_json(cls, reader: JsonDictReader) -> ParsedWord: return cls(reader.get_string('word'))
@@ -27,9 +27,9 @@ class ParsingResult:
         self.sentence = sentence
         self.parser_version = parser_version
 
-    def to_json(self) -> str: return ex_json.dict_to_json({'words': [word.to_json() for word in self.parsed_words],
-                                                           'sentence': self.sentence,
-                                                           'parser_version': self.parser_version})
+    def to_dict(self) -> dict[str, Any]: return {'words': [word.to_dict() for word in self.parsed_words],
+                                                 'sentence': self.sentence,
+                                                 'parser_version': self.parser_version}
 
     def parsed_words_strings(self) -> list[str]: return [parsed.word for parsed in self.parsed_words]
 
@@ -56,7 +56,7 @@ class SentenceConfiguration:
     def to_json(self) -> str:
         return ex_json.dict_to_json({'highlighted_words': self.highlighted_words,
                                      'incorrect_matches': [exclusion.to_dict() for exclusion in self.incorrect_matches],
-                                     'parsing_result': self.parsing_result.to_json()})
+                                     'parsing_result': self.parsing_result.to_dict()})
 
     def incorrect_matches_words(self) -> set[str]:
         return {exclusion.word for exclusion in self.incorrect_matches}
@@ -100,7 +100,6 @@ class CachingSentenceConfigurationField:
             self.highlighted_words().insert(index, vocab)
         self._save()
 
-
     def remove_incorrect_match(self, exclusion: WordExclusion) -> None:
         if exclusion in self.incorrect_matches():
             self.incorrect_matches().remove(exclusion)
@@ -110,7 +109,7 @@ class CachingSentenceConfigurationField:
     def set_parsing_result(self, analysis: TextAnalysis) -> None:
         self._value.instance().parsing_result = ParsingResult([ParsedWord(word.form) for word in analysis.all_words],
                                                               analysis.text,
-                                                              TextAnalysis.version)
+                                                              analysis.version)
         self._save()
 
     def _save(self) -> None: self._field.set(self._value.instance().to_json())

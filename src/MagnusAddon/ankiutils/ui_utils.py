@@ -1,12 +1,11 @@
 from __future__ import annotations
 from typing import Callable, Optional, TYPE_CHECKING
-
 if TYPE_CHECKING:
     from anki.notes import Note
     from aqt.clayout import CardLayout
+    from note.jpnote import JPNote
 
 from aqt.editor import Editor
-from note.jpnote import JPNote
 from aqt.webview import AnkiWebView, AnkiWebViewKind
 import aqt
 from aqt import AnkiQt  # type: ignore
@@ -56,6 +55,7 @@ def get_note_from_web_view(view: AnkiWebView) -> Optional[JPNote]:
     else:
         return None
 
+    from note.jpnote import JPNote
     return JPNote.note_from_note(inner_note)
 
 class UIUtils(IUIUtils):

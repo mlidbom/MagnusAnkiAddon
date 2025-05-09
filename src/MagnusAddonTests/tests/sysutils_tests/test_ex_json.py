@@ -1,4 +1,5 @@
 from __future__ import annotations
+from ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules # noqa
 
 from sysutils import ex_json
 from sysutils.ex_json import JsonDictReader
@@ -39,3 +40,12 @@ def test_round_object_list() -> None:
     round_tripped_value = HasObjectList.from_json(ex_json.json_to_dict(json))
 
     assert start_value.values == round_tripped_value.values
+
+def test_roundtrip_parsing_result() -> None:
+    from note.sentencenote_configuration import ParsedWord, ParsingResult
+
+    result = ParsingResult([ParsedWord("foo"), ParsedWord("bar")], "foo bar", "1.0")
+    json = ex_json.dict_to_json(result.to_dict())
+    round_tripped_result = ParsingResult.from_json(ex_json.json_to_dict(json))
+
+    assert [w.word for w in result.parsed_words] == [w.word for w in round_tripped_result.parsed_words]
