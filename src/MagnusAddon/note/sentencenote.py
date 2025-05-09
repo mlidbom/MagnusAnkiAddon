@@ -150,7 +150,7 @@ class SentenceNote(JPNote):
 
     def extract_kanji(self) -> list[str]:
         clean = ex_str.strip_html_and_bracket_markup(self.get_question())
-        return [char for char in clean if kana_utils.is_kanji(char)]
+        return [char for char in clean if kana_utils.character_is_kanji(char)]
 
     @classmethod
     def create_test_note(cls, question: str, answer: str) -> SentenceNote:

@@ -73,7 +73,7 @@ def notes_by_id(note_ids:list[NoteId]) -> str:
 
 def single_vocab_wildcard(query:str) -> str: return f"{note_vocab} ({f_forms}:*{query}* OR {f_reading}:*{query}* OR {f_answer}:*{query}*)"
 def single_vocab_by_question_reading_or_answer_exact(query: str) -> str:
-    return f"{note_vocab} ({field_contains_word(f_forms, query)} OR {field_contains_word(f_reading, kana_utils.to_hiragana(query))} OR {field_contains_word(f_answer, query)})"
+    return f"{note_vocab} ({field_contains_word(f_forms, query)} OR {field_contains_word(f_reading, kana_utils.katakana_to_hiragana(query))} OR {field_contains_word(f_answer, query)})"
 def single_vocab_by_form_exact(query: str) -> str:return f"{note_vocab} {field_contains_word(f_forms, query)}"
 
 def single_vocab_by_form_exact_read_card_only(query: str) -> str:return f"({single_vocab_by_form_exact(query)}) {card_read}"

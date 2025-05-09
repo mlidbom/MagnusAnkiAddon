@@ -71,7 +71,7 @@ class KanjiNote(WaniNote):
     def update_generated_data(self) -> None:
         super().update_generated_data()
 
-        self.set_reading_on(kana_utils.to_hiragana(self.get_reading_on_html()))  # Katakana sneaks in via yomitan etc
+        self.set_reading_on(kana_utils.katakana_to_hiragana(self.get_reading_on_html()))  # Katakana sneaks in via yomitan etc
 
         def update_primary_audios() -> None:
             from ankiutils import app

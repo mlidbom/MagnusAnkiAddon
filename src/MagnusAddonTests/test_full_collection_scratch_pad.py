@@ -72,7 +72,7 @@ def test_create_sample_data() -> None:
     word_forms = "".join(ex_sequence.flatten([list(n.get_forms()) for n in vocab_notes]))
     sentences_combined = "".join(_sentences)
     big_fat_string = word_forms + sentences_combined
-    only_kanji = "".join(char for char in list(big_fat_string) if kana_utils.is_kanji(char))
+    only_kanji = "".join(char for char in list(big_fat_string) if kana_utils.character_is_kanji(char))
     search_string = query_builder.kanji_in_string(only_kanji)
     kanji_notes:list[KanjiNote] = app.col().kanji.search(search_string)
     for kanji_note in kanji_notes:

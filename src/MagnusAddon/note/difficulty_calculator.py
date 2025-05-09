@@ -8,8 +8,8 @@ class DifficultyCalculator:
         self.kanji_seconds = kanji_seconds
 
     def allowed_seconds(self, string:str) -> float:
-        hiragana_seconds = ex_sequence.count(string, kana_utils.is_hiragana) * self.hiragana_seconds
-        katakana_seconds = ex_sequence.count(string, kana_utils.is_katakana) * self.katakata_seconds
-        kanji_seconds = ex_sequence.count(string, kana_utils.is_kanji) * self.kanji_seconds
+        hiragana_seconds = ex_sequence.count(string, kana_utils.character_is_hiragana) * self.hiragana_seconds
+        katakana_seconds = ex_sequence.count(string, kana_utils.character_is_katakana) * self.katakata_seconds
+        kanji_seconds = ex_sequence.count(string, kana_utils.character_is_kanji) * self.kanji_seconds
 
         return self.starting_seconds + hiragana_seconds + katakana_seconds + kanji_seconds

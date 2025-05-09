@@ -40,7 +40,7 @@ def build_string_menu(string_menu: QMenu, kanji: KanjiNote, menu_string: str) ->
 
     def add_primary_readings_actions(menu: QMenu, title_factory: Callable[[str], str], string: str) -> None:
         if kana_utils.is_only_katakana(string):
-            hiragana_string = kana_utils.to_hiragana(string)
+            hiragana_string = kana_utils.katakana_to_hiragana(string)
             if hiragana_string in kanji.get_primary_readings_on():
                 add_ui_action(menu, title_factory("Remove primary Onyomi Reading"), lambda: kanji.remove_primary_on_reading(hiragana_string))
             elif hiragana_string in kanji.get_readings_on():

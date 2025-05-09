@@ -27,12 +27,12 @@ class DictEntry:
         return [cls(entry, lookup_word, lookup_reading) for entry in entries]
 
     def has_matching_kana_form(self, search: str) -> bool:
-        search = kana_utils.to_hiragana(search) # todo: this converting to hiragana is worrisome. Is this really the behavior we want? What false positives might we run into?
-        return any(search == kana_utils.to_hiragana(form) for form in self.kana_forms())
+        search = kana_utils.katakana_to_hiragana(search) # todo: this converting to hiragana is worrisome. Is this really the behavior we want? What false positives might we run into?
+        return any(search == kana_utils.katakana_to_hiragana(form) for form in self.kana_forms())
 
     def has_matching_kanji_form(self, search: str) -> bool:
-        search = kana_utils.to_hiragana(search) # todo: this converting to hiragana is worrisome. Is this really the behavior we want? What false positives might we run into?
-        return any(search == kana_utils.to_hiragana(form) for form in self.kanji_forms())
+        search = kana_utils.katakana_to_hiragana(search) # todo: this converting to hiragana is worrisome. Is this really the behavior we want? What false positives might we run into?
+        return any(search == kana_utils.katakana_to_hiragana(form) for form in self.kanji_forms())
 
     def kana_forms(self) -> list[str]: return [ent.text for ent in self.entry.kana_forms]
     def kanji_forms(self) -> list[str]: return [ent.text for ent in self.entry.kanji_forms]
