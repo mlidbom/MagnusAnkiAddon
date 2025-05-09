@@ -3,7 +3,7 @@ from typing import Optional, TYPE_CHECKING
 
 from language_services.janome_ex.word_extraction.candidate_form import CandidateForm
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
-from note.notefields.string_note_field import StringField
+from note.notefields.string_note_field import AudioField, FallbackStringField, ReadOnlyNewlineSeparatedValuesField, StringField, StripHtmlOnReadStringField
 from note.sentencenote_configuration import SentenceConfiguration
 from sysutils.ex_str import newline
 
@@ -22,7 +22,14 @@ class SentenceNote(JPNote):
         super().__init__(note)
         self._user_excluded_cache:set[str] = self._get_user_word_exclusions_strings()
         self._source_answer = StringField(self, SentenceNoteFields.source_answer)
-
+        self._user_question = StringField(self, SentenceNoteFields.user_question)
+        self._source_question = StripHtmlOnReadStringField(self, SentenceNoteFields.source_question)
+        self.question = FallbackStringField(self, SentenceNoteFields.user_question, SentenceNoteFields.source_question)
+        self.answer = FallbackStringField(self, SentenceNoteFields.user_answer, SentenceNoteFields.source_answer)
+        self._screenshot = StringField(self, SentenceNoteFields.screenshot)
+        self._audio = AudioField(self, SentenceNoteFields.audio)
+        self._user_answer = StringField(self, SentenceNoteFields.user_answer)
+        self._user_excluded_vocab = ReadOnlyNewlineSeparatedValuesField(self, SentenceNoteFields.user_excluded_vocab)
 
 
     def get_direct_dependencies(self) -> set[JPNote]:
@@ -31,26 +38,14 @@ class SentenceNote(JPNote):
         kanji = set(self.collection.kanji.with_any_kanji_in(self.extract_kanji()))
         return highlighted | valid_parsed_roots | kanji
 
-    def get_question(self) -> str: return self._get_user_question() or self._get_source_question()
-    def get_answer(self) -> str: return self._get_user_answer() or self._get_source_answer()
-
-    def _get_source_answer(self) -> str: return self.get_field(SentenceNoteFields.source_answer)
-    def _set_source_answer(self, question: str) -> None: return self.set_field(SentenceNoteFields.source_answer, question)
-
-    def _set_screenshot(self, screenshot: str) -> None: return self.set_field(SentenceNoteFields.screenshot, screenshot)
-
-    def _set_audio(self, audio: str) -> None: return self.set_field(SentenceNoteFields.audio, audio)
-
-    def _get_user_answer(self) -> str: return self.get_field(SentenceNoteFields.user_answer)
-
-    def _set_user_answer(self, question: str) -> None: return self.set_field(SentenceNoteFields.user_answer, question)
-
-    def _get_source_question(self) -> str: return ex_str.strip_html_markup(self.get_field(SentenceNoteFields.source_question)).strip()
-    def _set_source_question(self, question: str) -> None: return self.set_field(SentenceNoteFields.source_question, question)
-
-    def _get_user_question(self) -> str: return ex_str.strip_html_markup(self.get_field(SentenceNoteFields.user_question)).strip()
-
-    def get_audio_path(self) -> str: return ex_str.strip_html_markup(self.get_field(SentenceNoteFields.audio)).strip()[7:-1]
+    def get_question(self) -> str: return self.question.get()
+    def get_answer(self) -> str: return self.answer.get()
+    def _set_source_answer(self, question: str) -> None: self._source_answer.set(question)
+    def _set_screenshot(self, screenshot: str) -> None: self._screenshot.set(screenshot)
+    def _set_audio(self, audio: str) -> None: self._audio.set(audio)
+    def _set_user_answer(self, answer: str) -> None: self._user_answer.set(answer)
+    def _set_source_question(self, question: str) -> None: self._source_question.set(question)
+    def get_audio_path(self) -> str: return self._audio.file_path()
 
     def get_user_excluded_vocab(self) -> set[str]: return self._user_excluded_cache
 

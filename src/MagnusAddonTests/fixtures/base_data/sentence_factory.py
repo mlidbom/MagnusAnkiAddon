@@ -15,5 +15,7 @@ def create_sentence() -> NoteTypeEx:
                           NoteFieldEx(SentenceNoteFields.ParsedWords),
                           NoteFieldEx(SentenceNoteFields.user_excluded_vocab),
                           NoteFieldEx(SentenceNoteFields.user_extra_vocab),
-                          NoteFieldEx(SentenceNoteFields.configuration)],
+                          NoteFieldEx(SentenceNoteFields.configuration),
+                          NoteFieldEx(SentenceNoteFields.screenshot),
+                          NoteFieldEx(SentenceNoteFields.audio)],
                       [NoteTemplateEx("reading")])
