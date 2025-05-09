@@ -57,9 +57,8 @@ def build_misc_menu(misc_menu: QMenu) -> None:
 
 def build_debug_menu(debug_menu: QMenu) -> None:
     add_menu_ui_action(debug_menu, shortcutfinger.home1("Refresh UI"), refresh, "F5")
-    add_menu_ui_action(debug_menu, shortcutfinger.home2("Run_memory_profiling_parsing"), local_note_updater.run_memory_profiling_sentence_reparsing_session)
-    add_menu_ui_action(debug_menu, shortcutfinger.home3("Print_memory_usage"), local_note_updater.print_memory_usage)
-    debug_menu.addAction("&Reset", app.reset)
+    add_menu_ui_action(debug_menu, shortcutfinger.home3("Print_memory_usage"), local_note_updater.print_gc_status_and_collect)
+    debug_menu.addAction(shortcutfinger.home4("Reset"), app.reset)
 
 def build_config_menu(config_menu: QMenu) -> None:
     def add_checkbox_config(menu: QMenu, config_value: ConfigurationValueBool, _title:str) -> None:
@@ -88,16 +87,14 @@ def build_local_menu(sub_menu: QMenu) -> None:
         add_menu_ui_action(update_menu, "Update &Sentences", local_note_updater.update_sentences)
         add_menu_ui_action(update_menu, "Reparse words from sentences", local_note_updater.reparse_sentence_words)
 
+    def setup_danger_zone_menu(danger_zone: QMenu) -> None:
+        add_menu_ui_action(danger_zone, "Create Sentences from Context Sentences With Audio", local_note_updater.generate_sentences_for_context_sentences_with_audio)
+
     setup_update_menu(non_optional(sub_menu.addMenu(shortcutfinger.home1("Update"))))
 
-
-    add_menu_ui_action(sub_menu, "Create Sentences from Context Sentences With Audio", local_note_updater.generate_sentences_for_context_sentences_with_audio)
-    add_menu_ui_action(sub_menu, "Convert &Immersion Kit sentences", local_note_updater.convert_immersion_kit_sentences)
-    add_menu_ui_action(sub_menu, "Tag note metadata", local_note_updater.tag_note_metadata)
-
-    danger_zone = QMenu("Danger Zone. No warnings given before executing!", main_window())
-    sub_menu.addMenu(danger_zone)
-    #add_menu_ui_action(danger_zone, "Adjust kanji primary readings", local_note_updater.adjust_kanji_primary_readings)
+    add_menu_ui_action(sub_menu, shortcutfinger.home2("Convert &Immersion Kit sentences"), local_note_updater.convert_immersion_kit_sentences)
+    add_menu_ui_action(sub_menu, shortcutfinger.home3("Tag note metadata"), local_note_updater.tag_note_metadata)
+    setup_danger_zone_menu(non_optional(sub_menu.addMenu(shortcutfinger.home4("Danger Zone"))))
 
 def build_wani_menu(sub_menu: QMenu) -> None:
     add_menu_ui_action(sub_menu, "Import Missing Radicals", note_importer.import_missing_radicals)

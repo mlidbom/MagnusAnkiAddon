@@ -1,3 +1,4 @@
+import gc
 import re
 from typing import Any
 
@@ -169,18 +170,13 @@ def run_memory_profiling_sentence_reparsing_session() -> None:
 
     tr.print_diff() # type: ignore
 
-def print_memory_usage()-> None:
-    def output_function(o:Any) -> str:
-        return str(type(o))
+def print_gc_status_and_collect()-> None:
 
-    from pympler import muppy, summary, refbrowser
-    all_objects = muppy.get_objects()
-    root = muppy.filter(all_objects, dict)[0]
-    cb = refbrowser.ConsoleBrowser(root, maxdepth=10, str_func=output_function)  # type: ignore
-    cb.print_tree()  # type: ignore
-
-    # sum1 = summary.summarize(all_objects) # type: ignore
-    # summary.print_(sum1) # type: ignore
+    print(f"""
+Gc.isenabled(): {gc.isenabled()}
+Collecting...
+""")
+    gc.collect()
 
 
 def reparse_sentences_for_vocab(vocab:VocabNote) -> None:

@@ -1,4 +1,4 @@
-import gc
+#import gc
 import sys
 import os
 
@@ -8,7 +8,7 @@ import _lib # noqa NOTE: this line sets up lib paths, lib imports before here do
 
 import hooks # noqa
 
-gc.enable() #Apparently there may be issues with running the garbage collector with Qt, but without it my code leaks memory like crazy....
+#gc.enable() #Apparently there may be issues with running the garbage collector with Qt, but without it my code leaks memory like crazy....
 
 hooks.timing_hacks.init()
 hooks.browser_right_click_menu.init()
