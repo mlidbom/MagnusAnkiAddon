@@ -11,7 +11,7 @@ from sysutils.typed import non_optional
 from hooks import shortcutfinger
 
 
-def setup_anki_open_menu(open_in_anki_menu:QMenu, search_string:Callable[[],str]) -> None:
+def build_open_in_anki_menu(open_in_anki_menu:QMenu, search_string:Callable[[],str]) -> None:
     def build_exact_menu(exact_menu:QMenu) -> None:
         add_lookup_action_lambda(exact_menu, shortcutfinger.home1("Open Exact matches | no sentences | reading cards"), lambda: query_builder.exact_matches_no_sentences_reading_cards(search_string()))
         add_lookup_action_lambda(exact_menu, shortcutfinger.home2("Open Exact matches with sentences"), lambda: query_builder.exact_matches(search_string()))
@@ -39,7 +39,7 @@ def setup_anki_open_menu(open_in_anki_menu:QMenu, search_string:Callable[[],str]
     build_vocab_menu(non_optional(open_in_anki_menu.addMenu(shortcutfinger.home3("Vocab"))))
     build_sentence_menu(non_optional(open_in_anki_menu.addMenu(shortcutfinger.home4("Sentence"))))
 
-def setup_web_search_menu(search_web_menu:QMenu, search_string:Callable[[],str]) -> None:
+def build_web_search_menu(search_web_menu:QMenu, search_string:Callable[[],str]) -> None:
     def add_web_lookup(menu: QMenu, name: str, url: str) -> None:
         menu.addAction(name, lambda: openLink(url % parse.quote(search_string(), encoding='utf8')))
 

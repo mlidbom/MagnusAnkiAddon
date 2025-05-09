@@ -11,7 +11,7 @@ from sysutils.ex_str import newline
 from sysutils.typed import non_optional
 from hooks import shortcutfinger
 
-def setup_note_menu(vocab: VocabNote, note_menu: QMenu, string_menus: list[tuple[QMenu, str]], selection:str, clipboard:str) -> None:
+def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboard: str) -> None:
     def build_create_note_menu(note_create_menu: QMenu) -> None:
         def build_forms_menu(clone_to_form_menu: QMenu) -> None:
             forms_with_no_vocab = [form for form in vocab.get_forms() if not any(app.col().vocab.with_question(form))]
@@ -108,49 +108,6 @@ def setup_note_menu(vocab: VocabNote, note_menu: QMenu, string_menus: list[tuple
 
         add_ui_action(note_menu, shortcutfinger.down1("Autogenerate compounds"), lambda: vocab.auto_generate_compounds())
 
-    def build_string_menus() -> None:
-        for string_menu, menu_string in string_menus:
-            def build_sentences_menu(sentence_menu: QMenu) -> None:
-                def remove_highlight(_sentences: list[SentenceNote]) -> None:
-                    for _sentence in _sentences:
-                        _sentence.remove_extra_vocab(vocab.get_question())
-
-                def exclude(_sentences: list[SentenceNote]) -> None:
-                    for _sentence in _sentences:
-                        _sentence.exclude_vocab(vocab.get_question())
-
-                sentence = sentences[0]
-
-                if vocab.get_question() not in sentence.get_user_highlighted_vocab():
-                    add_ui_action(sentence_menu, shortcutfinger.home1("Add Highlight"), lambda _sentence=sentence: _sentence.position_extra_vocab(vocab.get_question()))  # type: ignore
-                else:
-                    # noinspection PyDefaultArgument
-                    add_ui_action(sentence_menu, shortcutfinger.home2("Remove highlight"), lambda _sentences=sentences: remove_highlight(_sentences))  # type: ignore
-
-                # noinspection PyDefaultArgument
-                add_ui_action(sentence_menu, shortcutfinger.home3("Exclude this vocab"), lambda _sentences=sentences: exclude(_sentences))  # type: ignore
-
-            def build_add_menu(vocab_add_menu: QMenu) -> None:
-                add_ui_action(vocab_add_menu, shortcutfinger.home1("Similar meaning"), lambda _menu_string=menu_string: vocab.add_related_similar_meaning(_menu_string))  # type: ignore
-                add_ui_action(vocab_add_menu, shortcutfinger.home2("Confused with"), lambda _menu_string=menu_string: vocab.add_related_confused_with(_menu_string))  # type: ignore
-
-            def build_set_menu(note_set_menu: QMenu) -> None:
-                add_ui_action(note_set_menu, shortcutfinger.home1("Derived from"), lambda _menu_string=menu_string: vocab.set_related_derived_from(_menu_string))  # type: ignore
-                add_ui_action(note_set_menu, shortcutfinger.home2("Ergative twin"), lambda _menu_string=menu_string: vocab.set_related_ergative_twin(_menu_string))  # type: ignore
-
-            sentences = app.col().sentences.with_question(menu_string)
-            if sentences:
-                build_sentences_menu(non_optional(string_menu.addMenu(shortcutfinger.home1("Sentence"))))
-
-            build_add_menu(non_optional(string_menu.addMenu(shortcutfinger.home2("Add"))))
-            build_set_menu(non_optional(string_menu.addMenu(shortcutfinger.home3("Set"))))
-
-    def build_copy_menu(note_copy_menu: QMenu) -> None:
-        note_copy_menu.addAction(shortcutfinger.home1("Question"), lambda: pyperclip.copy(vocab.get_question()))
-        note_copy_menu.addAction(shortcutfinger.home2("Answer"), lambda: pyperclip.copy(vocab.get_answer()))
-        note_copy_menu.addAction(shortcutfinger.home3("Definition (question:answer)"), lambda: pyperclip.copy(f"""{vocab.get_question()}: {vocab.get_answer()}"""))
-        note_copy_menu.addAction(shortcutfinger.home4("Sentences: max 30"), lambda: pyperclip.copy(newline.join([sent.get_question() for sent in vocab.get_sentences()[0:30]])))
-
 
 
 
@@ -158,7 +115,48 @@ def setup_note_menu(vocab: VocabNote, note_menu: QMenu, string_menus: list[tuple
     build_create_note_menu(non_optional(note_menu.addMenu(shortcutfinger.home2("Create"))))
     build_copy_menu(non_optional(note_menu.addMenu(shortcutfinger.home3("Copy"))))
     build_note_menu()
-    build_string_menus()
+
+def build_string_menu(string_menu: QMenu, vocab: VocabNote, menu_string:str) -> None:
+    def build_sentences_menu(sentence_menu: QMenu) -> None:
+        def remove_highlight(_sentences: list[SentenceNote]) -> None:
+            for _sentence in _sentences:
+                _sentence.remove_extra_vocab(vocab.get_question())
+
+        def exclude(_sentences: list[SentenceNote]) -> None:
+            for _sentence in _sentences:
+                _sentence.exclude_vocab(vocab.get_question())
+
+        sentence = sentences[0]
+
+        if vocab.get_question() not in sentence.get_user_highlighted_vocab():
+            add_ui_action(sentence_menu, shortcutfinger.home1("Add Highlight"), lambda _sentence=sentence: _sentence.position_extra_vocab(vocab.get_question()))  # type: ignore
+        else:
+            # noinspection PyDefaultArgument
+            add_ui_action(sentence_menu, shortcutfinger.home2("Remove highlight"), lambda _sentences=sentences: remove_highlight(_sentences))  # type: ignore
+
+        # noinspection PyDefaultArgument
+        add_ui_action(sentence_menu, shortcutfinger.home3("Exclude this vocab"), lambda _sentences=sentences: exclude(_sentences))  # type: ignore
+
+    def build_add_menu(vocab_add_menu: QMenu) -> None:
+        add_ui_action(vocab_add_menu, shortcutfinger.home1("Similar meaning"), lambda _menu_string=menu_string: vocab.add_related_similar_meaning(_menu_string))  # type: ignore
+        add_ui_action(vocab_add_menu, shortcutfinger.home2("Confused with"), lambda _menu_string=menu_string: vocab.add_related_confused_with(_menu_string))  # type: ignore
+
+    def build_set_menu(note_set_menu: QMenu) -> None:
+        add_ui_action(note_set_menu, shortcutfinger.home1("Derived from"), lambda _menu_string=menu_string: vocab.set_related_derived_from(_menu_string))  # type: ignore
+        add_ui_action(note_set_menu, shortcutfinger.home2("Ergative twin"), lambda _menu_string=menu_string: vocab.set_related_ergative_twin(_menu_string))  # type: ignore
+
+    sentences = app.col().sentences.with_question(menu_string)
+    if sentences:
+        build_sentences_menu(non_optional(string_menu.addMenu(shortcutfinger.home1("Sentence"))))
+
+    build_add_menu(non_optional(string_menu.addMenu(shortcutfinger.home2("Add"))))
+    build_set_menu(non_optional(string_menu.addMenu(shortcutfinger.home3("Set"))))
+
+def build_copy_menu(note_copy_menu: QMenu) -> None:
+    note_copy_menu.addAction(shortcutfinger.home1("Question"), lambda: pyperclip.copy(vocab.get_question()))
+    note_copy_menu.addAction(shortcutfinger.home2("Answer"), lambda: pyperclip.copy(vocab.get_answer()))
+    note_copy_menu.addAction(shortcutfinger.home3("Definition (question:answer)"), lambda: pyperclip.copy(f"""{vocab.get_question()}: {vocab.get_answer()}"""))
+    note_copy_menu.addAction(shortcutfinger.home4("Sentences: max 30"), lambda: pyperclip.copy(newline.join([sent.get_question() for sent in vocab.get_sentences()[0:30]])))
 
 def format_vocab_meaning(meaning: str) -> str:
     return ex_str.strip_html_and_bracket_markup(meaning

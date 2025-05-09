@@ -9,7 +9,7 @@ from sysutils import ex_str, kana_utils
 from sysutils.typed import non_optional
 from hooks import shortcutfinger
 
-def build_note_menu(kanji: KanjiNote, note_menu: QMenu) -> None:
+def build_note_menu(note_menu: QMenu, kanji: KanjiNote) -> None:
     def build_lookup_menu(note_lookup_menu: QMenu) -> None:
         add_lookup_action(note_lookup_menu, shortcutfinger.home1("Primary Vocabs"), query_builder.vocabs_lookup_strings(kanji.get_primary_vocab()))
         add_lookup_action(note_lookup_menu, shortcutfinger.home2("Vocabs"), query_builder.vocab_with_kanji(kanji))

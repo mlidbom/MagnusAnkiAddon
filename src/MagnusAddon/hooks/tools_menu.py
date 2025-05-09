@@ -11,7 +11,7 @@ from configuration.configuration import show_japanese_options
 from configuration.configuration_value import ConfigurationValueBool
 from configuration.readings_mapping_dialog import show_readings_mappings
 from hooks import shortcutfinger
-from hooks.right_click_menu_search import setup_anki_open_menu, setup_web_search_menu
+from hooks.right_click_menu_search import build_open_in_anki_menu, build_web_search_menu
 from note.jpnote import JPNote
 from sysutils.typed import non_optional
 from wanikani import note_importer
@@ -48,8 +48,8 @@ def build_lookup_menu(lookup_menu: QMenu) -> None:
         text, ok = QInputDialog.getText(None, "input", "enter text", QLineEdit.EchoMode.Normal, "")
         return text if ok and text else ""
 
-    setup_anki_open_menu(non_optional(lookup_menu.addMenu(shortcutfinger.up1("Anki"))), get_text_input)
-    setup_web_search_menu(non_optional(lookup_menu.addMenu(shortcutfinger.down1("Web"))), get_text_input)
+    build_open_in_anki_menu(non_optional(lookup_menu.addMenu(shortcutfinger.up1("Anki"))), get_text_input)
+    build_web_search_menu(non_optional(lookup_menu.addMenu(shortcutfinger.down1("Web"))), get_text_input)
 
 def build_misc_menu(misc_menu: QMenu) -> None:
     build_debug_menu(non_optional(misc_menu.addMenu(shortcutfinger.home1("Debug"))))
