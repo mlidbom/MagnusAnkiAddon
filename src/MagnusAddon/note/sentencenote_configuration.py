@@ -30,22 +30,20 @@ class ParsingResult:
 
     @classmethod
     def from_json(cls, reader: JsonDictReader) -> ParsingResult:
-        return cls([ParsedWord.from_json(word_json) for word_json in reader.get_nested_object_list('words')],
+        return cls([ParsedWord.from_json(word_json) for word_json in reader.get_object_list('words')],
                    reader.get_string('parser_version'))
 
 class SentenceConfiguration:
-    _f_highlighted_words = 'highlighted_words'
-    _f_incorrect_matches = 'incorrect_matches'
     def __init__(self, json: str) -> None:
         reader = ex_json.json_to_dict(json) if json else None
-        self.highlighted_words: list[str] = reader.get_string_list(SentenceConfiguration._f_highlighted_words) if reader else []
+        self.highlighted_words: list[str] = reader.get_string_list('highlighted_words') if reader else []
         self.incorrect_matches: list[WordExclusion] = \
             [WordExclusion.from_dict(exclusion_data)
-             for exclusion_data in reader.get_nested_object_list(SentenceConfiguration._f_incorrect_matches)] if reader else []
+             for exclusion_data in reader.get_object_list('incorrect_matches')] if reader else []
 
     def to_json(self) -> str:
-        return ex_json.dict_to_json({SentenceConfiguration._f_highlighted_words: self.highlighted_words,
-                                     SentenceConfiguration._f_incorrect_matches: [exclusion.to_dict() for exclusion in self.incorrect_matches]})
+        return ex_json.dict_to_json({'highlighted_words': self.highlighted_words,
+                                     'incorrect_matches': [exclusion.to_dict() for exclusion in self.incorrect_matches]})
 
     def incorrect_matches_words(self) -> set[str]:
         return {exclusion.word for exclusion in self.incorrect_matches}

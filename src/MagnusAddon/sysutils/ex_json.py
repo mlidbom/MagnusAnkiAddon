@@ -18,4 +18,4 @@ class JsonDictReader:
     def get_string(self, string:str) -> str: return typed.str_(self._dict[string])
     def get_int(self, string: str) -> int: return typed.int_(self._dict[string])
     def get_string_list(self, string:str) -> list[str]: return typed.checked_cast_generics(list[str], self._dict[string])
-    def get_nested_object_list(self, string: str) -> list[JsonDictReader]: return [JsonDictReader(dict) for dict in typed.checked_cast_generics(list[dict[str, Any]], self._dict[string])]
+    def get_object_list(self, string: str) -> list[JsonDictReader]: return [JsonDictReader(dict) for dict in typed.checked_cast_generics(list[dict[str, Any]], self._dict[string])]
