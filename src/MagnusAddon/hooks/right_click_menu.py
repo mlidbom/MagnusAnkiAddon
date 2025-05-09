@@ -24,7 +24,7 @@ from sysutils.typed import checked_cast, non_optional
 from typing import Optional
 from hooks import shortcutfinger
 
-def register_lookup_actions(view: AnkiWebView, root_menu: QMenu) -> None:
+def build_right_click_menu(view: AnkiWebView, root_menu: QMenu) -> None:
     def get_note() -> Optional[JPNote]:
         inner_note: Optional[Note]
 
@@ -49,19 +49,19 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu) -> None:
 
         return JPNote.note_from_note(inner_note)
 
-    def setup_create_menu(create_menu: QMenu, to_create: str) -> None:
+    def build_create_menu(create_menu: QMenu, to_create: str) -> None:
         create_vocab_note_action(create_menu, shortcutfinger.home1(f"vocab"), lambda _string=to_create: VocabNote.create_with_dictionary(_string))  # type: ignore
         create_note_action(create_menu, shortcutfinger.home2(f"sentence"), lambda _word=to_create: SentenceNote.create(_word))  # type: ignore
         create_note_action(create_menu, shortcutfinger.home3(f"kanji"), lambda _word=to_create: KanjiNote.create(_word, "TODO", "", ""))  # type: ignore
 
-    def setup_string_menu(menu: QMenu, string: str) -> None:
+    def build_string_menu(menu: QMenu, string: str) -> None:
         menu.addSeparator()
         # todo: several fingers blocked by actions that may be added by the code below that passes this menu to the setup_note_menu function.
         # We probably want to change this somehow to remove the risk of collisions
-        setup_matching_note_menu(shortcutfinger.home4("Notes"), menu, string)
+        build_matching_note_menu(shortcutfinger.home4("Notes"), menu, string)
         setup_anki_open_menu(non_optional(menu.addMenu(shortcutfinger.up1("Open in Anki"))), lambda menu_string_=string: menu_string_)  # type: ignore
         setup_web_search_menu(non_optional(menu.addMenu(shortcutfinger.down1("Search Web"))), lambda menu_string_=string: menu_string_)  # type: ignore
-        setup_create_menu(non_optional(menu.addMenu(shortcutfinger.down2(f"Create: {string}"))), string)
+        build_create_menu(non_optional(menu.addMenu(shortcutfinger.down2(f"Create: {string}"))), string)
         add_ui_action(menu, "remove from sentence exclusions", lambda _string=string: local_note_updater.clean_sentence_excluded_word(_string))  # type: ignore
 
     selection = non_optional(view.page()).selectedText().strip()
@@ -76,12 +76,12 @@ def register_lookup_actions(view: AnkiWebView, root_menu: QMenu) -> None:
         string_menus.append((non_optional(root_menu.addMenu(shortcutfinger.home2(f'''Clipboard: "{clipboard[:40]}"'''))), clipboard))
 
     if note:
-        setup_note_menu(non_optional(root_menu.addMenu(shortcutfinger.home3("Note"))), note, string_menus, selection, clipboard)
+        build_note_menu(non_optional(root_menu.addMenu(shortcutfinger.home3("Note"))), note, string_menus, selection, clipboard)
 
     for string_menu, menu_string in string_menus:
-        setup_string_menu(string_menu, menu_string)
+        build_string_menu(string_menu, menu_string)
 
-def setup_note_menu(note_menu: QMenu, note: JPNote, string_menus: list[tuple[QMenu, str]], selection: str = "", clipboard: str = "") -> None:
+def build_note_menu(note_menu: QMenu, note: JPNote, string_menus: list[tuple[QMenu, str]], selection: str = "", clipboard: str = "") -> None:
     if isinstance(note, RadicalNote):
         right_click_menu_note_radical.setup_note_menu(note, note_menu, string_menus)
     elif isinstance(note, KanjiNote):
@@ -94,9 +94,9 @@ def setup_note_menu(note_menu: QMenu, note: JPNote, string_menus: list[tuple[QMe
     elif isinstance(note, SentenceNote):
         right_click_menu_note_sentence.setup_note_menu(note, note_menu, string_menus)
 
-    create_note_actions_menu(non_optional(note_menu.addMenu(shortcutfinger.home4("Note actions"))), note)
+    build_note_actions_menu(non_optional(note_menu.addMenu(shortcutfinger.home4("Note actions"))), note)
 
-def setup_matching_note_menu(menu_title: str, string_menu: QMenu, search_string: str) -> None:
+def build_matching_note_menu(menu_title: str, string_menu: QMenu, search_string: str) -> None:
     from ankiutils import app
     vocabs = app.col().vocab.with_question(search_string)
     sentences = app.col().sentences.with_question(search_string)
@@ -105,13 +105,13 @@ def setup_matching_note_menu(menu_title: str, string_menu: QMenu, search_string:
     if any(vocabs) or any(sentences) or any(kanjis):
         note_menu = non_optional(string_menu.addMenu(menu_title))
         if any(vocabs):
-            create_note_actions_menu(non_optional(note_menu.addMenu(shortcutfinger.home1("Vocab Actions"))), vocabs[0])
+            build_note_actions_menu(non_optional(note_menu.addMenu(shortcutfinger.home1("Vocab Actions"))), vocabs[0])
         if any(sentences):
-            create_note_actions_menu(non_optional(note_menu.addMenu(shortcutfinger.home2("Sentence Actions"))), sentences[0])
+            build_note_actions_menu(non_optional(note_menu.addMenu(shortcutfinger.home2("Sentence Actions"))), sentences[0])
         if any(kanjis):
-            create_note_actions_menu(non_optional(note_menu.addMenu(shortcutfinger.home3("Kanji Actions"))), kanjis[0])
+            build_note_actions_menu(non_optional(note_menu.addMenu(shortcutfinger.home3("Kanji Actions"))), kanjis[0])
 
-def create_note_actions_menu(note_actions_menu: QMenu, note: JPNote) -> None:
+def build_note_actions_menu(note_actions_menu: QMenu, note: JPNote) -> None:
     note_actions_menu.addAction(shortcutfinger.home1("Open"), search_executor.lookup_promise(lambda: query_builder.notes_lookup([note])))
     note_actions_menu.addAction(shortcutfinger.home2("Open in previewer"), search_executor.lookup_and_show_previewer_promise(lambda: query_builder.notes_lookup([note])))
 
@@ -124,5 +124,5 @@ def create_note_actions_menu(note_actions_menu: QMenu, note: JPNote) -> None:
         add_ui_action(note_actions_menu, shortcutfinger.home4("Unsuspend all cards and dependencies' cards"), note.unsuspend_all_cards_and_dependencies, confirm=True)
 
 def init() -> None:
-    gui_hooks.webview_will_show_context_menu.append(register_lookup_actions)
-    gui_hooks.editor_will_show_context_menu.append(register_lookup_actions)
+    gui_hooks.webview_will_show_context_menu.append(build_right_click_menu)
+    gui_hooks.editor_will_show_context_menu.append(build_right_click_menu)
