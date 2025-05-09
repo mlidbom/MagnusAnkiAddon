@@ -1,5 +1,9 @@
+import romkan
+
+from sysutils import typed
 from sysutils.ex_str import full_width_space
 import pykakasi
+import romkan
 
 def pad_to_length(value: str, target_length: int) -> str:
     padding = max(0, target_length - len(value))
@@ -63,3 +67,9 @@ def romanize(text:str) -> str:
 
     result = _kakasi.convert(text)
     return "".join([item['hepburn'] for item in result])
+
+def romaji_to_hiragana(string:str) -> str:
+    return typed.str_(romkan.to_hiragana(string))
+
+def romaji_to_katakana(string:str) -> str:
+    return typed.str_(romkan.to_katakana(string))
