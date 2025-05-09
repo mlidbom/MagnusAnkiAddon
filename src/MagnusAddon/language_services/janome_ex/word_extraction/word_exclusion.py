@@ -51,4 +51,4 @@ class WordExclusion:
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> 'WordExclusion':
-        return cls(word=data.get('word', ''), index=data.get('index', -1))
+        return cls(word=data['word'], index=data['index'])

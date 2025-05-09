@@ -257,15 +257,15 @@ class SentenceNote(JPNote):
     def add_word_exclusion_to_config(self, exclusion: WordExclusion) -> None:
         config = self.get_configuration()
 
-        config.word_exclusions = [e for e in config.word_exclusions if e.word != exclusion.word]
-        config.word_exclusions.append(exclusion)
+        config.incorrect_matches = [e for e in config.incorrect_matches if e.word != exclusion.word]
+        config.incorrect_matches.append(exclusion)
         self.set_configuration(config)
 
     def remove_word_exclusion_from_config(self, word: str) -> None:
         config = self.get_configuration()
 
-        config.word_exclusions = [e for e in config.word_exclusions
-                                  if e.word != word]
+        config.incorrect_matches = [e for e in config.incorrect_matches
+                                    if e.word != word]
 
         self.set_configuration(config)
 
@@ -276,5 +276,5 @@ class SentenceNote(JPNote):
 
     def reset_exclusions_in_config(self) -> None:
         config = self.get_configuration()
-        config.word_exclusions = []
+        config.incorrect_matches = []
         self.set_configuration(config)
