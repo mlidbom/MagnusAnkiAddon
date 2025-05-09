@@ -4,7 +4,8 @@ from typing import Optional, TYPE_CHECKING
 from language_services.janome_ex.word_extraction.candidate_form import CandidateForm
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from note.notefields.string_note_field import AudioField, FallbackStringField, ReadOnlyNewlineSeparatedValuesField, StringField, StripHtmlOnReadStringField
-from note.sentencenote_configuration import SentenceConfiguration
+from note.sentencenote_configuration import CachingSentenceConfigurationField
+
 from sysutils.ex_str import newline
 
 if TYPE_CHECKING:
@@ -30,14 +31,7 @@ class SentenceNote(JPNote):
         self._audio = AudioField(self, SentenceNoteFields.audio)
         self._user_answer = StringField(self, SentenceNoteFields.user_answer)
         self._user_excluded_vocab = ReadOnlyNewlineSeparatedValuesField(self, SentenceNoteFields.user_excluded_vocab)
-
-
-    def get_direct_dependencies(self) -> set[JPNote]:
-        highlighted = set(ex_sequence.flatten([self.collection.vocab.with_question(vocab) for vocab in self.get_user_highlighted_vocab()]))
-        valid_parsed_roots = set(ex_sequence.flatten([self.collection.vocab.with_question(vocab) for vocab in self.get_valid_parsed_non_child_words_strings()]))
-        kanji = set(self.collection.kanji.with_any_kanji_in(self.extract_kanji()))
-        return highlighted | valid_parsed_roots | kanji
-
+        self._configuration = CachingSentenceConfigurationField(self)
     #todo: replace this with field class
     def get_user_excluded_vocab(self) -> set[str]: return self._user_excluded_cache
 
@@ -77,6 +71,12 @@ class SentenceNote(JPNote):
         from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
         analysis = TextAnalysis(self.get_question(), list(self.get_user_word_exclusions()))
         return analysis.display_words
+
+    def get_direct_dependencies(self) -> set[JPNote]:
+        highlighted = set(ex_sequence.flatten([self.collection.vocab.with_question(vocab) for vocab in self.get_user_highlighted_vocab()]))
+        valid_parsed_roots = set(ex_sequence.flatten([self.collection.vocab.with_question(vocab) for vocab in self.get_valid_parsed_non_child_words_strings()]))
+        kanji = set(self.collection.kanji.with_any_kanji_in(self.extract_kanji()))
+        return highlighted | valid_parsed_roots | kanji
 
     def get_user_highlighted_vocab(self) -> list[str]: return ex_str.extract_newline_separated_values(self.get_field(SentenceNoteFields.user_extra_vocab))
     def _set_user_extra_vocab(self, extra: list[str]) -> None: return self.set_field(SentenceNoteFields.user_extra_vocab, newline.join(extra))
@@ -135,8 +135,6 @@ class SentenceNote(JPNote):
         self.update_parsed_words()
         self.set_field(SentenceNoteFields.active_answer, self.get_answer())
         self.set_field(SentenceNoteFields.active_question, self.get_question())
-
-        config = self.get_configuration()
 
     def update_parsed_words(self, force:bool = False) -> None:
         from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
@@ -214,22 +212,3 @@ class SentenceNote(JPNote):
         note.update_generated_data()
         app.anki_collection().addNote(inner_note)
         return note
-
-
-
-    def get_configuration(self) -> SentenceConfiguration:
-        config_json = self.get_field(SentenceNoteFields.configuration)
-        if not config_json:
-            # Generate configuration from existing fields for backward compatibility
-            config = SentenceConfiguration(
-                highlighted_words=self.get_user_highlighted_vocab(),
-                word_exclusions=self.get_user_word_exclusions()
-            )
-            self.set_configuration(config)
-            return config
-
-        return SentenceConfiguration.from_json(config_json)
-
-    def set_configuration(self, config: SentenceConfiguration) -> None:
-        config_json = config.to_json()
-        self.set_field(SentenceNoteFields.configuration, config_json)

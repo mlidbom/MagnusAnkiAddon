@@ -1,11 +1,10 @@
 from __future__ import annotations
-
 from typing import TYPE_CHECKING
-
-from sysutils import ex_str
 
 if TYPE_CHECKING:
     from note.jpnote import JPNote
+
+from sysutils import ex_str
 
 class StringField:
     def __init__(self, note: JPNote, field_name: str) -> None:
@@ -54,3 +53,4 @@ class ReadOnlyNewlineSeparatedValuesField:
         self._field = StringField(note, field_name)
 
     def get(self) -> list[str]: return ex_str.extract_newline_separated_values(self._field.get())
+

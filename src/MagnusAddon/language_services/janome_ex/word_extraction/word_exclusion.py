@@ -1,11 +1,15 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
+from sysutils.ex_json import JsonDictReader
+
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.hierarchicalword import HierarchicalWord
 
 from typing import Any
 
+_f_word = 'word'
+_f_index = 'index'
 class WordExclusion:
     _separator = "####"
     _no_index = -1
@@ -47,8 +51,8 @@ class WordExclusion:
         return self.word == other.word and (self.index == WordExclusion._no_index or self.index == other.index)
 
     def to_dict(self) -> dict[str, Any]:
-        return {'word': self.word, 'index': self.index}
+        return {_f_word: self.word, _f_index: self.index}
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> 'WordExclusion':
-        return cls(word=data['word'], index=data['index'])
+    def from_dict(cls, reader: JsonDictReader) -> 'WordExclusion':
+        return cls(word=reader.get_string(_f_word), index=reader.get_int(_f_word))
