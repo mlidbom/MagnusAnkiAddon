@@ -1,3 +1,5 @@
+from typing import Callable, Optional
+
 import pyperclip  # type: ignore
 from PyQt6.QtWidgets import QMenu
 from aqt import gui_hooks
@@ -14,49 +16,49 @@ from note.kanjinote import KanjiNote
 from note.radicalnote import RadicalNote
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
+from sysutils import typed
 from sysutils.typed import non_optional
 
 from hooks import shortcutfinger
 
-def build_right_click_menu(view: AnkiWebView, root_menu: QMenu) -> None:
+def build_browser_right_click_menu(root_menu: QMenu, note: JPNote) -> None:
+    build_right_click_menu(root_menu, note, "", "")
+
+def build_right_click_menu_webview_hook(view: AnkiWebView, root_menu: QMenu) -> None:
     selection = non_optional(view.page()).selectedText().strip()
     clipboard = pyperclip.paste().strip()
     note = ui_utils.get_note_from_web_view(view)
+    build_right_click_menu(root_menu, note, selection, clipboard)
+
+def build_right_click_menu(root_menu: QMenu, note: Optional[JPNote], selection: str, clipboard: str) -> None:
+    selection_menu = non_optional(root_menu.addMenu(shortcutfinger.home1(f'''Selection: "{selection[:40]}"'''))) if selection else None
+    clipboard_menu = non_optional(root_menu.addMenu(shortcutfinger.home2(f'''Clipboard: "{clipboard[:40]}"'''))) if clipboard else None
+
+    string_note_menu_factory: Callable[[QMenu, str], None] = null_op_factory
 
     if note:
         note_menu = non_optional(root_menu.addMenu(shortcutfinger.home3("Note")))
-        selection_menu = non_optional(root_menu.addMenu(shortcutfinger.home1(f'''Selection: "{selection[:40]}"'''))) if selection else None
-        clipboard_menu = non_optional(root_menu.addMenu(shortcutfinger.home2(f'''Clipboard: "{clipboard[:40]}"'''))) if clipboard else None
 
         if isinstance(note, RadicalNote):
             right_click_menu_note_radical.setup_note_menu(note_menu, note)
         elif isinstance(note, KanjiNote):
             right_click_menu_note_kanji.build_note_menu(note_menu, note)
-            if selection_menu:
-                right_click_menu_note_kanji.build_string_menu(selection_menu, note, selection)
-            if clipboard_menu:
-                right_click_menu_note_kanji.build_string_menu(clipboard_menu, note, clipboard)
-
+            string_note_menu_factory = lambda menu, string: right_click_menu_note_kanji.build_string_menu(menu, typed.checked_cast(KanjiNote, note), string)
         elif isinstance(note, VocabNote):
             right_click_menu_note_vocab.setup_note_menu(note_menu, note, selection, clipboard)
-            if selection_menu:
-                right_click_menu_note_vocab.build_string_menu(selection_menu, note, selection)
-            if clipboard_menu:
-                right_click_menu_note_vocab.build_string_menu(clipboard_menu, note, clipboard)
+            string_note_menu_factory = lambda menu, string: right_click_menu_note_vocab.build_string_menu(menu, typed.checked_cast(VocabNote, note), string)
         elif isinstance(note, SentenceNote):
-            if selection_menu:
-                right_click_menu_note_sentence.build_string_menu(selection_menu, note, selection)
-            if clipboard_menu:
-                right_click_menu_note_sentence.build_string_menu(clipboard_menu, note, clipboard)
+            right_click_menu_note_sentence.build_note_menu(note_menu, note)
+            string_note_menu_factory = lambda menu, string: right_click_menu_note_sentence.build_string_menu(menu, typed.checked_cast(SentenceNote, note), string)
 
         build_universal_note_actions_menu(non_optional(note_menu.addMenu(shortcutfinger.home4("Note actions"))), note)
 
-    if selection:
-        build_string_menu(non_optional(root_menu.addMenu(shortcutfinger.home1(f'''Selection: "{selection[:40]}"'''))), selection)
-    if clipboard:
-        build_string_menu(non_optional(root_menu.addMenu(shortcutfinger.home2(f'''Clipboard: "{clipboard[:40]}"'''))), clipboard)
+    if selection_menu:
+        build_string_menu(selection_menu, selection, string_note_menu_factory)
+    if clipboard_menu:
+        build_string_menu(clipboard_menu, clipboard, string_note_menu_factory)
 
-def build_string_menu(menu: QMenu, string: str) -> None:
+def build_string_menu(menu: QMenu, string: str, string_note_menu_factory: Callable[[QMenu, str], None]) -> None:
     def build_create_note_menu(create_note_menu: QMenu, to_create: str) -> None:
         create_vocab_note_action(create_note_menu, shortcutfinger.home1(f"vocab"), lambda _string=to_create: VocabNote.create_with_dictionary(_string))  # type: ignore
         create_note_action(create_note_menu, shortcutfinger.home2(f"sentence"), lambda _word=to_create: SentenceNote.create(_word))  # type: ignore
@@ -77,6 +79,7 @@ def build_string_menu(menu: QMenu, string: str) -> None:
             if any(kanjis):
                 build_universal_note_actions_menu(non_optional(note_menu.addMenu(shortcutfinger.home3("Kanji Actions"))), kanjis[0])
 
+    string_note_menu_factory(non_optional(menu.addMenu(shortcutfinger.home2("Open in Anki"))), string)
     build_matching_note_menu(shortcutfinger.home1("Exactly matching notes"), menu, string)
     build_open_in_anki_menu(non_optional(menu.addMenu(shortcutfinger.home2("Open in Anki"))), lambda menu_string_=string: menu_string_)  # type: ignore
     build_web_search_menu(non_optional(menu.addMenu(shortcutfinger.home3("Search Web"))), lambda menu_string_=string: menu_string_)  # type: ignore
@@ -95,6 +98,9 @@ def build_universal_note_actions_menu(note_actions_menu: QMenu, note: JPNote) ->
     if note.has_suspended_cards_or_depencies_suspended_cards():
         add_ui_action(note_actions_menu, shortcutfinger.up1("Unsuspend all cards and dependencies' cards"), note.unsuspend_all_cards_and_dependencies, confirm=True)
 
+def null_op_factory(_menu: QMenu, _string: str) -> None:
+    pass
+
 def init() -> None:
-    gui_hooks.webview_will_show_context_menu.append(build_right_click_menu)
-    gui_hooks.editor_will_show_context_menu.append(build_right_click_menu)
+    gui_hooks.webview_will_show_context_menu.append(build_right_click_menu_webview_hook)
+    gui_hooks.editor_will_show_context_menu.append(build_right_click_menu_webview_hook)

@@ -8,7 +8,7 @@ from note.sentencenote import SentenceNote
 from sysutils.typed import non_optional
 from hooks import shortcutfinger
 
-def build_note_menu(note_menu: QMenu, sentence: SentenceNote, string_menus: list[tuple[QMenu, str]]) -> None:
+def build_note_menu(note_menu: QMenu, sentence: SentenceNote) -> None:
     note_lookup_menu: QMenu = non_optional(note_menu.addMenu(shortcutfinger.home1("Open")))
 
     add_lookup_action(note_lookup_menu, shortcutfinger.home1("Highlighted Vocab"), query_builder.vocabs_lookup_strings(sentence.get_user_highlighted_vocab()))
