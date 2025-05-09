@@ -3,15 +3,21 @@ from aqt import mw, gui_hooks
 from aqt.browser import Browser  # type: ignore
 from aqt.qt import QKeySequence, QShortcut
 from typing import List
+import json
+import os
 
 from PyQt6.QtWidgets import QWidget
 
 from ankiutils import query_builder, search_executor
+from sysutils import typed
 
 class CardHistoryNavigator:
     def __init__(self) -> None:
         self.card_history: List[CardId] = []  # Stores card IDs
         self.current_position: int = -1
+
+        # Load history from file
+        self._load_history_from_file()
 
         gui_hooks.card_will_show.append(self.on_card_shown)  # Hook into card display
 
@@ -26,7 +32,29 @@ class CardHistoryNavigator:
 
         self.is_navigating: bool = False
 
-    def _reset_position(self) -> None: self.current_position = len(self.card_history) - 1
+    def _reset_position(self) -> None:
+        self.current_position = len(self.card_history) - 1
+
+    @staticmethod
+    def _get_history_file_path() -> str:
+        addon_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        return os.path.join(addon_dir, "card_history.json")
+
+    def _save_last_hundred_items_to_file(self) -> None:
+        history_file_path = self._get_history_file_path()
+        last_hundred_items = [int(card_id) for card_id in self.card_history[-100:]]
+
+        with open(history_file_path, "w") as history_file:
+            json.dump(last_hundred_items, history_file)
+
+    def _load_history_from_file(self) -> None:
+        history_file_path = self._get_history_file_path()
+
+        if os.path.exists(history_file_path):
+            with open(history_file_path, "r") as history_file:
+                saved_history = typed.checked_cast_generics(list[int], json.load(history_file))
+                self.card_history = [CardId(card_id) for card_id in saved_history]
+                self._reset_position()
 
     def on_card_shown(self, html: str, card: Card, _: str) -> str:
         if self.is_navigating:
@@ -40,6 +68,9 @@ class CardHistoryNavigator:
 
         self.card_history.append(card.id)
         self._reset_position()
+
+        # Save history to file
+        self._save_last_hundred_items_to_file()
 
         return html
 

@@ -16,7 +16,7 @@ def checked_cast(cls: type[CastT], instance: object) -> CastT:
     return instance
 
 def checked_cast_generics(cls: type[CastT], instance: object) -> CastT:
-    """ Runtime-check an object for a specific type and return it cast as such """
+    """ Runtime-check an object for a specific generic type and return it cast as such """
     if not is_bearable(instance, cls):
         msg = f"{repr(instance)}: expected {cls.__name__}, not {instance.__class__.__name__}"
         raise TypeError(msg)
