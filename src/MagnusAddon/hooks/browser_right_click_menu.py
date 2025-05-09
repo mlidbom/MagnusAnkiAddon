@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import QMenu
 from aqt import gui_hooks
 from ankiutils import app
 from hooks import shortcutfinger
-from hooks.right_click_menu import build_note_menu
+from hooks.right_click_menu import build_right_click_menu
 from note import queue_manager
 from typing import Sequence
 from anki.cards import Card, CardId
