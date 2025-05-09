@@ -15,7 +15,8 @@ libraries_to_copy = [
     'pyperclip',
     'beartype',
     'jamdict', 'jamdict_data', 'puchikarui', 'chirptext',
-    'pykakasi', 'jaconv', 'deprecated'
+    'pykakasi', 'jaconv', 'deprecated',
+    'romkan'
     ]
 
 # Create the target directory if it doesn't exist
