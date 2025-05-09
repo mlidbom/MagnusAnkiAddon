@@ -8,8 +8,8 @@ from aqt import gui_hooks
 from aqt.browser.previewer import Previewer
 from aqt.webview import AnkiWebView, AnkiWebViewKind
 
-from ankiutils import query_builder, search_executor
-from ankiutils.app import main_window
+from ankiutils import query_builder, search_executor, ui_utils
+from ankiutils.app import main_window, ui_utils
 from batches import local_note_updater
 from hooks import right_click_menu_note_radical, right_click_menu_note_kanji, right_click_menu_note_vocab, right_click_menu_note_sentence
 from hooks.right_click_menu_search import setup_anki_open_menu, setup_web_search_menu
@@ -25,49 +25,10 @@ from typing import Optional
 from hooks import shortcutfinger
 
 def build_right_click_menu(view: AnkiWebView, root_menu: QMenu) -> None:
-    def get_note() -> Optional[JPNote]:
-        inner_note: Optional[Note]
-
-        if view.kind == AnkiWebViewKind.MAIN:
-            card = main_window().reviewer.card
-            if card:
-                inner_note = non_optional(main_window().reviewer.card).note()
-            else:
-                return None
-        elif view.kind == AnkiWebViewKind.EDITOR:
-            # noinspection PyProtectedMember
-            editor = checked_cast(Editor, view._bridge_context)
-            if not editor.card: return None
-            card = non_optional(editor.card)
-            inner_note = non_optional(card.note())
-        elif view.kind == AnkiWebViewKind.PREVIEWER:
-            inner_note = non_optional([window for window in main_window().app.topLevelWidgets() if isinstance(window, Previewer)][0].card()).note()
-        elif view.kind == AnkiWebViewKind.CARD_LAYOUT:
-            inner_note = non_optional([window for window in main_window().app.topLevelWidgets() if isinstance(window, CardLayout)][0].note)
-        else:
-            return None
-
-        return JPNote.note_from_note(inner_note)
-
-    def build_create_menu(create_menu: QMenu, to_create: str) -> None:
-        create_vocab_note_action(create_menu, shortcutfinger.home1(f"vocab"), lambda _string=to_create: VocabNote.create_with_dictionary(_string))  # type: ignore
-        create_note_action(create_menu, shortcutfinger.home2(f"sentence"), lambda _word=to_create: SentenceNote.create(_word))  # type: ignore
-        create_note_action(create_menu, shortcutfinger.home3(f"kanji"), lambda _word=to_create: KanjiNote.create(_word, "TODO", "", ""))  # type: ignore
-
-    def build_string_menu(menu: QMenu, string: str) -> None:
-        menu.addSeparator()
-        # todo: several fingers blocked by actions that may be added by the code below that passes this menu to the setup_note_menu function.
-        # We probably want to change this somehow to remove the risk of collisions
-        build_matching_note_menu(shortcutfinger.home4("Notes"), menu, string)
-        setup_anki_open_menu(non_optional(menu.addMenu(shortcutfinger.up1("Open in Anki"))), lambda menu_string_=string: menu_string_)  # type: ignore
-        setup_web_search_menu(non_optional(menu.addMenu(shortcutfinger.down1("Search Web"))), lambda menu_string_=string: menu_string_)  # type: ignore
-        build_create_menu(non_optional(menu.addMenu(shortcutfinger.down2(f"Create: {string}"))), string)
-        add_ui_action(menu, "remove from sentence exclusions", lambda _string=string: local_note_updater.clean_sentence_excluded_word(_string))  # type: ignore
-
     selection = non_optional(view.page()).selectedText().strip()
     clipboard = pyperclip.paste().strip()
 
-    note = get_note()
+    note = ui_utils.get_note_from_web_view(view)
 
     string_menus: list[tuple[QMenu, str]] = []
     if selection:
@@ -96,20 +57,35 @@ def build_note_menu(note_menu: QMenu, note: JPNote, string_menus: list[tuple[QMe
 
     build_note_actions_menu(non_optional(note_menu.addMenu(shortcutfinger.home4("Note actions"))), note)
 
-def build_matching_note_menu(menu_title: str, string_menu: QMenu, search_string: str) -> None:
-    from ankiutils import app
-    vocabs = app.col().vocab.with_question(search_string)
-    sentences = app.col().sentences.with_question(search_string)
-    kanjis = app.col().kanji.with_any_kanji_in([search_string]) if len(search_string) == 1 else []
+def build_string_menu(menu: QMenu, string: str) -> None:
+    def build_create_menu(create_menu: QMenu, to_create: str) -> None:
+        create_vocab_note_action(create_menu, shortcutfinger.home1(f"vocab"), lambda _string=to_create: VocabNote.create_with_dictionary(_string))  # type: ignore
+        create_note_action(create_menu, shortcutfinger.home2(f"sentence"), lambda _word=to_create: SentenceNote.create(_word))  # type: ignore
+        create_note_action(create_menu, shortcutfinger.home3(f"kanji"), lambda _word=to_create: KanjiNote.create(_word, "TODO", "", ""))  # type: ignore
 
-    if any(vocabs) or any(sentences) or any(kanjis):
-        note_menu = non_optional(string_menu.addMenu(menu_title))
-        if any(vocabs):
-            build_note_actions_menu(non_optional(note_menu.addMenu(shortcutfinger.home1("Vocab Actions"))), vocabs[0])
-        if any(sentences):
-            build_note_actions_menu(non_optional(note_menu.addMenu(shortcutfinger.home2("Sentence Actions"))), sentences[0])
-        if any(kanjis):
-            build_note_actions_menu(non_optional(note_menu.addMenu(shortcutfinger.home3("Kanji Actions"))), kanjis[0])
+    def build_matching_note_menu(menu_title: str, string_menu: QMenu, search_string: str) -> None:
+        from ankiutils import app
+        vocabs = app.col().vocab.with_question(search_string)
+        sentences = app.col().sentences.with_question(search_string)
+        kanjis = app.col().kanji.with_any_kanji_in([search_string]) if len(search_string) == 1 else []
+
+        if any(vocabs) or any(sentences) or any(kanjis):
+            note_menu = non_optional(string_menu.addMenu(menu_title))
+            if any(vocabs):
+                build_note_actions_menu(non_optional(note_menu.addMenu(shortcutfinger.home1("Vocab Actions"))), vocabs[0])
+            if any(sentences):
+                build_note_actions_menu(non_optional(note_menu.addMenu(shortcutfinger.home2("Sentence Actions"))), sentences[0])
+            if any(kanjis):
+                build_note_actions_menu(non_optional(note_menu.addMenu(shortcutfinger.home3("Kanji Actions"))), kanjis[0])
+
+    menu.addSeparator()
+    # todo: several fingers blocked by actions that may be added by the code below that passes this menu to the setup_note_menu function.
+    # We probably want to change this somehow to remove the risk of collisions
+    build_matching_note_menu(shortcutfinger.home4("Notes"), menu, string)
+    setup_anki_open_menu(non_optional(menu.addMenu(shortcutfinger.up1("Open in Anki"))), lambda menu_string_=string: menu_string_)  # type: ignore
+    setup_web_search_menu(non_optional(menu.addMenu(shortcutfinger.down1("Search Web"))), lambda menu_string_=string: menu_string_)  # type: ignore
+    build_create_menu(non_optional(menu.addMenu(shortcutfinger.down2(f"Create: {string}"))), string)
+    add_ui_action(menu, "remove from sentence exclusions", lambda _string=string: local_note_updater.clean_sentence_excluded_word(_string))  # type: ignore
 
 def build_note_actions_menu(note_actions_menu: QMenu, note: JPNote) -> None:
     note_actions_menu.addAction(shortcutfinger.home1("Open"), search_executor.lookup_promise(lambda: query_builder.notes_lookup([note])))

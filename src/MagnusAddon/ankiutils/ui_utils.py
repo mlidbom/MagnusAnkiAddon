@@ -1,5 +1,13 @@
-from typing import Callable
+from __future__ import annotations
+from typing import Callable, Optional, TYPE_CHECKING
 
+from aqt.editor import Editor
+
+if TYPE_CHECKING:
+    from anki.notes import Note
+    from note.jpnote import JPNote
+
+from aqt.webview import AnkiWebView, AnkiWebViewKind
 import aqt
 from aqt import AnkiQt  # type: ignore
 from aqt.browser import Browser  # type: ignore
@@ -10,11 +18,13 @@ from aqt.utils import tooltip
 
 from ankiutils.audio_suppressor import audio_suppressor
 from ankiutils.ui_utils_interface import IUIUtils
+
 from sysutils import timeutil
-from sysutils.typed import non_optional
+from sysutils.typed import checked_cast, non_optional
 
 _ANSWER_DISPLAY_TYPES = {'reviewAnswer', 'previewAnswer', 'clayoutAnswer'}
 
+def main_window() -> AnkiQt: return non_optional(aqt.mw)
 def is_displaytype_displaying_answer(display_type: str) -> bool:
     return display_type in _ANSWER_DISPLAY_TYPES
 
@@ -23,6 +33,30 @@ def is_displaytype_displaying_review_question(display_type: str) -> bool:
 
 def is_displaytype_displaying_review_answer(display_type: str) -> bool:
     return display_type == "reviewAnswer"
+
+def get_note_from_web_view(view: AnkiWebView) -> Optional[JPNote]:
+    inner_note: Optional[Note]
+
+    if view.kind == AnkiWebViewKind.MAIN:
+        card = main_window().reviewer.card
+        if card:
+            inner_note = non_optional(main_window().reviewer.card).note()
+        else:
+            return None
+    elif view.kind == AnkiWebViewKind.EDITOR:
+        # noinspection PyProtectedMember
+        editor = checked_cast(Editor, view._bridge_context)
+        if not editor.card: return None
+        card = non_optional(editor.card)
+        inner_note = non_optional(card.note())
+    elif view.kind == AnkiWebViewKind.PREVIEWER:
+        inner_note = non_optional([window for window in main_window().app.topLevelWidgets() if isinstance(window, Previewer)][0].card()).note()
+    elif view.kind == AnkiWebViewKind.CARD_LAYOUT:
+        inner_note = non_optional([window for window in main_window().app.topLevelWidgets() if isinstance(window, CardLayout)][0].note)
+    else:
+        return None
+
+    return JPNote.note_from_note(inner_note)
 
 class UIUtils(IUIUtils):
     def __init__(self, mw: AnkiQt):
