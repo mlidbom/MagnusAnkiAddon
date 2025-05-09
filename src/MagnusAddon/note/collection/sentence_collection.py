@@ -55,7 +55,7 @@ class SentenceCollection:
     def with_vocab(self, vocab_note: VocabNote) -> list[SentenceNote]:
         matches = ex_sequence.remove_duplicates(ex_sequence.flatten([self._cache.with_vocab_form(form) for form in vocab_note.get_forms()]))
         question = vocab_note.get_question()
-        return [match for match in matches if question not in match._configuration.incorrect_matches_words()]
+        return [match for match in matches if question not in match.configuration.incorrect_matches_words()]
 
     def with_vocab_owned_form(self, vocab_note: VocabNote) -> list[SentenceNote]:
         from ankiutils import app
@@ -67,7 +67,7 @@ class SentenceCollection:
 
         matches = ex_sequence.remove_duplicates(ex_sequence.flatten([self._cache.with_vocab_form(form) for form in owned_forms]))
         question = vocab_note.get_question()
-        return [match for match in matches if question not in match._configuration.incorrect_matches_words()]
+        return [match for match in matches if question not in match.configuration.incorrect_matches_words()]
 
     def with_form(self, form:str) -> list[SentenceNote]: return self._cache.with_vocab_form(form)
 

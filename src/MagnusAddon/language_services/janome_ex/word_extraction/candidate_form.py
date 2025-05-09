@@ -111,6 +111,9 @@ class CandidateForm:
 
         return False
 
+    def to_exclusion(self) -> WordExclusion:
+        return WordExclusion(self.form, self.start_index)
+
 
     def __repr__(self) -> str:
         return f"""CandidateForm: {self.form}, ivc:{self.is_valid_candidate()}, iw:{self.is_word} ie:{self.is_excluded_by_config}""".replace(newline, "")

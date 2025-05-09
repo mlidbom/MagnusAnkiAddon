@@ -69,9 +69,10 @@ class CachingSentenceConfigurationField:
     def incorrect_matches(self) -> list[WordExclusion]: return self._value.instance().incorrect_matches
     def incorrect_matches_words(self) -> set[str]: return self._value.instance().incorrect_matches_words()
 
-    def remove_higlighted_word(self, word: str) -> None:
+    def remove_highlighted_word(self, word: str) -> None:
         if word in self.highlighted_words():
             self.highlighted_words().remove(word)
+        self._save()
 
     def set_incorrect_matches(self, exclusions: set[WordExclusion]) -> None:
         self._value.instance().incorrect_matches = sorted(exclusions, key=lambda x: x.index)
@@ -84,6 +85,25 @@ class CachingSentenceConfigurationField:
     def reset_highlighted_words(self) -> None: self.set_highlighted_words([])
 
     def reset_incorrect_matches(self) -> None: self.set_incorrect_matches(set())
+
+    def add_incorrect_match(self, vocab: str) -> None:
+        self._value.instance().incorrect_matches.append(WordExclusion.from_string(vocab))
+        self._save()
+
+    def position_highlighted_word(self, vocab: str, index: int = -1) -> None:
+        vocab = vocab.strip()
+        self.remove_highlighted_word(vocab)
+        if index == -1:
+            self.highlighted_words().append(vocab)
+        else:
+            self.highlighted_words().insert(index, vocab)
+        self._save()
+
+
+    def remove_incorrect_match(self, exclusion: WordExclusion) -> None:
+        if exclusion in self.incorrect_matches():
+            self.incorrect_matches().remove(exclusion)
+        self._save()
 
     def parsing_result(self) -> ParsingResult: return self._value.instance().parsing_result
     def set_parsing_result(self, analysis: TextAnalysis) -> None:
