@@ -2,7 +2,6 @@ from __future__ import annotations
 from typing import Optional, TYPE_CHECKING
 
 from language_services.janome_ex.word_extraction.candidate_form import CandidateForm
-from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from note.notefields.string_note_field import AudioField, FallbackStringField, ReadOnlyNewlineSeparatedValuesField, StringField, StripHtmlOnReadStringField
 from note.sentencenote_configuration import CachingSentenceConfigurationField, ParsingResult
 
@@ -38,13 +37,8 @@ class SentenceNote(JPNote):
     def get_question(self) -> str: return self.question.get()
     def get_answer(self) -> str: return self.answer.get()
 
-    def _set_user_extra_vocab(self, extra: list[str]) -> None: return self.set_field(SentenceNoteFields.user_extra_vocab, newline.join(extra))
-    def position_extra_vocab(self, vocab: str, index:int = -1) -> None:
-        self.configuration.position_highlighted_word(vocab, index)
-
     def is_studying_read(self) -> bool: return self.is_studying(NoteFields.SentencesNoteType.Card.Reading)
     def is_studying_listening(self) -> bool: return self.is_studying(NoteFields.SentencesNoteType.Card.Listening)
-
 
     def get_valid_parsed_non_child_words_strings(self) -> list[str]:
         return [w.form for w in self.get_valid_parsed_non_child_words()]
@@ -125,7 +119,8 @@ class SentenceNote(JPNote):
 
         if highlighted_vocab:
             for vocab in highlighted_vocab:
-                note.position_extra_vocab(vocab)
+                index = -1
+                note.configuration.position_highlighted_word(vocab, index)
 
         if tags:
             for tag in tags:
