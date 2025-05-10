@@ -1,6 +1,7 @@
 from sysutils import typed
 from sysutils.ex_str import full_width_space
 import pykakasi
+# noinspection PyPackageRequirements
 import romkan  # type: ignore
 
 def pad_to_length(value: str, target_length: int) -> str:
