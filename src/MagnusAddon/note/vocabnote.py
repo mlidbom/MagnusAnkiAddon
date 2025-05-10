@@ -73,7 +73,6 @@ class VocabNote(KanaVocabNote):
         self.cloner = VocabCloner(self)
         self.user_mnemonic = StringField(self, NoteFields.Vocab.Mnemonic__)
 
-
     def __repr__(self) -> str: return f"""{self.get_question()}"""
 
     def set_kanji(self, value: str) -> None: self.set_field(NoteFields.Vocab.Kanji, value)
@@ -443,24 +442,22 @@ class VocabNote(KanaVocabNote):
     def is_question_overrides_form(self) -> bool: return self.has_tag(Mine.Tags.question_overrides_form)
 
     def auto_generate_compounds(self) -> None:
+        from ankiutils import app
         from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
         analysis = TextAnalysis(self.get_question(), {WordExclusion(form) for form in self.get_forms()})
-        compound_parts_from_analysis = [a.form for a in analysis.display_words if a.form not in self.get_forms()]
-        if compound_parts_from_analysis:
-            self.set_user_compounds(compound_parts_from_analysis)
-        else:  # time to brute force it
-            from ankiutils import app
+        compound_parts = [a.form for a in analysis.display_words if a.form not in self.get_forms()]
+        if not len(compound_parts) > 1:#time to brute force it
             word = self.get_question()
             all_substrings = [word[i:j] for i in range(len(word)) for j in range(i + 1, len(word) + 1) if word[i:j] != word]
             all_word_substrings = [w for w in all_substrings if DictLookup.is_dictionary_or_collection_word(w)]
-            only_the_largest_segments = [segment for segment in all_word_substrings if not any(parent for parent in all_word_substrings if segment in parent and parent != segment)]
+            compound_parts = [segment for segment in all_word_substrings if not any(parent for parent in all_word_substrings if segment in parent and parent != segment)]
 
-            segments_missing_vocab = [segment for segment in only_the_largest_segments if not app.col().vocab.is_word(segment)]
-            for missing in segments_missing_vocab:
-                created = VocabNote.create_with_dictionary(missing)
-                created.suspend_all_cards()
+        segments_missing_vocab = [segment for segment in compound_parts if not app.col().vocab.is_word(segment)]
+        for missing in segments_missing_vocab:
+            created = VocabNote.create_with_dictionary(missing)
+            created.suspend_all_cards()
 
-            self.set_user_compounds(only_the_largest_segments)
+        self.set_user_compounds(compound_parts)
 
-    def set_user_mnemonic(self, mnemonic:str) -> None:
+    def set_user_mnemonic(self, mnemonic: str) -> None:
         self.user_mnemonic.set(mnemonic)
