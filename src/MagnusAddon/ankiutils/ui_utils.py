@@ -1,5 +1,8 @@
 from __future__ import annotations
 from typing import Callable, Optional, TYPE_CHECKING
+
+from anki.cards import Card
+
 if TYPE_CHECKING:
     from anki.notes import Note
     from aqt.clayout import CardLayout
@@ -108,3 +111,6 @@ class UIUtils(IUIUtils):
             browser.onTogglePreview()
         else:
             browser._previewer.activateWindow() # noqa
+
+def try_get_card_being_reviewed() -> Card | None:
+    return main_window().reviewer.card
