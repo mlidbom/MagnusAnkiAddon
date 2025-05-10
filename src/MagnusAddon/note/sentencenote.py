@@ -26,9 +26,7 @@ class SentenceNote(JPNote):
         self._screenshot = StringField(self, SentenceNoteFields.screenshot)
         self.audio = AudioField(self, SentenceNoteFields.audio)
         self._user_answer = StringField(self, SentenceNoteFields.user_answer)
-        self._user_excluded_vocab = ReadOnlyNewlineSeparatedValuesField(self, SentenceNoteFields.user_excluded_vocab)
         self.configuration:CachingSentenceConfigurationField = CachingSentenceConfigurationField(self)
-
 
     def parsing_result(self) -> ParsingResult: return self.configuration.parsing_result()
 
@@ -68,10 +66,6 @@ class SentenceNote(JPNote):
         self.update_parsed_words()
         self.set_field(SentenceNoteFields.active_answer, self.get_answer())
         self.set_field(SentenceNoteFields.active_question, self.get_question())
-
-        #todo: remove this temporary migration hack
-        for exclusion in self._user_excluded_vocab.get():
-            self.configuration.add_incorrect_match(exclusion)
 
     def update_parsed_words(self, force:bool = False) -> None:
         from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
