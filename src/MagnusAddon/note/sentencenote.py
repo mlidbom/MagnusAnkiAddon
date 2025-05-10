@@ -52,7 +52,7 @@ class SentenceNote(JPNote):
         kanji = set(self.collection.kanji.with_any_kanji_in(self.extract_kanji()))
         return highlighted | valid_parsed_roots | kanji
 
-    def get_user_highlighted_vocab(self) -> list[str]: return ex_str.extract_newline_separated_values(self.get_field(SentenceNoteFields.user_extra_vocab))
+    def get_user_highlighted_vocab(self) -> list[str]: return self.configuration.highlighted_words()
 
     def parse_words_from_expression(self) -> list[ExtractedWord]:
         from language_services.janome_ex.word_extraction.word_extractor import jn_extractor
