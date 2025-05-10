@@ -9,7 +9,8 @@ from aqt.webview import AnkiWebView
 from ankiutils import query_builder, search_executor, ui_utils
 from batches import local_note_updater
 from hooks import right_click_menu_note_radical, right_click_menu_note_kanji, right_click_menu_note_vocab, right_click_menu_note_sentence
-from hooks.right_click_menu_search import build_open_in_anki_menu, build_web_search_menu
+from hooks.right_click_menu_web_search import build_web_search_menu
+from hooks.right_click_menu_open_in_anki import build_open_in_anki_menu
 from hooks.right_click_menu_utils import add_ui_action, create_note_action, create_vocab_note_action
 from note.jpnote import JPNote
 from note.kanjinote import KanjiNote

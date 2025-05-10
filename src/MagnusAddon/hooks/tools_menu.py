@@ -11,7 +11,8 @@ from configuration.configuration import show_japanese_options
 from configuration.configuration_value import ConfigurationValueBool
 from configuration.readings_mapping_dialog import show_readings_mappings
 from hooks import shortcutfinger
-from hooks.right_click_menu_search import build_open_in_anki_menu, build_web_search_menu
+from hooks.right_click_menu_web_search import build_web_search_menu
+from hooks.right_click_menu_open_in_anki import build_open_in_anki_menu
 from note.jpnote import JPNote
 from sysutils.typed import non_optional
 from wanikani import note_importer

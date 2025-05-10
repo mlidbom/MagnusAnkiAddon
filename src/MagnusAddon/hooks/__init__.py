@@ -3,7 +3,7 @@ from . import (
     editor_buttons,
     right_click_menu,
     right_click_menu_utils,
-    right_click_menu_search,
+    right_click_menu_web_search,
     right_click_menu_note_sentence,
     right_click_menu_note_vocab,
     right_click_menu_note_radical,
