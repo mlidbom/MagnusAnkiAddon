@@ -443,7 +443,7 @@ class VocabNote(KanaVocabNote):
 
     def auto_generate_compounds(self) -> None:
         from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
-        analysis = TextAnalysis(self.get_question(), [WordExclusion(form) for form in self.get_forms()])
+        analysis = TextAnalysis(self.get_question(), {WordExclusion(form) for form in self.get_forms()})
         if analysis.display_words:
             self.set_user_compounds([a.form for a in analysis.display_words if a.form not in self.get_forms()])
         else:  # time to brute force it

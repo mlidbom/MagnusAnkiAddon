@@ -48,7 +48,7 @@ def setup_empty_collection() -> Generator[None, None, None]:
     ("「コーヒーはいかがですか？」「いえ、結構です。お構いなく。」", ['コーヒー', 'は', 'いかが', 'ですか', 'です', 'か', 'いえる', 'いえ', '結構', 'です', 'お構いなく'])
 ])
 def test_identify_words(setup_collection_with_select_data: Any, sentence: str, expected_output: list[str]) -> None:
-    analysis = TextAnalysis(sentence, [])
+    analysis = TextAnalysis(sentence, set())
     root_words = [w.form for w in analysis.all_words]
     assert root_words == expected_output
 
@@ -61,7 +61,7 @@ def test_identify_words(setup_collection_with_select_data: Any, sentence: str, e
 def test_custom_vocab_words(setup_collection_with_select_data: Any, sentence: str, custom_words: list[str], expected_output: list[str]) -> None:
     insert_custom_words(custom_words)
 
-    analysis = TextAnalysis(sentence, [])
+    analysis = TextAnalysis(sentence, set())
     root_words = set([w.form for w in analysis.all_words])
     assert root_words == set(expected_output)
 
@@ -69,7 +69,7 @@ def test_ignores_noise_characters(setup_collection_with_select_data: Any) -> Non
     sentence = ". , : ; / | 。 、ー ? !"
     expected = {"ー"}
 
-    analysis = TextAnalysis(sentence, [])
+    analysis = TextAnalysis(sentence, set())
     words = set([w.form for w in analysis.all_words])
     assert words == expected
 
@@ -175,7 +175,7 @@ def test_potential_verb_splitting_without_vocab(setup_empty_collection:Any, sent
 
 def _run_assertions(sentence: str, custom_words: list[str], excluded: list[WordExclusion], expected_output: list[str], expected_display_output: list[str]) -> None:
     insert_custom_words(custom_words)
-    analysis = TextAnalysis(sentence, excluded)
+    analysis = TextAnalysis(sentence, set(excluded))
     root_words = [w.form for w in analysis.display_words]
     assert root_words == expected_output
     display_words_forms = [dw.parsed_form for dw in analysis.display_forms]
@@ -205,6 +205,6 @@ def insert_custom_words_with_excluded_forms(custom_words: list[list[str]]) -> No
 def test_custom_vocab_words_with_excluded_forms(setup_collection_with_select_data: Any, sentence: str, custom_words: list[list[str]], expected_output: list[str]) -> None:
     insert_custom_words_with_excluded_forms(custom_words)
 
-    analysis = TextAnalysis(sentence, [])
+    analysis = TextAnalysis(sentence, set())
     root_words = set([w.form for w in analysis.all_words])
     assert root_words == set(expected_output)

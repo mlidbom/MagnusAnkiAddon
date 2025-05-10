@@ -43,7 +43,7 @@ class SentenceNote(JPNote):
 
     def get_valid_parsed_non_child_words(self) -> list[CandidateForm]:
         from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
-        analysis = TextAnalysis(self.get_question(), list(self.configuration.incorrect_matches()))
+        analysis = TextAnalysis(self.get_question(), self.configuration.incorrect_matches())
         return analysis.display_words
 
     def get_direct_dependencies(self) -> set[JPNote]:
@@ -68,6 +68,10 @@ class SentenceNote(JPNote):
         self.update_parsed_words()
         self.set_field(SentenceNoteFields.active_answer, self.get_answer())
         self.set_field(SentenceNoteFields.active_question, self.get_question())
+
+        #todo: remove this temporary migration hack
+        for exclusion in self._user_excluded_vocab.get():
+            self.configuration.add_incorrect_match(exclusion)
 
     def update_parsed_words(self, force:bool = False) -> None:
         from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis

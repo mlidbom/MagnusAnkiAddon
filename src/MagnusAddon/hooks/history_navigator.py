@@ -23,7 +23,9 @@ class CardHistoryNavigator:
 
         def bind_shortcuts(widget: QWidget) -> None:
             self._reset_position()
+            # noinspection PyUnresolvedReferences
             QShortcut(QKeySequence("Alt+Left"), widget).activated.connect(self.navigate_back)
+            # noinspection PyUnresolvedReferences
             QShortcut(QKeySequence("Alt+Right"), widget).activated.connect(self.navigate_forward)
 
         bind_shortcuts(mw)

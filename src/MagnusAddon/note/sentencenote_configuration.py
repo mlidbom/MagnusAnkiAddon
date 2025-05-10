@@ -45,7 +45,7 @@ class ParsingResult:
 class SentenceConfiguration:
     def __init__(self, highlighted_words: list[str], incorrect_matches: list[WordExclusion], parsing_result: ParsingResult) -> None:
         self.highlighted_words: list[str] = highlighted_words
-        self.incorrect_matches: list[WordExclusion] = incorrect_matches
+        self.incorrect_matches: set[WordExclusion] = set(incorrect_matches)
         self.parsing_result: ParsingResult = parsing_result
 
     def to_json(self) -> str:
@@ -78,7 +78,7 @@ class CachingSentenceConfigurationField:
         self._value: Lazy[SentenceConfiguration] = Lazy(lambda: SentenceConfiguration.from_json(self._field.get()))
 
     def highlighted_words(self) -> list[str]: return self._value.instance().highlighted_words
-    def incorrect_matches(self) -> list[WordExclusion]: return self._value.instance().incorrect_matches
+    def incorrect_matches(self) -> set[WordExclusion]: return self._value.instance().incorrect_matches
     def incorrect_matches_words(self) -> set[str]: return self._value.instance().incorrect_matches_words()
 
     def remove_highlighted_word(self, word: str) -> None:
@@ -87,7 +87,7 @@ class CachingSentenceConfigurationField:
         self._save()
 
     def _set_incorrect_matches(self, exclusions: set[WordExclusion]) -> None:
-        self._value.instance().incorrect_matches = sorted(exclusions, key=lambda x: x.index)
+        self._value.instance().incorrect_matches = exclusions
         self._save()
 
     def _set_highlighted_words(self, words: list[str]) -> None:
@@ -99,7 +99,7 @@ class CachingSentenceConfigurationField:
     def reset_incorrect_matches(self) -> None: self._set_incorrect_matches(set())
 
     def add_incorrect_match(self, vocab: str) -> None:
-        self._value.instance().incorrect_matches.append(WordExclusion.from_string(vocab))
+        self._value.instance().incorrect_matches.add(WordExclusion.from_string(vocab))
         self._save()
 
     def position_highlighted_word(self, vocab: str, index: int = -1) -> None:

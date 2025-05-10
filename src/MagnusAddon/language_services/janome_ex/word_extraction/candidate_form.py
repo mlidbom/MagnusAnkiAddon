@@ -20,7 +20,7 @@ class CandidateForm:
         from language_services.jamdict_ex.dict_lookup import DictLookup
 
         self.start_index:int = candidate.locations[0].character_start_index
-        self.configuration_exclusions:list[WordExclusion] = candidate.analysis.exclusions
+        self.configuration_exclusions:set[WordExclusion] = candidate.analysis.exclusions
         self.candidate:CandidateWord = candidate
         self.is_surface:bool = is_surface
         self.form:str = form

@@ -16,7 +16,7 @@ _tokenizer = JNTokenizer()
 class TextAnalysis:
     version = "text_analysis_0.1"
 
-    def __init__(self, sentence:str, exclusions:list[WordExclusion]):
+    def __init__(self, sentence:str, exclusions:set[WordExclusion]):
         self.text = sentence
         self.exclusions = exclusions
         self.tokens:list[ProcessedToken] = _tokenizer.tokenize(sentence).pre_process()
