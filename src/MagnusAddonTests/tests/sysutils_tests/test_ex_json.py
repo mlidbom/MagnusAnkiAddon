@@ -44,11 +44,11 @@ def test_round_object_list() -> None:
 def test_roundtrip_parsing_result() -> None:
     from note.sentencenote_configuration import ParsedWord, ParsingResult
 
-    parsingResult = ParsingResult([ParsedWord("foo"), ParsedWord("bar")], "foo bar", "1.0")
-    json = ex_json.dict_to_json(parsingResult.to_dict())
+    parsing_result = ParsingResult([ParsedWord("foo"), ParsedWord("bar")], "foo bar", "1.0")
+    json = ex_json.dict_to_json(parsing_result.to_dict())
     round_tripped_result = ParsingResult.from_json(ex_json.json_to_dict(json))
 
-    assert [w.word for w in parsingResult.parsed_words] == [w.word for w in round_tripped_result.parsed_words]
+    assert [w.word for w in parsing_result.parsed_words] == [w.word for w in round_tripped_result.parsed_words]
 
 def test_roundtrip_configuration() -> None:
     from note.sentencenote_configuration import ParsedWord, ParsingResult, SentenceConfiguration

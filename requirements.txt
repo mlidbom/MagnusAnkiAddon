@@ -18,3 +18,4 @@ pyperclip~=1.9.0
 typing_extensions
 PyQt6-sip~=13.8.0
 pykakasi~=2.3.0
+python-romkan-ng~=0.3.0
