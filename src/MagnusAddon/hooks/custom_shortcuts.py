@@ -12,6 +12,7 @@ from ankiutils import app, query_builder, search_executor, ui_utils
 from note.jpnote import JPNote
 from note.kanjinote import KanjiNote
 from note.sentencenote import SentenceNote
+from note.vocabnote import VocabNote
 from sysutils import typed
 
 
@@ -22,6 +23,9 @@ def init() -> None:
             note = JPNote.note_from_card(card_being_reviewed)
             if isinstance(note, KanjiNote):
                 note.set_user_mnemonic("")
+                app.get_ui_utils().refresh()
+            if isinstance(note, VocabNote):
+                note.user_mnemonic.set("")
                 app.get_ui_utils().refresh()
 
     def null_op() -> None: pass

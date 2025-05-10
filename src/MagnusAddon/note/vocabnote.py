@@ -12,6 +12,7 @@ from language_services.jamdict_ex.priority_spec import PrioritySpec
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from note.jpnote import JPNote
 from note.kanavocabnote import KanaVocabNote
+from note.notefields.string_note_field import StringField
 from note.vocabnote_cloner import VocabCloner
 from sysutils import ex_sequence, kana_utils
 from sysutils import ex_str
@@ -70,6 +71,8 @@ class VocabNote(KanaVocabNote):
     def __init__(self, note: Note):
         super().__init__(note)
         self.cloner = VocabCloner(self)
+        self.user_mnemonic = StringField(self, NoteFields.Vocab.Mnemonic__)
+
 
     def __repr__(self) -> str: return f"""{self.get_question()}"""
 
@@ -179,8 +182,6 @@ class VocabNote(KanaVocabNote):
         from language_services.jamdict_ex.dict_lookup import DictLookup
         lookup = DictLookup.try_lookup_vocab_word_or_name(self)
         return lookup.priority_spec() if lookup else PrioritySpec(set())
-
-    def get_mnemonics_override(self) -> str: return self.get_field(NoteFields.Vocab.Mnemonic__)
 
     def get_primary_audio(self) -> str:
         if self.get_audio_male():
@@ -459,3 +460,6 @@ class VocabNote(KanaVocabNote):
                 created.suspend_all_cards()
 
             self.set_user_compounds(only_the_largest_segments)
+
+    def set_user_mnemonic(self, param):
+        pass

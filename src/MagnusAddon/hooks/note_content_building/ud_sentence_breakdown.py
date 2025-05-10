@@ -34,7 +34,7 @@ def _build_vocab_list(word_to_show: list[str], excluded_words:set[str], title:st
                                 {vocab.get_meta_tags_html(include_extended_sentence_statistics)}
                                 <span class="vocabAnswer">{vocab.get_answer()}</span>
                             </div>
-                            {f'''<div class="sentenceVocabEntryMnemonic">{ vocab.get_mnemonics_override() }</div>''' if include_mnemonics and vocab.get_mnemonics_override() and vocab.get_mnemonics_override() != '-' else '' }
+                            {f'''<div class="sentenceVocabEntryMnemonic">{vocab.user_mnemonic.get()}</div>''' if include_mnemonics and vocab.user_mnemonic.get() and vocab.user_mnemonic.get() != '-' else '' }
                         </li>
                         """
         else:
