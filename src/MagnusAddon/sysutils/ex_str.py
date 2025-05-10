@@ -27,6 +27,9 @@ _html_bracket_pattern = re.compile('<.*?>|\[.*?\]') # noqa
 def strip_html_and_bracket_markup(string: str) -> str:
     return _html_bracket_pattern.sub('', string)
 
+def replace_html_and_bracket_markup_with(string: str, replacement:str) -> str:
+    return _html_bracket_pattern.sub(replacement, string)
+
 _html_pattern = re.compile('<.*?>|&nbsp;')
 def strip_html_markup(string: str) -> str:
     return _html_pattern.sub('', string)

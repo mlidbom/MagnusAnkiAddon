@@ -51,13 +51,20 @@ def build_string_menu(string_menu: QMenu, kanji: KanjiNote, menu_string: str) ->
             elif string in kanji.get_readings_kun():
                 add_ui_action(menu, title_factory("Make primary Kunyomi reading"), lambda: kanji.add_primary_kun_reading(string))
 
-    def build_add_menu(add_menu:QMenu) -> None:
+    def build_add_menu(add_menu: QMenu) -> None:
         add_ui_action(add_menu, shortcutfinger.home1("Similar meaning"), lambda _menu_string=menu_string: kanji.add_user_similar_meaning(_menu_string))  # type: ignore
         add_ui_action(add_menu, shortcutfinger.home2("Confused with"), lambda _menu_string=menu_string: kanji.add_related_confused_with(_menu_string))  # type: ignore
 
     build_highlighted_vocab_menu(non_optional(string_menu.addMenu(shortcutfinger.home1("Highlighted Vocab"))), menu_string)
     build_add_menu(non_optional(string_menu.addMenu(shortcutfinger.home2("Add"))))
-    add_primary_readings_actions(string_menu, shortcutfinger.home3,menu_string)
+    add_primary_readings_actions(string_menu, shortcutfinger.home3, menu_string)
 
 def format_kanji_meaning(meaning: str) -> str:
-    return ex_str.strip_html_and_bracket_markup(meaning.lower().replace(", ", "/").replace(" ", "-"))
+    return (ex_str.replace_html_and_bracket_markup_with(meaning, "|")
+            .lower()
+            .replace("||", "|")
+            .replace("||", "|")
+            .replace("||", "|")
+            .replace(", ", "|")
+            .replace(" ", "-")
+            .replace("-|-", " | "))
