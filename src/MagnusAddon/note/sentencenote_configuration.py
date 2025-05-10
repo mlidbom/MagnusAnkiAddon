@@ -86,17 +86,17 @@ class CachingSentenceConfigurationField:
             self.highlighted_words().remove(word)
         self._save()
 
-    def set_incorrect_matches(self, exclusions: set[WordExclusion]) -> None:
+    def _set_incorrect_matches(self, exclusions: set[WordExclusion]) -> None:
         self._value.instance().incorrect_matches = sorted(exclusions, key=lambda x: x.index)
         self._save()
 
-    def set_highlighted_words(self, words: list[str]) -> None:
+    def _set_highlighted_words(self, words: list[str]) -> None:
         self._value.instance().highlighted_words = words
         self._save()
 
-    def reset_highlighted_words(self) -> None: self.set_highlighted_words([])
+    def reset_highlighted_words(self) -> None: self._set_highlighted_words([])
 
-    def reset_incorrect_matches(self) -> None: self.set_incorrect_matches(set())
+    def reset_incorrect_matches(self) -> None: self._set_incorrect_matches(set())
 
     def add_incorrect_match(self, vocab: str) -> None:
         self._value.instance().incorrect_matches.append(WordExclusion.from_string(vocab))

@@ -114,8 +114,7 @@ class SentenceNote(JPNote):
 
         if highlighted_vocab:
             for vocab in highlighted_vocab:
-                index = -1
-                note.configuration.position_highlighted_word(vocab, index)
+                note.configuration.position_highlighted_word(vocab)
 
         if tags:
             for tag in tags:

@@ -30,6 +30,7 @@ def build_right_click_menu_webview_hook(view: AnkiWebView, root_menu: QMenu) -> 
     note = ui_utils.get_note_from_web_view(view)
     build_right_click_menu(root_menu, note, selection, clipboard)
 
+# noinspection PyPep8
 def build_right_click_menu(root_menu: QMenu, note: Optional[JPNote], selection: str, clipboard: str) -> None:
     selection_menu = non_optional(root_menu.addMenu(shortcutfinger.home1(f'''Selection: "{selection[:40]}"'''))) if selection else None
     clipboard_menu = non_optional(root_menu.addMenu(shortcutfinger.home2(f'''Clipboard: "{clipboard[:40]}"'''))) if clipboard else None

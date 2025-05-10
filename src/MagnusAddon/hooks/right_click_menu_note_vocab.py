@@ -126,8 +126,7 @@ def build_string_menu(string_menu: QMenu, vocab: VocabNote, menu_string:str) -> 
     def build_sentences_menu(sentence_menu: QMenu) -> None:
         def remove_highlight(_sentences: list[SentenceNote]) -> None:
             for _sentence in _sentences:
-                vocab1 = vocab.get_question()
-                _sentence.configuration.remove_highlighted_word(vocab1)
+                _sentence.configuration.remove_highlighted_word(vocab.get_question())
 
         def exclude(_sentences: list[SentenceNote]) -> None:
             for _sentence in _sentences:
