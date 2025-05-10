@@ -1,20 +1,11 @@
-from anki.cards import Card, CardId
-from aqt import mw, gui_hooks
+from aqt import mw
 from aqt.browser import Browser  # type: ignore
 from aqt.qt import QKeySequence, QShortcut
-from typing import List
-import json
-import os
 
-from PyQt6.QtWidgets import QWidget
-
-from ankiutils import app, query_builder, search_executor, ui_utils
+from ankiutils import app, ui_utils
 from note.jpnote import JPNote
 from note.kanjinote import KanjiNote
-from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
-from sysutils import typed
-
 
 def init() -> None:
     def null_op() -> None: pass
