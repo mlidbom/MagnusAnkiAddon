@@ -21,7 +21,6 @@ def build_note_menu(note_menu: QMenu, sentence: SentenceNote) -> None:
 
 def build_string_menu(string_menu: QMenu, sentence: SentenceNote, menu_string: str) -> None:
     build_highlighted_vocab_menu(non_optional(string_menu.addMenu(shortcutfinger.home1("Highlighted Vocab"))), sentence, menu_string)
-    build_highlighted_vocab_menu(non_optional(string_menu.addMenu(shortcutfinger.home2("Highlighted Vocab Separator"))), sentence, "-")
 
     potential_exclusion = WordExclusion.from_string(menu_string)
     current_words = sentence.get_valid_parsed_non_child_words()
@@ -32,8 +31,7 @@ def build_string_menu(string_menu: QMenu, sentence: SentenceNote, menu_string: s
         else:
             exclude_menu: QMenu = non_optional(string_menu.addMenu(shortcutfinger.home2("Exclude vocab")))
             for excluded_index, matched in enumerate(excluded):
-                vocab1 = matched.to_exclusion().as_string()
-                add_ui_action(exclude_menu, shortcutfinger.numpad_no_numbers(excluded_index, f"{matched.start_index}: {matched.word.word}"), lambda _matched=matched: sentence.configuration.add_incorrect_match(_vocab1))  # type: ignore
+                add_ui_action(exclude_menu, shortcutfinger.numpad_no_numbers(excluded_index, f"{matched.start_index}: {matched.word.word}"), lambda _matched=matched: sentence.configuration.add_incorrect_match(matched.to_exclusion().as_string()))  # type: ignore
     else:
         add_ui_action(string_menu, shortcutfinger.home2("Exclude vocab"), lambda _menu_string=menu_string: sentence.configuration.add_incorrect_match(_menu_string))  # type: ignore
 
@@ -46,6 +44,8 @@ def build_string_menu(string_menu: QMenu, sentence: SentenceNote, menu_string: s
             remove_exclution_menu: QMenu = non_optional(string_menu.addMenu(shortcutfinger.home3("Remove incorrect match")))
             for excluded_index, matched_exclusion in enumerate(covered_existing_exclusions):
                 add_ui_action(remove_exclution_menu, shortcutfinger.numpad_no_numbers(excluded_index, f"{matched_exclusion.index}:{matched_exclusion.word}"), lambda _matched_exclusion=matched_exclusion: sentence.configuration.remove_incorrect_match_string(_matched_exclusion.as_string()))  # type: ignore
+
+    build_highlighted_vocab_menu(non_optional(string_menu.addMenu(shortcutfinger.home4("Highlighted Vocab Separator"))), sentence, "-")
 
 def build_highlighted_vocab_menu(highlighted_vocab_menu: QMenu, sentence: SentenceNote, _vocab_to_add: str) -> None:
     for index, _vocab in enumerate(sentence.get_user_highlighted_vocab()):
