@@ -46,10 +46,11 @@ def build_web_search_menu(search_web_menu:QMenu, search_string:Callable[[],str])
 
     def set_up_lookup_menu(lookup_menu:QMenu) -> None:
         add_web_lookup(lookup_menu, shortcutfinger.home1("English: Merriam Webster"), u"https://www.merriam-webster.com/dictionary/%s")
-        add_web_lookup(lookup_menu, shortcutfinger.home2("Lookup: Takoboto"), u"https://takoboto.jp/?q=%s")
-        add_web_lookup(lookup_menu, shortcutfinger.home3("Lookup: Word Kanshudo"), u"https://www.kanshudo.com/searchw?q=%s")
+        add_web_lookup(lookup_menu, shortcutfinger.home2("Wiktionary"), u"https://en.wiktionary.org/wiki/%s")
+        add_web_lookup(lookup_menu, shortcutfinger.home3("Lookup: Takoboto"), u"https://takoboto.jp/?q=%s")
         add_web_lookup(lookup_menu, shortcutfinger.home4("Lookup: Jisho"), u"https://jisho.org/search/%s")
-        add_web_lookup(lookup_menu, shortcutfinger.down1("Lookup: Wanikani"), u"https://www.wanikani.com/search?query=%s")
+        add_web_lookup(lookup_menu, shortcutfinger.up1("Lookup: Wanikani"), u"https://www.wanikani.com/search?query=%s")
+        add_web_lookup(lookup_menu, shortcutfinger.down1("Lookup: Word Kanshudo"), u"https://www.kanshudo.com/searchw?q=%s")
 
     set_up_kanji_menu(non_optional(search_web_menu.addMenu(shortcutfinger.home1("Kanji"))))
     set_up_sentences_menu(non_optional(search_web_menu.addMenu(shortcutfinger.home2("Sentences"))))
