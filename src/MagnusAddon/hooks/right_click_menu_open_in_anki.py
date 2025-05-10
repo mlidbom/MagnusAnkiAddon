@@ -18,6 +18,7 @@ def build_open_in_anki_menu(open_in_anki_menu:QMenu, search_string:Callable[[],s
         add_lookup_action_lambda(kanji_menu, shortcutfinger.home2("By reading part"), lambda: query_builder.kanji_with_reading_part(search_string()))
         add_lookup_action_lambda(kanji_menu, shortcutfinger.home3("By reading exact"), lambda: query_builder.notes_lookup(list(app.col().kanji.with_reading(search_string()))))
         add_lookup_action_lambda(kanji_menu, shortcutfinger.home4("With radicals"), lambda: query_builder.kanji_with_radicals_in_string(search_string()))
+        add_lookup_action_lambda(kanji_menu, shortcutfinger.up1("With meaning"), lambda: query_builder.kanji_with_meaning(search_string()))
 
     def build_vocab_menu(vocab_menu:QMenu) -> None:
         add_lookup_action_lambda(vocab_menu, shortcutfinger.home1("form -"), lambda: query_builder.single_vocab_by_form_exact(search_string()))

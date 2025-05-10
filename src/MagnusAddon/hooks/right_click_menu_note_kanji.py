@@ -60,11 +60,18 @@ def build_string_menu(string_menu: QMenu, kanji: KanjiNote, menu_string: str) ->
     add_primary_readings_actions(string_menu, shortcutfinger.home3, menu_string)
 
 def format_kanji_meaning(meaning: str) -> str:
-    return (ex_str.replace_html_and_bracket_markup_with(meaning, "|")
-            .lower()
-            .replace("||", "|")
-            .replace("||", "|")
-            .replace("||", "|")
-            .replace(", ", "|")
-            .replace(" ", "-")
-            .replace("-|-", " | "))
+    val = (ex_str.replace_html_and_bracket_markup_with(meaning, "|")
+           .lower()
+           .replace("||", "|")
+           .replace("||", "|")
+           .replace("||", "|")
+           .replace(", ", "|")
+           .replace(" ", "-")
+           .replace("-|-", " | "))
+
+    if val.endswith("|"):
+        val = val[:-1]
+    if val.startswith("|"):
+        val = val[1:]
+
+    return val
