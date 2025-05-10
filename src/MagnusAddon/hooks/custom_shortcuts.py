@@ -17,6 +17,8 @@ from sysutils import typed
 
 
 def init() -> None:
+    def null_op() -> None: pass
+
     def remove_mnemonic() -> None:
         card_being_reviewed = ui_utils.try_get_card_being_reviewed()
         if card_being_reviewed:
@@ -28,9 +30,16 @@ def init() -> None:
                 note.user_mnemonic.set("")
                 app.get_ui_utils().refresh()
 
-    def null_op() -> None: pass
+    def generate_compound_parts() -> None:
+        card_being_reviewed = ui_utils.try_get_card_being_reviewed()
+        if card_being_reviewed:
+            note = JPNote.note_from_card(card_being_reviewed)
+            if isinstance(note, VocabNote):
+                note.auto_generate_compounds()
+                app.get_ui_utils().refresh()
 
     QShortcut(QKeySequence("0"), mw).activated.connect(remove_mnemonic)
+    QShortcut(QKeySequence("9"), mw).activated.connect(generate_compound_parts)
 
     for char in "u":#reset some pesky shortcuts constantly being accidentally triggered
         QShortcut(QKeySequence(char), mw).activated.connect(null_op)
