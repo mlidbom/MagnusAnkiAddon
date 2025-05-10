@@ -8,8 +8,6 @@ if TYPE_CHECKING:
 
 from typing import Any
 
-_f_word = 'word'
-_f_index = 'index'
 class WordExclusion:
     _separator = "####"
     _no_index = -1
@@ -51,8 +49,8 @@ class WordExclusion:
         return self.word == other.word and (self.index == WordExclusion._no_index or self.index == other.index)
 
     def to_dict(self) -> dict[str, Any]:
-        return {_f_word: self.word, _f_index: self.index}
+        return {'word': self.word, 'index': self.index}
 
     @classmethod
     def from_dict(cls, reader: JsonDictReader) -> 'WordExclusion':
-        return cls(word=reader.get_string(_f_word), index=reader.get_int(_f_word))
+        return cls(word=reader.get_string('word'), index=reader.get_int('index'))

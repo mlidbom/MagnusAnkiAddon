@@ -130,8 +130,7 @@ def build_string_menu(string_menu: QMenu, vocab: VocabNote, menu_string:str) -> 
 
         def exclude(_sentences: list[SentenceNote]) -> None:
             for _sentence in _sentences:
-                vocab1 = vocab.get_question()
-                _sentence.configuration.add_incorrect_match(vocab1)
+                _sentence.configuration.add_incorrect_match(vocab.get_question())
 
         sentence = sentences[0]
 

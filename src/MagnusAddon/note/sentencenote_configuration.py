@@ -55,19 +55,19 @@ class SentenceConfiguration:
 
     @classmethod
     def from_json(cls, json: str) -> SentenceConfiguration:
-        try:
-            reader = ex_json.json_to_dict(json) if json else None
-            highlighted_words: list[str] = reader.get_string_list('highlighted_words') if reader else []
-            incorrect_matches: list[WordExclusion] = \
-                [WordExclusion.from_dict(exclusion_data)
-                 for exclusion_data in reader.get_object_list('incorrect_matches')] if reader else []
+        # try:
+        reader = ex_json.json_to_dict(json) if json else None
+        highlighted_words: list[str] = reader.get_string_list('highlighted_words') if reader else []
+        incorrect_matches: list[WordExclusion] = \
+            [WordExclusion.from_dict(exclusion_data)
+             for exclusion_data in reader.get_object_list('incorrect_matches')] if reader else []
 
-            parsing_json_dict = reader.get_object_or_none('parsing_result') if reader else None
-            parsing_result: ParsingResult = ParsingResult.from_json(parsing_json_dict) if parsing_json_dict else ParsingResult.empty()
+        parsing_json_dict = reader.get_object_or_none('parsing_result') if reader else None
+        parsing_result: ParsingResult = ParsingResult.from_json(parsing_json_dict) if parsing_json_dict else ParsingResult.empty()
 
-            return cls(highlighted_words, incorrect_matches, parsing_result)
-        except: #todo: remove this ugly hack
-            return SentenceConfiguration([], [], ParsingResult.empty())
+        return cls(highlighted_words, incorrect_matches, parsing_result)
+        # except: #todo: remove this ugly hack
+        #     return SentenceConfiguration([], [], ParsingResult.empty())
 
     def incorrect_matches_words(self) -> set[str]:
         return {exclusion.word for exclusion in self.incorrect_matches}
@@ -109,6 +109,11 @@ class CachingSentenceConfigurationField:
             self.highlighted_words().append(vocab)
         else:
             self.highlighted_words().insert(index, vocab)
+        self._save()
+
+    def remove_incorrect_match_string(self, to_remove: str) -> None:
+        for exclusion in [ex for ex in self.incorrect_matches() if ex.word == to_remove]:
+            self.incorrect_matches().remove(exclusion)
         self._save()
 
     def remove_incorrect_match(self, exclusion: WordExclusion) -> None:
