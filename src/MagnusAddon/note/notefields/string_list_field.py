@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from note.jpnote import JPNote
-from note.notefields.string_note_field import StringField
+from note.notefields.string_field import StringField
 from sysutils import ex_str
 
 class StringListField:

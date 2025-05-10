@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import Any, TYPE_CHECKING
 
 from note.note_constants import SentenceNoteFields
-from note.notefields.string_note_field import StringField
+from note.notefields.string_field import StringField
 from sysutils import ex_json
 from sysutils.ex_json import JsonDictReader
 from sysutils.lazy import Lazy

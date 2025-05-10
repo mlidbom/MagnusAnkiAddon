@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import Optional, TYPE_CHECKING
 
 from language_services.janome_ex.word_extraction.candidate_form import CandidateForm
-from note.notefields.string_note_field import StringField
+from note.notefields.string_field import StringField
 from note.notefields.audio_field import AudioField
 from note.notefields.fallback_string_field import FallbackStringField
 from note.notefields.strip_html_on_read_string_field import StripHtmlOnReadStringField

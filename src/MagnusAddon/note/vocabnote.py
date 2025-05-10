@@ -12,7 +12,7 @@ from language_services.jamdict_ex.priority_spec import PrioritySpec
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from note.jpnote import JPNote
 from note.kanavocabnote import KanaVocabNote
-from note.notefields.string_note_field import StringField
+from note.notefields.string_field import StringField
 from note.vocabnote_cloner import VocabCloner
 from sysutils import ex_sequence, kana_utils
 from sysutils import ex_str
