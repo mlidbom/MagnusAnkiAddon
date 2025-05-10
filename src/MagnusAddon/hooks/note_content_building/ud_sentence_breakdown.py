@@ -103,7 +103,7 @@ def render_excluded_words(note: SentenceNote) -> str:
     return _build_vocab_list(excluded_vocab, set(), "incorrectly matched words", show_words_missing_dictionary_entries=True) if excluded_vocab else ""
 
 def render_user_extra_list(note: SentenceNote) -> str:
-    return _build_vocab_list(note.get_user_highlighted_vocab(), note.configuration.incorrect_matches_words(), "highlighted words", include_mnemonics=True, show_words_missing_dictionary_entries=True, include_extended_sentence_statistics=True) if note.get_user_highlighted_vocab() else ""
+    return _build_vocab_list(note.configuration.highlighted_words(), note.configuration.incorrect_matches_words(), "highlighted words", include_mnemonics=True, show_words_missing_dictionary_entries=True, include_extended_sentence_statistics=True) if note.configuration.highlighted_words() else ""
 
 def init() -> None:
     gui_hooks.card_will_show.append(PrerenderingAnswerContentRenderer(SentenceNote, {

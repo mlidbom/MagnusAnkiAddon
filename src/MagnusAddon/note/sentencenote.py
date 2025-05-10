@@ -47,18 +47,16 @@ class SentenceNote(JPNote):
         return analysis.display_words
 
     def get_direct_dependencies(self) -> set[JPNote]:
-        highlighted = set(ex_sequence.flatten([self.collection.vocab.with_question(vocab) for vocab in self.get_user_highlighted_vocab()]))
+        highlighted = set(ex_sequence.flatten([self.collection.vocab.with_question(vocab) for vocab in self.configuration.highlighted_words()]))
         valid_parsed_roots = set(ex_sequence.flatten([self.collection.vocab.with_question(vocab) for vocab in self.get_valid_parsed_non_child_words_strings()]))
         kanji = set(self.collection.kanji.with_any_kanji_in(self.extract_kanji()))
         return highlighted | valid_parsed_roots | kanji
-
-    def get_user_highlighted_vocab(self) -> list[str]: return self.configuration.highlighted_words()
 
     def parse_words_from_expression(self) -> list[ExtractedWord]:
         from language_services.janome_ex.word_extraction.word_extractor import jn_extractor
         return jn_extractor.extract_words(self.get_question())
 
-    def get_words(self) -> set[str]: return (set(self.parsing_result().parsed_words_strings()) | set(self.get_user_highlighted_vocab())) - self.configuration.incorrect_matches_words()
+    def get_words(self) -> set[str]: return (set(self.parsing_result().parsed_words_strings()) | set(self.configuration.highlighted_words())) - self.configuration.incorrect_matches_words()
 
     def get_parsed_words_notes(self) -> list[VocabNote]:
         from ankiutils import app

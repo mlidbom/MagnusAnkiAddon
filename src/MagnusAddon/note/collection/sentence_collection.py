@@ -16,7 +16,7 @@ class _SentenceSnapshot(CachedNote):
     def __init__(self, note: SentenceNote):
         super().__init__(note)
         self.words = note.get_words()
-        self.user_highlighted_vocab = set(note.get_user_highlighted_vocab())
+        self.user_highlighted_vocab = set(note.configuration.highlighted_words())
 
 class _SentenceCache(NoteCache[SentenceNote, _SentenceSnapshot]):
     def __init__(self, all_kanji: list[SentenceNote], cache_runner: CacheRunner):
@@ -35,7 +35,7 @@ class _SentenceCache(NoteCache[SentenceNote, _SentenceSnapshot]):
 
     def _inheritor_add_to_cache(self, sentence: SentenceNote) -> None:
         for vocab_form in sentence.get_words(): self._by_vocab_form[vocab_form].add(sentence)
-        for vocab_form in sentence.get_user_highlighted_vocab(): self._by_user_highlighted_vocab[vocab_form].add(sentence)
+        for vocab_form in sentence.configuration.highlighted_words(): self._by_user_highlighted_vocab[vocab_form].add(sentence)
 
 
 class SentenceCollection:

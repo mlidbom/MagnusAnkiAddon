@@ -75,7 +75,7 @@ def import_missing_context_sentences() -> None:
             else:
                 for existing in existing_sentences:
                     existing.set_tag(Mine.Tags.wani_sentence_current)
-                    if vocab not in existing.get_user_highlighted_vocab():
+                    if vocab not in existing.configuration.highlighted_words():
                         existing.configuration.position_highlighted_word(vocab)
                     present.append(existing)
 

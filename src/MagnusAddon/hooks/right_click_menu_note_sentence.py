@@ -11,8 +11,8 @@ from hooks import shortcutfinger
 def build_note_menu(note_menu: QMenu, sentence: SentenceNote) -> None:
     note_lookup_menu: QMenu = non_optional(note_menu.addMenu(shortcutfinger.home1("Open")))
 
-    add_lookup_action(note_lookup_menu, shortcutfinger.home1("Highlighted Vocab"), query_builder.vocabs_lookup_strings(sentence.get_user_highlighted_vocab()))
-    add_lookup_action(note_lookup_menu, shortcutfinger.home2("Highlighted Vocab Read Card"), query_builder.vocabs_lookup_strings_read_card(sentence.get_user_highlighted_vocab()))
+    add_lookup_action(note_lookup_menu, shortcutfinger.home1("Highlighted Vocab"), query_builder.vocabs_lookup_strings(sentence.configuration.highlighted_words()))
+    add_lookup_action(note_lookup_menu, shortcutfinger.home2("Highlighted Vocab Read Card"), query_builder.vocabs_lookup_strings_read_card(sentence.configuration.highlighted_words()))
     add_lookup_action(note_lookup_menu, shortcutfinger.home3("Kanji"), f"""note:{NoteTypes.Kanji} ({" OR ".join([f"{NoteFields.Kanji.question}:{kan}" for kan in sentence.extract_kanji()])})""")
     add_lookup_action(note_lookup_menu, shortcutfinger.home4("Parsed words"), query_builder.notes_by_id([voc.get_id() for voc in sentence.get_parsed_words_notes()]))
 
@@ -48,10 +48,10 @@ def build_string_menu(string_menu: QMenu, sentence: SentenceNote, menu_string: s
     build_highlighted_vocab_menu(non_optional(string_menu.addMenu(shortcutfinger.home4("Highlighted Vocab Separator"))), sentence, "-")
 
 def build_highlighted_vocab_menu(highlighted_vocab_menu: QMenu, sentence: SentenceNote, _vocab_to_add: str) -> None:
-    for index, _vocab in enumerate(sentence.get_user_highlighted_vocab()):
+    for index, _vocab in enumerate(sentence.configuration.highlighted_words()):
         add_ui_action(highlighted_vocab_menu, shortcutfinger.numpad(index, f"{_vocab}"), lambda _index=index: sentence.configuration.position_highlighted_word(_vocab_to_add, _index))  # type: ignore
 
     add_ui_action(highlighted_vocab_menu, shortcutfinger.home1(f"[Last]"), lambda: sentence.configuration.position_highlighted_word(_vocab_to_add))
 
-    if _vocab_to_add in sentence.get_user_highlighted_vocab():
+    if _vocab_to_add in sentence.configuration.highlighted_words():
         add_ui_action(highlighted_vocab_menu, shortcutfinger.home2("Remove"), lambda __vocab_to_add=_vocab_to_add: sentence.configuration.remove_highlighted_word(__vocab_to_add))  # type: ignore

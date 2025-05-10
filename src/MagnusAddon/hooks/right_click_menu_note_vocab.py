@@ -134,7 +134,7 @@ def build_string_menu(string_menu: QMenu, vocab: VocabNote, menu_string:str) -> 
 
         sentence = sentences[0]
 
-        if vocab.get_question() not in sentence.get_user_highlighted_vocab():
+        if vocab.get_question() not in sentence.configuration.highlighted_words():
             add_ui_action(sentence_menu, shortcutfinger.home1("Add Highlight"), lambda _sentence=sentence: _sentence.configuration.position_highlighted_word(vocab.get_question()))  # type: ignore
         else:
             # noinspection PyDefaultArgument
