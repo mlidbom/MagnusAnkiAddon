@@ -26,13 +26,15 @@ def create_default_mnemonic(kanji_note:KanjiNote) -> str:
                 segments_with_mapped_readings_by_start_index.append([cand for cand in candidates if cand in readings_mappings])
 
             def remove_dead_end_paths() -> None:
+                def reached_end_of_reading() -> bool: return path_index + len(match) == reading_length
+                def is_dead_end_path() -> bool: return not segments_with_mapped_readings_by_start_index[path_index + len(match)]
                 matches_removed = True
                 while matches_removed:
                     matches_removed = False
                     for path_index in range(reading_length):
                         for match in segments_with_mapped_readings_by_start_index[path_index]:
-                            if not path_index + len(match) == reading_length: #this match brings us to the end of the reading
-                                if not segments_with_mapped_readings_by_start_index[path_index + len(match)]: #There's nowhere to go after the end of this fragment
+                            if not reached_end_of_reading():
+                                if is_dead_end_path():
                                     matches_removed = True
                                     segments_with_mapped_readings_by_start_index[path_index].remove(match)
 
@@ -72,8 +74,9 @@ def create_default_mnemonic(kanji_note:KanjiNote) -> str:
 
     radical_names = [rad.get_primary_radical_meaning() for rad in kanji_note.get_radicals_notes()]
     mnemonic = f"""
-{" ".join([f"<rad>{name}</rad>" for name in radical_names])} 
-<kan>{kanji_note.get_primary_meaning()}</kan> 
-{" ".join([create_readings_tag(reading) for reading in kanji_note.get_primary_readings()])}
+{" ".join([f"<rad>{name}</rad>" for name in radical_names])}
+ <kan>{kanji_note.get_primary_meaning()}</kan>
+ {" ".join([create_readings_tag(reading) for reading in kanji_note.get_primary_readings()])}
+ ...
 """.replace(newline, "")
     return mnemonic.strip()

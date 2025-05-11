@@ -4,7 +4,7 @@ from typing import Optional, TYPE_CHECKING
 from language_services.janome_ex.word_extraction.candidate_form import CandidateForm
 from note.notefields.string_field import StringField
 from note.notefields.audio_field import AudioField
-from note.notefields.fallback_string_field import FallbackStringField
+from note.notefields.strip_html_on_read_fallback_string_field import StripHtmlOnReadFallbackStringField
 from note.notefields.strip_html_on_read_string_field import StripHtmlOnReadStringField
 from note.sentencenote_configuration import CachingSentenceConfigurationField, ParsingResult
 
@@ -24,8 +24,8 @@ class SentenceNote(JPNote):
         self._source_answer = StringField(self, SentenceNoteFields.source_answer)
         self._user_question = StringField(self, SentenceNoteFields.user_question)
         self._source_question = StripHtmlOnReadStringField(self, SentenceNoteFields.source_question)
-        self.question = FallbackStringField(self, SentenceNoteFields.user_question, SentenceNoteFields.source_question)
-        self.answer = FallbackStringField(self, SentenceNoteFields.user_answer, SentenceNoteFields.source_answer)
+        self.question = StripHtmlOnReadFallbackStringField(self, SentenceNoteFields.user_question, SentenceNoteFields.source_question)
+        self.answer = StripHtmlOnReadFallbackStringField(self, SentenceNoteFields.user_answer, SentenceNoteFields.source_answer)
         self._screenshot = StringField(self, SentenceNoteFields.screenshot)
         self.audio = AudioField(self, SentenceNoteFields.audio)
         self._user_answer = StringField(self, SentenceNoteFields.user_answer)
