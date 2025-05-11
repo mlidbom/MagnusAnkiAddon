@@ -17,7 +17,7 @@ select = [
     "I",# isort sorts imports etc
     "TC", # get's the correct imports into and out of TYPE_CHECKING blocks
     "ANN", # type annotations warnings
-    #"FA" # More type annotations fixes, but I cannot use them because somehow the | syntax for optional values does not work....
+    #"FA" # More type annotations fixes, but I cannot use them because somehow the | syntax for optional values causes warnings even though it apparently should not...
 ]
 
 #select = ["ALL"]
