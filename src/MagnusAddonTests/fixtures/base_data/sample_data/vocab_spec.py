@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Optional
 
 from note.note_constants import Mine
 
@@ -12,15 +12,15 @@ class VocabSpec:
     def __init__(self, question: str,
                  answer: str,
                  readings: list[str],
-                 extra_forms: list[str] = [],
-                 tags: list[str] = [],
-                 compounds: list[str] = []):
+                 extra_forms: Optional[list[str]] = None,
+                 tags: Optional[list[str]] = None,
+                 compounds: Optional[list[str]] = None):
         self.question = question
         self.answer = answer
         self.readings = readings
-        self.extra_forms = set(extra_forms)
-        self.tags = set(tags)
-        self.compounds = compounds
+        self.extra_forms = set(extra_forms if extra_forms else [])
+        self.tags = set(tags if tags else [] )
+        self.compounds = compounds if compounds else []
 
     def __repr__(self) -> str: return f"""VocabSpec("{self.question}", "{self.answer}", {self.readings})"""
 

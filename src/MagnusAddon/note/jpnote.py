@@ -1,9 +1,14 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, cast
 
+from anki.models import NotetypeDict
+from anki_extentions.card_ex import CardEx
 from anki_extentions.notetype_ex.note_type_ex import NoteTypeEx
-from sysutils import rassert
+from note import noteutils
+from note.note_constants import CardTypes, Mine, MyNoteFields, NoteTypes
+from sysutils import ex_str, rassert
+from sysutils.typed import non_optional, str_
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -12,18 +17,9 @@ if TYPE_CHECKING:
     from anki.notes import Note, NoteId
     from note.collection.jp_collection import JPCollection
 
-from abc import ABC
-from typing import Any, cast
-
-from anki.models import NotetypeDict
-from anki_extentions.card_ex import CardEx
-from note import noteutils
-from note.note_constants import CardTypes, Mine, MyNoteFields, NoteTypes
-from sysutils import ex_str
-from sysutils.typed import non_optional, str_
 
 
-class JPNote(ABC):
+class JPNote:
     def __init__(self, note: Note):
         self._note = note
         self._is_updating_generated_data: bool = False

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from language_services.jamdict_ex.dict_lookup import DictLookup
 from language_services.janome_ex.tokenizing.jn_tokenizer import JNTokenizer
@@ -43,7 +43,8 @@ class WordExtractor:
         return without_exclusions
 
     # noinspection PyDefaultArgument
-    def extract_words(self, sentence: str, allow_duplicates: bool = False, exclusions: list[WordExclusion] = []) -> list[ExtractedWord]:
+    def extract_words(self, sentence: str, allow_duplicates: bool = False, exclusions: Optional[list[WordExclusion]] = None) -> list[ExtractedWord]:
+        exclusions = exclusions if exclusions else []
         from ankiutils import app
 
         def _is_word(word: str) -> bool:

@@ -31,7 +31,7 @@ def build_string_menu(string_menu: QMenu, sentence: SentenceNote, menu_string: s
         else:
             exclude_menu: QMenu = non_optional(string_menu.addMenu(shortcutfinger.home2("Exclude vocab")))
             for excluded_index, matched in enumerate(excluded):
-                add_ui_action(exclude_menu, shortcutfinger.numpad_no_numbers(excluded_index, f"{matched.start_index}: {matched.word.word}"), lambda _matched=matched: sentence.configuration.add_incorrect_match(matched.to_exclusion().as_string()))  # type: ignore
+                add_ui_action(exclude_menu, shortcutfinger.numpad_no_numbers(excluded_index, f"{matched.start_index}: {matched.word.word}"), lambda _matched=matched: sentence.configuration.add_incorrect_match(_matched.to_exclusion().as_string()))  # type: ignore
     else:
         add_ui_action(string_menu, shortcutfinger.home2("Exclude vocab"), lambda _menu_string=menu_string: sentence.configuration.add_incorrect_match(_menu_string))  # type: ignore
 
