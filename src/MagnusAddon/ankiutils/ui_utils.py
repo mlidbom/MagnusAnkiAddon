@@ -2,11 +2,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Callable, Optional
 
-from anki.cards import Card
-
 if TYPE_CHECKING:
+    from anki.cards import Card
     from anki.notes import Note
-    from aqt.clayout import CardLayout
     from note.jpnote import JPNote
 
 import aqt
@@ -15,6 +13,7 @@ from ankiutils.ui_utils_interface import IUIUtils
 from aqt import AnkiQt  # type: ignore
 from aqt.browser import Browser  # type: ignore
 from aqt.browser.previewer import Previewer
+from aqt.clayout import CardLayout
 from aqt.editcurrent import EditCurrent
 from aqt.editor import Editor
 from aqt.reviewer import RefreshNeeded

@@ -1,5 +1,5 @@
 [tool.ruff]
-lint.select = ["I"]  # Enable TCH rules along with basic error checking
+lint.select = ["I", "TCH"]  # Enable TCH rules along with basic error checking
 #lint.select = ["E", "F", "B", "I", "TCH"] #
 
 #lint.select = [

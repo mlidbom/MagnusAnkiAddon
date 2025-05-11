@@ -1,18 +1,20 @@
 from __future__ import annotations
 
-from typing import Sequence
+from typing import TYPE_CHECKING, Sequence
 
-from anki.cards import Card
-from anki.notes import NoteId
 from ankiutils import app
-from language_services.janome_ex.word_extraction.extracted_word import ExtractedWord
 from language_services.janome_ex.word_extraction.word_extractor import jn_extractor
-from note.jpnote import JPNote
-from note.kanjinote import KanjiNote
 from note.note_constants import Builtin, MyNoteFields, NoteFields, NoteTypes, SentenceNoteFields
-from note.radicalnote import RadicalNote
-from note.vocabnote import VocabNote
 from sysutils import ex_sequence, kana_utils
+
+if TYPE_CHECKING:
+    from anki.cards import Card
+    from anki.notes import NoteId
+    from language_services.janome_ex.word_extraction.extracted_word import ExtractedWord
+    from note.jpnote import JPNote
+    from note.kanjinote import KanjiNote
+    from note.radicalnote import RadicalNote
+    from note.vocabnote import VocabNote
 
 f_question = MyNoteFields.question
 f_reading = NoteFields.Vocab.Reading

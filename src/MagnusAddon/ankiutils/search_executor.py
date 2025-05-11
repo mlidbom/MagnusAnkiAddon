@@ -1,8 +1,10 @@
-from typing import Callable
+from typing import Callable, TYPE_CHECKING  # noqa: I001
 
 import aqt
 from ankiutils import app
-from aqt.browser import Browser  # type: ignore
+
+if TYPE_CHECKING:
+    from aqt.browser import Browser
 
 
 def do_lookup_and_show_previewer(text: str) -> None:

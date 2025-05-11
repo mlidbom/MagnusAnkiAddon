@@ -5,21 +5,22 @@ from typing import TYPE_CHECKING, Any, Callable, Optional
 
 import anki
 from anki.collection import Collection
-from anki.dbproxy import DBProxy
 from anki.scheduler.v3 import Scheduler
 from anki_extentions.config_manager_ex import ConfigManagerEx
 from ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules  # noqa
-from sysutils.timeutil import StopWatch
-
-if TYPE_CHECKING:
-    from configuration.configuration import JapaneseConfig
-
 from ankiutils.ui_utils import UIUtils
-from ankiutils.ui_utils_interface import IUIUtils
 from aqt import AnkiQt, gui_hooks, mw  # type: ignore
 from note.collection.jp_collection import JPCollection
 from sysutils.lazy import BackgroundInitialingLazy
+from sysutils.timeutil import StopWatch
 from sysutils.typed import checked_cast, non_optional
+
+if TYPE_CHECKING:
+    from anki.dbproxy import DBProxy
+    from ankiutils.ui_utils_interface import IUIUtils
+    from configuration.configuration import JapaneseConfig
+
+
 
 _collection: Optional[BackgroundInitialingLazy[JPCollection]] = None
 

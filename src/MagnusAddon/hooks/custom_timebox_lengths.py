@@ -1,7 +1,6 @@
-from typing import Dict, Tuple
+from typing import TYPE_CHECKING, Dict, Tuple
 
 import aqt.utils
-from anki.cards import CardId
 from anki_extentions.card_ex import CardEx
 from anki_extentions.deck_ex import DeckEx
 from ankiutils import app
@@ -10,6 +9,9 @@ from aqt.overview import Overview
 from aqt.webview import WebContent
 from note.note_constants import CardTypes, NoteTypes
 from sysutils import typed
+
+if TYPE_CHECKING:
+    from anki.cards import CardId
 
 
 def adjust_timebox(_web_content: WebContent, context: object) -> None:
