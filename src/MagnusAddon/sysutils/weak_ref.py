@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 T = TypeVar('T')
 
 class WeakRef(Generic[T]):
-    def __init__(self, obj: T):
+    def __init__(self, obj: T) -> None:
         self._weakreference: ReferenceType[T] = weakref.ref(obj)
 
     @property

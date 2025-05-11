@@ -1,5 +1,5 @@
 class KanjiSpec:
-    def __init__(self, question: str, answer: str, kun_readings: str, on_readings: str):
+    def __init__(self, question: str, answer: str, kun_readings: str, on_readings: str) -> None:
         self.question = question
         self.answer = answer
         self.kun_reading = kun_readings

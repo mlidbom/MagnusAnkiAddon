@@ -30,7 +30,7 @@ def _get_answers_since_last_day_cutoff_for_card(card: anki.cards.Card) -> list[i
         return answers
 
 class CardEx:
-    def __init__(self, card:anki.cards.Card):
+    def __init__(self, card:anki.cards.Card) -> None:
         self.card = card
 
     @staticmethod

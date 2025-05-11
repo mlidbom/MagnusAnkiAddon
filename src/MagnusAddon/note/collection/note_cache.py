@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 
 
 class CachedNote:
-    def __init__(self, note: JPNote):
+    def __init__(self, note: JPNote) -> None:
         self.id = note.get_id()
         self.answer = note.get_answer()
         self.question = note.get_question()
@@ -27,7 +27,7 @@ TNote = TypeVar('TNote', bound=JPNote)
 TSnapshot = TypeVar('TSnapshot', bound=CachedNote)
 
 class NoteCache(ABC, Generic[TNote, TSnapshot]):
-    def __init__(self, all_notes: list[TNote], cached_note_type: type[TNote], cache_runner: CacheRunner):
+    def __init__(self, all_notes: list[TNote], cached_note_type: type[TNote], cache_runner: CacheRunner) -> None:
         self._note_type = cached_note_type
         self._by_question: DefaultDictCaseInsensitive[set[TNote]] = DefaultDictCaseInsensitive(set)
         self._by_id: dict[NoteId, TNote] = {}

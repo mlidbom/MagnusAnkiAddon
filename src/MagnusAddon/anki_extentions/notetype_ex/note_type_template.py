@@ -6,7 +6,7 @@ from sysutils import typed
 
 
 class NoteTemplateEx:
-    def __init__(self, name: str):
+    def __init__(self, name: str) -> None:
         self.name = name
         self.ord = 0
         self.qfmt = "{{Tags}}"

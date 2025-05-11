@@ -20,7 +20,7 @@ if TYPE_CHECKING:
 
 
 class JPNote:
-    def __init__(self, note: Note):
+    def __init__(self, note: Note) -> None:
         self._note = note
         self._is_updating_generated_data: bool = False
         self._generated_data_was_updated = False

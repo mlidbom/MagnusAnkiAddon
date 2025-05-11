@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 
 
 class _VocabSnapshot(CachedNote):
-    def __init__(self, note: VocabNote):
+    def __init__(self, note: VocabNote) -> None:
         super().__init__(note)
         self.forms = set(note.get_forms())
         self.compound_parts = set(note.get_user_compounds())
@@ -28,7 +28,7 @@ class _VocabSnapshot(CachedNote):
         self.stems = note.get_stems_for_primary_form()
 
 class _VocabCache(NoteCache[VocabNote, _VocabSnapshot]):
-    def __init__(self, all_vocab: list[VocabNote], cache_runner: CacheRunner):
+    def __init__(self, all_vocab: list[VocabNote], cache_runner: CacheRunner) -> None:
         self._by_form: dict[str, set[VocabNote]] = defaultdict(set)
         self._by_kanji_in_main_form: dict[str, set[VocabNote]] = defaultdict(set)
         self._by_kanji_in_any_form: dict[str, set[VocabNote]] = defaultdict(set)
@@ -80,7 +80,7 @@ class _VocabCache(NoteCache[VocabNote, _VocabSnapshot]):
         for stem in note.get_stems_for_primary_form(): self._by_stem[stem].add(note)
 
 class VocabCollection:
-    def __init__(self, collection: Collection, cache_manager: CacheRunner):
+    def __init__(self, collection: Collection, cache_manager: CacheRunner) -> None:
         def vocab_constructor(note: Note) -> VocabNote: return VocabNote(note)
         self.collection = BackEndFacade[VocabNote](collection, vocab_constructor, NoteTypes.Vocab)
         self._cache = _VocabCache(list(self.collection.all()), cache_manager)

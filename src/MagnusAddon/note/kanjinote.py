@@ -18,7 +18,7 @@ from wanikani.wanikani_api_client import WanikaniClient
 
 
 class KanjiNote(WaniNote):
-    def __init__(self, note: Note):
+    def __init__(self, note: Note) -> None:
         super().__init__(note)
 
     def get_direct_dependencies(self) -> set[JPNote]:

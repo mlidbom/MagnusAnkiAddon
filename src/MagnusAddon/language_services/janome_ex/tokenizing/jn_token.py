@@ -12,7 +12,7 @@ class JNToken:
                  inflected_form: str = "",
                  reading: str = "",
                  phonetic: str = "",
-                 node_type: str = ""):
+                 node_type: str = "") -> None:
         self.base_form = typed.str_(base_form)
         self.surface = typed.str_(surface)
         self.inflection_type = typed.str_(inflection_type).replace("*", "")

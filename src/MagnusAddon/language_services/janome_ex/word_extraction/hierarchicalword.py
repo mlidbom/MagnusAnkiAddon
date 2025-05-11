@@ -9,7 +9,7 @@ from typing import Optional
 
 
 class HierarchicalWord:
-    def __init__(self, word: ExtractedWord):
+    def __init__(self, word: ExtractedWord) -> None:
         self.word = word
         self.length = len(word.surface)
         self.shadowed_by:Optional[HierarchicalWord] = None

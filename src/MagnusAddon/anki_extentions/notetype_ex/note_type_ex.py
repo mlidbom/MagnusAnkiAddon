@@ -9,7 +9,7 @@ from sysutils import typed
 
 
 class NoteTypeEx:
-    def __init__(self, name: str, fields: list[NoteFieldEx], templates: list[NoteTemplateEx]):
+    def __init__(self, name: str, fields: list[NoteFieldEx], templates: list[NoteTemplateEx]) -> None:
         self.name = name
         self.id:NotetypeId = NotetypeId(0)
         self.flds = fields

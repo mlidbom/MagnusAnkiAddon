@@ -17,13 +17,13 @@ from sysutils import ex_sequence, kana_utils
 
 
 class _KanjiSnapshot(CachedNote):
-    def __init__(self, note: KanjiNote):
+    def __init__(self, note: KanjiNote) -> None:
         super().__init__(note)
         self.radicals = set(note.get_radicals())
         self.readings = set(note.get_readings_clean())
 
 class _KanjiCache(NoteCache[KanjiNote, _KanjiSnapshot]):
-    def __init__(self, all_kanji: list[KanjiNote], cache_runner: CacheRunner):
+    def __init__(self, all_kanji: list[KanjiNote], cache_runner: CacheRunner) -> None:
         self._by_radical: dict[str, set[KanjiNote]] = defaultdict(set)
         self.by_reading: dict[str, set[KanjiNote]] = defaultdict(set)
         super().__init__(all_kanji, KanjiNote, cache_runner)
@@ -41,7 +41,7 @@ class _KanjiCache(NoteCache[KanjiNote, _KanjiSnapshot]):
     def with_radical(self, radical: str) -> list[KanjiNote]: return list(self._by_radical[radical])
 
 class KanjiCollection:
-    def __init__(self, collection: Collection, jp_collection: JPCollection, cache_manager: CacheRunner):
+    def __init__(self, collection: Collection, jp_collection: JPCollection, cache_manager: CacheRunner) -> None:
         def kanji_constructor(note: Note) -> KanjiNote: return KanjiNote(note)
         self.jp_collection = jp_collection
         self.collection = BackEndFacade[KanjiNote](collection, kanji_constructor, NoteTypes.Kanji)

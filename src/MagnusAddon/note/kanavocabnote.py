@@ -6,7 +6,7 @@ from wanikani_api import models
 
 
 class KanaVocabNote(WaniNote):
-    def __init__(self, note: Note):
+    def __init__(self, note: Note) -> None:
         super().__init__(note)
 
     @staticmethod

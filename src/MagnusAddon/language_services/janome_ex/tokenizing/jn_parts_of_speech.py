@@ -27,7 +27,7 @@ class JNPartsOfSpeech:
 
 
 class PartOfSpeechDescription:
-    def __init__(self, japanese: str, english: str, explanation: str):
+    def __init__(self, japanese: str, english: str, explanation: str) -> None:
         self.japanese = japanese
         self.english = english
         self.explanation = explanation

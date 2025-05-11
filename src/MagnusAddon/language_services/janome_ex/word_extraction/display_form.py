@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     from sysutils.weak_ref import WeakRef
 
 class DisplayForm:
-    def __init__(self, candidate: WeakRef[CandidateForm]):
+    def __init__(self, candidate: WeakRef[CandidateForm]) -> None:
         self.candidate:WeakRef[CandidateForm] = candidate
         self.parsed_form:str = candidate().form
         self.vocab_form:str = ""
@@ -16,7 +16,7 @@ class DisplayForm:
 
 
 class VocabDisplayForm(DisplayForm):
-    def __init__(self, candidate: WeakRef[CandidateForm], vocab: VocabNote):
+    def __init__(self, candidate: WeakRef[CandidateForm], vocab: VocabNote) -> None:
         super().__init__(candidate)
         self.vocab:VocabNote = vocab
         self.vocab_form = vocab.get_question()
@@ -32,6 +32,6 @@ class VocabDisplayForm(DisplayForm):
 #         self.dictionary_entry = dictionary_entry
 
 class MissingDisplayForm(DisplayForm):
-    def __init__(self, candidate: WeakRef[CandidateForm]):
+    def __init__(self, candidate: WeakRef[CandidateForm]) -> None:
         super().__init__(candidate)
         self.answer = "---"

@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 
 class IntObject:
-    def __init__(self, value: int):
+    def __init__(self, value: int) -> None:
         self.value = value
 
     def to_dict(self) -> dict[str, int]:
@@ -30,7 +30,7 @@ class IntObject:
         return f"IntObject({self.value})"
 
 class HasObjectList:
-    def __init__(self, values: list[IntObject]):
+    def __init__(self, values: list[IntObject]) -> None:
         self.values = values
 
     def to_dict(self) -> dict[str, list[dict[str, int]]]:

@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from note.vocabnote import VocabNote
 
 class VocabCloner:
-    def __init__(self, note: VocabNote):
+    def __init__(self, note: VocabNote) -> None:
         self.note = note
 
     def create_prefix_version(self, prefix: str, speech_type: str = "expression", set_compounds: bool = True, truncate_characters: int = 0) -> VocabNote:

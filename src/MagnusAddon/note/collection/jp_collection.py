@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 
 
 class JPCollection:
-    def __init__(self, anki_collection: Collection):
+    def __init__(self, anki_collection: Collection) -> None:
         self.anki_collection = anki_collection
         self.cache_manager = CacheRunner(anki_collection)
 

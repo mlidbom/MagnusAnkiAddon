@@ -3,7 +3,7 @@ from sysutils import ex_str, kana_utils
 
 
 class KanjiViewModel:
-    def __init__(self, kanji: KanjiNote):
+    def __init__(self, kanji: KanjiNote) -> None:
         self.kanji = kanji
 
     def question(self) -> str: return self.kanji.get_question()

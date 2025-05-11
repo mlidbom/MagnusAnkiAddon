@@ -17,13 +17,13 @@ if TYPE_CHECKING:
 
 
 class _SentenceSnapshot(CachedNote):
-    def __init__(self, note: SentenceNote):
+    def __init__(self, note: SentenceNote) -> None:
         super().__init__(note)
         self.words = note.get_words()
         self.user_highlighted_vocab = set(note.configuration.highlighted_words())
 
 class _SentenceCache(NoteCache[SentenceNote, _SentenceSnapshot]):
-    def __init__(self, all_kanji: list[SentenceNote], cache_runner: CacheRunner):
+    def __init__(self, all_kanji: list[SentenceNote], cache_runner: CacheRunner) -> None:
         self._by_vocab_form: dict[str, set[SentenceNote]] = defaultdict(set)
         self._by_user_highlighted_vocab: dict[str, set[SentenceNote]] = defaultdict(set)
         super().__init__(all_kanji, SentenceNote, cache_runner)
@@ -43,7 +43,7 @@ class _SentenceCache(NoteCache[SentenceNote, _SentenceSnapshot]):
 
 
 class SentenceCollection:
-    def __init__(self, collection: Collection, cache_manager: CacheRunner):
+    def __init__(self, collection: Collection, cache_manager: CacheRunner) -> None:
         def sentence_constructor(note: Note) -> SentenceNote: return SentenceNote(note)
         self.collection = BackEndFacade[SentenceNote](collection, sentence_constructor, NoteTypes.Sentence)
         self._cache = _SentenceCache(list(self.collection.all()), cache_manager)

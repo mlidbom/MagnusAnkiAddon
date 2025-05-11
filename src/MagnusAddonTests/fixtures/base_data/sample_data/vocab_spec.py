@@ -14,7 +14,7 @@ class VocabSpec:
                  readings: list[str],
                  extra_forms: Optional[list[str]] = None,
                  tags: Optional[list[str]] = None,
-                 compounds: Optional[list[str]] = None):
+                 compounds: Optional[list[str]] = None) -> None:
         self.question = question
         self.answer = answer
         self.readings = readings

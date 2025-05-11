@@ -1,5 +1,5 @@
 class SentenceSpec:
-    def __init__(self, question: str, answer: str):
+    def __init__(self, question: str, answer: str) -> None:
         self.question = question
         self.answer = answer
 

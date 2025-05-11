@@ -5,7 +5,7 @@ from wanikani_api import models
 
 
 class WaniNote(JPNote):
-    def __init__(self, note: Note):
+    def __init__(self, note: Note) -> None:
         super().__init__(note)
 
     def _set_level_tag(self, new_level: int) -> None:

@@ -8,7 +8,7 @@ _tags_high = {"news1", "spec1"}
 _tags_medium = {"news2", "spec2"}
 
 class PrioritySpec:
-    def __init__(self, tags: set[str]):
+    def __init__(self, tags: set[str]) -> None:
         self.tags = tags
 
         if self.tags & _tags_maximum:

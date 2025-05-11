@@ -7,7 +7,7 @@ from sysutils import app_thread_pool
 T = TypeVar('T')
 
 class Lazy(Generic[T]):
-    def __init__(self, factory: Callable[[], T]):
+    def __init__(self, factory: Callable[[], T]) -> None:
         self.factory = factory
         self._instance: Optional[T] = None
 
@@ -18,7 +18,7 @@ class Lazy(Generic[T]):
 
 
 class BackgroundInitialingLazy(Generic[T]):
-    def __init__(self, factory: Callable[[], T], delay_seconds: float = 0):
+    def __init__(self, factory: Callable[[], T], delay_seconds: float = 0) -> None:
         self._lock = threading.Lock()
         self._instance: Optional[Future[T]] = None
         self._factory = factory

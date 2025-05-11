@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 
 class RadicalNote(WaniNote):
-    def __init__(self, note: Note):
+    def __init__(self, note: Note) -> None:
         super().__init__(note)
 
     def update_generated_data(self) -> None:

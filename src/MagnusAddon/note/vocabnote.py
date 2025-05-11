@@ -60,13 +60,13 @@ def sort_vocab_list_by_studying_status(vocabs: list[VocabNote], primary_voc: Opt
     return result
 
 class VocabMetaTag:
-    def __init__(self, name: str, display: str, tooltip: str):
+    def __init__(self, name: str, display: str, tooltip: str) -> None:
         self.name = name
         self.display = display
         self.tooltip = tooltip
 
 class VocabNote(KanaVocabNote):
-    def __init__(self, note: Note):
+    def __init__(self, note: Note) -> None:
         super().__init__(note)
         self.cloner = VocabCloner(self)
         self.user_mnemonic = StringField(self, NoteFields.Vocab.Mnemonic__)

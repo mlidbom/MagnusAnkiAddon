@@ -17,7 +17,7 @@ from sysutils.ex_str import newline
 
 _noise_characters = {'.', ',', ':', ';', '/', '|', '。', '、', '?', '!'}
 class CandidateForm:
-    def __init__(self, candidate: WeakRef[CandidateWord], is_surface: bool, form: str):
+    def __init__(self, candidate: WeakRef[CandidateWord], is_surface: bool, form: str) -> None:
         from ankiutils import app
         from language_services.jamdict_ex.dict_lookup import DictLookup
 
@@ -119,7 +119,7 @@ class CandidateForm:
         return f"""CandidateForm: {self.form}, ivc:{self.is_valid_candidate()}, iw:{self.is_word} ie:{self.is_excluded_by_config}""".replace(newline, "")
 
 class SurfaceCandidateForm(CandidateForm):
-    def __init__(self, candidate: WeakRef[CandidateWord]):
+    def __init__(self, candidate: WeakRef[CandidateWord]) -> None:
         super().__init__(candidate, True, "".join([t().surface for t in candidate().locations]) + "")
 
         if (not candidate().is_custom_compound
@@ -129,7 +129,7 @@ class SurfaceCandidateForm(CandidateForm):
     def counterpart(self) -> CandidateForm: return non_optional(self.candidate().base)
 
 class BaseCandidateForm(CandidateForm):
-    def __init__(self, candidate: WeakRef[CandidateWord]):
+    def __init__(self, candidate: WeakRef[CandidateWord]) -> None:
         base_form = "".join([t().surface for t in candidate().locations[:-1]]) + candidate().locations[-1]().base
         if not candidate().is_custom_compound:
             base_form = candidate().locations[-1]().token.base_form_for_non_compound_vocab_matching

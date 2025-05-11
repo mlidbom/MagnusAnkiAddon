@@ -60,7 +60,7 @@ def get_note_from_web_view(view: AnkiWebView) -> Optional[JPNote]:
     return JPNote.note_from_note(inner_note)
 
 class UIUtils(IUIUtils):
-    def __init__(self, mw: AnkiQt):
+    def __init__(self, mw: AnkiQt) -> None:
         self._mw = mw
 
     def is_edit_current_open(self) -> bool:

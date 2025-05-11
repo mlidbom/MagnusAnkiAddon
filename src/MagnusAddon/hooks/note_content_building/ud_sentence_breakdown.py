@@ -39,7 +39,7 @@ def _build_vocab_list(word_to_show: list[str], excluded_words:set[str], title:st
                         """
         else:
             class Hit:
-                def __init__(self, forms:str, readings_:str, answer:str):
+                def __init__(self, forms:str, readings_:str, answer:str) -> None:
                     self.forms: str = forms
                     self.readings: str = readings_
                     self.answer = answer

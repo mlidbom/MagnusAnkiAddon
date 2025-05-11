@@ -21,7 +21,7 @@ from sysutils.ex_str import newline
 _max_lookahead = 12
 
 class TokenTextLocation:
-    def __init__(self, analysis: WeakRef[TextAnalysis], token: ProcessedToken, character_start_index: int, token_index: int):
+    def __init__(self, analysis: WeakRef[TextAnalysis], token: ProcessedToken, character_start_index: int, token_index: int) -> None:
         surface = token.surface
         base = token.base_form
         self.is_covered_by: Optional[WeakRef[TokenTextLocation]] = None

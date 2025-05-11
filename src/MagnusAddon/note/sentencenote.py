@@ -18,7 +18,7 @@ if TYPE_CHECKING:
     from note.vocabnote import VocabNote
 
 class SentenceNote(JPNote):
-    def __init__(self, note: Note):
+    def __init__(self, note: Note) -> None:
         super().__init__(note)
         self._source_answer = StringField(self, SentenceNoteFields.source_answer)
         self._user_question = StringField(self, SentenceNoteFields.user_question)

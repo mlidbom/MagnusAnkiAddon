@@ -9,7 +9,7 @@ from sysutils.typed import checked_cast, non_optional
 
 
 class ReadingsOptionsDialog(QDialog):
-    def __init__(self, parent: Optional[QWidget] = None):
+    def __init__(self, parent: Optional[QWidget] = None) -> None:
         super().__init__(parent)
         self.config = app.config()
 

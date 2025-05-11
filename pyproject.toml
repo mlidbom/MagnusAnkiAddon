@@ -28,7 +28,7 @@ ignore = [
     "UP007",# Use `X | Y` for type annotations
 
     #ANN
-    "ANN204", #Missing return type annotation for special method `__init__`"
+    #"ANN204", #Missing return type annotation for special method `__init__`" thousands of these. It's just not worth it
 
     #below here is only needed when ALL is the select value
 #    "Q", # rules on how quotes are use...

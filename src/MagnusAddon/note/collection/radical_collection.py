@@ -15,17 +15,17 @@ if TYPE_CHECKING:
 
 
 class _RadicalSnapshot(CachedNote):
-    def __init__(self, note: RadicalNote):
+    def __init__(self, note: RadicalNote) -> None:
         super().__init__(note)
 
 class _RadicalCache(NoteCache[RadicalNote, _RadicalSnapshot]):
-    def __init__(self, all_kanji: list[RadicalNote], cache_runner: CacheRunner):
+    def __init__(self, all_kanji: list[RadicalNote], cache_runner: CacheRunner) -> None:
         super().__init__(all_kanji, RadicalNote, cache_runner)
 
     def _create_snapshot(self, note: RadicalNote) -> _RadicalSnapshot: return _RadicalSnapshot(note)
 
 class RadicalCollection:
-    def __init__(self, collection: Collection, cache_manager: CacheRunner):
+    def __init__(self, collection: Collection, cache_manager: CacheRunner) -> None:
         def radical_constructor(note: Note) -> RadicalNote: return RadicalNote(note)
         self.collection = BackEndFacade[RadicalNote](collection, radical_constructor, NoteTypes.Radical)
         self._cache = _RadicalCache(list(self.collection.all()), cache_manager)

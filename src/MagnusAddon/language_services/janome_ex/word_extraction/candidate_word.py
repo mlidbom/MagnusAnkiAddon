@@ -13,7 +13,7 @@ from sysutils.ex_str import newline
 
 
 class CandidateWord:
-    def __init__(self, locations: list[WeakRef[TokenTextLocation]]):
+    def __init__(self, locations: list[WeakRef[TokenTextLocation]]) -> None:
         self.analysis: WeakRef[TextAnalysis] = locations[0]().analysis
         self.locations: list[WeakRef[TokenTextLocation]] = locations
         self.is_custom_compound: bool = len(locations) > 1

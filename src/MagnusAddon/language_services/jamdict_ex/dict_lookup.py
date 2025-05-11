@@ -102,7 +102,7 @@ _all_word_forms = BackgroundInitialingLazy(_find_all_words)
 _all_name_forms = BackgroundInitialingLazy(_find_all_names)
 
 class DictLookup:
-    def __init__(self, entries: list[DictEntry], lookup_word: str, lookup_reading: list[str]):
+    def __init__(self, entries: list[DictEntry], lookup_word: str, lookup_reading: list[str]) -> None:
         self.lookup_word = lookup_word
         self.lookup_reading = lookup_reading
         self.entries = entries
