@@ -1,8 +1,28 @@
 [tool.ruff]
-#int.select = ["E", "F", "TCH"]  # Enable TCH rules along with basic error checking
-lint.select = ["E", "F", "B", "I", "TCH"] #
+lint.select = ["TCH"]  # Enable TCH rules along with basic error checking
+#lint.select = ["E", "F", "B", "I", "TCH"] #
 
-lint.ignore = ["E701"] #E701 multiple statements on one line
+#lint.select = [
+#    "E", # pycodestyle
+#    "F",# Pyflakes
+#    "UP", # pyupgrade
+#    "B", # flake8-bugbear
+#    "SIM", # flake8-simplify
+#    "I",# isort
+#    "TCH" # TODO
+#]
+
+#lint.select = ["ALL"]
+
+extend-exclude = [
+    "_lib",
+    "_lib_patched"
+]
+
+lint.ignore = [
+    "E701", #E701 multiple statements on one line,
+    "D102" # Missing docstring in public method
+]
 
 
 line-length = 250
