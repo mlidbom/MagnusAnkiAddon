@@ -1,9 +1,11 @@
 import pykakasi
 
 # noinspection PyPackageRequirements
-import romkan  # type: ignore
+import romkan  # type: ignore  # noqa: PGH003
 from sysutils import typed
 from sysutils.ex_str import full_width_space
+
+# ruff: noqa: PLR2004
 
 
 def pad_to_length(value: str, target_length: int) -> str:

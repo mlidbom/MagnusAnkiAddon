@@ -8,23 +8,27 @@ target-version = "py39"
 
 [tool.ruff.lint]
 
+#select = [
+#    "E", # pycodestyle
+#    "F",# Pyflakes
+#    "UP", # pyupgrade
+#    "B", # flake8-bugbear
+#    "SIM", # flake8-simplify
+#    "I",# isort sorts imports etc
+#    "TCH", # TODO
+#]
 
-select = [
-    "E", # pycodestyle
-    "F",# Pyflakes
-    "UP", # pyupgrade
-    "B", # flake8-bugbear
-    "SIM", # flake8-simplify
-    "I",# isort sorts imports etc
-    "TCH" # TODO
-]
-
-#lint.select = ["ALL"]
+select = ["ALL"]
 
 ignore = [
     "E701", #E701 multiple statements on one line,
     "D102", # Missing docstring in public method
     "TC006",# [*] Add quotes to type expression in `typing.cast()`
     "UP007",# Use `X | Y` for type annotations
+
+    #below here is only needed when ALL is the select value
+    "Q000", # [*] Single quotes found but double quotes preferred
+    "D", #Docstring rules
+    "W292", # [*] No newline at end of file
 ]
 

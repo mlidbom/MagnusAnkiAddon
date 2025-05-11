@@ -20,6 +20,9 @@ class WanikaniClient:
         self._is_initialized = False
         v2_api_key = "ebeda84c-2f6a-423e-bfc7-3068796ed50a"
         self._client = Client(v2_api_key)
+        self._kana_vocab_list: list[models.Vocabulary] = []
+        self._kana_vocab_dictionary: dict[Any, models.Vocabulary] = {}
+        self._kana_vocab_id_dictionary: dict[Any, models.Vocabulary] = {}
 
     # noinspection PyTypeChecker
     def _init(self) -> WanikaniClient:
@@ -64,9 +67,6 @@ class WanikaniClient:
         self._init()
         return self._vocab_list
 
-    _kana_vocab_list: list[models.Vocabulary] = list()
-    _kana_vocab_dictionary: dict[Any, models.Vocabulary] = {}
-    _kana_vocab_id_dictionary: dict[Any,models.Vocabulary] = {}
     # noinspection PyTypeChecker
     def list_kana_vocabulary(self) -> list[models.Vocabulary]:
         if not self._kana_vocab_list:
