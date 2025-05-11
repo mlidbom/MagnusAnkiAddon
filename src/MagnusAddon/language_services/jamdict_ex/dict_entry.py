@@ -81,7 +81,7 @@ class DictEntry:
         glosses_text = [str(gloss.text) for gloss in sense.gloss]
         glosses_text = [gloss.replace(" ", "-") for gloss in glosses_text]
         if self._is_verb():
-            if all(gloss[:6] == "to-be-" for gloss in glosses_text):
+            if all(gloss[:6] == "to-be-" for gloss in glosses_text):  # noqa: SIM108
                 glosses_text = [gloss[6:] for gloss in glosses_text]
             else:
                 glosses_text = [gloss[3:] if gloss[:3] == "to-" else gloss for gloss in glosses_text]
