@@ -23,7 +23,7 @@ class JNPartsOfSpeech:
             "3:" + kana_utils.pad_to_length(self.level3.japanese.replace("*", ""), 6),
             "4:" + kana_utils.pad_to_length(self.level4.japanese.replace("*", ""), 6)])
 
-    def is_verb(self) -> bool: return "verb" == self.level1.english
+    def is_verb(self) -> bool: return self.level1.english == "verb"
 
 
 class PartOfSpeechDescription:

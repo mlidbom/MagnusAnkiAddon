@@ -85,13 +85,12 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
 
 
     def _on_will_flush(self, backend_note: Note) -> None:
-        if backend_note.id:
-            if backend_note.id in self._by_id:
-                assert backend_note.id not in self._deleted
+        if backend_note.id and backend_note.id in self._by_id:
+            assert backend_note.id not in self._deleted
 
-                note = self._create_note(backend_note)
-                self._refresh_in_cache(note)
-                self._pending_generated_data_updates.add(note)
+            note = self._create_note(backend_note)
+            self._refresh_in_cache(note)
+            self._pending_generated_data_updates.add(note)
 
     def _on_will_be_added(self, backend_note: Note) -> None:
         note = JPNote.note_from_note(backend_note)

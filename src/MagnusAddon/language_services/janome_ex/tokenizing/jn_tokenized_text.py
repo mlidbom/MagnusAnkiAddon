@@ -49,16 +49,16 @@ class JNTokenWrapper(ProcessedToken):
     def _try_find_dictionary_based_potential_verb_compound(self) -> list[ProcessedToken]:
         if (len(self.token.base_form) >= 3
                 and self.token.base_form[-2:] in conjugator.godan_potential_verb_ending_to_dictionary_form_endings
-                and self.token.is_verb()):
-            if not DictLookup.is_word(self.token.base_form): #the potential verbs are generally not in the dictionary this is how we know them
-                root_verb = conjugator.construct_root_verb_for_possibly_potential_godan_verb_dictionary_form(self.token.base_form)
-                if DictLookup.is_word(root_verb):
-                    lookup = DictLookup.lookup_word_shallow(root_verb)
-                    if lookup.found_words():
-                        is_godan = any(e for e in lookup.entries if "godan verb" in e.parts_of_speech())
-                        if not is_godan:
-                            return []
-                    return self._build_potential_verb_compound(root_verb)
+                and self.token.is_verb()
+                and not DictLookup.is_word(self.token.base_form)):  # the potential verbs are generally not in the dictionary this is how we know them
+            root_verb = conjugator.construct_root_verb_for_possibly_potential_godan_verb_dictionary_form(self.token.base_form)
+            if DictLookup.is_word(root_verb):
+                lookup = DictLookup.lookup_word_shallow(root_verb)
+                if lookup.found_words():
+                    is_godan = any(e for e in lookup.entries if "godan verb" in e.parts_of_speech())
+                    if not is_godan:
+                        return []
+                return self._build_potential_verb_compound(root_verb)
         return []
 
     def _build_potential_verb_compound(self, root_verb: str) -> list[ProcessedToken]:

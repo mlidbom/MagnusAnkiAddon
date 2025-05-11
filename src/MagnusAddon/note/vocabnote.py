@@ -109,10 +109,9 @@ class VocabNote(KanaVocabNote):
         question = self.get_question_without_noise_characters().strip()
         readings = ",".join(self.get_readings())
 
-        if not readings:
-            if kana_utils.is_only_kana(question):
-                self.set_readings([question])
-                self.set_tag(Mine.Tags.UsuallyKanaOnly)
+        if not readings and kana_utils.is_only_kana(question):
+            self.set_readings([question])
+            self.set_tag(Mine.Tags.UsuallyKanaOnly)
 
         if len(self.get_user_compounds()) == 0 and self._is_suru_verb_included():
             self.set_user_compounds([question[:-2], "する"])

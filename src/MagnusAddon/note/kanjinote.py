@@ -256,7 +256,7 @@ class KanjiNote(WaniNote):
         self.set_primary_vocab(primary_vocab_list)
 
     def remove_primary_vocab(self, vocab: str) -> None:
-        self.set_primary_vocab([v for v in self.get_primary_vocab() if not v == vocab])
+        self.set_primary_vocab([v for v in self.get_primary_vocab() if v != vocab])
 
     def set_primary_vocab_audio(self, value: str) -> None: self.set_field(NoteFields.Kanji.Audio__, value)
 

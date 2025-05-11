@@ -19,7 +19,7 @@ def is_handled_card(card: CardEx) -> bool:
         return False
 
     note = JPNote.note_from_card(non_optional(mw.reviewer.card))
-    return isinstance(note, SentenceNote) or isinstance(note, VocabNote) or isinstance(note, KanjiNote)
+    return isinstance(note, (SentenceNote, VocabNote, KanjiNote))
 
 def seconds_to_show_question(card: CardEx) -> float:
     note = card.note()
@@ -69,9 +69,10 @@ def _auto_advance_to_answer_if_enabled(reviewer:Reviewer) -> None:
     )
 
 def _auto_start_auto_advance(html:str, anki_card:Card, _display_type:str) -> str:
-    if ui_utils.is_displaytype_displaying_review_question(_display_type):
-        if is_handled_card(CardEx(anki_card)) and not mw.reviewer.auto_advance_enabled:
-            mw.reviewer.toggle_auto_advance()
+    if (ui_utils.is_displaytype_displaying_review_question(_display_type)
+            and is_handled_card(CardEx(anki_card))
+            and not mw.reviewer.auto_advance_enabled):
+        mw.reviewer.toggle_auto_advance()
 
     return html
 

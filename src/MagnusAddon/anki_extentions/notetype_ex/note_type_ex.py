@@ -27,15 +27,11 @@ class NoteTypeEx:
         self.vers: list[Any] = []
         self.tags: list[Any] = []
 
-        index = 0
-        for field in self.flds:
+        for index, field in enumerate(self.flds):
             field.ord = index
-            index += 1
 
-        index = 0
-        for template in self.tmpls:
+        for index, template in enumerate(self.tmpls):
             template.ord = index
-            index += 1
 
     def to_dict(self) -> NotetypeDict:
         return {

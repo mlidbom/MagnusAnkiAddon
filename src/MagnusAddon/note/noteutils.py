@@ -24,6 +24,6 @@ def has_card_being_studied_cached(note: Note, card_type:str = "") -> bool:
 
     if card_type:
         cached = _card_is_studying_cache[note.id]
-        return cached[card_type] if card_type in cached else False
+        return cached.get(card_type, False)
 
     return any(_card_is_studying_cache[note.id].values())

@@ -34,10 +34,9 @@ def create_default_mnemonic(kanji_note:KanjiNote) -> str:
                     matches_removed = False
                     for path_index in range(reading_length):
                         for match in segments_with_mapped_readings_by_start_index[path_index]:
-                            if not reached_end_of_reading():
-                                if is_dead_end_path():
-                                    matches_removed = True
-                                    segments_with_mapped_readings_by_start_index[path_index].remove(match)
+                            if not reached_end_of_reading() and is_dead_end_path():
+                                matches_removed = True
+                                segments_with_mapped_readings_by_start_index[path_index].remove(match)
 
             def find_shortest_path() -> list[str]:
                 shortest_paths_to_position: dict[int, list[str]] = {0: []}  # Start with an empty path at position 0

@@ -63,9 +63,7 @@ class WordExtractor:
                 context += tokens[token_index + 1].surface
 
             context_exclusions = ex_sequence.flatten([list(voc.get_excluded_forms()) for voc in app.col().vocab.with_question(form_)])
-            if any(exclusion for exclusion in context_exclusions if form_ in exclusion and exclusion in context):
-                return True
-            return False
+            return any(exclusion for exclusion in context_exclusions if form_ in exclusion and exclusion in context)
 
         def get_excluded_forms(form_:str) -> set[str]:
             unexcluded_vocab_with_form = [voc for voc in (app.col().vocab.with_form(form_)) if not any(exclusion for exclusion in exclusions if exclusion.word == voc.get_question())]
@@ -96,18 +94,15 @@ class WordExtractor:
             next_token = tokens[index + 1]
             vocab: list[VocabNote] = lookup_vocabs_prefer_exact_match(next_token.base_form)
 
-            if any([voc for voc in vocab if voc.has_tag(Mine.Tags.inflecting_word)]):
-                return True
-
-            return False
+            return any([voc for voc in vocab if voc.has_tag(Mine.Tags.inflecting_word)])
 
         def is_inflected_word(index: int) -> bool:
             _token = tokens[index]
 
-            if _token.is_inflectable_word():
-                if index < len(tokens) - 1:
-                    if is_next_token_inflecting_word(index):
-                        return True
+            if (_token.is_inflectable_word()  # noqa: SIM103
+                    and index < len(tokens) - 1
+                    and is_next_token_inflecting_word(index)):
+                return True
 
             return False
 

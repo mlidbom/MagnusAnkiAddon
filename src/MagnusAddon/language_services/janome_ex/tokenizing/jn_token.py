@@ -65,16 +65,11 @@ class JNToken:
         if self.parts_of_speech in _adjective_auxiliary_parts_of_speech:
             return True
 
-        if self.inflection_type == "サ変・スル" and self.inflected_form == "連用形": # irregular conjugations of する like し
-            return True
-
-        return False
+        return self.inflection_type == "サ変・スル" and self.inflected_form == "連用形" # irregular conjugations of する like し
 
 
     def is_noun(self) -> bool:
-        if self.parts_of_speech in _noun_parts_of_speech:
-            return True
-        return False
+        return self.parts_of_speech in _noun_parts_of_speech
 
     def is_inflected_verb(self) -> bool:
         return self.parts_of_speech.is_verb() and self.inflected_form == "連用タ接続"
@@ -86,10 +81,7 @@ class JNToken:
         if self.parts_of_speech in _end_of_phrase_particles:
             return True
 
-        if self.parts_of_speech == POS.Particle.conjunctive and self.surface != "て":
-            return True
-
-        return False
+        return self.parts_of_speech == POS.Particle.conjunctive and self.surface != "て"
 
     _verb_inflection_token_surfaces = {"て", "てる", "た", "たら", "に", "たり"}
     _verb_inflection_token_bases = {"れる", "られる", "ちゃう", "たい", "そう"}

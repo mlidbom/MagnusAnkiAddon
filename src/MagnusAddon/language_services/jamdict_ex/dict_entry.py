@@ -5,10 +5,10 @@ from sysutils import ex_sequence, kana_utils
 
 
 def _sense_is_transitive_verb(sense: Sense) -> bool:
-    return any("transitive verb" == pos_item for pos_item in sense.pos)
+    return any(pos_item == "transitive verb" for pos_item in sense.pos)
 
 def _sense_is_intransitive_verb(sense: Sense) -> bool:
-    return any("intransitive verb" == pos_item for pos_item in sense.pos)
+    return any(pos_item == "intransitive verb" for pos_item in sense.pos)
 
 class DictEntry:
     def __init__(self, entry: JMDEntry, lookup_word: str, lookup_readings: list[str]) -> None:

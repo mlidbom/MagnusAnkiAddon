@@ -91,7 +91,4 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.sur
             return exact_match if exact_match else matches
 
         vocab = lookup_vocabs_prefer_exact_match(self.base)
-        if any([voc for voc in vocab if voc.has_tag(Mine.Tags.inflecting_word)]):
-            return True
-
-        return False
+        return any([voc for voc in vocab if voc.has_tag(Mine.Tags.inflecting_word)])
