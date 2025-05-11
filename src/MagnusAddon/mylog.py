@@ -5,7 +5,7 @@ import os
 import sys
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
-from typing import Any, Optional
+from typing import Optional
 
 from anki.hooks import wrap
 from aqt import mw
@@ -39,7 +39,7 @@ def get_logger(module: str) -> logging.Logger:
 
     # Prevent errors when deleting/updating the add-on on Windows
     # noinspection PyUnusedLocal
-    def close_log_file(manager: AddonManager, m: str, *args: Any, **kwargs: Any) -> None:
+    def close_log_file(manager: AddonManager, m: str, *args: object, **kwargs: object) -> None:
         if m == addon and file_handler:
             file_handler.close()
 

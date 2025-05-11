@@ -111,8 +111,8 @@ class DictLookup:
     def found_words(self) -> bool: return len(self.entries) > 0
 
     def is_uk(self) -> bool: return any(ent for ent
-                                         in self.entries
-                                         if ent.is_kana_only())
+                                        in self.entries
+                                        if ent.is_kana_only())
 
     def valid_forms(self, force_allow_kana_only: bool = False) -> set[str]:
         return set().union(*[entry.valid_forms(force_allow_kana_only) for entry in self.entries])
@@ -178,8 +178,8 @@ class DictLookup:
     @staticmethod
     def _is_kana_only(entry: JMDEntry) -> bool:
         return not entry.kanji_forms or any(sense for sense
-                                             in entry.senses
-                                             if 'word usually written using kana alone' in sense.misc)
+                                            in entry.senses
+                                            if 'word usually written using kana alone' in sense.misc)
 
     @classmethod
     def might_be_word(cls, word: str) -> bool:

@@ -1,5 +1,4 @@
 from collections.abc import Sequence
-from typing import Any
 
 from anki.cards import CardId
 from anki.collection import OpChangesWithCount
@@ -7,7 +6,7 @@ from aqt import gui_hooks, mw
 from note import noteutils
 
 
-def _monkey_patch(html:str, _card:Any, _something_else_again:Any) -> str:
+def _monkey_patch(html:str, _card:object, _something_else_again:object) -> str:
     def remove_cards_from_cache(ids: Sequence[CardId]) -> None:
         cards = [mw.col.get_card(card_id) for card_id in ids]
         for card in cards:

@@ -1,6 +1,3 @@
-from typing import Any
-
-
 class SentenceSpec:
     def __init__(self, question: str, answer: str):
         self.question = question
@@ -11,7 +8,7 @@ class SentenceSpec:
 
     def __hash__(self) -> int: return hash(self.question)
 
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: object) -> bool:
         return (isinstance(other, SentenceSpec)
                 and other.question == self.question
                 and other.answer == self.answer)

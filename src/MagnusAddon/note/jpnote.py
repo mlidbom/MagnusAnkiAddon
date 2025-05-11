@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, cast
+from typing import TYPE_CHECKING, cast
 
 from anki.models import NotetypeDict
 from anki_extentions.card_ex import CardEx
@@ -26,7 +26,7 @@ class JPNote:
         self._generated_data_was_updated = False
         self.__hash_value = 0
 
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: object) -> bool:
         rassert.not_none(self.get_id(), "You cannot compare or hash a note that has not been saved yet since it has no id")
         return isinstance(other, JPNote) and other.get_id() == self.get_id()
 

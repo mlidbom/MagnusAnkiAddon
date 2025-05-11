@@ -35,7 +35,7 @@ class WordExclusion:
     def as_string(self) -> str:
         return self.word if self.index == WordExclusion._no_index else f"""{self.index}{self._separator}{self.word}"""
 
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: object) -> bool:
         if isinstance(other, WordExclusion):
             return self.word == other.word and self.index == other.index
         return False

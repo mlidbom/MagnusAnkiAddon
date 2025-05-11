@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import gc
-from typing import TYPE_CHECKING, Any, Callable, Optional
+from typing import TYPE_CHECKING, Callable, Optional
 
 import anki
 from anki.collection import Collection
@@ -40,7 +40,7 @@ def config() -> JapaneseConfig:
     return configuration_value.config.instance()
 
 
-def _init(_col:Optional[Any] = None, delay_seconds: float = 0) -> None:
+def _init(_col:Optional[object] = None, delay_seconds: float = 0) -> None:
     global _collection
     if _collection and not _collection.try_cancel_scheduled_init():
         return
@@ -52,7 +52,7 @@ def reset(delay_seconds: float = 0) -> None:
     _destruct()
     _init(delay_seconds)
 
-def _reset(_col:Optional[Any] = None) -> None:
+def _reset(_col:Optional[object] = None) -> None:
     reset()
 
 def _destruct() -> None:
@@ -63,7 +63,7 @@ def _destruct() -> None:
 
     _collection = None
 
-def _collection_is_being_invalidated(_col:Optional[Any] = None) -> None:
+def _collection_is_being_invalidated(_col:Optional[object] = None) -> None:
     _destruct()
     reset(delay_seconds=9999) #Unless forced by the user we don't actually want to run an initialization here
 

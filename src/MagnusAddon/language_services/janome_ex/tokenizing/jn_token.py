@@ -1,5 +1,3 @@
-from typing import Any
-
 from language_services.janome_ex.tokenizing.jn_parts_of_speech import POS, JNPartsOfSpeech
 from sysutils import kana_utils, typed
 
@@ -36,7 +34,7 @@ class JNToken:
             #", " + kana_utils.pad_to_length(f"'{self.node_type}'", 10),
             ", " + str(self.parts_of_speech)])
 
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: object) -> bool:
         if isinstance(other, JNToken):
             return (self.base_form == other.base_form and
                     self.surface == other.surface and

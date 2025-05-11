@@ -1,5 +1,4 @@
 import time
-from typing import Any
 
 from anki.cards import Card
 from anki.notes import Note
@@ -22,7 +21,7 @@ class UglyUITimingBasedHacksData:
 
 ugly_timing_hacks = UglyUITimingBasedHacksData()
 
-def on_reviewer_show_answer(_card: Any) -> None: ugly_timing_hacks.reviewer_showed_answer(_card)
+def on_reviewer_show_answer(_card: Card) -> None: ugly_timing_hacks.reviewer_showed_answer(_card)
 def typed_in_editor(note:Note) -> None: ugly_timing_hacks.typed_in_note(note)
 
 def init() -> None:

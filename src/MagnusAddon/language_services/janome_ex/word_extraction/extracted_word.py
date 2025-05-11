@@ -1,4 +1,4 @@
-from typing import Any, Union
+from typing import Union
 
 from language_services.janome_ex.tokenizing.jn_parts_of_speech import PartOfSpeechDescription
 
@@ -16,7 +16,7 @@ class ExtractedWord:
     def __repr__(self) -> str:
         return f"ExtractedWord('{self.word}')"
 
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: object) -> bool:
         if isinstance(other, ExtractedWord):
             return self.word == other.word
         return False

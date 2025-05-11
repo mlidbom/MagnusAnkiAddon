@@ -1,10 +1,10 @@
 import collections
-from typing import Any, Callable, Generic, TypeVar
+from typing import Callable, Generic, TypeVar
 
 VT = TypeVar('VT')  # Value type
 
 class DefaultDictCaseInsensitive(collections.defaultdict[str, VT], Generic[VT]):
-    def __init__(self, default_factory: Callable[[], VT], **kwargs: Any):
+    def __init__(self, default_factory: Callable[[], VT], **kwargs: object):
         super().__init__(default_factory, **{key.lower(): value for key, value in kwargs.items()})
 
     def __getitem__(self, key: str) -> VT:
@@ -13,5 +13,5 @@ class DefaultDictCaseInsensitive(collections.defaultdict[str, VT], Generic[VT]):
     def __setitem__(self, key: str, value: VT) -> None:
         super().__setitem__(key.lower(), value)
 
-    def __contains__(self, key: Any) -> bool:
+    def __contains__(self, key: str) -> bool:
         return super().__contains__(key.lower())

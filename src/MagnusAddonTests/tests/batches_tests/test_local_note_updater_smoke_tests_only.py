@@ -1,5 +1,4 @@
 from collections.abc import Generator
-from typing import Any
 
 import pytest
 
@@ -18,12 +17,12 @@ def setup() -> Generator[None, None, None]:
         yield
 
 
-def test_smoke_update_all(setup:Any) -> None:
+def test_smoke_update_all(setup:object) -> None:
     from batches import local_note_updater
     local_note_updater.update_all()
 
 
-def test_memory_leak(setup:Any) -> None:
+def test_memory_leak(setup:object) -> None:
     pass
     # from batches import local_note_updater
     #

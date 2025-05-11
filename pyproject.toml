@@ -15,7 +15,8 @@ select = [
     "B", # flake8-bugbear
     "SIM", # flake8-simplify
     "I",# isort sorts imports etc
-    "TCH", # TODO
+    "TC", # TODO
+    "ANN"
 ]
 
 #select = ["ALL"]
@@ -25,6 +26,9 @@ ignore = [
     "D102", # Missing docstring in public method
     "TC006",# [*] Add quotes to type expression in `typing.cast()`
     "UP007",# Use `X | Y` for type annotations
+
+    #ANN
+    "ANN204", #Missing return type annotation for special method `__init__`"
 
     #below here is only needed when ALL is the select value
 #    "Q", # rules on how quotes are use...

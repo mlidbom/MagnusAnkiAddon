@@ -1,6 +1,3 @@
-from typing import Any
-
-
 class KanjiSpec:
     def __init__(self, question: str, answer: str, kun_readings: str, on_readings: str):
         self.question = question
@@ -10,7 +7,7 @@ class KanjiSpec:
 
     def __repr__(self) -> str: return f"""KanjiSpec("{self.question}", "{self.answer}", "{self.kun_reading}", "{self.on_readings}")"""
 
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: object) -> bool:
         return (isinstance(other, KanjiSpec)
                 and other.question == self.question
                 and other.answer == self.answer

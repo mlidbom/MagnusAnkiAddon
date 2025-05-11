@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Optional
 
 from note.note_constants import Mine
 
@@ -19,14 +19,14 @@ class VocabSpec:
         self.answer = answer
         self.readings = readings
         self.extra_forms = set(extra_forms if extra_forms else [])
-        self.tags = set(tags if tags else [] )
+        self.tags = set(tags if tags else [])
         self.compounds = compounds if compounds else []
 
     def __repr__(self) -> str: return f"""VocabSpec("{self.question}", "{self.answer}", {self.readings})"""
 
     def __hash__(self) -> int: return hash(self.question)
 
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: object) -> bool:
         return (isinstance(other, VocabSpec)
                 and other.question == self.question
                 and other.answer == self.answer
