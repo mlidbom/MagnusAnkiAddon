@@ -1,4 +1,5 @@
-from typing import Any, Generator
+from collections.abc import Generator
+from typing import Any
 
 import pytest
 from fixtures.collection_factory import inject_anki_collection_with_select_data, inject_empty_anki_collection_with_note_types

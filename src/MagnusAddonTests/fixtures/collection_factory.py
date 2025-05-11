@@ -1,8 +1,8 @@
 import tempfile
 import unittest.mock
+from collections.abc import Generator
 from contextlib import contextmanager
 from os import path
-from typing import Generator
 
 from anki.collection import Collection
 from fixtures.base_data import note_type_factory

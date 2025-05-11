@@ -4,6 +4,7 @@ extend-exclude = [
     "_lib_patched"
 ]
 line-length = 9999
+target-version = "py39"
 
 [tool.ruff.lint]
 
@@ -11,7 +12,7 @@ line-length = 9999
 select = [
     "E", # pycodestyle
     "F",# Pyflakes
-#    "UP", # pyupgrade
+    "UP", # pyupgrade
 #    "B", # flake8-bugbear
 #    "SIM", # flake8-simplify
     "I",# isort sorts imports etc
@@ -24,5 +25,6 @@ ignore = [
     "E701", #E701 multiple statements on one line,
     "D102", # Missing docstring in public method
     "TC006",# [*] Add quotes to type expression in `typing.cast()`
+    "UP007",# Use `X | Y` for type annotations
 ]
 

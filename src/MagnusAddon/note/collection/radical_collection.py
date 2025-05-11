@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING
 
 from note.collection.backend_facade import BackEndFacade
 from note.collection.note_cache import CachedNote, NoteCache
@@ -30,10 +30,10 @@ class RadicalCollection:
         self.collection = BackEndFacade[RadicalNote](collection, radical_constructor, NoteTypes.Radical)
         self._cache = _RadicalCache(list(self.collection.all()), cache_manager)
 
-    def all(self) -> List[RadicalNote]: return self._cache.all()
+    def all(self) -> list[RadicalNote]: return self._cache.all()
 
     def with_id(self, note_id:NoteId) -> RadicalNote:
         return self._cache.with_id(note_id)
 
-    def with_any_answer_in(self, answers: list[str]) -> List[RadicalNote]:
+    def with_any_answer_in(self, answers: list[str]) -> list[RadicalNote]:
         return ex_sequence.flatten([self._cache.with_answer(answer) for answer in answers])

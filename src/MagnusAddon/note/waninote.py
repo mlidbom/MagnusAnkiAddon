@@ -12,7 +12,7 @@ class WaniNote(JPNote):
         level_tags = [level for level in self._note.tags if level.startswith(Mine.Tags.wani_level)]
         for level in level_tags:
             self._note.remove_tag(level)
-        self.set_tag(f"""{Mine.Tags.wani_level}{"{:02d}".format(new_level)}""")
+        self.set_tag(f"""{Mine.Tags.wani_level}{f"{new_level:02d}"}""")
 
     def get_subject_id(self) -> int: return int(self.get_field(NoteFields.WaniCommon.subject_id))
     def _set_subject_id(self, value: int) -> None: self.set_field(NoteFields.WaniCommon.subject_id, str(value))
@@ -33,7 +33,7 @@ class WaniNote(JPNote):
             if current_position == "0" or current_position == "" or current_position is None:
                 self.set_field(NoteFields.WaniCommon.lesson_position, str(value))
             else:
-                print("Ignoring 0 as value for lesson_position for subject: {}".format(self.get_subject_id()))
+                print(f"Ignoring 0 as value for lesson_position for subject: {self.get_subject_id()}")
 
 
     def _set_my_learning_order(self, value: str) -> None: self.set_field(NoteFields.WaniCommon.my_learning_order, value)
@@ -57,7 +57,7 @@ class WaniNote(JPNote):
         self._set_lesson_position(wani_model.lesson_position)
         self.set_document_url(wani_model.document_url)
 
-        my_learning_order = "level:{:02d}-lesson_position:{:03d}".format(self.get_level(), self.get_lesson_position())
+        my_learning_order = f"level:{self.get_level():02d}-lesson_position:{self.get_lesson_position():03d}"
         self._set_my_learning_order(my_learning_order)
 
         auxiliary_meanings_whitelist = [meaning.meaning for meaning in wani_model.auxiliary_meanings if

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
     from anki.collection import Collection
@@ -58,7 +58,7 @@ class KanjiCollection:
     def all_wani(self) -> list[KanjiNote]:
         return [kanji for kanji in self.all() if kanji.is_wani_note()]
 
-    def with_any_kanji_in(self, kanji_list: list[str]) -> List[KanjiNote]:
+    def with_any_kanji_in(self, kanji_list: list[str]) -> list[KanjiNote]:
         return ex_sequence.flatten([self._cache.with_question(kanji) for kanji in kanji_list])
 
     def with_kanji(self, kanji: str) -> Optional[KanjiNote]:

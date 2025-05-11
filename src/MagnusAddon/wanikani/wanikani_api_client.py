@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, List
+from typing import TYPE_CHECKING, Any
 
 from wanikani_api.client import Client
 
@@ -29,9 +29,9 @@ class WanikaniClient:
             try:
                 client = self._client
 
-                self._radical_list: List[models.Radical] = list(client.subjects(types="radical", fetch_all=True))
-                self._kanji_list: List[models.Kanji] = list(client.subjects(types="kanji", fetch_all=True))
-                self._vocab_list: List[models.Vocabulary] = list(client.subjects(types="vocabulary", fetch_all=True))
+                self._radical_list: list[models.Radical] = list(client.subjects(types="radical", fetch_all=True))
+                self._kanji_list: list[models.Kanji] = list(client.subjects(types="kanji", fetch_all=True))
+                self._vocab_list: list[models.Vocabulary] = list(client.subjects(types="vocabulary", fetch_all=True))
 
                 self._radical_list = [radical for radical in self._radical_list if radical.hidden_at is None]
                 self._kanji_list = [kanji for kanji in self._kanji_list if kanji.hidden_at is None]
@@ -52,30 +52,30 @@ class WanikaniClient:
             self._is_initialized = True
         return self
 
-    def list_radicals(self) -> List[models.Radical]:
+    def list_radicals(self) -> list[models.Radical]:
         self._init()
         return self._radical_list
 
-    def list_kanji(self) -> List[models.Kanji]:
+    def list_kanji(self) -> list[models.Kanji]:
         self._init()
         return self._kanji_list
 
-    def list_vocabulary(self) -> List[models.Vocabulary]:
+    def list_vocabulary(self) -> list[models.Vocabulary]:
         self._init()
         return self._vocab_list
 
-    _kana_vocab_list: List[models.Vocabulary] = list()
+    _kana_vocab_list: list[models.Vocabulary] = list()
     _kana_vocab_dictionary: dict[Any, models.Vocabulary] = {}
     _kana_vocab_id_dictionary: dict[Any,models.Vocabulary] = {}
     # noinspection PyTypeChecker
-    def list_kana_vocabulary(self) -> List[models.Vocabulary]:
+    def list_kana_vocabulary(self) -> list[models.Vocabulary]:
         if not self._kana_vocab_list:
             from sysutils import progress_display_runner
             progress = progress_display_runner.open_spinning_progress_dialog("Fetching Wanikani data")
             try:
                 client = self._client
 
-                self._kana_vocab_list: List[models.Vocabulary] = list(client.subjects(types="kana_vocabulary", fetch_all=True))
+                self._kana_vocab_list: list[models.Vocabulary] = list(client.subjects(types="kana_vocabulary", fetch_all=True))
 
                 self._kana_vocab_list = [kana_vocab for kana_vocab in self._kana_vocab_list if kana_vocab.hidden_at is None]
                 self._kana_vocab_dictionary = {vocab.characters: vocab for vocab in self._kana_vocab_list}

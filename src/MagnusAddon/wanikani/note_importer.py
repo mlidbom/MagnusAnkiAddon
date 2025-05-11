@@ -19,11 +19,11 @@ def import_missing_radicals() -> None:
     imported = 0
     for wani_radical in all_wani_radicals:
         if wani_radical.id not in local_radicals_dictionary:
-            print("Importing: {}".format(wani_radical.slug))
+            print(f"Importing: {wani_radical.slug}")
             RadicalNote.create_from_wani_radical(wani_radical)
             imported += 1
 
-    showInfo("Imported {} radical notes".format(imported))
+    showInfo(f"Imported {imported} radical notes")
 
 
 def import_missing_kanji() -> None:
@@ -33,11 +33,11 @@ def import_missing_kanji() -> None:
     imported = 0
     for wani_kanji in all_wani_kanji:
         if wani_kanji.id not in local_kanji_dictionary:
-            print("Importing: {}".format(wani_kanji.slug))
+            print(f"Importing: {wani_kanji.slug}")
             KanjiNote.create_from_wani_kanji(wani_kanji)
             imported += 1
 
-    showInfo("Imported {} kanji notes".format(imported))
+    showInfo(f"Imported {imported} kanji notes")
 
 
 def import_missing_vocab() -> None:

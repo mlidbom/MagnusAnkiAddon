@@ -1,4 +1,4 @@
-from typing import Generator
+from collections.abc import Generator
 
 import pytest
 from fixtures.collection_factory import inject_anki_collection_with_select_data

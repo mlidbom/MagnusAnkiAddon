@@ -32,7 +32,7 @@ class CardUtils:
     def prioritize_note_cards(cls, note: JPNote, name: str) -> None:
         cards = [app.anki_collection().get_card(card_id) for card_id in note.card_ids()]
         for card in cards:
-            print("Prioritizing {}: {}".format(JPNote.get_note_type_name(note), name))
+            print(f"Prioritizing {JPNote.get_note_type_name(note)}: {name}")
             CardUtils.prioritize(card)
 
     @classmethod
@@ -40,7 +40,7 @@ class CardUtils:
         cards = [app.anki_collection().get_card(card_id) for card_id in note.card_ids()]
         for card in cards:
             if CardUtils.is_new(card):
-                print("Answering new card again {}: {}".format(JPNote.get_note_type_name(note), name))
+                print(f"Answering new card again {JPNote.get_note_type_name(note)}: {name}")
                 card.start_timer()  # answerCard crashes unless I do this.
                 app.anki_collection().sched.answerCard(card, 1)
                 card.due = int(time.time())

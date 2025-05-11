@@ -1,5 +1,6 @@
 # noinspection PyUnresolvedReferences
-from typing import TYPE_CHECKING, Callable, Optional, Sequence
+from collections.abc import Sequence
+from typing import TYPE_CHECKING, Callable, Optional
 
 from anki.cards import CardId
 from anki.notes import Note

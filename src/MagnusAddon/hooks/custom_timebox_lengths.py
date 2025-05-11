@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Dict, Tuple
+from typing import TYPE_CHECKING
 
 import aqt.utils
 from anki_extentions.card_ex import CardEx
@@ -25,7 +25,7 @@ def adjust_timebox(_web_content: WebContent, context: object) -> None:
             note = card.note()
             notetype = note.get_type()
 
-            card_notetype_timebox_minutes: Dict[Tuple[str, str], int] = {
+            card_notetype_timebox_minutes: dict[tuple[str, str], int] = {
                 (NoteTypes.Sentence, CardTypes.reading): app.config().timebox_sentence_read.get_value(),
                 (NoteTypes.Sentence, CardTypes.listening): app.config().timebox_sentence_listen.get_value(),
 

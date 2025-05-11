@@ -1,6 +1,7 @@
 """extentions for working with Iterable"""
 import itertools
-from typing import Callable, Iterable, TypeVar
+from collections.abc import Iterable
+from typing import Callable, TypeVar
 
 T = TypeVar('T')
 

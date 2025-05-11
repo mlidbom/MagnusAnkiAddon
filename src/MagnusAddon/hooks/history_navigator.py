@@ -1,6 +1,5 @@
 import json
 import os
-from typing import List
 
 from anki.cards import Card, CardId
 from ankiutils import query_builder, search_executor
@@ -13,7 +12,7 @@ from sysutils.typed import checked_cast
 
 class CardHistoryNavigator:
     def __init__(self) -> None:
-        self.card_history: List[CardId] = []  # Stores card IDs
+        self.card_history: list[CardId] = []  # Stores card IDs
         self.current_position: int = -1
 
         # Load history from file
@@ -53,7 +52,7 @@ class CardHistoryNavigator:
         history_file_path = self._get_history_file_path()
 
         if os.path.exists(history_file_path):
-            with open(history_file_path, "r") as history_file:
+            with open(history_file_path) as history_file:
                 saved_history = typed.checked_cast_generics(list[int], json.load(history_file))
                 self.card_history = [CardId(card_id) for card_id in saved_history]
                 self._reset_position()

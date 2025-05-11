@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Sequence
+from typing import TYPE_CHECKING
 
 from ankiutils import app
 from language_services.janome_ex.word_extraction.word_extractor import jn_extractor
@@ -8,6 +8,8 @@ from note.note_constants import Builtin, MyNoteFields, NoteFields, NoteTypes, Se
 from sysutils import ex_sequence, kana_utils
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
+
     from anki.cards import Card
     from anki.notes import NoteId
     from language_services.janome_ex.word_extraction.extracted_word import ExtractedWord

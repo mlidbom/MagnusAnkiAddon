@@ -1,4 +1,4 @@
-from typing import Sequence
+from collections.abc import Sequence
 
 import aqt.browser
 from anki.cards import Card, CardId

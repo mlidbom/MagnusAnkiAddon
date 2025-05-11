@@ -1,8 +1,9 @@
 import time
+from collections.abc import Sequence
 from dataclasses import dataclass
 from queue import Queue
 from threading import Event, Thread
-from typing import Callable, Optional, Sequence, cast
+from typing import Callable, Optional, cast
 
 from anki import hooks
 from anki.collection import Collection

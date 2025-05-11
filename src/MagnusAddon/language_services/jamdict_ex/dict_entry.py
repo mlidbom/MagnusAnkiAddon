@@ -1,4 +1,4 @@
-from typing import Sequence
+from collections.abc import Sequence
 
 from jamdict.jmdict import JMDEntry, Sense
 from sysutils import ex_sequence, kana_utils
@@ -17,20 +17,20 @@ class DictEntry:
         self.lookup_readings = lookup_readings
 
     def is_kana_only(self) -> bool:
-        return not self.entry.kanji_forms or any((sense for sense
-                                                  in self.entry.senses
-                                                  if 'word usually written using kana alone' in sense.misc))
+        return not self.entry.kanji_forms or any(sense for sense
+                                                 in self.entry.senses
+                                                 if 'word usually written using kana alone' in sense.misc)
 
     @classmethod
     def create(cls, entries: Sequence[JMDEntry], lookup_word: str, lookup_reading: list[str]) -> list['DictEntry']:
         return [cls(entry, lookup_word, lookup_reading) for entry in entries]
 
     def has_matching_kana_form(self, search: str) -> bool:
-        search = kana_utils.katakana_to_hiragana(search) # todo: this converting to hiragana is worrisome. Is this really the behavior we want? What false positives might we run into?
+        search = kana_utils.katakana_to_hiragana(search)  # todo: this converting to hiragana is worrisome. Is this really the behavior we want? What false positives might we run into?
         return any(search == kana_utils.katakana_to_hiragana(form) for form in self.kana_forms())
 
     def has_matching_kanji_form(self, search: str) -> bool:
-        search = kana_utils.katakana_to_hiragana(search) # todo: this converting to hiragana is worrisome. Is this really the behavior we want? What false positives might we run into?
+        search = kana_utils.katakana_to_hiragana(search)  # todo: this converting to hiragana is worrisome. Is this really the behavior we want? What false positives might we run into?
         return any(search == kana_utils.katakana_to_hiragana(form) for form in self.kanji_forms())
 
     def kana_forms(self) -> list[str]: return [ent.text for ent in self.entry.kana_forms]
@@ -39,14 +39,12 @@ class DictEntry:
         return set(self.kana_forms()) | set(self.kanji_forms()) if self.is_kana_only() or force_allow_kana_only else set(self.kanji_forms())
 
     def priority_tags(self) -> set[str]:
-        kanji_priorities:list[str] = ex_sequence.flatten([form.pri for form in self.entry.kanji_forms if form.text == self.lookup_word])
+        kanji_priorities: list[str] = ex_sequence.flatten([form.pri for form in self.entry.kanji_forms if form.text == self.lookup_word])
         kana_priorities: list[str] = ex_sequence.flatten([form.pri for form in self.entry.kana_forms if form.text in self.lookup_readings])
 
         tags = set(kanji_priorities + kana_priorities)
 
         return tags
-
-
 
     def _is_transitive_verb(self) -> bool:
         return all(_sense_is_transitive_verb(sense) for sense in self.entry.senses)
@@ -76,10 +74,10 @@ class DictEntry:
         if not self._is_verb():
             return False
 
-        glosses_text:list[str] = ex_sequence.flatten([[str(gloss.text) for gloss in sense.gloss] for sense in self.entry.senses])
+        glosses_text: list[str] = ex_sequence.flatten([[str(gloss.text) for gloss in sense.gloss] for sense in self.entry.senses])
         return all(gloss.startswith("to be ") for gloss in glosses_text)
 
-    def format_sense(self, sense:Sense) -> str:
+    def format_sense(self, sense: Sense) -> str:
         glosses_text = [str(gloss.text) for gloss in sense.gloss]
         glosses_text = [gloss.replace(" ", "-") for gloss in glosses_text]
         if self._is_verb():
@@ -154,10 +152,9 @@ class DictEntry:
         'Ichidan verb - kureru special class': ['ichidan verb', 'special-class'],
         "'taru' adjective": ['taru-adjective']
 
-
     }
     def parts_of_speech(self) -> set[str]:
-        def try_get_pos(pos:str) -> list[str]:
+        def try_get_pos(pos: str) -> list[str]:
             return self._parts_of_speech_map[pos] if pos in self._parts_of_speech_map else ["unmapped-pos-" + pos]
 
         return set(ex_sequence.flatten([ex_sequence.flatten([try_get_pos(pos) for pos in sense.pos]) for sense in self.entry.senses]))

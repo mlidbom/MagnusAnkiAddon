@@ -1,5 +1,5 @@
 import time
-from typing import Callable, List, Optional, TypeVar
+from typing import Callable, Optional, TypeVar
 
 from ankiutils import app
 from PyQt6.QtCore import Qt
@@ -45,7 +45,7 @@ def _create_spinning_progress_dialog(message: str) -> QProgressDialog:
     progress_dialog.show()
     return progress_dialog
 
-def process_with_progress(items: List[T], process_item: Callable[[T], None], message:str, allow_cancel: bool = True, display_delay_seconds: float = 0.0, pause_cache_updates: bool = True) -> None:
+def process_with_progress(items: list[T], process_item: Callable[[T], None], message:str, allow_cancel: bool = True, display_delay_seconds: float = 0.0, pause_cache_updates: bool = True) -> None:
     total_items = len(items)
     start_time = time.time()
     progress_dialog: Optional[QProgressDialog] = None

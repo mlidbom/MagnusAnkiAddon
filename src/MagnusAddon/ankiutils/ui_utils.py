@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Callable, Optional
+from typing import TYPE_CHECKING, Callable
 
 if TYPE_CHECKING:
     from anki.cards import Card
@@ -34,8 +34,8 @@ def is_displaytype_displaying_review_question(display_type: str) -> bool:
 def is_displaytype_displaying_review_answer(display_type: str) -> bool:
     return display_type == "reviewAnswer"
 
-def get_note_from_web_view(view: AnkiWebView) -> Optional[JPNote]:
-    inner_note: Optional[Note]
+def get_note_from_web_view(view: AnkiWebView) -> JPNote | None:
+    inner_note: Note | None
 
     if view.kind == AnkiWebViewKind.MAIN:
         card = main_window().reviewer.card

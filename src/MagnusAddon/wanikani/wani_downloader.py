@@ -1,5 +1,4 @@
 import os
-from typing import List
 
 import requests
 from ankiutils import app
@@ -27,7 +26,7 @@ class WaniDownloader:
 
             return filename
         else:
-            raise FileDownloadError("{} -> {}".format(url, cls.media_dir()))
+            raise FileDownloadError(f"{url} -> {cls.media_dir()}")
 
     @classmethod
     def fetch_audio_from_wanikani(cls, vocab: VocabNote) -> None:
@@ -44,7 +43,7 @@ class WaniDownloader:
 
     @classmethod
     def fetch_missing_vocab_audio(cls) -> None:
-        vocab_missing_audio: List[VocabNote] = [vocab for vocab in app.col().vocab.all_wani() if
+        vocab_missing_audio: list[VocabNote] = [vocab for vocab in app.col().vocab.all_wani() if
                                                 vocab.get_audio_female() == ""]
         for vocab in vocab_missing_audio:
             cls.fetch_audio_from_wanikani(vocab)

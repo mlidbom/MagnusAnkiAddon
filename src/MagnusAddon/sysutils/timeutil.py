@@ -3,9 +3,12 @@ from __future__ import annotations
 import sys
 import time
 from contextlib import contextmanager
-from typing import Callable, Iterator
+from typing import TYPE_CHECKING, Callable
 
 import mylog
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
 
 SECONDS_PER_DAY = 24 * 60 * 60
 MILLISECONDS_PER_SECOND = 1000

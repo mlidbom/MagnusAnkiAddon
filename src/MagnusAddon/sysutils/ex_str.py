@@ -1,6 +1,5 @@
 import re
-
-from typing_extensions import Sequence
+from collections.abc import Sequence
 
 newline = "\n"
 full_width_space = "　"

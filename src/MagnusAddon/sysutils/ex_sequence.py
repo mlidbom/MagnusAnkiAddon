@@ -1,5 +1,6 @@
 """extensions to the built in Sequence type"""
-from typing import Callable, Sequence, TypeVar
+from collections.abc import Sequence
+from typing import Callable, TypeVar
 
 T = TypeVar('T')
 

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import re
-from typing import TYPE_CHECKING, Tuple
+from typing import TYPE_CHECKING
 
 from anki.notes import Note
 from note import kanjinote_mnemonic_maker
@@ -228,7 +228,7 @@ class KanjiNote(WaniNote):
     def generate_default_primary_vocab(self) -> list[str]:
         result: list[str] = []
 
-        def sort_key(_vocab: VocabNote) -> Tuple[int, int]:
+        def sort_key(_vocab: VocabNote) -> tuple[int, int]:
             return -len(_vocab.get_sentences_studying()), len(_vocab.get_question())
 
         studying_reading_vocab_in_descending_studying_sentences_order = sorted((voc for voc in self.get_vocab_notes() if voc.is_studying(CardTypes.reading)), key=sort_key)
@@ -313,8 +313,8 @@ class KanjiNote(WaniNote):
     <div>'''
 
         for vocab in vocabs:
-            vocab_html += '''
-        <div>{} ({}) {}</div>'''.format(vocab.characters, vocab.readings[0].reading, vocab.meanings[0].meaning)
+            vocab_html += f'''
+        <div>{vocab.characters} ({vocab.readings[0].reading}) {vocab.meanings[0].meaning}</div>'''
 
         vocab_html += '''
     </div>

@@ -28,7 +28,7 @@ class JPCollection:
         self.cache_manager.start()
 
     def unsuspend_note_cards(self, note: JPNote, name: str) -> None:
-        print("Unsuspending {}: {}".format(JPNote.get_note_type_name(note), name))
+        print(f"Unsuspending {JPNote.get_note_type_name(note)}: {name}")
         self.anki_collection.sched.unsuspend_cards(note.card_ids())
 
     @classmethod

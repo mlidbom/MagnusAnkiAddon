@@ -53,5 +53,5 @@ class WordExclusion:
         return {'word': self.word, 'index': self.index}
 
     @classmethod
-    def from_dict(cls, reader: JsonDictReader) -> 'WordExclusion':
+    def from_dict(cls, reader: JsonDictReader) -> WordExclusion:
         return cls(word=reader.get_string('word'), index=reader.get_int('index'))

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import time
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Generic, Sequence, TypeVar
+from typing import TYPE_CHECKING, Generic, TypeVar
 
 from note.jpnote import JPNote
 from note.note_constants import CardTypes
@@ -11,6 +11,8 @@ from sysutils.collections.default_dict_case_insensitive import DefaultDictCaseIn
 from sysutils.typed import checked_cast
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
+
     from anki.notes import Note, NoteId
     from note.collection.cache_runner import CacheRunner
 

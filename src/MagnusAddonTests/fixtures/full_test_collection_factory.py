@@ -2,9 +2,9 @@ import os
 import shutil
 import tempfile
 import unittest.mock
+from collections.abc import Generator
 from contextlib import contextmanager
 from os import path
-from typing import Generator
 
 from anki.collection import Collection
 

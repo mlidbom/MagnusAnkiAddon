@@ -1,8 +1,9 @@
-from typing import Any, Callable, DefaultDict, Generic, TypeVar
+import collections
+from typing import Any, Callable, Generic, TypeVar
 
 VT = TypeVar('VT')  # Value type
 
-class DefaultDictCaseInsensitive(DefaultDict[str, VT], Generic[VT]):
+class DefaultDictCaseInsensitive(collections.defaultdict[str, VT], Generic[VT]):
     def __init__(self, default_factory: Callable[[], VT], **kwargs: Any):
         super().__init__(default_factory, **{key.lower(): value for key, value in kwargs.items()})
 

@@ -6,12 +6,14 @@ from anki_extentions.notetype_ex.note_type_ex import NoteTypeEx
 from sysutils import rassert
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
+
     from anki.cards import Card, CardId
     from anki.notes import Note, NoteId
     from note.collection.jp_collection import JPCollection
 
 from abc import ABC
-from typing import Any, Sequence, cast
+from typing import Any, cast
 
 from anki.models import NotetypeDict
 from anki_extentions.card_ex import CardEx

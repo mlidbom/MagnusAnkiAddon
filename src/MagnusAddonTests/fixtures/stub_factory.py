@@ -1,6 +1,7 @@
 import threading
+from collections.abc import Generator
 from contextlib import contextmanager
-from typing import Any, Callable, Generator, List, TypeVar
+from typing import Any, Callable, TypeVar
 
 from ankiutils import app
 from ankiutils.ui_utils_interface import IUIUtils
@@ -49,7 +50,7 @@ def _stub_progress_runner() -> Generator[None, None, None]:
         return Closable(lambda: None)
 
     # noinspection PyUnusedLocal
-    def _process_with_progress(items: List[T], process_item: Callable[[T], None], message:str, allow_cancel: bool = True, display_delay_seconds: float = 0.0, pause_cache_updates: bool = True) -> None:
+    def _process_with_progress(items: list[T], process_item: Callable[[T], None], message:str, allow_cancel: bool = True, display_delay_seconds: float = 0.0, pause_cache_updates: bool = True) -> None:
         for item in items:
             process_item(item)
 

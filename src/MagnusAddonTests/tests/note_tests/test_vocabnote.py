@@ -1,5 +1,5 @@
 import re
-from typing import Generator
+from collections.abc import Generator
 
 import pytest
 from fixtures.collection_factory import inject_empty_anki_collection_with_note_types
