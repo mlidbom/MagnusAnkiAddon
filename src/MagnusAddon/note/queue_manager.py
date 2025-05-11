@@ -1,29 +1,23 @@
-# noinspection PyUnresolvedReferences
-from collections.abc import Sequence
-from typing import TYPE_CHECKING, Callable, Optional
+from __future__ import annotations
 
-from anki.cards import CardId
-from anki.notes import Note
+from typing import TYPE_CHECKING, Callable
 
-# noinspection PyUnresolvedReferences
 from ankiutils import app
 from aqt import dialogs, mw
 from note.cardutils import CardUtils
-
-# noinspection PyUnresolvedReferences
 from note.kanjinote import KanjiNote
 from note.note_constants import NoteTypes
-
-# noinspection PyUnresolvedReferences
 from note.radicalnote import RadicalNote
-
-# noinspection PyUnresolvedReferences
 from note.vocabnote import VocabNote
-from note.waninote import WaniNote
 from sysutils import ex_str
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
+
+    from anki.cards import CardId
+    from anki.notes import Note
     from aqt.browser import Browser
+    from note.waninote import WaniNote
 
 
 def unsuspend_with_dependencies(note: Note) -> None:
@@ -61,7 +55,7 @@ def visit_vocab_with_dependencies(vocab_note: VocabNote, callback: Callable[[Wan
 
 
 def visit_kanji_with_dependencies(kanji_note: KanjiNote,
-                                  calling_radical_note: Optional[RadicalNote],
+                                  calling_radical_note: RadicalNote | None,
                                   callback: Callable[[WaniNote, str], None]) -> None:
     radical_dependencies_names = kanji_note.get_radical_dependencies_names()
 
@@ -77,7 +71,7 @@ def visit_kanji_with_dependencies(kanji_note: KanjiNote,
 
 
 def visit_radical_with_dependencies(radical_note: RadicalNote,
-                                    calling_kanji_note: Optional[KanjiNote],
+                                    calling_kanji_note: KanjiNote | None,
                                     callback: Callable[[WaniNote, str], None]) -> None:
     kanji_dependencies_notes = app.col().kanji.with_any_kanji_in([radical_note.get_question()])
     for kanji_note in kanji_dependencies_notes:

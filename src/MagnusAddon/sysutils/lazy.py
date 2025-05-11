@@ -1,6 +1,6 @@
 import threading
 from concurrent.futures import Future
-from typing import Callable, Generic, Optional, TypeVar, cast
+from typing import Callable, Generic, TypeVar, cast
 
 from sysutils import app_thread_pool
 
@@ -9,7 +9,7 @@ T = TypeVar('T')
 class Lazy(Generic[T]):
     def __init__(self, factory: Callable[[], T]) -> None:
         self.factory = factory
-        self._instance: Optional[T] = None
+        self._instance: T | None = None
 
     def instance(self) -> T:
         if self._instance is None:
@@ -20,7 +20,7 @@ class Lazy(Generic[T]):
 class BackgroundInitialingLazy(Generic[T]):
     def __init__(self, factory: Callable[[], T], delay_seconds: float = 0) -> None:
         self._lock = threading.Lock()
-        self._instance: Optional[Future[T]] = None
+        self._instance: Future[T] | None = None
         self._factory = factory
         if delay_seconds > 0:
             self._pending_init_timer = threading.Timer(delay_seconds, self._init)

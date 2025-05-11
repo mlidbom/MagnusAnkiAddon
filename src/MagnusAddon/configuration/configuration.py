@@ -1,14 +1,18 @@
-from typing import Optional
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 from ankiutils import app
 from aqt import qconnect
-from configuration.configuration_value import ConfigurationValueFloat, ConfigurationValueInt
 from PyQt6.QtWidgets import QDialog, QDialogButtonBox, QDoubleSpinBox, QGridLayout, QGroupBox, QLabel, QSpinBox, QVBoxLayout, QWidget
 from sysutils.typed import checked_cast
 
+if TYPE_CHECKING:
+    from configuration.configuration_value import ConfigurationValueFloat, ConfigurationValueInt
+
 
 class JapaneseOptionsDialog(QDialog):
-    def __init__(self, parent: Optional[QWidget] = None) -> None:
+    def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.config = app.config()
 

@@ -1,10 +1,13 @@
-from typing import Union
+from __future__ import annotations
 
-from language_services.janome_ex.tokenizing.jn_parts_of_speech import PartOfSpeechDescription
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from language_services.janome_ex.tokenizing.jn_parts_of_speech import PartOfSpeechDescription
 
 
 class ExtractedWord:
-    def __init__(self, word: str, surface: str, character_index:int, parts_of_speech: Union[PartOfSpeechDescription, None] = None) -> None:
+    def __init__(self, word: str, surface: str, character_index:int, parts_of_speech: PartOfSpeechDescription | None = None) -> None:
         self.word = word
         self.surface = surface
         self.parts_of_speech = parts_of_speech

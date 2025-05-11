@@ -1,24 +1,29 @@
+from __future__ import annotations
+
 import time
-from collections.abc import Sequence
 from dataclasses import dataclass
 from queue import Queue
 from threading import Event, Thread
-from typing import Callable, Optional, cast
+from typing import TYPE_CHECKING, Callable, cast
 
 from anki import hooks
-from anki.collection import Collection
-from anki.decks import DeckId
 from anki.models import NotetypeDict
-from anki.notes import Note, NoteId
 from anki_extentions.notetype_ex.note_type_ex import NoteTypeEx
 from note.note_constants import NoteTypes
 from sysutils import app_thread_pool
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
+
+    from anki.collection import Collection
+    from anki.decks import DeckId
+    from anki.notes import Note, NoteId
 
 
 @dataclass
 class Task:
     func: Callable[[], None]
-    completion_event: Optional[Event] = None
+    completion_event: Event | None = None
 
 class DedicatedThread:
     def __init__(self) -> None:

@@ -1,5 +1,5 @@
 from concurrent.futures import Future
-from typing import Callable, Generic, Optional, TypeVar
+from typing import Callable, Generic, TypeVar
 
 from anki.cards import Card
 from ankiutils import app, ui_utils
@@ -14,7 +14,7 @@ class PrerenderingAnswerContentRenderer(Generic[TNote]):
     def __init__(self, cls: type[TNote], render_methods:dict[str, Callable[[TNote], str]]) -> None:
         self._cls = cls
         self._render_methods = render_methods
-        self._promises:Optional[dict[str, Future[str]]] = None
+        self._promises:dict[str, Future[str]] | None = None
 
     @staticmethod
     def _schedule_render_method(_render_method:Callable[[TNote], str], section:str, note:TNote) -> Future[str]:

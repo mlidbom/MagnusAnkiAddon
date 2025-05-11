@@ -1,4 +1,4 @@
-from typing import Optional
+from __future__ import annotations
 
 from ankiutils import app
 from aqt import qconnect
@@ -9,7 +9,7 @@ from sysutils.typed import checked_cast, non_optional
 
 
 class ReadingsOptionsDialog(QDialog):
-    def __init__(self, parent: Optional[QWidget] = None) -> None:
+    def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.config = app.config()
 
@@ -82,7 +82,7 @@ class ReadingsOptionsDialog(QDialog):
                     five_lines_height = self.text_edit.fontMetrics().height() * 5
                     scrollbar.setValue(scrollbar_position_with_cursor_at_top - five_lines_height)
 
-        def find_block_starting_with_text() -> Optional[QTextBlock]:
+        def find_block_starting_with_text() -> QTextBlock | None:
             for block_num_ in range(document.blockCount()):
                 block_ = document.findBlockByNumber(block_num_)
                 line_text_ = block_.text().strip()
@@ -91,7 +91,7 @@ class ReadingsOptionsDialog(QDialog):
                     return block_
             return None
 
-        def find_block_containing_text() -> Optional[QTextBlock]:
+        def find_block_containing_text() -> QTextBlock | None:
             for block_num_ in range(document.blockCount()):
                 block_ = document.findBlockByNumber(block_num_)
                 line_text_ = block_.text().strip()
