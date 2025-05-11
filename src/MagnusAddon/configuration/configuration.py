@@ -1,5 +1,3 @@
-from typing import Optional
-
 from ankiutils import app
 from aqt.qt import *
 from configuration.configuration_value import *

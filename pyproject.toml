@@ -1,29 +1,28 @@
 [tool.ruff]
-lint.select = ["I", "TCH"]  # Enable TCH rules along with basic error checking
-#lint.select = ["E", "F", "B", "I", "TCH"] #
-
-#lint.select = [
-#    "E", # pycodestyle
-#    "F",# Pyflakes
-#    "UP", # pyupgrade
-#    "B", # flake8-bugbear
-#    "SIM", # flake8-simplify
-#    "I",# isort
-#    "TCH" # TODO
-#]
-
-#lint.select = ["ALL"]
-
 extend-exclude = [
     "_lib",
     "_lib_patched"
 ]
+line-length = 9999
 
-lint.ignore = [
+[tool.ruff.lint]
+
+
+select = [
+    "E", # pycodestyle
+#    "F",# Pyflakes
+#    "UP", # pyupgrade
+#    "B", # flake8-bugbear
+#    "SIM", # flake8-simplify
+    "I",# isort sorts imports etc
+    "TCH" # TODO
+]
+
+#lint.select = ["ALL"]
+
+ignore = [
     "E701", #E701 multiple statements on one line,
     "D102", # Missing docstring in public method
     "TC006",# [*] Add quotes to type expression in `typing.cast()`
 ]
 
-
-line-length = 250

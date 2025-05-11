@@ -67,7 +67,7 @@ def _build_vocab_list(word_to_show: list[str], excluded_words:set[str], title:st
 
 def lookup_vocabs(excluded_words: set[str], word:str) -> list[VocabNote]:
     vocabs: list[VocabNote] = app.col().vocab.with_form(word)
-    vocabs = [voc for voc in vocabs if not voc.get_question() in excluded_words]
+    vocabs = [voc for voc in vocabs if voc.get_question() not in excluded_words]
     exact_match = [voc for voc in vocabs if voc.get_question_without_noise_characters() == word]
     if exact_match:
         vocabs = exact_match

@@ -40,13 +40,13 @@ def build_right_click_menu(root_menu: QMenu, note: typing.Optional[JPNote], sele
             right_click_menu_note_radical.setup_note_menu(non_optional(root_menu.addMenu(shortcutfinger.home3("Radical note actions"))), note)
         elif isinstance(note, KanjiNote):
             right_click_menu_note_kanji.build_note_menu(non_optional(root_menu.addMenu(shortcutfinger.home3("Kanji note actions"))), note)
-            string_note_menu_factory = lambda menu, string: right_click_menu_note_kanji.build_string_menu(menu, typed.checked_cast(KanjiNote, note), string)
+            string_note_menu_factory = lambda menu, string: right_click_menu_note_kanji.build_string_menu(menu, typed.checked_cast(KanjiNote, note), string)  # noqa: E731
         elif isinstance(note, VocabNote):
             right_click_menu_note_vocab.setup_note_menu(non_optional(root_menu.addMenu(shortcutfinger.home3("Vocab note actions"))), note, selection, clipboard)
-            string_note_menu_factory = lambda menu, string: right_click_menu_note_vocab.build_string_menu(menu, typed.checked_cast(VocabNote, note), string)
+            string_note_menu_factory = lambda menu, string: right_click_menu_note_vocab.build_string_menu(menu, typed.checked_cast(VocabNote, note), string)  # noqa: E731
         elif isinstance(note, SentenceNote):
             right_click_menu_note_sentence.build_note_menu(non_optional(root_menu.addMenu(shortcutfinger.home3("Sentence note actions"))), note)
-            string_note_menu_factory = lambda menu, string: right_click_menu_note_sentence.build_string_menu(menu, typed.checked_cast(SentenceNote, note), string)
+            string_note_menu_factory = lambda menu, string: right_click_menu_note_sentence.build_string_menu(menu, typed.checked_cast(SentenceNote, note), string)  # noqa: E731
 
         build_universal_note_actions_menu(non_optional(root_menu.addMenu(shortcutfinger.home4("Universal note actions"))), note)
 
