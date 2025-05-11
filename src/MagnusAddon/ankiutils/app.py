@@ -18,7 +18,7 @@ from sysutils.typed import checked_cast, non_optional
 if TYPE_CHECKING:
     from anki.dbproxy import DBProxy
     from ankiutils.ui_utils_interface import IUIUtils
-    from configuration.configuration import JapaneseConfig
+    from configuration.configuration_value import JapaneseConfig
 
 
 
@@ -36,8 +36,8 @@ def add_init_hook(hook:Callable[[], None]) -> None:
     _init_hooks.add(hook)
 
 def config() -> JapaneseConfig:
-    from configuration import configuration
-    return configuration.config.instance()
+    from configuration import configuration_value
+    return configuration_value.config.instance()
 
 
 def _init(_col:Optional[Any] = None, delay_seconds: float = 0) -> None:

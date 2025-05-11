@@ -1,6 +1,6 @@
 from anki.decks import DeckDict, DeckId
 from anki_extentions.deck_configdict_ex import DeckConfigDictEx
-from sysutils.typed import *
+from sysutils.typed import checked_cast_generics, str_
 
 
 class DeckEx:

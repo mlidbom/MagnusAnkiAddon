@@ -33,7 +33,7 @@ def build_string_menu(string_menu: QMenu, kanji: KanjiNote, menu_string: str) ->
         for index, _vocab in enumerate(kanji.get_primary_vocab()):
             add_ui_action(highlighted_vocab_menu, shortcutfinger.numpad(index, f"{_vocab}"), lambda _index=index: kanji.position_primary_vocab(_vocab_to_add, _index))  # type: ignore
 
-        add_ui_action(highlighted_vocab_menu, shortcutfinger.home1(f"[Last]"), lambda: kanji.position_primary_vocab(_vocab_to_add))
+        add_ui_action(highlighted_vocab_menu, shortcutfinger.home1("[Last]"), lambda: kanji.position_primary_vocab(_vocab_to_add))
 
         if _vocab_to_add in kanji.get_primary_vocab():
             add_ui_action(highlighted_vocab_menu, shortcutfinger.home2("Remove"), lambda __vocab_to_add=_vocab_to_add: kanji.remove_primary_vocab(__vocab_to_add))  # type: ignore

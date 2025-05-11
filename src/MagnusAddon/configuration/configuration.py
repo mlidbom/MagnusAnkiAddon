@@ -1,7 +1,10 @@
+from typing import Optional
+
 from ankiutils import app
-from aqt.qt import *
-from configuration.configuration_value import *
-from PyQt6.QtWidgets import QDoubleSpinBox, QGridLayout, QLabel
+from aqt import qconnect
+from configuration.configuration_value import ConfigurationValueFloat, ConfigurationValueInt
+from PyQt6.QtWidgets import QDialog, QDialogButtonBox, QDoubleSpinBox, QGridLayout, QGroupBox, QLabel, QSpinBox, QVBoxLayout, QWidget
+from sysutils.typed import checked_cast
 
 
 class JapaneseOptionsDialog(QDialog):
@@ -150,4 +153,4 @@ class JapaneseOptionsDialog(QDialog):
 
 def show_japanese_options() -> None:
     from aqt import mw
-    JapaneseOptionsDialog(mw).exec()
+    JapaneseOptionsDialog(checked_cast(QWidget, mw)).exec()

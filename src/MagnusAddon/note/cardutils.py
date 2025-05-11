@@ -1,7 +1,7 @@
 # noinspection PyUnresolvedReferences
 import time
 
-from anki.cards import *
+from anki.cards import Card
 from anki.consts import QUEUE_TYPE_NEW
 from ankiutils import app
 from note.jpnote import JPNote

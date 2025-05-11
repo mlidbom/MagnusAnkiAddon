@@ -182,7 +182,7 @@ class Mine:
 
         priority_folder = f"{base_folder}priority::"
 
-        source_folder = f"source::"
+        source_folder = "source::"
 
         Wani = f"{source_folder}wani"
         wani_level = f"{Wani}::level::"

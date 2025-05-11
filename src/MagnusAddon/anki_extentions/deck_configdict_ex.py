@@ -1,5 +1,5 @@
 from anki.decks import DeckConfigDict
-from sysutils.typed import *
+from sysutils.typed import float_
 
 
 class DeckConfigDictEx:

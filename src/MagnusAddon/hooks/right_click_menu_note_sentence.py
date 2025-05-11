@@ -51,7 +51,7 @@ def build_highlighted_vocab_menu(highlighted_vocab_menu: QMenu, sentence: Senten
     for index, _vocab in enumerate(sentence.configuration.highlighted_words()):
         add_ui_action(highlighted_vocab_menu, shortcutfinger.numpad(index, f"{_vocab}"), lambda _index=index: sentence.configuration.position_highlighted_word(_vocab_to_add, _index))  # type: ignore
 
-    add_ui_action(highlighted_vocab_menu, shortcutfinger.home1(f"[Last]"), lambda: sentence.configuration.position_highlighted_word(_vocab_to_add))
+    add_ui_action(highlighted_vocab_menu, shortcutfinger.home1("[Last]"), lambda: sentence.configuration.position_highlighted_word(_vocab_to_add))
 
     if _vocab_to_add in sentence.configuration.highlighted_words():
         add_ui_action(highlighted_vocab_menu, shortcutfinger.home2("Remove"), lambda __vocab_to_add=_vocab_to_add: sentence.configuration.remove_highlighted_word(__vocab_to_add))  # type: ignore

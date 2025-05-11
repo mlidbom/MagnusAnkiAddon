@@ -1,3 +1,5 @@
+# ruff: noqa: F401
+
 from . import (
     kanji_katakana_onyomi,
     kanji_mnemonic,

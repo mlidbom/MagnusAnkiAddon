@@ -1,3 +1,5 @@
+# ruff: noqa: F401
+
 from . import (
     browser_right_click_menu,
     clear_studying_cache_on_card_suspend_unsuspend,
