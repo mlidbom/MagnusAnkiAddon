@@ -1,10 +1,12 @@
-from aqt.qt import *
-
-from ankiutils import app
 from typing import Optional
 
+from ankiutils import app
+from aqt import qconnect
+from PyQt6.QtGui import QColor, QKeySequence, QShortcut, QTextBlock, QTextCharFormat, QTextCursor
+from PyQt6.QtWidgets import QDialog, QDialogButtonBox, QHBoxLayout, QLabel, QLineEdit, QTextEdit, QVBoxLayout, QWidget
 from sysutils.ex_str import newline
-from sysutils.typed import non_optional
+from sysutils.typed import checked_cast, non_optional
+
 
 class ReadingsOptionsDialog(QDialog):
     def __init__(self, parent: Optional[QWidget] = None):
@@ -144,5 +146,5 @@ class ReadingsOptionsDialog(QDialog):
 
 def show_readings_mappings() -> None:
     from aqt import mw
-    dialog = ReadingsOptionsDialog(mw)
+    dialog = ReadingsOptionsDialog(checked_cast(QWidget, mw))
     dialog.exec()

@@ -1,15 +1,15 @@
-from anki.cards import Card, CardId
-from aqt import mw, gui_hooks
-from aqt.browser import Browser  # type: ignore
-from aqt.qt import QKeySequence, QShortcut
-from typing import List
 import json
 import os
+from typing import List
 
-from PyQt6.QtWidgets import QWidget
-
+from anki.cards import Card, CardId
 from ankiutils import query_builder, search_executor
+from aqt import gui_hooks, mw
+from aqt.qt import QKeySequence, QShortcut
+from PyQt6.QtWidgets import QWidget
 from sysutils import typed
+from sysutils.typed import checked_cast
+
 
 class CardHistoryNavigator:
     def __init__(self) -> None:
@@ -28,7 +28,7 @@ class CardHistoryNavigator:
             # noinspection PyUnresolvedReferences
             QShortcut(QKeySequence("Alt+Right"), widget).activated.connect(self.navigate_forward)
 
-        bind_shortcuts(mw)
+        bind_shortcuts(checked_cast(QWidget, mw))
         gui_hooks.previewer_did_init.append(bind_shortcuts)
         gui_hooks.browser_will_show.append(bind_shortcuts)
 

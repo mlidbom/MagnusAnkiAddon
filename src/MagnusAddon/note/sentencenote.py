@@ -1,22 +1,21 @@
 from __future__ import annotations
-from typing import Optional, TYPE_CHECKING
 
-from language_services.janome_ex.word_extraction.candidate_form import CandidateForm
-from note.notefields.string_field import StringField
+from typing import TYPE_CHECKING, Optional
+
+from anki.notes import Note
+from note.jpnote import JPNote
+from note.note_constants import ImmersionKitSentenceNoteFields, Mine, NoteFields, NoteTypes, SentenceNoteFields
 from note.notefields.audio_field import AudioField
+from note.notefields.string_field import StringField
 from note.notefields.strip_html_on_read_fallback_string_field import StripHtmlOnReadFallbackStringField
 from note.notefields.strip_html_on_read_string_field import StripHtmlOnReadStringField
 from note.sentencenote_configuration import CachingSentenceConfigurationField, ParsingResult
+from sysutils import ex_sequence, ex_str, kana_utils
 
 if TYPE_CHECKING:
+    from language_services.janome_ex.word_extraction.candidate_form import CandidateForm
     from language_services.janome_ex.word_extraction.extracted_word import ExtractedWord
     from note.vocabnote import VocabNote
-
-from note.jpnote import JPNote
-from sysutils import ex_sequence, kana_utils
-from sysutils import ex_str
-from note.note_constants import ImmersionKitSentenceNoteFields, Mine, NoteFields, SentenceNoteFields, NoteTypes
-from anki.notes import Note
 
 class SentenceNote(JPNote):
     def __init__(self, note: Note):
@@ -29,7 +28,7 @@ class SentenceNote(JPNote):
         self._screenshot = StringField(self, SentenceNoteFields.screenshot)
         self.audio = AudioField(self, SentenceNoteFields.audio)
         self._user_answer = StringField(self, SentenceNoteFields.user_answer)
-        self.configuration:CachingSentenceConfigurationField = CachingSentenceConfigurationField(self)
+        self.configuration: CachingSentenceConfigurationField = CachingSentenceConfigurationField(self)
 
     def parsing_result(self) -> ParsingResult: return self.configuration.parsing_result()
 
@@ -63,14 +62,13 @@ class SentenceNote(JPNote):
         from ankiutils import app
         return ex_sequence.flatten([app.col().vocab.with_question(q) for q in self.get_valid_parsed_non_child_words_strings()])
 
-
     def update_generated_data(self) -> None:
         super().update_generated_data()
         self.update_parsed_words()
         self.set_field(SentenceNoteFields.active_answer, self.get_answer())
         self.set_field(SentenceNoteFields.active_question, self.get_question())
 
-    def update_parsed_words(self, force:bool = False) -> None:
+    def update_parsed_words(self, force: bool = False) -> None:
         from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
         parsing_result = self.parsing_result()
         if not force and parsing_result and parsing_result.sentence == self.get_question() and parsing_result.parser_version == TextAnalysis.version:
@@ -78,7 +76,6 @@ class SentenceNote(JPNote):
 
         analysis = TextAnalysis(self.get_question(), self.configuration.incorrect_matches())
         self.configuration.set_parsing_result(analysis)
-
 
     def extract_kanji(self) -> list[str]:
         clean = ex_str.strip_html_and_bracket_markup(self.get_question())
@@ -96,7 +93,7 @@ class SentenceNote(JPNote):
         return note
 
     @classmethod
-    def add_sentence(cls, question: str, answer:str, audio:str = "", screenshot:str = "", highlighted_vocab: Optional[set[str]] = None, tags: Optional[set[str]] = None) -> SentenceNote:
+    def add_sentence(cls, question: str, answer: str, audio: str = "", screenshot: str = "", highlighted_vocab: Optional[set[str]] = None, tags: Optional[set[str]] = None) -> SentenceNote:
         from ankiutils import app
         inner_note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Sentence))
         note = SentenceNote(inner_note)
@@ -136,7 +133,7 @@ class SentenceNote(JPNote):
         return created
 
     @classmethod
-    def create(cls, question:str) -> SentenceNote:
+    def create(cls, question: str) -> SentenceNote:
         from ankiutils import app
         inner_note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Sentence))
         note = SentenceNote(inner_note)

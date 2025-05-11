@@ -1,11 +1,10 @@
-from aqt import mw
-from aqt.browser import Browser  # type: ignore
-from aqt.qt import QKeySequence, QShortcut
-
 from ankiutils import app, ui_utils
+from aqt import mw, qconnect
+from aqt.qt import QKeySequence, QShortcut
 from note.jpnote import JPNote
 from note.kanjinote import KanjiNote
 from note.vocabnote import VocabNote
+
 
 def init() -> None:
     def null_op() -> None: pass
@@ -29,8 +28,8 @@ def init() -> None:
                 note.auto_generate_compounds()
                 app.get_ui_utils().refresh()
 
-    QShortcut(QKeySequence("0"), mw).activated.connect(remove_mnemonic)
-    QShortcut(QKeySequence("9"), mw).activated.connect(generate_compound_parts)
+    qconnect(QShortcut(QKeySequence("0"), mw).activated, remove_mnemonic)
+    qconnect(QShortcut(QKeySequence("9"), mw).activated, generate_compound_parts)
 
-    for char in "u":#reset some pesky shortcuts constantly being accidentally triggered
-        QShortcut(QKeySequence(char), mw).activated.connect(null_op)
+    for char in "u":  # reset some pesky shortcuts constantly being accidentally triggered
+        qconnect(QShortcut(QKeySequence(char), mw).activated, null_op)
