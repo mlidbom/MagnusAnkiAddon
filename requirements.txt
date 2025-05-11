@@ -1,12 +1,18 @@
 aqt==25.5b2
 anki==25.5b2
-PyQt6-WebEngine==6.9.0
-PyQt6==6.9.0
-wanikani-api==0.6.1
 
+#Latest versions seem to crash in interesting ways. If Anki does not run, make sure to use exactly these versions
+PyQt6==6.7.1
+PyQt6-Qt6==6.7.3
+PyQt6_sip==13.8
+PyQt6-WebEngine==6.7.0
+PyQt6-WebEngine-Qt6==6.7.3
+PyQt6-WebEngineSubwheel-Qt6==6.7.3
+
+wanikani-api==0.6.1
 jamdict==0.1a11.post2
 #jamdict-data==1.
-Janome==0.5.0
+Janome==0.5.0   
 pipdeptree
 #puchikarui==0.2a2.post5
 requests==2.32.3
