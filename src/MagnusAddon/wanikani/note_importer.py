@@ -1,14 +1,13 @@
+from ankiutils import app
 from aqt.utils import showInfo
-from wanikani_api.models import Vocabulary
-
 from note.kanjinote import KanjiNote
 from note.note_constants import Mine
 from note.radicalnote import RadicalNote
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
-from ankiutils import app
 from sysutils import progress_display_runner
 from wanikani.wanikani_api_client import WanikaniClient
+from wanikani_api.models import Vocabulary
 
 waniClient = WanikaniClient.get_instance()
 

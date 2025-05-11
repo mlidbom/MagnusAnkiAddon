@@ -1,13 +1,13 @@
-from collections.abc import Callable
-
-from PyQt6.QtWidgets import QMenu
+import collections.abc
 
 from ankiutils import app, query_builder
+from hooks import shortcutfinger
 from hooks.right_click_menu_utils import add_lookup_action, add_ui_action
 from note.kanjinote import KanjiNote
+from PyQt6.QtWidgets import QMenu
 from sysutils import ex_str, kana_utils
 from sysutils.typed import non_optional
-from hooks import shortcutfinger
+
 
 def build_note_menu(note_menu: QMenu, kanji: KanjiNote) -> None:
     def build_lookup_menu(note_lookup_menu: QMenu) -> None:
@@ -38,7 +38,7 @@ def build_string_menu(string_menu: QMenu, kanji: KanjiNote, menu_string: str) ->
         if _vocab_to_add in kanji.get_primary_vocab():
             add_ui_action(highlighted_vocab_menu, shortcutfinger.home2("Remove"), lambda __vocab_to_add=_vocab_to_add: kanji.remove_primary_vocab(__vocab_to_add))  # type: ignore
 
-    def add_primary_readings_actions(menu: QMenu, title_factory: Callable[[str], str], string: str) -> None:
+    def add_primary_readings_actions(menu: QMenu, title_factory: collections.abc.Callable[[str], str], string: str) -> None:
         if kana_utils.is_only_katakana(string):
             hiragana_string = kana_utils.katakana_to_hiragana(string)
             if hiragana_string in kanji.get_primary_readings_on():

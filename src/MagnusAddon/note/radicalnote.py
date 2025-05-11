@@ -1,10 +1,14 @@
 from __future__ import annotations
 
-from wanikani_api import models
-from anki.notes import Note
+from typing import TYPE_CHECKING
 
+from anki.notes import Note
+from note.note_constants import Mine, NoteFields, NoteTypes
 from note.waninote import WaniNote
-from note.note_constants import NoteFields, Mine, NoteTypes
+
+if TYPE_CHECKING:
+    from wanikani_api import models
+
 
 
 class RadicalNote(WaniNote):

@@ -1,5 +1,6 @@
 from collections.abc import Callable
 
+
 def _format_finger(finger: str, text:str) -> str: return f"""&{finger} {text}"""
 
 def home1(text: str) -> str: return _format_finger("u", text)

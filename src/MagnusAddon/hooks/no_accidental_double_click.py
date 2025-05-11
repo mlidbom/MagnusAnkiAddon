@@ -1,9 +1,8 @@
 from typing import Literal
 
+from ankiutils import app
 from aqt.reviewer import Reviewer
 from aqt.utils import tooltip
-
-from ankiutils import app
 from sysutils.timeutil import StopWatch
 from sysutils.typed import non_optional
 

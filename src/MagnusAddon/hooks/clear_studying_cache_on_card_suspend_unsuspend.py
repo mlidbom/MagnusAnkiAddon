@@ -3,7 +3,6 @@ from typing import Any, Sequence
 from anki.cards import CardId
 from anki.collection import OpChangesWithCount
 from aqt import gui_hooks, mw
-
 from note import noteutils
 
 

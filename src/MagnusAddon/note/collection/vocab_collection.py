@@ -1,16 +1,20 @@
 from __future__ import annotations
 
 from collections import defaultdict
-
-from anki.collection import Collection
-from anki.notes import Note, NoteId
+from typing import TYPE_CHECKING
 
 from note.collection.backend_facade import BackEndFacade
-from note.collection.cache_runner import CacheRunner
 from note.collection.note_cache import CachedNote, NoteCache
-from note.kanjinote import KanjiNote
 from note.note_constants import NoteTypes
 from note.vocabnote import VocabNote
+
+if TYPE_CHECKING:
+    from anki.collection import Collection
+    from anki.notes import Note, NoteId
+    from note.collection.cache_runner import CacheRunner
+    from note.kanjinote import KanjiNote
+
+
 
 class _VocabSnapshot(CachedNote):
     def __init__(self, note: VocabNote):

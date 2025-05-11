@@ -1,9 +1,10 @@
-from aqt.qt import *
+from typing import Optional
 
 from ankiutils import app
+from aqt.qt import *
 from configuration.configuration_value import *
-from typing import Optional
-from PyQt6.QtWidgets import QGridLayout, QLabel, QDoubleSpinBox
+from PyQt6.QtWidgets import QDoubleSpinBox, QGridLayout, QLabel
+
 
 class JapaneseOptionsDialog(QDialog):
     def __init__(self, parent: Optional[QWidget] = None):

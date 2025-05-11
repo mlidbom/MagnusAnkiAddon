@@ -1,8 +1,8 @@
 from aqt import gui_hooks
-
 from hooks.note_content_building.content_renderer import PrerenderingAnswerContentRenderer
 from note.kanjinote import KanjiNote
 from sysutils import kana_utils
+
 
 def render_katakana_onyomi(kanji_note: KanjiNote) -> str:
     on_readings_list = [kana_utils.hiragana_to_katakana(x) for x in kanji_note.get_reading_on_list_html()]

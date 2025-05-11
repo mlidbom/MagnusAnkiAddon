@@ -1,8 +1,9 @@
 from __future__ import annotations
-from ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules # noqa
 
+from ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules  # noqa
 from sysutils import ex_json
 from sysutils.ex_json import JsonDictReader
+
 
 class IntObject:
     def __init__(self, value: int):

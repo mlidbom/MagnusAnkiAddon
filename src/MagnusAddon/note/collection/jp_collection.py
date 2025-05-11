@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-from anki.collection import Collection
-from anki.notes import NoteId
+from typing import TYPE_CHECKING
 
 from note.collection.cache_runner import CacheRunner
 from note.collection.kanji_collection import KanjiCollection
@@ -10,6 +9,11 @@ from note.collection.sentence_collection import SentenceCollection
 from note.collection.vocab_collection import VocabCollection
 from note.jpnote import JPNote
 from note.note_constants import NoteTypes
+
+if TYPE_CHECKING:
+    from anki.collection import Collection
+    from anki.notes import NoteId
+
 
 class JPCollection:
     def __init__(self, anki_collection: Collection):

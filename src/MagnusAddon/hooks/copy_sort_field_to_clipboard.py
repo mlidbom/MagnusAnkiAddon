@@ -1,16 +1,16 @@
-import pyperclip  # type: ignore
 from typing import cast
 
+import pyperclip  # type: ignore
 from anki.cards import Card
 from anki.models import NotetypeDict
 from anki.notes import Note
-from aqt import gui_hooks
-
 from ankiutils import app
 from ankiutils.app import get_ui_utils
-from sysutils.collections.recent_items import RecentItems
+from aqt import gui_hooks
 from sysutils import app_thread_pool, ex_str
+from sysutils.collections.recent_items import RecentItems
 from sysutils.timeutil import StopWatch
+
 
 def copy_card_sort_field_to_clipboard(note: Note) -> None:
     with StopWatch.log_warning_if_slower_than(0.01):

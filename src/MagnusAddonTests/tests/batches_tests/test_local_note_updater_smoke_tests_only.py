@@ -5,6 +5,7 @@ import pytest
 # from ankiutils import app
 from fixtures.collection_factory import inject_anki_collection_with_all_sample_data
 from fixtures.stub_factory import stub_ui_dependencies
+
 # from language_services.janome_ex.word_extraction.candidate_word import CandidateWord
 # from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 # from note.vocabnote import VocabNote

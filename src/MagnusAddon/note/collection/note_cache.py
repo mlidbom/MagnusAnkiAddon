@@ -1,16 +1,19 @@
 from __future__ import annotations
 
-from abc import ABC, abstractmethod
-from typing import Generic, Sequence, TypeVar
 import time
+from abc import ABC, abstractmethod
+from typing import TYPE_CHECKING, Generic, Sequence, TypeVar
 
-from anki.notes import Note, NoteId
-from note.collection.cache_runner import CacheRunner
 from note.jpnote import JPNote
 from note.note_constants import CardTypes
 from sysutils import app_thread_pool
 from sysutils.collections.default_dict_case_insensitive import DefaultDictCaseInsensitive
 from sysutils.typed import checked_cast
+
+if TYPE_CHECKING:
+    from anki.notes import Note, NoteId
+    from note.collection.cache_runner import CacheRunner
+
 
 class CachedNote:
     def __init__(self, note: JPNote):

@@ -1,12 +1,11 @@
 from collections.abc import Callable
 from urllib import parse
 
-from PyQt6.QtWidgets import QMenu
 from aqt.utils import openLink
-
+from hooks import shortcutfinger
+from PyQt6.QtWidgets import QMenu
 from sysutils.typed import non_optional
 
-from hooks import shortcutfinger
 
 def build_web_search_menu(search_web_menu:QMenu, search_string:Callable[[],str]) -> None:
     def add_web_lookup(menu: QMenu, name: str, url: str) -> None:

@@ -1,16 +1,17 @@
 from __future__ import annotations
-from typing import Any, TYPE_CHECKING
 
+from typing import TYPE_CHECKING, Any
+
+from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from note.note_constants import SentenceNoteFields
 from note.notefields.string_field import StringField
 from sysutils import ex_json
-from sysutils.ex_json import JsonDictReader
 from sysutils.lazy import Lazy
-from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 
 if TYPE_CHECKING:
-    from note.sentencenote import SentenceNote
     from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
+    from note.sentencenote import SentenceNote
+    from sysutils.ex_json import JsonDictReader
 
 class ParsedWord:
     def __init__(self, word: str) -> None:

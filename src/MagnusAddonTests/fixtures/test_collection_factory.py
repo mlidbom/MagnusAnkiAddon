@@ -1,16 +1,17 @@
-from typing import Generator
+from typing import TYPE_CHECKING, Generator
 
 import pytest
-
 from ankiutils import app
 from fixtures.base_data.sample_data import kanji_spec, sentence_spec, vocab_spec
 from fixtures.base_data.sample_data.kanji_spec import KanjiSpec
 from fixtures.base_data.sample_data.sentence_spec import SentenceSpec
 from fixtures.base_data.sample_data.vocab_spec import VocabSpec
 from fixtures.collection_factory import inject_anki_collection_with_all_sample_data
-from note.kanjinote import KanjiNote
-from note.sentencenote import SentenceNote
-from note.vocabnote import VocabNote
+
+if TYPE_CHECKING:
+    from note.kanjinote import KanjiNote
+    from note.sentencenote import SentenceNote
+    from note.vocabnote import VocabNote
 
 # noinspection PyUnusedFunction
 @pytest.fixture(scope="module", autouse=True)
@@ -31,7 +32,7 @@ def test_vocab_added_correctly() -> None:
     assert expected_vocab == saved_vocab
 
 def test_sentences_added_correctly() -> None:
-    expected_sentences = set(sentence_spec.test_sentence_list)
-    sentences_all:list[SentenceNote] = app.col().sentences.all()
-    saved_vocab = set(SentenceSpec(sentence.get_question(), sentence.get_answer()) for sentence in sentences_all)
+    expected_sentences = sorted(sentence_spec.test_sentence_list, key=lambda x: x.question)
+    sentences_all:list[SentenceNote] = sorted(app.col().sentences.all(), key=lambda x: x.get_question())
+    saved_vocab = [SentenceSpec(sentence.get_question(), sentence.get_answer()) for sentence in sentences_all]
     assert expected_sentences == saved_vocab

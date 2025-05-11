@@ -1,11 +1,12 @@
 # noinspection PyUnresolvedReferences
 import time
+
 from anki.cards import *
 from anki.consts import QUEUE_TYPE_NEW
-
 from ankiutils import app
 from note.jpnote import JPNote
 from note.note_constants import NoteTypes
+
 
 class CardUtils:
     @staticmethod

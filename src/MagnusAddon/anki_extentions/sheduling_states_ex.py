@@ -1,5 +1,6 @@
 from anki.scheduler.v3 import SchedulingState, SchedulingStates
 
+
 class SchedulingStatesEx:
     def __init__(self, states:SchedulingStates) -> None:
         self._states = states

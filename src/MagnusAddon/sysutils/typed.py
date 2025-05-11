@@ -1,6 +1,9 @@
 from __future__ import annotations
-from beartype.door import is_bearable
+
 from typing import Any, Optional, TypeVar, get_origin
+
+from beartype.door import is_bearable
+
 
 def str_(value: Any) -> str: return checked_cast(str, value)
 def int_(value: Any) -> int: return checked_cast(int, value)

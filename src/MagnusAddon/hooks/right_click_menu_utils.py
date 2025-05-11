@@ -1,13 +1,13 @@
 from typing import Callable
 
-from PyQt6.QtWidgets import QMenu, QMessageBox
-
 from ankiutils import query_builder, search_executor
 from ankiutils.app import get_ui_utils
 from ankiutils.search_executor import lookup_promise
 from hooks import shortcutfinger
 from note.jpnote import JPNote
 from note.vocabnote import VocabNote
+from PyQt6.QtWidgets import QMenu, QMessageBox
+
 
 def _confirm(menu: QMenu, message:str) -> bool:
     message = shortcutfinger.remove_shortcut_text(message)

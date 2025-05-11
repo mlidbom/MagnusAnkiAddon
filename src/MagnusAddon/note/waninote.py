@@ -1,7 +1,7 @@
-from wanikani_api import models
 from anki.notes import Note
 from note.jpnote import JPNote
 from note.note_constants import Mine, NoteFields
+from wanikani_api import models
 
 
 class WaniNote(JPNote):

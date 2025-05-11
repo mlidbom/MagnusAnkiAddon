@@ -1,24 +1,25 @@
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from anki_extentions.notetype_ex.note_type_ex import NoteTypeEx
 from sysutils import rassert
 
 if TYPE_CHECKING:
+    from anki.cards import Card, CardId
+    from anki.notes import Note, NoteId
     from note.collection.jp_collection import JPCollection
 
 from abc import ABC
-from typing import Any, cast, Sequence
+from typing import Any, Sequence, cast
 
-from anki.cards import Card, CardId
 from anki.models import NotetypeDict
-from anki.notes import Note, NoteId
-
-from note import noteutils
 from anki_extentions.card_ex import CardEx
+from note import noteutils
 from note.note_constants import CardTypes, Mine, MyNoteFields, NoteTypes
 from sysutils import ex_str
 from sysutils.typed import non_optional, str_
+
 
 class JPNote(ABC):
     def __init__(self, note: Note):
@@ -62,9 +63,9 @@ class JPNote(ABC):
 
     @classmethod
     def note_from_note(cls, note: Note) -> JPNote:
-        from note.sentencenote import SentenceNote
         from note.kanjinote import KanjiNote
         from note.radicalnote import RadicalNote
+        from note.sentencenote import SentenceNote
         from note.vocabnote import VocabNote
 
         if cls.get_note_type(note) == NoteTypes.Kanji: return KanjiNote(note)

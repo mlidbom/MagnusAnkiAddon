@@ -1,6 +1,6 @@
 import threading
 from concurrent.futures import Future
-from typing import Callable, cast, Generic, TypeVar, Optional
+from typing import Callable, Generic, Optional, TypeVar, cast
 
 from sysutils import app_thread_pool
 

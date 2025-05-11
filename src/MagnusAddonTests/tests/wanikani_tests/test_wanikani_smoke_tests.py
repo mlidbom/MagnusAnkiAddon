@@ -1,9 +1,9 @@
 from typing import Generator
 
 import pytest
-
 from fixtures.collection_factory import inject_empty_anki_collection_with_note_types
 from wanikani import wanikani_api_client
+
 
 # noinspection PyUnusedFunction
 @pytest.fixture(scope="function", autouse=True)

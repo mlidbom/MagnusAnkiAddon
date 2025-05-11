@@ -1,7 +1,6 @@
 from concurrent.futures.thread import ThreadPoolExecutor
 
 from PyQt6.QtCore import QCoreApplication, QThread
-
 from sysutils.typed import non_optional
 
 pool = ThreadPoolExecutor()

@@ -1,8 +1,9 @@
 from __future__ import annotations
-from typing import Callable, Generic, Optional, TypeVar
-import os
-from aqt import mw
 
+import os
+from typing import Callable, Generic, Optional, TypeVar
+
+from aqt import mw
 from sysutils.lazy import Lazy
 
 T = TypeVar('T')

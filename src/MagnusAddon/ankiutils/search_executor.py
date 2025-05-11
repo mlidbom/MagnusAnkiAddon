@@ -1,9 +1,9 @@
 from typing import Callable
 
 import aqt
+from ankiutils import app
 from aqt.browser import Browser  # type: ignore
 
-from ankiutils import app
 
 def do_lookup_and_show_previewer(text: str) -> None:
     do_lookup(text)

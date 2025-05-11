@@ -2,12 +2,11 @@ from concurrent.futures import Future
 from typing import Callable, Generic, Optional, TypeVar
 
 from anki.cards import Card
-from ankiutils import ui_utils
+from ankiutils import app, ui_utils
 from note.jpnote import JPNote
 from sysutils import app_thread_pool
 from sysutils.timeutil import StopWatch
 from sysutils.typed import non_optional
-from ankiutils import app
 
 TNote = TypeVar('TNote', bound=JPNote)
 

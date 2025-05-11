@@ -1,21 +1,21 @@
 from __future__ import annotations
 
 import re
-from typing import Tuple, TYPE_CHECKING
+from typing import TYPE_CHECKING, Tuple
 
-from wanikani_api import models
 from anki.notes import Note
-
 from note import kanjinote_mnemonic_maker
-from note.jpnote import JPNote
 
 if TYPE_CHECKING:
+    from note.jpnote import JPNote
     from note.vocabnote import VocabNote
+    from wanikani_api import models
 
+from note.note_constants import CardTypes, Mine, NoteFields, NoteTypes
 from note.waninote import WaniNote
-from note.note_constants import CardTypes, NoteFields, Mine, NoteTypes
 from sysutils import ex_sequence, ex_str, kana_utils
 from wanikani.wanikani_api_client import WanikaniClient
+
 
 class KanjiNote(WaniNote):
     def __init__(self, note: Note):

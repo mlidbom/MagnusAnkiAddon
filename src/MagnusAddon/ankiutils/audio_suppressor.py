@@ -1,6 +1,7 @@
+import threading
+
 from anki.sound import AVTag
 from aqt.sound import av_player
-import threading
 
 
 class AudioSuppressor:

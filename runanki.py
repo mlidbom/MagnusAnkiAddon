@@ -8,6 +8,7 @@ from typing import cast
 
 import aqt
 
+
 def is_pycharm_debugger() -> bool:
     return "pydevd" in sys.modules
 

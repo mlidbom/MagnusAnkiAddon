@@ -1,6 +1,5 @@
 from note.kanjinote import KanjiNote
-from sysutils import kana_utils
-from sysutils import ex_str
+from sysutils import ex_str, kana_utils
 
 
 class KanjiViewModel:

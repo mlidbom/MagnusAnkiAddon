@@ -1,10 +1,9 @@
-from aqt.sound import av_player
 from os.path import dirname
-from aqt.reviewer import Reviewer
 
+from aqt.reviewer import Reviewer
+from aqt.sound import av_player
 from aqt.utils import askUserDialog
 from PyQt6.QtWidgets import QMessageBox
-
 from sysutils import timeutil
 
 addon_path: str = dirname(__file__)

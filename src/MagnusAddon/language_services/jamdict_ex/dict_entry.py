@@ -1,9 +1,8 @@
 from typing import Sequence
 
 from jamdict.jmdict import JMDEntry, Sense
+from sysutils import ex_sequence, kana_utils
 
-from sysutils import kana_utils
-from sysutils import ex_sequence
 
 def _sense_is_transitive_verb(sense: Sense) -> bool:
     return any("transitive verb" == pos_item for pos_item in sense.pos)

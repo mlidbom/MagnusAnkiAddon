@@ -2,17 +2,18 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from language_services.janome_ex.tokenizing.jn_tokenized_text import ProcessedToken
 from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
+    from language_services.janome_ex.tokenizing.jn_tokenized_text import ProcessedToken
     from language_services.janome_ex.word_extraction.candidate_form import CandidateForm
     from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 
-from sysutils.ex_str import newline
-from sysutils import ex_sequence
 from language_services.janome_ex.tokenizing.jn_tokenizer import JNTokenizer
 from language_services.janome_ex.word_extraction.text_location import TokenTextLocation
+from sysutils import ex_sequence
+from sysutils.ex_str import newline
+
 _tokenizer = JNTokenizer()
 
 class TextAnalysis:

@@ -1,5 +1,6 @@
 from anki.config import ConfigManager
 
+
 class ConfigManagerEx:
     def __init__(self, config:ConfigManager) -> None:
         self.config = config

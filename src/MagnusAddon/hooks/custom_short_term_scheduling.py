@@ -1,8 +1,7 @@
 from anki.scheduler.v3 import QueuedCards
-from aqt.reviewer import V3CardInfo
-
-from anki_extentions.sheduling_states_ex import SchedulingStatesEx
 from anki_extentions.card_ex import CardEx
+from anki_extentions.sheduling_states_ex import SchedulingStatesEx
+from aqt.reviewer import V3CardInfo
 from sysutils.timeutil import StopWatch
 
 _oldMethod = V3CardInfo.from_queue

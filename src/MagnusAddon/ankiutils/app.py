@@ -1,28 +1,25 @@
 from __future__ import annotations
-from ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules # noqa
-import gc
-from typing import Any, Callable, Optional, TYPE_CHECKING
-import anki
 
+import gc
+from typing import TYPE_CHECKING, Any, Callable, Optional
+
+import anki
+from anki.collection import Collection
+from anki.dbproxy import DBProxy
+from anki.scheduler.v3 import Scheduler
 from anki_extentions.config_manager_ex import ConfigManagerEx
+from ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules  # noqa
 from sysutils.timeutil import StopWatch
 
 if TYPE_CHECKING:
     from configuration.configuration import JapaneseConfig
 
-from anki.collection import Collection
-from anki.dbproxy import DBProxy
-from anki.scheduler.v3 import Scheduler
-from aqt import gui_hooks, mw, AnkiQt  # type: ignore
-from aqt import gui_hooks, mw
-
 from ankiutils.ui_utils import UIUtils
 from ankiutils.ui_utils_interface import IUIUtils
+from aqt import AnkiQt, gui_hooks, mw  # type: ignore
 from note.collection.jp_collection import JPCollection
 from sysutils.lazy import BackgroundInitialingLazy
 from sysutils.typed import checked_cast, non_optional
-
-
 
 _collection: Optional[BackgroundInitialingLazy[JPCollection]] = None
 

@@ -1,5 +1,6 @@
 from sysutils import ex_sequence, kana_utils
 
+
 class DifficultyCalculator:
     def __init__(self, starting_seconds:float, hiragana_seconds:float, katakata_seconds:float, kanji_seconds:float) -> None:
         self.starting_seconds = starting_seconds

@@ -1,12 +1,12 @@
-from PyQt6.QtWidgets import QMenu
-
 from ankiutils import query_builder
+from hooks import shortcutfinger
 from hooks.right_click_menu_utils import add_lookup_action, add_ui_action
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from note.note_constants import NoteFields, NoteTypes
 from note.sentencenote import SentenceNote
+from PyQt6.QtWidgets import QMenu
 from sysutils.typed import non_optional
-from hooks import shortcutfinger
+
 
 def build_note_menu(note_menu: QMenu, sentence: SentenceNote) -> None:
     note_lookup_menu: QMenu = non_optional(note_menu.addMenu(shortcutfinger.home1("Open")))

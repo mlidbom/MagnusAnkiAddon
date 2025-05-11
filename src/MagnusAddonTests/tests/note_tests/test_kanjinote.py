@@ -1,10 +1,11 @@
 from typing import Generator
-import pytest
 
+import pytest
+from ankiutils import app
 from fixtures import collection_factory
 from fixtures.stub_factory import stub_ui_dependencies
 from sysutils.typed import non_optional
-from ankiutils import app
+
 
 # noinspection PyUnusedFunction
 @pytest.fixture(scope="function", autouse=True)
@@ -21,10 +22,10 @@ def test_inside_radical_population() -> None:
     assert inside.get_radicals() == ['冂', '人']
 
 @pytest.mark.parametrize("kanji, radicals, mnemonic", [
-    ("内", ["冂, 人"], "<rad>head</rad> <rad>person</rad> <kan>inside</kan> <compound-reading><read>U</read>ber-<read>chi</read>mp</compound-reading>"),
-    ("病", ["疒","丙"], "<rad>sick</rad> <rad>dynamite</rad> <kan>illness</kan> <read>yu</read>ck <compound-reading><read>yu</read>ck-<read>mi</read>ce</compound-reading> <read>BO</read>"),
-    ("品", [], "<kan>goods</kan> <read>hin</read>t <compound-reading><read>shi</read>t-<read>nu</read>t</compound-reading>"),
-    ("塚", [], "<kan>a-mound</kan> <read>Tsuka</read>")
+    ("内", ["冂, 人"], "<rad>head</rad> <rad>person</rad> <kan>inside</kan> <compound-reading><read>U</read>ber-<read>chi</read>mp</compound-reading> ..."),
+    ("病", ["疒","丙"], "<rad>sick</rad> <rad>dynamite</rad> <kan>illness</kan> <read>yu</read>ck <compound-reading><read>yu</read>ck-<read>mi</read>ce</compound-reading> <read>BO</read> ..."),
+    ("品", [], "<kan>goods</kan> <read>hin</read>t <compound-reading><read>shi</read>t-<read>nu</read>t</compound-reading> ..."),
+    ("塚", [], "<kan>a-mound</kan> <read>Tsuka</read> ...")
 ])
 def test_bootstrap_mnemonic(kanji:str, radicals:list[str], mnemonic:str) -> None:
     kanji_note = non_optional(app.col().kanji.with_kanji(kanji))

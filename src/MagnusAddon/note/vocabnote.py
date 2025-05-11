@@ -1,28 +1,26 @@
 from __future__ import annotations
 
 import re
+from typing import TYPE_CHECKING, Optional
 
 import language_services.conjugator
-from ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules  # noqa
-from wanikani_api import models
 from anki.notes import Note
-
+from ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules  # noqa
 from language_services.jamdict_ex.dict_lookup import DictLookup
 from language_services.jamdict_ex.priority_spec import PrioritySpec
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
-from note.jpnote import JPNote
 from note.kanavocabnote import KanaVocabNote
+from note.note_constants import Mine, NoteFields, NoteTypes
 from note.notefields.string_field import StringField
 from note.vocabnote_cloner import VocabCloner
-from sysutils import ex_sequence, kana_utils
-from sysutils import ex_str
-from note.note_constants import NoteFields, Mine, NoteTypes
+from sysutils import ex_sequence, ex_str, kana_utils
 from wanikani.wanikani_api_client import WanikaniClient
 
-from typing import Optional, TYPE_CHECKING
-
 if TYPE_CHECKING:
+    from note.jpnote import JPNote
     from note.sentencenote import SentenceNote
+    from wanikani_api import models
+
 
 def sort_vocab_list_by_studying_status(vocabs: list[VocabNote], primary_voc: Optional[list[str]] = None, preferred_kanji: Optional[str] = None) -> list[VocabNote]:
     def prefer_primary_vocab_in_order(local_vocab: VocabNote) -> int:

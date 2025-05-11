@@ -1,9 +1,11 @@
 import re
 from typing import Generator
+
 import pytest
 from fixtures.collection_factory import inject_empty_anki_collection_with_note_types
 from fixtures.stub_factory import stub_ui_dependencies
 from note.vocabnote import VocabNote
+
 
 # noinspection PyUnusedFunction
 @pytest.fixture(scope="function", autouse=True)

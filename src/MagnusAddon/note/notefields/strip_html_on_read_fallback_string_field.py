@@ -1,11 +1,15 @@
 from __future__ import annotations
 
-from note.jpnote import JPNote
+from typing import TYPE_CHECKING
+
 from note.notefields.fallback_string_field import FallbackStringField
 from sysutils import ex_str
+
+if TYPE_CHECKING:
+    from note.jpnote import JPNote
 
 class StripHtmlOnReadFallbackStringField:
     def __init__(self, note: JPNote, primary_field: str, fallback_field: str) -> None:
         self._field = FallbackStringField(note, primary_field, fallback_field)
 
-    def get(self) -> str: return ex_str.strip_html_and_bracket_markup(self._field.get())
+    def get(self) -> str: return ex_str.strip_html_markup(self._field.get())

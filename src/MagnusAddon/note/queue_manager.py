@@ -1,24 +1,28 @@
 # noinspection PyUnresolvedReferences
-from typing import Optional, Callable, Sequence
+from typing import TYPE_CHECKING, Callable, Optional, Sequence
+
+from anki.cards import CardId
+from anki.notes import Note
 
 # noinspection PyUnresolvedReferences
 from ankiutils import app
-from aqt.browser import Browser  # type: ignore
-from anki.cards import CardId
 from aqt import dialogs, mw
+from note.cardutils import CardUtils
 
-from note.waninote import WaniNote
-# noinspection PyUnresolvedReferences
-from note.vocabnote import VocabNote
 # noinspection PyUnresolvedReferences
 from note.kanjinote import KanjiNote
+from note.note_constants import NoteTypes
+
 # noinspection PyUnresolvedReferences
 from note.radicalnote import RadicalNote
+
+# noinspection PyUnresolvedReferences
+from note.vocabnote import VocabNote
+from note.waninote import WaniNote
 from sysutils import ex_str
-from note.cardutils import CardUtils
-from anki.notes import Note
-from note.note_constants import NoteTypes
-from ankiutils import app
+
+if TYPE_CHECKING:
+    from aqt.browser import Browser
 
 
 def unsuspend_with_dependencies(note: Note) -> None:

@@ -1,9 +1,8 @@
 from anki.cards import Card
-from aqt import gui_hooks, mw
-from aqt.reviewer import Reviewer
-
 from anki_extentions.card_ex import CardEx
 from ankiutils import app, ui_utils
+from aqt import gui_hooks, mw
+from aqt.reviewer import Reviewer
 from note.difficulty_calculator import DifficultyCalculator
 from note.jpnote import JPNote
 from note.kanjinote import KanjiNote

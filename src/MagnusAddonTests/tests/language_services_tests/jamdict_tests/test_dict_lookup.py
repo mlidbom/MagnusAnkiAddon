@@ -1,11 +1,11 @@
 from unittest.mock import MagicMock
 
 import pytest
-from ankiutils import app # noqa
-
+from ankiutils import app  # noqa
 from language_services.jamdict_ex.dict_entry import DictEntry
 from language_services.jamdict_ex.dict_lookup import DictLookup
 from note.vocabnote import VocabNote
+
 
 @pytest.mark.parametrize('word, readings', [
     ("為る", ["する"]),

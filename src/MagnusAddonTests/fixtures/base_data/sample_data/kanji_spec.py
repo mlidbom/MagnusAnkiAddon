@@ -1,5 +1,6 @@
 from typing import Any
 
+
 class KanjiSpec:
     def __init__(self, question: str, answer: str, kun_readings: str, on_readings: str):
         self.question = question

@@ -2,16 +2,15 @@ from typing import Dict, Tuple
 
 import aqt.utils
 from anki.cards import CardId
-from aqt import gui_hooks
-from aqt import mw
-from aqt.overview import Overview
-from aqt.webview import WebContent
-
 from anki_extentions.card_ex import CardEx
 from anki_extentions.deck_ex import DeckEx
 from ankiutils import app
-from note.note_constants import NoteTypes, CardTypes
+from aqt import gui_hooks, mw
+from aqt.overview import Overview
+from aqt.webview import WebContent
+from note.note_constants import CardTypes, NoteTypes
 from sysutils import typed
+
 
 def adjust_timebox(_web_content: WebContent, context: object) -> None:
     if isinstance(context, Overview):

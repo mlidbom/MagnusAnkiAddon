@@ -1,5 +1,6 @@
 import re
 
+from ankiutils import app
 from aqt import gui_hooks
 from hooks.note_content_building.content_renderer import PrerenderingAnswerContentRenderer
 from note.jpnote import JPNote
@@ -7,7 +8,7 @@ from note.kanjinote import KanjiNote
 from note.radicalnote import RadicalNote
 from sysutils import ex_str, kana_utils
 from viewmodels.kanji_list.sentence_kanji_viewmodel import KanjiViewModel
-from ankiutils import app
+
 
 def render_list(note:JPNote, kanjis:list[KanjiNote], kanji_readings:list[str]) -> str:
     if not kanjis:

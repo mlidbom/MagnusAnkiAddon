@@ -1,26 +1,23 @@
-from typing import Callable, Optional
+import typing
 
 import pyperclip  # type: ignore
-from PyQt6.QtWidgets import QMenu
-from aqt import gui_hooks
-
-from aqt.webview import AnkiWebView
-
 from ankiutils import query_builder, search_executor, ui_utils
+from aqt import gui_hooks
+from aqt.webview import AnkiWebView
 from batches import local_note_updater
-from hooks import right_click_menu_note_radical, right_click_menu_note_kanji, right_click_menu_note_vocab, right_click_menu_note_sentence
-from hooks.right_click_menu_web_search import build_web_search_menu
+from hooks import right_click_menu_note_kanji, right_click_menu_note_radical, right_click_menu_note_sentence, right_click_menu_note_vocab, shortcutfinger
 from hooks.right_click_menu_open_in_anki import build_open_in_anki_menu
 from hooks.right_click_menu_utils import add_ui_action, create_note_action, create_vocab_note_action
+from hooks.right_click_menu_web_search import build_web_search_menu
 from note.jpnote import JPNote
 from note.kanjinote import KanjiNote
 from note.radicalnote import RadicalNote
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
+from PyQt6.QtWidgets import QMenu
 from sysutils import typed
 from sysutils.typed import non_optional
 
-from hooks import shortcutfinger
 
 def build_browser_right_click_menu(root_menu: QMenu, note: JPNote) -> None:
     build_right_click_menu(root_menu, note, "", "")
@@ -32,11 +29,11 @@ def build_right_click_menu_webview_hook(view: AnkiWebView, root_menu: QMenu) -> 
     build_right_click_menu(root_menu, note, selection, clipboard)
 
 # noinspection PyPep8
-def build_right_click_menu(root_menu: QMenu, note: Optional[JPNote], selection: str, clipboard: str) -> None:
+def build_right_click_menu(root_menu: QMenu, note: typing.Optional[JPNote], selection: str, clipboard: str) -> None:
     selection_menu = non_optional(root_menu.addMenu(shortcutfinger.home1(f'''Selection: "{selection[:40]}"'''))) if selection else None
     clipboard_menu = non_optional(root_menu.addMenu(shortcutfinger.home2(f'''Clipboard: "{clipboard[:40]}"'''))) if clipboard else None
 
-    string_note_menu_factory: Callable[[QMenu, str], None] = null_op_factory
+    string_note_menu_factory: typing.Callable[[QMenu, str], None] = null_op_factory
 
     if note:
         if isinstance(note, RadicalNote):
@@ -58,7 +55,7 @@ def build_right_click_menu(root_menu: QMenu, note: Optional[JPNote], selection: 
     if clipboard_menu:
         build_string_menu(clipboard_menu, clipboard, string_note_menu_factory)
 
-def build_string_menu(menu: QMenu, string: str, string_note_menu_factory: Callable[[QMenu, str], None]) -> None:
+def build_string_menu(menu: QMenu, string: str, string_note_menu_factory: typing.Callable[[QMenu, str], None]) -> None:
     def build_create_note_menu(create_note_menu: QMenu, to_create: str) -> None:
         create_vocab_note_action(create_note_menu, shortcutfinger.home1(f"vocab"), lambda _string=to_create: VocabNote.create_with_dictionary(_string))  # type: ignore
         create_note_action(create_note_menu, shortcutfinger.home2(f"sentence"), lambda _word=to_create: SentenceNote.create(_word))  # type: ignore

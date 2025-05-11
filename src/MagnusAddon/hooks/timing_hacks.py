@@ -1,10 +1,10 @@
+import time
 from typing import Any
+
 from anki.cards import Card
 from anki.notes import Note
-import time
-from aqt import gui_hooks
-
 from ankiutils.audio_suppressor import audio_suppressor
+from aqt import gui_hooks
 
 
 class UglyUITimingBasedHacksData:

@@ -1,12 +1,13 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING
 
-from sysutils.ex_json import JsonDictReader
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.hierarchicalword import HierarchicalWord
+    from sysutils.ex_json import JsonDictReader
 
 from typing import Any
+
 
 class WordExclusion:
     _separator = "####"

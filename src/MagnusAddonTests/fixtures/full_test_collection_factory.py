@@ -9,8 +9,6 @@ from typing import Generator
 from anki.collection import Collection
 
 
-
-
 @contextmanager
 def inject_full_anki_collection_for_testing() -> Generator[None, None, None]:
     from note.collection.jp_collection import JPCollection

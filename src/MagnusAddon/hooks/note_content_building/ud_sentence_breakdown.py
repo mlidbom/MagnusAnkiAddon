@@ -1,6 +1,5 @@
-from aqt import gui_hooks
-
 from ankiutils import app
+from aqt import gui_hooks
 from hooks.note_content_building.content_renderer import PrerenderingAnswerContentRenderer
 from language_services.jamdict_ex.dict_lookup import DictLookup
 from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
@@ -8,6 +7,7 @@ from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
 from sysutils import kana_utils
 from sysutils.ex_str import newline
+
 
 def _build_vocab_list(word_to_show: list[str], excluded_words:set[str], title:str, include_mnemonics:bool = False, show_words_missing_dictionary_entries:bool = False, include_extended_sentence_statistics:bool = False) -> str:
     html = f"""

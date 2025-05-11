@@ -1,13 +1,16 @@
 from __future__ import annotations
+
+import logging
+import os
 import sys
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 from typing import Any, Optional
-import logging
-import os
-from aqt import mw
+
 from anki.hooks import wrap
+from aqt import mw
 from aqt.addons import AddonManager
+
 
 def is_testing() -> bool: return "pytest" in sys.modules
 

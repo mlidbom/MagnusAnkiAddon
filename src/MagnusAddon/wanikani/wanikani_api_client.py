@@ -1,8 +1,11 @@
 from __future__ import annotations
-from typing import Any, List
 
-from wanikani_api import models
+from typing import TYPE_CHECKING, Any, List
+
 from wanikani_api.client import Client
+
+if TYPE_CHECKING:
+    from wanikani_api import models
 
 class WanikaniClient:
     _instance = None

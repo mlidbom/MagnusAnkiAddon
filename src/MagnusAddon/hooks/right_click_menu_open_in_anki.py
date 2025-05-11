@@ -1,11 +1,11 @@
 from typing import Callable
 
-from PyQt6.QtWidgets import QMenu
-
 from ankiutils import app, query_builder
 from hooks import shortcutfinger
 from hooks.right_click_menu_utils import add_lookup_action_lambda
+from PyQt6.QtWidgets import QMenu
 from sysutils.typed import non_optional
+
 
 def build_open_in_anki_menu(open_in_anki_menu:QMenu, search_string:Callable[[],str]) -> None:
     def build_exact_menu(exact_menu:QMenu) -> None:

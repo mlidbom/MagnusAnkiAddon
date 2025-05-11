@@ -1,7 +1,11 @@
 from __future__ import annotations
 
-from note.jpnote import JPNote
+from typing import TYPE_CHECKING
+
 from note.notefields.strip_html_on_read_string_field import StripHtmlOnReadStringField
+
+if TYPE_CHECKING:
+    from note.jpnote import JPNote
 
 class AudioField(StripHtmlOnReadStringField):
     def __init__(self, note: JPNote, field_name: str) -> None:

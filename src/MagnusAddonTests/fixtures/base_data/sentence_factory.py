@@ -3,6 +3,7 @@ from anki_extentions.notetype_ex.note_type_field import NoteFieldEx
 from anki_extentions.notetype_ex.note_type_template import NoteTemplateEx
 from note.note_constants import NoteTypes, SentenceNoteFields
 
+
 def create_sentence() -> NoteTypeEx:
     return NoteTypeEx(NoteTypes.Sentence,
                       [

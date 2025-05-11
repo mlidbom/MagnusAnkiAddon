@@ -1,6 +1,7 @@
 """extentions for working with Iterable"""
 import itertools
 from typing import Callable, Iterable, TypeVar
+
 T = TypeVar('T')
 
 def take_while(predicate: Callable[[T], bool], iterable: Iterable[T]) -> Iterable[T]:

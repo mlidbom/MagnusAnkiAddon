@@ -1,17 +1,17 @@
-from aqt.browser import Browser  # type: ignore
-from PyQt6.QtWidgets import QMenu
-from aqt import gui_hooks
-from ankiutils import app
-from hooks import shortcutfinger
-from hooks import right_click_menu
-from note import queue_manager
 from typing import Sequence
-from anki.cards import Card, CardId
 
+import aqt.browser
+from anki.cards import Card, CardId
+from ankiutils import app
+from aqt import gui_hooks
+from hooks import right_click_menu, shortcutfinger
+from note import queue_manager
 from note.jpnote import JPNote
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
+from PyQt6.QtWidgets import QMenu
 from sysutils.typed import non_optional
+
 
 def spread_due_dates(cards: Sequence[CardId], start_day: int, days: int) -> None:
     anki_col = app.col().anki_collection
@@ -23,7 +23,7 @@ def spread_due_dates(cards: Sequence[CardId], start_day: int, days: int) -> None
 
     app.get_ui_utils().refresh()
 
-def setup_browser_context_menu(browser: Browser, menu: QMenu) -> None:
+def setup_browser_context_menu(browser: aqt.browser.Browser, menu: QMenu) -> None:
     magnus_menu: QMenu = non_optional(menu.addMenu("&Magnus"))
     selected_cards = browser.selected_cards()
 

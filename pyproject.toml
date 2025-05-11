@@ -1,5 +1,5 @@
 [tool.ruff]
-lint.select = ["TCH"]  # Enable TCH rules along with basic error checking
+lint.select = ["I"]  # Enable TCH rules along with basic error checking
 #lint.select = ["E", "F", "B", "I", "TCH"] #
 
 #lint.select = [
@@ -21,7 +21,8 @@ extend-exclude = [
 
 lint.ignore = [
     "E701", #E701 multiple statements on one line,
-    "D102" # Missing docstring in public method
+    "D102", # Missing docstring in public method
+    "TC006",# [*] Add quotes to type expression in `typing.cast()`
 ]
 
 

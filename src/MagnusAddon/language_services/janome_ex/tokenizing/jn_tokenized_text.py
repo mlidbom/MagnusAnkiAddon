@@ -5,6 +5,7 @@ from mylog import log
 from note.collection.vocab_collection import VocabCollection
 from sysutils import ex_sequence
 
+
 class ProcessedToken:
     def __init__(self, surface: str, base: str, base_for_vocab: str) -> None:
         self.surface = surface

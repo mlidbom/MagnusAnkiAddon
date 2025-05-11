@@ -1,7 +1,6 @@
 from anki.cards import Card
 from anki.consts import QUEUE_TYPE_SUSPENDED
 from anki.notes import Note, NoteId
-
 from sysutils.typed import str_
 
 _card_is_studying_cache: dict[NoteId, dict[str, bool]] = dict()

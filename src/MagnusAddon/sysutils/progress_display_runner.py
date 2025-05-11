@@ -1,9 +1,9 @@
-from PyQt6.QtWidgets import QMessageBox, QProgressDialog, QApplication
-from PyQt6.QtCore import Qt
 import time
 from typing import Callable, List, Optional, TypeVar
 
 from ankiutils import app
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QApplication, QMessageBox, QProgressDialog
 from sysutils import app_thread_pool, timeutil
 
 T = TypeVar('T')

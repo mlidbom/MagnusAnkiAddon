@@ -1,7 +1,8 @@
 from anki_extentions.notetype_ex.note_type_ex import NoteTypeEx
 from anki_extentions.notetype_ex.note_type_field import NoteFieldEx
 from anki_extentions.notetype_ex.note_type_template import NoteTemplateEx
-from note.note_constants import NoteTypes, NoteFields
+from note.note_constants import NoteFields, NoteTypes
+
 
 def create_vocab() -> NoteTypeEx:
     return NoteTypeEx(NoteTypes.Vocab,

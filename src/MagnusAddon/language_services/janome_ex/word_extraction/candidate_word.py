@@ -1,5 +1,7 @@
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
+
 from language_services.janome_ex.word_extraction.candidate_form import BaseCandidateForm, CandidateForm, SurfaceCandidateForm
 from sysutils.weak_ref import WeakRef
 
@@ -8,6 +10,7 @@ if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.text_location import TokenTextLocation
 
 from sysutils.ex_str import newline
+
 
 class CandidateWord:
     def __init__(self, locations: list[WeakRef[TokenTextLocation]]):

@@ -20,11 +20,11 @@ License: GNU AGPLv3 or later <https://www.gnu.org/licenses/agpl.html>
 
 import os
 
-from PyQt6.QtGui import QAction, QKeySequence
+from ankiutils import app
 from aqt import mw, qconnect
 from aqt.utils import tooltip
+from PyQt6.QtGui import QAction, QKeySequence
 
-from ankiutils import app
 
 def refresh_media() -> None:
     # write a dummy file to update collection.media modtime and force sync

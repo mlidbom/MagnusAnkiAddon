@@ -2,9 +2,8 @@ import os
 from typing import List
 
 import requests
-
-from note.vocabnote import VocabNote
 from ankiutils import app
+from note.vocabnote import VocabNote
 from wanikani.wanikani_api_client import WanikaniClient
 
 

@@ -1,10 +1,10 @@
 from __future__ import annotations
-from ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules  # noqa
 
+from typing import TYPE_CHECKING, Callable
+
+from ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules  # noqa
 from language_services import conjugator
 from note.note_constants import Mine
-
-from typing import Callable, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from note.vocabnote import VocabNote

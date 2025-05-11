@@ -1,11 +1,11 @@
 from typing import Any, Generator
 
 import pytest
-
 from fixtures.collection_factory import inject_anki_collection_with_select_data, inject_empty_anki_collection_with_note_types
 from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from note.vocabnote import VocabNote
+
 
 # noinspection PyUnusedFunction
 @pytest.fixture(scope="function")

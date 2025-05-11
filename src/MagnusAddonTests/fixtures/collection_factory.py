@@ -12,8 +12,6 @@ from note.kanjinote import KanjiNote
 from note.sentencenote import SentenceNote
 
 
-
-
 @contextmanager
 def inject_empty_anki_collection_with_note_types() -> Generator[None, None, None]:
     from note.collection.jp_collection import JPCollection

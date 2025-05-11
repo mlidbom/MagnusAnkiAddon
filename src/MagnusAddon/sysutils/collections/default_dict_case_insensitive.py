@@ -1,4 +1,4 @@
-from typing import DefaultDict, TypeVar, Generic, Callable, Any
+from typing import Any, Callable, DefaultDict, Generic, TypeVar
 
 VT = TypeVar('VT')  # Value type
 

@@ -1,6 +1,7 @@
-from typing import Union, Any
+from typing import Any, Union
 
 from language_services.janome_ex.tokenizing.jn_parts_of_speech import PartOfSpeechDescription
+
 
 class ExtractedWord:
     def __init__(self, word: str, surface: str, character_index:int, parts_of_speech: Union[PartOfSpeechDescription, None] = None) -> None:

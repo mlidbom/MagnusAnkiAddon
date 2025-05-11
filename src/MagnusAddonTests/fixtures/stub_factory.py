@@ -1,6 +1,7 @@
 import threading
 from contextlib import contextmanager
 from typing import Any, Callable, Generator, List, TypeVar
+
 from ankiutils import app
 from ankiutils.ui_utils_interface import IUIUtils
 from fixtures.stubs.ui_utils_stub import UIUtilsStub

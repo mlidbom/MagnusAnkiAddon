@@ -2,6 +2,7 @@
 
 from sysutils import kana_utils
 
+
 class JNPartsOfSpeech:
     @staticmethod
     def fetch(unparsed: str) -> 'JNPartsOfSpeech':

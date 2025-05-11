@@ -1,34 +1,36 @@
 from __future__ import annotations
-from anki import consts
+
 from typing import TYPE_CHECKING
 
+from anki import consts
 from anki_extentions.deck_ex import DeckEx
 from sysutils.timeutil import StopWatch
 from sysutils.typed import non_optional
 
 if TYPE_CHECKING:
+    from anki.scheduler.v3 import Scheduler
     from anki_extentions.notetype_ex.note_type_template import NoteTemplateEx
     from ankiutils import app
-    from anki.scheduler.v3 import Scheduler
     from note.jpnote import JPNote
 
-from anki.cards import Card
-from aqt.reviewer import AnswerAction
+import anki.cards
 from ankiutils import app
+from aqt.reviewer import AnswerAction
 from sysutils import ex_iterable, timeutil, typed
+
 
 def _latest_day_cutoff_timestamp() -> int:
     from aqt import mw
     return mw.col.sched.day_cutoff - timeutil.SECONDS_PER_DAY
 
-def _get_answers_since_last_day_cutoff_for_card(card: Card) -> list[int]:
+def _get_answers_since_last_day_cutoff_for_card(card: anki.cards.Card) -> list[int]:
     with StopWatch.log_warning_if_slower_than(0.01):
         reviews = app.anki_db().all("SELECT ease FROM revlog WHERE cid = ? AND id > ? ORDER BY id DESC", card.id, _latest_day_cutoff_timestamp() * timeutil.MILLISECONDS_PER_SECOND)
         answers = [typed.int_(review[0]) for review in reviews]
         return answers
 
 class CardEx:
-    def __init__(self, card:Card):
+    def __init__(self, card:anki.cards.Card):
         self.card = card
 
     @staticmethod

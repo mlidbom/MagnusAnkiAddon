@@ -1,6 +1,7 @@
 from anki.decks import DeckConfigDict
 from sysutils.typed import *
 
+
 class DeckConfigDictEx:
     def __init__(self, deck_config_dict:DeckConfigDict) -> None:
         self._dict = deck_config_dict

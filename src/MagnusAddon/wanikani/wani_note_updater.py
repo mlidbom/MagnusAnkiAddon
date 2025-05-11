@@ -1,9 +1,8 @@
 from anki.notes import Note
-
 from note.kanjinote import KanjiNote
+from note.note_constants import NoteTypes
 from note.radicalnote import RadicalNote
 from note.vocabnote import VocabNote
-from note.note_constants import NoteTypes
 from wanikani.wanikani_api_client import WanikaniClient
 
 waniClient = WanikaniClient.get_instance()

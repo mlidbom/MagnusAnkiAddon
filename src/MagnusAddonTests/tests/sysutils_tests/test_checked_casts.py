@@ -1,6 +1,7 @@
-from sysutils import typed
-from ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules # noqa
 from anki.models import NotetypeDict
+from ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules  # noqa
+from sysutils import typed
+
 
 def test_notetypedict() -> None:
     mydict:NotetypeDict = NotetypeDict()

@@ -1,6 +1,7 @@
 from abc import ABCMeta, abstractmethod
 from typing import Callable
 
+
 class IUIUtils(metaclass=ABCMeta):
     @abstractmethod
     def is_edit_current_open(self) -> bool: pass

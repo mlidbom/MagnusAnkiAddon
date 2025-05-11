@@ -1,21 +1,18 @@
 import time
-from typing import cast, Sequence
+from dataclasses import dataclass
+from queue import Queue
+from threading import Event, Thread
+from typing import Callable, Optional, Sequence, cast
 
 from anki import hooks
 from anki.collection import Collection
 from anki.decks import DeckId
 from anki.models import NotetypeDict
 from anki.notes import Note, NoteId
-
 from anki_extentions.notetype_ex.note_type_ex import NoteTypeEx
 from note.note_constants import NoteTypes
-
-from threading import Thread, Event
-from queue import Queue
-from dataclasses import dataclass
-from typing import Callable, Optional
-
 from sysutils import app_thread_pool
+
 
 @dataclass
 class Task:

@@ -5,6 +5,7 @@ from typing import Any, Optional
 
 from sysutils import typed
 
+
 def dict_to_json(object_dict: dict[str, Any]) -> str:
     return json.dumps(object_dict, ensure_ascii=False)
 

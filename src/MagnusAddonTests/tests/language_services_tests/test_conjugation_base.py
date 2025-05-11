@@ -1,6 +1,6 @@
+import language_services.conjugator
 import pytest
 
-import language_services.conjugator
 
 @pytest.mark.parametrize("word, conjugation_bases", [
     # irregular verbs

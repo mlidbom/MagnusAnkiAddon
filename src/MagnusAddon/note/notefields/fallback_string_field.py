@@ -1,7 +1,11 @@
 from __future__ import annotations
 
-from note.jpnote import JPNote
+from typing import TYPE_CHECKING
+
 from note.notefields.string_field import StringField
+
+if TYPE_CHECKING:
+    from note.jpnote import JPNote
 
 class FallbackStringField:
     def __init__(self, note: JPNote, primary_field: str, fallback_field: str) -> None:

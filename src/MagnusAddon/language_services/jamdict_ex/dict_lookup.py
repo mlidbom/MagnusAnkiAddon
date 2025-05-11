@@ -3,24 +3,23 @@ from __future__ import annotations
 from functools import lru_cache
 from typing import TYPE_CHECKING
 
-from jamdict.jmdict import JMDEntry
-from jamdict.util import LookupResult
-
 from language_services.jamdict_ex.priority_spec import PrioritySpec
 from sysutils.lazy import BackgroundInitialingLazy
 from sysutils.typed import str_
 
 if TYPE_CHECKING:
+    from jamdict.jmdict import JMDEntry
+    from jamdict.util import LookupResult
     from note.vocabnote import VocabNote
 
+import queue
+import threading
+from concurrent.futures import Future
+from typing import Any, Callable, Generic, TypeVar
+
+from jamdict import Jamdict
 from language_services.jamdict_ex.dict_entry import DictEntry
 from sysutils import ex_iterable, kana_utils
-
-import threading
-import queue
-from concurrent.futures import Future
-from typing import Callable, TypeVar, Generic, Any
-from jamdict import Jamdict
 
 T = TypeVar('T')
 

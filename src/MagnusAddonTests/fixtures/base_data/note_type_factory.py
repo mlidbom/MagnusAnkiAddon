@@ -1,5 +1,4 @@
 from anki.collection import Collection
-
 from fixtures.base_data.kanji_factory import create_kanji
 from fixtures.base_data.radical_factory import create_radical
 from fixtures.base_data.sentence_factory import create_sentence

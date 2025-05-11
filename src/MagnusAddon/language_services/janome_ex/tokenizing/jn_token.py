@@ -1,7 +1,8 @@
 from typing import Any
 
-from language_services.janome_ex.tokenizing.jn_parts_of_speech import JNPartsOfSpeech, POS
-from sysutils import typed, kana_utils
+from language_services.janome_ex.tokenizing.jn_parts_of_speech import POS, JNPartsOfSpeech
+from sysutils import kana_utils, typed
+
 
 # noinspection PyUnusedFunction
 class JNToken:

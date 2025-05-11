@@ -1,6 +1,6 @@
 import pytest
-
 from sysutils import ex_str
+
 
 @pytest.mark.parametrize('inp, output', [
     ("<div>something</div>", "something"),

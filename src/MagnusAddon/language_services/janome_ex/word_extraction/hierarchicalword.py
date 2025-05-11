@@ -1,10 +1,12 @@
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.extracted_word import ExtractedWord
 
 from typing import Optional
+
 
 class HierarchicalWord:
     def __init__(self, word: ExtractedWord):

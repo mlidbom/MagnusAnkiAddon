@@ -3,10 +3,10 @@ from __future__ import annotations
 from typing import Any, cast
 
 from anki.models import NotetypeDict, NotetypeId
-
 from anki_extentions.notetype_ex.note_type_field import NoteFieldEx
 from anki_extentions.notetype_ex.note_type_template import NoteTemplateEx
 from sysutils import typed
+
 
 class NoteTypeEx:
     def __init__(self, name: str, fields: list[NoteFieldEx], templates: list[NoteTemplateEx]):

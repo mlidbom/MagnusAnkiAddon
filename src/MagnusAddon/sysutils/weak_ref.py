@@ -1,8 +1,10 @@
-from _weakref import ReferenceType
-from typing import TypeVar, Generic, Optional
 import weakref
+from typing import TYPE_CHECKING, Generic, Optional, TypeVar
 
 from sysutils.typed import non_optional
+
+if TYPE_CHECKING:
+    from _weakref import ReferenceType
 
 T = TypeVar('T')
 

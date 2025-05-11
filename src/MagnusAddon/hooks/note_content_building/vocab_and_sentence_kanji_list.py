@@ -1,11 +1,9 @@
 from aqt import gui_hooks
-
 from hooks.note_content_building.content_renderer import PrerenderingAnswerContentRenderer
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
 from sysutils import ex_str
 from viewmodels.kanji_list import sentence_kanji_list_viewmodel
-
 
 
 def render_kanji_list_from_kanji(kanjis:list[str]) -> str:

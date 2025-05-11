@@ -1,12 +1,13 @@
 from __future__ import annotations
 
-from typing import Callable, Generic, Iterator, Sequence, TypeVar
-
-from anki.collection import Collection
-from anki.notes import Note, NoteId
+from typing import TYPE_CHECKING, Callable, Generic, Iterator, Sequence, TypeVar
 
 from note.jpnote import JPNote
 from note.note_constants import Builtin
+
+if TYPE_CHECKING:
+    from anki.collection import Collection
+    from anki.notes import Note, NoteId
 
 TNote = TypeVar('TNote', bound=JPNote)
 

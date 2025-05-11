@@ -1,11 +1,11 @@
-from aqt import gui_hooks
-
 from ankiutils import app
+from aqt import gui_hooks
 from hooks.note_content_building.content_renderer import PrerenderingAnswerContentRenderer
 from note import vocabnote
 from note.vocabnote import VocabNote
 from sysutils import ex_sequence
 from sysutils.ex_str import newline
+
 
 def _create_classes(_vocab: VocabNote) -> str:
     tags = list(_vocab.priority_spec().tags)

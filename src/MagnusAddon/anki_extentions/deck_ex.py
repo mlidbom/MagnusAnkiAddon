@@ -1,7 +1,7 @@
 from anki.decks import DeckDict, DeckId
-
 from anki_extentions.deck_configdict_ex import DeckConfigDictEx
 from sysutils.typed import *
+
 
 class DeckEx:
     def __init__(self, deck_dict: DeckDict) -> None:
