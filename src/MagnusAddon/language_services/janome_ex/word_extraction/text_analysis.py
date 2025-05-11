@@ -1,7 +1,9 @@
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from language_services.janome_ex.tokenizing.jn_tokenized_text import ProcessedToken
+from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.candidate_form import CandidateForm
@@ -25,7 +27,7 @@ class TextAnalysis:
 
         character_index = 0
         for token_index, token in enumerate(self.tokens):
-            self.locations.append(TokenTextLocation(self, token, character_index, token_index))
+            self.locations.append(TokenTextLocation(WeakRef(self), token, character_index, token_index))
             character_index += len(token.surface)
 
         self.start_location = self.locations[0]

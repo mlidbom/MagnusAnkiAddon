@@ -1,20 +1,22 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
+from sysutils.weak_ref import WeakRef
+
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.candidate_form import CandidateForm
     from note.vocabnote import VocabNote
 
 class DisplayForm:
-    def __init__(self, candidate: CandidateForm):
-        self.candidate:CandidateForm = candidate
-        self.parsed_form:str = candidate.form
+    def __init__(self, candidate: WeakRef[CandidateForm]):
+        self.candidate:WeakRef[CandidateForm] = candidate
+        self.parsed_form:str = candidate().form
         self.vocab_form:str = ""
         self.answer: str = ""
 
 
 class VocabDisplayForm(DisplayForm):
-    def __init__(self, candidate: CandidateForm, vocab: VocabNote):
+    def __init__(self, candidate: WeakRef[CandidateForm], vocab: VocabNote):
         super().__init__(candidate)
         self.vocab:VocabNote = vocab
         self.vocab_form = vocab.get_question()
@@ -30,6 +32,6 @@ class VocabDisplayForm(DisplayForm):
 #         self.dictionary_entry = dictionary_entry
 
 class MissingDisplayForm(DisplayForm):
-    def __init__(self, candidate: CandidateForm):
+    def __init__(self, candidate: WeakRef[CandidateForm]):
         super().__init__(candidate)
         self.answer = "---"

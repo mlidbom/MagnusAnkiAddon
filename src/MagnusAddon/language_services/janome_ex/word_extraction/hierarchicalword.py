@@ -3,7 +3,6 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.extracted_word import ExtractedWord
-    from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 
 from typing import Optional
 
@@ -38,6 +37,3 @@ class HierarchicalWord:
 
     def __repr__(self) -> str:
         return f"HierarchicalWord('{self.start_index}:{self.end_index}, {self.word.surface}:{self.word.word}: parent:{self.shadowed_by.word.word if self.shadowed_by else ''}')"
-
-    def to_exclusion(self) -> WordExclusion:
-        return WordExclusion(self.word.word, self.start_index)

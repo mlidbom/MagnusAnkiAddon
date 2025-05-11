@@ -116,11 +116,6 @@ class CachingSentenceConfigurationField:
             self.incorrect_matches().remove(exclusion)
         self._save()
 
-    def remove_incorrect_match(self, exclusion: WordExclusion) -> None:
-        if exclusion in self.incorrect_matches():
-            self.incorrect_matches().remove(exclusion)
-        self._save()
-
     def parsing_result(self) -> ParsingResult: return self._value.instance().parsing_result
     def set_parsing_result(self, analysis: TextAnalysis) -> None:
         self._value.instance().parsing_result = ParsingResult([ParsedWord(word.form) for word in analysis.all_words],

@@ -5,7 +5,6 @@ from typing import Callable, List, Optional, TypeVar
 
 from ankiutils import app
 from sysutils import app_thread_pool, timeutil
-from sysutils.gc_helper import run_with_gc_enabled_and_collect_before_disabling_again
 
 T = TypeVar('T')
 
@@ -47,38 +46,37 @@ def _create_spinning_progress_dialog(message: str) -> QProgressDialog:
     return progress_dialog
 
 def process_with_progress(items: List[T], process_item: Callable[[T], None], message:str, allow_cancel: bool = True, display_delay_seconds: float = 0.0, pause_cache_updates: bool = True) -> None:
-    with run_with_gc_enabled_and_collect_before_disabling_again():
-        total_items = len(items)
-        start_time = time.time()
-        progress_dialog: Optional[QProgressDialog] = None
-        last_refresh = 0.0
+    total_items = len(items)
+    start_time = time.time()
+    progress_dialog: Optional[QProgressDialog] = None
+    last_refresh = 0.0
 
-        if pause_cache_updates: app.col().pause_cache_updates()
+    if pause_cache_updates: app.col().pause_cache_updates()
 
-        try:
+    try:
 
-            for current_item, item in enumerate(items):
-                if not progress_dialog and (time.time() - start_time >= display_delay_seconds):
-                    progress_dialog = QProgressDialog(f"""{message}...""", "Cancel" if allow_cancel else None, 0, total_items)
-                    progress_dialog.setWindowTitle(f"""{message}""")
-                    progress_dialog.setWindowModality(Qt.WindowModality.ApplicationModal)
-                    progress_dialog.show()
+        for current_item, item in enumerate(items):
+            if not progress_dialog and (time.time() - start_time >= display_delay_seconds):
+                progress_dialog = QProgressDialog(f"""{message}...""", "Cancel" if allow_cancel else None, 0, total_items)
+                progress_dialog.setWindowTitle(f"""{message}""")
+                progress_dialog.setWindowModality(Qt.WindowModality.ApplicationModal)
+                progress_dialog.show()
 
-                if progress_dialog and progress_dialog.wasCanceled(): break
-                process_item(item)
-                if time.time() - last_refresh > 0.1 or current_item == total_items - 1:
-                    last_refresh = time.time()
-                    if progress_dialog: progress_dialog.setValue(current_item + 1)
-                    elapsed_time = time.time() - start_time
-                    if current_item > 0:
-                        estimated_total_time = (elapsed_time / current_item) * total_items
-                        estimated_remaining_time = estimated_total_time - elapsed_time
-                        if progress_dialog: progress_dialog.setLabelText(f"{message} {current_item} of {total_items} Remaining: {timeutil.format_seconds_as_hh_mm_ss(estimated_remaining_time)}")
+            if progress_dialog and progress_dialog.wasCanceled(): break
+            process_item(item)
+            if time.time() - last_refresh > 0.1 or current_item == total_items - 1:
+                last_refresh = time.time()
+                if progress_dialog: progress_dialog.setValue(current_item + 1)
+                elapsed_time = time.time() - start_time
+                if current_item > 0:
+                    estimated_total_time = (elapsed_time / current_item) * total_items
+                    estimated_remaining_time = estimated_total_time - elapsed_time
+                    if progress_dialog: progress_dialog.setLabelText(f"{message} {current_item} of {total_items} Remaining: {timeutil.format_seconds_as_hh_mm_ss(estimated_remaining_time)}")
 
-                    QApplication.processEvents()
-        finally:
-            if pause_cache_updates: app.col().resume_cache_updates()
-            if progress_dialog: progress_dialog.close()
+                QApplication.processEvents()
+    finally:
+        if pause_cache_updates: app.col().resume_cache_updates()
+        if progress_dialog: progress_dialog.close()
 
 def show_dismissable_message(window_title: str, message:str) -> None:
     msg_box = QMessageBox()

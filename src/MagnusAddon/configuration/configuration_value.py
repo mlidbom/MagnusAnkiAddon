@@ -121,4 +121,4 @@ class JapaneseConfig:
 
 
 
-config = Lazy(lambda: JapaneseConfig())
+config:Lazy[JapaneseConfig] = Lazy(lambda: JapaneseConfig())

@@ -17,12 +17,6 @@ _commaSeparatedCompiled = re.compile(_commaSeparatedPattern)
 def extract_comma_separated_values(string: str) -> list[str]:
     return [item for item in (item.strip() for item in _commaSeparatedCompiled.split(string.strip())) if item]
 
-def to_comma_separated_values(values: Sequence[str]) -> str:
-    return ", ".join(values)
-
-def extract_newline_separated_values(string: str) -> list[str]:
-    return [item for item in string.split(newline) if item]
-
 _html_bracket_pattern = re.compile('<.*?>|\[.*?\]') # noqa
 def strip_html_and_bracket_markup(string: str) -> str:
     return _html_bracket_pattern.sub('', string)

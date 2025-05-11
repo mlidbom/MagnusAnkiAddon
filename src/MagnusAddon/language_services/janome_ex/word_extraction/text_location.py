@@ -1,8 +1,10 @@
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from note.note_constants import Mine
 from sysutils import ex_sequence
+from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
     from note.vocabnote import VocabNote
@@ -19,12 +21,12 @@ from sysutils.ex_str import newline
 _max_lookahead = 12
 
 class TokenTextLocation:
-    def __init__(self, analysis: TextAnalysis, token: ProcessedToken, character_start_index: int, token_index: int):
+    def __init__(self, analysis: WeakRef[TextAnalysis], token: ProcessedToken, character_start_index: int, token_index: int):
         surface = token.surface
         base = token.base_form
-        self.is_covered_by: Optional[TokenTextLocation] = None
+        self.is_covered_by: Optional[WeakRef[TokenTextLocation]] = None
         self.token: ProcessedToken = token
-        self.analysis: TextAnalysis = analysis
+        self.analysis: WeakRef[TextAnalysis] = analysis
         self.token_index: int = token_index
         self.character_start_index: int = character_start_index
         self.character_end_index: int = character_start_index + len(surface) - 1
@@ -36,8 +38,8 @@ class TokenTextLocation:
         self.display_words: list[CandidateForm] = []
         self.all_words: list[CandidateForm] = []
         self.all_candidates: list[CandidateWord] = []
-        self.next: Optional[TokenTextLocation] = None
-        self.previous: Optional[TokenTextLocation] = None
+        self.next: Optional[WeakRef[TokenTextLocation]] = None
+        self.previous: Optional[WeakRef[TokenTextLocation]] = None
 
     def __repr__(self) -> str:
         return f"""
@@ -46,18 +48,18 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.sur
 """
 
     def forward_list(self, length: int = 99999) -> list[TokenTextLocation]:
-        locations = self.analysis.locations[self.token_index: self.token_index + length + 1]
+        locations = self.analysis().locations[self.token_index: self.token_index + length + 1]
         return locations
 
     def run_analysis_step_1(self) -> None:
-        if len(self.analysis.locations) > self.token_index + 1:
-            self.next = self.analysis.locations[self.token_index + 1]
+        if len(self.analysis().locations) > self.token_index + 1:
+            self.next = WeakRef(self.analysis().locations[self.token_index + 1])
 
         if self.token_index > 0:
-            self.previous = self.analysis.locations[self.token_index - 1]
+            self.previous = WeakRef(self.analysis().locations[self.token_index - 1])
 
         lookahead_max = min(_max_lookahead, len(self.forward_list(_max_lookahead)))
-        self.all_candidates = [CandidateWord(self.forward_list(index)) for index in range(lookahead_max - 1, -1, -1)]
+        self.all_candidates = [CandidateWord([WeakRef(location) for location in self.forward_list(index)]) for index in range(lookahead_max - 1, -1, -1)]
         self.all_candidates[-1].complete_analysis()  # the non-compound part needs to be completed first
 
     def run_analysis_step_2(self) -> None:
@@ -74,12 +76,12 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.sur
 
             covering_forward_count = self.valid_candidates[0].length - 1
             for location in self.forward_list(covering_forward_count)[1:]:
-                location.is_covered_by = self
+                location.is_covered_by = WeakRef(self)
 
         self.all_words = ex_sequence.flatten([v.display_words for v in self.valid_candidates])
 
     def is_next_location_inflecting_word(self) -> bool:
-        return self.next is not None and self.next.is_inflecting_word()
+        return self.next is not None and self.next().is_inflecting_word()
 
     def is_inflecting_word(self) -> bool:
         def lookup_vocabs_prefer_exact_match(form: str) -> list[VocabNote]:

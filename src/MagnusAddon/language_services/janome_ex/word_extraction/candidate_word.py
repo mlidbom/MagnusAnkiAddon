@@ -1,6 +1,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 from language_services.janome_ex.word_extraction.candidate_form import BaseCandidateForm, CandidateForm, SurfaceCandidateForm
+from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
@@ -9,21 +10,21 @@ if TYPE_CHECKING:
 from sysutils.ex_str import newline
 
 class CandidateWord:
-    def __init__(self, locations: list[TokenTextLocation]):
-        self.analysis: TextAnalysis = locations[0].analysis
-        self.locations: list[TokenTextLocation] = locations
+    def __init__(self, locations: list[WeakRef[TokenTextLocation]]):
+        self.analysis: WeakRef[TextAnalysis] = locations[0]().analysis
+        self.locations: list[WeakRef[TokenTextLocation]] = locations
         self.is_custom_compound: bool = len(locations) > 1
-        self.start_location: TokenTextLocation = self.locations[0]
-        self.end_location: TokenTextLocation = self.locations[-1]
+        self.start_location: WeakRef[TokenTextLocation] = self.locations[0]
+        self.end_location: WeakRef[TokenTextLocation] = self.locations[-1]
         self.length = len(self.locations)
 
-        self.base: CandidateForm = BaseCandidateForm(self)
-        self.surface: CandidateForm = SurfaceCandidateForm(self) if self.locations[-1].surface != self.locations[-1].base else self.base
+        self.base: CandidateForm = BaseCandidateForm(WeakRef(self))
+        self.surface: CandidateForm = SurfaceCandidateForm(WeakRef(self)) if self.locations[-1]().surface != self.locations[-1]().base else self.base
 
         self.is_word: bool = self.surface.is_word or self.base.is_word
 
-        self.is_inflectable_word: bool = self.end_location.token.is_inflectable_word
-        self.next_token_is_inflecting_word: bool = self.end_location.is_next_location_inflecting_word()
+        self.is_inflectable_word: bool = self.end_location().token.is_inflectable_word
+        self.next_token_is_inflecting_word: bool = self.end_location().is_next_location_inflecting_word()
         self.is_inflected_word: bool = self.is_inflectable_word and self.next_token_is_inflecting_word
 
         self.should_include_surface: bool = False

@@ -458,6 +458,3 @@ class VocabNote(KanaVocabNote):
             created.suspend_all_cards()
 
         self.set_user_compounds(compound_parts)
-
-    def set_user_mnemonic(self, mnemonic: str) -> None:
-        self.user_mnemonic.set(mnemonic)
