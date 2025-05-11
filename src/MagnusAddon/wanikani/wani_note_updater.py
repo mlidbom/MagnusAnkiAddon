@@ -5,7 +5,7 @@ from note.radicalnote import RadicalNote
 from note.vocabnote import VocabNote
 from wanikani.wanikani_api_client import WanikaniClient
 
-waniClient = WanikaniClient.get_instance()
+wani_client = WanikaniClient.get_instance()
 
 
 def update_from_wanikani(note: Note) -> None:
@@ -13,10 +13,10 @@ def update_from_wanikani(note: Note) -> None:
     note_type = note._note_type['name']  # noqa: SLF001
     if note_type == NoteTypes.Vocab:
         vocab_note = VocabNote(note)
-        vocab_note.update_from_wani(waniClient.get_vocab(vocab_note.get_question()))
+        vocab_note.update_from_wani(wani_client.get_vocab(vocab_note.get_question()))
     if note_type == NoteTypes.Kanji:
         kanji_note = KanjiNote(note)
-        kanji_note.update_from_wani(waniClient.get_kanji_by_name(kanji_note.get_question()))
+        kanji_note.update_from_wani(wani_client.get_kanji_by_name(kanji_note.get_question()))
     if note_type == NoteTypes.Radical:
         radical_note = RadicalNote(note)
-        radical_note.update_from_wani(waniClient.get_radical(radical_note.get_answer()))
+        radical_note.update_from_wani(wani_client.get_radical(radical_note.get_answer()))
