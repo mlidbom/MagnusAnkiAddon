@@ -18,6 +18,7 @@ from note.vocabulary.vocabnote_parts_of_speech import VocabNotePartsOfSpeech
 from note.vocabulary.vocabnote_related_notes import VocabNoteRelatedNotes
 from note.vocabulary.vocabnote_sentences import VocabNoteSentences
 from note.vocabulary.vocabnote_usercompoundparts import VocabNoteUserCompoundParts
+from note.vocabulary.vocabnote_wanikani_extensions import VocabNoteWaniExtensions
 from note.waninote import WaniNote
 from sysutils import ex_sequence, ex_str, kana_utils
 
@@ -42,6 +43,7 @@ class VocabNote(WaniNote):
         self.readings: CommaSeparatedStringsListField = CommaSeparatedStringsListField(self, NoteFields.Vocab.Reading)
         self.conjugator: VocabNoteConjugator = VocabNoteConjugator(self)
         self.user_answer: StringField = StringField(self, NoteFields.Vocab.user_answer)
+        self.wani_extensions: VocabNoteWaniExtensions = VocabNoteWaniExtensions(self)
 
 
     def __repr__(self) -> str: return f"""{self.get_question()}"""
@@ -108,7 +110,6 @@ class VocabNote(WaniNote):
 
     def _set_source_answer(self, value: str) -> None: self.set_field(NoteFields.Vocab.source_answer, value)
 
-    def set_meaning_mnemonic(self, value: str) -> None: self.set_field(NoteFields.Vocab.source_mnemonic, value)
-
     def update_from_wani(self, wani_vocab: models.Vocabulary) -> None:
+        super().update_from_wani(wani_vocab)
         vocabnote_wanikani_extensions.update_from_wani(self, wani_vocab)

@@ -3,7 +3,8 @@ from __future__ import annotations
 import typing
 
 from anki.notes import Note
-from note.note_constants import Mine, NoteTypes
+from note.note_constants import Mine, NoteFields, NoteTypes
+from note.notefields.string_field import StringField
 from wanikani.wanikani_api_client import WanikaniClient
 
 if typing.TYPE_CHECKING:
@@ -11,7 +12,7 @@ if typing.TYPE_CHECKING:
     from wanikani_api import models
 
 def update_from_wani(self: VocabNote, wani_vocab: models.Vocabulary) -> None:
-    self.set_meaning_mnemonic(wani_vocab.meaning_mnemonic)
+    self.wani_extensions.set_meaning_mnemonic(wani_vocab.meaning_mnemonic)
 
     meanings = ', '.join(str(meaning.meaning) for meaning in wani_vocab.meanings)
     self._set_source_answer(meanings)
@@ -53,3 +54,11 @@ def create_from_wani_vocabulary(wani_vocab: models.Vocabulary) -> None:
     if len(wani_vocab.context_sentences) > 2:
         vocab_note.context_sentences.third.english.set(wani_vocab.context_sentences[2].english)
         vocab_note.context_sentences.second.japanese.set(wani_vocab.context_sentences[2].japanese)
+
+class VocabNoteWaniExtensions:
+    def __init__(self, vocab: VocabNote) -> None:
+        self._vocab = vocab
+        self._meaning_mnemonic: StringField = StringField(vocab, NoteFields.Vocab.source_mnemonic)
+
+
+    def set_meaning_mnemonic(self, value: str) -> None: self._meaning_mnemonic.set(value)
