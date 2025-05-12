@@ -3,18 +3,18 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules  # noqa
-from language_services.jamdict_ex.priority_spec import PrioritySpec
 from note.note_constants import Mine, NoteFields
 from note.notefields.comma_separated_strings_list_field import CommaSeparatedStringsListField
 from note.notefields.string_field import StringField
 from note.vocabnote_cloner import VocabCloner
-from note.vocabulary import vocabnote_generated_data, vocabnote_meta_tag
+from note.vocabulary import vocabnote_generated_data
 from note.vocabulary.vocabnote_audio import VocabNoteAudio
 from note.vocabulary.vocabnote_conjugator import VocabNoteConjugator
 from note.vocabulary.vocabnote_context_sentences import VocabContextSentences
 from note.vocabulary.vocabnote_factory import VocabNoteFactory
 from note.vocabulary.vocabnote_forms import VocabNoteForms
 from note.vocabulary.vocabnote_kanji import VocabNoteKanji
+from note.vocabulary.vocabnote_metadata import VocabNoteMetaData
 from note.vocabulary.vocabnote_parts_of_speech import VocabNotePartsOfSpeech
 from note.vocabulary.vocabnote_related_notes import VocabNoteRelatedNotes
 from note.vocabulary.vocabnote_sentences import VocabNoteSentences
@@ -46,6 +46,7 @@ class VocabNote(WaniNote):
         self._source_answer: StringField = StringField(self, NoteFields.Vocab.source_answer)
         self.wani_extensions: VocabNoteWaniExtensions = VocabNoteWaniExtensions(self)
         self.kanji: VocabNoteKanji = VocabNoteKanji(self)
+        self.meta_data: VocabNoteMetaData = VocabNoteMetaData(self)
 
 
     def __repr__(self) -> str: return f"""{self.get_question()}"""
@@ -60,25 +61,12 @@ class VocabNote(WaniNote):
         super().update_generated_data()
         vocabnote_generated_data.update_generated_data(self)
 
-    def priority_spec(self) -> PrioritySpec:
-        from language_services.jamdict_ex.dict_lookup import DictLookup
-        lookup = DictLookup.try_lookup_vocab_word_or_name(self)
-        return lookup.priority_spec() if lookup else PrioritySpec(set())
-
-    def get_meta_tags_html(self: VocabNote, display_extended_sentence_statistics: bool = True) -> str:
-        return vocabnote_meta_tag.get_meta_tags_html(self, display_extended_sentence_statistics)
-
     def generate_and_set_answer(self) -> None:
         from language_services.jamdict_ex.dict_lookup import DictLookup
         dict_lookup = DictLookup.try_lookup_vocab_word_or_name(self)
         if dict_lookup.found_words():
             generated = dict_lookup.entries[0].generate_answer()
             self.user_answer.set(generated)
-
-    def requires_exact_match(self) -> bool:
-        return self.has_tag(Mine.Tags.requires_exact_match)
-
-    def is_question_overrides_form(self) -> bool: return self.has_tag(Mine.Tags.question_overrides_form)
 
     @staticmethod
     def _strip_noise_characters(string: str) -> str:

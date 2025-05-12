@@ -26,7 +26,7 @@ def _build_vocab_list(word_to_show: list[str], excluded_words:set[str], title:st
 
         if vocabs:
             for vocab in vocabs:
-                word_form = vocab.get_question() if vocab.is_question_overrides_form() else word
+                word_form = vocab.get_question() if vocab.meta_data.flags.question_overrides_form() else word
                 hit_form = vocab.get_question() if vocab.get_question() != word_form else ""
                 needs_reading = kana_utils.contains_kanji(word_form) and (not hit_form or kana_utils.contains_kanji(hit_form))
                 readings = ", ".join(vocab.readings.get()) if needs_reading else ""
@@ -37,7 +37,7 @@ def _build_vocab_list(word_to_show: list[str], excluded_words:set[str], title:st
                                 <span class="vocabQuestion clipboard">{word_form}</span>
                                 {f'''<span class="vocabHitForm clipboard">{hit_form}</span>''' if hit_form else ""}
                                 {f'''<span class="vocabHitReadings clipboard">{readings}</span>''' if readings else ""}
-                                {vocab.get_meta_tags_html(include_extended_sentence_statistics)}
+                                {vocab.meta_data.meta_tags_html(include_extended_sentence_statistics)}
                                 <span class="vocabAnswer">{vocab.get_answer()}</span>
                             </div>
                             {f'''<div class="sentenceVocabEntryMnemonic">{vocab.user_mnemonic.get()}</div>''' if include_mnemonics and vocab.user_mnemonic.get() and vocab.user_mnemonic.get() != '-' else '' }

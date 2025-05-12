@@ -10,10 +10,10 @@ from sysutils.ex_str import newline
 
 
 def _create_classes(_vocab: VocabNote) -> str:
-    tags = list(_vocab.priority_spec().tags)
+    tags = list(_vocab.meta_data.priority_spec().tags)
     tags.sort()
     classes = " ".join([f"""common_ness_{prio}""" for prio in tags])
-    classes += f""" {_vocab.priority_spec().priority_string}"""
+    classes += f""" {_vocab.meta_data.priority_spec().priority_string}"""
     classes += " " + " ".join(_vocab.get_meta_tags())
     return classes
 
@@ -40,7 +40,7 @@ def render_vocab_list(vocab_list: list[VocabNote], title:str, css_class:str, rea
                             <audio src="{_vocab_note.audio.get_primary_audio_path()}"></audio><a class="play-button"></a>
                             <span class="question clipboard">{_vocab_note.get_question()}</span>
                             {render_readings(_vocab_note)}                            
-                            {_vocab_note.get_meta_tags_html()}
+                            {_vocab_note.meta_data.meta_tags_html(True)}
                             <span class="meaning"> {_vocab_note.get_answer()}</span>
                         </div>
                         """ for _vocab_note in vocab_list])}
@@ -111,7 +111,7 @@ def generate_forms_list(vocab_note: VocabNote) -> str:
     return render_vocab_list([vocab_note] + forms, "forms", css_class="forms") if forms else ""
 
 def generate_meta_tags(vocab_note:VocabNote) -> str:
-    return vocab_note.get_meta_tags_html()
+    return vocab_note.meta_data.meta_tags_html(True)
 
 def init() -> None:
     gui_hooks.card_will_show.append(PrerenderingAnswerContentRenderer(VocabNote, {

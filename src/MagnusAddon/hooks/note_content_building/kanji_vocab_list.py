@@ -13,10 +13,10 @@ if TYPE_CHECKING:
 
 def generate_vocab_html_list(_kanji_note: KanjiNote) -> str:
     def _create_classes(_kanji: KanjiNote, _vocab: VocabNote) -> str:
-        tags = list(_vocab.priority_spec().tags)
+        tags = list(_vocab.meta_data.priority_spec().tags)
         tags.sort()
         classes = " ".join([f"""common_ness_{prio}""" for prio in tags])
-        classes += f""" {_vocab.priority_spec().priority_string}"""
+        classes += f""" {_vocab.meta_data.priority_spec().priority_string}"""
         classes += " " + " ".join(_vocab.get_meta_tags())
 
         if _vocab.get_question() in primary_vocab or (_vocab.readings.get() and _vocab.readings.get()[0] in _kanji.get_primary_vocab()):
@@ -42,7 +42,7 @@ def generate_vocab_html_list(_kanji_note: KanjiNote) -> str:
                         <audio src="{_vocab_note.audio.get_primary_audio_path()}"></audio><a class="play-button"></a>
                         <span class="kanji clipboard">{_vocab_note.get_question()}</span>
                         (<span class="clipboard vocabReading">{", ".join(_kanji_note.tag_vocab_readings(_vocab_note))}</span>)
-                        {_vocab_note.get_meta_tags_html()}
+                        {_vocab_note.meta_data.meta_tags_html(True)}
                         <span class="meaning"> {_vocab_note.get_answer()}</span>
                     </div>
                     """ for _vocab_note in vocabs])}

@@ -126,7 +126,7 @@ class WordExtractor:
                 return True
 
             exact_matches = ex_sequence.flatten([app.col().vocab.with_question(form) for form in [base,surface]])
-            return not any(v for v in exact_matches if v.requires_exact_match())
+            return not any(v for v in exact_matches if v.meta_data.flags.requires_exact_match())
 
         text = self._tokenizer.tokenize(sentence)
         tokens = text.tokens

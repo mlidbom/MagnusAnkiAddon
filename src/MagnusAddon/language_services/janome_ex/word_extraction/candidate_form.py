@@ -47,7 +47,7 @@ class CandidateForm:
 
         self.forms_excluded_by_compound_root_vocab_configuration: set[str] = set()
         self.is_excluded_by_compound_root_vocab_configuration: bool = False
-        self.exact_match_required_by_vocab_configuration: bool = any(v for v in self.unexcluded_vocabs if v.requires_exact_match())
+        self.exact_match_required_by_vocab_configuration: bool = any(v for v in self.unexcluded_vocabs if v.meta_data.flags.requires_exact_match())
         self.exact_match_required_by_counterpart_vocab_configuration: bool = False
         self.exact_match_required: bool = False
         self.exact_match_requirement_fulfilled: bool = False

@@ -22,7 +22,7 @@ class VocabDisplayForm(DisplayForm):
         self.vocab_form = vocab.get_question()
         self.answer = vocab.get_answer()
 
-        if vocab.is_question_overrides_form():
+        if vocab.meta_data.flags.question_overrides_form():
             self.parsed_form = self.vocab.get_question()
 
 
