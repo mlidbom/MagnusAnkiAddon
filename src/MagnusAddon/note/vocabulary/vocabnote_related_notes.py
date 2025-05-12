@@ -23,6 +23,4 @@ class VocabNoteRelatedNotes:
 
         if not _is_recursive_call:
             for similar in self._vocab.collection.vocab.with_question(new_similar):
-                similar1 = self._vocab.get_question()
-                similar.related_notes.add_similar_meaning(similar1)
-
+                similar.related_notes.add_similar_meaning(self._vocab.get_question())
