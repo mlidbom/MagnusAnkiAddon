@@ -58,11 +58,11 @@ def get_meta_tags_html(vocab: VocabNote, display_extended_sentence_statistics: b
     if "independent noun" in tos: meta.append(VocabMetaTag("independent-noun", "i-名", "independent noun"))
 
     # verbs
-    if "ichidan verb" in tos: meta.append(vocab._create_verb_meta_tag("ichidan", "1", "ichidan verb", tos))
-    if "godan verb" in tos: meta.append(vocab._create_verb_meta_tag("godan", "5", "godan verb", tos))
-    if "suru verb" in tos or "verbal noun" in tos or "する verb" in tos: meta.append(vocab._create_verb_meta_tag("suru-verb", "為", "suru verb", tos))
-    if "kuru verb" in tos: meta.append(vocab._create_verb_meta_tag("kuru-verb", "k-v", "kuru verb", tos))
-    if "auxiliary verb" in tos: meta.append(vocab._create_verb_meta_tag("auxiliary-verb", "aux-v", "auxiliary verb", tos))
+    if "ichidan verb" in tos: meta.append(_create_verb_meta_tag("ichidan", "1", "ichidan verb", tos))
+    if "godan verb" in tos: meta.append(_create_verb_meta_tag("godan", "5", "godan verb", tos))
+    if "suru verb" in tos or "verbal noun" in tos or "する verb" in tos: meta.append(_create_verb_meta_tag("suru-verb", "為", "suru verb", tos))
+    if "kuru verb" in tos: meta.append(_create_verb_meta_tag("kuru-verb", "k-v", "kuru verb", tos))
+    if "auxiliary verb" in tos: meta.append(_create_verb_meta_tag("auxiliary-verb", "aux-v", "auxiliary verb", tos))
 
     # adverbs
     if "と adverb" in tos or "to-adverb" in tos: meta.append(VocabMetaTag("to-adverb", "と", "adverbial noun taking the と particle to act as adverb"))
@@ -90,3 +90,15 @@ def get_meta_tags_html(vocab: VocabNote, display_extended_sentence_statistics: b
     if "masu-suffix" in tos: meta.append(VocabMetaTag("masu-suffix", "連", "follows the 連用形/masu-stem form of a verb"))
 
     return """<ol class="vocab_tag_list">""" + "".join([f"""<li class="vocab_tag vocab_tag_{tag.name}" title="{tag.tooltip}">{tag.display}</li>""" for tag in meta]) + "</ol>"
+
+def _create_verb_meta_tag(name: str, display: str, tooltip: str, tos: set[str]) -> VocabMetaTag:
+    tag = VocabMetaTag(name, display, tooltip)
+
+    if "intransitive verb" in tos or "intransitive" in tos:
+        tag.display += "i"
+        tag.tooltip = "intransitive " + tag.tooltip
+    if "transitive verb" in tos or "transitive" in tos:
+        tag.display += "t"
+        tag.tooltip = "transitive " + tag.tooltip
+
+    return tag

@@ -3,8 +3,6 @@ from __future__ import annotations
 import re
 from typing import TYPE_CHECKING
 
-from wanikani_api import models
-
 import language_services.conjugator
 from anki.notes import Note
 from ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules  # noqa
@@ -16,14 +14,13 @@ from note.notefields.string_field import StringField
 from note.notefields.string_set_field import StringSetField
 from note.vocabnote_cloner import VocabCloner
 from note.vocabulary import vocabnote_meta_tag, vocabnote_wanikani_extensions
-from note.vocabulary.vocabnote_meta_tag import VocabMetaTag
 from note.waninote import WaniNote
 from sysutils import ex_sequence, ex_str, kana_utils
-from wanikani.wanikani_api_client import WanikaniClient
 
 if TYPE_CHECKING:
     from note.jpnote import JPNote
     from note.sentencenote import SentenceNote
+    from wanikani_api import models
 
 class VocabNote(WaniNote):
     def __init__(self, note: Note) -> None:
@@ -156,19 +153,6 @@ class VocabNote(WaniNote):
 
         primary_list = primary_audio.replace("[sound:", "").split("]")
         return primary_list[0]
-
-    @staticmethod
-    def _create_verb_meta_tag(name: str, display: str, tooltip: str, tos: set[str]) -> VocabMetaTag:
-        tag = VocabMetaTag(name, display, tooltip)
-
-        if "intransitive verb" in tos or "intransitive" in tos:
-            tag.display += "i"
-            tag.tooltip = "intransitive " + tag.tooltip
-        if "transitive verb" in tos or "transitive" in tos:
-            tag.display += "t"
-            tag.tooltip = "transitive " + tag.tooltip
-
-        return tag
 
     def get_sentences(self) -> list[SentenceNote]:
         from ankiutils import app
