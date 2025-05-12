@@ -53,25 +53,25 @@ def render_vocab_list(vocab_list: list[VocabNote], title:str, css_class:str, rea
 def generate_homophones_html_list(vocab_note: VocabNote) -> str:
     forms = ex_sequence.flatten([app.col().vocab.with_question(reading) for reading in vocab_note.get_forms()])
     forms = [form for form in forms if form.get_id() != vocab_note.get_id()]
-    forms = note.vocabulary.vocab_sorting.sort_vocab_list_by_studying_status(forms)
+    forms = note.vocabulary.vocabnote_sorting.sort_vocab_list_by_studying_status(forms)
 
     forms_set = set(forms) | {vocab_note}
 
     homophones = ex_sequence.flatten([app.col().vocab.with_reading(reading) for reading in vocab_note.get_readings()])
     homophones = [homophone for homophone in homophones if homophone not in forms_set]
-    homophones = note.vocabulary.vocab_sorting.sort_vocab_list_by_studying_status(homophones)
+    homophones = note.vocabulary.vocabnote_sorting.sort_vocab_list_by_studying_status(homophones)
 
     return render_vocab_list(homophones, "homophones", css_class="homophones") if homophones else ""
 
 def generate_similar_meaning_html_list(_vocab_note: VocabNote) -> str:
     similar = lookup_vocabs_list_prefer_exact_match(list(_vocab_note.get_related_similar_meaning()))
-    similar = note.vocabulary.vocab_sorting.sort_vocab_list_by_studying_status(similar)
+    similar = note.vocabulary.vocabnote_sorting.sort_vocab_list_by_studying_status(similar)
 
     return render_vocab_list(similar, "similar", css_class="similar") if similar else ""
 
 def generate_confused_with_html_list(_vocab_note: VocabNote) -> str:
     confused_with = lookup_vocabs_list_prefer_exact_match(list(_vocab_note.get_related_confused_with()))
-    confused_with = note.vocabulary.vocab_sorting.sort_vocab_list_by_studying_status(confused_with)
+    confused_with = note.vocabulary.vocabnote_sorting.sort_vocab_list_by_studying_status(confused_with)
 
     return render_vocab_list(confused_with, "confused with", css_class="confused_with") if confused_with else ""
 
@@ -106,7 +106,7 @@ def generate_stem_of_vocabs(_vocab_note: VocabNote) -> str:
 def generate_forms_list(vocab_note: VocabNote) -> str:
     forms = ex_sequence.flatten([app.col().vocab.with_question(form) for form in vocab_note.get_forms()])
     forms = [form for form in forms if form.get_id() != vocab_note.get_id()]
-    forms = note.vocabulary.vocab_sorting.sort_vocab_list_by_studying_status(forms)
+    forms = note.vocabulary.vocabnote_sorting.sort_vocab_list_by_studying_status(forms)
 
     return render_vocab_list([vocab_note] + forms, "forms", css_class="forms") if forms else ""
 

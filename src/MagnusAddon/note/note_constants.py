@@ -3,8 +3,9 @@ from __future__ import annotations
 
 
 class Builtin:
-    Note = "note"
+    # noinspection PyUnusedName
     Tag = "tag"
+    Note = "note"
     Deck = "deck"
     Card = "card"
 
