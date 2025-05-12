@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
 
 class VocabNotePartsOfSpeech:
-    def __init__(self, vocab: VocabNote):
+    def __init__(self, vocab: VocabNote) -> None:
         self._vocab = vocab
         self._field: CommaSeparatedStringsSetField = CommaSeparatedStringsSetField(vocab, NoteFields.Vocab.parts_of_speech)
 

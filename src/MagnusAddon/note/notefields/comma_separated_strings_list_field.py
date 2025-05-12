@@ -21,5 +21,5 @@ class CommaSeparatedStringsListField:
     def raw_string_value(self) -> str:
         return self._field.get()
 
-    def set_raw_string_value(self, value:str):
+    def set_raw_string_value(self, value:str) -> None:
         self._field.set(value)
