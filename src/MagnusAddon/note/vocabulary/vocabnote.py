@@ -47,6 +47,7 @@ class VocabNote(WaniNote):
         self.wani_extensions: VocabNoteWaniExtensions = VocabNoteWaniExtensions(self)
         self.kanji: VocabNoteKanji = VocabNoteKanji(self)
         self.meta_data: VocabNoteMetaData = VocabNoteMetaData(self)
+        self.active_answer: StringField = StringField(self, NoteFields.Vocab.active_answer)
 
 
     def __repr__(self) -> str: return f"""{self.get_question()}"""
@@ -56,7 +57,7 @@ class VocabNote(WaniNote):
 
     def update_generated_data(self) -> None:
         self.set_field(NoteFields.Vocab.sentence_count, str(len(self.sentences.all())))
-        self.set_field(NoteFields.Vocab.active_answer, self.get_answer())
+        self.active_answer.set(self.get_answer())
 
         super().update_generated_data()
         vocabnote_generated_data.update_generated_data(self)
@@ -76,7 +77,7 @@ class VocabNote(WaniNote):
     def set_question(self, value: str) -> None: self.set_field(NoteFields.Vocab.question, value)
 
     def get_answer(self) -> str:
-        return self.user_answer.get() or self.get_field(NoteFields.Vocab.source_answer)
+        return self.user_answer.get() or self._source_answer.get()
 
     def update_from_wani(self, wani_vocab: models.Vocabulary) -> None:
         super().update_from_wani(wani_vocab)
