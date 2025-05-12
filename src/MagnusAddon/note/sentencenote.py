@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Optional
 from anki.notes import Note
 from note.jpnote import JPNote
 from note.note_constants import ImmersionKitSentenceNoteFields, Mine, NoteFields, NoteTypes, SentenceNoteFields
-from note.notefields.audio_field import AudioField
+from note.notefields.audio_field import WritableAudioField
 from note.notefields.string_field import StringField
 from note.notefields.strip_html_on_read_fallback_string_field import StripHtmlOnReadFallbackStringField
 from note.notefields.strip_html_on_read_string_field import StripHtmlOnReadStringField
@@ -26,7 +26,7 @@ class SentenceNote(JPNote):
         self.question = StripHtmlOnReadFallbackStringField(self, SentenceNoteFields.user_question, SentenceNoteFields.source_question)
         self.answer = StripHtmlOnReadFallbackStringField(self, SentenceNoteFields.user_answer, SentenceNoteFields.source_answer)
         self._screenshot = StringField(self, SentenceNoteFields.screenshot)
-        self.audio = AudioField(self, SentenceNoteFields.audio)
+        self.audio = WritableAudioField(self, SentenceNoteFields.audio)
         self._user_answer = StringField(self, SentenceNoteFields.user_answer)
         self.configuration: CachingSentenceConfigurationField = CachingSentenceConfigurationField(self)
 

@@ -14,6 +14,7 @@ from note.notefields.string_field import StringField
 from note.notefields.string_set_field import StringSetField
 from note.vocabnote_cloner import VocabCloner
 from note.vocabulary import vocabnote_context_sentences, vocabnote_generated_data, vocabnote_meta_tag, vocabnote_wanikani_extensions
+from note.vocabulary.vocabnote_context_sentences import VocabContextSentences
 from note.waninote import WaniNote
 from sysutils import ex_sequence, ex_str, kana_utils
 
@@ -28,6 +29,8 @@ class VocabNote(WaniNote):
         self.cloner = VocabCloner(self)
         self.user_mnemonic = StringField(self, NoteFields.Vocab.Mnemonic__)
         self.similar_meanings = StringSetField(self, NoteFields.Vocab.Related_similar_meaning)
+
+        self.context_sentences = VocabContextSentences(self)
 
     def __repr__(self) -> str: return f"""{self.get_question()}"""
 
@@ -289,29 +292,23 @@ class VocabNote(WaniNote):
     def is_transitive(self) -> bool: return any(val for val in self._transitive_string_values if val in self.get_speech_types())
     def is_intransitive(self) -> bool: return any(val for val in self._intransitive_string_values if val in self.get_speech_types())
 
-    def get_context_jp(self) -> str: return ex_str.strip_html_markup(self.get_field(NoteFields.Vocab.Context_jp))
-    def set_context_jp(self, value: str) -> None: self.set_field(NoteFields.Vocab.Context_jp, value)
+    def get_context_jp(self) -> str: return self.context_sentences.first.japanese.get()
+    def set_context_jp(self, value: str) -> None: self.context_sentences.first.japanese.set(value)
+    def get_context_jp_audio(self) -> str: return self.context_sentences.first.audio.get()
+    def get_context_en(self) -> str: return self.context_sentences.first.english.get()
+    def set_context_en(self, value: str) -> None: self.context_sentences.first.english.set(value)
 
-    def get_context_jp_audio(self) -> str: return self.get_field(NoteFields.Vocab.Context_jp_audio)
+    def get_context_jp_2(self) -> str: return self.context_sentences.second.japanese.get()
+    def set_context_jp_2(self, value: str) -> None: self.context_sentences.second.japanese.set(value)
+    def get_context_jp_2_audio(self) -> str: return self.context_sentences.second.audio.get()
+    def get_context_en_2(self) -> str: return self.context_sentences.second.english.get()
+    def set_context_en_2(self, value: str) -> None: self.context_sentences.second.english.set(value)
 
-    def get_context_en(self) -> str: return self.get_field(NoteFields.Vocab.Context_en)
-    def set_context_en(self, value: str) -> None: self.set_field(NoteFields.Vocab.Context_en, value)
-
-    def get_context_jp_2(self) -> str: return ex_str.strip_html_markup(self.get_field(NoteFields.Vocab.Context_jp_2))
-    def set_context_jp_2(self, value: str) -> None: self.set_field(NoteFields.Vocab.Context_jp_2, value)
-
-    def get_context_jp_2_audio(self) -> str: return self.get_field(NoteFields.Vocab.Context_jp_2_audio)
-
-    def get_context_en_2(self) -> str: return self.get_field(NoteFields.Vocab.Context_en_2)
-    def set_context_en_2(self, value: str) -> None: self.set_field(NoteFields.Vocab.Context_en_2, value)
-
-    def get_context_jp_3(self) -> str: return ex_str.strip_html_markup(self.get_field(NoteFields.Vocab.Context_jp_3))
-    def set_context_jp_3(self, value: str) -> None: self.set_field(NoteFields.Vocab.Context_jp_3, value)
-
-    def get_context_jp_3_audio(self) -> str: return self.get_field(NoteFields.Vocab.Context_jp_3_audio)
-
-    def get_context_en_3(self) -> str: return self.get_field(NoteFields.Vocab.Context_en_3)
-    def set_context_en_3(self, value: str) -> None: self.set_field(NoteFields.Vocab.Context_en_3, value)
+    def get_context_jp_3(self) -> str: return self.context_sentences.second.japanese.get()
+    def set_context_jp_3(self, value: str) -> None: self.context_sentences.second.japanese.set(value)
+    def get_context_jp_3_audio(self) -> str: return self.context_sentences.third.audio.get()
+    def get_context_en_3(self) -> str: return self.context_sentences.third.english.get()
+    def set_context_en_3(self, value: str) -> None: self.context_sentences.third.english.set(value)
 
     def set_meaning_mnemonic(self, value: str) -> None: self.set_field(NoteFields.Vocab.source_mnemonic, value)
 
@@ -326,4 +323,4 @@ class VocabNote(WaniNote):
 
     @staticmethod
     def create_from_wani_vocabulary(wani_vocab: models.Vocabulary) -> None:
-        return vocabnote_wanikani_extensions.create_from_wani_vocabulary(wani_vocab, lambda note: VocabNote(note))
+        return vocabnote_wanikani_extensions.create_from_wani_vocabulary(wani_vocab)
