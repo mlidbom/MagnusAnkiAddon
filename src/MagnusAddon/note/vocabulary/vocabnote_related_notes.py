@@ -15,6 +15,7 @@ class VocabNoteRelatedNotes:
         self._similar_meanings_field = CommaSeparatedStringsSetField(vocab, NoteFields.Vocab.Related_similar_meaning)
         self._ergative_twin_field = StringField(vocab, NoteFields.Vocab.Related_ergative_twin)
         self.derived_from = StringField(vocab, NoteFields.Vocab.Related_derived_from)
+        self.confused_with = CommaSeparatedStringsSetField(vocab, NoteFields.Vocab.Related_confused_with)
 
 
     def similar_meanings(self) -> set[str]:
