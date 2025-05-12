@@ -61,7 +61,7 @@ def sentence_search(word:str, exact:bool = False) -> str:
     return result + f"""({form_query(word)})"""
 
 def sentence_with_any_vocab_form_in_question(word:VocabNote) -> str:
-    search_strings = word.get_stems_for_all_forms() + list(word.forms.unexcluded_set())
+    search_strings = word.conjugator.get_stems_for_all_forms() + list(word.forms.unexcluded_set())
     return f"""{note_sentence} {field_contains_string(f_question,  *search_strings)}"""
 
 def sentences_with_exclusions(exclusions:list[str]) -> str:

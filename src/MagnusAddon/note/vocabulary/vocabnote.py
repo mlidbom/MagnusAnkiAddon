@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-import language_services.conjugator
 from ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules  # noqa
 from language_services.jamdict_ex.priority_spec import PrioritySpec
 from note.note_constants import Mine, NoteFields
@@ -11,6 +10,7 @@ from note.notefields.string_field import StringField
 from note.vocabnote_cloner import VocabCloner
 from note.vocabulary import vocabnote_generated_data, vocabnote_meta_tag, vocabnote_wanikani_extensions
 from note.vocabulary.vocabnote_audio import VocabNoteAudio
+from note.vocabulary.vocabnote_conjugator import VocabNoteConjugator
 from note.vocabulary.vocabnote_context_sentences import VocabContextSentences
 from note.vocabulary.vocabnote_factory import VocabNoteFactory
 from note.vocabulary.vocabnote_forms import VocabNoteForms
@@ -40,6 +40,7 @@ class VocabNote(WaniNote):
         self.parts_of_speech: VocabNotePartsOfSpeech = VocabNotePartsOfSpeech(self)
         self.compound_parts: VocabNoteUserCompoundParts = VocabNoteUserCompoundParts(self)
         self.readings: CommaSeparatedStringsListField = CommaSeparatedStringsListField(self, NoteFields.Vocab.Reading)
+        self.conjugator: VocabNoteConjugator = VocabNoteConjugator(self)
 
 
     def __repr__(self) -> str: return f"""{self.get_question()}"""
@@ -91,21 +92,6 @@ class VocabNote(WaniNote):
 
     def requires_exact_match(self) -> bool:
         return self.has_tag(Mine.Tags.requires_exact_match)
-
-    def _get_stems_for_form(self, form: str) -> list[str]:
-        return [base for base in language_services.conjugator.get_word_stems(form, is_ichidan_verb=self.parts_of_speech.is_ichidan()) if base != form]
-
-    def get_stems_for_primary_form(self) -> list[str]:
-        return ex_sequence.remove_duplicates_while_retaining_order(self._get_stems_for_form(self.get_question()))
-
-    def get_text_matching_forms_for_primary_form(self) -> list[str]:
-        return [self.get_question_without_noise_characters()] + self._get_stems_for_form(self.get_question_without_noise_characters())
-
-    def get_text_matching_forms_for_all_form(self) -> list[str]:
-        return [self._strip_noise_characters(form) for form in self.forms.unexcluded_list() + self.get_stems_for_all_forms()]
-
-    def get_stems_for_all_forms(self) -> list[str]:
-        return ex_sequence.flatten([self._get_stems_for_form(form) for form in self.forms.unexcluded_set()])
 
     def is_question_overrides_form(self) -> bool: return self.has_tag(Mine.Tags.question_overrides_form)
 

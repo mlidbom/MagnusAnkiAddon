@@ -96,7 +96,7 @@ def generate_derived_list(_vocab_note: VocabNote) -> str:
     return render_vocab_list(derived_vocabs, "derived vocabulaty", css_class="derived_vocabulary") if derived_vocabs else ""
 
 def generate_stem_vocabs(_vocab_note: VocabNote) -> str:
-    stem_vocabs = ex_sequence.flatten([app.col().vocab.with_question(stem) for stem in (_vocab_note.get_stems_for_primary_form())])
+    stem_vocabs = ex_sequence.flatten([app.col().vocab.with_question(stem) for stem in (_vocab_note.conjugator.get_stems_for_primary_form())])
     return render_vocab_list(stem_vocabs, "conjugation forms", css_class="stem_vocabulary") if stem_vocabs else ""
 
 def generate_stem_of_vocabs(_vocab_note: VocabNote) -> str:

@@ -18,21 +18,21 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
     forms = [_vocab_note.get_question()] + list(_vocab_note.forms.unexcluded_without_noise_characters_set())
     forms = ex_sequence.remove_duplicates_while_retaining_order(forms)
     primary_form = _vocab_note.get_question_without_noise_characters()
-    primary_form_forms = _vocab_note.get_text_matching_forms_for_primary_form()
+    primary_form_forms = _vocab_note.conjugator.get_text_matching_forms_for_primary_form()
     secondary_forms = [form for form in forms if form != primary_form]
-    secondary_forms_forms = ex_str.sort_by_length_descending([form for form in _vocab_note.get_text_matching_forms_for_all_form() if form not in primary_form_forms])
+    secondary_forms_forms = ex_str.sort_by_length_descending([form for form in _vocab_note.conjugator.get_text_matching_forms_for_all_form() if form not in primary_form_forms])
 
     secondary_forms_containing_primary_form_forms = [form for form in secondary_forms_forms if any(pform for pform in primary_form_forms if pform in form)]
 
     derived_compounds = _vocab_note.in_compounds()
-    derived_compounds_forms = ex_str.sort_by_length_descending(ex_sequence.flatten([der.get_text_matching_forms_for_all_form() for der in derived_compounds]))
+    derived_compounds_forms = ex_str.sort_by_length_descending(ex_sequence.flatten([der.conjugator.get_text_matching_forms_for_all_form() for der in derived_compounds]))
 
     secondary_forms_vocab_notes = ex_sequence.flatten([app.col().vocab.with_question(v) for v in secondary_forms])
-    secondary_forms_with_their_own_vocab_forms = ex_sequence.flatten([f.get_text_matching_forms_for_all_form() for f in secondary_forms_vocab_notes])
+    secondary_forms_with_their_own_vocab_forms = ex_sequence.flatten([f.conjugator.get_text_matching_forms_for_all_form() for f in secondary_forms_vocab_notes])
 
     secondary_forms_with_their_own_vocab_forms = ex_str.sort_by_length_descending(secondary_forms_with_their_own_vocab_forms)
 
-    primary_form_forms = _vocab_note.get_text_matching_forms_for_primary_form()
+    primary_form_forms = _vocab_note.conjugator.get_text_matching_forms_for_primary_form()
 
     def contains_primary_form(_sentence: SentenceNote) -> bool:
         clean_sentence = ex_str.strip_html_and_bracket_markup(_sentence.get_question())
