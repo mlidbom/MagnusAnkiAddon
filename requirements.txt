@@ -26,4 +26,3 @@ PyQt6-sip
 pykakasi~=2.3.0
 python-romkan-ng
 ruff
-ruff-lsp

@@ -16,7 +16,6 @@ if TYPE_CHECKING:
     from note.vocabnote import VocabNote
     from PyQt6.QtWidgets import QMenu
 
-
 def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboard: str) -> None:
     def build_copy_menu(note_copy_menu: QMenu) -> None:
         note_copy_menu.addAction(shortcutfinger.home1("Question"), lambda: pyperclip.copy(vocab.get_question()))
@@ -106,7 +105,6 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
     build_copy_menu(non_optional(note_menu.addMenu(shortcutfinger.home3("Copy"))))
     build_note_menu()
 
-
 def build_string_menu(string_menu: QMenu, vocab: VocabNote, menu_string: str) -> None:
     def build_sentences_menu(sentence_menu: QMenu) -> None:
         def remove_highlight(_sentences: list[SentenceNote]) -> None:
@@ -120,21 +118,26 @@ def build_string_menu(string_menu: QMenu, vocab: VocabNote, menu_string: str) ->
         sentence = sentences[0]
 
         if vocab.get_question() not in sentence.configuration.highlighted_words():
-            add_ui_action(sentence_menu, shortcutfinger.home1("Add Highlight"), lambda _sentence=sentence: _sentence.configuration.position_highlighted_word(vocab.get_question()))  # type: ignore
+            add_ui_action(sentence_menu, shortcutfinger.home1("Add Highlight"), lambda _sentence=sentence: _sentence.configuration.position_highlighted_word(vocab.get_question()))
         else:
             # noinspection PyDefaultArgument
-            add_ui_action(sentence_menu, shortcutfinger.home2("Remove highlight"), lambda _sentences=sentences: remove_highlight(_sentences))  # type: ignore
+            add_ui_action(sentence_menu, shortcutfinger.home2("Remove highlight"), lambda _sentences=sentences: remove_highlight(_sentences))
 
         # noinspection PyDefaultArgument
-        add_ui_action(sentence_menu, shortcutfinger.home3("Exclude this vocab"), lambda _sentences=sentences: exclude(_sentences))  # type: ignore
+        add_ui_action(sentence_menu, shortcutfinger.home3("Exclude this vocab"), lambda _sentences=sentences: exclude(_sentences))
 
     def build_add_menu(vocab_add_menu: QMenu) -> None:
-        add_ui_action(vocab_add_menu, shortcutfinger.home1("Similar meaning"), lambda _menu_string=menu_string: vocab.add_related_similar_meaning(_menu_string))  # type: ignore
-        add_ui_action(vocab_add_menu, shortcutfinger.home2("Confused with"), lambda _menu_string=menu_string: vocab.add_related_confused_with(_menu_string))  # type: ignore
+        add_ui_action(vocab_add_menu, shortcutfinger.home1("Similar meaning"), lambda: vocab.add_related_similar_meaning(menu_string))
+        add_ui_action(vocab_add_menu, shortcutfinger.home2("Confused with"), lambda: vocab.add_related_confused_with(menu_string))
+
+    def build_remove_menu(vocab_remove_menu: QMenu) -> None:
+        pass
+        # add_ui_action(vocab_remove_menu, shortcutfinger.home1("Similar meaning"), lambda: vocab.remove_related_similar_meaning(menu_string))
+        # add_ui_action(vocab_remove_menu, shortcutfinger.home2("Confused with"), lambda: vocab.remove_related_confused_with(menu_string))
 
     def build_set_menu(note_set_menu: QMenu) -> None:
-        add_ui_action(note_set_menu, shortcutfinger.home1("Derived from"), lambda _menu_string=menu_string: vocab.set_related_derived_from(_menu_string))  # type: ignore
-        add_ui_action(note_set_menu, shortcutfinger.home2("Ergative twin"), lambda _menu_string=menu_string: vocab.set_related_ergative_twin(_menu_string))  # type: ignore
+        add_ui_action(note_set_menu, shortcutfinger.home1("Derived from"), lambda: vocab.set_related_derived_from(menu_string))
+        add_ui_action(note_set_menu, shortcutfinger.home2("Ergative twin"), lambda: vocab.set_related_ergative_twin(menu_string))
 
     sentences = app.col().sentences.with_question(menu_string)
     if sentences:
@@ -143,7 +146,6 @@ def build_string_menu(string_menu: QMenu, vocab: VocabNote, menu_string: str) ->
     build_add_menu(non_optional(string_menu.addMenu(shortcutfinger.home2("Add"))))
     build_set_menu(non_optional(string_menu.addMenu(shortcutfinger.home3("Set"))))
     build_create_prefix_postfix_note_menu(non_optional(string_menu.addMenu(shortcutfinger.home4(f"Create combined {menu_string}"))), vocab, menu_string)
-
 
 def build_create_prefix_postfix_note_menu(prefix_postfix_note_menu: QMenu, vocab: VocabNote, addendum: str) -> None:
     def create_suffix_note_menu(suffix_note_menu: QMenu) -> None:
@@ -156,7 +158,6 @@ def build_create_prefix_postfix_note_menu(prefix_postfix_note_menu: QMenu, vocab
     create_vocab_note_action(prefix_postfix_note_menu, shortcutfinger.home1(f"prefix-{addendum}{vocab.get_question()}"), lambda: vocab.cloner.create_prefix_version(addendum))
 
     create_suffix_note_menu(non_optional(prefix_postfix_note_menu.addMenu(shortcutfinger.home2("Suffix-onto"))))
-
 
 def format_vocab_meaning(meaning: str) -> str:
     return ex_str.strip_html_and_bracket_markup(meaning.replace(" SOURCE", "").replace(", ", "/").replace(" ", "-").lower())
