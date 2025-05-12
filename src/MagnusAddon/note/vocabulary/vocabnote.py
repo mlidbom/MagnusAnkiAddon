@@ -41,6 +41,7 @@ class VocabNote(WaniNote):
         self.compound_parts: VocabNoteUserCompoundParts = VocabNoteUserCompoundParts(self)
         self.readings: CommaSeparatedStringsListField = CommaSeparatedStringsListField(self, NoteFields.Vocab.Reading)
         self.conjugator: VocabNoteConjugator = VocabNoteConjugator(self)
+        self.user_answer: StringField = StringField(self, NoteFields.Vocab.user_answer)
 
 
     def __repr__(self) -> str: return f"""{self.get_question()}"""
@@ -88,7 +89,7 @@ class VocabNote(WaniNote):
         dict_lookup = DictLookup.try_lookup_vocab_word_or_name(self)
         if dict_lookup.found_words():
             generated = dict_lookup.entries[0].generate_answer()
-            self.set_user_answer(generated)
+            self.user_answer.set(generated)
 
     def requires_exact_match(self) -> bool:
         return self.has_tag(Mine.Tags.requires_exact_match)
@@ -103,12 +104,9 @@ class VocabNote(WaniNote):
     def set_question(self, value: str) -> None: self.set_field(NoteFields.Vocab.question, value)
 
     def get_answer(self) -> str:
-        return self.get_user_answer() or self.get_field(NoteFields.Vocab.source_answer)
+        return self.user_answer.get() or self.get_field(NoteFields.Vocab.source_answer)
 
     def _set_source_answer(self, value: str) -> None: self.set_field(NoteFields.Vocab.source_answer, value)
-
-    def get_user_answer(self) -> str: return self.get_field(NoteFields.Vocab.user_answer)
-    def set_user_answer(self, value: str) -> None: self.set_field(NoteFields.Vocab.user_answer, value)
 
     def set_meaning_mnemonic(self, value: str) -> None: self.set_field(NoteFields.Vocab.source_mnemonic, value)
 

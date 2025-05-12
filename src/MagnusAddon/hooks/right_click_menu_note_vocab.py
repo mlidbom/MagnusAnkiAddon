@@ -87,8 +87,9 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
             add_single_vocab_lookup_action(note_lookup_menu, shortcutfinger.home4("Ergative twin"), vocab.related_notes.ergative_twin())
 
     def build_note_menu() -> None:
-        if not vocab.get_user_answer():
-            add_ui_action(note_menu, shortcutfinger.up1("Accept meaning"), lambda: vocab.set_user_answer(format_vocab_meaning(vocab.get_answer())))
+        if not vocab.user_answer.get():
+            vocab.user_answer.set(format_vocab_meaning(vocab.get_answer()))
+            add_ui_action(note_menu, shortcutfinger.up1("Accept meaning"), lambda: None)
 
         add_ui_action(note_menu, shortcutfinger.up2("Generate answer"), lambda: vocab.generate_and_set_answer())
         if vocabnote_context_sentences.can_generate_sentences_from_context_sentences(vocab, False):
