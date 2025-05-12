@@ -3,6 +3,8 @@ from __future__ import annotations
 import re
 from typing import TYPE_CHECKING
 
+from wanikani_api import models
+
 import language_services.conjugator
 from anki.notes import Note
 from ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules  # noqa
@@ -13,7 +15,7 @@ from note.note_constants import Mine, NoteFields, NoteTypes
 from note.notefields.string_field import StringField
 from note.notefields.string_set_field import StringSetField
 from note.vocabnote_cloner import VocabCloner
-from note.vocabulary import vocabnote_meta_tag
+from note.vocabulary import vocabnote_meta_tag, vocabnote_wanikani_extensions
 from note.vocabulary.vocabnote_meta_tag import VocabMetaTag
 from note.waninote import WaniNote
 from sysutils import ex_sequence, ex_str, kana_utils
@@ -22,7 +24,6 @@ from wanikani.wanikani_api_client import WanikaniClient
 if TYPE_CHECKING:
     from note.jpnote import JPNote
     from note.sentencenote import SentenceNote
-    from wanikani_api import models
 
 class VocabNote(WaniNote):
     def __init__(self, note: Note) -> None:
@@ -195,50 +196,6 @@ class VocabNote(WaniNote):
     def get_meta_tags_html(self: VocabNote, display_extended_sentence_statistics: bool = True) -> str:
         return vocabnote_meta_tag.get_meta_tags_html(self, display_extended_sentence_statistics)
 
-    def update_from_wani(self, wani_vocab: models.Vocabulary) -> None:
-        self.set_meaning_mnemonic(wani_vocab.meaning_mnemonic)
-
-        meanings = ', '.join(str(meaning.meaning) for meaning in wani_vocab.meanings)
-        self._set_source_answer(meanings)
-
-        self.set_speech_type(", ".join(wani_vocab.parts_of_speech))
-
-        self.set_reading_mnemonic(wani_vocab.reading_mnemonic)
-
-        readings = [reading.reading for reading in wani_vocab.readings]
-        self._set_reading(", ".join(readings))
-
-        component_subject_ids = [str(subject_id) for subject_id in wani_vocab.component_subject_ids]
-        self.set_component_subject_ids(", ".join(component_subject_ids))
-
-        client = WanikaniClient.get_instance()
-        kanji_subjects = [client.get_kanji_by_id(int(kanji_id)) for kanji_id in wani_vocab.component_subject_ids]
-        kanji_characters = [subject.characters for subject in kanji_subjects]
-        self.set_kanji(", ".join(kanji_characters))
-
-    @staticmethod
-    def create_from_wani_vocabulary(wani_vocab: models.Vocabulary) -> None:
-        from ankiutils import app
-        note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Vocab))
-        note.add_tag("__imported")
-        note.add_tag(Mine.Tags.Wani)
-        vocab_note = VocabNote(note)
-        app.anki_collection().addNote(note)
-        vocab_note.set_question(wani_vocab.characters)
-        vocab_note.update_from_wani(wani_vocab)
-
-        # Do not move to update method, or we will wipe out local changes made to the context sentences.
-        if len(wani_vocab.context_sentences) > 0:
-            vocab_note.set_context_en(wani_vocab.context_sentences[0].english)
-            vocab_note.set_context_jp(wani_vocab.context_sentences[0].japanese)
-
-        if len(wani_vocab.context_sentences) > 1:
-            vocab_note.set_context_en_2(wani_vocab.context_sentences[1].english)
-            vocab_note.set_context_jp_2(wani_vocab.context_sentences[1].japanese)
-
-        if len(wani_vocab.context_sentences) > 2:
-            vocab_note.set_context_en_3(wani_vocab.context_sentences[2].english)
-            vocab_note.set_context_jp_3(wani_vocab.context_sentences[2].japanese)
 
     def generate_and_set_answer(self) -> None:
         from language_services.jamdict_ex.dict_lookup import DictLookup
@@ -431,3 +388,10 @@ class VocabNote(WaniNote):
 
     def get_audio_female(self) -> str: return self.get_field(NoteFields.Vocab.Audio_g)
     def set_audio_female(self, value: list[str]) -> None: self.set_field(NoteFields.Vocab.Audio_g, ''.join([f'[sound:{item}]' for item in value]))
+
+    def update_from_wani(self, wani_vocab: models.Vocabulary) -> None:
+        vocabnote_wanikani_extensions.update_from_wani(self, wani_vocab)
+
+    @staticmethod
+    def create_from_wani_vocabulary(wani_vocab: models.Vocabulary) -> None:
+        return vocabnote_wanikani_extensions.create_from_wani_vocabulary(wani_vocab)
