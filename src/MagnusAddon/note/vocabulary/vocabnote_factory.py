@@ -31,7 +31,7 @@ class VocabNoteFactory:
         note = VocabNote(backend_note)
         note.set_question(question)
         note.set_user_answer(answer)
-        note.set_readings(readings)
+        note.readings.set(readings)
         note.update_generated_data()
         app.anki_collection().addNote(backend_note)
         return note

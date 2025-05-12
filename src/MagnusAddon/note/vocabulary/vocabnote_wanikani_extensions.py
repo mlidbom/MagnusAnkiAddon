@@ -21,8 +21,7 @@ def update_from_wani(self: VocabNote, wani_vocab: models.Vocabulary) -> None:
 
     self.set_reading_mnemonic(wani_vocab.reading_mnemonic)
 
-    readings = [reading.reading for reading in wani_vocab.readings]
-    self._set_reading(", ".join(readings))
+    self.readings.set([reading.reading for reading in wani_vocab.readings])
 
     component_subject_ids = [str(subject_id) for subject_id in wani_vocab.component_subject_ids]
     self.set_component_subject_ids(", ".join(component_subject_ids))

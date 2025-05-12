@@ -32,7 +32,7 @@ def test_kanji_added_correctly() -> None:
 def test_vocab_added_correctly() -> None:
     expected_vocab:set[VocabSpec] = set(vocab_spec.test_vocab_list)
     vocab_all:list[VocabNote] = app.col().vocab.all()
-    saved_vocab = set(VocabSpec(vocab.get_question(), vocab.get_answer(), vocab.get_readings()) for vocab in vocab_all)
+    saved_vocab = set(VocabSpec(vocab.get_question(), vocab.get_answer(), vocab.readings.get()) for vocab in vocab_all)
     assert expected_vocab == saved_vocab
 
 def test_sentences_added_correctly() -> None:

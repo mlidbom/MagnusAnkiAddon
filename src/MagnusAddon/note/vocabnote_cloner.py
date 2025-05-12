@@ -27,9 +27,10 @@ class VocabCloner:
                 return base + addendum if truncate_characters == 0 else base[0:-truncate_characters] + addendum
             return addendum + base if truncate_characters == 0 else base[truncate_characters:] + addendum
 
+        vocab_note = self.note
         new_vocab = VocabNote.factory.create(question=append_prepend_addendum(self.note.get_question()),
                                              answer=self.note.get_answer(),
-                                             readings=[append_prepend_addendum(reading) for reading in self.note.get_readings()])
+                                             readings=[append_prepend_addendum(reading) for reading in vocab_note.readings.get()])
 
         if set_compounds:
             if not is_prefix:
@@ -106,7 +107,9 @@ class VocabCloner:
 
         clone = VocabNote.factory.create(question=create_full_form(self.note.get_question()), answer=self.note.get_answer(), readings=[])
         clone.forms.set_list([create_full_form(form) for form in self.note.forms.unexcluded_list()])
-        clone.set_readings([create_full_form(reading) for reading in self.note.get_readings()])
+        vocab_note = self.note
+        readings = [create_full_form(reading) for reading in vocab_note.readings.get()]
+        clone.readings.set(readings)
         clone.parts_of_speech.set_raw_string_value("expression")
         compounds = [self.note.get_question(), form_suffix]
         clone.compound_parts.set(compounds)

@@ -19,7 +19,7 @@ def generate_vocab_html_list(_kanji_note: KanjiNote) -> str:
         classes += f""" {_vocab.priority_spec().priority_string}"""
         classes += " " + " ".join(_vocab.get_meta_tags())
 
-        if _vocab.get_question() in primary_vocab or (_vocab.get_readings() and _vocab.get_readings()[0] in _kanji.get_primary_vocab()):
+        if _vocab.get_question() in primary_vocab or (_vocab.readings.get() and _vocab.readings.get()[0] in _kanji.get_primary_vocab()):
             classes += " primary_vocab" if has_real_primary_vocabs else " default_primary_vocab"
 
         if _kanji_note.get_question() not in _vocab.get_question():

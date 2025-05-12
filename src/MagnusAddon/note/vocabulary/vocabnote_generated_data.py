@@ -17,10 +17,11 @@ def update_generated_data(self:VocabNote) -> None:
     from language_services.jamdict_ex.dict_lookup import DictLookup
 
     question = self.get_question_without_noise_characters().strip()
-    readings = ",".join(self.get_readings())
+    readings = ",".join(self.readings.get())
 
     if not readings and kana_utils.is_only_kana(question):
-        self.set_readings([question])
+        readings1 = [question]
+        self.readings.set(readings1)
         self.set_tag(Mine.Tags.UsuallyKanaOnly)
 
     if len(self.compound_parts.get()) == 0 and self.parts_of_speech.is_suru_verb_included():
@@ -39,8 +40,8 @@ def update_generated_data(self:VocabNote) -> None:
             if self.get_question() not in self.forms.unexcluded_set():
                 self.forms.set_set(self.forms.unexcluded_set() | {self.get_question()})
 
-            if self.is_uk() and self.get_readings()[0] not in self.forms.unexcluded_set():
-                self.forms.set_set(self.forms.unexcluded_set() | set(self.get_readings()))
+            if self.is_uk() and self.readings.get()[0] not in self.forms.unexcluded_set():
+                self.forms.set_set(self.forms.unexcluded_set() | set(self.readings.get()))
 
         speech_types = self.parts_of_speech.get() - {'Unknown',
                                                   'Godan verbIchidan verb'  # crap inserted by bug in yomitan

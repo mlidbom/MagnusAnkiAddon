@@ -6,6 +6,7 @@ import language_services.conjugator
 from ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules  # noqa
 from language_services.jamdict_ex.priority_spec import PrioritySpec
 from note.note_constants import Mine, NoteFields
+from note.notefields.comma_separated_strings_list_field import CommaSeparatedStringsListField
 from note.notefields.string_field import StringField
 from note.vocabnote_cloner import VocabCloner
 from note.vocabulary import vocabnote_context_sentences, vocabnote_generated_data, vocabnote_meta_tag, vocabnote_wanikani_extensions
@@ -38,6 +39,7 @@ class VocabNote(WaniNote):
         self.forms: VocabNoteForms = VocabNoteForms(self)
         self.parts_of_speech: VocabNotePartsOfSpeech = VocabNotePartsOfSpeech(self)
         self.compound_parts: VocabNoteUserCompoundParts = VocabNoteUserCompoundParts(self)
+        self.readings: CommaSeparatedStringsListField = CommaSeparatedStringsListField(self, NoteFields.Vocab.Reading)
 
 
     def __repr__(self) -> str: return f"""{self.get_question()}"""
@@ -45,8 +47,7 @@ class VocabNote(WaniNote):
     def set_kanji(self, value: str) -> None: self.set_field(NoteFields.Vocab.Kanji, value)
 
     def in_compounds(self) -> list[VocabNote]:
-        from ankiutils import app
-        return app.col().vocab.with_compound_part(self.get_question_without_noise_characters())
+        return self.collection.vocab.with_compound_part(self.get_question_without_noise_characters())
 
     def get_direct_dependencies(self) -> set[JPNote]:
         return (set(self.collection.kanji.with_any_kanji_in(list(self.extract_main_form_kanji()))) |
@@ -70,12 +71,6 @@ class VocabNote(WaniNote):
     def is_uk(self) -> bool: return self.has_tag(Mine.Tags.UsuallyKanaOnly)
 
     def set_reading_mnemonic(self, value: str) -> None: self.set_field(NoteFields.Vocab.source_reading_mnemonic, value)
-
-    def get_readings(self) -> list[str]: return ex_str.extract_comma_separated_values(self._get_reading())
-    def set_readings(self, readings: list[str]) -> None: self._set_reading(", ".join([reading.strip() for reading in readings]))
-
-    def _get_reading(self) -> str: return self.get_field(NoteFields.Vocab.Reading)
-    def _set_reading(self, value: str) -> None: self.set_field(NoteFields.Vocab.Reading, value)
 
     def set_component_subject_ids(self, value: str) -> None: self.set_field(NoteFields.Vocab.component_subject_ids, value)
 
@@ -119,7 +114,7 @@ class VocabNote(WaniNote):
         return ex_sequence.flatten([self._get_stems_for_form(form) for form in self.forms.unexcluded_set()])
 
     def clone(self) -> VocabNote:
-        clone = VocabNote.factory.create(self.get_question(), self.get_answer(), self.get_readings())
+        clone = VocabNote.factory.create(self.get_question(), self.get_answer(), self.readings.get())
 
         for i in range(len(self._note.fields)):
             clone._note.fields[i] = self._note.fields[i]

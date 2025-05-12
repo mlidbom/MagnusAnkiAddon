@@ -125,7 +125,7 @@ class DictLookup:
 
     @classmethod
     def try_lookup_vocab_word_or_name(cls, vocab: VocabNote) -> DictLookup:
-        return cls.try_lookup_word_or_name(vocab.get_question_without_noise_characters(), vocab.get_readings())
+        return cls.try_lookup_word_or_name(vocab.get_question_without_noise_characters(), vocab.readings.get())
 
     @classmethod
     def try_lookup_word_or_name(cls, word: str, readings: list[str]) -> DictLookup:

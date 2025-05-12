@@ -35,7 +35,7 @@ class KanjiNote(WaniNote):
         result: list[str] = []
 
         vocab_form = vocab.get_question()
-        for vocab_reading in vocab.get_readings():
+        for vocab_reading in vocab.readings.get():
             found = False
             for kanji_reading in primary_readings:
                 if self.reading_in_vocab_reading(kanji_reading, vocab_reading, vocab_form):
@@ -236,7 +236,7 @@ class KanjiNote(WaniNote):
         primary_readings = ex_sequence.remove_duplicates_while_retaining_order(self.get_primary_readings())
         for primary_reading in primary_readings:
             for vocab in studying_reading_vocab_in_descending_studying_sentences_order:
-                if any(vocab.get_readings()) and self.reading_in_vocab_reading(primary_reading, vocab.get_readings()[0], vocab.get_question()):
+                if any(vocab.readings.get()) and self.reading_in_vocab_reading(primary_reading, vocab.readings.get()[0], vocab.get_question()):
                     result.append(vocab.get_question())
                     break
 

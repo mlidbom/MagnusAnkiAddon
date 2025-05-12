@@ -72,7 +72,7 @@ def test_create_sample_data() -> None:
             non_duplicate_vocab_notes.append(candidate)
 
     for vocab in non_duplicate_vocab_notes:
-        print(f"""VocabSpec("{vocab.get_question()}", "{vocab.get_answer()}", {vocab.get_readings()}),""")
+        print(f"""VocabSpec("{vocab.get_question()}", "{vocab.get_answer()}", {vocab.readings.get()}),""")
 
     word_forms = "".join(ex_sequence.flatten([list(n.forms.unexcluded_set()) for n in vocab_notes]))
     sentences_combined = "".join(_sentences)

@@ -28,7 +28,7 @@ def lookup_vocabs_list_prefer_exact_match(vocabs:list[str]) -> list[VocabNote]:
 
 def render_vocab_list(vocab_list: list[VocabNote], title:str, css_class:str, reading:bool = True) -> str:
     def render_readings(_vocab_note: VocabNote) -> str:
-        return f"""<span class="clipboard vocabReading">{", ".join(_vocab_note.get_readings())}</span>""" if reading else ""
+        return f"""<span class="clipboard vocabReading">{", ".join(_vocab_note.readings.get())}</span>""" if reading else ""
 
     return f'''
              <div class="relatedVocabListDiv page_section {css_class}">
@@ -57,7 +57,7 @@ def generate_homophones_html_list(vocab_note: VocabNote) -> str:
 
     forms_set = set(forms) | {vocab_note}
 
-    homophones = ex_sequence.flatten([app.col().vocab.with_reading(reading) for reading in vocab_note.get_readings()])
+    homophones = ex_sequence.flatten([app.col().vocab.with_reading(reading) for reading in vocab_note.readings.get()])
     homophones = [homophone for homophone in homophones if homophone not in forms_set]
     homophones = note.vocabulary.vocabnote_sorting.sort_vocab_list_by_studying_status(homophones)
 
