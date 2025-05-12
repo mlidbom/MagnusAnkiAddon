@@ -24,7 +24,7 @@ class _VocabSnapshot(CachedNote):
         self.main_form_kanji = set(note.extract_main_form_kanji())
         self.all_kanji = note.extract_all_kanji()
         self.readings = set(note.get_readings())
-        self.derived_from = note.get_related_derived_from()
+        self.derived_from = note.related_notes.derived_from.get()
         self.stems = note.get_stems_for_primary_form()
 
 class _VocabCache(NoteCache[VocabNote, _VocabSnapshot]):
@@ -73,7 +73,7 @@ class _VocabCache(NoteCache[VocabNote, _VocabSnapshot]):
     def _inheritor_add_to_cache(self, note: VocabNote) -> None:
         for form in note.get_forms(): self._by_form[form].add(note)
         for compound_part in note.get_user_compounds(): self._by_compound_part[compound_part].add(note)
-        self._by_derived_from[note.get_related_derived_from()].add(note)
+        self._by_derived_from[note.related_notes.derived_from.get()].add(note)
         for kanji in note.extract_main_form_kanji(): self._by_kanji_in_main_form[kanji].add(note)
         for kanji in note.extract_all_kanji(): self._by_kanji_in_any_form[kanji].add(note)
         for reading in note.get_readings(): self._by_reading[reading].add(note)

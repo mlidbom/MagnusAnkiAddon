@@ -82,8 +82,8 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
         build_sentences_lookup_menu(non_optional(note_lookup_menu.addMenu(shortcutfinger.home2("Sentences"))))
 
         add_lookup_action(note_lookup_menu, shortcutfinger.home3("Kanji"), f"note:{NoteTypes.Kanji} ( {' OR '.join([f'{NoteFields.Kanji.question}:{char}' for char in vocab.get_question()])} )")
-        if vocab.get_related_ergative_twin():
-            add_single_vocab_lookup_action(note_lookup_menu, shortcutfinger.home4("Ergative twin"), vocab.get_related_ergative_twin())
+        if vocab.related_notes.ergative_twin():
+            add_single_vocab_lookup_action(note_lookup_menu, shortcutfinger.home4("Ergative twin"), vocab.related_notes.ergative_twin())
 
     def build_note_menu() -> None:
         if not vocab.get_user_answer():
@@ -129,7 +129,8 @@ def build_string_menu(string_menu: QMenu, vocab: VocabNote, menu_string: str) ->
     def build_add_menu(vocab_add_menu: QMenu) -> None:
         vocab.related_notes.add_similar_meaning(menu_string)
         add_ui_action(vocab_add_menu, shortcutfinger.home1("Similar meaning"), lambda: None)
-        add_ui_action(vocab_add_menu, shortcutfinger.home2("Confused with"), lambda: vocab.add_related_confused_with(menu_string))
+        vocab.related_notes.confused_with.add(menu_string)
+        add_ui_action(vocab_add_menu, shortcutfinger.home2("Confused with"), lambda: None)
 
     def build_remove_menu(vocab_remove_menu: QMenu) -> None:
         pass
@@ -137,8 +138,10 @@ def build_string_menu(string_menu: QMenu, vocab: VocabNote, menu_string: str) ->
         # add_ui_action(vocab_remove_menu, shortcutfinger.home2("Confused with"), lambda: vocab.remove_related_confused_with(menu_string))
 
     def build_set_menu(note_set_menu: QMenu) -> None:
-        add_ui_action(note_set_menu, shortcutfinger.home1("Derived from"), lambda: vocab.set_related_derived_from(menu_string))
-        add_ui_action(note_set_menu, shortcutfinger.home2("Ergative twin"), lambda: vocab.set_related_ergative_twin(menu_string))
+        vocab.related_notes.derived_from.set(menu_string)
+        add_ui_action(note_set_menu, shortcutfinger.home1("Derived from"), lambda: None)
+        vocab.related_notes.set_ergative_twin(menu_string)
+        add_ui_action(note_set_menu, shortcutfinger.home2("Ergative twin"), lambda: None)
 
     sentences = app.col().sentences.with_question(menu_string)
     if sentences:

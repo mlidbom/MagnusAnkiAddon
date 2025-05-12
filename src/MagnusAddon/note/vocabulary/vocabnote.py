@@ -252,17 +252,6 @@ class VocabNote(WaniNote):
     def get_user_answer(self) -> str: return self.get_field(NoteFields.Vocab.user_answer)
     def set_user_answer(self, value: str) -> None: self.set_field(NoteFields.Vocab.user_answer, value)
 
-    def get_related_derived_from(self) -> str: return self.related_notes.derived_from.get()
-    def set_related_derived_from(self, value: str) -> None: self.related_notes.derived_from.set(value)
-
-    def get_related_ergative_twin(self) -> str: return self.related_notes.ergative_twin()
-    def set_related_ergative_twin(self, value: str) -> None:
-        self.related_notes.set_ergative_twin(value)
-
-    def get_related_confused_with(self) -> set[str]: return self.related_notes.confused_with.get()
-    def add_related_confused_with(self, new_confused_with: str) -> None:
-        self.related_notes.confused_with.add(new_confused_with)
-
     def get_speech_type(self) -> str: return self.get_field(NoteFields.Vocab.Speech_Type)
     def set_speech_type(self, value: str) -> None: self.set_field(NoteFields.Vocab.Speech_Type, value)
     def get_speech_types(self) -> set[str]: return set(ex_str.extract_comma_separated_values(self.get_field(NoteFields.Vocab.Speech_Type)))
