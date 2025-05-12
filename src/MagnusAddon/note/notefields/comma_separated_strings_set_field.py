@@ -1,11 +1,12 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+import typing
 
 from note.notefields.string_field import StringField
 
-if TYPE_CHECKING:
+if typing.TYPE_CHECKING:
     from note.jpnote import JPNote
+
 
 
 class StringSetField:

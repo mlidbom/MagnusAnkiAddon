@@ -47,9 +47,9 @@ class SentenceNote(JPNote):
         return analysis.display_words
 
     def get_direct_dependencies(self) -> set[JPNote]:
-        highlighted = set(ex_sequence.flatten([self._col.vocab.with_question(vocab) for vocab in self.configuration.highlighted_words()]))
-        valid_parsed_roots = set(ex_sequence.flatten([self._col.vocab.with_question(vocab) for vocab in self.get_valid_parsed_non_child_words_strings()]))
-        kanji = set(self._col.kanji.with_any_kanji_in(self.extract_kanji()))
+        highlighted = set(ex_sequence.flatten([self.collection.vocab.with_question(vocab) for vocab in self.configuration.highlighted_words()]))
+        valid_parsed_roots = set(ex_sequence.flatten([self.collection.vocab.with_question(vocab) for vocab in self.get_valid_parsed_non_child_words_strings()]))
+        kanji = set(self.collection.kanji.with_any_kanji_in(self.extract_kanji()))
         return highlighted | valid_parsed_roots | kanji
 
     def parse_words_from_expression(self) -> list[ExtractedWord]:

@@ -44,7 +44,7 @@ class JPNote:
         return app
 
     @property
-    def _col(self) -> JPCollection: return self._app.col()
+    def collection(self) -> JPCollection: return self._app.col()
 
     def get_question(self) -> str:
         value = self.get_field(MyNoteFields.question).strip()

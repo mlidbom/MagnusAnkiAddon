@@ -11,10 +11,10 @@ from language_services.jamdict_ex.priority_spec import PrioritySpec
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from note.note_constants import Mine, NoteFields, NoteTypes
 from note.notefields.string_field import StringField
-from note.notefields.string_set_field import StringSetField
 from note.vocabnote_cloner import VocabCloner
 from note.vocabulary import vocabnote_context_sentences, vocabnote_generated_data, vocabnote_meta_tag, vocabnote_wanikani_extensions
 from note.vocabulary.vocabnote_context_sentences import VocabContextSentences
+from note.vocabulary.vocabnote_related_notes import VocabNoteRelatedNotes
 from note.waninote import WaniNote
 from sysutils import ex_sequence, ex_str, kana_utils
 
@@ -28,8 +28,7 @@ class VocabNote(WaniNote):
         super().__init__(note)
         self.cloner = VocabCloner(self)
         self.user_mnemonic = StringField(self, NoteFields.Vocab.Mnemonic__)
-        self.similar_meanings = StringSetField(self, NoteFields.Vocab.Related_similar_meaning)
-
+        self.related_notes = VocabNoteRelatedNotes(self)
         self.context_sentences = VocabContextSentences(self)
 
     def __repr__(self) -> str: return f"""{self.get_question()}"""
@@ -57,8 +56,8 @@ class VocabNote(WaniNote):
         return app.col().vocab.with_compound_part(self.get_question_without_noise_characters())
 
     def get_direct_dependencies(self) -> set[JPNote]:
-        return (set(self._col.kanji.with_any_kanji_in(list(self.extract_main_form_kanji()))) |
-                set(ex_sequence.flatten([self._col.vocab.with_question(compound_part) for compound_part in self.get_user_compounds()])))
+        return (set(self.collection.kanji.with_any_kanji_in(list(self.extract_main_form_kanji()))) |
+                set(ex_sequence.flatten([self.collection.vocab.with_question(compound_part) for compound_part in self.get_user_compounds()])))
 
     def update_generated_data(self) -> None:
         self.set_field(NoteFields.Vocab.sentence_count, str(len(self.get_sentences())))
@@ -212,8 +211,8 @@ class VocabNote(WaniNote):
         for i in range(len(self._note.fields)):
             clone._note.fields[i] = self._note.fields[i]
 
-        for related in clone.get_related_similar_meaning():
-            clone.add_related_similar_meaning(related)
+        for related in clone.related_notes.similar_meanings():
+            clone.related_notes.add_similar_meaning(related)
 
         clone._flush()
 
@@ -253,18 +252,6 @@ class VocabNote(WaniNote):
 
     def get_user_answer(self) -> str: return self.get_field(NoteFields.Vocab.user_answer)
     def set_user_answer(self, value: str) -> None: self.set_field(NoteFields.Vocab.user_answer, value)
-
-    def get_related_similar_meaning(self) -> set[str]: return set(ex_str.extract_comma_separated_values(self.get_field(NoteFields.Vocab.Related_similar_meaning)))
-    def add_related_similar_meaning(self, new_similar: str, _is_recursive_call: bool = False) -> None:
-        similar_vocab_questions = self.get_related_similar_meaning()
-        similar_vocab_questions.add(new_similar)
-
-        self.set_field(NoteFields.Vocab.Related_similar_meaning, ", ".join(similar_vocab_questions))
-
-        if not _is_recursive_call:
-            from ankiutils import app
-            for similar in app.col().vocab.with_question(new_similar):
-                similar.add_related_similar_meaning(self.get_question(), _is_recursive_call=True)
 
     def get_related_derived_from(self) -> str: return self.get_field(NoteFields.Vocab.Related_derived_from)
     def set_related_derived_from(self, value: str) -> None: self.set_field(NoteFields.Vocab.Related_derived_from, value)

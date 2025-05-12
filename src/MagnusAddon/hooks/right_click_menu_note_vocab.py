@@ -127,7 +127,8 @@ def build_string_menu(string_menu: QMenu, vocab: VocabNote, menu_string: str) ->
         add_ui_action(sentence_menu, shortcutfinger.home3("Exclude this vocab"), lambda _sentences=sentences: exclude(_sentences))
 
     def build_add_menu(vocab_add_menu: QMenu) -> None:
-        add_ui_action(vocab_add_menu, shortcutfinger.home1("Similar meaning"), lambda: vocab.add_related_similar_meaning(menu_string))
+        vocab.related_notes.add_similar_meaning(menu_string)
+        add_ui_action(vocab_add_menu, shortcutfinger.home1("Similar meaning"), lambda: None)
         add_ui_action(vocab_add_menu, shortcutfinger.home2("Confused with"), lambda: vocab.add_related_confused_with(menu_string))
 
     def build_remove_menu(vocab_remove_menu: QMenu) -> None:
