@@ -111,20 +111,16 @@ class VocabNote(WaniNote):
         return lookup.priority_spec() if lookup else PrioritySpec(set())
 
     def get_sentences(self) -> list[SentenceNote]:
-        from ankiutils import app
-        return app.col().sentences.with_vocab(self)
+        return self.collection.sentences.with_vocab(self)
 
     def get_sentences_with_owned_form(self) -> list[SentenceNote]:
-        from ankiutils import app
-        return app.col().sentences.with_vocab_owned_form(self)
+        return self.collection.sentences.with_vocab_owned_form(self)
 
     def get_sentences_with_primary_form(self) -> list[SentenceNote]:
-        from ankiutils import app
-        return app.col().sentences.with_form(self.get_question())
+        return self.collection.sentences.with_form(self.get_question())
 
     def get_user_highlighted_sentences(self) -> list[SentenceNote]:
-        from ankiutils import app
-        return [sentence for sentence in app.col().sentences.with_highlighted_vocab(self)]
+        return [sentence for sentence in self.collection.sentences.with_highlighted_vocab(self)]
 
     def get_sentences_studying(self) -> list[SentenceNote]:
         return [sentence for sentence in self.get_sentences() if sentence.is_studying()]
