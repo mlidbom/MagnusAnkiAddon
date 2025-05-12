@@ -15,7 +15,7 @@ class VocabNotePartsOfSpeech:
 
 
     def raw_string_value(self) -> str:
-        return self._field.get()
+        return self._field.raw_string_value()
 
     def set_raw_string_value(self, value: str) -> None:
         self._field.set_raw_string_value(value)
