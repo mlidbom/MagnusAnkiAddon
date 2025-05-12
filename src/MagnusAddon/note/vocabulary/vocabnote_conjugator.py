@@ -9,12 +9,9 @@ from sysutils import ex_sequence
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
 
-
-
 class VocabNoteConjugator:
     def __init__(self, vocab: VocabNote) -> None:
         self._vocab = vocab
-
 
     def _get_stems_for_form(self, form: str) -> list[str]:
         return [base for base in conjugator.get_word_stems(form, is_ichidan_verb=self._vocab.parts_of_speech.is_ichidan()) if base != form]
