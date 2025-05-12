@@ -31,8 +31,13 @@ class VocabNote(WaniNote):
     factory: VocabNoteFactory = VocabNoteFactory()
     def __init__(self, note: Note) -> None:
         super().__init__(note)
-        self.cloner: VocabCloner = VocabCloner(self)
         self.user_mnemonic: StringField = StringField(self, NoteFields.Vocab.Mnemonic__)
+        self.readings: CommaSeparatedStringsListField = CommaSeparatedStringsListField(self, NoteFields.Vocab.Reading)
+        self.user_answer: StringField = StringField(self, NoteFields.Vocab.user_answer)
+        self._source_answer: StringField = StringField(self, NoteFields.Vocab.source_answer)
+        self.active_answer: StringField = StringField(self, NoteFields.Vocab.active_answer)
+
+        self.cloner: VocabCloner = VocabCloner(self)
         self.related_notes: VocabNoteRelatedNotes = VocabNoteRelatedNotes(self)
         self.context_sentences: VocabContextSentences = VocabContextSentences(self)
         self.audio: VocabNoteAudio = VocabNoteAudio(self)
@@ -40,15 +45,10 @@ class VocabNote(WaniNote):
         self.forms: VocabNoteForms = VocabNoteForms(self)
         self.parts_of_speech: VocabNotePartsOfSpeech = VocabNotePartsOfSpeech(self)
         self.compound_parts: VocabNoteUserCompoundParts = VocabNoteUserCompoundParts(self)
-        self.readings: CommaSeparatedStringsListField = CommaSeparatedStringsListField(self, NoteFields.Vocab.Reading)
         self.conjugator: VocabNoteConjugator = VocabNoteConjugator(self)
-        self.user_answer: StringField = StringField(self, NoteFields.Vocab.user_answer)
-        self._source_answer: StringField = StringField(self, NoteFields.Vocab.source_answer)
         self.wani_extensions: VocabNoteWaniExtensions = VocabNoteWaniExtensions(self)
         self.kanji: VocabNoteKanji = VocabNoteKanji(self)
         self.meta_data: VocabNoteMetaData = VocabNoteMetaData(self)
-        self.active_answer: StringField = StringField(self, NoteFields.Vocab.active_answer)
-
 
     def __repr__(self) -> str: return f"""{self.get_question()}"""
 
@@ -68,7 +68,6 @@ class VocabNote(WaniNote):
         if dict_lookup.found_words():
             generated = dict_lookup.entries[0].generate_answer()
             self.user_answer.set(generated)
-
 
     def get_question_without_noise_characters(self) -> str: return self.get_question().replace(Mine.VocabPrefixSuffixMarker, "")
     def set_question(self, value: str) -> None: self.set_field(NoteFields.Vocab.question, value)
