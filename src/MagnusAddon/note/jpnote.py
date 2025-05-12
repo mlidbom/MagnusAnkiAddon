@@ -20,7 +20,7 @@ if TYPE_CHECKING:
 
 class JPNote:
     def __init__(self, note: Note) -> None:
-        self._note = note
+        self.backend_note = note
         self._is_updating_generated_data: bool = False
         self._generated_data_was_updated = False
         self.__hash_value = 0
@@ -53,7 +53,7 @@ class JPNote:
     def get_answer(self) -> str: return self.get_field(MyNoteFields.answer)
 
     def is_studying(self, card: str = "") -> bool:
-        return noteutils.has_card_being_studied_cached(self._note, card)
+        return noteutils.has_card_being_studied_cached(self.backend_note, card)
 
     @classmethod
     def note_from_card(cls, card: Card) -> JPNote:
@@ -77,9 +77,9 @@ class JPNote:
     def get_note_type(note: Note) -> str:
         return str_(cast(NotetypeDict, note.note_type())["name"])
 
-    def get_type(self) -> NoteTypeEx: return NoteTypeEx.from_dict(non_optional(self._note.note_type()))
+    def get_type(self) -> NoteTypeEx: return NoteTypeEx.from_dict(non_optional(self.backend_note.note_type()))
 
-    def get_note_type_name(self) -> str: return self.get_note_type(self._note)
+    def get_note_type_name(self) -> str: return self.get_note_type(self.backend_note)
 
     def get_direct_dependencies(self) -> set[JPNote]:
         return set()
@@ -95,11 +95,11 @@ class JPNote:
     def get_dependencies_recursive(self) -> set[JPNote]:
         return self._get_dependencies_recursive(set())
 
-    def get_id(self) -> NoteId: return self._note.id
-    def card_ids(self) -> Sequence[CardId]: return self._note.card_ids()
-    def is_wani_note(self) -> bool: return Mine.Tags.Wani in self._note.tags
+    def get_id(self) -> NoteId: return self.backend_note.id
+    def card_ids(self) -> Sequence[CardId]: return self.backend_note.card_ids()
+    def is_wani_note(self) -> bool: return Mine.Tags.Wani in self.backend_note.tags
 
-    def cards(self) -> list[CardEx]: return [CardEx(card) for card in self._note.cards()]
+    def cards(self) -> list[CardEx]: return [CardEx(card) for card in self.backend_note.cards()]
     def has_suspended_cards(self) -> bool: return any(_card for _card in self.cards() if _card.is_suspended())
     def has_active_cards(self) -> bool: return any(_card for _card in self.cards() if not _card.is_suspended())
 
@@ -118,9 +118,9 @@ class JPNote:
     def update_generated_data(self) -> None:
         noteutils.remove_from_studying_cache(self.get_id())
 
-    def get_field(self, field_name: str) -> str: return self._note[field_name]
+    def get_field(self, field_name: str) -> str: return self.backend_note[field_name]
 
-    def _is_persisted(self) -> bool: return int(self._note.id) != 0
+    def _is_persisted(self) -> bool: return int(self.backend_note.id) != 0
 
     def _flush(self) -> None:
         if self._is_persisted():
@@ -130,29 +130,29 @@ class JPNote:
 
             self._is_updating_generated_data = True
             try:
-                self._note.col.update_note(self._note)
+                self.backend_note.col.update_note(self.backend_note)
             finally:
                 self._is_updating_generated_data = False
 
     def set_field(self, field_name: str, value: str) -> None:
-        field_value = self._note[field_name]
+        field_value = self.backend_note[field_name]
         if field_value != value:
-            self._note[field_name] = value
+            self.backend_note[field_name] = value
             self._flush()
 
-    def get_tags(self) -> list[str]: return self._note.tags
+    def get_tags(self) -> list[str]: return self.backend_note.tags
 
-    def has_tag(self, tag: str) -> bool: return self._note.has_tag(tag)
+    def has_tag(self, tag: str) -> bool: return self.backend_note.has_tag(tag)
 
     def priority_tag_value(self) -> int:
-        for tag in self._note.tags:
+        for tag in self.backend_note.tags:
             if tag.startswith(Mine.Tags.priority_folder):
                 return int(ex_str.first_number(tag))
         return 0
 
     def get_meta_tags(self) -> set[str]:
         tags: set[str] = set()
-        for tag in self._note.tags:
+        for tag in self.backend_note.tags:
             if tag.startswith(Mine.Tags.priority_folder):
                 if "high" in tag: tags.add("high_priority")
                 if "low" in tag: tags.add("low_priority")
@@ -173,12 +173,12 @@ class JPNote:
 
     def remove_tag(self, tag: str) -> None:
         if self.has_tag(tag):
-            self._note.remove_tag(tag)
+            self.backend_note.remove_tag(tag)
             self._flush()
 
     def set_tag(self, tag: str) -> None:
         if not self.has_tag(tag):
-            self._note.tags.append(tag)
+            self.backend_note.tags.append(tag)
             self._flush()
 
     def toggle_tag(self, tag: str, on: bool) -> None:

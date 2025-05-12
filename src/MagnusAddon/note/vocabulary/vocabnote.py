@@ -113,19 +113,6 @@ class VocabNote(WaniNote):
     def get_stems_for_all_forms(self) -> list[str]:
         return ex_sequence.flatten([self._get_stems_for_form(form) for form in self.forms.unexcluded_set()])
 
-    def clone(self) -> VocabNote:
-        clone = VocabNote.factory.create(self.get_question(), self.get_answer(), self.readings.get())
-
-        for i in range(len(self._note.fields)):
-            clone._note.fields[i] = self._note.fields[i]
-
-        for related in clone.related_notes.similar_meanings():
-            clone.related_notes.add_similar_meaning(related)
-
-        clone._flush()
-
-        return clone
-
     def is_question_overrides_form(self) -> bool: return self.has_tag(Mine.Tags.question_overrides_form)
 
     @staticmethod

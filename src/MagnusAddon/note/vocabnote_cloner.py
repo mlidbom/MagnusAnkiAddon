@@ -2,9 +2,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Callable
 
+from anki.notes import Note
 from ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules  # noqa
 from language_services import conjugator
-from note.note_constants import Mine
+from note.note_constants import Mine, NoteTypes
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
@@ -88,8 +89,26 @@ class VocabCloner:
 
     def create_shimasu_verb(self) -> VocabNote: return self.create_suru_verb(shimasu=True)
 
+    def clone(self) -> VocabNote:
+        from ankiutils import app
+        from note.vocabulary.vocabnote import VocabNote
+
+        clone_backend_note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Vocab))
+
+        for i in range(len(self.note.backend_note.fields)):
+            clone_backend_note.fields[i] = self.note.backend_note.fields[i]
+
+        clone = VocabNote(clone_backend_note)
+
+        for related in clone.related_notes.similar_meanings():
+            clone.related_notes.add_similar_meaning(related)
+
+        clone._flush() # noqa this is essentially a part of the vocab note class. This is fine.
+
+        return clone
+
     def clone_to_form(self, form: str) -> VocabNote:
-        clone = self.note.clone()
+        clone = self.clone()
         clone.set_question(form)
 
         for tag in [tag for tag in self.note.get_tags() if tag in Mine.Tags.system_tags]:

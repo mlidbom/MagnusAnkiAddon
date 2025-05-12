@@ -15,9 +15,9 @@ class WaniNote(JPNote):
         super().__init__(note)
 
     def _set_level_tag(self, new_level: int) -> None:
-        level_tags = [level for level in self._note.tags if level.startswith(Mine.Tags.wani_level)]
+        level_tags = [level for level in self.backend_note.tags if level.startswith(Mine.Tags.wani_level)]
         for level in level_tags:
-            self._note.remove_tag(level)
+            self.backend_note.remove_tag(level)
         self.set_tag(f"""{Mine.Tags.wani_level}{f"{new_level:02d}"}""")
 
     def get_subject_id(self) -> int: return int(self.get_field(NoteFields.WaniCommon.subject_id))
