@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
 
 class VocabNoteKanji:
-    def __init__(self, vocab: VocabNote):
+    def __init__(self, vocab: VocabNote) -> None:
         self._vocab = vocab
 
     def extract_main_form_kanji(self) -> list[str]:

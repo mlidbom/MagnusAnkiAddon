@@ -8,13 +8,16 @@ from note.note_constants import NoteFields
 from note.notefields.comma_separated_strings_list_field import CommaSeparatedStringsListField
 
 if TYPE_CHECKING:
+    from note.collection.jp_collection import JPCollection
     from note.vocabulary.vocabnote import VocabNote
 
 class VocabNoteUserCompoundParts:
     def __init__(self, vocab: VocabNote) -> None:
         self._vocab = vocab
         self._field: CommaSeparatedStringsListField = CommaSeparatedStringsListField(vocab, NoteFields.Vocab.user_compounds)
-        self.collection = vocab.collection
+
+    @property
+    def _collection(self) -> JPCollection: return self._vocab.collection
 
     def get(self) -> list[str]: return self._field.get()
     def set(self, value: list[str]) -> None: self._field.set(value)
@@ -30,7 +33,7 @@ class VocabNoteUserCompoundParts:
             all_word_substrings = [w for w in all_substrings if DictLookup.is_dictionary_or_collection_word(w)]
             compound_parts = [segment for segment in all_word_substrings if not any(parent for parent in all_word_substrings if segment in parent and parent != segment)]
 
-        segments_missing_vocab = [segment for segment in compound_parts if not self.collection.vocab.is_word(segment)]
+        segments_missing_vocab = [segment for segment in compound_parts if not self._collection.vocab.is_word(segment)]
         for missing in segments_missing_vocab:
             created = VocabNote.factory.create_with_dictionary(missing)
             created.suspend_all_cards()

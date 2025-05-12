@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 
 
 class IntegerField:
-    def __init__(self, note: JPNote, field_name: str):
+    def __init__(self, note: JPNote, field_name: str) -> None:
         self._note = note
         self._field = StringField(note, field_name)
 
