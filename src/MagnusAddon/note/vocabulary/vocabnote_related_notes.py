@@ -31,7 +31,7 @@ class VocabNoteRelatedNotes:
 
         if not _is_recursive_call:
             for similar in self._collection.vocab.with_question(new_similar):
-                similar.related_notes.add_similar_meaning(self._vocab.get_question())
+                similar.related_notes.add_similar_meaning(self._vocab.get_question(), _is_recursive_call=True)
 
     def ergative_twin(self) -> str:
         return self._ergative_twin_field.get()

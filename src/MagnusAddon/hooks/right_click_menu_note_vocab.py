@@ -88,22 +88,18 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
 
     def build_note_menu() -> None:
         if not vocab.user_answer.get():
-            vocab.user_answer.set(format_vocab_meaning(vocab.get_answer()))
-            add_ui_action(note_menu, shortcutfinger.up1("Accept meaning"), lambda: None)
+            add_ui_action(note_menu, shortcutfinger.up1("Accept meaning"), lambda: vocab.user_answer.set(format_vocab_meaning(vocab.get_answer())))
 
         add_ui_action(note_menu, shortcutfinger.up2("Generate answer"), lambda: vocab.generate_and_set_answer())
         if vocabnote_context_sentences.can_generate_sentences_from_context_sentences(vocab, False):
-            vocabnote_context_sentences.generate_sentences_from_context_sentences(vocab, False)
-            add_ui_action(note_menu, shortcutfinger.up3("Generate sentences"), lambda: None)
+            add_ui_action(note_menu, shortcutfinger.up3("Generate sentences"), lambda: vocabnote_context_sentences.generate_sentences_from_context_sentences(vocab, False))
 
         from batches import local_note_updater
 
         add_ui_action(note_menu, shortcutfinger.up4("Reparse matching sentences"), lambda: local_note_updater.reparse_sentences_for_vocab(vocab))
-        vocab.parts_of_speech.set_automatically_from_dictionary()
-        add_ui_action(note_menu, shortcutfinger.up5("Repopulate TOS"), lambda: None)
+        add_ui_action(note_menu, shortcutfinger.up5("Repopulate TOS"), lambda: vocab.parts_of_speech.set_automatically_from_dictionary())
 
-        vocab.compound_parts.auto_generate()
-        add_ui_action(note_menu, shortcutfinger.down1("Autogenerate compounds"), lambda: None)
+        add_ui_action(note_menu, shortcutfinger.down1("Autogenerate compounds"), lambda: vocab.compound_parts.auto_generate())
 
     build_lookup_menu(non_optional(note_menu.addMenu(shortcutfinger.home1("Open"))))
     build_create_note_menu(non_optional(note_menu.addMenu(shortcutfinger.home2("Create"))))
@@ -132,10 +128,8 @@ def build_string_menu(string_menu: QMenu, vocab: VocabNote, menu_string: str) ->
         add_ui_action(sentence_menu, shortcutfinger.home3("Exclude this vocab"), lambda _sentences=sentences: exclude(_sentences))
 
     def build_add_menu(vocab_add_menu: QMenu) -> None:
-        vocab.related_notes.add_similar_meaning(menu_string)
-        add_ui_action(vocab_add_menu, shortcutfinger.home1("Similar meaning"), lambda: None)
-        vocab.related_notes.confused_with.add(menu_string)
-        add_ui_action(vocab_add_menu, shortcutfinger.home2("Confused with"), lambda: None)
+        add_ui_action(vocab_add_menu, shortcutfinger.home1("Similar meaning"), lambda: vocab.related_notes.add_similar_meaning(menu_string))
+        add_ui_action(vocab_add_menu, shortcutfinger.home2("Confused with"), lambda: vocab.related_notes.confused_with.add(menu_string))
 
     def build_remove_menu(vocab_remove_menu: QMenu) -> None:
         pass
@@ -143,10 +137,8 @@ def build_string_menu(string_menu: QMenu, vocab: VocabNote, menu_string: str) ->
         # add_ui_action(vocab_remove_menu, shortcutfinger.home2("Confused with"), lambda: vocab.remove_related_confused_with(menu_string))
 
     def build_set_menu(note_set_menu: QMenu) -> None:
-        vocab.related_notes.derived_from.set(menu_string)
-        add_ui_action(note_set_menu, shortcutfinger.home1("Derived from"), lambda: None)
-        vocab.related_notes.set_ergative_twin(menu_string)
-        add_ui_action(note_set_menu, shortcutfinger.home2("Ergative twin"), lambda: None)
+        add_ui_action(note_set_menu, shortcutfinger.home1("Derived from"), lambda: vocab.related_notes.derived_from.set(menu_string))
+        add_ui_action(note_set_menu, shortcutfinger.home2("Ergative twin"), lambda: vocab.related_notes.set_ergative_twin(menu_string))
 
     sentences = app.col().sentences.with_question(menu_string)
     if sentences:
