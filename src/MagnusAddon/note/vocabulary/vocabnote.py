@@ -20,7 +20,7 @@ from note.vocabulary.vocabnote_sentences import VocabNoteSentences
 from note.vocabulary.vocabnote_usercompoundparts import VocabNoteUserCompoundParts
 from note.vocabulary.vocabnote_wanikani_extensions import VocabNoteWaniExtensions
 from note.waninote import WaniNote
-from sysutils import ex_sequence, ex_str, kana_utils
+from sysutils import ex_str, kana_utils
 
 if TYPE_CHECKING:
     from anki.notes import Note
@@ -49,12 +49,8 @@ class VocabNote(WaniNote):
 
     def __repr__(self) -> str: return f"""{self.get_question()}"""
 
-    def in_compounds(self) -> list[VocabNote]:
-        return self.collection.vocab.with_compound_part(self.get_question_without_noise_characters())
-
     def get_direct_dependencies(self) -> set[JPNote]:
-        return (set(self.collection.kanji.with_any_kanji_in(list(self.extract_main_form_kanji()))) |
-                set(ex_sequence.flatten([self.collection.vocab.with_question(compound_part) for compound_part in self.compound_parts.get()])))
+        return self.related_notes.get_direct_dependencies()
 
     def update_generated_data(self) -> None:
         self.set_field(NoteFields.Vocab.sentence_count, str(len(self.sentences.all())))

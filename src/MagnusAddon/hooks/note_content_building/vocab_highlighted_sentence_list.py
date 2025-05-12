@@ -24,7 +24,7 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
 
     secondary_forms_containing_primary_form_forms = [form for form in secondary_forms_forms if any(pform for pform in primary_form_forms if pform in form)]
 
-    derived_compounds = _vocab_note.in_compounds()
+    derived_compounds = _vocab_note.related_notes.in_compounds()
     derived_compounds_forms = ex_str.sort_by_length_descending(ex_sequence.flatten([der.conjugator.get_text_matching_forms_for_all_form() for der in derived_compounds]))
 
     secondary_forms_vocab_notes = ex_sequence.flatten([app.col().vocab.with_question(v) for v in secondary_forms])
