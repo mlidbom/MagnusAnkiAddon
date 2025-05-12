@@ -77,7 +77,7 @@ class KanjiNote(WaniNote):
         def update_primary_audios() -> None:
             from ankiutils import app
             vocab_we_should_play = ex_sequence.flatten([app.col().vocab.with_question(vocab) for vocab in self.get_primary_vocab()])
-            self.set_primary_vocab_audio("".join([vo.get_primary_audio() for vo in vocab_we_should_play]) if vocab_we_should_play else "")
+            self.set_primary_vocab_audio("".join([vo.audio.get_primary_audio() for vo in vocab_we_should_play]) if vocab_we_should_play else "")
 
         self.set_field(NoteFields.Kanji.active_answer, self.get_answer())
         update_primary_audios()

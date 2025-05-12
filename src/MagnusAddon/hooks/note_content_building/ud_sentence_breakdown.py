@@ -33,7 +33,7 @@ def _build_vocab_list(word_to_show: list[str], excluded_words:set[str], title:st
                 html += f"""
                         <li class="sentenceVocabEntry depth1 word_priority_very_high {" ".join(vocab.get_meta_tags())}">
                             <div class="sentenceVocabEntryDiv">
-                                <audio src="{vocab.get_primary_audio_path()}"></audio><a class="play-button"></a>
+                                <audio src="{vocab.audio.get_primary_audio_path()}"></audio><a class="play-button"></a>
                                 <span class="vocabQuestion clipboard">{word_form}</span>
                                 {f'''<span class="vocabHitForm clipboard">{hit_form}</span>''' if hit_form else ""}
                                 {f'''<span class="vocabHitReadings clipboard">{readings}</span>''' if readings else ""}

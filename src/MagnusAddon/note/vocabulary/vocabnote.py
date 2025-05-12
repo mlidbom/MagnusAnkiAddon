@@ -110,17 +110,6 @@ class VocabNote(WaniNote):
         lookup = DictLookup.try_lookup_vocab_word_or_name(self)
         return lookup.priority_spec() if lookup else PrioritySpec(set())
 
-    def get_primary_audio(self) -> str:
-        return self.audio.get_primary_audio()
-
-    def get_primary_audio_path(self) -> str:
-        primary_audio = self.get_primary_audio().strip()
-        if not primary_audio:
-            return ""
-
-        primary_list = primary_audio.replace("[sound:", "").split("]")
-        return primary_list[0]
-
     def get_sentences(self) -> list[SentenceNote]:
         from ankiutils import app
         return app.col().sentences.with_vocab(self)

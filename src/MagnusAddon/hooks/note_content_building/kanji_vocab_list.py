@@ -39,7 +39,7 @@ def generate_vocab_html_list(_kanji_note: KanjiNote) -> str:
     
                     {newline.join([f"""
                     <div class="kanjiVocabEntry {_create_classes(_kanji_note, _vocab_note)}">
-                        <audio src="{_vocab_note.get_primary_audio_path()}"></audio><a class="play-button"></a>
+                        <audio src="{_vocab_note.audio.get_primary_audio_path()}"></audio><a class="play-button"></a>
                         <span class="kanji clipboard">{_vocab_note.get_question()}</span>
                         (<span class="clipboard vocabReading">{", ".join(_kanji_note.tag_vocab_readings(_vocab_note))}</span>)
                         {_vocab_note.get_meta_tags_html()}
