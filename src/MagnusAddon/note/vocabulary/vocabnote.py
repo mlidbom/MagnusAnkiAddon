@@ -15,6 +15,7 @@ from note.vocabulary.vocabnote_audio import VocabNoteAudio
 from note.vocabulary.vocabnote_context_sentences import VocabContextSentences
 from note.vocabulary.vocabnote_factory import VocabNoteFactory
 from note.vocabulary.vocabnote_forms import VocabNoteForms
+from note.vocabulary.vocabnote_parts_of_speech import VocabNotePartsOfSpeech
 from note.vocabulary.vocabnote_related_notes import VocabNoteRelatedNotes
 from note.vocabulary.vocabnote_sentences import VocabNoteSentences
 from note.waninote import WaniNote
@@ -36,6 +37,7 @@ class VocabNote(WaniNote):
         self.audio: VocabNoteAudio = VocabNoteAudio(self)
         self.sentences: VocabNoteSentences = VocabNoteSentences(self)
         self.forms: VocabNoteForms = VocabNoteForms(self)
+        self.parts_of_speech: VocabNotePartsOfSpeech = VocabNotePartsOfSpeech(self)
 
 
     def __repr__(self) -> str: return f"""{self.get_question()}"""
@@ -123,10 +125,10 @@ class VocabNote(WaniNote):
         return self.has_tag(Mine.Tags.requires_exact_match)
 
     def is_ichidan(self) -> bool:
-        return "ichidan" in self.get_speech_type().lower()
+        return "ichidan" in self.get_speech_type_raw_string().lower()
 
     def is_godan(self) -> bool:
-        return "ichidan" in self.get_speech_type().lower()
+        return "ichidan" in self.get_speech_type_raw_string().lower()
 
     def _get_stems_for_form(self, form: str) -> list[str]:
         return [base for base in language_services.conjugator.get_word_stems(form, is_ichidan_verb=self.is_ichidan()) if base != form]
@@ -191,9 +193,9 @@ class VocabNote(WaniNote):
     def get_user_answer(self) -> str: return self.get_field(NoteFields.Vocab.user_answer)
     def set_user_answer(self, value: str) -> None: self.set_field(NoteFields.Vocab.user_answer, value)
 
-    def get_speech_type(self) -> str: return self.get_field(NoteFields.Vocab.Speech_Type)
-    def set_speech_type(self, value: str) -> None: self.set_field(NoteFields.Vocab.Speech_Type, value)
-    def get_speech_types(self) -> set[str]: return set(ex_str.extract_comma_separated_values(self.get_field(NoteFields.Vocab.Speech_Type)))
+    def get_speech_type_raw_string(self) -> str: return self.parts_of_speech.raw_string_value()
+    def set_speech_type(self, value: str) -> None: self.parts_of_speech.set_raw_string_value(value)
+    def get_speech_types(self) -> set[str]: return self.parts_of_speech.get()
 
     _transitive_string_values = ["transitive", "transitive verb"]
     _intransitive_string_values = ["intransitive", "intransitive verb"]

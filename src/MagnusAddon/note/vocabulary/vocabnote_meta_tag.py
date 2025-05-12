@@ -17,7 +17,7 @@ class VocabMetaTag:
 def get_meta_tags_html(vocab: VocabNote, display_extended_sentence_statistics: bool = True) -> str:
     tags = set(vocab.get_tags())
     meta: list[VocabMetaTag] = []
-    tos = set([t.lower().strip() for t in vocab.get_speech_type().split(",")])
+    tos = set([t.lower().strip() for t in vocab.get_speech_type_raw_string().split(",")])
 
     def max_nine_number(value: int) -> str: return f"""{value}""" if value < 10 else "+"
     highlighted_in = vocab.sentences.user_highlighted()

@@ -13,7 +13,7 @@ def create_vocab() -> NoteTypeEx:
                        NoteFieldEx(NoteFields.Vocab.source_answer),
                        NoteFieldEx(NoteFields.Vocab.user_answer),
                        NoteFieldEx(NoteFields.Vocab.Reading),
-                       NoteFieldEx(NoteFields.Vocab.Speech_Type),
+                       NoteFieldEx(NoteFields.Vocab.parts_of_speech),
                        NoteFieldEx(NoteFields.Vocab.Context_sentence_1_japanese),
                        NoteFieldEx(NoteFields.Vocab.Context_sentence_1_english),
                        NoteFieldEx(NoteFields.Vocab.Context_sentence_2_japanese),

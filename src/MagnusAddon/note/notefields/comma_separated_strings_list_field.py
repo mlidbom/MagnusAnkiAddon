@@ -18,5 +18,8 @@ class CommaSeparatedStringsListField:
     def set(self, value: list[str]) -> None:
         self._field.set(", ".join(value))
 
-    def get_raw_string(self) -> str:
+    def raw_string_value(self) -> str:
         return self._field.get()
+
+    def set_raw_string_value(self, value:str):
+        self._field.set(value)

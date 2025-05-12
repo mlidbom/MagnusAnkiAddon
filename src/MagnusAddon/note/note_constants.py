@@ -118,7 +118,7 @@ class NoteFields:
         user_answer = "__answer"
         user_compounds = "__compounds"
         Reading = "Reading"
-        Speech_Type = "TOS"
+        parts_of_speech = "TOS"
         Context_sentence_1_japanese = "Context_jp"
         Context_sentence_1_audio = "Context_jp_audio"
         Context_sentence_1_english = "Context_en"

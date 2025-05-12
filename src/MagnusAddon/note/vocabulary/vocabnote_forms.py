@@ -18,7 +18,7 @@ class VocabNoteForms:
     def all_raw(self) -> list[str]: return self._field.get()
 
     def all_raw_string(self) -> str:
-        return self._field.get_raw_string()
+        return self._field.raw_string_value()
 
     def unexcluded_list(self) -> list[str]: return ExSequence.filter(self._field.get(), self._is_excluded_form, invert_condition=True)
     def unexcluded_set(self) -> set[str]: return set(self.unexcluded_list())

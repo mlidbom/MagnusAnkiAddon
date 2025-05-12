@@ -57,7 +57,7 @@ class VocabCloner:
         return self._create_postfix_prefix_version("て", "auxiliary", is_prefix=True)
 
     def create_o_prefixed_word(self) -> VocabNote:
-        return self._create_postfix_prefix_version("お", self.note.get_speech_type(), is_prefix=True)
+        return self._create_postfix_prefix_version("お", self.note.get_speech_type_raw_string(), is_prefix=True)
 
     def create_n_suffixed_word(self) -> VocabNote:
         return self._create_postfix_prefix_version("ん", "expression")
@@ -71,8 +71,8 @@ class VocabCloner:
         forms = list(suru_verb.forms.unexcluded_set()) + [form.replace("する", "をする") for form in suru_verb.forms.unexcluded_set()]
         suru_verb.forms.set_list(forms)
 
-        if self.note.is_transitive(): suru_verb.set_speech_type(suru_verb.get_speech_type() + ", transitive")
-        if self.note.is_intransitive(): suru_verb.set_speech_type(suru_verb.get_speech_type() + ", intransitive")
+        if self.note.is_transitive(): suru_verb.set_speech_type(suru_verb.get_speech_type_raw_string() + ", transitive")
+        if self.note.is_intransitive(): suru_verb.set_speech_type(suru_verb.get_speech_type_raw_string() + ", intransitive")
 
         return suru_verb
 
