@@ -21,6 +21,9 @@ class CommaSeparatedStringsSetField:
     def add(self, value: str) -> None:
         self.set(self.get() | {value})
 
+    def remove(self, value: str) -> None:
+        self.set(self.get() - {value})
+
     def raw_string_value(self) -> str:
         return self._field.raw_string_value()
 

@@ -43,7 +43,6 @@ class VocabNoteRelatedNotes:
         for twin in app.col().vocab.with_question(value):
             twin.related_notes._ergative_twin_field.set(self._vocab.get_question())
 
-
     def in_compounds(self) -> list[VocabNote]:
         return self._collection.vocab.with_compound_part(self._vocab.get_question_without_noise_characters())
 
@@ -51,3 +50,9 @@ class VocabNoteRelatedNotes:
         note = self._vocab
         return (set(self._collection.kanji.with_any_kanji_in(list(note.kanji.extract_main_form_kanji()))) |
                 set(ex_sequence.flatten([self._collection.vocab.with_question(compound_part) for compound_part in self._vocab.compound_parts.get()])))
+
+    def remove_similar_meaning(self, similar: str) -> None:
+        self._similar_meanings_field.remove(similar)
+
+    def remove_confused_with(self, confused_with: str) -> None:
+        self.confused_with.remove(confused_with)

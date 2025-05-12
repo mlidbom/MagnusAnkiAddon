@@ -132,9 +132,11 @@ def build_string_menu(string_menu: QMenu, vocab: VocabNote, menu_string: str) ->
         add_ui_action(vocab_add_menu, shortcutfinger.home2("Confused with"), lambda: vocab.related_notes.confused_with.add(menu_string))
 
     def build_remove_menu(vocab_remove_menu: QMenu) -> None:
-        pass
-        # add_ui_action(vocab_remove_menu, shortcutfinger.home1("Similar meaning"), lambda: vocab.remove_related_similar_meaning(menu_string))
-        # add_ui_action(vocab_remove_menu, shortcutfinger.home2("Confused with"), lambda: vocab.remove_related_confused_with(menu_string))
+        if menu_string in vocab.related_notes.similar_meanings():
+            add_ui_action(vocab_remove_menu, shortcutfinger.home1("Similar meaning"), lambda: vocab.related_notes.remove_similar_meaning(menu_string))
+
+        if menu_string in vocab.related_notes.confused_with.get():
+            add_ui_action(vocab_remove_menu, shortcutfinger.home2("Confused with"), lambda: vocab.related_notes.remove_confused_with(menu_string))
 
     def build_set_menu(note_set_menu: QMenu) -> None:
         add_ui_action(note_set_menu, shortcutfinger.home1("Derived from"), lambda: vocab.related_notes.derived_from.set(menu_string))
@@ -146,7 +148,8 @@ def build_string_menu(string_menu: QMenu, vocab: VocabNote, menu_string: str) ->
 
     build_add_menu(non_optional(string_menu.addMenu(shortcutfinger.home2("Add"))))
     build_set_menu(non_optional(string_menu.addMenu(shortcutfinger.home3("Set"))))
-    build_create_prefix_postfix_note_menu(non_optional(string_menu.addMenu(shortcutfinger.home4(f"Create combined {menu_string}"))), vocab, menu_string)
+    build_remove_menu(non_optional(string_menu.addMenu(shortcutfinger.home4("Remove"))))
+    build_create_prefix_postfix_note_menu(non_optional(string_menu.addMenu(shortcutfinger.up1(f"Create combined {menu_string}"))), vocab, menu_string)
 
 def build_create_prefix_postfix_note_menu(prefix_postfix_note_menu: QMenu, vocab: VocabNote, addendum: str) -> None:
     def create_suffix_note_menu(suffix_note_menu: QMenu) -> None:
