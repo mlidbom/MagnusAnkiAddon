@@ -31,7 +31,7 @@ def render_kanji_list_from_kanji(kanjis:list[str]) -> str:
         """
 
 def render_vocab_kanji_list(vocab: VocabNote) -> str:
-    return render_kanji_list_from_kanji(vocab.extract_main_form_kanji())
+    return render_kanji_list_from_kanji(vocab.kanji.extract_main_form_kanji())
 
 def render_sentence_kanji_list(sentence: SentenceNote) -> str:
     return render_kanji_list_from_kanji(sentence.extract_kanji())

@@ -95,7 +95,7 @@ def tag_kanji_metadata() -> None:
         def reading_is_in_vocab_readings(kanji_reading: str, voc:VocabNote) -> bool: return any(vocab_reading for vocab_reading in voc.readings.get() if reading_in_vocab_reading(kanji, kanji_reading, vocab_reading, voc.get_question()))
         def has_vocab_with_reading(kanji_reading: str) -> bool: return any(voc for voc in vocab_with_kanji_in_main_form if any(vocab_reading for vocab_reading in voc.readings.get() if reading_in_vocab_reading(kanji, kanji_reading, vocab_reading, voc.get_question())))
 
-        def vocab_has_only_known_kanji(voc:VocabNote) -> bool: return not any(kan for kan in voc.extract_all_kanji() if kan not in known_kanji)
+        def vocab_has_only_known_kanji(voc:VocabNote) -> bool: return not any(kan for kan in voc.kanji.extract_all_kanji() if kan not in known_kanji)
         def has_vocab_with_reading_and_no_unknown_kanji(kanji_reading: str) -> bool: return any(voc for voc in vocab_with_kanji_in_main_form if reading_is_in_vocab_readings(kanji_reading, voc) and vocab_has_only_known_kanji(voc))
 
         kanji.toggle_tag(Mine.Tags.kanji_with_vocab_with_primary_on_reading, any(primary_on_readings) and has_vocab_with_reading(primary_on_readings[0]))

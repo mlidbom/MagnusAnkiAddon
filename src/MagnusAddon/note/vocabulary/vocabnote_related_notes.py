@@ -45,5 +45,6 @@ class VocabNoteRelatedNotes:
         return self.collection.vocab.with_compound_part(self._vocab.get_question_without_noise_characters())
 
     def get_direct_dependencies(self) -> set[JPNote]:
-        return (set(self.collection.kanji.with_any_kanji_in(list(self._vocab.extract_main_form_kanji()))) |
+        note = self._vocab
+        return (set(self.collection.kanji.with_any_kanji_in(list(note.kanji.extract_main_form_kanji()))) |
                 set(ex_sequence.flatten([self.collection.vocab.with_question(compound_part) for compound_part in self._vocab.compound_parts.get()])))

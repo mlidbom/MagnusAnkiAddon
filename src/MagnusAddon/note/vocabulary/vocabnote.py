@@ -14,13 +14,13 @@ from note.vocabulary.vocabnote_conjugator import VocabNoteConjugator
 from note.vocabulary.vocabnote_context_sentences import VocabContextSentences
 from note.vocabulary.vocabnote_factory import VocabNoteFactory
 from note.vocabulary.vocabnote_forms import VocabNoteForms
+from note.vocabulary.vocabnote_kanji import VocabNoteKanji
 from note.vocabulary.vocabnote_parts_of_speech import VocabNotePartsOfSpeech
 from note.vocabulary.vocabnote_related_notes import VocabNoteRelatedNotes
 from note.vocabulary.vocabnote_sentences import VocabNoteSentences
 from note.vocabulary.vocabnote_usercompoundparts import VocabNoteUserCompoundParts
 from note.vocabulary.vocabnote_wanikani_extensions import VocabNoteWaniExtensions
 from note.waninote import WaniNote
-from sysutils import ex_str, kana_utils
 
 if TYPE_CHECKING:
     from anki.notes import Note
@@ -45,6 +45,7 @@ class VocabNote(WaniNote):
         self.user_answer: StringField = StringField(self, NoteFields.Vocab.user_answer)
         self._source_answer: StringField = StringField(self, NoteFields.Vocab.source_answer)
         self.wani_extensions: VocabNoteWaniExtensions = VocabNoteWaniExtensions(self)
+        self.kanji: VocabNoteKanji = VocabNoteKanji(self)
 
 
     def __repr__(self) -> str: return f"""{self.get_question()}"""
@@ -58,14 +59,6 @@ class VocabNote(WaniNote):
 
         super().update_generated_data()
         vocabnote_generated_data.update_generated_data(self)
-
-    def extract_main_form_kanji(self) -> list[str]:
-        clean = ex_str.strip_html_and_bracket_markup(self.get_question())
-        return [char for char in clean if kana_utils.character_is_kanji(char)]
-
-    def extract_all_kanji(self) -> set[str]:
-        clean = ex_str.strip_html_and_bracket_markup(self.get_question() + self.forms.all_raw_string())
-        return set(char for char in clean if kana_utils.character_is_kanji(char))
 
     def priority_spec(self) -> PrioritySpec:
         from language_services.jamdict_ex.dict_lookup import DictLookup
