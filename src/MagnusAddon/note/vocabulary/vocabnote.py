@@ -69,11 +69,8 @@ class VocabNote(WaniNote):
             generated = dict_lookup.entries[0].generate_answer()
             self.user_answer.set(generated)
 
-    @staticmethod
-    def _strip_noise_characters(string: str) -> str:
-        return string.replace(Mine.VocabPrefixSuffixMarker, "")
 
-    def get_question_without_noise_characters(self) -> str: return self._strip_noise_characters(self.get_question())
+    def get_question_without_noise_characters(self) -> str: return self.get_question().replace(Mine.VocabPrefixSuffixMarker, "")
     def set_question(self, value: str) -> None: self.set_field(NoteFields.Vocab.question, value)
 
     def get_answer(self) -> str:
