@@ -15,7 +15,7 @@ def update_from_wani(self: VocabNote, wani_vocab: models.Vocabulary) -> None:
     self.wani_extensions.set_meaning_mnemonic(wani_vocab.meaning_mnemonic)
 
     meanings = ', '.join(str(meaning.meaning) for meaning in wani_vocab.meanings)
-    self._set_source_answer(meanings)
+    self.wani_extensions.set_source_answer(meanings)
 
     value = ", ".join(wani_vocab.parts_of_speech)
     self.parts_of_speech.set_raw_string_value(value)
@@ -60,5 +60,5 @@ class VocabNoteWaniExtensions:
         self._vocab = vocab
         self._meaning_mnemonic: StringField = StringField(vocab, NoteFields.Vocab.source_mnemonic)
 
-
+    def set_source_answer(self, value: str) -> None: self._vocab._source_answer.set(value) # noqa this extensions is essentially part of the Vocab class
     def set_meaning_mnemonic(self, value: str) -> None: self._meaning_mnemonic.set(value)

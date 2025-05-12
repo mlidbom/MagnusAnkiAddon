@@ -109,8 +109,6 @@ class VocabNote(WaniNote):
     def get_answer(self) -> str:
         return self.user_answer.get() or self.get_field(NoteFields.Vocab.source_answer)
 
-    def _set_source_answer(self, value: str) -> None: self._source_answer.set(value)
-
     def update_from_wani(self, wani_vocab: models.Vocabulary) -> None:
         super().update_from_wani(wani_vocab)
         vocabnote_wanikani_extensions.update_from_wani(self, wani_vocab)
