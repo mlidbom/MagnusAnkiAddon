@@ -9,7 +9,7 @@ from note.note_constants import Mine, NoteFields
 from note.notefields.comma_separated_strings_list_field import CommaSeparatedStringsListField
 from note.notefields.string_field import StringField
 from note.vocabnote_cloner import VocabCloner
-from note.vocabulary import vocabnote_context_sentences, vocabnote_generated_data, vocabnote_meta_tag, vocabnote_wanikani_extensions
+from note.vocabulary import vocabnote_generated_data, vocabnote_meta_tag, vocabnote_wanikani_extensions
 from note.vocabulary.vocabnote_audio import VocabNoteAudio
 from note.vocabulary.vocabnote_context_sentences import VocabContextSentences
 from note.vocabulary.vocabnote_factory import VocabNoteFactory
@@ -88,12 +88,6 @@ class VocabNote(WaniNote):
         if dict_lookup.found_words():
             generated = dict_lookup.entries[0].generate_answer()
             self.set_user_answer(generated)
-
-    def can_generate_sentences_from_context_sentences(self, require_audio: bool) -> bool:
-        return vocabnote_context_sentences.can_generate_sentences_from_context_sentences(self, require_audio)
-
-    def generate_sentences_from_context_sentences(self, require_audio: bool) -> None:
-        vocabnote_context_sentences.generate_sentences_from_context_sentences(self, require_audio)
 
     def requires_exact_match(self) -> bool:
         return self.has_tag(Mine.Tags.requires_exact_match)

@@ -7,6 +7,7 @@ from ankiutils import app, query_builder
 from hooks import shortcutfinger
 from hooks.right_click_menu_utils import add_lookup_action, add_single_vocab_lookup_action, add_ui_action, add_vocab_dependencies_lookup, create_vocab_note_action
 from note.note_constants import NoteFields, NoteTypes
+from note.vocabulary import vocabnote_context_sentences
 from sysutils import ex_sequence, ex_str
 from sysutils.ex_str import newline
 from sysutils.typed import non_optional
@@ -90,8 +91,9 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
             add_ui_action(note_menu, shortcutfinger.up1("Accept meaning"), lambda: vocab.set_user_answer(format_vocab_meaning(vocab.get_answer())))
 
         add_ui_action(note_menu, shortcutfinger.up2("Generate answer"), lambda: vocab.generate_and_set_answer())
-        if vocab.can_generate_sentences_from_context_sentences(require_audio=False):
-            add_ui_action(note_menu, shortcutfinger.up3("Generate sentences"), lambda: vocab.generate_sentences_from_context_sentences(require_audio=False))
+        if vocabnote_context_sentences.can_generate_sentences_from_context_sentences(vocab, False):
+            vocabnote_context_sentences.generate_sentences_from_context_sentences(vocab, False)
+            add_ui_action(note_menu, shortcutfinger.up3("Generate sentences"), lambda: None)
 
         from batches import local_note_updater
 

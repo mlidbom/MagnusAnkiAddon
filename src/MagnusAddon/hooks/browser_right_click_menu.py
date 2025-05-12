@@ -9,6 +9,7 @@ from hooks import right_click_menu, shortcutfinger
 from note import queue_manager
 from note.jpnote import JPNote
 from note.sentencenote import SentenceNote
+from note.vocabulary import vocabnote_context_sentences
 from note.vocabulary.vocabnote import VocabNote
 from sysutils.typed import non_optional
 
@@ -49,11 +50,11 @@ def setup_browser_context_menu(browser: aqt.browser.Browser, menu: QMenu) -> Non
 
     selected_notes = set(app.col().note_from_note_id(note_id) for note_id in browser.selectedNotes())
     selected_vocab:set[VocabNote] = set(note for note in selected_notes if isinstance(note, VocabNote))
-    vocab_that_can_generate_audio = [note for note in selected_vocab if note.can_generate_sentences_from_context_sentences(require_audio=False)]
+    vocab_that_can_generate_audio = [note for note in selected_vocab if vocabnote_context_sentences.can_generate_sentences_from_context_sentences(note, False)]
     if vocab_that_can_generate_audio:
         def generate_sentences() -> None:
             for vocab in vocab_that_can_generate_audio:
-                vocab.generate_sentences_from_context_sentences(require_audio=False)
+                vocabnote_context_sentences.generate_sentences_from_context_sentences(vocab, False)
 
         magnus_menu.addAction("Generate sentences from context sentences for vocab", generate_sentences)
 
