@@ -43,6 +43,7 @@ class VocabNote(WaniNote):
         self.readings: CommaSeparatedStringsListField = CommaSeparatedStringsListField(self, NoteFields.Vocab.Reading)
         self.conjugator: VocabNoteConjugator = VocabNoteConjugator(self)
         self.user_answer: StringField = StringField(self, NoteFields.Vocab.user_answer)
+        self._source_answer: StringField = StringField(self, NoteFields.Vocab.source_answer)
         self.wani_extensions: VocabNoteWaniExtensions = VocabNoteWaniExtensions(self)
 
 
@@ -108,7 +109,7 @@ class VocabNote(WaniNote):
     def get_answer(self) -> str:
         return self.user_answer.get() or self.get_field(NoteFields.Vocab.source_answer)
 
-    def _set_source_answer(self, value: str) -> None: self.set_field(NoteFields.Vocab.source_answer, value)
+    def _set_source_answer(self, value: str) -> None: self._source_answer.set(value)
 
     def update_from_wani(self, wani_vocab: models.Vocabulary) -> None:
         super().update_from_wani(wani_vocab)
