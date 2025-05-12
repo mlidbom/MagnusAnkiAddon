@@ -170,11 +170,6 @@ class VocabNote(WaniNote):
     def get_user_answer(self) -> str: return self.get_field(NoteFields.Vocab.user_answer)
     def set_user_answer(self, value: str) -> None: self.set_field(NoteFields.Vocab.user_answer, value)
 
-    _transitive_string_values = ["transitive", "transitive verb"]
-    _intransitive_string_values = ["intransitive", "intransitive verb"]
-    def is_transitive(self) -> bool: return any(val for val in self._transitive_string_values if val in self.parts_of_speech.get())
-    def is_intransitive(self) -> bool: return any(val for val in self._intransitive_string_values if val in self.parts_of_speech.get())
-
     def set_meaning_mnemonic(self, value: str) -> None: self.set_field(NoteFields.Vocab.source_mnemonic, value)
 
     def update_from_wani(self, wani_vocab: models.Vocabulary) -> None:

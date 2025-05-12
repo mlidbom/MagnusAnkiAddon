@@ -23,7 +23,6 @@ class VocabNotePartsOfSpeech:
     def get(self) -> set[str]:
         return self._field.get()
 
-
     def is_ichidan(self) -> bool:
         return "ichidan" in self.raw_string_value().lower()
 
@@ -33,6 +32,11 @@ class VocabNotePartsOfSpeech:
     def is_suru_verb_included(self) -> bool:
         question = self._vocab.get_question_without_noise_characters()
         return question[-2:] == "する"
+
+    _transitive_string_values = ["transitive", "transitive verb"]
+    _intransitive_string_values = ["intransitive", "intransitive verb"]
+    def is_transitive(self) -> bool: return any(val for val in self._transitive_string_values if val in self.get())
+    def is_intransitive(self) -> bool: return any(val for val in self._intransitive_string_values if val in self.get())
 
     def set_automatically_from_dictionary(self) -> None:
         from language_services.jamdict_ex.dict_lookup import DictLookup

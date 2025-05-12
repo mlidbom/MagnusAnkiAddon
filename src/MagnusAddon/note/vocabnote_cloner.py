@@ -72,10 +72,12 @@ class VocabCloner:
         forms = list(suru_verb.forms.unexcluded_set()) + [form.replace("する", "をする") for form in suru_verb.forms.unexcluded_set()]
         suru_verb.forms.set_list(forms)
 
-        if self.note.is_transitive():
+        note = self.note
+        if note.parts_of_speech.is_transitive():
             value = suru_verb.parts_of_speech.raw_string_value() + ", transitive"
             suru_verb.parts_of_speech.set_raw_string_value(value)
-        if self.note.is_intransitive():
+        vocab_note = self.note
+        if vocab_note.parts_of_speech.is_intransitive():
             value1 = suru_verb.parts_of_speech.raw_string_value() + ", intransitive"
             suru_verb.parts_of_speech.set_raw_string_value(value1)
 
