@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import re
 from typing import TYPE_CHECKING
 
 import language_services.conjugator
@@ -15,6 +14,7 @@ from note.vocabnote_cloner import VocabCloner
 from note.vocabulary import vocabnote_context_sentences, vocabnote_generated_data, vocabnote_meta_tag, vocabnote_wanikani_extensions
 from note.vocabulary.vocabnote_audio import VocabNoteAudio
 from note.vocabulary.vocabnote_context_sentences import VocabContextSentences
+from note.vocabulary.vocabnote_forms import VocabNoteForms
 from note.vocabulary.vocabnote_related_notes import VocabNoteRelatedNotes
 from note.vocabulary.vocabnote_sentences import VocabNoteSentences
 from note.waninote import WaniNote
@@ -33,23 +33,13 @@ class VocabNote(WaniNote):
         self.context_sentences: VocabContextSentences = VocabContextSentences(self)
         self.audio: VocabNoteAudio = VocabNoteAudio(self)
         self.sentences: VocabNoteSentences = VocabNoteSentences(self)
+        self.forms: VocabNoteForms = VocabNoteForms(self)
+
 
     def __repr__(self) -> str: return f"""{self.get_question()}"""
 
     def set_kanji(self, value: str) -> None: self.set_field(NoteFields.Vocab.Kanji, value)
 
-    _forms_exclusions = re.compile(r'\[\[.*]]')
-    def _is_excluded_form(self, form: str) -> bool:
-        return bool(self._forms_exclusions.search(form))
-
-    def get_forms(self) -> set[str]: return set(self.get_forms_list())
-    def get_forms_without_noise_characters(self) -> set[str]: return set(self.get_forms_list_without_noise_characters())
-    def get_forms_list(self) -> list[str]: return [form for form in ex_str.extract_comma_separated_values(self._get_forms()) if not self._is_excluded_form(form)]
-    def get_forms_list_without_noise_characters(self) -> list[str]: return [self._strip_noise_characters(form) for form in self.get_forms_list()]
-    def get_excluded_forms(self) -> set[str]: return set(form.replace("[[", "").replace("]]", "") for form in ex_str.extract_comma_separated_values(self._get_forms()) if self._is_excluded_form(form))
-    def set_forms(self, forms: set[str]) -> None: self._set_forms(", ".join([form.strip() for form in forms]))
-    def _get_forms(self) -> str: return self.get_field(NoteFields.Vocab.Forms)
-    def _set_forms(self, value: str) -> None: self.set_field(NoteFields.Vocab.Forms, value)
     def get_user_compounds(self) -> list[str]: return ex_str.extract_comma_separated_values(self.get_field(NoteFields.Vocab.user_compounds))
     def set_user_compounds(self, compounds: list[str]) -> None:
         self.set_field(NoteFields.Vocab.user_compounds, ",".join(compounds))
@@ -91,7 +81,7 @@ class VocabNote(WaniNote):
         return [char for char in clean if kana_utils.character_is_kanji(char)]
 
     def extract_all_kanji(self) -> set[str]:
-        clean = ex_str.strip_html_and_bracket_markup(self.get_question() + self._get_forms())
+        clean = ex_str.strip_html_and_bracket_markup(self.get_question() + self.forms.all_raw_string())
         return set(char for char in clean if kana_utils.character_is_kanji(char))
 
     def is_uk(self) -> bool: return self.has_tag(Mine.Tags.UsuallyKanaOnly)
@@ -167,10 +157,10 @@ class VocabNote(WaniNote):
         return [self.get_question_without_noise_characters()] + self._get_stems_for_form(self.get_question_without_noise_characters())
 
     def get_text_matching_forms_for_all_form(self) -> list[str]:
-        return [self._strip_noise_characters(form) for form in self.get_forms_list() + self.get_stems_for_all_forms()]
+        return [self._strip_noise_characters(form) for form in self.forms.unexcluded_list() + self.get_stems_for_all_forms()]
 
     def get_stems_for_all_forms(self) -> list[str]:
-        return ex_sequence.flatten([self._get_stems_for_form(form) for form in self.get_forms()])
+        return ex_sequence.flatten([self._get_stems_for_form(form) for form in self.forms.unexcluded_set()])
 
     def clone(self) -> VocabNote:
         clone = self.create(self.get_question(), self.get_answer(), self.get_readings())
@@ -190,8 +180,8 @@ class VocabNote(WaniNote):
     def auto_generate_compounds(self) -> None:
         from ankiutils import app
         from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
-        analysis = TextAnalysis(self.get_question(), {WordExclusion(form) for form in self.get_forms()})
-        compound_parts = [a.form for a in analysis.display_words if a.form not in self.get_forms()]
+        analysis = TextAnalysis(self.get_question(), {WordExclusion(form) for form in self.forms.unexcluded_set()})
+        compound_parts = [a.form for a in analysis.display_words if a.form not in self.forms.unexcluded_set()]
         if not len(compound_parts) > 1:  # time to brute force it
             word = self.get_question()
             all_substrings = [word[i:j] for i in range(len(word)) for j in range(i + 1, len(word) + 1) if word[i:j] != word]

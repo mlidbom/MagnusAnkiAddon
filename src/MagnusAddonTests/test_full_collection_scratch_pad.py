@@ -74,7 +74,7 @@ def test_create_sample_data() -> None:
     for vocab in non_duplicate_vocab_notes:
         print(f"""VocabSpec("{vocab.get_question()}", "{vocab.get_answer()}", {vocab.get_readings()}),""")
 
-    word_forms = "".join(ex_sequence.flatten([list(n.get_forms()) for n in vocab_notes]))
+    word_forms = "".join(ex_sequence.flatten([list(n.forms.unexcluded_set()) for n in vocab_notes]))
     sentences_combined = "".join(_sentences)
     big_fat_string = word_forms + sentences_combined
     only_kanji = "".join(char for char in list(big_fat_string) if kana_utils.character_is_kanji(char))

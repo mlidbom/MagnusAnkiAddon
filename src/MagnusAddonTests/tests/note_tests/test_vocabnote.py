@@ -23,12 +23,12 @@ def setup() -> Generator[None, None, None]:
 ])
 def test_excluded_forms(question:str, answer:str, readings:list[str], forms:set[str]) -> None:
     note = VocabNote.create(question, answer, readings)
-    note.set_forms(forms)
-    forms_list = list(note.get_forms())
+    note.forms.set_set(forms)
+    forms_list = note.forms.unexcluded_list()
     assert len(forms_list) == 1
     assert forms_list[0] == "らっしゃい"
 
-    excluded_forms_list = list(note.get_excluded_forms())
+    excluded_forms_list = list(note.forms.excluded_set())
     assert len(excluded_forms_list) == 1
     assert excluded_forms_list[0] == "らっしゃる"
 

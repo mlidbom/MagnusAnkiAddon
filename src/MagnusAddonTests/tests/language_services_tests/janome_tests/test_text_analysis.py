@@ -193,7 +193,7 @@ def insert_custom_words_with_excluded_forms(custom_words: list[list[str]]) -> No
     from ankiutils import app
     for custom_word in custom_words:
         note = VocabNote.create(custom_word[0], "", [""])
-        note.set_forms(set(custom_word))
+        note.forms.set_list(custom_word)
     app.col().flush_cache_updates()
 
 @pytest.mark.parametrize('sentence, custom_words, expected_output', [

@@ -7,7 +7,7 @@ if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
 
 class VocabNoteSentences:
-    def __init__(self, vocab: VocabNote):
+    def __init__(self, vocab: VocabNote) -> None:
         self._vocab = vocab
         self._collection = self._vocab.collection
 

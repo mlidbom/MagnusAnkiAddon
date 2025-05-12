@@ -31,15 +31,15 @@ def update_generated_data(self:VocabNote) -> None:
         if lookup.is_uk() and not self.has_tag(Mine.Tags.DisableKanaOnly):
             self.set_tag(Mine.Tags.UsuallyKanaOnly)
 
-        if not self.get_forms():
+        if not self.forms.unexcluded_set():
             if lookup.found_words():
-                self.set_forms(lookup.valid_forms(self.is_uk()))
+                self.forms.set_set(lookup.valid_forms(self.is_uk()))
 
-            if self.get_question() not in self.get_forms():
-                self.set_forms(self.get_forms() | {self.get_question()})
+            if self.get_question() not in self.forms.unexcluded_set():
+                self.forms.set_set(self.forms.unexcluded_set() | {self.get_question()})
 
-            if self.is_uk() and self.get_readings()[0] not in self.get_forms():
-                self.set_forms(self.get_forms() | set(self.get_readings()))
+            if self.is_uk() and self.get_readings()[0] not in self.forms.unexcluded_set():
+                self.forms.set_set(self.forms.unexcluded_set() | set(self.get_readings()))
 
         speech_types = self.get_speech_types() - {'Unknown',
                                                   'Godan verbIchidan verb'  # crap inserted by bug in yomitan

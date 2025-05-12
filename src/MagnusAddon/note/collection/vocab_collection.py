@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 class _VocabSnapshot(CachedNote):
     def __init__(self, note: VocabNote) -> None:
         super().__init__(note)
-        self.forms = set(note.get_forms())
+        self.forms = set(note.forms.unexcluded_set())
         self.compound_parts = set(note.get_user_compounds())
         self.main_form_kanji = set(note.extract_main_form_kanji())
         self.all_kanji = note.extract_all_kanji()
@@ -71,7 +71,7 @@ class _VocabCache(NoteCache[VocabNote, _VocabSnapshot]):
         for stem in cached.stems: self._by_stem[stem].remove(note)
 
     def _inheritor_add_to_cache(self, note: VocabNote) -> None:
-        for form in note.get_forms(): self._by_form[form].add(note)
+        for form in note.forms.unexcluded_set(): self._by_form[form].add(note)
         for compound_part in note.get_user_compounds(): self._by_compound_part[compound_part].add(note)
         self._by_derived_from[note.related_notes.derived_from.get()].add(note)
         for kanji in note.extract_main_form_kanji(): self._by_kanji_in_main_form[kanji].add(note)

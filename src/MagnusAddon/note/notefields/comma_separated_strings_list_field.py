@@ -8,7 +8,6 @@ from sysutils import ex_str
 if TYPE_CHECKING:
     from note.jpnote import JPNote
 
-
 class CommaSeparatedStringsListField:
     def __init__(self, note: JPNote, field_name: str) -> None:
         self._field = StringField(note, field_name)
@@ -18,3 +17,6 @@ class CommaSeparatedStringsListField:
 
     def set(self, value: list[str]) -> None:
         self._field.set(", ".join(value))
+
+    def get_raw_string(self) -> str:
+        return self._field.get()

@@ -62,12 +62,12 @@ class WordExtractor:
             if token_index < len(tokens) - 1:
                 context += tokens[token_index + 1].surface
 
-            context_exclusions = ex_sequence.flatten([list(voc.get_excluded_forms()) for voc in app.col().vocab.with_question(form_)])
+            context_exclusions = ex_sequence.flatten([list(voc.forms.excluded_set()) for voc in app.col().vocab.with_question(form_)])
             return any(exclusion for exclusion in context_exclusions if form_ in exclusion and exclusion in context)
 
         def get_excluded_forms(form_:str) -> set[str]:
             unexcluded_vocab_with_form = [voc for voc in (app.col().vocab.with_form(form_)) if not any(exclusion for exclusion in exclusions if exclusion.word == voc.get_question())]
-            excluded_forms_list_for_form = [voc.get_excluded_forms() for voc in unexcluded_vocab_with_form]
+            excluded_forms_list_for_form = [voc.forms.excluded_set() for voc in unexcluded_vocab_with_form]
             excluded_forms_set = set.union(*excluded_forms_list_for_form) if excluded_forms_list_for_form else set()
             return excluded_forms_set
 

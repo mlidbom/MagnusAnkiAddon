@@ -25,7 +25,7 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
 
     def build_create_note_menu(note_create_menu: QMenu) -> None:
         def build_forms_menu(clone_to_form_menu: QMenu) -> None:
-            forms_with_no_vocab = [form for form in vocab.get_forms() if not any(app.col().vocab.with_question(form))]
+            forms_with_no_vocab = [form for form in vocab.forms.unexcluded_set() if not any(app.col().vocab.with_question(form))]
             for index, form in enumerate(forms_with_no_vocab):
                 create_vocab_note_action(clone_to_form_menu, shortcutfinger.numpad(index, form), lambda _form=form: vocab.cloner.clone_to_form(_form))  # type: ignore
 
@@ -72,7 +72,7 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
                 for index, reading in enumerate(vocab.get_readings()):
                     add_lookup_action(readings_vocab_lookup_menu, shortcutfinger.numpad_no_numbers(index, f"Homonyms: {reading}"), query_builder.notes_lookup(app.col().vocab.with_reading(reading)))
 
-            add_lookup_action(vocab_lookup_menu, shortcutfinger.home1("Forms"), query_builder.notes_lookup(ex_sequence.flatten([app.col().vocab.with_question(form) for form in vocab.get_forms()])))
+            add_lookup_action(vocab_lookup_menu, shortcutfinger.home1("Forms"), query_builder.notes_lookup(ex_sequence.flatten([app.col().vocab.with_question(form) for form in vocab.forms.unexcluded_set()])))
             add_lookup_action(vocab_lookup_menu, shortcutfinger.home2("Compound parts"), query_builder.vocabs_lookup_strings(vocab.get_user_compounds()))
             add_lookup_action(vocab_lookup_menu, shortcutfinger.home3("In compounds"), query_builder.notes_lookup(vocab.in_compounds()))
             build_readings_menu(non_optional(vocab_lookup_menu.addMenu(shortcutfinger.home4("Homonyms"))))

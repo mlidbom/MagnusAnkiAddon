@@ -38,7 +38,7 @@ class VocabSpec:
         vocab_note.set_user_compounds(self.compounds)
 
         if self.extra_forms:
-            vocab_note.set_forms(vocab_note.get_forms() | self.extra_forms)
+            vocab_note.forms.set_set(vocab_note.forms.unexcluded_set() | self.extra_forms)
 
         for tag in self.tags:
             vocab_note.set_tag(tag)
