@@ -63,25 +63,6 @@ class VocabNote(WaniNote):
         super().update_generated_data()
         vocabnote_generated_data.update_generated_data(self)
 
-    def _is_suru_verb_included(self) -> bool:
-        question = self.get_question_without_noise_characters()
-        return question[-2:] == "する"
-
-    def auto_set_speech_type(self) -> None:
-        from language_services.jamdict_ex.dict_lookup import DictLookup
-
-        lookup = DictLookup.try_lookup_vocab_word_or_name(self)
-        if lookup.found_words():
-            value = ", ".join(lookup.parts_of_speech())
-            self.parts_of_speech.set_raw_string_value(value)
-        elif self._is_suru_verb_included():
-            question = self.get_question_without_noise_characters()[:-2]
-            readings = [reading[:-2] for reading in self.get_readings()]
-            lookup = DictLookup.try_lookup_word_or_name(question, readings)
-            pos = lookup.parts_of_speech() & {"transitive", "intransitive"}
-            value1 = "suru verb, " + ", ".join(pos)
-            self.parts_of_speech.set_raw_string_value(value1)
-
     def extract_main_form_kanji(self) -> list[str]:
         clean = ex_str.strip_html_and_bracket_markup(self.get_question())
         return [char for char in clean if kana_utils.character_is_kanji(char)]

@@ -23,7 +23,7 @@ def update_generated_data(self:VocabNote) -> None:
         self.set_readings([question])
         self.set_tag(Mine.Tags.UsuallyKanaOnly)
 
-    if len(self.get_user_compounds()) == 0 and self._is_suru_verb_included():
+    if len(self.get_user_compounds()) == 0 and self.parts_of_speech.is_suru_verb_included():
         self.set_user_compounds([question[:-2], "する"])
 
     if self.get_question():
@@ -45,4 +45,4 @@ def update_generated_data(self:VocabNote) -> None:
                                                   'Godan verbIchidan verb'  # crap inserted by bug in yomitan
                                                      }
         if len(speech_types) == 0:
-            self.auto_set_speech_type()
+            self.parts_of_speech.set_automatically_from_dictionary()

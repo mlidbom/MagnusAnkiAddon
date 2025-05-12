@@ -96,7 +96,8 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
         from batches import local_note_updater
 
         add_ui_action(note_menu, shortcutfinger.up4("Reparse matching sentences"), lambda: local_note_updater.reparse_sentences_for_vocab(vocab))
-        add_ui_action(note_menu, shortcutfinger.up5("Repopulate TOS"), lambda: vocab.auto_set_speech_type())
+        vocab.parts_of_speech.set_automatically_from_dictionary()
+        add_ui_action(note_menu, shortcutfinger.up5("Repopulate TOS"), lambda: None)
 
         add_ui_action(note_menu, shortcutfinger.down1("Autogenerate compounds"), lambda: vocab.auto_generate_compounds())
 
