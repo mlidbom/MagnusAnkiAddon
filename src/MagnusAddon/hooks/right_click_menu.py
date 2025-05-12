@@ -1,22 +1,26 @@
+from __future__ import annotations
+
 import typing
 
 import pyperclip  # type: ignore
 from ankiutils import query_builder, search_executor, ui_utils
 from aqt import gui_hooks
-from aqt.webview import AnkiWebView
 from batches import local_note_updater
 from hooks import right_click_menu_note_kanji, right_click_menu_note_radical, right_click_menu_note_sentence, right_click_menu_note_vocab, shortcutfinger
 from hooks.right_click_menu_open_in_anki import build_open_in_anki_menu
 from hooks.right_click_menu_utils import add_ui_action, create_note_action, create_vocab_note_action
 from hooks.right_click_menu_web_search import build_web_search_menu
-from note.jpnote import JPNote
 from note.kanjinote import KanjiNote
 from note.radicalnote import RadicalNote
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
-from PyQt6.QtWidgets import QMenu
 from sysutils import typed
 from sysutils.typed import non_optional
+
+if typing.TYPE_CHECKING:
+    from aqt.webview import AnkiWebView
+    from note.jpnote import JPNote
+    from PyQt6.QtWidgets import QMenu
 
 
 def build_browser_right_click_menu(root_menu: QMenu, note: JPNote) -> None:
@@ -29,7 +33,7 @@ def build_right_click_menu_webview_hook(view: AnkiWebView, root_menu: QMenu) -> 
     build_right_click_menu(root_menu, note, selection, clipboard)
 
 # noinspection PyPep8
-def build_right_click_menu(root_menu: QMenu, note: typing.Optional[JPNote], selection: str, clipboard: str) -> None:
+def build_right_click_menu(root_menu: QMenu, note: JPNote | None, selection: str, clipboard: str) -> None:
     selection_menu = non_optional(root_menu.addMenu(shortcutfinger.home1(f'''Selection: "{selection[:40]}"'''))) if selection else None
     clipboard_menu = non_optional(root_menu.addMenu(shortcutfinger.home2(f'''Clipboard: "{clipboard[:40]}"'''))) if clipboard else None
 
@@ -84,8 +88,8 @@ def build_string_menu(menu: QMenu, string: str, string_note_menu_factory: typing
     add_ui_action(menu, shortcutfinger.down1("remove from sentence exclusions"), lambda _string=string: local_note_updater.clean_sentence_excluded_word(_string))  # type: ignore
 
 def build_universal_note_actions_menu(note_actions_menu: QMenu, note: JPNote) -> None:
-    note_actions_menu.addAction(shortcutfinger.home1("Find in browser"), search_executor.lookup_promise(lambda: query_builder.notes_lookup([note])))
-    note_actions_menu.addAction(shortcutfinger.home2("Open in previewer"), search_executor.lookup_and_show_previewer_promise(lambda: query_builder.notes_lookup([note])))
+    note_actions_menu.addAction(shortcutfinger.home1("Open in previewer"), search_executor.lookup_and_show_previewer_promise(lambda: query_builder.notes_lookup([note])))
+    note_actions_menu.addAction(shortcutfinger.home2("Find in browser"), search_executor.lookup_promise(lambda: query_builder.notes_lookup([note])))
 
     if note.has_suspended_cards():
         add_ui_action(note_actions_menu, shortcutfinger.home3("Unsuspend all cards"), note.unsuspend_all_cards)

@@ -38,37 +38,22 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
             create_vocab_note_action(verb_menu, shortcutfinger.home3("た-form"), lambda: vocab.cloner.create_ta_form())
             create_vocab_note_action(verb_menu, shortcutfinger.home4("ない-form"), lambda: vocab.cloner.create_nai_form())
 
-        def build_misc_menu(misc_menu:QMenu) -> None:
+        def build_misc_menu(misc_menu: QMenu) -> None:
             create_vocab_note_action(misc_menu, shortcutfinger.home1("く-form-of-い-adjective"), lambda: vocab.cloner.create_ku_form())
             create_vocab_note_action(misc_menu, shortcutfinger.home2("て-prefixed"), lambda: vocab.cloner.create_te_prefixed_word())
             create_vocab_note_action(misc_menu, shortcutfinger.home3("お-prefixed"), lambda: vocab.cloner.create_o_prefixed_word())
             create_vocab_note_action(misc_menu, shortcutfinger.home4("ん-suffixed"), lambda: vocab.cloner.create_n_suffixed_word())
             create_vocab_note_action(misc_menu, shortcutfinger.home5("か-suffixed"), lambda: vocab.cloner.create_ka_suffixed_word())
 
-
-        def build_create_prefix_postfix_note_menu(prefix_postfix_note_menu: QMenu, addendum:str) -> None:
-            def create_suffix_note_menu(suffix_note_menu: QMenu) -> None:
-                create_vocab_note_action(suffix_note_menu, shortcutfinger.home1("dictionary-form"), lambda: vocab.cloner.create_suffix_version(addendum))
-                create_vocab_note_action(suffix_note_menu, shortcutfinger.home2("い-stem"), lambda: vocab.cloner.suffix_to_i_stem(addendum))
-                create_vocab_note_action(suffix_note_menu, shortcutfinger.home3("て-stem"), lambda: vocab.cloner.suffix_to_te_stem(addendum))
-                create_vocab_note_action(suffix_note_menu, shortcutfinger.home4("え-stem"), lambda: vocab.cloner.suffix_to_e_stem(addendum))
-                create_vocab_note_action(suffix_note_menu, shortcutfinger.up1("あ-stem"), lambda: vocab.cloner.suffix_to_a_stem(addendum))
-
-            create_vocab_note_action(prefix_postfix_note_menu, shortcutfinger.home1(f"prefix-{addendum}{vocab.get_question()}"), lambda: vocab.cloner.create_prefix_version(addendum))
-
-            create_suffix_note_menu(non_optional(prefix_postfix_note_menu.addMenu(shortcutfinger.home2("Suffix-onto"))))
-
-
         build_forms_menu(non_optional(note_create_menu.addMenu(shortcutfinger.home1("Clone to form"))))
         build_noun_menu(non_optional(note_create_menu.addMenu(shortcutfinger.home2("Noun variations"))))
         build_verb_menu(non_optional(note_create_menu.addMenu(shortcutfinger.home3("Verb variations"))))
         build_misc_menu(non_optional(note_create_menu.addMenu(shortcutfinger.home4("Misc"))))
         if selection:
-            build_create_prefix_postfix_note_menu(non_optional(note_create_menu.addMenu(shortcutfinger.up1("Selection"))), selection)
+            build_create_prefix_postfix_note_menu(non_optional(note_create_menu.addMenu(shortcutfinger.up1("Selection"))), vocab, selection)
 
         if clipboard:
-            build_create_prefix_postfix_note_menu(non_optional(note_create_menu.addMenu(shortcutfinger.up2("Clipboard"))), clipboard)
-
+            build_create_prefix_postfix_note_menu(non_optional(note_create_menu.addMenu(shortcutfinger.up2("Clipboard"))), vocab, clipboard)
 
     def build_lookup_menu(note_lookup_menu: QMenu) -> None:
         def build_sentences_lookup_menu(sentences_lookup_menu: QMenu) -> None:
@@ -88,17 +73,12 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
             build_readings_menu(non_optional(vocab_lookup_menu.addMenu(shortcutfinger.home4("Homonyms"))))
             add_vocab_dependencies_lookup(vocab_lookup_menu, shortcutfinger.up1("Dependencies"), vocab)
 
-
         build_vocab_lookup_menu(non_optional(note_lookup_menu.addMenu(shortcutfinger.home1("Vocab"))))
         build_sentences_lookup_menu(non_optional(note_lookup_menu.addMenu(shortcutfinger.home2("Sentences"))))
 
         add_lookup_action(note_lookup_menu, shortcutfinger.home3("Kanji"), f"note:{NoteTypes.Kanji} ( {' OR '.join([f'{NoteFields.Kanji.question}:{char}' for char in vocab.get_question()])} )")
         if vocab.get_related_ergative_twin():
             add_single_vocab_lookup_action(note_lookup_menu, shortcutfinger.home4("Ergative twin"), vocab.get_related_ergative_twin())
-
-
-
-
 
     def build_note_menu() -> None:
         if not vocab.get_user_answer():
@@ -109,20 +89,19 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
             add_ui_action(note_menu, shortcutfinger.up3("Generate sentences"), lambda: vocab.generate_sentences_from_context_sentences(require_audio=False))
 
         from batches import local_note_updater
+
         add_ui_action(note_menu, shortcutfinger.up4("Reparse matching sentences"), lambda: local_note_updater.reparse_sentences_for_vocab(vocab))
         add_ui_action(note_menu, shortcutfinger.up5("Repopulate TOS"), lambda: vocab.auto_set_speech_type())
 
         add_ui_action(note_menu, shortcutfinger.down1("Autogenerate compounds"), lambda: vocab.auto_generate_compounds())
-
-
-
 
     build_lookup_menu(non_optional(note_menu.addMenu(shortcutfinger.home1("Open"))))
     build_create_note_menu(non_optional(note_menu.addMenu(shortcutfinger.home2("Create"))))
     build_copy_menu(non_optional(note_menu.addMenu(shortcutfinger.home3("Copy"))))
     build_note_menu()
 
-def build_string_menu(string_menu: QMenu, vocab: VocabNote, menu_string:str) -> None:
+
+def build_string_menu(string_menu: QMenu, vocab: VocabNote, menu_string: str) -> None:
     def build_sentences_menu(sentence_menu: QMenu) -> None:
         def remove_highlight(_sentences: list[SentenceNote]) -> None:
             for _sentence in _sentences:
@@ -157,10 +136,21 @@ def build_string_menu(string_menu: QMenu, vocab: VocabNote, menu_string:str) -> 
 
     build_add_menu(non_optional(string_menu.addMenu(shortcutfinger.home2("Add"))))
     build_set_menu(non_optional(string_menu.addMenu(shortcutfinger.home3("Set"))))
+    build_create_prefix_postfix_note_menu(non_optional(string_menu.addMenu(shortcutfinger.home4(f"Create combined {menu_string}"))), vocab, menu_string)
+
+
+def build_create_prefix_postfix_note_menu(prefix_postfix_note_menu: QMenu, vocab: VocabNote, addendum: str) -> None:
+    def create_suffix_note_menu(suffix_note_menu: QMenu) -> None:
+        create_vocab_note_action(suffix_note_menu, shortcutfinger.home1("dictionary-form"), lambda: vocab.cloner.create_suffix_version(addendum))
+        create_vocab_note_action(suffix_note_menu, shortcutfinger.home2("い-stem"), lambda: vocab.cloner.suffix_to_i_stem(addendum))
+        create_vocab_note_action(suffix_note_menu, shortcutfinger.home3("て-stem"), lambda: vocab.cloner.suffix_to_te_stem(addendum))
+        create_vocab_note_action(suffix_note_menu, shortcutfinger.home4("え-stem"), lambda: vocab.cloner.suffix_to_e_stem(addendum))
+        create_vocab_note_action(suffix_note_menu, shortcutfinger.up1("あ-stem"), lambda: vocab.cloner.suffix_to_a_stem(addendum))
+
+    create_vocab_note_action(prefix_postfix_note_menu, shortcutfinger.home1(f"prefix-{addendum}{vocab.get_question()}"), lambda: vocab.cloner.create_prefix_version(addendum))
+
+    create_suffix_note_menu(non_optional(prefix_postfix_note_menu.addMenu(shortcutfinger.home2("Suffix-onto"))))
+
 
 def format_vocab_meaning(meaning: str) -> str:
-    return ex_str.strip_html_and_bracket_markup(meaning
-                                                .replace(" SOURCE", "")
-                                                .replace(", ", "/")
-                                                .replace(" ", "-")
-                                                .lower())
+    return ex_str.strip_html_and_bracket_markup(meaning.replace(" SOURCE", "").replace(", ", "/").replace(" ", "-").lower())

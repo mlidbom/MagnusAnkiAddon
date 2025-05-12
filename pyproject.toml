@@ -19,6 +19,8 @@ select = [
     "FA" # More type annotations fixes, but I cannot use them because somehow the | syntax for optional values causes warnings even though it apparently should not...
 ]
 
+isort.required-imports = ["from __future__ import annotations"]
+
 #select = ["ALL"]
 
 ignore = [
