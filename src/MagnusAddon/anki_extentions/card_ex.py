@@ -3,13 +3,12 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from anki import consts
-from anki.decks import DeckManager
-
 from anki_extentions.deck_ex import DeckEx
 from sysutils.timeutil import StopWatch
 from sysutils.typed import non_optional
 
 if TYPE_CHECKING:
+    from anki.decks import DeckManager
     from anki.scheduler.v3 import Scheduler
     from anki_extentions.notetype_ex.note_type_template import NoteTemplateEx
     from ankiutils import app

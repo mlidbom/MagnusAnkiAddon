@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
 
 class VocabNoteAudio:
-    def __init__(self, vocab: VocabNote):
+    def __init__(self, vocab: VocabNote) -> None:
         self._vocab = vocab
         self.first: WritableAudioField = WritableAudioField(vocab, NoteFields.Vocab.Audio_b)
         self.second: WritableAudioField = WritableAudioField(vocab, NoteFields.Vocab.Audio_g)

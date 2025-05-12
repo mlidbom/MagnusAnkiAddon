@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
 
 class VocabNoteRelatedNotes:
-    def __init__(self, vocab: VocabNote):
+    def __init__(self, vocab: VocabNote) -> None:
         self._vocab = vocab
         self._similar_meanings_field: CommaSeparatedStringsSetField = CommaSeparatedStringsSetField(vocab, NoteFields.Vocab.Related_similar_meaning)
         self._ergative_twin_field: StringField = StringField(vocab, NoteFields.Vocab.Related_ergative_twin)
