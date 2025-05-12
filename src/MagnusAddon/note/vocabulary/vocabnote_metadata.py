@@ -3,7 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from language_services.jamdict_ex.priority_spec import PrioritySpec
-from note.note_constants import Mine
+from note.note_constants import Mine, NoteFields
+from note.notefields.integer_field import IntegerField
 from note.vocabulary import vocabnote_meta_tag
 
 if TYPE_CHECKING:
@@ -23,6 +24,7 @@ class VocabNoteMetaData:
     def __init__(self, vocab: VocabNote) -> None:
         self._vocab: VocabNote = vocab
         self.flags: VocabNoteMetaDataFlags = VocabNoteMetaDataFlags(vocab)
+        self.sentence_count: IntegerField = IntegerField(vocab, NoteFields.Vocab.sentence_count)
 
     def meta_tags_html(self: VocabNote, display_extended_sentence_statistics: bool = True) -> str:
         return vocabnote_meta_tag.get_meta_tags_html(self, display_extended_sentence_statistics)

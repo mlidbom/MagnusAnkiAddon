@@ -56,7 +56,7 @@ class VocabNote(WaniNote):
         return self.related_notes.get_direct_dependencies()
 
     def update_generated_data(self) -> None:
-        self.set_field(NoteFields.Vocab.sentence_count, str(len(self.sentences.all())))
+        self.meta_data.sentence_count.set(len(self.sentences.all()))
         self.active_answer.set(self.get_answer())
 
         super().update_generated_data()

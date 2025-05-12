@@ -12,3 +12,5 @@ class ReadOnlyStringField:
 
     def get(self) -> str: return self._note.get_field(self._field_name).strip()
 
+    def has_value(self) -> bool: return self.get() != ""
+
