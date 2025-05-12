@@ -12,15 +12,13 @@ if TYPE_CHECKING:
 class VocabNoteRelatedNotes:
     def __init__(self, vocab: VocabNote):
         self._vocab = vocab
-        self._similar_meanings_field = CommaSeparatedStringsSetField(vocab, NoteFields.Vocab.Related_similar_meaning)
-        self._ergative_twin_field = StringField(vocab, NoteFields.Vocab.Related_ergative_twin)
-        self.derived_from = StringField(vocab, NoteFields.Vocab.Related_derived_from)
-        self.confused_with = CommaSeparatedStringsSetField(vocab, NoteFields.Vocab.Related_confused_with)
-
+        self._similar_meanings_field: CommaSeparatedStringsSetField = CommaSeparatedStringsSetField(vocab, NoteFields.Vocab.Related_similar_meaning)
+        self._ergative_twin_field: StringField = StringField(vocab, NoteFields.Vocab.Related_ergative_twin)
+        self.derived_from: StringField = StringField(vocab, NoteFields.Vocab.Related_derived_from)
+        self.confused_with: CommaSeparatedStringsSetField = CommaSeparatedStringsSetField(vocab, NoteFields.Vocab.Related_confused_with)
 
     def similar_meanings(self) -> set[str]:
         return self._similar_meanings_field.get()
-
 
     def add_similar_meaning(self, new_similar: str, _is_recursive_call: bool = False) -> None:
         self._similar_meanings_field.add(new_similar)

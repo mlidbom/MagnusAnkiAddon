@@ -3,6 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from anki import consts
+from anki.decks import DeckManager
+
 from anki_extentions.deck_ex import DeckEx
 from sysutils.timeutil import StopWatch
 from sysutils.typed import non_optional
@@ -64,6 +66,10 @@ class CardEx:
         from note.jpnote import JPNote
         return JPNote.note_from_card(self.card)
 
-    def get_deck(self) -> DeckEx:
+    @staticmethod
+    def _deck_manager() -> DeckManager:
         from ankiutils import app
-        return DeckEx(non_optional(app.anki_collection().decks.get(self.card.current_deck_id())))
+        return app.anki_collection().decks
+
+    def get_deck(self) -> DeckEx:
+        return DeckEx(non_optional(self._deck_manager().get(self.card.current_deck_id())))

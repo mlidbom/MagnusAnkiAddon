@@ -31,7 +31,7 @@ class VocabNote(WaniNote):
         self.user_mnemonic: StringField = StringField(self, NoteFields.Vocab.Mnemonic__)
         self.related_notes: VocabNoteRelatedNotes = VocabNoteRelatedNotes(self)
         self.context_sentences: VocabContextSentences = VocabContextSentences(self)
-        self.audio = VocabNoteAudio(self)
+        self.audio: VocabNoteAudio = VocabNoteAudio(self)
 
     def __repr__(self) -> str: return f"""{self.get_question()}"""
 
@@ -111,12 +111,7 @@ class VocabNote(WaniNote):
         return lookup.priority_spec() if lookup else PrioritySpec(set())
 
     def get_primary_audio(self) -> str:
-        if self.audio.first.get():
-            return self.audio.first.get()
-        elif self.audio.second.get():
-            return self.audio.second.get()
-        else:
-            return ""
+        return self.audio.get_primary_audio()
 
     def get_primary_audio_path(self) -> str:
         primary_audio = self.get_primary_audio().strip()
