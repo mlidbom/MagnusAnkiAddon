@@ -51,6 +51,6 @@ class WaniDownloader:
     @classmethod
     def fetch_missing_vocab_audio(cls) -> None:
         vocab_missing_audio: list[VocabNote] = [vocab for vocab in app.col().vocab.all_wani() if
-                                                vocab.audio.second.get() == ""]
+                                                vocab.audio.second.raw_walue() == ""]
         for vocab in vocab_missing_audio:
             cls.fetch_audio_from_wanikani(vocab)

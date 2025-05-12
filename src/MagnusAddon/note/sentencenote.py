@@ -106,7 +106,7 @@ class SentenceNote(JPNote):
             note.set_tag(Mine.Tags.TTSAudio)
         else:
             audio1 = audio.strip()
-            note.audio.set(audio1)
+            note.audio.set_raw_value(audio1)
 
         if highlighted_vocab:
             for vocab in highlighted_vocab:
