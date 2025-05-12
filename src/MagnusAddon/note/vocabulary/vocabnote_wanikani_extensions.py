@@ -1,13 +1,15 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+import typing
 
 from anki.notes import Note
 from note.note_constants import Mine, NoteTypes
-from note.vocabulary.vocabnote import VocabNote
 from wanikani.wanikani_api_client import WanikaniClient
 
-if TYPE_CHECKING:
+if typing.TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from note.vocabulary.vocabnote import VocabNote
     from wanikani_api import models
 
 def update_from_wani(self: VocabNote, wani_vocab: models.Vocabulary) -> None:
@@ -31,12 +33,12 @@ def update_from_wani(self: VocabNote, wani_vocab: models.Vocabulary) -> None:
     kanji_characters = [subject.characters for subject in kanji_subjects]
     self.set_kanji(", ".join(kanji_characters))
 
-def create_from_wani_vocabulary(wani_vocab: models.Vocabulary) -> None:
+def create_from_wani_vocabulary(wani_vocab: models.Vocabulary, factory:Callable[[Note], VocabNote]) -> None:
     from ankiutils import app
     note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Vocab))
     note.add_tag("__imported")
     note.add_tag(Mine.Tags.Wani)
-    vocab_note = VocabNote(note)
+    vocab_note = factory(note)
     app.anki_collection().addNote(note)
     vocab_note.set_question(wani_vocab.characters)
     vocab_note.update_from_wani(wani_vocab)

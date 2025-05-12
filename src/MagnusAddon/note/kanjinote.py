@@ -3,9 +3,8 @@ from __future__ import annotations
 import re
 from typing import TYPE_CHECKING
 
-from anki.notes import Note
-
 import note.vocabulary.vocabnote_sorting
+from anki.notes import Note
 from note import kanjinote_mnemonic_maker
 
 if TYPE_CHECKING:
@@ -84,8 +83,7 @@ class KanjiNote(WaniNote):
         update_primary_audios()
 
     def get_vocab_notes_sorted(self) -> list[VocabNote]:
-        from note.vocabulary import vocabnote
-        vocab_list = note.vocabulary.vocab_sorting.sort_vocab_list_by_studying_status(self.get_vocab_notes(), self.get_primary_vocabs_or_defaults(), preferred_kanji=self.get_question())
+        vocab_list = note.vocabulary.vocabnote_sorting.sort_vocab_list_by_studying_status(self.get_vocab_notes(), self.get_primary_vocabs_or_defaults(), preferred_kanji=self.get_question())
         return vocab_list
 
     def get_vocab_notes(self) -> list[VocabNote]:

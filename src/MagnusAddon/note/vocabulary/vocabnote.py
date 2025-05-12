@@ -13,7 +13,7 @@ from note.note_constants import Mine, NoteFields, NoteTypes
 from note.notefields.string_field import StringField
 from note.notefields.string_set_field import StringSetField
 from note.vocabnote_cloner import VocabCloner
-from note.vocabulary import vocabnote_context_sentences, vocabnote_meta_tag, vocabnote_wanikani_extensions
+from note.vocabulary import vocabnote_context_sentences, vocabnote_generated_data, vocabnote_meta_tag, vocabnote_wanikani_extensions
 from note.waninote import WaniNote
 from sysutils import ex_sequence, ex_str, kana_utils
 
@@ -54,47 +54,16 @@ class VocabNote(WaniNote):
         return app.col().vocab.with_compound_part(self.get_question_without_noise_characters())
 
     def get_direct_dependencies(self) -> set[JPNote]:
-        return (set(self.collection.kanji.with_any_kanji_in(list(self.extract_main_form_kanji()))) |
-                set(ex_sequence.flatten([self.collection.vocab.with_question(compound_part) for compound_part in self.get_user_compounds()])))
+        return (set(self._col.kanji.with_any_kanji_in(list(self.extract_main_form_kanji()))) |
+                set(ex_sequence.flatten([self._col.vocab.with_question(compound_part) for compound_part in self.get_user_compounds()])))
 
     def update_generated_data(self) -> None:
         self.set_field(NoteFields.Vocab.sentence_count, str(len(self.get_sentences())))
         self.set_field(NoteFields.Vocab.active_answer, self.get_answer())
 
-        from language_services.jamdict_ex.dict_lookup import DictLookup
-
         super().update_generated_data()
+        vocabnote_generated_data.update_generated_data(self)
 
-        question = self.get_question_without_noise_characters().strip()
-        readings = ",".join(self.get_readings())
-
-        if not readings and kana_utils.is_only_kana(question):
-            self.set_readings([question])
-            self.set_tag(Mine.Tags.UsuallyKanaOnly)
-
-        if len(self.get_user_compounds()) == 0 and self._is_suru_verb_included():
-            self.set_user_compounds([question[:-2], "する"])
-
-        if self.get_question():
-            lookup = DictLookup.try_lookup_vocab_word_or_name(self)
-            if lookup.is_uk() and not self.has_tag(Mine.Tags.DisableKanaOnly):
-                self.set_tag(Mine.Tags.UsuallyKanaOnly)
-
-            if not self.get_forms():
-                if lookup.found_words():
-                    self.set_forms(lookup.valid_forms(self.is_uk()))
-
-                if self.get_question() not in self.get_forms():
-                    self.set_forms(self.get_forms() | {self.get_question()})
-
-                if self.is_uk() and self.get_readings()[0] not in self.get_forms():
-                    self.set_forms(self.get_forms() | set(self.get_readings()))
-
-            speech_types = self.get_speech_types() - {'Unknown',
-                                                      'Godan verbIchidan verb'  # crap inserted by bug in yomitan
-                                                      }
-            if len(speech_types) == 0:
-                self.auto_set_speech_type()
 
     def _is_suru_verb_included(self) -> bool:
         question = self.get_question_without_noise_characters()
@@ -357,4 +326,4 @@ class VocabNote(WaniNote):
 
     @staticmethod
     def create_from_wani_vocabulary(wani_vocab: models.Vocabulary) -> None:
-        return vocabnote_wanikani_extensions.create_from_wani_vocabulary(wani_vocab)
+        return vocabnote_wanikani_extensions.create_from_wani_vocabulary(wani_vocab, lambda note: VocabNote(note))

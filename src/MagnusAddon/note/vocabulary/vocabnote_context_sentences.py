@@ -1,4 +1,9 @@
-from note.vocabulary.vocabnote import VocabNote
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from note.vocabulary.vocabnote import VocabNote
 
 
 def can_generate_sentences_from_context_sentences(self:VocabNote, require_audio: bool) -> bool:

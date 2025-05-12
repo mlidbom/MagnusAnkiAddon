@@ -4,7 +4,6 @@ import note.vocabulary.vocabnote_sorting
 from ankiutils import app
 from aqt import gui_hooks
 from hooks.note_content_building.content_renderer import PrerenderingAnswerContentRenderer
-from note.vocabulary import vocabnote
 from note.vocabulary.vocabnote import VocabNote
 from sysutils import ex_sequence
 from sysutils.ex_str import newline

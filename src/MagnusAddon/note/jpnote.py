@@ -15,9 +15,8 @@ if TYPE_CHECKING:
 
     from anki.cards import Card, CardId
     from anki.notes import Note, NoteId
+    from ankiutils import app
     from note.collection.jp_collection import JPCollection
-
-
 
 class JPNote:
     def __init__(self, note: Note) -> None:
@@ -30,7 +29,6 @@ class JPNote:
         rassert.not_none(self.get_id(), "You cannot compare or hash a note that has not been saved yet since it has no id")
         return isinstance(other, JPNote) and other.get_id() == self.get_id()
 
-
     def __hash__(self) -> int:
         if not self.__hash_value:
             assert self.get_id(), "You cannot compare or hash a note that has not been saved yet since it has no id"
@@ -41,9 +39,12 @@ class JPNote:
         return f"""{self.get_question()} : {self.get_answer()}"""
 
     @property
-    def collection(self) -> JPCollection:
+    def _app(self) -> app:
         from ankiutils import app
-        return app.col()
+        return app
+
+    @property
+    def _col(self) -> JPCollection: return self._app.col()
 
     def get_question(self) -> str:
         value = self.get_field(MyNoteFields.question).strip()
@@ -51,7 +52,7 @@ class JPNote:
 
     def get_answer(self) -> str: return self.get_field(MyNoteFields.answer)
 
-    def is_studying(self, card:str = "") -> bool:
+    def is_studying(self, card: str = "") -> bool:
         return noteutils.has_card_being_studied_cached(self._note, card)
 
     @classmethod
@@ -104,7 +105,6 @@ class JPNote:
 
     def has_suspended_cards_or_depencies_suspended_cards(self) -> bool: return any(note for note in self.get_dependencies_recursive() if note.has_suspended_cards())
 
-
     def unsuspend_all_cards(self) -> None:
         for card in self.cards(): card.un_suspend()
 
@@ -124,7 +124,7 @@ class JPNote:
 
     def _flush(self) -> None:
         if self._is_persisted():
-            if self._is_updating_generated_data: # We need to cancel infinite recursion here somehow...
+            if self._is_updating_generated_data:  # We need to cancel infinite recursion here somehow...
                 self._generated_data_was_updated = True
                 return
 
@@ -151,7 +151,7 @@ class JPNote:
         return 0
 
     def get_meta_tags(self) -> set[str]:
-        tags:set[str] = set()
+        tags: set[str] = set()
         for tag in self._note.tags:
             if tag.startswith(Mine.Tags.priority_folder):
                 if "high" in tag: tags.add("high_priority")
@@ -171,7 +171,6 @@ class JPNote:
             return source_tags[0][len(Mine.Tags.source_folder):]
         return ""
 
-
     def remove_tag(self, tag: str) -> None:
         if self.has_tag(tag):
             self._note.remove_tag(tag)
@@ -182,7 +181,7 @@ class JPNote:
             self._note.tags.append(tag)
             self._flush()
 
-    def toggle_tag(self, tag:str, on:bool) -> None:
+    def toggle_tag(self, tag: str, on: bool) -> None:
         if on:
             self.set_tag(tag)
         else:
