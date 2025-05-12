@@ -21,10 +21,10 @@ def sort_vocab_list_by_studying_status(vocabs: list[VocabNote], primary_voc: Opt
         return 1 if local_vocab.is_studying() else 2
 
     def prefer_studying_sentences(local_vocab: VocabNote) -> int:
-        return 1 if local_vocab.get_sentences_studying() else 2
+        return 1 if local_vocab.sentences.studying() else 2
 
     def prefer_more_sentences(local_vocab: VocabNote) -> int:
-        return -len(local_vocab.get_sentences())
+        return -len(local_vocab.sentences.all())
 
     def prefer_high_priority(_vocab: VocabNote) -> int:
         return _vocab.priority_spec().priority

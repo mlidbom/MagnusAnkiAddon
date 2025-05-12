@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 
 def update_generated_data(self:VocabNote) -> None:
-    self.set_field(NoteFields.Vocab.sentence_count, str(len(self.get_sentences())))
+    self.set_field(NoteFields.Vocab.sentence_count, str(len(self.sentences.all())))
     self.set_field(NoteFields.Vocab.active_answer, self.get_answer())
 
     from language_services.jamdict_ex.dict_lookup import DictLookup

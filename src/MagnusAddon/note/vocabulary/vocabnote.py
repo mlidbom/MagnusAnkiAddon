@@ -16,12 +16,12 @@ from note.vocabulary import vocabnote_context_sentences, vocabnote_generated_dat
 from note.vocabulary.vocabnote_audio import VocabNoteAudio
 from note.vocabulary.vocabnote_context_sentences import VocabContextSentences
 from note.vocabulary.vocabnote_related_notes import VocabNoteRelatedNotes
+from note.vocabulary.vocabnote_sentences import VocabNoteSentences
 from note.waninote import WaniNote
 from sysutils import ex_sequence, ex_str, kana_utils
 
 if TYPE_CHECKING:
     from note.jpnote import JPNote
-    from note.sentencenote import SentenceNote
     from wanikani_api import models
 
 class VocabNote(WaniNote):
@@ -32,6 +32,7 @@ class VocabNote(WaniNote):
         self.related_notes: VocabNoteRelatedNotes = VocabNoteRelatedNotes(self)
         self.context_sentences: VocabContextSentences = VocabContextSentences(self)
         self.audio: VocabNoteAudio = VocabNoteAudio(self)
+        self.sentences: VocabNoteSentences = VocabNoteSentences(self)
 
     def __repr__(self) -> str: return f"""{self.get_question()}"""
 
@@ -62,7 +63,7 @@ class VocabNote(WaniNote):
                 set(ex_sequence.flatten([self.collection.vocab.with_question(compound_part) for compound_part in self.get_user_compounds()])))
 
     def update_generated_data(self) -> None:
-        self.set_field(NoteFields.Vocab.sentence_count, str(len(self.get_sentences())))
+        self.set_field(NoteFields.Vocab.sentence_count, str(len(self.sentences.all())))
         self.set_field(NoteFields.Vocab.active_answer, self.get_answer())
 
         super().update_generated_data()
@@ -109,21 +110,6 @@ class VocabNote(WaniNote):
         from language_services.jamdict_ex.dict_lookup import DictLookup
         lookup = DictLookup.try_lookup_vocab_word_or_name(self)
         return lookup.priority_spec() if lookup else PrioritySpec(set())
-
-    def get_sentences(self) -> list[SentenceNote]:
-        return self.collection.sentences.with_vocab(self)
-
-    def get_sentences_with_owned_form(self) -> list[SentenceNote]:
-        return self.collection.sentences.with_vocab_owned_form(self)
-
-    def get_sentences_with_primary_form(self) -> list[SentenceNote]:
-        return self.collection.sentences.with_form(self.get_question())
-
-    def get_user_highlighted_sentences(self) -> list[SentenceNote]:
-        return [sentence for sentence in self.collection.sentences.with_highlighted_vocab(self)]
-
-    def get_sentences_studying(self) -> list[SentenceNote]:
-        return [sentence for sentence in self.get_sentences() if sentence.is_studying()]
 
     def get_meta_tags_html(self: VocabNote, display_extended_sentence_statistics: bool = True) -> str:
         return vocabnote_meta_tag.get_meta_tags_html(self, display_extended_sentence_statistics)

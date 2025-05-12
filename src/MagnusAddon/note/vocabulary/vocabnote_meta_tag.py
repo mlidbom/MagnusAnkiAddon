@@ -20,10 +20,10 @@ def get_meta_tags_html(vocab: VocabNote, display_extended_sentence_statistics: b
     tos = set([t.lower().strip() for t in vocab.get_speech_type().split(",")])
 
     def max_nine_number(value: int) -> str: return f"""{value}""" if value < 10 else "+"
-    highlighted_in = vocab.get_user_highlighted_sentences()
+    highlighted_in = vocab.sentences.user_highlighted()
     meta.append(VocabMetaTag("highlighted_in_sentences", f"""{max_nine_number(len(highlighted_in))}""", f"""highlighted in {len(highlighted_in)} sentences"""))
 
-    sentences = vocab.get_sentences_with_owned_form()
+    sentences = vocab.sentences.with_owned_form()
     if sentences:
         studying_sentences_reading = _get_studying_sentence_count(sentences, NoteFields.VocabNoteType.Card.Reading)
         studying_sentences_listening = _get_studying_sentence_count(sentences, NoteFields.VocabNoteType.Card.Listening)

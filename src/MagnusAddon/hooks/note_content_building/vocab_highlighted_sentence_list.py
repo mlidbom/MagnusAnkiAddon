@@ -67,8 +67,8 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
         return clean_sentence
 
     sorted_sentences: set[str] = set()
-    highlighted_sentences = set(_vocab_note.get_user_highlighted_sentences())
-    studying_sentences = set(_vocab_note.get_sentences_studying())
+    highlighted_sentences = set(_vocab_note.sentences.user_highlighted())
+    studying_sentences = set(_vocab_note.sentences.studying())
 
     def sort_sentences(_sentences:list[SentenceNote]) -> list[SentenceNote]:
         is_low_reliability_matching = kana_utils.is_only_kana(primary_form) and len(primary_form) <= 2
@@ -119,7 +119,7 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
         return classes
 
 
-    sentences = sort_sentences(_vocab_note.get_sentences())
+    sentences = sort_sentences(_vocab_note.sentences.all())
     primary_form_matches = len([x for x in sentences if contains_primary_form(x)])
     sentences = sentences[:30]
 

@@ -63,7 +63,7 @@ def tag_note_metadata() -> None:
 
 def tag_vocab_metadata() -> None:
     def tag_note(vocab:VocabNote) -> None:
-        vocab.toggle_tag(Mine.Tags.vocab_has_no_studying_sentences, not any(vocab.get_sentences_studying()))
+        vocab.toggle_tag(Mine.Tags.vocab_has_no_studying_sentences, not any(vocab.sentences.studying()))
 
     progress_display_runner.process_with_progress(app.col().vocab.all(), tag_note, "Tag vocab notes")
 
