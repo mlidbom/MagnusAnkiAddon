@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import re
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 import language_services.conjugator
 from anki.notes import Note
@@ -9,62 +9,20 @@ from ankiutils import anki_module_import_issues_fix_just_import_this_module_befo
 from language_services.jamdict_ex.dict_lookup import DictLookup
 from language_services.jamdict_ex.priority_spec import PrioritySpec
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
-from note.jpnote import JPNote
 from note.note_constants import Mine, NoteFields, NoteTypes
 from note.notefields.string_field import StringField
 from note.notefields.string_set_field import StringSetField
 from note.vocabnote_cloner import VocabCloner
+from note.vocabulary import vocabnote_meta_tag
+from note.vocabulary.vocabnote_meta_tag import VocabMetaTag
 from note.waninote import WaniNote
 from sysutils import ex_sequence, ex_str, kana_utils
 from wanikani.wanikani_api_client import WanikaniClient
 
 if TYPE_CHECKING:
+    from note.jpnote import JPNote
     from note.sentencenote import SentenceNote
     from wanikani_api import models
-
-
-def sort_vocab_list_by_studying_status(vocabs: list[VocabNote], primary_voc: Optional[list[str]] = None, preferred_kanji: Optional[str] = None) -> list[VocabNote]:
-    def prefer_primary_vocab_in_order(local_vocab: VocabNote) -> int:
-        for index, primary in enumerate(_primary_voc):
-            if local_vocab.get_question() == primary or local_vocab.get_question_without_noise_characters() == primary or (local_vocab.get_readings() and local_vocab.get_readings()[0] == primary):
-                return index
-
-        return 1000
-
-    def prefer_vocab_with_kanji(local_vocab: VocabNote) -> int:
-        return 0 if preferred_kanji is None or preferred_kanji in local_vocab.get_question() else 1
-
-    def prefer_studying_vocab(local_vocab: VocabNote) -> int:
-        return 1 if local_vocab.is_studying() else 2
-
-    def prefer_studying_sentences(local_vocab: VocabNote) -> int:
-        return 1 if local_vocab.get_sentences_studying() else 2
-
-    def prefer_more_sentences(local_vocab: VocabNote) -> int:
-        return -len(local_vocab.get_sentences())
-
-    def prefer_high_priority(_vocab: VocabNote) -> int:
-        return _vocab.priority_spec().priority
-
-    _primary_voc = primary_voc if primary_voc else []
-
-    result = vocabs.copy()
-
-    result.sort(key=lambda local_vocab: (prefer_vocab_with_kanji(local_vocab),
-                                         prefer_primary_vocab_in_order(local_vocab),
-                                         prefer_studying_vocab(local_vocab),
-                                         prefer_studying_sentences(local_vocab),
-                                         prefer_more_sentences(local_vocab),
-                                         prefer_high_priority(local_vocab),
-                                         local_vocab.get_question()))
-
-    return result
-
-class VocabMetaTag:
-    def __init__(self, name: str, display: str, tooltip: str) -> None:
-        self.name = name
-        self.display = display
-        self.tooltip = tooltip
 
 class VocabNote(WaniNote):
     def __init__(self, note: Note) -> None:
@@ -234,83 +192,8 @@ class VocabNote(WaniNote):
     def _get_studying_sentence_count(sentences: list[SentenceNote], card: str = "") -> int:
         return len([sentence for sentence in sentences if sentence.is_studying(card)])
 
-    def get_meta_tags_html(self, display_extended_sentence_statistics: bool = True) -> str:
-        tags = set(self.get_tags())
-        meta: list[VocabMetaTag] = []
-        tos = set([t.lower().strip() for t in self.get_speech_type().split(",")])
-
-        def max_nine_number(value: int) -> str: return f"""{value}""" if value < 10 else "+"
-        highlighted_in = self.get_user_highlighted_sentences()
-        meta.append(VocabMetaTag("highlighted_in_sentences", f"""{max_nine_number(len(highlighted_in))}""", f"""highlighted in {len(highlighted_in)} sentences"""))
-
-        sentences = self.get_sentences_with_owned_form()
-        if sentences:
-            studying_sentences_reading = self._get_studying_sentence_count(sentences, NoteFields.VocabNoteType.Card.Reading)
-            studying_sentences_listening = self._get_studying_sentence_count(sentences, NoteFields.VocabNoteType.Card.Listening)
-            tooltip_text = f"""in {len(sentences)} sentences. Studying-listening:{studying_sentences_listening}, Studying-reading:{studying_sentences_reading}"""
-            if studying_sentences_reading or studying_sentences_listening:
-                if display_extended_sentence_statistics:
-                    meta.append(VocabMetaTag("in_studying_sentences", f"""{studying_sentences_listening}:{studying_sentences_reading}/{len(sentences)}""", tooltip_text))
-                else:
-                    def create_display_text() -> str:
-                        if studying_sentences_listening > 9 and studying_sentences_reading > 9:
-                            return "+"
-                        return f"{max_nine_number(studying_sentences_listening)}:{max_nine_number(studying_sentences_reading)}/{max_nine_number(len(sentences))}"
-
-                    meta.append(VocabMetaTag("in_studying_sentences", create_display_text(), tooltip_text))
-            else:
-                meta.append(VocabMetaTag("in_sentences", f"""{len(sentences)}""", tooltip_text))
-        else:
-            meta.append(VocabMetaTag("in_no_sentences", f"""{len(sentences)}""", f"""in {len(sentences)} sentences"""))
-
-        # overarching info
-        if "_uk" in tags: meta.append(VocabMetaTag("uk", "uk", "usually written using kana only"))
-        if "expression" in tos: meta.append(VocabMetaTag("expression", "x", "expression"))
-        if "abbreviation" in tos: meta.append(VocabMetaTag("abbreviation", "abbr", "abbreviation"))
-        if "auxiliary" in tos: meta.append(VocabMetaTag("auxiliary", "aux", "auxiliary"))
-        if "prefix" in tos: meta.append(VocabMetaTag("prefix", "頭", "prefix"))
-        if "suffix" in tos: meta.append(VocabMetaTag("suffix", "尾", "suffix"))
-
-        # nouns
-        if "proper noun" in tos: meta.append(VocabMetaTag("proper-noun", "p-名", "proper noun"))
-        elif "pronoun" in tos: meta.append(VocabMetaTag("pronoun", "pr-名", "pronoun"))
-        elif "noun" in tos: meta.append(VocabMetaTag("noun", "名", "noun"))
-        if "adverbial noun" in tos: meta.append(VocabMetaTag("adverbial-noun", "副-名", "adverbial noun"))
-        if "independent noun" in tos: meta.append(VocabMetaTag("independent-noun", "i-名", "independent noun"))
-
-        # verbs
-        if "ichidan verb" in tos: meta.append(self._create_verb_meta_tag("ichidan", "1", "ichidan verb", tos))
-        if "godan verb" in tos: meta.append(self._create_verb_meta_tag("godan", "5", "godan verb", tos))
-        if "suru verb" in tos or "verbal noun" in tos or "する verb" in tos: meta.append(self._create_verb_meta_tag("suru-verb", "為", "suru verb", tos))
-        if "kuru verb" in tos: meta.append(self._create_verb_meta_tag("kuru-verb", "k-v", "kuru verb", tos))
-        if "auxiliary verb" in tos: meta.append(self._create_verb_meta_tag("auxiliary-verb", "aux-v", "auxiliary verb", tos))
-
-        # adverbs
-        if "と adverb" in tos or "to-adverb" in tos: meta.append(VocabMetaTag("to-adverb", "と", "adverbial noun taking the と particle to act as adverb"))
-        elif "adverb" in tos: meta.append(VocabMetaTag("adverb", "副", "adverb"))
-        elif "adverbial" in tos: meta.append(VocabMetaTag("adverbial", "副", "adverbial"))
-
-        # adjectives
-        if "い adjective" in tos or "i-adjective" in tos: meta.append(VocabMetaTag("i-adjective", "い", "true adjective ending on the い copula"))
-        if "な adjective" in tos or "na-adjective" in tos: meta.append(VocabMetaTag("na-adjective", "な", "adjectival noun taking the な particle to act as adjective"))
-        if "の adjective" in tos or "no-adjective" in tos: meta.append(VocabMetaTag("no-adjective", "の", "adjectival noun taking the の particle to act as adjective"))
-        if "auxiliary adjective" in tos: meta.append(VocabMetaTag("auxiliary-adjective", "aux-adj", "auxiliary adjective"))
-
-        # ???
-        if "in compounds" in tos: meta.append(VocabMetaTag("in-compounds", "i-c", "in compounds"))
-
-        # misc
-
-        if "counter" in tos: meta.append(VocabMetaTag("counter", "ctr", "counter"))
-        if "numeral" in tos: meta.append(VocabMetaTag("numeral", "num", "numeral"))
-        if "interjection" in tos: meta.append(VocabMetaTag("interjection", "int", "interjection"))
-        if "conjunction" in tos: meta.append(VocabMetaTag("conjunction", "conj", "conjunction"))
-        if "particle" in tos: meta.append(VocabMetaTag("particle", "prt", "particle"))
-
-        # my own inventions
-        if "masu-suffix" in tos: meta.append(VocabMetaTag("masu-suffix", "連", "follows the 連用形/masu-stem form of a verb"))
-
-        return """<ol class="vocab_tag_list">""" + "".join([f"""<li class="vocab_tag vocab_tag_{tag.name}" title="{tag.tooltip}">{tag.display}</li>""" for tag in meta]) + "</ol>"
+    def get_meta_tags_html(self: VocabNote, display_extended_sentence_statistics: bool = True) -> str:
+        return vocabnote_meta_tag.get_meta_tags_html(self, display_extended_sentence_statistics)
 
     def update_from_wani(self, wani_vocab: models.Vocabulary) -> None:
         self.set_meaning_mnemonic(wani_vocab.meaning_mnemonic)
