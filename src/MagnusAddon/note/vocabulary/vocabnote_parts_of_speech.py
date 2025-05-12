@@ -22,3 +22,10 @@ class VocabNotePartsOfSpeech:
 
     def get(self) -> set[str]:
         return self._field.get()
+
+
+    def is_ichidan(self) -> bool:
+        return "ichidan" in self.raw_string_value().lower()
+
+    def is_godan(self) -> bool:
+        return "godan" in self.raw_string_value().lower()

@@ -41,8 +41,8 @@ def update_generated_data(self:VocabNote) -> None:
             if self.is_uk() and self.get_readings()[0] not in self.forms.unexcluded_set():
                 self.forms.set_set(self.forms.unexcluded_set() | set(self.get_readings()))
 
-        speech_types = self.get_speech_types() - {'Unknown',
+        speech_types = self.parts_of_speech.get() - {'Unknown',
                                                   'Godan verbIchidan verb'  # crap inserted by bug in yomitan
-                                                  }
+                                                     }
         if len(speech_types) == 0:
             self.auto_set_speech_type()

@@ -99,13 +99,13 @@ def get_te_stem(word: str, is_ichidan: bool = False, is_godan: bool = False) -> 
     return _get_stem(word, _te_stem_index, is_ichidan, is_godan)
 
 def get_i_stem_vocab(vocab: VocabNote, form: str = "") -> str:
-    return get_i_stem(form if form else vocab.get_question(), vocab.is_ichidan(), vocab.is_godan())
+    return get_i_stem(form if form else vocab.get_question(), vocab.parts_of_speech.is_ichidan(), vocab.parts_of_speech.is_godan())
 
 def get_e_stem_vocab(vocab: VocabNote, form: str = "") -> str:
-    return get_e_stem(form if form else vocab.get_question(), vocab.is_ichidan(), vocab.is_godan())
+    return get_e_stem(form if form else vocab.get_question(), vocab.parts_of_speech.is_ichidan(), vocab.parts_of_speech.is_godan())
 
 def get_a_stem_vocab(vocab: VocabNote, form: str = "") -> str:
-    return get_a_stem(form if form else vocab.get_question(), vocab.is_ichidan(), vocab.is_godan())
+    return get_a_stem(form if form else vocab.get_question(), vocab.parts_of_speech.is_ichidan(), vocab.parts_of_speech.is_godan())
 
 def get_te_stem_vocab(vocab: VocabNote, form: str = "") -> str:
-    return get_te_stem(form if form else vocab.get_question(), vocab.is_ichidan(), vocab.is_godan())
+    return get_te_stem(form if form else vocab.get_question(), vocab.parts_of_speech.is_ichidan(), vocab.parts_of_speech.is_godan())

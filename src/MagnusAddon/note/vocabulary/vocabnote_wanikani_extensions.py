@@ -16,7 +16,8 @@ def update_from_wani(self: VocabNote, wani_vocab: models.Vocabulary) -> None:
     meanings = ', '.join(str(meaning.meaning) for meaning in wani_vocab.meanings)
     self._set_source_answer(meanings)
 
-    self.set_speech_type(", ".join(wani_vocab.parts_of_speech))
+    value = ", ".join(wani_vocab.parts_of_speech)
+    self.parts_of_speech.set_raw_string_value(value)
 
     self.set_reading_mnemonic(wani_vocab.reading_mnemonic)
 

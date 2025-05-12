@@ -37,7 +37,7 @@ class VocabCloner:
             else:
                 new_vocab.set_user_compounds([addendum, self.note.get_question()])
 
-        new_vocab.set_speech_type(speech_type)
+        new_vocab.parts_of_speech.set_raw_string_value(speech_type)
         new_vocab.forms.set_list([append_prepend_addendum(form) for form in self.note.forms.unexcluded_set()])
         return new_vocab
 
@@ -57,7 +57,8 @@ class VocabCloner:
         return self._create_postfix_prefix_version("て", "auxiliary", is_prefix=True)
 
     def create_o_prefixed_word(self) -> VocabNote:
-        return self._create_postfix_prefix_version("お", self.note.get_speech_type_raw_string(), is_prefix=True)
+        note = self.note
+        return self._create_postfix_prefix_version("お", note.parts_of_speech.raw_string_value(), is_prefix=True)
 
     def create_n_suffixed_word(self) -> VocabNote:
         return self._create_postfix_prefix_version("ん", "expression")
@@ -71,8 +72,12 @@ class VocabCloner:
         forms = list(suru_verb.forms.unexcluded_set()) + [form.replace("する", "をする") for form in suru_verb.forms.unexcluded_set()]
         suru_verb.forms.set_list(forms)
 
-        if self.note.is_transitive(): suru_verb.set_speech_type(suru_verb.get_speech_type_raw_string() + ", transitive")
-        if self.note.is_intransitive(): suru_verb.set_speech_type(suru_verb.get_speech_type_raw_string() + ", intransitive")
+        if self.note.is_transitive():
+            value = suru_verb.parts_of_speech.raw_string_value() + ", transitive"
+            suru_verb.parts_of_speech.set_raw_string_value(value)
+        if self.note.is_intransitive():
+            value1 = suru_verb.parts_of_speech.raw_string_value() + ", intransitive"
+            suru_verb.parts_of_speech.set_raw_string_value(value1)
 
         return suru_verb
 
@@ -98,7 +103,7 @@ class VocabCloner:
         clone = VocabNote.factory.create(question=create_full_form(self.note.get_question()), answer=self.note.get_answer(), readings=[])
         clone.forms.set_list([create_full_form(form) for form in self.note.forms.unexcluded_list()])
         clone.set_readings([create_full_form(reading) for reading in self.note.get_readings()])
-        clone.set_speech_type("expression")
+        clone.parts_of_speech.set_raw_string_value("expression")
         clone.set_user_compounds([self.note.get_question(), form_suffix])
         return clone
 

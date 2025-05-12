@@ -72,13 +72,15 @@ class VocabNote(WaniNote):
 
         lookup = DictLookup.try_lookup_vocab_word_or_name(self)
         if lookup.found_words():
-            self.set_speech_type(", ".join(lookup.parts_of_speech()))
+            value = ", ".join(lookup.parts_of_speech())
+            self.parts_of_speech.set_raw_string_value(value)
         elif self._is_suru_verb_included():
             question = self.get_question_without_noise_characters()[:-2]
             readings = [reading[:-2] for reading in self.get_readings()]
             lookup = DictLookup.try_lookup_word_or_name(question, readings)
             pos = lookup.parts_of_speech() & {"transitive", "intransitive"}
-            self.set_speech_type("suru verb, " + ", ".join(pos))
+            value1 = "suru verb, " + ", ".join(pos)
+            self.parts_of_speech.set_raw_string_value(value1)
 
     def extract_main_form_kanji(self) -> list[str]:
         clean = ex_str.strip_html_and_bracket_markup(self.get_question())
@@ -124,14 +126,8 @@ class VocabNote(WaniNote):
     def requires_exact_match(self) -> bool:
         return self.has_tag(Mine.Tags.requires_exact_match)
 
-    def is_ichidan(self) -> bool:
-        return "ichidan" in self.get_speech_type_raw_string().lower()
-
-    def is_godan(self) -> bool:
-        return "ichidan" in self.get_speech_type_raw_string().lower()
-
     def _get_stems_for_form(self, form: str) -> list[str]:
-        return [base for base in language_services.conjugator.get_word_stems(form, is_ichidan_verb=self.is_ichidan()) if base != form]
+        return [base for base in language_services.conjugator.get_word_stems(form, is_ichidan_verb=self.parts_of_speech.is_ichidan()) if base != form]
 
     def get_stems_for_primary_form(self) -> list[str]:
         return ex_sequence.remove_duplicates_while_retaining_order(self._get_stems_for_form(self.get_question()))
@@ -193,14 +189,10 @@ class VocabNote(WaniNote):
     def get_user_answer(self) -> str: return self.get_field(NoteFields.Vocab.user_answer)
     def set_user_answer(self, value: str) -> None: self.set_field(NoteFields.Vocab.user_answer, value)
 
-    def get_speech_type_raw_string(self) -> str: return self.parts_of_speech.raw_string_value()
-    def set_speech_type(self, value: str) -> None: self.parts_of_speech.set_raw_string_value(value)
-    def get_speech_types(self) -> set[str]: return self.parts_of_speech.get()
-
     _transitive_string_values = ["transitive", "transitive verb"]
     _intransitive_string_values = ["intransitive", "intransitive verb"]
-    def is_transitive(self) -> bool: return any(val for val in self._transitive_string_values if val in self.get_speech_types())
-    def is_intransitive(self) -> bool: return any(val for val in self._intransitive_string_values if val in self.get_speech_types())
+    def is_transitive(self) -> bool: return any(val for val in self._transitive_string_values if val in self.parts_of_speech.get())
+    def is_intransitive(self) -> bool: return any(val for val in self._intransitive_string_values if val in self.parts_of_speech.get())
 
     def set_meaning_mnemonic(self, value: str) -> None: self.set_field(NoteFields.Vocab.source_mnemonic, value)
 
