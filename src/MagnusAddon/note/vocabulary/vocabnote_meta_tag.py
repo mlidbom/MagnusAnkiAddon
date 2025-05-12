@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 from note.note_constants import NoteFields
 
 if TYPE_CHECKING:
+    from note.sentencenote import SentenceNote
     from note.vocabulary.vocabnote import VocabNote
 
 class VocabMetaTag:
@@ -24,8 +25,8 @@ def get_meta_tags_html(vocab: VocabNote, display_extended_sentence_statistics: b
 
     sentences = vocab.get_sentences_with_owned_form()
     if sentences:
-        studying_sentences_reading = vocab._get_studying_sentence_count(sentences, NoteFields.VocabNoteType.Card.Reading)
-        studying_sentences_listening = vocab._get_studying_sentence_count(sentences, NoteFields.VocabNoteType.Card.Listening)
+        studying_sentences_reading = _get_studying_sentence_count(sentences, NoteFields.VocabNoteType.Card.Reading)
+        studying_sentences_listening = _get_studying_sentence_count(sentences, NoteFields.VocabNoteType.Card.Listening)
         tooltip_text = f"""in {len(sentences)} sentences. Studying-listening:{studying_sentences_listening}, Studying-reading:{studying_sentences_reading}"""
         if studying_sentences_reading or studying_sentences_listening:
             if display_extended_sentence_statistics:
@@ -102,3 +103,6 @@ def _create_verb_meta_tag(name: str, display: str, tooltip: str, tos: set[str]) 
         tag.tooltip = "transitive " + tag.tooltip
 
     return tag
+
+def _get_studying_sentence_count(sentences: list[SentenceNote], card: str = "") -> int:
+    return len([sentence for sentence in sentences if sentence.is_studying(card)])

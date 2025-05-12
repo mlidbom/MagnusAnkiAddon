@@ -173,13 +173,8 @@ class VocabNote(WaniNote):
     def get_sentences_studying(self) -> list[SentenceNote]:
         return [sentence for sentence in self.get_sentences() if sentence.is_studying()]
 
-    @staticmethod
-    def _get_studying_sentence_count(sentences: list[SentenceNote], card: str = "") -> int:
-        return len([sentence for sentence in sentences if sentence.is_studying(card)])
-
     def get_meta_tags_html(self: VocabNote, display_extended_sentence_statistics: bool = True) -> str:
         return vocabnote_meta_tag.get_meta_tags_html(self, display_extended_sentence_statistics)
-
 
     def generate_and_set_answer(self) -> None:
         from language_services.jamdict_ex.dict_lookup import DictLookup

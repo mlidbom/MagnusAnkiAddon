@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import note.vocabulary.vocab_sorting
+import note.vocabulary.vocabnote_sorting
 from ankiutils import app
 from aqt import gui_hooks
 from hooks.note_content_building.content_renderer import PrerenderingAnswerContentRenderer

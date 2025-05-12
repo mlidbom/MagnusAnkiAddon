@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 from anki.notes import Note
 
-import note.vocabulary.vocab_sorting
+import note.vocabulary.vocabnote_sorting
 from note import kanjinote_mnemonic_maker
 
 if TYPE_CHECKING:
