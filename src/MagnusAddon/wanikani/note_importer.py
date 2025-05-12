@@ -53,7 +53,7 @@ def import_missing_vocab() -> None:
         question = str(wani_vocab.characters)
         if not app.col().vocab.with_question(question):
             print(f"""Importing: {wani_vocab.slug}""")
-            VocabNote.create_from_wani_vocabulary(wani_vocab)
+            VocabNote.factory.create_from_wani_vocabulary(wani_vocab)
             imported += 1
 
     showInfo(f"""Imported {imported} vocabulary notes""")

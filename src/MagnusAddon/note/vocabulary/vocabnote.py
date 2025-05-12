@@ -147,7 +147,3 @@ class VocabNote(WaniNote):
 
     def update_from_wani(self, wani_vocab: models.Vocabulary) -> None:
         vocabnote_wanikani_extensions.update_from_wani(self, wani_vocab)
-
-    @staticmethod
-    def create_from_wani_vocabulary(wani_vocab: models.Vocabulary) -> None:
-        return vocabnote_wanikani_extensions.create_from_wani_vocabulary(wani_vocab)

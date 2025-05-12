@@ -5,10 +5,12 @@ from typing import TYPE_CHECKING
 from anki.notes import Note
 from language_services.jamdict_ex.dict_lookup import DictLookup
 from note.note_constants import NoteTypes
+from note.vocabulary import vocabnote_wanikani_extensions
 from sysutils import ex_sequence
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
+    from wanikani_api import models
 
 class VocabNoteFactory:
     @staticmethod
@@ -35,3 +37,7 @@ class VocabNoteFactory:
         note.update_generated_data()
         app.anki_collection().addNote(backend_note)
         return note
+
+    @staticmethod
+    def create_from_wani_vocabulary(wani_vocab: models.Vocabulary) -> None:
+        return vocabnote_wanikani_extensions.create_from_wani_vocabulary(wani_vocab)
