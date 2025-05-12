@@ -26,10 +26,10 @@ if TYPE_CHECKING:
 class VocabNote(WaniNote):
     def __init__(self, note: Note) -> None:
         super().__init__(note)
-        self.cloner = VocabCloner(self)
-        self.user_mnemonic = StringField(self, NoteFields.Vocab.Mnemonic__)
-        self.related_notes = VocabNoteRelatedNotes(self)
-        self.context_sentences = VocabContextSentences(self)
+        self.cloner: VocabCloner = VocabCloner(self)
+        self.user_mnemonic: StringField = StringField(self, NoteFields.Vocab.Mnemonic__)
+        self.related_notes: VocabNoteRelatedNotes = VocabNoteRelatedNotes(self)
+        self.context_sentences: VocabContextSentences = VocabContextSentences(self)
 
     def __repr__(self) -> str: return f"""{self.get_question()}"""
 
@@ -65,7 +65,6 @@ class VocabNote(WaniNote):
 
         super().update_generated_data()
         vocabnote_generated_data.update_generated_data(self)
-
 
     def _is_suru_verb_included(self) -> bool:
         question = self.get_question_without_noise_characters()
@@ -225,7 +224,7 @@ class VocabNote(WaniNote):
         from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
         analysis = TextAnalysis(self.get_question(), {WordExclusion(form) for form in self.get_forms()})
         compound_parts = [a.form for a in analysis.display_words if a.form not in self.get_forms()]
-        if not len(compound_parts) > 1:#time to brute force it
+        if not len(compound_parts) > 1:  # time to brute force it
             word = self.get_question()
             all_substrings = [word[i:j] for i in range(len(word)) for j in range(i + 1, len(word) + 1) if word[i:j] != word]
             all_word_substrings = [w for w in all_substrings if DictLookup.is_dictionary_or_collection_word(w)]
@@ -253,8 +252,8 @@ class VocabNote(WaniNote):
     def get_user_answer(self) -> str: return self.get_field(NoteFields.Vocab.user_answer)
     def set_user_answer(self, value: str) -> None: self.set_field(NoteFields.Vocab.user_answer, value)
 
-    def get_related_derived_from(self) -> str: return self.get_field(NoteFields.Vocab.Related_derived_from)
-    def set_related_derived_from(self, value: str) -> None: self.set_field(NoteFields.Vocab.Related_derived_from, value)
+    def get_related_derived_from(self) -> str: return self.related_notes.derived_from.get()
+    def set_related_derived_from(self, value: str) -> None: self.related_notes.derived_from.set(value)
 
     def get_related_ergative_twin(self) -> str: return self.get_field(NoteFields.Vocab.Related_ergative_twin)
     def set_related_ergative_twin(self, value: str) -> None:
