@@ -9,7 +9,6 @@ from note.note_constants import Mine
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
 
-
 class VocabCloner:
     def __init__(self, note: VocabNote) -> None:
         self.note = note
@@ -21,12 +20,14 @@ class VocabCloner:
         return self._create_postfix_prefix_version(suffix, speech_type, set_compounds=set_compounds, truncate_characters=truncate_characters)
 
     def _create_postfix_prefix_version(self, addendum: str, speech_type: str, is_prefix: bool = False, set_compounds: bool = True, truncate_characters: int = 0) -> VocabNote:
+        from note.vocabulary.vocabnote import VocabNote
+
         def append_prepend_addendum(base: str) -> str:
             if not is_prefix:
                 return base + addendum if truncate_characters == 0 else base[0:-truncate_characters] + addendum
             return addendum + base if truncate_characters == 0 else base[truncate_characters:] + addendum
 
-        new_vocab = self.note.factory.create(question=append_prepend_addendum(self.note.get_question()),
+        new_vocab = VocabNote.factory.create(question=append_prepend_addendum(self.note.get_question()),
                                              answer=self.note.get_answer(),
                                              readings=[append_prepend_addendum(reading) for reading in self.note.get_readings()])
 
@@ -90,9 +91,11 @@ class VocabCloner:
         return self._create_postfix_prefix_version("く", "adverb", set_compounds=False, truncate_characters=1)
 
     def clone_to_derived_form(self, form_suffix: str, create_form_root: Callable[[VocabNote, str], str]) -> VocabNote:
+        from note.vocabulary.vocabnote import VocabNote
+
         def create_full_form(form: str) -> str: return create_form_root(self.note, form) + form_suffix
 
-        clone = self.note.factory.create(question=create_full_form(self.note.get_question()), answer=self.note.get_answer(), readings=[])
+        clone = VocabNote.factory.create(question=create_full_form(self.note.get_question()), answer=self.note.get_answer(), readings=[])
         clone.forms.set_list([create_full_form(form) for form in self.note.forms.unexcluded_list()])
         clone.set_readings([create_full_form(reading) for reading in self.note.get_readings()])
         clone.set_speech_type("expression")
