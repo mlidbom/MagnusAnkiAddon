@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from note.note_constants import NoteFields
+from note.note_constants import Mine, NoteFields
 from note.notefields.comma_separated_strings_set_field import CommaSeparatedStringsSetField
 
 if TYPE_CHECKING:
@@ -32,6 +32,8 @@ class VocabNotePartsOfSpeech:
     def is_suru_verb_included(self) -> bool:
         question = self._vocab.get_question_without_noise_characters()
         return question[-2:] == "する"
+
+    def is_uk(self) -> bool: return self._vocab.has_tag(Mine.Tags.UsuallyKanaOnly)
 
     _transitive_string_values = ["transitive", "transitive verb"]
     _intransitive_string_values = ["intransitive", "intransitive verb"]

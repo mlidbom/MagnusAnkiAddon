@@ -33,12 +33,12 @@ def update_generated_data(self: VocabNote) -> None:
 
         if not self.forms.unexcluded_set():
             if lookup.found_words():
-                self.forms.set_set(lookup.valid_forms(self.is_uk()))
+                self.forms.set_set(lookup.valid_forms(self.parts_of_speech.is_uk()))
 
             if self.get_question() not in self.forms.unexcluded_set():
                 self.forms.set_set(self.forms.unexcluded_set() | {self.get_question()})
 
-            if self.is_uk() and self.readings.get()[0] not in self.forms.unexcluded_set():
+            if self.parts_of_speech.is_uk() and self.readings.get()[0] not in self.forms.unexcluded_set():
                 self.forms.set_set(self.forms.unexcluded_set() | set(self.readings.get()))
 
         speech_types = self.parts_of_speech.get() - {'Unknown',

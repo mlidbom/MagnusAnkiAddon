@@ -71,8 +71,6 @@ class VocabNote(WaniNote):
         clean = ex_str.strip_html_and_bracket_markup(self.get_question() + self.forms.all_raw_string())
         return set(char for char in clean if kana_utils.character_is_kanji(char))
 
-    def is_uk(self) -> bool: return self.has_tag(Mine.Tags.UsuallyKanaOnly)
-
     def set_reading_mnemonic(self, value: str) -> None: self.set_field(NoteFields.Vocab.source_reading_mnemonic, value)
 
     def set_component_subject_ids(self, value: str) -> None: self.set_field(NoteFields.Vocab.component_subject_ids, value)
