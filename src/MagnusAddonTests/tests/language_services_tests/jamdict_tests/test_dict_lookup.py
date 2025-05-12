@@ -1,16 +1,24 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
-from unittest.mock import MagicMock
 
 import pytest
 from ankiutils import app  # noqa
+from fixtures.collection_factory import inject_empty_anki_collection_with_note_types
 from language_services.jamdict_ex.dict_lookup import DictLookup
 from note.vocabulary.vocabnote import VocabNote
 
 if TYPE_CHECKING:
+    from collections.abc import Generator
+
     from language_services.jamdict_ex.dict_entry import DictEntry
 
+
+# noinspection PyUnusedFunction
+@pytest.fixture(scope="function", autouse=True)
+def setup_empty_collection() -> Generator[None, None, None]:
+    with inject_empty_anki_collection_with_note_types():
+        yield
 
 @pytest.mark.parametrize('word, readings', [
     ("為る", ["する"]),
@@ -121,11 +129,7 @@ def get_dict_entry(word: str, readings: list[str]) -> DictLookup:
     return dict_entry
 
 def vocab_mock(word: str, readings: list[str]) -> VocabNote:
-    mock_instance = MagicMock(spec=VocabNote)
-    mock_instance.get_question.return_value = word
-    mock_instance.get_readings.return_value = readings
-    mock_instance.get_question_without_noise_characters.return_value = word
-    return mock_instance
+    return VocabNote.factory.create(word, "", readings)
 
 
 

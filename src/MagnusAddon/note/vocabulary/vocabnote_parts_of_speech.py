@@ -47,8 +47,7 @@ class VocabNotePartsOfSpeech:
             self.set_raw_string_value(value)
         elif self.is_suru_verb_included():
             question = self._vocab.get_question_without_noise_characters()[:-2]
-            note = self._vocab
-            readings = [reading[:-2] for reading in note.readings.get()]
+            readings = [reading[:-2] for reading in self._vocab.readings.get()]
             lookup = DictLookup.try_lookup_word_or_name(question, readings)
             pos = lookup.parts_of_speech() & {"transitive", "intransitive"}
             value1 = "suru verb, " + ", ".join(pos)

@@ -9,8 +9,7 @@ from ..note_constants import Mine, NoteFields
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
 
-
-def update_generated_data(self:VocabNote) -> None:
+def update_generated_data(self: VocabNote) -> None:
     self.set_field(NoteFields.Vocab.sentence_count, str(len(self.sentences.all())))
     self.set_field(NoteFields.Vocab.active_answer, self.get_answer())
 
@@ -20,8 +19,7 @@ def update_generated_data(self:VocabNote) -> None:
     readings = ",".join(self.readings.get())
 
     if not readings and kana_utils.is_only_kana(question):
-        readings1 = [question]
-        self.readings.set(readings1)
+        self.readings.set([question])
         self.set_tag(Mine.Tags.UsuallyKanaOnly)
 
     if len(self.compound_parts.get()) == 0 and self.parts_of_speech.is_suru_verb_included():
@@ -44,7 +42,7 @@ def update_generated_data(self:VocabNote) -> None:
                 self.forms.set_set(self.forms.unexcluded_set() | set(self.readings.get()))
 
         speech_types = self.parts_of_speech.get() - {'Unknown',
-                                                  'Godan verbIchidan verb'  # crap inserted by bug in yomitan
+                                                     'Godan verbIchidan verb'  # crap inserted by bug in yomitan
                                                      }
         if len(speech_types) == 0:
             self.parts_of_speech.set_automatically_from_dictionary()
