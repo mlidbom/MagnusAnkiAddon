@@ -2,10 +2,7 @@
 requires-python = ">=3.9"
 
 [tool.ruff]
-extend-exclude = [
-    "_lib",
-    "_lib_patched"
-]
+extend-exclude = ["_lib", "_lib_patched"]
 line-length = 9999
 
 [tool.ruff.lint]
