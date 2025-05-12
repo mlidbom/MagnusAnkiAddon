@@ -9,27 +9,27 @@ from note.notefields.strip_html_on_read_string_field import StripHtmlOnReadStrin
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
 
-def can_generate_sentences_from_context_sentences(self: VocabNote, require_audio: bool) -> bool:
+def can_generate_sentences_from_context_sentences(vocab: VocabNote, require_audio: bool) -> bool:
     from ankiutils import app
 
     def can_create_sentence(question: str, audio: str) -> bool:
         return question != "" and (audio or not require_audio) and not app.col().sentences.with_question(question)
 
-    return ((can_create_sentence(question=self.context_sentences.first.japanese.get(), audio=self.context_sentences.first.audio.raw_walue()) or
-             can_create_sentence(question=self.context_sentences.second.japanese.get(), audio=self.context_sentences.second.audio.raw_walue())) or
-            can_create_sentence(question=self.context_sentences.second.japanese.get(), audio=self.context_sentences.third.audio.raw_walue()))
+    return ((can_create_sentence(question=vocab.context_sentences.first.japanese.get(), audio=vocab.context_sentences.first.audio.raw_walue()) or
+             can_create_sentence(question=vocab.context_sentences.second.japanese.get(), audio=vocab.context_sentences.second.audio.raw_walue())) or
+            can_create_sentence(question=vocab.context_sentences.second.japanese.get(), audio=vocab.context_sentences.third.audio.raw_walue()))
 
-def generate_sentences_from_context_sentences(self: VocabNote, require_audio: bool) -> None:
+def generate_sentences_from_context_sentences(vocab: VocabNote, require_audio: bool) -> None:
     from ankiutils import app
     from note.sentencenote import SentenceNote
 
     def create_sentence_if_not_present(question: str, answer: str, audio: str) -> None:
         if question and (audio or not require_audio) and not app.col().sentences.with_question(question):
-            SentenceNote.add_sentence(question=question, answer=answer, audio=audio, highlighted_vocab={self.get_question()})
+            SentenceNote.add_sentence(question=question, answer=answer, audio=audio, highlighted_vocab={vocab.get_question()})
 
-    create_sentence_if_not_present(question=self.context_sentences.first.japanese.get(), answer=self.context_sentences.first.english.get(), audio=self.context_sentences.first.audio.raw_walue())
-    create_sentence_if_not_present(question=self.context_sentences.second.japanese.get(), answer=self.context_sentences.second.english.get(), audio=self.context_sentences.second.audio.raw_walue())
-    create_sentence_if_not_present(question=self.context_sentences.second.japanese.get(), answer=self.context_sentences.third.english.get(), audio=self.context_sentences.third.audio.raw_walue())
+    create_sentence_if_not_present(question=vocab.context_sentences.first.japanese.get(), answer=vocab.context_sentences.first.english.get(), audio=vocab.context_sentences.first.audio.raw_walue())
+    create_sentence_if_not_present(question=vocab.context_sentences.second.japanese.get(), answer=vocab.context_sentences.second.english.get(), audio=vocab.context_sentences.second.audio.raw_walue())
+    create_sentence_if_not_present(question=vocab.context_sentences.second.japanese.get(), answer=vocab.context_sentences.third.english.get(), audio=vocab.context_sentences.third.audio.raw_walue())
 
 class VocabNoteContextSentence:
     def __init__(self, note: VocabNote, japanese_field: str, english_field: str, audio_field: str) -> None:

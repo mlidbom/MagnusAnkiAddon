@@ -11,8 +11,8 @@ from sysutils import timeutil
 addon_path: str = dirname(__file__)
 sound_file: str = addon_path + "/timebox_complete.mp3"
 
-def _check_timebox(self: Reviewer) -> bool:
-    elapsed = self.mw.col.timeboxReached()
+def _check_timebox(reviewer: Reviewer) -> bool:
+    elapsed = reviewer.mw.col.timeboxReached()
     if elapsed:
         av_player.play_file(sound_file)
         assert not isinstance(elapsed, bool)
@@ -26,7 +26,7 @@ Studied {cards_studied} cards in {timeutil.format_seconds_as_hh_mm_ss(seconds_st
 """, ["OK"])
         dialog.setIcon(QMessageBox.Icon.Information)
         dialog.exec()
-        self.mw.moveToState("deckBrowser")
+        reviewer.mw.moveToState("deckBrowser")
         return True
     return False
 
