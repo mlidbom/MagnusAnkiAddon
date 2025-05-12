@@ -41,8 +41,7 @@ class WaniDownloader:
         male_audio_mp3 = [audio for audio in wani_vocab.pronunciation_audios if audio.metadata.gender == "male" and audio.content_type == "audio/mpeg"]
 
         female_audios = [cls.download_file(value.url, f"Wani_{wani_vocab.id}_{value.metadata.pronunciation}_female.mp3") for value in female_audio_mp3]
-        value2 = female_audios[::-1]
-        vocab.audio.second.set_multiple(value2)
+        vocab.audio.second.set_multiple(female_audios[::-1])
 
         male_audios = [cls.download_file(value.url, f"Wani_{wani_vocab.id}_{value.metadata.pronunciation}_male.mp3") for value in male_audio_mp3]
         value1 = male_audios[::-1]

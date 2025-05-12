@@ -33,5 +33,4 @@ class WritableAudioField(AudioField):
         super().__init__(note, field_name)
 
     def set_raw_value(self, value: str) -> None: self._field.set(value)
-    def set_single_file_path(self, value: str) -> None: self.set_multiple([value])
     def set_multiple(self, values: list[str]) -> None: self._field.set(''.join([f'[sound:{item}]' for item in values]))

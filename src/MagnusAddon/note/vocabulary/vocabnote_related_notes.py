@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from note.note_constants import NoteFields
-from note.notefields.comma_separated_strings_field import CommaSeparatedStringsSetField
+from note.notefields.comma_separated_strings_set_field import CommaSeparatedStringsSetField
 from note.notefields.string_field import StringField
 
 if TYPE_CHECKING:
