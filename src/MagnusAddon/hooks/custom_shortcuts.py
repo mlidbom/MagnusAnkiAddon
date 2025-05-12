@@ -27,7 +27,7 @@ def init() -> None:
         if card_being_reviewed:
             note = JPNote.note_from_card(card_being_reviewed)
             if isinstance(note, VocabNote):
-                note.auto_generate_compounds()
+                note.compound_parts.auto_generate()
                 app.get_ui_utils().refresh()
 
     qconnect(QShortcut(QKeySequence("0"), mw).activated, remove_mnemonic)

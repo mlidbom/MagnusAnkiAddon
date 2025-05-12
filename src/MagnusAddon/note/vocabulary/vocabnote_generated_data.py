@@ -23,8 +23,9 @@ def update_generated_data(self:VocabNote) -> None:
         self.set_readings([question])
         self.set_tag(Mine.Tags.UsuallyKanaOnly)
 
-    if len(self.get_user_compounds()) == 0 and self.parts_of_speech.is_suru_verb_included():
-        self.set_user_compounds([question[:-2], "する"])
+    if len(self.compound_parts.get()) == 0 and self.parts_of_speech.is_suru_verb_included():
+        compounds = [question[:-2], "する"]
+        self.compound_parts.set(compounds)
 
     if self.get_question():
         lookup = DictLookup.try_lookup_vocab_word_or_name(self)

@@ -47,7 +47,7 @@ class JNTokenWrapper(ProcessedToken):
 
     def _try_find_vocab_based_potential_verb_compound(self) -> list[ProcessedToken]:
         for vocab in self._vocabs.with_question(self.base_form):
-            compound_parts = vocab.get_user_compounds()
+            compound_parts = vocab.compound_parts.get()
             if len(compound_parts) == 2 and compound_parts[1] == "える":
                 return self._build_potential_verb_compound(compound_parts[0])
         return []

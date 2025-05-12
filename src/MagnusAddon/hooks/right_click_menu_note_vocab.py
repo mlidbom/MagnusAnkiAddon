@@ -73,7 +73,7 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
                     add_lookup_action(readings_vocab_lookup_menu, shortcutfinger.numpad_no_numbers(index, f"Homonyms: {reading}"), query_builder.notes_lookup(app.col().vocab.with_reading(reading)))
 
             add_lookup_action(vocab_lookup_menu, shortcutfinger.home1("Forms"), query_builder.notes_lookup(ex_sequence.flatten([app.col().vocab.with_question(form) for form in vocab.forms.unexcluded_set()])))
-            add_lookup_action(vocab_lookup_menu, shortcutfinger.home2("Compound parts"), query_builder.vocabs_lookup_strings(vocab.get_user_compounds()))
+            add_lookup_action(vocab_lookup_menu, shortcutfinger.home2("Compound parts"), query_builder.vocabs_lookup_strings(vocab.compound_parts.get()))
             add_lookup_action(vocab_lookup_menu, shortcutfinger.home3("In compounds"), query_builder.notes_lookup(vocab.in_compounds()))
             build_readings_menu(non_optional(vocab_lookup_menu.addMenu(shortcutfinger.home4("Homonyms"))))
             add_vocab_dependencies_lookup(vocab_lookup_menu, shortcutfinger.up1("Dependencies"), vocab)
@@ -99,7 +99,8 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
         vocab.parts_of_speech.set_automatically_from_dictionary()
         add_ui_action(note_menu, shortcutfinger.up5("Repopulate TOS"), lambda: None)
 
-        add_ui_action(note_menu, shortcutfinger.down1("Autogenerate compounds"), lambda: vocab.auto_generate_compounds())
+        vocab.compound_parts.auto_generate()
+        add_ui_action(note_menu, shortcutfinger.down1("Autogenerate compounds"), lambda: None)
 
     build_lookup_menu(non_optional(note_menu.addMenu(shortcutfinger.home1("Open"))))
     build_create_note_menu(non_optional(note_menu.addMenu(shortcutfinger.home2("Create"))))

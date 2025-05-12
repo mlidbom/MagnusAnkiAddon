@@ -84,7 +84,7 @@ def generate_derived_from(_vocab_note: VocabNote) -> str:
     return render_vocab_list(derived_from, "derived from", css_class="derived_from") if derived_from else ""
 
 def generate_compounds(_vocab_note: VocabNote) -> str:
-    compound_parts = lookup_vocabs_list_prefer_exact_match(_vocab_note.get_user_compounds())
+    compound_parts = lookup_vocabs_list_prefer_exact_match(_vocab_note.compound_parts.get())
     return render_vocab_list(compound_parts, "compound parts", css_class="compound_parts") if compound_parts else ""
 
 def generate_in_compounds_list(_vocab_note: VocabNote) -> str:

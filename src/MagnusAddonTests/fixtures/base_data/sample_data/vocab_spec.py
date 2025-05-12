@@ -35,7 +35,7 @@ class VocabSpec:
     def create_vocab_note(self) -> VocabNote:
         from note.vocabulary.vocabnote import VocabNote
         vocab_note = VocabNote.factory.create(self.question, self.answer, self.readings)
-        vocab_note.set_user_compounds(self.compounds)
+        vocab_note.compound_parts.set(self.compounds)
 
         if self.extra_forms:
             vocab_note.forms.set_set(vocab_note.forms.unexcluded_set() | self.extra_forms)

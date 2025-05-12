@@ -33,9 +33,11 @@ class VocabCloner:
 
         if set_compounds:
             if not is_prefix:
-                new_vocab.set_user_compounds([self.note.get_question(), addendum])
+                compounds = [self.note.get_question(), addendum]
+                new_vocab.compound_parts.set(compounds)
             else:
-                new_vocab.set_user_compounds([addendum, self.note.get_question()])
+                compounds1 = [addendum, self.note.get_question()]
+                new_vocab.compound_parts.set(compounds1)
 
         new_vocab.parts_of_speech.set_raw_string_value(speech_type)
         new_vocab.forms.set_list([append_prepend_addendum(form) for form in self.note.forms.unexcluded_set()])
@@ -106,7 +108,8 @@ class VocabCloner:
         clone.forms.set_list([create_full_form(form) for form in self.note.forms.unexcluded_list()])
         clone.set_readings([create_full_form(reading) for reading in self.note.get_readings()])
         clone.parts_of_speech.set_raw_string_value("expression")
-        clone.set_user_compounds([self.note.get_question(), form_suffix])
+        compounds = [self.note.get_question(), form_suffix]
+        clone.compound_parts.set(compounds)
         return clone
 
     def suffix_to_a_stem(self, form_suffix: str) -> VocabNote:

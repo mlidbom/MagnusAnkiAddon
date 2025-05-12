@@ -4,9 +4,7 @@ from typing import TYPE_CHECKING
 
 import language_services.conjugator
 from ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules  # noqa
-from language_services.jamdict_ex.dict_lookup import DictLookup
 from language_services.jamdict_ex.priority_spec import PrioritySpec
-from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from note.note_constants import Mine, NoteFields
 from note.notefields.string_field import StringField
 from note.vocabnote_cloner import VocabCloner
@@ -18,6 +16,7 @@ from note.vocabulary.vocabnote_forms import VocabNoteForms
 from note.vocabulary.vocabnote_parts_of_speech import VocabNotePartsOfSpeech
 from note.vocabulary.vocabnote_related_notes import VocabNoteRelatedNotes
 from note.vocabulary.vocabnote_sentences import VocabNoteSentences
+from note.vocabulary.vocabnote_usercompoundparts import VocabNoteUserCompoundParts
 from note.waninote import WaniNote
 from sysutils import ex_sequence, ex_str, kana_utils
 
@@ -38,15 +37,12 @@ class VocabNote(WaniNote):
         self.sentences: VocabNoteSentences = VocabNoteSentences(self)
         self.forms: VocabNoteForms = VocabNoteForms(self)
         self.parts_of_speech: VocabNotePartsOfSpeech = VocabNotePartsOfSpeech(self)
+        self.compound_parts: VocabNoteUserCompoundParts = VocabNoteUserCompoundParts(self)
 
 
     def __repr__(self) -> str: return f"""{self.get_question()}"""
 
     def set_kanji(self, value: str) -> None: self.set_field(NoteFields.Vocab.Kanji, value)
-
-    def get_user_compounds(self) -> list[str]: return ex_str.extract_comma_separated_values(self.get_field(NoteFields.Vocab.user_compounds))
-    def set_user_compounds(self, compounds: list[str]) -> None:
-        self.set_field(NoteFields.Vocab.user_compounds, ",".join(compounds))
 
     def in_compounds(self) -> list[VocabNote]:
         from ankiutils import app
@@ -54,7 +50,7 @@ class VocabNote(WaniNote):
 
     def get_direct_dependencies(self) -> set[JPNote]:
         return (set(self.collection.kanji.with_any_kanji_in(list(self.extract_main_form_kanji()))) |
-                set(ex_sequence.flatten([self.collection.vocab.with_question(compound_part) for compound_part in self.get_user_compounds()])))
+                set(ex_sequence.flatten([self.collection.vocab.with_question(compound_part) for compound_part in self.compound_parts.get()])))
 
     def update_generated_data(self) -> None:
         self.set_field(NoteFields.Vocab.sentence_count, str(len(self.sentences.all())))
@@ -136,24 +132,6 @@ class VocabNote(WaniNote):
         return clone
 
     def is_question_overrides_form(self) -> bool: return self.has_tag(Mine.Tags.question_overrides_form)
-
-    def auto_generate_compounds(self) -> None:
-        from ankiutils import app
-        from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
-        analysis = TextAnalysis(self.get_question(), {WordExclusion(form) for form in self.forms.unexcluded_set()})
-        compound_parts = [a.form for a in analysis.display_words if a.form not in self.forms.unexcluded_set()]
-        if not len(compound_parts) > 1:  # time to brute force it
-            word = self.get_question()
-            all_substrings = [word[i:j] for i in range(len(word)) for j in range(i + 1, len(word) + 1) if word[i:j] != word]
-            all_word_substrings = [w for w in all_substrings if DictLookup.is_dictionary_or_collection_word(w)]
-            compound_parts = [segment for segment in all_word_substrings if not any(parent for parent in all_word_substrings if segment in parent and parent != segment)]
-
-        segments_missing_vocab = [segment for segment in compound_parts if not app.col().vocab.is_word(segment)]
-        for missing in segments_missing_vocab:
-            created = VocabNote.factory.create_with_dictionary(missing)
-            created.suspend_all_cards()
-
-        self.set_user_compounds(compound_parts)
 
     @staticmethod
     def _strip_noise_characters(string: str) -> str:
