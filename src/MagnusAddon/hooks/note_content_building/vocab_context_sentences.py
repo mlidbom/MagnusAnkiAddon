@@ -22,14 +22,14 @@ def generate_highlighted_sentences_html_list(_vocab_note:VocabNote) -> str:
 
 
     sentences:list[ContextSentence] = []
-    if _vocab_note.get_context_jp():
-        sentences.append(ContextSentence(_vocab_note.get_context_jp(), _vocab_note.get_context_en(), _vocab_note.get_context_jp_audio()))
+    if _vocab_note.context_sentences.first.japanese.get():
+        sentences.append(ContextSentence(_vocab_note.context_sentences.first.japanese.get(), _vocab_note.context_sentences.first.english.get(), _vocab_note.context_sentences.first.audio.get()))
 
-    if _vocab_note.get_context_jp_2():
-        sentences.append(ContextSentence(_vocab_note.get_context_jp_2(), _vocab_note.get_context_en_2(), _vocab_note.get_context_jp_2_audio()))
+    if _vocab_note.context_sentences.second.japanese.get():
+        sentences.append(ContextSentence(_vocab_note.context_sentences.second.japanese.get(), _vocab_note.context_sentences.second.english.get(), _vocab_note.context_sentences.second.audio.get()))
 
-    if _vocab_note.get_context_jp_3():
-        sentences.append(ContextSentence(_vocab_note.get_context_jp_3(), _vocab_note.get_context_en_3(), _vocab_note.get_context_jp_3_audio()))
+    if _vocab_note.context_sentences.second.japanese.get():
+        sentences.append(ContextSentence(_vocab_note.context_sentences.second.japanese.get(), _vocab_note.context_sentences.third.english.get(), _vocab_note.context_sentences.third.audio.get()))
 
     sentences = [sent for sent in sentences if not app.col().sentences.with_question(sent.japanese)] #If we generated a real sentence for this sentence, don't show it
 

@@ -43,13 +43,13 @@ def create_from_wani_vocabulary(wani_vocab: models.Vocabulary) -> None:
     vocab_note.update_from_wani(wani_vocab)
 
     if len(wani_vocab.context_sentences) > 0:
-        vocab_note.set_context_en(wani_vocab.context_sentences[0].english)
-        vocab_note.set_context_jp(wani_vocab.context_sentences[0].japanese)
+        vocab_note.context_sentences.first.english.set(wani_vocab.context_sentences[0].english)
+        vocab_note.context_sentences.first.japanese.set(wani_vocab.context_sentences[0].japanese)
 
     if len(wani_vocab.context_sentences) > 1:
-        vocab_note.set_context_en_2(wani_vocab.context_sentences[1].english)
-        vocab_note.set_context_jp_2(wani_vocab.context_sentences[1].japanese)
+        vocab_note.context_sentences.second.english.set(wani_vocab.context_sentences[1].english)
+        vocab_note.context_sentences.second.japanese.set(wani_vocab.context_sentences[1].japanese)
 
     if len(wani_vocab.context_sentences) > 2:
-        vocab_note.set_context_en_3(wani_vocab.context_sentences[2].english)
-        vocab_note.set_context_jp_3(wani_vocab.context_sentences[2].japanese)
+        vocab_note.context_sentences.third.english.set(wani_vocab.context_sentences[2].english)
+        vocab_note.context_sentences.second.japanese.set(wani_vocab.context_sentences[2].japanese)

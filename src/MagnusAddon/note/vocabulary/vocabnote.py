@@ -292,24 +292,6 @@ class VocabNote(WaniNote):
     def is_transitive(self) -> bool: return any(val for val in self._transitive_string_values if val in self.get_speech_types())
     def is_intransitive(self) -> bool: return any(val for val in self._intransitive_string_values if val in self.get_speech_types())
 
-    def get_context_jp(self) -> str: return self.context_sentences.first.japanese.get()
-    def set_context_jp(self, value: str) -> None: self.context_sentences.first.japanese.set(value)
-    def get_context_jp_audio(self) -> str: return self.context_sentences.first.audio.get()
-    def get_context_en(self) -> str: return self.context_sentences.first.english.get()
-    def set_context_en(self, value: str) -> None: self.context_sentences.first.english.set(value)
-
-    def get_context_jp_2(self) -> str: return self.context_sentences.second.japanese.get()
-    def set_context_jp_2(self, value: str) -> None: self.context_sentences.second.japanese.set(value)
-    def get_context_jp_2_audio(self) -> str: return self.context_sentences.second.audio.get()
-    def get_context_en_2(self) -> str: return self.context_sentences.second.english.get()
-    def set_context_en_2(self, value: str) -> None: self.context_sentences.second.english.set(value)
-
-    def get_context_jp_3(self) -> str: return self.context_sentences.second.japanese.get()
-    def set_context_jp_3(self, value: str) -> None: self.context_sentences.second.japanese.set(value)
-    def get_context_jp_3_audio(self) -> str: return self.context_sentences.third.audio.get()
-    def get_context_en_3(self) -> str: return self.context_sentences.third.english.get()
-    def set_context_en_3(self, value: str) -> None: self.context_sentences.third.english.set(value)
-
     def set_meaning_mnemonic(self, value: str) -> None: self.set_field(NoteFields.Vocab.source_mnemonic, value)
 
     def get_audio_male(self) -> str: return self.get_field(NoteFields.Vocab.Audio_b)
