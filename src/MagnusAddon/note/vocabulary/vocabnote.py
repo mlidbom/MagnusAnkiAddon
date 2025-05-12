@@ -13,6 +13,7 @@ from note.note_constants import Mine, NoteFields, NoteTypes
 from note.notefields.string_field import StringField
 from note.vocabnote_cloner import VocabCloner
 from note.vocabulary import vocabnote_context_sentences, vocabnote_generated_data, vocabnote_meta_tag, vocabnote_wanikani_extensions
+from note.vocabulary.vocabnote_audio import VocabNoteAudio
 from note.vocabulary.vocabnote_context_sentences import VocabContextSentences
 from note.vocabulary.vocabnote_related_notes import VocabNoteRelatedNotes
 from note.waninote import WaniNote
@@ -30,6 +31,7 @@ class VocabNote(WaniNote):
         self.user_mnemonic: StringField = StringField(self, NoteFields.Vocab.Mnemonic__)
         self.related_notes: VocabNoteRelatedNotes = VocabNoteRelatedNotes(self)
         self.context_sentences: VocabContextSentences = VocabContextSentences(self)
+        self.audio = VocabNoteAudio(self)
 
     def __repr__(self) -> str: return f"""{self.get_question()}"""
 
@@ -109,10 +111,10 @@ class VocabNote(WaniNote):
         return lookup.priority_spec() if lookup else PrioritySpec(set())
 
     def get_primary_audio(self) -> str:
-        if self.get_audio_male():
-            return self.get_audio_male()
-        elif self.get_audio_female():
-            return self.get_audio_female()
+        if self.audio.first.get():
+            return self.audio.first.get()
+        elif self.audio.second.get():
+            return self.audio.second.get()
         else:
             return ""
 
@@ -262,12 +264,6 @@ class VocabNote(WaniNote):
     def is_intransitive(self) -> bool: return any(val for val in self._intransitive_string_values if val in self.get_speech_types())
 
     def set_meaning_mnemonic(self, value: str) -> None: self.set_field(NoteFields.Vocab.source_mnemonic, value)
-
-    def get_audio_male(self) -> str: return self.get_field(NoteFields.Vocab.Audio_b)
-    def set_audio_male(self, value: list[str]) -> None: self.set_field(NoteFields.Vocab.Audio_b, ''.join([f'[sound:{item}]' for item in value]))
-
-    def get_audio_female(self) -> str: return self.get_field(NoteFields.Vocab.Audio_g)
-    def set_audio_female(self, value: list[str]) -> None: self.set_field(NoteFields.Vocab.Audio_g, ''.join([f'[sound:{item}]' for item in value]))
 
     def update_from_wani(self, wani_vocab: models.Vocabulary) -> None:
         vocabnote_wanikani_extensions.update_from_wani(self, wani_vocab)

@@ -11,7 +11,10 @@ class AudioField:
     def __init__(self, note: JPNote, field_name: str) -> None:
         self._field = StringField(note, field_name)
 
-    def file_path(self) -> str: return self._field.get()[7:-1]
+    def has_audio(self) -> bool:
+        return self._field.get().startswith("[sound:")
+
+    def file_path(self) -> str: return self._field.get()[7:-1] if self.has_audio() else ""
 
     def get(self) -> str: return self._field.get()
 
@@ -20,3 +23,5 @@ class WritableAudioField(AudioField):
         super().__init__(note, field_name)
 
     def set(self, value: str) -> None: self._field.set(value)
+
+    def set_multiple(self, values: list[str]) -> None: self._field.set(''.join([f'[sound:{item}]' for item in values]))

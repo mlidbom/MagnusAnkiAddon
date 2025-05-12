@@ -41,14 +41,16 @@ class WaniDownloader:
         male_audio_mp3 = [audio for audio in wani_vocab.pronunciation_audios if audio.metadata.gender == "male" and audio.content_type == "audio/mpeg"]
 
         female_audios = [cls.download_file(value.url, f"Wani_{wani_vocab.id}_{value.metadata.pronunciation}_female.mp3") for value in female_audio_mp3]
-        vocab.set_audio_female(female_audios[::-1])
+        value2 = female_audios[::-1]
+        vocab.audio.second.set_multiple(value2)
 
         male_audios = [cls.download_file(value.url, f"Wani_{wani_vocab.id}_{value.metadata.pronunciation}_male.mp3") for value in male_audio_mp3]
-        vocab.set_audio_male(male_audios[::-1])
+        value1 = male_audios[::-1]
+        vocab.audio.first.set_multiple(value1)
 
     @classmethod
     def fetch_missing_vocab_audio(cls) -> None:
         vocab_missing_audio: list[VocabNote] = [vocab for vocab in app.col().vocab.all_wani() if
-                                                vocab.get_audio_female() == ""]
+                                                vocab.audio.second.get() == ""]
         for vocab in vocab_missing_audio:
             cls.fetch_audio_from_wanikani(vocab)
