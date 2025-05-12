@@ -26,8 +26,8 @@ class SentenceNote(JPNote):
         self.question = StripHtmlOnReadFallbackStringField(self, SentenceNoteFields.user_question, SentenceNoteFields.source_question)
         self.answer = StripHtmlOnReadFallbackStringField(self, SentenceNoteFields.user_answer, SentenceNoteFields.source_answer)
         self._screenshot = StringField(self, SentenceNoteFields.screenshot)
-        self.audio = WritableAudioField(self, SentenceNoteFields.audio)
-        self._user_answer = StringField(self, SentenceNoteFields.user_answer)
+        self.audio: WritableAudioField = WritableAudioField(self, SentenceNoteFields.audio)
+        self._user_answer: StringField = StringField(self, SentenceNoteFields.user_answer)
         self.configuration: CachingSentenceConfigurationField = CachingSentenceConfigurationField(self)
 
     def parsing_result(self) -> ParsingResult: return self.configuration.parsing_result()

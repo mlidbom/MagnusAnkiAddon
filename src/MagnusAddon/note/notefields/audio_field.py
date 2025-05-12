@@ -14,7 +14,7 @@ class AudioField:
     def has_audio(self) -> bool:
         return self._field.get().strip().startswith("[sound:")
 
-    def file_path(self) -> str:
+    def first_audiofile_path(self) -> str:
         return self.audio_files_paths()[0] if self.has_audio() else ""
 
     def raw_walue(self) -> str: return self._field.get()

@@ -17,7 +17,7 @@ class VocabNoteAudio:
 
 
     def get_primary_audio_path(self) -> str:
-        return self.first.file_path() or self.second.file_path() or ""
+        return self.first.first_audiofile_path() or self.second.first_audiofile_path() or ""
 
     def get_primary_audio(self) -> str:
         return self.first.raw_walue() or self.second.raw_walue()
