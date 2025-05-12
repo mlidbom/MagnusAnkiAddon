@@ -8,7 +8,7 @@ from note.note_constants import Mine, NoteFields
 from note.notefields.comma_separated_strings_list_field import CommaSeparatedStringsListField
 from note.notefields.string_field import StringField
 from note.vocabnote_cloner import VocabCloner
-from note.vocabulary import vocabnote_generated_data, vocabnote_meta_tag, vocabnote_wanikani_extensions
+from note.vocabulary import vocabnote_generated_data, vocabnote_meta_tag
 from note.vocabulary.vocabnote_audio import VocabNoteAudio
 from note.vocabulary.vocabnote_conjugator import VocabNoteConjugator
 from note.vocabulary.vocabnote_context_sentences import VocabContextSentences
@@ -71,10 +71,6 @@ class VocabNote(WaniNote):
         clean = ex_str.strip_html_and_bracket_markup(self.get_question() + self.forms.all_raw_string())
         return set(char for char in clean if kana_utils.character_is_kanji(char))
 
-    def set_reading_mnemonic(self, value: str) -> None: self.set_field(NoteFields.Vocab.source_reading_mnemonic, value)
-
-    def set_component_subject_ids(self, value: str) -> None: self.set_field(NoteFields.Vocab.component_subject_ids, value)
-
     def priority_spec(self) -> PrioritySpec:
         from language_services.jamdict_ex.dict_lookup import DictLookup
         lookup = DictLookup.try_lookup_vocab_word_or_name(self)
@@ -107,4 +103,4 @@ class VocabNote(WaniNote):
 
     def update_from_wani(self, wani_vocab: models.Vocabulary) -> None:
         super().update_from_wani(wani_vocab)
-        vocabnote_wanikani_extensions.update_from_wani(self, wani_vocab)
+        self.wani_extensions.update_from_wani(wani_vocab)

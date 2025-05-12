@@ -4,34 +4,14 @@ import typing
 
 from anki.notes import Note
 from note.note_constants import Mine, NoteFields, NoteTypes
+from note.notefields.comma_separated_strings_list_field import CommaSeparatedStringsListField
+from note.notefields.comma_separated_strings_set_field import CommaSeparatedStringsSetField
 from note.notefields.string_field import StringField
 from wanikani.wanikani_api_client import WanikaniClient
 
 if typing.TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
     from wanikani_api import models
-
-def update_from_wani(self: VocabNote, wani_vocab: models.Vocabulary) -> None:
-    self.wani_extensions.set_meaning_mnemonic(wani_vocab.meaning_mnemonic)
-
-    meanings = ', '.join(str(meaning.meaning) for meaning in wani_vocab.meanings)
-    self.wani_extensions.set_source_answer(meanings)
-
-    value = ", ".join(wani_vocab.parts_of_speech)
-    self.parts_of_speech.set_raw_string_value(value)
-
-    self.set_reading_mnemonic(wani_vocab.reading_mnemonic)
-
-    self.readings.set([reading.reading for reading in wani_vocab.readings])
-
-    component_subject_ids = [str(subject_id) for subject_id in wani_vocab.component_subject_ids]
-    self.set_component_subject_ids(", ".join(component_subject_ids))
-
-    client = WanikaniClient.get_instance()
-    kanji_subjects = [client.get_kanji_by_id(int(kanji_id)) for kanji_id in wani_vocab.component_subject_ids]
-    kanji_characters = [subject.characters for subject in kanji_subjects]
-    value1 = ", ".join(kanji_characters)
-    self.wani_extensions.set_kanji(value1)
 
 def create_from_wani_vocabulary(wani_vocab: models.Vocabulary) -> None:
     from ankiutils import app
@@ -60,7 +40,29 @@ class VocabNoteWaniExtensions:
     def __init__(self, vocab: VocabNote) -> None:
         self._vocab = vocab
         self._meaning_mnemonic: StringField = StringField(vocab, NoteFields.Vocab.source_mnemonic)
+        self.component_subject_ids: CommaSeparatedStringsSetField = CommaSeparatedStringsSetField(vocab, NoteFields.Vocab.component_subject_ids)
+        self.kanji: CommaSeparatedStringsListField = CommaSeparatedStringsListField(vocab, NoteFields.Vocab.Kanji)
+        self.reading_mnemonic: StringField = StringField(vocab, NoteFields.Vocab.source_reading_mnemonic)
 
     def set_source_answer(self, value: str) -> None: self._vocab._source_answer.set(value) # noqa this extensions is essentially part of the Vocab class
-    def set_meaning_mnemonic(self, value: str) -> None: self._meaning_mnemonic.set(value)
-    def set_kanji(self, value: str) -> None: self._vocab.set_field(NoteFields.Vocab.Kanji, value)
+
+    def update_from_wani(self, wani_vocab: models.Vocabulary) -> None:
+        self._vocab.wani_extensions._meaning_mnemonic.set(wani_vocab.meaning_mnemonic)
+
+        meanings = ', '.join(str(meaning.meaning) for meaning in wani_vocab.meanings)
+        self.set_source_answer(meanings)
+
+        value = ", ".join(wani_vocab.parts_of_speech)
+        self._vocab.parts_of_speech.set_raw_string_value(value)
+
+        self.reading_mnemonic.set(wani_vocab.reading_mnemonic)
+
+        self._vocab.readings.set([reading.reading for reading in wani_vocab.readings])
+
+        component_subject_ids = set([str(subject_id) for subject_id in wani_vocab.component_subject_ids])
+        self.component_subject_ids.set(component_subject_ids)
+
+        client = WanikaniClient.get_instance()
+        kanji_subjects = [client.get_kanji_by_id(int(kanji_id)) for kanji_id in wani_vocab.component_subject_ids]
+        kanji_characters = [subject.characters for subject in kanji_subjects]
+        self.kanji.set(kanji_characters)
