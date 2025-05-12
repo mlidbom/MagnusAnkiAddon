@@ -16,7 +16,7 @@ if TYPE_CHECKING:
     from note.jpnote import JPNote
     from note.kanjinote import KanjiNote
     from note.radicalnote import RadicalNote
-    from note.vocabnote import VocabNote
+    from note.vocabulary.vocabnote import VocabNote
 
 f_question = MyNoteFields.question
 f_reading = NoteFields.Vocab.Reading

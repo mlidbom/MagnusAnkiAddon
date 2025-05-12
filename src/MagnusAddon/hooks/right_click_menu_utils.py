@@ -10,7 +10,7 @@ from PyQt6.QtWidgets import QMenu, QMessageBox
 
 if TYPE_CHECKING:
     from note.jpnote import JPNote
-    from note.vocabnote import VocabNote
+    from note.vocabulary.vocabnote import VocabNote
 
 
 def _confirm(menu: QMenu, message:str) -> bool:

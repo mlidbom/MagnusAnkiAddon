@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 import pytest
 from fixtures.collection_factory import inject_empty_anki_collection_with_note_types
 from fixtures.stub_factory import stub_ui_dependencies
-from note.vocabnote import VocabNote
+from note.vocabulary.vocabnote import VocabNote
 
 if TYPE_CHECKING:
     from collections.abc import Generator

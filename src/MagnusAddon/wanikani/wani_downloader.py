@@ -8,7 +8,7 @@ from ankiutils import app
 from wanikani.wanikani_api_client import WanikaniClient
 
 if TYPE_CHECKING:
-    from note.vocabnote import VocabNote
+    from note.vocabulary.vocabnote import VocabNote
 
 
 class FileDownloadError(Exception):

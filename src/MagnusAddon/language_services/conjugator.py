@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from note.vocabnote import VocabNote
+    from note.vocabulary.vocabnote import VocabNote
 
 _i_stem_index = 0
 _a_stem_index = 1

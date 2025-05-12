@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from anki.collection import Collection
     from anki.notes import Note, NoteId
     from note.collection.cache_runner import CacheRunner
-    from note.vocabnote import VocabNote
+    from note.vocabulary.vocabnote import VocabNote
 
 
 class _SentenceSnapshot(CachedNote):

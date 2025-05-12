@@ -4,7 +4,7 @@ from unittest.mock import MagicMock
 
 import pytest
 from language_services.jamdict_ex.dict_lookup import DictLookup
-from note.vocabnote import VocabNote
+from note.vocabulary.vocabnote import VocabNote
 
 
 @pytest.mark.parametrize('word, readings', [ # JPDB, CC100

@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 from note.collection.backend_facade import BackEndFacade
 from note.collection.note_cache import CachedNote, NoteCache
 from note.note_constants import NoteTypes
-from note.vocabnote import VocabNote
+from note.vocabulary.vocabnote import VocabNote
 
 if TYPE_CHECKING:
     from anki.collection import Collection

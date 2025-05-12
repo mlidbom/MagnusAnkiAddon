@@ -14,6 +14,7 @@ from note.note_constants import Mine, NoteFields, NoteTypes
 from note.notefields.string_field import StringField
 from note.notefields.string_set_field import StringSetField
 from note.vocabnote_cloner import VocabCloner
+from note.waninote import WaniNote
 from sysutils import ex_sequence, ex_str, kana_utils
 from wanikani.wanikani_api_client import WanikaniClient
 
@@ -65,7 +66,7 @@ class VocabMetaTag:
         self.display = display
         self.tooltip = tooltip
 
-class VocabNote(JPNote):
+class VocabNote(WaniNote):
     def __init__(self, note: Note) -> None:
         super().__init__(note)
         self.cloner = VocabCloner(self)

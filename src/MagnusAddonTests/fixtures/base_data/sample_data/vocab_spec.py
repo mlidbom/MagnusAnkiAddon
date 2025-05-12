@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Optional
 from note.note_constants import Mine
 
 if TYPE_CHECKING:
-    from note.vocabnote import VocabNote
+    from note.vocabulary.vocabnote import VocabNote
 
 class VocabSpec:
     # noinspection PyDefaultArgument
@@ -33,7 +33,7 @@ class VocabSpec:
                 and other.readings == self.readings)
 
     def create_vocab_note(self) -> VocabNote:
-        from note.vocabnote import VocabNote
+        from note.vocabulary.vocabnote import VocabNote
         vocab_note = VocabNote.create(self.question, self.answer, self.readings)
         vocab_note.set_user_compounds(self.compounds)
 

@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from note.kanjinote import KanjiNote
 from note.note_constants import NoteTypes
 from note.radicalnote import RadicalNote
-from note.vocabnote import VocabNote
+from note.vocabulary.vocabnote import VocabNote
 from wanikani.wanikani_api_client import WanikaniClient
 
 if TYPE_CHECKING:

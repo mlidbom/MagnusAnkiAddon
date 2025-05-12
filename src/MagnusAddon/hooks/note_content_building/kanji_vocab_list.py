@@ -8,7 +8,7 @@ from note.kanjinote import KanjiNote
 from sysutils.ex_str import newline
 
 if TYPE_CHECKING:
-    from note.vocabnote import VocabNote
+    from note.vocabulary.vocabnote import VocabNote
 
 
 def generate_vocab_html_list(_kanji_note: KanjiNote) -> str:

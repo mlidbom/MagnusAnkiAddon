@@ -15,7 +15,7 @@ from sysutils import ex_sequence, ex_str, kana_utils
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.candidate_form import CandidateForm
     from language_services.janome_ex.word_extraction.extracted_word import ExtractedWord
-    from note.vocabnote import VocabNote
+    from note.vocabulary.vocabnote import VocabNote
 
 class SentenceNote(JPNote):
     def __init__(self, note: Note) -> None:

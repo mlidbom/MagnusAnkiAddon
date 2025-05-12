@@ -10,7 +10,7 @@ from sysutils.typed import str_
 if TYPE_CHECKING:
     from jamdict.jmdict import JMDEntry
     from jamdict.util import LookupResult
-    from note.vocabnote import VocabNote
+    from note.vocabulary.vocabnote import VocabNote
 
 import queue
 import threading

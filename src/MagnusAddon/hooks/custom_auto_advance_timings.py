@@ -11,7 +11,7 @@ from note.jpnote import JPNote
 from note.kanjinote import KanjiNote
 from note.note_constants import CardTypes
 from note.sentencenote import SentenceNote
-from note.vocabnote import VocabNote
+from note.vocabulary.vocabnote import VocabNote
 from sysutils.typed import non_optional
 
 if TYPE_CHECKING:

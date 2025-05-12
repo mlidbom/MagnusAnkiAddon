@@ -5,7 +5,7 @@ from aqt import mw, qconnect
 from aqt.qt import QKeySequence, QShortcut
 from note.jpnote import JPNote
 from note.kanjinote import KanjiNote
-from note.vocabnote import VocabNote
+from note.vocabulary.vocabnote import VocabNote
 
 
 def init() -> None:

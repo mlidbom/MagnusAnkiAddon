@@ -12,7 +12,7 @@ from sysutils import ex_str, progress_display_runner
 if TYPE_CHECKING:
     from anki.notes import NoteId
     from note.kanjinote import KanjiNote
-    from note.vocabnote import VocabNote
+    from note.vocabulary.vocabnote import VocabNote
 
 
 def update_all() -> None:

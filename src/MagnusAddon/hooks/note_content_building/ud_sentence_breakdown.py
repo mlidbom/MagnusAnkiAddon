@@ -12,7 +12,7 @@ from sysutils import kana_utils
 from sysutils.ex_str import newline
 
 if TYPE_CHECKING:
-    from note.vocabnote import VocabNote
+    from note.vocabulary.vocabnote import VocabNote
 
 
 def _build_vocab_list(word_to_show: list[str], excluded_words:set[str], title:str, include_mnemonics:bool = False, show_words_missing_dictionary_entries:bool = False, include_extended_sentence_statistics:bool = False) -> str:

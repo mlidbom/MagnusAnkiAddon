@@ -13,7 +13,7 @@ from sysutils.typed import non_optional
 
 if TYPE_CHECKING:
     from note.sentencenote import SentenceNote
-    from note.vocabnote import VocabNote
+    from note.vocabulary.vocabnote import VocabNote
     from PyQt6.QtWidgets import QMenu
 
 def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboard: str) -> None:

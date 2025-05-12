@@ -8,7 +8,7 @@ from note import kanjinote_mnemonic_maker
 
 if TYPE_CHECKING:
     from note.jpnote import JPNote
-    from note.vocabnote import VocabNote
+    from note.vocabulary.vocabnote import VocabNote
     from wanikani_api import models
 
 from note.note_constants import CardTypes, Mine, NoteFields, NoteTypes
@@ -82,7 +82,7 @@ class KanjiNote(WaniNote):
         update_primary_audios()
 
     def get_vocab_notes_sorted(self) -> list[VocabNote]:
-        from note import vocabnote
+        from note.vocabulary import vocabnote
         vocab_list = vocabnote.sort_vocab_list_by_studying_status(self.get_vocab_notes(), self.get_primary_vocabs_or_defaults(), preferred_kanji=self.get_question())
         return vocab_list
 

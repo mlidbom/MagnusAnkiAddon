@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Callable
 from ankiutils import app
 from aqt import gui_hooks
 from note import queue_manager
-from note.vocabnote import VocabNote
+from note.vocabulary.vocabnote import VocabNote
 from sysutils.typed import non_optional
 from wanikani import wani_note_updater
 from wanikani.wani_downloader import WaniDownloader

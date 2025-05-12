@@ -4,7 +4,7 @@ import language_services.conjugator
 from ankiutils import app
 from aqt import gui_hooks
 from hooks.note_content_building.content_renderer import PrerenderingAnswerContentRenderer
-from note.vocabnote import VocabNote
+from note.vocabulary.vocabnote import VocabNote
 from sysutils import ex_str
 from sysutils.ex_str import newline
 

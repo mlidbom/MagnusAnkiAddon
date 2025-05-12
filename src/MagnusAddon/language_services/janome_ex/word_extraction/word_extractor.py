@@ -11,7 +11,7 @@ from sysutils import ex_sequence
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
-    from note.vocabnote import VocabNote
+    from note.vocabulary.vocabnote import VocabNote
 
 
 _noise_characters = {'.',',',':',';','/','|','。','、'}

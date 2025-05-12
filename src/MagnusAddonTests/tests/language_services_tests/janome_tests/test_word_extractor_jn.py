@@ -7,7 +7,7 @@ from fixtures.collection_factory import inject_anki_collection_with_select_data
 from language_services.janome_ex.tokenizing.jn_tokenizer import JNTokenizer
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from language_services.janome_ex.word_extraction.word_extractor import jn_extractor
-from note.vocabnote import VocabNote
+from note.vocabulary.vocabnote import VocabNote
 
 if TYPE_CHECKING:
     from collections.abc import Generator

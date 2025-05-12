@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
     from note.kanjinote import KanjiNote
     from note.sentencenote import SentenceNote
-    from note.vocabnote import VocabNote
+    from note.vocabulary.vocabnote import VocabNote
 
 # noinspection PyUnusedFunction
 @pytest.fixture(scope="module", autouse=True)

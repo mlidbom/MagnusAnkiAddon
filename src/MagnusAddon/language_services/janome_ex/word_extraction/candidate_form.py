@@ -11,7 +11,7 @@ from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.candidate_word import CandidateWord
-    from note.vocabnote import VocabNote
+    from note.vocabulary.vocabnote import VocabNote
 
 from sysutils.ex_str import newline
 

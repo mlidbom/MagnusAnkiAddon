@@ -7,7 +7,7 @@ from language_services import conjugator
 from note.note_constants import Mine
 
 if TYPE_CHECKING:
-    from note.vocabnote import VocabNote
+    from note.vocabulary.vocabnote import VocabNote
 
 class VocabCloner:
     def __init__(self, note: VocabNote) -> None:
