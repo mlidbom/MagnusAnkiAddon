@@ -81,7 +81,7 @@ def test_ignores_noise_characters(setup_collection_with_select_data: object) -> 
 def insert_custom_words(custom_words: list[str]) -> None:
     from ankiutils import app
     for custom_word in custom_words:
-        VocabNote.create(custom_word, "", [""])
+        VocabNote.factory.create(custom_word, "", [""])
     app.col().flush_cache_updates()
 
 @pytest.mark.parametrize('sentence, custom_words, excluded, expected_output, expected_display_output', [
@@ -192,7 +192,7 @@ def _run_assertions(sentence: str, custom_words: list[str], excluded: list[WordE
 def insert_custom_words_with_excluded_forms(custom_words: list[list[str]]) -> None:
     from ankiutils import app
     for custom_word in custom_words:
-        note = VocabNote.create(custom_word[0], "", [""])
+        note = VocabNote.factory.create(custom_word[0], "", [""])
         note.forms.set_list(custom_word)
     app.col().flush_cache_updates()
 

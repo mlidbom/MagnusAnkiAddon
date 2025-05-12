@@ -61,7 +61,7 @@ def build_right_click_menu(root_menu: QMenu, note: JPNote | None, selection: str
 
 def build_string_menu(menu: QMenu, string: str, string_note_menu_factory: typing.Callable[[QMenu, str], None]) -> None:
     def build_create_note_menu(create_note_menu: QMenu, to_create: str) -> None:
-        create_vocab_note_action(create_note_menu, shortcutfinger.home1("vocab"), lambda _string=to_create: VocabNote.create_with_dictionary(_string))  # type: ignore
+        create_vocab_note_action(create_note_menu, shortcutfinger.home1("vocab"), lambda _string=to_create: VocabNote.factory.create_with_dictionary(_string))  # type: ignore
         create_note_action(create_note_menu, shortcutfinger.home2("sentence"), lambda _word=to_create: SentenceNote.create(_word))  # type: ignore
         create_note_action(create_note_menu, shortcutfinger.home3("kanji"), lambda _word=to_create: KanjiNote.create(_word, "TODO", "", ""))  # type: ignore
 

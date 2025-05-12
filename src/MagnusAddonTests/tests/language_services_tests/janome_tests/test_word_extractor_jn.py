@@ -80,7 +80,7 @@ def test_ignores_noise_characters() -> None:
 def insert_custom_words(custom_words: list[str]) -> None:
     from ankiutils import app
     for custom_word in custom_words:
-        VocabNote.create(custom_word, "", [""])
+        VocabNote.factory.create(custom_word, "", [""])
     app.col().flush_cache_updates()
 
 @pytest.mark.parametrize('sentence, custom_words, excluded, expected_output', [
@@ -148,7 +148,7 @@ def test_hierarchical_extraction(sentence: str, custom_words: list[str], exclude
 def insert_custom_words_with_excluded_forms(custom_words: list[list[str]]) -> None:
     from ankiutils import app
     for custom_word in custom_words:
-        note = VocabNote.create(custom_word[0], "", [""])
+        note = VocabNote.factory.create(custom_word[0], "", [""])
         note.forms.set_list(custom_word)
     app.col().flush_cache_updates()
 

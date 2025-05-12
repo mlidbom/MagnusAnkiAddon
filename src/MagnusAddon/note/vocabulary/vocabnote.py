@@ -3,17 +3,17 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import language_services.conjugator
-from anki.notes import Note
 from ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules  # noqa
 from language_services.jamdict_ex.dict_lookup import DictLookup
 from language_services.jamdict_ex.priority_spec import PrioritySpec
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
-from note.note_constants import Mine, NoteFields, NoteTypes
+from note.note_constants import Mine, NoteFields
 from note.notefields.string_field import StringField
 from note.vocabnote_cloner import VocabCloner
 from note.vocabulary import vocabnote_context_sentences, vocabnote_generated_data, vocabnote_meta_tag, vocabnote_wanikani_extensions
 from note.vocabulary.vocabnote_audio import VocabNoteAudio
 from note.vocabulary.vocabnote_context_sentences import VocabContextSentences
+from note.vocabulary.vocabnote_factory import VocabNoteFactory
 from note.vocabulary.vocabnote_forms import VocabNoteForms
 from note.vocabulary.vocabnote_related_notes import VocabNoteRelatedNotes
 from note.vocabulary.vocabnote_sentences import VocabNoteSentences
@@ -21,10 +21,12 @@ from note.waninote import WaniNote
 from sysutils import ex_sequence, ex_str, kana_utils
 
 if TYPE_CHECKING:
+    from anki.notes import Note
     from note.jpnote import JPNote
     from wanikani_api import models
 
 class VocabNote(WaniNote):
+    factory: VocabNoteFactory = VocabNoteFactory()
     def __init__(self, note: Note) -> None:
         super().__init__(note)
         self.cloner: VocabCloner = VocabCloner(self)
@@ -117,27 +119,6 @@ class VocabNote(WaniNote):
     def generate_sentences_from_context_sentences(self, require_audio: bool) -> None:
         vocabnote_context_sentences.generate_sentences_from_context_sentences(self, require_audio)
 
-    @classmethod
-    def create_with_dictionary(cls, question: str) -> VocabNote:
-        dict_entry = DictLookup.lookup_word_shallow(question)
-        if not dict_entry.found_words(): return cls.create(question, "TODO", [])
-        readings = list(set(ex_sequence.flatten([ent.kana_forms() for ent in dict_entry.entries])))
-        created = cls.create(question, "TODO", readings)
-        created.generate_and_set_answer()
-        return created
-
-    @classmethod
-    def create(cls, question: str, answer: str, readings: list[str]) -> VocabNote:
-        from ankiutils import app
-        backend_note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Vocab))
-        note = VocabNote(backend_note)
-        note.set_question(question)
-        note.set_user_answer(answer)
-        note.set_readings(readings)
-        note.update_generated_data()
-        app.anki_collection().addNote(backend_note)
-        return note
-
     def requires_exact_match(self) -> bool:
         return self.has_tag(Mine.Tags.requires_exact_match)
 
@@ -163,7 +144,7 @@ class VocabNote(WaniNote):
         return ex_sequence.flatten([self._get_stems_for_form(form) for form in self.forms.unexcluded_set()])
 
     def clone(self) -> VocabNote:
-        clone = self.create(self.get_question(), self.get_answer(), self.get_readings())
+        clone = VocabNote.factory.create(self.get_question(), self.get_answer(), self.get_readings())
 
         for i in range(len(self._note.fields)):
             clone._note.fields[i] = self._note.fields[i]
@@ -190,7 +171,7 @@ class VocabNote(WaniNote):
 
         segments_missing_vocab = [segment for segment in compound_parts if not app.col().vocab.is_word(segment)]
         for missing in segments_missing_vocab:
-            created = VocabNote.create_with_dictionary(missing)
+            created = VocabNote.factory.create_with_dictionary(missing)
             created.suspend_all_cards()
 
         self.set_user_compounds(compound_parts)

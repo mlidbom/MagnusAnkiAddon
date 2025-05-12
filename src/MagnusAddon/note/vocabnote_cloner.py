@@ -9,6 +9,7 @@ from note.note_constants import Mine
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
 
+
 class VocabCloner:
     def __init__(self, note: VocabNote) -> None:
         self.note = note
@@ -25,9 +26,9 @@ class VocabCloner:
                 return base + addendum if truncate_characters == 0 else base[0:-truncate_characters] + addendum
             return addendum + base if truncate_characters == 0 else base[truncate_characters:] + addendum
 
-        new_vocab = self.note.create(question=append_prepend_addendum(self.note.get_question()),
-                                     answer=self.note.get_answer(),
-                                     readings=[append_prepend_addendum(reading) for reading in self.note.get_readings()])
+        new_vocab = self.note.factory.create(question=append_prepend_addendum(self.note.get_question()),
+                                             answer=self.note.get_answer(),
+                                             readings=[append_prepend_addendum(reading) for reading in self.note.get_readings()])
 
         if set_compounds:
             if not is_prefix:
@@ -91,7 +92,7 @@ class VocabCloner:
     def clone_to_derived_form(self, form_suffix: str, create_form_root: Callable[[VocabNote, str], str]) -> VocabNote:
         def create_full_form(form: str) -> str: return create_form_root(self.note, form) + form_suffix
 
-        clone = self.note.create(question=create_full_form(self.note.get_question()), answer=self.note.get_answer(), readings=[])
+        clone = self.note.factory.create(question=create_full_form(self.note.get_question()), answer=self.note.get_answer(), readings=[])
         clone.forms.set_list([create_full_form(form) for form in self.note.forms.unexcluded_list()])
         clone.set_readings([create_full_form(reading) for reading in self.note.get_readings()])
         clone.set_speech_type("expression")

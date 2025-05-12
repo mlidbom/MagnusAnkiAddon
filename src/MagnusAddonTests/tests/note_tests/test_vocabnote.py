@@ -22,7 +22,7 @@ def setup() -> Generator[None, None, None]:
     ("らっしゃい", "please-come", ["らっしゃい"], ["らっしゃい", "[[らっしゃる]]"])
 ])
 def test_excluded_forms(question:str, answer:str, readings:list[str], forms:set[str]) -> None:
-    note = VocabNote.create(question, answer, readings)
+    note = VocabNote.factory.create(question, answer, readings)
     note.forms.set_set(forms)
     forms_list = note.forms.unexcluded_list()
     assert len(forms_list) == 1
