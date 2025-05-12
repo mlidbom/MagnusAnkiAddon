@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import language_services.conjugator
 import pytest
 

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 _frequency_maximum = set([f"nf{num:02}" for num in range(1, 10)])
 _frequency_high = set([f"nf{num}" for num in range(11, 20)])
 _frequency_medium = set([f"nf{num}" for num in range(21, 40)])

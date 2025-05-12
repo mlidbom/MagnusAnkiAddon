@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from anki.decks import DeckDict, DeckId
 from anki_extentions.deck_configdict_ex import DeckConfigDictEx
 from sysutils.typed import checked_cast_generics, str_

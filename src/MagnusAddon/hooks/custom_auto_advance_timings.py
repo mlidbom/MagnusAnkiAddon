@@ -1,4 +1,7 @@
-from anki.cards import Card
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from anki_extentions.card_ex import CardEx
 from ankiutils import app, ui_utils
 from aqt import gui_hooks, mw
@@ -10,6 +13,9 @@ from note.note_constants import CardTypes
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
 from sysutils.typed import non_optional
+
+if TYPE_CHECKING:
+    from anki.cards import Card
 
 _real_auto_advance_to_answer_if_enabled = Reviewer._auto_advance_to_answer_if_enabled # noqa
 

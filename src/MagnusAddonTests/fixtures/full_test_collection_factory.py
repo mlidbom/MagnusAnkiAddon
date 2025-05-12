@@ -1,12 +1,17 @@
+from __future__ import annotations
+
 import os
 import shutil
 import tempfile
 import unittest.mock
-from collections.abc import Generator
 from contextlib import contextmanager
 from os import path
+from typing import TYPE_CHECKING
 
 from anki.collection import Collection
+
+if TYPE_CHECKING:
+    from collections.abc import Generator
 
 
 @contextmanager

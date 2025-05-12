@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import language_services.conjugator
 from ankiutils import app
 from aqt import gui_hooks

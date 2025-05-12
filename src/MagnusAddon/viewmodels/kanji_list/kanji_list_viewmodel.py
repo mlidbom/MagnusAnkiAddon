@@ -1,4 +1,9 @@
-from viewmodels.kanji_list.sentence_kanji_viewmodel import KanjiViewModel
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from viewmodels.kanji_list.sentence_kanji_viewmodel import KanjiViewModel
 
 
 class KanjiListViewModel:

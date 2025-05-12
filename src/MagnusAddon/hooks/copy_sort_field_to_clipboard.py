@@ -1,15 +1,19 @@
-from typing import cast
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, cast
 
 import pyperclip  # type: ignore
-from anki.cards import Card
 from anki.models import NotetypeDict
-from anki.notes import Note
 from ankiutils import app
 from ankiutils.app import get_ui_utils
 from aqt import gui_hooks
 from sysutils import app_thread_pool, ex_str
 from sysutils.collections.recent_items import RecentItems
 from sysutils.timeutil import StopWatch
+
+if TYPE_CHECKING:
+    from anki.cards import Card
+    from anki.notes import Note
 
 
 def copy_card_sort_field_to_clipboard(note: Note) -> None:

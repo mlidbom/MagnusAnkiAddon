@@ -1,11 +1,12 @@
-from typing import Callable
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Callable
 
 from ankiutils import app
 from ankiutils.app import get_ui_utils, main_window
 from aqt import qconnect
 from batches import local_note_updater
 from configuration.configuration import show_japanese_options
-from configuration.configuration_value import ConfigurationValueBool
 from configuration.readings_mapping_dialog import show_readings_mappings
 from hooks import shortcutfinger
 from hooks.right_click_menu_open_in_anki import build_open_in_anki_menu
@@ -16,6 +17,9 @@ from PyQt6.QtWidgets import QInputDialog, QLineEdit, QMenu
 from sysutils.typed import non_optional
 from wanikani import note_importer
 from wanikani.wani_downloader import WaniDownloader
+
+if TYPE_CHECKING:
+    from configuration.configuration_value import ConfigurationValueBool
 
 
 def refresh() -> None:

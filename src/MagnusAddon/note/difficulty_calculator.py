@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from sysutils import ex_sequence, kana_utils
 
 

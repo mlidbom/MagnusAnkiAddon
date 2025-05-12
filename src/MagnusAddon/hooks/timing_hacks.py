@@ -1,9 +1,14 @@
-import time
+from __future__ import annotations
 
-from anki.cards import Card
-from anki.notes import Note
+import time
+from typing import TYPE_CHECKING
+
 from ankiutils.audio_suppressor import audio_suppressor
 from aqt import gui_hooks
+
+if TYPE_CHECKING:
+    from anki.cards import Card
+    from anki.notes import Note
 
 
 class UglyUITimingBasedHacksData:

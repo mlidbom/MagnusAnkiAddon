@@ -1,14 +1,20 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 import pyperclip  # type: ignore
 from ankiutils import app, query_builder
 from hooks import shortcutfinger
 from hooks.right_click_menu_utils import add_lookup_action, add_single_vocab_lookup_action, add_ui_action, add_vocab_dependencies_lookup, create_vocab_note_action
 from note.note_constants import NoteFields, NoteTypes
-from note.sentencenote import SentenceNote
-from note.vocabnote import VocabNote
-from PyQt6.QtWidgets import QMenu
 from sysutils import ex_sequence, ex_str
 from sysutils.ex_str import newline
 from sysutils.typed import non_optional
+
+if TYPE_CHECKING:
+    from note.sentencenote import SentenceNote
+    from note.vocabnote import VocabNote
+    from PyQt6.QtWidgets import QMenu
 
 
 def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboard: str) -> None:

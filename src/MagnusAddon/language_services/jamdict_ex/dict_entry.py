@@ -1,7 +1,13 @@
-from collections.abc import Sequence
+from __future__ import annotations
 
-from jamdict.jmdict import JMDEntry, Sense
+from typing import TYPE_CHECKING
+
 from sysutils import ex_sequence, kana_utils
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
+
+    from jamdict.jmdict import JMDEntry, Sense
 
 
 def _sense_is_transitive_verb(sense: Sense) -> bool:
@@ -22,7 +28,7 @@ class DictEntry:
                                                  if 'word usually written using kana alone' in sense.misc)
 
     @classmethod
-    def create(cls, entries: Sequence[JMDEntry], lookup_word: str, lookup_reading: list[str]) -> list['DictEntry']:
+    def create(cls, entries: Sequence[JMDEntry], lookup_word: str, lookup_reading: list[str]) -> list[DictEntry]:
         return [cls(entry, lookup_word, lookup_reading) for entry in entries]
 
     def has_matching_kana_form(self, search: str) -> bool:

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from os.path import dirname
 
 from aqt.reviewer import Reviewer

@@ -1,4 +1,9 @@
-from anki.scheduler.v3 import SchedulingState, SchedulingStates
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from anki.scheduler.v3 import SchedulingState, SchedulingStates
 
 
 class SchedulingStatesEx:

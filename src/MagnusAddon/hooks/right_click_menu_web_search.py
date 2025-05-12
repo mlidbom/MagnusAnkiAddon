@@ -1,10 +1,16 @@
-from collections.abc import Callable
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 from urllib import parse
 
 from aqt.utils import openLink
 from hooks import shortcutfinger
-from PyQt6.QtWidgets import QMenu
 from sysutils.typed import non_optional
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from PyQt6.QtWidgets import QMenu
 
 
 def build_web_search_menu(search_web_menu:QMenu, search_string:Callable[[],str]) -> None:

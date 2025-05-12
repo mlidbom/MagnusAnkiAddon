@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import pytest
 from language_services.janome_ex.tokenizing.jn_parts_of_speech import POS
 from language_services.janome_ex.tokenizing.jn_token import JNToken

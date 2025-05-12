@@ -1,8 +1,14 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from aqt import gui_hooks
 from hooks.note_content_building.content_renderer import PrerenderingAnswerContentRenderer
 from note.kanjinote import KanjiNote
-from note.vocabnote import VocabNote
 from sysutils.ex_str import newline
+
+if TYPE_CHECKING:
+    from note.vocabnote import VocabNote
 
 
 def generate_vocab_html_list(_kanji_note: KanjiNote) -> str:

@@ -1,4 +1,9 @@
-from collections.abc import Callable
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 
 def _format_finger(finger: str, text:str) -> str: return f"""&{finger} {text}"""

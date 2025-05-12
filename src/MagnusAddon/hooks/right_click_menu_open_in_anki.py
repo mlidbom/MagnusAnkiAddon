@@ -1,10 +1,14 @@
-from typing import Callable
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Callable
 
 from ankiutils import app, query_builder
 from hooks import shortcutfinger
 from hooks.right_click_menu_utils import add_lookup_action_lambda
-from PyQt6.QtWidgets import QMenu
 from sysutils.typed import non_optional
+
+if TYPE_CHECKING:
+    from PyQt6.QtWidgets import QMenu
 
 
 def build_open_in_anki_menu(open_in_anki_menu:QMenu, search_string:Callable[[],str]) -> None:

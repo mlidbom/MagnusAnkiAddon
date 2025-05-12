@@ -1,5 +1,10 @@
+from __future__ import annotations
+
 import re
-from collections.abc import Sequence
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
 
 newline = "\n"
 full_width_space = "　"

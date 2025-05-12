@@ -1,7 +1,11 @@
 """extentions for working with Iterable"""
+from __future__ import annotations
+
 import itertools
-from collections.abc import Iterable
-from typing import Callable, TypeVar
+from typing import TYPE_CHECKING, Callable, TypeVar
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
 
 T = TypeVar('T')
 

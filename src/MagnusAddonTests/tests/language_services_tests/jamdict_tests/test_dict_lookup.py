@@ -1,10 +1,15 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 from unittest.mock import MagicMock
 
 import pytest
 from ankiutils import app  # noqa
-from language_services.jamdict_ex.dict_entry import DictEntry
 from language_services.jamdict_ex.dict_lookup import DictLookup
 from note.vocabnote import VocabNote
+
+if TYPE_CHECKING:
+    from language_services.jamdict_ex.dict_entry import DictEntry
 
 
 @pytest.mark.parametrize('word, readings', [

@@ -1,7 +1,12 @@
-import threading
+from __future__ import annotations
 
-from anki.sound import AVTag
+import threading
+from typing import TYPE_CHECKING
+
 from aqt.sound import av_player
+
+if TYPE_CHECKING:
+    from anki.sound import AVTag
 
 
 class AudioSuppressor:

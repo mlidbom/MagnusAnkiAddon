@@ -1,9 +1,15 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from ankiutils import query_builder
 from hooks import shortcutfinger
 from hooks.right_click_menu_utils import add_lookup_action
-from note.radicalnote import RadicalNote
-from PyQt6.QtWidgets import QMenu
 from sysutils.typed import non_optional
+
+if TYPE_CHECKING:
+    from note.radicalnote import RadicalNote
+    from PyQt6.QtWidgets import QMenu
 
 
 def setup_note_menu(note_menu: QMenu, note: RadicalNote) -> None:

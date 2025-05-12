@@ -1,8 +1,14 @@
-from anki.notes import Note
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from note.note_constants import Mine, NoteFields
 from note.waninote import WaniNote
 from sysutils import ex_str
-from wanikani_api import models
+
+if TYPE_CHECKING:
+    from anki.notes import Note
+    from wanikani_api import models
 
 
 class KanaVocabNote(WaniNote):

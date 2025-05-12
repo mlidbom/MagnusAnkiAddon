@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from anki.models import NotetypeDict
 from ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules  # noqa
 from sysutils import typed

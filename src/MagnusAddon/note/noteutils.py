@@ -1,7 +1,13 @@
-from anki.cards import Card
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from anki.consts import QUEUE_TYPE_SUSPENDED
-from anki.notes import Note, NoteId
 from sysutils.typed import str_
+
+if TYPE_CHECKING:
+    from anki.cards import Card
+    from anki.notes import Note, NoteId
 
 _card_is_studying_cache: dict[NoteId, dict[str, bool]] = dict()
 

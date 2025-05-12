@@ -1,4 +1,6 @@
-from typing import Callable, TYPE_CHECKING  # noqa: I001
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Callable  # noqa: I001
 
 import aqt
 from ankiutils import app

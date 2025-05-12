@@ -1,7 +1,8 @@
-from collections.abc import Sequence
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 import aqt.browser
-from anki.cards import Card, CardId
 from ankiutils import app
 from aqt import gui_hooks
 from hooks import right_click_menu, shortcutfinger
@@ -9,8 +10,13 @@ from note import queue_manager
 from note.jpnote import JPNote
 from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
-from PyQt6.QtWidgets import QMenu
 from sysutils.typed import non_optional
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
+
+    from anki.cards import Card, CardId
+    from PyQt6.QtWidgets import QMenu
 
 
 def spread_due_dates(cards: Sequence[CardId], start_day: int, days: int) -> None:

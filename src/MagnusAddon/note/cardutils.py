@@ -1,11 +1,16 @@
 # noinspection PyUnresolvedReferences
-import time
+from __future__ import annotations
 
-from anki.cards import Card
+import time
+from typing import TYPE_CHECKING
+
 from anki.consts import QUEUE_TYPE_NEW
 from ankiutils import app
 from note.jpnote import JPNote
 from note.note_constants import NoteTypes
+
+if TYPE_CHECKING:
+    from anki.cards import Card
 
 
 class CardUtils:

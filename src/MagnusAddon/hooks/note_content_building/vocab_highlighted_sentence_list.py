@@ -1,11 +1,17 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from ankiutils import app
 from aqt import gui_hooks
 from hooks.note_content_building.content_renderer import PrerenderingAnswerContentRenderer
 from note.note_constants import Mine
-from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
 from sysutils import ex_sequence, ex_str, kana_utils
 from sysutils.ex_str import newline
+
+if TYPE_CHECKING:
+    from note.sentencenote import SentenceNote
 
 
 def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:

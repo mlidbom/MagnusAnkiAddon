@@ -1,13 +1,18 @@
+from __future__ import annotations
+
 import re
+from typing import TYPE_CHECKING
 
 from ankiutils import app
 from aqt import gui_hooks
 from hooks.note_content_building.content_renderer import PrerenderingAnswerContentRenderer
-from note.jpnote import JPNote
 from note.kanjinote import KanjiNote
 from note.radicalnote import RadicalNote
 from sysutils import ex_str, kana_utils
 from viewmodels.kanji_list.sentence_kanji_viewmodel import KanjiViewModel
+
+if TYPE_CHECKING:
+    from note.jpnote import JPNote
 
 
 def render_list(note:JPNote, kanjis:list[KanjiNote], kanji_readings:list[str]) -> str:

@@ -1,8 +1,14 @@
-from anki.scheduler.v3 import QueuedCards
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from anki_extentions.card_ex import CardEx
 from anki_extentions.sheduling_states_ex import SchedulingStatesEx
 from aqt.reviewer import V3CardInfo
 from sysutils.timeutil import StopWatch
+
+if TYPE_CHECKING:
+    from anki.scheduler.v3 import QueuedCards
 
 _oldMethod = V3CardInfo.from_queue
 def set_again_time_for_previously_failed_today_cards(queue:QueuedCards) -> V3CardInfo:

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from concurrent.futures.thread import ThreadPoolExecutor
 
 from PyQt6.QtCore import QCoreApplication, QThread

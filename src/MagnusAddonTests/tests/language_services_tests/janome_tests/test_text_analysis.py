@@ -1,10 +1,15 @@
-from collections.abc import Generator
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 import pytest
 from fixtures.collection_factory import inject_anki_collection_with_select_data, inject_empty_anki_collection_with_note_types
 from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from note.vocabnote import VocabNote
+
+if TYPE_CHECKING:
+    from collections.abc import Generator
 
 
 # noinspection PyUnusedFunction

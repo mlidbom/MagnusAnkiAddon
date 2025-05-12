@@ -1,14 +1,18 @@
-from typing import Callable
+from __future__ import annotations
 
-from anki.notes import Note
+from typing import TYPE_CHECKING, Callable
+
 from ankiutils import app
 from aqt import gui_hooks
-from aqt.editor import Editor
 from note import queue_manager
 from note.vocabnote import VocabNote
 from sysutils.typed import non_optional
 from wanikani import wani_note_updater
 from wanikani.wani_downloader import WaniDownloader
+
+if TYPE_CHECKING:
+    from anki.notes import Note
+    from aqt.editor import Editor
 
 
 def setup_editor_buttons(buttons: list[str], the_editor: Editor) -> None:

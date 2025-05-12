@@ -1,13 +1,18 @@
+from __future__ import annotations
+
 import gc
 import re
+from typing import TYPE_CHECKING
 
-from anki.notes import NoteId
 from ankiutils import app, query_builder
-from note.kanjinote import KanjiNote
 from note.note_constants import CardTypes, Mine
 from note.sentencenote import SentenceNote
-from note.vocabnote import VocabNote
 from sysutils import ex_str, progress_display_runner
+
+if TYPE_CHECKING:
+    from anki.notes import NoteId
+    from note.kanjinote import KanjiNote
+    from note.vocabnote import VocabNote
 
 
 def update_all() -> None:

@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+
 class SentenceSpec:
     def __init__(self, question: str, answer: str) -> None:
         self.question = question

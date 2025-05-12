@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from ankiutils import app, ui_utils
 from aqt import mw, qconnect
 from aqt.qt import QKeySequence, QShortcut

@@ -1,5 +1,11 @@
-from note.kanjinote import KanjiNote
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from sysutils import ex_str, kana_utils
+
+if TYPE_CHECKING:
+    from note.kanjinote import KanjiNote
 
 
 class KanjiViewModel:

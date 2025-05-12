@@ -1,8 +1,13 @@
-from collections.abc import Generator
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 import pytest
 from fixtures.collection_factory import inject_empty_anki_collection_with_note_types
 from wanikani import wanikani_api_client
+
+if TYPE_CHECKING:
+    from collections.abc import Generator
 
 
 # noinspection PyUnusedFunction

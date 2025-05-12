@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import threading
 from concurrent.futures import Future
 from typing import Callable, Generic, TypeVar, cast

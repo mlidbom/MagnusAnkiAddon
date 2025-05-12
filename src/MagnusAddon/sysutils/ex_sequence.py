@@ -1,6 +1,10 @@
 """extensions to the built in Sequence type"""
-from collections.abc import Sequence
-from typing import Callable, TypeVar
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Callable, TypeVar
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
 
 T = TypeVar('T')
 

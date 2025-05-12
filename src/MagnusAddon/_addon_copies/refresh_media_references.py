@@ -15,6 +15,7 @@ Note: Might lead to increased memory consumption if used excessively
 Copyright: (c) Glutanimate 2017 <https://glutanimate.com/>
 License: GNU AGPLv3 or later <https://www.gnu.org/licenses/agpl.html>
 """
+from __future__ import annotations
 
 import os
 

@@ -1,3 +1,7 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from ankiutils import app
 from aqt.utils import showInfo
 from note.kanjinote import KanjiNote
@@ -7,7 +11,9 @@ from note.sentencenote import SentenceNote
 from note.vocabnote import VocabNote
 from sysutils import progress_display_runner
 from wanikani.wanikani_api_client import WanikaniClient
-from wanikani_api.models import Vocabulary
+
+if TYPE_CHECKING:
+    from wanikani_api.models import Vocabulary
 
 waniClient = WanikaniClient.get_instance()
 

@@ -1,4 +1,7 @@
 # noinspection PyUnusedName
+from __future__ import annotations
+
+
 class Builtin:
     Note = "note"
     Tag = "tag"

@@ -1,9 +1,15 @@
-from collections.abc import Sequence
+from __future__ import annotations
 
-from anki.cards import CardId
-from anki.collection import OpChangesWithCount
+from typing import TYPE_CHECKING
+
 from aqt import gui_hooks, mw
 from note import noteutils
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
+
+    from anki.cards import CardId
+    from anki.collection import OpChangesWithCount
 
 
 def _monkey_patch(html:str, _card:object, _something_else_again:object) -> str:

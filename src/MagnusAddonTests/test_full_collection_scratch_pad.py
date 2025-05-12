@@ -1,4 +1,5 @@
-from collections.abc import Generator
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 import pytest
@@ -7,6 +8,8 @@ from fixtures.full_test_collection_factory import inject_full_anki_collection_fo
 from sysutils import ex_sequence, ex_str, kana_utils
 
 if TYPE_CHECKING:
+    from collections.abc import Generator
+
     from note.kanjinote import KanjiNote
     from note.sentencenote import SentenceNote
     from note.vocabnote import VocabNote

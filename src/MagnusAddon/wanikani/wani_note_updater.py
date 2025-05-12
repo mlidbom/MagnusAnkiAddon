@@ -1,9 +1,15 @@
-from anki.notes import Note
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from note.kanjinote import KanjiNote
 from note.note_constants import NoteTypes
 from note.radicalnote import RadicalNote
 from note.vocabnote import VocabNote
 from wanikani.wanikani_api_client import WanikaniClient
+
+if TYPE_CHECKING:
+    from anki.notes import Note
 
 wani_client = WanikaniClient.get_instance()
 

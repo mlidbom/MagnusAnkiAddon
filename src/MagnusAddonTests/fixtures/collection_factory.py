@@ -1,8 +1,10 @@
+from __future__ import annotations
+
 import tempfile
 import unittest.mock
-from collections.abc import Generator
 from contextlib import contextmanager
 from os import path
+from typing import TYPE_CHECKING
 
 from anki.collection import Collection
 from fixtures.base_data import note_type_factory
@@ -10,6 +12,9 @@ from fixtures.base_data.sample_data import kanji_spec, sentence_spec, vocab_spec
 from fixtures.stub_factory import stub_ui_dependencies
 from note.kanjinote import KanjiNote
 from note.sentencenote import SentenceNote
+
+if TYPE_CHECKING:
+    from collections.abc import Generator
 
 
 @contextmanager

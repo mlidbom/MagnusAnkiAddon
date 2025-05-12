@@ -1,11 +1,12 @@
 # noinspection PyUnusedClass, PyUnusedName
+from __future__ import annotations
 
 from sysutils import kana_utils
 
 
 class JNPartsOfSpeech:
     @staticmethod
-    def fetch(unparsed: str) -> 'JNPartsOfSpeech':
+    def fetch(unparsed: str) -> JNPartsOfSpeech:
         return _full_parts_of_speech_dictionary[unparsed]
 
     def __init__(self, level1:str, level2:str = "*", level3:str = "*", level4:str = "*") -> None:

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from ankiutils import app
 from aqt import gui_hooks
 from hooks.note_content_building.content_renderer import PrerenderingAnswerContentRenderer

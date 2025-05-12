@@ -1,15 +1,20 @@
+from __future__ import annotations
+
 import threading
-from collections.abc import Generator
 from contextlib import contextmanager
-from typing import Any, Callable, TypeVar
+from typing import TYPE_CHECKING, Any, Callable, TypeVar
 
 from ankiutils import app
-from ankiutils.ui_utils_interface import IUIUtils
 from fixtures.stubs.ui_utils_stub import UIUtilsStub
 from sysutils import progress_display_runner
 from sysutils.lazy import Lazy
 from sysutils.progress_display_runner import Closable
 from sysutils.typed import checked_cast
+
+if TYPE_CHECKING:
+    from collections.abc import Generator
+
+    from ankiutils.ui_utils_interface import IUIUtils
 
 _thread_local = threading.local()
 

@@ -1,11 +1,17 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from ankiutils import query_builder
 from hooks import shortcutfinger
 from hooks.right_click_menu_utils import add_lookup_action, add_ui_action
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from note.note_constants import NoteFields, NoteTypes
-from note.sentencenote import SentenceNote
-from PyQt6.QtWidgets import QMenu
 from sysutils.typed import non_optional
+
+if TYPE_CHECKING:
+    from note.sentencenote import SentenceNote
+    from PyQt6.QtWidgets import QMenu
 
 
 def build_note_menu(note_menu: QMenu, sentence: SentenceNote) -> None:

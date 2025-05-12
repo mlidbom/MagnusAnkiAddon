@@ -1,9 +1,14 @@
+from __future__ import annotations
+
 import os
+from typing import TYPE_CHECKING
 
 import requests
 from ankiutils import app
-from note.vocabnote import VocabNote
 from wanikani.wanikani_api_client import WanikaniClient
+
+if TYPE_CHECKING:
+    from note.vocabnote import VocabNote
 
 
 class FileDownloadError(Exception):

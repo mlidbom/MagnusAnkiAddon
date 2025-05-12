@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+
 class KanjiSpec:
     def __init__(self, question: str, answer: str, kun_readings: str, on_readings: str) -> None:
         self.question = question
