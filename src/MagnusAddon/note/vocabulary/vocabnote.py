@@ -49,8 +49,6 @@ class VocabNote(WaniNote):
 
     def __repr__(self) -> str: return f"""{self.get_question()}"""
 
-    def set_kanji(self, value: str) -> None: self.set_field(NoteFields.Vocab.Kanji, value)
-
     def in_compounds(self) -> list[VocabNote]:
         return self.collection.vocab.with_compound_part(self.get_question_without_noise_characters())
 

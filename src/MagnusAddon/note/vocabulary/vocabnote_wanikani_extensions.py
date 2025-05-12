@@ -30,7 +30,8 @@ def update_from_wani(self: VocabNote, wani_vocab: models.Vocabulary) -> None:
     client = WanikaniClient.get_instance()
     kanji_subjects = [client.get_kanji_by_id(int(kanji_id)) for kanji_id in wani_vocab.component_subject_ids]
     kanji_characters = [subject.characters for subject in kanji_subjects]
-    self.set_kanji(", ".join(kanji_characters))
+    value1 = ", ".join(kanji_characters)
+    self.wani_extensions.set_kanji(value1)
 
 def create_from_wani_vocabulary(wani_vocab: models.Vocabulary) -> None:
     from ankiutils import app
@@ -62,3 +63,4 @@ class VocabNoteWaniExtensions:
 
     def set_source_answer(self, value: str) -> None: self._vocab._source_answer.set(value) # noqa this extensions is essentially part of the Vocab class
     def set_meaning_mnemonic(self, value: str) -> None: self._meaning_mnemonic.set(value)
+    def set_kanji(self, value: str) -> None: self._vocab.set_field(NoteFields.Vocab.Kanji, value)
