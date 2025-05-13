@@ -53,6 +53,7 @@ class StopWatch:
     @staticmethod
     @contextmanager
     def log_warning_if_slower_than(warn_if_slower_than:float, message:str = "") -> Iterator[None]:
+        # noinspection DuplicatedCode
         watch = StopWatch()
 
         def get_caller_info() -> str:
@@ -62,7 +63,7 @@ class StopWatch:
             return f"{module_name}..{function_name}"
 
         def get_message() -> str:
-            return f"Execution time:{watch.elapsed_formatted()} for {get_caller_info()}#{message}"
+            return f"############## Execution time:{watch.elapsed_formatted()} for {get_caller_info()}#{message} ##############"
         try:
             yield
         finally:
@@ -71,3 +72,22 @@ class StopWatch:
                 mylog.log.warning(get_message())
             elif elapsed_seconds * 2 > warn_if_slower_than:
                 mylog.log.info(get_message())
+
+    @staticmethod
+    @contextmanager
+    def log_execution_time(message:str = "") -> Iterator[None]:
+        # noinspection DuplicatedCode
+        watch = StopWatch()
+
+        def get_caller_info() -> str:
+            caller_frame = sys._getframe(4) # noqa
+            module_name = caller_frame.f_globals["__name__"]
+            function_name = caller_frame.f_code.co_name
+            return f"{module_name}..{function_name}"
+
+        def get_message() -> str:
+            return f"############## Execution time:{watch.elapsed_formatted()} for {get_caller_info()}#{message} ##############"
+        try:
+            yield
+        finally:
+            mylog.log.info(get_message())

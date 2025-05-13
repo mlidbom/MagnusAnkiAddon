@@ -4,7 +4,8 @@ from functools import cache
 from typing import TYPE_CHECKING
 
 from language_services.jamdict_ex.priority_spec import PrioritySpec
-from sysutils.lazy import BackgroundInitialingLazy
+from sysutils.lazy import BackgroundInitialingLazy, Lazy
+from sysutils.timeutil import StopWatch
 from sysutils.typed import str_
 
 if TYPE_CHECKING:
@@ -34,15 +35,22 @@ class JamdictThreadingWrapper:
         self._thread = threading.Thread(target=self._worker, daemon=True)
         self._running = True
         self._thread.start()
+        self.jamdict:Lazy[Jamdict] = Lazy(self.create_jamdict_and_log_loading_time)
+
+    @staticmethod
+    def create_jamdict_and_log_loading_time() -> Jamdict:
+        with StopWatch.log_execution_time("Loading Jamdict into memory"):
+            jamdict = Jamdict(memory_mode=True)
+            jamdict.lookup("俺", lookup_chars=False, lookup_ne=True)
+            return jamdict
 
     def _worker(self) -> None:
-        jamdict = Jamdict(memory_mode=True)
         while self._running:
             request = self._queue.get()
             if request is None:
                 break
             try:
-                result = request.func(jamdict)
+                result = request.func(self.jamdict.instance())
                 request.future.set_result(result)
             except Exception as e:
                 request.future.set_exception(e)
@@ -65,41 +73,44 @@ class JamdictThreadingWrapper:
 _jamdict_threading_wrapper = JamdictThreadingWrapper()
 
 def _find_all_words() -> set[str]:
-    _jamdict = Jamdict(reuse_ctx=False)
-    kanji_forms: set[str] = set()
-    kana_forms: set[str] = set()
+    with StopWatch.log_execution_time("Prepopulating all word forms from jamdict."):
+        _jamdict = Jamdict(reuse_ctx=False)
+        kanji_forms: set[str] = set()
+        kana_forms: set[str] = set()
 
-    with _jamdict.jmdict.ctx() as ctx:
-        for batch in ctx.conn.execute("SELECT distinct text FROM Kanji"):
-            for row in batch:
-                kanji_forms.add(str_(row))
+        with _jamdict.jmdict.ctx() as ctx:
+            for batch in ctx.conn.execute("SELECT distinct text FROM Kanji"):
+                for row in batch:
+                    kanji_forms.add(str_(row))
 
-    with _jamdict.jmdict.ctx() as ctx:
-        for batch in ctx.conn.execute("SELECT distinct text FROM Kana"):
-            for row in batch:
-                kana_forms.add(str_(row))
+        with _jamdict.jmdict.ctx() as ctx:
+            for batch in ctx.conn.execute("SELECT distinct text FROM Kana"):
+                for row in batch:
+                    kana_forms.add(str_(row))
 
     return kanji_forms | kana_forms
 
 def _find_all_names() -> set[str]:
-    _jamdict = Jamdict(reuse_ctx=False)
-    kanji_forms: set[str] = set()
-    kana_forms: set[str] = set()
+    with StopWatch.log_execution_time("Prepopulating all name forms from jamdict."):
+        _jamdict = Jamdict(reuse_ctx=False)
+        kanji_forms: set[str] = set()
+        kana_forms: set[str] = set()
 
-    with _jamdict.jmdict.ctx() as ctx:
-        for batch in ctx.conn.execute("SELECT distinct text FROM NEKanji"):
-            for row in batch:
-                kanji_forms.add(str_(row))
+        with _jamdict.jmdict.ctx() as ctx:
+            for batch in ctx.conn.execute("SELECT distinct text FROM NEKanji"):
+                for row in batch:
+                    kanji_forms.add(str_(row))
 
-    with _jamdict.jmdict.ctx() as ctx:
-        for batch in ctx.conn.execute("SELECT distinct text FROM NEKana"):
-            for row in batch:
-                kana_forms.add(str_(row))
+        with _jamdict.jmdict.ctx() as ctx:
+            for batch in ctx.conn.execute("SELECT distinct text FROM NEKana"):
+                for row in batch:
+                    kana_forms.add(str_(row))
 
-    return kanji_forms | kana_forms
+        return kanji_forms | kana_forms
 
-_all_word_forms = BackgroundInitialingLazy(_find_all_words)
-_all_name_forms = BackgroundInitialingLazy(_find_all_names)
+is_unit_testing_mode = False
+_all_word_forms = Lazy(_find_all_words)
+_all_name_forms = Lazy(_find_all_names)
 
 class DictLookup:
     def __init__(self, entries: list[DictEntry], lookup_word: str, lookup_reading: list[str]) -> None:
@@ -183,11 +194,13 @@ class DictLookup:
 
     @classmethod
     def might_be_word(cls, word: str) -> bool:
-        return word in _all_word_forms.instance()
+        # this method is a pure optimization to save on dictionary calls during real runtime. During tests populating all the words is a suboptimization, so just always return true when testing
+        return is_unit_testing_mode or word in _all_word_forms.instance()
 
     @classmethod
     def might_be_name(cls, word: str) -> bool:
-        return word in _all_name_forms.instance()
+        # this method is a pure optimization to save on dictionary calls during real runtime. During tests populating all the words is a suboptimization, so just always return true when testing
+        return is_unit_testing_mode or word in _all_name_forms.instance()
 
     @classmethod
     def might_be_entry(cls, word: str) -> bool:
