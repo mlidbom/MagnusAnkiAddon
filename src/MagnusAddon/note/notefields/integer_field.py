@@ -13,6 +13,7 @@ class IntegerField:
         self._note = note
         self._field = StringField(note, field_name)
 
+    # noinspection PyUnusedFunction
     def get(self) -> int:
         return int(self._field.get()) if self._field.has_value() else 0
 

@@ -14,8 +14,7 @@ if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
     from note.vocabulary.vocabnote import VocabNote
 
-
-_noise_characters = {'.',',',':',';','/','|','。','、'}
+_noise_characters = {'.', ',', ':', ';', '/', '|', '。', '、'}
 _max_lookahead = 12
 
 class WordExtractor:
@@ -46,6 +45,7 @@ class WordExtractor:
     # noinspection PyDefaultArgument
     def extract_words(self, sentence: str, allow_duplicates: bool = False, exclusions: Optional[list[WordExclusion]] = None) -> list[ExtractedWord]:
         exclusions = exclusions if exclusions else []
+
         def _is_word(word: str) -> bool:
             return app.col().vocab.is_word(word) or DictLookup.is_word(word)
 
@@ -53,7 +53,7 @@ class WordExtractor:
             if _is_word(word):
                 add_word(word, surface)
 
-        def is_excluded_contextually(form_:str) -> bool:
+        def is_excluded_contextually(form_: str) -> bool:
             context = ""
             if token_index > 0:
                 context += tokens[token_index - 1].surface
@@ -64,7 +64,7 @@ class WordExtractor:
             context_exclusions = ex_sequence.flatten([list(voc.forms.excluded_set()) for voc in app.col().vocab.with_question(form_)])
             return any(exclusion for exclusion in context_exclusions if form_ in exclusion and exclusion in context)
 
-        def get_excluded_forms(form_:str) -> set[str]:
+        def get_excluded_forms(form_: str) -> set[str]:
             unexcluded_vocab_with_form = [voc for voc in (app.col().vocab.with_form(form_)) if not any(exclusion for exclusion in exclusions if exclusion.word == voc.get_question())]
             excluded_forms_list_for_form = [voc.forms.excluded_set() for voc in unexcluded_vocab_with_form]
             excluded_forms_set = set.union(*excluded_forms_list_for_form) if excluded_forms_list_for_form else set()
@@ -120,11 +120,11 @@ class WordExtractor:
                 if not is_excluded_form(token.base_form, surface_compound):
                     add_word_if_it_is_in_dictionary(surface_compound, surface_compound)
 
-        def passes_exact_match_requirement(base:str, surface:str) -> bool:
+        def passes_exact_match_requirement(base: str, surface: str) -> bool:
             if base == surface:
                 return True
 
-            exact_matches = ex_sequence.flatten([app.col().vocab.with_question(form) for form in [base,surface]])
+            exact_matches = ex_sequence.flatten([app.col().vocab.with_question(form) for form in [base, surface]])
             return not any(v for v in exact_matches if v.meta_data.flags.requires_exact_match())
 
         text = self._tokenizer.tokenize(sentence)
@@ -146,6 +146,5 @@ class WordExtractor:
             character_index += len(token.surface)
 
         return found_words_list
-
 
 jn_extractor = WordExtractor(JNTokenizer())

@@ -8,7 +8,7 @@ from ankiutils import app, query_builder
 from note.note_constants import CardTypes, Mine
 from note.sentencenote import SentenceNote
 from note.vocabulary import vocabnote_context_sentences
-from sysutils import ex_str, progress_display_runner
+from sysutils import ex_str, object_instance_tracker, progress_display_runner
 
 if TYPE_CHECKING:
     from anki.notes import NoteId
@@ -163,12 +163,16 @@ def reparse_sentences(sentences:list[SentenceNote]) -> None:
 
 def print_gc_status_and_collect() -> None:
 
+    object_instance_tracker.print_instance_counts()
+
     print(f"""
+################# Displaying GC status #################    
 Gc.isenabled(): {gc.isenabled()}
 Collecting...
 """)
     gc.collect()
 
+    object_instance_tracker.print_instance_counts()
 
 def reparse_sentences_for_vocab(vocab:VocabNote) -> None:
     query = query_builder.sentence_with_any_vocab_form_in_question(vocab)

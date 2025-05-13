@@ -42,7 +42,7 @@ def update_generated_data(vocab: VocabNote) -> None:
                 vocab.forms.set_set(vocab.forms.unexcluded_set() | set(vocab.readings.get()))
 
         speech_types = vocab.parts_of_speech.get() - {'Unknown',
-                                                     'Godan verbIchidan verb'  # crap inserted by bug in yomitan
+                                                      'Godan verbIchidan verb'  # crap inserted by bug in yomitan
                                                       }
         if len(speech_types) == 0:
             vocab.parts_of_speech.set_automatically_from_dictionary()

@@ -13,6 +13,7 @@ if TYPE_CHECKING:
 
 def generate_vocab_html_list(_kanji_note: KanjiNote) -> str:
     def _create_classes(_kanji: KanjiNote, _vocab: VocabNote) -> str:
+        # noinspection DuplicatedCode
         tags = list(_vocab.meta_data.priority_spec().tags)
         tags.sort()
         classes = " ".join([f"""common_ness_{prio}""" for prio in tags])

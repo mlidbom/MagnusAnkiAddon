@@ -10,6 +10,7 @@ from sysutils.ex_str import newline
 
 
 def _create_classes(_vocab: VocabNote) -> str:
+    # noinspection DuplicatedCode
     tags = list(_vocab.meta_data.priority_spec().tags)
     tags.sort()
     classes = " ".join([f"""common_ness_{prio}""" for prio in tags])
