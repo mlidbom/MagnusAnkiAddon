@@ -8,6 +8,10 @@ import _lib_patched # noqa NOTE: this line sets up lib paths, lib imports before
 import _lib # noqa NOTE: this line sets up lib paths, lib imports before here do not work when running in anki
 
 import hooks # noqa
+from ankiutils import app # noqa
+if app.config().enable_garbage_collection.get_value():
+    import gc
+    gc.enable()
 
 hooks.timing_hacks.init()
 hooks.browser_right_click_menu.init()

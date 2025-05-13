@@ -83,15 +83,26 @@ class JapaneseConfig:
                                                                                                default=False,
                                                                                                feature_toggler=set_enable_fsrs_short_term_with_steps)
 
-        self.decrease_failed_card_intervals_interval = ConfigurationValueInt("decrease_failed_card_intervals_interval", "Failed card again seconds for next again", 60)
         self.decrease_failed_card_intervals = ConfigurationValueBool("decrease_failed_card_intervals", "Decrease failed card intervals", False)
 
         self.prevent_double_clicks = ConfigurationValueBool("prevent_double_clicks", "Prevent double clicks", True)
         self.prefer_default_mnemocs_to_source_mnemonics = ConfigurationValueBool("prefer_default_mnemocs_to_source_mnemonics", "Prefer default mnemonics to source mnemonics", False)
+        self.enable_garbage_collection = ConfigurationValueBool("enable_garbage_collection", "Enable GC. Requires restart. (Reduces memory usage but slows Anki down and may cause crashes due to Qt incompatibility.", False)
+
+
+        self.decrease_failed_card_intervals_interval = ConfigurationValueInt("decrease_failed_card_intervals_interval", "Failed card again seconds for next again", 60)
+
+
         self.minimum_time_viewing_question = ConfigurationValueFloat("minimum_time_viewing_question", "Minimum time viewing question", 0.5)
         self.minimum_time_viewing_answer = ConfigurationValueFloat("minimum_time_viewing_answer", "Minimum time viewing answer", 0.5)
 
-        self.feature_toggles = [self.yomitan_integration_copy_answer_to_clipboard, self.anki_internal_fsrs_set_enable_fsrs_short_term_with_steps, self.decrease_failed_card_intervals, self.prevent_double_clicks, self.boost_failed_card_allowed_time, self.prefer_default_mnemocs_to_source_mnemonics]
+        self.feature_toggles = [self.yomitan_integration_copy_answer_to_clipboard,
+                                self.anki_internal_fsrs_set_enable_fsrs_short_term_with_steps,
+                                self.decrease_failed_card_intervals,
+                                self.prevent_double_clicks,
+                                self.boost_failed_card_allowed_time,
+                                self.prefer_default_mnemocs_to_source_mnemonics,
+                                self.enable_garbage_collection]
 
         self.readings_mappings_dict = self.get_readings_mappings()
         self.readings_mappings.register_update_callback(self._update_after_save)
