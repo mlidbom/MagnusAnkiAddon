@@ -10,7 +10,7 @@ from note.collection.sentence_collection import SentenceCollection
 from note.collection.vocab_collection import VocabCollection
 from note.jpnote import JPNote
 from note.note_constants import Mine, NoteTypes
-from sysutils import app_thread_pool
+from sysutils import app_thread_pool, ex_gc, ex_thread
 from sysutils.object_instance_tracker import ObjectInstanceTracker
 from sysutils.timeutil import StopWatch
 
@@ -20,10 +20,11 @@ if TYPE_CHECKING:
     from anki.collection import Collection
     from anki.notes import NoteId
 
-
+_instance_is_destructing_on_background_thread: set[JPCollection] = set()
 class JPCollection:
     def __init__(self, anki_collection: Collection) -> None:
         with StopWatch.log_warning_if_slower_than(5, "Full collection setup"):
+            ex_thread.wait_until_(lambda: len(_instance_is_destructing_on_background_thread) == 0, timeout_seconds=10)
             self.instance_tracker = ObjectInstanceTracker(JPCollection)
 
             if not app.is_testing():
@@ -34,12 +35,12 @@ class JPCollection:
                 self.cache_manager = CacheRunner(anki_collection)
 
                 from language_services.jamdict_ex.dict_lookup import DictLookup
-                dictlookup_loading:Future[None] = app_thread_pool.pool.submit(DictLookup.ensure_loaded_into_memory) #doesn't really belong here but it works to speed up loading for user experience
+                dictlookup_loading: Future[None] = app_thread_pool.pool.submit(DictLookup.ensure_loaded_into_memory)  # doesn't really belong here but it works to speed up loading for user experience
 
-                self.vocab:VocabCollection = VocabCollection(anki_collection, self.cache_manager)
-                self.kanji:KanjiCollection = KanjiCollection(anki_collection, self, self.cache_manager)
-                self.sentences:SentenceCollection = SentenceCollection(anki_collection, self.cache_manager)
-                self.radicals:RadicalCollection = RadicalCollection(anki_collection, self.cache_manager)
+                self.vocab: VocabCollection = VocabCollection(anki_collection, self.cache_manager)
+                self.kanji: KanjiCollection = KanjiCollection(anki_collection, self, self.cache_manager)
+                self.sentences: SentenceCollection = SentenceCollection(anki_collection, self.cache_manager)
+                self.radicals: RadicalCollection = RadicalCollection(anki_collection, self.cache_manager)
 
                 dictlookup_loading.result()
 
@@ -55,7 +56,7 @@ class JPCollection:
 
     @classmethod
     def note_from_note_id(cls, note_id: NoteId) -> JPNote:
-        note = app.anki_collection().get_note(note_id) #todo: verify wether calling get_note is slow, if so hack this into the in memory caches instead
+        note = app.anki_collection().get_note(note_id)  # todo: verify wether calling get_note is slow, if so hack this into the in memory caches instead
 
         if JPNote.get_note_type(note) == NoteTypes.Kanji: return app.col().kanji.with_id(note.id)
         elif JPNote.get_note_type(note) == NoteTypes.Vocab: return app.col().vocab.with_id(note.id)
@@ -63,7 +64,19 @@ class JPCollection:
         elif JPNote.get_note_type(note) == NoteTypes.Sentence: return app.col().sentences.with_id(note.id)
         return JPNote(note)
 
-    def destruct(self) -> None: self.cache_manager.destruct()
+    def destruct_async(self) -> None:
+        _instance_is_destructing_on_background_thread.add(self)
+
+        def real_destruct() -> None:
+            ex_gc.collect_on_on_ui_thread()
+            self.cache_manager.destruct()
+            _instance_is_destructing_on_background_thread.remove(self)
+
+        app_thread_pool.pool.submit(real_destruct)
+
+    def destruct_sync(self) -> None:
+        self.cache_manager.destruct()
+
 
     def flush_cache_updates(self) -> None: self.cache_manager.flush_updates()
     def pause_cache_updates(self) -> None: self.cache_manager.pause_data_generation()

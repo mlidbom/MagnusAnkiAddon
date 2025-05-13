@@ -48,7 +48,7 @@ def build_main_menu() -> None:
     build_config_menu(non_optional(my_menu.addMenu(shortcutfinger.home1("Config"))))
     build_lookup_menu(non_optional(my_menu.addMenu(shortcutfinger.home2("Lookup"))))
     build_local_menu(non_optional(my_menu.addMenu(shortcutfinger.home3("Local Actions"))))
-    build_misc_menu(non_optional(my_menu.addMenu(shortcutfinger.home4("Debug"))))
+    build_debug_menu(non_optional(my_menu.addMenu(shortcutfinger.home4("Debug"))))
 
 def build_lookup_menu(lookup_menu: QMenu) -> None:
     def get_text_input() -> str:
@@ -57,9 +57,6 @@ def build_lookup_menu(lookup_menu: QMenu) -> None:
 
     build_open_in_anki_menu(non_optional(lookup_menu.addMenu(shortcutfinger.home2("Anki"))), get_text_input)
     build_web_search_menu(non_optional(lookup_menu.addMenu(shortcutfinger.home3("Web"))), get_text_input)
-
-def build_misc_menu(misc_menu: QMenu) -> None:
-    build_debug_menu(non_optional(misc_menu.addMenu(shortcutfinger.home1("Debug"))))
 
 def build_debug_menu(debug_menu: QMenu) -> None:
     add_menu_ui_action(debug_menu, shortcutfinger.home1("Refresh UI"), refresh, "F5")

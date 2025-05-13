@@ -59,12 +59,13 @@ def _reset(_col:Optional[object] = None) -> None:
     reset()
 
 def _destruct() -> None:
-    global _collection
-    if _collection and not _collection.try_cancel_scheduled_init():
-        _collection.instance().destruct()
-        gc.collect()
+    from sysutils.timeutil import StopWatch
+    with StopWatch.log_warning_if_slower_than(0.2):
+        global _collection
+        if _collection and not _collection.try_cancel_scheduled_init():
+            _collection.instance().destruct_async()
 
-    _collection = None
+        _collection = None
 
 def _collection_is_being_invalidated(_col:Optional[object] = None) -> None:
     _destruct()
