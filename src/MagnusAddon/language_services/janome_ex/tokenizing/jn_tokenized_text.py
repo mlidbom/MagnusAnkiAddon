@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+import mylog
 from ankiutils import app
 from language_services import conjugator
 from language_services.jamdict_ex.dict_lookup import DictLookup
-from mylog import log
 from sysutils import ex_sequence
 
 if TYPE_CHECKING:
@@ -77,11 +77,11 @@ class JNTokenWrapper(ProcessedToken):
         eru_token = SplitToken(f"{potential_stem_ending}{final_character}", f"{potential_stem_ending}る", "える", True, True)
         new_surface = root_verb_token.surface + eru_token.surface
         if new_surface != self.surface:
-            log.warning(f"combined surface should be {self.surface} but is {new_surface}, bailing out")
+            mylog.warning(f"combined surface should be {self.surface} but is {new_surface}, bailing out")
             return []
         new_base = root_verb_token.surface + eru_token.base_form
         if new_base != self.base_form:
-            log.warning(f"combined base should be {self.base_form} but is {new_base} bailing out")
+            mylog.warning(f"combined base should be {self.base_form} but is {new_base} bailing out")
             return []
         return [root_verb_token, eru_token]
 

@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import gc
 from typing import Any
 
 from sysutils import ex_gc
@@ -19,7 +18,6 @@ class ObjectInstanceTracker:
 
     def run_gc_and_assert_single_instance(self) -> None:
         with StopWatch.log_execution_time():
-            #gc.collect()
             ex_gc.collect_on_on_ui_thread()
             if not instance_counts[self.type_name] == 1: raise Exception(f"Expected single instance of {self.type_name}, found {instance_counts[self.type_name]}")
 

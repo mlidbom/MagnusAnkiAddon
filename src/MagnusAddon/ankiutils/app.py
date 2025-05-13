@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-import gc
 from typing import TYPE_CHECKING, Callable, Optional
 
+import mylog
 from sysutils.lazy import BackgroundInitialingLazy
 from sysutils.typed import checked_cast, non_optional
 
@@ -18,7 +18,6 @@ if TYPE_CHECKING:
 
 _collection: Optional[BackgroundInitialingLazy[JPCollection]] = None
 
-
 _init_hooks: set[Callable[[], None]] = set()
 _collection_closed_hooks: set[Callable[[], None]] = set()
 
@@ -26,21 +25,21 @@ def _call_init_hooks() -> None:
     global _init_hooks
     for hook in _init_hooks: hook()
 
-def add_init_hook(hook:Callable[[], None]) -> None:
+def add_init_hook(hook: Callable[[], None]) -> None:
     _init_hooks.add(hook)
 
 def config() -> JapaneseConfig:
     from configuration import configuration_value
     return configuration_value.config.instance()
 
+def _init(delay_seconds: float = 1.0) -> None:
+    mylog.info(f"_init delay= {delay_seconds}")
 
-def _init(_col:Optional[object] = None, delay_seconds: float = 0) -> None:
     from aqt import mw
     from note.collection.jp_collection import JPCollection
     global _collection
     if _collection and not _collection.try_cancel_scheduled_init():
         return
-
     _collection = BackgroundInitialingLazy(lambda: JPCollection(mw.col), delay_seconds=delay_seconds)
     _call_init_hooks()
 
@@ -48,6 +47,7 @@ def is_initialized() -> bool:
     return _collection and _collection.is_initialized()
 
 def reset(delay_seconds: float = 0) -> None:
+    mylog.info(f"reset: delay= {delay_seconds}")
     _destruct()
     _init(delay_seconds)
 
@@ -55,23 +55,27 @@ def is_testing() -> bool:
     import sys
     return "pytest" in sys.modules
 
-def _reset(_col:Optional[object] = None) -> None:
+def _reset(_col: Optional[object] = None) -> None:
+    mylog.info("_reset")
     reset()
 
 def _destruct() -> None:
+    mylog.info("_destruct")
     from sysutils.timeutil import StopWatch
     with StopWatch.log_warning_if_slower_than(0.2):
         global _collection
         if _collection and not _collection.try_cancel_scheduled_init():
-            _collection.instance().destruct_async()
+            _collection.instance().destruct_sync()
 
         _collection = None
 
-def _collection_is_being_invalidated(_col:Optional[object] = None) -> None:
+def _collection_is_being_invalidated(_col: Optional[object] = None) -> None:
+    mylog.info("_collection_is_being_invalidated")
     _destruct()
-    reset(delay_seconds=9999) #Unless forced by the user we don't actually want to run an initialization here
+    reset(delay_seconds=9999)  # Unless forced by the user we don't actually want to run an initialization here
 
 def _profile_closing() -> None:
+    mylog.info("profile_closing")
     from aqt import gui_hooks
     gui_hooks.sync_will_start.remove(_collection_is_being_invalidated)
     _collection_closed_hooks.remove(_destruct)
@@ -80,6 +84,7 @@ def _profile_closing() -> None:
     _destruct()
 
 def _profile_opened() -> None:
+    mylog.info("profile_opened")
     from aqt import gui_hooks
     gui_hooks.sync_will_start.append(_collection_is_being_invalidated)
     _collection_closed_hooks.add(_destruct)
@@ -129,4 +134,3 @@ def _setup_gui_hooks() -> None:
     gui_hooks.profile_did_open.append(_profile_opened)
 
 _setup_gui_hooks()
-

@@ -69,9 +69,9 @@ class StopWatch:
         finally:
             elapsed_seconds = watch.elapsed_seconds()
             if elapsed_seconds > warn_if_slower_than:
-                mylog.log.warning(get_message())
+                mylog.warning(get_message())
             elif elapsed_seconds * 2 > warn_if_slower_than:
-                mylog.log.info(get_message())
+                mylog.info(get_message())
 
     @staticmethod
     @contextmanager
@@ -90,4 +90,4 @@ class StopWatch:
         try:
             yield
         finally:
-            mylog.log.info(get_message())
+            mylog.info(get_message())

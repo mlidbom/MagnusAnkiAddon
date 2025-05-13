@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import time
-from typing import Callable, TypeVar
+from typing import Any, Callable, TypeVar
 
 from ankiutils import app
 from PyQt6.QtCore import Qt
@@ -18,7 +18,7 @@ class Closable:
 
 
 
-def with_spinning_progress_dialog(message:str, action: Callable[[], None]) -> None:
+def run_on_background_thread_with_spinning_progress_dialog(message:str, action: Callable[[], Any]) -> None:
     dialog = _create_spinning_progress_dialog(message)
 
     future = app_thread_pool.pool.submit(action)

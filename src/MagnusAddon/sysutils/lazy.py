@@ -18,6 +18,7 @@ class Lazy(Generic[T]):
             self._instance = self.factory()
         return self._instance
 
+    def __call__(self) -> T: return self.instance()
 
 class BackgroundInitialingLazy(Generic[T]):
     def __init__(self, factory: Callable[[], T], delay_seconds: float = 0) -> None:
@@ -34,7 +35,6 @@ class BackgroundInitialingLazy(Generic[T]):
         with self._lock:
             if not self._instance:
                 self._instance = app_thread_pool.pool.submit(self._factory)
-
 
     def is_initialized(self) -> bool: return bool(self._instance and self._instance.done() and not self._instance.cancelled())
 
@@ -55,6 +55,6 @@ class BackgroundInitialingLazy(Generic[T]):
             def init() -> None:
                 cast(Future[T], self._instance).result()
 
-            progress_display_runner.with_spinning_progress_dialog("Populating cache", init)
+            progress_display_runner.run_on_background_thread_with_spinning_progress_dialog("Populating cache", init)
 
         return cast(Future[T], self._instance).result()

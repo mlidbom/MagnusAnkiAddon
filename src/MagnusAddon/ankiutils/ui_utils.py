@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Callable, Optional
 
+from PyQt6.QtWidgets import QApplication
+
 from ankiutils import app
 
 if TYPE_CHECKING:
@@ -114,7 +116,11 @@ class UIUtils(IUIUtils):
             browser._previewer.activateWindow() # noqa
 
     def tool_tip(self, message: str, milliseconds:int = 3000) -> None:
-        app_thread_pool.run_on_ui_thread_fire_and_forget(lambda: tooltip(message))
+        def show_tooltip() -> None:
+            tooltip(message, milliseconds)
+            QApplication.processEvents()
+
+        app_thread_pool.run_on_ui_thread_fire_and_forget(show_tooltip)
 
 def try_get_card_being_reviewed() -> Card | None:
     return main_window().reviewer.card

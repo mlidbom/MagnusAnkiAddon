@@ -1,25 +1,34 @@
 from __future__ import annotations
 
-import logging
 import os
-import sys
-from logging.handlers import RotatingFileHandler
-from pathlib import Path
-from typing import Optional
+from typing import TYPE_CHECKING, Optional
 
-from anki.hooks import wrap
-from aqt import mw
-from aqt.addons import AddonManager
+from sysutils.lazy import Lazy
+
+if TYPE_CHECKING:
+    import logging
+    from logging.handlers import RotatingFileHandler
+    from pathlib import Path
 
 
 def is_testing() -> bool: return "pytest" in sys.modules
 
 def log_file_path(addon: str) -> Path:
+    from pathlib import Path
+
+    from aqt import mw
     logs_dir = Path(mw.addonManager.addonsFolder(addon)) / "user_files" / "logs"
     logs_dir.mkdir(parents=True, exist_ok=True)
     return logs_dir / f"{addon}.log"
 
 def get_logger(module: str) -> logging.Logger:
+    import logging
+    import sys
+    from logging.handlers import RotatingFileHandler
+
+    from anki.hooks import wrap
+    from aqt import mw
+    from aqt.addons import AddonManager
     addon = ""
     if is_testing():
         logger = logging.getLogger("addon")
@@ -62,4 +71,8 @@ def get_logger(module: str) -> logging.Logger:
 
 
 _addon_name = os.path.basename(os.path.dirname(__file__))
-log = get_logger(_addon_name)
+_logger:Lazy[logging.Logger] = Lazy(lambda: get_logger(_addon_name))
+
+def info(msg: str) -> None: _logger().info(msg)
+def warning(msg: str) -> None: _logger().warning(msg)
+

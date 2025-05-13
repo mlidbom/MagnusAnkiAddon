@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+import mylog
 from ankiutils import app
 from note.collection.cache_runner import CacheRunner
 from note.collection.kanji_collection import KanjiCollection
@@ -10,7 +11,7 @@ from note.collection.sentence_collection import SentenceCollection
 from note.collection.vocab_collection import VocabCollection
 from note.jpnote import JPNote
 from note.note_constants import Mine, NoteTypes
-from sysutils import app_thread_pool, ex_gc, ex_thread
+from sysutils import app_thread_pool, ex_thread
 from sysutils.object_instance_tracker import ObjectInstanceTracker
 from sysutils.timeutil import StopWatch
 
@@ -23,12 +24,15 @@ if TYPE_CHECKING:
 _instance_is_destructing_on_background_thread: set[JPCollection] = set()
 class JPCollection:
     def __init__(self, anki_collection: Collection) -> None:
+        mylog.info("JPCollection.__init__")
+        app.get_ui_utils().tool_tip(f"{Mine.app_name} loading", 60000)
         with StopWatch.log_warning_if_slower_than(5, "Full collection setup"):
             ex_thread.wait_until_(lambda: len(_instance_is_destructing_on_background_thread) == 0, timeout_seconds=10)
             self.instance_tracker = ObjectInstanceTracker(JPCollection)
 
             if not app.is_testing():
                 self.instance_tracker.run_gc_and_assert_single_instance()
+                app.get_ui_utils().tool_tip(f"{Mine.app_name} loading", 60000)
 
             with StopWatch.log_warning_if_slower_than(5, "Core collection setup - no gc"):
                 self.anki_collection = anki_collection
@@ -63,16 +67,6 @@ class JPCollection:
         elif JPNote.get_note_type(note) == NoteTypes.Radical: return app.col().radicals.with_id(note.id)
         elif JPNote.get_note_type(note) == NoteTypes.Sentence: return app.col().sentences.with_id(note.id)
         return JPNote(note)
-
-    def destruct_async(self) -> None:
-        _instance_is_destructing_on_background_thread.add(self)
-
-        def real_destruct() -> None:
-            ex_gc.collect_on_on_ui_thread()
-            self.cache_manager.destruct()
-            _instance_is_destructing_on_background_thread.remove(self)
-
-        app_thread_pool.pool.submit(real_destruct)
 
     def destruct_sync(self) -> None:
         self.cache_manager.destruct()
