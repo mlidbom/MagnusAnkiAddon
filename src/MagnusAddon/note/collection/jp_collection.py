@@ -11,6 +11,8 @@ from note.collection.vocab_collection import VocabCollection
 from note.jpnote import JPNote
 from note.note_constants import NoteTypes
 from sysutils import app_thread_pool
+from sysutils.object_instance_tracker import ObjectInstanceTracker
+from sysutils.timeutil import StopWatch
 
 if TYPE_CHECKING:
     from asyncio import Future
@@ -21,20 +23,30 @@ if TYPE_CHECKING:
 
 class JPCollection:
     def __init__(self, anki_collection: Collection) -> None:
-        self.anki_collection = anki_collection
-        self.cache_manager = CacheRunner(anki_collection)
+        with StopWatch.log_warning_if_slower_than(5, "Full collection setup"):
+            self.instance_tracker = ObjectInstanceTracker(JPCollection)
 
-        from language_services.jamdict_ex.dict_lookup import DictLookup
-        dictlookup_loading:Future[None] = app_thread_pool.pool.submit(DictLookup.ensure_loaded_into_memory) #doesn't really belong here but it works to speed up loading for user experience
+            if not app.is_testing():
+                self.instance_tracker.run_gc_and_assert_single_instance()
 
-        self.vocab:VocabCollection = VocabCollection(anki_collection, self.cache_manager)
-        self.kanji:KanjiCollection = KanjiCollection(anki_collection, self, self.cache_manager)
-        self.sentences:SentenceCollection = SentenceCollection(anki_collection, self.cache_manager)
-        self.radicals:RadicalCollection = RadicalCollection(anki_collection, self.cache_manager)
+            with StopWatch.log_warning_if_slower_than(5, "Core collection setup - no gc"):
+                self.anki_collection = anki_collection
+                self.cache_manager = CacheRunner(anki_collection)
 
-        dictlookup_loading.result()
+                from language_services.jamdict_ex.dict_lookup import DictLookup
+                dictlookup_loading:Future[None] = app_thread_pool.pool.submit(DictLookup.ensure_loaded_into_memory) #doesn't really belong here but it works to speed up loading for user experience
 
-        self.cache_manager.start()
+                self.vocab:VocabCollection = VocabCollection(anki_collection, self.cache_manager)
+                self.kanji:KanjiCollection = KanjiCollection(anki_collection, self, self.cache_manager)
+                self.sentences:SentenceCollection = SentenceCollection(anki_collection, self.cache_manager)
+                self.radicals:RadicalCollection = RadicalCollection(anki_collection, self.cache_manager)
+
+                dictlookup_loading.result()
+
+            if not app.is_testing():
+                self.instance_tracker.run_gc_and_assert_single_instance()
+
+            self.cache_manager.start()
 
     def unsuspend_note_cards(self, note: JPNote, name: str) -> None:
         print(f"Unsuspending {JPNote.get_note_type_name(note)}: {name}")
