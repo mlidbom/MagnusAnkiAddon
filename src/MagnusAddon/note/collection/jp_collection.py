@@ -9,8 +9,11 @@ from note.collection.sentence_collection import SentenceCollection
 from note.collection.vocab_collection import VocabCollection
 from note.jpnote import JPNote
 from note.note_constants import NoteTypes
+from sysutils import app_thread_pool
 
 if TYPE_CHECKING:
+    from asyncio import Future
+
     from anki.collection import Collection
     from anki.notes import NoteId
 
@@ -20,10 +23,15 @@ class JPCollection:
         self.anki_collection = anki_collection
         self.cache_manager = CacheRunner(anki_collection)
 
+        from language_services.jamdict_ex.dict_lookup import DictLookup
+        dictlookup_loading:Future[None] = app_thread_pool.pool.submit(DictLookup.ensure_loaded_into_memory) #doesn't really belong here but it works to speed up loading for user experience
+
         self.vocab:VocabCollection = VocabCollection(anki_collection, self.cache_manager)
         self.kanji:KanjiCollection = KanjiCollection(anki_collection, self, self.cache_manager)
         self.sentences:SentenceCollection = SentenceCollection(anki_collection, self.cache_manager)
         self.radicals:RadicalCollection = RadicalCollection(anki_collection, self.cache_manager)
+
+        dictlookup_loading.result()
 
         self.cache_manager.start()
 

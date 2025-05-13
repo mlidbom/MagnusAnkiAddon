@@ -216,3 +216,8 @@ class DictLookup:
     def is_dictionary_or_collection_word(cls, word: str) -> bool:
         from ankiutils import app
         return app.col().vocab.is_word(word) or cls.is_word(word)
+
+    @classmethod
+    def ensure_loaded_into_memory(cls) -> None:
+        cls._lookup_name("桜")
+        cls._lookup_word("俺")
