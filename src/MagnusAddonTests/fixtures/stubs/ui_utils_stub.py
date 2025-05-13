@@ -14,5 +14,4 @@ class UIUtilsStub(IUIUtils):
     def is_edit_current_open(self) -> bool: raise Exception("Unsupported by this stub")
     def activate_preview(self) -> None: raise Exception("Unsupported by this stub")
 
-    def tool_tip(self, message: str, milliseconds: int = 3000) -> None:
-        print(message)
+    def tool_tip(self, message: str, milliseconds: int = 3000) -> None: pass

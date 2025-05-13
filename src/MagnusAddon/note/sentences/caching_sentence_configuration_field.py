@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 class CachingSentenceConfigurationField:
     def __init__(self, note: SentenceNote) -> None:
         self._field = StringField(note, SentenceNoteFields.configuration)
-        self._value: Lazy[SentenceConfiguration] = Lazy(lambda: SentenceConfiguration.from_json(self._field.get()))
+        self._value: Lazy[SentenceConfiguration] = Lazy(lambda: SentenceConfiguration.serializer.deserialize(self._field.get()))
 
     def highlighted_words(self) -> list[str]: return self._value.instance().highlighted_words
     def incorrect_matches(self) -> set[WordExclusion]: return self._value.instance().incorrect_matches
@@ -66,4 +66,5 @@ class CachingSentenceConfigurationField:
                                                               analysis.version)
         self._save()
 
-    def _save(self) -> None: self._field.set(self._value.instance().to_json())
+    def _save(self) -> None:
+        self._field.set(SentenceConfiguration.serializer.serialize(self._value.instance()))

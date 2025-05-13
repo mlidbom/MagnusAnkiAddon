@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules  # noqa
+from note.sentences.sentence_configuration import SentenceConfiguration
 from sysutils import ex_json
 
 if TYPE_CHECKING:
@@ -52,19 +53,18 @@ def test_roundtrip_parsing_result() -> None:
     from note.sentences.parsing_result import ParsingResult
 
     parsing_result = ParsingResult([ParsedWord("foo"), ParsedWord("bar")], "foo bar", "1.0")
-    json = ex_json.dict_to_json(parsing_result.to_dict())
-    round_tripped_result = ParsingResult.from_json(ex_json.json_to_dict(json))
+    json = ex_json.dict_to_json(ParsingResult.serializer.to_dict(parsing_result))
+    round_tripped_result = ParsingResult.serializer.from_reader(ex_json.json_to_dict(json))
 
     assert [w.word for w in parsing_result.parsed_words] == [w.word for w in round_tripped_result.parsed_words]
 
 def test_roundtrip_configuration() -> None:
     from note.sentences.parsed_word import ParsedWord
     from note.sentences.parsing_result import ParsingResult
-    from note.sentences.sentence_configuration import SentenceConfiguration
 
     result = ParsingResult([ParsedWord("foo"), ParsedWord("bar")], "foo bar", "1.0")
     config = SentenceConfiguration([], [], result)
-    json = config.to_json()
-    round_tripped_result = SentenceConfiguration.from_json(json)
+    json = SentenceConfiguration.serializer.serialize(config)
+    round_tripped_result = SentenceConfiguration.serializer.deserialize(json)
 
     assert [w.word for w in config.parsing_result.parsed_words] == [w.word for w in round_tripped_result.parsing_result.parsed_words]
