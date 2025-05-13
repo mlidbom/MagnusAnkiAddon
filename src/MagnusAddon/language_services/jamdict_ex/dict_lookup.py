@@ -4,7 +4,7 @@ from functools import cache
 from typing import TYPE_CHECKING
 
 from language_services.jamdict_ex.priority_spec import PrioritySpec
-from sysutils.lazy import BackgroundInitialingLazy, Lazy
+from sysutils.lazy import Lazy
 from sysutils.timeutil import StopWatch
 from sysutils.typed import str_
 
