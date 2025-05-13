@@ -8,6 +8,7 @@ from note.collection.note_cache import CachedNote, NoteCache
 from note.note_constants import NoteTypes
 from note.sentencenote import SentenceNote
 from sysutils import ex_sequence
+from sysutils.timeutil import StopWatch
 
 if TYPE_CHECKING:
     from anki.collection import Collection
@@ -46,7 +47,9 @@ class SentenceCollection:
     def __init__(self, collection: Collection, cache_manager: CacheRunner) -> None:
         def sentence_constructor(note: Note) -> SentenceNote: return SentenceNote(note)
         self.collection = BackEndFacade[SentenceNote](collection, sentence_constructor, NoteTypes.Sentence)
-        self._cache = _SentenceCache(list(self.collection.all()), cache_manager)
+        with StopWatch.log_warning_if_slower_than(0.01, message="######################################### fetching all sentence notes #############################################"):
+            all_notes = list(self.collection.all())
+        self._cache = _SentenceCache(all_notes, cache_manager)
 
     def all(self) -> list[SentenceNote]: return self._cache.all()
 

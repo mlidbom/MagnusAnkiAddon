@@ -7,6 +7,7 @@ from note.collection.backend_facade import BackEndFacade
 from note.collection.note_cache import CachedNote, NoteCache
 from note.note_constants import NoteTypes
 from note.vocabulary.vocabnote import VocabNote
+from sysutils.timeutil import StopWatch
 
 if TYPE_CHECKING:
     from anki.collection import Collection
@@ -83,7 +84,10 @@ class VocabCollection:
     def __init__(self, collection: Collection, cache_manager: CacheRunner) -> None:
         def vocab_constructor(note: Note) -> VocabNote: return VocabNote(note)
         self.collection = BackEndFacade[VocabNote](collection, vocab_constructor, NoteTypes.Vocab)
-        self._cache = _VocabCache(list(self.collection.all()), cache_manager)
+
+        with StopWatch.log_warning_if_slower_than(0.01, message="######################################### fetching all vocab notes #############################################"):
+            all_notes = list(self.collection.all())
+        self._cache = _VocabCache(all_notes, cache_manager)
 
     def search(self, query: str) -> list[VocabNote]: return list(self.collection.search(query))
 

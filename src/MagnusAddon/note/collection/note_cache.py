@@ -2,12 +2,14 @@ from __future__ import annotations
 
 import time
 from abc import ABC, abstractmethod
+from asyncio import Future
 from typing import TYPE_CHECKING, Generic, TypeVar
 
 from note.jpnote import JPNote
 from note.note_constants import CardTypes
 from sysutils import app_thread_pool
 from sysutils.collections.default_dict_case_insensitive import DefaultDictCaseInsensitive
+from sysutils.timeutil import StopWatch
 from sysutils.typed import checked_cast
 
 if TYPE_CHECKING:
@@ -41,9 +43,18 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
         self._last_deleted_note_time = 0.0
         self._pending_add: list[Note] = list()
 
-        for _note in all_notes:
-            self._add_to_cache(_note)
+        with StopWatch.log_warning_if_slower_than(0.001, message="######################################### pushing notes into cache  #############################################"):
+            # Split all_notes into 8 parts and process them in parallel
+            chunk_size = (len(all_notes) + 7) // 8  # Ceiling division to ensure no notes are missed
+            futures: list[Future[None]] = []
 
+            for i in range(0, len(all_notes), chunk_size):
+                chunk = all_notes[i:i + chunk_size]
+                future: Future[None] = app_thread_pool.pool.submit(self._add_notes_to_cache, chunk)
+                futures.append(future)
+
+            # Wait for all chunks to be processed
+            for future in futures: future.result()
 
         cache_runner.connect_generate_data_timer(self._update_and_persist_generated_data)
         cache_runner.connect_merge_pending_adds(self._merge_pending_added_notes)
@@ -57,6 +68,11 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
                 note.is_studying(CardTypes.listening)
 
         app_thread_pool.pool.submit(cache_studying_status)
+
+    def _add_notes_to_cache(self, notes: list[TNote]) -> None:
+        with StopWatch.log_warning_if_slower_than(0.000001, message=f"######################################### adding {len(notes)} notes into cache  #############################################"):
+            for note in notes:
+                self._add_to_cache(note)
 
     def all(self) -> list[TNote]:
         return list(self._by_id.values())
