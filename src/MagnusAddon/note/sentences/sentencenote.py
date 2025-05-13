@@ -10,7 +10,7 @@ from note.notefields.audio_field import WritableAudioField
 from note.notefields.string_field import StringField
 from note.notefields.strip_html_on_read_fallback_string_field import StripHtmlOnReadFallbackStringField
 from note.notefields.strip_html_on_read_string_field import StripHtmlOnReadStringField
-from note.sentencenote_configuration import CachingSentenceConfigurationField, ParsingResult
+from note.sentences.sentencenote_configuration import CachingSentenceConfigurationField, ParsingResult
 from sysutils import ex_sequence, ex_str, kana_utils
 
 if TYPE_CHECKING:
