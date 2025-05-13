@@ -3,6 +3,7 @@ from __future__ import annotations
 from collections import defaultdict
 from typing import TYPE_CHECKING
 
+from ankiutils import app
 from note.collection.backend_facade import BackEndFacade
 from note.collection.note_cache import CachedNote, NoteCache
 from note.note_constants import NoteTypes
@@ -62,8 +63,6 @@ class SentenceCollection:
         return [match for match in matches if question not in match.configuration.incorrect_matches_words()]
 
     def with_vocab_owned_form(self, vocab_note: VocabNote) -> list[SentenceNote]:
-        from ankiutils import app
-
         def is_owned_by_other_form_note(form: str) -> bool:
             return any([owner for owner in app.col().vocab.with_question(form) if owner != vocab_note and vocab_note.get_question() in owner.forms.unexcluded_set()])
 

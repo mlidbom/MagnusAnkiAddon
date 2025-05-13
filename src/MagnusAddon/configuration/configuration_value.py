@@ -3,6 +3,7 @@ from __future__ import annotations
 import os
 from typing import Callable, Generic, Optional, TypeVar
 
+from ankiutils import app
 from aqt import mw
 from sysutils.lazy import Lazy
 
@@ -25,7 +26,6 @@ class ConfigurationValue(Generic[T]):
         self._update_callbacks: list[Callable[[], None]] = []
 
         if self.feature_toggler:
-            from ankiutils import app
             app.add_init_hook(self.toggle_feature)
 
     def get_value(self) -> T:

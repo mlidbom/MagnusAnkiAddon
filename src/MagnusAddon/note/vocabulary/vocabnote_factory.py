@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from anki.notes import Note
+from ankiutils import app
 from language_services.jamdict_ex.dict_lookup import DictLookup
 from note.note_constants import NoteTypes
 from note.vocabulary import vocabnote_wanikani_extensions
@@ -27,7 +28,6 @@ class VocabNoteFactory:
 
     @staticmethod
     def create(question: str, answer: str, readings: list[str]) -> VocabNote:
-        from ankiutils import app
         from note.vocabulary.vocabnote import VocabNote
         backend_note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Vocab))
         note = VocabNote(backend_note)

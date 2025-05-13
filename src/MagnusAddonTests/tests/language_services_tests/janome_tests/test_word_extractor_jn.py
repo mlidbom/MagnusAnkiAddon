@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import pytest
+from ankiutils import app
 from fixtures.collection_factory import inject_anki_collection_with_select_data
 from language_services.janome_ex.tokenizing.jn_tokenizer import JNTokenizer
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
@@ -78,7 +79,6 @@ def test_ignores_noise_characters() -> None:
     assert result == expected
 
 def insert_custom_words(custom_words: list[str]) -> None:
-    from ankiutils import app
     for custom_word in custom_words:
         VocabNote.factory.create(custom_word, "", [""])
     app.col().flush_cache_updates()

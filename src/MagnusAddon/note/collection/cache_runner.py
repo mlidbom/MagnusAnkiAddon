@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING, Callable, cast
 from anki import hooks
 from anki.models import ModelManager, NotetypeDict
 from anki_extentions.notetype_ex.note_type_ex import NoteTypeEx
+from ankiutils import app
 from note.note_constants import NoteTypes
 from sysutils import app_thread_pool
 from sysutils.typed import checked_cast
@@ -158,5 +159,4 @@ class CacheRunner:
             try:
                 current.assert_schema_matches(cached_note_type)
             except AssertionError:
-                from ankiutils import app
                 app.reset()

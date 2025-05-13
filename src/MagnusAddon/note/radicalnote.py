@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from anki.notes import Note
+from ankiutils import app
 from note.note_constants import Mine, NoteFields, NoteTypes
 from note.waninote import WaniNote
 
@@ -37,7 +38,6 @@ class RadicalNote(WaniNote):
 
     @staticmethod
     def create_from_wani_radical(wani_radical: models.Radical) -> None:
-        from ankiutils import app
         note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Radical))
         note.add_tag("__imported")
         note.add_tag(Mine.Tags.Wani)

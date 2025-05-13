@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from ankiutils import app
 from note.note_constants import Mine
 from sysutils import ex_sequence
 from sysutils.weak_ref import WeakRef
@@ -85,7 +86,6 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.sur
 
     def is_inflecting_word(self) -> bool:
         def lookup_vocabs_prefer_exact_match(form: str) -> list[VocabNote]:
-            from ankiutils import app
             matches: list[VocabNote] = app.col().vocab.with_form(form)
             exact_match = [voc for voc in matches if voc.get_question_without_noise_characters() == form]
             return exact_match if exact_match else matches

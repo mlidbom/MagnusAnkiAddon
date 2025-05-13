@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Callable
 
 from anki.notes import Note
-from ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules  # noqa
+from ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules, app  # noqa
 from language_services import conjugator
 from note.note_constants import Mine, NoteTypes
 
@@ -90,7 +90,6 @@ class VocabCloner:
     def create_shimasu_verb(self) -> VocabNote: return self.create_suru_verb(shimasu=True)
 
     def clone(self) -> VocabNote:
-        from ankiutils import app
         from note.vocabulary.vocabnote import VocabNote
 
         clone_backend_note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Vocab))

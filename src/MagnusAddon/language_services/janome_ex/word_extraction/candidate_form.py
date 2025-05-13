@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from ankiutils import app
 from language_services import conjugator
 from language_services.janome_ex.word_extraction.display_form import DisplayForm, MissingDisplayForm, VocabDisplayForm
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
@@ -18,7 +19,6 @@ from sysutils.ex_str import newline
 _noise_characters = {'.', ',', ':', ';', '/', '|', '。', '、', '?', '!'}
 class CandidateForm:
     def __init__(self, candidate: WeakRef[CandidateWord], is_surface: bool, form: str) -> None:
-        from ankiutils import app
         from language_services.jamdict_ex.dict_lookup import DictLookup
 
         self.start_index: int = candidate().locations[0]().character_start_index

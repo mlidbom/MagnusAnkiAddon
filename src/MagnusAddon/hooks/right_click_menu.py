@@ -71,7 +71,6 @@ def build_string_menu(menu: QMenu, string: str, string_note_menu_factory: typing
         create_note_action(create_note_menu, shortcutfinger.home3("kanji"), lambda _word=to_create: KanjiNote.create(_word, "TODO", "", ""))  # type: ignore
 
     def build_matching_note_menu(menu_title: str, string_menu: QMenu, search_string: str) -> None:
-        from ankiutils import app
         vocabs = app.col().vocab.with_question(search_string)
         sentences = app.col().sentences.with_question(search_string)
         kanjis = app.col().kanji.with_any_kanji_in([search_string]) if len(search_string) == 1 else []

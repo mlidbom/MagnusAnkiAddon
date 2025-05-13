@@ -3,6 +3,7 @@ from __future__ import annotations
 import typing
 
 from anki.notes import Note
+from ankiutils import app
 from note.note_constants import Mine, NoteFields, NoteTypes
 from note.notefields.comma_separated_strings_list_field import CommaSeparatedStringsListField
 from note.notefields.comma_separated_strings_set_field import CommaSeparatedStringsSetField
@@ -14,7 +15,6 @@ if typing.TYPE_CHECKING:
     from wanikani_api import models
 
 def create_from_wani_vocabulary(wani_vocab: models.Vocabulary) -> None:
-    from ankiutils import app
     from note.vocabulary.vocabnote import VocabNote
     note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Vocab))
     note.add_tag("__imported")

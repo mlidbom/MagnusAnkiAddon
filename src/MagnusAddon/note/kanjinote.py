@@ -4,6 +4,7 @@ import re
 from typing import TYPE_CHECKING
 
 from anki.notes import Note
+from ankiutils import app
 from note import kanjinote_mnemonic_maker
 from note.vocabulary import vocabnote_sorting
 
@@ -75,7 +76,6 @@ class KanjiNote(WaniNote):
         self.set_reading_on(kana_utils.katakana_to_hiragana(self.get_reading_on_html()))  # Katakana sneaks in via yomitan etc
 
         def update_primary_audios() -> None:
-            from ankiutils import app
             vocab_we_should_play = ex_sequence.flatten([app.col().vocab.with_question(vocab) for vocab in self.get_primary_vocab()])
             self.set_primary_vocab_audio("".join([vo.audio.get_primary_audio() for vo in vocab_we_should_play]) if vocab_we_should_play else "")
 
@@ -87,7 +87,6 @@ class KanjiNote(WaniNote):
         return vocab_list
 
     def get_vocab_notes(self) -> list[VocabNote]:
-        from ankiutils import app
         return app.col().vocab.with_kanji_in_any_form(self)
 
     def get_user_mnemonic(self) -> str: return self.get_field(NoteFields.Kanji.user_mnemonic)
@@ -142,7 +141,6 @@ class KanjiNote(WaniNote):
     def _set_radicals(self, value: str) -> None: self.set_field(NoteFields.Kanji.Radicals, value)
 
     def get_radicals_notes(self) -> list[KanjiNote]:
-        from ankiutils import app
         return [kanji_radical for kanji_radical in (app.col().kanji.with_kanji(radical) for radical in self.get_radicals()) if kanji_radical]
 
     def get_radical_dependencies_names(self) -> list[str]:
@@ -157,7 +155,6 @@ class KanjiNote(WaniNote):
     def set_radicals_icons_names(self, value: str) -> None: self.set_field(NoteFields.Kanji.Radicals_Icons_Names, value)
 
     def get_active_mnemonic(self) -> str:
-        from ankiutils import app
         return self.get_user_mnemonic() if self.get_user_mnemonic() \
             else f"# {kanjinote_mnemonic_maker.create_default_mnemonic(self)}" if app.config().prefer_default_mnemocs_to_source_mnemonics.get_value() \
             else self.get_source_meaning_mnemonic()
@@ -170,7 +167,6 @@ class KanjiNote(WaniNote):
         self.set_field(NoteFields.Kanji.user_similar_meaning, ", ".join(near_synonyms_questions))
 
         if not _is_recursive_call:
-            from ankiutils import app
             new_synonym = app.col().kanji.with_kanji(new_synonym_question)
             if new_synonym:
                 new_synonym.add_user_similar_meaning(self.get_question(), _is_recursive_call=True)
@@ -326,7 +322,6 @@ class KanjiNote(WaniNote):
         def detect_radicals_from_mnemonic() -> list[str]:
             radical_names = re.findall(r'<rad>(.*?)</rad>', self.get_user_mnemonic())
 
-            from ankiutils import app
             matching_radicals = ex_sequence.flatten([([rad for rad in app.col().kanji.all() if re.search(r'\b' + re.escape(radical_name) + r'\b', rad.get_answer())]) for radical_name in radical_names])
             return [match.get_question() for match in matching_radicals]
 
@@ -339,7 +334,6 @@ class KanjiNote(WaniNote):
 
     @staticmethod
     def create_from_wani_kanji(wani_kanji: models.Kanji) -> None:
-        from ankiutils import app
         note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Kanji))
         note.add_tag("__imported")
         note.add_tag(Mine.Tags.Wani)
@@ -350,7 +344,6 @@ class KanjiNote(WaniNote):
 
     @classmethod
     def create(cls, question: str, answer: str, on_readings: str, kun_reading: str) -> KanjiNote:
-        from ankiutils import app
         backend_note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Kanji))
         note = KanjiNote(backend_note)
         note.set_question(question)

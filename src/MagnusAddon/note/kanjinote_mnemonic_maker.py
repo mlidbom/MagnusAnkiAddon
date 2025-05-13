@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from ankiutils import app
 from sysutils import kana_utils
 from sysutils.ex_str import newline
 
@@ -9,7 +10,6 @@ if TYPE_CHECKING:
     from note.kanjinote import KanjiNote
 
 def create_default_mnemonic(kanji_note:KanjiNote) -> str:
-    from ankiutils import app
     readings_mappings = app.config().readings_mappings_dict
 
     def create_readings_tag(kana_reading: str) -> str:

@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, cast
 from anki.models import NotetypeDict
 from anki_extentions.card_ex import CardEx
 from anki_extentions.notetype_ex.note_type_ex import NoteTypeEx
+from ankiutils import app
 from note import noteutils
 from note.note_constants import CardTypes, Mine, MyNoteFields, NoteTypes
 from sysutils import ex_str, rassert
@@ -15,7 +16,6 @@ if TYPE_CHECKING:
 
     from anki.cards import Card, CardId
     from anki.notes import Note, NoteId
-    from ankiutils import app
     from note.collection.jp_collection import JPCollection
 
 class JPNote:
@@ -40,7 +40,6 @@ class JPNote:
 
     @property
     def _app(self) -> app:
-        from ankiutils import app
         return app
 
     @property

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from ankiutils import app
 from note.note_constants import NoteFields
 from note.notefields.comma_separated_strings_set_field import CommaSeparatedStringsSetField
 from note.notefields.string_field import StringField
@@ -39,7 +40,6 @@ class VocabNoteRelatedNotes:
     def set_ergative_twin(self, value: str) -> None:
         self._ergative_twin_field.set(value)
 
-        from ankiutils import app
         for twin in app.col().vocab.with_question(value):
             twin.related_notes._ergative_twin_field.set(self._vocab.get_question())
 

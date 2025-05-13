@@ -141,7 +141,6 @@ class ReadingsOptionsDialog(QDialog):
         self.config.readings_mappings.set_value(sorted_value_lines_without_duplicates_or_blank_lines())
         self.accept()
 
-        from ankiutils import app
         app.get_ui_utils().refresh()
 
 def show_readings_mappings() -> None:

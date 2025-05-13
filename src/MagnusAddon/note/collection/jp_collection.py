@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from ankiutils import app
 from note.collection.cache_runner import CacheRunner
 from note.collection.kanji_collection import KanjiCollection
 from note.collection.radical_collection import RadicalCollection
@@ -41,7 +42,6 @@ class JPCollection:
 
     @classmethod
     def note_from_note_id(cls, note_id: NoteId) -> JPNote:
-        from ankiutils import app
         note = app.anki_collection().get_note(note_id) #todo: verify wether calling get_note is slow, if so hack this into the in memory caches instead
 
         if JPNote.get_note_type(note) == NoteTypes.Kanji: return app.col().kanji.with_id(note.id)

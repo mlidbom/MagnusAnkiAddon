@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from ankiutils import app
 from language_services import conjugator
 from language_services.jamdict_ex.dict_lookup import DictLookup
 from mylog import log
@@ -90,7 +91,6 @@ class JNTokenizedText:
         self.tokens = tokens
 
     def pre_process(self) -> list[ProcessedToken]:
-        from ankiutils import app
         vocab = app.col().vocab
 
         step1 = [JNTokenWrapper(token, vocab) for token in self.tokens]

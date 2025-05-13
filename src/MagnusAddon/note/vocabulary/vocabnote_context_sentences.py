@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from ankiutils import app
 from note.note_constants import NoteFields
 from note.notefields.audio_field import AudioField
 from note.notefields.strip_html_on_read_string_field import StripHtmlOnReadStringField
@@ -10,8 +11,6 @@ if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
 
 def can_generate_sentences_from_context_sentences(vocab: VocabNote, require_audio: bool) -> bool:
-    from ankiutils import app
-
     def can_create_sentence(question: str, audio: str) -> bool:
         return question != "" and (audio or not require_audio) and not app.col().sentences.with_question(question)
 
@@ -20,7 +19,6 @@ def can_generate_sentences_from_context_sentences(vocab: VocabNote, require_audi
             can_create_sentence(question=vocab.context_sentences.second.japanese.get(), audio=vocab.context_sentences.third.audio.raw_walue()))
 
 def generate_sentences_from_context_sentences(vocab: VocabNote, require_audio: bool) -> None:
-    from ankiutils import app
     from note.sentencenote import SentenceNote
 
     def create_sentence_if_not_present(question: str, answer: str, audio: str) -> None:

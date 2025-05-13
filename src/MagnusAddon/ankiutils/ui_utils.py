@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Callable, Optional
 
+from ankiutils import app
+
 if TYPE_CHECKING:
     from anki.cards import Card
     from anki.notes import Note
@@ -74,7 +76,6 @@ class UIUtils(IUIUtils):
 
 
     def refresh(self, refresh_browser:bool = True) -> None:
-        from ankiutils import app
         if not app.is_initialized():
             return
 

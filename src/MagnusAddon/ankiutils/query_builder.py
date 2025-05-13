@@ -52,7 +52,6 @@ def sentence_search(word:str, exact:bool = False) -> str:
         return f"""(-{field_contains_word(SentenceNoteFields.user_excluded_vocab, form)} AND ({f_question}:*{form}* OR {field_contains_word(SentenceNoteFields.ParsedWords, form)} OR {field_contains_word(SentenceNoteFields.user_extra_vocab, form)}))"""
 
     if not exact:
-        from ankiutils import app
         vocabs = app.col().vocab.with_form(word)
         if vocabs:
             forms = set().union(*[v.forms.unexcluded_set() for v in vocabs])

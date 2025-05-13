@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from anki.decks import DeckDict, DeckId
 from anki_extentions.deck_configdict_ex import DeckConfigDictEx
+from ankiutils import app
 from sysutils.typed import checked_cast_generics, str_
 
 
@@ -13,5 +14,4 @@ class DeckEx:
 
 
     def get_config(self) -> DeckConfigDictEx:
-        from ankiutils import app
         return DeckConfigDictEx(app.anki_collection().decks.config_dict_for_deck_id(self.id))

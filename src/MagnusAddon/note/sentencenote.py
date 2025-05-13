@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Optional
 
 from anki.notes import Note
+from ankiutils import app
 from note.jpnote import JPNote
 from note.note_constants import ImmersionKitSentenceNoteFields, Mine, NoteFields, NoteTypes, SentenceNoteFields
 from note.notefields.audio_field import WritableAudioField
@@ -59,7 +60,6 @@ class SentenceNote(JPNote):
     def get_words(self) -> set[str]: return (set(self.parsing_result().parsed_words_strings()) | set(self.configuration.highlighted_words())) - self.configuration.incorrect_matches_words()
 
     def get_parsed_words_notes(self) -> list[VocabNote]:
-        from ankiutils import app
         return ex_sequence.flatten([app.col().vocab.with_question(q) for q in self.get_valid_parsed_non_child_words_strings()])
 
     def update_generated_data(self) -> None:
@@ -83,7 +83,6 @@ class SentenceNote(JPNote):
 
     @classmethod
     def create_test_note(cls, question: str, answer: str) -> SentenceNote:
-        from ankiutils import app
         inner_note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Sentence))
         note = SentenceNote(inner_note)
         note._source_question.set(question)
@@ -94,7 +93,6 @@ class SentenceNote(JPNote):
 
     @classmethod
     def add_sentence(cls, question: str, answer: str, audio: str = "", screenshot: str = "", highlighted_vocab: Optional[set[str]] = None, tags: Optional[set[str]] = None) -> SentenceNote:
-        from ankiutils import app
         inner_note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Sentence))
         note = SentenceNote(inner_note)
         note._source_question.set(question)
@@ -134,7 +132,6 @@ class SentenceNote(JPNote):
 
     @classmethod
     def create(cls, question: str) -> SentenceNote:
-        from ankiutils import app
         inner_note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Sentence))
         note = SentenceNote(inner_note)
         note._source_question.set(question)

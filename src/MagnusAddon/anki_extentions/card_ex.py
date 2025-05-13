@@ -11,7 +11,6 @@ if TYPE_CHECKING:
     from anki.decks import DeckManager
     from anki.scheduler.v3 import Scheduler
     from anki_extentions.notetype_ex.note_type_template import NoteTemplateEx
-    from ankiutils import app
     from note.jpnote import JPNote
 
 import anki.cards
@@ -36,7 +35,6 @@ class CardEx:
 
     @staticmethod
     def _scheduler() -> Scheduler:
-        from ankiutils import app
         return app.anki_scheduler()
 
     def is_suspended(self) -> bool:
@@ -67,7 +65,6 @@ class CardEx:
 
     @staticmethod
     def _deck_manager() -> DeckManager:
-        from ankiutils import app
         return app.anki_collection().decks
 
     def get_deck(self) -> DeckEx:

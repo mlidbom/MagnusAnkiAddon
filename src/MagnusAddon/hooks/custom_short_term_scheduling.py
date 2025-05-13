@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 from anki_extentions.card_ex import CardEx
 from anki_extentions.sheduling_states_ex import SchedulingStatesEx
+from ankiutils import app
 from aqt.reviewer import V3CardInfo
 from sysutils.timeutil import StopWatch
 
@@ -15,7 +16,6 @@ def set_again_time_for_previously_failed_today_cards(queue:QueuedCards) -> V3Car
     with StopWatch.log_warning_if_slower_than(0.01):
         info = _oldMethod(queue)
 
-        from ankiutils import app
         if app.is_initialized() and app.config().decrease_failed_card_intervals.get_value():
             card = CardEx(info.top_card().card)
 
