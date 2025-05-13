@@ -11,7 +11,7 @@ from sysutils import ex_sequence, ex_str, kana_utils
 from sysutils.ex_str import newline
 
 if TYPE_CHECKING:
-    from note.sentencenote import SentenceNote
+    from note.sentences.sentencenote import SentenceNote
 
 
 def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:

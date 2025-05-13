@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from aqt import gui_hooks
 from hooks.note_content_building.content_renderer import PrerenderingAnswerContentRenderer
-from note.sentencenote import SentenceNote
+from note.sentences.sentencenote import SentenceNote
 from note.vocabulary.vocabnote import VocabNote
 from sysutils import ex_str
 from viewmodels.kanji_list import sentence_kanji_list_viewmodel

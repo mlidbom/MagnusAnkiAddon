@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from note.collection.jp_collection import JPCollection
-    from note.sentencenote import SentenceNote
+    from note.sentences.sentencenote import SentenceNote
     from note.vocabulary.vocabnote import VocabNote
 
 class VocabNoteSentences:

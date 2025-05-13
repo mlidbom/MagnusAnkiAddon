@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from note.note_constants import NoteFields
 
 if TYPE_CHECKING:
-    from note.sentencenote import SentenceNote
+    from note.sentences.sentencenote import SentenceNote
     from note.vocabulary.vocabnote import VocabNote
 
 class VocabMetaTag:

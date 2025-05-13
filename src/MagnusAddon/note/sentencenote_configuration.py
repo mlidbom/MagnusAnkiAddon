@@ -10,7 +10,7 @@ from sysutils.lazy import Lazy
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
-    from note.sentencenote import SentenceNote
+    from note.sentences.sentencenote import SentenceNote
     from sysutils.ex_json import JsonDictReader
 
 class ParsedWord:

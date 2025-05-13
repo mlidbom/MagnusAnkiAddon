@@ -7,7 +7,7 @@ from aqt.utils import showInfo
 from note.kanjinote import KanjiNote
 from note.note_constants import Mine
 from note.radicalnote import RadicalNote
-from note.sentencenote import SentenceNote
+from note.sentences.sentencenote import SentenceNote
 from note.vocabulary.vocabnote import VocabNote
 from sysutils import progress_display_runner
 from wanikani.wanikani_api_client import WanikaniClient

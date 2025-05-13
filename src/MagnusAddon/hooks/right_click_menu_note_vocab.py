@@ -13,7 +13,7 @@ from sysutils.ex_str import newline
 from sysutils.typed import non_optional
 
 if TYPE_CHECKING:
-    from note.sentencenote import SentenceNote
+    from note.sentences.sentencenote import SentenceNote
     from note.vocabulary.vocabnote import VocabNote
     from PyQt6.QtWidgets import QMenu
 

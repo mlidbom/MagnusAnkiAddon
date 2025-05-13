@@ -10,7 +10,7 @@ from note.note_constants import NoteFields, NoteTypes
 from sysutils.typed import non_optional
 
 if TYPE_CHECKING:
-    from note.sentencenote import SentenceNote
+    from note.sentences.sentencenote import SentenceNote
     from PyQt6.QtWidgets import QMenu
 
 def build_note_menu(note_menu: QMenu, sentence: SentenceNote) -> None:

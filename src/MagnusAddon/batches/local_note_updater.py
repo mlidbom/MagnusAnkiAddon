@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 
 from ankiutils import app, query_builder
 from note.note_constants import CardTypes, Mine
-from note.sentencenote import SentenceNote
+from note.sentences.sentencenote import SentenceNote
 from note.vocabulary import vocabnote_context_sentences
 from sysutils import ex_str, object_instance_tracker, progress_display_runner
 

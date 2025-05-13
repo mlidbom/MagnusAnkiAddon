@@ -13,7 +13,7 @@ from hooks.right_click_menu_web_search import build_web_search_menu
 from note.kanjinote import KanjiNote
 from note.note_constants import Mine
 from note.radicalnote import RadicalNote
-from note.sentencenote import SentenceNote
+from note.sentences.sentencenote import SentenceNote
 from note.vocabulary.vocabnote import VocabNote
 from sysutils import typed
 from sysutils.typed import non_optional

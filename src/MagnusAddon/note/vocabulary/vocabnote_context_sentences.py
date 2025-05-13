@@ -19,7 +19,7 @@ def can_generate_sentences_from_context_sentences(vocab: VocabNote, require_audi
             can_create_sentence(question=vocab.context_sentences.second.japanese.get(), audio=vocab.context_sentences.third.audio.raw_walue()))
 
 def generate_sentences_from_context_sentences(vocab: VocabNote, require_audio: bool) -> None:
-    from note.sentencenote import SentenceNote
+    from note.sentences.sentencenote import SentenceNote
 
     def create_sentence_if_not_present(question: str, answer: str, audio: str) -> None:
         if question and (audio or not require_audio) and not app.col().sentences.with_question(question):

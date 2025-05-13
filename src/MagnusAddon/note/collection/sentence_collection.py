@@ -7,7 +7,7 @@ from ankiutils import app
 from note.collection.backend_facade import BackEndFacade
 from note.collection.note_cache import CachedNote, NoteCache
 from note.note_constants import NoteTypes
-from note.sentencenote import SentenceNote
+from note.sentences.sentencenote import SentenceNote
 from sysutils import ex_sequence
 
 if TYPE_CHECKING:

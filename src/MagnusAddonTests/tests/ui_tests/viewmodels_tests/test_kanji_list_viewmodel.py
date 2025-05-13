@@ -10,7 +10,7 @@ from viewmodels.kanji_list import sentence_kanji_list_viewmodel
 if TYPE_CHECKING:
     from collections.abc import Generator
 
-    from note.sentencenote import SentenceNote
+    from note.sentences.sentencenote import SentenceNote
 
 
 # noinspection PyUnusedFunction

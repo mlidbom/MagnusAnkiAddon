@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from collections.abc import Generator
 
     from note.kanjinote import KanjiNote
-    from note.sentencenote import SentenceNote
+    from note.sentences.sentencenote import SentenceNote
     from note.vocabulary.vocabnote import VocabNote
 
 shtml = ex_str.strip_html_markup

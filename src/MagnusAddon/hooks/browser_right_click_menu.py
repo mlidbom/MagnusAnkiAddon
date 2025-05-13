@@ -8,7 +8,7 @@ from aqt import gui_hooks
 from hooks import right_click_menu, shortcutfinger
 from note import queue_manager
 from note.jpnote import JPNote
-from note.sentencenote import SentenceNote
+from note.sentences.sentencenote import SentenceNote
 from note.vocabulary import vocabnote_context_sentences
 from note.vocabulary.vocabnote import VocabNote
 from sysutils.typed import non_optional

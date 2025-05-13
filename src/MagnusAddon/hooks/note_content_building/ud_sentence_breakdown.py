@@ -7,7 +7,7 @@ from aqt import gui_hooks
 from hooks.note_content_building.content_renderer import PrerenderingAnswerContentRenderer
 from language_services.jamdict_ex.dict_lookup import DictLookup
 from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
-from note.sentencenote import SentenceNote
+from note.sentences.sentencenote import SentenceNote
 from sysutils import kana_utils
 from sysutils.ex_str import newline
 
