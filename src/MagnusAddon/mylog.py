@@ -10,8 +10,9 @@ if TYPE_CHECKING:
     from logging.handlers import RotatingFileHandler
     from pathlib import Path
 
-
-def is_testing() -> bool: return "pytest" in sys.modules
+def is_testing() -> bool:
+    import sys
+    return "pytest" in sys.modules
 
 def log_file_path(addon: str) -> Path:
     from pathlib import Path
@@ -69,10 +70,8 @@ def get_logger(module: str) -> logging.Logger:
 
     return logger
 
-
 _addon_name = os.path.basename(os.path.dirname(__file__))
-_logger:Lazy[logging.Logger] = Lazy(lambda: get_logger(_addon_name))
+_logger: Lazy[logging.Logger] = Lazy(lambda: get_logger(_addon_name))
 
 def info(msg: str) -> None: _logger().info(msg)
 def warning(msg: str) -> None: _logger().warning(msg)
-
