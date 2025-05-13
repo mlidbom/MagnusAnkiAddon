@@ -23,6 +23,9 @@ if TYPE_CHECKING:
 
 
 def refresh() -> None:
+    if not app.is_initialized():
+        return
+
     note = JPNote.note_from_card(non_optional(main_window().reviewer.card))
 
     if isinstance(note, JPNote):

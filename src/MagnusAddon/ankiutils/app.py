@@ -48,6 +48,9 @@ def _init(_col:Optional[object] = None, delay_seconds: float = 0) -> None:
     _collection = BackgroundInitialingLazy(lambda: JPCollection(mw.col), delay_seconds=delay_seconds)
     _call_init_hooks()
 
+def is_initialized() -> bool:
+    return _collection and _collection.is_initialized()
+
 def reset(delay_seconds: float = 0) -> None:
     _destruct()
     _init(delay_seconds)

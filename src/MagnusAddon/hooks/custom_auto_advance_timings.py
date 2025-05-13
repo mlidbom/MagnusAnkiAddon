@@ -17,8 +17,7 @@ from sysutils.typed import non_optional
 if TYPE_CHECKING:
     from anki.cards import Card
 
-_real_auto_advance_to_answer_if_enabled = Reviewer._auto_advance_to_answer_if_enabled # noqa
-
+_real_auto_advance_to_answer_if_enabled = Reviewer._auto_advance_to_answer_if_enabled  # noqa
 
 def is_handled_card(card: CardEx) -> bool:
     if card.type().name != CardTypes.reading:
@@ -56,26 +55,28 @@ def seconds_to_show_question(card: CardEx) -> float:
 
     return time_allowed
 
+def _auto_advance_to_answer_if_enabled(reviewer: Reviewer) -> None:
+    if not app.is_initialized():
+        return
 
-
-def _auto_advance_to_answer_if_enabled(reviewer:Reviewer) -> None:
     card = CardEx(non_optional(mw.reviewer.card))
     if not is_handled_card(card):
         _real_auto_advance_to_answer_if_enabled(reviewer)
         return
 
-    mw.reviewer._clear_auto_advance_timers() # noqa
+    mw.reviewer._clear_auto_advance_timers()  # noqa
     allowed_milliseconds = int(seconds_to_show_question(card) * 1000)
 
     mw.reviewer._show_answer_timer = mw.reviewer.mw.progress.timer(
         allowed_milliseconds,
-        mw.reviewer._on_show_answer_timeout, # noqa
+        mw.reviewer._on_show_answer_timeout,  # noqa
         repeat=False,
         parent=mw.reviewer.mw,
     )
 
-def _auto_start_auto_advance(html:str, anki_card:Card, _display_type:str) -> str:
-    if (ui_utils.is_displaytype_displaying_review_question(_display_type)
+def _auto_start_auto_advance(html: str, anki_card: Card, _display_type: str) -> str:
+    if (app.is_initialized()
+            and ui_utils.is_displaytype_displaying_review_question(_display_type)
             and is_handled_card(CardEx(anki_card))
             and not mw.reviewer.auto_advance_enabled):
         mw.reviewer.toggle_auto_advance()

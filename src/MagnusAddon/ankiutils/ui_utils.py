@@ -75,6 +75,8 @@ class UIUtils(IUIUtils):
 
     def refresh(self, refresh_browser:bool = True) -> None:
         from ankiutils import app
+        if not app.is_initialized():
+            return
 
         def force_previewer_rerender() -> None:
             previewers: list[Previewer] = [window for window in self._mw.app.topLevelWidgets() if isinstance(window, Previewer)]

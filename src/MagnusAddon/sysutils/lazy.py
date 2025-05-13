@@ -36,7 +36,7 @@ class BackgroundInitialingLazy(Generic[T]):
                 self._instance = app_thread_pool.pool.submit(self._factory)
 
 
-    def _is_initialized(self) -> bool: return bool(self._instance and self._instance.done() and not self._instance.cancelled())
+    def is_initialized(self) -> bool: return bool(self._instance and self._instance.done() and not self._instance.cancelled())
 
     def try_cancel_scheduled_init(self) -> bool:
         if self._instance:
@@ -49,7 +49,7 @@ class BackgroundInitialingLazy(Generic[T]):
         if self.try_cancel_scheduled_init():
             self._init()
 
-        if not self._is_initialized() and app_thread_pool.current_is_ui_thread():
+        if not self.is_initialized() and app_thread_pool.current_is_ui_thread():
             from sysutils import progress_display_runner
 
             def init() -> None:

@@ -16,7 +16,7 @@ def set_again_time_for_previously_failed_today_cards(queue:QueuedCards) -> V3Car
         info = _oldMethod(queue)
 
         from ankiutils import app
-        if app.config().decrease_failed_card_intervals.get_value():
+        if app.is_initialized() and app.config().decrease_failed_card_intervals.get_value():
             card = CardEx(info.top_card().card)
 
             if card.last_answer_today_was_fail_db_call():

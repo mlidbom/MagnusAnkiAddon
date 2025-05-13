@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Callable, Generic, TypeVar
 
 from ankiutils import app, ui_utils
 from note.jpnote import JPNote
+from note.note_constants import Mine
 from sysutils import app_thread_pool
 from sysutils.timeutil import StopWatch
 from sysutils.typed import non_optional
@@ -27,11 +28,10 @@ class PrerenderingAnswerContentRenderer(Generic[TNote]):
             with StopWatch.log_warning_if_slower_than(0.5, f"rendering:{section}"):
                 return _render_method(note)
 
-        return app_thread_pool.pool.submit(run_render_method)
+        return app_thread_pool.pool.submit(run_render_method if app.is_initialized() else lambda: Mine.app_still_loading_message)
 
 
     def render(self, html: str, card: Card, type_of_display: str) -> str:
-        app.wait_for_initialization()
         note = JPNote.note_from_card(card)
 
         if isinstance(note, self._cls):

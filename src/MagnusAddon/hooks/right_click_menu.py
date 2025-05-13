@@ -3,7 +3,7 @@ from __future__ import annotations
 import typing
 
 import pyperclip  # type: ignore
-from ankiutils import query_builder, search_executor, ui_utils
+from ankiutils import app, query_builder, search_executor, ui_utils
 from aqt import gui_hooks
 from batches import local_note_updater
 from hooks import right_click_menu_note_kanji, right_click_menu_note_radical, right_click_menu_note_sentence, right_click_menu_note_vocab, shortcutfinger
@@ -11,6 +11,7 @@ from hooks.right_click_menu_open_in_anki import build_open_in_anki_menu
 from hooks.right_click_menu_utils import add_ui_action, create_note_action, create_vocab_note_action
 from hooks.right_click_menu_web_search import build_web_search_menu
 from note.kanjinote import KanjiNote
+from note.note_constants import Mine
 from note.radicalnote import RadicalNote
 from note.sentencenote import SentenceNote
 from note.vocabulary.vocabnote import VocabNote
@@ -34,6 +35,10 @@ def build_right_click_menu_webview_hook(view: AnkiWebView, root_menu: QMenu) -> 
 
 # noinspection PyPep8
 def build_right_click_menu(root_menu: QMenu, note: JPNote | None, selection: str, clipboard: str) -> None:
+    if not app.is_initialized():
+        root_menu.addAction(Mine.app_still_loading_message)
+        return
+
     selection_menu = non_optional(root_menu.addMenu(shortcutfinger.home1(f'''Selection: "{selection[:40]}"'''))) if selection else None
     clipboard_menu = non_optional(root_menu.addMenu(shortcutfinger.home2(f'''Clipboard: "{clipboard[:40]}"'''))) if clipboard else None
 
