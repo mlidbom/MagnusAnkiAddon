@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING, Any, Callable, TypeVar
 
 from ankiutils import app
 from fixtures.stubs.ui_utils_stub import UIUtilsStub
-from language_services.jamdict_ex import dict_lookup
 from sysutils import progress_display_runner
 from sysutils.lazy import Lazy
 from sysutils.progress_display_runner import Closable
@@ -31,11 +30,6 @@ def _stub_ui_utils_real() -> Generator[None, None, None]:
     yield
 
 @contextmanager
-def _stub_dict_optimizations() -> Generator[None, None, None]:
-    dict_lookup.is_unit_testing_mode = True
-    yield
-
-@contextmanager
 def _stub_config_dict() -> Generator[None, None, None]:
     _config_dict:dict[str,Any] = dict()
 
@@ -50,7 +44,7 @@ def _stub_config_dict() -> Generator[None, None, None]:
 
 @contextmanager
 def stub_ui_dependencies() -> Generator[None, None, None]:
-    with (_stub_ui_utils_real(), _stub_progress_runner(), _stub_config_dict(), _stub_dict_optimizations()):
+    with (_stub_ui_utils_real(), _stub_progress_runner(), _stub_config_dict()):
         yield
 
 T = TypeVar('T')

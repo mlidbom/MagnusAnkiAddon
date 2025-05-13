@@ -51,6 +51,10 @@ def reset(delay_seconds: float = 0) -> None:
     _destruct()
     _init(delay_seconds)
 
+def is_testing() -> bool:
+    import sys
+    return "pytest" in sys.modules
+
 def _reset(_col:Optional[object] = None) -> None:
     reset()
 

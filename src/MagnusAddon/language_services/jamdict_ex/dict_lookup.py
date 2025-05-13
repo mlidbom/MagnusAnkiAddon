@@ -3,6 +3,7 @@ from __future__ import annotations
 from functools import cache
 from typing import TYPE_CHECKING
 
+from ankiutils import app
 from language_services.jamdict_ex.priority_spec import PrioritySpec
 from sysutils.lazy import Lazy
 from sysutils.timeutil import StopWatch
@@ -108,7 +109,6 @@ def _find_all_names() -> set[str]:
 
         return kanji_forms | kana_forms
 
-is_unit_testing_mode = False
 _all_word_forms = Lazy(_find_all_words)
 _all_name_forms = Lazy(_find_all_names)
 
@@ -195,12 +195,12 @@ class DictLookup:
     @classmethod
     def might_be_word(cls, word: str) -> bool:
         # this method is a pure optimization to save on dictionary calls during real runtime. During tests populating all the words is a suboptimization, so just always return true when testing
-        return is_unit_testing_mode or word in _all_word_forms.instance()
+        return app.is_testing() or word in _all_word_forms.instance()
 
     @classmethod
     def might_be_name(cls, word: str) -> bool:
         # this method is a pure optimization to save on dictionary calls during real runtime. During tests populating all the words is a suboptimization, so just always return true when testing
-        return is_unit_testing_mode or word in _all_name_forms.instance()
+        return app.is_testing() or word in _all_name_forms.instance()
 
     @classmethod
     def might_be_entry(cls, word: str) -> bool:
