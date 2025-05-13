@@ -148,7 +148,8 @@ class NoteFields:
         component_subject_ids = "component_subject_ids"
 
 class Mine:
-    app_still_loading_message = "JA-Studio still loading....."
+    app_name = "JA-Studio"
+    app_still_loading_message = f"{app_name} still loading....."
     VocabPrefixSuffixMarker = "〜"
     class Tags:
 

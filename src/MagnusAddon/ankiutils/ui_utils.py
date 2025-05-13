@@ -21,7 +21,7 @@ from aqt.editor import Editor
 from aqt.reviewer import RefreshNeeded
 from aqt.utils import tooltip
 from aqt.webview import AnkiWebView, AnkiWebViewKind
-from sysutils import timeutil
+from sysutils import app_thread_pool, timeutil
 from sysutils.typed import checked_cast, non_optional
 
 _ANSWER_DISPLAY_TYPES = {'reviewAnswer', 'previewAnswer', 'clayoutAnswer'}
@@ -112,6 +112,9 @@ class UIUtils(IUIUtils):
             browser.onTogglePreview()
         else:
             browser._previewer.activateWindow() # noqa
+
+    def tool_tip(self, message: str, milliseconds:int = 3000) -> None:
+        app_thread_pool.run_on_ui_thread_fire_and_forget(lambda: tooltip(message))
 
 def try_get_card_being_reviewed() -> Card | None:
     return main_window().reviewer.card

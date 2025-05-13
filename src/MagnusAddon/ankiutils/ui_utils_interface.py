@@ -16,3 +16,6 @@ class IUIUtils(metaclass=ABCMeta):
 
     @abstractmethod
     def activate_preview(self) -> None: pass
+
+    @abstractmethod
+    def tool_tip(self, message:str, milliseconds:int = 3000) -> None: pass

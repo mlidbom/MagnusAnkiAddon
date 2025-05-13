@@ -27,3 +27,10 @@ def run_on_ui_thread_synchronously(func: Callable[[], T]) -> T:
         sleep(0.001)
 
     return done_running[0]
+
+
+def run_on_ui_thread_fire_and_forget(func: Callable[[], T]) -> None:
+    if app.is_testing() or current_is_ui_thread():
+        return func()
+
+    return app.main_window().taskman.run_on_main(func)

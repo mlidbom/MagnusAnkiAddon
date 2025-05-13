@@ -128,3 +128,4 @@ def _setup_gui_hooks() -> None:
     gui_hooks.profile_did_open.append(_profile_opened)
 
 _setup_gui_hooks()
+

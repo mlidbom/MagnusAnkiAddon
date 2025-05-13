@@ -9,7 +9,7 @@ from note.collection.radical_collection import RadicalCollection
 from note.collection.sentence_collection import SentenceCollection
 from note.collection.vocab_collection import VocabCollection
 from note.jpnote import JPNote
-from note.note_constants import NoteTypes
+from note.note_constants import Mine, NoteTypes
 from sysutils import app_thread_pool
 from sysutils.object_instance_tracker import ObjectInstanceTracker
 from sysutils.timeutil import StopWatch
@@ -47,6 +47,7 @@ class JPCollection:
                 self.instance_tracker.run_gc_and_assert_single_instance()
 
             self.cache_manager.start()
+            app.get_ui_utils().tool_tip(f"{Mine.app_name} done loading.", milliseconds=6000)
 
     def unsuspend_note_cards(self, note: JPNote, name: str) -> None:
         print(f"Unsuspending {JPNote.get_note_type_name(note)}: {name}")
