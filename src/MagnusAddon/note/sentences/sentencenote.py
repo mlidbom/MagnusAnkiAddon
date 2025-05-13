@@ -10,12 +10,13 @@ from note.notefields.audio_field import WritableAudioField
 from note.notefields.string_field import StringField
 from note.notefields.strip_html_on_read_fallback_string_field import StripHtmlOnReadFallbackStringField
 from note.notefields.strip_html_on_read_string_field import StripHtmlOnReadStringField
-from note.sentences.sentencenote_configuration import CachingSentenceConfigurationField, ParsingResult
+from note.sentences.caching_sentence_configuration_field import CachingSentenceConfigurationField
 from sysutils import ex_sequence, ex_str, kana_utils
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.candidate_form import CandidateForm
     from language_services.janome_ex.word_extraction.extracted_word import ExtractedWord
+    from note.sentences.parsing_result import ParsingResult
     from note.vocabulary.vocabnote import VocabNote
 
 class SentenceNote(JPNote):

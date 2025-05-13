@@ -2,9 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Callable, Optional
 
-from PyQt6.QtWidgets import QApplication
-
 from ankiutils import app
+from PyQt6.QtWidgets import QApplication
 
 if TYPE_CHECKING:
     from anki.cards import Card
