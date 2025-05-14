@@ -102,7 +102,7 @@ class VocabCloner:
         for related in clone.related_notes.similar_meanings():
             clone.related_notes.add_similar_meaning(related)
 
-        clone._flush() # noqa this is essentially a part of the vocab note class. This is fine.
+        app.anki_collection().addNote(clone_backend_note)
 
         return clone
 
