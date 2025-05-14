@@ -17,7 +17,7 @@ select = [
     "TC", # get's the correct imports into and out of TYPE_CHECKING blocks
     "ANN", # type annotations warnings
     "FA", # More type annotations fixes,
-    "Q"
+    "Q", #quoting style
 ]
 
 isort.required-imports = ["from __future__ import annotations"] # since vital other warnings only appear if this line is there we want it in every file.
