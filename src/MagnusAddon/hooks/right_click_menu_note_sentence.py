@@ -62,11 +62,8 @@ def build_string_menu(string_menu: QMenu, sentence: SentenceNote, menu_string: s
     build_highlighted_vocab_menu(non_optional(string_menu.addMenu(shortcutfinger.home4("Highlighted Vocab Separator"))), sentence, "-")
 
 def build_highlighted_vocab_menu(highlighted_vocab_menu: QMenu, sentence: SentenceNote, _vocab_to_add: str) -> None:
-    def add_position_highlighted_word_action(name: str, position: int) -> None:
-        add_ui_action(highlighted_vocab_menu, name, lambda: sentence.configuration.position_highlighted_word(_vocab_to_add, position))
-
     for index, _vocab in enumerate(sentence.configuration.highlighted_words()):
-        add_position_highlighted_word_action(shortcutfinger.numpad(index, f"{_vocab}"), index)
+        add_ui_action(highlighted_vocab_menu,shortcutfinger.numpad(index, f"{_vocab}"), ex_lambda.bind2(sentence.configuration.position_highlighted_word, _vocab_to_add, index))
 
     add_ui_action(highlighted_vocab_menu, shortcutfinger.home1("[Last]"), lambda: sentence.configuration.position_highlighted_word(_vocab_to_add))
 
