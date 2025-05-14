@@ -41,7 +41,7 @@ def build_string_menu(string_menu: QMenu, kanji: KanjiNote, menu_string: str) ->
         add_ui_action(highlighted_vocab_menu, shortcutfinger.home1("[Last]"), lambda: kanji.position_primary_vocab(_vocab_to_add))
 
         if _vocab_to_add in kanji.get_primary_vocab():
-            add_ui_action(highlighted_vocab_menu, shortcutfinger.home2("Remove"), ex_lambda.bind1(kanji.remove_primary_vocab, _vocab_to_add))  # type: ignore
+            add_ui_action(highlighted_vocab_menu, shortcutfinger.home2("Remove"), ex_lambda.bind1(kanji.remove_primary_vocab, _vocab_to_add))
 
     def add_primary_readings_actions(menu: QMenu, title_factory: collections.abc.Callable[[str], str], string: str) -> None:
         if kana_utils.is_only_katakana(string):
@@ -57,8 +57,8 @@ def build_string_menu(string_menu: QMenu, kanji: KanjiNote, menu_string: str) ->
                 add_ui_action(menu, title_factory("Make primary Kunyomi reading"), lambda: kanji.add_primary_kun_reading(string))
 
     def build_add_menu(add_menu: QMenu) -> None:
-        add_ui_action(add_menu, shortcutfinger.home1("Similar meaning"), lambda: kanji.add_user_similar_meaning(menu_string))  # type: ignore
-        add_ui_action(add_menu, shortcutfinger.home2("Confused with"), lambda: kanji.add_related_confused_with(menu_string))  # type: ignore
+        add_ui_action(add_menu, shortcutfinger.home1("Similar meaning"), lambda: kanji.add_user_similar_meaning(menu_string))
+        add_ui_action(add_menu, shortcutfinger.home2("Confused with"), lambda: kanji.add_related_confused_with(menu_string))
 
     build_highlighted_vocab_menu(non_optional(string_menu.addMenu(shortcutfinger.home1("Highlighted Vocab"))), menu_string)
     build_add_menu(non_optional(string_menu.addMenu(shortcutfinger.home2("Add"))))

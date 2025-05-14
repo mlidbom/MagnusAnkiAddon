@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-import pyperclip  # type: ignore
+import pyperclip
 from ankiutils import app, query_builder
 from hooks import shortcutfinger
 from hooks.right_click_menu_note_vocab_create_note_menu import build_create_note_menu

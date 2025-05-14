@@ -45,7 +45,7 @@ class DedicatedThread:
         completion_event = Event() if wait else None
         self.queue.put(Task(task, completion_event))
         if wait:
-            completion_event.wait()  # type: ignore
+            completion_event.wait()
 
     def destruct(self) -> None:
         self._running = False

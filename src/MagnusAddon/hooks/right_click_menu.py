@@ -3,7 +3,7 @@ from __future__ import annotations
 import typing
 
 import hooks.right_click_menu_note_vocab_string_menu
-import pyperclip  # type: ignore
+import pyperclip
 from ankiutils import app, query_builder, search_executor, ui_utils
 from aqt import gui_hooks
 from batches import local_note_updater

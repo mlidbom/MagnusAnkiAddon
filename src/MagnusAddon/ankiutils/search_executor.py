@@ -15,7 +15,7 @@ def do_lookup_and_show_previewer(text: str) -> None:
 
 def do_lookup(text: str) -> None:
     browser: Browser = aqt.dialogs.open("Browser", aqt.mw)
-    browser.form.searchEdit.lineEdit().setText(text)  # type: ignore
+    browser.form.searchEdit.lineEdit().setText(text)
     browser.onSearchActivated()
     app.get_ui_utils().activate_preview()
 
