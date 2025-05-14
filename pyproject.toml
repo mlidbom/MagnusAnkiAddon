@@ -50,6 +50,6 @@ ignore = [
     "W292", # [*] No newline at end of file
     "PT003", #`scope='function'` is implied in `@pytest.fixture()` ... But I like being explicit. No need to remember the default
     "TRY003", #Avoid specifying long messages outside the exception class"
-    "TRY002", #Create your own exception ... Not unless I need to catch it
+    "TRY002", #Create your own exception ... Not unless I need to catch it  
 ]
 
