@@ -10,11 +10,11 @@ line-length = 9999
 select = [
     "E", # pycodestyle
     "W", # pycodestyle warnings
-    "F",# Pyflakes
+    "F", # Pyflakes
     "UP", # pyupgrade
     "B", # flake8-bugbear
     "SIM", # flake8-simplify
-    "I",# isort sorts imports etc
+    "I", # isort sorts imports etc
     "TC", # get's the correct imports into and out of TYPE_CHECKING blocks
     "ANN", # type annotations warnings
     "FA", # More type annotations fixes,
@@ -28,24 +28,29 @@ select = [
     #"PGH", # yeah I should not be using noqa but instead specific ignores. Do look at this eventually..
     # "PL", # pylint. Has some good advice, but way too many false positives for me to enable this now.
     "FURB", # refurbishing and modernizing Python codebases.
+    #"RUF", #ruff specific rules might be something interesting in here, but a ton of stull that I don't care about, or disagree with...
+    "TRY", # proper exception use
 ]
 
 isort.required-imports = ["from __future__ import annotations"] # since vital other warnings only appear if this line is there we want it in every file.
 
 #select = ["ALL"]
 
- flake8-pytest-style.parametrize-names-type = "csv"
+flake8-pytest-style.parametrize-names-type = "csv"
+
 
 ignore = [
     "E701", #E701 multiple statements on one line,
-    "TC006",# [*] Add quotes to type expression in `typing.cast()`
-    "UP007",# Use `X | Y` for type annotations
+    "TC006", # [*] Add quotes to type expression in `typing.cast()`
+    "UP007", # Use `X | Y` for type annotations
 
     #below here is only needed when ALL is the select value
     #"Q", # rules on how quotes are use...
     "D", #Docstring rules
     "W292", # [*] No newline at end of file
-     "PT003", #`scope='function'` is implied in `@pytest.fixture()` ... But I like being explicit. No need to remember the default
+    "PT003", #`scope='function'` is implied in `@pytest.fixture()` ... But I like being explicit. No need to remember the default
+    "TRY003", #Avoid specifying long messages outside the exception class"
+    "TRY002", #Create your own exception ... Not unless I need to catch it
 
 ]
 
