@@ -28,6 +28,7 @@ class JsonReader:
 
         return [factory(reader) for reader in reader_list]
 
+    # noinspection PyUnusedFunction
     def object(self, prop: str, factory: Callable[[JsonReader], T], default: Callable[[], T] | None = None) -> T | None:
         reader = self._reader_or_none(prop)
         return default() if reader is None and default is not None else factory(typed.non_optional(reader))

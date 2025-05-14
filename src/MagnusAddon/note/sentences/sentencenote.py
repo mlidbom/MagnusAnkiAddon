@@ -69,7 +69,6 @@ class SentenceNote(JPNote):
         self.update_parsed_words()
         self.set_field(SentenceNoteFields.active_answer, self.get_answer())
         self.set_field(SentenceNoteFields.active_question, self.get_question())
-        self.configuration._save()
 
     def update_parsed_words(self, force: bool = False) -> None:
         from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
