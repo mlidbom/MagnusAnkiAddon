@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from ankiutils import app, query_builder
 from hooks import shortcutfinger
 from hooks.right_click_menu_utils import add_lookup_action, add_ui_action
-from sysutils import ex_str, kana_utils
+from sysutils import ex_lambda, ex_str, kana_utils
 from sysutils.typed import non_optional
 
 if TYPE_CHECKING:
@@ -13,7 +13,6 @@ if TYPE_CHECKING:
 
     from note.kanjinote import KanjiNote
     from PyQt6.QtWidgets import QMenu
-
 
 def build_note_menu(note_menu: QMenu, kanji: KanjiNote) -> None:
     def build_lookup_menu(note_lookup_menu: QMenu) -> None:
@@ -37,12 +36,12 @@ def build_note_menu(note_menu: QMenu, kanji: KanjiNote) -> None:
 def build_string_menu(string_menu: QMenu, kanji: KanjiNote, menu_string: str) -> None:
     def build_highlighted_vocab_menu(highlighted_vocab_menu: QMenu, _vocab_to_add: str) -> None:
         for index, _vocab in enumerate(kanji.get_primary_vocab()):
-            add_ui_action(highlighted_vocab_menu, shortcutfinger.numpad(index, f"{_vocab}"), lambda _index=index: kanji.position_primary_vocab(_vocab_to_add, _index))  # type: ignore
+            add_ui_action(highlighted_vocab_menu, shortcutfinger.numpad(index, f"{_vocab}"), ex_lambda.bind2(kanji.position_primary_vocab, menu_string, index))
 
         add_ui_action(highlighted_vocab_menu, shortcutfinger.home1("[Last]"), lambda: kanji.position_primary_vocab(_vocab_to_add))
 
         if _vocab_to_add in kanji.get_primary_vocab():
-            add_ui_action(highlighted_vocab_menu, shortcutfinger.home2("Remove"), lambda __vocab_to_add=_vocab_to_add: kanji.remove_primary_vocab(__vocab_to_add))  # type: ignore
+            add_ui_action(highlighted_vocab_menu, shortcutfinger.home2("Remove"), ex_lambda.bind1(kanji.remove_primary_vocab, _vocab_to_add))  # type: ignore
 
     def add_primary_readings_actions(menu: QMenu, title_factory: collections.abc.Callable[[str], str], string: str) -> None:
         if kana_utils.is_only_katakana(string):
@@ -58,8 +57,8 @@ def build_string_menu(string_menu: QMenu, kanji: KanjiNote, menu_string: str) ->
                 add_ui_action(menu, title_factory("Make primary Kunyomi reading"), lambda: kanji.add_primary_kun_reading(string))
 
     def build_add_menu(add_menu: QMenu) -> None:
-        add_ui_action(add_menu, shortcutfinger.home1("Similar meaning"), lambda _menu_string=menu_string: kanji.add_user_similar_meaning(_menu_string))  # type: ignore
-        add_ui_action(add_menu, shortcutfinger.home2("Confused with"), lambda _menu_string=menu_string: kanji.add_related_confused_with(_menu_string))  # type: ignore
+        add_ui_action(add_menu, shortcutfinger.home1("Similar meaning"), lambda: kanji.add_user_similar_meaning(menu_string))  # type: ignore
+        add_ui_action(add_menu, shortcutfinger.home2("Confused with"), lambda: kanji.add_related_confused_with(menu_string))  # type: ignore
 
     build_highlighted_vocab_menu(non_optional(string_menu.addMenu(shortcutfinger.home1("Highlighted Vocab"))), menu_string)
     build_add_menu(non_optional(string_menu.addMenu(shortcutfinger.home2("Add"))))
@@ -77,4 +76,3 @@ def format_kanji_meaning(meaning: str) -> str:
 
     val = val.removesuffix("|")
     return val.removeprefix("|")
-

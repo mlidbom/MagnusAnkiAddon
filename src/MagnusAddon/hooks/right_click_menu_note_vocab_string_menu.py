@@ -28,13 +28,13 @@ def build_string_menu(string_menu: QMenu, vocab: VocabNote, menu_string: str) ->
         sentence = sentences[0]
 
         if vocab.get_question() not in sentence.configuration.highlighted_words():
-            add_ui_action(sentence_menu, shortcutfinger.home1("Add Highlight"), lambda _sentence=sentence: _sentence.configuration.position_highlighted_word(vocab.get_question()))
+            add_ui_action(sentence_menu, shortcutfinger.home1("Add Highlight"), lambda: sentence.configuration.position_highlighted_word(vocab.get_question()))
         else:
             # noinspection PyDefaultArgument
-            add_ui_action(sentence_menu, shortcutfinger.home2("Remove highlight"), lambda _sentences=sentences: remove_highlight(_sentences))
+            add_ui_action(sentence_menu, shortcutfinger.home2("Remove highlight"), lambda: remove_highlight(sentences))
 
         # noinspection PyDefaultArgument
-        add_ui_action(sentence_menu, shortcutfinger.home3("Exclude this vocab"), lambda _sentences=sentences: exclude(_sentences))
+        add_ui_action(sentence_menu, shortcutfinger.home3("Exclude this vocab"), lambda: exclude(sentences))
 
     def build_add_menu(vocab_add_menu: QMenu) -> None:
         add_ui_action(vocab_add_menu, shortcutfinger.home1("Similar meaning"), lambda: vocab.related_notes.add_similar_meaning(menu_string))
