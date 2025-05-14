@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from anki.collection import Collection
     from anki.notes import Note, NoteId
 
-TNote = TypeVar('TNote', bound=JPNote)
+TNote = TypeVar("TNote", bound=JPNote)
 
 class BackEndFacade(Generic[TNote]):
     def __init__(self, anki_collection: Collection, constructor: Callable[[Note], TNote], note_type: str) -> None:

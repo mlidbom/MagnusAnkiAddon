@@ -13,4 +13,4 @@ class DeckConfigDictEx:
         self._dict = deck_config_dict
 
     def get_seconds_to_show_question(self) -> float:
-        return float_(self._dict.get('secondsToShowQuestion'))
+        return float_(self._dict.get("secondsToShowQuestion"))

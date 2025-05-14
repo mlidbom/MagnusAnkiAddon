@@ -27,13 +27,13 @@ def hiragana_to_katakana(hiragana: str) -> str:
     def char_to_katakana(char: str) -> str:
         return chr(ord(char) + 96) if character_is_hiragana(char) else char
 
-    return ''.join([char_to_katakana(char) for char in hiragana])
+    return "".join([char_to_katakana(char) for char in hiragana])
 
 def katakana_to_hiragana(katakana: str) -> str:
     def char_to_hiragana(char: str) -> str:
         return chr(ord(char) - 96) if character_is_katakana(char) else char
 
-    return ''.join([char_to_hiragana(char) for char in katakana])
+    return "".join([char_to_hiragana(char) for char in katakana])
 
 # from: https://www.darrenlester.com/blog/recognising-japanese-characters-with-javascript and http://www.rikai.com/library/kanjitables/kanji_codes.unicode.shtml
 # CJK unifed ideographs - Common and uncommon kanji ( 4e00 - 9faf)
@@ -71,7 +71,7 @@ def romanize(text:str) -> str:
         text = text[:-1]
 
     result = _kakasi.convert(text)
-    return "".join([item['hepburn'] for item in result])
+    return "".join([item["hepburn"] for item in result])
 
 def romaji_to_hiragana(string:str) -> str:
     return typed.str_(romkan.to_hiragana(string))

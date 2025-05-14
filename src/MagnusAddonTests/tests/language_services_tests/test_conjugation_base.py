@@ -6,41 +6,41 @@ import pytest
 
 @pytest.mark.parametrize("word, conjugation_bases", [
     # irregular verbs
-    ("くる", ['き', 'こ', 'くれ', 'き']),
-    ("する", ['し', 'さ', 'すれ', 'し', 'せ']),
-    ("いく", ['いき', 'いか', 'いけ', 'いっ', 'いこ']),
-    ("行く", ['行き', '行か', '行け', '行っ', '行こ']),
-    ("います", ['いまし', 'いませ']),
-    ('しようとする', ['しようとし', 'しようとさ', 'しようとすれ', 'しようとし', 'しようとせ']),
-    ("おいてくる", ['おいてき', 'おいてこ', 'おいてくれ', 'おいてき']),
+    ("くる", ["き", "こ", "くれ", "き"]),
+    ("する", ["し", "さ", "すれ", "し", "せ"]),
+    ("いく", ["いき", "いか", "いけ", "いっ", "いこ"]),
+    ("行く", ["行き", "行か", "行け", "行っ", "行こ"]),
+    ("います", ["いまし", "いませ"]),
+    ("しようとする", ["しようとし", "しようとさ", "しようとすれ", "しようとし", "しようとせ"]),
+    ("おいてくる", ["おいてき", "おいてこ", "おいてくれ", "おいてき"]),
 ])
 def test_irregular_verbs(word: str, conjugation_bases: list[str]) -> None:
     run_tests(word, conjugation_bases)
 
 @pytest.mark.parametrize("word, conjugation_bases, is_ichidan", [
-    ("食べる", ['食べり', '食べら', '食べれ', '食べっ', '食べ', '食べろ', '食べな'], False),
-    ("食べる", ['食べ', '食べろ', '食べな'], True),
+    ("食べる", ["食べり", "食べら", "食べれ", "食べっ", "食べ", "食べろ", "食べな"], False),
+    ("食べる", ["食べ", "食べろ", "食べな"], True),
 ])
 def test_ichidan(word: str, conjugation_bases: list[str], is_ichidan: bool) -> None:
     run_tests(word, conjugation_bases, is_ichidan)
 
 @pytest.mark.parametrize("word, conjugation_bases", [
     # adjectives
-    ("美味しい", ['美味しく', '美味しけ', '美味しか']),
+    ("美味しい", ["美味しく", "美味しけ", "美味しか"]),
 
     # irregular adjective
-    ("いい", ['よく', 'よけ', 'よか', 'よかっ']),
+    ("いい", ["よく", "よけ", "よか", "よかっ"]),
 ])
 def test_adjectives(word: str, conjugation_bases: list[str]) -> None:
     run_tests(word, conjugation_bases)
 
 @pytest.mark.parametrize("word, conjugation_bases", [
     # aru verbs
-    ('なさる', ['なさい', 'なさら', 'なされ', 'なさっ']),
-    ('くださる', ['ください', 'くださら', 'くだされ', 'くださっ']),
-    ('いらっしゃる', ['いらっしゃい', 'いらっしゃら', 'いらっしれば', 'いらっしゃっ']),
-    ('おっしゃる', ['おっしゃい', 'おっしゃら', 'おっしれば', 'おっしゃっ']),
-    ('ござる', ['ござい', 'ござら', 'ござれ', 'ござっ'])
+    ("なさる", ["なさい", "なさら", "なされ", "なさっ"]),
+    ("くださる", ["ください", "くださら", "くだされ", "くださっ"]),
+    ("いらっしゃる", ["いらっしゃい", "いらっしゃら", "いらっしれば", "いらっしゃっ"]),
+    ("おっしゃる", ["おっしゃい", "おっしゃら", "おっしれば", "おっしゃっ"]),
+    ("ござる", ["ござい", "ござら", "ござれ", "ござっ"])
 ])
 def test_aru_verbs(word: str, conjugation_bases: list[str]) -> None:
     run_tests(word, conjugation_bases)
@@ -48,7 +48,7 @@ def test_aru_verbs(word: str, conjugation_bases: list[str]) -> None:
 @pytest.mark.parametrize("word, conjugation_bases", [
     # unknown godan verbs should add the ichidan endings
     ("走る", ["走り", "走ら", "走れ", "走っ", "走", "走ろ", "走な"]),
-    ("帰る", ['帰り', '帰ら', '帰れ', '帰っ', '帰', '帰ろ', '帰な']),
+    ("帰る", ["帰り", "帰ら", "帰れ", "帰っ", "帰", "帰ろ", "帰な"]),
 
     #ordinary godan
     ("使う", ["使い", "使わ", "使え", "使っ"]),
@@ -64,7 +64,7 @@ def test_unknown_godan(word: str, conjugation_bases: list[str]) -> None:
 @pytest.mark.parametrize("word, conjugation_bases", [
     # godan verbs
     ("走る", ["走り", "走ら", "走れ", "走っ"]),
-    ("帰る", ['帰り', '帰ら', '帰れ', '帰っ']),
+    ("帰る", ["帰り", "帰ら", "帰れ", "帰っ"]),
     ("使う", ["使い", "使わ", "使え", "使っ"]),
     ("書く", ["書き", "書か", "書け", "書い"]),
     ("立つ", ["立ち", "立た", "立て", "立っ"]),

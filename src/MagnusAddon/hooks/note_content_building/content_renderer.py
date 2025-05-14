@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
     from anki.cards import Card
 
-TNote = TypeVar('TNote', bound=JPNote)
+TNote = TypeVar("TNote", bound=JPNote)
 
 class PrerenderingAnswerContentRenderer(Generic[TNote]):
     def __init__(self, cls: type[TNote], render_methods:dict[str, Callable[[TNote], str]]) -> None:

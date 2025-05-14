@@ -16,7 +16,7 @@ wani_client = WanikaniClient.get_instance()
 
 def update_from_wanikani(note: Note) -> None:
     # noinspection PyProtectedMember
-    note_type = note._note_type['name']  # noqa: SLF001
+    note_type = note._note_type["name"]  # noqa: SLF001
     if note_type == NoteTypes.Vocab:
         vocab_note = VocabNote(note)
         vocab_note.update_from_wani(wani_client.get_vocab(vocab_note.get_question()))

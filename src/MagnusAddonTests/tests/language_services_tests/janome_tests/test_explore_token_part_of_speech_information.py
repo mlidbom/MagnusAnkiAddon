@@ -8,12 +8,12 @@ from language_services.janome_ex.tokenizing.jn_tokenizer import JNTokenizer
 _tokenizer:JNTokenizer
 
 # noinspection PyUnusedFunction
-@pytest.fixture(scope='module', autouse=True)
+@pytest.fixture(scope="module", autouse=True)
 def setup() -> None:
     global _tokenizer
     _tokenizer = JNTokenizer()
 
-@pytest.mark.parametrize('sentence, expected_tokens', [
+@pytest.mark.parametrize("sentence, expected_tokens", [
     ("こんなに", [JNToken(POS.Adverb.particle_connection, "こんなに", "こんなに")]),
     ("こんなに疲れている", [
         JNToken(POS.Adverb.particle_connection, "こんなに", "こんなに"),

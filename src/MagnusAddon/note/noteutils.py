@@ -15,7 +15,7 @@ def _is_being_studied(card: Card) -> bool:
     return card.queue != QUEUE_TYPE_SUSPENDED #and card.queue != QUEUE_TYPE_NEW
 
 def _card_type(card: Card) -> str:
-    return str_(card.template()['name'])
+    return str_(card.template()["name"])
 
 def remove_from_studying_cache(note_id: NoteId) -> None:
     if note_id in _card_is_studying_cache:

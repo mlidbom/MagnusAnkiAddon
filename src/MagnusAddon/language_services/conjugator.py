@@ -10,41 +10,41 @@ _a_stem_index = 1
 _e_stem_index = 2
 _te_stem_index = 3
 
-_ichidan_endings = ['', 'ろ', 'な']
+_ichidan_endings = ["", "ろ", "な"]
 
-_godan_ru_endings = ['り', 'ら', 'れ', 'っ']
+_godan_ru_endings = ["り", "ら", "れ", "っ"]
 _godan_ru_or_ichidan_endings = _godan_ru_endings + _ichidan_endings
 
-godan_potential_verb_ending_to_dictionary_form_endings: dict[str, str] = {'える': 'う', 'ける': 'く', 'げる': 'ぐ', 'せる': 'す', 'てる': 'つ', 'ねる': 'ぬ', 'べる': 'ぶ', 'める': 'む', 'れる': 'る'}
+godan_potential_verb_ending_to_dictionary_form_endings: dict[str, str] = {"える": "う", "ける": "く", "げる": "ぐ", "せる": "す", "てる": "つ", "ねる": "ぬ", "べる": "ぶ", "める": "む", "れる": "る"}
 
-e_stem_characters:set[str] = {'え', 'け', 'げ', 'せ', 'て', 'ね', 'べ', 'め', 'れ'}
-a_stem_characters:set[str] = {'わ', 'か', 'が', 'さ', 'た', 'な', 'ば', 'ま', 'ら'}
+e_stem_characters:set[str] = {"え", "け", "げ", "せ", "て", "ね", "べ", "め", "れ"}
+a_stem_characters:set[str] = {"わ", "か", "が", "さ", "た", "な", "ば", "ま", "ら"}
 
-_1_character_mappings: dict[str, list[str]] = {'う': ['い', 'わ', 'え', 'っ'],
-                                               'く': ['き', 'か', 'け', 'い'],
-                                               'ぐ': ['ぎ', 'が', 'げ', 'い'],
-                                               'す': ['し', 'さ', 'せ', 'し'],
-                                               'つ': ['ち', 'た', 'て', 'っ'],
-                                               'ぬ': ['に', 'な', 'ね', 'ん'],
-                                               'ぶ': ['び', 'ば', 'べ', 'ん'],
-                                               'む': ['み', 'ま', 'め', 'ん'],
-                                               'る': _godan_ru_endings,
-                                               'い': ['く', 'け', 'か']}
+_1_character_mappings: dict[str, list[str]] = {"う": ["い", "わ", "え", "っ"],
+                                               "く": ["き", "か", "け", "い"],
+                                               "ぐ": ["ぎ", "が", "げ", "い"],
+                                               "す": ["し", "さ", "せ", "し"],
+                                               "つ": ["ち", "た", "て", "っ"],
+                                               "ぬ": ["に", "な", "ね", "ん"],
+                                               "ぶ": ["び", "ば", "べ", "ん"],
+                                               "む": ["み", "ま", "め", "ん"],
+                                               "る": _godan_ru_endings,
+                                               "い": ["く", "け", "か"]}
 
-_2_character_mappings: dict[str, list[str]] = {'する': ['し', 'さ', 'すれ', 'し', 'せ'],
-                                               'くる': ['き', 'こ', 'くれ', 'き'],
-                                               'いく': ['いき', 'いか', 'いけ', 'いっ', 'いこ'],
-                                               '行く': ['行き', '行か', '行け', '行っ', '行こ'],
-                                               'ます': ['まし', 'ませ'],
-                                               'いい': ['よく', 'よけ', 'よか', 'よかっ']}
+_2_character_mappings: dict[str, list[str]] = {"する": ["し", "さ", "すれ", "し", "せ"],
+                                               "くる": ["き", "こ", "くれ", "き"],
+                                               "いく": ["いき", "いか", "いけ", "いっ", "いこ"],
+                                               "行く": ["行き", "行か", "行け", "行っ", "行こ"],
+                                               "ます": ["まし", "ませ"],
+                                               "いい": ["よく", "よけ", "よか", "よかっ"]}
 
-_masu_forms_by_index = ['まし', 'ませ', 'まし', 'まし'] #not to sure about these. To say the least....
+_masu_forms_by_index = ["まし", "ませ", "まし", "まし"] #not to sure about these. To say the least....
 
-_aru_verbs: set[str] = {'なさる', 'くださる', 'おっしゃる', 'ござる', 'らっしゃる', '下さる', '為さる'}
+_aru_verbs: set[str] = {"なさる", "くださる", "おっしゃる", "ござる", "らっしゃる", "下さる", "為さる"}
 
-_aru_mappings: dict[str, list[str]] = {'さる': ['さい', 'さら', 'され', 'さっ'],
-                                       'ざる': ['ざい', 'ざら', 'ざれ', 'ざっ'],
-                                       'ゃる': ['ゃい', 'ゃら', 'れば', 'ゃっ']}
+_aru_mappings: dict[str, list[str]] = {"さる": ["さい", "さら", "され", "さっ"],
+                                       "ざる": ["ざい", "ざら", "ざれ", "ざっ"],
+                                       "ゃる": ["ゃい", "ゃら", "れば", "ゃっ"]}
 
 def construct_root_verb_for_possibly_potential_godan_verb_dictionary_form(potential_verb_form: str) -> str:
     return potential_verb_form[:-2] + godan_potential_verb_ending_to_dictionary_form_endings[potential_verb_form[-2:]]

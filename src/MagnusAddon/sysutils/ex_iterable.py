@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Callable, TypeVar
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 def take_while(predicate: Callable[[T], bool], iterable: Iterable[T]) -> Iterable[T]:
     """`returns` an iterable containing the items in `iterable` until (exclusive) `condition` returns false"""

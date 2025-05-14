@@ -106,7 +106,7 @@ class KanjiNote(WaniNote):
     def get_reading_on_html(self) -> str: return self.get_field(NoteFields.Kanji.Reading_On)
     def set_reading_on(self, value: str) -> None: self.set_field(NoteFields.Kanji.Reading_On, value)
 
-    primary_reading_pattern = re.compile(r'<primary>(.*?)</primary>')
+    primary_reading_pattern = re.compile(r"<primary>(.*?)</primary>")
 
     def get_primary_readings(self) -> list[str]:
         return self.get_primary_readings_on() + self.get_primary_readings_kun() + self.get_primary_readings_nan()
@@ -191,13 +191,13 @@ class KanjiNote(WaniNote):
     def get_primary_vocab(self) -> list[str]: return ex_str.extract_comma_separated_values(self.get_field(NoteFields.Kanji.PrimaryVocab))
     def set_primary_vocab(self, value: list[str]) -> None: self.set_field(NoteFields.Kanji.PrimaryVocab, ", ".join(value))
 
-    _any_word_pattern = re.compile(r'\b[-\w]+\b', re.UNICODE)
+    _any_word_pattern = re.compile(r"\b[-\w]+\b", re.UNICODE)
     def get_primary_meaning(self) -> str:
         radical_meaning_match = self._any_word_pattern.search(self.get_answer_text().replace("{", "").replace("}", ""))
         # noinspection PyArgumentEqualDefault
         return radical_meaning_match.group(0) if radical_meaning_match else ""
 
-    _parenthesized_word_pattern = re.compile(r'\([-\w]+\)', re.UNICODE)
+    _parenthesized_word_pattern = re.compile(r"\([-\w]+\)", re.UNICODE)
     def get_primary_radical_meaning(self) -> str:
         def get_dedicated_radical_primary_meaning() -> str:
             radical_meaning_match = self._parenthesized_word_pattern.search(self.get_answer_text())
@@ -304,25 +304,25 @@ class KanjiNote(WaniNote):
 
         vocabs = [client.get_vocab_by_id(int(kanji_id)) for kanji_id in amalgamation_subject_ids]
         vocabs.sort(key=lambda voc: (voc.level, voc.lesson_position))
-        vocab_html = '''
+        vocab_html = """
 <div class="vocabList">
-    <div>'''
+    <div>"""
 
         for vocab in vocabs:
-            vocab_html += f'''
-        <div>{vocab.characters} ({vocab.readings[0].reading}) {vocab.meanings[0].meaning}</div>'''
+            vocab_html += f"""
+        <div>{vocab.characters} ({vocab.readings[0].reading}) {vocab.meanings[0].meaning}</div>"""
 
-        vocab_html += '''
+        vocab_html += """
     </div>
 </div>
-'''
+"""
         self.set_vocabs(vocab_html)
 
     def populate_radicals_from_mnemonic_tags(self) -> None:
         def detect_radicals_from_mnemonic() -> list[str]:
-            radical_names = re.findall(r'<rad>(.*?)</rad>', self.get_user_mnemonic())
+            radical_names = re.findall(r"<rad>(.*?)</rad>", self.get_user_mnemonic())
 
-            matching_radicals = ex_sequence.flatten([([rad for rad in app.col().kanji.all() if re.search(r'\b' + re.escape(radical_name) + r'\b', rad.get_answer())]) for radical_name in radical_names])
+            matching_radicals = ex_sequence.flatten([([rad for rad in app.col().kanji.all() if re.search(r"\b" + re.escape(radical_name) + r"\b", rad.get_answer())]) for radical_name in radical_names])
             return [match.get_question() for match in matching_radicals]
 
         radicals = self.get_radicals()

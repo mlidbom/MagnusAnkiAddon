@@ -9,9 +9,9 @@ if TYPE_CHECKING:
 
 class ParsedWordSerializer:
     @staticmethod
-    def to_dict(self:ParsedWord) -> dict[str, Any]: return {'word': self.word}
+    def to_dict(self:ParsedWord) -> dict[str, Any]: return {"word": self.word}
 
     @staticmethod
     def from_reader(reader: JsonDictReader) -> ParsedWord:
         from note.sentences.parsed_word import ParsedWord
-        return ParsedWord(reader.string('word'))
+        return ParsedWord(reader.string("word"))

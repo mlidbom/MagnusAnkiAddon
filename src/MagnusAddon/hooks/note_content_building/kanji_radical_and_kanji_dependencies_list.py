@@ -14,8 +14,8 @@ def render_dependencies_list(note: KanjiNote) -> str:
     # noinspection DuplicatedCode
     def highlight_primary_reading_sources(text: str) -> str:
         for reading in readings:
-            text = re.sub(rf'\b{re.escape(kana_utils.katakana_to_hiragana(reading))}\b', f"<primary-reading-source>{kana_utils.katakana_to_hiragana(reading)}</primary-reading-source>", text)
-            text = re.sub(rf'\b{re.escape(kana_utils.hiragana_to_katakana(reading))}\b', f"<primary-reading-source>{kana_utils.hiragana_to_katakana(reading)}</primary-reading-source>", text)
+            text = re.sub(rf"\b{re.escape(kana_utils.katakana_to_hiragana(reading))}\b", f"<primary-reading-source>{kana_utils.katakana_to_hiragana(reading)}</primary-reading-source>", text)
+            text = re.sub(rf"\b{re.escape(kana_utils.hiragana_to_katakana(reading))}\b", f"<primary-reading-source>{kana_utils.hiragana_to_katakana(reading)}</primary-reading-source>", text)
 
         return text
 

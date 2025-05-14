@@ -3,7 +3,7 @@ from __future__ import annotations
 import collections
 from typing import Callable, Generic, TypeVar
 
-VT = TypeVar('VT')  # Value type
+VT = TypeVar("VT")  # Value type
 
 class DefaultDictCaseInsensitive(collections.defaultdict[str, VT], Generic[VT]):
     def __init__(self, default_factory: Callable[[], VT], **kwargs: object) -> None:

@@ -29,7 +29,7 @@ def inject_empty_anki_collection_with_note_types() -> Generator[None, None, None
         try:
             populate_collection(anki_collection)
             jp_collection = JPCollection(anki_collection)
-            with unittest.mock.patch('ankiutils.app.col', new=get_jp_collection):
+            with unittest.mock.patch("ankiutils.app.col", new=get_jp_collection):
                 yield
                 jp_collection.destruct_sync()
         finally:

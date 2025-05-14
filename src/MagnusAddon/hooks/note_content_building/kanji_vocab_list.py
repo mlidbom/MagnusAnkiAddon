@@ -52,7 +52,7 @@ def generate_vocab_html_list(_kanji_note: KanjiNote) -> str:
                 </div>
                 '''
     else:
-        return ''
+        return ""
 
 def init() -> None:
     gui_hooks.card_will_show.append(PrerenderingAnswerContentRenderer(KanjiNote, {"##VOCAB_LIST##": generate_vocab_html_list}).render)

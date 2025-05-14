@@ -49,7 +49,7 @@ class VocabNoteWaniExtensions:
     def update_from_wani(self, wani_vocab: models.Vocabulary) -> None:
         self._vocab.wani_extensions._meaning_mnemonic.set(wani_vocab.meaning_mnemonic)
 
-        meanings = ', '.join(str(meaning.meaning) for meaning in wani_vocab.meanings)
+        meanings = ", ".join(str(meaning.meaning) for meaning in wani_vocab.meanings)
         self.set_source_answer(meanings)
 
         value = ", ".join(wani_vocab.parts_of_speech)

@@ -31,7 +31,7 @@ note_kanji = f"{Builtin.Note}:{NoteTypes.Kanji}"
 note_vocab = f"{Builtin.Note}:{NoteTypes.Vocab}"
 note_sentence = f"{Builtin.Note}:{NoteTypes.Sentence}"
 excluded_deck_substring = "*Excluded*"
-deck_excluded = f'''{Builtin.Deck}:{excluded_deck_substring}'''
+deck_excluded = f"""{Builtin.Deck}:{excluded_deck_substring}"""
 
 note_vocab = note_vocab
 
@@ -85,7 +85,7 @@ def kanji_in_string(query: str) -> str: return f"{note_kanji} ( {' OR '.join([f'
 
 def vocab_dependencies_lookup_query(vocab: VocabNote) -> str:
     def single_vocab_clause(voc: ExtractedWord) -> str:
-        return f'{field_contains_word(f_forms, voc.word)}'
+        return f"{field_contains_word(f_forms, voc.word)}"
 
     def create_vocab_clause(text:str) -> str:
         dictionary_forms = [voc for voc in jn_extractor.extract_words(text)]
@@ -97,7 +97,7 @@ def vocab_dependencies_lookup_query(vocab: VocabNote) -> str:
     def create_kanji_clause() -> str:
         return f"{note_kanji} ( {' OR '.join([f'{f_question}:{char}' for char in vocab.get_question()])} )"
 
-    return f'''{create_vocab_vocab_clause()} ({create_kanji_clause()})'''
+    return f"""{create_vocab_vocab_clause()} ({create_kanji_clause()})"""
 
 def vocab_with_kanji(note:KanjiNote) -> str: return f"{note_vocab} {f_forms}:*{note.get_question()}*"
 
@@ -115,7 +115,7 @@ def vocabs_lookup_strings(words: list[str]) -> str:
     return f'''{note_vocab} ({' OR '.join([f"""{field_contains_word(f_forms, voc)}""" for voc in words])})'''
 
 def vocabs_lookup_strings_read_card(words: list[str]) -> str:
-    return f'''{vocabs_lookup_strings(words)} {card_read}'''
+    return f"""{vocabs_lookup_strings(words)} {card_read}"""
 
 def kanji_with_radical(radical: RadicalNote) -> str:
     if radical.get_question():
@@ -126,16 +126,16 @@ def kanji_with_radical(radical: RadicalNote) -> str:
 
 def kanji_with_reading_part(reading_part: str) -> str:
     hiragana_reading_part = kana_utils.anything_to_hiragana(reading_part)
-    return f'''note:{NoteTypes.Kanji} ({f_reading_on}:*{hiragana_reading_part}* OR {f_reading_kun}:*{hiragana_reading_part}*)'''
+    return f"""note:{NoteTypes.Kanji} ({f_reading_on}:*{hiragana_reading_part}* OR {f_reading_kun}:*{hiragana_reading_part}*)"""
 
 def exact_matches(question: str) -> str:
-    return f'''{f_question}:"{question}" OR {field_contains_word(f_forms, question)}'''
+    return f"""{f_question}:"{question}" OR {field_contains_word(f_forms, question)}"""
 
 def exact_matches_no_sentences(question: str) -> str:
-    return f'''({exact_matches(question)}) -{note_sentence}'''
+    return f"""({exact_matches(question)}) -{note_sentence}"""
 
 def exact_matches_no_sentences_reading_cards(question: str) -> str:
-    return f'''({exact_matches_no_sentences(question)}) {card_read} -{deck_excluded}'''
+    return f"""({exact_matches_no_sentences(question)}) {card_read} -{deck_excluded}"""
 
 def immersion_kit_sentences() -> str:
     return f'''"{Builtin.Note}:{NoteTypes.immersion_kit}"'''

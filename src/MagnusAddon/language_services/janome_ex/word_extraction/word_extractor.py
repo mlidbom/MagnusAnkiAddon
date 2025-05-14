@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
     from note.vocabulary.vocabnote import VocabNote
 
-_noise_characters = {'.', ',', ':', ';', '/', '|', '。', '、'}
+_noise_characters = {".", ",", ":", ";", "/", "|", "。", "、"}
 _max_lookahead = 12
 
 class WordExtractor:

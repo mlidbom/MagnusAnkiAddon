@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
 def build_web_search_menu(search_web_menu:QMenu, search_string:Callable[[],str]) -> None:
     def add_web_lookup(menu: QMenu, name: str, url: str) -> None:
-        menu.addAction(name, lambda: openLink(url % parse.quote(search_string(), encoding='utf8')))
+        menu.addAction(name, lambda: openLink(url % parse.quote(search_string(), encoding="utf8")))
 
     def set_up_kanji_menu(kanji_lookup_menu:QMenu) -> None:
         add_web_lookup(kanji_lookup_menu, shortcutfinger.home1("Kanji explosion"), "https://www.kurumi.com/jp/kjbh/?k=%s")

@@ -3,7 +3,7 @@ from __future__ import annotations
 from collections import deque
 from typing import Generic, TypeVar
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 class RecentItems(Generic[T]):
     def __init__(self, max_size: int) -> None:

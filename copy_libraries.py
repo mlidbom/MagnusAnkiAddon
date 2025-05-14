@@ -7,18 +7,18 @@ import shutil
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
 # Define the source directory (venv) and target directory (project) relative to the script location
-source_dir = os.path.join(script_dir, './venv/lib/site-packages')
-target_dir = os.path.join(script_dir, './src/MagnusAddon/_lib')
+source_dir = os.path.join(script_dir, "./venv/lib/site-packages")
+target_dir = os.path.join(script_dir, "./src/MagnusAddon/_lib")
 
 # One line per library and its dependencies
 libraries_to_copy = [
-    'wanikani_api', 'dateutil', 'six.py',
-    'janome',
-    'pyperclip',
-    'beartype',
-    'jamdict', 'jamdict_data', 'puchikarui', 'chirptext',
-    'pykakasi', 'jaconv', 'deprecated',
-    'romkan'
+    "wanikani_api", "dateutil", "six.py",
+    "janome",
+    "pyperclip",
+    "beartype",
+    "jamdict", "jamdict_data", "puchikarui", "chirptext",
+    "pykakasi", "jaconv", "deprecated",
+    "romkan"
     ]
 
 # Create the target directory if it doesn't exist

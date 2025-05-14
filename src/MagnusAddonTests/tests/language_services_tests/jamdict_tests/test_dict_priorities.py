@@ -16,7 +16,7 @@ def setup_empty_collection() -> Generator[None, None, None]:
     with inject_empty_anki_collection_with_note_types():
         yield
 
-@pytest.mark.parametrize('word, readings', [  # JPDB, CC100
+@pytest.mark.parametrize("word, readings", [  # JPDB, CC100
     ("これ", ["これ"]),  # 40, 144
     ("震える", ["ふるえる"]),  # 701, 7716
     ("元", ["もと"]),  # 501, 560
@@ -26,13 +26,13 @@ def setup_empty_collection() -> Generator[None, None, None]:
 ])
 def test_priority_maximum(word: str, readings: list[str]) -> None: run_priority_test(word, readings, "priority_maximum")
 
-@pytest.mark.parametrize('word, readings', [  # JPDB, CC100
+@pytest.mark.parametrize("word, readings", [  # JPDB, CC100
     ("惨状", ["さんじょう"]),  # 9372, 22639
     ("優遇", ["ゆうぐう"]),  # 15205, 7069
 ])
 def test_priority_high(word: str, readings: list[str]) -> None: run_priority_test(word, readings, "priority_high")
 
-@pytest.mark.parametrize('word, readings', [  # JPDB, CC100
+@pytest.mark.parametrize("word, readings", [  # JPDB, CC100
     ("最優遇", ["さいゆうぐう"]),  # 183459, ?
     ("不可分", ["ふかぶん"]),  # 51871, 34255 #todo
     ("不人気", ["ふにんき"]),  # 35219, 28125 #todo
@@ -40,12 +40,12 @@ def test_priority_high(word: str, readings: list[str]) -> None: run_priority_tes
 ])
 def test_priority_high_fixme(word: str, readings: list[str]) -> None: run_priority_test(word, readings, "priority_high")
 
-@pytest.mark.parametrize('word, readings', [  # JPDB, CC100
+@pytest.mark.parametrize("word, readings", [  # JPDB, CC100
     ("感涙", ["かんるい"]),  # 28855, 40035
 ])
 def test_priority_medium(word: str, readings: list[str]) -> None: run_priority_test(word, readings, "priority_medium")
 
-@pytest.mark.parametrize('word, readings', [  # JPDB, CC100
+@pytest.mark.parametrize("word, readings", [  # JPDB, CC100
     ("力不足", ["ちからぶそく"]),  # 13298, 35619 #todo
     ("号室", ["ごうしつ"])
 ])

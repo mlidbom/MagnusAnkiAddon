@@ -12,7 +12,7 @@ def dict_to_json(object_dict: dict[str, Any]) -> str:
 def json_to_reader(json_str: str) -> JsonDictReader:
     return JsonDictReader(typed.checked_cast_generics(dict[str, Any], json.loads(json_str)))
 
-T: TypeVar = TypeVar('T')
+T: TypeVar = TypeVar("T")
 
 class JsonDictReader:
     def __init__(self, json_dict: dict[str, Any]) -> None:

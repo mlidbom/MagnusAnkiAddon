@@ -25,7 +25,7 @@ def inject_full_anki_collection_for_testing() -> Generator[None, None, None]:
         anki_collection = create_collection(collection_file)
         jp_collection = JPCollection(anki_collection)
         try:
-            with unittest.mock.patch('ankiutils.app.col', new=get_jp_collection):
+            with unittest.mock.patch("ankiutils.app.col", new=get_jp_collection):
                 yield
         finally:
             anki_collection.close()

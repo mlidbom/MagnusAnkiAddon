@@ -6,8 +6,8 @@ from typing import TYPE_CHECKING, Callable, TypeVar
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
-T = TypeVar('T')
-U = TypeVar('U')
+T = TypeVar("T")
+U = TypeVar("U")
 
 def flatten(this: Sequence[Sequence[T]]) -> list[T]:
     """`returns` all the items in `this` in order, flattened into a one dimensional list"""

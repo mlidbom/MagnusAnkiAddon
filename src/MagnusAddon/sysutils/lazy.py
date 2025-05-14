@@ -6,7 +6,7 @@ from typing import Callable, Generic, TypeVar, cast
 
 from sysutils import app_thread_pool
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 class Lazy(Generic[T]):
     def __init__(self, factory: Callable[[], T]) -> None:

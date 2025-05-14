@@ -25,7 +25,7 @@ from aqt.webview import AnkiWebView, AnkiWebViewKind
 from sysutils import app_thread_pool, timeutil
 from sysutils.typed import checked_cast, non_optional
 
-_ANSWER_DISPLAY_TYPES = {'reviewAnswer', 'previewAnswer', 'clayoutAnswer'}
+_ANSWER_DISPLAY_TYPES = {"reviewAnswer", "previewAnswer", "clayoutAnswer"}
 
 def main_window() -> AnkiQt: return non_optional(aqt.mw)
 def is_displaytype_displaying_answer(display_type: str) -> bool:

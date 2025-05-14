@@ -11,4 +11,4 @@ class ConfigManagerEx:
         self.config = config
 
     def set_timebox_seconds(self, seconds:int) -> None:
-        self.config.set('timeLim', seconds)
+        self.config.set("timeLim", seconds)

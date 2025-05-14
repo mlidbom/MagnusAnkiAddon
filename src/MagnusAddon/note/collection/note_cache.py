@@ -23,8 +23,8 @@ class CachedNote:
         self.answer = note.get_answer()
         self.question = note.get_question()
 
-TNote = TypeVar('TNote', bound=JPNote)
-TSnapshot = TypeVar('TSnapshot', bound=CachedNote)
+TNote = TypeVar("TNote", bound=JPNote)
+TSnapshot = TypeVar("TSnapshot", bound=CachedNote)
 
 class NoteCache(ABC, Generic[TNote, TSnapshot]):
     def __init__(self, all_notes: list[TNote], cached_note_type: type[TNote], cache_runner: CacheRunner) -> None:

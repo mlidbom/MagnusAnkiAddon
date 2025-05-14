@@ -13,7 +13,7 @@ pool = ThreadPoolExecutor()
 def current_is_ui_thread() -> bool:
     return bool(QCoreApplication.instance() and non_optional(QCoreApplication.instance()).thread() == QThread.currentThread())
 
-T = TypeVar('T')
+T = TypeVar("T")
 def run_on_ui_thread_synchronously(func: Callable[[], T]) -> T:
     if app.is_testing() or current_is_ui_thread():
         return func()

@@ -8,7 +8,7 @@ from sysutils.typed import non_optional
 if TYPE_CHECKING:
     from _weakref import ReferenceType
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 class WeakRef(Generic[T]):
     def __init__(self, obj: T) -> None:

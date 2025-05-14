@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 
 from sysutils.ex_str import newline
 
-_noise_characters = {'.', ',', ':', ';', '/', '|', '。', '、', '?', '!'}
+_noise_characters = {".", ",", ":", ";", "/", "|", "。", "、", "?", "!"}
 class CandidateForm:
     def __init__(self, candidate: WeakRef[CandidateWord], is_surface: bool, form: str) -> None:
         from language_services.jamdict_ex.dict_lookup import DictLookup

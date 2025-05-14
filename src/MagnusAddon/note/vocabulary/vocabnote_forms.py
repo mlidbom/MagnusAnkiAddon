@@ -30,7 +30,7 @@ class VocabNoteForms:
     def _strip_noise_characters(string: str) -> str:
         return string.replace(Mine.VocabPrefixSuffixMarker, "")
 
-    _forms_exclusions = re.compile(r'\[\[|]]')
+    _forms_exclusions = re.compile(r"\[\[|]]")
     def _is_excluded_form(self, form: str) -> bool:
         return self._forms_exclusions.search(form) is not None
 

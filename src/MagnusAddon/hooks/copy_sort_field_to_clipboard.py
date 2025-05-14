@@ -20,7 +20,7 @@ def copy_card_sort_field_to_clipboard(note: Note) -> None:
     with StopWatch.log_warning_if_slower_than(0.01):
         if app.config().yomitan_integration_copy_answer_to_clipboard.get_value():
             model = cast(NotetypeDict, note.note_type())
-            sort_field = model['sortf']
+            sort_field = model["sortf"]
             sort_value = note.fields[sort_field]
             clean_string = ex_str.strip_html_and_bracket_markup_and_noise_characters(sort_value)
             app_thread_pool.pool.submit(lambda: pyperclip.copy(clean_string))

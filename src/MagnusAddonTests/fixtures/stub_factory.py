@@ -47,7 +47,7 @@ def stub_ui_dependencies() -> Generator[None, None, None]:
     with (_stub_ui_utils_real(), _stub_progress_runner(), _stub_config_dict()):
         yield
 
-T = TypeVar('T')
+T = TypeVar("T")
 @contextmanager
 def _stub_progress_runner() -> Generator[None, None, None]:
     # noinspection PyUnusedLocal

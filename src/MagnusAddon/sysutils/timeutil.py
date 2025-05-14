@@ -25,7 +25,7 @@ def format_seconds_as_hh_mm_ss(seconds: float) -> str:
     hours = int(seconds // 3600)
     minutes = int((seconds % 3600) // 60)
     sec = int(seconds % 60)
-    return f'{hours:02}:{minutes:02}:{sec:02}'
+    return f"{hours:02}:{minutes:02}:{sec:02}"
 
 def format_seconds_as_ss_ttt_ttt(seconds: float) -> str:
     total_milliseconds = int(seconds * 1000)  # Convert seconds to milliseconds
@@ -33,7 +33,7 @@ def format_seconds_as_ss_ttt_ttt(seconds: float) -> str:
     milliseconds_part = total_milliseconds % 1000  # Extract the milliseconds part
     microseconds_part = int((seconds - seconds_part) * 1_000_000)  # Calculate microseconds
 
-    return f'{seconds_part}.{milliseconds_part:03d} {microseconds_part:03d}'
+    return f"{seconds_part}.{milliseconds_part:03d} {microseconds_part:03d}"
 
 # noinspection PyUnusedFunction
 def start_stop_watch() -> StopWatch:

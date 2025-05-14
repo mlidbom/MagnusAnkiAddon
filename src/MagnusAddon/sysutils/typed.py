@@ -10,7 +10,7 @@ def int_(value: Any) -> int: return checked_cast(int, value)  # noqa: ANN401
 def float_(value: Any) -> float: return checked_cast(float, value)  # noqa: ANN401
 def bool_(value: Any) -> bool: return checked_cast(bool, value)  # noqa: ANN401
 
-CastT = TypeVar('CastT')
+CastT = TypeVar("CastT")
 
 def checked_cast(cls: type[CastT], instance: object) -> CastT:
     """ Runtime-check an object for simple built in types and return it cast as such """
@@ -27,7 +27,7 @@ def checked_cast_generics(cls: type[CastT], instance: object) -> CastT:
     return instance
 
 def _is_compatible_with_isinstance(cls: type[CastT]) -> bool:
-    return cls.__module__ == 'builtins' and get_origin(cls) is None
+    return cls.__module__ == "builtins" and get_origin(cls) is None
 
 def checked_cast_dynamic(cls: type[CastT], instance: object) -> CastT:
     """ Runtime-check an object for a specific type and return it cast as such """

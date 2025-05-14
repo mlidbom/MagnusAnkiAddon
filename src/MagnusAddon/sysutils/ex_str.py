@@ -23,27 +23,27 @@ def extract_comma_separated_values(string: str) -> list[str]:
 
 _html_bracket_pattern = re.compile('<.*?>|\[.*?\]') # noqa
 def strip_html_and_bracket_markup(string: str) -> str:
-    return _html_bracket_pattern.sub('', string)
+    return _html_bracket_pattern.sub("", string)
 
 def replace_html_and_bracket_markup_with(string: str, replacement:str) -> str:
     return _html_bracket_pattern.sub(replacement, string)
 
-_html_pattern = re.compile('<.*?>|&nbsp;')
+_html_pattern = re.compile("<.*?>|&nbsp;")
 def strip_html_markup(string: str) -> str:
-    return _html_pattern.sub('', string)
+    return _html_pattern.sub("", string)
 
 html_bracket_noise_pattern = re.compile('<.*?>|\[.*?\]|[〜]') # noqa
 def strip_html_and_bracket_markup_and_noise_characters(string: str) -> str:
-    return html_bracket_noise_pattern.sub('', string)
+    return html_bracket_noise_pattern.sub("", string)
 
-_first_number_pattern = re.compile(r'\d+')
+_first_number_pattern = re.compile(r"\d+")
 def first_number(string:str) -> int:
     match = _first_number_pattern.search(string)
     assert match
     return int(match.group())
 
 def replace_word(word:str, replacement:str, text:str) -> str:
-    return re.sub(rf'\b{re.escape(word)}\b', replacement, text)
+    return re.sub(rf"\b{re.escape(word)}\b", replacement, text)
 
 
 def sort_by_length_descending(strings: Sequence[str]) -> list[str]: return sorted(strings, key=len, reverse=True)

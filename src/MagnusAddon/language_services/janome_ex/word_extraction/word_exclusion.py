@@ -50,8 +50,8 @@ class WordExclusion:
         return self.word == other.word and (self.index == WordExclusion._no_index or self.index == other.index)
 
     def to_dict(self) -> dict[str, Any]:
-        return {'word': self.word, 'index': self.index}
+        return {"word": self.word, "index": self.index}
 
     @classmethod
     def from_reader(cls, reader: JsonDictReader) -> WordExclusion:
-        return cls(word=reader.string('word'), index=reader.int('index'))
+        return cls(word=reader.string("word"), index=reader.int("index"))

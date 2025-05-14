@@ -69,7 +69,7 @@ def tag_vocab_metadata() -> None:
     progress_display_runner.process_with_progress(app.col().vocab.all(), tag_note, "Tag vocab notes")
 
 def tag_kanji_metadata() -> None:
-    primary_reading = re.compile(r'<primary>(.*?)</primary>')
+    primary_reading = re.compile(r"<primary>(.*?)</primary>")
 
     known_kanji = {kanji.get_question() for kanji in app.col().kanji.all() if kanji.is_studying()}
 

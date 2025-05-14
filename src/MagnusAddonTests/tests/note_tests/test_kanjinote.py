@@ -24,7 +24,7 @@ def test_inside_radical_population() -> None:
     inside.set_user_mnemonic("<rad>head</rad> <rad>person</rad>")
 
     inside.populate_radicals_from_mnemonic_tags()
-    assert inside.get_radicals() == ['冂', '人']
+    assert inside.get_radicals() == ["冂", "人"]
 
 @pytest.mark.parametrize("kanji, radicals, mnemonic", [
     ("内", ["冂, 人"], "<rad>head</rad> <rad>person</rad> <kan>inside</kan> <compound-reading><read>U</read>ber-<read>chi</read>mp</compound-reading> ..."),

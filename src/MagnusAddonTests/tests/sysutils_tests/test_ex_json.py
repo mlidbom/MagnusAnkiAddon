@@ -17,11 +17,11 @@ class IntObject:
         self.value = value
 
     def to_dict(self) -> dict[str, int]:
-        return {'value': self.value}
+        return {"value": self.value}
 
     @staticmethod
     def from_json(reader: JsonDictReader) -> IntObject:
-        return IntObject(reader.int('value'))
+        return IntObject(reader.int("value"))
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, IntObject):
@@ -36,11 +36,11 @@ class HasObjectList:
         self.values = values
 
     def to_dict(self) -> dict[str, list[dict[str, int]]]:
-        return {'values': [value.to_dict() for value in self.values]}
+        return {"values": [value.to_dict() for value in self.values]}
 
     @staticmethod
     def from_json(reader: JsonDictReader) -> HasObjectList:
-        return HasObjectList(reader.object_list('values',IntObject.from_json))
+        return HasObjectList(reader.object_list("values",IntObject.from_json))
 
 def test_round_object_list() -> None:
     start_value = HasObjectList([IntObject(1), IntObject(2), IntObject(3)])

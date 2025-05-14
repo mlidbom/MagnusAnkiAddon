@@ -22,8 +22,8 @@ def render_list(note:JPNote, kanjis:list[KanjiNote], kanji_readings:list[str]) -
     # noinspection DuplicatedCode
     def highlight_inherited_reading(text: str) -> str:
         for reading in kanji_readings:
-            text = re.sub(rf'\b{re.escape(kana_utils.katakana_to_hiragana(reading))}\b', f"<inherited-reading>{kana_utils.katakana_to_hiragana(reading)}</inherited-reading>", text)
-            text = re.sub(rf'\b{re.escape(kana_utils.hiragana_to_katakana(reading))}\b', f"<inherited-reading>{kana_utils.hiragana_to_katakana(reading)}</inherited-reading>", text)
+            text = re.sub(rf"\b{re.escape(kana_utils.katakana_to_hiragana(reading))}\b", f"<inherited-reading>{kana_utils.katakana_to_hiragana(reading)}</inherited-reading>", text)
+            text = re.sub(rf"\b{re.escape(kana_utils.hiragana_to_katakana(reading))}\b", f"<inherited-reading>{kana_utils.hiragana_to_katakana(reading)}</inherited-reading>", text)
 
         return text
 

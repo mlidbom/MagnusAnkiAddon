@@ -26,7 +26,7 @@ class WaniDownloader:
 
         if response.status_code == 200:
             file_path = os.path.join(cls.media_dir(), filename)
-            with open(file_path, 'wb') as file:
+            with open(file_path, "wb") as file:
                 file.write(response.content)
 
             return filename

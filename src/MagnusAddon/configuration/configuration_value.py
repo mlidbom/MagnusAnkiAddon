@@ -7,7 +7,7 @@ from ankiutils import app
 from aqt import mw
 from sysutils.lazy import Lazy
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 _addon_dir = os.path.dirname(os.path.dirname(__file__))
 _addon_name = os.path.basename(_addon_dir)

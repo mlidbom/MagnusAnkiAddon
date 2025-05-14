@@ -33,7 +33,7 @@ def answer_again_with_zero_interval_for_new_note_cards_with_dependencies(note: N
 
 def visit_note_dependencies(note: Note, callback: Callable[[WaniNote, str], None]) -> None:
     # noinspection PyProtectedMember
-    note_type = note._note_type['name']
+    note_type = note._note_type["name"]
     if note_type == NoteTypes.Vocab:
         visit_vocab_with_dependencies(VocabNote(note), callback)
     if note_type == NoteTypes.Kanji:
@@ -82,7 +82,7 @@ def visit_radical_with_dependencies(radical_note: RadicalNote,
 
 
 def refresh_search() -> None:
-    browser: Browser = dialogs.open('Browser', mw)
+    browser: Browser = dialogs.open("Browser", mw)
     browser.onSearchActivated()
 
 

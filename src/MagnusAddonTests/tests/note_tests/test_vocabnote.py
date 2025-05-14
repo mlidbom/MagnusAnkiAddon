@@ -18,7 +18,7 @@ def setup() -> Generator[None, None, None]:
     with (stub_ui_dependencies(), inject_empty_anki_collection_with_note_types()):
         yield
 
-@pytest.mark.parametrize('question, answer, readings, forms', [
+@pytest.mark.parametrize("question, answer, readings, forms", [
     ("らっしゃい", "please-come", ["らっしゃい"], ["らっしゃい", "[[らっしゃる]]"])
 ])
 def test_excluded_forms(question:str, answer:str, readings:list[str], forms:set[str]) -> None:
@@ -33,6 +33,6 @@ def test_excluded_forms(question:str, answer:str, readings:list[str], forms:set[
     assert excluded_forms_list[0] == "らっしゃる"
 
 def test_blah() -> None:
-    _forms_exclusions = re.compile(r'\[\[.*]]')
+    _forms_exclusions = re.compile(r"\[\[.*]]")
 
     assert bool(_forms_exclusions.search("[[らっしゃる]]"))

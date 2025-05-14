@@ -23,7 +23,7 @@ from jamdict import Jamdict
 from language_services.jamdict_ex.dict_entry import DictEntry
 from sysutils import ex_iterable, kana_utils
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 class Request(Generic[T]):
     def __init__(self, func: Callable[[Jamdict], T], future: Future[T]) -> None:
@@ -190,7 +190,7 @@ class DictLookup:
     def _is_kana_only(entry: JMDEntry) -> bool:
         return not entry.kanji_forms or any(sense for sense
                                             in entry.senses
-                                            if 'word usually written using kana alone' in sense.misc)
+                                            if "word usually written using kana alone" in sense.misc)
 
     @classmethod
     def might_be_word(cls, word: str) -> bool:

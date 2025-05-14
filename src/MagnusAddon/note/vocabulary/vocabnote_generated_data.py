@@ -41,8 +41,8 @@ def update_generated_data(vocab: VocabNote) -> None:
             if vocab.parts_of_speech.is_uk() and vocab.readings.get()[0] not in vocab.forms.unexcluded_set():
                 vocab.forms.set_set(vocab.forms.unexcluded_set() | set(vocab.readings.get()))
 
-        speech_types = vocab.parts_of_speech.get() - {'Unknown',
-                                                      'Godan verbIchidan verb'  # crap inserted by bug in yomitan
+        speech_types = vocab.parts_of_speech.get() - {"Unknown",
+                                                      "Godan verbIchidan verb"  # crap inserted by bug in yomitan
                                                       }
         if len(speech_types) == 0:
             vocab.parts_of_speech.set_automatically_from_dictionary()

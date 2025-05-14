@@ -16,7 +16,8 @@ select = [
     "I",# isort sorts imports etc
     "TC", # get's the correct imports into and out of TYPE_CHECKING blocks
     "ANN", # type annotations warnings
-    "FA" # More type annotations fixes
+    "FA", # More type annotations fixes,
+    "Q"
 ]
 
 isort.required-imports = ["from __future__ import annotations"] # since vital other warnings only appear if this line is there we want it in every file.
@@ -29,8 +30,8 @@ ignore = [
     "UP007",# Use `X | Y` for type annotations
 
     #below here is only needed when ALL is the select value
-#    "Q", # rules on how quotes are use...
-#    "D", #Docstring rules
-#    "W292", # [*] No newline at end of file
+    #"Q", # rules on how quotes are use...
+    "D", #Docstring rules
+    "W292", # [*] No newline at end of file
 ]
 

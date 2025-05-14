@@ -9,8 +9,8 @@ from sysutils.typed import checked_cast_generics, str_
 class DeckEx:
     def __init__(self, deck_dict: DeckDict) -> None:
         self.deck_dict = deck_dict
-        self.name = str_(deck_dict['name'])
-        self.id = checked_cast_generics(DeckId, deck_dict['id'])
+        self.name = str_(deck_dict["name"])
+        self.id = checked_cast_generics(DeckId, deck_dict["id"])
 
 
     def get_config(self) -> DeckConfigDictEx:
