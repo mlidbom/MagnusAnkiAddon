@@ -37,7 +37,7 @@ def generate_vocab_html_list(_kanji_note: KanjiNote) -> str:
                 <div class="kanjiVocabList page_section">
                     <div class="page_section_title">vocabulary</div>
                     <div>
-    
+
                     {newline.join([f"""
                     <div class="kanjiVocabEntry {_create_classes(_kanji_note, _vocab_note)}">
                         <audio src="{_vocab_note.audio.get_primary_audio_path()}"></audio><a class="play-button"></a>
@@ -47,7 +47,7 @@ def generate_vocab_html_list(_kanji_note: KanjiNote) -> str:
                         <span class="meaning"> {_vocab_note.get_answer()}</span>
                     </div>
                     """ for _vocab_note in vocabs])}
-    
+
                     </div>
                 </div>
                 '''

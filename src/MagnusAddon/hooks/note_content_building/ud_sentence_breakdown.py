@@ -59,7 +59,7 @@ def _build_vocab_list(word_to_show: list[str], excluded_words:set[str], title:st
                         <li class="sentenceVocabEntry depth1 word_priority_very_low">
                             <div class="sentenceVocabEntryDiv">
                                 <span class="vocabQuestion clipboard">{word}</span>
-                                {f'''<span class="vocabHitForm clipboard">{hit.forms}</span>''' if hit.forms != word else ""} 
+                                {f'''<span class="vocabHitForm clipboard">{hit.forms}</span>''' if hit.forms != word else ""}
                                 <span class="vocabHitReadings clipboard">{hit.readings}</span>
                                 <span class="vocabAnswer">{hit.answer}</span>
                             </div>

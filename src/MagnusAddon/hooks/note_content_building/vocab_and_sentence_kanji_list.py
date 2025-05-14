@@ -22,7 +22,7 @@ def render_kanji_list_from_kanji(kanjis:list[str]) -> str:
         <div class="kanji_main">
             <span class="kanji_kanji clipboard">{kanji.question()}</span>
             <span class="kanji_readings">{kanji.readings()}</span>
-            <span class="kanji_answer">{kanji.answer()}</span>        
+            <span class="kanji_answer">{kanji.answer()}</span>
         </div>
         <div class="kanji_mnemonic">{kanji.mnemonic()}</div>
     </div>

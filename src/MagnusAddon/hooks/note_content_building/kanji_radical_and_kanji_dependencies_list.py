@@ -36,7 +36,7 @@ def render_dependencies_list(note: KanjiNote) -> str:
 {ex_str.newline.join(f'''
     <div class="dependency {" ".join(kanji.get_meta_tags())}">
         <div class="dependency_heading">
-            <div class="dependency_character clipboard">{kanji.get_question()}</div>                           
+            <div class="dependency_character clipboard">{kanji.get_question()}</div>
             <div class="dependency_name clipboard">{kanji.get_answer()}</div>
             <div class="dependency_readings">{highlight_primary_reading_sources(format_readings(kanji))}</div>
         </div>

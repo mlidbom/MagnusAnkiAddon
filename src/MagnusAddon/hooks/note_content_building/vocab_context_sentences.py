@@ -50,7 +50,7 @@ def generate_highlighted_sentences_html_list(_vocab_note:VocabNote) -> str:
                         {newline.join([f"""
                         <div class="highlightedSentenceDiv">
                             <audio src="{_sentence.audio}"></audio><a class="play-button"></a>
-                            <div class="highlightedSentence">                            
+                            <div class="highlightedSentence">
                                 <div class="sentenceQuestion clipboard">{format_sentence(_sentence.japanese)}</div>
                                 <div class="sentenceAnswer"> {_sentence.english}</div>
                             </div>

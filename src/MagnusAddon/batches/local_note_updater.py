@@ -165,7 +165,7 @@ def print_gc_status_and_collect() -> None:
     object_instance_tracker.print_instance_counts()
 
     print(f"""
-################# Displaying GC status #################    
+################# Displaying GC status #################
 Gc.isenabled(): {gc.isenabled()}
 Collecting...
 """)

@@ -55,6 +55,6 @@ class CandidateWord:
 
     def __repr__(self) -> str: return f"""
 surface: {self.surface.__repr__()} | base:{self.base.__repr__()},
-hvc:{self.has_valid_candidates()},  
-iw:{self.is_word} 
+hvc:{self.has_valid_candidates()},
+iw:{self.is_word}
 icc:{self.is_custom_compound})""".replace(newline, "")

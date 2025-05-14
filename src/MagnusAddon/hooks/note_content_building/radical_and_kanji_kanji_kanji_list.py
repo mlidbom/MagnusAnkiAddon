@@ -43,7 +43,7 @@ def render_list(note:JPNote, kanjis:list[KanjiNote], kanji_readings:list[str]) -
             <div class="kanji_main">
                 <span class="kanji_kanji clipboard">{kanji.question()}</span>
                 <span class="kanji_readings">{highlight_inherited_reading(kanji.readings())}</span>
-                <span class="kanji_answer">{kanji.answer()}</span>        
+                <span class="kanji_answer">{kanji.answer()}</span>
             </div>
             <div class="kanji_mnemonic">{kanji.mnemonic()}</div>
         </div>
