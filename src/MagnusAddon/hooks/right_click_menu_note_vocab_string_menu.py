@@ -23,9 +23,7 @@ def build_string_menu(string_menu: QMenu, vocab: VocabNote, menu_string: str) ->
             for _sentence in _sentences:
                 _sentence.configuration.incorrect_matches.add_global(vocab.get_question())
 
-        if not sentences:
-            sentence_menu.setEnabled(False)
-            return
+        if not sentences: return
 
         sentence = sentences[0]
 
