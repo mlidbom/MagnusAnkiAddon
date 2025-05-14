@@ -19,17 +19,17 @@ select = [
     "ANN", # type annotations warnings
     "FA", # More type annotations fixes,
     "Q", #quoting style,
-    "C4",
+    "C4", # Comprehensions fixes
     "PT", # pytest style
     "RET", #return values
     "TID", # tidy imports
-    #"PTH", apparently I'm doing paths all wrong. Might want to have a look sometime.
     "PERF", # performance
-    #"PGH", # yeah I should not be using noqa but instead specific ignores. Do look at this eventually..
-    # "PL", # pylint. Has some good advice, but way too many false positives for me to enable this now.
     "FURB", # refurbishing and modernizing Python codebases.
-    #"RUF", #ruff specific rules might be something interesting in here, but a ton of stull that I don't care about, or disagree with...
     "TRY", # proper exception use
+    #"PGH", # yeah I should not be using noqa but instead specific ignores. Do look at this eventually..
+    #"RUF", #ruff specific rules might be something interesting in here, but a ton of stull that I don't care about, or disagree with...
+    # "PL", # pylint. Has some good advice, but way too many false positives for me to enable this now.
+    #"PTH", apparently I'm doing paths all wrong. Might want to have a look sometime, for now it's all working and not under change.
 ]
 
 isort.required-imports = ["from __future__ import annotations"] # since vital other warnings only appear if this line is there we want it in every file.
@@ -50,6 +50,6 @@ ignore = [
     "W292", # [*] No newline at end of file
     "PT003", #`scope='function'` is implied in `@pytest.fixture()` ... But I like being explicit. No need to remember the default
     "TRY003", #Avoid specifying long messages outside the exception class"
-    "TRY002", #Create your own exception ... Not unless I need to catch it  
+    "TRY002", #Create your own exception ... Not unless I need to catch it
 ]
 
