@@ -7,16 +7,18 @@ from ankiutils import app
 from note.jpnote import JPNote
 from note.note_constants import ImmersionKitSentenceNoteFields, Mine, NoteFields, NoteTypes, SentenceNoteFields
 from note.notefields.audio_field import WritableAudioField
+from note.notefields.json_object_field import JsonObjectField
 from note.notefields.string_field import StringField
 from note.notefields.strip_html_on_read_fallback_string_field import StripHtmlOnReadFallbackStringField
 from note.notefields.strip_html_on_read_string_field import StripHtmlOnReadStringField
 from note.sentences.caching_sentence_configuration_field import CachingSentenceConfigurationField
+from note.sentences.parsing_result import ParsingResult
+from note.sentences.serialization.parsing_result_serializer import ParsingResultSerializer
 from sysutils import ex_sequence, ex_str, kana_utils
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.candidate_form import CandidateForm
     from language_services.janome_ex.word_extraction.extracted_word import ExtractedWord
-    from note.sentences.parsing_result import ParsingResult
     from note.vocabulary.vocabnote import VocabNote
 
 class SentenceNote(JPNote):
@@ -31,8 +33,7 @@ class SentenceNote(JPNote):
         self.audio: WritableAudioField = WritableAudioField(self, SentenceNoteFields.audio)
         self._user_answer: StringField = StringField(self, SentenceNoteFields.user_answer)
         self.configuration: CachingSentenceConfigurationField = CachingSentenceConfigurationField(self)
-
-    def parsing_result(self) -> ParsingResult: return self.configuration.parsing_result()
+        self.parsing_result: JsonObjectField[ParsingResult] = JsonObjectField[ParsingResult](self, SentenceNoteFields.parsing_result, ParsingResultSerializer())
 
     def get_question(self) -> str: return self.question.get()
     def get_answer(self) -> str: return self.answer.get()
@@ -58,7 +59,7 @@ class SentenceNote(JPNote):
         from language_services.janome_ex.word_extraction.word_extractor import jn_extractor
         return jn_extractor.extract_words(self.get_question())
 
-    def get_words(self) -> set[str]: return (set(self.parsing_result().parsed_words_strings()) | set(self.configuration.highlighted_words())) - self.configuration.incorrect_matches.words()
+    def get_words(self) -> set[str]: return (set(self.parsing_result.get().parsed_words_strings()) | set(self.configuration.highlighted_words())) - self.configuration.incorrect_matches.words()
 
     def get_parsed_words_notes(self) -> list[VocabNote]:
         return ex_sequence.flatten([app.col().vocab.with_question(q) for q in self.get_valid_parsed_non_child_words_strings()])
@@ -68,15 +69,16 @@ class SentenceNote(JPNote):
         self.update_parsed_words()
         self.set_field(SentenceNoteFields.active_answer, self.get_answer())
         self.set_field(SentenceNoteFields.active_question, self.get_question())
+        self.configuration._save()
 
     def update_parsed_words(self, force: bool = False) -> None:
         from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
-        parsing_result = self.parsing_result()
+        parsing_result = self.parsing_result.get()
         if not force and parsing_result and parsing_result.sentence == self.get_question() and parsing_result.parser_version == TextAnalysis.version:
             return
 
         analysis = TextAnalysis(self.get_question(), self.configuration.incorrect_matches.get())
-        self.configuration.set_parsing_result(analysis)
+        self.parsing_result.set(ParsingResult.from_analysis(analysis))
 
     def extract_kanji(self) -> list[str]:
         clean = ex_str.strip_html_and_bracket_markup(self.get_question())

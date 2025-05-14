@@ -4,13 +4,10 @@ from typing import TYPE_CHECKING
 
 from note.note_constants import SentenceNoteFields
 from note.notefields.string_field import StringField
-from note.sentences.parsed_word import ParsedWord
-from note.sentences.parsing_result import ParsingResult
 from note.sentences.sentence_configuration import SentenceConfiguration
 from sysutils.lazy import Lazy
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
     from note.sentences.sentencenote import SentenceNote
     from note.sentences.word_exclusion_set import WordExclusionSet
 
@@ -43,13 +40,6 @@ class CachingSentenceConfigurationField:
             self.highlighted_words().append(vocab)
         else:
             self.highlighted_words().insert(index, vocab)
-        self._save()
-
-    def parsing_result(self) -> ParsingResult: return self._value.instance().parsing_result
-    def set_parsing_result(self, analysis: TextAnalysis) -> None:
-        self._value.instance().parsing_result = ParsingResult([ParsedWord(word.form) for word in analysis.all_words],
-                                                              analysis.text,
-                                                              analysis.version)
         self._save()
 
     def _save(self) -> None:

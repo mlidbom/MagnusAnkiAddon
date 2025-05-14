@@ -15,7 +15,7 @@ def create_sentence() -> NoteTypeEx:
                           NoteFieldEx(SentenceNoteFields.active_answer),
                           NoteFieldEx(SentenceNoteFields.source_answer),
                           NoteFieldEx(SentenceNoteFields.user_answer),
-                          NoteFieldEx(SentenceNoteFields.ParsedWords),
+                          NoteFieldEx(SentenceNoteFields.parsing_result),
                           NoteFieldEx(SentenceNoteFields.user_excluded_vocab),
                           NoteFieldEx(SentenceNoteFields.user_extra_vocab),
                           NoteFieldEx(SentenceNoteFields.configuration),

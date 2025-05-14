@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.hierarchicalword import HierarchicalWord
-    from sysutils.ex_json import JsonDictReader
+    from sysutils.ex_json import JsonReader
 
 from typing import Any
 
@@ -46,5 +46,5 @@ class WordExclusion:
         return {"word": self.word, "index": self.index}
 
     @classmethod
-    def from_reader(cls, reader: JsonDictReader) -> WordExclusion:
+    def from_reader(cls, reader: JsonReader) -> WordExclusion:
         return cls(word=reader.string("word"), index=reader.int("index"), _secret=WordExclusion.secret)

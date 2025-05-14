@@ -1,22 +1,27 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
+from note.notefields.json_object_field import JsonObjectSerializer, T
 from note.sentences.parsed_word import ParsedWord
+from sysutils import ex_json
+from sysutils.ex_json import JsonReader
 
 if TYPE_CHECKING:
     from note.sentences.parsing_result import ParsingResult
-    from sysutils.ex_json import JsonDictReader
 
-class ParsingResultSerializer:
-    @staticmethod
-    def to_dict(self: ParsingResult) -> dict[str, Any]: return {"words": [ParsedWord.serializer.to_dict(word) for word in self.parsed_words],
-                                                                "sentence": self.sentence,
-                                                                "parser_version": self.parser_version}
+class ParsingResultSerializer(JsonObjectSerializer["ParsingResult"]):
 
-    @staticmethod
-    def from_reader(reader: JsonDictReader) -> ParsingResult:
+    def deserialize(self, json: str) -> T:
         from note.sentences.parsing_result import ParsingResult
+        if not json: return ParsingResult([], "", "")
+
+        reader = JsonReader.from_json(json)
         return ParsingResult(reader.object_list("words", ParsedWord.serializer.from_reader),
                              reader.string("sentence"),
-                             reader.string("parser_version"))
+                             reader.string("parser_version")) if json else ParsingResult([], "", "")
+
+    def serialize(self, parsing_result: ParsingResult) -> str:
+        return ex_json.dict_to_json({"words": [ParsedWord.serializer.to_dict(word) for word in parsing_result.parsed_words],
+                                     "sentence": parsing_result.sentence,
+                                     "parser_version": parsing_result.parser_version})

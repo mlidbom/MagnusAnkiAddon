@@ -4,8 +4,6 @@ import threading
 from concurrent.futures import Future
 from typing import Callable, Generic, TypeVar, cast
 
-from sysutils import app_thread_pool
-
 T = TypeVar("T")
 
 class Lazy(Generic[T]):
@@ -34,6 +32,7 @@ class BackgroundInitialingLazy(Generic[T]):
     def _init(self) -> None:
         with self._lock:
             if not self._instance:
+                from sysutils import app_thread_pool
                 self._instance = app_thread_pool.pool.submit(self._factory)
 
     def is_initialized(self) -> bool: return bool(self._instance and self._instance.done() and not self._instance.cancelled())
@@ -49,6 +48,7 @@ class BackgroundInitialingLazy(Generic[T]):
         if self.try_cancel_scheduled_init():
             self._init()
 
+        from sysutils import app_thread_pool
         if not self.is_initialized() and app_thread_pool.current_is_ui_thread():
             from sysutils import progress_display_runner
 

@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from note.sentences.parsed_word import ParsedWord
-    from sysutils.ex_json import JsonDictReader
+    from sysutils.ex_json import JsonReader
 
 
 class ParsedWordSerializer:
@@ -12,6 +12,6 @@ class ParsedWordSerializer:
     def to_dict(self:ParsedWord) -> dict[str, Any]: return {"word": self.word}
 
     @staticmethod
-    def from_reader(reader: JsonDictReader) -> ParsedWord:
+    def from_reader(reader: JsonReader) -> ParsedWord:
         from note.sentences.parsed_word import ParsedWord
         return ParsedWord(reader.string("word"))

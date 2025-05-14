@@ -30,7 +30,7 @@ class SentenceNoteFields:
     active_answer = MyNoteFields.answer
     source_answer = "source_answer"
     user_answer = "__answer"
-    ParsedWords = "ParsedWords"
+    parsing_result = "__parsing_result"
     user_excluded_vocab = "__excluded_vocab"
     user_extra_vocab = "__extra_vocab"
     audio = "Audio Sentence"
