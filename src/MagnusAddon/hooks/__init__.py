@@ -17,7 +17,7 @@ from . import (
     right_click_menu_note_kanji,
     right_click_menu_note_radical,
     right_click_menu_note_sentence,
-    right_click_menu_note_vocab,
+    right_click_menu_note_vocab_main,
     right_click_menu_utils,
     right_click_menu_web_search,
     timebox_end_sound,

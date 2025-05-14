@@ -3,10 +3,12 @@ from __future__ import annotations
 import typing
 
 import pyperclip  # type: ignore
+
+import hooks.right_click_menu_note_vocab_string_menu
 from ankiutils import app, query_builder, search_executor, ui_utils
 from aqt import gui_hooks
 from batches import local_note_updater
-from hooks import right_click_menu_note_kanji, right_click_menu_note_radical, right_click_menu_note_sentence, right_click_menu_note_vocab, shortcutfinger
+from hooks import right_click_menu_note_kanji, right_click_menu_note_radical, right_click_menu_note_sentence, right_click_menu_note_vocab_main, shortcutfinger
 from hooks.right_click_menu_open_in_anki import build_open_in_anki_menu
 from hooks.right_click_menu_utils import add_ui_action, create_note_action, create_vocab_note_action
 from hooks.right_click_menu_web_search import build_web_search_menu
@@ -52,7 +54,7 @@ def build_right_click_menu(root_menu: QMenu, note: JPNote | None, selection: str
             string_note_menu_factory = lambda menu, string: right_click_menu_note_kanji.build_string_menu(menu, typed.checked_cast(KanjiNote, note), string)  # noqa: E731
         elif isinstance(note, VocabNote):
             right_click_menu_note_vocab.setup_note_menu(non_optional(root_menu.addMenu(shortcutfinger.home3("Vocab note actions"))), note, selection, clipboard)
-            string_note_menu_factory = lambda menu, string: right_click_menu_note_vocab.build_string_menu(menu, typed.checked_cast(VocabNote, note), string)  # noqa: E731
+            string_note_menu_factory = lambda menu, string: hooks.right_click_menu_note_vocab_string_menu.build_string_menu(menu, typed.checked_cast(VocabNote, note), string)  # noqa: E731
         elif isinstance(note, SentenceNote):
             right_click_menu_note_sentence.build_note_menu(non_optional(root_menu.addMenu(shortcutfinger.home3("Sentence note actions"))), note)
             string_note_menu_factory = lambda menu, string: right_click_menu_note_sentence.build_string_menu(menu, typed.checked_cast(SentenceNote, note), string)  # noqa: E731
