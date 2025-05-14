@@ -52,9 +52,9 @@ def build_string_menu(string_menu: QMenu, sentence: SentenceNote, menu_string: s
             if len(covered_existing_exclusions) == 1:
                 add_ui_action(word_exclusion_set_menu, shortcutfinger.home2("Remove"), lambda: exclusion_set.remove_string(menu_string))
             else:
-                non_optional(word_exclusion_set_menu.addMenu(shortcutfinger.home2("Remove")))
+                remove_exclution_menu: QMenu = non_optional(word_exclusion_set_menu.addMenu(shortcutfinger.home2("Remove")))
                 for excluded_index, matched_exclusion in enumerate(covered_existing_exclusions):
-                    add_ui_action(add_exclusion_menu,shortcutfinger.numpad_no_numbers(excluded_index, f"{matched_exclusion.index}:{matched_exclusion.word}"), ex_lambda.bind1(exclusion_set.remove, matched_exclusion))
+                    add_ui_action(remove_exclution_menu,shortcutfinger.numpad_no_numbers(excluded_index, f"{matched_exclusion.index}:{matched_exclusion.word}"), ex_lambda.bind1(exclusion_set.remove, matched_exclusion))
 
     build_word_exclusion_set_menu(non_optional(string_menu.addMenu(shortcutfinger.home2("Incorrect matches"))), sentence.configuration.incorrect_matches)
     build_word_exclusion_set_menu(non_optional(string_menu.addMenu(shortcutfinger.home3("Hidden matches"))), sentence.configuration.hidden_matches)
