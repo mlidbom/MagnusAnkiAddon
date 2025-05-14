@@ -38,9 +38,12 @@ def build_string_menu(string_menu: QMenu, sentence: SentenceNote, menu_string: s
             if len(top_level_words_excluded_by_menu_string) == 1:
                 add_ui_action(word_exclusion_set_menu, shortcutfinger.home1("Add"), lambda: exclusion_set.add_global(menu_string))
             else:
-                exclude_menu: QMenu = non_optional(word_exclusion_set_menu.addMenu(shortcutfinger.home1("Add")))
+                add_exclusion_menu: QMenu = non_optional(word_exclusion_set_menu.addMenu(shortcutfinger.home1("Add")))
+                def add_add_to_exclusions_action(name: str, exclusion: WordExclusion) -> None:
+                    add_ui_action(add_exclusion_menu, name, lambda: exclusion_set.add(exclusion))
+
                 for excluded_index, matched in enumerate(top_level_words_excluded_by_menu_string):
-                    add_ui_action(exclude_menu, shortcutfinger.numpad_no_numbers(excluded_index, f"{matched.start_index}: {matched.form}"), lambda _matched=matched: exclusion_set.add(_matched.to_exclusion()))
+                    add_add_to_exclusions_action(shortcutfinger.numpad_no_numbers(excluded_index, f"{matched.start_index}: {matched.form}"), matched.to_exclusion())
         else:
             add_ui_action(word_exclusion_set_menu, shortcutfinger.home1("Add"), lambda: exclusion_set.add_global(menu_string))
 
@@ -50,10 +53,11 @@ def build_string_menu(string_menu: QMenu, sentence: SentenceNote, menu_string: s
             if len(covered_existing_exclusions) == 1:
                 add_ui_action(word_exclusion_set_menu, shortcutfinger.home2("Remove"), lambda: exclusion_set.remove_string(menu_string))
             else:
-                remove_exclution_menu: QMenu = non_optional(word_exclusion_set_menu.addMenu(shortcutfinger.home2("Remove")))
+                non_optional(word_exclusion_set_menu.addMenu(shortcutfinger.home2("Remove")))
+                def add_remove_from_exclusions_action(name: str, exclusion: WordExclusion) -> None:
+                    add_ui_action(add_exclusion_menu, name, lambda: exclusion_set.remove(exclusion))
                 for excluded_index, matched_exclusion in enumerate(covered_existing_exclusions):
-                    add_ui_action(remove_exclution_menu, shortcutfinger.numpad_no_numbers(excluded_index, f"{matched_exclusion.index}:{matched_exclusion.word}"), lambda _matched_exclusion=matched_exclusion: exclusion_set.remove(_matched_exclusion))
-
+                    add_remove_from_exclusions_action(shortcutfinger.numpad_no_numbers(excluded_index, f"{matched_exclusion.index}:{matched_exclusion.word}"), matched_exclusion)
 
     build_word_exclusion_set_menu(non_optional(string_menu.addMenu(shortcutfinger.home2("Incorrect matches"))), sentence.configuration.incorrect_matches)
     build_word_exclusion_set_menu(non_optional(string_menu.addMenu(shortcutfinger.home3("Hidden matches"))), sentence.configuration.hidden_matches)
@@ -61,10 +65,13 @@ def build_string_menu(string_menu: QMenu, sentence: SentenceNote, menu_string: s
     build_highlighted_vocab_menu(non_optional(string_menu.addMenu(shortcutfinger.home4("Highlighted Vocab Separator"))), sentence, "-")
 
 def build_highlighted_vocab_menu(highlighted_vocab_menu: QMenu, sentence: SentenceNote, _vocab_to_add: str) -> None:
+    def add_position_highlighted_word_action(name: str, position: int) -> None:
+        add_ui_action(highlighted_vocab_menu, name, lambda: sentence.configuration.position_highlighted_word(_vocab_to_add, position))
+
     for index, _vocab in enumerate(sentence.configuration.highlighted_words()):
-        add_ui_action(highlighted_vocab_menu, shortcutfinger.numpad(index, f"{_vocab}"), lambda _index=index: sentence.configuration.position_highlighted_word(_vocab_to_add, _index))
+        add_position_highlighted_word_action(shortcutfinger.numpad(index, f"{_vocab}"), index)
 
     add_ui_action(highlighted_vocab_menu, shortcutfinger.home1("[Last]"), lambda: sentence.configuration.position_highlighted_word(_vocab_to_add))
 
     if _vocab_to_add in sentence.configuration.highlighted_words():
-        add_ui_action(highlighted_vocab_menu, shortcutfinger.home2("Remove"), lambda __vocab_to_add=_vocab_to_add: sentence.configuration.remove_highlighted_word(__vocab_to_add))
+        add_ui_action(highlighted_vocab_menu, shortcutfinger.home2("Remove"), lambda: sentence.configuration.remove_highlighted_word(_vocab_to_add))
