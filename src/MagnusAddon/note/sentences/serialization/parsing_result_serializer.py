@@ -17,6 +17,6 @@ class ParsingResultSerializer:
     @staticmethod
     def from_reader(reader: JsonDictReader) -> ParsingResult:
         from note.sentences.parsing_result import ParsingResult
-        return ParsingResult([ParsedWord.serializer.from_reader(word_json) for word_json in reader.get_object_list('words')],
-                             reader.get_string('sentence'),
-                             reader.get_string('parser_version'))
+        return ParsingResult(reader.object_list('words', ParsedWord.serializer.from_reader),
+                             reader.string('sentence'),
+                             reader.string('parser_version'))

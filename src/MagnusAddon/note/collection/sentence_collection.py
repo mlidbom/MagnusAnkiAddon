@@ -60,7 +60,7 @@ class SentenceCollection:
     def with_vocab(self, vocab_note: VocabNote) -> list[SentenceNote]:
         matches = ex_sequence.remove_duplicates(ex_sequence.flatten([self._cache.with_vocab_form(form) for form in vocab_note.forms.unexcluded_set()]))
         question = vocab_note.get_question()
-        return [match for match in matches if question not in match.configuration.incorrect_matches_words()]
+        return [match for match in matches if question not in match.configuration.incorrect_matches.words()]
 
     def with_vocab_owned_form(self, vocab_note: VocabNote) -> list[SentenceNote]:
         def is_owned_by_other_form_note(form: str) -> bool:
@@ -70,7 +70,7 @@ class SentenceCollection:
 
         matches = ex_sequence.remove_duplicates(ex_sequence.flatten([self._cache.with_vocab_form(form) for form in owned_forms]))
         question = vocab_note.get_question()
-        return [match for match in matches if question not in match.configuration.incorrect_matches_words()]
+        return [match for match in matches if question not in match.configuration.incorrect_matches.words()]
 
     def with_form(self, form:str) -> list[SentenceNote]: return self._cache.with_vocab_form(form)
 

@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 from ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules  # noqa
 from note.sentences.sentence_configuration import SentenceConfiguration
+from note.sentences.word_exclusion_set import WordExclusionSet
 from sysutils import ex_json
 
 if TYPE_CHECKING:
@@ -20,7 +21,7 @@ class IntObject:
 
     @staticmethod
     def from_json(reader: JsonDictReader) -> IntObject:
-        return IntObject(reader.get_int('value'))
+        return IntObject(reader.int('value'))
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, IntObject):
@@ -39,12 +40,12 @@ class HasObjectList:
 
     @staticmethod
     def from_json(reader: JsonDictReader) -> HasObjectList:
-        return HasObjectList([IntObject.from_json(reader) for reader in reader.get_object_list('values')])
+        return HasObjectList(reader.object_list('values',IntObject.from_json))
 
 def test_round_object_list() -> None:
     start_value = HasObjectList([IntObject(1), IntObject(2), IntObject(3)])
     json = ex_json.dict_to_json(start_value.to_dict())
-    round_tripped_value = HasObjectList.from_json(ex_json.json_to_dict(json))
+    round_tripped_value = HasObjectList.from_json(ex_json.json_to_reader(json))
 
     assert start_value.values == round_tripped_value.values
 
@@ -54,7 +55,7 @@ def test_roundtrip_parsing_result() -> None:
 
     parsing_result = ParsingResult([ParsedWord("foo"), ParsedWord("bar")], "foo bar", "1.0")
     json = ex_json.dict_to_json(ParsingResult.serializer.to_dict(parsing_result))
-    round_tripped_result = ParsingResult.serializer.from_reader(ex_json.json_to_dict(json))
+    round_tripped_result = ParsingResult.serializer.from_reader(ex_json.json_to_reader(json))
 
     assert [w.word for w in parsing_result.parsed_words] == [w.word for w in round_tripped_result.parsed_words]
 
@@ -63,8 +64,8 @@ def test_roundtrip_configuration() -> None:
     from note.sentences.parsing_result import ParsingResult
 
     result = ParsingResult([ParsedWord("foo"), ParsedWord("bar")], "foo bar", "1.0")
-    config = SentenceConfiguration([], [], result)
+    config = SentenceConfiguration([], WordExclusionSet(lambda: None, []), WordExclusionSet(lambda: None, []), result)
     json = SentenceConfiguration.serializer.serialize(config)
-    round_tripped_result = SentenceConfiguration.serializer.deserialize(json)
+    round_tripped_result = SentenceConfiguration.serializer.deserialize(json, lambda: None)
 
     assert [w.word for w in config.parsing_result.parsed_words] == [w.word for w in round_tripped_result.parsing_result.parsed_words]

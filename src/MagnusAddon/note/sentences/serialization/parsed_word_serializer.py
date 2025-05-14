@@ -14,4 +14,4 @@ class ParsedWordSerializer:
     @staticmethod
     def from_reader(reader: JsonDictReader) -> ParsedWord:
         from note.sentences.parsed_word import ParsedWord
-        return ParsedWord(reader.get_string('word'))
+        return ParsedWord(reader.string('word'))

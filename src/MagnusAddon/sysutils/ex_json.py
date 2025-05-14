@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import json
-from typing import Any, Optional
+from typing import Any, Callable, TypeVar
 
 from sysutils import typed
 
@@ -9,22 +9,33 @@ from sysutils import typed
 def dict_to_json(object_dict: dict[str, Any]) -> str:
     return json.dumps(object_dict, ensure_ascii=False)
 
-def json_to_dict(json_str: str) -> JsonDictReader:
+def json_to_reader(json_str: str) -> JsonDictReader:
     return JsonDictReader(typed.checked_cast_generics(dict[str, Any], json.loads(json_str)))
+
+T: TypeVar = TypeVar('T')
 
 class JsonDictReader:
     def __init__(self, json_dict: dict[str, Any]) -> None:
         self._dict = json_dict
 
-    def get_string(self, string: str) -> str: return typed.str_(self._dict[string])
-    def get_int(self, string: str) -> int: return typed.int_(self._dict[string])
-    def get_string_list(self, string: str) -> list[str]: return typed.checked_cast_generics(list[str], self._dict[string])
+    def string(self, prop: str) -> str: return typed.str_(self._dict[prop])
+    def int(self, prop: str) -> string: return typed.int_(self._dict[prop])
+    def string_list(self, string: str) -> list[str]: return typed.checked_cast_generics(list[str], self._dict[string])
 
-    def get_object_list(self, string: str) -> list[JsonDictReader]:
-        return [JsonDictReader(json_dict) for json_dict in typed.checked_cast_generics(list[dict[str, Any]], self._dict[string])]
+    def object_list(self, prop: str, factory: Callable[[JsonDictReader], T], allow_missing:bool = False) -> list[T]:
+        prop_value = self._dict.get(prop, None)
+        if prop_value is None and allow_missing:
+            return []
 
-    def get_object(self, name: str) -> JsonDictReader:
-        return JsonDictReader(typed.checked_cast_generics(dict[str, Any],self._dict[name]))
+        reader_list = [JsonDictReader(json_dict) for json_dict in typed.checked_cast_generics(list[dict[str, Any]], prop_value)]
 
-    def get_object_or_none(self, name: str) -> Optional[JsonDictReader]:
-        return self.get_object(name) if name in self._dict else None
+        return [factory(reader) for reader in reader_list]
+
+    def object(self, prop: str, factory: Callable[[JsonDictReader], T], default: Callable[[], T] | None = None) -> T | None:
+        reader = self._reader_or_none(prop)
+        return default() if reader is None and default is not None else factory(typed.non_optional(reader))
+
+    def _reader_or_none(self, prop: str) -> JsonDictReader | None:
+        dict_ = self._dict.get(prop, None)
+        return None if dict_ is None else JsonDictReader(typed.checked_cast_generics(dict[str, Any], dict_))
+

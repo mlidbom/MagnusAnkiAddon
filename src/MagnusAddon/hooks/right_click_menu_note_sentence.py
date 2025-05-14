@@ -10,7 +10,9 @@ from note.note_constants import NoteFields, NoteTypes
 from sysutils.typed import non_optional
 
 if TYPE_CHECKING:
+    from language_services.janome_ex.word_extraction.candidate_form import CandidateForm
     from note.sentences.sentencenote import SentenceNote
+    from note.sentences.word_exclusion_set import WordExclusionSet
     from PyQt6.QtWidgets import QMenu
 
 def build_note_menu(note_menu: QMenu, sentence: SentenceNote) -> None:
@@ -22,33 +24,39 @@ def build_note_menu(note_menu: QMenu, sentence: SentenceNote) -> None:
     add_lookup_action(note_lookup_menu, shortcutfinger.home4("Parsed words"), query_builder.notes_by_id([voc.get_id() for voc in sentence.get_parsed_words_notes()]))
 
     add_ui_action(note_menu, shortcutfinger.home5("Reset higlighted"), lambda: sentence.configuration.reset_highlighted_words())
-    add_ui_action(note_menu, shortcutfinger.up1("Reset excluded"), lambda: sentence.configuration.reset_incorrect_matches())
+    add_ui_action(note_menu, shortcutfinger.up1("Reset incorrect matches"), lambda: sentence.configuration.incorrect_matches.reset())
+    add_ui_action(note_menu, shortcutfinger.up2("Reset hidden matches"), lambda: sentence.configuration.hidden_matches.reset())
 
 def build_string_menu(string_menu: QMenu, sentence: SentenceNote, menu_string: str) -> None:
     build_highlighted_vocab_menu(non_optional(string_menu.addMenu(shortcutfinger.home1("Highlighted Vocab"))), sentence, menu_string)
 
-    potential_exclusion = WordExclusion.from_string(menu_string)
-    current_words = sentence.get_valid_parsed_non_child_words()
-    excluded = [w for w in current_words if potential_exclusion.excludes_form_at_index(w.form, w.start_index)]
-    if any(excluded):
-        if len(excluded) == 1:
-            add_ui_action(string_menu, shortcutfinger.home2("Exclude vocab"), lambda: sentence.configuration.add_incorrect_match(menu_string))
+    def build_word_exclusion_set_menu(word_exclusion_set_menu: QMenu, exclusion_set: WordExclusionSet) -> None:
+        menu_string_as_word_exclusion = WordExclusion.from_string(menu_string)
+        valid_top_level_words = sentence.get_valid_parsed_non_child_words()
+        top_level_words_excluded_by_menu_string: list[CandidateForm] = [w for w in valid_top_level_words if menu_string_as_word_exclusion.excludes_form_at_index(w.form, w.start_index)]
+        if any(top_level_words_excluded_by_menu_string):
+            if len(top_level_words_excluded_by_menu_string) == 1:
+                add_ui_action(word_exclusion_set_menu, shortcutfinger.home1("Add"), lambda: exclusion_set.add_str(menu_string))
+            else:
+                exclude_menu: QMenu = non_optional(word_exclusion_set_menu.addMenu(shortcutfinger.home1("Add")))
+                for excluded_index, matched in enumerate(top_level_words_excluded_by_menu_string):
+                    add_ui_action(exclude_menu, shortcutfinger.numpad_no_numbers(excluded_index, f"{matched.start_index}: {matched.form}"), lambda _matched=matched: exclusion_set.add(_matched.to_exclusion()))
         else:
-            exclude_menu: QMenu = non_optional(string_menu.addMenu(shortcutfinger.home2("Exclude vocab")))
-            for excluded_index, matched in enumerate(excluded):
-                add_ui_action(exclude_menu, shortcutfinger.numpad_no_numbers(excluded_index, f"{matched.start_index}: {matched.form}"), lambda _matched=matched: sentence.configuration.add_incorrect_match(_matched.to_exclusion().as_string()))
-    else:
-        add_ui_action(string_menu, shortcutfinger.home2("Exclude vocab"), lambda: sentence.configuration.add_incorrect_match(menu_string))
+            add_ui_action(word_exclusion_set_menu, shortcutfinger.home1("Add"), lambda: exclusion_set.add_str(menu_string))
 
-    current_exclusions = sentence.configuration.incorrect_matches()
-    covered_existing_exclusions = [x for x in current_exclusions if potential_exclusion.covers(x)]
-    if any(covered_existing_exclusions):
-        if len(covered_existing_exclusions) == 1:
-            add_ui_action(string_menu, shortcutfinger.home3("Remove incorrect match"), lambda: sentence.configuration.remove_incorrect_match_string(menu_string))
-        else:
-            remove_exclution_menu: QMenu = non_optional(string_menu.addMenu(shortcutfinger.home3("Remove incorrect match")))
-            for excluded_index, matched_exclusion in enumerate(covered_existing_exclusions):
-                add_ui_action(remove_exclution_menu, shortcutfinger.numpad_no_numbers(excluded_index, f"{matched_exclusion.index}:{matched_exclusion.word}"), lambda _matched_exclusion=matched_exclusion: sentence.configuration.remove_incorrect_match_string(_matched_exclusion.as_string()))
+        current_exclusions = exclusion_set.get()
+        covered_existing_exclusions = [x for x in current_exclusions if menu_string_as_word_exclusion.covers(x)]
+        if any(covered_existing_exclusions):
+            if len(covered_existing_exclusions) == 1:
+                add_ui_action(word_exclusion_set_menu, shortcutfinger.home2("Remove"), lambda: exclusion_set.remove_string(menu_string))
+            else:
+                remove_exclution_menu: QMenu = non_optional(word_exclusion_set_menu.addMenu(shortcutfinger.home2("Remove")))
+                for excluded_index, matched_exclusion in enumerate(covered_existing_exclusions):
+                    add_ui_action(remove_exclution_menu, shortcutfinger.numpad_no_numbers(excluded_index, f"{matched_exclusion.index}:{matched_exclusion.word}"), lambda _matched_exclusion=matched_exclusion: exclusion_set.remove(_matched_exclusion))
+
+
+    build_word_exclusion_set_menu(non_optional(string_menu.addMenu(shortcutfinger.home2("Incorrect matches"))), sentence.configuration.incorrect_matches)
+    build_word_exclusion_set_menu(non_optional(string_menu.addMenu(shortcutfinger.home3("Hidden matches"))), sentence.configuration.hidden_matches)
 
     build_highlighted_vocab_menu(non_optional(string_menu.addMenu(shortcutfinger.home4("Highlighted Vocab Separator"))), sentence, "-")
 

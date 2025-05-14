@@ -45,7 +45,7 @@ class SentenceNote(JPNote):
 
     def get_valid_parsed_non_child_words(self) -> list[CandidateForm]:
         from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
-        analysis = TextAnalysis(self.get_question(), self.configuration.incorrect_matches())
+        analysis = TextAnalysis(self.get_question(), self.configuration.incorrect_matches.get())
         return analysis.display_words
 
     def get_direct_dependencies(self) -> set[JPNote]:
@@ -58,7 +58,7 @@ class SentenceNote(JPNote):
         from language_services.janome_ex.word_extraction.word_extractor import jn_extractor
         return jn_extractor.extract_words(self.get_question())
 
-    def get_words(self) -> set[str]: return (set(self.parsing_result().parsed_words_strings()) | set(self.configuration.highlighted_words())) - self.configuration.incorrect_matches_words()
+    def get_words(self) -> set[str]: return (set(self.parsing_result().parsed_words_strings()) | set(self.configuration.highlighted_words())) - self.configuration.incorrect_matches.words()
 
     def get_parsed_words_notes(self) -> list[VocabNote]:
         return ex_sequence.flatten([app.col().vocab.with_question(q) for q in self.get_valid_parsed_non_child_words_strings()])
@@ -75,7 +75,7 @@ class SentenceNote(JPNote):
         if not force and parsing_result and parsing_result.sentence == self.get_question() and parsing_result.parser_version == TextAnalysis.version:
             return
 
-        analysis = TextAnalysis(self.get_question(), self.configuration.incorrect_matches())
+        analysis = TextAnalysis(self.get_question(), self.configuration.incorrect_matches.get())
         self.configuration.set_parsing_result(analysis)
 
     def extract_kanji(self) -> list[str]:

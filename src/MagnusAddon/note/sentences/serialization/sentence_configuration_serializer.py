@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable
 
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from note.sentences.parsing_result import ParsingResult
+from note.sentences.word_exclusion_set import WordExclusionSet
 from sysutils import ex_json
 
 if TYPE_CHECKING:
@@ -11,21 +12,19 @@ if TYPE_CHECKING:
 
 class SentenceConfigurationSerializer:
     @staticmethod
-    def deserialize(json: str) -> SentenceConfiguration:
+    def deserialize(json: str, save_callback: Callable[[], None]) -> SentenceConfiguration:
         from note.sentences.sentence_configuration import SentenceConfiguration
-        reader = ex_json.json_to_dict(json) if json else None
-        highlighted_words: list[str] = reader.get_string_list('highlighted_words') if reader else []
-        incorrect_matches: list[WordExclusion] = \
-            [WordExclusion.from_dict(exclusion_data)
-             for exclusion_data in reader.get_object_list('incorrect_matches')] if reader else []
+        if not json: return SentenceConfiguration([], WordExclusionSet(save_callback, []), WordExclusionSet(save_callback, []), ParsingResult.empty())
 
-        parsing_json_dict = reader.get_object_or_none('parsing_result') if reader else None
-        parsing_result: ParsingResult = ParsingResult.serializer.from_reader(parsing_json_dict) if parsing_json_dict else ParsingResult.empty()
-
-        return SentenceConfiguration(highlighted_words, incorrect_matches, parsing_result)
+        reader = ex_json.json_to_reader(json)
+        return SentenceConfiguration(reader.string_list('highlighted_words'),
+                                     WordExclusionSet(save_callback, reader.object_list('incorrect_matches', WordExclusion.from_reader)),
+                                     WordExclusionSet(save_callback, reader.object_list('hidden_matches', WordExclusion.from_reader)),
+                                     reader.object('parsing_result', ParsingResult.serializer.from_reader, ParsingResult.empty))
 
     @staticmethod
     def serialize(config: SentenceConfiguration) -> str:
         return ex_json.dict_to_json({'highlighted_words': config.highlighted_words,
-                                     'incorrect_matches': [exclusion.to_dict() for exclusion in config.incorrect_matches],
+                                     'incorrect_matches': [exclusion.to_dict() for exclusion in config.incorrect_matches.get()],
+                                     'hidden_matches': [exclusion.to_dict() for exclusion in config.hidden_matches.get()],
                                      'parsing_result': ParsingResult.serializer.to_dict(config.parsing_result)})
