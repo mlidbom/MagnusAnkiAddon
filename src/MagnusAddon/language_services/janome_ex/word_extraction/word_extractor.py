@@ -93,7 +93,7 @@ class WordExtractor:
             next_token = tokens[index + 1]
             vocab: list[VocabNote] = lookup_vocabs_prefer_exact_match(next_token.base_form)
 
-            return any([voc for voc in vocab if voc.has_tag(Mine.Tags.inflecting_word)])
+            return any(voc for voc in vocab if voc.has_tag(Mine.Tags.inflecting_word))
 
         def is_inflected_word(index: int) -> bool:
             _token = tokens[index]

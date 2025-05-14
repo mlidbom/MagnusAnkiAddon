@@ -48,8 +48,8 @@ def setup_browser_context_menu(browser: aqt.browser.Browser, menu: QMenu) -> Non
             for days in [1,2,3,4,5,6,7,8,9]:
                 start_day_menu.addAction(f"{days} days apart", lambda _start_day=start_day, _days_apart=days: spread_due_dates(selected_cards, _start_day, _days_apart))
 
-    selected_notes = set(app.col().note_from_note_id(note_id) for note_id in browser.selectedNotes())
-    selected_vocab:set[VocabNote] = set(note for note in selected_notes if isinstance(note, VocabNote))
+    selected_notes = {app.col().note_from_note_id(note_id) for note_id in browser.selectedNotes()}
+    selected_vocab:set[VocabNote] = {note for note in selected_notes if isinstance(note, VocabNote)}
     vocab_that_can_generate_audio = [note for note in selected_vocab if vocabnote_context_sentences.can_generate_sentences_from_context_sentences(note, False)]
     if vocab_that_can_generate_audio:
         def generate_sentences() -> None:

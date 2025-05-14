@@ -39,7 +39,7 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
 
         self._flushing = False
         self._last_deleted_note_time = 0.0
-        self._pending_add: list[Note] = list()
+        self._pending_add: list[Note] = []
 
         for _note in all_notes:
             self._add_to_cache(_note)

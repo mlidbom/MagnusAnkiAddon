@@ -21,7 +21,7 @@ def create_default_mnemonic(kanji_note:KanjiNote) -> str:
             return read if read.count("<read>") <= 1 else f"""<compound-reading>{read}</compound-reading>"""
 
         def try_combine_framentary_matches_into_one_reading() -> str:
-            segments_with_mapped_readings_by_start_index: list[list[str]] = list()
+            segments_with_mapped_readings_by_start_index: list[list[str]] = []
             for segment_start_index in range(reading_length):
                 candidates = [reading[segment_start_index:sub_string_length] for sub_string_length in range(segment_start_index + 1, reading_length + 1)]
                 segments_with_mapped_readings_by_start_index.append([cand for cand in candidates if cand in readings_mappings])

@@ -24,7 +24,7 @@ class VocabNoteSentences:
         return self._collection.sentences.with_form(self._vocab.get_question())
 
     def user_highlighted(self) -> list[SentenceNote]:
-        return [sentence for sentence in self._collection.sentences.with_highlighted_vocab(self._vocab)]
+        return list(self._collection.sentences.with_highlighted_vocab(self._vocab))
 
     def studying(self) -> list[SentenceNote]:
         return [sentence for sentence in self.all() if sentence.is_studying()]

@@ -62,8 +62,8 @@ def import_missing_context_sentences() -> None:
     progress = progress_display_runner.open_spinning_progress_dialog("Fetching wanikani vocabulary. Please be patient this will complete in a minute or two.")
     sentence_collection = app.col().sentences
     all_wani_vocabulary = waniClient.list_vocabulary()
-    imported_sentences:list[SentenceNote] = list()
-    present:list[SentenceNote] = list()
+    imported_sentences:list[SentenceNote] = []
+    present:list[SentenceNote] = []
     progress.close()
 
     def handle_vocab(wani_vocab:Vocabulary) -> None:

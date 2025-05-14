@@ -17,4 +17,4 @@ class VocabNoteKanji:
 
     def extract_all_kanji(self) -> set[str]:
         clean = ex_str.strip_html_and_bracket_markup(self._vocab.get_question() + self._vocab.forms.all_raw_string())
-        return set(char for char in clean if kana_utils.character_is_kanji(char))
+        return {char for char in clean if kana_utils.character_is_kanji(char)}

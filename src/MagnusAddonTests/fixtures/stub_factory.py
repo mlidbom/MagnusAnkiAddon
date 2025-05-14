@@ -31,7 +31,7 @@ def _stub_ui_utils_real() -> Generator[None, None, None]:
 
 @contextmanager
 def _stub_config_dict() -> Generator[None, None, None]:
-    _config_dict:dict[str,Any] = dict()
+    _config_dict:dict[str,Any] = {}
 
     from configuration import configuration_value
 

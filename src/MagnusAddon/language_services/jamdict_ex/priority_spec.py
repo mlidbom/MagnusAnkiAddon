@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-_frequency_maximum = set([f"nf{num:02}" for num in range(1, 10)])
-_frequency_high = set([f"nf{num}" for num in range(11, 20)])
-_frequency_medium = set([f"nf{num}" for num in range(21, 40)])
-_frequency_low = set([f"nf{num}" for num in range(41, 60)])
+_frequency_maximum = {f"nf{num:02}" for num in range(1, 10)}
+_frequency_high = {f"nf{num}" for num in range(11, 20)}
+_frequency_medium = {f"nf{num}" for num in range(21, 40)}
+_frequency_low = {f"nf{num}" for num in range(41, 60)}
 
 _tags_maximum = {"ichi1"}
 _tags_high = {"news1", "spec1"}

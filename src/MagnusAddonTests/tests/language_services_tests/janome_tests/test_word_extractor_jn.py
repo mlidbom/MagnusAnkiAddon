@@ -57,7 +57,7 @@ def setup_object() -> Generator[None, None, None]:
 ])
 def test_identify_words(sentence: str, expected_output: list[str]) -> None:
     expected = set(expected_output)
-    result = set([w.word for w in word_extractor.extract_words(sentence)])
+    result = {w.word for w in word_extractor.extract_words(sentence)}
 
     assert result == expected
 
@@ -69,13 +69,13 @@ def test_identify_words(sentence: str, expected_output: list[str]) -> None:
 ])
 def test_custom_vocab_words(sentence: str, custom_words: list[str], expected_output: list[str]) -> None:
     insert_custom_words(custom_words)
-    result = set([w.word for w in word_extractor.extract_words(sentence)])
+    result = {w.word for w in word_extractor.extract_words(sentence)}
     assert result == set(expected_output)
 
 def test_ignores_noise_characters() -> None:
     sentence = ". , : ; / | 。 、 ー"
     expected = {"ー"}
-    result = set([w.word for w in word_extractor.extract_words(sentence)])
+    result = {w.word for w in word_extractor.extract_words(sentence)}
     assert result == expected
 
 def insert_custom_words(custom_words: list[str]) -> None:
@@ -166,5 +166,5 @@ def insert_custom_words_with_excluded_forms(custom_words: list[list[str]]) -> No
 def test_custom_vocab_words_with_excluded_forms(sentence: str, custom_words: list[list[str]], expected_output: list[str]) -> None:
     insert_custom_words_with_excluded_forms(custom_words)
     expected = set(expected_output)
-    result = set([w.word for w in word_extractor.extract_words(sentence)])
+    result = {w.word for w in word_extractor.extract_words(sentence)}
     assert result == expected

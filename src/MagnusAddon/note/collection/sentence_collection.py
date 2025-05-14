@@ -64,7 +64,7 @@ class SentenceCollection:
 
     def with_vocab_owned_form(self, vocab_note: VocabNote) -> list[SentenceNote]:
         def is_owned_by_other_form_note(form: str) -> bool:
-            return any([owner for owner in app.col().vocab.with_question(form) if owner != vocab_note and vocab_note.get_question() in owner.forms.unexcluded_set()])
+            return any(owner for owner in app.col().vocab.with_question(form) if owner != vocab_note and vocab_note.get_question() in owner.forms.unexcluded_set())
 
         owned_forms = [form for form in vocab_note.forms.unexcluded_set() if not is_owned_by_other_form_note(form)]
 

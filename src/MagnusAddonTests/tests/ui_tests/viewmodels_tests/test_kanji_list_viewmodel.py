@@ -30,7 +30,7 @@ def test_kanji_list_viewmodel() -> None:
         print(view_model)
 
         extracted_kanji_set = set(extracted_kanji)
-        found_kanji_set = set(m.question() for m in view_model.kanji_list)
+        found_kanji_set = {m.question() for m in view_model.kanji_list}
 
         print(f"""{len(extracted_kanji_set)}:{len(found_kanji_set)}""")
 

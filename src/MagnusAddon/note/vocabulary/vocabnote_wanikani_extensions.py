@@ -59,7 +59,7 @@ class VocabNoteWaniExtensions:
 
         self._vocab.readings.set([reading.reading for reading in wani_vocab.readings])
 
-        component_subject_ids = set([str(subject_id) for subject_id in wani_vocab.component_subject_ids])
+        component_subject_ids = {str(subject_id) for subject_id in wani_vocab.component_subject_ids}
         self.component_subject_ids.set(component_subject_ids)
 
         client = WanikaniClient.get_instance()

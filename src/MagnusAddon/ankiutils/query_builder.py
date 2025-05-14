@@ -88,7 +88,7 @@ def vocab_dependencies_lookup_query(vocab: VocabNote) -> str:
         return f"{field_contains_word(f_forms, voc.word)}"
 
     def create_vocab_clause(text:str) -> str:
-        dictionary_forms = [voc for voc in jn_extractor.extract_words(text)]
+        dictionary_forms = list(jn_extractor.extract_words(text))
         return f"({note_vocab} ({' OR '.join([single_vocab_clause(voc) for voc in dictionary_forms])})) OR " if dictionary_forms else ""
 
     def create_vocab_vocab_clause() -> str:

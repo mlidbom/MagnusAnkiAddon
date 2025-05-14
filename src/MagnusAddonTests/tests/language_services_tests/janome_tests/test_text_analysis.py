@@ -68,7 +68,7 @@ def test_custom_vocab_words(setup_collection_with_select_data: object, sentence:
     insert_custom_words(custom_words)
 
     analysis = TextAnalysis(sentence, set())
-    root_words = set([w.form for w in analysis.all_words])
+    root_words = {w.form for w in analysis.all_words}
     assert root_words == set(expected_output)
 
 def test_ignores_noise_characters(setup_collection_with_select_data: object) -> None:
@@ -76,7 +76,7 @@ def test_ignores_noise_characters(setup_collection_with_select_data: object) -> 
     expected = {"ー"}
 
     analysis = TextAnalysis(sentence, set())
-    words = set([w.form for w in analysis.all_words])
+    words = {w.form for w in analysis.all_words}
     assert words == expected
 
 def insert_custom_words(custom_words: list[str]) -> None:
@@ -210,5 +210,5 @@ def test_custom_vocab_words_with_excluded_forms(setup_collection_with_select_dat
     insert_custom_words_with_excluded_forms(custom_words)
 
     analysis = TextAnalysis(sentence, set())
-    root_words = set([w.form for w in analysis.all_words])
+    root_words = {w.form for w in analysis.all_words}
     assert root_words == set(expected_output)

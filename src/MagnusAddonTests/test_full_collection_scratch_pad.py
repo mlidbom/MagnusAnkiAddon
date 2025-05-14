@@ -61,7 +61,7 @@ def test_create_sample_data() -> None:
             print(f"""SentenceSpec("{shtml(sentence.get_question())}", "{shtml(sentence.get_answer())}"),"""),
 
     needed_vocab_parsed_words = ex_sequence.flatten([s.parse_words_from_expression() for s in sentence_notes])
-    need_vocab_strings = set([f.word for f in needed_vocab_parsed_words])
+    need_vocab_strings = {f.word for f in needed_vocab_parsed_words}
     vocab_notes = ex_sequence.flatten([app.col().vocab.search(query_builder.single_vocab_by_form_exact(word)) for word in need_vocab_strings])
 
     non_duplicate_vocab_notes:list[VocabNote] = []

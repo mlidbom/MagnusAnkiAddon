@@ -96,7 +96,7 @@ class DictEntry:
 
     def generate_answer(self) -> str:
         prefix = self._answer_prefix()
-        senses = [sense for sense in self.entry.senses]
+        senses = list(self.entry.senses)
         formatted_senses = [self.format_sense(sense) for sense in senses]
         answer_text = prefix + " | ".join(formatted_senses)
         return answer_text

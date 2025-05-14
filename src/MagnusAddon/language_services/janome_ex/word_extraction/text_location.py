@@ -73,7 +73,7 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.sur
         if self.valid_candidates and self.is_covered_by is None:
             self.display_words = self.valid_candidates[0].display_words
             self.display_words = [covered for covered in self.display_words
-                                  if not any([covering for covering in self.display_words if covered.form in covering.form and covered != covering])]
+                                  if not any(covering for covering in self.display_words if covered.form in covering.form and covered != covering)]
 
             covering_forward_count = self.valid_candidates[0].length - 1
             for location in self.forward_list(covering_forward_count)[1:]:
@@ -91,4 +91,4 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.sur
             return exact_match if exact_match else matches
 
         vocab = lookup_vocabs_prefer_exact_match(self.base)
-        return any([voc for voc in vocab if voc.has_tag(Mine.Tags.inflecting_word)])
+        return any(voc for voc in vocab if voc.has_tag(Mine.Tags.inflecting_word))
