@@ -11,6 +11,7 @@ from note.jpnote import JPNote
 from note.sentences.sentencenote import SentenceNote
 from note.vocabulary import vocabnote_context_sentences
 from note.vocabulary.vocabnote import VocabNote
+from sysutils import ex_lambda
 from sysutils.typed import non_optional
 
 if TYPE_CHECKING:
@@ -45,8 +46,8 @@ def setup_browser_context_menu(browser: aqt.browser.Browser, menu: QMenu) -> Non
         spread_menu: QMenu = non_optional(magnus_menu.addMenu("&Spread selected cards"))
         for start_day in [0,1,2,3,4,5,6,7,8,9]:
             start_day_menu: QMenu = non_optional(spread_menu.addMenu(f"First card in {start_day} days"))
-            for days in [1,2,3,4,5,6,7,8,9]:
-                start_day_menu.addAction(f"{days} days apart", lambda _start_day=start_day, _days_apart=days: spread_due_dates(selected_cards, _start_day, _days_apart))
+            for days_apart in [1,2,3,4,5,6,7,8,9]:
+                start_day_menu.addAction(f"{days_apart} days apart", ex_lambda.bind3(spread_due_dates, selected_cards, start_day, days_apart))
 
     selected_notes = {app.col().note_from_note_id(note_id) for note_id in browser.selectedNotes()}
     selected_vocab:set[VocabNote] = {note for note in selected_notes if isinstance(note, VocabNote)}

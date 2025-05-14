@@ -3,7 +3,7 @@ from __future__ import annotations
 import pykakasi
 
 # noinspection PyPackageRequirements
-import romkan  # type: ignore  # noqa: PGH003
+import romkan
 from sysutils import typed
 from sysutils.ex_str import full_width_space
 
@@ -65,7 +65,7 @@ def is_only_hiragana(text: str) -> bool:
 def is_only_katakana(text: str) -> bool:
     return not any(not character_is_katakana(char) for char in text)
 
-_kakasi = pykakasi.kakasi()  # type: ignore
+_kakasi = pykakasi.kakasi()
 def romanize(text:str) -> str:
     if text[-1] == "っ" or text[-1] == "ッ":
         text = text[:-1]

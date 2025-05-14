@@ -32,9 +32,9 @@ def _monkey_patch(html:str, _card:object, _something_else_again:object) -> str:
         _real_suspend_cards = scheduler.suspend_cards
         _real_unsuspend_cards = scheduler.unsuspend_cards
 
-        scheduler.suspend_cards = _monkey_patched_suspend_cards  # type: ignore
-        scheduler.unsuspend_cards = _monkey_patched_unsuspend_cards  # type: ignore
-        scheduler.is_patched_by_magnus_addon_for_suspend = True # type: ignore
+        scheduler.suspend_cards = _monkey_patched_suspend_cards
+        scheduler.unsuspend_cards = _monkey_patched_unsuspend_cards
+        scheduler.is_patched_by_magnus_addon_for_suspend = True
 
     return html
 

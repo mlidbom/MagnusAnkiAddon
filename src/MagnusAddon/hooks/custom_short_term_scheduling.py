@@ -24,4 +24,4 @@ def set_again_time_for_previously_failed_today_cards(queue:QueuedCards) -> V3Car
 
         return info
 
-V3CardInfo.from_queue = set_again_time_for_previously_failed_today_cards  # type: ignore #noqa
+V3CardInfo.from_queue = set_again_time_for_previously_failed_today_cards

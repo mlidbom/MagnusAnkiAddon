@@ -15,7 +15,7 @@ _real_answer_card = Reviewer._answerCard
 
 _stopwatch = StopWatch()
 
-def _show_answer(reviewer:Reviewer) -> None:
+def _show_answer(reviewer: Reviewer) -> None:
     if app.config().prevent_double_clicks.get_value():
         global _stopwatch
         if non_optional(reviewer.card).time_taken() < app.config().minimum_time_viewing_question.get_value() * 1000:
@@ -24,7 +24,7 @@ def _show_answer(reviewer:Reviewer) -> None:
         _stopwatch = StopWatch()
     _real_show_answer(reviewer)
 
-def _answer_card(reviewer:Reviewer, ease: Literal[1, 2, 3, 4]) -> None:
+def _answer_card(reviewer: Reviewer, ease: Literal[1, 2, 3, 4]) -> None:
     if app.config().prevent_double_clicks.get_value():
         global _stopwatch
         if _stopwatch.elapsed_seconds() < app.config().minimum_time_viewing_answer.get_value():
@@ -33,6 +33,5 @@ def _answer_card(reviewer:Reviewer, ease: Literal[1, 2, 3, 4]) -> None:
 
     _real_answer_card(reviewer, ease)
 
-
-Reviewer._showAnswer = _show_answer  # type: ignore
-Reviewer._answerCard = _answer_card  # type: ignore
+Reviewer._showAnswer = _show_answer
+Reviewer._answerCard = _answer_card

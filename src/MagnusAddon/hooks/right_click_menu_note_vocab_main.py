@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-import pyperclip  # type: ignore
+import pyperclip
 from ankiutils import app, query_builder
 from hooks import shortcutfinger
-from hooks.right_click_menu_note_vocab_common import build_create_prefix_postfix_note_menu
-from hooks.right_click_menu_utils import add_lookup_action, add_single_vocab_lookup_action, add_ui_action, add_vocab_dependencies_lookup, create_vocab_note_action
+from hooks.right_click_menu_note_vocab_create_note_menu import build_create_note_menu
+from hooks.right_click_menu_utils import add_lookup_action, add_single_vocab_lookup_action, add_ui_action, add_vocab_dependencies_lookup
 from note.note_constants import NoteFields, NoteTypes
 from note.vocabulary import vocabnote_context_sentences
 from sysutils import ex_sequence, ex_str
@@ -23,43 +23,6 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
         note_copy_menu.addAction(shortcutfinger.home2("Answer"), lambda: pyperclip.copy(vocab.get_answer()))
         note_copy_menu.addAction(shortcutfinger.home3("Definition (question:answer)"), lambda: pyperclip.copy(f"""{vocab.get_question()}: {vocab.get_answer()}"""))
         note_copy_menu.addAction(shortcutfinger.home4("Sentences: max 30"), lambda: pyperclip.copy(newline.join([sent.get_question() for sent in vocab.sentences.all()[0:30]])))
-
-    def build_create_note_menu(note_create_menu: QMenu) -> None:
-        def build_forms_menu(clone_to_form_menu: QMenu) -> None:
-            forms_with_no_vocab = [form for form in vocab.forms.unexcluded_set() if not any(app.col().vocab.with_question(form))]
-            for index, form in enumerate(forms_with_no_vocab):
-                create_vocab_note_action(clone_to_form_menu, shortcutfinger.numpad(index, form), lambda _form=form: vocab.cloner.clone_to_form(_form))  # type: ignore
-
-        def build_noun_menu(noun_menu: QMenu) -> None:
-            create_vocab_note_action(noun_menu, shortcutfinger.home1("する-verb"), lambda: vocab.cloner.create_suru_verb())
-            create_vocab_note_action(noun_menu, shortcutfinger.home2("します-verb"), lambda: vocab.cloner.create_shimasu_verb())
-            create_vocab_note_action(noun_menu, shortcutfinger.home3("な-adjective"), lambda: vocab.cloner.create_na_adjective())
-            create_vocab_note_action(noun_menu, shortcutfinger.home4("の-adjective"), lambda: vocab.cloner.create_no_adjective())
-            create_vocab_note_action(noun_menu, shortcutfinger.up1("に-adverb"), lambda: vocab.cloner.create_ni_adverb())
-            create_vocab_note_action(noun_menu, shortcutfinger.up2("と-adverb"), lambda: vocab.cloner.create_to_adverb())
-
-        def build_verb_menu(verb_menu: QMenu) -> None:
-            create_vocab_note_action(verb_menu, shortcutfinger.home1("ます-form"), lambda: vocab.cloner.create_masu_form())
-            create_vocab_note_action(verb_menu, shortcutfinger.home2("て-form"), lambda: vocab.cloner.create_te_form())
-            create_vocab_note_action(verb_menu, shortcutfinger.home3("た-form"), lambda: vocab.cloner.create_ta_form())
-            create_vocab_note_action(verb_menu, shortcutfinger.home4("ない-form"), lambda: vocab.cloner.create_nai_form())
-
-        def build_misc_menu(misc_menu: QMenu) -> None:
-            create_vocab_note_action(misc_menu, shortcutfinger.home1("く-form-of-い-adjective"), lambda: vocab.cloner.create_ku_form())
-            create_vocab_note_action(misc_menu, shortcutfinger.home2("て-prefixed"), lambda: vocab.cloner.create_te_prefixed_word())
-            create_vocab_note_action(misc_menu, shortcutfinger.home3("お-prefixed"), lambda: vocab.cloner.create_o_prefixed_word())
-            create_vocab_note_action(misc_menu, shortcutfinger.home4("ん-suffixed"), lambda: vocab.cloner.create_n_suffixed_word())
-            create_vocab_note_action(misc_menu, shortcutfinger.home5("か-suffixed"), lambda: vocab.cloner.create_ka_suffixed_word())
-
-        build_forms_menu(non_optional(note_create_menu.addMenu(shortcutfinger.home1("Clone to form"))))
-        build_noun_menu(non_optional(note_create_menu.addMenu(shortcutfinger.home2("Noun variations"))))
-        build_verb_menu(non_optional(note_create_menu.addMenu(shortcutfinger.home3("Verb variations"))))
-        build_misc_menu(non_optional(note_create_menu.addMenu(shortcutfinger.home4("Misc"))))
-        if selection:
-            build_create_prefix_postfix_note_menu(non_optional(note_create_menu.addMenu(shortcutfinger.up1("Selection"))), vocab, selection)
-
-        if clipboard:
-            build_create_prefix_postfix_note_menu(non_optional(note_create_menu.addMenu(shortcutfinger.up2("Clipboard"))), vocab, clipboard)
 
     def build_lookup_menu(note_lookup_menu: QMenu) -> None:
         def build_sentences_lookup_menu(sentences_lookup_menu: QMenu) -> None:
@@ -102,7 +65,7 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
         add_ui_action(note_menu, shortcutfinger.down1("Autogenerate compounds"), lambda: vocab.compound_parts.auto_generate())
 
     build_lookup_menu(non_optional(note_menu.addMenu(shortcutfinger.home1("Open"))))
-    build_create_note_menu(non_optional(note_menu.addMenu(shortcutfinger.home2("Create"))))
+    build_create_note_menu(non_optional(note_menu.addMenu(shortcutfinger.home2("Create"))), vocab, selection, clipboard)
     build_copy_menu(non_optional(note_menu.addMenu(shortcutfinger.home3("Copy"))))
     build_note_menu()
 

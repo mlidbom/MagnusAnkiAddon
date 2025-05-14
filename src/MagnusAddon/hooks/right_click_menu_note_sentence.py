@@ -7,6 +7,7 @@ from hooks import shortcutfinger
 from hooks.right_click_menu_utils import add_lookup_action, add_ui_action
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from note.note_constants import NoteFields, NoteTypes
+from sysutils import ex_lambda
 from sysutils.typed import non_optional
 
 if TYPE_CHECKING:
@@ -38,9 +39,10 @@ def build_string_menu(string_menu: QMenu, sentence: SentenceNote, menu_string: s
             if len(top_level_words_excluded_by_menu_string) == 1:
                 add_ui_action(word_exclusion_set_menu, shortcutfinger.home1("Add"), lambda: exclusion_set.add_global(menu_string))
             else:
-                exclude_menu: QMenu = non_optional(word_exclusion_set_menu.addMenu(shortcutfinger.home1("Add")))
+                add_exclusion_menu: QMenu = non_optional(word_exclusion_set_menu.addMenu(shortcutfinger.home1("Add")))
+
                 for excluded_index, matched in enumerate(top_level_words_excluded_by_menu_string):
-                    add_ui_action(exclude_menu, shortcutfinger.numpad_no_numbers(excluded_index, f"{matched.start_index}: {matched.form}"), lambda _matched=matched: exclusion_set.add(_matched.to_exclusion()))
+                    add_ui_action(add_exclusion_menu,shortcutfinger.numpad_no_numbers(excluded_index, f"{matched.start_index}: {matched.form}"),  ex_lambda.bind1(exclusion_set.add, matched.to_exclusion()))
         else:
             add_ui_action(word_exclusion_set_menu, shortcutfinger.home1("Add"), lambda: exclusion_set.add_global(menu_string))
 
@@ -52,8 +54,7 @@ def build_string_menu(string_menu: QMenu, sentence: SentenceNote, menu_string: s
             else:
                 remove_exclution_menu: QMenu = non_optional(word_exclusion_set_menu.addMenu(shortcutfinger.home2("Remove")))
                 for excluded_index, matched_exclusion in enumerate(covered_existing_exclusions):
-                    add_ui_action(remove_exclution_menu, shortcutfinger.numpad_no_numbers(excluded_index, f"{matched_exclusion.index}:{matched_exclusion.word}"), lambda _matched_exclusion=matched_exclusion: exclusion_set.remove(_matched_exclusion))
-
+                    add_ui_action(remove_exclution_menu,shortcutfinger.numpad_no_numbers(excluded_index, f"{matched_exclusion.index}:{matched_exclusion.word}"), ex_lambda.bind1(exclusion_set.remove, matched_exclusion))
 
     build_word_exclusion_set_menu(non_optional(string_menu.addMenu(shortcutfinger.home2("Incorrect matches"))), sentence.configuration.incorrect_matches)
     build_word_exclusion_set_menu(non_optional(string_menu.addMenu(shortcutfinger.home3("Hidden matches"))), sentence.configuration.hidden_matches)
@@ -62,9 +63,9 @@ def build_string_menu(string_menu: QMenu, sentence: SentenceNote, menu_string: s
 
 def build_highlighted_vocab_menu(highlighted_vocab_menu: QMenu, sentence: SentenceNote, _vocab_to_add: str) -> None:
     for index, _vocab in enumerate(sentence.configuration.highlighted_words()):
-        add_ui_action(highlighted_vocab_menu, shortcutfinger.numpad(index, f"{_vocab}"), lambda _index=index: sentence.configuration.position_highlighted_word(_vocab_to_add, _index))
+        add_ui_action(highlighted_vocab_menu,shortcutfinger.numpad(index, f"{_vocab}"), ex_lambda.bind2(sentence.configuration.position_highlighted_word, _vocab_to_add, index))
 
     add_ui_action(highlighted_vocab_menu, shortcutfinger.home1("[Last]"), lambda: sentence.configuration.position_highlighted_word(_vocab_to_add))
 
     if _vocab_to_add in sentence.configuration.highlighted_words():
-        add_ui_action(highlighted_vocab_menu, shortcutfinger.home2("Remove"), lambda __vocab_to_add=_vocab_to_add: sentence.configuration.remove_highlighted_word(__vocab_to_add))
+        add_ui_action(highlighted_vocab_menu, shortcutfinger.home2("Remove"), lambda: sentence.configuration.remove_highlighted_word(_vocab_to_add))

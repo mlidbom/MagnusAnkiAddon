@@ -13,8 +13,8 @@ if TYPE_CHECKING:
 import aqt
 from ankiutils.audio_suppressor import audio_suppressor
 from ankiutils.ui_utils_interface import IUIUtils
-from aqt import AnkiQt  # type: ignore
-from aqt.browser import Browser  # type: ignore
+from aqt import AnkiQt
+from aqt.browser import Browser
 from aqt.browser.previewer import Previewer
 from aqt.clayout import CardLayout
 from aqt.editcurrent import EditCurrent

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, cast
 
-import pyperclip  # type: ignore
+import pyperclip
 from anki.models import NotetypeDict
 from ankiutils import app
 from ankiutils.app import get_ui_utils

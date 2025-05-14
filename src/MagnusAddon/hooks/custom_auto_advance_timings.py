@@ -84,5 +84,5 @@ def _auto_start_auto_advance(html: str, anki_card: Card, _display_type: str) -> 
     return html
 
 def init() -> None:
-    Reviewer._auto_advance_to_answer_if_enabled = _auto_advance_to_answer_if_enabled  # type: ignore
+    Reviewer._auto_advance_to_answer_if_enabled = _auto_advance_to_answer_if_enabled
     gui_hooks.card_will_show.append(_auto_start_auto_advance)
