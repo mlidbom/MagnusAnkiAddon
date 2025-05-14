@@ -1,11 +1,15 @@
 from __future__ import annotations
 
-from PyQt6.QtWidgets import QMenu
+from typing import TYPE_CHECKING
 
 from hooks import shortcutfinger
 from hooks.right_click_menu_utils import create_vocab_note_action
-from note.vocabulary.vocabnote import VocabNote
 from sysutils.typed import non_optional
+
+if TYPE_CHECKING:
+    from note.vocabulary.vocabnote import VocabNote
+    from PyQt6.QtWidgets import QMenu
+
 
 def build_create_prefix_postfix_note_menu(prefix_postfix_note_menu: QMenu, vocab: VocabNote, addendum: str) -> None:
     def create_suffix_note_menu(suffix_note_menu: QMenu) -> None:

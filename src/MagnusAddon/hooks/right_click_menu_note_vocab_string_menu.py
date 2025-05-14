@@ -1,14 +1,17 @@
 from __future__ import annotations
 
-from PyQt6.QtWidgets import QMenu
+from typing import TYPE_CHECKING
 
 from ankiutils import app
 from hooks import shortcutfinger
 from hooks.right_click_menu_note_vocab_common import build_create_prefix_postfix_note_menu
 from hooks.right_click_menu_utils import add_ui_action
-from note.sentences.sentencenote import SentenceNote
-from note.vocabulary.vocabnote import VocabNote
 from sysutils.typed import non_optional
+
+if TYPE_CHECKING:
+    from note.sentences.sentencenote import SentenceNote
+    from note.vocabulary.vocabnote import VocabNote
+    from PyQt6.QtWidgets import QMenu
 
 def build_string_menu(string_menu: QMenu, vocab: VocabNote, menu_string: str) -> None:
     def build_sentences_menu(sentence_menu: QMenu) -> None:
@@ -18,7 +21,11 @@ def build_string_menu(string_menu: QMenu, vocab: VocabNote, menu_string: str) ->
 
         def exclude(_sentences: list[SentenceNote]) -> None:
             for _sentence in _sentences:
-                _sentence.configuration.add_incorrect_match(vocab.get_question())
+                _sentence.configuration.incorrect_matches.add_global(vocab.get_question())
+
+        if not sentences:
+            sentence_menu.setEnabled(False)
+            return
 
         sentence = sentences[0]
 
@@ -47,9 +54,8 @@ def build_string_menu(string_menu: QMenu, vocab: VocabNote, menu_string: str) ->
         add_ui_action(note_set_menu, shortcutfinger.home2("Ergative twin"), lambda: vocab.related_notes.set_ergative_twin(menu_string))
 
     sentences = app.col().sentences.with_question(menu_string)
-    if sentences:
-        build_sentences_menu(non_optional(string_menu.addMenu(shortcutfinger.home1("Sentence"))))
 
+    build_sentences_menu(non_optional(string_menu.addMenu(shortcutfinger.home1("Sentence"))))
     build_add_menu(non_optional(string_menu.addMenu(shortcutfinger.home2("Add"))))
     build_set_menu(non_optional(string_menu.addMenu(shortcutfinger.home3("Set"))))
     build_remove_menu(non_optional(string_menu.addMenu(shortcutfinger.home4("Remove"))))
