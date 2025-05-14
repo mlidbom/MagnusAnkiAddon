@@ -9,6 +9,7 @@ line-length = 9999
 
 select = [
     "E", # pycodestyle
+    "W", # pycodestyle warnings
     "F",# Pyflakes
     "UP", # pyupgrade
     "B", # flake8-bugbear
@@ -24,7 +25,9 @@ select = [
     "TID", # tidy imports
     #"PTH", apparently I'm doing paths all wrong. Might want to have a look sometime.
     "PERF", # performance
-    "W", #aoseunth
+    #"PGH", # yeah I should not be using noqa but instead specific ignores. Do look at this eventually..
+    # "PL", # pylint. Has some good advice, but way too many false positives for me to enable this now.
+    "FURB", # refurbishing and modernizing Python codebases.
 ]
 
 isort.required-imports = ["from __future__ import annotations"] # since vital other warnings only appear if this line is there we want it in every file.

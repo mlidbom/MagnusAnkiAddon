@@ -75,9 +75,6 @@ def format_kanji_meaning(meaning: str) -> str:
            .replace(" ", "-")
            .replace("-|-", " | "))
 
-    if val.endswith("|"):
-        val = val[:-1]
-    if val.startswith("|"):
-        val = val[1:]
+    val = val.removesuffix("|")
+    return val.removeprefix("|")
 
-    return val
