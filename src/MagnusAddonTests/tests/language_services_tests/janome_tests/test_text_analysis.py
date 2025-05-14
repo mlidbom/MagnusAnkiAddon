@@ -12,7 +12,6 @@ from note.vocabulary.vocabnote import VocabNote
 if TYPE_CHECKING:
     from collections.abc import Generator
 
-
 # noinspection PyUnusedFunction
 @pytest.fixture(scope="function")
 def setup_collection_with_select_data() -> Generator[None, None, None]:
@@ -51,7 +50,9 @@ def setup_empty_collection() -> Generator[None, None, None]:
     ("さっさと傷を清めてこい",
      ["さっさと", "傷", "を", "清める", "て", "くる", "こい"]),
     ("すげえ", ["すげえ", "すげる", "すげ", "え"]),
-    ("「コーヒーはいかがですか？」「いえ、結構です。お構いなく。」", ["コーヒー", "は", "いかが", "ですか", "です", "か", "いえる", "いえ", "結構", "です", "お構いなく"])
+    ("「コーヒーはいかがですか？」「いえ、結構です。お構いなく。」", ["コーヒー", "は", "いかが", "ですか", "です", "か", "いえる", "いえ", "結構", "です", "お構いなく"]),
+    ("しろ", ["しろ"]),
+    ("解放する", ["解放する", "解放", "する"])
 ])
 def test_identify_words(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
     analysis = TextAnalysis(sentence, set())
@@ -129,7 +130,7 @@ def insert_custom_words(custom_words: list[str]) -> None:
     ("落ちてないかな", [], [], ["落ちる", "てる", "ないか", "な"], []),
     ("分かってたら", [], [], ["分かる", "てたら"], []),
     ("頑張れたというか", [], [WordExclusion.global_("頑張れ")], ["頑張る", "える", "た", "というか"], []),
-    ("思い出せそうな気がする", [], [], ["思い出す", "える", "そう", "な", "気がする"], []),
+    ("思い出せそうな気がする", [], [], ["思い出す", "える", "そうだ", "気がする"], []),
     ("私が頼んだの", [], [], ["私", "が", "頼む", "頼ん", "だ", "の"], []),
     ("いらっしゃいません", [], [WordExclusion.global_("いらっしゃいませ")], ["いらっしゃいます", "ん"], []),
     ("代筆を頼みたいんだが", [], [], ["代筆", "を", "頼む", "頼み", "たい", "んだ", "が"], []),
@@ -175,7 +176,7 @@ def test_potential_verb_splitting_with_vocab(setup_collection_with_select_data: 
     ("買えよ　私", [], [], ["買える", "買えよ", "私"], []),
     ("覚ませない", [], [], ["覚ます", "える", "ない"], [])
 ])
-def test_potential_verb_splitting_without_vocab(setup_empty_collection:object, sentence: str, custom_words: list[str], excluded: list[WordExclusion], expected_output: list[str], expected_display_output: list[str]) -> None:
+def test_potential_verb_splitting_without_vocab(setup_empty_collection: object, sentence: str, custom_words: list[str], excluded: list[WordExclusion], expected_output: list[str], expected_display_output: list[str]) -> None:
     _run_assertions(sentence, custom_words, excluded, expected_output, expected_display_output)
 
 def _run_assertions(sentence: str, custom_words: list[str], excluded: list[WordExclusion], expected_output: list[str], expected_display_output: list[str]) -> None:
