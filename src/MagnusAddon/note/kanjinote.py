@@ -83,8 +83,7 @@ class KanjiNote(WaniNote):
         update_primary_audios()
 
     def get_vocab_notes_sorted(self) -> list[VocabNote]:
-        vocab_list = vocabnote_sorting.sort_vocab_list_by_studying_status(self.get_vocab_notes(), self.get_primary_vocabs_or_defaults(), preferred_kanji=self.get_question())
-        return vocab_list
+        return vocabnote_sorting.sort_vocab_list_by_studying_status(self.get_vocab_notes(), self.get_primary_vocabs_or_defaults(), preferred_kanji=self.get_question())
 
     def get_vocab_notes(self) -> list[VocabNote]:
         return app.col().vocab.with_kanji_in_any_form(self)
@@ -216,10 +215,9 @@ class KanjiNote(WaniNote):
 
         if vocab_form.startswith(self.get_question()):
             return vocab_reading.startswith(kanji_reading)
-        elif vocab_form.endswith(self.get_question()):
+        if vocab_form.endswith(self.get_question()):
             return vocab_reading.endswith(kanji_reading)
-        else:
-            return kanji_reading in vocab_reading[1:-1]
+        return kanji_reading in vocab_reading[1:-1]
 
     def generate_default_primary_vocab(self) -> list[str]:
         result: list[str] = []

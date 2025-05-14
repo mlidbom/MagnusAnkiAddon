@@ -26,8 +26,7 @@ def _latest_day_cutoff_timestamp() -> int:
 def _get_answers_since_last_day_cutoff_for_card(card: anki.cards.Card) -> list[int]:
     with StopWatch.log_warning_if_slower_than(0.01):
         reviews = app.anki_db().all("SELECT ease FROM revlog WHERE cid = ? AND id > ? ORDER BY id DESC", card.id, _latest_day_cutoff_timestamp() * timeutil.MILLISECONDS_PER_SECOND)
-        answers = [typed.int_(review[0]) for review in reviews]
-        return answers
+        return [typed.int_(review[0]) for review in reviews]
 
 class CardEx:
     def __init__(self, card:anki.cards.Card) -> None:

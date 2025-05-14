@@ -120,8 +120,7 @@ def vocabs_lookup_strings_read_card(words: list[str]) -> str:
 def kanji_with_radical(radical: RadicalNote) -> str:
     if radical.get_question():
         return f"note:{NoteTypes.Kanji} {NoteFields.Kanji.Radicals}:*{radical.get_question()}*"
-    else:
-        return f"note:{NoteTypes.Kanji} ({field_contains_word(NoteFields.Kanji.Radicals_Names, radical.get_answer())} OR {field_contains_word(NoteFields.Kanji.Radicals_Icons_Names, radical.get_answer())} )"
+    return f"note:{NoteTypes.Kanji} ({field_contains_word(NoteFields.Kanji.Radicals_Names, radical.get_answer())} OR {field_contains_word(NoteFields.Kanji.Radicals_Icons_Names, radical.get_answer())} )"
 
 
 def kanji_with_reading_part(reading_part: str) -> str:

@@ -125,8 +125,7 @@ def get_single_dict_entry(word: str, readings: list[str]) -> DictEntry:
 
 def get_dict_entry(word: str, readings: list[str]) -> DictLookup:
     mock_vocab = vocab_mock(word, readings)
-    dict_entry = DictLookup.try_lookup_vocab_word_or_name(mock_vocab)
-    return dict_entry
+    return DictLookup.try_lookup_vocab_word_or_name(mock_vocab)
 
 def vocab_mock(word: str, readings: list[str]) -> VocabNote:
     return VocabNote.factory.create(word, "", readings)

@@ -35,7 +35,7 @@ def render_list(note:JPNote, kanjis:list[KanjiNote], kanji_readings:list[str]) -
 
     viewmodels = [KanjiViewModel(kanji) for kanji in kanjis]
 
-    list_html = f"""
+    return f"""
     <div id="kanji_list" class="page_section">
         <div class="page_section_title">kanji</div>
     {ex_str.newline.join(f'''
@@ -51,7 +51,6 @@ def render_list(note:JPNote, kanjis:list[KanjiNote], kanji_readings:list[str]) -
     </div>
             """
 
-    return list_html
 
 def kanji_kanji_list(kanji:KanjiNote) -> str:
     kanjis = app.col().kanji.with_radical(kanji.get_question())

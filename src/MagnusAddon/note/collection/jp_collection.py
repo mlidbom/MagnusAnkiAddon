@@ -63,9 +63,9 @@ class JPCollection:
         note = app.anki_collection().get_note(note_id)  # todo: verify wether calling get_note is slow, if so hack this into the in memory caches instead
 
         if JPNote.get_note_type(note) == NoteTypes.Kanji: return app.col().kanji.with_id(note.id)
-        elif JPNote.get_note_type(note) == NoteTypes.Vocab: return app.col().vocab.with_id(note.id)
-        elif JPNote.get_note_type(note) == NoteTypes.Radical: return app.col().radicals.with_id(note.id)
-        elif JPNote.get_note_type(note) == NoteTypes.Sentence: return app.col().sentences.with_id(note.id)
+        if JPNote.get_note_type(note) == NoteTypes.Vocab: return app.col().vocab.with_id(note.id)
+        if JPNote.get_note_type(note) == NoteTypes.Radical: return app.col().radicals.with_id(note.id)
+        if JPNote.get_note_type(note) == NoteTypes.Sentence: return app.col().sentences.with_id(note.id)
         return JPNote(note)
 
     def destruct_sync(self) -> None:

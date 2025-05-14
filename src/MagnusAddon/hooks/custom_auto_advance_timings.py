@@ -35,12 +35,12 @@ def seconds_to_show_question(card: CardEx) -> float:
                                         hiragana_seconds=app.config().autoadvance_sentence_hiragana_seconds.get_value(),
                                         katakata_seconds=app.config().autoadvance_sentence_katakana_seconds.get_value(),
                                         kanji_seconds=app.config().autoadvance_sentence_kanji_seconds.get_value()).allowed_seconds(note.get_question())
-        elif isinstance(note, VocabNote):
+        if isinstance(note, VocabNote):
             return DifficultyCalculator(starting_seconds=app.config().autoadvance_vocab_starting_seconds.get_value(),
                                         hiragana_seconds=app.config().autoadvance_vocab_hiragana_seconds.get_value(),
                                         katakata_seconds=app.config().autoadvance_vocab_katakana_seconds.get_value(),
                                         kanji_seconds=app.config().autoadvance_vocab_kanji_seconds.get_value()).allowed_seconds(note.get_question())
-        elif isinstance(note, KanjiNote):
+        if isinstance(note, KanjiNote):
             return card.get_deck().get_config().get_seconds_to_show_question()
         raise Exception("We should never get here")
 

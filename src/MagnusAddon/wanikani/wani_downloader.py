@@ -30,8 +30,7 @@ class WaniDownloader:
                 file.write(response.content)
 
             return filename
-        else:
-            raise FileDownloadError(f"{url} -> {cls.media_dir()}")
+        raise FileDownloadError(f"{url} -> {cls.media_dir()}")
 
     @classmethod
     def fetch_audio_from_wanikani(cls, vocab: VocabNote) -> None:

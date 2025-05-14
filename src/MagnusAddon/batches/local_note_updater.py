@@ -150,10 +150,9 @@ def reading_in_vocab_reading(kanji:KanjiNote, kanji_reading: str, vocab_reading:
     vocab_form = ex_str.strip_html_and_bracket_markup_and_noise_characters(vocab_form)
     if vocab_form.startswith(kanji.get_question()):
         return vocab_reading.startswith(kanji_reading)
-    elif vocab_form.endswith(kanji.get_question()):
+    if vocab_form.endswith(kanji.get_question()):
         return vocab_reading.endswith(kanji_reading)
-    else:
-        return kanji_reading in vocab_reading[1:-1]
+    return kanji_reading in vocab_reading[1:-1]
 
 def reparse_sentences(sentences:list[SentenceNote]) -> None:
     def reparse_sentence(sentence: SentenceNote) -> None:

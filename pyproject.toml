@@ -18,12 +18,16 @@ select = [
     "ANN", # type annotations warnings
     "FA", # More type annotations fixes,
     "Q", #quoting style,
-    "C4"
+    "C4",
+    "PT", # pytest style
+    "RET", #return values
 ]
 
 isort.required-imports = ["from __future__ import annotations"] # since vital other warnings only appear if this line is there we want it in every file.
 
 #select = ["ALL"]
+
+ flake8-pytest-style.parametrize-names-type = "csv"
 
 ignore = [
     "E701", #E701 multiple statements on one line,
@@ -34,5 +38,7 @@ ignore = [
     #"Q", # rules on how quotes are use...
     "D", #Docstring rules
     "W292", # [*] No newline at end of file
+     "PT003", #`scope='function'` is implied in `@pytest.fixture()` ... But I like being explicit. No need to remember the default
+
 ]
 

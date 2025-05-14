@@ -94,6 +94,5 @@ class JNTokenizedText:
         vocab = app.col().vocab
 
         step1 = [JNTokenWrapper(token, vocab) for token in self.tokens]
-        step2 = ex_sequence.flatten([token.pre_process() for token in step1])
+        return ex_sequence.flatten([token.pre_process() for token in step1])
 
-        return step2

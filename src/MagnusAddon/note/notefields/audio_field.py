@@ -23,8 +23,7 @@ class AudioField:
         if not self.has_audio(): return []
 
         stripped_paths = self._field.get().strip().replace("[sound:", "").split("]")
-        stripped_paths = [path.strip() for path in stripped_paths]
-        return stripped_paths
+        return [path.strip() for path in stripped_paths]
 
 
 

@@ -120,13 +120,12 @@ class JapaneseConfig:
             return f"<read>{value_part}</read>"
 
 
-        readings_mappings = {
+        return {
             line.split(":", 1)[0].strip(): parse_value_part(line.split(":", 1)[1].strip())
             for line in self.readings_mappings.get_value().strip().splitlines()
             if ":" in line
         }
 
-        return readings_mappings
 
 
 

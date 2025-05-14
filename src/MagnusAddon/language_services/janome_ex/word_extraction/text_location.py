@@ -49,8 +49,7 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.sur
 """
 
     def forward_list(self, length: int = 99999) -> list[TokenTextLocation]:
-        locations = self.analysis().locations[self.token_index: self.token_index + length + 1]
-        return locations
+        return self.analysis().locations[self.token_index: self.token_index + length + 1]
 
     def run_analysis_step_1(self) -> None:
         if len(self.analysis().locations) > self.token_index + 1:

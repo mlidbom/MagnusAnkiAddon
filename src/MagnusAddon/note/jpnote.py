@@ -67,9 +67,9 @@ class JPNote:
         from note.vocabulary.vocabnote import VocabNote
 
         if cls.get_note_type(note) == NoteTypes.Kanji: return KanjiNote(note)
-        elif cls.get_note_type(note) == NoteTypes.Vocab: return VocabNote(note)
-        elif cls.get_note_type(note) == NoteTypes.Radical: return RadicalNote(note)
-        elif cls.get_note_type(note) == NoteTypes.Sentence: return SentenceNote(note)
+        if cls.get_note_type(note) == NoteTypes.Vocab: return VocabNote(note)
+        if cls.get_note_type(note) == NoteTypes.Radical: return RadicalNote(note)
+        if cls.get_note_type(note) == NoteTypes.Sentence: return SentenceNote(note)
         return JPNote(note)
 
     @staticmethod

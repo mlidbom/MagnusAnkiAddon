@@ -12,13 +12,12 @@ def render_katakana_onyomi(kanji_note: KanjiNote) -> str:
     kun_readings = ", ".join(f"""<span class="clipboard">{reading}</span>""" for reading in kanji_note.get_reading_kun_list_html())
     nan_readings = ", ".join(f"""<span class="clipboard">{reading}</span>""" for reading in kanji_note.get_reading_nan_list_html())
 
-    readings_html = f"""
+    return f"""
      <span class="reading">{on_readings}</span> <span class="readingsSeparator">|</span>
      <span class="reading">{kun_readings}</span> <span class="readingsSeparator">|</span>
      <span class="reading">{nan_readings}</span>
 """
 
-    return readings_html
 
 
 def init() -> None:

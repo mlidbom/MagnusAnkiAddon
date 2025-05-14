@@ -105,9 +105,9 @@ class CandidateForm:
         for exclusion in self.possible_contextual_exclusions:
             if exclusion.endswith(self.form) and (preceding_text + self.form).endswith(exclusion):  # noqa: SIM114
                 return True
-            elif exclusion.startswith(self.form) and (self.form + following_text).startswith(exclusion):  # noqa: SIM114
+            if exclusion.startswith(self.form) and (self.form + following_text).startswith(exclusion):  # noqa: SIM114
                 return True
-            elif exclusion in preceding_text + self.form + following_text:
+            if exclusion in preceding_text + self.form + following_text:
                 return True
 
         return False

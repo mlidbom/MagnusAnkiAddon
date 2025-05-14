@@ -30,7 +30,7 @@ def render_dependencies_list(note: KanjiNote) -> str:
         return f"""{readings_on} {separator} {readings_kun}"""
 
     if dependencies:
-        list_html = f"""
+        return f"""
 <div id="dependencies_list" class="page_section">
     <div class="page_section_title">radicals</div>
 {ex_str.newline.join(f'''
@@ -46,9 +46,7 @@ def render_dependencies_list(note: KanjiNote) -> str:
 </div>
         """
 
-        return list_html
-    else:
-        return ""
+    return ""
 
 
 def init() -> None:

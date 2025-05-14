@@ -24,8 +24,7 @@ class WordExtractor:
 
     def extract_words_hierarchical(self, sentence: str, excluded_words: list[WordExclusion]) -> list[HierarchicalWord]:
         hierarchical_all = self.extract_words_hierarchical_all(sentence, excluded_words)
-        only_non_children = [w for w in hierarchical_all if not w.shadowed_by]
-        return only_non_children
+        return [w for w in hierarchical_all if not w.shadowed_by]
 
     def extract_words_hierarchical_all(self, sentence: str, excluded_words: list[WordExclusion]) -> list[HierarchicalWord]:
         def sort_key(word: ExtractedWord) -> tuple[int, int, int]: return word.character_index, -word.surface_length(), -word.word_length()
@@ -67,8 +66,7 @@ class WordExtractor:
         def get_excluded_forms(form_: str) -> set[str]:
             unexcluded_vocab_with_form = [voc for voc in (app.col().vocab.with_form(form_)) if not any(exclusion for exclusion in exclusions if exclusion.word == voc.get_question())]
             excluded_forms_list_for_form = [voc.forms.excluded_set() for voc in unexcluded_vocab_with_form]
-            excluded_forms_set = set.union(*excluded_forms_list_for_form) if excluded_forms_list_for_form else set()
-            return excluded_forms_set
+            return set.union(*excluded_forms_list_for_form) if excluded_forms_list_for_form else set()
 
         def is_excluded_form(vocab_form: str, candidate_form: str) -> bool:
             if is_excluded_contextually(candidate_form):

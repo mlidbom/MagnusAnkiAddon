@@ -48,9 +48,8 @@ class DictEntry:
         kanji_priorities: list[str] = ex_sequence.flatten([form.pri for form in self.entry.kanji_forms if form.text == self.lookup_word])
         kana_priorities: list[str] = ex_sequence.flatten([form.pri for form in self.entry.kana_forms if form.text in self.lookup_readings])
 
-        tags = set(kanji_priorities + kana_priorities)
+        return set(kanji_priorities + kana_priorities)
 
-        return tags
 
     def _is_transitive_verb(self) -> bool:
         return all(_sense_is_transitive_verb(sense) for sense in self.entry.senses)
@@ -91,15 +90,13 @@ class DictEntry:
                 glosses_text = [gloss[6:] for gloss in glosses_text]
             else:
                 glosses_text = [gloss[3:] if gloss[:3] == "to-" else gloss for gloss in glosses_text]
-        sense_text = "/".join(glosses_text)
-        return sense_text
+        return "/".join(glosses_text)
 
     def generate_answer(self) -> str:
         prefix = self._answer_prefix()
         senses = list(self.entry.senses)
         formatted_senses = [self.format_sense(sense) for sense in senses]
-        answer_text = prefix + " | ".join(formatted_senses)
-        return answer_text
+        return prefix + " | ".join(formatted_senses)
 
     _parts_of_speech_map = {
         "transitive verb": ["transitive"],
