@@ -53,10 +53,12 @@ class CandidateForm:
         self.exact_match_requirement_fulfilled: bool = False
 
         self.display_forms: list[DisplayForm] = []
+        self.completed_analysis = False
 
     def counterpart(self) -> CandidateForm: raise Exception("Not implemented")
 
     def complete_analysis(self) -> None:
+        if self.completed_analysis: return
         self.forms_excluded_by_compound_root_vocab_configuration: set[str] = self.candidate().locations[0]().all_candidates[-1].base.forms_excluded_by_vocab_configuration
         self.is_excluded_by_compound_root_vocab_configuration: bool = self.form in self.forms_excluded_by_compound_root_vocab_configuration
         self.exact_match_required_by_counterpart_vocab_configuration: bool = self.counterpart().exact_match_required_by_vocab_configuration
@@ -70,6 +72,8 @@ class CandidateForm:
                 self.form = override_form[0].parsed_form
         else:
             self.display_forms = [MissingDisplayForm(WeakRef(self))]
+
+        self.completed_analysis = True
 
     def vocab_fulfills_stem_requirements(self, vocab: VocabNote) -> bool:
         if vocab.has_tag(Mine.Tags.requires_a_stem):
