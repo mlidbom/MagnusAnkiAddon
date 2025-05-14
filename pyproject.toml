@@ -21,6 +21,7 @@ select = [
     "C4",
     "PT", # pytest style
     "RET", #return values
+    "TID", # tidy imports
 ]
 
 isort.required-imports = ["from __future__ import annotations"] # since vital other warnings only appear if this line is there we want it in every file.

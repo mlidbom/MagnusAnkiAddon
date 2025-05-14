@@ -2,9 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from note.note_constants import Mine, NoteFields
 from sysutils import kana_utils
-
-from ..note_constants import Mine, NoteFields
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
