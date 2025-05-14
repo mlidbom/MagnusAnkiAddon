@@ -54,8 +54,6 @@ def test_roundtrip_parsing_result() -> None:
     json = ParsingResult.serializer.serialize(parsing_result)
     round_tripped_result = ParsingResult.serializer.deserialize(json)
 
-    parsing_result.parsed_words[0].word = "aoeu"
-
     assert_object_graphs_identical(parsing_result, round_tripped_result)
 
 def test_roundtrip_configuration() -> None:
