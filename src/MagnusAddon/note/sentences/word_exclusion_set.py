@@ -21,8 +21,8 @@ class WordExclusionSet:
         self._exclusions = set()
         self._save()
 
-    def add_str(self, vocab: str) -> None:
-        self.add(WordExclusion.from_string(vocab))
+    def add_global(self, vocab: str) -> None:
+        self.add(WordExclusion.global_(vocab))
 
     def add(self, exclusion: WordExclusion) -> None:
         self._exclusions.add(exclusion)

@@ -31,18 +31,18 @@ def build_string_menu(string_menu: QMenu, sentence: SentenceNote, menu_string: s
     build_highlighted_vocab_menu(non_optional(string_menu.addMenu(shortcutfinger.home1("Highlighted Vocab"))), sentence, menu_string)
 
     def build_word_exclusion_set_menu(word_exclusion_set_menu: QMenu, exclusion_set: WordExclusionSet) -> None:
-        menu_string_as_word_exclusion = WordExclusion.from_string(menu_string)
+        menu_string_as_word_exclusion = WordExclusion.global_(menu_string)
         valid_top_level_words = sentence.get_valid_parsed_non_child_words()
         top_level_words_excluded_by_menu_string: list[CandidateForm] = [w for w in valid_top_level_words if menu_string_as_word_exclusion.excludes_form_at_index(w.form, w.start_index)]
         if any(top_level_words_excluded_by_menu_string):
             if len(top_level_words_excluded_by_menu_string) == 1:
-                add_ui_action(word_exclusion_set_menu, shortcutfinger.home1("Add"), lambda: exclusion_set.add_str(menu_string))
+                add_ui_action(word_exclusion_set_menu, shortcutfinger.home1("Add"), lambda: exclusion_set.add_global(menu_string))
             else:
                 exclude_menu: QMenu = non_optional(word_exclusion_set_menu.addMenu(shortcutfinger.home1("Add")))
                 for excluded_index, matched in enumerate(top_level_words_excluded_by_menu_string):
                     add_ui_action(exclude_menu, shortcutfinger.numpad_no_numbers(excluded_index, f"{matched.start_index}: {matched.form}"), lambda _matched=matched: exclusion_set.add(_matched.to_exclusion()))
         else:
-            add_ui_action(word_exclusion_set_menu, shortcutfinger.home1("Add"), lambda: exclusion_set.add_str(menu_string))
+            add_ui_action(word_exclusion_set_menu, shortcutfinger.home1("Add"), lambda: exclusion_set.add_global(menu_string))
 
         current_exclusions = exclusion_set.get()
         covered_existing_exclusions = [x for x in current_exclusions if menu_string_as_word_exclusion.covers(x)]
