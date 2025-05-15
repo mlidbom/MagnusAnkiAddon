@@ -1,9 +1,10 @@
 from __future__ import annotations
 
+from typing import TypeVar
+
 from ankiutils import app, ui_utils
 from aqt import mw, qconnect
 from aqt.qt import QKeySequence, QShortcut
-from mypyc.ir.ops import TypeVar
 from note.kanjinote import KanjiNote
 from note.sentences.sentencenote import SentenceNote
 from note.vocabulary.vocabnote import VocabNote
