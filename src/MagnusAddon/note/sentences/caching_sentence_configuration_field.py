@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable
 
 from note.note_constants import SentenceNoteFields
 from note.notefields.string_field import StringField
@@ -15,6 +15,7 @@ class CachingSentenceConfigurationField:
     def __init__(self, note: SentenceNote) -> None:
         self.field = StringField(note, SentenceNoteFields.configuration)
         self._value: Lazy[SentenceConfiguration] = Lazy(lambda: SentenceConfiguration.serializer.deserialize(self.field.get(), self._save))
+        self._update_callbacks: list[Callable[[], None]] = []
 
     @property
     def configuration(self) -> SentenceConfiguration:
@@ -48,3 +49,8 @@ class CachingSentenceConfigurationField:
 
     def _save(self) -> None:
         self.field.set(SentenceConfiguration.serializer.serialize(self._value.instance()))
+        for callback in self._update_callbacks:
+            callback()
+
+    def on_update(self, callback: Callable[[], None]) -> None:
+        self._update_callbacks.append(callback)
