@@ -7,6 +7,7 @@ from note.collection.backend_facade import BackEndFacade
 from note.collection.note_cache import CachedNote, NoteCache
 from note.note_constants import NoteTypes
 from note.vocabulary.vocabnote import VocabNote
+from sysutils import ex_sequence
 
 if TYPE_CHECKING:
     from anki.collection import Collection
@@ -101,3 +102,11 @@ class VocabCollection:
     def with_question(self, question: str) -> list[VocabNote]: return self._cache.with_question(question)
     def with_reading(self, question: str) -> list[VocabNote]: return self._cache.with_reading(question)
     def with_stem(self, question: str) -> list[VocabNote]: return self._cache.with_stem(question)
+
+    def with_form_prefer_exact_match(self, form: str) -> list[VocabNote]:
+        matches: list[VocabNote] = self.with_form(form)
+        exact_match = [voc for voc in matches if voc.get_question_without_noise_characters() == form]
+        return ex_sequence.remove_duplicates_while_retaining_order(exact_match if exact_match else matches)
+
+    def with_any_form_in_prefer_exact_match(self, forms: list[str]) -> list[VocabNote]:
+        return ex_sequence.remove_duplicates_while_retaining_order(ex_sequence.flatten([self.with_form_prefer_exact_match(form) for form in forms]))

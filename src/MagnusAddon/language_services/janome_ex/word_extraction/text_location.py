@@ -11,8 +11,6 @@ if TYPE_CHECKING:
     from language_services.janome_ex.tokenizing.jn_tokenized_text import ProcessedToken
     from language_services.janome_ex.word_extraction.candidate_form import CandidateForm
     from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
-    from note.vocabulary.vocabnote import VocabNote
-
 
 from typing import Optional
 
@@ -84,10 +82,5 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.sur
         return self.next is not None and self.next().is_inflecting_word()
 
     def is_inflecting_word(self) -> bool:
-        def lookup_vocabs_prefer_exact_match(form: str) -> list[VocabNote]:
-            matches: list[VocabNote] = app.col().vocab.with_form(form)
-            exact_match = [voc for voc in matches if voc.get_question_without_noise_characters() == form]
-            return exact_match if exact_match else matches
-
-        vocab = lookup_vocabs_prefer_exact_match(self.base)
+        vocab = app.col().vocab.with_form(self.base)
         return any(voc for voc in vocab if voc.has_tag(Mine.Tags.inflecting_word))

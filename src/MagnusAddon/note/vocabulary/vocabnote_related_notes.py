@@ -27,12 +27,18 @@ class VocabNoteRelatedNotes:
     def similar_meanings(self) -> set[str]:
         return self._similar_meanings_field.get()
 
+    def similar_meaning_notes(self) -> list[VocabNote]:
+        return app.col().vocab.with_any_form_in_prefer_exact_match(list(self.similar_meanings()))
+
     def add_similar_meaning(self, new_similar: str, _is_recursive_call: bool = False) -> None:
         self._similar_meanings_field.add(new_similar)
 
         if not _is_recursive_call:
             for similar in self._collection.vocab.with_question(new_similar):
                 similar.related_notes.add_similar_meaning(self._vocab.get_question(), _is_recursive_call=True)
+
+    def remove_similar_meaning(self, similar: str) -> None:
+        self._similar_meanings_field.remove(similar)
 
     def ergative_twin(self) -> str:
         return self._ergative_twin_field.get()
@@ -50,9 +56,6 @@ class VocabNoteRelatedNotes:
         note = self._vocab
         return (set(self._collection.kanji.with_any_kanji_in(list(note.kanji.extract_main_form_kanji()))) |
                 set(ex_sequence.flatten([self._collection.vocab.with_question(compound_part) for compound_part in self._vocab.compound_parts.get()])))
-
-    def remove_similar_meaning(self, similar: str) -> None:
-        self._similar_meanings_field.remove(similar)
 
     def remove_confused_with(self, confused_with: str) -> None:
         self.confused_with.remove(confused_with)

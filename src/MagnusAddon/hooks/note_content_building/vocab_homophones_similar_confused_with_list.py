@@ -18,15 +18,6 @@ def _create_classes(_vocab: VocabNote) -> str:
     classes += " " + " ".join(_vocab.get_meta_tags())
     return classes
 
-def lookup_vocabs_prefer_exact_match(part:str) -> list[VocabNote]:
-    matches: list[VocabNote] = app.col().vocab.with_form(part)
-    exact_match = [voc for voc in matches if voc.get_question_without_noise_characters() == part]
-    return exact_match if exact_match else matches
-
-def lookup_vocabs_list_prefer_exact_match(vocabs:list[str]) -> list[VocabNote]:
-    return ex_sequence.flatten([lookup_vocabs_prefer_exact_match(part) for part in vocabs])
-
-
 def render_vocab_list(vocab_list: list[VocabNote], title:str, css_class:str, reading:bool = True) -> str:
     def render_readings(_vocab_note: VocabNote) -> str:
         return f"""<span class="clipboard vocabReading">{", ".join(_vocab_note.readings.get())}</span>""" if reading else ""
@@ -65,27 +56,32 @@ def generate_homophones_html_list(vocab_note: VocabNote) -> str:
     return render_vocab_list(homophones, "homophones", css_class="homophones") if homophones else ""
 
 def generate_similar_meaning_html_list(_vocab_note: VocabNote) -> str:
-    similar = lookup_vocabs_list_prefer_exact_match(list(_vocab_note.related_notes.similar_meanings()))
+    vocabs = list(_vocab_note.related_notes.similar_meanings())
+    similar = app.col().vocab.with_any_form_in_prefer_exact_match(vocabs)
     similar = note.vocabulary.vocabnote_sorting.sort_vocab_list_by_studying_status(similar)
 
     return render_vocab_list(similar, "similar", css_class="similar") if similar else ""
 
 def generate_confused_with_html_list(_vocab_note: VocabNote) -> str:
-    confused_with = lookup_vocabs_list_prefer_exact_match(list(_vocab_note.related_notes.confused_with.get()))
+    vocabs = list(_vocab_note.related_notes.confused_with.get())
+    confused_with = app.col().vocab.with_any_form_in_prefer_exact_match(vocabs)
     confused_with = note.vocabulary.vocabnote_sorting.sort_vocab_list_by_studying_status(confused_with)
 
     return render_vocab_list(confused_with, "confused with", css_class="confused_with") if confused_with else ""
 
 def generate_ergative_twin_html(_vocab_note: VocabNote) -> str:
-    ergative_twin = lookup_vocabs_prefer_exact_match(_vocab_note.related_notes.ergative_twin())
+    part = _vocab_note.related_notes.ergative_twin()
+    ergative_twin = app.col().vocab.with_form_prefer_exact_match(part)
     return render_vocab_list(ergative_twin, "ergative twin", css_class="ergative_twin") if ergative_twin else ""
 
 def generate_derived_from(_vocab_note: VocabNote) -> str:
-    derived_from = lookup_vocabs_prefer_exact_match(_vocab_note.related_notes.derived_from.get())
+    part = _vocab_note.related_notes.derived_from.get()
+    derived_from = app.col().vocab.with_form_prefer_exact_match(part)
     return render_vocab_list(derived_from, "derived from", css_class="derived_from") if derived_from else ""
 
 def generate_compounds(_vocab_note: VocabNote) -> str:
-    compound_parts = lookup_vocabs_list_prefer_exact_match(_vocab_note.compound_parts.get())
+    vocabs = _vocab_note.compound_parts.get()
+    compound_parts = app.col().vocab.with_any_form_in_prefer_exact_match(vocabs)
     return render_vocab_list(compound_parts, "compound parts", css_class="compound_parts") if compound_parts else ""
 
 def generate_in_compounds_list(_vocab_note: VocabNote) -> str:
