@@ -36,3 +36,6 @@ def checked_cast_dynamic(cls: type[CastT], instance: object) -> CastT:
 def non_optional(instance:Optional[CastT]) -> CastT:
     if instance is None: raise AssertionError()
     return instance
+
+def try_cast(cls: type[CastT], instance: object) -> Optional[CastT]:
+    return instance if isinstance(instance, cls) else None

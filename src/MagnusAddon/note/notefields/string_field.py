@@ -12,4 +12,5 @@ class StringField(ReadOnlyStringField):
         super().__init__(note, field_name)
 
     def set(self, value: str) -> None: self._note.set_field(self._field_name, value.strip())
+    def empty(self) -> None: self.set("")
 

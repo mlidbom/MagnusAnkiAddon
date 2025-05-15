@@ -6,7 +6,6 @@ from ankiutils import app
 from PyQt6.QtWidgets import QApplication
 
 if TYPE_CHECKING:
-    from anki.cards import Card
     from anki.notes import Note
     from note.jpnote import JPNote
 
@@ -121,5 +120,6 @@ class UIUtils(IUIUtils):
 
         app_thread_pool.run_on_ui_thread_fire_and_forget(show_tooltip)
 
-def try_get_card_being_reviewed() -> Card | None:
-    return main_window().reviewer.card
+def try_get_review_note() -> JPNote | None:
+    from note.jpnote import JPNote
+    return JPNote.note_from_card(main_window().reviewer.card) if main_window().reviewer.card else None

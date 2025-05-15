@@ -3,49 +3,48 @@ from __future__ import annotations
 from ankiutils import app, ui_utils
 from aqt import mw, qconnect
 from aqt.qt import QKeySequence, QShortcut
-from note.jpnote import JPNote
+from mypyc.ir.ops import TypeVar
 from note.kanjinote import KanjiNote
 from note.sentences.sentencenote import SentenceNote
 from note.vocabulary.vocabnote import VocabNote
+from sysutils.typed import try_cast
 
+T: TypeVar = TypeVar("T")
 
 def init() -> None:
     def null_op() -> None: pass
 
+    def try_get_review_note_of_type(note_type: type[T]) -> T | None:
+        return try_cast(note_type, ui_utils.try_get_review_note())
+
     def remove_mnemonic() -> None:
-        card_being_reviewed = ui_utils.try_get_card_being_reviewed()
-        if card_being_reviewed:
-            note = JPNote.note_from_card(card_being_reviewed)
-            if isinstance(note, KanjiNote):
-                note.set_user_mnemonic("")
-                app.get_ui_utils().refresh()
-            if isinstance(note, VocabNote):
-                note.user_mnemonic.set("")
-                app.get_ui_utils().refresh()
+        kanji = try_get_review_note_of_type(KanjiNote)
+        if kanji:
+            kanji.set_user_mnemonic("")
+            app.get_ui_utils().refresh()
+
+        vocab = try_get_review_note_of_type(VocabNote)
+        if vocab:
+            vocab.user_mnemonic.empty()
+            app.get_ui_utils().refresh()
 
     def generate_compound_parts() -> None:
-        card_being_reviewed = ui_utils.try_get_card_being_reviewed()
-        if card_being_reviewed:
-            note = JPNote.note_from_card(card_being_reviewed)
-            if isinstance(note, VocabNote):
-                note.compound_parts.auto_generate()
-                app.get_ui_utils().refresh()
+        vocab = try_get_review_note_of_type(VocabNote)
+        if vocab:
+            vocab.compound_parts.auto_generate()
+            app.get_ui_utils().refresh()
 
     def reset_incorrect_matches() -> None:
-        card_being_reviewed = ui_utils.try_get_card_being_reviewed()
-        if card_being_reviewed:
-            note = JPNote.note_from_card(card_being_reviewed)
-            if isinstance(note, SentenceNote):
-                note.configuration.incorrect_matches.reset()
-                app.get_ui_utils().refresh()
+        sentence = try_get_review_note_of_type(SentenceNote)
+        if sentence:
+            sentence.configuration.incorrect_matches.reset()
+            app.get_ui_utils().refresh()
 
     def reset_source_comments() -> None:
-        card_being_reviewed = ui_utils.try_get_card_being_reviewed()
-        if card_being_reviewed:
-            note = JPNote.note_from_card(card_being_reviewed)
-            if isinstance(note, SentenceNote):
-                note.source_comments.empty()
-                app.get_ui_utils().refresh()
+        sentence = try_get_review_note_of_type(SentenceNote)
+        if sentence:
+            sentence.source_comments.empty()
+            app.get_ui_utils().refresh()
 
     qconnect(QShortcut(QKeySequence("0"), mw).activated, remove_mnemonic)
     qconnect(QShortcut(QKeySequence("9"), mw).activated, generate_compound_parts)
