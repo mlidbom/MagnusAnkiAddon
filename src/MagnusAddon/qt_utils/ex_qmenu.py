@@ -12,9 +12,17 @@ class ExQmenu:
             return
 
         for action in menu.actions():
-            submenu:Optional[QMenu] = action.menu()
+            submenu: Optional[QMenu] = action.menu()
             if submenu:
                 cls.disable_empty_submenus(submenu)
 
-                if len(submenu.actions()) == 0:
+                if len(submenu.actions()) == 0: # Disable submenu if it's empty
                     action.setEnabled(False)
+                else: # Disable submenu if all its actions are disabled
+                    all_disabled = True
+                    for submenu_action in submenu.actions():
+                        if submenu_action.isEnabled():
+                            all_disabled = False
+                            break
+                    if all_disabled:
+                        action.setEnabled(False)

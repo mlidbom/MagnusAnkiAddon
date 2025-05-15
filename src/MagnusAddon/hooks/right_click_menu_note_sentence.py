@@ -61,6 +61,8 @@ def build_string_menu(string_menu: QMenu, sentence: SentenceNote, menu_string: s
                 remove_at_index_menu: QMenu = non_optional(word_exclusion_remove.addMenu(exclusion_type_title))
                 for excluded_index, matched_exclusion in enumerate(covered_existing_exclusions):
                     add_ui_action(remove_at_index_menu, shortcutfinger.numpad_no_numbers(excluded_index, f"{matched_exclusion.index}:{matched_exclusion.word}"), ex_lambda.bind1(exclusion_set.remove, matched_exclusion))
+        else:
+            add_ui_action(word_exclusion_remove, exclusion_type_title, lambda: None).setEnabled(False)
 
     def build_add_menu(add_menu: QMenu) -> None:
         build_highlighted_vocab_menu_add(non_optional(add_menu.addMenu(shortcutfinger.home1("Highlighted Vocab"))))
