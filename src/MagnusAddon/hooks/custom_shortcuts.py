@@ -39,9 +39,18 @@ def init() -> None:
                 note.configuration.incorrect_matches.reset()
                 app.get_ui_utils().refresh()
 
+    def reset_source_comments() -> None:
+        card_being_reviewed = ui_utils.try_get_card_being_reviewed()
+        if card_being_reviewed:
+            note = JPNote.note_from_card(card_being_reviewed)
+            if isinstance(note, SentenceNote):
+                note.source_comments.empty()
+                app.get_ui_utils().refresh()
+
     qconnect(QShortcut(QKeySequence("0"), mw).activated, remove_mnemonic)
     qconnect(QShortcut(QKeySequence("9"), mw).activated, generate_compound_parts)
     qconnect(QShortcut(QKeySequence("8"), mw).activated, reset_incorrect_matches)
+    qconnect(QShortcut(QKeySequence("7"), mw).activated, reset_source_comments)
 
     for char in "u":  # reset some pesky shortcuts constantly being accidentally triggered
         qconnect(QShortcut(QKeySequence(char), mw).activated, null_op)
