@@ -16,5 +16,6 @@ class StripHtmlOnReadStringField:
     def get(self) -> str: return ex_str.strip_html_markup(self._field.get())
     def set(self, value: str) -> None: self._field.set(value)
     def empty(self) -> None: self.set("")
+    def has_value(self) -> bool: return self._field.has_value()
 
 

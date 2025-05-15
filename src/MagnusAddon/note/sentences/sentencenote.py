@@ -14,6 +14,7 @@ from note.notefields.strip_html_on_read_string_field import StripHtmlOnReadStrin
 from note.sentences.caching_sentence_configuration_field import CachingSentenceConfigurationField
 from note.sentences.parsing_result import ParsingResult
 from note.sentences.serialization.parsing_result_serializer import ParsingResultSerializer
+from note.sentences.user_fields import SentenceUserFields
 from sysutils import ex_sequence, ex_str, kana_utils
 
 if TYPE_CHECKING:
@@ -28,11 +29,14 @@ class SentenceNote(JPNote):
         self._user_question = StringField(self, SentenceNoteFields.user_question)
         self._source_question = StripHtmlOnReadStringField(self, SentenceNoteFields.source_question)
         self.source_comments: StripHtmlOnReadStringField = StripHtmlOnReadStringField(self, SentenceNoteFields.source_comments)
+
+
+        self.user: SentenceUserFields = SentenceUserFields(self)
+
         self.question = StripHtmlOnReadFallbackStringField(self, SentenceNoteFields.user_question, SentenceNoteFields.source_question)
         self.answer = StripHtmlOnReadFallbackStringField(self, SentenceNoteFields.user_answer, SentenceNoteFields.source_answer)
         self._screenshot = StringField(self, SentenceNoteFields.screenshot)
         self.audio: WritableAudioField = WritableAudioField(self, SentenceNoteFields.audio)
-        self._user_answer: StringField = StringField(self, SentenceNoteFields.user_answer)
         self.configuration: CachingSentenceConfigurationField = CachingSentenceConfigurationField(self)
         self.configuration.on_update(lambda: self.update_parsed_words(force=True))
         self.parsing_result: JsonObjectField[ParsingResult] = JsonObjectField[ParsingResult](self, SentenceNoteFields.parsing_result, ParsingResultSerializer())
@@ -90,7 +94,7 @@ class SentenceNote(JPNote):
         inner_note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Sentence))
         note = SentenceNote(inner_note)
         note._source_question.set(question)
-        note._user_answer.set(answer)
+        note.user.answer.set(answer)
         note.update_generated_data()
         app.anki_collection().addNote(inner_note)
         return note
