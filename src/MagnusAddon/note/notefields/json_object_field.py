@@ -23,5 +23,5 @@ class JsonObjectField(Generic[T]):
 
     def get(self) -> T: return self._value()
     def set(self, value: T) -> None:
-        self._value = value
+        self._value = Lazy.from_value(value)
         self._field.set(self._serializer.serialize(value))

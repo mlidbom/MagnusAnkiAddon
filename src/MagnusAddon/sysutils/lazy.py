@@ -18,6 +18,10 @@ class Lazy(Generic[T]):
 
     def __call__(self) -> T: return self.instance()
 
+    @classmethod
+    def from_value(cls, result: T) -> Lazy[T]:
+        return cls(lambda: result)
+
 class BackgroundInitialingLazy(Generic[T]):
     def __init__(self, factory: Callable[[], T], delay_seconds: float = 0) -> None:
         self._lock = threading.Lock()
