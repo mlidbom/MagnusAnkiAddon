@@ -7,6 +7,7 @@ from ankiutils import app
 from fixtures.collection_factory import inject_anki_collection_with_select_data, inject_empty_anki_collection_with_note_types
 from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
+from note.sentences.sentence_configuration import SentenceConfiguration
 from note.vocabulary.vocabnote import VocabNote
 
 if TYPE_CHECKING:
@@ -55,7 +56,7 @@ def setup_empty_collection() -> Generator[None, None, None]:
     ("解放する", ["解放する", "解放", "する"])
 ])
 def test_identify_words(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
-    analysis = TextAnalysis(sentence, set())
+    analysis = TextAnalysis(sentence, SentenceConfiguration.empty())
     root_words = [w.form for w in analysis.all_words]
     assert root_words == expected_output
 
@@ -68,7 +69,7 @@ def test_identify_words(setup_collection_with_select_data: object, sentence: str
 def test_custom_vocab_words(setup_collection_with_select_data: object, sentence: str, custom_words: list[str], expected_output: list[str]) -> None:
     insert_custom_words(custom_words)
 
-    analysis = TextAnalysis(sentence, set())
+    analysis = TextAnalysis(sentence, SentenceConfiguration.empty())
     root_words = {w.form for w in analysis.all_words}
     assert root_words == set(expected_output)
 
@@ -76,7 +77,7 @@ def test_ignores_noise_characters(setup_collection_with_select_data: object) -> 
     sentence = ". , : ; / | 。 、ー ? !"
     expected = {"ー"}
 
-    analysis = TextAnalysis(sentence, set())
+    analysis = TextAnalysis(sentence, SentenceConfiguration.empty())
     words = {w.form for w in analysis.all_words}
     assert words == expected
 
@@ -181,7 +182,7 @@ def test_potential_verb_splitting_without_vocab(setup_empty_collection: object, 
 
 def _run_assertions(sentence: str, custom_words: list[str], excluded: list[WordExclusion], expected_output: list[str], expected_display_output: list[str]) -> None:
     insert_custom_words(custom_words)
-    analysis = TextAnalysis(sentence, set(excluded))
+    analysis = TextAnalysis(sentence, SentenceConfiguration.from_incorrect_matches(excluded))
     root_words = [w.form for w in analysis.display_words]
     assert root_words == expected_output
     display_words_forms = [dw.parsed_form for dw in analysis.display_forms]
@@ -210,6 +211,6 @@ def insert_custom_words_with_excluded_forms(custom_words: list[list[str]]) -> No
 def test_custom_vocab_words_with_excluded_forms(setup_collection_with_select_data: object, sentence: str, custom_words: list[list[str]], expected_output: list[str]) -> None:
     insert_custom_words_with_excluded_forms(custom_words)
 
-    analysis = TextAnalysis(sentence, set())
+    analysis = TextAnalysis(sentence, SentenceConfiguration.empty())
     root_words = {w.form for w in analysis.all_words}
     assert root_words == set(expected_output)

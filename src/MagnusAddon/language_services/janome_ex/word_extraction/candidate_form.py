@@ -7,6 +7,7 @@ from language_services import conjugator
 from language_services.janome_ex.word_extraction.display_form import DisplayForm, MissingDisplayForm, VocabDisplayForm
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from note.note_constants import Mine
+from note.sentences.sentence_configuration import SentenceConfiguration
 from sysutils.typed import non_optional
 from sysutils.weak_ref import WeakRef
 
@@ -22,7 +23,7 @@ class CandidateForm:
         from language_services.jamdict_ex.dict_lookup import DictLookup
 
         self.start_index: int = candidate().locations[0]().character_start_index
-        self.configuration_exclusions: set[WordExclusion] = candidate().analysis().exclusions
+        self.incorrect_matches: set[WordExclusion] = candidate().analysis().configuration.incorrect_matches.get()
         self.candidate: WeakRef[CandidateWord] = candidate
         self.is_surface: bool = is_surface
         self.form: str = form
@@ -31,7 +32,7 @@ class CandidateForm:
         self.all_vocabs: list[VocabNote] = app.col().vocab.with_form(form)
 
         def is_excluded_form(form_: str) -> bool:
-            return any(exclusion for exclusion in self.configuration_exclusions if exclusion.excludes_form_at_index(form_, self.start_index))
+            return any(exclusion for exclusion in self.incorrect_matches if exclusion.excludes_form_at_index(form_, self.start_index))
 
         self.unexcluded_vocabs: list[VocabNote] = [v for v in self.all_vocabs if not is_excluded_form(v.get_question())]
         self.excluded_vocabs: list[VocabNote] = [v for v in self.all_vocabs if is_excluded_form(v.get_question())]

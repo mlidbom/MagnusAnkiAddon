@@ -73,6 +73,7 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.sur
             self.display_words = self.valid_candidates[0].display_words
             self.display_words = [covered for covered in self.display_words
                                   if not any(covering for covering in self.display_words if covered.form in covering.form and covered != covering)]
+            self.display_words = [word for word in self.display_words if not self.analysis().configuration.hidden_matches.excludes(word)]
 
             covering_forward_count = self.valid_candidates[0].length - 1
             for location in self.forward_list(covering_forward_count)[1:]:

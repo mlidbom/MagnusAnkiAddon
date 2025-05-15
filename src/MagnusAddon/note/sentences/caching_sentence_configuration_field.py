@@ -17,6 +17,10 @@ class CachingSentenceConfigurationField:
         self._value: Lazy[SentenceConfiguration] = Lazy(lambda: SentenceConfiguration.serializer.deserialize(self.field.get(), self._save))
 
     @property
+    def configuration(self) -> SentenceConfiguration:
+        return self._value()
+
+    @property
     def incorrect_matches(self) -> WordExclusionSet: return self._value.instance().incorrect_matches
 
     @property

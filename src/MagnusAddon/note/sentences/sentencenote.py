@@ -46,7 +46,7 @@ class SentenceNote(JPNote):
 
     def get_valid_parsed_non_child_words(self) -> list[CandidateForm]:
         from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
-        analysis = TextAnalysis(self.get_question(), self.configuration.incorrect_matches.get())
+        analysis = TextAnalysis(self.get_question(), self.configuration.configuration)
         return analysis.display_words
 
     def get_direct_dependencies(self) -> set[JPNote]:
@@ -76,7 +76,7 @@ class SentenceNote(JPNote):
         if not force and parsing_result and parsing_result.sentence == self.get_question() and parsing_result.parser_version == TextAnalysis.version:
             return
 
-        analysis = TextAnalysis(self.get_question(), self.configuration.incorrect_matches.get())
+        analysis = TextAnalysis(self.get_question(), self.configuration.configuration)
         self.parsing_result.set(ParsingResult.from_analysis(analysis))
 
     def extract_kanji(self) -> list[str]:

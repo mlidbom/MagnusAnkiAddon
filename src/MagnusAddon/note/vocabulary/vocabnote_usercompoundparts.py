@@ -6,6 +6,8 @@ from language_services.jamdict_ex.dict_lookup import DictLookup
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from note.note_constants import NoteFields
 from note.notefields.comma_separated_strings_list_field import CommaSeparatedStringsListField
+from note.sentences.sentence_configuration import SentenceConfiguration
+from note.sentences.word_exclusion_set import WordExclusionSet
 
 if TYPE_CHECKING:
     from note.collection.jp_collection import JPCollection
@@ -25,7 +27,7 @@ class VocabNoteUserCompoundParts:
     def auto_generate(self) -> None:
         from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
         from note.vocabulary.vocabnote import VocabNote
-        analysis = TextAnalysis(self._vocab.get_question(), {WordExclusion.global_(form) for form in self._vocab.forms.unexcluded_set()})
+        analysis = TextAnalysis(self._vocab.get_question(), SentenceConfiguration.from_incorrect_matches([WordExclusion.global_(form) for form in self._vocab.forms.unexcluded_set()]))
         compound_parts = [a.form for a in analysis.display_words if a.form not in self._vocab.forms.unexcluded_set()]
         if not len(compound_parts) > 1:  # time to brute force it
             word = self._vocab.get_question()
