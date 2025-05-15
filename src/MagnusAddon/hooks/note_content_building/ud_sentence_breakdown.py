@@ -87,22 +87,6 @@ def render_parsed_words(note: SentenceNote) -> str:
     excluded = note.configuration.incorrect_matches.words()
     return _build_vocab_list(word_strings, excluded, "parsed words", show_words_missing_dictionary_entries=True)
 
-def render_words_missing_dictionary_entries(note: SentenceNote) -> str:
-    analysis = TextAnalysis(note.get_question(), note.configuration.configuration)
-    display_forms = analysis.display_words
-    word_strings = [w.form for w in display_forms]
-
-    excluded_words = note.configuration.incorrect_matches.words()
-
-    def has_vocab(word:str) -> bool:
-        vocabs = lookup_vocabs(excluded_words, word)
-        return len(vocabs) > 0 or len(DictLookup.lookup_word_shallow(word).entries) > 0
-
-
-    words_without_dictionary_entries = [word for word in word_strings if not has_vocab(word)]
-
-    return _build_vocab_list(words_without_dictionary_entries, set(), "matched words without dictionary entries", show_words_missing_dictionary_entries=True) if words_without_dictionary_entries else ""
-
 def render_incorrect_matches(note: SentenceNote) -> str:
     excluded_words = {x.word for x in note.configuration.incorrect_matches.get()}
     excluded_vocab = list(excluded_words)
@@ -122,5 +106,4 @@ def init() -> None:
         "##INCORRECT_MATCHES##": render_incorrect_matches,
         "##HIDDEN_MATCHES##": render_hidden_matches,
         "##USER_EXTRA_VOCAB##": render_user_extra_list,
-        "##WORDS_MISSING_DICTIONARY_ENTRIES##": render_words_missing_dictionary_entries,
     }).render)
