@@ -39,3 +39,5 @@ class WordExclusionSet:
 
     def excludes_at_index(self, word:str, index:int) -> bool:
         return any(exclusion for exclusion in self._exclusions if exclusion.excludes_form_at_index(word, index))
+
+    def __repr__(self) -> str: return ", ".join(exclusion.__repr__() for exclusion in self._exclusions)
