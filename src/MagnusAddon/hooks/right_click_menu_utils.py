@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Callable
 
+from PyQt6.QtGui import QAction
+
 from ankiutils import query_builder, search_executor
 from ankiutils.app import get_ui_utils
 from ankiutils.search_executor import lookup_promise
@@ -23,13 +25,13 @@ def _confirm(menu: QMenu, message:str) -> bool:
         QMessageBox.StandardButton.Yes
     ) == QMessageBox.StandardButton.Yes
 
-def add_ui_action(menu: QMenu, name: str, callback: Callable[[], None], confirm:bool = False) -> None:
+def add_ui_action(menu: QMenu, name: str, callback: Callable[[], None], confirm:bool = False) -> QAction:
     def run_ui_action() -> None:
         if not confirm or _confirm(menu, name):
             callback()
             get_ui_utils().refresh()
 
-    menu.addAction(name, lambda: run_ui_action())
+    return menu.addAction(name, lambda: run_ui_action())
 
 def add_lookup_action_lambda(menu: QMenu, name: str, search: Callable[[],str]) -> None:
     menu.addAction(name, lookup_promise(search))
