@@ -79,8 +79,8 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
 
     def build_toggle_flags_menu(toggle_flags_menu: QMenu) -> None:
         add_toggle_checkbox(toggle_flags_menu, shortcutfinger.home1("Requires exact match"), vocab.flags.requires_exact_match)
-        add_toggle_checkbox(toggle_flags_menu, shortcutfinger.home2("Requires e stem"), vocab.flags.requires_a_stem)
-        add_toggle_checkbox(toggle_flags_menu, shortcutfinger.home3("Requires a stem"), vocab.flags.requires_e_stem)
+        add_toggle_checkbox(toggle_flags_menu, shortcutfinger.home2("Requires a stem"), vocab.flags.requires_a_stem)
+        add_toggle_checkbox(toggle_flags_menu, shortcutfinger.home3("Requires e stem"), vocab.flags.requires_e_stem)
         add_toggle_checkbox(toggle_flags_menu, shortcutfinger.home4("Question overrides form"), vocab.flags.question_overrides_form)
 
     build_lookup_menu(non_optional(note_menu.addMenu(shortcutfinger.home1("Open"))))
