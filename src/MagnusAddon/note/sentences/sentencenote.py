@@ -27,6 +27,7 @@ class SentenceNote(JPNote):
         self._source_answer = StringField(self, SentenceNoteFields.source_answer)
         self._user_question = StringField(self, SentenceNoteFields.user_question)
         self._source_question = StripHtmlOnReadStringField(self, SentenceNoteFields.source_question)
+        self.source_comments: StripHtmlOnReadStringField = StripHtmlOnReadStringField(self, SentenceNoteFields.source_comments)
         self.question = StripHtmlOnReadFallbackStringField(self, SentenceNoteFields.user_question, SentenceNoteFields.source_question)
         self.answer = StripHtmlOnReadFallbackStringField(self, SentenceNoteFields.user_answer, SentenceNoteFields.source_answer)
         self._screenshot = StringField(self, SentenceNoteFields.screenshot)

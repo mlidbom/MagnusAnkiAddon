@@ -26,6 +26,7 @@ class SentenceNoteFields:
     id = "ID"
     active_question = MyNoteFields.question
     source_question = "source_question"
+    source_comments = "Comments"
     user_question = "__question"
     active_answer = MyNoteFields.answer
     source_answer = "source_answer"
