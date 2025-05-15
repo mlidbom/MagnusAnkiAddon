@@ -48,6 +48,7 @@ def create_note_action(menu: QMenu, name: str, callback: Callable[[], JPNote]) -
     def run_ui_action() -> None:
         new_note = callback()
         search_executor.do_lookup_and_show_previewer(query_builder.notes_lookup([new_note]))
+        get_ui_utils().refresh()
 
     menu.addAction(name, lambda: run_ui_action())
 
