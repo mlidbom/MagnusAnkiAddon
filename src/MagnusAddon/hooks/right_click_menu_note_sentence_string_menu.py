@@ -14,7 +14,6 @@ if TYPE_CHECKING:
     from note.sentences.word_exclusion_set import WordExclusionSet
     from PyQt6.QtWidgets import QMenu
 
-
 def build_string_menu(string_menu: QMenu, sentence: SentenceNote, menu_string: str) -> None:
     def build_highlighted_vocab_menu_add(highlighted_vocab_menu: QMenu) -> None:
         for index, _vocab in enumerate(sentence.configuration.highlighted_words()):
@@ -52,15 +51,13 @@ def build_string_menu(string_menu: QMenu, sentence: SentenceNote, menu_string: s
             add_ui_action(word_exclusion_remove, exclusion_type_title, lambda: None).setEnabled(False)
 
     def build_add_menu(add_menu: QMenu) -> None:
-        build_highlighted_vocab_menu_add(non_optional(add_menu.addMenu(shortcutfinger.home1("Highlighted Vocab"))))
-        add_add_word_exclusion_action(add_menu, shortcutfinger.home2("Hidden matches"), sentence.configuration.hidden_matches)
+        add_add_word_exclusion_action(add_menu, shortcutfinger.home1("Hidden matches"), sentence.configuration.hidden_matches)
+        build_highlighted_vocab_menu_add(non_optional(add_menu.addMenu(shortcutfinger.home2("Highlighted Vocab"))))
         add_add_word_exclusion_action(add_menu, shortcutfinger.home3("Incorrect matches"), sentence.configuration.incorrect_matches)
 
     def build_remove_menu(remove_menu: QMenu) -> None:
-        (add_ui_action(remove_menu, shortcutfinger.home1("Highlighted vocab"), lambda: sentence.configuration.remove_highlighted_word(menu_string))
-         .setEnabled(menu_string in sentence.configuration.highlighted_words()))
-
-        add_remove_word_exclusion_action(remove_menu, shortcutfinger.home2("Hidden matches"), sentence.configuration.hidden_matches)
+        add_remove_word_exclusion_action(remove_menu, shortcutfinger.home1("Hidden matches"), sentence.configuration.hidden_matches)
+        add_ui_action(remove_menu, shortcutfinger.home2("Highlighted vocab"), lambda: sentence.configuration.remove_highlighted_word(menu_string)).setEnabled(menu_string in sentence.configuration.highlighted_words())
         add_remove_word_exclusion_action(remove_menu, shortcutfinger.home3("Incorrect matches"), sentence.configuration.incorrect_matches)
 
     build_add_menu(non_optional(string_menu.addMenu(shortcutfinger.home1("Add"))))
