@@ -12,6 +12,7 @@ from note.vocabulary.vocabnote_audio import VocabNoteAudio
 from note.vocabulary.vocabnote_conjugator import VocabNoteConjugator
 from note.vocabulary.vocabnote_context_sentences import VocabContextSentences
 from note.vocabulary.vocabnote_factory import VocabNoteFactory
+from note.vocabulary.vocabnote_flags import VocabNoteFlags
 from note.vocabulary.vocabnote_forms import VocabNoteForms
 from note.vocabulary.vocabnote_kanji import VocabNoteKanji
 from note.vocabulary.vocabnote_metadata import VocabNoteMetaData
@@ -49,6 +50,7 @@ class VocabNote(WaniNote):
         self.wani_extensions: VocabNoteWaniExtensions = VocabNoteWaniExtensions(self)
         self.kanji: VocabNoteKanji = VocabNoteKanji(self)
         self.meta_data: VocabNoteMetaData = VocabNoteMetaData(self)
+        self.flags: VocabNoteFlags = VocabNoteFlags(self)
 
     def __repr__(self) -> str: return f"""{self.get_question()}"""
 

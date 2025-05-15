@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 import pyperclip
 from ankiutils import app, query_builder
+from aqt import qconnect
 from hooks import shortcutfinger
 from hooks.right_click_menu_note_vocab_create_note_menu import build_create_note_menu
 from hooks.right_click_menu_utils import add_lookup_action, add_single_vocab_lookup_action, add_ui_action, add_vocab_dependencies_lookup
@@ -14,8 +15,19 @@ from sysutils.ex_str import newline
 from sysutils.typed import non_optional
 
 if TYPE_CHECKING:
+    from note.notefields.tag_flag_field import TagFlagField
     from note.vocabulary.vocabnote import VocabNote
     from PyQt6.QtWidgets import QMenu
+
+def add_toggle_checkbox(menu: QMenu, title: str, field: TagFlagField) -> None:
+    def set_value(value: bool) -> None:
+        field.set_to(value)
+        app.get_ui_utils().refresh()
+
+    action = menu.addAction(title)
+    action.setCheckable(True)
+    action.setChecked(field.is_set)
+    qconnect(action.triggered, set_value)
 
 def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboard: str) -> None:
     def build_copy_menu(note_copy_menu: QMenu) -> None:
@@ -65,9 +77,16 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
 
         add_ui_action(note_menu, shortcutfinger.down1("Autogenerate compounds"), lambda: vocab.compound_parts.auto_generate())
 
+    def build_toggle_flags_menu(toggle_flags_menu: QMenu) -> None:
+        add_toggle_checkbox(toggle_flags_menu, shortcutfinger.home1("Requires exact match"), vocab.flags.requires_exact_match)
+        add_toggle_checkbox(toggle_flags_menu, shortcutfinger.home2("Requires e stem"), vocab.flags.requires_a_stem)
+        add_toggle_checkbox(toggle_flags_menu, shortcutfinger.home3("Requires a stem"), vocab.flags.requires_e_stem)
+        add_toggle_checkbox(toggle_flags_menu, shortcutfinger.home4("Question overrides form"), vocab.flags.question_overrides_form)
+
     build_lookup_menu(non_optional(note_menu.addMenu(shortcutfinger.home1("Open"))))
     build_create_note_menu(non_optional(note_menu.addMenu(shortcutfinger.home2("Create"))), vocab, selection, clipboard)
     build_copy_menu(non_optional(note_menu.addMenu(shortcutfinger.home3("Copy"))))
+    build_toggle_flags_menu(non_optional(note_menu.addMenu(shortcutfinger.home4("Toggle flags"))))
     build_note_menu()
 
 def format_vocab_meaning(meaning: str) -> str:
