@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from typing import TypeVar
+from typing import Callable, TypeVar
 
+import aqt
 from ankiutils import app, ui_utils
-from aqt import mw, qconnect
-from aqt.qt import QKeySequence, QShortcut
+from aqt import gui_hooks
 from note.kanjinote import KanjiNote
 from note.sentences.sentencenote import SentenceNote
 from note.vocabulary.vocabnote import VocabNote
@@ -13,8 +13,6 @@ from sysutils.typed import try_cast
 T: TypeVar = TypeVar("T")
 
 def init() -> None:
-    def null_op() -> None: pass
-
     def try_get_review_note_of_type(note_type: type[T]) -> T | None:
         return try_cast(note_type, ui_utils.try_get_review_note())
 
@@ -47,10 +45,20 @@ def init() -> None:
             sentence.source_comments.empty()
             app.get_ui_utils().refresh()
 
-    qconnect(QShortcut(QKeySequence("0"), mw).activated, remove_mnemonic)
-    qconnect(QShortcut(QKeySequence("9"), mw).activated, generate_compound_parts)
-    qconnect(QShortcut(QKeySequence("8"), mw).activated, reset_incorrect_matches)
-    qconnect(QShortcut(QKeySequence("7"), mw).activated, reset_source_comments)
+    def inject_shortcuts(_state: aqt.main.MainWindowState, shortcuts:list[tuple[str, Callable]]) -> None:
+        def remove_shortcut(string: str) -> None:
+            for shortcut in shortcuts:
+                if shortcut[0] == string:
+                    shortcuts.remove(shortcut)
 
-    for char in "u":  # reset some pesky shortcuts constantly being accidentally triggered
-        qconnect(QShortcut(QKeySequence(char), mw).activated, null_op)
+        for char in ["0", "9", "8", "7", "u"]:
+            remove_shortcut(char)
+
+        shortcuts.append(("0", remove_mnemonic))
+        shortcuts.append(("9", generate_compound_parts))
+        shortcuts.append(("8", reset_incorrect_matches))
+        shortcuts.append(("7", reset_source_comments))
+
+
+
+    gui_hooks.state_shortcuts_will_change.append(inject_shortcuts)
