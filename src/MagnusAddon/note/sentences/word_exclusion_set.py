@@ -7,7 +7,6 @@ from language_services.janome_ex.word_extraction.word_exclusion import WordExclu
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from language_services.janome_ex.word_extraction.candidate_form import CandidateForm
 
 class WordExclusionSet:
     def __init__(self, save_callback: Callable[[],None], exclusions: list[WordExclusion]) -> None:
@@ -38,5 +37,5 @@ class WordExclusionSet:
             self._exclusions.remove(exclusion)
         self._save()
 
-    def excludes(self, word: CandidateForm) -> bool:
-        return any(exclusion for exclusion in self._exclusions if exclusion.excludes_form_at_index(word.form, word.start_index))
+    def excludes_at_index(self, word:str, index:int) -> bool:
+        return any(exclusion for exclusion in self._exclusions if exclusion.excludes_form_at_index(word, index))

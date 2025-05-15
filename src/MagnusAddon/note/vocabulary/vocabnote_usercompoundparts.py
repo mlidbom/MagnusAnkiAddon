@@ -7,7 +7,6 @@ from language_services.janome_ex.word_extraction.word_exclusion import WordExclu
 from note.note_constants import NoteFields
 from note.notefields.comma_separated_strings_list_field import CommaSeparatedStringsListField
 from note.sentences.sentence_configuration import SentenceConfiguration
-from note.sentences.word_exclusion_set import WordExclusionSet
 
 if TYPE_CHECKING:
     from note.collection.jp_collection import JPCollection

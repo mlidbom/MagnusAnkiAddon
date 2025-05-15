@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Callable
 
-from PyQt6.QtGui import QAction
-
 from ankiutils import query_builder, search_executor
 from ankiutils.app import get_ui_utils
 from ankiutils.search_executor import lookup_promise
@@ -13,6 +11,7 @@ from PyQt6.QtWidgets import QMenu, QMessageBox
 if TYPE_CHECKING:
     from note.jpnote import JPNote
     from note.vocabulary.vocabnote import VocabNote
+    from PyQt6.QtGui import QAction
 
 
 def _confirm(menu: QMenu, message:str) -> bool:

@@ -29,11 +29,11 @@ def build_note_menu(note_menu: QMenu, sentence: SentenceNote) -> None:
     add_ui_action(note_menu, shortcutfinger.up2("Reset hidden matches"), lambda: sentence.configuration.hidden_matches.reset())
 
 def build_string_menu(string_menu: QMenu, sentence: SentenceNote, menu_string: str) -> None:
-    def build_highlighted_vocab_menu_add(highlighted_vocab_menu: QMenu, sentence: SentenceNote, _vocab_to_add: str) -> None:
+    def build_highlighted_vocab_menu_add(highlighted_vocab_menu: QMenu) -> None:
         for index, _vocab in enumerate(sentence.configuration.highlighted_words()):
-            add_ui_action(highlighted_vocab_menu, shortcutfinger.numpad(index, f"{_vocab}"), ex_lambda.bind2(sentence.configuration.position_highlighted_word, _vocab_to_add, index))
+            add_ui_action(highlighted_vocab_menu, shortcutfinger.numpad(index, f"{_vocab}"), ex_lambda.bind2(sentence.configuration.position_highlighted_word, menu_string, index))
 
-        add_ui_action(highlighted_vocab_menu, shortcutfinger.home1("[Last]"), lambda: sentence.configuration.position_highlighted_word(_vocab_to_add))
+        add_ui_action(highlighted_vocab_menu, shortcutfinger.home1("[Last]"), lambda: sentence.configuration.position_highlighted_word(menu_string))
 
     def add_add_word_exclusion_action(add_menu: QMenu, exclusion_type_title: str, exclusion_set: WordExclusionSet) -> None:
         menu_string_as_word_exclusion = WordExclusion.global_(menu_string)
@@ -63,7 +63,7 @@ def build_string_menu(string_menu: QMenu, sentence: SentenceNote, menu_string: s
                     add_ui_action(remove_at_index_menu, shortcutfinger.numpad_no_numbers(excluded_index, f"{matched_exclusion.index}:{matched_exclusion.word}"), ex_lambda.bind1(exclusion_set.remove, matched_exclusion))
 
     def build_add_menu(add_menu: QMenu) -> None:
-        build_highlighted_vocab_menu_add(non_optional(add_menu.addMenu(shortcutfinger.home1("Highlighted Vocab"))), sentence, menu_string)
+        build_highlighted_vocab_menu_add(non_optional(add_menu.addMenu(shortcutfinger.home1("Highlighted Vocab"))))
         add_add_word_exclusion_action(add_menu, shortcutfinger.home2("Hidden matches"), sentence.configuration.hidden_matches)
         add_add_word_exclusion_action(add_menu, shortcutfinger.home3("Incorrect matches"), sentence.configuration.incorrect_matches)
 
