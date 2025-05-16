@@ -13,8 +13,9 @@ if TYPE_CHECKING:
     from sysutils.weak_ref import WeakRef
 
 class CachingSentenceConfigurationField:
-    def __init__(self, note: WeakRef[SentenceNote]) -> None:
-        self.field = StringField(note, SentenceNoteFields.configuration)
+    def __init__(self, sentence: WeakRef[SentenceNote]) -> None:
+        self._sentence = sentence
+        self.field = StringField(sentence, SentenceNoteFields.configuration)
         self._value: Lazy[SentenceConfiguration] = Lazy(lambda: SentenceConfiguration.serializer.deserialize(self.field.get(), self._save))
         self._update_callbacks: list[Callable[[], None]] = []
 
@@ -50,8 +51,5 @@ class CachingSentenceConfigurationField:
 
     def _save(self) -> None:
         self.field.set(SentenceConfiguration.serializer.serialize(self._value.instance()))
-        for callback in self._update_callbacks:
-            callback()
+        self._sentence().update_parsed_words(force=True)
 
-    def on_update(self, callback: Callable[[], None]) -> None:
-        self._update_callbacks.append(callback)

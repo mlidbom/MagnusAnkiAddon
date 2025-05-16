@@ -39,7 +39,6 @@ class SentenceNote(JPNote):
         self._screenshot = StringField(self.weakref, SentenceNoteFields.screenshot)
         self.audio: WritableAudioField = WritableAudioField(self.weakref, SentenceNoteFields.audio)
         self.configuration: CachingSentenceConfigurationField = CachingSentenceConfigurationField(self.weakref)
-        self.configuration.on_update(lambda: self.update_parsed_words(force=True))
         self.parsing_result: JsonObjectField[ParsingResult] = JsonObjectField[ParsingResult](self.weakref, SentenceNoteFields.parsing_result, ParsingResultSerializer())
 
     def get_question(self) -> str: return self.question.get()
