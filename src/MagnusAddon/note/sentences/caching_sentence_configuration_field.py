@@ -16,7 +16,10 @@ class CachingSentenceConfigurationField:
     def __init__(self, sentence: WeakRef[SentenceNote]) -> None:
         self._sentence = sentence
         self.field = StringField(sentence, SentenceNoteFields.configuration)
-        self._value: Lazy[SentenceConfiguration] = Lazy(lambda: SentenceConfiguration.serializer.deserialize(self.field.get(), self._save))
+
+        weak_self_ref = WeakRef(self)
+        self._value: Lazy[SentenceConfiguration] = Lazy(lambda: SentenceConfiguration.serializer.deserialize(self.field.get(), weak_self_ref()._save))
+
         self._update_callbacks: list[Callable[[], None]] = []
 
     @property
