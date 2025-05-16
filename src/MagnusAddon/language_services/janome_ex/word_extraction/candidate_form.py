@@ -81,9 +81,9 @@ class CandidateForm:
         self.completed_analysis = True
 
     def vocab_fulfills_stem_requirements(self, vocab: VocabNote) -> bool:
-        if vocab.has_tag(Mine.Tags.requires_a_stem):
+        if vocab.flags.requires_a_stem.is_set:
             return self._previous_token_ends_on_a_stem()
-        if vocab.has_tag(Mine.Tags.requires_e_stem):
+        if vocab.flags.requires_e_stem.is_set:
             return self._previous_token_ends_on_e_stem()
         return True
 
