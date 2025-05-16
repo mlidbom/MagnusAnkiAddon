@@ -9,10 +9,11 @@ from sysutils.ex_sequence import ExSequence
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
+    from sysutils.weak_ref import WeakRef
 
 class VocabNoteForms:
-    def __init__(self, vocab: VocabNote) -> None:
-        self._vocab: VocabNote = vocab
+    def __init__(self, vocab: WeakRef[VocabNote]) -> None:
+        self._vocab: WeakRef[VocabNote] = vocab
         self._field: CommaSeparatedStringsListField = CommaSeparatedStringsListField(vocab, NoteFields.Vocab.Forms)
 
     def all_raw(self) -> list[str]: return self._field.get()

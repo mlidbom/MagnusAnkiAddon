@@ -7,6 +7,7 @@ from sysutils.lazy import Lazy
 
 if TYPE_CHECKING:
     from note.jpnote import JPNote
+    from sysutils.weak_ref import WeakRef
 
 T: TypeVar = TypeVar("T")
 
@@ -15,8 +16,8 @@ class JsonObjectSerializer(Generic[T]):
     def deserialize(self, json: str) -> T: raise NotImplementedError()
 
 class JsonObjectField(Generic[T]):
-    def __init__(self, note: JPNote, field: str, serializer: JsonObjectSerializer[T]) -> None:
-        self._note: JPNote = note
+    def __init__(self, note: WeakRef[JPNote], field: str, serializer: JsonObjectSerializer[T]) -> None:
+        self._note: WeakRef[JPNote] = note
         self._field: StringField = StringField(note, field)
         self._serializer: JsonObjectSerializer[T] = serializer
         self._value: Lazy[T] = Lazy(lambda: serializer.deserialize(self._field.get()))

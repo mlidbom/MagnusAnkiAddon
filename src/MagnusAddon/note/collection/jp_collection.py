@@ -28,10 +28,10 @@ class JPCollection:
         app.get_ui_utils().tool_tip(f"{Mine.app_name} loading", 60000)
         with StopWatch.log_warning_if_slower_than(5, "Full collection setup"):
             ex_thread.wait_until_(lambda: len(_instance_is_destructing_on_background_thread) == 0, timeout_seconds=10)
-            self.instance_tracker = ObjectInstanceTracker(JPCollection)
+            self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker(self.__class__)
 
             if not app.is_testing():
-                self.instance_tracker.run_gc_and_assert_single_instance()
+                self._instance_tracker.run_gc_and_assert_single_instance()
                 app.get_ui_utils().tool_tip(f"{Mine.app_name} loading", 60000)
 
             with StopWatch.log_warning_if_slower_than(5, "Core collection setup - no gc"):
@@ -49,7 +49,7 @@ class JPCollection:
                 dictlookup_loading.result()
 
             if not app.is_testing():
-                self.instance_tracker.run_gc_and_assert_single_instance()
+                self._instance_tracker.run_gc_and_assert_single_instance()
 
             self.cache_manager.start()
             app.get_ui_utils().tool_tip(f"{Mine.app_name} done loading.", milliseconds=6000)

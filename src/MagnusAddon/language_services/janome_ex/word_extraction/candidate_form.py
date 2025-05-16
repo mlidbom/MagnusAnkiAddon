@@ -7,6 +7,7 @@ from language_services import conjugator
 from language_services.janome_ex.word_extraction.display_form import DisplayForm, MissingDisplayForm, VocabDisplayForm
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from note.note_constants import Mine
+from sysutils.object_instance_tracker import ObjectInstanceTracker
 from sysutils.typed import non_optional
 from sysutils.weak_ref import WeakRef
 
@@ -20,6 +21,7 @@ from sysutils.ex_str import newline
 _noise_characters = {".", ",", ":", ";", "/", "|", "。", "、", "?", "!"}
 class CandidateForm:
     def __init__(self, candidate: WeakRef[CandidateWord], is_surface: bool, form: str) -> None:
+        self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker(self.__class__)
         from language_services.jamdict_ex.dict_lookup import DictLookup
 
         self.start_index: int = candidate().locations[0]().character_start_index

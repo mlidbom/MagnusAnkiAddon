@@ -9,10 +9,14 @@ from note.note_constants import Mine, NoteTypes
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
+    from sysutils.weak_ref import WeakRef
 
 class VocabCloner:
-    def __init__(self, note: VocabNote) -> None:
-        self.note = note
+    def __init__(self, note: WeakRef[VocabNote]) -> None:
+        self._note_ref = note
+
+    @property
+    def note(self) -> VocabNote: return self._note_ref()
 
     def create_prefix_version(self, prefix: str, speech_type: str = "expression", set_compounds: bool = True, truncate_characters: int = 0) -> VocabNote:
         return self._create_postfix_prefix_version(prefix, speech_type, is_prefix=True, set_compounds=set_compounds, truncate_characters=truncate_characters)

@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 from ankiutils import app
 from note.note_constants import Mine
 from sysutils import ex_sequence
+from sysutils.object_instance_tracker import ObjectInstanceTracker
 from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
@@ -39,6 +40,7 @@ class TokenTextLocation:
         self.all_candidates: list[CandidateWord] = []
         self.next: Optional[WeakRef[TokenTextLocation]] = None
         self.previous: Optional[WeakRef[TokenTextLocation]] = None
+        self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker(self.__class__)
 
     def __repr__(self) -> str:
         return f"""

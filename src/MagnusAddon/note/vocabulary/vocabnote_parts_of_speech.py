@@ -7,11 +7,15 @@ from note.notefields.comma_separated_strings_set_field import CommaSeparatedStri
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
+    from sysutils.weak_ref import WeakRef
 
 class VocabNotePartsOfSpeech:
-    def __init__(self, vocab: VocabNote) -> None:
-        self._vocab = vocab
+    def __init__(self, vocab: WeakRef[VocabNote]) -> None:
+        self.__vocab = vocab
         self._field: CommaSeparatedStringsSetField = CommaSeparatedStringsSetField(vocab, NoteFields.Vocab.parts_of_speech)
+
+    @property
+    def _vocab(self) -> VocabNote: return self.__vocab()
 
 
     def raw_string_value(self) -> str:

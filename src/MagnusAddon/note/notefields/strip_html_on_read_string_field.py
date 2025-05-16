@@ -7,10 +7,11 @@ from sysutils import ex_str
 
 if TYPE_CHECKING:
     from note.jpnote import JPNote
+    from sysutils.weak_ref import WeakRef
 
 
 class StripHtmlOnReadStringField:
-    def __init__(self, note: JPNote, field_name: str) -> None:
+    def __init__(self, note: WeakRef[JPNote], field_name: str) -> None:
         self._field = StringField(note, field_name)
 
     def get(self) -> str: return ex_str.strip_html_markup(self._field.get())

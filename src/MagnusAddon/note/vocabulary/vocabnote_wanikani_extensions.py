@@ -12,6 +12,7 @@ from wanikani.wanikani_api_client import WanikaniClient
 
 if typing.TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
+    from sysutils.weak_ref import WeakRef
     from wanikani_api import models
 
 def create_from_wani_vocabulary(wani_vocab: models.Vocabulary) -> None:
@@ -37,12 +38,15 @@ def create_from_wani_vocabulary(wani_vocab: models.Vocabulary) -> None:
         vocab_note.context_sentences.second.japanese.set(wani_vocab.context_sentences[2].japanese)
 
 class VocabNoteWaniExtensions:
-    def __init__(self, vocab: VocabNote) -> None:
-        self._vocab = vocab
+    def __init__(self, vocab: WeakRef[VocabNote]) -> None:
+        self.__vocab = vocab
         self._meaning_mnemonic: StringField = StringField(vocab, NoteFields.Vocab.source_mnemonic)
         self.component_subject_ids: CommaSeparatedStringsSetField = CommaSeparatedStringsSetField(vocab, NoteFields.Vocab.component_subject_ids)
         self.kanji: CommaSeparatedStringsListField = CommaSeparatedStringsListField(vocab, NoteFields.Vocab.Kanji)
         self.reading_mnemonic: StringField = StringField(vocab, NoteFields.Vocab.source_reading_mnemonic)
+
+    @property
+    def _vocab(self) -> VocabNote: return self.__vocab()
 
     def set_source_answer(self, value: str) -> None: self._vocab._source_answer.set(value) # noqa this extensions is essentially part of the Vocab class
 

@@ -16,6 +16,7 @@ from note.sentences.parsing_result import ParsingResult
 from note.sentences.serialization.parsing_result_serializer import ParsingResultSerializer
 from note.sentences.user_fields import SentenceUserFields
 from sysutils import ex_sequence, ex_str, kana_utils
+from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.candidate_form import CandidateForm
@@ -25,21 +26,21 @@ if TYPE_CHECKING:
 class SentenceNote(JPNote):
     def __init__(self, note: Note) -> None:
         super().__init__(note)
-        self._source_answer = StringField(self, SentenceNoteFields.source_answer)
-        self._user_question = StringField(self, SentenceNoteFields.user_question)
-        self._source_question = StripHtmlOnReadStringField(self, SentenceNoteFields.source_question)
-        self.source_comments: StripHtmlOnReadStringField = StripHtmlOnReadStringField(self, SentenceNoteFields.source_comments)
+        self.weakref: WeakRef[SentenceNote] = WeakRef(self)
+        self._source_answer = StringField(self.weakref, SentenceNoteFields.source_answer)
+        self._user_question = StringField(self.weakref, SentenceNoteFields.user_question)
+        self._source_question = StripHtmlOnReadStringField(self.weakref, SentenceNoteFields.source_question)
+        self.source_comments: StripHtmlOnReadStringField = StripHtmlOnReadStringField(self.weakref, SentenceNoteFields.source_comments)
 
+        self.user: SentenceUserFields = SentenceUserFields(self.weakref)
 
-        self.user: SentenceUserFields = SentenceUserFields(self)
-
-        self.question = StripHtmlOnReadFallbackStringField(self, SentenceNoteFields.user_question, SentenceNoteFields.source_question)
-        self.answer = StripHtmlOnReadFallbackStringField(self, SentenceNoteFields.user_answer, SentenceNoteFields.source_answer)
-        self._screenshot = StringField(self, SentenceNoteFields.screenshot)
-        self.audio: WritableAudioField = WritableAudioField(self, SentenceNoteFields.audio)
-        self.configuration: CachingSentenceConfigurationField = CachingSentenceConfigurationField(self)
+        self.question = StripHtmlOnReadFallbackStringField(self.weakref, SentenceNoteFields.user_question, SentenceNoteFields.source_question)
+        self.answer = StripHtmlOnReadFallbackStringField(self.weakref, SentenceNoteFields.user_answer, SentenceNoteFields.source_answer)
+        self._screenshot = StringField(self.weakref, SentenceNoteFields.screenshot)
+        self.audio: WritableAudioField = WritableAudioField(self.weakref, SentenceNoteFields.audio)
+        self.configuration: CachingSentenceConfigurationField = CachingSentenceConfigurationField(self.weakref)
         self.configuration.on_update(lambda: self.update_parsed_words(force=True))
-        self.parsing_result: JsonObjectField[ParsingResult] = JsonObjectField[ParsingResult](self, SentenceNoteFields.parsing_result, ParsingResultSerializer())
+        self.parsing_result: JsonObjectField[ParsingResult] = JsonObjectField[ParsingResult](self.weakref, SentenceNoteFields.parsing_result, ParsingResultSerializer())
 
     def get_question(self) -> str: return self.question.get()
     def get_answer(self) -> str: return self.answer.get()

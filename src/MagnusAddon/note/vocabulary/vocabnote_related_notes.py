@@ -12,14 +12,18 @@ if TYPE_CHECKING:
     from note.collection.jp_collection import JPCollection
     from note.jpnote import JPNote
     from note.vocabulary.vocabnote import VocabNote
+    from sysutils.weak_ref import WeakRef
 
 class VocabNoteRelatedNotes:
-    def __init__(self, vocab: VocabNote) -> None:
-        self._vocab = vocab
+    def __init__(self, vocab: WeakRef[VocabNote]) -> None:
+        self._vocab_ref = vocab
         self._similar_meanings_field: CommaSeparatedStringsSetField = CommaSeparatedStringsSetField(vocab, NoteFields.Vocab.Related_similar_meaning)
         self._ergative_twin_field: StringField = StringField(vocab, NoteFields.Vocab.Related_ergative_twin)
         self.derived_from: StringField = StringField(vocab, NoteFields.Vocab.Related_derived_from)
         self.confused_with: CommaSeparatedStringsSetField = CommaSeparatedStringsSetField(vocab, NoteFields.Vocab.Related_confused_with)
+
+    @property
+    def _vocab(self) -> VocabNote: return self._vocab_ref()
 
     @property
     def _collection(self) -> JPCollection: return self._vocab.collection

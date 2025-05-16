@@ -13,7 +13,7 @@ class WordExclusionSet:
     def __init__(self, save_callback: Callable[[],None], exclusions: list[WordExclusion]) -> None:
         self._save: Callable[[],None] = save_callback
         self._exclusions: set[WordExclusion] = set(exclusions)
-        self._instance_tracker = ObjectInstanceTracker(WordExclusionSet)
+        self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker(self.__class__)
 
     def get(self) -> set[WordExclusion]: return self._exclusions
 

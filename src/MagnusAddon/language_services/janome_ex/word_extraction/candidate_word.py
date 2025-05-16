@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from language_services.janome_ex.word_extraction.candidate_form import BaseCandidateForm, CandidateForm, SurfaceCandidateForm
+from sysutils.object_instance_tracker import ObjectInstanceTracker
 from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
@@ -33,6 +34,7 @@ class CandidateWord:
         self.should_include_surface: bool = False
         self.should_include_base: bool = False
         self.display_words: list[CandidateForm] = []
+        self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker(self.__class__)
 
     def complete_analysis(self) -> None:
         self.base.complete_analysis()

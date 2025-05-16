@@ -24,7 +24,7 @@ class JPNote:
         self.backend_note = note
         self._is_updating_generated_data: bool = False
         self._generated_data_was_updated = False
-        self.instance_tracker = ObjectInstanceTracker(JPNote)
+        self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker(self.__class__)
         self.__hash_value = 0
 
     def __eq__(self, other: object) -> bool:

@@ -6,10 +6,14 @@ from sysutils import ex_str, kana_utils
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
+    from sysutils.weak_ref import WeakRef
 
 class VocabNoteKanji:
-    def __init__(self, vocab: VocabNote) -> None:
-        self._vocab = vocab
+    def __init__(self, vocab: WeakRef[VocabNote]) -> None:
+        self.__vocab = vocab
+
+    @property
+    def _vocab(self) -> VocabNote: return self.__vocab()
 
     def extract_main_form_kanji(self) -> list[str]:
         clean = ex_str.strip_html_and_bracket_markup(self._vocab.get_question())

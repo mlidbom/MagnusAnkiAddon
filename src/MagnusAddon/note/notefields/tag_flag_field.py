@@ -11,7 +11,7 @@ class TagFlagField:
     def __init__(self, note: JPNote, tag: str) -> None:
         self._note = note
         self.tag = tag
-        self._instance_tracker = ObjectInstanceTracker(TagFlagField)
+        self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker(self.__class__)
 
     @property
     def is_set(self) -> bool: return self._note.has_tag(self.tag)

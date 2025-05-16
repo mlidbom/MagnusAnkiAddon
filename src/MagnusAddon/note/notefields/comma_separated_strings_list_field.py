@@ -7,9 +7,10 @@ from sysutils import ex_str
 
 if TYPE_CHECKING:
     from note.jpnote import JPNote
+    from sysutils.weak_ref import WeakRef
 
 class CommaSeparatedStringsListField:
-    def __init__(self, note: JPNote, field_name: str) -> None:
+    def __init__(self, note: WeakRef[JPNote], field_name: str) -> None:
         self._field = StringField(note, field_name)
 
     def get(self) -> list[str]:

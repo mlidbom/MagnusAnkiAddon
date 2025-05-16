@@ -8,10 +8,14 @@ from sysutils import ex_sequence
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
+    from sysutils.weak_ref import WeakRef
 
 class VocabNoteConjugator:
-    def __init__(self, vocab: VocabNote) -> None:
-        self._vocab = vocab
+    def __init__(self, vocab: WeakRef[VocabNote]) -> None:
+        self.__vocab = vocab
+
+    @property
+    def _vocab(self) -> VocabNote: return self.__vocab()
 
     def _get_stems_for_form(self, form: str) -> list[str]:
         return [base for base in conjugator.get_word_stems(form, is_ichidan_verb=self._vocab.parts_of_speech.is_ichidan()) if base != form]

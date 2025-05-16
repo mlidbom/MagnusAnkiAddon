@@ -23,6 +23,7 @@ from note.vocabulary.vocabnote_usercompoundparts import VocabNoteUserCompoundPar
 from note.vocabulary.vocabnote_userfields import VocabNoteUserfields
 from note.vocabulary.vocabnote_wanikani_extensions import VocabNoteWaniExtensions
 from note.waninote import WaniNote
+from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
     from anki.notes import Note
@@ -33,26 +34,28 @@ class VocabNote(WaniNote):
     factory: VocabNoteFactory = VocabNoteFactory()
     def __init__(self, note: Note) -> None:
         super().__init__(note)
-        self.readings: CommaSeparatedStringsListField = CommaSeparatedStringsListField(self, NoteFields.Vocab.Reading)
+        self.weakref: WeakRef[VocabNote] = WeakRef(self)
 
-        self.user: VocabNoteUserfields = VocabNoteUserfields(self)
+        self.readings: CommaSeparatedStringsListField = CommaSeparatedStringsListField(self.weakref, NoteFields.Vocab.Reading)
 
-        self._source_answer: StringField = StringField(self, NoteFields.Vocab.source_answer)
-        self.active_answer: StringField = StringField(self, NoteFields.Vocab.active_answer)
+        self.user: VocabNoteUserfields = VocabNoteUserfields(self.weakref)
 
-        self.cloner: VocabCloner = VocabCloner(self)
-        self.related_notes: VocabNoteRelatedNotes = VocabNoteRelatedNotes(self)
-        self.context_sentences: VocabContextSentences = VocabContextSentences(self)
-        self.audio: VocabNoteAudio = VocabNoteAudio(self)
-        self.sentences: VocabNoteSentences = VocabNoteSentences(self)
-        self.forms: VocabNoteForms = VocabNoteForms(self)
-        self.parts_of_speech: VocabNotePartsOfSpeech = VocabNotePartsOfSpeech(self)
-        self.compound_parts: VocabNoteUserCompoundParts = VocabNoteUserCompoundParts(self)
-        self.conjugator: VocabNoteConjugator = VocabNoteConjugator(self)
-        self.wani_extensions: VocabNoteWaniExtensions = VocabNoteWaniExtensions(self)
-        self.kanji: VocabNoteKanji = VocabNoteKanji(self)
-        self.meta_data: VocabNoteMetaData = VocabNoteMetaData(self)
-        self.flags: VocabNoteFlags = VocabNoteFlags(self)
+        self._source_answer: StringField = StringField(self.weakref, NoteFields.Vocab.source_answer)
+        self.active_answer: StringField = StringField(self.weakref, NoteFields.Vocab.active_answer)
+
+        self.cloner: VocabCloner = VocabCloner(self.weakref)
+        self.related_notes: VocabNoteRelatedNotes = VocabNoteRelatedNotes(self.weakref)
+        self.context_sentences: VocabContextSentences = VocabContextSentences(self.weakref)
+        self.audio: VocabNoteAudio = VocabNoteAudio(self.weakref)
+        self.sentences: VocabNoteSentences = VocabNoteSentences(self.weakref)
+        self.forms: VocabNoteForms = VocabNoteForms(self.weakref)
+        self.parts_of_speech: VocabNotePartsOfSpeech = VocabNotePartsOfSpeech(self.weakref)
+        self.compound_parts: VocabNoteUserCompoundParts = VocabNoteUserCompoundParts(self.weakref)
+        self.conjugator: VocabNoteConjugator = VocabNoteConjugator(self.weakref)
+        self.wani_extensions: VocabNoteWaniExtensions = VocabNoteWaniExtensions(self.weakref)
+        self.kanji: VocabNoteKanji = VocabNoteKanji(self.weakref)
+        self.meta_data: VocabNoteMetaData = VocabNoteMetaData(self.weakref)
+        self.flags: VocabNoteFlags = VocabNoteFlags(self.weakref)
 
     def __repr__(self) -> str: return f"""{self.get_question()}"""
 

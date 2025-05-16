@@ -6,10 +6,14 @@ if TYPE_CHECKING:
     from note.collection.jp_collection import JPCollection
     from note.sentences.sentencenote import SentenceNote
     from note.vocabulary.vocabnote import VocabNote
+    from sysutils.weak_ref import WeakRef
 
 class VocabNoteSentences:
-    def __init__(self, vocab: VocabNote) -> None:
-        self._vocab = vocab
+    def __init__(self, vocab: WeakRef[VocabNote]) -> None:
+        self.__vocab = vocab
+
+    @property
+    def _vocab(self) -> VocabNote: return self.__vocab()
 
     @property
     def _collection(self) -> JPCollection: return self._vocab.collection

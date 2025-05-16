@@ -6,10 +6,11 @@ from note.notefields.string_field import StringField
 
 if TYPE_CHECKING:
     from note.jpnote import JPNote
+    from sysutils.weak_ref import WeakRef
 
 
 class IntegerField:
-    def __init__(self, note: JPNote, field_name: str) -> None:
+    def __init__(self, note: WeakRef[JPNote], field_name: str) -> None:
         self._note = note
         self._field = StringField(note, field_name)
 

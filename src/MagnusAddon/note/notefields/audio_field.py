@@ -6,9 +6,10 @@ from note.notefields.string_field import StringField
 
 if TYPE_CHECKING:
     from note.jpnote import JPNote
+    from sysutils.weak_ref import WeakRef
 
 class AudioField:
-    def __init__(self, note: JPNote, field_name: str) -> None:
+    def __init__(self, note: WeakRef[JPNote], field_name: str) -> None:
         self._field = StringField(note, field_name)
 
     def has_audio(self) -> bool:
@@ -28,7 +29,7 @@ class AudioField:
 
 
 class WritableAudioField(AudioField):
-    def __init__(self, note: JPNote, field_name: str) -> None:
+    def __init__(self, note: WeakRef[JPNote], field_name: str) -> None:
         super().__init__(note, field_name)
 
     def set_raw_value(self, value: str) -> None: self._field.set(value)

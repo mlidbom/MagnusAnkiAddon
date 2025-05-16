@@ -8,13 +8,14 @@ from sysutils.object_instance_tracker import ObjectInstanceTracker
 
 if TYPE_CHECKING:
     from note.sentences.sentencenote import SentenceNote
+    from sysutils.weak_ref import WeakRef
 
 class SentenceUserFields:
-    def __init__(self, sentence: SentenceNote) -> None:
-        self._sentence = sentence
+    def __init__(self, sentence: WeakRef[SentenceNote]) -> None:
+        self._sentence: WeakRef[SentenceNote] = sentence
         self.comments: StripHtmlOnReadStringField = StripHtmlOnReadStringField(sentence, SentenceNoteFields.user_comments)
         self.comments_long: StripHtmlOnReadStringField = StripHtmlOnReadStringField(sentence, SentenceNoteFields.user_comments_long)
         self.question: StripHtmlOnReadStringField = StripHtmlOnReadStringField(sentence, SentenceNoteFields.user_question)
         self.answer: StripHtmlOnReadStringField = StripHtmlOnReadStringField(sentence, SentenceNoteFields.user_answer)
         self.answer_analysis: StripHtmlOnReadStringField = StripHtmlOnReadStringField(sentence, SentenceNoteFields.user_answer_analysis)
-        self._instance_tracker = ObjectInstanceTracker(SentenceUserFields)
+        self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker(self.__class__)

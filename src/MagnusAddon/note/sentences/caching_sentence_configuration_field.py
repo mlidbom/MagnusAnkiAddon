@@ -10,9 +10,10 @@ from sysutils.lazy import Lazy
 if TYPE_CHECKING:
     from note.sentences.sentencenote import SentenceNote
     from note.sentences.word_exclusion_set import WordExclusionSet
+    from sysutils.weak_ref import WeakRef
 
 class CachingSentenceConfigurationField:
-    def __init__(self, note: SentenceNote) -> None:
+    def __init__(self, note: WeakRef[SentenceNote]) -> None:
         self.field = StringField(note, SentenceNoteFields.configuration)
         self._value: Lazy[SentenceConfiguration] = Lazy(lambda: SentenceConfiguration.serializer.deserialize(self.field.get(), self._save))
         self._update_callbacks: list[Callable[[], None]] = []

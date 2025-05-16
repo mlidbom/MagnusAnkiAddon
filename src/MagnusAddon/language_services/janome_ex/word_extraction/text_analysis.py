@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from sysutils.object_instance_tracker import ObjectInstanceTracker
 from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
@@ -43,6 +44,8 @@ class TextAnalysis:
         self.all_words: list[CandidateForm] = ex_sequence.flatten([loc.all_words for loc in self.locations])
 
         self.display_forms = ex_sequence.flatten([w.display_forms for w in self.display_words])
+
+        self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker(self.__class__)
 
     def __repr__(self) -> str:
         return f"""{self.text}
