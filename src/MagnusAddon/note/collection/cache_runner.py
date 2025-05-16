@@ -63,7 +63,6 @@ class CacheRunner:
         self._will_add_subscribers: list[Callable[[Note], None]] = []
         self._will_flush_subscribers: list[Callable[[Note], None]] = []
         self._will_remove_subscribers: list[Callable[[Sequence[NoteId]], None]] = []
-        self._destructors: list[Callable[[], None]] = []
         self._anki_collection: Collection = anki_collection
         self._dedicated_thread: DedicatedThread = DedicatedThread()
         self._running: bool = False
@@ -96,10 +95,16 @@ class CacheRunner:
         hooks.note_will_be_added.remove(self._on_will_be_added)
         hooks.note_will_flush.remove(self._on_will_flush)
 
-        for destructor in self._destructors: destructor()
-
         from note import noteutils
         noteutils.clear_studying_cache()
+
+        self._anki_collection = None
+        self._generate_data_subscribers.clear()
+        self._merge_pending_subscribers.clear()
+        self._will_add_subscribers.clear()
+        self._will_flush_subscribers.clear()
+        self._will_remove_subscribers.clear()
+        self._note_types.clear()
 
     def _internal_flush_updates(self) -> None:
         self._check_for_updated_note_types_and_reset_app_if_found()

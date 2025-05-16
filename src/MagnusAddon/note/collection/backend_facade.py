@@ -19,6 +19,10 @@ class BackEndFacade(Generic[TNote]):
         self.constructor = constructor
         self.note_type = note_type
 
+    def destruct(self) -> None:
+        self.constructor = None
+        self.anki_collection = None
+
     def all(self) -> Iterator[TNote]:
         return self.search(f"{Builtin.Note}:{self.note_type}")
 

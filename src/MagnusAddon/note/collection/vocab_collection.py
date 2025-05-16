@@ -39,6 +39,16 @@ class _VocabCache(NoteCache[VocabNote, _VocabSnapshot]):
         self._by_stem: dict[str, set[VocabNote]] = defaultdict(set)
         super().__init__(all_vocab, VocabNote, cache_runner)
 
+    def destruct(self) -> None:
+        self._by_form.clear()
+        self._by_kanji_in_main_form.clear()
+        self._by_kanji_in_any_form.clear()
+        self._by_compound_part.clear()
+        self._by_derived_from.clear()
+        self._by_reading.clear()
+        self._by_stem.clear()
+        super().destruct()
+
     def with_form(self, form: str) -> list[VocabNote]: return list(self._by_form[form]) if form in self._by_form else []
 
     def with_compound_part(self, form: str) -> list[VocabNote]:
@@ -110,3 +120,11 @@ class VocabCollection:
 
     def with_any_form_in_prefer_exact_match(self, forms: list[str]) -> list[VocabNote]:
         return ex_sequence.remove_duplicates_while_retaining_order(ex_sequence.flatten([self.with_form_prefer_exact_match(form) for form in forms]))
+
+    def destruct(self) -> None:
+        for vocab in self.all():
+            vocab.destruct()
+        self._cache.destruct()
+        self.collection.destruct()
+        self._cache = None
+        self.collection = None

@@ -34,28 +34,49 @@ class VocabNote(WaniNote):
     factory: VocabNoteFactory = VocabNoteFactory()
     def __init__(self, note: Note) -> None:
         super().__init__(note)
-        self.weakref: WeakRef[VocabNote] = WeakRef(self)
+        self_weak_ref: WeakRef[VocabNote] = WeakRef(self)
 
-        self.readings: CommaSeparatedStringsListField = CommaSeparatedStringsListField(self.weakref, NoteFields.Vocab.Reading)
+        self.readings: CommaSeparatedStringsListField = CommaSeparatedStringsListField(self_weak_ref, NoteFields.Vocab.Reading)
 
-        self.user: VocabNoteUserfields = VocabNoteUserfields(self.weakref)
+        self.user: VocabNoteUserfields = VocabNoteUserfields(self_weak_ref)
 
-        self._source_answer: StringField = StringField(self.weakref, NoteFields.Vocab.source_answer)
-        self.active_answer: StringField = StringField(self.weakref, NoteFields.Vocab.active_answer)
+        self._source_answer: StringField = StringField(self_weak_ref, NoteFields.Vocab.source_answer)
+        self.active_answer: StringField = StringField(self_weak_ref, NoteFields.Vocab.active_answer)
 
-        self.cloner: VocabCloner = VocabCloner(self.weakref)
-        self.related_notes: VocabNoteRelatedNotes = VocabNoteRelatedNotes(self.weakref)
-        self.context_sentences: VocabContextSentences = VocabContextSentences(self.weakref)
-        self.audio: VocabNoteAudio = VocabNoteAudio(self.weakref)
-        self.sentences: VocabNoteSentences = VocabNoteSentences(self.weakref)
-        self.forms: VocabNoteForms = VocabNoteForms(self.weakref)
-        self.parts_of_speech: VocabNotePartsOfSpeech = VocabNotePartsOfSpeech(self.weakref)
-        self.compound_parts: VocabNoteUserCompoundParts = VocabNoteUserCompoundParts(self.weakref)
-        self.conjugator: VocabNoteConjugator = VocabNoteConjugator(self.weakref)
-        self.wani_extensions: VocabNoteWaniExtensions = VocabNoteWaniExtensions(self.weakref)
-        self.kanji: VocabNoteKanji = VocabNoteKanji(self.weakref)
-        self.meta_data: VocabNoteMetaData = VocabNoteMetaData(self.weakref)
-        self.flags: VocabNoteFlags = VocabNoteFlags(self.weakref)
+        self.cloner: VocabCloner = VocabCloner(self_weak_ref)
+        self.related_notes: VocabNoteRelatedNotes = VocabNoteRelatedNotes(self_weak_ref)
+        self.context_sentences: VocabContextSentences = VocabContextSentences(self_weak_ref)
+        self.audio: VocabNoteAudio = VocabNoteAudio(self_weak_ref)
+        self.sentences: VocabNoteSentences = VocabNoteSentences(self_weak_ref)
+        self.forms: VocabNoteForms = VocabNoteForms(self_weak_ref)
+        self.parts_of_speech: VocabNotePartsOfSpeech = VocabNotePartsOfSpeech(self_weak_ref)
+        self.compound_parts: VocabNoteUserCompoundParts = VocabNoteUserCompoundParts(self_weak_ref)
+        self.conjugator: VocabNoteConjugator = VocabNoteConjugator(self_weak_ref)
+        self.wani_extensions: VocabNoteWaniExtensions = VocabNoteWaniExtensions(self_weak_ref)
+        self.kanji: VocabNoteKanji = VocabNoteKanji(self_weak_ref)
+        self.meta_data: VocabNoteMetaData = VocabNoteMetaData(self_weak_ref)
+        self.flags: VocabNoteFlags = VocabNoteFlags(self_weak_ref)
+
+    def destruct(self) -> None:
+        # noinspection DuplicatedCode
+        self.readings = None
+        self.user = None
+        self._source_answer = None
+        self.active_answer = None
+        self.cloner = None
+        self.related_notes = None
+        self.context_sentences = None
+        self.audio = None
+        self.sentences = None
+        self.forms = None
+        self.parts_of_speech = None
+        self.compound_parts = None
+        self.conjugator = None
+        self.wani_extensions = None
+        self.kanji = None
+        self.meta_data = None
+        self.flags = None
+        super().destruct()
 
     def __repr__(self) -> str: return f"""{self.get_question()}"""
 

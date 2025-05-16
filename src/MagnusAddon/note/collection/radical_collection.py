@@ -13,7 +13,6 @@ if TYPE_CHECKING:
     from anki.notes import Note, NoteId
     from note.collection.cache_runner import CacheRunner
 
-
 class _RadicalSnapshot(CachedNote):
     def __init__(self, note: RadicalNote) -> None:
         super().__init__(note)
@@ -32,8 +31,16 @@ class RadicalCollection:
 
     def all(self) -> list[RadicalNote]: return self._cache.all()
 
-    def with_id(self, note_id:NoteId) -> RadicalNote:
+    def with_id(self, note_id: NoteId) -> RadicalNote:
         return self._cache.with_id(note_id)
 
     def with_any_answer_in(self, answers: list[str]) -> list[RadicalNote]:
         return ex_sequence.flatten([self._cache.with_answer(answer) for answer in answers])
+    def destruct(self) -> None:
+        for radical in self.all():
+            radical.destruct()
+
+        self._cache.destruct()
+        self.collection.destruct()
+        self._cache = None
+        self.collection = None

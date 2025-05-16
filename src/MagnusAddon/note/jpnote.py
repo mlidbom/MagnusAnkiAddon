@@ -40,6 +40,9 @@ class JPNote:
     def __repr__(self) -> str:
         return f"""{self.get_question()} : {self.get_answer()}"""
 
+    def destruct(self) -> None:
+        self.backend_note = None
+
     @property
     def _app(self) -> app:
         return app

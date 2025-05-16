@@ -67,6 +67,16 @@ class JPCollection:
 
     def destruct_sync(self) -> None:
         self.cache_manager.destruct()
+        self.kanji.destruct()
+        self.vocab.destruct()
+        self.sentences.destruct()
+        self.radicals.destruct()
+
+        self.cache_manager = None
+        self.kanji = None
+        self.vocab = None
+        self.sentences = None
+        self.radicals = None
 
 
     def flush_cache_updates(self) -> None: self.cache_manager.flush_updates()

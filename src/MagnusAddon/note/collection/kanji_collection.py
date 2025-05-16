@@ -39,6 +39,11 @@ class _KanjiCache(NoteCache[KanjiNote, _KanjiSnapshot]):
 
     def with_radical(self, radical: str) -> list[KanjiNote]: return list(self._by_radical[radical])
 
+    def destruct(self) -> None:
+        self.by_reading.clear()
+        self._by_radical.clear()
+        super().destruct()
+
 class KanjiCollection:
     def __init__(self, collection: Collection, cache_manager: CacheRunner) -> None:
         def kanji_constructor(note: Note) -> KanjiNote: return KanjiNote(note)
@@ -66,3 +71,11 @@ class KanjiCollection:
     def with_radical(self, radical:str) -> list[KanjiNote]: return self._cache.with_radical(radical)
     def with_reading(self, reading:str) -> set[KanjiNote]:
         return self._cache.by_reading[kana_utils.anything_to_hiragana(reading)]
+
+    def destruct(self) -> None:
+        for kanji in self.all():
+            kanji.destruct()
+        self._cache.destruct()
+        self.collection.destruct()
+        self._cache = None
+        self.collection = None

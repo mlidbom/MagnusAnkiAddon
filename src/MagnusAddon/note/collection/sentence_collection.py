@@ -29,6 +29,11 @@ class _SentenceCache(NoteCache[SentenceNote, _SentenceSnapshot]):
         self._by_user_highlighted_vocab: dict[str, set[SentenceNote]] = defaultdict(set)
         super().__init__(all_kanji, SentenceNote, cache_runner)
 
+    def destruct(self) -> None:
+        self._by_vocab_form.clear()
+        self._by_user_highlighted_vocab.clear()
+        super().destruct()
+
     def _create_snapshot(self, note: SentenceNote) -> _SentenceSnapshot: return _SentenceSnapshot(note)
 
     def with_vocab_form(self, form: str) -> list[SentenceNote]: return list(self._by_vocab_form[form])
@@ -78,3 +83,10 @@ class SentenceCollection:
         return ex_sequence.remove_duplicates(ex_sequence.flatten([self._cache.with_user_highlighted_vocab(form) for form in vocab_note.forms.unexcluded_set()]))
 
     def search(self, query: str) -> list[SentenceNote]: return list(self.collection.search(query))
+    def destruct(self) -> None:
+        for sentence in self.all():
+            sentence.destruct()
+        self._cache.destruct()
+        self.collection.destruct()
+        self._cache = None
+        self.collection = None

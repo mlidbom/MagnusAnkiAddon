@@ -26,20 +26,35 @@ if TYPE_CHECKING:
 class SentenceNote(JPNote):
     def __init__(self, note: Note) -> None:
         super().__init__(note)
-        self.weakref: WeakRef[SentenceNote] = WeakRef(self)
-        self._source_answer = StringField(self.weakref, SentenceNoteFields.source_answer)
-        self._user_question = StringField(self.weakref, SentenceNoteFields.user_question)
-        self._source_question = StripHtmlOnReadStringField(self.weakref, SentenceNoteFields.source_question)
-        self.source_comments: StripHtmlOnReadStringField = StripHtmlOnReadStringField(self.weakref, SentenceNoteFields.source_comments)
+        self_weak_ref: WeakRef[SentenceNote] = WeakRef(self)
+        self._source_answer = StringField(self_weak_ref, SentenceNoteFields.source_answer)
+        self._user_question = StringField(self_weak_ref, SentenceNoteFields.user_question)
+        self._source_question = StripHtmlOnReadStringField(self_weak_ref, SentenceNoteFields.source_question)
+        self.source_comments: StripHtmlOnReadStringField = StripHtmlOnReadStringField(self_weak_ref, SentenceNoteFields.source_comments)
 
-        self.user: SentenceUserFields = SentenceUserFields(self.weakref)
+        self.user: SentenceUserFields = SentenceUserFields(self_weak_ref)
 
-        self.question = StripHtmlOnReadFallbackStringField(self.weakref, SentenceNoteFields.user_question, SentenceNoteFields.source_question)
-        self.answer = StripHtmlOnReadFallbackStringField(self.weakref, SentenceNoteFields.user_answer, SentenceNoteFields.source_answer)
-        self._screenshot = StringField(self.weakref, SentenceNoteFields.screenshot)
-        self.audio: WritableAudioField = WritableAudioField(self.weakref, SentenceNoteFields.audio)
-        self.configuration: CachingSentenceConfigurationField = CachingSentenceConfigurationField(self.weakref)
-        self.parsing_result: JsonObjectField[ParsingResult] = JsonObjectField[ParsingResult](self.weakref, SentenceNoteFields.parsing_result, ParsingResultSerializer())
+        self.question = StripHtmlOnReadFallbackStringField(self_weak_ref, SentenceNoteFields.user_question, SentenceNoteFields.source_question)
+        self.answer = StripHtmlOnReadFallbackStringField(self_weak_ref, SentenceNoteFields.user_answer, SentenceNoteFields.source_answer)
+        self._screenshot = StringField(self_weak_ref, SentenceNoteFields.screenshot)
+        self.audio: WritableAudioField = WritableAudioField(self_weak_ref, SentenceNoteFields.audio)
+        self.configuration: CachingSentenceConfigurationField = CachingSentenceConfigurationField(self_weak_ref)
+        self.parsing_result: JsonObjectField[ParsingResult] = JsonObjectField[ParsingResult](self_weak_ref, SentenceNoteFields.parsing_result, ParsingResultSerializer())
+
+    def destruct(self) -> None:
+        # noinspection DuplicatedCode
+        self._source_answer = None
+        self._user_question = None
+        self._source_question = None
+        self.source_comments = None
+        self.user = None
+        self.question = None
+        self.answer = None
+        self._screenshot = None
+        self.audio = None
+        self.configuration = None
+        self.parsing_result = None
+        super().destruct()
 
     def get_question(self) -> str: return self.question.get()
     def get_answer(self) -> str: return self.answer.get()

@@ -58,6 +58,15 @@ class NoteCache(ABC, Generic[TNote, TSnapshot]):
 
         app_thread_pool.pool.submit(cache_studying_status)
 
+    def destruct(self) -> None:
+        self._by_id.clear()
+        self._by_question.clear()
+        self._by_answer.clear()
+        self._snapshot_by_id.clear()
+        self._pending_generated_data_updates.clear()
+        self._deleted.clear()
+        self._pending_add.clear()
+
     def all(self) -> list[TNote]:
         return list(self._by_id.values())
 
