@@ -7,7 +7,6 @@ if TYPE_CHECKING:
     from anki.collection import Collection
     from anki.notes import Note, NoteId
     from note.collection.cache_runner import CacheRunner
-    from note.collection.jp_collection import JPCollection
 
 from note.collection.backend_facade import BackEndFacade
 from note.collection.note_cache import CachedNote, NoteCache
@@ -41,9 +40,8 @@ class _KanjiCache(NoteCache[KanjiNote, _KanjiSnapshot]):
     def with_radical(self, radical: str) -> list[KanjiNote]: return list(self._by_radical[radical])
 
 class KanjiCollection:
-    def __init__(self, collection: Collection, jp_collection: JPCollection, cache_manager: CacheRunner) -> None:
+    def __init__(self, collection: Collection, cache_manager: CacheRunner) -> None:
         def kanji_constructor(note: Note) -> KanjiNote: return KanjiNote(note)
-        self.jp_collection = jp_collection
         self.collection = BackEndFacade[KanjiNote](collection, kanji_constructor, NoteTypes.Kanji)
         self._cache = _KanjiCache(list(self.collection.all()), cache_manager)
 

@@ -20,6 +20,7 @@
       <excludeFolder url="file://$MODULE_DIR$/venv311" />
       <excludeFolder url="file://$MODULE_DIR$/src/MagnusAddonTests/tests/language_services_tests/.pytest_cache" />
       <excludeFolder url="file://$MODULE_DIR$/venv11" />
+      <excludeFolder url="file://$MODULE_DIR$/src/MagnusAddon/user_files" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.11 (MagnusAnkiAddon)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
