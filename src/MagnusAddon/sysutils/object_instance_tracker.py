@@ -20,7 +20,7 @@ class Snapshot:
                 change = count - self.previous.get(type_name, 0)
                 if change != 0:
                     diffs[type_name] = change
-        return f"""{newline.join([f"{type_name}:{diff}" for type_name, diff in diffs.items()])}""" if diffs else "No changes"
+        return f"""{newline.join([f"{type_name.split('.')[-1]}:{diff}" for type_name, diff in diffs.items()])}""" if diffs else "No changes"
 
 snapshots: list[Snapshot] = []
 
