@@ -32,7 +32,7 @@ class VocabNoteFactory:
         backend_note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Vocab))
         note = VocabNote(backend_note)
         note.set_question(question)
-        note.user_answer.set(answer)
+        note.user.answer.set(answer)
         note.readings.set(readings)
         note.update_generated_data()
         app.anki_collection().addNote(backend_note)

@@ -63,8 +63,8 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
             add_single_vocab_lookup_action(note_lookup_menu, shortcutfinger.home4("Ergative twin"), vocab.related_notes.ergative_twin())
 
     def build_note_menu() -> None:
-        if not vocab.user_answer.get():
-            add_ui_action(note_menu, shortcutfinger.up1("Accept meaning"), lambda: vocab.user_answer.set(format_vocab_meaning(vocab.get_answer())))
+        if not vocab.user.answer.get():
+            add_ui_action(note_menu, shortcutfinger.up1("Accept meaning"), lambda: vocab.user.answer.set(format_vocab_meaning(vocab.get_answer())))
 
         add_ui_action(note_menu, shortcutfinger.up2("Generate answer"), lambda: vocab.generate_and_set_answer())
         if vocabnote_context_sentences.can_generate_sentences_from_context_sentences(vocab, False):
@@ -83,10 +83,17 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
         add_toggle_checkbox(toggle_flags_menu, shortcutfinger.home3("Requires e stem"), vocab.flags.requires_e_stem)
         add_toggle_checkbox(toggle_flags_menu, shortcutfinger.home4("Question overrides form"), vocab.flags.question_overrides_form)
 
+    def build_remove_menu(remove_menu: QMenu) -> None:
+        add_ui_action(remove_menu, shortcutfinger.home1("User answer"), lambda: vocab.user.answer.empty()).setEnabled(vocab.user.answer.has_value())
+        add_ui_action(remove_menu, shortcutfinger.home2("User explanation"), lambda: vocab.user.explanation.empty()).setEnabled(vocab.user.explanation.has_value())
+        add_ui_action(remove_menu, shortcutfinger.home3("User explanation long"), lambda: vocab.user.explanation_long.empty()).setEnabled(vocab.user.explanation_long.has_value())
+        add_ui_action(remove_menu, shortcutfinger.home4("User mnemonic"), lambda: vocab.user.mnemonic.empty()).setEnabled(vocab.user.mnemonic.has_value())
+
     build_lookup_menu(non_optional(note_menu.addMenu(shortcutfinger.home1("Open"))))
     build_create_note_menu(non_optional(note_menu.addMenu(shortcutfinger.home2("Create"))), vocab, selection, clipboard)
     build_copy_menu(non_optional(note_menu.addMenu(shortcutfinger.home3("Copy"))))
     build_toggle_flags_menu(non_optional(note_menu.addMenu(shortcutfinger.home4("Toggle flags"))))
+    build_remove_menu(non_optional(note_menu.addMenu(shortcutfinger.up1("Remove"))))
     build_note_menu()
 
 def format_vocab_meaning(meaning: str) -> str:

@@ -24,7 +24,7 @@ def init() -> None:
 
         vocab = try_get_review_note_of_type(VocabNote)
         if vocab:
-            vocab.user_mnemonic.empty()
+            vocab.user.mnemonic.empty()
             app.get_ui_utils().refresh()
 
     def generate_compound_parts() -> None:

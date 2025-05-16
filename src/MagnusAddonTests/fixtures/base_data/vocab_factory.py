@@ -33,7 +33,7 @@ def create_vocab() -> NoteTypeEx:
                        NoteFieldEx(NoteFields.Vocab.source_reading_mnemonic),
                        NoteFieldEx(NoteFields.Vocab.Homophones),
                        NoteFieldEx(NoteFields.Vocab.ParsedTypeOfSpeech),
-                       NoteFieldEx(NoteFields.Vocab.Mnemonic__),
+                       NoteFieldEx(NoteFields.Vocab.user_mnemonic),
                        NoteFieldEx(NoteFields.Vocab.component_subject_ids),
                        NoteFieldEx(NoteFields.Vocab.sentence_count),
                        NoteFieldEx(NoteFields.Vocab.user_compounds)],

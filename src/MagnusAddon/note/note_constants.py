@@ -121,6 +121,9 @@ class NoteFields:
         source_answer = "source_answer"
         user_answer = "__answer"
         user_compounds = "__compounds"
+        user_explanation = "__explanation"
+        user_explanation_long = "__explanation_long"
+        user_mnemonic = "__mnemonic"
         Reading = "Reading"
         parts_of_speech = "TOS"
         Context_sentence_1_japanese = "Context_jp"
@@ -147,7 +150,6 @@ class NoteFields:
         source_reading_mnemonic = "source_reading_mnemonic"
         Homophones = "Homophones"
         ParsedTypeOfSpeech = "ParsedTypeOfSpeech"
-        Mnemonic__ = "__mnemonic"
 
         component_subject_ids = "component_subject_ids"
 

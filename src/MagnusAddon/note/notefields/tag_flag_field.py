@@ -16,7 +16,3 @@ class TagFlagField:
     def set_to(self, set_: bool) -> None:
         if set_: self._note.set_tag(self.tag)
         else: self._note.remove_tag(self.tag)
-
-    def toggle(self) -> None: self.set_to(not self.is_set)
-    def unset(self) -> None: self.set_to(False)
-    def set(self) -> None: self.set_to(True)
