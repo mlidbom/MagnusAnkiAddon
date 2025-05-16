@@ -167,6 +167,7 @@ class Mine:
         question_overrides_form = f"{base_folder}question-overrides-form"
         requires_a_stem = f"{base_folder}requires-a-stem"
         requires_e_stem = f"{base_folder}requires-e-stem"
+        match_with_preceding_token = f"{base_folder}match-with-preceding-token"
 
         kanji_folder = f"{base_folder}kanji::"
         kanji_is_radical = f"{kanji_folder}is-radical"
