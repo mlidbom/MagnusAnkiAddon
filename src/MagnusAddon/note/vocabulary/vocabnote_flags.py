@@ -17,4 +17,5 @@ class VocabNoteFlags:
         self.question_overrides_form: TagFlagField = TagFlagField(vocab(),  Mine.Tags.question_overrides_form)
         self.requires_a_stem: TagFlagField = TagFlagField(vocab(),  Mine.Tags.requires_a_stem)
         self.requires_e_stem: TagFlagField = TagFlagField(vocab(),  Mine.Tags.requires_e_stem)
-        self.match_with_preceding_token: TagFlagField = TagFlagField(vocab(), Mine.Tags.match_with_preceding_token)
+        self.match_with_preceding_character: TagFlagField = TagFlagField(vocab(), Mine.Tags.match_with_preceding_character)
+        self.match_with_preceding_vowel: TagFlagField = TagFlagField(vocab(), Mine.Tags.match_with_preceding_vowel)
