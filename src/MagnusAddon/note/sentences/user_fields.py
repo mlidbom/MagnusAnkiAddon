@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 from note.note_constants import SentenceNoteFields
 from note.notefields.strip_html_on_read_string_field import StripHtmlOnReadStringField
+from sysutils.object_instance_tracker import ObjectInstanceTracker
 
 if TYPE_CHECKING:
     from note.sentences.sentencenote import SentenceNote
@@ -16,3 +17,4 @@ class SentenceUserFields:
         self.question: StripHtmlOnReadStringField = StripHtmlOnReadStringField(sentence, SentenceNoteFields.user_question)
         self.answer: StripHtmlOnReadStringField = StripHtmlOnReadStringField(sentence, SentenceNoteFields.user_answer)
         self.answer_analysis: StripHtmlOnReadStringField = StripHtmlOnReadStringField(sentence, SentenceNoteFields.user_answer_analysis)
+        self._instance_tracker = ObjectInstanceTracker(SentenceUserFields)

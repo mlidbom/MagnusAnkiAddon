@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from sysutils.object_instance_tracker import ObjectInstanceTracker
+
 if TYPE_CHECKING:
     from note.jpnote import JPNote
 
@@ -9,6 +11,7 @@ class TagFlagField:
     def __init__(self, note: JPNote, tag: str) -> None:
         self._note = note
         self.tag = tag
+        self._instance_tracker = ObjectInstanceTracker(TagFlagField)
 
     @property
     def is_set(self) -> bool: return self._note.has_tag(self.tag)

@@ -87,7 +87,9 @@ class JapaneseConfig:
 
         self.prevent_double_clicks = ConfigurationValueBool("prevent_double_clicks", "Prevent double clicks", True)
         self.prefer_default_mnemocs_to_source_mnemonics = ConfigurationValueBool("prefer_default_mnemocs_to_source_mnemonics", "Prefer default mnemonics to source mnemonics", False)
-        self.enable_garbage_collection = ConfigurationValueBool("enable_garbage_collection", "Enable GC. Requires restart. (Reduces memory usage but slows Anki down and may cause crashes due to Qt incompatibility.", False)
+
+        self.enable_garbage_collection_during_batches = ConfigurationValueBool("enable_garbage_collection_during_batches", "Enable Batch GC. Requires restart. (Eliminates LARGE memory leak on sync, but slows down startup and batches and introduces short 'hangs'.", True)
+        self.enable_automatic_garbage_collection = ConfigurationValueBool("enable_automatic_garbage_collection", "Enable automatic GC. Requires restart. (Reduces memory usage the most but slows Anki down and may cause crashes due to Qt incompatibility.", False)
 
 
         self.decrease_failed_card_intervals_interval = ConfigurationValueInt("decrease_failed_card_intervals_interval", "Failed card again seconds for next again", 60)
@@ -102,7 +104,8 @@ class JapaneseConfig:
                                 self.prevent_double_clicks,
                                 self.boost_failed_card_allowed_time,
                                 self.prefer_default_mnemocs_to_source_mnemonics,
-                                self.enable_garbage_collection]
+                                self.enable_garbage_collection_during_batches,
+                                self.enable_automatic_garbage_collection]
 
         self.readings_mappings_dict = self.get_readings_mappings()
         self.readings_mappings.register_update_callback(self._update_after_save)

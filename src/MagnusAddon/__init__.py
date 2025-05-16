@@ -9,7 +9,7 @@ import _lib # noqa NOTE: this line sets up lib paths, lib imports before here do
 
 import hooks # noqa
 from ankiutils import app # noqa
-if app.config().enable_garbage_collection.get_value():
+if app.config().enable_automatic_garbage_collection.get_value():
     import gc
     gc.enable()
 

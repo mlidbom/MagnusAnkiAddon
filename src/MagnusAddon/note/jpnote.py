@@ -9,6 +9,7 @@ from ankiutils import app
 from note import noteutils
 from note.note_constants import CardTypes, Mine, MyNoteFields, NoteTypes
 from sysutils import ex_str, rassert
+from sysutils.object_instance_tracker import ObjectInstanceTracker
 from sysutils.typed import non_optional, str_
 
 if TYPE_CHECKING:
@@ -23,6 +24,7 @@ class JPNote:
         self.backend_note = note
         self._is_updating_generated_data: bool = False
         self._generated_data_was_updated = False
+        self.instance_tracker = ObjectInstanceTracker(JPNote)
         self.__hash_value = 0
 
     def __eq__(self, other: object) -> bool:

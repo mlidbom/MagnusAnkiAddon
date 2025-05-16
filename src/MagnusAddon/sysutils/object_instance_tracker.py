@@ -3,26 +3,55 @@ from __future__ import annotations
 from typing import Any
 
 from sysutils import ex_gc
+from sysutils.ex_str import newline
 from sysutils.timeutil import StopWatch
 
-instance_counts: dict[str, int] = {}
+current_instance_count: dict[str, int] = {}
+
+class Snapshot:
+    def __init__(self, current_state: dict[str, int], previous_state: dict[str, int]) -> None:
+        self.previous: dict[str, int] = previous_state
+        self.current_counts: dict[str, int] = current_state
+
+    def single_line_diff_report(self) -> str:
+        diffs: dict[str, int] = {}
+        if self.previous is not None:
+            for type_name, count in self.current_counts.items():
+                change = count - self.previous.get(type_name, 0)
+                if change != 0:
+                    diffs[type_name] = change
+        return f"""{newline.join([f"{type_name}:{diff}" for type_name, diff in diffs.items()])}""" if diffs else "No changes"
+
+snapshots: list[Snapshot] = []
+
+def take_snapshot() -> Snapshot:
+    current_state = current_instance_count.copy()
+    previous_state = snapshots[-1].current_counts if len(snapshots) > 0 else {}
+    snapshot = Snapshot(current_state, previous_state)
+    snapshots.append(snapshot)
+    return snapshot
+
+def current_snapshot() -> Snapshot:
+    if len(snapshots) == 0:
+        take_snapshot()
+    return snapshots[-1]
 
 class ObjectInstanceTracker:
 
     def __init__(self, cls_type: type[Any]) -> None:
         self.type_name = self._get_fully_qualified_name(cls_type)
-        instance_counts[self.type_name] = instance_counts.get(self.type_name, 0) + 1
+        current_instance_count[self.type_name] = current_instance_count.get(self.type_name, 0) + 1
 
     def count(self) -> int:
-        return instance_counts[self.type_name]
+        return current_instance_count[self.type_name]
 
     def run_gc_and_assert_single_instance(self) -> None:
         with StopWatch.log_execution_time():
-            ex_gc.collect_on_on_ui_thread()
-            if not instance_counts[self.type_name] == 1: raise Exception(f"Expected single instance of {self.type_name}, found {instance_counts[self.type_name]}")
+            if ex_gc.collect_on_on_ui_thread_if_collection_during_batches_enabled():  # noqa: SIM102
+                if not current_instance_count[self.type_name] == 1: raise Exception(f"Expected single instance of {self.type_name}, found {current_instance_count[self.type_name]}")
 
     def __del__(self) -> None:
-        instance_counts[self.type_name] -= 1
+        current_instance_count[self.type_name] -= 1
 
     @staticmethod
     def _get_fully_qualified_name(cls_type: type[Any]) -> str:
@@ -32,5 +61,8 @@ class ObjectInstanceTracker:
 
 def print_instance_counts() -> None:
     print("################### Instance counts ###################")
-    for type_name, count in instance_counts.items():
+    for type_name, count in current_instance_count.items():
         print(f"{type_name}: {count}")
+
+def single_line_report() -> str:
+    return f"""{', '.join([f"{type_name.split('.')[-1]}:{count}" for type_name, count in current_instance_count.items()])}"""
