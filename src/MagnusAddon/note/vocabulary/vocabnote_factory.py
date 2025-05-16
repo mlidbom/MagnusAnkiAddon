@@ -19,8 +19,7 @@ class VocabNoteFactory:
         from note.vocabulary.vocabnote import VocabNote
         dict_entry = DictLookup.lookup_word_shallow(question)
         if not dict_entry.found_words():
-            readings1 = []
-            return VocabNote.factory.create(question, "TODO", readings1)
+            return VocabNote.factory.create(question, "TODO", [])
         readings = list(set(ex_sequence.flatten([ent.kana_forms() for ent in dict_entry.entries])))
         created = VocabNote.factory.create(question, "TODO", readings)
         created.generate_and_set_answer()
