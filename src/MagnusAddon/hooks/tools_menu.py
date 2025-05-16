@@ -13,7 +13,6 @@ from hooks.right_click_menu_open_in_anki import build_open_in_anki_menu
 from hooks.right_click_menu_web_search import build_web_search_menu
 from PyQt6.QtGui import QAction
 from PyQt6.QtWidgets import QInputDialog, QLineEdit, QMenu
-
 from sysutils import object_instance_tracker
 from sysutils.typed import non_optional
 from wanikani import note_importer
@@ -61,10 +60,12 @@ def build_lookup_menu(lookup_menu: QMenu) -> None:
 def build_debug_menu(debug_menu: QMenu) -> None:
     debug_menu.addAction(shortcutfinger.home1("Show instance report"), lambda: app.get_ui_utils().tool_tip(object_instance_tracker.single_line_report(), 10000))
     debug_menu.addAction(shortcutfinger.home2("Take Snapshot"), object_instance_tracker.take_snapshot)
-    debug_menu.addAction(shortcutfinger.home3("Show snapshot diff"), lambda: app.get_ui_utils().tool_tip(object_instance_tracker.current_snapshot().single_line_diff_report(), 10000))
-    debug_menu.addAction(shortcutfinger.home4("Run GC and report"), local_note_updater.print_gc_status_and_collect)
-    debug_menu.addAction(shortcutfinger.up1("Reset"), app.reset)
-    add_menu_ui_action(debug_menu, shortcutfinger.up1("Refresh UI"), refresh, "F5")
+    debug_menu.addAction(shortcutfinger.home3("Show current snapshot diff"), lambda: app.get_ui_utils().tool_tip(object_instance_tracker.current_snapshot().single_line_diff_report(), 10000))
+    debug_menu.addAction(shortcutfinger.home4("Show diff against first snapshot"), lambda: app.get_ui_utils().tool_tip(object_instance_tracker.create_transient_snapshot_against_first_snapshot().single_line_diff_report(), 10000))
+    debug_menu.addAction(shortcutfinger.home5("Show diff against current snapshot"), lambda: app.get_ui_utils().tool_tip(object_instance_tracker.create_transient_snapshot_against_last_snapshot().single_line_diff_report(), 10000))
+    debug_menu.addAction(shortcutfinger.up1("Run GC and report"), local_note_updater.print_gc_status_and_collect)
+    debug_menu.addAction(shortcutfinger.up2("Reset"), app.reset)
+    add_menu_ui_action(debug_menu, shortcutfinger.down1("Refresh UI"), refresh, "F5")
 
 def build_config_menu(config_menu: QMenu) -> None:
     def add_checkbox_config(menu: QMenu, config_value: ConfigurationValueBool, _title:str) -> None:

@@ -25,11 +25,19 @@ class Snapshot:
 snapshots: list[Snapshot] = []
 
 def take_snapshot() -> Snapshot:
+    diff = create_transient_snapshot_against_last_snapshot()
+    snapshots.append(diff)
+    return diff
+
+def create_transient_snapshot_against_last_snapshot() -> Snapshot:
     current_state = current_instance_count.copy()
     previous_state = snapshots[-1].current_counts if len(snapshots) > 0 else {}
-    snapshot = Snapshot(current_state, previous_state)
-    snapshots.append(snapshot)
-    return snapshot
+    return Snapshot(current_state, previous_state)
+
+def create_transient_snapshot_against_first_snapshot() -> Snapshot:
+    current_state = current_instance_count.copy()
+    previous_state = snapshots[0].current_counts if len(snapshots) > 0 else {}
+    return Snapshot(current_state, previous_state)
 
 def current_snapshot() -> Snapshot:
     if len(snapshots) == 0:
