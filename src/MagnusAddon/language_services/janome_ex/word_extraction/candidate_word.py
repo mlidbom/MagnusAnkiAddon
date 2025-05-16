@@ -15,6 +15,7 @@ from sysutils.ex_str import newline
 
 class CandidateWord:
     def __init__(self, locations: list[WeakRef[TokenTextLocation]]) -> None:
+        self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker(self.__class__)
         self.analysis: WeakRef[TextAnalysis] = locations[0]().analysis
         self.locations: list[WeakRef[TokenTextLocation]] = locations
         self.is_custom_compound: bool = len(locations) > 1
@@ -34,7 +35,6 @@ class CandidateWord:
         self.should_include_surface: bool = False
         self.should_include_base: bool = False
         self.display_words: list[CandidateForm] = []
-        self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker(self.__class__)
 
     def complete_analysis(self) -> None:
         self.base.complete_analysis()

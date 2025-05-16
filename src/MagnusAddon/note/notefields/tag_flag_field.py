@@ -9,9 +9,9 @@ if TYPE_CHECKING:
 
 class TagFlagField:
     def __init__(self, note: JPNote, tag: str) -> None:
+        self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker(self.__class__)
         self._note = note
         self.tag = tag
-        self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker(self.__class__)
 
     @property
     def is_set(self) -> bool: return self._note.has_tag(self.tag)

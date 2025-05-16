@@ -21,6 +21,7 @@ class TextAnalysis:
     version = "text_analysis_0.1"
 
     def __init__(self, sentence:str, sentence_configuration:SentenceConfiguration) -> None:
+        self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker(self.__class__)
         self.text = sentence
         self.configuration = sentence_configuration
         self.tokens:list[ProcessedToken] = _tokenizer.tokenize(sentence).pre_process()
@@ -44,8 +45,6 @@ class TextAnalysis:
         self.all_words: list[CandidateForm] = ex_sequence.flatten([loc.all_words for loc in self.locations])
 
         self.display_forms = ex_sequence.flatten([w.display_forms for w in self.display_words])
-
-        self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker(self.__class__)
 
     def __repr__(self) -> str:
         return f"""{self.text}

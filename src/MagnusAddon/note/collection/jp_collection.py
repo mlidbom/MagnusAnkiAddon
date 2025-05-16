@@ -24,11 +24,11 @@ if TYPE_CHECKING:
 _instance_is_destructing_on_background_thread: set[JPCollection] = set()
 class JPCollection:
     def __init__(self, anki_collection: Collection) -> None:
+        self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker(self.__class__)
         mylog.info("JPCollection.__init__")
         app.get_ui_utils().tool_tip(f"{Mine.app_name} loading", 60000)
         with StopWatch.log_warning_if_slower_than(5, "Full collection setup"):
             ex_thread.wait_until_(lambda: len(_instance_is_destructing_on_background_thread) == 0, timeout_seconds=10)
-            self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker(self.__class__)
 
             if not app.is_testing():
                 self._instance_tracker.run_gc_and_assert_single_instance()

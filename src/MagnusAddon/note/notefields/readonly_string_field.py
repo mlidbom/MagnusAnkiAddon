@@ -10,9 +10,9 @@ if TYPE_CHECKING:
 
 class ReadOnlyStringField:
     def __init__(self, note: WeakRef[JPNote], field_name: str) -> None:
+        self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker(self.__class__)
         self._note = note
         self._field_name = field_name
-        self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker(self.__class__)
 
 
     def get(self) -> str: return self._note().get_field(self._field_name).strip()

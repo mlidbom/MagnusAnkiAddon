@@ -22,6 +22,7 @@ _max_lookahead = 12
 
 class TokenTextLocation:
     def __init__(self, analysis: WeakRef[TextAnalysis], token: ProcessedToken, character_start_index: int, token_index: int) -> None:
+        self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker(self.__class__)
         surface = token.surface
         base = token.base_form
         self.is_covered_by: Optional[WeakRef[TokenTextLocation]] = None
@@ -40,7 +41,6 @@ class TokenTextLocation:
         self.all_candidates: list[CandidateWord] = []
         self.next: Optional[WeakRef[TokenTextLocation]] = None
         self.previous: Optional[WeakRef[TokenTextLocation]] = None
-        self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker(self.__class__)
 
     def __repr__(self) -> str:
         return f"""
