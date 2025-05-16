@@ -3,10 +3,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from sysutils.object_instance_tracker import ObjectInstanceTracker
-from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
     from note.jpnote import JPNote
+    from sysutils.weak_ref import WeakRef
 
 class TagFlagField:
     def __init__(self, note: WeakRef[JPNote], tag: str) -> None:
