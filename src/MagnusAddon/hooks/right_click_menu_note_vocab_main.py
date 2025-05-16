@@ -87,7 +87,7 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
         add_ui_action(remove_menu, shortcutfinger.home1("User explanation"), lambda: vocab.user.explanation.empty()).setEnabled(vocab.user.explanation.has_value())
         add_ui_action(remove_menu, shortcutfinger.home2("User explanation long"), lambda: vocab.user.explanation_long.empty()).setEnabled(vocab.user.explanation_long.has_value())
         add_ui_action(remove_menu, shortcutfinger.home3("User mnemonic"), lambda: vocab.user.mnemonic.empty()).setEnabled(vocab.user.mnemonic.has_value())
-        add_ui_action(remove_menu, shortcutfinger.home4("User answer"), lambda: vocab.user.answer.empty()).setEnabled(vocab.user.answer.has_value())
+        add_ui_action(remove_menu, shortcutfinger.home4("User answer"), lambda: vocab.user.answer.empty(), True).setEnabled(vocab.user.answer.has_value())
 
     build_lookup_menu(non_optional(note_menu.addMenu(shortcutfinger.home1("Open"))))
     build_create_note_menu(non_optional(note_menu.addMenu(shortcutfinger.home2("Create"))), vocab, selection, clipboard)
