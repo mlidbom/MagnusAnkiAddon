@@ -24,13 +24,15 @@ def _confirm(menu: QMenu, message:str) -> bool:
         QMessageBox.StandardButton.Yes
     ) == QMessageBox.StandardButton.Yes
 
-def add_ui_action(menu: QMenu, name: str, callback: Callable[[], None], confirm:bool = False) -> QAction:
+def add_ui_action(menu: QMenu, name: str, callback: Callable[[], None], enabled:bool = True, confirm:bool = False) -> QAction:
     def run_ui_action() -> None:
         if not confirm or _confirm(menu, name):
             callback()
             get_ui_utils().refresh()
 
-    return menu.addAction(name, lambda: run_ui_action())
+    action = menu.addAction(name, lambda: run_ui_action())
+    action.setEnabled(enabled)
+    return action
 
 def add_lookup_action_lambda(menu: QMenu, name: str, search: Callable[[],str]) -> None:
     menu.addAction(name, lookup_promise(search))

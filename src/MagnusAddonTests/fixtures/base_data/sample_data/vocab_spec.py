@@ -15,13 +15,15 @@ class VocabSpec(Slots):
                  readings: list[str],
                  extra_forms: Optional[list[str]] = None,
                  tags: Optional[list[str]] = None,
-                 compounds: Optional[list[str]] = None) -> None:
+                 compounds: Optional[list[str]] = None,
+                 surface_is_not: set[str] = None) -> None:
         self.question = question
         self.answer = answer
         self.readings = readings
         self.extra_forms = set(extra_forms if extra_forms else [])
         self.tags = set(tags if tags else [])
         self.compounds = compounds if compounds else []
+        self.surface_is_not = surface_is_not if surface_is_not else set()
 
     def __repr__(self) -> str: return f"""VocabSpec("{self.question}", "{self.answer}", {self.readings})"""
 
@@ -44,37 +46,45 @@ class VocabSpec(Slots):
         for tag in self.tags:
             vocab_note.set_tag(tag)
 
+        for excluded_surface in self.surface_is_not:
+            vocab_note.matching_rules.rules.surface_is_not.add(excluded_surface)
+
         return vocab_note
 
 test_special_vocab = [
     VocabSpec("てる", "{continuing-{activity | state}} / {progressive | perfect}", ["てる"], tags=[Mine.Tags.inflecting_word]),
-    VocabSpec("た", "{past-tense} | (please)do", ["た"], tags=[Mine.Tags.inflecting_word]),
     VocabSpec("て", "{continuing-action}", ["て"], tags=[Mine.Tags.inflecting_word]),
     VocabSpec("てた", "{was}-{_-ing|_ed}", ["てた"], tags=[Mine.Tags.inflecting_word]),
     VocabSpec("てたら", "{was}-{_-ing|_ed}", ["てたら"], tags=[Mine.Tags.inflecting_word]),
-    VocabSpec("たら", "conj{if/when} prt{as-for | why-not..  | I-said!/I-tell-you!}", ["たら"], extra_forms=["[[た]]"], tags=[Mine.Tags.inflecting_word]),
+    VocabSpec("たら", "conj{if/when} prt{as-for | why-not..  | I-said!/I-tell-you!}", ["たら"], tags=[Mine.Tags.inflecting_word]),
     VocabSpec("ちゃう", "to do: accidentally/unfortunately | completely", ["ちゃう"], tags=[Mine.Tags.inflecting_word]),
     VocabSpec("無い", "{negation} | nonexistent | unowned | impossible/won't-happen", ["ない"], tags=[Mine.Tags.inflecting_word]),
     VocabSpec("ても良い", "{concession/compromise} | {permission}", ["てもいい"], tags=[Mine.Tags.inflecting_word]),
-    VocabSpec("たの", "{indicates-{emotion/admiration/emphasis}}", ["たの"], extra_forms=["[[たの]]"]),
     VocabSpec("すぎる", "too-much", ["すぎる"], tags=[Mine.Tags.inflecting_word]),
+    VocabSpec("いらっしゃいます", "to: come/be/do", ["いらっしゃいます"]),
+    VocabSpec("を頼む", "I-entrust-to-you", ["を頼む"], tags=[Mine.Tags.requires_exact_match]),
+    VocabSpec("会える", "to-be-able: to-meet", ["あえる"], compounds=["会う", "える"]),
+    VocabSpec("作れる", "to-be-able: to-make", ["つくれる"], compounds=["作る", "える"]),
+    VocabSpec("えない", "unable-able-to", ["えない"], compounds=["える", "ない"], tags=[Mine.Tags.inflecting_word]),
+    VocabSpec("解放する", "to{} release", ["かいほうする"]),
+
+    VocabSpec("える", "to-be-able-to", ["える"], extra_forms=["[[れる]]"], tags=[Mine.Tags.inflecting_word]),
+    VocabSpec("あれる", "get-_/is-_", ["あれる"], extra_forms=["れる"], tags=[Mine.Tags.requires_a_stem, Mine.Tags.question_overrides_form, Mine.Tags.inflecting_word]),
+    VocabSpec("えれる", "is-able-to-_", ["えれる"], extra_forms=["れる"], tags=[Mine.Tags.requires_e_stem, Mine.Tags.question_overrides_form, Mine.Tags.inflecting_word]),
+
+    VocabSpec("する", "do!", ["する"], surface_is_not={"しろ"}),
+    VocabSpec("ぬ", "not", ["ぬ"], surface_is_not={"ず"}),
+    VocabSpec("らっしゃる", "is/does", ["らっしゃる"], surface_is_not={"らっしゃい"}),
+    VocabSpec("た", "{past-tense} | (please)do", ["た"], surface_is_not={"たら"}, tags=[Mine.Tags.inflecting_word]),
+
     VocabSpec("だったら", "if-so", ["だったら"], extra_forms=["[[だった]]"]),
     VocabSpec("に", "{location/direction/target/reason/purpose} {adv}", ["に"], extra_forms=["[[だ]]"]),
     VocabSpec("で", "{act-ctx{time|place|cause|means}}　| {て-form:+<ja>む/ぬ</ja>-verbs+<ja>だ</ja>} | ksb:よ", ["で"], extra_forms=["[[だ]]"]),
     VocabSpec("な", "{attributive-copula} | な-particle ...", ["な"], extra_forms=["[[だ]]"]),
     VocabSpec("だの", "and-the-like", ["だの"], extra_forms=["[[んだの]]"]),
     VocabSpec("いらっしゃいませ", "welcome!", ["いらっしゃいませ"], extra_forms=["[[いらっしゃいます]]"]),
-    VocabSpec("いらっしゃいます", "to: come/be/do", ["いらっしゃいます"]),
-    VocabSpec("を頼む", "I-entrust-to-you", ["を頼む"], tags=[Mine.Tags.requires_exact_match]),
-    VocabSpec("あれる", "get-_/is-_", ["あれる"], extra_forms=["れる"], tags=[Mine.Tags.requires_a_stem, Mine.Tags.question_overrides_form, Mine.Tags.inflecting_word]),
-    VocabSpec("えれる", "is-able-to-_", ["えれる"], extra_forms=["れる"], tags=[Mine.Tags.requires_e_stem, Mine.Tags.question_overrides_form, Mine.Tags.inflecting_word]),
-    VocabSpec("会える", "to-be-able: to-meet", ["あえる"], compounds=["会う", "える"]),
-    VocabSpec("作れる", "to-be-able: to-make", ["つくれる"], compounds=["作る", "える"]),
-    VocabSpec("える", "to-be-able-to", ["える"], extra_forms=["[[れる]]"], tags=[Mine.Tags.inflecting_word]),
-    VocabSpec("えない", "unable-able-to", ["えない"], compounds=["える", "ない"], tags=[Mine.Tags.inflecting_word]),
     VocabSpec("だもの", "is-the-thing", ["だもの"], extra_forms=["[[んだもの]]"]),
-    VocabSpec("しろ", "do!", ["しろ"], extra_forms=["[[する]]"]),
-    VocabSpec("解放する", "to{} release", ["かいほうする"]),
+    VocabSpec("たの", "{indicates-{emotion/admiration/emphasis}}", ["たの"], extra_forms=["[[たの]]"]),
 ]
 
 test_ordinary_vocab_list = [

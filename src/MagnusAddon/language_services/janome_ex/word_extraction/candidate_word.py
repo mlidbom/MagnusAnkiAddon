@@ -17,7 +17,7 @@ from sysutils.ex_str import newline
 class CandidateWord(Slots):
     __slots__ = ["__weakref__"]
     def __init__(self, locations: list[WeakRef[TokenTextLocation]]) -> None:
-        self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker.configured_tracker_for(self)
+        self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
         self.analysis: WeakRef[TextAnalysis] = locations[0]().analysis
         self.locations: list[WeakRef[TokenTextLocation]] = locations
         self.is_custom_compound: bool = len(locations) > 1
@@ -45,9 +45,10 @@ class CandidateWord(Slots):
         self.should_include_surface = (self.surface.is_valid_candidate()
                                        and not self.is_inflected_word
                                        and self.surface.form != self.base.form
-                                       and self.surface.form not in self.base.forms_excluded_by_vocab_configuration)
+                                       and self.surface.form not in self.base.forms_excluded_by_vocab_configuration_legacy)
         self.should_include_base = (self.base.is_valid_candidate()
-                                    and self.base.form not in self.surface.forms_excluded_by_vocab_configuration)
+                                    #and self.base.form not in self.surface.forms_excluded_by_vocab_configuration_legacy
+                                    )
 
         self.display_words = []
         if self.should_include_base:

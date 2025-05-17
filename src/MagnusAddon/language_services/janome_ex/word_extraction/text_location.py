@@ -24,7 +24,7 @@ _max_lookahead = 12
 class TokenTextLocation(Slots):
     __slots__ = ["__weakref__"]
     def __init__(self, analysis: WeakRef[TextAnalysis], token: ProcessedToken, character_start_index: int, token_index: int) -> None:
-        self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker.configured_tracker_for(self)
+        self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
         surface = token.surface
         base = token.base_form
         self.is_covered_by: Optional[WeakRef[TokenTextLocation]] = None

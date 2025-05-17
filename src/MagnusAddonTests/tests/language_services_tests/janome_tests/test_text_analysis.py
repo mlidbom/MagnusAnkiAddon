@@ -40,9 +40,6 @@ def setup_empty_collection() -> Generator[None, None, None]:
      ),
     ("どうやってここを知った。",
      ["どうやって", "どう", "やる", "て", "ここ", "を", "知る", "た"]),
-    ("声出したら駄目だからね",
-     ["声", "出す", "たら", "駄目", "だから", "だ", "から", "ね"]
-     ),
     ("彼の日本語のレベルは私と同じ位だ。",
      ["彼の", "彼", "の", "日本語", "の", "レベル", "は", "私", "と", "同じ位", "同じ", "位", "だ"]),
     ("それなのに 周りは化け物が出ることで有名だと聞き",
@@ -52,10 +49,21 @@ def setup_empty_collection() -> Generator[None, None, None]:
      ["さっさと", "傷", "を", "清める", "て", "くる", "こい"]),
     ("すげえ", ["すげえ", "すげる", "すげ", "え"]),
     ("「コーヒーはいかがですか？」「いえ、結構です。お構いなく。」", ["コーヒー", "は", "いかが", "ですか", "です", "か", "いえる", "いえ", "結構", "です", "お構いなく"]),
-    ("しろ", ["しろ"]),
     ("解放する", ["解放する", "解放", "する"])
 ])
 def test_identify_words(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
+    analysis = TextAnalysis(sentence, SentenceConfiguration.empty())
+    root_words = [w.form for w in analysis.all_words]
+    assert root_words == expected_output
+
+@pytest.mark.parametrize("sentence, expected_output", [
+    ("言わず", ["言う", "言わ", "ず"]),
+    ("しろ", ["しろ"]),
+    ("声出したら駄目だからね", ["声", "出す", "たら", "駄目", "だから", "だ", "から", "ね"]),
+    ("後で下に下りてらっしゃいね", ["後で", "下に", "下", "に", "下りる", "て", "らっしゃい", "ね"]),
+    ("無理して思い出す", ["無理", "して", "する", "て", "思い出す"])
+])
+def test_excluded_surfaces(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
     analysis = TextAnalysis(sentence, SentenceConfiguration.empty())
     root_words = [w.form for w in analysis.all_words]
     assert root_words == expected_output
@@ -190,27 +198,3 @@ def _run_assertions(sentence: str, custom_words: list[str], excluded: list[WordE
         assert display_words_forms == expected_display_output
     else:
         assert display_words_forms == expected_output
-
-def insert_custom_words_with_excluded_forms(custom_words: list[list[str]]) -> None:
-    for custom_word in custom_words:
-        note = VocabNote.factory.create(custom_word[0], "", [""])
-        note.forms.set_list(custom_word)
-    app.col().flush_cache_updates()
-
-@pytest.mark.parametrize("sentence, custom_words, expected_output", [
-    ("後で下に下りてらっしゃいね",
-     [["らっしゃい", "[[らっしゃる]]"]],
-     ["後で", "下", "下に", "に", "下りる", "て", "らっしゃい", "ね"]),
-    ("無理して思い出す",
-     [["する", "[[し]]"]],
-     ["無理", "する", "して", "て", "思い出す"]),
-    ("リセットしても",
-     [["する", "[[し]]", "[[して]]"]],
-     ["リセット", "する", "て", "ても", "も"],)
-])
-def test_custom_vocab_words_with_excluded_forms(setup_collection_with_select_data: object, sentence: str, custom_words: list[list[str]], expected_output: list[str]) -> None:
-    insert_custom_words_with_excluded_forms(custom_words)
-
-    analysis = TextAnalysis(sentence, SentenceConfiguration.empty())
-    root_words = {w.form for w in analysis.all_words}
-    assert root_words == set(expected_output)

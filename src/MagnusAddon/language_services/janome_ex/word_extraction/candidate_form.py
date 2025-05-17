@@ -22,7 +22,7 @@ _noise_characters = {".", ",", ":", ";", "/", "|", "。", "、", "?", "!"}
 class CandidateForm(Slots):
     __slots__ = ["__weakref__"]
     def __init__(self, candidate: WeakRef[CandidateWord], is_surface: bool, form: str) -> None:
-        self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker.configured_tracker_for(self)
+        self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
         from language_services.jamdict_ex.dict_lookup import DictLookup
 
         self.start_index: int = candidate().locations[0]().character_start_index
@@ -35,20 +35,20 @@ class CandidateForm(Slots):
         self.all_vocabs: list[VocabNote] = app.col().vocab.with_form(form)
 
         def is_excluded_form(form_: str) -> bool:
-            #todo: bug: With the current implementation this removes hidden matches from the parsed words. That is precisely what hidden matches should not do.
+            # todo: bug: With the current implementation this removes hidden matches from the parsed words. That is precisely what hidden matches should not do.
             return (self.configuration.incorrect_matches.excludes_at_index(form_, self.start_index)
                     or self.configuration.hidden_matches.excludes_at_index(form_, self.start_index))
 
         self.unexcluded_vocabs: list[VocabNote] = [v for v in self.all_vocabs if not is_excluded_form(v.get_question())]
         self.excluded_vocabs: list[VocabNote] = [v for v in self.all_vocabs if is_excluded_form(v.get_question())]
 
-        self.forms_excluded_by_vocab_configuration: set[str] = set().union(*[v.forms.excluded_set() for v in self.unexcluded_vocabs])
+        self.forms_excluded_by_vocab_configuration_legacy: set[str] = set().union(*[v.forms.excluded_set() for v in self.unexcluded_vocabs])
 
         self.is_word: bool = self.dict_lookup.found_words() or len(self.all_vocabs) > 0
         self.is_excluded_by_config: bool = is_excluded_form(form)
-        self.is_self_excluded: bool = form in self.forms_excluded_by_vocab_configuration
+        self.is_self_excluded: bool = form in self.forms_excluded_by_vocab_configuration_legacy
 
-        self.possible_contextual_exclusions: list[str] = [excluded for excluded in self.forms_excluded_by_vocab_configuration if self.form in excluded]
+        self.possible_contextual_exclusions: list[str] = [excluded for excluded in self.forms_excluded_by_vocab_configuration_legacy if self.form in excluded]
         self.is_contextually_excluded: bool = self._is_contextually_excluded()
 
         self.forms_excluded_by_compound_root_vocab_configuration: set[str] = set()
@@ -65,7 +65,7 @@ class CandidateForm(Slots):
 
     def complete_analysis(self) -> None:
         if self.completed_analysis: return
-        self.forms_excluded_by_compound_root_vocab_configuration: set[str] = self.candidate().locations[0]().all_candidates[-1].base.forms_excluded_by_vocab_configuration
+        self.forms_excluded_by_compound_root_vocab_configuration: set[str] = self.candidate().locations[0]().all_candidates[-1].base.forms_excluded_by_vocab_configuration_legacy
         self.is_excluded_by_compound_root_vocab_configuration: bool = self.form in self.forms_excluded_by_compound_root_vocab_configuration
         self.exact_match_required_by_counterpart_vocab_configuration: bool = self.counterpart().exact_match_required_by_vocab_configuration
         self.exact_match_required: bool = self.exact_match_required_by_vocab_configuration or self.exact_match_required_by_counterpart_vocab_configuration
@@ -82,9 +82,9 @@ class CandidateForm(Slots):
         self.completed_analysis = True
 
     def vocab_fulfills_stem_requirements(self, vocab: VocabNote) -> bool:
-        if vocab.flags.requires_a_stem.is_set:
+        if vocab.matching_rules.requires_a_stem.is_set:
             return self._previous_token_ends_on_a_stem()
-        if vocab.flags.requires_e_stem.is_set:
+        if vocab.matching_rules.requires_e_stem.is_set:
             return self._previous_token_ends_on_e_stem()
         return True
 
@@ -136,6 +136,14 @@ class SurfaceCandidateForm(CandidateForm, Slots):
                 and candidate().locations[-1]().token.do_not_match_surface_for_non_compound_vocab):
             self.is_self_excluded = True
 
+        self.bases_excluded_by_vocab_configuration: set[str] = set().union(*[v.matching_rules.rules.base_is_not.get() for v in self.unexcluded_vocabs for v in self.unexcluded_vocabs])
+
+    def complete_analysis(self) -> None:
+        super().complete_analysis()
+
+        if self.counterpart().form in self.bases_excluded_by_vocab_configuration:
+            self.is_self_excluded = True
+
     def counterpart(self) -> CandidateForm: return non_optional(self.candidate().base)
 
 class BaseCandidateForm(CandidateForm, Slots):
@@ -145,5 +153,13 @@ class BaseCandidateForm(CandidateForm, Slots):
             base_form = candidate().locations[-1]().token.base_form_for_non_compound_vocab_matching
 
         super().__init__(candidate, False, base_form)
+
+        self.surfaces_excluded_by_vocab_configuration: set[str] = set().union(*[v.matching_rules.rules.surface_is_not.get() for v in self.unexcluded_vocabs for v in self.unexcluded_vocabs])
+
+    def complete_analysis(self) -> None:
+        super().complete_analysis()
+
+        if self.counterpart().form in self.surfaces_excluded_by_vocab_configuration:
+            self.is_self_excluded = True
 
     def counterpart(self) -> CandidateForm: return non_optional(self.candidate().surface)

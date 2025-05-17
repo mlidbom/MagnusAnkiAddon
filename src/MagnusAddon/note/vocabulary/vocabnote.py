@@ -13,9 +13,9 @@ from note.vocabulary.vocabnote_audio import VocabNoteAudio
 from note.vocabulary.vocabnote_conjugator import VocabNoteConjugator
 from note.vocabulary.vocabnote_context_sentences import VocabContextSentences
 from note.vocabulary.vocabnote_factory import VocabNoteFactory
-from note.vocabulary.vocabnote_flags import VocabNoteFlags
 from note.vocabulary.vocabnote_forms import VocabNoteForms
 from note.vocabulary.vocabnote_kanji import VocabNoteKanji
+from note.vocabulary.vocabnote_matching_rules import VocabNoteMatching
 from note.vocabulary.vocabnote_metadata import VocabNoteMetaData
 from note.vocabulary.vocabnote_parts_of_speech import VocabNotePartsOfSpeech
 from note.vocabulary.vocabnote_related_notes import VocabNoteRelatedNotes
@@ -57,7 +57,7 @@ class VocabNote(WaniNote, Slots):
         self.wani_extensions: VocabNoteWaniExtensions = VocabNoteWaniExtensions(self.weakref)
         self.kanji: VocabNoteKanji = VocabNoteKanji(self.weakref)
         self.meta_data: VocabNoteMetaData = VocabNoteMetaData(self.weakref)
-        self.flags: VocabNoteFlags = VocabNoteFlags(self.weakref)
+        self.matching_rules: VocabNoteMatching = VocabNoteMatching(self.weakref)
 
     def __repr__(self) -> str: return f"""{self.get_question()}"""
 

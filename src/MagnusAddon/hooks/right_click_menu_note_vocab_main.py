@@ -78,12 +78,12 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
         add_ui_action(note_menu, shortcutfinger.down1("Autogenerate compounds"), lambda: vocab.compound_parts.auto_generate())
 
     def build_toggle_flags_menu(toggle_flags_menu: QMenu) -> None:
-        add_toggle_checkbox(toggle_flags_menu, shortcutfinger.home1("Requires exact match"), vocab.flags.requires_exact_match)
-        add_toggle_checkbox(toggle_flags_menu, shortcutfinger.home2("Requires e stem"), vocab.flags.requires_e_stem)
-        add_toggle_checkbox(toggle_flags_menu, shortcutfinger.home3("Requires a stem"), vocab.flags.requires_a_stem)
-        add_toggle_checkbox(toggle_flags_menu, shortcutfinger.home4("Match with preceding token"), vocab.flags.match_with_preceding_character)
-        add_toggle_checkbox(toggle_flags_menu, shortcutfinger.home5("Match with preceding vowel"), vocab.flags.match_with_preceding_vowel)
-        add_toggle_checkbox(toggle_flags_menu, shortcutfinger.up1("Question overrides form"), vocab.flags.question_overrides_form)
+        add_toggle_checkbox(toggle_flags_menu, shortcutfinger.home1("Requires exact match"), vocab.matching_rules.requires_exact_match)
+        add_toggle_checkbox(toggle_flags_menu, shortcutfinger.home2("Requires e stem"), vocab.matching_rules.requires_e_stem)
+        add_toggle_checkbox(toggle_flags_menu, shortcutfinger.home3("Requires a stem"), vocab.matching_rules.requires_a_stem)
+        add_toggle_checkbox(toggle_flags_menu, shortcutfinger.home4("Match with preceding token"), vocab.matching_rules.match_with_preceding_character)
+        add_toggle_checkbox(toggle_flags_menu, shortcutfinger.home5("Match with preceding vowel"), vocab.matching_rules.match_with_preceding_vowel)
+        add_toggle_checkbox(toggle_flags_menu, shortcutfinger.up1("Question overrides form"), vocab.matching_rules.question_overrides_form)
 
     def build_remove_menu(remove_menu: QMenu) -> None:
         add_ui_action(remove_menu, shortcutfinger.home1("User explanation"), lambda: vocab.user.explanation.empty()).setEnabled(vocab.user.explanation.has_value())

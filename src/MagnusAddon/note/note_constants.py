@@ -117,6 +117,7 @@ class NoteFields(Slots):
         VocabsRaw = "VocabsRaw"
 
     class Vocab(Slots):
+        matching_rules = "__matching_rules"
         sentence_count = "sentence_count"
         question = MyNoteFields.question
         active_answer = MyNoteFields.answer

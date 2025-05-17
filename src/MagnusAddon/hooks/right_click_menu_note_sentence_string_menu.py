@@ -48,7 +48,7 @@ def build_string_menu(string_menu: QMenu, sentence: SentenceNote, menu_string: s
                 for excluded_index, matched_exclusion in enumerate(covered_existing_exclusions):
                     add_ui_action(remove_at_index_menu, shortcutfinger.numpad_no_numbers(excluded_index, f"{matched_exclusion.index}:{matched_exclusion.word}"), ex_lambda.bind1(exclusion_set.remove, matched_exclusion))
         else:
-            add_ui_action(word_exclusion_remove, exclusion_type_title, lambda: None).setEnabled(False)
+            add_ui_action(word_exclusion_remove, exclusion_type_title, lambda: None, False)
 
     def build_add_menu(add_menu: QMenu) -> None:
         add_add_word_exclusion_action(add_menu, shortcutfinger.home1("Hidden matches"), sentence.configuration.hidden_matches)

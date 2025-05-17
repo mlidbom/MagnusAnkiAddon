@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 class ReadOnlyStringField(Slots):
     def __init__(self, note: WeakRef[JPNote], field_name: str) -> None:
-        self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker.configured_tracker_for(self)
+        self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
         self._note = note
         self._field_name = field_name
 
