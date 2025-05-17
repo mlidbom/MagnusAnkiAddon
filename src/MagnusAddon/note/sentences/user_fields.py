@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 class SentenceUserFields(Slots):
     def __init__(self, sentence: WeakRef[SentenceNote]) -> None:
-        self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker(self.__class__)
+        self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker.configured_tracker_for(self)
         self._sentence: WeakRef[SentenceNote] = sentence
         self.comments: StripHtmlOnReadStringField = StripHtmlOnReadStringField(sentence, SentenceNoteFields.user_comments)
         self.comments_long: StripHtmlOnReadStringField = StripHtmlOnReadStringField(sentence, SentenceNoteFields.user_comments_long)

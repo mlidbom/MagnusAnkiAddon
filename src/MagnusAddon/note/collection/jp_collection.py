@@ -25,7 +25,7 @@ if TYPE_CHECKING:
 class JPCollection(Slots):
     __slots__ = ["__weakref__"]
     def __init__(self, anki_collection: Collection) -> None:
-        self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker(self.__class__)
+        self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker.tracker_for(self)
         mylog.info("JPCollection.__init__")
         app.get_ui_utils().tool_tip(f"{Mine.app_name} loading", 60000)
         with StopWatch.log_warning_if_slower_than(5, "Full collection setup"):

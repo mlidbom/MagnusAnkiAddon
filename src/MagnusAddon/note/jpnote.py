@@ -22,7 +22,7 @@ if TYPE_CHECKING:
 
 class JPNote(Slots):
     def __init__(self, note: Note) -> None:
-        self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker(self.__class__)
+        self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker.configured_tracker_for(self)
         self.backend_note = note
         self._is_updating_generated_data: bool = False
         self._generated_data_was_updated = False

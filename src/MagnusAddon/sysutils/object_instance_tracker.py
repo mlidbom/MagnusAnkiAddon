@@ -3,6 +3,7 @@ from __future__ import annotations
 import sys
 from typing import Any
 
+from ankiutils import app
 from autoslot import Slots
 from sysutils import ex_gc
 from sysutils.ex_str import newline
@@ -68,6 +69,12 @@ class ObjectInstanceTracker(Slots):
         if cls_type.__module__ is not None and cls_type.__module__ != "__builtin__":
             return sys.intern(cls_type.__module__ + "." + cls_type.__qualname__)
         return sys.intern(cls_type.__qualname__)
+
+    @staticmethod
+    def configured_tracker_for(obj: object) -> object | None: return ObjectInstanceTracker(obj.__class__) if app.config().track_instances_in_memory.get_value() else None
+
+    @staticmethod
+    def tracker_for(obj: object) -> ObjectInstanceTracker: return ObjectInstanceTracker(obj.__class__)
 
 def print_instance_counts() -> None:
     print("################### Instance counts ###################")

@@ -23,7 +23,7 @@ class TextAnalysis(Slots):
     version = "text_analysis_0.1"
 
     def __init__(self, sentence:str, sentence_configuration:SentenceConfiguration) -> None:
-        self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker(self.__class__)
+        self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker.configured_tracker_for(self)
         self.text = sentence
         self.configuration = sentence_configuration
         self.tokens:list[ProcessedToken] = _tokenizer.tokenize(sentence).pre_process()

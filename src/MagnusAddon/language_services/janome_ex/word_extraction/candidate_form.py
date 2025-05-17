@@ -22,7 +22,7 @@ _noise_characters = {".", ",", ":", ";", "/", "|", "。", "、", "?", "!"}
 class CandidateForm(Slots):
     __slots__ = ["__weakref__"]
     def __init__(self, candidate: WeakRef[CandidateWord], is_surface: bool, form: str) -> None:
-        self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker(self.__class__)
+        self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker.configured_tracker_for(self)
         from language_services.jamdict_ex.dict_lookup import DictLookup
 
         self.start_index: int = candidate().locations[0]().character_start_index

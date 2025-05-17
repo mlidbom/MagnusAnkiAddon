@@ -17,7 +17,7 @@ from sysutils.ex_str import newline
 class CandidateWord(Slots):
     __slots__ = ["__weakref__"]
     def __init__(self, locations: list[WeakRef[TokenTextLocation]]) -> None:
-        self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker(self.__class__)
+        self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker.configured_tracker_for(self)
         self.analysis: WeakRef[TextAnalysis] = locations[0]().analysis
         self.locations: list[WeakRef[TokenTextLocation]] = locations
         self.is_custom_compound: bool = len(locations) > 1
