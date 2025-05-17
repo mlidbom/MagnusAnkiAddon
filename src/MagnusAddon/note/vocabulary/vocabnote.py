@@ -67,6 +67,7 @@ class VocabNote(WaniNote, Slots):
     def update_generated_data(self) -> None:
         self.meta_data.sentence_count.set(len(self.sentences.all()))
         self.active_answer.set(self.get_answer())
+        self.matching_rules.save()
 
         super().update_generated_data()
         vocabnote_generated_data.update_generated_data(self)
