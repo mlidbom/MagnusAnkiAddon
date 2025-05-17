@@ -22,9 +22,9 @@ def create_default_mnemonic(kanji_note:KanjiNote) -> str:
 
         def try_combine_framentary_matches_into_one_reading() -> str:
             segments_with_mapped_readings_by_start_index: list[list[str]] = []
-            for segment_start_index in range(reading_length):
-                candidates = [reading[segment_start_index:sub_string_length] for sub_string_length in range(segment_start_index + 1, reading_length + 1)]
-                segments_with_mapped_readings_by_start_index.append([cand for cand in candidates if cand in readings_mappings])
+            for current_postion in range(reading_length):
+                all_substrings_permutations_starting_at_current_position = [reading[current_postion:sub_string_length] for sub_string_length in range(current_postion + 1, reading_length + 1)]
+                segments_with_mapped_readings_by_start_index.append([candidate for candidate in all_substrings_permutations_starting_at_current_position if candidate in readings_mappings])
 
             def remove_dead_end_paths() -> None:
                 def reached_end_of_reading() -> bool: return path_index + len(match) == reading_length
@@ -38,7 +38,7 @@ def create_default_mnemonic(kanji_note:KanjiNote) -> str:
                                 matches_removed = True
                                 segments_with_mapped_readings_by_start_index[path_index].remove(match)
 
-            def find_shortest_path() -> list[str]:
+            def find_shortest_path_prefer_long_starting_segments() -> list[str]:
                 shortest_paths_to_position: dict[int, list[str]] = {0: []}  # Start with an empty path at position 0
 
                 def current_index_is_reachable() -> bool: return current_position in shortest_paths_to_position
@@ -46,6 +46,12 @@ def create_default_mnemonic(kanji_note:KanjiNote) -> str:
                 def current_segment_is_shortest_path_to_position_after_segment() -> bool:
                     return (position_after_segment not in shortest_paths_to_position or
                             len(shortest_paths_to_position[current_position]) < len(shortest_paths_to_position[position_after_segment]))
+
+                def sort_candidates_longest_first_so_that_the_longest_starting_candidate_will_be_preferred() -> None:
+                    for start_position in range(reading_length):
+                        segments_with_mapped_readings_by_start_index[start_position].sort(key=lambda candidate: -len(candidate))
+
+                sort_candidates_longest_first_so_that_the_longest_starting_candidate_will_be_preferred()
 
                 current_position:int = 0
                 for current_position in range(reading_length):
@@ -59,7 +65,7 @@ def create_default_mnemonic(kanji_note:KanjiNote) -> str:
                 return shortest_paths_to_position.get(reading_length, [])
 
             remove_dead_end_paths()
-            shortest_path = find_shortest_path()
+            shortest_path = find_shortest_path_prefer_long_starting_segments()
 
             if not shortest_path: return ""
             combined_reading = "-".join([readings_mappings[fragment] for fragment in shortest_path])
