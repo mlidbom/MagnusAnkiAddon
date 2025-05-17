@@ -41,21 +41,20 @@ def create_default_mnemonic(kanji_note:KanjiNote) -> str:
             def find_shortest_path() -> list[str]:
                 shortest_paths_to_position: dict[int, list[str]] = {0: []}  # Start with an empty path at position 0
 
-                def current_index_is_reachable() -> bool: return index in shortest_paths_to_position
+                def current_index_is_reachable() -> bool: return current_position in shortest_paths_to_position
 
-                def segment_is_shortest_path_to_position_after_segment() -> bool:
+                def current_segment_is_shortest_path_to_position_after_segment() -> bool:
                     return (position_after_segment not in shortest_paths_to_position or
-                            len(shortest_paths_to_position[index]) + 1 < len(shortest_paths_to_position[position_after_segment]))
+                            len(shortest_paths_to_position[current_position]) < len(shortest_paths_to_position[position_after_segment]))
 
-                index:int = 0
-                for index in range(reading_length):
+                current_position:int = 0
+                for current_position in range(reading_length):
                     if not current_index_is_reachable(): continue
 
-                    segments_starting_at_current_index = segments_with_mapped_readings_by_start_index[index]
-                    for segment in segments_starting_at_current_index:
-                        position_after_segment:int = index + len(segment)
-                        if segment_is_shortest_path_to_position_after_segment():
-                            shortest_paths_to_position[position_after_segment] = shortest_paths_to_position[index] + [segment]
+                    for current_segment in segments_with_mapped_readings_by_start_index[current_position]:
+                        position_after_segment:int = current_position + len(current_segment)
+                        if current_segment_is_shortest_path_to_position_after_segment():
+                            shortest_paths_to_position[position_after_segment] = shortest_paths_to_position[current_position] + [current_segment]
 
                 return shortest_paths_to_position.get(reading_length, [])
 
