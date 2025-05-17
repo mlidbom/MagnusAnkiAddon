@@ -7,12 +7,13 @@ from anki.cards import Card, CardId
 from ankiutils import query_builder, search_executor
 from aqt import gui_hooks, mw
 from aqt.qt import QKeySequence, QShortcut
+from autoslot import Slots
 from PyQt6.QtWidgets import QWidget
 from sysutils import typed
 from sysutils.typed import checked_cast
 
 
-class CardHistoryNavigator:
+class CardHistoryNavigator(Slots):
     def __init__(self) -> None:
         self.card_history: list[CardId] = []  # Stores card IDs
         self.current_position: int = -1

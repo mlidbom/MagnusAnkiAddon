@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Optional
 
 from autoslot import Slots
-
 from note.note_constants import Mine
 
 if TYPE_CHECKING:

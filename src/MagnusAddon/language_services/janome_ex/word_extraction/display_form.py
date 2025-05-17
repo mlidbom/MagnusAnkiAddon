@@ -2,12 +2,14 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from autoslot import Slots
+
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.candidate_form import CandidateForm
     from note.vocabulary.vocabnote import VocabNote
     from sysutils.weak_ref import WeakRef
 
-class DisplayForm:
+class DisplayForm(Slots):
     def __init__(self, candidate: WeakRef[CandidateForm]) -> None:
         self.candidate:WeakRef[CandidateForm] = candidate
         self.parsed_form:str = candidate().form
@@ -26,7 +28,7 @@ class VocabDisplayForm(DisplayForm):
             self.parsed_form = self.vocab.get_question()
 
 
-# class DictionaryDisplayForm(DisplayForm):
+# class DictionaryDisplayForm(DisplayForm, Slots):
 #     def __init__(self, candidate: CandidateForm, dictionary_entry: DictEntry):
 #         super().__init__(candidate)
 #         self.dictionary_entry = dictionary_entry

@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
-
 from note.note_constants import NoteFields
 from note.notefields.string_field import StringField
 from sysutils.object_instance_tracker import ObjectInstanceTracker

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from autoslot import Slots
 
+
 class SentenceSpec(Slots):
     def __init__(self, question: str, answer: str) -> None:
         self.question = question

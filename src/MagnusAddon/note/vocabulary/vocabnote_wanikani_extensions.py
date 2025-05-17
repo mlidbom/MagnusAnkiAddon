@@ -3,9 +3,8 @@ from __future__ import annotations
 import typing
 
 from anki.notes import Note
-from autoslot import Slots
-
 from ankiutils import app
+from autoslot import Slots
 from note.note_constants import Mine, NoteFields, NoteTypes
 from note.notefields.comma_separated_strings_list_field import CommaSeparatedStringsListField
 from note.notefields.comma_separated_strings_set_field import CommaSeparatedStringsSetField

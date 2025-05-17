@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
-
 from language_services.jamdict_ex.dict_lookup import DictLookup
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from note.note_constants import NoteFields

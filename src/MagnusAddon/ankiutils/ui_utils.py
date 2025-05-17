@@ -2,9 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Callable, Optional
 
-from autoslot import Slots
-
 from ankiutils import app
+from autoslot import Slots
 from PyQt6.QtWidgets import QApplication
 
 if TYPE_CHECKING:

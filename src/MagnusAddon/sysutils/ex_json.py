@@ -4,7 +4,6 @@ import json
 from typing import Any, Callable, TypeVar
 
 from autoslot import Slots
-
 from sysutils import typed
 
 

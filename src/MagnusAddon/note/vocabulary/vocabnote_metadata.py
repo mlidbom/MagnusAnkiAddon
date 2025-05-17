@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
-
 from language_services.jamdict_ex.priority_spec import PrioritySpec
 from note.note_constants import Mine, NoteFields
 from note.notefields.integer_field import IntegerField

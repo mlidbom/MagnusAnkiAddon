@@ -4,9 +4,8 @@ import os
 from typing import TYPE_CHECKING
 
 import requests
-from autoslot import Slots
-
 from ankiutils import app
+from autoslot import Slots
 from wanikani.wanikani_api_client import WanikaniClient
 
 if TYPE_CHECKING:

@@ -5,9 +5,8 @@ import time
 from contextlib import contextmanager
 from typing import TYPE_CHECKING, Callable
 
-from autoslot import Slots
-
 import mylog
+from autoslot import Slots
 
 if TYPE_CHECKING:
     from collections.abc import Iterator

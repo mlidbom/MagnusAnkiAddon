@@ -4,7 +4,6 @@ import re
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
-
 from note.note_constants import Mine, NoteFields
 from note.notefields.comma_separated_strings_list_field import CommaSeparatedStringsListField
 from sysutils.ex_sequence import ExSequence

@@ -59,12 +59,12 @@ class NoteTypes(Slots):
 class NoteFields(Slots):
     note_id = "nid"
     class VocabNoteType(Slots):
-        class Card:
+        class Card(Slots):
             Reading = CardTypes.reading
             Listening = CardTypes.listening
 
     class SentencesNoteType(Slots):
-        class Card:
+        class Card(Slots):
             Reading = CardTypes.reading
             Listening = CardTypes.listening
 

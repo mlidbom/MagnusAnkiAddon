@@ -2,9 +2,8 @@ from __future__ import annotations
 
 from typing import Callable
 
-from autoslot import Slots
-
 from ankiutils.ui_utils_interface import IUIUtils
+from autoslot import Slots
 
 
 class UIUtilsStub(IUIUtils, Slots):

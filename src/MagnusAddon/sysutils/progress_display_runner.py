@@ -3,9 +3,8 @@ from __future__ import annotations
 import time
 from typing import Any, Callable, TypeVar
 
-from autoslot import Slots
-
 from ankiutils import app
+from autoslot import Slots
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication, QMessageBox, QProgressDialog
 from sysutils import app_thread_pool, timeutil
