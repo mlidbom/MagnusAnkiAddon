@@ -8,6 +8,8 @@ from typing import TYPE_CHECKING, Callable, cast
 
 from anki import hooks
 from anki.models import ModelManager, NotetypeDict
+from autoslot import Slots
+
 from anki_extentions.notetype_ex.note_type_ex import NoteTypeEx
 from ankiutils import app
 from note.note_constants import NoteTypes
@@ -26,7 +28,7 @@ class Task:
     func: Callable[[], None]
     completion_event: Event | None = None
 
-class DedicatedThread:
+class DedicatedThread(Slots):
     def __init__(self) -> None:
         self.queue: Queue[Task] = Queue()
         self.thread: Thread = Thread(target=self._worker, daemon=True)
@@ -55,7 +57,7 @@ class DedicatedThread:
         self.submit(null_op)  # Prevents deadlock
         self.thread.join()
 
-class CacheRunner:
+class CacheRunner(Slots):
     def __init__(self, anki_collection: Collection) -> None:
         self._pause_data_generation: bool = False
         self._generate_data_subscribers: list[Callable[[], None]] = []

@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 
 from anki.consts import QUEUE_TYPE_NEW
 from ankiutils import app
+from autoslot import Slots
 from note.jpnote import JPNote
 from note.note_constants import NoteTypes
 
@@ -13,7 +14,7 @@ if TYPE_CHECKING:
     from anki.cards import Card
 
 
-class CardUtils:
+class CardUtils(Slots):
     @staticmethod
     def is_new(card: Card) -> bool:
         return card.queue == QUEUE_TYPE_NEW

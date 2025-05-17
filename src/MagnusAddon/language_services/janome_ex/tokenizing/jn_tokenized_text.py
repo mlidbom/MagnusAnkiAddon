@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 import mylog
 from ankiutils import app
+from autoslot import Slots
 from language_services import conjugator
 from language_services.jamdict_ex.dict_lookup import DictLookup
 from sysutils import ex_sequence
@@ -13,7 +14,7 @@ if TYPE_CHECKING:
     from note.collection.vocab_collection import VocabCollection
 
 
-class ProcessedToken:
+class ProcessedToken(Slots):
     def __init__(self, surface: str, base: str, base_for_vocab: str) -> None:
         self.surface = surface
         self.base_form = base
@@ -24,13 +25,13 @@ class ProcessedToken:
     def __repr__(self) -> str:
         return f"ProcessedToken('{self.surface}', '{self.base_form}', '{self.base_form_for_non_compound_vocab_matching}', {self.is_inflectable_word})"
 
-class SplitToken(ProcessedToken):
+class SplitToken(ProcessedToken, Slots):
     def __init__(self, surface: str, base: str, base_for_vocab: str, is_inflectable_word: bool, do_not_match_surface_for_non_compound_vocab: bool) -> None:
         super().__init__(surface, base, base_for_vocab)
         self.is_inflectable_word = is_inflectable_word
         self.do_not_match_surface_for_non_compound_vocab = do_not_match_surface_for_non_compound_vocab
 
-class JNTokenWrapper(ProcessedToken):
+class JNTokenWrapper(ProcessedToken, Slots):
     def __init__(self, token: JNToken, vocabs: VocabCollection) -> None:
         super().__init__(token.surface, token.base_form, token.base_form)
         self.token = token
@@ -85,7 +86,7 @@ class JNTokenWrapper(ProcessedToken):
             return []
         return [root_verb_token, eru_token]
 
-class JNTokenizedText:
+class JNTokenizedText(Slots):
     def __init__(self, text: str, tokens: list[JNToken]) -> None:
         self.text = text
         self.tokens = tokens

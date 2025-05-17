@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 from anki import consts
 from anki_extentions.deck_ex import DeckEx
+from autoslot import Slots
 from sysutils.timeutil import StopWatch
 from sysutils.typed import non_optional
 
@@ -28,7 +29,7 @@ def _get_answers_since_last_day_cutoff_for_card(card: anki.cards.Card) -> list[i
         reviews = app.anki_db().all("SELECT ease FROM revlog WHERE cid = ? AND id > ? ORDER BY id DESC", card.id, _latest_day_cutoff_timestamp() * timeutil.MILLISECONDS_PER_SECOND)
         return [typed.int_(review[0]) for review in reviews]
 
-class CardEx:
+class CardEx(Slots):
     def __init__(self, card:anki.cards.Card) -> None:
         self.card = card
 

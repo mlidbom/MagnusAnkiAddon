@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Generic, TypeVar
 
+from autoslot import Slots
 from note.notefields.string_field import StringField
 from sysutils.lazy import Lazy
 
@@ -11,7 +12,7 @@ if TYPE_CHECKING:
 
 T: TypeVar = TypeVar("T")
 
-class JsonObjectSerializer(Generic[T]):
+class JsonObjectSerializer(Generic[T], Slots):
     def serialize(self, obj: T) -> str: raise NotImplementedError()
     def deserialize(self, json: str) -> T: raise NotImplementedError()
 

@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 from anki.notes import Note
 from ankiutils import app
+from autoslot import Slots
 from note.note_constants import Mine, NoteFields, NoteTypes
 from note.waninote import WaniNote
 
@@ -12,7 +13,7 @@ if TYPE_CHECKING:
 
 
 
-class RadicalNote(WaniNote):
+class RadicalNote(WaniNote, Slots):
     def __init__(self, note: Note) -> None:
         super().__init__(note)
 

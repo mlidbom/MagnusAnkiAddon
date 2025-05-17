@@ -3,6 +3,8 @@ from __future__ import annotations
 from collections import defaultdict
 from typing import TYPE_CHECKING, Optional
 
+from autoslot import Slots
+
 if TYPE_CHECKING:
     from anki.collection import Collection
     from anki.notes import Note, NoteId
@@ -15,7 +17,7 @@ from note.note_constants import NoteTypes
 from sysutils import ex_sequence, kana_utils
 
 
-class _KanjiSnapshot(CachedNote):
+class _KanjiSnapshot(CachedNote, Slots):
     def __init__(self, note: KanjiNote) -> None:
         super().__init__(note)
         self.radicals = set(note.get_radicals())
@@ -39,7 +41,7 @@ class _KanjiCache(NoteCache[KanjiNote, _KanjiSnapshot]):
 
     def with_radical(self, radical: str) -> list[KanjiNote]: return list(self._by_radical[radical])
 
-class KanjiCollection:
+class KanjiCollection(Slots):
     def __init__(self, collection: Collection, cache_manager: CacheRunner) -> None:
         def kanji_constructor(note: Note) -> KanjiNote: return KanjiNote(note)
         self.collection = BackEndFacade[KanjiNote](collection, kanji_constructor, NoteTypes.Kanji)

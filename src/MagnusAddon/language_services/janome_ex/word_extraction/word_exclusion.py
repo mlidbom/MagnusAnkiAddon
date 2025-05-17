@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from autoslot import Slots
+
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.hierarchicalword import HierarchicalWord
     from sysutils.ex_json import JsonReader
@@ -9,7 +11,7 @@ if TYPE_CHECKING:
 from typing import Any
 
 
-class WordExclusion:
+class WordExclusion(Slots):
     secret = "aoesunth9cgrcgf"
     _no_index = -1
     def __init__(self, word: str, index: int, _secret:str) -> None:

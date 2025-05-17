@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 
 from anki.notes import Note
 from ankiutils import app
+from autoslot import Slots
 from note import kanjinote_mnemonic_maker
 from note.vocabulary import vocabnote_sorting
 
@@ -19,7 +20,8 @@ from sysutils import ex_sequence, ex_str, kana_utils
 from wanikani.wanikani_api_client import WanikaniClient
 
 
-class KanjiNote(WaniNote):
+class KanjiNote(WaniNote, Slots):
+    __slots__ = ["__weakref__"]
     def __init__(self, note: Note) -> None:
         super().__init__(note)
 

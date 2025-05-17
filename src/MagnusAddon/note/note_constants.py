@@ -1,19 +1,21 @@
 # noinspection PyUnusedName
 from __future__ import annotations
 
+from autoslot import Slots
 
-class Builtin:
+
+class Builtin(Slots):
     # noinspection PyUnusedName
     Tag = "tag"
     Note = "note"
     Deck = "deck"
     Card = "card"
 
-class MyNoteFields:
+class MyNoteFields(Slots):
     question = "Q"
     answer = "A"
 
-class ImmersionKitSentenceNoteFields:
+class ImmersionKitSentenceNoteFields(Slots):
     audio = "Audio Sentence"
     id = "ID"
     screenshot = "Screenshot"
@@ -21,7 +23,7 @@ class ImmersionKitSentenceNoteFields:
     answer = "English"
     question = "Expression"
 
-class SentenceNoteFields:
+class SentenceNoteFields(Slots):
     reading = "Reading"
     id = "ID"
     active_question = MyNoteFields.question
@@ -41,11 +43,11 @@ class SentenceNoteFields:
     screenshot = "Screenshot"
     configuration = "__configuration"
 
-class CardTypes:
+class CardTypes(Slots):
     reading = "Reading"
     listening = "Listening"
 
-class NoteTypes:
+class NoteTypes(Slots):
     immersion_kit = "Immersion Kit Sentence"
     Kanji = "_Kanji"
     Vocab = "_Vocab"
@@ -54,19 +56,19 @@ class NoteTypes:
 
     ALL = {Kanji, Vocab, Radical, Sentence}
 
-class NoteFields:
+class NoteFields(Slots):
     note_id = "nid"
-    class VocabNoteType:
+    class VocabNoteType(Slots):
         class Card:
             Reading = CardTypes.reading
             Listening = CardTypes.listening
 
-    class SentencesNoteType:
+    class SentencesNoteType(Slots):
         class Card:
             Reading = CardTypes.reading
             Listening = CardTypes.listening
 
-    class WaniCommon:
+    class WaniCommon(Slots):
         subject_id = "subject_id"
         level = "level"
         lesson_position = "lesson_position"
@@ -76,7 +78,7 @@ class NoteFields:
         auxiliary_meanings_whitelist = "auxiliary_meanings_whitelist"
         auxiliary_meanings_blacklist = "auxiliary_meanings_blacklist"
 
-    class Radical:
+    class Radical(Slots):
         question = MyNoteFields.question
         answer = MyNoteFields.answer
         source_mnemonic = "Radical_Meaning"
@@ -85,7 +87,7 @@ class NoteFields:
 
         amalgamation_subject_ids = "amalgamation_subject_ids"
 
-    class Kanji:
+    class Kanji(Slots):
         question = MyNoteFields.question
         active_answer = MyNoteFields.answer
         source_answer = "source_answer"
@@ -114,7 +116,7 @@ class NoteFields:
         Vocabs = "Vocabs"
         VocabsRaw = "VocabsRaw"
 
-    class Vocab:
+    class Vocab(Slots):
         sentence_count = "sentence_count"
         question = MyNoteFields.question
         active_answer = MyNoteFields.answer
@@ -153,11 +155,11 @@ class NoteFields:
 
         component_subject_ids = "component_subject_ids"
 
-class Mine:
+class Mine(Slots):
     app_name = "JA-Studio"
     app_still_loading_message = f"{app_name} still loading....."
     VocabPrefixSuffixMarker = "〜"
-    class Tags:
+    class Tags(Slots):
 
 
         base_folder = "-::"

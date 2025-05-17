@@ -1,9 +1,9 @@
 from __future__ import annotations
 
+import sys
 from typing import Any
 
-import sys
-
+from autoslot import Slots
 from sysutils import ex_gc
 from sysutils.ex_str import newline
 from sysutils.timeutil import StopWatch
@@ -46,7 +46,7 @@ def current_snapshot() -> Snapshot:
         take_snapshot()
     return snapshots[-1]
 
-class ObjectInstanceTracker:
+class ObjectInstanceTracker(Slots):
 
     def __init__(self, cls_type: type[Any]) -> None:
         self.type_name = self._get_fully_qualified_name(cls_type)

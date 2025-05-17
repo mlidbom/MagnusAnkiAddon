@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Callable, Generic, TypeVar
 
 from ankiutils import app, ui_utils
+from autoslot import Slots
 from note.jpnote import JPNote
 from note.note_constants import Mine
 from sysutils import app_thread_pool
@@ -16,7 +17,7 @@ if TYPE_CHECKING:
 
 TNote = TypeVar("TNote", bound=JPNote)
 
-class PrerenderingAnswerContentRenderer(Generic[TNote]):
+class PrerenderingAnswerContentRenderer(Generic[TNote], Slots):
     def __init__(self, cls: type[TNote], render_methods:dict[str, Callable[[TNote], str]]) -> None:
         self._cls = cls
         self._render_methods = render_methods

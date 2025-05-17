@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from autoslot import Slots
 from note.notefields.comma_separated_strings_list_field import CommaSeparatedStringsListField
 
 if TYPE_CHECKING:
@@ -9,7 +10,7 @@ if TYPE_CHECKING:
     from sysutils.weak_ref import WeakRef
 
 
-class CommaSeparatedStringsSetField:
+class CommaSeparatedStringsSetField(Slots):
     def __init__(self, note: WeakRef[JPNote], field_name: str) -> None:
         self._field = CommaSeparatedStringsListField(note, field_name)
 

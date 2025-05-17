@@ -5,6 +5,7 @@ from typing import Callable, Generic, Optional, TypeVar
 
 from ankiutils import app
 from aqt import mw
+from autoslot import Slots
 from sysutils.lazy import Lazy
 
 T = TypeVar("T")
@@ -50,7 +51,7 @@ ConfigurationValueFloat = ConfigurationValue[float]
 ConfigurationValueBool = ConfigurationValue[bool]
 ConfigurationValueString = ConfigurationValue[str]
 
-class JapaneseConfig:
+class JapaneseConfig(Slots):
     def __init__(self) -> None:
         self.boost_failed_card_allowed_time_by_factor = ConfigurationValueFloat("boost_failed_card_allowed_time_by_factor", "Boost Failed Card Allowed Time Factor", 1.5)
         self.boost_failed_card_allowed_time = ConfigurationValueBool("boost_failed_card_allowed_time", "Boost failed card allowed time", True)

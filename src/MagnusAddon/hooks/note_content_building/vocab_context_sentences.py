@@ -3,13 +3,14 @@ from __future__ import annotations
 import language_services.conjugator
 from ankiutils import app
 from aqt import gui_hooks
+from autoslot import Slots
 from hooks.note_content_building.content_renderer import PrerenderingAnswerContentRenderer
 from note.vocabulary.vocabnote import VocabNote
 from sysutils import ex_str
 from sysutils.ex_str import newline
 
 
-class ContextSentence:
+class ContextSentence(Slots):
     def __init__(self, japanese:str, english:str, audio:str) -> None:
         self.japanese = japanese
         self.english = english

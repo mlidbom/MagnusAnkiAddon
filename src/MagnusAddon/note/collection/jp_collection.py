@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from autoslot import Slots
+
 import mylog
 from ankiutils import app
 from note.collection.cache_runner import CacheRunner
@@ -21,7 +23,8 @@ if TYPE_CHECKING:
     from anki.collection import Collection
     from anki.notes import NoteId
 
-class JPCollection:
+class JPCollection(Slots):
+    __slots__ = ["__weakref__"]
     def __init__(self, anki_collection: Collection) -> None:
         self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker(self.__class__)
         mylog.info("JPCollection.__init__")

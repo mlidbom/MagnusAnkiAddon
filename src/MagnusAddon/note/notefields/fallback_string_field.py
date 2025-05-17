@@ -2,13 +2,14 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from autoslot import Slots
 from note.notefields.string_field import StringField
 
 if TYPE_CHECKING:
     from note.jpnote import JPNote
     from sysutils.weak_ref import WeakRef
 
-class FallbackStringField:
+class FallbackStringField(Slots):
     def __init__(self, note: WeakRef[JPNote], primary_field: str, fallback_field: str) -> None:
         self._field = StringField(note, primary_field)
         self._fallback_field = StringField(note, fallback_field)

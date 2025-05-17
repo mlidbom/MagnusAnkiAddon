@@ -2,10 +2,11 @@ from __future__ import annotations
 
 from typing import Any
 
+from autoslot import Slots
 from sysutils import typed
 
 
-class NoteTemplateEx:
+class NoteTemplateEx(Slots):
     def __init__(self, name: str) -> None:
         self.name = name
         self.ord = 0

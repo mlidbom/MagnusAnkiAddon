@@ -4,6 +4,8 @@ import time
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Generic, TypeVar
 
+from autoslot import Slots
+
 from note.jpnote import JPNote
 from note.note_constants import CardTypes
 from sysutils import app_thread_pool
@@ -17,7 +19,7 @@ if TYPE_CHECKING:
     from note.collection.cache_runner import CacheRunner
 
 
-class CachedNote:
+class CachedNote(Slots):
     def __init__(self, note: JPNote) -> None:
         self.id = note.get_id()
         self.answer = note.get_answer()

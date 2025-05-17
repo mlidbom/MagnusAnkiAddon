@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Optional
 
 from ankiutils import app
+from autoslot import Slots
 from language_services.jamdict_ex.dict_lookup import DictLookup
 from language_services.janome_ex.tokenizing.jn_tokenizer import JNTokenizer
 from language_services.janome_ex.word_extraction.extracted_word import ExtractedWord
@@ -17,7 +18,7 @@ if TYPE_CHECKING:
 _noise_characters = {".", ",", ":", ";", "/", "|", "。", "、"}
 _max_lookahead = 12
 
-class WordExtractor:
+class WordExtractor(Slots):
     def __init__(self, tokenizer: JNTokenizer) -> None:
         self.version = "janome_extractor_1"
         self._tokenizer = tokenizer

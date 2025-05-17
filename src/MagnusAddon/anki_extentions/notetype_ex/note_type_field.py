@@ -2,10 +2,11 @@ from __future__ import annotations
 
 from typing import Any
 
+from autoslot import Slots
 from sysutils import typed
 
 
-class NoteFieldEx:
+class NoteFieldEx(Slots):
     def __init__(self, name: str) -> None:
         self.name = name
         self.ord = 0

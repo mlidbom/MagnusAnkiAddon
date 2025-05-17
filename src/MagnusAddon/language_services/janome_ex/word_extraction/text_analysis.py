@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from autoslot import Slots
 from sysutils.object_instance_tracker import ObjectInstanceTracker
 from sysutils.weak_ref import WeakRef
 
@@ -17,7 +18,8 @@ from sysutils.ex_str import newline
 
 _tokenizer = JNTokenizer()
 
-class TextAnalysis:
+class TextAnalysis(Slots):
+    __slots__ = ["__weakref__"]
     version = "text_analysis_0.1"
 
     def __init__(self, sentence:str, sentence_configuration:SentenceConfiguration) -> None:
