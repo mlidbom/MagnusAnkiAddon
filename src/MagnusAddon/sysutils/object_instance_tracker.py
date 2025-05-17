@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import Any
 
+import sys
+
 from sysutils import ex_gc
 from sysutils.ex_str import newline
 from sysutils.timeutil import StopWatch
@@ -64,8 +66,8 @@ class ObjectInstanceTracker:
     @staticmethod
     def _get_fully_qualified_name(cls_type: type[Any]) -> str:
         if cls_type.__module__ is not None and cls_type.__module__ != "__builtin__":
-            return cls_type.__module__ + "." + cls_type.__qualname__
-        return cls_type.__qualname__
+            return sys.intern(cls_type.__module__ + "." + cls_type.__qualname__)
+        return sys.intern(cls_type.__qualname__)
 
 def print_instance_counts() -> None:
     print("################### Instance counts ###################")
