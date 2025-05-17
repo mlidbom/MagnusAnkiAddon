@@ -136,7 +136,7 @@ class SurfaceCandidateForm(CandidateForm, Slots):
                 and candidate().locations[-1]().token.do_not_match_surface_for_non_compound_vocab):
             self.is_self_excluded = True
 
-        self.bases_excluded_by_vocab_configuration: set[str] = set().union(*[v.matching_rules.rules.base_is_not.get() for v in self.unexcluded_vocabs for v in self.unexcluded_vocabs])
+        self.bases_excluded_by_vocab_configuration: set[str] = set().union(*[v.matching_rules.rules.base_is_not.get() for v in self.unexcluded_vocabs])
 
     def complete_analysis(self) -> None:
         super().complete_analysis()
@@ -154,7 +154,7 @@ class BaseCandidateForm(CandidateForm, Slots):
 
         super().__init__(candidate, False, base_form)
 
-        self.surfaces_excluded_by_vocab_configuration: set[str] = set().union(*[v.matching_rules.rules.surface_is_not.get() for v in self.unexcluded_vocabs for v in self.unexcluded_vocabs])
+        self.surfaces_excluded_by_vocab_configuration: set[str] = set().union(*[v.matching_rules.rules.surface_is_not.get() for v in self.unexcluded_vocabs])
 
     def complete_analysis(self) -> None:
         super().complete_analysis()
