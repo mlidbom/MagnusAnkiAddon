@@ -1,11 +1,12 @@
 from __future__ import annotations
 
+from autoslot import Slots
 from language_services.janome_ex.tokenizing.jn_parts_of_speech import POS, JNPartsOfSpeech
 from sysutils import kana_utils, typed
 
 
 # noinspection PyUnusedFunction
-class JNToken:
+class JNToken(Slots):
     def __init__(self,
                  parts_of_speech: JNPartsOfSpeech,
                  base_form: str,

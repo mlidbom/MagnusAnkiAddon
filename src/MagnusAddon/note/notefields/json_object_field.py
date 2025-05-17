@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Generic, TypeVar
 
+from autoslot import Slots
 from note.notefields.string_field import StringField
 from sysutils.lazy import Lazy
 
@@ -11,11 +12,11 @@ if TYPE_CHECKING:
 
 T: TypeVar = TypeVar("T")
 
-class JsonObjectSerializer(Generic[T]):
+class JsonObjectSerializer(Generic[T], Slots):
     def serialize(self, obj: T) -> str: raise NotImplementedError()
     def deserialize(self, json: str) -> T: raise NotImplementedError()
 
-class JsonObjectField(Generic[T]):
+class JsonObjectField(Generic[T], Slots):
     def __init__(self, note: WeakRef[JPNote], field: str, serializer: JsonObjectSerializer[T]) -> None:
         self._note: WeakRef[JPNote] = note
         self._field: StringField = StringField(note, field)

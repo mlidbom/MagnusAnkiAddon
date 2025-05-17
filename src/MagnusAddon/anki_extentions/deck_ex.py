@@ -3,10 +3,11 @@ from __future__ import annotations
 from anki.decks import DeckDict, DeckId
 from anki_extentions.deck_configdict_ex import DeckConfigDictEx
 from ankiutils import app
+from autoslot import Slots
 from sysutils.typed import checked_cast_generics, str_
 
 
-class DeckEx:
+class DeckEx(Slots):
     def __init__(self, deck_dict: DeckDict) -> None:
         self.deck_dict = deck_dict
         self.name = str_(deck_dict["name"])

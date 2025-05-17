@@ -3,6 +3,7 @@ from __future__ import annotations
 from collections import defaultdict
 from typing import TYPE_CHECKING
 
+from autoslot import Slots
 from note.collection.backend_facade import BackEndFacade
 from note.collection.note_cache import CachedNote, NoteCache
 from note.note_constants import NoteTypes
@@ -17,7 +18,7 @@ if TYPE_CHECKING:
 
 
 
-class _VocabSnapshot(CachedNote):
+class _VocabSnapshot(CachedNote, Slots):
     def __init__(self, note: VocabNote) -> None:
         super().__init__(note)
         self.forms = set(note.forms.unexcluded_set())
@@ -28,7 +29,7 @@ class _VocabSnapshot(CachedNote):
         self.derived_from = note.related_notes.derived_from.get()
         self.stems = note.conjugator.get_stems_for_primary_form()
 
-class _VocabCache(NoteCache[VocabNote, _VocabSnapshot]):
+class _VocabCache(NoteCache[VocabNote, _VocabSnapshot], Slots):
     def __init__(self, all_vocab: list[VocabNote], cache_runner: CacheRunner) -> None:
         self._by_form: dict[str, set[VocabNote]] = defaultdict(set)
         self._by_kanji_in_main_form: dict[str, set[VocabNote]] = defaultdict(set)
@@ -80,7 +81,7 @@ class _VocabCache(NoteCache[VocabNote, _VocabSnapshot]):
         for reading in note.readings.get(): self._by_reading[reading].add(note)
         for stem in note.conjugator.get_stems_for_primary_form(): self._by_stem[stem].add(note)
 
-class VocabCollection:
+class VocabCollection(Slots):
     def __init__(self, collection: Collection, cache_manager: CacheRunner) -> None:
         def vocab_constructor(note: Note) -> VocabNote: return VocabNote(note)
         self.collection = BackEndFacade[VocabNote](collection, vocab_constructor, NoteTypes.Vocab)

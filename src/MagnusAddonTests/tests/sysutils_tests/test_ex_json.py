@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules  # noqa
+from autoslot import Slots
 from deepdiff import DeepDiff
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from note.sentences.sentence_configuration import SentenceConfiguration
@@ -9,7 +10,7 @@ from sysutils import ex_json
 from sysutils.ex_json import JsonReader
 
 
-class IntObject:
+class IntObject(Slots):
     def __init__(self, value: int) -> None:
         self.value = value
 
@@ -28,7 +29,7 @@ class IntObject:
     def __repr__(self) -> str:
         return f"IntObject({self.value})"
 
-class HasObjectList:
+class HasObjectList(Slots):
     def __init__(self, values: list[IntObject]) -> None:
         self.values = values
 

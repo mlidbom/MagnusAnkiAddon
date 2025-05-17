@@ -3,6 +3,7 @@ from __future__ import annotations
 import weakref
 from typing import TYPE_CHECKING, Generic, TypeVar
 
+from autoslot import Slots
 from sysutils.typed import non_optional
 
 if TYPE_CHECKING:
@@ -10,7 +11,7 @@ if TYPE_CHECKING:
 
 T = TypeVar("T")
 
-class WeakRef(Generic[T]):
+class WeakRef(Generic[T], Slots):
     def __init__(self, obj: T) -> None:
         self._weakreference: ReferenceType[T] = weakref.ref(obj)
 

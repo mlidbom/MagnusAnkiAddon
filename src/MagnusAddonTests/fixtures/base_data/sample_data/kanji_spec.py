@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+from autoslot import Slots
 
-class KanjiSpec:
+
+class KanjiSpec(Slots):
     def __init__(self, question: str, answer: str, kun_readings: str, on_readings: str) -> None:
         self.question = question
         self.answer = answer

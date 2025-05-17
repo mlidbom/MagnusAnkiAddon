@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 from ankiutils import app
 from aqt import gui_hooks
+from autoslot import Slots
 from hooks.note_content_building.content_renderer import PrerenderingAnswerContentRenderer
 from language_services.jamdict_ex.dict_lookup import DictLookup
 from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
@@ -44,7 +45,7 @@ def _build_vocab_list(word_to_show: list[str], excluded_words:set[str], title:st
                         </li>
                         """
         else:
-            class Hit:
+            class Hit(Slots):
                 def __init__(self, forms:str, readings_:str, answer:str) -> None:
                     self.forms: str = forms
                     self.readings: str = readings_

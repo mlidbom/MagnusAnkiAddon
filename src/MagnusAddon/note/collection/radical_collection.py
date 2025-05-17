@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from autoslot import Slots
 from note.collection.backend_facade import BackEndFacade
 from note.collection.note_cache import CachedNote, NoteCache
 from note.note_constants import NoteTypes
@@ -14,17 +15,17 @@ if TYPE_CHECKING:
     from note.collection.cache_runner import CacheRunner
 
 
-class _RadicalSnapshot(CachedNote):
+class _RadicalSnapshot(CachedNote, Slots):
     def __init__(self, note: RadicalNote) -> None:
         super().__init__(note)
 
-class _RadicalCache(NoteCache[RadicalNote, _RadicalSnapshot]):
+class _RadicalCache(NoteCache[RadicalNote, _RadicalSnapshot], Slots):
     def __init__(self, all_kanji: list[RadicalNote], cache_runner: CacheRunner) -> None:
         super().__init__(all_kanji, RadicalNote, cache_runner)
 
     def _create_snapshot(self, note: RadicalNote) -> _RadicalSnapshot: return _RadicalSnapshot(note)
 
-class RadicalCollection:
+class RadicalCollection(Slots):
     def __init__(self, collection: Collection, cache_manager: CacheRunner) -> None:
         def radical_constructor(note: Note) -> RadicalNote: return RadicalNote(note)
         self.collection = BackEndFacade[RadicalNote](collection, radical_constructor, NoteTypes.Radical)

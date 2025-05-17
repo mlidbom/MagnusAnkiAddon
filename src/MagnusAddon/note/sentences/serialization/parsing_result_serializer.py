@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from autoslot import Slots
 from note.notefields.json_object_field import JsonObjectSerializer, T
 from note.sentences.parsed_word import ParsedWord
 from sysutils import ex_json
@@ -10,7 +11,7 @@ from sysutils.ex_json import JsonReader
 if TYPE_CHECKING:
     from note.sentences.parsing_result import ParsingResult
 
-class ParsingResultSerializer(JsonObjectSerializer["ParsingResult"]):
+class ParsingResultSerializer(JsonObjectSerializer["ParsingResult"], Slots):
 
     def deserialize(self, json: str) -> T:
         from note.sentences.parsing_result import ParsingResult

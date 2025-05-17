@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from autoslot import Slots
 from language_services.janome_ex.word_extraction.candidate_form import BaseCandidateForm, CandidateForm, SurfaceCandidateForm
 from sysutils.object_instance_tracker import ObjectInstanceTracker
 from sysutils.weak_ref import WeakRef
@@ -13,9 +14,10 @@ if TYPE_CHECKING:
 from sysutils.ex_str import newline
 
 
-class CandidateWord:
+class CandidateWord(Slots):
+    __slots__ = ["__weakref__"]
     def __init__(self, locations: list[WeakRef[TokenTextLocation]]) -> None:
-        self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker(self.__class__)
+        self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker.configured_tracker_for(self)
         self.analysis: WeakRef[TextAnalysis] = locations[0]().analysis
         self.locations: list[WeakRef[TokenTextLocation]] = locations
         self.is_custom_compound: bool = len(locations) > 1

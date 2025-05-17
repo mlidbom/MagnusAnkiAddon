@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Optional
 
 from anki.notes import Note
 from ankiutils import app
+from autoslot import Slots
 from note.jpnote import JPNote
 from note.note_constants import ImmersionKitSentenceNoteFields, Mine, NoteFields, NoteTypes, SentenceNoteFields
 from note.notefields.audio_field import WritableAudioField
@@ -23,7 +24,8 @@ if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.extracted_word import ExtractedWord
     from note.vocabulary.vocabnote import VocabNote
 
-class SentenceNote(JPNote):
+class SentenceNote(JPNote, Slots):
+    __slots__ = ["__weakref__"]
     def __init__(self, note: Note) -> None:
         super().__init__(note)
         self.weakref: WeakRef[SentenceNote] = WeakRef(self)

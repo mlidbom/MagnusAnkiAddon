@@ -1,10 +1,11 @@
 # noinspection PyUnusedClass, PyUnusedName
 from __future__ import annotations
 
+from autoslot import Slots
 from sysutils import kana_utils
 
 
-class JNPartsOfSpeech:
+class JNPartsOfSpeech(Slots):
     @staticmethod
     def fetch(unparsed: str) -> JNPartsOfSpeech:
         return _full_parts_of_speech_dictionary[unparsed]
@@ -27,7 +28,7 @@ class JNPartsOfSpeech:
     def is_verb(self) -> bool: return self.level1.english == "verb"
 
 
-class PartOfSpeechDescription:
+class PartOfSpeechDescription(Slots):
     def __init__(self, japanese: str, english: str, explanation: str) -> None:
         self.japanese = japanese
         self.english = english
@@ -125,7 +126,7 @@ def _add_full_part_of_speech(level1:str, level2:str = "*", level3:str = "*", lev
     return parts_of_speech
 
 # noinspection PyUnusedClass, PyUnusedName
-class POS:
+class POS(Slots):
     filler = _add_full_part_of_speech("フィラー")
     bound_auxiliary = _add_full_part_of_speech("助動詞") # た, ない, だ
     pre_noun_adjectival = _add_full_part_of_speech("連体詞") # こんな
@@ -133,15 +134,15 @@ class POS:
     conjunction = _add_full_part_of_speech("接続詞")
 
     # noinspection PyUnusedClass, PyUnusedName
-    class Other:
+    class Other(Slots):
         interjection = _add_full_part_of_speech("その他", "間投")
 
-    class Adverb:
+    class Adverb(Slots):
         general = _add_full_part_of_speech("副詞", "一般") # もう, そんなに
         particle_connection = _add_full_part_of_speech("副詞", "助詞類接続") # こんなに
 
     # noinspection PyUnusedClass, PyUnusedName
-    class Particle:
+    class Particle(Slots):
         coordinating_conjunction = _add_full_part_of_speech("助詞", "並立助詞") # たり
         binding = _add_full_part_of_speech("助詞", "係助詞") # は, も
         adverbial = _add_full_part_of_speech("助詞", "副助詞") # まで
@@ -152,18 +153,18 @@ class POS:
         sentence_ending = _add_full_part_of_speech("助詞", "終助詞") # な
         adnominalization = _add_full_part_of_speech("助詞", "連体化") # の
 
-        class CaseMarking:
+        class CaseMarking(Slots):
             general = _add_full_part_of_speech("助詞", "格助詞", "一般") # が, に
             quotation = _add_full_part_of_speech("助詞", "格助詞", "引用")
             compound = _add_full_part_of_speech("助詞", "格助詞", "連語")
 
-    class Verb:
+    class Verb(Slots):
         suffix = _add_full_part_of_speech("動詞", "接尾") # れる passive
         independent = _add_full_part_of_speech("動詞", "自立") # 疲れる, する, 走る
         dependent = _add_full_part_of_speech("動詞", "非自立") # いる progressive/perfect, いく
 
     # noinspection PyUnusedClass, PyUnusedName
-    class Noun:
+    class Noun(Slots):
         suru_verb = _add_full_part_of_speech("名詞", "サ変接続") # 話
         negative_adjective_stem = _add_full_part_of_speech("名詞", "ナイ形容詞語幹")
         general = _add_full_part_of_speech("名詞", "一般") # 自分
@@ -175,25 +176,25 @@ class POS:
         quoted_character_string = _add_full_part_of_speech("名詞", "引用文字列") # ???
 
         # noinspection PyUnusedClass, PyUnusedName
-        class Pronoun:
+        class Pronoun(Slots):
             general = _add_full_part_of_speech("名詞", "代名詞", "一般") # あいつ
             contracted = _add_full_part_of_speech("名詞", "代名詞", "縮約")
 
         # noinspection PyUnusedClass, PyUnusedName
-        class ProperNoun:
+        class ProperNoun(Slots):
             general = _add_full_part_of_speech("名詞", "固有名詞", "一般")
             organization = _add_full_part_of_speech("名詞", "固有名詞", "組織")
             # noinspection PyUnusedClass, PyUnusedName
-            class Person:
+            class Person(Slots):
                 general = _add_full_part_of_speech("名詞", "固有名詞", "人名", "一般")
                 firstname = _add_full_part_of_speech("名詞", "固有名詞", "人名", "名")
                 surname = _add_full_part_of_speech("名詞", "固有名詞", "人名", "姓")
             # noinspection PyUnusedClass, PyUnusedName
-            class Location:
+            class Location(Slots):
                 general = _add_full_part_of_speech("名詞", "固有名詞", "地域", "一般")
                 country = _add_full_part_of_speech("名詞", "固有名詞", "地域", "国")
         # noinspection PyUnusedClass, PyUnusedName
-        class Suffix:
+        class Suffix(Slots):
             suru_verb_connection = _add_full_part_of_speech("名詞", "接尾", "サ変接続")
             general = _add_full_part_of_speech("名詞", "接尾", "一般")
             persons_name = _add_full_part_of_speech("名詞", "接尾", "人名")
@@ -204,27 +205,27 @@ class POS:
             na_adjective_stem = _add_full_part_of_speech("名詞", "接尾", "形容動詞語幹")
             special = _add_full_part_of_speech("名詞", "接尾", "特殊")
         # noinspection PyUnusedClass, PyUnusedName
-        class Special:
+        class Special(Slots):
             auxiliary_verb_stem = _add_full_part_of_speech("名詞", "特殊", "助動詞語幹")
         # noinspection PyUnusedClass, PyUnusedName
-        class Dependent:
+        class Dependent(Slots):
             general = _add_full_part_of_speech("名詞", "非自立", "一般") # こと
             adverbial = _add_full_part_of_speech("名詞", "非自立", "副詞可能") # なか
             auxiliary_verb_stem = _add_full_part_of_speech("名詞", "非自立", "助動詞語幹")
             na_adjective_stem = _add_full_part_of_speech("名詞", "非自立", "形容動詞語幹")
     # noinspection PyUnusedClass, PyUnusedName
-    class Adjective:
+    class Adjective(Slots):
         suffix = _add_full_part_of_speech("形容詞", "接尾")
         independent = _add_full_part_of_speech("形容詞", "自立")
         dependent = _add_full_part_of_speech("形容詞", "非自立") # よかった
     # noinspection PyUnusedClass, PyUnusedName
-    class Prefix:
+    class Prefix(Slots):
         noun = _add_full_part_of_speech("接頭詞", "名詞接続")
         adjective = _add_full_part_of_speech("接頭詞", "形容詞接続")
         number = _add_full_part_of_speech("接頭詞", "数接続")
         verb_connective = _add_full_part_of_speech("接頭詞", "動詞接続")
     # noinspection PyUnusedClass, PyUnusedName
-    class Symbol:
+    class Symbol(Slots):
         alphabet = _add_full_part_of_speech("記号", "アルファベット")
         general = _add_full_part_of_speech("記号", "一般")
         period = _add_full_part_of_speech("記号", "句点")

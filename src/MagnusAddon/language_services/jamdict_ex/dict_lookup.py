@@ -4,6 +4,7 @@ from functools import cache
 from typing import TYPE_CHECKING
 
 from ankiutils import app
+from autoslot import Slots
 from language_services.jamdict_ex.priority_spec import PrioritySpec
 from sysutils.lazy import Lazy
 from sysutils.timeutil import StopWatch
@@ -25,12 +26,12 @@ from sysutils import ex_iterable, kana_utils
 
 T = TypeVar("T")
 
-class Request(Generic[T]):
+class Request(Generic[T], Slots):
     def __init__(self, func: Callable[[Jamdict], T], future: Future[T]) -> None:
         self.func = func
         self.future = future
 
-class JamdictThreadingWrapper:
+class JamdictThreadingWrapper(Slots):
     def __init__(self) -> None:
         self._queue: queue.Queue[Request[Any]] = queue.Queue()
         self._thread = threading.Thread(target=self._worker, daemon=True)
@@ -112,7 +113,7 @@ def _find_all_names() -> set[str]:
 _all_word_forms = Lazy(_find_all_words)
 _all_name_forms = Lazy(_find_all_names)
 
-class DictLookup:
+class DictLookup(Slots):
     def __init__(self, entries: list[DictEntry], lookup_word: str, lookup_reading: list[str]) -> None:
         self.lookup_word = lookup_word
         self.lookup_reading = lookup_reading

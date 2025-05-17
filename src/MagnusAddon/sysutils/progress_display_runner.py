@@ -4,13 +4,14 @@ import time
 from typing import Any, Callable, TypeVar
 
 from ankiutils import app
+from autoslot import Slots
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication, QMessageBox, QProgressDialog
 from sysutils import app_thread_pool, timeutil
 
 T = TypeVar("T")
 
-class Closable:
+class Closable(Slots):
     def __init__(self, close_action: Callable[[], None]) -> None:
         self.close_action = close_action
 

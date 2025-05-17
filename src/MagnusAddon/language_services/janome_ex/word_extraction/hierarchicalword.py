@@ -2,13 +2,15 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from autoslot import Slots
+
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.extracted_word import ExtractedWord
 
 from typing import Optional
 
 
-class HierarchicalWord:
+class HierarchicalWord(Slots):
     def __init__(self, word: ExtractedWord) -> None:
         self.word = word
         self.length = len(word.surface)

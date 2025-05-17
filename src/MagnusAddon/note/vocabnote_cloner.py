@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Callable
 
 from anki.notes import Note
 from ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules, app  # noqa
+from autoslot import Slots
 from language_services import conjugator
 from note.note_constants import Mine, NoteTypes
 
@@ -11,7 +12,7 @@ if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
     from sysutils.weak_ref import WeakRef
 
-class VocabCloner:
+class VocabCloner(Slots):
     def __init__(self, note: WeakRef[VocabNote]) -> None:
         self._note_ref = note
 

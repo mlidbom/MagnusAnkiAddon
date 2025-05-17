@@ -6,6 +6,7 @@ from anki.models import NotetypeDict
 from anki_extentions.card_ex import CardEx
 from anki_extentions.notetype_ex.note_type_ex import NoteTypeEx
 from ankiutils import app
+from autoslot import Slots
 from note import noteutils
 from note.note_constants import CardTypes, Mine, MyNoteFields, NoteTypes
 from sysutils import ex_str, rassert
@@ -19,9 +20,9 @@ if TYPE_CHECKING:
     from anki.notes import Note, NoteId
     from note.collection.jp_collection import JPCollection
 
-class JPNote:
+class JPNote(Slots):
     def __init__(self, note: Note) -> None:
-        self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker(self.__class__)
+        self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker.configured_tracker_for(self)
         self.backend_note = note
         self._is_updating_generated_data: bool = False
         self._generated_data_was_updated = False

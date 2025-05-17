@@ -3,9 +3,10 @@ from __future__ import annotations
 from typing import Callable
 
 from ankiutils.ui_utils_interface import IUIUtils
+from autoslot import Slots
 
 
-class UIUtilsStub(IUIUtils):
+class UIUtilsStub(IUIUtils, Slots):
     def run_ui_action(self, callback: Callable[[], None]) -> None:
         callback()
 

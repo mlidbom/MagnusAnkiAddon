@@ -2,10 +2,11 @@ from __future__ import annotations
 
 from typing import Optional
 
+from autoslot import Slots
 from PyQt6.QtWidgets import QMenu
 
 
-class ExQmenu:
+class ExQmenu(Slots):
     @classmethod
     def disable_empty_submenus(cls, menu: QMenu) -> None:
         if not isinstance(menu, QMenu):

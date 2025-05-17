@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules  # noqa
+from autoslot import Slots
 from note.note_constants import Mine, NoteFields
 from note.notefields.comma_separated_strings_list_field import CommaSeparatedStringsListField
 from note.notefields.string_field import StringField
@@ -30,7 +31,8 @@ if TYPE_CHECKING:
     from note.jpnote import JPNote
     from wanikani_api import models
 
-class VocabNote(WaniNote):
+class VocabNote(WaniNote, Slots):
+    __slots__ = ["__weakref__"]
     factory: VocabNoteFactory = VocabNoteFactory()
     def __init__(self, note: Note) -> None:
         super().__init__(note)

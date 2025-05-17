@@ -2,11 +2,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from autoslot import Slots
+
 if TYPE_CHECKING:
     from language_services.janome_ex.tokenizing.jn_parts_of_speech import PartOfSpeechDescription
 
 
-class ExtractedWord:
+class ExtractedWord(Slots):
     def __init__(self, word: str, surface: str, character_index:int, parts_of_speech: PartOfSpeechDescription | None = None) -> None:
         self.word = word
         self.surface = surface

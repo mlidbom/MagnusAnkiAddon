@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from ankiutils import app
+from autoslot import Slots
 from language_services import conjugator
 from language_services.janome_ex.word_extraction.display_form import DisplayForm, MissingDisplayForm, VocabDisplayForm
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
@@ -18,9 +19,10 @@ if TYPE_CHECKING:
 from sysutils.ex_str import newline
 
 _noise_characters = {".", ",", ":", ";", "/", "|", "。", "、", "?", "!"}
-class CandidateForm:
+class CandidateForm(Slots):
+    __slots__ = ["__weakref__"]
     def __init__(self, candidate: WeakRef[CandidateWord], is_surface: bool, form: str) -> None:
-        self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker(self.__class__)
+        self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker.configured_tracker_for(self)
         from language_services.jamdict_ex.dict_lookup import DictLookup
 
         self.start_index: int = candidate().locations[0]().character_start_index
@@ -126,7 +128,7 @@ class CandidateForm:
     def __repr__(self) -> str:
         return f"""CandidateForm: {self.form}, ivc:{self.is_valid_candidate()}, iw:{self.is_word} ie:{self.is_excluded_by_config}""".replace(newline, "")
 
-class SurfaceCandidateForm(CandidateForm):
+class SurfaceCandidateForm(CandidateForm, Slots):
     def __init__(self, candidate: WeakRef[CandidateWord]) -> None:
         super().__init__(candidate, True, "".join([t().surface for t in candidate().locations]) + "")
 
@@ -136,7 +138,7 @@ class SurfaceCandidateForm(CandidateForm):
 
     def counterpart(self) -> CandidateForm: return non_optional(self.candidate().base)
 
-class BaseCandidateForm(CandidateForm):
+class BaseCandidateForm(CandidateForm, Slots):
     def __init__(self, candidate: WeakRef[CandidateWord]) -> None:
         base_form = "".join([t().surface for t in candidate().locations[:-1]]) + candidate().locations[-1]().base
         if not candidate().is_custom_compound:

@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 import time
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from typing import TYPE_CHECKING, Generic, TypeVar
 
+from autoslot import Slots
 from note.jpnote import JPNote
 from note.note_constants import CardTypes
 from sysutils import app_thread_pool
@@ -17,7 +18,7 @@ if TYPE_CHECKING:
     from note.collection.cache_runner import CacheRunner
 
 
-class CachedNote:
+class CachedNote(Slots):
     def __init__(self, note: JPNote) -> None:
         self.id = note.get_id()
         self.answer = note.get_answer()
@@ -26,7 +27,7 @@ class CachedNote:
 TNote = TypeVar("TNote", bound=JPNote)
 TSnapshot = TypeVar("TSnapshot", bound=CachedNote)
 
-class NoteCache(ABC, Generic[TNote, TSnapshot]):
+class NoteCache(Generic[TNote, TSnapshot], Slots):
     def __init__(self, all_notes: list[TNote], cached_note_type: type[TNote], cache_runner: CacheRunner) -> None:
         self._note_type = cached_note_type
         self._by_question: DefaultDictCaseInsensitive[set[TNote]] = DefaultDictCaseInsensitive(set)

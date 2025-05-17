@@ -1,14 +1,17 @@
 from __future__ import annotations
 
+import sys
 from typing import Any
 
+from ankiutils import app
+from autoslot import Slots
 from sysutils import ex_gc
 from sysutils.ex_str import newline
 from sysutils.timeutil import StopWatch
 
 current_instance_count: dict[str, int] = {}
 
-class Snapshot:
+class Snapshot(Slots):
     def __init__(self, current_state: dict[str, int], previous_state: dict[str, int]) -> None:
         self.previous: dict[str, int] = previous_state
         self.current_counts: dict[str, int] = current_state
@@ -44,7 +47,7 @@ def current_snapshot() -> Snapshot:
         take_snapshot()
     return snapshots[-1]
 
-class ObjectInstanceTracker:
+class ObjectInstanceTracker(Slots):
 
     def __init__(self, cls_type: type[Any]) -> None:
         self.type_name = self._get_fully_qualified_name(cls_type)
@@ -64,8 +67,14 @@ class ObjectInstanceTracker:
     @staticmethod
     def _get_fully_qualified_name(cls_type: type[Any]) -> str:
         if cls_type.__module__ is not None and cls_type.__module__ != "__builtin__":
-            return cls_type.__module__ + "." + cls_type.__qualname__
-        return cls_type.__qualname__
+            return sys.intern(cls_type.__module__ + "." + cls_type.__qualname__)
+        return sys.intern(cls_type.__qualname__)
+
+    @staticmethod
+    def configured_tracker_for(obj: object) -> object | None: return ObjectInstanceTracker(obj.__class__) if app.config().track_instances_in_memory.get_value() else None
+
+    @staticmethod
+    def tracker_for(obj: object) -> ObjectInstanceTracker: return ObjectInstanceTracker(obj.__class__)
 
 def print_instance_counts() -> None:
     print("################### Instance counts ###################")

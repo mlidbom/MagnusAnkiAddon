@@ -2,17 +2,19 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from autoslot import Slots
+
 if TYPE_CHECKING:
     from anki.scheduler.v3 import SchedulingState, SchedulingStates
 
 
-class SchedulingStatesEx:
+class SchedulingStatesEx(Slots):
     def __init__(self, states:SchedulingStates) -> None:
         self._states = states
         self.again = SchedulingStateEx(states.again)
 
 
-class SchedulingStateEx:
+class SchedulingStateEx(Slots):
     def __init__(self, state:SchedulingState) -> None:
         self._state = state
 

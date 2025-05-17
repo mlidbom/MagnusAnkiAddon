@@ -1,21 +1,13 @@
 from __future__ import annotations
 
-from abc import ABCMeta, abstractmethod
 from typing import Callable
 
+from autoslot import Slots
 
-class IUIUtils(metaclass=ABCMeta):
-    @abstractmethod
-    def is_edit_current_open(self) -> bool: pass
 
-    @abstractmethod
-    def refresh(self, refresh_browser:bool = True) -> None: pass
-
-    @abstractmethod
-    def run_ui_action(self, callback: Callable[[],None]) -> None: pass
-
-    @abstractmethod
-    def activate_preview(self) -> None: pass
-
-    @abstractmethod
-    def tool_tip(self, message:str, milliseconds:int = 3000) -> None: pass
+class IUIUtils(Slots):
+    def is_edit_current_open(self) -> bool: raise NotImplementedError()
+    def refresh(self, refresh_browser:bool = True) -> None: raise NotImplementedError()
+    def run_ui_action(self, callback: Callable[[],None]) -> None: raise NotImplementedError()
+    def activate_preview(self) -> None: raise NotImplementedError()
+    def tool_tip(self, message:str, milliseconds:int = 3000) -> None: raise NotImplementedError()

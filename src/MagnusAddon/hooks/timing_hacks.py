@@ -5,13 +5,14 @@ from typing import TYPE_CHECKING
 
 from ankiutils.audio_suppressor import audio_suppressor
 from aqt import gui_hooks
+from autoslot import Slots
 
 if TYPE_CHECKING:
     from anki.cards import Card
     from anki.notes import Note
 
 
-class UglyUITimingBasedHacksData:
+class UglyUITimingBasedHacksData(Slots):
     def __init__(self) -> None:
         self._last_editor_typing_time = 0.0
         self._last_reviewer_showed_answer_time = 0.0
