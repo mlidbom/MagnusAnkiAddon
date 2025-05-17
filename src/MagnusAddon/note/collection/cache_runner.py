@@ -8,10 +8,9 @@ from typing import TYPE_CHECKING, Callable, cast
 
 from anki import hooks
 from anki.models import ModelManager, NotetypeDict
-from autoslot import Slots
-
 from anki_extentions.notetype_ex.note_type_ex import NoteTypeEx
 from ankiutils import app
+from autoslot import Slots
 from note.note_constants import NoteTypes
 from sysutils import app_thread_pool
 from sysutils.typed import checked_cast

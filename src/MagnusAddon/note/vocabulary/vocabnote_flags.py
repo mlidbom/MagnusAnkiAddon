@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from autoslot import Slots
+
 from note.note_constants import Mine
 from note.notefields.tag_flag_field import TagFlagField
 
@@ -10,7 +12,7 @@ if TYPE_CHECKING:
     from sysutils.weak_ref import WeakRef
 
 
-class VocabNoteFlags:
+class VocabNoteFlags(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self._vocab: WeakRef[VocabNote] = vocab
         self.requires_exact_match: TagFlagField = TagFlagField(vocab, Mine.Tags.requires_exact_match)

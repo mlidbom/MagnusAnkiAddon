@@ -4,6 +4,7 @@ from collections import defaultdict
 from typing import TYPE_CHECKING
 
 from ankiutils import app
+from autoslot import Slots
 from note.collection.backend_facade import BackEndFacade
 from note.collection.note_cache import CachedNote, NoteCache
 from note.note_constants import NoteTypes
@@ -17,13 +18,13 @@ if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
 
 
-class _SentenceSnapshot(CachedNote):
+class _SentenceSnapshot(CachedNote, Slots):
     def __init__(self, note: SentenceNote) -> None:
         super().__init__(note)
         self.words = note.get_words()
         self.user_highlighted_vocab = set(note.configuration.highlighted_words())
 
-class _SentenceCache(NoteCache[SentenceNote, _SentenceSnapshot]):
+class _SentenceCache(NoteCache[SentenceNote, _SentenceSnapshot], Slots):
     def __init__(self, all_kanji: list[SentenceNote], cache_runner: CacheRunner) -> None:
         self._by_vocab_form: dict[str, set[SentenceNote]] = defaultdict(set)
         self._by_user_highlighted_vocab: dict[str, set[SentenceNote]] = defaultdict(set)
@@ -43,7 +44,7 @@ class _SentenceCache(NoteCache[SentenceNote, _SentenceSnapshot]):
         for vocab_form in sentence.configuration.highlighted_words(): self._by_user_highlighted_vocab[vocab_form].add(sentence)
 
 
-class SentenceCollection:
+class SentenceCollection(Slots):
     def __init__(self, collection: Collection, cache_manager: CacheRunner) -> None:
         def sentence_constructor(note: Note) -> SentenceNote: return SentenceNote(note)
         self.collection = BackEndFacade[SentenceNote](collection, sentence_constructor, NoteTypes.Sentence)

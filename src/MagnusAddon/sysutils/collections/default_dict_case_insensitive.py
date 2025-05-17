@@ -3,9 +3,11 @@ from __future__ import annotations
 import collections
 from typing import Callable, Generic, TypeVar
 
+from autoslot import Slots
+
 VT = TypeVar("VT")  # Value type
 
-class DefaultDictCaseInsensitive(collections.defaultdict[str, VT], Generic[VT]):
+class DefaultDictCaseInsensitive(collections.defaultdict[str, VT], Generic[VT], Slots):
     def __init__(self, default_factory: Callable[[], VT], **kwargs: object) -> None:
         super().__init__(default_factory, **{key.lower(): value for key, value in kwargs.items()})
 

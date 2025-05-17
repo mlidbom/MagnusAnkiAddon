@@ -3,6 +3,8 @@ from __future__ import annotations
 import typing
 
 from anki.notes import Note
+from autoslot import Slots
+
 from ankiutils import app
 from note.note_constants import Mine, NoteFields, NoteTypes
 from note.notefields.comma_separated_strings_list_field import CommaSeparatedStringsListField
@@ -37,7 +39,7 @@ def create_from_wani_vocabulary(wani_vocab: models.Vocabulary) -> None:
         vocab_note.context_sentences.third.english.set(wani_vocab.context_sentences[2].english)
         vocab_note.context_sentences.second.japanese.set(wani_vocab.context_sentences[2].japanese)
 
-class VocabNoteWaniExtensions:
+class VocabNoteWaniExtensions(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self.__vocab = vocab
         self._meaning_mnemonic: StringField = StringField(vocab, NoteFields.Vocab.source_mnemonic)

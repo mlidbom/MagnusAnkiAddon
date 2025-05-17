@@ -3,6 +3,8 @@ from __future__ import annotations
 import re
 from typing import TYPE_CHECKING
 
+from autoslot import Slots
+
 from note.note_constants import Mine, NoteFields
 from note.notefields.comma_separated_strings_list_field import CommaSeparatedStringsListField
 from sysutils.ex_sequence import ExSequence
@@ -11,7 +13,7 @@ if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
     from sysutils.weak_ref import WeakRef
 
-class VocabNoteForms:
+class VocabNoteForms(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self._vocab: WeakRef[VocabNote] = vocab
         self._field: CommaSeparatedStringsListField = CommaSeparatedStringsListField(vocab, NoteFields.Vocab.Forms)

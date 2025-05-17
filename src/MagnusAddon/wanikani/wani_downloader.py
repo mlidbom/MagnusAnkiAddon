@@ -4,6 +4,8 @@ import os
 from typing import TYPE_CHECKING
 
 import requests
+from autoslot import Slots
+
 from ankiutils import app
 from wanikani.wanikani_api_client import WanikaniClient
 
@@ -15,7 +17,7 @@ class FileDownloadError(Exception):
     pass
 
 
-class WaniDownloader:
+class WaniDownloader(Slots):
     @staticmethod
     def media_dir() -> str:
         return app.anki_collection().media.dir()

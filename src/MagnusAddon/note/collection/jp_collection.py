@@ -2,10 +2,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from autoslot import Slots
-
 import mylog
 from ankiutils import app
+from autoslot import Slots
 from note.collection.cache_runner import CacheRunner
 from note.collection.kanji_collection import KanjiCollection
 from note.collection.radical_collection import RadicalCollection

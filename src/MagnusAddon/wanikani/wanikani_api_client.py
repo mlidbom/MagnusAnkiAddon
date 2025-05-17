@@ -2,12 +2,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
+from autoslot import Slots
 from wanikani_api.client import Client
 
 if TYPE_CHECKING:
     from wanikani_api import models
 
-class WanikaniClient:
+class WanikaniClient(Slots):
     _instance = None
 
     @classmethod

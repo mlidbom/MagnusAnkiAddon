@@ -3,6 +3,8 @@ from __future__ import annotations
 import json
 from typing import Any, Callable, TypeVar
 
+from autoslot import Slots
+
 from sysutils import typed
 
 
@@ -11,7 +13,7 @@ def dict_to_json(object_dict: dict[str, Any], indent: int | None = None) -> str:
 
 T: TypeVar = TypeVar("T")
 
-class JsonReader:
+class JsonReader(Slots):
     def __init__(self, json_dict: dict[str, Any]) -> None:
         self._dict = json_dict
 

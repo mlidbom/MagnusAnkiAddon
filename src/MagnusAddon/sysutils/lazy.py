@@ -4,9 +4,11 @@ import threading
 from concurrent.futures import Future
 from typing import Callable, Generic, TypeVar, cast
 
+from autoslot import Slots
+
 T = TypeVar("T")
 
-class Lazy(Generic[T]):
+class Lazy(Generic[T], Slots):
     def __init__(self, factory: Callable[[], T]) -> None:
         self.factory = factory
         self._instance: T | None = None
@@ -22,7 +24,7 @@ class Lazy(Generic[T]):
     def from_value(cls, result: T) -> Lazy[T]:
         return cls(lambda: result)
 
-class BackgroundInitialingLazy(Generic[T]):
+class BackgroundInitialingLazy(Generic[T], Slots):
     def __init__(self, factory: Callable[[], T], delay_seconds: float = 0) -> None:
         self._lock = threading.Lock()
         self._instance: Future[T] | None = None

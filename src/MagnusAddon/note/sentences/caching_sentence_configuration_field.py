@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Callable
 
+from autoslot import Slots
 from note.note_constants import SentenceNoteFields
 from note.notefields.string_field import StringField
 from note.sentences.sentence_configuration import SentenceConfiguration
@@ -12,7 +13,8 @@ if TYPE_CHECKING:
     from note.sentences.sentencenote import SentenceNote
     from note.sentences.word_exclusion_set import WordExclusionSet
 
-class CachingSentenceConfigurationField:
+class CachingSentenceConfigurationField(Slots):
+    __slots__ = ["__weakref__"]
     def __init__(self, sentence: WeakRef[SentenceNote]) -> None:
         self._sentence = sentence
         self.field = StringField(sentence, SentenceNoteFields.configuration)

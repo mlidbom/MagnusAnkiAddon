@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Callable, Generic, TypeVar
 
 from autoslot import Slots
-
 from note.jpnote import JPNote
 from note.note_constants import Builtin
 

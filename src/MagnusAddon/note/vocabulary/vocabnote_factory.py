@@ -3,6 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from anki.notes import Note
+from autoslot import Slots
+
 from ankiutils import app
 from language_services.jamdict_ex.dict_lookup import DictLookup
 from note.note_constants import NoteTypes
@@ -13,7 +15,7 @@ if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
     from wanikani_api import models
 
-class VocabNoteFactory:
+class VocabNoteFactory(Slots):
     @staticmethod
     def create_with_dictionary(question: str) -> VocabNote:
         from note.vocabulary.vocabnote import VocabNote

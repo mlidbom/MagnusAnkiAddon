@@ -10,7 +10,7 @@ from sysutils.timeutil import StopWatch
 
 current_instance_count: dict[str, int] = {}
 
-class Snapshot:
+class Snapshot(Slots):
     def __init__(self, current_state: dict[str, int], previous_state: dict[str, int]) -> None:
         self.previous: dict[str, int] = previous_state
         self.current_counts: dict[str, int] = current_state

@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from ankiutils import app
+from autoslot import Slots
 from note.note_constants import NoteFields
 from note.notefields.audio_field import AudioField
 from note.notefields.strip_html_on_read_string_field import StripHtmlOnReadStringField
@@ -30,14 +31,14 @@ def generate_sentences_from_context_sentences(vocab: VocabNote, require_audio: b
     create_sentence_if_not_present(question=vocab.context_sentences.second.japanese.get(), answer=vocab.context_sentences.second.english.get(), audio=vocab.context_sentences.second.audio.raw_walue())
     create_sentence_if_not_present(question=vocab.context_sentences.second.japanese.get(), answer=vocab.context_sentences.third.english.get(), audio=vocab.context_sentences.third.audio.raw_walue())
 
-class VocabNoteContextSentence:
+class VocabNoteContextSentence(Slots):
     def __init__(self, note: WeakRef[VocabNote], japanese_field: str, english_field: str, audio_field: str) -> None:
         self._note: WeakRef[VocabNote] = note
         self.japanese: StripHtmlOnReadStringField = StripHtmlOnReadStringField(note, japanese_field)
         self.english: StripHtmlOnReadStringField = StripHtmlOnReadStringField(note, english_field)
         self.audio: AudioField = AudioField(note, audio_field)
 
-class VocabContextSentences:
+class VocabContextSentences(Slots):
     def __init__(self, note: WeakRef[VocabNote]) -> None:
         self._note = note
         self.first: VocabNoteContextSentence = VocabNoteContextSentence(note, NoteFields.Vocab.Context_sentence_1_japanese, NoteFields.Vocab.Context_sentence_1_english, NoteFields.Vocab.Context_sentence_1_audio)

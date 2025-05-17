@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from autoslot import Slots
+
 from ankiutils import app
 from note.note_constants import NoteFields
 from note.notefields.comma_separated_strings_set_field import CommaSeparatedStringsSetField
@@ -14,7 +16,7 @@ if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
     from sysutils.weak_ref import WeakRef
 
-class VocabNoteRelatedNotes:
+class VocabNoteRelatedNotes(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self._vocab_ref = vocab
         self._similar_meanings_field: CommaSeparatedStringsSetField = CommaSeparatedStringsSetField(vocab, NoteFields.Vocab.Related_similar_meaning)

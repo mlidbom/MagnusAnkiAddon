@@ -5,6 +5,8 @@ import time
 from contextlib import contextmanager
 from typing import TYPE_CHECKING, Callable
 
+from autoslot import Slots
+
 import mylog
 
 if TYPE_CHECKING:
@@ -40,7 +42,7 @@ def start_stop_watch() -> StopWatch:
     return StopWatch()
 
 # noinspection PyUnusedFunction
-class StopWatch:
+class StopWatch(Slots):
     def __init__(self) -> None:
         self.start_time = time.perf_counter()
 

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from autoslot import Slots
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from sysutils.object_instance_tracker import ObjectInstanceTracker
 
@@ -9,7 +10,7 @@ if TYPE_CHECKING:
     from collections.abc import Callable
 
 
-class WordExclusionSet:
+class WordExclusionSet(Slots):
     def __init__(self, save_callback: Callable[[],None], exclusions: list[WordExclusion]) -> None:
         self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker(self.__class__)
         self._save: Callable[[],None] = save_callback

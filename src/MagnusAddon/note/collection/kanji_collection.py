@@ -23,7 +23,7 @@ class _KanjiSnapshot(CachedNote, Slots):
         self.radicals = set(note.get_radicals())
         self.readings = set(note.get_readings_clean())
 
-class _KanjiCache(NoteCache[KanjiNote, _KanjiSnapshot]):
+class _KanjiCache(NoteCache[KanjiNote, _KanjiSnapshot], Slots):
     def __init__(self, all_kanji: list[KanjiNote], cache_runner: CacheRunner) -> None:
         self._by_radical: dict[str, set[KanjiNote]] = defaultdict(set)
         self.by_reading: dict[str, set[KanjiNote]] = defaultdict(set)

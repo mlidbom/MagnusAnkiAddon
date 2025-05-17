@@ -2,13 +2,15 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from autoslot import Slots
+
 if TYPE_CHECKING:
     from note.collection.jp_collection import JPCollection
     from note.sentences.sentencenote import SentenceNote
     from note.vocabulary.vocabnote import VocabNote
     from sysutils.weak_ref import WeakRef
 
-class VocabNoteSentences:
+class VocabNoteSentences(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self.__vocab = vocab
 
