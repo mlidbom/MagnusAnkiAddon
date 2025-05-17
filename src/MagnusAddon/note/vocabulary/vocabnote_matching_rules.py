@@ -16,10 +16,11 @@ if TYPE_CHECKING:
 
 class VocabNoteMatchingRulesData(Slots):
     serializer = VocabNoteMatchingRulesSerializer()
-    def __init__(self, surface_is_not: set[str], base_is_not: set[str], prefix_is_not:set[str]) -> None:
+    def __init__(self, surface_is_not: set[str], base_is_not: set[str], prefix_is_not:set[str], required_prefix:set[str]) -> None:
         self.prefix_is_not = prefix_is_not
         self.surface_is_not = surface_is_not
         self.base_is_not = base_is_not
+        self.required_prefix = required_prefix
 
 class VocabNoteMatchingRules:
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
@@ -28,6 +29,7 @@ class VocabNoteMatchingRules:
         self.surface_is_not: FieldSetWrapper[str] = FieldSetWrapper.for_json_object_field(self._data.weakref, self._data.get().surface_is_not)
         self.base_is_not: FieldSetWrapper[str] = FieldSetWrapper.for_json_object_field(self._data.weakref, self._data.get().base_is_not)
         self.prefix_is_not: FieldSetWrapper[str] = FieldSetWrapper.for_json_object_field(self._data.weakref, self._data.get().prefix_is_not)
+        self.required_prefix: FieldSetWrapper[str] = FieldSetWrapper.for_json_object_field(self._data.weakref, self._data.get().required_prefix)
 
 class VocabNoteMatching(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:

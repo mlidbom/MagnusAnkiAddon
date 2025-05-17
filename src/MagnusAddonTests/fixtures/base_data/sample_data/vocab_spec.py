@@ -17,7 +17,8 @@ class VocabSpec(Slots):
                  tags: Optional[list[str]] = None,
                  compounds: Optional[list[str]] = None,
                  surface_is_not: set[str] = None,
-                 prefix_is_not: set[str] = None) -> None:
+                 prefix_is_not: set[str] = None,
+                 required_prefix: set[str] = None) -> None:
         self.question = question
         self.answer = answer
         self.readings = readings
@@ -26,6 +27,7 @@ class VocabSpec(Slots):
         self.compounds = compounds if compounds else []
         self.surface_is_not = surface_is_not if surface_is_not else set()
         self.prefix_is_not = prefix_is_not if prefix_is_not else set()
+        self.required_prefix = required_prefix if required_prefix else set()
 
     def __repr__(self) -> str: return f"""VocabSpec("{self.question}", "{self.answer}", {self.readings})"""
 
@@ -53,6 +55,9 @@ class VocabSpec(Slots):
 
         for forbidden_prefix in self.prefix_is_not:
             vocab_note.matching_rules.rules.prefix_is_not.add(forbidden_prefix)
+
+        for required_prefix in self.required_prefix:
+            vocab_note.matching_rules.rules.required_prefix.add(required_prefix)
 
         return vocab_note
 

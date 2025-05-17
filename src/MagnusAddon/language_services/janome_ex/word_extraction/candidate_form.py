@@ -56,10 +56,13 @@ class CandidateForm(Slots):
         self.exact_match_required_by_vocab_configuration: bool = any(v for v in self.unexcluded_vocabs if v.meta_data.flags.requires_exact_match())
         self.exact_match_required_by_counterpart_vocab_configuration: bool = False
         self.exact_match_required: bool = False
-        self.exact_match_requirement_fulfilled: bool = False
+        self.is_exact_match_requirement_fulfilled: bool = False
 
         self.prefix_is_not: set[str] = set().union(*[v.matching_rules.rules.prefix_is_not.get() for v in self.unexcluded_vocabs])
-        self.excluded_by_prefix = any(excluded_prefix for excluded_prefix in self.prefix_is_not if self.prefix.endswith(excluded_prefix))
+        self.is_excluded_by_prefix = any(excluded_prefix for excluded_prefix in self.prefix_is_not if self.prefix.endswith(excluded_prefix))
+
+        self.required_prefix: set[str] = set().union(*[v.matching_rules.rules.required_prefix.get() for v in self.unexcluded_vocabs])
+        self.is_missing_required_prefix = self.required_prefix and not any(required for required in self.required_prefix if self.prefix.startswith(required))
 
         self.display_forms: list[DisplayForm] = []
         self.completed_analysis = False
@@ -72,7 +75,7 @@ class CandidateForm(Slots):
         self.is_excluded_by_compound_root_vocab_configuration: bool = self.form in self.forms_excluded_by_compound_root_vocab_configuration
         self.exact_match_required_by_counterpart_vocab_configuration: bool = self.counterpart().exact_match_required_by_vocab_configuration
         self.exact_match_required: bool = self.exact_match_required_by_vocab_configuration or self.exact_match_required_by_counterpart_vocab_configuration
-        self.exact_match_requirement_fulfilled: bool = self.form == self.counterpart().form or not self.exact_match_required
+        self.is_exact_match_requirement_fulfilled: bool = self.form == self.counterpart().form or not self.exact_match_required
 
         if self.unexcluded_vocabs:
             self.display_forms = [VocabDisplayForm(WeakRef(self), voc) for voc in self.unexcluded_vocabs if self.vocab_fulfills_stem_requirements(voc)]
@@ -108,10 +111,11 @@ class CandidateForm(Slots):
                 and self.form not in _noise_characters
                 and not self.is_excluded_by_config
                 and not self.is_self_excluded
-                and not self.excluded_by_prefix
+                and not self.is_excluded_by_prefix
+                and not self.is_missing_required_prefix
                 and not self.is_contextually_excluded
                 and not self.is_excluded_by_compound_root_vocab_configuration
-                and self.exact_match_requirement_fulfilled)
+                and self.is_exact_match_requirement_fulfilled)
 
     def _is_contextually_excluded(self) -> bool:
         for exclusion in self.possible_contextual_exclusions:
