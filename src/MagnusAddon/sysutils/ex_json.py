@@ -18,8 +18,15 @@ class JsonReader(Slots):
 
     def string(self, prop: str) -> str: return typed.str_(self._dict[prop])
     def int(self, prop: str) -> string: return typed.int_(self._dict[prop])
-    def string_list(self, string: str) -> list[str]: return typed.checked_cast_generics(list[str], self._dict[string])
-    def string_set(self, string: str) -> set[str]: return set(self.string_list(string))
+
+    def string_list(self, string: str, allow_missing: bool = False) -> list[str]:
+        value = self._dict.get(string, None)
+        if value is None and allow_missing:
+            return []
+        
+        return typed.checked_cast_generics(list[str], value)
+
+    def string_set(self, string: str, allow_missing: bool = False) -> set[str]: return set(self.string_list(string, allow_missing))
 
     def object_list(self, prop: str, factory: Callable[[JsonReader], T], allow_missing: bool = False) -> list[T]:
         prop_value = self._dict.get(prop, None)

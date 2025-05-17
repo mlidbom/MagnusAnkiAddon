@@ -58,6 +58,9 @@ class CandidateForm(Slots):
         self.exact_match_required: bool = False
         self.exact_match_requirement_fulfilled: bool = False
 
+        self.prefix_is_not: set[str] = set().union(*[v.matching_rules.rules.prefix_is_not.get() for v in self.unexcluded_vocabs])
+        self.excluded_by_prefix = any(excluded_prefix for excluded_prefix in self.prefix_is_not if self.prefix.endswith(excluded_prefix))
+
         self.display_forms: list[DisplayForm] = []
         self.completed_analysis = False
 
@@ -105,22 +108,29 @@ class CandidateForm(Slots):
                 and self.form not in _noise_characters
                 and not self.is_excluded_by_config
                 and not self.is_self_excluded
+                and not self.excluded_by_prefix
                 and not self.is_contextually_excluded
                 and not self.is_excluded_by_compound_root_vocab_configuration
                 and self.exact_match_requirement_fulfilled)
 
     def _is_contextually_excluded(self) -> bool:
-        preceding_text = self.candidate().start_location().previous().surface if self.candidate().start_location().previous else ""
-        following_text = self.candidate().end_location().next().surface if self.candidate().end_location().next else ""
         for exclusion in self.possible_contextual_exclusions:
-            if exclusion.endswith(self.form) and (preceding_text + self.form).endswith(exclusion):  # noqa: SIM114
+            if exclusion.endswith(self.form) and (self.prefix + self.form).endswith(exclusion):  # noqa: SIM114
                 return True
-            if exclusion.startswith(self.form) and (self.form + following_text).startswith(exclusion):  # noqa: SIM114
+            if exclusion.startswith(self.form) and (self.form + self.suffix).startswith(exclusion):  # noqa: SIM114
                 return True
-            if exclusion in preceding_text + self.form + following_text:
+            if exclusion in self.prefix + self.form + self.suffix:
                 return True
 
         return False
+
+    @property
+    def prefix(self) -> str:
+        return self.candidate().start_location().previous().surface if self.candidate().start_location().previous else ""
+
+    @property
+    def suffix(self) -> str:
+        return self.candidate().end_location().next().surface if self.candidate().end_location().next else ""
 
     def to_exclusion(self) -> WordExclusion:
         return WordExclusion.at_index(self.form, self.start_index)
@@ -136,12 +146,12 @@ class SurfaceCandidateForm(CandidateForm, Slots):
                 and candidate().locations[-1]().token.do_not_match_surface_for_non_compound_vocab):
             self.is_self_excluded = True
 
-        self.bases_excluded_by_vocab_configuration: set[str] = set().union(*[v.matching_rules.rules.base_is_not.get() for v in self.unexcluded_vocabs])
+        self.base_is_not: set[str] = set().union(*[v.matching_rules.rules.base_is_not.get() for v in self.unexcluded_vocabs])
 
     def complete_analysis(self) -> None:
         super().complete_analysis()
 
-        if self.counterpart().form in self.bases_excluded_by_vocab_configuration:
+        if self.counterpart().form in self.base_is_not:
             self.is_self_excluded = True
 
     def counterpart(self) -> CandidateForm: return non_optional(self.candidate().base)
@@ -154,12 +164,12 @@ class BaseCandidateForm(CandidateForm, Slots):
 
         super().__init__(candidate, False, base_form)
 
-        self.surfaces_excluded_by_vocab_configuration: set[str] = set().union(*[v.matching_rules.rules.surface_is_not.get() for v in self.unexcluded_vocabs])
+        self.surface_is_not: set[str] = set().union(*[v.matching_rules.rules.surface_is_not.get() for v in self.unexcluded_vocabs])
 
     def complete_analysis(self) -> None:
         super().complete_analysis()
 
-        if self.counterpart().form in self.surfaces_excluded_by_vocab_configuration:
+        if self.counterpart().form in self.surface_is_not:
             self.is_self_excluded = True
 
     def counterpart(self) -> CandidateForm: return non_optional(self.candidate().surface)

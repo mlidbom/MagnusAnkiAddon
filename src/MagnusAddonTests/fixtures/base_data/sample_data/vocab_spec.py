@@ -16,7 +16,8 @@ class VocabSpec(Slots):
                  extra_forms: Optional[list[str]] = None,
                  tags: Optional[list[str]] = None,
                  compounds: Optional[list[str]] = None,
-                 surface_is_not: set[str] = None) -> None:
+                 surface_is_not: set[str] = None,
+                 prefix_is_not: set[str] = None) -> None:
         self.question = question
         self.answer = answer
         self.readings = readings
@@ -24,6 +25,7 @@ class VocabSpec(Slots):
         self.tags = set(tags if tags else [])
         self.compounds = compounds if compounds else []
         self.surface_is_not = surface_is_not if surface_is_not else set()
+        self.prefix_is_not = prefix_is_not if prefix_is_not else set()
 
     def __repr__(self) -> str: return f"""VocabSpec("{self.question}", "{self.answer}", {self.readings})"""
 
@@ -48,6 +50,9 @@ class VocabSpec(Slots):
 
         for excluded_surface in self.surface_is_not:
             vocab_note.matching_rules.rules.surface_is_not.add(excluded_surface)
+
+        for forbidden_prefix in self.prefix_is_not:
+            vocab_note.matching_rules.rules.prefix_is_not.add(forbidden_prefix)
 
         return vocab_note
 
@@ -77,14 +82,8 @@ test_special_vocab = [
     VocabSpec("らっしゃる", "is/does", ["らっしゃる"], surface_is_not={"らっしゃい"}),
     VocabSpec("た", "{past-tense} | (please)do", ["た"], surface_is_not={"たら"}, tags=[Mine.Tags.inflecting_word]),
 
-    VocabSpec("だったら", "if-so", ["だったら"], extra_forms=["[[だった]]"]),
-    VocabSpec("に", "{location/direction/target/reason/purpose} {adv}", ["に"], extra_forms=["[[だ]]"]),
-    VocabSpec("で", "{act-ctx{time|place|cause|means}}　| {て-form:+<ja>む/ぬ</ja>-verbs+<ja>だ</ja>} | ksb:よ", ["で"], extra_forms=["[[だ]]"]),
-    VocabSpec("な", "{attributive-copula} | な-particle ...", ["な"], extra_forms=["[[だ]]"]),
-    VocabSpec("だの", "and-the-like", ["だの"], extra_forms=["[[んだの]]"]),
-    VocabSpec("いらっしゃいませ", "welcome!", ["いらっしゃいませ"], extra_forms=["[[いらっしゃいます]]"]),
-    VocabSpec("だもの", "is-the-thing", ["だもの"], extra_forms=["[[んだもの]]"]),
-    VocabSpec("たの", "{indicates-{emotion/admiration/emphasis}}", ["たの"], extra_forms=["[[たの]]"]),
+
+    VocabSpec("だの", "and-the-like", ["だの"], prefix_is_not={"ん"}),
 ]
 
 test_ordinary_vocab_list = [
