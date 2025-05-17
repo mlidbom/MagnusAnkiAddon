@@ -38,6 +38,8 @@ def build_string_menu(string_menu: QMenu, vocab: VocabNote, menu_string: str) ->
         def build_add_rule_menu(add_rule_menu: QMenu) -> None:
             add_ui_action(add_rule_menu, shortcutfinger.home1("Surface is not"), lambda: vocab.matching_rules.rules.surface_is_not.add(menu_string), menu_string not in vocab.matching_rules.rules.surface_is_not.get())
             add_ui_action(add_rule_menu, shortcutfinger.home2("Base is not"), lambda: vocab.matching_rules.rules.base_is_not.add(menu_string), menu_string not in vocab.matching_rules.rules.base_is_not.get())
+            add_ui_action(add_rule_menu, shortcutfinger.home3("Prefix is not"), lambda: vocab.matching_rules.rules.prefix_is_not.add(menu_string), menu_string not in vocab.matching_rules.rules.prefix_is_not.get())
+            add_ui_action(add_rule_menu, shortcutfinger.home4("Required prefix"), lambda: vocab.matching_rules.rules.required_prefix.add(menu_string), menu_string not in vocab.matching_rules.rules.required_prefix.get())
 
         add_ui_action(vocab_add_menu, shortcutfinger.home1("Similar meaning"), lambda: vocab.related_notes.add_similar_meaning(menu_string))
         add_ui_action(vocab_add_menu, shortcutfinger.home2("Confused with"), lambda: vocab.related_notes.confused_with.add(menu_string))
@@ -47,6 +49,8 @@ def build_string_menu(string_menu: QMenu, vocab: VocabNote, menu_string: str) ->
         def build_remove_rule_menu(remove_rule_menu: QMenu) -> None:
             add_ui_action(remove_rule_menu, shortcutfinger.home1("Surface is not"), lambda: vocab.matching_rules.rules.surface_is_not.remove(menu_string), menu_string in vocab.matching_rules.rules.surface_is_not.get())
             add_ui_action(remove_rule_menu, shortcutfinger.home2("Base is not"), lambda: vocab.matching_rules.rules.base_is_not.remove(menu_string), menu_string in vocab.matching_rules.rules.base_is_not.get())
+            add_ui_action(remove_rule_menu, shortcutfinger.home3("Prefix is not"), lambda: vocab.matching_rules.rules.prefix_is_not.remove(menu_string), menu_string in vocab.matching_rules.rules.prefix_is_not.get())
+            add_ui_action(remove_rule_menu, shortcutfinger.home4("Required prefix"), lambda: vocab.matching_rules.rules.required_prefix.remove(menu_string), menu_string in vocab.matching_rules.rules.required_prefix.get())
 
         add_ui_action(vocab_remove_menu, shortcutfinger.home1("Similar meaning"), lambda: vocab.related_notes.remove_similar_meaning(menu_string), menu_string in vocab.related_notes.similar_meanings())
         add_ui_action(vocab_remove_menu, shortcutfinger.home2("Confused with"), lambda: vocab.related_notes.remove_confused_with(menu_string), menu_string in vocab.related_notes.confused_with.get())
