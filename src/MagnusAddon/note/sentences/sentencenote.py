@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Optional
 from anki.notes import Note
 from ankiutils import app
 from autoslot import Slots
+from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 from note.jpnote import JPNote
 from note.note_constants import ImmersionKitSentenceNoteFields, Mine, NoteFields, NoteTypes, SentenceNoteFields
 from note.notefields.audio_field import WritableAudioField
@@ -21,7 +22,6 @@ from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.candidate_form import CandidateForm
-    from language_services.janome_ex.word_extraction.extracted_word import ExtractedWord
     from note.vocabulary.vocabnote import VocabNote
 
 class SentenceNote(JPNote, Slots):
@@ -63,9 +63,8 @@ class SentenceNote(JPNote, Slots):
         kanji = set(self.collection.kanji.with_any_kanji_in(self.extract_kanji()))
         return highlighted | valid_parsed_roots | kanji
 
-    def parse_words_from_expression(self) -> list[ExtractedWord]:
-        from language_services.janome_ex.word_extraction.word_extractor import jn_extractor
-        return jn_extractor.extract_words(self.get_question())
+    def parse_words_from_expression(self) -> list[str]:
+        return TextAnalysis.from_text(self.get_question()).all_words_strings()
 
     def get_words(self) -> set[str]: return (set(self.parsing_result.get().parsed_words_strings()) | set(self.configuration.highlighted_words())) - self.configuration.incorrect_matches.words()
 

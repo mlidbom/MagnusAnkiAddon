@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from ankiutils import app
-from language_services.janome_ex.word_extraction.word_extractor import jn_extractor
+from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 from note.note_constants import Builtin, MyNoteFields, NoteFields, NoteTypes, SentenceNoteFields
 from sysutils import ex_sequence, kana_utils
 
@@ -12,7 +12,6 @@ if TYPE_CHECKING:
 
     from anki.cards import Card
     from anki.notes import NoteId
-    from language_services.janome_ex.word_extraction.extracted_word import ExtractedWord
     from note.jpnote import JPNote
     from note.kanjinote import KanjiNote
     from note.radicalnote import RadicalNote
@@ -84,11 +83,11 @@ def single_vocab_by_form_exact_read_card_only(query: str) -> str:return f"({sing
 def kanji_in_string(query: str) -> str: return f"{note_kanji} ( {' OR '.join([f'{f_question}:{char}' for char in query])} )"
 
 def vocab_dependencies_lookup_query(vocab: VocabNote) -> str:
-    def single_vocab_clause(voc: ExtractedWord) -> str:
-        return f"{field_contains_word(f_forms, voc.word)}"
+    def single_vocab_clause(voc: str) -> str:
+        return f"{field_contains_word(f_forms, voc)}"
 
     def create_vocab_clause(text:str) -> str:
-        dictionary_forms = list(jn_extractor.extract_words(text))
+        dictionary_forms = TextAnalysis.from_text(text).all_words_strings()
         return f"({note_vocab} ({' OR '.join([single_vocab_clause(voc) for voc in dictionary_forms])})) OR " if dictionary_forms else ""
 
     def create_vocab_vocab_clause() -> str:
@@ -101,14 +100,14 @@ def vocab_dependencies_lookup_query(vocab: VocabNote) -> str:
 
 def vocab_with_kanji(note:KanjiNote) -> str: return f"{note_vocab} {f_forms}:*{note.get_question()}*"
 
-def vocab_clause(voc: ExtractedWord) -> str:
-    return f"""{field_contains_word(f_forms, voc.word)}"""
+def vocab_clause(voc: str) -> str:
+    return f"""{field_contains_word(f_forms, voc)}"""
 
 def text_vocab_lookup(text:str) -> str:
-    dictionary_forms = jn_extractor.extract_words(text)
+    dictionary_forms = TextAnalysis.from_text(text).all_words_strings()
     return vocabs_lookup(dictionary_forms)
 
-def vocabs_lookup(dictionary_forms: list[ExtractedWord]) -> str:
+def vocabs_lookup(dictionary_forms: list[str]) -> str:
     return f"{note_vocab} ({' OR '.join([vocab_clause(voc) for voc in dictionary_forms])})"
 
 def vocabs_lookup_strings(words: list[str]) -> str:

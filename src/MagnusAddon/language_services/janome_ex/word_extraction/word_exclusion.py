@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING
 from autoslot import Slots
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.hierarchicalword import HierarchicalWord
     from sysutils.ex_json import JsonReader
 
 from typing import Any
@@ -18,9 +17,6 @@ class WordExclusion(Slots):
         if _secret != "aoesunth9cgrcgf": raise ValueError("please use the factory methods instead of this private constructor")
         self.word = word
         self.index = index
-
-    def excludes(self, word: HierarchicalWord) -> bool:
-        return word.word.word == self.word and (self.index == WordExclusion._no_index or self.index == word.word.character_index)
 
     def excludes_form_at_index(self, form: str, index: int) -> bool:
         return form == self.word and (self.index == WordExclusion._no_index or self.index == index)
