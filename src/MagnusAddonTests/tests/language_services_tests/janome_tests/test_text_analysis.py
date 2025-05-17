@@ -58,13 +58,20 @@ def test_identify_words(setup_collection_with_select_data: object, sentence: str
 
 @pytest.mark.parametrize("sentence, expected_output", [
     ("言わず", ["言う", "言わ", "ず"]),
-    ("しろ", ["しろ"]),
     ("声出したら駄目だからね", ["声", "出す", "たら", "駄目", "だから", "だ", "から", "ね"]),
-    ("後で下に下りてらっしゃいね", ["後で", "下に", "下", "に", "下りる", "て", "らっしゃい", "ね"]),
     ("無理して思い出す", ["無理", "して", "する", "て", "思い出す"]),
     ("私が頼んだの", ["私", "が", "頼む", "頼ん", "だ", "の"]),
 ])
 def test_excluded_surfaces(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
+    analysis = TextAnalysis(sentence, SentenceConfiguration.empty())
+    root_words = [w.form for w in analysis.all_words]
+    assert root_words == expected_output
+
+@pytest.mark.parametrize("sentence, expected_output", [
+    ("しろ", ["しろ"]),
+    ("後で下に下りてらっしゃいね", ["後で", "下に", "下", "に", "下りる", "て", "らっしゃい", "ね"]),
+])
+def test_prefer_surfaces_over_bases(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
     analysis = TextAnalysis(sentence, SentenceConfiguration.empty())
     root_words = [w.form for w in analysis.all_words]
     assert root_words == expected_output

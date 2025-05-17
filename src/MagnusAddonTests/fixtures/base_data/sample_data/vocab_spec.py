@@ -18,7 +18,8 @@ class VocabSpec(Slots):
                  compounds: Optional[list[str]] = None,
                  surface_is_not: set[str] = None,
                  prefix_is_not: set[str] = None,
-                 required_prefix: set[str] = None) -> None:
+                 required_prefix: set[str] = None,
+                 prefer_over_base: set[str] = None) -> None:
         self.question = question
         self.answer = answer
         self.readings = readings
@@ -28,6 +29,7 @@ class VocabSpec(Slots):
         self.surface_is_not = surface_is_not if surface_is_not else set()
         self.prefix_is_not = prefix_is_not if prefix_is_not else set()
         self.required_prefix = required_prefix if required_prefix else set()
+        self.prefer_over_base = prefer_over_base if prefer_over_base else set()
 
     def __repr__(self) -> str: return f"""VocabSpec("{self.question}", "{self.answer}", {self.readings})"""
 
@@ -59,6 +61,9 @@ class VocabSpec(Slots):
         for required_prefix in self.required_prefix:
             vocab_note.matching_rules.rules.required_prefix.add(required_prefix)
 
+        for prefer_surface_over_base in self.prefer_over_base:
+            vocab_note.matching_rules.rules.prefer_over_base.add(prefer_surface_over_base)
+
         return vocab_note
 
 test_special_vocab = [
@@ -82,11 +87,14 @@ test_special_vocab = [
     VocabSpec("あれる", "get-_/is-_", ["あれる"], extra_forms=["れる"], tags=[Mine.Tags.requires_a_stem, Mine.Tags.question_overrides_form, Mine.Tags.inflecting_word]),
     VocabSpec("えれる", "is-able-to-_", ["えれる"], extra_forms=["れる"], tags=[Mine.Tags.requires_e_stem, Mine.Tags.question_overrides_form, Mine.Tags.inflecting_word]),
 
-    VocabSpec("する", "do!", ["する"], surface_is_not={"しろ"}),
-    VocabSpec("ぬ", "not", ["ぬ"], surface_is_not={"ず"}),
-    VocabSpec("らっしゃる", "is/does", ["らっしゃる"], surface_is_not={"らっしゃい"}),
-    VocabSpec("た", "{past-tense} | (please)do", ["た"], surface_is_not={"たら"}, tags=[Mine.Tags.inflecting_word]),
+    VocabSpec("しろ", "do!", ["しろ"], prefer_over_base={"する"}),
+    VocabSpec("らっしゃい", "todo", ["らっしゃい"], prefer_over_base={"らっしゃる"}),
 
+    # VocabSpec("する", "do!", ["する"], surface_is_not={"しろ"}),
+    # VocabSpec("らっしゃる", "is/does", ["らっしゃる"], surface_is_not={"らっしゃい"}),
+
+    VocabSpec("ぬ", "not", ["ぬ"], surface_is_not={"ず"}),
+    VocabSpec("た", "{past-tense} | (please)do", ["た"], surface_is_not={"たら"}, tags=[Mine.Tags.inflecting_word]),
 
     VocabSpec("だの", "and-the-like", ["だの"], prefix_is_not={"ん"}),
 ]

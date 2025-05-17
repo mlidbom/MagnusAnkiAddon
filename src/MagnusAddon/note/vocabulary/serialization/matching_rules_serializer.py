@@ -17,12 +17,12 @@ class VocabNoteMatchingRulesSerializer(JsonObjectSerializer["VocabNoteMatchingRu
 
         reader = JsonReader.from_json(json)
         return VocabNoteMatchingRulesData(reader.string_set("surface_is_not"),
-                                          reader.string_set("base_is_not"),
+                                          reader.string_set("prefer_over_base"),
                                           reader.string_set("prefix_is_not", True),
                                           reader.string_set("required_prefix", True))
 
     def serialize(self, rules: VocabNoteMatchingRulesData) -> str:
         return ex_json.dict_to_json({"surface_is_not": list(rules.surface_is_not),
-                                     "base_is_not": list(rules.base_is_not),
+                                     "prefer_over_base": list(rules.prefer_over_base),
                                      "prefix_is_not": list(rules.prefix_is_not),
                                      "required_prefix": list(rules.required_prefix)})

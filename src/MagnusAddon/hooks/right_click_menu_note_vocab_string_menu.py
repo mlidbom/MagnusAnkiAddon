@@ -37,7 +37,7 @@ def build_string_menu(string_menu: QMenu, vocab: VocabNote, menu_string: str) ->
     def build_add_menu(vocab_add_menu: QMenu) -> None:
         def build_add_rule_menu(add_rule_menu: QMenu) -> None:
             add_ui_action(add_rule_menu, shortcutfinger.home1("Surface is not"), lambda: vocab.matching_rules.rules.surface_is_not.add(menu_string), menu_string not in vocab.matching_rules.rules.surface_is_not.get())
-            add_ui_action(add_rule_menu, shortcutfinger.home2("Base is not"), lambda: vocab.matching_rules.rules.base_is_not.add(menu_string), menu_string not in vocab.matching_rules.rules.base_is_not.get())
+            add_ui_action(add_rule_menu, shortcutfinger.home2("Prefer over base"), lambda: vocab.matching_rules.rules.prefer_over_base.add(menu_string), menu_string not in vocab.matching_rules.rules.prefer_over_base.get())
             add_ui_action(add_rule_menu, shortcutfinger.home3("Prefix is not"), lambda: vocab.matching_rules.rules.prefix_is_not.add(menu_string), menu_string not in vocab.matching_rules.rules.prefix_is_not.get())
             add_ui_action(add_rule_menu, shortcutfinger.home4("Required prefix"), lambda: vocab.matching_rules.rules.required_prefix.add(menu_string), menu_string not in vocab.matching_rules.rules.required_prefix.get())
 
@@ -48,7 +48,7 @@ def build_string_menu(string_menu: QMenu, vocab: VocabNote, menu_string: str) ->
     def build_remove_menu(vocab_remove_menu: QMenu) -> None:
         def build_remove_rule_menu(remove_rule_menu: QMenu) -> None:
             add_ui_action(remove_rule_menu, shortcutfinger.home1("Surface is not"), lambda: vocab.matching_rules.rules.surface_is_not.remove(menu_string), menu_string in vocab.matching_rules.rules.surface_is_not.get())
-            add_ui_action(remove_rule_menu, shortcutfinger.home2("Base is not"), lambda: vocab.matching_rules.rules.base_is_not.remove(menu_string), menu_string in vocab.matching_rules.rules.base_is_not.get())
+            add_ui_action(remove_rule_menu, shortcutfinger.home2("Prefer over base"), lambda: vocab.matching_rules.rules.prefer_over_base.remove(menu_string), menu_string in vocab.matching_rules.rules.prefer_over_base.get())
             add_ui_action(remove_rule_menu, shortcutfinger.home3("Prefix is not"), lambda: vocab.matching_rules.rules.prefix_is_not.remove(menu_string), menu_string in vocab.matching_rules.rules.prefix_is_not.get())
             add_ui_action(remove_rule_menu, shortcutfinger.home4("Required prefix"), lambda: vocab.matching_rules.rules.required_prefix.remove(menu_string), menu_string in vocab.matching_rules.rules.required_prefix.get())
 
