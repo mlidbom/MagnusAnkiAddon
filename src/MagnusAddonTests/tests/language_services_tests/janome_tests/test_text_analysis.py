@@ -76,6 +76,15 @@ def test_strictly_suffix(setup_collection_with_select_data: object, sentence: st
     assert root_words == expected_output
 
 @pytest.mark.parametrize("sentence, expected_output", [
+    ("うるせえ", ["うるせえ", "うる", "せえ", "せる", "せ", "え"]),
+    ("金貸せって", ["金貸", "せる", "て"])
+])
+def test_requires_a_stem(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
+    analysis = TextAnalysis(sentence, SentenceConfiguration.empty())
+    root_words = [w.form for w in analysis.all_words]
+    assert root_words == expected_output
+
+@pytest.mark.parametrize("sentence, expected_output", [
     ("しろ", ["しろ"]),
     ("後で下に下りてらっしゃいね", ["後で", "下に", "下", "に", "下りる", "て", "らっしゃい", "ね"]),
 ])
@@ -141,7 +150,7 @@ def insert_custom_words(custom_words: list[str]) -> None:
     ("ああもう　だったら普通に金貸せって言えよ",
      [],
      [],
-     ["ああ", "もう", "だったら", "普通に", "金貸", "せる", "て", "言えよ"], []),
+     ["ああ", "もう", "だったら", "普通に", "金貸", "て", "言えよ"], []),
     ("お前も色々考えてるんだなぁ",
      [],
      [],

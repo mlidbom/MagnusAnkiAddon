@@ -85,7 +85,14 @@ test_special_vocab = [
     VocabSpec("解放する", "to{} release", ["かいほうする"]),
 
     VocabSpec("える", "to-be-able-to", ["える"], surface_is_not={"れる"}, tags=[Mine.Tags.vocab_matching_is_inflecting_word]),
+
+    # require a stems
     VocabSpec("あれる", "get-_/is-_", ["あれる"], extra_forms=["れる"], tags=[Mine.Tags.vocab_matching_requires_a_stem, Mine.Tags.question_overrides_form, Mine.Tags.vocab_matching_is_inflecting_word]),
+    VocabSpec("あせる", "get-_/is-_", ["あせる"], extra_forms=["せる"], tags=[Mine.Tags.vocab_matching_requires_a_stem, Mine.Tags.question_overrides_form, Mine.Tags.vocab_matching_is_inflecting_word]),
+
+    VocabSpec("させる", "get-_/is-_", ["させる"], extra_forms=["せる"], tags=[Mine.Tags.vocab_matching_is_inflecting_word]),
+
+    # require e stems
     VocabSpec("えれる", "is-able-to-_", ["えれる"], extra_forms=["れる"], tags=[Mine.Tags.vocab_matching_requires_e_stem, Mine.Tags.question_overrides_form, Mine.Tags.vocab_matching_is_inflecting_word]),
 
     VocabSpec("しろ", "do!", ["しろ"], prefer_over_base={"する"}),

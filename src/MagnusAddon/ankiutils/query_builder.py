@@ -10,7 +10,7 @@ from sysutils import ex_sequence, kana_utils
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
-    from anki.cards import Card
+    from anki.cards import Card, CardId
     from anki.notes import NoteId
     from note.jpnote import JPNote
     from note.kanjinote import KanjiNote
@@ -146,6 +146,9 @@ def kanji_with_radicals_in_string(search:str) -> str:
 
 def open_card(card:Card) -> str:
     return f"cid:{card.id}"
+
+def open_card_by_id(card_id:CardId) -> str:
+    return f"cid:{card_id}"
 
 def kanji_with_meaning(search:str) -> str:
     return f"""{note_kanji} ({f_answer}:*{search}*)"""

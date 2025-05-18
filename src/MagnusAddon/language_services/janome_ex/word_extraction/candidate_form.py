@@ -95,6 +95,7 @@ class CandidateForm(Slots):
                                    and not self.is_self_excluded
                                    and not self.is_excluded_by_prefix
                                    and not self.is_missing_required_prefix
+                                   and len(self.display_forms) > 0
                                    and not self.is_excluded_by_compound_root_vocab_configuration
                                    and (not self.requires_prefix or self.has_prefix)
                                    and not self.starts_with_non_word_token

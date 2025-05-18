@@ -95,8 +95,7 @@ class CardHistoryNavigator:
 
     @staticmethod
     def _show_card_by_id(card_id: CardId) -> None:
-        card = mw.col.get_card(card_id)
-        search_executor.do_lookup(query_builder.open_card(card))
+        search_executor.do_lookup(query_builder.open_card_by_id(card_id))
 
 def init() -> None:
     CardHistoryNavigator()
