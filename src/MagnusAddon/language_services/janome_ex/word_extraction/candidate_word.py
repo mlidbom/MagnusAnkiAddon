@@ -34,26 +34,32 @@ class CandidateWord(Slots):
         self.next_token_is_inflecting_word: bool = self.end_location().is_next_location_inflecting_word()
         self.is_inflected_word: bool = self.is_inflectable_word and self.next_token_is_inflecting_word
 
-        self.should_include_surface: bool = False
-        self.should_include_base: bool = False
+        self.should_include_surface_in_all_words: bool = False
+        self.should_include_base_in_all_words: bool = False
+        self.all_words: list[CandidateForm] = []
         self.display_words: list[CandidateForm] = []
 
     def complete_analysis(self) -> None:
         self.base.complete_analysis()
         self.surface.complete_analysis()
 
-        self.should_include_surface = (self.surface.is_valid_candidate()
-                                       and not self.is_inflected_word
-                                       and self.surface.form != self.base.form)
-        self.should_include_base = self.base.is_valid_candidate()
+        self.should_include_surface_in_all_words = (self.surface.is_valid_candidate()
+                                                    and not self.is_inflected_word
+                                                    and self.surface.form != self.base.form)
+        self.should_include_base_in_all_words = self.base.is_valid_candidate()
 
-        self.display_words = []
-        if self.should_include_base:
-            self.display_words.append(self.base)
-        if self.should_include_surface:
+        self.all_words = []
+        if self.should_include_base_in_all_words:
+            self.all_words.append(self.base)
+        if self.should_include_surface_in_all_words:
+            self.all_words.append(self.surface)
+
+        if self.should_include_surface_in_all_words:
             self.display_words.append(self.surface)
+        elif self.should_include_base_in_all_words:
+            self.display_words.append(self.base)
 
-    def has_valid_candidates(self) -> bool: return len(self.display_words) > 0
+    def has_valid_candidates(self) -> bool: return len(self.all_words) > 0
 
     def __repr__(self) -> str: return f"""
 surface: {self.surface.__repr__()} | base:{self.base.__repr__()},

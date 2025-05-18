@@ -80,7 +80,7 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.sur
             for location in self.forward_list(covering_forward_count)[1:]:
                 location.is_covered_by = WeakRef(self)
 
-        self.all_words = ex_sequence.flatten([v.display_words for v in self.valid_candidates])
+        self.all_words = ex_sequence.flatten([v.all_words for v in self.valid_candidates])
 
     def is_next_location_inflecting_word(self) -> bool:
         return self.next is not None and self.next().is_inflecting_word()

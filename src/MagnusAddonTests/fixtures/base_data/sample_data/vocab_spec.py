@@ -81,6 +81,7 @@ test_special_vocab = [
     VocabSpec("会える", "to-be-able: to-meet", ["あえる"], compounds=["会う", "える"]),
     VocabSpec("作れる", "to-be-able: to-make", ["つくれる"], compounds=["作る", "える"]),
     VocabSpec("えない", "unable-able-to", ["えない"], compounds=["える", "ない"], tags=[Mine.Tags.inflecting_word]),
+    VocabSpec("たい", "want to", ["たい"], tags=[Mine.Tags.inflecting_word]),
     VocabSpec("解放する", "to{} release", ["かいほうする"]),
 
     VocabSpec("える", "to-be-able-to", ["える"], surface_is_not={"れる"}, tags=[Mine.Tags.inflecting_word]),
@@ -212,7 +213,6 @@ test_ordinary_vocab_list = [
     VocabSpec("ん", "<ja>の</ja>{nom |poss | explan } ...", ["ん"]),
     VocabSpec("一緒", "together | at-the-same-time | same/identical", ["いっしょ"]),
     VocabSpec("一度", "once/on-one-occation", ["いちど"]),
-    VocabSpec("たい", "want to", ["たい"]),
     VocabSpec("と", "conj{if/when | exhaus-list-item} prt{with | quote | adverb}", ["と"]),
     VocabSpec("たの", "{indicates-{emotion/admiration/emphasis}}", ["たの"]),
     VocabSpec("今", "now", ["いま"]),
