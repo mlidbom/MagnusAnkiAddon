@@ -17,7 +17,6 @@ if TYPE_CHECKING:
     from note.sentences.sentence_configuration import SentenceConfiguration
     from note.vocabulary.vocabnote import VocabNote
 
-from sysutils.ex_str import newline
 
 _noise_characters = {".", ",", ":", ";", "/", "|", "。", "、", "?", "!"}
 _non_word_characters = _noise_characters | {" ", "\t"}
@@ -101,6 +100,7 @@ class CandidateForm(Slots):
     @property
     def prefix(self) -> str: return self.preceding_surface[-1] if self.has_prefix else ""
 
+    @property
     def is_valid_candidate(self) -> bool:
         return ((self.is_word or not self.candidate().is_custom_compound)
                 and self.form not in _noise_characters
@@ -120,7 +120,7 @@ class CandidateForm(Slots):
         return WordExclusion.at_index(self.form, self.start_index)
 
     def __repr__(self) -> str:
-        return f"""CandidateForm: {self.form}, ivc:{self.is_valid_candidate()}, iw:{self.is_word} ie:{self.is_excluded_by_config}""".replace(newline, "")
+        return f"""CandidateForm:({self.form})"""
 
 class SurfaceCandidateForm(CandidateForm, Slots):
     def __init__(self, candidate: WeakRef[CandidateWord]) -> None:
@@ -151,7 +151,8 @@ class BaseCandidateForm(CandidateForm, Slots):
 
         self.surface_preferred_over_bases = set().union(*[vocab.matching_rules.rules.prefer_over_base.get() for vocab in self.counterpart().unexcluded_vocabs])
 
+    @property
     def is_valid_candidate(self) -> bool:
-        return super().is_valid_candidate() and self.form not in self.surface_preferred_over_bases
+        return super().is_valid_candidate and self.form not in self.surface_preferred_over_bases
 
     def counterpart(self) -> CandidateForm: return non_optional(self.candidate().surface)

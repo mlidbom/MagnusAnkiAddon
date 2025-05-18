@@ -43,10 +43,10 @@ class CandidateWord(Slots):
         self.base.complete_analysis()
         self.surface.complete_analysis()
 
-        self.should_include_surface_in_all_words = (self.surface.is_valid_candidate()
+        self.should_include_surface_in_all_words = (self.surface.is_valid_candidate
                                                     and not self.is_inflected_word
                                                     and self.surface.form != self.base.form)
-        self.should_include_base_in_all_words = self.base.is_valid_candidate()
+        self.should_include_base_in_all_words = self.base.is_valid_candidate
 
         self.all_words = []
         if self.should_include_base_in_all_words:
