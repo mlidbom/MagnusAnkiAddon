@@ -83,22 +83,13 @@ class CandidateForm(Slots):
 
     def vocab_fulfills_stem_requirements(self, vocab: VocabNote) -> bool:
         if vocab.matching_rules.requires_a_stem.is_set:
-            return self._previous_token_ends_on_a_stem()
+            return self.has_prefix and self.prefix[-1] in conjugator.a_stem_characters
         if vocab.matching_rules.requires_e_stem.is_set:
-            return self._previous_token_ends_on_e_stem()
+            return self.has_prefix and self.prefix[-1] in conjugator.e_stem_characters
         return True
 
-    def _previous_token_ends_on_a_stem(self) -> bool:
-        previous = self.candidate().start_location().previous
-        if previous is not None:
-            return previous().surface[-1] in conjugator.a_stem_characters
-        return False
-
-    def _previous_token_ends_on_e_stem(self) -> bool:
-        previous = self.candidate().start_location().previous
-        if previous is not None:
-            return previous().surface[-1] in conjugator.e_stem_characters
-        return False
+    @property
+    def has_prefix(self) -> bool: return self.prefix != ""
 
     def is_valid_candidate(self) -> bool:
         return ((self.is_word or not self.candidate().is_custom_compound)
