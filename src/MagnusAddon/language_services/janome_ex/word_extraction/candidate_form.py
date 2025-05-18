@@ -7,6 +7,7 @@ from autoslot import Slots
 from language_services import conjugator
 from language_services.janome_ex.word_extraction.display_form import DisplayForm, MissingDisplayForm, VocabDisplayForm
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
+from sysutils import kana_utils
 from sysutils.object_instance_tracker import ObjectInstanceTracker
 from sysutils.typed import non_optional
 from sysutils.weak_ref import WeakRef
@@ -84,13 +85,16 @@ class CandidateForm(Slots):
 
     def vocab_fulfills_stem_requirements(self, vocab: VocabNote) -> bool:
         if vocab.matching_rules.requires_a_stem.is_set:
-            return self.has_prefix and self.preceding_surface[-1] in conjugator.a_stem_characters
+            return self.has_prefix and self.prefix[-1] in conjugator.a_stem_characters
         if vocab.matching_rules.requires_e_stem.is_set:
-            return self.has_prefix and self.preceding_surface[-1] not in conjugator.a_stem_characters
+            return self.has_prefix and self.prefix[-1] in conjugator.e_stem_characters or kana_utils.character_is_kanji(self.prefix[-1])
         return True
 
     @property
     def has_prefix(self) -> bool: return self.preceding_surface != "" and self.preceding_surface[-1] not in _non_word_characters
+
+    @property
+    def prefix(self) -> str: return self.preceding_surface[-1] if self.has_prefix else ""
 
     def is_valid_candidate(self) -> bool:
         return ((self.is_word or not self.candidate().is_custom_compound)
