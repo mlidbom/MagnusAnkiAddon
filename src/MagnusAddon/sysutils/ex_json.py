@@ -12,22 +12,32 @@ def dict_to_json(object_dict: dict[str, Any], indent: int | None = None) -> str:
 
 TProp: TypeVar = TypeVar("TProp")
 
+class PropertyTypeError(TypeError):
+    def __init__(self, prop: str, prop_type: type[TProp]) -> None:
+        message = f"Property '{prop}' is not of type '{prop_type.__name__}'"
+        super().__init__(message)
+
 class JsonReader(Slots):
     def __init__(self, json_dict: dict[str, Any]) -> None:
         self._dict = json_dict
 
     def _get_prop(self, prop: str | list[str], prop_type: type[TProp], default: TProp | None) -> TProp:
-        if isinstance(prop, str):
-            return typed.checked_cast_generics(prop_type, self._dict.get(prop, None))
+        try:
+            if isinstance(prop, str):
+                value = self._dict.get(prop, None)
+                if value is None:
+                    if default is not None: return default
+                    raise KeyError(f"Property '{prop}' not found in the JSON.")
+                return typed.checked_cast_generics(prop_type, value)
 
-        for p in prop:
-            if p in self._dict:
-                return typed.checked_cast_generics(prop_type, self._dict[p])
+            for p in prop:
+                if p in self._dict:
+                    return typed.checked_cast_generics(prop_type, self._dict[p])
 
-        if default is None:
+            if default is not None: return default
             raise KeyError(f"None of the following keys were found in the JSON: {prop}")
-
-        return default
+        except TypeError as type_error:
+            raise PropertyTypeError(prop, prop_type) from type_error
 
     def string(self, prop: str | list[str], default: str | None = None) -> str: return self._get_prop(prop, str, default)
     def int(self, prop: str | list[str], default: int | None = None) -> string: return self._get_prop(prop, int, default)
