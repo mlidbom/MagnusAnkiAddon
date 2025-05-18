@@ -64,6 +64,7 @@ class CandidateForm(Slots):
         self.is_exact_match_requirement_fulfilled: bool = False
         self.is_self_excluded = False
         self.completed_analysis = False
+        self.is_valid_candidate: bool = False
 
         self.display_forms: list[DisplayForm] = []
 
@@ -85,6 +86,16 @@ class CandidateForm(Slots):
         else:
             self.display_forms = [MissingDisplayForm(WeakRef(self))]
 
+        self.is_valid_candidate = ((self.is_word or not self.candidate().is_custom_compound)
+                                   and self.form not in _noise_characters
+                                   and not self.is_excluded_by_config
+                                   and not self.is_self_excluded
+                                   and not self.is_excluded_by_prefix
+                                   and not self.is_missing_required_prefix
+                                   and not self.is_excluded_by_compound_root_vocab_configuration
+                                   and (not self.requires_prefix or self.has_prefix)
+                                   and self.is_exact_match_requirement_fulfilled)
+
         self.completed_analysis = True
 
     def vocab_fulfills_stem_requirements(self, vocab: VocabNote) -> bool:
@@ -100,17 +111,6 @@ class CandidateForm(Slots):
     @property
     def prefix(self) -> str: return self.preceding_surface[-1] if self.has_prefix else ""
 
-    @property
-    def is_valid_candidate(self) -> bool:
-        return ((self.is_word or not self.candidate().is_custom_compound)
-                and self.form not in _noise_characters
-                and not self.is_excluded_by_config
-                and not self.is_self_excluded
-                and not self.is_excluded_by_prefix
-                and not self.is_missing_required_prefix
-                and not self.is_excluded_by_compound_root_vocab_configuration
-                and (not self.requires_prefix or self.has_prefix)
-                and self.is_exact_match_requirement_fulfilled)
     @property
     def preceding_surface(self) -> str:
         return self.candidate().start_location().previous().surface if self.candidate().start_location().previous else ""
@@ -148,12 +148,13 @@ class BaseCandidateForm(CandidateForm, Slots):
 
         if self.counterpart.form in self.surface_is_not:
             self.is_self_excluded = True
+            self.is_valid_candidate = False
 
         self.surface_preferred_over_bases = set().union(*[vocab.matching_rules.rules.prefer_over_base.get() for vocab in self.counterpart.unexcluded_vocabs])
+        if self.form in self.surface_preferred_over_bases:
+            self.is_valid_candidate = False
 
-    @property
-    def is_valid_candidate(self) -> bool:
-        return super().is_valid_candidate and self.form not in self.surface_preferred_over_bases
+
 
     @property
     def counterpart(self) -> CandidateForm: return non_optional(self.candidate().surface)
