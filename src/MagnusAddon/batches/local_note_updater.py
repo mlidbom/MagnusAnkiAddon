@@ -20,7 +20,12 @@ def update_all() -> None:
     update_sentences()
     update_kanji()
     update_vocab()
+    tag_note_metadata()
     # update_vocab_parsed_parts_of_speech()
+
+def full_rebuild() -> None:
+    update_all()
+    reparse_all_sentences()
 
 def update_sentences() -> None:
     def update_sentence(sentence: SentenceNote) -> None:
@@ -143,7 +148,7 @@ def tag_kanji_metadata() -> None:
     progress_display_runner.process_with_progress(all_kanji, tag_kanji, "Tagging kanji with studying metadata")
     progress_display_runner.process_with_progress(all_kanji, tag_has_single_kanji_vocab_with_reading_different_from_kanji_primary_reading, "Tagging kanji with single kanji vocab")
 
-def reparse_sentence_words() -> None:
+def reparse_all_sentences() -> None:
     reparse_sentences(app.col().sentences.all())
 
 def reading_in_vocab_reading(kanji: KanjiNote, kanji_reading: str, vocab_reading: str, vocab_form: str) -> bool:
