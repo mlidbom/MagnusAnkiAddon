@@ -27,7 +27,7 @@ class Lazy(Generic[T], Slots):
 class BackgroundInitialingLazy(Generic[T], Slots):
     def __init__(self, factory: Callable[[], T], delay_seconds: float = 0) -> None:
         self._lock = threading.Lock()
-        self._instance: Future[T] | None = None
+        self._future_instance: Future[T] | None = None
         self._factory = factory
         if delay_seconds > 0:
             self._pending_init_timer = threading.Timer(delay_seconds, self._init)
@@ -37,18 +37,19 @@ class BackgroundInitialingLazy(Generic[T], Slots):
 
     def _init(self) -> None:
         with self._lock:
-            if not self._instance:
+            if not self._future_instance:
                 from sysutils import app_thread_pool
-                self._instance = app_thread_pool.pool.submit(self._factory)
+                self._future_instance = app_thread_pool.pool.submit(self._factory)
 
-    def is_initialized(self) -> bool: return bool(self._instance and self._instance.done() and not self._instance.cancelled())
+    def is_initialized(self) -> bool: return bool(self._future_instance and self._future_instance.done() and not self._future_instance.cancelled())
 
     def try_cancel_scheduled_init(self) -> bool:
-        if self._instance:
+        if self._future_instance:
             return False
 
         self._pending_init_timer.cancel()
-        return True
+
+        return not self._future_instance
 
     def instance(self) -> T:
         if self.try_cancel_scheduled_init():
@@ -59,8 +60,8 @@ class BackgroundInitialingLazy(Generic[T], Slots):
             from sysutils import progress_display_runner
 
             def init() -> None:
-                cast(Future[T], self._instance).result()
+                cast(Future[T], self._future_instance).result()
 
             progress_display_runner.run_on_background_thread_with_spinning_progress_dialog("Populating cache", init)
 
-        return cast(Future[T], self._instance).result()
+        return cast(Future[T], self._future_instance).result()
