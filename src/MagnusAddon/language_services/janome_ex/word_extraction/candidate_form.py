@@ -17,7 +17,6 @@ if TYPE_CHECKING:
     from note.sentences.sentence_configuration import SentenceConfiguration
     from note.vocabulary.vocabnote import VocabNote
 
-
 _noise_characters = {".", ",", ":", ";", "/", "|", "。", "、", "?", "!"}
 _non_word_characters = _noise_characters | {" ", "\t"}
 class CandidateForm(Slots):
@@ -68,14 +67,15 @@ class CandidateForm(Slots):
 
         self.display_forms: list[DisplayForm] = []
 
+    @property
     def counterpart(self) -> CandidateForm: raise Exception("Not implemented")
 
     def complete_analysis(self) -> None:
         if self.completed_analysis: return
         self.is_excluded_by_compound_root_vocab_configuration: bool = self.form in self.forms_excluded_by_compound_root_vocab_configuration
-        self.exact_match_required_by_counterpart_vocab_configuration: bool = self.counterpart().exact_match_required_by_vocab_configuration
+        self.exact_match_required_by_counterpart_vocab_configuration: bool = self.counterpart.exact_match_required_by_vocab_configuration
         self.exact_match_required: bool = self.exact_match_required_by_vocab_configuration or self.exact_match_required_by_counterpart_vocab_configuration
-        self.is_exact_match_requirement_fulfilled: bool = self.form == self.counterpart().form or not self.exact_match_required
+        self.is_exact_match_requirement_fulfilled: bool = self.form == self.counterpart.form or not self.exact_match_required
 
         if self.unexcluded_vocabs:
             self.display_forms = [VocabDisplayForm(WeakRef(self), voc) for voc in self.unexcluded_vocabs if self.vocab_fulfills_stem_requirements(voc)]
@@ -111,7 +111,6 @@ class CandidateForm(Slots):
                 and not self.is_excluded_by_compound_root_vocab_configuration
                 and (not self.requires_prefix or self.has_prefix)
                 and self.is_exact_match_requirement_fulfilled)
-
     @property
     def preceding_surface(self) -> str:
         return self.candidate().start_location().previous().surface if self.candidate().start_location().previous else ""
@@ -130,6 +129,7 @@ class SurfaceCandidateForm(CandidateForm, Slots):
                 and candidate().locations[-1]().token.do_not_match_surface_for_non_compound_vocab):
             self.is_self_excluded = True
 
+    @property
     def counterpart(self) -> CandidateForm: return non_optional(self.candidate().base)
 
 class BaseCandidateForm(CandidateForm, Slots):
@@ -146,13 +146,14 @@ class BaseCandidateForm(CandidateForm, Slots):
     def complete_analysis(self) -> None:
         super().complete_analysis()
 
-        if self.counterpart().form in self.surface_is_not:
+        if self.counterpart.form in self.surface_is_not:
             self.is_self_excluded = True
 
-        self.surface_preferred_over_bases = set().union(*[vocab.matching_rules.rules.prefer_over_base.get() for vocab in self.counterpart().unexcluded_vocabs])
+        self.surface_preferred_over_bases = set().union(*[vocab.matching_rules.rules.prefer_over_base.get() for vocab in self.counterpart.unexcluded_vocabs])
 
     @property
     def is_valid_candidate(self) -> bool:
         return super().is_valid_candidate and self.form not in self.surface_preferred_over_bases
 
+    @property
     def counterpart(self) -> CandidateForm: return non_optional(self.candidate().surface)
