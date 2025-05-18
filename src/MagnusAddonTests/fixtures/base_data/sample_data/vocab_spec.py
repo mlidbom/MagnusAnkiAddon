@@ -91,13 +91,12 @@ test_special_vocab = [
     VocabSpec("しろ", "do!", ["しろ"], prefer_over_base={"する"}),
     VocabSpec("らっしゃい", "todo", ["らっしゃい"], prefer_over_base={"らっしゃる"}),
 
-    # VocabSpec("する", "do!", ["する"], surface_is_not={"しろ"}),
-    # VocabSpec("らっしゃる", "is/does", ["らっしゃる"], surface_is_not={"らっしゃい"}),
-
     VocabSpec("ぬ", "not", ["ぬ"], surface_is_not={"ず"}),
     VocabSpec("た", "{past-tense} | (please)do", ["た"], surface_is_not={"たら"}, tags=[Mine.Tags.vocab_matching_is_inflecting_word]),
 
     VocabSpec("だの", "and-the-like", ["だの"], prefix_is_not={"ん"}),
+
+    VocabSpec("こ", "familiarizing-suffix", ["こ"], extra_forms=["っこ"], tags=[Mine.Tags.vocab_matching_is_strictly_suffix]),
 ]
 
 test_ordinary_vocab_list = [

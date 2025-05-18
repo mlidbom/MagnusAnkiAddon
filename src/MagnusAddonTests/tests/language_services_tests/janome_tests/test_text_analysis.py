@@ -68,6 +68,14 @@ def test_excluded_surfaces(setup_collection_with_select_data: object, sentence: 
     assert root_words == expected_output
 
 @pytest.mark.parametrize("sentence, expected_output", [
+    ("うわ こわっ", ["うわ", "こい", "こ", "わっ"]),
+])
+def test_strictly_suffix(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
+    analysis = TextAnalysis(sentence, SentenceConfiguration.empty())
+    root_words = [w.form for w in analysis.all_words]
+    assert root_words == expected_output
+
+@pytest.mark.parametrize("sentence, expected_output", [
     ("しろ", ["しろ"]),
     ("後で下に下りてらっしゃいね", ["後で", "下に", "下", "に", "下りる", "て", "らっしゃい", "ね"]),
 ])

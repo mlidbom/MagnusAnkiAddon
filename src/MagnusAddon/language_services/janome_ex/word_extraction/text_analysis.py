@@ -56,6 +56,4 @@ class TextAnalysis(Slots):
         return [w.form for w in self.all_words]
 
     def __repr__(self) -> str:
-        return f"""{self.text}
-{newline.join([dw.__repr__() for dw in self.display_words])}
-"""
+        return self.text
