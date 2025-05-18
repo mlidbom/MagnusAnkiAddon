@@ -15,25 +15,26 @@ if TYPE_CHECKING:
 
 
 class ProcessedToken(Slots):
-    def __init__(self, surface: str, base: str, base_for_vocab: str) -> None:
+    def __init__(self, surface: str, base: str, base_for_vocab: str, is_non_word_character:bool) -> None:
         self.surface = surface
         self.base_form = base
         self.base_form_for_non_compound_vocab_matching = base_for_vocab
         self.is_inflectable_word: bool = False
         self.do_not_match_surface_for_non_compound_vocab: bool = False
+        self.is_non_word_character = is_non_word_character
 
     def __repr__(self) -> str:
         return f"ProcessedToken('{self.surface}', '{self.base_form}', '{self.base_form_for_non_compound_vocab_matching}', {self.is_inflectable_word})"
 
 class SplitToken(ProcessedToken, Slots):
     def __init__(self, surface: str, base: str, base_for_vocab: str, is_inflectable_word: bool, do_not_match_surface_for_non_compound_vocab: bool) -> None:
-        super().__init__(surface, base, base_for_vocab)
+        super().__init__(surface, base, base_for_vocab, False)
         self.is_inflectable_word = is_inflectable_word
         self.do_not_match_surface_for_non_compound_vocab = do_not_match_surface_for_non_compound_vocab
 
 class JNTokenWrapper(ProcessedToken, Slots):
     def __init__(self, token: JNToken, vocabs: VocabCollection) -> None:
-        super().__init__(token.surface, token.base_form, token.base_form)
+        super().__init__(token.surface, token.base_form, token.base_form, token.parts_of_speech.is_non_word_character())
         self.token = token
         self._vocabs = vocabs
         self.is_inflectable_word = self.token.is_inflectable_word()

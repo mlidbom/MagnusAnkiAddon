@@ -65,6 +65,7 @@ class CandidateForm(Slots):
         self.is_self_excluded = False
         self.completed_analysis = False
         self.is_valid_candidate: bool = False
+        self.is_non_word_token = self.candidate().locations[0]().token.is_non_word_character
 
         self.display_forms: list[DisplayForm] = []
 
@@ -94,6 +95,7 @@ class CandidateForm(Slots):
                                    and not self.is_missing_required_prefix
                                    and not self.is_excluded_by_compound_root_vocab_configuration
                                    and (not self.requires_prefix or self.has_prefix)
+                                   and not self.is_non_word_token
                                    and self.is_exact_match_requirement_fulfilled)
 
         self.completed_analysis = True

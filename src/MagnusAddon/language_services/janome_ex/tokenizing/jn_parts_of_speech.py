@@ -16,7 +16,7 @@ class JNPartsOfSpeech(Slots):
         self.level3 = _japanese_to_part_of_speech[level3]
         self.level4 = _japanese_to_part_of_speech[level4]
 
-    def is_noise(self) -> bool: return self.level1.japanese in ["記号"]
+    def is_non_word_character(self) -> bool: return self.level1.japanese in ["記号"]
 
     def __repr__(self) -> str:
         return "".join([
