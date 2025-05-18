@@ -47,7 +47,7 @@ class VocabSpec(Slots):
         vocab_note.compound_parts.set(self.compounds)
 
         if self.extra_forms:
-            vocab_note.forms.set_set(vocab_note.forms.unexcluded_set() | self.extra_forms)
+            vocab_note.forms.set_set(vocab_note.forms.all_set() | self.extra_forms)
 
         for tag in self.tags:
             vocab_note.set_tag(tag)

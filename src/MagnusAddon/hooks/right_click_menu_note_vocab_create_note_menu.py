@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 def build_create_note_menu(note_create_menu: QMenu, vocab: VocabNote, selection: str, clipboard: str) -> None:
     def build_forms_menu(clone_to_form_menu: QMenu) -> None:
-        forms_with_no_vocab = [form for form in vocab.forms.unexcluded_set() if not any(app.col().vocab.with_question(form))]
+        forms_with_no_vocab = [form for form in vocab.forms.all_set() if not any(app.col().vocab.with_question(form))]
 
         def add_clone_to_form_action(title:str, form:str) -> None:
             create_vocab_note_action(clone_to_form_menu, title, lambda: vocab.cloner.clone_to_form(form))

@@ -47,7 +47,7 @@ class VocabCloner(Slots):
                 new_vocab.compound_parts.set(compounds1)
 
         new_vocab.parts_of_speech.set_raw_string_value(speech_type)
-        new_vocab.forms.set_list([append_prepend_addendum(form) for form in self.note.forms.unexcluded_set()])
+        new_vocab.forms.set_list([append_prepend_addendum(form) for form in self.note.forms.all_set()])
         return new_vocab
 
     def create_na_adjective(self) -> VocabNote:
@@ -78,7 +78,7 @@ class VocabCloner(Slots):
     def create_suru_verb(self, shimasu: bool = False) -> VocabNote:
         suru_verb = self._create_postfix_prefix_version("する" if not shimasu else "します", "suru verb")
 
-        forms = list(suru_verb.forms.unexcluded_set()) + [form.replace("する", "をする") for form in suru_verb.forms.unexcluded_set()]
+        forms = list(suru_verb.forms.all_set()) + [form.replace("する", "をする") for form in suru_verb.forms.all_set()]
         suru_verb.forms.set_list(forms)
 
         note = self.note
@@ -129,7 +129,7 @@ class VocabCloner(Slots):
         def create_full_form(form: str) -> str: return create_form_root(self.note, form) + form_suffix
 
         clone = VocabNote.factory.create(question=create_full_form(self.note.get_question()), answer=self.note.get_answer(), readings=[])
-        clone.forms.set_list([create_full_form(form) for form in self.note.forms.unexcluded_list()])
+        clone.forms.set_list([create_full_form(form) for form in self.note.forms.all_raw()])
         vocab_note = self.note
         readings = [create_full_form(reading) for reading in vocab_note.readings.get()]
         clone.readings.set(readings)

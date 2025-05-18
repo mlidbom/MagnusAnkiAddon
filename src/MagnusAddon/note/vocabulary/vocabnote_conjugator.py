@@ -28,10 +28,10 @@ class VocabNoteConjugator(Slots):
         return [self._vocab.get_question_without_noise_characters()] + self._get_stems_for_form(self._vocab.get_question_without_noise_characters())
 
     def get_text_matching_forms_for_all_form(self) -> list[str]:
-        return [self._strip_noise_characters(form) for form in self._vocab.forms.unexcluded_list() + self.get_stems_for_all_forms()]
+        return [self._strip_noise_characters(form) for form in self._vocab.forms.all_raw() + self.get_stems_for_all_forms()]
 
     def get_stems_for_all_forms(self) -> list[str]:
-        return ex_sequence.flatten([self._get_stems_for_form(form) for form in self._vocab.forms.unexcluded_set()])
+        return ex_sequence.flatten([self._get_stems_for_form(form) for form in self._vocab.forms.all_set()])
 
     @staticmethod
     def _strip_noise_characters(string: str) -> str:

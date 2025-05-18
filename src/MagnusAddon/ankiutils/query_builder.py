@@ -53,13 +53,13 @@ def sentence_search(word:str, exact:bool = False) -> str:
     if not exact:
         vocabs = app.col().vocab.with_form(word)
         if vocabs:
-            forms = set().union(*[v.forms.unexcluded_set() for v in vocabs])
+            forms = set().union(*[v.forms.all_set() for v in vocabs])
             return result + "(" + "　OR ".join([form_query(form) for form in forms]) + ")"
 
     return result + f"""({form_query(word)})"""
 
 def sentence_with_any_vocab_form_in_question(word:VocabNote) -> str:
-    search_strings = word.conjugator.get_stems_for_all_forms() + list(word.forms.unexcluded_set())
+    search_strings = word.conjugator.get_stems_for_all_forms() + list(word.forms.all_set())
     return f"""{note_sentence} {field_contains_string(f_question,  *search_strings)}"""
 
 def sentences_with_exclusions(exclusions:list[str]) -> str:

@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
 
 def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
-    forms = [_vocab_note.get_question()] + list(_vocab_note.forms.unexcluded_without_noise_characters_set())
+    forms = [_vocab_note.get_question()] + list(_vocab_note.forms.without_noise_characters_set())
     forms = ex_sequence.remove_duplicates_while_retaining_order(forms)
     primary_form = _vocab_note.get_question_without_noise_characters()
     primary_form_forms = _vocab_note.conjugator.get_text_matching_forms_for_primary_form()

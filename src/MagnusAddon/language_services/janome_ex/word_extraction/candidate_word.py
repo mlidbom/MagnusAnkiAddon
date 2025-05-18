@@ -44,11 +44,8 @@ class CandidateWord(Slots):
 
         self.should_include_surface = (self.surface.is_valid_candidate()
                                        and not self.is_inflected_word
-                                       and self.surface.form != self.base.form
-                                       and self.surface.form not in self.base.forms_excluded_by_vocab_configuration_legacy)
-        self.should_include_base = (self.base.is_valid_candidate()
-                                    #and self.base.form not in self.surface.forms_excluded_by_vocab_configuration_legacy
-                                    )
+                                       and self.surface.form != self.base.form)
+        self.should_include_base = self.base.is_valid_candidate()
 
         self.display_words = []
         if self.should_include_base:

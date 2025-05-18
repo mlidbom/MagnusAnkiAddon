@@ -42,14 +42,8 @@ class CandidateForm(Slots):
         self.unexcluded_vocabs: list[VocabNote] = [v for v in self.all_vocabs if not is_excluded_form(v.get_question())]
         self.excluded_vocabs: list[VocabNote] = [v for v in self.all_vocabs if is_excluded_form(v.get_question())]
 
-        self.forms_excluded_by_vocab_configuration_legacy: set[str] = set().union(*[v.forms.excluded_set() for v in self.unexcluded_vocabs])
-
         self.is_word: bool = self.dict_lookup.found_words() or len(self.all_vocabs) > 0
         self.is_excluded_by_config: bool = is_excluded_form(form)
-        self.is_self_excluded: bool = form in self.forms_excluded_by_vocab_configuration_legacy
-
-        self.possible_contextual_exclusions: list[str] = [excluded for excluded in self.forms_excluded_by_vocab_configuration_legacy if self.form in excluded]
-        self.is_contextually_excluded: bool = self._is_contextually_excluded()
 
         self.forms_excluded_by_compound_root_vocab_configuration: set[str] = set()
         self.is_excluded_by_compound_root_vocab_configuration: bool = False
@@ -65,13 +59,13 @@ class CandidateForm(Slots):
         self.is_missing_required_prefix = self.required_prefix and not any(required for required in self.required_prefix if self.prefix.startswith(required))
 
         self.display_forms: list[DisplayForm] = []
+        self.is_self_excluded = False
         self.completed_analysis = False
 
     def counterpart(self) -> CandidateForm: raise Exception("Not implemented")
 
     def complete_analysis(self) -> None:
         if self.completed_analysis: return
-        self.forms_excluded_by_compound_root_vocab_configuration: set[str] = self.candidate().locations[0]().all_candidates[-1].base.forms_excluded_by_vocab_configuration_legacy
         self.is_excluded_by_compound_root_vocab_configuration: bool = self.form in self.forms_excluded_by_compound_root_vocab_configuration
         self.exact_match_required_by_counterpart_vocab_configuration: bool = self.counterpart().exact_match_required_by_vocab_configuration
         self.exact_match_required: bool = self.exact_match_required_by_vocab_configuration or self.exact_match_required_by_counterpart_vocab_configuration
@@ -113,28 +107,12 @@ class CandidateForm(Slots):
                 and not self.is_self_excluded
                 and not self.is_excluded_by_prefix
                 and not self.is_missing_required_prefix
-                and not self.is_contextually_excluded
                 and not self.is_excluded_by_compound_root_vocab_configuration
                 and self.is_exact_match_requirement_fulfilled)
-
-    def _is_contextually_excluded(self) -> bool:
-        for exclusion in self.possible_contextual_exclusions:
-            if exclusion.endswith(self.form) and (self.prefix + self.form).endswith(exclusion):  # noqa: SIM114
-                return True
-            if exclusion.startswith(self.form) and (self.form + self.suffix).startswith(exclusion):  # noqa: SIM114
-                return True
-            if exclusion in self.prefix + self.form + self.suffix:
-                return True
-
-        return False
 
     @property
     def prefix(self) -> str:
         return self.candidate().start_location().previous().surface if self.candidate().start_location().previous else ""
-
-    @property
-    def suffix(self) -> str:
-        return self.candidate().end_location().next().surface if self.candidate().end_location().next else ""
 
     def to_exclusion(self) -> WordExclusion:
         return WordExclusion.at_index(self.form, self.start_index)

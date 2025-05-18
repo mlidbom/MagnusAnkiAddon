@@ -59,15 +59,15 @@ class SentenceCollection(Slots):
         return self._cache.with_question(question)
 
     def with_vocab(self, vocab_note: VocabNote) -> list[SentenceNote]:
-        matches = ex_sequence.remove_duplicates(ex_sequence.flatten([self._cache.with_vocab_form(form) for form in vocab_note.forms.unexcluded_set()]))
+        matches = ex_sequence.remove_duplicates(ex_sequence.flatten([self._cache.with_vocab_form(form) for form in vocab_note.forms.all_set()]))
         question = vocab_note.get_question()
         return [match for match in matches if question not in match.configuration.incorrect_matches.words()]
 
     def with_vocab_owned_form(self, vocab_note: VocabNote) -> list[SentenceNote]:
         def is_owned_by_other_form_note(form: str) -> bool:
-            return any(owner for owner in app.col().vocab.with_question(form) if owner != vocab_note and vocab_note.get_question() in owner.forms.unexcluded_set())
+            return any(owner for owner in app.col().vocab.with_question(form) if owner != vocab_note and vocab_note.get_question() in owner.forms.all_set())
 
-        owned_forms = [form for form in vocab_note.forms.unexcluded_set() if not is_owned_by_other_form_note(form)]
+        owned_forms = [form for form in vocab_note.forms.all_set() if not is_owned_by_other_form_note(form)]
 
         matches = ex_sequence.remove_duplicates(ex_sequence.flatten([self._cache.with_vocab_form(form) for form in owned_forms]))
         question = vocab_note.get_question()
@@ -76,6 +76,6 @@ class SentenceCollection(Slots):
     def with_form(self, form:str) -> list[SentenceNote]: return self._cache.with_vocab_form(form)
 
     def with_highlighted_vocab(self, vocab_note: VocabNote) -> list[SentenceNote]:
-        return ex_sequence.remove_duplicates(ex_sequence.flatten([self._cache.with_user_highlighted_vocab(form) for form in vocab_note.forms.unexcluded_set()]))
+        return ex_sequence.remove_duplicates(ex_sequence.flatten([self._cache.with_user_highlighted_vocab(form) for form in vocab_note.forms.all_set()]))
 
     def search(self, query: str) -> list[SentenceNote]: return list(self.collection.search(query))

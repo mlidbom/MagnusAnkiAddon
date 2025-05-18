@@ -3,13 +3,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Callable, TypeVar
 
-from autoslot import Slots
-
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
 T = TypeVar("T")
-U = TypeVar("U")
 
 def flatten(this: Sequence[Sequence[T]]) -> list[T]:
     """`returns` all the items in `this` in order, flattened into a one dimensional list"""
@@ -28,12 +25,3 @@ def remove_duplicates(sequence: Sequence[T]) -> list[T]: return list(set(sequenc
 
 def count(sequence: Sequence[T], predicate: Callable[[T], bool]) -> int:
     return len([t for t in sequence if predicate(t)])
-
-class ExSequence(Slots):
-    @staticmethod
-    def filter(value: Sequence[T], predicate: Callable[[T], bool], invert_condition: bool = False) -> list[T]:
-        return [item for item in value if predicate(item)] if not invert_condition else [item for item in value if not predicate(item)]
-
-    @staticmethod
-    def transform(value: Sequence[T], transform: Callable[[T], U]) -> list[U]:
-        return [transform(item) for item in value]

@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING
 import pytest
 from fixtures.collection_factory import inject_empty_anki_collection_with_note_types
 from fixtures.stub_factory import stub_ui_dependencies
-from note.vocabulary.vocabnote import VocabNote
 
 if TYPE_CHECKING:
     from collections.abc import Generator
@@ -17,20 +16,6 @@ if TYPE_CHECKING:
 def setup() -> Generator[None, None, None]:
     with (stub_ui_dependencies(), inject_empty_anki_collection_with_note_types()):
         yield
-
-@pytest.mark.parametrize("question, answer, readings, forms", [
-    ("らっしゃい", "please-come", ["らっしゃい"], ["らっしゃい", "[[らっしゃる]]"])
-])
-def test_excluded_forms(question:str, answer:str, readings:list[str], forms:set[str]) -> None:
-    note = VocabNote.factory.create(question, answer, readings)
-    note.forms.set_set(forms)
-    forms_list = note.forms.unexcluded_list()
-    assert len(forms_list) == 1
-    assert forms_list[0] == "らっしゃい"
-
-    excluded_forms_list = list(note.forms.excluded_set())
-    assert len(excluded_forms_list) == 1
-    assert excluded_forms_list[0] == "らっしゃる"
 
 def test_blah() -> None:
     _forms_exclusions = re.compile(r"\[\[.*]]")

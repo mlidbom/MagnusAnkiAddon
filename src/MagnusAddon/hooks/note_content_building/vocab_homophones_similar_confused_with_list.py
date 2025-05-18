@@ -43,7 +43,7 @@ def render_vocab_list(vocab_list: list[VocabNote], title:str, css_class:str, rea
 
 
 def generate_homophones_html_list(vocab_note: VocabNote) -> str:
-    forms = ex_sequence.flatten([app.col().vocab.with_question(reading) for reading in vocab_note.forms.unexcluded_set()])
+    forms = ex_sequence.flatten([app.col().vocab.with_question(reading) for reading in vocab_note.forms.all_set()])
     forms = [form for form in forms if form.get_id() != vocab_note.get_id()]
     forms = note.vocabulary.vocabnote_sorting.sort_vocab_list_by_studying_status(forms)
 
@@ -101,7 +101,7 @@ def generate_stem_of_vocabs(_vocab_note: VocabNote) -> str:
     return render_vocab_list(stem_of, "dictionary form", css_class="is_stem_of") if stem_of else ""
 
 def generate_forms_list(vocab_note: VocabNote) -> str:
-    forms = ex_sequence.flatten([app.col().vocab.with_question(form) for form in vocab_note.forms.unexcluded_set()])
+    forms = ex_sequence.flatten([app.col().vocab.with_question(form) for form in vocab_note.forms.all_set()])
     forms = [form for form in forms if form.get_id() != vocab_note.get_id()]
     forms = note.vocabulary.vocabnote_sorting.sort_vocab_list_by_studying_status(forms)
 
