@@ -27,6 +27,8 @@ class FieldSetWrapper(Generic[TValue], Slots):
         self._value.remove(key)
         self._save()
 
+    def is_empty(self) -> bool: return len(self._value) == 0
+
     @classmethod
     def for_json_object_field(cls, field: WeakRef[JsonObjectField[Any]], value: set[TValue]) -> FieldSetWrapper[TValue]:
         return cls(lambda: field().save(), value, FieldSetWrapper._secret)

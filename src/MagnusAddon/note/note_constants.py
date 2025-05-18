@@ -195,6 +195,11 @@ class Mine(Slots):
 
         vocab_folder = f"{base_folder}vocab::"
         vocab_has_no_studying_sentences = f"{vocab_folder}has-no-studying-sentences"
+        vocab_uses_folder = f"{vocab_folder}uses::"
+        vocab_uses_required_prefix = f"{vocab_uses_folder}required-prefix"
+        vocab_uses_prefix_is_not = f"{vocab_uses_folder}prefix-is-not"
+        vocab_uses_surface_is_not = f"{vocab_uses_folder}surface-is-not"
+        vocab_uses_prefer_over_base = f"{vocab_uses_folder}prefer-over-base"
 
 
         priority_folder = f"{base_folder}priority::"
