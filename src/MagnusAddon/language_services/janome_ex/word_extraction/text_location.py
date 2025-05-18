@@ -87,4 +87,4 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.sur
 
     def is_inflecting_word(self) -> bool:
         vocab = app.col().vocab.with_form(self.base)
-        return any(voc for voc in vocab if voc.has_tag(Mine.Tags.inflecting_word))
+        return any(voc for voc in vocab if voc.has_tag(Mine.Tags.vocab_matching_is_inflecting_word))

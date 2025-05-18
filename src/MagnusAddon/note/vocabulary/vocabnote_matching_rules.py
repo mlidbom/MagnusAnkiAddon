@@ -37,12 +37,12 @@ class VocabNoteMatching(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self._data: WeakRef[VocabNote] = vocab
         self._rules: Lazy[VocabNoteMatchingRules] = Lazy(lambda: VocabNoteMatchingRules(vocab))
-        self.requires_exact_match: TagFlagField = TagFlagField(vocab, Mine.Tags.requires_exact_match)
+        self.requires_exact_match: TagFlagField = TagFlagField(vocab, Mine.Tags.vocab_matching_requires_exact_match)
         self.question_overrides_form: TagFlagField = TagFlagField(vocab, Mine.Tags.question_overrides_form)
-        self.requires_a_stem: TagFlagField = TagFlagField(vocab, Mine.Tags.requires_a_stem)
-        self.requires_e_stem: TagFlagField = TagFlagField(vocab, Mine.Tags.requires_e_stem)
-        self.match_with_preceding_character: TagFlagField = TagFlagField(vocab, Mine.Tags.match_with_preceding_character)
-        self.match_with_preceding_vowel: TagFlagField = TagFlagField(vocab, Mine.Tags.match_with_preceding_vowel)
+        self.requires_a_stem: TagFlagField = TagFlagField(vocab, Mine.Tags.vocab_matching_requires_a_stem)
+        self.requires_e_stem: TagFlagField = TagFlagField(vocab, Mine.Tags.vocab_matching_requires_e_stem)
+        self.match_with_preceding_character: TagFlagField = TagFlagField(vocab, Mine.Tags.vocab_matching_with_preceding_character)
+        self.match_with_preceding_vowel: TagFlagField = TagFlagField(vocab, Mine.Tags.vocab_matching_with_preceding_vowel)
 
     @property
     def rules(self) -> VocabNoteMatchingRules:

@@ -20,7 +20,7 @@ class VocabNoteMetaDataFlags(Slots):
         return self._vocab().has_tag(Mine.Tags.question_overrides_form)
 
     def requires_exact_match(self) -> bool:
-        return self._vocab().has_tag(Mine.Tags.requires_exact_match)
+        return self._vocab().has_tag(Mine.Tags.vocab_matching_requires_exact_match)
 
 class VocabNoteMetaData(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:

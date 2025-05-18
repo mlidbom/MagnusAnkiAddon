@@ -67,10 +67,10 @@ def tag_note_metadata() -> None:
 def tag_vocab_metadata() -> None:
     def tag_note(vocab: VocabNote) -> None:
         vocab.toggle_tag(Mine.Tags.vocab_has_no_studying_sentences, not any(vocab.sentences.studying()))
-        vocab.toggle_tag(Mine.Tags.vocab_uses_required_prefix, not vocab.matching_rules.rules.required_prefix.is_empty())
-        vocab.toggle_tag(Mine.Tags.vocab_uses_prefix_is_not, not vocab.matching_rules.rules.prefix_is_not.is_empty())
-        vocab.toggle_tag(Mine.Tags.vocab_uses_surface_is_not, not vocab.matching_rules.rules.surface_is_not.is_empty())
-        vocab.toggle_tag(Mine.Tags.vocab_uses_prefer_over_base, not vocab.matching_rules.rules.prefer_over_base.is_empty())
+        vocab.toggle_tag(Mine.Tags.vocab_matching_uses_required_prefix, not vocab.matching_rules.rules.required_prefix.is_empty())
+        vocab.toggle_tag(Mine.Tags.vocab_matching_uses_prefix_is_not, not vocab.matching_rules.rules.prefix_is_not.is_empty())
+        vocab.toggle_tag(Mine.Tags.vocab_matching_uses_surface_is_not, not vocab.matching_rules.rules.surface_is_not.is_empty())
+        vocab.toggle_tag(Mine.Tags.vocab_matching_uses_prefer_over_base, not vocab.matching_rules.rules.prefer_over_base.is_empty())
 
     progress_display_runner.process_with_progress(app.col().vocab.all(), tag_note, "Tag vocab notes")
 
