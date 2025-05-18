@@ -10,43 +10,40 @@ from sysutils import typed
 def dict_to_json(object_dict: dict[str, Any], indent: int | None = None) -> str:
     return json.dumps(object_dict, ensure_ascii=False, indent=indent)
 
-T: TypeVar = TypeVar("T")
+TProp: TypeVar = TypeVar("TProp")
 
 class JsonReader(Slots):
     def __init__(self, json_dict: dict[str, Any]) -> None:
         self._dict = json_dict
 
-    def _try_get_prop(self, prop: str | list[str]) -> object | None:
+    def _get_prop(self, prop: str | list[str], prop_type: type[TProp], default: TProp | None) -> TProp:
         if isinstance(prop, str):
-            return self._dict.get(prop, None)
+            return typed.checked_cast_generics(prop_type, self._dict.get(prop, None))
 
         for p in prop:
             if p in self._dict:
-                return self._dict[p]
-        return None
+                return typed.checked_cast_generics(prop_type, self._dict[p])
 
-    def string(self, prop: str) -> str: return typed.str_(self._dict[prop])
-    def int(self, prop: str) -> string: return typed.int_(self._dict[prop])
+        if default is None:
+            raise KeyError(f"None of the following keys were found in the JSON: {prop}")
 
-    def string_list(self, prop: str | list[str], allow_missing: bool = False) -> list[str]:
-        value = self._try_get_prop(prop)
-        if value is None and allow_missing: return []
+        return default
 
-        return typed.checked_cast_generics(list[str], value)
+    def string(self, prop: str | list[str], default: str | None = None) -> str: return self._get_prop(prop, str, default)
+    def int(self, prop: str | list[str], default: int | None = None) -> string: return self._get_prop(prop, int, default)
 
-    def string_set(self, prop: str | list[str], allow_missing: bool = False) -> set[str]: return set(self.string_list(prop, allow_missing))
+    def string_list(self, prop: str | list[str], default: list[str] | None = None) -> list[str]:
+        return self._get_prop(prop, list[str], default)
 
-    def object_list(self, prop: str, factory: Callable[[JsonReader], T], allow_missing: bool = False) -> list[T]:
-        prop_value = self._dict.get(prop, None)
-        if prop_value is None and allow_missing:
-            return []
+    def string_set(self, prop: str | list[str], default: set[str] | None = None) -> set[str]: return set(self.string_list(prop, default))
 
-        reader_list = [JsonReader(json_dict) for json_dict in typed.checked_cast_generics(list[dict[str, Any]], prop_value)]
-
+    def object_list(self, prop: str | list[str], factory: Callable[[JsonReader], TProp], default: list[TProp] | None = None) -> list[TProp]:
+        prop_value = self._get_prop(prop, list[dict[str, Any]], default)
+        reader_list = [JsonReader(json_dict) for json_dict in prop_value]
         return [factory(reader) for reader in reader_list]
 
     # noinspection PyUnusedFunction
-    def object(self, prop: str, factory: Callable[[JsonReader], T], default: Callable[[], T] | None = None) -> T | None:
+    def object(self, prop: str, factory: Callable[[JsonReader], TProp], default: Callable[[], TProp] | None = None) -> TProp | None:
         reader = self._reader_or_none(prop)
         return default() if reader is None and default is not None else factory(typed.non_optional(reader))
 
