@@ -8,6 +8,7 @@ from fixtures.collection_factory import inject_anki_collection_with_select_data,
 from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from note.sentences.sentence_configuration import SentenceConfiguration
+from note.sentences.sentencenote import SentenceNote
 from note.vocabulary.vocabnote import VocabNote
 from sysutils import ex_str
 
@@ -86,10 +87,11 @@ def test_requires_a_stem(setup_collection_with_select_data: object, sentence: st
     assert root_words == expected_output
 
 @pytest.mark.parametrize("sentence, expected_output", [
-    (f"金{ex_str.invisible_space}貸せって", ["金", "貸す", "える", "って"])
+    ("金<wbr>貸せって", ["金", "貸す", "える", "って"])
 ])
 def test_invisible_space_breakup(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
-    analysis = TextAnalysis(sentence, SentenceConfiguration.empty())
+    sentence_note = SentenceNote.create(sentence)
+    analysis = TextAnalysis(sentence_note.get_question(), SentenceConfiguration.empty())
     root_words = [w.form for w in analysis.all_words]
     assert root_words == expected_output
 
