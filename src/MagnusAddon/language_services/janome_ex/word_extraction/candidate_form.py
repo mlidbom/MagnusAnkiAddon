@@ -56,7 +56,7 @@ class CandidateForm(Slots):
         self.is_excluded_by_prefix = any(excluded_prefix for excluded_prefix in self.prefix_is_not if self.prefix.endswith(excluded_prefix))
 
         self.required_prefix: set[str] = set().union(*[v.matching_rules.rules.required_prefix.get() for v in self.unexcluded_vocabs])
-        self.is_missing_required_prefix = self.required_prefix and not any(required for required in self.required_prefix if self.prefix.startswith(required))
+        self.is_missing_required_prefix = self.required_prefix and not any(required for required in self.required_prefix if self.prefix.endswith(required))
 
         self.display_forms: list[DisplayForm] = []
         self.is_self_excluded = False
