@@ -92,7 +92,7 @@ class CandidateForm(Slots):
         if vocab.matching_rules.requires_a_stem.is_set:
             return self.has_prefix and self.prefix[-1] in conjugator.a_stem_characters
         if vocab.matching_rules.requires_e_stem.is_set:
-            return self.has_prefix and self.prefix[-1] in conjugator.e_stem_characters or kana_utils.character_is_kanji(self.prefix[-1])
+            return self.has_prefix and (self.prefix[-1] in conjugator.e_stem_characters or kana_utils.character_is_kanji(self.prefix[-1]))
         return True
 
     @property
