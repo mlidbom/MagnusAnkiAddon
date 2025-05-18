@@ -19,6 +19,7 @@ if TYPE_CHECKING:
 from sysutils.ex_str import newline
 
 _noise_characters = {".", ",", ":", ";", "/", "|", "。", "、", "?", "!"}
+_non_word_characters = _noise_characters | {" ", "\t"}
 class CandidateForm(Slots):
     __slots__ = ["__weakref__"]
     def __init__(self, candidate: WeakRef[CandidateWord], is_surface: bool, form: str) -> None:
@@ -53,10 +54,10 @@ class CandidateForm(Slots):
         self.is_exact_match_requirement_fulfilled: bool = False
 
         self.prefix_is_not: set[str] = set().union(*[v.matching_rules.rules.prefix_is_not.get() for v in self.unexcluded_vocabs])
-        self.is_excluded_by_prefix = any(excluded_prefix for excluded_prefix in self.prefix_is_not if self.prefix.endswith(excluded_prefix))
+        self.is_excluded_by_prefix = any(excluded_prefix for excluded_prefix in self.prefix_is_not if self.preceding_surface.endswith(excluded_prefix))
 
         self.required_prefix: set[str] = set().union(*[v.matching_rules.rules.required_prefix.get() for v in self.unexcluded_vocabs])
-        self.is_missing_required_prefix = self.required_prefix and not any(required for required in self.required_prefix if self.prefix.endswith(required))
+        self.is_missing_required_prefix = self.required_prefix and not any(required for required in self.required_prefix if self.preceding_surface.endswith(required))
 
         self.display_forms: list[DisplayForm] = []
         self.is_self_excluded = False
@@ -83,13 +84,13 @@ class CandidateForm(Slots):
 
     def vocab_fulfills_stem_requirements(self, vocab: VocabNote) -> bool:
         if vocab.matching_rules.requires_a_stem.is_set:
-            return self.has_prefix and self.prefix[-1] in conjugator.a_stem_characters
+            return self.has_prefix and self.preceding_surface[-1] in conjugator.a_stem_characters
         if vocab.matching_rules.requires_e_stem.is_set:
-            return self.has_prefix and self.prefix[-1] not in conjugator.a_stem_characters
+            return self.has_prefix and self.preceding_surface[-1] not in conjugator.a_stem_characters
         return True
 
     @property
-    def has_prefix(self) -> bool: return self.prefix != ""
+    def has_prefix(self) -> bool: return self.preceding_surface != "" and self.preceding_surface[-1] not in _non_word_characters
 
     def is_valid_candidate(self) -> bool:
         return ((self.is_word or not self.candidate().is_custom_compound)
@@ -102,7 +103,7 @@ class CandidateForm(Slots):
                 and self.is_exact_match_requirement_fulfilled)
 
     @property
-    def prefix(self) -> str:
+    def preceding_surface(self) -> str:
         return self.candidate().start_location().previous().surface if self.candidate().start_location().previous else ""
 
     def to_exclusion(self) -> WordExclusion:
