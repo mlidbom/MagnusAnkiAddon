@@ -85,7 +85,7 @@ class CandidateForm(Slots):
         if vocab.matching_rules.requires_a_stem.is_set:
             return self.has_prefix and self.prefix[-1] in conjugator.a_stem_characters
         if vocab.matching_rules.requires_e_stem.is_set:
-            return self.has_prefix and self.prefix[-1] in conjugator.e_stem_characters
+            return self.has_prefix and self.prefix[-1] not in conjugator.a_stem_characters
         return True
 
     @property

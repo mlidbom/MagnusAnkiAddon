@@ -17,8 +17,8 @@ _godan_ru_or_ichidan_endings = _godan_ru_endings + _ichidan_endings
 
 godan_potential_verb_ending_to_dictionary_form_endings: dict[str, str] = {"える": "う", "ける": "く", "げる": "ぐ", "せる": "す", "てる": "つ", "ねる": "ぬ", "べる": "ぶ", "める": "む", "れる": "る"}
 
-e_stem_characters:set[str] = {"え", "け", "げ", "せ", "て", "ね", "べ", "め", "れ"}
-a_stem_characters:set[str] = {"わ", "か", "が", "さ", "た", "な", "ば", "ま", "ら"}
+e_stem_characters: set[str] = {"え", "け", "げ", "せ", "て", "ね", "べ", "め", "れ", "エ", "ケ", "ゲ", "セ", "テ", "ネ", "ベ", "メ", "レ"}
+a_stem_characters: set[str] = {"わ", "か", "が", "さ", "た", "な", "ば", "ま", "ら", "ワ", "カ", "ガ", "サ", "タ", "ナ", "バ", "マ", "ラ"}
 
 _1_character_mappings: dict[str, list[str]] = {"う": ["い", "わ", "え", "っ"],
                                                "く": ["き", "か", "け", "い"],
@@ -38,7 +38,7 @@ _2_character_mappings: dict[str, list[str]] = {"する": ["し", "さ", "すれ"
                                                "ます": ["まし", "ませ"],
                                                "いい": ["よく", "よけ", "よか", "よかっ"]}
 
-_masu_forms_by_index = ["まし", "ませ", "まし", "まし"] #not to sure about these. To say the least....
+_masu_forms_by_index = ["まし", "ませ", "まし", "まし"]  # not to sure about these. To say the least....
 
 _aru_verbs: set[str] = {"なさる", "くださる", "おっしゃる", "ござる", "らっしゃる", "下さる", "為さる"}
 
