@@ -11,7 +11,7 @@ from note.note_constants import ImmersionKitSentenceNoteFields, Mine, NoteFields
 from note.notefields.audio_field import WritableAudioField
 from note.notefields.json_object_field import JsonObjectField
 from note.notefields.string_field import StringField
-from note.notefields.strip_html_on_read_fallback_string_field import StripHtmlOnReadFallbackStringField
+from note.notefields.strip_html_on_read_fallback_string_field import SentenceQuestionField
 from note.notefields.strip_html_on_read_string_field import StripHtmlOnReadStringField
 from note.sentences.caching_sentence_configuration_field import CachingSentenceConfigurationField
 from note.sentences.parsing_result import ParsingResult
@@ -30,14 +30,13 @@ class SentenceNote(JPNote, Slots):
         super().__init__(note)
         self.weakref: WeakRef[SentenceNote] = WeakRef(self)
         self._source_answer = StringField(self.weakref, SentenceNoteFields.source_answer)
-        self._user_question = StringField(self.weakref, SentenceNoteFields.user_question)
         self._source_question = StripHtmlOnReadStringField(self.weakref, SentenceNoteFields.source_question)
         self.source_comments: StripHtmlOnReadStringField = StripHtmlOnReadStringField(self.weakref, SentenceNoteFields.source_comments)
 
         self.user: SentenceUserFields = SentenceUserFields(self.weakref)
 
-        self.question = StripHtmlOnReadFallbackStringField(self.weakref, SentenceNoteFields.user_question, SentenceNoteFields.source_question)
-        self.answer = StripHtmlOnReadFallbackStringField(self.weakref, SentenceNoteFields.user_answer, SentenceNoteFields.source_answer)
+        self.question = SentenceQuestionField(self.weakref, SentenceNoteFields.user_question, SentenceNoteFields.source_question)
+        self.answer = SentenceQuestionField(self.weakref, SentenceNoteFields.user_answer, SentenceNoteFields.source_answer)
         self._screenshot = StringField(self.weakref, SentenceNoteFields.screenshot)
         self.audio: WritableAudioField = WritableAudioField(self.weakref, SentenceNoteFields.audio)
         self.configuration: CachingSentenceConfigurationField = CachingSentenceConfigurationField(self.weakref)

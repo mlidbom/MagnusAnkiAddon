@@ -7,7 +7,7 @@ from autoslot import Slots
 from language_services import conjugator
 from language_services.janome_ex.word_extraction.display_form import DisplayForm, MissingDisplayForm, VocabDisplayForm
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
-from sysutils import kana_utils
+from sysutils import ex_str, kana_utils
 from sysutils.object_instance_tracker import ObjectInstanceTracker
 from sysutils.typed import non_optional
 from sysutils.weak_ref import WeakRef
@@ -17,7 +17,7 @@ if TYPE_CHECKING:
     from note.sentences.sentence_configuration import SentenceConfiguration
     from note.vocabulary.vocabnote import VocabNote
 
-_noise_characters = {".", ",", ":", ";", "/", "|", "。", "、", "?", "!"}
+_noise_characters = {".", ",", ":", ";", "/", "|", "。", "、", "?", "!", ex_str.invisible_space}
 _non_word_characters = _noise_characters | {" ", "\t"}
 class CandidateForm(Slots):
     __slots__ = ["__weakref__"]

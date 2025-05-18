@@ -7,6 +7,7 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
 
 newline = "\n"
+invisible_space = "​"
 full_width_space = "　"
 
 def pad_to_length(value: str, target_length: int, space_scaling: float = 1.0) -> str:
