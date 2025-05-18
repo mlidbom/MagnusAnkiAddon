@@ -48,21 +48,26 @@ class CandidateForm(Slots):
         self.is_excluded_by_config: bool = is_excluded_form(form)
 
         self.forms_excluded_by_compound_root_vocab_configuration: set[str] = set()
-        self.is_excluded_by_compound_root_vocab_configuration: bool = False
         self.exact_match_required_by_vocab_configuration: bool = any(v for v in self.unexcluded_vocabs if v.meta_data.flags.requires_exact_match())
-        self.exact_match_required_by_counterpart_vocab_configuration: bool = False
-        self.exact_match_required: bool = False
-        self.is_exact_match_requirement_fulfilled: bool = False
 
         self.prefix_is_not: set[str] = set().union(*[v.matching_rules.rules.prefix_is_not.get() for v in self.unexcluded_vocabs])
         self.is_excluded_by_prefix = any(excluded_prefix for excluded_prefix in self.prefix_is_not if self.preceding_surface.endswith(excluded_prefix))
 
-        self.required_prefix: set[str] = set().union(*[v.matching_rules.rules.required_prefix.get() for v in self.unexcluded_vocabs])
-        self.is_missing_required_prefix = self.required_prefix and not any(required for required in self.required_prefix if self.preceding_surface.endswith(required))
+        self.prefix_must_end_with: set[str] = set().union(*[v.matching_rules.rules.required_prefix.get() for v in self.unexcluded_vocabs])
+        self.is_missing_required_prefix = self.prefix_must_end_with and not any(required for required in self.prefix_must_end_with if self.preceding_surface.endswith(required))
 
-        self.display_forms: list[DisplayForm] = []
+        self.is_strictly_suffix = any(voc for voc in self.unexcluded_vocabs if voc.matching_rules.is_strictly_suffix.is_set)
+        self.requires_prefix = self.is_strictly_suffix or any(self.prefix_must_end_with)
+
+        # will be completed in complete_analysis
+        self.is_excluded_by_compound_root_vocab_configuration: bool = False
+        self.exact_match_required_by_counterpart_vocab_configuration: bool = False
+        self.exact_match_required: bool = False
+        self.is_exact_match_requirement_fulfilled: bool = False
         self.is_self_excluded = False
         self.completed_analysis = False
+
+        self.display_forms: list[DisplayForm] = []
 
     def counterpart(self) -> CandidateForm: raise Exception("Not implemented")
 
@@ -104,6 +109,7 @@ class CandidateForm(Slots):
                 and not self.is_excluded_by_prefix
                 and not self.is_missing_required_prefix
                 and not self.is_excluded_by_compound_root_vocab_configuration
+                and (not self.requires_prefix or self.has_prefix)
                 and self.is_exact_match_requirement_fulfilled)
 
     @property
