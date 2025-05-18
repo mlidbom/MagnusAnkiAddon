@@ -32,29 +32,31 @@ class CandidateForm(Slots):
         self.form: str = form
 
         self.dict_lookup: DictLookup = DictLookup.lookup_word_shallow(form)
-        self.all_vocabs: list[VocabNote] = app.col().vocab.with_form(form)
+        self.all_any_form_vocabs: list[VocabNote] = app.col().vocab.with_form(form)
+        self.all_primary_form_vocabs: list[VocabNote] = [voc for voc in self.all_any_form_vocabs if voc.get_question() == form]
 
         def is_excluded_form(form_: str) -> bool:
             # todo: bug: With the current implementation this removes hidden matches from the parsed words. That is precisely what hidden matches should not do.
             return (self.configuration.incorrect_matches.excludes_at_index(form_, self.start_index)
                     or self.configuration.hidden_matches.excludes_at_index(form_, self.start_index))
 
-        self.unexcluded_vocabs: list[VocabNote] = [v for v in self.all_vocabs if not is_excluded_form(v.get_question())]
-        self.excluded_vocabs: list[VocabNote] = [v for v in self.all_vocabs if is_excluded_form(v.get_question())]
+        self.unexcluded_any_form_vocabs: list[VocabNote] = [v for v in self.all_any_form_vocabs if not is_excluded_form(v.get_question())]
+        self.unexcluded_primary_form_vocabs: list[VocabNote] = [voc for voc in self.unexcluded_any_form_vocabs if voc.get_question() == form]
+        self.excluded_vocabs: list[VocabNote] = [v for v in self.all_any_form_vocabs if is_excluded_form(v.get_question())]
 
-        self.is_word: bool = self.dict_lookup.found_words() or len(self.all_vocabs) > 0
+        self.is_word: bool = self.dict_lookup.found_words() or len(self.all_any_form_vocabs) > 0
         self.is_excluded_by_config: bool = is_excluded_form(form)
 
         self.forms_excluded_by_compound_root_vocab_configuration: set[str] = set()
-        self.exact_match_required_by_vocab_configuration: bool = any(v for v in self.unexcluded_vocabs if v.meta_data.flags.requires_exact_match())
+        self.exact_match_required_by_primary_form_vocab_configuration: bool = any(v for v in self.unexcluded_primary_form_vocabs if v.meta_data.flags.requires_exact_match())
 
-        self.prefix_is_not: set[str] = set().union(*[v.matching_rules.rules.prefix_is_not.get() for v in self.unexcluded_vocabs])
+        self.prefix_is_not: set[str] = set().union(*[v.matching_rules.rules.prefix_is_not.get() for v in self.unexcluded_primary_form_vocabs])
         self.is_excluded_by_prefix = any(excluded_prefix for excluded_prefix in self.prefix_is_not if self.preceding_surface.endswith(excluded_prefix))
 
-        self.prefix_must_end_with: set[str] = set().union(*[v.matching_rules.rules.required_prefix.get() for v in self.unexcluded_vocabs])
+        self.prefix_must_end_with: set[str] = set().union(*[v.matching_rules.rules.required_prefix.get() for v in self.unexcluded_primary_form_vocabs])
         self.is_missing_required_prefix = self.prefix_must_end_with and not any(required for required in self.prefix_must_end_with if self.preceding_surface.endswith(required))
 
-        self.is_strictly_suffix = any(voc for voc in self.unexcluded_vocabs if voc.matching_rules.is_strictly_suffix.is_set)
+        self.is_strictly_suffix = any(voc for voc in self.unexcluded_primary_form_vocabs if voc.matching_rules.is_strictly_suffix.is_set)
         self.requires_prefix = self.is_strictly_suffix or any(self.prefix_must_end_with)
 
         # will be completed in complete_analysis
@@ -75,12 +77,12 @@ class CandidateForm(Slots):
     def complete_analysis(self) -> None:
         if self.completed_analysis: return
         self.is_excluded_by_compound_root_vocab_configuration: bool = self.form in self.forms_excluded_by_compound_root_vocab_configuration
-        self.exact_match_required_by_counterpart_vocab_configuration: bool = self.counterpart.exact_match_required_by_vocab_configuration
-        self.exact_match_required: bool = self.exact_match_required_by_vocab_configuration or self.exact_match_required_by_counterpart_vocab_configuration
+        self.exact_match_required_by_counterpart_vocab_configuration: bool = self.counterpart.exact_match_required_by_primary_form_vocab_configuration
+        self.exact_match_required: bool = self.exact_match_required_by_primary_form_vocab_configuration or self.exact_match_required_by_counterpart_vocab_configuration
         self.is_exact_match_requirement_fulfilled: bool = self.form == self.counterpart.form or not self.exact_match_required
 
-        if self.unexcluded_vocabs:
-            self.display_forms = [VocabDisplayForm(WeakRef(self), voc) for voc in self.unexcluded_vocabs if self.vocab_fulfills_stem_requirements(voc)]
+        if self.unexcluded_any_form_vocabs:
+            self.display_forms = [VocabDisplayForm(WeakRef(self), voc) for voc in self.unexcluded_any_form_vocabs if self.vocab_fulfills_stem_requirements(voc)]
             override_form = [df for df in self.display_forms if df.parsed_form != self.form]
             if any(override_form):
                 self.form = override_form[0].parsed_form
@@ -142,7 +144,7 @@ class BaseCandidateForm(CandidateForm, Slots):
 
         super().__init__(candidate, False, base_form)
 
-        self.surface_is_not: set[str] = set().union(*[v.matching_rules.rules.surface_is_not.get() for v in self.unexcluded_vocabs])
+        self.surface_is_not: set[str] = set().union(*[v.matching_rules.rules.surface_is_not.get() for v in self.unexcluded_any_form_vocabs])
         self.surface_preferred_over_bases: set[str] = set()
 
     def complete_analysis(self) -> None:
@@ -152,7 +154,7 @@ class BaseCandidateForm(CandidateForm, Slots):
             self.is_self_excluded = True
             self.is_valid_candidate = False
 
-        self.surface_preferred_over_bases = set().union(*[vocab.matching_rules.rules.prefer_over_base.get() for vocab in self.counterpart.unexcluded_vocabs])
+        self.surface_preferred_over_bases = set().union(*[vocab.matching_rules.rules.prefer_over_base.get() for vocab in self.counterpart.unexcluded_any_form_vocabs])
         if self.form in self.surface_preferred_over_bases:
             self.is_valid_candidate = False
 
