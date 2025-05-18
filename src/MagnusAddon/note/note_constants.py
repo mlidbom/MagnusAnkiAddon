@@ -192,8 +192,10 @@ class Mine(Slots):
         vocab_matching_requires_a_stem = f"{vocab_matching_folder}requires-a-stem"
         vocab_matching_requires_e_stem = f"{vocab_matching_folder}requires-e-stem"
         vocab_matching_requires_exact_match = f"{vocab_matching_folder}requires-exact-match"
-        vocab_matching_with_preceding_character = f"{vocab_matching_folder}match-with-preceding-character"
-        vocab_matching_with_preceding_vowel = f"{vocab_matching_folder}match-with-preceding-vowel"
+
+        vocab_matching_todo_folder = f"{vocab_matching_folder}todo::"
+        vocab_matching_todo_with_preceding_character = f"{vocab_matching_todo_folder}match-with-preceding-character"
+        vocab_matching_todo_with_preceding_vowel = f"{vocab_matching_todo_folder}match-with-preceding-vowel"
 
         vocab_matching_uses_folder = f"{vocab_matching_folder}uses::"
         vocab_matching_uses_prefer_over_base = f"{vocab_matching_uses_folder}prefer-over-base"
