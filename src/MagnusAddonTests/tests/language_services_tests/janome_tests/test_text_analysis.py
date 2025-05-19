@@ -10,7 +10,6 @@ from language_services.janome_ex.word_extraction.word_exclusion import WordExclu
 from note.sentences.sentence_configuration import SentenceConfiguration
 from note.sentences.sentencenote import SentenceNote
 from note.vocabulary.vocabnote import VocabNote
-from sysutils import ex_str
 
 if TYPE_CHECKING:
     from collections.abc import Generator
