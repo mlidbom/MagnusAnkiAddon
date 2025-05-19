@@ -9,7 +9,8 @@ from note.notefields.auto_save_wrappers.set_wrapper import FieldSetWrapper
 from note.notefields.comma_separated_strings_set_field import CommaSeparatedStringsSetField
 from note.notefields.json_object_field import JsonObjectField
 from note.notefields.string_field import StringField
-from note.vocabulary.vocabnote_related_notes import VocabErgativeTwin, VocabNoteRelatedNotesData
+from note.vocabulary.related_notes.ergative_twin import VocabErgativeTwin
+from note.vocabulary.related_notes.related_notes_data import VocabNoteRelatedNotesData
 from sysutils import ex_sequence
 
 if TYPE_CHECKING:
