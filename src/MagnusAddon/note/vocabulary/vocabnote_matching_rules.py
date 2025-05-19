@@ -22,7 +22,7 @@ class VocabNoteMatchingRulesData(Slots):
         self.prefer_over_base = prefer_over_base
         self.required_prefix = required_prefix
 
-class VocabNoteMatchingRules:
+class VocabNoteMatchingRules(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self._data: JsonObjectField[VocabNoteMatchingRulesData] = JsonObjectField(vocab, NoteFields.Vocab.matching_rules, VocabNoteMatchingRulesData.serializer)
         self.surface_is_not: FieldSetWrapper[str] = FieldSetWrapper.for_json_object_field(self._data.weakref, self._data.get().surface_is_not)
