@@ -37,6 +37,7 @@ def create_vocab() -> NoteTypeEx:
                        NoteFieldEx(NoteFields.Vocab.component_subject_ids),
                        NoteFieldEx(NoteFields.Vocab.sentence_count),
                        NoteFieldEx(NoteFields.Vocab.user_compounds),
-                       NoteFieldEx(NoteFields.Vocab.matching_rules)
+                       NoteFieldEx(NoteFields.Vocab.matching_rules),
+                       NoteFieldEx(NoteFields.Vocab.related_vocab)
                        ],
                       [NoteTemplateEx("reading")])

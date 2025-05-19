@@ -14,7 +14,6 @@ from language_services.janome_ex.tokenizing.jn_tokenizer import JNTokenizer
 from language_services.janome_ex.word_extraction.text_location import TokenTextLocation
 from note.sentences.sentence_configuration import SentenceConfiguration
 from sysutils import ex_sequence
-from sysutils.ex_str import newline
 
 _tokenizer = JNTokenizer()
 

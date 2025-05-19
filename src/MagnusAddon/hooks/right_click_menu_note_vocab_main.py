@@ -59,8 +59,8 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
         build_sentences_lookup_menu(non_optional(note_lookup_menu.addMenu(shortcutfinger.home2("Sentences"))))
 
         add_lookup_action(note_lookup_menu, shortcutfinger.home3("Kanji"), f"note:{NoteTypes.Kanji} ( {' OR '.join([f'{NoteFields.Kanji.question}:{char}' for char in vocab.get_question()])} )")
-        if vocab.related_notes.ergative_twin():
-            add_single_vocab_lookup_action(note_lookup_menu, shortcutfinger.home4("Ergative twin"), vocab.related_notes.ergative_twin())
+        if vocab.related_notes.ergative_twin_legacy():
+            add_single_vocab_lookup_action(note_lookup_menu, shortcutfinger.home4("Ergative twin"), vocab.related_notes.ergative_twin_legacy())
 
     def build_note_menu() -> None:
         if not vocab.user.answer.get():

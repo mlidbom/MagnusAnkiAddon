@@ -63,19 +63,19 @@ def generate_similar_meaning_html_list(_vocab_note: VocabNote) -> str:
     return render_vocab_list(similar, "similar", css_class="similar") if similar else ""
 
 def generate_confused_with_html_list(_vocab_note: VocabNote) -> str:
-    vocabs = list(_vocab_note.related_notes.confused_with.get())
+    vocabs = list(_vocab_note.related_notes.confused_with_field.get())
     confused_with = app.col().vocab.with_any_form_in_prefer_exact_match(vocabs)
     confused_with = note.vocabulary.vocabnote_sorting.sort_vocab_list_by_studying_status(confused_with)
 
     return render_vocab_list(confused_with, "confused with", css_class="confused_with") if confused_with else ""
 
 def generate_ergative_twin_html(_vocab_note: VocabNote) -> str:
-    part = _vocab_note.related_notes.ergative_twin()
+    part = _vocab_note.related_notes.ergative_twin_legacy()
     ergative_twin = app.col().vocab.with_form_prefer_exact_match(part)
     return render_vocab_list(ergative_twin, "ergative twin", css_class="ergative_twin") if ergative_twin else ""
 
 def generate_derived_from(_vocab_note: VocabNote) -> str:
-    part = _vocab_note.related_notes.derived_from.get()
+    part = _vocab_note.related_notes.derived_from_field.get()
     derived_from = app.col().vocab.with_form_prefer_exact_match(part)
     return render_vocab_list(derived_from, "derived from", css_class="derived_from") if derived_from else ""
 

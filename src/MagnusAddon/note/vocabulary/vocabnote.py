@@ -9,6 +9,7 @@ from note.notefields.comma_separated_strings_list_field import CommaSeparatedStr
 from note.notefields.string_field import StringField
 from note.vocabnote_cloner import VocabCloner
 from note.vocabulary import vocabnote_generated_data
+from note.vocabulary.related_notes.related_notes_property import VocabNoteRelatedNotesProperty
 from note.vocabulary.vocabnote_audio import VocabNoteAudio
 from note.vocabulary.vocabnote_conjugator import VocabNoteConjugator
 from note.vocabulary.vocabnote_context_sentences import VocabContextSentences
@@ -18,7 +19,6 @@ from note.vocabulary.vocabnote_kanji import VocabNoteKanji
 from note.vocabulary.vocabnote_matching_rules import VocabNoteMatching
 from note.vocabulary.vocabnote_metadata import VocabNoteMetaData
 from note.vocabulary.vocabnote_parts_of_speech import VocabNotePartsOfSpeech
-from note.vocabulary.vocabnote_related_notes import VocabNoteRelatedNotes
 from note.vocabulary.vocabnote_sentences import VocabNoteSentences
 from note.vocabulary.vocabnote_usercompoundparts import VocabNoteUserCompoundParts
 from note.vocabulary.vocabnote_userfields import VocabNoteUserfields
@@ -46,7 +46,7 @@ class VocabNote(WaniNote, Slots):
         self.active_answer: StringField = StringField(self.weakref, NoteFields.Vocab.active_answer)
 
         self.cloner: VocabCloner = VocabCloner(self.weakref)
-        self.related_notes: VocabNoteRelatedNotes = VocabNoteRelatedNotes(self.weakref)
+        self.related_notes: VocabNoteRelatedNotesProperty = VocabNoteRelatedNotesProperty(self.weakref)
         self.context_sentences: VocabContextSentences = VocabContextSentences(self.weakref)
         self.audio: VocabNoteAudio = VocabNoteAudio(self.weakref)
         self.sentences: VocabNoteSentences = VocabNoteSentences(self.weakref)
