@@ -62,4 +62,4 @@ def build_string_menu(string_menu: QMenu, sentence: SentenceNote, menu_string: s
 
     build_add_menu(non_optional(string_menu.addMenu(shortcutfinger.home1("Add"))))
     build_remove_menu(non_optional(string_menu.addMenu(shortcutfinger.home2("Remove"))))
-    add_ui_action(string_menu, shortcutfinger.home3("Split with word-break tag"), lambda: sentence.question.split_token_with_word_break_tag(menu_string), menu_string in sentence.get_question())
+    add_ui_action(string_menu, shortcutfinger.home3("Split with word-break tag in question"), lambda: sentence.question.split_token_with_word_break_tag(menu_string), menu_string in sentence.get_question())
