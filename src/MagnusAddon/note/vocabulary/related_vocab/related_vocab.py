@@ -16,7 +16,6 @@ from note.vocabulary.related_vocab.Synonyms import Synonyms
 from sysutils import ex_sequence
 
 if TYPE_CHECKING:
-    from note.collection.jp_collection import JPCollection
     from note.jpnote import JPNote
     from note.vocabulary.vocabnote import VocabNote
     from sysutils.weak_ref import WeakRef
@@ -42,9 +41,6 @@ class RelatedVocab(Slots):
     @property
     def _vocab(self) -> VocabNote: return self._vocab_ref()
 
-    @property
-    def _collection(self) -> JPCollection: return self._vocab.collection
-
     def similar_meanings(self) -> set[str]:
         return self.synonyms.strings()
 
@@ -64,12 +60,12 @@ class RelatedVocab(Slots):
         self.ergative_twin.set(value)
 
     def in_compounds(self) -> list[VocabNote]:
-        return self._collection.vocab.with_compound_part(self._vocab.get_question_without_noise_characters())
+        return col().vocab.with_compound_part(self._vocab.get_question_without_noise_characters())
 
     def get_direct_dependencies(self) -> set[JPNote]:
         note = self._vocab
-        return (set(self._collection.kanji.with_any_kanji_in(list(note.kanji.extract_main_form_kanji()))) |
-                set(ex_sequence.flatten([self._collection.vocab.with_question(compound_part) for compound_part in self._vocab.compound_parts.get()])))
+        return (set(col().kanji.with_any_kanji_in(list(note.kanji.extract_main_form_kanji()))) |
+                set(ex_sequence.flatten([col().vocab.with_question(compound_part) for compound_part in self._vocab.compound_parts.get()])))
 
     def remove_confused_with(self, confused_with: str) -> None:
         self.confused_with.remove(confused_with)
