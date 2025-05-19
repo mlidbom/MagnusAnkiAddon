@@ -19,6 +19,7 @@ godan_potential_verb_ending_to_dictionary_form_endings: dict[str, str] = {"え�
 
 e_stem_characters: set[str] = {"え", "け", "げ", "せ", "て", "ね", "べ", "め", "れ", "エ", "ケ", "ゲ", "セ", "テ", "ネ", "ベ", "メ", "レ"}
 a_stem_characters: set[str] = {"わ", "か", "が", "さ", "た", "な", "ば", "ま", "ら", "ワ", "カ", "ガ", "サ", "タ", "ナ", "バ", "マ", "ラ"}
+#passive_form_stem_characters: set[str] = a_stem_characters - {"な", "ナ"} # in practice な only brings false positives when searching for passive since passive ぬ verb usages are non-existent
 
 _1_character_mappings: dict[str, list[str]] = {"う": ["い", "わ", "え", "っ"],
                                                "く": ["き", "か", "け", "い"],
