@@ -11,17 +11,23 @@ if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
     from sysutils.weak_ref import WeakRef
 
-
-class SimilarVocab(Slots):
+class Synonyms(Slots):
     def __init__(self, vocab: WeakRef[VocabNote], data: JsonObjectField[RelatedVocabData]) -> None:
         self._vocab: WeakRef[VocabNote] = vocab
         self._data: JsonObjectField[RelatedVocabData] = data
 
-    def get(self) -> set[str]: return self._data.get().similar
+    def get(self) -> set[str]: return self._data.get().synonyms
 
     def add(self, new_similar: str) -> None:
         self.get().add(new_similar)
 
         for similar in app.col().vocab.with_question(new_similar):
-            if self._vocab().get_question() not in similar.related_notes.similar_meanings():
-                similar.related_notes.add_similar_meaning(self._vocab().get_question(), _is_recursive_call=True)
+            if self._vocab().get_question() not in similar.related_notes.synonyms.get():
+                similar.related_notes.synonyms.add(self._vocab().get_question())
+
+    def remove(self, to_remove: str) -> None:
+        self.get().remove(to_remove)
+
+        for similar in app.col().vocab.with_question(to_remove):
+            if self._vocab().get_question() in similar.related_notes.synonyms.get():
+                similar.related_notes.synonyms.remove(self._vocab().get_question())

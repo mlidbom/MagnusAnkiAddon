@@ -9,8 +9,10 @@ from note.notefields.auto_save_wrappers.set_wrapper import FieldSetWrapper
 from note.notefields.comma_separated_strings_set_field import CommaSeparatedStringsSetField
 from note.notefields.json_object_field import JsonObjectField
 from note.notefields.string_field import StringField
-from note.vocabulary.related_vocab.ergative_twin import VocabErgativeTwin
+from note.vocabulary.related_vocab.Antonyms import Antonyms
+from note.vocabulary.related_vocab.ergative_twin import ErgativeTwin
 from note.vocabulary.related_vocab.related_vocab_data import RelatedVocabData
+from note.vocabulary.related_vocab.Synonyms import Synonyms
 from sysutils import ex_sequence
 
 if TYPE_CHECKING:
@@ -26,10 +28,10 @@ class RelatedVocab(Slots):
 
         self._data: JsonObjectField[RelatedVocabData] = JsonObjectField(vocab, NoteFields.Vocab.related_vocab, RelatedVocabData.serializer)
 
-        self.ergative_twin: VocabErgativeTwin = VocabErgativeTwin(vocab, self._data)
-        self.derived: FieldSetWrapper[str] = FieldSetWrapper.for_json_object_field(self._data.weakref, self._data.get().derived)
-        self.similar: FieldSetWrapper[str] = FieldSetWrapper.for_json_object_field(self._data.weakref, self._data.get().similar)
-        self.antonyms: FieldSetWrapper[str] = FieldSetWrapper.for_json_object_field(self._data.weakref, self._data.get().antonyms)
+        self.ergative_twin: ErgativeTwin = ErgativeTwin(vocab, self._data)
+        self.synonyms: Synonyms = Synonyms(vocab, self._data)
+        self.antonyms: Antonyms = Antonyms(vocab, self._data)
+
         self.confused_with: FieldSetWrapper[str] = FieldSetWrapper.for_json_object_field(self._data.weakref, self._data.get().confused_with)
 
         self._similar_meanings_field: CommaSeparatedStringsSetField = CommaSeparatedStringsSetField(vocab, NoteFields.Vocab.Related_similar_meaning)

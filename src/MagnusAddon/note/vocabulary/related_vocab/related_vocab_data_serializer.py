@@ -14,20 +14,18 @@ if TYPE_CHECKING:
 class RelatedVocabDataSerializer(JsonObjectSerializer["RelatedVocabData"], Slots):
     def deserialize(self, json: str) -> RelatedVocabData:
         from note.vocabulary.related_vocab.related_vocab_data import RelatedVocabData
-        if not json: return RelatedVocabData("", "", set(), set(), set(), set())
+        if not json: return RelatedVocabData("", "", set(), set(), set())
 
         reader = JsonReader.from_json(json)
         return RelatedVocabData(reader.string("ergative_twin"),
                                 reader.string("derived_from"),
-                                reader.string_set("derived"),
-                                reader.string_set("similar"),
+                                reader.string_set("synonyms"),
                                 reader.string_set("antonyms"),
                                 reader.string_set("confused_with"))
 
     def serialize(self, related_notes: RelatedVocabData) -> str:
         return ex_json.dict_to_json({"ergative_twin": related_notes.ergative_twin,
                                      "derived_from": related_notes.derived_from,
-                                     "derived": list(related_notes.derived),
-                                     "similar": list(related_notes.similar),
+                                     "synonyms": list(related_notes.synonyms),
                                      "antonyms": list(related_notes.antonyms),
                                      "confused_with": list(related_notes.confused_with)})

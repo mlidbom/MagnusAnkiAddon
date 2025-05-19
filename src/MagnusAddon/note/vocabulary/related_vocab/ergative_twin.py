@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from sysutils.weak_ref import WeakRef
 
 
-class VocabErgativeTwin(Slots):
+class ErgativeTwin(Slots):
     def __init__(self, vocab: WeakRef[VocabNote], data: JsonObjectField[RelatedVocabData]) -> None:
         self._vocab: WeakRef[VocabNote] = vocab
         self._data: JsonObjectField[RelatedVocabData] = data
