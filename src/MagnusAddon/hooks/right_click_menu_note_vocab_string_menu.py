@@ -19,20 +19,21 @@ def build_string_menu(string_menu: QMenu, vocab: VocabNote, menu_string: str) ->
             for _sentence in _sentences:
                 _sentence.configuration.remove_highlighted_word(vocab.get_question())
 
-        def exclude(_sentences: list[SentenceNote]) -> None:
+        def mark_as_incorrect_match(_sentences: list[SentenceNote]) -> None:
             for _sentence in _sentences:
                 _sentence.configuration.incorrect_matches.add_global(vocab.get_question())
 
-        if not sentences: return
+        has_sentences = len(sentences) > 0
 
-        sentence = sentences[0]
-
-        if vocab.get_question() not in sentence.configuration.highlighted_words():
-            add_ui_action(sentence_menu, shortcutfinger.home1("Add Highlight"), lambda: sentence.configuration.position_highlighted_word(vocab.get_question()))
-        else:
-            add_ui_action(sentence_menu, shortcutfinger.home2("Remove highlight"), lambda: remove_highlight(sentences))
-
-        add_ui_action(sentence_menu, shortcutfinger.home3("Mark as incorrect match"), lambda: exclude(sentences))
+        add_ui_action(sentence_menu, shortcutfinger.home1("Add Highlight"),
+                      lambda: sentences[0].configuration.position_highlighted_word(vocab.get_question()),
+                      has_sentences and vocab.get_question() not in sentences[0].configuration.highlighted_words())
+        add_ui_action(sentence_menu, shortcutfinger.home2("Remove highlight"),
+                      lambda: remove_highlight(sentences),
+                      has_sentences and vocab.get_question() in sentences[0].configuration.highlighted_words())
+        add_ui_action(sentence_menu, shortcutfinger.home3("Mark as incorrect match"),
+                      lambda: mark_as_incorrect_match(sentences),
+                      has_sentences)
 
     def build_add_menu(vocab_add_menu: QMenu) -> None:
         def build_add_rule_menu(add_rule_menu: QMenu) -> None:
@@ -42,7 +43,7 @@ def build_string_menu(string_menu: QMenu, vocab: VocabNote, menu_string: str) ->
             add_ui_action(add_rule_menu, shortcutfinger.home4("Required prefix"), lambda: vocab.matching_rules.rules.required_prefix.add(menu_string), menu_string not in vocab.matching_rules.rules.required_prefix.get())
 
         add_ui_action(vocab_add_menu, shortcutfinger.home1("Similar meaning"), lambda: vocab.related_notes.synonyms.add(menu_string))
-        add_ui_action(vocab_add_menu, shortcutfinger.home2("Confused with"), lambda: vocab.related_notes.confused_with_field.add(menu_string))
+        add_ui_action(vocab_add_menu, shortcutfinger.home2("Confused with"), lambda: vocab.related_notes.confused_with.add(menu_string))
         build_add_rule_menu(non_optional(vocab_add_menu.addMenu(shortcutfinger.home3("Rule"))))
 
     def build_remove_menu(vocab_remove_menu: QMenu) -> None:
@@ -53,11 +54,13 @@ def build_string_menu(string_menu: QMenu, vocab: VocabNote, menu_string: str) ->
             add_ui_action(remove_rule_menu, shortcutfinger.home4("Required prefix"), lambda: vocab.matching_rules.rules.required_prefix.remove(menu_string), menu_string in vocab.matching_rules.rules.required_prefix.get())
 
         add_ui_action(vocab_remove_menu, shortcutfinger.home1("Similar meaning"), lambda: vocab.related_notes.synonyms.remove(menu_string), menu_string in vocab.related_notes.synonyms.strings())
-        add_ui_action(vocab_remove_menu, shortcutfinger.home2("Confused with"), lambda: vocab.related_notes.confused_with.remove(menu_string), menu_string in vocab.related_notes.confused_with_field.get())
-        build_remove_rule_menu(non_optional(vocab_remove_menu.addMenu(shortcutfinger.home3("Rule"))))
+        add_ui_action(vocab_remove_menu, shortcutfinger.home2("Confused with"), lambda: vocab.related_notes.confused_with.remove(menu_string), menu_string in vocab.related_notes.confused_with.get())
+        add_ui_action(vocab_remove_menu, shortcutfinger.home3("Derived from"), lambda: vocab.related_notes.derived_from.clear(), menu_string == vocab.related_notes.derived_from.get())
+        add_ui_action(vocab_remove_menu, shortcutfinger.home4("Ergative twin"), lambda: vocab.related_notes.ergative_twin.remove(), menu_string == vocab.related_notes.ergative_twin.get())
+        build_remove_rule_menu(non_optional(vocab_remove_menu.addMenu(shortcutfinger.home5("Rule"))))
 
     def build_set_menu(note_set_menu: QMenu) -> None:
-        add_ui_action(note_set_menu, shortcutfinger.home1("Derived from"), lambda: vocab.related_notes.derived_from_field.set(menu_string))
+        add_ui_action(note_set_menu, shortcutfinger.home1("Derived from"), lambda: vocab.related_notes.derived_from.set(menu_string))
         add_ui_action(note_set_menu, shortcutfinger.home2("Ergative twin"), lambda: vocab.related_notes.ergative_twin.set(menu_string))
 
     sentences = app.col().sentences.with_question(menu_string)

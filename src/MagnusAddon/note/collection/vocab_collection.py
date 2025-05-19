@@ -26,7 +26,7 @@ class _VocabSnapshot(CachedNote, Slots):
         self.main_form_kanji = set(note.kanji.extract_main_form_kanji())
         self.all_kanji = note.kanji.extract_all_kanji()
         self.readings = set(note.readings.get())
-        self.derived_from = note.related_notes.derived_from_field.get()
+        self.derived_from = note.related_notes.derived_from.get()
         self.stems = note.conjugator.get_stems_for_primary_form()
 
 class _VocabCache(NoteCache[VocabNote, _VocabSnapshot], Slots):
@@ -75,7 +75,8 @@ class _VocabCache(NoteCache[VocabNote, _VocabSnapshot], Slots):
     def _inheritor_add_to_cache(self, note: VocabNote) -> None:
         for form in note.forms.all_set(): self._by_form[form].add(note)
         for compound_part in note.compound_parts.get(): self._by_compound_part[compound_part].add(note)
-        self._by_derived_from[note.related_notes.derived_from_field.get()].add(note)
+        #todo: We add these regardless of whether they have a value in derived from? Won't there be a ton of instances for the empty string?
+        self._by_derived_from[note.related_notes.derived_from.get()].add(note)
         for kanji in note.kanji.extract_main_form_kanji(): self._by_kanji_in_main_form[kanji].add(note)
         for kanji in note.kanji.extract_all_kanji(): self._by_kanji_in_any_form[kanji].add(note)
         for reading in note.readings.get(): self._by_reading[reading].add(note)

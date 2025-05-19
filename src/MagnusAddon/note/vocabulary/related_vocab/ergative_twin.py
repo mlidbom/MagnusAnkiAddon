@@ -26,3 +26,12 @@ class ErgativeTwin(Slots):
                 twin.related_notes.ergative_twin.set(self._vocab().get_question())
 
         self._data.save()
+
+    def remove(self) -> None:
+        for twin in app.col().vocab.with_question(self._vocab().get_question()):
+            if twin.related_notes.ergative_twin.get() == self._vocab().get_question():
+                twin.related_notes.ergative_twin.remove()
+
+        self._data.get().ergative_twin = ""
+
+        self._data.save()

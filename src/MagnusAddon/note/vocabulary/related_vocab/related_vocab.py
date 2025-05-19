@@ -7,9 +7,7 @@ from autoslot import Slots
 from note.note_constants import NoteFields
 from note.notefields.auto_save_wrappers.field_wrapper import FieldWrapper
 from note.notefields.auto_save_wrappers.set_wrapper import FieldSetWrapper
-from note.notefields.comma_separated_strings_set_field import CommaSeparatedStringsSetField
 from note.notefields.json_object_field import JsonObjectField
-from note.notefields.string_field import StringField
 from note.vocabulary.related_vocab.Antonyms import Antonyms
 from note.vocabulary.related_vocab.ergative_twin import ErgativeTwin
 from note.vocabulary.related_vocab.related_vocab_data import RelatedVocabData
@@ -33,11 +31,6 @@ class RelatedVocab(Slots):
         self.derived_from: FieldWrapper[str] = FieldWrapper(self._data, self._data.get().derived_from)
 
         self.confused_with: FieldSetWrapper[str] = FieldSetWrapper.for_json_object_field(self._data, self._data.get().confused_with)
-
-        self._ergative_twin_field: StringField = StringField(vocab, NoteFields.Vocab.Related_ergative_twin)
-        self._similar_meanings_field: CommaSeparatedStringsSetField = CommaSeparatedStringsSetField(vocab, NoteFields.Vocab.Related_similar_meaning)
-        self.derived_from_field: StringField = StringField(vocab, NoteFields.Vocab.Related_derived_from)
-        self.confused_with_field: CommaSeparatedStringsSetField = CommaSeparatedStringsSetField(vocab, NoteFields.Vocab.Related_confused_with)
 
     def in_compounds(self) -> list[VocabNote]:
         return col().vocab.with_compound_part(self._vocab().get_question_without_noise_characters())

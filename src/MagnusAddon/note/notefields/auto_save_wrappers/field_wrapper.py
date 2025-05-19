@@ -19,6 +19,8 @@ class FieldWrapper(Generic[TValue], Slots):
         self._value.set(value)
         self._field.save()
 
-    # noinspection PyUnusedFunction
     def get(self) -> TValue:
         return self._value.get()
+
+    def clear(self) -> None:
+        self.set("")
