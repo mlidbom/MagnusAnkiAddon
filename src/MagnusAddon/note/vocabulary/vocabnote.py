@@ -72,8 +72,6 @@ class VocabNote(WaniNote, Slots):
         super().update_generated_data()
         vocabnote_generated_data.update_generated_data(self)
 
-        self.related_notes.import_from_legacy_remove_ASAP()
-
     def generate_and_set_answer(self) -> None:
         from language_services.jamdict_ex.dict_lookup import DictLookup
         dict_lookup = DictLookup.try_lookup_vocab_word_or_name(self)

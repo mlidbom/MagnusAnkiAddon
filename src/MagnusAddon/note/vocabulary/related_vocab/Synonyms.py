@@ -28,9 +28,13 @@ class Synonyms(Slots):
             if self._vocab().get_question() not in similar.related_notes.synonyms.strings():
                 similar.related_notes.synonyms.add(self._vocab().get_question())
 
+        self._data.save()
+
     def remove(self, to_remove: str) -> None:
         self.strings().remove(to_remove)
 
         for similar in col().vocab.with_question(to_remove):
             if self._vocab().get_question() in similar.related_notes.synonyms.strings():
                 similar.related_notes.synonyms.remove(self._vocab().get_question())
+
+        self._data.save()

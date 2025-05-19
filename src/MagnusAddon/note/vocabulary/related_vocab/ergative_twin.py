@@ -11,7 +11,6 @@ if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
     from sysutils.weak_ref import WeakRef
 
-
 class ErgativeTwin(Slots):
     def __init__(self, vocab: WeakRef[VocabNote], data: JsonObjectField[RelatedVocabData]) -> None:
         self._vocab: WeakRef[VocabNote] = vocab
@@ -25,3 +24,5 @@ class ErgativeTwin(Slots):
         for twin in app.col().vocab.with_question(value):
             if twin.related_notes.ergative_twin.get() != self._vocab().get_question():
                 twin.related_notes.ergative_twin.set(self._vocab().get_question())
+
+        self._data.save()

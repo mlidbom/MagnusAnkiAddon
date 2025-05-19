@@ -45,19 +45,3 @@ class RelatedVocab(Slots):
     def get_direct_dependencies(self) -> set[JPNote]:
         return (set(col().kanji.with_any_kanji_in(list(self._vocab().kanji.extract_main_form_kanji()))) |
                 set(ex_sequence.flatten([col().vocab.with_question(compound_part) for compound_part in self._vocab().compound_parts.get()])))
-
-    def remove_confused_with(self, confused_with: str) -> None:
-        self.confused_with.remove(confused_with)
-
-    def import_from_legacy_remove_ASAP(self) -> None:
-        self.ergative_twin.set(self._ergative_twin_field.get())
-
-        for similar in self._similar_meanings_field.get():
-            self.synonyms.add(similar)
-
-        for confused_with in self.confused_with_field.get():
-            self.confused_with.add(confused_with)
-
-        self.derived_from.set(self.derived_from_field.get())
-
-        self._data.save()

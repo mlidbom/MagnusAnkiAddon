@@ -26,9 +26,13 @@ class Antonyms(Slots):
             if self._vocab().get_question() not in similar.related_notes.antonyms.get():
                 similar.related_notes.antonyms.add(self._vocab().get_question())
 
+        self._data.save()
+
     def remove(self, to_remove: str) -> None:
         self.get().remove(to_remove)
 
         for similar in app.col().vocab.with_question(to_remove):
             if self._vocab().get_question() in similar.related_notes.antonyms.get():
                 similar.related_notes.antonyms.remove(self._vocab().get_question())
+
+        self._data.save()
