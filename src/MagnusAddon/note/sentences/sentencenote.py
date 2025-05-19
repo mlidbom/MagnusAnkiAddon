@@ -10,8 +10,9 @@ from note.jpnote import JPNote
 from note.note_constants import ImmersionKitSentenceNoteFields, Mine, NoteFields, NoteTypes, SentenceNoteFields
 from note.notefields.audio_field import WritableAudioField
 from note.notefields.json_object_field import JsonObjectField
+from note.notefields.sentence_question_field import SentenceQuestionField
 from note.notefields.string_field import StringField
-from note.notefields.strip_html_on_read_fallback_string_field import SentenceQuestionField
+from note.notefields.strip_html_on_read_fallback_string_field import StripHtmlOnReadFallbackStringField
 from note.notefields.strip_html_on_read_string_field import StripHtmlOnReadStringField
 from note.sentences.caching_sentence_configuration_field import CachingSentenceConfigurationField
 from note.sentences.parsing_result import ParsingResult
@@ -35,9 +36,9 @@ class SentenceNote(JPNote, Slots):
 
         self.user: SentenceUserFields = SentenceUserFields(self.weakref)
 
-        self.question = SentenceQuestionField(self.weakref, SentenceNoteFields.user_question, SentenceNoteFields.source_question)
-        self.answer = SentenceQuestionField(self.weakref, SentenceNoteFields.user_answer, SentenceNoteFields.source_answer)
-        self._screenshot = StringField(self.weakref, SentenceNoteFields.screenshot)
+        self.question: SentenceQuestionField = SentenceQuestionField(self.weakref, SentenceNoteFields.user_question, SentenceNoteFields.source_question)
+        self.answer: StripHtmlOnReadFallbackStringField = StripHtmlOnReadFallbackStringField(self.weakref, SentenceNoteFields.user_answer, SentenceNoteFields.source_answer)
+        self._screenshot: StringField = StringField(self.weakref, SentenceNoteFields.screenshot)
         self.audio: WritableAudioField = WritableAudioField(self.weakref, SentenceNoteFields.audio)
         self.configuration: CachingSentenceConfigurationField = CachingSentenceConfigurationField(self.weakref)
         self.parsing_result: JsonObjectField[ParsingResult] = JsonObjectField[ParsingResult](self.weakref, SentenceNoteFields.parsing_result, ParsingResultSerializer())

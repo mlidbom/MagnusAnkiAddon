@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from note.jpnote import JPNote
     from sysutils.weak_ref import WeakRef
 
-class SentenceQuestionField(Slots):
+class StripHtmlOnReadFallbackStringField(Slots):
     def __init__(self, note: WeakRef[JPNote], primary_field: str, fallback_field: str) -> None:
         self._field = FallbackStringField(note, primary_field, fallback_field)
 
