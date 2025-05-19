@@ -9,8 +9,8 @@ from note.notefields.auto_save_wrappers.set_wrapper import FieldSetWrapper
 from note.notefields.comma_separated_strings_set_field import CommaSeparatedStringsSetField
 from note.notefields.json_object_field import JsonObjectField
 from note.notefields.string_field import StringField
-from note.vocabulary.related_notes.ergative_twin import VocabErgativeTwin
-from note.vocabulary.related_notes.related_notes_data import VocabNoteRelatedNotesData
+from note.vocabulary.related_vocab.ergative_twin import VocabErgativeTwin
+from note.vocabulary.related_vocab.related_vocab_data import RelatedVocabData
 from sysutils import ex_sequence
 
 if TYPE_CHECKING:
@@ -20,11 +20,11 @@ if TYPE_CHECKING:
     from sysutils.weak_ref import WeakRef
 
 
-class VocabNoteRelatedNotesProperty(Slots):
+class RelatedVocab(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self._vocab_ref = vocab
 
-        self._data: JsonObjectField[VocabNoteRelatedNotesData] = JsonObjectField(vocab, NoteFields.Vocab.related_vocab, VocabNoteRelatedNotesData.serializer)
+        self._data: JsonObjectField[RelatedVocabData] = JsonObjectField(vocab, NoteFields.Vocab.related_vocab, RelatedVocabData.serializer)
 
         self.ergative_twin: VocabErgativeTwin = VocabErgativeTwin(vocab, self._data)
         self.derived: FieldSetWrapper[str] = FieldSetWrapper.for_json_object_field(self._data.weakref, self._data.get().derived)
