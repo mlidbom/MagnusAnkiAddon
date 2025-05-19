@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from sysutils.weak_ref import WeakRef
 
 class SentenceQuestionField(Slots):
-    _word_break_tag = "<vbr>"
+    _word_break_tag = "<wbr>"
     def __init__(self, note: WeakRef[JPNote], primary_field: str, fallback_field: str) -> None:
         self._field = StringField(note, primary_field)
         self._fallback_field = StringField(note, fallback_field)
