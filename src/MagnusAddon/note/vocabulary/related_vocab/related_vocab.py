@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ankiutils import app
+from ankiutils.app import col
 from autoslot import Slots
 from note.note_constants import NoteFields
 from note.notefields.auto_save_wrappers.set_wrapper import FieldSetWrapper
@@ -46,29 +46,22 @@ class RelatedVocab(Slots):
     def _collection(self) -> JPCollection: return self._vocab.collection
 
     def similar_meanings(self) -> set[str]:
-        return self._similar_meanings_field.get()
+        return self.synonyms.strings()
 
     def similar_meaning_notes(self) -> list[VocabNote]:
-        return app.col().vocab.with_any_form_in_prefer_exact_match(list(self.similar_meanings()))
+        return self.synonyms.notes()
 
-    def add_similar_meaning(self, new_similar: str, _is_recursive_call: bool = False) -> None:
-        self._similar_meanings_field.add(new_similar)
-
-        if not _is_recursive_call:
-            for similar in self._collection.vocab.with_question(new_similar):
-                similar.related_notes.add_similar_meaning(self._vocab.get_question(), _is_recursive_call=True)
+    def add_similar_meaning(self, new_similar: str) -> None:
+        self.synonyms.add(new_similar)
 
     def remove_similar_meaning(self, similar: str) -> None:
-        self._similar_meanings_field.remove(similar)
+        self.synonyms.remove(similar)
 
     def ergative_twin_legacy(self) -> str:
-        return self._ergative_twin_field.get()
+        return self.ergative_twin.get()
 
     def set_ergative_twin(self, value: str) -> None:
-        self._ergative_twin_field.set(value)
-
-        for twin in app.col().vocab.with_question(value):
-            twin.related_notes._ergative_twin_field.set(self._vocab.get_question())
+        self.ergative_twin.set(value)
 
     def in_compounds(self) -> list[VocabNote]:
         return self._collection.vocab.with_compound_part(self._vocab.get_question_without_noise_characters())
@@ -79,4 +72,4 @@ class RelatedVocab(Slots):
                 set(ex_sequence.flatten([self._collection.vocab.with_question(compound_part) for compound_part in self._vocab.compound_parts.get()])))
 
     def remove_confused_with(self, confused_with: str) -> None:
-        self.confused_with_field.remove(confused_with)
+        self.confused_with.remove(confused_with)
