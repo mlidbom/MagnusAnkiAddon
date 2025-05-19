@@ -15,13 +15,11 @@ if TYPE_CHECKING:
 
 def build_string_menu(string_menu: QMenu, vocab: VocabNote, menu_string: str) -> None:
     def build_sentences_menu(sentence_menu: QMenu) -> None:
-        def remove_highlight(_sentences: list[SentenceNote]) -> None:
-            for _sentence in _sentences:
-                _sentence.configuration.remove_highlighted_word(vocab.get_question())
+        def remove_highlight_from_sentences() -> None:
+            for sent in sentences: sent.configuration.remove_highlighted_word(vocab.get_question())
 
-        def mark_as_incorrect_match(_sentences: list[SentenceNote]) -> None:
-            for _sentence in _sentences:
-                _sentence.configuration.incorrect_matches.add_global(vocab.get_question())
+        def mark_as_incorrect_match_in_sentences() -> None:
+            for sent in sentences: sent.configuration.incorrect_matches.add_global(vocab.get_question())
 
         has_sentences = len(sentences) > 0
 
@@ -29,10 +27,10 @@ def build_string_menu(string_menu: QMenu, vocab: VocabNote, menu_string: str) ->
                       lambda: sentences[0].configuration.position_highlighted_word(vocab.get_question()),
                       has_sentences and vocab.get_question() not in sentences[0].configuration.highlighted_words())
         add_ui_action(sentence_menu, shortcutfinger.home2("Remove highlight"),
-                      lambda: remove_highlight(sentences),
+                      lambda: remove_highlight_from_sentences(),
                       has_sentences and vocab.get_question() in sentences[0].configuration.highlighted_words())
-        add_ui_action(sentence_menu, shortcutfinger.home3("Mark as incorrect match"),
-                      lambda: mark_as_incorrect_match(sentences),
+        add_ui_action(sentence_menu, shortcutfinger.home3("Remove-sentence: Mark as incorrect match in sentence"),
+                      lambda: mark_as_incorrect_match_in_sentences(),
                       has_sentences)
 
     def build_add_menu(vocab_add_menu: QMenu) -> None:
@@ -65,8 +63,8 @@ def build_string_menu(string_menu: QMenu, vocab: VocabNote, menu_string: str) ->
 
     sentences = app.col().sentences.with_question(menu_string)
 
-    build_sentences_menu(non_optional(string_menu.addMenu(shortcutfinger.home1("Sentence"))))
-    build_add_menu(non_optional(string_menu.addMenu(shortcutfinger.home2("Add"))))
-    build_set_menu(non_optional(string_menu.addMenu(shortcutfinger.home3("Set"))))
-    build_remove_menu(non_optional(string_menu.addMenu(shortcutfinger.home4("Remove"))))
+    build_add_menu(non_optional(string_menu.addMenu(shortcutfinger.home1("Add"))))
+    build_set_menu(non_optional(string_menu.addMenu(shortcutfinger.home2("Set"))))
+    build_remove_menu(non_optional(string_menu.addMenu(shortcutfinger.home3("Remove"))))
+    build_sentences_menu(non_optional(string_menu.addMenu(shortcutfinger.home4("Sentence"))))
     build_create_prefix_postfix_note_menu(non_optional(string_menu.addMenu(shortcutfinger.up1(f"Create combined {menu_string}"))), vocab, menu_string)
