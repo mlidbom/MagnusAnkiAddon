@@ -56,7 +56,8 @@ def generate_homophones_html_list(vocab_note: VocabNote) -> str:
     return render_vocab_list(homophones, "homophones", css_class="homophones") if homophones else ""
 
 def generate_similar_meaning_html_list(_vocab_note: VocabNote) -> str:
-    vocabs = list(_vocab_note.related_notes.similar_meanings())
+    vocab = _vocab_note.related_notes
+    vocabs = list(vocab.synonyms.strings())
     similar = app.col().vocab.with_any_form_in_prefer_exact_match(vocabs)
     similar = note.vocabulary.vocabnote_sorting.sort_vocab_list_by_studying_status(similar)
 
@@ -70,8 +71,7 @@ def generate_confused_with_html_list(_vocab_note: VocabNote) -> str:
     return render_vocab_list(confused_with, "confused with", css_class="confused_with") if confused_with else ""
 
 def generate_ergative_twin_html(_vocab_note: VocabNote) -> str:
-    part = _vocab_note.related_notes.ergative_twin_legacy()
-    ergative_twin = app.col().vocab.with_form_prefer_exact_match(part)
+    ergative_twin = app.col().vocab.with_form_prefer_exact_match(_vocab_note.related_notes.ergative_twin.get())
     return render_vocab_list(ergative_twin, "ergative twin", css_class="ergative_twin") if ergative_twin else ""
 
 def generate_derived_from(_vocab_note: VocabNote) -> str:

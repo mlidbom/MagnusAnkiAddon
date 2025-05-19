@@ -25,10 +25,10 @@ class VocabNoteMatchingRulesData(Slots):
 class VocabNoteMatchingRules(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self._data: JsonObjectField[VocabNoteMatchingRulesData] = JsonObjectField(vocab, NoteFields.Vocab.matching_rules, VocabNoteMatchingRulesData.serializer)
-        self.surface_is_not: FieldSetWrapper[str] = FieldSetWrapper.for_json_object_field(self._data.weakref, self._data.get().surface_is_not)
-        self.prefer_over_base: FieldSetWrapper[str] = FieldSetWrapper.for_json_object_field(self._data.weakref, self._data.get().prefer_over_base)
-        self.prefix_is_not: FieldSetWrapper[str] = FieldSetWrapper.for_json_object_field(self._data.weakref, self._data.get().prefix_is_not)
-        self.required_prefix: FieldSetWrapper[str] = FieldSetWrapper.for_json_object_field(self._data.weakref, self._data.get().required_prefix)
+        self.surface_is_not: FieldSetWrapper[str] = FieldSetWrapper.for_json_object_field(self._data, self._data.get().surface_is_not)
+        self.prefer_over_base: FieldSetWrapper[str] = FieldSetWrapper.for_json_object_field(self._data, self._data.get().prefer_over_base)
+        self.prefix_is_not: FieldSetWrapper[str] = FieldSetWrapper.for_json_object_field(self._data, self._data.get().prefix_is_not)
+        self.required_prefix: FieldSetWrapper[str] = FieldSetWrapper.for_json_object_field(self._data, self._data.get().required_prefix)
 
     def save(self) -> None:
         self._data.save()

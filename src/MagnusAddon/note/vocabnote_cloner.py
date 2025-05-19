@@ -104,8 +104,8 @@ class VocabCloner(Slots):
 
         clone = VocabNote(clone_backend_note)
 
-        for related in clone.related_notes.similar_meanings():
-            clone.related_notes.add_similar_meaning(related)
+        for related in clone.related_notes.synonyms.strings():
+            clone.related_notes.synonyms.add(related)
 
         app.anki_collection().addNote(clone_backend_note)
 

@@ -51,7 +51,7 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
             add_lookup_action(vocab_lookup_menu, shortcutfinger.home1("Forms"), query_builder.notes_lookup(ex_sequence.flatten([app.col().vocab.with_question(form) for form in vocab.forms.all_set()])))
             add_lookup_action(vocab_lookup_menu, shortcutfinger.home2("Compound parts"), query_builder.vocabs_lookup_strings(vocab.compound_parts.get()))
             add_lookup_action(vocab_lookup_menu, shortcutfinger.home3("In compounds"), query_builder.notes_lookup(vocab.related_notes.in_compounds()))
-            add_lookup_action(vocab_lookup_menu, shortcutfinger.home4("Similar"), query_builder.notes_lookup(vocab.related_notes.similar_meaning_notes()))
+            add_lookup_action(vocab_lookup_menu, shortcutfinger.home4("Similar"), query_builder.notes_lookup(vocab.related_notes.synonyms.notes()))
             build_readings_menu(non_optional(vocab_lookup_menu.addMenu(shortcutfinger.up1("Homonyms"))))
             add_vocab_dependencies_lookup(vocab_lookup_menu, shortcutfinger.up2("Dependencies"), vocab)
 
@@ -59,8 +59,9 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
         build_sentences_lookup_menu(non_optional(note_lookup_menu.addMenu(shortcutfinger.home2("Sentences"))))
 
         add_lookup_action(note_lookup_menu, shortcutfinger.home3("Kanji"), f"note:{NoteTypes.Kanji} ( {' OR '.join([f'{NoteFields.Kanji.question}:{char}' for char in vocab.get_question()])} )")
-        if vocab.related_notes.ergative_twin_legacy():
-            add_single_vocab_lookup_action(note_lookup_menu, shortcutfinger.home4("Ergative twin"), vocab.related_notes.ergative_twin_legacy())
+        if vocab.related_notes.ergative_twin.get():
+            related_vocab = vocab.related_notes
+            add_single_vocab_lookup_action(note_lookup_menu, shortcutfinger.home4("Ergative twin"), related_vocab.ergative_twin.get())
 
     def build_note_menu() -> None:
         if not vocab.user.answer.get():

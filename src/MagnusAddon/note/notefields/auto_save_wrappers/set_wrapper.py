@@ -6,7 +6,6 @@ from autoslot import Slots
 
 if TYPE_CHECKING:
     from note.notefields.json_object_field import JsonObjectField
-    from sysutils.weak_ref import WeakRef
 
 TValue: TypeVar = TypeVar("TValue")
 
@@ -30,5 +29,5 @@ class FieldSetWrapper(Generic[TValue], Slots):
     def is_empty(self) -> bool: return len(self._value) == 0
 
     @classmethod
-    def for_json_object_field(cls, field: WeakRef[JsonObjectField[Any]], value: set[TValue]) -> FieldSetWrapper[TValue]:
-        return cls(lambda: field().save(), value, FieldSetWrapper._secret)
+    def for_json_object_field(cls, field: JsonObjectField[Any], value: set[TValue]) -> FieldSetWrapper[TValue]:
+        return cls(lambda: field.save(), value, FieldSetWrapper._secret)

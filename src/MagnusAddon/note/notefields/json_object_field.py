@@ -5,10 +5,10 @@ from typing import TYPE_CHECKING, Generic, TypeVar
 from autoslot import Slots
 from note.notefields.string_field import StringField
 from sysutils.lazy import Lazy
-from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
     from note.jpnote import JPNote
+    from sysutils.weak_ref import WeakRef
 
 T: TypeVar = TypeVar("T")
 
@@ -32,8 +32,3 @@ class JsonObjectField(Generic[T], Slots):
 
     def save(self) -> None:
         self._field.set(self._serializer.serialize(self._value()))
-
-    @property
-    def weakref(self) -> WeakRef[JsonObjectField[T]]:
-        if self._weakref is None: self._weakref = WeakRef(self)
-        return self._weakref

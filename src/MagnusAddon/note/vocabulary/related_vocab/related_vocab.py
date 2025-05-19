@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 from ankiutils.app import col
 from autoslot import Slots
 from note.note_constants import NoteFields
+from note.notefields.auto_save_wrappers.field_wrapper import FieldWrapper
 from note.notefields.auto_save_wrappers.set_wrapper import FieldSetWrapper
 from note.notefields.comma_separated_strings_set_field import CommaSeparatedStringsSetField
 from note.notefields.json_object_field import JsonObjectField
@@ -20,52 +21,43 @@ if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
     from sysutils.weak_ref import WeakRef
 
-
 class RelatedVocab(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
-        self._vocab_ref = vocab
+        self._vocab = vocab
 
         self._data: JsonObjectField[RelatedVocabData] = JsonObjectField(vocab, NoteFields.Vocab.related_vocab, RelatedVocabData.serializer)
 
         self.ergative_twin: ErgativeTwin = ErgativeTwin(vocab, self._data)
         self.synonyms: Synonyms = Synonyms(vocab, self._data)
         self.antonyms: Antonyms = Antonyms(vocab, self._data)
+        self.derived_from: FieldWrapper[str] = FieldWrapper(self._data, self._data.get().derived_from)
 
-        self.confused_with: FieldSetWrapper[str] = FieldSetWrapper.for_json_object_field(self._data.weakref, self._data.get().confused_with)
+        self.confused_with: FieldSetWrapper[str] = FieldSetWrapper.for_json_object_field(self._data, self._data.get().confused_with)
 
-        self._similar_meanings_field: CommaSeparatedStringsSetField = CommaSeparatedStringsSetField(vocab, NoteFields.Vocab.Related_similar_meaning)
         self._ergative_twin_field: StringField = StringField(vocab, NoteFields.Vocab.Related_ergative_twin)
+        self._similar_meanings_field: CommaSeparatedStringsSetField = CommaSeparatedStringsSetField(vocab, NoteFields.Vocab.Related_similar_meaning)
         self.derived_from_field: StringField = StringField(vocab, NoteFields.Vocab.Related_derived_from)
         self.confused_with_field: CommaSeparatedStringsSetField = CommaSeparatedStringsSetField(vocab, NoteFields.Vocab.Related_confused_with)
 
-    @property
-    def _vocab(self) -> VocabNote: return self._vocab_ref()
-
-    def similar_meanings(self) -> set[str]:
-        return self.synonyms.strings()
-
-    def similar_meaning_notes(self) -> list[VocabNote]:
-        return self.synonyms.notes()
-
-    def add_similar_meaning(self, new_similar: str) -> None:
-        self.synonyms.add(new_similar)
-
-    def remove_similar_meaning(self, similar: str) -> None:
-        self.synonyms.remove(similar)
-
-    def ergative_twin_legacy(self) -> str:
-        return self.ergative_twin.get()
-
-    def set_ergative_twin(self, value: str) -> None:
-        self.ergative_twin.set(value)
-
     def in_compounds(self) -> list[VocabNote]:
-        return col().vocab.with_compound_part(self._vocab.get_question_without_noise_characters())
+        return col().vocab.with_compound_part(self._vocab().get_question_without_noise_characters())
 
     def get_direct_dependencies(self) -> set[JPNote]:
-        note = self._vocab
-        return (set(col().kanji.with_any_kanji_in(list(note.kanji.extract_main_form_kanji()))) |
-                set(ex_sequence.flatten([col().vocab.with_question(compound_part) for compound_part in self._vocab.compound_parts.get()])))
+        return (set(col().kanji.with_any_kanji_in(list(self._vocab().kanji.extract_main_form_kanji()))) |
+                set(ex_sequence.flatten([col().vocab.with_question(compound_part) for compound_part in self._vocab().compound_parts.get()])))
 
     def remove_confused_with(self, confused_with: str) -> None:
         self.confused_with.remove(confused_with)
+
+    def import_from_legacy_remove_ASAP(self) -> None:
+        self.ergative_twin.set(self._ergative_twin_field.get())
+
+        for similar in self._similar_meanings_field.get():
+            self.synonyms.add(similar)
+
+        for confused_with in self.confused_with_field.get():
+            self.confused_with.add(confused_with)
+
+        self.derived_from.set(self.derived_from_field.get())
+
+        self._data.save()
