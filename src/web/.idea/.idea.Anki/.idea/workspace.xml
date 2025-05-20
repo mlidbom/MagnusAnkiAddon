@@ -9,7 +9,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e673d2b4-30c5-4627-be8f-dda6640aa992" name="Changes" comment="" />
+    <list default="true" id="e673d2b4-30c5-4627-be8f-dda6640aa992" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Anki/.idea/watcherTasks.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Anki/.idea/watcherTasks.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Anki/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Anki/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -63,6 +66,7 @@
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "settings.editor.selected.configurable": "watcher.settings",
+    "settings.editor.splitter.proportion": "0.28804347",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -144,7 +148,7 @@
       <workItem from="1747425743097" duration="23000" />
       <workItem from="1747425802003" duration="10624000" />
       <workItem from="1747766612689" duration="852000" />
-      <workItem from="1747768097305" duration="447000" />
+      <workItem from="1747768097305" duration="948000" />
     </task>
     <task id="LOCAL-00001" summary="More rider stuff">
       <option name="closed" value="true" />

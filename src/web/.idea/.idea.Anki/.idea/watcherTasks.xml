@@ -21,5 +21,25 @@
       <option name="workingDir" value="$FileDir$" />
       <envs />
     </TaskOptions>
+    <TaskOptions isEnabled="true">
+      <option name="arguments" value="/c copy &quot;$FilePath$&quot; &quot;c:\Users\magnu\AppData\Roaming\Anki2\Magnus\collection.media\&quot;" />
+      <option name="checkSyntaxErrors" value="true" />
+      <option name="description" />
+      <option name="exitCodeBehavior" value="ALWAYS" />
+      <option name="fileExtension" value="js" />
+      <option name="immediateSync" value="true" />
+      <option name="name" value="Copy-js-to-anki-folder" />
+      <option name="output" value="" />
+      <option name="outputFilters">
+        <array />
+      </option>
+      <option name="outputFromStdout" value="false" />
+      <option name="program" value="cmd.exe" />
+      <option name="runOnExternalChanges" value="true" />
+      <option name="scopeName" value="Solution" />
+      <option name="trackOnlyRoot" value="false" />
+      <option name="workingDir" value="" />
+      <envs />
+    </TaskOptions>
   </component>
 </project>
