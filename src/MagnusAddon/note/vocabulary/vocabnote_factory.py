@@ -18,7 +18,7 @@ class VocabNoteFactory(Slots):
     @staticmethod
     def create_with_dictionary(question: str) -> VocabNote:
         from note.vocabulary.vocabnote import VocabNote
-        dict_entry = DictLookup.lookup_word_shallow(question)
+        dict_entry = DictLookup.lookup_word(question)
         if not dict_entry.found_words():
             return VocabNote.factory.create(question, "TODO", [])
         readings = list(set(ex_sequence.flatten([ent.kana_forms() for ent in dict_entry.entries])))

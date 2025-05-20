@@ -51,7 +51,7 @@ def _build_vocab_list(word_to_show: list[str], excluded_words:set[str], title:st
                     self.readings: str = readings_
                     self.answer = answer
 
-            dictionary_hits = [Hit(forms=",".join(hit.valid_forms()), readings_=",".join(f.text for f in hit.entry.kana_forms), answer=hit.generate_answer()) for hit in DictLookup.lookup_word_shallow(word).entries]
+            dictionary_hits = [Hit(forms=",".join(hit.valid_forms()), readings_=",".join(f.text for f in hit.entry.kana_forms), answer=hit.generate_answer()) for hit in DictLookup.lookup_word(word).entries]
 
             if not dictionary_hits and show_words_missing_dictionary_entries:
                 dictionary_hits = [Hit(word, "", "---")]

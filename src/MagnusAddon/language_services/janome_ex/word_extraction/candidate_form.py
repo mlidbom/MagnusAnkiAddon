@@ -31,7 +31,7 @@ class CandidateForm(Slots):
         self.is_surface: bool = is_surface
         self.form: str = form
 
-        self.dict_lookup: DictLookup = DictLookup.lookup_word_shallow(form)
+        self.dict_lookup: DictLookup = DictLookup.lookup_word(form)
         self.all_any_form_vocabs: list[VocabNote] = app.col().vocab.with_form(form)
         self.all_primary_form_vocabs: list[VocabNote] = [voc for voc in self.all_any_form_vocabs if voc.get_question() == form]
 

@@ -26,7 +26,7 @@ def update_generated_data(vocab: VocabNote) -> None:
         vocab.compound_parts.set(compounds)
 
     if vocab.get_question():
-        lookup = DictLookup.try_lookup_vocab_word_or_name(vocab)
+        lookup = DictLookup.lookup_vocab_word_or_name(vocab)
         if lookup.is_uk() and not vocab.has_tag(Mine.Tags.DisableKanaOnly):
             vocab.set_tag(Mine.Tags.UsuallyKanaOnly)
 

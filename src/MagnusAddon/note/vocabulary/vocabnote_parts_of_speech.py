@@ -18,7 +18,6 @@ class VocabNotePartsOfSpeech(Slots):
     @property
     def _vocab(self) -> VocabNote: return self.__vocab()
 
-
     def raw_string_value(self) -> str:
         return self._field.raw_string_value()
 
@@ -47,14 +46,14 @@ class VocabNotePartsOfSpeech(Slots):
     def set_automatically_from_dictionary(self) -> None:
         from language_services.jamdict_ex.dict_lookup import DictLookup
 
-        lookup = DictLookup.try_lookup_vocab_word_or_name(self._vocab)
+        lookup = DictLookup.lookup_vocab_word_or_name(self._vocab)
         if lookup.found_words():
             value = ", ".join(lookup.parts_of_speech())
             self.set_raw_string_value(value)
         elif self.is_suru_verb_included():
             question = self._vocab.question.without_noise_characters()[:-2]
             readings = [reading[:-2] for reading in self._vocab.readings.get()]
-            lookup = DictLookup.try_lookup_word_or_name(question, readings)
+            lookup = DictLookup.lookup_word_or_name_with_matching_reading(question, readings)
             pos = lookup.parts_of_speech() & {"transitive", "intransitive"}
             value1 = "suru verb, " + ", ".join(pos)
             self.set_raw_string_value(value1)

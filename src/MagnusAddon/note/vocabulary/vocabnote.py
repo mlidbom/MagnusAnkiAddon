@@ -77,7 +77,7 @@ class VocabNote(WaniNote, Slots):
 
     def generate_and_set_answer(self) -> None:
         from language_services.jamdict_ex.dict_lookup import DictLookup
-        dict_lookup = DictLookup.try_lookup_vocab_word_or_name(self)
+        dict_lookup = DictLookup.lookup_vocab_word_or_name(self)
         if dict_lookup.found_words():
             generated = dict_lookup.entries[0].generate_answer()
             self.user.answer.set(generated)

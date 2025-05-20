@@ -36,5 +36,5 @@ class VocabNoteMetaData(Slots):
 
     def priority_spec(self) -> PrioritySpec:
         from language_services.jamdict_ex.dict_lookup import DictLookup
-        lookup = DictLookup.try_lookup_vocab_word_or_name(self._vocab)
+        lookup = DictLookup.lookup_vocab_word_or_name(self._vocab)
         return lookup.priority_spec() if lookup else PrioritySpec(set())

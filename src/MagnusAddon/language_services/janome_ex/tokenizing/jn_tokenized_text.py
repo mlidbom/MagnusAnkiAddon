@@ -62,7 +62,7 @@ class JNTokenWrapper(ProcessedToken, Slots):
                 and not DictLookup.is_word(self.token.base_form)):  # the potential verbs are generally not in the dictionary this is how we know them
             root_verb = conjugator.construct_root_verb_for_possibly_potential_godan_verb_dictionary_form(self.token.base_form)
             if DictLookup.is_word(root_verb):
-                lookup = DictLookup.lookup_word_shallow(root_verb)
+                lookup = DictLookup.lookup_word(root_verb)
                 if lookup.found_words():
                     is_godan = any(e for e in lookup.entries if "godan verb" in e.parts_of_speech())
                     if not is_godan:

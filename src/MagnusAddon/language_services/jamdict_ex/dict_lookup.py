@@ -37,7 +37,7 @@ class JamdictThreadingWrapper(Slots):
         self._thread = threading.Thread(target=self._worker, daemon=True)
         self._running = True
         self._thread.start()
-        self.jamdict:Lazy[Jamdict] = Lazy(self.create_jamdict_and_log_loading_time)
+        self.jamdict: Lazy[Jamdict] = Lazy(self.create_jamdict_and_log_loading_time)
 
     @staticmethod
     def create_jamdict_and_log_loading_time() -> Jamdict:
@@ -57,11 +57,11 @@ class JamdictThreadingWrapper(Slots):
             except Exception as e:
                 request.future.set_exception(e)
 
-    def lookup(self, word: str, lookup_chars: bool, lookup_ne: bool) -> LookupResult:
+    def lookup(self, word: str, include_names: bool) -> LookupResult:
         future: Future[LookupResult] = Future()
 
         def do_actual_lookup(jamdict: Jamdict) -> LookupResult:
-            return jamdict.lookup(word, lookup_chars=lookup_chars, lookup_ne=lookup_ne)
+            return jamdict.lookup(word, lookup_chars=False, lookup_ne=include_names)
 
         self._queue.put(Request(do_actual_lookup, future))
         return future.result()
@@ -72,7 +72,7 @@ class JamdictThreadingWrapper(Slots):
     #     self._queue.put(Request(null_op, Future()))#Prevents deadlock
     #     self._thread.join()
 
-_jamdict_threading_wrapper = JamdictThreadingWrapper()
+_jamdict_threading_wrapper: JamdictThreadingWrapper = JamdictThreadingWrapper()
 
 def _find_all_words() -> set[str]:
     with StopWatch.log_execution_time("Prepopulating all word forms from jamdict."):
@@ -115,7 +115,7 @@ _all_name_forms = Lazy(_find_all_names)
 
 class DictLookup(Slots):
     def __init__(self, entries: list[DictEntry], lookup_word: str, lookup_reading: list[str]) -> None:
-        self.lookup_word = lookup_word
+        self.word = lookup_word
         self.lookup_reading = lookup_reading
         self.entries = entries
 
@@ -136,16 +136,20 @@ class DictLookup(Slots):
         return PrioritySpec(set(ex_iterable.flatten(entry.priority_tags() for entry in self.entries)))
 
     @classmethod
-    def try_lookup_vocab_word_or_name(cls, vocab: VocabNote) -> DictLookup:
-        return cls.try_lookup_word_or_name(vocab.question.without_noise_characters(), vocab.readings.get())
+    def lookup_vocab_word_or_name(cls, vocab: VocabNote) -> DictLookup:
+        if vocab.readings.get():
+            return cls.lookup_word_or_name_with_matching_reading(vocab.question.without_noise_characters(), vocab.readings.get())
+
+        return cls.lookup_word_or_name(vocab.question.without_noise_characters())
 
     @classmethod
-    def try_lookup_word_or_name(cls, word: str, readings: list[str]) -> DictLookup:
-        return cls._try_lookup_word_or_name(word, tuple(readings))
+    def lookup_word_or_name_with_matching_reading(cls, word: str, readings: list[str]) -> DictLookup:
+        if len(readings) == 0: raise ValueError("readings may not be empty. If you want to match without filtering on reading, use lookup_word_or_name instead")
+        return cls._try_lookup_word_or_name_with_matching_reading(word, tuple(readings))
 
     @classmethod
     @cache
-    def _try_lookup_word_or_name(cls, word: str, readings: tuple[str, ...]) -> DictLookup:
+    def _try_lookup_word_or_name_with_matching_reading(cls, word: str, readings: tuple[str, ...]) -> DictLookup:  # needs to be a tuple to be hashable for caching
         if not cls.might_be_entry(word): return DictLookup([], word, [])
 
         def kanji_form_matches() -> list[DictEntry]:
@@ -159,33 +163,47 @@ class DictLookup(Slots):
                     if any(ent.has_matching_kana_form(reading) for reading in readings)
                     and ent.is_kana_only()]
 
-        lookup: list[DictEntry] = DictEntry.create(cls._lookup_word(word), word, list(readings))
+        lookup: list[DictEntry] = DictEntry.create(cls._lookup_word_raw(word), word, list(readings))
         if not lookup:
-            lookup = DictEntry.create(cls._lookup_name(word), word, list(readings))
+            lookup = DictEntry.create(cls._lookup_name_raw(word), word, list(readings))
 
         matching = any_kana_only_matches() if kana_utils.is_only_kana(word) else kanji_form_matches()
 
         return DictLookup(matching, word, list(readings))
 
     @classmethod
-    def lookup_word_shallow(cls, word: str) -> DictLookup:
+    def lookup_word_or_name(cls, search: str) -> DictLookup:
+        if not cls.might_be_entry(search): return DictLookup([], search, [])
+        word_hit = cls.lookup_word(search)
+        if word_hit.found_words():
+            return word_hit
+        return cls.lookup_name(search)
+
+    @classmethod
+    def lookup_word(cls, word: str) -> DictLookup:
         if not cls.might_be_word(word): return DictLookup([], word, [])
-        entries = DictEntry.create(cls._lookup_word(word), word, [])
+        entries = DictEntry.create(cls._lookup_word_raw(word), word, [])
+        return DictLookup(entries, word, [])
+
+    @classmethod
+    def lookup_name(cls, word: str) -> DictLookup:
+        if not cls.might_be_word(word): return DictLookup([], word, [])
+        entries = DictEntry.create(cls._lookup_name_raw(word), word, [])
         return DictLookup(entries, word, [])
 
     @classmethod
     @cache  # _lookup_word_shallow.cache_clear(), _lookup_word_shallow.cache_info()
-    def _lookup_word(cls, word: str) -> list[JMDEntry]:
+    def _lookup_word_raw(cls, word: str) -> list[JMDEntry]:
         if not cls.might_be_word(word): return []
 
-        entries = list(_jamdict_threading_wrapper.lookup(word, lookup_chars=False, lookup_ne=False).entries)
+        entries = list(_jamdict_threading_wrapper.lookup(word, include_names=False).entries)
         return entries if not kana_utils.is_only_kana(word) else [ent for ent in entries if cls._is_kana_only(ent)]
 
     @classmethod
     @cache  # _lookup_word_shallow.cache_clear(), _lookup_word_shallow.cache_info()
-    def _lookup_name(cls, word: str) -> list[JMDEntry]:
+    def _lookup_name_raw(cls, word: str) -> list[JMDEntry]:
         if not cls.might_be_name(word): return []
-        return list(_jamdict_threading_wrapper.lookup(word, lookup_ne=True, lookup_chars=False).names)
+        return list(_jamdict_threading_wrapper.lookup(word, include_names=True).names)
 
     @staticmethod
     def _is_kana_only(entry: JMDEntry) -> bool:
@@ -210,7 +228,7 @@ class DictLookup(Slots):
     @classmethod
     @cache
     def is_word(cls, word: str) -> bool:
-        return cls.might_be_word(word) and cls.lookup_word_shallow(word).found_words()
+        return cls.might_be_word(word) and cls.lookup_word(word).found_words()
 
     @classmethod
     @cache
@@ -220,5 +238,5 @@ class DictLookup(Slots):
 
     @classmethod
     def ensure_loaded_into_memory(cls) -> None:
-        cls._lookup_name("桜")
-        cls._lookup_word("俺")
+        cls._lookup_name_raw("桜")
+        cls._lookup_word_raw("俺")

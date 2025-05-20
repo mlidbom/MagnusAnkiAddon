@@ -62,7 +62,7 @@ def test_missing(word: str, readings: list[str]) -> None:
     ("しない", ["しない"]),
 ])
 def test_should_be_missing(word: str, readings: list[str]) -> None:
-    result = DictLookup.lookup_word_shallow(word)
+    result = DictLookup.lookup_word(word)
     assert len(result.entries) == 0
 
 @pytest.mark.parametrize("word, readings", [
@@ -125,7 +125,7 @@ def get_single_dict_entry(word: str, readings: list[str]) -> DictEntry:
 
 def get_dict_entry(word: str, readings: list[str]) -> DictLookup:
     mock_vocab = vocab_mock(word, readings)
-    return DictLookup.try_lookup_vocab_word_or_name(mock_vocab)
+    return DictLookup.lookup_vocab_word_or_name(mock_vocab)
 
 def vocab_mock(word: str, readings: list[str]) -> VocabNote:
     return VocabNote.factory.create(word, "", readings)
