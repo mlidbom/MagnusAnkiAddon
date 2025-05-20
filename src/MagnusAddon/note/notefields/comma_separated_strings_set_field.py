@@ -20,9 +20,6 @@ class CommaSeparatedStringsSetField(Slots):
     def set(self, value: set[str]) -> None:
         self._field.set(list(value))
 
-    def add(self, value: str) -> None:
-        self.set(self.get() | {value})
-
     def remove(self, value: str) -> None:
         self.set(self.get() - {value})
 

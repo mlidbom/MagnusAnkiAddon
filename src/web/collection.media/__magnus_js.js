@@ -7,8 +7,6 @@
       selection.addRange(range);
    }
 
-   function removeSelection(element) { window.getSelection().removeAllRanges(); }
-
    document.querySelectorAll('.clipboard, ja, .headword-term, rad, radical, voc, vocab, kan, kanji, read, reading')
       .forEach(function (element) {
          element.addEventListener('mousedown', event => {
@@ -42,10 +40,12 @@ function setupAudioPlayers() {
             const audioElement = this.previousElementSibling;
             if (audioElement.paused) {
                   audioElement.play();
-                  this.innerHTML = '⏸︎';
+                  // noinspection JSUnusedGlobalSymbols
+               this.innerHTML = '⏸︎';
             } else {
                   audioElement.pause();
-                  this.innerHTML = '▶';
+                  // noinspection JSUnusedGlobalSymbols
+               this.innerHTML = '▶';
             }
          });
         
