@@ -11,15 +11,11 @@ if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
     from sysutils.weak_ref import WeakRef
 
-
 class VocabStems(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self._vocab = vocab
 
     def masu_stem(self) -> str: return conjugator.get_i_stem_vocab(self._vocab())
-
-
-
 
 class VocabNoteQuestion(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
@@ -27,7 +23,7 @@ class VocabNoteQuestion(Slots):
         self._field = StringField(vocab, NoteFields.Vocab.question)
 
     def raw(self) -> str: return self._field.get()
-    def without_noise_characters(self) -> str: return  self.raw().replace(Mine.VocabPrefixSuffixMarker, "")
+    def without_noise_characters(self) -> str: return self.raw().replace(Mine.VocabPrefixSuffixMarker, "")
 
     def stems(self) -> VocabStems: return VocabStems(self._vocab)
 
