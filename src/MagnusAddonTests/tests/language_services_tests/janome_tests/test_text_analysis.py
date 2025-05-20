@@ -113,8 +113,8 @@ def test_custom_vocab_words(setup_collection_with_select_data: object, sentence:
     insert_custom_words(custom_words)
 
     analysis = TextAnalysis(sentence, SentenceConfiguration.empty())
-    root_words = {w.form for w in analysis.all_words}
-    assert root_words == set(expected_output)
+    root_words = sorted({w.form for w in analysis.all_words})
+    assert root_words == sorted(expected_output)
 
 def test_ignores_noise_characters(setup_collection_with_select_data: object) -> None:
     sentence = ". , : ; / | 。 、ー ? !"

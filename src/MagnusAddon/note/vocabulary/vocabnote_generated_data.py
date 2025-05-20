@@ -25,7 +25,7 @@ def update_generated_data(vocab: VocabNote) -> None:
         compounds = [question[:-2], "する"]
         vocab.compound_parts.set(compounds)
 
-    if vocab.get_question():
+    if vocab.get_question() and vocab.readings.get():  # if we don't have a reading, the lookup will be too unreliable
         lookup = DictLookup.lookup_vocab_word_or_name(vocab)
         if lookup.is_uk() and not vocab.has_tag(Mine.Tags.DisableKanaOnly):
             vocab.set_tag(Mine.Tags.UsuallyKanaOnly)
