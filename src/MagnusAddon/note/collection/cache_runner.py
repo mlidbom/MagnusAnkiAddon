@@ -160,4 +160,4 @@ class CacheRunner(Slots):
             try:
                 current.assert_schema_matches(cached_note_type)
             except AssertionError:
-                app.reset()
+                app_thread_pool.pool.submit(lambda: app.reset())#We are running on the thread that will be killed by the reset...
