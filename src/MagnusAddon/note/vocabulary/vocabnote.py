@@ -82,6 +82,8 @@ class VocabNote(WaniNote, Slots):
             generated = dict_lookup.entries[0].generate_answer()
             self.user.answer.set(generated)
 
+        self.update_generated_data()
+
     def get_answer(self) -> str:
         return self.user.answer.get() or self._source_answer.get()
 

@@ -26,9 +26,6 @@ def update_generated_data(vocab: VocabNote) -> None:
         vocab.compound_parts.set(compounds)
 
     if vocab.get_question():
-        if vocab.get_question() not in vocab.forms.all_set():
-            vocab.forms.set_set(vocab.forms.all_set() | {vocab.get_question()})
-
         speech_types = vocab.parts_of_speech.get() - {"Unknown",
                                                       "Godan verbIchidan verb"  # crap inserted by bug in yomitan
                                                       }
@@ -47,3 +44,6 @@ def update_generated_data(vocab: VocabNote) -> None:
 
             if len(speech_types) == 0:
                 vocab.parts_of_speech.set_automatically_from_dictionary()
+
+        if vocab.get_question() not in vocab.forms.all_set():
+            vocab.forms.set_set(vocab.forms.all_set() | {vocab.get_question()})
