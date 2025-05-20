@@ -18,7 +18,7 @@ def _create_classes(_vocab: VocabNote) -> str:
     classes += " " + " ".join(_vocab.get_meta_tags())
     return classes
 
-def render_vocab_list(vocab_list: list[VocabNote], title:str, css_class:str, reading:bool = True) -> str:
+def render_vocab_list(vocab_list: list[VocabNote], title: str, css_class: str, reading: bool = True) -> str:
     def render_readings(_vocab_note: VocabNote) -> str:
         return f"""<span class="clipboard vocabReading">{", ".join(_vocab_note.readings.get())}</span>""" if reading else ""
 
@@ -40,7 +40,6 @@ def render_vocab_list(vocab_list: list[VocabNote], title:str, css_class:str, rea
                 </div>
             </div>
             '''
-
 
 def generate_homophones_html_list(vocab_note: VocabNote) -> str:
     forms = ex_sequence.flatten([app.col().vocab.with_question(reading) for reading in vocab_note.forms.all_set()])
@@ -89,6 +88,7 @@ def generate_in_compounds_list(_vocab_note: VocabNote) -> str:
     return render_vocab_list(compound_parts, "part of compound", css_class="in_compound_words") if compound_parts else ""
 
 def generate_stem_in_compounds_list(_vocab_note: VocabNote) -> str:
+    if _vocab_note.question.stems().masu_stem() is None: return ""
     compound_parts = app.col().vocab.with_compound_part(_vocab_note.question.stems().masu_stem())
     return render_vocab_list(compound_parts, "masu stem is part of compound", css_class="in_compound_words") if compound_parts else ""
 
@@ -111,7 +111,7 @@ def generate_forms_list(vocab_note: VocabNote) -> str:
 
     return render_vocab_list([vocab_note] + forms, "forms", css_class="forms") if forms else ""
 
-def generate_meta_tags(vocab_note:VocabNote) -> str:
+def generate_meta_tags(vocab_note: VocabNote) -> str:
     return vocab_note.meta_data.meta_tags_html(True)
 
 def init() -> None:

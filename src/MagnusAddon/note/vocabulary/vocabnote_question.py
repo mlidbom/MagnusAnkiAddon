@@ -15,7 +15,9 @@ class VocabStems(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self._vocab = vocab
 
-    def masu_stem(self) -> str: return conjugator.get_i_stem_vocab(self._vocab())
+    def masu_stem(self) -> str | None:
+        masu_stem = conjugator.get_i_stem_vocab(self._vocab())
+        return masu_stem if masu_stem != self._vocab().question.raw() else None
 
 class VocabNoteQuestion(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
