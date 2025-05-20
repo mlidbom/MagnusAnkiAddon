@@ -23,7 +23,7 @@ def create_from_wani_vocabulary(wani_vocab: models.Vocabulary) -> None:
     note.add_tag(Mine.Tags.Wani)
     vocab_note = VocabNote(note)
     app.anki_collection().addNote(note)
-    vocab_note.set_question(wani_vocab.characters)
+    vocab_note.question.set(wani_vocab.characters)
     vocab_note.update_from_wani(wani_vocab)
 
     if len(wani_vocab.context_sentences) > 0:

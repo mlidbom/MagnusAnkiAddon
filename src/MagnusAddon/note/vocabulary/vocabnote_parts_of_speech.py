@@ -35,8 +35,7 @@ class VocabNotePartsOfSpeech(Slots):
         return "godan" in self.raw_string_value().lower()
 
     def is_suru_verb_included(self) -> bool:
-        question = self._vocab.get_question_without_noise_characters()
-        return question[-2:] == "する"
+        return self._vocab.question.without_noise_characters()[-2:] == "する"
 
     def is_uk(self) -> bool: return self._vocab.has_tag(Mine.Tags.UsuallyKanaOnly)
 
@@ -53,7 +52,7 @@ class VocabNotePartsOfSpeech(Slots):
             value = ", ".join(lookup.parts_of_speech())
             self.set_raw_string_value(value)
         elif self.is_suru_verb_included():
-            question = self._vocab.get_question_without_noise_characters()[:-2]
+            question = self._vocab.question.without_noise_characters()[:-2]
             readings = [reading[:-2] for reading in self._vocab.readings.get()]
             lookup = DictLookup.try_lookup_word_or_name(question, readings)
             pos = lookup.parts_of_speech() & {"transitive", "intransitive"}

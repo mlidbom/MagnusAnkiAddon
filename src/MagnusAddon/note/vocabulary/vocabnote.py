@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules  # noqa
 from autoslot import Slots
-from note.note_constants import Mine, NoteFields
+from note.note_constants import NoteFields
 from note.notefields.comma_separated_strings_list_field import CommaSeparatedStringsListField
 from note.notefields.string_field import StringField
 from note.vocabnote_cloner import VocabCloner
@@ -19,6 +19,7 @@ from note.vocabulary.vocabnote_kanji import VocabNoteKanji
 from note.vocabulary.vocabnote_matching_rules import VocabNoteMatching
 from note.vocabulary.vocabnote_metadata import VocabNoteMetaData
 from note.vocabulary.vocabnote_parts_of_speech import VocabNotePartsOfSpeech
+from note.vocabulary.vocabnote_question import VocabNoteQuestion
 from note.vocabulary.vocabnote_sentences import VocabNoteSentences
 from note.vocabulary.vocabnote_usercompoundparts import VocabNoteUserCompoundParts
 from note.vocabulary.vocabnote_userfields import VocabNoteUserfields
@@ -37,6 +38,8 @@ class VocabNote(WaniNote, Slots):
     def __init__(self, note: Note) -> None:
         super().__init__(note)
         self.weakref: WeakRef[VocabNote] = WeakRef(self)
+
+        self.question: VocabNoteQuestion = VocabNoteQuestion(self.weakref)
 
         self.readings: CommaSeparatedStringsListField = CommaSeparatedStringsListField(self.weakref, NoteFields.Vocab.Reading)
 
@@ -78,9 +81,6 @@ class VocabNote(WaniNote, Slots):
         if dict_lookup.found_words():
             generated = dict_lookup.entries[0].generate_answer()
             self.user.answer.set(generated)
-
-    def get_question_without_noise_characters(self) -> str: return self.get_question().replace(Mine.VocabPrefixSuffixMarker, "")
-    def set_question(self, value: str) -> None: self.set_field(NoteFields.Vocab.question, value)
 
     def get_answer(self) -> str:
         return self.user.answer.get() or self._source_answer.get()

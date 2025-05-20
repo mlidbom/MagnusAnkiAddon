@@ -14,7 +14,7 @@ def update_generated_data(vocab: VocabNote) -> None:
 
     from language_services.jamdict_ex.dict_lookup import DictLookup
 
-    question = vocab.get_question_without_noise_characters().strip()
+    question = vocab.question.without_noise_characters().strip()
     readings = ",".join(vocab.readings.get())
 
     if not readings and kana_utils.is_only_kana(question):

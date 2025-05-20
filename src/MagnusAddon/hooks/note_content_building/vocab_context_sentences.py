@@ -18,7 +18,7 @@ class ContextSentence(Slots):
 
 
 def generate_highlighted_sentences_html_list(_vocab_note:VocabNote) -> str:
-    primary_form = _vocab_note.get_question_without_noise_characters()
+    primary_form = _vocab_note.question.without_noise_characters()
     conjugation_base_forms = language_services.conjugator.get_word_stems(primary_form)
 
 

@@ -31,7 +31,7 @@ class VocabNoteFactory(Slots):
         from note.vocabulary.vocabnote import VocabNote
         backend_note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Vocab))
         note = VocabNote(backend_note)
-        note.set_question(question)
+        note.question.set(question)
         note.user.answer.set(answer)
         note.readings.set(readings)
         note.update_generated_data()

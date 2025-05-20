@@ -107,7 +107,7 @@ class VocabCollection(Slots):
 
     def with_form_prefer_exact_match(self, form: str) -> list[VocabNote]:
         matches: list[VocabNote] = self.with_form(form)
-        exact_match = [voc for voc in matches if voc.get_question_without_noise_characters() == form]
+        exact_match = [voc for voc in matches if voc.question.without_noise_characters() == form]
         return ex_sequence.remove_duplicates_while_retaining_order(exact_match if exact_match else matches)
 
     def with_any_form_in_prefer_exact_match(self, forms: list[str]) -> list[VocabNote]:

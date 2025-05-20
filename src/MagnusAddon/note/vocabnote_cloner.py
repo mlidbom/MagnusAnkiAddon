@@ -113,7 +113,7 @@ class VocabCloner(Slots):
 
     def clone_to_form(self, form: str) -> VocabNote:
         clone = self.clone()
-        clone.set_question(form)
+        clone.question.set(form)
 
         for tag in [tag for tag in self.note.get_tags() if tag in Mine.Tags.system_tags]:
             clone.set_tag(tag)

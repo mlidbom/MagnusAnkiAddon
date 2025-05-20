@@ -11,5 +11,5 @@ from . import (
     vocab_and_sentence_kanji_list,
     vocab_context_sentences,
     vocab_highlighted_sentence_list,
-    vocab_homophones_similar_confused_with_list,
+    vocab_related_vocabs,
 )
