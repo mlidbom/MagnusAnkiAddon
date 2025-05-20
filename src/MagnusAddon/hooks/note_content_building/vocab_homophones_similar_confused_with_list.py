@@ -61,7 +61,7 @@ def generate_similar_meaning_html_list(_vocab_note: VocabNote) -> str:
     similar = app.col().vocab.with_any_form_in_prefer_exact_match(vocabs)
     similar = note.vocabulary.vocabnote_sorting.sort_vocab_list_by_studying_status(similar)
 
-    return render_vocab_list(similar, "similar", css_class="similar") if similar else ""
+    return render_vocab_list(similar, "synonyms", css_class="similar") if similar else ""
 
 def generate_confused_with_html_list(_vocab_note: VocabNote) -> str:
     vocabs = list(_vocab_note.related_notes.confused_with.get())

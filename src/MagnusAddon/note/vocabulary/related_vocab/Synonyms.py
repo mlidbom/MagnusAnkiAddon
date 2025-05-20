@@ -21,14 +21,23 @@ class Synonyms(Slots):
     def notes(self) -> list[VocabNote]:
         return col().vocab.with_any_form_in_prefer_exact_match(list(self.strings()))
 
-    def add(self, new_similar: str) -> None:
-        self.strings().add(new_similar)
+    def add(self, synonym: str) -> None:
+        self.strings().add(synonym)
 
-        for similar in self.notes():
+        for similar in col().vocab.with_question(synonym):
             if self._vocab().get_question() not in similar.related_notes.synonyms.strings():
                 similar.related_notes.synonyms.add(self._vocab().get_question())
 
         self._data.save()
+
+    def add_transitively_one_level(self, synonym: str) -> None:
+        synonym_notes = col().vocab.with_any_form_in_prefer_exact_match([synonym])
+        new_synonyms = set().union(*[note.related_notes.synonyms.strings() for note in synonym_notes]) | {note.get_question() for note in synonym_notes}
+        for new_synonym in new_synonyms:
+            self.add(new_synonym)
+
+
+
 
     def remove(self, to_remove: str) -> None:
         self.strings().remove(to_remove)
