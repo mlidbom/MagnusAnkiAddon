@@ -62,7 +62,7 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "watcher.settings",
+    "settings.editor.selected.configurable": "Errors",
     "settings.editor.splitter.proportion": "0.28804347",
     "vue.rearranger.settings.migration": "true"
   }
@@ -145,7 +145,7 @@
       <workItem from="1747425743097" duration="23000" />
       <workItem from="1747425802003" duration="10624000" />
       <workItem from="1747766612689" duration="852000" />
-      <workItem from="1747768097305" duration="1483000" />
+      <workItem from="1747768097305" duration="3240000" />
     </task>
     <task id="LOCAL-00001" summary="More rider stuff">
       <option name="closed" value="true" />
