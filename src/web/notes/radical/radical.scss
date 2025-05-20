@@ -1,0 +1,49 @@
+@import "../../Styles/_040_japanese.scss";
+.card #container1 #container2 .mainContent{ //Let's stay focused and not break other stuff    
+                            
+   /* FONTS AND COLORS */
+  @include kanji_list;
+  
+   font-size: 20pt;
+
+   .radical_heading { 
+            font-size:180px;
+            line-height: 0.9;
+            padding-bottom:7pt;
+            background:var(--colorBgRad);
+            display: flex;
+            flex-direction: column;
+            align-content: center;
+
+            div{  display: flex;
+                  align-self: center;
+                  align-content: center; }
+
+   }
+
+
+   .radical_heading_svg svg {
+      height: 180px;
+      width: 180px !important;
+      display: inline-block !important;
+   }
+
+   .radicalName { color:#0a9ce6;
+                  font-weight:bold;
+                  font-size: 40px; }
+
+   .referenceLink { font-size:10pt;	}
+
+
+   .mnemonics.user { background: var(--colorBgOffset1); }
+
+   /* LAYOUT */ 
+   @include flexContainerColumn;
+
+   .front-and-answer { text-align: center;
+                       width: 100%; }
+
+   .mnemonics.user > div { white-space:pre-line; }
+
+   .mnemonics { margin-top: 20pt; }
+}

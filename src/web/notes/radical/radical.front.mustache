@@ -1,0 +1,26 @@
+<div id="container1">
+   <div id="container2" class="{{Tags}} card{{Card}}">
+      <!--######-->
+
+      <div class="mainContent">
+         <div class="front-and-answer">
+            {{#Q}}
+            <div class="radical_heading">
+               <span class="clipboard">{{Q}}</span>
+            </div>
+            {{/Q}}
+            {{^Q}}
+            <div class="radical_heading radical_heading_svg">
+               <div>
+                  <div>{{Radical_Icon}}</div>
+               </div>
+            </div>
+            {{/Q}}
+         </div>
+      </div>
+
+      <!--######-->
+   </div>
+</div>
+
+<script src="__magnus_js.js"></script>

@@ -1,0 +1,137 @@
+@use "sass:color";
+@import "../../Styles/_040_japanese.scss";
+.card #container1 #container2 { //Let's stay focused and not break other stuff
+  @include kanji_list;
+  
+   /* FONTS AND COLORS */
+   font-size: 20pt;
+
+  .expression { font-size: 40pt;
+    line-height:1;
+    color: color-mix(in lch, var(--colorTextCard), black 20%);
+    white-space:pre-line;
+    &.overridden { font-size: 130%; } }
+  
+   .comments {
+      max-width:1420px;
+      padding:0 5px 0 5px;
+      white-space: pre-line; }
+
+   .user { background: var(--colorBgOffset1);
+           &.comments.short{ border-color: color-mix(in lch, var(--colorBgCard), var(--colorTextBold) 50%); }
+           read { background-color: unset;
+                  color: var(--colorTextReading); } }
+
+   .meaning { font-size:25pt;
+              &.overridden { font-size: 15pt; } }
+
+   .expression, .reading{
+      b { font-weight:normal; } }
+
+   .references{
+      a {
+        display: inline-block; /* or block */
+        width: 800px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+   }
+
+   #debug_output {
+      white-space:pre;
+      font-size: 12pt;
+     font-family: Consolas, serif; }
+
+   .sentenceVocabList {     
+      padding-left : 0;
+      ul { padding-left: 20px;
+           margin-left: 0; 
+           background: var(--colorBgCard);
+      }
+      list-style: none;
+      
+      li { background: var(--colorBgOffset1); }
+
+      ul.depth3 { padding-left: 20px; }
+
+      .vocab_tag_list{ white-space:nowrap;
+                       padding-left: 10px; }
+
+      li { line-height:1.2; }
+      .sentenceVocabEntry{
+         &.is_studying_reading .vocabQuestion { 
+            border-left:solid;
+            border-color:var(--colorTextReading);
+         }
+         &.is_studying_listening .vocabQuestion { 
+            border-left:solid; 
+            border-color:white;
+         }
+
+         &.is_studying_listening.is_studying_reading .vocabQuestion  { 
+            border-left:solid; 
+            border-color:var(--colorTextGreen);
+         }
+
+         div.sentenceVocabEntryDiv { display: flex; 
+                                     align-items: center; 
+
+                                     .vocabLookupForm, .vocabHitForm, .vocabHitReadings { white-space: nowrap; }
+                                     
+                                     .vocabLookupForm {color: darkgrey;
+                                                       margin-left: 5pt; }
+
+                                     .vocabHitForm { color: var(--colorTextGreen); 
+                                                     margin-left: 5pt; }
+
+                                     .vocabHitReadings { color: var(--colorTextReading);
+                                                         font-size: 25pt;
+                                                         margin-left: 5pt;}
+         }
+
+         div.sentenceVocabEntryMnemonic {
+            padding-left: 15px;
+            white-space:pre-line;
+         }
+
+         .vocabQuestion, .vocabLookupForm, .vocabHitForm { font-size: 30pt; 
+                                                           white-space:nowrap; }
+         .vocabAnswer{ margin-left: 10pt; 
+                       white-space: pre-line;
+         }
+         
+         &.word_priority_very_low { & > div > .vocabQuestion{ color: var(--colorTextPriorityVeryLow); } 
+                                    & > div > .vocabAnswer { color: var(--colorTextPriorityVeryLow); } }
+         
+         &.word_priority_low { & > div > .vocabQuestion{ color: var(--colorTextPriorityLow); } 
+                               & > div > .vocabAnswer { color: var(--colorTextPriorityLow); } }
+
+         &.word_priority_medium { & > div > .vocabQuestion{ color: var(--colorTextPriorityMedium); } 
+                                  & > div > .vocabAnswer { color: var(--colorTextMeaning); } }
+
+         &.word_priority_high { & > div > .vocabQuestion{ color: var(--colorTextPriorityHigh); } 
+                                & > div > .vocabAnswer { color: var(--colorTextMeaning); } }
+
+         &.word_priority_very_high { & > div > .vocabQuestion{ color: var(--colorTextBold); } 
+                                     & > div > .vocabAnswer { color: var(--colorTextBold); } }
+
+      }
+   }
+   
+   #expressionAndReading { .reading { display:none; } }
+
+   /* LAYOUT */
+   .topSection { @include flexContainerColumn; }
+
+   .bottomSection { justify-content: center;
+                    text-align:left; }
+
+   .image { text-align:center;
+            width:100%; }
+
+   .image img{ height: 300px;
+               width: auto;
+               object-fit: contain; }
+
+}

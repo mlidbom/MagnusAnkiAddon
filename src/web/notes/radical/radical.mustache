@@ -1,0 +1,58 @@
+<div id="container1">
+   <div id="container2">
+      <!--######-->
+
+      <div class="mainContent">
+         <div class="front-and-answer">
+            <div>
+               {{#Q}}
+               <div class="radical_heading">
+                  <span class="clipboard">{{Q}}</span>
+                  {{#Similar_Radicals}} !{{Similar_Radicals}} {{/Similar_Radicals}}
+               </div>
+               {{/Q}}
+               {{^Q}}
+               <div class="radical_heading radical_heading_svg">
+                  <div>
+                     <div>{{Radical_Icon}}</div>
+                     <div>{{#Similar_Radicals}} !{{Similar_Radicals}} {{/Similar_Radicals}}</div>
+                  </div>
+               </div>
+               {{/Q}}
+            </div>
+
+            <div>
+               <div>
+                  <div class="text radicalName">{{A}}</div>
+                  <div>
+                     <a class="referenceLink" target="_blank" href="https://www.wanikani.com/radicals/{{A}}">Wanikani</a>
+                     <a class="referenceLink" target="_blank" href="https://jisho.org/search/{{Q}}%20%23kanji">Jisho</a>
+                     <a class="referenceLink" target="_blank" href="https://www.immersionkit.com/dictionary?keyword={{Q}}&exact=true&sort=shortness">Anime Sentences</a>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="bottomSection">
+            {{#__mnemonic}}
+            <div class="mnemonics user">
+               <div class="text">{{__mnemonic}}</div>
+            </div>
+            {{/__mnemonic}}
+            {{^__mnemonic}}
+            <div class="mnemonics">
+               <div>
+                  <span class="text">{{Radical_Meaning}}</span>
+               </div>
+            </div>
+            {{/__mnemonic}}
+         </div>
+		
+				 ##KANJI_LIST##
+
+      </div>
+      <!--######-->
+   </div>
+</div>
+
+<!--suppress HtmlUnknownTarget -->
+<script src="__magnus_js.js"></script>

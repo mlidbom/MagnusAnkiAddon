@@ -1,0 +1,60 @@
+@use "sass:color";
+@import "_020_mixins.scss";
+@import "025_resets.scss";
+
+$maxWidth: 1000px;
+
+/* FONTS & COLORS */
+.card { background:var(--colorBgCard) !important;
+        color:var(--colorTextCard) !important;
+  
+   #container1, #container2 { 
+      u { color:var(--colorTextUnderline); }
+      i,em { color:var(--colorTextItalic); }
+      b,strong { color: var(--colorTextBold);}
+
+      /* LINKS */
+      a:hover { cursor: pointer !important; }
+      a { text-decoration:none; }
+   }
+}
+
+//Style sections
+.card #container1 #container2{
+
+   .page_section {
+      position:relative;
+      .page_section_title { position: absolute;
+                            font-size: 10pt;
+                            line-height:1;
+                            background-color:var(--colorBgCard);
+                            white-space: nowrap;
+                            text-transform: lowercase;
+                            padding:0 2px 0 2px;
+                            color:var(--colorPageSectionTitle);
+                            top: -12px;
+                            left: 10px;}
+      //padding-top: 5pt;
+     border: 1px solid var(--colorPageSectionBorder);
+   }
+}
+
+//layout
+.card #container1 {
+      margin-right:10pt;
+      margin-left:10pt; 
+      
+      #container2 { 
+         @include flexContainerColumn;
+
+         .page_section {margin-top: 10pt;}
+      }
+}
+
+//utils
+
+.play-button{
+   display: inline-block;
+   width: 35px;
+   min-width: 35px;
+}
