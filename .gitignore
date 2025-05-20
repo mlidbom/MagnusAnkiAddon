@@ -9,3 +9,4 @@ collection.anki2
 /src/MagnusAddon/card_history.json
 /src/web/obj/
 /src/web/collection.media/*.css
+/src/web/collection.media/*.css.map
