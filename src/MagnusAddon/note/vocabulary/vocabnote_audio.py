@@ -15,9 +15,10 @@ class VocabNoteAudio(Slots):
         self._vocab = vocab
         self.first: WritableAudioField = WritableAudioField(vocab, NoteFields.Vocab.Audio_b)
         self.second: WritableAudioField = WritableAudioField(vocab, NoteFields.Vocab.Audio_g)
+        self.tts: WritableAudioField = WritableAudioField(vocab, NoteFields.Vocab.Audio_TTS)
 
     def get_primary_audio_path(self) -> str:
-        return self.first.first_audiofile_path() or self.second.first_audiofile_path() or ""
+        return self.first.first_audiofile_path() or self.second.first_audiofile_path() or self.tts.first_audiofile_path() or ""
 
     def get_primary_audio(self) -> str:
-        return self.first.raw_walue() or self.second.raw_walue()
+        return self.first.raw_walue() or self.second.raw_walue() or self.tts.raw_walue() or ""

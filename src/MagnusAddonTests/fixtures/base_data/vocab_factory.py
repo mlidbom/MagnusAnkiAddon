@@ -23,6 +23,7 @@ def create_vocab() -> NoteTypeEx:
                        NoteFieldEx(NoteFields.Vocab.source_mnemonic),
                        NoteFieldEx(NoteFields.Vocab.Audio_b),
                        NoteFieldEx(NoteFields.Vocab.Audio_g),
+                       NoteFieldEx(NoteFields.Vocab.Audio_TTS),
                        NoteFieldEx(NoteFields.Vocab.sort_id),
                        NoteFieldEx(NoteFields.Vocab.Related_similar_meaning),
                        NoteFieldEx(NoteFields.Vocab.Related_derived_from),

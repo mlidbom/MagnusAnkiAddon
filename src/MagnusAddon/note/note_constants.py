@@ -142,6 +142,7 @@ class NoteFields(Slots):
         source_mnemonic = "source_mnemonic"
         Audio_b = "Audio_b"
         Audio_g = "Audio_g"
+        Audio_TTS = "Audio_TTS"
         sort_id = "sort_id"
 
         Related_similar_meaning = "__similar_meaning"
