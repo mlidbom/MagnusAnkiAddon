@@ -2,10 +2,10 @@
 <project version="4">
   <component name="ProjectTasksOptions">
     <TaskOptions isEnabled="true">
-      <option name="arguments" value="$FileName$:$SolutionDir$collection.media\__magnus_css_$FileNameWithoutExtension$.css" />
+      <option name="arguments" value="$FileName$:c:\Users\magnu\AppData\Roaming\Anki2\Magnus\collection.media\__magnus_css_$FileNameWithoutExtension$.css" />
       <option name="checkSyntaxErrors" value="true" />
       <option name="description" />
-      <option name="exitCodeBehavior" value="ERROR" />
+      <option name="exitCodeBehavior" value="ALWAYS" />
       <option name="fileExtension" value="scss" />
       <option name="immediateSync" value="true" />
       <option name="name" value="SCSS" />
