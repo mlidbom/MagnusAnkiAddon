@@ -25,23 +25,25 @@ def update_generated_data(vocab: VocabNote) -> None:
         compounds = [question[:-2], "する"]
         vocab.compound_parts.set(compounds)
 
-    if vocab.get_question() and vocab.readings.get():  # if we don't have a reading, the lookup will be too unreliable
-        lookup = DictLookup.lookup_vocab_word_or_name(vocab)
-        if lookup.is_uk() and not vocab.has_tag(Mine.Tags.DisableKanaOnly):
-            vocab.set_tag(Mine.Tags.UsuallyKanaOnly)
-
-        if not vocab.forms.all_set():
-            if lookup.found_words():
-                vocab.forms.set_set(lookup.valid_forms(vocab.parts_of_speech.is_uk()))
-
-            if vocab.get_question() not in vocab.forms.all_set():
-                vocab.forms.set_set(vocab.forms.all_set() | {vocab.get_question()})
-
-            if vocab.parts_of_speech.is_uk() and vocab.readings.get()[0] not in vocab.forms.all_set():
-                vocab.forms.set_set(vocab.forms.all_set() | set(vocab.readings.get()))
+    if vocab.get_question():
+        if vocab.get_question() not in vocab.forms.all_set():
+            vocab.forms.set_set(vocab.forms.all_set() | {vocab.get_question()})
 
         speech_types = vocab.parts_of_speech.get() - {"Unknown",
                                                       "Godan verbIchidan verb"  # crap inserted by bug in yomitan
                                                       }
-        if len(speech_types) == 0:
-            vocab.parts_of_speech.set_automatically_from_dictionary()
+
+        if vocab.readings.get():  # if we don't have a reading, the lookup will be too unreliable
+            lookup = DictLookup.lookup_vocab_word_or_name(vocab)
+            if lookup.is_uk() and not vocab.has_tag(Mine.Tags.DisableKanaOnly):
+                vocab.set_tag(Mine.Tags.UsuallyKanaOnly)
+
+            if not vocab.forms.all_set():
+                if lookup.found_words():
+                    vocab.forms.set_set(lookup.valid_forms(vocab.parts_of_speech.is_uk()))
+
+                if vocab.parts_of_speech.is_uk() and vocab.readings.get()[0] not in vocab.forms.all_set():
+                    vocab.forms.set_set(vocab.forms.all_set() | set(vocab.readings.get()))
+
+            if len(speech_types) == 0:
+                vocab.parts_of_speech.set_automatically_from_dictionary()
