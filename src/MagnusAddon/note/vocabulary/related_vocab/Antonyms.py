@@ -17,7 +17,7 @@ class Antonyms(Slots):
         self._vocab: WeakRef[VocabNote] = vocab
         self._data: JsonObjectField[RelatedVocabData] = data
 
-    def get(self) -> set[str]: return self._data.get().synonyms
+    def get(self) -> set[str]: return self._data.get().antonyms
 
     def add(self, antonym: str) -> None:
         self.get().add(antonym)
