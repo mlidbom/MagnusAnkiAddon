@@ -285,10 +285,6 @@ class KanjiNote(WaniNote, Slots):
         radical_characters = [radical.characters for radical in radicals_with_characters]
         self._set_radicals(", ".join(radical_characters))
 
-
-        characterless_radical_names = [radical.meanings[0].meaning for radical in radicals_without_characters]
-        self.set_radicals_icons_names(", ".join(characterless_radical_names))
-
         vocabs = [client.get_vocab_by_id(int(kanji_id)) for kanji_id in amalgamation_subject_ids]
         vocabs.sort(key=lambda voc: (voc.level, voc.lesson_position))
         vocab_html = """
