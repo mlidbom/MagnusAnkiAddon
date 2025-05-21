@@ -12,7 +12,6 @@ from note.vocabulary import vocabnote_generated_data
 from note.vocabulary.related_vocab.related_vocab import RelatedVocab
 from note.vocabulary.vocabnote_audio import VocabNoteAudio
 from note.vocabulary.vocabnote_conjugator import VocabNoteConjugator
-from note.vocabulary.vocabnote_context_sentences import VocabContextSentences
 from note.vocabulary.vocabnote_factory import VocabNoteFactory
 from note.vocabulary.vocabnote_forms import VocabNoteForms
 from note.vocabulary.vocabnote_kanji import VocabNoteKanji
@@ -50,7 +49,6 @@ class VocabNote(WaniNote, Slots):
 
         self.cloner: VocabCloner = VocabCloner(self.weakref)
         self.related_notes: RelatedVocab = RelatedVocab(self.weakref)
-        self.context_sentences: VocabContextSentences = VocabContextSentences(self.weakref)
         self.audio: VocabNoteAudio = VocabNoteAudio(self.weakref)
         self.sentences: VocabNoteSentences = VocabNoteSentences(self.weakref)
         self.forms: VocabNoteForms = VocabNoteForms(self.weakref)

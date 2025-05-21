@@ -6,7 +6,6 @@ import pyperclip
 from ankiutils import app, query_builder
 from aqt import qconnect
 from note.note_constants import NoteFields, NoteTypes
-from note.vocabulary import vocabnote_context_sentences
 from sysutils import ex_sequence, ex_str
 from sysutils.ex_str import newline
 from sysutils.typed import non_optional
@@ -68,13 +67,11 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
             add_ui_action(note_menu, shortcutfinger.up1("Accept meaning"), lambda: vocab.user.answer.set(format_vocab_meaning(vocab.get_answer())))
 
         add_ui_action(note_menu, shortcutfinger.up2("Generate answer"), lambda: vocab.generate_and_set_answer())
-        if vocabnote_context_sentences.can_generate_sentences_from_context_sentences(vocab, False):
-            add_ui_action(note_menu, shortcutfinger.up3("Generate sentences"), lambda: vocabnote_context_sentences.generate_sentences_from_context_sentences(vocab, False))
 
         from batches import local_note_updater
 
-        add_ui_action(note_menu, shortcutfinger.up4("Reparse matching sentences"), lambda: local_note_updater.reparse_sentences_for_vocab(vocab))
-        add_ui_action(note_menu, shortcutfinger.up5("Repopulate TOS"), lambda: vocab.parts_of_speech.set_automatically_from_dictionary())
+        add_ui_action(note_menu, shortcutfinger.up3("Reparse matching sentences"), lambda: local_note_updater.reparse_sentences_for_vocab(vocab))
+        add_ui_action(note_menu, shortcutfinger.up4("Repopulate TOS"), lambda: vocab.parts_of_speech.set_automatically_from_dictionary())
 
         add_ui_action(note_menu, shortcutfinger.down1("Autogenerate compounds"), lambda: vocab.compound_parts.auto_generate())
 

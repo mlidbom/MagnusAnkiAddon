@@ -8,8 +8,6 @@ from aqt import gui_hooks
 from note import queue_manager
 from note.jpnote import JPNote
 from note.sentences.sentencenote import SentenceNote
-from note.vocabulary import vocabnote_context_sentences
-from note.vocabulary.vocabnote import VocabNote
 from sysutils import ex_lambda
 from sysutils.typed import non_optional
 from ui import menus
@@ -51,14 +49,6 @@ def setup_browser_context_menu(browser: aqt.browser.Browser, menu: QMenu) -> Non
                 start_day_menu.addAction(f"{days_apart} days apart", ex_lambda.bind3(spread_due_dates, selected_cards, start_day, days_apart))
 
     selected_notes = {app.col().note_from_note_id(note_id) for note_id in browser.selectedNotes()}
-    selected_vocab:set[VocabNote] = {note for note in selected_notes if isinstance(note, VocabNote)}
-    vocab_that_can_generate_audio = [note for note in selected_vocab if vocabnote_context_sentences.can_generate_sentences_from_context_sentences(note, False)]
-    if vocab_that_can_generate_audio:
-        def generate_sentences() -> None:
-            for vocab in vocab_that_can_generate_audio:
-                vocabnote_context_sentences.generate_sentences_from_context_sentences(vocab, False)
-
-        magnus_menu.addAction("Generate sentences from context sentences for vocab", generate_sentences)
 
     selected_sentences:list[SentenceNote] = [note for note in selected_notes if isinstance(note, SentenceNote)]
     if selected_sentences:

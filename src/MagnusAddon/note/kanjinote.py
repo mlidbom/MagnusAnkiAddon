@@ -280,7 +280,6 @@ class KanjiNote(WaniNote, Slots):
         client = WanikaniClient.get_instance()
         radicals = [client.get_radical_by_id(int(radical_id)) for radical_id in component_subject_ids]
         radicals_with_characters = [radical for radical in radicals if radical.characters is not None]
-        radicals_without_characters = [radical for radical in radicals if radical.characters is None]
 
         radical_characters = [radical.characters for radical in radicals_with_characters]
         self._set_radicals(", ".join(radical_characters))

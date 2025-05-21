@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING
 
 from autoslot import Slots
 from note.notefields.string_field import StringField
-from sysutils import ex_str
 
 if TYPE_CHECKING:
     from note.jpnote import JPNote
@@ -15,7 +14,6 @@ class StripHtmlOnReadStringField(Slots):
     def __init__(self, note: WeakRef[JPNote], field_name: str) -> None:
         self._field = StringField(note, field_name)
 
-    def get(self) -> str: return ex_str.strip_html_markup(self._field.get())
     def set(self, value: str) -> None: self._field.set(value)
     def empty(self) -> None: self.set("")
     def has_value(self) -> bool: return self._field.has_value()

@@ -8,7 +8,6 @@ from typing import TYPE_CHECKING
 from ankiutils import app, query_builder
 from note.note_constants import CardTypes, Mine
 from note.sentences.sentencenote import SentenceNote
-from note.vocabulary import vocabnote_context_sentences
 from sysutils import ex_str, object_instance_tracker, progress_display_runner
 
 if TYPE_CHECKING:
@@ -44,12 +43,6 @@ def update_vocab() -> None:
         vocab.update_generated_data()
 
     progress_display_runner.process_with_progress(app.col().vocab.all(), _update_vocab, "Updating vocab")
-
-def generate_sentences_for_context_sentences_with_audio() -> None:
-    def generate_sentences(vocab: VocabNote) -> None:
-        vocabnote_context_sentences.generate_sentences_from_context_sentences(vocab, True)
-
-    progress_display_runner.process_with_progress(app.col().vocab.all(), generate_sentences, "Generating sentence notes from context sentences")
 
 def convert_immersion_kit_sentences() -> None:
     def convert_note(note_id: NoteId) -> None:

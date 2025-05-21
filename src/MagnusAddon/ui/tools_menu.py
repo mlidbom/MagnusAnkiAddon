@@ -96,7 +96,6 @@ def build_local_menu(local_menu: QMenu) -> None:
         add_menu_ui_action(update_menu, shortcutfinger.down1("All the above: Full rebuild"), local_note_updater.full_rebuild)
 
     def build_danger_zone_menu(danger_zone: QMenu) -> None:
-        add_menu_ui_action(danger_zone, "Create Sentences from Context Sentences With Audio", local_note_updater.generate_sentences_for_context_sentences_with_audio)
         build_wani_menu(non_optional(danger_zone.addMenu("Wanikani Actions")))
 
     build_update_menu(non_optional(local_menu.addMenu(shortcutfinger.home1("Update"))))

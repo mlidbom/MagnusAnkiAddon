@@ -26,18 +26,6 @@ def create_from_wani_vocabulary(wani_vocab: models.Vocabulary) -> None:
     vocab_note.question.set(wani_vocab.characters)
     vocab_note.update_from_wani(wani_vocab)
 
-    if len(wani_vocab.context_sentences) > 0:
-        vocab_note.context_sentences.first.english.set(wani_vocab.context_sentences[0].english)
-        vocab_note.context_sentences.first.japanese.set(wani_vocab.context_sentences[0].japanese)
-
-    if len(wani_vocab.context_sentences) > 1:
-        vocab_note.context_sentences.second.english.set(wani_vocab.context_sentences[1].english)
-        vocab_note.context_sentences.second.japanese.set(wani_vocab.context_sentences[1].japanese)
-
-    if len(wani_vocab.context_sentences) > 2:
-        vocab_note.context_sentences.third.english.set(wani_vocab.context_sentences[2].english)
-        vocab_note.context_sentences.second.japanese.set(wani_vocab.context_sentences[2].japanese)
-
 class VocabNoteWaniExtensions(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self.__vocab = vocab
