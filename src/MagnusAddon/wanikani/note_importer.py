@@ -16,20 +16,18 @@ if TYPE_CHECKING:
 
 waniClient = WanikaniClient.get_instance()
 
-
 def import_missing_kanji() -> None:
     all_kanji: list[KanjiNote] = app.col().kanji.all_wani()
-    local_kanji_dictionary = {kanji.get_subject_id(): kanji for kanji in all_kanji}
+    local_kanji_dictionary = {kanji.get_question(): kanji for kanji in all_kanji}
     all_wani_kanji = waniClient.list_kanji()
     imported = 0
     for wani_kanji in all_wani_kanji:
-        if wani_kanji.id not in local_kanji_dictionary:
+        if wani_kanji.characters not in local_kanji_dictionary:
             print(f"Importing: {wani_kanji.slug}")
             KanjiNote.create_from_wani_kanji(wani_kanji)
             imported += 1
 
     showInfo(f"Imported {imported} kanji notes")
-
 
 def import_missing_vocab() -> None:
     all_wani_vocabulary = waniClient.list_vocabulary()
@@ -47,11 +45,11 @@ def import_missing_context_sentences() -> None:
     progress = progress_display_runner.open_spinning_progress_dialog("Fetching wanikani vocabulary. Please be patient this will complete in a minute or two.")
     sentence_collection = app.col().sentences
     all_wani_vocabulary = waniClient.list_vocabulary()
-    imported_sentences:list[SentenceNote] = []
-    present:list[SentenceNote] = []
+    imported_sentences: list[SentenceNote] = []
+    present: list[SentenceNote] = []
     progress.close()
 
-    def handle_vocab(wani_vocab:Vocabulary) -> None:
+    def handle_vocab(wani_vocab: Vocabulary) -> None:
         for sentence in wani_vocab.context_sentences:
             vocab = str(wani_vocab.characters)
             question = str(sentence.japanese).strip()
@@ -71,7 +69,6 @@ def import_missing_context_sentences() -> None:
 
     progress_display_runner.process_with_progress(all_wani_vocabulary, handle_vocab, "Processing found Wanikani vacabulary")
 
-
     old_sentences = [sent for sent in app.col().sentences.all() if sent.has_tag(Mine.Tags.Wani) and not sent.has_tag(Mine.Tags.wani_sentence_current)]
     for old_sentence in old_sentences:
         old_sentence.remove_tag(Mine.Tags.wani_sentence_current)
@@ -81,4 +78,3 @@ def import_missing_context_sentences() -> None:
     Imported: {len(imported_sentences)} sentences.
     Already present: {len(present)} sentences.
     Marked as removed: {len(old_sentences)} sentences.""")
-

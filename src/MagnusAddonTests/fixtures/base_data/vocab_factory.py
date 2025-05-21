@@ -23,7 +23,6 @@ def create_vocab() -> NoteTypeEx:
                        NoteFieldEx(NoteFields.Vocab.Related_derived_from),
                        NoteFieldEx(NoteFields.Vocab.Related_ergative_twin),
                        NoteFieldEx(NoteFields.Vocab.Related_confused_with),
-                       NoteFieldEx(NoteFields.Vocab.Kanji),
                        NoteFieldEx(NoteFields.Vocab.Forms),
                        NoteFieldEx(NoteFields.Vocab.source_reading_mnemonic),
                        NoteFieldEx(NoteFields.Vocab.Homophones),

@@ -67,16 +67,6 @@ class NoteFields(Slots):
             Reading = CardTypes.reading
             Listening = CardTypes.listening
 
-    class WaniCommon(Slots):
-        subject_id = "subject_id"
-        level = "level"
-        lesson_position = "lesson_position"
-        document_url = "document_url"
-        my_learning_order = "my_learning_order"
-
-        auxiliary_meanings_whitelist = "auxiliary_meanings_whitelist"
-        auxiliary_meanings_blacklist = "auxiliary_meanings_blacklist"
-
     class Kanji(Slots):
         question = MyNoteFields.question
         active_answer = MyNoteFields.answer
@@ -128,7 +118,6 @@ class NoteFields(Slots):
         Related_ergative_twin = "__ergative_twin"
         Related_confused_with = "__confused_with"
 
-        Kanji = "Kanji"
         Forms = "F"
         source_reading_mnemonic = "source_reading_mnemonic"
         Homophones = "Homophones"
@@ -188,7 +177,6 @@ class Mine(Slots):
         source_folder = "source::"
 
         Wani = f"{source_folder}wani"
-        wani_level = f"{Wani}::level::"
         wani_sentence_current = f"{Wani}::current"
         wani_sentence_removed_on_wani = f"{Wani}::removed"
 
