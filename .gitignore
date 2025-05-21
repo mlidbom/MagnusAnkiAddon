@@ -10,3 +10,4 @@ collection.anki2
 /src/web/obj/
 /src/web/collection.media/*.css
 /src/web/collection.media/*.css.map
+/src/MagnusAddon/user_files/

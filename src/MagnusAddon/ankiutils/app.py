@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from typing import TYPE_CHECKING, Callable, Optional
 
 import mylog
@@ -132,5 +133,7 @@ def _setup_gui_hooks() -> None:
     from aqt import gui_hooks
     gui_hooks.profile_will_close.append(_profile_closing)
     gui_hooks.profile_did_open.append(_profile_opened)
+
+user_files_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..\\user_files")
 
 _setup_gui_hooks()

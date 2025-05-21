@@ -4,7 +4,7 @@ import json
 import os
 
 from anki.cards import Card, CardId
-from ankiutils import query_builder, search_executor
+from ankiutils import app, query_builder, search_executor
 from aqt import gui_hooks, mw
 from aqt.qt import QKeySequence, QShortcut
 from PyQt6.QtWidgets import QWidget
@@ -40,8 +40,7 @@ class CardHistoryNavigator:
 
     @staticmethod
     def _get_history_file_path() -> str:
-        addon_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        return os.path.join(addon_dir, "card_history.json")
+        return os.path.join(app.user_files_dir, "card_history.json")
 
     def _save_last_hundred_items_to_file(self) -> None:
         history_file_path = self._get_history_file_path()
