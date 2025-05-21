@@ -17,9 +17,17 @@ _godan_ru_or_ichidan_endings = _godan_ru_endings + _ichidan_endings
 
 godan_potential_verb_ending_to_dictionary_form_endings: dict[str, str] = {"える": "う", "ける": "く", "げる": "ぐ", "せる": "す", "てる": "つ", "ねる": "ぬ", "べる": "ぶ", "める": "む", "れる": "る"}
 
-e_stem_characters: set[str] = {"え", "け", "げ", "せ", "て", "ね", "べ", "め", "れ", "エ", "ケ", "ゲ", "セ", "テ", "ネ", "ベ", "メ", "レ"}
-a_stem_characters: set[str] = {"わ", "か", "が", "さ", "た", "な", "ば", "ま", "ら", "ワ", "カ", "ガ", "サ", "タ", "ナ", "バ", "マ", "ラ"}
-#passive_form_stem_characters: set[str] = a_stem_characters - {"な", "ナ"} # in practice な only brings false positives when searching for passive since passive ぬ verb usages are non-existent
+e_stem_hiragana: set[str] = {"え", "け", "げ", "せ", "て", "ね", "べ", "め", "れ"}
+e_stem_katakana: set[str] = {"エ", "ケ", "ゲ", "セ", "テ", "ネ", "ベ", "メ", "レ"}
+e_stem_characters: set[str] = e_stem_hiragana | e_stem_katakana
+
+a_stem_hiragana: set[str] = {"わ", "か", "が", "さ", "た", "な", "ば", "ま", "ら",}
+a_stem_katakana: set[str] = {"ワ", "カ", "ガ", "サ", "タ", "ナ", "バ", "マ", "ラ"}
+a_stem_characters: set[str] = a_stem_hiragana | a_stem_katakana
+
+#o_row_hiragana: set[str] = {"を", "こ", "ご", "そ", "と", "の", "ぼ", "も", "ろ"}
+#o_row_katakana: set[str] = {"オ", "コ", "ゴ", "ソ", "ト", "ノ", "ボ", "モ", "ロ"}
+# passive_form_stem_characters: set[str] = a_stem_characters - {"な", "ナ"} # in practice な only brings false positives when searching for passive since passive ぬ verb usages are non-existent
 
 _1_character_mappings: dict[str, list[str]] = {"う": ["い", "わ", "え", "っ"],
                                                "く": ["き", "か", "け", "い"],
