@@ -27,10 +27,9 @@ def build_note_menu(note_menu: QMenu, sentence: SentenceNote) -> None:
 
     def build_remove_user(remove_user_menu: QMenu) -> None:
         add_ui_action(remove_user_menu, shortcutfinger.home1("comments"), lambda: sentence.user.comments.empty()).setEnabled(sentence.user.comments.has_value())
-        add_ui_action(remove_user_menu, shortcutfinger.home2("comments long"), lambda: sentence.user.comments_long.empty()).setEnabled(sentence.user.comments_long.has_value())
-        add_ui_action(remove_user_menu, shortcutfinger.home3("analysis"), lambda: sentence.user.answer_analysis.empty()).setEnabled(sentence.user.answer_analysis.has_value())
-        add_ui_action(remove_user_menu, shortcutfinger.home4("answer"), lambda: sentence.user.question.empty()).setEnabled(sentence.user.answer.has_value())
-        add_ui_action(remove_user_menu, shortcutfinger.up1("question"), lambda: sentence.user.question.empty()).setEnabled(sentence.user.question.has_value())
+        add_ui_action(remove_user_menu, shortcutfinger.home2("analysis"), lambda: sentence.user.answer_analysis.empty()).setEnabled(sentence.user.answer_analysis.has_value())
+        add_ui_action(remove_user_menu, shortcutfinger.home3("answer"), lambda: sentence.user.question.empty()).setEnabled(sentence.user.answer.has_value())
+        add_ui_action(remove_user_menu, shortcutfinger.home4("question"), lambda: sentence.user.question.empty()).setEnabled(sentence.user.question.has_value())
 
     build_lookup_menu(non_optional(note_menu.addMenu(shortcutfinger.home1("Open"))))
     build_remove_menu(non_optional(note_menu.addMenu(shortcutfinger.home2("Remove"))))
