@@ -6,7 +6,6 @@ from ankiutils import app
 from aqt.utils import showInfo
 from note.kanjinote import KanjiNote
 from note.note_constants import Mine
-from note.radicalnote import RadicalNote
 from note.sentences.sentencenote import SentenceNote
 from note.vocabulary.vocabnote import VocabNote
 from sysutils import progress_display_runner
@@ -16,20 +15,6 @@ if TYPE_CHECKING:
     from wanikani_api.models import Vocabulary
 
 waniClient = WanikaniClient.get_instance()
-
-
-def import_missing_radicals() -> None:
-    all_radicals: list[RadicalNote] = app.col().radicals.all()
-    local_radicals_dictionary = {radical.get_subject_id(): radical for radical in all_radicals}
-    all_wani_radicals = waniClient.list_radicals()
-    imported = 0
-    for wani_radical in all_wani_radicals:
-        if wani_radical.id not in local_radicals_dictionary:
-            print(f"Importing: {wani_radical.slug}")
-            RadicalNote.create_from_wani_radical(wani_radical)
-            imported += 1
-
-    showInfo(f"Imported {imported} radical notes")
 
 
 def import_missing_kanji() -> None:

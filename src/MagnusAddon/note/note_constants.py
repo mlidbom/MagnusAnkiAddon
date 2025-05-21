@@ -51,10 +51,9 @@ class NoteTypes(Slots):
     immersion_kit = "Immersion Kit Sentence"
     Kanji = "_Kanji"
     Vocab = "_Vocab"
-    Radical = "_Radical"
     Sentence = "_japanese_sentence"
 
-    ALL = {Kanji, Vocab, Radical, Sentence}
+    ALL = {Kanji, Vocab, Sentence}
 
 class NoteFields(Slots):
     note_id = "nid"
@@ -78,15 +77,6 @@ class NoteFields(Slots):
         auxiliary_meanings_whitelist = "auxiliary_meanings_whitelist"
         auxiliary_meanings_blacklist = "auxiliary_meanings_blacklist"
 
-    class Radical(Slots):
-        question = MyNoteFields.question
-        answer = MyNoteFields.answer
-        source_mnemonic = "Radical_Meaning"
-        Radical_Icon = "Radical_Icon"
-        sort_id = "sort_id"
-
-        amalgamation_subject_ids = "amalgamation_subject_ids"
-
     class Kanji(Slots):
         question = MyNoteFields.question
         active_answer = MyNoteFields.answer
@@ -96,9 +86,6 @@ class NoteFields(Slots):
         Reading_Kun = "Reading_Kun"
         Reading_Nan = "__reading_Nan"
         Radicals = "Radicals"
-        Radicals_Icons = "Radicals_Icons"
-        Radicals_Names = "Radicals_Names"
-        Radicals_Icons_Names = "Radicals_Icons_Names"
         Source_Meaning_Mnemonic = "Meaning_Mnemonic"
         Meaning_Info = "Meaning_Info"
         Reading_Mnemonic = "Reading_Mnemonic"

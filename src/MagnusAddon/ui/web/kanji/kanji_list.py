@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING
 from ankiutils import app
 from aqt import gui_hooks
 from note.kanjinote import KanjiNote
-from note.radicalnote import RadicalNote
 from sysutils import ex_str, kana_utils
 from ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
 from viewmodels.kanji_list.sentence_kanji_viewmodel import KanjiViewModel
@@ -58,11 +57,6 @@ def kanji_kanji_list(kanji:KanjiNote) -> str:
 
     return render_list(kanji, kanjis, kanji_readings)
 
-def radical_kanji_list(radical: RadicalNote) -> str:
-    kanjis = app.col().kanji.with_radical(radical.get_question()) if radical.get_question() else []
-    return render_list(radical, kanjis, [])
-
 
 def init() -> None:
     gui_hooks.card_will_show.append(PrerenderingAnswerContentRenderer(KanjiNote, {"##KANJI_LIST##": kanji_kanji_list}).render)
-    gui_hooks.card_will_show.append(PrerenderingAnswerContentRenderer(RadicalNote, {"##KANJI_LIST##": radical_kanji_list}).render)

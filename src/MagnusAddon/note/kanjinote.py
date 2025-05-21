@@ -144,17 +144,6 @@ class KanjiNote(WaniNote, Slots):
     def get_radicals_notes(self) -> list[KanjiNote]:
         return [kanji_radical for kanji_radical in (app.col().kanji.with_kanji(radical) for radical in self.get_radicals()) if kanji_radical]
 
-    def get_radical_dependencies_names(self) -> list[str]:
-        return ex_str.extract_comma_separated_values(
-            self.get_radicals_names()) + ex_str.extract_comma_separated_values(
-            self.get_radicals_icons_names())
-
-    def get_radicals_names(self) -> str: return self.get_field(NoteFields.Kanji.Radicals_Names)
-    def set_radicals_names(self, value: str) -> None: self.set_field(NoteFields.Kanji.Radicals_Names, value)
-
-    def get_radicals_icons_names(self) -> str: return self.get_field(NoteFields.Kanji.Radicals_Icons_Names)
-    def set_radicals_icons_names(self, value: str) -> None: self.set_field(NoteFields.Kanji.Radicals_Icons_Names, value)
-
     def get_active_mnemonic(self) -> str:
         return self.get_user_mnemonic() if self.get_user_mnemonic() \
             else f"# {kanjinote_mnemonic_maker.create_default_mnemonic(self)}" if app.config().prefer_default_mnemocs_to_source_mnemonics.get_value() \

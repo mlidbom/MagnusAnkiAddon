@@ -14,9 +14,6 @@ def pad_to_length(value: str, target_length: int, space_scaling: float = 1.0) ->
     padding = max(0, target_length - len(value))
     return value + " " * int(padding * space_scaling)
 
-def extract_characters(string: str) -> list[str]:
-    return [char for char in string if not char.isspace()]
-
 _commaSeparatedPattern = f"""[{''.join(map(re.escape, (",", "、")))}]"""
 _commaSeparatedCompiled = re.compile(_commaSeparatedPattern)
 def extract_comma_separated_values(string: str) -> list[str]:

@@ -68,9 +68,6 @@ class NoteCache(Generic[TNote, TSnapshot], Slots):
     def with_question(self, question: str) -> list[TNote]:
         return list(self._by_question[question])
 
-    def with_answer(self, answer: str) -> list[TNote]:
-        return list(self._by_answer[answer])
-
     @abstractmethod
     def _create_snapshot(self, note: TNote) -> TSnapshot: pass
     def _inheritor_remove_from_cache(self, note: TNote, cached: TSnapshot) -> None: pass

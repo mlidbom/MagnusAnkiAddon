@@ -106,7 +106,6 @@ def build_local_menu(local_menu: QMenu) -> None:
     build_danger_zone_menu(non_optional(local_menu.addMenu(shortcutfinger.home4("Danger Zone"))))
 
 def build_wani_menu(sub_menu: QMenu) -> None:
-    add_menu_ui_action(sub_menu, "Import Missing Radicals", note_importer.import_missing_radicals)
     add_menu_ui_action(sub_menu, "Import Missing Kanji", note_importer.import_missing_kanji)
     add_menu_ui_action(sub_menu, "Import Missing Vocabulary", note_importer.import_missing_vocab)
     add_menu_ui_action(sub_menu, "Import Missing context sentences", note_importer.import_missing_context_sentences)

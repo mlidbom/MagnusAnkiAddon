@@ -14,9 +14,8 @@ from sysutils.object_instance_tracker import ObjectInstanceTracker
 from sysutils.typed import non_optional, str_
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
 
-    from anki.cards import Card, CardId
+    from anki.cards import Card
     from anki.notes import Note, NoteId
     from note.collection.jp_collection import JPCollection
 
@@ -65,13 +64,11 @@ class JPNote(Slots):
     @classmethod
     def note_from_note(cls, note: Note) -> JPNote:
         from note.kanjinote import KanjiNote
-        from note.radicalnote import RadicalNote
         from note.sentences.sentencenote import SentenceNote
         from note.vocabulary.vocabnote import VocabNote
 
         if cls.get_note_type(note) == NoteTypes.Kanji: return KanjiNote(note)
         if cls.get_note_type(note) == NoteTypes.Vocab: return VocabNote(note)
-        if cls.get_note_type(note) == NoteTypes.Radical: return RadicalNote(note)
         if cls.get_note_type(note) == NoteTypes.Sentence: return SentenceNote(note)
         return JPNote(note)
 
@@ -80,8 +77,6 @@ class JPNote(Slots):
         return str_(cast(NotetypeDict, note.note_type())["name"])
 
     def get_type(self) -> NoteTypeEx: return NoteTypeEx.from_dict(non_optional(self.backend_note.note_type()))
-
-    def get_note_type_name(self) -> str: return self.get_note_type(self.backend_note)
 
     def get_direct_dependencies(self) -> set[JPNote]:
         return set()
@@ -98,7 +93,6 @@ class JPNote(Slots):
         return self._get_dependencies_recursive(set())
 
     def get_id(self) -> NoteId: return self.backend_note.id
-    def card_ids(self) -> Sequence[CardId]: return self.backend_note.card_ids()
     def is_wani_note(self) -> bool: return Mine.Tags.Wani in self.backend_note.tags
 
     def cards(self) -> list[CardEx]: return [CardEx(card) for card in self.backend_note.cards()]

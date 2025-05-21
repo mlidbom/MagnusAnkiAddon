@@ -56,10 +56,6 @@ class WanikaniClient(Slots):
             self._is_initialized = True
         return self
 
-    def list_radicals(self) -> list[models.Radical]:
-        self._init()
-        return self._radical_list
-
     def list_kanji(self) -> list[models.Kanji]:
         self._init()
         return self._kanji_list
@@ -88,17 +84,9 @@ class WanikaniClient(Slots):
 
         return self._kana_vocab_list
 
-    def get_radical(self, radical_name: str) -> models.Radical:
-        self._init()
-        return self._radical_dictionary[radical_name.replace(" ", "-").lower()]
-
     def get_radical_by_id(self, radical_id: int) -> models.Radical:
         self._init()
         return self._radical_id_dictionary[radical_id]
-
-    def get_kanji_by_name(self, kanji_name: str) -> models.Kanji:
-        self._init()
-        return self._kanji_dictionary[kanji_name]
 
     def get_kanji_by_id(self, kanji_id: int) -> models.Kanji:
         self._init()

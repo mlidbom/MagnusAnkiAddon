@@ -8,7 +8,6 @@ from aqt import gui_hooks
 from batches import local_note_updater
 from note.kanjinote import KanjiNote
 from note.note_constants import Mine
-from note.radicalnote import RadicalNote
 from note.sentences.sentencenote import SentenceNote
 from note.vocabulary.vocabnote import VocabNote
 from qt_utils.ex_qmenu import ExQmenu
@@ -46,9 +45,7 @@ def build_right_click_menu(right_click_menu: QMenu, note: JPNote | None, selecti
     string_note_menu_factory: typing.Callable[[QMenu, str], None] = null_op_factory
 
     if note:
-        if isinstance(note, RadicalNote):
-            menus.notes.radical.main.setup_note_menu(non_optional(right_click_menu.addMenu(shortcutfinger.home3("Radical note actions"))), note)
-        elif isinstance(note, KanjiNote):
+        if isinstance(note, KanjiNote):
             menus.notes.kanji.main.build_note_menu(non_optional(right_click_menu.addMenu(shortcutfinger.home3("Kanji note actions"))), note)
             string_note_menu_factory = lambda menu, string: menus.notes.kanji.string_menu.build(menu, typed.checked_cast(KanjiNote, note), string)  # noqa: E731
         elif isinstance(note, VocabNote):

@@ -14,7 +14,6 @@ if TYPE_CHECKING:
     from anki.notes import NoteId
     from note.jpnote import JPNote
     from note.kanjinote import KanjiNote
-    from note.radicalnote import RadicalNote
     from note.vocabulary.vocabnote import VocabNote
 
 f_question = MyNoteFields.question
@@ -115,12 +114,6 @@ def vocabs_lookup_strings(words: list[str]) -> str:
 
 def vocabs_lookup_strings_read_card(words: list[str]) -> str:
     return f"""{vocabs_lookup_strings(words)} {card_read}"""
-
-def kanji_with_radical(radical: RadicalNote) -> str:
-    if radical.get_question():
-        return f"note:{NoteTypes.Kanji} {NoteFields.Kanji.Radicals}:*{radical.get_question()}*"
-    return f"note:{NoteTypes.Kanji} ({field_contains_word(NoteFields.Kanji.Radicals_Names, radical.get_answer())} OR {field_contains_word(NoteFields.Kanji.Radicals_Icons_Names, radical.get_answer())} )"
-
 
 def kanji_with_reading_part(reading_part: str) -> str:
     hiragana_reading_part = kana_utils.anything_to_hiragana(reading_part)
