@@ -4,8 +4,8 @@ from typing import TYPE_CHECKING
 from urllib import parse
 
 from aqt.utils import openLink
-from hooks import shortcutfinger
 from sysutils.typed import non_optional
+from ui.qt_menu import shortcutfinger
 
 if TYPE_CHECKING:
     from collections.abc import Callable

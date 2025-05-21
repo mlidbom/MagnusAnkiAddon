@@ -3,9 +3,9 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Callable
 
 from ankiutils import app, query_builder
-from hooks import shortcutfinger
-from hooks.right_click_menu_utils import add_lookup_action_lambda
 from sysutils.typed import non_optional
+from ui.qt_menu import shortcutfinger
+from ui.qt_menu.right_click_menu_utils import add_lookup_action_lambda
 
 if TYPE_CHECKING:
     from PyQt6.QtWidgets import QMenu

@@ -3,9 +3,9 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from aqt import gui_hooks
-from hooks.note_content_building.content_renderer import PrerenderingAnswerContentRenderer
 from note.kanjinote import KanjiNote
 from sysutils.ex_str import newline
+from ui.note_content_building.content_renderer import PrerenderingAnswerContentRenderer
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote

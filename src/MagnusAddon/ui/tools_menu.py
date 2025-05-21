@@ -8,13 +8,13 @@ from aqt import qconnect
 from batches import local_note_updater
 from configuration.configuration import show_japanese_options
 from configuration.readings_mapping_dialog import show_readings_mappings
-from hooks import shortcutfinger
-from hooks.right_click_menu_open_in_anki import build_open_in_anki_menu
-from hooks.right_click_menu_web_search import build_web_search_menu
 from PyQt6.QtGui import QAction
 from PyQt6.QtWidgets import QInputDialog, QLineEdit, QMenu
 from sysutils import object_instance_tracker
 from sysutils.typed import non_optional
+from ui.qt_menu import shortcutfinger
+from ui.qt_menu.right_click_menu_open_in_anki import build_open_in_anki_menu
+from ui.qt_menu.right_click_menu_web_search import build_web_search_menu
 from wanikani import note_importer
 from wanikani.wani_downloader import WaniDownloader
 

@@ -5,14 +5,14 @@ from typing import TYPE_CHECKING
 import pyperclip
 from ankiutils import app, query_builder
 from aqt import qconnect
-from hooks import shortcutfinger
-from hooks.right_click_menu_note_vocab_create_note_menu import build_create_note_menu
-from hooks.right_click_menu_utils import add_lookup_action, add_single_vocab_lookup_action, add_ui_action, add_vocab_dependencies_lookup
 from note.note_constants import NoteFields, NoteTypes
 from note.vocabulary import vocabnote_context_sentences
 from sysutils import ex_sequence, ex_str
 from sysutils.ex_str import newline
 from sysutils.typed import non_optional
+from ui.qt_menu import shortcutfinger
+from ui.qt_menu.right_click_menu_note_vocab_create_note_menu import build_create_note_menu
+from ui.qt_menu.right_click_menu_utils import add_lookup_action, add_single_vocab_lookup_action, add_ui_action, add_vocab_dependencies_lookup
 
 if TYPE_CHECKING:
     from note.notefields.tag_flag_field import TagFlagField

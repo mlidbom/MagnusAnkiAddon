@@ -3,10 +3,10 @@ from __future__ import annotations
 import note.vocabulary.vocabnote_sorting
 from ankiutils import app
 from aqt import gui_hooks
-from hooks.note_content_building.content_renderer import PrerenderingAnswerContentRenderer
 from note.vocabulary.vocabnote import VocabNote
 from sysutils import ex_sequence
 from sysutils.ex_str import newline
+from ui.note_content_building.content_renderer import PrerenderingAnswerContentRenderer
 
 
 def _create_classes(_vocab: VocabNote) -> str:

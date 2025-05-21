@@ -3,10 +3,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from ankiutils import app
-from hooks import shortcutfinger
-from hooks.right_click_menu_note_vocab_common import build_create_prefix_postfix_note_menu
-from hooks.right_click_menu_utils import add_ui_action
 from sysutils.typed import non_optional
+from ui.qt_menu import shortcutfinger
+from ui.qt_menu.right_click_menu_note_vocab_common import build_create_prefix_postfix_note_menu
+from ui.qt_menu.right_click_menu_utils import add_ui_action
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote

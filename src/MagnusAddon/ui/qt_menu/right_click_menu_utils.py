@@ -5,8 +5,8 @@ from typing import TYPE_CHECKING, Callable
 from ankiutils import query_builder, search_executor
 from ankiutils.app import get_ui_utils
 from ankiutils.search_executor import lookup_promise
-from hooks import shortcutfinger
 from PyQt6.QtWidgets import QMenu, QMessageBox
+from ui.qt_menu import shortcutfinger
 
 if TYPE_CHECKING:
     from note.jpnote import JPNote

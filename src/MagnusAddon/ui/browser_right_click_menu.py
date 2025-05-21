@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING
 import aqt.browser
 from ankiutils import app
 from aqt import gui_hooks
-from hooks import right_click_menu, shortcutfinger
 from note import queue_manager
 from note.jpnote import JPNote
 from note.sentences.sentencenote import SentenceNote
@@ -13,6 +12,7 @@ from note.vocabulary import vocabnote_context_sentences
 from note.vocabulary.vocabnote import VocabNote
 from sysutils import ex_lambda
 from sysutils.typed import non_optional
+from ui.qt_menu import right_click_menu, shortcutfinger
 
 if TYPE_CHECKING:
     from collections.abc import Sequence

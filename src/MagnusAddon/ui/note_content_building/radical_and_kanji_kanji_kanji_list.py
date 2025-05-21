@@ -5,10 +5,10 @@ from typing import TYPE_CHECKING
 
 from ankiutils import app
 from aqt import gui_hooks
-from hooks.note_content_building.content_renderer import PrerenderingAnswerContentRenderer
 from note.kanjinote import KanjiNote
 from note.radicalnote import RadicalNote
 from sysutils import ex_str, kana_utils
+from ui.note_content_building.content_renderer import PrerenderingAnswerContentRenderer
 from viewmodels.kanji_list.sentence_kanji_viewmodel import KanjiViewModel
 
 if TYPE_CHECKING:
