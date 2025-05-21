@@ -10,7 +10,7 @@ from language_services.janome_ex.word_extraction.text_analysis import TextAnalys
 from note.sentences.sentencenote import SentenceNote
 from sysutils import kana_utils
 from sysutils.ex_str import newline
-from ui.note_content_building.content_renderer import PrerenderingAnswerContentRenderer
+from ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote

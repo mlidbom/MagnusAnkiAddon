@@ -4,7 +4,7 @@ from aqt import gui_hooks
 from note.sentences.sentencenote import SentenceNote
 from note.vocabulary.vocabnote import VocabNote
 from sysutils import ex_str
-from ui.note_content_building.content_renderer import PrerenderingAnswerContentRenderer
+from ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
 from viewmodels.kanji_list import sentence_kanji_list_viewmodel
 
 

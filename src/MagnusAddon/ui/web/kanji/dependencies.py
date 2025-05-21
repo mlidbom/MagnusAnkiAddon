@@ -5,7 +5,7 @@ import re
 from aqt import gui_hooks
 from note.kanjinote import KanjiNote
 from sysutils import ex_str, kana_utils
-from ui.note_content_building.content_renderer import PrerenderingAnswerContentRenderer
+from ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
 
 
 def render_dependencies_list(note: KanjiNote) -> str:

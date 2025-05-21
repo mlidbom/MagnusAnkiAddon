@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from aqt import gui_hooks
 from note.kanjinote import KanjiNote
-from ui.note_content_building.content_renderer import PrerenderingAnswerContentRenderer
+from ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
 
 
 def render_mnemonic(note: KanjiNote) -> str:

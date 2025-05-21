@@ -12,7 +12,7 @@ from note.vocabulary import vocabnote_context_sentences
 from note.vocabulary.vocabnote import VocabNote
 from sysutils import ex_lambda
 from sysutils.typed import non_optional
-from ui.menus import right_click_menu
+from ui import menus
 from ui.menus.menu_utils import shortcutfinger
 
 if TYPE_CHECKING:
@@ -41,7 +41,7 @@ def setup_browser_context_menu(browser: aqt.browser.Browser, menu: QMenu) -> Non
 
         card = app.anki_collection().get_card(selected_cards[0])
         note = JPNote.note_from_card(card)
-        right_click_menu.build_browser_right_click_menu(non_optional(magnus_menu.addMenu(shortcutfinger.home3("Note"))), note)
+        menus.common.build_browser_right_click_menu(non_optional(magnus_menu.addMenu(shortcutfinger.home3("Note"))), note)
 
     if len(selected_cards) > 0:
         spread_menu: QMenu = non_optional(magnus_menu.addMenu("&Spread selected cards"))

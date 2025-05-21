@@ -30,4 +30,6 @@ Studied {cards_studied} cards in {timeutil.format_seconds_as_hh_mm_ss(seconds_st
         return True
     return False
 
-Reviewer.check_timebox = _check_timebox
+
+def init() -> None:
+    Reviewer.check_timebox = _check_timebox

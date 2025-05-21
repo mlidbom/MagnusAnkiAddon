@@ -8,7 +8,7 @@ from note.note_constants import Mine
 from note.vocabulary.vocabnote import VocabNote
 from sysutils import ex_sequence, ex_str, kana_utils
 from sysutils.ex_str import newline
-from ui.note_content_building.content_renderer import PrerenderingAnswerContentRenderer
+from ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
 
 if TYPE_CHECKING:
     from note.sentences.sentencenote import SentenceNote
