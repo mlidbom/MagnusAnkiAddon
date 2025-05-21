@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from PyQt6.QtWidgets import QMenu
 
 
-def build_string_menu(string_menu: QMenu, kanji: KanjiNote, menu_string: str) -> None:
+def build(string_menu: QMenu, kanji: KanjiNote, menu_string: str) -> None:
     def build_highlighted_vocab_menu(highlighted_vocab_menu: QMenu, _vocab_to_add: str) -> None:
         for index, _vocab in enumerate(kanji.get_primary_vocab()):
             add_ui_action(highlighted_vocab_menu, shortcutfinger.numpad(index, f"{_vocab}"), ex_lambda.bind2(kanji.position_primary_vocab, menu_string, index))
