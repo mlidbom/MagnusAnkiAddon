@@ -106,11 +106,6 @@ class NoteFields(Slots):
         Audio_g = "Audio_g"
         Audio_TTS = "Audio_TTS"
 
-        Related_similar_meaning = "__similar_meaning"
-        Related_derived_from = "__derivedFrom"
-        Related_ergative_twin = "__ergative_twin"
-        Related_confused_with = "__confused_with"
-
         Forms = "F"
         source_reading_mnemonic = "source_reading_mnemonic"
         Homophones = "Homophones"
