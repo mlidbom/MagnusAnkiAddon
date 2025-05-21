@@ -173,9 +173,6 @@ class KanjiNote(WaniNote, Slots):
     def set_meaning_hint(self, value: str) -> None: self.set_field(NoteFields.Kanji.Meaning_Info, value if value is not None else "")
     def set_reading_mnemonic(self, value: str) -> None: self.set_field(NoteFields.Kanji.Reading_Mnemonic, value)
     def set_reading_hint(self, value: str) -> None: self.set_field(NoteFields.Kanji.Reading_Info, value if value is not None else "")
-    def set_amalgamation_subject_ids(self, value: str) -> None: self.set_field(NoteFields.Kanji.amalgamation_subject_ids, value)
-    def set_component_subject_ids(self, value: str) -> None: self.set_field(NoteFields.Kanji.component_subject_ids, value)
-    def set_vocabs(self, value: str) -> None: self.set_field(NoteFields.Kanji.Vocabs, value)
     def get_primary_vocabs_or_defaults(self) -> list[str]: return self.get_primary_vocab() if self.get_primary_vocab() else self.generate_default_primary_vocab()
 
     def get_primary_vocab(self) -> list[str]: return ex_str.extract_comma_separated_values(self.get_field(NoteFields.Kanji.PrimaryVocab))
@@ -271,34 +268,16 @@ class KanjiNote(WaniNote, Slots):
         self.set_reading_on(", ".join(onyomi_readings))
         self.set_reading_kun(", ".join(kunyomi_readings))
 
-        amalgamation_subject_ids = [str(subject_id) for subject_id in wani_kanji.amalgamation_subject_ids]
-        self.set_amalgamation_subject_ids(", ".join(amalgamation_subject_ids))
 
         component_subject_ids = [str(subject_id) for subject_id in wani_kanji.component_subject_ids]
-        self.set_component_subject_ids(", ".join(component_subject_ids))
 
         client = WanikaniClient.get_instance()
         radicals = [client.get_radical_by_id(int(radical_id)) for radical_id in component_subject_ids]
         radicals_with_characters = [radical for radical in radicals if radical.characters is not None]
 
         radical_characters = [radical.characters for radical in radicals_with_characters]
-        self._set_radicals(", ".join(radical_characters))
-
-        vocabs = [client.get_vocab_by_id(int(kanji_id)) for kanji_id in amalgamation_subject_ids]
-        vocabs.sort(key=lambda voc: (voc.level, voc.lesson_position))
-        vocab_html = """
-<div class="vocabList">
-    <div>"""
-
-        for vocab in vocabs:
-            vocab_html += f"""
-        <div>{vocab.characters} ({vocab.readings[0].reading}) {vocab.meanings[0].meaning}</div>"""
-
-        vocab_html += """
-    </div>
-</div>
-"""
-        self.set_vocabs(vocab_html)
+        if self.get_radicals() == "": #Absolutely never overwrite any locally configured kanji with stuff from wani that has a completely different strategy for radicals
+            self._set_radicals(", ".join(radical_characters))
 
     def populate_radicals_from_mnemonic_tags(self) -> None:
         def detect_radicals_from_mnemonic() -> list[str]:

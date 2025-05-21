@@ -23,9 +23,6 @@ def create_kanji() -> NoteTypeEx:
                           NoteFieldEx(NoteFields.Kanji.Reading_Info),
                           NoteFieldEx(NoteFields.Kanji.PrimaryVocab),
                           NoteFieldEx(NoteFields.Kanji.Audio__),
-                          NoteFieldEx(NoteFields.Kanji.user_mnemonic),
-                          NoteFieldEx(NoteFields.Kanji.amalgamation_subject_ids),
-                          NoteFieldEx(NoteFields.Kanji.component_subject_ids),
-                          NoteFieldEx(NoteFields.Kanji.Vocabs),
-                          NoteFieldEx(NoteFields.Kanji.VocabsRaw)],
+                          NoteFieldEx(NoteFields.Kanji.user_mnemonic)
+                      ],
                       [NoteTemplateEx("reading")])

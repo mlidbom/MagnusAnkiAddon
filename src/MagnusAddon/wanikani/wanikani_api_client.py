@@ -88,10 +88,6 @@ class WanikaniClient(Slots):
         self._init()
         return self._radical_id_dictionary[radical_id]
 
-    def get_vocab_by_id(self, vocab_id: int) -> models.Vocabulary:
-        self._init()
-        return self._vocab_id_dictionary[vocab_id]
-
     def get_vocab(self, vocab_name: str) -> models.Vocabulary:
         self._init()
         return self._vocab_dictionary[vocab_name]

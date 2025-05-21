@@ -87,12 +87,6 @@ class NoteFields(Slots):
         user_similar_meaning = "__similar_meaning"
         related_confused_with = "__confused_with"
 
-        amalgamation_subject_ids = "amalgamation_subject_ids"
-        component_subject_ids = "component_subject_ids"
-
-        Vocabs = "Vocabs"
-        VocabsRaw = "VocabsRaw"
-
     class Vocab(Slots):
         matching_rules = "__matching_rules"
         related_vocab = "__related_vocab"
@@ -111,7 +105,6 @@ class NoteFields(Slots):
         Audio_b = "Audio_b"
         Audio_g = "Audio_g"
         Audio_TTS = "Audio_TTS"
-        sort_id = "sort_id"
 
         Related_similar_meaning = "__similar_meaning"
         Related_derived_from = "__derivedFrom"
