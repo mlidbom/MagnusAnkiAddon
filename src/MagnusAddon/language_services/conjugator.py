@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+import mylog
+
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
 
@@ -61,35 +63,41 @@ def _is_aru_verb(word: str) -> bool:
     return any(aru_ending for aru_ending in _aru_verbs if word.endswith(aru_ending))
 
 def get_word_stems(word: str, is_ichidan_verb: bool = False, is_godan: bool = False) -> list[str]:
-    if _is_aru_verb(word):
-        return [word[:-2] + end for end in _aru_mappings[word[-2:]]]
-    if is_ichidan_verb:
-        return [word[:-1] + end for end in _ichidan_endings]
-    if is_godan:
-        return [word[:-1] + end for end in _1_character_mappings[word[-1]]]
-    if word[-2:] in _2_character_mappings:
-        return [word[:-2] + end for end in _2_character_mappings[word[-2:]]]
-    if word[-1] in _1_character_mappings:
-        if word[-1] == "る":
-            return [word[:-1] + end for end in _godan_ru_or_ichidan_endings]
-        return [word[:-1] + end for end in _1_character_mappings[word[-1]]]
+    try:
+        if _is_aru_verb(word):
+            return [word[:-2] + end for end in _aru_mappings[word[-2:]]]
+        if is_ichidan_verb:
+            return [word[:-1] + end for end in _ichidan_endings]
+        if is_godan:
+            return [word[:-1] + end for end in _1_character_mappings[word[-1]]]
+        if word[-2:] in _2_character_mappings:
+            return [word[:-2] + end for end in _2_character_mappings[word[-2:]]]
+        if word[-1] in _1_character_mappings:
+            if word[-1] == "る":
+                return [word[:-1] + end for end in _godan_ru_or_ichidan_endings]
+            return [word[:-1] + end for end in _1_character_mappings[word[-1]]]
+    except KeyError:
+        mylog.warning(f"get_word_stems failed to handle {word}, returning empty list ")
     return [word]
 
 def _get_stem(word: str, stem_index: int, is_ichidan_verb: bool = False, is_godan: bool = False) -> str:
-    if _is_aru_verb(word):
-        return word[:-2] + _aru_mappings[word[-2:]][stem_index]
-    if is_ichidan_verb:
-        return word[:-1]
-    if is_godan:
-        return word[:-1] + _1_character_mappings[word[-1]][stem_index]
-    if word[-2:] == "ます":
-        return word[:-2] + _masu_forms_by_index[stem_index]
-    if word[-2:] in _2_character_mappings:
-        return word[:-2] + _2_character_mappings[word[-2:]][stem_index]
-    if word[-1] in _1_character_mappings:
-        if word[-1] != "る":
+    try:
+        if _is_aru_verb(word):
+            return word[:-2] + _aru_mappings[word[-2:]][stem_index]
+        if is_ichidan_verb:
+            return word[:-1]
+        if is_godan:
             return word[:-1] + _1_character_mappings[word[-1]][stem_index]
-        return word[:-1] + _1_character_mappings[word[-1]][stem_index]
+        if word[-2:] == "ます":
+            return word[:-2] + _masu_forms_by_index[stem_index]
+        if word[-2:] in _2_character_mappings:
+            return word[:-2] + _2_character_mappings[word[-2:]][stem_index]
+        if word[-1] in _1_character_mappings:
+            if word[-1] != "る":
+                return word[:-1] + _1_character_mappings[word[-1]][stem_index]
+            return word[:-1] + _1_character_mappings[word[-1]][stem_index]
+    except KeyError:
+        mylog.warning(f"_get_stem failed to handle {word}, returning empty list ")
     return word
 
 def get_i_stem(word: str, is_ichidan: bool = False, is_godan: bool = False) -> str:
