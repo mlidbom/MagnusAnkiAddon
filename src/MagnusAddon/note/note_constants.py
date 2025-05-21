@@ -30,7 +30,6 @@ class SentenceNoteFields(Slots):
     source_question = "source_question"
     source_comments = "Comments"
     user_comments = "__comments"
-    user_comments_long = "__comments_Long"
     user_question = "__question"
     user_answer_analysis = "__answer_analysis"
     active_answer = MyNoteFields.answer

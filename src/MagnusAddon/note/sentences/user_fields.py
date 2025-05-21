@@ -16,7 +16,6 @@ class SentenceUserFields(Slots):
         self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
         self._sentence: WeakRef[SentenceNote] = sentence
         self.comments: StripHtmlOnReadStringField = StripHtmlOnReadStringField(sentence, SentenceNoteFields.user_comments)
-        self.comments_long: StripHtmlOnReadStringField = StripHtmlOnReadStringField(sentence, SentenceNoteFields.user_comments_long)
         self.question: StripHtmlOnReadStringField = StripHtmlOnReadStringField(sentence, SentenceNoteFields.user_question)
         self.answer: StripHtmlOnReadStringField = StripHtmlOnReadStringField(sentence, SentenceNoteFields.user_answer)
         self.answer_analysis: StripHtmlOnReadStringField = StripHtmlOnReadStringField(sentence, SentenceNoteFields.user_answer_analysis)
