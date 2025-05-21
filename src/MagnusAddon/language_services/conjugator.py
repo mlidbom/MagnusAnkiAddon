@@ -5,11 +5,6 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
 
-_i_stem_index = 0
-_a_stem_index = 1
-_e_stem_index = 2
-_te_stem_index = 3
-
 _ichidan_endings = ["", "ろ", "な"]
 
 _godan_ru_endings = ["り", "ら", "れ", "っ"]
@@ -29,6 +24,10 @@ a_stem_characters: set[str] = a_stem_hiragana | a_stem_katakana
 # o_row_katakana: set[str] = {"オ", "コ", "ゴ", "ソ", "ト", "ノ", "ボ", "モ", "ロ"}
 # passive_form_stem_characters: set[str] = a_stem_characters - {"な", "ナ"} # in practice な only brings false positives when searching for passive since passive ぬ verb usages are non-existent
 
+_i_stem_index = 0
+_a_stem_index = 1
+_e_stem_index = 2
+_te_stem_index = 3
 _1_character_mappings: dict[str, list[str]] = {"う": ["い", "わ", "え", "っ"],
                                                "く": ["き", "か", "け", "い"],
                                                "ぐ": ["ぎ", "が", "げ", "い"],
