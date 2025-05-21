@@ -5,7 +5,7 @@ from urllib import parse
 
 from aqt.utils import openLink
 from sysutils.typed import non_optional
-from ui.qt_menu import shortcutfinger
+from ui.menus.menu_utils import shortcutfinger
 
 if TYPE_CHECKING:
     from collections.abc import Callable

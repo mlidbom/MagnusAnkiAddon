@@ -17,7 +17,7 @@ ui.timing_hacks.init()
 ui.browser_right_click_menu.init()
 ui.editor_buttons.init()
 ui.tools_menu.init()
-ui.qt_menu.right_click_menu.init()
+ui.menus.right_click_menu.init()
 
 ui.note_content_building.ud_sentence_breakdown.init() #needs to be before vocab_and_sentence_kanji_list
 ui.note_content_building.vocab_and_sentence_kanji_list.init()

@@ -4,9 +4,9 @@ from typing import TYPE_CHECKING
 
 from ankiutils import app
 from sysutils.typed import non_optional
-from ui.qt_menu import shortcutfinger
-from ui.qt_menu.right_click_menu_note_vocab_common import build_create_prefix_postfix_note_menu
-from ui.qt_menu.right_click_menu_utils import create_vocab_note_action
+from ui.menus.menu_utils import shortcutfinger
+from ui.menus.menu_utils.ex_qmenu import create_vocab_note_action
+from ui.menus.vocab_menu.common import build_create_prefix_postfix_note_menu
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote

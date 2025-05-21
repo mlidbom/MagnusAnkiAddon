@@ -2,11 +2,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ankiutils import app, query_builder
-from sysutils import ex_lambda, ex_str, kana_utils
+from sysutils import ex_lambda, kana_utils
 from sysutils.typed import non_optional
-from ui.qt_menu import shortcutfinger
-from ui.qt_menu.right_click_menu_utils import add_lookup_action, add_ui_action
+from ui.menus.menu_utils import shortcutfinger
+from ui.menus.menu_utils.ex_qmenu import add_ui_action
 
 if TYPE_CHECKING:
     import collections.abc
@@ -14,24 +13,6 @@ if TYPE_CHECKING:
     from note.kanjinote import KanjiNote
     from PyQt6.QtWidgets import QMenu
 
-def build_note_menu(note_menu: QMenu, kanji: KanjiNote) -> None:
-    def build_lookup_menu(note_lookup_menu: QMenu) -> None:
-        add_lookup_action(note_lookup_menu, shortcutfinger.home1("Primary Vocabs"), query_builder.vocabs_lookup_strings(kanji.get_primary_vocab()))
-        add_lookup_action(note_lookup_menu, shortcutfinger.home2("Vocabs"), query_builder.vocab_with_kanji(kanji))
-        add_lookup_action(note_lookup_menu, shortcutfinger.home3("Radicals"), query_builder.notes_lookup(kanji.get_radicals_notes()))
-        add_lookup_action(note_lookup_menu, shortcutfinger.home4("Kanji"), query_builder.notes_lookup(app.col().kanji.with_radical(kanji.get_question())))
-        add_lookup_action(note_lookup_menu, shortcutfinger.home5("Sentences"), query_builder.sentence_search(kanji.get_question(), exact=True))
-
-    build_lookup_menu(non_optional(note_menu.addMenu(shortcutfinger.home1("Open"))))
-
-    add_ui_action(note_menu, shortcutfinger.home5("Reset Primary Vocabs"), lambda: kanji.set_primary_vocab([]))
-
-    if not kanji.get_user_answer():
-        add_ui_action(note_menu, shortcutfinger.up1("Accept meaning"), lambda: kanji.set_user_answer(format_kanji_meaning(kanji.get_answer())))
-
-    add_ui_action(note_menu, shortcutfinger.up2("Populate radicals from mnemonic tags"), lambda: kanji.populate_radicals_from_mnemonic_tags())
-    add_ui_action(note_menu, shortcutfinger.up3("Bootstrap mnemonic from radicals"), lambda: kanji.bootstrap_mnemonic_from_radicals())
-    add_ui_action(note_menu, shortcutfinger.up4("Reset mnemonic"), lambda: kanji.set_user_mnemonic(""))
 
 def build_string_menu(string_menu: QMenu, kanji: KanjiNote, menu_string: str) -> None:
     def build_highlighted_vocab_menu(highlighted_vocab_menu: QMenu, _vocab_to_add: str) -> None:
@@ -63,16 +44,3 @@ def build_string_menu(string_menu: QMenu, kanji: KanjiNote, menu_string: str) ->
     build_highlighted_vocab_menu(non_optional(string_menu.addMenu(shortcutfinger.home1("Highlighted Vocab"))), menu_string)
     build_add_menu(non_optional(string_menu.addMenu(shortcutfinger.home2("Add"))))
     add_primary_readings_actions(string_menu, shortcutfinger.home3, menu_string)
-
-def format_kanji_meaning(meaning: str) -> str:
-    val = (ex_str.replace_html_and_bracket_markup_with(meaning, "|")
-           .lower()
-           .replace("||", "|")
-           .replace("||", "|")
-           .replace("||", "|")
-           .replace(", ", "|")
-           .replace(" ", "-")
-           .replace("-|-", " | "))
-
-    val = val.removesuffix("|")
-    return val.removeprefix("|")

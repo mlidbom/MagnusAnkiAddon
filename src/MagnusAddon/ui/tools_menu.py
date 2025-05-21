@@ -12,9 +12,9 @@ from PyQt6.QtGui import QAction
 from PyQt6.QtWidgets import QInputDialog, QLineEdit, QMenu
 from sysutils import object_instance_tracker
 from sysutils.typed import non_optional
-from ui.qt_menu import shortcutfinger
-from ui.qt_menu.right_click_menu_open_in_anki import build_open_in_anki_menu
-from ui.qt_menu.right_click_menu_web_search import build_web_search_menu
+from ui.menus.menu_utils import shortcutfinger
+from ui.menus.open_in_anki import build_open_in_anki_menu
+from ui.menus.web_search import build_web_search_menu
 from wanikani import note_importer
 from wanikani.wani_downloader import WaniDownloader
 

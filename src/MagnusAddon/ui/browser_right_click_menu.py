@@ -12,7 +12,8 @@ from note.vocabulary import vocabnote_context_sentences
 from note.vocabulary.vocabnote import VocabNote
 from sysutils import ex_lambda
 from sysutils.typed import non_optional
-from ui.qt_menu import right_click_menu, shortcutfinger
+from ui.menus import right_click_menu
+from ui.menus.menu_utils import shortcutfinger
 
 if TYPE_CHECKING:
     from collections.abc import Sequence

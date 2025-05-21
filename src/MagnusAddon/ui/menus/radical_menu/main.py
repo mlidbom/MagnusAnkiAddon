@@ -4,8 +4,8 @@ from typing import TYPE_CHECKING
 
 from ankiutils import query_builder
 from sysutils.typed import non_optional
-from ui.qt_menu import shortcutfinger
-from ui.qt_menu.right_click_menu_utils import add_lookup_action
+from ui.menus.menu_utils import shortcutfinger
+from ui.menus.menu_utils.ex_qmenu import add_lookup_action
 
 if TYPE_CHECKING:
     from note.radicalnote import RadicalNote

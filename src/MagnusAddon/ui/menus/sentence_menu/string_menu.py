@@ -5,8 +5,8 @@ from typing import TYPE_CHECKING
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from sysutils import ex_lambda
 from sysutils.typed import non_optional
-from ui.qt_menu import shortcutfinger
-from ui.qt_menu.right_click_menu_utils import add_ui_action
+from ui.menus.menu_utils import shortcutfinger
+from ui.menus.menu_utils.ex_qmenu import add_ui_action
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.candidate_form import CandidateForm

@@ -3,8 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from sysutils.typed import non_optional
-from ui.qt_menu import shortcutfinger
-from ui.qt_menu.right_click_menu_utils import create_vocab_note_action
+from ui.menus.menu_utils import shortcutfinger
+from ui.menus.menu_utils.ex_qmenu import create_vocab_note_action
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote

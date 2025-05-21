@@ -3,8 +3,6 @@ from __future__ import annotations
 import typing
 
 import pyperclip
-import ui.qt_menu.right_click_menu_note_sentence_string_menu
-import ui.qt_menu.right_click_menu_note_vocab_string_menu
 from ankiutils import app, query_builder, search_executor, ui_utils
 from aqt import gui_hooks
 from batches import local_note_updater
@@ -16,10 +14,11 @@ from note.vocabulary.vocabnote import VocabNote
 from qt_utils.ex_qmenu import ExQmenu
 from sysutils import ex_lambda, typed
 from sysutils.typed import non_optional
-from ui.qt_menu import right_click_menu_note_kanji, right_click_menu_note_radical, right_click_menu_note_sentence, right_click_menu_note_vocab_main, shortcutfinger
-from ui.qt_menu.right_click_menu_open_in_anki import build_open_in_anki_menu
-from ui.qt_menu.right_click_menu_utils import add_ui_action, create_note_action, create_vocab_note_action
-from ui.qt_menu.right_click_menu_web_search import build_web_search_menu
+from ui.menus import kanji_menu, radical_menu, sentence_menu, vocab_menu
+from ui.menus.menu_utils import shortcutfinger
+from ui.menus.menu_utils.ex_qmenu import add_ui_action, create_note_action, create_vocab_note_action
+from ui.menus.open_in_anki import build_open_in_anki_menu
+from ui.menus.web_search import build_web_search_menu
 
 if typing.TYPE_CHECKING:
     from aqt.webview import AnkiWebView
@@ -48,16 +47,16 @@ def build_right_click_menu(right_click_menu: QMenu, note: JPNote | None, selecti
 
     if note:
         if isinstance(note, RadicalNote):
-            right_click_menu_note_radical.setup_note_menu(non_optional(right_click_menu.addMenu(shortcutfinger.home3("Radical note actions"))), note)
+            radical_menu.main.setup_note_menu(non_optional(right_click_menu.addMenu(shortcutfinger.home3("Radical note actions"))), note)
         elif isinstance(note, KanjiNote):
-            right_click_menu_note_kanji.build_note_menu(non_optional(right_click_menu.addMenu(shortcutfinger.home3("Kanji note actions"))), note)
-            string_note_menu_factory = lambda menu, string: right_click_menu_note_kanji.build_string_menu(menu, typed.checked_cast(KanjiNote, note), string)  # noqa: E731
+            kanji_menu.main.build_note_menu(non_optional(right_click_menu.addMenu(shortcutfinger.home3("Kanji note actions"))), note)
+            string_note_menu_factory = lambda menu, string: kanji_menu.string_menu.build_string_menu(menu, typed.checked_cast(KanjiNote, note), string)  # noqa: E731
         elif isinstance(note, VocabNote):
-            right_click_menu_note_vocab_main.setup_note_menu(non_optional(right_click_menu.addMenu(shortcutfinger.home3("Vocab note actions"))), note, selection, clipboard)
-            string_note_menu_factory = lambda menu, string: ui.qt_menu.right_click_menu_note_vocab_string_menu.build_string_menu(menu, typed.checked_cast(VocabNote, note), string)  # noqa: E731
+            vocab_menu.main.setup_note_menu(non_optional(right_click_menu.addMenu(shortcutfinger.home3("Vocab note actions"))), note, selection, clipboard)
+            string_note_menu_factory = lambda menu, string: vocab_menu.right_click_menu_note_vocab_string_menu.build_string_menu(menu, typed.checked_cast(VocabNote, note), string)  # noqa: E731
         elif isinstance(note, SentenceNote):
-            right_click_menu_note_sentence.build_note_menu(non_optional(right_click_menu.addMenu(shortcutfinger.home3("Sentence note actions"))), note)
-            string_note_menu_factory = lambda menu, string: ui.qt_menu.right_click_menu_note_sentence_string_menu.build_string_menu(menu, typed.checked_cast(SentenceNote, note), string)  # noqa: E731
+            sentence_menu.main.build_note_menu(non_optional(right_click_menu.addMenu(shortcutfinger.home3("Sentence note actions"))), note)
+            string_note_menu_factory = lambda menu, string: sentence_menu.right_click_menu_note_sentence_string_menu.build_string_menu(menu, typed.checked_cast(SentenceNote, note), string)  # noqa: E731
 
         build_universal_note_actions_menu(non_optional(right_click_menu.addMenu(shortcutfinger.home4("Universal note actions"))), note)
 
