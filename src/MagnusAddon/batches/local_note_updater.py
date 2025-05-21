@@ -56,6 +56,14 @@ def convert_immersion_kit_sentences() -> None:
 def tag_note_metadata() -> None:
     tag_kanji_metadata()
     tag_vocab_metadata()
+    tag_sentence_metadata()
+
+def tag_sentence_metadata() -> None:
+    def tag_sentence(sentence: SentenceNote) -> None:
+        sentence.toggle_tag(Tags.Sentence.Uses.incorrect_matches, any(sentence.configuration.incorrect_matches.get()))
+        sentence.toggle_tag(Tags.Sentence.Uses.hidden_matches, any(sentence.configuration.hidden_matches.get()))
+
+    progress_display_runner.process_with_progress(app.col().sentences.all(), tag_sentence, "Tag sentence notes")
 
 def tag_vocab_metadata() -> None:
     def tag_note(vocab: VocabNote) -> None:
