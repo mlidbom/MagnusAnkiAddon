@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
-from note.note_constants import Mine, NoteFields
+from note.note_constants import NoteFields, Tags
 from note.notefields.comma_separated_strings_set_field import CommaSeparatedStringsSetField
 
 if TYPE_CHECKING:
@@ -36,7 +36,7 @@ class VocabNotePartsOfSpeech(Slots):
     def is_suru_verb_included(self) -> bool:
         return self._vocab.question.without_noise_characters()[-2:] == "する"
 
-    def is_uk(self) -> bool: return self._vocab.has_tag(Mine.Tags.UsuallyKanaOnly)
+    def is_uk(self) -> bool: return self._vocab.has_tag(Tags.UsuallyKanaOnly)
 
     _transitive_string_values = ["transitive", "transitive verb"]
     _intransitive_string_values = ["intransitive", "intransitive verb"]

@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
     from wanikani_api import models
 
-from note.note_constants import CardTypes, Mine, NoteFields, NoteTypes
+from note.note_constants import CardTypes, NoteFields, NoteTypes, Tags
 from note.waninote import WaniNote
 from sysutils import ex_sequence, ex_str, kana_utils
 from wanikani.wanikani_api_client import WanikaniClient
@@ -297,7 +297,7 @@ class KanjiNote(WaniNote, Slots):
     def create_from_wani_kanji(wani_kanji: models.Kanji) -> None:
         note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Kanji))
         note.add_tag("__imported")
-        note.add_tag(Mine.Tags.Wani)
+        note.add_tag(Tags.Wani)
         kanji_note = KanjiNote(note)
         app.anki_collection().addNote(note)
         kanji_note.set_question(wani_kanji.characters)

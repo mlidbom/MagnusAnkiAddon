@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
-from note.note_constants import Mine, NoteFields
+from note.note_constants import NoteFields, Tags
 from note.notefields.auto_save_wrappers.set_wrapper import FieldSetWrapper
 from note.notefields.json_object_field import JsonObjectField
 from note.notefields.tag_flag_field import TagFlagField
@@ -37,12 +37,12 @@ class VocabNoteMatching(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self._data: WeakRef[VocabNote] = vocab
         self._rules: Lazy[VocabNoteMatchingRules] = Lazy(lambda: VocabNoteMatchingRules(vocab))
-        self.requires_exact_match: TagFlagField = TagFlagField(vocab, Mine.Tags.vocab_matching_requires_exact_match)
-        self.question_overrides_form: TagFlagField = TagFlagField(vocab, Mine.Tags.question_overrides_form)
-        self.requires_a_stem: TagFlagField = TagFlagField(vocab, Mine.Tags.vocab_matching_requires_a_stem)
-        self.requires_e_stem: TagFlagField = TagFlagField(vocab, Mine.Tags.vocab_matching_requires_e_stem)
-        self.match_with_preceding_vowel: TagFlagField = TagFlagField(vocab, Mine.Tags.vocab_matching_todo_with_preceding_vowel)
-        self.is_strictly_suffix: TagFlagField = TagFlagField(vocab, Mine.Tags.vocab_matching_is_strictly_suffix)
+        self.requires_exact_match: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.requires_exact_match)
+        self.question_overrides_form: TagFlagField = TagFlagField(vocab, Tags.Vocab.question_overrides_form)
+        self.requires_a_stem: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.requires_a_stem)
+        self.requires_e_stem: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.requires_e_stem)
+        self.match_with_preceding_vowel: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.Todo.with_preceding_vowel)
+        self.is_strictly_suffix: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.is_strictly_suffix)
 
     @property
     def rules(self) -> VocabNoteMatchingRules:

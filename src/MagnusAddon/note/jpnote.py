@@ -8,7 +8,7 @@ from anki_extentions.notetype_ex.note_type_ex import NoteTypeEx
 from ankiutils import app
 from autoslot import Slots
 from note import noteutils
-from note.note_constants import CardTypes, Mine, MyNoteFields, NoteTypes
+from note.note_constants import CardTypes, MyNoteFields, NoteTypes, Tags
 from sysutils import ex_str, rassert
 from sysutils.object_instance_tracker import ObjectInstanceTracker
 from sysutils.typed import non_optional, str_
@@ -93,7 +93,7 @@ class JPNote(Slots):
         return self._get_dependencies_recursive(set())
 
     def get_id(self) -> NoteId: return self.backend_note.id
-    def is_wani_note(self) -> bool: return Mine.Tags.Wani in self.backend_note.tags
+    def is_wani_note(self) -> bool: return Tags.Wani in self.backend_note.tags
 
     def cards(self) -> list[CardEx]: return [CardEx(card) for card in self.backend_note.cards()]
     def has_suspended_cards(self) -> bool: return any(_card for _card in self.cards() if _card.is_suspended())
@@ -142,29 +142,29 @@ class JPNote(Slots):
 
     def priority_tag_value(self) -> int:
         for tag in self.backend_note.tags:
-            if tag.startswith(Mine.Tags.priority_folder):
+            if tag.startswith(Tags.priority_folder):
                 return int(ex_str.first_number(tag))
         return 0
 
     def get_meta_tags(self) -> set[str]:
         tags: set[str] = set()
         for tag in self.backend_note.tags:
-            if tag.startswith(Mine.Tags.priority_folder):
+            if tag.startswith(Tags.priority_folder):
                 if "high" in tag: tags.add("high_priority")
                 if "low" in tag: tags.add("low_priority")
 
         if self.is_studying(CardTypes.reading) or self.is_studying(CardTypes.listening): tags.add("is_studying")
         if self.is_studying(CardTypes.reading): tags.add("is_studying_reading")
         if self.is_studying(CardTypes.listening): tags.add("is_studying_listening")
-        if self.has_tag(Mine.Tags.TTSAudio): tags.add("tts_audio")
+        if self.has_tag(Tags.TTSAudio): tags.add("tts_audio")
 
         return tags
 
     def get_source_tag(self) -> str:
-        source_tags = [t for t in self.get_tags() if t.startswith(Mine.Tags.source_folder)]
+        source_tags = [t for t in self.get_tags() if t.startswith(Tags.source_folder)]
         if source_tags:
             source_tags = sorted(source_tags, key=lambda tag: len(tag))
-            return source_tags[0][len(Mine.Tags.source_folder):]
+            return source_tags[0][len(Tags.source_folder):]
         return ""
 
     def remove_tag(self, tag: str) -> None:

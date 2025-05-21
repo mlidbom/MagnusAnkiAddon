@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from ankiutils import app
 from aqt import gui_hooks
-from note.note_constants import Mine
+from note.note_constants import Tags
 from note.vocabulary.vocabnote import VocabNote
 from sysutils import ex_sequence, ex_str, kana_utils
 from sysutils.ex_str import newline
@@ -80,7 +80,7 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
         def prefer_studying_listening(_sentence: SentenceNote) -> int: return 0 if _sentence.is_studying_listening() else 1
         def dislike_secondary_form_with_vocab(_sentence: SentenceNote) -> int: return 1 if not contains_primary_form(_sentence) and contains_secondary_form_with_its_own_vocabulary_note(_sentence) else 0
         def prefer_primary_form(_sentence:SentenceNote) -> int: return 0 if contains_primary_form(_sentence) else 1
-        def dislike_tts_sentences(_sentence:SentenceNote) -> int: return 1 if _sentence.has_tag(Mine.Tags.TTSAudio) else 0
+        def dislike_tts_sentences(_sentence:SentenceNote) -> int: return 1 if _sentence.has_tag(Tags.TTSAudio) else 0
         def prefer_short_questions(_sentence:SentenceNote) -> int: return len(_sentence.get_question())
         def prefer_lower_priority_tag_values(_sentence: SentenceNote) -> int: return _sentence.priority_tag_value()
         def dislike_no_translation(_sentence: SentenceNote) -> int: return 1 if not _sentence.get_answer().strip() else 0

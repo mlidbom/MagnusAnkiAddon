@@ -7,7 +7,7 @@ from ankiutils import app
 from autoslot import Slots
 from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 from note.jpnote import JPNote
-from note.note_constants import ImmersionKitSentenceNoteFields, Mine, NoteFields, NoteTypes, SentenceNoteFields
+from note.note_constants import ImmersionKitSentenceNoteFields, NoteFields, NoteTypes, SentenceNoteFields, Tags
 from note.notefields.audio_field import WritableAudioField
 from note.notefields.json_object_field import JsonObjectField
 from note.notefields.sentence_question_field import SentenceQuestionField
@@ -110,7 +110,7 @@ class SentenceNote(JPNote, Slots):
         note.update_generated_data()
 
         if not audio.strip():
-            note.set_tag(Mine.Tags.TTSAudio)
+            note.set_tag(Tags.TTSAudio)
         else:
             audio1 = audio.strip()
             note.audio.set_raw_value(audio1)
@@ -132,7 +132,7 @@ class SentenceNote(JPNote, Slots):
                                    answer=immersion_kit_note[ImmersionKitSentenceNoteFields.answer],
                                    audio=immersion_kit_note[ImmersionKitSentenceNoteFields.audio],
                                    screenshot=immersion_kit_note[ImmersionKitSentenceNoteFields.screenshot],
-                                   tags={Mine.Tags.immersion_kit})
+                                   tags={Tags.immersion_kit})
 
         created.set_field(SentenceNoteFields.id, immersion_kit_note[ImmersionKitSentenceNoteFields.id])
         created.set_field(SentenceNoteFields.reading, immersion_kit_note[ImmersionKitSentenceNoteFields.reading])

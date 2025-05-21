@@ -5,7 +5,7 @@ import typing
 from anki.notes import Note
 from ankiutils import app
 from autoslot import Slots
-from note.note_constants import Mine, NoteFields, NoteTypes
+from note.note_constants import NoteFields, NoteTypes, Tags
 from note.notefields.comma_separated_strings_set_field import CommaSeparatedStringsSetField
 from note.notefields.string_field import StringField
 
@@ -18,7 +18,7 @@ def create_from_wani_vocabulary(wani_vocab: models.Vocabulary) -> None:
     from note.vocabulary.vocabnote import VocabNote
     note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Vocab))
     note.add_tag("__imported")
-    note.add_tag(Mine.Tags.Wani)
+    note.add_tag(Tags.Wani)
     vocab_note = VocabNote(note)
     app.anki_collection().addNote(note)
     vocab_note.question.set(wani_vocab.characters)

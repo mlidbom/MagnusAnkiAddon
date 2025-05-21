@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from ankiutils import app
 from autoslot import Slots
-from note.note_constants import Mine
+from note.note_constants import Tags
 from sysutils import ex_sequence
 from sysutils.object_instance_tracker import ObjectInstanceTracker
 from sysutils.weak_ref import WeakRef
@@ -87,4 +87,4 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.sur
 
     def is_inflecting_word(self) -> bool:
         vocab = app.col().vocab.with_form(self.base)
-        return any(voc for voc in vocab if voc.has_tag(Mine.Tags.vocab_matching_is_inflecting_word))
+        return any(voc for voc in vocab if voc.has_tag(Tags.Vocab.Matching.is_inflecting_word))

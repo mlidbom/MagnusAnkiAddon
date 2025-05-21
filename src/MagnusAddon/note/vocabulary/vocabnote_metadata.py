@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from autoslot import Slots
 from language_services.jamdict_ex.priority_spec import PrioritySpec
-from note.note_constants import Mine, NoteFields
+from note.note_constants import NoteFields, Tags
 from note.notefields.integer_field import IntegerField
 from note.vocabulary import vocabnote_meta_tag
 
@@ -17,10 +17,10 @@ class VocabNoteMetaDataFlags(Slots):
         self._vocab: WeakRef[VocabNote] = vocab
 
     def question_overrides_form(self) -> bool:
-        return self._vocab().has_tag(Mine.Tags.question_overrides_form)
+        return self._vocab().has_tag(Tags.Vocab.question_overrides_form)
 
     def requires_exact_match(self) -> bool:
-        return self._vocab().has_tag(Mine.Tags.vocab_matching_requires_exact_match)
+        return self._vocab().has_tag(Tags.Vocab.Matching.requires_exact_match)
 
 class VocabNoteMetaData(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:

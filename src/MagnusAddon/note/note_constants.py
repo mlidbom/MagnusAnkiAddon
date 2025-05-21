@@ -112,65 +112,80 @@ class NoteFields(Slots):
 
         component_subject_ids = "component_subject_ids"
 
+f_root = "-::"
+f_sentence = f"{f_root}sentence::"
+f_kanji = f"{f_root}kanji::"
+f_sentence_uses = f"{f_sentence}uses::"
+f_vocab = f"{f_root}vocab::"
+f_vocab_matching = f"{f_vocab}matching::"
+f_vocab_matching_todo = f"{f_vocab_matching}todo::"
+f_vocab_matching_uses = f"{f_vocab_matching}uses::"
+
+class Tags(Slots):
+    class Sentence:
+        class Uses:
+            incorrect_matches = f"{f_sentence_uses}incorrect-matches"
+            hidden_matches = f"{f_sentence_uses}hidden-matches"
+
+    class Kanji:
+        is_radical = f"{f_kanji}is-radical"
+        is_radical_purely = f"{f_kanji}is-radical-purely"
+        is_radical_silent = f"{f_kanji}is-radical-silent"
+        in_vocab_main_form = f"{f_kanji}in-vocab-main-form"
+        in_any_vocab_form = f"{f_kanji}in-any-vocab-form"
+
+        with_single_kanji_vocab = f"{f_kanji}single-kanji-vocab"
+        with_single_kanji_vocab_with_different_reading = f"{f_kanji}single-kanji-vocab-with-different-reading"
+        with_studying_single_kanji_vocab_with_different_reading = f"{f_kanji}studying-single-kanji-vocab-with-different-reading"
+        with_no_primary_on_readings = f"{f_kanji}no-primary-on-readings"
+        with_no_primary_readings = f"{f_kanji}no-primary-readings"
+        with_studying_vocab = f"{f_kanji}studying-vocab"
+        with_vocab_with_primary_on_reading = f"{f_kanji}has-vocab-with-primary-on-reading"
+        with_studying_vocab_with_primary_on_reading = f"{f_kanji}studying-vocab-with-primary-on-reading"
+
+        has_studying_vocab_with_no_matching_primary_reading = f"{f_kanji}has-studying-vocab-with-no-matching-primary-reading"
+        has_studying_vocab_for_each_primary_reading = f"{f_kanji}has-studying-vocab-for-each-primary-reading"
+        has_primary_reading_with_no_studying_vocab = f"{f_kanji}has-primary-reading-with-no-studying-vocab"
+        has_non_primary_on_reading_vocab = f"{f_kanji}has-non-primary-on-reading-vocab"
+        has_non_primary_on_reading_vocab_with_only_known_kanji = f"{f_kanji}has-non-primary-on-reading-vocab-with-only-known-kanji"
+
+    class Vocab:
+        has_no_studying_sentences = f"{f_vocab}has-no-studying-sentences"
+        question_overrides_form = f"{f_vocab}question-overrides-form"
+
+        class Matching:
+            is_inflecting_word = f"{f_vocab_matching}is-inflecting-word"
+            requires_a_stem = f"{f_vocab_matching}requires-a-stem"
+            requires_e_stem = f"{f_vocab_matching}requires-e-stem"
+            requires_exact_match = f"{f_vocab_matching}requires-exact-match"
+            is_strictly_suffix = f"{f_vocab_matching}is-strictly-suffix"
+
+            class Todo:
+                with_preceding_vowel = f"{f_vocab_matching_todo}match-with-preceding-vowel"
+
+            class Uses:
+                prefer_over_base = f"{f_vocab_matching_uses}prefer-over-base"
+                prefix_is_not = f"{f_vocab_matching_uses}prefix-is-not"
+                required_prefix = f"{f_vocab_matching_uses}required-prefix"
+                surface_is_not = f"{f_vocab_matching_uses}surface-is-not"
+
+    system_tags = {Vocab.Matching.is_inflecting_word}
+
+    priority_folder = f"{f_root}priority::"
+
+    source_folder = "source::"
+
+    Wani = f"{source_folder}wani"
+    wani_sentence_current = f"{Wani}::current"
+    wani_sentence_removed_on_wani = f"{Wani}::removed"
+
+    immersion_kit = f"{source_folder}immersion_kit"
+
+    DisableKanaOnly = "_disable_uk"
+    UsuallyKanaOnly = "_uk"
+    TTSAudio = "_tts_audio"
+
 class Mine(Slots):
     app_name = "JA-Studio"
     app_still_loading_message = f"{app_name} still loading....."
     VocabPrefixSuffixMarker = "〜"
-    class Tags(Slots):
-        base_folder = "-::"
-
-        kanji_folder = f"{base_folder}kanji::"
-        kanji_is_radical = f"{kanji_folder}is-radical"
-        kanji_is_radical_purely = f"{kanji_folder}is-radical-purely"
-        kanji_is_radical_silent = f"{kanji_folder}is-radical-silent"
-        kanji_with_single_kanji_vocab = f"{kanji_folder}single-kanji-vocab"
-        kanji_in_vocab_main_form = f"{kanji_folder}in-vocab-main-form"
-        kanji_in_any_vocab_form = f"{kanji_folder}in-any-vocab-form"
-        kanji_with_single_kanji_vocab_with_different_reading = f"{kanji_folder}single-kanji-vocab-with-different-reading"
-        kanji_with_studying_single_kanji_vocab_with_different_reading = f"{kanji_folder}studying-single-kanji-vocab-with-different-reading"
-        kanji_with_no_primary_on_readings = f"{kanji_folder}no-primary-on-readings"
-        kanji_with_no_primary_readings = f"{kanji_folder}no-primary-readings"
-        kanji_with_studying_vocab = f"{kanji_folder}studying-vocab"
-        kanji_with_vocab_with_primary_on_reading = f"{kanji_folder}has-vocab-with-primary-on-reading"
-        kanji_with_studying_vocab_with_primary_on_reading = f"{kanji_folder}studying-vocab-with-primary-on-reading"
-        kanji_has_studying_vocab_with_no_matching_primary_reading = f"{kanji_folder}has-studying-vocab-with-no-matching-primary-reading"
-        kanji_has_studying_vocab_for_each_primary_reading = f"{kanji_folder}has-studying-vocab-for-each-primary-reading"
-        kanji_has_primary_reading_with_no_studying_vocab = f"{kanji_folder}has-primary-reading-with-no-studying-vocab"
-        kanji_has_non_primary_on_reading_vocab = f"{kanji_folder}has-non-primary-on-reading-vocab"
-        kanji_has_non_primary_on_reading_vocab_with_only_known_kanji = f"{kanji_folder}has-non-primary-on-reading-vocab-with-only-known-kanji"
-
-        vocab_folder = f"{base_folder}vocab::"
-        vocab_has_no_studying_sentences = f"{vocab_folder}has-no-studying-sentences"
-        question_overrides_form = f"{vocab_folder}question-overrides-form"
-
-        vocab_matching_folder = f"{vocab_folder}matching::"
-        vocab_matching_is_inflecting_word = f"{vocab_matching_folder}is-inflecting-word"
-        vocab_matching_requires_a_stem = f"{vocab_matching_folder}requires-a-stem"
-        vocab_matching_requires_e_stem = f"{vocab_matching_folder}requires-e-stem"
-        vocab_matching_requires_exact_match = f"{vocab_matching_folder}requires-exact-match"
-        vocab_matching_is_strictly_suffix = f"{vocab_matching_folder}is-strictly-suffix"
-
-        vocab_matching_todo_folder = f"{vocab_matching_folder}todo::"
-        vocab_matching_todo_with_preceding_vowel = f"{vocab_matching_todo_folder}match-with-preceding-vowel"
-
-        vocab_matching_uses_folder = f"{vocab_matching_folder}uses::"
-        vocab_matching_uses_prefer_over_base = f"{vocab_matching_uses_folder}prefer-over-base"
-        vocab_matching_uses_prefix_is_not = f"{vocab_matching_uses_folder}prefix-is-not"
-        vocab_matching_uses_required_prefix = f"{vocab_matching_uses_folder}required-prefix"
-        vocab_matching_uses_surface_is_not = f"{vocab_matching_uses_folder}surface-is-not"
-
-        priority_folder = f"{base_folder}priority::"
-
-        source_folder = "source::"
-
-        Wani = f"{source_folder}wani"
-        wani_sentence_current = f"{Wani}::current"
-        wani_sentence_removed_on_wani = f"{Wani}::removed"
-
-        immersion_kit = f"{source_folder}immersion_kit"
-
-        DisableKanaOnly = "_disable_uk"
-        UsuallyKanaOnly = "_uk"
-        TTSAudio = "_tts_audio"
-
-        system_tags = {vocab_matching_is_inflecting_word}

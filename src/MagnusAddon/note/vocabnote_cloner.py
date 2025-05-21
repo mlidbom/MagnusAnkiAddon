@@ -6,7 +6,7 @@ from anki.notes import Note
 from ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules, app  # noqa
 from autoslot import Slots
 from language_services import conjugator
-from note.note_constants import Mine, NoteTypes
+from note.note_constants import NoteTypes, Tags
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
@@ -115,7 +115,7 @@ class VocabCloner(Slots):
         clone = self.clone()
         clone.question.set(form)
 
-        for tag in [tag for tag in self.note.get_tags() if tag in Mine.Tags.system_tags]:
+        for tag in [tag for tag in self.note.get_tags() if tag in Tags.system_tags]:
             clone.set_tag(tag)
 
         return clone
