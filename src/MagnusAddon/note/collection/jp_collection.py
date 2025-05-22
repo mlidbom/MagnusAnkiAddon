@@ -46,15 +46,18 @@ class JPCollection(Slots):
             app.get_ui_utils().tool_tip(f"{Mine.app_name} done loading in {str(stopwatch.elapsed_seconds())[0:4]} seconds.", milliseconds=6000)
 
             self._populate_additional_caches_on_background_thread()
+            self._is_running = True
 
     def _populate_additional_caches_on_background_thread(self) -> None:
         def populate_caches() -> None:
+            if not self._is_running: return
             from language_services.jamdict_ex.dict_lookup import DictLookup
             DictLookup.ensure_loaded_into_memory()
 
             with StopWatch.log_execution_time("Populating studying status cache"):
                 for notelist in [self.vocab.all(), self.kanji.all(), self.sentences.all()]:
                     for note in notelist:
+                        if not self._is_running: return
                         note.is_studying(CardTypes.reading)
                         note.is_studying(CardTypes.listening)
 
@@ -70,6 +73,7 @@ class JPCollection(Slots):
         return JPNote(note)
 
     def destruct_sync(self) -> None:
+        self._is_running = False
         self.cache_manager.destruct()
 
     def flush_cache_updates(self) -> None: self.cache_manager.flush_updates()
