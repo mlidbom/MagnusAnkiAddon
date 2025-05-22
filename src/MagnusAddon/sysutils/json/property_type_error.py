@@ -1,10 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TypeVar
 
-if TYPE_CHECKING:
-    from sysutils.json.ex_json import TProp
-
+TProp: TypeVar = TypeVar("TProp")
 
 class PropertyTypeError(TypeError):
     def __init__(self, prop: str, prop_type: type[TProp]) -> None:
