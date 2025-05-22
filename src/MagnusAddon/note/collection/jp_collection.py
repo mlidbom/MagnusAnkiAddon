@@ -45,21 +45,20 @@ class JPCollection(Slots):
             self.cache_manager.start()
             app.get_ui_utils().tool_tip(f"{Mine.app_name} done loading in {str(stopwatch.elapsed_seconds())[0:4]} seconds.", milliseconds=6000)
 
+            self._populate_additional_caches_on_background_thread()
 
-            self._cache_studying_status_on_background_thread()
+    def _populate_additional_caches_on_background_thread(self) -> None:
+        def populate_caches() -> None:
             from language_services.jamdict_ex.dict_lookup import DictLookup
-            app_thread_pool.pool.submit(DictLookup.ensure_loaded_into_memory)  # doesn't really belong here but it works to speed up loading for user experience
+            DictLookup.ensure_loaded_into_memory()
 
-
-    def _cache_studying_status_on_background_thread(self) -> None:
-        def cache_studying_status() -> None:
             with StopWatch.log_execution_time("Populating studying status cache"):
                 for notelist in [self.vocab.all(), self.kanji.all(), self.sentences.all()]:
                     for note in notelist:
                         note.is_studying(CardTypes.reading)
                         note.is_studying(CardTypes.listening)
 
-        app_thread_pool.pool.submit(cache_studying_status)
+        app_thread_pool.pool.submit(populate_caches)
 
     @classmethod
     def note_from_note_id(cls, note_id: NoteId) -> JPNote:
