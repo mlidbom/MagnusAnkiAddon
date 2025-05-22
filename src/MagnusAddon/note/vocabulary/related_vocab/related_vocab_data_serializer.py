@@ -23,7 +23,7 @@ class RelatedVocabDataSerializer(JsonObjectSerializer["RelatedVocabData"], Slots
                                 reader.string_set("synonyms"),
                                 reader.string_set("antonyms"),
                                 reader.string_set("confused_with"),
-                                reader.string_set("see_also", default=set())) #todo: remove default after repopulation
+                                reader.string_set("see_also"))
 
     def serialize(self, related_notes: RelatedVocabData) -> str:
         return ex_json.dict_to_json({"ergative_twin": related_notes.ergative_twin,

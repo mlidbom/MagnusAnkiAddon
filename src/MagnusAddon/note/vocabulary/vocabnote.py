@@ -69,6 +69,7 @@ class VocabNote(WaniNote, Slots):
         self.meta_data.sentence_count.set(len(self.sentences.all()))
         self.active_answer.set(self.get_answer())
         self.matching_rules.save()
+        self.related_notes.save()
 
         super().update_generated_data()
         vocabnote_generated_data.update_generated_data(self)
