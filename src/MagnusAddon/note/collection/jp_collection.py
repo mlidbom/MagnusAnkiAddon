@@ -36,14 +36,9 @@ class JPCollection(Slots):
                 self.anki_collection = anki_collection
                 self.cache_manager = CacheRunner(anki_collection)
 
-                from language_services.jamdict_ex.dict_lookup import DictLookup
-                dictlookup_loading: Future[None] = app_thread_pool.pool.submit(DictLookup.ensure_loaded_into_memory)  # doesn't really belong here but it works to speed up loading for user experience
-
                 self.vocab: VocabCollection = VocabCollection(anki_collection, self.cache_manager)
                 self.kanji: KanjiCollection = KanjiCollection(anki_collection, self.cache_manager)
                 self.sentences: SentenceCollection = SentenceCollection(anki_collection, self.cache_manager)
-
-                dictlookup_loading.result()
 
             if not app.is_testing():
                 self._instance_tracker.run_gc_and_assert_single_instance()
