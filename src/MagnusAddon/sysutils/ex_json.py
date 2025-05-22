@@ -7,8 +7,20 @@ from autoslot import Slots
 from sysutils import typed
 
 
+class JsonLibraryShim:
+    def loads(self, json_str: str) -> dict[str, Any]: raise NotImplementedError()
+    def dumps(self, object_dict: dict[str, Any], indent: int | None = None) -> str: raise NotImplementedError()
+
+class JsonLibraryShimBuiltInJson(JsonLibraryShim):
+    def loads(self, json_str: str) -> dict[str, Any]: return json.loads(json_str)
+    def dumps(self, object_dict: dict[str, Any], indent: int | None = None) -> str: return json.dumps(object_dict, indent=indent, ensure_ascii=False)
+
+
+_json_library_shim = JsonLibraryShimBuiltInJson()
+
+
 def dict_to_json(object_dict: dict[str, Any], indent: int | None = None) -> str:
-    return json.dumps(object_dict, ensure_ascii=False, indent=indent)
+    return _json_library_shim.dumps(object_dict, indent=indent)
 
 TProp: TypeVar = TypeVar("TProp")
 
@@ -63,4 +75,4 @@ class JsonReader(Slots):
 
     @classmethod
     def from_json(cls, json_str: str) -> JsonReader:
-        return cls(typed.checked_cast_generics(dict[str, Any], json.loads(json_str)))
+        return cls(typed.checked_cast_generics(dict[str, Any], _json_library_shim.loads(json_str)))

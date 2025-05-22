@@ -16,7 +16,6 @@ from sysutils.object_instance_tracker import ObjectInstanceTracker
 from sysutils.timeutil import StopWatch
 
 if TYPE_CHECKING:
-    from asyncio import Future
 
     from anki.collection import Collection
     from anki.notes import NoteId
