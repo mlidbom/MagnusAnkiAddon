@@ -66,6 +66,12 @@ def generate_antonyms_meaning_html_list(_vocab_note: VocabNote) -> str:
 
     return render_vocab_list(antonym_notes, "antonyms", css_class="similar") if antonym_notes else ""
 
+def generate_see_also_html_list(_vocab_note: VocabNote) -> str:
+    see_also = _vocab_note.related_notes.see_also.notes()
+    see_also = note.vocabulary.vocabnote_sorting.sort_vocab_list_by_studying_status(see_also)
+
+    return render_vocab_list(see_also, "see also", css_class="similar") if see_also else ""
+
 def generate_confused_with_html_list(_vocab_note: VocabNote) -> str:
     vocabs = list(_vocab_note.related_notes.confused_with.get())
     confused_with = app.col().vocab.with_any_form_in_prefer_exact_match(vocabs)
@@ -129,6 +135,7 @@ def init() -> None:
         "##DERIVED_FROM##": generate_derived_from,
         "##HOMOPHONES_LIST##": generate_homophones_html_list,
         "##SYNONYMS_LIST##": generate_synonyms_meaning_html_list,
+        "##SEE_ALSO_LIST##": generate_see_also_html_list,
         "##ANTONYMS_LIST##": generate_antonyms_meaning_html_list,
         "##CONFUSED_WITH_LIST##": generate_confused_with_html_list,
         "##VOCAB_META_TAGS_HTML##": generate_meta_tags,

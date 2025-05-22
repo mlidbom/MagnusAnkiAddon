@@ -11,6 +11,7 @@ from note.notefields.json_object_field import JsonObjectField
 from note.vocabulary.related_vocab.Antonyms import Antonyms
 from note.vocabulary.related_vocab.ergative_twin import ErgativeTwin
 from note.vocabulary.related_vocab.related_vocab_data import RelatedVocabData
+from note.vocabulary.related_vocab.SeeAlso import SeeAlso
 from note.vocabulary.related_vocab.Synonyms import Synonyms
 from sysutils import ex_sequence
 
@@ -28,6 +29,7 @@ class RelatedVocab(Slots):
         self.ergative_twin: ErgativeTwin = ErgativeTwin(vocab, self._data)
         self.synonyms: Synonyms = Synonyms(vocab, self._data)
         self.antonyms: Antonyms = Antonyms(vocab, self._data)
+        self.see_also: SeeAlso = SeeAlso(vocab, self._data)
         self.derived_from: FieldWrapper[str] = FieldWrapper(self._data, self._data.get().derived_from)
 
         self.confused_with: FieldSetWrapper[str] = FieldSetWrapper.for_json_object_field(self._data, self._data.get().confused_with)
