@@ -53,7 +53,7 @@ def build_right_click_menu(right_click_menu: QMenu, note: JPNote | None, selecti
             string_note_menu_factory = lambda menu, string: menus.notes.vocab.string_menu.build_string_menu(menu, typed.checked_cast(VocabNote, note), string)  # noqa: E731
         elif isinstance(note, SentenceNote):
             menus.notes.sentence.main.build_note_menu(non_optional(right_click_menu.addMenu(shortcutfinger.home3("Sentence note actions"))), note)
-            string_note_menu_factory = lambda menu, string: menus.notes.sentence.right_click_menu_note_sentence_string_menu.build_string_menu(menu, typed.checked_cast(SentenceNote, note), string)  # noqa: E731
+            string_note_menu_factory = lambda menu, string: menus.notes.sentence.string_menu.build_string_menu(menu, typed.checked_cast(SentenceNote, note), string)  # noqa: E731
 
         build_universal_note_actions_menu(non_optional(right_click_menu.addMenu(shortcutfinger.home4("Universal note actions"))), note)
 
