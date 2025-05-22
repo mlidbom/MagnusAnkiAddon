@@ -20,22 +20,23 @@ class CardHistoryNavigator:
         # Load history from file
         self._load_history_from_file()
 
-        gui_hooks.card_will_show.append(self.on_card_shown)  # Hook into card display
+        gui_hooks.card_will_show.append(self._on_card_shown)  # Hook into card display
 
         def bind_shortcuts(widget: QWidget) -> None:
-            self._reset_position()
+            self._set_current_position_to_end_of_history()
             # noinspection PyUnresolvedReferences
-            QShortcut(QKeySequence("Alt+Left"), widget).activated.connect(self.navigate_back)
+            QShortcut(QKeySequence("Alt+Left"), widget).activated.connect(self._navigate_back)
             # noinspection PyUnresolvedReferences
-            QShortcut(QKeySequence("Alt+Right"), widget).activated.connect(self.navigate_forward)
+            QShortcut(QKeySequence("Alt+Right"), widget).activated.connect(self._navigate_forward)
 
         bind_shortcuts(checked_cast(QWidget, mw))
         gui_hooks.previewer_did_init.append(bind_shortcuts)
         gui_hooks.browser_will_show.append(bind_shortcuts)
 
-        self.is_navigating: bool = False
+        self._is_navigating: bool = False
+        self._last_card_shown_was_navigated_card_id: CardId | None = None
 
-    def _reset_position(self) -> None:
+    def _set_current_position_to_end_of_history(self) -> None:
         self.current_position = len(self.card_history) - 1
 
     @staticmethod
@@ -56,45 +57,51 @@ class CardHistoryNavigator:
             with open(history_file_path) as history_file:
                 saved_history = typed.checked_cast_generics(list[int], json.load(history_file))
                 self.card_history = [CardId(card_id) for card_id in saved_history]
-                self._reset_position()
+                self._set_current_position_to_end_of_history()
 
-    def on_card_shown(self, html: str, card: Card, _: str) -> str:
-        if self.is_navigating:
-            self.is_navigating = False
+    def _on_card_shown(self, html: str, card: Card, _: str) -> str:
+        self._remove_from_history(card.id)
+        if self._is_navigating: # don't mess up the history when navigating the history. Navigating the history is a read-only operation
+            self._is_navigating = False
+            self._last_card_shown_was_navigated_card_id = card.id
             return html
 
-        if self.card_history and card.id == self.card_history[-1]: return html
-
-        if card.id in self.card_history:
-            self.card_history.remove(card.id)
+        # if we navigate away from a card shown while navigating the history, that was probably the card we were searching for and if we hit back after that, we want that card
+        if self._last_card_shown_was_navigated_card_id is not None:
+            self._remove_from_history(self._last_card_shown_was_navigated_card_id)
+            self.card_history.append(self._last_card_shown_was_navigated_card_id)
+            self._last_card_shown_was_navigated_card_id = None
 
         self.card_history.append(card.id)
-        self._reset_position()
+        self._set_current_position_to_end_of_history()
 
-        # Save history to file
         self._save_last_hundred_items_to_file()
-
         return html
 
-    def navigate_back(self) -> None:
-        if self.current_position <= 0:
+    def _remove_from_history(self, card_id: CardId) -> None:
+        if card_id in self.card_history: self.card_history.remove(card_id)  # no duplicates in the history please
+
+    def _navigate_back(self) -> None:
+        if self._is_at_start_of_history():
             return
 
         self.current_position -= 1
-        self.is_navigating = True
+        self._is_navigating = True
         self._show_card_by_id(self.card_history[self.current_position])
 
-    def navigate_forward(self) -> None:
-        if self.current_position >= len(self.card_history) - 1:
+    def _navigate_forward(self) -> None:
+        if self._is_at_end_of_history():
             return
 
         self.current_position += 1
-        self.is_navigating = True
+        self._is_navigating = True
         self._show_card_by_id(self.card_history[self.current_position])
 
+    def _is_at_end_of_history(self) -> bool: return self.current_position >= len(self.card_history) - 1
+    def _is_at_start_of_history(self) -> bool: return self.current_position <= 0
+
     @staticmethod
-    def _show_card_by_id(card_id: CardId) -> None:
-        search_executor.do_lookup(query_builder.open_card_by_id(card_id))
+    def _show_card_by_id(card_id: CardId) -> None: search_executor.do_lookup(query_builder.open_card_by_id(card_id))
 
 def init() -> None:
     CardHistoryNavigator()
