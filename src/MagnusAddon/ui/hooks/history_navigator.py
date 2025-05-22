@@ -60,12 +60,12 @@ class CardHistoryNavigator:
                 self._set_current_position_to_end_of_history()
 
     def _on_card_shown(self, html: str, card: Card, _: str) -> str:
-        self._remove_from_history(card.id)
         if self._is_navigating: # don't mess up the history when navigating the history. Navigating the history is a read-only operation
             self._is_navigating = False
             self._last_card_shown_was_navigated_card_id = card.id
             return html
 
+        self._remove_from_history(card.id) # no duplicates in the history please
         # if we navigate away from a card shown while navigating the history, that was probably the card we were searching for and if we hit back after that, we want that card
         if self._last_card_shown_was_navigated_card_id is not None:
             self._remove_from_history(self._last_card_shown_was_navigated_card_id)
