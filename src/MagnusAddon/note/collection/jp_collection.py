@@ -25,6 +25,7 @@ class JPCollection(Slots):
         self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker.tracker_for(self)
         mylog.info("JPCollection.__init__")
         app.get_ui_utils().tool_tip(f"{Mine.app_name} loading", 60000)
+        stopwatch = StopWatch()
         with StopWatch.log_warning_if_slower_than(5, "Full collection setup"):
             if not app.is_testing():
                 self._instance_tracker.run_gc_and_assert_single_instance()
@@ -42,7 +43,7 @@ class JPCollection(Slots):
                 self._instance_tracker.run_gc_and_assert_single_instance()
 
             self.cache_manager.start()
-            app.get_ui_utils().tool_tip(f"{Mine.app_name} done loading.", milliseconds=6000)
+            app.get_ui_utils().tool_tip(f"{Mine.app_name} done loading in {str(stopwatch.elapsed_seconds())[0:4]} seconds.", milliseconds=6000)
 
 
             self._cache_studying_status_on_background_thread()
