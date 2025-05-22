@@ -17,6 +17,9 @@ class CommaSeparatedStringsListField(Slots):
     def get(self) -> list[str]:
         return ex_str.extract_comma_separated_values(self._field.get())
 
+    def remove(self, remove: str) -> None:
+        self.set([item for item in self.get() if item != remove])
+
     def set(self, value: list[str]) -> None:
         self._field.set(", ".join(value))
 
@@ -25,3 +28,6 @@ class CommaSeparatedStringsListField(Slots):
 
     def set_raw_string_value(self, value:str) -> None:
         self._field.set(value)
+
+    def add(self, add: str) -> None:
+        self.set(self.get() + [add])

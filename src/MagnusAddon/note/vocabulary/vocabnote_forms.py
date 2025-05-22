@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from ankiutils.app import col
 from autoslot import Slots
 from note.note_constants import Mine, NoteFields
 from note.notefields.comma_separated_strings_list_field import CommaSeparatedStringsListField
@@ -31,3 +32,15 @@ class VocabNoteForms(Slots):
 
     def set_set(self, forms: set[str]) -> None: self.set_list(list(forms))
     def set_list(self, forms: list[str]) -> None: self._field.set(forms)
+
+    def remove(self, remove: str) -> None:
+        self._field.remove(remove)
+
+        for remove_note in [voc for voc in col().vocab.with_question(remove) if self._vocab().get_question() in voc.forms.all_set()]:
+            remove_note.forms.remove(self._vocab().get_question())
+
+    def add(self, add: str) -> None:
+        self._field.add(add)
+
+        for add_note in [voc for voc in col().vocab.with_question(add) if self._vocab().get_question() not in voc.forms.all_set()]:
+            add_note.forms.add(self._vocab().get_question())

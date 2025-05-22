@@ -44,6 +44,7 @@ def build_string_menu(string_menu: QMenu, vocab: VocabNote, menu_string: str) ->
         add_ui_action(vocab_add_menu, shortcutfinger.home3("Confused with"), lambda: vocab.related_notes.confused_with.add(menu_string), menu_string not in vocab.related_notes.confused_with.get())
         add_ui_action(vocab_add_menu, shortcutfinger.home4("Antonym"), lambda: vocab.related_notes.antonyms.add(menu_string), menu_string not in vocab.related_notes.antonyms.strings())
         build_add_rule_menu(non_optional(vocab_add_menu.addMenu(shortcutfinger.home5("Rule"))))
+        add_ui_action(vocab_add_menu, shortcutfinger.up1("Form"), lambda: vocab.forms.add(menu_string), menu_string not in vocab.forms.all_set())
 
     def build_remove_menu(vocab_remove_menu: QMenu) -> None:
         def build_remove_rule_menu(remove_rule_menu: QMenu) -> None:
@@ -57,6 +58,7 @@ def build_string_menu(string_menu: QMenu, vocab: VocabNote, menu_string: str) ->
         add_ui_action(vocab_remove_menu, shortcutfinger.home3("Antonym"), lambda: vocab.related_notes.antonyms.remove(menu_string), menu_string in vocab.related_notes.antonyms.strings())
         add_ui_action(vocab_remove_menu, shortcutfinger.home4("Ergative twin"), lambda: vocab.related_notes.ergative_twin.remove(), menu_string == vocab.related_notes.ergative_twin.get())
         build_remove_rule_menu(non_optional(vocab_remove_menu.addMenu(shortcutfinger.home5("Rule"))))
+        add_ui_action(vocab_remove_menu, shortcutfinger.up1("Form"), lambda: vocab.forms.remove(menu_string), menu_string in vocab.forms.all_set())
         add_ui_action(vocab_remove_menu, shortcutfinger.down1("Derived from"), lambda: vocab.related_notes.derived_from.clear(), menu_string == vocab.related_notes.derived_from.get())
 
     def build_set_menu(note_set_menu: QMenu) -> None:

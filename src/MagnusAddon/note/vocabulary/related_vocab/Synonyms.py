@@ -18,17 +18,22 @@ class Synonyms(Slots):
 
     def strings(self) -> set[str]: return self._data.get().synonyms
 
+    def _save(self) -> None:
+        self.strings().discard(self._vocab().get_question())#todo: this is cleanup after a bug. Remove soon
+        self._data.save()
+
     def notes(self) -> list[VocabNote]:
         return col().vocab.with_any_form_in_prefer_exact_match(list(self.strings()))
 
     def add(self, synonym: str) -> None:
+        if synonym == self._vocab().get_question(): return
         self.strings().add(synonym)
 
         for similar in col().vocab.with_question(synonym):
             if self._vocab().get_question() not in similar.related_notes.synonyms.strings():
                 similar.related_notes.synonyms.add(self._vocab().get_question())
 
-        self._data.save()
+        self._save()
 
     def add_transitively_one_level(self, synonym: str) -> None:
         synonym_notes = col().vocab.with_any_form_in_prefer_exact_match([synonym])
@@ -46,4 +51,4 @@ class Synonyms(Slots):
             if self._vocab().get_question() in similar.related_notes.synonyms.strings():
                 similar.related_notes.synonyms.remove(self._vocab().get_question())
 
-        self._data.save()
+        self._save()
