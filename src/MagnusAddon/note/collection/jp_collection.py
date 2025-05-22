@@ -45,6 +45,8 @@ class JPCollection(Slots):
 
             self.cache_manager.start()
             app.get_ui_utils().tool_tip(f"{Mine.app_name} done loading.", milliseconds=6000)
+            from language_services.jamdict_ex.dict_lookup import DictLookup
+            app_thread_pool.pool.submit(DictLookup.ensure_loaded_into_memory)  # doesn't really belong here but it works to speed up loading for user experience
 
     @classmethod
     def note_from_note_id(cls, note_id: NoteId) -> JPNote:
