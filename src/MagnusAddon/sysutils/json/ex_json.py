@@ -2,11 +2,13 @@ from __future__ import annotations
 
 from typing import Any
 
-from sysutils.json.json_library_shim_orjson import JsonLibraryShimOrjson
+from sysutils.json.json_library_shim_builtin import JsonLibraryShimBuiltInJson
 
-#_json_library_shim = JsonLibraryShimBuiltInJson()
+#from sysutils.json.json_library_shim_orjson import JsonLibraryShimOrjson
+
+_json_library_shim = JsonLibraryShimBuiltInJson()
 # To use orjson instead, uncomment the following line:
-_json_library_shim = JsonLibraryShimOrjson()
+#_json_library_shim = JsonLibraryShimOrjson()
 
 
 def dict_to_json(object_dict: dict[str, Any], indent: int | None = None) -> str:
