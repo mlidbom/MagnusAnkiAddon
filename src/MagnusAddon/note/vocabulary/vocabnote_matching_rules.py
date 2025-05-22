@@ -8,6 +8,7 @@ from note.notefields.auto_save_wrappers.set_wrapper import FieldSetWrapper
 from note.notefields.json_object_field import JsonObjectField
 from note.notefields.tag_flag_field import TagFlagField
 from note.vocabulary.serialization.matching_rules_serializer import VocabNoteMatchingRulesSerializer
+from note.vocabulary.vocabnote_question_overrides_form import QuestionOverridesForm
 from sysutils.lazy import Lazy
 
 if TYPE_CHECKING:
@@ -38,7 +39,7 @@ class VocabNoteMatching(Slots):
         self._data: WeakRef[VocabNote] = vocab
         self._rules: Lazy[VocabNoteMatchingRules] = Lazy(lambda: VocabNoteMatchingRules(vocab))
         self.requires_exact_match: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.requires_exact_match)
-        self.question_overrides_form: TagFlagField = TagFlagField(vocab, Tags.Vocab.question_overrides_form)
+        self.question_overrides_form: QuestionOverridesForm = QuestionOverridesForm(vocab)
         self.requires_a_stem: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.requires_a_stem)
         self.requires_e_stem: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.requires_e_stem)
         self.match_with_preceding_vowel: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.Todo.with_preceding_vowel)

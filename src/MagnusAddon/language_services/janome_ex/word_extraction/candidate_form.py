@@ -48,7 +48,7 @@ class CandidateForm(Slots):
         self.is_excluded_by_config: bool = is_excluded_form(form)
 
         self.forms_excluded_by_compound_root_vocab_configuration: set[str] = set()
-        self.exact_match_required_by_primary_form_vocab_configuration: bool = any(v for v in self.unexcluded_primary_form_vocabs if v.meta_data.flags.requires_exact_match())
+        self.exact_match_required_by_primary_form_vocab_configuration: bool = any(v for v in self.unexcluded_primary_form_vocabs if v.matching_rules.requires_exact_match.is_set)
 
         self.prefix_is_not: set[str] = set().union(*[v.matching_rules.rules.prefix_is_not.get() for v in self.unexcluded_primary_form_vocabs])
         self.is_excluded_by_prefix = any(excluded_prefix for excluded_prefix in self.prefix_is_not if self.preceding_surface.endswith(excluded_prefix))
