@@ -27,7 +27,7 @@ def _build_vocab_list(word_to_show: list[str], excluded_words:set[str], title:st
 
         if vocabs:
             for vocab in vocabs:
-                word_form = vocab.get_question() if vocab.matching_rules.question_overrides_form.get() else word
+                word_form = vocab.get_question() if vocab.matching_rules.question_overrides_form.is_set() else word
                 hit_form = vocab.get_question() if vocab.get_question() != word_form else ""
                 needs_reading = kana_utils.contains_kanji(word_form) and (not hit_form or kana_utils.contains_kanji(hit_form))
                 readings = ", ".join(vocab.readings.get()) if needs_reading else ""

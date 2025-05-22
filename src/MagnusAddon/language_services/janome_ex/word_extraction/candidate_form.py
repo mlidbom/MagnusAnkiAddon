@@ -48,7 +48,7 @@ class CandidateForm(Slots):
         self.is_excluded_by_config: bool = is_excluded_form(form)
 
         self.forms_excluded_by_compound_root_vocab_configuration: set[str] = set()
-        self.exact_match_required_by_primary_form_vocab_configuration: bool = any(v for v in self.unexcluded_primary_form_vocabs if v.matching_rules.requires_exact_match.is_set)
+        self.exact_match_required_by_primary_form_vocab_configuration: bool = any(v for v in self.unexcluded_primary_form_vocabs if v.matching_rules.requires_exact_match.is_set())
 
         self.prefix_is_not: set[str] = set().union(*[v.matching_rules.rules.prefix_is_not.get() for v in self.unexcluded_primary_form_vocabs])
         self.is_excluded_by_prefix = any(excluded_prefix for excluded_prefix in self.prefix_is_not if self.preceding_surface.endswith(excluded_prefix))
@@ -56,7 +56,7 @@ class CandidateForm(Slots):
         self.prefix_must_end_with: set[str] = set().union(*[v.matching_rules.rules.required_prefix.get() for v in self.unexcluded_primary_form_vocabs])
         self.is_missing_required_prefix = self.prefix_must_end_with and not any(required for required in self.prefix_must_end_with if self.preceding_surface.endswith(required))
 
-        self.is_strictly_suffix = any(voc for voc in self.unexcluded_primary_form_vocabs if voc.matching_rules.is_strictly_suffix.is_set)
+        self.is_strictly_suffix = any(voc for voc in self.unexcluded_primary_form_vocabs if voc.matching_rules.is_strictly_suffix.is_set())
         self.requires_prefix = self.is_strictly_suffix or any(self.prefix_must_end_with)
 
         # will be completed in complete_analysis
@@ -104,9 +104,9 @@ class CandidateForm(Slots):
         self.completed_analysis = True
 
     def vocab_fulfills_stem_requirements(self, vocab: VocabNote) -> bool:
-        if vocab.matching_rules.requires_a_stem.is_set:
+        if vocab.matching_rules.requires_a_stem.is_set():
             return self.has_prefix and self.prefix[-1] in conjugator.a_stem_characters
-        if vocab.matching_rules.requires_e_stem.is_set:
+        if vocab.matching_rules.requires_e_stem.is_set():
             return self.has_prefix and (self.prefix[-1] in conjugator.e_stem_characters or kana_utils.character_is_kanji(self.prefix[-1]))
         return True
 

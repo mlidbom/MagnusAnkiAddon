@@ -25,7 +25,7 @@ def add_toggle_checkbox(menu: QMenu, title: str, field: TagFlagField) -> None:
 
     action = menu.addAction(title)
     action.setCheckable(True)
-    action.setChecked(field.is_set)
+    action.setChecked(field.is_set())
     qconnect(action.triggered, set_value)
 
 def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboard: str) -> None:

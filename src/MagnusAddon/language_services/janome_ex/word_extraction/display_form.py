@@ -24,7 +24,7 @@ class VocabDisplayForm(DisplayForm):
         self.vocab_form = vocab.get_question()
         self.answer = vocab.get_answer()
 
-        if vocab.matching_rules.question_overrides_form.get():
+        if vocab.matching_rules.question_overrides_form.is_set():
             self.parsed_form = self.vocab.get_question()
 
 

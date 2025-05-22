@@ -10,11 +10,10 @@ if TYPE_CHECKING:
     from sysutils.weak_ref import WeakRef
 
 
-class QuestionOverridesForm:
+class IsStrictlySuffix:
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self._vocab: WeakRef[VocabNote] = vocab
-        self.tag_field: TagFlagField = TagFlagField(vocab, Tags.Vocab.question_overrides_form)
+        self.tag_field: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.is_strictly_suffix)
 
-
-    def get(self) -> bool:
-        return self.tag_field.is_set or self._vocab().get_question().startswith(Mine.VocabPrefixSuffixMarker)
+    def is_set(self) -> bool:
+        return self.tag_field.is_set() or self._vocab().get_question().startswith(Mine.VocabPrefixSuffixMarker)

@@ -15,7 +15,6 @@ class TagFlagField(Slots):
         self._note = note
         self.tag = tag
 
-    @property
     def is_set(self) -> bool: return self._note().has_tag(self.tag)
 
     def set_to(self, set_: bool) -> None:
