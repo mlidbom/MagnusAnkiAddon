@@ -1,33 +1,13 @@
 from __future__ import annotations
 
-import json
 from typing import Any, Callable, TypeVar
 
 from autoslot import Slots
 from sysutils import typed
-
-
-class JsonLibraryShim:
-    def loads(self, json_str: str) -> dict[str, Any]: raise NotImplementedError()
-    def dumps(self, object_dict: dict[str, Any], indent: int | None = None) -> str: raise NotImplementedError()
-
-class JsonLibraryShimBuiltInJson(JsonLibraryShim):
-    def loads(self, json_str: str) -> dict[str, Any]: return json.loads(json_str)
-    def dumps(self, object_dict: dict[str, Any], indent: int | None = None) -> str: return json.dumps(object_dict, indent=indent, ensure_ascii=False)
-
-
-_json_library_shim = JsonLibraryShimBuiltInJson()
-
-
-def dict_to_json(object_dict: dict[str, Any], indent: int | None = None) -> str:
-    return _json_library_shim.dumps(object_dict, indent=indent)
+from sysutils.json.ex_json import _json_library_shim
+from sysutils.json.property_type_error import PropertyTypeError
 
 TProp: TypeVar = TypeVar("TProp")
-
-class PropertyTypeError(TypeError):
-    def __init__(self, prop: str, prop_type: type[TProp]) -> None:
-        message = f"Property '{prop}' is not of type '{prop_type.__name__}'"
-        super().__init__(message)
 
 class JsonReader(Slots):
     def __init__(self, json_dict: dict[str, Any]) -> None:
@@ -52,7 +32,7 @@ class JsonReader(Slots):
             raise PropertyTypeError(prop, prop_type) from type_error
 
     def string(self, prop: str | list[str], default: str | None = None) -> str: return self._get_prop(prop, str, default)
-    def int(self, prop: str | list[str], default: int | None = None) -> string: return self._get_prop(prop, int, default)
+    def int(self, prop: str | list[str], default: int | None = None) -> int: return self._get_prop(prop, int, default)
 
     def string_list(self, prop: str | list[str], default: list[str] | None = None) -> list[str]:
         return self._get_prop(prop, list[str], default)

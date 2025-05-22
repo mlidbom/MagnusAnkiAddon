@@ -6,8 +6,8 @@ from deepdiff import DeepDiff
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from note.sentences.sentence_configuration import SentenceConfiguration
 from note.sentences.word_exclusion_set import WordExclusionSet
-from sysutils import ex_json
-from sysutils.ex_json import JsonReader
+from sysutils.json import ex_json
+from sysutils.json.json_reader import JsonReader
 
 
 class IntObject(Slots):

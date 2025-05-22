@@ -4,8 +4,8 @@ from typing import TYPE_CHECKING
 
 from autoslot import Slots
 from note.notefields.json_object_field import JsonObjectSerializer
-from sysutils import ex_json
-from sysutils.ex_json import JsonReader
+from sysutils.json import ex_json
+from sysutils.json.json_reader import JsonReader
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote_matching_rules import VocabNoteMatchingRulesData

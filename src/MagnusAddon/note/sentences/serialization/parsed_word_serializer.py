@@ -6,8 +6,7 @@ from autoslot import Slots
 
 if TYPE_CHECKING:
     from note.sentences.parsed_word import ParsedWord
-    from sysutils.ex_json import JsonReader
-
+    from sysutils.json.json_reader import JsonReader
 
 class ParsedWordSerializer(Slots):
     @staticmethod

@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from autoslot import Slots
 
 if TYPE_CHECKING:
-    from sysutils.ex_json import JsonReader
+    from sysutils.json.json_reader import JsonReader
 
 from typing import Any
 
