@@ -66,48 +66,33 @@ class JamdictThreadingWrapper(Slots):
         self._queue.put(Request(do_actual_lookup, future))
         return future.result()
 
-    # def shutdown(self) -> None:
-    #     self._running = False
-    #     def null_op(jamdict:Jamdict) -> str: return ""
-    #     self._queue.put(Request(null_op, Future()))#Prevents deadlock
-    #     self._thread.join()
+    def run_string_query(self, query: str) -> list[str]:
+        def perform_query(jamdict: Jamdict) -> list[str]:
+            result: list[str] = []
+            for batch in jamdict.jmdict.ctx().conn.execute(query):
+                for row in batch:
+                    result.append(str_(row))  # noqa: PERF401
+
+            return result
+
+        future: Future[list[str]] = Future()
+
+        self._queue.put(Request(perform_query, future))
+        return future.result()
 
 _jamdict_threading_wrapper: JamdictThreadingWrapper = JamdictThreadingWrapper()
 
 def _find_all_words() -> set[str]:
     with StopWatch.log_execution_time("Prepopulating all word forms from jamdict."):
-        _jamdict = Jamdict(reuse_ctx=False)
-        kanji_forms: set[str] = set()
-        kana_forms: set[str] = set()
-
-        with _jamdict.jmdict.ctx() as ctx:
-            for batch in ctx.conn.execute("SELECT distinct text FROM Kanji"):
-                for row in batch:
-                    kanji_forms.add(str_(row))
-
-        with _jamdict.jmdict.ctx() as ctx:
-            for batch in ctx.conn.execute("SELECT distinct text FROM Kana"):
-                for row in batch:
-                    kana_forms.add(str_(row))
-
+        kanji_forms: set[str] = set(_jamdict_threading_wrapper.run_string_query("SELECT distinct text FROM Kanji"))
+        kana_forms: set[str] = set(_jamdict_threading_wrapper.run_string_query("SELECT distinct text FROM Kana"))
     return kanji_forms | kana_forms
 
 def _find_all_names() -> set[str]:
     with StopWatch.log_execution_time("Prepopulating all name forms from jamdict."):
         _jamdict = Jamdict(reuse_ctx=False)
-        kanji_forms: set[str] = set()
-        kana_forms: set[str] = set()
-
-        with _jamdict.jmdict.ctx() as ctx:
-            for batch in ctx.conn.execute("SELECT distinct text FROM NEKanji"):
-                for row in batch:
-                    kanji_forms.add(str_(row))
-
-        with _jamdict.jmdict.ctx() as ctx:
-            for batch in ctx.conn.execute("SELECT distinct text FROM NEKana"):
-                for row in batch:
-                    kana_forms.add(str_(row))
-
+        kanji_forms: set[str] = set(_jamdict_threading_wrapper.run_string_query("SELECT distinct text FROM NEKanji"))
+        kana_forms: set[str] = set(_jamdict_threading_wrapper.run_string_query("SELECT distinct text FROM NEKana"))
         return kanji_forms | kana_forms
 
 _all_word_forms = Lazy(_find_all_words)
