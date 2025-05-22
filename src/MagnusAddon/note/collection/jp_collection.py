@@ -10,13 +10,12 @@ from note.collection.kanji_collection import KanjiCollection
 from note.collection.sentence_collection import SentenceCollection
 from note.collection.vocab_collection import VocabCollection
 from note.jpnote import JPNote
-from note.note_constants import Mine, NoteTypes
+from note.note_constants import CardTypes, Mine, NoteTypes
 from sysutils import app_thread_pool
 from sysutils.object_instance_tracker import ObjectInstanceTracker
 from sysutils.timeutil import StopWatch
 
 if TYPE_CHECKING:
-
     from anki.collection import Collection
     from anki.notes import NoteId
 
@@ -44,8 +43,22 @@ class JPCollection(Slots):
 
             self.cache_manager.start()
             app.get_ui_utils().tool_tip(f"{Mine.app_name} done loading.", milliseconds=6000)
+
+
+            self._cache_studying_status_on_background_thread()
             from language_services.jamdict_ex.dict_lookup import DictLookup
             app_thread_pool.pool.submit(DictLookup.ensure_loaded_into_memory)  # doesn't really belong here but it works to speed up loading for user experience
+
+
+    def _cache_studying_status_on_background_thread(self) -> None:
+        def cache_studying_status() -> None:
+            with StopWatch.log_execution_time("Populating studying status cache"):
+                for notelist in [self.vocab.all(), self.kanji.all(), self.sentences.all()]:
+                    for note in notelist:
+                        note.is_studying(CardTypes.reading)
+                        note.is_studying(CardTypes.listening)
+
+        app_thread_pool.pool.submit(cache_studying_status)
 
     @classmethod
     def note_from_note_id(cls, note_id: NoteId) -> JPNote:
@@ -58,7 +71,6 @@ class JPCollection(Slots):
 
     def destruct_sync(self) -> None:
         self.cache_manager.destruct()
-
 
     def flush_cache_updates(self) -> None: self.cache_manager.flush_updates()
     def pause_cache_updates(self) -> None: self.cache_manager.pause_data_generation()

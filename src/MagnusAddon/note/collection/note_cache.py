@@ -52,13 +52,6 @@ class NoteCache(Generic[TNote, TSnapshot], Slots):
         cache_runner.connect_will_add(self._on_will_be_added)
         cache_runner.connect_will_flush(self._on_will_flush)
 
-        def cache_studying_status() -> None:
-            for note in all_notes:
-                note.is_studying(CardTypes.reading)
-                note.is_studying(CardTypes.listening)
-
-        app_thread_pool.pool.submit(cache_studying_status)
-
     def all(self) -> list[TNote]:
         return list(self._by_id.values())
 
