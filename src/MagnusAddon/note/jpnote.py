@@ -9,7 +9,7 @@ from ankiutils import app
 from autoslot import Slots
 from note import noteutils
 from note.note_constants import CardTypes, MyNoteFields, NoteTypes, Tags
-from sysutils import ex_str, rassert
+from sysutils import ex_assert, ex_str
 from sysutils.object_instance_tracker import ObjectInstanceTracker
 from sysutils.typed import non_optional, str_
 
@@ -28,13 +28,13 @@ class JPNote(Slots):
         self.__hash_value = 0
 
     def __eq__(self, other: object) -> bool:
-        rassert.not_none(self.get_id(), "You cannot compare or hash a note that has not been saved yet since it has no id")
+        ex_assert.not_none(self.get_id(), "You cannot compare or hash a note that has not been saved yet since it has no id")
         return isinstance(other, JPNote) and other.get_id() == self.get_id()
 
     def __hash__(self) -> int:
         if not self.__hash_value:
-            assert self.get_id(), "You cannot compare or hash a note that has not been saved yet since it has no id"
-            self.__hash_value = hash(self.get_id())
+            self.__hash_value = int(self.get_id())
+            ex_assert.that(self.__hash_value != 0, "You cannot compare or hash a note that has not been saved yet since it has no id")
         return self.__hash_value
 
     def __repr__(self) -> str:

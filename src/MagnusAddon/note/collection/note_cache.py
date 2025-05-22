@@ -6,9 +6,8 @@ from typing import TYPE_CHECKING, Generic, TypeVar
 
 from autoslot import Slots
 from note.jpnote import JPNote
-from note.note_constants import CardTypes
-from sysutils import app_thread_pool
 from sysutils.collections.default_dict_case_insensitive import DefaultDictCaseInsensitive
+from sysutils.timeutil import StopWatch
 from sysutils.typed import checked_cast
 
 if TYPE_CHECKING:
@@ -42,8 +41,9 @@ class NoteCache(Generic[TNote, TSnapshot], Slots):
         self._last_deleted_note_time = 0.0
         self._pending_add: list[Note] = []
 
-        for _note in all_notes:
-            self._add_to_cache(_note)
+        with StopWatch.log_execution_time(f"pushing {cached_note_type.__name__}s into cache"):
+            for _note in all_notes:
+                self._add_to_cache(_note)
 
 
         cache_runner.connect_generate_data_timer(self._update_and_persist_generated_data)
