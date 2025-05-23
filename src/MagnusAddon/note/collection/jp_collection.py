@@ -45,8 +45,8 @@ class JPCollection(Slots):
             self.cache_manager.start()
             app.get_ui_utils().tool_tip(f"{Mine.app_name} done loading in {str(stopwatch.elapsed_seconds())[0:4]} seconds.", milliseconds=6000)
 
-            self._populate_additional_caches_on_background_thread()
             self._is_running = True
+            self._populate_additional_caches_on_background_thread()
 
     def _populate_additional_caches_on_background_thread(self) -> None:
         def populate_caches() -> None:
@@ -77,5 +77,3 @@ class JPCollection(Slots):
         self.cache_manager.destruct()
 
     def flush_cache_updates(self) -> None: self.cache_manager.flush_updates()
-    def pause_cache_updates(self) -> None: self.cache_manager.pause_data_generation()
-    def resume_cache_updates(self) -> None: self.cache_manager.resume_data_generation()

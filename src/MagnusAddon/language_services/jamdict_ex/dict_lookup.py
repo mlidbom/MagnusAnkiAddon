@@ -42,7 +42,7 @@ class JamdictThreadingWrapper(Slots):
     @staticmethod
     def create_jamdict_and_log_loading_time() -> Jamdict:
         with StopWatch.log_execution_time("Loading Jamdict into memory"):
-            jamdict = Jamdict(memory_mode=True)
+            jamdict = Jamdict(memory_mode=True) if not app.is_testing() else Jamdict(reuse_ctx=True)
             jamdict.lookup("俺", lookup_chars=False, lookup_ne=True)
             return jamdict
 

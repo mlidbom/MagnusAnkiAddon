@@ -16,7 +16,6 @@ if TYPE_CHECKING:
     from anki.notes import Note, NoteId
     from note.collection.cache_runner import CacheRunner
 
-
 class CachedNote(Slots):
     def __init__(self, note: JPNote) -> None:
         self.id = note.get_id()
@@ -33,7 +32,6 @@ class NoteCache(Generic[TNote, TSnapshot], Slots):
         self._by_id: dict[NoteId, TNote] = {}
         self._snapshot_by_id: dict[NoteId, TSnapshot] = {}
         self._by_answer: DefaultDictCaseInsensitive[set[TNote]] = DefaultDictCaseInsensitive(set)
-        self._pending_generated_data_updates: set[TNote] = set()
 
         self._deleted: set[NoteId] = set()
 
@@ -45,8 +43,6 @@ class NoteCache(Generic[TNote, TSnapshot], Slots):
             for _note in all_notes:
                 self._add_to_cache(_note)
 
-
-        cache_runner.connect_generate_data_timer(self._update_and_persist_generated_data)
         cache_runner.connect_merge_pending_adds(self._merge_pending_added_notes)
         cache_runner.connect_will_remove(self._on_will_be_removed)
         cache_runner.connect_will_add(self._on_will_be_added)
@@ -72,16 +68,19 @@ class NoteCache(Generic[TNote, TSnapshot], Slots):
             self._pending_add.remove(backend_note)
             note = checked_cast(self._note_type, JPNote.note_from_note(backend_note))
             self._add_to_cache(note)
-            self._pending_generated_data_updates.add(note)
-
 
     def _on_will_flush(self, backend_note: Note) -> None:
         if backend_note.id and backend_note.id in self._by_id:
             assert backend_note.id not in self._deleted
 
-            note = self._create_note(backend_note)
-            self._refresh_in_cache(note)
-            self._pending_generated_data_updates.add(note)
+            cached_note = self._by_id[backend_note.id]
+
+            if cached_note.is_flushing:  # our code called flush, we should just make sure the cached data is up to date
+                self._refresh_in_cache(cached_note)
+            else:  # a note has been edited outside of our control, we need to switch to that up-to-date note and refresh generated data
+                note = self._create_note(backend_note)
+                self._refresh_in_cache(note)
+                note.update_generated_data()
 
     def _on_will_be_added(self, backend_note: Note) -> None:
         note = JPNote.note_from_note(backend_note)
@@ -98,17 +97,6 @@ class NoteCache(Generic[TNote, TSnapshot], Slots):
     def _create_note(self, backend_note: Note) -> TNote:
         return checked_cast(self._note_type, JPNote.note_from_note(backend_note))
 
-    def _consume_pending_data_updates(self) -> set[TNote]:
-        update_set = self._pending_generated_data_updates
-        self._pending_generated_data_updates = set()
-        return {note for note in update_set if note.get_id() not in self._deleted}
-
-    def _update_and_persist_generated_data(self) -> None:
-        for note in self._consume_pending_data_updates():
-            note.update_generated_data()
-            self._refresh_in_cache(note)
-
-
     def _refresh_in_cache(self, note: TNote) -> None:
         self._remove_from_cache(note)
         self._add_to_cache(note)
@@ -120,7 +108,6 @@ class NoteCache(Generic[TNote, TSnapshot], Slots):
         self._by_question[cached.question].remove(note)
         self._by_answer[cached.answer].remove(note)
         self._inheritor_remove_from_cache(note, cached)
-
 
     def _add_to_cache(self, note: TNote) -> None:
         assert note.get_id()
