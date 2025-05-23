@@ -77,12 +77,12 @@ class NoteCache(Generic[TNote, TSnapshot], Slots):
 
     def _on_will_flush(self, backend_note: Note) -> None:
         if backend_note.id and backend_note.id in self._by_id:
-            #todo: bug performance. If this is invoked because our code is flushing a JPNote, that note will be replaced by a new note in the cache, while it may well still be in the process of making updates.
-            # there seems to be a very good chance that this will cause trouble of one sort or another. And we are seeing strange issues in the UI that may well be related to such issues.
-            # So if we are triggering this code, maybe keep the existing note instance in the cache and just reregister it? We can check if this is the case by asking the note if it is currently flushing.
             assert backend_note.id not in self._deleted
 
-            note = self._create_note(backend_note)
+            cached_note = self._by_id[backend_note.id]
+
+            #if we are here because our code called flush, we should keep our up-to-date note, if we are here because of a note being edited, we need to use that up-to-date note
+            note = cached_note if cached_note.is_flushing else self._create_note(backend_note)
             self._refresh_in_cache(note)
             self._pending_generated_data_updates.add(note)
 
