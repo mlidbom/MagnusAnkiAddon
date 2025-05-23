@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from contextlib import contextmanager
 from typing import TYPE_CHECKING, cast
 
 from anki.models import NotetypeDict
@@ -12,19 +13,47 @@ from note.note_constants import CardTypes, MyNoteFields, NoteTypes, Tags
 from sysutils import ex_assert, ex_str
 from sysutils.object_instance_tracker import ObjectInstanceTracker
 from sysutils.typed import non_optional, str_
+from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
+
+    from collections.abc import Iterator
 
     from anki.cards import Card
     from anki.notes import Note, NoteId
     from note.collection.jp_collection import JPCollection
 
+class NoteFlushGuard(Slots):
+    def __init__(self, note: WeakRef[JPNote]) -> None:
+        self._note = note
+        self._depth = 0
+
+    @contextmanager
+    def pause_flushing(self) -> Iterator[None]:
+        self._depth += 1
+        try: yield
+        finally:
+            self._depth -= 1
+
+    def _should_flush(self) -> bool: return self._depth == 0
+
+    @property
+    def is_flushing(self) -> bool: return self._depth > 0
+
+    def flush(self) -> None:
+        if self._should_flush():
+            self._note().backend_note.col.update_note(self._note().backend_note)
+
 class JPNote(Slots):
     def __init__(self, note: Note) -> None:
+        self.weakref: WeakRef[JPNote] = WeakRef(self)
         self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
+        self.flush_guard = NoteFlushGuard(self.weakref)
         self.backend_note = note
-        self.is_flushing: bool = False
         self.__hash_value = 0
+
+    @property
+    def is_flushing(self) -> bool: return self.flush_guard.is_flushing
 
     def __eq__(self, other: object) -> bool:
         ex_assert.not_none(self.get_id(), "You cannot compare or hash a note that has not been saved yet since it has no id")
@@ -119,11 +148,7 @@ class JPNote(Slots):
 
     def _flush(self) -> None:
         if self._is_persisted():
-            self.is_flushing = True
-            try:
-                self.backend_note.col.update_note(self.backend_note)
-            finally:
-                self.is_flushing = False
+            self.flush_guard.flush()
 
     def set_field(self, field_name: str, value: str) -> None:
         field_value = self.backend_note[field_name]

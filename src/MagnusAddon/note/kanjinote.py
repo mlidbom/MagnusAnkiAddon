@@ -1,13 +1,14 @@
 from __future__ import annotations
 
 import re
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 from anki.notes import Note
 from ankiutils import app
 from autoslot import Slots
 from note import kanjinote_mnemonic_maker
 from note.vocabulary import vocabnote_sorting
+from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
     from note.jpnote import JPNote
@@ -24,6 +25,7 @@ class KanjiNote(WaniNote, Slots):
     __slots__ = ["__weakref__"]
     def __init__(self, note: Note) -> None:
         super().__init__(note)
+        self.weakref = cast(WeakRef[KanjiNote], self.weakref)
 
     def get_direct_dependencies(self) -> set[JPNote]:
         return set(self.get_radicals_notes())

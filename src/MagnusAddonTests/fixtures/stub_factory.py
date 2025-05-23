@@ -12,7 +12,8 @@ from sysutils.progress_display_runner import Closable
 from sysutils.typed import checked_cast
 
 if TYPE_CHECKING:
-    from collections.abc import Generator
+
+    from collections.abc import Iterator
 
     from ankiutils.ui_utils_interface import IUIUtils
 
@@ -24,13 +25,13 @@ def get_thread_local_ui_utils() -> IUIUtils:
 
 
 @contextmanager
-def _stub_ui_utils_real() -> Generator[None, None, None]:
+def _stub_ui_utils_real() -> Iterator[None]:
     _thread_local.ui_utils = UIUtilsStub()
     app.get_ui_utils = get_thread_local_ui_utils
     yield
 
 @contextmanager
-def _stub_config_dict() -> Generator[None, None, None]:
+def _stub_config_dict() -> Iterator[None]:
     _config_dict:dict[str,Any] = {}
 
     from configuration import configuration_value
@@ -43,13 +44,13 @@ def _stub_config_dict() -> Generator[None, None, None]:
     yield
 
 @contextmanager
-def stub_ui_dependencies() -> Generator[None, None, None]:
+def stub_ui_dependencies() -> Iterator[None]:
     with (_stub_ui_utils_real(), _stub_progress_runner(), _stub_config_dict()):
         yield
 
 T = TypeVar("T")
 @contextmanager
-def _stub_progress_runner() -> Generator[None, None, None]:
+def _stub_progress_runner() -> Iterator[None]:
     # noinspection PyUnusedLocal
     def _open_spinning_progress_dialog(message: str) -> Closable:
         return Closable(lambda: None)

@@ -8,7 +8,8 @@ from fixtures.full_test_collection_factory import inject_full_anki_collection_fo
 from sysutils import ex_sequence, ex_str, kana_utils
 
 if TYPE_CHECKING:
-    from collections.abc import Generator
+
+    from collections.abc import Iterator
 
     from note.kanjinote import KanjiNote
     from note.sentences.sentencenote import SentenceNote
@@ -18,7 +19,7 @@ shtml = ex_str.strip_html_markup
 
 # noinspection PyUnusedFunction
 @pytest.fixture(scope="function", autouse=True)
-def setup() -> Generator[None, None, None]:
+def setup() -> Iterator[None]:
     with (inject_full_anki_collection_for_testing()):
         yield
 

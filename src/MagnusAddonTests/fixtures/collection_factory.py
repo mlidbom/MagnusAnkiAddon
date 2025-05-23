@@ -14,11 +14,11 @@ from note.kanjinote import KanjiNote
 from note.sentences.sentencenote import SentenceNote
 
 if TYPE_CHECKING:
-    from collections.abc import Generator
+    from collections.abc import Iterator
 
 
 @contextmanager
-def inject_empty_anki_collection_with_note_types() -> Generator[None, None, None]:
+def inject_empty_anki_collection_with_note_types() -> Iterator[None]:
     from note.collection.jp_collection import JPCollection
     jp_collection: JPCollection
     def get_jp_collection() -> JPCollection: return jp_collection
@@ -40,7 +40,7 @@ def populate_collection(collection: Collection) -> None:
     note_type_factory.add_note_types(collection)
 
 @contextmanager
-def inject_anki_collection_with_select_data(kanji:bool = False, special_vocab:bool = False, ordinary_vocab: bool = False, sentences:bool = False) -> Generator[None, None, None]:
+def inject_anki_collection_with_select_data(kanji:bool = False, special_vocab:bool = False, ordinary_vocab: bool = False, sentences:bool = False) -> Iterator[None]:
     from ankiutils import app
     with inject_empty_anki_collection_with_note_types():
         if kanji:
@@ -65,6 +65,6 @@ def inject_anki_collection_with_select_data(kanji:bool = False, special_vocab:bo
         yield
 
 @contextmanager
-def inject_anki_collection_with_all_sample_data() -> Generator[None, None, None]:
+def inject_anki_collection_with_all_sample_data() -> Iterator[None]:
     with inject_anki_collection_with_select_data(kanji=True, special_vocab=True, ordinary_vocab=True, sentences=True):
         yield

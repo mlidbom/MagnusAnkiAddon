@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, cast
 
 from anki.notes import Note
 from ankiutils import app
@@ -29,7 +29,8 @@ class SentenceNote(JPNote, Slots):
     __slots__ = ["__weakref__"]
     def __init__(self, note: Note) -> None:
         super().__init__(note)
-        self.weakref: WeakRef[SentenceNote] = WeakRef(self)
+        self.weakref = cast(WeakRef[SentenceNote], self.weakref)
+
         self._source_answer = StringField(self.weakref, SentenceNoteFields.source_answer)
         self._source_question = StripHtmlOnReadStringField(self.weakref, SentenceNoteFields.source_question)
         self.source_comments: StripHtmlOnReadStringField = StripHtmlOnReadStringField(self.weakref, SentenceNoteFields.source_comments)

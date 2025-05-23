@@ -9,11 +9,12 @@ from note.sentences.sentencenote import SentenceNote
 from sysutils import ex_str
 
 if TYPE_CHECKING:
-    from collections.abc import Generator
+    from collections.abc import Iterator
+
 
 # noinspection PyUnusedFunction
 @pytest.fixture(scope="function", autouse=True)
-def setup() -> Generator[None, None, None]:
+def setup() -> Iterator[None]:
     with (stub_ui_dependencies(), inject_empty_anki_collection_with_note_types()):
         yield
 

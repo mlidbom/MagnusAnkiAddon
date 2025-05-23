@@ -9,14 +9,15 @@ from language_services.jamdict_ex.dict_lookup import DictLookup
 from note.vocabulary.vocabnote import VocabNote
 
 if TYPE_CHECKING:
-    from collections.abc import Generator
+
+    from collections.abc import Iterator
 
     from language_services.jamdict_ex.dict_entry import DictEntry
 
 
 # noinspection PyUnusedFunction
 @pytest.fixture(scope="function", autouse=True)
-def setup_empty_collection() -> Generator[None, None, None]:
+def setup_empty_collection() -> Iterator[None]:
     with inject_empty_anki_collection_with_note_types():
         yield
 

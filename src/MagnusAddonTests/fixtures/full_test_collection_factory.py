@@ -11,11 +11,11 @@ from typing import TYPE_CHECKING
 from anki.collection import Collection
 
 if TYPE_CHECKING:
-    from collections.abc import Generator
+    from collections.abc import Iterator
 
 
 @contextmanager
-def inject_full_anki_collection_for_testing() -> Generator[None, None, None]:
+def inject_full_anki_collection_for_testing() -> Iterator[None]:
     from note.collection.jp_collection import JPCollection
     jp_collection: JPCollection
     def get_jp_collection() -> JPCollection: return jp_collection

@@ -9,12 +9,12 @@ from fixtures.stub_factory import stub_ui_dependencies
 from sysutils.typed import non_optional
 
 if TYPE_CHECKING:
-    from collections.abc import Generator
+    from collections.abc import Iterator
 
 
 # noinspection PyUnusedFunction
 @pytest.fixture(scope="function", autouse=True)
-def setup() -> Generator[None, None, None]:
+def setup() -> Iterator[None]:
     with (stub_ui_dependencies(), collection_factory.inject_anki_collection_with_select_data(kanji=True)):
         app.config().readings_mappings.set_value(_readings_mappings)
         yield

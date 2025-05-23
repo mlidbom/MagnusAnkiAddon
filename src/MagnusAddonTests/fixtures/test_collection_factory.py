@@ -11,7 +11,8 @@ from fixtures.base_data.sample_data.vocab_spec import VocabSpec
 from fixtures.collection_factory import inject_anki_collection_with_all_sample_data
 
 if TYPE_CHECKING:
-    from collections.abc import Generator
+
+    from collections.abc import Iterator
 
     from note.kanjinote import KanjiNote
     from note.sentences.sentencenote import SentenceNote
@@ -19,7 +20,7 @@ if TYPE_CHECKING:
 
 # noinspection PyUnusedFunction
 @pytest.fixture(scope="module", autouse=True)
-def setup_object() -> Generator[None, None, None]:
+def setup_object() -> Iterator[None]:
     with inject_anki_collection_with_all_sample_data():
         yield
 

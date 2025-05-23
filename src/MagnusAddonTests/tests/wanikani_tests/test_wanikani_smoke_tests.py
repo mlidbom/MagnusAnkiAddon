@@ -7,12 +7,12 @@ from fixtures.collection_factory import inject_empty_anki_collection_with_note_t
 from wanikani import wanikani_api_client
 
 if TYPE_CHECKING:
-    from collections.abc import Generator
+    from collections.abc import Iterator
 
 
 # noinspection PyUnusedFunction
 @pytest.fixture(scope="function", autouse=True)
-def setup_object() -> Generator[None, None, None]:
+def setup_object() -> Iterator[None]:
     with inject_empty_anki_collection_with_note_types():
         yield
 

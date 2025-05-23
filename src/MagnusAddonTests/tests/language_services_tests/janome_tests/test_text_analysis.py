@@ -12,16 +12,17 @@ from note.sentences.sentencenote import SentenceNote
 from note.vocabulary.vocabnote import VocabNote
 
 if TYPE_CHECKING:
-    from collections.abc import Generator
+    from collections.abc import Iterator
+
 
 # noinspection PyUnusedFunction
 @pytest.fixture(scope="function")
-def setup_collection_with_select_data() -> Generator[None, None, None]:
+def setup_collection_with_select_data() -> Iterator[None]:
     with inject_anki_collection_with_select_data(special_vocab=True):
         yield
 
 @pytest.fixture(scope="function")
-def setup_empty_collection() -> Generator[None, None, None]:
+def setup_empty_collection() -> Iterator[None]:
     with inject_empty_anki_collection_with_note_types():
         yield
 

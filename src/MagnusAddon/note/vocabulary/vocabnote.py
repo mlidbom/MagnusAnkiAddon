@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 from ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules  # noqa
 from autoslot import Slots
@@ -36,7 +36,7 @@ class VocabNote(WaniNote, Slots):
     factory: VocabNoteFactory = VocabNoteFactory()
     def __init__(self, note: Note) -> None:
         super().__init__(note)
-        self.weakref: WeakRef[VocabNote] = WeakRef(self)
+        self.weakref = cast(WeakRef[VocabNote], self.weakref)
 
         self.question: VocabNoteQuestion = VocabNoteQuestion(self.weakref)
 
