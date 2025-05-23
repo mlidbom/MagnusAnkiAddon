@@ -10,7 +10,7 @@ from anki_extentions.notetype_ex.note_type_ex import NoteTypeEx
 from ankiutils import app
 from autoslot import Slots
 from note.note_constants import NoteTypes
-from sysutils import app_thread_pool
+from sysutils import app_thread_pool, ex_assert
 from sysutils.typed import checked_cast
 
 if TYPE_CHECKING:
@@ -36,7 +36,7 @@ class CacheRunner(Slots):
         model_manager: ModelManager = anki_collection.models
         all_note_types: list[NoteTypeEx] = [NoteTypeEx.from_dict(model) for model in model_manager.all()]
         self._note_types: list[NoteTypeEx] = [note_type for note_type in all_note_types if note_type.name in NoteTypes.ALL]
-        assert len(self._note_types) == len(NoteTypes.ALL)
+        ex_assert.equal(len(self._note_types), len(NoteTypes.ALL))
 
         hooks.notes_will_be_deleted.append(self._on_will_be_removed)
         hooks.note_will_be_added.append(self._on_will_be_added)
@@ -44,7 +44,7 @@ class CacheRunner(Slots):
 
     def start(self) -> None:
         with self._lock:
-            assert not self._running
+            ex_assert.that(not self._running)
             self._running = True
             app_thread_pool.pool.submit(self._run_periodic_flushes)
 
@@ -92,12 +92,12 @@ class CacheRunner(Slots):
 
     def pause_data_generation(self) -> None:
         with self._lock:
-            assert not self._pause_data_generation
+            ex_assert.that(not self._pause_data_generation)
             self._pause_data_generation = True
 
     def resume_data_generation(self) -> None:
         with self._lock:
-            assert self._pause_data_generation
+            ex_assert.that(self._pause_data_generation)
             self._pause_data_generation = False
 
     def connect_generate_data_timer(self, flush_updates: Callable[[], None]) -> None:
@@ -122,7 +122,7 @@ class CacheRunner(Slots):
 
     def _check_for_updated_note_types_and_reset_app_if_found(self) -> None:
         for cached_note_type in self._note_types:
-            assert self._anki_collection.db
+            ex_assert.not_none(self._anki_collection.db)
             current = NoteTypeEx.from_dict(cast(NotetypeDict, checked_cast(ModelManager, self._anki_collection.models).get(cached_note_type.id)))
             try:
                 current.assert_schema_matches(cached_note_type)
