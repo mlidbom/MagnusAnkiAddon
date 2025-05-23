@@ -32,7 +32,6 @@ if TYPE_CHECKING:
     from wanikani_api import models
 
 class VocabNote(WaniNote, Slots):
-    __slots__ = ["__weakref__"]
     factory: VocabNoteFactory = VocabNoteFactory()
     def __init__(self, note: Note) -> None:
         super().__init__(note)

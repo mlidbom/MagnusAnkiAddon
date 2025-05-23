@@ -26,7 +26,6 @@ if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
 
 class SentenceNote(JPNote, Slots):
-    __slots__ = ["__weakref__"]
     def __init__(self, note: Note) -> None:
         super().__init__(note)
         self.weakref = cast(WeakRef[SentenceNote], self.weakref)

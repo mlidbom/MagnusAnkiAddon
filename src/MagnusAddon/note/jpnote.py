@@ -22,6 +22,7 @@ if TYPE_CHECKING:
     from note.collection.jp_collection import JPCollection
 
 class JPNote(Slots):
+    __slots__ = ["__weakref__"]
     def __init__(self, note: Note) -> None:
         self.weakref: WeakRef[JPNote] = WeakRef(self)
         self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
