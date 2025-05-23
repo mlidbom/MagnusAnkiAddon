@@ -77,8 +77,8 @@ class NoteCache(Generic[TNote, TSnapshot], Slots):
                 self._refresh_in_cache(cached_note)
             else:  # a note has been edited outside of our control, we need to switch to that up-to-date note and refresh generated data
                 note = self._create_note(backend_note)
-                self._refresh_in_cache(note)
                 note.update_generated_data()
+                self._refresh_in_cache(note)
 
     def _on_will_be_added(self, backend_note: Note) -> None:
         note = JPNote.note_from_note(backend_note)
