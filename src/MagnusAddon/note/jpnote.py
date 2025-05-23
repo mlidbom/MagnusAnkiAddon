@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from contextlib import contextmanager
 from typing import TYPE_CHECKING, cast
 
 from anki.models import NotetypeDict
@@ -10,6 +9,7 @@ from ankiutils import app
 from autoslot import Slots
 from note import noteutils
 from note.note_constants import CardTypes, MyNoteFields, NoteTypes, Tags
+from note.note_flush_guard import NoteFlushGuard
 from sysutils import ex_assert, ex_str
 from sysutils.object_instance_tracker import ObjectInstanceTracker
 from sysutils.typed import non_optional, str_
@@ -17,32 +17,9 @@ from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
 
-    from collections.abc import Iterator
-
     from anki.cards import Card
     from anki.notes import Note, NoteId
     from note.collection.jp_collection import JPCollection
-
-class NoteFlushGuard(Slots):
-    def __init__(self, note: WeakRef[JPNote]) -> None:
-        self._note = note
-        self._depth = 0
-
-    @contextmanager
-    def pause_flushing(self) -> Iterator[None]:
-        self._depth += 1
-        try: yield
-        finally:
-            self._depth -= 1
-
-    def _should_flush(self) -> bool: return self._depth == 0
-
-    @property
-    def is_flushing(self) -> bool: return self._depth > 0
-
-    def flush(self) -> None:
-        if self._should_flush():
-            self._note().backend_note.col.update_note(self._note().backend_note)
 
 class JPNote(Slots):
     def __init__(self, note: Note) -> None:
