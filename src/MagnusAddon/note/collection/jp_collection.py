@@ -10,7 +10,7 @@ from note.collection.kanji_collection import KanjiCollection
 from note.collection.sentence_collection import SentenceCollection
 from note.collection.vocab_collection import VocabCollection
 from note.jpnote import JPNote
-from note.note_constants import CardTypes, Mine, NoteTypes
+from note.note_constants import CardTypes, Mine
 from sysutils import app_thread_pool
 from sysutils.object_instance_tracker import ObjectInstanceTracker
 from sysutils.timeutil import StopWatch
@@ -65,12 +65,11 @@ class JPCollection(Slots):
 
     @classmethod
     def note_from_note_id(cls, note_id: NoteId) -> JPNote:
-        note = app.anki_collection().get_note(note_id)  # todo: verify wether calling get_note is slow, if so hack this into the in memory caches instead
-
-        if JPNote.get_note_type(note) == NoteTypes.Kanji: return app.col().kanji.with_id(note.id)
-        if JPNote.get_note_type(note) == NoteTypes.Vocab: return app.col().vocab.with_id(note.id)
-        if JPNote.get_note_type(note) == NoteTypes.Sentence: return app.col().sentences.with_id(note.id)
-        return JPNote(note)
+        col = app.col()
+        return (col.kanji.with_id_or_none(note_id)
+                or col.vocab.with_id_or_none(note_id)
+                or col.sentences.with_id_or_none(note_id)
+                or JPNote(app.anki_collection().get_note(note_id)))
 
     def destruct_sync(self) -> None:
         self._is_running = False

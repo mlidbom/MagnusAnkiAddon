@@ -52,6 +52,9 @@ class NoteCache(Generic[TNote, TSnapshot], Slots):
     def with_id(self, note_id: NoteId) -> TNote:
         return self._by_id[note_id]
 
+    def with_id_or_none(self, note_id: NoteId) -> TNote | None:
+        return self._by_id.get(note_id, None)
+
     def with_question(self, question: str) -> list[TNote]:
         return list(self._by_question[question])
 
