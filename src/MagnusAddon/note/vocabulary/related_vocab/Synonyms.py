@@ -19,7 +19,7 @@ class Synonyms(Slots):
     def strings(self) -> set[str]: return self._data.get().synonyms
 
     def _save(self) -> None:
-        self.strings().discard(self._vocab().get_question())#todo: this is cleanup after a bug. Remove soon
+        self.strings().discard(self._vocab().get_question())  # todo: this is cleanup after a bug. Remove soon
         self._data.save()
 
     def notes(self) -> list[VocabNote]:
@@ -36,13 +36,15 @@ class Synonyms(Slots):
         self._save()
 
     def add_transitively_one_level(self, synonym: str) -> None:
-        synonym_notes = col().vocab.with_any_form_in_prefer_exact_match([synonym])
-        new_synonyms = set().union(*[note.related_notes.synonyms.strings() for note in synonym_notes]) | {note.get_question() for note in synonym_notes}
-        for new_synonym in new_synonyms:
+        new_synonym_notes = col().vocab.with_any_form_in_prefer_exact_match([synonym])
+
+        for synonym_note in new_synonym_notes:
+            for my_synonym in self.strings():
+                synonym_note.related_notes.synonyms.add(my_synonym)
+
+        synonyms_of_new_synonym_strings = set().union(*[note.related_notes.synonyms.strings() for note in new_synonym_notes]) | {note.get_question() for note in new_synonym_notes}
+        for new_synonym in synonyms_of_new_synonym_strings:
             self.add(new_synonym)
-
-
-
 
     def remove(self, to_remove: str) -> None:
         self.strings().remove(to_remove)
