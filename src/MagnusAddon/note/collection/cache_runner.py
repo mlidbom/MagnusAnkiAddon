@@ -1,9 +1,6 @@
 from __future__ import annotations
 
 import time
-from dataclasses import dataclass
-from queue import Queue
-from threading import Event, Thread
 from typing import TYPE_CHECKING, Callable, cast
 
 from anki import hooks
@@ -22,39 +19,6 @@ if TYPE_CHECKING:
     from anki.decks import DeckId
     from anki.notes import Note, NoteId
 
-@dataclass
-class Task:
-    func: Callable[[], None]
-    completion_event: Event | None = None
-
-class DedicatedThread(Slots):
-    def __init__(self) -> None:
-        self.queue: Queue[Task] = Queue()
-        self.thread: Thread = Thread(target=self._worker, daemon=True)
-        self._running = True
-        self.thread.start()
-
-    def _worker(self) -> None:
-        while self._running:
-            task: Task = self.queue.get()
-            task.func()
-            if task.completion_event is not None:
-                task.completion_event.set()
-            self.queue.task_done()
-
-    def submit(self, task: Callable[[], None], wait: bool = False) -> None:
-        completion_event = Event() if wait else None
-        self.queue.put(Task(task, completion_event))
-        if wait:
-            completion_event.wait()
-
-    def destruct(self) -> None:
-        self._running = False
-
-        def null_op() -> None:
-            pass
-        self.submit(null_op)  # Prevents deadlock
-        self.thread.join()
 
 class CacheRunner(Slots):
     def __init__(self, anki_collection: Collection) -> None:
@@ -66,7 +30,6 @@ class CacheRunner(Slots):
         self._will_remove_subscribers: list[Callable[[Sequence[NoteId]], None]] = []
         self._destructors: list[Callable[[], None]] = []
         self._anki_collection: Collection = anki_collection
-        self._dedicated_thread: DedicatedThread = DedicatedThread()
         self._running: bool = False
 
         model_manager: ModelManager = anki_collection.models
@@ -81,16 +44,15 @@ class CacheRunner(Slots):
     def start(self) -> None:
         assert not self._running
         self._running = True
-        app_thread_pool.pool.submit(self._run_periodic_flushes)
+        app_thread_pool.pool.submit(self._check_for_changed_schemas)
 
-    def _run_periodic_flushes(self) -> None:
+    def _check_for_changed_schemas(self) -> None:
         while self._running:
-            self.flush_updates()
+            self._check_for_updated_note_types_and_reset_app_if_found()
             time.sleep(0.1)
 
     def destruct(self) -> None:
         self._running = False
-        self._dedicated_thread.destruct()
         self._internal_flush_updates()
 
         hooks.notes_will_be_deleted.remove(self._on_will_be_removed)
@@ -103,32 +65,22 @@ class CacheRunner(Slots):
         noteutils.clear_studying_cache()
 
     def _internal_flush_updates(self) -> None:
-        self._check_for_updated_note_types_and_reset_app_if_found()
         for subscriber in self._merge_pending_subscribers: subscriber()
 
         if self._pause_data_generation: return
         for callback in self._generate_data_subscribers: callback()
 
     def flush_updates(self) -> None:
-        self._dedicated_thread.submit(self._internal_flush_updates, wait=True)
+        self._internal_flush_updates()
 
     def _on_will_be_added(self, _collection: Collection, backend_note: Note, _deck_id: DeckId) -> None:
-        def task() -> None:
-            for subscriber in self._will_add_subscribers: subscriber(backend_note)
-
-        self._dedicated_thread.submit(task)
+        for subscriber in self._will_add_subscribers: subscriber(backend_note)
 
     def _on_will_flush(self, backend_note: Note) -> None:
-        def task() -> None:
-            for subscriber in self._will_flush_subscribers: subscriber(backend_note)
-
-        self._dedicated_thread.submit(task)
+        for subscriber in self._will_flush_subscribers: subscriber(backend_note)
 
     def _on_will_be_removed(self, _: Collection, note_ids: Sequence[NoteId]) -> None:
-        def task() -> None:
-            for subscriber in self._will_remove_subscribers: subscriber(note_ids)
-
-        self._dedicated_thread.submit(task)
+        for subscriber in self._will_remove_subscribers: subscriber(note_ids)
 
     def pause_data_generation(self) -> None:
         assert not self._pause_data_generation

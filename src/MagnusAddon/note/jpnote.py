@@ -23,8 +23,7 @@ class JPNote(Slots):
     def __init__(self, note: Note) -> None:
         self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
         self.backend_note = note
-        self._is_updating_generated_data: bool = False
-        self._generated_data_was_updated = False
+        self.is_flushing: bool = False
         self.__hash_value = 0
 
     def __eq__(self, other: object) -> bool:
@@ -120,15 +119,11 @@ class JPNote(Slots):
 
     def _flush(self) -> None:
         if self._is_persisted():
-            if self._is_updating_generated_data:  # We need to cancel infinite recursion here somehow...
-                self._generated_data_was_updated = True
-                return
-
-            self._is_updating_generated_data = True
+            self.is_flushing = True
             try:
                 self.backend_note.col.update_note(self.backend_note)
             finally:
-                self._is_updating_generated_data = False
+                self.is_flushing = False
 
     def set_field(self, field_name: str, value: str) -> None:
         field_value = self.backend_note[field_name]
