@@ -16,4 +16,4 @@ class QuestionOverridesForm:
         self.tag_field: TagFlagField = TagFlagField(vocab, Tags.Vocab.question_overrides_form)
 
     def is_set(self) -> bool:
-        return self.tag_field.is_set() or self._vocab().matching_rules.is_strictly_suffix.is_set()
+        return self.tag_field.is_set() # or self._vocab().matching_rules.is_strictly_suffix.is_set()
