@@ -3,7 +3,6 @@ from __future__ import annotations
 import time
 from typing import Any, Callable, TypeVar
 
-from ankiutils import app
 from autoslot import Slots
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication, QMessageBox, QProgressDialog
@@ -48,13 +47,11 @@ def _create_spinning_progress_dialog(message: str) -> QProgressDialog:
     progress_dialog.show()
     return progress_dialog
 
-def process_with_progress(items: list[T], process_item: Callable[[T], None], message:str, allow_cancel: bool = True, display_delay_seconds: float = 0.0, pause_cache_updates: bool = True) -> None:
+def process_with_progress(items: list[T], process_item: Callable[[T], None], message:str, allow_cancel: bool = True, display_delay_seconds: float = 0.0) -> None:
     total_items = len(items)
     start_time = time.time()
     progress_dialog: QProgressDialog | None = None
     last_refresh = 0.0
-
-    if pause_cache_updates: app.col().pause_cache_updates()
 
     try:
 
@@ -78,7 +75,6 @@ def process_with_progress(items: list[T], process_item: Callable[[T], None], mes
 
                 QApplication.processEvents()
     finally:
-        if pause_cache_updates: app.col().resume_cache_updates()
         if progress_dialog: progress_dialog.close()
 
 def show_dismissable_message(window_title: str, message:str) -> None:

@@ -22,8 +22,6 @@ if TYPE_CHECKING:
 
 class CacheRunner(Slots):
     def __init__(self, anki_collection: Collection) -> None:
-        self._pause_data_generation: bool = False
-        self._generate_data_subscribers: list[Callable[[], None]] = []
         self._merge_pending_subscribers: list[Callable[[], None]] = []
         self._will_add_subscribers: list[Callable[[Note], None]] = []
         self._will_flush_subscribers: list[Callable[[Note], None]] = []
@@ -70,9 +68,6 @@ class CacheRunner(Slots):
     def _internal_flush_updates(self) -> None:
         for subscriber in self._merge_pending_subscribers: subscriber()
 
-        if self._pause_data_generation: return
-        for callback in self._generate_data_subscribers: callback()
-
     def flush_updates(self) -> None:
         with self._lock:
             self._check_for_updated_note_types_and_reset_app_if_found()
@@ -89,20 +84,6 @@ class CacheRunner(Slots):
     def _on_will_be_removed(self, _: Collection, note_ids: Sequence[NoteId]) -> None:
         with self._lock:
             for subscriber in self._will_remove_subscribers: subscriber(note_ids)
-
-    def pause_data_generation(self) -> None:
-        with self._lock:
-            ex_assert.that(not self._pause_data_generation)
-            self._pause_data_generation = True
-
-    def resume_data_generation(self) -> None:
-        with self._lock:
-            ex_assert.that(self._pause_data_generation)
-            self._pause_data_generation = False
-
-    def connect_generate_data_timer(self, flush_updates: Callable[[], None]) -> None:
-        with self._lock:
-            self._generate_data_subscribers.append(flush_updates)
 
     def connect_merge_pending_adds(self, _merge_pending_added_notes: Callable[[], None]) -> None:
         with self._lock:

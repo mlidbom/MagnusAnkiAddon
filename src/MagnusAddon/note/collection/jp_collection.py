@@ -77,5 +77,3 @@ class JPCollection(Slots):
         self.cache_manager.destruct()
 
     def flush_cache_updates(self) -> None: self.cache_manager.flush_updates()
-    def pause_cache_updates(self) -> None: self.cache_manager.pause_data_generation()
-    def resume_cache_updates(self) -> None: self.cache_manager.resume_data_generation()
