@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import time
 from abc import abstractmethod
 from typing import TYPE_CHECKING, Generic, TypeVar
 
@@ -36,7 +35,6 @@ class NoteCache(Generic[TNote, TSnapshot], Slots):
         self._deleted: set[NoteId] = set()
 
         self._flushing = False
-        self._last_deleted_note_time = 0.0
         self._pending_add: list[Note] = []
 
         with StopWatch.log_execution_time(f"pushing {cached_note_type.__name__}s into cache"):
@@ -89,7 +87,6 @@ class NoteCache(Generic[TNote, TSnapshot], Slots):
 
     def _on_will_be_removed(self, note_ids: Sequence[NoteId]) -> None:
         self._deleted.update(note_ids)
-        self._last_deleted_note_time = time.time()
         cached_notes = [self._by_id[note_id] for note_id in note_ids if note_id in self._snapshot_by_id]
         for cached in cached_notes:
             self._remove_from_cache(cached)
