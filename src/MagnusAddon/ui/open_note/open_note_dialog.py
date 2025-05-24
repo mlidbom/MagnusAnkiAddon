@@ -3,7 +3,6 @@ from __future__ import annotations
 import threading
 from typing import TYPE_CHECKING, Callable, Optional
 
-from ankiutils import app
 from ankiutils.app import col
 from note.kanjinote import KanjiNote
 from note.sentences.sentencenote import SentenceNote
