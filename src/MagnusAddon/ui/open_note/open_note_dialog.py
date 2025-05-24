@@ -114,17 +114,13 @@ class NoteSearchDialog(QDialog):
 
         for note in notes:
             for extractor in extractors:
-                try:
-                    field_text = extractor(note)
-                    clean_field = ex_str.strip_html_and_bracket_markup(field_text)
-                    if clean_search in clean_field:
-                        matches.append(note)
-                        if len(matches) >= max_notes:
-                            return matches
-                        break
-                except:
-                    # Skip errors in extraction
-                    continue
+                field_text = extractor(note)
+                clean_field = ex_str.strip_html_and_bracket_markup(field_text)
+                if clean_search in clean_field:
+                    matches.append(note)
+                    if len(matches) >= max_notes:
+                        return matches
+                    break
 
         return matches
 
