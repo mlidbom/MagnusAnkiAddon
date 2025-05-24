@@ -18,7 +18,7 @@ class NoteSearchDialog(QDialog):
     def __init__(self, parent: Optional[QWidget] = None) -> None:
         super().__init__(parent)
         self.setWindowTitle("Find Notes")
-        self.resize(1000, 600)
+        self.resize(1600, 1000)
 
         self.matched_notes: list[JPNote] = []
         self._lock = threading.Lock()
@@ -78,7 +78,7 @@ class NoteSearchDialog(QDialog):
                 search_text,
                 lambda note: note.get_question().lower(),
                 lambda note: note.get_answer().lower(),
-                lambda note: " ".join(note.get_readings_clean()).lower() if isinstance(note, KanjiNote) else ""
+                lambda note: " ".join(note.get_readings_clean()).lower()
             ))
 
             # Search in vocab notes
@@ -88,7 +88,7 @@ class NoteSearchDialog(QDialog):
                 search_text,
                 lambda note: note.get_question().lower(),
                 lambda note: note.get_answer().lower(),
-                lambda note: ", ".join(note.forms.all_set()).lower() if isinstance(note, VocabNote) else ""
+                lambda note: ", ".join(note.forms.all_set()).lower()
             ))
 
             # Search in sentence notes
