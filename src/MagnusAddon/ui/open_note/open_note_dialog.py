@@ -136,9 +136,17 @@ class NoteSearchDialog(QDialog):
         return matches
 
     @staticmethod
-    def _create_item(text: str) -> QTableWidgetItem:
+    def _create_item(text: str, is_question: bool = False) -> QTableWidgetItem:
         item = QTableWidgetItem()
         item.setText(ex_str.strip_html_and_bracket_markup(text))
+
+        # Apply special formatting to question column
+        if is_question:
+            font = item.font()
+            font.setFamily("Meiryo UI")
+            font.setPointSize(int(font.pointSize() * 1.5))  # Increase font size by 50%
+            item.setFont(font)
+
         return item
 
     def _update_results_table(self) -> None:
@@ -151,7 +159,7 @@ class NoteSearchDialog(QDialog):
             self.results_table.setItem(i, 0, QTableWidgetItem(self._get_note_type_display(note)))
             self.results_table.item(i, 0).setData(Qt.ItemDataRole.UserRole, note.get_id())
 
-            self.results_table.setItem(i, 1, self._create_item(note.get_question()))
+            self.results_table.setItem(i, 1, self._create_item(note.get_question(), is_question=True))
             self.results_table.setItem(i, 2, self._create_item(note.get_answer()))
 
     @staticmethod
