@@ -72,8 +72,6 @@ class NoteCache(Generic[TNote, TSnapshot], Slots):
 
     def _on_will_flush(self, backend_note: Note) -> None:
         if backend_note.id and backend_note.id in self._by_id:
-            assert backend_note.id not in self._deleted
-
             cached_note = self._by_id[backend_note.id]
 
             if cached_note.is_flushing:  # our code called flush, we should just make sure the cached data is up to date
@@ -83,6 +81,12 @@ class NoteCache(Generic[TNote, TSnapshot], Slots):
                 with note.flush_guard.pause_flushing():
                     note.update_generated_data()
                     self._refresh_in_cache(note)
+        elif backend_note.id in self._deleted:  # undeleted note
+            self._deleted.remove(backend_note.id)
+            note = self._create_note(backend_note)
+            with note.flush_guard.pause_flushing():
+                note.update_generated_data()
+                self._add_to_cache(note)
 
     def _on_will_be_added(self, backend_note: Note) -> None:
         note = JPNote.note_from_note(backend_note)
@@ -90,8 +94,9 @@ class NoteCache(Generic[TNote, TSnapshot], Slots):
             self._pending_add.append(backend_note)
 
     def _on_will_be_removed(self, note_ids: Sequence[NoteId]) -> None:
-        self._deleted.update(note_ids)
-        cached_notes = [self._by_id[note_id] for note_id in note_ids if note_id in self._snapshot_by_id]
+        my_notes_ids = [note_id for note_id in note_ids if note_id in self._by_id]
+        cached_notes = [self._by_id[note_id] for note_id in my_notes_ids]
+        self._deleted.update(my_notes_ids)
         for cached in cached_notes:
             self._remove_from_cache(cached)
 
