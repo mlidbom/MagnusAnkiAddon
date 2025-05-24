@@ -158,10 +158,15 @@ class NoteSearchDialog(QDialog):
         return "Note"
 
     def on_item_double_clicked(self, item: QListWidgetItem) -> None:
-        """Handle double-click on a result item"""
-        item.data(Qt.ItemDataRole.UserRole)
-        # For now, we'll just close the dialog
-        # In a future implementation, this is where you'd open the note
+        """Handle double-click on a result item to open the note in the previewer"""
+        # Get the note ID from the item's user data
+        note_id = item.data(Qt.ItemDataRole.UserRole)
+        if note_id:
+            from ankiutils import query_builder, search_executor
+            # Use the search executor to lookup the note and show it in the previewer
+            search_executor.do_lookup_and_show_previewer(query_builder.open_note_by_id(note_id))
+
+        # Close the dialog
         self.accept()
 
     @classmethod

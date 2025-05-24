@@ -140,5 +140,8 @@ def kanji_with_radicals_in_string(search:str) -> str:
 def open_card_by_id(card_id:CardId) -> str:
     return f"cid:{card_id}"
 
+def open_note_by_id(note_id:NoteId) -> str:
+    return f"nid:{note_id}"
+
 def kanji_with_meaning(search:str) -> str:
     return f"""{note_kanji} ({f_answer}:*{search}*)"""
