@@ -76,8 +76,6 @@ class NoteSearchDialog(QDialog):
 
             max_notes = 60
 
-            def note_question(note: JPNote) -> str: return ex_str.strip_html_and_bracket_markup(note.get_question())
-            def note_answer(note: JPNote) -> str: return ex_str.strip_html_and_bracket_markup(note.get_answer())
             def kanji_readings(note: KanjiNote) -> str: return " ".join(note.get_readings_clean())
             def vocab_readings(vocab: VocabNote) -> str: return " ".join(vocab.readings.get())
             def vocab_forms(vocab: VocabNote) -> str: return " ".join(vocab.forms.without_noise_characters())
@@ -87,8 +85,6 @@ class NoteSearchDialog(QDialog):
                 max_notes - len(matching_notes),
                 col().kanji.all(),
                 search_text,
-                note_question,
-                note_answer,
                 kanji_readings
             ))
 
@@ -97,8 +93,6 @@ class NoteSearchDialog(QDialog):
                 max_notes - len(matching_notes),
                 col().vocab.all(),
                 search_text,
-                note_question,
-                note_answer,
                 vocab_forms,
                 vocab_readings
             ))
@@ -107,9 +101,7 @@ class NoteSearchDialog(QDialog):
             matching_notes.extend(self._search_in_notes(
                 max_notes - len(matching_notes),
                 col().sentences.all(),
-                search_text,
-                note_question,
-                note_answer,
+                search_text
             ))
 
             self.matched_notes = matching_notes
@@ -123,10 +115,15 @@ class NoteSearchDialog(QDialog):
         if max_notes <= 0:
             return []
 
+        def note_question(note_: JPNote) -> str: return ex_str.strip_html_and_bracket_markup(note_.get_question())
+        def note_answer(note_: JPNote) -> str: return ex_str.strip_html_and_bracket_markup(note_.get_answer())
+
+        total_extractors = extractors + (note_question, note_answer)
+
         clean_search = ex_str.strip_html_and_bracket_markup(search_text)
 
         for note in notes:
-            for extractor in extractors:
+            for extractor in total_extractors:
                 field_text = extractor(note)
                 clean_field = ex_str.strip_html_and_bracket_markup(field_text)
                 if clean_search in clean_field:
