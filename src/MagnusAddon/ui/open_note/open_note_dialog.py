@@ -108,7 +108,7 @@ class NoteSearchDialog(QDialog):
             ))
 
             self.matched_notes = matching_notes
-            self._update_results_table(search_text)
+            self._update_results_table()
 
     @staticmethod
     def _search_in_notes(max_notes: int, notes: list[JPNote], search_text: str, *extractors: Callable[[JPNote], str]) -> list[JPNote]:
@@ -131,53 +131,24 @@ class NoteSearchDialog(QDialog):
 
         return matches
 
-    def _create_highlighted_item(self, text: str, search_text: str) -> QTableWidgetItem:
-        """Create a table item with the search text highlighted"""
+    def _create_item(self, text: str) -> QTableWidgetItem:
         item = QTableWidgetItem()
-
-        # Clean the text for display
         clean_text = ex_str.strip_html_and_bracket_markup(text)
-
-        # Set the basic item text
         item.setText(clean_text)
-
-        # If the search text is in the cleaned text, highlight it
-        lower_clean_text = clean_text.lower()
-        lower_search_text = search_text.lower()
-
-        if lower_search_text in lower_clean_text:
-            # Create a highlighted font
-            font = QFont()
-            font.setBold(True)
-            item.setFont(font)
-
-            # Set a background color for the whole cell to indicate a match
-            item.setBackground(QBrush(QColor(255, 255, 0, 40)))  # Light yellow
-
         return item
 
-    def _update_results_table(self, search_text: str) -> None:
+    def _update_results_table(self) -> None:
         self.results_table.setRowCount(0)
 
         for i, note in enumerate(self.matched_notes):
             self.results_table.insertRow(i)
 
             # Create type column
-            note_type = self._get_note_type_display(note)
-            type_item = QTableWidgetItem(note_type)
-            self.results_table.setItem(i, 0, type_item)
-
-            # Create question column with highlighting
-            question_item = self._create_highlighted_item(note.get_question(), search_text)
-            self.results_table.setItem(i, 1, question_item)
-
-            # Create answer column with highlighting
-            answer_item = self._create_highlighted_item(note.get_answer(), search_text)
-            self.results_table.setItem(i, 2, answer_item)
-
-            # Store the note ID in the row
-            self.results_table.setItem(i, 0, QTableWidgetItem(note_type))
+            self.results_table.setItem(i, 0, QTableWidgetItem(self._get_note_type_display(note)))
             self.results_table.item(i, 0).setData(Qt.ItemDataRole.UserRole, note.get_id())
+
+            self.results_table.setItem(i, 1, self._create_item(note.get_question()))
+            self.results_table.setItem(i, 2, self._create_item(note.get_answer()))
 
     @staticmethod
     def _get_note_type_display(note: JPNote) -> str:
