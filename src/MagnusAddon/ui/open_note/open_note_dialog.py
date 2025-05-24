@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 import threading
-from typing import Callable, Optional, TypeVar
+from typing import Callable, cast, Optional, TypeVar
 
+from anki.notes import NoteId
 from ankiutils.app import col
 from note.jpnote import JPNote
 from note.kanjinote import KanjiNote
@@ -192,10 +193,10 @@ class NoteSearchDialog(QDialog):
 
     def open_note_at_row(self, row: int) -> None:
         """Open the note at the specified row"""
-        note_id = self.results_table.item(row, 0).data(Qt.ItemDataRole.UserRole)
+        note_id:NoteId = cast(NoteId, self.results_table.item(row, 0).data(Qt.ItemDataRole.UserRole))
         if note_id:
             from ankiutils import query_builder, search_executor
-            search_executor.do_lookup_and_show_previewer(query_builder.open_note_by_id(note_id))
+            search_executor.do_lookup_and_show_previewer(query_builder.notes_by_id([note_id]))
 
     @classmethod
     def show_dialog(cls, parent: Optional[QWidget] = None) -> None:
