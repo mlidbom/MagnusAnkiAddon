@@ -68,15 +68,6 @@ class NoteSearchDialog(QDialog):
         collection = app.col()
         all_notes: list[JPNote] = []
 
-        # Search in vocab notes
-        all_notes.extend(self._search_in_notes(
-            collection.vocab.all(),
-            search_text,
-            lambda note: note.get_question().lower(),
-            lambda note: note.get_answer().lower(),
-            lambda note: ", ".join(note.forms.all_set()).lower() if isinstance(note, VocabNote) else ""
-        ))
-
         # Search in kanji notes
         all_notes.extend(self._search_in_notes(
             collection.kanji.all(),
@@ -84,6 +75,15 @@ class NoteSearchDialog(QDialog):
             lambda note: note.get_question().lower(),
             lambda note: note.get_answer().lower(),
             lambda note: " ".join(note.get_readings_clean()).lower() if isinstance(note, KanjiNote) else ""
+        ))
+
+        # Search in vocab notes
+        all_notes.extend(self._search_in_notes(
+            collection.vocab.all(),
+            search_text,
+            lambda note: note.get_question().lower(),
+            lambda note: note.get_answer().lower(),
+            lambda note: ", ".join(note.forms.all_set()).lower() if isinstance(note, VocabNote) else ""
         ))
 
         # Search in sentence notes
