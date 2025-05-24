@@ -162,6 +162,8 @@ class NoteSearchDialog(QDialog):
             self.results_table.setItem(i, 1, self._create_item(note.get_question(), is_question=True))
             self.results_table.setItem(i, 2, self._create_item(note.get_answer()))
 
+        self.results_table.resizeColumnsToContents()
+
     @staticmethod
     def _get_note_type_display(note: JPNote) -> str:
         """Get a display name for the note type"""
