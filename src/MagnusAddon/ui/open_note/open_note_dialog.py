@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import threading
-from typing import Callable, cast, Optional, TypeVar
+from typing import Callable, Optional, TypeVar, cast
 
 from anki.notes import NoteId
 from ankiutils.app import col
@@ -177,26 +177,25 @@ class NoteSearchDialog(QDialog):
         return "Note"
 
     def on_selection_changed(self) -> None:
-        """Handle selection changes (via keyboard or mouse clicks)"""
         selected_rows = self.results_table.selectedItems()
         if not selected_rows:
             return
 
-        # Get the row of the first selected item
-        row = selected_rows[0].row()
-        self.open_note_at_row(row)
+        self.open_notes_at_rows({item.row() for item in selected_rows})
 
     def on_cell_double_clicked(self, row: int, _column: int) -> None:
-        """Handle double-clicking on a cell"""
-        self.open_note_at_row(row)
-        # No longer closing the dialog with self.accept()
+        self.open_notes_at_rows({row})
 
-    def open_note_at_row(self, row: int) -> None:
-        """Open the note at the specified row"""
-        note_id:NoteId = cast(NoteId, self.results_table.item(row, 0).data(Qt.ItemDataRole.UserRole))
-        if note_id:
+    def open_notes_at_rows(self, rows: set[int]) -> None:
+        note_ids = []
+        for row in rows:
+            note_id = cast(NoteId, self.results_table.item(row, 0).data(Qt.ItemDataRole.UserRole))
+            if note_id:
+                note_ids.append(note_id)
+
+        if note_ids:
             from ankiutils import query_builder, search_executor
-            search_executor.do_lookup_and_show_previewer(query_builder.notes_by_id([note_id]))
+            search_executor.do_lookup_and_show_previewer(query_builder.notes_by_id(note_ids))
 
     @classmethod
     def show_dialog(cls, parent: Optional[QWidget] = None) -> None:
