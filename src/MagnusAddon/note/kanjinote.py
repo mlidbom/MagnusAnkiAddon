@@ -315,3 +315,6 @@ class KanjiNote(WaniNote, Slots):
         note.update_generated_data()
         app.anki_collection().addNote(backend_note)
         return note
+
+    def get_romaji_readings(self) -> str:
+       return kana_utils.romanize(", ".join(self.get_readings_clean()))

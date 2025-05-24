@@ -67,6 +67,7 @@ def is_only_katakana(text: str) -> bool:
 
 _kakasi = pykakasi.kakasi()
 def romanize(text:str) -> str:
+    if text == "": return ""
     if text[-1] == "っ" or text[-1] == "ッ":
         text = text[:-1]
 

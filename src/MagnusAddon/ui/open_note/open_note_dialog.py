@@ -81,13 +81,15 @@ class NoteSearchDialog(QDialog):
             def vocab_readings(vocab: VocabNote) -> str: return " ".join(vocab.readings.get())
             def vocab_forms(vocab: VocabNote) -> str: return " ".join(vocab.forms.without_noise_characters())
             def question_length(note: JPNote) -> int: return len(note.get_question())
+            def kanji_romaji_readings(note: KanjiNote) -> str: return note.get_romaji_readings()
 
             # Search in kanji notes
             matching_notes.extend(self._search_in_notes(
                 max_notes - len(matching_notes),
                 col().kanji.all(),
                 search_text,
-                kanji_readings
+                kanji_readings,
+                kanji_romaji_readings
             ))
 
             # Search in vocab notes
