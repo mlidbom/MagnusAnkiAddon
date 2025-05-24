@@ -8,7 +8,8 @@ from note.kanjinote import KanjiNote
 from note.sentences.sentencenote import SentenceNote
 from note.vocabulary.vocabnote import VocabNote
 from PyQt6.QtCore import Qt, QTimer, pyqtBoundSignal
-from PyQt6.QtWidgets import QDialog, QHBoxLayout, QLabel, QLineEdit, QListWidget, QListWidgetItem, QVBoxLayout, QWidget
+from PyQt6.QtGui import QBrush, QColor, QFont
+from PyQt6.QtWidgets import QDialog, QHBoxLayout, QHeaderView, QLabel, QLineEdit, QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget
 from sysutils import ex_str, typed
 
 if TYPE_CHECKING:
@@ -34,19 +35,25 @@ class NoteSearchDialog(QDialog):
         search_layout.addWidget(self.search_input)
         layout.addLayout(search_layout)
 
-        # Create results list
-        self.results_list = QListWidget()
-        layout.addWidget(self.results_list)
+        # Create results table (instead of list)
+        self.results_table = QTableWidget()
+        self.results_table.setColumnCount(3)
+        self.results_table.setHorizontalHeaderLabels(["Type", "Question", "Answer"])
+        self.results_table.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
+        self.results_table.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
+        self.results_table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
+        self.results_table.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
+        layout.addWidget(self.results_table)
 
         # Setup delayed searching (for real-time results as user types)
         self.search_timer = QTimer()
         self.search_timer.setSingleShot(True)
-        self.search_timer.setInterval(200)  # 300ms delay
+        self.search_timer.setInterval(200)  # 200ms delay
         typed.checked_cast(pyqtBoundSignal, self.search_timer.timeout).connect(self.perform_search)
 
         # Connect signals
         typed.checked_cast(pyqtBoundSignal, self.search_input.textChanged).connect(self.on_search_text_changed)
-        typed.checked_cast(pyqtBoundSignal, self.results_list.itemDoubleClicked).connect(self.on_item_double_clicked)
+        typed.checked_cast(pyqtBoundSignal, self.results_table.cellDoubleClicked).connect(self.on_cell_double_clicked)
 
         # Initialize the UI
         self.search_input.setFocus()
@@ -58,10 +65,10 @@ class NoteSearchDialog(QDialog):
 
     def perform_search(self) -> None:
         with self._lock:
-            """Perform the actual search and update the results list"""
+            """Perform the actual search and update the results table"""
             search_text = self.search_input.text().strip().lower()
             if not search_text:
-                self.results_list.clear()
+                self.results_table.setRowCount(0)
                 self.matched_notes = []
                 return
 
@@ -101,7 +108,7 @@ class NoteSearchDialog(QDialog):
             ))
 
             self.matched_notes = matching_notes
-            self._update_results_list()
+            self._update_results_table(search_text)
 
     @staticmethod
     def _search_in_notes(max_notes: int, notes: list[JPNote], search_text: str, *extractors: Callable[[JPNote], str]) -> list[JPNote]:
@@ -124,21 +131,53 @@ class NoteSearchDialog(QDialog):
 
         return matches
 
-    def _update_results_list(self) -> None:
-        self.results_list.clear()
+    def _create_highlighted_item(self, text: str, search_text: str) -> QTableWidgetItem:
+        """Create a table item with the search text highlighted"""
+        item = QTableWidgetItem()
 
-        for note in self.matched_notes:
-            # Create a display string for the note
+        # Clean the text for display
+        clean_text = ex_str.strip_html_and_bracket_markup(text)
+
+        # Set the basic item text
+        item.setText(clean_text)
+
+        # If the search text is in the cleaned text, highlight it
+        lower_clean_text = clean_text.lower()
+        lower_search_text = search_text.lower()
+
+        if lower_search_text in lower_clean_text:
+            # Create a highlighted font
+            font = QFont()
+            font.setBold(True)
+            item.setFont(font)
+
+            # Set a background color for the whole cell to indicate a match
+            item.setBackground(QBrush(QColor(255, 255, 0, 40)))  # Light yellow
+
+        return item
+
+    def _update_results_table(self, search_text: str) -> None:
+        self.results_table.setRowCount(0)
+
+        for i, note in enumerate(self.matched_notes):
+            self.results_table.insertRow(i)
+
+            # Create type column
             note_type = self._get_note_type_display(note)
-            question = ex_str.strip_html_and_bracket_markup(note.get_question())
-            answer = ex_str.strip_html_and_bracket_markup(note.get_answer())
+            type_item = QTableWidgetItem(note_type)
+            self.results_table.setItem(i, 0, type_item)
 
-            display_text = f"{note_type}: {question} - {answer}"
+            # Create question column with highlighting
+            question_item = self._create_highlighted_item(note.get_question(), search_text)
+            self.results_table.setItem(i, 1, question_item)
 
-            # Create and add the list item
-            item = QListWidgetItem(display_text)
-            item.setData(Qt.ItemDataRole.UserRole, note.get_id())
-            self.results_list.addItem(item)
+            # Create answer column with highlighting
+            answer_item = self._create_highlighted_item(note.get_answer(), search_text)
+            self.results_table.setItem(i, 2, answer_item)
+
+            # Store the note ID in the row
+            self.results_table.setItem(i, 0, QTableWidgetItem(note_type))
+            self.results_table.item(i, 0).setData(Qt.ItemDataRole.UserRole, note.get_id())
 
     @staticmethod
     def _get_note_type_display(note: JPNote) -> str:
@@ -151,8 +190,8 @@ class NoteSearchDialog(QDialog):
             return "Sentence"
         return "Note"
 
-    def on_item_double_clicked(self, item: QListWidgetItem) -> None:
-        note_id = item.data(Qt.ItemDataRole.UserRole)
+    def on_cell_double_clicked(self, row: int, column: int) -> None:
+        note_id = self.results_table.item(row, 0).data(Qt.ItemDataRole.UserRole)
         if note_id:
             from ankiutils import query_builder, search_executor
             search_executor.do_lookup_and_show_previewer(query_builder.open_note_by_id(note_id))
