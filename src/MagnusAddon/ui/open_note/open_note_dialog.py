@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 import threading
-from typing import TYPE_CHECKING, Callable, Optional
+from typing import Callable, Optional, TypeVar
 
 from ankiutils.app import col
+from note.jpnote import JPNote
 from note.kanjinote import KanjiNote
 from note.sentences.sentencenote import SentenceNote
 from note.vocabulary.vocabnote import VocabNote
@@ -11,8 +12,6 @@ from PyQt6.QtCore import Qt, QTimer, pyqtBoundSignal
 from PyQt6.QtWidgets import QDialog, QHBoxLayout, QHeaderView, QLabel, QLineEdit, QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget
 from sysutils import ex_str, typed
 
-if TYPE_CHECKING:
-    from note.jpnote import JPNote
 
 class NoteSearchDialog(QDialog):
     def __init__(self, parent: Optional[QWidget] = None) -> None:
@@ -77,14 +76,20 @@ class NoteSearchDialog(QDialog):
 
             max_notes = 60
 
+            def note_question(note: JPNote) -> str: return ex_str.strip_html_and_bracket_markup(note.get_question())
+            def note_answer(note: JPNote) -> str: return ex_str.strip_html_and_bracket_markup(note.get_answer())
+            def kanji_readings(note: KanjiNote) -> str: return " ".join(note.get_readings_clean())
+            def vocab_readings(vocab: VocabNote) -> str: return " ".join(vocab.readings.get())
+            def vocab_forms(vocab: VocabNote) -> str: return " ".join(vocab.forms.without_noise_characters())
+
             # Search in kanji notes
             matching_notes.extend(self._search_in_notes(
                 max_notes - len(matching_notes),
                 col().kanji.all(),
                 search_text,
-                lambda note: note.get_question().lower(),
-                lambda note: note.get_answer().lower(),
-                lambda note: " ".join(note.get_readings_clean()).lower()
+                note_question,
+                note_answer,
+                kanji_readings
             ))
 
             # Search in vocab notes
@@ -92,9 +97,10 @@ class NoteSearchDialog(QDialog):
                 max_notes - len(matching_notes),
                 col().vocab.all(),
                 search_text,
-                lambda note: note.get_question().lower(),
-                lambda note: note.get_answer().lower(),
-                lambda note: ", ".join(note.forms.all_set()).lower()
+                note_question,
+                note_answer,
+                vocab_forms,
+                vocab_readings
             ))
 
             # Search in sentence notes
@@ -102,15 +108,16 @@ class NoteSearchDialog(QDialog):
                 max_notes - len(matching_notes),
                 col().sentences.all(),
                 search_text,
-                lambda note: note.get_question().lower(),
-                lambda note: note.get_answer().lower()
+                note_question,
+                note_answer,
             ))
 
             self.matched_notes = matching_notes
             self._update_results_table()
 
+    TNote: TypeVar = TypeVar("TNote", bound=JPNote)
     @staticmethod
-    def _search_in_notes(max_notes: int, notes: list[JPNote], search_text: str, *extractors: Callable[[JPNote], str]) -> list[JPNote]:
+    def _search_in_notes(max_notes: int, notes: list[TNote], search_text: str, *extractors: Callable[[TNote], str]) -> list[JPNote]:
         matches: list[JPNote] = []
 
         if max_notes <= 0:
@@ -165,7 +172,7 @@ class NoteSearchDialog(QDialog):
         selected_rows = self.results_table.selectedItems()
         if not selected_rows:
             return
-            
+
         # Get the row of the first selected item
         row = selected_rows[0].row()
         self.open_note_at_row(row)
