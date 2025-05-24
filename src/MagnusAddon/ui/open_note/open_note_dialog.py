@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import threading
 from typing import TYPE_CHECKING, Callable, Optional
 
 from ankiutils import app
@@ -20,6 +21,7 @@ class NoteSearchDialog(QDialog):
         self.resize(1000, 600)
 
         self.matched_notes: list[JPNote] = []
+        self._lock = threading.Lock()
 
         layout = QVBoxLayout(self)
 
@@ -50,54 +52,62 @@ class NoteSearchDialog(QDialog):
         self.search_input.setFocus()
 
     def on_search_text_changed(self, text: str) -> None:
+        if self.search_timer.isActive():
+            self.search_timer.stop()
         self.search_timer.start()
 
     def perform_search(self) -> None:
-        """Perform the actual search and update the results list"""
-        search_text = self.search_input.text().strip().lower()
-        if not search_text:
-            self.results_list.clear()
-            self.matched_notes = []
-            return
+        with self._lock:
+            """Perform the actual search and update the results list"""
+            search_text = self.search_input.text().strip().lower()
+            if not search_text:
+                self.results_list.clear()
+                self.matched_notes = []
+                return
 
-        # Get the JP collection
-        collection = app.col()
-        all_notes: list[JPNote] = []
+            # Get the JP collection
+            collection = app.col()
+            matching_notes: list[JPNote] = []
 
-        # Search in kanji notes
-        all_notes.extend(self._search_in_notes(
-            collection.kanji.all(),
-            search_text,
-            lambda note: note.get_question().lower(),
-            lambda note: note.get_answer().lower(),
-            lambda note: " ".join(note.get_readings_clean()).lower() if isinstance(note, KanjiNote) else ""
-        ))
+            max_notes = 30
 
-        # Search in vocab notes
-        all_notes.extend(self._search_in_notes(
-            collection.vocab.all(),
-            search_text,
-            lambda note: note.get_question().lower(),
-            lambda note: note.get_answer().lower(),
-            lambda note: ", ".join(note.forms.all_set()).lower() if isinstance(note, VocabNote) else ""
-        ))
+            # Search in kanji notes
+            matching_notes.extend(self._search_in_notes(
+                max_notes - len(matching_notes),
+                collection.kanji.all(),
+                search_text,
+                lambda note: note.get_question().lower(),
+                lambda note: note.get_answer().lower(),
+                lambda note: " ".join(note.get_readings_clean()).lower() if isinstance(note, KanjiNote) else ""
+            ))
 
-        # Search in sentence notes
-        all_notes.extend(self._search_in_notes(
-            collection.sentences.all(),
-            search_text,
-            lambda note: note.get_question().lower(),
-            lambda note: note.get_answer().lower()
-        ))
+            # Search in vocab notes
+            matching_notes.extend(self._search_in_notes(
+                max_notes - len(matching_notes),
+                collection.vocab.all(),
+                search_text,
+                lambda note: note.get_question().lower(),
+                lambda note: note.get_answer().lower(),
+                lambda note: ", ".join(note.forms.all_set()).lower() if isinstance(note, VocabNote) else ""
+            ))
 
-        self.matched_notes = all_notes
-        self._update_results_list()
+            # Search in sentence notes
+            matching_notes.extend(self._search_in_notes(
+                max_notes - len(matching_notes),
+                collection.sentences.all(),
+                search_text,
+                lambda note: note.get_question().lower(),
+                lambda note: note.get_answer().lower()
+            ))
 
-    def _search_in_notes(self, notes: list[JPNote], search_text: str, *extractors: Callable[[JPNote], str]) -> list[JPNote]:
+            self.matched_notes = matching_notes
+            self._update_results_list()
+
+    @staticmethod
+    def _search_in_notes(max_notes: int, notes: list[JPNote], search_text: str, *extractors: Callable[[JPNote], str]) -> list[JPNote]:
         matches: list[JPNote] = []
-        max_notes = 30
 
-        if len(self.matched_notes) >= max_notes:
+        if max_notes <= 0:
             return []
 
         clean_search = ex_str.strip_html_and_bracket_markup(search_text)
@@ -109,10 +119,8 @@ class NoteSearchDialog(QDialog):
                     clean_field = ex_str.strip_html_and_bracket_markup(field_text)
                     if clean_search in clean_field:
                         matches.append(note)
-                        # Check if we've reached our limit with this new match
-                        if len(self.matched_notes) + len(matches) >= max_notes:
-                            # Return only enough matches to reach the max limit
-                            return matches[:max_notes - len(self.matched_notes)]
+                        if len(matches) >= max_notes:
+                            return matches
                         break
                 except:
                     # Skip errors in extraction
