@@ -53,6 +53,8 @@ class NoteSearchDialog(QDialog):
         # Connect signals
         typed.checked_cast(pyqtBoundSignal, self.search_input.textChanged).connect(self.on_search_text_changed)
         typed.checked_cast(pyqtBoundSignal, self.results_table.cellDoubleClicked).connect(self.on_cell_double_clicked)
+        # Add selection change signal to handle keyboard/mouse selection
+        typed.checked_cast(pyqtBoundSignal, self.results_table.itemSelectionChanged).connect(self.on_selection_changed)
 
         self.search_input.setFocus()
 
@@ -158,13 +160,27 @@ class NoteSearchDialog(QDialog):
             return "Sentence"
         return "Note"
 
+    def on_selection_changed(self) -> None:
+        """Handle selection changes (via keyboard or mouse clicks)"""
+        selected_rows = self.results_table.selectedItems()
+        if not selected_rows:
+            return
+            
+        # Get the row of the first selected item
+        row = selected_rows[0].row()
+        self.open_note_at_row(row)
+
     def on_cell_double_clicked(self, row: int, _column: int) -> None:
+        """Handle double-clicking on a cell"""
+        self.open_note_at_row(row)
+        # No longer closing the dialog with self.accept()
+
+    def open_note_at_row(self, row: int) -> None:
+        """Open the note at the specified row"""
         note_id = self.results_table.item(row, 0).data(Qt.ItemDataRole.UserRole)
         if note_id:
             from ankiutils import query_builder, search_executor
             search_executor.do_lookup_and_show_previewer(query_builder.open_note_by_id(note_id))
-
-        self.accept()
 
     @classmethod
     def show_dialog(cls, parent: Optional[QWidget] = None) -> None:
