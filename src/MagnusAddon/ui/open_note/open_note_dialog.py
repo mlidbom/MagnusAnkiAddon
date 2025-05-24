@@ -79,6 +79,7 @@ class NoteSearchDialog(QDialog):
             def kanji_readings(note: KanjiNote) -> str: return " ".join(note.get_readings_clean())
             def vocab_readings(vocab: VocabNote) -> str: return " ".join(vocab.readings.get())
             def vocab_forms(vocab: VocabNote) -> str: return " ".join(vocab.forms.without_noise_characters())
+            def question_length(note: JPNote) -> int: return len(note.get_question())
 
             # Search in kanji notes
             matching_notes.extend(self._search_in_notes(
@@ -91,7 +92,7 @@ class NoteSearchDialog(QDialog):
             # Search in vocab notes
             matching_notes.extend(self._search_in_notes(
                 max_notes - len(matching_notes),
-                col().vocab.all(),
+                sorted(col().vocab.all(), key=question_length),
                 search_text,
                 vocab_forms,
                 vocab_readings
@@ -100,7 +101,7 @@ class NoteSearchDialog(QDialog):
             # Search in sentence notes
             matching_notes.extend(self._search_in_notes(
                 max_notes - len(matching_notes),
-                col().sentences.all(),
+                sorted(col().sentences.all(), key=question_length),
                 search_text
             ))
 
