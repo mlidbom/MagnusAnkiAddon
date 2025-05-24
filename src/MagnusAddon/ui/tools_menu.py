@@ -8,13 +8,14 @@ from aqt import qconnect
 from batches import local_note_updater
 from configuration.configuration import show_japanese_options
 from configuration.readings_mapping_dialog import show_readings_mappings
-from PyQt6.QtGui import QAction
+from PyQt6.QtGui import QAction, QKeySequence
 from PyQt6.QtWidgets import QInputDialog, QLineEdit, QMenu
 from sysutils import object_instance_tracker
 from sysutils.typed import non_optional
 from ui.menus.menu_utils import shortcutfinger
 from ui.menus.open_in_anki import build_open_in_anki_menu
 from ui.menus.web_search import build_web_search_menu
+from ui.open_note.open_note_dialog import NoteSearchDialog
 from wanikani import note_importer
 from wanikani.wani_downloader import WaniDownloader
 
@@ -54,6 +55,7 @@ def build_lookup_menu(lookup_menu: QMenu) -> None:
         text, ok = QInputDialog.getText(None, "input", "enter text", QLineEdit.EchoMode.Normal, "")
         return text if ok and text else ""
 
+    lookup_menu.addAction(shortcutfinger.home1("Open note"), QKeySequence("Ctrl+o"), lambda: NoteSearchDialog.show_dialog())
     build_open_in_anki_menu(non_optional(lookup_menu.addMenu(shortcutfinger.home2("Anki"))), get_text_input)
     build_web_search_menu(non_optional(lookup_menu.addMenu(shortcutfinger.home3("Web"))), get_text_input)
 
