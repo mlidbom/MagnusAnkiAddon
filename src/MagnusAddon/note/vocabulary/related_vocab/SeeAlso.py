@@ -22,20 +22,20 @@ class SeeAlso(Slots):
     def notes(self) -> list[VocabNote]:
         return col().vocab.with_any_form_in_prefer_exact_match(list(self.strings()))
 
-    def add(self, antonym: str) -> None:
-        self.strings().add(antonym)
+    def add(self, to_add: str) -> None:
+        self.strings().add(to_add)
 
-        for similar in app.col().vocab.with_question(antonym):
-            if self._vocab().get_question() not in similar.related_notes.see_also.strings():
-                similar.related_notes.see_also.add(self._vocab().get_question())
+        for added_note in app.col().vocab.with_question(to_add):
+            if self._vocab().get_question() not in added_note.related_notes.see_also.strings():
+                added_note.related_notes.see_also.add(self._vocab().get_question())
 
         self._data.save()
 
     def remove(self, to_remove: str) -> None:
         self.strings().remove(to_remove)
 
-        for similar in app.col().vocab.with_question(to_remove):
-            if self._vocab().get_question() in similar.related_notes.see_also.strings():
-                similar.related_notes.see_also.remove(self._vocab().get_question())
+        for removed_note in app.col().vocab.with_question(to_remove):
+            if self._vocab().get_question() in removed_note.related_notes.see_also.strings():
+                removed_note.related_notes.see_also.remove(self._vocab().get_question())
 
         self._data.save()
