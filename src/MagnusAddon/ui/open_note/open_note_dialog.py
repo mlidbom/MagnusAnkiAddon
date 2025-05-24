@@ -4,11 +4,11 @@ import threading
 from typing import TYPE_CHECKING, Callable, Optional
 
 from ankiutils import app
+from ankiutils.app import col
 from note.kanjinote import KanjiNote
 from note.sentences.sentencenote import SentenceNote
 from note.vocabulary.vocabnote import VocabNote
 from PyQt6.QtCore import Qt, QTimer, pyqtBoundSignal
-from PyQt6.QtGui import QBrush, QColor, QFont
 from PyQt6.QtWidgets import QDialog, QHBoxLayout, QHeaderView, QLabel, QLineEdit, QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget
 from sysutils import ex_str, typed
 
@@ -19,7 +19,7 @@ class NoteSearchDialog(QDialog):
     def __init__(self, parent: Optional[QWidget] = None) -> None:
         super().__init__(parent)
         self.setWindowTitle("Find Notes")
-        self.resize(1600, 1000)
+        self.resize(1800, 1100)
 
         self.matched_notes: list[JPNote] = []
         self._lock = threading.Lock()
@@ -35,7 +35,7 @@ class NoteSearchDialog(QDialog):
         search_layout.addWidget(self.search_input)
         layout.addLayout(search_layout)
 
-        # Create results table (instead of list)
+        # Create results table
         self.results_table = QTableWidget()
         self.results_table.setColumnCount(3)
         self.results_table.setHorizontalHeaderLabels(["Type", "Question", "Answer"])
@@ -55,10 +55,9 @@ class NoteSearchDialog(QDialog):
         typed.checked_cast(pyqtBoundSignal, self.search_input.textChanged).connect(self.on_search_text_changed)
         typed.checked_cast(pyqtBoundSignal, self.results_table.cellDoubleClicked).connect(self.on_cell_double_clicked)
 
-        # Initialize the UI
         self.search_input.setFocus()
 
-    def on_search_text_changed(self, text: str) -> None:
+    def on_search_text_changed(self, _text: str) -> None:
         if self.search_timer.isActive():
             self.search_timer.stop()
         self.search_timer.start()
@@ -73,15 +72,14 @@ class NoteSearchDialog(QDialog):
                 return
 
             # Get the JP collection
-            collection = app.col()
             matching_notes: list[JPNote] = []
 
-            max_notes = 30
+            max_notes = 60
 
             # Search in kanji notes
             matching_notes.extend(self._search_in_notes(
                 max_notes - len(matching_notes),
-                collection.kanji.all(),
+                col().kanji.all(),
                 search_text,
                 lambda note: note.get_question().lower(),
                 lambda note: note.get_answer().lower(),
@@ -91,7 +89,7 @@ class NoteSearchDialog(QDialog):
             # Search in vocab notes
             matching_notes.extend(self._search_in_notes(
                 max_notes - len(matching_notes),
-                collection.vocab.all(),
+                col().vocab.all(),
                 search_text,
                 lambda note: note.get_question().lower(),
                 lambda note: note.get_answer().lower(),
@@ -101,7 +99,7 @@ class NoteSearchDialog(QDialog):
             # Search in sentence notes
             matching_notes.extend(self._search_in_notes(
                 max_notes - len(matching_notes),
-                collection.sentences.all(),
+                col().sentences.all(),
                 search_text,
                 lambda note: note.get_question().lower(),
                 lambda note: note.get_answer().lower()
@@ -131,10 +129,10 @@ class NoteSearchDialog(QDialog):
 
         return matches
 
-    def _create_item(self, text: str) -> QTableWidgetItem:
+    @staticmethod
+    def _create_item(text: str) -> QTableWidgetItem:
         item = QTableWidgetItem()
-        clean_text = ex_str.strip_html_and_bracket_markup(text)
-        item.setText(clean_text)
+        item.setText(ex_str.strip_html_and_bracket_markup(text))
         return item
 
     def _update_results_table(self) -> None:
@@ -161,7 +159,7 @@ class NoteSearchDialog(QDialog):
             return "Sentence"
         return "Note"
 
-    def on_cell_double_clicked(self, row: int, column: int) -> None:
+    def on_cell_double_clicked(self, row: int, _column: int) -> None:
         note_id = self.results_table.item(row, 0).data(Qt.ItemDataRole.UserRole)
         if note_id:
             from ankiutils import query_builder, search_executor
