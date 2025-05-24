@@ -13,7 +13,6 @@ from sysutils import ex_str, typed
 if TYPE_CHECKING:
     from note.jpnote import JPNote
 
-
 class NoteSearchDialog(QDialog):
     def __init__(self, parent: Optional[QWidget] = None) -> None:
         super().__init__(parent)
@@ -102,6 +101,13 @@ class NoteSearchDialog(QDialog):
         """Search in a collection of notes using multiple field extractors"""
         matches: list[JPNote] = []
 
+        # Define max limit of notes to find
+        max_notes = 30
+
+        # If we've already reached the limit from previous searches, return empty list
+        if len(self.matched_notes) >= max_notes:
+            return []
+
         # Clean the search text for more accurate matching
         clean_search = ex_str.strip_html_and_bracket_markup(search_text)
 
@@ -112,6 +118,10 @@ class NoteSearchDialog(QDialog):
                     clean_field = ex_str.strip_html_and_bracket_markup(field_text)
                     if clean_search in clean_field:
                         matches.append(note)
+                        # Check if we've reached our limit with this new match
+                        if len(self.matched_notes) + len(matches) >= max_notes:
+                            # Return only enough matches to reach the max limit
+                            return matches[:max_notes - len(self.matched_notes)]
                         break
                 except:
                     # Skip errors in extraction
@@ -136,7 +146,8 @@ class NoteSearchDialog(QDialog):
             item.setData(Qt.ItemDataRole.UserRole, note.get_id())
             self.results_list.addItem(item)
 
-    def _get_note_type_display(self, note: JPNote) -> str:
+    @staticmethod
+    def _get_note_type_display(note: JPNote) -> str:
         """Get a display name for the note type"""
         if isinstance(note, VocabNote):
             return "Vocab"
