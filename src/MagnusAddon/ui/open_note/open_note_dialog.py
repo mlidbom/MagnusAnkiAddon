@@ -17,12 +17,10 @@ class NoteSearchDialog(QDialog):
     def __init__(self, parent: Optional[QWidget] = None) -> None:
         super().__init__(parent)
         self.setWindowTitle("Find Notes")
-        self.resize(600, 400)
+        self.resize(1000, 600)
 
-        # Track the matched notes
         self.matched_notes: list[JPNote] = []
 
-        # Create layout
         layout = QVBoxLayout(self)
 
         # Create search input field
@@ -41,7 +39,7 @@ class NoteSearchDialog(QDialog):
         # Setup delayed searching (for real-time results as user types)
         self.search_timer = QTimer()
         self.search_timer.setSingleShot(True)
-        self.search_timer.setInterval(300)  # 300ms delay
+        self.search_timer.setInterval(200)  # 300ms delay
         typed.checked_cast(pyqtBoundSignal, self.search_timer.timeout).connect(self.perform_search)
 
         # Connect signals
@@ -52,7 +50,6 @@ class NoteSearchDialog(QDialog):
         self.search_input.setFocus()
 
     def on_search_text_changed(self, text: str) -> None:
-        """Start the search timer whenever the text changes"""
         self.search_timer.start()
 
     def perform_search(self) -> None:
@@ -93,22 +90,16 @@ class NoteSearchDialog(QDialog):
             lambda note: note.get_answer().lower()
         ))
 
-        # Update the matched notes and display them
         self.matched_notes = all_notes
         self._update_results_list()
 
     def _search_in_notes(self, notes: list[JPNote], search_text: str, *extractors: Callable[[JPNote], str]) -> list[JPNote]:
-        """Search in a collection of notes using multiple field extractors"""
         matches: list[JPNote] = []
-
-        # Define max limit of notes to find
         max_notes = 30
 
-        # If we've already reached the limit from previous searches, return empty list
         if len(self.matched_notes) >= max_notes:
             return []
 
-        # Clean the search text for more accurate matching
         clean_search = ex_str.strip_html_and_bracket_markup(search_text)
 
         for note in notes:
@@ -130,7 +121,6 @@ class NoteSearchDialog(QDialog):
         return matches
 
     def _update_results_list(self) -> None:
-        """Update the UI with search results"""
         self.results_list.clear()
 
         for note in self.matched_notes:
@@ -158,15 +148,11 @@ class NoteSearchDialog(QDialog):
         return "Note"
 
     def on_item_double_clicked(self, item: QListWidgetItem) -> None:
-        """Handle double-click on a result item to open the note in the previewer"""
-        # Get the note ID from the item's user data
         note_id = item.data(Qt.ItemDataRole.UserRole)
         if note_id:
             from ankiutils import query_builder, search_executor
-            # Use the search executor to lookup the note and show it in the previewer
             search_executor.do_lookup_and_show_previewer(query_builder.open_note_by_id(note_id))
 
-        # Close the dialog
         self.accept()
 
     @classmethod
