@@ -72,7 +72,7 @@ class NoteSearchDialog(QDialog):
     def perform_search(self) -> None:
         with self._lock:
             """Perform the actual search and update the results table"""
-            search_text = self.search_input.text().strip().lower()
+            search_text = self.search_input.text().strip()
             if not search_text:
                 self.results_table.setRowCount(0)
                 self.matched_notes = []
@@ -98,68 +98,36 @@ class NoteSearchDialog(QDialog):
                 def note_question(note_: JPNote) -> str: return ex_str.strip_html_and_bracket_markup(note_.get_question())
                 def note_answer(note_: JPNote) -> str: return ex_str.strip_html_and_bracket_markup(note_.get_answer())
 
-                # Check for search prefixes
-                search_readings_only = False
-                search_answer_only = False
-
-                if search_text.startswith("r:"):
-                    search_readings_only = True
-                    search_text = search_text[2:].strip()
-                elif search_text.startswith("a:"):
-                    search_answer_only = True
-                    search_text = search_text[2:].strip()
-
                 # Search in kanji notes
-                if search_text:
-                    # Define which extractors to use based on search prefixes
-                    kanji_extractors = []
-                    if search_readings_only:
-                        kanji_extractors = [kanji_readings, kanji_romaji_readings]
-                    elif search_answer_only:
-                        kanji_extractors = [note_answer]
-                    else:
-                        kanji_extractors = [kanji_readings, kanji_romaji_readings, note_question, note_answer]
+                matching_notes.extend(self._search_in_notes(
+                    self._max_results - len(matching_notes),
+                    col().kanji.all(),
+                    search_text,
+                    kanji_readings=kanji_readings,
+                    kanji_romaji_readings=kanji_romaji_readings,
+                    question=note_question,
+                    answer=note_answer
+                ))
 
-                    matching_notes.extend(self._search_in_notes(
-                        self._max_results - len(matching_notes),
-                        col().kanji.all(),
-                        search_text,
-                        *kanji_extractors
-                    ))
+                # Search in vocab notes
+                matching_notes.extend(self._search_in_notes(
+                    self._max_results - len(matching_notes),
+                    sorted(col().vocab.all(), key=question_length),
+                    search_text,
+                    readings=vocab_readings,
+                    forms=vocab_forms,
+                    question=note_question,
+                    answer=note_answer
+                ))
 
-                    # Search in vocab notes
-                    vocab_extractors = []
-                    if search_readings_only:
-                        vocab_extractors = [vocab_readings]
-                    elif search_answer_only:
-                        vocab_extractors = [note_answer]
-                    else:
-                        vocab_extractors = [vocab_forms, vocab_readings, note_question, note_answer]
-
-                    matching_notes.extend(self._search_in_notes(
-                        self._max_results - len(matching_notes),
-                        sorted(col().vocab.all(), key=question_length),
-                        search_text,
-                        *vocab_extractors
-                    ))
-
-                    # Search in sentence notes
-                    sentence_extractors = []
-                    if search_readings_only:
-                        # Sentences don't have specific readings, so we might want to skip them for reading searches
-                        pass
-                    elif search_answer_only:
-                        sentence_extractors = [note_answer]
-                    else:
-                        sentence_extractors = [note_question, note_answer]
-
-                    if sentence_extractors:
-                        matching_notes.extend(self._search_in_notes(
-                            self._max_results - len(matching_notes),
-                            sorted(col().sentences.all(), key=question_length),
-                            search_text,
-                            *sentence_extractors
-                        ))
+                # Search in sentence notes
+                matching_notes.extend(self._search_in_notes(
+                    self._max_results - len(matching_notes),
+                    sorted(col().sentences.all(), key=question_length),
+                    search_text,
+                    question=note_question,
+                    answer=note_answer
+                ))
 
                 self.matched_notes = matching_notes
                 self._update_results_table()
@@ -179,31 +147,55 @@ class NoteSearchDialog(QDialog):
 
     TNote: TypeVar = TypeVar("TNote", bound=JPNote)
     @staticmethod
-    def _search_in_notes(max_notes: int, notes: list[TNote], search_text: str, *extractors: Callable[[TNote], str]) -> list[JPNote]:
+    def _search_in_notes(max_notes: int, notes: list[TNote], search_text: str, **extractors: Callable[[TNote], str]) -> list[JPNote]:
         matches: list[JPNote] = []
 
         if max_notes <= 0:
             return []
 
-        def note_question(note_: JPNote) -> str: return ex_str.strip_html_and_bracket_markup(note_.get_question())
-        def note_answer(note_: JPNote) -> str: return ex_str.strip_html_and_bracket_markup(note_.get_answer())
-
-        total_extractors = extractors + (note_question, note_answer)
-
         # Split search text by " && " to get multiple conditions
-        search_conditions = [ex_str.strip_html_and_bracket_markup(condition.strip().lower())
-                             for condition in search_text.split(" && ")]
+        search_conditions = [condition.strip() for condition in search_text.split(" && ")]
 
         for note in notes:
             all_conditions_match = True
+
             for condition in search_conditions:
                 condition_matches = False
-                for extractor in total_extractors:
-                    field_text = extractor(note)
-                    clean_field = ex_str.strip_html_and_bracket_markup(field_text).lower()
-                    if condition in clean_field:
-                        condition_matches = True
+                condition_lower = condition.lower()
+
+                # Check for prefixed search
+                if condition.startswith("r:"):
+                    # Only search in reading fields
+                    reading_value = condition[2:].strip().lower()
+                    reading_fields = {extractor_name: extractor for extractor_name, extractor in extractors.items() if "reading" in extractor_name.lower()}
+
+                    if not reading_fields:
+                        # Skip this note type if it doesn't have reading fields
+                        all_conditions_match = False
                         break
+
+                    for extractor_name, extractor in reading_fields.items():
+                        field_text = extractor(note)
+                        clean_field = ex_str.strip_html_and_bracket_markup(field_text).lower()
+                        if reading_value in clean_field:
+                            condition_matches = True
+                            break
+                elif condition.startswith("a:"):
+                    # Only search in answer field
+                    answer_value = condition[2:].strip().lower()
+                    if "answer" in extractors:
+                        field_text = extractors["answer"](note)
+                        clean_field = ex_str.strip_html_and_bracket_markup(field_text).lower()
+                        if answer_value in clean_field:
+                            condition_matches = True
+                else:
+                    # Standard search in all fields
+                    for extractor_name, extractor in extractors.items():
+                        field_text = extractor(note)
+                        clean_field = ex_str.strip_html_and_bracket_markup(field_text).lower()
+                        if condition_lower in clean_field:
+                            condition_matches = True
+                            break
 
                 if not condition_matches:
                     all_conditions_match = False
