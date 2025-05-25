@@ -9,7 +9,7 @@ from note.jpnote import JPNote
 from note.kanjinote import KanjiNote
 from note.sentences.sentencenote import SentenceNote
 from note.vocabulary.vocabnote import VocabNote
-from PyQt6.QtCore import Qt, QTimer, pyqtBoundSignal
+from PyQt6.QtCore import Qt, pyqtBoundSignal
 from PyQt6.QtWidgets import QDialog, QHBoxLayout, QHeaderView, QLabel, QLineEdit, QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget
 from sysutils import ex_str, typed
 
@@ -29,7 +29,7 @@ class NoteSearchDialog(QDialog):
         search_layout = QHBoxLayout()
         search_label = QLabel("Search:")
         self.search_input = QLineEdit()
-        self.search_input.setPlaceholderText("Type to search for notes...")
+        self.search_input.setPlaceholderText("Type search query and press Enter...")
         search_layout.addWidget(search_label)
         search_layout.addWidget(self.search_input)
         layout.addLayout(search_layout)
@@ -44,24 +44,13 @@ class NoteSearchDialog(QDialog):
         self.results_table.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
         layout.addWidget(self.results_table)
 
-        # Setup delayed searching (for real-time results as user types)
-        self.search_timer = QTimer()
-        self.search_timer.setSingleShot(True)
-        self.search_timer.setInterval(200)  # 200ms delay
-        typed.checked_cast(pyqtBoundSignal, self.search_timer.timeout).connect(self.perform_search)
-
         # Connect signals
-        typed.checked_cast(pyqtBoundSignal, self.search_input.textChanged).connect(self.on_search_text_changed)
+        typed.checked_cast(pyqtBoundSignal, self.search_input.returnPressed).connect(self.perform_search)
         typed.checked_cast(pyqtBoundSignal, self.results_table.cellDoubleClicked).connect(self.on_cell_double_clicked)
         # Add selection change signal to handle keyboard/mouse selection
         typed.checked_cast(pyqtBoundSignal, self.results_table.itemSelectionChanged).connect(self.on_selection_changed)
 
         self.search_input.setFocus()
-
-    def on_search_text_changed(self, _text: str) -> None:
-        if self.search_timer.isActive():
-            self.search_timer.stop()
-        self.search_timer.start()
 
     def perform_search(self) -> None:
         with self._lock:
