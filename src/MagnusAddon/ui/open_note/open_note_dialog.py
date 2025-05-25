@@ -13,8 +13,10 @@ from PyQt6.QtCore import Qt, pyqtBoundSignal
 from PyQt6.QtWidgets import QDialog, QHBoxLayout, QHeaderView, QLabel, QLineEdit, QProgressBar, QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget
 from sysutils import ex_str, typed
 
-
 class NoteSearchDialog(QDialog):
+    # Singleton instance
+    _instance: Optional[NoteSearchDialog] = None
+
     def __init__(self, parent: Optional[QWidget] = None) -> None:
         super().__init__(parent)
         self.setWindowTitle("Find Notes")
@@ -275,21 +277,27 @@ class NoteSearchDialog(QDialog):
 
     @classmethod
     def show_dialog(cls, parent: Optional[QWidget] = None) -> None:
-        """Show the note search dialog"""
-        dialog = cls(parent)
+        """Show the note search dialog as a singleton instance"""
+        # If instance doesn't exist yet, create it
+        if cls._instance is None:
+            cls._instance = cls(parent)
 
-        # Store a reference to prevent garbage collection
-        # This is crucial when using show() instead of exec()
-        if not hasattr(cls, '_instances'):
-            cls._instances = []
-        cls._instances.append(dialog)
+        # If the dialog is already visible, just activate it
+        if cls._instance.isVisible():
+            cls._instance.raise_()
+            cls._instance.activateWindow()
+            return
 
-        # Set window flags before showing
-        dialog.setWindowFlags(dialog.windowFlags() | Qt.WindowType.WindowStaysOnTopHint )
+        # Set window flags (in case they were changed)
+        cls._instance.setWindowFlags(cls._instance.windowFlags() | Qt.WindowType.WindowStaysOnTopHint)
 
         # Show the dialog non-modally
-        dialog.show()
+        cls._instance.show()
 
-        # The dialog needs to be explicitly raised after setting flags and showing
-        dialog.raise_()
-        dialog.activateWindow()
+        # Raise and activate the dialog
+        cls._instance.raise_()
+        cls._instance.activateWindow()
+
+        # Clear any previous search results and focus the search input
+        cls._instance.search_input.clear()
+        cls._instance.search_input.setFocus()
