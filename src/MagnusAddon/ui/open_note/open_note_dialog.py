@@ -124,17 +124,29 @@ class NoteSearchDialog(QDialog):
 
         total_extractors = extractors + (note_question, note_answer)
 
-        clean_search = ex_str.strip_html_and_bracket_markup(search_text)
+        # Split search text by " && " to get multiple conditions
+        search_conditions = [ex_str.strip_html_and_bracket_markup(condition.strip().lower())
+                             for condition in search_text.split(" && ")]
 
         for note in notes:
-            for extractor in total_extractors:
-                field_text = extractor(note)
-                clean_field = ex_str.strip_html_and_bracket_markup(field_text)
-                if clean_search in clean_field:
-                    matches.append(note)
-                    if len(matches) >= max_notes:
-                        return matches
+            all_conditions_match = True
+            for condition in search_conditions:
+                condition_matches = False
+                for extractor in total_extractors:
+                    field_text = extractor(note)
+                    clean_field = ex_str.strip_html_and_bracket_markup(field_text).lower()
+                    if condition in clean_field:
+                        condition_matches = True
+                        break
+
+                if not condition_matches:
+                    all_conditions_match = False
                     break
+
+            if all_conditions_match:
+                matches.append(note)
+                if len(matches) >= max_notes:
+                    return matches
 
         return matches
 
