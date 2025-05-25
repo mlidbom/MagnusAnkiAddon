@@ -279,6 +279,7 @@ class NoteSearchDialog(QDialog):
         if note_ids:
             from ankiutils import query_builder, search_executor
             search_executor.do_lookup_and_show_previewer(query_builder.notes_by_id(note_ids))
+            self.instance().activateWindow() #the search will lose our focus, reactivate it
 
     @classmethod
     def toggle_dialog_visibility(cls) -> None:
