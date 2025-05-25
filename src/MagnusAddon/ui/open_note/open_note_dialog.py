@@ -31,14 +31,14 @@ class NoteSearchDialog(QDialog):
         search_layout = QHBoxLayout()
         search_label = QLabel("Search:")
         self.search_input = QLineEdit()
-        self.search_input.setPlaceholderText("Type search query and press Enter...")
+        self.search_input.setPlaceholderText("Separate multiple conditions with &&  r:readings-only-condition, a:answer-only-condition")
         search_layout.addWidget(search_label)
         search_layout.addWidget(self.search_input)
         layout.addLayout(search_layout)
 
         # Create status and progress indicator area right below search
         status_layout = QHBoxLayout()
-        self.status_label = QLabel("Hit enter to search. Separate multiple search strings with &&")
+        self.status_label = QLabel("Hit enter to search")
         self.status_label.setMinimumHeight(25)  # Give it some height to prevent layout shifting
 
         # Create progress bar for busy indicator
@@ -174,7 +174,7 @@ class NoteSearchDialog(QDialog):
                         all_conditions_match = False
                         break
 
-                    for extractor_name, extractor in reading_fields.items():
+                    for extractor in reading_fields.values():
                         field_text = extractor(note)
                         clean_field = ex_str.strip_html_and_bracket_markup(field_text).lower()
                         if reading_value in clean_field:
@@ -190,7 +190,7 @@ class NoteSearchDialog(QDialog):
                             condition_matches = True
                 else:
                     # Standard search in all fields
-                    for extractor_name, extractor in extractors.items():
+                    for extractor in extractors.values():
                         field_text = extractor(note)
                         clean_field = ex_str.strip_html_and_bracket_markup(field_text).lower()
                         if condition_lower in clean_field:
