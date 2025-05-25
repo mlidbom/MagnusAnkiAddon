@@ -24,7 +24,6 @@ class ConfigurationValue(Generic[T]):
         self.feature_toggler: Optional[Callable[[T], None]] = feature_toggler
         self.name = name
         self._value: T = _config_dict.instance().get(name, default)
-        self._update_callbacks: list[Callable[[], None]] = []
 
         if self.feature_toggler:
             app.add_init_hook(self.toggle_feature)
@@ -36,20 +35,15 @@ class ConfigurationValue(Generic[T]):
         self._value = value
         _config_dict.instance()[self.name] = value
         self.toggle_feature()
-        for callback in self._update_callbacks: callback()
         _write_config_dict()
 
     def toggle_feature(self) -> None:
         if self.feature_toggler is not None:
             self.feature_toggler(self._value)
 
-    def register_update_callback(self, callback: Callable[[], None]) -> None:
-        self._update_callbacks.append(callback)
-
 ConfigurationValueInt = ConfigurationValue[int]
 ConfigurationValueFloat = ConfigurationValue[float]
 ConfigurationValueBool = ConfigurationValue[bool]
-ConfigurationValueString = ConfigurationValue[str]
 
 class JapaneseConfig(Slots):
     def __init__(self) -> None:
@@ -59,8 +53,6 @@ class JapaneseConfig(Slots):
         def set_enable_fsrs_short_term_with_steps(toggle: bool) -> None:
             # noinspection PyProtectedMember, PyArgumentList
             mw.col._set_enable_fsrs_short_term_with_steps(toggle)
-
-        self.readings_mappings = ConfigurationValueString("readings_mappings", "Readings Mappings", "")
 
         self.autoadvance_vocab_starting_seconds = ConfigurationValueFloat("autoadvance_vocab_starting_seconds", "Starting Seconds", 3.0)
         self.autoadvance_vocab_hiragana_seconds = ConfigurationValueFloat("autoadvance_vocab_hiragana_seconds", "Hiragana Seconds", 0.7)
@@ -93,9 +85,7 @@ class JapaneseConfig(Slots):
         self.enable_automatic_garbage_collection = ConfigurationValueBool("enable_automatic_garbage_collection", "Enable automatic GC. Requires restart. (Reduces memory usage the most but slows Anki down and may cause crashes due to Qt incompatibility.", False)
         self.track_instances_in_memory = ConfigurationValueBool("track_instances_in_memory", "Track instances in memory. Requires restart. Only useful to developers and will use extra memory.", False)
 
-
         self.decrease_failed_card_intervals_interval = ConfigurationValueInt("decrease_failed_card_intervals_interval", "Failed card again seconds for next again", 60)
-
 
         self.minimum_time_viewing_question = ConfigurationValueFloat("minimum_time_viewing_question", "Minimum time viewing question", 0.5)
         self.minimum_time_viewing_answer = ConfigurationValueFloat("minimum_time_viewing_answer", "Minimum time viewing answer", 0.5)
@@ -110,13 +100,29 @@ class JapaneseConfig(Slots):
                                 self.enable_automatic_garbage_collection,
                                 self.track_instances_in_memory]
 
-        self.readings_mappings_dict = self.get_readings_mappings()
-        self.readings_mappings.register_update_callback(self._update_after_save)
+        self.readings_mappings_dict = self._read_reading_mappings_from_file()
 
-    def _update_after_save(self) -> None:
-        self.readings_mappings_dict = self.get_readings_mappings()
+    def save_mappings(self, mappings: str) -> None:
+        mappings_file_path = self._mappings_file_path()
+        with open(mappings_file_path, "w", encoding="utf-8") as f:
+            f.write(mappings)
 
-    def get_readings_mappings(self) -> dict[str, str]:
+        self.readings_mappings_dict = self._read_reading_mappings_from_file()
+
+    def set_readings_mappings_for_testing(self, mappings: str) -> None:
+        self.readings_mappings_dict = self._parse_mappings_from_string(mappings)
+
+    @classmethod
+    def _read_readings_mappings_file(cls) -> str:
+        with open(cls._mappings_file_path(), encoding="utf-8") as f:
+            return f.read()
+
+    @classmethod
+    def _read_reading_mappings_from_file(cls) -> dict[str, str]:
+        return cls._parse_mappings_from_string(cls._read_readings_mappings_file())
+
+    @staticmethod
+    def _parse_mappings_from_string(mappings_string: str) -> dict[str, str]:
         def parse_value_part(value_part: str) -> str:
             if "<read>" in value_part:
                 return value_part
@@ -125,17 +131,13 @@ class JapaneseConfig(Slots):
                 return f"""<read>{parts[0].strip()}</read>{parts[1]}"""
             return f"<read>{value_part}</read>"
 
-
         return {
             line.split(":", 1)[0].strip(): parse_value_part(line.split(":", 1)[1].strip())
-            for line in self.readings_mappings.get_value().strip().splitlines()
+            for line in mappings_string.strip().splitlines()
             if ":" in line
         }
 
+    @staticmethod
+    def _mappings_file_path() -> str: return os.path.join(app.user_files_dir, "readings_mappings.txt")
 
-
-
-
-
-
-config:Lazy[JapaneseConfig] = Lazy(lambda: JapaneseConfig())
+config: Lazy[JapaneseConfig] = Lazy(lambda: JapaneseConfig())

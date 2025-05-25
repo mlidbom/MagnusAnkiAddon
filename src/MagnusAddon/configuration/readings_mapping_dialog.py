@@ -18,7 +18,7 @@ class ReadingsOptionsDialog(QDialog):
         self.setWindowTitle("Readings Mappings")
         self.setMinimumWidth(500)
 
-        mappings_text = newline + self.config.readings_mappings.get_value()
+        mappings_text = newline + self.config._read_readings_mappings_file()
 
         # Create search field
         search_layout = QHBoxLayout()
@@ -138,7 +138,7 @@ class ReadingsOptionsDialog(QDialog):
 
             return "\n".join(sorted(new_lines))
 
-        self.config.readings_mappings.set_value(sorted_value_lines_without_duplicates_or_blank_lines())
+        self.config.save_mappings(sorted_value_lines_without_duplicates_or_blank_lines())
         self.accept()
 
         app.get_ui_utils().refresh()
