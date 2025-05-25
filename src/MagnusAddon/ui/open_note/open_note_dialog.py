@@ -10,9 +10,10 @@ from note.kanjinote import KanjiNote
 from note.sentences.sentencenote import SentenceNote
 from note.vocabulary.vocabnote import VocabNote
 from PyQt6.QtCore import Qt, pyqtBoundSignal
-from PyQt6.QtWidgets import QDialog, QHBoxLayout, QHeaderView, QLabel, QLineEdit, QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget
+from PyQt6.QtWidgets import (QDialog, QHBoxLayout, QHeaderView, QLabel,
+                             QLineEdit, QProgressBar, QTableWidget,
+                             QTableWidgetItem, QVBoxLayout, QWidget)
 from sysutils import ex_str, typed
-
 
 class NoteSearchDialog(QDialog):
     def __init__(self, parent: Optional[QWidget] = None) -> None:
@@ -33,6 +34,21 @@ class NoteSearchDialog(QDialog):
         search_layout.addWidget(search_label)
         search_layout.addWidget(self.search_input)
         layout.addLayout(search_layout)
+
+        # Create status and progress indicator area right below search
+        status_layout = QHBoxLayout()
+        self.status_label = QLabel("Ready")
+        self.status_label.setMinimumHeight(25)  # Give it some height to prevent layout shifting
+
+        # Create progress bar for busy indicator
+        self.progress_bar = QProgressBar()
+        self.progress_bar.setRange(0, 0)  # Indeterminate mode
+        self.progress_bar.setMinimumHeight(20)  # Make it a bit taller
+        self.progress_bar.hide()  # Hidden by default
+
+        status_layout.addWidget(self.status_label)
+        status_layout.addWidget(self.progress_bar, 1)  # 1 = stretch factor to take up available space
+        layout.addLayout(status_layout)
 
         # Create results table
         self.results_table = QTableWidget()
@@ -61,44 +77,64 @@ class NoteSearchDialog(QDialog):
                 self.matched_notes = []
                 return
 
-            # Get the JP collection
-            matching_notes: list[JPNote] = []
+            # Show the busy indicator
+            self.status_label.setText("Searching...")
+            self.progress_bar.show()
 
-            max_notes = 60
+            # Process events to ensure UI updates
+            from PyQt6.QtWidgets import QApplication
+            QApplication.processEvents()
 
-            def kanji_readings(note: KanjiNote) -> str: return " ".join(note.get_readings_clean())
-            def vocab_readings(vocab: VocabNote) -> str: return " ".join(vocab.readings.get())
-            def vocab_forms(vocab: VocabNote) -> str: return " ".join(vocab.forms.without_noise_characters())
-            def question_length(note: JPNote) -> int: return len(note.get_question())
-            def kanji_romaji_readings(note: KanjiNote) -> str: return note.get_romaji_readings()
+            try:
+                # Get the JP collection
+                matching_notes: list[JPNote] = []
 
-            # Search in kanji notes
-            matching_notes.extend(self._search_in_notes(
-                max_notes - len(matching_notes),
-                col().kanji.all(),
-                search_text,
-                kanji_readings,
-                kanji_romaji_readings
-            ))
+                max_notes = 60
 
-            # Search in vocab notes
-            matching_notes.extend(self._search_in_notes(
-                max_notes - len(matching_notes),
-                sorted(col().vocab.all(), key=question_length),
-                search_text,
-                vocab_forms,
-                vocab_readings
-            ))
+                def kanji_readings(note: KanjiNote) -> str: return " ".join(note.get_readings_clean())
+                def vocab_readings(vocab: VocabNote) -> str: return " ".join(vocab.readings.get())
+                def vocab_forms(vocab: VocabNote) -> str: return " ".join(vocab.forms.without_noise_characters())
+                def question_length(note: JPNote) -> int: return len(note.get_question())
+                def kanji_romaji_readings(note: KanjiNote) -> str: return note.get_romaji_readings()
 
-            # Search in sentence notes
-            matching_notes.extend(self._search_in_notes(
-                max_notes - len(matching_notes),
-                sorted(col().sentences.all(), key=question_length),
-                search_text
-            ))
+                # Search in kanji notes
+                matching_notes.extend(self._search_in_notes(
+                    max_notes - len(matching_notes),
+                    col().kanji.all(),
+                    search_text,
+                    kanji_readings,
+                    kanji_romaji_readings
+                ))
 
-            self.matched_notes = matching_notes
-            self._update_results_table()
+                # Search in vocab notes
+                matching_notes.extend(self._search_in_notes(
+                    max_notes - len(matching_notes),
+                    sorted(col().vocab.all(), key=question_length),
+                    search_text,
+                    vocab_forms,
+                    vocab_readings
+                ))
+
+                # Search in sentence notes
+                matching_notes.extend(self._search_in_notes(
+                    max_notes - len(matching_notes),
+                    sorted(col().sentences.all(), key=question_length),
+                    search_text
+                ))
+
+                self.matched_notes = matching_notes
+                self._update_results_table()
+
+                # Update status with result count
+                result_count = len(matching_notes)
+                if result_count == 0:
+                    self.status_label.setText("No results found")
+                else:
+                    self.status_label.setText(f"Found {result_count} result{'s' if result_count != 1 else ''}")
+
+            finally:
+                # Hide the busy indicator
+                self.progress_bar.hide()
 
     TNote: TypeVar = TypeVar("TNote", bound=JPNote)
     @staticmethod
