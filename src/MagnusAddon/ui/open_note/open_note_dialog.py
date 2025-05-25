@@ -277,27 +277,16 @@ class NoteSearchDialog(QDialog):
 
     @classmethod
     def show_dialog(cls, parent: Optional[QWidget] = None) -> None:
-        """Show the note search dialog as a singleton instance"""
-        # If instance doesn't exist yet, create it
         if cls._instance is None:
             cls._instance = cls(parent)
 
-        # If the dialog is already visible, just activate it
         if cls._instance.isVisible():
             cls._instance.raise_()
             cls._instance.activateWindow()
             return
 
-        # Set window flags (in case they were changed)
         cls._instance.setWindowFlags(cls._instance.windowFlags() | Qt.WindowType.WindowStaysOnTopHint)
 
-        # Show the dialog non-modally
         cls._instance.show()
-
-        # Raise and activate the dialog
         cls._instance.raise_()
         cls._instance.activateWindow()
-
-        # Clear any previous search results and focus the search input
-        cls._instance.search_input.clear()
-        cls._instance.search_input.setFocus()
