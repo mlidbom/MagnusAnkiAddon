@@ -240,7 +240,7 @@ class NoteSearchDialog(QDialog):
             self.results_table.insertRow(i)
 
             # Create type column
-            self.results_table.setItem(i, 0, QTableWidgetItem   (self._get_note_type_display(note)))
+            self.results_table.setItem(i, 0, QTableWidgetItem(self._get_note_type_display(note)))
             self.results_table.item(i, 0).setData(Qt.ItemDataRole.UserRole, note.get_id())
 
             self.results_table.setItem(i, 1, self._create_item(note.get_question(), is_question=True))
@@ -281,7 +281,7 @@ class NoteSearchDialog(QDialog):
             search_executor.do_lookup_and_show_previewer(query_builder.notes_by_id(note_ids))
 
     @classmethod
-    def toggle_dialog_visibility(cls, parent: Optional[QWidget] = None) -> None:
+    def toggle_dialog_visibility(cls) -> None:
         if cls.instance().isVisible():
             cls.instance().hide()
             return
