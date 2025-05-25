@@ -13,9 +13,17 @@ from PyQt6.QtCore import Qt, pyqtBoundSignal
 from PyQt6.QtWidgets import QDialog, QHBoxLayout, QHeaderView, QLabel, QLineEdit, QProgressBar, QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget
 from sysutils import ex_str, typed
 
+
 class NoteSearchDialog(QDialog):
     # Singleton instance
     _instance: Optional[NoteSearchDialog] = None
+
+    @classmethod
+    def instance(cls) -> NoteSearchDialog:
+        """Access to the singleton instance, creating it if needed."""
+        if cls._instance is None:
+            cls._instance = cls()
+        return cls._instance
 
     def __init__(self, parent: Optional[QWidget] = None) -> None:
         super().__init__(parent)
@@ -235,7 +243,7 @@ class NoteSearchDialog(QDialog):
             self.results_table.insertRow(i)
 
             # Create type column
-            self.results_table.setItem(i, 0, QTableWidgetItem(self._get_note_type_display(note)))
+            self.results_table.setItem(i, 0, QTableWidgetItem   (self._get_note_type_display(note)))
             self.results_table.item(i, 0).setData(Qt.ItemDataRole.UserRole, note.get_id())
 
             self.results_table.setItem(i, 1, self._create_item(note.get_question(), is_question=True))
@@ -277,14 +285,10 @@ class NoteSearchDialog(QDialog):
 
     @classmethod
     def toggle_dialog_visibility(cls, parent: Optional[QWidget] = None) -> None:
-        if cls._instance is None:
-            cls._instance = cls(parent)
-
-        if cls._instance.isVisible():
-            cls._instance.hide()
+        if cls.instance().isVisible():
+            cls.instance().hide()
             return
 
-#        cls._instance.setWindowFlags(cls._instance.windowFlags() | Qt.WindowType.WindowStaysOnTopHint)
-        cls._instance.show()
-        cls._instance.raise_()
-        cls._instance.activateWindow()
+        cls.instance().show()
+        cls.instance().raise_()
+        cls.instance().activateWindow()
