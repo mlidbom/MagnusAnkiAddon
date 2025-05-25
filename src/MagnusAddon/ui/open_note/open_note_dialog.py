@@ -1,3 +1,4 @@
+
 from __future__ import annotations
 
 import threading
@@ -10,10 +11,9 @@ from note.kanjinote import KanjiNote
 from note.sentences.sentencenote import SentenceNote
 from note.vocabulary.vocabnote import VocabNote
 from PyQt6.QtCore import Qt, pyqtBoundSignal
-from PyQt6.QtWidgets import (QDialog, QHBoxLayout, QHeaderView, QLabel,
-                             QLineEdit, QProgressBar, QTableWidget,
-                             QTableWidgetItem, QVBoxLayout, QWidget)
+from PyQt6.QtWidgets import QDialog, QHBoxLayout, QHeaderView, QLabel, QLineEdit, QProgressBar, QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget
 from sysutils import ex_str, typed
+
 
 class NoteSearchDialog(QDialog):
     def __init__(self, parent: Optional[QWidget] = None) -> None:
@@ -23,6 +23,7 @@ class NoteSearchDialog(QDialog):
 
         self.matched_notes: list[JPNote] = []
         self._lock = threading.Lock()
+        self._max_results = 100  # Maximum number of results to show
 
         layout = QVBoxLayout(self)
 
@@ -37,7 +38,7 @@ class NoteSearchDialog(QDialog):
 
         # Create status and progress indicator area right below search
         status_layout = QHBoxLayout()
-        self.status_label = QLabel("Ready")
+        self.status_label = QLabel("Hit enter to search. Separate multiple search strings with &&")
         self.status_label.setMinimumHeight(25)  # Give it some height to prevent layout shifting
 
         # Create progress bar for busy indicator
@@ -89,8 +90,6 @@ class NoteSearchDialog(QDialog):
                 # Get the JP collection
                 matching_notes: list[JPNote] = []
 
-                max_notes = 60
-
                 def kanji_readings(note: KanjiNote) -> str: return " ".join(note.get_readings_clean())
                 def vocab_readings(vocab: VocabNote) -> str: return " ".join(vocab.readings.get())
                 def vocab_forms(vocab: VocabNote) -> str: return " ".join(vocab.forms.without_noise_characters())
@@ -99,7 +98,7 @@ class NoteSearchDialog(QDialog):
 
                 # Search in kanji notes
                 matching_notes.extend(self._search_in_notes(
-                    max_notes - len(matching_notes),
+                    self._max_results - len(matching_notes),
                     col().kanji.all(),
                     search_text,
                     kanji_readings,
@@ -108,7 +107,7 @@ class NoteSearchDialog(QDialog):
 
                 # Search in vocab notes
                 matching_notes.extend(self._search_in_notes(
-                    max_notes - len(matching_notes),
+                    self._max_results - len(matching_notes),
                     sorted(col().vocab.all(), key=question_length),
                     search_text,
                     vocab_forms,
@@ -117,7 +116,7 @@ class NoteSearchDialog(QDialog):
 
                 # Search in sentence notes
                 matching_notes.extend(self._search_in_notes(
-                    max_notes - len(matching_notes),
+                    self._max_results - len(matching_notes),
                     sorted(col().sentences.all(), key=question_length),
                     search_text
                 ))
@@ -129,8 +128,10 @@ class NoteSearchDialog(QDialog):
                 result_count = len(matching_notes)
                 if result_count == 0:
                     self.status_label.setText("No results found")
+                elif result_count >= self._max_results:
+                    self.status_label.setText(f"{self._max_results}+ notes found. Showing first {self._max_results}")
                 else:
-                    self.status_label.setText(f"Found {result_count} result{'s' if result_count != 1 else ''}")
+                    self.status_label.setText(f"{result_count} note{'s' if result_count != 1 else ''} found")
 
             finally:
                 # Hide the busy indicator
