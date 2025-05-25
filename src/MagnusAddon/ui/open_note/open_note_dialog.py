@@ -1,4 +1,3 @@
-
 from __future__ import annotations
 
 import threading
@@ -21,9 +20,14 @@ class NoteSearchDialog(QDialog):
         self.setWindowTitle("Find Notes")
         self.resize(1800, 1100)
 
+        # Set the window to be always on top but not modal
+        self.setWindowFlags(self.windowFlags() | Qt.WindowType.WindowStaysOnTopHint)
+
         self.matched_notes: list[JPNote] = []
         self._lock = threading.Lock()
         self._max_results = 100  # Maximum number of results to show
+
+        # Rest of the initialization code...
 
         layout = QVBoxLayout(self)
 
@@ -273,4 +277,19 @@ class NoteSearchDialog(QDialog):
     def show_dialog(cls, parent: Optional[QWidget] = None) -> None:
         """Show the note search dialog"""
         dialog = cls(parent)
-        dialog.exec()
+
+        # Store a reference to prevent garbage collection
+        # This is crucial when using show() instead of exec()
+        if not hasattr(cls, '_instances'):
+            cls._instances = []
+        cls._instances.append(dialog)
+
+        # Set window flags before showing
+        dialog.setWindowFlags(dialog.windowFlags() | Qt.WindowType.WindowStaysOnTopHint )
+
+        # Show the dialog non-modally
+        dialog.show()
+
+        # The dialog needs to be explicitly raised after setting flags and showing
+        dialog.raise_()
+        dialog.activateWindow()
