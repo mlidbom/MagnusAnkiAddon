@@ -95,31 +95,71 @@ class NoteSearchDialog(QDialog):
                 def vocab_forms(vocab: VocabNote) -> str: return " ".join(vocab.forms.without_noise_characters())
                 def question_length(note: JPNote) -> int: return len(note.get_question())
                 def kanji_romaji_readings(note: KanjiNote) -> str: return note.get_romaji_readings()
+                def note_question(note_: JPNote) -> str: return ex_str.strip_html_and_bracket_markup(note_.get_question())
+                def note_answer(note_: JPNote) -> str: return ex_str.strip_html_and_bracket_markup(note_.get_answer())
+
+                # Check for search prefixes
+                search_readings_only = False
+                search_answer_only = False
+
+                if search_text.startswith("r:"):
+                    search_readings_only = True
+                    search_text = search_text[2:].strip()
+                elif search_text.startswith("a:"):
+                    search_answer_only = True
+                    search_text = search_text[2:].strip()
 
                 # Search in kanji notes
-                matching_notes.extend(self._search_in_notes(
-                    self._max_results - len(matching_notes),
-                    col().kanji.all(),
-                    search_text,
-                    kanji_readings,
-                    kanji_romaji_readings
-                ))
+                if search_text:
+                    # Define which extractors to use based on search prefixes
+                    kanji_extractors = []
+                    if search_readings_only:
+                        kanji_extractors = [kanji_readings, kanji_romaji_readings]
+                    elif search_answer_only:
+                        kanji_extractors = [note_answer]
+                    else:
+                        kanji_extractors = [kanji_readings, kanji_romaji_readings, note_question, note_answer]
 
-                # Search in vocab notes
-                matching_notes.extend(self._search_in_notes(
-                    self._max_results - len(matching_notes),
-                    sorted(col().vocab.all(), key=question_length),
-                    search_text,
-                    vocab_forms,
-                    vocab_readings
-                ))
+                    matching_notes.extend(self._search_in_notes(
+                        self._max_results - len(matching_notes),
+                        col().kanji.all(),
+                        search_text,
+                        *kanji_extractors
+                    ))
 
-                # Search in sentence notes
-                matching_notes.extend(self._search_in_notes(
-                    self._max_results - len(matching_notes),
-                    sorted(col().sentences.all(), key=question_length),
-                    search_text
-                ))
+                    # Search in vocab notes
+                    vocab_extractors = []
+                    if search_readings_only:
+                        vocab_extractors = [vocab_readings]
+                    elif search_answer_only:
+                        vocab_extractors = [note_answer]
+                    else:
+                        vocab_extractors = [vocab_forms, vocab_readings, note_question, note_answer]
+
+                    matching_notes.extend(self._search_in_notes(
+                        self._max_results - len(matching_notes),
+                        sorted(col().vocab.all(), key=question_length),
+                        search_text,
+                        *vocab_extractors
+                    ))
+
+                    # Search in sentence notes
+                    sentence_extractors = []
+                    if search_readings_only:
+                        # Sentences don't have specific readings, so we might want to skip them for reading searches
+                        pass
+                    elif search_answer_only:
+                        sentence_extractors = [note_answer]
+                    else:
+                        sentence_extractors = [note_question, note_answer]
+
+                    if sentence_extractors:
+                        matching_notes.extend(self._search_in_notes(
+                            self._max_results - len(matching_notes),
+                            sorted(col().sentences.all(), key=question_length),
+                            search_text,
+                            *sentence_extractors
+                        ))
 
                 self.matched_notes = matching_notes
                 self._update_results_table()
