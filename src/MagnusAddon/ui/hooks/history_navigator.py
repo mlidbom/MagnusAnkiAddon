@@ -5,11 +5,8 @@ import os
 
 from anki.cards import Card, CardId
 from ankiutils import app, query_builder, search_executor
-from aqt import gui_hooks, mw
-from aqt.qt import QKeySequence, QShortcut
-from PyQt6.QtWidgets import QWidget
+from aqt import gui_hooks
 from sysutils import typed
-from sysutils.typed import checked_cast
 
 
 class CardHistoryNavigator:
@@ -17,21 +14,7 @@ class CardHistoryNavigator:
         self.card_history: list[CardId] = []  # Stores card IDs
         self.current_position: int = -1
 
-        # Load history from file
         self._load_history_from_file()
-
-        gui_hooks.card_will_show.append(self._on_card_shown)  # Hook into card display
-
-        def bind_shortcuts(widget: QWidget) -> None:
-            self._set_current_position_to_end_of_history()
-            # noinspection PyUnresolvedReferences
-            QShortcut(QKeySequence("Alt+Left"), widget).activated.connect(self._navigate_back)
-            # noinspection PyUnresolvedReferences
-            QShortcut(QKeySequence("Alt+Right"), widget).activated.connect(self._navigate_forward)
-
-        bind_shortcuts(checked_cast(QWidget, mw))
-        gui_hooks.previewer_did_init.append(bind_shortcuts)
-        gui_hooks.browser_will_show.append(bind_shortcuts)
 
         self._is_navigating: bool = False
         self._last_card_shown_was_navigated_card_id: CardId | None = None
@@ -59,7 +42,7 @@ class CardHistoryNavigator:
                 self.card_history = [CardId(card_id) for card_id in saved_history]
                 self._set_current_position_to_end_of_history()
 
-    def _on_card_shown(self, html: str, card: Card, _: str) -> str:
+    def on_card_shown(self, html: str, card: Card, _: str) -> str:
         if self._is_navigating: # don't mess up the history when navigating the history. Navigating the history is a read-only operation
             self._is_navigating = False
             self._last_card_shown_was_navigated_card_id = card.id
@@ -81,7 +64,7 @@ class CardHistoryNavigator:
     def _remove_from_history(self, card_id: CardId) -> None:
         if card_id in self.card_history: self.card_history.remove(card_id)  # no duplicates in the history please
 
-    def _navigate_back(self) -> None:
+    def navigate_back(self) -> None:
         if self._is_at_start_of_history():
             return
 
@@ -89,7 +72,7 @@ class CardHistoryNavigator:
         self._is_navigating = True
         self._show_card_by_id(self.card_history[self.current_position])
 
-    def _navigate_forward(self) -> None:
+    def navigate_forward(self) -> None:
         if self._is_at_end_of_history():
             return
 
@@ -103,5 +86,8 @@ class CardHistoryNavigator:
     @staticmethod
     def _show_card_by_id(card_id: CardId) -> None: search_executor.do_lookup(query_builder.open_card_by_id(card_id))
 
+navigator: CardHistoryNavigator | None = None
 def init() -> None:
-    CardHistoryNavigator()
+    global navigator
+    navigator = CardHistoryNavigator()
+    gui_hooks.card_will_show.append(navigator.on_card_shown)
