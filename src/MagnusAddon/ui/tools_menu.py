@@ -55,7 +55,7 @@ def build_lookup_menu(lookup_menu: QMenu) -> None:
         text, ok = QInputDialog.getText(None, "input", "enter text", QLineEdit.EchoMode.Normal, "")
         return text if ok and text else ""
 
-    lookup_menu.addAction(shortcutfinger.home1("Open note Ctrl+o"), lambda: NoteSearchDialog.show_dialog())
+    lookup_menu.addAction(shortcutfinger.home1("Open note Ctrl+o"), lambda: NoteSearchDialog.toggle_dialog_visibility())
     build_open_in_anki_menu(non_optional(lookup_menu.addMenu(shortcutfinger.home2("Anki"))), get_text_input)
     build_web_search_menu(non_optional(lookup_menu.addMenu(shortcutfinger.home3("Web"))), get_text_input)
 

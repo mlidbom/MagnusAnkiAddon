@@ -14,7 +14,7 @@ def init() -> None:
     def bind_shortcuts(widget: QWidget) -> None:
         typed.checked_cast(pyqtBoundSignal, QShortcut(QKeySequence("Alt+Left"), widget).activated).connect(history_navigator.navigator.navigate_back)
         typed.checked_cast(pyqtBoundSignal,QShortcut(QKeySequence("Alt+Right"), widget).activated).connect(history_navigator.navigator.navigate_forward)
-        typed.checked_cast(pyqtBoundSignal, QShortcut(QKeySequence("Ctrl+o"), widget).activated).connect(NoteSearchDialog.show_dialog)
+        typed.checked_cast(pyqtBoundSignal, QShortcut(QKeySequence("Ctrl+o"), widget).activated).connect(NoteSearchDialog.toggle_dialog_visibility)
 
     ex_assert.not_none(history_navigator.navigator, "History navigator needs to be initialized before global shortcuts are bound")
     bind_shortcuts(checked_cast(QWidget, mw))

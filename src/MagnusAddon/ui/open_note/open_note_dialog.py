@@ -276,17 +276,15 @@ class NoteSearchDialog(QDialog):
             search_executor.do_lookup_and_show_previewer(query_builder.notes_by_id(note_ids))
 
     @classmethod
-    def show_dialog(cls, parent: Optional[QWidget] = None) -> None:
+    def toggle_dialog_visibility(cls, parent: Optional[QWidget] = None) -> None:
         if cls._instance is None:
             cls._instance = cls(parent)
 
         if cls._instance.isVisible():
-            cls._instance.raise_()
-            cls._instance.activateWindow()
+            cls._instance.hide()
             return
 
-        cls._instance.setWindowFlags(cls._instance.windowFlags() | Qt.WindowType.WindowStaysOnTopHint)
-
+#        cls._instance.setWindowFlags(cls._instance.windowFlags() | Qt.WindowType.WindowStaysOnTopHint)
         cls._instance.show()
         cls._instance.raise_()
         cls._instance.activateWindow()
