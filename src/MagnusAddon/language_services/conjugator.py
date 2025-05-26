@@ -76,7 +76,7 @@ def get_word_stems(word: str, is_ichidan_verb: bool = False, is_godan: bool = Fa
             if word[-1] == "る":
                 return [word[:-1] + end for end in _godan_ru_or_ichidan_endings]
             return [word[:-1] + end for end in _1_character_mappings[word[-1]]]
-    except KeyError:
+    except (KeyError, IndexError):
         mylog.warning(f"get_word_stems failed to handle {word}, returning empty list ")
     return [word]
 
@@ -96,7 +96,7 @@ def _get_stem(word: str, stem_index: int, is_ichidan_verb: bool = False, is_goda
             if word[-1] != "る":
                 return word[:-1] + _1_character_mappings[word[-1]][stem_index]
             return word[:-1] + _1_character_mappings[word[-1]][stem_index]
-    except KeyError:
+    except (KeyError, IndexError):
         mylog.warning(f"_get_stem failed to handle {word}, returning empty list ")
     return word
 
