@@ -13,6 +13,7 @@ class VocabCandidate:
     def __init__(self, candidate: WeakRef[CandidateWord], vocab: VocabNote) -> None:
         self.vocab: VocabNote = vocab
         self.candidate: WeakRef[CandidateWord] = candidate
+        self.config = candidate().configuration
 
         self.rules = vocab.matching_rules
         rules = self.rules

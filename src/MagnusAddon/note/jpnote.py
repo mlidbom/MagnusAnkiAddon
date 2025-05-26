@@ -43,8 +43,7 @@ class JPNote(Slots):
             ex_assert.that(self.__hash_value != 0, "You cannot compare or hash a note that has not been saved yet since it has no id")
         return self.__hash_value
 
-    def __repr__(self) -> str:
-        return f"""{self.get_question()} : {self.get_answer()}"""
+    def __repr__(self) -> str: return self.get_question()
 
     @property
     def _app(self) -> app:

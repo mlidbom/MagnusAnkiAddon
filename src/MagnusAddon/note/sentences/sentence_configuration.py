@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 from autoslot import Slots
 from note.sentences.serialization.sentence_configuration_serializer import SentenceConfigurationSerializer
 from note.sentences.word_exclusion_set import WordExclusionSet
+from sysutils.debug_repr_builder import SkipFalsyValuesDebugReprBuilder
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
@@ -28,3 +29,9 @@ class SentenceConfiguration(Slots):
 
     @classmethod
     def empty(cls) -> SentenceConfiguration: return cls.from_lists([], [], [])
+
+    def __repr__(self) -> str: return (SkipFalsyValuesDebugReprBuilder()
+                                       .prop("highlighted_words", self.highlighted_words)
+                                       .prop("incorrect_matches", self.incorrect_matches)
+                                       .prop("hidden_matches", self.hidden_matches)
+                                       .repr)

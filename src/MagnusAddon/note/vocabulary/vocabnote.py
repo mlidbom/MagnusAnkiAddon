@@ -59,8 +59,6 @@ class VocabNote(WaniNote, Slots):
         self.meta_data: VocabNoteMetaData = VocabNoteMetaData(self.weakref)
         self.matching_rules: VocabNoteMatching = VocabNoteMatching(self.weakref)
 
-    def __repr__(self) -> str: return f"""{self.get_question()}"""
-
     def get_direct_dependencies(self) -> set[JPNote]:
         return self.related_notes.get_direct_dependencies()
 
