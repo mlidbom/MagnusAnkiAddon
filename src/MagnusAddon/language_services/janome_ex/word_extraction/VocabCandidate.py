@@ -23,6 +23,7 @@ class VocabCandidate:
 
     def __repr__(self) -> str: return (
         SkipFalsyValuesDebugReprBuilder()
+        .include(self.vocab.question.raw())
         .flag("is_valid_match", self.is_valid_match)
         .flag("is_exact_match", self.is_exact_match)
         .repr)
