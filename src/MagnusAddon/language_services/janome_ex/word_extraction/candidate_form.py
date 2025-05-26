@@ -5,10 +5,11 @@ from typing import TYPE_CHECKING
 from ankiutils import app
 from autoslot import Slots
 from language_services import conjugator
+from language_services.janome_ex.word_extraction.analysis_constants import noise_characters, non_word_characters
 from language_services.janome_ex.word_extraction.display_form import DisplayForm, MissingDisplayForm, VocabDisplayForm
 from language_services.janome_ex.word_extraction.VocabCandidate import VocabCandidate
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
-from sysutils import ex_str, kana_utils
+from sysutils import kana_utils
 from sysutils.object_instance_tracker import ObjectInstanceTracker
 from sysutils.typed import non_optional
 from sysutils.weak_ref import WeakRef
@@ -18,8 +19,6 @@ if TYPE_CHECKING:
     from note.sentences.sentence_configuration import SentenceConfiguration
     from note.vocabulary.vocabnote import VocabNote
 
-_noise_characters = {".", ",", ":", ";", "/", "|", "。", "、", "?", "!", ex_str.invisible_space}
-_non_word_characters = _noise_characters | {" ", "\t"}
 class CandidateForm(Slots):
     __slots__ = ["__weakref__"]
     def __init__(self, candidate: WeakRef[CandidateWord], form: str, is_base: bool) -> None:
@@ -64,14 +63,13 @@ class CandidateForm(Slots):
         self.requires_prefix = self.is_strictly_suffix or any(self.prefix_must_end_with)
 
         # will be completed in complete_analysis
-        self.is_excluded_by_compound_root_vocab_configuration: bool = False
         self.exact_match_required_by_counterpart_vocab_configuration: bool = False
         self.exact_match_required: bool = False
         self.is_exact_match_requirement_fulfilled: bool = False
         self.is_self_excluded = False
         self.completed_analysis = False
         self.is_valid_candidate: bool = False
-        self.starts_with_non_word_token = self.candidate().locations[0]().token.is_non_word_character
+        self.starts_with_non_word_token = self.candidate().start_location().token.is_non_word_character
 
         self.display_forms: list[DisplayForm] = []
 
@@ -93,13 +91,12 @@ class CandidateForm(Slots):
             self.display_forms = [MissingDisplayForm(self.weak_ref)]
 
         self.is_valid_candidate = ((self.is_word or not self.candidate().is_custom_compound)
-                                   and self.form not in _noise_characters
+                                   and self.form not in noise_characters
                                    and not self.is_excluded_by_config
                                    and not self.is_self_excluded
                                    and not self.is_excluded_by_prefix
                                    and not self.is_missing_required_prefix
                                    and len(self.display_forms) > 0
-                                   and not self.is_excluded_by_compound_root_vocab_configuration
                                    and (not self.requires_prefix or self.has_prefix)
                                    and not self.starts_with_non_word_token
                                    and self.is_exact_match_requirement_fulfilled)
@@ -114,7 +111,7 @@ class CandidateForm(Slots):
         return True
 
     @property
-    def has_prefix(self) -> bool: return self.preceding_surface != "" and self.preceding_surface[-1] not in _non_word_characters
+    def has_prefix(self) -> bool: return self.preceding_surface != "" and self.preceding_surface[-1] not in non_word_characters
 
     @property
     def prefix(self) -> str: return self.preceding_surface[-1] if self.has_prefix else ""
