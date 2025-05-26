@@ -45,7 +45,7 @@ class NoteSearchDialog(QDialog):
         search_layout = QHBoxLayout()
         search_label = QLabel("Search:")
         self.search_input = QLineEdit()
-        self.search_input.setPlaceholderText("Separate multiple conditions with &&  r:readings-only-condition, a:answer-only-condition")
+        self.search_input.setPlaceholderText("Separate multiple conditions with &&  r:readings-only-condition, a:answer-only-condition, q:question-only-condition")
         search_layout.addWidget(search_label)
         search_layout.addWidget(self.search_input)
         layout.addLayout(search_layout)
@@ -201,6 +201,14 @@ class NoteSearchDialog(QDialog):
                         field_text = extractors["answer"](note)
                         clean_field = ex_str.strip_html_and_bracket_markup(field_text).lower()
                         if answer_value in clean_field:
+                            condition_matches = True
+                elif condition.startswith("q:"):
+                    # Only search in question field
+                    question_value = condition[2:].strip().lower()
+                    if "question" in extractors:
+                        field_text = extractors["question"](note)
+                        clean_field = ex_str.strip_html_and_bracket_markup(field_text).lower()
+                        if question_value in clean_field:
                             condition_matches = True
                 else:
                     # Standard search in all fields
