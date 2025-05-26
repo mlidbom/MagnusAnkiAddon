@@ -30,6 +30,9 @@ class NoteSearchDialog(QDialog):
         self.setWindowTitle("Find Notes")
         self.resize(1800, 1100)
 
+        # Set the window to be always on top but not modal
+        self.setWindowFlags(self.windowFlags() | Qt.WindowType.WindowStaysOnTopHint)
+
         self.matched_notes: list[JPNote] = []
         self._lock = threading.Lock()
         self._max_results = 100  # Maximum number of results to show
