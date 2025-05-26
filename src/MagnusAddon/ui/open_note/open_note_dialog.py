@@ -290,3 +290,4 @@ class NoteSearchDialog(QDialog):
         cls.instance().show()
         cls.instance().raise_()
         cls.instance().activateWindow()
+        cls.instance().search_input.setFocus()
