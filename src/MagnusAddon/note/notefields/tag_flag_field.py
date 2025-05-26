@@ -20,3 +20,5 @@ class TagFlagField(Slots):
     def set_to(self, set_: bool) -> None:
         if set_: self._note().set_tag(self.tag)
         else: self._note().remove_tag(self.tag)
+
+    def __repr__(self) -> str: return "True" if self.is_set() else "False"

@@ -6,6 +6,7 @@ from ankiutils import app
 from autoslot import Slots
 from language_services import conjugator
 from language_services.janome_ex.word_extraction.display_form import DisplayForm, MissingDisplayForm, VocabDisplayForm
+from language_services.janome_ex.word_extraction.VocabCandidate import VocabCandidate
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from sysutils import ex_str, kana_utils
 from sysutils.object_instance_tracker import ObjectInstanceTracker
@@ -21,19 +22,23 @@ _noise_characters = {".", ",", ":", ";", "/", "|", "。", "、", "?", "!", ex_st
 _non_word_characters = _noise_characters | {" ", "\t"}
 class CandidateForm(Slots):
     __slots__ = ["__weakref__"]
-    def __init__(self, candidate: WeakRef[CandidateWord], is_surface: bool, form: str) -> None:
+    def __init__(self, candidate: WeakRef[CandidateWord], form: str, is_base: bool) -> None:
         self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
+
+        self.is_base = is_base
+        self.is_surface = not is_base
+        self.weak_ref = WeakRef(self)
         from language_services.jamdict_ex.dict_lookup import DictLookup
 
-        self.start_index: int = candidate().locations[0]().character_start_index
+        self.start_index: int = candidate().start_location().character_start_index
         self.configuration: SentenceConfiguration = candidate().analysis().configuration
         self.candidate: WeakRef[CandidateWord] = candidate
-        self.is_surface: bool = is_surface
         self.form: str = form
 
         self.dict_lookup: DictLookup = DictLookup.lookup_word(form)
         self.all_any_form_vocabs: list[VocabNote] = app.col().vocab.with_form(form)
-        self.all_primary_form_vocabs: list[VocabNote] = [voc for voc in self.all_any_form_vocabs if voc.get_question() == form]
+
+        self.vocab_candidates: list[VocabCandidate] = [VocabCandidate(self.weak_ref, voc) for voc in self.all_any_form_vocabs]
 
         def is_excluded_form(form_: str) -> bool:
             # todo: bug: With the current implementation this removes hidden matches from the parsed words. That is precisely what hidden matches should not do.
@@ -47,7 +52,6 @@ class CandidateForm(Slots):
         self.is_word: bool = self.dict_lookup.found_words() or len(self.all_any_form_vocabs) > 0
         self.is_excluded_by_config: bool = is_excluded_form(form)
 
-        self.forms_excluded_by_compound_root_vocab_configuration: set[str] = set()
         self.exact_match_required_by_primary_form_vocab_configuration: bool = any(v for v in self.unexcluded_primary_form_vocabs if v.matching_rules.requires_exact_match.is_set())
 
         self.prefix_is_not: set[str] = set().union(*[v.matching_rules.rules.prefix_is_not.get() for v in self.unexcluded_primary_form_vocabs])
@@ -76,18 +80,17 @@ class CandidateForm(Slots):
 
     def complete_analysis(self) -> None:
         if self.completed_analysis: return
-        self.is_excluded_by_compound_root_vocab_configuration: bool = self.form in self.forms_excluded_by_compound_root_vocab_configuration
         self.exact_match_required_by_counterpart_vocab_configuration: bool = self.counterpart.exact_match_required_by_primary_form_vocab_configuration
         self.exact_match_required: bool = self.exact_match_required_by_primary_form_vocab_configuration or self.exact_match_required_by_counterpart_vocab_configuration
         self.is_exact_match_requirement_fulfilled: bool = self.form == self.counterpart.form or not self.exact_match_required
 
         if self.unexcluded_any_form_vocabs:
-            self.display_forms = [VocabDisplayForm(WeakRef(self), voc) for voc in self.unexcluded_any_form_vocabs if self.vocab_fulfills_stem_requirements(voc)]
+            self.display_forms = [VocabDisplayForm(self.weak_ref, voc) for voc in self.unexcluded_any_form_vocabs if self.vocab_fulfills_stem_requirements(voc)]
             override_form = [df for df in self.display_forms if df.parsed_form != self.form]
             if any(override_form):
                 self.form = override_form[0].parsed_form
         else:
-            self.display_forms = [MissingDisplayForm(WeakRef(self))]
+            self.display_forms = [MissingDisplayForm(self.weak_ref)]
 
         self.is_valid_candidate = ((self.is_word or not self.candidate().is_custom_compound)
                                    and self.form not in _noise_characters
@@ -128,7 +131,7 @@ class CandidateForm(Slots):
 
 class SurfaceCandidateForm(CandidateForm, Slots):
     def __init__(self, candidate: WeakRef[CandidateWord]) -> None:
-        super().__init__(candidate, True, "".join([t().surface for t in candidate().locations]) + "")
+        super().__init__(candidate, "".join([t().surface for t in candidate().locations]) + "", is_base = False)
 
         if (not candidate().is_custom_compound
                 and candidate().locations[-1]().token.do_not_match_surface_for_non_compound_vocab):
@@ -143,7 +146,7 @@ class BaseCandidateForm(CandidateForm, Slots):
         if not candidate().is_custom_compound:
             base_form = candidate().locations[-1]().token.base_form_for_non_compound_vocab_matching
 
-        super().__init__(candidate, False, base_form)
+        super().__init__(candidate, base_form, is_base = True)
 
         self.surface_is_not: set[str] = set().union(*[v.matching_rules.rules.surface_is_not.get() for v in self.unexcluded_any_form_vocabs])
         self.surface_preferred_over_bases: set[str] = set()

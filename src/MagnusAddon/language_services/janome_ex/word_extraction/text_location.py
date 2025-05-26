@@ -68,8 +68,8 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.sur
         for cand in self.all_candidates[:-1]:  # we already have the last one completed
             cand.complete_analysis()
 
-        self.word_candidates = [word for word in self.all_candidates if word.is_word]
-        self.valid_candidates = [word for word in self.all_candidates if word.has_valid_candidates()]
+        self.word_candidates = [candidate for candidate in self.all_candidates if candidate.is_word]
+        self.valid_candidates = [candidate for candidate in self.all_candidates if candidate.has_valid_words()]
 
         if self.valid_candidates and self.is_covered_by is None:
             self.display_words = self.valid_candidates[0].display_words

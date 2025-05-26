@@ -26,7 +26,7 @@ class CandidateWord(Slots):
         self.length = len(self.locations)
 
         self.base: CandidateForm = BaseCandidateForm(WeakRef(self))
-        self.surface: CandidateForm = SurfaceCandidateForm(WeakRef(self)) if self.locations[-1]().surface != self.locations[-1]().base else self.base
+        self.surface: CandidateForm = SurfaceCandidateForm(WeakRef(self)) if self.end_location().surface != self.end_location().base else self.base
 
         self.is_word: bool = self.surface.is_word or self.base.is_word
 
@@ -59,10 +59,10 @@ class CandidateWord(Slots):
         elif self.should_include_base_in_all_words:
             self.display_words.append(self.base)
 
-    def has_valid_candidates(self) -> bool: return len(self.all_words) > 0
+    def has_valid_words(self) -> bool: return len(self.all_words) > 0
 
     def __repr__(self) -> str: return f"""
 surface: {self.surface.__repr__()} | base:{self.base.__repr__()},
-hvc:{self.has_valid_candidates()},
+hvc:{self.has_valid_words()},
 iw:{self.is_word}
 icc:{self.is_custom_compound})""".replace(newline, "")
