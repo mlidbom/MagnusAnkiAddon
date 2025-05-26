@@ -6,8 +6,8 @@ from autoslot import Slots
 from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.candidate_form import CandidateWord
-    from language_services.janome_ex.word_extraction.candidate_word import TokenRange
+    from language_services.janome_ex.word_extraction.candidate_word import CandidateWord
+    from language_services.janome_ex.word_extraction.token_range import TokenRange
     from note.sentences.sentencenote import SentenceNote
 
 class CandidateFormViewModel:

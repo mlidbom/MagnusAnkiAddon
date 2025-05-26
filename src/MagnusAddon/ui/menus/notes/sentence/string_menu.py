@@ -9,7 +9,7 @@ from ui.menus.menu_utils import shortcutfinger
 from ui.menus.menu_utils.ex_qmenu import add_ui_action
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.candidate_form import CandidateWord
+    from language_services.janome_ex.word_extraction.candidate_word import CandidateWord
     from note.sentences.sentencenote import SentenceNote
     from note.sentences.word_exclusion_set import WordExclusionSet
     from PyQt6.QtWidgets import QMenu

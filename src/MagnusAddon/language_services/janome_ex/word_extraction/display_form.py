@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from autoslot import Slots
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.candidate_form import CandidateWord
+    from language_services.janome_ex.word_extraction.candidate_word import CandidateWord
     from note.vocabulary.vocabnote import VocabNote
     from sysutils.weak_ref import WeakRef
 

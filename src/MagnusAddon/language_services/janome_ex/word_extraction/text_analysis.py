@@ -8,7 +8,7 @@ from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
     from language_services.janome_ex.tokenizing.jn_tokenized_text import ProcessedToken
-    from language_services.janome_ex.word_extraction.candidate_form import CandidateWord
+    from language_services.janome_ex.word_extraction.candidate_word import CandidateWord
 
 from language_services.janome_ex.tokenizing.jn_tokenizer import JNTokenizer
 from language_services.janome_ex.word_extraction.text_location import TokenTextLocation

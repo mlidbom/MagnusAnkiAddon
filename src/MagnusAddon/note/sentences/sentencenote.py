@@ -22,7 +22,7 @@ from sysutils import ex_sequence, ex_str, kana_utils
 from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.candidate_form import CandidateWord
+    from language_services.janome_ex.word_extraction.candidate_word import CandidateWord
     from note.vocabulary.vocabnote import VocabNote
 
 class SentenceNote(JPNote, Slots):
