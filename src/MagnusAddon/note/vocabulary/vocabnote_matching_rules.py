@@ -37,10 +37,10 @@ class VocabNoteMatchingRules(Slots):
         self._data.save()
 
     def __repr__(self) -> str: return (SkipFalsyValuesDebugReprBuilder()
-                                       .prop("surface_is_not", self.surface_is_not)
-                                       .prop("prefer_over_base", self.prefer_over_base)
-                                       .prop("prefix_is_not", self.prefix_is_not)
-                                       .prop("required_prefix", self.required_prefix).repr)
+                                       .prop("surface_is_not", self.surface_is_not.get())
+                                       .prop("prefer_over_base", self.prefer_over_base.get())
+                                       .prop("prefix_is_not", self.prefix_is_not.get())
+                                       .prop("required_prefix", self.required_prefix.get()).repr)
 
 class VocabNoteMatching(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
