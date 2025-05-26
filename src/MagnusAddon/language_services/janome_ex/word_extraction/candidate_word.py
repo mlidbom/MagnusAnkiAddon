@@ -62,6 +62,8 @@ class CandidateWord(Slots):
         self.is_strictly_suffix = any(voc for voc in self.unexcluded_primary_form_vocabs if voc.matching_rules.is_strictly_suffix.is_set())
         self.requires_prefix = self.is_strictly_suffix or any(self.prefix_must_end_with)
 
+        self.is_noise_character = self.form in noise_characters
+
         # will be completed in complete_analysis
         self.exact_match_required_by_counterpart_vocab_configuration: bool = False
         self.exact_match_required: bool = False
@@ -72,6 +74,7 @@ class CandidateWord(Slots):
         self.starts_with_non_word_token = self.token_range().start_location().token.is_non_word_character
 
         self.display_forms: list[DisplayForm] = []
+        self.only_requires_being_a_word_to_be_a_valid_candidate = False
 
     @property
     def counterpart(self) -> CandidateWord: raise Exception("Not implemented")
@@ -90,16 +93,17 @@ class CandidateWord(Slots):
         else:
             self.display_forms = [MissingDisplayForm(self.weak_ref)]
 
-        self.is_valid_candidate = ((self.is_word or not self.token_range().is_custom_compound)
-                                   and self.form not in noise_characters
-                                   and not self.is_excluded_by_config
-                                   and not self.is_self_excluded
-                                   and not self.is_excluded_by_prefix
-                                   and not self.is_missing_required_prefix
-                                   and len(self.display_forms) > 0
-                                   and (not self.requires_prefix or self.has_prefix)
-                                   and not self.starts_with_non_word_token
-                                   and self.is_exact_match_requirement_fulfilled)
+        self.only_requires_being_a_word_to_be_a_valid_candidate = (not self.is_noise_character
+                                                                   and not self.is_excluded_by_config
+                                                                   and not self.is_self_excluded
+                                                                   and not self.is_excluded_by_prefix
+                                                                   and not self.is_missing_required_prefix
+                                                                   and len(self.display_forms) > 0
+                                                                   and (not self.requires_prefix or self.has_prefix)
+                                                                   and not self.starts_with_non_word_token
+                                                                   and self.is_exact_match_requirement_fulfilled)
+
+        self.is_valid_candidate = self.only_requires_being_a_word_to_be_a_valid_candidate and self.is_word
 
         self.completed_analysis = True
 
@@ -128,7 +132,7 @@ class CandidateWord(Slots):
 
 class SurfaceCandidateWord(CandidateWord, Slots):
     def __init__(self, token_range: WeakRef[LocationRange]) -> None:
-        super().__init__(token_range, "".join([t().surface for t in token_range().locations]) + "", is_base = False)
+        super().__init__(token_range, "".join([t().surface for t in token_range().locations]) + "", is_base=False)
 
         if (not token_range().is_custom_compound
                 and token_range().locations[-1]().token.do_not_match_surface_for_non_compound_vocab):
@@ -143,7 +147,7 @@ class BaseCandidateWord(CandidateWord, Slots):
         if not token_range().is_custom_compound:
             base_form = token_range().locations[-1]().token.base_form_for_non_compound_vocab_matching
 
-        super().__init__(token_range, base_form, is_base = True)
+        super().__init__(token_range, base_form, is_base=True)
 
         self.surface_is_not: set[str] = set().union(*[v.matching_rules.rules.surface_is_not.get() for v in self.unexcluded_any_form_vocabs])
         self.surface_preferred_over_bases: set[str] = set()
@@ -158,8 +162,6 @@ class BaseCandidateWord(CandidateWord, Slots):
         self.surface_preferred_over_bases = set().union(*[vocab.matching_rules.rules.prefer_over_base.get() for vocab in self.counterpart.unexcluded_any_form_vocabs])
         if self.form in self.surface_preferred_over_bases:
             self.is_valid_candidate = False
-
-
 
     @property
     def counterpart(self) -> CandidateWord: return non_optional(self.token_range().surface)

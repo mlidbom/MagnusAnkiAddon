@@ -43,11 +43,14 @@ class LocationRange(Slots):
         self.base.complete_analysis()
         self.surface.complete_analysis()
 
-        #todo: bug: if the surface is not a valid candidate, the word is inflected, and the base is not a valid candidate, no words are included
-        self.should_include_surface_in_all_words = (self.surface.is_valid_candidate
-                                                    and not self.is_inflected_word
-                                                    and self.surface.form != self.base.form)
         self.should_include_base_in_all_words = self.base.is_valid_candidate
+
+        self.should_include_surface_in_all_words = ((not self.should_include_base_in_all_words
+                                                     and not self.is_custom_compound
+                                                     and self.surface.only_requires_being_a_word_to_be_a_valid_candidate)
+                                                    or (self.surface.is_valid_candidate
+                                                        and not self.is_inflected_word
+                                                        and self.surface.form != self.base.form))
 
         self.all_words = []
         if self.should_include_base_in_all_words:
@@ -55,7 +58,7 @@ class LocationRange(Slots):
         if self.should_include_surface_in_all_words:
             self.all_words.append(self.surface)
 
-        #todo: may result in no matches, and I'm not sure we should say that only one is ever allowed to be included
+        # todo: may result in no matches, and I'm not sure we should say that only one is ever allowed to be included
         if self.should_include_surface_in_all_words:
             self.display_words.append(self.surface)
         elif self.should_include_base_in_all_words:

@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 import pytest
 from ankiutils import app
+from fixtures.base_data.sample_data import vocab_spec
 from fixtures.collection_factory import inject_anki_collection_with_select_data, inject_empty_anki_collection_with_note_types
 from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
@@ -13,7 +14,6 @@ from note.vocabulary.vocabnote import VocabNote
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
-
 
 # noinspection PyUnusedFunction
 @pytest.fixture(scope="function")
@@ -38,7 +38,7 @@ def setup_empty_collection() -> Iterator[None]:
     ("私が行きましょう。",
      ["私", "が", "行く", "行き", "ましょう", "ます", "ましょ", "う"]),
     ("１人でいる時間がこれほどまでに長く感じるとは",
-     ["１人で", "１人", "１", "人", "で", "いる", "時間", "が", "これほど", "これ", "ほど", "までに", "まで", "に", "長い", "長く", "感じる", "とは", "と", "は"]
+     ["１人で", "１人", "１", "人", "で", "いる", "時間", "が", "これほど", "これ", "ほど", "までに", "まで", "に", "長い", "感じる", "とは", "と", "は"]
      ),
     ("どうやってここを知った。",
      ["どうやって", "どう", "やる", "て", "ここ", "を", "知る", "た"]),
@@ -49,8 +49,8 @@ def setup_empty_collection() -> Iterator[None]:
     ("清めの一波", ["清める", "清め", "の", "一波"]),
     ("さっさと傷を清めてこい",
      ["さっさと", "傷", "を", "清める", "て", "くる", "こい"]),
-    ("すげえ", ["すげえ", "すげる", "すげ", "え"]),
-    ("「コーヒーはいかがですか？」「いえ、結構です。お構いなく。」", ["コーヒー", "は", "いかが", "ですか", "です", "か", "いえる", "いえ", "結構", "です", "お構いなく"]),
+    ("すげえ", ["すげえ", "すげ", "え"]),
+    ("「コーヒーはいかがですか？」「いえ、結構です。お構いなく。」", ["コーヒー", "は", "いかが", "ですか", "です", "か", "いえ", "結構", "です", "お構いなく"]),
     ("解放する", ["解放する", "解放", "する"])
 ])
 def test_identify_words(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
@@ -59,10 +59,10 @@ def test_identify_words(setup_collection_with_select_data: object, sentence: str
     assert root_words == expected_output
 
 @pytest.mark.parametrize("sentence, expected_output", [
-    ("言わず", ["言う", "言わ", "ず"]),
+    ("言わず", ["言う", "ず"]),
     ("声出したら駄目だからね", ["声", "出す", "たら", "駄目", "だから", "だ", "から", "ね"]),
     ("無理して思い出す", ["無理", "して", "する", "て", "思い出す"]),
-    ("私が頼んだの", ["私", "が", "頼む", "頼ん", "だ", "の"]),
+    ("私が頼んだの", ["私", "が", "頼む", "だ", "の"]),
 ])
 def test_excluded_surfaces(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
     analysis = TextAnalysis(sentence, SentenceConfiguration.empty())
@@ -177,7 +177,8 @@ def insert_custom_words(custom_words: list[str]) -> None:
     ("食べれる", [], [], ["食べる", "えれる"], ["食べる", "えれる"]),
     ("破られたか", [], [], ["破る", "あれる", "たか"], ["破る", "あれる", "たか"]),
     ("大家族だもの", [], [], ["大家族", "だもの"], []),
-    ("奪うんだもの", [], [], ["奪う", "んだ", "もの"], [])
+    ("奪うんだもの", [], [], ["奪う", "んだ", "もの"], []),
+    ("難しく考えすぎ", [], [], ["難しい", "考えすぎ"], []),
 ])
 def test_hierarchical_extraction(setup_collection_with_select_data: object, sentence: str, custom_words: list[str], excluded: list[WordExclusion], expected_output: list[str], expected_display_output: list[str]) -> None:
     _run_assertions(sentence, custom_words, excluded, expected_output, expected_display_output)
@@ -216,6 +217,7 @@ def test_potential_verb_splitting_with_vocab(setup_collection_with_select_data: 
     ("覚ませない", [], [], ["覚ます", "える", "ない"], [])
 ])
 def test_potential_verb_splitting_without_vocab(setup_empty_collection: object, sentence: str, custom_words: list[str], excluded: list[WordExclusion], expected_output: list[str], expected_display_output: list[str]) -> None:
+    [eru for eru in vocab_spec.test_special_vocab if eru.question == "える"][0].create_vocab_note()
     _run_assertions(sentence, custom_words, excluded, expected_output, expected_display_output)
 
 def _run_assertions(sentence: str, custom_words: list[str], excluded: list[WordExclusion], expected_output: list[str], expected_display_output: list[str]) -> None:
