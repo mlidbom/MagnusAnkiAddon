@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 
 from typing import Optional
 
-from language_services.janome_ex.word_extraction.token_range import TokenRange
+from language_services.janome_ex.word_extraction.location_range import LocationRange
 from sysutils.ex_str import newline
 
 _max_lookahead = 12
@@ -36,11 +36,11 @@ class TokenTextLocation(Slots):
         self.surface: str = surface
         self.base: str = base
 
-        self.word_candidates: list[TokenRange] = []
-        self.valid_candidates: list[TokenRange] = []
+        self.word_candidates: list[LocationRange] = []
+        self.valid_candidates: list[LocationRange] = []
         self.display_words: list[CandidateWord] = []
         self.all_words: list[CandidateWord] = []
-        self.all_candidate_ranges: list[TokenRange] = []
+        self.all_candidate_ranges: list[LocationRange] = []
         self.next: Optional[WeakRef[TokenTextLocation]] = None
         self.previous: Optional[WeakRef[TokenTextLocation]] = None
 
@@ -61,7 +61,7 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.sur
             self.previous = WeakRef(self.analysis().locations[self.token_index - 1])
 
         lookahead_max = min(_max_lookahead, len(self.forward_list(_max_lookahead)))
-        self.all_candidate_ranges = [TokenRange([WeakRef(location) for location in self.forward_list(index)]) for index in range(lookahead_max - 1, -1, -1)]
+        self.all_candidate_ranges = [LocationRange([WeakRef(location) for location in self.forward_list(index)]) for index in range(lookahead_max - 1, -1, -1)]
         self.all_candidate_ranges[-1].complete_analysis()  # the non-compound part needs to be completed first
 
     def run_analysis_step_2(self) -> None:

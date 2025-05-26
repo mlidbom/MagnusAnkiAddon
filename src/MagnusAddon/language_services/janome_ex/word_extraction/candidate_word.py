@@ -15,13 +15,13 @@ from sysutils.typed import non_optional
 from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.token_range import TokenRange
+    from language_services.janome_ex.word_extraction.location_range import LocationRange
     from note.sentences.sentence_configuration import SentenceConfiguration
     from note.vocabulary.vocabnote import VocabNote
 
 class CandidateWord(Slots):
     __slots__ = ["__weakref__"]
-    def __init__(self, token_range: WeakRef[TokenRange], form: str, is_base: bool) -> None:
+    def __init__(self, token_range: WeakRef[LocationRange], form: str, is_base: bool) -> None:
         self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
 
         self.is_base = is_base
@@ -31,7 +31,7 @@ class CandidateWord(Slots):
 
         self.start_index: int = token_range().start_location().character_start_index
         self.configuration: SentenceConfiguration = token_range().analysis().configuration
-        self.token_range: WeakRef[TokenRange] = token_range
+        self.token_range: WeakRef[LocationRange] = token_range
         self.form: str = form
 
         self.dict_lookup: DictLookup = DictLookup.lookup_word(form)
@@ -127,7 +127,7 @@ class CandidateWord(Slots):
         return f"""CandidateForm:({self.form}, {self.is_valid_candidate})"""
 
 class SurfaceCandidateWord(CandidateWord, Slots):
-    def __init__(self, token_range: WeakRef[TokenRange]) -> None:
+    def __init__(self, token_range: WeakRef[LocationRange]) -> None:
         super().__init__(token_range, "".join([t().surface for t in token_range().locations]) + "", is_base = False)
 
         if (not token_range().is_custom_compound
@@ -138,7 +138,7 @@ class SurfaceCandidateWord(CandidateWord, Slots):
     def counterpart(self) -> CandidateWord: return non_optional(self.token_range().base)
 
 class BaseCandidateWord(CandidateWord, Slots):
-    def __init__(self, token_range: WeakRef[TokenRange]) -> None:
+    def __init__(self, token_range: WeakRef[LocationRange]) -> None:
         base_form = "".join([t().surface for t in token_range().locations[:-1]]) + token_range().locations[-1]().base
         if not token_range().is_custom_compound:
             base_form = token_range().locations[-1]().token.base_form_for_non_compound_vocab_matching

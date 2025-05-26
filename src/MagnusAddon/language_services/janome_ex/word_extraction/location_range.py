@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 from sysutils.ex_str import newline
 
 
-class TokenRange(Slots):
+class LocationRange(Slots):
     __slots__ = ["__weakref__"]
     def __init__(self, locations: list[WeakRef[TokenTextLocation]]) -> None:
         self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)

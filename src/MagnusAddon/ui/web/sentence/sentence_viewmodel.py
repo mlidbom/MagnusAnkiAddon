@@ -7,7 +7,7 @@ from language_services.janome_ex.word_extraction.text_analysis import TextAnalys
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.candidate_word import CandidateWord
-    from language_services.janome_ex.word_extraction.token_range import TokenRange
+    from language_services.janome_ex.word_extraction.location_range import LocationRange
     from note.sentences.sentencenote import SentenceNote
 
 class CandidateFormViewModel:
@@ -15,7 +15,7 @@ class CandidateFormViewModel:
         self.candidate_form = candidate_form
 
 class CandidateWordViewModel(Slots):
-    def __init__(self, candidate_word: TokenRange) -> None:
+    def __init__(self, candidate_word: LocationRange) -> None:
         self.candidate_word = candidate_word
 
     def display_words(self) -> list[CandidateFormViewModel]: return [CandidateFormViewModel(candidate_form) for candidate_form in self.candidate_word.all_words]
