@@ -17,3 +17,5 @@ class IsStrictlySuffix:
 
     def is_set(self) -> bool:
         return self.tag_field.is_set() or self._vocab().get_question().startswith(Mine.VocabPrefixSuffixMarker)
+
+    def __repr__(self) -> str: return self.is_set().__repr__()

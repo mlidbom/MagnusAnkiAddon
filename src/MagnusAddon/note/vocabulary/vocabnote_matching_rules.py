@@ -10,6 +10,7 @@ from note.notefields.tag_flag_field import TagFlagField
 from note.vocabulary.serialization.matching_rules_serializer import VocabNoteMatchingRulesSerializer
 from note.vocabulary.vocabnote_matching_rules_is_strictly_prefix import IsStrictlySuffix
 from note.vocabulary.vocabnote_matching_rules_question_overrides_form import QuestionOverridesForm
+from sysutils.ex_str import newline
 from sysutils.lazy import Lazy
 
 if TYPE_CHECKING:
@@ -35,15 +36,22 @@ class VocabNoteMatchingRules(Slots):
     def save(self) -> None:
         self._data.save()
 
+    def __repr__(self) -> str: return f"""
+    {f"surface_is_not: {self.surface_is_not.__repr__()}" if self.surface_is_not.get() else " "}, 
+    {f"prefer_over_base: {self.prefer_over_base.__repr__()}" if self.prefer_over_base.get() else " "}, 
+    {f"prefix_is_not: {self.prefix_is_not.__repr__()}" if self.prefix_is_not.get() else " "}, 
+    {f"required_prefix: {self.required_prefix.__repr__()}" if self.required_prefix.get() else " "}
+""".replace(newline, "")
+
 class VocabNoteMatching(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self._data: WeakRef[VocabNote] = vocab
         self._rules: Lazy[VocabNoteMatchingRules] = Lazy(lambda: VocabNoteMatchingRules(vocab))
         self.requires_exact_match: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.requires_exact_match)
-        self.question_overrides_form: QuestionOverridesForm = QuestionOverridesForm(vocab)
         self.requires_a_stem: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.requires_a_stem)
         self.requires_e_stem: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.requires_e_stem)
         self.match_with_preceding_vowel: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.Todo.with_preceding_vowel)
+        self.question_overrides_form: QuestionOverridesForm = QuestionOverridesForm(vocab)
         self.is_strictly_suffix: IsStrictlySuffix = IsStrictlySuffix(vocab)
 
     @property
@@ -52,3 +60,12 @@ class VocabNoteMatching(Slots):
 
     def save(self) -> None:
         self.rules.save()
+
+    def __repr__(self) -> str: return f"""
+{"requires_exact_match" if self.requires_exact_match.is_set() else " "} 
+{"requires_a_stem" if self.requires_a_stem.is_set() else " "}
+{"requires_e_stem" if self.requires_e_stem.is_set() else " "}
+{"match_with_preceding_vowel" if self.match_with_preceding_vowel.is_set() else " "}
+{"question_overrides_form" if self.question_overrides_form.is_set() else " "}
+{"is_strictly_suffix" if self.is_strictly_suffix.is_set() else " "}
+""".replace(newline, "")
