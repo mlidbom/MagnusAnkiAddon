@@ -85,6 +85,7 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.sur
     def is_next_location_inflecting_word(self) -> bool:
         return self.next is not None and self.next().is_inflecting_word()
 
+    #todo: having this check here only means that marking a compound as an inflecting word has no effect, and figuring out why things are not working can be quite a pain
     def is_inflecting_word(self) -> bool:
         vocab = app.col().vocab.with_form(self.base)
         return any(voc for voc in vocab if voc.has_tag(Tags.Vocab.Matching.is_inflecting_word))
