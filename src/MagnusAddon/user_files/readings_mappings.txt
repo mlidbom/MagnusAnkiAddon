@@ -25,6 +25,7 @@ aza:Aza:zel
 ba:ba:t
 baa:baa
 bai:bi:le
+bako:back-co
 baku:back
 ban:ban
 batsu:bats
@@ -43,6 +44,7 @@ butsu:butts
 byou:BO
 cha:chu:m
 chi:chi:mp
+chichi:chichi
 chiga:chigger
 chii:chee:se
 chika:chick-a
@@ -52,6 +54,7 @@ cho:cho:p
 choku:chock
 chou:chore
 chuu:chew
+co:co
 da:da
 dai:die
 daki:ducky
@@ -68,7 +71,7 @@ dori:dolly
 doro:door
 dou:doe
 e:E:lle
-ei:a:pe
+ei:a
 eki:ecki
 en:En:t
 era:era
@@ -78,6 +81,7 @@ fuka:fucker
 fuku:fuck
 fukuro:fuck-u-raw
 fun:fun
+furu:fur
 futa:foot-a
 futo:foot
 futsu:foot's
@@ -100,7 +104,7 @@ go:go
 goro:gore
 goto:go-to
 gou:go
-gu:gu:ppy
+gu:goo
 gun:gun
 guu:goo
 gyou:gyo:za
@@ -110,6 +114,7 @@ hada:had-a
 hag:hag
 hai:hi:de
 haka:hacker
+hako:hack-co
 haku:hack
 hama:ham
 han:Han
@@ -136,6 +141,7 @@ hita:hit-a
 hito:hit
 hitsu:hits
 ho:ho
+hoga:hog-a
 hoku:hock
 hon:hon
 hone:hone
@@ -166,7 +172,7 @@ juu:jew
 ka:car
 kage:Kage
 kai:ki:te
-kaka:kaka
+kaka:kake-a
 kaku:cack:le
 kama:<read>ca</read>ve-<read>ma</read>n
 kame:came
@@ -186,6 +192,7 @@ kaza:Kaza:k
 ke:ke:g
 kega:keg-a
 kei:ca:ke
+kemuri:kay-Murray
 ken:ken:do
 ketsu:ketsu:p
 ki:key
@@ -194,7 +201,7 @@ kiku:kick-u
 kimo:kimo:no
 kin:kin
 kitsu:kits
-ko:co:t
+ko:co
 koba:coba:lt
 koi:koi
 koko:coco
@@ -248,7 +255,7 @@ meka:mech-a
 men:men
 meshi:messy
 metsu:Mets
-mi:mea:t
+mi:mee:t
 migi:MiG
 mika:mick-a
 miki:Mickie
@@ -412,7 +419,7 @@ tabi:tabby
 tachi:touch
 tai:tie
 taka:take-a
-takara:take-a-ri:ght
+takara:take-a-ra:t
 take:take
 taku:tack:le
 takuwa:takeuway
@@ -422,7 +429,7 @@ tamo:Tamo:ra
 tan:tan
 tani:tiny
 tao:Tao
-tato:tattoo
+tato:tatto:o
 tatsu:tats
 tazu:taze-u
 te:te:ch
