@@ -15,13 +15,13 @@ from sysutils.typed import non_optional
 from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.candidate_word import CandidateWord
+    from language_services.janome_ex.word_extraction.candidate_word import TokenRange
     from note.sentences.sentence_configuration import SentenceConfiguration
     from note.vocabulary.vocabnote import VocabNote
 
-class CandidateForm(Slots):
+class CandidateWord(Slots):
     __slots__ = ["__weakref__"]
-    def __init__(self, candidate: WeakRef[CandidateWord], form: str, is_base: bool) -> None:
+    def __init__(self, token_range: WeakRef[TokenRange], form: str, is_base: bool) -> None:
         self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
 
         self.is_base = is_base
@@ -29,9 +29,9 @@ class CandidateForm(Slots):
         self.weak_ref = WeakRef(self)
         from language_services.jamdict_ex.dict_lookup import DictLookup
 
-        self.start_index: int = candidate().start_location().character_start_index
-        self.configuration: SentenceConfiguration = candidate().analysis().configuration
-        self.candidate: WeakRef[CandidateWord] = candidate
+        self.start_index: int = token_range().start_location().character_start_index
+        self.configuration: SentenceConfiguration = token_range().analysis().configuration
+        self.candidate: WeakRef[TokenRange] = token_range
         self.form: str = form
 
         self.dict_lookup: DictLookup = DictLookup.lookup_word(form)
@@ -74,7 +74,7 @@ class CandidateForm(Slots):
         self.display_forms: list[DisplayForm] = []
 
     @property
-    def counterpart(self) -> CandidateForm: raise Exception("Not implemented")
+    def counterpart(self) -> CandidateWord: raise Exception("Not implemented")
 
     def complete_analysis(self) -> None:
         if self.completed_analysis: return
@@ -126,24 +126,24 @@ class CandidateForm(Slots):
     def __repr__(self) -> str:
         return f"""CandidateForm:({self.form}, {self.is_valid_candidate})"""
 
-class SurfaceCandidateForm(CandidateForm, Slots):
-    def __init__(self, candidate: WeakRef[CandidateWord]) -> None:
-        super().__init__(candidate, "".join([t().surface for t in candidate().locations]) + "", is_base = False)
+class SurfaceCandidateWord(CandidateWord, Slots):
+    def __init__(self, token_range: WeakRef[TokenRange]) -> None:
+        super().__init__(token_range, "".join([t().surface for t in token_range().locations]) + "", is_base = False)
 
-        if (not candidate().is_custom_compound
-                and candidate().locations[-1]().token.do_not_match_surface_for_non_compound_vocab):
+        if (not token_range().is_custom_compound
+                and token_range().locations[-1]().token.do_not_match_surface_for_non_compound_vocab):
             self.is_self_excluded = True
 
     @property
-    def counterpart(self) -> CandidateForm: return non_optional(self.candidate().base)
+    def counterpart(self) -> CandidateWord: return non_optional(self.candidate().base)
 
-class BaseCandidateForm(CandidateForm, Slots):
-    def __init__(self, candidate: WeakRef[CandidateWord]) -> None:
-        base_form = "".join([t().surface for t in candidate().locations[:-1]]) + candidate().locations[-1]().base
-        if not candidate().is_custom_compound:
-            base_form = candidate().locations[-1]().token.base_form_for_non_compound_vocab_matching
+class BaseCandidateWord(CandidateWord, Slots):
+    def __init__(self, token_range: WeakRef[TokenRange]) -> None:
+        base_form = "".join([t().surface for t in token_range().locations[:-1]]) + token_range().locations[-1]().base
+        if not token_range().is_custom_compound:
+            base_form = token_range().locations[-1]().token.base_form_for_non_compound_vocab_matching
 
-        super().__init__(candidate, base_form, is_base = True)
+        super().__init__(token_range, base_form, is_base = True)
 
         self.surface_is_not: set[str] = set().union(*[v.matching_rules.rules.surface_is_not.get() for v in self.unexcluded_any_form_vocabs])
         self.surface_preferred_over_bases: set[str] = set()
@@ -162,4 +162,4 @@ class BaseCandidateForm(CandidateForm, Slots):
 
 
     @property
-    def counterpart(self) -> CandidateForm: return non_optional(self.candidate().surface)
+    def counterpart(self) -> CandidateWord: return non_optional(self.candidate().surface)

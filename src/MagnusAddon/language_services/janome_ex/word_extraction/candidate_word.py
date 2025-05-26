@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
-from language_services.janome_ex.word_extraction.candidate_form import BaseCandidateForm, CandidateForm, SurfaceCandidateForm
+from language_services.janome_ex.word_extraction.candidate_form import BaseCandidateWord, CandidateWord, SurfaceCandidateWord
 from sysutils.object_instance_tracker import ObjectInstanceTracker
 from sysutils.weak_ref import WeakRef
 
@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 from sysutils.ex_str import newline
 
 
-class CandidateWord(Slots):
+class TokenRange(Slots):
     __slots__ = ["__weakref__"]
     def __init__(self, locations: list[WeakRef[TokenTextLocation]]) -> None:
         self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
@@ -25,8 +25,8 @@ class CandidateWord(Slots):
         self.end_location: WeakRef[TokenTextLocation] = self.locations[-1]
         self.length = len(self.locations)
 
-        self.base: CandidateForm = BaseCandidateForm(WeakRef(self))
-        self.surface: CandidateForm = SurfaceCandidateForm(WeakRef(self)) if self.end_location().surface != self.end_location().base else self.base
+        self.base: CandidateWord = BaseCandidateWord(WeakRef(self))
+        self.surface: CandidateWord = SurfaceCandidateWord(WeakRef(self)) if self.end_location().surface != self.end_location().base else self.base
 
         self.is_word: bool = self.surface.is_word or self.base.is_word
 
@@ -36,8 +36,8 @@ class CandidateWord(Slots):
 
         self.should_include_surface_in_all_words: bool = False
         self.should_include_base_in_all_words: bool = False
-        self.all_words: list[CandidateForm] = []
-        self.display_words: list[CandidateForm] = []
+        self.all_words: list[CandidateWord] = []
+        self.display_words: list[CandidateWord] = []
 
     def complete_analysis(self) -> None:
         self.base.complete_analysis()

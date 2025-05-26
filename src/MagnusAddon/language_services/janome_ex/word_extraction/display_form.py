@@ -5,20 +5,20 @@ from typing import TYPE_CHECKING
 from autoslot import Slots
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.candidate_form import CandidateForm
+    from language_services.janome_ex.word_extraction.candidate_form import CandidateWord
     from note.vocabulary.vocabnote import VocabNote
     from sysutils.weak_ref import WeakRef
 
 class DisplayForm(Slots):
-    def __init__(self, candidate: WeakRef[CandidateForm]) -> None:
-        self.candidate:WeakRef[CandidateForm] = candidate
+    def __init__(self, candidate: WeakRef[CandidateWord]) -> None:
+        self.candidate:WeakRef[CandidateWord] = candidate
         self.parsed_form:str = candidate().form
         self.vocab_form:str = ""
         self.answer: str = ""
 
 
 class VocabDisplayForm(DisplayForm):
-    def __init__(self, candidate: WeakRef[CandidateForm], vocab: VocabNote) -> None:
+    def __init__(self, candidate: WeakRef[CandidateWord], vocab: VocabNote) -> None:
         super().__init__(candidate)
         self.vocab:VocabNote = vocab
         self.vocab_form = vocab.get_question()
@@ -34,6 +34,6 @@ class VocabDisplayForm(DisplayForm):
 #         self.dictionary_entry = dictionary_entry
 
 class MissingDisplayForm(DisplayForm):
-    def __init__(self, candidate: WeakRef[CandidateForm]) -> None:
+    def __init__(self, candidate: WeakRef[CandidateWord]) -> None:
         super().__init__(candidate)
         self.answer = "---"

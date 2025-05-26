@@ -11,12 +11,12 @@ from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
     from language_services.janome_ex.tokenizing.jn_tokenized_text import ProcessedToken
-    from language_services.janome_ex.word_extraction.candidate_form import CandidateForm
+    from language_services.janome_ex.word_extraction.candidate_form import CandidateWord
     from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 
 from typing import Optional
 
-from language_services.janome_ex.word_extraction.candidate_word import CandidateWord
+from language_services.janome_ex.word_extraction.candidate_word import TokenRange
 from sysutils.ex_str import newline
 
 _max_lookahead = 12
@@ -36,11 +36,11 @@ class TokenTextLocation(Slots):
         self.surface: str = surface
         self.base: str = base
 
-        self.word_candidates: list[CandidateWord] = []
-        self.valid_candidates: list[CandidateWord] = []
-        self.display_words: list[CandidateForm] = []
-        self.all_words: list[CandidateForm] = []
-        self.all_candidates: list[CandidateWord] = []
+        self.word_candidates: list[TokenRange] = []
+        self.valid_candidates: list[TokenRange] = []
+        self.display_words: list[CandidateWord] = []
+        self.all_words: list[CandidateWord] = []
+        self.all_candidate_ranges: list[TokenRange] = []
         self.next: Optional[WeakRef[TokenTextLocation]] = None
         self.previous: Optional[WeakRef[TokenTextLocation]] = None
 
@@ -61,15 +61,15 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.sur
             self.previous = WeakRef(self.analysis().locations[self.token_index - 1])
 
         lookahead_max = min(_max_lookahead, len(self.forward_list(_max_lookahead)))
-        self.all_candidates = [CandidateWord([WeakRef(location) for location in self.forward_list(index)]) for index in range(lookahead_max - 1, -1, -1)]
-        self.all_candidates[-1].complete_analysis()  # the non-compound part needs to be completed first
+        self.all_candidate_ranges = [TokenRange([WeakRef(location) for location in self.forward_list(index)]) for index in range(lookahead_max - 1, -1, -1)]
+        self.all_candidate_ranges[-1].complete_analysis()  # the non-compound part needs to be completed first
 
     def run_analysis_step_2(self) -> None:
-        for cand in self.all_candidates[:-1]:  # we already have the last one completed
-            cand.complete_analysis()
+        for range in self.all_candidate_ranges[:-1]:  # we already have the last one completed
+            range.complete_analysis()
 
-        self.word_candidates = [candidate for candidate in self.all_candidates if candidate.is_word]
-        self.valid_candidates = [candidate for candidate in self.all_candidates if candidate.has_valid_words()]
+        self.word_candidates = [candidate for candidate in self.all_candidate_ranges if candidate.is_word]
+        self.valid_candidates = [candidate for candidate in self.all_candidate_ranges if candidate.has_valid_words()]
 
         if self.valid_candidates and self.is_covered_by is None:
             self.display_words = self.valid_candidates[0].display_words
