@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from sysutils.debug_repr_builder import SkipFalsyValuesDebugReprBuilder
+
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.candidate_word import CandidateWord
     from note.vocabulary.vocabnote import VocabNote
@@ -19,3 +21,8 @@ class VocabCandidate:
 
         self.is_valid_match = (not rules.requires_exact_match.is_set() or self.is_exact_match)
 
+    def __repr__(self) -> str: return (
+        SkipFalsyValuesDebugReprBuilder()
+        .flag("is_valid_match", self.is_valid_match)
+        .flag("is_exact_match", self.is_exact_match)
+        .repr)
