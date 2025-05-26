@@ -25,8 +25,8 @@ class LocationRange(Slots):
         self.end_location: WeakRef[TokenTextLocation] = self.locations[-1]
         self.length = len(self.locations)
 
-        self.base: CandidateWord = BaseCandidateWord(WeakRef(self))
-        self.surface: CandidateWord = SurfaceCandidateWord(WeakRef(self)) if self.end_location().surface != self.end_location().base else self.base
+        self.base: BaseCandidateWord = BaseCandidateWord(WeakRef(self))
+        self.surface: SurfaceCandidateWord = SurfaceCandidateWord(WeakRef(self))
 
         self.is_word: bool = self.surface.is_word or self.base.is_word
 

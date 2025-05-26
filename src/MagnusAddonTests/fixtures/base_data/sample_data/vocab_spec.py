@@ -84,7 +84,7 @@ test_special_vocab = [
     VocabSpec("たい", "want to", ["たい"], tags=[Tags.Vocab.Matching.is_inflecting_word]),
     VocabSpec("解放する", "to{} release", ["かいほうする"]),
 
-    VocabSpec("える", "to-be-able-to", ["える"], surface_is_not={"れる"}, tags=[Tags.Vocab.Matching.is_inflecting_word]),
+    VocabSpec("える", "to-be-able-to", ["える"], tags=[Tags.Vocab.Matching.is_inflecting_word]),
 
     # require a stems
     VocabSpec("あれる", "get-_/is-_", ["あれる"], extra_forms=["れる"], tags=[Tags.Vocab.Matching.requires_a_stem, Tags.Vocab.question_overrides_form, Tags.Vocab.Matching.is_inflecting_word]),
