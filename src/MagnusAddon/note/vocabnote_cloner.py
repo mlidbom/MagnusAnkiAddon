@@ -138,17 +138,32 @@ class VocabCloner(Slots):
         clone.compound_parts.set(compounds)
         return clone
 
+    def _create_preview_form(self, form_suffix: str, create_form_root: Callable[[VocabNote, str], str]) -> str:
+        return create_form_root(self.note, self.note.get_question()) + form_suffix
+
     def suffix_to_a_stem(self, form_suffix: str) -> VocabNote:
         return self.clone_to_derived_form(form_suffix, conjugator.get_a_stem_vocab)
+
+    def suffix_to_a_stem_preview(self, form_suffix: str) -> str:
+        return self._create_preview_form(form_suffix, conjugator.get_a_stem_vocab)
 
     def suffix_to_i_stem(self, form_suffix: str) -> VocabNote:
         return self.clone_to_derived_form(form_suffix, conjugator.get_i_stem_vocab)
 
+    def suffix_to_i_stem_preview(self, form_suffix: str) -> str:
+        return self._create_preview_form(form_suffix, conjugator.get_i_stem_vocab)
+
     def suffix_to_e_stem(self, form_suffix: str) -> VocabNote:
         return self.clone_to_derived_form(form_suffix, conjugator.get_e_stem_vocab)
 
+    def suffix_to_e_stem_preview(self, form_suffix: str) -> str:
+        return self._create_preview_form(form_suffix, conjugator.get_e_stem_vocab)
+
     def suffix_to_te_stem(self, form_suffix: str) -> VocabNote:
         return self.clone_to_derived_form(form_suffix, conjugator.get_te_stem_vocab)
+
+    def suffix_to_te_stem_preview(self, form_suffix: str) -> str:
+        return self._create_preview_form(form_suffix, conjugator.get_te_stem_vocab)
 
     def create_masu_form(self) -> VocabNote:
         return self.suffix_to_i_stem("ます")
