@@ -21,7 +21,7 @@ ato:ato:ll
 atsu:a-two
 awa:awa:y
 aya:Aya:no
-aza:Aza:zel
+aza:az-a
 ba:ba:t
 baa:baa
 bai:bi:le
@@ -40,9 +40,11 @@ bo:bo:mb
 bou:bow
 bu:bu:ll
 bun:bun
+buta:but-a
 butsu:butts
 byou:BO
 cha:chu:m
+chaku:chuck
 chi:chi:mp
 chichi:chichi
 chiga:chigger
@@ -90,7 +92,7 @@ ga:gu:t
 gai:guy
 gaku:gack
 gami:gamy
-gan:gun
+gan:gan:ja
 gata:gut-a
 gatsu:guts
 gaya:guy-a
@@ -140,7 +142,7 @@ hiso:he-saw
 hita:hit-a
 hito:hit
 hitsu:hits
-ho:ho
+ho:hoe
 hoga:hog-a
 hoku:hock
 hon:hon
@@ -158,6 +160,7 @@ ishi:ish
 ita:eat-a
 itona:<read>i</read>n<read>tona</read>tion
 itsu:eats
+iwa:Iva:n
 ja:ja:g
 jaku:jack
 ji:ji:nn
@@ -281,15 +284,17 @@ mugi:muggy
 muka:muck
 muku:muck
 mushi:mushy
-na:nu:t
+na:gna:t
 naga:nagger
 naka:knack
+naku:knack
 nan:naan
 nani:nunny
 nano:nano
 natsu:nuts
 ne:ne:t
 nega:nega:tion
+neta:net-a
 netsu:nets
 ni:nie:ce
 nichi:Nietzche
@@ -301,6 +306,7 @@ nise:niece
 nishi:niche
 niwa:nirwa:na
 no:no
+nodo:nod
 noma:nom-a
 noo:gnaw
 nota:note-a
@@ -359,7 +365,7 @@ rui:rui:n
 ryo:rio:t
 ryou:rio:t
 ryuu:dragon
-sa:sa:p
+sa:sa:ss
 saga:saga
 sai:cy:borg
 saida:aid-a
@@ -463,7 +469,7 @@ uri:uri:ne
 usa:user
 usu:us
 utsu:U2
-wa:wa:ll
+wa:va:t
 wai:why
 waka:wack-a
 wake:wack-eh
