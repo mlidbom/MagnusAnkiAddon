@@ -64,6 +64,7 @@ class EnglishWordSearchDialog(QDialog):
         self.results_table = QTableWidget()
         self.results_table.setColumnCount(2)  # Two columns: word and definition
         self.results_table.setHorizontalHeaderLabels(["Word", "Definition"])
+        self.results_table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
         self.results_table.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
         self.results_table.setSelectionMode(QTableWidget.SelectionMode.SingleSelection)
 
