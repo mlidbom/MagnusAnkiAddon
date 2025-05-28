@@ -90,7 +90,7 @@ futa:foot-a
 futo:foot
 futsu:foot's
 fuu:foo:l
-ga:gu:t
+ga:ga:g
 gai:guy
 gaku:gack
 gami:gamy
@@ -246,6 +246,7 @@ mago:mug
 mai:mi:ce
 maji:magi:c
 maku:muck
+mame:mammy
 mamo:mammo:th
 man:man
 mane:mane
