@@ -28,5 +28,6 @@ def init() -> None:
     bind_shortcuts(EnglishWordSearchDialog.instance())
 
     gui_hooks.previewer_did_init.append(bind_shortcuts)
+    gui_hooks.previewer_did_init.append(disable_escape)
     gui_hooks.browser_will_show.append(bind_shortcuts)
     gui_hooks.browser_will_show.append(disable_escape)
