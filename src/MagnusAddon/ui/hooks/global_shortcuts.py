@@ -6,6 +6,7 @@ from PyQt6.QtGui import QKeySequence, QShortcut
 from PyQt6.QtWidgets import QWidget
 from sysutils import ex_assert, typed
 from sysutils.typed import checked_cast
+from ui.english_dict.find_english_words_dialog import EnglishWordSearchDialog
 from ui.hooks import history_navigator
 from ui.open_note.open_note_dialog import NoteSearchDialog
 
@@ -15,6 +16,7 @@ def init() -> None:
         typed.checked_cast(pyqtBoundSignal, QShortcut(QKeySequence("Alt+Left"), widget).activated).connect(history_navigator.navigator.navigate_back)
         typed.checked_cast(pyqtBoundSignal, QShortcut(QKeySequence("Alt+Right"), widget).activated).connect(history_navigator.navigator.navigate_forward)
         typed.checked_cast(pyqtBoundSignal, QShortcut(QKeySequence("Ctrl+o"), widget).activated).connect(NoteSearchDialog.toggle_dialog_visibility)
+        typed.checked_cast(pyqtBoundSignal, QShortcut(QKeySequence("Ctrl+Shift+o"), widget).activated).connect(EnglishWordSearchDialog.toggle_dialog_visibility)
 
     ex_assert.not_none(history_navigator.navigator, "History navigator needs to be initialized before global shortcuts are bound")
 

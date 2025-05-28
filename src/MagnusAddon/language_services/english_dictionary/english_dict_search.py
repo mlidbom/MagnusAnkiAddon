@@ -13,11 +13,6 @@ class EnglishWord(Slots):
         self.definition = definition
         self.pos = pos
 
-    class Predicates:
-        @staticmethod
-        def starts_with(word: EnglishWord, test_for: str) -> bool:
-            return word.lower_case_word.startswith(test_for)
-
 class EnglishDictionary(Slots):
     def __init__(self) -> None:
         self.words: list[EnglishWord] = []
@@ -42,4 +37,4 @@ class EnglishDictionary(Slots):
         return sorted(hits, key=lambda word: len(word.lower_case_word))
 
 
-dictionary = Lazy(lambda: EnglishDictionary())
+dictionary:Lazy[EnglishDictionary] = Lazy(lambda: EnglishDictionary())
