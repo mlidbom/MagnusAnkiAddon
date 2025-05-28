@@ -116,7 +116,8 @@ ha:ha:t
 habu:hub
 hada:had-a
 hag:hag
-hai:hi:de
+hage:hag
+hai:high
 haka:hacker
 hako:hack-co
 haku:hack
@@ -131,7 +132,6 @@ he:hea:d
 hei:hay
 heki:heck
 hen:hen
-hi:he
 hiiragi:he-rags-i:ncessantly
 hiki:hickey
 hiko:hick
@@ -147,6 +147,7 @@ hito:hit
 hitsu:hits
 ho:hoe
 hoga:hog-a
+hoko:hawk
 hoku:hock
 hon:hon
 hone:hone
@@ -216,6 +217,7 @@ koma:coma
 kon:con
 kona:con-a
 koo:caw
+kora:core-a
 kore:core
 koro:core
 koto:koto
@@ -289,6 +291,7 @@ muka:muck
 muku:muck
 mushi:mushy
 na:gna:t
+nabe:nab
 naga:nagger
 naka:knack
 naku:knack
@@ -349,7 +352,7 @@ piki:pick
 po:po:t
 ppa:pa
 pu:pu:sh
-ra:ra:t
+ra:Ra
 rai:rye
 raku:lucky
 ran:run
@@ -389,7 +392,7 @@ sei:say
 seki:sexy
 sen:cen:taur
 setsu:sets
-sha:sha:ft
+sha:shah
 shaku:shack
 shami:shame
 shi:she
@@ -466,6 +469,7 @@ tsubu:<read>tsu</read>ndere-<read>bu</read>ll
 tsuka:tuck
 tsukue:i<read>t’s cool, eh</read>
 tsuna:tuna
+tsura:tour-a
 tsuu:two
 u:U:zi
 ude:udde:r
@@ -497,6 +501,7 @@ you:you:ghurt
 yu:you
 yuka:yuka:ta
 yukata:yukata
+yumi:yummy
 yuru:you-rue
 yuu:ewe
 za:za:zen
