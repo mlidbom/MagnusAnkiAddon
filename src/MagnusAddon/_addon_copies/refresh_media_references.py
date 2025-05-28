@@ -22,7 +22,7 @@ import os
 from ankiutils import app
 from aqt import mw, qconnect
 from aqt.utils import tooltip
-from PyQt6.QtGui import QAction, QKeySequence
+from PyQt6.QtGui import QAction
 
 
 def refresh_media() -> None:
@@ -40,6 +40,5 @@ def refresh_media() -> None:
 
 # Set up menus and hooks
 refresh_media_action = QAction("Refresh &Media", mw)
-refresh_media_action.setShortcut(QKeySequence("Ctrl+Alt+M"))
 qconnect(refresh_media_action.triggered, refresh_media)
 app.main_window().form.menuTools.addAction(refresh_media_action)
