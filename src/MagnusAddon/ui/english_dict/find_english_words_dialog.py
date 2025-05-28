@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Optional
 from aqt.utils import openLink
 from language_services.english_dictionary import english_dict_search
 from PyQt6.QtCore import Qt, pyqtBoundSignal
-from PyQt6.QtWidgets import QDialog, QHBoxLayout, QHeaderView, QLabel, QLineEdit, QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget
+from PyQt6.QtWidgets import QApplication, QDialog, QHBoxLayout, QHeaderView, QLabel, QLineEdit, QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget
 from sysutils import typed
 
 if TYPE_CHECKING:
@@ -97,7 +97,11 @@ class EnglishWordSearchDialog(QDialog):
         if word_item:
             selected_word = word_item.data(Qt.ItemDataRole.UserRole)
             if selected_word:
-                openLink(f"https://www.merriam-webster.com/dictionary/{selected_word}")
+                modifiers = QApplication.keyboardModifiers()
+                if modifiers & Qt.KeyboardModifier.ControlModifier:
+                    openLink(f"https://www.google.com/search?q={selected_word}")
+                else:
+                    openLink(f"https://www.merriam-webster.com/dictionary/{selected_word}")
 
     @classmethod
     def toggle_dialog_visibility(cls) -> None:
