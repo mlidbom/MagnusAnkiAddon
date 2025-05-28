@@ -222,7 +222,7 @@ koto:koto
 kotsu:cots
 kou:caw
 kowa:cowa:rd
-ku:coo:kie
+ku:coo
 kubi:cubby
 kuda:coulda
 kuku:cuckoo
