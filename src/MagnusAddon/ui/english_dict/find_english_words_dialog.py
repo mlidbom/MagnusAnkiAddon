@@ -6,6 +6,8 @@ from typing import Optional
 from language_services.english_dictionary import english_dict_search
 from PyQt6.QtCore import Qt, pyqtBoundSignal
 from PyQt6.QtWidgets import QApplication, QDialog, QHBoxLayout, QHeaderView, QLabel, QLineEdit, QProgressBar, QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget
+
+from language_services.english_dictionary.english_dict_search import EnglishWord
 from sysutils import typed
 
 
@@ -96,7 +98,7 @@ class EnglishWordSearchDialog(QDialog):
 
             try:
                 # Search for words starting with the provided text
-                matching_words = english_dict_search.dictionary().words_starting_with_shortest_first(search_text)
+                matching_words:list[EnglishWord] = english_dict_search.dictionary().words_starting_with_shortest_first(search_text)
 
                 # Limit to max results
                 if len(matching_words) > self._max_results:
@@ -128,7 +130,7 @@ class EnglishWordSearchDialog(QDialog):
             self.results_table.setItem(row, 0, word_item)
 
             # Definition item
-            definition_item = QTableWidgetItem(word.definition)
+            definition_item = QTableWidgetItem(word.senses[0].definition)
             self.results_table.setItem(row, 1, definition_item)
 
     def on_cell_double_clicked(self, row: int, column: int) -> None:
