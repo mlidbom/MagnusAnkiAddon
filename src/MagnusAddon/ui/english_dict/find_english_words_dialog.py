@@ -5,7 +5,7 @@ from typing import Optional
 
 from language_services.english_dictionary import english_dict_search
 from PyQt6.QtCore import Qt, pyqtBoundSignal
-from PyQt6.QtWidgets import QApplication, QDialog, QHBoxLayout, QLabel, QLineEdit, QListWidget, QListWidgetItem, QProgressBar, QVBoxLayout, QWidget
+from PyQt6.QtWidgets import QApplication, QDialog, QHBoxLayout, QHeaderView, QLabel, QLineEdit, QProgressBar, QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget
 from sysutils import typed
 
 
@@ -57,24 +57,33 @@ class EnglishWordSearchDialog(QDialog):
         status_layout.addWidget(self.progress_bar, 1)  # 1 = stretch factor to take up available space
         layout.addLayout(status_layout)
 
-        # Create results list
-        self.results_list = QListWidget()
-        self.results_list.setSelectionMode(QListWidget.SelectionMode.SingleSelection)
-        layout.addWidget(self.results_list)
+        # Create results table instead of list
+        self.results_table = QTableWidget()
+        self.results_table.setColumnCount(2)  # Two columns: word and definition
+        self.results_table.setHorizontalHeaderLabels(["Word", "Definition"])
+        self.results_table.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
+        self.results_table.setSelectionMode(QTableWidget.SelectionMode.SingleSelection)
+
+        # Configure column widths
+        header = self.results_table.horizontalHeader()
+        header.setSectionResizeMode(0, QHeaderView.ResizeMode.ResizeToContents)
+        header.setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
+
+        layout.addWidget(self.results_table)
 
         # Connect signals
         typed.checked_cast(pyqtBoundSignal, self.search_input.returnPressed).connect(self.perform_search)
         typed.checked_cast(pyqtBoundSignal, self.search_input.textChanged).connect(self.perform_search)
-        typed.checked_cast(pyqtBoundSignal, self.results_list.itemDoubleClicked).connect(self.on_item_double_clicked)
+        typed.checked_cast(pyqtBoundSignal, self.results_table.cellDoubleClicked).connect(self.on_cell_double_clicked)
 
         self.search_input.setFocus()
 
     def perform_search(self) -> None:
         with self._lock:
-            """Perform the search and update the results list"""
+            """Perform the search and update the results table"""
             search_text = self.search_input.text().strip()
             if not search_text:
-                self.results_list.clear()
+                self.results_table.setRowCount(0)
                 return
 
             # Show the busy indicator
@@ -93,7 +102,7 @@ class EnglishWordSearchDialog(QDialog):
                 if len(matching_words) > self._max_results:
                     matching_words = matching_words[:self._max_results]
 
-                self._update_results_list(matching_words)
+                self._update_results_table(matching_words)
 
                 # Update status with result count
                 result_count = len(matching_words)
@@ -108,23 +117,28 @@ class EnglishWordSearchDialog(QDialog):
                 # Hide the busy indicator
                 self.progress_bar.hide()
 
-    def _update_results_list(self, words: list[english_dict_search.EnglishWord]) -> None:
-        self.results_list.clear()
+    def _update_results_table(self, words: list[english_dict_search.EnglishWord]) -> None:
+        self.results_table.setRowCount(0)  # Clear the table
+        self.results_table.setRowCount(len(words))
 
-        for word in words:
-            item = QListWidgetItem()
-            display_text = f"{word.word} ({word.pos}): {word.definition}"
-            item.setText(display_text)
-            item.setData(Qt.ItemDataRole.UserRole, word.word)
-            self.results_list.addItem(item)
+        for row, word in enumerate(words):
+            # Word item
+            word_item = QTableWidgetItem(word.word)
+            word_item.setData(Qt.ItemDataRole.UserRole, word.word)  # Store the word for double-click
+            self.results_table.setItem(row, 0, word_item)
 
-    def on_item_double_clicked(self, item: QListWidgetItem) -> None:
-        selected_word = item.data(Qt.ItemDataRole.UserRole)
-        if selected_word:
-            # Here you can implement what happens when a word is double-clicked
-            # For example, copying to clipboard or showing detailed information
-            QApplication.clipboard().setText(selected_word)
-            self.status_label.setText(f"Copied '{selected_word}' to clipboard")
+            # Definition item
+            definition_item = QTableWidgetItem(word.definition)
+            self.results_table.setItem(row, 1, definition_item)
+
+    def on_cell_double_clicked(self, row: int, column: int) -> None:
+        word_item = self.results_table.item(row, 0)
+        if word_item:
+            selected_word = word_item.data(Qt.ItemDataRole.UserRole)
+            if selected_word:
+                # Copy the word to clipboard
+                QApplication.clipboard().setText(selected_word)
+                self.status_label.setText(f"Copied '{selected_word}' to clipboard")
 
     @classmethod
     def toggle_dialog_visibility(cls) -> None:
