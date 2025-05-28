@@ -22,6 +22,7 @@ def init() -> None:
 
     bind_shortcuts(checked_cast(QWidget, mw))
     bind_shortcuts(NoteSearchDialog.instance())
+    bind_shortcuts(EnglishWordSearchDialog.instance())
 
     gui_hooks.previewer_did_init.append(bind_shortcuts)
     gui_hooks.browser_will_show.append(bind_shortcuts)

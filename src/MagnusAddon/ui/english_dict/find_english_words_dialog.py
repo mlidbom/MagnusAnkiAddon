@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import threading
+from time import sleep
 from typing import TYPE_CHECKING, Optional
 
 from aqt.utils import openLink
@@ -11,7 +12,6 @@ from sysutils import typed
 
 if TYPE_CHECKING:
     from language_services.english_dictionary.english_dict_search import EnglishWord
-
 
 class EnglishWordSearchDialog(QDialog):
     # Singleton instance
@@ -77,7 +77,6 @@ class EnglishWordSearchDialog(QDialog):
 
             self._update_results_table(matching_words)
 
-
     def _update_results_table(self, words: list[english_dict_search.EnglishWord]) -> None:
         self.results_table.setRowCount(0)  # Clear the table
         self.results_table.setRowCount(len(words))
@@ -97,11 +96,12 @@ class EnglishWordSearchDialog(QDialog):
         if word_item:
             selected_word = word_item.data(Qt.ItemDataRole.UserRole)
             if selected_word:
-                modifiers = QApplication.keyboardModifiers()
-                if modifiers & Qt.KeyboardModifier.ControlModifier:
-                    openLink(f"https://www.google.com/search?q={selected_word}")
-                else:
+                if QApplication.keyboardModifiers() & Qt.KeyboardModifier.ControlModifier:
                     openLink(f"https://www.merriam-webster.com/dictionary/{selected_word}")
+                elif QApplication.keyboardModifiers() & Qt.KeyboardModifier.ShiftModifier:
+                    openLink(f"https://www.google.com/search?q=define+{selected_word}")
+                else:
+                    openLink(f"https://www.oed.com/search/dictionary/?scope=Entries&q={selected_word}")
 
     @classmethod
     def toggle_dialog_visibility(cls) -> None:
