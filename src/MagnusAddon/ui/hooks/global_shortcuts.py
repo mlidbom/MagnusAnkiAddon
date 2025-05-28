@@ -18,6 +18,9 @@ def init() -> None:
         typed.checked_cast(pyqtBoundSignal, QShortcut(QKeySequence("Ctrl+o"), widget).activated).connect(NoteSearchDialog.toggle_dialog_visibility)
         typed.checked_cast(pyqtBoundSignal, QShortcut(QKeySequence("Ctrl+Shift+o"), widget).activated).connect(EnglishWordSearchDialog.toggle_dialog_visibility)
 
+    def disable_escape(widget: QWidget) -> None:
+        typed.checked_cast(pyqtBoundSignal, QShortcut(QKeySequence("Escape"), widget).activated).connect(lambda: None)
+
     ex_assert.not_none(history_navigator.navigator, "History navigator needs to be initialized before global shortcuts are bound")
 
     bind_shortcuts(checked_cast(QWidget, mw))
@@ -26,3 +29,4 @@ def init() -> None:
 
     gui_hooks.previewer_did_init.append(bind_shortcuts)
     gui_hooks.browser_will_show.append(bind_shortcuts)
+    gui_hooks.browser_will_show.append(disable_escape)
