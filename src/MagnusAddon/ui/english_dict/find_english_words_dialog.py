@@ -1,14 +1,15 @@
 from __future__ import annotations
 
 import threading
-from typing import Optional
+from typing import TYPE_CHECKING, Optional
 
 from language_services.english_dictionary import english_dict_search
 from PyQt6.QtCore import Qt, pyqtBoundSignal
 from PyQt6.QtWidgets import QApplication, QDialog, QHBoxLayout, QHeaderView, QLabel, QLineEdit, QProgressBar, QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget
-
-from language_services.english_dictionary.english_dict_search import EnglishWord
 from sysutils import typed
+
+if TYPE_CHECKING:
+    from language_services.english_dictionary.english_dict_search import EnglishWord
 
 
 class EnglishWordSearchDialog(QDialog):
