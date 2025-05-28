@@ -3,6 +3,8 @@ from __future__ import annotations
 import threading
 from typing import TYPE_CHECKING, Optional
 
+from aqt.utils import openLink
+
 from language_services.english_dictionary import english_dict_search
 from PyQt6.QtCore import Qt, pyqtBoundSignal
 from PyQt6.QtWidgets import QApplication, QDialog, QHBoxLayout, QHeaderView, QLabel, QLineEdit, QProgressBar, QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget
@@ -140,9 +142,7 @@ class EnglishWordSearchDialog(QDialog):
         if word_item:
             selected_word = word_item.data(Qt.ItemDataRole.UserRole)
             if selected_word:
-                # Copy the word to clipboard
-                QApplication.clipboard().setText(selected_word)
-                self.status_label.setText(f"Copied '{selected_word}' to clipboard")
+                openLink(f"https://www.merriam-webster.com/dictionary/{selected_word}")
 
     @classmethod
     def toggle_dialog_visibility(cls) -> None:
