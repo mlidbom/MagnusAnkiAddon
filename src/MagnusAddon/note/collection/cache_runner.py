@@ -66,7 +66,7 @@ class CacheRunner(Slots):
             noteutils.clear_studying_cache()
 
     def _internal_flush_updates(self) -> None:
-        for subscriber in self._merge_pending_subscribers: subscriber()
+        for callback in self._merge_pending_subscribers: callback()
 
     def flush_updates(self) -> None:
         with self._lock:
@@ -74,16 +74,19 @@ class CacheRunner(Slots):
             self._internal_flush_updates()
 
     def _on_will_be_added(self, _collection: Collection, backend_note: Note, _deck_id: DeckId) -> None:
+        if not self._running: return
         with self._lock:
-            for subscriber in self._will_add_subscribers: subscriber(backend_note)
+            for callback in self._will_add_subscribers: callback(backend_note)
 
     def _on_will_flush(self, backend_note: Note) -> None:
+        if not self._running: return
         with self._lock:
             for subscriber in self._will_flush_subscribers: subscriber(backend_note)
 
     def _on_will_be_removed(self, _: Collection, note_ids: Sequence[NoteId]) -> None:
+        if not self._running: return
         with self._lock:
-            for subscriber in self._will_remove_subscribers: subscriber(note_ids)
+            for callback in self._will_remove_subscribers: callback(note_ids)
 
     def connect_merge_pending_adds(self, _merge_pending_added_notes: Callable[[], None]) -> None:
         with self._lock:

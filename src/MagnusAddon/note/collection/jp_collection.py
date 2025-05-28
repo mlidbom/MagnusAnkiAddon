@@ -33,16 +33,16 @@ class JPCollection(Slots):
 
             with StopWatch.log_warning_if_slower_than(5, "Core collection setup - no gc"):
                 self.anki_collection = anki_collection
-                self.cache_manager = CacheRunner(anki_collection)
+                self.cache_runner = CacheRunner(anki_collection)
 
-                self.vocab: VocabCollection = VocabCollection(anki_collection, self.cache_manager)
-                self.kanji: KanjiCollection = KanjiCollection(anki_collection, self.cache_manager)
-                self.sentences: SentenceCollection = SentenceCollection(anki_collection, self.cache_manager)
+                self.vocab: VocabCollection = VocabCollection(anki_collection, self.cache_runner)
+                self.kanji: KanjiCollection = KanjiCollection(anki_collection, self.cache_runner)
+                self.sentences: SentenceCollection = SentenceCollection(anki_collection, self.cache_runner)
 
             if not app.is_testing():
                 self._instance_tracker.run_gc_and_assert_single_instance()
 
-            self.cache_manager.start()
+            self.cache_runner.start()
             app.get_ui_utils().tool_tip(f"{Mine.app_name} done loading in {str(stopwatch.elapsed_seconds())[0:4]} seconds.", milliseconds=6000)
 
             self._is_running = True
@@ -73,6 +73,6 @@ class JPCollection(Slots):
 
     def destruct_sync(self) -> None:
         self._is_running = False
-        self.cache_manager.destruct()
+        self.cache_runner.destruct()
 
-    def flush_cache_updates(self) -> None: self.cache_manager.flush_updates()
+    def flush_cache_updates(self) -> None: self.cache_runner.flush_updates()
