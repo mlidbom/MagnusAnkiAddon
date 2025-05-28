@@ -53,6 +53,17 @@ class EnglishDictionary(Slots):
                         self.words.append(english_word)
                         self.word_map[lower_word] = english_word
 
+        raw_word_list_path = os.path.join(current_dir, "data", "raw_word_list.txt")
+        with open(raw_word_list_path, encoding="utf-8") as raw_file:
+            for line in raw_file:
+                word = line.strip()
+                if word:
+                    lower_word = word.lower()
+                    if lower_word not in self.word_map:
+                        english_word = EnglishWord(word, "no-definition", "")
+                        self.words.append(english_word)
+                        self.word_map[lower_word] = english_word
+
     def words_starting_with_shortest_first(self, start_of_word: str) -> list[EnglishWord]:
         search_string = start_of_word.lower()
         hits = [word for word in self.words if word.lower_case_word.startswith(search_string)]
