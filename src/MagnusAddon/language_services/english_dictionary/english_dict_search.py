@@ -72,11 +72,6 @@ class EnglishDictionary(Slots):
     def _starting_with_first_then_shortest_first(word: EnglishWord, search_string: str) -> tuple[bool, int]:
         return not word.lower_case_word.startswith(search_string), len(word.lower_case_word)
 
-    def words_starting_with_shortest_first(self, start_of_word: str) -> list[EnglishWord]:
-        search_string = start_of_word.lower()
-        hits = [word for word in self.words if word.lower_case_word.startswith(search_string)]
-        return sorted(hits, key=self._shortest_word_first)
-
     def words_containing_starting_with_first_then_by_shortest_first(self, search_string: str) -> list[EnglishWord]:
         search_string = search_string.lower()
         hits = [word for word in self.words if search_string in word.lower_case_word]

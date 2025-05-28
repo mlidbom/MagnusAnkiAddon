@@ -296,6 +296,7 @@ nan:naan
 nani:nunny
 nano:nano
 natsu:nuts
+nawa:Nava:jo
 ne:ne:t
 nega:nega:tion
 neta:net-a
@@ -320,10 +321,10 @@ nu:nu:de
 nuku:nook
 nuno:nun-oh
 nyuu:new
-o:o:x
+o:O
 obo:oboe
 oda:awe-da:d
-odo:odo:r
+odo:odor
 odoro:odor
 oka:oka:pi
 okina:Okina:wa
@@ -376,6 +377,7 @@ saida:aid-a
 saka:sucker
 saki:sucky
 saku:sack
+sama:Sama:ritan
 sami:Sammy
 samu:some
 san:san:ta
