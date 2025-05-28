@@ -99,7 +99,7 @@ class EnglishWordSearchDialog(QDialog):
 
             try:
                 # Search for words starting with the provided text
-                matching_words:list[EnglishWord] = english_dict_search.dictionary().words_starting_with_shortest_first(search_text)
+                matching_words:list[EnglishWord] = english_dict_search.dictionary().words_containing_starting_with_first_then_by_shortest_first(search_text)
 
                 # Limit to max results
                 if len(matching_words) > self._max_results:
