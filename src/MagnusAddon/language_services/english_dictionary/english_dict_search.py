@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import os
+
 from autoslot import Slots
 
 
@@ -13,7 +15,10 @@ class EnglishDictionary(Slots):
     def __init__(self) -> None:
         self.words: dict[str, EnglishWord] = {}
 
-        with open("data/english_words.csv", encoding="utf-8") as file:
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        data_file_path = os.path.join(current_dir, "data", "english_words.csv")
+
+        with open(data_file_path, encoding="utf-8") as file:
             next(file)
             for line in file:
                 parts = line.strip().split(",", 2)
