@@ -25,7 +25,8 @@ class VocabNoteUserCompoundParts(Slots):
     @property
     def _collection(self) -> JPCollection: return self._vocab.collection
 
-    def get(self) -> list[str]: return self._field.get()
+    def primary(self) -> list[str]: return [part for part in self._field.get() if not part.startswith("[")]
+    def all(self) -> list[str]: return [self._strip_brackets(part) for part in self._field.get()]
     def set(self, value: list[str]) -> None: self._field.set(value)
 
     def auto_generate(self) -> None:
@@ -45,3 +46,7 @@ class VocabNoteUserCompoundParts(Slots):
             created.suspend_all_cards()
 
         self.set(compound_parts)
+
+    @staticmethod
+    def _strip_brackets(part: str) -> str:
+        return part.replace("[", "").replace("]", "")

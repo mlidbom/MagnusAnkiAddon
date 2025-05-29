@@ -53,7 +53,7 @@ def get_compound_parts_recursive(vocab_note: VocabNote, depth: int = 0, visited:
 
     visited.add(vocab_note.get_id())
 
-    compound_parts = app.col().vocab.with_any_form_in_prefer_exact_match(vocab_note.compound_parts.get())
+    compound_parts = app.col().vocab.with_any_form_in_prefer_exact_match(vocab_note.compound_parts.primary())
 
     result = []
 
