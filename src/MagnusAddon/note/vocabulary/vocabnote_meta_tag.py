@@ -15,34 +15,35 @@ class VocabMetaTag(Slots):
         self.display = display
         self.tooltip = tooltip
 
-def get_meta_tags_html(vocab: VocabNote, display_extended_sentence_statistics: bool = True) -> str:
+def get_meta_tags_html(vocab: VocabNote, display_extended_sentence_statistics: bool = True, no_sentense_statistics: bool = False) -> str:
     tags = set(vocab.get_tags())
     meta: list[VocabMetaTag] = []
     tos = {t.lower().strip() for t in vocab.parts_of_speech.raw_string_value().split(",")}
 
-    def max_nine_number(value: int) -> str: return f"""{value}""" if value < 10 else "+"
-    highlighted_in = vocab.sentences.user_highlighted()
-    meta.append(VocabMetaTag("highlighted_in_sentences", f"""{max_nine_number(len(highlighted_in))}""", f"""highlighted in {len(highlighted_in)} sentences"""))
+    if not no_sentense_statistics:
+        def max_nine_number(value: int) -> str: return f"""{value}""" if value < 10 else "+"
+        highlighted_in = vocab.sentences.user_highlighted()
+        meta.append(VocabMetaTag("highlighted_in_sentences", f"""{max_nine_number(len(highlighted_in))}""", f"""highlighted in {len(highlighted_in)} sentences"""))
 
-    sentences = vocab.sentences.with_owned_form()
-    if sentences:
-        studying_sentences_reading = _get_studying_sentence_count(sentences, NoteFields.VocabNoteType.Card.Reading)
-        studying_sentences_listening = _get_studying_sentence_count(sentences, NoteFields.VocabNoteType.Card.Listening)
-        tooltip_text = f"""in {len(sentences)} sentences. Studying-listening:{studying_sentences_listening}, Studying-reading:{studying_sentences_reading}"""
-        if studying_sentences_reading or studying_sentences_listening:
-            if display_extended_sentence_statistics:
-                meta.append(VocabMetaTag("in_studying_sentences", f"""{studying_sentences_listening}:{studying_sentences_reading}/{len(sentences)}""", tooltip_text))
+        sentences = vocab.sentences.with_owned_form()
+        if sentences:
+            studying_sentences_reading = _get_studying_sentence_count(sentences, NoteFields.VocabNoteType.Card.Reading)
+            studying_sentences_listening = _get_studying_sentence_count(sentences, NoteFields.VocabNoteType.Card.Listening)
+            tooltip_text = f"""in {len(sentences)} sentences. Studying-listening:{studying_sentences_listening}, Studying-reading:{studying_sentences_reading}"""
+            if studying_sentences_reading or studying_sentences_listening:
+                if display_extended_sentence_statistics:
+                    meta.append(VocabMetaTag("in_studying_sentences", f"""{studying_sentences_listening}:{studying_sentences_reading}/{len(sentences)}""", tooltip_text))
+                else:
+                    def create_display_text() -> str:
+                        if studying_sentences_listening > 9 and studying_sentences_reading > 9:
+                            return "+"
+                        return f"{max_nine_number(studying_sentences_listening)}:{max_nine_number(studying_sentences_reading)}/{max_nine_number(len(sentences))}"
+
+                    meta.append(VocabMetaTag("in_studying_sentences", create_display_text(), tooltip_text))
             else:
-                def create_display_text() -> str:
-                    if studying_sentences_listening > 9 and studying_sentences_reading > 9:
-                        return "+"
-                    return f"{max_nine_number(studying_sentences_listening)}:{max_nine_number(studying_sentences_reading)}/{max_nine_number(len(sentences))}"
-
-                meta.append(VocabMetaTag("in_studying_sentences", create_display_text(), tooltip_text))
+                meta.append(VocabMetaTag("in_sentences", f"""{len(sentences)}""", tooltip_text))
         else:
-            meta.append(VocabMetaTag("in_sentences", f"""{len(sentences)}""", tooltip_text))
-    else:
-        meta.append(VocabMetaTag("in_no_sentences", f"""{len(sentences)}""", f"""in {len(sentences)} sentences"""))
+            meta.append(VocabMetaTag("in_no_sentences", f"""{len(sentences)}""", f"""in {len(sentences)} sentences"""))
 
     # overarching info
     if "_uk" in tags: meta.append(VocabMetaTag("uk", "uk", "usually written using kana only"))

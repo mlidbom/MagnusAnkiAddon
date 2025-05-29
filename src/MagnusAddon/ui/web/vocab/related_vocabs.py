@@ -33,6 +33,7 @@ def render_vocab_list(vocab_list: list[VocabNote], title: str, css_class: str, r
                             <audio src="{_vocab_note.audio.get_primary_audio_path()}"></audio><a class="play-button"></a>
                             <span class="question clipboard">{_vocab_note.get_question()}</span>
                             {render_readings(_vocab_note)}
+                            {_vocab_note.meta_data.meta_tags_html(no_sentense_statistics=True)}
                             <span class="meaning"> {_vocab_note.get_answer()}</span>
                         </div>
                         """ for _vocab_note in vocab_list])}
