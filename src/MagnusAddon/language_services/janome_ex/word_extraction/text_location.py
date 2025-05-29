@@ -53,13 +53,14 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.sur
     def forward_list(self, length: int = 99999) -> list[TokenTextLocation]:
         return self.analysis().locations[self.token_index: self.token_index + length + 1]
 
-    def run_analysis_step_1(self) -> None:
+    def connect_next_and_previous(self) -> None:
         if len(self.analysis().locations) > self.token_index + 1:
             self.next = WeakRef(self.analysis().locations[self.token_index + 1])
 
         if self.token_index > 0:
             self.previous = WeakRef(self.analysis().locations[self.token_index - 1])
 
+    def run_analysis_step_1(self) -> None:
         lookahead_max = min(_max_lookahead, len(self.forward_list(_max_lookahead)))
         self.all_candidate_ranges = [LocationRange([WeakRef(location) for location in self.forward_list(index)]) for index in range(lookahead_max - 1, -1, -1)]
         self.all_candidate_ranges[-1].complete_analysis()  # the non-compound part needs to be completed first

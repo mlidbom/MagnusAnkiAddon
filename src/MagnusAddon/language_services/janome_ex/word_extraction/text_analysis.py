@@ -37,6 +37,9 @@ class TextAnalysis(Slots):
         self.start_location = self.locations[0]
 
         for location in self.locations:
+            location.connect_next_and_previous()
+
+        for location in self.locations:
             location.run_analysis_step_1()
 
         for location in self.locations:

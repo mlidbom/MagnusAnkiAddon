@@ -128,7 +128,7 @@ class CandidateWord(Slots):
         return WordExclusion.at_index(self.form, self.start_index)
 
     def __repr__(self) -> str:
-        return f"""CandidateForm:({self.form}, {self.is_valid_candidate})"""
+        return f"""CandidateWord:({self.form}, {self.is_valid_candidate})"""
 
 class SurfaceCandidateWord(CandidateWord, Slots):
     def __init__(self, token_range: WeakRef[LocationRange]) -> None:
