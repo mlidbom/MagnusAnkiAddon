@@ -25,7 +25,8 @@ def _create_classes(_vocab: VocabNote, depth: int = 0) -> str:
 def render_vocab_list(vocab_list: list[CompoundPart], title: str, css_class: str, reading: bool = True) -> str:
     def render_readings(_vocab_wrapper: CompoundPart) -> str:
         _vocab_note = _vocab_wrapper.vocab_note
-        return f"""<span class="clipboard vocabReading">{", ".join(_vocab_note.readings.get())}</span>""" if reading else ""
+        readings = ", ".join(_vocab_note.readings.get())
+        return f"""<span class="clipboard vocabReading">{readings}</span>""" if reading and readings != _vocab_note.get_question() else ""
 
     return f'''
              <div class="relatedVocabListDiv page_section {css_class}">
