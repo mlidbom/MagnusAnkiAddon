@@ -88,11 +88,6 @@ def generate_derived_from(_vocab_note: VocabNote) -> str:
     derived_from = app.col().vocab.with_form_prefer_exact_match(part)
     return render_vocab_list(derived_from, "derived from", css_class="derived_from") if derived_from else ""
 
-def generate_compounds(_vocab_note: VocabNote) -> str:
-    vocabs = _vocab_note.compound_parts.get()
-    compound_parts = app.col().vocab.with_any_form_in_prefer_exact_match(vocabs)
-    return render_vocab_list(compound_parts, "compound parts", css_class="compound_parts") if compound_parts else ""
-
 def generate_in_compounds_list(_vocab_note: VocabNote) -> str:
     compound_parts = app.col().vocab.with_compound_part(_vocab_note.question.without_noise_characters())
     return render_vocab_list(compound_parts, "part of compound", css_class="in_compound_words") if compound_parts else ""
@@ -127,7 +122,6 @@ def generate_meta_tags(vocab_note: VocabNote) -> str:
 def init() -> None:
     gui_hooks.card_will_show.append(PrerenderingAnswerContentRenderer(VocabNote, {
         "##FORMS_LIST##": generate_forms_list,
-        "##VOCAB_COMPOUNDS##": generate_compounds,
         "##IN_COMPOUNDS##": generate_in_compounds_list,
         "##STEM_IN_COMPOUNDS##": generate_stem_in_compounds_list,
         "##DERIVED_VOCABULARY##": generate_derived_list,
