@@ -11,7 +11,7 @@ from note.sentences.sentencenote import SentenceNote
 from note.vocabulary.vocabnote import VocabNote
 from PyQt6.QtCore import Qt, pyqtBoundSignal
 from PyQt6.QtWidgets import QDialog, QHBoxLayout, QHeaderView, QLabel, QLineEdit, QProgressBar, QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget
-from sysutils import ex_str, typed
+from sysutils import ex_str, kana_utils, typed
 
 
 class NoteSearchDialog(QDialog):
@@ -106,6 +106,7 @@ class NoteSearchDialog(QDialog):
 
                 def kanji_readings(note: KanjiNote) -> str: return " ".join(note.get_readings_clean())
                 def vocab_readings(vocab: VocabNote) -> str: return " ".join(vocab.readings.get())
+                def vocab_romaji_readings(vocab: VocabNote) -> str: return kana_utils.romanize(vocab_readings(vocab))
                 def vocab_forms(vocab: VocabNote) -> str: return " ".join(vocab.forms.without_noise_characters())
                 def question_length(note: JPNote) -> int: return len(note.get_question())
                 def kanji_romaji_readings(note: KanjiNote) -> str: return note.get_romaji_readings()
@@ -128,7 +129,8 @@ class NoteSearchDialog(QDialog):
                     self._max_results - len(matching_notes),
                     sorted(col().vocab.all(), key=question_length),
                     search_text,
-                    readings=vocab_readings,
+                    vocab_readings=vocab_readings,
+                    vocab_romaji_readings=vocab_romaji_readings,
                     forms=vocab_forms,
                     question=note_question,
                     answer=note_answer
