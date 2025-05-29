@@ -76,7 +76,10 @@
             font-size:30pt;
          }
 
-         .vocabReading{ color: var(--colorTextReading); }
+         .vocabReading{
+            color: var(--colorTextReading);
+            margin-right: 7px;
+         }
 
          .vocab_tag_list { 
             margin-right:10px;
