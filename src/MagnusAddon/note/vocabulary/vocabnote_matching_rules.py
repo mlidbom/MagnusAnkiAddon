@@ -46,9 +46,9 @@ class VocabNoteMatching(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self._data: WeakRef[VocabNote] = vocab
         self._rules: Lazy[VocabNoteMatchingRules] = Lazy(lambda: VocabNoteMatchingRules(vocab))
-        self.requires_exact_match: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.requires_exact_match)
-        self.requires_a_stem: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.requires_a_stem)
-        self.requires_e_stem: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.requires_e_stem)
+        self.requires_exact_match: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.Requires.exact_match)
+        self.requires_a_stem: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.Requires.a_stem)
+        self.requires_e_stem: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.Requires.e_stem)
         self.match_with_preceding_vowel: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.Todo.with_preceding_vowel)
         self.question_overrides_form: QuestionOverridesForm = QuestionOverridesForm(vocab)
         self.is_strictly_suffix: IsStrictlySuffix = IsStrictlySuffix(vocab)

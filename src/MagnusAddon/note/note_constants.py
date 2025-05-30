@@ -118,6 +118,7 @@ f_kanji = f"{f_root}kanji::"
 f_sentence_uses = f"{f_sentence}uses::"
 f_vocab = f"{f_root}vocab::"
 f_vocab_matching = f"{f_vocab}matching::"
+f_vocab_matching_requires = f"{f_vocab_matching}::requires"
 f_vocab_matching_todo = f"{f_vocab_matching}todo::"
 f_vocab_matching_uses = f"{f_vocab_matching}uses::"
 
@@ -155,9 +156,10 @@ class Tags(Slots):
 
         class Matching:
             is_inflecting_word = f"{f_vocab_matching}is-inflecting-word"
-            requires_a_stem = f"{f_vocab_matching}requires-a-stem"
-            requires_e_stem = f"{f_vocab_matching}requires-e-stem"
-            requires_exact_match = f"{f_vocab_matching}requires-exact-match"
+            class Requires:
+                a_stem = f"{f_vocab_matching_requires}a-stem"
+                e_stem = f"{f_vocab_matching_requires}e-stem"
+                exact_match = f"{f_vocab_matching_requires}exact-match"
             is_strictly_suffix = f"{f_vocab_matching}is-strictly-suffix"
 
             class Todo:

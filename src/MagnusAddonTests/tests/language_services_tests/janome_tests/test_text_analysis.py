@@ -180,7 +180,7 @@ def insert_custom_words(custom_words: list[str]) -> None:
     ("大家族だもの", [], [], ["大家族", "だもの"], []),
     ("奪うんだもの", [], [], ["奪う", "んだ", "もの"], []),
     ("難しく考えすぎ", [], [], ["難しい", "考えすぎ"], []),
-    ("やり過ぎた", [], [], ["やり過ぎる", "た"] , [])
+    ("やり過ぎた", [], [], ["やり過ぎる", "た"], [])
 ])
 def test_hierarchical_extraction(setup_collection_with_select_data: object, sentence: str, custom_words: list[str], excluded: list[WordExclusion], expected_output: list[str], expected_display_output: list[str]) -> None:
     _run_assertions(sentence, custom_words, excluded, expected_output, expected_display_output)

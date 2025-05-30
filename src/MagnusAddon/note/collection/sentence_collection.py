@@ -52,9 +52,6 @@ class SentenceCollection(Slots):
 
     def all(self) -> list[SentenceNote]: return self._cache.all()
 
-    def with_id(self, note_id:NoteId) -> SentenceNote:
-        return self._cache.with_id(note_id)
-
     def with_id_or_none(self, note_id:NoteId) -> SentenceNote | None:
         return self._cache.with_id_or_none(note_id)
 

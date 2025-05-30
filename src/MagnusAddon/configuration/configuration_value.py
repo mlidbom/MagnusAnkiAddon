@@ -113,13 +113,13 @@ class JapaneseConfig(Slots):
         self.readings_mappings_dict = self._parse_mappings_from_string(mappings)
 
     @classmethod
-    def _read_readings_mappings_file(cls) -> str:
+    def read_readings_mappings_file(cls) -> str:
         with open(cls._mappings_file_path(), encoding="utf-8") as f:
             return f.read()
 
     @classmethod
     def _read_reading_mappings_from_file(cls) -> dict[str, str]:
-        return cls._parse_mappings_from_string(cls._read_readings_mappings_file())
+        return cls._parse_mappings_from_string(cls.read_readings_mappings_file())
 
     @staticmethod
     def _parse_mappings_from_string(mappings_string: str) -> dict[str, str]:

@@ -90,7 +90,7 @@ class EnglishWordSearchDialog(QDialog):
             definition_item = QTableWidgetItem(word.senses[0].definition)
             self.results_table.setItem(row, 1, definition_item)
 
-    def on_cell_double_clicked(self, row: int, column: int) -> None:
+    def on_cell_double_clicked(self, row: int, _column: int) -> None:
         word_item = self.results_table.item(row, 0)
         if word_item:
             selected_word = word_item.data(Qt.ItemDataRole.UserRole)

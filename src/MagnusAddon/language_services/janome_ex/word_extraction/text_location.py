@@ -66,8 +66,8 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.sur
         self.all_candidate_ranges[-1].complete_analysis()  # the non-compound part needs to be completed first
 
     def run_analysis_step_2(self) -> None:
-        for range in self.all_candidate_ranges[:-1]:  # we already have the last one completed
-            range.complete_analysis()
+        for range_ in self.all_candidate_ranges[:-1]:  # we already have the last one completed
+            range_.complete_analysis()
 
         self.word_candidates = [candidate for candidate in self.all_candidate_ranges if candidate.is_word]
         self.valid_candidates = [candidate for candidate in self.all_candidate_ranges if candidate.has_valid_words()]

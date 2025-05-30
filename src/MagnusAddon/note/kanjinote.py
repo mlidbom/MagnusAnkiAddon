@@ -269,7 +269,6 @@ class KanjiNote(WaniNote, Slots):
         self.set_reading_on(", ".join(onyomi_readings))
         self.set_reading_kun(", ".join(kunyomi_readings))
 
-
         component_subject_ids = [str(subject_id) for subject_id in wani_kanji.component_subject_ids]
 
         client = WanikaniClient.get_instance()
@@ -277,7 +276,7 @@ class KanjiNote(WaniNote, Slots):
         radicals_with_characters = [radical for radical in radicals if radical.characters is not None]
 
         radical_characters = [radical.characters for radical in radicals_with_characters]
-        if self.get_radicals() == "": #Absolutely never overwrite any locally configured kanji with stuff from wani that has a completely different strategy for radicals
+        if self.get_radicals() == "":  # Absolutely never overwrite any locally configured kanji with stuff from wani that has a completely different strategy for radicals
             self._set_radicals(", ".join(radical_characters))
 
     def populate_radicals_from_mnemonic_tags(self) -> None:
@@ -317,4 +316,4 @@ class KanjiNote(WaniNote, Slots):
         return note
 
     def get_romaji_readings(self) -> str:
-       return kana_utils.romanize(", ".join(self.get_readings_clean()))
+        return kana_utils.romanize(", ".join(self.get_readings_clean()))

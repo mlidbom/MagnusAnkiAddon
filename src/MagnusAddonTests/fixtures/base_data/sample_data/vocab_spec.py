@@ -77,7 +77,7 @@ test_special_vocab = [
     VocabSpec("ても良い", "{concession/compromise} | {permission}", ["てもいい"], tags=[Tags.Vocab.Matching.is_inflecting_word]),
     VocabSpec("すぎる", "too-much", ["すぎる"], tags=[Tags.Vocab.Matching.is_inflecting_word]),
     VocabSpec("いらっしゃいます", "to: come/be/do", ["いらっしゃいます"]),
-    VocabSpec("を頼む", "I-entrust-to-you", ["を頼む"], tags=[Tags.Vocab.Matching.requires_exact_match]),
+    VocabSpec("を頼む", "I-entrust-to-you", ["を頼む"], tags=[Tags.Vocab.Matching.Requires.exact_match]),
     VocabSpec("会える", "to-be-able: to-meet", ["あえる"], compounds=["会う", "える"]),
     VocabSpec("作れる", "to-be-able: to-make", ["つくれる"], compounds=["作る", "える"]),
     VocabSpec("えない", "unable-able-to", ["えない"], compounds=["える", "ない"], tags=[Tags.Vocab.Matching.is_inflecting_word]),
@@ -87,13 +87,13 @@ test_special_vocab = [
     VocabSpec("える", "to-be-able-to", ["える"], tags=[Tags.Vocab.Matching.is_inflecting_word]),
 
     # require a stems
-    VocabSpec("あれる", "get-_/is-_", ["あれる"], extra_forms=["れる"], tags=[Tags.Vocab.Matching.requires_a_stem, Tags.Vocab.question_overrides_form, Tags.Vocab.Matching.is_inflecting_word]),
-    VocabSpec("あせる", "get-_/is-_", ["あせる"], extra_forms=["せる"], tags=[Tags.Vocab.Matching.requires_a_stem, Tags.Vocab.question_overrides_form, Tags.Vocab.Matching.is_inflecting_word]),
+    VocabSpec("あれる", "get-_/is-_", ["あれる"], extra_forms=["れる"], tags=[Tags.Vocab.Matching.Requires.a_stem, Tags.Vocab.question_overrides_form, Tags.Vocab.Matching.is_inflecting_word]),
+    VocabSpec("あせる", "get-_/is-_", ["あせる"], extra_forms=["せる"], tags=[Tags.Vocab.Matching.Requires.a_stem, Tags.Vocab.question_overrides_form, Tags.Vocab.Matching.is_inflecting_word]),
 
     VocabSpec("させる", "get-_/is-_", ["させる"], extra_forms=["せる"], tags=[Tags.Vocab.Matching.is_inflecting_word]),
 
     # require e stems
-    VocabSpec("えれる", "is-able-to-_", ["えれる"], extra_forms=["れる"], tags=[Tags.Vocab.Matching.requires_e_stem, Tags.Vocab.question_overrides_form, Tags.Vocab.Matching.is_inflecting_word]),
+    VocabSpec("えれる", "is-able-to-_", ["えれる"], extra_forms=["れる"], tags=[Tags.Vocab.Matching.Requires.e_stem, Tags.Vocab.question_overrides_form, Tags.Vocab.Matching.is_inflecting_word]),
 
     VocabSpec("しろ", "do!", ["しろ"], prefer_over_base={"する"}),
     VocabSpec("らっしゃい", "todo", ["らっしゃい"], prefer_over_base={"らっしゃる"}),

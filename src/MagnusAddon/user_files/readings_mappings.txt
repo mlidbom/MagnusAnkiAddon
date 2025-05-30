@@ -218,6 +218,7 @@ kiku:kick-u
 kimo:kimo:no
 kin:kin
 kitsu:kits
+kiza:kizz-a
 ko:co
 koba:coba:lt
 koi:koi
@@ -470,7 +471,7 @@ tama:tama:gotchi
 tame:tame
 tamo:Tamo:ra
 tan:tan
-tani:tiny
+tani:Tani:a
 tao:Tao
 tata:tata:mi
 tato:tatto:o
@@ -486,6 +487,7 @@ to:to
 tobira:to-be-ra:ther
 todo:TODO
 toga:toga
+toki:tock-key
 toku:tock
 tomo:to-mo:m
 ton:ton:s
