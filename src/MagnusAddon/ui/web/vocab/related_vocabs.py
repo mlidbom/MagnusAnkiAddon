@@ -18,7 +18,7 @@ def _create_classes(_vocab: VocabNote) -> str:
     classes += " " + " ".join(_vocab.get_meta_tags())
     return classes
 
-def render_vocab_list(vocab_list: list[VocabNote], title: str, css_class: str, reading: bool = True) -> str:
+def render_vocab_list(vocab_list: list[VocabNote], title: str, css_class: str, reading: bool = True, no_sentense_statistics: bool = True) -> str:
     def render_readings(_vocab_note: VocabNote) -> str:
         readings = ", ".join(_vocab_note.readings.get())
         return f"""<span class="clipboard vocabReading">{readings}</span>""" if reading and readings != _vocab_note.get_question() else ""
@@ -33,7 +33,7 @@ def render_vocab_list(vocab_list: list[VocabNote], title: str, css_class: str, r
                             <audio src="{_vocab_note.audio.get_primary_audio_path()}"></audio><a class="play-button"></a>
                             <span class="question clipboard">{_vocab_note.get_question()}</span>
                             {render_readings(_vocab_note)}
-                            {_vocab_note.meta_data.meta_tags_html(no_sentense_statistics=True)}
+                            {_vocab_note.meta_data.meta_tags_html(no_sentense_statistics=no_sentense_statistics)}
                             <span class="meaning"> {_vocab_note.get_answer()}</span>
                         </div>
                         """ for _vocab_note in vocab_list])}
@@ -115,7 +115,7 @@ def generate_forms_list(vocab_note: VocabNote) -> str:
     forms = [form for form in forms if form.get_id() != vocab_note.get_id()]
     forms = note.vocabulary.vocabnote_sorting.sort_vocab_list_by_studying_status(forms)
 
-    return render_vocab_list([vocab_note] + forms, "forms", css_class="forms") if forms else ""
+    return render_vocab_list([vocab_note] + forms, "forms", css_class="forms", no_sentense_statistics=False) if forms else ""
 
 def generate_meta_tags(vocab_note: VocabNote) -> str:
     return vocab_note.meta_data.meta_tags_html(True)
