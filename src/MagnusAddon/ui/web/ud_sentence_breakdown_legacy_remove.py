@@ -101,6 +101,7 @@ def render_hidden_matches(note: SentenceNote) -> str:
 def render_user_extra_list(note: SentenceNote) -> str:
     return _build_vocab_list(note.configuration.highlighted_words(), note.configuration.incorrect_matches.words(), "highlighted words", include_mnemonics=True, show_words_missing_dictionary_entries=True, include_extended_sentence_statistics=True) if note.configuration.highlighted_words() else ""
 
+# noinspection PyUnusedFunction
 def init() -> None:
     gui_hooks.card_will_show.append(PrerenderingAnswerContentRenderer(SentenceNote, {
         "##PARSED_WORDS##": render_parsed_words,
