@@ -3,6 +3,7 @@ from __future__ import annotations
 from ankiutils import app
 from aqt import gui_hooks
 from note.vocabulary.vocabnote import VocabNote
+from sysutils import ex_sequence
 from sysutils.ex_str import newline
 from ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
 
@@ -53,7 +54,7 @@ def get_compound_parts_recursive(vocab_note: VocabNote, depth: int = 0, visited:
 
     visited.add(vocab_note.get_id())
 
-    compound_parts = app.col().vocab.with_any_form_in_prefer_exact_match(vocab_note.compound_parts.primary())
+    compound_parts = ex_sequence.flatten([app.col().vocab.with_form_prefer_exact_match(part) for part in vocab_note.compound_parts.primary()])
 
     result = []
 

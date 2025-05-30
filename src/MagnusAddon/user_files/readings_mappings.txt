@@ -115,7 +115,7 @@ gu:goo
 gun:gun
 guu:goo
 gyou:gyo:za
-ha:ha:t
+ha:ha
 habu:hub
 hachi:hatch
 hada:had-a
@@ -166,7 +166,7 @@ i:ee:l
 ichi:itchy
 iki:icky
 iku:ick
-in:inn
+in:in
 ino:inno:vation
 ishi:ish
 ita:eat-a
@@ -333,8 +333,10 @@ nise:niece
 nishi:niche
 niwa:nirwa:na
 no:no
+nobo:nobo:dy
 nodo:nod
 noga:nog
+noko:knock
 noma:nom-a
 noo:gnaw
 nota:note-a
@@ -538,7 +540,7 @@ yuru:you-rue
 yuu:ewe
 za:za
 zai:xy:lophone
-zan:Zan:sibar
+zan:zan:y
 zatsu:Zatsu
 ze:zea:lot
 zetsu:Zed's
