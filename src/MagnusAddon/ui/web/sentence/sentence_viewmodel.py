@@ -28,10 +28,11 @@ class DisplayFormViewModel:
         self.is_shadowed: bool = word_viewmodel.is_shadowed
         self.is_display_form: bool = display_form in display_form.candidate().display_forms
         self.is_displayed = not self.is_shadowed and self.is_display_form
-        self.hit_form = display_form.parsed_form
+        self.parsed_form = display_form.parsed_form
         self.answer = display_form.answer
         self.vocab_form = display_form.vocab_form
         self.compound_parts: list[CompoundPartViewModel] = []
+        self.question = self.vocab_form or self.parsed_form
         self.audio_path = ""
         self.readings:str = ""
         self.meta_tags_html = ""
@@ -42,8 +43,8 @@ class DisplayFormViewModel:
             self.readings = ", ".join(display_form.vocab.readings.get())
             self.meta_tags = " ".join(display_form.vocab.get_meta_tags())
             self.meta_tags_html = display_form.vocab.meta_data.meta_tags_html(display_extended_sentence_statistics=False)
-            if self.hit_form == self.vocab_form:
-                self.hit_form = ""
+            if self.parsed_form == self.vocab_form:
+                self.parsed_form = ""
                 self.readings = ""
 
     @classmethod
