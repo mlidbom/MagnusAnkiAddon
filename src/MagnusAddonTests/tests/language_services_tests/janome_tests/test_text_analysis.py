@@ -142,8 +142,8 @@ def insert_custom_words(custom_words: list[str]) -> None:
      [],
      ["厳密に言えば", "俺", "一人", "が", "友達", "だけど", "だけど"], []),
     ("厳密に言えばだけど俺一人が友達だけど", [],
-     [WordExclusion.at_index("だけど", 6)],
-     ["厳密に言えば", "俺", "一人", "が", "友達", "だけど"], []),
+     [WordExclusion.at_index("だけど", 6)],# You don't get to exclude tokens, it would mutilate the text, so this will remain.
+     ["厳密に言えば", "だけど", "俺", "一人", "が", "友達", "だけど"], []),
     ("幼すぎて よく覚えていないけど", [],
      [],
      ["幼い", "すぎる", "て", "よく", "覚える", "て", "いる", "ない", "けど"], []),

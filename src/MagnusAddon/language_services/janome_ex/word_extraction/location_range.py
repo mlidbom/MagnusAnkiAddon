@@ -45,9 +45,11 @@ class LocationRange(Slots):
 
         self.should_include_base_in_all_words = self.base.is_valid_candidate
 
+        #todo: bug: if surface and base are both invalid, and this is not a compound, we end up with a chunk of the text missing in the analysis
         self.should_include_surface_in_all_words = ((not self.should_include_base_in_all_words
                                                      and not self.is_custom_compound
-                                                     and self.surface.only_requires_being_a_word_to_be_a_valid_candidate)
+                                                     and not self.surface.starts_with_non_word_token
+                                                     and not self.surface.is_noise_character)
                                                     or (self.surface.is_valid_candidate
                                                         and not self.is_inflected_word
                                                         and self.surface.form != self.base.form))
