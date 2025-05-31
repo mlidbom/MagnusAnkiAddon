@@ -68,6 +68,7 @@ class DisplayFormViewModel:
 
     @classmethod
     def _get_compound_parts_recursive(cls, vocab_note: VocabNote, depth: int = 0, visited: set = None) -> list[CompoundPartViewModel]:
+        if not app.config().show_compound_parts_in_sentence_breakdown.get_value(): return []
         if visited is None: visited = set()
         if vocab_note.get_id() in visited: return []
 
