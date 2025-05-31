@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from ankiutils import app
 from ankiutils.app import col
 from autoslot import Slots
 from language_services.janome_ex.word_extraction.display_form import VocabDisplayForm
@@ -55,7 +56,7 @@ class DisplayFormViewModel:
 
         visited.add(vocab_note.get_id())
 
-        compound_parts = ex_sequence.flatten([col().vocab.with_form_prefer_exact_match(part) for part in vocab_note.compound_parts.primary()])
+        compound_parts = ex_sequence.flatten([app.col().vocab.with_form_prefer_exact_match(part) for part in vocab_note.compound_parts.primary()])
 
         result = []
 
