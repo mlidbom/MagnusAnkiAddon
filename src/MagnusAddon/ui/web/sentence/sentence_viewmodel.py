@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from ankiutils import app
-from ankiutils.app import col
 from autoslot import Slots
 from language_services.janome_ex.word_extraction.display_form import VocabDisplayForm
 from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
@@ -34,7 +33,7 @@ class DisplayFormViewModel:
         self.answer = display_form.answer
         self.vocab_form = display_form.vocab_form
         self.compound_parts: list[CompoundPartViewModel] = []
-        self.question = self.vocab_form or self.parsed_form
+        self.question = self.parsed_form
         self.audio_path = ""
         self.readings: str = ""
         self.meta_tags_html = ""
