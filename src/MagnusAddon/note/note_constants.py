@@ -118,7 +118,7 @@ f_kanji = f"{f_root}kanji::"
 f_sentence_uses = f"{f_sentence}uses::"
 f_vocab = f"{f_root}vocab::"
 f_vocab_matching = f"{f_vocab}matching::"
-f_vocab_matching_requires = f"{f_vocab_matching}::requires"
+f_vocab_matching_requires = f"{f_vocab_matching}requires::"
 f_vocab_matching_todo = f"{f_vocab_matching}todo::"
 f_vocab_matching_uses = f"{f_vocab_matching}uses::"
 
