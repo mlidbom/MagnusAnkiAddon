@@ -48,8 +48,6 @@ class TextAnalysis(Slots):
         self.display_words:list[CandidateWord] = ex_sequence.flatten([loc.display_words for loc in self.locations])
         self.all_words: list[CandidateWord] = ex_sequence.flatten([loc.all_words for loc in self.locations])
 
-        self.display_forms = ex_sequence.flatten([w.display_forms for w in self.display_words])
-
     @classmethod
     def from_text(cls, text:str) -> TextAnalysis:
         return cls(text, SentenceConfiguration.empty())
