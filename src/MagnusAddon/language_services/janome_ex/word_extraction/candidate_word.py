@@ -5,8 +5,9 @@ from typing import TYPE_CHECKING
 from ankiutils import app
 from autoslot import Slots
 from language_services import conjugator
+from language_services.jamdict_ex.dict_lookup import DictLookup
 from language_services.janome_ex.word_extraction.analysis_constants import noise_characters, non_word_characters
-from language_services.janome_ex.word_extraction.display_form import DisplayForm, MissingDisplayForm, VocabDisplayForm
+from language_services.janome_ex.word_extraction.display_form import DisplayForm, MissingDisplayForm, VocabDisplayForm, DictionaryDisplayForm
 from language_services.janome_ex.word_extraction.VocabCandidate import VocabCandidate
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from sysutils import kana_utils
@@ -95,7 +96,11 @@ class CandidateWord(Slots):
             if any(override_form):
                 self.form = override_form[0].parsed_form
         else:
-            self.display_forms = [MissingDisplayForm(self.weak_ref)]
+            dict_lookup = DictLookup.lookup_word(self.form)
+            if dict_lookup.found_words():
+                self.display_forms = [DictionaryDisplayForm(self.weak_ref, dict_lookup.entries[0])]
+            else:
+                self.display_forms = [MissingDisplayForm(self.weak_ref)]
 
         self.only_requires_being_a_word_to_be_a_valid_candidate = (not self.is_noise_character
                                                                    and not self.is_excluded_by_config

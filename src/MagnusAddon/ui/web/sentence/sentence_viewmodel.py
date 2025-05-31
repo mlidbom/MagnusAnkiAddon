@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from ankiutils import app
 from autoslot import Slots
-from language_services.janome_ex.word_extraction.display_form import VocabDisplayForm
+from language_services.janome_ex.word_extraction.display_form import VocabDisplayForm, DictionaryDisplayForm
 from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 from sysutils import ex_sequence, kana_utils
 from sysutils.debug_repr_builder import SkipFalsyValuesDebugReprBuilder
@@ -42,7 +42,7 @@ class DisplayFormViewModel:
         self.vocab_form = display_form.vocab_form
         self.compound_parts: list[CompoundPartViewModel] = []
         self.audio_path = ""
-        self.readings: str = ""
+        self.readings: str = ", ".join(display_form.readings)
         self.meta_tags_html = ""
         self.meta_tags: str = ""
         self.display_vocab_form = False
@@ -51,7 +51,6 @@ class DisplayFormViewModel:
         if isinstance(display_form, VocabDisplayForm):
             self.compound_parts:list[CompoundPartViewModel] = self._get_compound_parts_recursive(display_form.vocab)
             self.audio_path = display_form.vocab.audio.get_primary_audio_path()
-            self.readings = ", ".join(display_form.vocab.readings.get())
             self.meta_tags = " ".join(display_form.vocab.get_meta_tags())
             self.meta_tags_html = display_form.vocab.meta_data.meta_tags_html(display_extended_sentence_statistics=False)
             if self.parsed_form == self.vocab_form:
@@ -59,6 +58,9 @@ class DisplayFormViewModel:
             else:
                 self.display_vocab_form = True
                 self.display_readings = kana_utils.contains_kanji(self.vocab_form)
+        if isinstance(display_form, DictionaryDisplayForm):
+            self.display_readings = True
+
 
     @property
     def is_displayed(self) -> bool:
