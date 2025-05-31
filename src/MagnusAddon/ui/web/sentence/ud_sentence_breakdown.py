@@ -32,8 +32,8 @@ def render_sentence_analysis(note: SentenceNote) -> str:
                     <li class="sentenceVocabEntry depth1 word_priority_very_high {display_form.meta_tags}">
                         <div class="sentenceVocabEntryDiv">
                             <audio src="{display_form.audio_path}"></audio><a class="play-button"></a>
-                            <span class="vocabQuestion clipboard">{display_form.vocab_form}</span>
-                            {f'''<span class="vocabHitForm clipboard">{display_form.parsed_form}</span>''' if display_form.parsed_form else ""}
+                            <span class="vocabQuestion clipboard">{display_form.question}</span>
+                            {f'''<span class="vocabHitForm clipboard">{display_form.vocab_form}</span>''' if display_form.vocab_form else ""}
                             {f'''<span class="vocabHitReadings clipboard">{display_form.readings}</span>''' if display_form.readings else ""}
                             {display_form.meta_tags_html}
                             <span class="vocabAnswer">{display_form.answer}</span>

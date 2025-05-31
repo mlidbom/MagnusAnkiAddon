@@ -8,6 +8,7 @@ from language_services.janome_ex.word_extraction.display_form import VocabDispla
 from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 from sysutils import ex_sequence
 from sysutils.debug_repr_builder import SkipFalsyValuesDebugReprBuilder
+from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.candidate_word import CandidateWord
@@ -24,11 +25,11 @@ class CompoundPartViewModel:
         self.readings = vocab_note.readings.get()
 
 class DisplayFormViewModel:
-    def __init__(self, word_viewmodel: CandidateWordViewModel, display_form: DisplayForm) -> None:
+    def __init__(self, word_viewmodel: WeakRef[CandidateWordViewModel], display_form: DisplayForm) -> None:
         self.display_form: DisplayForm = display_form
-        self.is_shadowed: bool = word_viewmodel.is_shadowed
-        self.is_display_word = word_viewmodel.is_display_word
-        self.is_displayed = not self.is_shadowed and self.is_display_word
+        self.word_viewmodel: WeakRef[CandidateWordViewModel] = word_viewmodel
+        self.is_shadowed: bool = word_viewmodel().is_shadowed
+        self.is_display_word = word_viewmodel().is_display_word
         self.parsed_form = display_form.parsed_form
         self.answer = display_form.answer
         self.vocab_form = display_form.vocab_form
@@ -38,6 +39,7 @@ class DisplayFormViewModel:
         self.readings: str = ""
         self.meta_tags_html = ""
         self.meta_tags: str = ""
+        self.is_perfect_match = self.parsed_form == self.vocab_form
         if isinstance(display_form, VocabDisplayForm):
             self.compound_parts = self._get_compound_parts_recursive(display_form.vocab)
             self.audio_path = display_form.vocab.audio.get_primary_audio_path()
@@ -47,6 +49,10 @@ class DisplayFormViewModel:
             if self.parsed_form == self.vocab_form:
                 self.parsed_form = ""
                 self.readings = ""
+
+    @property
+    def is_displayed(self) -> bool:
+        return not self.is_shadowed and self.is_display_word and (self.is_perfect_match or not self.word_viewmodel().has_perfect_match)
 
     @classmethod
     def _get_compound_parts_recursive(cls, vocab_note: VocabNote, depth: int = 0, visited: set = None) -> list[CompoundPartViewModel]:
@@ -77,9 +83,11 @@ class DisplayFormViewModel:
 class CandidateWordViewModel:
     def __init__(self, candidate_word: CandidateWord) -> None:
         self.candidate_word: CandidateWord = candidate_word
+        self.weakref:WeakRef[CandidateWordViewModel] = WeakRef(self)
         self.is_shadowed: bool = candidate_word.is_shadowed
         self.is_display_word:bool = candidate_word in candidate_word.token_range().analysis().display_words
-        self.display_forms: list[DisplayFormViewModel] = [DisplayFormViewModel(self, form) for form in candidate_word.display_forms]
+        self.display_forms: list[DisplayFormViewModel] = [DisplayFormViewModel(self.weakref, form) for form in candidate_word.display_forms]
+        self.has_perfect_match = any(form.is_perfect_match for form in self.display_forms)
 
     def __repr__(self) -> str: return (
         SkipFalsyValuesDebugReprBuilder()

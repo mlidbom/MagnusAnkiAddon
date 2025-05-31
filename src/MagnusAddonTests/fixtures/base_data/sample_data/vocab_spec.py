@@ -66,7 +66,7 @@ class VocabSpec(Slots):
 
         return vocab_note
 
-test_special_vocab = [
+test_special_vocab: list[VocabSpec] = [
     VocabSpec("てる", "{continuing-{activity | state}} / {progressive | perfect}", ["てる"], tags=[Tags.Vocab.Matching.is_inflecting_word]),
     VocabSpec("て", "{continuing-action}", ["て"], tags=[Tags.Vocab.Matching.is_inflecting_word]),
     VocabSpec("てた", "{was}-{_-ing|_ed}", ["てた"], tags=[Tags.Vocab.Matching.is_inflecting_word]),
@@ -104,6 +104,10 @@ test_special_vocab = [
     VocabSpec("だの", "and-the-like", ["だの"], prefix_is_not={"ん"}),
 
     VocabSpec("こ", "familiarizing-suffix", ["こ"], extra_forms=["っこ"], tags=[Tags.Vocab.Matching.is_strictly_suffix]),
+
+    # multiple form to trigger a certain bug
+    VocabSpec("ない", "not", ["ない"], extra_forms=["無い"]),
+    VocabSpec("無い", "not", ["ない"], extra_forms=["ない"]),
 ]
 
 test_ordinary_vocab_list = [
