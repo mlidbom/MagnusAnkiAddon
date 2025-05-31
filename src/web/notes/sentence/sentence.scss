@@ -6,7 +6,8 @@
     /* FONTS AND COLORS */
     font-size: 20pt;
 
-    .expression { font-size: 40pt;
+    .expression {
+        font-size: 40pt;
         line-height: 1;
         color: color-mix(in lch, var(--colorTextCard), black 20%);
         white-space: pre-line;
@@ -18,13 +19,16 @@
         padding: 0 5px 0 5px;
         white-space: pre-line; }
 
-    .user { background: var(--colorBgOffset1);
+    .user {
+        background: var(--colorBgOffset1);
         &.comments.short { border-color: color-mix(in lch, var(--colorBgCard), var(--colorTextBold) 50%); }
-        read { background-color: unset;
+        read {
+            background-color: unset;
             color: var(--colorTextReading); }
     }
 
-    .meaning { font-size: 25pt;
+    .meaning {
+        font-size: 25pt;
         &.overridden { font-size: 15pt; }
     }
 
@@ -49,29 +53,43 @@
 
     .sentenceVocabList {
         padding-left: 0;
-        ul { padding-left: 20px;
+        ul {
+            padding-left: 20px;
             margin-left: 0;
-            background: var(--colorBgCard);
-        }
+            background: var(--colorBgCard); }
         list-style: none;
 
         li { background: var(--colorBgOffset1); }
 
-        .compound_part_depth_0 { padding-left: 30px; }
-        .compound_part_depth_1 { padding-left: 60px; }
-        .compound_part_depth_2 { padding-left: 90px; }
-        .compound_part_depth_3 { padding-left: 120px; }
-        .compound_part_depth_4 { padding-left: 150px; }
-
-        .vocab_tag_list { white-space: nowrap;
+        .vocab_tag_list {
+            white-space: nowrap;
             padding-left: 10px; }
 
         li { line-height: 1.2; }
         .sentenceVocabEntry {
+
+            .vocabQuestion { color: var(--colorTextCard); }
+            .vocabAnswer { color: var(--colorTextMeaning); }
+
+            &.compound_part {
+                .vocabQuestion { color: color-mix(in lch, var(--colorTextCard), white 30%); }
+                .vocabAnswer { color: color-mix(in lch, var(--colorTextMeaning), white 30%); }
+                .vocabLookupForm { color: darkgrey; }
+                .vocabHitForm, ja, tag { color: color-mix(in lch, var(--colorTextGreen), white 30%);}
+                .vocabHitReadings { color: color-mix(in lch, var(--colorTextReading), white 30%);}
+
+                &.depth_0 { padding-left: 30px; }
+                &.depth_1 { padding-left: 60px; }
+                &.depth_2 { padding-left: 90px; }
+                &.depth_3 { padding-left: 120px; }
+                &.depth_4 { padding-left: 150px; }
+            }
+
             &.is_studying_reading .vocabQuestion {
                 border-left: solid;
                 border-color: var(--colorTextReading);
             }
+
             &.is_studying_listening .vocabQuestion {
                 border-left: solid;
                 border-color: white;
@@ -82,20 +100,21 @@
                 border-color: var(--colorTextGreen);
             }
 
-            div.sentenceVocabEntryDiv { display: flex;
+            div.sentenceVocabEntryDiv {
+                display: flex;
                 align-items: center;
 
                 .vocabLookupForm, .vocabHitForm, .vocabHitReadings { white-space: nowrap; }
 
-                .vocabLookupForm {color: darkgrey;
+                .vocabLookupForm {
+                    color: darkgrey;
                     margin-left: 5pt; }
-
-                .vocabHitForm { color: var(--colorTextGreen);
+                .vocabHitForm {
+                    color: var(--colorTextGreen);
                     margin-left: 5pt; }
-
-                .vocabHitReadings { color: var(--colorTextReading);
-                    font-size: 25pt;
-                    margin-left: 5pt;}
+                .vocabHitReadings {
+                    color: var(--colorTextReading);
+                    font-size: 25pt; margin-left: 5pt;}
             }
 
             div.sentenceVocabEntryMnemonic {
@@ -103,35 +122,8 @@
                 white-space: pre-line;
             }
 
-            .vocabQuestion, .vocabLookupForm, .vocabHitForm { font-size: 30pt;
-                white-space: nowrap; }
-            .vocabAnswer { margin-left: 10pt;
-                white-space: pre-line;}
-
-            &.word_priority_very_low {
-                & > div > .vocabQuestion { color: var(--colorTextPriorityVeryLow); }
-                & > div > .vocabAnswer { color: var(--colorTextPriorityVeryLow); }
-            }
-
-            &.word_priority_low {
-                & > div > .vocabQuestion { color: var(--colorTextPriorityLow); }
-                & > div > .vocabAnswer { color: var(--colorTextPriorityLow); }
-            }
-
-            &.word_priority_medium {
-                & > div > .vocabQuestion { color: var(--colorTextPriorityMedium); }
-                & > div > .vocabAnswer { color: var(--colorTextMeaning); }
-            }
-
-            &.word_priority_high {
-                & > div > .vocabQuestion { color: var(--colorTextPriorityHigh); }
-                & > div > .vocabAnswer { color: var(--colorTextMeaning); }
-            }
-
-            &.word_priority_very_high {
-                & > div > .vocabQuestion { color: var(--colorTextBold); }
-                & > div > .vocabAnswer { color: var(--colorTextBold); }
-            }
+            .vocabQuestion, .vocabLookupForm, .vocabHitForm { font-size: 30pt; white-space: nowrap; }
+            .vocabAnswer { margin-left: 10pt; white-space: pre-line;}
 
         }
     }
