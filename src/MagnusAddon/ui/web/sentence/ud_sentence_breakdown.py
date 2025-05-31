@@ -21,13 +21,13 @@ def render_sentence_analysis(note: SentenceNote) -> str:
     text_analysis: TextAnalysisViewModel = sentence_analysis.analysis
     candidate_words: list[CandidateWordViewModel] = text_analysis.candidate_words
     html = """
-        <div class="breakdown page_section">
-            <div class="page_section_title">Sentence breakdown</div>
-            <ul class="sentenceVocabList userExtra depth1">
+    <div class="breakdown page_section">
+        <div class="page_section_title">Sentence breakdown</div>
+        <ul class="sentenceVocabList userExtra depth1">
     """
-    for candidate_word in (w for w in candidate_words):
+    for candidate_word in candidate_words:
 
-        for display_form in candidate_word.display_forms:
+        for display_form in [df for df in candidate_word.display_forms if df.is_displayed]:
             html += f"""
                         <li class="sentenceVocabEntry depth1 word_priority_very_high {display_form.meta_tags}">
                             <div class="sentenceVocabEntryDiv">
@@ -38,6 +38,7 @@ def render_sentence_analysis(note: SentenceNote) -> str:
                                 {display_form.meta_tags_html}
                                 <span class="vocabAnswer">{display_form.answer}</span>
                             </div>
+
                         </li>
                         """
 

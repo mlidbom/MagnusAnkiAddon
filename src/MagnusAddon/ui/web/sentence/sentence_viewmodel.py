@@ -26,6 +26,8 @@ class DisplayFormViewModel:
     def __init__(self, word_viewmodel: CandidateWordViewModel, display_form: DisplayForm) -> None:
         self.display_form: DisplayForm = display_form
         self.is_shadowed: bool = word_viewmodel.is_shadowed
+        self.is_display_form: bool = display_form in display_form.candidate().display_forms
+        self.is_displayed = not self.is_shadowed and self.is_display_form
         self.hit_form = display_form.parsed_form
         self.answer = display_form.answer
         self.vocab_form = display_form.vocab_form
