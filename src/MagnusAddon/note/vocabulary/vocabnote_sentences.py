@@ -3,6 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
+from note.note_constants import NoteFields
+from sysutils.lazy import Lazy
 
 if TYPE_CHECKING:
     from note.collection.jp_collection import JPCollection
@@ -10,9 +12,22 @@ if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
     from sysutils.weak_ref import WeakRef
 
+
+class SentenceCounts:
+    def __init__(self, sentences:VocabNoteSentences) -> None:
+        sentences = sentences.with_owned_form()
+        self.studying_reading = self._get_studying_sentence_count(sentences, NoteFields.VocabNoteType.Card.Reading)
+        self.studying_listening = self._get_studying_sentence_count(sentences, NoteFields.VocabNoteType.Card.Listening)
+        self.total = len(sentences)
+
+    @staticmethod
+    def _get_studying_sentence_count(sentences: list[SentenceNote], card: str = "") -> int:
+        return len([sentence for sentence in sentences if sentence.is_studying(card)])
+
 class VocabNoteSentences(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self.__vocab = vocab
+        self.counts:Lazy[SentenceCounts] = Lazy(lambda: SentenceCounts(self))
 
     @property
     def _vocab(self) -> VocabNote: return self.__vocab()
