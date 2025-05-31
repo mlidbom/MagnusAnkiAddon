@@ -6,7 +6,7 @@ from ankiutils import app
 from autoslot import Slots
 from language_services.janome_ex.word_extraction.display_form import VocabDisplayForm
 from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
-from sysutils import ex_sequence
+from sysutils import ex_sequence, kana_utils
 from sysutils.debug_repr_builder import SkipFalsyValuesDebugReprBuilder
 from sysutils.weak_ref import WeakRef
 
@@ -34,12 +34,13 @@ class DisplayFormViewModel:
         self.answer = display_form.answer
         self.vocab_form = display_form.vocab_form
         self.compound_parts: list[CompoundPartViewModel] = []
-        self.question = self.parsed_form
         self.audio_path = ""
         self.readings: str = ""
         self.meta_tags_html = ""
         self.meta_tags: str = ""
+        self.display_vocab_form = False
         self.is_perfect_match = self.parsed_form == self.vocab_form
+        self.display_readings = False
         if isinstance(display_form, VocabDisplayForm):
             self.compound_parts = self._get_compound_parts_recursive(display_form.vocab)
             self.audio_path = display_form.vocab.audio.get_primary_audio_path()
@@ -47,8 +48,10 @@ class DisplayFormViewModel:
             self.meta_tags = " ".join(display_form.vocab.get_meta_tags())
             self.meta_tags_html = display_form.vocab.meta_data.meta_tags_html(display_extended_sentence_statistics=False)
             if self.parsed_form == self.vocab_form:
-                self.parsed_form = ""
-                self.readings = ""
+                self.display_readings = kana_utils.contains_kanji(self.parsed_form)
+            else:
+                self.display_vocab_form = True
+                self.display_readings = kana_utils.contains_kanji(self.vocab_form)
 
     @property
     def is_displayed(self) -> bool:
@@ -75,7 +78,7 @@ class DisplayFormViewModel:
 
     def __repr__(self) -> str: return (
         SkipFalsyValuesDebugReprBuilder()
-        .include(self.question)
+        .include(self.parsed_form)
         .flag("shadowed", self.is_shadowed)
         .flag("is_display_word", self.is_display_word)
         .flag("displayed", self.is_displayed).repr)
