@@ -24,7 +24,7 @@ class CompoundPartViewModel:
         self.answer = vocab_note.get_answer()
         self.readings = ", ".join(vocab_note.readings.get())
         self.audio_path = vocab_note.audio.get_primary_audio_path()
-        self.meta_tags_html = vocab_note.meta_data.meta_tags_html(display_extended_sentence_statistics=False)
+        self.meta_tags_html: str =  vocab_note.meta_data.meta_tags_html(no_sentense_statistics=True)
         self.display_readings = kana_utils.contains_kanji(self.question)
 
         self.meta_tags = " ".join(vocab_note.get_meta_tags())
@@ -43,7 +43,7 @@ class DisplayFormViewModel:
         self.compound_parts: list[CompoundPartViewModel] = []
         self.audio_path = ""
         self.readings: str = ", ".join(display_form.readings)
-        self.meta_tags_html = ""
+        self.meta_tags_html:str = ""
         self.meta_tags: str = ""
         self.display_vocab_form = False
         self.is_perfect_match = self.parsed_form == self.vocab_form

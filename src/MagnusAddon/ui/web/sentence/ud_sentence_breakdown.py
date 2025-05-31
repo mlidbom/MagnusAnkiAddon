@@ -137,6 +137,6 @@ def render_user_extra_list(note: SentenceNote) -> str:
 def init() -> None:
     gui_hooks.card_will_show.append(PrerenderingAnswerContentRenderer(SentenceNote, {
         "##SENTENCE_ANALYSIS##": render_sentence_analysis,
-        "##PARSED_WORDS##": render_parsed_words,
+        # "##PARSED_WORDS##": render_parsed_words,
         "##USER_EXTRA_VOCAB##": render_user_extra_list,
     }).render)
