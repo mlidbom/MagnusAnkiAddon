@@ -1,10 +1,16 @@
 <component name="ProjectCodeStyleConfiguration">
   <code_scheme name="Project" version="173">
+    <Python>
+      <option name="BLANK_LINES_AROUND_TOP_LEVEL_CLASSES_FUNCTIONS" value="1" />
+    </Python>
     <ScssCodeStyleSettings>
       <option name="BLANK_LINES_BETWEEN_BLOCKS" value="0" />
       <option name="BLANK_LINES_AROUND_NESTED_SELECTOR" value="0" />
       <option name="KEEP_SINGLE_LINE_BLOCKS" value="true" />
     </ScssCodeStyleSettings>
+    <codeStyleSettings language="Python">
+      <option name="RIGHT_MARGIN" value="999" />
+    </codeStyleSettings>
     <codeStyleSettings language="SCSS">
       <indentOptions>
         <option name="INDENT_SIZE" value="4" />
