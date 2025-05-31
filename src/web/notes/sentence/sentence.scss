@@ -74,8 +74,8 @@
             &.compound_part {
                 div.sentenceVocabEntryDiv {
                     .vocabQuestion { color: color-mix(in lch, var(--colorTextCard), white 20%); }
-                    .vocabAnswer { color: color-mix(in lch, var(--colorTextMeaning), white 10%); }
-                    .vocabLookupForm { color: color-mix(in lch, darkgrey, white 10%); }
+                    .vocabAnswer { color: color-mix(in lch, var(--colorTextMeaning), white 20%); }
+                    .vocabLookupForm { color: color-mix(in lch, darkgrey, white 15%); }
                     .vocabHitForm, ja, tag, .vocab_tag { color: color-mix(in lch, var(--colorTextGreen), white 15%);}
                     .vocabHitReadings { color: color-mix(in lch, var(--colorTextReading), white 10%);}
                 }
