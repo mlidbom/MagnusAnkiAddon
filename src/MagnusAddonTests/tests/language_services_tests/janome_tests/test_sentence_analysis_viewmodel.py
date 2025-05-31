@@ -230,8 +230,8 @@ def _run_assertions(sentence: str, custom_words: list[str], excluded: list[WordE
     sentence_note.configuration._value = Lazy.from_value(SentenceConfiguration.from_incorrect_matches(excluded))
     analysis = SentenceAnalysisViewModel(sentence_note)
     candidate_words = analysis.analysis.candidate_words
-    candidate_forms = ex_sequence.flatten([cand.display_forms for cand in candidate_words])
-    displayed_forms = [cand for cand in candidate_forms if cand.is_displayed]
+    display_forms = ex_sequence.flatten([cand.display_forms for cand in candidate_words])
+    displayed_forms = [display_form for display_form in display_forms if display_form.is_displayed]
 
     root_words = [df.question for df in displayed_forms]
     assert root_words == expected_output

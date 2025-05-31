@@ -78,7 +78,7 @@ class CandidateWordViewModel:
     def __init__(self, candidate_word: CandidateWord) -> None:
         self.candidate_word: CandidateWord = candidate_word
         self.is_shadowed: bool = candidate_word.is_shadowed
-        self.is_display_word = candidate_word in candidate_word.token_range().analysis().display_words
+        self.is_display_word:bool = candidate_word in candidate_word.token_range().analysis().display_words
         self.display_forms: list[DisplayFormViewModel] = [DisplayFormViewModel(self, form) for form in candidate_word.display_forms]
 
     def __repr__(self) -> str: return (
@@ -94,5 +94,5 @@ class TextAnalysisViewModel(Slots):
 
 class SentenceAnalysisViewModel(Slots):
     def __init__(self, sentence: SentenceNote) -> None:
-        self.sentence = sentence
-        self.analysis = TextAnalysisViewModel(TextAnalysis(sentence.get_question(), sentence.configuration.configuration))
+        self.sentence: SentenceNote = sentence
+        self.analysis:TextAnalysisViewModel = TextAnalysisViewModel(TextAnalysis(sentence.get_question(), sentence.configuration.configuration))
