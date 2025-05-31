@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from ankiutils import app
 from autoslot import Slots
-from language_services.janome_ex.word_extraction.display_form import VocabDisplayForm, DictionaryDisplayForm
+from language_services.janome_ex.word_extraction.display_form import DictionaryDisplayForm, VocabDisplayForm
 from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 from sysutils import ex_sequence, kana_utils
 from sysutils.debug_repr_builder import SkipFalsyValuesDebugReprBuilder

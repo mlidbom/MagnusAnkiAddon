@@ -7,7 +7,7 @@ from autoslot import Slots
 from language_services import conjugator
 from language_services.jamdict_ex.dict_lookup import DictLookup
 from language_services.janome_ex.word_extraction.analysis_constants import noise_characters, non_word_characters
-from language_services.janome_ex.word_extraction.display_form import DisplayForm, MissingDisplayForm, VocabDisplayForm, DictionaryDisplayForm
+from language_services.janome_ex.word_extraction.display_form import DictionaryDisplayForm, DisplayForm, MissingDisplayForm, VocabDisplayForm
 from language_services.janome_ex.word_extraction.VocabCandidate import VocabCandidate
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from sysutils import kana_utils
