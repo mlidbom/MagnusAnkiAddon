@@ -23,6 +23,13 @@ class CompoundPartViewModel:
         self.question = vocab_note.get_question()
         self.answer = vocab_note.get_answer()
         self.readings = vocab_note.readings.get()
+        self.audio_path = vocab_note.audio.get_primary_audio_path()
+        self.meta_tags_html = vocab_note.meta_data.meta_tags_html(display_extended_sentence_statistics=False)
+        self.display_readings = kana_utils.contains_kanji(self.question)
+
+        self.meta_tags = " ".join(vocab_note.get_meta_tags())
+        self.meta_tags += f""" compound_part_depth_{depth}"""
+
 
 class DisplayFormViewModel:
     def __init__(self, word_viewmodel: WeakRef[CandidateWordViewModel], display_form: DisplayForm) -> None:
@@ -42,7 +49,7 @@ class DisplayFormViewModel:
         self.is_perfect_match = self.parsed_form == self.vocab_form
         self.display_readings = False
         if isinstance(display_form, VocabDisplayForm):
-            self.compound_parts = self._get_compound_parts_recursive(display_form.vocab)
+            self.compound_parts:list[CompoundPartViewModel] = self._get_compound_parts_recursive(display_form.vocab)
             self.audio_path = display_form.vocab.audio.get_primary_audio_path()
             self.readings = ", ".join(display_form.vocab.readings.get())
             self.meta_tags = " ".join(display_form.vocab.get_meta_tags())

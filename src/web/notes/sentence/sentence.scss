@@ -1,5 +1,5 @@
 @use "sass:color";
-@import "../Styles/_040_japanese.scss";
+@import "../../Styles/_040_japanese.scss";
 .card #container1 #container2 { //Let's stay focused and not break other stuff
   @include kanji_list;
   
@@ -53,7 +53,11 @@
       
       li { background: var(--colorBgOffset1); }
 
-      ul.depth3 { padding-left: 20px; }
+     .compound_part_depth_0 { padding-left: 30px; }
+     .compound_part_depth_1 { padding-left: 60px; }
+     .compound_part_depth_2 { padding-left: 90px; }
+     .compound_part_depth_3 { padding-left: 120px; }
+     .compound_part_depth_4 { padding-left: 150px; }
 
       .vocab_tag_list{ white-space:nowrap;
                        padding-left: 10px; }

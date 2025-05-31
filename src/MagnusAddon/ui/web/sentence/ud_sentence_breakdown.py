@@ -41,6 +41,19 @@ def render_sentence_analysis(note: SentenceNote) -> str:
 
                     </li>
                     """
+        for compound_part in display_form.compound_parts:
+            html += f"""
+                        <li class="sentenceVocabEntry word_priority_very_high {compound_part.meta_tags}">
+                            <div class="sentenceVocabEntryDiv">
+                                <audio src="{compound_part.audio_path}"></audio><a class="play-button"></a>
+                                <span class="vocabQuestion clipboard">{compound_part.question}</span>
+                                {f'''<span class="vocabHitReadings clipboard">{compound_part.readings}</span>''' if compound_part.display_readings else ""}
+                                {compound_part.meta_tags_html}
+                                <span class="vocabAnswer">{compound_part.answer}</span>
+                            </div>
+
+                        </li>
+                        """
 
     html += """</ul>
             </div>
