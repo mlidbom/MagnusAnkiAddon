@@ -8,46 +8,46 @@ from autoslot import Slots
 from language_services.jamdict_ex.dict_lookup import DictLookup
 from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 from note.sentences.sentencenote import SentenceNote
-from sysutils import kana_utils
+from sysutils import ex_sequence, kana_utils
 from sysutils.ex_str import newline
-from ui.web.sentence.sentence_viewmodel import CandidateWordViewModel, SentenceAnalysisViewModel, TextAnalysisViewModel
+from ui.web.sentence.sentence_viewmodel import SentenceAnalysisViewModel
 from ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
 
 def render_sentence_analysis(note: SentenceNote) -> str:
-    sentence_analysis:SentenceAnalysisViewModel = SentenceAnalysisViewModel(note)
-    text_analysis: TextAnalysisViewModel = sentence_analysis.analysis
-    candidate_words: list[CandidateWordViewModel] = text_analysis.candidate_words
+    sentence_analysis: SentenceAnalysisViewModel = SentenceAnalysisViewModel(note)
+    candidate_words = sentence_analysis.analysis.candidate_words
+    display_forms = ex_sequence.flatten([cand.display_forms for cand in candidate_words])
+    displayed_forms = [display_form for display_form in display_forms if display_form.is_displayed]
     html = """
     <div class="breakdown page_section">
         <div class="page_section_title">Sentence breakdown</div>
         <ul class="sentenceVocabList userExtra depth1">
     """
-    for candidate_word in candidate_words:
 
-        for display_form in [df for df in candidate_word.display_forms if df.is_displayed]:
-            html += f"""
-                        <li class="sentenceVocabEntry depth1 word_priority_very_high {display_form.meta_tags}">
-                            <div class="sentenceVocabEntryDiv">
-                                <audio src="{display_form.audio_path}"></audio><a class="play-button"></a>
-                                <span class="vocabQuestion clipboard">{display_form.vocab_form}</span>
-                                {f'''<span class="vocabHitForm clipboard">{display_form.parsed_form}</span>''' if display_form.parsed_form else ""}
-                                {f'''<span class="vocabHitReadings clipboard">{display_form.readings}</span>''' if display_form.readings else ""}
-                                {display_form.meta_tags_html}
-                                <span class="vocabAnswer">{display_form.answer}</span>
-                            </div>
+    for display_form in displayed_forms:
+        html += f"""
+                    <li class="sentenceVocabEntry depth1 word_priority_very_high {display_form.meta_tags}">
+                        <div class="sentenceVocabEntryDiv">
+                            <audio src="{display_form.audio_path}"></audio><a class="play-button"></a>
+                            <span class="vocabQuestion clipboard">{display_form.vocab_form}</span>
+                            {f'''<span class="vocabHitForm clipboard">{display_form.parsed_form}</span>''' if display_form.parsed_form else ""}
+                            {f'''<span class="vocabHitReadings clipboard">{display_form.readings}</span>''' if display_form.readings else ""}
+                            {display_form.meta_tags_html}
+                            <span class="vocabAnswer">{display_form.answer}</span>
+                        </div>
 
-                        </li>
-                        """
+                    </li>
+                    """
 
     html += """</ul>
             </div>
         """
     return html
 
-def _build_vocab_list(word_to_show: list[str], excluded_words:set[str], title:str, include_mnemonics:bool = False, show_words_missing_dictionary_entries:bool = False, include_extended_sentence_statistics:bool = False) -> str:
+def _build_vocab_list(word_to_show: list[str], excluded_words: set[str], title: str, include_mnemonics: bool = False, show_words_missing_dictionary_entries: bool = False, include_extended_sentence_statistics: bool = False) -> str:
     html = f"""
     <div class="breakdown page_section">
         <div class="page_section_title">{title}</div>
@@ -63,21 +63,21 @@ def _build_vocab_list(word_to_show: list[str], excluded_words:set[str], title:st
                 needs_reading = kana_utils.contains_kanji(word_form) and (not hit_form or kana_utils.contains_kanji(hit_form))
                 readings = ", ".join(vocab.readings.get()) if needs_reading else ""
                 html += f"""
-                        <li class="sentenceVocabEntry depth1 word_priority_very_high {" ".join(vocab.get_meta_tags())}">
-                            <div class="sentenceVocabEntryDiv">
-                                <audio src="{vocab.audio.get_primary_audio_path()}"></audio><a class="play-button"></a>
-                                <span class="vocabQuestion clipboard">{word_form}</span>
-                                {f'''<span class="vocabHitForm clipboard">{hit_form}</span>''' if hit_form else ""}
-                                {f'''<span class="vocabHitReadings clipboard">{readings}</span>''' if readings else ""}
-                                {vocab.meta_data.meta_tags_html(include_extended_sentence_statistics)}
-                                <span class="vocabAnswer">{vocab.get_answer()}</span>
-                            </div>
-                            {f'''<div class="sentenceVocabEntryMnemonic">{vocab.user.mnemonic.get()}</div>''' if include_mnemonics and vocab.user.mnemonic.get() and vocab.user.mnemonic.get() != '-' else '' }
-                        </li>
+                    <li class="sentenceVocabEntry depth1 word_priority_very_high {" ".join(vocab.get_meta_tags())}">
+                        <div class="sentenceVocabEntryDiv">
+                            <audio src="{vocab.audio.get_primary_audio_path()}"></audio><a class="play-button"></a>
+                            <span class="vocabQuestion clipboard">{word_form}</span>
+                            {f'''<span class="vocabHitForm clipboard">{hit_form}</span>''' if hit_form else ""}
+                            {f'''<span class="vocabHitReadings clipboard">{readings}</span>''' if readings else ""}
+                            {vocab.meta_data.meta_tags_html(include_extended_sentence_statistics)}
+                            <span class="vocabAnswer">{vocab.get_answer()}</span>
+                        </div>
+                        {f'''<div class="sentenceVocabEntryMnemonic">{vocab.user.mnemonic.get()}</div>''' if include_mnemonics and vocab.user.mnemonic.get() and vocab.user.mnemonic.get() != '-' else ''}
+                    </li>
                         """
         else:
             class Hit(Slots):
-                def __init__(self, forms:str, readings_:str, answer:str) -> None:
+                def __init__(self, forms: str, readings_: str, answer: str) -> None:
                     self.forms: str = forms
                     self.readings: str = readings_
                     self.answer = answer
@@ -103,7 +103,7 @@ def _build_vocab_list(word_to_show: list[str], excluded_words:set[str], title:st
     """
     return html
 
-def lookup_vocabs(excluded_words: set[str], word:str) -> list[VocabNote]:
+def lookup_vocabs(excluded_words: set[str], word: str) -> list[VocabNote]:
     vocabs: list[VocabNote] = app.col().vocab.with_form(word)
     vocabs = [voc for voc in vocabs if voc.get_question() not in excluded_words]
     exact_match = [voc for voc in vocabs if voc.question.without_noise_characters() == word]
