@@ -71,6 +71,7 @@ class CandidateWord(Slots):
         self.is_self_excluded = False
         self.completed_analysis = False
         self.is_valid_candidate: bool = False
+        self.is_shadowed: bool = False
         self.starts_with_non_word_token = self.token_range().start_location().token.is_non_word_character
 
         self.display_forms: list[DisplayForm] = []
@@ -81,6 +82,9 @@ class CandidateWord(Slots):
 
     def complete_analysis(self) -> None:
         if self.completed_analysis: return
+
+        self.is_shadowed = self.token_range().start_location().is_shadowed_by is not None
+
         self.exact_match_required_by_counterpart_vocab_configuration: bool = self.counterpart.exact_match_required_by_primary_form_vocab_configuration
         self.exact_match_required: bool = self.exact_match_required_by_primary_form_vocab_configuration or self.exact_match_required_by_counterpart_vocab_configuration
         self.is_exact_match_requirement_fulfilled: bool = self.form == self.counterpart.form or not self.exact_match_required

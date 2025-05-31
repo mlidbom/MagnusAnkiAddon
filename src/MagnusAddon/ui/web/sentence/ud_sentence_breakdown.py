@@ -10,11 +10,41 @@ from language_services.janome_ex.word_extraction.text_analysis import TextAnalys
 from note.sentences.sentencenote import SentenceNote
 from sysutils import kana_utils
 from sysutils.ex_str import newline
+from ui.web.sentence.sentence_viewmodel import CandidateWordViewModel, SentenceAnalysisViewModel, TextAnalysisViewModel
 from ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
 
+def render_sentence_analysis(note: SentenceNote) -> str:
+    sentence_analysis:SentenceAnalysisViewModel = SentenceAnalysisViewModel(note)
+    text_analysis: TextAnalysisViewModel = sentence_analysis.analysis
+    candidate_words: list[CandidateWordViewModel] = text_analysis.candidate_words
+    html = """
+        <div class="breakdown page_section">
+            <div class="page_section_title">Sentence breakdown</div>
+            <ul class="sentenceVocabList userExtra depth1">
+    """
+    for candidate_word in (w for w in candidate_words):
+
+        for display_form in candidate_word.display_forms:
+            html += f"""
+                        <li class="sentenceVocabEntry depth1 word_priority_very_high {display_form.meta_tags}">
+                            <div class="sentenceVocabEntryDiv">
+                                <audio src="{display_form.audio_path}"></audio><a class="play-button"></a>
+                                <span class="vocabQuestion clipboard">{display_form.vocab_form}</span>
+                                {f'''<span class="vocabHitForm clipboard">{display_form.hit_form}</span>''' if display_form.hit_form else ""}
+                                {f'''<span class="vocabHitReadings clipboard">{display_form.readings}</span>''' if display_form.readings else ""}
+                                {display_form.meta_tags_html}
+                                <span class="vocabAnswer">{display_form.answer}</span>
+                            </div>
+                        </li>
+                        """
+
+    html += """</ul>
+            </div>
+        """
+    return html
 
 def _build_vocab_list(word_to_show: list[str], excluded_words:set[str], title:str, include_mnemonics:bool = False, show_words_missing_dictionary_entries:bool = False, include_extended_sentence_statistics:bool = False) -> str:
     html = f"""
@@ -88,23 +118,12 @@ def render_parsed_words(note: SentenceNote) -> str:
     excluded = note.configuration.incorrect_matches.words()
     return _build_vocab_list(word_strings, excluded, "parsed words", show_words_missing_dictionary_entries=True)
 
-def render_incorrect_matches(note: SentenceNote) -> str:
-    excluded_words = {x.word for x in note.configuration.incorrect_matches.get()}
-    excluded_vocab = list(excluded_words)
-    return _build_vocab_list(excluded_vocab, set(), "incorrectly matched words", show_words_missing_dictionary_entries=True) if excluded_vocab else ""
-
-def render_hidden_matches(note: SentenceNote) -> str:
-    hidden_words = {x.word for x in note.configuration.hidden_matches.get()}
-    hidden_vocab = list(hidden_words)
-    return _build_vocab_list(hidden_vocab, set(), "hidden words", show_words_missing_dictionary_entries=True) if hidden_vocab else ""
-
 def render_user_extra_list(note: SentenceNote) -> str:
     return _build_vocab_list(note.configuration.highlighted_words(), note.configuration.incorrect_matches.words(), "highlighted words", include_mnemonics=True, show_words_missing_dictionary_entries=True, include_extended_sentence_statistics=True) if note.configuration.highlighted_words() else ""
 
 def init() -> None:
     gui_hooks.card_will_show.append(PrerenderingAnswerContentRenderer(SentenceNote, {
+        "##SENTENCE_ANALYSIS##": render_sentence_analysis,
         "##PARSED_WORDS##": render_parsed_words,
-        "##INCORRECT_MATCHES##": render_incorrect_matches,
-        "##HIDDEN_MATCHES##": render_hidden_matches,
         "##USER_EXTRA_VOCAB##": render_user_extra_list,
     }).render)

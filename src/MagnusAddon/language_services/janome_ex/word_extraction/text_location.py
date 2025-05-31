@@ -27,7 +27,7 @@ class TokenTextLocation(Slots):
         self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
         surface = token.surface
         base = token.base_form
-        self.is_covered_by: Optional[WeakRef[TokenTextLocation]] = None
+        self.is_shadowed_by: Optional[WeakRef[TokenTextLocation]] = None
         self.token: ProcessedToken = token
         self.analysis: WeakRef[TextAnalysis] = analysis
         self.token_index: int = token_index
@@ -72,14 +72,14 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.sur
         self.word_candidates = [candidate for candidate in self.all_candidate_ranges if candidate.is_word]
         self.valid_candidates = [candidate for candidate in self.all_candidate_ranges if candidate.has_valid_words()]
 
-        if self.valid_candidates and self.is_covered_by is None:
+        if self.valid_candidates and self.is_shadowed_by is None:
             self.display_words = self.valid_candidates[0].display_words
             self.display_words = [covered for covered in self.display_words
                                   if not any(covering for covering in self.display_words if covered.form in covering.form and covered != covering)]
 
             covering_forward_count = self.valid_candidates[0].length - 1
             for location in self.forward_list(covering_forward_count)[1:]:
-                location.is_covered_by = WeakRef(self)
+                location.is_shadowed_by = WeakRef(self)
 
         self.all_words = ex_sequence.flatten([v.all_words for v in self.valid_candidates])
 
