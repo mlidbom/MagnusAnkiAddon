@@ -72,11 +72,13 @@
             .vocabAnswer { color: var(--colorTextMeaning); }
 
             &.compound_part {
-                .vocabQuestion { color: color-mix(in lch, var(--colorTextCard), white 30%); }
-                .vocabAnswer { color: color-mix(in lch, var(--colorTextMeaning), white 30%); }
-                .vocabLookupForm { color: darkgrey; }
-                .vocabHitForm, ja, tag { color: color-mix(in lch, var(--colorTextGreen), white 30%);}
-                .vocabHitReadings { color: color-mix(in lch, var(--colorTextReading), white 30%);}
+                div.sentenceVocabEntryDiv {
+                    .vocabQuestion { color: color-mix(in lch, var(--colorTextCard), white 30%); }
+                    .vocabAnswer { color: color-mix(in lch, var(--colorTextMeaning), white 30%); }
+                    .vocabLookupForm { color: color-mix(in lch, darkgrey, white 30%); }
+                    .vocabHitForm, ja, tag, .vocab_tag { color: color-mix(in lch, var(--colorTextGreen), white 30%);}
+                    .vocabHitReadings { color: color-mix(in lch, var(--colorTextReading), white 30%);}
+                }
 
                 &.depth_0 { padding-left: 30px; }
                 &.depth_1 { padding-left: 60px; }
