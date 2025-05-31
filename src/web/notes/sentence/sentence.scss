@@ -1,141 +1,156 @@
 @use "sass:color";
 @import "../../Styles/_040_japanese.scss";
 .card #container1 #container2 { //Let's stay focused and not break other stuff
-  @include kanji_list;
-  
-   /* FONTS AND COLORS */
-   font-size: 20pt;
+    @include kanji_list;
 
-  .expression { font-size: 40pt;
-    line-height:1;
-    color: color-mix(in lch, var(--colorTextCard), black 20%);
-    white-space:pre-line;
-    &.overridden { font-size: 130%; } }
-  
-   .comments {
-      max-width:1420px;
-      padding:0 5px 0 5px;
-      white-space: pre-line; }
+    /* FONTS AND COLORS */
+    font-size: 20pt;
 
-   .user { background: var(--colorBgOffset1);
-           &.comments.short{ border-color: color-mix(in lch, var(--colorBgCard), var(--colorTextBold) 50%); }
-           read { background-color: unset;
-                  color: var(--colorTextReading); } }
+    .expression { font-size: 40pt;
+        line-height: 1;
+        color: color-mix(in lch, var(--colorTextCard), black 20%);
+        white-space: pre-line;
+        &.overridden { font-size: 130%; }
+    }
 
-   .meaning { font-size:25pt;
-              &.overridden { font-size: 15pt; } }
+    .comments {
+        max-width: 1420px;
+        padding: 0 5px 0 5px;
+        white-space: pre-line; }
 
-   .expression, .reading{
-      b { font-weight:normal; } }
+    .user { background: var(--colorBgOffset1);
+        &.comments.short { border-color: color-mix(in lch, var(--colorBgCard), var(--colorTextBold) 50%); }
+        read { background-color: unset;
+            color: var(--colorTextReading); }
+    }
 
-   .references{
-      a {
-        display: inline-block; /* or block */
-        width: 800px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-   }
+    .meaning { font-size: 25pt;
+        &.overridden { font-size: 15pt; }
+    }
 
-   #debug_output {
-      white-space:pre;
-      font-size: 12pt;
-     font-family: Consolas, serif; }
+    .expression, .reading {
+        b { font-weight: normal; }
+    }
 
-   .sentenceVocabList {     
-      padding-left : 0;
-      ul { padding-left: 20px;
-           margin-left: 0; 
-           background: var(--colorBgCard);
-      }
-      list-style: none;
-      
-      li { background: var(--colorBgOffset1); }
+    .references {
+        a {
+            display: inline-block; /* or block */
+            width: 800px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
 
-     .compound_part_depth_0 { padding-left: 30px; }
-     .compound_part_depth_1 { padding-left: 60px; }
-     .compound_part_depth_2 { padding-left: 90px; }
-     .compound_part_depth_3 { padding-left: 120px; }
-     .compound_part_depth_4 { padding-left: 150px; }
+    #debug_output {
+        white-space: pre;
+        font-size: 12pt;
+        font-family: Consolas, serif; }
 
-      .vocab_tag_list{ white-space:nowrap;
-                       padding-left: 10px; }
+    .sentenceVocabList {
+        padding-left: 0;
+        ul { padding-left: 20px;
+            margin-left: 0;
+            background: var(--colorBgCard);
+        }
+        list-style: none;
 
-      li { line-height:1.2; }
-      .sentenceVocabEntry{
-         &.is_studying_reading .vocabQuestion { 
-            border-left:solid;
-            border-color:var(--colorTextReading);
-         }
-         &.is_studying_listening .vocabQuestion { 
-            border-left:solid; 
-            border-color:white;
-         }
+        li { background: var(--colorBgOffset1); }
 
-         &.is_studying_listening.is_studying_reading .vocabQuestion  { 
-            border-left:solid; 
-            border-color:var(--colorTextGreen);
-         }
+        .compound_part_depth_0 { padding-left: 30px; }
+        .compound_part_depth_1 { padding-left: 60px; }
+        .compound_part_depth_2 { padding-left: 90px; }
+        .compound_part_depth_3 { padding-left: 120px; }
+        .compound_part_depth_4 { padding-left: 150px; }
 
-         div.sentenceVocabEntryDiv { display: flex; 
-                                     align-items: center; 
+        .vocab_tag_list { white-space: nowrap;
+            padding-left: 10px; }
 
-                                     .vocabLookupForm, .vocabHitForm, .vocabHitReadings { white-space: nowrap; }
-                                     
-                                     .vocabLookupForm {color: darkgrey;
-                                                       margin-left: 5pt; }
+        li { line-height: 1.2; }
+        .sentenceVocabEntry {
+            &.is_studying_reading .vocabQuestion {
+                border-left: solid;
+                border-color: var(--colorTextReading);
+            }
+            &.is_studying_listening .vocabQuestion {
+                border-left: solid;
+                border-color: white;
+            }
 
-                                     .vocabHitForm { color: var(--colorTextGreen); 
-                                                     margin-left: 5pt; }
+            &.is_studying_listening.is_studying_reading .vocabQuestion {
+                border-left: solid;
+                border-color: var(--colorTextGreen);
+            }
 
-                                     .vocabHitReadings { color: var(--colorTextReading);
-                                                         font-size: 25pt;
-                                                         margin-left: 5pt;}
-         }
+            div.sentenceVocabEntryDiv { display: flex;
+                align-items: center;
 
-         div.sentenceVocabEntryMnemonic {
-            padding-left: 15px;
-            white-space:pre-line;
-         }
+                .vocabLookupForm, .vocabHitForm, .vocabHitReadings { white-space: nowrap; }
 
-         .vocabQuestion, .vocabLookupForm, .vocabHitForm { font-size: 30pt; 
-                                                           white-space:nowrap; }
-         .vocabAnswer{ margin-left: 10pt; 
-                       white-space: pre-line;
-         }
-         
-         &.word_priority_very_low { & > div > .vocabQuestion{ color: var(--colorTextPriorityVeryLow); } 
-                                    & > div > .vocabAnswer { color: var(--colorTextPriorityVeryLow); } }
-         
-         &.word_priority_low { & > div > .vocabQuestion{ color: var(--colorTextPriorityLow); } 
-                               & > div > .vocabAnswer { color: var(--colorTextPriorityLow); } }
+                .vocabLookupForm {color: darkgrey;
+                    margin-left: 5pt; }
 
-         &.word_priority_medium { & > div > .vocabQuestion{ color: var(--colorTextPriorityMedium); } 
-                                  & > div > .vocabAnswer { color: var(--colorTextMeaning); } }
+                .vocabHitForm { color: var(--colorTextGreen);
+                    margin-left: 5pt; }
 
-         &.word_priority_high { & > div > .vocabQuestion{ color: var(--colorTextPriorityHigh); } 
-                                & > div > .vocabAnswer { color: var(--colorTextMeaning); } }
+                .vocabHitReadings { color: var(--colorTextReading);
+                    font-size: 25pt;
+                    margin-left: 5pt;}
+            }
 
-         &.word_priority_very_high { & > div > .vocabQuestion{ color: var(--colorTextBold); } 
-                                     & > div > .vocabAnswer { color: var(--colorTextBold); } }
+            div.sentenceVocabEntryMnemonic {
+                padding-left: 15px;
+                white-space: pre-line;
+            }
 
-      }
-   }
-   
-   #expressionAndReading { .reading { display:none; } }
+            .vocabQuestion, .vocabLookupForm, .vocabHitForm { font-size: 30pt;
+                white-space: nowrap; }
+            .vocabAnswer { margin-left: 10pt;
+                white-space: pre-line;}
 
-   /* LAYOUT */
-   .topSection { @include flexContainerColumn; }
+            &.word_priority_very_low {
+                & > div > .vocabQuestion { color: var(--colorTextPriorityVeryLow); }
+                & > div > .vocabAnswer { color: var(--colorTextPriorityVeryLow); }
+            }
 
-   .bottomSection { justify-content: center;
-                    text-align:left; }
+            &.word_priority_low {
+                & > div > .vocabQuestion { color: var(--colorTextPriorityLow); }
+                & > div > .vocabAnswer { color: var(--colorTextPriorityLow); }
+            }
 
-   .image { text-align:center;
-            width:100%; }
+            &.word_priority_medium {
+                & > div > .vocabQuestion { color: var(--colorTextPriorityMedium); }
+                & > div > .vocabAnswer { color: var(--colorTextMeaning); }
+            }
 
-   .image img{ height: 300px;
-               width: auto;
-               object-fit: contain; }
+            &.word_priority_high {
+                & > div > .vocabQuestion { color: var(--colorTextPriorityHigh); }
+                & > div > .vocabAnswer { color: var(--colorTextMeaning); }
+            }
+
+            &.word_priority_very_high {
+                & > div > .vocabQuestion { color: var(--colorTextBold); }
+                & > div > .vocabAnswer { color: var(--colorTextBold); }
+            }
+
+        }
+    }
+
+    #expressionAndReading {
+        .reading { display: none; }
+    }
+
+    /* LAYOUT */
+    .topSection { @include flexContainerColumn; }
+
+    .bottomSection { justify-content: center;
+        text-align: left; }
+
+    .image { text-align: center;
+        width: 100%; }
+
+    .image img { height: 300px;
+        width: auto;
+        object-fit: contain; }
 
 }
