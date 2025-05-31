@@ -7,6 +7,7 @@ from autoslot import Slots
 from language_services.janome_ex.word_extraction.display_form import VocabDisplayForm
 from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 from sysutils import ex_sequence
+from sysutils.debug_repr_builder import SkipFalsyValuesDebugReprBuilder
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.candidate_word import CandidateWord
@@ -26,15 +27,15 @@ class DisplayFormViewModel:
     def __init__(self, word_viewmodel: CandidateWordViewModel, display_form: DisplayForm) -> None:
         self.display_form: DisplayForm = display_form
         self.is_shadowed: bool = word_viewmodel.is_shadowed
-        self.is_display_form: bool = display_form in display_form.candidate().display_forms
-        self.is_displayed = not self.is_shadowed and self.is_display_form
+        self.is_display_word = word_viewmodel.is_display_word
+        self.is_displayed = not self.is_shadowed and self.is_display_word
         self.parsed_form = display_form.parsed_form
         self.answer = display_form.answer
         self.vocab_form = display_form.vocab_form
         self.compound_parts: list[CompoundPartViewModel] = []
         self.question = self.vocab_form or self.parsed_form
         self.audio_path = ""
-        self.readings:str = ""
+        self.readings: str = ""
         self.meta_tags_html = ""
         self.meta_tags: str = ""
         if isinstance(display_form, VocabDisplayForm):
@@ -66,11 +67,25 @@ class DisplayFormViewModel:
 
         return result
 
+    def __repr__(self) -> str: return (
+        SkipFalsyValuesDebugReprBuilder()
+        .include(self.question)
+        .flag("shadowed", self.is_shadowed)
+        .flag("is_display_word", self.is_display_word)
+        .flag("displayed", self.is_displayed).repr)
+
 class CandidateWordViewModel:
     def __init__(self, candidate_word: CandidateWord) -> None:
         self.candidate_word: CandidateWord = candidate_word
         self.is_shadowed: bool = candidate_word.is_shadowed
+        self.is_display_word = candidate_word in candidate_word.token_range().analysis().display_words
         self.display_forms: list[DisplayFormViewModel] = [DisplayFormViewModel(self, form) for form in candidate_word.display_forms]
+
+    def __repr__(self) -> str: return (
+        SkipFalsyValuesDebugReprBuilder()
+        .include(self.candidate_word.form)
+        .flag("display_word", self.is_display_word)
+        .flag("shadowed", self.is_shadowed).repr)
 
 class TextAnalysisViewModel(Slots):
     def __init__(self, text_analysis: TextAnalysis) -> None:
