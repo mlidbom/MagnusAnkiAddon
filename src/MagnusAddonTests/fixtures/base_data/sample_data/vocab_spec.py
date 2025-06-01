@@ -31,9 +31,11 @@ class VocabSpec(Slots):
         self.required_prefix = required_prefix if required_prefix else set()
         self.prefer_over_base = prefer_over_base if prefer_over_base else set()
 
-    def __repr__(self) -> str: return f"""VocabSpec("{self.question}", "{self.answer}", {self.readings})"""
+    def __repr__(self) -> str:
+        return f"""VocabSpec("{self.question}", "{self.answer}", {self.readings})"""
 
-    def __hash__(self) -> int: return hash(self.question)
+    def __hash__(self) -> int:
+        return hash(self.question)
 
     def __eq__(self, other: object) -> bool:
         return (isinstance(other, VocabSpec)
@@ -106,6 +108,9 @@ test_special_vocab: list[VocabSpec] = [
     # multiple form to trigger a certain bug
     VocabSpec("ない", "not", ["ない"], extra_forms=["無い"]),
     VocabSpec("無い", "not", ["ない"], extra_forms=["ない"]),
+
+    VocabSpec("ている", "is-_-ing", readings=["ている"]),
+    VocabSpec("にする", "to: turn-into", readings=["にする"])
 ]
 
 test_ordinary_vocab_list = [
