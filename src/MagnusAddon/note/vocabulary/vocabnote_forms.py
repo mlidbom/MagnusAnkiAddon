@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from ankiutils import app
 from ankiutils.app import col
 from autoslot import Slots
 from note.note_constants import Mine, NoteFields
@@ -19,21 +20,36 @@ class VocabNoteForms(Slots):
         field_with_no_reference_loop = self._field
         self._value: Lazy[set[str]] = Lazy(lambda: set(field_with_no_reference_loop.get()))
 
-    def all_raw(self) -> list[str]: return self._field.get()
+    def all_raw(self) -> list[str]:
+        return self._field.get()
 
     def all_raw_string(self) -> str:
         return self._field.raw_string_value()
 
-    def all_set(self) -> set[str]: return self._value()
+    def owned_forms(self) -> set[str]:
+        vocab_note = self._vocab()
 
-    def without_noise_characters(self) -> list[str]: return [self._strip_noise_characters(form) for form in self.all_raw()]
-    def without_noise_characters_set(self) -> set[str]: return set(self.without_noise_characters())
+        def is_owned_by_other_form_note(form: str) -> bool:
+            return any(owner for owner in app.col().vocab.with_question(form) if owner != vocab_note and vocab_note.get_question() in owner.forms.all_set())
+
+        return {form for form in vocab_note.forms.all_set() if not is_owned_by_other_form_note(form)}
+
+    def all_set(self) -> set[str]:
+        return self._value()
+
+    def without_noise_characters(self) -> list[str]:
+        return [self._strip_noise_characters(form) for form in self.all_raw()]
+
+    def without_noise_characters_set(self) -> set[str]:
+        return set(self.without_noise_characters())
 
     @staticmethod
     def _strip_noise_characters(string: str) -> str:
         return string.replace(Mine.VocabPrefixSuffixMarker, "")
 
-    def set_set(self, forms: set[str]) -> None: self.set_list(list(forms))
+    def set_set(self, forms: set[str]) -> None:
+        self.set_list(list(forms))
+
     def set_list(self, forms: list[str]) -> None:
         self._value = Lazy.from_value(set(forms))
         self._field.set(forms)
