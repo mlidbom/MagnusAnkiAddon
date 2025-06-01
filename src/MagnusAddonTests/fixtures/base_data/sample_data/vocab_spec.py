@@ -102,7 +102,7 @@ test_special_vocab: list[VocabSpec] = [
     VocabSpec("た", "{past-tense} | (please)do", ["た"], surface_is_not={"たら"}, tags=[Tags.Vocab.Matching.is_inflecting_word]),
 
     VocabSpec("だの", "and-the-like", ["だの"], prefix_is_not={"ん"}),
-    #VocabSpec("だ", tags=[Tags.Vocab.Matching.Requires.exact_match]),
+    VocabSpec("だ", surface_is_not={"なら", "な"}),
 
     VocabSpec("こ", "familiarizing-suffix", ["こ"], extra_forms=["っこ"], tags=[Tags.Vocab.Matching.is_strictly_suffix]),
 
