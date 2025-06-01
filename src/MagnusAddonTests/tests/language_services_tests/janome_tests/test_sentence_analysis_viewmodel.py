@@ -100,26 +100,26 @@ def test_hierarchical_extraction(setup_collection_with_select_data: object, sent
 def test_potential_verb_splitting_with_vocab(setup_collection_with_select_data: object, sentence: str, custom_words: list[str], excluded: list[WordExclusion], expected_output: list[str]) -> None:
     _run_assertions(sentence, custom_words, excluded, expected_output)
 
-@pytest.mark.parametrize("sentence, custom_words, excluded, expected_output", [
-    ("会える", [], [], ["会う", "える"]),
-    ("会える", [], [WordExclusion.global_("会える")], ["会う", "える"]),
-    ("会えて", [], [WordExclusion.global_("会える")], ["会う", "える", "て"]),
-    ("作れる", [], [], ["作る", "える"]),
-    ("作れる", [], [WordExclusion.global_("作れる")], ["作る", "える"]),
-    ("作れて", [], [], ["作る", "える", "て"]),
-    ("作れて", [], [WordExclusion.global_("作れる")], ["作る", "える", "て"]),
-    ("今日会えた", [], [], ["今日", "会う", "える", "た"]),
-    ("今日会えた", [], [WordExclusion.global_("会える")], ["今日", "会う", "える", "た"]),
-    ("今日会えないかな", [], [], ["今日", "会う", "える", "ないか", "な"]),
-    ("今日会えないかな", [], [WordExclusion.global_("会える")], ["今日", "会う", "える", "ないか", "な"]),
-    ("この夏は　たくさん思い出を作れたなぁ", [], [], ["この", "夏", "は", "たくさん", "思い出", "を", "作る", "える", "た", "なぁ"]),
-    ("買えよ　私", [], [], ["買えよ", "私"]),
-    ("覚ませない", [], [], ["覚ます", "える", "ない"])
+@pytest.mark.parametrize("sentence, excluded, expected_output", [
+    ("会える", [], ["会う", "える"]),
+    ("会える", [WordExclusion.global_("会える")], ["会う", "える"]),
+    ("会えて", [WordExclusion.global_("会える")], ["会う", "える", "て"]),
+    ("作れる", [], ["作る", "える"]),
+    ("作れる", [WordExclusion.global_("作れる")], ["作る", "える"]),
+    ("作れて", [], ["作る", "える", "て"]),
+    ("作れて", [WordExclusion.global_("作れる")], ["作る", "える", "て"]),
+    ("今日会えた", [], ["今日", "会う", "える", "た"]),
+    ("今日会えた", [WordExclusion.global_("会える")], ["今日", "会う", "える", "た"]),
+    ("今日会えないかな", [], ["今日", "会う", "える", "ないか", "な"]),
+    ("今日会えないかな", [WordExclusion.global_("会える")], ["今日", "会う", "える", "ないか", "な"]),
+    ("この夏は　たくさん思い出を作れたなぁ", [], ["この", "夏", "は", "たくさん", "思い出", "を", "作る", "える", "た", "なぁ"]),
+    ("買えよ　私", [], ["買えよ", "私"]),
+    ("覚ませない", [], ["覚ます", "える", "ない"])
 ])
-def test_potential_verb_splitting_without_vocab(setup_empty_collection: object, sentence: str, custom_words: list[str], excluded: list[WordExclusion], expected_output: list[str]) -> None:
+def test_potential_verb_splitting_without_vocab(setup_empty_collection: object, sentence: str, excluded: list[WordExclusion], expected_output: list[str]) -> None:
     [eru for eru in vocab_spec.test_special_vocab if eru.question == "える"][0].create_vocab_note()
     app.col().flush_cache_updates()
-    _run_assertions(sentence, custom_words, excluded, expected_output)
+    _run_assertions(sentence, [], excluded, expected_output)
 
 def _run_assertions(sentence: str, custom_words: list[str], excluded: list[WordExclusion], expected_output: list[str]) -> None:
     sentence_note = SentenceNote.create(sentence)
