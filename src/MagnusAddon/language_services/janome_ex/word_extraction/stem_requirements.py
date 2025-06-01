@@ -1,10 +1,14 @@
 from __future__ import annotations
 
-from autoslot import Slots
+from typing import TYPE_CHECKING
 
+from autoslot import Slots
 from language_services import conjugator
-from note.vocabulary.vocabnote import VocabNote
 from sysutils import kana_utils
+
+if TYPE_CHECKING:
+    from note.vocabulary.vocabnote import VocabNote
+
 
 class StemRequirements(Slots):
     def __init__(self, vocab: VocabNote, stem: str) -> None:
