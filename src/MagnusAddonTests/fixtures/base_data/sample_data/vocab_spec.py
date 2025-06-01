@@ -102,6 +102,7 @@ test_special_vocab: list[VocabSpec] = [
     VocabSpec("た", "{past-tense} | (please)do", ["た"], surface_is_not={"たら"}, tags=[Tags.Vocab.Matching.is_inflecting_word]),
 
     VocabSpec("だの", "and-the-like", ["だの"], prefix_is_not={"ん"}),
+    #VocabSpec("だ", tags=[Tags.Vocab.Matching.Requires.exact_match]),
 
     VocabSpec("こ", "familiarizing-suffix", ["こ"], extra_forms=["っこ"], tags=[Tags.Vocab.Matching.is_strictly_suffix]),
 
@@ -173,7 +174,6 @@ test_ordinary_vocab_list = [
     VocabSpec("様", "appearing/looking | way to | form/style", ["よう"]),
     VocabSpec("考え", "Thought, A Thought", ["かんがえ"]),
     VocabSpec("恐ろしい", "Scary, Fearful", ["おそろしい"]),
-    VocabSpec("だ", "cop{be/is} aux{past-tense | please/do}", ["だ"]),
     VocabSpec("傷つける", "to{}: wound/injure", ["きずつける"]),
     VocabSpec("ね", "end{right?|see?|please?} int{hey/say}", ["ね"]),
     VocabSpec("ねぇ", "nonexistent/not-being | not | <ja>ね:</ja> right/isn't-it ...", ["ねぇ"]),

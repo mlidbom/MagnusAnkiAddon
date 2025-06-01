@@ -45,7 +45,8 @@ def setup_collection_with_select_data() -> Iterator[None]:
     ("すげえ", ["すげえ", "すげ", "え"]),
     ("「コーヒーはいかがですか？」「いえ、結構です。お構いなく。」", ["コーヒー", "は", "いかが", "ですか", "です", "か", "いえ", "結構", "です", "お構いなく"]),
     ("解放する", ["解放する", "解放", "する"]),
-    ("落書きしたろ", ["落書き", "する", "た"])
+    ("落書きしたろ", ["落書き", "する", "た"]),
+    ("なのかな", ["なの", "だ", "な", "の", "かな", "か", "な"]),
 ])
 def test_identify_words(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
     analysis = TextAnalysis(sentence, SentenceConfiguration.empty())
