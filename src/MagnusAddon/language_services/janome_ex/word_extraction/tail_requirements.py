@@ -10,9 +10,11 @@ if TYPE_CHECKING:
     from sysutils.weak_ref import WeakRef
 
 
+_quote_characters = {"と", "って"}
+
 class TailRequirements(Slots):
     def __init__(self, vocab: VocabNote, tail:WeakRef[TokenTextLocation]) -> None:
         self.config = vocab.matching_rules
         self.are_fulfilled = True
         if self.config.requires_sentence_end.is_set():
-            self.are_fulfilled = self.are_fulfilled and (tail is None or tail().token.is_non_word_character)
+            self.are_fulfilled = self.are_fulfilled and (tail is None or tail().token.is_non_word_character or tail().token.surface in _quote_characters)
