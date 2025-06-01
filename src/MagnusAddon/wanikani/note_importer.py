@@ -64,7 +64,7 @@ def import_missing_context_sentences() -> None:
                 for existing in existing_sentences:
                     existing.set_tag(Tags.wani_sentence_current)
                     if vocab not in existing.configuration.highlighted_words():
-                        existing.configuration.position_highlighted_word(vocab)
+                        existing.configuration.add_highlighted_word(vocab)
                     present.append(existing)
 
     progress_display_runner.process_with_progress(all_wani_vocabulary, handle_vocab, "Processing found Wanikani vacabulary")

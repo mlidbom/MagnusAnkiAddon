@@ -117,7 +117,7 @@ class SentenceNote(JPNote, Slots):
 
         if highlighted_vocab:
             for vocab in highlighted_vocab:
-                note.configuration.position_highlighted_word(vocab)
+                note.configuration.add_highlighted_word(vocab)
 
         if tags:
             for tag in tags:

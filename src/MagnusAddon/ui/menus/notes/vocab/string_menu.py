@@ -23,7 +23,7 @@ def build_string_menu(string_menu: QMenu, vocab: VocabNote, menu_string: str) ->
         has_sentences = len(sentences) > 0
 
         add_ui_action(sentence_menu, shortcutfinger.home1("Add Highlight"),
-                      lambda: sentences[0].configuration.position_highlighted_word(vocab.get_question()),
+                      lambda: sentences[0].configuration.add_highlighted_word(vocab.get_question()),
                       has_sentences and vocab.get_question() not in sentences[0].configuration.highlighted_words())
         add_ui_action(sentence_menu, shortcutfinger.home2("Remove highlight"),
                       lambda: remove_highlight_from_sentences(),

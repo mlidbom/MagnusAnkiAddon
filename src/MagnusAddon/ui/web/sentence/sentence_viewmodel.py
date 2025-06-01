@@ -13,27 +13,30 @@ from sysutils.weak_ref import WeakRef
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.candidate_word import CandidateWord
     from language_services.janome_ex.word_extraction.display_form import DisplayForm
+    from note.sentences.sentence_configuration import SentenceConfiguration
     from note.sentences.sentencenote import SentenceNote
     from note.vocabulary.vocabnote import VocabNote
 
 class CompoundPartViewModel:
-    def __init__(self, vocab_note: VocabNote, depth: int = 0) -> None:
+    def __init__(self, vocab_note: VocabNote, depth: int, config: SentenceConfiguration) -> None:
         self.vocab_note = vocab_note
         self.depth = depth
         self.question = vocab_note.get_question()
         self.answer = vocab_note.get_answer()
         self.readings = ", ".join(vocab_note.readings.get())
         self.audio_path = vocab_note.audio.get_primary_audio_path()
-        self.meta_tags_html: str =  vocab_note.meta_data.meta_tags_html(no_sentense_statistics=True)
+        self.meta_tags_html: str = vocab_note.meta_data.meta_tags_html(no_sentense_statistics=True)
         self.display_readings = kana_utils.contains_kanji(self.question)
+        self.is_highlighted = self.question in config.highlighted_words
 
         self.meta_tags = " ".join(vocab_note.get_meta_tags())
         self.meta_tags += f""" depth_{depth}"""
-
+        self.meta_tags += " highlighted" if self.is_highlighted else ""
 
 class DisplayFormViewModel:
     def __init__(self, word_viewmodel: WeakRef[CandidateWordViewModel], display_form: DisplayForm) -> None:
         self.display_form: DisplayForm = display_form
+        self._config: SentenceConfiguration = word_viewmodel().candidate_word.token_range().analysis().configuration
         self.word_viewmodel: WeakRef[CandidateWordViewModel] = word_viewmodel
         self.is_shadowed: bool = word_viewmodel().is_shadowed
         self.is_display_word = word_viewmodel().is_display_word
@@ -42,14 +45,15 @@ class DisplayFormViewModel:
         self.vocab_form = display_form.vocab_form
         self.compound_parts: list[CompoundPartViewModel] = []
         self.audio_path = ""
+        self.is_highlighted = self.parsed_form in self._config.highlighted_words or self.vocab_form in self._config.highlighted_words
         self.readings: str = ", ".join(display_form.readings)
-        self.meta_tags_html:str = ""
+        self.meta_tags_html: str = ""
         self.meta_tags: str = ""
         self.display_vocab_form = False
         self.is_perfect_match = self.parsed_form == self.vocab_form
         self.display_readings = False
         if isinstance(display_form, VocabDisplayForm):
-            self.compound_parts:list[CompoundPartViewModel] = self._get_compound_parts_recursive(display_form.vocab)
+            self.compound_parts: list[CompoundPartViewModel] = self._get_compound_parts_recursive(display_form.vocab, self._config)
             self.audio_path = display_form.vocab.audio.get_primary_audio_path()
             self.meta_tags = " ".join(display_form.vocab.get_meta_tags())
             self.meta_tags_html = display_form.vocab.meta_data.meta_tags_html(display_extended_sentence_statistics=False)
@@ -61,13 +65,14 @@ class DisplayFormViewModel:
         if isinstance(display_form, DictionaryDisplayForm):
             self.display_readings = True
 
+        self.meta_tags += " highlighted" if self.is_highlighted else ""
 
     @property
     def is_displayed(self) -> bool:
         return not self.is_shadowed and self.is_display_word and (self.is_perfect_match or not self.word_viewmodel().has_perfect_match)
 
     @classmethod
-    def _get_compound_parts_recursive(cls, vocab_note: VocabNote, depth: int = 0, visited: set = None) -> list[CompoundPartViewModel]:
+    def _get_compound_parts_recursive(cls, vocab_note: VocabNote, config: SentenceConfiguration, depth: int = 0, visited: set = None) -> list[CompoundPartViewModel]:
         if not app.config().show_compound_parts_in_sentence_breakdown.get_value(): return []
         if visited is None: visited = set()
         if vocab_note.get_id() in visited: return []
@@ -79,26 +84,27 @@ class DisplayFormViewModel:
         result = []
 
         for part in compound_parts:
-            wrapper = CompoundPartViewModel(part, depth)
+            wrapper = CompoundPartViewModel(part, depth, config)
             result.append(wrapper)
-            nested_parts = cls._get_compound_parts_recursive(part, depth + 1, visited)
+            nested_parts = cls._get_compound_parts_recursive(part, config, depth + 1, visited)
             result.extend(nested_parts)
 
         return result
 
-    def __repr__(self) -> str: return (
-        SkipFalsyValuesDebugReprBuilder()
-        .include(self.parsed_form)
-        .flag("shadowed", self.is_shadowed)
-        .flag("is_display_word", self.is_display_word)
-        .flag("displayed", self.is_displayed).repr)
+    def __repr__(self) -> str:
+        return (
+            SkipFalsyValuesDebugReprBuilder()
+            .include(self.parsed_form)
+            .flag("shadowed", self.is_shadowed)
+            .flag("is_display_word", self.is_display_word)
+            .flag("displayed", self.is_displayed).repr)
 
 class CandidateWordViewModel:
     def __init__(self, candidate_word: CandidateWord) -> None:
         self.candidate_word: CandidateWord = candidate_word
-        self.weakref:WeakRef[CandidateWordViewModel] = WeakRef(self)
+        self.weakref: WeakRef[CandidateWordViewModel] = WeakRef(self)
         self.is_shadowed: bool = candidate_word.is_shadowed
-        self.is_display_word:bool = candidate_word in candidate_word.token_range().analysis().display_words
+        self.is_display_word: bool = candidate_word in candidate_word.token_range().analysis().display_words
         self.display_forms: list[DisplayFormViewModel] = [DisplayFormViewModel(self.weakref, form) for form in candidate_word.display_forms]
         self.has_perfect_match = any(form.is_perfect_match for form in self.display_forms)
 
@@ -116,4 +122,4 @@ class TextAnalysisViewModel(Slots):
 class SentenceAnalysisViewModel(Slots):
     def __init__(self, sentence: SentenceNote) -> None:
         self.sentence: SentenceNote = sentence
-        self.analysis:TextAnalysisViewModel = TextAnalysisViewModel(TextAnalysis(sentence.get_question(), sentence.configuration.configuration))
+        self.analysis: TextAnalysisViewModel = TextAnalysisViewModel(TextAnalysis(sentence.get_question(), sentence.configuration.configuration))

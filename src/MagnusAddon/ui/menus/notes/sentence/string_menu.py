@@ -15,12 +15,6 @@ if TYPE_CHECKING:
     from PyQt6.QtWidgets import QMenu
 
 def build_string_menu(string_menu: QMenu, sentence: SentenceNote, menu_string: str) -> None:
-    def build_highlighted_vocab_menu_add(highlighted_vocab_menu: QMenu) -> None:
-        for index, _vocab in enumerate(sentence.configuration.highlighted_words()):
-            add_ui_action(highlighted_vocab_menu, shortcutfinger.numpad(index, f"{_vocab}"), ex_lambda.bind2(sentence.configuration.position_highlighted_word, menu_string, index))
-
-        add_ui_action(highlighted_vocab_menu, shortcutfinger.home1("[Last]"), lambda: sentence.configuration.position_highlighted_word(menu_string))
-
     def add_add_word_exclusion_action(add_menu: QMenu, exclusion_type_title: str, exclusion_set: WordExclusionSet) -> None:
         menu_string_as_word_exclusion = WordExclusion.global_(menu_string)
         valid_top_level_words = sentence.get_valid_parsed_non_child_words()
@@ -52,7 +46,7 @@ def build_string_menu(string_menu: QMenu, sentence: SentenceNote, menu_string: s
 
     def build_add_menu(add_menu: QMenu) -> None:
         add_add_word_exclusion_action(add_menu, shortcutfinger.home1("Hidden matches"), sentence.configuration.hidden_matches)
-        build_highlighted_vocab_menu_add(non_optional(add_menu.addMenu(shortcutfinger.home2("Highlighted Vocab"))))
+        add_ui_action(add_menu, shortcutfinger.home2("Highlighted Vocab"), lambda: sentence.configuration.add_highlighted_word(menu_string), menu_string not in sentence.configuration.highlighted_words())
         add_add_word_exclusion_action(add_menu, shortcutfinger.home3("Incorrect matches"), sentence.configuration.incorrect_matches)
 
     def build_remove_menu(remove_menu: QMenu) -> None:

@@ -15,6 +15,7 @@ if TYPE_CHECKING:
 
 class CachingSentenceConfigurationField(Slots):
     __slots__ = ["__weakref__"]
+
     def __init__(self, sentence: WeakRef[SentenceNote]) -> None:
         self._sentence = sentence
         self.field = StringField(sentence, SentenceNoteFields.configuration)
@@ -45,16 +46,11 @@ class CachingSentenceConfigurationField(Slots):
         self._value.instance().highlighted_words = []
         self._save()
 
-    def position_highlighted_word(self, vocab: str, index: int = -1) -> None:
+    def add_highlighted_word(self, vocab: str) -> None:
         vocab = vocab.strip()
-        self.remove_highlighted_word(vocab)
-        if index == -1:
-            self.highlighted_words().append(vocab)
-        else:
-            self.highlighted_words().insert(index, vocab)
+        self.highlighted_words().append(vocab)
         self._save()
 
     def _save(self) -> None:
         self.field.set(SentenceConfiguration.serializer.serialize(self._value.instance()))
         self._sentence().update_parsed_words(force=True)
-

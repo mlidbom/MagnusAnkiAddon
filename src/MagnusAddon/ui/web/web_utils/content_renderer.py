@@ -37,11 +37,11 @@ class PrerenderingAnswerContentRenderer(Generic[TNote], Slots):
 
         if isinstance(note, self._cls):
             def schedule_all() -> None:
-                self._promises = {tag: self._schedule_render_method(render_method, tag, note) for tag, render_method in self._render_methods.items()}
+                self._promises = {tag_: self._schedule_render_method(render_method_, tag_, note) for tag_, render_method_ in self._render_methods.items()}
 
             def render_scheduled(_html:str) -> str:
-                for tag, content in non_optional(self._promises).items():
-                    _html = _html.replace(tag, content.result())
+                for tag_, content in non_optional(self._promises).items():
+                    _html = _html.replace(tag_, content.result())
                 self._promises = None
                 return _html
 

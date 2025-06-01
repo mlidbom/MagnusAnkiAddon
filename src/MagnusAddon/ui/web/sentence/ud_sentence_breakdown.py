@@ -6,7 +6,6 @@ from ankiutils import app
 from aqt import gui_hooks
 from autoslot import Slots
 from language_services.jamdict_ex.dict_lookup import DictLookup
-from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 from note.sentences.sentencenote import SentenceNote
 from sysutils import ex_sequence, kana_utils
 from sysutils.ex_str import newline
@@ -123,11 +122,19 @@ def lookup_vocabs(excluded_words: set[str], word: str) -> list[VocabNote]:
         vocabs = exact_match
     return vocabs
 
-def render_user_extra_list(note: SentenceNote) -> str:
-    return _build_vocab_list(note.configuration.highlighted_words(), note.configuration.incorrect_matches.words(), "highlighted words", include_mnemonics=True, show_words_missing_dictionary_entries=True, include_extended_sentence_statistics=True) if note.configuration.highlighted_words() else ""
+def render_incorrect_matches(note: SentenceNote) -> str:
+    excluded_words = {x.word for x in note.configuration.incorrect_matches.get()}
+    excluded_vocab = list(excluded_words)
+    return _build_vocab_list(excluded_vocab, set(), "incorrectly matched words", show_words_missing_dictionary_entries=True) if excluded_vocab else ""
+
+def render_hidden_matches(note: SentenceNote) -> str:
+    hidden_words = {x.word for x in note.configuration.hidden_matches.get()}
+    hidden_vocab = list(hidden_words)
+    return _build_vocab_list(hidden_vocab, set(), "hidden words", show_words_missing_dictionary_entries=True) if hidden_vocab else ""
 
 def init() -> None:
     gui_hooks.card_will_show.append(PrerenderingAnswerContentRenderer(SentenceNote, {
         "##SENTENCE_ANALYSIS##": render_sentence_analysis,
-        "##USER_EXTRA_VOCAB##": render_user_extra_list,
+        "##INCORRECT_MATCHES##": render_incorrect_matches,
+        "##HIDDEN_MATCHES##": render_hidden_matches,
     }).render)
