@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Callable
+
 from aqt import gui_hooks, mw
 from PyQt6.QtCore import pyqtBoundSignal
 from PyQt6.QtGui import QKeySequence, QShortcut
@@ -12,14 +14,22 @@ from ui.open_note.open_note_dialog import NoteSearchDialog
 
 
 def init() -> None:
+    shortcuts: dict[str, Callable[[], None]] = {
+        "Alt+Left": history_navigator.navigator.navigate_back,
+        "Alt+Right": history_navigator.navigator.navigate_forward,
+        "Ctrl+o": NoteSearchDialog.toggle_dialog_visibility,
+        "Ctrl+Shift+o": EnglishWordSearchDialog.toggle_dialog_visibility
+    }
+
+    def set_shortcut(widget: QWidget, shortcut: str, callback: Callable[[], None]) -> None:
+        typed.checked_cast(pyqtBoundSignal, QShortcut(QKeySequence(shortcut), widget).activated).connect(callback)
+
     def bind_universal_shortcuts(widget: QWidget) -> None:
-        typed.checked_cast(pyqtBoundSignal, QShortcut(QKeySequence("Alt+Left"), widget).activated).connect(history_navigator.navigator.navigate_back)
-        typed.checked_cast(pyqtBoundSignal, QShortcut(QKeySequence("Alt+Right"), widget).activated).connect(history_navigator.navigator.navigate_forward)
-        typed.checked_cast(pyqtBoundSignal, QShortcut(QKeySequence("Ctrl+o"), widget).activated).connect(NoteSearchDialog.toggle_dialog_visibility)
-        typed.checked_cast(pyqtBoundSignal, QShortcut(QKeySequence("Ctrl+Shift+o"), widget).activated).connect(EnglishWordSearchDialog.toggle_dialog_visibility)
+        for key, callback in shortcuts.items():
+            set_shortcut(widget, key, callback)
 
     def disable_escape(widget: QWidget) -> None:
-        typed.checked_cast(pyqtBoundSignal, QShortcut(QKeySequence("Escape"), widget).activated).connect(lambda: None)
+        set_shortcut(widget, "Escape", lambda: None)
 
     ex_assert.not_none(history_navigator.navigator, "History navigator needs to be initialized before global shortcuts are bound")
 

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Callable, TypeVar
+from typing import TYPE_CHECKING, Callable, TypeVar
 
 import aqt
 from ankiutils import app, ui_utils
@@ -10,9 +10,11 @@ from note.sentences.sentencenote import SentenceNote
 from note.vocabulary.vocabnote import VocabNote
 from PyQt6.QtCore import pyqtBoundSignal
 from PyQt6.QtGui import QKeySequence, QShortcut
-from PyQt6.QtWidgets import QWidget
 from sysutils import typed
 from sysutils.typed import try_cast
+
+if TYPE_CHECKING:
+    from PyQt6.QtWidgets import QWidget
 
 T: TypeVar = TypeVar("T")
 
