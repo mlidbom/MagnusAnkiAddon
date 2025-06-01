@@ -32,9 +32,9 @@ class SentenceCounts:
         self._cache_seconds = self._how_long_to_cache_for()
 
     def _how_long_to_cache_for(self) -> int:
-        if self._total < 10: return 5
-        if self._total < 100: return 60
-        return 60 * 10
+        if self._total < 10: return 60
+        if self._total < 100: return 600
+        return 6000
 
     def _check_and_update(self) -> None:
         current_time = time.time()
