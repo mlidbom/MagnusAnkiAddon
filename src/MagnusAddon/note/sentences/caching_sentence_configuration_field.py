@@ -35,20 +35,18 @@ class CachingSentenceConfigurationField(Slots):
     @property
     def hidden_matches(self) -> WordExclusionSet: return self._value.instance().hidden_matches
 
-    def highlighted_words(self) -> list[str]: return self._value.instance().highlighted_words
+    def highlighted_words(self) -> set[str]: return self._value.instance().highlighted_words
 
     def remove_highlighted_word(self, word: str) -> None:
-        if word in self.highlighted_words():
-            self.highlighted_words().remove(word)
+        self.highlighted_words().discard(word)
         self._save()
 
     def reset_highlighted_words(self) -> None:
-        self._value.instance().highlighted_words = []
+        self._value.instance().highlighted_words.clear()
         self._save()
 
     def add_highlighted_word(self, vocab: str) -> None:
-        vocab = vocab.strip()
-        self.highlighted_words().append(vocab)
+        self.highlighted_words().add(vocab.strip())
         self._save()
 
     def _save(self) -> None:
