@@ -9,7 +9,6 @@ from fixtures.collection_factory import inject_anki_collection_with_select_data,
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from note.sentences.sentence_configuration import SentenceConfiguration
 from note.sentences.sentencenote import SentenceNote
-from note.vocabulary.vocabnote import VocabNote
 from sysutils import ex_sequence
 from sysutils.lazy import Lazy
 from ui.web.sentence.sentence_viewmodel import SentenceAnalysisViewModel
@@ -27,11 +26,6 @@ def setup_collection_with_select_data() -> Iterator[None]:
 def setup_empty_collection() -> Iterator[None]:
     with inject_empty_anki_collection_with_note_types():
         yield
-
-def insert_custom_words(custom_words: list[str]) -> None:
-    for custom_word in custom_words:
-        VocabNote.factory.create(custom_word, "", [""])
-    app.col().flush_cache_updates()
 
 @pytest.mark.parametrize("sentence, custom_words, excluded, expected_output", [
     ("厳密に言えば　俺一人が友達だけど", [],
@@ -124,10 +118,10 @@ def test_potential_verb_splitting_with_vocab(setup_collection_with_select_data: 
 ])
 def test_potential_verb_splitting_without_vocab(setup_empty_collection: object, sentence: str, custom_words: list[str], excluded: list[WordExclusion], expected_output: list[str]) -> None:
     [eru for eru in vocab_spec.test_special_vocab if eru.question == "える"][0].create_vocab_note()
+    app.col().flush_cache_updates()
     _run_assertions(sentence, custom_words, excluded, expected_output)
 
 def _run_assertions(sentence: str, custom_words: list[str], excluded: list[WordExclusion], expected_output: list[str]) -> None:
-    insert_custom_words(custom_words)
     sentence_note = SentenceNote.create(sentence)
     sentence_note.configuration._value = Lazy.from_value(SentenceConfiguration.from_incorrect_matches(excluded))
     analysis = SentenceAnalysisViewModel(sentence_note)
