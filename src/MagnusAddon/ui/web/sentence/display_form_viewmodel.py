@@ -2,20 +2,22 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from language_services.janome_ex.word_extraction.display_form import DictionaryWordMatch, VocabWordMatch, WordMatch
+from language_services.janome_ex.word_extraction.dictionary_match import DictionaryMatch
+from language_services.janome_ex.word_extraction.vocab_match import VocabMatch
 from sysutils import kana_utils
 from sysutils.debug_repr_builder import SkipFalsyValuesDebugReprBuilder
 from ui.web.sentence.compound_part_viewmodel import CompoundPartViewModel
 
 if TYPE_CHECKING:
+    from language_services.janome_ex.word_extraction.match import Match
     from note.sentences.sentence_configuration import SentenceConfiguration
     from sysutils.weak_ref import WeakRef
     from ui.web.sentence.candidate_word_viewmodel import CandidateWordViewModel
 
 
 class DisplayFormViewModel:
-    def __init__(self, word_viewmodel: WeakRef[CandidateWordViewModel], display_form: WordMatch) -> None:
-        self.display_form: WordMatch = display_form
+    def __init__(self, word_viewmodel: WeakRef[CandidateWordViewModel], display_form: Match) -> None:
+        self.display_form: Match = display_form
         self._config: SentenceConfiguration = word_viewmodel().candidate_word.token_range().analysis().configuration
         self.word_viewmodel: WeakRef[CandidateWordViewModel] = word_viewmodel
         self.is_shadowed: bool = word_viewmodel().is_shadowed
@@ -32,7 +34,7 @@ class DisplayFormViewModel:
         self.display_vocab_form = False
         self.is_perfect_match = self.parsed_form == self.vocab_form
         self.display_readings = False
-        if isinstance(display_form, VocabWordMatch):
+        if isinstance(display_form, VocabMatch):
             self.compound_parts: list[CompoundPartViewModel] = CompoundPartViewModel.get_compound_parts_recursive(display_form.vocab, self._config)
             self.audio_path = display_form.vocab.audio.get_primary_audio_path()
             self.meta_tags = " ".join(display_form.vocab.get_meta_tags())
@@ -42,7 +44,7 @@ class DisplayFormViewModel:
             else:
                 self.display_vocab_form = True
                 self.display_readings = kana_utils.contains_kanji(self.vocab_form)
-        if isinstance(display_form, DictionaryWordMatch):
+        if isinstance(display_form, DictionaryMatch):
             self.display_readings = True
 
         self.meta_tags += " highlighted" if self.is_highlighted else ""

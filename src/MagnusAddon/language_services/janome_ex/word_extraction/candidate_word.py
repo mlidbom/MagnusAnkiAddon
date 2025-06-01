@@ -6,7 +6,9 @@ from ankiutils import app
 from autoslot import Slots
 from language_services.jamdict_ex.dict_lookup import DictLookup
 from language_services.janome_ex.word_extraction.analysis_constants import noise_characters, non_word_characters
-from language_services.janome_ex.word_extraction.display_form import DictionaryWordMatch, MissingWordMatch, VocabWordMatch, WordMatch
+from language_services.janome_ex.word_extraction.dictionary_match import DictionaryMatch
+from language_services.janome_ex.word_extraction.missing_match import MissingMatch
+from language_services.janome_ex.word_extraction.vocab_match import VocabMatch
 from language_services.janome_ex.word_extraction.VocabCandidate import VocabCandidate
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from sysutils.object_instance_tracker import ObjectInstanceTracker
@@ -15,6 +17,7 @@ from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.location_range import LocationRange
+    from language_services.janome_ex.word_extraction.match import Match
     from note.sentences.sentence_configuration import SentenceConfiguration
     from note.vocabulary.vocabnote import VocabNote
 
@@ -74,7 +77,7 @@ class CandidateWord(Slots):
         self.is_shadowed: bool = False
         self.starts_with_non_word_token = self.token_range().start_location().token.is_non_word_character
 
-        self.display_forms: list[WordMatch] = []
+        self.display_forms: list[Match] = []
         self.only_requires_being_a_word_to_be_a_valid_candidate = False
 
     @property
@@ -91,16 +94,16 @@ class CandidateWord(Slots):
         self.is_exact_match_requirement_fulfilled: bool = self.form == self.counterpart.form or not self.exact_match_required
 
         if self.unexcluded_any_form_vocabs:
-            self.display_forms = [match for match in [VocabWordMatch(self.weak_ref, voc) for voc in self.unexcluded_any_form_vocabs] if match.is_valid]
+            self.display_forms = [match for match in [VocabMatch(self.weak_ref, voc) for voc in self.unexcluded_any_form_vocabs] if match.is_valid]
             override_form = [df for df in self.display_forms if df.parsed_form != self.form]
             if any(override_form):
                 self.form = override_form[0].parsed_form
         else:
             dict_lookup = DictLookup.lookup_word(self.form)
             if dict_lookup.found_words():
-                self.display_forms = [DictionaryWordMatch(self.weak_ref, dict_lookup.entries[0])]
+                self.display_forms = [DictionaryMatch(self.weak_ref, dict_lookup.entries[0])]
             else:
-                self.display_forms = [MissingWordMatch(self.weak_ref)]
+                self.display_forms = [MissingMatch(self.weak_ref)]
 
         self.only_requires_being_a_word_to_be_a_valid_candidate = (not self.is_noise_character
                                                                    and not self.is_excluded_by_config
