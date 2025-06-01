@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from anki.cards import Card
     from anki.notes import Note, NoteId
 
-_card_is_studying_cache: dict[NoteId, dict[str, bool]] = {}
+_studying_status_cache: dict[NoteId, dict[str, bool]] = {}
 
 def _is_being_studied(card: Card) -> bool:
     return card.queue != QUEUE_TYPE_SUSPENDED #and card.queue != QUEUE_TYPE_NEW
@@ -18,18 +18,21 @@ def _card_type(card: Card) -> str:
     return str_(card.template()["name"])
 
 def remove_from_studying_cache(note_id: NoteId) -> None:
-    if note_id in _card_is_studying_cache:
-        _card_is_studying_cache.pop(note_id)
+    if note_id in _studying_status_cache:
+        _studying_status_cache.pop(note_id)
 
 def clear_studying_cache() -> None:
-    _card_is_studying_cache.clear()
+    _studying_status_cache.clear()
 
 def has_card_being_studied_cached(note: Note, card_type:str = "") -> bool:
-    if note.id not in _card_is_studying_cache:
-        _card_is_studying_cache[note.id] = {_card_type(card): _is_being_studied(card) for card in note.cards()}
+    _ensure_card_status_is_cached(note)
 
     if card_type:
-        cached = _card_is_studying_cache[note.id]
+        cached = _studying_status_cache[note.id]
         return cached.get(card_type, False)
 
-    return any(_card_is_studying_cache[note.id].values())
+    return any(_studying_status_cache[note.id].values())
+
+def _ensure_card_status_is_cached(note: Note) -> None:
+    if note.id not in _studying_status_cache:
+        _studying_status_cache[note.id] = {_card_type(card): _is_being_studied(card) for card in note.cards()}
