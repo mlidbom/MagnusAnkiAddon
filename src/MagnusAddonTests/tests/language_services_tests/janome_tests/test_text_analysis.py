@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 import pytest
 from ankiutils import app
-from fixtures.collection_factory import inject_anki_collection_with_select_data, inject_empty_anki_collection_with_note_types
+from fixtures.collection_factory import inject_anki_collection_with_select_data
 from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 from note.sentences.sentence_configuration import SentenceConfiguration
 from note.sentences.sentencenote import SentenceNote
@@ -17,11 +17,6 @@ if TYPE_CHECKING:
 @pytest.fixture(scope="function")
 def setup_collection_with_select_data() -> Iterator[None]:
     with inject_anki_collection_with_select_data(special_vocab=True):
-        yield
-
-@pytest.fixture(scope="function")
-def setup_empty_collection() -> Iterator[None]:
-    with inject_empty_anki_collection_with_note_types():
         yield
 
 @pytest.mark.parametrize("sentence, expected_output", [
