@@ -11,8 +11,8 @@ if TYPE_CHECKING:
 class VocabSpec(Slots):
     # noinspection PyDefaultArgument
     def __init__(self, question: str,
-                 answer: str,
-                 readings: list[str],
+                 answer: str | None = None,
+                 readings: list[str] | None = None,
                  extra_forms: Optional[list[str]] = None,
                  tags: Optional[list[str]] = None,
                  compounds: Optional[list[str]] = None,
@@ -20,16 +20,16 @@ class VocabSpec(Slots):
                  prefix_is_not: set[str] = None,
                  required_prefix: set[str] = None,
                  prefer_over_base: set[str] = None) -> None:
-        self.question = question
-        self.answer = answer
-        self.readings = readings
-        self.extra_forms = set(extra_forms if extra_forms else [])
-        self.tags = set(tags if tags else [])
-        self.compounds = compounds if compounds else []
-        self.surface_is_not = surface_is_not if surface_is_not else set()
-        self.prefix_is_not = prefix_is_not if prefix_is_not else set()
-        self.required_prefix = required_prefix if required_prefix else set()
-        self.prefer_over_base = prefer_over_base if prefer_over_base else set()
+        self.question: str = question
+        self.answer: str = answer or question
+        self.readings: list[str] = readings or [self.question]
+        self.extra_forms: set[str] = set(extra_forms if extra_forms else [])
+        self.tags: set[str] = set(tags if tags else [])
+        self.compounds: list[str] = compounds if compounds else []
+        self.surface_is_not: set[str] = surface_is_not if surface_is_not else set()
+        self.prefix_is_not: set[str] = prefix_is_not if prefix_is_not else set()
+        self.required_prefix: set[str] = required_prefix if required_prefix else set()
+        self.prefer_over_base: set[str] = prefer_over_base if prefer_over_base else set()
 
     def __repr__(self) -> str:
         return f"""VocabSpec("{self.question}", "{self.answer}", {self.readings})"""
@@ -110,7 +110,8 @@ test_special_vocab: list[VocabSpec] = [
     VocabSpec("無い", "not", ["ない"], extra_forms=["ない"]),
 
     VocabSpec("ている", "is-_-ing", readings=["ている"]),
-    VocabSpec("にする", "to: turn-into", readings=["にする"])
+    VocabSpec("にする", "to: turn-into", readings=["にする"]),
+    VocabSpec("のか", tags=[Tags.Vocab.Matching.Requires.sentence_end]),
 ]
 
 test_ordinary_vocab_list = [

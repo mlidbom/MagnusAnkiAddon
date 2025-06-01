@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 from language_services.janome_ex.word_extraction.match import Match
 from language_services.janome_ex.word_extraction.stem_requirements import StemRequirements
+from language_services.janome_ex.word_extraction.tail_requirements import TailRequirements
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.candidate_word import CandidateWord
@@ -21,6 +22,7 @@ class VocabMatch(Match):
         if vocab.matching_rules.question_overrides_form.is_set():
             self.parsed_form = self.vocab.get_question()
 
-        self.stem_requirements = StemRequirements(vocab, self.candidate().prefix)
+        self.stem_requirements = StemRequirements(vocab, self.candidate().token_range().start_location().previous)
+        self.tail_requirements = TailRequirements(vocab, self.candidate().token_range().end_location().next)
 
-        self.is_valid = self.stem_requirements.are_fulfilled
+        self.is_valid = self.stem_requirements.are_fulfilled and self.tail_requirements.are_fulfilled

@@ -73,9 +73,10 @@ def setup_empty_collection() -> Iterator[None]:
     ("難しく考えすぎ", [], ["難しい", "考えすぎ"]),
     ("やり過ぎた", [], ["やり過ぎる", "た"]),
     ("ない", [], ["ない"]),
-    ("俺に謝られても", [], ["俺", "に", "謝る", "あれる", "ても"])
+    ("俺に謝られても", [], ["俺", "に", "謝る", "あれる", "ても"]),
+    ("いいのかよ", [], ["いい", "の", "かよ"])
 ])
-def test_hierarchical_extraction(setup_collection_with_select_data: object, sentence: str, excluded: list[WordExclusion], expected_output: list[str]) -> None:
+def test_misc_stuff(setup_collection_with_select_data: object, sentence: str, excluded: list[WordExclusion], expected_output: list[str]) -> None:
     _run_assertions(sentence, excluded, expected_output)
 
 @pytest.mark.parametrize("sentence, excluded, expected_output", [

@@ -162,6 +162,7 @@ class Tags(Slots):
             class Requires:
                 a_stem = f"{f_vocab_matching_requires}a-stem"
                 e_stem = f"{f_vocab_matching_requires}e-stem"
+                sentence_end = f"{f_vocab_matching_requires}sentence-end"
                 exact_match = f"{f_vocab_matching_requires}exact-match"
 
             class Forbids:
