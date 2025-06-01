@@ -56,6 +56,7 @@ class NoteTypes(Slots):
 
 class NoteFields(Slots):
     note_id = "nid"
+
     class VocabNoteType(Slots):
         class Card(Slots):
             Reading = CardTypes.reading
@@ -119,6 +120,7 @@ f_sentence_uses = f"{f_sentence}uses::"
 f_vocab = f"{f_root}vocab::"
 f_vocab_matching = f"{f_vocab}matching::"
 f_vocab_matching_requires = f"{f_vocab_matching}requires::"
+f_vocab_matching_forbids = f"{f_vocab_matching}forbids::"
 f_vocab_matching_todo = f"{f_vocab_matching}todo::"
 f_vocab_matching_uses = f"{f_vocab_matching}uses::"
 
@@ -156,10 +158,15 @@ class Tags(Slots):
 
         class Matching:
             is_inflecting_word = f"{f_vocab_matching}is-inflecting-word"
+
             class Requires:
                 a_stem = f"{f_vocab_matching_requires}a-stem"
                 e_stem = f"{f_vocab_matching_requires}e-stem"
                 exact_match = f"{f_vocab_matching_requires}exact-match"
+
+            class Forbids:
+                a_stem = f"{f_vocab_matching_forbids}a-stem"
+
             is_strictly_suffix = f"{f_vocab_matching}is-strictly-suffix"
 
             class Todo:

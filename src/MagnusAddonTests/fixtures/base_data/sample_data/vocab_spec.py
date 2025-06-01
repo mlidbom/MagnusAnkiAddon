@@ -85,15 +85,13 @@ test_special_vocab: list[VocabSpec] = [
     VocabSpec("解放する", "to{} release", ["かいほうする"]),
 
     VocabSpec("える", "to-be-able-to", ["える"], tags=[Tags.Vocab.Matching.is_inflecting_word]),
+    VocabSpec("れる", "can-_/possible-to-_ | ??get-_??", ["れる"], tags=[Tags.Vocab.Matching.is_inflecting_word, Tags.Vocab.Matching.Forbids.a_stem]),
 
     # require a stems
     VocabSpec("あれる", "get-_/is-_", ["あれる"], extra_forms=["れる"], tags=[Tags.Vocab.Matching.Requires.a_stem, Tags.Vocab.question_overrides_form, Tags.Vocab.Matching.is_inflecting_word]),
     VocabSpec("あせる", "get-_/is-_", ["あせる"], extra_forms=["せる"], tags=[Tags.Vocab.Matching.Requires.a_stem, Tags.Vocab.question_overrides_form, Tags.Vocab.Matching.is_inflecting_word]),
 
     VocabSpec("させる", "get-_/is-_", ["させる"], extra_forms=["せる"], tags=[Tags.Vocab.Matching.is_inflecting_word]),
-
-    # require e stems
-    VocabSpec("えれる", "is-able-to-_", ["えれる"], extra_forms=["れる"], tags=[Tags.Vocab.Matching.Requires.e_stem, Tags.Vocab.question_overrides_form, Tags.Vocab.Matching.is_inflecting_word]),
 
     VocabSpec("しろ", "do!", ["しろ"], prefer_over_base={"する"}),
     VocabSpec("らっしゃい", "todo", ["らっしゃい"], prefer_over_base={"らっしゃる"}),
