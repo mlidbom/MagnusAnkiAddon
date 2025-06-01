@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from ui.hooks import clear_studying_cache_on_card_suspend_unsuspend, copy_sort_field_to_clipboard, custom_auto_advance_timings, custom_short_term_scheduling, custom_timebox_lengths, global_shortcuts, history_navigator, no_accidental_double_click, reviewer_shortcuts, timebox_end_sound
+from ui.hooks import clear_studying_cache_on_card_suspend_unsuspend, copy_sort_field_to_clipboard, custom_auto_advance_timings, custom_short_term_scheduling, custom_timebox_lengths, global_shortcuts, history_navigator, no_accidental_double_click, note_view_shortcuts, timebox_end_sound
 
 
 def init() -> None:
@@ -12,5 +12,5 @@ def init() -> None:
     history_navigator.init()
     no_accidental_double_click.init()
     timebox_end_sound.init()
-    reviewer_shortcuts.init()
+    note_view_shortcuts.init()
     global_shortcuts.init()
