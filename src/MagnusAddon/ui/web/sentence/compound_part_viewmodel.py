@@ -2,12 +2,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from sysutils import kana_utils
+from ankiutils import app
+from sysutils import ex_sequence
 
 if TYPE_CHECKING:
     from note.sentences.sentence_configuration import SentenceConfiguration
     from note.vocabulary.vocabnote import VocabNote
-
 
 class CompoundPartViewModel:
     def __init__(self, vocab_note: VocabNote, depth: int, config: SentenceConfiguration) -> None:
@@ -18,9 +18,29 @@ class CompoundPartViewModel:
         self.readings = ", ".join(vocab_note.readings.get())
         self.audio_path = vocab_note.audio.get_primary_audio_path()
         self.meta_tags_html: str = vocab_note.meta_data.meta_tags_html(no_sentense_statistics=True)
-        self.display_readings = kana_utils.contains_kanji(self.question)
+        self.display_readings = self.question != self.readings
         self.is_highlighted = self.question in config.highlighted_words
 
         self.meta_tags = " ".join(vocab_note.get_meta_tags())
         self.meta_tags += f""" depth_{depth}"""
         self.meta_tags += " highlighted" if self.is_highlighted else ""
+
+    @classmethod
+    def get_compound_parts_recursive(cls, vocab_note: VocabNote, config: SentenceConfiguration, depth: int = 0, visited: set = None) -> list[CompoundPartViewModel]:
+        if not app.config().show_compound_parts_in_sentence_breakdown.get_value(): return []
+        if visited is None: visited = set()
+        if vocab_note.get_id() in visited: return []
+
+        visited.add(vocab_note.get_id())
+
+        compound_parts = ex_sequence.flatten([app.col().vocab.with_form_prefer_exact_match(part) for part in vocab_note.compound_parts.primary()])
+
+        result = []
+
+        for part in compound_parts:
+            wrapper = CompoundPartViewModel(part, depth, config)
+            result.append(wrapper)
+            nested_parts = cls.get_compound_parts_recursive(part, config, depth + 1, visited)
+            result.extend(nested_parts)
+
+        return result

@@ -2,15 +2,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ankiutils import app
 from language_services.janome_ex.word_extraction.display_form import DictionaryDisplayForm, DisplayForm, VocabDisplayForm
-from sysutils import ex_sequence, kana_utils
+from sysutils import kana_utils
 from sysutils.debug_repr_builder import SkipFalsyValuesDebugReprBuilder
 from ui.web.sentence.compound_part_viewmodel import CompoundPartViewModel
 
 if TYPE_CHECKING:
     from note.sentences.sentence_configuration import SentenceConfiguration
-    from note.vocabulary.vocabnote import VocabNote
     from sysutils.weak_ref import WeakRef
     from ui.web.sentence.candidate_word_viewmodel import CandidateWordViewModel
 
@@ -35,7 +33,7 @@ class DisplayFormViewModel:
         self.is_perfect_match = self.parsed_form == self.vocab_form
         self.display_readings = False
         if isinstance(display_form, VocabDisplayForm):
-            self.compound_parts: list[CompoundPartViewModel] = self._get_compound_parts_recursive(display_form.vocab, self._config)
+            self.compound_parts: list[CompoundPartViewModel] = CompoundPartViewModel.get_compound_parts_recursive(display_form.vocab, self._config)
             self.audio_path = display_form.vocab.audio.get_primary_audio_path()
             self.meta_tags = " ".join(display_form.vocab.get_meta_tags())
             self.meta_tags_html = display_form.vocab.meta_data.meta_tags_html(display_extended_sentence_statistics=False)
@@ -52,26 +50,6 @@ class DisplayFormViewModel:
     @property
     def is_displayed(self) -> bool:
         return not self.is_shadowed and self.is_display_word and (self.is_perfect_match or not self.word_viewmodel().has_perfect_match)
-
-    @classmethod
-    def _get_compound_parts_recursive(cls, vocab_note: VocabNote, config: SentenceConfiguration, depth: int = 0, visited: set = None) -> list[CompoundPartViewModel]:
-        if not app.config().show_compound_parts_in_sentence_breakdown.get_value(): return []
-        if visited is None: visited = set()
-        if vocab_note.get_id() in visited: return []
-
-        visited.add(vocab_note.get_id())
-
-        compound_parts = ex_sequence.flatten([app.col().vocab.with_form_prefer_exact_match(part) for part in vocab_note.compound_parts.primary()])
-
-        result = []
-
-        for part in compound_parts:
-            wrapper = CompoundPartViewModel(part, depth, config)
-            result.append(wrapper)
-            nested_parts = cls._get_compound_parts_recursive(part, config, depth + 1, visited)
-            result.extend(nested_parts)
-
-        return result
 
     def __repr__(self) -> str:
         return (
