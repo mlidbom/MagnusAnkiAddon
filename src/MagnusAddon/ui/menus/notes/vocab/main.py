@@ -81,8 +81,8 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
         add_toggle_checkbox(toggle_flags_menu, shortcutfinger.home3("Requires a stem"), vocab.matching_rules.requires_a_stem)
         add_toggle_checkbox(toggle_flags_menu, shortcutfinger.home4("Forbids a stem"), vocab.matching_rules.forbids_a_stem)
         add_toggle_checkbox(toggle_flags_menu, shortcutfinger.home5("Match with preceding vowel"), vocab.matching_rules.match_with_preceding_vowel)
-        add_toggle_checkbox(toggle_flags_menu, shortcutfinger.up1("Question overrides form"), vocab.matching_rules.question_overrides_form.tag_field)
-        add_toggle_checkbox(toggle_flags_menu, shortcutfinger.up2("Requires sentence end"), vocab.matching_rules.requires_sentence_end)
+        add_toggle_checkbox(toggle_flags_menu, shortcutfinger.up1("Question overrides form: Show the question in results even if the match was another form"), vocab.matching_rules.question_overrides_form.tag_field)
+        add_toggle_checkbox(toggle_flags_menu, shortcutfinger.up2("Requires sentence end: followed by nothing, a non-word, or a quote, character: と、って"), vocab.matching_rules.requires_sentence_end)
 
     def build_remove_menu(remove_menu: QMenu) -> None:
         add_ui_action(remove_menu, shortcutfinger.home1("User explanation"), lambda: vocab.user.explanation.empty()).setEnabled(vocab.user.explanation.has_value())
