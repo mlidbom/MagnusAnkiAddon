@@ -14,7 +14,7 @@ _studying_status_cache: dict[NoteId, dict[str, bool]] = {}
 def _is_being_studied(card: Card) -> bool:
     return card.queue != QUEUE_TYPE_SUSPENDED #and card.queue != QUEUE_TYPE_NEW
 
-def _card_type(card: Card) -> str:
+def _card_type(card: Card, note: Note) -> str:
     return str_(card.template()["name"])
 
 def remove_from_studying_cache(note_id: NoteId) -> None:
@@ -35,4 +35,7 @@ def has_card_being_studied_cached(note: Note, card_type:str = "") -> bool:
 
 def _ensure_card_status_is_cached(note: Note) -> None:
     if note.id not in _studying_status_cache:
-        _studying_status_cache[note.id] = {_card_type(card): _is_being_studied(card) for card in note.cards()}
+        #todo: performance: this code lists note cards, then inside _is_being_studied turns right around and fetches the note, which is slow.
+        # We should cache by the ord member of the card instead, which, I believe is the id of the card type,
+        # but this requires some infrastructure for getting the ord from the card name and switching to using that everywhere
+        _studying_status_cache[note.id] = {_card_type(card, note): _is_being_studied(card) for card in note.cards()}

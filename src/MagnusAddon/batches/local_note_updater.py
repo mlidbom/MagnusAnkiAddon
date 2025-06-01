@@ -142,7 +142,7 @@ def tag_kanji_metadata() -> None:
                 for reading in vocab.readings.get():
                     if reading not in primary_readings:
                         kanji.set_tag(Tags.Kanji.with_single_kanji_vocab_with_different_reading)
-                        if vocab.is_studying(reading):
+                        if vocab.is_studying(reading):#todo: Bug: this code looks nuts. You cannot pass a reading to is_studying.
                             kanji.set_tag(Tags.Kanji.with_studying_single_kanji_vocab_with_different_reading)
 
     all_kanji = app.col().kanji.all()
