@@ -76,7 +76,7 @@ def setup_empty_collection() -> Iterator[None]:
     ("俺に謝られても", [], ["俺", "に", "謝る", "あれる", "ても"])
 ])
 def test_hierarchical_extraction(setup_collection_with_select_data: object, sentence: str, excluded: list[WordExclusion], expected_output: list[str]) -> None:
-    _run_assertions(sentence, [], excluded, expected_output)
+    _run_assertions(sentence, excluded, expected_output)
 
 @pytest.mark.parametrize("sentence, excluded, expected_output", [
     ("会える", [], ["会える"]),
@@ -93,7 +93,7 @@ def test_hierarchical_extraction(setup_collection_with_select_data: object, sent
     ("この夏は　たくさん思い出を作れたなぁ", [], ["この", "夏", "は", "たくさん", "思い出", "を", "作れる", "た", "なぁ"]),
 ])
 def test_potential_verb_splitting_with_vocab(setup_collection_with_select_data: object, sentence: str, excluded: list[WordExclusion], expected_output: list[str]) -> None:
-    _run_assertions(sentence, [], excluded, expected_output)
+    _run_assertions(sentence, excluded, expected_output)
 
 @pytest.mark.parametrize("sentence, excluded, expected_output", [
     ("会える", [], ["会う", "える"]),
@@ -114,9 +114,9 @@ def test_potential_verb_splitting_with_vocab(setup_collection_with_select_data: 
 def test_potential_verb_splitting_without_vocab(setup_empty_collection: object, sentence: str, excluded: list[WordExclusion], expected_output: list[str]) -> None:
     [eru for eru in vocab_spec.test_special_vocab if eru.question == "える"][0].create_vocab_note()
     app.col().flush_cache_updates()
-    _run_assertions(sentence, [], excluded, expected_output)
+    _run_assertions(sentence, excluded, expected_output)
 
-def _run_assertions(sentence: str, custom_words: list[str], excluded: list[WordExclusion], expected_output: list[str]) -> None:
+def _run_assertions(sentence: str, excluded: list[WordExclusion], expected_output: list[str]) -> None:
     sentence_note = SentenceNote.create(sentence)
     sentence_note.configuration._value = Lazy.from_value(SentenceConfiguration.from_incorrect_matches(excluded))
     analysis = SentenceAnalysisViewModel(sentence_note)
