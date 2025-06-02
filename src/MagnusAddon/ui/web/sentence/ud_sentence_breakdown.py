@@ -127,14 +127,8 @@ def render_incorrect_matches(note: SentenceNote) -> str:
     excluded_vocab = list(excluded_words)
     return _build_vocab_list(excluded_vocab, set(), "incorrectly matched words", show_words_missing_dictionary_entries=True) if excluded_vocab else ""
 
-def render_hidden_matches(note: SentenceNote) -> str:
-    hidden_words = {x.word for x in note.configuration.hidden_matches.get()}
-    hidden_vocab = list(hidden_words)
-    return _build_vocab_list(hidden_vocab, set(), "hidden words", show_words_missing_dictionary_entries=True) if hidden_vocab else ""
-
 def init() -> None:
     gui_hooks.card_will_show.append(PrerenderingAnswerContentRenderer(SentenceNote, {
         "##SENTENCE_ANALYSIS##": render_sentence_analysis,
-        "##INCORRECT_MATCHES##": render_incorrect_matches,
-        "##HIDDEN_MATCHES##": render_hidden_matches,
+        "##INCORRECT_MATCHES##": render_incorrect_matches
     }).render)

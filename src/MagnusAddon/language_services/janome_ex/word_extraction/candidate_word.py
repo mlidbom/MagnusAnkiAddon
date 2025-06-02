@@ -46,17 +46,19 @@ class CandidateWord(Slots):
         self.valid_variants: list[CandidateWordVariant] = []
         self.display_variants: list[CandidateWordVariant] = []
 
+    def must_include_some_variant(self) -> bool:
+        return (not self.is_custom_compound
+                and not self.surface.starts_with_non_word_token
+                and not self.surface.is_noise_character)
+
     def complete_analysis(self) -> None:
         self.surface.complete_analysis()
         if self.base is not None: self.base.complete_analysis()
 
         self.should_include_base_in_all_words = self.base is not None and self.base.is_valid_candidate
 
-        # todo: bug: if surface and base are both invalid, and this is not a compound, we end up with a chunk of the text missing in the analysis
         self.should_include_surface_in_all_words = ((not self.should_include_base_in_all_words
-                                                     and not self.is_custom_compound
-                                                     and not self.surface.starts_with_non_word_token
-                                                     and not self.surface.is_noise_character)
+                                                     and self.must_include_some_variant())
                                                     or (self.surface.is_valid_candidate
                                                         and not self.is_inflected_word
                                                         and (self.base is None or self.surface.form != self.base.form)))
@@ -67,8 +69,8 @@ class CandidateWord(Slots):
         if self.should_include_surface_in_all_words:
             self.valid_variants.append(self.surface)
 
-        # todo: may result in no matches, and I'm not sure we should say that only one is ever allowed to be included
-        if self.should_include_surface_in_all_words:
+        if ((self.should_include_surface_in_all_words and not self.surface.is_marked_hidden_by_config)
+                or (not self.should_include_base_in_all_words and self.must_include_some_variant())):
             self.display_variants.append(self.surface)
         elif self.base is not None and self.should_include_base_in_all_words:
             self.display_variants.append(self.base)

@@ -40,7 +40,7 @@ class DisplayFormViewModel:
             self.match_owns_form = display_form.vocab.forms.is_owned_form(self.parsed_form)
             if self.parsed_form != self.vocab_form:
                 self.display_vocab_form = True
-                self.display_readings = self.vocab_form != self.readings
+                self.display_readings = self.display_readings and self.vocab_form != self.readings
 
     @property
     def meta_tags(self) -> str:

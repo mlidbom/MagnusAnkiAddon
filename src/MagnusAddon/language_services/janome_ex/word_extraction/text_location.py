@@ -64,8 +64,10 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
         self.valid_words_starting_here = [candidate for candidate in self.all_candidate_ranges if candidate.has_valid_words()]
         self.valid_variants = ex_sequence.flatten([v.valid_variants for v in self.valid_words_starting_here])
 
-    def analysis_step_3_calculate_preference_between_overlapping_valid_candidates(self) -> None:
+    def analysis_step_3_calculate_preference_between_overlapping_display_variants(self) -> None:
         if self.valid_words_starting_here and self.is_shadowed_by is None:
+            while len(self.valid_words_starting_here[0].display_variants) == 0:
+                self.valid_words_starting_here = self.valid_words_starting_here[1:]
             while self.selected_word_needs_to_yield_to_upcoming_compounds():
                 self.valid_words_starting_here = self.valid_words_starting_here[1:]
 

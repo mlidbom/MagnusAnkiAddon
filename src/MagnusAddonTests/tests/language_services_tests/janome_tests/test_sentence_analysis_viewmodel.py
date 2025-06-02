@@ -80,7 +80,9 @@ def setup_empty_collection() -> Iterator[None]:
     ("しても", [], ["する", "ても"]),
     ("見えなくなったって そんな", [], ["見える", "なくなる", "たって", "そんな"]),
     ("焼けたかな", [], ["焼ける", "た", "かな"]),
-    ("何て言うか<wbr>さ", [], ["何", "て言うか", "さ"])
+    ("何て言うか<wbr>さ", [], ["何", "て言うか", "さ"]),
+    ("また来ような", [], ["また", "来る", "う", "な"]),
+    ("何なんだろうな", [], ["何だ", "んだ", "う", "な"])
 ])
 def test_misc_stuff(setup_collection_with_select_data: object, sentence: str, excluded: list[WordExclusion], expected_output: list[str]) -> None:
     _run_assertions(sentence, excluded, expected_output)

@@ -41,25 +41,29 @@ class CandidateWordVariant(Slots):
 
         self.vocab_candidates: list[VocabCandidate] = [VocabCandidate(self.weak_ref, voc) for voc in self.all_any_form_vocabs]
 
-        def is_excluded_form(form_: str) -> bool:
+        def is_marked_incorrect_form(form_: str) -> bool:
             return self.configuration.incorrect_matches.excludes_at_index(form_, self.start_index)
 
-        self.unexcluded_any_form_vocabs: list[VocabNote] = [v for v in self.all_any_form_vocabs if not is_excluded_form(v.get_question())]
-        self.unexcluded_primary_form_vocabs: list[VocabNote] = [voc for voc in self.unexcluded_any_form_vocabs if voc.get_question() == form]
-        self.excluded_vocabs: list[VocabNote] = [v for v in self.all_any_form_vocabs if is_excluded_form(v.get_question())]
+        def is_marked_hidden_form(form_: str) -> bool:
+            return self.configuration.hidden_matches.excludes_at_index(form_, self.start_index)
+
+        self.unexcluded_any_form_vocabs: list[VocabNote] = [v for v in self.all_any_form_vocabs if not is_marked_incorrect_form(v.get_question())]
+        self.unexcluded_form_owning_vocab: list[VocabNote] = [voc for voc in self.unexcluded_any_form_vocabs if voc.forms.is_owned_form(form)]
+        self.excluded_vocabs: list[VocabNote] = [v for v in self.all_any_form_vocabs if is_marked_incorrect_form(v.get_question())]
 
         self.is_word: bool = self.dict_lookup.found_words() or len(self.all_any_form_vocabs) > 0
-        self.is_excluded_by_config: bool = is_excluded_form(form)
+        self.is_marked_incorrect_by_config: bool = is_marked_incorrect_form(form)
+        self.is_marked_hidden_by_config: bool = is_marked_hidden_form(form)
 
-        self.exact_match_required_by_primary_form_vocab_configuration: bool = any(v for v in self.unexcluded_primary_form_vocabs if v.matching_rules.requires_exact_match.is_set())
+        self.exact_match_required_by_primary_form_vocab_configuration: bool = any(v for v in self.unexcluded_form_owning_vocab if v.matching_rules.requires_exact_match.is_set())
 
-        self.prefix_is_not: set[str] = set().union(*[v.matching_rules.rules.prefix_is_not.get() for v in self.unexcluded_primary_form_vocabs])
+        self.prefix_is_not: set[str] = set().union(*[v.matching_rules.rules.prefix_is_not.get() for v in self.unexcluded_form_owning_vocab])
         self.is_excluded_by_prefix = any(excluded_prefix for excluded_prefix in self.prefix_is_not if self.preceding_surface.endswith(excluded_prefix))
 
-        self.prefix_must_end_with: set[str] = set().union(*[v.matching_rules.rules.required_prefix.get() for v in self.unexcluded_primary_form_vocabs])
+        self.prefix_must_end_with: set[str] = set().union(*[v.matching_rules.rules.required_prefix.get() for v in self.unexcluded_form_owning_vocab])
         self.is_missing_required_prefix = self.prefix_must_end_with and not any(required for required in self.prefix_must_end_with if self.preceding_surface.endswith(required))
 
-        self.is_strictly_suffix = any(voc for voc in self.unexcluded_primary_form_vocabs if voc.matching_rules.is_strictly_suffix.is_set())
+        self.is_strictly_suffix = any(voc for voc in self.unexcluded_form_owning_vocab if voc.matching_rules.is_strictly_suffix.is_set())
         self.requires_prefix = self.is_strictly_suffix or any(self.prefix_must_end_with)
 
         self.is_noise_character = self.form in noise_characters
@@ -105,7 +109,7 @@ class CandidateWordVariant(Slots):
                 self.matches = [MissingMatch(self.weak_ref)]
 
         self.only_requires_being_a_word_to_be_a_valid_candidate = (not self.is_noise_character
-                                                                   and not self.is_excluded_by_config
+                                                                   and not self.is_marked_incorrect_by_config
                                                                    and not self.is_self_excluded
                                                                    and not self.is_excluded_by_prefix
                                                                    and not self.is_missing_required_prefix

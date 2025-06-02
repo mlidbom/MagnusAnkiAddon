@@ -72,4 +72,4 @@ class TextAnalysis(Slots):
 
     def _analysis_step_3_calculate_preference_between_overlapping_valid_candidates(self) -> None:
         for location in self.locations:
-            location.analysis_step_3_calculate_preference_between_overlapping_valid_candidates()
+            location.analysis_step_3_calculate_preference_between_overlapping_display_variants()

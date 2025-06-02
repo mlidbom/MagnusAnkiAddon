@@ -127,7 +127,8 @@ test_special_vocab: list[VocabSpec] = [
     VocabSpec("なんて", tags=[vm.yield_last_token_to_overlapping_compound]),
     VocabSpec("何て", tags=[vm.yield_last_token_to_overlapping_compound]),
     VocabSpec("というか", forms=["[と言うか]", "っていうか", "ていうか", "て言うか"]),
-    VocabSpec("ていうか", forms=["と言うか", "というか", "っていうか", "[て言うか]"])
+    VocabSpec("ていうか", forms=["と言うか", "というか", "っていうか", "[て言うか]"]),
+    VocabSpec("鰻", forms=["[うな]"], prefix_not={"ろ", "よ"})
 ]
 
 test_ordinary_vocab_list = [
