@@ -121,7 +121,9 @@ test_special_vocab: list[VocabSpec] = [
     VocabSpec("ても"),
     VocabSpec("と思う"),
     VocabSpec("たの", tags=[vm.is_poison_word]),
-    VocabSpec("たって", tags=[vm.is_poison_word])
+    VocabSpec("たって", tags=[vm.is_poison_word]),
+    VocabSpec("たかな", tags=[vm.is_poison_word]),
+    VocabSpec("たか", tags=[vm.is_poison_word])
 ]
 
 test_ordinary_vocab_list = [
