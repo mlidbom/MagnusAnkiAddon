@@ -7,7 +7,7 @@ from sysutils import typed
 from sysutils.json.ex_json import _json_library_shim
 from sysutils.json.property_type_error import PropertyTypeError
 
-TProp: TypeVar = TypeVar("TProp")
+TProp = TypeVar("TProp")
 
 class JsonReader(Slots):
     def __init__(self, json_dict: dict[str, Any]) -> None:

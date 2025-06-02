@@ -82,9 +82,9 @@ def build_config_menu(config_menu: QMenu) -> None:
         for index, toggle in enumerate(app.config().feature_toggles):
             add_checkbox_config(toggles_menu, toggle, shortcutfinger.numpad_no_numbers(index, toggle.title))
 
-    config_menu.addAction(shortcutfinger.home1("Readings mappings"), show_readings_mappings).setShortcut("Ctrl+Shift+m")
+    non_optional(config_menu.addAction(shortcutfinger.home1("Readings mappings"), show_readings_mappings)).setShortcut("Ctrl+Shift+m")
     build_feature_toggles_menu(shortcutfinger.home2("Feature Toggles"))
-    config_menu.addAction(shortcutfinger.home3("Options"), show_japanese_options).setShortcut("Ctrl+Shift+s")
+    non_optional(config_menu.addAction(shortcutfinger.home3("Options"), show_japanese_options)).setShortcut("Ctrl+Shift+s")
 
 
 def build_local_menu(local_menu: QMenu) -> None:

@@ -6,6 +6,7 @@ from ankiutils import app
 from sysutils import ex_sequence
 
 if TYPE_CHECKING:
+    from anki.notes import NoteId
     from note.sentences.sentence_configuration import SentenceConfiguration
     from note.vocabulary.vocabnote import VocabNote
 
@@ -26,7 +27,7 @@ class CompoundPartViewModel:
         self.meta_tags += " highlighted" if self.is_highlighted else ""
 
     @classmethod
-    def get_compound_parts_recursive(cls, vocab_note: VocabNote, config: SentenceConfiguration, depth: int = 0, visited: set = None) -> list[CompoundPartViewModel]:
+    def get_compound_parts_recursive(cls, vocab_note: VocabNote, config: SentenceConfiguration, depth: int = 0, visited: set[NoteId] | None = None) -> list[CompoundPartViewModel]:
         if not app.config().show_compound_parts_in_sentence_breakdown.get_value(): return []
         if visited is None: visited = set()
         if vocab_note.get_id() in visited: return []

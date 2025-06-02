@@ -55,4 +55,4 @@ def build_create_note_menu(note_create_menu: QMenu, vocab: VocabNote, selection:
         pass
 
     if clipboard:
-        build_create_prefix_postfix_note_menu(note_create_menu.addMenu(shortcutfinger.up2("Clipboard")), vocab, clipboard)
+        build_create_prefix_postfix_note_menu(non_optional(note_create_menu.addMenu(shortcutfinger.up2("Clipboard"))), vocab, clipboard)

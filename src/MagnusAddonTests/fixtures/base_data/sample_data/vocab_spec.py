@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from autoslot import Slots
 from note.note_constants import Tags
@@ -13,13 +13,13 @@ class VocabSpec(Slots):
     def __init__(self, question: str,
                  answer: str | None = None,
                  readings: list[str] | None = None,
-                 forms: Optional[list[str]] = None,
-                 tags: Optional[list[str]] = None,
-                 compounds: Optional[list[str]] = None,
-                 surface_not: set[str] = None,
-                 prefix_not: set[str] = None,
-                 prefix_in: set[str] = None,
-                 prefer_over_base: set[str] = None) -> None:
+                 forms: list[str] | None = None,
+                 tags: list[str] | None = None,
+                 compounds: list[str] | None = None,
+                 surface_not: set[str] | None = None,
+                 prefix_not: set[str] | None = None,
+                 prefix_in: set[str] | None = None,
+                 prefer_over_base: set[str] | None = None) -> None:
         self.question: str = question
         self.answer: str = answer or question
         self.readings: list[str] = readings or [self.question]
@@ -67,6 +67,7 @@ class VocabSpec(Slots):
             vocab_note.matching_rules.rules.prefer_over_base.add(prefer_surface_over_base)
 
         return vocab_note
+
 v = Tags.Vocab
 vm = Tags.Vocab.Matching
 

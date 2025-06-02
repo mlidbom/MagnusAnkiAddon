@@ -33,7 +33,7 @@ class DisplayFormViewModel:
         self.is_perfect_match = self.parsed_form == self.vocab_form
         self.display_readings = self.parsed_form != self.readings
         if isinstance(display_form, VocabMatch):
-            self.compound_parts: list[CompoundPartViewModel] = CompoundPartViewModel.get_compound_parts_recursive(display_form.vocab, self._config)
+            self.compound_parts = CompoundPartViewModel.get_compound_parts_recursive(display_form.vocab, self._config)
             self.audio_path = display_form.vocab.audio.get_primary_audio_path()
             self.meta_tags = " ".join(display_form.vocab.get_meta_tags())
             self.meta_tags_html = display_form.vocab.meta_data.meta_tags_html(display_extended_sentence_statistics=False)

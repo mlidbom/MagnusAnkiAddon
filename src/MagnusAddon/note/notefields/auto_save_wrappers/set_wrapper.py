@@ -7,7 +7,7 @@ from autoslot import Slots
 if TYPE_CHECKING:
     from note.notefields.json_object_field import JsonObjectField
 
-TValue: TypeVar = TypeVar("TValue")
+TValue = TypeVar("TValue")
 
 class FieldSetWrapper(Generic[TValue], Slots):
     _secret = "aoeulrcaboeusthb"

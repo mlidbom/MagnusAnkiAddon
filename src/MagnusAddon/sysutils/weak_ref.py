@@ -17,6 +17,6 @@ class WeakRef(Generic[T], Slots):
 
     @property
     def instance(self) -> T: return non_optional(self._weakreference())
-    def __call__(self) -> T | None: return non_optional(self._weakreference())
+    def __call__(self) -> T: return non_optional(self._weakreference())
 
     def __repr__(self) -> str: return f"WeakRef: {self.instance.__repr__()}"

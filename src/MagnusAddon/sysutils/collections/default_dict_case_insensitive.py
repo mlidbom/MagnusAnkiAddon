@@ -4,6 +4,7 @@ import collections
 from typing import Callable, Generic, TypeVar
 
 from autoslot import Slots
+from sysutils import typed
 
 VT = TypeVar("VT")  # Value type
 
@@ -17,5 +18,5 @@ class DefaultDictCaseInsensitive(collections.defaultdict[str, VT], Generic[VT], 
     def __setitem__(self, key: str, value: VT) -> None:
         super().__setitem__(key.lower(), value)
 
-    def __contains__(self, key: str) -> bool:
-        return super().__contains__(key.lower())
+    def __contains__(self, key: object) -> bool:
+        return super().__contains__(typed.str_(key).lower())

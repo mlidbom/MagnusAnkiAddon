@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     from note.notefields.auto_save_wrappers.value_wrapper import ValueWrapper
     from note.notefields.json_object_field import JsonObjectField
 
-TValue: TypeVar = TypeVar("TValue")
+TValue = TypeVar("TValue")
 
 class FieldWrapper(Generic[TValue], Slots):
     def __init__(self, field: JsonObjectField[object], value: ValueWrapper[TValue]) -> None:

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from anki.notes import NoteId
+
 from ankiutils import app
 from aqt import gui_hooks
 from note.vocabulary.vocabnote import VocabNote
@@ -48,7 +50,7 @@ def render_vocab_list(vocab_list: list[CompoundPart], title: str, css_class: str
             </div>
             '''
 
-def get_compound_parts_recursive(vocab_note: VocabNote, depth: int = 0, visited: set = None) -> list[CompoundPart]:
+def get_compound_parts_recursive(vocab_note: VocabNote, depth: int = 0, visited: set[NoteId] | None = None) -> list[CompoundPart]:
     if visited is None: visited = set()
     if vocab_note.get_id() in visited: return []
 

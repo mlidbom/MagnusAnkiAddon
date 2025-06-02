@@ -4,7 +4,7 @@ from typing import Generic, TypeVar
 
 from autoslot import Slots
 
-TValue: TypeVar = TypeVar("TValue")
+TValue = TypeVar("TValue")
 
 class ValueWrapper(Generic[TValue], Slots):
     def __init__(self, value: TValue) -> None:

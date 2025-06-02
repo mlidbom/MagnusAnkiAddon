@@ -16,7 +16,7 @@ from sysutils.typed import try_cast
 if TYPE_CHECKING:
     from PyQt6.QtWidgets import QWidget
 
-T: TypeVar = TypeVar("T")
+T = TypeVar("T")
 
 def init() -> None:
     def try_get_review_note_of_type(note_type: type[T]) -> T | None:

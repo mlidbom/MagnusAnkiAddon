@@ -8,6 +8,7 @@ from language_services.english_dictionary import english_dict_search
 from PyQt6.QtCore import Qt, pyqtBoundSignal
 from PyQt6.QtWidgets import QApplication, QDialog, QHBoxLayout, QHeaderView, QLabel, QLineEdit, QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget
 from sysutils import typed
+from sysutils.typed import non_optional
 
 if TYPE_CHECKING:
     from language_services.english_dictionary.english_dict_search import EnglishWord
@@ -53,7 +54,7 @@ class EnglishWordSearchDialog(QDialog):
         self.results_table.setSelectionMode(QTableWidget.SelectionMode.SingleSelection)
 
         # Configure column widths
-        header = self.results_table.horizontalHeader()
+        header = non_optional(self.results_table.horizontalHeader())
         header.setSectionResizeMode(0, QHeaderView.ResizeMode.ResizeToContents)
         header.setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
 

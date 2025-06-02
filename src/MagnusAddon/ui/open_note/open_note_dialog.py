@@ -12,6 +12,7 @@ from note.vocabulary.vocabnote import VocabNote
 from PyQt6.QtCore import Qt, pyqtBoundSignal
 from PyQt6.QtWidgets import QDialog, QHBoxLayout, QHeaderView, QLabel, QLineEdit, QProgressBar, QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget
 from sysutils import ex_str, kana_utils, typed
+from sysutils.typed import non_optional
 
 
 class NoteSearchDialog(QDialog):
@@ -69,7 +70,7 @@ class NoteSearchDialog(QDialog):
         self.results_table = QTableWidget()
         self.results_table.setColumnCount(3)
         self.results_table.setHorizontalHeaderLabels(["Type", "Question", "Answer"])
-        self.results_table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Interactive)  # Make all columns resizable
+        non_optional(self.results_table.horizontalHeader()).setSectionResizeMode(QHeaderView.ResizeMode.Interactive)  # Make all columns resizable
         self.results_table.setColumnWidth(1, 200)  # Set Question column width to 200 pixels
         self.results_table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
         self.results_table.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
@@ -104,14 +105,29 @@ class NoteSearchDialog(QDialog):
                 # Get the JP collection
                 matching_notes: list[JPNote] = []
 
-                def kanji_readings(note: KanjiNote) -> str: return " ".join(note.get_readings_clean())
-                def vocab_readings(vocab: VocabNote) -> str: return " ".join(vocab.readings.get())
-                def vocab_romaji_readings(vocab: VocabNote) -> str: return kana_utils.romanize(vocab_readings(vocab))
-                def vocab_forms(vocab: VocabNote) -> str: return " ".join(vocab.forms.without_noise_characters())
-                def question_length(note: JPNote) -> int: return len(note.get_question())
-                def kanji_romaji_readings(note: KanjiNote) -> str: return note.get_romaji_readings()
-                def note_question(note_: JPNote) -> str: return ex_str.strip_html_and_bracket_markup(note_.get_question())
-                def note_answer(note_: JPNote) -> str: return ex_str.strip_html_and_bracket_markup(note_.get_answer())
+                def kanji_readings(note: KanjiNote) -> str:
+                    return " ".join(note.get_readings_clean())
+
+                def vocab_readings(vocab: VocabNote) -> str:
+                    return " ".join(vocab.readings.get())
+
+                def vocab_romaji_readings(vocab: VocabNote) -> str:
+                    return kana_utils.romanize(vocab_readings(vocab))
+
+                def vocab_forms(vocab: VocabNote) -> str:
+                    return " ".join(vocab.forms.without_noise_characters())
+
+                def question_length(note: JPNote) -> int:
+                    return len(note.get_question())
+
+                def kanji_romaji_readings(note: KanjiNote) -> str:
+                    return note.get_romaji_readings()
+
+                def note_question(note_: JPNote) -> str:
+                    return ex_str.strip_html_and_bracket_markup(note_.get_question())
+
+                def note_answer(note_: JPNote) -> str:
+                    return ex_str.strip_html_and_bracket_markup(note_.get_answer())
 
                 # Search in kanji notes
                 matching_notes.extend(self._search_in_notes(
@@ -161,7 +177,8 @@ class NoteSearchDialog(QDialog):
                 # Hide the busy indicator
                 self.progress_bar.hide()
 
-    TNote: TypeVar = TypeVar("TNote", bound=JPNote)
+    TNote = TypeVar("TNote", bound=JPNote)
+
     @staticmethod
     def _search_in_notes(max_notes: int, notes: list[TNote], search_text: str, **extractors: Callable[[TNote], str]) -> list[JPNote]:
         matches: list[JPNote] = []
@@ -254,7 +271,7 @@ class NoteSearchDialog(QDialog):
 
             # Create type column
             self.results_table.setItem(i, 0, QTableWidgetItem(self._get_note_type_display(note)))
-            self.results_table.item(i, 0).setData(Qt.ItemDataRole.UserRole, note.get_id())
+            non_optional(self.results_table.item(i, 0)).setData(Qt.ItemDataRole.UserRole, note.get_id())
 
             self.results_table.setItem(i, 1, self._create_item(note.get_question(), is_question=True))
             self.results_table.setItem(i, 2, self._create_item(note.get_answer()))
@@ -285,14 +302,14 @@ class NoteSearchDialog(QDialog):
     def open_notes_at_rows(self, rows: set[int]) -> None:
         note_ids = []
         for row in rows:
-            note_id = cast(NoteId, self.results_table.item(row, 0).data(Qt.ItemDataRole.UserRole))
+            note_id = cast(NoteId, non_optional(self.results_table.item(row, 0)).data(Qt.ItemDataRole.UserRole))
             if note_id:
                 note_ids.append(note_id)
 
         if note_ids:
             from ankiutils import query_builder, search_executor
             search_executor.do_lookup_and_show_previewer(query_builder.notes_by_id(note_ids))
-            self.instance().activateWindow() #the search will lose our focus, reactivate it
+            self.instance().activateWindow()  # the search will lose our focus, reactivate it
 
     @classmethod
     def toggle_dialog_visibility(cls) -> None:

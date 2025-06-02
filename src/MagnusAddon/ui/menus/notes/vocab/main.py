@@ -23,7 +23,7 @@ def add_toggle_checkbox(menu: QMenu, title: str, field: TagFlagField) -> None:
         field.set_to(value)
         app.get_ui_utils().refresh()
 
-    action = menu.addAction(title)
+    action = non_optional(menu.addAction(title))
     action.setCheckable(True)
     action.setChecked(field.is_set())
     qconnect(action.triggered, set_value)

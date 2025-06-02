@@ -86,8 +86,6 @@ class CardHistoryNavigator:
     @staticmethod
     def _show_card_by_id(card_id: CardId) -> None: search_executor.do_lookup(query_builder.open_card_by_id(card_id))
 
-navigator: CardHistoryNavigator | None = None
+navigator: CardHistoryNavigator = CardHistoryNavigator()
 def init() -> None:
-    global navigator
-    navigator = CardHistoryNavigator()
     gui_hooks.card_will_show.append(navigator.on_card_shown)

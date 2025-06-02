@@ -123,4 +123,4 @@ class UIUtils(IUIUtils, Slots):
 
 def try_get_review_note() -> JPNote | None:
     from note.jpnote import JPNote
-    return JPNote.note_from_card(main_window().reviewer.card) if main_window().reviewer.card else None
+    return JPNote.note_from_card(non_optional(main_window().reviewer.card)) if main_window().reviewer.card else None

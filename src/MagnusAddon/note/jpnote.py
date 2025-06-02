@@ -46,11 +46,7 @@ class JPNote(Slots):
     def __repr__(self) -> str: return self.get_question()
 
     @property
-    def _app(self) -> app:
-        return app
-
-    @property
-    def collection(self) -> JPCollection: return self._app.col()
+    def collection(self) -> JPCollection: return app.col()
 
     def get_question(self) -> str:
         value = self.get_field(MyNoteFields.question).strip()

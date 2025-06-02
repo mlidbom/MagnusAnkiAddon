@@ -89,9 +89,9 @@ class CandidateWordVariant(Slots):
 
         self.is_shadowed = self.token_range().start_location().is_shadowed_by is not None
 
-        self.exact_match_required_by_counterpart_vocab_configuration: bool = self.counterpart.exact_match_required_by_primary_form_vocab_configuration
-        self.exact_match_required: bool = self.exact_match_required_by_primary_form_vocab_configuration or self.exact_match_required_by_counterpart_vocab_configuration
-        self.is_exact_match_requirement_fulfilled: bool = self.form == self.counterpart.form or not self.exact_match_required
+        self.exact_match_required_by_counterpart_vocab_configuration = self.counterpart.exact_match_required_by_primary_form_vocab_configuration
+        self.exact_match_required = self.exact_match_required_by_primary_form_vocab_configuration or self.exact_match_required_by_counterpart_vocab_configuration
+        self.is_exact_match_requirement_fulfilled = self.form == self.counterpart.form or not self.exact_match_required
 
         if self.unexcluded_any_form_vocabs:
             self.display_forms = [match for match in [VocabMatch(self.weak_ref, voc) for voc in self.unexcluded_any_form_vocabs] if match.is_valid]
@@ -125,7 +125,8 @@ class CandidateWordVariant(Slots):
 
     @property
     def preceding_surface(self) -> str:
-        return self.token_range().start_location().previous().token.surface if self.token_range().start_location().previous else ""
+        previous = self.token_range().start_location().previous
+        return previous().token.surface if previous else ""
 
     def to_exclusion(self) -> WordExclusion:
         return WordExclusion.at_index(self.form, self.start_index)

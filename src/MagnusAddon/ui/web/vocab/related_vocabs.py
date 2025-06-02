@@ -95,7 +95,7 @@ def generate_in_compounds_list(_vocab_note: VocabNote) -> str:
 
 def generate_stem_in_compounds_list(_vocab_note: VocabNote) -> str:
     if _vocab_note.question.stems().masu_stem() is None: return ""
-    compound_parts = app.col().vocab.with_compound_part(_vocab_note.question.stems().masu_stem())
+    compound_parts = app.col().vocab.with_compound_part(_vocab_note.question.stems().masu_stem() or "")
     return render_vocab_list(compound_parts, "masu stem is part of compound", css_class="in_compound_words") if compound_parts else ""
 
 def generate_derived_list(_vocab_note: VocabNote) -> str:

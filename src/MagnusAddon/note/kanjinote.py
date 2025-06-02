@@ -30,8 +30,11 @@ class KanjiNote(WaniNote, Slots):
         return set(self.get_radicals_notes())
 
     def tag_vocab_readings(self, vocab: VocabNote) -> list[str]:
-        def primary_reading(read: str) -> str: return f'<span class="kanjiReadingPrimary">{read}</span>'
-        def secondary_reading(read: str) -> str: return f'<span class="kanjiReadingSecondary">{read}</span>'
+        def primary_reading(read: str) -> str:
+            return f'<span class="kanjiReadingPrimary">{read}</span>'
+
+        def secondary_reading(read: str) -> str:
+            return f'<span class="kanjiReadingSecondary">{read}</span>'
 
         primary_readings = self.get_primary_readings()
         secondary_readings = [reading for reading in self.get_readings_clean() if reading not in primary_readings and reading]
@@ -59,8 +62,11 @@ class KanjiNote(WaniNote, Slots):
 
         return result
 
-    def get_question(self) -> str: return self.get_field(NoteFields.Kanji.question)
-    def set_question(self, value: str) -> None: self.set_field(NoteFields.Kanji.question, value)
+    def get_question(self) -> str:
+        return self.get_field(NoteFields.Kanji.question)
+
+    def set_question(self, value: str) -> None:
+        self.set_field(NoteFields.Kanji.question, value)
 
     def get_answer(self) -> str:
         return self.get_user_answer() or self.get_field(NoteFields.Kanji.source_answer)
@@ -68,10 +74,14 @@ class KanjiNote(WaniNote, Slots):
     def get_answer_text(self) -> str:
         return ex_str.strip_html_markup(self.get_answer())
 
-    def get_user_answer(self) -> str: return self.get_field(NoteFields.Kanji.user_answer)
-    def set_user_answer(self, value: str) -> None: return self.set_field(NoteFields.Kanji.user_answer, value)
+    def get_user_answer(self) -> str:
+        return self.get_field(NoteFields.Kanji.user_answer)
 
-    def _set_source_answer(self, value: str) -> None: self.set_field(NoteFields.Kanji.source_answer, value)
+    def set_user_answer(self, value: str) -> None:
+        return self.set_field(NoteFields.Kanji.user_answer, value)
+
+    def _set_source_answer(self, value: str) -> None:
+        self.set_field(NoteFields.Kanji.source_answer, value)
 
     def update_generated_data(self) -> None:
         super().update_generated_data()
@@ -91,22 +101,35 @@ class KanjiNote(WaniNote, Slots):
     def get_vocab_notes(self) -> list[VocabNote]:
         return app.col().vocab.with_kanji_in_any_form(self)
 
-    def get_user_mnemonic(self) -> str: return self.get_field(NoteFields.Kanji.user_mnemonic)
-    def set_user_mnemonic(self, value: str) -> None: self.set_field(NoteFields.Kanji.user_mnemonic, value)
+    def get_user_mnemonic(self) -> str:
+        return self.get_field(NoteFields.Kanji.user_mnemonic)
 
-    def get_readings_on(self) -> list[str]: return ex_str.extract_comma_separated_values(ex_str.strip_html_markup(self.get_reading_on_html()))
-    def get_reading_on_list_html(self) -> list[str]: return ex_str.extract_comma_separated_values(self.get_reading_on_html())
+    def set_user_mnemonic(self, value: str) -> None:
+        self.set_field(NoteFields.Kanji.user_mnemonic, value)
 
-    def get_readings_kun(self) -> list[str]: return ex_str.extract_comma_separated_values(ex_str.strip_html_markup(self.get_reading_kun_html()))
-    def get_reading_kun_list_html(self) -> list[str]: return ex_str.extract_comma_separated_values(self.get_reading_kun_html())
+    def get_readings_on(self) -> list[str]:
+        return ex_str.extract_comma_separated_values(ex_str.strip_html_markup(self.get_reading_on_html()))
 
-    def get_reading_nan_list_html(self) -> list[str]: return ex_str.extract_comma_separated_values(self.get_reading_nan_html())
+    def get_reading_on_list_html(self) -> list[str]:
+        return ex_str.extract_comma_separated_values(self.get_reading_on_html())
+
+    def get_readings_kun(self) -> list[str]:
+        return ex_str.extract_comma_separated_values(ex_str.strip_html_markup(self.get_reading_kun_html()))
+
+    def get_reading_kun_list_html(self) -> list[str]:
+        return ex_str.extract_comma_separated_values(self.get_reading_kun_html())
+
+    def get_reading_nan_list_html(self) -> list[str]:
+        return ex_str.extract_comma_separated_values(self.get_reading_nan_html())
 
     def get_readings_clean(self) -> list[str]:
         return [ex_str.strip_html_markup(reading) for reading in self.get_reading_on_list_html() + self.get_reading_kun_list_html() + self.get_reading_nan_list_html()]
 
-    def get_reading_on_html(self) -> str: return self.get_field(NoteFields.Kanji.Reading_On)
-    def set_reading_on(self, value: str) -> None: self.set_field(NoteFields.Kanji.Reading_On, value)
+    def get_reading_on_html(self) -> str:
+        return self.get_field(NoteFields.Kanji.Reading_On)
+
+    def set_reading_on(self, value: str) -> None:
+        self.set_field(NoteFields.Kanji.Reading_On, value)
 
     primary_reading_pattern = re.compile(r"<primary>(.*?)</primary>")
 
@@ -122,10 +145,14 @@ class KanjiNote(WaniNote, Slots):
     def get_primary_readings_nan(self) -> list[str]:
         return [ex_str.strip_html_markup(reading) for reading in KanjiNote.primary_reading_pattern.findall(self.get_reading_nan_html())]
 
-    def get_reading_kun_html(self) -> str: return self.get_field(NoteFields.Kanji.Reading_Kun)
-    def set_reading_kun(self, value: str) -> None: self.set_field(NoteFields.Kanji.Reading_Kun, value)
+    def get_reading_kun_html(self) -> str:
+        return self.get_field(NoteFields.Kanji.Reading_Kun)
 
-    def get_reading_nan_html(self) -> str: return self.get_field(NoteFields.Kanji.Reading_Nan)
+    def set_reading_kun(self, value: str) -> None:
+        self.set_field(NoteFields.Kanji.Reading_Kun, value)
+
+    def get_reading_nan_html(self) -> str:
+        return self.get_field(NoteFields.Kanji.Reading_Nan)
 
     def add_primary_on_reading(self, reading: str) -> None:
         self.set_reading_on(ex_str.replace_word(reading, f"<primary>{reading}</primary>", self.get_reading_on_html()))
@@ -139,8 +166,11 @@ class KanjiNote(WaniNote, Slots):
     def remove_primary_kun_reading(self, reading: str) -> None:
         self.set_reading_kun(self.get_reading_kun_html().replace(f"<primary>{reading}</primary>", reading))
 
-    def get_radicals(self) -> list[str]: return [rad for rad in ex_str.extract_comma_separated_values(self.get_field(NoteFields.Kanji.Radicals)) if rad != self.get_question()]
-    def _set_radicals(self, value: str) -> None: self.set_field(NoteFields.Kanji.Radicals, value)
+    def get_radicals(self) -> list[str]:
+        return [rad for rad in ex_str.extract_comma_separated_values(self.get_field(NoteFields.Kanji.Radicals)) if rad != self.get_question()]
+
+    def _set_radicals(self, value: str) -> None:
+        self.set_field(NoteFields.Kanji.Radicals, value)
 
     def get_radicals_notes(self) -> list[KanjiNote]:
         return [kanji_radical for kanji_radical in (app.col().kanji.with_kanji(radical) for radical in self.get_radicals()) if kanji_radical]
@@ -150,7 +180,9 @@ class KanjiNote(WaniNote, Slots):
             else f"# {kanjinote_mnemonic_maker.create_default_mnemonic(self)}" if app.config().prefer_default_mnemocs_to_source_mnemonics.get_value() \
             else self.get_source_meaning_mnemonic()
 
-    def get_user_similar_meaning(self) -> set[str]: return set(ex_str.extract_comma_separated_values(self.get_field(NoteFields.Kanji.user_similar_meaning)))
+    def get_user_similar_meaning(self) -> set[str]:
+        return set(ex_str.extract_comma_separated_values(self.get_field(NoteFields.Kanji.user_similar_meaning)))
+
     def add_user_similar_meaning(self, new_synonym_question: str, _is_recursive_call: bool = False) -> None:
         near_synonyms_questions = self.get_user_similar_meaning()
         near_synonyms_questions.add(new_synonym_question)
@@ -162,30 +194,47 @@ class KanjiNote(WaniNote, Slots):
             if new_synonym:
                 new_synonym.add_user_similar_meaning(self.get_question(), _is_recursive_call=True)
 
-    def get_source_meaning_mnemonic(self) -> str: return self.get_field(NoteFields.Kanji.Source_Meaning_Mnemonic)
-    def set_source_meaning_mnemonic(self, value: str) -> None: self.set_field(NoteFields.Kanji.Source_Meaning_Mnemonic, value)
+    def get_source_meaning_mnemonic(self) -> str:
+        return self.get_field(NoteFields.Kanji.Source_Meaning_Mnemonic)
 
-    def get_related_confused_with(self) -> set[str]: return set(ex_str.extract_comma_separated_values(self.get_field(NoteFields.Kanji.related_confused_with)))
+    def set_source_meaning_mnemonic(self, value: str) -> None:
+        self.set_field(NoteFields.Kanji.Source_Meaning_Mnemonic, value)
+
+    def get_related_confused_with(self) -> set[str]:
+        return set(ex_str.extract_comma_separated_values(self.get_field(NoteFields.Kanji.related_confused_with)))
+
     def add_related_confused_with(self, new_confused_with: str) -> None:
         confused_with = self.get_related_confused_with()
         confused_with.add(new_confused_with)
         self.set_field(NoteFields.Kanji.related_confused_with, ", ".join(confused_with))
 
-    def set_meaning_hint(self, value: str) -> None: self.set_field(NoteFields.Kanji.Meaning_Info, value if value is not None else "")
-    def set_reading_mnemonic(self, value: str) -> None: self.set_field(NoteFields.Kanji.Reading_Mnemonic, value)
-    def set_reading_hint(self, value: str) -> None: self.set_field(NoteFields.Kanji.Reading_Info, value if value is not None else "")
-    def get_primary_vocabs_or_defaults(self) -> list[str]: return self.get_primary_vocab() if self.get_primary_vocab() else self.generate_default_primary_vocab()
+    def set_meaning_hint(self, value: str) -> None:
+        self.set_field(NoteFields.Kanji.Meaning_Info, value if value is not None else "")
 
-    def get_primary_vocab(self) -> list[str]: return ex_str.extract_comma_separated_values(self.get_field(NoteFields.Kanji.PrimaryVocab))
-    def set_primary_vocab(self, value: list[str]) -> None: self.set_field(NoteFields.Kanji.PrimaryVocab, ", ".join(value))
+    def set_reading_mnemonic(self, value: str) -> None:
+        self.set_field(NoteFields.Kanji.Reading_Mnemonic, value)
+
+    def set_reading_hint(self, value: str) -> None:
+        self.set_field(NoteFields.Kanji.Reading_Info, value if value is not None else "")
+
+    def get_primary_vocabs_or_defaults(self) -> list[str]:
+        return self.get_primary_vocab() if self.get_primary_vocab() else self.generate_default_primary_vocab()
+
+    def get_primary_vocab(self) -> list[str]:
+        return ex_str.extract_comma_separated_values(self.get_field(NoteFields.Kanji.PrimaryVocab))
+
+    def set_primary_vocab(self, value: list[str]) -> None:
+        self.set_field(NoteFields.Kanji.PrimaryVocab, ", ".join(value))
 
     _any_word_pattern = re.compile(r"\b[-\w]+\b", re.UNICODE)
+
     def get_primary_meaning(self) -> str:
         radical_meaning_match = self._any_word_pattern.search(self.get_answer_text().replace("{", "").replace("}", ""))
         # noinspection PyArgumentEqualDefault
         return radical_meaning_match.group(0) if radical_meaning_match else ""
 
     _parenthesized_word_pattern = re.compile(r"\([-\w]+\)", re.UNICODE)
+
     def get_primary_radical_meaning(self) -> str:
         def get_dedicated_radical_primary_meaning() -> str:
             radical_meaning_match = self._parenthesized_word_pattern.search(self.get_answer_text())
@@ -241,7 +290,8 @@ class KanjiNote(WaniNote, Slots):
     def remove_primary_vocab(self, vocab: str) -> None:
         self.set_primary_vocab([v for v in self.get_primary_vocab() if v != vocab])
 
-    def set_primary_vocab_audio(self, value: str) -> None: self.set_field(NoteFields.Kanji.Audio__, value)
+    def set_primary_vocab_audio(self, value: str) -> None:
+        self.set_field(NoteFields.Kanji.Audio__, value)
 
     def bootstrap_mnemonic_from_radicals(self) -> None:
         self.set_user_mnemonic(kanjinote_mnemonic_maker.create_default_mnemonic(self))
@@ -276,7 +326,7 @@ class KanjiNote(WaniNote, Slots):
         radicals_with_characters = [radical for radical in radicals if radical.characters is not None]
 
         radical_characters = [radical.characters for radical in radicals_with_characters]
-        if self.get_radicals() == "":  # Absolutely never overwrite any locally configured kanji with stuff from wani that has a completely different strategy for radicals
+        if len(self.get_radicals()) == 0:  # Absolutely never overwrite any locally configured kanji with stuff from wani that has a completely different strategy for radicals
             self._set_radicals(", ".join(radical_characters))
 
     def populate_radicals_from_mnemonic_tags(self) -> None:

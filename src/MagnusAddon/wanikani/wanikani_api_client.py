@@ -52,7 +52,6 @@ class WanikaniClient(Slots):
                 # noinspection PyInconsistentReturns
                 progress.close()
 
-
             self._is_initialized = True
         return self
 
@@ -72,15 +71,14 @@ class WanikaniClient(Slots):
             try:
                 client = self._client
 
-                self._kana_vocab_list: list[models.Vocabulary] = list(client.subjects(types="kana_vocabulary", fetch_all=True))
-
+                self._kana_vocab_list = list(client.subjects(types="kana_vocabulary", fetch_all=True))
                 self._kana_vocab_list = [kana_vocab for kana_vocab in self._kana_vocab_list if kana_vocab.hidden_at is None]
+
                 self._kana_vocab_dictionary = {vocab.characters: vocab for vocab in self._kana_vocab_list}
                 self._kana_vocab_id_dictionary = {vocab.id: vocab for vocab in self._kana_vocab_list}
             finally:
                 # noinspection PyInconsistentReturns
                 progress.close()
-
 
         return self._kana_vocab_list
 
