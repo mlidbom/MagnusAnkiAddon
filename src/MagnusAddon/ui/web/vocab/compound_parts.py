@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from anki.notes import NoteId
+from typing import TYPE_CHECKING
 
 from ankiutils import app
 from aqt import gui_hooks
@@ -8,6 +8,9 @@ from note.vocabulary.vocabnote import VocabNote
 from sysutils import ex_sequence
 from sysutils.ex_str import newline
 from ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
+
+if TYPE_CHECKING:
+    from anki.notes import NoteId
 
 
 class CompoundPart:
