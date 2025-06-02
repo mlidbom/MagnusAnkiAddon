@@ -26,8 +26,14 @@ class CandidateWord(Slots):
         self.location_count = len(self.locations)
         self.weakref = WeakRef(self)
 
-        self.base: CandidateWordBaseVariant = CandidateWordBaseVariant(self.weakref)
-        self.surface: CandidateWordSurfaceVariant = CandidateWordSurfaceVariant(self.weakref)
+        surface_form = "".join([t().token.surface for t in self.locations])
+
+        base_form = "".join([location().token.surface for location in self.locations[:-1]]) + self.locations[-1]().token.base_form
+        if not self.is_custom_compound:
+            base_form = self.locations[-1]().token.base_form_for_non_compound_vocab_matching
+
+        self.surface: CandidateWordSurfaceVariant = CandidateWordSurfaceVariant(self.weakref, surface_form)
+        self.base: CandidateWordBaseVariant = CandidateWordBaseVariant(self.weakref, base_form)
 
         self.is_word: bool = self.surface.is_word or self.base.is_word
 
