@@ -134,7 +134,7 @@ class CandidateWordVariant(Slots):
         return f"""CandidateWord:({self.form}, {self.is_valid_candidate})"""
 
 class CandidateWordSurfaceVariant(CandidateWordVariant, Slots):
-    def __init__(self, token_range: WeakRef[CandidateWord], form) -> None:
+    def __init__(self, token_range: WeakRef[CandidateWord], form: str) -> None:
         super().__init__(token_range, form, is_base=False)
 
         if (not token_range().is_custom_compound
@@ -145,7 +145,7 @@ class CandidateWordSurfaceVariant(CandidateWordVariant, Slots):
     def counterpart(self) -> CandidateWordVariant: return non_optional(self.token_range().base)
 
 class CandidateWordBaseVariant(CandidateWordVariant, Slots):
-    def __init__(self, candidate_word: WeakRef[CandidateWord], form) -> None:
+    def __init__(self, candidate_word: WeakRef[CandidateWord], form: str) -> None:
         super().__init__(candidate_word, form, is_base=True)
 
         self.surface_is_not: set[str] = set().union(*[v.matching_rules.rules.surface_is_not.get() for v in self.unexcluded_any_form_vocabs])
