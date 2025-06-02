@@ -51,8 +51,12 @@ def init() -> None:
             sentence.source_comments.empty()
             app.get_ui_utils().refresh()
 
-    def toggle_show_compound_parts() -> None:
+    def toggle_show_compound_parts_in_sentence_breakdown() -> None:
         app.config().show_compound_parts_in_sentence_breakdown.set_value(not app.config().show_compound_parts_in_sentence_breakdown.get_value())
+        app.get_ui_utils().refresh()
+
+    def toggle_show_all_words_in_sentence_breakdown() -> None:
+        app.config().show_all_matched_words_in_sentence_breakdown.set_value(not app.config().show_all_matched_words_in_sentence_breakdown.get_value())
         app.get_ui_utils().refresh()
 
     def disable_shortcut(widget: QWidget, shortcut: str) -> None:
@@ -81,7 +85,8 @@ def init() -> None:
         for key, callback in stortcuts.items():
             state_shortcuts.append((key, callback))
 
-    stortcuts: dict[str, Callable[[], None]] = {"1": toggle_show_compound_parts,
+    stortcuts: dict[str, Callable[[], None]] = {"1": toggle_show_compound_parts_in_sentence_breakdown,
+                                                "2": toggle_show_all_words_in_sentence_breakdown,
                                                 "0": remove_mnemonic,
                                                 "7": reset_source_comments,
                                                 "8": reset_incorrect_matches,

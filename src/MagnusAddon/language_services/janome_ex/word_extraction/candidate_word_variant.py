@@ -23,7 +23,7 @@ if TYPE_CHECKING:
 class CandidateWordVariant(Slots):
     __slots__ = ["__weakref__"]
 
-    def __init__(self, token_range: WeakRef[CandidateWord], form: str, is_base: bool) -> None:
+    def __init__(self, candidate_word: WeakRef[CandidateWord], form: str, is_base: bool) -> None:
         self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
 
         self.is_base = is_base
@@ -31,9 +31,9 @@ class CandidateWordVariant(Slots):
         self.weak_ref = WeakRef(self)
         from language_services.jamdict_ex.dict_lookup import DictLookup
 
-        self.start_index: int = token_range().start_location().character_start_index
-        self.configuration: SentenceConfiguration = token_range().analysis().configuration
-        self.candidate_word: WeakRef[CandidateWord] = token_range
+        self.start_index: int = candidate_word().start_location().character_start_index
+        self.configuration: SentenceConfiguration = candidate_word().analysis().configuration
+        self.candidate_word: WeakRef[CandidateWord] = candidate_word
         self.form: str = form
 
         self.dict_lookup: DictLookup = DictLookup.lookup_word(form)
@@ -73,11 +73,14 @@ class CandidateWordVariant(Slots):
         self.is_self_excluded = False
         self.completed_analysis = False
         self.is_valid_candidate: bool = False
-        self.is_shadowed: bool = False
         self.starts_with_non_word_token = self.candidate_word().start_location().token.is_non_word_character
 
         self.matches: list[Match] = []
         self.only_requires_being_a_word_to_be_a_valid_candidate = False
+
+    @property
+    def is_shadowed(self) -> bool:
+        return self.candidate_word().start_location().is_shadowed_by is not None
 
     @property
     def counterpart(self) -> CandidateWordVariant | None:
@@ -85,8 +88,6 @@ class CandidateWordVariant(Slots):
 
     def complete_analysis(self) -> None:
         if self.completed_analysis: return
-
-        self.is_shadowed = self.candidate_word().start_location().is_shadowed_by is not None
 
         self.exact_match_required_by_counterpart_vocab_configuration = self.counterpart is not None and self.counterpart.exact_match_required_by_primary_form_vocab_configuration
         self.exact_match_required = self.exact_match_required_by_primary_form_vocab_configuration or self.exact_match_required_by_counterpart_vocab_configuration
@@ -134,11 +135,11 @@ class CandidateWordVariant(Slots):
         return f"""CandidateWord:({self.form}, {self.is_valid_candidate})"""
 
 class CandidateWordSurfaceVariant(CandidateWordVariant, Slots):
-    def __init__(self, token_range: WeakRef[CandidateWord], form: str) -> None:
-        super().__init__(token_range, form, is_base=False)
+    def __init__(self, candidate_word: WeakRef[CandidateWord], form: str) -> None:
+        super().__init__(candidate_word, form, is_base=False)
 
-        if (not token_range().is_custom_compound
-                and token_range().locations[-1]().token.do_not_match_surface_for_non_compound_vocab):
+        if (not candidate_word().is_custom_compound
+                and candidate_word().locations[-1]().token.do_not_match_surface_for_non_compound_vocab):
             self.is_self_excluded = True
 
     @property
@@ -154,13 +155,14 @@ class CandidateWordBaseVariant(CandidateWordVariant, Slots):
     def complete_analysis(self) -> None:
         super().complete_analysis()
 
-        if self.counterpart.form in self.surface_is_not:
-            self.is_self_excluded = True
-            self.is_valid_candidate = False
+        if self.counterpart is not None:
+            if self.counterpart.form in self.surface_is_not:
+                self.is_self_excluded = True
+                self.is_valid_candidate = False
 
-        self.surface_preferred_over_bases = set().union(*[vocab.matching_rules.rules.prefer_over_base.get() for vocab in self.counterpart.unexcluded_any_form_vocabs])
-        if self.form in self.surface_preferred_over_bases:
-            self.is_valid_candidate = False
+            self.surface_preferred_over_bases = set().union(*[vocab.matching_rules.rules.prefer_over_base.get() for vocab in self.counterpart.unexcluded_any_form_vocabs])
+            if self.form in self.surface_preferred_over_bases:
+                self.is_valid_candidate = False
 
     @property
     def counterpart(self) -> CandidateWordVariant | None:

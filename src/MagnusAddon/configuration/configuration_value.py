@@ -85,6 +85,7 @@ class JapaneseConfig(Slots):
         self.enable_automatic_garbage_collection = ConfigurationValueBool("enable_automatic_garbage_collection", "Enable automatic GC. Requires restart. (Reduces memory usage the most but slows Anki down and may cause crashes due to Qt incompatibility.", False)
         self.track_instances_in_memory = ConfigurationValueBool("track_instances_in_memory", "Track instances in memory. Requires restart. Only useful to developers and will use extra memory.", False)
         self.show_compound_parts_in_sentence_breakdown = ConfigurationValueBool("show_compound_parts_in_sentence_breakdown", "Show compound parts in sentence breakdown", True)
+        self.show_all_matched_words_in_sentence_breakdown = ConfigurationValueBool("show_all_matched_words_in_sentence_breakdown", "Show all matched words in sentence breakdown", False)
 
         self.decrease_failed_card_intervals_interval = ConfigurationValueInt("decrease_failed_card_intervals_interval", "Failed card again seconds for next again", 60)
 
@@ -92,6 +93,7 @@ class JapaneseConfig(Slots):
         self.minimum_time_viewing_answer = ConfigurationValueFloat("minimum_time_viewing_answer", "Minimum time viewing answer", 0.5)
 
         self.feature_toggles = [self.show_compound_parts_in_sentence_breakdown,
+                                self.show_all_matched_words_in_sentence_breakdown,
                                 self.yomitan_integration_copy_answer_to_clipboard,
                                 self.anki_internal_fsrs_set_enable_fsrs_short_term_with_steps,
                                 self.decrease_failed_card_intervals,
