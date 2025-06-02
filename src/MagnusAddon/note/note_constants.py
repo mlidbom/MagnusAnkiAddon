@@ -158,6 +158,7 @@ class Tags(Slots):
 
         class Matching:
             yield_last_token_to_overlapping_compound = f"{f_vocab_matching}yield-last-token-to-upcoming-compound"
+            is_poison_word = f"{f_vocab_matching}is-poison-word"
             is_inflecting_word = f"{f_vocab_matching}is-inflecting-word"
 
             class Requires:
