@@ -68,18 +68,17 @@
 
             &.highlighted .vocabQuestion { color: var(--colorTextBold); }
 
-            &.secondary_match, &.shadowed, &.hidden_word { padding-left: 30px; }
+            &.secondary_match, &.shadowed { padding-left: 30px; }
+            &.secondary_match.shadowed { padding-left: 60px; }
             &.secondary_match {
-                &, & .vocab_tag { background-color: color-mix(in lch, var(--colorBgOffset1), white 20%);}
+                &, & .vocab_tag { background-color: color-mix(in lch, var(--colorBgOffset1), white 30%);}
             }
-            &.shadowed, &.hidden_word {
-                &, & .vocab_tag {background-color: color-mix(in lch, var(--colorBgOffset1), black 6%);}
+            &.shadowed {
+                &, & .vocab_tag {background-color: color-mix(in lch, var(--colorBgOffset1), white 15%);}
             }
 
             &.compound_part {
-                div.sentenceVocabEntryDiv {
-                    &, & .vocab_tag {background-color: color-mix(in lch, var(--colorBgOffset1), black 6%);}
-                }
+                &, & .vocab_tag {background-color: color-mix(in lch, var(--colorBgOffset1), black 6%);}
 
                 &.highlighted div.sentenceVocabEntryDiv .vocabQuestion { color: var(--colorTextBold); }
 

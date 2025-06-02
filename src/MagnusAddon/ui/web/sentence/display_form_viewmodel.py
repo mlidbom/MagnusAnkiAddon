@@ -47,10 +47,7 @@ class DisplayFormViewModel:
         tags = self._meta_tags
         tags += " highlighted" if self.is_highlighted else ""
         tags += " shadowed" if self.is_shadowed else ""
-        tags += " display_word" if self.is_display_word else ""
-        tags += " hidden_word" if not self.is_display_word else ""
         tags += " secondary_match" if not self.is_primary_match() else ""
-        tags += " primary_match" if self.is_primary_match() else ""
         return tags
 
     @property
