@@ -43,7 +43,7 @@ class CandidateWord(Slots):
 
         self.should_include_surface_in_all_words: bool = False
         self.should_include_base_in_all_words: bool = False
-        self.all_words: list[CandidateWordVariant] = []
+        self.valid_variants: list[CandidateWordVariant] = []
         self.display_variants: list[CandidateWordVariant] = []
 
     def complete_analysis(self) -> None:
@@ -61,11 +61,11 @@ class CandidateWord(Slots):
                                                         and not self.is_inflected_word
                                                         and (self.base is None or self.surface.form != self.base.form)))
 
-        self.all_words = []
+        self.valid_variants = []
         if self.base is not None and self.should_include_base_in_all_words:
-            self.all_words.append(self.base)
+            self.valid_variants.append(self.base)
         if self.should_include_surface_in_all_words:
-            self.all_words.append(self.surface)
+            self.valid_variants.append(self.surface)
 
         # todo: may result in no matches, and I'm not sure we should say that only one is ever allowed to be included
         if self.should_include_surface_in_all_words:
@@ -73,7 +73,7 @@ class CandidateWord(Slots):
         elif self.base is not None and self.should_include_base_in_all_words:
             self.display_variants.append(self.base)
 
-    def has_valid_words(self) -> bool: return len(self.all_words) > 0
+    def has_valid_words(self) -> bool: return len(self.valid_variants) > 0
 
     def __repr__(self) -> str: return f"""
 surface: {self.surface.__repr__()} | base:{self.base.__repr__()},
