@@ -62,14 +62,14 @@ class TextAnalysis(Slots):
             if token_index > 0:
                 location.previous = self.locations[token_index - 1].weakref
 
-    def _analysis_step_3_calculate_preference_between_overlapping_valid_candidates(self) -> None:
+    def _analysis_step_1_analyze_non_compound(self) -> None:
         for location in self.locations:
-            location.analysis_step_3_calculate_preference_between_overlapping_valid_candidates()
+            location.analysis_step_1_analyze_non_compound()
 
     def _analysis_step_2_analyze_compounds(self) -> None:
         for location in self.locations:
             location.analysis_step_2_analyze_compounds()
 
-    def _analysis_step_1_analyze_non_compound(self) -> None:
+    def _analysis_step_3_calculate_preference_between_overlapping_valid_candidates(self) -> None:
         for location in self.locations:
-            location.analysis_step_1_analyze_non_compound()
+            location.analysis_step_3_calculate_preference_between_overlapping_valid_candidates()
