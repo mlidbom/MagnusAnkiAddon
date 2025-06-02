@@ -116,7 +116,9 @@ test_special_vocab: list[VocabSpec] = [
     VocabSpec("ている", "is-_-ing", readings=["ている"]),
     VocabSpec("にする", "to: turn-into", readings=["にする"]),
     VocabSpec("のか", tags=[vm.Requires.sentence_end]),
-    VocabSpec("ないと", tags=[vm.yield_to_upcoming_compounds]),
+    VocabSpec("ないと", tags=[vm.yield_last_token_to_overlapping_compound]),
+    VocabSpec("して", tags=[vm.yield_last_token_to_overlapping_compound]),
+    VocabSpec("ても"),
     VocabSpec("と思う")
 ]
 

@@ -51,7 +51,7 @@ class VocabNoteMatching(Slots):
         self.requires_e_stem: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.Requires.e_stem)
         self.requires_sentence_end: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.Requires.sentence_end)
         self.forbids_a_stem: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.Forbids.a_stem)
-        self.yield_last_token_to_overlapping_compound: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.yield_to_upcoming_compounds)
+        self.yield_last_token_to_overlapping_compound: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.yield_last_token_to_overlapping_compound)
         self.match_with_preceding_vowel: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.Todo.with_preceding_vowel)
         self.question_overrides_form: QuestionOverridesForm = QuestionOverridesForm(vocab)
         self.is_strictly_suffix: IsStrictlySuffix = IsStrictlySuffix(vocab)
