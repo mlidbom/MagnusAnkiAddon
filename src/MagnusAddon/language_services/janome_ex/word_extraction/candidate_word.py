@@ -16,7 +16,7 @@ from sysutils.typed import non_optional
 from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.location_range import LocationRange
+    from language_services.janome_ex.word_extraction.location_range import CandidateWord
     from language_services.janome_ex.word_extraction.match import Match
     from note.sentences.sentence_configuration import SentenceConfiguration
     from note.vocabulary.vocabnote import VocabNote
@@ -24,7 +24,7 @@ if TYPE_CHECKING:
 class CandidateWordVariant(Slots):
     __slots__ = ["__weakref__"]
 
-    def __init__(self, token_range: WeakRef[LocationRange], form: str, is_base: bool) -> None:
+    def __init__(self, token_range: WeakRef[CandidateWord], form: str, is_base: bool) -> None:
         self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
 
         self.is_base = is_base
@@ -34,7 +34,7 @@ class CandidateWordVariant(Slots):
 
         self.start_index: int = token_range().start_location().character_start_index
         self.configuration: SentenceConfiguration = token_range().analysis().configuration
-        self.token_range: WeakRef[LocationRange] = token_range
+        self.token_range: WeakRef[CandidateWord] = token_range
         self.form: str = form
 
         self.dict_lookup: DictLookup = DictLookup.lookup_word(form)
@@ -124,12 +124,8 @@ class CandidateWordVariant(Slots):
         return self.preceding_surface != "" and self.preceding_surface[-1] not in non_word_characters
 
     @property
-    def prefix(self) -> str:
-        return self.preceding_surface[-1] if self.has_prefix else ""
-
-    @property
     def preceding_surface(self) -> str:
-        return self.token_range().start_location().previous().surface if self.token_range().start_location().previous else ""
+        return self.token_range().start_location().previous().token.surface if self.token_range().start_location().previous else ""
 
     def to_exclusion(self) -> WordExclusion:
         return WordExclusion.at_index(self.form, self.start_index)
@@ -138,8 +134,8 @@ class CandidateWordVariant(Slots):
         return f"""CandidateWord:({self.form}, {self.is_valid_candidate})"""
 
 class CandidateWordSurfaceVariant(CandidateWordVariant, Slots):
-    def __init__(self, token_range: WeakRef[LocationRange]) -> None:
-        super().__init__(token_range, "".join([t().surface for t in token_range().locations]) + "", is_base=False)
+    def __init__(self, token_range: WeakRef[CandidateWord]) -> None:
+        super().__init__(token_range, "".join([t().token.surface for t in token_range().locations]) + "", is_base=False)
 
         if (not token_range().is_custom_compound
                 and token_range().locations[-1]().token.do_not_match_surface_for_non_compound_vocab):
@@ -149,12 +145,12 @@ class CandidateWordSurfaceVariant(CandidateWordVariant, Slots):
     def counterpart(self) -> CandidateWordVariant: return non_optional(self.token_range().base)
 
 class CandidateWordBaseVariant(CandidateWordVariant, Slots):
-    def __init__(self, token_range: WeakRef[LocationRange]) -> None:
-        base_form = "".join([t().surface for t in token_range().locations[:-1]]) + token_range().locations[-1]().base
-        if not token_range().is_custom_compound:
-            base_form = token_range().locations[-1]().token.base_form_for_non_compound_vocab_matching
+    def __init__(self, candidate_word: WeakRef[CandidateWord]) -> None:
+        base_form = "".join([location().token.surface for location in candidate_word().locations[:-1]]) + candidate_word().locations[-1]().token.base_form
+        if not candidate_word().is_custom_compound:
+            base_form = candidate_word().locations[-1]().token.base_form_for_non_compound_vocab_matching
 
-        super().__init__(token_range, base_form, is_base=True)
+        super().__init__(candidate_word, base_form, is_base=True)
 
         self.surface_is_not: set[str] = set().union(*[v.matching_rules.rules.surface_is_not.get() for v in self.unexcluded_any_form_vocabs])
         self.surface_preferred_over_bases: set[str] = set()

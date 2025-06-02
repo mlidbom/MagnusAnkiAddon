@@ -9,21 +9,21 @@ from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
-    from language_services.janome_ex.word_extraction.text_location import TokenTextLocation
+    from language_services.janome_ex.word_extraction.text_location import TextAnalysisLocation
 
 from sysutils.ex_str import newline
 
 
-class LocationRange(Slots):
+class CandidateWord(Slots):
     __slots__ = ["__weakref__"]
-    def __init__(self, locations: list[WeakRef[TokenTextLocation]]) -> None:
+    def __init__(self, locations: list[WeakRef[TextAnalysisLocation]]) -> None:
         self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
         self.analysis: WeakRef[TextAnalysis] = locations[0]().analysis
-        self.locations: list[WeakRef[TokenTextLocation]] = locations
+        self.locations: list[WeakRef[TextAnalysisLocation]] = locations
         self.is_custom_compound: bool = len(locations) > 1
-        self.start_location: WeakRef[TokenTextLocation] = self.locations[0]
-        self.end_location: WeakRef[TokenTextLocation] = self.locations[-1]
-        self.length = len(self.locations)
+        self.start_location: WeakRef[TextAnalysisLocation] = self.locations[0]
+        self.end_location: WeakRef[TextAnalysisLocation] = self.locations[-1]
+        self.location_count = len(self.locations)
         self.weakref = WeakRef(self)
 
         self.base: CandidateWordBaseVariant = CandidateWordBaseVariant(self.weakref)

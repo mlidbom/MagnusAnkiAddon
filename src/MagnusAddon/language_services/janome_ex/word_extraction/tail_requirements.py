@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from autoslot import Slots
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.text_location import TokenTextLocation
+    from language_services.janome_ex.word_extraction.text_location import TextAnalysisLocation
     from note.vocabulary.vocabnote import VocabNote
     from sysutils.weak_ref import WeakRef
 
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 _quote_characters = {"と", "って"}
 
 class TailRequirements(Slots):
-    def __init__(self, vocab: VocabNote, tail:WeakRef[TokenTextLocation]) -> None:
+    def __init__(self, vocab: VocabNote, tail:WeakRef[TextAnalysisLocation]) -> None:
         self.config = vocab.matching_rules
         self.are_fulfilled = True
         if self.config.requires_sentence_end.is_set():

@@ -16,42 +16,38 @@ if TYPE_CHECKING:
 
 from typing import Optional
 
-from language_services.janome_ex.word_extraction.location_range import LocationRange
+from language_services.janome_ex.word_extraction.location_range import CandidateWord
 from sysutils.ex_str import newline
 
 _max_lookahead = 12
 
-class TokenTextLocation(Slots):
+class TextAnalysisLocation(Slots):
     __slots__ = ["__weakref__"]
 
     def __init__(self, analysis: WeakRef[TextAnalysis], token: ProcessedToken, character_start_index: int, token_index: int) -> None:
         self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
-        surface = token.surface
-        base = token.base_form
-        self.is_shadowed_by: Optional[WeakRef[TokenTextLocation]] = None
         self.token: ProcessedToken = token
+        self.is_shadowed_by: Optional[WeakRef[TextAnalysisLocation]] = None
         self.analysis: WeakRef[TextAnalysis] = analysis
         self.token_index: int = token_index
         self.character_start_index: int = character_start_index
-        self.character_end_index: int = character_start_index + len(surface) - 1
-        self.surface: str = surface
-        self.base: str = base
+        self.character_end_index: int = character_start_index + len(self.token.surface) - 1
 
-        self.word_candidates: list[LocationRange] = []
-        self.valid_candidates: list[LocationRange] = []
+        self.candidate_words_starting_here: list[CandidateWord] = []
+        self.valid_words_starting_here: list[CandidateWord] = []
         self.display_variants: list[CandidateWordVariant] = []
         self.all_words: list[CandidateWordVariant] = []
-        self.all_candidate_ranges: list[LocationRange] = []
-        self.next: Optional[WeakRef[TokenTextLocation]] = None
-        self.previous: Optional[WeakRef[TokenTextLocation]] = None
+        self.all_candidate_ranges: list[CandidateWord] = []
+        self.next: Optional[WeakRef[TextAnalysisLocation]] = None
+        self.previous: Optional[WeakRef[TextAnalysisLocation]] = None
 
     def __repr__(self) -> str:
         return f"""
-TextLocation('{self.character_start_index}-{self.character_end_index}, {self.surface} | {self.base})
-{newline.join([cand.__repr__() for cand in self.word_candidates])}
+TextLocation('{self.character_start_index}-{self.character_end_index}, {self.token.surface} | {self.token.base_form})
+{newline.join([cand.__repr__() for cand in self.candidate_words_starting_here])}
 """
 
-    def forward_list(self, length: int = 99999) -> list[TokenTextLocation]:
+    def forward_list(self, length: int = 99999) -> list[TextAnalysisLocation]:
         return self.analysis().locations[self.token_index: self.token_index + length + 1]
 
     def analysis_step_1_connect_next_and_previous(self) -> None:
@@ -63,22 +59,22 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.sur
 
     def analysis_step_2_analyze_non_compound(self) -> None:
         lookahead_max = min(_max_lookahead, len(self.forward_list(_max_lookahead)))
-        self.all_candidate_ranges = [LocationRange([WeakRef(location) for location in self.forward_list(index)]) for index in range(lookahead_max - 1, -1, -1)]
+        self.all_candidate_ranges = [CandidateWord([WeakRef(location) for location in self.forward_list(index)]) for index in range(lookahead_max - 1, -1, -1)]
         self.all_candidate_ranges[-1].complete_analysis()  # the non-compound part needs to be completed first
 
     def analysis_step_3_analyze_compounds(self) -> None:
         for range_ in self.all_candidate_ranges[:-1]:  # we already have the last one completed
             range_.complete_analysis()
 
-        self.word_candidates = [candidate for candidate in self.all_candidate_ranges if candidate.is_word]
-        self.valid_candidates = [candidate for candidate in self.all_candidate_ranges if candidate.has_valid_words()]
-        self.all_words = ex_sequence.flatten([v.all_words for v in self.valid_candidates])
+        self.candidate_words_starting_here = [candidate for candidate in self.all_candidate_ranges if candidate.is_word]
+        self.valid_words_starting_here = [candidate for candidate in self.all_candidate_ranges if candidate.has_valid_words()]
+        self.all_words = ex_sequence.flatten([v.all_words for v in self.valid_words_starting_here])
 
     def analysis_step_4_calculate_preference_between_overlapping_valid_candidates(self) -> None:
-        if self.valid_candidates and self.is_shadowed_by is None:
-            self.display_variants = self.valid_candidates[0].display_variants
+        if self.valid_words_starting_here and self.is_shadowed_by is None:
+            self.display_variants = self.valid_words_starting_here[0].display_variants
 
-            covering_forward_count = self.valid_candidates[0].length - 1
+            covering_forward_count = self.valid_words_starting_here[0].location_count - 1
             for location in self.forward_list(covering_forward_count)[1:]:
                 location.is_shadowed_by = WeakRef(self)
 
@@ -87,5 +83,5 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.sur
 
     # todo: having this check here only means that marking a compound as an inflecting word has no effect, and figuring out why things are not working can be quite a pain
     def is_inflecting_word(self) -> bool:
-        vocab = app.col().vocab.with_form(self.base)
+        vocab = app.col().vocab.with_form(self.token.base_form)
         return any(voc for voc in vocab if voc.has_tag(Tags.Vocab.Matching.is_inflecting_word))

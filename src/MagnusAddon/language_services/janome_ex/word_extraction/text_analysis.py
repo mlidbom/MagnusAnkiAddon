@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.candidate_word import CandidateWordVariant
 
 from language_services.janome_ex.tokenizing.jn_tokenizer import JNTokenizer
-from language_services.janome_ex.word_extraction.text_location import TokenTextLocation
+from language_services.janome_ex.word_extraction.text_location import TextAnalysisLocation
 from note.sentences.sentence_configuration import SentenceConfiguration
 from sysutils import ex_sequence
 
@@ -27,11 +27,11 @@ class TextAnalysis(Slots):
         self.configuration = sentence_configuration
         self.tokens: list[ProcessedToken] = _tokenizer.tokenize(sentence).pre_process()
 
-        self.locations: list[TokenTextLocation] = []
+        self.locations: list[TextAnalysisLocation] = []
 
         character_index = 0
         for token_index, token in enumerate(self.tokens):
-            self.locations.append(TokenTextLocation(WeakRef(self), token, character_index, token_index))
+            self.locations.append(TextAnalysisLocation(WeakRef(self), token, character_index, token_index))
             character_index += len(token.surface)
 
         self.start_location = self.locations[0]
