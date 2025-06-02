@@ -33,9 +33,9 @@ class CandidateWord(Slots):
             base_form = self.locations[-1]().token.base_form_for_non_compound_vocab_matching
 
         self.surface: CandidateWordSurfaceVariant = CandidateWordSurfaceVariant(self.weakref, surface_form)
-        self.base: CandidateWordBaseVariant = CandidateWordBaseVariant(self.weakref, base_form)
+        self.base: CandidateWordBaseVariant | None = CandidateWordBaseVariant(self.weakref, base_form) if base_form != surface_form else None
 
-        self.is_word: bool = self.surface.is_word or self.base.is_word
+        self.is_word: bool = self.surface.is_word or self.base is not None and self.base.is_word
 
         self.is_inflectable_word: bool = self.end_location().token.is_inflectable_word
         self.next_token_is_inflecting_word: bool = self.end_location().is_next_location_inflecting_word()
@@ -47,22 +47,22 @@ class CandidateWord(Slots):
         self.display_variants: list[CandidateWordVariant] = []
 
     def complete_analysis(self) -> None:
-        self.base.complete_analysis()
         self.surface.complete_analysis()
+        if self.base is not None: self.base.complete_analysis()
 
-        self.should_include_base_in_all_words = self.base.is_valid_candidate
+        self.should_include_base_in_all_words = self.base is not None and self.base.is_valid_candidate
 
-        #todo: bug: if surface and base are both invalid, and this is not a compound, we end up with a chunk of the text missing in the analysis
+        # todo: bug: if surface and base are both invalid, and this is not a compound, we end up with a chunk of the text missing in the analysis
         self.should_include_surface_in_all_words = ((not self.should_include_base_in_all_words
                                                      and not self.is_custom_compound
                                                      and not self.surface.starts_with_non_word_token
                                                      and not self.surface.is_noise_character)
                                                     or (self.surface.is_valid_candidate
                                                         and not self.is_inflected_word
-                                                        and self.surface.form != self.base.form))
+                                                        and (self.base is None or self.surface.form != self.base.form)))
 
         self.all_words = []
-        if self.should_include_base_in_all_words:
+        if self.base is not None and self.should_include_base_in_all_words:
             self.all_words.append(self.base)
         if self.should_include_surface_in_all_words:
             self.all_words.append(self.surface)
@@ -70,7 +70,7 @@ class CandidateWord(Slots):
         # todo: may result in no matches, and I'm not sure we should say that only one is ever allowed to be included
         if self.should_include_surface_in_all_words:
             self.display_variants.append(self.surface)
-        elif self.should_include_base_in_all_words:
+        elif self.base is not None and self.should_include_base_in_all_words:
             self.display_variants.append(self.base)
 
     def has_valid_words(self) -> bool: return len(self.all_words) > 0

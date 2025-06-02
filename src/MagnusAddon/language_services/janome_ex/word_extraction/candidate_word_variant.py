@@ -12,7 +12,6 @@ from language_services.janome_ex.word_extraction.vocab_match import VocabMatch
 from language_services.janome_ex.word_extraction.VocabCandidate import VocabCandidate
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from sysutils.object_instance_tracker import ObjectInstanceTracker
-from sysutils.typed import non_optional
 from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
@@ -81,7 +80,7 @@ class CandidateWordVariant(Slots):
         self.only_requires_being_a_word_to_be_a_valid_candidate = False
 
     @property
-    def counterpart(self) -> CandidateWordVariant:
+    def counterpart(self) -> CandidateWordVariant | None:
         raise Exception("Not implemented")
 
     def complete_analysis(self) -> None:
@@ -89,9 +88,9 @@ class CandidateWordVariant(Slots):
 
         self.is_shadowed = self.token_range().start_location().is_shadowed_by is not None
 
-        self.exact_match_required_by_counterpart_vocab_configuration = self.counterpart.exact_match_required_by_primary_form_vocab_configuration
+        self.exact_match_required_by_counterpart_vocab_configuration = self.counterpart is not None and self.counterpart.exact_match_required_by_primary_form_vocab_configuration
         self.exact_match_required = self.exact_match_required_by_primary_form_vocab_configuration or self.exact_match_required_by_counterpart_vocab_configuration
-        self.is_exact_match_requirement_fulfilled = self.form == self.counterpart.form or not self.exact_match_required
+        self.is_exact_match_requirement_fulfilled = not self.exact_match_required or self.counterpart is None or self.form == self.counterpart.form
 
         if self.unexcluded_any_form_vocabs:
             self.display_forms = [match for match in [VocabMatch(self.weak_ref, voc) for voc in self.unexcluded_any_form_vocabs] if match.is_valid]
@@ -143,7 +142,7 @@ class CandidateWordSurfaceVariant(CandidateWordVariant, Slots):
             self.is_self_excluded = True
 
     @property
-    def counterpart(self) -> CandidateWordVariant: return non_optional(self.token_range().base)
+    def counterpart(self) -> CandidateWordVariant | None: return self.token_range().base
 
 class CandidateWordBaseVariant(CandidateWordVariant, Slots):
     def __init__(self, candidate_word: WeakRef[CandidateWord], form: str) -> None:
@@ -164,5 +163,5 @@ class CandidateWordBaseVariant(CandidateWordVariant, Slots):
             self.is_valid_candidate = False
 
     @property
-    def counterpart(self) -> CandidateWordVariant:
-        return non_optional(self.token_range().surface)
+    def counterpart(self) -> CandidateWordVariant | None:
+        return self.token_range().surface
