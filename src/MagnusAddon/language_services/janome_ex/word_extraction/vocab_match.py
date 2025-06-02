@@ -28,4 +28,4 @@ class VocabMatch(Match):
 
         self.is_valid = (self.stem_requirements.are_fulfilled
                          and self.tail_requirements.are_fulfilled
-                         and not self.is_poison_word)
+                         and (not self.is_poison_word or not self.candidate().candidate_word().is_custom_compound))#if we remove ourselves and we are not a compound, part of the text goes missing

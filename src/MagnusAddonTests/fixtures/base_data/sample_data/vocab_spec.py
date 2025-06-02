@@ -120,7 +120,8 @@ test_special_vocab: list[VocabSpec] = [
     VocabSpec("して", tags=[vm.yield_last_token_to_overlapping_compound]),
     VocabSpec("ても"),
     VocabSpec("と思う"),
-    VocabSpec("たの", tags=[vm.is_poison_word])
+    VocabSpec("たの", tags=[vm.is_poison_word]),
+    VocabSpec("たって", tags=[vm.is_poison_word])
 ]
 
 test_ordinary_vocab_list = [
