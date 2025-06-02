@@ -7,7 +7,7 @@ from language_services.janome_ex.word_extraction.match import Match
 
 if TYPE_CHECKING:
     from language_services.jamdict_ex.dict_entry import DictEntry
-    from language_services.janome_ex.word_extraction.candidate_word import CandidateWordVariant
+    from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
     from sysutils.weak_ref import WeakRef
 
 

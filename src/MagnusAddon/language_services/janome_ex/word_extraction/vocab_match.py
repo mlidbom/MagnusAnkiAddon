@@ -7,7 +7,7 @@ from language_services.janome_ex.word_extraction.stem_requirements import StemRe
 from language_services.janome_ex.word_extraction.tail_requirements import TailRequirements
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.candidate_word import CandidateWordVariant
+    from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
     from note.vocabulary.vocabnote import VocabNote
     from sysutils.weak_ref import WeakRef
 

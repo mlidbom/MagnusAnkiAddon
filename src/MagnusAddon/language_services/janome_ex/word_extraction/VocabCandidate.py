@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from sysutils.debug_repr_builder import SkipFalsyValuesDebugReprBuilder
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.candidate_word import CandidateWordVariant
+    from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
     from note.vocabulary.vocabnote import VocabNote
     from sysutils.weak_ref import WeakRef
 

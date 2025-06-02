@@ -7,7 +7,7 @@ from sysutils.weak_ref import WeakRef
 from ui.web.sentence.display_form_viewmodel import DisplayFormViewModel
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.candidate_word import CandidateWordVariant
+    from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
 
 
 class CandidateWordViewModel:

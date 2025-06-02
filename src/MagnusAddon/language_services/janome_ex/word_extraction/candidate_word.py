@@ -2,167 +2,81 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ankiutils import app
 from autoslot import Slots
-from language_services.jamdict_ex.dict_lookup import DictLookup
-from language_services.janome_ex.word_extraction.analysis_constants import noise_characters, non_word_characters
-from language_services.janome_ex.word_extraction.dictionary_match import DictionaryMatch
-from language_services.janome_ex.word_extraction.missing_match import MissingMatch
-from language_services.janome_ex.word_extraction.vocab_match import VocabMatch
-from language_services.janome_ex.word_extraction.VocabCandidate import VocabCandidate
-from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
+from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordBaseVariant, CandidateWordSurfaceVariant, CandidateWordVariant
 from sysutils.object_instance_tracker import ObjectInstanceTracker
-from sysutils.typed import non_optional
 from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.location_range import CandidateWord
-    from language_services.janome_ex.word_extraction.match import Match
-    from note.sentences.sentence_configuration import SentenceConfiguration
-    from note.vocabulary.vocabnote import VocabNote
+    from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
+    from language_services.janome_ex.word_extraction.text_location import TextAnalysisLocation
 
-class CandidateWordVariant(Slots):
+from sysutils.ex_str import newline
+
+
+class CandidateWord(Slots):
     __slots__ = ["__weakref__"]
-
-    def __init__(self, token_range: WeakRef[CandidateWord], form: str, is_base: bool) -> None:
+    def __init__(self, locations: list[WeakRef[TextAnalysisLocation]]) -> None:
         self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
+        self.analysis: WeakRef[TextAnalysis] = locations[0]().analysis
+        self.locations: list[WeakRef[TextAnalysisLocation]] = locations
+        self.is_custom_compound: bool = len(locations) > 1
+        self.start_location: WeakRef[TextAnalysisLocation] = self.locations[0]
+        self.end_location: WeakRef[TextAnalysisLocation] = self.locations[-1]
+        self.location_count = len(self.locations)
+        self.weakref = WeakRef(self)
 
-        self.is_base = is_base
-        self.is_surface = not is_base
-        self.weak_ref = WeakRef(self)
-        from language_services.jamdict_ex.dict_lookup import DictLookup
+        surface_form = "".join([t().token.surface for t in self.locations])
 
-        self.start_index: int = token_range().start_location().character_start_index
-        self.configuration: SentenceConfiguration = token_range().analysis().configuration
-        self.token_range: WeakRef[CandidateWord] = token_range
-        self.form: str = form
+        base_form = "".join([location().token.surface for location in self.locations[:-1]]) + self.locations[-1]().token.base_form
+        if not self.is_custom_compound:
+            base_form = self.locations[-1]().token.base_form_for_non_compound_vocab_matching
 
-        self.dict_lookup: DictLookup = DictLookup.lookup_word(form)
-        self.all_any_form_vocabs: list[VocabNote] = app.col().vocab.with_form(form)
+        self.surface: CandidateWordSurfaceVariant = CandidateWordSurfaceVariant(self.weakref, surface_form)
+        self.base: CandidateWordBaseVariant = CandidateWordBaseVariant(self.weakref, base_form)
 
-        self.vocab_candidates: list[VocabCandidate] = [VocabCandidate(self.weak_ref, voc) for voc in self.all_any_form_vocabs]
+        self.is_word: bool = self.surface.is_word or self.base.is_word
 
-        def is_excluded_form(form_: str) -> bool:
-            # todo: bug: With the current implementation this removes hidden matches from the parsed words. That is precisely what hidden matches should not do.
-            return (self.configuration.incorrect_matches.excludes_at_index(form_, self.start_index)
-                    or self.configuration.hidden_matches.excludes_at_index(form_, self.start_index))
+        self.is_inflectable_word: bool = self.end_location().token.is_inflectable_word
+        self.next_token_is_inflecting_word: bool = self.end_location().is_next_location_inflecting_word()
+        self.is_inflected_word: bool = self.is_inflectable_word and self.next_token_is_inflecting_word
 
-        self.unexcluded_any_form_vocabs: list[VocabNote] = [v for v in self.all_any_form_vocabs if not is_excluded_form(v.get_question())]
-        self.unexcluded_primary_form_vocabs: list[VocabNote] = [voc for voc in self.unexcluded_any_form_vocabs if voc.get_question() == form]
-        self.excluded_vocabs: list[VocabNote] = [v for v in self.all_any_form_vocabs if is_excluded_form(v.get_question())]
-
-        self.is_word: bool = self.dict_lookup.found_words() or len(self.all_any_form_vocabs) > 0
-        self.is_excluded_by_config: bool = is_excluded_form(form)
-
-        self.exact_match_required_by_primary_form_vocab_configuration: bool = any(v for v in self.unexcluded_primary_form_vocabs if v.matching_rules.requires_exact_match.is_set())
-
-        self.prefix_is_not: set[str] = set().union(*[v.matching_rules.rules.prefix_is_not.get() for v in self.unexcluded_primary_form_vocabs])
-        self.is_excluded_by_prefix = any(excluded_prefix for excluded_prefix in self.prefix_is_not if self.preceding_surface.endswith(excluded_prefix))
-
-        self.prefix_must_end_with: set[str] = set().union(*[v.matching_rules.rules.required_prefix.get() for v in self.unexcluded_primary_form_vocabs])
-        self.is_missing_required_prefix = self.prefix_must_end_with and not any(required for required in self.prefix_must_end_with if self.preceding_surface.endswith(required))
-
-        self.is_strictly_suffix = any(voc for voc in self.unexcluded_primary_form_vocabs if voc.matching_rules.is_strictly_suffix.is_set())
-        self.requires_prefix = self.is_strictly_suffix or any(self.prefix_must_end_with)
-
-        self.is_noise_character = self.form in noise_characters
-
-        # will be completed in complete_analysis
-        self.exact_match_required_by_counterpart_vocab_configuration: bool = False
-        self.exact_match_required: bool = False
-        self.is_exact_match_requirement_fulfilled: bool = False
-        self.is_self_excluded = False
-        self.completed_analysis = False
-        self.is_valid_candidate: bool = False
-        self.is_shadowed: bool = False
-        self.starts_with_non_word_token = self.token_range().start_location().token.is_non_word_character
-
-        self.display_forms: list[Match] = []
-        self.only_requires_being_a_word_to_be_a_valid_candidate = False
-
-    @property
-    def counterpart(self) -> CandidateWordVariant:
-        raise Exception("Not implemented")
+        self.should_include_surface_in_all_words: bool = False
+        self.should_include_base_in_all_words: bool = False
+        self.all_words: list[CandidateWordVariant] = []
+        self.display_variants: list[CandidateWordVariant] = []
 
     def complete_analysis(self) -> None:
-        if self.completed_analysis: return
+        self.base.complete_analysis()
+        self.surface.complete_analysis()
 
-        self.is_shadowed = self.token_range().start_location().is_shadowed_by is not None
+        self.should_include_base_in_all_words = self.base.is_valid_candidate
 
-        self.exact_match_required_by_counterpart_vocab_configuration = self.counterpart.exact_match_required_by_primary_form_vocab_configuration
-        self.exact_match_required = self.exact_match_required_by_primary_form_vocab_configuration or self.exact_match_required_by_counterpart_vocab_configuration
-        self.is_exact_match_requirement_fulfilled = self.form == self.counterpart.form or not self.exact_match_required
+        #todo: bug: if surface and base are both invalid, and this is not a compound, we end up with a chunk of the text missing in the analysis
+        self.should_include_surface_in_all_words = ((not self.should_include_base_in_all_words
+                                                     and not self.is_custom_compound
+                                                     and not self.surface.starts_with_non_word_token
+                                                     and not self.surface.is_noise_character)
+                                                    or (self.surface.is_valid_candidate
+                                                        and not self.is_inflected_word
+                                                        and self.surface.form != self.base.form))
 
-        if self.unexcluded_any_form_vocabs:
-            self.display_forms = [match for match in [VocabMatch(self.weak_ref, voc) for voc in self.unexcluded_any_form_vocabs] if match.is_valid]
-            override_form = [df for df in self.display_forms if df.parsed_form != self.form]
-            if any(override_form):
-                self.form = override_form[0].parsed_form
-        else:
-            dict_lookup = DictLookup.lookup_word(self.form)
-            if dict_lookup.found_words():
-                self.display_forms = [DictionaryMatch(self.weak_ref, dict_lookup.entries[0])]
-            else:
-                self.display_forms = [MissingMatch(self.weak_ref)]
+        self.all_words = []
+        if self.should_include_base_in_all_words:
+            self.all_words.append(self.base)
+        if self.should_include_surface_in_all_words:
+            self.all_words.append(self.surface)
 
-        self.only_requires_being_a_word_to_be_a_valid_candidate = (not self.is_noise_character
-                                                                   and not self.is_excluded_by_config
-                                                                   and not self.is_self_excluded
-                                                                   and not self.is_excluded_by_prefix
-                                                                   and not self.is_missing_required_prefix
-                                                                   and len(self.display_forms) > 0
-                                                                   and (not self.requires_prefix or self.has_prefix)
-                                                                   and not self.starts_with_non_word_token
-                                                                   and self.is_exact_match_requirement_fulfilled)
+        # todo: may result in no matches, and I'm not sure we should say that only one is ever allowed to be included
+        if self.should_include_surface_in_all_words:
+            self.display_variants.append(self.surface)
+        elif self.should_include_base_in_all_words:
+            self.display_variants.append(self.base)
 
-        self.is_valid_candidate = self.only_requires_being_a_word_to_be_a_valid_candidate and self.is_word
+    def has_valid_words(self) -> bool: return len(self.all_words) > 0
 
-        self.completed_analysis = True
-
-    @property
-    def has_prefix(self) -> bool:
-        return self.preceding_surface != "" and self.preceding_surface[-1] not in non_word_characters
-
-    @property
-    def preceding_surface(self) -> str:
-        previous = self.token_range().start_location().previous
-        return previous().token.surface if previous else ""
-
-    def to_exclusion(self) -> WordExclusion:
-        return WordExclusion.at_index(self.form, self.start_index)
-
-    def __repr__(self) -> str:
-        return f"""CandidateWord:({self.form}, {self.is_valid_candidate})"""
-
-class CandidateWordSurfaceVariant(CandidateWordVariant, Slots):
-    def __init__(self, token_range: WeakRef[CandidateWord], form: str) -> None:
-        super().__init__(token_range, form, is_base=False)
-
-        if (not token_range().is_custom_compound
-                and token_range().locations[-1]().token.do_not_match_surface_for_non_compound_vocab):
-            self.is_self_excluded = True
-
-    @property
-    def counterpart(self) -> CandidateWordVariant: return non_optional(self.token_range().base)
-
-class CandidateWordBaseVariant(CandidateWordVariant, Slots):
-    def __init__(self, candidate_word: WeakRef[CandidateWord], form: str) -> None:
-        super().__init__(candidate_word, form, is_base=True)
-
-        self.surface_is_not: set[str] = set().union(*[v.matching_rules.rules.surface_is_not.get() for v in self.unexcluded_any_form_vocabs])
-        self.surface_preferred_over_bases: set[str] = set()
-
-    def complete_analysis(self) -> None:
-        super().complete_analysis()
-
-        if self.counterpart.form in self.surface_is_not:
-            self.is_self_excluded = True
-            self.is_valid_candidate = False
-
-        self.surface_preferred_over_bases = set().union(*[vocab.matching_rules.rules.prefer_over_base.get() for vocab in self.counterpart.unexcluded_any_form_vocabs])
-        if self.form in self.surface_preferred_over_bases:
-            self.is_valid_candidate = False
-
-    @property
-    def counterpart(self) -> CandidateWordVariant:
-        return non_optional(self.token_range().surface)
+    def __repr__(self) -> str: return f"""
+surface: {self.surface.__repr__()} | base:{self.base.__repr__()},
+hvc:{self.has_valid_words()},
+iw:{self.is_word}
+icc:{self.is_custom_compound})""".replace(newline, "")
