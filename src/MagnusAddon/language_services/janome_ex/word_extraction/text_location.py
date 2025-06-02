@@ -27,6 +27,8 @@ class TextAnalysisLocation(Slots):
     def __init__(self, analysis: WeakRef[TextAnalysis], token: ProcessedToken, character_start_index: int, token_index: int) -> None:
         self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
         self.weakref = WeakRef(self)
+        self.next: Optional[WeakRef[TextAnalysisLocation]] = None
+        self.previous: Optional[WeakRef[TextAnalysisLocation]] = None
         self.token: ProcessedToken = token
         self.is_shadowed_by: Optional[WeakRef[TextAnalysisLocation]] = None
         self.analysis: WeakRef[TextAnalysis] = analysis
@@ -39,8 +41,6 @@ class TextAnalysisLocation(Slots):
         self.display_variants: list[CandidateWordVariant] = []
         self.all_words: list[CandidateWordVariant] = []
         self.all_candidate_ranges: list[CandidateWord] = []
-        self.next: Optional[WeakRef[TextAnalysisLocation]] = None
-        self.previous: Optional[WeakRef[TextAnalysisLocation]] = None
 
     def __repr__(self) -> str:
         return f"""
@@ -51,19 +51,12 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
     def forward_list(self, length: int = 99999) -> list[TextAnalysisLocation]:
         return self.analysis().locations[self.token_index: self.token_index + length + 1]
 
-    def analysis_step_1_connect_next_and_previous(self) -> None:
-        if len(self.analysis().locations) > self.token_index + 1:
-            self.next = self.analysis().locations[self.token_index + 1].weakref
-
-        if self.token_index > 0:
-            self.previous = self.analysis().locations[self.token_index - 1].weakref
-
-    def analysis_step_2_analyze_non_compound(self) -> None:
+    def analysis_step_1_analyze_non_compound(self) -> None:
         lookahead_max = min(_max_lookahead, len(self.forward_list(_max_lookahead)))
         self.all_candidate_ranges = [CandidateWord([location.weakref for location in self.forward_list(index)]) for index in range(lookahead_max - 1, -1, -1)]
         self.all_candidate_ranges[-1].complete_analysis()  # the non-compound part needs to be completed first
 
-    def analysis_step_3_analyze_compounds(self) -> None:
+    def analysis_step_2_analyze_compounds(self) -> None:
         for range_ in self.all_candidate_ranges[:-1]:  # we already have the last one completed
             range_.complete_analysis()
 
@@ -71,7 +64,7 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
         self.valid_words_starting_here = [candidate for candidate in self.all_candidate_ranges if candidate.has_valid_words()]
         self.all_words = ex_sequence.flatten([v.all_words for v in self.valid_words_starting_here])
 
-    def analysis_step_4_calculate_preference_between_overlapping_valid_candidates(self) -> None:
+    def analysis_step_3_calculate_preference_between_overlapping_valid_candidates(self) -> None:
         if self.valid_words_starting_here and self.is_shadowed_by is None:
             self.display_variants = self.valid_words_starting_here[0].display_variants
 

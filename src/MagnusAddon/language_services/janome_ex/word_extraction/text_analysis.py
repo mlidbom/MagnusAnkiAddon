@@ -36,20 +36,12 @@ class TextAnalysis(Slots):
             character_index += len(token.surface)
 
         self.start_location = self.locations[0]
+        self._connect_next_and_previous_to_locations()
+        self._analysis_step_1_analyze_non_compound()
+        self._analysis_step_2_analyze_compounds()
+        self._analysis_step_3_calculate_preference_between_overlapping_valid_candidates()
 
-        for location in self.locations:
-            location.analysis_step_1_connect_next_and_previous()
-
-        for location in self.locations:
-            location.analysis_step_2_analyze_non_compound()
-
-        for location in self.locations:
-            location.analysis_step_3_analyze_compounds()
-
-        for location in self.locations:
-            location.analysis_step_4_calculate_preference_between_overlapping_valid_candidates()
-
-        self.display_words: list[CandidateWordVariant] = ex_sequence.flatten([loc.display_variants for loc in self.locations])
+        self.display_variants: list[CandidateWordVariant] = ex_sequence.flatten([loc.display_variants for loc in self.locations])
         self.all_words: list[CandidateWordVariant] = ex_sequence.flatten([loc.all_words for loc in self.locations])
 
     @classmethod
@@ -61,3 +53,23 @@ class TextAnalysis(Slots):
 
     def __repr__(self) -> str:
         return self.text
+
+    def _connect_next_and_previous_to_locations(self) -> None:
+        for token_index, location in enumerate(self.locations):
+            if len(self.locations) > token_index + 1:
+                location.next = self.locations[token_index + 1].weakref
+
+            if token_index > 0:
+                location.previous = self.locations[token_index - 1].weakref
+
+    def _analysis_step_3_calculate_preference_between_overlapping_valid_candidates(self) -> None:
+        for location in self.locations:
+            location.analysis_step_3_calculate_preference_between_overlapping_valid_candidates()
+
+    def _analysis_step_2_analyze_compounds(self) -> None:
+        for location in self.locations:
+            location.analysis_step_2_analyze_compounds()
+
+    def _analysis_step_1_analyze_non_compound(self) -> None:
+        for location in self.locations:
+            location.analysis_step_1_analyze_non_compound()

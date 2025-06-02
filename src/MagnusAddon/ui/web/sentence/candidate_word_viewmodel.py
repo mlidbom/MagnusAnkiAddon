@@ -15,7 +15,7 @@ class CandidateWordViewModel:
         self.candidate_word: CandidateWordVariant = candidate_word
         self.weakref: WeakRef[CandidateWordViewModel] = WeakRef(self)
         self.is_shadowed: bool = candidate_word.is_shadowed
-        self.is_display_word: bool = candidate_word in candidate_word.token_range().analysis().display_words
+        self.is_display_word: bool = candidate_word in candidate_word.token_range().analysis().display_variants
         self.display_forms: list[DisplayFormViewModel] = [DisplayFormViewModel(self.weakref, form) for form in candidate_word.display_forms]
         self.has_perfect_match = any(form.is_perfect_match for form in self.display_forms)
 
