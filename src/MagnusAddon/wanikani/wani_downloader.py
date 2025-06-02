@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 from typing import TYPE_CHECKING
 
-import requests  # type: ignore
+import requests
 from ankiutils import app
 from autoslot import Slots
 from wanikani.wanikani_api_client import WanikaniClient
