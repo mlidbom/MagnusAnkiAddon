@@ -83,8 +83,8 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
             add_toggle_checkbox(toggle_flags_menu, shortcutfinger.home4("Sentence end: followed by nothing, a non-word, or a quote, character: と、って"), vocab.matching_rules.requires_sentence_end)
 
         def build_is_menu(is_menu: QMenu) -> None:
-            add_toggle_checkbox(toggle_flags_menu, shortcutfinger.home2("Poison word"), vocab.matching_rules.is_poison_word)
-            add_toggle_checkbox(toggle_flags_menu, shortcutfinger.home3("Inflecting word"), vocab.matching_rules.is_inflecting_word)
+            add_toggle_checkbox(toggle_flags_menu, shortcutfinger.home1("Poison word"), vocab.matching_rules.is_poison_word)
+            add_toggle_checkbox(toggle_flags_menu, shortcutfinger.home2("Inflecting word"), vocab.matching_rules.is_inflecting_word)
 
         def build_misc_menu(misc_menu: QMenu) -> None:
             add_toggle_checkbox(toggle_flags_menu, shortcutfinger.home1("Question overrides form: Show the question in results even if the match was another form"), vocab.matching_rules.question_overrides_form.tag_field)
