@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 from typing import TYPE_CHECKING
 
-import requests
+import requests  # type: ignore
 from ankiutils import app
 from autoslot import Slots
 from wanikani.wanikani_api_client import WanikaniClient
@@ -11,10 +11,8 @@ from wanikani.wanikani_api_client import WanikaniClient
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
 
-
 class FileDownloadError(Exception):
     pass
-
 
 class WaniDownloader(Slots):
     @staticmethod
@@ -22,7 +20,7 @@ class WaniDownloader(Slots):
         return app.anki_collection().media.dir()
 
     @classmethod
-    def download_file(cls, url:str, filename:str) -> str:
+    def download_file(cls, url: str, filename: str) -> str:
         response = requests.get(url)
 
         if response.status_code == 200:

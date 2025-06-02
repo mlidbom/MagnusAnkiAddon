@@ -61,7 +61,7 @@ def build_string_menu(string_menu: QMenu, vocab: VocabNote, menu_string: str) ->
         build_remove_rule_menu(non_optional(vocab_remove_menu.addMenu(shortcutfinger.home5("Rule"))))
         add_ui_action(vocab_remove_menu, shortcutfinger.up1("Form"), lambda: vocab.forms.remove(menu_string), menu_string in vocab.forms.all_set())
         add_ui_action(vocab_remove_menu, shortcutfinger.up2("See also"), lambda: vocab.related_notes.see_also.remove(menu_string), menu_string in vocab.related_notes.see_also.strings())
-        add_ui_action(vocab_remove_menu, shortcutfinger.down1("Derived from"), lambda: vocab.related_notes.derived_from.clear(), menu_string == vocab.related_notes.derived_from.get())
+        add_ui_action(vocab_remove_menu, shortcutfinger.down1("Derived from"), lambda: vocab.related_notes.derived_from.set(""), menu_string == vocab.related_notes.derived_from.get())
 
     def build_set_menu(note_set_menu: QMenu) -> None:
         add_ui_action(note_set_menu, shortcutfinger.home1("Ergative twin"), lambda: vocab.related_notes.ergative_twin.set(menu_string))

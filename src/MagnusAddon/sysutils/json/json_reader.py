@@ -41,7 +41,7 @@ class JsonReader(Slots):
     def string_list(self, prop: str | list[str], default: list[str] | None = None) -> list[str]:
         return self._get_prop(prop, list[str], default)
 
-    def string_set(self, prop: str | list[str], default: set[str] | None = None) -> set[str]: return set(self.string_list(prop, default))
+    def string_set(self, prop: str | list[str], default: set[str] | None = None) -> set[str]: return set(self.string_list(prop, list(default) if default is not None else None))
 
     def object_list(self, prop: str | list[str], factory: Callable[[JsonReader], TProp], default: list[TProp] | None = None) -> list[TProp]:
         prop_value = typed.checked_cast_generics(list[dict[str, Any]], self._get_prop(prop, list[dict[str, Any]], default))

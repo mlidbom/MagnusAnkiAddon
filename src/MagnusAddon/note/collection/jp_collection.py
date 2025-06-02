@@ -16,6 +16,8 @@ from sysutils.object_instance_tracker import ObjectInstanceTracker
 from sysutils.timeutil import StopWatch
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
+
     from anki.collection import Collection
     from anki.notes import NoteId
 
@@ -55,11 +57,15 @@ class JPCollection(Slots):
             DictLookup.ensure_loaded_into_memory()
 
             with StopWatch.log_execution_time("Populating studying status cache"):
-                for notelist in [self.vocab.all(), self.kanji.all(), self.sentences.all()]:
+                def cache_notes_studying_status(notelist: Sequence[JPNote]) -> None:
                     for note in notelist:
                         if not self._is_running: return
                         note.is_studying(CardTypes.reading)
                         note.is_studying(CardTypes.listening)
+
+                cache_notes_studying_status(self.vocab.all())
+                cache_notes_studying_status(self.kanji.all())
+                cache_notes_studying_status(self.sentences.all())
 
         app_thread_pool.pool.submit(populate_caches)
 
