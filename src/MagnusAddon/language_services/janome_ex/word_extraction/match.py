@@ -18,3 +18,5 @@ class Match(Slots):
         self.answer: str = ""
         self.readings: list[str] = []
         self.rules = rules
+        self.is_configured_hidden = candidate().configuration.hidden_matches.excludes_at_index(self.parsed_form, candidate().start_index)
+        self.is_configured_incorrect = candidate().configuration.incorrect_matches.excludes_at_index(self.parsed_form, candidate().start_index)

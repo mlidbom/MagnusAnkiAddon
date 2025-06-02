@@ -48,6 +48,8 @@ class DisplayFormViewModel:
         tags += " highlighted" if self.is_highlighted else ""
         tags += " shadowed" if self.is_shadowed else ""
         tags += " secondary_match" if not self.is_primary_match() else ""
+        tags += " configured_hidden" if self.display_form.is_configured_hidden else ""
+        tags += " configured_incorrect_match" if self.display_form.is_configured_incorrect else ""
         return tags
 
     @property

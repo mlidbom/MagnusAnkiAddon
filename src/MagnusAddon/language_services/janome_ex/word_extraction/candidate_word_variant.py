@@ -42,9 +42,7 @@ class CandidateWordVariant(Slots):
         self.vocab_candidates: list[VocabCandidate] = [VocabCandidate(self.weak_ref, voc) for voc in self.all_any_form_vocabs]
 
         def is_excluded_form(form_: str) -> bool:
-            # todo: bug: With the current implementation this removes hidden matches from the parsed words. That is precisely what hidden matches should not do.
-            return (self.configuration.incorrect_matches.excludes_at_index(form_, self.start_index)
-                    or self.configuration.hidden_matches.excludes_at_index(form_, self.start_index))
+            return self.configuration.incorrect_matches.excludes_at_index(form_, self.start_index)
 
         self.unexcluded_any_form_vocabs: list[VocabNote] = [v for v in self.all_any_form_vocabs if not is_excluded_form(v.get_question())]
         self.unexcluded_primary_form_vocabs: list[VocabNote] = [voc for voc in self.unexcluded_any_form_vocabs if voc.get_question() == form]

@@ -77,6 +77,11 @@
                 &, & .vocab_tag {background-color: color-mix(in lch, var(--colorBgOffset1), white 15%);}
             }
 
+            &.configured_hidden {
+                border: solid;
+                border-color: var(--colorTextBold);
+            }
+
             &.compound_part {
                 &, & .vocab_tag {background-color: color-mix(in lch, var(--colorBgOffset1), black 6%);}
 
