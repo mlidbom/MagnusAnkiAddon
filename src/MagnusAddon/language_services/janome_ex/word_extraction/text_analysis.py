@@ -21,13 +21,13 @@ class TextAnalysis(Slots):
     __slots__ = ["__weakref__"]
     version = "text_analysis_0.1"
 
-    def __init__(self, sentence:str, sentence_configuration:SentenceConfiguration) -> None:
+    def __init__(self, sentence: str, sentence_configuration: SentenceConfiguration) -> None:
         self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
         self.text = sentence
         self.configuration = sentence_configuration
-        self.tokens:list[ProcessedToken] = _tokenizer.tokenize(sentence).pre_process()
+        self.tokens: list[ProcessedToken] = _tokenizer.tokenize(sentence).pre_process()
 
-        self.locations:list[TokenTextLocation] = []
+        self.locations: list[TokenTextLocation] = []
 
         character_index = 0
         for token_index, token in enumerate(self.tokens):
@@ -37,19 +37,22 @@ class TextAnalysis(Slots):
         self.start_location = self.locations[0]
 
         for location in self.locations:
-            location.connect_next_and_previous()
+            location.analysis_step_1_connect_next_and_previous()
 
         for location in self.locations:
-            location.run_analysis_step_1()
+            location.analysis_step_2_analyze_non_compound()
 
         for location in self.locations:
-            location.run_analysis_step_2()
+            location.analysis_step_3_analyze_compounds()
 
-        self.display_words:list[CandidateWord] = ex_sequence.flatten([loc.display_words for loc in self.locations])
+        for location in self.locations:
+            location.analysis_step_4_calculate_preference_between_overlapping_valid_candidates()
+
+        self.display_words: list[CandidateWord] = ex_sequence.flatten([loc.display_words for loc in self.locations])
         self.all_words: list[CandidateWord] = ex_sequence.flatten([loc.all_words for loc in self.locations])
 
     @classmethod
-    def from_text(cls, text:str) -> TextAnalysis:
+    def from_text(cls, text: str) -> TextAnalysis:
         return cls(text, SentenceConfiguration.empty())
 
     def all_words_strings(self) -> list[str]:
