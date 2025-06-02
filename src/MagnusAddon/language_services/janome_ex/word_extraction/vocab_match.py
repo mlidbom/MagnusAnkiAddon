@@ -24,5 +24,8 @@ class VocabMatch(Match):
 
         self.stem_requirements = StemRequirements(vocab, self.candidate().candidate_word().start_location().previous)
         self.tail_requirements = TailRequirements(vocab, self.candidate().candidate_word().end_location().next)
+        self.is_poison_word = vocab.matching_rules.is_poison_word.is_set()
 
-        self.is_valid = self.stem_requirements.are_fulfilled and self.tail_requirements.are_fulfilled
+        self.is_valid = (self.stem_requirements.are_fulfilled
+                         and self.tail_requirements.are_fulfilled
+                         and not self.is_poison_word)
