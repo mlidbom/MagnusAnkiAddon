@@ -88,7 +88,7 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
         if len(selected_word.display_variants) > 1: return False
         selected_variant = selected_word.display_variants[0]
         matches = selected_variant.matches
-        if len(matches) > 1: return False
+        if len(matches) != 1: return False
         match = matches[0]
         if match.rules and match.rules.yield_last_token_to_overlapping_compound.is_set():
             last_token = selected_word.end_location()
