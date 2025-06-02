@@ -18,17 +18,19 @@ if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
     from PyQt6.QtWidgets import QMenu
 
-def add_toggle_checkbox(menu: QMenu, title: str, field: TagFlagField) -> None:
-    def set_value(value: bool) -> None:
-        field.set_to(value)
-        app.get_ui_utils().refresh()
-
-    action = non_optional(menu.addAction(title))
-    action.setCheckable(True)
-    action.setChecked(field.is_set())
-    qconnect(action.triggered, set_value)
-
 def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboard: str) -> None:
+    def add_toggle_checkbox(menu: QMenu, title: str, field: TagFlagField) -> None:
+        def set_value(value: bool) -> None:
+            field.set_to(value)
+            from batches import local_note_updater
+            local_note_updater.reparse_sentences_for_vocab(vocab)
+            app.get_ui_utils().refresh()
+
+        action = non_optional(menu.addAction(title))
+        action.setCheckable(True)
+        action.setChecked(field.is_set())
+        qconnect(action.triggered, set_value)
+
     def build_copy_menu(note_copy_menu: QMenu) -> None:
         note_copy_menu.addAction(shortcutfinger.home1("Question"), lambda: pyperclip.copy(vocab.get_question()))
         note_copy_menu.addAction(shortcutfinger.home2("Answer"), lambda: pyperclip.copy(vocab.get_answer()))
@@ -77,20 +79,20 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
 
     def build_toggle_flags_menu(toggle_flags_menu: QMenu) -> None:
         def build_requires_menu(requires_menu: QMenu) -> None:
-            add_toggle_checkbox(toggle_flags_menu, shortcutfinger.home1("exact match"), vocab.matching_rules.requires_exact_match)
-            add_toggle_checkbox(toggle_flags_menu, shortcutfinger.home2("e stem"), vocab.matching_rules.requires_e_stem)
-            add_toggle_checkbox(toggle_flags_menu, shortcutfinger.home3("a stem"), vocab.matching_rules.requires_a_stem)
-            add_toggle_checkbox(toggle_flags_menu, shortcutfinger.home4("Sentence end: followed by nothing, a non-word, or a quote, character: と、って"), vocab.matching_rules.requires_sentence_end)
+            add_toggle_checkbox(requires_menu, shortcutfinger.home1("exact match"), vocab.matching_rules.requires_exact_match)
+            add_toggle_checkbox(requires_menu, shortcutfinger.home2("e stem"), vocab.matching_rules.requires_e_stem)
+            add_toggle_checkbox(requires_menu, shortcutfinger.home3("a stem"), vocab.matching_rules.requires_a_stem)
+            add_toggle_checkbox(requires_menu, shortcutfinger.home4("Sentence end: followed by nothing, a non-word, or a quote, character: と、って"), vocab.matching_rules.requires_sentence_end)
 
         def build_is_menu(is_menu: QMenu) -> None:
-            add_toggle_checkbox(toggle_flags_menu, shortcutfinger.home1("Poison word"), vocab.matching_rules.is_poison_word)
-            add_toggle_checkbox(toggle_flags_menu, shortcutfinger.home2("Inflecting word"), vocab.matching_rules.is_inflecting_word)
+            add_toggle_checkbox(is_menu, shortcutfinger.home1("Poison word"), vocab.matching_rules.is_poison_word)
+            add_toggle_checkbox(is_menu, shortcutfinger.home2("Inflecting word"), vocab.matching_rules.is_inflecting_word)
 
         def build_misc_menu(misc_menu: QMenu) -> None:
-            add_toggle_checkbox(toggle_flags_menu, shortcutfinger.home1("Question overrides form: Show the question in results even if the match was another form"), vocab.matching_rules.question_overrides_form.tag_field)
-            add_toggle_checkbox(toggle_flags_menu, shortcutfinger.home2("Forbid a stem"), vocab.matching_rules.forbids_a_stem)
-            add_toggle_checkbox(toggle_flags_menu, shortcutfinger.home3("Yield last token to overlapping compound"), vocab.matching_rules.yield_last_token_to_overlapping_compound)
-            add_toggle_checkbox(toggle_flags_menu, shortcutfinger.home4("Match with preceding vowel"), vocab.matching_rules.match_with_preceding_vowel)
+            add_toggle_checkbox(misc_menu, shortcutfinger.home1("Question overrides form: Show the question in results even if the match was another form"), vocab.matching_rules.question_overrides_form.tag_field)
+            add_toggle_checkbox(misc_menu, shortcutfinger.home2("Forbid a stem"), vocab.matching_rules.forbids_a_stem)
+            add_toggle_checkbox(misc_menu, shortcutfinger.home3("Yield last token to overlapping compound"), vocab.matching_rules.yield_last_token_to_overlapping_compound)
+            add_toggle_checkbox(misc_menu, shortcutfinger.home4("Match with preceding vowel"), vocab.matching_rules.match_with_preceding_vowel)
 
         build_requires_menu(non_optional(toggle_flags_menu.addMenu(shortcutfinger.home1("Requires"))))
         build_is_menu(non_optional(toggle_flags_menu.addMenu(shortcutfinger.home2("Is"))))
