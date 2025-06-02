@@ -68,7 +68,7 @@ def init() -> None:
         for key, callback in stortcuts.items():
             set_shortcut(widget, key, callback)
 
-    def inject_shortcuts_in_reviewer(_state: aqt.main.MainWindowState, state_shortcuts: list[tuple[str, Callable]]) -> None:
+    def inject_shortcuts_in_reviewer(_state: aqt.main.MainWindowState, state_shortcuts: list[tuple[str, Callable[[], None]]]) -> None:
         def remove_shortcut(string: str) -> None:
             for shortcut in state_shortcuts:
                 if shortcut[0] == string:

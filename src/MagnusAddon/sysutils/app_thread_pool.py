@@ -29,7 +29,7 @@ def run_on_ui_thread_synchronously(func: Callable[[], T]) -> T:
     return done_running[0]
 
 
-def run_on_ui_thread_fire_and_forget(func: Callable[[], T]) -> None:
+def run_on_ui_thread_fire_and_forget(func: Callable[[], None]) -> None:
     if app.is_testing() or current_is_ui_thread():
         func()
 

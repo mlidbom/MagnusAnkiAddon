@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
 
     from anki.cards import CardId
-    from aqt.browser import Browser
+    from aqt.browser import Browser  # type: ignore
 
 def refresh_search() -> None:
     browser: Browser = dialogs.open("Browser", mw)

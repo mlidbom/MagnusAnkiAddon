@@ -35,5 +35,5 @@ def _answer_card(reviewer: Reviewer, ease: Literal[1, 2, 3, 4]) -> None:
 
 
 def init() -> None:
-    Reviewer._showAnswer = _show_answer
-    Reviewer._answerCard = _answer_card
+    Reviewer._showAnswer = _show_answer # type: ignore
+    Reviewer._answerCard = _answer_card # type: ignore

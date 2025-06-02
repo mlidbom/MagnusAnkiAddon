@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from sysutils.weak_ref import WeakRef
 
 class StemRequirements(Slots):
-    def __init__(self, vocab: VocabNote, end_of_stem: WeakRef[TextAnalysisLocation]) -> None:
+    def __init__(self, vocab: VocabNote, end_of_stem: WeakRef[TextAnalysisLocation] | None) -> None:
         self.config = vocab.matching_rules
         self.are_fulfilled = True
 

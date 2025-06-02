@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 _quote_characters = {"と", "って"}
 
 class TailRequirements(Slots):
-    def __init__(self, vocab: VocabNote, tail:WeakRef[TextAnalysisLocation]) -> None:
+    def __init__(self, vocab: VocabNote, tail:WeakRef[TextAnalysisLocation] | None) -> None:
         self.config = vocab.matching_rules
         self.are_fulfilled = True
         if self.config.requires_sentence_end.is_set():
