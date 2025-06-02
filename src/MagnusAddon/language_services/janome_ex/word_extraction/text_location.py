@@ -26,6 +26,7 @@ class TextAnalysisLocation(Slots):
 
     def __init__(self, analysis: WeakRef[TextAnalysis], token: ProcessedToken, character_start_index: int, token_index: int) -> None:
         self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
+        self.weakref = WeakRef(self)
         self.token: ProcessedToken = token
         self.is_shadowed_by: Optional[WeakRef[TextAnalysisLocation]] = None
         self.analysis: WeakRef[TextAnalysis] = analysis
@@ -52,14 +53,14 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
 
     def analysis_step_1_connect_next_and_previous(self) -> None:
         if len(self.analysis().locations) > self.token_index + 1:
-            self.next = WeakRef(self.analysis().locations[self.token_index + 1])
+            self.next = self.analysis().locations[self.token_index + 1].weakref
 
         if self.token_index > 0:
-            self.previous = WeakRef(self.analysis().locations[self.token_index - 1])
+            self.previous = self.analysis().locations[self.token_index - 1].weakref
 
     def analysis_step_2_analyze_non_compound(self) -> None:
         lookahead_max = min(_max_lookahead, len(self.forward_list(_max_lookahead)))
-        self.all_candidate_ranges = [CandidateWord([WeakRef(location) for location in self.forward_list(index)]) for index in range(lookahead_max - 1, -1, -1)]
+        self.all_candidate_ranges = [CandidateWord([location.weakref for location in self.forward_list(index)]) for index in range(lookahead_max - 1, -1, -1)]
         self.all_candidate_ranges[-1].complete_analysis()  # the non-compound part needs to be completed first
 
     def analysis_step_3_analyze_compounds(self) -> None:
@@ -76,7 +77,7 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
 
             covering_forward_count = self.valid_words_starting_here[0].location_count - 1
             for location in self.forward_list(covering_forward_count)[1:]:
-                location.is_shadowed_by = WeakRef(self)
+                location.is_shadowed_by = self.weakref
 
     def is_next_location_inflecting_word(self) -> bool:
         return self.next is not None and self.next().is_inflecting_word()

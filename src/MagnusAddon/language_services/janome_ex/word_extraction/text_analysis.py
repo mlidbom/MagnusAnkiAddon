@@ -23,6 +23,7 @@ class TextAnalysis(Slots):
 
     def __init__(self, sentence: str, sentence_configuration: SentenceConfiguration) -> None:
         self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
+        self.weakref = WeakRef(self)
         self.text = sentence
         self.configuration = sentence_configuration
         self.tokens: list[ProcessedToken] = _tokenizer.tokenize(sentence).pre_process()
@@ -31,7 +32,7 @@ class TextAnalysis(Slots):
 
         character_index = 0
         for token_index, token in enumerate(self.tokens):
-            self.locations.append(TextAnalysisLocation(WeakRef(self), token, character_index, token_index))
+            self.locations.append(TextAnalysisLocation(self.weakref, token, character_index, token_index))
             character_index += len(token.surface)
 
         self.start_location = self.locations[0]
