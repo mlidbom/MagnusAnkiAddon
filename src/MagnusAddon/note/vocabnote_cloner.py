@@ -129,7 +129,7 @@ class VocabCloner(Slots):
         def create_full_form(form: str) -> str: return create_form_root(self.note, form) + form_suffix
 
         clone = VocabNote.factory.create(question=create_full_form(self.note.get_question()), answer=self.note.get_answer(), readings=[])
-        clone.forms.set_list([create_full_form(form) for form in self.note.forms.all_raw()])
+        clone.forms.set_list([create_full_form(form) for form in self.note.forms.all_list()])
         vocab_note = self.note
         readings = [create_full_form(reading) for reading in vocab_note.readings.get()]
         clone.readings.set(readings)

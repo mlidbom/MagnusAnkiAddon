@@ -63,7 +63,7 @@ class SentenceCollection(Slots):
         return [match for match in matches if question not in match.configuration.incorrect_matches.words()]
 
     def with_vocab_owned_form(self, vocab_note: VocabNote) -> list[SentenceNote]:
-        owned_forms = vocab_note.forms.owned_forms()
+        owned_forms = vocab_note.forms.not_owned_by_other_vocab()
 
         matches = ex_sequence.remove_duplicates(ex_sequence.flatten([self._cache.with_vocab_form(form) for form in owned_forms]))
         question = vocab_note.get_question()

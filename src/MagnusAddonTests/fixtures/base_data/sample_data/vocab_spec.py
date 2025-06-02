@@ -126,7 +126,8 @@ test_special_vocab: list[VocabSpec] = [
     VocabSpec("たか", tags=[vm.is_poison_word]),
     VocabSpec("なんて", tags=[vm.yield_last_token_to_overlapping_compound]),
     VocabSpec("何て", tags=[vm.yield_last_token_to_overlapping_compound]),
-    VocabSpec("て言うか")
+    VocabSpec("というか", forms=["[と言うか]", "っていうか", "ていうか", "て言うか"]),
+    VocabSpec("ていうか", forms=["と言うか", "というか", "っていうか", "[て言うか]"])
 ]
 
 test_ordinary_vocab_list = [

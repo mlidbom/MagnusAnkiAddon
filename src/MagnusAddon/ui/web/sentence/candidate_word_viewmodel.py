@@ -17,7 +17,7 @@ class CandidateWordViewModel:
         self.is_shadowed: bool = candidate_word.is_shadowed
         self.is_display_word: bool = candidate_word in candidate_word.candidate_word().analysis().display_variants
         self.display_forms: list[DisplayFormViewModel] = [DisplayFormViewModel(self.weakref, form) for form in candidate_word.matches]
-        self.has_perfect_match = any(form.is_perfect_match for form in self.display_forms)
+        self.has_perfect_match = any(form.match_owns_form for form in self.display_forms)
 
     def __repr__(self) -> str: return (
         SkipFalsyValuesDebugReprBuilder()

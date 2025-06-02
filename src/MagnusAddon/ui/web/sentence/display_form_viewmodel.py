@@ -30,13 +30,14 @@ class DisplayFormViewModel:
         self.meta_tags_html: str = ""
         self.meta_tags: str = ""
         self.display_vocab_form = False
-        self.is_perfect_match = self.parsed_form == self.vocab_form
+        self.match_owns_form = self.parsed_form == self.vocab_form
         self.display_readings = self.parsed_form != self.readings
         if isinstance(display_form, VocabMatch):
             self.compound_parts = CompoundPartViewModel.get_compound_parts_recursive(display_form.vocab, self._config)
             self.audio_path = display_form.vocab.audio.get_primary_audio_path()
             self.meta_tags = " ".join(display_form.vocab.get_meta_tags())
             self.meta_tags_html = display_form.vocab.meta_data.meta_tags_html(display_extended_sentence_statistics=False)
+            self.match_owns_form = display_form.vocab.forms.is_owned_form(self.parsed_form)
             if self.parsed_form != self.vocab_form:
                 self.display_vocab_form = True
                 self.display_readings = self.vocab_form != self.readings
@@ -45,7 +46,7 @@ class DisplayFormViewModel:
 
     @property
     def is_displayed(self) -> bool:
-        return not self.is_shadowed and self.is_display_word and (self.is_perfect_match or not self.word_viewmodel().has_perfect_match)
+        return not self.is_shadowed and self.is_display_word and (self.match_owns_form or not self.word_viewmodel().has_perfect_match)
 
     def __repr__(self) -> str:
         return (
