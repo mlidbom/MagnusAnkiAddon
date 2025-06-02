@@ -77,12 +77,14 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.sur
     def analysis_step_4_calculate_preference_between_overlapping_valid_candidates(self) -> None:
         if self.valid_candidates and self.is_shadowed_by is None:
             self.display_words = self.valid_candidates[0].display_words
-            self.display_words = [covered for covered in self.display_words
-                                  if not any(covering for covering in self.display_words if covered.form in covering.form and covered != covering)]
+            self.display_words = [candidate for candidate in self.display_words if not self.is_part_of_other_display_word(candidate)]
 
             covering_forward_count = self.valid_candidates[0].length - 1
             for location in self.forward_list(covering_forward_count)[1:]:
                 location.is_shadowed_by = WeakRef(self)
+
+    def is_part_of_other_display_word(self, word: CandidateWord) -> bool:
+        return any(covering for covering in self.display_words if word.form in covering.form and word != covering)
 
     def is_next_location_inflecting_word(self) -> bool:
         return self.next is not None and self.next().is_inflecting_word()
