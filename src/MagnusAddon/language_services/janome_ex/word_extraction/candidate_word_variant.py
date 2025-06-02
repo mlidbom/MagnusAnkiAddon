@@ -33,7 +33,7 @@ class CandidateWordVariant(Slots):
 
         self.start_index: int = token_range().start_location().character_start_index
         self.configuration: SentenceConfiguration = token_range().analysis().configuration
-        self.token_range: WeakRef[CandidateWord] = token_range
+        self.candidate_word: WeakRef[CandidateWord] = token_range
         self.form: str = form
 
         self.dict_lookup: DictLookup = DictLookup.lookup_word(form)
@@ -74,9 +74,9 @@ class CandidateWordVariant(Slots):
         self.completed_analysis = False
         self.is_valid_candidate: bool = False
         self.is_shadowed: bool = False
-        self.starts_with_non_word_token = self.token_range().start_location().token.is_non_word_character
+        self.starts_with_non_word_token = self.candidate_word().start_location().token.is_non_word_character
 
-        self.display_forms: list[Match] = []
+        self.matches: list[Match] = []
         self.only_requires_being_a_word_to_be_a_valid_candidate = False
 
     @property
@@ -86,30 +86,30 @@ class CandidateWordVariant(Slots):
     def complete_analysis(self) -> None:
         if self.completed_analysis: return
 
-        self.is_shadowed = self.token_range().start_location().is_shadowed_by is not None
+        self.is_shadowed = self.candidate_word().start_location().is_shadowed_by is not None
 
         self.exact_match_required_by_counterpart_vocab_configuration = self.counterpart is not None and self.counterpart.exact_match_required_by_primary_form_vocab_configuration
         self.exact_match_required = self.exact_match_required_by_primary_form_vocab_configuration or self.exact_match_required_by_counterpart_vocab_configuration
         self.is_exact_match_requirement_fulfilled = not self.exact_match_required or self.counterpart is None or self.form == self.counterpart.form
 
         if self.unexcluded_any_form_vocabs:
-            self.display_forms = [match for match in [VocabMatch(self.weak_ref, voc) for voc in self.unexcluded_any_form_vocabs] if match.is_valid]
-            override_form = [df for df in self.display_forms if df.parsed_form != self.form]
+            self.matches = [match for match in [VocabMatch(self.weak_ref, voc) for voc in self.unexcluded_any_form_vocabs] if match.is_valid]
+            override_form = [df for df in self.matches if df.parsed_form != self.form]
             if any(override_form):
                 self.form = override_form[0].parsed_form
         else:
             dict_lookup = DictLookup.lookup_word(self.form)
             if dict_lookup.found_words():
-                self.display_forms = [DictionaryMatch(self.weak_ref, dict_lookup.entries[0])]
+                self.matches = [DictionaryMatch(self.weak_ref, dict_lookup.entries[0])]
             else:
-                self.display_forms = [MissingMatch(self.weak_ref)]
+                self.matches = [MissingMatch(self.weak_ref)]
 
         self.only_requires_being_a_word_to_be_a_valid_candidate = (not self.is_noise_character
                                                                    and not self.is_excluded_by_config
                                                                    and not self.is_self_excluded
                                                                    and not self.is_excluded_by_prefix
                                                                    and not self.is_missing_required_prefix
-                                                                   and len(self.display_forms) > 0
+                                                                   and len(self.matches) > 0
                                                                    and (not self.requires_prefix or self.has_prefix)
                                                                    and not self.starts_with_non_word_token
                                                                    and self.is_exact_match_requirement_fulfilled)
@@ -124,7 +124,7 @@ class CandidateWordVariant(Slots):
 
     @property
     def preceding_surface(self) -> str:
-        previous = self.token_range().start_location().previous
+        previous = self.candidate_word().start_location().previous
         return previous().token.surface if previous else ""
 
     def to_exclusion(self) -> WordExclusion:
@@ -142,7 +142,7 @@ class CandidateWordSurfaceVariant(CandidateWordVariant, Slots):
             self.is_self_excluded = True
 
     @property
-    def counterpart(self) -> CandidateWordVariant | None: return self.token_range().base
+    def counterpart(self) -> CandidateWordVariant | None: return self.candidate_word().base
 
 class CandidateWordBaseVariant(CandidateWordVariant, Slots):
     def __init__(self, candidate_word: WeakRef[CandidateWord], form: str) -> None:
@@ -164,4 +164,4 @@ class CandidateWordBaseVariant(CandidateWordVariant, Slots):
 
     @property
     def counterpart(self) -> CandidateWordVariant | None:
-        return self.token_range().surface
+        return self.candidate_word().surface

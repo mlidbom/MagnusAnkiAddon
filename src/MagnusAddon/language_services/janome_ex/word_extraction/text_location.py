@@ -66,6 +66,9 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
 
     def analysis_step_3_calculate_preference_between_overlapping_valid_candidates(self) -> None:
         if self.valid_words_starting_here and self.is_shadowed_by is None:
+            while self.selected_word_needs_to_yield_to_upcoming_compounds():
+                self.valid_words_starting_here = self.valid_words_starting_here[1:]
+
             self.display_variants = self.valid_words_starting_here[0].display_variants
 
             covering_forward_count = self.valid_words_starting_here[0].location_count - 1
@@ -79,3 +82,17 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
     def is_inflecting_word(self) -> bool:
         vocab = app.col().vocab.with_form(self.token.base_form)
         return any(voc for voc in vocab if voc.has_tag(Tags.Vocab.Matching.is_inflecting_word))
+
+    def selected_word_needs_to_yield_to_upcoming_compounds(self) -> bool:
+        selected_word = self.valid_words_starting_here[0]
+        if len(selected_word.display_variants) > 1: return False
+        selected_variant = selected_word.display_variants[0]
+        matches = selected_variant.matches
+        if len(matches) > 1: return False
+        match = matches[0]
+        if match.rules and match.rules.yield_last_token_to_overlapping_compound.is_set():
+            last_token = selected_word.end_location()
+            if last_token.valid_words_starting_here[0].is_custom_compound:
+                return True
+
+        return False

@@ -11,5 +11,5 @@ if TYPE_CHECKING:
 
 class MissingMatch(Match):
     def __init__(self, candidate: WeakRef[CandidateWordVariant]) -> None:
-        super().__init__(candidate)
+        super().__init__(candidate, None)
         self.answer = "---"

@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 class DisplayFormViewModel:
     def __init__(self, word_viewmodel: WeakRef[CandidateWordViewModel], display_form: Match) -> None:
         self.display_form: Match = display_form
-        self._config: SentenceConfiguration = word_viewmodel().candidate_word.token_range().analysis().configuration
+        self._config: SentenceConfiguration = word_viewmodel().candidate_word.candidate_word().analysis().configuration
         self.word_viewmodel: WeakRef[CandidateWordViewModel] = word_viewmodel
         self.is_shadowed: bool = word_viewmodel().is_shadowed
         self.is_display_word = word_viewmodel().is_display_word

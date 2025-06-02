@@ -157,6 +157,7 @@ class Tags(Slots):
         question_overrides_form = f"{f_vocab}question-overrides-form"
 
         class Matching:
+            yield_to_upcoming_compounds = f"{f_vocab_matching}yield-to-upcoming-compounds"
             is_inflecting_word = f"{f_vocab_matching}is-inflecting-word"
 
             class Requires:

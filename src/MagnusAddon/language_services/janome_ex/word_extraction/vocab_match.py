@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 class VocabMatch(Match):
     def __init__(self, candidate: WeakRef[CandidateWordVariant], vocab: VocabNote) -> None:
-        super().__init__(candidate)
+        super().__init__(candidate, vocab.matching_rules)
         self.vocab: VocabNote = vocab
         self.vocab_form = vocab.get_question()
         self.answer = vocab.get_answer()
@@ -22,7 +22,7 @@ class VocabMatch(Match):
         if vocab.matching_rules.question_overrides_form.is_set():
             self.parsed_form = self.vocab.get_question()
 
-        self.stem_requirements = StemRequirements(vocab, self.candidate().token_range().start_location().previous)
-        self.tail_requirements = TailRequirements(vocab, self.candidate().token_range().end_location().next)
+        self.stem_requirements = StemRequirements(vocab, self.candidate().candidate_word().start_location().previous)
+        self.tail_requirements = TailRequirements(vocab, self.candidate().candidate_word().end_location().next)
 
         self.is_valid = self.stem_requirements.are_fulfilled and self.tail_requirements.are_fulfilled
