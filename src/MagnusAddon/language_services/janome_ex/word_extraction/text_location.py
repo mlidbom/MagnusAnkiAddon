@@ -39,7 +39,7 @@ class TextAnalysisLocation(Slots):
         self.candidate_words_starting_here: list[CandidateWord] = []
         self.valid_words_starting_here: list[CandidateWord] = []
         self.display_variants: list[CandidateWordVariant] = []
-        self.all_words: list[CandidateWordVariant] = []
+        self.valid_variants: list[CandidateWordVariant] = []
         self.all_candidate_ranges: list[CandidateWord] = []
 
     def __repr__(self) -> str:
@@ -62,7 +62,7 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
 
         self.candidate_words_starting_here = [candidate for candidate in self.all_candidate_ranges if candidate.is_word]
         self.valid_words_starting_here = [candidate for candidate in self.all_candidate_ranges if candidate.has_valid_words()]
-        self.all_words = ex_sequence.flatten([v.all_words for v in self.valid_words_starting_here])
+        self.valid_variants = ex_sequence.flatten([v.all_words for v in self.valid_words_starting_here])
 
     def analysis_step_3_calculate_preference_between_overlapping_valid_candidates(self) -> None:
         if self.valid_words_starting_here and self.is_shadowed_by is None:

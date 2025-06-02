@@ -41,15 +41,15 @@ class TextAnalysis(Slots):
         self._analysis_step_2_analyze_compounds()
         self._analysis_step_3_calculate_preference_between_overlapping_valid_candidates()
 
+        self.valid_variants: list[CandidateWordVariant] = ex_sequence.flatten([loc.valid_variants for loc in self.locations])
         self.display_variants: list[CandidateWordVariant] = ex_sequence.flatten([loc.display_variants for loc in self.locations])
-        self.all_words: list[CandidateWordVariant] = ex_sequence.flatten([loc.all_words for loc in self.locations])
 
     @classmethod
     def from_text(cls, text: str) -> TextAnalysis:
         return cls(text, SentenceConfiguration.empty())
 
     def all_words_strings(self) -> list[str]:
-        return [w.form for w in self.all_words]
+        return [w.form for w in self.valid_variants]
 
     def __repr__(self) -> str:
         return self.text

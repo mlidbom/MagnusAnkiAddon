@@ -50,7 +50,7 @@ def setup_collection_with_select_data() -> Iterator[None]:
 ])
 def test_identify_words(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
     analysis = TextAnalysis(sentence, SentenceConfiguration.empty())
-    root_words = [w.form for w in analysis.all_words]
+    root_words = [w.form for w in analysis.valid_variants]
     assert root_words == expected_output
 
 @pytest.mark.parametrize("sentence, expected_output", [
@@ -61,7 +61,7 @@ def test_identify_words(setup_collection_with_select_data: object, sentence: str
 ])
 def test_excluded_surfaces(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
     analysis = TextAnalysis(sentence, SentenceConfiguration.empty())
-    root_words = [w.form for w in analysis.all_words]
+    root_words = [w.form for w in analysis.valid_variants]
     assert root_words == expected_output
 
 @pytest.mark.parametrize("sentence, expected_output", [
@@ -69,7 +69,7 @@ def test_excluded_surfaces(setup_collection_with_select_data: object, sentence: 
 ])
 def test_strictly_suffix(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
     analysis = TextAnalysis(sentence, SentenceConfiguration.empty())
-    root_words = [w.form for w in analysis.all_words]
+    root_words = [w.form for w in analysis.valid_variants]
     assert root_words == expected_output
 
 @pytest.mark.parametrize("sentence, expected_output", [
@@ -78,7 +78,7 @@ def test_strictly_suffix(setup_collection_with_select_data: object, sentence: st
 ])
 def test_requires_a_stem(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
     analysis = TextAnalysis(sentence, SentenceConfiguration.empty())
-    root_words = [w.form for w in analysis.all_words]
+    root_words = [w.form for w in analysis.valid_variants]
     assert root_words == expected_output
 
 @pytest.mark.parametrize("sentence, expected_output", [
@@ -87,7 +87,7 @@ def test_requires_a_stem(setup_collection_with_select_data: object, sentence: st
 def test_invisible_space_breakup(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
     sentence_note = SentenceNote.create(sentence)
     analysis = TextAnalysis(sentence_note.get_question(), SentenceConfiguration.empty())
-    root_words = [w.form for w in analysis.all_words]
+    root_words = [w.form for w in analysis.valid_variants]
     assert root_words == expected_output
 
 @pytest.mark.parametrize("sentence, expected_output", [
@@ -96,7 +96,7 @@ def test_invisible_space_breakup(setup_collection_with_select_data: object, sent
 ])
 def test_prefer_surfaces_over_bases(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
     analysis = TextAnalysis(sentence, SentenceConfiguration.empty())
-    root_words = [w.form for w in analysis.all_words]
+    root_words = [w.form for w in analysis.valid_variants]
     assert root_words == expected_output
 
 @pytest.mark.parametrize("sentence, custom_words, expected_output", [
@@ -109,7 +109,7 @@ def test_custom_vocab_words(setup_collection_with_select_data: object, sentence:
     insert_custom_words(custom_words)
 
     analysis = TextAnalysis(sentence, SentenceConfiguration.empty())
-    root_words = sorted({w.form for w in analysis.all_words})
+    root_words = sorted({w.form for w in analysis.valid_variants})
     assert root_words == sorted(expected_output)
 
 def test_ignores_noise_characters(setup_collection_with_select_data: object) -> None:
@@ -117,7 +117,7 @@ def test_ignores_noise_characters(setup_collection_with_select_data: object) -> 
     expected = {"ー"}
 
     analysis = TextAnalysis(sentence, SentenceConfiguration.empty())
-    words = {w.form for w in analysis.all_words}
+    words = {w.form for w in analysis.valid_variants}
     assert words == expected
 
 def insert_custom_words(custom_words: list[str]) -> None:

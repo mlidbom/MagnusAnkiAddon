@@ -12,4 +12,4 @@ if TYPE_CHECKING:
 class TextAnalysisViewModel(Slots):
     def __init__(self, text_analysis: TextAnalysis) -> None:
         self.analysis: TextAnalysis = text_analysis
-        self.candidate_words: list[CandidateWordViewModel] = [CandidateWordViewModel(candidate_word) for candidate_word in text_analysis.all_words]
+        self.candidate_words: list[CandidateWordViewModel] = [CandidateWordViewModel(candidate_word) for candidate_word in text_analysis.valid_variants]
