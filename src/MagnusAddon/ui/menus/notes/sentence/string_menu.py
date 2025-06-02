@@ -9,7 +9,7 @@ from ui.menus.menu_utils import shortcutfinger
 from ui.menus.menu_utils.ex_qmenu import add_ui_action
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.candidate_word import CandidateWord
+    from language_services.janome_ex.word_extraction.candidate_word import CandidateWordVariant
     from note.sentences.sentencenote import SentenceNote
     from note.sentences.word_exclusion_set import WordExclusionSet
     from PyQt6.QtWidgets import QMenu
@@ -18,7 +18,7 @@ def build_string_menu(string_menu: QMenu, sentence: SentenceNote, menu_string: s
     def add_add_word_exclusion_action(add_menu: QMenu, exclusion_type_title: str, exclusion_set: WordExclusionSet) -> None:
         menu_string_as_word_exclusion = WordExclusion.global_(menu_string)
         valid_top_level_words = sentence.get_valid_parsed_non_child_words()
-        top_level_words_excluded_by_menu_string: list[CandidateWord] = [w for w in valid_top_level_words if menu_string_as_word_exclusion.excludes_form_at_index(w.form, w.start_index)]
+        top_level_words_excluded_by_menu_string: list[CandidateWordVariant] = [w for w in valid_top_level_words if menu_string_as_word_exclusion.excludes_form_at_index(w.form, w.start_index)]
         if any(top_level_words_excluded_by_menu_string):
             if len(top_level_words_excluded_by_menu_string) == 1:
                 add_ui_action(add_menu, exclusion_type_title, lambda: exclusion_set.add(top_level_words_excluded_by_menu_string[0].to_exclusion()))

@@ -7,12 +7,12 @@ from language_services.janome_ex.word_extraction.stem_requirements import StemRe
 from language_services.janome_ex.word_extraction.tail_requirements import TailRequirements
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.candidate_word import CandidateWord
+    from language_services.janome_ex.word_extraction.candidate_word import CandidateWordVariant
     from note.vocabulary.vocabnote import VocabNote
     from sysutils.weak_ref import WeakRef
 
 class VocabMatch(Match):
-    def __init__(self, candidate: WeakRef[CandidateWord], vocab: VocabNote) -> None:
+    def __init__(self, candidate: WeakRef[CandidateWordVariant], vocab: VocabNote) -> None:
         super().__init__(candidate)
         self.vocab: VocabNote = vocab
         self.vocab_form = vocab.get_question()

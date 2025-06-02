@@ -5,14 +5,14 @@ from typing import TYPE_CHECKING
 from sysutils.debug_repr_builder import SkipFalsyValuesDebugReprBuilder
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.candidate_word import CandidateWord
+    from language_services.janome_ex.word_extraction.candidate_word import CandidateWordVariant
     from note.vocabulary.vocabnote import VocabNote
     from sysutils.weak_ref import WeakRef
 
 class VocabCandidate:
-    def __init__(self, candidate: WeakRef[CandidateWord], vocab: VocabNote) -> None:
+    def __init__(self, candidate: WeakRef[CandidateWordVariant], vocab: VocabNote) -> None:
         self.vocab: VocabNote = vocab
-        self.candidate: WeakRef[CandidateWord] = candidate
+        self.candidate: WeakRef[CandidateWordVariant] = candidate
         self.config = candidate().configuration
 
         self.rules = vocab.matching_rules

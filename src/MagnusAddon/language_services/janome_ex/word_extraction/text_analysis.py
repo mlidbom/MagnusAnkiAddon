@@ -8,7 +8,7 @@ from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
     from language_services.janome_ex.tokenizing.jn_tokenized_text import ProcessedToken
-    from language_services.janome_ex.word_extraction.candidate_word import CandidateWord
+    from language_services.janome_ex.word_extraction.candidate_word import CandidateWordVariant
 
 from language_services.janome_ex.tokenizing.jn_tokenizer import JNTokenizer
 from language_services.janome_ex.word_extraction.text_location import TokenTextLocation
@@ -48,8 +48,8 @@ class TextAnalysis(Slots):
         for location in self.locations:
             location.analysis_step_4_calculate_preference_between_overlapping_valid_candidates()
 
-        self.display_words: list[CandidateWord] = ex_sequence.flatten([loc.display_words for loc in self.locations])
-        self.all_words: list[CandidateWord] = ex_sequence.flatten([loc.all_words for loc in self.locations])
+        self.display_words: list[CandidateWordVariant] = ex_sequence.flatten([loc.display_variants for loc in self.locations])
+        self.all_words: list[CandidateWordVariant] = ex_sequence.flatten([loc.all_words for loc in self.locations])
 
     @classmethod
     def from_text(cls, text: str) -> TextAnalysis:

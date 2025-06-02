@@ -7,12 +7,12 @@ from sysutils.weak_ref import WeakRef
 from ui.web.sentence.display_form_viewmodel import DisplayFormViewModel
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.candidate_word import CandidateWord
+    from language_services.janome_ex.word_extraction.candidate_word import CandidateWordVariant
 
 
 class CandidateWordViewModel:
-    def __init__(self, candidate_word: CandidateWord) -> None:
-        self.candidate_word: CandidateWord = candidate_word
+    def __init__(self, candidate_word: CandidateWordVariant) -> None:
+        self.candidate_word: CandidateWordVariant = candidate_word
         self.weakref: WeakRef[CandidateWordViewModel] = WeakRef(self)
         self.is_shadowed: bool = candidate_word.is_shadowed
         self.is_display_word: bool = candidate_word in candidate_word.token_range().analysis().display_words

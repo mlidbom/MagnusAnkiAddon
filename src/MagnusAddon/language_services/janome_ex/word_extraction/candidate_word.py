@@ -21,7 +21,7 @@ if TYPE_CHECKING:
     from note.sentences.sentence_configuration import SentenceConfiguration
     from note.vocabulary.vocabnote import VocabNote
 
-class CandidateWord(Slots):
+class CandidateWordVariant(Slots):
     __slots__ = ["__weakref__"]
 
     def __init__(self, token_range: WeakRef[LocationRange], form: str, is_base: bool) -> None:
@@ -81,7 +81,7 @@ class CandidateWord(Slots):
         self.only_requires_being_a_word_to_be_a_valid_candidate = False
 
     @property
-    def counterpart(self) -> CandidateWord:
+    def counterpart(self) -> CandidateWordVariant:
         raise Exception("Not implemented")
 
     def complete_analysis(self) -> None:
@@ -137,7 +137,7 @@ class CandidateWord(Slots):
     def __repr__(self) -> str:
         return f"""CandidateWord:({self.form}, {self.is_valid_candidate})"""
 
-class SurfaceCandidateWord(CandidateWord, Slots):
+class CandidateWordSurfaceVariant(CandidateWordVariant, Slots):
     def __init__(self, token_range: WeakRef[LocationRange]) -> None:
         super().__init__(token_range, "".join([t().surface for t in token_range().locations]) + "", is_base=False)
 
@@ -146,9 +146,9 @@ class SurfaceCandidateWord(CandidateWord, Slots):
             self.is_self_excluded = True
 
     @property
-    def counterpart(self) -> CandidateWord: return non_optional(self.token_range().base)
+    def counterpart(self) -> CandidateWordVariant: return non_optional(self.token_range().base)
 
-class BaseCandidateWord(CandidateWord, Slots):
+class CandidateWordBaseVariant(CandidateWordVariant, Slots):
     def __init__(self, token_range: WeakRef[LocationRange]) -> None:
         base_form = "".join([t().surface for t in token_range().locations[:-1]]) + token_range().locations[-1]().base
         if not token_range().is_custom_compound:
@@ -171,5 +171,5 @@ class BaseCandidateWord(CandidateWord, Slots):
             self.is_valid_candidate = False
 
     @property
-    def counterpart(self) -> CandidateWord:
+    def counterpart(self) -> CandidateWordVariant:
         return non_optional(self.token_range().surface)

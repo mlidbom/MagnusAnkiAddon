@@ -7,12 +7,12 @@ from language_services.janome_ex.word_extraction.match import Match
 
 if TYPE_CHECKING:
     from language_services.jamdict_ex.dict_entry import DictEntry
-    from language_services.janome_ex.word_extraction.candidate_word import CandidateWord
+    from language_services.janome_ex.word_extraction.candidate_word import CandidateWordVariant
     from sysutils.weak_ref import WeakRef
 
 
 class DictionaryMatch(Match, Slots):
-    def __init__(self, candidate: WeakRef[CandidateWord], dictionary_entry: DictEntry) -> None:
+    def __init__(self, candidate: WeakRef[CandidateWordVariant], dictionary_entry: DictEntry) -> None:
         super().__init__(candidate)
         self.dictionary_entry: DictEntry = dictionary_entry
         self.answer: str = dictionary_entry.generate_answer()

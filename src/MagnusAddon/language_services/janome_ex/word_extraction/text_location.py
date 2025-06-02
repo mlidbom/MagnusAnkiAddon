@@ -11,7 +11,7 @@ from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
     from language_services.janome_ex.tokenizing.jn_tokenized_text import ProcessedToken
-    from language_services.janome_ex.word_extraction.candidate_word import CandidateWord
+    from language_services.janome_ex.word_extraction.candidate_word import CandidateWordVariant
     from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 
 from typing import Optional
@@ -39,8 +39,8 @@ class TokenTextLocation(Slots):
 
         self.word_candidates: list[LocationRange] = []
         self.valid_candidates: list[LocationRange] = []
-        self.display_words: list[CandidateWord] = []
-        self.all_words: list[CandidateWord] = []
+        self.display_variants: list[CandidateWordVariant] = []
+        self.all_words: list[CandidateWordVariant] = []
         self.all_candidate_ranges: list[LocationRange] = []
         self.next: Optional[WeakRef[TokenTextLocation]] = None
         self.previous: Optional[WeakRef[TokenTextLocation]] = None
@@ -76,15 +76,11 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.sur
 
     def analysis_step_4_calculate_preference_between_overlapping_valid_candidates(self) -> None:
         if self.valid_candidates and self.is_shadowed_by is None:
-            self.display_words = self.valid_candidates[0].display_words
-            self.display_words = [candidate for candidate in self.display_words if not self.is_part_of_other_display_word(candidate)]
+            self.display_variants = self.valid_candidates[0].display_variants
 
             covering_forward_count = self.valid_candidates[0].length - 1
             for location in self.forward_list(covering_forward_count)[1:]:
                 location.is_shadowed_by = WeakRef(self)
-
-    def is_part_of_other_display_word(self, word: CandidateWord) -> bool:
-        return any(covering for covering in self.display_words if word.form in covering.form and word != covering)
 
     def is_next_location_inflecting_word(self) -> bool:
         return self.next is not None and self.next().is_inflecting_word()

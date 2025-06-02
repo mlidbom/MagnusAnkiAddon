@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
-from language_services.janome_ex.word_extraction.candidate_word import BaseCandidateWord, CandidateWord, SurfaceCandidateWord
+from language_services.janome_ex.word_extraction.candidate_word import CandidateWordBaseVariant, CandidateWordSurfaceVariant, CandidateWordVariant
 from sysutils.object_instance_tracker import ObjectInstanceTracker
 from sysutils.weak_ref import WeakRef
 
@@ -26,8 +26,8 @@ class LocationRange(Slots):
         self.length = len(self.locations)
         self.weakref = WeakRef(self)
 
-        self.base: BaseCandidateWord = BaseCandidateWord(self.weakref)
-        self.surface: SurfaceCandidateWord = SurfaceCandidateWord(self.weakref)
+        self.base: CandidateWordBaseVariant = CandidateWordBaseVariant(self.weakref)
+        self.surface: CandidateWordSurfaceVariant = CandidateWordSurfaceVariant(self.weakref)
 
         self.is_word: bool = self.surface.is_word or self.base.is_word
 
@@ -37,8 +37,8 @@ class LocationRange(Slots):
 
         self.should_include_surface_in_all_words: bool = False
         self.should_include_base_in_all_words: bool = False
-        self.all_words: list[CandidateWord] = []
-        self.display_words: list[CandidateWord] = []
+        self.all_words: list[CandidateWordVariant] = []
+        self.display_variants: list[CandidateWordVariant] = []
 
     def complete_analysis(self) -> None:
         self.base.complete_analysis()
@@ -63,9 +63,9 @@ class LocationRange(Slots):
 
         # todo: may result in no matches, and I'm not sure we should say that only one is ever allowed to be included
         if self.should_include_surface_in_all_words:
-            self.display_words.append(self.surface)
+            self.display_variants.append(self.surface)
         elif self.should_include_base_in_all_words:
-            self.display_words.append(self.base)
+            self.display_variants.append(self.base)
 
     def has_valid_words(self) -> bool: return len(self.all_words) > 0
 

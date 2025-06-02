@@ -5,13 +5,13 @@ from typing import TYPE_CHECKING
 from autoslot import Slots
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.candidate_word import CandidateWord
+    from language_services.janome_ex.word_extraction.candidate_word import CandidateWordVariant
     from sysutils.weak_ref import WeakRef
 
 
 class Match(Slots):
-    def __init__(self, candidate: WeakRef[CandidateWord]) -> None:
-        self.candidate: WeakRef[CandidateWord] = candidate
+    def __init__(self, candidate: WeakRef[CandidateWordVariant]) -> None:
+        self.candidate: WeakRef[CandidateWordVariant] = candidate
         self.parsed_form: str = candidate().form
         self.vocab_form: str = ""
         self.answer: str = ""
