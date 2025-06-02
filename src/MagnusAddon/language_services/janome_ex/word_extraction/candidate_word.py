@@ -30,7 +30,7 @@ class CandidateWord(Slots):
 
         base_form = "".join([location().token.surface for location in self.locations[:-1]]) + self.locations[-1]().token.base_form
         if not self.is_custom_compound:
-            base_form = self.locations[-1]().token.base_form_for_non_compound_vocab_matching
+            base_form = self.locations[0]().token.base_form_for_non_compound_vocab_matching
 
         self.surface: CandidateWordSurfaceVariant = CandidateWordSurfaceVariant(self.weakref, surface_form)
         self.base: CandidateWordBaseVariant | None = CandidateWordBaseVariant(self.weakref, base_form) if base_form != surface_form else None
