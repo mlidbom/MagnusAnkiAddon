@@ -43,12 +43,12 @@ class CardHistoryNavigator:
                 self._set_current_position_to_end_of_history()
 
     def on_card_shown(self, html: str, card: Card, _: str) -> str:
-        if self._is_navigating: # don't mess up the history when navigating the history. Navigating the history is a read-only operation
+        if self._is_navigating:  # don't mess up the history when navigating the history. Navigating the history is a read-only operation
             self._is_navigating = False
             self._last_card_shown_was_navigated_card_id = card.id
             return html
 
-        self._remove_from_history(card.id) # no duplicates in the history please
+        self._remove_from_history(card.id)  # no duplicates in the history please
         # if we navigate away from a card shown while navigating the history, that was probably the card we were searching for and if we hit back after that, we want that card
         if self._last_card_shown_was_navigated_card_id is not None:
             self._remove_from_history(self._last_card_shown_was_navigated_card_id)
@@ -64,11 +64,27 @@ class CardHistoryNavigator:
     def _remove_from_history(self, card_id: CardId) -> None:
         if card_id in self.card_history: self.card_history.remove(card_id)  # no duplicates in the history please
 
+    @staticmethod
+    def _card_exists(card_id: CardId) -> bool:
+        # noinspection PyBroadException
+        try:
+            return app.anki_collection().get_card(card_id) is not None
+        except:  # noqa: E722
+            return False
+
     def navigate_back(self) -> None:
         if self._is_at_start_of_history():
             return
 
         self.current_position -= 1
+
+        while self.current_position >= 0 and not self._card_exists(self.card_history[self.current_position]):
+            self.current_position -= 1
+
+        if self.current_position < 0:
+            self.current_position = 0
+            return
+
         self._is_navigating = True
         self._show_card_by_id(self.card_history[self.current_position])
 
@@ -77,6 +93,13 @@ class CardHistoryNavigator:
             return
 
         self.current_position += 1
+        while self.current_position < len(self.card_history) and not self._card_exists(self.card_history[self.current_position]):
+            self.current_position += 1
+
+        if self.current_position >= len(self.card_history):
+            self.current_position = len(self.card_history) - 1
+            return
+
         self._is_navigating = True
         self._show_card_by_id(self.card_history[self.current_position])
 
@@ -87,5 +110,6 @@ class CardHistoryNavigator:
     def _show_card_by_id(card_id: CardId) -> None: search_executor.do_lookup(query_builder.open_card_by_id(card_id))
 
 navigator: CardHistoryNavigator = CardHistoryNavigator()
+
 def init() -> None:
     gui_hooks.card_will_show.append(navigator.on_card_shown)
