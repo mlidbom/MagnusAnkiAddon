@@ -66,7 +66,14 @@ class DisplayFormViewModel:
     @property
     def is_displayed(self) -> bool:
         if app.config().show_all_matched_words_in_sentence_breakdown.get_value(): return True
-        return not self.is_shadowed and self.is_display_word and self.is_primary_match() and (self.vocab_match is None or self.vocab_match.is_valid)
+        return (not self.is_shadowed
+                and self.is_display_word
+                and self.is_primary_match()
+                and (self.vocab_match is None
+                     or self.vocab_match.is_valid
+                     or (not self.word_viewmodel().candidate_word.candidate_word().is_custom_compound
+                         and len(self.word_viewmodel().display_forms) == 1))  # we are the only match for a non-compound and we have to display something
+                )
 
     @property
     def should_be_excluded(self) -> bool:
