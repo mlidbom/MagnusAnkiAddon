@@ -57,11 +57,11 @@ class DisplayFormViewModel:
     def exclusion_reason_tags(self) -> str:
         return (SimpleStringBuilder(auto_separator=" ")
                 .append("")
-                .append_if("configured_hidden", self.match.is_configured_hidden)
-                .append_if("configured_incorrect_match", self.match.is_configured_incorrect)
+                .append_if(self.match.is_configured_hidden, "configured_hidden")
+                .append_if(self.match.is_configured_incorrect, "configured_incorrect_match",)
                 .append(" ".join(self.vocab_match.failure_reasons()) if self.vocab_match is not None else "")
-                .append_if("shadowed", self.is_shadowed)
-                .append_if("secondary_match", not self.is_primary_match()).build())
+                .append_if(self.is_shadowed, "shadowed")
+                .append_if(not self.is_primary_match()).build(), "secondary_match")
 
     @property
     def is_displayed(self) -> bool:

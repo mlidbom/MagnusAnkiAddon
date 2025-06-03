@@ -9,9 +9,9 @@ class SimpleStringBuilder:
         self.auto_separator = auto_separator
 
     def append(self, text: str) -> SimpleStringBuilder:
-        return self.append_if(text, True)
+        return self.append_if(True, text)
 
-    def append_if(self, text: str, condition: bool) -> SimpleStringBuilder:
+    def append_if(self, condition: bool, text: str) -> SimpleStringBuilder:
         self._builder.append_if(text, condition)
         return self
 
