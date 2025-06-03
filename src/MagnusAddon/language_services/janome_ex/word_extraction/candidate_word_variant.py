@@ -75,6 +75,7 @@ class CandidateWordVariant(Slots):
         self.is_valid_candidate: bool = False
         self.starts_with_non_word_token = self.candidate_word().start_location().token.is_non_word_character
         self.valid_vocab_matches: list[VocabMatch] = []
+        self.form_owning_vocab_matches: list[VocabMatch] = []
         self.matches: list[Match] = []
         self.valid_matches: list[Match] = []
 
@@ -95,8 +96,9 @@ class CandidateWordVariant(Slots):
         self.exact_match_required = self.exact_match_required_by_primary_form_vocab_configuration or self.exact_match_required_by_counterpart_vocab_configuration
         self.is_exact_match_requirement_fulfilled = not self.exact_match_required or self.counterpart is None or self.form == self.counterpart.form
 
-        if any(vm for vm in self.vocab_matches if vm.vocab.forms.is_owned_form(self.form)):
-            self.valid_vocab_matches = [vm for vm in self.vocab_matches if vm.is_valid]
+        self.valid_vocab_matches = [vm for vm in self.vocab_matches if vm.is_valid]
+        self.form_owning_vocab_matches = [vm for vm in self.vocab_matches if vm.vocab.forms.is_owned_form(self.form)]
+        if any(self.valid_vocab_matches) or any(self.form_owning_vocab_matches):
             self.valid_matches = list(self.valid_vocab_matches)
             self.matches = list(self.vocab_matches)
             override_form = [df for df in self.valid_matches if df.parsed_form != self.form]
