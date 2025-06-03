@@ -40,6 +40,7 @@ class TextAnalysisLocation(Slots):
         self.valid_words_starting_here: list[CandidateWord] = []
         self.display_variants: list[CandidateWordVariant] = []
         self.valid_variants: list[CandidateWordVariant] = []
+        self.all_word_variants: list[CandidateWordVariant] = []
         self.all_candidate_ranges: list[CandidateWord] = []
 
     def __repr__(self) -> str:
@@ -63,15 +64,16 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
         self.candidate_words_starting_here = [candidate for candidate in self.all_candidate_ranges if candidate.is_word]
         self.valid_words_starting_here = [candidate for candidate in self.all_candidate_ranges if candidate.has_valid_words()]
         self.valid_variants = ex_sequence.flatten([v.valid_variants for v in self.valid_words_starting_here])
+        self.all_word_variants = ex_sequence.flatten([v.all_word_variants for v in self.valid_words_starting_here])
 
     def analysis_step_3_calculate_preference_between_overlapping_display_variants(self) -> None:
         if self.valid_words_starting_here and self.is_shadowed_by is None:
-            while len(self.valid_words_starting_here[0].display_variants) == 0:
+            while len(self.valid_words_starting_here[0].display_word_variants) == 0:
                 self.valid_words_starting_here = self.valid_words_starting_here[1:]
             while self.selected_word_needs_to_yield_to_upcoming_compounds():
                 self.valid_words_starting_here = self.valid_words_starting_here[1:]
 
-            self.display_variants = self.valid_words_starting_here[0].display_variants
+            self.display_variants = self.valid_words_starting_here[0].display_word_variants
 
             covering_forward_count = self.valid_words_starting_here[0].location_count - 1
             for location in self.forward_list(covering_forward_count)[1:]:
@@ -87,8 +89,8 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
 
     def selected_word_needs_to_yield_to_upcoming_compounds(self) -> bool:
         selected_word = self.valid_words_starting_here[0]
-        if len(selected_word.display_variants) > 1: return False
-        selected_variant = selected_word.display_variants[0]
+        if len(selected_word.display_word_variants) > 1: return False
+        selected_variant = selected_word.display_word_variants[0]
         matches = selected_variant.matches
         if len(matches) == 0: return False
 

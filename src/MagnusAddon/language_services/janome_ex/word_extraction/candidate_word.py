@@ -46,8 +46,9 @@ class CandidateWord(Slots):
         self.should_include_base_in_all_words: bool = False
         self.should_include_base_in_display_variants: bool = False
         self.should_include_surface_in_display_variants: bool = False
+        self.all_word_variants: list[CandidateWordVariant] = []
         self.valid_variants: list[CandidateWordVariant] = []
-        self.display_variants: list[CandidateWordVariant] = []
+        self.display_word_variants: list[CandidateWordVariant] = []
 
     def must_include_some_variant(self) -> bool:
         return (not self.is_custom_compound
@@ -56,7 +57,13 @@ class CandidateWord(Slots):
 
     def complete_analysis(self) -> None:
         self.surface.complete_analysis()
-        if self.base is not None: self.base.complete_analysis()
+        if self.surface.is_word:
+            self.all_word_variants.append(self.surface)
+
+        if self.base is not None:
+            self.base.complete_analysis()
+            if self.base.is_word:
+                self.all_word_variants.append(self.base)
 
         self.should_include_base_in_all_words = self.base is not None and self.base.is_valid_candidate
 
@@ -78,9 +85,9 @@ class CandidateWord(Slots):
                                                            or (not self.should_include_base_in_all_words and self.must_include_some_variant()))
 
         if self.should_include_surface_in_display_variants:
-            self.display_variants.append(self.surface)
+            self.display_word_variants.append(self.surface)
         elif self.should_include_base_in_display_variants:
-            self.display_variants.append(non_optional(self.base))
+            self.display_word_variants.append(non_optional(self.base))
 
     def has_valid_words(self) -> bool: return len(self.valid_variants) > 0
 
