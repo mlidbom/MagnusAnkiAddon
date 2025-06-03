@@ -30,8 +30,8 @@ class VocabMatch(Match, Slots):
         self.misc_requirements = MiscRequirements(self.weakref)
 
         self.is_valid = (self.stem_requirements.are_fulfilled
-                          and self.tail_requirements.are_fulfilled
-                          and self.misc_requirements.are_fulfilled)  # if we remove ourselves and we are not a compound, part of the text goes missing
+                         and self.tail_requirements.are_fulfilled
+                         and self.misc_requirements.are_fulfilled)  # if we remove ourselves and we are not a compound, part of the text goes missing
 
     def failure_reasons(self) -> set[str]:
         return (self.misc_requirements.failure_reasons()
