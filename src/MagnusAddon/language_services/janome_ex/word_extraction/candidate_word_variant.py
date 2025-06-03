@@ -9,7 +9,6 @@ from language_services.janome_ex.word_extraction.analysis_constants import noise
 from language_services.janome_ex.word_extraction.dictionary_match import DictionaryMatch
 from language_services.janome_ex.word_extraction.missing_match import MissingMatch
 from language_services.janome_ex.word_extraction.vocab_match import VocabMatch
-from language_services.janome_ex.word_extraction.VocabCandidate import VocabCandidate
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from sysutils.object_instance_tracker import ObjectInstanceTracker
 from sysutils.weak_ref import WeakRef
@@ -38,8 +37,6 @@ class CandidateWordVariant(Slots):
 
         self.dict_lookup: DictLookup = DictLookup.lookup_word(form)
         self.all_any_form_vocabs: list[VocabNote] = app.col().vocab.with_form(form)
-
-        self.vocab_candidates: list[VocabCandidate] = [VocabCandidate(self.weak_ref, voc) for voc in self.all_any_form_vocabs]
 
         def is_marked_incorrect_form(form_: str) -> bool:
             return self.configuration.incorrect_matches.excludes_at_index(form_, self.start_index)

@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 from language_services.janome_ex.word_extraction.match import Match
 from language_services.janome_ex.word_extraction.stem_requirements import StemRequirements
 from language_services.janome_ex.word_extraction.tail_requirements import TailRequirements
+from sysutils.simple_string_list_builder import SimpleStringListBuilder
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
@@ -28,4 +29,10 @@ class VocabMatch(Match):
 
         self.is_valid = (self.stem_requirements.are_fulfilled
                          and self.tail_requirements.are_fulfilled
-                         and (not self.is_poison_word or not self.candidate().candidate_word().is_custom_compound))#if we remove ourselves and we are not a compound, part of the text goes missing
+                         and (not self.is_poison_word or not self.candidate().candidate_word().is_custom_compound))  # if we remove ourselves and we are not a compound, part of the text goes missing
+
+    def failure_reasons(self) -> set[str]:
+        return ((SimpleStringListBuilder()
+                 .append_if("is_poison_word", self.is_poison_word).as_set())
+                | self.stem_requirements.failure_reasons()
+                | self.tail_requirements.failure_reasons())
