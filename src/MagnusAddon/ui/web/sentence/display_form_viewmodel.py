@@ -6,6 +6,7 @@ from ankiutils import app
 from language_services.janome_ex.word_extraction.vocab_match import VocabMatch
 from sysutils import typed
 from sysutils.debug_repr_builder import SkipFalsyValuesDebugReprBuilder
+from sysutils.simple_string_builder import SimpleStringBuilder
 from ui.web.sentence.compound_part_viewmodel import CompoundPartViewModel
 
 if TYPE_CHECKING:
@@ -54,14 +55,13 @@ class DisplayFormViewModel:
 
     @property
     def exclusion_reason_tags(self) -> str:
-        reason = " "
-        reason += " shadowed" if self.is_shadowed else ""
-        reason += " secondary_match" if not self.is_primary_match() else ""
-        reason += " configured_hidden" if self.match.is_configured_hidden else ""
-        reason += " configured_incorrect_match" if self.match.is_configured_incorrect else ""
-        if self.vocab_match is not None:
-            reason += f""" {" ".join(self.vocab_match.failure_reasons())}"""
-        return reason
+        return (SimpleStringBuilder(auto_separator=" ")
+                .append("")
+                .append_if("configured_hidden", self.match.is_configured_hidden)
+                .append_if("configured_incorrect_match", self.match.is_configured_incorrect)
+                .append(" ".join(self.vocab_match.failure_reasons()) if self.vocab_match is not None else "")
+                .append_if("shadowed", self.is_shadowed)
+                .append_if("secondary_match", not self.is_primary_match()).build())
 
     @property
     def is_displayed(self) -> bool:
