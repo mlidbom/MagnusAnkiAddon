@@ -54,7 +54,7 @@ class DisplayFormViewModel:
 
     @property
     def exclusion_reason_tags(self) -> str:
-        reason = ""
+        reason = " "
         reason += " shadowed" if self.is_shadowed else ""
         reason += " secondary_match" if not self.is_primary_match() else ""
         reason += " configured_hidden" if self.match.is_configured_hidden else ""
