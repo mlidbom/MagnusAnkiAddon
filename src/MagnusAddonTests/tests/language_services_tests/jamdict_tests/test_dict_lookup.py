@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 
 
 # noinspection PyUnusedFunction
-@pytest.fixture(scope="function", autouse=True)
+@pytest.fixture(scope="module", autouse=True)
 def setup_empty_collection() -> Iterator[None]:
     with inject_empty_anki_collection_with_note_types():
         yield
@@ -125,11 +125,8 @@ def get_single_dict_entry(word: str, readings: list[str]) -> DictEntry:
     return dict_entry.entries[0]
 
 def get_dict_entry(word: str, readings: list[str]) -> DictLookup:
-    mock_vocab = vocab_mock(word, readings)
+    mock_vocab = VocabNote.factory.create(word, "", readings)
     return DictLookup.lookup_vocab_word_or_name(mock_vocab)
-
-def vocab_mock(word: str, readings: list[str]) -> VocabNote:
-    return VocabNote.factory.create(word, "", readings)
 
 
 

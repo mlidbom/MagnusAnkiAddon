@@ -3,18 +3,15 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import pytest
-from ankiutils import app
 from fixtures.collection_factory import inject_anki_collection_with_select_data
 from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 from note.sentences.sentence_configuration import SentenceConfiguration
-from note.sentences.sentencenote import SentenceNote
-from note.vocabulary.vocabnote import VocabNote
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
 # noinspection PyUnusedFunction
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="module")
 def setup_collection_with_select_data() -> Iterator[None]:
     with inject_anki_collection_with_select_data(special_vocab=True):
         yield
@@ -83,15 +80,6 @@ def test_requires_a_stem(setup_collection_with_select_data: object, sentence: st
     assert root_words == expected_output
 
 @pytest.mark.parametrize("sentence, expected_output", [
-    ("金<wbr>貸せって", ["金", "貸す", "える", "って"])
-])
-def test_invisible_space_breakup(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
-    sentence_note = SentenceNote.create(sentence)
-    analysis = TextAnalysis(sentence_note.get_question(), SentenceConfiguration.empty())
-    root_words = [w.form for w in analysis.valid_variants]
-    assert root_words == expected_output
-
-@pytest.mark.parametrize("sentence, expected_output", [
     ("しろ", ["しろ"]),
     ("後で下に下りてらっしゃいね", ["後で", "下に", "下", "に", "下りる", "て", "らっしゃい", "ね"]),
 ])
@@ -100,18 +88,7 @@ def test_prefer_surfaces_over_bases(setup_collection_with_select_data: object, s
     root_words = [w.form for w in analysis.valid_variants]
     assert root_words == expected_output
 
-@pytest.mark.parametrize("sentence, custom_words, expected_output", [
-    ("彼の日本語のレベルは私と同じ位だ。",
-     ["彼の日本語", "日本語のレベル"],
-     ["彼", "彼の", "彼の日本語", "の", "日本語", "日本語のレベル", "レベル", "は", "私", "と", "同じ", "同じ位", "位", "だ"]
-     )
-])
-def test_custom_vocab_words(setup_collection_with_select_data: object, sentence: str, custom_words: list[str], expected_output: list[str]) -> None:
-    insert_custom_words(custom_words)
 
-    analysis = TextAnalysis(sentence, SentenceConfiguration.empty())
-    root_words = sorted({w.form for w in analysis.valid_variants})
-    assert root_words == sorted(expected_output)
 
 def test_ignores_noise_characters(setup_collection_with_select_data: object) -> None:
     sentence = ". , : ; / | 。 、ー ? !"
@@ -120,8 +97,3 @@ def test_ignores_noise_characters(setup_collection_with_select_data: object) -> 
     analysis = TextAnalysis(sentence, SentenceConfiguration.empty())
     words = {w.form for w in analysis.valid_variants}
     assert words == expected
-
-def insert_custom_words(custom_words: list[str]) -> None:
-    for custom_word in custom_words:
-        VocabNote.factory.create(custom_word, "", [""])
-    app.col().flush_cache_updates()

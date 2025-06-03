@@ -3,28 +3,17 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import pytest
-from ankiutils import app
-from fixtures.base_data.sample_data import vocab_spec
-from fixtures.collection_factory import inject_anki_collection_with_select_data, inject_empty_anki_collection_with_note_types
+from fixtures.collection_factory import inject_anki_collection_with_select_data
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
-from note.sentences.sentence_configuration import SentenceConfiguration
-from note.sentences.sentencenote import SentenceNote
-from sysutils import ex_sequence
-from sysutils.lazy import Lazy
-from ui.web.sentence.sentence_viewmodel import SentenceAnalysisViewModel
+from tests.language_services_tests.janome_tests.test_sentence_analysis_viewmodel_common import _run_assertions
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
 # noinspection PyUnusedFunction
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="module")
 def setup_collection_with_select_data() -> Iterator[None]:
     with inject_anki_collection_with_select_data(special_vocab=True):
-        yield
-
-@pytest.fixture(scope="function")
-def setup_empty_collection() -> Iterator[None]:
-    with inject_empty_anki_collection_with_note_types():
         yield
 
 @pytest.mark.parametrize("sentence, excluded, expected_output", [
@@ -110,35 +99,3 @@ def test_exclusions(setup_collection_with_select_data: object, sentence: str, ex
 ])
 def test_potential_verb_splitting_with_vocab(setup_collection_with_select_data: object, sentence: str, excluded: list[WordExclusion], expected_output: list[str]) -> None:
     _run_assertions(sentence, excluded, expected_output)
-
-@pytest.mark.parametrize("sentence, excluded, expected_output", [
-    ("会える", [], ["会う", "える"]),
-    ("会える", [WordExclusion.global_("会える")], ["会う", "える"]),
-    ("会えて", [WordExclusion.global_("会える")], ["会う", "える", "て"]),
-    ("作れる", [], ["作る", "える"]),
-    ("作れる", [WordExclusion.global_("作れる")], ["作る", "える"]),
-    ("作れて", [], ["作る", "える", "て"]),
-    ("作れて", [WordExclusion.global_("作れる")], ["作る", "える", "て"]),
-    ("今日会えた", [], ["今日", "会う", "える", "た"]),
-    ("今日会えた", [WordExclusion.global_("会える")], ["今日", "会う", "える", "た"]),
-    ("今日会えないかな", [], ["今日", "会う", "える", "ないか", "な"]),
-    ("今日会えないかな", [WordExclusion.global_("会える")], ["今日", "会う", "える", "ないか", "な"]),
-    ("この夏は　たくさん思い出を作れたなぁ", [], ["この", "夏", "は", "たくさん", "思い出", "を", "作る", "える", "た", "なぁ"]),
-    ("買えよ　私", [], ["買えよ", "私"]),
-    ("覚ませない", [], ["覚ます", "える", "ない"])
-])
-def test_potential_verb_splitting_without_vocab(setup_empty_collection: object, sentence: str, excluded: list[WordExclusion], expected_output: list[str]) -> None:
-    [eru for eru in vocab_spec.test_special_vocab if eru.question == "える"][0].create_vocab_note()
-    app.col().flush_cache_updates()
-    _run_assertions(sentence, excluded, expected_output)
-
-def _run_assertions(sentence: str, excluded: list[WordExclusion], expected_output: list[str]) -> None:
-    sentence_note = SentenceNote.create(sentence)
-    sentence_note.configuration._value = Lazy.from_value(SentenceConfiguration.from_incorrect_matches(excluded))
-    analysis = SentenceAnalysisViewModel(sentence_note)
-    candidate_words = analysis.analysis.candidate_words
-    display_forms = ex_sequence.flatten([cand.display_forms for cand in candidate_words])
-    displayed_forms = [display_form for display_form in display_forms if display_form.is_displayed]
-
-    root_words = [df.parsed_form for df in displayed_forms]
-    assert root_words == expected_output
