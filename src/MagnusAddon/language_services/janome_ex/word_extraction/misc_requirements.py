@@ -16,12 +16,10 @@ class MiscRequirements(Slots):
 
         self.is_poison_word = rules.is_poison_word.is_set()
         self.is_exact_match_requirement_fulfilled = (not rules.requires_exact_match.is_set()
-                                                     or match().candidate().form == vocab.question.without_noise_characters())
+                                                     or (match().candidate().is_surface and match().candidate().form == vocab.question.without_noise_characters()))
 
         self.are_fulfilled = (self.is_exact_match_requirement_fulfilled
-                              and (not self.is_poison_word
-                                   or not match().candidate().candidate_word().is_custom_compound  # todo: bug: This absolutely does not belong here. Figure out how to get rid of it without tests failing.
-                                   ))
+                              and not self.is_poison_word)
 
     def failure_reasons(self) -> set[str]:
         return (SimpleStringListBuilder()
