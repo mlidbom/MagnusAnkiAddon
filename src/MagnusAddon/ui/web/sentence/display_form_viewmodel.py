@@ -60,7 +60,7 @@ class DisplayFormViewModel:
         reason += " configured_hidden" if self.match.is_configured_hidden else ""
         reason += " configured_incorrect_match" if self.match.is_configured_incorrect else ""
         if self.vocab_match is not None:
-            reason += " ".join(self.vocab_match.failure_reasons())
+            reason += f""" {" ".join(self.vocab_match.failure_reasons())}"""
         return reason
 
     @property
