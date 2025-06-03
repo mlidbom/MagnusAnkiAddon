@@ -6,7 +6,7 @@ from ankiutils import app
 from ankiutils.app import col
 from autoslot import Slots
 from note.note_constants import Mine, NoteFields
-from note.notefields.comma_separated_strings_list_field import CommaSeparatedStringsListField
+from note.notefields.comma_separated_strings_list_field_de_duplicated import CommaSeparatedStringsListFieldDeDuplicated
 from sysutils import ex_str
 from sysutils.lazy import Lazy
 from sysutils.weak_ref import WeakRef
@@ -18,7 +18,7 @@ class VocabNoteForms(Slots):
     __slots__ = ["__weakref__"]
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self._vocab: WeakRef[VocabNote] = vocab
-        self._field: CommaSeparatedStringsListField = CommaSeparatedStringsListField(vocab, NoteFields.Vocab.Forms)
+        self._field: CommaSeparatedStringsListFieldDeDuplicated = CommaSeparatedStringsListFieldDeDuplicated(vocab, NoteFields.Vocab.Forms)
         weakrefself = WeakRef(self)
         self._all_raw: Lazy[set[str]] = Lazy(lambda: set(weakrefself()._field.get()))
 
