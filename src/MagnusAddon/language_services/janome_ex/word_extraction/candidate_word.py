@@ -57,13 +57,7 @@ class CandidateWord(Slots):
 
     def complete_analysis(self) -> None:
         self.surface.complete_analysis()
-        if self.surface.is_word:
-            self.all_word_variants.append(self.surface)
-
-        if self.base is not None:
-            self.base.complete_analysis()
-            if self.base.is_word:
-                self.all_word_variants.append(self.base)
+        if self.base is not None: self.base.complete_analysis()
 
         self.should_include_base_in_all_words = self.base is not None and self.base.is_valid_candidate
 
@@ -88,6 +82,12 @@ class CandidateWord(Slots):
             self.display_word_variants.append(self.surface)
         elif self.should_include_base_in_display_variants:
             self.display_word_variants.append(non_optional(self.base))
+
+        if self.surface.is_word or self.should_include_surface_in_all_words:
+            self.all_word_variants.append(self.surface)
+
+        if self.base is not None and (self.base.is_word or self.should_include_base_in_all_words):
+            self.all_word_variants.append(self.base)
 
     def has_valid_words(self) -> bool: return len(self.valid_variants) > 0
 

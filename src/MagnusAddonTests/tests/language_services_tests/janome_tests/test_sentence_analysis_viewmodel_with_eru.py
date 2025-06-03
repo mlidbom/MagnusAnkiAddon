@@ -7,7 +7,7 @@ from ankiutils import app
 from fixtures.base_data.sample_data import vocab_spec
 from fixtures.collection_factory import inject_empty_anki_collection_with_note_types
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
-from tests.language_services_tests.janome_tests.test_sentence_analysis_viewmodel_common import _run_assertions
+from tests.language_services_tests.janome_tests.test_sentence_analysis_viewmodel_common import _assert_display_words_equal
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -36,5 +36,5 @@ def inject_empty_collection_with_eru() -> Iterator[None]:
     ("覚ませない", [], ["覚ます", "える", "ない"])
 ])
 def test_potential_verb_splitting_without_vocab(inject_empty_collection_with_eru: object, sentence: str, excluded: list[WordExclusion], expected_output: list[str]) -> None:
-    _run_assertions(sentence, excluded, expected_output)
+    _assert_display_words_equal(sentence, excluded, expected_output)
 

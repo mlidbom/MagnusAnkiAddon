@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 import pytest
 from fixtures.collection_factory import inject_anki_collection_with_select_data
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
-from tests.language_services_tests.janome_tests.test_sentence_analysis_viewmodel_common import _run_assertions
+from tests.language_services_tests.janome_tests.test_sentence_analysis_viewmodel_common import _assert_all_words_equal, _assert_display_words_equal
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -55,7 +55,7 @@ def setup_collection_with_select_data() -> Iterator[None]:
     ("書きなさい", ["書く", "なさい"]),
 ])
 def test_misc_stuff(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
-    _run_assertions(sentence, [], expected_output)
+    _assert_display_words_equal(sentence, [], expected_output)
 
 @pytest.mark.parametrize("sentence, excluded, expected_output", [
     ("厳密に言えば　俺一人が友達だけど",
@@ -75,7 +75,7 @@ def test_misc_stuff(setup_collection_with_select_data: object, sentence: str, ex
     ("風の強さに驚きました", [WordExclusion.global_("風の強い")], ["風", "の", "強さ", "に", "驚き", "ます", "た"])
 ])
 def test_exclusions(setup_collection_with_select_data: object, sentence: str, excluded: list[WordExclusion], expected_output: list[str]) -> None:
-    _run_assertions(sentence, excluded, expected_output)
+    _assert_display_words_equal(sentence, excluded, expected_output)
 
 @pytest.mark.parametrize("sentence, excluded, expected_output", [
     ("会える", [], ["会える"]),
@@ -92,4 +92,10 @@ def test_exclusions(setup_collection_with_select_data: object, sentence: str, ex
     ("この夏は　たくさん思い出を作れたなぁ", [], ["この", "夏", "は", "たくさん", "思い出", "を", "作れる", "た", "なぁ"]),
 ])
 def test_potential_verb_splitting_with_vocab(setup_collection_with_select_data: object, sentence: str, excluded: list[WordExclusion], expected_output: list[str]) -> None:
-    _run_assertions(sentence, excluded, expected_output)
+    _assert_display_words_equal(sentence, excluded, expected_output)
+
+@pytest.mark.parametrize("sentence, expected_output", [
+    ("風の強さに驚きました", ["風の強い", "風", "の", "強さ", "強", "強い", "さ", "に", "驚き", "驚く", "まし", "ます", "た"]),
+])
+def test_all_words_equal(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
+    _assert_all_words_equal(sentence, expected_output)
