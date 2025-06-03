@@ -23,6 +23,10 @@ class SentenceConfiguration(Slots):
         return cls.from_values(set(), incorrect_matches, [])
 
     @classmethod
+    def from_hidden_matches(cls, incorrect_matches: list[WordExclusion]) -> SentenceConfiguration:
+        return cls.from_values(set(), [], incorrect_matches)
+
+    @classmethod
     def from_values(cls, highlighted: set[str], incorrect_matches: list[WordExclusion], hidden_matches: list[WordExclusion]) -> SentenceConfiguration:
         return cls(highlighted,
                    WordExclusionSet(lambda: None, incorrect_matches),

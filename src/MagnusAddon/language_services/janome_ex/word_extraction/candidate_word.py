@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 from autoslot import Slots
 from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordBaseVariant, CandidateWordSurfaceVariant, CandidateWordVariant
 from sysutils.object_instance_tracker import ObjectInstanceTracker
+from sysutils.typed import non_optional
 from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
@@ -43,6 +44,8 @@ class CandidateWord(Slots):
 
         self.should_include_surface_in_all_words: bool = False
         self.should_include_base_in_all_words: bool = False
+        self.should_include_base_in_display_variants: bool = False
+        self.should_include_surface_in_display_variants: bool = False
         self.valid_variants: list[CandidateWordVariant] = []
         self.display_variants: list[CandidateWordVariant] = []
 
@@ -69,11 +72,15 @@ class CandidateWord(Slots):
         if self.should_include_surface_in_all_words:
             self.valid_variants.append(self.surface)
 
-        if ((self.should_include_surface_in_all_words and not self.surface.is_marked_hidden_by_config and not self.is_inflected_word)
-                or (not self.should_include_base_in_all_words and self.must_include_some_variant())):
+        self.should_include_base_in_display_variants = self.base is not None and self.should_include_base_in_all_words
+
+        self.should_include_surface_in_display_variants = ((self.should_include_surface_in_all_words and not self.surface.is_marked_hidden_by_config and not self.is_inflected_word)
+                                                           or (not self.should_include_base_in_all_words and self.must_include_some_variant()))
+
+        if self.should_include_surface_in_display_variants:
             self.display_variants.append(self.surface)
-        elif self.base is not None and self.should_include_base_in_all_words:
-            self.display_variants.append(self.base)
+        elif self.should_include_base_in_display_variants:
+            self.display_variants.append(non_optional(self.base))
 
     def has_valid_words(self) -> bool: return len(self.valid_variants) > 0
 
