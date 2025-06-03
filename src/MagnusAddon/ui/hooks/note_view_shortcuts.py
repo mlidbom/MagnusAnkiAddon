@@ -22,53 +22,49 @@ def init() -> None:
     def try_get_review_note_of_type(note_type: type[T]) -> T | None:
         return try_cast(note_type, ui_utils.try_get_review_note())
 
+    def refresh_shallow() -> None: app.get_ui_utils().refresh(refresh_browser=False)
+
     def remove_mnemonic() -> None:
         kanji = try_get_review_note_of_type(KanjiNote)
         if kanji:
             kanji.set_user_mnemonic("")
-            app.get_ui_utils().refresh()
+            refresh_shallow()
 
         vocab = try_get_review_note_of_type(VocabNote)
         if vocab:
             vocab.user.mnemonic.empty()
-            app.get_ui_utils().refresh()
+            refresh_shallow()
 
     def generate_compound_parts() -> None:
         vocab = try_get_review_note_of_type(VocabNote)
         if vocab:
             vocab.compound_parts.auto_generate()
-            app.get_ui_utils().refresh()
+            refresh_shallow()
 
     def reset_incorrect_matches() -> None:
         sentence = try_get_review_note_of_type(SentenceNote)
         if sentence:
             sentence.configuration.incorrect_matches.reset()
-            app.get_ui_utils().refresh()
+            refresh_shallow()
 
     def reset_source_comments() -> None:
         sentence = try_get_review_note_of_type(SentenceNote)
         if sentence:
             sentence.source_comments.empty()
-            app.get_ui_utils().refresh()
+            refresh_shallow()
 
     def toggle_show_compound_parts_in_sentence_breakdown() -> None:
         app.config().show_compound_parts_in_sentence_breakdown.set_value(not app.config().show_compound_parts_in_sentence_breakdown.get_value())
-        app.get_ui_utils().refresh()
+        refresh_shallow()
 
     def toggle_show_all_words_in_sentence_breakdown() -> None:
         app.config().show_all_matched_words_in_sentence_breakdown.set_value(not app.config().show_all_matched_words_in_sentence_breakdown.get_value())
-        app.get_ui_utils().refresh()
-
-    def disable_shortcut(widget: QWidget, shortcut: str) -> None:
-        typed.checked_cast(pyqtBoundSignal, QShortcut(QKeySequence(shortcut), widget).activated).connect(lambda: None)
+        refresh_shallow()
 
     def set_shortcut(widget: QWidget, shortcut: str, callback: Callable[[], None]) -> None:
         typed.checked_cast(pyqtBoundSignal, QShortcut(QKeySequence(shortcut), widget).activated).connect(callback)
 
     def inject_shortcuts_in_widget(widget: QWidget) -> None:
-        for char in ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "u"]:
-            disable_shortcut(widget, char)
-
         for key, callback in stortcuts.items():
             set_shortcut(widget, key, callback)
 

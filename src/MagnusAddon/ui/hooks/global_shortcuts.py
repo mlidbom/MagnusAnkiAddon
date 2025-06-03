@@ -18,7 +18,7 @@ def init() -> None:
         "Alt+Left": history_navigator.navigator.navigate_back,
         "Alt+Right": history_navigator.navigator.navigate_forward,
         "Ctrl+o": NoteSearchDialog.toggle_dialog_visibility,
-        "Ctrl+Shift+o": EnglishWordSearchDialog.toggle_dialog_visibility
+        "Ctrl+Shift+o": EnglishWordSearchDialog.toggle_dialog_visibility,
     }
 
     def set_shortcut(widget: QWidget, shortcut: str, callback: Callable[[], None]) -> None:
