@@ -22,7 +22,7 @@ class TailRequirements(Slots):
 
     def failure_reasons(self) -> set[str]:
         return (SimpleStringListBuilder()
-                .append_if("fails_requires_sentence_end_requirement", not self.fulfills_requires_sentence_end_requirement)
+                .append_if("requires_sentence_end", not self.fulfills_requires_sentence_end_requirement)
                 .as_set())
 
     def __repr__(self) -> str: return " ".join(self.failure_reasons())

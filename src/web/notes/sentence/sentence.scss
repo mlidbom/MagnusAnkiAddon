@@ -68,7 +68,7 @@
 
             &.highlighted .vocabQuestion { color: var(--colorTextBold); }
 
-            .exclusion_reason {font-size: 30pt; color: var(--colorTextWarningRed);}
+            .exclusion_reason {font-size: 10pt; color: var(--colorTextWarningRed);}
             //&.secondary_match.shadowed { padding-left: 60px; }
             &.secondary_match {
                 &, & .vocab_tag { background-color: color-mix(in lch, var(--colorBgOffset1), white 30%);}
