@@ -16,8 +16,9 @@ class MiscRequirements(Slots):
 
         self.is_poison_word = rules.is_poison_word.is_set()
 
-        #todo: bug: This absolutely does not belong here. Figure out how to get rid of it without tests failing.
-        self.are_fulfilled = (not self.is_poison_word or not match().candidate().candidate_word().is_custom_compound)
+        self.are_fulfilled = (not self.is_poison_word
+                              or not match().candidate().candidate_word().is_custom_compound  # todo: bug: This absolutely does not belong here. Figure out how to get rid of it without tests failing.
+                              )
 
     def failure_reasons(self) -> set[str]:
         return (SimpleStringListBuilder()
