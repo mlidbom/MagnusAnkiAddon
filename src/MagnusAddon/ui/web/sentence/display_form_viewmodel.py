@@ -66,7 +66,7 @@ class DisplayFormViewModel:
     @property
     def is_displayed(self) -> bool:
         if app.config().show_all_matched_words_in_sentence_breakdown.get_value(): return True
-        return not self.is_shadowed and self.is_display_word and self.is_primary_match()
+        return not self.is_shadowed and self.is_display_word and self.is_primary_match() and (self.vocab_match is None or self.vocab_match.is_valid)
 
     @property
     def should_be_excluded(self) -> bool:

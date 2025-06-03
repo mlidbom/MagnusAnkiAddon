@@ -41,4 +41,3 @@ def _assert_all_words_equal(sentence: str, expected_output: list[str]) -> None:
 
     root_words = [df.parsed_form for df in display_forms]
     assert root_words == expected_output
-
