@@ -72,7 +72,7 @@ class CandidateWord(Slots):
         if self.should_include_surface_in_all_words:
             self.valid_variants.append(self.surface)
 
-        self.should_include_base_in_display_variants = self.base is not None and self.should_include_base_in_all_words
+        self.should_include_base_in_display_variants = self.base is not None and self.should_include_base_in_all_words and not self.base.is_marked_hidden_by_config
 
         self.should_include_surface_in_display_variants = ((self.should_include_surface_in_all_words and not self.surface.is_marked_hidden_by_config and not self.is_inflected_word)
                                                            or (not self.should_include_base_in_all_words and self.must_include_some_variant()))

@@ -27,8 +27,8 @@ def _run_assertions(sentence: str, excluded: list[WordExclusion], expected_outpu
     if len(excluded) == 0:
         run_note_assertions()
     else:
-        sentence_note.configuration._value = Lazy.from_value(SentenceConfiguration.from_incorrect_matches(excluded))
-        run_note_assertions("################################### running assertions with exclusions marked as incorrect matches")
-
         sentence_note.configuration._value = Lazy.from_value(SentenceConfiguration.from_hidden_matches(excluded))
         run_note_assertions("################################### running assertions with exclusions hidden")
+
+        sentence_note.configuration._value = Lazy.from_value(SentenceConfiguration.from_incorrect_matches(excluded))
+        run_note_assertions("################################### running assertions with exclusions marked as incorrect matches")
