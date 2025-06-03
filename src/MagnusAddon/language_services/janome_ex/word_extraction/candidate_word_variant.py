@@ -131,7 +131,7 @@ class CandidateWordVariant(Slots):
         return WordExclusion.at_index(self.form, self.start_index)
 
     def __repr__(self) -> str:
-        return f"""CandidateWord:({self.form}, {self.is_valid_candidate})"""
+        return f"""{self.form}, is_valid_candidate:{self.is_valid_candidate}"""
 
 class CandidateWordSurfaceVariant(CandidateWordVariant, Slots):
     def __init__(self, candidate_word: WeakRef[CandidateWord], form: str) -> None:
