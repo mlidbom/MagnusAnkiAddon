@@ -12,7 +12,7 @@ class SimpleStringBuilder:
         return self.append_if(True, text)
 
     def append_if(self, condition: bool, text: str) -> SimpleStringBuilder:
-        self._builder.append_if(text, condition)
+        self._builder.append_if(condition, text)
         return self
 
     def build(self) -> str:

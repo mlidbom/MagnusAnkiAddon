@@ -5,7 +5,7 @@ class SimpleStringListBuilder:
     def __init__(self) -> None:
         self.value:list[str] = []
 
-    def append_if(self, text: str, condition: bool) -> SimpleStringListBuilder:
+    def append_if(self, condition: bool, text: str) -> SimpleStringListBuilder:
         if condition: self.value.append(text)
         return self
 

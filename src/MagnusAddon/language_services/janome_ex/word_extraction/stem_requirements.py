@@ -32,9 +32,9 @@ class StemRequirements(Slots):
 
     def failure_reasons(self) -> set[str]:
         return (SimpleStringListBuilder()
-                .append_if("forbids_a_stem", not self.fulfills_forbids_a_stem_requirement)
-                .append_if("requires_a_stem", not self.fulfills_requires_a_stem)
-                .append_if("requires_e_stem", not self.fulfills_requires_e_stem_requirement)
+                .append_if(not self.fulfills_forbids_a_stem_requirement, "forbids_a_stem")
+                .append_if(not self.fulfills_requires_a_stem, "requires_a_stem")
+                .append_if(not self.fulfills_requires_e_stem_requirement, "requires_e_stem")
                 .as_set())
 
     def __repr__(self) -> str: return " ".join(self.failure_reasons())

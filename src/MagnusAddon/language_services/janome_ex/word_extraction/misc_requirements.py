@@ -23,8 +23,8 @@ class MiscRequirements(Slots):
 
     def failure_reasons(self) -> set[str]:
         return (SimpleStringListBuilder()
-                .append_if("requires_exact_match", not self.is_exact_match_requirement_fulfilled)
-                .append_if("is_poison_word", self.is_poison_word)
+                .append_if(not self.is_exact_match_requirement_fulfilled, "requires_exact_match")
+                .append_if(self.is_poison_word, "is_poison_word")
                 .as_set())
 
     def __repr__(self) -> str: return " ".join(self.failure_reasons())
