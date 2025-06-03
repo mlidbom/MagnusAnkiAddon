@@ -64,7 +64,7 @@ class CandidateWord(Slots):
         self.should_include_surface_in_all_words = ((not self.should_include_base_in_all_words
                                                      and self.must_include_some_variant())
                                                     or (self.surface.is_valid_candidate
-                                                        and not self.is_inflected_word
+                                                        and (not self.is_inflected_word or not self.should_include_base_in_all_words)
                                                         and (self.base is None or self.surface.form != self.base.form)))
 
         self.valid_variants = []
@@ -75,7 +75,7 @@ class CandidateWord(Slots):
 
         self.should_include_base_in_display_variants = self.base is not None and self.should_include_base_in_all_words and not self.base.is_marked_hidden_by_config
 
-        self.should_include_surface_in_display_variants = ((self.should_include_surface_in_all_words and not self.surface.is_marked_hidden_by_config and not self.is_inflected_word)
+        self.should_include_surface_in_display_variants = ((self.should_include_surface_in_all_words and not self.surface.is_marked_hidden_by_config)
                                                            or (not self.should_include_base_in_all_words and self.must_include_some_variant()))
 
         if self.should_include_surface_in_display_variants:

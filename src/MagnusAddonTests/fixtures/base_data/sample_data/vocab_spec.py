@@ -105,7 +105,7 @@ test_special_vocab: list[VocabSpec] = [
     VocabSpec("た", "{past-tense} | (please)do", ["た"], surface_not={"たら"}, tags=[vm.is_inflecting_word]),
 
     VocabSpec("だの", "and-the-like", ["だの"], prefix_not={"ん"}),
-    VocabSpec("だ", surface_not={"なら", "な"}),
+    VocabSpec("だ", surface_not={"なら", "な"}, tags=[vm.is_inflecting_word]),
 
     VocabSpec("こ", "familiarizing-suffix", ["こ"], forms=["っこ"], tags=[vm.is_strictly_suffix]),
 
@@ -132,7 +132,10 @@ test_special_vocab: list[VocabSpec] = [
     VocabSpec("書き"),
     VocabSpec("なさい", tags=[vm.is_inflecting_word]),
     VocabSpec("風の強い", tags=[vm.Requires.exact_match]),
-    VocabSpec("たね", tags=[vm.Requires.single_token])
+    VocabSpec("たね", tags=[vm.Requires.single_token]),
+    VocabSpec("たらしい", tags=[vm.Requires.single_token]),
+    VocabSpec("に決まる", forms=["に決る", "に決まる", "に極る"]),
+    VocabSpec("に決まってる", forms=["に決っている", "に決まっている", "に極っている", "に決ってる", "に決まってる", "に極ってる"])
 ]
 
 test_ordinary_vocab_list = [
