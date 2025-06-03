@@ -72,7 +72,7 @@ def test_misc_stuff(setup_collection_with_select_data: object, sentence: str, ex
      ["私", "は", "毎日", "ジョギング", "を", "する", "こと", "を", "習慣", "にする", "ている", "ます"]),
     ("頑張れたというか", [WordExclusion.global_("頑張れ")], ["頑張る", "える", "た", "というか"]),
     ("いらっしゃいません", [WordExclusion.global_("いらっしゃいませ")], ["いらっしゃいます", "ん"]),
-    ("風の強さに驚きました", [], ["風の強い", "さ", "に", "驚き", "ます", "た"])
+    ("風の強さに驚きました", [WordExclusion.global_("風の強い")], ["風", "の", "強さ", "に", "驚き", "ます", "た"])
 ])
 def test_exclusions(setup_collection_with_select_data: object, sentence: str, excluded: list[WordExclusion], expected_output: list[str]) -> None:
     _run_assertions(sentence, excluded, expected_output)
