@@ -93,8 +93,8 @@ class CandidateWordVariant(Slots):
         self.exact_match_required = self.exact_match_required_by_primary_form_vocab_configuration or self.exact_match_required_by_counterpart_vocab_configuration
         self.is_exact_match_requirement_fulfilled = not self.exact_match_required or self.counterpart is None or self.form == self.counterpart.form
 
-        self.valid_vocab_matches = [vm for vm in self.vocab_matches if vm.is_valid]
-        if any(self.valid_vocab_matches):
+        if any(self.vocab_matches):
+            self.valid_vocab_matches = [vm for vm in self.vocab_matches if vm.is_valid]
             self.matches = list(self.valid_vocab_matches)
             override_form = [df for df in self.matches if df.parsed_form != self.form]
             if any(override_form):
