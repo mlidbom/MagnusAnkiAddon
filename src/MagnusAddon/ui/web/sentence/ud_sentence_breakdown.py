@@ -14,12 +14,14 @@ from ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
+    from ui.web.sentence.candidate_word_viewmodel import CandidateWordViewModel
+    from ui.web.sentence.display_form_viewmodel import DisplayFormViewModel
 
 def render_sentence_analysis(note: SentenceNote) -> str:
     sentence_analysis: SentenceAnalysisViewModel = SentenceAnalysisViewModel(note)
-    candidate_words = sentence_analysis.analysis.candidate_words
-    display_forms = ex_sequence.flatten([cand.display_forms for cand in candidate_words])
-    displayed_forms = [display_form for display_form in display_forms if display_form.is_displayed]
+    candidate_words:list[CandidateWordViewModel] = sentence_analysis.analysis.candidate_words
+    display_forms:list[DisplayFormViewModel] = ex_sequence.flatten([cand.display_forms for cand in candidate_words])
+    displayed_forms:list[DisplayFormViewModel] = [display_form for display_form in display_forms if display_form.is_displayed]
     html = """
     <div class="breakdown page_section">
         <div class="page_section_title">Sentence breakdown</div>
@@ -30,6 +32,7 @@ def render_sentence_analysis(note: SentenceNote) -> str:
         html += f"""
                     <li class="sentenceVocabEntry depth1 word_priority_very_high {display_form.meta_tags}">
                         <div class="sentenceVocabEntryDiv">
+                            {f'''<span class="exclusion_reason" title="{display_form.exclusion_reason_tags}">🛈</span>''' if display_form.should_be_excluded else ""}
                             <audio src="{display_form.audio_path}"></audio><a class="play-button"></a>
                             <span class="vocabQuestion clipboard">{display_form.parsed_form}</span>
                             {f'''<span class="vocabHitForm clipboard">{display_form.vocab_form}</span>''' if display_form.display_vocab_form else ""}

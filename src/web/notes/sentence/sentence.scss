@@ -68,8 +68,8 @@
 
             &.highlighted .vocabQuestion { color: var(--colorTextBold); }
 
-            &.secondary_match, &.shadowed { padding-left: 30px; }
-            &.secondary_match.shadowed { padding-left: 60px; }
+            .exclusion_reason {font-size: 30pt; color: var(--colorTextWarningRed);}
+            //&.secondary_match.shadowed { padding-left: 60px; }
             &.secondary_match {
                 &, & .vocab_tag { background-color: color-mix(in lch, var(--colorBgOffset1), white 30%);}
             }
@@ -77,10 +77,9 @@
                 &, & .vocab_tag {background-color: color-mix(in lch, var(--colorBgOffset1), white 15%);}
             }
 
-            &.configured_hidden {
+            &.configured_hidden, &.configured_incorrect_match {
                 border: solid;
-                border-color: var(--colorTextBold);
-            }
+                border-color: var(--colorTextBold); }
 
             &.compound_part {
                 &, & .vocab_tag {background-color: color-mix(in lch, var(--colorBgOffset1), black 6%);}

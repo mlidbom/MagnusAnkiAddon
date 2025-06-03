@@ -46,16 +46,31 @@ class DisplayFormViewModel:
     def meta_tags(self) -> str:
         tags = self._meta_tags
         tags += " highlighted" if self.is_highlighted else ""
-        tags += " shadowed" if self.is_shadowed else ""
-        tags += " secondary_match" if not self.is_primary_match() else ""
-        tags += " configured_hidden" if self.display_form.is_configured_hidden else ""
-        tags += " configured_incorrect_match" if self.display_form.is_configured_incorrect else ""
+        tags += self.exclusion_reason_tags
+
         return tags
+
+    @property
+    def exclusion_reason_tags(self) -> str:
+        reason = ""
+        reason += " shadowed" if self.is_shadowed else ""
+        reason += " secondary_match" if not self.is_primary_match() else ""
+        reason += " configured_hidden" if self.display_form.is_configured_hidden else ""
+        reason += " configured_incorrect_match" if self.display_form.is_configured_incorrect else ""
+        return reason
 
     @property
     def is_displayed(self) -> bool:
         if app.config().show_all_matched_words_in_sentence_breakdown.get_value(): return True
         return not self.is_shadowed and self.is_display_word and self.is_primary_match()
+
+    @property
+    def should_be_excluded(self) -> bool:
+        return (self.is_shadowed
+                or self.display_form.is_configured_hidden
+                or self.display_form.is_configured_incorrect
+                or not self.is_primary_match()
+                or not self.is_display_word)
 
     def is_primary_match(self) -> bool:
         return self.match_owns_form or not self.word_viewmodel().has_perfect_match
