@@ -48,7 +48,7 @@ class DisplayFormViewModel:
     def meta_tags(self) -> str:
         tags = self._meta_tags
         tags += " highlighted" if self.is_highlighted else ""
-        tags += self.exclusion_reason_tags
+        tags += " " + self.exclusion_reason_tags
 
         return tags
 
