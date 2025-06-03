@@ -37,3 +37,5 @@ class VocabMatch(Match, Slots):
         return (self.misc_requirements.failure_reasons()
                 | self.stem_requirements.failure_reasons()
                 | self.tail_requirements.failure_reasons())
+
+    def __repr__(self) -> str: return " ".join(self.failure_reasons())

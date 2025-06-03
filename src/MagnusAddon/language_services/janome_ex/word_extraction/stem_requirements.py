@@ -36,3 +36,5 @@ class StemRequirements(Slots):
                 .append_if("fails_requires_a_stem", not self.fulfills_requires_a_stem)
                 .append_if("fails_requires_e_stem_requirement", not self.fulfills_requires_e_stem_requirement)
                 .as_set())
+
+    def __repr__(self) -> str: return " ".join(self.failure_reasons())
