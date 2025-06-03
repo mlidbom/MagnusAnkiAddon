@@ -78,7 +78,6 @@ class CandidateWordVariant(Slots):
         self.starts_with_non_word_token = self.candidate_word().start_location().token.is_non_word_character
 
         self.matches: list[Match] = []
-        self.only_requires_being_a_word_to_be_a_valid_candidate = False
 
     @property
     def is_shadowed(self) -> bool:
@@ -108,17 +107,15 @@ class CandidateWordVariant(Slots):
             else:
                 self.matches = [MissingMatch(self.weak_ref)]
 
-        self.only_requires_being_a_word_to_be_a_valid_candidate = (not self.is_noise_character
-                                                                   and not self.is_marked_incorrect_by_config
-                                                                   and not self.is_self_excluded
-                                                                   and not self.is_excluded_by_prefix
-                                                                   and not self.is_missing_required_prefix
-                                                                   and len(self.matches) > 0
-                                                                   and (not self.requires_prefix or self.has_prefix)
-                                                                   and not self.starts_with_non_word_token
-                                                                   and self.is_exact_match_requirement_fulfilled)
-
-        self.is_valid_candidate = self.only_requires_being_a_word_to_be_a_valid_candidate and self.is_word
+        self.is_valid_candidate = (self.is_word and (not self.is_noise_character
+                                                     and not self.is_marked_incorrect_by_config
+                                                     and not self.is_self_excluded
+                                                     and not self.is_excluded_by_prefix
+                                                     and not self.is_missing_required_prefix
+                                                     and len(self.matches) > 0
+                                                     and (not self.requires_prefix or self.has_prefix)
+                                                     and not self.starts_with_non_word_token
+                                                     and self.is_exact_match_requirement_fulfilled))
 
         self.completed_analysis = True
 
