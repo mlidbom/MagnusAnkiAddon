@@ -11,6 +11,7 @@ if TYPE_CHECKING:
 
 
 class Match(Slots):
+    __slots__ = ["__weakref__"]
     def __init__(self, candidate: WeakRef[CandidateWordVariant], rules: VocabNoteMatching | None) -> None:
         self.candidate: WeakRef[CandidateWordVariant] = candidate
         self.parsed_form: str = candidate().form
