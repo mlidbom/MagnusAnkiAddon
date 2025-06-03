@@ -47,6 +47,7 @@ class VocabNoteMatching(Slots):
         self._data: WeakRef[VocabNote] = vocab
         self._rules: Lazy[VocabNoteMatchingRules] = Lazy(lambda: VocabNoteMatchingRules(vocab))
         self.requires_exact_match: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.Requires.exact_match)
+        self.requires_single_token:TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.Requires.single_token)
         self.requires_a_stem: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.Requires.a_stem)
         self.forbids_a_stem: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.Forbids.a_stem)
         self.requires_e_stem: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.Requires.e_stem)

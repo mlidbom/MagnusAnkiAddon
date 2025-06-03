@@ -80,9 +80,10 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
     def build_toggle_flags_menu(toggle_flags_menu: QMenu) -> None:
         def build_requires_menu(requires_menu: QMenu) -> None:
             add_toggle_checkbox(requires_menu, shortcutfinger.home1("exact match"), vocab.matching_rules.requires_exact_match)
-            add_toggle_checkbox(requires_menu, shortcutfinger.home2("e stem"), vocab.matching_rules.requires_e_stem)
-            add_toggle_checkbox(requires_menu, shortcutfinger.home3("a stem"), vocab.matching_rules.requires_a_stem)
-            add_toggle_checkbox(requires_menu, shortcutfinger.home4("Sentence end: followed by nothing, a non-word, or a quote, character: と、って"), vocab.matching_rules.requires_sentence_end)
+            add_toggle_checkbox(requires_menu, shortcutfinger.home2("single token"), vocab.matching_rules.requires_single_token)
+            add_toggle_checkbox(requires_menu, shortcutfinger.home3("e stem"), vocab.matching_rules.requires_e_stem)
+            add_toggle_checkbox(requires_menu, shortcutfinger.home4("a stem"), vocab.matching_rules.requires_a_stem)
+            add_toggle_checkbox(requires_menu, shortcutfinger.home5("Sentence end: followed by nothing, a non-word, or a quote, character: と、って"), vocab.matching_rules.requires_sentence_end)
 
         def build_is_menu(is_menu: QMenu) -> None:
             add_toggle_checkbox(is_menu, shortcutfinger.home1("Poison word"), vocab.matching_rules.is_poison_word)

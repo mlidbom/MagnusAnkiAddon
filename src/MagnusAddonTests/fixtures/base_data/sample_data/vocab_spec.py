@@ -131,7 +131,8 @@ test_special_vocab: list[VocabSpec] = [
     VocabSpec("鰻", forms=["[うな]"], prefix_not={"ろ", "よ"}),
     VocabSpec("書き"),
     VocabSpec("なさい", tags=[vm.is_inflecting_word]),
-    VocabSpec("風の強い", tags=[vm.Requires.exact_match])
+    VocabSpec("風の強い", tags=[vm.Requires.exact_match]),
+    VocabSpec("たね", tags=[vm.Requires.single_token])
 ]
 
 test_ordinary_vocab_list = [
