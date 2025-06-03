@@ -31,24 +31,12 @@ def setup_empty_collection() -> Iterator[None]:
     ("厳密に言えば　俺一人が友達だけど",
      [],
      ["厳密に言えば", "俺", "一人", "が", "友達", "だけど"]),
-    ("厳密に言えば　俺一人が友達だけど",
-     [WordExclusion.global_("厳密に言えば"), WordExclusion.global_("言え"), WordExclusion.global_("だけど")],
-     ["厳密", "に", "言う", "ば", "俺", "一人", "が", "友達", "だ", "けど"]),
     ("厳密に言えば　俺一人が友達だけどだけど",
      [],
      ["厳密に言えば", "俺", "一人", "が", "友達", "だけど", "だけど"]),
-    ("厳密に言えばだけど俺一人が友達だけど",
-     [WordExclusion.at_index("だけど", 6)],  # You don't get to exclude tokens, it would mutilate the text, so this will remain.
-     ["厳密に言えば", "だけど", "俺", "一人", "が", "友達", "だけど"]),
     ("幼すぎて よく覚えていないけど",
      [],
      ["幼い", "すぎる", "て", "よく", "覚える", "ている", "ない", "けど"]),
-    ("私は毎日ジョギングをすることを習慣にしています。",
-     [WordExclusion.at_index("にして", 17), WordExclusion.at_index("にし", 17), WordExclusion.at_index("して", 18), WordExclusion.at_index("し", 18), WordExclusion.at_index("してい", 18), WordExclusion.at_index("い", 12), WordExclusion.global_("にする")],
-     ["私", "は", "毎日", "ジョギング", "を", "する", "こと", "を", "習慣", "に", "する", "ている", "ます"]),
-    ("私は毎日ジョギングをすることを習慣にしています。",
-     [WordExclusion.at_index("にして", 17), WordExclusion.at_index("にし", 17), WordExclusion.at_index("して", 18), WordExclusion.at_index("し", 18), WordExclusion.at_index("してい", 18)],
-     ["私", "は", "毎日", "ジョギング", "を", "する", "こと", "を", "習慣", "にする", "ている", "ます"]),
     ("ばら撒かれるなんて死んでもいやだ",
      [],
      ["ばら撒く", "あれる", "なんて", "死んでも", "いや", "だ"]),
@@ -61,9 +49,7 @@ def setup_empty_collection() -> Iterator[None]:
     ("待ってました", [], ["待つ", "て", "ます", "た"]),
     ("落ちてないかな", [], ["落ちる", "てる", "ないか", "な"]),
     ("分かってたら", [], ["分かる", "てたら"]),
-    ("頑張れたというか", [WordExclusion.global_("頑張れ")], ["頑張る", "える", "た", "というか"]),
     ("思い出せそうな気がする", [], ["思い出す", "える", "そうだ", "気がする"]),
-    ("いらっしゃいません", [WordExclusion.global_("いらっしゃいませ")], ["いらっしゃいます", "ん"]),
     ("代筆を頼みたいんだが", [], ["代筆", "を", "頼む", "たい", "んだ", "が"]),
     ("飛ばされる", [], ["飛ばす", "あれる"]),
     ("食べれる", [], ["食べる", "れる"]),
@@ -83,9 +69,29 @@ def setup_empty_collection() -> Iterator[None]:
     ("何て言うか<wbr>さ", [], ["何", "て言うか", "さ"]),
     ("また来ような", [], ["また", "来る", "う", "な"]),
     ("何なんだろうな", [], ["何だ", "んだ", "う", "な"]),
-    ("書きなさい", [], ["書く", "なさい"])
+    ("書きなさい", [], ["書く", "なさい"]),
 ])
 def test_misc_stuff(setup_collection_with_select_data: object, sentence: str, excluded: list[WordExclusion], expected_output: list[str]) -> None:
+    _run_assertions(sentence, excluded, expected_output)
+
+@pytest.mark.parametrize("sentence, excluded, expected_output", [
+    ("厳密に言えば　俺一人が友達だけど",
+     [WordExclusion.global_("厳密に言えば"), WordExclusion.global_("言え"), WordExclusion.global_("だけど")],
+     ["厳密", "に", "言う", "ば", "俺", "一人", "が", "友達", "だ", "けど"]),
+    ("厳密に言えばだけど俺一人が友達だけど",
+     [WordExclusion.at_index("だけど", 6)],  # You don't get to exclude tokens, it would mutilate the text, so this will remain.
+     ["厳密に言えば", "だけど", "俺", "一人", "が", "友達", "だけど"]),
+    ("私は毎日ジョギングをすることを習慣にしています。",
+     [WordExclusion.at_index("にして", 17), WordExclusion.at_index("にし", 17), WordExclusion.at_index("して", 18), WordExclusion.at_index("し", 18), WordExclusion.at_index("してい", 18), WordExclusion.at_index("い", 12), WordExclusion.global_("にする")],
+     ["私", "は", "毎日", "ジョギング", "を", "する", "こと", "を", "習慣", "に", "する", "ている", "ます"]),
+    ("私は毎日ジョギングをすることを習慣にしています。",
+     [WordExclusion.at_index("にして", 17), WordExclusion.at_index("にし", 17), WordExclusion.at_index("して", 18), WordExclusion.at_index("し", 18), WordExclusion.at_index("してい", 18)],
+     ["私", "は", "毎日", "ジョギング", "を", "する", "こと", "を", "習慣", "にする", "ている", "ます"]),
+    ("頑張れたというか", [WordExclusion.global_("頑張れ")], ["頑張る", "える", "た", "というか"]),
+    ("いらっしゃいません", [WordExclusion.global_("いらっしゃいませ")], ["いらっしゃいます", "ん"]),
+    ("風の強さに驚きました", [], ["風の強い", "さ", "に", "驚き", "ます", "た"])
+])
+def test_exclusions(setup_collection_with_select_data: object, sentence: str, excluded: list[WordExclusion], expected_output: list[str]) -> None:
     _run_assertions(sentence, excluded, expected_output)
 
 @pytest.mark.parametrize("sentence, excluded, expected_output", [
