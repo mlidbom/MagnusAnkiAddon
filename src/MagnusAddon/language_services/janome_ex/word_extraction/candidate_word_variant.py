@@ -76,6 +76,7 @@ class CandidateWordVariant(Slots):
         self.starts_with_non_word_token = self.candidate_word().start_location().token.is_non_word_character
         self.valid_vocab_matches: list[VocabMatch] = []
         self.matches: list[Match] = []
+        self.valid_matches: list[Match] = []
 
     @property
     def is_shadowed(self) -> bool:
@@ -93,9 +94,10 @@ class CandidateWordVariant(Slots):
         self.exact_match_required = self.exact_match_required_by_primary_form_vocab_configuration or self.exact_match_required_by_counterpart_vocab_configuration
         self.is_exact_match_requirement_fulfilled = not self.exact_match_required or self.counterpart is None or self.form == self.counterpart.form
 
-        if any(self.vocab_matches):
+        if any(vm for vm in self.vocab_matches if vm.vocab.forms.is_owned_form(self.form)):
             self.valid_vocab_matches = [vm for vm in self.vocab_matches if vm.is_valid]
-            self.matches = list(self.valid_vocab_matches)
+            self.valid_matches = list(self.valid_vocab_matches)
+            self.matches = list(self.vocab_matches)
             override_form = [df for df in self.matches if df.parsed_form != self.form]
             if any(override_form):
                 self.form = override_form[0].parsed_form
@@ -103,6 +105,7 @@ class CandidateWordVariant(Slots):
             dict_lookup = DictLookup.lookup_word(self.form)
             if dict_lookup.found_words():
                 self.matches = [DictionaryMatch(self.weak_ref, dict_lookup.entries[0])]
+                self.valid_matches = self.matches
             else:
                 self.matches = [MissingMatch(self.weak_ref)]
 
@@ -111,7 +114,7 @@ class CandidateWordVariant(Slots):
                                                      and not self.is_self_excluded
                                                      and not self.is_excluded_by_prefix
                                                      and not self.is_missing_required_prefix
-                                                     and len(self.matches) > 0
+                                                     and len(self.valid_matches) > 0
                                                      and (not self.requires_prefix or self.has_prefix)
                                                      and not self.starts_with_non_word_token
                                                      and self.is_exact_match_requirement_fulfilled))
