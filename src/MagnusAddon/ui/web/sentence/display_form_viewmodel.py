@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 from ankiutils import app
 from language_services.janome_ex.word_extraction.vocab_match import VocabMatch
+from sysutils import typed
 from sysutils.debug_repr_builder import SkipFalsyValuesDebugReprBuilder
 from ui.web.sentence.compound_part_viewmodel import CompoundPartViewModel
 
@@ -15,7 +16,8 @@ if TYPE_CHECKING:
 
 class DisplayFormViewModel:
     def __init__(self, word_viewmodel: WeakRef[CandidateWordViewModel], display_form: Match) -> None:
-        self.display_form: Match = display_form
+        self.match: Match = display_form
+        self.vocab_match: VocabMatch | None = typed.try_cast(VocabMatch, display_form)
         self._config: SentenceConfiguration = word_viewmodel().candidate_word.candidate_word().analysis().configuration
         self.word_viewmodel: WeakRef[CandidateWordViewModel] = word_viewmodel
         self.is_shadowed: bool = word_viewmodel().is_shadowed
@@ -32,12 +34,12 @@ class DisplayFormViewModel:
         self.display_vocab_form: bool = False
         self.match_owns_form: bool = self.parsed_form == self.vocab_form
         self.display_readings: bool = self.parsed_form != self.readings
-        if isinstance(display_form, VocabMatch):
-            self.compound_parts = CompoundPartViewModel.get_compound_parts_recursive(display_form.vocab, self._config)
-            self.audio_path = display_form.vocab.audio.get_primary_audio_path()
-            self._meta_tags = " ".join(display_form.vocab.get_meta_tags())
-            self.meta_tags_html = display_form.vocab.meta_data.meta_tags_html(display_extended_sentence_statistics=False)
-            self.match_owns_form = display_form.vocab.forms.is_owned_form(self.parsed_form)
+        if self.vocab_match is not None:
+            self.compound_parts = CompoundPartViewModel.get_compound_parts_recursive(self.vocab_match.vocab, self._config)
+            self.audio_path = self.vocab_match.vocab.audio.get_primary_audio_path()
+            self._meta_tags = " ".join(self.vocab_match.vocab.get_meta_tags())
+            self.meta_tags_html = self.vocab_match.vocab.meta_data.meta_tags_html(display_extended_sentence_statistics=False)
+            self.match_owns_form = self.vocab_match.vocab.forms.is_owned_form(self.parsed_form)
             if self.parsed_form != self.vocab_form:
                 self.display_vocab_form = True
                 self.display_readings = self.display_readings and self.vocab_form != self.readings
@@ -55,8 +57,8 @@ class DisplayFormViewModel:
         reason = ""
         reason += " shadowed" if self.is_shadowed else ""
         reason += " secondary_match" if not self.is_primary_match() else ""
-        reason += " configured_hidden" if self.display_form.is_configured_hidden else ""
-        reason += " configured_incorrect_match" if self.display_form.is_configured_incorrect else ""
+        reason += " configured_hidden" if self.match.is_configured_hidden else ""
+        reason += " configured_incorrect_match" if self.match.is_configured_incorrect else ""
         return reason
 
     @property
@@ -67,8 +69,9 @@ class DisplayFormViewModel:
     @property
     def should_be_excluded(self) -> bool:
         return (self.is_shadowed
-                or self.display_form.is_configured_hidden
-                or self.display_form.is_configured_incorrect
+                or self.match.is_configured_hidden
+                or self.match.is_configured_incorrect
+                or self.match.is_configured_hidden
                 or not self.is_primary_match()
                 or not self.is_display_word)
 
