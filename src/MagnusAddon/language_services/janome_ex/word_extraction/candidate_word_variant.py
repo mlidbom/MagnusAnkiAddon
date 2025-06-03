@@ -80,8 +80,7 @@ class CandidateWordVariant(Slots):
 
     @property
     def is_shadowed(self) -> bool:
-        return (self.candidate_word().start_location().is_shadowed_by is not None or
-                self not in self.candidate_word().start_location().display_variants)
+        return self.candidate_word().start_location().is_shadowed_by is not None
 
     @property
     def counterpart(self) -> CandidateWordVariant | None:
