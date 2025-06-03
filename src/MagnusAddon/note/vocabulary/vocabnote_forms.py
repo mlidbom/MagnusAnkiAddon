@@ -7,7 +7,6 @@ from ankiutils.app import col
 from autoslot import Slots
 from note.note_constants import Mine, NoteFields
 from note.notefields.comma_separated_strings_list_field_de_duplicated import CommaSeparatedStringsListFieldDeDuplicated
-from note.vocabulary import vocabnote_sorting
 from sysutils import ex_sequence, ex_str
 from sysutils.lazy import Lazy
 from sysutils.weak_ref import WeakRef
@@ -33,8 +32,11 @@ class VocabNoteForms(Slots):
     def all_list_notes(self) -> list[VocabNote]:
         return ex_sequence.flatten([app.col().vocab.with_question(form) for form in self.all_list()])
 
-    def all_list_notes_by_studying_status(self) -> list[VocabNote]:
-        return vocabnote_sorting.sort_vocab_list_by_studying_status(self.all_list_notes())
+    def all_list_notes_by_sentence_count(self) -> list[VocabNote]:
+        def prefer_more_sentences(vocab: VocabNote) -> int:
+            return -vocab.sentences.counts().total
+
+        return sorted(self.all_list_notes(), key=prefer_more_sentences)
 
     def all_raw_string(self) -> str:
         return self._field.raw_string_value()

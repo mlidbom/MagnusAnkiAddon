@@ -112,7 +112,8 @@ def generate_stem_of_vocabs(_vocab_note: VocabNote) -> str:
     return render_vocab_list(app.col().vocab.with_stem(_vocab_note.get_question()), "dictionary form", css_class="is_stem_of")
 
 def generate_forms_list(vocab_note: VocabNote) -> str:
-    return render_vocab_list(vocab_note.forms.all_list_notes_by_studying_status(), "forms", css_class="forms", no_sentense_statistics=False)
+    forms = vocab_note.forms.all_list_notes_by_sentence_count()
+    return render_vocab_list(forms, "forms", css_class="forms", no_sentense_statistics=False) if len(forms) > 1 else ""
 
 def generate_meta_tags(vocab_note: VocabNote) -> str:
     return vocab_note.meta_data.meta_tags_html(True)
