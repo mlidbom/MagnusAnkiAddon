@@ -91,7 +91,7 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
         selected_word = self.valid_words_starting_here[0]
         if len(selected_word.display_word_variants) > 1: return False
         selected_variant = selected_word.display_word_variants[0]
-        matches = selected_variant.matches
+        matches = selected_variant.valid_matches
         if len(matches) == 0: return False
 
         for match in matches:
