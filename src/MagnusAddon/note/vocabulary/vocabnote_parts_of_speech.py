@@ -37,6 +37,11 @@ class VocabNotePartsOfSpeech(Slots):
         question = self._vocab.question.without_noise_characters()
         return len(question) > 2 and question[-2:] == "する"
 
+    _ga_suru_ni_suru_endings: set[str] = {"がする", "にする", "くする"}
+    def is_ni_suru_ga_suru_ku_suru_compound(self) -> bool:
+        question = self._vocab.question.without_noise_characters()
+        return len(question) > 3 and question[-3:] in self._ga_suru_ni_suru_endings
+
     def is_uk(self) -> bool: return self._vocab.has_tag(Tags.UsuallyKanaOnly)
 
     _transitive_string_values = ["transitive", "transitive verb"]

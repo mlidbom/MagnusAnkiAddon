@@ -18,7 +18,8 @@ class YieldLastTokenToOverlappingCompound:
     def is_set(self) -> bool:
         return (self.tag_field.is_set()
                 or (app.config().automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound.get_value()
-                    and self._vocab().parts_of_speech.is_suru_verb_included())
+                    and self._vocab().parts_of_speech.is_suru_verb_included()
+                    and not self._vocab().parts_of_speech.is_ni_suru_ga_suru_ku_suru_compound())
                 or (app.config().automatically_yield_last_token_in_passive_verb_compounds_to_overlapping_compound.get_value()
                     and self._vocab().parts_of_speech.is_passive_verb_compound())
                 or (app.config().automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound.get_value()
