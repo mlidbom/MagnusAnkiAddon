@@ -12,6 +12,7 @@ from sysutils.weak_ref import WeakRef
 if TYPE_CHECKING:
     from language_services.janome_ex.tokenizing.jn_tokenized_text import ProcessedToken
     from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
+    from language_services.janome_ex.word_extraction.match import Match
     from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 
 from typing import Optional
@@ -69,12 +70,13 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
         self.valid_variants = ex_sequence.flatten([v.valid_variants for v in self.valid_words_starting_here])
         self.all_word_variants = ex_sequence.flatten([v.all_word_variants for v in self.all_candidate_ranges])
 
-    def create_display_words_starting_here(self) -> list[CandidateWord]:
-        return [candidate for candidate in self.all_candidate_ranges if candidate.has_display_words()]
-
     def analysis_step_4_calculate_preference_between_overlapping_display_variants(self) -> None:
-        while self.display_words_starting_here and not any(match for match in self.display_words_starting_here[0].display_word_variants[0].matches if match.is_displayed()):
-            self.display_words_starting_here = self.display_words_starting_here[1:]
+        def candidate_has_display_matches(cand: CandidateWord) -> bool:
+            matches:list[Match] = ex_sequence.flatten([variant.valid_matches for variant in cand.display_word_variants])
+            return any(match for match in matches if match.is_displayed())
+
+        while self.display_words_starting_here and not candidate_has_display_matches(self.display_words_starting_here[0]):
+            self.display_words_starting_here.remove(self.display_words_starting_here[0])
 
         if self.display_words_starting_here and self.is_shadowed_by is None:
             self.display_variants = self.display_words_starting_here[0].display_word_variants
