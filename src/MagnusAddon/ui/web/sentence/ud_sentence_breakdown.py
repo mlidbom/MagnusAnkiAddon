@@ -17,11 +17,22 @@ if TYPE_CHECKING:
     from ui.web.sentence.candidate_word_viewmodel import CandidateWordViewModel
     from ui.web.sentence.display_form_viewmodel import DisplayFormViewModel
 
+
+def build_exclusion_message_span(display_form: DisplayFormViewModel) -> str:
+    def build_exclusion_message_divs() -> str:
+        exclusion_reasons = [f"""<div class="exclusion_reason">{reason}</div>""" for reason in display_form.exclusion_reason_tags]
+        hiding_reasons = [f"""<div class="hiding_reason">{reason}</div>""" for reason in display_form.hiding_reason_tags]
+        return "<br>".join(exclusion_reasons + hiding_reasons)
+
+    return f"""<span>{build_exclusion_message_divs()}</span>"""
+
+
 def render_sentence_analysis(note: SentenceNote) -> str:
     sentence_analysis: SentenceAnalysisViewModel = SentenceAnalysisViewModel(note)
-    candidate_words:list[CandidateWordViewModel] = sentence_analysis.analysis.candidate_words
-    display_forms:list[DisplayFormViewModel] = ex_sequence.flatten([cand.display_forms for cand in candidate_words])
-    displayed_forms:list[DisplayFormViewModel] = [display_form for display_form in display_forms if display_form.is_displayed]
+    candidate_words: list[CandidateWordViewModel] = sentence_analysis.analysis.candidate_words
+    display_forms: list[DisplayFormViewModel] = ex_sequence.flatten([cand.display_forms for cand in candidate_words])
+    displayed_forms: list[DisplayFormViewModel] = [display_form for display_form in display_forms if
+                                                   display_form.is_displayed]
     html = """
     <div class="breakdown page_section">
         <div class="page_section_title">Sentence breakdown</div>
@@ -32,7 +43,7 @@ def render_sentence_analysis(note: SentenceNote) -> str:
         html += f"""
                     <li class="sentenceVocabEntry depth1 word_priority_very_high {display_form.meta_tags}">
                         <div class="sentenceVocabEntryDiv">
-                            {f'''<span class="exclusion_reason">{display_form.exclusion_reason_tags.replace(" ", "<br>")}</span>''' if display_form.should_be_excluded else ""}
+                            {build_exclusion_message_span(display_form) if display_form.should_be_excluded else ""}
                             <audio src="{display_form.audio_path}"></audio><a class="play-button"></a>
                             <span class="vocabQuestion clipboard">{display_form.parsed_form}</span>
                             {f'''<span class="vocabHitForm clipboard">{display_form.vocab_form}</span>''' if display_form.display_vocab_form else ""}
@@ -61,7 +72,10 @@ def render_sentence_analysis(note: SentenceNote) -> str:
         """
     return html
 
-def _build_vocab_list(word_to_show: list[str], excluded_words: set[str], title: str, include_mnemonics: bool = False, show_words_missing_dictionary_entries: bool = False, include_extended_sentence_statistics: bool = False) -> str:
+
+def _build_vocab_list(word_to_show: list[str], excluded_words: set[str], title: str, include_mnemonics: bool = False,
+                      show_words_missing_dictionary_entries: bool = False,
+                      include_extended_sentence_statistics: bool = False) -> str:
     html = f"""
     <div class="breakdown page_section">
         <div class="page_section_title">{title}</div>
@@ -74,7 +88,8 @@ def _build_vocab_list(word_to_show: list[str], excluded_words: set[str], title: 
             for vocab in vocabs:
                 word_form = vocab.get_question() if vocab.matching_rules.question_overrides_form.is_set() else word
                 hit_form = vocab.get_question() if vocab.get_question() != word_form else ""
-                needs_reading = kana_utils.contains_kanji(word_form) and (not hit_form or kana_utils.contains_kanji(hit_form))
+                needs_reading = kana_utils.contains_kanji(word_form) and (
+                            not hit_form or kana_utils.contains_kanji(hit_form))
                 readings = ", ".join(vocab.readings.get()) if needs_reading else ""
                 html += f"""
                     <li class="sentenceVocabEntry depth1 word_priority_very_high {" ".join(vocab.get_meta_tags())}">
@@ -96,7 +111,9 @@ def _build_vocab_list(word_to_show: list[str], excluded_words: set[str], title: 
                     self.readings: str = readings_
                     self.answer = answer
 
-            dictionary_hits = [Hit(forms=",".join(hit.valid_forms()), readings_=",".join(f.text for f in hit.entry.kana_forms), answer=hit.generate_answer()) for hit in DictLookup.lookup_word(word).entries]
+            dictionary_hits = [
+                Hit(forms=",".join(hit.valid_forms()), readings_=",".join(f.text for f in hit.entry.kana_forms),
+                    answer=hit.generate_answer()) for hit in DictLookup.lookup_word(word).entries]
 
             if not dictionary_hits and show_words_missing_dictionary_entries:
                 dictionary_hits = [Hit(word, "", "---")]
@@ -117,6 +134,7 @@ def _build_vocab_list(word_to_show: list[str], excluded_words: set[str], title: 
     """
     return html
 
+
 def lookup_vocabs(excluded_words: set[str], word: str) -> list[VocabNote]:
     vocabs: list[VocabNote] = app.col().vocab.with_form(word)
     vocabs = [voc for voc in vocabs if voc.get_question() not in excluded_words]
@@ -125,10 +143,13 @@ def lookup_vocabs(excluded_words: set[str], word: str) -> list[VocabNote]:
         vocabs = exact_match
     return vocabs
 
+
 def render_incorrect_matches(note: SentenceNote) -> str:
     excluded_words = {x.word for x in note.configuration.incorrect_matches.get()}
     excluded_vocab = list(excluded_words)
-    return _build_vocab_list(excluded_vocab, set(), "incorrectly matched words", show_words_missing_dictionary_entries=True) if excluded_vocab else ""
+    return _build_vocab_list(excluded_vocab, set(), "incorrectly matched words",
+                             show_words_missing_dictionary_entries=True) if excluded_vocab else ""
+
 
 def init() -> None:
     gui_hooks.card_will_show.append(PrerenderingAnswerContentRenderer(SentenceNote, {

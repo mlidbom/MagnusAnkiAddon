@@ -6,7 +6,7 @@ from ankiutils import app
 from language_services.janome_ex.word_extraction.vocab_match import VocabMatch
 from sysutils import typed
 from sysutils.debug_repr_builder import SkipFalsyValuesDebugReprBuilder
-from sysutils.simple_string_builder import SimpleStringBuilder
+from sysutils.simple_string_list_builder import SimpleStringListBuilder
 from ui.web.sentence.compound_part_viewmodel import CompoundPartViewModel
 
 if TYPE_CHECKING:
@@ -31,14 +31,14 @@ class DisplayFormViewModel:
         self.is_highlighted: bool = self.parsed_form in self._config.highlighted_words or self.vocab_form in self._config.highlighted_words
         self.readings: str = ", ".join(display_form.readings)
         self.meta_tags_html: str = ""
-        self._meta_tags: str = ""
+        self._meta_tags: list[str] = []
         self.display_vocab_form: bool = False
         self.match_owns_form: bool = self.parsed_form == self.vocab_form
         self.display_readings: bool = self.parsed_form != self.readings
         if self.vocab_match is not None:
             self.compound_parts = CompoundPartViewModel.get_compound_parts_recursive(self.vocab_match.vocab, self._config)
             self.audio_path = self.vocab_match.vocab.audio.get_primary_audio_path()
-            self._meta_tags = " ".join(self.vocab_match.vocab.get_meta_tags())
+            self._meta_tags = list(self.vocab_match.vocab.get_meta_tags())
             self.meta_tags_html = self.vocab_match.vocab.meta_data.meta_tags_html(display_extended_sentence_statistics=False)
             self.match_owns_form = self.vocab_match.vocab.forms.is_owned_form(self.parsed_form)
             if self.parsed_form != self.vocab_form:
@@ -46,22 +46,26 @@ class DisplayFormViewModel:
                 self.display_readings = self.display_readings and self.vocab_form != self.readings
 
     @property
-    def meta_tags(self) -> str:
-        tags = self._meta_tags
-        tags += " highlighted" if self.is_highlighted else ""
-        tags += " " + self.exclusion_reason_tags
-
-        return tags
+    def meta_tags(self) -> list[str]:
+        return (SimpleStringListBuilder()
+                .concat(self._meta_tags)
+                .append_if(self.is_highlighted, "highlighted")
+                .concat(self.exclusion_reason_tags)
+                .value)
 
     @property
-    def exclusion_reason_tags(self) -> str:
-        return (SimpleStringBuilder(auto_separator=" ")
-                .append("")
-                .append_if(self.match.is_configured_hidden, "configured_hidden")
+    def exclusion_reason_tags(self) -> list[str]:
+        return (SimpleStringListBuilder()
                 .append_if(self.match.is_configured_incorrect, "configured_incorrect_match", )
-                .append(" ".join(self.vocab_match.failure_reasons) if self.vocab_match is not None else "")
+                .concat_set(self.vocab_match.failure_reasons if self.vocab_match is not None else set())
+                .value)
+
+    @property
+    def hiding_reason_tags(self) -> list[str]:
+        return (SimpleStringListBuilder()
+                .append_if(self.match.is_configured_hidden, "configured_hidden")
                 .append_if(self.is_shadowed, "shadowed")
-                .append_if(not self.is_primary_match(), "secondary_match").build())
+                .append_if(not self.is_primary_match(), "secondary_match").value)
 
     @property
     def is_displayed(self) -> bool:
