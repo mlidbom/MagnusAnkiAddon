@@ -59,6 +59,7 @@ class DisplayFormViewModel:
     @property
     def hiding_reasons(self) -> list[str]:
         return (SimpleStringListBuilder()
+                .concat_set(self.match.hiding_reasons)
                 .append_if(self.is_shadowed, "shadowed")
                 .append_if(not self.is_primary_match(), "secondary_match").value)
 

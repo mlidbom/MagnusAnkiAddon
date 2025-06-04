@@ -47,7 +47,10 @@ class VocabMatch(Match, Slots):
         return (super().failure_reasons
                 | self.misc_requirements.failure_reasons()
                 | self.stem_requirements.failure_reasons()
-                | self.tail_requirements.failure_reasons()
-                | self.display_requirements.failure_reasons())
+                | self.tail_requirements.failure_reasons())
 
-    def __repr__(self) -> str: return " ".join(self.failure_reasons)
+    @property
+    def hiding_reasons(self) -> set[str]: return (super().hiding_reasons
+                                                  | self.display_requirements.failure_reasons())
+
+    def __repr__(self) -> str: return f"""{" ".join(self.failure_reasons)} {" ".join(self.hiding_reasons)}"""

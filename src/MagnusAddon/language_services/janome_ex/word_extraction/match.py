@@ -54,5 +54,10 @@ class Match(Slots):
     def failure_reasons(self) -> set[str]:
         return (SimpleStringListBuilder()
                 .append_if(self.is_configured_incorrect, "configured_incorrect")
+                .as_set())
+
+    @property
+    def hiding_reasons(self) -> set[str]:
+        return (SimpleStringListBuilder()
                 .append_if(self.is_configured_hidden, "configured_hidden")
                 .as_set())
