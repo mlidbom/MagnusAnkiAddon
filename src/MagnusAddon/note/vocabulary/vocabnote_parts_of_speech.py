@@ -58,3 +58,9 @@ class VocabNotePartsOfSpeech(Slots):
             pos = lookup.parts_of_speech() & {"transitive", "intransitive"}
             value1 = "suru verb, " + ", ".join(pos)
             self.set_raw_string_value(value1)
+
+    passive_verb_endings: set[str] = {"あれる", "られる"}
+    def is_passive_verb_compound(self) -> bool:
+        compounds = self._vocab.compound_parts.primary()
+        if len(compounds) == 0: return False
+        return compounds[-1] in self.passive_verb_endings

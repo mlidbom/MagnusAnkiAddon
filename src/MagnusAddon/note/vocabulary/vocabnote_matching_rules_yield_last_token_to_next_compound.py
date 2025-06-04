@@ -16,8 +16,11 @@ class YieldLastTokenToOverlappingCompound:
         self.tag_field: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.yield_last_token_to_overlapping_compound)
 
     def is_set(self) -> bool:
-        return (self.tag_field.is_set() or
-                (app.config().automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound.get_value()
-                 and self._vocab().parts_of_speech.is_suru_verb_included()))
+        return (self.tag_field.is_set()
+                or (app.config().automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound.get_value()
+                    and self._vocab().parts_of_speech.is_suru_verb_included())
+                or (app.config().automatically_yield_last_token_in_passive_verb_compounds_to_overlapping_compound.get_value()
+                    and self._vocab().parts_of_speech.is_passive_verb_compound())
+                )
 
     def __repr__(self) -> str: return self.is_set().__repr__()
