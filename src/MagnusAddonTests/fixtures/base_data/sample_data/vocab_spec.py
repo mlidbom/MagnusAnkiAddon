@@ -136,8 +136,9 @@ test_special_vocab: list[VocabSpec] = [
     VocabSpec("たらしい", tags=[vm.Requires.single_token]),
     VocabSpec("に決まる", forms=["に決る", "に決まる", "に極る"]),
     VocabSpec("に決まってる", forms=["に決っている", "に決まっている", "に極っている", "に決ってる", "に決まってる", "に極ってる"]),
-    VocabSpec("んです", tags=[vm.yield_last_token_to_overlapping_compound]),
-    VocabSpec("された", surface_not={"されたら"})
+    VocabSpec("された", surface_not={"されたら"}),
+    VocabSpec("んです", tags=[vm.Requires.exact_match, vm.yield_last_token_to_overlapping_compound]),
+    VocabSpec("んだ", tags=[vm.Requires.exact_match, vm.yield_last_token_to_overlapping_compound]),
 ]
 
 test_ordinary_vocab_list = [
