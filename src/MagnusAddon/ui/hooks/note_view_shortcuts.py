@@ -106,6 +106,7 @@ def init() -> None:
 
     stortcuts: dict[str, Callable[[], None]] = {"1": toggle_show_compound_parts_in_sentence_breakdown,
                                                 "2": toggle_show_all_words_in_sentence_breakdown,
+                                                "3": toggle_all_yield_last_token_flags,
                                                 "0": remove_mnemonic,
                                                 "7": reset_source_comments,
                                                 "8": reset_incorrect_matches,
