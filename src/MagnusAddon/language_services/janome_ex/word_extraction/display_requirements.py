@@ -18,7 +18,7 @@ class DisplayRequirements(Slots):
 
         self.is_yield_last_token_to_overlapping_compound_requirement_fulfilled = self._is_yield_last_token_to_overlapping_compound_requirement_fulfilled()
 
-        self.are_fulfilled = (self.is_yield_last_token_to_overlapping_compound_requirement_fulfilled)
+        self.are_fulfilled = self.is_yield_last_token_to_overlapping_compound_requirement_fulfilled
 
     def failure_reasons(self) -> set[str]:
         return (SimpleStringListBuilder()

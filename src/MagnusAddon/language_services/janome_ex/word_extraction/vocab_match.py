@@ -28,7 +28,8 @@ class VocabMatch(Match, Slots):
 
     @property
     def is_valid(self) -> bool:
-        return (self.stem_requirements.are_fulfilled
+        return (super().is_valid
+                and self.stem_requirements.are_fulfilled
                 and self.tail_requirements.are_fulfilled
                 and self.misc_requirements.are_fulfilled)  # if we remove ourselves and we are not a compound, part of the text goes missing
 
@@ -45,7 +46,8 @@ class VocabMatch(Match, Slots):
     def display_requirements(self) -> DisplayRequirements: return DisplayRequirements(self.weakref)
 
     def failure_reasons(self) -> set[str]:
-        return (self.misc_requirements.failure_reasons()
+        return (super().failure_reasons()
+                | self.misc_requirements.failure_reasons()
                 | self.stem_requirements.failure_reasons()
                 | self.tail_requirements.failure_reasons())
 

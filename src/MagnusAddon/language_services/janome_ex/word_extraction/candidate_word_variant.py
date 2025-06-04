@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING
 
 from ankiutils import app
 from autoslot import Slots
-from language_services.jamdict_ex.dict_lookup import DictLookup
 from language_services.janome_ex.word_extraction.analysis_constants import noise_characters, non_word_characters
 from language_services.janome_ex.word_extraction.dictionary_match import DictionaryMatch
 from language_services.janome_ex.word_extraction.missing_match import MissingMatch
@@ -14,6 +13,7 @@ from sysutils.object_instance_tracker import ObjectInstanceTracker
 from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
+    from language_services.jamdict_ex.dict_lookup import DictLookup
     from language_services.janome_ex.word_extraction.candidate_word import CandidateWord
     from language_services.janome_ex.word_extraction.match import Match
     from note.sentences.sentence_configuration import SentenceConfiguration
