@@ -54,8 +54,6 @@ class CandidateWordVariant(Slots):
         self.is_marked_incorrect_by_config: bool = is_marked_incorrect_form(form)
         self.is_marked_hidden_by_config: bool = is_marked_hidden_form(form)
 
-        self.exact_match_required_by_primary_form_vocab_configuration: bool = any(v for v in self.unexcluded_form_owning_vocab if v.matching_rules.requires_exact_match.is_set())
-
         self.prefix_is_not: set[str] = set().union(*[v.matching_rules.rules.prefix_is_not.get() for v in self.unexcluded_form_owning_vocab])
         self.is_excluded_by_prefix = any(excluded_prefix for excluded_prefix in self.prefix_is_not if self.preceding_surface.endswith(excluded_prefix))
 
