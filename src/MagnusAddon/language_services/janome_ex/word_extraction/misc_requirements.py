@@ -22,25 +22,15 @@ class MiscRequirements(Slots):
         self.is_single_token_requirement_fulfilled = (not self.rules.requires_single_token.is_set()
                                                       or not match().candidate().candidate_word().is_custom_compound)
 
-        self.is_yield_last_token_to_overlapping_compound_requirement_fulfilled = self._is_yield_last_token_to_overlapping_compound_requirement_fulfilled()
-
         self.are_fulfilled = (self.is_exact_match_requirement_fulfilled
                               and self.is_single_token_requirement_fulfilled
-                              and self.is_yield_last_token_to_overlapping_compound_requirement_fulfilled
                               and not self.is_poison_word)
 
     def failure_reasons(self) -> set[str]:
         return (SimpleStringListBuilder()
                 .append_if(not self.is_exact_match_requirement_fulfilled, "requires_exact_match")
                 .append_if(not self.is_single_token_requirement_fulfilled, "requires_single_token")
-                .append_if(not self.is_yield_last_token_to_overlapping_compound_requirement_fulfilled, "yield_last_token_to_overlapping_compound")
                 .append_if(self.is_poison_word, "is_poison_word")
                 .as_set())
 
     def __repr__(self) -> str: return " ".join(self.failure_reasons())
-
-    def _is_yield_last_token_to_overlapping_compound_requirement_fulfilled(self) -> bool:
-        if not self.rules.yield_last_token_to_overlapping_compound.is_set(): return True
-
-        end_location_display_word = self.match().candidate().candidate_word().end_location().selected_display_word()
-        return end_location_display_word is None or not end_location_display_word.is_custom_compound

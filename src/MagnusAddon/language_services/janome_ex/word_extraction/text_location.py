@@ -71,6 +71,9 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
 
     def selected_display_word(self) -> CandidateWord | None: return self.display_words_starting_here[0] if self.display_words_starting_here else None
 
+    def create_display_words_starting_here(self) -> list[CandidateWord]:
+        return [candidate for candidate in self.all_candidate_ranges if candidate.has_display_words()]
+
     def analysis_step_4_calculate_preference_between_overlapping_display_variants(self) -> None:
         if self.display_words_starting_here and self.is_shadowed_by is None:
             while self.selected_word_needs_to_yield_to_upcoming_compounds():
