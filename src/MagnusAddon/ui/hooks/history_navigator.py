@@ -5,7 +5,7 @@ import os
 
 from anki.cards import Card, CardId
 from ankiutils import app, query_builder, search_executor
-from aqt import gui_hooks
+from aqt import gui_hooks, mw
 from sysutils import typed
 
 
@@ -68,7 +68,7 @@ class CardHistoryNavigator:
     def _card_exists(card_id: CardId) -> bool:
         # noinspection PyBroadException
         try:
-            return app.anki_collection().get_card(card_id) is not None
+            return mw.col.get_card(card_id) is not None
         except:  # noqa: E722
             return False
 
