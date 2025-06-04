@@ -70,16 +70,16 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
     def analysis_step_4_create_collections(self) -> None:
         self.candidate_words_starting_here = [candidate for candidate in self.all_candidate_ranges if candidate.is_word]
         self.valid_words_starting_here = [candidate for candidate in self.all_candidate_ranges if candidate.has_valid_words()]
-        self.display_words_starting_here = [candidate for candidate in self.all_candidate_ranges if candidate.has_display_words()]
+        self.display_words_starting_here = [candidate for candidate in self.all_candidate_ranges if candidate.display_words_are_still_valid()]
         self.valid_variants = ex_sequence.flatten([v.valid_variants for v in self.valid_words_starting_here])
         self.all_word_variants = ex_sequence.flatten([v.all_word_variants for v in self.all_candidate_ranges])
 
     def analysis_step_5_calculate_preference_between_overlapping_display_variant5(self) -> None:
-        #todo this does not belong here. The cand should never have display words that are not displayed in the first place.
-        def candidate_has_display_matches(cand: CandidateWord) -> bool:
-            return any(any(variant.display_matches) for variant in cand.display_word_variants)
-
-        while self.display_words_starting_here and not candidate_has_display_matches(self.display_words_starting_here[0]):
+        #todo this does not feel great. Currently we need the first version of display_words_starting_here to be created
+        # in order for the DisplayRequirements class to inspect it and mark itself as not being displayed so that it can be removed here.
+        # this is some truly strange invisible order dependency that is making me quite incomfortable
+        # it also relies on the check for is_yield_last_token_to_overlapping_compound_requirement_fulfilled to return different values at different times
+        while self.display_words_starting_here and not self.display_words_starting_here[0].display_words_are_still_valid():
             self.display_words_starting_here.remove(self.display_words_starting_here[0])
 
         if self.display_words_starting_here and self.is_shadowed_by is None:
