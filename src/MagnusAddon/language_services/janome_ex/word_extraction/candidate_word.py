@@ -55,7 +55,7 @@ class CandidateWord(Slots):
                 and not self.surface.starts_with_non_word_token
                 and not self.surface.is_noise_character)
 
-    def complete_analysis(self) -> None:
+    def run_validity_analysis(self) -> None:
         self.surface.complete_analysis()
         if self.base is not None: self.base.complete_analysis()
 
@@ -78,6 +78,7 @@ class CandidateWord(Slots):
         self.should_include_surface_in_display_variants = ((self.should_include_surface_in_all_words and not self.surface.is_marked_hidden_by_config)
                                                            or (not self.should_include_base_in_all_words and self.must_include_some_variant()))
 
+    def run_display_analysis(self) -> None:
         if self.should_include_surface_in_display_variants:
             self.display_word_variants.append(self.surface)
         elif self.should_include_base_in_display_variants:

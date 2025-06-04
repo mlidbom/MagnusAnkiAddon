@@ -54,23 +54,27 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
     def forward_list(self, length: int = 99999) -> list[TextAnalysisLocation]:
         return self.analysis().locations[self.token_index: self.token_index + length + 1]
 
-    def analysis_step_1_analyze_non_compound(self) -> None:
+    def analysis_step_1_analyze_non_compound_validity(self) -> None:
         lookahead_max = min(_max_lookahead, len(self.forward_list(_max_lookahead)))
         self.all_candidate_ranges = [CandidateWord([location.weakref for location in self.forward_list(index)]) for index in range(lookahead_max - 1, -1, -1)]
-        self.all_candidate_ranges[-1].complete_analysis()  # the non-compound part needs to be completed first
+        self.all_candidate_ranges[-1].run_validity_analysis()  # the non-compound part needs to be completed first
 
-    def analysis_step_2_analyze_compounds(self) -> None:
+    def analysis_step_2_analyze_compound_validity(self) -> None:
         for range_ in self.all_candidate_ranges[:-1]:  # we already have the last one completed
-            range_.complete_analysis()
+            range_.run_validity_analysis()
 
-    def analysis_step_3_create_collections(self) -> None:
+    def analysis_step_3_analyze_display_status(self) -> None:
+        for range_ in self.all_candidate_ranges:
+            range_.run_display_analysis()
+
+    def analysis_step_4_create_collections(self) -> None:
         self.candidate_words_starting_here = [candidate for candidate in self.all_candidate_ranges if candidate.is_word]
         self.valid_words_starting_here = [candidate for candidate in self.all_candidate_ranges if candidate.has_valid_words()]
         self.display_words_starting_here = [candidate for candidate in self.all_candidate_ranges if candidate.has_display_words()]
         self.valid_variants = ex_sequence.flatten([v.valid_variants for v in self.valid_words_starting_here])
         self.all_word_variants = ex_sequence.flatten([v.all_word_variants for v in self.all_candidate_ranges])
 
-    def analysis_step_4_calculate_preference_between_overlapping_display_variants(self) -> None:
+    def analysis_step_5_calculate_preference_between_overlapping_display_variant5(self) -> None:
         #todo this does not belong here. The cand should never have display words that are not displayed in the first place.
         def candidate_has_display_matches(cand: CandidateWord) -> bool:
             matches:list[Match] = ex_sequence.flatten([variant.matches for variant in cand.display_word_variants])

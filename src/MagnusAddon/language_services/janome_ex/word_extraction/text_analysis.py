@@ -39,8 +39,9 @@ class TextAnalysis(Slots):
         self._connect_next_and_previous_to_locations()
         self._analysis_step_1_analyze_non_compound()
         self._analysis_step_2_analyze_compounds()
-        self._analysis_step_3_create_collections()
-        self._analysis_step_4_calculate_preference_between_overlapping_valid_candidates()
+        self._analysis_step_3_analyze_display_status()
+        self._analysis_step_4_create_collections()
+        self._analysis_step_5_calculate_preference_between_overlapping_display_candidates()
 
         self.all_word_variants: list[CandidateWordVariant] = ex_sequence.flatten([loc.all_word_variants for loc in self.locations])
         self.valid_word_variants: list[CandidateWordVariant] = ex_sequence.flatten([loc.valid_variants for loc in self.locations])
@@ -66,16 +67,20 @@ class TextAnalysis(Slots):
 
     def _analysis_step_1_analyze_non_compound(self) -> None:
         for location in self.locations:
-            location.analysis_step_1_analyze_non_compound()
+            location.analysis_step_1_analyze_non_compound_validity()
 
     def _analysis_step_2_analyze_compounds(self) -> None:
         for location in self.locations:
-            location.analysis_step_2_analyze_compounds()
+            location.analysis_step_2_analyze_compound_validity()
 
-    def _analysis_step_3_create_collections(self) -> None:
+    def _analysis_step_3_analyze_display_status(self) -> None:
         for location in self.locations:
-            location.analysis_step_3_create_collections()
+            location.analysis_step_3_analyze_display_status()
 
-    def _analysis_step_4_calculate_preference_between_overlapping_valid_candidates(self) -> None:
+    def _analysis_step_4_create_collections(self) -> None:
         for location in self.locations:
-            location.analysis_step_4_calculate_preference_between_overlapping_display_variants()
+            location.analysis_step_4_create_collections()
+
+    def _analysis_step_5_calculate_preference_between_overlapping_display_candidates(self) -> None:
+        for location in self.locations:
+            location.analysis_step_5_calculate_preference_between_overlapping_display_variant5()
