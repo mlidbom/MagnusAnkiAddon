@@ -38,6 +38,7 @@ class CandidateWordVariant(Slots):
         self.dict_lookup: DictLookup = DictLookup.lookup_word(form)
         self.all_any_form_vocabs: list[VocabNote] = app.col().vocab.with_form(form)
         self.vocab_matches: list[VocabMatch] = [VocabMatch(self.weak_ref, vocab) for vocab in self.all_any_form_vocabs]
+        self.form_owning_vocab_matches = [vm for vm in self.vocab_matches if vm.vocab.forms.is_owned_form(self.form)]
 
         def is_marked_incorrect_form(form_: str) -> bool:
             return self.configuration.incorrect_matches.excludes_at_index(form_, self.start_index)
@@ -75,7 +76,6 @@ class CandidateWordVariant(Slots):
         self.is_valid_candidate: bool = False
         self.starts_with_non_word_token = self.candidate_word().start_location().token.is_non_word_character
         self.valid_vocab_matches: list[VocabMatch] = []
-        self.form_owning_vocab_matches: list[VocabMatch] = []
         self.matches: list[Match] = []
         self.valid_matches: list[Match] = []
 
@@ -84,6 +84,9 @@ class CandidateWordVariant(Slots):
         return (self.candidate_word().start_location().is_shadowed_by is not None
                 or (self not in self.candidate_word().start_location().display_variants
                     and self.is_valid_candidate))
+
+    def form_owning_vocab_matches_are_all_invalid(self) -> bool:
+        return not self.form_owning_vocab_matches or not any(vm for vm in self.form_owning_vocab_matches if vm.is_valid)
 
     def is_preliminarily_valid(self) -> bool:
         return (self.is_word and (not self.is_noise_character
@@ -99,7 +102,6 @@ class CandidateWordVariant(Slots):
         if self.completed_analysis: return
 
         self.valid_vocab_matches = [vm for vm in self.vocab_matches if vm.is_valid]
-        self.form_owning_vocab_matches = [vm for vm in self.vocab_matches if vm.vocab.forms.is_owned_form(self.form)]
         if self.valid_vocab_matches or self.form_owning_vocab_matches:
             self.valid_matches = list(self.valid_vocab_matches)
             self.matches = list(self.vocab_matches)
