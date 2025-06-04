@@ -82,13 +82,9 @@ class CandidateWord(Slots):
     def run_display_analysis(self) -> None:
         self.should_include_base_in_display_variants = (self.base is not None
                                                         and self.should_include_base_in_all_words
-                                                        and not self.base.is_marked_hidden_by_config
                                                         and any(self.base.display_matches))
 
-        self.should_include_surface_in_display_variants = ((self.should_include_surface_in_all_words
-                                                            and not self.surface.is_marked_hidden_by_config
-                                                            and any(self.surface.display_matches))
-                                                           or (not self.should_include_base_in_all_words and self.must_include_some_variant()))
+        self.should_include_surface_in_display_variants = (self.should_include_surface_in_all_words and any(self.surface.display_matches))
 
         if self.should_include_surface_in_display_variants:
             self.display_word_variants.append(self.surface)
