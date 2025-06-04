@@ -85,6 +85,16 @@ class CandidateWordVariant(Slots):
                 or (self not in self.candidate_word().start_location().display_variants
                     and self.is_valid_candidate))
 
+    def is_preliminarily_valid(self) -> bool:
+        return (self.is_word and (not self.is_noise_character
+                                  and not self.is_marked_incorrect_by_config
+                                  and not self.is_self_excluded
+                                  and not self.is_excluded_by_prefix
+                                  and not self.is_missing_required_prefix
+                                  and (not self.requires_prefix or self.has_prefix)
+                                  and not self.starts_with_non_word_token
+                                  ))
+
     def complete_analysis(self) -> None:
         if self.completed_analysis: return
 
@@ -105,15 +115,7 @@ class CandidateWordVariant(Slots):
             else:
                 self.matches = [MissingMatch(self.weak_ref)]
 
-        self.is_valid_candidate = (self.is_word and (not self.is_noise_character
-                                                     and not self.is_marked_incorrect_by_config
-                                                     and not self.is_self_excluded
-                                                     and not self.is_excluded_by_prefix
-                                                     and not self.is_missing_required_prefix
-                                                     and len(self.valid_matches) > 0
-                                                     and (not self.requires_prefix or self.has_prefix)
-                                                     and not self.starts_with_non_word_token
-                                                     ))
+        self.is_valid_candidate = (self.is_preliminarily_valid() and len(self.valid_matches) > 0)
 
         self.completed_analysis = True
 
