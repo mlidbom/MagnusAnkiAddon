@@ -95,6 +95,7 @@ class CandidateWordVariant(Slots):
             self.matches = list(self.vocab_matches)
             override_form = [df for df in self.valid_matches if df.parsed_form != self.form]
             if any(override_form):
+                # todo: this is highly suspect, do we really want to just overwrite the parsed value? Should this logic not stay within the match?
                 self.form = override_form[0].parsed_form
         else:
             dict_lookup = DictLookup.lookup_word(self.form)
