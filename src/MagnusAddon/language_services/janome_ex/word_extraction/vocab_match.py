@@ -22,6 +22,9 @@ class VocabMatch(Match, Slots):
         self.vocab_form = vocab.get_question()
         self.answer = vocab.get_answer()
         self.readings = vocab.readings.get()
+        self.stem_requirements: StemRequirements = StemRequirements(self.vocab, self.candidate().candidate_word().start_location().previous)
+        self.tail_requirements: TailRequirements = TailRequirements(self.vocab, self.candidate().candidate_word().end_location().next)
+        self.misc_requirements: MiscRequirements = MiscRequirements(self.weakref)
 
         if vocab.matching_rules.question_overrides_form.is_set():
             self.parsed_form = self.vocab.get_question()
@@ -31,18 +34,11 @@ class VocabMatch(Match, Slots):
         return (super().is_valid
                 and self.stem_requirements.are_fulfilled
                 and self.tail_requirements.are_fulfilled
-                and self.misc_requirements.are_fulfilled)  # if we remove ourselves and we are not a compound, part of the text goes missing
+                and self.misc_requirements.are_fulfilled)
 
     @property
     def is_valid_for_display(self) -> bool: return (super().is_valid_for_display
                                                     and self.is_valid and self.display_requirements.are_fulfilled)
-
-    @property
-    def stem_requirements(self) -> StemRequirements: return StemRequirements(self.vocab, self.candidate().candidate_word().start_location().previous)
-    @property
-    def tail_requirements(self) -> TailRequirements: return TailRequirements(self.vocab, self.candidate().candidate_word().end_location().next)
-    @property
-    def misc_requirements(self) -> MiscRequirements: return MiscRequirements(self.weakref)
     @property
     def display_requirements(self) -> DisplayRequirements: return DisplayRequirements(self.weakref)
 
