@@ -74,7 +74,12 @@ def build_config_menu(config_menu: QMenu) -> None:
         checkbox_action = QAction(_title, main_window())
         checkbox_action.setCheckable(True)
         checkbox_action.setChecked(config_value.get_value())
-        qconnect(checkbox_action.triggered, config_value.set_value)
+
+        def set_value(value: bool) -> None:
+            config_value.set_value(value)
+            app.get_ui_utils().refresh()
+
+        qconnect(checkbox_action.triggered, set_value)
         menu.addAction(checkbox_action)
 
     def build_feature_toggles_menu(_title: str) -> None:
