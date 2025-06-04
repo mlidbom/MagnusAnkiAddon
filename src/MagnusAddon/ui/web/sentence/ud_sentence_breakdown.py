@@ -17,19 +17,16 @@ if TYPE_CHECKING:
     from ui.web.sentence.candidate_word_viewmodel import CandidateWordViewModel
     from ui.web.sentence.display_form_viewmodel import DisplayFormViewModel
 
-
 def build_exclusion_message_span(view_model: DisplayFormViewModel) -> str:
     exclusion_reasons = [f"""<div class="exclusion_reason">{reason}</div>""" for reason in view_model.exclusion_reasons]
     hiding_reasons = [f"""<div class="hiding_reason">{reason}</div>""" for reason in view_model.hiding_reasons]
-    return f"""<span>{"<br>".join(exclusion_reasons + hiding_reasons)}</span>"""
-
+    return f"""<span>{newline.join(exclusion_reasons + hiding_reasons)}</span>"""
 
 def render_sentence_analysis(note: SentenceNote) -> str:
     sentence_analysis: SentenceAnalysisViewModel = SentenceAnalysisViewModel(note)
     candidate_words: list[CandidateWordViewModel] = sentence_analysis.analysis.candidate_words
     display_forms: list[DisplayFormViewModel] = ex_sequence.flatten([cand.display_forms for cand in candidate_words])
-    displayed_forms: list[DisplayFormViewModel] = [display_form for display_form in display_forms
-                                                   if display_form.is_displayed]
+    displayed_forms: list[DisplayFormViewModel] = [display_form for display_form in display_forms if display_form.is_displayed]
     html = """
     <div class="breakdown page_section">
         <div class="page_section_title">Sentence breakdown</div>
@@ -68,7 +65,6 @@ def render_sentence_analysis(note: SentenceNote) -> str:
             </div>
         """
     return html
-
 
 def _build_vocab_list(word_to_show: list[str], excluded_words: set[str], title: str, include_mnemonics: bool = False,
                       show_words_missing_dictionary_entries: bool = False,
@@ -131,7 +127,6 @@ def _build_vocab_list(word_to_show: list[str], excluded_words: set[str], title: 
     """
     return html
 
-
 def lookup_vocabs(excluded_words: set[str], word: str) -> list[VocabNote]:
     vocabs: list[VocabNote] = app.col().vocab.with_form(word)
     vocabs = [voc for voc in vocabs if voc.get_question() not in excluded_words]
@@ -140,13 +135,11 @@ def lookup_vocabs(excluded_words: set[str], word: str) -> list[VocabNote]:
         vocabs = exact_match
     return vocabs
 
-
 def render_incorrect_matches(note: SentenceNote) -> str:
     excluded_words = {x.word for x in note.configuration.incorrect_matches.get()}
     excluded_vocab = list(excluded_words)
     return _build_vocab_list(excluded_vocab, set(), "incorrectly matched words",
                              show_words_missing_dictionary_entries=True) if excluded_vocab else ""
-
 
 def init() -> None:
     gui_hooks.card_will_show.append(PrerenderingAnswerContentRenderer(SentenceNote, {
