@@ -60,7 +60,7 @@ class CandidateWordVariant(Slots):
         self.is_excluded_by_prefix = any(excluded_prefix for excluded_prefix in self.prefix_is_not if self.preceding_surface.endswith(excluded_prefix))
 
         self.prefix_must_end_with: set[str] = set().union(*[v.matching_rules.rules.required_prefix.get() for v in self.unexcluded_form_owning_vocab])
-        self.is_missing_required_prefix = self.prefix_must_end_with and not any(required for required in self.prefix_must_end_with if self.preceding_surface.endswith(required))
+        self.is_missing_required_prefix: bool = any(self.prefix_must_end_with) and not any(required for required in self.prefix_must_end_with if self.preceding_surface.endswith(required))
 
         self.is_strictly_suffix = any(voc for voc in self.unexcluded_form_owning_vocab if voc.matching_rules.is_strictly_suffix.is_set())
         self.requires_prefix = self.is_strictly_suffix or any(self.prefix_must_end_with)
@@ -89,14 +89,13 @@ class CandidateWordVariant(Slots):
         return any(self.form_owning_vocab_matches) and not any(vm for vm in self.form_owning_vocab_matches if vm.is_valid)
 
     def is_preliminarily_valid(self) -> bool:
-        return (self.is_word and (not self.is_noise_character
-                                  and not self.is_marked_incorrect_by_config
-                                  and not self.is_self_excluded
-                                  and not self.is_excluded_by_prefix
-                                  and not self.is_missing_required_prefix
-                                  and (not self.requires_prefix or self.has_prefix)
-                                  and not self.starts_with_non_word_token
-                                  ))
+        return (self.is_word and not (self.is_noise_character
+                                      or self.is_marked_incorrect_by_config
+                                      or self.is_self_excluded
+                                      or self.is_excluded_by_prefix
+                                      or self.is_missing_required_prefix
+                                      or self.starts_with_non_word_token
+                                      or (self.requires_prefix and not self.has_prefix)))
 
     def complete_analysis(self) -> None:
         if self.completed_analysis: return
