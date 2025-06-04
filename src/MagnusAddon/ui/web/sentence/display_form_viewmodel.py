@@ -59,7 +59,7 @@ class DisplayFormViewModel:
                 .append("")
                 .append_if(self.match.is_configured_hidden, "configured_hidden")
                 .append_if(self.match.is_configured_incorrect, "configured_incorrect_match", )
-                .append(" ".join(self.vocab_match.failure_reasons()) if self.vocab_match is not None else "")
+                .append(" ".join(self.vocab_match.failure_reasons) if self.vocab_match is not None else "")
                 .append_if(self.is_shadowed, "shadowed")
                 .append_if(not self.is_primary_match(), "secondary_match").build())
 

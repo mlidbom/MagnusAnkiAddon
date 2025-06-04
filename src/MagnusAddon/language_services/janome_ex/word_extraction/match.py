@@ -50,6 +50,7 @@ class Match(Slots):
     @property
     def _must_include_some_variant(self) -> bool: return self.candidate().candidate_word().must_include_some_variant()
 
+    @property
     def failure_reasons(self) -> set[str]:
         return (SimpleStringListBuilder()
                 .append_if(self.is_configured_incorrect, "configured_incorrect")
