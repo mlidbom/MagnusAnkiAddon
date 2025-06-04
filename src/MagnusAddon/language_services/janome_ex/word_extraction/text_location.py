@@ -69,16 +69,14 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
         self.valid_variants = ex_sequence.flatten([v.valid_variants for v in self.valid_words_starting_here])
         self.all_word_variants = ex_sequence.flatten([v.all_word_variants for v in self.all_candidate_ranges])
 
-    def selected_display_word(self) -> CandidateWord | None: return self.display_words_starting_here[0] if self.display_words_starting_here else None
-
     def create_display_words_starting_here(self) -> list[CandidateWord]:
         return [candidate for candidate in self.all_candidate_ranges if candidate.has_display_words()]
 
     def analysis_step_4_calculate_preference_between_overlapping_display_variants(self) -> None:
-        if self.display_words_starting_here and self.is_shadowed_by is None:
-            while self.selected_word_needs_to_yield_to_upcoming_compounds():
-                self.display_words_starting_here = self.display_words_starting_here[1:]
+        while self.display_words_starting_here and not any(match for match in self.display_words_starting_here[0].display_word_variants[0].matches if match.is_displayed()):
+            self.display_words_starting_here = self.display_words_starting_here[1:]
 
+        if self.display_words_starting_here and self.is_shadowed_by is None:
             self.display_variants = self.display_words_starting_here[0].display_word_variants
 
             covering_forward_count = self.display_words_starting_here[0].location_count - 1
@@ -92,16 +90,3 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
     def is_inflecting_word(self) -> bool:
         vocab = app.col().vocab.with_any_form_in([self.token.base_form, self.token.surface])
         return any(voc for voc in vocab if voc.has_tag(Tags.Vocab.Matching.is_inflecting_word))
-
-    def selected_word_needs_to_yield_to_upcoming_compounds(self) -> bool:
-        selected_word = self.display_words_starting_here[0]
-        if len(selected_word.display_word_variants) > 1: return False
-        selected_variant = selected_word.display_word_variants[0]
-        matches = selected_variant.valid_matches
-        if len(matches) == 0: return False
-
-        for match in matches:
-            if match.rules is None or not match.rules.yield_last_token_to_overlapping_compound.is_set():
-                return False
-
-        return selected_word.end_location().display_words_starting_here[0].is_custom_compound

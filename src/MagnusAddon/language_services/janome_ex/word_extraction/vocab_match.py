@@ -33,7 +33,6 @@ class VocabMatch(Match, Slots):
                 and self.tail_requirements.are_fulfilled
                 and self.misc_requirements.are_fulfilled)  # if we remove ourselves and we are not a compound, part of the text goes missing
 
-    @property
     def is_displayed(self) -> bool: return self.is_valid and self.display_requirements.are_fulfilled
 
     @property

@@ -26,8 +26,20 @@ class Match(Slots):
     def is_valid(self) -> bool:
         return not self.is_configured_incorrect
 
-    @property
-    def is_displayed(self) -> bool: return self.is_valid and not self.is_configured_hidden
+    def is_displayed(self) -> bool: return ((self.is_valid and not self.is_configured_hidden)
+                                            or self._emergency_displayed())
+
+    def _emergency_displayed(self) -> bool:
+        return (self._must_include_some_variant()
+                and self._is_surface()
+                and not self._base_is_valid_word())
+
+    def _base_is_valid_word(self) -> bool:
+        base = self.candidate().candidate_word().base
+        return base is not None and base.is_valid_candidate
+
+    def _is_surface(self) -> bool: return self.candidate().is_surface
+    def _must_include_some_variant(self) -> bool: return self.candidate().candidate_word().must_include_some_variant()
 
     def failure_reasons(self) -> set[str]:
         return (SimpleStringListBuilder()
