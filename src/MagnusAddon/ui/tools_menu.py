@@ -22,7 +22,6 @@ from wanikani.wani_downloader import WaniDownloader
 if TYPE_CHECKING:
     from configuration.configuration_value import ConfigurationValueBool
 
-
 def refresh() -> None:
     if not app.is_initialized():
         return
@@ -31,8 +30,7 @@ def refresh() -> None:
     if note:
         note.update_generated_data()
 
-
-def add_menu_ui_action(sub_menu: QMenu, heading: str, callback: Callable[[],None], shortcut: str = "") -> None:
+def add_menu_ui_action(sub_menu: QMenu, heading: str, callback: Callable[[], None], shortcut: str = "") -> None:
     action = QAction(heading, main_window())
     if shortcut: action.setShortcut(shortcut)
 
@@ -70,10 +68,12 @@ def build_debug_menu(debug_menu: QMenu) -> None:
     add_menu_ui_action(debug_menu, shortcutfinger.down1("Refresh UI"), refresh, "F5")
 
 def build_config_menu(config_menu: QMenu) -> None:
-    def add_checkbox_config(menu: QMenu, config_value: ConfigurationValueBool, _title:str) -> None:
+    def add_checkbox_config(menu: QMenu, config_value: ConfigurationValueBool, _title: str) -> None:
         checkbox_action = QAction(_title, main_window())
         checkbox_action.setCheckable(True)
         checkbox_action.setChecked(config_value.get_value())
+
+        config_value.on_change(checkbox_action.setChecked) #when the value changes through another mechanism, make sure the menu changes state
 
         def set_value(value: bool) -> None:
             config_value.set_value(value)
@@ -90,7 +90,6 @@ def build_config_menu(config_menu: QMenu) -> None:
     non_optional(config_menu.addAction(shortcutfinger.home1("Readings mappings"), show_readings_mappings)).setShortcut("Ctrl+Shift+m")
     build_feature_toggles_menu(shortcutfinger.home2("Feature Toggles"))
     non_optional(config_menu.addAction(shortcutfinger.home3("Options"), show_japanese_options)).setShortcut("Ctrl+Shift+s")
-
 
 def build_local_menu(local_menu: QMenu) -> None:
     def build_update_menu(update_menu: QMenu) -> None:
@@ -116,7 +115,6 @@ def build_wani_menu(sub_menu: QMenu) -> None:
     add_menu_ui_action(sub_menu, "Import Missing Vocabulary", note_importer.import_missing_vocab)
     add_menu_ui_action(sub_menu, "Import Missing context sentences", note_importer.import_missing_context_sentences)
     add_menu_ui_action(sub_menu, "Download Missing Vocabulary audio", WaniDownloader.fetch_missing_vocab_audio)
-
 
 def init() -> None:
     build_main_menu()

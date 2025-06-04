@@ -28,6 +28,8 @@ class ConfigurationValue(Generic[T]):
         if self.feature_toggler:
             app.add_init_hook(self.toggle_feature)
 
+        self._change_callbacks: list[Callable[[T], None]] = []
+
     def get_value(self) -> T:
         return self._value
 
@@ -36,6 +38,11 @@ class ConfigurationValue(Generic[T]):
         _config_dict.instance()[self.name] = value
         self.toggle_feature()
         _write_config_dict()
+        for callback in self._change_callbacks:
+            callback(self.get_value())
+
+    def on_change(self, callback: Callable[[T], None]) -> None:
+        self._change_callbacks.append(callback)
 
     def toggle_feature(self) -> None:
         if self.feature_toggler is not None:
@@ -86,7 +93,7 @@ class JapaneseConfig(Slots):
         self.track_instances_in_memory = ConfigurationValueBool("track_instances_in_memory", "Track instances in memory. Requires restart. Only useful to developers and will use extra memory.", False)
         self.show_compound_parts_in_sentence_breakdown = ConfigurationValueBool("show_compound_parts_in_sentence_breakdown", "Show compound parts in sentence breakdown", True)
         self.show_all_matched_words_in_sentence_breakdown = ConfigurationValueBool("show_all_matched_words_in_sentence_breakdown", "Show all matched words in sentence breakdown", False)
-        self.automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound = ConfigurationValueBool("automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound", "Automatically yield last token in suru verb compounds to overlapping compounds", True)
+        self.automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound = ConfigurationValueBool("automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound", "Automatically yield last token in suru verb compounds to overlapping compounds (Ctrl+Shift+Alt+s)", True)
 
         self.decrease_failed_card_intervals_interval = ConfigurationValueInt("decrease_failed_card_intervals_interval", "Failed card again seconds for next again", 60)
 

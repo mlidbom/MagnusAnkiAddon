@@ -61,6 +61,11 @@ def init() -> None:
         app.config().show_all_matched_words_in_sentence_breakdown.set_value(not app.config().show_all_matched_words_in_sentence_breakdown.get_value())
         refresh_shallow()
 
+    def toggle_yield_last_token_in_suru_verb_compounds_to_overlapping_compound() -> None:
+        app.config().automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound.set_value(
+            not app.config().automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound.get_value())
+        refresh_shallow()
+
     def set_shortcut(widget: QWidget, shortcut: str, callback: Callable[[], None]) -> None:
         typed.checked_cast(pyqtBoundSignal, QShortcut(QKeySequence(shortcut), widget).activated).connect(callback)
 
@@ -86,7 +91,8 @@ def init() -> None:
                                                 "0": remove_mnemonic,
                                                 "7": reset_source_comments,
                                                 "8": reset_incorrect_matches,
-                                                "9": generate_compound_parts}
+                                                "9": generate_compound_parts,
+                                                "Ctrl+Shift+Alt+s": toggle_yield_last_token_in_suru_verb_compounds_to_overlapping_compound}
 
     gui_hooks.previewer_did_init.append(inject_shortcuts_in_widget)
     gui_hooks.state_shortcuts_will_change.append(inject_shortcuts_in_reviewer)
