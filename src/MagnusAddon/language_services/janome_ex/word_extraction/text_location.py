@@ -74,9 +74,7 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
         #todo this does not belong here. The cand should never have display words that are not displayed in the first place.
         def candidate_has_display_matches(cand: CandidateWord) -> bool:
             matches:list[Match] = ex_sequence.flatten([variant.matches for variant in cand.display_word_variants])
-            if any(match for match in matches if match.is_displayed):
-                return True
-            return False
+            return bool(any(match for match in matches if match.is_displayed))
 
         while self.display_words_starting_here and not candidate_has_display_matches(self.display_words_starting_here[0]):
             self.display_words_starting_here.remove(self.display_words_starting_here[0])
