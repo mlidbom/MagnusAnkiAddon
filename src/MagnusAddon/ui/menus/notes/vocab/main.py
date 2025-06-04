@@ -85,19 +85,23 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
             add_toggle_checkbox(requires_menu, shortcutfinger.home4("a stem"), vocab.matching_rules.requires_a_stem)
             add_toggle_checkbox(requires_menu, shortcutfinger.home5("Sentence end: followed by nothing, a non-word, or a quote, character: と、って"), vocab.matching_rules.requires_sentence_end)
 
+        def build_forbids_menu(forbids_menu: QMenu) -> None:
+            add_toggle_checkbox(forbids_menu, shortcutfinger.home1("a stem"), vocab.matching_rules.forbids_a_stem)
+            add_toggle_checkbox(forbids_menu, shortcutfinger.home2("auto yielding to overlapping compound"), vocab.matching_rules.forbids_auto_yielding)
+
         def build_is_menu(is_menu: QMenu) -> None:
             add_toggle_checkbox(is_menu, shortcutfinger.home1("Poison word"), vocab.matching_rules.is_poison_word)
             add_toggle_checkbox(is_menu, shortcutfinger.home2("Inflecting word"), vocab.matching_rules.is_inflecting_word)
 
         def build_misc_menu(misc_menu: QMenu) -> None:
             add_toggle_checkbox(misc_menu, shortcutfinger.home1("Question overrides form: Show the question in results even if the match was another form"), vocab.matching_rules.question_overrides_form.tag_field)
-            add_toggle_checkbox(misc_menu, shortcutfinger.home2("Forbid a stem"), vocab.matching_rules.forbids_a_stem)
-            add_toggle_checkbox(misc_menu, shortcutfinger.home3("Yield last token to overlapping compound"), vocab.matching_rules.yield_last_token_to_overlapping_compound.tag_field)
-            add_toggle_checkbox(misc_menu, shortcutfinger.home4("Match with preceding vowel"), vocab.matching_rules.match_with_preceding_vowel)
+            add_toggle_checkbox(misc_menu, shortcutfinger.home2("Yield last token to overlapping compound"), vocab.matching_rules.yield_last_token_to_overlapping_compound.tag_field)
+            add_toggle_checkbox(misc_menu, shortcutfinger.home3("Match with preceding vowel"), vocab.matching_rules.match_with_preceding_vowel)
 
         build_requires_menu(non_optional(toggle_flags_menu.addMenu(shortcutfinger.home1("Requires"))))
-        build_is_menu(non_optional(toggle_flags_menu.addMenu(shortcutfinger.home2("Is"))))
-        build_misc_menu(non_optional(toggle_flags_menu.addMenu(shortcutfinger.home3("Misc"))))
+        build_forbids_menu(non_optional(toggle_flags_menu.addMenu(shortcutfinger.home2("Forbids"))))
+        build_is_menu(non_optional(toggle_flags_menu.addMenu(shortcutfinger.home3("Is"))))
+        build_misc_menu(non_optional(toggle_flags_menu.addMenu(shortcutfinger.home4("Misc"))))
 
     def build_remove_menu(remove_menu: QMenu) -> None:
         add_ui_action(remove_menu, shortcutfinger.home1("User explanation"), lambda: vocab.user.explanation.empty()).setEnabled(vocab.user.explanation.has_value())

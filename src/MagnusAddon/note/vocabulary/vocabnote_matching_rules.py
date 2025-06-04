@@ -57,6 +57,7 @@ class VocabNoteMatching(Slots):
         self.is_poison_word: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.is_poison_word)
         self.yield_last_token_to_overlapping_compound: YieldLastTokenToOverlappingCompound = YieldLastTokenToOverlappingCompound(vocab)
         self.match_with_preceding_vowel: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.Todo.with_preceding_vowel)
+        self.forbids_auto_yielding: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.Forbids.auto_yielding)
         self.question_overrides_form: QuestionOverridesForm = QuestionOverridesForm(vocab)
         self.is_strictly_suffix: IsStrictlySuffix = IsStrictlySuffix(vocab)
 
