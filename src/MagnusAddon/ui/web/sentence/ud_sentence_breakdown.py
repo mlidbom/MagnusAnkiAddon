@@ -26,7 +26,7 @@ def render_sentence_analysis(note: SentenceNote) -> str:
 
     for display_form in sentence_analysis.displayed_forms:
         html += f"""
-                    <li class="sentenceVocabEntry depth1 word_priority_very_high {display_form.meta_tags}">
+                    <li class="sentenceVocabEntry depth1 word_priority_very_high {display_form.meta_tags_string}">
                         <div class="sentenceVocabEntryDiv">
                             {build_exclusion_message_span(display_form) if display_form.should_be_excluded else ""}
                             <audio src="{display_form.audio_path}"></audio><a class="play-button"></a>
@@ -41,7 +41,7 @@ def render_sentence_analysis(note: SentenceNote) -> str:
 
         for compound_part in display_form.compound_parts:
             html += f"""
-                        <li class="sentenceVocabEntry compound_part {compound_part.meta_tags}">
+                        <li class="sentenceVocabEntry compound_part {compound_part.meta_tags_string}">
                             <div class="sentenceVocabEntryDiv">
                                 <audio src="{compound_part.audio_path}"></audio><a class="play-button"></a>
                                 <span class="vocabQuestion clipboard">{compound_part.question}</span>

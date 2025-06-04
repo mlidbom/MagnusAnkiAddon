@@ -46,7 +46,10 @@ class DisplayFormViewModel:
                 self.display_readings = self.display_readings and self.vocab_form != self.readings
 
     @property
-    def meta_tags(self) -> list[str]:
+    def meta_tags_string(self) -> str: return " ".join(self.meta_tags_list)
+
+    @property
+    def meta_tags_list(self) -> list[str]:
         return (SimpleStringListBuilder()
                 .concat(self._meta_tags)
                 .append_if(self.is_highlighted, "highlighted")

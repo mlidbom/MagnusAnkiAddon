@@ -22,9 +22,9 @@ class CompoundPartViewModel:
         self.display_readings = self.question != self.readings
         self.is_highlighted = self.question in config.highlighted_words
 
-        self.meta_tags = " ".join(vocab_note.get_meta_tags())
-        self.meta_tags += f""" depth_{depth}"""
-        self.meta_tags += " highlighted" if self.is_highlighted else ""
+        self.meta_tags_string = " ".join(vocab_note.get_meta_tags())
+        self.meta_tags_string += f""" depth_{depth}"""
+        self.meta_tags_string += " highlighted" if self.is_highlighted else ""
 
     @classmethod
     def get_compound_parts_recursive(cls, vocab_note: VocabNote, config: SentenceConfiguration, depth: int = 0, visited: set[NoteId] | None = None) -> list[CompoundPartViewModel]:
