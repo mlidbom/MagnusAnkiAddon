@@ -100,7 +100,7 @@ class CandidateWordVariant(Slots):
 
         self.valid_vocab_matches = [vm for vm in self.vocab_matches if vm.is_valid]
         self.form_owning_vocab_matches = [vm for vm in self.vocab_matches if vm.vocab.forms.is_owned_form(self.form)]
-        if any(self.valid_vocab_matches) or any(self.form_owning_vocab_matches):
+        if self.valid_vocab_matches or self.form_owning_vocab_matches:
             self.valid_matches = list(self.valid_vocab_matches)
             self.matches = list(self.vocab_matches)
             override_form = [df for df in self.valid_matches if df.parsed_form != self.form]
