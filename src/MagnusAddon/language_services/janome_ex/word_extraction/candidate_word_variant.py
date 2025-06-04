@@ -86,7 +86,7 @@ class CandidateWordVariant(Slots):
                     and self.is_valid_candidate))
 
     def form_owning_vocab_matches_are_all_invalid(self) -> bool:
-        return not self.form_owning_vocab_matches or not any(vm for vm in self.form_owning_vocab_matches if vm.is_valid)
+        return any(self.form_owning_vocab_matches) and not any(vm for vm in self.form_owning_vocab_matches if vm.is_valid)
 
     def is_preliminarily_valid(self) -> bool:
         return (self.is_word and (not self.is_noise_character
@@ -117,7 +117,7 @@ class CandidateWordVariant(Slots):
             else:
                 self.matches = [MissingMatch(self.weak_ref)]
 
-        self.is_valid_candidate = (self.is_preliminarily_valid() and len(self.valid_matches) > 0)
+        self.is_valid_candidate = self.is_preliminarily_valid() and any(self.valid_matches)
 
         self.completed_analysis = True
 
