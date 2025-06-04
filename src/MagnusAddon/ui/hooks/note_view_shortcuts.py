@@ -55,10 +55,14 @@ def init() -> None:
 
     def toggle_show_compound_parts_in_sentence_breakdown() -> None:
         app.config().show_compound_parts_in_sentence_breakdown.set_value(not app.config().show_compound_parts_in_sentence_breakdown.get_value())
+        if app.config().show_compound_parts_in_sentence_breakdown.get_value():
+            app.config().show_all_matched_words_in_sentence_breakdown.set_value(False)
         refresh_shallow()
 
     def toggle_show_all_words_in_sentence_breakdown() -> None:
         app.config().show_all_matched_words_in_sentence_breakdown.set_value(not app.config().show_all_matched_words_in_sentence_breakdown.get_value())
+        if app.config().show_all_matched_words_in_sentence_breakdown.get_value():
+            app.config().show_compound_parts_in_sentence_breakdown.set_value(False)
         refresh_shallow()
 
     def toggle_yield_last_token_in_suru_verb_compounds_to_overlapping_compound() -> None:
@@ -74,6 +78,10 @@ def init() -> None:
     def toggle_yield_last_token_in_causative_verb_compounds_to_overlapping_compound() -> None:
         app.config().automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound.set_value(
             not app.config().automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound.get_value())
+        refresh_shallow()
+
+    def toggle_all_yield_last_token_flags() -> None:
+        app.config().toggle_all_sentence_display_auto_yield_flags()
         refresh_shallow()
 
     def set_shortcut(widget: QWidget, shortcut: str, callback: Callable[[], None]) -> None:
@@ -104,7 +112,8 @@ def init() -> None:
                                                 "9": generate_compound_parts,
                                                 "Ctrl+Shift+Alt+s": toggle_yield_last_token_in_suru_verb_compounds_to_overlapping_compound,
                                                 "Ctrl+Shift+Alt+h": toggle_yield_last_token_in_passive_verb_compounds_to_overlapping_compound,
-                                                "Ctrl+Shift+Alt+t": toggle_yield_last_token_in_causative_verb_compounds_to_overlapping_compound}
+                                                "Ctrl+Shift+Alt+t": toggle_yield_last_token_in_causative_verb_compounds_to_overlapping_compound,
+                                                "Ctrl+Shift+Alt+d": toggle_all_yield_last_token_flags}
 
     gui_hooks.previewer_did_init.append(inject_shortcuts_in_widget)
     gui_hooks.state_shortcuts_will_change.append(inject_shortcuts_in_reviewer)
