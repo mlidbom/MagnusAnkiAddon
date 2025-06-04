@@ -28,7 +28,7 @@ def render_sentence_analysis(note: SentenceNote) -> str:
         html += f"""
                     <li class="sentenceVocabEntry depth1 word_priority_very_high {display_form.meta_tags_string}">
                         <div class="sentenceVocabEntryDiv">
-                            {build_exclusion_message_span(display_form) if display_form.should_be_excluded else ""}
+                            {build_exclusion_message_span(display_form) if display_form.should_be_excluded else ""}2
                             <audio src="{display_form.audio_path}"></audio><a class="play-button"></a>
                             <span class="vocabQuestion clipboard">{display_form.parsed_form}</span>
                             {f'''<span class="vocabHitForm clipboard">{display_form.vocab_form}</span>''' if display_form.display_vocab_form else ""}
