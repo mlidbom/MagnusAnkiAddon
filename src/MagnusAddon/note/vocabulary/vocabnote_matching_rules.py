@@ -10,6 +10,7 @@ from note.notefields.tag_flag_field import TagFlagField
 from note.vocabulary.serialization.matching_rules_serializer import VocabNoteMatchingRulesSerializer
 from note.vocabulary.vocabnote_matching_rules_is_strictly_prefix import IsStrictlySuffix
 from note.vocabulary.vocabnote_matching_rules_question_overrides_form import QuestionOverridesForm
+from note.vocabulary.vocabnote_matching_rules_yield_last_token_to_next_compound import YieldLastTokenToOverlappingCompound
 from sysutils.debug_repr_builder import SkipFalsyValuesDebugReprBuilder
 from sysutils.lazy import Lazy
 
@@ -54,7 +55,7 @@ class VocabNoteMatching(Slots):
         self.requires_sentence_end: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.Requires.sentence_end)
         self.is_inflecting_word: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.is_inflecting_word)
         self.is_poison_word: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.is_poison_word)
-        self.yield_last_token_to_overlapping_compound: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.yield_last_token_to_overlapping_compound)
+        self.yield_last_token_to_overlapping_compound: YieldLastTokenToOverlappingCompound = YieldLastTokenToOverlappingCompound(vocab)
         self.match_with_preceding_vowel: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.Todo.with_preceding_vowel)
         self.question_overrides_form: QuestionOverridesForm = QuestionOverridesForm(vocab)
         self.is_strictly_suffix: IsStrictlySuffix = IsStrictlySuffix(vocab)
