@@ -26,8 +26,11 @@ class Match(Slots):
     def is_valid(self) -> bool:
         return not self.is_configured_incorrect
 
-    def is_displayed(self) -> bool: return ((self.is_valid and not self.is_configured_hidden)
+    def is_displayed(self) -> bool: return (self.is_valid_for_display()
                                             or self._emergency_displayed())
+
+    def is_valid_for_display(self) -> bool:
+        return self.is_valid and not self.is_configured_hidden
 
     def _emergency_displayed(self) -> bool:
         return (self._must_include_some_variant()
