@@ -3,7 +3,6 @@ from __future__ import annotations
 from collections import defaultdict
 from typing import TYPE_CHECKING
 
-from ankiutils import app
 from autoslot import Slots
 from note.collection.backend_facade import BackEndFacade
 from note.collection.note_cache import CachedNote, NoteCache
@@ -52,9 +51,6 @@ class SentenceCollection(Slots):
 
     def all(self) -> list[SentenceNote]: return self._cache.all()
 
-    def with_id(self, note_id:NoteId) -> SentenceNote:
-        return self._cache.with_id(note_id)
-
     def with_id_or_none(self, note_id:NoteId) -> SentenceNote | None:
         return self._cache.with_id_or_none(note_id)
 
@@ -67,10 +63,7 @@ class SentenceCollection(Slots):
         return [match for match in matches if question not in match.configuration.incorrect_matches.words()]
 
     def with_vocab_owned_form(self, vocab_note: VocabNote) -> list[SentenceNote]:
-        def is_owned_by_other_form_note(form: str) -> bool:
-            return any(owner for owner in app.col().vocab.with_question(form) if owner != vocab_note and vocab_note.get_question() in owner.forms.all_set())
-
-        owned_forms = [form for form in vocab_note.forms.all_set() if not is_owned_by_other_form_note(form)]
+        owned_forms = vocab_note.forms.not_owned_by_other_vocab()
 
         matches = ex_sequence.remove_duplicates(ex_sequence.flatten([self._cache.with_vocab_form(form) for form in owned_forms]))
         question = vocab_note.get_question()

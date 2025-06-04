@@ -31,6 +31,9 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
     secondary_forms_with_their_own_vocab_forms = ex_sequence.flatten([f.conjugator.get_text_matching_forms_for_all_form() for f in secondary_forms_vocab_notes])
 
     secondary_forms_with_their_own_vocab_forms = ex_str.sort_by_length_descending(secondary_forms_with_their_own_vocab_forms)
+    # Create a list of compounds derived from secondary forms
+    secondary_forms_derived_compounds = ex_sequence.flatten([app.col().vocab.with_compound_part(v) for v in secondary_forms])
+    secondary_forms_derived_compounds_forms = ex_str.sort_by_length_descending(ex_sequence.flatten([der.conjugator.get_text_matching_forms_for_all_form() for der in secondary_forms_derived_compounds]))
 
     primary_form_forms = _vocab_note.conjugator.get_text_matching_forms_for_primary_form()
 
@@ -47,6 +50,10 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
 
     def format_sentence(html_sentence: str) -> str:
         clean_sentence = ex_str.strip_html_and_bracket_markup(html_sentence)
+
+        for form in secondary_forms_derived_compounds_forms:
+            if form in clean_sentence:
+                return clean_sentence.replace(form, f"""<span class="vocabInContext secondaryFormDerivedCompoundForm">{form}</span>""")
 
         for form in derived_compounds_forms:
             if form in clean_sentence:

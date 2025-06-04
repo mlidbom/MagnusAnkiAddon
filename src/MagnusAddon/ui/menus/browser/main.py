@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-import aqt.browser
 from ankiutils import app
 from aqt import gui_hooks
 from note import queue_manager
@@ -17,6 +16,7 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
 
     from anki.cards import Card, CardId
+    from aqt.browser import Browser  # type: ignore[attr-defined]
     from PyQt6.QtWidgets import QMenu
 
 
@@ -30,7 +30,7 @@ def spread_due_dates(cards: Sequence[CardId], start_day: int, days: int) -> None
 
     app.get_ui_utils().refresh()
 
-def setup_browser_context_menu(browser: aqt.browser.Browser, menu: QMenu) -> None:
+def setup_browser_context_menu(browser: Browser, menu: QMenu) -> None:
     magnus_menu: QMenu = non_optional(menu.addMenu("&Magnus"))
     selected_cards = browser.selected_cards()
 

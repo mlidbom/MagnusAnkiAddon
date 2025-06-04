@@ -15,6 +15,7 @@ if TYPE_CHECKING:
 
 class CachingSentenceConfigurationField(Slots):
     __slots__ = ["__weakref__"]
+
     def __init__(self, sentence: WeakRef[SentenceNote]) -> None:
         self._sentence = sentence
         self.field = StringField(sentence, SentenceNoteFields.configuration)
@@ -34,27 +35,20 @@ class CachingSentenceConfigurationField(Slots):
     @property
     def hidden_matches(self) -> WordExclusionSet: return self._value.instance().hidden_matches
 
-    def highlighted_words(self) -> list[str]: return self._value.instance().highlighted_words
+    def highlighted_words(self) -> set[str]: return self._value.instance().highlighted_words
 
     def remove_highlighted_word(self, word: str) -> None:
-        if word in self.highlighted_words():
-            self.highlighted_words().remove(word)
+        self.highlighted_words().discard(word)
         self._save()
 
     def reset_highlighted_words(self) -> None:
-        self._value.instance().highlighted_words = []
+        self._value.instance().highlighted_words.clear()
         self._save()
 
-    def position_highlighted_word(self, vocab: str, index: int = -1) -> None:
-        vocab = vocab.strip()
-        self.remove_highlighted_word(vocab)
-        if index == -1:
-            self.highlighted_words().append(vocab)
-        else:
-            self.highlighted_words().insert(index, vocab)
+    def add_highlighted_word(self, vocab: str) -> None:
+        self.highlighted_words().add(vocab.strip())
         self._save()
 
     def _save(self) -> None:
         self.field.set(SentenceConfiguration.serializer.serialize(self._value.instance()))
         self._sentence().update_parsed_words(force=True)
-

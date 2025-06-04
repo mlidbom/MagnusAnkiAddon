@@ -6,6 +6,7 @@ from ankiutils import query_builder, search_executor
 from ankiutils.app import get_ui_utils
 from ankiutils.search_executor import lookup_promise
 from PyQt6.QtWidgets import QMenu, QMessageBox
+from sysutils.typed import non_optional
 from ui.menus.menu_utils import shortcutfinger
 
 if TYPE_CHECKING:
@@ -30,7 +31,7 @@ def add_ui_action(menu: QMenu, name: str, callback: Callable[[], None], enabled:
             callback()
             get_ui_utils().refresh()
 
-    action = menu.addAction(name, lambda: run_ui_action())
+    action = non_optional(menu.addAction(name, lambda: run_ui_action()))
     action.setEnabled(enabled)
     return action
 

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TypeVar
 
-TProp: TypeVar = TypeVar("TProp")
+TProp = TypeVar("TProp")
 
 class PropertyTypeError(TypeError):
     def __init__(self, prop: str, prop_type: type[TProp]) -> None:

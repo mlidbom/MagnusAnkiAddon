@@ -22,7 +22,7 @@ from sysutils import ex_sequence, ex_str, kana_utils
 from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.candidate_form import CandidateForm
+    from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
     from note.vocabulary.vocabnote import VocabNote
 
 class SentenceNote(JPNote, Slots):
@@ -52,10 +52,10 @@ class SentenceNote(JPNote, Slots):
     def get_valid_parsed_non_child_words_strings(self) -> list[str]:
         return [w.form for w in self.get_valid_parsed_non_child_words()]
 
-    def get_valid_parsed_non_child_words(self) -> list[CandidateForm]:
+    def get_valid_parsed_non_child_words(self) -> list[CandidateWordVariant]:
         from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
         analysis = TextAnalysis(self.get_question(), self.configuration.configuration)
-        return analysis.display_words
+        return analysis.display_word_variants
 
     def get_direct_dependencies(self) -> set[JPNote]:
         highlighted = set(ex_sequence.flatten([self.collection.vocab.with_question(vocab) for vocab in self.configuration.highlighted_words()]))
@@ -117,7 +117,7 @@ class SentenceNote(JPNote, Slots):
 
         if highlighted_vocab:
             for vocab in highlighted_vocab:
-                note.configuration.position_highlighted_word(vocab)
+                note.configuration.add_highlighted_word(vocab)
 
         if tags:
             for tag in tags:

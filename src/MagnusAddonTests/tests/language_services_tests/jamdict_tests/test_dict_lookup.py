@@ -9,14 +9,12 @@ from language_services.jamdict_ex.dict_lookup import DictLookup
 from note.vocabulary.vocabnote import VocabNote
 
 if TYPE_CHECKING:
-
     from collections.abc import Iterator
 
     from language_services.jamdict_ex.dict_entry import DictEntry
 
-
 # noinspection PyUnusedFunction
-@pytest.fixture(scope="function", autouse=True)
+@pytest.fixture(scope="module", autouse=True)
 def setup_empty_collection() -> Iterator[None]:
     with inject_empty_anki_collection_with_note_types():
         yield
@@ -31,7 +29,7 @@ def test_uk(word: str, readings: list[str]) -> None:
     assert dict_entry.found_words_count() == 1
 
 @pytest.mark.parametrize("word, readings", [
-    ("毎月", ["まいつき","まいげつ"])
+    ("毎月", ["まいつき", "まいげつ"])
 ])
 def test_multi_readings(word: str, readings: list[str]) -> None:
     dict_entry = get_dict_entry(word, readings)
@@ -39,7 +37,7 @@ def test_multi_readings(word: str, readings: list[str]) -> None:
 
 @pytest.mark.parametrize("word, readings", [
     ("元", ["もと"]),
-    ("角", ["かく","かど"]),
+    ("角", ["かく", "かど"]),
     ("これ", ["これ"]),
     ("正す", ["ただす"]),
     ("て", ["て"])
@@ -77,11 +75,10 @@ def test_names(word: str, readings: list[str]) -> None:
     ("怪我", ["けが"], {"怪我", "ケガ", "けが"}),
     ("部屋", ["へや"], {"部屋"})
 ])
-def test_valid_forms(word: str, readings:list[str], forms: set[str]) -> None:
+def test_valid_forms(word: str, readings: list[str], forms: set[str]) -> None:
     dict_entry = get_dict_entry(word, readings)
     assert dict_entry.found_words_count() == 1
     assert dict_entry.valid_forms() == forms
-
 
 @pytest.mark.parametrize("word, readings, answer", [
     ("張り切る", ["はりきる"], "to? be-in-high-spirits/be-full-of-vigor-(vigour)/be-enthusiastic/be-eager/stretch-to-breaking-point"),
@@ -90,7 +87,7 @@ def test_valid_forms(word: str, readings:list[str], forms: set[str]) -> None:
     ("拭く", ["ふく"], "to{} wipe/dry"),
     ("歩く", ["あるく"], "to: walk")
 ])
-def test_generate_answer(word: str, readings:list[str], answer: str) -> None:
+def test_generate_answer(word: str, readings: list[str], answer: str) -> None:
     dict_entry = get_single_dict_entry(word, readings)
     generated_answer = dict_entry.generate_answer()
     print(generated_answer)
@@ -101,23 +98,23 @@ def test_generate_answer(word: str, readings:list[str], answer: str) -> None:
     ("部屋", ["へや"], {"noun"}),
     ("確実", ["かくじつ"], {"na-adjective", "noun"}),
     ("式", ["しき"], {"suffix", "noun"}),
-    ("吸う",["すう"], {"godan verb", "transitive"}),
-    ("走る", ["はしる"], {"godan verb","intransitive"}),
-    ("帰る", ["かえる"], {"godan verb","intransitive"}),
-    ("使う", ["つかう"], {"godan verb","transitive"}),
-    ("書く", ["かく"],  {"godan verb","transitive"}),
-    ("立つ", ["たつ"],  {"godan verb","intransitive"}),
-    ("死ぬ", ["しぬ"],  {"nu verb", "godan verb","intransitive"}),
-    ("飛ぶ", ["とぶ"],  {"godan verb","intransitive"}),
-    ("読む", ["よむ"],  {"godan verb","transitive"})
+    ("吸う", ["すう"], {"godan verb", "transitive"}),
+    ("走る", ["はしる"], {"godan verb", "intransitive"}),
+    ("帰る", ["かえる"], {"godan verb", "intransitive"}),
+    ("使う", ["つかう"], {"godan verb", "transitive"}),
+    ("書く", ["かく"], {"godan verb", "transitive"}),
+    ("立つ", ["たつ"], {"godan verb", "intransitive"}),
+    ("死ぬ", ["しぬ"], {"nu verb", "godan verb", "intransitive"}),
+    ("飛ぶ", ["とぶ"], {"godan verb", "intransitive"}),
+    ("読む", ["よむ"], {"godan verb", "transitive"}),
+    ("小さな", ["ちいさな"], {"pre-noun-adjectival"})
 ])
-def test_pos(word: str, readings:list[str], pos: set[str]) -> None:
+def test_pos(word: str, readings: list[str], pos: set[str]) -> None:
     dict_entry = get_dict_entry(word, readings)
     assert dict_entry.found_words_count() == 1
 
     assert dict_entry.entries[0].parts_of_speech() == pos
     assert dict_entry.parts_of_speech() == pos
-
 
 def get_single_dict_entry(word: str, readings: list[str]) -> DictEntry:
     dict_entry = get_dict_entry(word, readings)
@@ -125,12 +122,5 @@ def get_single_dict_entry(word: str, readings: list[str]) -> DictEntry:
     return dict_entry.entries[0]
 
 def get_dict_entry(word: str, readings: list[str]) -> DictLookup:
-    mock_vocab = vocab_mock(word, readings)
+    mock_vocab = VocabNote.factory.create(word, "", readings)
     return DictLookup.lookup_vocab_word_or_name(mock_vocab)
-
-def vocab_mock(word: str, readings: list[str]) -> VocabNote:
-    return VocabNote.factory.create(word, "", readings)
-
-
-
-

@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING, Optional
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
 
-
 def sort_vocab_list_by_studying_status(vocabs: list[VocabNote], primary_voc: Optional[list[str]] = None, preferred_kanji: Optional[str] = None) -> list[VocabNote]:
     def prefer_primary_vocab_in_order(local_vocab: VocabNote) -> int:
         for index, primary in enumerate(_primary_voc):

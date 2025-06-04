@@ -1,5 +1,5 @@
 @use "sass:color";
-@import "../Styles/_040_japanese.scss";
+@import "../../Styles/_040_japanese.scss";
 .card #container1 #container2 { //Let's stay focused and not break other stuff
    @include kanji_list;
    
@@ -62,6 +62,11 @@
       }
 
       .relatedVocab {
+         &.compound_part_depth_1 { margin-left: 30px; }
+         &.compound_part_depth_2 { margin-left: 60px; }
+         &.compound_part_depth_3 { margin-left: 90px; }
+         &.compound_part_depth_4 { margin-left: 120px; }
+         &.compound_part_depth_5 { margin-left: 150px; }
          display:flex;
          .question{
             white-space: nowrap;
@@ -71,7 +76,10 @@
             font-size:30pt;
          }
 
-         .vocabReading{ color: var(--colorTextReading); }
+         .vocabReading{
+            color: var(--colorTextReading);
+            margin-right: 7px;
+         }
 
          .vocab_tag_list { 
             margin-right:10px;
@@ -200,7 +208,8 @@
                   .vocabInContext { 
                      &.primaryForm { background-color: var(--colorBgVoc); }
                      &.secondaryForm { background-color: var(--colorBgRad); } 
-                     &.derivedCompoundForm { background-color: var(--colorBgRead); } }
+                     &.derivedCompoundForm { background-color: var(--colorBgRead); }
+                     &.secondaryFormDerivedCompoundForm { background-color: color-mix(in lch, var(--colorBgRad), var(--colorBgRead) 50%); } }
                }
                .sentenceAnswer{ color: var(--colorTextMeaning);
                                 line-height: 1;}

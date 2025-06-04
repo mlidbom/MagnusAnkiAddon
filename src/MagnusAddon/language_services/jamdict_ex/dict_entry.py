@@ -142,7 +142,7 @@ class DictEntry(Slots):
         "noun, used as a prefix": ["prefix", "noun"],
         "nouns which may take the genitive case particle 'no'": ["noun", "no-adjective"],
         "particle": ["particle"],
-        "pre-noun adjectival (rentaishi)": [""],
+        "pre-noun adjectival (rentaishi)": ["pre-noun-adjectival"],
         "prefix": ["prefix"],
         "pronoun": ["pronoun"],
         "suffix": ["suffix"],

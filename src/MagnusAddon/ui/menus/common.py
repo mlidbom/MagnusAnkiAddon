@@ -95,13 +95,9 @@ def build_universal_note_actions_menu(note_actions_menu: QMenu, note: JPNote | N
     note_actions_menu.addAction(shortcutfinger.home1("Open in previewer"), search_executor.lookup_and_show_previewer_promise(lambda: query_builder.notes_lookup([note])))
     note_actions_menu.addAction(shortcutfinger.home2("Find in browser"), search_executor.lookup_promise(lambda: query_builder.notes_lookup([note])))
 
-    if note.has_suspended_cards():
-        add_ui_action(note_actions_menu, shortcutfinger.home3("Unsuspend all cards"), note.unsuspend_all_cards)
-    if note.has_active_cards():
-        add_ui_action(note_actions_menu, shortcutfinger.home4("Suspend all cards"), note.suspend_all_cards)
-
-    if note.has_suspended_cards_or_depencies_suspended_cards():
-        add_ui_action(note_actions_menu, shortcutfinger.up1("Unsuspend all cards and dependencies' cards"), note.unsuspend_all_cards_and_dependencies, confirm=True)
+    add_ui_action(note_actions_menu, shortcutfinger.home3("Unsuspend all cards"), note.unsuspend_all_cards, note.has_suspended_cards())
+    add_ui_action(note_actions_menu, shortcutfinger.home4("Suspend all cards"), note.suspend_all_cards, note.has_active_cards())
+    add_ui_action(note_actions_menu, shortcutfinger.up1("Unsuspend all cards and dependencies' cards"), note.unsuspend_all_cards_and_dependencies, confirm=True, enabled=note.has_suspended_cards_or_depencies_suspended_cards())
 
 def null_op_factory(_menu: QMenu, _string: str) -> None:
     pass

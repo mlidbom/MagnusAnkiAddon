@@ -4,9 +4,10 @@ from typing import TYPE_CHECKING, Callable  # noqa: I001
 
 import aqt
 from ankiutils import app
+from sysutils.typed import non_optional
 
 if TYPE_CHECKING:
-    from aqt.browser import Browser
+    from aqt.browser import Browser  # type: ignore[attr-defined]
 
 
 def do_lookup_and_show_previewer(text: str) -> None:
@@ -15,7 +16,7 @@ def do_lookup_and_show_previewer(text: str) -> None:
 
 def do_lookup(text: str) -> None:
     browser: Browser = aqt.dialogs.open("Browser", aqt.mw)
-    browser.form.searchEdit.lineEdit().setText(text)
+    non_optional(browser.form.searchEdit.lineEdit()).setText(text)
     browser.onSearchActivated()
     app.get_ui_utils().activate_preview()
 

@@ -65,7 +65,7 @@ def is_only_hiragana(text: str) -> bool:
 def is_only_katakana(text: str) -> bool:
     return not any(not character_is_katakana(char) for char in text)
 
-_kakasi = pykakasi.kakasi()
+_kakasi = pykakasi.kakasi()  # type: ignore
 def romanize(text:str) -> str:
     if text == "": return ""
     if text[-1] == "っ" or text[-1] == "ッ":

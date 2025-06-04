@@ -21,8 +21,8 @@ class VocabNoteMetaData(Slots):
     @property
     def _vocab(self) -> VocabNote: return self.__vocab()
 
-    def meta_tags_html(self, display_extended_sentence_statistics: bool = True) -> str:
-        return vocabnote_meta_tag.get_meta_tags_html(self._vocab, display_extended_sentence_statistics)
+    def meta_tags_html(self, display_extended_sentence_statistics: bool = True, no_sentense_statistics: bool = False) -> str:
+        return vocabnote_meta_tag.get_meta_tags_html(self._vocab, display_extended_sentence_statistics, no_sentense_statistics)
 
     def priority_spec(self) -> PrioritySpec:
         from language_services.jamdict_ex.dict_lookup import DictLookup

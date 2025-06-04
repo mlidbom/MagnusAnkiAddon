@@ -82,7 +82,7 @@ def lookup_vocabs(excluded_words: set[str], word:str) -> list[VocabNote]:
 
 def render_parsed_words(note: SentenceNote) -> str:
     analysis = TextAnalysis(note.get_question(), note.configuration.configuration)
-    display_forms = analysis.display_words
+    display_forms = analysis.display_word_variants
     word_strings = [w.form for w in display_forms]
 
     excluded = note.configuration.incorrect_matches.words()
@@ -98,13 +98,10 @@ def render_hidden_matches(note: SentenceNote) -> str:
     hidden_vocab = list(hidden_words)
     return _build_vocab_list(hidden_vocab, set(), "hidden words", show_words_missing_dictionary_entries=True) if hidden_vocab else ""
 
-def render_user_extra_list(note: SentenceNote) -> str:
-    return _build_vocab_list(note.configuration.highlighted_words(), note.configuration.incorrect_matches.words(), "highlighted words", include_mnemonics=True, show_words_missing_dictionary_entries=True, include_extended_sentence_statistics=True) if note.configuration.highlighted_words() else ""
-
+# noinspection PyUnusedFunction
 def init() -> None:
     gui_hooks.card_will_show.append(PrerenderingAnswerContentRenderer(SentenceNote, {
         "##PARSED_WORDS##": render_parsed_words,
         "##INCORRECT_MATCHES##": render_incorrect_matches,
-        "##HIDDEN_MATCHES##": render_hidden_matches,
-        "##USER_EXTRA_VOCAB##": render_user_extra_list,
+        "##HIDDEN_MATCHES##": render_hidden_matches
     }).render)

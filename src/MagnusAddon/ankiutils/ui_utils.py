@@ -13,8 +13,8 @@ if TYPE_CHECKING:
 import aqt
 from ankiutils.audio_suppressor import audio_suppressor
 from ankiutils.ui_utils_interface import IUIUtils
-from aqt import AnkiQt
-from aqt.browser import Browser
+from aqt import AnkiQt  # type: ignore[attr-defined]
+from aqt.browser import Browser  # type: ignore[attr-defined]
 from aqt.browser.previewer import Previewer
 from aqt.clayout import CardLayout
 from aqt.editcurrent import EditCurrent
@@ -123,4 +123,4 @@ class UIUtils(IUIUtils, Slots):
 
 def try_get_review_note() -> JPNote | None:
     from note.jpnote import JPNote
-    return JPNote.note_from_card(main_window().reviewer.card) if main_window().reviewer.card else None
+    return JPNote.note_from_card(non_optional(main_window().reviewer.card)) if main_window().reviewer.card else None

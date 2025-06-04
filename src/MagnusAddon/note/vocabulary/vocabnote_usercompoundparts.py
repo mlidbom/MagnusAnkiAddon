@@ -25,14 +25,15 @@ class VocabNoteUserCompoundParts(Slots):
     @property
     def _collection(self) -> JPCollection: return self._vocab.collection
 
-    def get(self) -> list[str]: return self._field.get()
+    def primary(self) -> list[str]: return [part for part in self._field.get() if not part.startswith("[")]
+    def all(self) -> list[str]: return [self._strip_brackets(part) for part in self._field.get()]
     def set(self, value: list[str]) -> None: self._field.set(value)
 
     def auto_generate(self) -> None:
         from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
         from note.vocabulary.vocabnote import VocabNote
         analysis = TextAnalysis(self._vocab.get_question(), SentenceConfiguration.from_incorrect_matches([WordExclusion.global_(form) for form in self._vocab.forms.all_set()]))
-        compound_parts = [a.form for a in analysis.display_words if a.form not in self._vocab.forms.all_set()]
+        compound_parts = [a.form for a in analysis.display_word_variants if a.form not in self._vocab.forms.all_set()]
         if not len(compound_parts) > 1:  # time to brute force it
             word = self._vocab.get_question()
             all_substrings = [word[i:j] for i in range(len(word)) for j in range(i + 1, len(word) + 1) if word[i:j] != word]
@@ -45,3 +46,7 @@ class VocabNoteUserCompoundParts(Slots):
             created.suspend_all_cards()
 
         self.set(compound_parts)
+
+    @staticmethod
+    def _strip_brackets(part: str) -> str:
+        return part.replace("[", "").replace("]", "")

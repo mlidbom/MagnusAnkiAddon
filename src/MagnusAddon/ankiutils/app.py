@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from anki.scheduler.v3 import Scheduler
     from anki_extentions.config_manager_ex import ConfigManagerEx
     from ankiutils.ui_utils_interface import IUIUtils
-    from aqt import AnkiQt
+    from aqt import AnkiQt  # type: ignore[attr-defined]
     from configuration.configuration_value import JapaneseConfig
     from note.collection.jp_collection import JPCollection
 
@@ -45,7 +45,7 @@ def _init(delay_seconds: float = 1.0) -> None:
     _call_init_hooks()
 
 def is_initialized() -> bool:
-    return _collection and _collection.is_initialized()
+    return _collection is not None and _collection.is_initialized()
 
 def reset(delay_seconds: float = 0) -> None:
     mylog.info(f"reset: delay= {delay_seconds}")
@@ -125,7 +125,7 @@ def _collection_closed(_collection: Collection, _downgrade: bool = False) -> Non
 def _wrap_collection_close() -> None:
     import anki
     from anki.collection import Collection
-    Collection.close = anki.hooks.wrap(Collection.close, _collection_closed, "before")
+    Collection.close = anki.hooks.wrap(Collection.close, _collection_closed, "before")  # type: ignore
 
 _wrap_collection_close()
 

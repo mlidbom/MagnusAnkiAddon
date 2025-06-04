@@ -56,6 +56,7 @@ class NoteTypes(Slots):
 
 class NoteFields(Slots):
     note_id = "nid"
+
     class VocabNoteType(Slots):
         class Card(Slots):
             Reading = CardTypes.reading
@@ -118,6 +119,8 @@ f_kanji = f"{f_root}kanji::"
 f_sentence_uses = f"{f_sentence}uses::"
 f_vocab = f"{f_root}vocab::"
 f_vocab_matching = f"{f_vocab}matching::"
+f_vocab_matching_requires = f"{f_vocab_matching}requires::"
+f_vocab_matching_forbids = f"{f_vocab_matching}forbids::"
 f_vocab_matching_todo = f"{f_vocab_matching}todo::"
 f_vocab_matching_uses = f"{f_vocab_matching}uses::"
 
@@ -154,10 +157,20 @@ class Tags(Slots):
         question_overrides_form = f"{f_vocab}question-overrides-form"
 
         class Matching:
+            yield_last_token_to_overlapping_compound = f"{f_vocab_matching}yield-last-token-to-upcoming-compound"
+            is_poison_word = f"{f_vocab_matching}is-poison-word"
             is_inflecting_word = f"{f_vocab_matching}is-inflecting-word"
-            requires_a_stem = f"{f_vocab_matching}requires-a-stem"
-            requires_e_stem = f"{f_vocab_matching}requires-e-stem"
-            requires_exact_match = f"{f_vocab_matching}requires-exact-match"
+
+            class Requires:
+                a_stem = f"{f_vocab_matching_requires}a-stem"
+                e_stem = f"{f_vocab_matching_requires}e-stem"
+                sentence_end = f"{f_vocab_matching_requires}sentence-end"
+                exact_match = f"{f_vocab_matching_requires}exact-match"
+                single_token = f"{f_vocab_matching_requires}single-token"
+
+            class Forbids:
+                a_stem = f"{f_vocab_matching_forbids}a-stem"
+
             is_strictly_suffix = f"{f_vocab_matching}is-strictly-suffix"
 
             class Todo:

@@ -16,6 +16,8 @@ from sysutils.object_instance_tracker import ObjectInstanceTracker
 from sysutils.timeutil import StopWatch
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
+
     from anki.collection import Collection
     from anki.notes import NoteId
 
@@ -33,16 +35,16 @@ class JPCollection(Slots):
 
             with StopWatch.log_warning_if_slower_than(5, "Core collection setup - no gc"):
                 self.anki_collection = anki_collection
-                self.cache_manager = CacheRunner(anki_collection)
+                self.cache_runner = CacheRunner(anki_collection)
 
-                self.vocab: VocabCollection = VocabCollection(anki_collection, self.cache_manager)
-                self.kanji: KanjiCollection = KanjiCollection(anki_collection, self.cache_manager)
-                self.sentences: SentenceCollection = SentenceCollection(anki_collection, self.cache_manager)
+                self.vocab: VocabCollection = VocabCollection(anki_collection, self.cache_runner)
+                self.kanji: KanjiCollection = KanjiCollection(anki_collection, self.cache_runner)
+                self.sentences: SentenceCollection = SentenceCollection(anki_collection, self.cache_runner)
 
             if not app.is_testing():
                 self._instance_tracker.run_gc_and_assert_single_instance()
 
-            self.cache_manager.start()
+            self.cache_runner.start()
             app.get_ui_utils().tool_tip(f"{Mine.app_name} done loading in {str(stopwatch.elapsed_seconds())[0:4]} seconds.", milliseconds=6000)
 
             self._is_running = True
@@ -55,11 +57,15 @@ class JPCollection(Slots):
             DictLookup.ensure_loaded_into_memory()
 
             with StopWatch.log_execution_time("Populating studying status cache"):
-                for notelist in [self.vocab.all(), self.kanji.all(), self.sentences.all()]:
+                def cache_notes_studying_status(notelist: Sequence[JPNote]) -> None:
                     for note in notelist:
                         if not self._is_running: return
                         note.is_studying(CardTypes.reading)
                         note.is_studying(CardTypes.listening)
+
+                cache_notes_studying_status(self.vocab.all())
+                cache_notes_studying_status(self.kanji.all())
+                cache_notes_studying_status(self.sentences.all())
 
         app_thread_pool.pool.submit(populate_caches)
 
@@ -73,6 +79,6 @@ class JPCollection(Slots):
 
     def destruct_sync(self) -> None:
         self._is_running = False
-        self.cache_manager.destruct()
+        self.cache_runner.destruct()
 
-    def flush_cache_updates(self) -> None: self.cache_manager.flush_updates()
+    def flush_cache_updates(self) -> None: self.cache_runner.flush_updates()

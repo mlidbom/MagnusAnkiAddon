@@ -21,7 +21,7 @@ def update_generated_data(vocab: VocabNote) -> None:
         vocab.readings.set([question])
         vocab.set_tag(Tags.UsuallyKanaOnly)
 
-    if len(vocab.compound_parts.get()) == 0 and vocab.parts_of_speech.is_suru_verb_included():
+    if len(vocab.compound_parts.all()) == 0 and vocab.parts_of_speech.is_suru_verb_included():
         compounds = [question[:-2], "する"]
         vocab.compound_parts.set(compounds)
 

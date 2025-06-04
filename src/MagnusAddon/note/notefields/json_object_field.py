@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from note.jpnote import JPNote
     from sysutils.weak_ref import WeakRef
 
-T: TypeVar = TypeVar("T")
+T = TypeVar("T")
 
 class JsonObjectSerializer(Generic[T], Slots):
     def serialize(self, obj: T) -> str: raise NotImplementedError()

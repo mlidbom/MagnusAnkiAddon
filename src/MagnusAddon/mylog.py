@@ -61,10 +61,10 @@ def get_logger(module: str) -> logging.Logger:
         file_handler.setFormatter(file_formatter)
         logger.addHandler(file_handler)
 
-        AddonManager.deleteAddon = wrap(
+        AddonManager.deleteAddon = wrap(  # type: ignore
             AddonManager.deleteAddon, close_log_file, "before"
         )
-        AddonManager.backupUserFiles = wrap(
+        AddonManager.backupUserFiles = wrap( # type: ignore
             AddonManager.backupUserFiles, close_log_file, "before"
         )
 

@@ -34,7 +34,8 @@ class VocabNotePartsOfSpeech(Slots):
         return "godan" in self.raw_string_value().lower()
 
     def is_suru_verb_included(self) -> bool:
-        return self._vocab.question.without_noise_characters()[-2:] == "する"
+        question = self._vocab.question.without_noise_characters()
+        return len(question) > 2 and question[-2:] == "する"
 
     def is_uk(self) -> bool: return self._vocab.has_tag(Tags.UsuallyKanaOnly)
 

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Callable, TypeVar
 
-TResult: TypeVar = TypeVar("TResult")
+TResult = TypeVar("TResult")
 TParam1 = TypeVar("TParam1")
 TParam2 = TypeVar("TParam2")
 TParam3 = TypeVar("TParam3")

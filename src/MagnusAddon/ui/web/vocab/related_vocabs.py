@@ -18,9 +18,12 @@ def _create_classes(_vocab: VocabNote) -> str:
     classes += " " + " ".join(_vocab.get_meta_tags())
     return classes
 
-def render_vocab_list(vocab_list: list[VocabNote], title: str, css_class: str, reading: bool = True) -> str:
+def render_vocab_list(vocab_list: list[VocabNote], title: str, css_class: str, reading: bool = True, no_sentense_statistics: bool = True) -> str:
     def render_readings(_vocab_note: VocabNote) -> str:
-        return f"""<span class="clipboard vocabReading">{", ".join(_vocab_note.readings.get())}</span>""" if reading else ""
+        readings = ", ".join(_vocab_note.readings.get())
+        return f"""<span class="clipboard vocabReading">{readings}</span>""" if reading and readings != _vocab_note.get_question() else ""
+
+    if len(vocab_list) == 0: return ""
 
     return f'''
              <div class="relatedVocabListDiv page_section {css_class}">
@@ -32,7 +35,7 @@ def render_vocab_list(vocab_list: list[VocabNote], title: str, css_class: str, r
                             <audio src="{_vocab_note.audio.get_primary_audio_path()}"></audio><a class="play-button"></a>
                             <span class="question clipboard">{_vocab_note.get_question()}</span>
                             {render_readings(_vocab_note)}
-                            {_vocab_note.meta_data.meta_tags_html(True)}
+                            {_vocab_note.meta_data.meta_tags_html(no_sentense_statistics=no_sentense_statistics)}
                             <span class="meaning"> {_vocab_note.get_answer()}</span>
                         </div>
                         """ for _vocab_note in vocab_list])}
@@ -42,7 +45,7 @@ def render_vocab_list(vocab_list: list[VocabNote], title: str, css_class: str, r
             '''
 
 def generate_homophones_html_list(vocab_note: VocabNote) -> str:
-    forms = ex_sequence.flatten([app.col().vocab.with_question(reading) for reading in vocab_note.forms.all_set()])
+    forms = ex_sequence.flatten([app.col().vocab.with_question(reading) for reading in vocab_note.forms.all_list()])
     forms = [form for form in forms if form.get_id() != vocab_note.get_id()]
     forms = note.vocabulary.vocabnote_sorting.sort_vocab_list_by_studying_status(forms)
 
@@ -52,74 +55,65 @@ def generate_homophones_html_list(vocab_note: VocabNote) -> str:
     homophones = [homophone for homophone in homophones if homophone not in forms_set]
     homophones = note.vocabulary.vocabnote_sorting.sort_vocab_list_by_studying_status(homophones)
 
-    return render_vocab_list(homophones, "homophones", css_class="homophones") if homophones else ""
+    return render_vocab_list(homophones, "homophones", css_class="homophones")
 
 def generate_synonyms_meaning_html_list(_vocab_note: VocabNote) -> str:
     synonym_notes = _vocab_note.related_notes.synonyms.notes()
     synonym_notes = note.vocabulary.vocabnote_sorting.sort_vocab_list_by_studying_status(synonym_notes)
 
-    return render_vocab_list(synonym_notes, "synonyms", css_class="similar") if synonym_notes else ""
+    return render_vocab_list(synonym_notes, "synonyms", css_class="similar")
 
 def generate_antonyms_meaning_html_list(_vocab_note: VocabNote) -> str:
     antonym_notes = _vocab_note.related_notes.antonyms.notes()
     antonym_notes = note.vocabulary.vocabnote_sorting.sort_vocab_list_by_studying_status(antonym_notes)
 
-    return render_vocab_list(antonym_notes, "antonyms", css_class="similar") if antonym_notes else ""
+    return render_vocab_list(antonym_notes, "antonyms", css_class="similar")
 
 def generate_see_also_html_list(_vocab_note: VocabNote) -> str:
     see_also = _vocab_note.related_notes.see_also.notes()
     see_also = note.vocabulary.vocabnote_sorting.sort_vocab_list_by_studying_status(see_also)
 
-    return render_vocab_list(see_also, "see also", css_class="similar") if see_also else ""
+    return render_vocab_list(see_also, "see also", css_class="similar")
 
 def generate_confused_with_html_list(_vocab_note: VocabNote) -> str:
     vocabs = list(_vocab_note.related_notes.confused_with.get())
     confused_with = app.col().vocab.with_any_form_in_prefer_exact_match(vocabs)
     confused_with = note.vocabulary.vocabnote_sorting.sort_vocab_list_by_studying_status(confused_with)
 
-    return render_vocab_list(confused_with, "confused with", css_class="confused_with") if confused_with else ""
+    return render_vocab_list(confused_with, "confused with", css_class="confused_with")
 
 def generate_ergative_twin_html(_vocab_note: VocabNote) -> str:
     ergative_twin = app.col().vocab.with_form_prefer_exact_match(_vocab_note.related_notes.ergative_twin.get())
-    return render_vocab_list(ergative_twin, "ergative twin", css_class="ergative_twin") if ergative_twin else ""
+    return render_vocab_list(ergative_twin, "ergative twin", css_class="ergative_twin")
 
 def generate_derived_from(_vocab_note: VocabNote) -> str:
     part = _vocab_note.related_notes.derived_from.get()
     derived_from = app.col().vocab.with_form_prefer_exact_match(part)
-    return render_vocab_list(derived_from, "derived from", css_class="derived_from") if derived_from else ""
-
-def generate_compounds(_vocab_note: VocabNote) -> str:
-    vocabs = _vocab_note.compound_parts.get()
-    compound_parts = app.col().vocab.with_any_form_in_prefer_exact_match(vocabs)
-    return render_vocab_list(compound_parts, "compound parts", css_class="compound_parts") if compound_parts else ""
+    return render_vocab_list(derived_from, "derived from", css_class="derived_from")
 
 def generate_in_compounds_list(_vocab_note: VocabNote) -> str:
     compound_parts = app.col().vocab.with_compound_part(_vocab_note.question.without_noise_characters())
-    return render_vocab_list(compound_parts, "part of compound", css_class="in_compound_words") if compound_parts else ""
+    return render_vocab_list(compound_parts, "part of compound", css_class="in_compound_words")
 
 def generate_stem_in_compounds_list(_vocab_note: VocabNote) -> str:
     if _vocab_note.question.stems().masu_stem() is None: return ""
-    compound_parts = app.col().vocab.with_compound_part(_vocab_note.question.stems().masu_stem())
-    return render_vocab_list(compound_parts, "masu stem is part of compound", css_class="in_compound_words") if compound_parts else ""
+    compound_parts = app.col().vocab.with_compound_part(_vocab_note.question.stems().masu_stem() or "")
+    return render_vocab_list(compound_parts, "masu stem is part of compound", css_class="in_compound_words")
 
 def generate_derived_list(_vocab_note: VocabNote) -> str:
     derived_vocabs = app.col().vocab.derived_from(_vocab_note.get_question())
-    return render_vocab_list(derived_vocabs, "derived vocabulaty", css_class="derived_vocabulary") if derived_vocabs else ""
+    return render_vocab_list(derived_vocabs, "derived vocabulaty", css_class="derived_vocabulary")
 
 def generate_stem_vocabs(_vocab_note: VocabNote) -> str:
     stem_vocabs = ex_sequence.flatten([app.col().vocab.with_question(stem) for stem in (_vocab_note.conjugator.get_stems_for_primary_form())])
-    return render_vocab_list(stem_vocabs, "conjugation forms", css_class="stem_vocabulary") if stem_vocabs else ""
+    return render_vocab_list(stem_vocabs, "conjugation forms", css_class="stem_vocabulary")
 
 def generate_stem_of_vocabs(_vocab_note: VocabNote) -> str:
-    stem_of = app.col().vocab.with_stem(_vocab_note.get_question())
-    return render_vocab_list(stem_of, "dictionary form", css_class="is_stem_of") if stem_of else ""
+    return render_vocab_list(app.col().vocab.with_stem(_vocab_note.get_question()), "dictionary form", css_class="is_stem_of")
 
 def generate_forms_list(vocab_note: VocabNote) -> str:
-    forms = ex_sequence.flatten([app.col().vocab.with_question(form) for form in vocab_note.forms.all_set()])
-    forms = [form for form in forms if form.get_id() != vocab_note.get_id()]
-    forms = note.vocabulary.vocabnote_sorting.sort_vocab_list_by_studying_status(forms)
-
-    return render_vocab_list([vocab_note] + forms, "forms", css_class="forms") if forms else ""
+    forms = vocab_note.forms.all_list_notes_by_sentence_count()
+    return render_vocab_list(forms, "forms", css_class="forms", no_sentense_statistics=False) if len(forms) > 1 else ""
 
 def generate_meta_tags(vocab_note: VocabNote) -> str:
     return vocab_note.meta_data.meta_tags_html(True)
@@ -127,7 +121,6 @@ def generate_meta_tags(vocab_note: VocabNote) -> str:
 def init() -> None:
     gui_hooks.card_will_show.append(PrerenderingAnswerContentRenderer(VocabNote, {
         "##FORMS_LIST##": generate_forms_list,
-        "##VOCAB_COMPOUNDS##": generate_compounds,
         "##IN_COMPOUNDS##": generate_in_compounds_list,
         "##STEM_IN_COMPOUNDS##": generate_stem_in_compounds_list,
         "##DERIVED_VOCABULARY##": generate_derived_list,

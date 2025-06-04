@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from autoslot import Slots
 from note.note_constants import Tags
@@ -11,29 +11,31 @@ if TYPE_CHECKING:
 class VocabSpec(Slots):
     # noinspection PyDefaultArgument
     def __init__(self, question: str,
-                 answer: str,
-                 readings: list[str],
-                 extra_forms: Optional[list[str]] = None,
-                 tags: Optional[list[str]] = None,
-                 compounds: Optional[list[str]] = None,
-                 surface_is_not: set[str] = None,
-                 prefix_is_not: set[str] = None,
-                 required_prefix: set[str] = None,
-                 prefer_over_base: set[str] = None) -> None:
-        self.question = question
-        self.answer = answer
-        self.readings = readings
-        self.extra_forms = set(extra_forms if extra_forms else [])
-        self.tags = set(tags if tags else [])
-        self.compounds = compounds if compounds else []
-        self.surface_is_not = surface_is_not if surface_is_not else set()
-        self.prefix_is_not = prefix_is_not if prefix_is_not else set()
-        self.required_prefix = required_prefix if required_prefix else set()
-        self.prefer_over_base = prefer_over_base if prefer_over_base else set()
+                 answer: str | None = None,
+                 readings: list[str] | None = None,
+                 forms: list[str] | None = None,
+                 tags: list[str] | None = None,
+                 compounds: list[str] | None = None,
+                 surface_not: set[str] | None = None,
+                 prefix_not: set[str] | None = None,
+                 prefix_in: set[str] | None = None,
+                 prefer_over_base: set[str] | None = None) -> None:
+        self.question: str = question
+        self.answer: str = answer or question
+        self.readings: list[str] = readings or [self.question]
+        self.extra_forms: set[str] = set(forms if forms else [])
+        self.tags: set[str] = set(tags if tags else [])
+        self.compounds: list[str] = compounds if compounds else []
+        self.surface_is_not: set[str] = surface_not if surface_not else set()
+        self.prefix_is_not: set[str] = prefix_not if prefix_not else set()
+        self.required_prefix: set[str] = prefix_in if prefix_in else set()
+        self.prefer_over_base: set[str] = prefer_over_base if prefer_over_base else set()
 
-    def __repr__(self) -> str: return f"""VocabSpec("{self.question}", "{self.answer}", {self.readings})"""
+    def __repr__(self) -> str:
+        return f"""VocabSpec("{self.question}", "{self.answer}", {self.readings})"""
 
-    def __hash__(self) -> int: return hash(self.question)
+    def __hash__(self) -> int:
+        return hash(self.question)
 
     def __eq__(self, other: object) -> bool:
         return (isinstance(other, VocabSpec)
@@ -66,44 +68,74 @@ class VocabSpec(Slots):
 
         return vocab_note
 
-test_special_vocab = [
-    VocabSpec("てる", "{continuing-{activity | state}} / {progressive | perfect}", ["てる"], tags=[Tags.Vocab.Matching.is_inflecting_word]),
-    VocabSpec("て", "{continuing-action}", ["て"], tags=[Tags.Vocab.Matching.is_inflecting_word]),
-    VocabSpec("てた", "{was}-{_-ing|_ed}", ["てた"], tags=[Tags.Vocab.Matching.is_inflecting_word]),
-    VocabSpec("てたら", "{was}-{_-ing|_ed}", ["てたら"], tags=[Tags.Vocab.Matching.is_inflecting_word]),
-    VocabSpec("たら", "conj{if/when} prt{as-for | why-not..  | I-said!/I-tell-you!}", ["たら"], tags=[Tags.Vocab.Matching.is_inflecting_word]),
-    VocabSpec("ちゃう", "to do: accidentally/unfortunately | completely", ["ちゃう"], tags=[Tags.Vocab.Matching.is_inflecting_word]),
-    VocabSpec("無い", "{negation} | nonexistent | unowned | impossible/won't-happen", ["ない"], tags=[Tags.Vocab.Matching.is_inflecting_word]),
-    VocabSpec("ても良い", "{concession/compromise} | {permission}", ["てもいい"], tags=[Tags.Vocab.Matching.is_inflecting_word]),
-    VocabSpec("すぎる", "too-much", ["すぎる"], tags=[Tags.Vocab.Matching.is_inflecting_word]),
+v = Tags.Vocab
+vm = Tags.Vocab.Matching
+
+test_special_vocab: list[VocabSpec] = [
+    VocabSpec("てる", "{continuing-{activity | state}} / {progressive | perfect}", ["てる"], tags=[vm.is_inflecting_word]),
+    VocabSpec("て", "{continuing-action}", ["て"], tags=[vm.is_inflecting_word]),
+    VocabSpec("てた", "{was}-{_-ing|_ed}", ["てた"], tags=[vm.is_inflecting_word]),
+    VocabSpec("てたら", "{was}-{_-ing|_ed}", ["てたら"], tags=[vm.is_inflecting_word]),
+    VocabSpec("たら", "conj{if/when} prt{as-for | why-not..  | I-said!/I-tell-you!}", ["たら"], tags=[vm.is_inflecting_word]),
+    VocabSpec("ちゃう", "to do: accidentally/unfortunately | completely", ["ちゃう"], tags=[vm.is_inflecting_word]),
+    VocabSpec("無い", "{negation} | nonexistent | unowned | impossible/won't-happen", ["ない"], tags=[vm.is_inflecting_word]),
+    VocabSpec("ても良い", "{concession/compromise} | {permission}", ["てもいい"], tags=[vm.is_inflecting_word]),
+    VocabSpec("すぎる", "too-much", ["すぎる"], tags=[vm.is_inflecting_word]),
     VocabSpec("いらっしゃいます", "to: come/be/do", ["いらっしゃいます"]),
-    VocabSpec("を頼む", "I-entrust-to-you", ["を頼む"], tags=[Tags.Vocab.Matching.requires_exact_match]),
+    VocabSpec("を頼む", "I-entrust-to-you", ["を頼む"], tags=[vm.Requires.exact_match]),
     VocabSpec("会える", "to-be-able: to-meet", ["あえる"], compounds=["会う", "える"]),
     VocabSpec("作れる", "to-be-able: to-make", ["つくれる"], compounds=["作る", "える"]),
-    VocabSpec("えない", "unable-able-to", ["えない"], compounds=["える", "ない"], tags=[Tags.Vocab.Matching.is_inflecting_word]),
-    VocabSpec("たい", "want to", ["たい"], tags=[Tags.Vocab.Matching.is_inflecting_word]),
+    VocabSpec("えない", "unable-able-to", ["えない"], compounds=["える", "ない"], tags=[vm.is_inflecting_word]),
+    VocabSpec("たい", "want to", ["たい"], tags=[vm.is_inflecting_word]),
     VocabSpec("解放する", "to{} release", ["かいほうする"]),
 
-    VocabSpec("える", "to-be-able-to", ["える"], surface_is_not={"れる"}, tags=[Tags.Vocab.Matching.is_inflecting_word]),
+    VocabSpec("える", "to-be-able-to", ["える"], tags=[vm.is_inflecting_word]),
+    VocabSpec("れる", "can-_/possible-to-_ | ??get-_??", ["れる"], tags=[vm.is_inflecting_word, vm.Forbids.a_stem]),
 
     # require a stems
-    VocabSpec("あれる", "get-_/is-_", ["あれる"], extra_forms=["れる"], tags=[Tags.Vocab.Matching.requires_a_stem, Tags.Vocab.question_overrides_form, Tags.Vocab.Matching.is_inflecting_word]),
-    VocabSpec("あせる", "get-_/is-_", ["あせる"], extra_forms=["せる"], tags=[Tags.Vocab.Matching.requires_a_stem, Tags.Vocab.question_overrides_form, Tags.Vocab.Matching.is_inflecting_word]),
+    VocabSpec("あれる", "get-_/is-_", ["あれる"], forms=["れる"], tags=[vm.Requires.a_stem, v.question_overrides_form, vm.is_inflecting_word]),
+    VocabSpec("あせる", "get-_/is-_", ["あせる"], forms=["せる"], tags=[vm.Requires.a_stem, v.question_overrides_form, vm.is_inflecting_word]),
 
-    VocabSpec("させる", "get-_/is-_", ["させる"], extra_forms=["せる"], tags=[Tags.Vocab.Matching.is_inflecting_word]),
-
-    # require e stems
-    VocabSpec("えれる", "is-able-to-_", ["えれる"], extra_forms=["れる"], tags=[Tags.Vocab.Matching.requires_e_stem, Tags.Vocab.question_overrides_form, Tags.Vocab.Matching.is_inflecting_word]),
+    VocabSpec("させる", "get-_/is-_", ["させる"], forms=["せる"], tags=[vm.is_inflecting_word]),
 
     VocabSpec("しろ", "do!", ["しろ"], prefer_over_base={"する"}),
     VocabSpec("らっしゃい", "todo", ["らっしゃい"], prefer_over_base={"らっしゃる"}),
 
-    VocabSpec("ぬ", "not", ["ぬ"], surface_is_not={"ず"}),
-    VocabSpec("た", "{past-tense} | (please)do", ["た"], surface_is_not={"たら"}, tags=[Tags.Vocab.Matching.is_inflecting_word]),
+    VocabSpec("ぬ", "not", ["ぬ"], surface_not={"ず"}),
+    VocabSpec("た", "{past-tense} | (please)do", ["た"], surface_not={"たら"}, tags=[vm.is_inflecting_word]),
 
-    VocabSpec("だの", "and-the-like", ["だの"], prefix_is_not={"ん"}),
+    VocabSpec("だの", "and-the-like", ["だの"], prefix_not={"ん"}),
+    VocabSpec("だ", surface_not={"なら", "な"}, tags=[vm.is_inflecting_word]),
 
-    VocabSpec("こ", "familiarizing-suffix", ["こ"], extra_forms=["っこ"], tags=[Tags.Vocab.Matching.is_strictly_suffix]),
+    VocabSpec("こ", "familiarizing-suffix", ["こ"], forms=["っこ"], tags=[vm.is_strictly_suffix]),
+
+    # multiple form to trigger a certain bug
+    VocabSpec("ない", "not", ["ない"], forms=["無い"]),
+    VocabSpec("無い", "not", ["ない"], forms=["ない"]),
+
+    VocabSpec("ている", "is-_-ing", readings=["ている"]),
+    VocabSpec("にする", "to: turn-into", readings=["にする"]),
+    VocabSpec("のか", tags=[vm.Requires.sentence_end]),
+    VocabSpec("ないと", tags=[vm.yield_last_token_to_overlapping_compound]),
+    VocabSpec("して", tags=[vm.yield_last_token_to_overlapping_compound]),
+    VocabSpec("ても"),
+    VocabSpec("と思う"),
+    VocabSpec("たの", tags=[vm.is_poison_word]),
+    VocabSpec("たって", tags=[vm.is_poison_word]),
+    VocabSpec("たかな", tags=[vm.is_poison_word]),
+    VocabSpec("たか", tags=[vm.is_poison_word]),
+    VocabSpec("なんて", tags=[vm.yield_last_token_to_overlapping_compound]),
+    VocabSpec("何て", tags=[vm.yield_last_token_to_overlapping_compound]),
+    VocabSpec("というか", forms=["[と言うか]", "っていうか", "ていうか", "て言うか"]),
+    VocabSpec("ていうか", forms=["と言うか", "というか", "っていうか", "[て言うか]"]),
+    VocabSpec("鰻", forms=["[うな]"], prefix_not={"ろ", "よ"}),
+    VocabSpec("書き"),
+    VocabSpec("なさい", tags=[vm.is_inflecting_word]),
+    VocabSpec("風の強い", tags=[vm.Requires.exact_match]),
+    VocabSpec("たね", tags=[vm.Requires.single_token]),
+    VocabSpec("たらしい", tags=[vm.Requires.single_token]),
+    VocabSpec("に決まる", forms=["に決る", "に決まる", "に極る"]),
+    VocabSpec("に決まってる", forms=["に決っている", "に決まっている", "に極っている", "に決ってる", "に決まってる", "に極ってる"])
 ]
 
 test_ordinary_vocab_list = [
@@ -165,7 +197,6 @@ test_ordinary_vocab_list = [
     VocabSpec("様", "appearing/looking | way to | form/style", ["よう"]),
     VocabSpec("考え", "Thought, A Thought", ["かんがえ"]),
     VocabSpec("恐ろしい", "Scary, Fearful", ["おそろしい"]),
-    VocabSpec("だ", "cop{be/is} aux{past-tense | please/do}", ["だ"]),
     VocabSpec("傷つける", "to{}: wound/injure", ["きずつける"]),
     VocabSpec("ね", "end{right?|see?|please?} int{hey/say}", ["ね"]),
     VocabSpec("ねぇ", "nonexistent/not-being | not | <ja>ね:</ja> right/isn't-it ...", ["ねぇ"]),

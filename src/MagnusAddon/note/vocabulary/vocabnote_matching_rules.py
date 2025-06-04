@@ -10,6 +10,8 @@ from note.notefields.tag_flag_field import TagFlagField
 from note.vocabulary.serialization.matching_rules_serializer import VocabNoteMatchingRulesSerializer
 from note.vocabulary.vocabnote_matching_rules_is_strictly_prefix import IsStrictlySuffix
 from note.vocabulary.vocabnote_matching_rules_question_overrides_form import QuestionOverridesForm
+from note.vocabulary.vocabnote_matching_rules_yield_last_token_to_next_compound import YieldLastTokenToOverlappingCompound
+from sysutils.debug_repr_builder import SkipFalsyValuesDebugReprBuilder
 from sysutils.lazy import Lazy
 
 if TYPE_CHECKING:
@@ -35,15 +37,27 @@ class VocabNoteMatchingRules(Slots):
     def save(self) -> None:
         self._data.save()
 
+    def __repr__(self) -> str: return (SkipFalsyValuesDebugReprBuilder()
+                                       .prop("surface_is_not", self.surface_is_not.get())
+                                       .prop("prefer_over_base", self.prefer_over_base.get())
+                                       .prop("prefix_is_not", self.prefix_is_not.get())
+                                       .prop("required_prefix", self.required_prefix.get()).repr)
+
 class VocabNoteMatching(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self._data: WeakRef[VocabNote] = vocab
         self._rules: Lazy[VocabNoteMatchingRules] = Lazy(lambda: VocabNoteMatchingRules(vocab))
-        self.requires_exact_match: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.requires_exact_match)
-        self.question_overrides_form: QuestionOverridesForm = QuestionOverridesForm(vocab)
-        self.requires_a_stem: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.requires_a_stem)
-        self.requires_e_stem: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.requires_e_stem)
+        self.requires_exact_match: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.Requires.exact_match)
+        self.requires_single_token:TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.Requires.single_token)
+        self.requires_a_stem: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.Requires.a_stem)
+        self.forbids_a_stem: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.Forbids.a_stem)
+        self.requires_e_stem: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.Requires.e_stem)
+        self.requires_sentence_end: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.Requires.sentence_end)
+        self.is_inflecting_word: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.is_inflecting_word)
+        self.is_poison_word: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.is_poison_word)
+        self.yield_last_token_to_overlapping_compound: YieldLastTokenToOverlappingCompound = YieldLastTokenToOverlappingCompound(vocab)
         self.match_with_preceding_vowel: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.Todo.with_preceding_vowel)
+        self.question_overrides_form: QuestionOverridesForm = QuestionOverridesForm(vocab)
         self.is_strictly_suffix: IsStrictlySuffix = IsStrictlySuffix(vocab)
 
     @property
@@ -52,3 +66,17 @@ class VocabNoteMatching(Slots):
 
     def save(self) -> None:
         self.rules.save()
+
+    def __repr__(self) -> str: return (SkipFalsyValuesDebugReprBuilder()
+                                       .flag("requires_exact_match", self.requires_exact_match.is_set())
+                                       .flag("requires_a_stem", self.requires_a_stem.is_set())
+                                       .flag("forbids_a_stem", self.forbids_a_stem.is_set())
+                                       .flag("requires_e_stem", self.requires_e_stem.is_set())
+                                       .flag("requires_sentence_end", self.requires_sentence_end.is_set())
+                                       .flag("is_inflecting_word", self.is_inflecting_word.is_set())
+                                       .flag("is_poison_word", self.is_poison_word.is_set())
+                                       .flag("yield_last_token_to_overlapping_compound", self.yield_last_token_to_overlapping_compound.is_set())
+                                       .flag("match_with_preceding_vowel", self.match_with_preceding_vowel.is_set())
+                                       .flag("question_overrides_form", self.question_overrides_form.is_set())
+                                       .flag("is_strictly_suffix", self.is_strictly_suffix.is_set())
+                                       .include(self.rules).repr)

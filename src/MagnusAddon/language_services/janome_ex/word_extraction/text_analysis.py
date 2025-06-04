@@ -8,10 +8,10 @@ from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
     from language_services.janome_ex.tokenizing.jn_tokenized_text import ProcessedToken
-    from language_services.janome_ex.word_extraction.candidate_form import CandidateForm
+    from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
 
 from language_services.janome_ex.tokenizing.jn_tokenizer import JNTokenizer
-from language_services.janome_ex.word_extraction.text_location import TokenTextLocation
+from language_services.janome_ex.word_extraction.text_location import TextAnalysisLocation
 from note.sentences.sentence_configuration import SentenceConfiguration
 from sysutils import ex_sequence
 
@@ -21,38 +21,66 @@ class TextAnalysis(Slots):
     __slots__ = ["__weakref__"]
     version = "text_analysis_0.1"
 
-    def __init__(self, sentence:str, sentence_configuration:SentenceConfiguration) -> None:
+    def __init__(self, sentence: str, sentence_configuration: SentenceConfiguration) -> None:
         self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
+        self.weakref = WeakRef(self)
         self.text = sentence
         self.configuration = sentence_configuration
-        self.tokens:list[ProcessedToken] = _tokenizer.tokenize(sentence).pre_process()
+        self.tokens: list[ProcessedToken] = _tokenizer.tokenize(sentence).pre_process()
 
-        self.locations:list[TokenTextLocation] = []
+        self.locations: list[TextAnalysisLocation] = []
 
         character_index = 0
         for token_index, token in enumerate(self.tokens):
-            self.locations.append(TokenTextLocation(WeakRef(self), token, character_index, token_index))
+            self.locations.append(TextAnalysisLocation(self.weakref, token, character_index, token_index))
             character_index += len(token.surface)
 
         self.start_location = self.locations[0]
+        self._connect_next_and_previous_to_locations()
+        self._analysis_step_1_analyze_non_compound()
+        self._analysis_step_2_analyze_compounds()
+        self._analysis_step_3_analyze_display_status()
+        self._analysis_step_4_create_collections()
+        self._analysis_step_5_calculate_preference_between_overlapping_display_candidates()
 
-        for location in self.locations:
-            location.run_analysis_step_1()
-
-        for location in self.locations:
-            location.run_analysis_step_2()
-
-        self.display_words:list[CandidateForm] = ex_sequence.flatten([loc.display_words for loc in self.locations])
-        self.all_words: list[CandidateForm] = ex_sequence.flatten([loc.all_words for loc in self.locations])
-
-        self.display_forms = ex_sequence.flatten([w.display_forms for w in self.display_words])
+        self.all_word_variants: list[CandidateWordVariant] = ex_sequence.flatten([loc.all_word_variants for loc in self.locations])
+        self.valid_word_variants: list[CandidateWordVariant] = ex_sequence.flatten([loc.valid_variants for loc in self.locations])
+        self.display_word_variants: list[CandidateWordVariant] = ex_sequence.flatten([loc.display_variants for loc in self.locations])
 
     @classmethod
-    def from_text(cls, text:str) -> TextAnalysis:
+    def from_text(cls, text: str) -> TextAnalysis:
         return cls(text, SentenceConfiguration.empty())
 
     def all_words_strings(self) -> list[str]:
-        return [w.form for w in self.all_words]
+        return [w.form for w in self.valid_word_variants]
 
     def __repr__(self) -> str:
         return self.text
+
+    def _connect_next_and_previous_to_locations(self) -> None:
+        for token_index, location in enumerate(self.locations):
+            if len(self.locations) > token_index + 1:
+                location.next = self.locations[token_index + 1].weakref
+
+            if token_index > 0:
+                location.previous = self.locations[token_index - 1].weakref
+
+    def _analysis_step_1_analyze_non_compound(self) -> None:
+        for location in self.locations:
+            location.analysis_step_1_analyze_non_compound_validity()
+
+    def _analysis_step_2_analyze_compounds(self) -> None:
+        for location in self.locations:
+            location.analysis_step_2_analyze_compound_validity()
+
+    def _analysis_step_3_analyze_display_status(self) -> None:
+        for location in self.locations:
+            location.analysis_step_3_analyze_display_status()
+
+    def _analysis_step_4_create_collections(self) -> None:
+        for location in self.locations:
+            location.analysis_step_4_create_collections()
+
+    def _analysis_step_5_calculate_preference_between_overlapping_display_candidates(self) -> None:
+        for location in self.locations:
+            location.analysis_step_5_calculate_preference_between_overlapping_display_variant5()
