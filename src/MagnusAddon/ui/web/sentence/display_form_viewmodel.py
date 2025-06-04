@@ -50,18 +50,18 @@ class DisplayFormViewModel:
         return (SimpleStringListBuilder()
                 .concat(self._meta_tags)
                 .append_if(self.is_highlighted, "highlighted")
-                .concat(self.exclusion_reason_tags)
+                .concat(self.exclusion_reasons)
                 .value)
 
     @property
-    def exclusion_reason_tags(self) -> list[str]:
+    def exclusion_reasons(self) -> list[str]:
         return (SimpleStringListBuilder()
                 .append_if(self.match.is_configured_incorrect, "configured_incorrect_match", )
                 .concat_set(self.vocab_match.failure_reasons if self.vocab_match is not None else set())
                 .value)
 
     @property
-    def hiding_reason_tags(self) -> list[str]:
+    def hiding_reasons(self) -> list[str]:
         return (SimpleStringListBuilder()
                 .append_if(self.match.is_configured_hidden, "configured_hidden")
                 .append_if(self.is_shadowed, "shadowed")

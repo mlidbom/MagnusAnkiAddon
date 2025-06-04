@@ -18,13 +18,10 @@ if TYPE_CHECKING:
     from ui.web.sentence.display_form_viewmodel import DisplayFormViewModel
 
 
-def build_exclusion_message_span(display_form: DisplayFormViewModel) -> str:
-    def build_exclusion_message_divs() -> str:
-        exclusion_reasons = [f"""<div class="exclusion_reason">{reason}</div>""" for reason in display_form.exclusion_reason_tags]
-        hiding_reasons = [f"""<div class="hiding_reason">{reason}</div>""" for reason in display_form.hiding_reason_tags]
-        return "<br>".join(exclusion_reasons + hiding_reasons)
-
-    return f"""<span>{build_exclusion_message_divs()}</span>"""
+def build_exclusion_message_span(view_model: DisplayFormViewModel) -> str:
+    exclusion_reasons = [f"""<div class="exclusion_reason">{reason}</div>""" for reason in view_model.exclusion_reasons]
+    hiding_reasons = [f"""<div class="hiding_reason">{reason}</div>""" for reason in view_model.hiding_reasons]
+    return f"""<span>{"<br>".join(exclusion_reasons + hiding_reasons)}</span>"""
 
 
 def render_sentence_analysis(note: SentenceNote) -> str:
@@ -89,7 +86,7 @@ def _build_vocab_list(word_to_show: list[str], excluded_words: set[str], title: 
                 word_form = vocab.get_question() if vocab.matching_rules.question_overrides_form.is_set() else word
                 hit_form = vocab.get_question() if vocab.get_question() != word_form else ""
                 needs_reading = kana_utils.contains_kanji(word_form) and (
-                            not hit_form or kana_utils.contains_kanji(hit_form))
+                        not hit_form or kana_utils.contains_kanji(hit_form))
                 readings = ", ".join(vocab.readings.get()) if needs_reading else ""
                 html += f"""
                     <li class="sentenceVocabEntry depth1 word_priority_very_high {" ".join(vocab.get_meta_tags())}">
