@@ -80,7 +80,6 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
     def sort_sentences(_sentences:list[SentenceNote]) -> list[SentenceNote]:
         is_low_reliability_matching = kana_utils.is_only_kana(primary_form) and len(primary_form) <= 2
 
-        #todo: downprioritize matches for forms with their own vocabnote. Also for such forms, exclude those forms from the matches shown in the vocab metadata
         def prefer_highlighted_for_low_reliability_matches(_sentence: SentenceNote) -> int: return 0 if is_low_reliability_matching and _sentence in highlighted_sentences else 1
         def prefer_highlighted(_sentence:SentenceNote) -> int: return 0 if _sentence in highlighted_sentences else 1
         def prefer_studying_read(_sentence:SentenceNote) -> int: return 0 if _sentence.is_studying_read() else 1

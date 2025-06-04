@@ -23,7 +23,7 @@ def setup_empty_collection() -> Iterator[None]:
     ("元", ["もと"]),  # 501, 560
     ("角", ["かく", "かど"]),  # 2748, 6965
     ("正す", ["ただす"]),  # 7219, 9192
-    ("震度", ["しんど"]),  # 40774, 8583 #todo
+    ("震度", ["しんど"]),  # 40774, 8583
 ])
 def test_priority_maximum(word: str, readings: list[str]) -> None: run_priority_test(word, readings, "priority_maximum")
 
@@ -35,9 +35,9 @@ def test_priority_high(word: str, readings: list[str]) -> None: run_priority_tes
 
 @pytest.mark.parametrize("word, readings", [  # JPDB, CC100
     ("最優遇", ["さいゆうぐう"]),  # 183459, ?
-    ("不可分", ["ふかぶん"]),  # 51871, 34255 #todo
-    ("不人気", ["ふにんき"]),  # 35219, 28125 #todo
-    ("株式市場", ["かぶしきしじょう"])  # 59089, 36225 #todo
+    ("不可分", ["ふかぶん"]),  # 51871, 34255
+    ("不人気", ["ふにんき"]),  # 35219, 28125
+    ("株式市場", ["かぶしきしじょう"])  # 59089, 36225
 ])
 def test_priority_high_fixme(word: str, readings: list[str]) -> None: run_priority_test(word, readings, "priority_high")
 
@@ -47,7 +47,7 @@ def test_priority_high_fixme(word: str, readings: list[str]) -> None: run_priori
 def test_priority_medium(word: str, readings: list[str]) -> None: run_priority_test(word, readings, "priority_medium")
 
 @pytest.mark.parametrize("word, readings", [  # JPDB, CC100
-    ("力不足", ["ちからぶそく"]),  # 13298, 35619 #todo
+    ("力不足", ["ちからぶそく"]),  # 13298, 35619
     ("号室", ["ごうしつ"])
 ])
 def test_priority_low(word: str, readings: list[str]) -> None: run_priority_test(word, readings, "priority_low")

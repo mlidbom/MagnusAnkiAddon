@@ -12,7 +12,7 @@
 # juman++ https://pyknp.readthedocs.io/en/latest/
 
 #Janome, fast, but no mapping to the kanji representations so that one can find the correct words.
-#Sudachi, TODO
+#Sudachi
 
 #Probably not
 #Java, with bindings..

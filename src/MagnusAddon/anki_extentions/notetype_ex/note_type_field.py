@@ -47,7 +47,7 @@ class NoteFieldEx(Slots):
         instance.plainText = typed.bool_(d["plainText"])
         instance.collapsed = typed.bool_(d["collapsed"])
         instance.excludeFromSearch = typed.bool_(d["excludeFromSearch"])
-        #todo: wth is this missing? instance.media = d['media']
+        # missing for som reason# instance.media = d['media']
 
         return instance
 

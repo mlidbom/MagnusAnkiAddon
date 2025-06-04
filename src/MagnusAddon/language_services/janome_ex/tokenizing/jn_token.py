@@ -130,8 +130,8 @@ _noun_auxiliary_parts_of_speech = {
 
 _verb_parts_of_speech = {
     POS.Verb.independent,
-    POS.Verb.dependent, #todo: this seems odd
-    POS.Verb.suffix #todo: this seems odd
+    POS.Verb.dependent,
+    POS.Verb.suffix
 }
 
 _verb_auxiliary_parts_of_speech = {
@@ -142,7 +142,7 @@ _verb_auxiliary_parts_of_speech = {
             POS.Verb.suffix, # れる passive
             POS.Particle.conjunctive, # て,と,し
             POS.Particle.coordinating_conjunction, # たり
-            POS.Particle.adverbial, # まで todo: not sure about this one
+            POS.Particle.adverbial, # まで
             POS.Adjective.dependent, # よかった
             POS.Adjective.independent, # ない
             POS.Noun.Dependent.general, # こと

@@ -71,13 +71,13 @@ class NoteTypeEx(Slots):
         created.mod = typed.int_(note_type_dict["mod"])
         created.usn = typed.int_(note_type_dict["usn"])
         created.sortf = typed.int_(note_type_dict["sortf"])
-        # todo: wth is this None? created.did = typed.int_(note_type_dict['did'])
+        # None for some reason# created.did = typed.int_(note_type_dict['did'])
         created.css = typed.str_(note_type_dict["css"])
         created.latexPre = typed.str_(note_type_dict["latexPre"])
         created.latexPost = typed.str_(note_type_dict["latexPost"])
         created.latexsvg = typed.bool_(note_type_dict["latexsvg"])
         created.req = note_type_dict["req"]
-        # todo: wth is this missing? created.vers = note_type_dict['vers']
-        # todo: wth is this missing? created.tags = note_type_dict['tags']
+        # missing for som reason# created.vers = note_type_dict['vers']
+        # missing for som reason# created.tags = note_type_dict['tags']
 
         return created
