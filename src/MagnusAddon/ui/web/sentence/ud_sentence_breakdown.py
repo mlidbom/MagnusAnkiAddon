@@ -28,7 +28,8 @@ def render_sentence_analysis(note: SentenceNote) -> str:
     sentence_analysis: SentenceAnalysisViewModel = SentenceAnalysisViewModel(note)
     candidate_words: list[CandidateWordViewModel] = sentence_analysis.analysis.candidate_words
     display_forms: list[DisplayFormViewModel] = ex_sequence.flatten([cand.display_forms for cand in candidate_words])
-    displayed_forms: list[DisplayFormViewModel] = [display_form for display_form in display_forms if display_form.is_displayed]
+    displayed_forms: list[DisplayFormViewModel] = [display_form for display_form in display_forms
+                                                   if display_form.is_displayed]
     html = """
     <div class="breakdown page_section">
         <div class="page_section_title">Sentence breakdown</div>
