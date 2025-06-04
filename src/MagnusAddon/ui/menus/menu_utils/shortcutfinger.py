@@ -34,8 +34,9 @@ def numpad(index:int, text:str) -> str:
     if index < len(_numpad_functions): return _numpad_functions[index](f"""{index + 1} {text}""")
     return none(text)
 
-def numpad_no_numbers(index:int, text:str) -> str:
-    if index < len(_numpad_functions): return _numpad_functions[index](f"""{text}""")
+_finger_by_priority_order: list[Callable[[str], str]] = [home1, home2, home3, home4, home5, up1, up2, up3, up4, up5, down1, down2, down3, down5]
+def finger_by_priority_order(index:int, text:str) -> str:
+    if index < len(_finger_by_priority_order): return _finger_by_priority_order[index](f"""{text}""")
     return none(text)
 
 def remove_shortcut_text(string:str) -> str: return " " .join(string.split(" ")[1:])

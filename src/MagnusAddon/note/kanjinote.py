@@ -177,7 +177,7 @@ class KanjiNote(WaniNote, Slots):
 
     def get_active_mnemonic(self) -> str:
         return self.get_user_mnemonic() if self.get_user_mnemonic() \
-            else f"# {kanjinote_mnemonic_maker.create_default_mnemonic(self)}" if app.config().prefer_default_mnemocs_to_source_mnemonics.get_value() \
+            else f"# {kanjinote_mnemonic_maker.create_default_mnemonic(self)}" if app.config().prefer_default_mnemonics_to_source_mnemonics.get_value() \
             else self.get_source_meaning_mnemonic()
 
     def get_user_similar_meaning(self) -> set[str]:

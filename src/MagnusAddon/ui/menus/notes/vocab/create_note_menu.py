@@ -20,7 +20,7 @@ def build_create_note_menu(note_create_menu: QMenu, vocab: VocabNote, selection:
             create_vocab_note_action(clone_to_form_menu, title, lambda: vocab.cloner.clone_to_form(form))
 
         for index, form in enumerate(forms_with_no_vocab):
-            add_clone_to_form_action(shortcutfinger.numpad(index, form), form)
+            add_clone_to_form_action(shortcutfinger.finger_by_priority_order(index, form), form)
 
     def build_noun_variations_menu(noun_menu: QMenu) -> None:
         create_vocab_note_action(noun_menu, shortcutfinger.home1("する-verb"), lambda: vocab.cloner.create_suru_verb())

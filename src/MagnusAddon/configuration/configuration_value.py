@@ -86,7 +86,7 @@ class JapaneseConfig(Slots):
         self.decrease_failed_card_intervals = ConfigurationValueBool("decrease_failed_card_intervals", "Decrease failed card intervals", False)
 
         self.prevent_double_clicks = ConfigurationValueBool("prevent_double_clicks", "Prevent double clicks", True)
-        self.prefer_default_mnemocs_to_source_mnemonics = ConfigurationValueBool("prefer_default_mnemocs_to_source_mnemonics", "Prefer default mnemonics to source mnemonics", False)
+        self.prefer_default_mnemonics_to_source_mnemonics = ConfigurationValueBool("prefer_default_mnemocs_to_source_mnemonics", "Prefer default mnemonics to source mnemonics", False)
 
         self.enable_garbage_collection_during_batches = ConfigurationValueBool("enable_garbage_collection_during_batches", "Enable Batch GC. Requires restart. (Eliminates LARGE memory leak on sync, but slows down startup and batches and introduces short 'hangs'.", True)
         self.enable_automatic_garbage_collection = ConfigurationValueBool("enable_automatic_garbage_collection", "Enable automatic GC. Requires restart. (Reduces memory usage the most but slows Anki down and may cause crashes due to Qt incompatibility.", False)
@@ -101,19 +101,20 @@ class JapaneseConfig(Slots):
         self.minimum_time_viewing_question = ConfigurationValueFloat("minimum_time_viewing_question", "Minimum time viewing question", 0.5)
         self.minimum_time_viewing_answer = ConfigurationValueFloat("minimum_time_viewing_answer", "Minimum time viewing answer", 0.5)
 
-        self.feature_toggles = [self.automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound,
-                                self.automatically_yield_last_token_in_passive_verb_compounds_to_overlapping_compound,
-                                self.show_compound_parts_in_sentence_breakdown,
-                                self.show_all_matched_words_in_sentence_breakdown,
-                                self.yomitan_integration_copy_answer_to_clipboard,
-                                self.anki_internal_fsrs_set_enable_fsrs_short_term_with_steps,
-                                self.decrease_failed_card_intervals,
-                                self.prevent_double_clicks,
-                                self.boost_failed_card_allowed_time,
-                                self.prefer_default_mnemocs_to_source_mnemonics,
-                                self.enable_garbage_collection_during_batches,
-                                self.enable_automatic_garbage_collection,
-                                self.track_instances_in_memory]
+        self.feature_toggles: list[tuple[str, list[ConfigurationValueBool]]] = \
+            [("Sentence Display", [self.automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound,
+                                   self.automatically_yield_last_token_in_passive_verb_compounds_to_overlapping_compound,
+                                   self.show_compound_parts_in_sentence_breakdown,
+                                   self.show_all_matched_words_in_sentence_breakdown]),
+             ("Misc", [self.yomitan_integration_copy_answer_to_clipboard,
+                       self.anki_internal_fsrs_set_enable_fsrs_short_term_with_steps,
+                       self.decrease_failed_card_intervals,
+                       self.prevent_double_clicks,
+                       self.boost_failed_card_allowed_time,
+                       self.prefer_default_mnemonics_to_source_mnemonics]),
+             ("Memory", [self.enable_garbage_collection_during_batches,
+                         self.enable_automatic_garbage_collection,
+                         self.track_instances_in_memory])]
 
         self.readings_mappings_dict = self._read_reading_mappings_from_file()
 

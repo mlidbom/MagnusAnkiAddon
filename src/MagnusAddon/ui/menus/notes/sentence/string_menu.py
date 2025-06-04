@@ -26,7 +26,7 @@ def build_string_menu(string_menu: QMenu, sentence: SentenceNote, menu_string: s
                 add_exclusion_menu: QMenu = non_optional(add_menu.addMenu(exclusion_type_title))
 
                 for excluded_index, matched in enumerate(top_level_words_excluded_by_menu_string):
-                    add_ui_action(add_exclusion_menu, shortcutfinger.numpad_no_numbers(excluded_index, f"{matched.start_index}: {matched.form}"), ex_lambda.bind1(exclusion_set.add, matched.to_exclusion()))
+                    add_ui_action(add_exclusion_menu, shortcutfinger.finger_by_priority_order(excluded_index, f"{matched.start_index}: {matched.form}"), ex_lambda.bind1(exclusion_set.add, matched.to_exclusion()))
         else:
             add_ui_action(add_menu, exclusion_type_title, lambda: None).setEnabled(False)
 
@@ -40,7 +40,7 @@ def build_string_menu(string_menu: QMenu, sentence: SentenceNote, menu_string: s
             else:
                 remove_at_index_menu: QMenu = non_optional(word_exclusion_remove.addMenu(exclusion_type_title))
                 for excluded_index, matched_exclusion in enumerate(covered_existing_exclusions):
-                    add_ui_action(remove_at_index_menu, shortcutfinger.numpad_no_numbers(excluded_index, f"{matched_exclusion.index}:{matched_exclusion.word}"), ex_lambda.bind1(exclusion_set.remove, matched_exclusion))
+                    add_ui_action(remove_at_index_menu, shortcutfinger.finger_by_priority_order(excluded_index, f"{matched_exclusion.index}:{matched_exclusion.word}"), ex_lambda.bind1(exclusion_set.remove, matched_exclusion))
         else:
             add_ui_action(word_exclusion_remove, exclusion_type_title, lambda: None, False)
 

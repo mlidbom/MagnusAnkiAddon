@@ -84,11 +84,13 @@ def build_config_menu(config_menu: QMenu) -> None:
 
     def build_feature_toggles_menu(_title: str) -> None:
         toggles_menu = non_optional(config_menu.addMenu(_title))
-        for index, toggle in enumerate(app.config().feature_toggles):
-            add_checkbox_config(toggles_menu, toggle, shortcutfinger.numpad_no_numbers(index, toggle.title))
+        for section_index, (section, toggles) in enumerate(app.config().feature_toggles):
+            section_menu = non_optional(toggles_menu.addMenu(shortcutfinger.finger_by_priority_order(section_index, section)))
+            for index, toggle in enumerate(toggles):
+                add_checkbox_config(section_menu, toggle, shortcutfinger.finger_by_priority_order(index, toggle.title))
 
-    non_optional(config_menu.addAction(shortcutfinger.home1("Readings mappings"), show_readings_mappings)).setShortcut("Ctrl+Shift+m")
-    build_feature_toggles_menu(shortcutfinger.home2("Feature Toggles"))
+    build_feature_toggles_menu(shortcutfinger.home1("Feature Toggles"))
+    non_optional(config_menu.addAction(shortcutfinger.home2("Readings mappings"), show_readings_mappings)).setShortcut("Ctrl+Shift+m")
     non_optional(config_menu.addAction(shortcutfinger.home3("Options"), show_japanese_options)).setShortcut("Ctrl+Shift+s")
 
 def build_local_menu(local_menu: QMenu) -> None:
