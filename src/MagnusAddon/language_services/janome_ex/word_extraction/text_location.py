@@ -73,8 +73,6 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
 
     def analysis_step_4_calculate_preference_between_overlapping_display_variants(self) -> None:
         if self.display_words_starting_here and self.is_shadowed_by is None:
-            while len(self.display_words_starting_here[0].display_word_variants) == 0:
-                self.display_words_starting_here = self.display_words_starting_here[1:]
             while self.selected_word_needs_to_yield_to_upcoming_compounds():
                 self.display_words_starting_here = self.display_words_starting_here[1:]
 
