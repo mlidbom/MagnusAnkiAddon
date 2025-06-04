@@ -72,15 +72,15 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
     def selected_display_word(self) -> CandidateWord | None: return self.display_words_starting_here[0] if self.display_words_starting_here else None
 
     def analysis_step_4_calculate_preference_between_overlapping_display_variants(self) -> None:
-        if self.valid_words_starting_here and self.is_shadowed_by is None:
-            while len(self.valid_words_starting_here[0].display_word_variants) == 0:
-                self.valid_words_starting_here = self.valid_words_starting_here[1:]
+        if self.display_words_starting_here and self.is_shadowed_by is None:
+            while len(self.display_words_starting_here[0].display_word_variants) == 0:
+                self.display_words_starting_here = self.display_words_starting_here[1:]
             while self.selected_word_needs_to_yield_to_upcoming_compounds():
-                self.valid_words_starting_here = self.valid_words_starting_here[1:]
+                self.display_words_starting_here = self.display_words_starting_here[1:]
 
-            self.display_variants = self.valid_words_starting_here[0].display_word_variants
+            self.display_variants = self.display_words_starting_here[0].display_word_variants
 
-            covering_forward_count = self.valid_words_starting_here[0].location_count - 1
+            covering_forward_count = self.display_words_starting_here[0].location_count - 1
             for location in self.forward_list(covering_forward_count)[1:]:
                 location.is_shadowed_by = self.weakref
 
@@ -93,7 +93,7 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
         return any(voc for voc in vocab if voc.has_tag(Tags.Vocab.Matching.is_inflecting_word))
 
     def selected_word_needs_to_yield_to_upcoming_compounds(self) -> bool:
-        selected_word = self.valid_words_starting_here[0]
+        selected_word = self.display_words_starting_here[0]
         if len(selected_word.display_word_variants) > 1: return False
         selected_variant = selected_word.display_word_variants[0]
         matches = selected_variant.valid_matches
@@ -103,4 +103,4 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
             if match.rules is None or not match.rules.yield_last_token_to_overlapping_compound.is_set():
                 return False
 
-        return selected_word.end_location().valid_words_starting_here[0].is_custom_compound
+        return selected_word.end_location().display_words_starting_here[0].is_custom_compound
