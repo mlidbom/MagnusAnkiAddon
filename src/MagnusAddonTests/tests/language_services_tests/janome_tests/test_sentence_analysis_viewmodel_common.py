@@ -15,11 +15,8 @@ def _assert_display_words_equal(sentence: str, excluded: list[WordExclusion], ex
     def run_note_assertions(message: str | None = None) -> None:
         if message: print(message)
         analysis = SentenceAnalysisViewModel(sentence_note)
-        candidate_words = analysis.analysis.candidate_words
-        display_forms = ex_sequence.flatten([cand.display_forms for cand in candidate_words])
-        displayed_forms = [display_form for display_form in display_forms if display_form.is_displayed]
 
-        root_words = [df.parsed_form for df in displayed_forms]
+        root_words = [df.parsed_form for df in analysis.displayed_forms]
         assert root_words == expected_output
 
     print()
