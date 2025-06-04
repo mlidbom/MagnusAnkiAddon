@@ -71,6 +71,7 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
         self.all_word_variants = ex_sequence.flatten([v.all_word_variants for v in self.all_candidate_ranges])
 
     def analysis_step_4_calculate_preference_between_overlapping_display_variants(self) -> None:
+        #todo this does not belong here. The cand should never have display words that are not displayed in the first place.
         def candidate_has_display_matches(cand: CandidateWord) -> bool:
             matches:list[Match] = ex_sequence.flatten([variant.matches for variant in cand.display_word_variants])
             if any(match for match in matches if match.is_displayed):
