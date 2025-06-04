@@ -21,6 +21,8 @@ class YieldLastTokenToOverlappingCompound:
                     and self._vocab().parts_of_speech.is_suru_verb_included())
                 or (app.config().automatically_yield_last_token_in_passive_verb_compounds_to_overlapping_compound.get_value()
                     and self._vocab().parts_of_speech.is_passive_verb_compound())
+                or (app.config().automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound.get_value()
+                    and self._vocab().parts_of_speech.is_causative_verb_compound())
                 )
 
     def __repr__(self) -> str: return self.is_set().__repr__()
