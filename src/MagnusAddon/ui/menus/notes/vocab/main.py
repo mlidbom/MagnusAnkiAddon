@@ -92,7 +92,7 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
         def build_misc_menu(misc_menu: QMenu) -> None:
             add_toggle_checkbox(misc_menu, shortcutfinger.home1("Question overrides form: Show the question in results even if the match was another form"), vocab.matching_rules.question_overrides_form.tag_field)
             add_toggle_checkbox(misc_menu, shortcutfinger.home2("Forbid a stem"), vocab.matching_rules.forbids_a_stem)
-            add_toggle_checkbox(misc_menu, shortcutfinger.home3("Yield last token to overlapping compound"), vocab.matching_rules.yield_last_token_to_overlapping_compound)
+            add_toggle_checkbox(misc_menu, shortcutfinger.home3("Yield last token to overlapping compound"), vocab.matching_rules.yield_last_token_to_overlapping_compound.tag_field)
             add_toggle_checkbox(misc_menu, shortcutfinger.home4("Match with preceding vowel"), vocab.matching_rules.match_with_preceding_vowel)
 
         build_requires_menu(non_optional(toggle_flags_menu.addMenu(shortcutfinger.home1("Requires"))))

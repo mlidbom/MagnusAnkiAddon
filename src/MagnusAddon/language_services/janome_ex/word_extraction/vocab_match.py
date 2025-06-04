@@ -25,13 +25,18 @@ class VocabMatch(Match, Slots):
         if vocab.matching_rules.question_overrides_form.is_set():
             self.parsed_form = self.vocab.get_question()
 
-        self.stem_requirements = StemRequirements(vocab, self.candidate().candidate_word().start_location().previous)
-        self.tail_requirements = TailRequirements(vocab, self.candidate().candidate_word().end_location().next)
-        self.misc_requirements = MiscRequirements(self.weakref)
+    @property
+    def is_valid(self) -> bool:
+        return (self.stem_requirements.are_fulfilled
+                and self.tail_requirements.are_fulfilled
+                and self.misc_requirements.are_fulfilled)  # if we remove ourselves and we are not a compound, part of the text goes missing
 
-        self.is_valid = (self.stem_requirements.are_fulfilled
-                         and self.tail_requirements.are_fulfilled
-                         and self.misc_requirements.are_fulfilled)  # if we remove ourselves and we are not a compound, part of the text goes missing
+    @property
+    def stem_requirements(self) -> StemRequirements: return StemRequirements(self.vocab, self.candidate().candidate_word().start_location().previous)
+    @property
+    def tail_requirements(self) -> TailRequirements: return TailRequirements(self.vocab, self.candidate().candidate_word().end_location().next)
+    @property
+    def misc_requirements(self) -> MiscRequirements: return MiscRequirements(self.weakref)
 
     def failure_reasons(self) -> set[str]:
         return (self.misc_requirements.failure_reasons()

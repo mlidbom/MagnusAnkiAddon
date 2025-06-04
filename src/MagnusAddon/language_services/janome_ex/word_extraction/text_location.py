@@ -42,6 +42,7 @@ class TextAnalysisLocation(Slots):
         self.valid_variants: list[CandidateWordVariant] = []
         self.all_word_variants: list[CandidateWordVariant] = []
         self.all_candidate_ranges: list[CandidateWord] = []
+        self.display_words_starting_here: list[CandidateWord] = []
 
     def __repr__(self) -> str:
         return f"""
@@ -61,12 +62,16 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
         for range_ in self.all_candidate_ranges[:-1]:  # we already have the last one completed
             range_.complete_analysis()
 
+    def analysis_step_3_create_collections(self) -> None:
         self.candidate_words_starting_here = [candidate for candidate in self.all_candidate_ranges if candidate.is_word]
         self.valid_words_starting_here = [candidate for candidate in self.all_candidate_ranges if candidate.has_valid_words()]
+        self.display_words_starting_here = [candidate for candidate in self.all_candidate_ranges if candidate.has_display_words()]
         self.valid_variants = ex_sequence.flatten([v.valid_variants for v in self.valid_words_starting_here])
         self.all_word_variants = ex_sequence.flatten([v.all_word_variants for v in self.all_candidate_ranges])
 
-    def analysis_step_3_calculate_preference_between_overlapping_display_variants(self) -> None:
+    def selected_display_word(self) -> CandidateWord | None: return self.display_words_starting_here[0] if self.display_words_starting_here else None
+
+    def analysis_step_4_calculate_preference_between_overlapping_display_variants(self) -> None:
         if self.valid_words_starting_here and self.is_shadowed_by is None:
             while len(self.valid_words_starting_here[0].display_word_variants) == 0:
                 self.valid_words_starting_here = self.valid_words_starting_here[1:]

@@ -90,9 +90,10 @@ class CandidateWord(Slots):
             self.all_word_variants.append(self.base)
 
     def has_valid_words(self) -> bool: return len(self.valid_variants) > 0
+    def has_display_words(self) -> bool: return len(self.display_word_variants) > 0
 
     def __repr__(self) -> str: return f"""
 surface: {self.surface.__repr__()} | base:{self.base.__repr__()},
-hvc:{self.has_valid_words()},
+hdc:{self.has_valid_words()},
 iw:{self.is_word}
 icc:{self.is_custom_compound})""".replace(newline, "")
