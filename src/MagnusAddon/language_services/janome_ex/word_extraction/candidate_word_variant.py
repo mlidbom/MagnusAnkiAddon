@@ -122,6 +122,10 @@ class CandidateWordVariant(Slots):
         return self.preceding_surface != "" and self.preceding_surface[-1] not in non_word_characters
 
     @property
+    def display_matches(self) -> list[Match]:
+        return [match for match in self.matches if match.is_displayed]
+
+    @property
     def preceding_surface(self) -> str:
         previous = self.candidate_word().start_location().previous
         return previous().token.surface if previous else ""
@@ -155,7 +159,7 @@ class CandidateWordBaseVariant(CandidateWordVariant, Slots):
                 self.is_self_excluded = True
                 self.is_valid_candidate = False
 
-            #todo: really not sure about this. Is this a good way to do it? If so, should it not belong to display logic rather than validity logic
+            # todo: really not sure about this. Is this a good way to do it? If so, should it not belong to display logic rather than validity logic
             self.surface_preferred_over_bases = set().union(*[vocab.matching_rules.rules.prefer_over_base.get() for vocab in self.surface.unexcluded_any_form_vocabs])
             if self.form in self.surface_preferred_over_bases:
                 self.is_valid_candidate = False

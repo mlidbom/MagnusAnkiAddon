@@ -73,22 +73,27 @@ class CandidateWord(Slots):
         if self.should_include_surface_in_all_words:
             self.valid_variants.append(self.surface)
 
-        self.should_include_base_in_display_variants = self.base is not None and self.should_include_base_in_all_words and not self.base.is_marked_hidden_by_config
-
-        self.should_include_surface_in_display_variants = ((self.should_include_surface_in_all_words and not self.surface.is_marked_hidden_by_config)
-                                                           or (not self.should_include_base_in_all_words and self.must_include_some_variant()))
-
-    def run_display_analysis(self) -> None:
-        if self.should_include_surface_in_display_variants:
-            self.display_word_variants.append(self.surface)
-        elif self.should_include_base_in_display_variants:
-            self.display_word_variants.append(non_optional(self.base))
-
         if self.surface.is_word or self.should_include_surface_in_all_words:
             self.all_word_variants.append(self.surface)
 
         if self.base is not None and (self.base.is_word or self.should_include_base_in_all_words):
             self.all_word_variants.append(self.base)
+
+    def run_display_analysis(self) -> None:
+        self.should_include_base_in_display_variants = (self.base is not None
+                                                        and self.should_include_base_in_all_words
+                                                        and not self.base.is_marked_hidden_by_config
+                                                        and any(self.base.display_matches))
+
+        self.should_include_surface_in_display_variants = ((self.should_include_surface_in_all_words
+                                                            and not self.surface.is_marked_hidden_by_config
+                                                            and any(self.surface.display_matches))
+                                                           or (not self.should_include_base_in_all_words and self.must_include_some_variant()))
+
+        if self.should_include_surface_in_display_variants:
+            self.display_word_variants.append(self.surface)
+        elif self.should_include_base_in_display_variants:
+            self.display_word_variants.append(non_optional(self.base))
 
     def has_valid_words(self) -> bool: return len(self.valid_variants) > 0
     def has_display_words(self) -> bool: return len(self.display_word_variants) > 0
