@@ -85,16 +85,8 @@ class CandidateWordVariant(Slots):
                 or (self not in self.candidate_word().start_location().display_variants
                     and self.is_valid_candidate))
 
-    @property
-    def counterpart(self) -> CandidateWordVariant | None:
-        raise Exception("Not implemented")
-
     def complete_analysis(self) -> None:
         if self.completed_analysis: return
-
-        self.exact_match_required_by_counterpart_vocab_configuration = self.counterpart is not None and self.counterpart.exact_match_required_by_primary_form_vocab_configuration
-        self.exact_match_required = self.exact_match_required_by_primary_form_vocab_configuration or self.exact_match_required_by_counterpart_vocab_configuration
-        self.is_exact_match_requirement_fulfilled = not self.exact_match_required or self.counterpart is None or self.form == self.counterpart.form
 
         self.valid_vocab_matches = [vm for vm in self.vocab_matches if vm.is_valid]
         self.form_owning_vocab_matches = [vm for vm in self.vocab_matches if vm.vocab.forms.is_owned_form(self.form)]
@@ -120,7 +112,7 @@ class CandidateWordVariant(Slots):
                                                      and len(self.valid_matches) > 0
                                                      and (not self.requires_prefix or self.has_prefix)
                                                      and not self.starts_with_non_word_token
-                                                     and self.is_exact_match_requirement_fulfilled))
+                                                     ))
 
         self.completed_analysis = True
 
@@ -147,9 +139,6 @@ class CandidateWordSurfaceVariant(CandidateWordVariant, Slots):
                 and candidate_word().locations[-1]().token.do_not_match_surface_for_non_compound_vocab):
             self.is_self_excluded = True
 
-    @property
-    def counterpart(self) -> CandidateWordVariant | None: return self.candidate_word().base
-
 class CandidateWordBaseVariant(CandidateWordVariant, Slots):
     def __init__(self, candidate_word: WeakRef[CandidateWord], form: str) -> None:
         super().__init__(candidate_word, form, is_base=True)
@@ -160,15 +149,15 @@ class CandidateWordBaseVariant(CandidateWordVariant, Slots):
     def complete_analysis(self) -> None:
         super().complete_analysis()
 
-        if self.counterpart is not None:
-            if self.counterpart.form in self.surface_is_not:
+        if self.surface is not None:
+            if self.surface.form in self.surface_is_not:
                 self.is_self_excluded = True
                 self.is_valid_candidate = False
 
-            self.surface_preferred_over_bases = set().union(*[vocab.matching_rules.rules.prefer_over_base.get() for vocab in self.counterpart.unexcluded_any_form_vocabs])
+            self.surface_preferred_over_bases = set().union(*[vocab.matching_rules.rules.prefer_over_base.get() for vocab in self.surface.unexcluded_any_form_vocabs])
             if self.form in self.surface_preferred_over_bases:
                 self.is_valid_candidate = False
 
     @property
-    def counterpart(self) -> CandidateWordVariant | None:
+    def surface(self) -> CandidateWordVariant | None:
         return self.candidate_word().surface
