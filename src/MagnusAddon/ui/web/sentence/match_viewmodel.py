@@ -20,7 +20,7 @@ class MatchViewModel:
         self.match: Match = match
         self.vocab_match: VocabMatch | None = typed.try_cast(VocabMatch, match)
         self._config: SentenceConfiguration = word_variant_vm().candidate_word.candidate_word().analysis().configuration
-        self.word_viewmodel: WeakRef[CandidateWordVariantViewModel] = word_variant_vm
+        self.word_variant_vm: WeakRef[CandidateWordVariantViewModel] = word_variant_vm
         self.is_shadowed: bool = word_variant_vm().is_shadowed
         self.is_display_word: bool = word_variant_vm().is_display_word
         self.parsed_form: str = match.parsed_form
@@ -77,8 +77,8 @@ class MatchViewModel:
                 and self.match.is_displayed
                 and (self.vocab_match is None
                      or self.vocab_match.is_valid
-                     or (not self.word_viewmodel().candidate_word.candidate_word().is_custom_compound
-                         and len(self.word_viewmodel().matches) == 1))  # we are the only match for a non-compound and we have to display something
+                     or (not self.word_variant_vm().candidate_word.candidate_word().is_custom_compound
+                         and len(self.word_variant_vm().matches) == 1))  # we are the only match for a non-compound and we have to display something
                 )
 
     @property
@@ -90,7 +90,7 @@ class MatchViewModel:
                 or not self.is_display_word)
 
     def is_primary_match(self) -> bool:
-        return self.match_owns_form or not self.word_viewmodel().has_perfect_match
+        return self.match_owns_form or not self.word_variant_vm().has_perfect_match
 
     def __repr__(self) -> str:
         return (
