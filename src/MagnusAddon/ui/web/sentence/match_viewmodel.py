@@ -74,6 +74,7 @@ class MatchViewModel:
         return (not self.is_shadowed
                 and self.is_display_word
                 and self.is_primary_match()
+                and self.match.is_displayed
                 and (self.vocab_match is None
                      or self.vocab_match.is_valid
                      or (not self.word_viewmodel().candidate_word.candidate_word().is_custom_compound
