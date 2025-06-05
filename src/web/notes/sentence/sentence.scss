@@ -4,10 +4,10 @@
     @include kanji_list;
 
     /* FONTS AND COLORS */
-    font-size: 20pt;
+    font-size: 13pt;
 
     .expression {
-        font-size: 40pt;
+        font-size: 200%;
         line-height: 1;
         color: color-mix(in lch, var(--colorTextCard), black 20%);
         white-space: pre-line;
@@ -28,8 +28,8 @@
     }
 
     .meaning {
-        font-size: 25pt;
-        &.overridden { font-size: 15pt; }
+        font-size: 150%;
+        &.overridden { font-size: 120%; }
     }
 
     .expression, .reading {
@@ -68,8 +68,8 @@
 
             &.highlighted .vocabQuestion { color: var(--colorTextBold); }
 
-            .exclusion_reason, .hiding_reason {font-size: 10pt;}
-            .exclusion_reason { color: var(--colorTextWarningRed);}
+            .incorrect_reason, .hiding_reason, .not_shown_reason {font-size: 80%;}
+            .incorrect_reason, .hiding_reason { color: var(--colorTextWarningRed);}
 
             &.secondary_match {
                 &, & .vocab_tag { background-color: color-mix(in lch, var(--colorBgOffset1), white 30%);}
@@ -123,7 +123,7 @@
                     margin-left: 5pt; }
                 .vocabHitReadings {
                     color: var(--colorTextReading);
-                    font-size: 25pt; margin-left: 5pt;}
+                    font-size: 150%; margin-left: 5pt;}
             }
 
             div.sentenceVocabEntryMnemonic {
@@ -131,7 +131,7 @@
                 white-space: pre-line;
             }
 
-            .vocabQuestion, .vocabLookupForm, .vocabHitForm { font-size: 30pt; white-space: nowrap; }
+            .vocabQuestion, .vocabLookupForm, .vocabHitForm { font-size: 180%; white-space: nowrap; }
             .vocabAnswer { margin-left: 10pt; white-space: pre-line;}
 
         }
@@ -142,7 +142,11 @@
     }
 
     /* LAYOUT */
-    .topSection { @include flexContainerColumn; }
+    .topSection {
+        .image {
+            float: right;
+        }
+    }
 
     .bottomSection { justify-content: center;
         text-align: left; }
