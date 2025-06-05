@@ -28,6 +28,7 @@ from sysutils.typed import checked_cast, non_optional
 _ANSWER_DISPLAY_TYPES = {"reviewAnswer", "previewAnswer", "clayoutAnswer"}
 
 def main_window() -> AnkiQt: return non_optional(aqt.mw)
+
 def is_displaytype_displaying_answer(display_type: str) -> bool:
     return display_type in _ANSWER_DISPLAY_TYPES
 
@@ -36,6 +37,9 @@ def is_displaytype_displaying_review_question(display_type: str) -> bool:
 
 def is_displaytype_displaying_review_answer(display_type: str) -> bool:
     return display_type == "reviewAnswer"
+
+def is_reviewer_display_type(display_type: str) -> bool:
+    return display_type.startswith("review")
 
 def get_note_from_web_view(view: AnkiWebView) -> Optional[JPNote]:
     inner_note: Note | None
@@ -75,8 +79,7 @@ class UIUtils(IUIUtils, Slots):
         self.refresh()
         tooltip(f"done in {time}")
 
-
-    def refresh(self, refresh_browser:bool = True) -> None:
+    def refresh(self, refresh_browser: bool = True) -> None:
         if not app.is_initialized():
             return
 
@@ -107,14 +110,14 @@ class UIUtils(IUIUtils, Slots):
             force_browser_rerender()
 
     def activate_preview(self) -> None:
-        browser: Browser = aqt.dialogs.open('Browser', self._mw) # noqa
+        browser: Browser = aqt.dialogs.open('Browser', self._mw)  # noqa
         self._mw.app.processEvents()
-        if browser._previewer is None: # noqa
+        if browser._previewer is None:  # noqa
             browser.onTogglePreview()
         else:
-            browser._previewer.activateWindow() # noqa
+            browser._previewer.activateWindow()  # noqa
 
-    def tool_tip(self, message: str, milliseconds:int = 3000) -> None:
+    def tool_tip(self, message: str, milliseconds: int = 3000) -> None:
         def show_tooltip() -> None:
             tooltip(message, milliseconds)
             QApplication.processEvents()

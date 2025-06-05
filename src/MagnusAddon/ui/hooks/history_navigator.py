@@ -4,7 +4,7 @@ import json
 import os
 
 from anki.cards import Card, CardId
-from ankiutils import app, query_builder, search_executor
+from ankiutils import app, query_builder, search_executor, ui_utils
 from aqt import gui_hooks, mw
 from sysutils import typed
 
@@ -18,6 +18,7 @@ class CardHistoryNavigator:
 
         self._is_navigating: bool = False
         self._last_card_shown_was_navigated_card_id: CardId | None = None
+        self._last_card_shown_in_reviewer_card_id: CardId | None = None
 
     def _set_current_position_to_end_of_history(self) -> None:
         self.current_position = len(self.card_history) - 1
@@ -42,7 +43,11 @@ class CardHistoryNavigator:
                 self.card_history = [CardId(card_id) for card_id in saved_history]
                 self._set_current_position_to_end_of_history()
 
-    def on_card_shown(self, html: str, card: Card, _: str) -> str:
+    def on_card_shown(self, html: str, card: Card, _display_type: str) -> str:
+        if ui_utils.is_reviewer_display_type(_display_type):
+            if self._last_card_shown_in_reviewer_card_id == card.id: return html  # We don't want to pollute the history every single time the currently reviewed card is refreshed by our UI refresh code....
+            self._last_card_shown_in_reviewer_card_id = card.id
+
         if self._is_navigating:  # don't mess up the history when navigating the history. Navigating the history is a read-only operation
             self._is_navigating = False
             self._last_card_shown_was_navigated_card_id = card.id
