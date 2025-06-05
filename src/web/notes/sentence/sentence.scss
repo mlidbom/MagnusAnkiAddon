@@ -141,13 +141,32 @@
         .reading { display: none; }
     }
 
+
     /* LAYOUT */
     .topSection {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        grid-column-gap: 10px;
+        grid-row-gap: 5px;
+
         .image {
-            float: right;
+            grid-column: 1;
+            grid-row: 1 / span 6;
+        }
+
+        #expressionAndReading {
+            grid-column: 2;
+            grid-row: 4;
+        }
+        .meaning {
+            grid-column: 2;
+            grid-row: 5;
+        }
+        .meaning.overridden {
+            grid-column: 2;
+            grid-row: 6;
         }
     }
-
     .bottomSection { justify-content: center;
         text-align: left; }
 
