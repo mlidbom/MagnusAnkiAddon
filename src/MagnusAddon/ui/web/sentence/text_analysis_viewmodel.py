@@ -15,6 +15,6 @@ class TextAnalysisViewModel(Slots):
     def __init__(self, text_analysis: TextAnalysis) -> None:
         self.analysis: TextAnalysis = text_analysis
         self.candidate_words: list[CandidateWordVariantViewModel] = [CandidateWordVariantViewModel(candidate_word) for candidate_word in text_analysis.all_word_variants]
-        candidate_words: list[CandidateWordVariantViewModel] = self.candidate_words
-        display_forms: list[MatchViewModel] = ex_sequence.flatten([cand.matches for cand in candidate_words])
-        self.displayed_forms:list[MatchViewModel] = [display_form for display_form in display_forms if display_form.is_displayed]
+        variant_view_models: list[CandidateWordVariantViewModel] = self.candidate_words
+        matches: list[MatchViewModel] = ex_sequence.flatten([cand.matches for cand in variant_view_models])
+        self.displayed_matches:list[MatchViewModel] = [display_form for display_form in matches if display_form.is_displayed]

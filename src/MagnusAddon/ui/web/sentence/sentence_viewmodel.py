@@ -14,4 +14,4 @@ class SentenceAnalysisViewModel(Slots):
     def __init__(self, sentence: SentenceNote) -> None:
         self.sentence: SentenceNote = sentence
         self.analysis: TextAnalysisViewModel = TextAnalysisViewModel(TextAnalysis(sentence.get_question(), sentence.configuration.configuration))
-        self.displayed_forms:list[MatchViewModel] = self.analysis.displayed_forms
+        self.displayed_matches:list[MatchViewModel] = self.analysis.displayed_matches

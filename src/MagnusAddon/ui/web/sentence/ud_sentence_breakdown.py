@@ -25,7 +25,7 @@ def render_sentence_analysis(note: SentenceNote) -> str:
         <ul class="sentenceVocabList userExtra depth1">
     """
 
-    for display_form in sentence_analysis.displayed_forms:
+    for display_form in sentence_analysis.displayed_matches:
         html += f"""
                     <li class="sentenceVocabEntry depth1 word_priority_very_high {display_form.meta_tags_string}">
                         <div class="sentenceVocabEntryDiv">

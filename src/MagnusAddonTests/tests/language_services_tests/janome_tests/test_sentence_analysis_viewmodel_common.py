@@ -10,13 +10,18 @@ from ui.web.sentence.sentence_viewmodel import SentenceAnalysisViewModel
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
+    from ui.web.sentence.match_viewmodel import MatchViewModel
+
+def surface_and_match_form(match_vm: MatchViewModel) -> str:
+    return f"""{match_vm.match.parsed_form}:{match_vm.vocab_form}""" if match_vm.display_vocab_form else match_vm.match.parsed_form
 
 def _assert_display_words_equal(sentence: str, excluded: list[WordExclusion], expected_output: list[str]) -> None:
+
     def run_note_assertions(message: str | None = None) -> None:
         if message: print(message)
         analysis = SentenceAnalysisViewModel(sentence_note)
 
-        root_words = [df.parsed_form for df in analysis.displayed_forms]
+        root_words = [surface_and_match_form(dm) for dm in analysis.displayed_matches]
         assert root_words == expected_output
 
     print()
@@ -34,7 +39,7 @@ def _assert_all_words_equal(sentence: str, expected_output: list[str]) -> None:
     sentence_note = SentenceNote.create(sentence)
     analysis = SentenceAnalysisViewModel(sentence_note)
     candidate_words = analysis.analysis.candidate_words
-    display_forms = ex_sequence.flatten([cand.matches for cand in candidate_words])
+    matches = ex_sequence.flatten([cand.matches for cand in candidate_words])
 
-    root_words = [df.parsed_form for df in display_forms]
+    root_words = [surface_and_match_form(match) for match in matches]
     assert root_words == expected_output
