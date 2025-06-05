@@ -53,21 +53,21 @@ class CardHistoryNavigator:
             self._last_card_shown_was_navigated_card_id = card.id
             return html
 
-        self._remove_from_history(card.id)  # no duplicates in the history please
         # if we navigate away from a card shown while navigating the history, that was probably the card we were searching for and if we hit back after that, we want that card
         if self._last_card_shown_was_navigated_card_id is not None:
             self._remove_from_history(self._last_card_shown_was_navigated_card_id)
             self.card_history.append(self._last_card_shown_was_navigated_card_id)
             self._last_card_shown_was_navigated_card_id = None
 
+        self._remove_from_history(card.id)  # no duplicates in the history please
         self.card_history.append(card.id)
-        self._set_current_position_to_end_of_history()
 
+        self._set_current_position_to_end_of_history()
         self._save_last_hundred_items_to_file()
         return html
 
     def _remove_from_history(self, card_id: CardId) -> None:
-        if card_id in self.card_history: self.card_history.remove(card_id)  # no duplicates in the history please
+        while card_id in self.card_history: self.card_history.remove(card_id)  # no duplicates in the history please
 
     @staticmethod
     def _card_exists(card_id: CardId) -> bool:
