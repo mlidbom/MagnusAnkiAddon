@@ -71,6 +71,7 @@ class MatchViewModel:
     @property
     def is_displayed(self) -> bool:
         if app.config().show_all_matched_words_in_sentence_breakdown.get_value(): return True
+        #todo: this absolutely does not belong here. This is a viewmodel for crying out loud, it should not be implementing core domain logic.
         return (not self.is_shadowed
                 and self.is_display_word
                 and self.is_primary_match()
