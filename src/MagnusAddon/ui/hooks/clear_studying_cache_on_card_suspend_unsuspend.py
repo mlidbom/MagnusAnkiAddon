@@ -28,6 +28,7 @@ def _monkey_patch(html:str, _card:object, _something_else_again:object) -> str:
 
     scheduler = mw.col.sched
 
+    #todo this silliness is because I patch the instance instead of the class...
     if not hasattr(scheduler, "is_patched_by_magnus_addon_for_suspend"):
         _real_suspend_cards = scheduler.suspend_cards
         _real_unsuspend_cards = scheduler.unsuspend_cards
