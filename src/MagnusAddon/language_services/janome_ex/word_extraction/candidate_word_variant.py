@@ -22,7 +22,7 @@ if TYPE_CHECKING:
 class CandidateWordVariant(Slots):
     __slots__ = ["__weakref__"]
 
-    def __init__(self, candidate_word: WeakRef[CandidateWord], form: str, is_base: bool) -> None:
+    def __init__(self, word: WeakRef[CandidateWord], form: str, is_base: bool) -> None:
         self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
 
         self.is_base = is_base
@@ -30,9 +30,9 @@ class CandidateWordVariant(Slots):
         self.weak_ref = WeakRef(self)
         from language_services.jamdict_ex.dict_lookup import DictLookup
 
-        self.start_index: int = candidate_word().start_location().character_start_index
-        self.configuration: SentenceConfiguration = candidate_word().analysis().configuration
-        self.candidate_word: WeakRef[CandidateWord] = candidate_word
+        self.start_index: int = word().start_location().character_start_index
+        self.configuration: SentenceConfiguration = word().analysis().configuration
+        self.word: WeakRef[CandidateWord] = word
         self.form: str = form
 
         self.dict_lookup: DictLookup = DictLookup.lookup_word(form)
@@ -72,15 +72,15 @@ class CandidateWordVariant(Slots):
         self.is_self_excluded = False
         self.completed_analysis = False
         self.is_valid_candidate: bool = False
-        self.starts_with_non_word_token = self.candidate_word().start_location().token.is_non_word_character
+        self.starts_with_non_word_token = self.word().start_location().token.is_non_word_character
         self.valid_vocab_matches: list[VocabMatch] = []
         self.matches: list[Match] = []
         self.valid_matches: list[Match] = []
 
     @property
     def is_shadowed(self) -> bool:
-        return (self.candidate_word().start_location().is_shadowed_by is not None
-                or (self not in self.candidate_word().start_location().display_variants
+        return (self.word().start_location().is_shadowed_by is not None
+                or (self not in self.word().start_location().display_variants
                     and self.is_valid_candidate))
 
     def has_form_owning_vocab_but_no_valid_vocab(self) -> bool:
@@ -127,7 +127,7 @@ class CandidateWordVariant(Slots):
 
     @property
     def preceding_surface(self) -> str:
-        previous = self.candidate_word().start_location().previous
+        previous = self.word().start_location().previous
         return previous().token.surface if previous else ""
 
     def to_exclusion(self) -> WordExclusion:
@@ -137,16 +137,16 @@ class CandidateWordVariant(Slots):
         return f"""{self.form}, is_valid_candidate:{self.is_valid_candidate}"""
 
 class CandidateWordSurfaceVariant(CandidateWordVariant, Slots):
-    def __init__(self, candidate_word: WeakRef[CandidateWord], form: str) -> None:
-        super().__init__(candidate_word, form, is_base=False)
+    def __init__(self, word: WeakRef[CandidateWord], form: str) -> None:
+        super().__init__(word, form, is_base=False)
 
-        if (not candidate_word().is_custom_compound
-                and candidate_word().locations[-1]().token.do_not_match_surface_for_non_compound_vocab):
+        if (not word().is_custom_compound
+                and word().locations[-1]().token.do_not_match_surface_for_non_compound_vocab):
             self.is_self_excluded = True
 
 class CandidateWordBaseVariant(CandidateWordVariant, Slots):
-    def __init__(self, candidate_word: WeakRef[CandidateWord], form: str) -> None:
-        super().__init__(candidate_word, form, is_base=True)
+    def __init__(self, word: WeakRef[CandidateWord], form: str) -> None:
+        super().__init__(word, form, is_base=True)
 
         self.surface_is_not: set[str] = set().union(*[v.matching_rules.rules.surface_is_not.get() for v in self.unexcluded_any_form_vocabs])
         self.surface_preferred_over_bases: set[str] = set()
@@ -166,4 +166,4 @@ class CandidateWordBaseVariant(CandidateWordVariant, Slots):
 
     @property
     def surface(self) -> CandidateWordVariant | None:
-        return self.candidate_word().surface
+        return self.word().surface

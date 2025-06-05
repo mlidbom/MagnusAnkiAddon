@@ -19,7 +19,7 @@ class MatchViewModel:
     def __init__(self, word_variant_vm: WeakRef[CandidateWordVariantViewModel], match: Match) -> None:
         self.match: Match = match
         self.vocab_match: VocabMatch | None = typed.try_cast(VocabMatch, match)
-        self._config: SentenceConfiguration = word_variant_vm().candidate_word.candidate_word().analysis().configuration
+        self._config: SentenceConfiguration = word_variant_vm().candidate_word.word().analysis().configuration
         self.word_variant_vm: WeakRef[CandidateWordVariantViewModel] = word_variant_vm
         self.is_shadowed: bool = word_variant_vm().is_shadowed
         self.is_display_word: bool = word_variant_vm().is_display_word
@@ -78,7 +78,7 @@ class MatchViewModel:
                 and self.match.is_displayed
                 and (self.vocab_match is None
                      or self.vocab_match.is_valid
-                     or (not self.word_variant_vm().candidate_word.candidate_word().is_custom_compound
+                     or (not self.word_variant_vm().candidate_word.word().is_custom_compound
                          and len(self.word_variant_vm().matches) == 1))  # we are the only match for a non-compound and we have to display something
                 )
 

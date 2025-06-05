@@ -22,8 +22,8 @@ class VocabMatch(Match, Slots):
         self.vocab_form = vocab.get_question()
         self.answer = vocab.get_answer()
         self.readings = vocab.readings.get()
-        self.stem_requirements: StemRequirements = StemRequirements(self.vocab, self.candidate().candidate_word().start_location().previous)
-        self.tail_requirements: TailRequirements = TailRequirements(self.vocab, self.candidate().candidate_word().end_location().next)
+        self.stem_requirements: StemRequirements = StemRequirements(self.vocab, self.word_variant().word().start_location().previous)
+        self.tail_requirements: TailRequirements = TailRequirements(self.vocab, self.word_variant().word().end_location().next)
         self.misc_requirements: MiscRequirements = MiscRequirements(self.weakref)
 
         if vocab.matching_rules.question_overrides_form.is_set():

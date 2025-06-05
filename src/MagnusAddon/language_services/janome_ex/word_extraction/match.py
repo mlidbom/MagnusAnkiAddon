@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 class Match(Slots):
     __slots__ = ["__weakref__"]
     def __init__(self, candidate: WeakRef[CandidateWordVariant], rules: VocabNoteMatching | None) -> None:
-        self.candidate: WeakRef[CandidateWordVariant] = candidate
+        self.word_variant: WeakRef[CandidateWordVariant] = candidate
         self.parsed_form: str = candidate().form
         self.vocab_form: str = ""
         self.answer: str = ""
@@ -42,13 +42,13 @@ class Match(Slots):
 
     @property
     def _base_is_valid_word(self) -> bool:
-        base = self.candidate().candidate_word().base
+        base = self.word_variant().word().base
         return base is not None and base.is_valid_candidate
 
     @property
-    def _is_surface(self) -> bool: return self.candidate().is_surface
+    def _is_surface(self) -> bool: return self.word_variant().is_surface
     @property
-    def _must_include_some_variant(self) -> bool: return self.candidate().candidate_word().must_include_some_variant()
+    def _must_include_some_variant(self) -> bool: return self.word_variant().word().must_include_some_variant()
 
     @property
     def failure_reasons(self) -> set[str]:

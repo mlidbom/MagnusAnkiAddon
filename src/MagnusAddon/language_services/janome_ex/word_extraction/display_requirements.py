@@ -30,7 +30,7 @@ class DisplayRequirements(Slots):
     def _is_yield_last_token_to_overlapping_compound_requirement_fulfilled(self) -> bool:
         if not self.rules.yield_last_token_to_overlapping_compound.is_set(): return True
 
-        last_token_display_words: list[CandidateWord] = self.match().candidate().candidate_word().end_location().display_words_starting_here
+        last_token_display_words: list[CandidateWord] = self.match().word_variant().word().end_location().display_words_starting_here
         if not last_token_display_words: return True
 
         return not last_token_display_words[0].is_custom_compound
