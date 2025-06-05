@@ -12,9 +12,10 @@ if TYPE_CHECKING:
     from ui.web.sentence.display_form_viewmodel import DisplayFormViewModel
 
 def build_exclusion_message_span(view_model: DisplayFormViewModel) -> str:
-    exclusion_reasons = [f"""<div class="exclusion_reason">{reason}</div>""" for reason in view_model.exclusion_reasons]
+    incorrect_reasons = [f"""<div class="incorrect_reason">{reason}</div>""" for reason in view_model.incorrect_reasons]
     hiding_reasons = [f"""<div class="hiding_reason">{reason}</div>""" for reason in view_model.hiding_reasons]
-    return f"""<span>{newline.join(exclusion_reasons + hiding_reasons)}</span>"""
+    not_shown_reasons = [f"""<div class="not_shown_reason">{reason}</div>""" for reason in view_model.not_shown_reasons]
+    return f"""<span>{newline.join(incorrect_reasons + hiding_reasons + not_shown_reasons)}</span>"""
 
 def render_sentence_analysis(note: SentenceNote) -> str:
     sentence_analysis: SentenceAnalysisViewModel = SentenceAnalysisViewModel(note)
