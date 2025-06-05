@@ -13,23 +13,23 @@ if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.match import Match
     from note.sentences.sentence_configuration import SentenceConfiguration
     from sysutils.weak_ref import WeakRef
-    from ui.web.sentence.candidate_word_viewmodel import CandidateWordViewModel
+    from ui.web.sentence.candidate_word_variant_viewmodel import CandidateWordVariantViewModel
 
-class DisplayFormViewModel:
-    def __init__(self, word_viewmodel: WeakRef[CandidateWordViewModel], display_form: Match) -> None:
-        self.match: Match = display_form
-        self.vocab_match: VocabMatch | None = typed.try_cast(VocabMatch, display_form)
-        self._config: SentenceConfiguration = word_viewmodel().candidate_word.candidate_word().analysis().configuration
-        self.word_viewmodel: WeakRef[CandidateWordViewModel] = word_viewmodel
-        self.is_shadowed: bool = word_viewmodel().is_shadowed
-        self.is_display_word: bool = word_viewmodel().is_display_word
-        self.parsed_form: str = display_form.parsed_form
-        self.answer: str = display_form.answer
-        self.vocab_form: str = display_form.vocab_form
+class MatchViewModel:
+    def __init__(self, word_variant_vm: WeakRef[CandidateWordVariantViewModel], match: Match) -> None:
+        self.match: Match = match
+        self.vocab_match: VocabMatch | None = typed.try_cast(VocabMatch, match)
+        self._config: SentenceConfiguration = word_variant_vm().candidate_word.candidate_word().analysis().configuration
+        self.word_viewmodel: WeakRef[CandidateWordVariantViewModel] = word_variant_vm
+        self.is_shadowed: bool = word_variant_vm().is_shadowed
+        self.is_display_word: bool = word_variant_vm().is_display_word
+        self.parsed_form: str = match.parsed_form
+        self.answer: str = match.answer
+        self.vocab_form: str = match.vocab_form
         self.compound_parts: list[CompoundPartViewModel] = []
         self.audio_path: str = ""
         self.is_highlighted: bool = self.parsed_form in self._config.highlighted_words or self.vocab_form in self._config.highlighted_words
-        self.readings: str = ", ".join(display_form.readings)
+        self.readings: str = ", ".join(match.readings)
         self.meta_tags_html: str = ""
         self._meta_tags: list[str] = []
         self.display_vocab_form: bool = False
@@ -77,7 +77,7 @@ class DisplayFormViewModel:
                 and (self.vocab_match is None
                      or self.vocab_match.is_valid
                      or (not self.word_viewmodel().candidate_word.candidate_word().is_custom_compound
-                         and len(self.word_viewmodel().display_forms) == 1))  # we are the only match for a non-compound and we have to display something
+                         and len(self.word_viewmodel().matches) == 1))  # we are the only match for a non-compound and we have to display something
                 )
 
     @property
@@ -85,7 +85,6 @@ class DisplayFormViewModel:
         return (self.is_shadowed
                 or self.match.is_configured_hidden
                 or self.match.is_configured_incorrect
-                or self.match.is_configured_hidden
                 or not self.is_primary_match()
                 or not self.is_display_word)
 

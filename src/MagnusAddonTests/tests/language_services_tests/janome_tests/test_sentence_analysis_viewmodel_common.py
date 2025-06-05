@@ -34,7 +34,7 @@ def _assert_all_words_equal(sentence: str, expected_output: list[str]) -> None:
     sentence_note = SentenceNote.create(sentence)
     analysis = SentenceAnalysisViewModel(sentence_note)
     candidate_words = analysis.analysis.candidate_words
-    display_forms = ex_sequence.flatten([cand.display_forms for cand in candidate_words])
+    display_forms = ex_sequence.flatten([cand.matches for cand in candidate_words])
 
     root_words = [df.parsed_form for df in display_forms]
     assert root_words == expected_output

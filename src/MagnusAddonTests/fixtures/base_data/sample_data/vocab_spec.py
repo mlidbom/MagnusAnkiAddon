@@ -137,8 +137,14 @@ test_special_vocab: list[VocabSpec] = [
     VocabSpec("に決まる", forms=["に決る", "に決まる", "に極る"]),
     VocabSpec("に決まってる", forms=["に決っている", "に決まっている", "に極っている", "に決ってる", "に決まってる", "に極ってる"]),
     VocabSpec("された", surface_not={"されたら"}),
+
     VocabSpec("んです", tags=[vm.Requires.exact_match, vm.yield_last_token_to_overlapping_compound]),
     VocabSpec("んだ", tags=[vm.Requires.exact_match, vm.yield_last_token_to_overlapping_compound]),
+    VocabSpec("たん", forms=["たの"], tags=[vm.Requires.single_token]),
+    VocabSpec("たの", forms=["たん"], tags=[vm.yield_last_token_to_overlapping_compound]),
+    VocabSpec("たんだ", tags=[vm.yield_last_token_to_overlapping_compound]),
+    VocabSpec("んだろう", tags=[vm.is_poison_word]),
+    VocabSpec("しちゃう")
 ]
 
 test_ordinary_vocab_list = [
@@ -254,7 +260,6 @@ test_ordinary_vocab_list = [
     VocabSpec("一緒", "together | at-the-same-time | same/identical", ["いっしょ"]),
     VocabSpec("一度", "once/on-one-occation", ["いちど"]),
     VocabSpec("と", "conj{if/when | exhaus-list-item} prt{with | quote | adverb}", ["と"]),
-    VocabSpec("たの", "{indicates-{emotion/admiration/emphasis}}", ["たの"]),
     VocabSpec("今", "now", ["いま"]),
     VocabSpec("言う", "to: say | name/call", ["いう"]),
     VocabSpec("そんなに", "so-much/so/like-that", ["そんなに"]),

@@ -9,9 +9,9 @@ from ui.web.sentence.sentence_viewmodel import SentenceAnalysisViewModel
 from ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
 
 if TYPE_CHECKING:
-    from ui.web.sentence.display_form_viewmodel import DisplayFormViewModel
+    from ui.web.sentence.match_viewmodel import MatchViewModel
 
-def build_exclusion_message_span(view_model: DisplayFormViewModel) -> str:
+def build_exclusion_message_span(view_model: MatchViewModel) -> str:
     incorrect_reasons = [f"""<div class="incorrect_reason">{reason}</div>""" for reason in view_model.incorrect_reasons]
     hiding_reasons = [f"""<div class="hiding_reason">{reason}</div>""" for reason in view_model.hiding_reasons]
     not_shown_reasons = [f"""<div class="not_shown_reason">{reason}</div>""" for reason in view_model.not_shown_reasons]
