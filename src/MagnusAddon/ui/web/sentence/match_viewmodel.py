@@ -73,7 +73,6 @@ class MatchViewModel:
         #todo: this absolutely does not belong here. This is a viewmodel for crying out loud, it should not be implementing core domain logic.
         return (not self.is_shadowed
                 and self.is_display_word
-                #and self.is_primary_match()
                 and self.match.is_displayed
                 and (self.vocab_match is None
                      or self.vocab_match.is_valid
@@ -88,9 +87,6 @@ class MatchViewModel:
                 or self.match.is_configured_incorrect
                 or not self.match.is_displayed
                 or not self.is_display_word)
-
-    def is_primary_match(self) -> bool:
-        return self.match_owns_form or not self.word_variant_vm().has_perfect_match
 
     def __repr__(self) -> str:
         return (

@@ -27,6 +27,9 @@ class Match(Slots):
         return not self.is_configured_incorrect
 
     @property
+    def is_primary_match(self) -> bool: raise NotImplementedError()
+
+    @property
     def is_displayed(self) -> bool: return (self.is_valid_for_display
                                             or self._emergency_displayed)
 

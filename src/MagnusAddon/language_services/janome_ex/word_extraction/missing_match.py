@@ -13,3 +13,6 @@ class MissingMatch(Match):
     def __init__(self, candidate: WeakRef[CandidateWordVariant]) -> None:
         super().__init__(candidate, None)
         self.answer = "---"
+
+    @property
+    def is_primary_match(self) -> bool: return True
