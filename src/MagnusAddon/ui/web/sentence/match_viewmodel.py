@@ -73,12 +73,7 @@ class MatchViewModel:
         #todo: this absolutely does not belong here. This is a viewmodel for crying out loud, it should not be implementing core domain logic.
         return (not self.is_shadowed
                 and self.is_display_word
-                and self.match.is_displayed
-                and (self.vocab_match is None
-                     or self.vocab_match.is_valid
-                     or (not self.word_variant_vm().candidate_word.word().is_custom_compound
-                         and len(self.word_variant_vm().matches) == 1))  # we are the only match for a non-compound and we have to display something
-                )
+                and self.match.is_displayed)
 
     @property
     def not_valid_for_display(self) -> bool:
