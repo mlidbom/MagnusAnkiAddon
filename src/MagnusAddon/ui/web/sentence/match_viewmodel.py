@@ -65,8 +65,7 @@ class MatchViewModel:
     @property
     def not_shown_reasons(self) -> list[str]:
         return (SimpleStringListBuilder()
-                .append_if(self.is_shadowed, "shadowed")
-                .append_if(not self.is_primary_match(), "secondary_match").value)
+                .append_if(self.is_shadowed, "shadowed").value)
 
     @property
     def is_displayed(self) -> bool:
@@ -74,7 +73,7 @@ class MatchViewModel:
         #todo: this absolutely does not belong here. This is a viewmodel for crying out loud, it should not be implementing core domain logic.
         return (not self.is_shadowed
                 and self.is_display_word
-                and self.is_primary_match()
+                #and self.is_primary_match()
                 and self.match.is_displayed
                 and (self.vocab_match is None
                      or self.vocab_match.is_valid
@@ -83,11 +82,11 @@ class MatchViewModel:
                 )
 
     @property
-    def should_be_excluded(self) -> bool:
+    def not_valid_for_display(self) -> bool:
         return (self.is_shadowed
                 or self.match.is_configured_hidden
                 or self.match.is_configured_incorrect
-                or not self.is_primary_match()
+                or not self.match.is_displayed
                 or not self.is_display_word)
 
     def is_primary_match(self) -> bool:

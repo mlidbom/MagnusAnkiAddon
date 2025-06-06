@@ -38,7 +38,8 @@ class Match(Slots):
     def _emergency_displayed(self) -> bool:
         return (self._must_include_some_variant
                 and self._is_surface
-                and not self._base_is_valid_word)
+                and not self._base_is_valid_word
+                and not any(other_match for other_match in self.word_variant().matches if other_match.is_valid_for_display))
 
     @property
     def _base_is_valid_word(self) -> bool:

@@ -11,7 +11,7 @@ from ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
 if TYPE_CHECKING:
     from ui.web.sentence.match_viewmodel import MatchViewModel
 
-def build_exclusion_message_span(view_model: MatchViewModel) -> str:
+def build_invalid_for_display_span(view_model: MatchViewModel) -> str:
     incorrect_reasons = [f"""<div class="incorrect_reason">{reason}</div>""" for reason in view_model.incorrect_reasons]
     hiding_reasons = [f"""<div class="hiding_reason">{reason}</div>""" for reason in view_model.hiding_reasons]
     not_shown_reasons = [f"""<div class="not_shown_reason">{reason}</div>""" for reason in view_model.not_shown_reasons]
@@ -29,7 +29,7 @@ def render_sentence_analysis(note: SentenceNote) -> str:
         html += f"""
                     <li class="sentenceVocabEntry depth1 word_priority_very_high {display_form.meta_tags_string}">
                         <div class="sentenceVocabEntryDiv">
-                            {build_exclusion_message_span(display_form) if display_form.should_be_excluded else ""}
+                            {build_invalid_for_display_span(display_form) if display_form.not_valid_for_display else ""}
                             <audio src="{display_form.audio_path}"></audio><a class="play-button"></a>
                             <span class="vocabQuestion clipboard">{display_form.parsed_form}</span>
                             {f'''<span class="vocabHitForm clipboard">{display_form.vocab_form}</span>''' if display_form.display_vocab_form else ""}
