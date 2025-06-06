@@ -10,13 +10,15 @@ from note.notefields.tag_flag_field import TagFlagField
 from note.vocabulary.serialization.matching_rules_serializer import VocabNoteMatchingRulesSerializer
 from note.vocabulary.vocabnote_matching_rules_is_strictly_prefix import IsStrictlySuffix
 from note.vocabulary.vocabnote_matching_rules_question_overrides_form import QuestionOverridesForm
+from note.vocabulary.vocabnote_matching_rules_requires_compound import RequiresCompound
+from note.vocabulary.vocabnote_matching_rules_requires_single_token import RequiresSingleToken
 from note.vocabulary.vocabnote_matching_rules_yield_last_token_to_next_compound import YieldLastTokenToOverlappingCompound
 from sysutils.debug_repr_builder import SkipFalsyValuesDebugReprBuilder
 from sysutils.lazy import Lazy
+from sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
-    from sysutils.weak_ref import WeakRef
 
 class VocabNoteMatchingRulesData(Slots):
     serializer = VocabNoteMatchingRulesSerializer()
@@ -43,13 +45,14 @@ class VocabNoteMatchingRules(Slots):
                                        .prop("prefix_is_not", self.prefix_is_not.get())
                                        .prop("required_prefix", self.required_prefix.get()).repr)
 
-class VocabNoteMatching(Slots):
+class VocabNoteMatching(WeakRefable, Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
-        self._data: WeakRef[VocabNote] = vocab
+        self.vocab: WeakRef[VocabNote] = vocab
+        self.weakref = WeakRef(self)
         self._rules: Lazy[VocabNoteMatchingRules] = Lazy(lambda: VocabNoteMatchingRules(vocab))
         self.requires_exact_match: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.Requires.exact_match)
-        self.requires_single_token:TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.Requires.single_token)
-        self.requires_compound: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.Requires.compound)
+        self.requires_single_token:RequiresSingleToken = RequiresSingleToken(self.weakref)
+        self.requires_compound: RequiresCompound = RequiresCompound(self.weakref)
         self.requires_a_stem: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.Requires.a_stem)
         self.forbids_a_stem: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.Forbids.a_stem)
         self.requires_e_stem: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.Requires.e_stem)
