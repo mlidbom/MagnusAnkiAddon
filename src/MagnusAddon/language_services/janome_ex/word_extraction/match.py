@@ -15,7 +15,7 @@ class Match(Slots):
     def __init__(self, candidate: WeakRef[CandidateWordVariant], rules: VocabNoteMatching | None) -> None:
         self.word_variant: WeakRef[CandidateWordVariant] = candidate
         self.parsed_form: str = candidate().form
-        self.vocab_form: str = ""
+        self.match_form: str = self.parsed_form
         self.answer: str = ""
         self.readings: list[str] = []
         self.rules = rules

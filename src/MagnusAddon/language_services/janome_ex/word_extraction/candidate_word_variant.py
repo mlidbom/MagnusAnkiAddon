@@ -38,7 +38,7 @@ class CandidateWordVariant(Slots):
         self.dict_lookup: DictLookup = DictLookup.lookup_word(form)
         self.all_any_form_vocabs: list[VocabNote] = app.col().vocab.with_form(form)
         self.vocab_matches: list[VocabMatch] = [VocabMatch(self.weak_ref, vocab) for vocab in self.all_any_form_vocabs]
-        self.form_owning_vocab_matches:list[VocabMatch] = [vm for vm in self.vocab_matches if vm.vocab.forms.is_owned_form(self.form)]
+        self.form_owning_vocab_matches: list[VocabMatch] = [vm for vm in self.vocab_matches if vm.vocab.forms.is_owned_form(self.form)]
 
         def is_marked_incorrect_form(form_: str) -> bool:
             return self.configuration.incorrect_matches.excludes_at_index(form_, self.start_index)
@@ -95,11 +95,17 @@ class CandidateWordVariant(Slots):
                                       or self.starts_with_non_word_token
                                       or (self.requires_prefix and not self.has_prefix)))
 
+    @property
+    def vocabs_control_match_status(self) -> bool:
+        return (any(self.valid_vocab_matches)
+                or any(self.form_owning_vocab_matches)
+                or (any(self.vocab_matches) and not self.dict_lookup.found_words() and self.word().is_custom_compound))
+
     def complete_analysis(self) -> None:
         if self.completed_analysis: return
 
         self.valid_vocab_matches = [vm for vm in self.vocab_matches if vm.is_valid]
-        if self.valid_vocab_matches or self.form_owning_vocab_matches:
+        if self.vocabs_control_match_status:
             self.valid_matches = list(self.valid_vocab_matches)
             self.matches = list(self.vocab_matches)
             override_form = [df for df in self.valid_matches if df.parsed_form != self.form]

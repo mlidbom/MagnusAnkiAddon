@@ -25,14 +25,14 @@ class MatchViewModel:
         self.is_display_word: bool = word_variant_vm().is_display_word
         self.parsed_form: str = match.parsed_form
         self.answer: str = match.answer
-        self.vocab_form: str = match.vocab_form
+        self.vocab_form: str = match.match_form
         self.compound_parts: list[CompoundPartViewModel] = []
         self.audio_path: str = ""
         self.is_highlighted: bool = self.parsed_form in self._config.highlighted_words or self.vocab_form in self._config.highlighted_words
         self.readings: str = ", ".join(match.readings)
         self.meta_tags_html: str = ""
         self._meta_tags: list[str] = []
-        self.display_vocab_form: bool = False
+        self.display_vocab_form: bool = self.parsed_form != self.vocab_form
         self.match_owns_form: bool = self.parsed_form == self.vocab_form
         self.display_readings: bool = self.parsed_form != self.readings
         if self.vocab_match is not None:

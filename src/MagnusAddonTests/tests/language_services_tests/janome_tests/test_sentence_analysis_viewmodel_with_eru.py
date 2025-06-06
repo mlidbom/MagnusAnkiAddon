@@ -32,7 +32,7 @@ def inject_empty_collection_with_eru() -> Iterator[None]:
     ("今日会えないかな", [], ["今日", "会う", "える", "ないか", "な"]),
     ("今日会えないかな", [WordExclusion.global_("会える")], ["今日", "会う", "える", "ないか", "な"]),
     ("この夏は　たくさん思い出を作れたなぁ", [], ["この", "夏", "は", "たくさん", "思い出", "を", "作る", "える", "た", "なぁ"]),
-    ("買えよ　私", [], ["買えよ", "私"]),
+    ("買えよ　私", [], ["買えよ:[MISSING]", "私"]),
     ("覚ませない", [], ["覚ます", "える", "ない"])
 ])
 def test_potential_verb_splitting_without_vocab(inject_empty_collection_with_eru: object, sentence: str, excluded: list[WordExclusion], expected_output: list[str]) -> None:

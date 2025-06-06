@@ -20,7 +20,7 @@ class VocabMatch(Match, Slots):
         self.vocab: VocabNote = vocab
         self.word_variant: WeakRef[CandidateWordVariant] = word_variant
         self.weakref = WeakRef(self)
-        self.vocab_form = vocab.get_question()
+        self.match_form = vocab.get_question()
         self.answer = vocab.get_answer()
         self.readings = vocab.readings.get()
         self.stem_requirements: StemRequirements = StemRequirements(self.vocab, self.word_variant().word().start_location().previous)
