@@ -64,6 +64,10 @@
 
         li { line-height: 1.2; }
         .sentenceVocabEntry {
+            .vocab_kanji_list {
+                padding-left: 50px;
+                @include kanji_list;
+            }
 
             .vocabQuestion { color: var(--colorTextCard); }
             .vocabAnswer { color: var(--colorTextMeaning); }

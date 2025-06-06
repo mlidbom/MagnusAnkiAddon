@@ -28,9 +28,8 @@ def render_match_kanji(match: MatchViewModel) -> str:
 
     return f"""
 <div class="vocab_kanji_list">
-    <div class="page_section_title">kanji</div>
 {ex_str.newline.join(f'''
-    <div class="vocab_kanji {" ".join(kanji.kanji.get_meta_tags())}">
+    <div class="kanji_item {" ".join(kanji.kanji.get_meta_tags())}">
         <div class="kanji_main">
             <span class="kanji_kanji clipboard">{kanji.question()}</span>
             <span class="kanji_readings">{kanji.readings()}</span>
