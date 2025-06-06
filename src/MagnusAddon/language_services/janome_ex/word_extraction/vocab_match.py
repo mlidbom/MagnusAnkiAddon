@@ -34,8 +34,8 @@ class VocabMatch(Match, Slots):
         self.owns_form: bool = vocab.forms.is_owned_form(self.parsed_form)
 
     @property
-    def is_valid(self) -> bool:
-        return (super().is_valid
+    def _is_valid_internal(self) -> bool:
+        return (super()._is_valid_internal
                 and self.stem_requirements.are_fulfilled
                 and self.tail_requirements.are_fulfilled
                 and self.misc_requirements.are_fulfilled)

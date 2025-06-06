@@ -12,19 +12,26 @@ if TYPE_CHECKING:
     from sysutils.weak_ref import WeakRef
 
 class Match(WeakRefable, Slots):
-    def __init__(self, candidate: WeakRef[CandidateWordVariant], rules: VocabNoteMatching | None) -> None:
-        self.word_variant: WeakRef[CandidateWordVariant] = candidate
-        self.parsed_form: str = candidate().form
+    def __init__(self, word_variant: WeakRef[CandidateWordVariant], rules: VocabNoteMatching | None) -> None:
+        self.word_variant: WeakRef[CandidateWordVariant] = word_variant
+        self.parsed_form: str = word_variant().form
         self.match_form: str = self.parsed_form
         self.answer: str = ""
         self.readings: list[str] = []
         self.rules = rules
-        self.is_configured_hidden = candidate().configuration.hidden_matches.excludes_at_index(self.parsed_form, candidate().start_index)
-        self.is_configured_incorrect = candidate().configuration.incorrect_matches.excludes_at_index(self.parsed_form, candidate().start_index)
+        self.is_configured_hidden = word_variant().configuration.hidden_matches.excludes_at_index(self.parsed_form, word_variant().start_index)
+        self.is_configured_incorrect = word_variant().configuration.incorrect_matches.excludes_at_index(self.parsed_form, word_variant().start_index)
 
     @property
     def is_valid(self) -> bool:
+        return self._is_valid_internal or self.is_highlighted
+
+    @property
+    def _is_valid_internal(self) -> bool:
         return not self.is_configured_incorrect
+
+    @property
+    def is_highlighted(self) -> bool: return self.match_form in self.word_variant().configuration.highlighted_words
 
     @property
     def is_primary_match(self) -> bool: raise NotImplementedError()

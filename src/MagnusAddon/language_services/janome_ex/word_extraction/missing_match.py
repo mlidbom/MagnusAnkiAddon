@@ -10,8 +10,8 @@ if TYPE_CHECKING:
 
 
 class MissingMatch(Match):
-    def __init__(self, candidate: WeakRef[CandidateWordVariant]) -> None:
-        super().__init__(candidate, None)
+    def __init__(self, word_variant: WeakRef[CandidateWordVariant]) -> None:
+        super().__init__(word_variant, None)
         self.answer = "---"
         self.match_form = "[MISSING]" #Change this so the tests can distinguish that this is a missing match
 
