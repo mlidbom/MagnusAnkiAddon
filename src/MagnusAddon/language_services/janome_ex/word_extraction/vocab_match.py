@@ -15,9 +15,10 @@ if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
 
 class VocabMatch(Match, Slots):
-    def __init__(self, candidate: WeakRef[CandidateWordVariant], vocab: VocabNote) -> None:
-        super().__init__(candidate, vocab.matching_rules)
+    def __init__(self, word_variant: WeakRef[CandidateWordVariant], vocab: VocabNote) -> None:
+        super().__init__(word_variant, vocab.matching_rules)
         self.vocab: VocabNote = vocab
+        self.word_variant: WeakRef[CandidateWordVariant] = word_variant
         self.weakref = WeakRef(self)
         self.vocab_form = vocab.get_question()
         self.answer = vocab.get_answer()

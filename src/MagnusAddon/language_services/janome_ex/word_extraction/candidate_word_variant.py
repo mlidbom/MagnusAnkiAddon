@@ -38,7 +38,7 @@ class CandidateWordVariant(Slots):
         self.dict_lookup: DictLookup = DictLookup.lookup_word(form)
         self.all_any_form_vocabs: list[VocabNote] = app.col().vocab.with_form(form)
         self.vocab_matches: list[VocabMatch] = [VocabMatch(self.weak_ref, vocab) for vocab in self.all_any_form_vocabs]
-        self.form_owning_vocab_matches = [vm for vm in self.vocab_matches if vm.vocab.forms.is_owned_form(self.form)]
+        self.form_owning_vocab_matches:list[VocabMatch] = [vm for vm in self.vocab_matches if vm.vocab.forms.is_owned_form(self.form)]
 
         def is_marked_incorrect_form(form_: str) -> bool:
             return self.configuration.incorrect_matches.excludes_at_index(form_, self.start_index)
