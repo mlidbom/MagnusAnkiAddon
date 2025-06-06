@@ -178,7 +178,18 @@ class VocabCloner(Slots):
         return self.suffix_to_e_stem("ば")
 
     def create_receptive_form(self) -> VocabNote:
-        return self.suffix_to_a_stem("せる")
+        result = self.suffix_to_a_stem("れる")
+        compound_parts = result.compound_parts.all()
+        compound_parts[-1] = "あれる"
+        result.compound_parts.set(compound_parts)
+        return result
+
+    def create_causative_form(self) -> VocabNote:
+        result = self.suffix_to_a_stem("せる")
+        compound_parts = result.compound_parts.all()
+        compound_parts[-1] = "あせる"
+        result.compound_parts.set(compound_parts)
+        return result
 
     def create_nai_form(self) -> VocabNote:
         return self.suffix_to_a_stem("ない")
