@@ -46,7 +46,8 @@ def setup_collection_with_select_data() -> Iterator[None]:
     ("なのかな", ["なの", "な", "の", "かな", "か", "な"]),
     ("前だったのか", ["前", "だった", "だ", "たの", "た", "のか", "の", "か"]),
     ("未練たらしい", ["未練たらしい", "未練", "たらしい"]),
-    ("作るに決まってるだろ", ["作る", "に決まってる", "に決まる", "に", "決まる", "てる", "だ", "だろ"])
+    ("作るに決まってるだろ", ["作る", "に決まってる", "に決まる", "に", "決まる", "てる", "だ", "だろ"]),
+    ("良いものを食べる", ["良い", "もの", "を", "食べる"]),
 ])
 def test_identify_words(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
     analysis = TextAnalysis(sentence, SentenceConfiguration.empty())
@@ -89,8 +90,6 @@ def test_prefer_surfaces_over_bases(setup_collection_with_select_data: object, s
     analysis = TextAnalysis(sentence, SentenceConfiguration.empty())
     root_words = [w.form for w in analysis.valid_word_variants]
     assert root_words == expected_output
-
-
 
 def test_ignores_noise_characters(setup_collection_with_select_data: object) -> None:
     sentence = ". , : ; / | 。 、ー ? !"
