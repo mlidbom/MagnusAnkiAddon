@@ -177,5 +177,8 @@ class VocabCloner(Slots):
     def create_ba_form(self) -> VocabNote:
         return self.suffix_to_e_stem("ば")
 
+    def create_receptive_form(self) -> VocabNote:
+        return self.suffix_to_a_stem("せる")
+
     def create_nai_form(self) -> VocabNote:
         return self.suffix_to_a_stem("ない")
