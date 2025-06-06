@@ -107,6 +107,7 @@ def get_a_stem(word: str, is_ichidan: bool = False, is_godan: bool = False) -> s
     return _get_stem(word, _a_stem_index, is_ichidan, is_godan)
 
 def get_e_stem(word: str, is_ichidan: bool = False, is_godan: bool = False) -> str:
+    if is_ichidan: return word[:-1] + "れ"
     return _get_stem(word, _e_stem_index, is_ichidan, is_godan)
 
 def get_te_stem(word: str, is_ichidan: bool = False, is_godan: bool = False) -> str:

@@ -36,6 +36,7 @@ def build_create_note_menu(note_create_menu: QMenu, vocab: VocabNote, selection:
         create_vocab_note_action(verb_menu, shortcutfinger.home3("た-form"), lambda: vocab.cloner.create_ta_form())
         create_vocab_note_action(verb_menu, shortcutfinger.home4("ない-form"), lambda: vocab.cloner.create_nai_form())
         create_vocab_note_action(verb_menu, shortcutfinger.home5(f"え-stem/imperative {vocab.cloner.suffix_to_e_stem_preview('')}"), lambda: vocab.cloner.suffix_to_e_stem(""))
+        create_vocab_note_action(verb_menu, shortcutfinger.up1("ば-form"), lambda: vocab.cloner.create_ba_form())
 
     def build_misc_menu(misc_menu: QMenu) -> None:
         create_vocab_note_action(misc_menu, shortcutfinger.home1("く-form-of-い-adjective"), lambda: vocab.cloner.create_ku_form())
