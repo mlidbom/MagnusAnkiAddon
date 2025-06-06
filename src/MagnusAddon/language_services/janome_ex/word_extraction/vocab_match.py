@@ -27,8 +27,11 @@ class VocabMatch(Match, Slots):
         self.tail_requirements: TailRequirements = TailRequirements(self.vocab, self.word_variant().word().end_location().next)
         self.misc_requirements: MiscRequirements = MiscRequirements(self.weakref)
 
+        # this feels really suspect, and the owns form below depending on this makes me really uneasy
         if vocab.matching_rules.question_overrides_form.is_set():
             self.parsed_form = self.vocab.get_question()
+
+        self.owns_form: bool = vocab.forms.is_owned_form(self.parsed_form)
 
     @property
     def is_valid(self) -> bool:
@@ -36,6 +39,9 @@ class VocabMatch(Match, Slots):
                 and self.stem_requirements.are_fulfilled
                 and self.tail_requirements.are_fulfilled
                 and self.misc_requirements.are_fulfilled)
+
+    @property
+    def is_primary_match(self) -> bool: return self.owns_form or not any(other_match for other_match in self.word_variant().vocab_matches if other_match.owns_form)
 
     @property
     def is_valid_for_display(self) -> bool: return (super().is_valid_for_display
