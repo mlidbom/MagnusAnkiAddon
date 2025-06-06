@@ -49,6 +49,7 @@ class VocabNoteMatching(Slots):
         self._rules: Lazy[VocabNoteMatchingRules] = Lazy(lambda: VocabNoteMatchingRules(vocab))
         self.requires_exact_match: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.Requires.exact_match)
         self.requires_single_token:TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.Requires.single_token)
+        self.requires_compound: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.Requires.compound)
         self.requires_a_stem: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.Requires.a_stem)
         self.forbids_a_stem: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.Forbids.a_stem)
         self.requires_e_stem: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.Requires.e_stem)
@@ -70,6 +71,8 @@ class VocabNoteMatching(Slots):
 
     def __repr__(self) -> str: return (SkipFalsyValuesDebugReprBuilder()
                                        .flag("requires_exact_match", self.requires_exact_match.is_set())
+                                       .flag("requires_single_token", self.requires_single_token.is_set())
+                                       .flag("requires_compound", self.requires_compound.is_set())
                                        .flag("requires_a_stem", self.requires_a_stem.is_set())
                                        .flag("forbids_a_stem", self.forbids_a_stem.is_set())
                                        .flag("requires_e_stem", self.requires_e_stem.is_set())

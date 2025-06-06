@@ -22,14 +22,19 @@ class MiscRequirements(Slots):
         self.is_single_token_requirement_fulfilled = (not self.rules.requires_single_token.is_set()
                                                       or not match().word_variant().word().is_custom_compound)
 
+        self.is_compound_requirement_fulfilled = (not self.rules.requires_compound.is_set()
+                                                  or match().word_variant().word().is_custom_compound)
+
         self.are_fulfilled = (self.is_exact_match_requirement_fulfilled
                               and self.is_single_token_requirement_fulfilled
+                              and self.is_compound_requirement_fulfilled
                               and not self.is_poison_word)
 
     def failure_reasons(self) -> set[str]:
         return (SimpleStringListBuilder()
                 .append_if(not self.is_exact_match_requirement_fulfilled, "requires_exact_match")
                 .append_if(not self.is_single_token_requirement_fulfilled, "requires_single_token")
+                .append_if(not self.is_compound_requirement_fulfilled, "requires_compound")
                 .append_if(self.is_poison_word, "is_poison_word")
                 .as_set())
 

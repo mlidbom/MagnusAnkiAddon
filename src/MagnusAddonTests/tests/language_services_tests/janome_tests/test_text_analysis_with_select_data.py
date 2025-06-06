@@ -36,9 +36,9 @@ def setup_collection_with_select_data() -> Iterator[None]:
      ["彼の", "彼", "の", "日本語", "の", "レベル", "は", "私", "と", "同じ位", "同じ", "位", "だ"]),
     ("それなのに 周りは化け物が出ることで有名だと聞き",
      ["それなのに", "周り", "は", "化け物", "が", "出る", "こと", "で", "有名", "だ", "と", "聞く", "聞き"]),
-    ("清めの一波", ["清める", "清め", "の", "一波"]),
+    ("清めの一波", ["清める", "清め", "の"]),
     ("さっさと傷を清めてこい",
-     ["さっさと", "傷", "を", "清める", "て", "くる", "こい"]),
+     ["傷", "を", "清める", "て", "くる", "こい"]),
     ("すげえ", ["すげえ", "すげ", "え"]),
     ("「コーヒーはいかがですか？」「いえ、結構です。お構いなく。」", ["コーヒー", "は", "いかが", "ですか", "です", "か", "いえ", "結構", "です", "お構いなく"]),
     ("解放する", ["解放する", "解放", "する"]),
@@ -48,6 +48,7 @@ def setup_collection_with_select_data() -> Iterator[None]:
     ("未練たらしい", ["未練たらしい", "未練", "たらしい"]),
     ("作るに決まってるだろ", ["作る", "に決まってる", "に決まる", "に", "決まる", "てる", "だ", "だろ"]),
     ("良いものを食べる", ["良い", "もの", "を", "食べる"]),
+    ("のに", ["のに"])
 ])
 def test_identify_words(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
     analysis = TextAnalysis(sentence, SentenceConfiguration.empty())
@@ -74,8 +75,8 @@ def test_strictly_suffix(setup_collection_with_select_data: object, sentence: st
     assert root_words == expected_output
 
 @pytest.mark.parametrize("sentence, expected_output", [
-    ("うるせえ", ["うるせえ", "うる", "せえ", "せる", "せ", "え"]),
-    ("金貸せって", ["金貸", "せる", "て"])
+    ("うるせえ", ["うるせえ", "せえ", "せる", "せ", "え"]),
+    ("お金貸せって", ["お金", "貸す", "える", "って"])
 ])
 def test_requires_a_stem(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
     analysis = TextAnalysis(sentence, SentenceConfiguration.empty())

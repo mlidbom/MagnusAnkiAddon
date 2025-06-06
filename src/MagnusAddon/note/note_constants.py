@@ -167,6 +167,7 @@ class Tags(Slots):
                 sentence_end = f"{f_vocab_matching_requires}sentence-end"
                 exact_match = f"{f_vocab_matching_requires}exact-match"
                 single_token = f"{f_vocab_matching_requires}single-token"
+                compound = f"{f_vocab_matching_requires}compound"
 
             class Forbids:
                 a_stem = f"{f_vocab_matching_forbids}a-stem"

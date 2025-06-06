@@ -43,9 +43,10 @@ class CandidateWord(Slots):
         self.is_inflected_word: bool = self.is_inflectable_word and self.next_token_is_inflecting_word
 
         self.should_include_surface_in_all_words: bool = False
-        self.should_include_base_in_all_words: bool = False
+        self.should_include_base_in_valid_words: bool = False
         self.should_include_base_in_display_variants: bool = False
         self.should_include_surface_in_display_variants: bool = False
+        self.should_include_surface_in_valid_words: bool = False
         self.all_word_variants: list[CandidateWordVariant] = []
         self.valid_variants: list[CandidateWordVariant] = []
         self.display_word_variants: list[CandidateWordVariant] = []
@@ -59,29 +60,31 @@ class CandidateWord(Slots):
         self.surface.complete_analysis()
         if self.base is not None: self.base.complete_analysis()
 
-        self.should_include_base_in_all_words = self.base is not None and self.base.is_valid_candidate
+        self.should_include_base_in_valid_words = self.base is not None and self.base.is_valid_candidate
 
-        self.should_include_surface_in_all_words = ((not self.should_include_base_in_all_words
+        self.should_include_surface_in_valid_words = (self.surface.is_valid_candidate
+                                                      and (not self.is_inflected_word or not self.should_include_base_in_valid_words)
+                                                      and (self.base is None or self.surface.form != self.base.form))
+
+        self.should_include_surface_in_all_words = ((not self.should_include_base_in_valid_words
                                                      and self.must_include_some_variant())
-                                                    or (self.surface.is_valid_candidate
-                                                        and (not self.is_inflected_word or not self.should_include_base_in_all_words)
-                                                        and (self.base is None or self.surface.form != self.base.form)))
+                                                    or self.should_include_surface_in_valid_words)
 
         self.valid_variants = []
-        if self.base is not None and self.should_include_base_in_all_words:
+        if self.base is not None and self.should_include_base_in_valid_words:
             self.valid_variants.append(self.base)
-        if self.should_include_surface_in_all_words:
+        if self.should_include_surface_in_valid_words:
             self.valid_variants.append(self.surface)
 
         if self.surface.is_word or self.should_include_surface_in_all_words:
             self.all_word_variants.append(self.surface)
 
-        if self.base is not None and (self.base.is_word or self.should_include_base_in_all_words):
+        if self.base is not None and (self.base.is_word or self.should_include_base_in_valid_words):
             self.all_word_variants.append(self.base)
 
     def run_display_analysis(self) -> None:
         self.should_include_base_in_display_variants = (self.base is not None
-                                                        and self.should_include_base_in_all_words
+                                                        and self.should_include_base_in_valid_words
                                                         and any(self.base.display_matches))
 
         self.should_include_surface_in_display_variants = (self.should_include_surface_in_all_words and any(self.surface.display_matches))
@@ -93,7 +96,7 @@ class CandidateWord(Slots):
 
     def has_valid_words(self) -> bool: return len(self.valid_variants) > 0
     def display_words_are_still_valid(self) -> bool: return (len(self.display_word_variants) > 0
-                                                             #todo strange order dependency makes the first collection potentially invalid later. Ugh
+                                                             # todo strange order dependency makes the first collection potentially invalid later. Ugh
                                                              and any(any(variant.display_matches) for variant in self.display_word_variants))
 
     def __repr__(self) -> str: return f"""
