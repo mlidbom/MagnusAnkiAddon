@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Callable
 
+from ankiutils import app
 from aqt import gui_hooks, mw
 from PyQt6.QtCore import pyqtBoundSignal
 from PyQt6.QtGui import QKeySequence, QShortcut
@@ -19,6 +20,7 @@ def init() -> None:
         "Alt+Right": history_navigator.navigator.navigate_forward,
         "Ctrl+o": NoteSearchDialog.toggle_dialog_visibility,
         "Ctrl+Shift+o": EnglishWordSearchDialog.toggle_dialog_visibility,
+        "F5": lambda: app.get_ui_utils().refresh()
     }
 
     def set_shortcut(widget: QWidget, shortcut: str, callback: Callable[[], None]) -> None:

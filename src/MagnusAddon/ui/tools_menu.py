@@ -65,7 +65,7 @@ def build_debug_menu(debug_menu: QMenu) -> None:
     debug_menu.addAction(shortcutfinger.home5("Show diff against current snapshot"), lambda: app.get_ui_utils().tool_tip(object_instance_tracker.create_transient_snapshot_against_last_snapshot().single_line_diff_report(), 10000))
     debug_menu.addAction(shortcutfinger.up1("Run GC and report"), local_note_updater.print_gc_status_and_collect)
     debug_menu.addAction(shortcutfinger.up2("Reset"), app.reset)
-    add_menu_ui_action(debug_menu, shortcutfinger.down1("Refresh UI"), refresh, "F5")
+    add_menu_ui_action(debug_menu, shortcutfinger.down1("Refresh UI ('F5')"), refresh)
 
 def build_config_menu(config_menu: QMenu) -> None:
     def add_checkbox_config(menu: QMenu, config_value: ConfigurationValueBool, _title: str) -> None:
