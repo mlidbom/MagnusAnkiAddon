@@ -80,7 +80,7 @@ class MatchViewModel:
         return (self.is_shadowed
                 or self.match.is_configured_hidden
                 or self.match.is_configured_incorrect
-                or not self.match.is_displayed
+                or not self.match.is_valid_for_display
                 or not self.is_display_word)
 
     def __repr__(self) -> str:
