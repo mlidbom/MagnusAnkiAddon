@@ -64,18 +64,15 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
             related_vocab = vocab.related_notes
             add_single_vocab_lookup_action(note_lookup_menu, shortcutfinger.home4("Ergative twin"), related_vocab.ergative_twin.get())
 
-    def build_note_menu() -> None:
-        if not vocab.user.answer.get():
-            add_ui_action(note_menu, shortcutfinger.up1("Accept meaning"), lambda: vocab.user.answer.set(format_vocab_meaning(vocab.get_answer())))
-
-        add_ui_action(note_menu, shortcutfinger.up2("Generate answer"), lambda: vocab.generate_and_set_answer())
+    def build_misc_menu(misc_menu: QMenu) -> None:
+        add_ui_action(misc_menu, shortcutfinger.home1("Accept meaning"), lambda: vocab.user.answer.set(format_vocab_meaning(vocab.get_answer())), not vocab.user.answer.get())
+        add_ui_action(misc_menu, shortcutfinger.home2("Generate answer"), lambda: vocab.generate_and_set_answer())
 
         from batches import local_note_updater
+        add_ui_action(misc_menu, shortcutfinger.home3("Reparse matching sentences"), lambda: local_note_updater.reparse_sentences_for_vocab(vocab))
+        add_ui_action(misc_menu, shortcutfinger.home4("Repopulate TOS"), lambda: vocab.parts_of_speech.set_automatically_from_dictionary())
 
-        add_ui_action(note_menu, shortcutfinger.up3("Reparse matching sentences"), lambda: local_note_updater.reparse_sentences_for_vocab(vocab))
-        add_ui_action(note_menu, shortcutfinger.up4("Repopulate TOS"), lambda: vocab.parts_of_speech.set_automatically_from_dictionary())
-
-        add_ui_action(note_menu, shortcutfinger.down1("Autogenerate compounds"), lambda: vocab.compound_parts.auto_generate())
+        add_ui_action(misc_menu, shortcutfinger.home5("Autogenerate compounds"), lambda: vocab.compound_parts.auto_generate())
 
     def build_toggle_flags_menu(toggle_flags_menu: QMenu) -> None:
         def build_requires_menu(requires_menu: QMenu) -> None:
@@ -112,9 +109,9 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
     build_lookup_menu(non_optional(note_menu.addMenu(shortcutfinger.home1("Open"))))
     build_create_note_menu(non_optional(note_menu.addMenu(shortcutfinger.home2("Create"))), vocab, selection, clipboard)
     build_copy_menu(non_optional(note_menu.addMenu(shortcutfinger.home3("Copy"))))
-    build_toggle_flags_menu(non_optional(note_menu.addMenu(shortcutfinger.home4("Toggle flags"))))
+    build_misc_menu(non_optional(note_menu.addMenu(shortcutfinger.home4("Misc"))))
+    build_toggle_flags_menu(non_optional(note_menu.addMenu(shortcutfinger.home5("Toggle flags"))))
     build_remove_menu(non_optional(note_menu.addMenu(shortcutfinger.up1("Remove"))))
-    build_note_menu()
 
 def format_vocab_meaning(meaning: str) -> str:
     return ex_str.strip_html_and_bracket_markup(meaning.replace(" SOURCE", "").replace(", ", "/").replace(" ", "-").lower())
