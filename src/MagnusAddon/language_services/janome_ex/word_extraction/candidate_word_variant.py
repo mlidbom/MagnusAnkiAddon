@@ -10,7 +10,7 @@ from language_services.janome_ex.word_extraction.missing_match import MissingMat
 from language_services.janome_ex.word_extraction.vocab_match import VocabMatch
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from sysutils.object_instance_tracker import ObjectInstanceTracker
-from sysutils.weak_ref import WeakRef
+from sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
     from language_services.jamdict_ex.dict_lookup import DictLookup
@@ -19,9 +19,7 @@ if TYPE_CHECKING:
     from note.sentences.sentence_configuration import SentenceConfiguration
     from note.vocabulary.vocabnote import VocabNote
 
-class CandidateWordVariant(Slots):
-    __slots__ = ["__weakref__"]
-
+class CandidateWordVariant(WeakRefable, Slots):
     def __init__(self, word: WeakRef[CandidateWord], form: str, is_base: bool) -> None:
         self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
 

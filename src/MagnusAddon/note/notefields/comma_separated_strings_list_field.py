@@ -6,13 +6,12 @@ from autoslot import Slots
 from note.notefields.string_field import StringField
 from sysutils import ex_str
 from sysutils.lazy import Lazy
-from sysutils.weak_ref import WeakRef
+from sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
     from note.jpnote import JPNote
 
-class CommaSeparatedStringsListField(Slots):
-    __slots__ = ["__weakref__"]
+class CommaSeparatedStringsListField(WeakRefable, Slots):
     def __init__(self, note: WeakRef[JPNote], field_name: str) -> None:
         self._field = StringField(note, field_name)
         self_with_no_reference_loop = WeakRef(self)
@@ -39,4 +38,3 @@ class CommaSeparatedStringsListField(Slots):
 
     def _extract_field_values(self) -> list[str]:
         return ex_str.extract_comma_separated_values(self._field.get())
-

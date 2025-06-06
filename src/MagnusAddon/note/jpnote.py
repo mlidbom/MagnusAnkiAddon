@@ -13,16 +13,14 @@ from note.note_flush_guard import NoteFlushGuard
 from sysutils import ex_assert, ex_str
 from sysutils.object_instance_tracker import ObjectInstanceTracker
 from sysutils.typed import non_optional, str_
-from sysutils.weak_ref import WeakRef
+from sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
     from anki.cards import Card
     from anki.notes import Note, NoteId
     from note.collection.jp_collection import JPCollection
 
-class JPNote(Slots):
-    __slots__ = ["__weakref__"]
-
+class JPNote(WeakRefable,Slots):
     def __init__(self, note: Note) -> None:
         self.weakref: WeakRef[JPNote] = WeakRef(self)
         self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)

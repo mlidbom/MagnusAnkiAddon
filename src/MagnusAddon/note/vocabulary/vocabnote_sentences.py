@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 from autoslot import Slots
 from note.note_constants import NoteFields
 from sysutils.lazy import Lazy
-from sysutils.weak_ref import WeakRef
+from sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
     from note.collection.jp_collection import JPCollection
@@ -60,9 +60,7 @@ class SentenceCounts:
     def _get_studying_sentence_count(sentences: list[SentenceNote], card: str = "") -> int:
         return len([sentence for sentence in sentences if sentence.is_studying(card)])
 
-class VocabNoteSentences(Slots):
-    __slots__ = ["__weakref__"]
-
+class VocabNoteSentences(WeakRefable, Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self.__vocab = vocab
         self.counts: Lazy[SentenceCounts] = Lazy(lambda: SentenceCounts(WeakRef(self)))

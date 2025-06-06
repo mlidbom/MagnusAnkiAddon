@@ -9,13 +9,12 @@ from note.note_constants import Mine, NoteFields
 from note.notefields.comma_separated_strings_list_field_de_duplicated import CommaSeparatedStringsListFieldDeDuplicated
 from sysutils import ex_sequence, ex_str
 from sysutils.lazy import Lazy
-from sysutils.weak_ref import WeakRef
+from sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
 
-class VocabNoteForms(Slots):
-    __slots__ = ["__weakref__"]
+class VocabNoteForms(WeakRefable, Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self._vocab: WeakRef[VocabNote] = vocab
         self._field: CommaSeparatedStringsListFieldDeDuplicated = CommaSeparatedStringsListFieldDeDuplicated(vocab, NoteFields.Vocab.Forms)

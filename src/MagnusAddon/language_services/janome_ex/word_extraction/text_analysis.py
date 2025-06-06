@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from autoslot import Slots
 from sysutils.object_instance_tracker import ObjectInstanceTracker
-from sysutils.weak_ref import WeakRef
+from sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
     from language_services.janome_ex.tokenizing.jn_tokenized_text import ProcessedToken
@@ -17,8 +17,7 @@ from sysutils import ex_sequence
 
 _tokenizer = JNTokenizer()
 
-class TextAnalysis(Slots):
-    __slots__ = ["__weakref__"]
+class TextAnalysis(WeakRefable,Slots):
     version = "text_analysis_0.1"
 
     def __init__(self, sentence: str, sentence_configuration: SentenceConfiguration) -> None:

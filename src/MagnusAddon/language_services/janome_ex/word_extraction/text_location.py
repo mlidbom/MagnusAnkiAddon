@@ -7,7 +7,7 @@ from autoslot import Slots
 from note.note_constants import Tags
 from sysutils import ex_sequence
 from sysutils.object_instance_tracker import ObjectInstanceTracker
-from sysutils.weak_ref import WeakRef
+from sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
     from language_services.janome_ex.tokenizing.jn_tokenized_text import ProcessedToken
@@ -21,9 +21,7 @@ from sysutils.ex_str import newline
 
 _max_lookahead = 12
 
-class TextAnalysisLocation(Slots):
-    __slots__ = ["__weakref__"]
-
+class TextAnalysisLocation(WeakRefable,Slots):
     def __init__(self, analysis: WeakRef[TextAnalysis], token: ProcessedToken, character_start_index: int, token_index: int) -> None:
         self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
         self.weakref = WeakRef(self)

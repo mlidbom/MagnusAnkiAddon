@@ -14,6 +14,7 @@ from note.note_constants import CardTypes, Mine
 from sysutils import app_thread_pool
 from sysutils.object_instance_tracker import ObjectInstanceTracker
 from sysutils.timeutil import StopWatch
+from sysutils.weak_ref import WeakRefable
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -21,8 +22,7 @@ if TYPE_CHECKING:
     from anki.collection import Collection
     from anki.notes import NoteId
 
-class JPCollection(Slots):
-    __slots__ = ["__weakref__"]
+class JPCollection(WeakRefable,Slots):
     def __init__(self, anki_collection: Collection) -> None:
         self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker.tracker_for(self)
         mylog.info("JPCollection.__init__")

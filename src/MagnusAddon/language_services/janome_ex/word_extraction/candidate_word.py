@@ -6,7 +6,7 @@ from autoslot import Slots
 from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordBaseVariant, CandidateWordSurfaceVariant, CandidateWordVariant
 from sysutils.object_instance_tracker import ObjectInstanceTracker
 from sysutils.typed import non_optional
-from sysutils.weak_ref import WeakRef
+from sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
@@ -15,8 +15,7 @@ if TYPE_CHECKING:
 from sysutils.ex_str import newline
 
 
-class CandidateWord(Slots):
-    __slots__ = ["__weakref__"]
+class CandidateWord(WeakRefable, Slots):
     def __init__(self, locations: list[WeakRef[TextAnalysisLocation]]) -> None:
         self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
         self.analysis: WeakRef[TextAnalysis] = locations[0]().analysis

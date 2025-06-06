@@ -4,14 +4,14 @@ from typing import TYPE_CHECKING
 
 from autoslot import Slots
 from sysutils.simple_string_list_builder import SimpleStringListBuilder
+from sysutils.weak_ref import WeakRefable
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
     from note.vocabulary.vocabnote_matching_rules import VocabNoteMatching
     from sysutils.weak_ref import WeakRef
 
-class Match(Slots):
-    __slots__ = ["__weakref__"]
+class Match(WeakRefable, Slots):
     def __init__(self, candidate: WeakRef[CandidateWordVariant], rules: VocabNoteMatching | None) -> None:
         self.word_variant: WeakRef[CandidateWordVariant] = candidate
         self.parsed_form: str = candidate().form

@@ -20,3 +20,6 @@ class WeakRef(Generic[T], Slots):
     def __call__(self) -> T: return non_optional(self._weakreference())
 
     def __repr__(self) -> str: return f"WeakRef: {self.instance.__repr__()}"
+
+class WeakRefable(Slots):
+    __slots__ = ["__weakref__"]
