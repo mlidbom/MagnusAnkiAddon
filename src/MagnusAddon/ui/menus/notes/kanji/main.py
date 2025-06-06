@@ -31,6 +31,9 @@ def build_note_menu(note_menu: QMenu, kanji: KanjiNote) -> None:
     add_ui_action(note_menu, shortcutfinger.up3("Bootstrap mnemonic from radicals"), lambda: kanji.bootstrap_mnemonic_from_radicals())
     add_ui_action(note_menu, shortcutfinger.up4("Reset mnemonic"), lambda: kanji.set_user_mnemonic(""))
 
+def build_view_menu(_view_menu:QMenu, _kanji:KanjiNote) -> None:
+    pass
+
 def format_kanji_meaning(meaning: str) -> str:
     val = (ex_str.replace_html_and_bracket_markup_with(meaning, "|")
            .lower()

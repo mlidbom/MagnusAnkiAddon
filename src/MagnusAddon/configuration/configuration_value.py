@@ -103,13 +103,15 @@ class JapaneseConfig(Slots):
         self.minimum_time_viewing_question = ConfigurationValueFloat("minimum_time_viewing_question", "Minimum time viewing question", 0.5)
         self.minimum_time_viewing_answer = ConfigurationValueFloat("minimum_time_viewing_answer", "Minimum time viewing answer", 0.5)
 
+        self.sentence_view_toggles = [self.automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound,
+                                      self.automatically_yield_last_token_in_passive_verb_compounds_to_overlapping_compound,
+                                      self.automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound,
+                                      self.show_compound_parts_in_sentence_breakdown,
+                                      self.show_all_matched_words_in_sentence_breakdown,
+                                      self.show_kanji_in_sentence_breakdown]
+
         self.feature_toggles: list[tuple[str, list[ConfigurationValueBool]]] = \
-            [("Sentence Display", [self.automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound,
-                                   self.automatically_yield_last_token_in_passive_verb_compounds_to_overlapping_compound,
-                                   self.automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound,
-                                   self.show_compound_parts_in_sentence_breakdown,
-                                   self.show_all_matched_words_in_sentence_breakdown,
-                                   self.show_kanji_in_sentence_breakdown]),
+            [("Sentence Display", self.sentence_view_toggles),
              ("Misc", [self.yomitan_integration_copy_answer_to_clipboard,
                        self.anki_internal_fsrs_set_enable_fsrs_short_term_with_steps,
                        self.decrease_failed_card_intervals,

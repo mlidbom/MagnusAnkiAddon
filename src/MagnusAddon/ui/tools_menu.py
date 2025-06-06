@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Callable
+from typing import Callable
 
 from ankiutils import app, ui_utils
 from ankiutils.app import get_ui_utils, main_window
@@ -12,15 +12,13 @@ from PyQt6.QtGui import QAction
 from PyQt6.QtWidgets import QInputDialog, QLineEdit, QMenu
 from sysutils import object_instance_tracker
 from sysutils.typed import non_optional
-from ui.menus.menu_utils import shortcutfinger
+from ui.menus.menu_utils import ex_qmenu, shortcutfinger
 from ui.menus.open_in_anki import build_open_in_anki_menu
 from ui.menus.web_search import build_web_search_menu
 from ui.open_note.open_note_dialog import NoteSearchDialog
 from wanikani import note_importer
 from wanikani.wani_downloader import WaniDownloader
 
-if TYPE_CHECKING:
-    from configuration.configuration_value import ConfigurationValueBool
 
 def refresh() -> None:
     if not app.is_initialized():
@@ -68,27 +66,13 @@ def build_debug_menu(debug_menu: QMenu) -> None:
     add_menu_ui_action(debug_menu, shortcutfinger.down1("Refresh UI ('F5')"), refresh)
 
 def build_config_menu(config_menu: QMenu) -> None:
-    def add_checkbox_config(menu: QMenu, config_value: ConfigurationValueBool, _title: str) -> None:
-        checkbox_action = QAction(_title, main_window())
-        checkbox_action.setCheckable(True)
-        checkbox_action.setChecked(config_value.get_value())
-
-        config_value.on_change(checkbox_action.setChecked)  # when the value changes through another mechanism, make sure the menu changes state
-
-        def set_value(value: bool) -> None:
-            config_value.set_value(value)
-            app.get_ui_utils().refresh()
-
-        qconnect(checkbox_action.triggered, set_value)
-        menu.addAction(checkbox_action)
-
     def build_feature_toggles_menu(_title: str) -> None:
         section_index = 0
         toggles_menu = non_optional(config_menu.addMenu(_title))
         for section_index, (section, toggles) in enumerate(app.config().feature_toggles):
             section_menu = non_optional(toggles_menu.addMenu(shortcutfinger.finger_by_priority_order(section_index, section)))
-            for index, toggle in enumerate(toggles):
-                add_checkbox_config(section_menu, toggle, shortcutfinger.finger_by_priority_order(index, toggle.title))
+            ex_qmenu.build_checkbox_config_section_menu(section_menu, toggles)
+
         add_menu_ui_action(toggles_menu, shortcutfinger.finger_by_priority_order(section_index + 1, "Toggle all sentence auto yield compound last token flags (Ctrl+Shift+Alt+d)"), app.config().toggle_all_sentence_display_auto_yield_flags)
 
     build_feature_toggles_menu(shortcutfinger.home1("Feature Toggles"))

@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ankiutils import query_builder
+from ankiutils import app, query_builder
 from note.note_constants import NoteFields, NoteTypes
 from sysutils.typed import non_optional
 from ui.menus.menu_utils import shortcutfinger
-from ui.menus.menu_utils.ex_qmenu import add_lookup_action, add_ui_action
+from ui.menus.menu_utils.ex_qmenu import add_checkbox_config, add_lookup_action, add_ui_action
 
 if TYPE_CHECKING:
     from note.sentences.sentencenote import SentenceNote
@@ -34,3 +34,11 @@ def build_note_menu(note_menu: QMenu, sentence: SentenceNote) -> None:
     build_lookup_menu(non_optional(note_menu.addMenu(shortcutfinger.home1("Open"))))
     build_remove_menu(non_optional(note_menu.addMenu(shortcutfinger.home2("Remove"))))
     build_remove_user(non_optional(note_menu.addMenu(shortcutfinger.home3("Remove User"))))
+
+def build_view_menu(view_menu: QMenu, _vocab: SentenceNote) -> None:
+    index = 0
+    for index, toggle in enumerate(app.config().sentence_view_toggles):
+        add_checkbox_config(view_menu, toggle, shortcutfinger.finger_by_priority_order(index, toggle.title))
+    add_ui_action(view_menu,
+                  shortcutfinger.finger_by_priority_order(index + 1, "Toggle all sentence auto yield compound last token flags (Ctrl+Shift+Alt+d)"),
+                  app.config().toggle_all_sentence_display_auto_yield_flags)

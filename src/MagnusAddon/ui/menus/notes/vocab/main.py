@@ -116,3 +116,6 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
 
 def format_vocab_meaning(meaning: str) -> str:
     return ex_str.strip_html_and_bracket_markup(meaning.replace(" SOURCE", "").replace(", ", "/").replace(" ", "-").lower())
+
+def build_view_menu(view_menu:QMenu, _vocab:VocabNote) -> None:
+    pass

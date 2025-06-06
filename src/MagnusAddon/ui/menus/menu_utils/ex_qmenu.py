@@ -2,18 +2,37 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Callable
 
-from ankiutils import query_builder, search_executor
+from ankiutils import app, query_builder, search_executor
 from ankiutils.app import get_ui_utils
 from ankiutils.search_executor import lookup_promise
+from aqt import qconnect
+from PyQt6.QtGui import QAction
 from PyQt6.QtWidgets import QMenu, QMessageBox
 from sysutils.typed import non_optional
 from ui.menus.menu_utils import shortcutfinger
 
 if TYPE_CHECKING:
+    from configuration.configuration_value import ConfigurationValueBool
     from note.jpnote import JPNote
     from note.vocabulary.vocabnote import VocabNote
-    from PyQt6.QtGui import QAction
 
+def build_checkbox_config_section_menu(menu: QMenu, toggles: list[ConfigurationValueBool]) -> None:
+    for index, toggle in enumerate(toggles):
+        add_checkbox_config(menu, toggle, shortcutfinger.finger_by_priority_order(index, toggle.title))
+
+def add_checkbox_config(menu: QMenu, config_value: ConfigurationValueBool, _title: str) -> None:
+    checkbox_action = QAction(_title, app.main_window())
+    checkbox_action.setCheckable(True)
+    checkbox_action.setChecked(config_value.get_value())
+
+    config_value.on_change(checkbox_action.setChecked)  # when the value changes through another mechanism, make sure the menu changes state
+
+    def set_value(value: bool) -> None:
+        config_value.set_value(value)
+        app.get_ui_utils().refresh()
+
+    qconnect(checkbox_action.triggered, set_value)
+    menu.addAction(checkbox_action)
 
 def _confirm(menu: QMenu, message:str) -> bool:
     message = shortcutfinger.remove_shortcut_text(message)

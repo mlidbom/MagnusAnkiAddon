@@ -41,21 +41,24 @@ def build_right_click_menu(right_click_menu: QMenu, note: JPNote | None, selecti
 
     selection_menu = non_optional(right_click_menu.addMenu(shortcutfinger.home1(f'''Selection: "{selection[:40]}"'''))) if selection else None
     clipboard_menu = non_optional(right_click_menu.addMenu(shortcutfinger.home2(f'''Clipboard: "{clipboard[:40]}"'''))) if clipboard else None
+    note_actions_menu = non_optional(right_click_menu.addMenu(shortcutfinger.home3("Note actions")))
+    build_universal_note_actions_menu(non_optional(right_click_menu.addMenu(shortcutfinger.home4("Universal note actions"))), note)
+    view_menu = non_optional(right_click_menu.addMenu(shortcutfinger.home5("View")))
 
     string_note_menu_factory: typing.Callable[[QMenu, str], None] = null_op_factory
-
     if note:
         if isinstance(note, KanjiNote):
-            menus.notes.kanji.main.build_note_menu(non_optional(right_click_menu.addMenu(shortcutfinger.home3("Kanji note actions"))), note)
+            menus.notes.kanji.main.build_note_menu(note_actions_menu, note)
+            menus.notes.kanji.main.build_view_menu(view_menu, note)
             string_note_menu_factory = lambda menu, string: menus.notes.kanji.string_menu.build(menu, typed.checked_cast(KanjiNote, note), string)  # noqa: E731
         elif isinstance(note, VocabNote):
-            menus.notes.vocab.main.setup_note_menu(non_optional(right_click_menu.addMenu(shortcutfinger.home3("Vocab note actions"))), note, selection, clipboard)
+            menus.notes.vocab.main.setup_note_menu(note_actions_menu, note, selection, clipboard)
+            menus.notes.vocab.main.build_view_menu(view_menu, note)
             string_note_menu_factory = lambda menu, string: menus.notes.vocab.string_menu.build_string_menu(menu, typed.checked_cast(VocabNote, note), string)  # noqa: E731
         elif isinstance(note, SentenceNote):
-            menus.notes.sentence.main.build_note_menu(non_optional(right_click_menu.addMenu(shortcutfinger.home3("Sentence note actions"))), note)
+            menus.notes.sentence.main.build_note_menu(note_actions_menu, note)
+            menus.notes.sentence.main.build_view_menu(view_menu, note)
             string_note_menu_factory = lambda menu, string: menus.notes.sentence.string_menu.build_string_menu(menu, typed.checked_cast(SentenceNote, note), string)  # noqa: E731
-
-        build_universal_note_actions_menu(non_optional(right_click_menu.addMenu(shortcutfinger.home4("Universal note actions"))), note)
 
     if selection_menu:
         build_string_menu(selection_menu, selection, string_note_menu_factory)
