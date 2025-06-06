@@ -92,6 +92,7 @@ class JapaneseConfig(Slots):
         self.enable_automatic_garbage_collection = ConfigurationValueBool("enable_automatic_garbage_collection", "Enable automatic GC. Requires restart. (Reduces memory usage the most but slows Anki down and may cause crashes due to Qt incompatibility.", False)
         self.track_instances_in_memory = ConfigurationValueBool("track_instances_in_memory", "Track instances in memory. Requires restart. Only useful to developers and will use extra memory.", False)
         self.show_compound_parts_in_sentence_breakdown = ConfigurationValueBool("show_compound_parts_in_sentence_breakdown", "Show compound parts in sentence breakdown", True)
+        self.show_kanji_in_sentence_breakdown = ConfigurationValueBool("show_kanji_in_sentence_breakdown", "Show kanji in sentence breakdown", True)
         self.show_all_matched_words_in_sentence_breakdown = ConfigurationValueBool("show_all_matched_words_in_sentence_breakdown", "Show all matched words in sentence breakdown", False)
         self.automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound = ConfigurationValueBool("automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound", "Automatically yield last token in suru verb compounds to overlapping compounds (Ctrl+Shift+Alt+s)", True)
         self.automatically_yield_last_token_in_passive_verb_compounds_to_overlapping_compound = ConfigurationValueBool("automatically_yield_last_token_in_passive_verb_compounds_to_overlapping_compound", "Automatically yield last token in passive verb compounds to overlapping compounds (Ctrl+Shift+Alt+h)", True)
@@ -107,7 +108,8 @@ class JapaneseConfig(Slots):
                                    self.automatically_yield_last_token_in_passive_verb_compounds_to_overlapping_compound,
                                    self.automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound,
                                    self.show_compound_parts_in_sentence_breakdown,
-                                   self.show_all_matched_words_in_sentence_breakdown]),
+                                   self.show_all_matched_words_in_sentence_breakdown,
+                                   self.show_kanji_in_sentence_breakdown]),
              ("Misc", [self.yomitan_integration_copy_answer_to_clipboard,
                        self.anki_internal_fsrs_set_enable_fsrs_short_term_with_steps,
                        self.decrease_failed_card_intervals,

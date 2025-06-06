@@ -82,3 +82,6 @@ def romaji_to_katakana(string:str) -> str:
 
 def anything_to_hiragana(string:str) -> str:
     return katakana_to_hiragana(string) if is_only_kana(string) else romaji_to_hiragana(string)
+
+def extract_kanji(string:str) -> list[str]:
+    return [char for char in string if character_is_kanji(char)]

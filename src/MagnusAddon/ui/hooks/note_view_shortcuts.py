@@ -59,6 +59,10 @@ def init() -> None:
             app.config().show_all_matched_words_in_sentence_breakdown.set_value(False)
         refresh_shallow()
 
+    def toggle_show_kanji_in_sentence_breakdown() -> None:
+        app.config().show_kanji_in_sentence_breakdown.set_value(not app.config().show_kanji_in_sentence_breakdown.get_value())
+        refresh_shallow()
+
     def toggle_show_all_words_in_sentence_breakdown() -> None:
         app.config().show_all_matched_words_in_sentence_breakdown.set_value(not app.config().show_all_matched_words_in_sentence_breakdown.get_value())
         if app.config().show_all_matched_words_in_sentence_breakdown.get_value():
@@ -107,6 +111,7 @@ def init() -> None:
     stortcuts: dict[str, Callable[[], None]] = {"1": toggle_show_compound_parts_in_sentence_breakdown,
                                                 "2": toggle_show_all_words_in_sentence_breakdown,
                                                 "3": toggle_all_yield_last_token_flags,
+                                                "4": toggle_show_kanji_in_sentence_breakdown,
                                                 "0": remove_mnemonic,
                                                 "7": reset_source_comments,
                                                 "8": reset_incorrect_matches,

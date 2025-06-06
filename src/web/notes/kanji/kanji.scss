@@ -1,9 +1,11 @@
-@import "../Styles/_040_japanese.scss";
+@import "../../Styles/_040_japanese.scss";
 
 /* FONTS AND COLORS */
 .card #container1 #container2 .mainContent{ //Let's stay focused and not break other stuff
 
-   @include kanji_list;
+   #kanji_list {
+       @include kanji_list;
+   }
   
    font-size: 20px;
 

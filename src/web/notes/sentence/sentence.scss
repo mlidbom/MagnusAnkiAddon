@@ -1,7 +1,9 @@
 @use "sass:color";
 @import "../../Styles/_040_japanese.scss";
 .card #container1 #container2 { //Let's stay focused and not break other stuff
-    @include kanji_list;
+    #kanji_list {
+        @include kanji_list;
+    }
 
     /* FONTS AND COLORS */
     font-size: 13pt;
