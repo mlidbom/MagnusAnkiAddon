@@ -8,6 +8,8 @@ class InflectionForm:
         self.name = name
         self.description = description
 
+    def __repr__(self) -> str: return f"""{self.name} - {self.description}"""
+
     def __eq__(self, other: object) -> bool:
         if isinstance(other, InflectionForm):
             return self.name == other.name
