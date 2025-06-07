@@ -1,6 +1,27 @@
 ####Inflection types ###########
 from __future__ import annotations
 
+all_dict: dict[str, InflectionType] = {}
+
+class InflectionType:
+    def __init__(self, name: str, description: str) -> None:
+        self.name = name
+        self.description = description
+
+    def __eq__(self, other: object) -> bool:
+        if isinstance(other, InflectionType):
+            return self.name == other.name
+        return False
+
+def _add_form(name: str, description: str) -> InflectionType:
+    form = InflectionType(name, description)
+    all_dict[name] = form
+    return form
+
+class InflectionForms:
+    class Godan:
+        sa_ending: InflectionType = _add_form("五段・サ行", "Godan verb with 'sa' ending - Changes 'sa' stem in conjugation")
+
 godan: set[str] = {
     "五段・サ行",  # Godan verb with 'sa' ending - Changes 'sa' stem in conjugation
     "五段・ラ行",  # Godan verb with 'ra' ending - Changes 'ra' stem in conjugation
