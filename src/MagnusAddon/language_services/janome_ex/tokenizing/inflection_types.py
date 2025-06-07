@@ -1,4 +1,4 @@
-####Inflection types ###########
+# noinspection PyUnusedClass, PyUnusedName
 from __future__ import annotations
 
 all_dict: dict[str, InflectionType] = {}
@@ -18,7 +18,9 @@ def _add_form(name: str, description: str) -> InflectionType:
     all_dict[name] = form
     return form
 
+# noinspection PyUnusedClass
 class InflectionTypes:
+    # noinspection PyUnusedClass,PyUnusedName
     class Godan:
         sa_ending: InflectionType = _add_form("五段・サ行", "Godan verb with 'sa' ending - Changes 'sa' stem in conjugation")
         ra_ending: InflectionType = _add_form("五段・ラ行", "Godan verb with 'ra' ending - Changes 'ra' stem in conjugation")
@@ -35,25 +37,30 @@ class InflectionTypes:
         ka_ending_i_sound: InflectionType = _add_form("五段・カ行イ音便", "Godan verb with 'ka' ending and 'i' sound change - Special 'ka' conjugation pattern")
         ra_ending_aru: InflectionType = _add_form("五段・ラ行アル", "Godan verb 'aru' (to exist) with 'ra' ending - Special case verb")
 
+    # noinspection PyUnusedClass,PyUnusedName
     class Ichidan:
         regular: InflectionType = _add_form("一段", "Ichidan (one-step) verb - Regular -eru/-iru verb pattern")
         eru: InflectionType = _add_form("一段・得ル", "Ichidan verb 'eru' (to get/obtain) - Special case ichidan verb")
         kureru: InflectionType = _add_form("一段・クレル", "Ichidan verb 'kureru' (to give) - Special case ichidan verb")
 
+    # noinspection PyUnusedClass,PyUnusedName
     class Adjective:
         i_ending: InflectionType = _add_form("形容詞・イ段", "I-adjective - Ends with 'i' and conjugates like 'takai' (high)")
         auo_ending: InflectionType = _add_form("形容詞・アウオ段", "Adjective with 'a', 'u', 'o' row - Special adjective conjugation pattern")
         ii: InflectionType = _add_form("形容詞・イイ", "Adjective 'ii' (good) - Special case adjective")
 
+    # noinspection PyUnusedClass,PyUnusedName
     class Sahen:
         suru: InflectionType = _add_form("サ変・スル", "Suru verb - Irregular verb 'suru' (to do)")
         suru_compound: InflectionType = _add_form("サ変・−スル", "Suru compound verb - Noun + suru combination")
         zuru: InflectionType = _add_form("サ変・−ズル", "Zuru verb - Classical variation of suru")
 
+    # noinspection PyUnusedClass,PyUnusedName
     class Kahen:
         kuru_kanji: InflectionType = _add_form("カ変・来ル", "Kuru verb - Irregular verb 'kuru' (to come) in kanji form")
         kuru_kana: InflectionType = _add_form("カ変・クル", "Kuru verb - Irregular verb 'kuru' (to come) in kana form")
 
+    # noinspection PyUnusedClass,PyUnusedName
     class Bungo:
         nari: InflectionType = _add_form("文語・ナリ", "Classical 'nari' - Classical Japanese copula")
         ru: InflectionType = _add_form("文語・ル", "Classical 'ru' ending - Classical verb ending")
@@ -63,6 +70,7 @@ class InflectionTypes:
         ri: InflectionType = _add_form("文語・リ", "Classical 'ri' - Classical verb ending")
         beshi: InflectionType = _add_form("文語・ベシ", "Classical 'beshi' - Classical expression of obligation/probability")
 
+    # noinspection PyUnusedClass,PyUnusedName
     class Special:
         masu: InflectionType = _add_form("特殊・マス", "Special 'masu' form - Polite verb ending")
         ya: InflectionType = _add_form("特殊・ヤ", "Special 'ya' - Dialectal copula/question marker")
@@ -74,16 +82,20 @@ class InflectionTypes:
         tai: InflectionType = _add_form("特殊・タイ", "Special 'tai' - Desire form (-want to do)")
         desu: InflectionType = _add_form("特殊・デス", "Special 'desu' - Polite copula")
 
+    # noinspection PyUnusedClass,PyUnusedName
     class Yodan:
         ha_ending: InflectionType = _add_form("四段・ハ行", "Classical yodan verb with 'ha' ending - Classical conjugation pattern")
         ba_ending: InflectionType = _add_form("四段・バ行", "Classical yodan verb with 'ba' ending - Classical conjugation pattern")
 
+    # noinspection PyUnusedClass,PyUnusedName
     class Ruhen:
         ra_hen: InflectionType = _add_form("ラ変", "Classical ra-hen irregular verb - Classical irregular conjugation")
 
+    # noinspection PyUnusedClass,PyUnusedName
     class Nidan:
         lower_da: InflectionType = _add_form("下二・ダ行", "Lower bigrade with 'da' ending - Classical conjugation pattern")
         lower_ta: InflectionType = _add_form("下二・タ行", "Lower bigrade with 'ta' ending - Classical conjugation pattern")
 
+    # noinspection PyUnusedClass,PyUnusedName
     class Other:
         indeclinable: InflectionType = _add_form("不変化型", "Indeclinable type - Words that don't conjugate")
