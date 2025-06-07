@@ -85,7 +85,8 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
 
         def build_forbids_menu(forbids_menu: QMenu) -> None:
             add_toggle_checkbox(forbids_menu, shortcutfinger.home1("a stem"), vocab.matching_rules.forbids_a_stem)
-            add_toggle_checkbox(forbids_menu, shortcutfinger.home2("auto yielding to overlapping compound"), vocab.matching_rules.forbids_auto_yielding)
+            add_toggle_checkbox(forbids_menu, shortcutfinger.home2("e stem"), vocab.matching_rules.forbids_e_stem)
+            add_toggle_checkbox(forbids_menu, shortcutfinger.home3("auto yielding to overlapping compound"), vocab.matching_rules.forbids_auto_yielding)
 
         def build_is_menu(is_menu: QMenu) -> None:
             add_toggle_checkbox(is_menu, shortcutfinger.home1("Poison word"), vocab.matching_rules.is_poison_word)
