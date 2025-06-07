@@ -167,15 +167,6 @@ def reparse_sentences(sentences: list[SentenceNote]) -> None:
 
     progress_display_runner.process_with_progress(sentences, reparse_sentence, "Reparsing sentences.")
 
-    print(f""""
-####Inflection types ###########
-{jn_token.inflection_types}
-
-
-####Inflection forms ###########
-{jn_token.inflection_forms}
-    """)
-
 def print_gc_status_and_collect() -> None:
     object_instance_tracker.print_instance_counts()
 

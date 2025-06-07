@@ -9,9 +9,6 @@ from sysutils import kana_utils, typed
 if TYPE_CHECKING:
     from janome.tokenizer import Token
 
-
-inflection_types: set[str] = set()
-inflection_forms: set[str] = set()
 # noinspection PyUnusedFunction
 class JNToken(Slots):
     def __init__(self,
@@ -28,8 +25,6 @@ class JNToken(Slots):
         self.surface = typed.str_(surface)
         self.inflection_type = typed.str_(inflection_type).replace("*", "")
         self.inflected_form = typed.str_(inflected_form).replace("*", "")
-        inflection_types.add(self.inflection_type)
-        inflection_forms.add(self.inflected_form)
         self.reading = typed.str_(reading)
         self.phonetic = typed.str_(phonetic)
         self.node_type = typed.str_(node_type)
