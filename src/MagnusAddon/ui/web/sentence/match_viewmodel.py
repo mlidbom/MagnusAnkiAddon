@@ -36,7 +36,7 @@ class MatchViewModel:
         self.match_owns_form: bool = self.parsed_form == self.vocab_form
         self.display_readings: bool = self.parsed_form != self.readings
         if self.vocab_match is not None:
-            self.compound_parts = CompoundPartViewModel.get_compound_parts_recursive(self.vocab_match.vocab, self._config)
+            self.compound_parts:list[CompoundPartViewModel] = CompoundPartViewModel.get_compound_parts_recursive(self.vocab_match.vocab, self._config)
             self.audio_path = self.vocab_match.vocab.audio.get_primary_audio_path()
             self._meta_tags = list(self.vocab_match.vocab.get_meta_tags())
             self.meta_tags_html = self.vocab_match.vocab.meta_data.meta_tags_html(display_extended_sentence_statistics=False)
@@ -69,7 +69,7 @@ class MatchViewModel:
 
     @property
     def is_displayed(self) -> bool:
-        if app.config().show_all_matched_words_in_sentence_breakdown.get_value(): return True
+        if app.config().show_sentence_breakdown_in_edit_mode.get_value(): return True
         #todo: this absolutely does not belong here. This is a viewmodel for crying out loud, it should not be implementing core domain logic.
         return (not self.is_shadowed
                 and self.is_display_word

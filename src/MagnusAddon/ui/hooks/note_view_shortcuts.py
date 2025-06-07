@@ -56,16 +56,16 @@ def init() -> None:
     def toggle_show_compound_parts_in_sentence_breakdown() -> None:
         app.config().show_compound_parts_in_sentence_breakdown.set_value(not app.config().show_compound_parts_in_sentence_breakdown.get_value())
         if app.config().show_compound_parts_in_sentence_breakdown.get_value():
-            app.config().show_all_matched_words_in_sentence_breakdown.set_value(False)
+            app.config().show_sentence_breakdown_in_edit_mode.set_value(False)
         refresh_shallow()
 
     def toggle_show_kanji_in_sentence_breakdown() -> None:
         app.config().show_kanji_in_sentence_breakdown.set_value(not app.config().show_kanji_in_sentence_breakdown.get_value())
         refresh_shallow()
 
-    def toggle_show_all_words_in_sentence_breakdown() -> None:
-        app.config().show_all_matched_words_in_sentence_breakdown.set_value(not app.config().show_all_matched_words_in_sentence_breakdown.get_value())
-        if app.config().show_all_matched_words_in_sentence_breakdown.get_value():
+    def toggle_show_sentence_breakdown_in_edit_mode() -> None:
+        app.config().show_sentence_breakdown_in_edit_mode.set_value(not app.config().show_sentence_breakdown_in_edit_mode.get_value())
+        if app.config().show_sentence_breakdown_in_edit_mode.get_value():
             app.config().show_compound_parts_in_sentence_breakdown.set_value(False)
         refresh_shallow()
 
@@ -109,7 +109,7 @@ def init() -> None:
             state_shortcuts.append((key, callback))
 
     stortcuts: dict[str, Callable[[], None]] = {"1": toggle_show_compound_parts_in_sentence_breakdown,
-                                                "2": toggle_show_all_words_in_sentence_breakdown,
+                                                "2": toggle_show_sentence_breakdown_in_edit_mode,
                                                 "3": toggle_all_yield_last_token_flags,
                                                 "4": toggle_show_kanji_in_sentence_breakdown,
                                                 "0": remove_mnemonic,

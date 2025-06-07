@@ -93,7 +93,7 @@ class JapaneseConfig(Slots):
         self.track_instances_in_memory = ConfigurationValueBool("track_instances_in_memory", "Track instances in memory. Requires restart. Only useful to developers and will use extra memory.", False)
         self.show_compound_parts_in_sentence_breakdown = ConfigurationValueBool("show_compound_parts_in_sentence_breakdown", "Show compound parts in sentence breakdown", True)
         self.show_kanji_in_sentence_breakdown = ConfigurationValueBool("show_kanji_in_sentence_breakdown", "Show kanji in sentence breakdown", True)
-        self.show_all_matched_words_in_sentence_breakdown = ConfigurationValueBool("show_all_matched_words_in_sentence_breakdown", "Show all matched words in sentence breakdown", False)
+        self.show_sentence_breakdown_in_edit_mode = ConfigurationValueBool("show_sentence_breakdown_in_edit_mode", "Show sentence breakdown in edit mode", False)
         self.automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound = ConfigurationValueBool("automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound", "Automatically yield last token in suru verb compounds to overlapping compounds (Ctrl+Shift+Alt+s)", True)
         self.automatically_yield_last_token_in_passive_verb_compounds_to_overlapping_compound = ConfigurationValueBool("automatically_yield_last_token_in_passive_verb_compounds_to_overlapping_compound", "Automatically yield last token in passive verb compounds to overlapping compounds (Ctrl+Shift+Alt+h)", True)
         self.automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound = ConfigurationValueBool("automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound", "Automatically yield last token in causative verb compounds to overlapping compounds (Ctrl+Shift+Alt+t)", True)
@@ -107,7 +107,7 @@ class JapaneseConfig(Slots):
                                       self.automatically_yield_last_token_in_passive_verb_compounds_to_overlapping_compound,
                                       self.automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound,
                                       self.show_compound_parts_in_sentence_breakdown,
-                                      self.show_all_matched_words_in_sentence_breakdown,
+                                      self.show_sentence_breakdown_in_edit_mode,
                                       self.show_kanji_in_sentence_breakdown]
 
         self.feature_toggles: list[tuple[str, list[ConfigurationValueBool]]] = \

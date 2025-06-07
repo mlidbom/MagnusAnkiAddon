@@ -31,7 +31,7 @@ class SentenceNote(JPNote, Slots):
         self.weakref = cast(WeakRef[SentenceNote], self.weakref)
 
         self._source_answer = StringField(self.weakref, SentenceNoteFields.source_answer)
-        self._source_question = StripHtmlOnReadStringField(self.weakref, SentenceNoteFields.source_question)
+        self.source_question = StripHtmlOnReadStringField(self.weakref, SentenceNoteFields.source_question)
         self.source_comments: StripHtmlOnReadStringField = StripHtmlOnReadStringField(self.weakref, SentenceNoteFields.source_comments)
 
         self.user: SentenceUserFields = SentenceUserFields(self.weakref)
@@ -94,7 +94,7 @@ class SentenceNote(JPNote, Slots):
     def create_test_note(cls, question: str, answer: str) -> SentenceNote:
         inner_note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Sentence))
         note = SentenceNote(inner_note)
-        note._source_question.set(question)
+        note.source_question.set(question)
         note.user.answer.set(answer)
         note.update_generated_data()
         app.anki_collection().addNote(inner_note)
@@ -104,7 +104,7 @@ class SentenceNote(JPNote, Slots):
     def add_sentence(cls, question: str, answer: str, audio: str = "", screenshot: str = "", highlighted_vocab: Optional[set[str]] = None, tags: Optional[set[str]] = None) -> SentenceNote:
         inner_note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Sentence))
         note = SentenceNote(inner_note)
-        note._source_question.set(question)
+        note.source_question.set(question)
         note._source_answer.set(answer)
         note._screenshot.set(screenshot)
         note.update_generated_data()
@@ -143,7 +143,7 @@ class SentenceNote(JPNote, Slots):
     def create(cls, question: str) -> SentenceNote:
         inner_note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Sentence))
         note = SentenceNote(inner_note)
-        note._source_question.set(question)
+        note.source_question.set(question)
         note.update_generated_data()
         app.anki_collection().addNote(inner_note)
         return note
