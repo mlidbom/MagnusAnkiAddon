@@ -84,12 +84,6 @@ class JNToken(Slots):
 
         return self.parts_of_speech == POS.Particle.conjunctive and self.surface != "て"
 
-    _verb_inflection_token_surfaces = {"て", "てる", "た", "たら", "に", "たり"}
-    _verb_inflection_token_bases = {"れる", "られる", "ちゃう", "たい", "そう"}
-    def is_verb_inflection_word(self) -> bool:
-        return (self.surface in self._verb_inflection_token_surfaces
-                or self.base_form in self._verb_inflection_token_bases)
-
 _end_of_phrase_particles = {
     POS.Particle.CaseMarking.general,
     POS.Particle.CaseMarking.compound,
