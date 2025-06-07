@@ -10,6 +10,7 @@ from language_services.jamdict_ex.dict_lookup import DictLookup
 from sysutils import ex_sequence
 
 if TYPE_CHECKING:
+    from janome.tokenizer import Token
     from language_services.janome_ex.tokenizing.jn_token import JNToken
     from note.collection.vocab_collection import VocabCollection
 
@@ -60,7 +61,7 @@ class JNTokenWrapper(ProcessedToken, Slots):
     def _try_find_dictionary_based_potential_verb_compound(self) -> list[ProcessedToken]:
         if (len(self.token.base_form) >= 3
                 and self.token.base_form[-2:] in conjugator.godan_potential_verb_ending_to_dictionary_form_endings
-                and self.token.is_verb()
+                and self.token.is_ichidan_verb()
                 and not DictLookup.is_word(self.token.base_form)):  # the potential verbs are generally not in the dictionary this is how we know them
             root_verb = conjugator.construct_root_verb_for_possibly_potential_godan_verb_dictionary_form(self.token.base_form)
             if DictLookup.is_word(root_verb):
@@ -90,7 +91,8 @@ class JNTokenWrapper(ProcessedToken, Slots):
         return [root_verb_token, eru_token]
 
 class JNTokenizedText(Slots):
-    def __init__(self, text: str, tokens: list[JNToken]) -> None:
+    def __init__(self, text: str, raw_tokens: list[Token], tokens: list[JNToken]) -> None:
+        self.raw_tokens = raw_tokens
         self.text = text
         self.tokens = tokens
 

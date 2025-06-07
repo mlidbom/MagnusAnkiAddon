@@ -6,6 +6,7 @@ from time import sleep
 from typing import TYPE_CHECKING
 
 from ankiutils import app, query_builder
+from language_services.janome_ex.tokenizing import jn_token
 from note.note_constants import CardTypes, Tags
 from note.sentences.sentencenote import SentenceNote
 from sysutils import ex_str, object_instance_tracker, progress_display_runner
@@ -165,6 +166,15 @@ def reparse_sentences(sentences: list[SentenceNote]) -> None:
         sentence.update_parsed_words(force=True)
 
     progress_display_runner.process_with_progress(sentences, reparse_sentence, "Reparsing sentences.")
+
+    print(f""""
+####Inflection types ###########
+{jn_token.inflection_types}
+
+
+####Inflection forms ###########
+{jn_token.inflection_forms}
+    """)
 
 def print_gc_status_and_collect() -> None:
     object_instance_tracker.print_instance_counts()

@@ -1,10 +1,17 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from autoslot import Slots
 from language_services.janome_ex.tokenizing.jn_parts_of_speech import POS, JNPartsOfSpeech
 from sysutils import kana_utils, typed
 
+if TYPE_CHECKING:
+    from janome.tokenizer import Token
 
+
+inflection_types: set[str] = set()
+inflection_forms: set[str] = set()
 # noinspection PyUnusedFunction
 class JNToken(Slots):
     def __init__(self,
@@ -15,15 +22,19 @@ class JNToken(Slots):
                  inflected_form: str = "",
                  reading: str = "",
                  phonetic: str = "",
-                 node_type: str = "") -> None:
+                 node_type: str = "",
+                 raw_token: Token | None = None) -> None:
         self.base_form = typed.str_(base_form)
         self.surface = typed.str_(surface)
         self.inflection_type = typed.str_(inflection_type).replace("*", "")
         self.inflected_form = typed.str_(inflected_form).replace("*", "")
+        inflection_types.add(self.inflection_type)
+        inflection_forms.add(self.inflected_form)
         self.reading = typed.str_(reading)
         self.phonetic = typed.str_(phonetic)
         self.node_type = typed.str_(node_type)
         self.parts_of_speech = parts_of_speech
+        self.raw_token = raw_token
 
     def __repr__(self) -> str:
         return "".join([
@@ -68,6 +79,8 @@ class JNToken(Slots):
 
         return self.inflection_type == "サ変・スル" and self.inflected_form == "連用形" # irregular conjugations of する like し
 
+    def is_ichidan_verb(self) -> bool:
+        return self.inflection_type == "一段"
 
     def is_noun(self) -> bool:
         return self.parts_of_speech in _noun_parts_of_speech
