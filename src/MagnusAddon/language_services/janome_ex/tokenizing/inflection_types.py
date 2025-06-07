@@ -18,7 +18,7 @@ def _add_form(name: str, description: str) -> InflectionType:
     all_dict[name] = form
     return form
 
-class InflectionForms:
+class InflectionTypes:
     class Godan:
         sa_ending: InflectionType = _add_form("五段・サ行", "Godan verb with 'sa' ending - Changes 'sa' stem in conjugation")
 
