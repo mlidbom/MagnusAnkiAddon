@@ -13,6 +13,8 @@ def _add_form(name: str, description: str) -> InflectionForm:
     return form
 
 class InflectionForms:
+    special_noun_connection = _add_form("体言接続特殊", "Special noun connection - Connects to nouns in special cases")
+
     all_string: set[str] = {
         "体言接続特殊",  # Special noun connection - Connects to nouns in special cases
         "連用ゴザイ接続",  # Continuative gozai connection - Links to polite auxiliary "gozai" (polite form)
