@@ -33,7 +33,7 @@ class DisplayRequirements(Slots):
     def __repr__(self) -> str: return " ".join(self.failure_reasons())
 
     def _is_yield_last_token_to_overlapping_compound_requirement_fulfilled(self) -> bool:
-        if not self.rules.yield_last_token_to_overlapping_compound.is_set(): return True
+        if not self.rules.yield_last_token.is_required: return True
 
         last_token_display_words: list[CandidateWord] = self.match().word_variant().word().end_location().display_words_starting_here
         if not last_token_display_words: return True

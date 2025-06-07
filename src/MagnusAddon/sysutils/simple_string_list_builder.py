@@ -17,6 +17,3 @@ class SimpleStringListBuilder:
     def concat(self, values: list[str]) -> SimpleStringListBuilder:
         self.value.extend(values)
         return self
-
-    def concat_set(self, values: set[str]) -> SimpleStringListBuilder:
-        return self.concat(list(values))

@@ -172,6 +172,7 @@ class Tags(Slots):
             class Forbids:
                 a_stem = f"{f_vocab_matching_forbids}a-stem"
                 e_stem = f"{f_vocab_matching_forbids}e-stem"
+                sentence_end = f"{f_vocab_matching_forbids}sentence-end"
                 auto_yielding = f"{f_vocab_matching_forbids}auto_yielding"
 
             is_strictly_suffix = f"{f_vocab_matching}is-strictly-suffix"

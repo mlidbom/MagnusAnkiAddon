@@ -53,6 +53,7 @@ def init() -> None:
             sentence.source_comments.empty()
             refresh_shallow()
 
+    # noinspection DuplicatedCode
     def toggle_show_compound_parts_in_sentence_breakdown() -> None:
         app.config().show_compound_parts_in_sentence_breakdown.set_value(not app.config().show_compound_parts_in_sentence_breakdown.get_value())
         if app.config().show_compound_parts_in_sentence_breakdown.get_value():
@@ -63,6 +64,7 @@ def init() -> None:
         app.config().show_kanji_in_sentence_breakdown.set_value(not app.config().show_kanji_in_sentence_breakdown.get_value())
         refresh_shallow()
 
+    # noinspection DuplicatedCode
     def toggle_show_sentence_breakdown_in_edit_mode() -> None:
         app.config().show_sentence_breakdown_in_edit_mode.set_value(not app.config().show_sentence_breakdown_in_edit_mode.get_value())
         if app.config().show_sentence_breakdown_in_edit_mode.get_value():

@@ -15,7 +15,7 @@ _quote_characters = {"と", "って"}
 class TailRequirements(Slots):
     def __init__(self, vocab: VocabNote, tail: WeakRef[TextAnalysisLocation] | None) -> None:
         self.config = vocab.matching_rules
-        self.fulfills_requires_sentence_end_requirement = (not self.config.requires_sentence_end.is_set()
+        self.fulfills_requires_sentence_end_requirement = (not self.config.sentence_end.is_required
                                                            or (tail is None or tail().token.is_non_word_character or tail().token.surface in _quote_characters))
 
         self.are_fulfilled = self.fulfills_requires_sentence_end_requirement

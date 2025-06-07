@@ -22,3 +22,4 @@ class TagFlagField(Slots):
         else: self._note().remove_tag(self.tag)
 
     def __repr__(self) -> str: return self.is_set().__repr__()
+

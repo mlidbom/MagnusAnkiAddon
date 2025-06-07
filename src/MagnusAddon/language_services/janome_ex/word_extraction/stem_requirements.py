@@ -21,20 +21,21 @@ class StemRequirements(Slots):
         self.are_fulfilled = True
 
         self.has_a_stem = end_of_stem is not None and end_of_stem().token.surface[-1] in conjugator.a_stem_characters
-        self.fulfills_forbids_a_stem_requirement = not rules.forbids_a_stem.is_set() or not self.has_a_stem
-        self.fulfills_requires_a_stem = not rules.requires_a_stem.is_set() or self.has_a_stem
+        self.fulfills_forbids_a_stem_requirement = not rules.a_stem.is_forbidden or not self.has_a_stem
+        self.fulfills_requires_a_stem = not rules.a_stem.is_required or self.has_a_stem
 
         self.has_e_stem = (end_of_stem is not None and
                            (end_of_stem().token.surface[-1] in conjugator.e_stem_characters
                             or kana_utils.character_is_kanji(end_of_stem().token.surface[-1])))
 
-        self.fulfills_requires_e_stem_requirement = not rules.requires_e_stem.is_set() or self.has_e_stem
-        self.fulfills_forbids_e_stem_requirement = not rules.forbids_e_stem.is_set() or not self.has_e_stem
+        self.fulfills_requires_e_stem_requirement = not rules.e_stem.is_required or self.has_e_stem
+        self.fulfills_forbids_e_stem_requirement = not rules.e_stem.is_forbidden or not self.has_e_stem
 
         self.are_fulfilled = (self.are_fulfilled
                               and self.fulfills_forbids_a_stem_requirement
                               and self.fulfills_requires_a_stem
-                              and self.fulfills_requires_e_stem_requirement)
+                              and self.fulfills_requires_e_stem_requirement
+                              and self.fulfills_forbids_e_stem_requirement)
 
     def failure_reasons(self) -> set[str]:
         return (SimpleStringListBuilder()

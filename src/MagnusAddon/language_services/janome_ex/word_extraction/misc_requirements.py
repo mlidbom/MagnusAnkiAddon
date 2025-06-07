@@ -19,10 +19,10 @@ class MiscRequirements(Slots):
         self.is_exact_match_requirement_fulfilled = (not self.rules.requires_exact_match.is_set()
                                                      or (match().word_variant().is_surface and match().word_variant().form == vocab.question.without_noise_characters()))
 
-        self.is_single_token_requirement_fulfilled = (not self.rules.requires_single_token.is_set()
+        self.is_single_token_requirement_fulfilled = (not self.rules.single_token.is_required
                                                       or not match().word_variant().word().is_custom_compound)
 
-        self.is_compound_requirement_fulfilled = (not self.rules.requires_compound.is_set()
+        self.is_compound_requirement_fulfilled = (not self.rules.single_token.is_forbidden
                                                   or match().word_variant().word().is_custom_compound)
 
         self.are_fulfilled = (self.is_exact_match_requirement_fulfilled
