@@ -6,7 +6,6 @@ from time import sleep
 from typing import TYPE_CHECKING
 
 from ankiutils import app, query_builder
-from language_services.janome_ex.tokenizing import jn_token
 from note.note_constants import CardTypes, Tags
 from note.sentences.sentencenote import SentenceNote
 from sysutils import ex_str, object_instance_tracker, progress_display_runner
