@@ -40,11 +40,13 @@ class JNTokenWrapper(ProcessedToken, Slots):
         self.is_inflectable_word = self.token.is_inflectable_word()
 
     def pre_process(self) -> list[ProcessedToken]:
-        vocab_based_potential_verb_split = self._try_find_vocab_based_potential_verb_compound()
-        if vocab_based_potential_verb_split: return vocab_based_potential_verb_split
+        if app.config().tokenizing_split_potential_godan_vocab_based.get_value():
+            vocab_based_potential_verb_split = self._try_find_vocab_based_potential_verb_compound()
+            if vocab_based_potential_verb_split: return vocab_based_potential_verb_split
 
-        dictionary_based_potential_verb_split = self._try_find_dictionary_based_potential_verb_compound()
-        if dictionary_based_potential_verb_split: return dictionary_based_potential_verb_split
+        if app.config().tokenizing_split_potential_godan_dictionary_based.get_value():
+            dictionary_based_potential_verb_split = self._try_find_dictionary_based_potential_verb_compound()
+            if dictionary_based_potential_verb_split: return dictionary_based_potential_verb_split
 
         return [self]
 

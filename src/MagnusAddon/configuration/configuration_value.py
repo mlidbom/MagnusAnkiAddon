@@ -98,6 +98,9 @@ class JapaneseConfig(Slots):
         self.automatically_yield_last_token_in_passive_verb_compounds_to_overlapping_compound = ConfigurationValueBool("automatically_yield_last_token_in_passive_verb_compounds_to_overlapping_compound", "Automatically yield last token in passive verb compounds to overlapping compounds (Ctrl+Shift+Alt+h)", True)
         self.automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound = ConfigurationValueBool("automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound", "Automatically yield last token in causative verb compounds to overlapping compounds (Ctrl+Shift+Alt+t)", True)
 
+        self.tokenizing_split_potential_godan_vocab_based = ConfigurationValueBool("tokenizing_split_potential_godan_vocab_based", "Tokenizing: Split potential godan verbs with vocabulary cards.", True)
+        self.tokenizing_split_potential_godan_dictionary_based = ConfigurationValueBool("tokenizing_split_potential_godan_vocab_based", "Tokenizing: Split potential godan verbs based on dictionary information.", True)
+
         self.decrease_failed_card_intervals_interval = ConfigurationValueInt("decrease_failed_card_intervals_interval", "Failed card again seconds for next again", 60)
 
         self.minimum_time_viewing_question = ConfigurationValueFloat("minimum_time_viewing_question", "Minimum time viewing question", 0.5)
@@ -110,6 +113,9 @@ class JapaneseConfig(Slots):
                                       self.show_sentence_breakdown_in_edit_mode,
                                       self.show_kanji_in_sentence_breakdown]
 
+        self.tokenizing_toggles = [self.tokenizing_split_potential_godan_vocab_based,
+                                   self.tokenizing_split_potential_godan_dictionary_based]
+
         self.feature_toggles: list[tuple[str, list[ConfigurationValueBool]]] = \
             [("Sentence Display", self.sentence_view_toggles),
              ("Misc", [self.yomitan_integration_copy_answer_to_clipboard,
@@ -118,6 +124,7 @@ class JapaneseConfig(Slots):
                        self.prevent_double_clicks,
                        self.boost_failed_card_allowed_time,
                        self.prefer_default_mnemonics_to_source_mnemonics]),
+             ("Tokenizing", self.tokenizing_toggles),
              ("Memory", [self.enable_garbage_collection_during_batches,
                          self.enable_automatic_garbage_collection,
                          self.track_instances_in_memory])]
