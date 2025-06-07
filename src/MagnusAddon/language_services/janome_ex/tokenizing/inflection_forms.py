@@ -7,6 +7,11 @@ class InflectionForm:
         self.name = name
         self.description = description
 
+    def __eq__(self, other: object) -> bool:
+        if isinstance(other, InflectionForm):
+            return self.name == other.name
+        return False
+
 def _add_form(name: str, description: str) -> InflectionForm:
     form = InflectionForm(name, description)
     all_dict[name] = form
