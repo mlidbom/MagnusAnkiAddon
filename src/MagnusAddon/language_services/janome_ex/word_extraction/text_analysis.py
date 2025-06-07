@@ -25,12 +25,13 @@ class TextAnalysis(WeakRefable,Slots):
         self.weakref = WeakRef(self)
         self.text = sentence
         self.configuration = sentence_configuration
-        self.tokens: list[ProcessedToken] = _tokenizer.tokenize(sentence).pre_process()
+        self.tokenized_text = _tokenizer.tokenize(sentence)
+        self.pre_processed_tokens: list[ProcessedToken] = self.tokenized_text.pre_process()
 
         self.locations: list[TextAnalysisLocation] = []
 
         character_index = 0
-        for token_index, token in enumerate(self.tokens):
+        for token_index, token in enumerate(self.pre_processed_tokens):
             self.locations.append(TextAnalysisLocation(self.weakref, token, character_index, token_index))
             character_index += len(token.surface)
 
