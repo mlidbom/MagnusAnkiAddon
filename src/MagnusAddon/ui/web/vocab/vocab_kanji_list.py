@@ -7,7 +7,7 @@ from ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
 from viewmodels.kanji_list import sentence_kanji_list_viewmodel
 
 
-def render_kanji_list_from_kanji(kanjis:list[str]) -> str:
+def render_kanji_list_from_kanji(kanjis: list[str]) -> str:
     if not kanjis:
         return ""
 
@@ -20,8 +20,8 @@ def render_kanji_list_from_kanji(kanjis:list[str]) -> str:
     <div class="kanji_item {" ".join(kanji.kanji.get_meta_tags())}">
         <div class="kanji_main">
             <span class="kanji_kanji clipboard">{kanji.question()}</span>
-            <span class="kanji_readings">{kanji.readings()}</span>
             <span class="kanji_answer">{kanji.answer()}</span>
+            <span class="kanji_readings">{kanji.readings()}</span>
         </div>
         <div class="kanji_mnemonic">{kanji.mnemonic()}</div>
     </div>

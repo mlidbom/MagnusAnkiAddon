@@ -60,7 +60,7 @@ def setup_collection_with_select_data() -> Iterator[None]:
     ("ガチだったんでしょ", ["ガチ", "だった", "ん", "でしょ"]),
     ("どうしちゃったんだろうな", ["どう", "しちゃう", "た", "ん", "だろう", "な"]),
     ("良いものを食べる", ["良い", "もの", "を", "食べる"]),
-    ("いいものを食べる", ["いい", "もの", "を", "食べる"])
+    ("いいものを食べる", ["いい", "もの", "を", "食べる"]),
 ])
 def test_misc_stuff(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
     _assert_display_words_equal(sentence, [], expected_output)
@@ -103,7 +103,7 @@ def test_potential_verb_splitting_with_vocab(setup_collection_with_select_data: 
     _assert_display_words_equal(sentence, excluded, expected_output)
 
 @pytest.mark.parametrize("sentence, expected_output", [
-    ("風の強さに驚きました", ["風の強い", "風", "の", "強さ", "強", "強い", "さ", "に", "驚き", "驚く", "まし", "ます", "た"]),
+    ("風の強さに驚きました", ["風の強い", "風", "の", "強さ", "強", "強い", "さ", "に", "驚き", "驚く", "まし", "ます", "た"])
 ])
 def test_all_words_equal(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
     _assert_all_words_equal(sentence, expected_output)

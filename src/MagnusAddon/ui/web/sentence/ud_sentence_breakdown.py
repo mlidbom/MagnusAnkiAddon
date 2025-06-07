@@ -32,8 +32,8 @@ def render_match_kanji(match: MatchViewModel) -> str:
     <div class="kanji_item {" ".join(kanji.kanji.get_meta_tags())}">
         <div class="kanji_main">
             <span class="kanji_kanji clipboard">{kanji.question()}</span>
-            <span class="kanji_readings">{kanji.readings()}</span>
             <span class="kanji_answer">{kanji.answer()}</span>
+            <span class="kanji_readings">{kanji.readings()}</span>
         </div>
         <div class="kanji_mnemonic">{kanji.mnemonic()}</div>
     </div>

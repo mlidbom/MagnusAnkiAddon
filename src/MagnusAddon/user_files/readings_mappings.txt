@@ -121,6 +121,7 @@ hachi:hatch
 hada:had-a
 hag:hag
 hage:hag
+hagu:hag
 hai:high
 haji:hajji
 haka:hacker

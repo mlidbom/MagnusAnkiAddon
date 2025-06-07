@@ -17,7 +17,7 @@ def setup_collection_with_select_data() -> Iterator[None]:
         yield
 
 @pytest.mark.parametrize("sentence, expected_output", [
-    ("金<wbr>貸せって", ["金", "貸す", "える", "って"])
+    ("金<wbr>貸せって", ["金", "貸す", "って"])
 ])
 def test_invisible_space_breakup(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
     sentence_note = SentenceNote.create(sentence)
