@@ -13,6 +13,7 @@
         color: color-mix(in lch, var(--colorTextCard), black 20%);
         white-space: pre-line;
         &.overridden { font-size: 130%; }
+        .wbr_tag { color: var(--colorTextBold); }
     }
 
     .comments {
