@@ -77,7 +77,7 @@ class JNToken(Slots):
         if self.parts_of_speech in _adjective_auxiliary_parts_of_speech:
             return True
 
-        return self.inflection_type == InflectionTypes.Sahen.suru and self.inflected_form == InflectionForms.Continuative.general_continuative  # "連用形" # irregular conjugations of する like し # "サ変・スル"
+        return self.inflection_type == InflectionTypes.Sahen.suru and self.inflected_form == InflectionForms.Continuative.renyōkei_masu_stem  # "連用形" # irregular conjugations of する like し # "サ変・スル"
 
     def is_ichidan_verb(self) -> bool:
         return self.inflection_type == InflectionTypes.Ichidan.regular
