@@ -211,7 +211,7 @@
                             &.primaryForm { background-color: var(--colorBgVoc); }
                             &.secondaryForm { background-color: var(--colorBgRad); }
                             &.derivedCompoundForm { background-color: var(--colorBgRead); }
-                            &.secondaryFormDerivedCompoundForm { background-color: color-mix(in lch, var(--colorBgRad), var(--colorBgRead) 50%); }
+                            &.secondaryFormDerivedCompoundForm { background-color: color-mix(in lch, var(--colorBgVoc), var(--colorBgRead) 80%); }
                         }
                     }
                     .sentenceAnswer { color: var(--colorTextMeaning);
