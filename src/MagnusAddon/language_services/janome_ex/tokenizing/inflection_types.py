@@ -27,20 +27,22 @@ class InflectionTypes:
 
     # noinspection PyUnusedClass,PyUnusedName
     class Godan:
-        sa_ending: InflectionType = _add_form("五段・サ行", "Godan verb with 'sa' ending - Changes 'sa' stem in conjugation")
-        ra_ending: InflectionType = _add_form("五段・ラ行", "Godan verb with 'ra' ending - Changes 'ra' stem in conjugation")
-        ma_ending: InflectionType = _add_form("五段・マ行", "Godan verb with 'ma' ending - Changes 'ma' stem in conjugation")
-        ba_ending: InflectionType = _add_form("五段・バ行", "Godan verb with 'ba' ending - Changes 'ba' stem in conjugation")
-        wa_ending_gemination: InflectionType = _add_form("五段・ワ行促音便", "Godan verb with 'wa' ending and 'っ' consonant assimilation - Special 'wa' conjugation pattern")
-        ka_ending_gemination_yuku: InflectionType = _add_form("五段・カ行促音便ユク", "Godan verb 'yuku' (to go) with 'ka' ending and consonant assimilation - Special case verb")
-        wa_ending_u_sound: InflectionType = _add_form("五段・ワ行ウ音便", "Godan verb with 'wa' ending and 'u' sound change - Special 'wa' conjugation pattern")
-        na_ending: InflectionType = _add_form("五段・ナ行", "Godan verb with 'na' ending - Changes 'na' stem in conjugation")
-        ka_ending_gemination: InflectionType = _add_form("五段・カ行促音便", "Godan verb with 'ka' ending and consonant assimilation - Special 'ka' conjugation pattern")
-        ta_ending: InflectionType = _add_form("五段・タ行", "Godan verb with 'ta' ending - Changes 'ta' stem in conjugation")
-        ga_ending: InflectionType = _add_form("五段・ガ行", "Godan verb with 'ga' ending - Changes 'ga' stem in conjugation")
-        ra_ending_special: InflectionType = _add_form("五段・ラ行特殊", "Special godan verb with 'ra' ending - Irregular 'ra' conjugation pattern")
-        ka_ending_i_sound: InflectionType = _add_form("五段・カ行イ音便", "Godan verb with 'ka' ending and 'i' sound change - Special 'ka' conjugation pattern")
-        ra_ending_aru: InflectionType = _add_form("五段・ラ行アル", "Godan verb 'aru' (to exist) with 'ra' ending - Special case verb")
+        su: InflectionType = _add_form("五段・サ行", "Godan verb with 'su' ending")
+        mu: InflectionType = _add_form("五段・マ行", "Godan verb with 'mu' ending")
+        bu: InflectionType = _add_form("五段・バ行", "Godan verb with 'bu' ending")
+        gu_ending: InflectionType = _add_form("五段・ガ行", "Godan verb with 'gu' ending")
+        tsu: InflectionType = _add_form("五段・タ行", "Godan verb with 'tsu' ending")
+        nu: InflectionType = _add_form("五段・ナ行", "Godan verb with 'nu' ending")
+        ru: InflectionType = _add_form("五段・ラ行", "Godan verb with 'ru' ending")
+        ru_special: InflectionType = _add_form("五段・ラ行特殊", "Special godan verb with 'ru' ending - Irregular 'ru' conjugation pattern")
+        ru_ending_aru: InflectionType = _add_form("五段・ラ行アル", "Godan verb 'aru' (to exist) with 'ru' ending - Special case verb")
+
+        wu_ending_gemination: InflectionType = _add_form("五段・ワ行促音便", "Godan verb with 'wu' ending and 'っ' consonant assimilation - Special 'wu' conjugation pattern")
+        wu_ending_u_sound: InflectionType = _add_form("五段・ワ行ウ音便", "Godan verb with 'wu' ending and 'u' sound change - Special 'wu' conjugation pattern")
+
+        ku_ending_gemination_yuku: InflectionType = _add_form("五段・カ行促音便ユク", "Godan verb 'yuku' (to go) with 'ku' ending and consonant assimilation - Special case verb")
+        ku_ending_gemination: InflectionType = _add_form("五段・カ行促音便", "Godan verb with 'ku' ending and consonant assimilation - Special 'ku' conjugation pattern")
+        ku_ending_i_sound: InflectionType = _add_form("五段・カ行イ音便", "Godan verb with 'ku' ending and 'i' sound change - Special 'ku' conjugation pattern")
 
     # noinspection PyUnusedClass,PyUnusedName
     class Ichidan:
