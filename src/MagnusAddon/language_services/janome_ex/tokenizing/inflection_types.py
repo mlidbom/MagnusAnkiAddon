@@ -9,6 +9,7 @@ class InflectionType:
         self.description = description
 
     def __repr__(self) -> str: return f"""{self.name} - {self.description}"""
+    def __str__(self) -> str: return self.name
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other, InflectionType):
@@ -20,8 +21,10 @@ def _add_form(name: str, description: str) -> InflectionType:
     all_dict[name] = form
     return form
 
-# noinspection PyUnusedClass
+# noinspection PyUnusedClass,PyUnusedName
 class InflectionTypes:
+    unknown: InflectionType = _add_form("*", "Unknown")
+
     # noinspection PyUnusedClass,PyUnusedName
     class Godan:
         sa_ending: InflectionType = _add_form("五段・サ行", "Godan verb with 'sa' ending - Changes 'sa' stem in conjugation")

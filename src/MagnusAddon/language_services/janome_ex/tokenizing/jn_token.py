@@ -3,11 +3,16 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
+from language_services.janome_ex.tokenizing import inflection_forms, inflection_types
+from language_services.janome_ex.tokenizing.inflection_forms import InflectionForms
+from language_services.janome_ex.tokenizing.inflection_types import InflectionTypes
 from language_services.janome_ex.tokenizing.jn_parts_of_speech import POS, JNPartsOfSpeech
 from sysutils import kana_utils, typed
 
 if TYPE_CHECKING:
     from janome.tokenizer import Token
+    from language_services.janome_ex.tokenizing.inflection_forms import InflectionForm
+    from language_services.janome_ex.tokenizing.inflection_types import InflectionType
 
 # noinspection PyUnusedFunction
 class JNToken(Slots):
@@ -15,16 +20,16 @@ class JNToken(Slots):
                  parts_of_speech: JNPartsOfSpeech,
                  base_form: str,
                  surface: str,
-                 inflection_type: str = "",
-                 inflected_form: str = "",
+                 inflection_type: str = "*",
+                 inflected_form: str = "*",
                  reading: str = "",
                  phonetic: str = "",
                  node_type: str = "",
                  raw_token: Token | None = None) -> None:
         self.base_form = typed.str_(base_form)
         self.surface = typed.str_(surface)
-        self.inflection_type = typed.str_(inflection_type).replace("*", "")
-        self.inflected_form = typed.str_(inflected_form).replace("*", "")
+        self.inflection_type: InflectionType = inflection_types.all_dict[inflection_type]
+        self.inflected_form: InflectionForm = inflection_forms.all_dict[inflected_form]
         self.reading = typed.str_(reading)
         self.phonetic = typed.str_(phonetic)
         self.node_type = typed.str_(node_type)
@@ -38,9 +43,9 @@ class JNToken(Slots):
             ", " + kana_utils.pad_to_length(f"'{self.surface}'", 6),
             ", " + kana_utils.pad_to_length(f"'{self.inflection_type}'", 6),
             ", " + kana_utils.pad_to_length(f"'{self.inflected_form}'", 10),
-            #", " + kana_utils.pad_to_length(f"'{self.reading}'", 10),
-            #", " + kana_utils.pad_to_length(f"'{self.phonetic}'", 10),
-            #", " + kana_utils.pad_to_length(f"'{self.node_type}'", 10),
+            # ", " + kana_utils.pad_to_length(f"'{self.reading}'", 10),
+            # ", " + kana_utils.pad_to_length(f"'{self.phonetic}'", 10),
+            # ", " + kana_utils.pad_to_length(f"'{self.node_type}'", 10),
             ", " + str(self.parts_of_speech)])
 
     def __eq__(self, other: object) -> bool:
@@ -49,9 +54,9 @@ class JNToken(Slots):
                     self.surface == other.surface and
                     self.inflection_type == other.inflection_type and
                     self.inflected_form == other.inflected_form and
-                    #self.reading == other.reading and
-                    #self.phonetic == other.phonetic and
-                    #self.node_type == other.node_type and
+                    # self.reading == other.reading and
+                    # self.phonetic == other.phonetic and
+                    # self.node_type == other.node_type and
                     self.parts_of_speech == other.parts_of_speech)
         return False
 
@@ -72,16 +77,16 @@ class JNToken(Slots):
         if self.parts_of_speech in _adjective_auxiliary_parts_of_speech:
             return True
 
-        return self.inflection_type == "サ変・スル" and self.inflected_form == "連用形" # irregular conjugations of する like し
+        return self.inflection_type == InflectionTypes.Sahen.suru and self.inflected_form == InflectionForms.Continuative.general_continuative  # "連用形" # irregular conjugations of する like し # "サ変・スル"
 
     def is_ichidan_verb(self) -> bool:
-        return self.inflection_type == "一段"
+        return self.inflection_type == InflectionTypes.Ichidan.regular
 
     def is_noun(self) -> bool:
         return self.parts_of_speech in _noun_parts_of_speech
 
     def is_inflected_verb(self) -> bool:
-        return self.parts_of_speech.is_verb() and self.inflected_form == "連用タ接続"
+        return self.parts_of_speech.is_verb() and self.inflected_form == InflectionForms.Continuative.ta_connection  # "連用タ接続"
 
     def is_noun_auxiliary(self) -> bool:
         return self.parts_of_speech in _noun_auxiliary_parts_of_speech
@@ -96,21 +101,21 @@ _end_of_phrase_particles = {
     POS.Particle.CaseMarking.general,
     POS.Particle.CaseMarking.compound,
     POS.Particle.CaseMarking.quotation,
-    POS.Particle.adverbial # まで : this feels strange, but works so far.
+    POS.Particle.adverbial  # まで : this feels strange, but works so far.
 }
 
 _noun_parts_of_speech = {
-    POS.Noun.general, # 自分
-    POS.Noun.Pronoun.general, # あいつ
-    POS.Noun.suru_verb, # 話
-    POS.Noun.adverbial, # 今
-    POS.Noun.na_adjective_stem # 余慶
+    POS.Noun.general,  # 自分
+    POS.Noun.Pronoun.general,  # あいつ
+    POS.Noun.suru_verb,  # 話
+    POS.Noun.adverbial,  # 今
+    POS.Noun.na_adjective_stem  # 余慶
 }
 
 _adjective_auxiliary_parts_of_speech = {
-    POS.bound_auxiliary, # た, ない past, negation
-    POS.Particle.conjunctive, # て,と,し
-    #POS.Adverb.general, # もう
+    POS.bound_auxiliary,  # た, ない past, negation
+    POS.Particle.conjunctive,  # て,と,し
+    # POS.Adverb.general, # もう
 }
 
 _adjective_parts_of_speech = {
@@ -119,16 +124,16 @@ _adjective_parts_of_speech = {
 }
 
 _noun_auxiliary_parts_of_speech = {
-    POS.Noun.general, # 自分
+                                      POS.Noun.general,  # 自分
 
-    POS.Particle.CaseMarking.general, # が
-    POS.Particle.adnominalization, # の
-    POS.Particle.binding, # は
-    POS.Noun.Dependent.adverbial, # なか
-    POS.Noun.Dependent.general, # こと
-    POS.Particle.adverbial,  # まで
-    POS.Particle.adverbialization # に
-} | _adjective_parts_of_speech | _adjective_auxiliary_parts_of_speech
+                                      POS.Particle.CaseMarking.general,  # が
+                                      POS.Particle.adnominalization,  # の
+                                      POS.Particle.binding,  # は
+                                      POS.Noun.Dependent.adverbial,  # なか
+                                      POS.Noun.Dependent.general,  # こと
+                                      POS.Particle.adverbial,  # まで
+                                      POS.Particle.adverbialization  # に
+                                  } | _adjective_parts_of_speech | _adjective_auxiliary_parts_of_speech
 
 _verb_parts_of_speech = {
     POS.Verb.independent,
@@ -137,16 +142,16 @@ _verb_parts_of_speech = {
 }
 
 _verb_auxiliary_parts_of_speech = {
-            POS.bound_auxiliary, # た, ない past, negation
-            POS.Particle.binding, # は, も
-            POS.Particle.sentence_ending, # な
-            POS.Verb.dependent, # いる progressive/perfect, いく
-            POS.Verb.suffix, # れる passive
-            POS.Particle.conjunctive, # て,と,し
-            POS.Particle.coordinating_conjunction, # たり
-            POS.Particle.adverbial, # まで
-            POS.Adjective.dependent, # よかった
-            POS.Adjective.independent, # ない
-            POS.Noun.Dependent.general, # こと
-            POS.Noun.general
-        } | _verb_parts_of_speech
+                                      POS.bound_auxiliary,  # た, ない past, negation
+                                      POS.Particle.binding,  # は, も
+                                      POS.Particle.sentence_ending,  # な
+                                      POS.Verb.dependent,  # いる progressive/perfect, いく
+                                      POS.Verb.suffix,  # れる passive
+                                      POS.Particle.conjunctive,  # て,と,し
+                                      POS.Particle.coordinating_conjunction,  # たり
+                                      POS.Particle.adverbial,  # まで
+                                      POS.Adjective.dependent,  # よかった
+                                      POS.Adjective.independent,  # ない
+                                      POS.Noun.Dependent.general,  # こと
+                                      POS.Noun.general
+                                  } | _verb_parts_of_speech

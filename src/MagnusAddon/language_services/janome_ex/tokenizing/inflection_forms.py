@@ -9,6 +9,7 @@ class InflectionForm:
         self.description = description
 
     def __repr__(self) -> str: return f"""{self.name} - {self.description}"""
+    def __str__(self) -> str: return self.name
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other, InflectionForm):
@@ -20,8 +21,10 @@ def _add_form(name: str, description: str) -> InflectionForm:
     all_dict[name] = form
     return form
 
-# noinspection PyUnusedClass
+# noinspection PyUnusedClass,PyUnusedName
 class InflectionForms:
+    unknowm = _add_form("*", "Unknown")
+
     # noinspection PyUnusedClass,PyUnusedName
     class Basic:
         general_basic = _add_form("基本形", "Basic form - Dictionary/plain form")
