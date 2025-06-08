@@ -20,16 +20,16 @@ class JNToken(Slots):
                  parts_of_speech: JNPartsOfSpeech,
                  base_form: str,
                  surface: str,
-                 inflection_type: str = "*",
-                 inflected_form: str = "*",
+                 inflection_type: str | InflectionType = "*",
+                 inflected_form: str | InflectionForm = "*",
                  reading: str = "",
                  phonetic: str = "",
                  node_type: str = "",
                  raw_token: Token | None = None) -> None:
         self.base_form = typed.str_(base_form)
         self.surface = typed.str_(surface)
-        self.inflection_type: InflectionType = inflection_types.all_dict[inflection_type]
-        self.inflected_form: InflectionForm = inflection_forms.all_dict[inflected_form]
+        self.inflection_type: InflectionType = inflection_types.all_dict[inflection_type] if isinstance(inflection_type, str) else inflection_type
+        self.inflected_form: InflectionForm = inflection_forms.all_dict[inflected_form] if isinstance(inflected_form, str) else inflected_form
         self.reading = typed.str_(reading)
         self.phonetic = typed.str_(phonetic)
         self.node_type = typed.str_(node_type)
