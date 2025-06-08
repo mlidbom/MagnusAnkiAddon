@@ -41,7 +41,7 @@ def setup() -> None:
         JNToken(POS.bound_auxiliary, "だ", "だ", InflectionTypes.Special.da, InflectionForms.Basic.dictionary_form)]),
     ("そんなに走った", [
         JNToken(POS.Adverb.general, "そんなに", "そんなに"),
-        JNToken(POS.Verb.independent, "走る", "走っ", InflectionTypes.Godan.ru_ending, InflectionForms.Continuative.ta_connection),
+        JNToken(POS.Verb.independent, "走る", "走っ", InflectionTypes.Godan.ru, InflectionForms.Continuative.ta_connection),
         JNToken(POS.bound_auxiliary, "た", "た", InflectionTypes.Special.ta, InflectionForms.Basic.dictionary_form)]),
     ("来い", [JNToken(POS.Verb.independent, "来る", "来い", InflectionTypes.Kahen.kuru_kanji, InflectionForms.ImperativeMeireikei.i)]),
     ("飛べない", [
@@ -49,10 +49,11 @@ def setup() -> None:
         JNToken(POS.bound_auxiliary, "ない", "ない", InflectionTypes.Special.nai, InflectionForms.Basic.dictionary_form)
     ]),
     ("飛ばない", [
-        JNToken(POS.Verb.independent, "飛ぶ", "飛ば", InflectionTypes.Godan.bu_ending, InflectionForms.Irrealis.general_irrealis_mizenkei),
+        JNToken(POS.Verb.independent, "飛ぶ", "飛ば", InflectionTypes.Godan.bu, InflectionForms.Irrealis.general_irrealis_mizenkei),
         JNToken(POS.bound_auxiliary, "ない", "ない", InflectionTypes.Special.nai, InflectionForms.Basic.dictionary_form)
     ]),
     ("飛べ", [JNToken(POS.Verb.independent, "飛べる", "飛べ", InflectionTypes.Ichidan.regular, InflectionForms.Continuative.renyōkei_masu_stem)]),
+    ("会う", [JNToken(POS.Verb.independent, "会う", "会う", InflectionTypes.Godan.u_gemination, InflectionForms.Basic.dictionary_form)]),
 ])
 def test_identify_something_words(sentence: str, expected_tokens: list[JNTokenizer]) -> None:
     tokenized = _tokenizer.tokenize(sentence)

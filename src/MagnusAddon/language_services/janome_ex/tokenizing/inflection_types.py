@@ -37,12 +37,12 @@ class InflectionTypes:
         ru_special: InflectionType = _add_form("五段・ラ行特殊", "Special godan verb with 'ru' ending - Irregular 'ru' conjugation pattern")
         ru_ending_aru: InflectionType = _add_form("五段・ラ行アル", "Godan verb 'aru' (to exist) with 'ru' ending - Special case verb")
 
-        wu_ending_gemination: InflectionType = _add_form("五段・ワ行促音便", "Godan verb with 'wu' ending and 'っ' consonant assimilation - Special 'wu' conjugation pattern")
-        wu_ending_u_sound: InflectionType = _add_form("五段・ワ行ウ音便", "Godan verb with 'wu' ending and 'u' sound change - Special 'wu' conjugation pattern")
+        u_gemination: InflectionType = _add_form("五段・ワ行促音便", "Godan verb with 'u' ending and 'っ' consonant assimilation - Special 'u' conjugation pattern")
+        u_u_sound: InflectionType = _add_form("五段・ワ行ウ音便", "Godan verb with 'u' ending and 'u' sound change - Special 'u' conjugation pattern")
 
-        ku_ending_gemination_yuku: InflectionType = _add_form("五段・カ行促音便ユク", "Godan verb 'yuku' (to go) with 'ku' ending and consonant assimilation - Special case verb")
-        ku_ending_gemination: InflectionType = _add_form("五段・カ行促音便", "Godan verb with 'ku' ending and consonant assimilation - Special 'ku' conjugation pattern")
-        ku_ending_i_sound: InflectionType = _add_form("五段・カ行イ音便", "Godan verb with 'ku' ending and 'i' sound change - Special 'ku' conjugation pattern")
+        ku_gemination_yuku: InflectionType = _add_form("五段・カ行促音便ユク", "Godan verb 'yuku' (to go) with 'ku' ending and consonant assimilation - Special case verb")
+        ku_gemination: InflectionType = _add_form("五段・カ行促音便", "Godan verb with 'ku' ending and consonant assimilation - Special 'ku' conjugation pattern")
+        ku_i_sound: InflectionType = _add_form("五段・カ行イ音便", "Godan verb with 'ku' ending and 'i' sound change - Special 'ku' conjugation pattern")
 
     # noinspection PyUnusedClass,PyUnusedName
     class Ichidan:
