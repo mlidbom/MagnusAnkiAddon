@@ -34,7 +34,7 @@ class InflectionForms:
 
     # noinspection PyUnusedClass,PyUnusedName
     class Continuative:
-        renyōkei_masu_stem = _add_form("連用形", "Continuative - masu-stem/i-stem [読み] - Used for connecting verbs/adjectives masu-stem")
+        renyōkei_masu_stem = _add_form("連用形", "Continuative - masu-stem/i-stem [読み] - verbs/adjective")
         te_connection = _add_form("連用テ接続", "Continuative te-connection - Connects to te-form")
         ta_connection = _add_form("連用タ接続", 'Continuative ta-connection - Connects to past tense marker "ta"')
         de_connection = _add_form("連用デ接続", 'Continuative de-connection - Connects to the te-form variant "de"')
@@ -55,16 +55,16 @@ class InflectionForms:
 
     # noinspection PyUnusedClass,PyUnusedName
     class Hypothetical:
-        general_hypothetical_kateikei = _add_form("仮定形", "Hypothetical - e-stem [読め] - of verbs and adjectives.")
+        general_hypothetical_kateikei = _add_form("仮定形", "Hypothetical/potential - e-stem [読め] - of verbs and adjectives.")
         contraction1 = _add_form("仮定縮約１", "Hypothetical form of verbs and adjectives contraction version 1")
         contraction2 = _add_form("仮定縮約２", "Hypothetical form of verbs and adjectives contraction version 2")
 
     # noinspection PyUnusedClass,PyUnusedName
     class ImperativeMeireikei:
-        e = _add_form("命令ｅ", 'Imperative-e  e-stem[読め] - Command form ending in "e"')
-        ro = _add_form("命令ｒｏ", 'Imperative-ro [食べろ] - Command form ending in "ro"')
-        yo = _add_form("命令ｙｏ", 'Imperative-yo [食べよ] - Command form ending in "yo"')
-        i = _add_form("命令ｉ", 'Imperative i-form - Command form ending in "i"')
+        e = _add_form("命令ｅ", 'Imperative/command/meireikei -  e-stem[読め] - Command form ending in "e"')
+        ro = _add_form("命令ｒｏ", 'Imperative/command/meireikei - ro [食べろ] - Command form ending in "ro"')
+        yo = _add_form("命令ｙｏ", 'Imperative/command/meireikei - yo [食べよ] - Command form ending in "yo"')
+        i = _add_form("命令ｉ", 'Imperative/command/meireikei - i-form - Command form ending in "i"')
 
     # noinspection PyUnusedClass,PyUnusedName
     class NounConnection:
