@@ -33,12 +33,12 @@ class JNToken(Slots):
         self.reading = typed.str_(reading)
         self.phonetic = typed.str_(phonetic)
         self.node_type = typed.str_(node_type)
-        self.parts_of_speech = parts_of_speech
+        self.parts_of_speech:JNPartsOfSpeech = parts_of_speech
         self.raw_token = raw_token
 
     def __repr__(self) -> str:
         return "".join([
-            "TokenExt(",
+            "JNToken(",
             "" + kana_utils.pad_to_length(f"'{self.base_form}'", 6),
             ", " + kana_utils.pad_to_length(f"'{self.surface}'", 6),
             ", " + kana_utils.pad_to_length(f"'{self.inflection_type}'", 6),
