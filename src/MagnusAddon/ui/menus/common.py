@@ -90,7 +90,7 @@ def build_string_menu(menu: QMenu, string: str, string_note_menu_factory: typing
     build_web_search_menu(non_optional(menu.addMenu(shortcutfinger.home3("Search Web"))), lambda: string)
     build_matching_note_menu(non_optional(menu.addMenu(shortcutfinger.home4("Exactly matching notes"))), string)
     build_create_note_menu(non_optional(menu.addMenu(shortcutfinger.up1(f"Create: {string[:40]}"))), string)
-    add_ui_action(menu, shortcutfinger.down1("remove from sentence exclusions"), lambda: local_note_updater.clean_sentence_excluded_word(string))
+    add_ui_action(menu, shortcutfinger.down1("Reparse matching sentences"), lambda: local_note_updater.reparse_matching_sentences(string))
 
 def build_universal_note_actions_menu(note_actions_menu: QMenu, note: JPNote | None) -> None:
     if not note: return

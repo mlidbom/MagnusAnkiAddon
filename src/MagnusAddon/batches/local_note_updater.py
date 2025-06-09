@@ -177,13 +177,12 @@ def print_gc_status_and_collect() -> None:
     object_instance_tracker.print_instance_counts()
 
 def reparse_sentences_for_vocab(vocab: VocabNote) -> None:
-    query = query_builder.sentence_with_any_vocab_form_in_question(vocab)
-    sentences = app.col().sentences.search(query)
-    reparse_sentences(sentences)
+    query = query_builder.potentially_matching_sentences_for_vocab(vocab)
+    sentences:set[SentenceNote] = set(app.col().sentences.search(query))
+    # noinspection PyAugmentAssignment
+    sentences = sentences | set(vocab.sentences.all())
+    reparse_sentences(list(sentences))
 
-def clean_sentence_excluded_word(excluded: str) -> None:
-    def reparse_sentence(sentence: SentenceNote) -> None:
-        sentence.configuration.incorrect_matches.remove_string(excluded)
-
-    sentences_to_update = app.col().sentences.search(query_builder.sentences_with_exclusions([excluded]))
-    progress_display_runner.process_with_progress(sentences_to_update, reparse_sentence, "Reparsing sentences.")
+def reparse_matching_sentences(question_substring: str) -> None:
+    sentences_to_update = app.col().sentences.search(query_builder.sentences_with_question_substring(question_substring))
+    reparse_sentences(sentences_to_update)

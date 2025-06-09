@@ -73,7 +73,7 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
         add_ui_action(misc_menu, shortcutfinger.home2("Generate answer"), lambda: vocab.generate_and_set_answer())
 
         from batches import local_note_updater
-        add_ui_action(misc_menu, shortcutfinger.home3("Reparse matching sentences"), lambda: local_note_updater.reparse_sentences_for_vocab(vocab))
+        add_ui_action(misc_menu, shortcutfinger.home3("Reparse potentially matching sentences: (Only reparse all sentences is sure to catch everything)"), lambda: local_note_updater.reparse_sentences_for_vocab(vocab))
         add_ui_action(misc_menu, shortcutfinger.home4("Repopulate TOS"), lambda: vocab.parts_of_speech.set_automatically_from_dictionary())
 
         add_ui_action(misc_menu, shortcutfinger.home5("Autogenerate compounds"), lambda: vocab.compound_parts.auto_generate())

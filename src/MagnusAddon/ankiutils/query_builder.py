@@ -33,20 +33,19 @@ deck_excluded = f"""{Builtin.Deck}:{excluded_deck_substring}"""
 
 note_vocab = note_vocab
 
-def _or_clauses(clauses:list[str]) -> str:
+def _or_clauses(clauses: list[str]) -> str:
     return clauses[0] if len(clauses) == 1 else f"""({" OR ".join(clauses)})"""
 
-
-def field_contains_word(field:str, *words:str) -> str:
+def field_contains_word(field: str, *words: str) -> str:
     return _or_clauses([f'''"{field}:re:\\b{query}\\b"''' for query in words])
 
-def field_contains_string(field:str, *words:str) -> str:
+def field_contains_string(field: str, *words: str) -> str:
     return _or_clauses([f'''"{field}:*{query}*"''' for query in words])
 
-def sentence_search(word:str, exact:bool = False) -> str:
+def sentence_search(word: str, exact: bool = False) -> str:
     result = f"""{note_sentence} """
 
-    def form_query(form:str) -> str:
+    def form_query(form: str) -> str:
         return f"""(-{field_contains_word(SentenceNoteFields.user_excluded_vocab, form)} AND ({f_question}:*{form}* OR {field_contains_word(SentenceNoteFields.parsing_result, form)} OR {field_contains_word(SentenceNoteFields.user_extra_vocab, form)}))"""
 
     if not exact:
@@ -57,27 +56,30 @@ def sentence_search(word:str, exact:bool = False) -> str:
 
     return result + f"""({form_query(word)})"""
 
-def sentence_with_any_vocab_form_in_question(word:VocabNote) -> str:
-    search_strings = word.conjugator.get_stems_for_all_forms() + list(word.forms.all_set())
-    return f"""{note_sentence} {field_contains_string(f_question,  *search_strings)}"""
+def potentially_matching_sentences_for_vocab(word: VocabNote) -> str:
+    search_strings = word.conjugator.get_stems_for_all_forms() + word.forms.all_list()
+    # we'd much rather catch too much than not enough here. False positives only slow things down a bit,
+    # false negatives on the other hand, can totally confuse things, giving the user entirely the wrong idea about the value of a word when no/few matches are found.
+    search_strings += [form[:-1] for form in word.forms.all_list() if len(form) > 2 or kana_utils.contains_kanji(form)]
+    return f"""{note_sentence} {field_contains_string(f_question, *search_strings)}"""
 
-def sentences_with_exclusions(exclusions:list[str]) -> str:
-    return f"""{note_sentence} {field_contains_string(SentenceNoteFields.user_excluded_vocab,  *exclusions)}"""
-
+def sentences_with_question_substring(substring: str) -> str:
+    return f"""{note_sentence} {field_contains_string(SentenceNoteFields.active_question, substring)}"""
 
 def notes_lookup(notes: Sequence[JPNote]) -> str:
     return notes_by_id([note.get_id() for note in notes])
 
-def notes_by_id(note_ids:list[NoteId]) -> str:
+def notes_by_id(note_ids: list[NoteId]) -> str:
     return f"""{NoteFields.note_id}:{",".join([str(note_id) for note_id in note_ids])}""" if note_ids else ""
 
-def single_vocab_wildcard(query:str) -> str: return f"{note_vocab} ({f_forms}:*{query}* OR {f_reading}:*{query}* OR {f_answer}:*{query}*)"
+def single_vocab_wildcard(query: str) -> str: return f"{note_vocab} ({f_forms}:*{query}* OR {f_reading}:*{query}* OR {f_answer}:*{query}*)"
+
 def single_vocab_by_question_reading_or_answer_exact(query: str) -> str:
     return f"{note_vocab} ({field_contains_word(f_forms, query)} OR {field_contains_word(f_reading, kana_utils.katakana_to_hiragana(query))} OR {field_contains_word(f_answer, query)})"
-def single_vocab_by_form_exact(query: str) -> str:return f"{note_vocab} {field_contains_word(f_forms, query)}"
 
-def single_vocab_by_form_exact_read_card_only(query: str) -> str:return f"({single_vocab_by_form_exact(query)}) {card_read}"
+def single_vocab_by_form_exact(query: str) -> str: return f"{note_vocab} {field_contains_word(f_forms, query)}"
 
+def single_vocab_by_form_exact_read_card_only(query: str) -> str: return f"({single_vocab_by_form_exact(query)}) {card_read}"
 
 def kanji_in_string(query: str) -> str: return f"{note_kanji} ( {' OR '.join([f'{f_question}:{char}' for char in query])} )"
 
@@ -85,7 +87,7 @@ def vocab_dependencies_lookup_query(vocab: VocabNote) -> str:
     def single_vocab_clause(voc: str) -> str:
         return f"{field_contains_word(f_forms, voc)}"
 
-    def create_vocab_clause(text:str) -> str:
+    def create_vocab_clause(text: str) -> str:
         dictionary_forms = TextAnalysis.from_text(text).all_words_strings()
         return f"({note_vocab} ({' OR '.join([single_vocab_clause(voc) for voc in dictionary_forms])})) OR " if dictionary_forms else ""
 
@@ -97,12 +99,12 @@ def vocab_dependencies_lookup_query(vocab: VocabNote) -> str:
 
     return f"""{create_vocab_vocab_clause()} ({create_kanji_clause()})"""
 
-def vocab_with_kanji(note:KanjiNote) -> str: return f"{note_vocab} {f_forms}:*{note.get_question()}*"
+def vocab_with_kanji(note: KanjiNote) -> str: return f"{note_vocab} {f_forms}:*{note.get_question()}*"
 
 def vocab_clause(voc: str) -> str:
     return f"""{field_contains_word(f_forms, voc)}"""
 
-def text_vocab_lookup(text:str) -> str:
+def text_vocab_lookup(text: str) -> str:
     dictionary_forms = TextAnalysis.from_text(text).all_words_strings()
     return vocabs_lookup(dictionary_forms)
 
@@ -131,14 +133,14 @@ def exact_matches_no_sentences_reading_cards(question: str) -> str:
 def immersion_kit_sentences() -> str:
     return f'''"{Builtin.Note}:{NoteTypes.immersion_kit}"'''
 
-def kanji_with_radicals_in_string(search:str) -> str:
+def kanji_with_radicals_in_string(search: str) -> str:
     radicals = search.strip().replace(",", "").replace(" ", "")
     notes = ex_sequence.flatten([app.col().kanji.with_radical(rad) for rad in radicals])
     notes = [note for note in notes if not any(rad for rad in radicals if rad not in note.get_radicals())]
     return notes_lookup(notes)
 
-def open_card_by_id(card_id:CardId) -> str:
+def open_card_by_id(card_id: CardId) -> str:
     return f"cid:{card_id}"
 
-def kanji_with_meaning(search:str) -> str:
+def kanji_with_meaning(search: str) -> str:
     return f"""{note_kanji} ({f_answer}:*{search}*)"""
