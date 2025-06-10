@@ -124,3 +124,9 @@ def get_a_stem_vocab(vocab: VocabNote, form: str = "") -> str:
 
 def get_te_stem_vocab(vocab: VocabNote, form: str = "") -> str:
     return get_te_stem(form if form else vocab.get_question(), vocab.parts_of_speech.is_ichidan(), vocab.parts_of_speech.is_godan())
+
+def get_imperative(word: str, is_ichidan: bool = False, is_godan: bool = False) -> str:
+    if is_godan or (not is_ichidan and word[-1] != "る"):
+        return get_e_stem(word, is_ichidan, is_godan)
+
+    return word[:-1] + "ろ"

@@ -193,3 +193,16 @@ class VocabCloner(Slots):
 
     def create_nai_form(self) -> VocabNote:
         return self.suffix_to_a_stem("ない")
+
+    def create_imperative(self) -> VocabNote:
+        from note.vocabulary.vocabnote import VocabNote
+
+        def create_imperative(form: str) -> str: return conjugator.get_imperative(form, self.note.parts_of_speech.is_ichidan(),  self.note.parts_of_speech.is_godan())
+
+        clone = VocabNote.factory.create(question=create_imperative(self.note.get_question()), answer=self.note.get_answer(), readings=[])
+        clone.forms.set_list([create_imperative(form) for form in self.note.forms.all_list()])
+        vocab_note = self.note
+        readings = [create_imperative(reading) for reading in vocab_note.readings.get()]
+        clone.readings.set(readings)
+        clone.parts_of_speech.set_raw_string_value("expression")
+        return clone
