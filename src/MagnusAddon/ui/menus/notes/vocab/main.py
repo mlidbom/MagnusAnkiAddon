@@ -57,6 +57,7 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
             add_lookup_action(vocab_lookup_menu, shortcutfinger.home2("Compound parts"), query_builder.vocabs_lookup_strings(vocab.compound_parts.all()))
             add_lookup_action(vocab_lookup_menu, shortcutfinger.home3("In compounds"), query_builder.notes_lookup(vocab.related_notes.in_compounds()))
             add_lookup_action(vocab_lookup_menu, shortcutfinger.home4("Synonyms"), query_builder.notes_lookup(vocab.related_notes.synonyms.notes()))
+            add_lookup_action(vocab_lookup_menu, shortcutfinger.home5("See also"), query_builder.notes_lookup(vocab.related_notes.see_also.notes()))
             build_readings_menu(non_optional(vocab_lookup_menu.addMenu(shortcutfinger.up1("Homonyms"))))
             add_vocab_dependencies_lookup(vocab_lookup_menu, shortcutfinger.up2("Dependencies"), vocab)
 
