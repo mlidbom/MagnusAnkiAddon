@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING
 from ankiutils import app
 from note.note_constants import Tags
 from note.notefields.require_forbid_flag_field import RequireForbidFlagField
-from note.notefields.tag_flag_field import TagFlagField
 from sysutils.simple_string_builder import SimpleStringBuilder
 
 if TYPE_CHECKING:
@@ -16,7 +15,6 @@ class YieldLastTokenToOverlappingCompound(RequireForbidFlagField):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         super().__init__(vocab, Tags.Vocab.Matching.yield_last_token_to_overlapping_compound, Tags.Vocab.Matching.Forbids.auto_yielding)
         self._vocab: WeakRef[VocabNote] = vocab
-        self.tag_field: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.yield_last_token_to_overlapping_compound)
 
     @property
     def is_required(self) -> bool:

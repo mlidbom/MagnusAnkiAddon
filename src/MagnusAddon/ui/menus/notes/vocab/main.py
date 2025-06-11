@@ -83,8 +83,8 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
         def build_requires_forbids_menu(requires_forbids_menu: QMenu) -> None:
             def add_require_forbid_menu(menu: QMenu, title: str, field: RequireForbidFlagField) -> None:
                 toggle_menu = non_optional(menu.addMenu(title))
-                add_checkbox(toggle_menu, shortcutfinger.home1("Required"), lambda: field.is_required, field.set_required)
-                add_checkbox(toggle_menu, shortcutfinger.home2("Forbidden"), lambda: field.is_forbidden, field.set_forbidden)
+                add_checkbox(toggle_menu, shortcutfinger.home1("Required"), lambda: field.is_configured_required, field.set_required)
+                add_checkbox(toggle_menu, shortcutfinger.home2("Forbidden"), lambda: field.is_configured_forbidden, field.set_forbidden)
 
             add_require_forbid_menu(requires_forbids_menu, shortcutfinger.home2("single token"), vocab.matching_rules.single_token)
             add_require_forbid_menu(requires_forbids_menu, shortcutfinger.home4("e stem"), vocab.matching_rules.e_stem)
