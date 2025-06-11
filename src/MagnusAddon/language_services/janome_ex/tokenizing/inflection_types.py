@@ -47,6 +47,7 @@ class InflectionTypes:
     # noinspection PyUnusedClass,PyUnusedName
     class Ichidan:
         regular: InflectionType = _add_form("一段", "Ichidan (one-step) verb - Regular -eru/-iru verb pattern")
+        #turns out this is not what we need, rather it only occurs in rare cases like ありうる
         eru: InflectionType = _add_form("一段・得ル", "Ichidan verb 'eru' (to get/obtain) - Special case ichidan verb")
         kureru: InflectionType = _add_form("一段・クレル", "Ichidan verb 'kureru' (to give) - Special case ichidan verb")
 
