@@ -35,8 +35,6 @@ class JNToken(Slots):
         self.node_type = typed.str_(node_type)
         self.parts_of_speech:JNPartsOfSpeech = parts_of_speech
         self.raw_token = raw_token
-        if self.inflection_type == InflectionTypes.Ichidan.eru:
-            pass
 
     def __repr__(self) -> str:
         return "".join([
