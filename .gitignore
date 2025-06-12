@@ -12,3 +12,4 @@ collection.anki2
 /src/web/collection.media/*.css.map
 /src/MagnusAddon/user_files/card_history.json
 /src/MagnusAddon/meta.json
+/src/MagnusAddon/user_files/logs/MagnusAddon.log*
