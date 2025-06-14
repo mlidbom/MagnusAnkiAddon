@@ -18,4 +18,4 @@ class DictionaryMatch(Match, Slots):
         self.readings: list[str] = [f.text for f in dictionary_entry.entry.kana_forms]
 
     @property
-    def is_primary_match(self) -> bool: return True
+    def is_secondary_match(self) -> bool: return True

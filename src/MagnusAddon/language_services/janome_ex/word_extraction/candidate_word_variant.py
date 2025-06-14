@@ -103,10 +103,6 @@ class CandidateWordVariant(WeakRefable, Slots):
         if self.vocabs_control_match_status:
             self.valid_matches = list(self.valid_vocab_matches)
             self.matches = list(self.vocab_matches)
-            override_form = [df for df in self.valid_matches if df.parsed_form != self.form]
-            if any(override_form):
-                # todo: this is highly suspect, do we really want to just overwrite the parsed value? Should this logic not stay within the match?
-                self.form = override_form[0].parsed_form
         else:
             if self.dict_lookup.found_words():
                 self.matches = [DictionaryMatch(self.weak_ref, self.dict_lookup.entries[0])]

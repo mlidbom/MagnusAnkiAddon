@@ -16,4 +16,4 @@ class MissingMatch(Match):
         self.match_form = "[MISSING]" #Change this so the tests can distinguish that this is a missing match
 
     @property
-    def is_primary_match(self) -> bool: return True
+    def is_secondary_match(self) -> bool: return True

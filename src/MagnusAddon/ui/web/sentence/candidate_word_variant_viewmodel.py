@@ -20,7 +20,7 @@ class CandidateWordVariantViewModel:
         self.has_perfect_match = any(match.match_owns_form for match in self.matches if match.match.is_displayed)
 
         def primary_matches_first(form: MatchViewModel) -> int:
-            return 0 if form.match.is_primary_match else 1
+            return 1 if form.match.is_secondary_match else 0
 
         self.primary_display_forms = [form for form in self.matches if primary_matches_first(form)]
         self.matches = sorted(self.matches, key=primary_matches_first)

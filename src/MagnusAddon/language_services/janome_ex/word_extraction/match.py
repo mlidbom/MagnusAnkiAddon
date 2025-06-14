@@ -14,13 +14,14 @@ if TYPE_CHECKING:
 class Match(WeakRefable, Slots):
     def __init__(self, word_variant: WeakRef[CandidateWordVariant], rules: VocabNoteMatching | None) -> None:
         self.word_variant: WeakRef[CandidateWordVariant] = word_variant
-        self.parsed_form: str = word_variant().form
-        self.match_form: str = self.parsed_form
+        self.tokenized_form: str = word_variant().form
+        self.parsed_form: str = self.tokenized_form
+        self.match_form: str = self.tokenized_form
         self.answer: str = ""
         self.readings: list[str] = []
         self.rules = rules
-        self.is_configured_hidden = word_variant().configuration.hidden_matches.excludes_at_index(self.parsed_form, word_variant().start_index)
-        self.is_configured_incorrect = word_variant().configuration.incorrect_matches.excludes_at_index(self.parsed_form, word_variant().start_index)
+        self.is_configured_hidden = word_variant().configuration.hidden_matches.excludes_at_index(self.tokenized_form, word_variant().start_index)
+        self.is_configured_incorrect = word_variant().configuration.incorrect_matches.excludes_at_index(self.tokenized_form, word_variant().start_index)
 
     @property
     def is_valid(self) -> bool:
@@ -34,7 +35,7 @@ class Match(WeakRefable, Slots):
     def is_highlighted(self) -> bool: return self.match_form in self.word_variant().configuration.highlighted_words
 
     @property
-    def is_primary_match(self) -> bool: raise NotImplementedError()
+    def is_secondary_match(self) -> bool: raise NotImplementedError()
 
     @property
     def is_displayed(self) -> bool: return (self.is_valid_for_display

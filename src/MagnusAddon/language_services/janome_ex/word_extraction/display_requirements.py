@@ -19,7 +19,7 @@ class DisplayRequirements(Slots):
         self.is_yield_last_token_to_overlapping_compound_requirement_fulfilled = self._is_yield_last_token_to_overlapping_compound_requirement_fulfilled()
 
         #if we have matches that owns the form, it calls the shots for display, no other matches are allowed to be displayed
-        self.yields_to_form_owning_match: bool = not match().is_primary_match
+        self.yields_to_form_owning_match: bool = match().is_secondary_match
 
         self.are_fulfilled = (self.is_yield_last_token_to_overlapping_compound_requirement_fulfilled
                               and not self.yields_to_form_owning_match)
