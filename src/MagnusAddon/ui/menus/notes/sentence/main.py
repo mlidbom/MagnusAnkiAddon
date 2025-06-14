@@ -40,10 +40,6 @@ def build_view_menu(view_menu: QMenu, _vocab: SentenceNote) -> None:
     for index, toggle in enumerate(app.config().sentence_view_toggles):
         add_checkbox_config(view_menu, toggle, shortcutfinger.finger_by_priority_order(index, toggle.title))
 
-    tokenizing_menu = non_optional(view_menu.addMenu(shortcutfinger.finger_by_priority_order(index + 1, "Tokenizing")))
-    for index2, toggle in enumerate(app.config().tokenizing_toggles):
-        add_checkbox_config(tokenizing_menu, toggle, shortcutfinger.finger_by_priority_order(index2, toggle.title))
-
     add_ui_action(view_menu,
-                  shortcutfinger.finger_by_priority_order(index + 2, "Toggle all sentence auto yield compound last token flags (Ctrl+Shift+Alt+d)"),
+                  shortcutfinger.finger_by_priority_order(index + 1, "Toggle all sentence auto yield compound last token flags (Ctrl+Shift+Alt+d)"),
                   app.config().toggle_all_sentence_display_auto_yield_flags)
