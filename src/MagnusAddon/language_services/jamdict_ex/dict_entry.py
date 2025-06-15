@@ -61,7 +61,7 @@ class DictEntry(Slots):
     def _is_verb(self) -> bool:
         return (any(_sense_is_intransitive_verb(sense) for sense in self.entry.senses)
                 or any(_sense_is_transitive_verb(sense) for sense in self.entry.senses)
-                or any(" verb " in s.pos[0] for s in self.entry.senses))
+                or any(" verb " in s.pos[0] for s in self.entry.senses if len(s.pos) > 0))
 
     def _answer_prefix(self) -> str:
         if self._is_verb():
