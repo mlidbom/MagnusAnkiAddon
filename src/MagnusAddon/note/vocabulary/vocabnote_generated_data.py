@@ -27,7 +27,8 @@ def update_generated_data(vocab: VocabNote) -> None:
 
     if vocab.get_question():
         speech_types = vocab.parts_of_speech.get() - {"Unknown",
-                                                      "Godan verbIchidan verb"  # crap inserted by bug in yomitan
+                                                      "Godan verbIchidan verb",
+                                                      "Ichidan verbGodan verb" # crap inserted by bug in yomitan
                                                       }
 
         if vocab.readings.get():  # if we don't have a reading, the lookup will be too unreliable
