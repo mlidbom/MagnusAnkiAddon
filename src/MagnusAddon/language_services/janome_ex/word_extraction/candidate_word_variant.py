@@ -145,17 +145,12 @@ class CandidateWordBaseVariant(CandidateWordVariant, Slots):
     def __init__(self, word: WeakRef[CandidateWord], form: str) -> None:
         super().__init__(word, form, is_base=True)
 
-        self.surface_is_not: set[str] = set().union(*[v.matching_rules.rules.surface_is_not.get() for v in self.unexcluded_any_form_vocabs])
         self.surface_preferred_over_bases: set[str] = set()
 
     def complete_analysis(self) -> None:
         super().complete_analysis()
 
         if self.surface is not None:
-            if self.surface.form in self.surface_is_not:
-                self.is_self_excluded = True
-                self.is_valid_candidate = False
-
             # todo: really not sure about this. Is this a good way to do it? If so, should it not belong to display logic rather than validity logic
             self.surface_preferred_over_bases = set().union(*[vocab.matching_rules.rules.prefer_over_base.get() for vocab in self.surface.unexcluded_any_form_vocabs])
             if self.form in self.surface_preferred_over_bases:
