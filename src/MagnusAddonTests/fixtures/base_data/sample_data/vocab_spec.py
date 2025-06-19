@@ -17,9 +17,9 @@ class VocabSpec(Slots):
                  tags: list[str] | None = None,
                  compounds: list[str] | None = None,
                  surface_not: set[str] | None = None,
+                 yield_to_surface: set[str] | None = None,
                  prefix_not: set[str] | None = None,
-                 prefix_in: set[str] | None = None,
-                 prefer_over_base: set[str] | None = None) -> None:
+                 prefix_in: set[str] | None = None) -> None:
         self.question: str = question
         self.answer: str = answer or question
         self.readings: list[str] = readings or [self.question]
@@ -27,9 +27,9 @@ class VocabSpec(Slots):
         self.tags: set[str] = set(tags if tags else [])
         self.compounds: list[str] = compounds if compounds else []
         self.surface_is_not: set[str] = surface_not if surface_not else set()
+        self.yield_to_surface: set[str] = yield_to_surface if yield_to_surface else set()
         self.prefix_is_not: set[str] = prefix_not if prefix_not else set()
         self.required_prefix: set[str] = prefix_in if prefix_in else set()
-        self.prefer_over_base: set[str] = prefer_over_base if prefer_over_base else set()
 
     def __repr__(self) -> str:
         return f"""VocabSpec("{self.question}", "{self.answer}", {self.readings})"""
@@ -57,14 +57,14 @@ class VocabSpec(Slots):
         for excluded_surface in self.surface_is_not:
             vocab_note.matching_rules.rules.surface_is_not.add(excluded_surface)
 
+        for yield_to_surface in self.yield_to_surface:
+            vocab_note.matching_rules.rules.yield_to_surface.add(yield_to_surface)
+
         for forbidden_prefix in self.prefix_is_not:
             vocab_note.matching_rules.rules.prefix_is_not.add(forbidden_prefix)
 
         for required_prefix in self.required_prefix:
             vocab_note.matching_rules.rules.required_prefix.add(required_prefix)
-
-        for prefer_surface_over_base in self.prefer_over_base:
-            vocab_note.matching_rules.rules.prefer_over_base.add(prefer_surface_over_base)
 
         return vocab_note
 
@@ -98,9 +98,9 @@ test_special_vocab: list[VocabSpec] = [
 
     VocabSpec("させる", "get-_/is-_", ["させる"], forms=["せる"], tags=[vm.is_inflecting_word]),
 
-    VocabSpec("する", "to: do", surface_not={"しろ"}),
+    VocabSpec("する", "to: do", yield_to_surface={"しろ"}),
     VocabSpec("しろ", "do!", ["しろ"]),
-    VocabSpec("らっしゃる", surface_not={"らっしゃい"}),
+    VocabSpec("らっしゃる", yield_to_surface={"らっしゃい"}),
     VocabSpec("らっしゃい"),
 
     VocabSpec("ぬ", "not", ["ぬ"], surface_not={"ず"}),

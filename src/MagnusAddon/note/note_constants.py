@@ -181,7 +181,6 @@ class Tags(Slots):
                 with_preceding_vowel = f"{f_vocab_matching_todo}match-with-preceding-vowel"
 
             class Uses:
-                prefer_over_base = f"{f_vocab_matching_uses}prefer-over-base"
                 prefix_is_not = f"{f_vocab_matching_uses}prefix-is-not"
                 required_prefix = f"{f_vocab_matching_uses}required-prefix"
                 surface_is_not = f"{f_vocab_matching_uses}surface-is-not"

@@ -65,6 +65,13 @@ def setup_collection_with_select_data() -> Iterator[None]:
 def test_misc_stuff(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
     _assert_display_words_equal(sentence, [], expected_output)
 
+@pytest.mark.parametrize("sentence, expected_output", [
+    ("しろ", ["しろ"]),
+    ("後で下に下りてらっしゃいね", ["後で", "下に", "下りる", "て", "らっしゃい", "ね"]),
+])
+def test_yield_to_surface(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
+    _assert_display_words_equal(sentence, [], expected_output)
+
 @pytest.mark.parametrize("sentence, excluded, expected_output", [
     ("厳密に言えば　俺一人が友達だけど",
      [WordExclusion.global_("厳密に言えば"), WordExclusion.global_("言え"), WordExclusion.global_("だけど")],

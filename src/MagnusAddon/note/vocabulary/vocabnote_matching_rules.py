@@ -22,10 +22,11 @@ if TYPE_CHECKING:
 
 class VocabNoteMatchingRulesData(Slots):
     serializer = VocabNoteMatchingRulesSerializer()
-    def __init__(self, surface_is_not: set[str], prefer_over_base: set[str], prefix_is_not: set[str], required_prefix: set[str]) -> None:
+    def __init__(self, surface_is_not: set[str], prefer_over_base: set[str], prefix_is_not: set[str], required_prefix: set[str], yield_to_surface: set[str]) -> None:
         self.prefix_is_not = prefix_is_not
         self.surface_is_not = surface_is_not
         self.prefer_over_base = prefer_over_base
+        self.yield_to_surface = yield_to_surface
         self.required_prefix = required_prefix
 
 class VocabNoteMatchingRules(Slots):
@@ -33,6 +34,7 @@ class VocabNoteMatchingRules(Slots):
         self._data: JsonObjectField[VocabNoteMatchingRulesData] = JsonObjectField(vocab, NoteFields.Vocab.matching_rules, VocabNoteMatchingRulesData.serializer)
         self.surface_is_not: FieldSetWrapper[str] = FieldSetWrapper.for_json_object_field(self._data, self._data.get().surface_is_not)
         self.prefer_over_base: FieldSetWrapper[str] = FieldSetWrapper.for_json_object_field(self._data, self._data.get().prefer_over_base)
+        self.yield_to_surface: FieldSetWrapper[str] = FieldSetWrapper.for_json_object_field(self._data, self._data.get().yield_to_surface)
         self.prefix_is_not: FieldSetWrapper[str] = FieldSetWrapper.for_json_object_field(self._data, self._data.get().prefix_is_not)
         self.required_prefix: FieldSetWrapper[str] = FieldSetWrapper.for_json_object_field(self._data, self._data.get().required_prefix)
 
@@ -41,7 +43,6 @@ class VocabNoteMatchingRules(Slots):
 
     def __repr__(self) -> str: return (SkipFalsyValuesDebugReprBuilder()
                                        .prop("surface_is_not", self.surface_is_not.get())
-                                       .prop("prefer_over_base", self.prefer_over_base.get())
                                        .prop("prefix_is_not", self.prefix_is_not.get())
                                        .prop("required_prefix", self.required_prefix.get()).repr)
 

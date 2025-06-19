@@ -84,15 +84,6 @@ def test_requires_a_stem(setup_collection_with_select_data: object, sentence: st
     root_words = [w.form for w in analysis.valid_word_variants]
     assert root_words == expected_output
 
-@pytest.mark.parametrize("sentence, expected_output", [
-    ("しろ", ["しろ"]),
-    ("後で下に下りてらっしゃいね", ["後で", "下に", "下", "に", "下りる", "て", "らっしゃい", "ね"]),
-])
-def test_prefer_surfaces_over_bases(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
-    analysis = TextAnalysis(sentence, SentenceConfiguration.empty())
-    root_words = [w.form for w in analysis.valid_word_variants]
-    assert root_words == expected_output
-
 def test_ignores_noise_characters(setup_collection_with_select_data: object) -> None:
     sentence = ". , : ; / | 。 、ー ? !"
     expected = {"ー"}
