@@ -33,6 +33,9 @@ class VocabNotePartsOfSpeech(Slots):
     def is_godan(self) -> bool:
         return "godan" in self.raw_string_value().lower()
 
+    def is_inflecting_word_type(self) -> bool:
+        return self.is_godan() or self.is_ichidan()
+
     def is_suru_verb_included(self) -> bool:
         question = self._vocab.question.without_noise_characters()
         return len(question) > 2 and question[-2:] == "する"

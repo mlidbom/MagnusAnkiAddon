@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING
 
 from ankiutils import app
 from autoslot import Slots
-from note.note_constants import Tags
 from sysutils import ex_sequence
 from sysutils.object_instance_tracker import ObjectInstanceTracker
 from sysutils.weak_ref import WeakRef, WeakRefable
@@ -92,4 +91,4 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
     # todo: having this check here only means that marking a compound as an inflecting word has no effect, and figuring out why things are not working can be quite a pain
     def is_inflecting_word(self) -> bool:
         vocab = app.col().vocab.with_any_form_in([self.token.base_form, self.token.surface])
-        return any(voc for voc in vocab if voc.has_tag(Tags.Vocab.Matching.is_inflecting_word))
+        return any(voc for voc in vocab if voc.matching_rules.is_inflecting_word.is_active)
