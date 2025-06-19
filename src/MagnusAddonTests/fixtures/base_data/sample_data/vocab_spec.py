@@ -98,8 +98,10 @@ test_special_vocab: list[VocabSpec] = [
 
     VocabSpec("させる", "get-_/is-_", ["させる"], forms=["せる"], tags=[vm.is_inflecting_word]),
 
-    VocabSpec("しろ", "do!", ["しろ"], prefer_over_base={"する"}),
-    VocabSpec("らっしゃい", "todo", ["らっしゃい"], prefer_over_base={"らっしゃる"}),
+    VocabSpec("する", "to: do", surface_not={"しろ"}),
+    VocabSpec("しろ", "do!", ["しろ"]),
+    VocabSpec("らっしゃる", surface_not={"らっしゃい"}),
+    VocabSpec("らっしゃい"),
 
     VocabSpec("ぬ", "not", ["ぬ"], surface_not={"ず"}),
     VocabSpec("た", "{past-tense} | (please)do", ["た"], surface_not={"たら"}, tags=[vm.is_inflecting_word]),
@@ -203,7 +205,6 @@ test_ordinary_vocab_list = [
     VocabSpec("としたら", "if-it-happens-that / if-we-assume", ["としたら"]),
     VocabSpec("だろう", "seems/I-think/I-guess | right?/don't-you-agree?", ["だろう"]),
     VocabSpec("だろ", "seems/I-think/I-guess | right?/don't-you-agree?", ["だろ"]),
-    VocabSpec("する", "{verbalizes-noun} #to: do | make-into | serve-as | wear", ["する"]),
     VocabSpec("友達", "friend/companion", ["ともだち"]),
     VocabSpec("様", "appearing/looking | way to | form/style", ["よう"]),
     VocabSpec("考え", "Thought, A Thought", ["かんがえ"]),
