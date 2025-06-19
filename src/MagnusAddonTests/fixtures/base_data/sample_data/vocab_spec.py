@@ -19,6 +19,7 @@ class VocabSpec(Slots):
                  surface_not: set[str] | None = None,
                  yield_to_surface: set[str] | None = None,
                  prefix_not: set[str] | None = None,
+                 tos:str | None = None,
                  prefix_in: set[str] | None = None) -> None:
         self.question: str = question
         self.answer: str = answer or question
@@ -29,6 +30,7 @@ class VocabSpec(Slots):
         self.surface_is_not: set[str] = surface_not if surface_not else set()
         self.yield_to_surface: set[str] = yield_to_surface if yield_to_surface else set()
         self.prefix_is_not: set[str] = prefix_not if prefix_not else set()
+        self.tos: str = tos if tos else ""
         self.required_prefix: set[str] = prefix_in if prefix_in else set()
 
     def __repr__(self) -> str:
@@ -65,6 +67,9 @@ class VocabSpec(Slots):
 
         for required_prefix in self.required_prefix:
             vocab_note.matching_rules.rules.required_prefix.add(required_prefix)
+
+        if self.tos:
+            vocab_note.parts_of_speech.set_raw_string_value(self.tos)
 
         return vocab_note
 
@@ -114,6 +119,9 @@ test_special_vocab: list[VocabSpec] = [
     # multiple form to trigger a certain bug
     VocabSpec("ない", "not", ["ない"], forms=["無い"]),
     VocabSpec("無い", "not", ["ない"], forms=["ない"]),
+    VocabSpec("うまい", yield_to_surface={"うまく"}),
+    VocabSpec("うまく"),
+    VocabSpec("笑える", tos="ichidan verb"),
 
     VocabSpec("ている", "is-_-ing", readings=["ている"]),
     VocabSpec("にする", "to: turn-into", readings=["にする"]),

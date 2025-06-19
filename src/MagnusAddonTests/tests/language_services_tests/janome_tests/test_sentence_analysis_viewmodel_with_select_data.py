@@ -61,6 +61,7 @@ def setup_collection_with_select_data() -> Iterator[None]:
     ("どうしちゃったんだろうな", ["どう", "しちゃう", "たん:たの", "だろう", "な"]),
     ("良いものを食べる", ["良い", "もの", "を", "食べる"]),
     ("いいものを食べる", ["いい", "もの", "を", "食べる"]),
+    ("うまく笑えずに", ["うまく", "笑える", "ずに"]) # うまく disappeared when we made all verbs inflecting words by default
 ])
 def test_misc_stuff(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
     _assert_display_words_equal(sentence, [], expected_output)
