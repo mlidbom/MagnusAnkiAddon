@@ -30,9 +30,16 @@ class MiscRequirements(Slots):
                                                      or match().word_variant().is_surface
                                                      or match().word_variant().word().surface.form not in surface_is_not)
 
+        # todo: this should be in display requirements but due to the messed up way we intermingle logic for validity and display that breaks the display. For now we have it here.
+        yield_to_surface = self.rules.rules.yield_to_surface.get()
+        self.yield_to_surface_requirement_fulfilled = (not any(yield_to_surface)
+                                                       or match().word_variant().is_surface
+                                                       or match().word_variant().word().surface.form not in yield_to_surface)
+
         self.are_fulfilled = (self.is_exact_match_requirement_fulfilled
                               and self.is_single_token_requirement_fulfilled
                               and self.surface_is_not_requirement_fulfilled
+                              and self.yield_to_surface_requirement_fulfilled
                               and self.is_compound_requirement_fulfilled
                               and not self.is_poison_word)
 
@@ -40,6 +47,7 @@ class MiscRequirements(Slots):
         return (SimpleStringListBuilder()
                 .append_if(not self.is_exact_match_requirement_fulfilled, "requires_exact_match")
                 .append_if(not self.is_single_token_requirement_fulfilled, "requires_single_token")
+                .append_if(not self.yield_to_surface_requirement_fulfilled, f"yield_to_surface_{self.match().word_variant().word().surface.form}")
                 .append_if(not self.is_compound_requirement_fulfilled, "requires_compound")
                 .append_if(not self.surface_is_not_requirement_fulfilled, f"surface_is_not_{self.match().word_variant().word().surface.form}")
                 .append_if(self.is_poison_word, "is_poison_word")

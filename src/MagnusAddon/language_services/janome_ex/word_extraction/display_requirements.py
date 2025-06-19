@@ -21,19 +21,12 @@ class DisplayRequirements(Slots):
         # if we have matches that owns the form, it calls the shots for display, no other matches are allowed to be displayed
         self.yields_to_form_owning_match: bool = match().is_secondary_match
 
-        yield_to_surface = self.rules.rules.yield_to_surface.get()
-        self.yield_to_surface_requirement_fulfilled = (not any(yield_to_surface)
-                                                       or match().word_variant().is_surface
-                                                       or match().word_variant().word().surface.form not in yield_to_surface)
-
         self.are_fulfilled = (self.is_yield_last_token_to_overlapping_compound_requirement_fulfilled
-                              and self.yield_to_surface_requirement_fulfilled
                               and not self.yields_to_form_owning_match)
 
     def failure_reasons(self) -> set[str]:
         return (SimpleStringListBuilder()
                 .append_if(not self.is_yield_last_token_to_overlapping_compound_requirement_fulfilled, "yield_last_token_to_overlapping_compound")
-                .append_if(not self.yield_to_surface_requirement_fulfilled, f"yield_to_surface_{self.match().word_variant().word().surface.form}")
                 .append_if(self.yields_to_form_owning_match, "yields_to_form_owning_match")
                 .as_set())
 
