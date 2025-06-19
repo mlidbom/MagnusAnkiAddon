@@ -2,11 +2,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ankiutils import app
 from autoslot import Slots
 from note.note_constants import Tags
 from note.notefields.tag_flag_field import TagFlagField
-from sysutils.simple_string_builder import SimpleStringBuilder
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
