@@ -19,7 +19,6 @@ class ProcessedToken(Slots):
         self.base_form = base
         self.base_form_for_non_compound_vocab_matching = base_for_vocab
         self.is_inflectable_word: bool = False
-        self.do_not_match_surface_for_non_compound_vocab: bool = False
         self.is_non_word_character = is_non_word_character
         self.potential_godan_verb: str | None = None
 

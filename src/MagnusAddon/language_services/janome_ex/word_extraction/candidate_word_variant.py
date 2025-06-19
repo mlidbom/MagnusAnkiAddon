@@ -137,10 +137,6 @@ class CandidateWordSurfaceVariant(CandidateWordVariant, Slots):
     def __init__(self, word: WeakRef[CandidateWord], form: str) -> None:
         super().__init__(word, form, is_base=False)
 
-        if (not word().is_custom_compound
-                and word().locations[-1]().token.do_not_match_surface_for_non_compound_vocab):
-            self.is_self_excluded = True
-
 class CandidateWordBaseVariant(CandidateWordVariant, Slots):
     def __init__(self, word: WeakRef[CandidateWord], form: str) -> None:
         super().__init__(word, form, is_base=True)
