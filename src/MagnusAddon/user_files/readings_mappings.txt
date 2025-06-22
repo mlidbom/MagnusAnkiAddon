@@ -151,6 +151,7 @@ hiro:hiro
 hisa:hiss-a
 hiso:he-saw
 hita:hit-a
+hitai:hit-eye
 hito:hit
 hitsu:hits
 hitsuji:hits-Je:sus

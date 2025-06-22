@@ -40,6 +40,7 @@ def build_create_note_menu(note_create_menu: QMenu, vocab: VocabNote, selection:
         create_vocab_note_action(verb_menu, shortcutfinger.up2("{receptive/passive}-form"), lambda: vocab.cloner.create_receptive_form())
         create_vocab_note_action(verb_menu, shortcutfinger.up3("causative"), lambda: vocab.cloner.create_causative_form())
         create_vocab_note_action(verb_menu, shortcutfinger.up4("imperative"), lambda: vocab.cloner.create_imperative())
+        create_vocab_note_action(verb_menu, shortcutfinger.down1("Potential-godan"), lambda: vocab.cloner.create_potential_godan())
 
     def build_misc_menu(misc_menu: QMenu) -> None:
         create_vocab_note_action(misc_menu, shortcutfinger.home1("く-form-of-い-adjective"), lambda: vocab.cloner.create_ku_form())
