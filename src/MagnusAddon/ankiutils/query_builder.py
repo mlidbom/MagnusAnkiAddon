@@ -60,7 +60,7 @@ def potentially_matching_sentences_for_vocab(word: VocabNote) -> str:
     search_strings = word.conjugator.get_stems_for_all_forms() + word.forms.all_list()
     # we'd much rather catch too much than not enough here. False positives only slow things down a bit,
     # false negatives on the other hand, can totally confuse things, giving the user entirely the wrong idea about the value of a word when no/few matches are found.
-    search_strings += [form[:-1] for form in word.forms.all_list() if len(form) > 2 or kana_utils.contains_kanji(form)]
+    search_strings += [form[:-1] for form in word.forms.all_list() if (len(form) > 2 or kana_utils.contains_kanji(form)) and kana_utils.character_is_kana(form[-1])]
     return f"""{note_sentence} {field_contains_string(f_question, *search_strings)}"""
 
 def sentences_with_question_substring(substring: str) -> str:
