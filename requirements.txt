@@ -1,5 +1,5 @@
-aqt==25.7.3
-anki==25.7.3
+aqt==25.7.5
+anki==25.7.5
 
 #Latest versions seem to crash in interesting ways. If Anki does not run, make sure to use exactly these versions
 PyQt6==6.9.1
@@ -18,7 +18,7 @@ pipdeptree
 #puchikarui==0.2a2.post5
 requests==2.32.5
 types-requests
-pytest~=8.4.1
+pytest~=8.4.2
 pytest-xdist
 mypy
 beartype~=0.21.0
@@ -28,6 +28,6 @@ PyQt6-sip
 pykakasi~=2.3.0
 python-romkan-ng
 ruff
-deepdiff~=8.5.0
-typing_extensions~=4.13.2
+deepdiff~=8.6.1
+typing_extensions~=4.15.0
 autoslot~=2024.12.1
