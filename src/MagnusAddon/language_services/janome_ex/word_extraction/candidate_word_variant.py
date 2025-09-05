@@ -52,7 +52,7 @@ class CandidateWordVariant(WeakRefable, Slots):
     @property
     def is_shadowed(self) -> bool:
         return (self.word().start_location().is_shadowed_by is not None
-                or (self not in self.word().start_location().display_variants
+                or (self not in self.word().start_location().display_variants #todo: this feels very suspect. The location is NOT shadowed, but we still consider it shadowed?
                     and self.is_valid_candidate))
 
     def is_preliminarily_valid(self) -> bool:
