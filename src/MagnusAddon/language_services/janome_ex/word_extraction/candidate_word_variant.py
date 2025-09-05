@@ -57,7 +57,6 @@ class CandidateWordVariant(WeakRefable, Slots):
         self.exact_match_required_by_counterpart_vocab_configuration: bool = False
         self.exact_match_required: bool = False
         self.is_exact_match_requirement_fulfilled: bool = False
-        self.is_self_excluded = False
         self.completed_analysis = False
         self.is_valid_candidate: bool = False
         self.starts_with_non_word_token = self.word().start_location().token.is_non_word_character
@@ -73,7 +72,6 @@ class CandidateWordVariant(WeakRefable, Slots):
 
     def is_preliminarily_valid(self) -> bool:
         return (self.is_word and not (self.is_noise_character
-                                      or self.is_self_excluded
                                       or self.is_excluded_by_prefix
                                       or self.starts_with_non_word_token))
 
