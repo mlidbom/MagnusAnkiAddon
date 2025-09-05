@@ -18,7 +18,6 @@ if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.candidate_word import CandidateWord
     from language_services.janome_ex.word_extraction.match import Match
     from note.sentences.sentence_configuration import SentenceConfiguration
-    from note.vocabulary.vocabnote import VocabNote
 
 class CandidateWordVariant(WeakRefable, Slots):
     def __init__(self, word: WeakRef[CandidateWord], form: str, is_base: bool) -> None:

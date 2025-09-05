@@ -35,6 +35,8 @@ class DisplayRequirements(Slots):
     def _is_yield_last_token_to_overlapping_compound_requirement_fulfilled(self) -> bool:
         if not self.rules.yield_last_token.is_required: return True
 
+        #todo: this is a problematic reference to display_words_starting_here. Thot collection is initialized using this class,
+        # so this class will return different results depending on whether it is used after or before display_words_starting_here is first initialized. Ouch
         last_token_display_words: list[CandidateWord] = self.match().word_variant().word().end_location().display_words_starting_here
         if not last_token_display_words: return True
 
