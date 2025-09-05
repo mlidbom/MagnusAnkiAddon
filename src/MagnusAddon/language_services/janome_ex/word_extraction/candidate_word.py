@@ -62,8 +62,8 @@ class CandidateWord(WeakRefable, Slots):
         self.should_include_base_in_valid_words = self.base is not None and self.base.is_valid_candidate
 
         self.should_include_surface_in_valid_words = (self.surface.is_valid_candidate
-                                                      and (not self.is_inflected_word or not self.should_include_base_in_valid_words)
-                                                      and (self.base is None or self.surface.form != self.base.form))
+                                                      and (self.base is None or self.surface.form != self.base.form)
+                                                      and (not self.is_inflected_word or not self.should_include_base_in_valid_words))
 
         self.should_include_surface_in_all_words = ((not self.should_include_base_in_valid_words
                                                      and self.must_include_some_variant())
