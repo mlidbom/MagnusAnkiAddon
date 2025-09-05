@@ -73,7 +73,7 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
     def analysis_step_5_calculate_preference_between_overlapping_display_variant5(self) -> None:
         #todo this does not feel great. Currently we need the first version of display_words_starting_here to be created
         # in order for the DisplayRequirements class to inspect it and mark itself as not being displayed so that it can be removed here.
-        # this is some truly strange invisible order dependency that is making me quite incomfortable
+        # this is some truly strange invisible order dependency that is making me quite uncomfortable
         # it also relies on the check for is_yield_last_token_to_overlapping_compound_requirement_fulfilled to return different values at different times
         while self.display_words_starting_here and not self.display_words_starting_here[0].display_words_are_still_valid():
             self.display_words_starting_here.remove(self.display_words_starting_here[0])
