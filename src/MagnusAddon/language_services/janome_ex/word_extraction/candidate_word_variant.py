@@ -49,15 +49,21 @@ class CandidateWordVariant(WeakRefable, Slots):
         self.excluded_vocabs: list[VocabNote] = [v for v in self.all_any_form_vocabs if is_marked_incorrect_form(v.get_question())]
 
         self.is_word: bool = self.dict_lookup.found_words() or len(self.all_any_form_vocabs) > 0
+
+        #todo: is this still needed here? We have it in the match requirements
         self.is_marked_incorrect_by_config: bool = is_marked_incorrect_form(form)
+        # todo: is this still needed here? We have it in the match requirements
         self.is_marked_hidden_by_config: bool = is_marked_hidden_form(form)
 
+        #todo: move into match requirements
         self.prefix_is_not: set[str] = set().union(*[v.matching_rules.rules.prefix_is_not.get() for v in self.unexcluded_form_owning_vocab])
         self.is_excluded_by_prefix = any(excluded_prefix for excluded_prefix in self.prefix_is_not if self.preceding_surface.endswith(excluded_prefix))
 
+        # todo: move into match requirements
         self.prefix_must_end_with: set[str] = set().union(*[v.matching_rules.rules.required_prefix.get() for v in self.unexcluded_form_owning_vocab])
         self.is_missing_required_prefix: bool = any(self.prefix_must_end_with) and not any(required for required in self.prefix_must_end_with if self.preceding_surface.endswith(required))
 
+        # todo: move into match requirements
         self.is_strictly_suffix = any(voc for voc in self.unexcluded_form_owning_vocab if voc.matching_rules.is_strictly_suffix.is_set())
         self.requires_prefix = self.is_strictly_suffix or any(self.prefix_must_end_with)
 

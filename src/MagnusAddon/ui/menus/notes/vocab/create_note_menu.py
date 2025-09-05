@@ -44,10 +44,11 @@ def build_create_note_menu(note_create_menu: QMenu, vocab: VocabNote, selection:
 
     def build_misc_menu(misc_menu: QMenu) -> None:
         create_vocab_note_action(misc_menu, shortcutfinger.home1("く-form-of-い-adjective"), lambda: vocab.cloner.create_ku_form())
-        create_vocab_note_action(misc_menu, shortcutfinger.home2("て-prefixed"), lambda: vocab.cloner.create_te_prefixed_word())
-        create_vocab_note_action(misc_menu, shortcutfinger.home3("お-prefixed"), lambda: vocab.cloner.create_o_prefixed_word())
-        create_vocab_note_action(misc_menu, shortcutfinger.home4("ん-suffixed"), lambda: vocab.cloner.create_n_suffixed_word())
-        create_vocab_note_action(misc_menu, shortcutfinger.home5("か-suffixed"), lambda: vocab.cloner.create_ka_suffixed_word())
+        create_vocab_note_action(misc_menu, shortcutfinger.home2("さ-form-of-い-adjective"), lambda: vocab.cloner.create_sa_form())
+        create_vocab_note_action(misc_menu, shortcutfinger.home3("て-prefixed"), lambda: vocab.cloner.create_te_prefixed_word())
+        create_vocab_note_action(misc_menu, shortcutfinger.home4("お-prefixed"), lambda: vocab.cloner.create_o_prefixed_word())
+        create_vocab_note_action(misc_menu, shortcutfinger.home5("ん-suffixed"), lambda: vocab.cloner.create_n_suffixed_word())
+        create_vocab_note_action(misc_menu, shortcutfinger.up1("か-suffixed"), lambda: vocab.cloner.create_ka_suffixed_word())
 
     build_forms_menu(non_optional(note_create_menu.addMenu(shortcutfinger.home1("Clone to form"))))
     build_noun_variations_menu(non_optional(note_create_menu.addMenu(shortcutfinger.home2("Noun variations"))))

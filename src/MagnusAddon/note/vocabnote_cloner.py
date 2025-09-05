@@ -121,7 +121,10 @@ class VocabCloner(Slots):
         return clone
 
     def create_ku_form(self) -> VocabNote:
-        return self._create_postfix_prefix_version("く", "adverb", set_compounds=False, truncate_characters=1)
+        return self._create_postfix_prefix_version("く", "adverb", set_compounds=True, truncate_characters=1)
+
+    def create_sa_form(self) -> VocabNote:
+        return self._create_postfix_prefix_version("さ", "noun", set_compounds=True, truncate_characters=1)
 
     def clone_to_derived_form(self, form_suffix: str, create_form_root: Callable[[VocabNote, str], str]) -> VocabNote:
         from note.vocabulary.vocabnote import VocabNote

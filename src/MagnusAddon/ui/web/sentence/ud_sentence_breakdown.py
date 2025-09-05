@@ -61,7 +61,6 @@ def render_sentence_analysis(note: SentenceNote) -> str:
                             {match.meta_tags_html}
                             <span class="vocabAnswer">{match.answer}</span>
                         </div>
-                        {render_match_kanji(match)}
                     </li>
                     """
 
@@ -78,6 +77,11 @@ def render_sentence_analysis(note: SentenceNote) -> str:
                         </li>
                         """
 
+        html += f"""
+        <li class="sentenceVocabEntry depth1 word_priority_very_high {match.meta_tags_string}">
+            {render_match_kanji(match)}
+        </li>
+"""
     html += """</ul>
             </div>
         """

@@ -30,6 +30,7 @@ bai:bi:le
 bako:back-co
 baku:back
 ban:ban
+bata:batter
 batsu:bats
 be:be:d
 bei:bay
