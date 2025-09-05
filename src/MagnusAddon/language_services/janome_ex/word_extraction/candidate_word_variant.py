@@ -41,19 +41,11 @@ class CandidateWordVariant(WeakRefable, Slots):
         def is_marked_incorrect_form(form_: str) -> bool:
             return self.configuration.incorrect_matches.excludes_at_index(form_, self.start_index)
 
-        def is_marked_hidden_form(form_: str) -> bool:
-            return self.configuration.hidden_matches.excludes_at_index(form_, self.start_index)
-
         self.unexcluded_any_form_vocabs: list[VocabNote] = [v for v in self.all_any_form_vocabs if not is_marked_incorrect_form(v.get_question())]
         self.unexcluded_form_owning_vocab: list[VocabNote] = [voc for voc in self.unexcluded_any_form_vocabs if voc.forms.is_owned_form(form)]
-        self.excluded_vocabs: list[VocabNote] = [v for v in self.all_any_form_vocabs if is_marked_incorrect_form(v.get_question())]
 
         self.is_word: bool = self.dict_lookup.found_words() or len(self.all_any_form_vocabs) > 0
 
-        #todo: is this still needed here? We have it in the match requirements
-        self.is_marked_incorrect_by_config: bool = is_marked_incorrect_form(form)
-        # todo: is this still needed here? We have it in the match requirements
-        self.is_marked_hidden_by_config: bool = is_marked_hidden_form(form)
 
         #todo: move into match requirements
         self.prefix_is_not: set[str] = set().union(*[v.matching_rules.rules.prefix_is_not.get() for v in self.unexcluded_form_owning_vocab])
@@ -89,7 +81,6 @@ class CandidateWordVariant(WeakRefable, Slots):
 
     def is_preliminarily_valid(self) -> bool:
         return (self.is_word and not (self.is_noise_character
-                                      or self.is_marked_incorrect_by_config
                                       or self.is_self_excluded
                                       or self.is_excluded_by_prefix
                                       or self.is_missing_required_prefix
