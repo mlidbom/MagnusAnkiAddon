@@ -3,11 +3,11 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
-from language_services.janome_ex.word_extraction.matches.display_requirements import DisplayRequirements
-from language_services.janome_ex.word_extraction.matches.head_requirements import HeadRequirements
 from language_services.janome_ex.word_extraction.matches.match import Match
-from language_services.janome_ex.word_extraction.matches.misc_requirements import MiscRequirements
-from language_services.janome_ex.word_extraction.matches.tail_requirements import TailRequirements
+from language_services.janome_ex.word_extraction.matches.requirements.display_requirements import DisplayRequirements
+from language_services.janome_ex.word_extraction.matches.requirements.head_requirements import HeadRequirements
+from language_services.janome_ex.word_extraction.matches.requirements.misc_requirements import MiscRequirements
+from language_services.janome_ex.word_extraction.matches.requirements.tail_requirements import TailRequirements
 from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
