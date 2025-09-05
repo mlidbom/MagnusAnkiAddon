@@ -6,7 +6,7 @@ from ankiutils import app
 from autoslot import Slots
 from language_services.janome_ex.word_extraction.analysis_constants import noise_characters
 from language_services.janome_ex.word_extraction.matches.dictionary_match import DictionaryMatch
-from language_services.janome_ex.word_extraction.missing_match import MissingMatch
+from language_services.janome_ex.word_extraction.matches.missing_match import MissingMatch
 from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from sysutils import ex_assert
