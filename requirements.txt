@@ -16,7 +16,7 @@ jamdict-data-fix==1.5.1a2
 Janome==0.5.0
 pipdeptree
 #puchikarui==0.2a2.post5
-requests==2.32.4
+requests==2.32.5
 types-requests
 pytest~=8.4.1
 pytest-xdist
