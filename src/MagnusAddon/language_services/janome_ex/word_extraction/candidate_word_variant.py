@@ -84,8 +84,7 @@ class CandidateWordVariant(WeakRefable, Slots):
                                       or self.is_self_excluded
                                       or self.is_excluded_by_prefix
                                       or self.is_missing_required_prefix
-                                      or self.starts_with_non_word_token
-                                      or (self.requires_prefix and not self.has_prefix)))
+                                      or self.starts_with_non_word_token))
 
     @property
     def vocabs_control_match_status(self) -> bool:
@@ -110,10 +109,6 @@ class CandidateWordVariant(WeakRefable, Slots):
         self.is_valid_candidate = self.is_preliminarily_valid() and any(self.valid_matches)
 
         self.completed_analysis = True
-
-    @property
-    def has_prefix(self) -> bool:
-        return self.preceding_surface != "" and self.preceding_surface[-1] not in non_word_characters
 
     @property
     def display_matches(self) -> list[Match]:
