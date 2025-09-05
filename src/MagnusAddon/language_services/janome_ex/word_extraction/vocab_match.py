@@ -23,7 +23,7 @@ class VocabMatch(Match, Slots):
         self.match_form = vocab.get_question()
         self.answer = vocab.get_answer()
         self.readings = vocab.readings.get()
-        self.stem_requirements: HeadRequirements = HeadRequirements(self.vocab, self.word_variant().word().start_location().previous)
+        self.head_requirements: HeadRequirements = HeadRequirements(self.vocab, self.word_variant().word().start_location().previous)
         self.tail_requirements: TailRequirements = TailRequirements(self.vocab, self.word_variant().word().end_location().next)
         self.misc_requirements: MiscRequirements = MiscRequirements(self.weakref)
 
@@ -35,7 +35,7 @@ class VocabMatch(Match, Slots):
     @property
     def _is_valid_internal(self) -> bool:
         return (super()._is_valid_internal
-                and self.stem_requirements.are_fulfilled
+                and self.head_requirements.are_fulfilled
                 and self.tail_requirements.are_fulfilled
                 and self.misc_requirements.are_fulfilled)
 
@@ -52,7 +52,7 @@ class VocabMatch(Match, Slots):
     def failure_reasons(self) -> set[str]:
         return (super().failure_reasons
                 | self.misc_requirements.failure_reasons()
-                | self.stem_requirements.failure_reasons()
+                | self.head_requirements.failure_reasons()
                 | self.tail_requirements.failure_reasons())
 
     @property
