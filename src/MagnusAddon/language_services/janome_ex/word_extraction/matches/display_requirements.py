@@ -7,7 +7,7 @@ from sysutils.simple_string_list_builder import SimpleStringListBuilder
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.candidate_word import CandidateWord
-    from language_services.janome_ex.word_extraction.vocab_match import VocabMatch
+    from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
     from sysutils.weak_ref import WeakRef
 
 class DisplayRequirements(Slots):

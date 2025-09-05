@@ -3,14 +3,14 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from ankiutils import app
-from language_services.janome_ex.word_extraction.vocab_match import VocabMatch
+from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
 from sysutils import ex_sequence, kana_utils, typed
 from sysutils.debug_repr_builder import SkipFalsyValuesDebugReprBuilder
 from sysutils.simple_string_list_builder import SimpleStringListBuilder
 from ui.web.sentence.compound_part_viewmodel import CompoundPartViewModel
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.match import Match
+    from language_services.janome_ex.word_extraction.matches.match import Match
     from note.sentences.sentence_configuration import SentenceConfiguration
     from sysutils.weak_ref import WeakRef
     from ui.web.sentence.candidate_word_variant_viewmodel import CandidateWordVariantViewModel

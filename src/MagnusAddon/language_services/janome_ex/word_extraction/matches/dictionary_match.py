@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
-from language_services.janome_ex.word_extraction.match import Match
+from language_services.janome_ex.word_extraction.matches.match import Match
 
 if TYPE_CHECKING:
     from language_services.jamdict_ex.dict_entry import DictEntry
