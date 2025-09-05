@@ -35,29 +35,29 @@ class VocabNote(WaniNote, Slots):
     factory: VocabNoteFactory = VocabNoteFactory()
     def __init__(self, note: Note) -> None:
         super().__init__(note)
-        self.weakref = cast(WeakRef[VocabNote], self.weakref)
+        self.weakref_vocab = cast(WeakRef[VocabNote], self.weakref)
 
-        self.question: VocabNoteQuestion = VocabNoteQuestion(self.weakref)
+        self.question: VocabNoteQuestion = VocabNoteQuestion(self.weakref_vocab)
 
         self.readings: CommaSeparatedStringsListField = CommaSeparatedStringsListField(self.weakref, NoteFields.Vocab.Reading)
 
-        self.user: VocabNoteUserfields = VocabNoteUserfields(self.weakref)
+        self.user: VocabNoteUserfields = VocabNoteUserfields(self.weakref_vocab)
 
         self._source_answer: StringField = StringField(self.weakref, NoteFields.Vocab.source_answer)
         self.active_answer: StringField = StringField(self.weakref, NoteFields.Vocab.active_answer)
 
-        self.cloner: VocabCloner = VocabCloner(self.weakref)
-        self.related_notes: RelatedVocab = RelatedVocab(self.weakref)
-        self.audio: VocabNoteAudio = VocabNoteAudio(self.weakref)
-        self.sentences: VocabNoteSentences = VocabNoteSentences(self.weakref)
-        self.forms: VocabNoteForms = VocabNoteForms(self.weakref)
-        self.parts_of_speech: VocabNotePartsOfSpeech = VocabNotePartsOfSpeech(self.weakref)
-        self.compound_parts: VocabNoteUserCompoundParts = VocabNoteUserCompoundParts(self.weakref)
-        self.conjugator: VocabNoteConjugator = VocabNoteConjugator(self.weakref)
-        self.wani_extensions: VocabNoteWaniExtensions = VocabNoteWaniExtensions(self.weakref)
-        self.kanji: VocabNoteKanji = VocabNoteKanji(self.weakref)
-        self.meta_data: VocabNoteMetaData = VocabNoteMetaData(self.weakref)
-        self.matching_rules: VocabNoteMatching = VocabNoteMatching(self.weakref)
+        self.cloner: VocabCloner = VocabCloner(self.weakref_vocab)
+        self.related_notes: RelatedVocab = RelatedVocab(self.weakref_vocab)
+        self.audio: VocabNoteAudio = VocabNoteAudio(self.weakref_vocab)
+        self.sentences: VocabNoteSentences = VocabNoteSentences(self.weakref_vocab)
+        self.forms: VocabNoteForms = VocabNoteForms(self.weakref_vocab)
+        self.parts_of_speech: VocabNotePartsOfSpeech = VocabNotePartsOfSpeech(self.weakref_vocab)
+        self.compound_parts: VocabNoteUserCompoundParts = VocabNoteUserCompoundParts(self.weakref_vocab)
+        self.conjugator: VocabNoteConjugator = VocabNoteConjugator(self.weakref_vocab)
+        self.wani_extensions: VocabNoteWaniExtensions = VocabNoteWaniExtensions(self.weakref_vocab)
+        self.kanji: VocabNoteKanji = VocabNoteKanji(self.weakref_vocab)
+        self.meta_data: VocabNoteMetaData = VocabNoteMetaData(self.weakref_vocab)
+        self.matching_rules: VocabNoteMatching = VocabNoteMatching(self.weakref_vocab)
 
     def get_direct_dependencies(self) -> set[JPNote]:
         return self.related_notes.get_direct_dependencies()

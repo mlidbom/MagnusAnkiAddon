@@ -28,19 +28,19 @@ if TYPE_CHECKING:
 class SentenceNote(JPNote, Slots):
     def __init__(self, note: Note) -> None:
         super().__init__(note)
-        self.weakref = cast(WeakRef[SentenceNote], self.weakref)
+        self.weakref_sentence = cast(WeakRef[SentenceNote], self.weakref)
 
         self._source_answer = StringField(self.weakref, SentenceNoteFields.source_answer)
         self.source_question = StripHtmlOnReadStringField(self.weakref, SentenceNoteFields.source_question)
         self.source_comments: StripHtmlOnReadStringField = StripHtmlOnReadStringField(self.weakref, SentenceNoteFields.source_comments)
 
-        self.user: SentenceUserFields = SentenceUserFields(self.weakref)
+        self.user: SentenceUserFields = SentenceUserFields(self.weakref_sentence)
 
         self.question: SentenceQuestionField = SentenceQuestionField(self.weakref, SentenceNoteFields.user_question, SentenceNoteFields.source_question)
         self.answer: StripHtmlOnReadFallbackStringField = StripHtmlOnReadFallbackStringField(self.weakref, SentenceNoteFields.user_answer, SentenceNoteFields.source_answer)
         self._screenshot: StringField = StringField(self.weakref, SentenceNoteFields.screenshot)
         self.audio: WritableAudioField = WritableAudioField(self.weakref, SentenceNoteFields.audio)
-        self.configuration: CachingSentenceConfigurationField = CachingSentenceConfigurationField(self.weakref)
+        self.configuration: CachingSentenceConfigurationField = CachingSentenceConfigurationField(self.weakref_sentence)
         self.parsing_result: JsonObjectField[ParsingResult] = JsonObjectField[ParsingResult](self.weakref, SentenceNoteFields.parsing_result, ParsingResultSerializer())
 
     def get_question(self) -> str: return self.question.get()
