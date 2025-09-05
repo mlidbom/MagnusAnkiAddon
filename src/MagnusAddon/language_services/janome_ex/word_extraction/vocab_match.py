@@ -6,7 +6,7 @@ from autoslot import Slots
 from language_services.janome_ex.word_extraction.display_requirements import DisplayRequirements
 from language_services.janome_ex.word_extraction.match import Match
 from language_services.janome_ex.word_extraction.misc_requirements import MiscRequirements
-from language_services.janome_ex.word_extraction.stem_requirements import StemRequirements
+from language_services.janome_ex.word_extraction.head_requirements import HeadRequirements
 from language_services.janome_ex.word_extraction.tail_requirements import TailRequirements
 from sysutils.weak_ref import WeakRef
 
@@ -23,7 +23,7 @@ class VocabMatch(Match, Slots):
         self.match_form = vocab.get_question()
         self.answer = vocab.get_answer()
         self.readings = vocab.readings.get()
-        self.stem_requirements: StemRequirements = StemRequirements(self.vocab, self.word_variant().word().start_location().previous)
+        self.stem_requirements: HeadRequirements = HeadRequirements(self.vocab, self.word_variant().word().start_location().previous)
         self.tail_requirements: TailRequirements = TailRequirements(self.vocab, self.word_variant().word().end_location().next)
         self.misc_requirements: MiscRequirements = MiscRequirements(self.weakref)
 
