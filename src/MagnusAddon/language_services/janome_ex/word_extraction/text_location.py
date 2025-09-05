@@ -75,6 +75,7 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
         # in order for the DisplayRequirements class to inspect it and mark itself as not being displayed so that it can be removed here.
         # this is some truly strange invisible order dependency that is making me quite uncomfortable
         # it also relies on the check for is_yield_last_token_to_overlapping_compound_requirement_fulfilled to return different values at different times
+        # because that method has a circular dependency to display_words_starting_here which we set up here.
         while self.display_words_starting_here and not self.display_words_starting_here[0].display_words_are_still_valid():
             self.display_words_starting_here.remove(self.display_words_starting_here[0])
 
