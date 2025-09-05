@@ -150,6 +150,8 @@ test_special_vocab: list[VocabSpec] = [
 
     VocabSpec("んです", tags=[vm.Requires.exact_match, vm.yield_last_token_to_overlapping_compound]),
     VocabSpec("んだ", tags=[vm.Requires.exact_match, vm.yield_last_token_to_overlapping_compound]),
+    VocabSpec("んで", tags=[]),
+    VocabSpec("んで", forms=["で"], prefix_in={"ん"}),
     VocabSpec("たん", forms=["たの"], tags=[vm.Requires.single_token]),
     VocabSpec("たの", forms=["たん"], tags=[vm.yield_last_token_to_overlapping_compound]),
     VocabSpec("たんだ", tags=[vm.yield_last_token_to_overlapping_compound]),

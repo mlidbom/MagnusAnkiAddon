@@ -9,6 +9,7 @@ from language_services.janome_ex.word_extraction.dictionary_match import Diction
 from language_services.janome_ex.word_extraction.missing_match import MissingMatch
 from language_services.janome_ex.word_extraction.vocab_match import VocabMatch
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
+from sysutils import ex_assert
 from sysutils.object_instance_tracker import ObjectInstanceTracker
 from sysutils.weak_ref import WeakRef, WeakRefable
 
@@ -34,11 +35,10 @@ class CandidateWordVariant(WeakRefable, Slots):
         self.form: str = form
 
         self.dict_lookup: DictLookup = DictLookup.lookup_word(form)
-        self.all_any_form_vocabs: list[VocabNote] = app.col().vocab.with_form(form)
-        self.vocab_matches: list[VocabMatch] = [VocabMatch(self.weak_ref, vocab) for vocab in self.all_any_form_vocabs]
+        self.vocab_matches: list[VocabMatch] = [VocabMatch(self.weak_ref, vocab) for vocab in app.col().vocab.with_form(form)]
         self.form_owning_vocab_matches: list[VocabMatch] = [vm for vm in self.vocab_matches if vm.vocab.forms.is_owned_form(self.form)]
 
-        self.is_word: bool = self.dict_lookup.found_words() or len(self.all_any_form_vocabs) > 0
+        self.is_word: bool = self.dict_lookup.found_words() or len(self.vocab_matches) > 0
         self.is_noise_character = self.form in noise_characters
 
         # will be completed in complete_analysis
@@ -85,6 +85,7 @@ class CandidateWordVariant(WeakRefable, Slots):
 
     @property
     def display_matches(self) -> list[Match]:
+        ex_assert.that(self.completed_analysis)
         return [match for match in self.matches if match.is_displayed]
 
     def to_exclusion(self) -> WordExclusion:
