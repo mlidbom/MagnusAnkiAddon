@@ -19,7 +19,7 @@ class IntObject(Slots):
 
     @staticmethod
     def from_json(reader: JsonReader) -> IntObject:
-        return IntObject(reader.int("value"))
+        return IntObject(reader.integer("value"))
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, IntObject):

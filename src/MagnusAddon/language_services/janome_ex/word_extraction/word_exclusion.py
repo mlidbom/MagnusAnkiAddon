@@ -45,4 +45,4 @@ class WordExclusion(Slots):
 
     @classmethod
     def from_reader(cls, reader: JsonReader) -> WordExclusion:
-        return cls(word=reader.string("word"), index=reader.int("index"), _secret=WordExclusion.secret)
+        return cls(word=reader.string("word"), index=reader.integer("index"), _secret=WordExclusion.secret)

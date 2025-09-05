@@ -36,7 +36,7 @@ class JsonReader(Slots):
 
 
     def string(self, prop: str | list[str], default: str | None = None) -> str: return self._get_prop(prop, str, default)
-    def int(self, prop: str | list[str], default: int | None = None) -> int: return self._get_prop(prop, int, default)
+    def integer(self, prop: str | list[str], default: int | None = None) -> int: return self._get_prop(prop, int, default)
 
     def string_list(self, prop: str | list[str], default: list[str] | None = None) -> list[str]:
         return self._get_prop(prop, list[str], default)
