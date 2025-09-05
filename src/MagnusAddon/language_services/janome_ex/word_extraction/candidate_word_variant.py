@@ -42,9 +42,6 @@ class CandidateWordVariant(WeakRefable, Slots):
         self.is_noise_character = self.form in noise_characters
 
         # will be completed in complete_analysis
-        self.exact_match_required_by_counterpart_vocab_configuration: bool = False
-        self.exact_match_required: bool = False
-        self.is_exact_match_requirement_fulfilled: bool = False
         self.completed_analysis = False
         self.is_valid_candidate: bool = False
         self.starts_with_non_word_token = self.word().start_location().token.is_non_word_character
