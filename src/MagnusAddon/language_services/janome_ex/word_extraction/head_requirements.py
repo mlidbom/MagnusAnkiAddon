@@ -21,7 +21,12 @@ class HeadRequirements(Slots):
         self.has_prefix = end_of_stem is not None and end_of_stem().token.surface != "" and end_of_stem().token.surface[-1] not in non_word_characters
         self.fulfills_is_strictly_suffix = not rules.is_strictly_suffix.is_set() or self.has_prefix
 
-        self.fulfills_required_prefix = not rules.rules.required_prefix.get() or (end_of_stem is not None and self.has_prefix and any(required for required in rules.rules.required_prefix.get() if end_of_stem().token.surface.endswith(required)))
+        self.fulfills_required_prefix = (not rules.rules.required_prefix.get()
+                                         or (end_of_stem is not None and self.has_prefix and any(required for required in rules.rules.required_prefix.get() if end_of_stem().token.surface.endswith(required))))
+
+        self.fulfills_prefix_not = (not rules.rules.prefix_is_not.get()
+                                    or not self.has_prefix
+                                    or (end_of_stem is not None and not any(forbidden for forbidden in rules.rules.prefix_is_not.get() if end_of_stem().token.surface.endswith(forbidden))))
 
         self.has_a_stem = end_of_stem is not None and end_of_stem().token.surface[-1] in conjugator.a_stem_characters
         self.fulfills_forbids_a_stem_requirement = not rules.a_stem.is_forbidden or not self.has_a_stem
@@ -37,6 +42,7 @@ class HeadRequirements(Slots):
         self.are_fulfilled = (True
                               and self.fulfills_is_strictly_suffix
                               and self.fulfills_required_prefix
+                              and self.fulfills_prefix_not
                               and self.fulfills_forbids_a_stem_requirement
                               and self.fulfills_requires_a_stem
                               and self.fulfills_requires_e_stem_requirement
@@ -46,6 +52,7 @@ class HeadRequirements(Slots):
         return (SimpleStringListBuilder()
                 .append_if(not self.fulfills_is_strictly_suffix, "is_strictly_suffix")
                 .append_if(not self.fulfills_required_prefix, "required_prefix")
+                .append_if(not self.fulfills_prefix_not, "prefix_not")
                 .append_if(not self.fulfills_forbids_a_stem_requirement, "forbids_a_stem")
                 .append_if(not self.fulfills_requires_a_stem, "requires_a_stem")
                 .append_if(not self.fulfills_forbids_e_stem_requirement, "forbids_e_stem")

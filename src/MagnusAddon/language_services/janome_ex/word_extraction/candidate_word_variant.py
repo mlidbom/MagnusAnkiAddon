@@ -46,11 +46,6 @@ class CandidateWordVariant(WeakRefable, Slots):
 
         self.is_word: bool = self.dict_lookup.found_words() or len(self.all_any_form_vocabs) > 0
 
-
-        #todo: move into match requirements
-        self.prefix_is_not: set[str] = set().union(*[v.matching_rules.rules.prefix_is_not.get() for v in self.unexcluded_form_owning_vocab])
-        self.is_excluded_by_prefix = any(excluded_prefix for excluded_prefix in self.prefix_is_not if self.preceding_surface.endswith(excluded_prefix))
-
         self.is_noise_character = self.form in noise_characters
 
         # will be completed in complete_analysis
@@ -72,7 +67,6 @@ class CandidateWordVariant(WeakRefable, Slots):
 
     def is_preliminarily_valid(self) -> bool:
         return (self.is_word and not (self.is_noise_character
-                                      or self.is_excluded_by_prefix
                                       or self.starts_with_non_word_token))
 
     @property
@@ -102,11 +96,6 @@ class CandidateWordVariant(WeakRefable, Slots):
     @property
     def display_matches(self) -> list[Match]:
         return [match for match in self.matches if match.is_displayed]
-
-    @property
-    def preceding_surface(self) -> str:
-        previous = self.word().start_location().previous
-        return previous().token.surface if previous else ""
 
     def to_exclusion(self) -> WordExclusion:
         return WordExclusion.at_index(self.form, self.start_index)
