@@ -4,9 +4,9 @@ from typing import TYPE_CHECKING
 
 from autoslot import Slots
 from language_services.janome_ex.word_extraction.display_requirements import DisplayRequirements
+from language_services.janome_ex.word_extraction.head_requirements import HeadRequirements
 from language_services.janome_ex.word_extraction.match import Match
 from language_services.janome_ex.word_extraction.misc_requirements import MiscRequirements
-from language_services.janome_ex.word_extraction.head_requirements import HeadRequirements
 from language_services.janome_ex.word_extraction.tail_requirements import TailRequirements
 from sysutils.weak_ref import WeakRef
 

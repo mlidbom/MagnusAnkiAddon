@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from ankiutils import app
 from autoslot import Slots
-from language_services.janome_ex.word_extraction.analysis_constants import noise_characters, non_word_characters
+from language_services.janome_ex.word_extraction.analysis_constants import noise_characters
 from language_services.janome_ex.word_extraction.dictionary_match import DictionaryMatch
 from language_services.janome_ex.word_extraction.missing_match import MissingMatch
 from language_services.janome_ex.word_extraction.vocab_match import VocabMatch
@@ -51,10 +51,6 @@ class CandidateWordVariant(WeakRefable, Slots):
         self.prefix_is_not: set[str] = set().union(*[v.matching_rules.rules.prefix_is_not.get() for v in self.unexcluded_form_owning_vocab])
         self.is_excluded_by_prefix = any(excluded_prefix for excluded_prefix in self.prefix_is_not if self.preceding_surface.endswith(excluded_prefix))
 
-        # todo: move into match requirements
-        self.prefix_must_end_with: set[str] = set().union(*[v.matching_rules.rules.required_prefix.get() for v in self.unexcluded_form_owning_vocab])
-        self.is_missing_required_prefix: bool = any(self.prefix_must_end_with) and not any(required for required in self.prefix_must_end_with if self.preceding_surface.endswith(required))
-
         self.is_noise_character = self.form in noise_characters
 
         # will be completed in complete_analysis
@@ -79,7 +75,6 @@ class CandidateWordVariant(WeakRefable, Slots):
         return (self.is_word and not (self.is_noise_character
                                       or self.is_self_excluded
                                       or self.is_excluded_by_prefix
-                                      or self.is_missing_required_prefix
                                       or self.starts_with_non_word_token))
 
     @property
