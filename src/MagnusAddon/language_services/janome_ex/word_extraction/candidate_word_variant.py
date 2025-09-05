@@ -55,10 +55,6 @@ class CandidateWordVariant(WeakRefable, Slots):
         self.prefix_must_end_with: set[str] = set().union(*[v.matching_rules.rules.required_prefix.get() for v in self.unexcluded_form_owning_vocab])
         self.is_missing_required_prefix: bool = any(self.prefix_must_end_with) and not any(required for required in self.prefix_must_end_with if self.preceding_surface.endswith(required))
 
-        # todo: move into match requirements
-        self.is_strictly_suffix = any(voc for voc in self.unexcluded_form_owning_vocab if voc.matching_rules.is_strictly_suffix.is_set())
-        self.requires_prefix = self.is_strictly_suffix or any(self.prefix_must_end_with)
-
         self.is_noise_character = self.form in noise_characters
 
         # will be completed in complete_analysis
