@@ -27,7 +27,7 @@ class WanikaniClient(Slots):
 
     # noinspection PyTypeChecker
     def _init(self) -> WanikaniClient:
-        if self._is_initialized is False:
+        if not self._is_initialized:
             from sysutils import progress_display_runner
             progress = progress_display_runner.open_spinning_progress_dialog("Fetching Wanikani data")
             try:

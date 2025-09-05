@@ -101,7 +101,7 @@ class SentenceNote(JPNote, Slots):
         return note
 
     @classmethod
-    def add_sentence(cls, question: str, answer: str, audio: str = "", screenshot: str = "", highlighted_vocab: Optional[set[str]] = None, tags: Optional[set[str]] = None) -> SentenceNote:
+    def add_sentence(cls, question: str, answer: str, audio: str = "", screenshot: str = "", highlighted_vocab: set[str] | None = None, tags: set[str] | None = None) -> SentenceNote:
         inner_note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Sentence))
         note = SentenceNote(inner_note)
         note.source_question.set(question)
