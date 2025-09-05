@@ -19,12 +19,12 @@ def setup() -> None:
     ("こんなに", [JNToken(POS.Adverb.particle_connection, "こんなに", "こんなに")]),
     ("こんなに疲れている", [
         JNToken(POS.Adverb.particle_connection, "こんなに", "こんなに"),
-        JNToken(POS.Verb.independent, "疲れる", "疲れ", InflectionTypes.Ichidan.regular, InflectionForms.Continuative.renyōkei_masu_stem),
+        JNToken(POS.Verb.independent, "疲れる", "疲れ", InflectionTypes.Ichidan.regular, InflectionForms.Continuative.renyoukei_masu_stem),
         JNToken(POS.Particle.conjunctive, "て", "て"),
         JNToken(POS.Verb.dependent, "いる", "いる", InflectionTypes.Ichidan.regular, InflectionForms.Basic.dictionary_form)]),
     ("こんなに食べている", [
         JNToken(POS.Adverb.particle_connection, "こんなに", "こんなに"),
-        JNToken(POS.Verb.independent, "食べる", "食べ", InflectionTypes.Ichidan.regular, InflectionForms.Continuative.renyōkei_masu_stem),
+        JNToken(POS.Verb.independent, "食べる", "食べ", InflectionTypes.Ichidan.regular, InflectionForms.Continuative.renyoukei_masu_stem),
         JNToken(POS.Particle.conjunctive, "て", "て"),
         JNToken(POS.Verb.dependent, "いる", "いる", InflectionTypes.Ichidan.regular, InflectionForms.Basic.dictionary_form)]),
     ("こんなにする", [
@@ -52,7 +52,7 @@ def setup() -> None:
         JNToken(POS.Verb.independent, "飛ぶ", "飛ば", InflectionTypes.Godan.bu, InflectionForms.Irrealis.general_irrealis_mizenkei),
         JNToken(POS.bound_auxiliary, "ない", "ない", InflectionTypes.Special.nai, InflectionForms.Basic.dictionary_form)
     ]),
-    ("飛べ", [JNToken(POS.Verb.independent, "飛べる", "飛べ", InflectionTypes.Ichidan.regular, InflectionForms.Continuative.renyōkei_masu_stem)]),
+    ("飛べ", [JNToken(POS.Verb.independent, "飛べる", "飛べ", InflectionTypes.Ichidan.regular, InflectionForms.Continuative.renyoukei_masu_stem)]),
     ("会う", [JNToken(POS.Verb.independent, "会う", "会う", InflectionTypes.Godan.u_gemination, InflectionForms.Basic.dictionary_form)]),
 ])
 def test_identify_something_words(sentence: str, expected_tokens: list[JNTokenizer]) -> None:

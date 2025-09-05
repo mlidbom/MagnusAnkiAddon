@@ -34,7 +34,7 @@ class InflectionForms:
 
     # noinspection PyUnusedClass,PyUnusedName
     class Continuative:
-        renyōkei_masu_stem = _add_form("連用形", "Continuative - masu-stem/i-stem [読み] - verbs/adjective")
+        renyoukei_masu_stem = _add_form("連用形", "Continuative - masu-stem/i-stem [読み] - verbs/adjective")
         te_connection = _add_form("連用テ接続", "Continuative te-connection - Connects to te-form")
         ta_connection = _add_form("連用タ接続", 'Continuative ta-connection - Connects to past tense marker "ta"')
         de_connection = _add_form("連用デ接続", 'Continuative de-connection - Connects to the te-form variant "de"')
