@@ -38,14 +38,7 @@ class CandidateWordVariant(WeakRefable, Slots):
         self.vocab_matches: list[VocabMatch] = [VocabMatch(self.weak_ref, vocab) for vocab in self.all_any_form_vocabs]
         self.form_owning_vocab_matches: list[VocabMatch] = [vm for vm in self.vocab_matches if vm.vocab.forms.is_owned_form(self.form)]
 
-        def is_marked_incorrect_form(form_: str) -> bool:
-            return self.configuration.incorrect_matches.excludes_at_index(form_, self.start_index)
-
-        self.unexcluded_any_form_vocabs: list[VocabNote] = [v for v in self.all_any_form_vocabs if not is_marked_incorrect_form(v.get_question())]
-        self.unexcluded_form_owning_vocab: list[VocabNote] = [voc for voc in self.unexcluded_any_form_vocabs if voc.forms.is_owned_form(form)]
-
         self.is_word: bool = self.dict_lookup.found_words() or len(self.all_any_form_vocabs) > 0
-
         self.is_noise_character = self.form in noise_characters
 
         # will be completed in complete_analysis
