@@ -76,14 +76,6 @@ class MatchViewModel:
                 and self.match.is_displayed)
 
     @property
-    def not_valid_for_display(self) -> bool:
-        return (self.is_shadowed
-                or self.match.is_configured_hidden
-                or self.match.is_configured_incorrect
-                or not self.match.is_valid_for_display
-                or not self.is_display_word)
-
-    @property
     def kanji(self) -> list[str]:
         return ex_sequence.remove_duplicates_while_retaining_order(kana_utils.extract_kanji(self.parsed_form + self.vocab_form))
 

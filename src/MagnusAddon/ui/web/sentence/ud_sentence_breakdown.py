@@ -15,6 +15,8 @@ if TYPE_CHECKING:
     from ui.web.sentence.match_viewmodel import MatchViewModel
 
 def build_invalid_for_display_span(view_model: MatchViewModel) -> str:
+    if not view_model.incorrect_reasons and not view_model.hiding_reasons and not view_model.not_shown_reasons: return ""
+
     incorrect_reasons = [f"""<div class="incorrect_reason">{reason}</div>""" for reason in view_model.incorrect_reasons]
     hiding_reasons = [f"""<div class="hiding_reason">{reason}</div>""" for reason in view_model.hiding_reasons]
     not_shown_reasons = [f"""<div class="not_shown_reason">{reason}</div>""" for reason in view_model.not_shown_reasons]
