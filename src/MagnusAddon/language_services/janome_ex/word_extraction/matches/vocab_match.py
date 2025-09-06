@@ -43,7 +43,7 @@ class VocabMatch(Match, Slots):
     def is_secondary_match(self) -> bool: return not self.owns_form and any(other_match for other_match in self.word_variant().vocab_matches if other_match.owns_form and other_match.is_valid)
 
     @property
-    def is_valid_for_display(self) -> bool: return super().is_valid_for_display and self._is_valid_internal and self.display_requirements.are_fulfilled
+    def is_valid_for_display(self) -> bool: return super().is_valid_for_display and self.display_requirements.are_fulfilled
     @property
     def display_requirements(self) -> DisplayRequirements: return DisplayRequirements(self.weakref)
 
