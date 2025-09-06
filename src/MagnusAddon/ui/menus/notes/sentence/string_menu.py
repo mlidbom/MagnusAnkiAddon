@@ -17,15 +17,15 @@ if TYPE_CHECKING:
 def build_string_menu(string_menu: QMenu, sentence: SentenceNote, menu_string: str) -> None:
     def add_add_word_exclusion_action(add_menu: QMenu, exclusion_type_title: str, exclusion_set: WordExclusionSet) -> None:
         menu_string_as_word_exclusion = WordExclusion.global_(menu_string)
-        valid_top_level_words = sentence.get_valid_parsed_non_child_words()
-        top_level_words_excluded_by_menu_string: list[CandidateWordVariant] = [w for w in valid_top_level_words if menu_string_as_word_exclusion.excludes_form_at_index(w.form, w.start_index)]
-        if any(top_level_words_excluded_by_menu_string):
-            if len(top_level_words_excluded_by_menu_string) == 1:
-                add_ui_action(add_menu, exclusion_type_title, lambda: exclusion_set.add(top_level_words_excluded_by_menu_string[0].to_exclusion()))
+        valid_words = sentence.create_analysis().valid_word_variants
+        words_excluded_by_menu_string: list[CandidateWordVariant] = [w for w in valid_words if menu_string_as_word_exclusion.excludes_form_at_index(w.form, w.start_index)]
+        if any(words_excluded_by_menu_string):
+            if len(words_excluded_by_menu_string) == 1:
+                add_ui_action(add_menu, exclusion_type_title, lambda: exclusion_set.add(words_excluded_by_menu_string[0].to_exclusion()))
             else:
                 add_exclusion_menu: QMenu = non_optional(add_menu.addMenu(exclusion_type_title))
 
-                for excluded_index, matched in enumerate(top_level_words_excluded_by_menu_string):
+                for excluded_index, matched in enumerate(words_excluded_by_menu_string):
                     add_ui_action(add_exclusion_menu, shortcutfinger.finger_by_priority_order(excluded_index, f"{matched.start_index}: {matched.form}"), ex_lambda.bind1(exclusion_set.add, matched.to_exclusion()))
         else:
             add_ui_action(add_menu, exclusion_type_title, lambda: None).setEnabled(False)

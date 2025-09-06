@@ -53,9 +53,11 @@ class SentenceNote(JPNote, Slots):
         return [w.form for w in self.get_valid_parsed_non_child_words()]
 
     def get_valid_parsed_non_child_words(self) -> list[CandidateWordVariant]:
+        return self.create_analysis().display_word_variants
+
+    def create_analysis(self) -> TextAnalysis:
         from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
-        analysis = TextAnalysis(self.get_question(), self.configuration.configuration)
-        return analysis.display_word_variants
+        return TextAnalysis(self.get_question(), self.configuration.configuration)
 
     def get_direct_dependencies(self) -> set[JPNote]:
         highlighted = set(ex_sequence.flatten([self.collection.vocab.with_question(vocab) for vocab in self.configuration.highlighted_words()]))

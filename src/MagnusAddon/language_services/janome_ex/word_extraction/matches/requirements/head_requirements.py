@@ -9,12 +9,13 @@ from sysutils import kana_utils
 from sysutils.simple_string_list_builder import SimpleStringListBuilder
 
 if TYPE_CHECKING:
+    from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
     from language_services.janome_ex.word_extraction.text_location import TextAnalysisLocation
     from note.vocabulary.vocabnote import VocabNote
     from sysutils.weak_ref import WeakRef
 
 class HeadRequirements(Slots):
-    def __init__(self, vocab: VocabNote, end_of_stem: WeakRef[TextAnalysisLocation] | None) -> None:
+    def __init__(self, vocab: VocabNote, word_variant: WeakRef[CandidateWordVariant], end_of_stem: WeakRef[TextAnalysisLocation] | None) -> None:
         rules = vocab.matching_rules
         self.config = rules
 
@@ -32,7 +33,7 @@ class HeadRequirements(Slots):
         self.fulfills_forbids_a_stem_requirement = not rules.a_stem.is_forbidden or not self.has_a_stem
         self.fulfills_requires_a_stem = not rules.a_stem.is_required or self.has_a_stem
 
-        self.has_past_tense_stem = end_of_stem is not None and end_of_stem().token.is_past_tense_verb_stem()
+        self.has_past_tense_stem = end_of_stem is not None and (end_of_stem().token.is_past_tense_stem() or word_variant().word().start_location().token.is_past_tense_marker())
         self.fulfills_forbids_past_tense_stem = not rules.past_tense_stem.is_forbidden or not self.has_past_tense_stem
         self.fulfills_requires_past_tense_stem = not rules.past_tense_stem.is_required or self.has_past_tense_stem
 

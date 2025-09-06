@@ -22,7 +22,8 @@ class ProcessedToken(Slots):
         self.is_non_word_character = is_non_word_character
         self.potential_godan_verb: str | None = None
 
-    def is_past_tense_verb_stem(self) -> bool: return False
+    def is_past_tense_stem(self) -> bool: return False
+    def is_past_tense_marker(self) -> bool: return False
 
     def __repr__(self) -> str:
         return f"ProcessedToken('{self.surface}', '{self.base_form}', '{self.base_form_for_non_compound_vocab_matching}', {self.is_inflectable_word})"
@@ -34,7 +35,8 @@ class JNTokenWrapper(ProcessedToken, Slots):
         self._vocabs = vocabs
         self.is_inflectable_word = self.token.is_inflectable_word()
 
-    def is_past_tense_verb_stem(self) -> bool: return self.token.is_past_tense_verb_stem()
+    def is_past_tense_stem(self) -> bool: return self.token.is_past_tense_stem()
+    def is_past_tense_marker(self) -> bool: return self.token.is_past_tense_marker()
 
     def pre_process(self) -> list[ProcessedToken]:
         self.potential_godan_verb = self._try_find_vocab_based_potential_verb_compound() or self._try_find_dictionary_based_potential_godan_verb()

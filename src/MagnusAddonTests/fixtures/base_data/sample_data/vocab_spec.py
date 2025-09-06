@@ -131,7 +131,7 @@ test_special_vocab: list[VocabSpec] = [
     VocabSpec("ても"),
     VocabSpec("と思う"),
     VocabSpec("たの", tags=[vm.is_poison_word]),
-    VocabSpec("たって", tags=[vm.is_poison_word]),
+    VocabSpec("たって", tags=[vm.Forbids.past_tense_stem]),
     VocabSpec("たかな", tags=[vm.is_poison_word]),
     VocabSpec("たか", tags=[vm.is_poison_word]),
     VocabSpec("なんて", tags=[vm.yield_last_token_to_overlapping_compound]),
