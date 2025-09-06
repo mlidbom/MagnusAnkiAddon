@@ -85,7 +85,7 @@ class JNToken(Slots):
     def is_noun(self) -> bool:
         return self.parts_of_speech in _noun_parts_of_speech
 
-    def is_inflected_verb(self) -> bool:
+    def is_past_tense_verb_stem(self) -> bool:
         return self.parts_of_speech.is_verb() and self.inflected_form == InflectionForms.Continuative.ta_connection  # "連用タ接続"
 
     def is_noun_auxiliary(self) -> bool:

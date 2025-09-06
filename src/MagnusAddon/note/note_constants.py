@@ -164,6 +164,7 @@ class Tags(Slots):
             class Requires:
                 a_stem = f"{f_vocab_matching_requires}a-stem"
                 e_stem = f"{f_vocab_matching_requires}e-stem"
+                past_tense_stem = f"{f_vocab_matching_requires}past_tense_stem"
                 sentence_end = f"{f_vocab_matching_requires}sentence-end"
                 exact_match = f"{f_vocab_matching_requires}exact-match"
                 single_token = f"{f_vocab_matching_requires}single-token"
@@ -172,6 +173,7 @@ class Tags(Slots):
             class Forbids:
                 a_stem = f"{f_vocab_matching_forbids}a-stem"
                 e_stem = f"{f_vocab_matching_forbids}e-stem"
+                past_tense_stem = f"{f_vocab_matching_forbids}past_tense_stem"
                 sentence_end = f"{f_vocab_matching_forbids}sentence-end"
                 auto_yielding = f"{f_vocab_matching_forbids}auto_yielding"
 

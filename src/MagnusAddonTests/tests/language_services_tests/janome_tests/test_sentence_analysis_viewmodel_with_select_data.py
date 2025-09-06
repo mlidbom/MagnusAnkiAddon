@@ -62,7 +62,9 @@ def setup_collection_with_select_data() -> Iterator[None]:
     ("良いものを食べる", ["良い", "もの", "を", "食べる"]),
     ("いいものを食べる", ["いい", "もの", "を", "食べる"]),
     ("うまく笑えずに", ["うまく", "笑える", "ずに"]), # うまく disappeared when we made all verbs inflecting words by default
-    ("慣れているんでね", ["慣れる", "ている", "んで", "ね"])
+    ("慣れているんでね", ["慣れる", "ている", "んで", "ね"]),
+    ("私が頼んだの", ["私", "が", "頼む", "んだ", "の"]),
+    ("月光が差し込んでるんだ", ["月光", "が", "差し込む", "でる:てる", "んだ"])
 ])
 def test_misc_stuff(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
     _assert_display_words_equal(sentence, [], expected_output)

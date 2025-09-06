@@ -53,7 +53,7 @@ def render_sentence_analysis(note: SentenceNote) -> str:
         html += f"""
                     <li class="sentenceVocabEntry depth1 word_priority_very_high {match.meta_tags_string}">
                         <div class="sentenceVocabEntryDiv">
-                            {build_invalid_for_display_span(match) if match.not_valid_for_display else ""}
+                            {build_invalid_for_display_span(match)}
                             <audio src="{match.audio_path}"></audio><a class="play-button"></a>
                             <span class="vocabQuestion clipboard">{match.parsed_form}</span>
                             {f'''<span class="vocabHitForm clipboard">{match.vocab_form}</span>''' if match.display_vocab_form else ""}

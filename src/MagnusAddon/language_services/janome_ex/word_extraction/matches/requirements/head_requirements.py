@@ -32,6 +32,10 @@ class HeadRequirements(Slots):
         self.fulfills_forbids_a_stem_requirement = not rules.a_stem.is_forbidden or not self.has_a_stem
         self.fulfills_requires_a_stem = not rules.a_stem.is_required or self.has_a_stem
 
+        self.has_past_tense_stem = end_of_stem is not None and end_of_stem().token.is_past_tense_verb_stem()
+        self.fulfills_forbids_past_tense_stem = not rules.past_tense_stem.is_forbidden or not self.has_past_tense_stem
+        self.fulfills_requires_past_tense_stem = not rules.past_tense_stem.is_required or self.has_past_tense_stem
+
         self.has_e_stem = (end_of_stem is not None and
                            (end_of_stem().token.surface[-1] in conjugator.e_stem_characters
                             or kana_utils.character_is_kanji(end_of_stem().token.surface[-1])))
@@ -46,7 +50,9 @@ class HeadRequirements(Slots):
                               and self.fulfills_forbids_a_stem_requirement
                               and self.fulfills_requires_a_stem
                               and self.fulfills_requires_e_stem_requirement
-                              and self.fulfills_forbids_e_stem_requirement)
+                              and self.fulfills_forbids_e_stem_requirement
+                              and self.fulfills_requires_past_tense_stem
+                              and self.fulfills_forbids_past_tense_stem)
 
     def failure_reasons(self) -> set[str]:
         return (SimpleStringListBuilder()
@@ -57,6 +63,8 @@ class HeadRequirements(Slots):
                 .append_if(not self.fulfills_requires_a_stem, "requires_a_stem")
                 .append_if(not self.fulfills_forbids_e_stem_requirement, "forbids_e_stem")
                 .append_if(not self.fulfills_requires_e_stem_requirement, "requires_e_stem")
+                .append_if(not self.fulfills_forbids_past_tense_stem, "forbids_past_tense_stem")
+                .append_if(not self.fulfills_requires_past_tense_stem, "requires_past_tense_stem")
                 .as_set())
 
     def __repr__(self) -> str: return " ".join(self.failure_reasons())

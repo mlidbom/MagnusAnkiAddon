@@ -112,7 +112,7 @@ test_special_vocab: list[VocabSpec] = [
     VocabSpec("た", "{past-tense} | (please)do", ["た"], surface_not={"たら"}, tags=[vm.is_inflecting_word]),
 
     VocabSpec("だの", "and-the-like", ["だの"], prefix_not={"ん"}),
-    VocabSpec("だ", surface_not={"なら", "な"}, tags=[vm.is_inflecting_word]),
+    VocabSpec("だ", surface_not={"なら", "な"}, tags=[vm.is_inflecting_word, vm.Forbids.past_tense_stem]),
 
     VocabSpec("こ", "familiarizing-suffix", ["こ"], forms=["っこ"], tags=[vm.is_strictly_suffix]),
 
@@ -149,7 +149,8 @@ test_special_vocab: list[VocabSpec] = [
     VocabSpec("された", surface_not={"されたら"}),
 
     VocabSpec("んです", tags=[vm.Requires.exact_match, vm.yield_last_token_to_overlapping_compound]),
-    VocabSpec("んだ", tags=[vm.Requires.exact_match, vm.yield_last_token_to_overlapping_compound]),
+    VocabSpec("んだ", "thing-is", tags=[vm.Requires.exact_match, vm.yield_last_token_to_overlapping_compound, vm.Forbids.past_tense_stem]),
+    VocabSpec("んだ", "did/was", forms=["だ"], tags=[vm.Requires.past_tense_stem, vm.is_inflecting_word, Tags.Vocab.question_overrides_form]),
     VocabSpec("んで", "thing-is", tags=[]),
     VocabSpec("んで", "and/て", forms=["で"], prefix_in={"ん"}),
     VocabSpec("たん", forms=["たの"], tags=[vm.Requires.single_token]),

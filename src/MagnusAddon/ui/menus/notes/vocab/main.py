@@ -87,10 +87,11 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
                 add_checkbox(toggle_menu, shortcutfinger.home2("Forbidden"), lambda: field.is_configured_forbidden, field.set_forbidden)
 
             add_require_forbid_menu(requires_forbids_menu, shortcutfinger.home2("single token"), vocab.matching_rules.single_token)
+            add_require_forbid_menu(requires_forbids_menu, shortcutfinger.home3("yield to overlapping compound"), vocab.matching_rules.yield_last_token)
             add_require_forbid_menu(requires_forbids_menu, shortcutfinger.home4("e stem"), vocab.matching_rules.e_stem)
             add_require_forbid_menu(requires_forbids_menu, shortcutfinger.home5("a stem"), vocab.matching_rules.a_stem)
-            add_require_forbid_menu(requires_forbids_menu, shortcutfinger.up1("Sentence end"), vocab.matching_rules.sentence_end)
-            add_require_forbid_menu(requires_forbids_menu, shortcutfinger.home3("yield to overlapping compound"), vocab.matching_rules.yield_last_token)
+            add_require_forbid_menu(requires_forbids_menu, shortcutfinger.up1("paste tense stem"), vocab.matching_rules.past_tense_stem)
+            add_require_forbid_menu(requires_forbids_menu, shortcutfinger.up2("Sentence end"), vocab.matching_rules.sentence_end)
 
         def build_is_menu(is_menu: QMenu) -> None:
             add_tag_field_check_box(is_menu, shortcutfinger.home1("Poison word"), vocab.matching_rules.is_poison_word)

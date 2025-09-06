@@ -53,6 +53,7 @@ class VocabNoteMatching(WeakRefable, Slots):
 
         self.e_stem: RequireForbidFlagField = RequireForbidFlagField(vocab, Tags.Vocab.Matching.Requires.e_stem, Tags.Vocab.Matching.Forbids.e_stem)
         self.a_stem: RequireForbidFlagField = RequireForbidFlagField(vocab, Tags.Vocab.Matching.Requires.a_stem, Tags.Vocab.Matching.Forbids.a_stem)
+        self.past_tense_stem: RequireForbidFlagField = RequireForbidFlagField(vocab, Tags.Vocab.Matching.Requires.past_tense_stem, Tags.Vocab.Matching.Forbids.past_tense_stem)
         self.single_token: RequireForbidFlagField = RequireForbidFlagField(vocab, Tags.Vocab.Matching.Requires.single_token, Tags.Vocab.Matching.Requires.compound)
         self.sentence_end: RequireForbidFlagField = RequireForbidFlagField(vocab, Tags.Vocab.Matching.Requires.sentence_end, Tags.Vocab.Matching.Forbids.sentence_end)
         self.yield_last_token: RequireForbidFlagField = YieldLastTokenToOverlappingCompound(vocab)
@@ -78,6 +79,8 @@ class VocabNoteMatching(WeakRefable, Slots):
                                        .flag("forbids_a_stem", self.a_stem.is_forbidden)
                                        .flag("requires_e_stem", self.e_stem.is_required)
                                        .flag("forbids_e_stem", self.e_stem.is_forbidden)
+                                       .flag("requires_past_tense_stem", self.past_tense_stem.is_required)
+                                       .flag("forbids_past_tense_stem", self.past_tense_stem.is_forbidden)
                                        .flag("requires_sentence_end", self.sentence_end.is_required)
                                        .flag("is_inflecting_word", self.is_inflecting_word.is_set())
                                        .flag("is_poison_word", self.is_poison_word.is_set())
