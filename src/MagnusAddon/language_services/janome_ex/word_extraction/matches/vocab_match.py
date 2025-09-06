@@ -58,4 +58,4 @@ class VocabMatch(Match, Slots):
     def hiding_reasons(self) -> set[str]: return (super().hiding_reasons
                                                   | self.display_requirements.failure_reasons())
 
-    def __repr__(self) -> str: return f"""{" ".join(self.failure_reasons)} {" ".join(self.hiding_reasons)}"""
+    def __repr__(self) -> str: return f"""{self.vocab.get_question()}, {self.vocab.get_answer()[:10]}: {" ".join(self.failure_reasons)} {" ".join(self.hiding_reasons)}"""
