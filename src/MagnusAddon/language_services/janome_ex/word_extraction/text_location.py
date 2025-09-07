@@ -59,16 +59,17 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
         for range_ in self.all_candidate_ranges[:-1]:  # we already have the last one completed
             range_.run_validity_analysis()
 
+        self.candidate_words_starting_here = [candidate for candidate in self.all_candidate_ranges if candidate.is_word]
+        self.valid_words_starting_here = [candidate for candidate in self.all_candidate_ranges if candidate.has_valid_words()]
+        self.valid_variants = ex_sequence.flatten([word.valid_variants for word in self.valid_words_starting_here])
+        self.all_word_variants = ex_sequence.flatten([v.all_word_variants for v in self.all_candidate_ranges])
+
     def analysis_step_3_analyze_display_status(self) -> None:
         for range_ in self.all_candidate_ranges:
             range_.run_display_analysis_pass()
 
     def analysis_step_4_create_collections(self) -> None:
-        self.candidate_words_starting_here = [candidate for candidate in self.all_candidate_ranges if candidate.is_word]
-        self.valid_words_starting_here = [candidate for candidate in self.all_candidate_ranges if candidate.has_valid_words()]
         self.display_words_starting_here = [candidate for candidate in self.all_candidate_ranges if candidate.display_word_variants]
-        self.valid_variants = ex_sequence.flatten([word.valid_variants for word in self.valid_words_starting_here])
-        self.all_word_variants = ex_sequence.flatten([v.all_word_variants for v in self.all_candidate_ranges])
 
     def analysis_step_5_calculate_preference_between_overlapping_display_variant5(self) -> bool:
         #todo this does not feel great. Currently we need the first version of display_words_starting_here to be created
