@@ -44,7 +44,7 @@ class Match(WeakRefable, Slots):
 
     @property
     def is_valid_for_display(self) -> bool:
-        return self.is_valid and not self.is_configured_hidden
+        return self.is_valid and not self.is_configured_hidden and not self.is_shadowed
 
     @property
     def _emergency_displayed(self) -> bool:
