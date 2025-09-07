@@ -76,6 +76,8 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
         # this is some truly strange invisible order dependency that is making me quite uncomfortable
         # it also relies on the check for is_yield_last_token_to_overlapping_compound_requirement_fulfilled to return different values at different times
         # because that method has a circular dependency to display_words_starting_here which we set up here.
+
+        # todo:bug: when there are chains of compounds that yield to the next compound, this does NOT work. The first compound is not shown even though it should be since the latter has yielded.
         while self.display_words_starting_here and not self.display_words_starting_here[0].display_words_are_still_valid():
             self.display_words_starting_here.remove(self.display_words_starting_here[0])
 
