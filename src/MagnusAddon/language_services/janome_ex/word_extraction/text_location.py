@@ -82,7 +82,7 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
 
         self.display_words_starting_here = new_display_words_starting_here
 
-        if self.display_words_starting_here and self.is_shadowed_by is None:
+        if self.display_words_starting_here and self.is_shadowed_by is None:    
             self.display_variants = self.display_words_starting_here[0].display_word_variants
 
             covering_forward_count = self.display_words_starting_here[0].location_count - 1
