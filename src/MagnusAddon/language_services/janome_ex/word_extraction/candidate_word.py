@@ -94,7 +94,10 @@ class CandidateWord(WeakRefable, Slots):
         elif self.should_include_base_in_display_variants:
             self.display_word_variants.append(non_optional(self.base))
 
-        return len(old_display_word_variants) != len(self.display_word_variants)
+        if len(old_display_word_variants) != len(self.display_word_variants):
+            return True
+
+        return any(old_display_word_variants[index] != self.display_word_variants[index] for index in range(len(old_display_word_variants)))
 
     def has_valid_words(self) -> bool: return len(self.valid_variants) > 0
 
