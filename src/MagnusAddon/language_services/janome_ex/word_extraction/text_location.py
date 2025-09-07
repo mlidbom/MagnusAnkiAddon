@@ -61,12 +61,12 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
 
     def analysis_step_3_analyze_display_status(self) -> None:
         for range_ in self.all_candidate_ranges:
-            range_.run_display_analysis()
+            range_.run_display_analysis_pass()
 
     def analysis_step_4_create_collections(self) -> None:
         self.candidate_words_starting_here = [candidate for candidate in self.all_candidate_ranges if candidate.is_word]
         self.valid_words_starting_here = [candidate for candidate in self.all_candidate_ranges if candidate.has_valid_words()]
-        self.display_words_starting_here = [candidate for candidate in self.all_candidate_ranges if candidate.display_words_are_still_valid()]
+        self.display_words_starting_here = [candidate for candidate in self.all_candidate_ranges if candidate.display_word_variants]
         self.valid_variants = ex_sequence.flatten([word.valid_variants for word in self.valid_words_starting_here])
         self.all_word_variants = ex_sequence.flatten([v.all_word_variants for v in self.all_candidate_ranges])
 
@@ -77,12 +77,13 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
         # it also relies on the check for is_yield_last_token_to_overlapping_compound_requirement_fulfilled to return different values at different times
         # because that method has a circular dependency to display_words_starting_here which we set up here.
 
-        new_display_words_starting_here = [candidate for candidate in self.all_candidate_ranges if candidate.display_words_are_still_valid()]
+        self.analysis_step_3_analyze_display_status()
+        new_display_words_starting_here = [candidate for candidate in self.all_candidate_ranges if candidate.display_word_variants]
         changes_made = len(new_display_words_starting_here) != len(self.display_words_starting_here)
 
         self.display_words_starting_here = new_display_words_starting_here
 
-        if self.display_words_starting_here and self.is_shadowed_by is None:    
+        if self.display_words_starting_here and self.is_shadowed_by is None:
             self.display_variants = self.display_words_starting_here[0].display_word_variants
 
             covering_forward_count = self.display_words_starting_here[0].location_count - 1

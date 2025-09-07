@@ -80,7 +80,8 @@ class CandidateWord(WeakRefable, Slots):
         if self.base is not None and (self.base.is_word or self.should_include_base_in_valid_words):
             self.all_word_variants.append(self.base)
 
-    def run_display_analysis(self) -> None:
+    def run_display_analysis_pass(self) -> None:
+        self.display_word_variants = []
         self.should_include_base_in_display_variants = (self.base is not None
                                                         and self.should_include_base_in_valid_words
                                                         and any(self.base.display_matches))
