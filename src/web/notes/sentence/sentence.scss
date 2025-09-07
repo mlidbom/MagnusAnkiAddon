@@ -75,7 +75,7 @@
             &.highlighted .vocabQuestion { color: var(--colorTextBold); }
 
             .incorrect_reason, .hiding_reason, .not_shown_reason {font-size: 80%;}
-            .incorrect_reason, .hiding_reason { color: var(--colorTextWarningRed);}
+            .incorrect_reason { color: var(--colorTextWarningRed);}
 
             &.secondary_match {
                 &, & .vocab_tag { background-color: color-mix(in lch, var(--colorBgOffset1), white 30%);}

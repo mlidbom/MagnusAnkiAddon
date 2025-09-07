@@ -63,11 +63,6 @@ class MatchViewModel:
     def hiding_reasons(self) -> list[str]: return list(self.match.hiding_reasons)
 
     @property
-    def not_shown_reasons(self) -> list[str]:
-        return (SimpleStringListBuilder()
-                .append_if(self.is_shadowed, "shadowed").value)
-
-    @property
     def is_displayed(self) -> bool:
         if app.config().show_sentence_breakdown_in_edit_mode.get_value(): return True
         #todo: this absolutely does not belong here. This is a viewmodel for crying out loud, it should not be implementing core domain logic.
