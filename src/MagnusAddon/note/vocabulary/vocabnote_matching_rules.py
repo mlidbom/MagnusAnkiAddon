@@ -85,7 +85,7 @@ class VocabNoteMatching(WeakRefable, Slots):
                                        .flag("is_inflecting_word", self.is_inflecting_word.is_set())
                                        .flag("is_poison_word", self.is_poison_word.is_set())
                                        .flag("yield_last_token_to_overlapping_compound", self.yield_last_token.is_required)
-                                       .flag("forbid_auto_yielding_last_token", self.yield_last_token.is_required)
+                                       .flag("forbid_auto_yielding_last_token", self.yield_last_token.is_forbidden)
                                        .flag("match_with_preceding_vowel", self.match_with_preceding_vowel.is_set())
                                        .flag("question_overrides_form", self.question_overrides_form.is_set())
                                        .flag("is_strictly_suffix", self.is_strictly_suffix.is_set())
