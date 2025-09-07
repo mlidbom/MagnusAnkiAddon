@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 from autoslot import Slots
 from sysutils.simple_string_list_builder import SimpleStringListBuilder
+from sysutils.typed import non_optional
 from sysutils.weak_ref import WeakRefable
 
 if TYPE_CHECKING:
@@ -63,6 +64,9 @@ class Match(WeakRefable, Slots):
     def _must_include_some_variant(self) -> bool: return self.word_variant().word().must_include_some_variant()
 
     @property
+    def is_shadowed(self) -> bool: return self.word_variant().is_shadowed
+
+    @property
     def failure_reasons(self) -> set[str]:
         return (SimpleStringListBuilder()
                 .append_if(self.is_configured_incorrect, "configured_incorrect")
@@ -72,4 +76,5 @@ class Match(WeakRefable, Slots):
     def hiding_reasons(self) -> set[str]:
         return (SimpleStringListBuilder()
                 .append_if(self.is_configured_hidden, "configured_hidden")
+                .append_if_lambda(self.is_shadowed, lambda: f"shadowed_by:{non_optional(self.word_variant().word().start_location().is_shadowed_by)().display_variants[0].form}")
                 .as_set())
