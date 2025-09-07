@@ -77,11 +77,4 @@ class TextAnalysis(WeakRefable,Slots):
             location.analysis_step_3_run_initial_display_analysis()
 
     def _analysis_step_5_calculate_preference_between_overlapping_display_candidates(self) -> None:
-        # for location in self.locations:
-        #     location.analysis_step_5_calculate_preference_between_overlapping_display_variant5()
-        changes_made = True
-        while changes_made:
-            changes_made = False
-            for location in self.locations:
-                if location.analysis_step_5_resolve_chains_of_compounds_yielding_to_the_next_compound_pass_true_if_there_were_changes():
-                    changes_made = True
+        while any([location.analysis_step_5_resolve_chains_of_compounds_yielding_to_the_next_compound_pass_true_if_there_were_changes() for location in self.locations]):pass  # noqa: C419 all the calls must be made

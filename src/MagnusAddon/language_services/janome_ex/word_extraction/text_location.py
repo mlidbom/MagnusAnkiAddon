@@ -64,11 +64,7 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
         self.all_word_variants = ex_sequence.flatten([v.all_word_variants for v in self.all_candidate_ranges])
 
     def _run_display_analysis_pass_true_if_there_were_changes(self) -> bool:
-
-        changes_made = False
-        for range_ in self.all_candidate_ranges:
-            if range_.run_display_analysis_pass_true_if_there_were_changes():
-                changes_made = True
+        changes_made = any([range_.run_display_analysis_pass_true_if_there_were_changes() for range_ in self.all_candidate_ranges])  # noqa: C419 all the calls must be made
 
         if changes_made:
             self.display_words_starting_here = [candidate for candidate in self.all_candidate_ranges if candidate.display_word_variants]
