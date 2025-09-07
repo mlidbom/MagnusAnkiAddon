@@ -80,7 +80,7 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
         # it also relies on the check for is_yield_last_token_to_overlapping_compound_requirement_fulfilled to return different values at different times
         # because that method has a circular dependency to display_words_starting_here which we set up here.
 
-        the_next_compound_yields_to_the_one_after_that = self._run_display_analysis_pass()
+        the_next_compound_yields_to_the_one_after_that_so_this_one_no_longer_yields = self._run_display_analysis_pass()
         if self.display_words_starting_here and self.is_shadowed_by is None:
             self.display_variants = self.display_words_starting_here[0].display_word_variants
 
@@ -88,7 +88,7 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
             for location in self.forward_list(covering_forward_count)[1:]:
                 location.is_shadowed_by = self.weakref
 
-        return the_next_compound_yields_to_the_one_after_that
+        return the_next_compound_yields_to_the_one_after_that_so_this_one_no_longer_yields
 
     def is_next_location_inflecting_word(self) -> bool:
         return self.next is not None and self.next().is_inflecting_word()
