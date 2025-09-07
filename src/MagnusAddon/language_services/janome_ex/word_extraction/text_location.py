@@ -65,12 +65,9 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
         self.all_word_variants = ex_sequence.flatten([v.all_word_variants for v in self.all_candidate_ranges])
 
     def _run_display_analysis_pass(self) -> bool:
-        for range_ in self.all_candidate_ranges:
-            range_.run_display_analysis_pass()
-
-        new_display_words_starting_here = [candidate for candidate in self.all_candidate_ranges if candidate.display_word_variants]
-        changes_made = len(new_display_words_starting_here) != len(self.display_words_starting_here)
-        self.display_words_starting_here = new_display_words_starting_here
+        changes_made = any(range_.run_display_analysis_pass_true_if_there_were_changes() for range_ in self.all_candidate_ranges)
+        if changes_made:
+            self.display_words_starting_here = [candidate for candidate in self.all_candidate_ranges if candidate.display_word_variants]
         return changes_made
 
     def analysis_step_3_run_initial_display_analysis(self) -> None:
