@@ -63,23 +63,23 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
         self.valid_variants = ex_sequence.flatten([word.valid_variants for word in self.valid_words_starting_here])
         self.all_word_variants = ex_sequence.flatten([v.all_word_variants for v in self.all_candidate_ranges])
 
-    def _run_display_analysis_pass(self) -> bool:
+    def _run_display_analysis_pass_true_if_there_were_changes(self) -> bool:
         changes_made = any(range_.run_display_analysis_pass_true_if_there_were_changes() for range_ in self.all_candidate_ranges)
         if changes_made:
             self.display_words_starting_here = [candidate for candidate in self.all_candidate_ranges if candidate.display_word_variants]
         return changes_made
 
     def analysis_step_3_run_initial_display_analysis(self) -> None:
-        self._run_display_analysis_pass()
+        self._run_display_analysis_pass_true_if_there_were_changes()
 
-    def analysis_step_5_resolve_chains_of_compounds_yielding_to_the_next_compound_pass(self) -> bool:
+    def analysis_step_5_resolve_chains_of_compounds_yielding_to_the_next_compound_pass_true_if_there_were_changes(self) -> bool:
         #todo this does not feel great. Currently we need the first version of display_words_starting_here to be created
         # in order for the DisplayRequirements class to inspect it and mark itself as not being displayed so that it can be removed here.
         # this is some truly strange invisible order dependency that is making me quite uncomfortable
         # it also relies on the check for is_yield_last_token_to_overlapping_compound_requirement_fulfilled to return different values at different times
         # because that method has a circular dependency to display_words_starting_here which we set up here.
 
-        the_next_compound_yields_to_the_one_after_that_so_this_one_no_longer_yields = self._run_display_analysis_pass()
+        the_next_compound_yields_to_the_one_after_that_so_this_one_no_longer_yields = self._run_display_analysis_pass_true_if_there_were_changes()
         if self.display_words_starting_here and self.is_shadowed_by is None:
             self.display_variants = self.display_words_starting_here[0].display_word_variants
 

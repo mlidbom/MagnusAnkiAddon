@@ -83,4 +83,4 @@ class TextAnalysis(WeakRefable,Slots):
         while changes_made:
             changes_made = False
             for location in self.locations:
-                changes_made = changes_made or location.analysis_step_5_resolve_chains_of_compounds_yielding_to_the_next_compound_pass()
+                changes_made = changes_made or location.analysis_step_5_resolve_chains_of_compounds_yielding_to_the_next_compound_pass_true_if_there_were_changes()
