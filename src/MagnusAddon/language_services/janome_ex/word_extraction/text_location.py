@@ -73,7 +73,7 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
     def analysis_step_3_run_initial_display_analysis(self) -> None:
         self._run_display_analysis_pass()
 
-    def analysis_step_5_resolve_chains_of_compounds_yielding_to_the_next_compound(self) -> bool:
+    def analysis_step_5_resolve_chains_of_compounds_yielding_to_the_next_compound_pass(self) -> bool:
         #todo this does not feel great. Currently we need the first version of display_words_starting_here to be created
         # in order for the DisplayRequirements class to inspect it and mark itself as not being displayed so that it can be removed here.
         # this is some truly strange invisible order dependency that is making me quite uncomfortable
