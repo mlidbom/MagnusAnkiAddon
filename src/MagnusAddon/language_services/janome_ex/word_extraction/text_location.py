@@ -64,26 +64,26 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
         self.valid_variants = ex_sequence.flatten([word.valid_variants for word in self.valid_words_starting_here])
         self.all_word_variants = ex_sequence.flatten([v.all_word_variants for v in self.all_candidate_ranges])
 
-    def analysis_step_3_analyze_display_status(self) -> None:
+    def _run_display_analysis_pass(self) -> bool:
         for range_ in self.all_candidate_ranges:
             range_.run_display_analysis_pass()
 
-    def analysis_step_4_create_collections(self) -> None:
-        self.display_words_starting_here = [candidate for candidate in self.all_candidate_ranges if candidate.display_word_variants]
+        new_display_words_starting_here = [candidate for candidate in self.all_candidate_ranges if candidate.display_word_variants]
+        changes_made = len(new_display_words_starting_here) != len(self.display_words_starting_here)
+        self.display_words_starting_here = new_display_words_starting_here
+        return changes_made
 
-    def analysis_step_5_calculate_preference_between_overlapping_display_variant5(self) -> bool:
+    def analysis_step_3_run_initial_display_analysis(self) -> None:
+        self._run_display_analysis_pass()
+
+    def analysis_step_5_resolve_chains_of_compounds_yielding_to_the_next_compound(self) -> bool:
         #todo this does not feel great. Currently we need the first version of display_words_starting_here to be created
         # in order for the DisplayRequirements class to inspect it and mark itself as not being displayed so that it can be removed here.
         # this is some truly strange invisible order dependency that is making me quite uncomfortable
         # it also relies on the check for is_yield_last_token_to_overlapping_compound_requirement_fulfilled to return different values at different times
         # because that method has a circular dependency to display_words_starting_here which we set up here.
 
-        self.analysis_step_3_analyze_display_status()
-        new_display_words_starting_here = [candidate for candidate in self.all_candidate_ranges if candidate.display_word_variants]
-        changes_made = len(new_display_words_starting_here) != len(self.display_words_starting_here)
-
-        self.display_words_starting_here = new_display_words_starting_here
-
+        the_next_compound_yields_to_the_one_after_that = self._run_display_analysis_pass()
         if self.display_words_starting_here and self.is_shadowed_by is None:
             self.display_variants = self.display_words_starting_here[0].display_word_variants
 
@@ -91,7 +91,7 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
             for location in self.forward_list(covering_forward_count)[1:]:
                 location.is_shadowed_by = self.weakref
 
-        return changes_made
+        return the_next_compound_yields_to_the_one_after_that
 
     def is_next_location_inflecting_word(self) -> bool:
         return self.next is not None and self.next().is_inflecting_word()

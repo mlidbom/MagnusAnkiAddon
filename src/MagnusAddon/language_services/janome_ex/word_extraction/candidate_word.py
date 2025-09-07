@@ -94,8 +94,6 @@ class CandidateWord(WeakRefable, Slots):
             self.display_word_variants.append(non_optional(self.base))
 
     def has_valid_words(self) -> bool: return len(self.valid_variants) > 0
-    # todo strange order dependency makes the first collection potentially invalid later. Ugh
-    def display_words_are_still_valid(self) -> bool: return any(any(variant.display_matches) for variant in self.display_word_variants)
 
     def __repr__(self) -> str: return f"""
 surface: {self.surface.__repr__()} | base:{self.base.__repr__()},

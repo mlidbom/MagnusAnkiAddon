@@ -39,8 +39,7 @@ class TextAnalysis(WeakRefable,Slots):
         self._connect_next_and_previous_to_locations()
         self._analysis_step_1_analyze_non_compound()
         self._analysis_step_2_analyze_compounds()
-        self._analysis_step_3_analyze_display_status()
-        self._analysis_step_4_create_collections()
+        self._analysis_step_3_run_initial_display_analysis()
         self._analysis_step_5_calculate_preference_between_overlapping_display_candidates()
 
         self.all_word_variants: list[CandidateWordVariant] = ex_sequence.flatten([loc.all_word_variants for loc in self.locations])
@@ -73,13 +72,9 @@ class TextAnalysis(WeakRefable,Slots):
         for location in self.locations:
             location.analysis_step_2_analyze_compound_validity()
 
-    def _analysis_step_3_analyze_display_status(self) -> None:
+    def _analysis_step_3_run_initial_display_analysis(self) -> None:
         for location in self.locations:
-            location.analysis_step_3_analyze_display_status()
-
-    def _analysis_step_4_create_collections(self) -> None:
-        for location in self.locations:
-            location.analysis_step_4_create_collections()
+            location.analysis_step_3_run_initial_display_analysis()
 
     def _analysis_step_5_calculate_preference_between_overlapping_display_candidates(self) -> None:
         # for location in self.locations:
@@ -88,4 +83,4 @@ class TextAnalysis(WeakRefable,Slots):
         while changes_made:
             changes_made = False
             for location in self.locations:
-                changes_made = changes_made or location.analysis_step_5_calculate_preference_between_overlapping_display_variant5()
+                changes_made = changes_made or location.analysis_step_5_resolve_chains_of_compounds_yielding_to_the_next_compound()
