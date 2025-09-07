@@ -159,7 +159,9 @@ test_special_vocab: list[VocabSpec] = [
     VocabSpec("んだろう", tags=[vm.is_poison_word]),
     VocabSpec("しちゃう"),
     VocabSpec("ものを", tags=[vm.Requires.sentence_end]),
-    VocabSpec("いいものを", forms=["よいものを", "良いものを", "かったものを"], tags=[vm.Requires.sentence_end])
+    VocabSpec("いいものを", forms=["よいものを", "良いものを", "かったものを"], tags=[vm.Requires.sentence_end]),
+    VocabSpec("に行く", compounds=["に", "行く"], tags=[vm.yield_last_token_to_overlapping_compound]),
+    VocabSpec("行った", compounds=["行く", "た"], tags=[vm.yield_last_token_to_overlapping_compound])
 ]
 
 test_ordinary_vocab_list = [

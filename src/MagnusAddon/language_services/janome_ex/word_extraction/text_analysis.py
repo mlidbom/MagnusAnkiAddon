@@ -82,5 +82,10 @@ class TextAnalysis(WeakRefable,Slots):
             location.analysis_step_4_create_collections()
 
     def _analysis_step_5_calculate_preference_between_overlapping_display_candidates(self) -> None:
-        for location in self.locations:
-            location.analysis_step_5_calculate_preference_between_overlapping_display_variant5()
+        # for location in self.locations:
+        #     location.analysis_step_5_calculate_preference_between_overlapping_display_variant5()
+        changes_made = True
+        while changes_made:
+            changes_made = False
+            for location in self.locations:
+                changes_made = changes_made or location.analysis_step_5_calculate_preference_between_overlapping_display_variant5()

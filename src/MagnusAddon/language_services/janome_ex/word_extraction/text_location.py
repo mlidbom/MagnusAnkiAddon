@@ -70,16 +70,17 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
         self.valid_variants = ex_sequence.flatten([word.valid_variants for word in self.valid_words_starting_here])
         self.all_word_variants = ex_sequence.flatten([v.all_word_variants for v in self.all_candidate_ranges])
 
-    def analysis_step_5_calculate_preference_between_overlapping_display_variant5(self) -> None:
+    def analysis_step_5_calculate_preference_between_overlapping_display_variant5(self) -> bool:
         #todo this does not feel great. Currently we need the first version of display_words_starting_here to be created
         # in order for the DisplayRequirements class to inspect it and mark itself as not being displayed so that it can be removed here.
         # this is some truly strange invisible order dependency that is making me quite uncomfortable
         # it also relies on the check for is_yield_last_token_to_overlapping_compound_requirement_fulfilled to return different values at different times
         # because that method has a circular dependency to display_words_starting_here which we set up here.
 
-        # todo:bug: when there are chains of compounds that yield to the next compound, this does NOT work. The first compound is not shown even though it should be since the latter has yielded.
-        while self.display_words_starting_here and not self.display_words_starting_here[0].display_words_are_still_valid():
-            self.display_words_starting_here.remove(self.display_words_starting_here[0])
+        new_display_words_starting_here = [candidate for candidate in self.all_candidate_ranges if candidate.display_words_are_still_valid()]
+        changes_made = len(new_display_words_starting_here) != len(self.display_words_starting_here)
+
+        self.display_words_starting_here = new_display_words_starting_here
 
         if self.display_words_starting_here and self.is_shadowed_by is None:
             self.display_variants = self.display_words_starting_here[0].display_word_variants
@@ -87,6 +88,8 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
             covering_forward_count = self.display_words_starting_here[0].location_count - 1
             for location in self.forward_list(covering_forward_count)[1:]:
                 location.is_shadowed_by = self.weakref
+
+        return changes_made
 
     def is_next_location_inflecting_word(self) -> bool:
         return self.next is not None and self.next().is_inflecting_word()
