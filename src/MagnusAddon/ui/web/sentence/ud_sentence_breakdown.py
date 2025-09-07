@@ -19,7 +19,7 @@ def build_invalid_for_display_span(view_model: MatchViewModel) -> str:
 
     incorrect_reasons = [f"""<div class="incorrect_reason">{reason}</div>""" for reason in view_model.incorrect_reasons]
     hiding_reasons = [f"""<div class="hiding_reason">{reason}</div>""" for reason in view_model.hiding_reasons]
-    return f"""<span>{newline.join(incorrect_reasons +  hiding_reasons)}</span>"""
+    return f"""<span>{newline.join(incorrect_reasons + hiding_reasons)}</span>"""
 
 def render_match_kanji(match: MatchViewModel) -> str:
     if not match.kanji or not app.config().show_kanji_in_sentence_breakdown.get_value():
