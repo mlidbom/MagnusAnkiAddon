@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Optional, TypeVar, get_origin
+from typing import Any, TypeVar, get_origin
 
 from beartype.door import is_bearable
 
@@ -33,9 +33,9 @@ def checked_cast_dynamic(cls: type[CastT], instance: object) -> CastT:
     """ Runtime-check an object for a specific type and return it cast as such """
     return checked_cast(cls, instance) if _is_compatible_with_isinstance(cls) else checked_cast_generics(cls, instance)
 
-def non_optional(instance:Optional[CastT]) -> CastT:
+def non_optional(instance:CastT | None) -> CastT:
     if instance is None: raise AssertionError()
     return instance
 
-def try_cast(cls: type[CastT], instance: object) -> Optional[CastT]:
+def try_cast(cls: type[CastT], instance: object) -> CastT | None:
     return instance if isinstance(instance, cls) else None

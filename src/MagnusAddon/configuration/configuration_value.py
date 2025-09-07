@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import os
-from typing import Callable, Generic, Optional, TypeVar
+from typing import Callable, Generic, TypeVar
 
 from ankiutils import app
 from aqt import mw
@@ -19,9 +19,9 @@ def _write_config_dict() -> None:
     mw.addonManager.writeConfig(_addon_name, _config_dict.instance())
 
 class ConfigurationValue(Generic[T]):
-    def __init__(self, name: str, title: str, default: T, feature_toggler: Optional[Callable[[T], None]] = None) -> None:
+    def __init__(self, name: str, title: str, default: T, feature_toggler: Callable[[T], None] | None = None) -> None:
         self.title = title
-        self.feature_toggler: Optional[Callable[[T], None]] = feature_toggler
+        self.feature_toggler: Callable[[T], None] | None = feature_toggler
         self.name = name
         self._value: T = _config_dict.instance().get(name, default)
 

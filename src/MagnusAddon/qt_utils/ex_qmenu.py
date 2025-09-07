@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Optional
-
 from autoslot import Slots
 from PyQt6.QtWidgets import QMenu
 
@@ -13,7 +11,7 @@ class ExQmenu(Slots):
             return
 
         for action in menu.actions():
-            submenu: Optional[QMenu] = action.menu()
+            submenu: QMenu | None = action.menu()
             if submenu:
                 cls.disable_empty_submenus(submenu)
 

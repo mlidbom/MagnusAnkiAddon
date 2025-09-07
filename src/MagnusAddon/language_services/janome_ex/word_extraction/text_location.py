@@ -13,7 +13,6 @@ if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
     from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 
-from typing import Optional
 
 from language_services.janome_ex.word_extraction.candidate_word import CandidateWord
 from sysutils.ex_str import newline
@@ -24,10 +23,10 @@ class TextAnalysisLocation(WeakRefable,Slots):
     def __init__(self, analysis: WeakRef[TextAnalysis], token: ProcessedToken, character_start_index: int, token_index: int) -> None:
         self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
         self.weakref = WeakRef(self)
-        self.next: Optional[WeakRef[TextAnalysisLocation]] = None
-        self.previous: Optional[WeakRef[TextAnalysisLocation]] = None
+        self.next: WeakRef[TextAnalysisLocation] | None = None
+        self.previous: WeakRef[TextAnalysisLocation] | None = None
         self.token: ProcessedToken = token
-        self.is_shadowed_by: Optional[WeakRef[TextAnalysisLocation]] = None
+        self.is_shadowed_by: WeakRef[TextAnalysisLocation] | None = None
         self.analysis: WeakRef[TextAnalysis] = analysis
         self.token_index: int = token_index
         self.character_start_index: int = character_start_index

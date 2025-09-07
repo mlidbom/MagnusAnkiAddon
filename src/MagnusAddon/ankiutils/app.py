@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import os
-from typing import TYPE_CHECKING, Callable, Optional
+from typing import TYPE_CHECKING, Callable
 
 import mylog
 from sysutils.lazy import BackgroundInitialingLazy
@@ -17,7 +17,7 @@ if TYPE_CHECKING:
     from configuration.configuration_value import JapaneseConfig
     from note.collection.jp_collection import JPCollection
 
-_collection: Optional[BackgroundInitialingLazy[JPCollection]] = None
+_collection: BackgroundInitialingLazy[JPCollection] | None = None
 
 _init_hooks: set[Callable[[], None]] = set()
 _collection_closed_hooks: set[Callable[[], None]] = set()
@@ -56,7 +56,7 @@ def is_testing() -> bool:
     import sys
     return "pytest" in sys.modules
 
-def _reset(_col: Optional[object] = None) -> None:
+def _reset(_col: object | None = None) -> None:
     mylog.info("_reset")
     reset()
 
@@ -70,7 +70,7 @@ def _destruct() -> None:
 
         _collection = None
 
-def _collection_is_being_invalidated(_col: Optional[object] = None) -> None:
+def _collection_is_being_invalidated(_col: object | None = None) -> None:
     mylog.info("_collection_is_being_invalidated")
     _destruct()
     reset(delay_seconds=9999)  # Unless forced by the user we don't actually want to run an initialization here

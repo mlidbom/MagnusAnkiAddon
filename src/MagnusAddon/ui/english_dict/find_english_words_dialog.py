@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import threading
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from aqt.utils import openLink
 from language_services.english_dictionary import english_dict_search
@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
 class EnglishWordSearchDialog(QDialog):
     # Singleton instance
-    _instance: Optional[EnglishWordSearchDialog] = None
+    _instance: EnglishWordSearchDialog | None = None
 
     @classmethod
     def instance(cls) -> EnglishWordSearchDialog:
@@ -23,7 +23,7 @@ class EnglishWordSearchDialog(QDialog):
             cls._instance = cls()
         return cls._instance
 
-    def __init__(self, parent: Optional[QWidget] = None) -> None:
+    def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.setWindowTitle("Find English Words")
         self.resize(800, 600)

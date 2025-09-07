@@ -42,7 +42,6 @@ flake8-pytest-style.parametrize-names-type = "csv"
 ignore = [
     "E701", #E701 multiple statements on one line,
     "TC006", # [*] Add quotes to type expression in `typing.cast()`
-    "UP007", # Use `X | Y` for type annotations
 
     #below here is only needed when ALL is the select value
     #"Q", # rules on how quotes are use...

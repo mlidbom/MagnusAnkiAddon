@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Callable, Optional
+from typing import TYPE_CHECKING, Callable
 
 from ankiutils import app
 from autoslot import Slots
@@ -41,7 +41,7 @@ def is_displaytype_displaying_review_answer(display_type: str) -> bool:
 def is_reviewer_display_type(display_type: str) -> bool:
     return display_type.startswith("review")
 
-def get_note_from_web_view(view: AnkiWebView) -> Optional[JPNote]:
+def get_note_from_web_view(view: AnkiWebView) -> JPNote | None:
     inner_note: Note | None
 
     if view.kind == AnkiWebViewKind.MAIN:

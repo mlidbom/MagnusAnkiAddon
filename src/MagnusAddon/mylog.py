@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import os
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from sysutils.lazy import Lazy
 
@@ -45,7 +45,7 @@ def get_logger(module: str) -> logging.Logger:
     stdout_handler.setFormatter(stdout_formatter)
     logger.addHandler(stdout_handler)
 
-    file_handler: Optional[RotatingFileHandler] = None
+    file_handler: RotatingFileHandler | None = None
 
     # Prevent errors when deleting/updating the add-on on Windows
     # noinspection PyUnusedLocal

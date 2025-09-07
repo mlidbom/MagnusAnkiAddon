@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import threading
-from typing import Callable, Optional, TypeVar, cast
+from typing import Callable, TypeVar, cast
 
 from anki.notes import NoteId
 from ankiutils.app import col
@@ -17,7 +17,7 @@ from sysutils.typed import non_optional
 
 class NoteSearchDialog(QDialog):
     # Singleton instance
-    _instance: Optional[NoteSearchDialog] = None
+    _instance: NoteSearchDialog | None = None
 
     @classmethod
     def instance(cls) -> NoteSearchDialog:
@@ -26,7 +26,7 @@ class NoteSearchDialog(QDialog):
             cls._instance = cls()
         return cls._instance
 
-    def __init__(self, parent: Optional[QWidget] = None) -> None:
+    def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.setWindowTitle("Find Notes")
         self.resize(1800, 1100)

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from autoslot import Slots
 
@@ -61,7 +61,7 @@ class KanjiCollection(Slots):
     def with_any_kanji_in(self, kanji_list: list[str]) -> list[KanjiNote]:
         return ex_sequence.flatten([self._cache.with_question(kanji) for kanji in kanji_list])
 
-    def with_kanji(self, kanji: str) -> Optional[KanjiNote]:
+    def with_kanji(self, kanji: str) -> KanjiNote | None:
         found = self._cache.with_question(kanji)
         return found[0] if found else None
 
