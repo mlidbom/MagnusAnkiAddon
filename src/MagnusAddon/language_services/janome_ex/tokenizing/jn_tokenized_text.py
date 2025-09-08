@@ -23,6 +23,7 @@ class ProcessedToken(Slots):
         self.potential_godan_verb: str | None = None
 
     def is_past_tense_stem(self) -> bool: return False
+    def is_t_form_stem(self) -> bool: return False
     def is_past_tense_marker(self) -> bool: return False
 
     def __repr__(self) -> str:
@@ -36,6 +37,7 @@ class JNTokenWrapper(ProcessedToken, Slots):
         self.is_inflectable_word = self.token.is_inflectable_word()
 
     def is_past_tense_stem(self) -> bool: return self.token.is_past_tense_stem()
+    def is_t_form_stem(self) -> bool: return self.token.is_t_form_stem()
     def is_past_tense_marker(self) -> bool: return self.token.is_past_tense_marker()
 
     def pre_process(self) -> list[ProcessedToken]:

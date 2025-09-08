@@ -16,6 +16,8 @@ class InflectionForm:
             return self.name == other.name
         return False
 
+    def __hash__(self) -> int: return hash(self.name)
+
 def _add_form(name: str, description: str) -> InflectionForm:
     form = InflectionForm(name, description)
     all_dict[name] = form

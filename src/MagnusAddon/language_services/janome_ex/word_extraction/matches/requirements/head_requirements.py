@@ -15,6 +15,7 @@ if TYPE_CHECKING:
     from sysutils.weak_ref import WeakRef
 
 class HeadRequirements(Slots):
+    _te_forms = {"て", "で"}
     def __init__(self, vocab: VocabNote, word_variant: WeakRef[CandidateWordVariant], end_of_stem: WeakRef[TextAnalysisLocation] | None) -> None:
         rules = vocab.matching_rules
         self.config = rules
@@ -37,6 +38,10 @@ class HeadRequirements(Slots):
         self.fulfills_forbids_past_tense_stem = not rules.past_tense_stem.is_forbidden or not self.has_past_tense_stem
         self.fulfills_requires_past_tense_stem = not rules.past_tense_stem.is_required or self.has_past_tense_stem
 
+        self.has_t_form_stem = end_of_stem is not None and (end_of_stem().token.is_t_form_stem() or (end_of_stem().token.is_past_tense_stem() and word_variant().form in HeadRequirements._te_forms))
+        self.fulfills_requires_t_form_stem = not rules.t_form_stem.is_required or self.has_t_form_stem
+        self.fulfills_forbids_t_form_stem = not rules.t_form_stem.is_forbidden or not self.has_t_form_stem
+
         self.has_e_stem = (end_of_stem is not None and
                            (end_of_stem().token.surface[-1] in conjugator.e_stem_characters
                             or kana_utils.character_is_kanji(end_of_stem().token.surface[-1])))
@@ -53,7 +58,10 @@ class HeadRequirements(Slots):
                               and self.fulfills_requires_e_stem_requirement
                               and self.fulfills_forbids_e_stem_requirement
                               and self.fulfills_requires_past_tense_stem
-                              and self.fulfills_forbids_past_tense_stem)
+                              and self.fulfills_forbids_past_tense_stem
+                              and self.fulfills_requires_t_form_stem
+                              and self.fulfills_forbids_t_form_stem
+                              )
 
     def failure_reasons(self) -> set[str]:
         return (SimpleStringListBuilder()
@@ -66,6 +74,8 @@ class HeadRequirements(Slots):
                 .append_if(not self.fulfills_requires_e_stem_requirement, "requires_e_stem")
                 .append_if(not self.fulfills_forbids_past_tense_stem, "forbids_past_tense_stem")
                 .append_if(not self.fulfills_requires_past_tense_stem, "requires_past_tense_stem")
+                .append_if(not self.fulfills_forbids_t_form_stem, "forbids_t_form_stem")
+                .append_if(not self.fulfills_requires_t_form_stem, "requires_t_form_stem")
                 .as_set())
 
     def __repr__(self) -> str: return " ".join(self.failure_reasons())
