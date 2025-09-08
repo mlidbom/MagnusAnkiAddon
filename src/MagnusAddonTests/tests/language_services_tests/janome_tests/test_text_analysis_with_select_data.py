@@ -60,7 +60,7 @@ def test_identify_words(setup_collection_with_select_data: object, sentence: str
     ("言わず", ["言う", "ず"]),
     ("声出したら駄目だからね", ["声", "出す", "たら", "駄目", "だから", "だ", "から", "ね"]),
     ("無理して思い出す", ["無理", "して", "する", "て", "思い出す"]),
-    ("私が頼んだの", ["もう", "逃がす", "ません", "ます", "ん"]),
+    ("私が頼んだの", ["私", "が", "頼む", "だ", "の"]),
 ])
 def test_excluded_surfaces(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
     analysis = TextAnalysis(sentence, SentenceConfiguration.empty())
