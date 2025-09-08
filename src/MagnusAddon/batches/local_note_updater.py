@@ -70,6 +70,7 @@ def tag_vocab_metadata() -> None:
         vocab.toggle_tag(Tags.Vocab.has_no_studying_sentences, not any(vocab.sentences.studying()))
         vocab.toggle_tag(Tags.Vocab.Matching.Uses.required_prefix, not vocab.matching_rules.rules.required_prefix.is_empty())
         vocab.toggle_tag(Tags.Vocab.Matching.Uses.prefix_is_not, not vocab.matching_rules.rules.prefix_is_not.is_empty())
+        vocab.toggle_tag(Tags.Vocab.Matching.Uses.suffix_is_not, not vocab.matching_rules.rules.suffix_is_not.is_empty())
         vocab.toggle_tag(Tags.Vocab.Matching.Uses.surface_is_not, not vocab.matching_rules.rules.surface_is_not.is_empty())
 
     progress_display_runner.process_with_progress(app.col().vocab.all(), tag_note, "Tag vocab notes")

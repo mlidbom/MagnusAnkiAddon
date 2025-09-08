@@ -102,7 +102,7 @@ def test_exclusions(setup_collection_with_select_data: object, sentence: str, ex
     _assert_display_words_equal(sentence, excluded, expected_output)
 
 @pytest.mark.parametrize("sentence, expected_output", [
-    ("風の強さに驚きました", ["風の強い", "風", "の", "強さ", "強", "強い", "さ", "に", "驚き", "驚く", "まし", "ます", "た"])
+    ("風の強さに驚きました", ["風の強い", "風", "の", "強さ", "強", "強い", "さ", "に", "驚き", "驚く", "まし:ませ", "ます", "た"])
 ])
 def test_all_words_equal(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
     _assert_all_words_equal(sentence, expected_output)

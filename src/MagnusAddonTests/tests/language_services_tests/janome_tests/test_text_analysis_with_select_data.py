@@ -48,7 +48,8 @@ def setup_collection_with_select_data() -> Iterator[None]:
     ("未練たらしい", ["未練たらしい", "未練", "たらしい"]),
     ("作るに決まってるだろ", ["作る", "に決まってる", "に決まる", "に", "決まる", "てる", "だ", "だろ"]),
     ("良いものを食べる", ["良い", "もの", "を", "食べる"]),
-    ("のに", ["のに"])
+    ("のに", ["のに"]),
+    ("もう逃がしません", ["もう", "逃がす", "ません", "ます", "ん"])
 ])
 def test_identify_words(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
     analysis = TextAnalysis(sentence, SentenceConfiguration.empty())
@@ -59,7 +60,7 @@ def test_identify_words(setup_collection_with_select_data: object, sentence: str
     ("言わず", ["言う", "ず"]),
     ("声出したら駄目だからね", ["声", "出す", "たら", "駄目", "だから", "だ", "から", "ね"]),
     ("無理して思い出す", ["無理", "して", "する", "て", "思い出す"]),
-    ("私が頼んだの", ["私", "が", "頼む", "だ", "の"]),
+    ("私が頼んだの", ["もう", "逃がす", "ません", "ます", "ん"]),
 ])
 def test_excluded_surfaces(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
     analysis = TextAnalysis(sentence, SentenceConfiguration.empty())

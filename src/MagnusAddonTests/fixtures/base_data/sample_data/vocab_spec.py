@@ -19,7 +19,8 @@ class VocabSpec(Slots):
                  surface_not: set[str] | None = None,
                  yield_to_surface: set[str] | None = None,
                  prefix_not: set[str] | None = None,
-                 tos:str | None = None,
+                 suffix_not: set[str] | None = None,
+                 tos: str | None = None,
                  prefix_in: set[str] | None = None) -> None:
         self.question: str = question
         self.answer: str = answer or question
@@ -30,6 +31,7 @@ class VocabSpec(Slots):
         self.surface_is_not: set[str] = surface_not if surface_not else set()
         self.yield_to_surface: set[str] = yield_to_surface if yield_to_surface else set()
         self.prefix_is_not: set[str] = prefix_not if prefix_not else set()
+        self.suffix_is_not: set[str] = suffix_not if suffix_not else set()
         self.tos: str = tos if tos else ""
         self.required_prefix: set[str] = prefix_in if prefix_in else set()
 
@@ -64,6 +66,9 @@ class VocabSpec(Slots):
 
         for forbidden_prefix in self.prefix_is_not:
             vocab_note.matching_rules.rules.prefix_is_not.add(forbidden_prefix)
+
+        for forbidden_suffix in self.suffix_is_not:
+            vocab_note.matching_rules.rules.suffix_is_not.add(forbidden_suffix)
 
         for required_prefix in self.required_prefix:
             vocab_note.matching_rules.rules.required_prefix.add(required_prefix)
@@ -163,8 +168,9 @@ test_special_vocab: list[VocabSpec] = [
     VocabSpec("に行く", compounds=["に", "行く"], tags=[vm.yield_last_token_to_overlapping_compound]),
     VocabSpec("行った", compounds=["行く", "た"], tags=[vm.yield_last_token_to_overlapping_compound]),
 
-    VocabSpec("うと", compounds=["う","と"], tags=[vm.yield_last_token_to_overlapping_compound]),
+    VocabSpec("うと", compounds=["う", "と"], tags=[vm.yield_last_token_to_overlapping_compound]),
     VocabSpec("と思って", compounds=["と思う", "て"], tags=[vm.yield_last_token_to_overlapping_compound]),
+    VocabSpec("ませ", suffix_not={"ん"})
 ]
 
 test_ordinary_vocab_list = [

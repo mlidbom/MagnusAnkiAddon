@@ -184,6 +184,7 @@ class Tags(Slots):
 
             class Uses:
                 prefix_is_not = f"{f_vocab_matching_uses}prefix-is-not"
+                suffix_is_not = f"{f_vocab_matching_uses}suffix-is-not"
                 required_prefix = f"{f_vocab_matching_uses}required-prefix"
                 surface_is_not = f"{f_vocab_matching_uses}surface-is-not"
 
