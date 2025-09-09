@@ -9,6 +9,7 @@ from sysutils.weak_ref import WeakRef, WeakRefable
 if TYPE_CHECKING:
     from language_services.janome_ex.tokenizing.jn_tokenized_text import ProcessedToken
     from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
+    from language_services.janome_ex.word_extraction.matches.match import Match
 
 from language_services.janome_ex.tokenizing.jn_tokenizer import JNTokenizer
 from language_services.janome_ex.word_extraction.text_location import TextAnalysisLocation
@@ -45,6 +46,13 @@ class TextAnalysis(WeakRefable,Slots):
         self.all_word_variants: list[CandidateWordVariant] = ex_sequence.flatten([loc.all_word_variants for loc in self.locations])
         self.valid_word_variants: list[CandidateWordVariant] = ex_sequence.flatten([loc.valid_variants for loc in self.locations])
         self.display_word_variants: list[CandidateWordVariant] = ex_sequence.flatten([loc.display_variants for loc in self.locations])
+
+        self.all_matches: list[Match] = ex_sequence.flatten([cand.matches for cand in self.all_word_variants])
+        self.valid_word_variant_matches: list[Match] = ex_sequence.flatten([cand.matches for cand in self.valid_word_variants])
+        #todo: bug valid_matches here and valid_word_variant_valid_matches should be identical. Once they are, the valid_word_variant_valid_matches collection should be removed
+        self.valid_matches: list[Match] = [match for match in self.all_matches if match.is_valid]
+        self.valid_word_variant_valid_matches: list[Match] = [match for match in self.valid_word_variant_matches if match.is_valid]
+        self.display_matches = [match for match in self.all_matches if match.is_displayed]
 
     @classmethod
     def from_text(cls, text: str) -> TextAnalysis:

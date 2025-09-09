@@ -4,8 +4,6 @@ from typing import TYPE_CHECKING
 
 import pytest
 from fixtures.collection_factory import inject_anki_collection_with_select_data
-from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
-from note.sentences.sentence_configuration import SentenceConfiguration
 from note.sentences.sentencenote import SentenceNote
 
 if TYPE_CHECKING:

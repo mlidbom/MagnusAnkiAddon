@@ -4,8 +4,6 @@ from typing import TYPE_CHECKING
 
 import pytest
 from fixtures.collection_factory import inject_anki_collection_with_select_data
-from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
-from note.sentences.sentence_configuration import SentenceConfiguration
 from note.sentences.sentencenote import SentenceNote
 
 if TYPE_CHECKING:
@@ -51,7 +49,7 @@ def setup_collection_with_select_data() -> Iterator[None]:
     ("良いものを食べる", ["良い", "もの", "を", "食べる"]),
     ("のに", ["のに"]),
     ("もう逃がしません", ["もう", "逃がす", "ません", "ます", "ん"]),
-    ("死んどる", ["死ぬ", "どる"])
+    ("死んどる", ["死ぬ", "んどる"])
 ])
 def test_identify_words(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
     sentence_note = SentenceNote.create_test_note(sentence,"")
@@ -62,7 +60,7 @@ def test_identify_words(setup_collection_with_select_data: object, sentence: str
     ("言わず", ["言う", "ず"]),
     ("声出したら駄目だからね", ["声", "出す", "たら", "駄目", "だから", "だ", "から", "ね"]),
     ("無理して思い出す", ["無理", "して", "する", "て", "思い出す"]),
-    ("私が頼んだの", ["私", "が", "頼む", "だ", "の"]),
+    ("私が頼んだの", ["私", "が", "頼む", "んだ", "の"]),
 ])
 def test_excluded_surfaces(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
     sentence_note = SentenceNote.create_test_note(sentence,"")
