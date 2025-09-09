@@ -93,6 +93,9 @@ class JNToken(Slots):
         return (self.inflected_form in JNToken._te_connections or
                 (self.is_past_tense_stem() and self.surface.endswith("ん")))
 
+    def is_ichidan_masu_stem(self) -> bool:
+        return self.inflected_form == InflectionForms.Continuative.renyoukei_masu_stem
+
     def is_past_tense_marker(self) -> bool:
         return self.inflection_type == InflectionTypes.Special.ta  # "連用タ接続"
 

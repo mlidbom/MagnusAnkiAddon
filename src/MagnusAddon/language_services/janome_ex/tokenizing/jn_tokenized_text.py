@@ -23,6 +23,7 @@ class ProcessedToken(Slots):
         self.potential_godan_verb: str | None = None
 
     def is_past_tense_stem(self) -> bool: return False
+    def is_ichidan_masu_stem(self) -> bool: return False
     def is_t_form_stem(self) -> bool: return False
     def is_past_tense_marker(self) -> bool: return False
 
@@ -38,6 +39,7 @@ class JNTokenWrapper(ProcessedToken, Slots):
 
     def is_past_tense_stem(self) -> bool: return self.token.is_past_tense_stem()
     def is_t_form_stem(self) -> bool: return self.token.is_t_form_stem()
+    def is_ichidan_masu_stem(self) -> bool: return self.token.is_ichidan_masu_stem()
     def is_past_tense_marker(self) -> bool: return self.token.is_past_tense_marker()
 
     def pre_process(self) -> list[ProcessedToken]:
