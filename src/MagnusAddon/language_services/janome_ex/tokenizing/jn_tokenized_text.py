@@ -44,6 +44,16 @@ class JNTokenWrapper(ProcessedToken, Slots):
     def is_past_tense_marker(self) -> bool: return self.token.is_past_tense_marker()
     def is_special_nai_negative(self) -> bool: return self.token.is_special_nai_negative()
 
+    # todo: restore the splitting of godan verbs, but this time around:
+    #  1. output a first token that has the whole current surface, but with the normal Godan as it's base, along with the metadata that this is a potential godan stem token.
+    #  2. output a second token with an EMPTY surface and a base that is える. Via the base the potential compound will be matched later.
+    #  3. add a fallback/alternative surface member to ProcessedToken. For potential godans that will be え.
+    #  4. When a CandidateWord encounters an empty form at the start of it's token chain, it will replace it with the alternative surface,
+    #     thus effectively creating an alternative repretation of that index in the analysis, since the next token starts at the same index.
+    #  5. All that would have been matched before will be matched normally from the next token, while the potential token/location will allow any compounds starting with e
+    #   and marked as requiring a potential godan stem, to correctly match all the potential conjugations.
+    #  6. A configuration option can determine whether the matches from the original surface or the alternative surface should be the ones used in the display,
+    #    in the indexing both will of course always be output so that all the sentences containing える will be correctly identified.
     def pre_process(self) -> list[ProcessedToken]:
         self.potential_godan_verb = self._try_find_vocab_based_potential_verb_compound() or self._try_find_dictionary_based_potential_godan_verb()
         return [self]
