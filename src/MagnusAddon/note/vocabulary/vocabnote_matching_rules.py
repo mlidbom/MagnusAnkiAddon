@@ -41,6 +41,13 @@ class VocabNoteMatchingRules(Slots):
     def save(self) -> None:
         self._data.save()
 
+    def overwrite_with(self, other: VocabNoteMatchingRules) ->None:
+        self.surface_is_not.overwrite_with(other.surface_is_not)
+        self.yield_to_surface.overwrite_with(other.yield_to_surface)
+        self.prefix_is_not.overwrite_with(other.prefix_is_not)
+        self.suffix_is_not.overwrite_with(other.suffix_is_not)
+        self.required_prefix.overwrite_with(other.required_prefix)
+
     def __repr__(self) -> str: return (SkipFalsyValuesDebugReprBuilder()
                                        .prop("surface_is_not", self.surface_is_not.get())
                                        .prop("prefix_is_not", self.prefix_is_not.get())

@@ -153,6 +153,7 @@ class Tags(Slots):
         has_non_primary_on_reading_vocab_with_only_known_kanji = f"{f_kanji}has-non-primary-on-reading-vocab-with-only-known-kanji"
 
     class Vocab:
+        root = f_vocab
         has_no_studying_sentences = f"{f_vocab}has-no-studying-sentences"
         question_overrides_form = f"{f_vocab}question-overrides-form"
 

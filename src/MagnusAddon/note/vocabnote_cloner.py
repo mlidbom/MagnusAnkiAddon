@@ -26,17 +26,15 @@ class VocabCloner(Slots):
         return self._create_postfix_prefix_version(suffix, speech_type, set_compounds=set_compounds, truncate_characters=truncate_characters)
 
     def _create_postfix_prefix_version(self, addendum: str, speech_type: str, is_prefix: bool = False, set_compounds: bool = True, truncate_characters: int = 0) -> VocabNote:
-        from note.vocabulary.vocabnote import VocabNote
-
         def append_prepend_addendum(base: str) -> str:
             if not is_prefix:
                 return base + addendum if truncate_characters == 0 else base[0:-truncate_characters] + addendum
             return addendum + base if truncate_characters == 0 else base[truncate_characters:] + addendum
 
         vocab_note = self.note
-        new_vocab = VocabNote.factory.create(question=append_prepend_addendum(self.note.get_question()),
-                                             answer=self.note.get_answer(),
-                                             readings=[append_prepend_addendum(reading) for reading in vocab_note.readings.get()])
+        new_vocab = self._create_new_vocab_with_some_data_copied(question=append_prepend_addendum(self.note.get_question()),
+                                                                 answer=self.note.get_answer(),
+                                                                 readings=[append_prepend_addendum(reading) for reading in vocab_note.readings.get()])
 
         if set_compounds:
             if not is_prefix:
@@ -104,6 +102,8 @@ class VocabCloner(Slots):
 
         clone = VocabNote(clone_backend_note)
 
+        self._copy_vocab_tags_to(clone)
+
         for related in clone.related_notes.synonyms.strings():
             clone.related_notes.synonyms.add(related)
 
@@ -111,12 +111,13 @@ class VocabCloner(Slots):
 
         return clone
 
+    def _copy_vocab_tags_to(self, target: VocabNote) -> None:
+        for tag in [tag for tag in self.note.get_tags() if tag.startswith(Tags.Vocab.root)]:
+            target.set_tag(tag)
+
     def clone_to_form(self, form: str) -> VocabNote:
         clone = self.clone()
         clone.question.set(form)
-
-        for tag in [tag for tag in self.note.get_tags() if tag in Tags.system_tags]:
-            clone.set_tag(tag)
 
         return clone
 
@@ -127,11 +128,9 @@ class VocabCloner(Slots):
         return self._create_postfix_prefix_version("さ", "noun", set_compounds=True, truncate_characters=1)
 
     def clone_to_derived_form(self, form_suffix: str, create_form_root: Callable[[VocabNote, str], str]) -> VocabNote:
-        from note.vocabulary.vocabnote import VocabNote
-
         def create_full_form(form: str) -> str: return create_form_root(self.note, form) + form_suffix
 
-        clone = VocabNote.factory.create(question=create_full_form(self.note.get_question()), answer=self.note.get_answer(), readings=[])
+        clone = self._create_new_vocab_with_some_data_copied(question=create_full_form(self.note.get_question()), answer=self.note.get_answer(), readings=[])
         clone.forms.set_list([create_full_form(form) for form in self.note.forms.all_list()])
         vocab_note = self.note
         readings = [create_full_form(reading) for reading in vocab_note.readings.get()]
@@ -198,11 +197,9 @@ class VocabCloner(Slots):
         return self.suffix_to_a_stem("ない")
 
     def create_imperative(self) -> VocabNote:
-        from note.vocabulary.vocabnote import VocabNote
-
         def create_imperative(form: str) -> str: return conjugator.get_imperative(form, self.note.parts_of_speech.is_ichidan(), self.note.parts_of_speech.is_godan())
 
-        clone = VocabNote.factory.create(question=create_imperative(self.note.get_question()), answer=self.note.get_answer(), readings=[])
+        clone = self._create_new_vocab_with_some_data_copied(question=create_imperative(self.note.get_question()), answer=self.note.get_answer(), readings=[])
         clone.forms.set_list([create_imperative(form) for form in self.note.forms.all_list()])
         vocab_note = self.note
         readings = [create_imperative(reading) for reading in vocab_note.readings.get()]
@@ -213,4 +210,14 @@ class VocabCloner(Slots):
     def create_potential_godan(self) -> VocabNote:
         clone = self.suffix_to_e_stem("る")
         clone.compound_parts.set([self.note.get_question(), "える"])
+        return clone
+
+    def _create_new_vocab_with_some_data_copied(self, question: str, answer: str, readings: list[str], copy_vocab_tags: bool = True, copy_matching_rules: bool = True) -> VocabNote:
+        from note.vocabulary.vocabnote import VocabNote
+        clone = VocabNote.factory.create(question, answer, readings)
+        if copy_vocab_tags:
+            self._copy_vocab_tags_to(clone)
+
+        if copy_matching_rules:
+            clone.matching_rules.rules.overwrite_with(self.note.matching_rules.rules)
         return clone

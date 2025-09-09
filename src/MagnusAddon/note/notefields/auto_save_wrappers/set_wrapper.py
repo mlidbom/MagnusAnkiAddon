@@ -11,10 +11,10 @@ TValue = TypeVar("TValue")
 
 class FieldSetWrapper(Generic[TValue], Slots):
     _secret = "aoeulrcaboeusthb"
-    def __init__(self, save_callback: Callable[[], None], value: set[TValue], secret:str) -> None:
+    def __init__(self, save_callback: Callable[[], None], value: set[TValue], secret: str) -> None:
         if FieldSetWrapper._secret != secret: raise ValueError("use the factory methods, not this private constructor")
         self._save: Callable[[], None] = save_callback
-        self._value: set[TValue] = value
+        self._value: set[TValue] = value #never replace _value or the save method will stop working...
 
     def get(self) -> set[TValue]: return self._value
 
@@ -24,6 +24,11 @@ class FieldSetWrapper(Generic[TValue], Slots):
 
     def remove(self, key: TValue) -> None:
         self._value.remove(key)
+        self._save()
+
+    def overwrite_with(self, other: FieldSetWrapper[TValue]) -> None:
+        self._value.clear()
+        self._value.update(other.get())
         self._save()
 
     def is_empty(self) -> bool: return len(self._value) == 0
