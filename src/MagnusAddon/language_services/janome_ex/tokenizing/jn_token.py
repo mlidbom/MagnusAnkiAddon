@@ -96,6 +96,9 @@ class JNToken(Slots):
     def is_ichidan_masu_stem(self) -> bool:
         return self.inflected_form == InflectionForms.Continuative.renyoukei_masu_stem
 
+    def is_special_nai_negative(self) -> bool:
+        return self.inflection_type == InflectionTypes.Special.nai
+
     def is_past_tense_marker(self) -> bool:
         return self.inflection_type == InflectionTypes.Special.ta  # "連用タ接続"
 

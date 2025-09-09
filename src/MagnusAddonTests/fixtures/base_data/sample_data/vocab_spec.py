@@ -94,7 +94,7 @@ test_special_vocab: list[VocabSpec] = [
     # </te-stem-required>
     # <te-stem-forbidden>
     VocabSpec("で", tags=[vm.Forbids.t_form_stem]),
-    VocabSpec("でいる"),
+    VocabSpec("でいる", tags=[vm.Forbids.t_form_stem]),
     VocabSpec("んで", "thing-is", tags=[vm.Forbids.t_form_stem]),
     # </te-stem-forbidden>
     VocabSpec("１人で", compounds=["で","１人"], tags=[vm.yield_last_token_to_overlapping_compound]),
