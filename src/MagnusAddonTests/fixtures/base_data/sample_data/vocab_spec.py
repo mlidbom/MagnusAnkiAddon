@@ -94,8 +94,10 @@ test_special_vocab: list[VocabSpec] = [
     # </te-stem-required>
     # <te-stem-forbidden>
     VocabSpec("で", tags=[vm.Forbids.t_form_stem]),
+    VocabSpec("でいる"),
     VocabSpec("んで", "thing-is", tags=[vm.Forbids.t_form_stem]),
     # </te-stem-forbidden>
+    VocabSpec("１人で", compounds=["で","１人"], tags=[vm.yield_last_token_to_overlapping_compound]),
 
     # <past-tense-required>
     VocabSpec("た", "{past-tense} | (please)do", ["た"], surface_not={"たら"}, tags=[vm.is_inflecting_word, vm.Requires.past_tense_stem]),
