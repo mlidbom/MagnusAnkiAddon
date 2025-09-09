@@ -154,11 +154,13 @@ test_special_vocab: list[VocabSpec] = [
     VocabSpec("された", surface_not={"されたら"}),
 
     VocabSpec("で", tags=[vm.Forbids.t_form_stem]),
+    VocabSpec("んで", "thing-is", tags=[vm.Forbids.t_form_stem]),
+    VocabSpec("んで", "and/て", forms=["で"], prefix_in={"ん"}, tags=[vm.Requires.t_form_stem, Tags.Vocab.question_overrides_form]),
+    VocabSpec("んどる", forms=["どる"], prefix_in={"ん"}, tags=[Tags.Vocab.question_overrides_form, vm.Requires.t_form_stem]),
+
     VocabSpec("んです", tags=[vm.Requires.exact_match, vm.yield_last_token_to_overlapping_compound]),
     VocabSpec("んだ", "thing-is", tags=[vm.Requires.exact_match, vm.yield_last_token_to_overlapping_compound, vm.Forbids.past_tense_stem]),
     VocabSpec("んだ", "did/was", forms=["だ"], tags=[vm.Requires.past_tense_stem, vm.is_inflecting_word, Tags.Vocab.question_overrides_form]),
-    VocabSpec("んで", "thing-is", tags=[vm.Forbids.t_form_stem]),
-    VocabSpec("んで", "and/て", forms=["で"], prefix_in={"ん"}, tags=[vm.Requires.t_form_stem, Tags.Vocab.question_overrides_form]),
     VocabSpec("たん", forms=["たの"], tags=[vm.Requires.single_token]),
     VocabSpec("たの", forms=["たん"], tags=[vm.yield_last_token_to_overlapping_compound]),
     VocabSpec("たんだ", tags=[vm.yield_last_token_to_overlapping_compound]),
@@ -171,8 +173,7 @@ test_special_vocab: list[VocabSpec] = [
 
     VocabSpec("うと", compounds=["う", "と"], tags=[vm.yield_last_token_to_overlapping_compound]),
     VocabSpec("と思って", compounds=["と思う", "て"], tags=[vm.yield_last_token_to_overlapping_compound]),
-    VocabSpec("ませ", suffix_not={"ん"}),
-    VocabSpec("んどる", forms=["どる"], prefix_in={"ん"}, tags=[Tags.Vocab.question_overrides_form, vm.Requires.t_form_stem])
+    VocabSpec("ませ", suffix_not={"ん"})
 ]
 
 test_ordinary_vocab_list = [
