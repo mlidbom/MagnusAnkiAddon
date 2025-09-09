@@ -20,7 +20,6 @@ def setup_collection_with_select_data() -> Iterator[None]:
     ("金<wbr>貸せって", ["金", "貸す", "って"])
 ])
 def test_invisible_space_breakup(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
-    sentence_note = SentenceNote.create(sentence)
-    analysis = TextAnalysis(sentence_note.get_question(), SentenceConfiguration.empty())
-    root_words = [w.form for w in analysis.valid_word_variants]
+    sentence_note = SentenceNote.create_test_note(sentence, "")
+    root_words = [w.word for w in sentence_note.parsing_result.get().parsed_words]
     assert root_words == expected_output

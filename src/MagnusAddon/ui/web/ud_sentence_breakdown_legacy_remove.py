@@ -81,7 +81,7 @@ def lookup_vocabs(excluded_words: set[str], word:str) -> list[VocabNote]:
     return vocabs
 
 def render_parsed_words(note: SentenceNote) -> str:
-    analysis = TextAnalysis(note.get_question(), note.configuration.configuration)
+    analysis = note.create_analysis()
     display_forms = analysis.display_word_variants
     word_strings = [w.form for w in display_forms]
 

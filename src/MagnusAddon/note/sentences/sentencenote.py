@@ -85,7 +85,7 @@ class SentenceNote(JPNote, Slots):
         if not force and parsing_result and parsing_result.sentence == self.get_question() and parsing_result.parser_version == TextAnalysis.version:
             return
 
-        analysis = TextAnalysis(self.get_question(), self.configuration.configuration)
+        analysis = self.create_analysis()
         self.parsing_result.set(ParsingResult.from_analysis(analysis))
 
     def extract_kanji(self) -> list[str]:
