@@ -48,7 +48,9 @@ class TextAnalysis(WeakRefable,Slots):
         self.display_word_variants: list[CandidateWordVariant] = ex_sequence.flatten([loc.display_variants for loc in self.locations])
 
         self.all_matches: list[Match] = ex_sequence.flatten([cand.matches for cand in self.all_word_variants])
+        self.valid_word_variant_matches: list[Match] = ex_sequence.flatten([cand.matches for cand in self.valid_word_variants])
         self.valid_matches: list[Match] = [match for match in self.all_matches if match.is_valid]
+        self.valid_word_variant_valid_matches: list[Match] = [match for match in self.valid_word_variant_matches if match.is_valid]
         self.display_matches = [match for match in self.all_matches if match.is_displayed]
 
     @classmethod
