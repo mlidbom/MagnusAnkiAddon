@@ -54,6 +54,7 @@ class JNTokenWrapper(ProcessedToken, Slots):
     #   and marked as requiring a potential godan stem, to correctly match all the potential conjugations.
     #  6. A configuration option can determine whether the matches from the original surface or the alternative surface should be the ones used in the display,
     #    in the indexing both will of course always be output so that all the sentences containing える will be correctly identified.
+    #  7. Note, when calculating shadowing the empty tokens must not be counted, or words that are actually shadowed will be displayed.
     def pre_process(self) -> list[ProcessedToken]:
         self.potential_godan_verb = self._try_find_vocab_based_potential_verb_compound() or self._try_find_dictionary_based_potential_godan_verb()
         return [self]
