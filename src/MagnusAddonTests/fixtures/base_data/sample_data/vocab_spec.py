@@ -82,10 +82,30 @@ v = Tags.Vocab
 vm = Tags.Vocab.Matching
 
 test_special_vocab: list[VocabSpec] = [
+    # <te-stem-required>
     VocabSpec("てる", "{continuing-{activity | state}} / {progressive | perfect}", ["てる"], tags=[vm.is_inflecting_word]),
     VocabSpec("て", "{continuing-action}", ["て"], tags=[vm.is_inflecting_word]),
     VocabSpec("てた", "{was}-{_-ing|_ed}", ["てた"], tags=[vm.is_inflecting_word]),
     VocabSpec("てたら", "{was}-{_-ing|_ed}", ["てたら"], tags=[vm.is_inflecting_word]),
+    VocabSpec("んで", "and/て", forms=["で"], prefix_in={"ん"}, tags=[vm.Requires.t_form_stem, Tags.Vocab.question_overrides_form]),
+    VocabSpec("んどる", forms=["どる"], prefix_in={"ん"}, tags=[Tags.Vocab.question_overrides_form, vm.Requires.t_form_stem]),
+    VocabSpec("ている", "is-_-ing", readings=["ている"]),
+    # </te-stem-required>
+    # <te-stem-forbidden>
+    VocabSpec("で", tags=[vm.Forbids.t_form_stem]),
+    VocabSpec("んで", "thing-is", tags=[vm.Forbids.t_form_stem]),
+    # </te-stem-forbidden>
+    
+    # <past-tense-required>
+    VocabSpec("た", "{past-tense} | (please)do", ["た"], surface_not={"たら"}, tags=[vm.is_inflecting_word]),
+    VocabSpec("んだ", "did/was", forms=["だ"], tags=[vm.Requires.past_tense_stem, vm.is_inflecting_word, Tags.Vocab.question_overrides_form]),
+    # <past-tense-required>
+    # <past-tense-forbidden>
+    VocabSpec("んだ", "thing-is", tags=[vm.Requires.exact_match, vm.yield_last_token_to_overlapping_compound, vm.Forbids.past_tense_stem]),
+    VocabSpec("たって", tags=[vm.Forbids.past_tense_stem]),
+    VocabSpec("だ", surface_not={"なら", "な"}, tags=[vm.is_inflecting_word, vm.Forbids.past_tense_stem]),
+    # </past-tense-forbidden>
+
     VocabSpec("たら", "conj{if/when} prt{as-for | why-not..  | I-said!/I-tell-you!}", ["たら"], tags=[vm.is_inflecting_word]),
     VocabSpec("ちゃう", "to do: accidentally/unfortunately | completely", ["ちゃう"], tags=[vm.is_inflecting_word]),
     VocabSpec("無い", "{negation} | nonexistent | unowned | impossible/won't-happen", ["ない"], tags=[vm.is_inflecting_word]),
@@ -114,10 +134,8 @@ test_special_vocab: list[VocabSpec] = [
     VocabSpec("らっしゃい"),
 
     VocabSpec("ぬ", "not", ["ぬ"], surface_not={"ず"}),
-    VocabSpec("た", "{past-tense} | (please)do", ["た"], surface_not={"たら"}, tags=[vm.is_inflecting_word]),
 
     VocabSpec("だの", "and-the-like", ["だの"], prefix_not={"ん"}),
-    VocabSpec("だ", surface_not={"なら", "な"}, tags=[vm.is_inflecting_word, vm.Forbids.past_tense_stem]),
 
     VocabSpec("こ", "familiarizing-suffix", ["こ"], forms=["っこ"], tags=[vm.is_strictly_suffix]),
 
@@ -128,7 +146,6 @@ test_special_vocab: list[VocabSpec] = [
     VocabSpec("うまく"),
     VocabSpec("笑える", tos="ichidan verb"),
 
-    VocabSpec("ている", "is-_-ing", readings=["ている"]),
     VocabSpec("にする", "to: turn-into", readings=["にする"]),
     VocabSpec("のか", tags=[vm.Requires.sentence_end]),
     VocabSpec("ないと", tags=[vm.yield_last_token_to_overlapping_compound]),
@@ -136,7 +153,7 @@ test_special_vocab: list[VocabSpec] = [
     VocabSpec("ても"),
     VocabSpec("と思う"),
     VocabSpec("たの", tags=[vm.is_poison_word]),
-    VocabSpec("たって", tags=[vm.Forbids.past_tense_stem]),
+
     VocabSpec("たかな", tags=[vm.is_poison_word]),
     VocabSpec("たか", tags=[vm.is_poison_word]),
     VocabSpec("なんて", tags=[vm.yield_last_token_to_overlapping_compound]),
@@ -153,14 +170,8 @@ test_special_vocab: list[VocabSpec] = [
     VocabSpec("に決まってる", forms=["に決っている", "に決まっている", "に極っている", "に決ってる", "に決まってる", "に極ってる"]),
     VocabSpec("された", surface_not={"されたら"}),
 
-    VocabSpec("で", tags=[vm.Forbids.t_form_stem]),
-    VocabSpec("んで", "thing-is", tags=[vm.Forbids.t_form_stem]),
-    VocabSpec("んで", "and/て", forms=["で"], prefix_in={"ん"}, tags=[vm.Requires.t_form_stem, Tags.Vocab.question_overrides_form]),
-    VocabSpec("んどる", forms=["どる"], prefix_in={"ん"}, tags=[Tags.Vocab.question_overrides_form, vm.Requires.t_form_stem]),
-
     VocabSpec("んです", tags=[vm.Requires.exact_match, vm.yield_last_token_to_overlapping_compound]),
-    VocabSpec("んだ", "thing-is", tags=[vm.Requires.exact_match, vm.yield_last_token_to_overlapping_compound, vm.Forbids.past_tense_stem]),
-    VocabSpec("んだ", "did/was", forms=["だ"], tags=[vm.Requires.past_tense_stem, vm.is_inflecting_word, Tags.Vocab.question_overrides_form]),
+
     VocabSpec("たん", forms=["たの"], tags=[vm.Requires.single_token]),
     VocabSpec("たの", forms=["たん"], tags=[vm.yield_last_token_to_overlapping_compound]),
     VocabSpec("たんだ", tags=[vm.yield_last_token_to_overlapping_compound]),
