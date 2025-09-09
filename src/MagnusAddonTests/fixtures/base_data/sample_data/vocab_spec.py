@@ -83,21 +83,22 @@ vm = Tags.Vocab.Matching
 
 test_special_vocab: list[VocabSpec] = [
     # <te-stem-required>
-    VocabSpec("てる", "{continuing-{activity | state}} / {progressive | perfect}", ["てる"], tags=[vm.is_inflecting_word]),
-    VocabSpec("て", "{continuing-action}", ["て"], tags=[vm.is_inflecting_word]),
-    VocabSpec("てた", "{was}-{_-ing|_ed}", ["てた"], tags=[vm.is_inflecting_word]),
-    VocabSpec("てたら", "{was}-{_-ing|_ed}", ["てたら"], tags=[vm.is_inflecting_word]),
+    VocabSpec("て", "{continuing-action}", ["て"], tags=[vm.is_inflecting_word, vm.Requires.t_form_stem]),
+    VocabSpec("てる", "{continuing-{activity | state}} / {progressive | perfect}", ["てる"], tags=[vm.is_inflecting_word, vm.Requires.t_form_stem]),
+    VocabSpec("ている", "is-_-ing", readings=["ている"], tags=[vm.is_inflecting_word, vm.Requires.t_form_stem]),
+    VocabSpec("てた", "{was}-{_-ing|_ed}", ["てた"], tags=[vm.is_inflecting_word, vm.Requires.t_form_stem]),
+    VocabSpec("てたら", "{was}-{_-ing|_ed}", ["てたら"], tags=[vm.is_inflecting_word, vm.Requires.t_form_stem]),
+
     VocabSpec("んで", "and/て", forms=["で"], prefix_in={"ん"}, tags=[vm.Requires.t_form_stem, Tags.Vocab.question_overrides_form]),
     VocabSpec("んどる", forms=["どる"], prefix_in={"ん"}, tags=[Tags.Vocab.question_overrides_form, vm.Requires.t_form_stem]),
-    VocabSpec("ている", "is-_-ing", readings=["ている"]),
     # </te-stem-required>
     # <te-stem-forbidden>
     VocabSpec("で", tags=[vm.Forbids.t_form_stem]),
     VocabSpec("んで", "thing-is", tags=[vm.Forbids.t_form_stem]),
     # </te-stem-forbidden>
-    
+
     # <past-tense-required>
-    VocabSpec("た", "{past-tense} | (please)do", ["た"], surface_not={"たら"}, tags=[vm.is_inflecting_word]),
+    VocabSpec("た", "{past-tense} | (please)do", ["た"], surface_not={"たら"}, tags=[vm.is_inflecting_word, vm.Requires.past_tense_stem]),
     VocabSpec("んだ", "did/was", forms=["だ"], tags=[vm.Requires.past_tense_stem, vm.is_inflecting_word, Tags.Vocab.question_overrides_form]),
     # <past-tense-required>
     # <past-tense-forbidden>
