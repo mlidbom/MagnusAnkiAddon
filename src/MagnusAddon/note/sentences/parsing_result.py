@@ -20,6 +20,6 @@ class ParsingResult(Slots):
 
     @classmethod
     def from_analysis(cls, analysis: TextAnalysis) -> ParsingResult:
-        return ParsingResult([ParsedWord(word.form) for word in analysis.valid_word_variants],
+        return ParsingResult([ParsedWord(match.match_form) for match in analysis.valid_matches],
                              analysis.text,
                              analysis.version)

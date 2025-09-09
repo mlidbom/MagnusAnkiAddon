@@ -4,8 +4,6 @@ from typing import TYPE_CHECKING
 
 import pytest
 from fixtures.collection_factory import inject_anki_collection_with_select_data
-from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
-from note.sentences.sentence_configuration import SentenceConfiguration
 from note.sentences.sentencenote import SentenceNote
 
 if TYPE_CHECKING:
@@ -23,11 +21,11 @@ def setup_collection_with_select_data() -> Iterator[None]:
     ("走って",
      ["走る", "て"]),
     ("これをください。",
-     ["これ", "を", "くださる", "ください"]),
+     ["これ", "を", "ください", "くださる"]),
     ("ハート形",
      ["ハート形", "ハート", "形"]),
     ("私が行きましょう。",
-     ["私", "が", "行く", "行き", "ましょう", "ます", "ましょ", "う"]),
+     ["私", "が", "行き", "行く", "ましょう", "ましょ", "ます", "う"]),
     ("１人でいる時間がこれほどまでに長く感じるとは",
      ["１人で", "１人", "１", "人", "で", "いる", "時間", "が", "これほど", "これ", "ほど", "までに", "まで", "に", "長い", "感じる", "とは", "と", "は"]
      ),
@@ -36,7 +34,7 @@ def setup_collection_with_select_data() -> Iterator[None]:
     ("彼の日本語のレベルは私と同じ位だ。",
      ["彼の", "彼", "の", "日本語", "の", "レベル", "は", "私", "と", "同じ位", "同じ", "位", "だ"]),
     ("それなのに 周りは化け物が出ることで有名だと聞き",
-     ["それなのに", "周り", "は", "化け物", "が", "出る", "こと", "で", "有名", "だ", "と", "聞く", "聞き"]),
+     ["それなのに", "周り", "は", "化け物", "が", "出る", "こと", "で", "有名", "だ", "と", "聞き", "聞く"]),
     ("清めの一波", ["清める", "清め", "の"]),
     ("さっさと傷を清めてこい",
      ["傷", "を", "清める", "て", "くる", "こい"]),
@@ -47,11 +45,11 @@ def setup_collection_with_select_data() -> Iterator[None]:
     ("なのかな", ["なの", "な", "の", "かな", "か", "な"]),
     ("前だったのか", ["前", "だった", "だ", "たの", "た", "のか", "の", "か"]),
     ("未練たらしい", ["未練たらしい", "未練", "たらしい"]),
-    ("作るに決まってるだろ", ["作る", "に決まってる", "に決まる", "に", "決まる", "てる", "だ", "だろ"]),
+    ("作るに決まってるだろ", ["作る", "に決まってる", "に決まる", "に", "決まる", "てる", "だろ", "だ"]),
     ("良いものを食べる", ["良い", "もの", "を", "食べる"]),
     ("のに", ["のに"]),
     ("もう逃がしません", ["もう", "逃がす", "ません", "ます", "ん"]),
-    ("死んどる", ["死ぬ", "どる"])
+    ("死んどる", ["死ぬ", "んどる"])
 ])
 def test_identify_words(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
     sentence_note = SentenceNote.create_test_note(sentence,"")
@@ -62,7 +60,7 @@ def test_identify_words(setup_collection_with_select_data: object, sentence: str
     ("言わず", ["言う", "ず"]),
     ("声出したら駄目だからね", ["声", "出す", "たら", "駄目", "だから", "だ", "から", "ね"]),
     ("無理して思い出す", ["無理", "して", "する", "て", "思い出す"]),
-    ("私が頼んだの", ["私", "が", "頼む", "だ", "の"]),
+    ("私が頼んだの", ["私", "が", "頼む", "んだ", "の"]),
 ])
 def test_excluded_surfaces(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
     sentence_note = SentenceNote.create_test_note(sentence,"")
