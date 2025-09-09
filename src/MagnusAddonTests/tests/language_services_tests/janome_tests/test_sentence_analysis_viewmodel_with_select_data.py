@@ -70,7 +70,8 @@ def setup_collection_with_select_data() -> Iterator[None]:
     ("行ったって話", ["行く", "たって", "話"]),
     ("会いに行ったんだ", ["会う", "に行く", "たんだ"]),
     ("聞こうと思ってた", ["聞く", "う", "と思う", "てた"]),
-    ("沈んで", ["沈む", "んで"])
+    ("沈んで", ["沈む", "んで"]),
+    ("死んどる", ["死ぬ", "んどる"])
 ])
 def test_misc_stuff(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
     _assert_display_words_equal(sentence, [], expected_output)

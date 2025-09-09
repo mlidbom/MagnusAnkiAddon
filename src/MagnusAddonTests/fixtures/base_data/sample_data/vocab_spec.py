@@ -171,7 +171,8 @@ test_special_vocab: list[VocabSpec] = [
 
     VocabSpec("うと", compounds=["う", "と"], tags=[vm.yield_last_token_to_overlapping_compound]),
     VocabSpec("と思って", compounds=["と思う", "て"], tags=[vm.yield_last_token_to_overlapping_compound]),
-    VocabSpec("ませ", suffix_not={"ん"})
+    VocabSpec("ませ", suffix_not={"ん"}),
+    VocabSpec("んどる", forms=["どる"], prefix_in={"ん"}, tags=[Tags.Vocab.question_overrides_form, vm.Requires.t_form_stem])
 ]
 
 test_ordinary_vocab_list = [

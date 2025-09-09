@@ -6,6 +6,7 @@ import pytest
 from fixtures.collection_factory import inject_anki_collection_with_select_data
 from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 from note.sentences.sentence_configuration import SentenceConfiguration
+from note.sentences.sentencenote import SentenceNote
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -49,12 +50,13 @@ def setup_collection_with_select_data() -> Iterator[None]:
     ("作るに決まってるだろ", ["作る", "に決まってる", "に決まる", "に", "決まる", "てる", "だ", "だろ"]),
     ("良いものを食べる", ["良い", "もの", "を", "食べる"]),
     ("のに", ["のに"]),
-    ("もう逃がしません", ["もう", "逃がす", "ません", "ます", "ん"])
+    ("もう逃がしません", ["もう", "逃がす", "ません", "ます", "ん"]),
+    ("死んどる", ["死ぬ", "どる"])
 ])
 def test_identify_words(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
-    analysis = TextAnalysis(sentence, SentenceConfiguration.empty())
-    root_words = [w.form for w in analysis.valid_word_variants]
-    assert root_words == expected_output
+    sentence_note = SentenceNote.create_test_note(sentence,"")
+    words = [w.word for w in sentence_note.parsing_result.get().parsed_words]
+    assert words == expected_output
 
 @pytest.mark.parametrize("sentence, expected_output", [
     ("言わず", ["言う", "ず"]),
@@ -63,17 +65,17 @@ def test_identify_words(setup_collection_with_select_data: object, sentence: str
     ("私が頼んだの", ["私", "が", "頼む", "だ", "の"]),
 ])
 def test_excluded_surfaces(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
-    analysis = TextAnalysis(sentence, SentenceConfiguration.empty())
-    root_words = [w.form for w in analysis.valid_word_variants]
-    assert root_words == expected_output
+    sentence_note = SentenceNote.create_test_note(sentence,"")
+    words = [w.word for w in sentence_note.parsing_result.get().parsed_words]
+    assert words == expected_output
 
 @pytest.mark.parametrize("sentence, expected_output", [
     ("うわ こわっ", ["うわ", "こい", "わっ"]),
 ])
 def test_strictly_suffix(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
-    analysis = TextAnalysis(sentence, SentenceConfiguration.empty())
-    root_words = [w.form for w in analysis.valid_word_variants]
-    assert root_words == expected_output
+    sentence_note = SentenceNote.create_test_note(sentence,"")
+    words = [w.word for w in sentence_note.parsing_result.get().parsed_words]
+    assert words == expected_output
 
 @pytest.mark.parametrize("sentence, expected_output", [
     ("うるせえ", ["うるせえ", "せえ", "せる", "せ", "え"]),
@@ -81,14 +83,14 @@ def test_strictly_suffix(setup_collection_with_select_data: object, sentence: st
     ("お金貸せって", ["お金", "って"])
 ])
 def test_requires_a_stem(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
-    analysis = TextAnalysis(sentence, SentenceConfiguration.empty())
-    root_words = [w.form for w in analysis.valid_word_variants]
+    sentence_note = SentenceNote.create_test_note(sentence,"")
+    root_words = [w.word for w in sentence_note.parsing_result.get().parsed_words]
     assert root_words == expected_output
 
 def test_ignores_noise_characters(setup_collection_with_select_data: object) -> None:
     sentence = ". , : ; / | 。 、ー ? !"
     expected = {"ー"}
 
-    analysis = TextAnalysis(sentence, SentenceConfiguration.empty())
-    words = {w.form for w in analysis.valid_word_variants}
+    sentence_note = SentenceNote.create_test_note(sentence,"")
+    words = {w.word for w in sentence_note.parsing_result.get().parsed_words}
     assert words == expected
