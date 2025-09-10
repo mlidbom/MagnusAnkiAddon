@@ -21,7 +21,7 @@ class VocabNoteForms(WeakRefable, Slots):
         weakrefself = WeakRef(self)
         self._all_raw_set: Lazy[set[str]] = Lazy(lambda: set(weakrefself()._field.get()))
 
-        self._all_list: Lazy[list[str]] = Lazy(lambda: [ex_str.strip_brackets(form) for form in self._field.get()])
+        self._all_list: Lazy[list[str]] = Lazy(lambda: [ex_str.strip_brackets(form) for form in weakrefself()._field.get()])
         self._all_set: Lazy[set[str]] = Lazy(lambda: set(weakrefself()._all_list()))
         self._owned_forms: Lazy[set[str]] = Lazy(lambda: {weakrefself()._vocab().get_question()} | {ex_str.strip_brackets(form) for form in weakrefself()._all_raw_set() if form.startswith("[")})
         self._field.on_update(self._all_raw_set.reset, self._all_list.reset, self._all_set.reset, self._owned_forms.reset)
