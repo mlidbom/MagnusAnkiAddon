@@ -14,7 +14,6 @@ if TYPE_CHECKING:
     from anki.collection import Collection
     from anki.notes import Note, NoteId
     from note.collection.cache_runner import CacheRunner
-    from note.sentences.parsed_word import ParsedWord
     from note.vocabulary.vocabnote import VocabNote
 
 

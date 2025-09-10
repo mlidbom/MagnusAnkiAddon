@@ -17,8 +17,6 @@ class ParsedWord(Slots):
         self.is_displayed: bool = is_displayed
         self.start_index: int = start_index
         self.surface: str = surface
-    @property
-    def end_index(self) -> int: return self.start_index + len(self.word)
 
     @classmethod
     def from_match(cls, match: Match) -> ParsedWord:

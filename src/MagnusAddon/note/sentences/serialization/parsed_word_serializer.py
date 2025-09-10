@@ -10,17 +10,17 @@ if TYPE_CHECKING:
 
 class ParsedWordSerializer(Slots):
     @staticmethod
-    def to_dict(self: ParsedWord) -> dict[str, Any]: return {"word": self.word,
-                                                             "surface_form": self.surface,
-                                                             "vocab_id": self.vocab_id,
-                                                             "is_displayed": self.is_displayed,
-                                                             "start_index": self.start_index}
+    def to_dict(self: ParsedWord) -> dict[str, Any]: return {"w": self.word,
+                                                             "s": self.surface,
+                                                             "v": self.vocab_id,
+                                                             "d": 1 if self.is_displayed else 0,
+                                                             "i": self.start_index}
 
     @staticmethod
     def from_reader(reader: JsonReader) -> ParsedWord:
         from note.sentences.parsed_word import ParsedWord
-        return ParsedWord(reader.string("word"),
-                          reader.string("surface_form", ""),
-                          reader.integer("vocab_id"),
-                          reader.boolean("is_displayed"),
-                          reader.integer("start_index"))
+        return ParsedWord(reader.string("w"),
+                          reader.string("s"),
+                          reader.integer("v"),
+                          reader.integer("d") == 1,
+                          reader.integer("i"))
