@@ -27,9 +27,8 @@ class JsonReader(Slots):
         if default is not None: return default
         raise KeyError(f"None of the following keys were found in the JSON: {prop}")
 
-
-    def string(self, prop: str | list[str], default: str | None = None) -> str: return typed.str_(self._get_prop(prop, default))
-    def integer(self, prop: str | list[str], default: int | None = None) -> int: return typed.int_(self._get_prop(prop, default))
+    def string(self, prop: str | list[str], default: str | None = None) -> str: return cast(str, self._get_prop(prop, default))
+    def integer(self, prop: str | list[str], default: int | None = None) -> int: return cast(int, self._get_prop(prop, default))
 
     def string_list(self, prop: str | list[str], default: list[str] | None = None) -> list[str]:
         return cast(list[str], self._get_prop(prop, default))
@@ -52,4 +51,4 @@ class JsonReader(Slots):
 
     @classmethod
     def from_json(cls, json_str: str) -> JsonReader:
-        return cls(cast(dict[str, Any], _json_library_shim.loads(json_str)))
+        return cls(_json_library_shim.loads(json_str))
