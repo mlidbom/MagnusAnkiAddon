@@ -65,6 +65,7 @@ class SentenceCollection(Slots):
     def with_vocab(self, vocab_note: VocabNote) -> list[SentenceNote]:
         matches = self._cache.with_vocab(vocab_note)
         question = vocab_note.get_question()
+        #todo: isn't this check redundant, won't the match have been removed during indexing?
         return [match for match in matches if question not in match.configuration.incorrect_matches.words()]
 
     def with_vocab_owned_form(self, vocab_note: VocabNote) -> list[SentenceNote]:
@@ -72,6 +73,7 @@ class SentenceCollection(Slots):
 
         matches = ex_sequence.remove_duplicates(ex_sequence.flatten([self._cache.with_vocab_form(form) for form in owned_forms]))
         question = vocab_note.get_question()
+        # todo: isn't this check redundant, won't the match have been removed during indexing?
         return [match for match in matches if question not in match.configuration.incorrect_matches.words()]
 
     def with_form(self, form:str) -> list[SentenceNote]: return self._cache.with_vocab_form(form)
