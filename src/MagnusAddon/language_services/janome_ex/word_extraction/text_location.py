@@ -38,7 +38,7 @@ class TextAnalysisLocation(WeakRefable,Slots):
         self.valid_variants: list[CandidateWordVariant] = []
         self.variants: list[CandidateWordVariant] = []
         self.candidate_words: list[CandidateWord] = []
-        self.display_words_starting_here: list[CandidateWord] = []
+        self.display_words: list[CandidateWord] = []
 
     def __repr__(self) -> str:
         return f"""
@@ -70,7 +70,7 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
                 changes_made = True
 
         if changes_made:
-            self.display_words_starting_here = [candidate for candidate in self.candidate_words if candidate.display_word_variants]
+            self.display_words = [candidate for candidate in self.candidate_words if candidate.display_word_variants]
             test = 12
         return changes_made
 
@@ -85,10 +85,10 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
         # because that method has a circular dependency to display_words_starting_here which we set up here.
 
         the_next_compound_yields_to_the_one_after_that_so_this_one_no_longer_yields = self._run_display_analysis_pass_true_if_there_were_changes()
-        if self.display_words_starting_here and self.is_shadowed_by is None:
-            self.display_variants = self.display_words_starting_here[0].display_word_variants
+        if self.display_words and self.is_shadowed_by is None:
+            self.display_variants = self.display_words[0].display_word_variants
 
-            covering_forward_count = self.display_words_starting_here[0].location_count - 1
+            covering_forward_count = self.display_words[0].location_count - 1
             for location in self.forward_list(covering_forward_count)[1:]:
                 location.is_shadowed_by = self.weakref
 
