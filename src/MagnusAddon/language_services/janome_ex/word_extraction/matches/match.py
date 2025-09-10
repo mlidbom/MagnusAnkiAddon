@@ -14,6 +14,7 @@ if TYPE_CHECKING:
 
 class Match(WeakRefable, Slots):
     def __init__(self, word_variant: WeakRef[CandidateWordVariant], rules: VocabNoteMatching | None) -> None:
+        self.start_index = word_variant().start_index
         self.word_variant: WeakRef[CandidateWordVariant] = word_variant
         self.tokenized_form: str = word_variant().form
         self.parsed_form: str = self.tokenized_form
