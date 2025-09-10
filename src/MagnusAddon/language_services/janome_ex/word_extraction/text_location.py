@@ -32,18 +32,18 @@ class TextAnalysisLocation(WeakRefable,Slots):
         self.character_start_index: int = character_start_index
         self.character_end_index: int = character_start_index + len(self.token.surface) - 1
 
-        self.candidate_words_starting_here: list[CandidateWord] = []
-        self.valid_words_starting_here: list[CandidateWord] = []
+        self.known_words: list[CandidateWord] = []
+        self.valid_words: list[CandidateWord] = []
         self.display_variants: list[CandidateWordVariant] = []
         self.valid_variants: list[CandidateWordVariant] = []
-        self.all_word_variants: list[CandidateWordVariant] = []
-        self.all_candidate_ranges: list[CandidateWord] = []
+        self.variants: list[CandidateWordVariant] = []
+        self.candidate_words: list[CandidateWord] = []
         self.display_words_starting_here: list[CandidateWord] = []
 
     def __repr__(self) -> str:
         return f"""
 TextLocation('{self.character_start_index}-{self.character_end_index}, {self.token.surface} | {self.token.base_form})
-{newline.join([cand.__repr__() for cand in self.candidate_words_starting_here])}
+{newline.join([cand.__repr__() for cand in self.known_words])}
 """
 
     def forward_list(self, length: int = 99999) -> list[TextAnalysisLocation]:
@@ -51,26 +51,26 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
 
     def analysis_step_1_analyze_non_compound_validity(self) -> None:
         lookahead_max = min(_max_lookahead, len(self.forward_list(_max_lookahead)))
-        self.all_candidate_ranges = [CandidateWord([location.weakref for location in self.forward_list(index)]) for index in range(lookahead_max - 1, -1, -1)]
-        self.all_candidate_ranges[-1].run_validity_analysis()  # the non-compound part needs to be completed first
+        self.candidate_words = [CandidateWord([location.weakref for location in self.forward_list(index)]) for index in range(lookahead_max - 1, -1, -1)]
+        self.candidate_words[-1].run_validity_analysis()  # the non-compound part needs to be completed first
 
     def analysis_step_2_analyze_compound_validity(self) -> None:
-        for range_ in self.all_candidate_ranges[:-1]:  # we already have the last one completed
+        for range_ in self.candidate_words[:-1]:  # we already have the last one completed
             range_.run_validity_analysis()
 
-        self.candidate_words_starting_here = [candidate for candidate in self.all_candidate_ranges if candidate.is_word]
-        self.valid_words_starting_here = [candidate for candidate in self.all_candidate_ranges if candidate.has_valid_words()]
-        self.valid_variants = ex_sequence.flatten([word.valid_variants for word in self.valid_words_starting_here])
-        self.all_word_variants = ex_sequence.flatten([v.all_word_variants for v in self.all_candidate_ranges])
+        self.known_words = [candidate for candidate in self.candidate_words if candidate.is_word]
+        self.valid_words = [candidate for candidate in self.candidate_words if candidate.has_valid_words()]
+        self.variants = ex_sequence.flatten([v.all_word_variants for v in self.candidate_words])
+        self.valid_variants = ex_sequence.flatten([word.valid_variants for word in self.valid_words])
 
     def _run_display_analysis_pass_true_if_there_were_changes(self) -> bool:
         changes_made = False
-        for range_ in self.all_candidate_ranges:
+        for range_ in self.candidate_words:
             if range_.run_display_analysis_pass_true_if_there_were_changes():
                 changes_made = True
 
         if changes_made:
-            self.display_words_starting_here = [candidate for candidate in self.all_candidate_ranges if candidate.display_word_variants]
+            self.display_words_starting_here = [candidate for candidate in self.candidate_words if candidate.display_word_variants]
             test = 12
         return changes_made
 

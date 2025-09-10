@@ -43,7 +43,7 @@ class TextAnalysis(WeakRefable,Slots):
         self._analysis_step_3_run_initial_display_analysis()
         self._analysis_step_5_calculate_preference_between_overlapping_display_candidates()
 
-        self.all_word_variants: list[CandidateWordVariant] = ex_sequence.flatten([loc.all_word_variants for loc in self.locations])
+        self.all_word_variants: list[CandidateWordVariant] = ex_sequence.flatten([loc.variants for loc in self.locations])
         self.valid_word_variants: list[CandidateWordVariant] = ex_sequence.flatten([loc.valid_variants for loc in self.locations])
         self.display_word_variants: list[CandidateWordVariant] = ex_sequence.flatten([loc.display_variants for loc in self.locations])
 
