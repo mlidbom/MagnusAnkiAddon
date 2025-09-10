@@ -76,5 +76,5 @@ class Match(WeakRefable, Slots):
     def hiding_reasons(self) -> set[str]:
         return (SimpleStringListBuilder()
                 .append_if(self.is_configured_hidden, "configured_hidden")
-                .append_if_lambda(self.is_shadowed, lambda: f"shadowed_by:{self.word_variant().word().start_location().is_shadowed_by[0]().display_variants[0].form}")
+                .append_if_lambda(self.is_shadowed, lambda: f"shadowed_by:{self.word_variant().shadowed_by_text}")
                 .as_set())

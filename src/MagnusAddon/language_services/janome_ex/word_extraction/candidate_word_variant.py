@@ -11,6 +11,7 @@ from language_services.janome_ex.word_extraction.matches.vocab_match import Voca
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from sysutils import ex_assert
 from sysutils.object_instance_tracker import ObjectInstanceTracker
+from sysutils.typed import non_optional
 from sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
@@ -49,8 +50,16 @@ class CandidateWordVariant(WeakRefable, Slots):
         self.valid_matches: list[Match] = []
 
     @property
-    def is_shadowed(self) -> bool:
-        return any(self.word().start_location().is_shadowed_by)
+    def is_shadowed(self) -> bool: return self.is_shadowed_by is not None
+
+    @property
+    def shadowed_by_text(self) -> str: return non_optional(self.is_shadowed_by).form if self.is_shadowed else ""
+
+    @property
+    def is_shadowed_by(self) -> CandidateWordVariant | None:
+        if any(self.word().start_location().is_shadowed_by): return self.word().start_location().is_shadowed_by[0]().display_variants[0]
+        if any(self.word().display_word_variants) and self.word().display_word_variants[0] != self: return self.word().display_word_variants[0]
+        return None
 
     def is_preliminarily_valid(self) -> bool:
         return (self.is_word and not (self.is_noise_character
