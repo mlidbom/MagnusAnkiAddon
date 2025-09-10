@@ -26,7 +26,8 @@ class TextAnalysisLocation(WeakRefable,Slots):
         self.next: WeakRef[TextAnalysisLocation] | None = None
         self.previous: WeakRef[TextAnalysisLocation] | None = None
         self.token: ProcessedToken = token
-        self.is_shadowed_by: WeakRef[TextAnalysisLocation] | None = None
+        self.is_shadowed_by: list[WeakRef[TextAnalysisLocation]] = []
+        self.shadows: list[WeakRef[TextAnalysisLocation]] = []
         self.analysis: WeakRef[TextAnalysis] = analysis
         self.token_index: int = token_index
         self.character_start_index: int = character_start_index
@@ -71,7 +72,6 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
 
         if changes_made:
             self.display_words = [candidate for candidate in self.candidate_words if candidate.display_word_variants]
-            test = 12
         return changes_made
 
     def analysis_step_3_run_initial_display_analysis(self) -> None:
@@ -85,14 +85,19 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
         # because that method has a circular dependency to display_words_starting_here which we set up here.
 
         the_next_compound_yields_to_the_one_after_that_so_this_one_no_longer_yields = self._run_display_analysis_pass_true_if_there_were_changes()
-        if self.display_words and self.is_shadowed_by is None:
+        if self.display_words and not any(self.is_shadowed_by):
             self.display_variants = self.display_words[0].display_word_variants
 
             covering_forward_count = self.display_words[0].location_count - 1
-            for location in self.forward_list(covering_forward_count)[1:]:
-                location.is_shadowed_by = self.weakref
+            for shadowed in self.forward_list(covering_forward_count)[1:]:
+                shadowed.is_shadowed_by.append(self.weakref)
+                self.shadows.append(shadowed.weakref)
+                for shadowed_shadowed in shadowed.shadows:
+                    shadowed_shadowed().is_shadowed_by.remove(shadowed.weakref)
+                shadowed.shadows.clear()
 
         return the_next_compound_yields_to_the_one_after_that_so_this_one_no_longer_yields
+
 
     def is_next_location_inflecting_word(self) -> bool:
         return self.next is not None and self.next().is_inflecting_word()

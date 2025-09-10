@@ -50,7 +50,7 @@ class CandidateWordVariant(WeakRefable, Slots):
 
     @property
     def is_shadowed(self) -> bool:
-        return self.word().start_location().is_shadowed_by is not None
+        return any(self.word().start_location().is_shadowed_by)
 
     def is_preliminarily_valid(self) -> bool:
         return (self.is_word and not (self.is_noise_character
