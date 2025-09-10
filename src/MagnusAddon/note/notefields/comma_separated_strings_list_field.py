@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable
 
 from autoslot import Slots
 from note.notefields.string_field import StringField
@@ -14,7 +14,8 @@ if TYPE_CHECKING:
 class CommaSeparatedStringsListField(WeakRefable, Slots):
     def __init__(self, note: WeakRef[JPNote], field_name: str) -> None:
         self._field = StringField(note, field_name)
-        self_with_no_reference_loop = WeakRef(self)
+        self.weakref = WeakRef(self)
+        self_with_no_reference_loop = self.weakref
         self._value: Lazy[list[str]] = Lazy(lambda: self_with_no_reference_loop()._extract_field_values())
 
     def get(self) -> list[str]:
@@ -38,3 +39,5 @@ class CommaSeparatedStringsListField(WeakRefable, Slots):
 
     def _extract_field_values(self) -> list[str]:
         return ex_str.extract_comma_separated_values(self._field.get())
+
+    def on_update(self, *callbacks: Callable[[], None]) -> None:  self._field.on_update(*callbacks)

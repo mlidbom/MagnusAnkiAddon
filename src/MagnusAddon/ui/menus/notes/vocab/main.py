@@ -15,7 +15,6 @@ from ui.menus.notes.vocab.create_note_menu import build_create_note_menu
 from ui.menus.notes.vocab.matching_settings_menu import build_matching_settings_menu
 
 if TYPE_CHECKING:
-    from note.notefields.require_forbid_flag_field import RequireForbidFlagField
     from note.notefields.tag_flag_field import TagFlagField
     from note.vocabulary.vocabnote import VocabNote
     from PyQt6.QtWidgets import QMenu
