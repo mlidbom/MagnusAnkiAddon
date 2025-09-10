@@ -78,3 +78,5 @@ class Match(WeakRefable, Slots):
                 .append_if(self.is_configured_hidden, "configured_hidden")
                 .append_if_lambda(self.is_shadowed, lambda: f"shadowed_by:{self.word_variant().shadowed_by_text}")
                 .as_set())
+
+    def __repr__(self) -> str: return f"""{self.parsed_form}, {self.match_form[:10]}: {" ".join(self.failure_reasons)} {" ".join(self.hiding_reasons)}"""
