@@ -24,6 +24,9 @@ class Lazy(Generic[T], Slots):
     def from_value(cls, result: T) -> Lazy[T]:
         return cls(lambda: result)
 
+    def reset(self) -> None:
+        self._instance = None
+
 class BackgroundInitialingLazy(Generic[T], Slots):
     def __init__(self, factory: Callable[[], T], delay_seconds: float = 0) -> None:
         self._lock = threading.Lock()

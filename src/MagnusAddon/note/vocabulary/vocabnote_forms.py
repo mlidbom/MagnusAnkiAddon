@@ -20,6 +20,7 @@ class VocabNoteForms(WeakRefable, Slots):
         self._field: CommaSeparatedStringsListFieldDeDuplicated = CommaSeparatedStringsListFieldDeDuplicated(vocab, NoteFields.Vocab.Forms)
         weakrefself = WeakRef(self)
         self._all_raw: Lazy[set[str]] = Lazy(lambda: set(weakrefself()._field.get()))
+        self._all: Lazy[set[str]] = Lazy(lambda: weakrefself()._all_set())
 
     def _owned_forms(self) -> set[str]: return {self._vocab().get_question()} | {ex_str.strip_brackets(form) for form in self._all_raw() if form.startswith("[")}
 
@@ -48,8 +49,8 @@ class VocabNoteForms(WeakRefable, Slots):
 
         return {form for form in vocab_note.forms.all_set() if not is_owned_by_other_form_note(form)}
 
-    def all_set(self) -> set[str]:
-        return {ex_str.strip_brackets(form) for form in self._all_raw()}
+    def _all_set(self) -> set[str]: return set({ex_str.strip_brackets(form) for form in self._all_raw()})
+    def all_set(self) -> set[str]: return self._all()
 
     def without_noise_characters(self) -> list[str]:
         return [self._strip_noise_characters(form) for form in self.all_list()]
@@ -67,10 +68,12 @@ class VocabNoteForms(WeakRefable, Slots):
     def set_list(self, forms: list[str]) -> None:
         self._all_raw = Lazy.from_value(set(forms))
         self._field.set(forms)
+        self._all.reset()
 
     def remove(self, remove: str) -> None:
         self._all_raw().discard(remove)
         self._field.remove(remove)
+        self._all.reset()
 
         for remove_note in [voc for voc in col().vocab.with_question(remove) if self._vocab().get_question() in voc.forms.all_set()]:
             remove_note.forms.remove(self._vocab().get_question())
@@ -78,6 +81,7 @@ class VocabNoteForms(WeakRefable, Slots):
     def add(self, add: str) -> None:
         self._all_raw().add(add)
         self._field.add(add)
+        self._all.reset()
 
         for add_note in [voc for voc in col().vocab.with_question(add) if self._vocab().get_question() not in voc.forms.all_set()]:
             add_note.forms.add(self._vocab().get_question())
