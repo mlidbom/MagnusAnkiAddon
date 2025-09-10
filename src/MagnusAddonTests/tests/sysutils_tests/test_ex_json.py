@@ -51,8 +51,8 @@ def test_roundtrip_parsing_result() -> None:
     from note.sentences.parsed_word import ParsedWord
     from note.sentences.parsing_result import ParsingResult
 
-    parsing_result = ParsingResult([ParsedWord("foo", 1, True, 0),
-                                    ParsedWord("bar", 2, False, 4)], "foo bar", "1.0")
+    parsing_result = ParsingResult([ParsedWord("foo", "boo", 1, True, 0),
+                                    ParsedWord("bar", "doo", 2, False, 4)], "foo bar", "1.0")
     json = ParsingResult.serializer.serialize(parsing_result)
     round_tripped_result = ParsingResult.serializer.deserialize(json)
 
