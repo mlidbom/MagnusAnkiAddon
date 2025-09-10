@@ -20,14 +20,19 @@ class YieldLastTokenToOverlappingCompound(RequireForbidFlagField):
     def is_required(self) -> bool:
         return (super().is_required
                 or (not self.is_forbidden
-                    and ((app.config().automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound.get_value()
-                          and self._vocab().parts_of_speech.is_suru_verb_included()
-                          and not self._vocab().parts_of_speech.is_ni_suru_ga_suru_ku_suru_compound())
-                         or (app.config().automatically_yield_last_token_in_passive_verb_compounds_to_overlapping_compound.get_value()
-                             and self._vocab().parts_of_speech.is_passive_verb_compound())
-                         or (app.config().automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound.get_value()
-                             and self._vocab().parts_of_speech.is_causative_verb_compound())
-                         )))
+                    and (  # na adjectives
+                            self._vocab().parts_of_speech.is_complete_na_adjective()
+                            # suru verb compounds
+                            or (app.config().automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound.get_value()
+                                and self._vocab().parts_of_speech.is_suru_verb_included()
+                                and not self._vocab().parts_of_speech.is_ni_suru_ga_suru_ku_suru_compound())
+                            # passive verb compounds
+                            or (app.config().automatically_yield_last_token_in_passive_verb_compounds_to_overlapping_compound.get_value()
+                                and self._vocab().parts_of_speech.is_passive_verb_compound())
+                            # causative verb compounds
+                            or (app.config().automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound.get_value()
+                                and self._vocab().parts_of_speech.is_causative_verb_compound())
+                    )))
 
     def __repr__(self) -> str: return (SimpleStringBuilder()
                                        .append_if(self.is_required, "required")
