@@ -96,13 +96,12 @@ def build_universal_note_actions_menu(universal_actions_menu: QMenu, note: JPNot
     if not note: return
 
     universal_actions_menu.addAction(shortcutfinger.home1("Open in previewer"), search_executor.lookup_and_show_previewer_promise(lambda: query_builder.notes_lookup([note])))
-    universal_actions_menu.addAction(shortcutfinger.home2("Find in browser"), search_executor.lookup_promise(lambda: query_builder.notes_lookup([note])))
+    note_actions_menu = non_optional(universal_actions_menu.addMenu(shortcutfinger.home2("Note actions")))
 
     add_ui_action(universal_actions_menu, shortcutfinger.home3("Unsuspend all cards"), note.unsuspend_all_cards, note.has_suspended_cards())
     add_ui_action(universal_actions_menu, shortcutfinger.home4("Suspend all cards"), note.suspend_all_cards, note.has_active_cards())
     add_ui_action(universal_actions_menu, shortcutfinger.up1("Unsuspend all cards and dependencies' cards"), note.unsuspend_all_cards_and_dependencies, confirm=True, enabled=note.has_suspended_cards_or_depencies_suspended_cards())
 
-    note_actions_menu = non_optional(universal_actions_menu.addMenu(shortcutfinger.home5("Note actions")))
     if note:
         if isinstance(note, KanjiNote):
             menus.notes.kanji.main.build_note_menu(note_actions_menu, note)

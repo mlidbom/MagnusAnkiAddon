@@ -12,6 +12,7 @@ from sysutils.typed import non_optional
 from ui.menus.menu_utils import shortcutfinger
 from ui.menus.menu_utils.ex_qmenu import add_lookup_action, add_single_vocab_lookup_action, add_ui_action, add_vocab_dependencies_lookup
 from ui.menus.notes.vocab.create_note_menu import build_create_note_menu
+from ui.menus.notes.vocab.matching_settings_menu import build_matching_settings_menu
 
 if TYPE_CHECKING:
     from note.notefields.require_forbid_flag_field import RequireForbidFlagField
@@ -79,33 +80,6 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
 
         add_ui_action(misc_menu, shortcutfinger.home5("Autogenerate compounds"), lambda: vocab.compound_parts.auto_generate())
 
-    def build_toggle_flags_menu(toggle_flags_menu: QMenu) -> None:
-        def build_requires_forbids_menu(requires_forbids_menu: QMenu) -> None:
-            def add_require_forbid_menu(menu: QMenu, title: str, field: RequireForbidFlagField) -> None:
-                toggle_menu = non_optional(menu.addMenu(title))
-                add_checkbox(toggle_menu, shortcutfinger.home1("Required"), lambda: field.is_configured_required, field.set_required)
-                add_checkbox(toggle_menu, shortcutfinger.home2("Forbidden"), lambda: field.is_configured_forbidden, field.set_forbidden)
-
-            add_require_forbid_menu(requires_forbids_menu, shortcutfinger.home2("single token"), vocab.matching_rules.single_token)
-            add_require_forbid_menu(requires_forbids_menu, shortcutfinger.home3("yield to overlapping compound"), vocab.matching_rules.yield_last_token)
-            add_require_forbid_menu(requires_forbids_menu, shortcutfinger.home4("e stem"), vocab.matching_rules.e_stem)
-            add_require_forbid_menu(requires_forbids_menu, shortcutfinger.home5("a stem"), vocab.matching_rules.a_stem)
-            add_require_forbid_menu(requires_forbids_menu, shortcutfinger.up1("paste tense stem"), vocab.matching_rules.past_tense_stem)
-            add_require_forbid_menu(requires_forbids_menu, shortcutfinger.up2("て-form tense stem"), vocab.matching_rules.t_form_stem)
-            add_require_forbid_menu(requires_forbids_menu, shortcutfinger.up3("Sentence end"), vocab.matching_rules.sentence_end)
-
-        def build_is_menu(is_menu: QMenu) -> None:
-            add_tag_field_check_box(is_menu, shortcutfinger.home1("Poison word"), vocab.matching_rules.is_poison_word)
-            add_tag_field_check_box(is_menu, shortcutfinger.home2("Inflecting word"), vocab.matching_rules.is_inflecting_word)
-
-        def build_misc_flags_menu(misc_menu: QMenu) -> None:
-            add_tag_field_check_box(misc_menu, shortcutfinger.home1("Question overrides form: Show the question in results even if the match was another form"), vocab.matching_rules.question_overrides_form.tag_field)
-            add_tag_field_check_box(misc_menu, shortcutfinger.home3("Match with preceding vowel"), vocab.matching_rules.match_with_preceding_vowel)
-
-        build_requires_forbids_menu(non_optional(toggle_flags_menu.addMenu(shortcutfinger.home1("Requireds/Forbids"))))
-        build_is_menu(non_optional(toggle_flags_menu.addMenu(shortcutfinger.home1("Is"))))
-        build_misc_flags_menu(non_optional(toggle_flags_menu.addMenu(shortcutfinger.home3("Misc"))))
-        add_tag_field_check_box(toggle_flags_menu, shortcutfinger.home4("Requires exact match"), vocab.matching_rules.requires_exact_match)
 
     def build_remove_menu(remove_menu: QMenu) -> None:
         add_ui_action(remove_menu, shortcutfinger.home1("User explanation"), lambda: vocab.user.explanation.empty()).setEnabled(vocab.user.explanation.has_value())
@@ -114,10 +88,10 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
         add_ui_action(remove_menu, shortcutfinger.home4("User answer"), lambda: vocab.user.answer.empty(), True).setEnabled(vocab.user.answer.has_value())
 
     build_lookup_menu(non_optional(note_menu.addMenu(shortcutfinger.home1("Open"))))
-    build_create_note_menu(non_optional(note_menu.addMenu(shortcutfinger.home2("Create"))), vocab, selection, clipboard)
-    build_copy_menu(non_optional(note_menu.addMenu(shortcutfinger.home3("Copy"))))
-    build_misc_menu(non_optional(note_menu.addMenu(shortcutfinger.home4("Misc"))))
-    build_toggle_flags_menu(non_optional(note_menu.addMenu(shortcutfinger.home5("Toggle flags"))))
+    build_matching_settings_menu(non_optional(note_menu.addMenu(shortcutfinger.home2("Toggle flags"))), vocab)
+    build_create_note_menu(non_optional(note_menu.addMenu(shortcutfinger.home3("Create"))), vocab, selection, clipboard)
+    build_copy_menu(non_optional(note_menu.addMenu(shortcutfinger.home4("Copy"))))
+    build_misc_menu(non_optional(note_menu.addMenu(shortcutfinger.home5("Misc"))))
     build_remove_menu(non_optional(note_menu.addMenu(shortcutfinger.up1("Remove"))))
 
 def format_vocab_meaning(meaning: str) -> str:
