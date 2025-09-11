@@ -6,17 +6,17 @@ from autoslot import Slots
 from note.notefields.string_field import StringField
 from sysutils import ex_str
 from sysutils.lazy import Lazy
-from sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
     from note.jpnote import JPNote
+    from sysutils.weak_ref import WeakRef
 
-class CommaSeparatedStringsListField(WeakRefable, Slots):
+class CommaSeparatedStringsListField(Slots):
     def __init__(self, note: WeakRef[JPNote], field_name: str) -> None:
-        self._field = StringField(note, field_name)
-        self.weakref = WeakRef(self)
-        self_with_no_reference_loop = self.weakref
-        self._value: Lazy[list[str]] = Lazy(lambda: self_with_no_reference_loop()._extract_field_values())
+        field = StringField(note, field_name)
+        self._field = field
+        self._value: Lazy[list[str]] = Lazy(lambda: ex_str.extract_comma_separated_values(field.get()))
+        self._field.on_update(self._value.reset)
 
     def get(self) -> list[str]:
         return self._value()
@@ -25,7 +25,6 @@ class CommaSeparatedStringsListField(WeakRefable, Slots):
         self.set([item for item in self.get() if item != remove])
 
     def set(self, value: list[str]) -> None:
-        self._value = Lazy.from_value(value)
         self._field.set(", ".join(value))
 
     def raw_string_value(self) -> str:
@@ -36,8 +35,5 @@ class CommaSeparatedStringsListField(WeakRefable, Slots):
 
     def add(self, add: str) -> None:
         self.set(self.get() + [add])
-
-    def _extract_field_values(self) -> list[str]:
-        return ex_str.extract_comma_separated_values(self._field.get())
 
     def on_update(self, *callbacks: Callable[[], None]) -> None:  self._field.on_update(*callbacks)
