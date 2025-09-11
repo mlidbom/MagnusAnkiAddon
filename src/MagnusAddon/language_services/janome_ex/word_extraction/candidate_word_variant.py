@@ -47,9 +47,9 @@ class CandidateWordVariant(WeakRefable, Slots):
         self.valid_matches: list[Match] = []
 
     @property
-    def is_base(self) -> bool: raise NotImplementedError()
+    def is_base(self) -> bool: return self.form == self.word().base_form
     @property
-    def is_surface(self) -> bool: return not self.is_base
+    def is_surface(self) -> bool: return self.form == self.word().surface_form
 
     @property
     def is_shadowed(self) -> bool: return self.is_shadowed_by is not None
@@ -108,12 +108,6 @@ class CandidateWordSurfaceVariant(CandidateWordVariant, Slots):
     def __init__(self, word: WeakRef[CandidateWord], form: str) -> None:
         super().__init__(word, form)
 
-    @property
-    def is_base(self) -> bool: return False
-
 class CandidateWordBaseVariant(CandidateWordVariant, Slots):
     def __init__(self, word: WeakRef[CandidateWord], form: str) -> None:
         super().__init__(word, form)
-
-    @property
-    def is_base(self) -> bool: return True
