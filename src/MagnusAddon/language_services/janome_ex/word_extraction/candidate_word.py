@@ -51,6 +51,20 @@ class CandidateWord(WeakRefable, Slots):
         self.valid_variants: list[CandidateWordVariant] = []
         self.display_word_variants: list[CandidateWordVariant] = []
 
+
+    @property
+    def is_shadowed(self) -> bool: return self.is_shadowed_by is not None
+    @property
+    def shadowed_by_text(self) -> str: return non_optional(self.is_shadowed_by).form if self.is_shadowed else ""
+    @property
+    def is_shadowed_by(self) -> CandidateWordVariant | None:
+        if any(self.start_location().is_shadowed_by):
+            return self.start_location().is_shadowed_by[0]().display_variants[0]
+        if (any(self.start_location().display_variants)
+                and self.start_location().display_variants[0].word().location_count > self.location_count):
+            return self.start_location().display_variants[0]
+        return None
+
     def has_seemingly_valid_single_token(self) -> bool:
         return not self.is_custom_compound and not self.starts_with_non_word_character
 

@@ -66,7 +66,7 @@ class Match(WeakRefable, Slots):
     def _surface_is_seemingly_valid_single_token(self) -> bool: return self.word.has_seemingly_valid_single_token()
 
     @property
-    def is_shadowed(self) -> bool: return self.variant.is_shadowed
+    def is_shadowed(self) -> bool: return self.word.is_shadowed
 
     @property
     def failure_reasons(self) -> set[str]:
@@ -78,7 +78,7 @@ class Match(WeakRefable, Slots):
     def hiding_reasons(self) -> set[str]:
         return (SimpleStringListBuilder()
                 .append_if(self.is_configured_hidden, "configured_hidden")
-                .append_if_lambda(self.is_shadowed, lambda: f"shadowed_by:{self.variant.shadowed_by_text}")
+                .append_if_lambda(self.is_shadowed, lambda: f"shadowed_by:{self.word.shadowed_by_text}")
                 .as_set())
 
     def __repr__(self) -> str: return f"""{self.parsed_form}, {self.match_form[:10]}: {" ".join(self.failure_reasons)} {" ".join(self.hiding_reasons)}"""
