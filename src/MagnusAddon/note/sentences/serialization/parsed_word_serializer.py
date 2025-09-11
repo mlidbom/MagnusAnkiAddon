@@ -17,8 +17,8 @@ class ParsedWordSerializer(Slots):
         str(parsed_word.start_index),  # 1
         str(1 if parsed_word.is_displayed else 0),  # 2
         parsed_word.word,  # 3
-        str(parsed_word.vocab_id),  # 4
-        parsed_word.information_string,  # 5
+        parsed_word.information_string or "#",  # 4
+        str(parsed_word.vocab_id),  # 5
     ])
 
     @staticmethod
@@ -30,5 +30,5 @@ class ParsedWordSerializer(Slots):
                           int(values[1]),
                           bool(int(values[2])),
                           values[3],
-                          int(values[4]),
+                          int(values[5]),
                           "")
