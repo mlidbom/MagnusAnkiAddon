@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable
 
 from autoslot import Slots
 from sysutils.simple_string_list_builder import SimpleStringListBuilder
@@ -8,7 +8,7 @@ from sysutils.weak_ref import WeakRefable
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.candidate_word import CandidateWord
-    from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
+    from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordBaseVariant, CandidateWordVariant
     from note.vocabulary.vocabnote_matching_rules import VocabNoteMatching
     from sysutils.weak_ref import WeakRef
 
@@ -60,7 +60,7 @@ class Match(WeakRefable, Slots):
         return (self.surface_is_seemingly_valid_single_token
                 and self.variant().is_surface
                 and not self._base_is_valid_word
-                and not any(other_match for other_match in self.variant().matches if other_match.is_valid_for_display))
+                and not self._has_valid_for_display_sibling)
 
     @property
     def _has_valid_for_display_sibling(self) -> bool: return any(other_match for other_match in self._sibling_matches if other_match.is_valid_for_display)
@@ -70,6 +70,10 @@ class Match(WeakRefable, Slots):
     def _base_is_valid_word(self) -> bool:
         base = self.variant().word().base
         return base is not None and base.is_valid_candidate
+
+    def _has_base_where(self, condition: Callable[[CandidateWordBaseVariant], bool]) -> bool:
+        base = self.variant().word().base
+        return base is not None and condition(base)
 
     @property
     def word(self) -> CandidateWord: return self.variant().word()
