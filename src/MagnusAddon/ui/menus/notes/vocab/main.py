@@ -20,21 +20,6 @@ if TYPE_CHECKING:
     from PyQt6.QtWidgets import QMenu
 
 def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboard: str) -> None:
-    def add_tag_field_check_box(menu: QMenu, title: str, field: TagFlagField) -> None:
-        add_checkbox(menu, title, field.is_set, field.set_to)
-
-    def add_checkbox(menu: QMenu, title: str, getter: Callable[[], bool], setter: Callable[[bool], None]) -> None:
-        def set_value(value: bool) -> None:
-            setter(value)
-            from batches import local_note_updater
-            local_note_updater.reparse_sentences_for_vocab(vocab)
-            app.get_ui_utils().refresh()
-
-        action = non_optional(menu.addAction(title))
-        action.setCheckable(True)
-        action.setChecked(getter())
-        qconnect(action.triggered, set_value)
-
     def build_copy_menu(note_copy_menu: QMenu) -> None:
         note_copy_menu.addAction(shortcutfinger.home1("Question"), lambda: pyperclip.copy(vocab.get_question()))
         note_copy_menu.addAction(shortcutfinger.home2("Answer"), lambda: pyperclip.copy(vocab.get_answer()))
