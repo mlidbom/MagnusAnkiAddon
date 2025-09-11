@@ -82,40 +82,25 @@ class VocabNoteMatchingConfiguration(WeakRefable, Slots):
     @property
     def configurable_rules(self) -> VocabNoteMatchingRules: return self._rules.instance()
 
-    @property
-    def e_stem(self) -> RequireForbidFlagField: return self.flags.e_stem
-    @property
-    def a_stem(self) -> RequireForbidFlagField: return self.flags.a_stem
-    @property
-    def past_tense_stem(self) -> RequireForbidFlagField: return self.flags.past_tense_stem
-    @property
-    def t_form_stem(self) -> RequireForbidFlagField: return self.flags.t_form_stem
-    @property
-    def single_token(self) -> RequireForbidFlagField: return self.flags.single_token
-    @property
-    def sentence_end(self) -> RequireForbidFlagField: return self.flags.sentence_end
-    @property
-    def yield_last_token(self) -> RequireForbidFlagField: return self.flags.yield_last_token
-
     def save(self) -> None: self.configurable_rules.save()
 
     def __repr__(self) -> str: return (SkipFalsyValuesDebugReprBuilder()
                                        .flag("requires_exact_match", self.requires_exact_match.is_set())
-                                       .flag("requires_single_token", self.single_token.is_required)
-                                       .flag("requires_compound", self.single_token.is_forbidden)
-                                       .flag("requires_a_stem", self.a_stem.is_required)
-                                       .flag("forbids_a_stem", self.a_stem.is_forbidden)
-                                       .flag("requires_e_stem", self.e_stem.is_required)
-                                       .flag("forbids_e_stem", self.e_stem.is_forbidden)
-                                       .flag("requires_past_tense_stem", self.past_tense_stem.is_required)
-                                       .flag("forbids_past_tense_stem", self.past_tense_stem.is_forbidden)
-                                       .flag("requires_t_form_stem", self.t_form_stem.is_required)
-                                       .flag("forbids_t_form_stem", self.t_form_stem.is_forbidden)
-                                       .flag("requires_sentence_end", self.sentence_end.is_required)
+                                       .flag("requires_single_token", self.flags.single_token.is_required)
+                                       .flag("requires_compound", self.flags.single_token.is_forbidden)
+                                       .flag("requires_a_stem", self.flags.a_stem.is_required)
+                                       .flag("forbids_a_stem", self.flags.a_stem.is_forbidden)
+                                       .flag("requires_e_stem", self.flags.e_stem.is_required)
+                                       .flag("forbids_e_stem", self.flags.e_stem.is_forbidden)
+                                       .flag("requires_past_tense_stem", self.flags.past_tense_stem.is_required)
+                                       .flag("forbids_past_tense_stem", self.flags.past_tense_stem.is_forbidden)
+                                       .flag("requires_t_form_stem", self.flags.t_form_stem.is_required)
+                                       .flag("forbids_t_form_stem", self.flags.t_form_stem.is_forbidden)
+                                       .flag("requires_sentence_end", self.flags.sentence_end.is_required)
                                        .flag("is_inflecting_word", self.is_inflecting_word.is_set())
                                        .flag("is_poison_word", self.is_poison_word.is_set())
-                                       .flag("yield_last_token_to_overlapping_compound", self.yield_last_token.is_required)
-                                       .flag("forbid_auto_yielding_last_token", self.yield_last_token.is_forbidden)
+                                       .flag("yield_last_token_to_overlapping_compound", self.flags.yield_last_token.is_required)
+                                       .flag("forbid_auto_yielding_last_token", self.flags.yield_last_token.is_forbidden)
                                        .flag("match_with_preceding_vowel", self.match_with_preceding_vowel.is_set())
                                        .flag("question_overrides_form", self.question_overrides_form.is_set())
                                        .flag("is_strictly_suffix", self.is_strictly_suffix.is_set())

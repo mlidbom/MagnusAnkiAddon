@@ -16,6 +16,3 @@ class CommaSeparatedStringsListFieldDeDuplicated(CommaSeparatedStringsListField,
 
     def set(self, value: list[str]) -> None:
         super().set(ex_sequence.remove_duplicates_while_retaining_order(value))
-
-    def _extract_field_values(self) -> list[str]:
-        return ex_sequence.remove_duplicates_while_retaining_order(super()._extract_field_values())

@@ -31,12 +31,12 @@ class HeadRequirements(Slots):
                                     or (end_of_stem is not None and not any(forbidden for forbidden in rules.configurable_rules.prefix_is_not.get() if end_of_stem().token.surface.endswith(forbidden))))
 
         self.has_a_stem = end_of_stem is not None and end_of_stem().token.surface[-1] in conjugator.a_stem_characters
-        self.fulfills_forbids_a_stem_requirement = not rules.a_stem.is_forbidden or not self.has_a_stem
-        self.fulfills_requires_a_stem = not rules.a_stem.is_required or self.has_a_stem
+        self.fulfills_forbids_a_stem_requirement = not rules.flags.a_stem.is_forbidden or not self.has_a_stem
+        self.fulfills_requires_a_stem = not rules.flags.a_stem.is_required or self.has_a_stem
 
         self.has_past_tense_stem = end_of_stem is not None and (end_of_stem().token.is_past_tense_stem() or word_variant().word.start_location.token.is_past_tense_marker())
-        self.fulfills_forbids_past_tense_stem = not rules.past_tense_stem.is_forbidden or not self.has_past_tense_stem
-        self.fulfills_requires_past_tense_stem = not rules.past_tense_stem.is_required or self.has_past_tense_stem
+        self.fulfills_forbids_past_tense_stem = not rules.flags.past_tense_stem.is_forbidden or not self.has_past_tense_stem
+        self.fulfills_requires_past_tense_stem = not rules.flags.past_tense_stem.is_required or self.has_past_tense_stem
 
         # todo: get this stuff moved into the tokenizing stage...
         self.has_t_form_stem = (end_of_stem is not None
@@ -44,15 +44,15 @@ class HeadRequirements(Slots):
                                 and (end_of_stem().token.is_t_form_stem()
                                      or (end_of_stem().token.is_past_tense_stem() and any(tform for tform in HeadRequirements._te_forms if match.parsed_form.startswith(tform)))
                                      or (end_of_stem().token.is_ichidan_masu_stem() and any(tform for tform in HeadRequirements._te_forms if match.parsed_form.startswith(tform)))))
-        self.fulfills_requires_t_form_stem = not rules.t_form_stem.is_required or self.has_t_form_stem
-        self.fulfills_forbids_t_form_stem = not rules.t_form_stem.is_forbidden or not self.has_t_form_stem
+        self.fulfills_requires_t_form_stem = not rules.flags.t_form_stem.is_required or self.has_t_form_stem
+        self.fulfills_forbids_t_form_stem = not rules.flags.t_form_stem.is_forbidden or not self.has_t_form_stem
 
         self.has_e_stem = (end_of_stem is not None and
                            (end_of_stem().token.surface[-1] in conjugator.e_stem_characters
                             or kana_utils.character_is_kanji(end_of_stem().token.surface[-1])))
 
-        self.fulfills_requires_e_stem_requirement = not rules.e_stem.is_required or self.has_e_stem
-        self.fulfills_forbids_e_stem_requirement = not rules.e_stem.is_forbidden or not self.has_e_stem
+        self.fulfills_requires_e_stem_requirement = not rules.flags.e_stem.is_required or self.has_e_stem
+        self.fulfills_forbids_e_stem_requirement = not rules.flags.e_stem.is_forbidden or not self.has_e_stem
 
         self.are_fulfilled = (True
                               and self.fulfills_is_strictly_suffix
