@@ -39,14 +39,16 @@ class VocabMatch(Match, Slots):
 
     @property
     def parsed_form(self) -> str:
-        if self.matching.bool_flags.question_overrides_form.is_set():
-            return self.vocab.question.raw
-        return super().parsed_form
+        return self.vocab.question.raw \
+            if self.matching.bool_flags.question_overrides_form.is_set() \
+            else super().parsed_form
 
     @property
     def start_index(self) -> int:
-        if self.matching.bool_flags.question_overrides_form.is_set() and self.matching.configurable_rules.required_prefix.any():
-            matched_prefixes = [prefix for prefix in self.matching.configurable_rules.required_prefix.get() if self.parsed_form.startswith(prefix)]
+        if (self.matching.bool_flags.question_overrides_form.is_set()
+                and self.matching.configurable_rules.required_prefix.any()):
+            matched_prefixes = [prefix for prefix in self.matching.configurable_rules.required_prefix.get()
+                                if self.parsed_form.startswith(prefix)]
             if matched_prefixes:
                 return super().start_index - max(len(prefix) for prefix in matched_prefixes)
 
@@ -60,7 +62,13 @@ class VocabMatch(Match, Slots):
                 and self.misc_requirements.are_fulfilled)
 
     @property
-    def is_secondary_match(self) -> bool: return not self.owns_form and any(other_match for other_match in self.word_variant().vocab_matches if other_match.owns_form and other_match.is_valid)
+    def is_secondary_match(self) -> bool: return not self.owns_form and self._another_match_owns_form
+
+    @property
+    def _another_match_owns_form(self) -> bool: return any(other_match for other_match in self.word_variant().vocab_matches
+                                                           if other_match != self
+                                                           and other_match.owns_form
+                                                           and other_match.is_valid)
 
     @property
     def is_valid_for_display(self) -> bool: return super().is_valid_for_display and self.display_requirements.are_fulfilled
