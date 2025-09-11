@@ -64,14 +64,22 @@ def generate_sentences_list_html(_vocab_note: VocabNote) -> str:
             return f"""{head}<span class="vocabInContext {class_name}">{hit_range}</span>{tail}"""
 
         matches = [match for match in result.parsed_words if match.vocab_id == _vocab_note.get_id()]
-        displayed_hits = [match for match in matches if match.is_displayed]
-        if displayed_hits:
-            return highlight_match(displayed_hits[0], "primaryForm")
+        displayed_matches = [match for match in matches if match.is_displayed]
+        if displayed_matches:
+            match = displayed_matches[0]
+            if any(form for form in secondary_forms_containing_primary_form_forms if form.startswith(match.parsed_form)):
+                return highlight_match(match, "secondaryForm")
+            if any(form for form in secondary_forms_forms if form.startswith(match.parsed_form)):
+                return highlight_match(match, "secondaryForm")
+
+            return highlight_match(match, "primaryForm")
 
         shaded_matches = [match for match in matches if not match.is_displayed]
         first_shaded_match = shaded_matches[0]
         match_shading_our_match = [match for match in reversed(result.parsed_words) if match.is_displayed and match.start_index <= first_shaded_match.start_index][0]
         if match_shading_our_match.vocab_id in derived_compound_ids:
+            if any(form for form in secondary_forms_derived_compounds_forms if form.startswith(match_shading_our_match.parsed_form)):
+                return highlight_match(match_shading_our_match, "secondaryFormDerivedCompoundForm")
             return highlight_match(match_shading_our_match, "derivedCompoundForm")
 
         return result.sentence
