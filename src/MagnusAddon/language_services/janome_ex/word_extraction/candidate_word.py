@@ -37,24 +37,24 @@ class CandidateWord(WeakRefable, Slots):
         self.display_word_variants: list[CandidateWordVariant] = []
 
     @property
-    def analysis(self) -> WeakRef[TextAnalysis]: return self.locations[0]().analysis
+    def analysis(self) -> TextAnalysis: return self.locations[0]().analysis()
     @property
     def is_custom_compound(self) -> bool: return self.location_count > 1
     @property
-    def start_location(self) -> WeakRef[TextAnalysisLocation]: return self.locations[0]
+    def start_location(self) -> TextAnalysisLocation: return self.locations[0]()
     @property
-    def end_location(self) -> WeakRef[TextAnalysisLocation]: return self.locations[-1]
+    def end_location(self) -> TextAnalysisLocation: return self.locations[-1]()
     @property
     def location_count(self) -> int: return len(self.locations)
     @property
-    def starts_with_non_word_token(self) -> bool: return self.start_location().token.is_non_word_character
+    def starts_with_non_word_token(self) -> bool: return self.start_location.token.is_non_word_character
 
     @property
     def is_word(self) -> bool: return self.surface_variant.is_known_word or (self.base_variant is not None and self.base_variant.is_known_word)
     @property
-    def is_inflectable_word(self) -> bool: return self.end_location().token.is_inflectable_word
+    def is_inflectable_word(self) -> bool: return self.end_location.token.is_inflectable_word
     @property
-    def next_token_is_inflecting_word(self) -> bool: return self.end_location().is_next_location_inflecting_word()
+    def next_token_is_inflecting_word(self) -> bool: return self.end_location.is_next_location_inflecting_word()
     @property
     def is_inflected_word(self) -> bool: return self.is_inflectable_word and self.next_token_is_inflecting_word
     @property
@@ -66,11 +66,11 @@ class CandidateWord(WeakRefable, Slots):
     def shadowed_by_text(self) -> str: return non_optional(self.is_shadowed_by).form if self.is_shadowed else ""
     @property
     def is_shadowed_by(self) -> CandidateWordVariant | None:
-        if any(self.start_location().is_shadowed_by):
-            return self.start_location().is_shadowed_by[0]().display_variants[0]
-        if (any(self.start_location().display_variants)
-                and self.start_location().display_variants[0].word().location_count > self.location_count):
-            return self.start_location().display_variants[0]
+        if any(self.start_location.is_shadowed_by):
+            return self.start_location.is_shadowed_by[0]().display_variants[0]
+        if (any(self.start_location.display_variants)
+                and self.start_location.display_variants[0].word().location_count > self.location_count):
+            return self.start_location.display_variants[0]
         return None
 
     def has_seemingly_valid_single_token(self) -> bool:
