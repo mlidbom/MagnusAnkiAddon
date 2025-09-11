@@ -54,7 +54,7 @@ class VocabNoteMatchingRules(Slots):
                                        .prop("suffix_is_not", self.suffix_is_not.get())
                                        .prop("required_prefix", self.required_prefix.get()).repr)
 
-class VocabMatchingRulesConfigurationFlags(Slots):
+class VocabMatchingRulesConfigurationRequiresForbidsFlags(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self.e_stem: RequireForbidFlagField = RequireForbidFlagField(vocab, Tags.Vocab.Matching.Requires.e_stem, Tags.Vocab.Matching.Forbids.e_stem)
         self.a_stem: RequireForbidFlagField = RequireForbidFlagField(vocab, Tags.Vocab.Matching.Requires.a_stem, Tags.Vocab.Matching.Forbids.a_stem)
@@ -64,6 +64,14 @@ class VocabMatchingRulesConfigurationFlags(Slots):
         self.sentence_end: RequireForbidFlagField = RequireForbidFlagField(vocab, Tags.Vocab.Matching.Requires.sentence_end, Tags.Vocab.Matching.Forbids.sentence_end)
         self.yield_last_token: RequireForbidFlagField = YieldLastTokenToOverlappingCompound(vocab)
 
+class VocabMatchingRulesConfigurationBoolFlags(Slots):
+    def __init__(self, vocab: WeakRef[VocabNote]) -> None:
+        self.is_inflecting_word: IsInflectingWord = IsInflectingWord(vocab)
+        self.is_poison_word: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.is_poison_word)
+        self.match_with_preceding_vowel: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.Todo.with_preceding_vowel)
+        self.question_overrides_form: QuestionOverridesForm = QuestionOverridesForm(vocab)
+        self.is_strictly_suffix: IsStrictlySuffix = IsStrictlySuffix(vocab)
+
 class VocabNoteMatchingConfiguration(WeakRefable, Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self.vocab: WeakRef[VocabNote] = vocab
@@ -71,13 +79,8 @@ class VocabNoteMatchingConfiguration(WeakRefable, Slots):
         self._rules: Lazy[VocabNoteMatchingRules] = Lazy(lambda: VocabNoteMatchingRules(vocab))
         self.requires_exact_match: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.Requires.exact_match)
 
-        self.flags = VocabMatchingRulesConfigurationFlags(vocab)
-
-        self.is_inflecting_word: IsInflectingWord = IsInflectingWord(vocab)
-        self.is_poison_word: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.is_poison_word)
-        self.match_with_preceding_vowel: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.Todo.with_preceding_vowel)
-        self.question_overrides_form: QuestionOverridesForm = QuestionOverridesForm(vocab)
-        self.is_strictly_suffix: IsStrictlySuffix = IsStrictlySuffix(vocab)
+        self.requires_forbids = VocabMatchingRulesConfigurationRequiresForbidsFlags(vocab)
+        self.bool_flags = VocabMatchingRulesConfigurationBoolFlags(vocab)
 
     @property
     def configurable_rules(self) -> VocabNoteMatchingRules: return self._rules.instance()
@@ -86,22 +89,22 @@ class VocabNoteMatchingConfiguration(WeakRefable, Slots):
 
     def __repr__(self) -> str: return (SkipFalsyValuesDebugReprBuilder()
                                        .flag("requires_exact_match", self.requires_exact_match.is_set())
-                                       .flag("requires_single_token", self.flags.single_token.is_required)
-                                       .flag("requires_compound", self.flags.single_token.is_forbidden)
-                                       .flag("requires_a_stem", self.flags.a_stem.is_required)
-                                       .flag("forbids_a_stem", self.flags.a_stem.is_forbidden)
-                                       .flag("requires_e_stem", self.flags.e_stem.is_required)
-                                       .flag("forbids_e_stem", self.flags.e_stem.is_forbidden)
-                                       .flag("requires_past_tense_stem", self.flags.past_tense_stem.is_required)
-                                       .flag("forbids_past_tense_stem", self.flags.past_tense_stem.is_forbidden)
-                                       .flag("requires_t_form_stem", self.flags.t_form_stem.is_required)
-                                       .flag("forbids_t_form_stem", self.flags.t_form_stem.is_forbidden)
-                                       .flag("requires_sentence_end", self.flags.sentence_end.is_required)
-                                       .flag("is_inflecting_word", self.is_inflecting_word.is_set())
-                                       .flag("is_poison_word", self.is_poison_word.is_set())
-                                       .flag("yield_last_token_to_overlapping_compound", self.flags.yield_last_token.is_required)
-                                       .flag("forbid_auto_yielding_last_token", self.flags.yield_last_token.is_forbidden)
-                                       .flag("match_with_preceding_vowel", self.match_with_preceding_vowel.is_set())
-                                       .flag("question_overrides_form", self.question_overrides_form.is_set())
-                                       .flag("is_strictly_suffix", self.is_strictly_suffix.is_set())
+                                       .flag("requires_single_token", self.requires_forbids.single_token.is_required)
+                                       .flag("requires_compound", self.requires_forbids.single_token.is_forbidden)
+                                       .flag("requires_a_stem", self.requires_forbids.a_stem.is_required)
+                                       .flag("forbids_a_stem", self.requires_forbids.a_stem.is_forbidden)
+                                       .flag("requires_e_stem", self.requires_forbids.e_stem.is_required)
+                                       .flag("forbids_e_stem", self.requires_forbids.e_stem.is_forbidden)
+                                       .flag("requires_past_tense_stem", self.requires_forbids.past_tense_stem.is_required)
+                                       .flag("forbids_past_tense_stem", self.requires_forbids.past_tense_stem.is_forbidden)
+                                       .flag("requires_t_form_stem", self.requires_forbids.t_form_stem.is_required)
+                                       .flag("forbids_t_form_stem", self.requires_forbids.t_form_stem.is_forbidden)
+                                       .flag("requires_sentence_end", self.requires_forbids.sentence_end.is_required)
+                                       .flag("is_inflecting_word", self.bool_flags.is_inflecting_word.is_set())
+                                       .flag("is_poison_word", self.bool_flags.is_poison_word.is_set())
+                                       .flag("yield_last_token_to_overlapping_compound", self.requires_forbids.yield_last_token.is_required)
+                                       .flag("forbid_auto_yielding_last_token", self.requires_forbids.yield_last_token.is_forbidden)
+                                       .flag("match_with_preceding_vowel", self.bool_flags.match_with_preceding_vowel.is_set())
+                                       .flag("question_overrides_form", self.bool_flags.question_overrides_form.is_set())
+                                       .flag("is_strictly_suffix", self.bool_flags.is_strictly_suffix.is_set())
                                        .include(self.configurable_rules).repr)

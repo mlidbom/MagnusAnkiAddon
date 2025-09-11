@@ -20,10 +20,10 @@ class TailRequirements(Slots):
 
         self.has_suffix = tail is not None and tail().token.surface != "" and tail().token.surface[-1] not in non_word_characters
 
-        self.fulfills_requires_sentence_end_requirement = (not self.config.flags.sentence_end.is_required
+        self.fulfills_requires_sentence_end_requirement = (not self.config.requires_forbids.sentence_end.is_required
                                                            or (tail is None or tail().token.is_non_word_character or tail().token.surface in _quote_characters))
 
-        self.fulfills_forbids_sentence_end_requirement = (not self.config.flags.sentence_end.is_forbidden
+        self.fulfills_forbids_sentence_end_requirement = (not self.config.requires_forbids.sentence_end.is_forbidden
                                                           or (tail is not None and not tail().token.is_non_word_character and tail().token.surface not in _quote_characters))
 
         self.fulfills_suffix_is_not = (not rules.configurable_rules.suffix_is_not.get()

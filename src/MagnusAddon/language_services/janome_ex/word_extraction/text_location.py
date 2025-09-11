@@ -105,4 +105,4 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
     # todo: having this check here only means that marking a compound as an inflecting word has no effect, and figuring out why things are not working can be quite a pain
     def is_inflecting_word(self) -> bool:
         vocab = app.col().vocab.with_any_form_in([self.token.base_form, self.token.surface])
-        return any(voc for voc in vocab if voc.matching_configuration.is_inflecting_word.is_active)
+        return any(voc for voc in vocab if voc.matching_configuration.bool_flags.is_inflecting_word.is_active)

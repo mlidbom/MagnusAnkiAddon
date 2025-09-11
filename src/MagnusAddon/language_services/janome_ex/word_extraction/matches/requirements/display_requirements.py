@@ -33,7 +33,7 @@ class DisplayRequirements(Slots):
     def __repr__(self) -> str: return " ".join(self.failure_reasons())
 
     def _is_yield_last_token_to_overlapping_compound_requirement_fulfilled(self) -> bool:
-        if not self.rules.flags.yield_last_token.is_required: return True
+        if not self.rules.requires_forbids.yield_last_token.is_required: return True
 
         #todo: this is a problematic reference to display_words_starting_here. Thot collection is initialized using this class,
         # so this class will return different results depending on whether it is used after or before display_words_starting_here is first initialized. Ouch
