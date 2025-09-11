@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from anki.notes import NoteId
 from ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules  # noqa
 from autoslot import Slots
 from deepdiff import DeepDiff
@@ -51,8 +52,8 @@ def test_roundtrip_parsing_result() -> None:
     from note.sentences.parsed_word import ParsedMatch
     from note.sentences.parsing_result import ParsingResult
 
-    parsing_result = ParsingResult([ParsedMatch("B", 0, True, "foo", "inf", 1),
-                                    ParsedMatch("B", 4, False, "bar", "inf", 2)], "foo bar", "1.0")
+    parsing_result = ParsingResult([ParsedMatch("B", 0, True, "foo", "inf", NoteId(1)),
+                                    ParsedMatch("B", 4, False, "bar", "inf", NoteId(2))], "foo bar", "1.0")
     serialized = ParsingResult.serializer.serialize(parsing_result)
     round_tripped_result = ParsingResult.serializer.deserialize(serialized)
 

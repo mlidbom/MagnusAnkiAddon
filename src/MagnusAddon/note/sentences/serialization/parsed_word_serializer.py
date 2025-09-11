@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from anki.notes import NoteId
 from autoslot import Slots
 from sysutils.ex_str import invisible_space
 
@@ -13,7 +14,7 @@ class ParsedWordSerializer(Slots):
 
     @staticmethod
     def to_row(parsed_word: ParsedMatch) -> str: return ParsedWordSerializer.separator.join([
-        parsed_word.type,  # 0
+        parsed_word.variant,  # 0
         str(parsed_word.start_index),  # 1
         str(1 if parsed_word.is_displayed else 0),  # 2
         parsed_word.parsed_form,  # 3
@@ -31,4 +32,4 @@ class ParsedWordSerializer(Slots):
                            bool(int(values[2])),
                            values[3],
                            values[4],
-                           int(values[5]))
+                           NoteId(int(values[5])))

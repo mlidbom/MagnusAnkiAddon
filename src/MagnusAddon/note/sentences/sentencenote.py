@@ -61,10 +61,12 @@ class SentenceNote(JPNote, Slots):
 
     def get_direct_dependencies(self) -> set[JPNote]:
         highlighted = self.configuration.highlighted_vocab
-        aoesth = self.parsing_result.get().matched_vocab_ids
-        valid_parsed_roots = set(ex_sequence.flatten([self.collection.vocab.with_question(vocab) for vocab in self.get_valid_parsed_non_child_words_strings()]))
+        displayed_vocab = {voc for voc in {app.col().vocab.with_id_or_none(voc.vocab_id)
+                                           for voc in self.parsing_result.get().parsed_words
+                                           if voc.is_displayed}
+                           if voc is not None}
         kanji = set(self.collection.kanji.with_any_kanji_in(self.extract_kanji()))
-        return highlighted | valid_parsed_roots | kanji
+        return highlighted | displayed_vocab | kanji
 
     def parse_words_from_expression(self) -> list[str]:
         return TextAnalysis.from_text(self.get_question()).all_words_strings()

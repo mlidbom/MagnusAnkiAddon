@@ -19,6 +19,7 @@ class ParsingResultSerializer(ObjectSerializer["ParsingResult"], Slots):
         rows = serialized.split(newline)
         if len(rows) < 2: return ParsingResult([], "", "")
 
+        # noinspection PyBroadException
         try:
             return ParsingResult([ParsedMatch.serializer.from_row(row) for row in rows[2:]],
                                  self._restore_newline(rows[1]),

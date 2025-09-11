@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING
 
 from ankiutils import app
 from aqt import gui_hooks
-from autoslot import Slots
 from note.note_constants import Tags
 from note.vocabulary.vocabnote import VocabNote
 from sysutils import ex_sequence, ex_str, kana_utils
@@ -13,12 +12,7 @@ from ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
 
 if TYPE_CHECKING:
     from note.sentences.parsed_word import ParsedMatch
-    from note.sentences.parsing_result import ParsingResult
     from note.sentences.sentencenote import SentenceNote
-
-class ParsingResultViewModel(Slots):
-    def __init__(self, result: ParsingResult) -> None:
-        self.result: ParsingResult = result
 
 def generate_sentences_list_html(_vocab_note: VocabNote) -> str:
     forms = [_vocab_note.get_question()] + list(_vocab_note.forms.without_noise_characters_set())
