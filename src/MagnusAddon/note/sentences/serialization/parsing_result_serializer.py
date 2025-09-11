@@ -17,12 +17,9 @@ class ParsingResultSerializer(ObjectSerializer["ParsingResult"], Slots):
         rows = json.split(newline)
         if len(rows) < 2: return ParsingResult([], "", "")
 
-        try:
-            return ParsingResult([ParsedWord.serializer.from_row(row) for row in rows[2:]],
-                                 rows[1],
-                                 rows[0]) if json else ParsingResult([], "", "")
-        except Exception as e:
-            return ParsingResult([], "", "")
+        return ParsingResult([ParsedWord.serializer.from_row(row) for row in rows[2:]],
+                             rows[1],
+                             rows[0]) if json else ParsingResult([], "", "")
 
     def serialize(self, parsing_result: ParsingResult) -> str:
         return newline.join([parsing_result.parser_version,
