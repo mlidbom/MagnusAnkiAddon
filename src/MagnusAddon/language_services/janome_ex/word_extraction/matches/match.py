@@ -19,6 +19,8 @@ class Match(WeakRefable, Slots):
     def answer(self) -> str: raise NotImplementedError()
     @property
     def readings(self) -> list[str]: raise NotImplementedError()
+    @property
+    def is_secondary_match(self) -> bool: raise NotImplementedError()
 
     @property
     def tokenized_form(self) -> str: return self.variant.form
@@ -45,8 +47,6 @@ class Match(WeakRefable, Slots):
     def _is_valid_internal(self) -> bool: return not self.is_configured_incorrect
     @property
     def is_highlighted(self) -> bool: return self.match_form in self.variant.configuration.highlighted_words
-    @property
-    def is_secondary_match(self) -> bool: raise NotImplementedError()
     @property
     def is_displayed(self) -> bool: return self.is_valid_for_display or self.is_emergency_displayed
     @property
