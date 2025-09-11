@@ -34,7 +34,7 @@ class CandidateWord(WeakRefable, Slots):
         self.surface_variant: CandidateWordSurfaceVariant = CandidateWordSurfaceVariant(self.weakref, self.surface_form)
         self.base_variant: CandidateWordBaseVariant | None = CandidateWordBaseVariant(self.weakref, self.base_form) if self.base_form != self.surface_form else None
 
-        self.is_word: bool = self.surface_variant.is_word or self.base_variant is not None and self.base_variant.is_word
+        self.is_word: bool = self.surface_variant.is_known_word or self.base_variant is not None and self.base_variant.is_known_word
 
         self.is_inflectable_word: bool = self.end_location().token.is_inflectable_word
         self.next_token_is_inflecting_word: bool = self.end_location().is_next_location_inflecting_word()
@@ -73,10 +73,10 @@ class CandidateWord(WeakRefable, Slots):
         if self.should_include_surface_in_valid_words:
             self.valid_variants.append(self.surface_variant)
 
-        if self.surface_variant.is_word or self.should_include_surface_in_all_words:
+        if self.surface_variant.is_known_word or self.should_include_surface_in_all_words:
             self.all_word_variants.append(self.surface_variant)
 
-        if self.base_variant is not None and (self.base_variant.is_word or self.should_include_base_in_valid_words):
+        if self.base_variant is not None and (self.base_variant.is_known_word or self.should_include_base_in_valid_words):
             self.all_word_variants.append(self.base_variant)
 
     def run_display_analysis_pass_true_if_there_were_changes(self) -> bool:

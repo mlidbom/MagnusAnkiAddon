@@ -21,11 +21,9 @@ if TYPE_CHECKING:
     from note.sentences.sentence_configuration import SentenceConfiguration
 
 class CandidateWordVariant(WeakRefable, Slots):
-    def __init__(self, word: WeakRef[CandidateWord], form: str, is_base: bool) -> None:
+    def __init__(self, word: WeakRef[CandidateWord], form: str) -> None:
         self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
 
-        self.is_base = is_base
-        self.is_surface = not is_base
         self.weak_ref = WeakRef(self)
         from language_services.jamdict_ex.dict_lookup import DictLookup
 
@@ -38,7 +36,7 @@ class CandidateWordVariant(WeakRefable, Slots):
         self.vocab_matches: list[VocabMatch] = [VocabMatch(self.weak_ref, vocab) for vocab in app.col().vocab.with_form(form)]
         self.form_owning_vocab_matches: list[VocabMatch] = [vm for vm in self.vocab_matches if vm.vocab.forms.is_owned_form(self.form)]
 
-        self.is_word: bool = self.dict_lookup.found_words() or len(self.vocab_matches) > 0
+        self.is_known_word: bool = self.dict_lookup.found_words() or len(self.vocab_matches) > 0
         self.is_noise_character = self.form in noise_characters
 
         # will be completed in complete_analysis
@@ -47,6 +45,11 @@ class CandidateWordVariant(WeakRefable, Slots):
         self.valid_vocab_matches: list[VocabMatch] = []
         self.matches: list[Match] = []
         self.valid_matches: list[Match] = []
+
+    @property
+    def is_base(self) -> bool: raise NotImplementedError()
+    @property
+    def is_surface(self) -> bool: return not self.is_base
 
     @property
     def is_shadowed(self) -> bool: return self.is_shadowed_by is not None
@@ -64,7 +67,7 @@ class CandidateWordVariant(WeakRefable, Slots):
         return None
 
     def is_preliminarily_valid(self) -> bool:
-        return self.is_word and not self.word().starts_with_non_word_character
+        return self.is_known_word and not self.word().starts_with_non_word_character
 
     @property
     def vocabs_control_match_status(self) -> bool:
@@ -103,8 +106,14 @@ class CandidateWordVariant(WeakRefable, Slots):
 
 class CandidateWordSurfaceVariant(CandidateWordVariant, Slots):
     def __init__(self, word: WeakRef[CandidateWord], form: str) -> None:
-        super().__init__(word, form, is_base=False)
+        super().__init__(word, form)
+
+    @property
+    def is_base(self) -> bool: return False
 
 class CandidateWordBaseVariant(CandidateWordVariant, Slots):
     def __init__(self, word: WeakRef[CandidateWord], form: str) -> None:
-        super().__init__(word, form, is_base=True)
+        super().__init__(word, form)
+
+    @property
+    def is_base(self) -> bool: return True
