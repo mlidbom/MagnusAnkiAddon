@@ -40,6 +40,8 @@ class CandidateWord(WeakRefable, Slots):
         self.next_token_is_inflecting_word: bool = self.end_location().is_next_location_inflecting_word()
         self.is_inflected_word: bool = self.is_inflectable_word and self.next_token_is_inflecting_word
 
+        self.starts_with_non_word_character: bool = self.starts_with_non_word_token or self.surface_form in noise_characters
+
         self.should_include_surface_in_all_words: bool = False
         self.should_include_base_in_valid_words: bool = False
         self.should_include_base_in_display_variants: bool = False
@@ -49,10 +51,8 @@ class CandidateWord(WeakRefable, Slots):
         self.valid_variants: list[CandidateWordVariant] = []
         self.display_word_variants: list[CandidateWordVariant] = []
 
-    def surface_is_seemingly_valid_single_token(self) -> bool:
-        return (not self.is_custom_compound
-                and not self.starts_with_non_word_token
-                and self.surface_form not in noise_characters)
+    def has_seemingly_valid_single_token(self) -> bool:
+        return not self.is_custom_compound and not self.starts_with_non_word_character
 
     def run_validity_analysis(self) -> None:
         self.surface_variant.complete_analysis()
@@ -65,7 +65,7 @@ class CandidateWord(WeakRefable, Slots):
                                                       and (not self.is_inflected_word or not self.should_include_base_in_valid_words))
 
         self.should_include_surface_in_all_words = (self.should_include_surface_in_valid_words
-                                                    or (not self.should_include_base_in_valid_words and self.surface_is_seemingly_valid_single_token()))
+                                                    or (not self.should_include_base_in_valid_words and self.has_seemingly_valid_single_token()))
 
         self.valid_variants = []
         if self.base_variant is not None and self.should_include_base_in_valid_words:

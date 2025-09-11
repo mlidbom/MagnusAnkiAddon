@@ -64,8 +64,7 @@ class CandidateWordVariant(WeakRefable, Slots):
         return None
 
     def is_preliminarily_valid(self) -> bool:
-        return (self.is_word and not (self.is_noise_character
-                                      or self.word().starts_with_non_word_token))
+        return self.is_word and not self.word().starts_with_non_word_character
 
     @property
     def vocabs_control_match_status(self) -> bool:
