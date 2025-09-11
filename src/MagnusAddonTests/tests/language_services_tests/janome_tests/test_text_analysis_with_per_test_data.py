@@ -19,5 +19,5 @@ def setup_collection_with_select_data() -> Iterator[None]:
 ])
 def test_invisible_space_breakup(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
     sentence_note = SentenceNote.create_test_note(sentence, "")
-    root_words = [w.word for w in sentence_note.parsing_result.get().parsed_words]
+    root_words = [w.parsed_form for w in sentence_note.parsing_result.get().parsed_words]
     assert root_words == expected_output

@@ -16,7 +16,7 @@ class ParsingResult(Slots):
         self.sentence = sentence
         self.parser_version = parser_version
 
-    def parsed_words_strings(self) -> list[str]: return [parsed.word for parsed in self.parsed_words]
+    def parsed_words_strings(self) -> list[str]: return [parsed.parsed_form for parsed in self.parsed_words]
 
     def detected_vocab(self) -> set[int]: return {parsed.vocab_id for parsed in self.parsed_words if parsed.vocab_id != -1}
 

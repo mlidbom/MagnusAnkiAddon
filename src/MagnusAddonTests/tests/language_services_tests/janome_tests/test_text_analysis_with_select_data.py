@@ -53,7 +53,7 @@ def setup_collection_with_select_data() -> Iterator[None]:
 ])
 def test_identify_words(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
     sentence_note = SentenceNote.create_test_note(sentence,"")
-    words = [w.word for w in sentence_note.parsing_result.get().parsed_words]
+    words = [w.parsed_form for w in sentence_note.parsing_result.get().parsed_words]
     assert words == expected_output
 
 @pytest.mark.parametrize("sentence, expected_output", [
@@ -64,7 +64,7 @@ def test_identify_words(setup_collection_with_select_data: object, sentence: str
 ])
 def test_excluded_surfaces(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
     sentence_note = SentenceNote.create_test_note(sentence,"")
-    words = [w.word for w in sentence_note.parsing_result.get().parsed_words]
+    words = [w.parsed_form for w in sentence_note.parsing_result.get().parsed_words]
     assert words == expected_output
 
 @pytest.mark.parametrize("sentence, expected_output", [
@@ -72,7 +72,7 @@ def test_excluded_surfaces(setup_collection_with_select_data: object, sentence: 
 ])
 def test_strictly_suffix(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
     sentence_note = SentenceNote.create_test_note(sentence,"")
-    words = [w.word for w in sentence_note.parsing_result.get().parsed_words]
+    words = [w.parsed_form for w in sentence_note.parsing_result.get().parsed_words]
     assert words == expected_output
 
 @pytest.mark.parametrize("sentence, expected_output", [
@@ -82,7 +82,7 @@ def test_strictly_suffix(setup_collection_with_select_data: object, sentence: st
 ])
 def test_requires_a_stem(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
     sentence_note = SentenceNote.create_test_note(sentence,"")
-    root_words = [w.word for w in sentence_note.parsing_result.get().parsed_words]
+    root_words = [w.parsed_form for w in sentence_note.parsing_result.get().parsed_words]
     assert root_words == expected_output
 
 def test_ignores_noise_characters(setup_collection_with_select_data: object) -> None:
@@ -90,5 +90,5 @@ def test_ignores_noise_characters(setup_collection_with_select_data: object) -> 
     expected = {"ー"}
 
     sentence_note = SentenceNote.create_test_note(sentence,"")
-    words = {w.word for w in sentence_note.parsing_result.get().parsed_words}
+    words = {w.parsed_form for w in sentence_note.parsing_result.get().parsed_words}
     assert words == expected
