@@ -3,14 +3,14 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
-from note.notefields.json_object_field import JsonObjectSerializer
+from note.notefields.json_object_field import ObjectSerializer
 from sysutils.json import ex_json
 from sysutils.json.json_reader import JsonReader
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote_matching_rules import VocabNoteMatchingRulesData
 
-class VocabNoteMatchingRulesSerializer(JsonObjectSerializer["VocabNoteMatchingRulesData"], Slots):
+class VocabNoteMatchingRulesSerializer(ObjectSerializer["VocabNoteMatchingRulesData"], Slots):
     def deserialize(self, json: str) -> VocabNoteMatchingRulesData:
         from note.vocabulary.vocabnote_matching_rules import VocabNoteMatchingRulesData
         if not json: return VocabNoteMatchingRulesData(set(), set(), set(), set(), set())

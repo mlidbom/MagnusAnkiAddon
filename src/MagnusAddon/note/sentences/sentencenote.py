@@ -9,7 +9,7 @@ from language_services.janome_ex.word_extraction.text_analysis import TextAnalys
 from note.jpnote import JPNote
 from note.note_constants import ImmersionKitSentenceNoteFields, NoteFields, NoteTypes, SentenceNoteFields, Tags
 from note.notefields.audio_field import WritableAudioField
-from note.notefields.json_object_field import JsonObjectField
+from note.notefields.json_object_field import SerializedObjectField
 from note.notefields.sentence_question_field import SentenceQuestionField
 from note.notefields.string_field import AutoStrippingStringField
 from note.notefields.strip_html_on_read_fallback_string_field import StripHtmlOnReadFallbackStringField
@@ -41,7 +41,7 @@ class SentenceNote(JPNote, Slots):
         self._screenshot: AutoStrippingStringField = AutoStrippingStringField(self.weakref, SentenceNoteFields.screenshot)
         self.audio: WritableAudioField = WritableAudioField(self.weakref, SentenceNoteFields.audio)
         self.configuration: CachingSentenceConfigurationField = CachingSentenceConfigurationField(self.weakref_sentence)
-        self.parsing_result: JsonObjectField[ParsingResult] = JsonObjectField[ParsingResult](self.weakref, SentenceNoteFields.parsing_result, ParsingResultSerializer())
+        self.parsing_result: SerializedObjectField[ParsingResult] = SerializedObjectField[ParsingResult](self.weakref, SentenceNoteFields.parsing_result, ParsingResultSerializer())
 
     def get_question(self) -> str: return self.question.get()
     def get_answer(self) -> str: return self.answer.get()

@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from autoslot import Slots
 from note.notefields.auto_save_wrappers.value_wrapper import ValueWrapper
-from note.notefields.json_object_field import JsonObjectSerializer
+from note.notefields.json_object_field import ObjectSerializer
 from sysutils.json import ex_json
 from sysutils.json.json_reader import JsonReader
 
@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from note.vocabulary.related_vocab.related_vocab_data import RelatedVocabData
 
 
-class RelatedVocabDataSerializer(JsonObjectSerializer["RelatedVocabData"], Slots):
+class RelatedVocabDataSerializer(ObjectSerializer["RelatedVocabData"], Slots):
     def deserialize(self, json: str) -> RelatedVocabData:
         from note.vocabulary.related_vocab.related_vocab_data import RelatedVocabData
         if not json: return RelatedVocabData("", ValueWrapper(""), set(), set(), set(), set())

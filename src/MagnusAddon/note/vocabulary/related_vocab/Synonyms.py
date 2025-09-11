@@ -6,15 +6,15 @@ from ankiutils.app import col
 from autoslot import Slots
 
 if TYPE_CHECKING:
-    from note.notefields.json_object_field import JsonObjectField
+    from note.notefields.json_object_field import SerializedObjectField
     from note.vocabulary.related_vocab.related_vocab_data import RelatedVocabData
     from note.vocabulary.vocabnote import VocabNote
     from sysutils.weak_ref import WeakRef
 
 class Synonyms(Slots):
-    def __init__(self, vocab: WeakRef[VocabNote], data: JsonObjectField[RelatedVocabData]) -> None:
+    def __init__(self, vocab: WeakRef[VocabNote], data: SerializedObjectField[RelatedVocabData]) -> None:
         self._vocab: WeakRef[VocabNote] = vocab
-        self._data: JsonObjectField[RelatedVocabData] = data
+        self._data: SerializedObjectField[RelatedVocabData] = data
 
     def strings(self) -> set[str]: return self._data.get().synonyms
 

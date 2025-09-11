@@ -7,7 +7,7 @@ from autoslot import Slots
 from note.note_constants import NoteFields
 from note.notefields.auto_save_wrappers.field_wrapper import FieldWrapper
 from note.notefields.auto_save_wrappers.set_wrapper import FieldSetWrapper
-from note.notefields.json_object_field import JsonObjectField
+from note.notefields.json_object_field import SerializedObjectField
 from note.vocabulary.related_vocab.Antonyms import Antonyms
 from note.vocabulary.related_vocab.ergative_twin import ErgativeTwin
 from note.vocabulary.related_vocab.related_vocab_data import RelatedVocabData
@@ -24,7 +24,7 @@ class RelatedVocab(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self._vocab = vocab
 
-        self._data: JsonObjectField[RelatedVocabData] = JsonObjectField(vocab, NoteFields.Vocab.related_vocab, RelatedVocabData.serializer)
+        self._data: SerializedObjectField[RelatedVocabData] = SerializedObjectField(vocab, NoteFields.Vocab.related_vocab, RelatedVocabData.serializer)
 
         self.ergative_twin: ErgativeTwin = ErgativeTwin(vocab, self._data)
         self.synonyms: Synonyms = Synonyms(vocab, self._data)

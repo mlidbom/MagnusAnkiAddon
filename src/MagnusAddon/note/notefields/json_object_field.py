@@ -13,17 +13,17 @@ if TYPE_CHECKING:
 
 T = TypeVar("T")
 
-class JsonObjectSerializer(Generic[T], Slots):
+class ObjectSerializer(Generic[T], Slots):
     def serialize(self, obj: T) -> str: raise NotImplementedError()
     def deserialize(self, json: str) -> T: raise NotImplementedError()
 
-class JsonObjectField(Generic[T], WeakRefable, Slots):
-    def __init__(self, note: WeakRef[JPNote], field: str, serializer: JsonObjectSerializer[T]) -> None:
+class SerializedObjectField(Generic[T], WeakRefable, Slots):
+    def __init__(self, note: WeakRef[JPNote], field: str, serializer: ObjectSerializer[T]) -> None:
         self._note: WeakRef[JPNote] = note
         self._field: AutoStrippingStringField = AutoStrippingStringField(note, field)
-        self._serializer: JsonObjectSerializer[T] = serializer
+        self._serializer: ObjectSerializer[T] = serializer
         self._value: Lazy[T] = Lazy(lambda: serializer.deserialize(self._field.get()))
-        self._weakref: WeakRef[JsonObjectField[T]] | None = None
+        self._weakref: WeakRef[SerializedObjectField[T]] | None = None
 
     def get(self) -> T: return self._value()
     def set(self, value: T) -> None:

@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from autoslot import Slots
 from note.note_constants import NoteFields, Tags
 from note.notefields.auto_save_wrappers.set_wrapper import FieldSetWrapper
-from note.notefields.json_object_field import JsonObjectField
+from note.notefields.json_object_field import SerializedObjectField
 from note.notefields.require_forbid_flag_field import RequireForbidFlagField
 from note.notefields.tag_flag_field import TagFlagField
 from note.vocabulary.serialization.matching_rules_serializer import VocabNoteMatchingRulesSerializer
@@ -31,7 +31,7 @@ class VocabNoteMatchingRulesData(Slots):
 
 class VocabNoteMatchingRules(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
-        self._data: JsonObjectField[VocabNoteMatchingRulesData] = JsonObjectField(vocab, NoteFields.Vocab.matching_rules, VocabNoteMatchingRulesData.serializer)
+        self._data: SerializedObjectField[VocabNoteMatchingRulesData] = SerializedObjectField(vocab, NoteFields.Vocab.matching_rules, VocabNoteMatchingRulesData.serializer)
         self.surface_is_not: FieldSetWrapper[str] = FieldSetWrapper.for_json_object_field(self._data, self._data.get().surface_is_not)
         self.yield_to_surface: FieldSetWrapper[str] = FieldSetWrapper.for_json_object_field(self._data, self._data.get().yield_to_surface)
         self.prefix_is_not: FieldSetWrapper[str] = FieldSetWrapper.for_json_object_field(self._data, self._data.get().prefix_is_not)
