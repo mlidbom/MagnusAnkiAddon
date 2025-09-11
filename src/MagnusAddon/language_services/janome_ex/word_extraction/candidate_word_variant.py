@@ -34,7 +34,6 @@ class CandidateWordVariant(WeakRefable, Slots):
         # will be completed in complete_analysis
         self.completed_analysis = False
         self.matches: list[Match] = []
-        self.valid_matches: list[Match] = []
 
     @property
     def is_surface(self) -> bool: return self.form == self.word.surface_form
@@ -48,12 +47,10 @@ class CandidateWordVariant(WeakRefable, Slots):
         ex_assert.that(not self.completed_analysis)
 
         if self.vocabs_control_match_status:
-            self.valid_matches = list(self.valid_vocab_matches)
             self.matches = list(self.vocab_matches)
         else:
             if self.dict_lookup.found_words():
                 self.matches = [DictionaryMatch(self.weak_ref, self.dict_lookup.entries[0])]
-                self.valid_matches = self.matches
             else:
                 self.matches = [MissingMatch(self.weak_ref)]
 
@@ -72,7 +69,7 @@ class CandidateWordVariant(WeakRefable, Slots):
     @property
     def valid_vocab_matches(self) -> list[VocabMatch]: return [vm for vm in self.vocab_matches if vm.is_valid]
     @property
-    def is_valid(self) -> bool: return any(self.valid_matches)
+    def is_valid(self) -> bool: return any(match for match in self.matches if match.is_valid)
     @property
     def display_matches(self) -> list[Match]: return [match for match in self._once_analyzed.matches if match.is_displayed]
 
