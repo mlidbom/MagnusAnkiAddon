@@ -34,32 +34,31 @@ class CandidateWord(WeakRefable, Slots):
 
     @property
     def should_include_surface_in_valid_words(self) -> bool: return (self.surface_variant.is_valid_candidate
-                                                                     and (not self.is_inflected_word or not self.should_include_base_in_valid_words))
-
+                                                                     and (not self.is_inflected_word or not self.has_valid_base_variant))
     @property
-    def should_include_base_in_valid_words(self) -> bool: return self.base_variant is not None and self.base_variant.is_valid_candidate
+    def has_valid_base_variant(self) -> bool: return self.base_variant is not None and self.base_variant.is_valid_candidate
 
     @property
     def should_include_surface_in_all_words(self) -> bool: return (self.should_include_surface_in_valid_words
-                                                                   or (not self.should_include_base_in_valid_words and self.has_seemingly_valid_single_token))
+                                                                   or (not self.has_valid_base_variant and self.has_seemingly_valid_single_token))
 
     @property
     def should_include_base_in_display_variants(self) -> bool: return (self.base_variant is not None
-                                                                       and self.should_include_base_in_valid_words
+                                                                       and self.has_valid_base_variant
                                                                        and any(self.base_variant.display_matches))
 
     @property
     def should_include_surface_in_display_variants(self) -> bool: return self.should_include_surface_in_all_words and any(self.surface_variant.display_matches)
 
     @property
-    def should_include_base_in_all_variants(self) -> bool: return self.base_variant is not None and (self.base_variant.is_known_word or self.should_include_base_in_valid_words)
+    def should_include_base_in_all_variants(self) -> bool: return self.base_variant is not None and (self.base_variant.is_known_word or self.has_valid_base_variant)
 
     def run_validity_analysis(self) -> None:
         self.surface_variant.run_validity_analysis()
         if self.base_variant is not None: self.base_variant.run_validity_analysis()
 
         self.valid_variants = []
-        if self.should_include_base_in_valid_words:
+        if self.has_valid_base_variant:
             self.valid_variants.append(non_optional(self.base_variant))
         if self.should_include_surface_in_valid_words:
             self.valid_variants.append(self.surface_variant)
