@@ -11,11 +11,14 @@ if TYPE_CHECKING:
 class MissingMatch(Match):
     def __init__(self, word_variant: WeakRef[CandidateWordVariant]) -> None:
         super().__init__(word_variant)
-        self.answer = "---"
-        self.match_form = "[MISSING]"  # Change this so the tests can distinguish that this is a missing match
 
     @property
-    def is_secondary_match(self) -> bool: return True
-
+    def answer(self) -> str: return "---"
+    @property
+    def match_form(self) -> str: return "[MISSING]"  # Change this so the tests can distinguish that this is a missing match
+    @property
+    def is_secondary_match(self) -> bool: return True #todo: how can this be considered a secondary match when there are no matches?
     @property
     def is_valid(self) -> bool: return False
+    @property
+    def readings(self) -> list[str]: return []

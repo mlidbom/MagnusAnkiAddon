@@ -20,14 +20,19 @@ class VocabMatch(Match, Slots):
         self.vocab: VocabNote = vocab
         self.word_variant: WeakRef[CandidateWordVariant] = word_variant
         self.weakref = WeakRef(self)
-        self.match_form = vocab.get_question()
-        self.answer = vocab.get_answer()
-        self.readings = vocab.readings.get()
+
         self.head_requirements: HeadRequirements = HeadRequirements(self, word_variant, self.word_variant().word.start_location.previous)
         self.tail_requirements: TailRequirements = TailRequirements(self.vocab, self.word_variant().word.end_location.next)
         self.misc_requirements: MiscRequirements = MiscRequirements(self.weakref)
 
         self.owns_form: bool = vocab.forms.is_owned_form(self.tokenized_form)
+
+    @property
+    def match_form(self) -> str: return self.vocab.get_question()
+    @property
+    def answer(self) -> str: return self.vocab.get_answer()
+    @property
+    def readings(self) -> list[str]: return self.vocab.readings.get()
 
     @property
     def parsed_form(self) -> str:

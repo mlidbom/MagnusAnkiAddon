@@ -14,8 +14,11 @@ class DictionaryMatch(Match, Slots):
     def __init__(self, word_variant: WeakRef[CandidateWordVariant], dictionary_entry: DictEntry) -> None:
         super().__init__(word_variant)
         self.dictionary_entry: DictEntry = dictionary_entry
-        self.answer: str = dictionary_entry.generate_answer()
-        self.readings: list[str] = [f.text for f in dictionary_entry.entry.kana_forms]
+
+    @property
+    def answer(self) -> str: return self.dictionary_entry.generate_answer()
+    @property
+    def readings(self) -> list[str]: return [f.text for f in self.dictionary_entry.entry.kana_forms]
 
     @property
     def is_secondary_match(self) -> bool: return True

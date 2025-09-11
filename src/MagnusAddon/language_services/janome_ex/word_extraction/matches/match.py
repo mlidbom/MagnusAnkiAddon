@@ -14,8 +14,11 @@ if TYPE_CHECKING:
 class Match(WeakRefable, Slots):
     def __init__(self, word_variant: WeakRef[CandidateWordVariant]) -> None:
         self._variant: WeakRef[CandidateWordVariant] = word_variant
-        self.answer: str = ""
-        self.readings: list[str] = []
+
+    @property
+    def answer(self) -> str: raise NotImplementedError()
+    @property
+    def readings(self) -> list[str]: raise NotImplementedError()
 
     @property
     def tokenized_form(self) -> str: return self.variant.form
