@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from autoslot import Slots
 from language_services.janome_ex.word_extraction.analysis_constants import noise_characters
-from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordBaseVariant, CandidateWordSurfaceVariant, CandidateWordVariant
+from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
 from sysutils.object_instance_tracker import ObjectInstanceTracker
 from sysutils.typed import non_optional
 from sysutils.weak_ref import WeakRef, WeakRefable
@@ -31,8 +31,8 @@ class CandidateWord(WeakRefable, Slots):
         self.surface_form = "".join([t().token.surface for t in self.locations])
         self.base_form = "".join([location().token.surface for location in self.locations[:-1]]) + self.locations[-1]().token.base_form
 
-        self.surface_variant: CandidateWordSurfaceVariant = CandidateWordSurfaceVariant(self.weakref, self.surface_form)
-        self.base_variant: CandidateWordBaseVariant | None = CandidateWordBaseVariant(self.weakref, self.base_form) if self.base_form != self.surface_form else None
+        self.surface_variant: CandidateWordVariant = CandidateWordVariant(self.weakref, self.surface_form)
+        self.base_variant: CandidateWordVariant | None = CandidateWordVariant(self.weakref, self.base_form) if self.base_form != self.surface_form else None
 
         self.is_word: bool = self.surface_variant.is_known_word or self.base_variant is not None and self.base_variant.is_known_word
 

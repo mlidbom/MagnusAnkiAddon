@@ -50,13 +50,10 @@ class CandidateWordVariant(WeakRefable, Slots):
     def is_base(self) -> bool: return self.form == self.word().base_form
     @property
     def is_surface(self) -> bool: return self.form == self.word().surface_form
-
     @property
     def is_shadowed(self) -> bool: return self.is_shadowed_by is not None
-
     @property
     def shadowed_by_text(self) -> str: return non_optional(self.is_shadowed_by).form if self.is_shadowed else ""
-
     @property
     def is_shadowed_by(self) -> CandidateWordVariant | None:
         if any(self.word().start_location().is_shadowed_by):
@@ -65,9 +62,8 @@ class CandidateWordVariant(WeakRefable, Slots):
                 and self.word().start_location().display_variants[0].word().location_count > self.word().location_count):
             return self.word().start_location().display_variants[0]
         return None
-
-    def is_preliminarily_valid(self) -> bool:
-        return self.is_known_word and not self.word().starts_with_non_word_character
+    @property
+    def is_preliminarily_valid(self) -> bool: return self.is_known_word and not self.word().starts_with_non_word_character
 
     @property
     def vocabs_control_match_status(self) -> bool:
@@ -89,7 +85,7 @@ class CandidateWordVariant(WeakRefable, Slots):
             else:
                 self.matches = [MissingMatch(self.weak_ref)]
 
-        self.is_valid_candidate = self.is_preliminarily_valid() and any(self.valid_matches)
+        self.is_valid_candidate = self.is_preliminarily_valid and any(self.valid_matches)
 
         self.completed_analysis = True
 
@@ -103,11 +99,3 @@ class CandidateWordVariant(WeakRefable, Slots):
 
     def __repr__(self) -> str:
         return f"""{self.form}, is_valid_candidate:{self.is_valid_candidate}"""
-
-class CandidateWordSurfaceVariant(CandidateWordVariant, Slots):
-    def __init__(self, word: WeakRef[CandidateWord], form: str) -> None:
-        super().__init__(word, form)
-
-class CandidateWordBaseVariant(CandidateWordVariant, Slots):
-    def __init__(self, word: WeakRef[CandidateWord], form: str) -> None:
-        super().__init__(word, form)
