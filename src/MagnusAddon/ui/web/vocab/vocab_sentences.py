@@ -2,11 +2,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ankiutils import app
 from aqt import gui_hooks
 from note.note_constants import Tags
 from note.vocabulary.vocabnote import VocabNote
-from sysutils import ex_sequence, ex_str, kana_utils
+from sysutils import ex_str, kana_utils
 from sysutils.ex_str import newline
 from ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
 
@@ -15,38 +14,18 @@ if TYPE_CHECKING:
     from note.sentences.sentencenote import SentenceNote
 
 def generate_sentences_list_html(_vocab_note: VocabNote) -> str:
-    forms = [_vocab_note.get_question()] + list(_vocab_note.forms.without_noise_characters_set())
-    forms = ex_sequence.remove_duplicates_while_retaining_order(forms)
     primary_form = _vocab_note.question.without_noise_characters
-    primary_form_forms = _vocab_note.conjugator.get_text_matching_forms_for_primary_form()
-    secondary_forms = [form for form in forms if form != primary_form]
-    secondary_forms_forms = ex_str.sort_by_length_descending([form for form in _vocab_note.conjugator.get_text_matching_forms_for_all_form() if form not in primary_form_forms])
-
-    secondary_forms_containing_primary_form_forms = [form for form in secondary_forms_forms if any(pform for pform in primary_form_forms if pform in form)]
-
-    derived_compounds = _vocab_note.related_notes.in_compounds()
-    derived_compound_ids = {der.get_id() for der in derived_compounds}
-    derived_compounds_forms = ex_str.sort_by_length_descending(ex_sequence.flatten([der.conjugator.get_text_matching_forms_for_all_form() for der in derived_compounds]))
-
-    secondary_forms_vocab_notes = ex_sequence.flatten([app.col().vocab.with_question(v) for v in secondary_forms])
-    secondary_forms_with_their_own_vocab_forms = ex_sequence.flatten([f.conjugator.get_text_matching_forms_for_all_form() for f in secondary_forms_vocab_notes])
-
-    secondary_forms_with_their_own_vocab_forms = ex_str.sort_by_length_descending(secondary_forms_with_their_own_vocab_forms)
-    # Create a list of compounds derived from secondary forms
-    secondary_forms_derived_compounds = ex_sequence.flatten([app.col().vocab.with_compound_part(v) for v in secondary_forms])
-    secondary_forms_derived_compounds_forms = ex_str.sort_by_length_descending(ex_sequence.flatten([der.conjugator.get_text_matching_forms_for_all_form() for der in secondary_forms_derived_compounds]))
-
-    primary_form_forms = _vocab_note.conjugator.get_text_matching_forms_for_primary_form()
+    conjugations = _vocab_note.forms.conjugations
 
     def contains_primary_form(_sentence: SentenceNote) -> bool:
         clean_sentence = ex_str.strip_html_and_bracket_markup(_sentence.get_question())
 
-        return (not any(covering_secondary_form for covering_secondary_form in secondary_forms_containing_primary_form_forms if covering_secondary_form in clean_sentence)
-                and any(base_form for base_form in primary_form_forms if base_form in clean_sentence))
+        return (not any(covering_secondary_form for covering_secondary_form in conjugations.secondary_forms_containing_primary_form_forms if covering_secondary_form in clean_sentence)
+                and any(base_form for base_form in conjugations.primary_form_forms if base_form in clean_sentence))
 
     def contains_secondary_form_with_its_own_vocabulary_note(_sentence: SentenceNote) -> bool:
         clean_sentence = ex_str.strip_html_and_bracket_markup(_sentence.get_question())
-        return any(base_form for base_form in secondary_forms_with_their_own_vocab_forms if base_form in clean_sentence)
+        return any(base_form for base_form in conjugations.secondary_forms_with_their_own_vocab_forms if base_form in clean_sentence)
 
     def format_sentence_new(sentence_note: SentenceNote) -> str:
         result = sentence_note.parsing_result.get()
@@ -61,9 +40,9 @@ def generate_sentences_list_html(_vocab_note: VocabNote) -> str:
         displayed_matches = [match for match in matches if match.is_displayed]
         if displayed_matches:
             match = displayed_matches[0]
-            if any(form for form in secondary_forms_containing_primary_form_forms if form.startswith(match.parsed_form)):
+            if any(form for form in conjugations.secondary_forms_containing_primary_form_forms if form.startswith(match.parsed_form)):
                 return highlight_match(match, "secondaryForm")
-            if any(form for form in secondary_forms_forms if form.startswith(match.parsed_form)):
+            if any(form for form in conjugations.secondary_forms_forms if form.startswith(match.parsed_form)):
                 return highlight_match(match, "secondaryForm")
 
             return highlight_match(match, "primaryForm")
@@ -71,8 +50,8 @@ def generate_sentences_list_html(_vocab_note: VocabNote) -> str:
         shaded_matches = [match for match in matches if not match.is_displayed]
         first_shaded_match = shaded_matches[0]
         match_shading_our_match = [match for match in reversed(result.parsed_words) if match.is_displayed and match.start_index <= first_shaded_match.start_index][0]
-        if match_shading_our_match.vocab_id in derived_compound_ids:
-            if any(form for form in secondary_forms_derived_compounds_forms if form.startswith(match_shading_our_match.parsed_form)):
+        if match_shading_our_match.vocab_id in conjugations.derived_compound_ids:
+            if any(form for form in conjugations.secondary_forms_derived_compounds_forms if form.startswith(match_shading_our_match.parsed_form)):
                 return highlight_match(match_shading_our_match, "secondaryFormDerivedCompoundForm")
             return highlight_match(match_shading_our_match, "derivedCompoundForm")
 
@@ -103,11 +82,11 @@ def generate_sentences_list_html(_vocab_note: VocabNote) -> str:
 
         def dislike_sentences_containing_secondary_form(_sentence: SentenceNote) -> int:
             clean_sentence = ex_str.strip_html_and_bracket_markup(_sentence.get_question())
-            return 1 if any(base_forms for base_forms in secondary_forms_forms if any(base_form for base_form in base_forms if base_form in clean_sentence)) else 0
+            return 1 if any(base_forms for base_forms in conjugations.secondary_forms_forms if any(base_form for base_form in base_forms if base_form in clean_sentence)) else 0
 
         def dislike_contains_derived_compound(_sentence: SentenceNote) -> int:
             clean_sentence = ex_str.strip_html_and_bracket_markup(_sentence.get_question())
-            return 1 if any(stem for stem in derived_compounds_forms if stem in clean_sentence) else 0
+            return 1 if any(stem for stem in conjugations.derived_compounds_forms if stem in clean_sentence) else 0
 
         return sorted(_sentences, key=lambda x: (dislike_secondary_form_with_vocab(x),
                                                  prefer_studying_read(x),

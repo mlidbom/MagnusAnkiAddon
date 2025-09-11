@@ -12,13 +12,34 @@ from sysutils.lazy import Lazy
 from sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
+    from anki.notes import NoteId
     from note.vocabulary.vocabnote import VocabNote
 
 class Conjugations(Slots):
-    def __init__(self, forms: WeakRef[VocabNoteForms], field: CommaSeparatedStringsListFieldDeDuplicated) -> None:
-        self._forms = forms
-        self._primary_form_variations = []
-        
+    def __init__(self, forms_other: VocabNoteForms, _vocab_note: VocabNote) -> None:
+        forms = [_vocab_note.get_question()] + forms_other.without_noise_characters()
+        forms = ex_sequence.remove_duplicates_while_retaining_order(forms)
+        primary_form = _vocab_note.question.without_noise_characters
+        self.primary_form_forms: set[str] = set(_vocab_note.conjugator.get_text_matching_forms_for_primary_form())
+        secondary_forms: set[str] = {form for form in forms if form != primary_form}
+        self.secondary_forms_forms: set[str] = {form for form in _vocab_note.conjugator.get_text_matching_forms_for_all_form()
+                                                if form not in self.primary_form_forms}
+
+        self.secondary_forms_containing_primary_form_forms: set[str] = {sec_form for sec_form in self.secondary_forms_forms
+                                                                        if any(pri_form for pri_form in self.primary_form_forms if pri_form in sec_form)}
+
+        derived_compounds = _vocab_note.related_notes.in_compounds()
+        self.derived_compound_ids: set[NoteId] = {der.get_id() for der in derived_compounds}
+        self.derived_compounds_forms: set[str] = set(ex_sequence.flatten([der.conjugator.get_text_matching_forms_for_all_form() for der in derived_compounds]))
+
+        secondary_forms_vocab_notes = ex_sequence.flatten([app.col().vocab.with_question(v) for v in secondary_forms])
+        secondary_forms_with_their_own_vocab_forms = ex_sequence.flatten([f.conjugator.get_text_matching_forms_for_all_form() for f in secondary_forms_vocab_notes])
+
+        self.secondary_forms_with_their_own_vocab_forms = ex_str.sort_by_length_descending(secondary_forms_with_their_own_vocab_forms)
+        # Create a list of compounds derived from secondary forms
+        secondary_forms_derived_compounds = ex_sequence.flatten([app.col().vocab.with_compound_part(v) for v in secondary_forms])
+        self.secondary_forms_derived_compounds_forms: set[str] = set(ex_sequence.flatten([der.conjugator.get_text_matching_forms_for_all_form() for der in secondary_forms_derived_compounds]))
+
 class VocabNoteForms(WeakRefable, Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self._vocab: WeakRef[VocabNote] = vocab
@@ -26,12 +47,15 @@ class VocabNoteForms(WeakRefable, Slots):
         self._field: CommaSeparatedStringsListFieldDeDuplicated = field
         weakrefself = WeakRef(self)
         self._all_raw_set: Lazy[set[str]] = Lazy(lambda: set(weakrefself()._field.get()))
-        self.conjugations = Conjugations(weakrefself, field)
+        self._conjugations: Lazy[Conjugations] = field.lazy_reader(lambda: Conjugations(self, vocab()))
 
         self._all_list: Lazy[list[str]] = field.lazy_reader(lambda: [ex_str.strip_brackets(form) for form in weakrefself()._field.get()])
         self._all_set: Lazy[set[str]] = field.lazy_reader(lambda: set(weakrefself()._all_list()))
         self._owned_forms: Lazy[set[str]] = field.lazy_reader(lambda: {weakrefself()._vocab().get_question()} | {ex_str.strip_brackets(form) for form in weakrefself()._all_raw_set() if form.startswith("[")})
         self._not_owned_by_other_vocab: Lazy[set[str]] = field.lazy_reader(lambda: weakrefself().___not_owned_by_other_vocab())
+
+    @property
+    def conjugations(self) -> Conjugations: return self._conjugations()
 
     def is_owned_form(self, form: str) -> bool: return form in self._owned_forms()
 
@@ -61,9 +85,6 @@ class VocabNoteForms(WeakRefable, Slots):
 
     def without_noise_characters(self) -> list[str]:
         return [self._strip_noise_characters(form) for form in self.all_list()]
-
-    def without_noise_characters_set(self) -> set[str]:
-        return set(self.without_noise_characters())
 
     @staticmethod
     def _strip_noise_characters(string: str) -> str:
