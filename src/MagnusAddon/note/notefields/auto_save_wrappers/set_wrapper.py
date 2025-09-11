@@ -31,7 +31,8 @@ class FieldSetWrapper(Generic[TValue], Slots):
         self._value().update(other.get())
         self._save()
 
-    def is_empty(self) -> bool: return len(self._value()) == 0
+    def none(self) -> bool: return not self.any()
+    def any(self) -> bool: return any(self._value())
 
     @classmethod
     def for_json_object_field(cls, field: JsonObjectField[Any], value: set[TValue]) -> FieldSetWrapper[TValue]:

@@ -18,6 +18,7 @@ class StringField(ReadOnlyStringField, Slots):
 
     def set(self, value: str) -> None:
         self._note().set_field(self._field_name, value.strip())
+        self._value.reset()
         for callback in self._update_listeners: callback()
 
     def empty(self) -> None: self.set("")
