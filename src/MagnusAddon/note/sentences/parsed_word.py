@@ -28,10 +28,10 @@ class ParsedWord(Slots):
 
     @classmethod
     def from_match(cls, match: Match) -> ParsedWord:
-        return cls("S" if match.variant.is_surface else "B",
-                   match.start_index,
-                   match.is_displayed,
-                   match.parsed_form,
-                   cls._base_form_from_match(match),
-                   match.vocab.get_id() if isinstance(match, VocabMatch) else -1,
-                   f"""{" ".join(match.failure_reasons)} {invisible_space} {" ".join(match.hiding_reasons)} {"highlighted" if match.is_highlighted else ""}""")
+        return ParsedWord("S" if match.variant.is_surface else "B",
+                          match.start_index,
+                          match.is_displayed,
+                          match.parsed_form,
+                          cls._base_form_from_match(match),
+                          match.vocab.get_id() if isinstance(match, VocabMatch) else -1,
+                          f"""{" ".join(match.failure_reasons)} {invisible_space} {" ".join(match.hiding_reasons)} {"highlighted" if match.is_highlighted else ""}""")
