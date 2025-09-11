@@ -19,7 +19,9 @@ class VocabNoteConjugator(Slots):
     def _vocab(self) -> VocabNote: return self.__vocab()
 
     def _get_stems_for_form(self, form: str) -> list[str]:
-        return [base for base in conjugator.get_word_stems(form, is_ichidan_verb=self._vocab.parts_of_speech.is_ichidan()) if base != form]
+        return [base for base in conjugator.get_word_stems(form,
+                                                           is_ichidan_verb=self._vocab.parts_of_speech.is_ichidan(),
+                                                           is_godan=self._vocab.parts_of_speech.is_godan()) if base != form]
 
     def get_stems_for_primary_form(self) -> list[str]:
         return ex_sequence.remove_duplicates_while_retaining_order(self._get_stems_for_form(self._vocab.get_question()))

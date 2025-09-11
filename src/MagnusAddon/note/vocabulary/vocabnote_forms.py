@@ -14,6 +14,11 @@ from sysutils.weak_ref import WeakRef, WeakRefable
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
 
+class Conjugations(Slots):
+    def __init__(self, forms: WeakRef[VocabNoteForms], field: CommaSeparatedStringsListFieldDeDuplicated) -> None:
+        self._forms = forms
+        self._primary_form_variations = []
+        
 class VocabNoteForms(WeakRefable, Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self._vocab: WeakRef[VocabNote] = vocab
@@ -21,6 +26,7 @@ class VocabNoteForms(WeakRefable, Slots):
         self._field: CommaSeparatedStringsListFieldDeDuplicated = field
         weakrefself = WeakRef(self)
         self._all_raw_set: Lazy[set[str]] = Lazy(lambda: set(weakrefself()._field.get()))
+        self.conjugations = Conjugations(weakrefself, field)
 
         self._all_list: Lazy[list[str]] = field.lazy_reader(lambda: [ex_str.strip_brackets(form) for form in weakrefself()._field.get()])
         self._all_set: Lazy[set[str]] = field.lazy_reader(lambda: set(weakrefself()._all_list()))
