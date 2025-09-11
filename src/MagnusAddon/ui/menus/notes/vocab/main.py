@@ -1,10 +1,9 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING
 
 import pyperclip
 from ankiutils import app, query_builder
-from aqt import qconnect
 from note.note_constants import NoteFields, NoteTypes
 from sysutils import ex_sequence, ex_str
 from sysutils.ex_str import newline
@@ -15,7 +14,6 @@ from ui.menus.notes.vocab.create_note_menu import build_create_note_menu
 from ui.menus.notes.vocab.matching_settings_menu import build_matching_settings_menu
 
 if TYPE_CHECKING:
-    from note.notefields.tag_flag_field import TagFlagField
     from note.vocabulary.vocabnote import VocabNote
     from PyQt6.QtWidgets import QMenu
 
