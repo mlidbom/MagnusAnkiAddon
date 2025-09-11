@@ -17,8 +17,10 @@ class MiscRequirements(Slots):
 
         self.is_poison_word = self.rules.bool_flags.is_poison_word.is_set()
 
-        self.is_exact_match_requirement_fulfilled = (not self.rules.requires_exact_match.is_set()
-                                                     or (match().word_variant().is_surface and match().word_variant().form in vocab.forms.all_set()))
+        self.is_exact_match = match().word_variant().is_surface and match().word_variant().form in vocab.forms.all_set()
+
+        self.is_requires_exact_match_requirement_fulfilled = (not self.rules.requires_forbids.requires_exact_match.is_required or self.is_exact_match)
+        self.is_forbids_exact_match_requirement_fulfilled = (not self.rules.requires_forbids.requires_exact_match.is_forbidden or not self.is_exact_match)
 
         self.is_single_token_requirement_fulfilled = (not self.rules.requires_forbids.single_token.is_required
                                                       or not match().word_variant().word.is_custom_compound)
@@ -37,7 +39,8 @@ class MiscRequirements(Slots):
                                                        or match().word_variant().is_surface
                                                        or match().word_variant().word.surface_variant.form not in yield_to_surface)
 
-        self.are_fulfilled = (self.is_exact_match_requirement_fulfilled
+        self.are_fulfilled = (self.is_requires_exact_match_requirement_fulfilled
+                              and self.is_forbids_exact_match_requirement_fulfilled
                               and self.is_single_token_requirement_fulfilled
                               and self.surface_is_not_requirement_fulfilled
                               and self.yield_to_surface_requirement_fulfilled
@@ -46,7 +49,8 @@ class MiscRequirements(Slots):
 
     def failure_reasons(self) -> set[str]:
         return (SimpleStringListBuilder()
-                .append_if(not self.is_exact_match_requirement_fulfilled, "requires_exact_match")
+                .append_if(not self.is_requires_exact_match_requirement_fulfilled, "requires_exact_match")
+                .append_if(not self.is_forbids_exact_match_requirement_fulfilled, "forbids_exact_match")
                 .append_if(not self.is_single_token_requirement_fulfilled, "requires_single_token")
                 .append_if(not self.yield_to_surface_requirement_fulfilled, f"yield_to_surface_{self.match().word_variant().word.surface_variant.form}")
                 .append_if(not self.is_compound_requirement_fulfilled, "requires_compound")

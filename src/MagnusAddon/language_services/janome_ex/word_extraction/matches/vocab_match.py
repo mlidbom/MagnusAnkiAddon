@@ -47,7 +47,7 @@ class VocabMatch(Match, Slots):
     def start_index(self) -> int:
         if (self.matching.bool_flags.question_overrides_form.is_set()
                 and self.matching.configurable_rules.required_prefix.any()):
-            [prefix for prefix in self.matching.configurable_rules.required_prefix.get() if self.parsed_form.startswith(prefix)]
+            matched_prefixes = [prefix for prefix in self.matching.configurable_rules.required_prefix.get() if self.parsed_form.startswith(prefix)]
             return 12
 
         return super().start_index

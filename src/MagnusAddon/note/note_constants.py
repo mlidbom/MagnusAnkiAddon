@@ -178,6 +178,7 @@ class Tags(Slots):
                 past_tense_stem = f"{f_vocab_matching_forbids}past-tense-stem"
                 t_form_stem = f"{f_vocab_matching_forbids}t-form-stem"
                 sentence_end = f"{f_vocab_matching_forbids}sentence-end"
+                exact_match = f"{f_vocab_matching_forbids}exact-match"
                 auto_yielding = f"{f_vocab_matching_forbids}auto_yielding"
 
             is_strictly_suffix = f"{f_vocab_matching}is-strictly-suffix"

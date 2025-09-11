@@ -62,6 +62,7 @@ class VocabMatchingRulesConfigurationRequiresForbidsFlags(Slots):
         self.t_form_stem: RequireForbidFlagField = RequireForbidFlagField(vocab, Tags.Vocab.Matching.Requires.t_form_stem, Tags.Vocab.Matching.Forbids.t_form_stem)
         self.single_token: RequireForbidFlagField = RequireForbidFlagField(vocab, Tags.Vocab.Matching.Requires.single_token, Tags.Vocab.Matching.Requires.compound)
         self.sentence_end: RequireForbidFlagField = RequireForbidFlagField(vocab, Tags.Vocab.Matching.Requires.sentence_end, Tags.Vocab.Matching.Forbids.sentence_end)
+        self.requires_exact_match: RequireForbidFlagField = RequireForbidFlagField(vocab, Tags.Vocab.Matching.Requires.exact_match, Tags.Vocab.Matching.Forbids.exact_match)
         self.yield_last_token: RequireForbidFlagField = YieldLastTokenToOverlappingCompound(vocab)
 
 class VocabMatchingRulesConfigurationBoolFlags(Slots):
@@ -77,7 +78,6 @@ class VocabNoteMatchingConfiguration(WeakRefable, Slots):
         self.vocab: WeakRef[VocabNote] = vocab
         self.weakref = WeakRef(self)
         self._rules: Lazy[VocabNoteMatchingRules] = Lazy(lambda: VocabNoteMatchingRules(vocab))
-        self.requires_exact_match: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.Requires.exact_match)
 
         self.requires_forbids = VocabMatchingRulesConfigurationRequiresForbidsFlags(vocab)
         self.bool_flags = VocabMatchingRulesConfigurationBoolFlags(vocab)
@@ -88,7 +88,8 @@ class VocabNoteMatchingConfiguration(WeakRefable, Slots):
     def save(self) -> None: self.configurable_rules.save()
 
     def __repr__(self) -> str: return (SkipFalsyValuesDebugReprBuilder()
-                                       .flag("requires_exact_match", self.requires_exact_match.is_set())
+                                       .flag("requires_exact_match", self.requires_forbids.requires_exact_match.is_required)
+                                       .flag("forbids_exact_match", self.requires_forbids.requires_exact_match.is_forbidden)
                                        .flag("requires_single_token", self.requires_forbids.single_token.is_required)
                                        .flag("requires_compound", self.requires_forbids.single_token.is_forbidden)
                                        .flag("requires_a_stem", self.requires_forbids.a_stem.is_required)
