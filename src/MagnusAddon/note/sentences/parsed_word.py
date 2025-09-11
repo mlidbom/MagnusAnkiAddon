@@ -26,5 +26,5 @@ class ParsedWord(Slots):
                           match.start_index,
                           match.is_displayed,
                           match.parsed_form,
-                          f"""{" ".join(match.failure_reasons)} {invisible_space} {" ".join(match.hiding_reasons)} {"highlighted" if match.is_highlighted else ""}""",
+                          f"""{" ".join(match.failure_reasons)}{f" {invisible_space} " if match.failure_reasons else ""}{" ".join(match.hiding_reasons)} {"highlighted" if match.is_highlighted else ""}""",
                           match.vocab.get_id() if isinstance(match, VocabMatch) else -1)
