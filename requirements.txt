@@ -1,5 +1,5 @@
-aqt==25.7.5
-anki==25.7.5
+aqt==25.9
+anki==25.9
 
 #Latest versions seem to crash in interesting ways. If Anki does not run, make sure to use exactly these versions
 PyQt6==6.9.1
@@ -15,7 +15,7 @@ jamdict==0.1a11.post2
 jamdict-data-fix==1.5.1a2
 Janome==0.5.0
 pipdeptree
-#puchikarui==0.2a2.post5
+puchikarui==0.2a2.post5
 requests==2.32.5
 types-requests
 pytest~=8.4.2
