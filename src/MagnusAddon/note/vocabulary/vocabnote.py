@@ -31,6 +31,7 @@ if TYPE_CHECKING:
     from note.jpnote import JPNote
     from wanikani_api import models
 
+
 class VocabNote(WaniNote, Slots):
     factory: VocabNoteFactory = VocabNoteFactory()
     def __init__(self, note: Note) -> None:

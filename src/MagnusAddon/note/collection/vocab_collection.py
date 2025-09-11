@@ -51,7 +51,8 @@ class _VocabCache(NoteCache[VocabNote, _VocabSnapshot], Slots):
 
         fetch_parts(form)
 
-        return sorted(compound_parts, key=lambda part: part.get_question())
+        def get_vocab_question(vocab: VocabNote) -> str: return vocab.get_question()
+        return sorted(compound_parts, key=get_vocab_question)
 
     def derived_from(self, form: str) -> list[VocabNote]: return list(self._by_derived_from[form])
     def with_kanji_in_main_form(self, kanji: str) -> list[VocabNote]: return list(self._by_kanji_in_main_form[kanji])

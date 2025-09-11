@@ -16,8 +16,9 @@ def noop_gc_on_dialog_finish(_self:aqt.main.AnkiQt, dialog: QDialog) -> None:
     qconnect(dialog.finished, lambda: dialog.deleteLater())
 
 def visible_garbage_collection(_self:aqt.main.AnkiQt) -> None:
-    app.get_ui_utils().tool_tip("running garbage collection triggered by internal Anki code", milliseconds=10000)
-    gc.collect()
+    if not app.config().enable_automatic_garbage_collection.get_value():
+        app.get_ui_utils().tool_tip("running garbage collection triggered by internal Anki code", milliseconds=10000)
+        gc.collect()
 
 def init() -> None:
     aqt.main.AnkiQt.garbage_collect_on_dialog_finish = noop_gc_on_dialog_finish  # type: ignore
