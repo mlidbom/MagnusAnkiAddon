@@ -14,11 +14,15 @@ if TYPE_CHECKING:
 class Match(WeakRefable, Slots):
     def __init__(self, word_variant: WeakRef[CandidateWordVariant]) -> None:
         self._variant: WeakRef[CandidateWordVariant] = word_variant
-        self.tokenized_form: str = word_variant().form
-        self.parsed_form: str = self.tokenized_form
-        self.match_form: str = self.tokenized_form
         self.answer: str = ""
         self.readings: list[str] = []
+
+    @property
+    def tokenized_form(self) -> str: return self.variant.form
+    @property
+    def match_form(self) -> str: return self.tokenized_form
+    @property
+    def parsed_form(self) -> str: return self.tokenized_form
 
     @property
     def is_configured_hidden(self) -> bool: return self.variant.configuration.hidden_matches.excludes_at_index(self.tokenized_form, self.variant.start_index)

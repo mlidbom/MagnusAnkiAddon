@@ -27,10 +27,13 @@ class VocabMatch(Match, Slots):
         self.tail_requirements: TailRequirements = TailRequirements(self.vocab, self.word_variant().word.end_location.next)
         self.misc_requirements: MiscRequirements = MiscRequirements(self.weakref)
 
-        if vocab.matching_rules.question_overrides_form.is_set():
-            self.parsed_form = self.vocab.get_question()
-
         self.owns_form: bool = vocab.forms.is_owned_form(self.tokenized_form)
+
+    @property
+    def parsed_form(self) -> str:
+        if self.vocab.matching_rules.question_overrides_form.is_set():
+            return self.vocab.get_question()
+        return super().parsed_form
 
     @property
     def _is_valid_internal(self) -> bool:

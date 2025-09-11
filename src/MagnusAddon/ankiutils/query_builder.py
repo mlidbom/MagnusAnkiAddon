@@ -57,7 +57,6 @@ def sentence_search(word: str, exact: bool = False) -> str:
     return result + f"""({form_query(word)})"""
 
 def potentially_matching_sentences_for_vocab(word: VocabNote) -> str:
-    search_strings: list[str] = []
     if word.matching_rules.requires_exact_match.is_set():
         search_strings = word.forms.all_list()
     else:

@@ -191,8 +191,6 @@ class Tags(Slots):
                 required_prefix = f"{f_vocab_matching_uses}required-prefix"
                 surface_is_not = f"{f_vocab_matching_uses}surface-is-not"
 
-    system_tags = {Vocab.Matching.is_inflecting_word}
-
     priority_folder = f"{f_root}priority::"
 
     source_folder = "source::"
