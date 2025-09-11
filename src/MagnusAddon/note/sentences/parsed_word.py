@@ -11,17 +11,22 @@ if TYPE_CHECKING:
 
 class ParsedWord(Slots):
     serializer: ParsedWordSerializer = ParsedWordSerializer()
-    def __init__(self, word: str, surface: str, vocab_id: int, is_displayed: bool, start_index: int) -> None:
+    def __init__(self, word: str, base: str, vocab_id: int, is_displayed: bool, start_index: int) -> None:
         self.word: str = word
         self.vocab_id: int = vocab_id
         self.is_displayed: bool = is_displayed
         self.start_index: int = start_index
-        self.surface: str = surface
+        self.base_form: str = base
+
+    @classmethod
+    def _base_form_from_match(self, match: Match) -> str:
+        if not match.base_form: return "NONE"
+        return match.base_form if match.base_form != match.base_form else "SAME"
 
     @classmethod
     def from_match(cls, match: Match) -> ParsedWord:
         return cls(match.parsed_form,
-                   match.surface_form,
+                   cls._base_form_from_match(match),
                    match.vocab.get_id() if isinstance(match, VocabMatch) else -1,
                    match.is_displayed,
                    match.start_index)

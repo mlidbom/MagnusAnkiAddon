@@ -5,24 +5,26 @@ from typing import TYPE_CHECKING
 from autoslot import Slots
 from note.notefields.json_object_field import ObjectSerializer
 from note.sentences.parsed_word import ParsedWord
-from sysutils.json import ex_json
-from sysutils.json.json_reader import JsonReader
+from sysutils.ex_str import newline
 
 if TYPE_CHECKING:
     from note.sentences.parsing_result import ParsingResult
 
 class ParsingResultSerializer(ObjectSerializer["ParsingResult"], Slots):
-
     def deserialize(self, json: str) -> ParsingResult:
         from note.sentences.parsing_result import ParsingResult
-        if not json: return ParsingResult([], "", "")
 
-        reader = JsonReader.from_json(json)
-        return ParsingResult(reader.object_list("words", ParsedWord.serializer.from_reader),
-                             reader.string("sentence"),
-                             reader.string("parser_version")) if json else ParsingResult([], "", "")
+        rows = json.split(newline)
+        if len(rows) < 2: return ParsingResult([], "", "")
+
+        try:
+            return ParsingResult([ParsedWord.serializer.from_row(row) for row in rows[2:]],
+                                 rows[1],
+                                 rows[0]) if json else ParsingResult([], "", "")
+        except Exception as e:
+            return ParsingResult([], "", "")
 
     def serialize(self, parsing_result: ParsingResult) -> str:
-        return ex_json.dict_to_json({"words": [ParsedWord.serializer.to_dict(word) for word in parsing_result.parsed_words],
-                                     "sentence": parsing_result.sentence,
-                                     "parser_version": parsing_result.parser_version})
+        return newline.join([parsing_result.parser_version,
+                             parsing_result.sentence]
+                            + [ParsedWord.serializer.to_dict(word) for word in parsing_result.parsed_words])

@@ -42,7 +42,7 @@ class Match(WeakRefable, Slots):
     @property
     def is_valid(self) -> bool: return self._is_valid_internal or self.is_highlighted
     @property
-    def surface_form(self) -> str: return self.word.surface_variant.form
+    def base_form(self) -> str: return self.word.base_variant.form if self.word.base_variant is not None else ""
     @property
     def _is_valid_internal(self) -> bool: return not self.is_configured_incorrect
     @property
