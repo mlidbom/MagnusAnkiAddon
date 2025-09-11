@@ -31,9 +31,9 @@ class CandidateWord(WeakRefable, Slots):
         self.valid_variants: list[CandidateWordVariant] = []
         self.display_word_variants: list[CandidateWordVariant] = []
 
+
     @property
     def should_include_surface_in_valid_words(self) -> bool: return (self.surface_variant.is_valid_candidate
-                                                                     and (self.base_variant is None or self.surface_variant.form != self.base_variant.form)
                                                                      and (not self.is_inflected_word or not self.should_include_base_in_valid_words))
 
     @property
