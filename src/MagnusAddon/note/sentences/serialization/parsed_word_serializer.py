@@ -12,23 +12,25 @@ class ParsedWordSerializer(Slots):
     separator = f" {invisible_space} "
 
     @staticmethod
-    def to_dict(self: ParsedWord) -> str: return ParsedWordSerializer.separator.join([
-        str(self.start_index),  # 0
-        str(1 if self.is_displayed else 0),  # 1
-        self.word,  # 2
-        self.base_form,  # 3
-        str(self.vocab_id),  # 4
+    def to_row(parsed_word: ParsedWord) -> str: return ParsedWordSerializer.separator.join([
+        str(parsed_word.start_index),  # 0
+        str(1 if parsed_word.is_displayed else 0),  # 1
+        parsed_word.type, # 2
+        parsed_word.word,  # 3
+        parsed_word.base_form,  # 4
+        str(parsed_word.vocab_id),  # 5
+        parsed_word.information_string,  # 6
     ])
 
     @staticmethod
     def from_row(serialized: str) -> ParsedWord:
         from note.sentences.parsed_word import ParsedWord
         values = serialized.split(ParsedWordSerializer.separator)
-        try:
-            return ParsedWord(values[2],
-                              values[3],
-                              int(values[4]),
-                              bool(int(values[1])),
-                              int(values[0]))
-        except Exception:
-            return ParsedWord("", "", 0, False, 0)
+
+        return ParsedWord(int(values[0]),
+                          bool(int(values[1])),
+                          values[2],
+                          values[3],
+                          values[4],
+                          int(values[5]),
+                          "")

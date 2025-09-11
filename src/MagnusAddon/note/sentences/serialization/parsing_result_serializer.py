@@ -34,4 +34,4 @@ class ParsingResultSerializer(ObjectSerializer["ParsingResult"], Slots):
     def serialize(self, parsing_result: ParsingResult) -> str:
         return newline.join([parsing_result.parser_version,
                              self._replace_newline(parsing_result.sentence)]
-                            + [ParsedWord.serializer.to_dict(word) for word in parsing_result.parsed_words])
+                            + [ParsedWord.serializer.to_row(word) for word in parsing_result.parsed_words])
