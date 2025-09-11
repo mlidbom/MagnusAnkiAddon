@@ -17,14 +17,14 @@ if TYPE_CHECKING:
 class VocabNoteForms(WeakRefable, Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self._vocab: WeakRef[VocabNote] = vocab
-        self._field: CommaSeparatedStringsListFieldDeDuplicated = CommaSeparatedStringsListFieldDeDuplicated(vocab, NoteFields.Vocab.Forms)
+        field = CommaSeparatedStringsListFieldDeDuplicated(vocab, NoteFields.Vocab.Forms)
+        self._field: CommaSeparatedStringsListFieldDeDuplicated = field
         weakrefself = WeakRef(self)
         self._all_raw_set: Lazy[set[str]] = Lazy(lambda: set(weakrefself()._field.get()))
 
-        self._all_list: Lazy[list[str]] = Lazy(lambda: [ex_str.strip_brackets(form) for form in weakrefself()._field.get()])
-        self._all_set: Lazy[set[str]] = Lazy(lambda: set(weakrefself()._all_list()))
-        self._owned_forms: Lazy[set[str]] = Lazy(lambda: {weakrefself()._vocab().get_question()} | {ex_str.strip_brackets(form) for form in weakrefself()._all_raw_set() if form.startswith("[")})
-        self._field.on_update(self._all_raw_set.reset, self._all_list.reset, self._all_set.reset, self._owned_forms.reset)
+        self._all_list: Lazy[list[str]] = field.lazy_reader(lambda: [ex_str.strip_brackets(form) for form in weakrefself()._field.get()])
+        self._all_set: Lazy[set[str]] = field.lazy_reader(lambda: set(weakrefself()._all_list()))
+        self._owned_forms: Lazy[set[str]] = field.lazy_reader(lambda: {weakrefself()._vocab().get_question()} | {ex_str.strip_brackets(form) for form in weakrefself()._all_raw_set() if form.startswith("[")})
 
     def is_owned_form(self, form: str) -> bool: return form in self._owned_forms()
 

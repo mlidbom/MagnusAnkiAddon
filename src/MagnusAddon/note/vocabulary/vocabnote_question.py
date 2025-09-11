@@ -6,10 +6,10 @@ from autoslot import Slots
 from language_services import conjugator
 from note.note_constants import Mine, NoteFields
 from note.notefields.string_field import StringField
-from sysutils.lazy import Lazy
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
+    from sysutils.lazy import Lazy
     from sysutils.weak_ref import WeakRef
 
 class VocabStems(Slots):
@@ -25,9 +25,8 @@ class VocabNoteQuestion(Slots):
         self._vocab = vocab
         field = StringField(vocab, NoteFields.Vocab.question)
         self._field = field
-        self._raw: Lazy[str] = Lazy(lambda: field.get())
-        self._without_noise_characters: Lazy[str] = Lazy(lambda: field.get().replace(Mine.VocabPrefixSuffixMarker, ""))
-        field.on_update(self._raw.reset, self._without_noise_characters.reset)
+        self._raw: Lazy[str] = field.lazy_reader(lambda: field.get())
+        self._without_noise_characters: Lazy[str] = field.lazy_reader(lambda: field.get().replace(Mine.VocabPrefixSuffixMarker, ""))
 
     @property
     def raw(self) -> str: return self._raw()

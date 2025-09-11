@@ -1,22 +1,21 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING, Callable, TypeVar
 
 from autoslot import Slots
 from note.notefields.string_field import StringField
 from sysutils import ex_str
-from sysutils.lazy import Lazy
 
 if TYPE_CHECKING:
     from note.jpnote import JPNote
+    from sysutils.lazy import Lazy
     from sysutils.weak_ref import WeakRef
 
 class CommaSeparatedStringsListField(Slots):
     def __init__(self, note: WeakRef[JPNote], field_name: str) -> None:
         field = StringField(note, field_name)
         self._field = field
-        self._value: Lazy[list[str]] = Lazy(lambda: ex_str.extract_comma_separated_values(field.get()))
-        self._field.on_update(self._value.reset)
+        self._value: Lazy[list[str]] = self._field.lazy_reader(lambda: ex_str.extract_comma_separated_values(field.get()))
 
     def get(self) -> list[str]:
         return self._value()
@@ -36,4 +35,5 @@ class CommaSeparatedStringsListField(Slots):
     def add(self, add: str) -> None:
         self.set(self.get() + [add])
 
-    def on_update(self, *callbacks: Callable[[], None]) -> None:  self._field.on_update(*callbacks)
+    TValue = TypeVar("TValue")
+    def lazy_reader(self, reader: Callable[[], TValue]) -> Lazy[TValue]: return self._field.lazy_reader(reader)
