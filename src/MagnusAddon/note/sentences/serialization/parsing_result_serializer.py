@@ -24,8 +24,11 @@ class ParsingResultSerializer(ObjectSerializer["ParsingResult"], Slots):
             return ParsingResult([ParsedMatch.serializer.from_row(row) for row in rows[2:]],
                                  self._restore_newline(rows[1]),
                                  rows[0]) if serialized else ParsingResult([], "", "")
-        except Exception:
-            mylog.warning(f"Failed to deserialize ParsingResult: {serialized}")
+        except Exception as ex:
+            mylog.warning(f"""Failed to deserialize ParsingResult:
+            message:
+{ex} 
+{serialized}""")
             return ParsingResult([], "", "")
 
     def _replace_newline(self, value: str) -> str:
