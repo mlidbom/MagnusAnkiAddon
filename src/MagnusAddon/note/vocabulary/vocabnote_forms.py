@@ -25,6 +25,7 @@ class VocabNoteForms(WeakRefable, Slots):
         self._all_list: Lazy[list[str]] = field.lazy_reader(lambda: [ex_str.strip_brackets(form) for form in weakrefself()._field.get()])
         self._all_set: Lazy[set[str]] = field.lazy_reader(lambda: set(weakrefself()._all_list()))
         self._owned_forms: Lazy[set[str]] = field.lazy_reader(lambda: {weakrefself()._vocab().get_question()} | {ex_str.strip_brackets(form) for form in weakrefself()._all_raw_set() if form.startswith("[")})
+        self._not_owned_by_other_vocab: Lazy[set[str]] = field.lazy_reader(lambda: weakrefself().___not_owned_by_other_vocab())
 
     def is_owned_form(self, form: str) -> bool: return form in self._owned_forms()
 
@@ -41,11 +42,14 @@ class VocabNoteForms(WeakRefable, Slots):
 
         return sorted(self.all_list_notes(), key=prefer_more_sentences)
 
-    def not_owned_by_other_vocab(self) -> set[str]:
+    def not_owned_by_other_vocab(self) -> set[str]: return self._not_owned_by_other_vocab()
+
+    def ___not_owned_by_other_vocab(self) -> set[str]:
         vocab_note = self._vocab()
 
         def is_owned_by_other_form_note(form: str) -> bool:
-            return any(owner for owner in app.col().vocab.with_question(form) if owner != vocab_note and vocab_note.get_question() in owner.forms.all_set())
+            return any(owner for owner in app.col().vocab.with_question(form)
+                       if owner != vocab_note and vocab_note.get_question() in owner.forms.all_set())
 
         return {form for form in vocab_note.forms.all_set() if not is_owned_by_other_form_note(form)}
 
