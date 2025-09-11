@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 
 class VocabMatch(Match, Slots):
     def __init__(self, word_variant: WeakRef[CandidateWordVariant], vocab: VocabNote) -> None:
-        super().__init__(word_variant, vocab.matching_rules)
+        super().__init__(word_variant)
         self.vocab: VocabNote = vocab
         self.word_variant: WeakRef[CandidateWordVariant] = word_variant
         self.weakref = WeakRef(self)

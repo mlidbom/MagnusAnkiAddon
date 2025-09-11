@@ -9,11 +9,10 @@ from sysutils.weak_ref import WeakRefable
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.candidate_word import CandidateWord
     from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
-    from note.vocabulary.vocabnote_matching_rules import VocabNoteMatching
     from sysutils.weak_ref import WeakRef
 
 class Match(WeakRefable, Slots):
-    def __init__(self, word_variant: WeakRef[CandidateWordVariant], rules: VocabNoteMatching | None) -> None:
+    def __init__(self, word_variant: WeakRef[CandidateWordVariant]) -> None:
         self._variant: WeakRef[CandidateWordVariant] = word_variant
         self.tokenized_form: str = word_variant().form
         self.parsed_form: str = self.tokenized_form
@@ -45,8 +44,6 @@ class Match(WeakRefable, Slots):
     def is_displayed(self) -> bool: return self.is_valid_for_display or self.is_emergency_displayed
     @property
     def start_index(self) -> int: return self.variant.start_index
-    @property
-    def is_indexed(self) -> bool: return self.is_valid or self.is_emergency_displayed
     @property
     def is_valid_for_display(self) -> bool: return self.is_valid and not self.is_configured_hidden and not self.is_shadowed
 
