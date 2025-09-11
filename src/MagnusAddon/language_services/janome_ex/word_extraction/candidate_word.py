@@ -50,7 +50,7 @@ class CandidateWord(WeakRefable, Slots):
         self.valid_variants: list[CandidateWordVariant] = []
         self.display_word_variants: list[CandidateWordVariant] = []
 
-    def must_include_some_variant(self) -> bool:
+    def surface_is_seemingly_valid_single_token(self) -> bool:
         return (not self.is_custom_compound
                 and not self.surface.starts_with_non_word_token
                 and not self.surface.is_noise_character)
@@ -66,7 +66,7 @@ class CandidateWord(WeakRefable, Slots):
                                                       and (not self.is_inflected_word or not self.should_include_base_in_valid_words))
 
         self.should_include_surface_in_all_words = (self.should_include_surface_in_valid_words
-                                                    or (not self.should_include_base_in_valid_words and self.must_include_some_variant()))
+                                                    or (not self.should_include_base_in_valid_words and self.surface_is_seemingly_valid_single_token()))
 
         self.valid_variants = []
         if self.base is not None and self.should_include_base_in_valid_words:
