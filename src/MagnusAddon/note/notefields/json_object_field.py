@@ -15,7 +15,7 @@ T = TypeVar("T")
 
 class ObjectSerializer(Generic[T], Slots):
     def serialize(self, obj: T) -> str: raise NotImplementedError()
-    def deserialize(self, json: str) -> T: raise NotImplementedError()
+    def deserialize(self, serialized: str) -> T: raise NotImplementedError()
 
 class SerializedObjectField(Generic[T], WeakRefable, Slots):
     def __init__(self, note: WeakRef[JPNote], field: str, serializer: ObjectSerializer[T]) -> None:
