@@ -34,7 +34,7 @@ class HeadRequirements(Slots):
         self.fulfills_forbids_a_stem_requirement = not rules.a_stem.is_forbidden or not self.has_a_stem
         self.fulfills_requires_a_stem = not rules.a_stem.is_required or self.has_a_stem
 
-        self.has_past_tense_stem = end_of_stem is not None and (end_of_stem().token.is_past_tense_stem() or word_variant().word().start_location.token.is_past_tense_marker())
+        self.has_past_tense_stem = end_of_stem is not None and (end_of_stem().token.is_past_tense_stem() or word_variant().word.start_location.token.is_past_tense_marker())
         self.fulfills_forbids_past_tense_stem = not rules.past_tense_stem.is_forbidden or not self.has_past_tense_stem
         self.fulfills_requires_past_tense_stem = not rules.past_tense_stem.is_required or self.has_past_tense_stem
 

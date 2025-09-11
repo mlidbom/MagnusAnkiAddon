@@ -23,8 +23,8 @@ class VocabMatch(Match, Slots):
         self.match_form = vocab.get_question()
         self.answer = vocab.get_answer()
         self.readings = vocab.readings.get()
-        self.head_requirements: HeadRequirements = HeadRequirements(self, word_variant, self.word_variant().word().start_location.previous)
-        self.tail_requirements: TailRequirements = TailRequirements(self.vocab, self.word_variant().word().end_location.next)
+        self.head_requirements: HeadRequirements = HeadRequirements(self, word_variant, self.word_variant().word.start_location.previous)
+        self.tail_requirements: TailRequirements = TailRequirements(self.vocab, self.word_variant().word.end_location.next)
         self.misc_requirements: MiscRequirements = MiscRequirements(self.weakref)
 
         if vocab.matching_rules.question_overrides_form.is_set():

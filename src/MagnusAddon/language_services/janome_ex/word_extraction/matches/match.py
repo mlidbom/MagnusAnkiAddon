@@ -25,7 +25,7 @@ class Match(WeakRefable, Slots):
         self.is_configured_incorrect = word_variant().configuration.incorrect_matches.excludes_at_index(self.tokenized_form, word_variant().start_index)
 
     @property
-    def word(self) -> CandidateWord: return self.variant.word()
+    def word(self) -> CandidateWord: return self.variant.word
     @property
     def variant(self) -> CandidateWordVariant: return self._variant()
 

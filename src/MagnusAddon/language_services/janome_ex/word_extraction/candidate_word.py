@@ -118,7 +118,7 @@ class CandidateWord(WeakRefable, Slots):
         if any(self.start_location.is_shadowed_by):
             return self.start_location.is_shadowed_by[0]().display_variants[0]
         if (any(self.start_location.display_variants)
-                and self.start_location.display_variants[0].word().location_count > self.location_count):
+                and self.start_location.display_variants[0].word.location_count > self.location_count):
             return self.start_location.display_variants[0]
         return None
 

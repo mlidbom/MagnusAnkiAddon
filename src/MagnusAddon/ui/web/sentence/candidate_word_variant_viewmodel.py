@@ -13,8 +13,8 @@ class CandidateWordVariantViewModel:
     def __init__(self, variant: CandidateWordVariant) -> None:
         self.candidate_word: CandidateWordVariant = variant
         self.weakref: WeakRef[CandidateWordVariantViewModel] = WeakRef(self)
-        self.is_shadowed: bool = variant.word().is_shadowed
-        self.is_display_word: bool = variant in variant.word().analysis.display_word_variants
+        self.is_shadowed: bool = variant.word.is_shadowed
+        self.is_display_word: bool = variant in variant.word.analysis.display_word_variants
         self.matches: list[MatchViewModel] = [MatchViewModel(self.weakref, match) for match in variant.matches]
         self.display_matches: list[MatchViewModel] = [match for match in self.matches if match.match.is_displayed]
         self.has_perfect_match = any(match.match_owns_form for match in self.matches if match.match.is_displayed)
