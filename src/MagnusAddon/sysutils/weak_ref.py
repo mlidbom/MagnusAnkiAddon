@@ -4,7 +4,6 @@ import weakref
 from typing import TYPE_CHECKING, Generic, TypeVar
 
 from autoslot import Slots
-from sysutils.typed import non_optional
 
 if TYPE_CHECKING:
     from _weakref import ReferenceType
@@ -16,8 +15,12 @@ class WeakRef(Generic[T], Slots):
         self._weakreference: ReferenceType[T] = weakref.ref(obj)
 
     @property
-    def instance(self) -> T: return non_optional(self._weakreference())
-    def __call__(self) -> T: return non_optional(self._weakreference())
+    def instance(self) -> T:
+        instance = self._weakreference()
+        if instance is None: raise ReferenceError("This WeakRef instance has been destroyed by the reference counting in python. No GC roots referencing it remain.")
+        return instance
+    def __call__(self) -> T: return self.instance
+
 
     def __repr__(self) -> str: return f"WeakRef: {self.instance.__repr__()}"
 
