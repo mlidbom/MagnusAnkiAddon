@@ -40,15 +40,11 @@ class CandidateWordVariant(WeakRefable, Slots):
 
         # will be completed in complete_analysis
         self.completed_analysis = False
-        self.is_valid_candidate: bool = False
-        self.valid_vocab_matches: list[VocabMatch] = []
         self.matches: list[Match] = []
         self.valid_matches: list[Match] = []
 
     @property
     def is_surface(self) -> bool: return self.form == self.word().surface_form
-    @property
-    def is_preliminarily_valid(self) -> bool: return self.is_known_word and not self.word().starts_with_non_word_character
     @property
     def vocabs_control_match_status(self) -> bool:
         return (any(self.valid_vocab_matches)
@@ -58,7 +54,6 @@ class CandidateWordVariant(WeakRefable, Slots):
     def run_validity_analysis(self) -> None:
         if self.completed_analysis: return
 
-        self.valid_vocab_matches = [vm for vm in self.vocab_matches if vm.is_valid]
         if self.vocabs_control_match_status:
             self.valid_matches = list(self.valid_vocab_matches)
             self.matches = list(self.vocab_matches)
@@ -69,17 +64,23 @@ class CandidateWordVariant(WeakRefable, Slots):
             else:
                 self.matches = [MissingMatch(self.weak_ref)]
 
-        self.is_valid_candidate = self.is_preliminarily_valid and any(self.valid_matches)
-
         self.completed_analysis = True
 
     @property
-    def display_matches(self) -> list[Match]:
+    def valid_vocab_matches(self) -> list[VocabMatch]: return [vm for vm in self.vocab_matches if vm.is_valid]
+    @property
+    def is_valid(self) -> bool: return any(self.valid_matches)
+
+    @property
+    def _once_analyzed(self) -> CandidateWordVariant:
         ex_assert.that(self.completed_analysis)
-        return [match for match in self.matches if match.is_displayed]
+        return self
+
+    @property
+    def display_matches(self) -> list[Match]: return [match for match in self._once_analyzed.matches if match.is_displayed]
 
     def to_exclusion(self) -> WordExclusion:
         return WordExclusion.at_index(self.form, self.start_index)
 
     def __repr__(self) -> str:
-        return f"""{self.form}, is_valid_candidate:{self.is_valid_candidate}"""
+        return f"""{self.form}, is_valid_candidate:{self.is_valid}"""
