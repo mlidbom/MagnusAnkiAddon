@@ -52,7 +52,7 @@ class CandidateWordVariant(WeakRefable, Slots):
                 or (any(self.vocab_matches) and not self.dict_lookup.found_words() and self.word().is_custom_compound))
 
     def run_validity_analysis(self) -> None:
-        if self.completed_analysis: return
+        ex_assert.that(not self.completed_analysis)
 
         if self.vocabs_control_match_status:
             self.valid_matches = list(self.valid_vocab_matches)
