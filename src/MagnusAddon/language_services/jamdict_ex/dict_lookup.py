@@ -123,9 +123,9 @@ class DictLookup(Slots):
     @classmethod
     def lookup_vocab_word_or_name(cls, vocab: VocabNote) -> DictLookup:
         if vocab.readings.get():
-            return cls.lookup_word_or_name_with_matching_reading(vocab.question.without_noise_characters(), vocab.readings.get())
+            return cls.lookup_word_or_name_with_matching_reading(vocab.question.without_noise_characters, vocab.readings.get())
 
-        return cls.lookup_word_or_name(vocab.question.without_noise_characters())
+        return cls.lookup_word_or_name(vocab.question.without_noise_characters)
 
     @classmethod
     def lookup_word_or_name_with_matching_reading(cls, word: str, readings: list[str]) -> DictLookup:

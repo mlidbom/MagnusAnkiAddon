@@ -40,7 +40,7 @@ class VocabMatch(Match, Slots):
     @property
     def parsed_form(self) -> str:
         if self.matching.question_overrides_form.is_set():
-            return self.vocab.question.raw()
+            return self.vocab.question.raw
         return super().parsed_form
 
     @property

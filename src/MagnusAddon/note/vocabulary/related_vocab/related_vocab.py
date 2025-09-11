@@ -35,7 +35,7 @@ class RelatedVocab(Slots):
         self.confused_with: FieldSetWrapper[str] = FieldSetWrapper.for_json_object_field(self._data, self._data.get().confused_with)
 
     def in_compounds(self) -> list[VocabNote]:
-        return col().vocab.with_compound_part(self._vocab().question.without_noise_characters())
+        return col().vocab.with_compound_part(self._vocab().question.without_noise_characters)
 
     def get_direct_dependencies(self) -> set[JPNote]:
         return (set(col().kanji.with_any_kanji_in(list(self._vocab().kanji.extract_main_form_kanji()))) |

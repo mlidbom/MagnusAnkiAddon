@@ -8,7 +8,7 @@ if TYPE_CHECKING:
 def sort_vocab_list_by_studying_status(vocabs: list[VocabNote], primary_voc: list[str] | None = None, preferred_kanji: str | None = None) -> list[VocabNote]:
     def prefer_primary_vocab_in_order(local_vocab: VocabNote) -> int:
         for index, primary in enumerate(_primary_voc):
-            if local_vocab.get_question() == primary or local_vocab.question.without_noise_characters() == primary or (local_vocab.readings.get() and local_vocab.readings.get()[0] == primary):
+            if local_vocab.get_question() == primary or local_vocab.question.without_noise_characters == primary or (local_vocab.readings.get() and local_vocab.readings.get()[0] == primary):
                 return index
 
         return 1000

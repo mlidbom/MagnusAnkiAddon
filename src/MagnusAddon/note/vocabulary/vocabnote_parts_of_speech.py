@@ -37,12 +37,12 @@ class VocabNotePartsOfSpeech(Slots):
         return self.is_godan() or self.is_ichidan()
 
     def is_suru_verb_included(self) -> bool:
-        question = self._vocab.question.without_noise_characters()
+        question = self._vocab.question.without_noise_characters
         return len(question) > 2 and question[-2:] == "する"
 
     _ga_suru_ni_suru_endings: set[str] = {"がする", "にする", "くする"}
     def is_ni_suru_ga_suru_ku_suru_compound(self) -> bool:
-        question = self._vocab.question.without_noise_characters()
+        question = self._vocab.question.without_noise_characters
         return len(question) > 3 and question[-3:] in self._ga_suru_ni_suru_endings
 
     def is_uk(self) -> bool: return self._vocab.has_tag(Tags.UsuallyKanaOnly)
@@ -60,7 +60,7 @@ class VocabNotePartsOfSpeech(Slots):
             value = ", ".join(lookup.parts_of_speech())
             self.set_raw_string_value(value)
         elif self.is_suru_verb_included():
-            question = self._vocab.question.without_noise_characters()[:-2]
+            question = self._vocab.question.without_noise_characters[:-2]
             readings = [reading[:-2] for reading in self._vocab.readings.get()]
             lookup = DictLookup.lookup_word_or_name_with_matching_reading(question, readings)
             pos = lookup.parts_of_speech() & {"transitive", "intransitive"}
@@ -82,4 +82,4 @@ class VocabNotePartsOfSpeech(Slots):
 
     _na_adjective_tos_names = {"な adjective", "na-adjective"}
     def is_complete_na_adjective(self) -> bool:
-        return self.__vocab().question.raw().endswith("な") and any(na for na in self._na_adjective_tos_names if na in self.get())
+        return self.__vocab().question.raw.endswith("な") and any(na for na in self._na_adjective_tos_names if na in self.get())

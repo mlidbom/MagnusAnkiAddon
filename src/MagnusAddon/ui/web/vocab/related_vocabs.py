@@ -92,7 +92,7 @@ def generate_derived_from(_vocab_note: VocabNote) -> str:
     return render_vocab_list(derived_from, "derived from", css_class="derived_from")
 
 def generate_in_compounds_list(_vocab_note: VocabNote) -> str:
-    compound_parts = app.col().vocab.with_compound_part(_vocab_note.question.without_noise_characters())
+    compound_parts = app.col().vocab.with_compound_part(_vocab_note.question.without_noise_characters)
     return render_vocab_list(compound_parts, "part of compound", css_class="in_compound_words")
 
 def generate_stem_in_compounds_list(_vocab_note: VocabNote) -> str:
