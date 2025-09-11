@@ -26,8 +26,6 @@ class VocabMatch(Match, Slots):
         self.tail_requirements: TailRequirements = TailRequirements(self.vocab, self.word_variant().word.end_location.next)
         self.misc_requirements: MiscRequirements = MiscRequirements(self.weakref)
 
-        self.owns_form: bool = vocab.forms.is_owned_form(self.tokenized_form)
-
     @property
     def matching(self) -> VocabNoteMatchingConfiguration: return self.vocab.matching_configuration
     @property
@@ -75,6 +73,9 @@ class VocabMatch(Match, Slots):
     def is_valid_for_display(self) -> bool: return super().is_valid_for_display and self.display_requirements.are_fulfilled
     @property
     def display_requirements(self) -> DisplayRequirements: return DisplayRequirements(self.weakref)
+
+    @property
+    def owns_form(self) -> bool: return self.vocab.forms.is_owned_form(self.tokenized_form)
 
     @property
     def failure_reasons(self) -> set[str]:
