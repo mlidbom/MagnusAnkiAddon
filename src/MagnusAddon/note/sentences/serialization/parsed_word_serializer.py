@@ -24,8 +24,11 @@ class ParsedWordSerializer(Slots):
     def from_row(serialized: str) -> ParsedWord:
         from note.sentences.parsed_word import ParsedWord
         values = serialized.split(ParsedWordSerializer.separator)
-        return ParsedWord(values[2],
-                          values[3],
-                          int(values[4]),
-                          bool(int(values[1])),
-                          int(values[0]))
+        try:
+            return ParsedWord(values[2],
+                              values[3],
+                              int(values[4]),
+                              bool(int(values[1])),
+                              int(values[0]))
+        except Exception:
+            return ParsedWord("", "", 0, False, 0)

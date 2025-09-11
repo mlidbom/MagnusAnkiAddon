@@ -17,7 +17,8 @@ if TYPE_CHECKING:
 def build_string_menu(string_menu: QMenu, sentence: SentenceNote, menu_string: str) -> None:
     def add_add_word_exclusion_action(add_menu: QMenu, exclusion_type_title: str, exclusion_set: WordExclusionSet) -> None:
         menu_string_as_word_exclusion = WordExclusion.global_(menu_string)
-        valid_words = sentence.create_analysis().valid_word_variants
+        analysis_variable_that_keeps_a_root_for_the_weak_refs_so_they_are_not_cleaned_up = sentence.create_analysis()
+        valid_words = analysis_variable_that_keeps_a_root_for_the_weak_refs_so_they_are_not_cleaned_up.valid_word_variants
         words_excluded_by_menu_string: list[CandidateWordVariant] = [w for w in valid_words if menu_string_as_word_exclusion.excludes_form_at_index(w.form, w.start_index)]
         if any(words_excluded_by_menu_string):
             if len(words_excluded_by_menu_string) == 1:
