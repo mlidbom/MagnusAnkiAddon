@@ -25,7 +25,6 @@ class CandidateWordVariant(WeakRefable, Slots):
         self.weak_ref = WeakRef(self)
         from language_services.jamdict_ex.dict_lookup import DictLookup
 
-        self.start_index: int = word().start_location.character_start_index
         self._word: WeakRef[CandidateWord] = word
         self.form: str = form
 
@@ -61,8 +60,9 @@ class CandidateWordVariant(WeakRefable, Slots):
         self.completed_analysis = True
 
     @property
+    def start_index(self) -> int: return self.word.start_location.character_start_index
+    @property
     def configuration(self) -> SentenceConfiguration: return self.word.analysis.configuration
-
     @property
     def word(self) -> CandidateWord: return self._word()
     @property
