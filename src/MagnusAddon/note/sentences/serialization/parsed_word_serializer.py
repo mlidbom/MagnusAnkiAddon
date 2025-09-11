@@ -6,13 +6,13 @@ from autoslot import Slots
 from sysutils.ex_str import invisible_space
 
 if TYPE_CHECKING:
-    from note.sentences.parsed_word import ParsedWord
+    from note.sentences.parsed_word import ParsedMatch
 
 class ParsedWordSerializer(Slots):
     separator = f" {invisible_space} "
 
     @staticmethod
-    def to_row(parsed_word: ParsedWord) -> str: return ParsedWordSerializer.separator.join([
+    def to_row(parsed_word: ParsedMatch) -> str: return ParsedWordSerializer.separator.join([
         parsed_word.type,  # 0
         str(parsed_word.start_index),  # 1
         str(1 if parsed_word.is_displayed else 0),  # 2
@@ -22,13 +22,13 @@ class ParsedWordSerializer(Slots):
     ])
 
     @staticmethod
-    def from_row(serialized: str) -> ParsedWord:
-        from note.sentences.parsed_word import ParsedWord
+    def from_row(serialized: str) -> ParsedMatch:
+        from note.sentences.parsed_word import ParsedMatch
         values = serialized.split(ParsedWordSerializer.separator)
 
-        return ParsedWord(values[0],
-                          int(values[1]),
-                          bool(int(values[2])),
-                          values[3],
-                          values[4],
-                          int(values[5]))
+        return ParsedMatch(values[0],
+                           int(values[1]),
+                           bool(int(values[2])),
+                           values[3],
+                           values[4],
+                           int(values[5]))

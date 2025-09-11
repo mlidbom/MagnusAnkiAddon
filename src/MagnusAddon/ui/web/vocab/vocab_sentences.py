@@ -4,17 +4,23 @@ from typing import TYPE_CHECKING
 
 from ankiutils import app
 from aqt import gui_hooks
+from autoslot import Slots
 from note.note_constants import Tags
+from note.sentences.parsed_word import ParsedMatch
 from note.vocabulary.vocabnote import VocabNote
 from sysutils import ex_sequence, ex_str, kana_utils
 from sysutils.ex_str import newline
 from ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
 
 if TYPE_CHECKING:
+    from note.sentences.parsing_result import ParsingResult
     from note.sentences.sentencenote import SentenceNote
 
+class ParsingResultViewModel(Slots):
+    def __init__(self, result: ParsingResult) -> None:
+        self.result: ParsingResult = result
 
-def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
+def generate_sentences_list_html(_vocab_note: VocabNote) -> str:
     forms = [_vocab_note.get_question()] + list(_vocab_note.forms.without_noise_characters_set())
     forms = ex_sequence.remove_duplicates_while_retaining_order(forms)
     primary_form = _vocab_note.question.without_noise_characters
@@ -25,6 +31,7 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
     secondary_forms_containing_primary_form_forms = [form for form in secondary_forms_forms if any(pform for pform in primary_form_forms if pform in form)]
 
     derived_compounds = _vocab_note.related_notes.in_compounds()
+    derived_compound_ids = {der.get_id() for der in derived_compounds}
     derived_compounds_forms = ex_str.sort_by_length_descending(ex_sequence.flatten([der.conjugator.get_text_matching_forms_for_all_form() for der in derived_compounds]))
 
     secondary_forms_vocab_notes = ex_sequence.flatten([app.col().vocab.with_question(v) for v in secondary_forms])
@@ -40,13 +47,34 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
     def contains_primary_form(_sentence: SentenceNote) -> bool:
         clean_sentence = ex_str.strip_html_and_bracket_markup(_sentence.get_question())
 
-
         return (not any(covering_secondary_form for covering_secondary_form in secondary_forms_containing_primary_form_forms if covering_secondary_form in clean_sentence)
                 and any(base_form for base_form in primary_form_forms if base_form in clean_sentence))
 
     def contains_secondary_form_with_its_own_vocabulary_note(_sentence: SentenceNote) -> bool:
         clean_sentence = ex_str.strip_html_and_bracket_markup(_sentence.get_question())
         return any(base_form for base_form in secondary_forms_with_their_own_vocab_forms if base_form in clean_sentence)
+
+    def format_sentence_new(sentence_note: SentenceNote) -> str:
+        result = sentence_note.parsing_result.get()
+
+        def highlight_match(match: ParsedMatch, class_name: str) -> str:
+            head = result.sentence[:match.start_index]
+            hit_range = result.sentence[match.start_index:match.end_index]
+            tail = result.sentence[match.end_index:]
+            return f"""{head}<span class="vocabInContext {class_name}">{hit_range}</span>{tail}"""
+
+        matches = [match for match in result.parsed_words if match.vocab_id == _vocab_note.get_id()]
+        displayed_hits = [match for match in matches if match.is_displayed]
+        if displayed_hits:
+            return highlight_match(displayed_hits[0], "primaryForm")
+
+        shaded_matches = [match for match in matches if not match.is_displayed]
+        first_shaded_match = shaded_matches[0]
+        match_shading_our_match = [match for match in reversed(result.parsed_words) if match.is_displayed and match.start_index <= first_shaded_match.start_index][0]
+        if match_shading_our_match.vocab_id in derived_compound_ids:
+            return highlight_match(match_shading_our_match, "derivedCompoundForm")
+
+        return result.sentence
 
     def format_sentence(html_sentence: str) -> str:
         clean_sentence = ex_str.strip_html_and_bracket_markup(html_sentence)
@@ -77,26 +105,26 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
     highlighted_sentences = set(_vocab_note.sentences.user_highlighted())
     studying_sentences = set(_vocab_note.sentences.studying())
 
-    def sort_sentences(_sentences:list[SentenceNote]) -> list[SentenceNote]:
+    def sort_sentences(_sentences: list[SentenceNote]) -> list[SentenceNote]:
         is_low_reliability_matching = kana_utils.is_only_kana(primary_form) and len(primary_form) <= 2
 
         def prefer_highlighted_for_low_reliability_matches(_sentence: SentenceNote) -> int: return 0 if is_low_reliability_matching and _sentence in highlighted_sentences else 1
-        def prefer_highlighted(_sentence:SentenceNote) -> int: return 0 if _sentence in highlighted_sentences else 1
-        def prefer_studying_read(_sentence:SentenceNote) -> int: return 0 if _sentence.is_studying_read() else 1
+        def prefer_highlighted(_sentence: SentenceNote) -> int: return 0 if _sentence in highlighted_sentences else 1
+        def prefer_studying_read(_sentence: SentenceNote) -> int: return 0 if _sentence.is_studying_read() else 1
         def prefer_studying_listening(_sentence: SentenceNote) -> int: return 0 if _sentence.is_studying_listening() else 1
         def dislike_secondary_form_with_vocab(_sentence: SentenceNote) -> int: return 1 if not contains_primary_form(_sentence) and contains_secondary_form_with_its_own_vocabulary_note(_sentence) else 0
-        def prefer_primary_form(_sentence:SentenceNote) -> int: return 0 if contains_primary_form(_sentence) else 1
-        def dislike_tts_sentences(_sentence:SentenceNote) -> int: return 1 if _sentence.has_tag(Tags.TTSAudio) else 0
-        def prefer_short_questions(_sentence:SentenceNote) -> int: return len(_sentence.get_question())
+        def prefer_primary_form(_sentence: SentenceNote) -> int: return 0 if contains_primary_form(_sentence) else 1
+        def dislike_tts_sentences(_sentence: SentenceNote) -> int: return 1 if _sentence.has_tag(Tags.TTSAudio) else 0
+        def prefer_short_questions(_sentence: SentenceNote) -> int: return len(_sentence.get_question())
         def prefer_lower_priority_tag_values(_sentence: SentenceNote) -> int: return _sentence.priority_tag_value()
         def dislike_no_translation(_sentence: SentenceNote) -> int: return 1 if not _sentence.get_answer().strip() else 0
 
-        def prefer_non_duplicates(_sentence:SentenceNote) -> int:
+        def prefer_non_duplicates(_sentence: SentenceNote) -> int:
             if _sentence.get_question() in sorted_sentences: return 1
             sorted_sentences.add(_sentence.get_question())
             return 0
 
-        def dislike_sentences_containing_secondary_form(_sentence:SentenceNote) -> int:
+        def dislike_sentences_containing_secondary_form(_sentence: SentenceNote) -> int:
             clean_sentence = ex_str.strip_html_and_bracket_markup(_sentence.get_question())
             return 1 if any(base_forms for base_forms in secondary_forms_forms if any(base_form for base_form in base_forms if base_form in clean_sentence)) else 0
 
@@ -124,7 +152,6 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
         classes += " ".join(sentence.get_meta_tags())
         return classes
 
-
     sentences = sort_sentences(_vocab_note.sentences.all())
     primary_form_matches = len([x for x in sentences if contains_primary_form(x)])
     sentences = sentences[:30]
@@ -138,7 +165,7 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
                         <div class="highlightedSentenceDiv {sentence_classes(_sentence)}">
                             <audio src="{_sentence.audio.first_audiofile_path()}"></audio><a class="play-button"></a>
                             <div class="highlightedSentence">
-                                <div class="sentenceQuestion"><span class="clipboard">{format_sentence(_sentence.get_question())}</span> <span class="deck_indicator">{_sentence.get_source_tag()}</div>
+                                <div class="sentenceQuestion"><span class="clipboard">{format_sentence_new(_sentence)}</span> <span class="deck_indicator">{_sentence.get_source_tag()}</div>
                                 <div class="sentenceAnswer"> {_sentence.get_answer()}</span></div>
                             </div>
                         </div>
@@ -148,6 +175,5 @@ def generate_highlighted_sentences_html_list(_vocab_note: VocabNote) -> str:
             </div>
             ''' if sentences else ""
 
-
 def init() -> None:
-    gui_hooks.card_will_show.append(PrerenderingAnswerContentRenderer(VocabNote, {"##HIGHLIGHTED_SENTENCES##": generate_highlighted_sentences_html_list}).render)
+    gui_hooks.card_will_show.append(PrerenderingAnswerContentRenderer(VocabNote, {"##HIGHLIGHTED_SENTENCES##": generate_sentences_list_html}).render)
