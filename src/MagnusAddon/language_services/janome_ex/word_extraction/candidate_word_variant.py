@@ -55,7 +55,7 @@ class CandidateWordVariant(WeakRefable, Slots):
                 or any(self.form_owning_vocab_matches)
                 or (any(self.vocab_matches) and not self.dict_lookup.found_words() and self.word().is_custom_compound))
 
-    def complete_analysis(self) -> None:
+    def run_validity_analysis(self) -> None:
         if self.completed_analysis: return
 
         self.valid_vocab_matches = [vm for vm in self.vocab_matches if vm.is_valid]
