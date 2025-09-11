@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
-from note.notefields.string_field import StringField
+from note.notefields.string_field import AutoStrippingStringField
 from sysutils import ex_str
 
 if TYPE_CHECKING:
@@ -13,8 +13,8 @@ if TYPE_CHECKING:
 class SentenceQuestionField(Slots):
     word_break_tag = "<wbr>"
     def __init__(self, note: WeakRef[JPNote], primary_field: str, fallback_field: str) -> None:
-        self._field = StringField(note, primary_field)
-        self._fallback_field = StringField(note, fallback_field)
+        self._field = AutoStrippingStringField(note, primary_field)
+        self._fallback_field = AutoStrippingStringField(note, fallback_field)
 
     def _get_raw(self) -> str: return self._field.get() or self._fallback_field.get()
 

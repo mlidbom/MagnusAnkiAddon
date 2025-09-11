@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Callable
 
 from autoslot import Slots
 from note.note_constants import SentenceNoteFields
-from note.notefields.string_field import StringField
+from note.notefields.string_field import AutoStrippingStringField
 from note.sentences.sentence_configuration import SentenceConfiguration
 from sysutils.lazy import Lazy
 from sysutils.weak_ref import WeakRef, WeakRefable
@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 class CachingSentenceConfigurationField(WeakRefable, Slots):
     def __init__(self, sentence: WeakRef[SentenceNote]) -> None:
         self._sentence = sentence
-        self.field = StringField(sentence, SentenceNoteFields.configuration)
+        self.field = AutoStrippingStringField(sentence, SentenceNoteFields.configuration)
 
         weak_self_ref = WeakRef(self)
         self._value: Lazy[SentenceConfiguration] = Lazy(lambda: SentenceConfiguration.serializer.deserialize(self.field.get(), weak_self_ref()._save))

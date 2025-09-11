@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, TypeVar
 
 from autoslot import Slots
-from note.notefields.readonly_string_field import ReadOnlyStringField
+from note.notefields.readonly_string_field import AutoStrippingReadOnlyStringField
 from sysutils.lazy import Lazy
 
 if TYPE_CHECKING:
@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from note.jpnote import JPNote
     from sysutils.weak_ref import WeakRef
 
-class StringField(ReadOnlyStringField, Slots):
+class AutoStrippingStringField(AutoStrippingReadOnlyStringField, Slots):
     def __init__(self, note: WeakRef[JPNote], field_name: str) -> None:
         super().__init__(note, field_name)
         self._reset_callbacks: list[Callable[[], None]] = []

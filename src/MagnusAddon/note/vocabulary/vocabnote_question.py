@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from autoslot import Slots
 from language_services import conjugator
 from note.note_constants import Mine, NoteFields
-from note.notefields.string_field import StringField
+from note.notefields.string_field import AutoStrippingStringField
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
@@ -23,7 +23,7 @@ class VocabStems(Slots):
 class VocabNoteQuestion(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self._vocab = vocab
-        field = StringField(vocab, NoteFields.Vocab.question)
+        field = AutoStrippingStringField(vocab, NoteFields.Vocab.question)
         self._field = field
         self._raw: Lazy[str] = field.lazy_reader(lambda: field.get())
         self._without_noise_characters: Lazy[str] = field.lazy_reader(lambda: field.get().replace(Mine.VocabPrefixSuffixMarker, ""))

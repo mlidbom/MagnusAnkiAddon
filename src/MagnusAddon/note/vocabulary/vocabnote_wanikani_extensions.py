@@ -7,7 +7,7 @@ from ankiutils import app
 from autoslot import Slots
 from note.note_constants import NoteFields, NoteTypes, Tags
 from note.notefields.comma_separated_strings_set_field import CommaSeparatedStringsSetField
-from note.notefields.string_field import StringField
+from note.notefields.string_field import AutoStrippingStringField
 
 if typing.TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
@@ -26,9 +26,9 @@ def create_from_wani_vocabulary(wani_vocab: models.Vocabulary) -> None:
 class VocabNoteWaniExtensions(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self.__vocab = vocab
-        self._meaning_mnemonic: StringField = StringField(vocab, NoteFields.Vocab.source_mnemonic)
+        self._meaning_mnemonic: AutoStrippingStringField = AutoStrippingStringField(vocab, NoteFields.Vocab.source_mnemonic)
         self.component_subject_ids: CommaSeparatedStringsSetField = CommaSeparatedStringsSetField(vocab, NoteFields.Vocab.component_subject_ids)
-        self.reading_mnemonic: StringField = StringField(vocab, NoteFields.Vocab.source_reading_mnemonic)
+        self.reading_mnemonic: AutoStrippingStringField = AutoStrippingStringField(vocab, NoteFields.Vocab.source_reading_mnemonic)
 
     @property
     def _vocab(self) -> VocabNote: return self.__vocab()

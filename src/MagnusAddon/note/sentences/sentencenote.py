@@ -11,7 +11,7 @@ from note.note_constants import ImmersionKitSentenceNoteFields, NoteFields, Note
 from note.notefields.audio_field import WritableAudioField
 from note.notefields.json_object_field import JsonObjectField
 from note.notefields.sentence_question_field import SentenceQuestionField
-from note.notefields.string_field import StringField
+from note.notefields.string_field import AutoStrippingStringField
 from note.notefields.strip_html_on_read_fallback_string_field import StripHtmlOnReadFallbackStringField
 from note.notefields.strip_html_on_read_string_field import StripHtmlOnReadStringField
 from note.sentences.caching_sentence_configuration_field import CachingSentenceConfigurationField
@@ -30,7 +30,7 @@ class SentenceNote(JPNote, Slots):
         super().__init__(note)
         self.weakref_sentence = cast(WeakRef[SentenceNote], self.weakref)
 
-        self._source_answer = StringField(self.weakref, SentenceNoteFields.source_answer)
+        self._source_answer = AutoStrippingStringField(self.weakref, SentenceNoteFields.source_answer)
         self.source_question = StripHtmlOnReadStringField(self.weakref, SentenceNoteFields.source_question)
         self.source_comments: StripHtmlOnReadStringField = StripHtmlOnReadStringField(self.weakref, SentenceNoteFields.source_comments)
 
@@ -38,7 +38,7 @@ class SentenceNote(JPNote, Slots):
 
         self.question: SentenceQuestionField = SentenceQuestionField(self.weakref, SentenceNoteFields.user_question, SentenceNoteFields.source_question)
         self.answer: StripHtmlOnReadFallbackStringField = StripHtmlOnReadFallbackStringField(self.weakref, SentenceNoteFields.user_answer, SentenceNoteFields.source_answer)
-        self._screenshot: StringField = StringField(self.weakref, SentenceNoteFields.screenshot)
+        self._screenshot: AutoStrippingStringField = AutoStrippingStringField(self.weakref, SentenceNoteFields.screenshot)
         self.audio: WritableAudioField = WritableAudioField(self.weakref, SentenceNoteFields.audio)
         self.configuration: CachingSentenceConfigurationField = CachingSentenceConfigurationField(self.weakref_sentence)
         self.parsing_result: JsonObjectField[ParsingResult] = JsonObjectField[ParsingResult](self.weakref, SentenceNoteFields.parsing_result, ParsingResultSerializer())

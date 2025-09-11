@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Generic, TypeVar
 
 from autoslot import Slots
-from note.notefields.string_field import StringField
+from note.notefields.string_field import AutoStrippingStringField
 from sysutils.lazy import Lazy
 from sysutils.weak_ref import WeakRefable
 
@@ -20,7 +20,7 @@ class JsonObjectSerializer(Generic[T], Slots):
 class JsonObjectField(Generic[T], WeakRefable, Slots):
     def __init__(self, note: WeakRef[JPNote], field: str, serializer: JsonObjectSerializer[T]) -> None:
         self._note: WeakRef[JPNote] = note
-        self._field: StringField = StringField(note, field)
+        self._field: AutoStrippingStringField = AutoStrippingStringField(note, field)
         self._serializer: JsonObjectSerializer[T] = serializer
         self._value: Lazy[T] = Lazy(lambda: serializer.deserialize(self._field.get()))
         self._weakref: WeakRef[JsonObjectField[T]] | None = None

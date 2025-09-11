@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from note.jpnote import JPNote
     from sysutils.weak_ref import WeakRef
 
-class ReadOnlyStringField(Slots):
+class AutoStrippingReadOnlyStringField(Slots):
     def __init__(self, note: WeakRef[JPNote], field_name: str) -> None:
         self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
         self._note = note
