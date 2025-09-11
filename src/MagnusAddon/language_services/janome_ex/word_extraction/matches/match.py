@@ -24,14 +24,15 @@ class Match(WeakRefable, Slots):
         self.is_configured_hidden = word_variant().configuration.hidden_matches.excludes_at_index(self.tokenized_form, word_variant().start_index)
         self.is_configured_incorrect = word_variant().configuration.incorrect_matches.excludes_at_index(self.tokenized_form, word_variant().start_index)
 
-
+    @property
+    def word(self) -> CandidateWord: return self.variant.word()
     @property
     def variant(self) -> CandidateWordVariant: return self._variant()
 
     @property
     def is_valid(self) -> bool: return self._is_valid_internal or self.is_highlighted
     @property
-    def surface_form(self) -> str: return self.variant.word().surface.form
+    def surface_form(self) -> str: return self.word.surface_variant.form
     @property
     def _is_valid_internal(self) -> bool: return not self.is_configured_incorrect
     @property
@@ -49,7 +50,7 @@ class Match(WeakRefable, Slots):
 
     @property
     def is_emergency_displayed(self) -> bool:
-        return (self.surface_is_seemingly_valid_single_token
+        return (self._surface_is_seemingly_valid_single_token
                 and self.variant.is_surface
                 and not self._base_is_valid_word
                 and not self._has_valid_for_display_sibling)
@@ -59,14 +60,10 @@ class Match(WeakRefable, Slots):
     @property
     def _sibling_matches(self) -> list[Match]: return [match for match in self.variant.matches if match != self]
     @property
-    def _base_is_valid_word(self) -> bool:
-        base = self.word.base
-        return self.word.base is not None and self.word.base.is_valid_candidate
+    def _base_is_valid_word(self) -> bool: return self.word.base_variant is not None and self.word.base_variant.is_valid_candidate
 
     @property
-    def word(self) -> CandidateWord: return self.variant.word()
-    @property
-    def surface_is_seemingly_valid_single_token(self) -> bool: return self.word.surface_is_seemingly_valid_single_token()
+    def _surface_is_seemingly_valid_single_token(self) -> bool: return self.word.surface_is_seemingly_valid_single_token()
 
     @property
     def is_shadowed(self) -> bool: return self.variant.is_shadowed

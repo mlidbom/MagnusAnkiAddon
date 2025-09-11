@@ -44,7 +44,6 @@ class CandidateWordVariant(WeakRefable, Slots):
         # will be completed in complete_analysis
         self.completed_analysis = False
         self.is_valid_candidate: bool = False
-        self.starts_with_non_word_token = self.word().start_location().token.is_non_word_character
         self.valid_vocab_matches: list[VocabMatch] = []
         self.matches: list[Match] = []
         self.valid_matches: list[Match] = []
@@ -66,7 +65,7 @@ class CandidateWordVariant(WeakRefable, Slots):
 
     def is_preliminarily_valid(self) -> bool:
         return (self.is_word and not (self.is_noise_character
-                                      or self.starts_with_non_word_token))
+                                      or self.word().starts_with_non_word_token))
 
     @property
     def vocabs_control_match_status(self) -> bool:
