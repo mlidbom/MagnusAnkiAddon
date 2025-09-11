@@ -15,7 +15,7 @@ from note.vocabulary.vocabnote_conjugator import VocabNoteConjugator
 from note.vocabulary.vocabnote_factory import VocabNoteFactory
 from note.vocabulary.vocabnote_forms import VocabNoteForms
 from note.vocabulary.vocabnote_kanji import VocabNoteKanji
-from note.vocabulary.vocabnote_matching_rules import VocabNoteMatching
+from note.vocabulary.vocabnote_matching_rules import VocabNoteMatchingConfiguration
 from note.vocabulary.vocabnote_metadata import VocabNoteMetaData
 from note.vocabulary.vocabnote_parts_of_speech import VocabNotePartsOfSpeech
 from note.vocabulary.vocabnote_question import VocabNoteQuestion
@@ -57,7 +57,7 @@ class VocabNote(WaniNote, Slots):
         self.wani_extensions: VocabNoteWaniExtensions = VocabNoteWaniExtensions(self.weakref_vocab)
         self.kanji: VocabNoteKanji = VocabNoteKanji(self.weakref_vocab)
         self.meta_data: VocabNoteMetaData = VocabNoteMetaData(self.weakref_vocab)
-        self.matching_rules: VocabNoteMatching = VocabNoteMatching(self.weakref_vocab)
+        self.matching_configuration: VocabNoteMatchingConfiguration = VocabNoteMatchingConfiguration(self.weakref_vocab)
 
     def get_direct_dependencies(self) -> set[JPNote]:
         return self.related_notes.get_direct_dependencies()
@@ -65,7 +65,7 @@ class VocabNote(WaniNote, Slots):
     def update_generated_data(self) -> None:
         self.meta_data.sentence_count.set(len(self.sentences.all()))
         self.active_answer.set(self.get_answer())
-        self.matching_rules.save()
+        self.matching_configuration.save()
         self.related_notes.save()
 
         super().update_generated_data()

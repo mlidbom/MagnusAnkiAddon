@@ -41,7 +41,7 @@ class VocabNoteMatchingRules(Slots):
     def save(self) -> None:
         self._data.save()
 
-    def overwrite_with(self, other: VocabNoteMatchingRules) ->None:
+    def overwrite_with(self, other: VocabNoteMatchingRules) -> None:
         self.surface_is_not.overwrite_with(other.surface_is_not)
         self.yield_to_surface.overwrite_with(other.yield_to_surface)
         self.prefix_is_not.overwrite_with(other.prefix_is_not)
@@ -54,13 +54,8 @@ class VocabNoteMatchingRules(Slots):
                                        .prop("suffix_is_not", self.suffix_is_not.get())
                                        .prop("required_prefix", self.required_prefix.get()).repr)
 
-class VocabNoteMatching(WeakRefable, Slots):
+class VocabMatchingRulesConfigurationFlags(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
-        self.vocab: WeakRef[VocabNote] = vocab
-        self.weakref = WeakRef(self)
-        self._rules: Lazy[VocabNoteMatchingRules] = Lazy(lambda: VocabNoteMatchingRules(vocab))
-        self.requires_exact_match: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.Requires.exact_match)
-
         self.e_stem: RequireForbidFlagField = RequireForbidFlagField(vocab, Tags.Vocab.Matching.Requires.e_stem, Tags.Vocab.Matching.Forbids.e_stem)
         self.a_stem: RequireForbidFlagField = RequireForbidFlagField(vocab, Tags.Vocab.Matching.Requires.a_stem, Tags.Vocab.Matching.Forbids.a_stem)
         self.past_tense_stem: RequireForbidFlagField = RequireForbidFlagField(vocab, Tags.Vocab.Matching.Requires.past_tense_stem, Tags.Vocab.Matching.Forbids.past_tense_stem)
@@ -69,6 +64,15 @@ class VocabNoteMatching(WeakRefable, Slots):
         self.sentence_end: RequireForbidFlagField = RequireForbidFlagField(vocab, Tags.Vocab.Matching.Requires.sentence_end, Tags.Vocab.Matching.Forbids.sentence_end)
         self.yield_last_token: RequireForbidFlagField = YieldLastTokenToOverlappingCompound(vocab)
 
+class VocabNoteMatchingConfiguration(WeakRefable, Slots):
+    def __init__(self, vocab: WeakRef[VocabNote]) -> None:
+        self.vocab: WeakRef[VocabNote] = vocab
+        self.weakref = WeakRef(self)
+        self._rules: Lazy[VocabNoteMatchingRules] = Lazy(lambda: VocabNoteMatchingRules(vocab))
+        self.requires_exact_match: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.Requires.exact_match)
+
+        self.flags = VocabMatchingRulesConfigurationFlags(vocab)
+
         self.is_inflecting_word: IsInflectingWord = IsInflectingWord(vocab)
         self.is_poison_word: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.is_poison_word)
         self.match_with_preceding_vowel: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.Todo.with_preceding_vowel)
@@ -76,11 +80,24 @@ class VocabNoteMatching(WeakRefable, Slots):
         self.is_strictly_suffix: IsStrictlySuffix = IsStrictlySuffix(vocab)
 
     @property
-    def rules(self) -> VocabNoteMatchingRules:
-        return self._rules.instance()
+    def configurable_rules(self) -> VocabNoteMatchingRules: return self._rules.instance()
 
-    def save(self) -> None:
-        self.rules.save()
+    @property
+    def e_stem(self) -> RequireForbidFlagField: return self.flags.e_stem
+    @property
+    def a_stem(self) -> RequireForbidFlagField: return self.flags.a_stem
+    @property
+    def past_tense_stem(self) -> RequireForbidFlagField: return self.flags.past_tense_stem
+    @property
+    def t_form_stem(self) -> RequireForbidFlagField: return self.flags.t_form_stem
+    @property
+    def single_token(self) -> RequireForbidFlagField: return self.flags.single_token
+    @property
+    def sentence_end(self) -> RequireForbidFlagField: return self.flags.sentence_end
+    @property
+    def yield_last_token(self) -> RequireForbidFlagField: return self.flags.yield_last_token
+
+    def save(self) -> None: self.configurable_rules.save()
 
     def __repr__(self) -> str: return (SkipFalsyValuesDebugReprBuilder()
                                        .flag("requires_exact_match", self.requires_exact_match.is_set())
@@ -102,4 +119,4 @@ class VocabNoteMatching(WeakRefable, Slots):
                                        .flag("match_with_preceding_vowel", self.match_with_preceding_vowel.is_set())
                                        .flag("question_overrides_form", self.question_overrides_form.is_set())
                                        .flag("is_strictly_suffix", self.is_strictly_suffix.is_set())
-                                       .include(self.rules).repr)
+                                       .include(self.configurable_rules).repr)

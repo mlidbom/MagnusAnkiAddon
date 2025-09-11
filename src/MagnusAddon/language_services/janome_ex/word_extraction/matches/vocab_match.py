@@ -13,7 +13,7 @@ from sysutils.weak_ref import WeakRef
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
     from note.vocabulary.vocabnote import VocabNote
-    from note.vocabulary.vocabnote_matching_rules import VocabNoteMatching
+    from note.vocabulary.vocabnote_matching_rules import VocabNoteMatchingConfiguration
 
 class VocabMatch(Match, Slots):
     def __init__(self, word_variant: WeakRef[CandidateWordVariant], vocab: VocabNote) -> None:
@@ -29,7 +29,7 @@ class VocabMatch(Match, Slots):
         self.owns_form: bool = vocab.forms.is_owned_form(self.tokenized_form)
 
     @property
-    def matching(self) -> VocabNoteMatching: return self.vocab.matching_rules
+    def matching(self) -> VocabNoteMatchingConfiguration: return self.vocab.matching_configuration
     @property
     def match_form(self) -> str: return self.vocab.get_question()
     @property
@@ -46,8 +46,8 @@ class VocabMatch(Match, Slots):
     @property
     def start_index(self) -> int:
         if (self.matching.question_overrides_form.is_set()
-                and self.matching.rules.required_prefix.any()):
-            [prefix for prefix in self.matching.rules.required_prefix.get() if self.parsed_form.startswith(prefix)]
+                and self.matching.configurable_rules.required_prefix.any()):
+            [prefix for prefix in self.matching.configurable_rules.required_prefix.get() if self.parsed_form.startswith(prefix)]
             return 12
 
         return super().start_index

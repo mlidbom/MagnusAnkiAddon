@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 class DisplayRequirements(Slots):
     def __init__(self, match: WeakRef[VocabMatch]) -> None:
         vocab = match().vocab
-        self.rules = vocab.matching_rules
+        self.rules = vocab.matching_configuration
         self.match = match
 
         self.is_yield_last_token_to_overlapping_compound_requirement_fulfilled = self._is_yield_last_token_to_overlapping_compound_requirement_fulfilled()

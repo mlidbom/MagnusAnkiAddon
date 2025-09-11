@@ -219,5 +219,5 @@ class VocabCloner(Slots):
             self._copy_vocab_tags_to(clone)
 
         if copy_matching_rules:
-            clone.matching_rules.rules.overwrite_with(self.note.matching_rules.rules)
+            clone.matching_configuration.configurable_rules.overwrite_with(self.note.matching_configuration.configurable_rules)
         return clone

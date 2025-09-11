@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 class MiscRequirements(Slots):
     def __init__(self, match: WeakRef[VocabMatch]) -> None:
         vocab = match().vocab
-        self.rules = vocab.matching_rules
+        self.rules = vocab.matching_configuration
         self.match = match
 
         self.is_poison_word = self.rules.is_poison_word.is_set()
@@ -26,13 +26,13 @@ class MiscRequirements(Slots):
         self.is_compound_requirement_fulfilled = (not self.rules.single_token.is_forbidden
                                                   or match().word_variant().word.is_custom_compound)
 
-        surface_is_not = self.rules.rules.surface_is_not.get()
+        surface_is_not = self.rules.configurable_rules.surface_is_not.get()
         self.surface_is_not_requirement_fulfilled = (not any(surface_is_not)
                                                      or match().word_variant().is_surface
                                                      or match().word_variant().word.surface_variant.form not in surface_is_not)
 
         # todo: this should be in display requirements but due to the messed up way we intermingle logic for validity and display that breaks the display. For now we have it here.
-        yield_to_surface = self.rules.rules.yield_to_surface.get()
+        yield_to_surface = self.rules.configurable_rules.yield_to_surface.get()
         self.yield_to_surface_requirement_fulfilled = (not any(yield_to_surface)
                                                        or match().word_variant().is_surface
                                                        or match().word_variant().word.surface_variant.form not in yield_to_surface)

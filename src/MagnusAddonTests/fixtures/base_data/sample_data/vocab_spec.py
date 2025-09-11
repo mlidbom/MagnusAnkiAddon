@@ -59,19 +59,19 @@ class VocabSpec(Slots):
             vocab_note.set_tag(tag)
 
         for excluded_surface in self.surface_is_not:
-            vocab_note.matching_rules.rules.surface_is_not.add(excluded_surface)
+            vocab_note.matching_configuration.configurable_rules.surface_is_not.add(excluded_surface)
 
         for yield_to_surface in self.yield_to_surface:
-            vocab_note.matching_rules.rules.yield_to_surface.add(yield_to_surface)
+            vocab_note.matching_configuration.configurable_rules.yield_to_surface.add(yield_to_surface)
 
         for forbidden_prefix in self.prefix_is_not:
-            vocab_note.matching_rules.rules.prefix_is_not.add(forbidden_prefix)
+            vocab_note.matching_configuration.configurable_rules.prefix_is_not.add(forbidden_prefix)
 
         for forbidden_suffix in self.suffix_is_not:
-            vocab_note.matching_rules.rules.suffix_is_not.add(forbidden_suffix)
+            vocab_note.matching_configuration.configurable_rules.suffix_is_not.add(forbidden_suffix)
 
         for required_prefix in self.required_prefix:
-            vocab_note.matching_rules.rules.required_prefix.add(required_prefix)
+            vocab_note.matching_configuration.configurable_rules.required_prefix.add(required_prefix)
 
         if self.tos:
             vocab_note.parts_of_speech.set_raw_string_value(self.tos)

@@ -17,18 +17,18 @@ if TYPE_CHECKING:
 class HeadRequirements(Slots):
     _te_forms = {"て", "って", "で"}
     def __init__(self, match: VocabMatch, word_variant: WeakRef[CandidateWordVariant], end_of_stem: WeakRef[TextAnalysisLocation] | None) -> None:
-        rules = match.vocab.matching_rules
+        rules = match.vocab.matching_configuration
         self.config = rules
 
         self.has_prefix = end_of_stem is not None and end_of_stem().token.surface != "" and end_of_stem().token.surface[-1] not in non_word_characters
         self.fulfills_is_strictly_suffix = not rules.is_strictly_suffix.is_set() or self.has_prefix
 
-        self.fulfills_required_prefix = (not rules.rules.required_prefix.get()
-                                         or (end_of_stem is not None and self.has_prefix and any(required for required in rules.rules.required_prefix.get() if end_of_stem().token.surface.endswith(required))))
+        self.fulfills_required_prefix = (not rules.configurable_rules.required_prefix.get()
+                                         or (end_of_stem is not None and self.has_prefix and any(required for required in rules.configurable_rules.required_prefix.get() if end_of_stem().token.surface.endswith(required))))
 
-        self.fulfills_prefix_not = (not rules.rules.prefix_is_not.get()
+        self.fulfills_prefix_not = (not rules.configurable_rules.prefix_is_not.get()
                                     or not self.has_prefix
-                                    or (end_of_stem is not None and not any(forbidden for forbidden in rules.rules.prefix_is_not.get() if end_of_stem().token.surface.endswith(forbidden))))
+                                    or (end_of_stem is not None and not any(forbidden for forbidden in rules.configurable_rules.prefix_is_not.get() if end_of_stem().token.surface.endswith(forbidden))))
 
         self.has_a_stem = end_of_stem is not None and end_of_stem().token.surface[-1] in conjugator.a_stem_characters
         self.fulfills_forbids_a_stem_requirement = not rules.a_stem.is_forbidden or not self.has_a_stem

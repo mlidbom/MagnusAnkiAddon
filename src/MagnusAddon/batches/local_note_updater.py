@@ -68,10 +68,10 @@ def tag_sentence_metadata() -> None:
 def tag_vocab_metadata() -> None:
     def tag_note(vocab: VocabNote) -> None:
         vocab.toggle_tag(Tags.Vocab.has_no_studying_sentences, not any(vocab.sentences.studying()))
-        vocab.toggle_tag(Tags.Vocab.Matching.Uses.required_prefix, not vocab.matching_rules.rules.required_prefix.none())
-        vocab.toggle_tag(Tags.Vocab.Matching.Uses.prefix_is_not, not vocab.matching_rules.rules.prefix_is_not.none())
-        vocab.toggle_tag(Tags.Vocab.Matching.Uses.suffix_is_not, not vocab.matching_rules.rules.suffix_is_not.none())
-        vocab.toggle_tag(Tags.Vocab.Matching.Uses.surface_is_not, not vocab.matching_rules.rules.surface_is_not.none())
+        vocab.toggle_tag(Tags.Vocab.Matching.Uses.required_prefix, not vocab.matching_configuration.configurable_rules.required_prefix.none())
+        vocab.toggle_tag(Tags.Vocab.Matching.Uses.prefix_is_not, not vocab.matching_configuration.configurable_rules.prefix_is_not.none())
+        vocab.toggle_tag(Tags.Vocab.Matching.Uses.suffix_is_not, not vocab.matching_configuration.configurable_rules.suffix_is_not.none())
+        vocab.toggle_tag(Tags.Vocab.Matching.Uses.surface_is_not, not vocab.matching_configuration.configurable_rules.surface_is_not.none())
 
     progress_display_runner.process_with_progress(app.col().vocab.all(), tag_note, "Tag vocab notes")
 

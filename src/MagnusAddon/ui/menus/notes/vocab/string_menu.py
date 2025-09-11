@@ -34,11 +34,11 @@ def build_string_menu(string_menu: QMenu, vocab: VocabNote, menu_string: str) ->
 
     def build_add_menu(vocab_add_menu: QMenu) -> None:
         def build_add_rule_menu(add_rule_menu: QMenu) -> None:
-            add_ui_action(add_rule_menu, shortcutfinger.home1("Surface is not"), lambda: vocab.matching_rules.rules.surface_is_not.add(menu_string), menu_string not in vocab.matching_rules.rules.surface_is_not.get())
-            add_ui_action(add_rule_menu, shortcutfinger.home2("Yield to surface"), lambda: vocab.matching_rules.rules.yield_to_surface.add(menu_string), menu_string not in vocab.matching_rules.rules.yield_to_surface.get())
-            add_ui_action(add_rule_menu, shortcutfinger.home3("Prefix is not"), lambda: vocab.matching_rules.rules.prefix_is_not.add(menu_string), menu_string not in vocab.matching_rules.rules.prefix_is_not.get())
-            add_ui_action(add_rule_menu, shortcutfinger.home4("Required prefix"), lambda: vocab.matching_rules.rules.required_prefix.add(menu_string), menu_string not in vocab.matching_rules.rules.required_prefix.get())
-            add_ui_action(add_rule_menu, shortcutfinger.home5("Suffix is not"), lambda: vocab.matching_rules.rules.suffix_is_not.add(menu_string), menu_string not in vocab.matching_rules.rules.suffix_is_not.get())
+            add_ui_action(add_rule_menu, shortcutfinger.home1("Surface is not"), lambda: vocab.matching_configuration.configurable_rules.surface_is_not.add(menu_string), menu_string not in vocab.matching_configuration.configurable_rules.surface_is_not.get())
+            add_ui_action(add_rule_menu, shortcutfinger.home2("Yield to surface"), lambda: vocab.matching_configuration.configurable_rules.yield_to_surface.add(menu_string), menu_string not in vocab.matching_configuration.configurable_rules.yield_to_surface.get())
+            add_ui_action(add_rule_menu, shortcutfinger.home3("Prefix is not"), lambda: vocab.matching_configuration.configurable_rules.prefix_is_not.add(menu_string), menu_string not in vocab.matching_configuration.configurable_rules.prefix_is_not.get())
+            add_ui_action(add_rule_menu, shortcutfinger.home4("Required prefix"), lambda: vocab.matching_configuration.configurable_rules.required_prefix.add(menu_string), menu_string not in vocab.matching_configuration.configurable_rules.required_prefix.get())
+            add_ui_action(add_rule_menu, shortcutfinger.home5("Suffix is not"), lambda: vocab.matching_configuration.configurable_rules.suffix_is_not.add(menu_string), menu_string not in vocab.matching_configuration.configurable_rules.suffix_is_not.get())
 
         add_ui_action(vocab_add_menu, shortcutfinger.home1("Synonym"), lambda: vocab.related_notes.synonyms.add(menu_string), menu_string not in vocab.related_notes.synonyms.strings())
         add_ui_action(vocab_add_menu, shortcutfinger.home2("Synonyms transitively one level"), lambda: vocab.related_notes.synonyms.add_transitively_one_level(menu_string))
@@ -50,11 +50,11 @@ def build_string_menu(string_menu: QMenu, vocab: VocabNote, menu_string: str) ->
 
     def build_remove_menu(vocab_remove_menu: QMenu) -> None:
         def build_remove_rule_menu(remove_rule_menu: QMenu) -> None:
-            add_ui_action(remove_rule_menu, shortcutfinger.home1("Surface is not"), lambda: vocab.matching_rules.rules.surface_is_not.remove(menu_string), menu_string in vocab.matching_rules.rules.surface_is_not.get())
-            add_ui_action(remove_rule_menu, shortcutfinger.home2("Yield to surface"), lambda: vocab.matching_rules.rules.yield_to_surface.remove(menu_string), menu_string in vocab.matching_rules.rules.yield_to_surface.get())
-            add_ui_action(remove_rule_menu, shortcutfinger.home3("Prefix is not"), lambda: vocab.matching_rules.rules.prefix_is_not.remove(menu_string), menu_string in vocab.matching_rules.rules.prefix_is_not.get())
-            add_ui_action(remove_rule_menu, shortcutfinger.home4("Required prefix"), lambda: vocab.matching_rules.rules.required_prefix.remove(menu_string), menu_string in vocab.matching_rules.rules.required_prefix.get())
-            add_ui_action(remove_rule_menu, shortcutfinger.home5("Suffix is not"), lambda: vocab.matching_rules.rules.suffix_is_not.remove(menu_string), menu_string in vocab.matching_rules.rules.suffix_is_not.get())
+            add_ui_action(remove_rule_menu, shortcutfinger.home1("Surface is not"), lambda: vocab.matching_configuration.configurable_rules.surface_is_not.remove(menu_string), menu_string in vocab.matching_configuration.configurable_rules.surface_is_not.get())
+            add_ui_action(remove_rule_menu, shortcutfinger.home2("Yield to surface"), lambda: vocab.matching_configuration.configurable_rules.yield_to_surface.remove(menu_string), menu_string in vocab.matching_configuration.configurable_rules.yield_to_surface.get())
+            add_ui_action(remove_rule_menu, shortcutfinger.home3("Prefix is not"), lambda: vocab.matching_configuration.configurable_rules.prefix_is_not.remove(menu_string), menu_string in vocab.matching_configuration.configurable_rules.prefix_is_not.get())
+            add_ui_action(remove_rule_menu, shortcutfinger.home4("Required prefix"), lambda: vocab.matching_configuration.configurable_rules.required_prefix.remove(menu_string), menu_string in vocab.matching_configuration.configurable_rules.required_prefix.get())
+            add_ui_action(remove_rule_menu, shortcutfinger.home5("Suffix is not"), lambda: vocab.matching_configuration.configurable_rules.suffix_is_not.remove(menu_string), menu_string in vocab.matching_configuration.configurable_rules.suffix_is_not.get())
 
         add_ui_action(vocab_remove_menu, shortcutfinger.home1("Synonym"), lambda: vocab.related_notes.synonyms.remove(menu_string), menu_string in vocab.related_notes.synonyms.strings())
         add_ui_action(vocab_remove_menu, shortcutfinger.home2("Confused with"), lambda: vocab.related_notes.confused_with.remove(menu_string), menu_string in vocab.related_notes.confused_with.get())
