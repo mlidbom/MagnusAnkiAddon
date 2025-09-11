@@ -31,7 +31,6 @@ class CandidateWord(WeakRefable, Slots):
         self.valid_variants: list[CandidateWordVariant] = []
         self.display_word_variants: list[CandidateWordVariant] = []
 
-
     @property
     def should_include_surface_in_valid_words(self) -> bool: return (self.surface_variant.is_valid_candidate
                                                                      and (not self.is_inflected_word or not self.has_valid_base_variant))
@@ -43,9 +42,7 @@ class CandidateWord(WeakRefable, Slots):
                                                                    or (not self.has_valid_base_variant and self.has_seemingly_valid_single_token))
 
     @property
-    def should_include_base_in_display_variants(self) -> bool: return (self.base_variant is not None
-                                                                       and self.has_valid_base_variant
-                                                                       and any(self.base_variant.display_matches))
+    def has_valid_base_with_display_matches(self) -> bool: return self.has_valid_base_variant and any(non_optional(self.base_variant).display_matches)
 
     @property
     def should_include_surface_in_display_variants(self) -> bool: return self.should_include_surface_in_all_words and any(self.surface_variant.display_matches)
@@ -75,13 +72,16 @@ class CandidateWord(WeakRefable, Slots):
 
         if self.should_include_surface_in_display_variants:
             self.display_word_variants.append(self.surface_variant)
-        elif self.should_include_base_in_display_variants:
+        elif self.has_valid_base_with_display_matches:
             self.display_word_variants.append(non_optional(self.base_variant))
 
-        if len(old_display_word_variants) != len(self.display_word_variants):
-            return True
+        def displaywords_were_changed() -> bool:
+            if len(old_display_word_variants) != len(self.display_word_variants):
+                return True
 
-        return any(old_display_word_variants[index] != self.display_word_variants[index] for index in range(len(old_display_word_variants)))
+            return any(old_display_word_variants[index] != self.display_word_variants[index] for index in range(len(old_display_word_variants)))
+
+        return displaywords_were_changed()
 
     def has_valid_words(self) -> bool: return len(self.valid_variants) > 0
 
