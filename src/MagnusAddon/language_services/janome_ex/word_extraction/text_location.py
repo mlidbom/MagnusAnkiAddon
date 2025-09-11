@@ -61,7 +61,7 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
 
         self.known_words = [candidate for candidate in self.candidate_words if candidate.is_word]
         self.valid_words = [candidate for candidate in self.candidate_words if candidate.has_valid_words()]
-        self.variants = ex_sequence.flatten([v.all_word_variants for v in self.candidate_words])
+        self.variants = ex_sequence.flatten([v.indexing_variants for v in self.candidate_words])
         self.valid_variants = ex_sequence.flatten([word.valid_variants for word in self.valid_words])
 
     def _run_display_analysis_pass_true_if_there_were_changes(self) -> bool:
@@ -71,7 +71,7 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
                 changes_made = True
 
         if changes_made:
-            self.display_words = [candidate for candidate in self.candidate_words if candidate.display_word_variants]
+            self.display_words = [candidate for candidate in self.candidate_words if candidate.display_variants]
         return changes_made
 
     def analysis_step_3_run_initial_display_analysis(self) -> None:
@@ -86,7 +86,7 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
 
         the_next_compound_yields_to_the_one_after_that_so_this_one_no_longer_yields = self._run_display_analysis_pass_true_if_there_were_changes()
         if self.display_words and not any(self.is_shadowed_by):
-            self.display_variants = self.display_words[0].display_word_variants
+            self.display_variants = self.display_words[0].display_variants
 
             covering_forward_count = self.display_words[0].location_count - 1
             for shadowed in self.forward_list(covering_forward_count)[1:]:

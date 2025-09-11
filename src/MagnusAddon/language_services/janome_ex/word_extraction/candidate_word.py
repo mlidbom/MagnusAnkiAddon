@@ -27,28 +27,26 @@ class CandidateWord(WeakRefable, Slots):
         self.surface_variant: CandidateWordVariant = CandidateWordVariant(self.weakref, self.surface_form)
         self.base_variant: CandidateWordVariant | None = CandidateWordVariant(self.weakref, self.base_form) if self.base_form != self.surface_form else None
 
-        self.all_word_variants: list[CandidateWordVariant] = []
+        self.indexing_variants: list[CandidateWordVariant] = []
         self.valid_variants: list[CandidateWordVariant] = []
-        self.display_word_variants: list[CandidateWordVariant] = []
+        self.display_variants: list[CandidateWordVariant] = []
 
     @property
     def should_include_surface_in_valid_words(self) -> bool: return (self.surface_variant.is_valid_candidate
                                                                      and (not self.is_inflected_word or not self.has_valid_base_variant))
     @property
     def has_valid_base_variant(self) -> bool: return self.base_variant is not None and self.base_variant.is_valid_candidate
-
     @property
     def should_include_surface_in_all_words(self) -> bool: return (self.should_include_surface_in_valid_words
                                                                    or (not self.has_valid_base_variant and self.has_seemingly_valid_single_token))
-
     @property
     def has_valid_base_with_display_matches(self) -> bool: return self.has_valid_base_variant and any(non_optional(self.base_variant).display_matches)
-
     @property
     def should_include_surface_in_display_variants(self) -> bool: return self.should_include_surface_in_all_words and any(self.surface_variant.display_matches)
-
     @property
-    def should_include_base_in_all_variants(self) -> bool: return self.base_variant is not None and (self.base_variant.is_known_word or self.has_valid_base_variant)
+    def should_index_base(self) -> bool: return self.base_variant is not None and (self.base_variant.is_known_word or self.has_valid_base_variant)
+    @property
+    def should_index_surface(self) -> bool: return self.surface_variant.is_known_word or self.should_include_surface_in_all_words
 
     def run_validity_analysis(self) -> None:
         self.surface_variant.run_validity_analysis()
@@ -60,26 +58,26 @@ class CandidateWord(WeakRefable, Slots):
         if self.should_include_surface_in_valid_words:
             self.valid_variants.append(self.surface_variant)
 
-        if self.surface_variant.is_known_word or self.should_include_surface_in_all_words:
-            self.all_word_variants.append(self.surface_variant)
+        if self.should_index_surface:
+            self.indexing_variants.append(self.surface_variant)
 
-        if self.should_include_base_in_all_variants:
-            self.all_word_variants.append(non_optional(self.base_variant))
+        if self.should_index_base:
+            self.indexing_variants.append(non_optional(self.base_variant))
 
     def run_display_analysis_pass_true_if_there_were_changes(self) -> bool:
-        old_display_word_variants = self.display_word_variants
-        self.display_word_variants = []
+        old_display_word_variants = self.display_variants
+        self.display_variants = []
 
         if self.should_include_surface_in_display_variants:
-            self.display_word_variants.append(self.surface_variant)
+            self.display_variants.append(self.surface_variant)
         elif self.has_valid_base_with_display_matches:
-            self.display_word_variants.append(non_optional(self.base_variant))
+            self.display_variants.append(non_optional(self.base_variant))
 
         def displaywords_were_changed() -> bool:
-            if len(old_display_word_variants) != len(self.display_word_variants):
+            if len(old_display_word_variants) != len(self.display_variants):
                 return True
 
-            return any(old_display_word_variants[index] != self.display_word_variants[index] for index in range(len(old_display_word_variants)))
+            return any(old_display_word_variants[index] != self.display_variants[index] for index in range(len(old_display_word_variants)))
 
         return displaywords_were_changed()
 
