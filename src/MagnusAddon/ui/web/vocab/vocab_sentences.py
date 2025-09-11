@@ -84,31 +84,6 @@ def generate_sentences_list_html(_vocab_note: VocabNote) -> str:
 
         return highlight_match(first_shaded_match, "undisplayedMatch")
 
-    def format_sentence(html_sentence: str) -> str:
-        clean_sentence = ex_str.strip_html_and_bracket_markup(html_sentence)
-
-        for form in secondary_forms_derived_compounds_forms:
-            if form in clean_sentence:
-                return clean_sentence.replace(form, f"""<span class="vocabInContext secondaryFormDerivedCompoundForm">{form}</span>""")
-
-        for form in derived_compounds_forms:
-            if form in clean_sentence:
-                return clean_sentence.replace(form, f"""<span class="vocabInContext derivedCompoundForm">{form}</span>""")
-
-        for form in secondary_forms_containing_primary_form_forms:
-            if form in clean_sentence:
-                return clean_sentence.replace(form, f"""<span class="vocabInContext secondaryForm">{form}</span>""")
-
-        for form in primary_form_forms:
-            if form in clean_sentence:
-                return clean_sentence.replace(form, f"""<span class="vocabInContext primaryForm">{form}</span>""")
-
-        for form in secondary_forms_forms:
-            if form in clean_sentence:
-                return clean_sentence.replace(form, f"""<span class="vocabInContext secondaryForm">{form}</span>""")
-
-        return clean_sentence
-
     sorted_sentences: set[str] = set()
     highlighted_sentences = set(_vocab_note.sentences.user_highlighted())
     studying_sentences = set(_vocab_note.sentences.studying())
