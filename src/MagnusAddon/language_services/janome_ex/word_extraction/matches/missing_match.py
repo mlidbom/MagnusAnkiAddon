@@ -17,7 +17,7 @@ class MissingMatch(Match):
     @property
     def match_form(self) -> str: return "[MISSING]"  # Change this so the tests can distinguish that this is a missing match
     @property
-    def is_secondary_match(self) -> bool: return True #todo: how can this be considered a secondary match when there are no matches?
+    def is_secondary_match(self) -> bool: return False #There are no matches so this can hardly be a secondary match
     @property
     def is_valid(self) -> bool: return False
     @property
