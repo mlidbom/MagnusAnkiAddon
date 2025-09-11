@@ -82,7 +82,7 @@ def generate_sentences_list_html(_vocab_note: VocabNote) -> str:
                 return highlight_match(match_shading_our_match, "secondaryFormDerivedCompoundForm")
             return highlight_match(match_shading_our_match, "derivedCompoundForm")
 
-        return result.sentence
+        return highlight_match(first_shaded_match, "undisplayedMatch")
 
     def format_sentence(html_sentence: str) -> str:
         clean_sentence = ex_str.strip_html_and_bracket_markup(html_sentence)

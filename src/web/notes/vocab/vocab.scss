@@ -212,6 +212,7 @@
                             &.secondaryForm { background-color: var(--colorBgRad); }
                             &.derivedCompoundForm { background-color: var(--colorBgRead); }
                             &.secondaryFormDerivedCompoundForm { background-color: color-mix(in lch, var(--colorBgVoc), var(--colorBgRead) 80%); }
+                            &.undisplayedMatch { background-color: lightgrey }
                         }
                     }
                     .sentenceAnswer { color: var(--colorTextMeaning);
