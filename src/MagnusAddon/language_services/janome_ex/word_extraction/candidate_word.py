@@ -18,29 +18,14 @@ from sysutils.ex_str import newline
 
 class CandidateWord(WeakRefable, Slots):
     def __init__(self, locations: list[WeakRef[TextAnalysisLocation]]) -> None:
-        self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
-        self.analysis: WeakRef[TextAnalysis] = locations[0]().analysis
-        self.locations: list[WeakRef[TextAnalysisLocation]] = locations
-        self.is_custom_compound: bool = len(locations) > 1
-        self.start_location: WeakRef[TextAnalysisLocation] = self.locations[0]
-        self.end_location: WeakRef[TextAnalysisLocation] = self.locations[-1]
-        self.location_count = len(self.locations)
         self.weakref = WeakRef(self)
-        self.starts_with_non_word_token = self.start_location().token.is_non_word_character
+        self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
+        self.locations: list[WeakRef[TextAnalysisLocation]] = locations
 
         self.surface_form = "".join([t().token.surface for t in self.locations])
         self.base_form = "".join([location().token.surface for location in self.locations[:-1]]) + self.locations[-1]().token.base_form
-
         self.surface_variant: CandidateWordVariant = CandidateWordVariant(self.weakref, self.surface_form)
         self.base_variant: CandidateWordVariant | None = CandidateWordVariant(self.weakref, self.base_form) if self.base_form != self.surface_form else None
-
-        self.is_word: bool = self.surface_variant.is_known_word or self.base_variant is not None and self.base_variant.is_known_word
-
-        self.is_inflectable_word: bool = self.end_location().token.is_inflectable_word
-        self.next_token_is_inflecting_word: bool = self.end_location().is_next_location_inflecting_word()
-        self.is_inflected_word: bool = self.is_inflectable_word and self.next_token_is_inflecting_word
-
-        self.starts_with_non_word_character: bool = self.starts_with_non_word_token or self.surface_form in noise_characters
 
         self.should_include_surface_in_all_words: bool = False
         self.should_include_base_in_valid_words: bool = False
@@ -51,6 +36,29 @@ class CandidateWord(WeakRefable, Slots):
         self.valid_variants: list[CandidateWordVariant] = []
         self.display_word_variants: list[CandidateWordVariant] = []
 
+    @property
+    def analysis(self) -> WeakRef[TextAnalysis]: return self.locations[0]().analysis
+    @property
+    def is_custom_compound(self) -> bool: return self.location_count > 1
+    @property
+    def start_location(self) -> WeakRef[TextAnalysisLocation]: return self.locations[0]
+    @property
+    def end_location(self) -> WeakRef[TextAnalysisLocation]: return self.locations[-1]
+    @property
+    def location_count(self) -> int: return len(self.locations)
+    @property
+    def starts_with_non_word_token(self) -> bool: return self.start_location().token.is_non_word_character
+
+    @property
+    def is_word(self) -> bool: return self.surface_variant.is_known_word or (self.base_variant is not None and self.base_variant.is_known_word)
+    @property
+    def is_inflectable_word(self) -> bool: return self.end_location().token.is_inflectable_word
+    @property
+    def next_token_is_inflecting_word(self) -> bool: return self.end_location().is_next_location_inflecting_word()
+    @property
+    def is_inflected_word(self) -> bool: return self.is_inflectable_word and self.next_token_is_inflecting_word
+    @property
+    def starts_with_non_word_character(self) -> bool: return self.starts_with_non_word_token or self.surface_form in noise_characters
 
     @property
     def is_shadowed(self) -> bool: return self.is_shadowed_by is not None

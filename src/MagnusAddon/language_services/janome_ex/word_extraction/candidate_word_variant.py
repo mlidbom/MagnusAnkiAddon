@@ -47,10 +47,8 @@ class CandidateWordVariant(WeakRefable, Slots):
 
     @property
     def is_surface(self) -> bool: return self.form == self.word().surface_form
-
     @property
     def is_preliminarily_valid(self) -> bool: return self.is_known_word and not self.word().starts_with_non_word_character
-
     @property
     def vocabs_control_match_status(self) -> bool:
         return (any(self.valid_vocab_matches)
