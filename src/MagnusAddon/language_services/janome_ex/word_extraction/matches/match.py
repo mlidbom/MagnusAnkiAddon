@@ -63,7 +63,7 @@ class Match(WeakRefable, Slots):
     def _base_is_valid_word(self) -> bool: return self.word.base_variant is not None and self.word.base_variant.is_valid_candidate
 
     @property
-    def _surface_is_seemingly_valid_single_token(self) -> bool: return self.word.has_seemingly_valid_single_token()
+    def _surface_is_seemingly_valid_single_token(self) -> bool: return self.word.has_seemingly_valid_single_token
 
     @property
     def is_shadowed(self) -> bool: return self.word.is_shadowed
