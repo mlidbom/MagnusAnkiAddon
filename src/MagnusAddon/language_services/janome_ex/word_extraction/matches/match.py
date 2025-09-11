@@ -20,9 +20,11 @@ class Match(WeakRefable, Slots):
         self.match_form: str = self.tokenized_form
         self.answer: str = ""
         self.readings: list[str] = []
-        self.rules = rules
-        self.is_configured_hidden = word_variant().configuration.hidden_matches.excludes_at_index(self.tokenized_form, word_variant().start_index)
-        self.is_configured_incorrect = word_variant().configuration.incorrect_matches.excludes_at_index(self.tokenized_form, word_variant().start_index)
+
+    @property
+    def is_configured_hidden(self) -> bool: return self.variant.configuration.hidden_matches.excludes_at_index(self.tokenized_form, self.variant.start_index)
+    @property
+    def is_configured_incorrect(self) -> bool: return self.variant.configuration.incorrect_matches.excludes_at_index(self.tokenized_form, self.variant.start_index)
 
     @property
     def word(self) -> CandidateWord: return self.variant.word

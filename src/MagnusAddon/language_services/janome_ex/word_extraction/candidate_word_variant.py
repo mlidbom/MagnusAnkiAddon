@@ -69,7 +69,7 @@ class CandidateWordVariant(WeakRefable, Slots):
     @property
     def valid_vocab_matches(self) -> list[VocabMatch]: return [vm for vm in self.vocab_matches if vm.is_valid]
     @property
-    def is_valid(self) -> bool: return any(match for match in self.matches if match.is_valid)
+    def is_valid(self) -> bool: return any(match for match in self._once_analyzed.matches if match.is_valid)
     @property
     def display_matches(self) -> list[Match]: return [match for match in self._once_analyzed.matches if match.is_displayed]
 
