@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from sysutils import ex_lambda
+from sysutils.lazy import Lazy
 from sysutils.typed import non_optional
 from ui.menus.menu_utils import shortcutfinger
 from ui.menus.menu_utils.ex_qmenu import add_ui_action
@@ -17,16 +18,16 @@ if TYPE_CHECKING:
 def build_string_menu(string_menu: QMenu, sentence: SentenceNote, menu_string: str) -> None:
     def add_add_word_exclusion_action(add_menu: QMenu, exclusion_type_title: str, exclusion_set: WordExclusionSet) -> None:
         menu_string_as_word_exclusion = WordExclusion.global_(menu_string)
-        analysis_variable_that_keeps_a_root_for_the_weak_refs_so_they_are_not_cleaned_up = sentence.create_analysis()
-        valid_words = analysis_variable_that_keeps_a_root_for_the_weak_refs_so_they_are_not_cleaned_up.valid_word_variants
-        words_excluded_by_menu_string: list[CandidateWordVariant] = [w for w in valid_words if menu_string_as_word_exclusion.excludes_form_at_index(w.form, w.start_index)]
-        if any(words_excluded_by_menu_string):
-            if len(words_excluded_by_menu_string) == 1:
-                add_ui_action(add_menu, exclusion_type_title, lambda: exclusion_set.add(words_excluded_by_menu_string[0].to_exclusion()))
+        analysis = sentence.create_analysis()
+        valid_words = Lazy(lambda: analysis.valid_word_variants) #these little tricks with the Lazy is to capture the analysis in a closure so that the weak references within the analysis don't get cleaned up before the action is invoked in the UI by the user.
+        words_excluded_by_menu_string: Lazy[list[CandidateWordVariant]] = Lazy(lambda: [w for w in valid_words() if menu_string_as_word_exclusion.excludes_form_at_index(w.form, w.start_index)])
+        if any(words_excluded_by_menu_string()):
+            if len(words_excluded_by_menu_string()) == 1:
+                add_ui_action(add_menu, exclusion_type_title, lambda: exclusion_set.add(words_excluded_by_menu_string()[0].to_exclusion()))
             else:
                 add_exclusion_menu: QMenu = non_optional(add_menu.addMenu(exclusion_type_title))
 
-                for excluded_index, matched in enumerate(words_excluded_by_menu_string):
+                for excluded_index, matched in enumerate(words_excluded_by_menu_string()):
                     add_ui_action(add_exclusion_menu, shortcutfinger.finger_by_priority_order(excluded_index, f"{matched.start_index}: {matched.form}"), ex_lambda.bind1(exclusion_set.add, matched.to_exclusion()))
         else:
             add_ui_action(add_menu, exclusion_type_title, lambda: None).setEnabled(False)
