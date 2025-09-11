@@ -50,7 +50,8 @@ class VocabMatch(Match, Slots):
             matched_prefixes = [prefix for prefix in self.matching.configurable_rules.required_prefix.get()
                                 if self.parsed_form.startswith(prefix)]
             if matched_prefixes:
-                return super().start_index - max(len(prefix) for prefix in matched_prefixes)
+                matched_prefix_length = max(len(prefix) for prefix in matched_prefixes)
+                return super().start_index - matched_prefix_length
 
         return super().start_index
 
