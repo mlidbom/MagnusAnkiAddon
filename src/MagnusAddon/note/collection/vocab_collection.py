@@ -62,24 +62,24 @@ class _VocabCache(NoteCache[VocabNote, _VocabSnapshot], Slots):
 
     def _create_snapshot(self, note: VocabNote) -> _VocabSnapshot: return _VocabSnapshot(note)
 
-    def _inheritor_remove_from_cache(self, note: VocabNote, cached: _VocabSnapshot) -> None:
-        for form in cached.forms: self._by_form[form].remove(note)
-        for part in cached.compound_parts: self._by_compound_part[part].remove(note)
-        self._by_derived_from[cached.derived_from].remove(note)
-        for kanji in cached.main_form_kanji: self._by_kanji_in_main_form[kanji].remove(note)
-        for kanji in cached.all_kanji: self._by_kanji_in_any_form[kanji].remove(note)
-        for kanji in cached.readings: self._by_reading[kanji].remove(note)
-        for stem in cached.stems: self._by_stem[stem].remove(note)
+    def _inheritor_remove_from_cache(self, note: VocabNote, snapshot: _VocabSnapshot) -> None:
+        for form in snapshot.forms: self._by_form[form].remove(note)
+        for part in snapshot.compound_parts: self._by_compound_part[part].remove(note)
+        self._by_derived_from[snapshot.derived_from].remove(note)
+        for kanji in snapshot.main_form_kanji: self._by_kanji_in_main_form[kanji].remove(note)
+        for kanji in snapshot.all_kanji: self._by_kanji_in_any_form[kanji].remove(note)
+        for kanji in snapshot.readings: self._by_reading[kanji].remove(note)
+        for stem in snapshot.stems: self._by_stem[stem].remove(note)
 
-    def _inheritor_add_to_cache(self, note: VocabNote) -> None:
-        for form in note.forms.all_set(): self._by_form[form].add(note)
-        for compound_part in note.compound_parts.all(): self._by_compound_part[compound_part].add(note)
+    def _inheritor_add_to_cache(self, note: VocabNote, snapshot: _VocabSnapshot) -> None:
+        for form in snapshot.forms: self._by_form[form].add(note)
+        for compound_part in snapshot.compound_parts: self._by_compound_part[compound_part].add(note)
         # todo: We add these regardless of whether they have a value in derived from? Won't there be a ton of instances for the empty string?
-        self._by_derived_from[note.related_notes.derived_from.get()].add(note)
-        for kanji in note.kanji.extract_main_form_kanji(): self._by_kanji_in_main_form[kanji].add(note)
-        for kanji in note.kanji.extract_all_kanji(): self._by_kanji_in_any_form[kanji].add(note)
-        for reading in note.readings.get(): self._by_reading[reading].add(note)
-        for stem in note.conjugator.get_stems_for_primary_form(): self._by_stem[stem].add(note)
+        self._by_derived_from[snapshot.derived_from].add(note)
+        for kanji in snapshot.main_form_kanji: self._by_kanji_in_main_form[kanji].add(note)
+        for kanji in snapshot.all_kanji: self._by_kanji_in_any_form[kanji].add(note)
+        for reading in snapshot.readings: self._by_reading[reading].add(note)
+        for stem in snapshot.stems: self._by_stem[stem].add(note)
 
 class VocabCollection(Slots):
     def __init__(self, collection: Collection, cache_manager: CacheRunner) -> None:

@@ -35,9 +35,9 @@ class _KanjiCache(NoteCache[KanjiNote, _KanjiSnapshot], Slots):
         for form in cached.radicals: self._by_radical[form].remove(note)
         for reading in cached.readings: self.by_reading[reading].remove(note)
 
-    def _inheritor_add_to_cache(self, note: KanjiNote) -> None:
-        for form in note.get_radicals(): self._by_radical[form].add(note)
-        for reading in set(note.get_readings_clean()): self.by_reading[reading].add(note)
+    def _inheritor_add_to_cache(self, note: KanjiNote, snapshot: _KanjiSnapshot) -> None:
+        for form in snapshot.radicals: self._by_radical[form].add(note)
+        for reading in snapshot.readings: self.by_reading[reading].add(note)
 
     def with_radical(self, radical: str) -> list[KanjiNote]: return list(self._by_radical[radical])
 
