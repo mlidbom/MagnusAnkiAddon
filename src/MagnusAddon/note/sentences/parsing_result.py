@@ -15,10 +15,9 @@ class ParsingResult(Slots):
         self.parsed_words = words
         self.sentence = sentence
         self.parser_version = parser_version
+        self.matched_vocab_ids: set[int] = {parsed.vocab_id for parsed in self.parsed_words if parsed.vocab_id != -1}
 
     def parsed_words_strings(self) -> list[str]: return [parsed.parsed_form for parsed in self.parsed_words]
-
-    def detected_vocab(self) -> set[int]: return {parsed.vocab_id for parsed in self.parsed_words if parsed.vocab_id != -1}
 
     @classmethod
     def from_analysis(cls, analysis: TextAnalysis) -> ParsingResult:

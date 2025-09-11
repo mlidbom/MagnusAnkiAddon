@@ -6,13 +6,13 @@ from ankiutils import app
 from aqt import gui_hooks
 from autoslot import Slots
 from note.note_constants import Tags
-from note.sentences.parsed_word import ParsedMatch
 from note.vocabulary.vocabnote import VocabNote
 from sysutils import ex_sequence, ex_str, kana_utils
 from sysutils.ex_str import newline
 from ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
 
 if TYPE_CHECKING:
+    from note.sentences.parsed_word import ParsedMatch
     from note.sentences.parsing_result import ParsingResult
     from note.sentences.sentencenote import SentenceNote
 

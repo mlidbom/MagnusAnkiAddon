@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING
 
+from ankiutils import app
 from autoslot import Slots
 from note.note_constants import SentenceNoteFields
 from note.notefields.string_field import AutoStrippingStringField
@@ -12,6 +13,7 @@ from sysutils.weak_ref import WeakRef, WeakRefable
 if TYPE_CHECKING:
     from note.sentences.sentencenote import SentenceNote
     from note.sentences.word_exclusion_set import WordExclusionSet
+    from note.vocabulary.vocabnote import VocabNote
 
 class CachingSentenceConfigurationField(WeakRefable, Slots):
     def __init__(self, sentence: WeakRef[SentenceNote]) -> None:
@@ -20,8 +22,6 @@ class CachingSentenceConfigurationField(WeakRefable, Slots):
 
         weak_self_ref = WeakRef(self)
         self._value: Lazy[SentenceConfiguration] = Lazy(lambda: SentenceConfiguration.serializer.deserialize(self.field.get(), weak_self_ref()._save))
-
-        self._update_callbacks: list[Callable[[], None]] = []
 
     @property
     def configuration(self) -> SentenceConfiguration:
@@ -34,6 +34,14 @@ class CachingSentenceConfigurationField(WeakRefable, Slots):
     def hidden_matches(self) -> WordExclusionSet: return self._value.instance().hidden_matches
 
     def highlighted_words(self) -> set[str]: return self._value.instance().highlighted_words
+
+    @property
+    def highlighted_vocab_ids(self) -> set[int]: return {vocab.get_id() for vocab in self.highlighted_vocab}
+
+    @property
+    def highlighted_vocab(self) -> set[VocabNote]:
+        return {vocab for vocab in (app.col().vocab.with_any_form_in(list(self.highlighted_words())))
+                if vocab.get_id() in self._sentence().parsing_result.get().matched_vocab_ids}
 
     def remove_highlighted_word(self, word: str) -> None:
         self.highlighted_words().discard(word)
