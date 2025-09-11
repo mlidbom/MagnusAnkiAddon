@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 class ParsedWord(Slots):
     serializer: ParsedWordSerializer = ParsedWordSerializer()
-    def __init__(self, start_index: int, is_displayed: bool, type: str, word: str, base: str, vocab_id: int, information_string: str) -> None:
+    def __init__(self, type: str, start_index: int, is_displayed: bool, word: str, base: str, vocab_id: int, information_string: str) -> None:
         self.start_index: int = start_index
         self.is_displayed: bool = is_displayed
         self.type: str = type
@@ -28,9 +28,9 @@ class ParsedWord(Slots):
 
     @classmethod
     def from_match(cls, match: Match) -> ParsedWord:
-        return cls(match.start_index,
+        return cls("S" if match.variant.is_surface else "B",
+                   match.start_index,
                    match.is_displayed,
-                   "S" if match.variant.is_surface else "B",
                    match.parsed_form,
                    cls._base_form_from_match(match),
                    match.vocab.get_id() if isinstance(match, VocabMatch) else -1,

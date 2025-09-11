@@ -13,9 +13,9 @@ class ParsedWordSerializer(Slots):
 
     @staticmethod
     def to_row(parsed_word: ParsedWord) -> str: return ParsedWordSerializer.separator.join([
-        str(parsed_word.start_index),  # 0
-        str(1 if parsed_word.is_displayed else 0),  # 1
-        parsed_word.type, # 2
+        parsed_word.type,  # 0
+        str(parsed_word.start_index),  # 1
+        str(1 if parsed_word.is_displayed else 0),  # 2
         parsed_word.word,  # 3
         parsed_word.base_form,  # 4
         str(parsed_word.vocab_id),  # 5
@@ -27,9 +27,9 @@ class ParsedWordSerializer(Slots):
         from note.sentences.parsed_word import ParsedWord
         values = serialized.split(ParsedWordSerializer.separator)
 
-        return ParsedWord(int(values[0]),
-                          bool(int(values[1])),
-                          values[2],
+        return ParsedWord(values[0],
+                          int(values[1]),
+                          bool(int(values[2])),
                           values[3],
                           values[4],
                           int(values[5]),

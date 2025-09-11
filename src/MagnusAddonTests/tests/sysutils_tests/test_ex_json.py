@@ -51,10 +51,10 @@ def test_roundtrip_parsing_result() -> None:
     from note.sentences.parsed_word import ParsedWord
     from note.sentences.parsing_result import ParsingResult
 
-    parsing_result = ParsingResult([ParsedWord(0, True, "B", "foo", "boo", 1, ""),
-                                    ParsedWord(4, False, "B", "bar", "doo", 2, "")], "foo bar", "1.0")
-    json = ParsingResult.serializer.serialize(parsing_result)
-    round_tripped_result = ParsingResult.serializer.deserialize(json)
+    parsing_result = ParsingResult([ParsedWord("B", 0, True, "foo", "boo", 1, ""),
+                                    ParsedWord("B", 4, False, "bar", "doo", 2, "")], "foo bar", "1.0")
+    serialized = ParsingResult.serializer.serialize(parsing_result)
+    round_tripped_result = ParsingResult.serializer.deserialize(serialized)
 
     assert_object_graphs_identical(parsing_result, round_tripped_result)
 

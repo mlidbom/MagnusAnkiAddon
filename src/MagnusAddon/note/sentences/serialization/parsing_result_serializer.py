@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+import mylog
 from autoslot import Slots
 from note.notefields.json_object_field import ObjectSerializer
 from note.sentences.parsed_word import ParsedWord
@@ -12,17 +13,18 @@ if TYPE_CHECKING:
 
 class ParsingResultSerializer(ObjectSerializer["ParsingResult"], Slots):
     newline_replacement = "NEWLINE{invisible_space}"
-    def deserialize(self, json: str) -> ParsingResult:
+    def deserialize(self, serialized: str) -> ParsingResult:
         from note.sentences.parsing_result import ParsingResult
 
-        rows = json.split(newline)
+        rows = serialized.split(newline)
         if len(rows) < 2: return ParsingResult([], "", "")
 
         try:
             return ParsingResult([ParsedWord.serializer.from_row(row) for row in rows[2:]],
                                  self._restore_newline(rows[1]),
-                                 rows[0]) if json else ParsingResult([], "", "")
+                                 rows[0]) if serialized else ParsingResult([], "", "")
         except Exception:
+            mylog.warning(f"Failed to deserialize ParsingResult: {serialized}")
             return ParsingResult([], "", "")
 
     def _replace_newline(self, value: str) -> str:
