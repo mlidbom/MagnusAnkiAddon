@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 from ankiutils.app import col
 from autoslot import Slots
+from sysutils import ex_sequence
 
 if TYPE_CHECKING:
     from note.notefields.json_object_field import SerializedObjectField
@@ -42,7 +43,7 @@ class Synonyms(Slots):
             for my_synonym in self.strings():
                 synonym_note.related_notes.synonyms.add(my_synonym)
 
-        synonyms_of_new_synonym_strings = set().union(*[note.related_notes.synonyms.strings() for note in new_synonym_notes]) | {note.get_question() for note in new_synonym_notes}
+        synonyms_of_new_synonym_strings = set(ex_sequence.flatten([list(note.related_notes.synonyms.strings()) for note in new_synonym_notes])) | {note.get_question() for note in new_synonym_notes}
         for new_synonym in synonyms_of_new_synonym_strings:
             self.add(new_synonym)
 

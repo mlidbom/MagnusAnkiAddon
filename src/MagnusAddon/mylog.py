@@ -27,7 +27,7 @@ def get_logger(module: str) -> logging.Logger:
     import sys
     from logging.handlers import RotatingFileHandler
 
-    from anki.hooks import wrap
+    from anki.hooks import wrap  # pyright: ignore[reportUnknownVariableType]
     from aqt import mw
     from aqt.addons import AddonManager
     addon = ""

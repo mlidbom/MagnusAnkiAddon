@@ -60,7 +60,6 @@ typeCheckingMode="recommended" # "off", "basic", "standard", "strict", "recommen
 
 #todo: errors we should enable detection of ASAP
 reportPrivateUsage =  "none"
-reportUnknownVariableType =  "none"
 reportUnknownMemberType =  "none"
 reportUnknownArgumentType =  "none"
 reportExplicitAny = "none" #yeah, we probably don't want to go declaring anything as Any

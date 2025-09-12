@@ -36,7 +36,7 @@ class CompoundPartViewModel:
 
         compound_parts = ex_sequence.flatten([app.col().vocab.with_form_prefer_exact_match(part) for part in vocab_note.compound_parts.primary()])
 
-        result = []
+        result: list[CompoundPartViewModel] = []
 
         for part in compound_parts:
             wrapper = CompoundPartViewModel(part, depth, config)

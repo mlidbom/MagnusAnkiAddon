@@ -22,7 +22,7 @@ from typing import Any, Callable, Generic, TypeVar
 
 from jamdict import Jamdict
 from language_services.jamdict_ex.dict_entry import DictEntry
-from sysutils import ex_iterable, kana_utils
+from sysutils import ex_iterable, ex_sequence, kana_utils
 
 T = TypeVar("T")
 
@@ -110,10 +110,10 @@ class DictLookup(Slots):
                                         if ent.is_kana_only())
 
     def valid_forms(self, force_allow_kana_only: bool = False) -> set[str]:
-        return set().union(*[entry.valid_forms(force_allow_kana_only) for entry in self.entries])
+        return set(ex_sequence.flatten([list(entry.valid_forms(force_allow_kana_only)) for entry in self.entries]))
 
     def parts_of_speech(self) -> set[str]:
-        return set().union(*[ent.parts_of_speech() for ent in self.entries])
+        return set(ex_sequence.flatten([list(ent.parts_of_speech()) for ent in self.entries]))
 
     def priority_spec(self) -> PrioritySpec:
         return PrioritySpec(set(ex_iterable.flatten(entry.priority_tags() for entry in self.entries)))

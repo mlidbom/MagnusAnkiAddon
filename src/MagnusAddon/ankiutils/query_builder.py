@@ -51,7 +51,7 @@ def sentence_search(word: str, exact: bool = False) -> str:
     if not exact:
         vocabs = app.col().vocab.with_form(word)
         if vocabs:
-            forms = set().union(*[v.forms.all_set() for v in vocabs])
+            forms: set[str] = set(ex_sequence.flatten([v.forms.all_list() for v in vocabs]))
             return result + "(" + "　OR ".join([form_query(form) for form in forms]) + ")"
 
     return result + f"""({form_query(word)})"""

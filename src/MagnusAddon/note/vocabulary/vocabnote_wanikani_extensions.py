@@ -45,5 +45,5 @@ class VocabNoteWaniExtensions(Slots):
 
         self._vocab.readings.set([reading.reading for reading in wani_vocab.readings])
 
-        component_subject_ids = {str(subject_id) for subject_id in wani_vocab.component_subject_ids}
+        component_subject_ids = {str(subject_id) for subject_id in wani_vocab.component_subject_ids}  # pyright: ignore[reportUnknownVariableType]
         self.component_subject_ids.set(component_subject_ids)

@@ -310,27 +310,27 @@ class KanjiNote(WaniNote, Slots):
         self.set_reading_mnemonic(wani_model.reading_mnemonic)
         self.set_reading_hint(wani_model.reading_hint)
 
-        meanings = [f"<primary>{meaning.meaning}</primary>" if meaning.primary else meaning.meaning
+        meanings = [f"<primary>{meaning.meaning}</primary>" if meaning.primary else meaning.meaning  # pyright: ignore[reportUnknownVariableType]
                     for meaning in wani_model.meanings]
 
         self._set_source_answer(", ".join(meanings))
 
-        onyomi_readings = [f"<primary>{reading.reading}</primary>" if reading.primary else reading.reading
+        onyomi_readings = [f"<primary>{reading.reading}</primary>" if reading.primary else reading.reading  # pyright: ignore[reportUnknownVariableType]
                            for reading in wani_model.readings if reading.type == "onyomi"]  # pyright: ignore[reportAttributeAccessIssue]
 
-        kunyomi_readings = [f"<primary>{reading.reading}</primary>" if reading.primary else reading.reading
+        kunyomi_readings = [f"<primary>{reading.reading}</primary>" if reading.primary else reading.reading  # pyright: ignore[reportUnknownVariableType]
                             for reading in wani_model.readings if reading.type == "kunyomi"]  # pyright: ignore[reportAttributeAccessIssue]
 
         self.set_reading_on(", ".join(onyomi_readings))
         self.set_reading_kun(", ".join(kunyomi_readings))
 
-        component_subject_ids = [str(subject_id) for subject_id in wani_model.component_subject_ids]
+        component_subject_ids = [str(subject_id) for subject_id in wani_model.component_subject_ids]  # pyright: ignore[reportUnknownVariableType]
 
         client = WanikaniClient.get_instance()
         radicals = [client.get_radical_by_id(int(radical_id)) for radical_id in component_subject_ids]
         radicals_with_characters = [radical for radical in radicals if radical.characters is not None]
 
-        radical_characters = [radical.characters for radical in radicals_with_characters]
+        radical_characters = [radical.characters for radical in radicals_with_characters]  # pyright: ignore[reportUnknownVariableType]
         if len(self.get_radicals()) == 0:  # Absolutely never overwrite any locally configured kanji with stuff from wani that has a completely different strategy for radicals
             self._set_radicals(", ".join(radical_characters))
 

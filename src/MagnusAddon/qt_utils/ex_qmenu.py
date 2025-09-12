@@ -15,7 +15,7 @@ class ExQmenu(Slots):
             return
 
         for action in menu.actions():
-            submenu: QMenu | None = action.menu()
+            submenu: QMenu | None = action.menu()  # pyright: ignore[reportUnknownVariableType]
             if submenu:
                 cls.disable_empty_submenus(submenu)
 
@@ -23,7 +23,7 @@ class ExQmenu(Slots):
                     action.setEnabled(False)
                 else: # Disable submenu if all its actions are disabled
                     all_disabled = True
-                    for submenu_action in submenu.actions():
+                    for submenu_action in submenu.actions():  # pyright: ignore[reportUnknownVariableType]
                         if submenu_action.isEnabled():
                             all_disabled = False
                             break

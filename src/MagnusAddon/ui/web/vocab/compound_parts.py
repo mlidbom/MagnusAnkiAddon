@@ -60,7 +60,7 @@ def get_compound_parts_recursive(vocab_note: VocabNote, depth: int = 0, visited:
 
     compound_parts = ex_sequence.flatten([app.col().vocab.with_form_prefer_exact_match(part) for part in vocab_note.compound_parts.primary()])
 
-    result = []
+    result: list[CompoundPart] = []
 
     for part in compound_parts:
         wrapper = CompoundPart(part, depth)

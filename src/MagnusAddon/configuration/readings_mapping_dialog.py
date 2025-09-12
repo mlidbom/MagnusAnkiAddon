@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from ankiutils import app
-from aqt import qconnect
+from PyQt6.QtCore import pyqtBoundSignal
 from PyQt6.QtGui import QColor, QKeySequence, QShortcut, QTextBlock, QTextCharFormat, QTextCursor
 from PyQt6.QtWidgets import QDialog, QDialogButtonBox, QHBoxLayout, QLabel, QLineEdit, QTextEdit, QVBoxLayout, QWidget
 from sysutils.ex_str import newline
@@ -11,7 +11,6 @@ from sysutils.typed import checked_cast, non_optional
 
 if TYPE_CHECKING:
     from configuration.configuration_value import JapaneseConfig
-
 
 class ReadingsOptionsDialog(QDialog):
     def __init__(self, parent: QWidget | None = None) -> None:
@@ -28,13 +27,13 @@ class ReadingsOptionsDialog(QDialog):
         # Create search field
         search_layout = QHBoxLayout()
         search_label = QLabel("Search:")
-        self.search_edit:QLineEdit = QLineEdit(self)
+        self.search_edit: QLineEdit = QLineEdit(self)
         self.search_edit.setPlaceholderText("Type to search...")
         search_layout.addWidget(search_label)
         search_layout.addWidget(self.search_edit)
 
         # Connect search field to search function
-        qconnect(self.search_edit.textChanged, self.search_text)
+        checked_cast(pyqtBoundSignal, self.search_edit.textChanged).connect(self.search_text)
 
         self.text_edit: QTextEdit = QTextEdit(self)
         self.text_edit.setPlainText(mappings_text)
@@ -47,8 +46,8 @@ class ReadingsOptionsDialog(QDialog):
         shortcut = "Alt+Return"
         self.button_box.setToolTip(f"Save ({shortcut})")
         save_shortcut = QShortcut(QKeySequence(shortcut), self)
-        qconnect(save_shortcut.activated, self.save)
-        qconnect(self.button_box.clicked, self.save)
+        checked_cast(pyqtBoundSignal, save_shortcut.activated).connect(self.save)
+        checked_cast(pyqtBoundSignal, self.button_box.clicked).connect(self.save)
         window_layout.addWidget(self.button_box)
         self.setLayout(window_layout)
 
@@ -68,7 +67,7 @@ class ReadingsOptionsDialog(QDialog):
             cursor_.select(QTextCursor.SelectionType.Document)
             cursor_.setCharFormat(format_)
 
-        def highlight_block(block_to_highlight:QTextBlock) -> None:
+        def highlight_block(block_to_highlight: QTextBlock) -> None:
             cursor = QTextCursor(block_to_highlight)
             self.text_edit.setTextCursor(cursor)
             highlight_format = QTextCharFormat()
@@ -131,7 +130,7 @@ class ReadingsOptionsDialog(QDialog):
     def save(self) -> None:
         def sorted_value_lines_without_duplicates_or_blank_lines() -> str:
             lines = self.text_edit.toPlainText().splitlines()
-            lines.reverse() #the top latest lines are now the last lines and will overwrite earlier lines
+            lines.reverse()  # the top latest lines are now the last lines and will overwrite earlier lines
 
             readings_mappings = {
                 line.split(":", 1)[0].strip(): line.split(":", 1)[1].strip()

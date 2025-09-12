@@ -13,8 +13,8 @@ def flatten(this: Sequence[Sequence[T]]) -> list[T]:
     return [item for sub_list in this for item in sub_list]
 
 def remove_duplicates_while_retaining_order(sequence: Sequence[T]) -> list[T]:
-    seen = set()
-    result = []
+    seen: set[object] = set()
+    result: list[T] = []
     for item in sequence:
         if item not in seen:
             seen.add(item)

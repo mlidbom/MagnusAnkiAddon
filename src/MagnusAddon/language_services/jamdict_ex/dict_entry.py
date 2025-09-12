@@ -11,10 +11,10 @@ if TYPE_CHECKING:
     from jamdict.jmdict import JMDEntry, Sense
 
 def _sense_is_transitive_verb(sense: Sense) -> bool:
-    return any(pos_item == "transitive verb" for pos_item in sense.pos)
+    return any(pos_item == "transitive verb" for pos_item in sense.pos)  # pyright: ignore[reportUnknownVariableType]
 
 def _sense_is_intransitive_verb(sense: Sense) -> bool:
-    return any(pos_item == "intransitive verb" for pos_item in sense.pos)
+    return any(pos_item == "intransitive verb" for pos_item in sense.pos)  # pyright: ignore[reportUnknownVariableType]
 
 @final
 class DictEntry(Slots):
@@ -160,4 +160,4 @@ class DictEntry(Slots):
         def try_get_pos(pos: str) -> list[str]:
             return self._parts_of_speech_map[pos] if pos in self._parts_of_speech_map else ["unmapped-pos-" + pos]
 
-        return set(ex_sequence.flatten([ex_sequence.flatten([try_get_pos(pos) for pos in sense.pos]) for sense in self.entry.senses]))
+        return set(ex_sequence.flatten([ex_sequence.flatten([try_get_pos(pos) for pos in sense.pos]) for sense in self.entry.senses]))  # pyright: ignore[reportUnknownVariableType]

@@ -3,13 +3,12 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from ankiutils import app
-from aqt import qconnect
+from PyQt6.QtCore import pyqtBoundSignal
 from PyQt6.QtWidgets import QDialog, QDialogButtonBox, QDoubleSpinBox, QGridLayout, QGroupBox, QLabel, QSpinBox, QVBoxLayout, QWidget
 from sysutils.typed import checked_cast
 
 if TYPE_CHECKING:
     from configuration.configuration_value import ConfigurationValueFloat, ConfigurationValueInt, JapaneseConfig
-
 
 class JapaneseOptionsDialog(QDialog):
     def __init__(self, parent: QWidget | None = None) -> None:
@@ -31,7 +30,7 @@ class JapaneseOptionsDialog(QDialog):
             number_input = QSpinBox()
             number_input.setRange(0, 99999)
             number_input.setValue(config_value.get_value())
-            qconnect(number_input.valueChanged, config_value.set_value)
+            checked_cast(pyqtBoundSignal, number_input.valueChanged).connect(config_value.set_value)
             grid.addWidget(number_input, row, 1)
 
         def add_double_spinner_value(grid: QGridLayout, row: int, config_value: ConfigurationValueFloat) -> None:
@@ -46,7 +45,7 @@ class JapaneseOptionsDialog(QDialog):
             double_input.setSingleStep(0.05)  # Set step size for increment/decrementb
 
             # Connect the valueChanged signal to update the config value
-            qconnect(double_input.valueChanged, config_value.set_value)
+            checked_cast(pyqtBoundSignal, double_input.valueChanged).connect(config_value.set_value)
 
             grid.addWidget(double_input, row, 1)
 
@@ -149,8 +148,8 @@ class JapaneseOptionsDialog(QDialog):
         # checkbox_group.setLayout(checkbox_layout)
         # layout.addWidget(checkbox_group)
 
-        self.button_box:QDialogButtonBox = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok)
-        qconnect(self.button_box.clicked, self.accept)
+        self.button_box: QDialogButtonBox = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok)
+        checked_cast(pyqtBoundSignal, self.button_box.clicked).connect(self.accept)
         window_layout.addWidget(self.button_box)
 
         self.setLayout(window_layout)

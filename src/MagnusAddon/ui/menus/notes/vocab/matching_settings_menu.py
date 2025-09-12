@@ -3,8 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Callable
 
 from ankiutils import app
-from aqt import qconnect
-from sysutils.typed import non_optional
+from PyQt6.QtCore import pyqtBoundSignal
+from sysutils.typed import checked_cast, non_optional
 from ui.menus.menu_utils import shortcutfinger
 
 if TYPE_CHECKING:
@@ -28,7 +28,7 @@ def build_matching_settings_menu(toggle_flags_menu: QMenu, vocab: VocabNote) -> 
         action = non_optional(menu.addAction(title))
         action.setCheckable(True)
         action.setChecked(getter())
-        qconnect(action.triggered, set_value)
+        checked_cast(pyqtBoundSignal, action.triggered).connect(set_value)
 
     def build_requires_forbids_menu(requires_forbids_menu: QMenu) -> None:
         def add_require_forbid_menu(menu: QMenu, title: str, field: RequireForbidFlagField, reparse_sentences: bool = True) -> None:

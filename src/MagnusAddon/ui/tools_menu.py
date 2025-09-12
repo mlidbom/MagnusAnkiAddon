@@ -4,14 +4,14 @@ from typing import Callable
 
 from ankiutils import app, ui_utils
 from ankiutils.app import get_ui_utils, main_window
-from aqt import qconnect
 from batches import local_note_updater
 from configuration.configuration import show_japanese_options
 from configuration.readings_mapping_dialog import show_readings_mappings
+from PyQt6.QtCore import pyqtBoundSignal
 from PyQt6.QtGui import QAction
 from PyQt6.QtWidgets import QInputDialog, QLineEdit, QMenu
 from sysutils import object_instance_tracker
-from sysutils.typed import non_optional
+from sysutils.typed import checked_cast, non_optional
 from ui.menus.menu_utils import ex_qmenu, shortcutfinger
 from ui.menus.open_in_anki import build_open_in_anki_menu
 from ui.menus.web_search import build_web_search_menu
@@ -35,7 +35,7 @@ def add_menu_ui_action(sub_menu: QMenu, heading: str, callback: Callable[[], Non
     def ui_callback() -> None:
         get_ui_utils().run_ui_action(callback)
 
-    qconnect(action.triggered, ui_callback)
+    checked_cast(pyqtBoundSignal, action.triggered).connect(ui_callback)
     sub_menu.addAction(action)
 
 def build_main_menu() -> None:

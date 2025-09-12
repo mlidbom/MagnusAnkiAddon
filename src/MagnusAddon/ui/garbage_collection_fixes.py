@@ -5,18 +5,18 @@ from typing import TYPE_CHECKING
 
 import aqt
 from ankiutils import app
-from aqt import qconnect
+from PyQt6.QtCore import pyqtBoundSignal
+from sysutils.typed import checked_cast
 
 if TYPE_CHECKING:
     from aqt.main import AnkiQt
     from PyQt6.QtWidgets import QDialog
 
-
-def noop_gc_on_dialog_finish(_self:AnkiQt, dialog: QDialog) -> None:
+def noop_gc_on_dialog_finish(_self: AnkiQt, dialog: QDialog) -> None:
     # Fix anki hanging for several seconds every time a window closes
-    qconnect(dialog.finished, lambda: dialog.deleteLater())
+    checked_cast(pyqtBoundSignal, dialog.finished).connect(dialog.deleteLater)
 
-def visible_garbage_collection(_self:AnkiQt) -> None:
+def visible_garbage_collection(_self: AnkiQt) -> None:
     if not app.config().enable_automatic_garbage_collection.get_value():
         app.get_ui_utils().tool_tip("running garbage collection triggered by internal Anki code", milliseconds=10000)
         gc.collect()

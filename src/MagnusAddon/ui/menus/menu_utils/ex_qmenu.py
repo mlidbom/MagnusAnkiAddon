@@ -5,10 +5,10 @@ from typing import TYPE_CHECKING, Callable
 from ankiutils import app, query_builder, search_executor
 from ankiutils.app import get_ui_utils
 from ankiutils.search_executor import lookup_promise
-from aqt import qconnect
+from aqt import pyqtBoundSignal
 from PyQt6.QtGui import QAction
 from PyQt6.QtWidgets import QMenu, QMessageBox
-from sysutils.typed import non_optional
+from sysutils.typed import checked_cast, non_optional
 from ui.menus.menu_utils import shortcutfinger
 
 if TYPE_CHECKING:
@@ -31,10 +31,10 @@ def add_checkbox_config(menu: QMenu, config_value: ConfigurationValueBool, _titl
         config_value.set_value(value)
         app.get_ui_utils().refresh()
 
-    qconnect(checkbox_action.triggered, set_value)
+    checked_cast(pyqtBoundSignal, checkbox_action.triggered).connect(set_value)
     menu.addAction(checkbox_action)
 
-def _confirm(menu: QMenu, message:str) -> bool:
+def _confirm(menu: QMenu, message: str) -> bool:
     message = shortcutfinger.remove_shortcut_text(message)
     return QMessageBox.question(
         menu.parentWidget(),
@@ -44,7 +44,7 @@ def _confirm(menu: QMenu, message:str) -> bool:
         QMessageBox.StandardButton.Yes
     ) == QMessageBox.StandardButton.Yes
 
-def add_ui_action(menu: QMenu, name: str, callback: Callable[[], None], enabled:bool = True, confirm:bool = False) -> QAction:
+def add_ui_action(menu: QMenu, name: str, callback: Callable[[], None], enabled: bool = True, confirm: bool = False) -> QAction:
     def run_ui_action() -> None:
         if not confirm or _confirm(menu, name):
             callback()
@@ -54,13 +54,13 @@ def add_ui_action(menu: QMenu, name: str, callback: Callable[[], None], enabled:
     action.setEnabled(enabled)
     return action
 
-def add_lookup_action_lambda(menu: QMenu, name: str, search: Callable[[],str]) -> None:
+def add_lookup_action_lambda(menu: QMenu, name: str, search: Callable[[], str]) -> None:
     menu.addAction(name, lookup_promise(search))
 
 def add_lookup_action(menu: QMenu, name: str, search: str) -> None:
     menu.addAction(name, lookup_promise(lambda: search))
 
-def add_single_vocab_lookup_action(menu: QMenu, name:str, vocab:str) -> None:
+def add_single_vocab_lookup_action(menu: QMenu, name: str, vocab: str) -> None:
     menu.addAction(name, lookup_promise(lambda: query_builder.single_vocab_by_form_exact(vocab)))
 
 def add_vocab_dependencies_lookup(menu: QMenu, name: str, vocab: VocabNote) -> None:
