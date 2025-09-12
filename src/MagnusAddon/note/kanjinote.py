@@ -301,30 +301,30 @@ class KanjiNote(WaniNote, Slots):
         self.set_user_mnemonic(kanjinote_mnemonic_maker.create_default_mnemonic(self))
 
     @override
-    def update_from_wani(self, wani_kanji: models.Kanji) -> None:
-        super().update_from_wani(wani_kanji)
+    def update_from_wani(self, wani_model: models.Kanji) -> None:  # pyright: ignore[reportIncompatibleMethodOverride]
+        super().update_from_wani(wani_model)
 
-        self.set_source_meaning_mnemonic(wani_kanji.meaning_mnemonic)
-        self.set_meaning_hint(wani_kanji.meaning_hint)
+        self.set_source_meaning_mnemonic(wani_model.meaning_mnemonic)
+        self.set_meaning_hint(wani_model.meaning_hint)
 
-        self.set_reading_mnemonic(wani_kanji.reading_mnemonic)
-        self.set_reading_hint(wani_kanji.reading_hint)
+        self.set_reading_mnemonic(wani_model.reading_mnemonic)
+        self.set_reading_hint(wani_model.reading_hint)
 
         meanings = [f"<primary>{meaning.meaning}</primary>" if meaning.primary else meaning.meaning
-                    for meaning in wani_kanji.meanings]
+                    for meaning in wani_model.meanings]
 
         self._set_source_answer(", ".join(meanings))
 
         onyomi_readings = [f"<primary>{reading.reading}</primary>" if reading.primary else reading.reading
-                           for reading in wani_kanji.readings if reading.type == "onyomi"]  # pyright: ignore[reportAttributeAccessIssue]
+                           for reading in wani_model.readings if reading.type == "onyomi"]  # pyright: ignore[reportAttributeAccessIssue]
 
         kunyomi_readings = [f"<primary>{reading.reading}</primary>" if reading.primary else reading.reading
-                            for reading in wani_kanji.readings if reading.type == "kunyomi"]  # pyright: ignore[reportAttributeAccessIssue]
+                            for reading in wani_model.readings if reading.type == "kunyomi"]  # pyright: ignore[reportAttributeAccessIssue]
 
         self.set_reading_on(", ".join(onyomi_readings))
         self.set_reading_kun(", ".join(kunyomi_readings))
 
-        component_subject_ids = [str(subject_id) for subject_id in wani_kanji.component_subject_ids]
+        component_subject_ids = [str(subject_id) for subject_id in wani_model.component_subject_ids]
 
         client = WanikaniClient.get_instance()
         radicals = [client.get_radical_by_id(int(radical_id)) for radical_id in component_subject_ids]

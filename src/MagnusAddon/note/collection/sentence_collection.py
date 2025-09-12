@@ -39,16 +39,16 @@ class _SentenceCache(NoteCache[SentenceNote, _SentenceSnapshot], Slots):
     def with_user_highlighted_vocab(self, form: str) -> list[SentenceNote]: return list(self._by_user_highlighted_vocab[form])
 
     @override
-    def _inheritor_remove_from_cache(self, sentence: SentenceNote, cached:_SentenceSnapshot) -> None:
-        for vocab_form in cached.words: self._by_vocab_form[vocab_form].remove(sentence)
-        for vocab_form in cached.user_highlighted_vocab: self._by_user_highlighted_vocab[vocab_form].remove(sentence)
-        for vocab_id in cached.detected_vocab: self._by_vocab_id[vocab_id].remove(sentence)
+    def _inheritor_remove_from_cache(self, note: SentenceNote, snapshot:_SentenceSnapshot) -> None:
+        for vocab_form in snapshot.words: self._by_vocab_form[vocab_form].remove(note)
+        for vocab_form in snapshot.user_highlighted_vocab: self._by_user_highlighted_vocab[vocab_form].remove(note)
+        for vocab_id in snapshot.detected_vocab: self._by_vocab_id[vocab_id].remove(note)
 
     @override
-    def _inheritor_add_to_cache(self, sentence: SentenceNote, snapshot: _SentenceSnapshot) -> None:
-        for vocab_form in snapshot.words: self._by_vocab_form[vocab_form].add(sentence)
-        for vocab_form in snapshot.user_highlighted_vocab: self._by_user_highlighted_vocab[vocab_form].add(sentence)
-        for vocab_id in snapshot.detected_vocab: self._by_vocab_id[vocab_id].add(sentence)
+    def _inheritor_add_to_cache(self, note: SentenceNote, snapshot: _SentenceSnapshot) -> None:
+        for vocab_form in snapshot.words: self._by_vocab_form[vocab_form].add(note)
+        for vocab_form in snapshot.user_highlighted_vocab: self._by_user_highlighted_vocab[vocab_form].add(note)
+        for vocab_id in snapshot.detected_vocab: self._by_vocab_id[vocab_id].add(note)
 
 
 class SentenceCollection(Slots):

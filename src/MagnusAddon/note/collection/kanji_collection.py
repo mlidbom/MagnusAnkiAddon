@@ -33,9 +33,9 @@ class _KanjiCache(NoteCache[KanjiNote, _KanjiSnapshot], Slots):
     def _create_snapshot(self, note: KanjiNote) -> _KanjiSnapshot: return _KanjiSnapshot(note)
 
     @override
-    def _inheritor_remove_from_cache(self, note: KanjiNote, cached:_KanjiSnapshot) -> None:
-        for form in cached.radicals: self._by_radical[form].remove(note)
-        for reading in cached.readings: self.by_reading[reading].remove(note)
+    def _inheritor_remove_from_cache(self, note: KanjiNote, snapshot:_KanjiSnapshot) -> None:
+        for form in snapshot.radicals: self._by_radical[form].remove(note)
+        for reading in snapshot.readings: self.by_reading[reading].remove(note)
 
     @override
     def _inheritor_add_to_cache(self, note: KanjiNote, snapshot: _KanjiSnapshot) -> None:

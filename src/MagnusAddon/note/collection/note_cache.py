@@ -55,7 +55,7 @@ class NoteCache(Generic[TNote, TSnapshot], Slots):
         return list(self._by_question[question])
 
     def _create_snapshot(self, note: TNote) -> TSnapshot: raise NotImplementedError()
-    def _inheritor_remove_from_cache(self, note: TNote, cached: TSnapshot) -> None: raise NotImplementedError()
+    def _inheritor_remove_from_cache(self, note: TNote, snapshot: TSnapshot) -> None: raise NotImplementedError()
     def _inheritor_add_to_cache(self, note: TNote, snapshot: TSnapshot) -> None: raise NotImplementedError()
 
     def _merge_pending_added_notes(self) -> None:

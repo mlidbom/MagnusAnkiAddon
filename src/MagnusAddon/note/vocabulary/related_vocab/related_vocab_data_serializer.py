@@ -14,11 +14,11 @@ if TYPE_CHECKING:
 
 class RelatedVocabDataSerializer(ObjectSerializer["RelatedVocabData"], Slots):
     @override
-    def deserialize(self, json: str) -> RelatedVocabData:
+    def deserialize(self, serialized: str) -> RelatedVocabData:
         from note.vocabulary.related_vocab.related_vocab_data import RelatedVocabData
-        if not json: return RelatedVocabData("", ValueWrapper(""), set(), set(), set(), set())
+        if not serialized: return RelatedVocabData("", ValueWrapper(""), set(), set(), set(), set())
 
-        reader = JsonReader.from_json(json)
+        reader = JsonReader.from_json(serialized)
         return RelatedVocabData(reader.string("ergative_twin"),
                                 ValueWrapper(reader.string("derived_from")),
                                 reader.string_set("synonyms"),
@@ -27,10 +27,10 @@ class RelatedVocabDataSerializer(ObjectSerializer["RelatedVocabData"], Slots):
                                 reader.string_set("see_also"))
 
     @override
-    def serialize(self, related_notes: RelatedVocabData) -> str:
-        return ex_json.dict_to_json({"ergative_twin": related_notes.ergative_twin,
-                                     "derived_from": related_notes.derived_from.get(),
-                                     "synonyms": list(related_notes.synonyms),
-                                     "antonyms": list(related_notes.antonyms),
-                                     "confused_with": list(related_notes.confused_with),
-                                     "see_also": list(related_notes.see_also)})
+    def serialize(self, instance: RelatedVocabData) -> str:
+        return ex_json.dict_to_json({"ergative_twin": instance.ergative_twin,
+                                     "derived_from": instance.derived_from.get(),
+                                     "synonyms": list(instance.synonyms),
+                                     "antonyms": list(instance.antonyms),
+                                     "confused_with": list(instance.confused_with),
+                                     "see_also": list(instance.see_also)})

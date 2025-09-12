@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 T = TypeVar("T")
 
 class ObjectSerializer(Generic[T], Slots):
-    def serialize(self, obj: T) -> str: raise NotImplementedError()
+    def serialize(self, instance: T) -> str: raise NotImplementedError()
     def deserialize(self, serialized: str) -> T: raise NotImplementedError()
 
 class SerializedObjectField(Generic[T], WeakRefable, Slots):

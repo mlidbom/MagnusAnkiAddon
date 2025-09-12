@@ -88,6 +88,6 @@ class VocabNote(WaniNote, Slots):
         return self.user.answer.get() or self._source_answer.get()
 
     @override
-    def update_from_wani(self, wani_vocab: models.Vocabulary) -> None:
-        super().update_from_wani(wani_vocab)
-        self.wani_extensions.update_from_wani(wani_vocab)
+    def update_from_wani(self, wani_model: models.Vocabulary) -> None:  # pyright: ignore[reportIncompatibleMethodOverride]
+        super().update_from_wani(wani_model)
+        self.wani_extensions.update_from_wani(wani_model)

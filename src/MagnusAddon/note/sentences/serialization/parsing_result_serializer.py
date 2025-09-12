@@ -39,7 +39,7 @@ class ParsingResultSerializer(ObjectSerializer["ParsingResult"], Slots):
         return serialized_value.replace(self.newline_replacement, newline)
 
     @override
-    def serialize(self, parsing_result: ParsingResult) -> str:
-        return newline.join([parsing_result.parser_version,
-                             self._replace_newline(parsing_result.sentence)]
-                            + [ParsedMatch.serializer.to_row(word) for word in parsing_result.parsed_words])
+    def serialize(self, instance: ParsingResult) -> str:
+        return newline.join([instance.parser_version,
+                             self._replace_newline(instance.sentence)]
+                            + [ParsedMatch.serializer.to_row(word) for word in instance.parsed_words])
