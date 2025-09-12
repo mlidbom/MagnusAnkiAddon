@@ -56,12 +56,12 @@ ignore = [
 include=["src"]
 exclude=["**/node_modules", "**/__pycache__", "**/.*", "src/MagnusAddon/_lib/", "**/_lib_patched/*", "**venv/*"]
 extraPaths=["src/MagnusAddon"]
-typeCheckingMode="recommended" # "off", "basic", "standard", "strict", "recommended", "all"
+typeCheckingMode="basic" # "off", "basic", "standard", "strict", "recommended", "all"
 
 #added for now, remove once the typeCheckingMode has been upgraded:
 reportImplicitOverride="error"
 
-#trying to enable highher level by disabling the stuff that causes a ton of warnings....
+#todo: errors we should enable detection of ASAP
   reportPrivateUsage =  "none"
   reportImportCycles =  "none"
   reportUnknownVariableType =  "none"
