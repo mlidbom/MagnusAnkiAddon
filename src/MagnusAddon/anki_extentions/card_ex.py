@@ -10,7 +10,7 @@ from sysutils.typed import non_optional
 
 if TYPE_CHECKING:
     from anki.decks import DeckManager
-    from anki.scheduler.v3 import Scheduler
+    from anki.scheduler.v3 import Scheduler  # pyright: ignore[reportMissingTypeStubs]
     from anki_extentions.notetype_ex.note_type_template import NoteTemplateEx
     from note.jpnote import JPNote
 

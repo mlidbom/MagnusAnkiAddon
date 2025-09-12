@@ -9,7 +9,7 @@ from language_services.jamdict_ex.dict_lookup import DictLookup
 from sysutils import ex_sequence
 
 if TYPE_CHECKING:
-    from janome.tokenizer import Token
+    from janome.tokenizer import Token  # pyright: ignore[reportMissingTypeStubs]
     from language_services.janome_ex.tokenizing.jn_token import JNToken
     from note.collection.vocab_collection import VocabCollection
 

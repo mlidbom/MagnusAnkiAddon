@@ -11,8 +11,8 @@ from sysutils.timeutil import StopWatch
 from sysutils.typed import non_optional, str_
 
 if TYPE_CHECKING:
-    from jamdict.jmdict import JMDEntry
-    from jamdict.util import LookupResult
+    from jamdict.jmdict import JMDEntry  # pyright: ignore[reportMissingTypeStubs]
+    from jamdict.util import LookupResult  # pyright: ignore[reportMissingTypeStubs]
     from note.vocabulary.vocabnote import VocabNote
 
 import queue
@@ -20,7 +20,7 @@ import threading
 from concurrent.futures import Future
 from typing import Callable, Generic, TypeVar
 
-from jamdict import Jamdict
+from jamdict import Jamdict  # pyright: ignore[reportMissingTypeStubs]
 from language_services.jamdict_ex.dict_entry import DictEntry
 from sysutils import ex_iterable, ex_sequence, kana_utils
 

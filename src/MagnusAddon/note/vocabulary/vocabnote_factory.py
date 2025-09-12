@@ -12,7 +12,7 @@ from sysutils import ex_sequence
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
-    from wanikani_api import models
+    from wanikani_api import models  # pyright: ignore[reportMissingTypeStubs]
 
 class VocabNoteFactory(Slots):
     @staticmethod

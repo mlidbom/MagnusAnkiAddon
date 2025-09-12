@@ -12,7 +12,7 @@ from note.notefields.string_field import AutoStrippingStringField
 if typing.TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
     from sysutils.weak_ref import WeakRef
-    from wanikani_api import models
+    from wanikani_api import models  # pyright: ignore[reportMissingTypeStubs]
 
 def create_from_wani_vocabulary(wani_vocab: models.Vocabulary) -> None:
     from note.vocabulary.vocabnote import VocabNote

@@ -36,9 +36,6 @@ class CachingSentenceConfigurationField(WeakRefable, Slots):
     def highlighted_words(self) -> set[str]: return self._value.instance().highlighted_words
 
     @property
-    def highlighted_vocab_ids(self) -> set[int]: return {vocab.get_id() for vocab in self.highlighted_vocab}
-
-    @property
     def highlighted_vocab(self) -> set[VocabNote]:
         return {vocab for vocab in (app.col().vocab.with_any_form_in(list(self.highlighted_words())))
                 if vocab.get_id() in self._sentence().parsing_result.get().matched_vocab_ids}

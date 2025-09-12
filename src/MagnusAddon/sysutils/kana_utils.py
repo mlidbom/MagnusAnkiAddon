@@ -3,7 +3,7 @@ from __future__ import annotations
 import pykakasi
 
 # noinspection PyPackageRequirements
-import romkan
+import romkan  # pyright: ignore[reportMissingTypeStubs]
 from sysutils import typed
 from sysutils.ex_str import full_width_space
 

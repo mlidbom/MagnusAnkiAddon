@@ -10,7 +10,7 @@ from sysutils.typed import checked_cast, non_optional
 if TYPE_CHECKING:
     from anki.collection import Collection
     from anki.dbproxy import DBProxy
-    from anki.scheduler.v3 import Scheduler
+    from anki.scheduler.v3 import Scheduler  # pyright: ignore[reportMissingTypeStubs]
     from anki_extentions.config_manager_ex import ConfigManagerEx
     from ankiutils.ui_utils_interface import IUIUtils
     from aqt import AnkiQt  # type: ignore[attr-defined]  # pyright: ignore[reportPrivateImportUsage]
@@ -107,7 +107,7 @@ def col() -> JPCollection:
 def anki_collection() -> Collection: return col().anki_collection
 def anki_db() -> DBProxy: return non_optional(col().anki_collection.db)
 def anki_scheduler() -> Scheduler:
-    from anki.scheduler.v3 import Scheduler
+    from anki.scheduler.v3 import Scheduler  # pyright: ignore[reportMissingTypeStubs]
     return checked_cast(Scheduler, col().anki_collection.sched)
 
 def main_window() -> AnkiQt:

@@ -8,7 +8,7 @@ from sysutils import ex_sequence, kana_utils
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
-    from jamdict.jmdict import JMDEntry, Sense
+    from jamdict.jmdict import JMDEntry, Sense  # pyright: ignore[reportMissingTypeStubs]
 
 def _sense_is_transitive_verb(sense: Sense) -> bool:
     return any(pos_item == "transitive verb" for pos_item in sense.pos)  # pyright: ignore[reportUnknownVariableType]

@@ -12,7 +12,7 @@ from sysutils import progress_display_runner
 from wanikani.wanikani_api_client import WanikaniClient
 
 if TYPE_CHECKING:
-    from wanikani_api.models import Vocabulary
+    from wanikani_api.models import Vocabulary  # pyright: ignore[reportMissingTypeStubs]
 
 waniClient = WanikaniClient.get_instance()
 

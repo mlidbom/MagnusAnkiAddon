@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from autoslot import Slots
 
 if TYPE_CHECKING:
-    from anki.scheduler.v3 import SchedulingState, SchedulingStates
+    from anki.scheduler.v3 import SchedulingState, SchedulingStates  # pyright: ignore[reportMissingTypeStubs]
 
 class SchedulingStatesEx(Slots):
     def __init__(self, states: SchedulingStates) -> None:

@@ -51,9 +51,6 @@ class ObjectInstanceTracker(Slots):
         self.type_name: str = self._get_fully_qualified_name(cls_type)
         current_instance_count[self.type_name] = current_instance_count.get(self.type_name, 0) + 1
 
-    def count(self) -> int:
-        return current_instance_count[self.type_name]
-
     def run_gc_and_assert_single_instance(self) -> None:
         with StopWatch.log_execution_time():
             if ex_gc.collect_on_on_ui_thread_if_collection_during_batches_enabled():  # noqa: SIM102

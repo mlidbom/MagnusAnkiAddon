@@ -13,7 +13,7 @@ from sysutils.weak_ref import WeakRef
 if TYPE_CHECKING:
     from note.jpnote import JPNote
     from note.vocabulary.vocabnote import VocabNote
-    from wanikani_api import models
+    from wanikani_api import models  # pyright: ignore[reportMissingTypeStubs]
 
 from note.note_constants import CardTypes, NoteFields, NoteTypes, Tags
 from note.waninote import WaniNote

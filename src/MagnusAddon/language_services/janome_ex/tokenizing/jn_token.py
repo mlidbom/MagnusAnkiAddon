@@ -10,7 +10,7 @@ from language_services.janome_ex.tokenizing.jn_parts_of_speech import POS, JNPar
 from sysutils import kana_utils, typed
 
 if TYPE_CHECKING:
-    from janome.tokenizer import Token
+    from janome.tokenizer import Token  # pyright: ignore[reportMissingTypeStubs]
     from language_services.janome_ex.tokenizing.inflection_forms import InflectionForm
     from language_services.janome_ex.tokenizing.inflection_types import InflectionType
 

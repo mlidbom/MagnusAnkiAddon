@@ -65,7 +65,7 @@ reportUnknownArgumentType =  "none"
 reportAny = "none"
 reportImportCycles =  "none"
 
-reportMissingTypeStubs = "none"
+#reportMissingTypeStubs = "none"
 
 #  "questionable if these are useful =  "",
 reportUnusedExpression= "none"

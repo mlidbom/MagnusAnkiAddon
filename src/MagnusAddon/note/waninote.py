@@ -8,7 +8,7 @@ from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
     from anki.notes import Note
-    from wanikani_api import models
+    from wanikani_api import models  # pyright: ignore[reportMissingTypeStubs]
 
 class WaniNote(JPNote, Slots):
     def __init__(self, note: Note) -> None:
