@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from ankiutils import app
 from autoslot import Slots
@@ -27,6 +27,7 @@ class ProcessedToken(Slots):
     def is_past_tense_marker(self) -> bool: return False
     def is_special_nai_negative(self) -> bool: return False
 
+    @override
     def __repr__(self) -> str:
         return f"ProcessedToken('{self.surface}', '{self.base_form}', {self.is_inflectable_word})"
 
@@ -37,10 +38,15 @@ class JNTokenWrapper(ProcessedToken, Slots):
         self._vocabs = vocabs
         self.is_inflectable_word = self.token.is_inflectable_word()
 
+    @override
     def is_past_tense_stem(self) -> bool: return self.token.is_past_tense_stem()
+    @override
     def is_t_form_stem(self) -> bool: return self.token.is_t_form_stem()
+    @override
     def is_ichidan_masu_stem(self) -> bool: return self.token.is_ichidan_masu_stem()
+    @override
     def is_past_tense_marker(self) -> bool: return self.token.is_past_tense_marker()
+    @override
     def is_special_nai_negative(self) -> bool: return self.token.is_special_nai_negative()
 
     # todo: restore the splitting of godan verbs, but this time around:

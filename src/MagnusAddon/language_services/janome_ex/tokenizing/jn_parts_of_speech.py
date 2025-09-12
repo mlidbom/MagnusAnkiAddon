@@ -1,6 +1,8 @@
 # noinspection PyUnusedClass, PyUnusedName
 from __future__ import annotations
 
+from typing import override
+
 from autoslot import Slots
 from sysutils import kana_utils
 
@@ -18,6 +20,7 @@ class JNPartsOfSpeech(Slots):
 
     def is_non_word_character(self) -> bool: return self.level1.japanese in ["記号"]
 
+    @override
     def __repr__(self) -> str:
         return "".join([
             "1:" + kana_utils.pad_to_length(self.level1.japanese, 5),
@@ -32,6 +35,7 @@ class PartOfSpeechDescription(Slots):
         self.english = english
         self.explanation = explanation
 
+    @override
     def __repr__(self) -> str: return self.english
 
 _level_1 = [

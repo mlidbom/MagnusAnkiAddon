@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from language_services.janome_ex.word_extraction.matches.match import Match
 
@@ -13,12 +13,17 @@ class MissingMatch(Match):
         super().__init__(word_variant)
 
     @property
+    @override
     def answer(self) -> str: return "---"
     @property
+    @override
     def match_form(self) -> str: return "[MISSING]"  # Change this so the tests can distinguish that this is a missing match
     @property
-    def is_secondary_match(self) -> bool: return False #There are no matches so this can hardly be a secondary match
+    @override
+    def is_secondary_match(self) -> bool: return False  # There are no matches so this can hardly be a secondary match
     @property
+    @override
     def is_valid(self) -> bool: return False
     @property
+    @override
     def readings(self) -> list[str]: return []

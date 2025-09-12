@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, cast, override
 
 from anki.models import NotetypeDict
 from anki_extentions.card_ex import CardEx
@@ -31,16 +31,19 @@ class JPNote(WeakRefable,Slots):
     @property
     def is_flushing(self) -> bool: return self.flush_guard.is_flushing
 
+    @override
     def __eq__(self, other: object) -> bool:
         ex_assert.not_none(self.get_id(), "You cannot compare or hash a note that has not been saved yet since it has no id")
         return isinstance(other, JPNote) and other.get_id() == self.get_id()
 
+    @override
     def __hash__(self) -> int:
         if not self.__hash_value:
             self.__hash_value = int(self.get_id())
             ex_assert.that(self.__hash_value != 0, "You cannot compare or hash a note that has not been saved yet since it has no id")
         return self.__hash_value
 
+    @override
     def __repr__(self) -> str:
         return self.get_question()
 

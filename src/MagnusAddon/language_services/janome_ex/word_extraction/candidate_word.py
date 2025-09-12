@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
 from language_services.janome_ex.word_extraction.analysis_constants import noise_characters
@@ -122,6 +122,7 @@ class CandidateWord(WeakRefable, Slots):
             return self.start_location.display_variants[0]
         return None
 
+    @override
     def __repr__(self) -> str: return f"""
 surface: {self.surface_variant.__repr__()} | base:{self.base_variant.__repr__()},
 hdc:{self.has_valid_words()},

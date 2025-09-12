@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
 from sysutils.simple_string_list_builder import SimpleStringListBuilder
@@ -86,4 +86,5 @@ class Match(WeakRefable, Slots):
                 .append_if_lambda(self.is_shadowed, lambda: f"shadowed_by:{self.word.shadowed_by_text}")
                 .as_set())
 
+    @override
     def __repr__(self) -> str: return f"""{self.parsed_form}, {self.match_form[:10]}: {" ".join(self.failure_reasons)} {" ".join(self.hiding_reasons)}"""

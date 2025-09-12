@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
 from note.note_constants import NoteFields, Tags
@@ -48,6 +48,7 @@ class VocabNoteMatchingRules(Slots):
         self.suffix_is_not.overwrite_with(other.suffix_is_not)
         self.required_prefix.overwrite_with(other.required_prefix)
 
+    @override
     def __repr__(self) -> str: return (SkipFalsyValuesDebugReprBuilder()
                                        .prop("surface_is_not", self.surface_is_not.get())
                                        .prop("prefix_is_not", self.prefix_is_not.get())
@@ -87,6 +88,7 @@ class VocabNoteMatchingConfiguration(WeakRefable, Slots):
 
     def save(self) -> None: self.configurable_rules.save()
 
+    @override
     def __repr__(self) -> str: return (SkipFalsyValuesDebugReprBuilder()
                                        .flag("requires_exact_match", self.requires_forbids.requires_exact_match.is_required)
                                        .flag("forbids_exact_match", self.requires_forbids.requires_exact_match.is_forbidden)

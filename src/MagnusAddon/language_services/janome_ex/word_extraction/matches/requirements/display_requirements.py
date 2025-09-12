@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
 from sysutils.simple_string_list_builder import SimpleStringListBuilder
@@ -30,6 +30,7 @@ class DisplayRequirements(Slots):
                 .append_if(self.yields_to_form_owning_match, "yields_to_form_owning_match")
                 .as_set())
 
+    @override
     def __repr__(self) -> str: return " ".join(self.failure_reasons())
 
     def _is_yield_last_token_to_overlapping_compound_requirement_fulfilled(self) -> bool:

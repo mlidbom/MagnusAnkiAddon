@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
 from sysutils import ex_str, kana_utils
@@ -25,5 +25,6 @@ class KanjiViewModel(Slots):
     def mnemonic(self) -> str:
         return self.kanji.get_active_mnemonic()
 
+    @override
     def __str__(self) -> str:
         return f"{self.question()}      {ex_str.pad_to_length(self.answer(), 60)}: {self.readings()}"

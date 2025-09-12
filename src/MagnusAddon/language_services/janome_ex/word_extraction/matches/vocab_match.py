@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
 from language_services.janome_ex.word_extraction.matches.match import Match
@@ -29,19 +29,24 @@ class VocabMatch(Match, Slots):
     @property
     def matching(self) -> VocabNoteMatchingConfiguration: return self.vocab.matching_configuration
     @property
+    @override
     def match_form(self) -> str: return self.vocab.get_question()
     @property
+    @override
     def answer(self) -> str: return self.vocab.get_answer()
     @property
+    @override
     def readings(self) -> list[str]: return self.vocab.readings.get()
 
     @property
+    @override
     def parsed_form(self) -> str:
         return self.vocab.question.raw \
             if self.matching.bool_flags.question_overrides_form.is_set() \
             else super().parsed_form
 
     @property
+    @override
     def start_index(self) -> int:
         if (self.matching.bool_flags.question_overrides_form.is_set()
                 and self.matching.configurable_rules.required_prefix.any()):
@@ -54,6 +59,7 @@ class VocabMatch(Match, Slots):
         return super().start_index
 
     @property
+    @override
     def _is_valid_internal(self) -> bool:
         return (super()._is_valid_internal
                 and self.head_requirements.are_fulfilled
@@ -61,6 +67,7 @@ class VocabMatch(Match, Slots):
                 and self.misc_requirements.are_fulfilled)
 
     @property
+    @override
     def is_secondary_match(self) -> bool: return not self.owns_form and self._another_match_owns_form
 
     @property
@@ -70,6 +77,7 @@ class VocabMatch(Match, Slots):
                                                            and other_match.is_valid)
 
     @property
+    @override
     def is_valid_for_display(self) -> bool: return super().is_valid_for_display and self.display_requirements.are_fulfilled
     @property
     def display_requirements(self) -> DisplayRequirements: return DisplayRequirements(self.weakref)
@@ -78,6 +86,7 @@ class VocabMatch(Match, Slots):
     def owns_form(self) -> bool: return self.vocab.forms.is_owned_form(self.tokenized_form)
 
     @property
+    @override
     def failure_reasons(self) -> set[str]:
         return (super().failure_reasons
                 | self.misc_requirements.failure_reasons()
@@ -85,7 +94,9 @@ class VocabMatch(Match, Slots):
                 | self.tail_requirements.failure_reasons())
 
     @property
+    @override
     def hiding_reasons(self) -> set[str]: return (super().hiding_reasons
                                                   | self.display_requirements.failure_reasons())
 
+    @override
     def __repr__(self) -> str: return f"""{self.vocab.get_question()}, {self.vocab.get_answer()[:10]}: {" ".join(self.failure_reasons)} {" ".join(self.hiding_reasons)}"""

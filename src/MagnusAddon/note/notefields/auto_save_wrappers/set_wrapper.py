@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Callable, Generic, TypeVar
+from typing import TYPE_CHECKING, Any, Callable, Generic, TypeVar, override
 
 from autoslot import Slots
 
@@ -38,4 +38,5 @@ class FieldSetWrapper(Generic[TValue], Slots):
     def for_json_object_field(cls, field: SerializedObjectField[Any], value: set[TValue]) -> FieldSetWrapper[TValue]:
         return cls(lambda: field.save(), lambda: value, FieldSetWrapper._secret)
 
+    @override
     def __repr__(self) -> str: return self._value().__repr__() if self._value() else "{}"

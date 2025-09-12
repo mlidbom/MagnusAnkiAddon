@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, cast, override
 
 from anki.notes import Note
 from ankiutils import app
@@ -43,7 +43,9 @@ class SentenceNote(JPNote, Slots):
         self.configuration: CachingSentenceConfigurationField = CachingSentenceConfigurationField(self.weakref_sentence)
         self.parsing_result: SerializedObjectField[ParsingResult] = SerializedObjectField[ParsingResult](self.weakref, SentenceNoteFields.parsing_result, ParsingResultSerializer())
 
+    @override
     def get_question(self) -> str: return self.question.get()
+    @override
     def get_answer(self) -> str: return self.answer.get()
 
     def is_studying_read(self) -> bool: return self.is_studying(NoteFields.SentencesNoteType.Card.Reading)
@@ -59,6 +61,7 @@ class SentenceNote(JPNote, Slots):
         from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
         return TextAnalysis(self.get_question(), self.configuration.configuration)
 
+    @override
     def get_direct_dependencies(self) -> set[JPNote]:
         highlighted = self.configuration.highlighted_vocab
         displayed_vocab = {voc for voc in {app.col().vocab.with_id_or_none(voc.vocab_id)
@@ -76,6 +79,7 @@ class SentenceNote(JPNote, Slots):
     def get_parsed_words_notes(self) -> list[VocabNote]:
         return ex_sequence.flatten([app.col().vocab.with_question(q) for q in self.get_valid_parsed_non_child_words_strings()])
 
+    @override
     def update_generated_data(self) -> None:
         super().update_generated_data()
         self.update_parsed_words()

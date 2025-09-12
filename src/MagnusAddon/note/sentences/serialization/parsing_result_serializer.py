@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 import mylog
 from autoslot import Slots
@@ -13,6 +13,7 @@ if TYPE_CHECKING:
 
 class ParsingResultSerializer(ObjectSerializer["ParsingResult"], Slots):
     newline_replacement = f"NEWLINE{invisible_space}"
+    @override
     def deserialize(self, serialized: str) -> ParsingResult:
         from note.sentences.parsing_result import ParsingResult
 
@@ -37,6 +38,7 @@ class ParsingResultSerializer(ObjectSerializer["ParsingResult"], Slots):
     def _restore_newline(self, serialized_value: str) -> str:
         return serialized_value.replace(self.newline_replacement, newline)
 
+    @override
     def serialize(self, parsing_result: ParsingResult) -> str:
         return newline.join([parsing_result.parser_version,
                              self._replace_newline(parsing_result.sentence)]

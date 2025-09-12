@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, cast, override
 
 from ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules  # noqa
 from autoslot import Slots
@@ -60,9 +60,11 @@ class VocabNote(WaniNote, Slots):
         self.meta_data: VocabNoteMetaData = VocabNoteMetaData(self.weakref_vocab)
         self.matching_configuration: VocabNoteMatchingConfiguration = VocabNoteMatchingConfiguration(self.weakref_vocab)
 
+    @override
     def get_direct_dependencies(self) -> set[JPNote]:
         return self.related_notes.get_direct_dependencies()
 
+    @override
     def update_generated_data(self) -> None:
         self.meta_data.sentence_count.set(len(self.sentences.all()))
         self.active_answer.set(self.get_answer())
@@ -81,9 +83,11 @@ class VocabNote(WaniNote, Slots):
 
         self.update_generated_data()
 
+    @override
     def get_answer(self) -> str:
         return self.user.answer.get() or self._source_answer.get()
 
+    @override
     def update_from_wani(self, wani_vocab: models.Vocabulary) -> None:
         super().update_from_wani(wani_vocab)
         self.wani_extensions.update_from_wani(wani_vocab)

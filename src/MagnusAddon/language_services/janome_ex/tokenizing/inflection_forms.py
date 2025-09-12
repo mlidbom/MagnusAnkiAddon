@@ -1,6 +1,8 @@
 # noinspection PyUnusedClass, PyUnusedName
 from __future__ import annotations
 
+from typing import override
+
 all_dict: dict[str, InflectionForm] = {}
 
 class InflectionForm:
@@ -8,14 +10,18 @@ class InflectionForm:
         self.name = name
         self.description = description
 
+    @override
     def __repr__(self) -> str: return f"""{self.name} - {self.description}"""
+    @override
     def __str__(self) -> str: return self.name
 
+    @override
     def __eq__(self, other: object) -> bool:
         if isinstance(other, InflectionForm):
             return self.name == other.name
         return False
 
+    @override
     def __hash__(self) -> int: return hash(self.name)
 
 def _add_form(name: str, description: str) -> InflectionForm:

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
 
@@ -12,4 +12,5 @@ class KanjiListViewModel(Slots):
     def __init__(self, kanji_list: list[KanjiViewModel]) -> None:
         self.kanji_list = kanji_list
 
+    @override
     def __str__(self) -> str: return "\n".join([str(kan) for kan in self.kanji_list])

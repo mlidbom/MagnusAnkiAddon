@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
 
@@ -26,14 +26,17 @@ class WordExclusion(Slots):
     @classmethod
     def at_index(cls, exclusion: str, index: int) -> WordExclusion: return WordExclusion(exclusion.strip(), index, WordExclusion.secret)
 
+    @override
     def __eq__(self, other: object) -> bool:
         if isinstance(other, WordExclusion):
             return self.word == other.word and self.index == other.index
         return False
 
+    @override
     def __hash__(self) -> int:
         return hash((self.word, self.index))
 
+    @override
     def __repr__(self) -> str:
         return f"WordExclusion('{self.word}', {self.index})"
 

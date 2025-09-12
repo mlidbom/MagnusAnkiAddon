@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
 from sysutils.object_instance_tracker import ObjectInstanceTracker
@@ -21,5 +21,6 @@ class TagFlagField(Slots):
         if set_: self._note().set_tag(self.tag)
         else: self._note().remove_tag(self.tag)
 
+    @override
     def __repr__(self) -> str: return self.is_set().__repr__()
 

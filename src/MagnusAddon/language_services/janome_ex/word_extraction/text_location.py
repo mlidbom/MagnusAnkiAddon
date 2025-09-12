@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from ankiutils import app
 from autoslot import Slots
@@ -41,6 +41,7 @@ class TextAnalysisLocation(WeakRefable,Slots):
         self.candidate_words: list[CandidateWord] = []
         self.display_words: list[CandidateWord] = []
 
+    @override
     def __repr__(self) -> str:
         return f"""
 TextLocation('{self.character_start_index}-{self.character_end_index}, {self.token.surface} | {self.token.base_form})

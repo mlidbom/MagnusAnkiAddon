@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from ankiutils import app
 from autoslot import Slots
@@ -81,5 +81,6 @@ class CandidateWordVariant(WeakRefable, Slots):
     def to_exclusion(self) -> WordExclusion:
         return WordExclusion.at_index(self.form, self.start_index)
 
+    @override
     def __repr__(self) -> str:
         return f"""{self.form}, is_valid_candidate:{self.is_valid}"""

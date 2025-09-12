@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
 from language_services import conjugator
@@ -83,4 +83,5 @@ class HeadRequirements(Slots):
                 .append_if(not self.fulfills_requires_t_form_stem, "requires_t_form_stem")
                 .as_set())
 
+    @override
     def __repr__(self) -> str: return " ".join(self.failure_reasons())

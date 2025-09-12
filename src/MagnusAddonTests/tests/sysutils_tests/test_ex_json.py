@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import override
+
 from anki.notes import NoteId
 from ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules  # noqa
 from autoslot import Slots
@@ -22,11 +24,13 @@ class IntObject(Slots):
     def from_json(reader: JsonReader) -> IntObject:
         return IntObject(reader.integer("value"))
 
+    @override
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, IntObject):
             return False
         return self.value == other.value
 
+    @override
     def __repr__(self) -> str:
         return f"IntObject({self.value})"
 

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from ankiutils import app
 from note.note_constants import Tags
@@ -17,6 +17,7 @@ class YieldLastTokenToOverlappingCompound(RequireForbidFlagField):
         self._vocab: WeakRef[VocabNote] = vocab
 
     @property
+    @override
     def is_required(self) -> bool:
         return (super().is_required
                 or (not self.is_forbidden
@@ -34,6 +35,7 @@ class YieldLastTokenToOverlappingCompound(RequireForbidFlagField):
                                 and self._vocab().parts_of_speech.is_causative_verb_compound())
                     )))
 
+    @override
     def __repr__(self) -> str: return (SimpleStringBuilder()
                                        .append_if(self.is_required, "required")
                                        .append_if(self.is_forbidden, "forbidden")

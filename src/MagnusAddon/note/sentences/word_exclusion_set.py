@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
@@ -51,4 +51,5 @@ class WordExclusionSet(Slots):
     def excludes_at_index(self, word: str, index: int) -> bool:
         return any(exclusion for exclusion in self._exclusions if exclusion.excludes_form_at_index(word, index))
 
+    @override
     def __repr__(self) -> str: return ", ".join(exclusion.__repr__() for exclusion in self._exclusions)

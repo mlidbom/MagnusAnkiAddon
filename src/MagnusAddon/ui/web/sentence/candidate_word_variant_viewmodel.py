@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from sysutils.debug_repr_builder import SkipFalsyValuesDebugReprBuilder
 from sysutils.weak_ref import WeakRef
@@ -25,6 +25,7 @@ class CandidateWordVariantViewModel:
         self.primary_display_forms = [form for form in self.matches if primary_matches_first(form)]
         self.matches = sorted(self.matches, key=primary_matches_first)
 
+    @override
     def __repr__(self) -> str: return (
         SkipFalsyValuesDebugReprBuilder()
         .include(self.candidate_word.form)

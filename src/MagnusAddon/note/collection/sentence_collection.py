@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
 from note.collection.backend_facade import BackEndFacade
@@ -31,17 +31,20 @@ class _SentenceCache(NoteCache[SentenceNote, _SentenceSnapshot], Slots):
         self._by_vocab_id: dict[int, set[SentenceNote]] = defaultdict(set)
         super().__init__(all_kanji, SentenceNote, cache_runner)
 
+    @override
     def _create_snapshot(self, note: SentenceNote) -> _SentenceSnapshot: return _SentenceSnapshot(note)
 
     def with_vocab(self, vocab: VocabNote) -> list[SentenceNote]: return list(self._by_vocab_id[vocab.get_id()])
     def with_vocab_form(self, form: str) -> list[SentenceNote]: return list(self._by_vocab_form[form])
     def with_user_highlighted_vocab(self, form: str) -> list[SentenceNote]: return list(self._by_user_highlighted_vocab[form])
 
+    @override
     def _inheritor_remove_from_cache(self, sentence: SentenceNote, cached:_SentenceSnapshot) -> None:
         for vocab_form in cached.words: self._by_vocab_form[vocab_form].remove(sentence)
         for vocab_form in cached.user_highlighted_vocab: self._by_user_highlighted_vocab[vocab_form].remove(sentence)
         for vocab_id in cached.detected_vocab: self._by_vocab_id[vocab_id].remove(sentence)
 
+    @override
     def _inheritor_add_to_cache(self, sentence: SentenceNote, snapshot: _SentenceSnapshot) -> None:
         for vocab_form in snapshot.words: self._by_vocab_form[vocab_form].add(sentence)
         for vocab_form in snapshot.user_highlighted_vocab: self._by_user_highlighted_vocab[vocab_form].add(sentence)

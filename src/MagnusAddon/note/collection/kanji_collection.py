@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
 
@@ -29,12 +29,15 @@ class _KanjiCache(NoteCache[KanjiNote, _KanjiSnapshot], Slots):
         self.by_reading: dict[str, set[KanjiNote]] = defaultdict(set)
         super().__init__(all_kanji, KanjiNote, cache_runner)
 
+    @override
     def _create_snapshot(self, note: KanjiNote) -> _KanjiSnapshot: return _KanjiSnapshot(note)
 
+    @override
     def _inheritor_remove_from_cache(self, note: KanjiNote, cached:_KanjiSnapshot) -> None:
         for form in cached.radicals: self._by_radical[form].remove(note)
         for reading in cached.readings: self.by_reading[reading].remove(note)
 
+    @override
     def _inheritor_add_to_cache(self, note: KanjiNote, snapshot: _KanjiSnapshot) -> None:
         for form in snapshot.radicals: self._by_radical[form].add(note)
         for reading in snapshot.readings: self.by_reading[reading].add(note)

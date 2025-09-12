@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
 from note.note_constants import Tags
@@ -35,12 +35,15 @@ class VocabSpec(Slots):
         self.tos: str = tos if tos else ""
         self.required_prefix: set[str] = prefix_in if prefix_in else set()
 
+    @override
     def __repr__(self) -> str:
         return f"""VocabSpec("{self.question}", "{self.answer}", {self.readings})"""
 
+    @override
     def __hash__(self) -> int:
         return hash(self.question)
 
+    @override
     def __eq__(self, other: object) -> bool:
         return (isinstance(other, VocabSpec)
                 and other.question == self.question

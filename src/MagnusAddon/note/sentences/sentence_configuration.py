@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
 from note.sentences.serialization.sentence_configuration_serializer import SentenceConfigurationSerializer
@@ -35,6 +35,7 @@ class SentenceConfiguration(Slots):
     @classmethod
     def empty(cls) -> SentenceConfiguration: return cls.from_values(set(), [], [])
 
+    @override
     def __repr__(self) -> str: return (SkipFalsyValuesDebugReprBuilder()
                                        .prop("highlighted_words", self.highlighted_words)
                                        .prop("incorrect_matches", self.incorrect_matches)

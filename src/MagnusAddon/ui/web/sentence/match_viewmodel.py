@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from ankiutils import app
 from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
@@ -74,6 +74,7 @@ class MatchViewModel:
     def kanji(self) -> list[str]:
         return ex_sequence.remove_duplicates_while_retaining_order(kana_utils.extract_kanji(self.parsed_form + self.vocab_form))
 
+    @override
     def __repr__(self) -> str:
         return (
             SkipFalsyValuesDebugReprBuilder()

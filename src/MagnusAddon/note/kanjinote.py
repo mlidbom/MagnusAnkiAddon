@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import re
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, cast, override
 
 from anki.notes import Note
 from ankiutils import app
@@ -26,6 +26,7 @@ class KanjiNote(WaniNote, Slots):
         super().__init__(note)
         self.weakref = cast(WeakRef[KanjiNote], self.weakref)
 
+    @override
     def get_direct_dependencies(self) -> set[JPNote]:
         return set(self.get_radicals_notes())
 
@@ -62,12 +63,14 @@ class KanjiNote(WaniNote, Slots):
 
         return result
 
+    @override
     def get_question(self) -> str:
         return self.get_field(NoteFields.Kanji.question)
 
     def set_question(self, value: str) -> None:
         self.set_field(NoteFields.Kanji.question, value)
 
+    @override
     def get_answer(self) -> str:
         return self.get_user_answer() or self.get_field(NoteFields.Kanji.source_answer)
 
@@ -83,6 +86,7 @@ class KanjiNote(WaniNote, Slots):
     def _set_source_answer(self, value: str) -> None:
         self.set_field(NoteFields.Kanji.source_answer, value)
 
+    @override
     def update_generated_data(self) -> None:
         super().update_generated_data()
 
@@ -296,6 +300,7 @@ class KanjiNote(WaniNote, Slots):
     def bootstrap_mnemonic_from_radicals(self) -> None:
         self.set_user_mnemonic(kanjinote_mnemonic_maker.create_default_mnemonic(self))
 
+    @override
     def update_from_wani(self, wani_kanji: models.Kanji) -> None:
         super().update_from_wani(wani_kanji)
 

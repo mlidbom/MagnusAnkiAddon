@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
 from note.notefields.auto_save_wrappers.value_wrapper import ValueWrapper
@@ -13,6 +13,7 @@ if TYPE_CHECKING:
 
 
 class RelatedVocabDataSerializer(ObjectSerializer["RelatedVocabData"], Slots):
+    @override
     def deserialize(self, json: str) -> RelatedVocabData:
         from note.vocabulary.related_vocab.related_vocab_data import RelatedVocabData
         if not json: return RelatedVocabData("", ValueWrapper(""), set(), set(), set(), set())
@@ -25,6 +26,7 @@ class RelatedVocabDataSerializer(ObjectSerializer["RelatedVocabData"], Slots):
                                 reader.string_set("confused_with"),
                                 reader.string_set("see_also"))
 
+    @override
     def serialize(self, related_notes: RelatedVocabData) -> str:
         return ex_json.dict_to_json({"ergative_twin": related_notes.ergative_twin,
                                      "derived_from": related_notes.derived_from.get(),

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
 from language_services.janome_ex.tokenizing import inflection_forms, inflection_types
@@ -36,6 +36,7 @@ class JNToken(Slots):
         self.parts_of_speech:JNPartsOfSpeech = parts_of_speech
         self.raw_token = raw_token
 
+    @override
     def __repr__(self) -> str:
         return "".join([
             "JNToken(",
@@ -48,6 +49,7 @@ class JNToken(Slots):
             # ", " + kana_utils.pad_to_length(f"'{self.node_type}'", 10),
             ", " + str(self.parts_of_speech)])
 
+    @override
     def __eq__(self, other: object) -> bool:
         if isinstance(other, JNToken):
             return (self.base_form == other.base_form and

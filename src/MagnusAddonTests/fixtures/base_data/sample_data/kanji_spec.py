@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import override
+
 from autoslot import Slots
 
 
@@ -10,8 +12,10 @@ class KanjiSpec(Slots):
         self.kun_reading = kun_readings
         self.on_readings = on_readings
 
+    @override
     def __repr__(self) -> str: return f"""KanjiSpec("{self.question}", "{self.answer}", "{self.kun_reading}", "{self.on_readings}")"""
 
+    @override
     def __eq__(self, other: object) -> bool:
         return (isinstance(other, KanjiSpec)
                 and other.question == self.question
@@ -19,6 +23,7 @@ class KanjiSpec(Slots):
                 and other.kun_reading == self.kun_reading
                 and other.on_readings == self.on_readings)
 
+    @override
     def __hash__(self) -> int:
         return hash(self.question)
 

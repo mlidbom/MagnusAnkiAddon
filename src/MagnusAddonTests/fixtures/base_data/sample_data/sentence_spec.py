@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import override
+
 from autoslot import Slots
 
 
@@ -8,11 +10,14 @@ class SentenceSpec(Slots):
         self.question = question
         self.answer = answer
 
+    @override
     def __repr__(self) -> str:
         return f"""SentenceSpec("{self.question}", "{self.answer}")"""
 
+    @override
     def __hash__(self) -> int: return hash(self.question)
 
+    @override
     def __eq__(self, other: object) -> bool:
         return (isinstance(other, SentenceSpec)
                 and other.question == self.question

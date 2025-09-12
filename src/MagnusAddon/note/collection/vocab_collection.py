@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
 from note.collection.backend_facade import BackEndFacade
@@ -60,8 +60,10 @@ class _VocabCache(NoteCache[VocabNote, _VocabSnapshot], Slots):
     def with_reading(self, reading: str) -> list[VocabNote]: return list(self._by_reading[reading])
     def with_stem(self, stem: str) -> list[VocabNote]: return list(self._by_stem[stem])
 
+    @override
     def _create_snapshot(self, note: VocabNote) -> _VocabSnapshot: return _VocabSnapshot(note)
 
+    @override
     def _inheritor_remove_from_cache(self, note: VocabNote, snapshot: _VocabSnapshot) -> None:
         for form in snapshot.forms: self._by_form[form].remove(note)
         for part in snapshot.compound_parts: self._by_compound_part[part].remove(note)
@@ -71,6 +73,7 @@ class _VocabCache(NoteCache[VocabNote, _VocabSnapshot], Slots):
         for kanji in snapshot.readings: self._by_reading[kanji].remove(note)
         for stem in snapshot.stems: self._by_stem[stem].remove(note)
 
+    @override
     def _inheritor_add_to_cache(self, note: VocabNote, snapshot: _VocabSnapshot) -> None:
         for form in snapshot.forms: self._by_form[form].add(note)
         for compound_part in snapshot.compound_parts: self._by_compound_part[compound_part].add(note)

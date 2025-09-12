@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import weakref
-from typing import TYPE_CHECKING, Generic, TypeVar
+from typing import TYPE_CHECKING, Generic, TypeVar, override
 
 from autoslot import Slots
 
@@ -21,7 +21,7 @@ class WeakRef(Generic[T], Slots):
         return instance
     def __call__(self) -> T: return self.instance
 
-
+    @override
     def __repr__(self) -> str: return f"WeakRef: {self.instance.__repr__()}"
 
 class WeakRefable(Slots):

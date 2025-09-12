@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from note.note_constants import Tags
 from note.notefields.tag_flag_field import TagFlagField
@@ -18,4 +18,5 @@ class QuestionOverridesForm:
     def is_set(self) -> bool:
         return self.tag_field.is_set() # or self._vocab().matching_rules.is_strictly_suffix.is_set()
 
+    @override
     def __repr__(self) -> str: return self.is_set().__repr__()

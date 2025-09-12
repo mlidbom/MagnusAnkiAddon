@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
 from language_services.janome_ex.word_extraction.analysis_constants import non_word_characters
@@ -41,4 +41,5 @@ class TailRequirements(Slots):
                 .append_if(not self.fulfills_suffix_is_not, "suffix_is_not")
                 .as_set())
 
+    @override
     def __repr__(self) -> str: return " ".join(self.failure_reasons())

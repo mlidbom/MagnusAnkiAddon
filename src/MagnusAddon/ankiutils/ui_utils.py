@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING, Callable, override
 
 from ankiutils import app
 from autoslot import Slots
@@ -70,15 +70,18 @@ class UIUtils(IUIUtils, Slots):
     def __init__(self, mw: AnkiQt) -> None:
         self._mw = mw
 
+    @override
     def is_edit_current_open(self) -> bool:
         edit_current = [window for window in self._mw.app.topLevelWidgets() if isinstance(window, EditCurrent)]
         return len(edit_current) > 0
 
+    @override
     def run_ui_action(self, callback: Callable[[], None]) -> None:
         time = timeutil.time_execution(callback)
         self.refresh()
         tooltip(f"done in {time}")
 
+    @override
     def refresh(self, refresh_browser: bool = True) -> None:
         if not app.is_initialized():
             return
@@ -109,6 +112,7 @@ class UIUtils(IUIUtils, Slots):
         if refresh_browser:
             force_browser_rerender()
 
+    @override
     def activate_preview(self) -> None:
         browser: Browser = aqt.dialogs.open('Browser', self._mw)  # noqa
         self._mw.app.processEvents()
@@ -117,6 +121,7 @@ class UIUtils(IUIUtils, Slots):
         else:
             browser._previewer.activateWindow()  # noqa
 
+    @override
     def tool_tip(self, message: str, milliseconds: int = 3000) -> None:
         def show_tooltip() -> None:
             tooltip(message, milliseconds)

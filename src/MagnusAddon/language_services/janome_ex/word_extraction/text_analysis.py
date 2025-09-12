@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
 from sysutils.object_instance_tracker import ObjectInstanceTracker
@@ -60,7 +60,7 @@ class TextAnalysis(WeakRefable,Slots):
 
     def all_words_strings(self) -> list[str]:
         return [w.form for w in self.valid_word_variants]
-
+    @override
     def __repr__(self) -> str:
         return self.text
 

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
 from note.notefields.json_object_field import ObjectSerializer
@@ -11,6 +11,7 @@ if TYPE_CHECKING:
     from note.vocabulary.vocabnote_matching_rules import VocabNoteMatchingRulesData
 
 class VocabNoteMatchingRulesSerializer(ObjectSerializer["VocabNoteMatchingRulesData"], Slots):
+    @override
     def deserialize(self, json: str) -> VocabNoteMatchingRulesData:
         from note.vocabulary.vocabnote_matching_rules import VocabNoteMatchingRulesData
         if not json: return VocabNoteMatchingRulesData(set(), set(), set(), set(), set())
@@ -22,6 +23,7 @@ class VocabNoteMatchingRulesSerializer(ObjectSerializer["VocabNoteMatchingRulesD
                                           reader.string_set("required_prefix"),
                                           reader.string_set("yield_to_surface", set()))
 
+    @override
     def serialize(self, rules: VocabNoteMatchingRulesData) -> str:
         return ex_json.dict_to_json({"surface_is_not": list(rules.surface_is_not),
                                      "prefix_is_not": list(rules.prefix_is_not),

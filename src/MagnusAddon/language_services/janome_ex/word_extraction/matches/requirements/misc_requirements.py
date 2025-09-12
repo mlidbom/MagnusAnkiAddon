@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
 from sysutils.simple_string_list_builder import SimpleStringListBuilder
@@ -58,4 +58,5 @@ class MiscRequirements(Slots):
                 .append_if(self.is_poison_word, "is_poison_word")
                 .as_set())
 
+    @override
     def __repr__(self) -> str: return " ".join(self.failure_reasons())

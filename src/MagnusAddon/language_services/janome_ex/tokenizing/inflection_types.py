@@ -1,6 +1,8 @@
 # noinspection PyUnusedClass, PyUnusedName
 from __future__ import annotations
 
+from typing import override
+
 all_dict: dict[str, InflectionType] = {}
 
 class InflectionType:
@@ -8,9 +10,12 @@ class InflectionType:
         self.name = name
         self.description = description
 
+    @override
     def __repr__(self) -> str: return f"""{self.name} - {self.description}"""
+    @override
     def __str__(self) -> str: return self.name
 
+    @override
     def __eq__(self, other: object) -> bool:
         if isinstance(other, InflectionType):
             return self.name == other.name

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
 from note.notefields.comma_separated_strings_list_field import CommaSeparatedStringsListField
@@ -14,5 +14,6 @@ class CommaSeparatedStringsListFieldDeDuplicated(CommaSeparatedStringsListField,
     def __init__(self, note: WeakRef[JPNote], field_name: str) -> None:
         super().__init__(note, field_name)
 
+    @override
     def set(self, value: list[str]) -> None:
         super().set(ex_sequence.remove_duplicates_while_retaining_order(value))

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
 from language_services.janome_ex.word_extraction.matches.match import Match
@@ -16,9 +16,12 @@ class DictionaryMatch(Match, Slots):
         self.dictionary_entry: DictEntry = dictionary_entry
 
     @property
+    @override
     def answer(self) -> str: return self.dictionary_entry.generate_answer()
     @property
+    @override
     def readings(self) -> list[str]: return [f.text for f in self.dictionary_entry.entry.kana_forms]
 
     @property
+    @override
     def is_secondary_match(self) -> bool: return True
