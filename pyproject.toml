@@ -58,7 +58,7 @@ exclude=["**/node_modules", "**/__pycache__", "**/.*", "src/MagnusAddon/_lib/", 
 extraPaths=["src/MagnusAddon"]
 typeCheckingMode="recommended" # "off", "basic", "standard", "strict", "recommended", "all"
 
-#todo: errors we should enable detection of ASAP
+# not too sure about this one. Gives some hella confusing results making me wonder if it is really accurate....
 reportImportCycles =  "none"
 
 #  "questionable if these are useful =  "",
