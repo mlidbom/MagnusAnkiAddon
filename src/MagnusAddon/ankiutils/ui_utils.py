@@ -114,7 +114,7 @@ class UIUtils(IUIUtils, Slots):
 
     @override
     def activate_preview(self) -> None:
-        browser: Browser = aqt.dialogs.open('Browser', self._mw)  # noqa
+        browser: Browser = aqt.dialogs.open('Browser', self._mw)  # noqa  # pyright: ignore[reportAny]
         self._mw.app.processEvents()
         if browser._previewer is None:  # noqa
             browser.onTogglePreview()

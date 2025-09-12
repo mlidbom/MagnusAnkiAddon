@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, Callable
 
 import mylog
 from autoslot import Slots
+from sysutils import typed
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -59,7 +60,7 @@ class StopWatch(Slots):
 
         def get_caller_info() -> str:
             caller_frame = sys._getframe(4) # noqa
-            module_name = caller_frame.f_globals["__name__"]
+            module_name = typed.str_(caller_frame.f_globals["__name__"])  # pyright: ignore[reportAny]
             function_name = caller_frame.f_code.co_name
             return f"{module_name}..{function_name}"
 
@@ -82,7 +83,7 @@ class StopWatch(Slots):
 
         def get_caller_info() -> str:
             caller_frame = sys._getframe(4) # noqa
-            module_name = caller_frame.f_globals["__name__"]
+            module_name:str = typed.str_(caller_frame.f_globals["__name__"])  # pyright: ignore[reportAny]
             function_name = caller_frame.f_code.co_name
             return f"{module_name}..{function_name}"
 

@@ -50,7 +50,7 @@ class JamdictThreadingWrapper(Slots):
         while self._running:
             request = self._queue.get()
             try:
-                result = request.func(self.jamdict.instance())
+                result = request.func(self.jamdict.instance())  # pyright: ignore[reportAny]
                 request.future.set_result(result)
             except Exception as e:
                 request.future.set_exception(e)
@@ -67,9 +67,9 @@ class JamdictThreadingWrapper(Slots):
     def run_string_query(self, query: str) -> list[str]:
         def perform_query(jamdict: Jamdict) -> list[str]:
             result: list[str] = []
-            for batch in non_optional(non_optional(jamdict.jmdict).ctx().conn).execute(query):
-                for row in batch:
-                    result.append(str_(row))  # noqa: PERF401
+            for batch in non_optional(non_optional(jamdict.jmdict).ctx().conn).execute(query):  # pyright: ignore[reportAny]
+                for row in batch:  # pyright: ignore[reportAny]
+                    result.append(str_(row))  # noqa: PERF401  # pyright: ignore[reportAny]
 
             return result
 

@@ -12,17 +12,17 @@ class JsonReader(Slots):
     def __init__(self, json_dict: dict[str, Any]) -> None:  # pyright: ignore[reportExplicitAny]
         self._dict: dict[str, Any] = json_dict  # pyright: ignore[reportExplicitAny]
 
-    def _get_prop(self, prop: str | list[str], default: object | None) -> Any:  # noqa: ANN401  # pyright: ignore[reportExplicitAny]
+    def _get_prop(self, prop: str | list[str], default: object | None) -> Any:  # noqa: ANN401  # pyright: ignore[reportExplicitAny, reportAny]
         if isinstance(prop, str):
             value = self._dict.get(prop, None)
             if value is None:
                 if default is not None: return default
                 raise KeyError(f"Property '{prop}' not found in the JSON.")
-            return value
+            return value  # pyright: ignore[reportAny]
 
         for current_property_name in prop:
             if current_property_name in self._dict:
-                return self._dict[current_property_name]
+                return self._dict[current_property_name]  # pyright: ignore[reportAny]
 
         if default is not None: return default
         raise KeyError(f"None of the following keys were found in the JSON: {prop}")

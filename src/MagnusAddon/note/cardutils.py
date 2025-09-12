@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 from anki.consts import QUEUE_TYPE_NEW
 from autoslot import Slots
 from note.note_constants import NoteTypes
+from sysutils import typed
 
 if TYPE_CHECKING:
     from anki.cards import Card
@@ -18,7 +19,7 @@ class CardUtils(Slots):
 
     @classmethod
     def get_note_type_priority(cls, card: Card) -> int:
-        note_type_name = card.note_type()["name"]
+        note_type_name = typed.str_(card.note_type()["name"])  # pyright: ignore[reportAny]
         if note_type_name == NoteTypes.Kanji: return 1
         if note_type_name == NoteTypes.Vocab: return 2
 

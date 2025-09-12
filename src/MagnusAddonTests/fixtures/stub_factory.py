@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 _thread_local = threading.local()
 
 def get_thread_local_ui_utils() -> IUIUtils:
-    return checked_cast(UIUtilsStub, _thread_local.ui_utils)
+    return checked_cast(UIUtilsStub, _thread_local.ui_utils)  # pyright: ignore[reportAny]
 
 @contextmanager
 def _stub_ui_utils_real() -> Iterator[None]:

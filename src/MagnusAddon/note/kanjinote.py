@@ -141,13 +141,13 @@ class KanjiNote(WaniNote, Slots):
         return self.get_primary_readings_on() + self.get_primary_readings_kun() + self.get_primary_readings_nan()
 
     def get_primary_readings_on(self) -> list[str]:
-        return [ex_str.strip_html_markup(reading) for reading in KanjiNote.primary_reading_pattern.findall(self.get_reading_on_html())]
+        return [ex_str.strip_html_markup(reading) for reading in KanjiNote.primary_reading_pattern.findall(self.get_reading_on_html())]  # pyright: ignore[reportAny]
 
     def get_primary_readings_kun(self) -> list[str]:
-        return [ex_str.strip_html_markup(reading) for reading in KanjiNote.primary_reading_pattern.findall(self.get_reading_kun_html())]
+        return [ex_str.strip_html_markup(reading) for reading in KanjiNote.primary_reading_pattern.findall(self.get_reading_kun_html())]  # pyright: ignore[reportAny]
 
     def get_primary_readings_nan(self) -> list[str]:
-        return [ex_str.strip_html_markup(reading) for reading in KanjiNote.primary_reading_pattern.findall(self.get_reading_nan_html())]
+        return [ex_str.strip_html_markup(reading) for reading in KanjiNote.primary_reading_pattern.findall(self.get_reading_nan_html())]  # pyright: ignore[reportAny]
 
     def get_reading_kun_html(self) -> str:
         return self.get_field(NoteFields.Kanji.Reading_Kun)
@@ -338,7 +338,7 @@ class KanjiNote(WaniNote, Slots):
         def detect_radicals_from_mnemonic() -> list[str]:
             radical_names = re.findall(r"<rad>(.*?)</rad>", self.get_user_mnemonic())
 
-            matching_radicals = ex_sequence.flatten([([rad for rad in app.col().kanji.all() if re.search(r"\b" + re.escape(radical_name) + r"\b", rad.get_answer())]) for radical_name in radical_names])
+            matching_radicals = ex_sequence.flatten([([rad for rad in app.col().kanji.all() if re.search(r"\b" + re.escape(radical_name) + r"\b", rad.get_answer())]) for radical_name in radical_names])  # pyright: ignore[reportAny]
             return [match.get_question() for match in matching_radicals]
 
         radicals = self.get_radicals()

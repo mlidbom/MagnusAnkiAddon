@@ -12,7 +12,7 @@ from sysutils.typed import str_
 class DeckEx(Slots):
     def __init__(self, deck_dict: DeckDict) -> None:
         self.deck_dict: DeckDict = deck_dict
-        self.name: str = str_(deck_dict["name"])
+        self.name: str = str_(deck_dict["name"])  # pyright: ignore[reportAny]
         self.id: DeckId = cast(DeckId, deck_dict["id"])
 
     def get_config(self) -> DeckConfigDictEx:

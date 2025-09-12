@@ -62,7 +62,7 @@ typeCheckingMode="recommended" # "off", "basic", "standard", "strict", "recommen
 reportPrivateUsage =  "none"
 reportUnknownMemberType =  "none"
 reportUnknownArgumentType =  "none"
-reportAny = "none"
+#reportAny = "none"
 reportImportCycles =  "none"
 
 #  "questionable if these are useful =  "",

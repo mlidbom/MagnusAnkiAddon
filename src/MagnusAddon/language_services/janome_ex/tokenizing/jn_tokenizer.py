@@ -22,12 +22,12 @@ class JNTokenizer(Slots):
 
         return JNTokenizedText(text,
                                tokens,
-                               [JNToken(JNPartsOfSpeech.fetch(typed.str_(token.part_of_speech)),
-                                        typed.str_(token.base_form),
-                                        typed.str_(token.surface),
-                                        typed.str_(token.infl_type),
-                                        typed.str_(token.infl_form),
-                                        typed.str_(token.reading),
-                                        typed.str_(token.phonetic),
-                                        typed.str_(token.node_type),
+                               [JNToken(JNPartsOfSpeech.fetch(typed.str_(token.part_of_speech)),  # pyright: ignore[reportAny]
+                                        typed.str_(token.base_form),  # pyright: ignore[reportAny]
+                                        typed.str_(token.surface),  # pyright: ignore[reportAny]
+                                        typed.str_(token.infl_type),  # pyright: ignore[reportAny]
+                                        typed.str_(token.infl_form),  # pyright: ignore[reportAny]
+                                        typed.str_(token.reading),  # pyright: ignore[reportAny]
+                                        typed.str_(token.phonetic),  # pyright: ignore[reportAny]
+                                        typed.str_(token.node_type),  # pyright: ignore[reportAny]
                                         token) for token in tokens])

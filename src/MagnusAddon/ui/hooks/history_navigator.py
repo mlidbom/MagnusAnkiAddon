@@ -40,7 +40,7 @@ class CardHistoryNavigator:
 
         if os.path.exists(history_file_path):
             with open(history_file_path) as history_file:
-                saved_history = typed.checked_cast_generics(list[int], json.load(history_file))
+                saved_history = typed.checked_cast_generics(list[int], json.load(history_file))  # pyright: ignore[reportAny]
                 self.card_history = [CardId(card_id) for card_id in saved_history]
                 self._set_current_position_to_end_of_history()
 

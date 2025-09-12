@@ -7,7 +7,7 @@ from aqt.reviewer import Reviewer
 from aqt.sound import av_player
 from aqt.utils import askUserDialog
 from PyQt6.QtWidgets import QMessageBox
-from sysutils import timeutil
+from sysutils import timeutil, typed
 
 addon_path: str = dirname(__file__)
 sound_file: str = addon_path + "/timebox_complete.mp3"
@@ -18,11 +18,11 @@ def _check_timebox(reviewer: Reviewer) -> bool:
         av_player.play_file(sound_file)
         assert not isinstance(elapsed, bool)
         cards_studied = elapsed[1]
-        seconds_studied = elapsed[0]
+        seconds_studied = typed.float_(elapsed[0])  # pyright: ignore[reportAny]
         seconds_per_card = float(seconds_studied) / cards_studied
 
         dialog = askUserDialog(f"""
-Studied {cards_studied} cards in {timeutil.format_seconds_as_hh_mm_ss(seconds_studied)}.
+Studied {cards_studied} cards in {timeutil.format_seconds_as_hh_mm_ss(seconds_studied)}.  # pyright: ignore[reportAny]  # pyright: ignore[reportAny]
 {seconds_per_card:.2f} seconds per card.
 """, ["OK"])
         dialog.setIcon(QMessageBox.Icon.Information)
@@ -30,7 +30,6 @@ Studied {cards_studied} cards in {timeutil.format_seconds_as_hh_mm_ss(seconds_st
         reviewer.mw.moveToState("deckBrowser")
         return True
     return False
-
 
 def init() -> None:
     Reviewer.check_timebox = _check_timebox  # type: ignore  # pyright: ignore[reportAttributeAccessIssue]

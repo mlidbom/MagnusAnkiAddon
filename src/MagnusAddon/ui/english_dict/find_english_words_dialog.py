@@ -94,7 +94,7 @@ class EnglishWordSearchDialog(QDialog):
     def on_cell_double_clicked(self, row: int, _column: int) -> None:
         word_item = self.results_table.item(row, 0)
         if word_item:
-            selected_word = word_item.data(Qt.ItemDataRole.UserRole)
+            selected_word = typed.str_(word_item.data(Qt.ItemDataRole.UserRole))  # pyright: ignore[reportAny]
             if selected_word:
                 if QApplication.keyboardModifiers() & Qt.KeyboardModifier.ControlModifier:
                     openLink(f"https://www.merriam-webster.com/dictionary/{selected_word}")
