@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 TValue = TypeVar("TValue")
 TWrapper = TypeVar("TWrapper")
 
-class FieldWrapper(Generic[TValue], Slots):
+class FieldWrapper(Generic[TValue, TWrapper], Slots):
     def __init__(self, field: SerializedObjectField[TWrapper], value: ValueWrapper[TValue]) -> None:
         self._field: SerializedObjectField[TWrapper] = field
         self._value = value

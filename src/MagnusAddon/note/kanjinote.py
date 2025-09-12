@@ -311,10 +311,10 @@ class KanjiNote(WaniNote, Slots):
         self._set_source_answer(", ".join(meanings))
 
         onyomi_readings = [f"<primary>{reading.reading}</primary>" if reading.primary else reading.reading
-                           for reading in wani_kanji.readings if reading.type == "onyomi"]
+                           for reading in wani_kanji.readings if reading.type == "onyomi"]  # pyright: ignore[reportAttributeAccessIssue]
 
         kunyomi_readings = [f"<primary>{reading.reading}</primary>" if reading.primary else reading.reading
-                            for reading in wani_kanji.readings if reading.type == "kunyomi"]
+                            for reading in wani_kanji.readings if reading.type == "kunyomi"]  # pyright: ignore[reportAttributeAccessIssue]
 
         self.set_reading_on(", ".join(onyomi_readings))
         self.set_reading_kun(", ".join(kunyomi_readings))

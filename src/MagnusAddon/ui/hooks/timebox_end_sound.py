@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from os.path import dirname
 
+from ankiutils import app
 from aqt.reviewer import Reviewer
 from aqt.sound import av_player
 from aqt.utils import askUserDialog
@@ -12,7 +13,7 @@ addon_path: str = dirname(__file__)
 sound_file: str = addon_path + "/timebox_complete.mp3"
 
 def _check_timebox(reviewer: Reviewer) -> bool:
-    elapsed = reviewer.mw.col.timeboxReached()
+    elapsed = app.anki_collection().timeboxReached()
     if elapsed:
         av_player.play_file(sound_file)
         assert not isinstance(elapsed, bool)

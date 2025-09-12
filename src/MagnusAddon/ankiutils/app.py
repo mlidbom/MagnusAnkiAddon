@@ -41,7 +41,7 @@ def _init(delay_seconds: float = 1.0) -> None:
     global _collection
     if _collection and not _collection.try_cancel_scheduled_init():
         return
-    _collection = BackgroundInitialingLazy(lambda: JPCollection(mw.col), delay_seconds=delay_seconds)
+    _collection = BackgroundInitialingLazy(lambda: JPCollection(non_optional(mw.col)), delay_seconds=delay_seconds)
     _call_init_hooks()
 
 def is_initialized() -> bool:
@@ -96,7 +96,7 @@ def _profile_opened() -> None:
 def anki_config() -> ConfigManagerEx:
     from anki_extentions.config_manager_ex import ConfigManagerEx
     from aqt import mw
-    return ConfigManagerEx(mw.col.conf)
+    return ConfigManagerEx(non_optional(mw.col).conf)
 
 def col() -> JPCollection:
     from sysutils.timeutil import StopWatch

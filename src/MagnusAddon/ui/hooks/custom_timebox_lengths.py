@@ -6,7 +6,7 @@ import aqt.utils
 from anki_extentions.card_ex import CardEx
 from anki_extentions.deck_ex import DeckEx
 from ankiutils import app
-from aqt import gui_hooks, mw
+from aqt import gui_hooks
 from aqt.overview import Overview
 from note.note_constants import CardTypes, NoteTypes
 from sysutils import typed
@@ -18,12 +18,12 @@ if TYPE_CHECKING:
 
 def adjust_timebox(_web_content: WebContent, context: object) -> None:
     if isinstance(context, Overview):
-        deck = DeckEx(mw.col.decks.current())
-        deck_card_ids = mw.col.find_cards(f"deck:{deck.name}")
+        deck = DeckEx(app.anki_collection().decks.current())
+        deck_card_ids = app.anki_collection().find_cards(f"deck:{deck.name}")
         if deck_card_ids:
             first_card_id: CardId = deck_card_ids[0]
 
-            card = CardEx(mw.col.get_card(first_card_id))
+            card = CardEx(app.anki_collection().get_card(first_card_id))
             note = card.note()
             notetype = note.get_type()
 

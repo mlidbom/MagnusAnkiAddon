@@ -31,3 +31,4 @@ ruff
 deepdiff~=8.6.1
 typing_extensions~=4.15.0
 autoslot~=2024.12.1
+basedpyright

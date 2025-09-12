@@ -6,6 +6,7 @@ from autoslot import Slots
 
 if TYPE_CHECKING:
     from note.sentences.parsed_word import ParsedMatch
+    from note.sentences.parsing_result import ParsingResult
     from note.sentences.sentencenote import SentenceNote
     from note.vocabulary.vocabnote import VocabNote
 
@@ -30,8 +31,8 @@ class VocabSentenceViewModel(Slots):
     def __init__(self, _vocab_note: VocabNote, sentence_note: SentenceNote) -> None:
         self.vocab: VocabNote = _vocab_note
         self.sentence: SentenceNote = sentence_note
-        self.result = sentence_note.parsing_result.get()
-        self.matches = [VocabSentenceMatchViewModel(match, self) for match in self.result.parsed_words if match.vocab_id == _vocab_note.get_id()]
+        self.result:ParsingResult = sentence_note.parsing_result.get()
+        self.matches: list[VocabSentenceMatchViewModel] = [VocabSentenceMatchViewModel(match, self) for match in self.result.parsed_words if match.vocab_id == _vocab_note.get_id()]
         self.displayed_matches = [match for match in self.matches if match.is_displayed]
         self.highlighted_sentences = set(_vocab_note.sentences.user_highlighted())
         self.shaded_matches = [match for match in self.matches if not match.is_displayed]

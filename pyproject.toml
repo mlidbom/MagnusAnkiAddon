@@ -54,4 +54,6 @@ ignore = [
 
 [tool.pyright]
 include=["src"]
+exclude=["**/node_modules", "**/__pycache__", "**/.*", "src/MagnusAddon/_lib/", "**/_lib_patched/*", "**venv/*"]
 extraPaths=["src/MagnusAddon"]
+typeCheckingMode="basic" # "off", "basic", "standard", "strict", "recommended", "all"

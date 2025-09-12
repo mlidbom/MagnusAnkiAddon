@@ -15,6 +15,7 @@ if TYPE_CHECKING:
     from note.jpnote import JPNote
 
 import anki.cards
+import anki.cards_pb2
 from ankiutils import app
 from aqt.reviewer import AnswerAction
 from sysutils import ex_iterable, timeutil, typed
@@ -22,11 +23,11 @@ from sysutils import ex_iterable, timeutil, typed
 
 def _latest_day_cutoff_timestamp() -> int:
     from aqt import mw
-    return mw.col.sched.day_cutoff - timeutil.SECONDS_PER_DAY
+    return non_optional(mw.col).sched.day_cutoff - timeutil.SECONDS_PER_DAY
 
-def _get_answers_since_last_day_cutoff_for_card(card: anki.cards.Card) -> list[int]:
+def _get_answers_since_last_day_cutoff_for_card(card_id: int) -> list[int]:
     with StopWatch.log_warning_if_slower_than(0.01):
-        reviews = app.anki_db().all("SELECT ease FROM revlog WHERE cid = ? AND id > ? ORDER BY id DESC", card.id, _latest_day_cutoff_timestamp() * timeutil.MILLISECONDS_PER_SECOND)
+        reviews = app.anki_db().all("SELECT ease FROM revlog WHERE cid = ? AND id > ? ORDER BY id DESC", card_id, _latest_day_cutoff_timestamp() * timeutil.MILLISECONDS_PER_SECOND)
         return [typed.int_(review[0]) for review in reviews]
 
 class CardEx(Slots):
@@ -53,11 +54,8 @@ class CardEx(Slots):
         return NoteTemplateEx.from_dict(self.card.template())
 
     def sequential_again_answers_today(self) -> int:
-        answers = _get_answers_since_last_day_cutoff_for_card(self.card)
+        answers = _get_answers_since_last_day_cutoff_for_card(self.card.id)
         return len(list(ex_iterable.take_while(lambda x: AnswerAction(x) == AnswerAction.ANSWER_AGAIN, answers)))
-
-    def last_answer_today_was_fail_db_call(self) -> bool:
-        return self.sequential_again_answers_today() > 0
 
     def note(self) -> JPNote:
         from note.jpnote import JPNote
@@ -69,3 +67,15 @@ class CardEx(Slots):
 
     def get_deck(self) -> DeckEx:
         return DeckEx(non_optional(self._deck_manager().get(self.card.current_deck_id())))
+
+
+class Card2Ex(Slots):
+    def __init__(self, card:anki.cards_pb2.Card) -> None:
+        self.card = card
+
+    def sequential_again_answers_today(self) -> int:
+        answers = _get_answers_since_last_day_cutoff_for_card(self.card.id)
+        return len(list(ex_iterable.take_while(lambda x: AnswerAction(x) == AnswerAction.ANSWER_AGAIN, answers)))
+
+    def last_answer_today_was_fail_db_call(self) -> bool:
+        return self.sequential_again_answers_today() > 0

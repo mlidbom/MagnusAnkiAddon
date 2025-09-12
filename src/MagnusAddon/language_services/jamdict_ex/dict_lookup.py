@@ -8,7 +8,7 @@ from autoslot import Slots
 from language_services.jamdict_ex.priority_spec import PrioritySpec
 from sysutils.lazy import Lazy
 from sysutils.timeutil import StopWatch
-from sysutils.typed import str_
+from sysutils.typed import non_optional, str_
 
 if TYPE_CHECKING:
     from jamdict.jmdict import JMDEntry
@@ -69,7 +69,7 @@ class JamdictThreadingWrapper(Slots):
     def run_string_query(self, query: str) -> list[str]:
         def perform_query(jamdict: Jamdict) -> list[str]:
             result: list[str] = []
-            for batch in jamdict.jmdict.ctx().conn.execute(query):
+            for batch in non_optional(non_optional(jamdict.jmdict).ctx().conn).execute(query):
                 for row in batch:
                     result.append(str_(row))  # noqa: PERF401
 

@@ -30,7 +30,7 @@ class RelatedVocab(Slots):
         self.synonyms: Synonyms = Synonyms(vocab, self._data)
         self.antonyms: Antonyms = Antonyms(vocab, self._data)
         self.see_also: SeeAlso = SeeAlso(vocab, self._data)
-        self.derived_from: FieldWrapper[str] = FieldWrapper(self._data, self._data.get().derived_from)
+        self.derived_from: FieldWrapper[str, RelatedVocabData] = FieldWrapper(self._data, self._data.get().derived_from)
 
         self.confused_with: FieldSetWrapper[str] = FieldSetWrapper.for_json_object_field(self._data, self._data.get().confused_with)
 
@@ -38,7 +38,7 @@ class RelatedVocab(Slots):
         return col().vocab.with_compound_part(self._vocab().question.without_noise_characters)
 
     def get_direct_dependencies(self) -> set[JPNote]:
-        return (set(col().kanji.with_any_kanji_in(list(self._vocab().kanji.extract_main_form_kanji()))) |
-                set(ex_sequence.flatten([col().vocab.with_question(compound_part) for compound_part in self._vocab().compound_parts.all()])))
+        return set(set(col().kanji.with_any_kanji_in(list(self._vocab().kanji.extract_main_form_kanji()))) |
+                   set(ex_sequence.flatten([col().vocab.with_question(compound_part) for compound_part in self._vocab().compound_parts.all()])))
 
     def save(self) -> None: self._data.save()

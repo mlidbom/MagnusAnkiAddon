@@ -66,7 +66,7 @@ class SentenceNote(JPNote, Slots):
                                            if voc.is_displayed}
                            if voc is not None}
         kanji = set(self.collection.kanji.with_any_kanji_in(self.extract_kanji()))
-        return highlighted | displayed_vocab | kanji
+        return set(highlighted | displayed_vocab | kanji)
 
     def parse_words_from_expression(self) -> list[str]:
         return TextAnalysis.from_text(self.get_question()).all_words_strings()
