@@ -66,7 +66,7 @@ test_special_vocab: list[VocabSpec] = [
 
     VocabSpec("だの", "and-the-like", ["だの"], prefix_not={"ん"}),
 
-    VocabSpec("こ", "familiarizing-suffix", ["こ"], forms=["っこ"], tags=[vm.is_strictly_suffix]),
+    VocabSpec("こ", "familiarizing-suffix", ["こ"], forms=["っこ"], tags=[vm.Forbids.sentence_start]),
 
     # multiple form to trigger a certain bug
     VocabSpec("ない", "not", ["ない"], forms=["無い"]),
@@ -113,7 +113,8 @@ test_special_vocab: list[VocabSpec] = [
 
     VocabSpec("うと", compounds=["う", "と"], tags=[vm.yield_last_token_to_overlapping_compound]),
     VocabSpec("と思って", compounds=["と思う", "て"], tags=[vm.yield_last_token_to_overlapping_compound]),
-    VocabSpec("ませ", suffix_not={"ん"})
+    VocabSpec("ませ", suffix_not={"ん"}),
+    VocabSpec("ところが", tags=[vm.Requires.sentence_start]),
 ]
 
 test_ordinary_vocab_list = [

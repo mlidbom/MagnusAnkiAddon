@@ -37,9 +37,10 @@ def build_matching_settings_menu(toggle_flags_menu: QMenu, vocab: VocabNote) -> 
             add_checkbox(toggle_menu, shortcutfinger.home2("Forbidden"), lambda: field.is_configured_forbidden, field.set_forbidden, reparse_sentences)
 
         def build_misc_menu(misc_menu: QMenu) -> None:
-            add_require_forbid_menu(misc_menu, shortcutfinger.home1("exact match"), vocab.matching_configuration.requires_forbids.requires_exact_match)
-            add_require_forbid_menu(misc_menu, shortcutfinger.home2("single token"), vocab.matching_configuration.requires_forbids.single_token)
-            add_require_forbid_menu(misc_menu, shortcutfinger.home3("Sentence end"), vocab.matching_configuration.requires_forbids.sentence_end)
+            add_require_forbid_menu(misc_menu, shortcutfinger.home1("Sentence start"), vocab.matching_configuration.requires_forbids.sentence_start)
+            add_require_forbid_menu(misc_menu, shortcutfinger.home2("Sentence end"), vocab.matching_configuration.requires_forbids.sentence_end)
+            add_require_forbid_menu(misc_menu, shortcutfinger.home3("exact match"), vocab.matching_configuration.requires_forbids.requires_exact_match)
+            add_require_forbid_menu(misc_menu, shortcutfinger.home4("single token"), vocab.matching_configuration.requires_forbids.single_token)
 
         def build_stem_menu(stem_menu: QMenu) -> None:
             add_require_forbid_menu(stem_menu, shortcutfinger.home1("e stem"), vocab.matching_configuration.requires_forbids.e_stem)

@@ -23,7 +23,11 @@ class HeadRequirements(Slots):
         self.config: VocabNoteMatchingConfiguration = rules
 
         self.has_prefix: bool = end_of_stem is not None and end_of_stem().token.surface != "" and end_of_stem().token.surface[-1] not in non_word_characters
-        self.fulfills_is_strictly_suffix: bool = not rules.bool_flags.is_strictly_suffix.is_set() or self.has_prefix
+        self.fulfills_requires_sentence_start_requirement: bool = (not self.config.requires_forbids.sentence_start.is_required
+                                                                   or not self.has_prefix)
+
+        self.fulfills_forbids_sentence_start_requirement: bool = (not self.config.requires_forbids.sentence_start.is_forbidden
+                                                                  or self.has_prefix)
 
         self.fulfills_required_prefix: bool = (not rules.configurable_rules.required_prefix.get()
                                                or (end_of_stem is not None and self.has_prefix and any(required for required in rules.configurable_rules.required_prefix.get() if end_of_stem().token.surface.endswith(required))))
@@ -57,7 +61,8 @@ class HeadRequirements(Slots):
         self.fulfills_forbids_e_stem_requirement: bool = not rules.requires_forbids.e_stem.is_forbidden or not self.has_e_stem
 
         self.are_fulfilled = (True
-                              and self.fulfills_is_strictly_suffix
+                              and self.fulfills_requires_sentence_start_requirement
+                              and self.fulfills_forbids_sentence_start_requirement
                               and self.fulfills_required_prefix
                               and self.fulfills_prefix_not
                               and self.fulfills_forbids_a_stem_requirement
@@ -72,7 +77,8 @@ class HeadRequirements(Slots):
 
     def failure_reasons(self) -> set[str]:
         return (SimpleStringListBuilder()
-                .append_if(not self.fulfills_is_strictly_suffix, "is_strictly_suffix")
+                .append_if(not self.fulfills_requires_sentence_start_requirement, "requires_sentence_start")
+                .append_if(not self.fulfills_forbids_sentence_start_requirement, "forbids_sentence_start")
                 .append_if(not self.fulfills_required_prefix, "required_prefix")
                 .append_if(not self.fulfills_prefix_not, "prefix_not")
                 .append_if(not self.fulfills_forbids_a_stem_requirement, "forbids_a_stem")

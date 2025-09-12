@@ -168,6 +168,7 @@ class Tags(Slots):
                 past_tense_stem: str = f"{f_vocab_matching_requires}past-tense-stem"
                 t_form_stem: str = f"{f_vocab_matching_requires}t-form-stem"
                 sentence_end: str = f"{f_vocab_matching_requires}sentence-end"
+                sentence_start: str = f"{f_vocab_matching_requires}sentence-start"
                 exact_match: str = f"{f_vocab_matching_requires}exact-match"
                 single_token: str = f"{f_vocab_matching_requires}single-token"
                 compound: str = f"{f_vocab_matching_requires}compound"
@@ -178,10 +179,9 @@ class Tags(Slots):
                 past_tense_stem: str = f"{f_vocab_matching_forbids}past-tense-stem"
                 t_form_stem: str = f"{f_vocab_matching_forbids}t-form-stem"
                 sentence_end: str = f"{f_vocab_matching_forbids}sentence-end"
+                sentence_start: str = f"{f_vocab_matching_forbids}sentence-start"
                 exact_match: str = f"{f_vocab_matching_forbids}exact-match"
                 auto_yielding: str = f"{f_vocab_matching_forbids}auto_yielding"
-
-            is_strictly_suffix: str = f"{f_vocab_matching}is-strictly-suffix"
 
             class Todo:
                 with_preceding_vowel: str = f"{f_vocab_matching_todo}match-with-preceding-vowel"
