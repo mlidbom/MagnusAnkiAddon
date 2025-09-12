@@ -20,27 +20,7 @@ class SentenceCounts:
         self._studying_listening: int = 0
         self._total: int = 0
         self._last_update_time: float = 0
-        self._update_numbers()
         self._cache_seconds = 0
-
-    def _update_numbers(self) -> None:
-        self._last_update_time = time.time()
-        sentences = self._parent().with_owned_form()
-        self._studying_reading = self._get_studying_sentence_count(sentences, NoteFields.VocabNoteType.Card.Reading)
-        self._studying_listening = self._get_studying_sentence_count(sentences, NoteFields.VocabNoteType.Card.Listening)
-        self._total = len(sentences)
-        self._cache_seconds = self._how_long_to_cache_for()
-
-    def _how_long_to_cache_for(self) -> int:
-        if self._total < 10: return 60
-        if self._total < 100: return 600
-        return 6000
-
-    def _up_to_date_self(self) -> SentenceCounts:
-        current_time = time.time()
-        if current_time - self._last_update_time > self._cache_seconds:
-            self._update_numbers()
-        return self
 
     @property
     def total(self) -> int: return self._up_to_date_self()._total
@@ -49,9 +29,23 @@ class SentenceCounts:
     @property
     def studying_listening(self) -> int: return self._up_to_date_self()._studying_listening
 
-    @staticmethod
-    def _get_studying_sentence_count(sentences: list[SentenceNote], card: str = "") -> int:
-        return len([sentence for sentence in sentences if sentence.is_studying(card)])
+    def _up_to_date_self(self) -> SentenceCounts:
+        def _how_long_to_cache_for() -> int:
+            if self._total < 10: return 60
+            if self._total < 100: return 600
+            return 6000
+
+        def get_studying_sentence_count(card: str = "") -> int:
+            return len([sentence for sentence in sentences if sentence.is_studying(card)])
+
+        if time.time() - self._last_update_time > self._cache_seconds:
+            self._last_update_time = time.time()
+            sentences = self._parent().with_owned_form()
+            self._studying_reading = get_studying_sentence_count(NoteFields.VocabNoteType.Card.Reading)
+            self._studying_listening = get_studying_sentence_count(NoteFields.VocabNoteType.Card.Listening)
+            self._total = len(sentences)
+            self._cache_seconds = _how_long_to_cache_for()
+        return self
 
 class VocabNoteSentences(WeakRefable, Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
