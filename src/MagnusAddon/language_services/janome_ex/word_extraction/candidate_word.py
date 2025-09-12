@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, override
+from typing import TYPE_CHECKING, final, override
 
 from autoslot import Slots
 from language_services.janome_ex.word_extraction.analysis_constants import noise_characters
@@ -16,6 +16,7 @@ if TYPE_CHECKING:
 from sysutils.ex_str import newline
 
 
+@final
 class CandidateWord(WeakRefable, Slots):
     def __init__(self, locations: list[WeakRef[TextAnalysisLocation]]) -> None:
         self.weakref = WeakRef(self)

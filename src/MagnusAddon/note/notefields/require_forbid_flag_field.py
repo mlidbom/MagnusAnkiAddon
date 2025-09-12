@@ -11,8 +11,8 @@ if TYPE_CHECKING:
 
 class RequireForbidFlagField(Slots):
     def __init__(self, note: WeakRef[JPNote], required_tag: str, forbidden_tag: str) -> None:
-        self._required_field = TagFlagField(note, required_tag)
-        self._forbidden_field = TagFlagField(note, forbidden_tag)
+        self._required_field: TagFlagField = TagFlagField(note, required_tag)
+        self._forbidden_field: TagFlagField = TagFlagField(note, forbidden_tag)
 
     @property
     def is_configured_required(self) -> bool: return self._required_field.is_set()

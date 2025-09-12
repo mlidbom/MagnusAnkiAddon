@@ -18,7 +18,7 @@ class ParsedMatch(Slots):
         self.variant: str = variant
         self.parsed_form: str = word
         self.vocab_id: NoteId = vocab_id
-        self.information_string = information_string
+        self.information_string: str = information_string
 
     @property
     def end_index(self) -> int: return self.start_index + len(self.parsed_form)

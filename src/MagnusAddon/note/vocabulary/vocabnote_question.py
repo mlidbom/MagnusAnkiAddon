@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 class VocabStems(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
-        self._vocab = vocab
+        self._vocab: WeakRef[VocabNote] = vocab
 
     def masu_stem(self) -> str | None:
         masu_stem = conjugator.get_i_stem_vocab(self._vocab())
@@ -22,9 +22,9 @@ class VocabStems(Slots):
 
 class VocabNoteQuestion(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
-        self._vocab = vocab
+        self._vocab: WeakRef[VocabNote] = vocab
         field = AutoStrippingStringField(vocab, NoteFields.Vocab.question)
-        self._field = field
+        self._field: AutoStrippingStringField = field
         self._raw: Lazy[str] = field.lazy_reader(lambda: field.get())
         self._without_noise_characters: Lazy[str] = field.lazy_reader(lambda: field.get().replace(Mine.VocabPrefixSuffixMarker, ""))
 

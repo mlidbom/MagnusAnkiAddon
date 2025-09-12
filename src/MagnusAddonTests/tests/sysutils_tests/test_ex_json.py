@@ -15,7 +15,7 @@ from sysutils.json.json_reader import JsonReader
 
 class IntObject(Slots):
     def __init__(self, value: int) -> None:
-        self.value = value
+        self.value: int = value
 
     def to_dict(self) -> dict[str, int]:
         return {"value": self.value}
@@ -36,7 +36,7 @@ class IntObject(Slots):
 
 class HasObjectList(Slots):
     def __init__(self, values: list[IntObject]) -> None:
-        self.values = values
+        self.values: list[IntObject] = values
 
     def to_dict(self) -> dict[str, list[dict[str, int]]]:
         return {"values": [value.to_dict() for value in self.values]}

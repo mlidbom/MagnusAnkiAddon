@@ -8,7 +8,7 @@ TValue = TypeVar("TValue")
 
 class ValueWrapper(Generic[TValue], Slots):
     def __init__(self, value: TValue) -> None:
-        self._value = value
+        self._value: TValue = value
 
     def set(self, value: TValue) -> None:
         self._value = value

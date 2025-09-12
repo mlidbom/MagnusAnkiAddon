@@ -12,6 +12,6 @@ if TYPE_CHECKING:
 
 class StripHtmlOnReadFallbackStringField(Slots):
     def __init__(self, note: WeakRef[JPNote], primary_field: str, fallback_field: str) -> None:
-        self._field = FallbackStringField(note, primary_field, fallback_field)
+        self._field: FallbackStringField = FallbackStringField(note, primary_field, fallback_field)
 
     def get(self) -> str: return ex_str.strip_html_markup(self._field.get().replace("<wbr>", ex_str.invisible_space))

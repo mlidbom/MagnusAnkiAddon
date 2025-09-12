@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from ankiutils import app
 from aqt import qconnect
 from PyQt6.QtGui import QColor, QKeySequence, QShortcut, QTextBlock, QTextCharFormat, QTextCursor
@@ -7,11 +9,14 @@ from PyQt6.QtWidgets import QDialog, QDialogButtonBox, QHBoxLayout, QLabel, QLin
 from sysutils.ex_str import newline
 from sysutils.typed import checked_cast, non_optional
 
+if TYPE_CHECKING:
+    from configuration.configuration_value import JapaneseConfig
+
 
 class ReadingsOptionsDialog(QDialog):
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
-        self.config = app.config()
+        self.config: JapaneseConfig = app.config()
 
         # for some reason the dead code detector breaks some logic in pycharm here. This method is just fine
         # noinspection PyUnresolvedReferences
@@ -23,7 +28,7 @@ class ReadingsOptionsDialog(QDialog):
         # Create search field
         search_layout = QHBoxLayout()
         search_label = QLabel("Search:")
-        self.search_edit = QLineEdit(self)
+        self.search_edit:QLineEdit = QLineEdit(self)
         self.search_edit.setPlaceholderText("Type to search...")
         search_layout.addWidget(search_label)
         search_layout.addWidget(self.search_edit)
@@ -31,14 +36,14 @@ class ReadingsOptionsDialog(QDialog):
         # Connect search field to search function
         qconnect(self.search_edit.textChanged, self.search_text)
 
-        self.text_edit = QTextEdit(self)
+        self.text_edit: QTextEdit = QTextEdit(self)
         self.text_edit.setPlainText(mappings_text)
 
         window_layout = QVBoxLayout()
         window_layout.addLayout(search_layout)
         window_layout.addWidget(self.text_edit)
 
-        self.button_box = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok)
+        self.button_box: QDialogButtonBox = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok)
         shortcut = "Alt+Return"
         self.button_box.setToolTip(f"Save ({shortcut})")
         save_shortcut = QShortcut(QKeySequence(shortcut), self)

@@ -12,11 +12,10 @@ from ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
 if TYPE_CHECKING:
     from anki.notes import NoteId
 
-
 class CompoundPart:
     def __init__(self, vocab_note: VocabNote, depth: int = 0) -> None:
-        self.vocab_note = vocab_note
-        self.depth = depth
+        self.vocab_note: VocabNote = vocab_note
+        self.depth: int = depth
 
 def _create_classes(_vocab: VocabNote, depth: int = 0) -> str:
     # noinspection DuplicatedCode

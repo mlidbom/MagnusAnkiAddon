@@ -14,8 +14,8 @@ if TYPE_CHECKING:
 
 class UglyUITimingBasedHacksData(Slots):
     def __init__(self) -> None:
-        self._last_editor_typing_time = 0.0
-        self._last_reviewer_showed_answer_time = 0.0
+        self._last_editor_typing_time: float = 0.0
+        self._last_reviewer_showed_answer_time: float = 0.0
 
     def typed_in_note(self, _note: Note) -> None:
         audio_suppressor.suppress_for_seconds(.1)

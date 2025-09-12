@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 class KanjiViewModel(Slots):
     def __init__(self, kanji: KanjiNote) -> None:
-        self.kanji = kanji
+        self.kanji: KanjiNote = kanji
 
     def question(self) -> str: return self.kanji.get_question()
     def answer(self) -> str: return self.kanji.get_answer()

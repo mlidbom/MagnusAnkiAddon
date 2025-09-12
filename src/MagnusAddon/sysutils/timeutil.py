@@ -43,7 +43,7 @@ def start_stop_watch() -> StopWatch:
 # noinspection PyUnusedFunction
 class StopWatch(Slots):
     def __init__(self) -> None:
-        self.start_time = time.perf_counter()
+        self.start_time: float = time.perf_counter()
 
     def elapsed_seconds(self) -> float:
         return time.perf_counter() - self.start_time

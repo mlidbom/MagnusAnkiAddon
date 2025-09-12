@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, override
+from typing import TYPE_CHECKING, final, override
 
 from autoslot import Slots
 from sysutils.simple_string_list_builder import SimpleStringListBuilder
@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
     from sysutils.weak_ref import WeakRef
 
+@final
 class DisplayRequirements(Slots):
     def __init__(self, match: WeakRef[VocabMatch]) -> None:
         vocab = match().vocab

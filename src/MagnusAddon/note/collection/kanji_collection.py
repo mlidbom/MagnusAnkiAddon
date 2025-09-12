@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from typing import TYPE_CHECKING, override
+from typing import TYPE_CHECKING, final, override
 
 from autoslot import Slots
 
@@ -17,11 +17,12 @@ from note.note_constants import NoteTypes
 from sysutils import ex_sequence, kana_utils
 
 
+@final
 class _KanjiSnapshot(CachedNote, Slots):
     def __init__(self, note: KanjiNote) -> None:
         super().__init__(note)
-        self.radicals = set(note.get_radicals())
-        self.readings = set(note.get_readings_clean())
+        self.radicals: set[str] = set(note.get_radicals())
+        self.readings: set[str] = set(note.get_readings_clean())
 
 class _KanjiCache(NoteCache[KanjiNote, _KanjiSnapshot], Slots):
     def __init__(self, all_kanji: list[KanjiNote], cache_runner: CacheRunner) -> None:
@@ -47,8 +48,8 @@ class _KanjiCache(NoteCache[KanjiNote, _KanjiSnapshot], Slots):
 class KanjiCollection(Slots):
     def __init__(self, collection: Collection, cache_manager: CacheRunner) -> None:
         def kanji_constructor(note: Note) -> KanjiNote: return KanjiNote(note)
-        self.collection = BackEndFacade[KanjiNote](collection, kanji_constructor, NoteTypes.Kanji)
-        self._cache = _KanjiCache(list(self.collection.all()), cache_manager)
+        self.collection: BackEndFacade[KanjiNote] = BackEndFacade[KanjiNote](collection, kanji_constructor, NoteTypes.Kanji)
+        self._cache: _KanjiCache = _KanjiCache(list(self.collection.all()), cache_manager)
 
     def search(self, query: str) -> list[KanjiNote]:
         return list(self.collection.search(query))

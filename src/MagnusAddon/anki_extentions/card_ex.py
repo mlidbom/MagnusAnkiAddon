@@ -71,7 +71,7 @@ class CardEx(Slots):
 
 class Card2Ex(Slots):
     def __init__(self, card:anki.cards_pb2.Card) -> None:
-        self.card = card
+        self.card:anki.cards_pb2.Card = card
 
     def sequential_again_answers_today(self) -> int:
         answers = _get_answers_since_last_day_cutoff_for_card(self.card.id)

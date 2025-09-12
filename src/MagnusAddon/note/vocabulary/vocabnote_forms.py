@@ -35,7 +35,7 @@ class Conjugations(Slots):
         secondary_forms_vocab_notes = ex_sequence.flatten([app.col().vocab.with_question(v) for v in secondary_forms])
         secondary_forms_with_their_own_vocab_forms = ex_sequence.flatten([f.conjugator.get_text_matching_forms_for_all_form() for f in secondary_forms_vocab_notes])
 
-        self.secondary_forms_with_their_own_vocab_forms = ex_str.sort_by_length_descending(secondary_forms_with_their_own_vocab_forms)
+        self.secondary_forms_with_their_own_vocab_forms: list[str] = ex_str.sort_by_length_descending(secondary_forms_with_their_own_vocab_forms)
         # Create a list of compounds derived from secondary forms
         secondary_forms_derived_compounds = ex_sequence.flatten([app.col().vocab.with_compound_part(v) for v in secondary_forms])
         self.secondary_forms_derived_compounds_forms: set[str] = set(ex_sequence.flatten([der.conjugator.get_text_matching_forms_for_all_form() for der in secondary_forms_derived_compounds]))

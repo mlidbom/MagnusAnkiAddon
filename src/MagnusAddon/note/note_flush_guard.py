@@ -14,8 +14,8 @@ if TYPE_CHECKING:
 
 class NoteFlushGuard(Slots):
     def __init__(self, note: WeakRef[JPNote]) -> None:
-        self._note = note
-        self._depth = 0
+        self._note: WeakRef[JPNote] = note
+        self._depth:int = 0
 
     @contextmanager
     def pause_flushing(self) -> Iterator[None]:

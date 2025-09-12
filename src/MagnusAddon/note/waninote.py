@@ -13,6 +13,6 @@ if TYPE_CHECKING:
 class WaniNote(JPNote, Slots):
     def __init__(self, note: Note) -> None:
         super().__init__(note)
-        self.weakref = cast(WeakRef[WaniNote], self.weakref)
+        self.weakref: WeakRef[WaniNote] = cast(WeakRef[WaniNote], self.weakref)
 
     def update_from_wani(self, wani_model: models.Subject) -> None: raise NotImplementedError()  # pyright: ignore[reportUnusedParameter]

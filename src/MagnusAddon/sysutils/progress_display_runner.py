@@ -12,7 +12,7 @@ T = TypeVar("T")
 
 class Closable(Slots):
     def __init__(self, close_action: Callable[[], None]) -> None:
-        self.close_action = close_action
+        self.close_action: Callable[[], None] = close_action
 
     def close(self) -> None: self.close_action()
 

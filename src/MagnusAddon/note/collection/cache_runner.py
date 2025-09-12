@@ -29,7 +29,7 @@ class CacheRunner(Slots):
         self._destructors: list[Callable[[], None]] = []
         self._anki_collection: Collection = anki_collection
         self._running: bool = False
-        self._lock = threading.RLock()
+        self._lock: threading.RLock = threading.RLock()
 
         model_manager: ModelManager = anki_collection.models
         all_note_types: list[NoteTypeEx] = [NoteTypeEx.from_dict(model) for model in model_manager.all()]

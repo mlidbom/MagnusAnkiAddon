@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import threading
-from typing import Callable, TypeVar, cast
+from typing import Callable, TypeVar, cast, final
 
 from anki.notes import NoteId
 from ankiutils.app import col
@@ -15,6 +15,7 @@ from sysutils import ex_str, kana_utils, typed
 from sysutils.typed import non_optional
 
 
+@final
 class NoteSearchDialog(QDialog):
     # Singleton instance
     _instance: NoteSearchDialog | None = None

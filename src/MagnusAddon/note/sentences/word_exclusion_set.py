@@ -14,7 +14,7 @@ class WordExclusionSet(Slots):
         self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
         self._save: Callable[[], None] = save_callback
         self._exclusions: set[WordExclusion] = set(exclusions)
-        self._excluded_words = self._extract_words()
+        self._excluded_words: set[str] = self._extract_words()
 
     def get(self) -> set[WordExclusion]: return self._exclusions
 

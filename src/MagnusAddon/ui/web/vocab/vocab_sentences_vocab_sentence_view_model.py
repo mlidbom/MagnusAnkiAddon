@@ -12,8 +12,8 @@ if TYPE_CHECKING:
 
 class VocabSentenceMatchViewModel:
     def __init__(self, match: ParsedMatch, sentence_view_model: VocabSentenceViewModel) -> None:
-        self.match = match
-        self.sentence_view_model = sentence_view_model
+        self.match: ParsedMatch = match
+        self.sentence_view_model: VocabSentenceViewModel = sentence_view_model
 
     @property
     def is_displayed(self) -> bool: return self.match.is_displayed
@@ -31,11 +31,11 @@ class VocabSentenceViewModel(Slots):
     def __init__(self, _vocab_note: VocabNote, sentence_note: SentenceNote) -> None:
         self.vocab: VocabNote = _vocab_note
         self.sentence: SentenceNote = sentence_note
-        self.result:ParsingResult = sentence_note.parsing_result.get()
+        self.result: ParsingResult = sentence_note.parsing_result.get()
         self.matches: list[VocabSentenceMatchViewModel] = [VocabSentenceMatchViewModel(match, self) for match in self.result.parsed_words if match.vocab_id == _vocab_note.get_id()]
-        self.displayed_matches = [match for match in self.matches if match.is_displayed]
-        self.highlighted_sentences = set(_vocab_note.sentences.user_highlighted())
-        self.shaded_matches = [match for match in self.matches if not match.is_displayed]
+        self.displayed_matches: list[VocabSentenceMatchViewModel] = [match for match in self.matches if match.is_displayed]
+        self.highlighted_sentences: set[SentenceNote] = set(_vocab_note.sentences.user_highlighted())
+        self.shaded_matches: list[VocabSentenceMatchViewModel] = [match for match in self.matches if not match.is_displayed]
 
     @property
     def first_shaded_match(self) -> VocabSentenceMatchViewModel: return self.shaded_matches[0]

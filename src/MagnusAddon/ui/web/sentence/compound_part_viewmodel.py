@@ -12,17 +12,17 @@ if TYPE_CHECKING:
 
 class CompoundPartViewModel:
     def __init__(self, vocab_note: VocabNote, depth: int, config: SentenceConfiguration) -> None:
-        self.vocab_note = vocab_note
-        self.depth = depth
-        self.question = vocab_note.get_question()
-        self.answer = vocab_note.get_answer()
-        self.readings = ", ".join(vocab_note.readings.get())
-        self.audio_path = vocab_note.audio.get_primary_audio_path()
+        self.vocab_note: VocabNote = vocab_note
+        self.depth: int = depth
+        self.question: str = vocab_note.get_question()
+        self.answer: str = vocab_note.get_answer()
+        self.readings: str = ", ".join(vocab_note.readings.get())
+        self.audio_path: str = vocab_note.audio.get_primary_audio_path()
         self.meta_tags_html: str = vocab_note.meta_data.meta_tags_html(no_sentense_statistics=True)
-        self.display_readings = self.question != self.readings
-        self.is_highlighted = self.question in config.highlighted_words
+        self.display_readings: bool = self.question != self.readings
+        self.is_highlighted: bool = self.question in config.highlighted_words
 
-        self.meta_tags_string = " ".join(vocab_note.get_meta_tags())
+        self.meta_tags_string: str = " ".join(vocab_note.get_meta_tags())
         self.meta_tags_string += f""" depth_{depth}"""
         self.meta_tags_string += " highlighted" if self.is_highlighted else ""
 

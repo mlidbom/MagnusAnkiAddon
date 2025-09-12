@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 TValue = TypeVar("TValue")
 
 class FieldSetWrapper(Generic[TValue], Slots):
-    _secret = "aoeulrcaboeusthb"
+    _secret: str = "aoeulrcaboeusthb"
     def __init__(self, save_callback: Callable[[], None], value: Callable[[], set[TValue]], secret: str) -> None:
         if FieldSetWrapper._secret != secret: raise ValueError("use the factory methods, not this private constructor")
         self._save: Callable[[], None] = save_callback

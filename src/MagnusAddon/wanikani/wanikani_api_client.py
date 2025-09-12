@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, final
 
 from autoslot import Slots
 from wanikani_api.client import Client
@@ -9,6 +9,7 @@ if TYPE_CHECKING:
     from wanikani_api import models
     from wanikani_api.models import Kanji, Radical, Vocabulary
 
+@final
 class WanikaniClient(Slots):
     _instance = None
 
@@ -29,13 +30,13 @@ class WanikaniClient(Slots):
         self._kanji_list: list[models.Kanji] = []
         self._vocab_list: list[models.Vocabulary] = []
 
-        self._radical_dictionary:dict[Any, Radical] = {}
-        self._kanji_dictionary:dict[Any, Kanji] = {}
-        self._vocab_dictionary:dict[Any, Vocabulary] = {}
+        self._radical_dictionary: dict[Any, Radical] = {}
+        self._kanji_dictionary: dict[Any, Kanji] = {}
+        self._vocab_dictionary: dict[Any, Vocabulary] = {}
 
-        self._radical_id_dictionary:dict[Any, Radical] = {}
-        self._kanji_id_dictionary:dict[Any, Kanji] = {}
-        self._vocab_id_dictionary:dict[Any, Vocabulary] = {}
+        self._radical_id_dictionary: dict[Any, Radical] = {}
+        self._kanji_id_dictionary: dict[Any, Kanji] = {}
+        self._vocab_id_dictionary: dict[Any, Vocabulary] = {}
 
     # noinspection PyTypeChecker
     def _init(self) -> WanikaniClient:

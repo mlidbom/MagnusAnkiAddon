@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 class AudioSuppressor(Slots):
     def __init__(self) -> None:
-        self._av_player_play_tags_method = av_player.play_tags
+        self._av_player_play_tags_method = av_player.play_tags  # pyright: ignore[reportUnannotatedClassAttribute]
 
     def restore_play_tags_method(self) -> None:
         av_player.play_tags = self._av_player_play_tags_method  # type: ignore

@@ -36,7 +36,7 @@ class VocabNote(WaniNote, Slots):
     factory: VocabNoteFactory = VocabNoteFactory()
     def __init__(self, note: Note) -> None:
         super().__init__(note)
-        self.weakref_vocab = cast(WeakRef[VocabNote], self.weakref)
+        self.weakref_vocab: WeakRef[VocabNote] = cast(WeakRef[VocabNote], self.weakref)
 
         self.question: VocabNoteQuestion = VocabNoteQuestion(self.weakref_vocab)
 

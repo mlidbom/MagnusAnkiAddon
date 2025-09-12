@@ -22,7 +22,7 @@ if TYPE_CHECKING:
 
 class RelatedVocab(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
-        self._vocab = vocab
+        self._vocab: WeakRef[VocabNote] = vocab
 
         self._data: SerializedObjectField[RelatedVocabData] = SerializedObjectField(vocab, NoteFields.Vocab.related_vocab, RelatedVocabData.serializer)
 

@@ -5,8 +5,8 @@ from sysutils.simple_string_list_builder import SimpleStringListBuilder
 
 class SimpleStringBuilder:
     def __init__(self, auto_separator: str = "") -> None:
-        self._builder = SimpleStringListBuilder()
-        self.auto_separator = auto_separator
+        self._builder: SimpleStringListBuilder = SimpleStringListBuilder()
+        self.auto_separator: str = auto_separator
 
     def append(self, text: str) -> SimpleStringBuilder:
         return self.append_if(True, text)

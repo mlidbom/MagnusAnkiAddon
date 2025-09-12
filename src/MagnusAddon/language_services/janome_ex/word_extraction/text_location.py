@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, override
+from typing import TYPE_CHECKING, final, override
 
 from ankiutils import app
 from autoslot import Slots
@@ -13,13 +13,13 @@ if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
     from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 
-
 from language_services.janome_ex.word_extraction.candidate_word import CandidateWord
 from sysutils.ex_str import newline
 
 _max_lookahead = 12
 
-class TextAnalysisLocation(WeakRefable,Slots):
+@final
+class TextAnalysisLocation(WeakRefable, Slots):
     def __init__(self, analysis: WeakRef[TextAnalysis], token: ProcessedToken, character_start_index: int, token_index: int) -> None:
         self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
         self.weakref = WeakRef(self)
@@ -79,7 +79,7 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
         self._run_display_analysis_pass_true_if_there_were_changes()
 
     def analysis_step_5_resolve_chains_of_compounds_yielding_to_the_next_compound_pass_true_if_there_were_changes(self) -> bool:
-        #todo this does not feel great. Currently we need the first version of display_words_starting_here to be created
+        # todo this does not feel great. Currently we need the first version of display_words_starting_here to be created
         # in order for the DisplayRequirements class to inspect it and mark itself as not being displayed so that it can be removed here.
         # this is some truly strange invisible order dependency that is making me quite uncomfortable
         # it also relies on the check for is_yield_last_token_to_overlapping_compound_requirement_fulfilled to return different values at different times
@@ -98,7 +98,6 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
                 shadowed.shadows.clear()
 
         return the_next_compound_yields_to_the_one_after_that_so_this_one_no_longer_yields
-
 
     def is_next_location_inflecting_word(self) -> bool:
         return self.next is not None and self.next().is_inflecting_word()

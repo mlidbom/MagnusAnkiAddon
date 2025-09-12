@@ -12,9 +12,9 @@ if TYPE_CHECKING:
 class ParsingResult(Slots):
     serializer: ParsingResultSerializer = ParsingResultSerializer()
     def __init__(self, words: list[ParsedMatch], sentence: str, parser_version: str) -> None:
-        self.parsed_words = words
-        self.sentence = sentence
-        self.parser_version = parser_version
+        self.parsed_words: list[ParsedMatch] = words
+        self.sentence: str = sentence
+        self.parser_version: str = parser_version
         self.matched_vocab_ids: set[int] = {parsed.vocab_id for parsed in self.parsed_words if parsed.vocab_id != -1}
 
     def parsed_words_strings(self) -> list[str]: return [parsed.parsed_form for parsed in self.parsed_words]

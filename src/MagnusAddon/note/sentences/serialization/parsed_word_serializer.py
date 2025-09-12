@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from note.sentences.parsed_word import ParsedMatch
 
 class ParsedWordSerializer(Slots):
-    separator = f" {invisible_space} "
+    separator: str = f" {invisible_space} "
 
     @staticmethod
     def to_row(parsed_word: ParsedMatch) -> str: return ParsedWordSerializer.separator.join([

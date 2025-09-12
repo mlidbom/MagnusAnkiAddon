@@ -11,10 +11,11 @@ if TYPE_CHECKING:
     from sysutils.lazy import Lazy
     from sysutils.weak_ref import WeakRef
 
+TValue = TypeVar("TValue")
 class CommaSeparatedStringsListField(Slots):
     def __init__(self, note: WeakRef[JPNote], field_name: str) -> None:
         field = AutoStrippingStringField(note, field_name)
-        self._field = field
+        self._field: AutoStrippingStringField = field
         self._value: Lazy[list[str]] = self._field.lazy_reader(lambda: ex_str.extract_comma_separated_values(field.get()))
 
     def get(self) -> list[str]:
@@ -35,5 +36,4 @@ class CommaSeparatedStringsListField(Slots):
     def add(self, add: str) -> None:
         self.set(self.get() + [add])
 
-    TValue = TypeVar("TValue")
     def lazy_reader(self, reader: Callable[[], TValue]) -> Lazy[TValue]: return self._field.lazy_reader(reader)

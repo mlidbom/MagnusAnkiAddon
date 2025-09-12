@@ -8,13 +8,13 @@ from PyQt6.QtWidgets import QDialog, QDialogButtonBox, QDoubleSpinBox, QGridLayo
 from sysutils.typed import checked_cast
 
 if TYPE_CHECKING:
-    from configuration.configuration_value import ConfigurationValueFloat, ConfigurationValueInt
+    from configuration.configuration_value import ConfigurationValueFloat, ConfigurationValueInt, JapaneseConfig
 
 
 class JapaneseOptionsDialog(QDialog):
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
-        self.config = app.config()
+        self.config: JapaneseConfig = app.config()
 
         # for some reason the dead code detector breaks some logic in pycharm here. This method is just fine
         # noinspection PyUnresolvedReferences
@@ -149,7 +149,7 @@ class JapaneseOptionsDialog(QDialog):
         # checkbox_group.setLayout(checkbox_layout)
         # layout.addWidget(checkbox_group)
 
-        self.button_box = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok)
+        self.button_box:QDialogButtonBox = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok)
         qconnect(self.button_box.clicked, self.accept)
         window_layout.addWidget(self.button_box)
 

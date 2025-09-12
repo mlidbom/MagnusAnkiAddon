@@ -28,10 +28,10 @@ if TYPE_CHECKING:
 class SentenceNote(JPNote, Slots):
     def __init__(self, note: Note) -> None:
         super().__init__(note)
-        self.weakref_sentence = cast(WeakRef[SentenceNote], self.weakref)
+        self.weakref_sentence: WeakRef[SentenceNote] = cast(WeakRef[SentenceNote], self.weakref)
 
-        self._source_answer = AutoStrippingStringField(self.weakref, SentenceNoteFields.source_answer)
-        self.source_question = StripHtmlOnReadStringField(self.weakref, SentenceNoteFields.source_question)
+        self._source_answer: AutoStrippingStringField = AutoStrippingStringField(self.weakref, SentenceNoteFields.source_answer)
+        self.source_question: StripHtmlOnReadStringField = StripHtmlOnReadStringField(self.weakref, SentenceNoteFields.source_question)
         self.source_comments: StripHtmlOnReadStringField = StripHtmlOnReadStringField(self.weakref, SentenceNoteFields.source_comments)
 
         self.user: SentenceUserFields = SentenceUserFields(self.weakref_sentence)

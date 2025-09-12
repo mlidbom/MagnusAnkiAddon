@@ -15,12 +15,12 @@ if TYPE_CHECKING:
 
 class SentenceCounts:
     def __init__(self, parent: WeakRef[VocabNoteSentences]) -> None:
-        self._parent = parent
+        self._parent: WeakRef[VocabNoteSentences] = parent
         self._studying_reading: int = 0
         self._studying_listening: int = 0
         self._total: int = 0
         self._last_update_time: float = 0
-        self._cache_seconds = 0
+        self._cache_seconds: int = 0
 
     @property
     def total(self) -> int: return self._up_to_date_self()._total

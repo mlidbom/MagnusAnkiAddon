@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING, final, override
 from autoslot import Slots
 from language_services import conjugator
 from language_services.janome_ex.word_extraction.analysis_constants import non_word_characters
-from note.vocabulary.vocabnote_matching_rules import VocabNoteMatchingConfiguration, VocabNoteMatchingRules
 from sysutils import kana_utils
 from sysutils.simple_string_list_builder import SimpleStringListBuilder
 
@@ -13,6 +12,7 @@ if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
     from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
     from language_services.janome_ex.word_extraction.text_location import TextAnalysisLocation
+    from note.vocabulary.vocabnote_matching_rules import VocabNoteMatchingConfiguration
     from sysutils.weak_ref import WeakRef
 
 @final

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, override
+from typing import TYPE_CHECKING, final, override
 
 from autoslot import Slots
 from sysutils.object_instance_tracker import ObjectInstanceTracker
@@ -18,6 +18,7 @@ from sysutils import ex_sequence
 
 _tokenizer = JNTokenizer()
 
+@final
 class TextAnalysis(WeakRefable,Slots):
     version = "text_analysis_0.1"
 

@@ -24,8 +24,8 @@ class JPNote(WeakRefable,Slots):
     def __init__(self, note: Note) -> None:
         self.weakref: WeakRef[JPNote] = WeakRef(self)
         self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
-        self.flush_guard = NoteFlushGuard(self.weakref)
-        self.backend_note = note
+        self.flush_guard: NoteFlushGuard = NoteFlushGuard(self.weakref)
+        self.backend_note: Note = note
         self.__hash_value = 0
 
     @property

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, override
+from typing import TYPE_CHECKING, final, override
 
 from ankiutils import app
 from autoslot import Slots
@@ -18,6 +18,7 @@ if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.match import Match
     from note.sentences.sentence_configuration import SentenceConfiguration
 
+@final
 class CandidateWordVariant(WeakRefable, Slots):
     def __init__(self, word: WeakRef[CandidateWord], form: str) -> None:
         self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)

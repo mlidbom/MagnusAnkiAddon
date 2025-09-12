@@ -12,8 +12,8 @@ if TYPE_CHECKING:
 class TagFlagField(Slots):
     def __init__(self, note: WeakRef[JPNote], tag: str) -> None:
         self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
-        self._note = note
-        self.tag = tag
+        self._note: WeakRef[JPNote] = note
+        self.tag: str = tag
 
     def is_set(self) -> bool: return self._note().has_tag(self.tag)
 
@@ -23,4 +23,3 @@ class TagFlagField(Slots):
 
     @override
     def __repr__(self) -> str: return self.is_set().__repr__()
-

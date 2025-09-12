@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, override
+from typing import TYPE_CHECKING, final, override
 
 from autoslot import Slots
 
@@ -10,10 +10,11 @@ if TYPE_CHECKING:
 from typing import Any
 
 
+@final
 class WordExclusion(Slots):
     secret = "aoesunth9cgrcgf"
     _no_index = -1
-    def __init__(self, word: str, index: int, _secret:str) -> None:
+    def __init__(self, word: str, index: int, _secret: str) -> None:
         if _secret != "aoesunth9cgrcgf": raise ValueError("please use the factory methods instead of this private constructor")
         self.word = word
         self.index = index

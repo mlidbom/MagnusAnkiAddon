@@ -13,8 +13,8 @@ if TYPE_CHECKING:
 class AutoStrippingReadOnlyStringField(Slots):
     def __init__(self, note: WeakRef[JPNote], field_name: str) -> None:
         self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
-        self._note = note
-        self._field_name = field_name
+        self._note: WeakRef[JPNote] = note
+        self._field_name: str = field_name
         self._value: Lazy[str] = Lazy(lambda: note().get_field(field_name).strip())
 
     def get(self) -> str: return self._value()

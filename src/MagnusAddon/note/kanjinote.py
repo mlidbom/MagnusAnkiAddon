@@ -24,7 +24,7 @@ from wanikani.wanikani_api_client import WanikaniClient
 class KanjiNote(WaniNote, Slots):
     def __init__(self, note: Note) -> None:
         super().__init__(note)
-        self.weakref = cast(WeakRef[KanjiNote], self.weakref)
+        self.weakref: WeakRef[KanjiNote] = cast(WeakRef[KanjiNote], self.weakref)  # pyright: ignore[reportUnnecessaryCast]
 
     @override
     def get_direct_dependencies(self) -> set[JPNote]:
@@ -135,7 +135,7 @@ class KanjiNote(WaniNote, Slots):
     def set_reading_on(self, value: str) -> None:
         self.set_field(NoteFields.Kanji.Reading_On, value)
 
-    primary_reading_pattern = re.compile(r"<primary>(.*?)</primary>")
+    primary_reading_pattern: re.Pattern[str] = re.compile(r"<primary>(.*?)</primary>")
 
     def get_primary_readings(self) -> list[str]:
         return self.get_primary_readings_on() + self.get_primary_readings_kun() + self.get_primary_readings_nan()
@@ -230,14 +230,14 @@ class KanjiNote(WaniNote, Slots):
     def set_primary_vocab(self, value: list[str]) -> None:
         self.set_field(NoteFields.Kanji.PrimaryVocab, ", ".join(value))
 
-    _any_word_pattern = re.compile(r"\b[-\w]+\b", re.UNICODE)
+    _any_word_pattern: re.Pattern[str] = re.compile(r"\b[-\w]+\b", re.UNICODE)
 
     def get_primary_meaning(self) -> str:
         radical_meaning_match = self._any_word_pattern.search(self.get_answer_text().replace("{", "").replace("}", ""))
         # noinspection PyArgumentEqualDefault
         return radical_meaning_match.group(0) if radical_meaning_match else ""
 
-    _parenthesized_word_pattern = re.compile(r"\([-\w]+\)", re.UNICODE)
+    _parenthesized_word_pattern: re.Pattern[str] = re.compile(r"\([-\w]+\)", re.UNICODE)
 
     def get_primary_radical_meaning(self) -> str:
         def get_dedicated_radical_primary_meaning() -> str:

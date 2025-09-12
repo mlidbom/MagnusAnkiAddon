@@ -8,13 +8,13 @@ from sysutils.lazy import Lazy
 
 class WordSense(Slots):
     def __init__(self, definition: str, pos: str) -> None:
-        self.definition = definition
-        self.pos = pos
+        self.definition: str = definition
+        self.pos: str = pos
 
 class EnglishWord(Slots):
     def __init__(self, word: str, definition: str = "", pos: str = "") -> None:
-        self.word = word
-        self.lower_case_word = word.lower()
+        self.word: str = word
+        self.lower_case_word: str = word.lower()
         self.senses: list[WordSense] = []
 
         # Add the initial sense if provided

@@ -49,7 +49,7 @@ def current_snapshot() -> Snapshot:
 class ObjectInstanceTracker(Slots):
 
     def __init__(self, cls_type: type[Any]) -> None:
-        self.type_name = self._get_fully_qualified_name(cls_type)
+        self.type_name: str = self._get_fully_qualified_name(cls_type)
         current_instance_count[self.type_name] = current_instance_count.get(self.type_name, 0) + 1
 
     def count(self) -> int:

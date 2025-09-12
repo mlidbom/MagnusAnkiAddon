@@ -17,8 +17,8 @@ if TYPE_CHECKING:
 
 class CachingSentenceConfigurationField(WeakRefable, Slots):
     def __init__(self, sentence: WeakRef[SentenceNote]) -> None:
-        self._sentence = sentence
-        self.field = AutoStrippingStringField(sentence, SentenceNoteFields.configuration)
+        self._sentence: WeakRef[SentenceNote] = sentence
+        self.field: AutoStrippingStringField = AutoStrippingStringField(sentence, SentenceNoteFields.configuration)
 
         weak_self_ref = WeakRef(self)
         self._value: Lazy[SentenceConfiguration] = Lazy(lambda: SentenceConfiguration.serializer.deserialize(self.field.get(), weak_self_ref()._save))

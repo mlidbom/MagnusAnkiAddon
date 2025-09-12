@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from note.sentences.parsing_result import ParsingResult
 
 class ParsingResultSerializer(ObjectSerializer["ParsingResult"], Slots):
-    newline_replacement = f"NEWLINE{invisible_space}"
+    newline_replacement: str = f"NEWLINE{invisible_space}"
     @override
     def deserialize(self, serialized: str) -> ParsingResult:
         from note.sentences.parsing_result import ParsingResult

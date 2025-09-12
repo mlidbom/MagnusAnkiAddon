@@ -7,8 +7,8 @@ all_dict: dict[str, InflectionType] = {}
 
 class InflectionType:
     def __init__(self, name: str, description: str) -> None:
-        self.name = name
-        self.description = description
+        self.name: str = name
+        self.description: str = description
 
     @override
     def __repr__(self) -> str: return f"""{self.name} - {self.description}"""

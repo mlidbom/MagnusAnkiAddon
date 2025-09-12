@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Callable, Generic, TypeVar
+from typing import TYPE_CHECKING, Callable, Generic, TypeVar, final
 
 from autoslot import Slots
 from note.jpnote import JPNote
@@ -14,6 +14,7 @@ if TYPE_CHECKING:
 
 TNote = TypeVar("TNote", bound=JPNote)
 
+@final
 class BackEndFacade(Generic[TNote], Slots):
     def __init__(self, anki_collection: Collection, constructor: Callable[[Note], TNote], note_type: str) -> None:
         self.anki_collection = anki_collection

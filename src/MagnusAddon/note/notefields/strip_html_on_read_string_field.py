@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 class StripHtmlOnReadStringField(Slots):
     def __init__(self, note: WeakRef[JPNote], field_name: str) -> None:
-        self._field = AutoStrippingStringField(note, field_name)
+        self._field: AutoStrippingStringField = AutoStrippingStringField(note, field_name)
 
     def get_raw(self) -> str: return self._field.get()
 

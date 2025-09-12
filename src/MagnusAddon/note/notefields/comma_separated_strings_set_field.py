@@ -10,12 +10,11 @@ if TYPE_CHECKING:
     from note.jpnote import JPNote
     from sysutils.weak_ref import WeakRef
 
-
 class CommaSeparatedStringsSetField(Slots):
     def __init__(self, note: WeakRef[JPNote], field_name: str) -> None:
-        self._field = CommaSeparatedStringsListField(note, field_name)
+        self._field: CommaSeparatedStringsListField = CommaSeparatedStringsListField(note, field_name)
         field_with_no_reference_loop = self._field
-        self._value:Lazy[set[str]] = Lazy(lambda: set(field_with_no_reference_loop.get()))
+        self._value: Lazy[set[str]] = Lazy(lambda: set(field_with_no_reference_loop.get()))
 
     def get(self) -> set[str]:
         return self._value()
@@ -30,5 +29,5 @@ class CommaSeparatedStringsSetField(Slots):
     def raw_string_value(self) -> str:
         return self._field.raw_string_value()
 
-    def set_raw_string_value(self, value:str) -> None:
+    def set_raw_string_value(self, value: str) -> None:
         self._field.set_raw_string_value(value)

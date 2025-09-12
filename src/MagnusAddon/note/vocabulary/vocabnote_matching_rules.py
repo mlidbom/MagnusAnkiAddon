@@ -21,13 +21,13 @@ if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
 
 class VocabNoteMatchingRulesData(Slots):
-    serializer = VocabNoteMatchingRulesSerializer()
+    serializer: VocabNoteMatchingRulesSerializer = VocabNoteMatchingRulesSerializer()
     def __init__(self, surface_is_not: set[str], prefix_is_not: set[str], suffix_is_not: set[str], required_prefix: set[str], yield_to_surface: set[str]) -> None:
-        self.prefix_is_not = prefix_is_not
-        self.suffix_is_not = suffix_is_not
-        self.surface_is_not = surface_is_not
-        self.yield_to_surface = yield_to_surface
-        self.required_prefix = required_prefix
+        self.prefix_is_not: set[str] = prefix_is_not
+        self.suffix_is_not: set[str] = suffix_is_not
+        self.surface_is_not: set[str] = surface_is_not
+        self.yield_to_surface: set[str] = yield_to_surface
+        self.required_prefix: set[str] = required_prefix
 
 class VocabNoteMatchingRules(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
@@ -77,11 +77,11 @@ class VocabMatchingRulesConfigurationBoolFlags(Slots):
 class VocabNoteMatchingConfiguration(WeakRefable, Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self.vocab: WeakRef[VocabNote] = vocab
-        self.weakref = WeakRef(self)
+        self.weakref: WeakRef[VocabNoteMatchingConfiguration] = WeakRef(self)
         self._rules: Lazy[VocabNoteMatchingRules] = Lazy(lambda: VocabNoteMatchingRules(vocab))
 
-        self.requires_forbids = VocabMatchingRulesConfigurationRequiresForbidsFlags(vocab)
-        self.bool_flags = VocabMatchingRulesConfigurationBoolFlags(vocab)
+        self.requires_forbids: VocabMatchingRulesConfigurationRequiresForbidsFlags = VocabMatchingRulesConfigurationRequiresForbidsFlags(vocab)
+        self.bool_flags: VocabMatchingRulesConfigurationBoolFlags = VocabMatchingRulesConfigurationBoolFlags(vocab)
 
     @property
     def configurable_rules(self) -> VocabNoteMatchingRules: return self._rules.instance()

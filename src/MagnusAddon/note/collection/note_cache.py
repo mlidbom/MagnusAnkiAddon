@@ -16,16 +16,16 @@ if TYPE_CHECKING:
 
 class CachedNote(Slots):
     def __init__(self, note: JPNote) -> None:
-        self.id = note.get_id()
-        self.answer = note.get_answer()
-        self.question = note.get_question()
+        self.id: NoteId = note.get_id()
+        self.answer: str = note.get_answer()
+        self.question: str = note.get_question()
 
 TNote = TypeVar("TNote", bound=JPNote)
 TSnapshot = TypeVar("TSnapshot", bound=CachedNote)
 
 class NoteCache(Generic[TNote, TSnapshot], Slots):
     def __init__(self, all_notes: list[TNote], cached_note_type: type[TNote], cache_runner: CacheRunner) -> None:
-        self._note_type = cached_note_type
+        self._note_type: type[TNote] = cached_note_type
         self._by_question: DefaultDictCaseInsensitive[set[TNote]] = DefaultDictCaseInsensitive(set)
         self._by_id: dict[NoteId, TNote] = {}
         self._snapshot_by_id: dict[NoteId, TSnapshot] = {}
@@ -33,7 +33,7 @@ class NoteCache(Generic[TNote, TSnapshot], Slots):
 
         self._deleted: set[NoteId] = set()
 
-        self._flushing = False
+        self._flushing: bool = False
         self._pending_add: list[Note] = []
 
         with StopWatch.log_execution_time(f"pushing {cached_note_type.__name__}s into cache"):

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, override
+from typing import TYPE_CHECKING, final, override
 
 from autoslot import Slots
 from language_services.janome_ex.word_extraction.matches.match import Match
@@ -15,6 +15,7 @@ if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
     from note.vocabulary.vocabnote_matching_rules import VocabNoteMatchingConfiguration
 
+@final
 class VocabMatch(Match, Slots):
     def __init__(self, word_variant: WeakRef[CandidateWordVariant], vocab: VocabNote) -> None:
         super().__init__(word_variant)

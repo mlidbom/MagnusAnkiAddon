@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 class AudioField(Slots):
     def __init__(self, note: WeakRef[JPNote], field_name: str) -> None:
-        self._field = AutoStrippingStringField(note, field_name)
+        self._field: AutoStrippingStringField = AutoStrippingStringField(note, field_name)
 
     def has_audio(self) -> bool:
         return self._field.get().strip().startswith("[sound:")
@@ -26,8 +26,6 @@ class AudioField(Slots):
 
         stripped_paths = self._field.get().strip().replace("[sound:", "").split("]")
         return [path.strip() for path in stripped_paths]
-
-
 
 class WritableAudioField(AudioField, Slots):
     def __init__(self, note: WeakRef[JPNote], field_name: str) -> None:

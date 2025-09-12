@@ -9,11 +9,10 @@ if TYPE_CHECKING:
     from note.jpnote import JPNote
     from sysutils.weak_ref import WeakRef
 
-
 class IntegerField(Slots):
     def __init__(self, note: WeakRef[JPNote], field_name: str) -> None:
-        self._note = note
-        self._field = AutoStrippingStringField(note, field_name)
+        self._note: WeakRef[JPNote] = note
+        self._field: AutoStrippingStringField = AutoStrippingStringField(note, field_name)
 
     # noinspection PyUnusedFunction
     def get(self) -> int:

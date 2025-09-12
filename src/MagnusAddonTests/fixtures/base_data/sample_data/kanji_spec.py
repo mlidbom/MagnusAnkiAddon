@@ -7,10 +7,10 @@ from autoslot import Slots
 
 class KanjiSpec(Slots):
     def __init__(self, question: str, answer: str, kun_readings: str, on_readings: str) -> None:
-        self.question = question
-        self.answer = answer
-        self.kun_reading = kun_readings
-        self.on_readings = on_readings
+        self.question: str = question
+        self.answer: str = answer
+        self.kun_reading: str = kun_readings
+        self.on_readings: str = on_readings
 
     @override
     def __repr__(self) -> str: return f"""KanjiSpec("{self.question}", "{self.answer}", "{self.kun_reading}", "{self.on_readings}")"""

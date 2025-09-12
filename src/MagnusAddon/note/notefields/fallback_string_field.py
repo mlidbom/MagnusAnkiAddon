@@ -11,8 +11,8 @@ if TYPE_CHECKING:
 
 class FallbackStringField(Slots):
     def __init__(self, note: WeakRef[JPNote], primary_field: str, fallback_field: str) -> None:
-        self._field = AutoStrippingStringField(note, primary_field)
-        self._fallback_field = AutoStrippingStringField(note, fallback_field)
+        self._field: AutoStrippingStringField = AutoStrippingStringField(note, primary_field)
+        self._fallback_field: AutoStrippingStringField = AutoStrippingStringField(note, fallback_field)
 
     def get(self) -> str: return self._field.get() or self._fallback_field.get()
 

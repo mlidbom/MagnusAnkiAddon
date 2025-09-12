@@ -19,8 +19,8 @@ TNote = TypeVar("TNote", bound=JPNote)
 
 class PrerenderingAnswerContentRenderer(Generic[TNote], Slots):
     def __init__(self, cls: type[TNote], render_methods: dict[str, Callable[[TNote], str]]) -> None:
-        self._cls = cls
-        self._render_methods = render_methods
+        self._cls: type[TNote] = cls
+        self._render_methods: dict[str, Callable[[TNote], str]] = render_methods
         self._promises: dict[str, Future[str]] | None = None
 
     @staticmethod

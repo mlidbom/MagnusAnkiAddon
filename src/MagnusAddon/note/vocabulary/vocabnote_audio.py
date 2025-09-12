@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 class VocabNoteAudio(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
-        self._vocab = vocab
+        self._vocab: WeakRef[VocabNote] = vocab
         self.first: WritableAudioField = WritableAudioField(vocab, NoteFields.Vocab.Audio_b)
         self.second: WritableAudioField = WritableAudioField(vocab, NoteFields.Vocab.Audio_g)
         self.tts: WritableAudioField = WritableAudioField(vocab, NoteFields.Vocab.Audio_TTS)

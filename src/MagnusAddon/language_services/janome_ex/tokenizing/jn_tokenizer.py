@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import final
+
 from autoslot import Slots
 from janome.tokenizer import Token, Tokenizer
 from language_services.janome_ex.tokenizing.jn_parts_of_speech import JNPartsOfSpeech
@@ -8,6 +10,7 @@ from language_services.janome_ex.tokenizing.jn_tokenized_text import JNTokenized
 from sysutils import ex_str, typed
 
 
+@final
 class JNTokenizer(Slots):
     def __init__(self) -> None:
         self._tokenizer = Tokenizer()

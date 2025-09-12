@@ -6,10 +6,10 @@ from sysutils import ex_sequence, kana_utils
 
 class DifficultyCalculator(Slots):
     def __init__(self, starting_seconds:float, hiragana_seconds:float, katakata_seconds:float, kanji_seconds:float) -> None:
-        self.starting_seconds = starting_seconds
-        self.hiragana_seconds = hiragana_seconds
-        self.katakata_seconds = katakata_seconds
-        self.kanji_seconds = kanji_seconds
+        self.starting_seconds: float  = starting_seconds
+        self.hiragana_seconds: float  = hiragana_seconds
+        self.katakata_seconds: float  = katakata_seconds
+        self.kanji_seconds: float = kanji_seconds
 
     @staticmethod
     def is_other_character(char:str) -> bool:

@@ -34,8 +34,8 @@ class JPCollection(WeakRefable, Slots):
                 app.get_ui_utils().tool_tip(f"{Mine.app_name} loading", 60000)
 
             with StopWatch.log_warning_if_slower_than(5, "Core collection setup - no gc"):
-                self.anki_collection = anki_collection
-                self.cache_runner = CacheRunner(anki_collection)
+                self.anki_collection: Collection = anki_collection
+                self.cache_runner: CacheRunner = CacheRunner(anki_collection)
 
                 self.vocab: VocabCollection = VocabCollection(anki_collection, self.cache_runner)
                 self.kanji: KanjiCollection = KanjiCollection(anki_collection, self.cache_runner)
@@ -50,7 +50,7 @@ class JPCollection(WeakRefable, Slots):
             self.cache_runner.start()
             app.get_ui_utils().tool_tip(f"{Mine.app_name} done loading in {str(stopwatch.elapsed_seconds())[0:4]} seconds.", milliseconds=6000)
 
-            self._is_running = True
+            self._is_running: bool = True
 
             if app.config().run_additional_pre_caching.get_value() and app.config().run_any_additional_pre_caching_on_background_thread.get_value():
                 self._populate_additional_caches_on_background_thread()

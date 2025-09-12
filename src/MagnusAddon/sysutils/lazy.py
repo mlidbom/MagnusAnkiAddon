@@ -10,7 +10,7 @@ T = TypeVar("T")
 
 class Lazy(Generic[T], Slots):
     def __init__(self, factory: Callable[[], T]) -> None:
-        self.factory = factory
+        self.factory: Callable[[], T] = factory
         self._instance: T | None = None
 
     def instance(self) -> T:
@@ -29,11 +29,11 @@ class Lazy(Generic[T], Slots):
 
 class BackgroundInitialingLazy(Generic[T], Slots):
     def __init__(self, factory: Callable[[], T], delay_seconds: float = 0) -> None:
-        self._lock = threading.Lock()
+        self._lock: threading.Lock = threading.Lock()
         self._future_instance: Future[T] | None = None
-        self._factory = factory
+        self._factory: Callable[[], T] = factory
         if delay_seconds > 0:
-            self._pending_init_timer = threading.Timer(delay_seconds, self._init)
+            self._pending_init_timer: threading.Timer = threading.Timer(delay_seconds, self._init)
             self._pending_init_timer.start()
         else:
             self._init()

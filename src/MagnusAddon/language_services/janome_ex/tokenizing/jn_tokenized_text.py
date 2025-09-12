@@ -15,10 +15,10 @@ if TYPE_CHECKING:
 
 class ProcessedToken(Slots):
     def __init__(self, surface: str, base: str, is_non_word_character: bool) -> None:
-        self.surface = surface
-        self.base_form = base
+        self.surface: str = surface
+        self.base_form: str = base
         self.is_inflectable_word: bool = False
-        self.is_non_word_character = is_non_word_character
+        self.is_non_word_character: bool = is_non_word_character
         self.potential_godan_verb: str | None = None
 
     def is_past_tense_stem(self) -> bool: return False
@@ -34,9 +34,9 @@ class ProcessedToken(Slots):
 class JNTokenWrapper(ProcessedToken, Slots):
     def __init__(self, token: JNToken, vocabs: VocabCollection) -> None:
         super().__init__(token.surface, token.base_form, token.parts_of_speech.is_non_word_character())
-        self.token = token
-        self._vocabs = vocabs
-        self.is_inflectable_word = self.token.is_inflectable_word()
+        self.token: JNToken = token
+        self._vocabs: VocabCollection = vocabs
+        self.is_inflectable_word: bool = self.token.is_inflectable_word()
 
     @override
     def is_past_tense_stem(self) -> bool: return self.token.is_past_tense_stem()
@@ -61,7 +61,7 @@ class JNTokenWrapper(ProcessedToken, Slots):
     #    in the indexing both will of course always be output so that all the sentences containing える will be correctly identified.
     #  7. Note, when calculating shadowing the empty tokens must not be counted, or words that are actually shadowed will be displayed.
     def pre_process(self) -> list[ProcessedToken]:
-        self.potential_godan_verb = self._try_find_vocab_based_potential_verb_compound() or self._try_find_dictionary_based_potential_godan_verb()
+        self.potential_godan_verb: str | None = self._try_find_vocab_based_potential_verb_compound() or self._try_find_dictionary_based_potential_godan_verb()
         return [self]
 
     def _try_find_vocab_based_potential_verb_compound(self) -> str | None:
@@ -88,9 +88,9 @@ class JNTokenWrapper(ProcessedToken, Slots):
 
 class JNTokenizedText(Slots):
     def __init__(self, text: str, raw_tokens: list[Token], tokens: list[JNToken]) -> None:
-        self.raw_tokens = raw_tokens
-        self.text = text
-        self.tokens = tokens
+        self.raw_tokens: list[Token] = raw_tokens
+        self.text: str = text
+        self.tokens: list[JNToken] = tokens
 
     def pre_process(self) -> list[ProcessedToken]:
         vocab = app.col().vocab

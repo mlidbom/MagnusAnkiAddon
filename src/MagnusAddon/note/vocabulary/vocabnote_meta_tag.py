@@ -11,9 +11,9 @@ if TYPE_CHECKING:
 
 class VocabMetaTag(Slots):
     def __init__(self, name: str, display: str, tooltip: str) -> None:
-        self.name = name
-        self.display = display
-        self.tooltip = tooltip
+        self.name: str = name
+        self.display: str = display
+        self.tooltip: str = tooltip
 
 def get_meta_tags_html(vocab: VocabNote, display_extended_sentence_statistics: bool = True, no_sentense_statistics: bool = False) -> str:
     tags = set(vocab.get_tags())

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, override
+from typing import TYPE_CHECKING, final, override
 
 from autoslot import Slots
 from language_services.janome_ex.word_extraction.analysis_constants import non_word_characters
@@ -13,6 +13,7 @@ if TYPE_CHECKING:
 
 _quote_characters = {"と", "って"}
 
+@final
 class TailRequirements(Slots):
     def __init__(self, vocab: VocabNote, tail: WeakRef[TextAnalysisLocation] | None) -> None:
         self.config = vocab.matching_configuration

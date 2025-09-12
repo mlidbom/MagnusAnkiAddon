@@ -47,8 +47,8 @@ class VocabNotePartsOfSpeech(Slots):
 
     def is_uk(self) -> bool: return self._vocab.has_tag(Tags.UsuallyKanaOnly)
 
-    _transitive_string_values = ["transitive", "transitive verb"]
-    _intransitive_string_values = ["intransitive", "intransitive verb"]
+    _transitive_string_values: list[str] = ["transitive", "transitive verb"]
+    _intransitive_string_values: list[str] = ["intransitive", "intransitive verb"]
     def is_transitive(self) -> bool: return any(val for val in self._transitive_string_values if val in self.get())
     def is_intransitive(self) -> bool: return any(val for val in self._intransitive_string_values if val in self.get())
 
@@ -80,6 +80,6 @@ class VocabNotePartsOfSpeech(Slots):
         if len(compounds) == 0: return False
         return compounds[-1] in self._causative_verb_endings
 
-    _na_adjective_tos_names = {"な adjective", "na-adjective"}
+    _na_adjective_tos_names: set[str] = {"な adjective", "na-adjective"}
     def is_complete_na_adjective(self) -> bool:
         return self.__vocab().question.raw.endswith("な") and any(na for na in self._na_adjective_tos_names if na in self.get())

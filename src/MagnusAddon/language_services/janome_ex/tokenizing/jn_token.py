@@ -26,15 +26,15 @@ class JNToken(Slots):
                  phonetic: str = "",
                  node_type: str = "",
                  raw_token: Token | None = None) -> None:
-        self.base_form = typed.str_(base_form)
-        self.surface = typed.str_(surface)
+        self.base_form: str = typed.str_(base_form)
+        self.surface: str = typed.str_(surface)
         self.inflection_type: InflectionType = inflection_types.all_dict[inflection_type] if isinstance(inflection_type, str) else inflection_type
         self.inflected_form: InflectionForm = inflection_forms.all_dict[inflected_form] if isinstance(inflected_form, str) else inflected_form
-        self.reading = typed.str_(reading)
-        self.phonetic = typed.str_(phonetic)
-        self.node_type = typed.str_(node_type)
-        self.parts_of_speech:JNPartsOfSpeech = parts_of_speech
-        self.raw_token = raw_token
+        self.reading: str = typed.str_(reading)
+        self.phonetic: str = typed.str_(phonetic)
+        self.node_type: str = typed.str_(node_type)
+        self.parts_of_speech: JNPartsOfSpeech = parts_of_speech
+        self.raw_token: Token | None = raw_token
 
     @override
     def __repr__(self) -> str:
@@ -65,7 +65,7 @@ class JNToken(Slots):
     def is_verb(self) -> bool:
         return self.parts_of_speech in _verb_parts_of_speech
 
-    _pseudo_verbs_for_inflection_purposes = {"ます"}
+    _pseudo_verbs_for_inflection_purposes: set[str] = {"ます"}
     def is_inflectable_word(self) -> bool:
         return self.is_verb() or self.is_adjective() or self.base_form in self._pseudo_verbs_for_inflection_purposes
 
@@ -90,7 +90,7 @@ class JNToken(Slots):
     def is_past_tense_stem(self) -> bool:
         return self.inflected_form == InflectionForms.Continuative.ta_connection  # "連用タ接続"
 
-    _te_connections = {InflectionForms.Continuative.te_connection, InflectionForms.Continuative.de_connection}
+    _te_connections: set[InflectionForm] = {InflectionForms.Continuative.te_connection, InflectionForms.Continuative.de_connection}
     def is_t_form_stem(self) -> bool:
         return (self.inflected_form in JNToken._te_connections or
                 (self.is_past_tense_stem() and self.surface.endswith("ん")))

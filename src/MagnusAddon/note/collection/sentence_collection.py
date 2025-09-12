@@ -16,13 +16,12 @@ if TYPE_CHECKING:
     from note.collection.cache_runner import CacheRunner
     from note.vocabulary.vocabnote import VocabNote
 
-
 class _SentenceSnapshot(CachedNote, Slots):
     def __init__(self, note: SentenceNote) -> None:
         super().__init__(note)
-        self.words = note.get_words()
-        self.detected_vocab:set[int] = note.parsing_result.get().matched_vocab_ids
-        self.user_highlighted_vocab = set(note.configuration.highlighted_words())
+        self.words: set[str] = note.get_words()
+        self.detected_vocab: set[int] = note.parsing_result.get().matched_vocab_ids
+        self.user_highlighted_vocab: set[str] = set(note.configuration.highlighted_words())
 
 class _SentenceCache(NoteCache[SentenceNote, _SentenceSnapshot], Slots):
     def __init__(self, all_kanji: list[SentenceNote], cache_runner: CacheRunner) -> None:
@@ -39,7 +38,7 @@ class _SentenceCache(NoteCache[SentenceNote, _SentenceSnapshot], Slots):
     def with_user_highlighted_vocab(self, form: str) -> list[SentenceNote]: return list(self._by_user_highlighted_vocab[form])
 
     @override
-    def _inheritor_remove_from_cache(self, note: SentenceNote, snapshot:_SentenceSnapshot) -> None:
+    def _inheritor_remove_from_cache(self, note: SentenceNote, snapshot: _SentenceSnapshot) -> None:
         for vocab_form in snapshot.words: self._by_vocab_form[vocab_form].remove(note)
         for vocab_form in snapshot.user_highlighted_vocab: self._by_user_highlighted_vocab[vocab_form].remove(note)
         for vocab_id in snapshot.detected_vocab: self._by_vocab_id[vocab_id].remove(note)
@@ -50,16 +49,15 @@ class _SentenceCache(NoteCache[SentenceNote, _SentenceSnapshot], Slots):
         for vocab_form in snapshot.user_highlighted_vocab: self._by_user_highlighted_vocab[vocab_form].add(note)
         for vocab_id in snapshot.detected_vocab: self._by_vocab_id[vocab_id].add(note)
 
-
 class SentenceCollection(Slots):
     def __init__(self, collection: Collection, cache_manager: CacheRunner) -> None:
         def sentence_constructor(note: Note) -> SentenceNote: return SentenceNote(note)
-        self.collection = BackEndFacade[SentenceNote](collection, sentence_constructor, NoteTypes.Sentence)
-        self._cache = _SentenceCache(list(self.collection.all()), cache_manager)
+        self.collection: BackEndFacade[SentenceNote] = BackEndFacade[SentenceNote](collection, sentence_constructor, NoteTypes.Sentence)
+        self._cache: _SentenceCache = _SentenceCache(list(self.collection.all()), cache_manager)
 
     def all(self) -> list[SentenceNote]: return self._cache.all()
 
-    def with_id_or_none(self, note_id:NoteId) -> SentenceNote | None:
+    def with_id_or_none(self, note_id: NoteId) -> SentenceNote | None:
         return self._cache.with_id_or_none(note_id)
 
     def with_question(self, question: str) -> list[SentenceNote]:
@@ -68,7 +66,7 @@ class SentenceCollection(Slots):
     def with_vocab(self, vocab_note: VocabNote) -> list[SentenceNote]:
         matches = self._cache.with_vocab(vocab_note)
         question = vocab_note.get_question()
-        #todo: isn't this check redundant, won't the match have been removed during indexing?
+        # todo: isn't this check redundant, won't the match have been removed during indexing?
         return [match for match in matches if question not in match.configuration.incorrect_matches.words()]
 
     def with_vocab_owned_form(self, vocab_note: VocabNote) -> list[SentenceNote]:
@@ -79,7 +77,7 @@ class SentenceCollection(Slots):
         # todo: isn't this check redundant, won't the match have been removed during indexing?
         return [match for match in matches if question not in match.configuration.incorrect_matches.words()]
 
-    def with_form(self, form:str) -> list[SentenceNote]: return self._cache.with_vocab_form(form)
+    def with_form(self, form: str) -> list[SentenceNote]: return self._cache.with_vocab_form(form)
 
     def with_highlighted_vocab(self, vocab_note: VocabNote) -> list[SentenceNote]:
         return ex_sequence.remove_duplicates(ex_sequence.flatten([self._cache.with_user_highlighted_vocab(form) for form in vocab_note.forms.all_set()]))

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import threading
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, final
 
 from aqt.utils import openLink
 from language_services.english_dictionary import english_dict_search
@@ -12,7 +12,7 @@ from sysutils.typed import non_optional
 
 if TYPE_CHECKING:
     from language_services.english_dictionary.english_dict_search import EnglishWord
-
+@final
 class EnglishWordSearchDialog(QDialog):
     # Singleton instance
     _instance: EnglishWordSearchDialog | None = None

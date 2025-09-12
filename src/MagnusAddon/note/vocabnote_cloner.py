@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 class VocabCloner(Slots):
     def __init__(self, note: WeakRef[VocabNote]) -> None:
-        self._note_ref = note
+        self._note_ref: WeakRef[VocabNote] = note
 
     @property
     def note(self) -> VocabNote: return self._note_ref()

@@ -7,8 +7,8 @@ from autoslot import Slots
 
 class SentenceSpec(Slots):
     def __init__(self, question: str, answer: str) -> None:
-        self.question = question
-        self.answer = answer
+        self.question: str = question
+        self.answer: str = answer
 
     @override
     def __repr__(self) -> str:

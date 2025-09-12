@@ -68,7 +68,7 @@ def get_note_from_web_view(view: AnkiWebView) -> JPNote | None:
 
 class UIUtils(IUIUtils, Slots):
     def __init__(self, mw: AnkiQt) -> None:
-        self._mw = mw
+        self._mw: AnkiQt = mw
 
     @override
     def is_edit_current_open(self) -> bool:

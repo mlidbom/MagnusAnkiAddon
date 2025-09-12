@@ -3,7 +3,7 @@ from __future__ import annotations
 
 class SkipFalsyValuesDebugReprBuilder:
     def __init__(self) -> None:
-        self.repr = ""
+        self.repr: str = ""
 
     def flag(self, name: str, value: bool) -> SkipFalsyValuesDebugReprBuilder:
         self.repr += f"{name} " if value else ""

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, final
 
 from autoslot import Slots
 from sysutils import ex_sequence, kana_utils
@@ -16,6 +16,7 @@ def _sense_is_transitive_verb(sense: Sense) -> bool:
 def _sense_is_intransitive_verb(sense: Sense) -> bool:
     return any(pos_item == "intransitive verb" for pos_item in sense.pos)
 
+@final
 class DictEntry(Slots):
     def __init__(self, entry: JMDEntry, lookup_word: str, lookup_readings: list[str]) -> None:
         self.entry: JMDEntry = entry

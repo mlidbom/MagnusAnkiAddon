@@ -10,7 +10,7 @@ TProp = TypeVar("TProp")
 
 class JsonReader(Slots):
     def __init__(self, json_dict: dict[str, Any]) -> None:
-        self._dict = json_dict
+        self._dict: dict[str, Any] = json_dict
 
     def _get_prop(self, prop: str | list[str], default: object | None) -> Any:  # noqa: ANN401
         if isinstance(prop, str):
