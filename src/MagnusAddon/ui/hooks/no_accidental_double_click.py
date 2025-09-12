@@ -10,9 +10,9 @@ from sysutils.timeutil import StopWatch
 from sysutils.typed import non_optional
 
 # noinspection PyProtectedMember
-_real_show_answer = Reviewer._showAnswer
+_real_show_answer = Reviewer._showAnswer  # pyright: ignore[reportPrivateUsage]
 # noinspection PyProtectedMember
-_real_answer_card = Reviewer._answerCard
+_real_answer_card = Reviewer._answerCard  # pyright: ignore[reportPrivateUsage]
 
 _stopwatch = StopWatch()
 
@@ -36,5 +36,5 @@ def _answer_card(reviewer: Reviewer, ease: Literal[1, 2, 3, 4]) -> None:
 
 
 def init() -> None:
-    Reviewer._showAnswer = _show_answer # type: ignore  # pyright: ignore[reportAttributeAccessIssue]
-    Reviewer._answerCard = _answer_card # type: ignore  # pyright: ignore[reportAttributeAccessIssue]
+    Reviewer._showAnswer = _show_answer # type: ignore  # pyright: ignore[reportAttributeAccessIssue, reportPrivateUsage]
+    Reviewer._answerCard = _answer_card # type: ignore  # pyright: ignore[reportAttributeAccessIssue, reportPrivateUsage]

@@ -34,7 +34,7 @@ def test_inside_radical_population() -> None:
 ])
 def test_bootstrap_mnemonic(kanji:str, radicals:list[str], mnemonic:str) -> None:
     kanji_note = non_optional(app.col().kanji.with_kanji(kanji))
-    kanji_note._set_radicals(",".join(radicals))
+    kanji_note._set_radicals(",".join(radicals))  # pyright: ignore[reportPrivateUsage]
 
     kanji_note.bootstrap_mnemonic_from_radicals()
 

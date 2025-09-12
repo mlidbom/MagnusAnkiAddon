@@ -59,7 +59,6 @@ extraPaths=["src/MagnusAddon"]
 typeCheckingMode="recommended" # "off", "basic", "standard", "strict", "recommended", "all"
 
 #todo: errors we should enable detection of ASAP
-reportPrivateUsage =  "none"
 reportImportCycles =  "none"
 
 #  "questionable if these are useful =  "",

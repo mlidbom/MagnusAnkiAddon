@@ -52,7 +52,7 @@ def get_note_from_web_view(view: AnkiWebView) -> JPNote | None:
             return None
     elif view.kind == AnkiWebViewKind.EDITOR:
         # noinspection PyProtectedMember
-        editor = checked_cast(Editor, view._bridge_context)
+        editor = checked_cast(Editor, view._bridge_context)  # pyright: ignore[reportPrivateUsage]
         if not editor.card: return None
         card = non_optional(editor.card)
         inner_note = non_optional(card.note())
@@ -91,12 +91,12 @@ class UIUtils(IUIUtils, Slots):
             if len(previewers) > 0:
                 previewer = previewers[0]
                 # noinspection PyProtectedMember
-                previewer._last_state = (previewer._state, non_optional(previewer.card()).id, 0)
+                previewer._last_state = (previewer._state, non_optional(previewer.card()).id, 0)  # pyright: ignore[reportPrivateUsage]
                 previewer.render_card()
 
         def force_reviewer_rerender() -> None:
             if self._mw.reviewer.card:
-                self._mw.reviewer._refresh_needed = RefreshNeeded.NOTE_TEXT
+                self._mw.reviewer._refresh_needed = RefreshNeeded.NOTE_TEXT  # pyright: ignore[reportPrivateUsage]
                 self._mw.reviewer.refresh_if_needed()
 
         def force_browser_rerender() -> None:
@@ -116,10 +116,10 @@ class UIUtils(IUIUtils, Slots):
     def activate_preview(self) -> None:
         browser: Browser = aqt.dialogs.open('Browser', self._mw)  # noqa  # pyright: ignore[reportAny]
         self._mw.app.processEvents()
-        if browser._previewer is None:  # noqa
+        if browser._previewer is None:  # noqa  # pyright: ignore[reportPrivateUsage]
             browser.onTogglePreview()
         else:
-            browser._previewer.activateWindow()  # noqa
+            browser._previewer.activateWindow()  # noqa  # pyright: ignore[reportPrivateUsage]
 
     @override
     def tool_tip(self, message: str, milliseconds: int = 3000) -> None:

@@ -17,7 +17,7 @@ from sysutils.typed import non_optional
 if TYPE_CHECKING:
     from anki.cards import Card
 
-_real_auto_advance_to_answer_if_enabled = Reviewer._auto_advance_to_answer_if_enabled  # noqa
+_real_auto_advance_to_answer_if_enabled = Reviewer._auto_advance_to_answer_if_enabled  # noqa  # pyright: ignore[reportPrivateUsage]
 
 def is_handled_card(card: CardEx) -> bool:
     if card.type().name != CardTypes.reading:
@@ -64,12 +64,12 @@ def _auto_advance_to_answer_if_enabled(reviewer: Reviewer) -> None:
         _real_auto_advance_to_answer_if_enabled(reviewer)
         return
 
-    mw.reviewer._clear_auto_advance_timers()  # noqa
+    mw.reviewer._clear_auto_advance_timers()  # noqa  # pyright: ignore[reportPrivateUsage]
     allowed_milliseconds = int(seconds_to_show_question(card) * 1000)
 
-    mw.reviewer._show_answer_timer = mw.reviewer.mw.progress.timer(  # pyright: ignore[reportUnknownMemberType]
+    mw.reviewer._show_answer_timer = mw.reviewer.mw.progress.timer(  # pyright: ignore[reportUnknownMemberType, reportPrivateUsage]
         allowed_milliseconds,
-        mw.reviewer._on_show_answer_timeout,  # noqa
+        mw.reviewer._on_show_answer_timeout,  # noqa  # pyright: ignore[reportPrivateUsage]
         repeat=False,
         parent=mw.reviewer.mw,
     )
@@ -84,5 +84,5 @@ def _auto_start_auto_advance(html: str, anki_card: Card, _display_type: str) -> 
     return html
 
 def init() -> None:
-    Reviewer._auto_advance_to_answer_if_enabled = _auto_advance_to_answer_if_enabled # type: ignore  # pyright: ignore[reportAttributeAccessIssue]
+    Reviewer._auto_advance_to_answer_if_enabled = _auto_advance_to_answer_if_enabled # type: ignore  # pyright: ignore[reportAttributeAccessIssue, reportPrivateUsage]
     gui_hooks.card_will_show.append(_auto_start_auto_advance)

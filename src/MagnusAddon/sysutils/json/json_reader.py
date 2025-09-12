@@ -4,7 +4,7 @@ from typing import Any, Callable, TypeVar, cast
 
 from autoslot import Slots
 from sysutils import typed
-from sysutils.json.ex_json import _json_library_shim
+from sysutils.json.ex_json import json_library_shim
 
 TProp = TypeVar("TProp")
 
@@ -51,4 +51,4 @@ class JsonReader(Slots):
 
     @classmethod
     def from_json(cls, json_str: str) -> JsonReader:
-        return cls(_json_library_shim.loads(json_str))
+        return cls(json_library_shim.loads(json_str))

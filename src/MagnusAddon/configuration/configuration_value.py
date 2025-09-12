@@ -60,7 +60,7 @@ class JapaneseConfig(Slots):
 
         def set_enable_fsrs_short_term_with_steps(toggle: bool) -> None:
             # noinspection PyProtectedMember, PyArgumentList
-            non_optional(mw.col)._set_enable_fsrs_short_term_with_steps(toggle)
+            non_optional(mw.col)._set_enable_fsrs_short_term_with_steps(toggle)  # pyright: ignore[reportPrivateUsage]
 
         self.autoadvance_vocab_starting_seconds: ConfigurationValueFloat = ConfigurationValueFloat("autoadvance_vocab_starting_seconds", "Starting Seconds", 3.0)
         self.autoadvance_vocab_hiragana_seconds: ConfigurationValueFloat = ConfigurationValueFloat("autoadvance_vocab_hiragana_seconds", "Hiragana Seconds", 0.7)

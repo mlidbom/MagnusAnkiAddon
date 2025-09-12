@@ -35,8 +35,8 @@ def _stub_config_dict() -> Iterator[None]:
 
     def _write_config_dict() -> None: pass
 
-    configuration_value._config_dict = Lazy(lambda: _config_dict)
-    configuration_value._write_config_dict = _write_config_dict
+    configuration_value._config_dict = Lazy(lambda: _config_dict)  # pyright: ignore[reportPrivateUsage]
+    configuration_value._write_config_dict = _write_config_dict  # pyright: ignore[reportPrivateUsage]
 
     yield
 

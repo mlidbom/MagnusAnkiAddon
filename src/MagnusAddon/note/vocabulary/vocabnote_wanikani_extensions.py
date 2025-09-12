@@ -33,7 +33,7 @@ class VocabNoteWaniExtensions(Slots):
     @property
     def _vocab(self) -> VocabNote: return self.__vocab()
 
-    def set_source_answer(self, value: str) -> None: self._vocab._source_answer.set(value) # noqa this extensions is essentially part of the Vocab class
+    def set_source_answer(self, value: str) -> None: self._vocab._source_answer.set(value) # noqa this extensions is essentially part of the Vocab class  # pyright: ignore[reportPrivateUsage]
 
     def update_from_wani(self, wani_vocab: models.Vocabulary) -> None:
         self._vocab.wani_extensions._meaning_mnemonic.set(wani_vocab.meaning_mnemonic)  # pyright: ignore[reportUnknownArgumentType, reportUnknownMemberType]
