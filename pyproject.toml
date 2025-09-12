@@ -62,7 +62,6 @@ typeCheckingMode="recommended" # "off", "basic", "standard", "strict", "recommen
 reportImportCycles =  "none"
 
 #  "questionable if these are useful =  "",
-reportUnusedExpression= "none"
 reportUnusedCallResult = "none"
 
 # we probably really don't need these

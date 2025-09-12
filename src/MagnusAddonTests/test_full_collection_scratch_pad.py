@@ -59,7 +59,7 @@ def test_create_sample_data() -> None:
         with_active_answer:list[SentenceNote] = [m for m in matching if m.get_answer()]
         sentence_notes += with_active_answer
         for sentence in with_active_answer:
-            print(f"""SentenceSpec("{shtml(sentence.get_question())}", "{shtml(sentence.get_answer())}"),"""),
+            print(f"""SentenceSpec("{shtml(sentence.get_question())}", "{shtml(sentence.get_answer())}"),"""),  # pyright: ignore[reportUnusedExpression]
 
     needed_vocab_parsed_words = ex_sequence.flatten([s.parse_words_from_expression() for s in sentence_notes])
     need_vocab_strings = set(needed_vocab_parsed_words)
@@ -82,4 +82,4 @@ def test_create_sample_data() -> None:
     search_string = query_builder.kanji_in_string(only_kanji)
     kanji_notes:list[KanjiNote] = app.col().kanji.search(search_string)
     for kanji_note in kanji_notes:
-        print(f"""KanjiSpec("{shtml(kanji_note.get_question())}", "{shtml(kanji_note.get_answer())}", "{shtml(kanji_note.get_reading_kun_html())}", "{shtml(kanji_note.get_reading_on_html())}"),"""),
+        print(f"""KanjiSpec("{shtml(kanji_note.get_question())}", "{shtml(kanji_note.get_answer())}", "{shtml(kanji_note.get_reading_kun_html())}", "{shtml(kanji_note.get_reading_on_html())}"),"""),  # pyright: ignore[reportUnusedExpression]
