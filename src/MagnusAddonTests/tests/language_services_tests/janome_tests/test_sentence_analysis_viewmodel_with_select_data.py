@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 import pytest
 from fixtures.collection_factory import inject_anki_collection_with_select_data
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
-from tests.language_services_tests.janome_tests.test_sentence_analysis_viewmodel_common import _assert_all_words_equal, _assert_display_words_equal
+from tests.language_services_tests.janome_tests.test_sentence_analysis_viewmodel_common import assert_all_words_equal, assert_display_words_equal
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -75,14 +75,14 @@ def setup_collection_with_select_data() -> Iterator[None]:
     ("馴染めないでいる", ["馴染め:[MISSING]", "ない", "でいる"])
 ])
 def test_misc_stuff(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
-    _assert_display_words_equal(sentence, [], expected_output)
+    assert_display_words_equal(sentence, [], expected_output)
 
 @pytest.mark.parametrize("sentence, expected_output", [
     ("しろ", ["しろ"]),
     ("後で下に下りてらっしゃいね", ["後で", "下に", "下りる", "て", "らっしゃい", "ね"]),
 ])
 def test_yield_to_surface(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
-    _assert_display_words_equal(sentence, [], expected_output)
+    assert_display_words_equal(sentence, [], expected_output)
 
 @pytest.mark.parametrize("sentence, excluded, expected_output", [
     ("厳密に言えば　俺一人が友達だけど",
@@ -102,10 +102,10 @@ def test_yield_to_surface(setup_collection_with_select_data: object, sentence: s
     ("風の強さに驚きました", [WordExclusion.global_("風の強い")], ["風", "の", "強さ", "に", "驚き", "ます", "た"])
 ])
 def test_exclusions(setup_collection_with_select_data: object, sentence: str, excluded: list[WordExclusion], expected_output: list[str]) -> None:
-    _assert_display_words_equal(sentence, excluded, expected_output)
+    assert_display_words_equal(sentence, excluded, expected_output)
 
 @pytest.mark.parametrize("sentence, expected_output", [
     ("風の強さに驚きました", ["風の強い", "風", "の", "強さ", "強", "強い", "さ", "に", "驚き", "驚く", "まし:ませ", "ます", "た"])
 ])
 def test_all_words_equal(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
-    _assert_all_words_equal(sentence, expected_output)
+    assert_all_words_equal(sentence, expected_output)

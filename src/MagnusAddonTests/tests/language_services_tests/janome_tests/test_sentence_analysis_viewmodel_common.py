@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 def surface_and_match_form(match_vm: MatchViewModel) -> str:
     return f"""{match_vm.match.parsed_form}:{match_vm.vocab_form}""" if match_vm.display_vocab_form else match_vm.match.parsed_form
 
-def _assert_display_words_equal(sentence: str, excluded: list[WordExclusion], expected_output: list[str]) -> None:
+def assert_display_words_equal(sentence: str, excluded: list[WordExclusion], expected_output: list[str]) -> None:
 
     def run_note_assertions(message: str | None = None) -> None:
         if message: print(message)
@@ -35,7 +35,7 @@ def _assert_display_words_equal(sentence: str, excluded: list[WordExclusion], ex
         sentence_note.configuration._value = Lazy.from_value(SentenceConfiguration.from_incorrect_matches(excluded))
         run_note_assertions("################################### running assertions with exclusions marked as incorrect matches")
 
-def _assert_all_words_equal(sentence: str, expected_output: list[str]) -> None:
+def assert_all_words_equal(sentence: str, expected_output: list[str]) -> None:
     sentence_note = SentenceNote.create(sentence)
     analysis = SentenceAnalysisViewModel(sentence_note)
     candidate_words = analysis.analysis.candidate_words

@@ -49,8 +49,6 @@ class JamdictThreadingWrapper(Slots):
     def _worker(self) -> None:
         while self._running:
             request = self._queue.get()
-            if request is None:
-                break
             try:
                 result = request.func(self.jamdict.instance())
                 request.future.set_result(result)

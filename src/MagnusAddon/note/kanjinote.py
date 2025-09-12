@@ -212,13 +212,13 @@ class KanjiNote(WaniNote, Slots):
         confused_with.add(new_confused_with)
         self.set_field(NoteFields.Kanji.related_confused_with, ", ".join(confused_with))
 
-    def set_meaning_hint(self, value: str) -> None:
+    def set_meaning_hint(self, value: str | None) -> None:
         self.set_field(NoteFields.Kanji.Meaning_Info, value if value is not None else "")
 
     def set_reading_mnemonic(self, value: str) -> None:
         self.set_field(NoteFields.Kanji.Reading_Mnemonic, value)
 
-    def set_reading_hint(self, value: str) -> None:
+    def set_reading_hint(self, value: str | None) -> None:
         self.set_field(NoteFields.Kanji.Reading_Info, value if value is not None else "")
 
     def get_primary_vocabs_or_defaults(self) -> list[str]:

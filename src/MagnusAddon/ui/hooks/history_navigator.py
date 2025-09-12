@@ -74,7 +74,8 @@ class CardHistoryNavigator:
     def _card_exists(card_id: CardId) -> bool:
         # noinspection PyBroadException
         try:
-            return non_optional(mw.col).get_card(card_id) is not None
+            _discarded = non_optional(mw.col).get_card(card_id)
+            return True
         except:  # noqa: E722
             return False
 

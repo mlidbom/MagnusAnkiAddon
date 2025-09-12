@@ -1,0 +1,34 @@
+{
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "**/node_modules",
+    "**/__pycache__",
+    "**/.*",
+    "src/MagnusAddon/_lib/",
+    "**/_lib_patched/*",
+    "**venv/*"
+  ],
+  "ignore": [],
+  "extraPaths": ["src/MagnusAddon"],
+
+  "nonsense_because_comments_not_allowed": "",
+  "typeCheckingMode": "strict",
+
+  "#added for now, remove once the typeCheckingMode has been upgraded:": 0,
+  "reportImplicitOverride": "error",
+
+  "trying to enable highher level by disabling the stuff that causes a ton of warnings we should get to these soon": "",
+  "reportPrivateUsage": "none",
+  "reportUnknownVariableType": "none",
+  "reportUnknownMemberType": "none",
+  "reportUnknownArgumentType": "none",
+  "reportMissingTypeStubs" : "none",
+
+  "questionable if these are useful": "",
+  "reportUnusedExpression": "none",
+
+  "we probably really don't need these": "",
+  "reportImplicitRelativeImport": "none"
+}

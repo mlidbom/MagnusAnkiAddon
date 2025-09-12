@@ -19,7 +19,7 @@ _commaSeparatedCompiled = re.compile(_commaSeparatedPattern)
 def extract_comma_separated_values(string: str) -> list[str]:
     return [item for item in (item.strip() for item in _commaSeparatedCompiled.split(string.strip())) if item]
 
-_html_bracket_pattern = re.compile('<.*?>|\[.*?\]') # noqa
+_html_bracket_pattern = re.compile('<.*?>|\[.*?\]') # noqa  # pyright: ignore[reportInvalidStringEscapeSequence] don't know what's going on here but it has been working for ages
 def strip_html_and_bracket_markup(string: str) -> str:
     return _html_bracket_pattern.sub("", string)
 
@@ -30,7 +30,7 @@ _html_pattern = re.compile("<.*?>|&nbsp;")
 def strip_html_markup(string: str) -> str:
     return _html_pattern.sub("", string)
 
-html_bracket_noise_pattern = re.compile('<.*?>|\[.*?\]|[〜]') # noqa
+html_bracket_noise_pattern = re.compile('<.*?>|\[.*?\]|[〜]') # noqa  # pyright: ignore[reportInvalidStringEscapeSequence] don't know what's going on here but it has been working for ages
 def strip_html_and_bracket_markup_and_noise_characters(string: str) -> str:
     return html_bracket_noise_pattern.sub("", string)
 

@@ -12,7 +12,7 @@ class JsonReader(Slots):
     def __init__(self, json_dict: dict[str, Any]) -> None:
         self._dict = json_dict
 
-    def _get_prop(self, prop: str | list[str], default: TProp | None) -> Any:  # noqa: ANN401
+    def _get_prop(self, prop: str | list[str], default: object | None) -> Any:  # noqa: ANN401
         if isinstance(prop, str):
             value = self._dict.get(prop, None)
             if value is None:

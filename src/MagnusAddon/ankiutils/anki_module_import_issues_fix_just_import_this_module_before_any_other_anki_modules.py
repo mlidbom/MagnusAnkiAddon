@@ -1,1 +1,1 @@
-from anki import collection # noqa fixes anki module loading issues
+from anki import collection # noqa fixes anki module loading issues  # pyright: ignore[reportUnusedImport]

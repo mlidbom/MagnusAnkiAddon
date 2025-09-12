@@ -6,8 +6,8 @@ from PyQt6.QtWidgets import QMenu
 
 class ExQmenu(Slots):
     @classmethod
-    def disable_empty_submenus(cls, menu: QMenu) -> None:
-        if not isinstance(menu, QMenu):
+    def disable_empty_submenus(cls, menu: QMenu | None) -> None:
+        if menu is None:
             return
 
         for action in menu.actions():

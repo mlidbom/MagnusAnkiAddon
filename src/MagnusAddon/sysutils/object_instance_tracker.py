@@ -18,11 +18,10 @@ class Snapshot(Slots):
 
     def single_line_diff_report(self) -> str:
         diffs: dict[str, int] = {}
-        if self.previous is not None:
-            for type_name, count in self.current_counts.items():
-                change = count - self.previous.get(type_name, 0)
-                if change != 0:
-                    diffs[type_name] = change
+        for type_name, count in self.current_counts.items():
+            change = count - self.previous.get(type_name, 0)
+            if change != 0:
+                diffs[type_name] = change
         return f"""{newline.join([f"{type_name.split('.')[-1]}:{diff}" for type_name, diff in diffs.items()])}""" if diffs else "No changes"
 
 snapshots: list[Snapshot] = []
@@ -66,7 +65,7 @@ class ObjectInstanceTracker(Slots):
 
     @staticmethod
     def _get_fully_qualified_name(cls_type: type[Any]) -> str:
-        if cls_type.__module__ is not None and cls_type.__module__ != "__builtin__":
+        if cls_type.__module__ != "__builtin__":
             return sys.intern(cls_type.__module__ + "." + cls_type.__qualname__)
         return sys.intern(cls_type.__qualname__)
 

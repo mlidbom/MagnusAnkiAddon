@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import override
 
 from anki.notes import NoteId
-from ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules  # noqa
+from ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules  # noqa  # pyright: ignore[reportUnusedImport]
 from autoslot import Slots
 from deepdiff import DeepDiff
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
