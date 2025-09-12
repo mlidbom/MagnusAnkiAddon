@@ -36,25 +36,18 @@ class SentenceCounts:
         if self._total < 100: return 600
         return 6000
 
-    def _check_and_update(self) -> None:
+    def _up_to_date_self(self) -> SentenceCounts:
         current_time = time.time()
         if current_time - self._last_update_time > self._cache_seconds:
             self._update_numbers()
+        return self
 
     @property
-    def total(self) -> int:
-        self._check_and_update()
-        return self._total
-
+    def total(self) -> int: return self._up_to_date_self()._total
     @property
-    def studying_reading(self) -> int:
-        self._check_and_update()
-        return self._studying_reading
-
+    def studying_reading(self) -> int: return self._up_to_date_self()._studying_reading
     @property
-    def studying_listening(self) -> int:
-        self._check_and_update()
-        return self._studying_listening
+    def studying_listening(self) -> int: return self._up_to_date_self()._studying_listening
 
     @staticmethod
     def _get_studying_sentence_count(sentences: list[SentenceNote], card: str = "") -> int:
