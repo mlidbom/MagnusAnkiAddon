@@ -8,10 +8,12 @@ from typing import TYPE_CHECKING
 
 from anki.collection import Collection
 from fixtures.base_data import note_type_factory
-from fixtures.base_data.sample_data import kanji_spec, sentence_spec, vocab_spec
+from fixtures.base_data.sample_data import kanji_spec, sentence_spec
 from fixtures.stub_factory import stub_ui_dependencies
 from note.kanjinote import KanjiNote
 from note.sentences.sentencenote import SentenceNote
+
+from src.MagnusAddonTests.fixtures.base_data.sample_data import vocab_lists
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -48,11 +50,11 @@ def inject_anki_collection_with_select_data(kanji:bool = False, special_vocab:bo
                 KanjiNote.create(_kanji.question, _kanji.answer, _kanji.on_readings, _kanji.kun_reading)
 
         if special_vocab:
-            for vocab in vocab_spec.test_special_vocab:
+            for vocab in vocab_lists.test_special_vocab:
                 vocab.create_vocab_note()
 
         if ordinary_vocab:
-            for vocab in vocab_spec.test_ordinary_vocab_list:
+            for vocab in vocab_lists.test_ordinary_vocab_list:
                 vocab.create_vocab_note()
 
         if sentences:

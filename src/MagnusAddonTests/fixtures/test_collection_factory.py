@@ -4,11 +4,13 @@ from typing import TYPE_CHECKING
 
 import pytest
 from ankiutils import app
-from fixtures.base_data.sample_data import kanji_spec, sentence_spec, vocab_spec
+from fixtures.base_data.sample_data import kanji_spec, sentence_spec
 from fixtures.base_data.sample_data.kanji_spec import KanjiSpec
 from fixtures.base_data.sample_data.sentence_spec import SentenceSpec
 from fixtures.base_data.sample_data.vocab_spec import VocabSpec
 from fixtures.collection_factory import inject_anki_collection_with_all_sample_data
+
+from src.MagnusAddonTests.fixtures.base_data.sample_data import vocab_lists
 
 if TYPE_CHECKING:
 
@@ -31,7 +33,7 @@ def test_kanji_added_correctly() -> None:
     assert set(kanji_spec.test_kanji_list) == set(saved_kanji)
 
 def test_vocab_added_correctly() -> None:
-    expected_vocab:list[VocabSpec] = sorted(vocab_spec.test_vocab_list, key=lambda x: x.question)
+    expected_vocab:list[VocabSpec] = sorted(vocab_lists.test_vocab_list, key=lambda x: x.question)
     vocab_all:list[VocabNote] = app.col().vocab.all()
     saved_vocab = [VocabSpec(vocab.get_question(), vocab.get_answer(), vocab.readings.get()) for vocab in vocab_all]
     saved_vocab = sorted(saved_vocab, key=lambda x: x.question)
