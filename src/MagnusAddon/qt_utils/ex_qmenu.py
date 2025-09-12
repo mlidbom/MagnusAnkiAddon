@@ -1,7 +1,11 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from autoslot import Slots
-from PyQt6.QtWidgets import QMenu
+
+if TYPE_CHECKING:
+    from PyQt6.QtWidgets import QMenu
 
 
 class ExQmenu(Slots):
