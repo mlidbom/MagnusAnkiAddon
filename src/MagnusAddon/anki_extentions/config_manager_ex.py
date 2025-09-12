@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 class ConfigManagerEx(Slots):
     def __init__(self, config:ConfigManager) -> None:
-        self.config = config
+        self.config: ConfigManager = config
 
     def set_timebox_seconds(self, seconds:int) -> None:
         self.config.set("timeLim", seconds)

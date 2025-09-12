@@ -11,10 +11,9 @@ from sysutils.typed import str_
 
 class DeckEx(Slots):
     def __init__(self, deck_dict: DeckDict) -> None:
-        self.deck_dict = deck_dict
-        self.name = str_(deck_dict["name"])
-        self.id = cast(DeckId, deck_dict["id"])
-
+        self.deck_dict: DeckDict = deck_dict
+        self.name: str = str_(deck_dict["name"])
+        self.id: DeckId = cast(DeckId, deck_dict["id"])
 
     def get_config(self) -> DeckConfigDictEx:
         return DeckConfigDictEx(app.anki_collection().decks.config_dict_for_deck_id(self.id))

@@ -11,19 +11,19 @@ from sysutils import ex_assert, typed
 
 class NoteTypeEx(Slots):
     def __init__(self, name: str, fields: list[NoteFieldEx], templates: list[NoteTemplateEx]) -> None:
-        self.name = name
+        self.name: str = name
         self.id: NotetypeId = NotetypeId(0)
-        self.flds = fields
-        self.tmpls = templates
-        self.type = 0
-        self.mod = 0
-        self.usn = 0
-        self.sortf = 0
-        self.did = 0
-        self.css = ""
-        self.latexPre = ""
-        self.latexPost = ""
-        self.latexsvg = False
+        self.flds:list[NoteFieldEx] = fields
+        self.tmpls:list[NoteTemplateEx] = templates
+        self.type:int = 0
+        self.mod:int = 0
+        self.usn:int = 0
+        self.sortf:int = 0
+        self.did:int = 0
+        self.css:str = ""
+        self.latexPre:str = ""
+        self.latexPost:str = ""
+        self.latexsvg:bool = False
         self.req: list[Any] = []
         self.vers: list[Any] = []
         self.tags: list[Any] = []

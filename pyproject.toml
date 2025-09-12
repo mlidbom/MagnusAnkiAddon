@@ -60,13 +60,13 @@ typeCheckingMode="recommended" # "off", "basic", "standard", "strict", "recommen
 
 #todo: errors we should enable detection of ASAP
 reportPrivateUsage =  "none"
-reportImportCycles =  "none"
 reportUnknownVariableType =  "none"
 reportUnknownMemberType =  "none"
-reportUnannotatedClassAttribute = "none" #refactoring etc works far FAR more reliably if these are all in place
+#reportUnannotatedClassAttribute = "none" #refactoring etc works far FAR more reliably if these are all in place
 reportUnknownArgumentType =  "none"
 reportExplicitAny = "none" #yeah, we probably don't want to go declaring anything as Any
 reportAny = "none"
+reportImportCycles =  "none"
 
 reportMissingTypeStubs = "none"
 

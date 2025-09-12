@@ -10,7 +10,6 @@ if TYPE_CHECKING:
 
     from jamdict.jmdict import JMDEntry, Sense
 
-
 def _sense_is_transitive_verb(sense: Sense) -> bool:
     return any(pos_item == "transitive verb" for pos_item in sense.pos)
 
@@ -19,9 +18,9 @@ def _sense_is_intransitive_verb(sense: Sense) -> bool:
 
 class DictEntry(Slots):
     def __init__(self, entry: JMDEntry, lookup_word: str, lookup_readings: list[str]) -> None:
-        self.entry = entry
-        self.lookup_word = lookup_word
-        self.lookup_readings = lookup_readings
+        self.entry: JMDEntry = entry
+        self.lookup_word: str = lookup_word
+        self.lookup_readings: list[str] = lookup_readings
 
     def is_kana_only(self) -> bool:
         return not self.entry.kanji_forms or any(sense for sense
@@ -50,7 +49,6 @@ class DictEntry(Slots):
         kana_priorities: list[str] = ex_sequence.flatten([form.pri for form in self.entry.kana_forms if form.text in self.lookup_readings])
 
         return set(kanji_priorities + kana_priorities)
-
 
     def _is_transitive_verb(self) -> bool:
         return all(_sense_is_transitive_verb(sense) for sense in self.entry.senses)

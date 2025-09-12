@@ -13,11 +13,11 @@ _tags_medium = {"news2", "spec2"}
 
 class PrioritySpec(Slots):
     def __init__(self, tags: set[str]) -> None:
-        self.tags = tags
+        self.tags: set[str] = tags
 
         if self.tags & _tags_maximum:
-            self.priority_string = "priority_maximum"
-            self.priority = 1
+            self.priority_string: str = "priority_maximum"
+            self.priority: int = 1
         elif self.tags & _tags_high:
             self.priority_string = "priority_high"
             self.priority = 11
@@ -26,16 +26,16 @@ class PrioritySpec(Slots):
             self.priority = 21
         elif self.tags & _frequency_maximum:
             self.priority_string = "priority_maximum"
-            self.priority = int(list(self.tags & _frequency_maximum)[0][-1]) #the actual number from the nf tag
+            self.priority = int(list(self.tags & _frequency_maximum)[0][-1])  # the actual number from the nf tag
         elif self.tags & _frequency_high:
             self.priority_string = "priority_high"
-            self.priority = int(list(self.tags & _frequency_high)[0][-2:]) #the actual number from the nf tag
+            self.priority = int(list(self.tags & _frequency_high)[0][-2:])  # the actual number from the nf tag
         elif self.tags & _frequency_medium:
             self.priority_string = "priority_medium"
-            self.priority = int(list(self.tags & _frequency_high)[0][-2:]) #the actual number from the nf tag
+            self.priority = int(list(self.tags & _frequency_high)[0][-2:])  # the actual number from the nf tag
         elif self.tags & _frequency_low:
             self.priority_string = "priority_low"
-            self.priority = int(list(self.tags & _frequency_high)[0][-2:]) #the actual number from the nf tag
+            self.priority = int(list(self.tags & _frequency_high)[0][-2:])  # the actual number from the nf tag
         else:
             self.priority_string = "priority_low"
             self.priority = 50

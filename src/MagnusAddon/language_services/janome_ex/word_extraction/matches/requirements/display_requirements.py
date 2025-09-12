@@ -21,8 +21,8 @@ class DisplayRequirements(Slots):
         # if we have matches that owns the form, it calls the shots for display, no other matches are allowed to be displayed
         self.yields_to_form_owning_match: bool = match().is_secondary_match
 
-        self.are_fulfilled = (self.is_yield_last_token_to_overlapping_compound_requirement_fulfilled
-                              and not self.yields_to_form_owning_match)
+        self.are_fulfilled: bool = (self.is_yield_last_token_to_overlapping_compound_requirement_fulfilled
+                                    and not self.yields_to_form_owning_match)
 
     def failure_reasons(self) -> set[str]:
         return (SimpleStringListBuilder()
@@ -36,7 +36,7 @@ class DisplayRequirements(Slots):
     def _is_yield_last_token_to_overlapping_compound_requirement_fulfilled(self) -> bool:
         if not self.rules.requires_forbids.yield_last_token.is_required: return True
 
-        #todo: this is a problematic reference to display_words_starting_here. Thot collection is initialized using this class,
+        # todo: this is a problematic reference to display_words_starting_here. Thot collection is initialized using this class,
         # so this class will return different results depending on whether it is used after or before display_words_starting_here is first initialized. Ouch
         last_token_display_words: list[CandidateWord] = self.match().word_variant().word.end_location.display_words
         if not last_token_display_words: return True

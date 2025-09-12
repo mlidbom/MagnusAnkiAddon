@@ -28,14 +28,14 @@ T = TypeVar("T")
 
 class Request(Generic[T], Slots):
     def __init__(self, func: Callable[[Jamdict], T], future: Future[T]) -> None:
-        self.func = func
-        self.future = future
+        self.func: Callable[[Jamdict], T] = func
+        self.future: Future[T] = future
 
 class JamdictThreadingWrapper(Slots):
     def __init__(self) -> None:
         self._queue: queue.Queue[Request[Any]] = queue.Queue()
-        self._thread = threading.Thread(target=self._worker, daemon=True)
-        self._running = True
+        self._thread: threading.Thread = threading.Thread(target=self._worker, daemon=True)
+        self._running: bool = True
         self._thread.start()
         self.jamdict: Lazy[Jamdict] = Lazy(self.create_jamdict_and_log_loading_time)
 
@@ -98,9 +98,9 @@ _all_name_forms = Lazy(_find_all_names)
 
 class DictLookup(Slots):
     def __init__(self, entries: list[DictEntry], lookup_word: str, lookup_reading: list[str]) -> None:
-        self.word = lookup_word
-        self.lookup_reading = lookup_reading
-        self.entries = entries
+        self.word: str = lookup_word
+        self.lookup_reading: list[str] = lookup_reading
+        self.entries: list[DictEntry] = entries
 
     def found_words_count(self) -> int: return len(self.entries)
     def found_words(self) -> bool: return len(self.entries) > 0

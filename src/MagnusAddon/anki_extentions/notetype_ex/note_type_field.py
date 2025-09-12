@@ -8,16 +8,16 @@ from sysutils import typed
 
 class NoteFieldEx(Slots):
     def __init__(self, name: str) -> None:
-        self.name = name
-        self.ord = 0
-        self.sticky = False
-        self.rtl = False
-        self.font = "Arial"
-        self.size = 20
-        self.description = ""
-        self.plainText = False
-        self.collapsed = False
-        self.excludeFromSearch = False
+        self.name: str = name
+        self.ord: int = 0
+        self.sticky: bool = False
+        self.rtl: bool = False
+        self.font: str = "Arial"
+        self.size: int = 20
+        self.description: str = ""
+        self.plainText: bool = False
+        self.collapsed: bool = False
+        self.excludeFromSearch: bool = False
         self.media: list[Any] = []
 
     def to_dict(self) -> dict[str, Any]:
@@ -50,4 +50,3 @@ class NoteFieldEx(Slots):
         # missing for som reason# instance.media = d['media']
 
         return instance
-

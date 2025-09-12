@@ -32,7 +32,7 @@ def _get_answers_since_last_day_cutoff_for_card(card_id: int) -> list[int]:
 
 class CardEx(Slots):
     def __init__(self, card:anki.cards.Card) -> None:
-        self.card = card
+        self.card:anki.cards.Card = card
 
     @staticmethod
     def _scheduler() -> Scheduler:

@@ -8,15 +8,15 @@ from sysutils import typed
 
 class NoteTemplateEx(Slots):
     def __init__(self, name: str) -> None:
-        self.name = name
-        self.ord = 0
-        self.qfmt = "{{Tags}}"
-        self.afmt = "{{Tags}}"
-        self.bqfmt = ""
-        self.bafmt = ""
-        self.did = 0
-        self.bfont = "Arial"
-        self.bsize = 30
+        self.name: str = name
+        self.ord: int = 0
+        self.qfmt: str = "{{Tags}}"
+        self.afmt: str = "{{Tags}}"
+        self.bqfmt: str = ""
+        self.bafmt: str = ""
+        self.did: int = 0
+        self.bfont: str = "Arial"
+        self.bsize: int = 30
 
     def to_dict(self) -> dict[str, Any]:
         return {"name": self.name,
@@ -42,4 +42,3 @@ class NoteTemplateEx(Slots):
         instance.bfont = typed.str_(d["bfont"])
         instance.bsize = typed.int_(d["bsize"])
         return instance
-

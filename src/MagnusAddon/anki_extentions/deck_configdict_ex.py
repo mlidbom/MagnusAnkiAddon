@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 class DeckConfigDictEx(Slots):
     def __init__(self, deck_config_dict:DeckConfigDict) -> None:
-        self._dict = deck_config_dict
+        self._dict:DeckConfigDict = deck_config_dict
 
     def get_seconds_to_show_question(self) -> float:
         return float_(self._dict.get("secondsToShowQuestion"))

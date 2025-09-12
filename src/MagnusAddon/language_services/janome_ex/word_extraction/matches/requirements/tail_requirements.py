@@ -18,21 +18,21 @@ class TailRequirements(Slots):
         self.config = vocab.matching_configuration
         rules = vocab.matching_configuration
 
-        self.has_suffix = tail is not None and tail().token.surface != "" and tail().token.surface[-1] not in non_word_characters
+        self.has_suffix: bool = tail is not None and tail().token.surface != "" and tail().token.surface[-1] not in non_word_characters
 
-        self.fulfills_requires_sentence_end_requirement = (not self.config.requires_forbids.sentence_end.is_required
-                                                           or (tail is None or tail().token.is_non_word_character or tail().token.surface in _quote_characters))
+        self.fulfills_requires_sentence_end_requirement: bool = (not self.config.requires_forbids.sentence_end.is_required
+                                                                 or (tail is None or tail().token.is_non_word_character or tail().token.surface in _quote_characters))
 
-        self.fulfills_forbids_sentence_end_requirement = (not self.config.requires_forbids.sentence_end.is_forbidden
-                                                          or (tail is not None and not tail().token.is_non_word_character and tail().token.surface not in _quote_characters))
+        self.fulfills_forbids_sentence_end_requirement: bool = (not self.config.requires_forbids.sentence_end.is_forbidden
+                                                                or (tail is not None and not tail().token.is_non_word_character and tail().token.surface not in _quote_characters))
 
-        self.fulfills_suffix_is_not = (not rules.configurable_rules.suffix_is_not.get()
-                                       or not self.has_suffix
-                                       or (tail is not None and not any(forbidden for forbidden in rules.configurable_rules.suffix_is_not.get() if tail().token.surface.startswith(forbidden))))
+        self.fulfills_suffix_is_not: bool = (not rules.configurable_rules.suffix_is_not.get()
+                                             or not self.has_suffix
+                                             or (tail is not None and not any(forbidden for forbidden in rules.configurable_rules.suffix_is_not.get() if tail().token.surface.startswith(forbidden))))
 
-        self.are_fulfilled = (self.fulfills_requires_sentence_end_requirement
-                              and self.fulfills_forbids_sentence_end_requirement
-                              and self.fulfills_suffix_is_not)
+        self.are_fulfilled: bool = (self.fulfills_requires_sentence_end_requirement
+                                    and self.fulfills_forbids_sentence_end_requirement
+                                    and self.fulfills_suffix_is_not)
 
     def failure_reasons(self) -> set[str]:
         return (SimpleStringListBuilder()

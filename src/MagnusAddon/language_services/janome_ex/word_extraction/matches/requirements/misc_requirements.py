@@ -15,31 +15,31 @@ class MiscRequirements(Slots):
         self.rules = vocab.matching_configuration
         self.match = match
 
-        self.is_poison_word = self.rules.bool_flags.is_poison_word.is_set()
+        self.is_poison_word: bool = self.rules.bool_flags.is_poison_word.is_set()
 
-        self.is_exact_match = match().word_variant().is_surface and match().word_variant().form in vocab.forms.all_set()
+        self.is_exact_match: bool = match().word_variant().is_surface and match().word_variant().form in vocab.forms.all_set()
 
-        self.is_requires_exact_match_requirement_fulfilled = (not self.rules.requires_forbids.requires_exact_match.is_required or self.is_exact_match)
-        self.is_forbids_exact_match_requirement_fulfilled = (not self.rules.requires_forbids.requires_exact_match.is_forbidden or not self.is_exact_match)
+        self.is_requires_exact_match_requirement_fulfilled: bool = (not self.rules.requires_forbids.requires_exact_match.is_required or self.is_exact_match)
+        self.is_forbids_exact_match_requirement_fulfilled: bool = (not self.rules.requires_forbids.requires_exact_match.is_forbidden or not self.is_exact_match)
 
-        self.is_single_token_requirement_fulfilled = (not self.rules.requires_forbids.single_token.is_required
+        self.is_single_token_requirement_fulfilled: bool = (not self.rules.requires_forbids.single_token.is_required
                                                       or not match().word_variant().word.is_custom_compound)
 
-        self.is_compound_requirement_fulfilled = (not self.rules.requires_forbids.single_token.is_forbidden
+        self.is_compound_requirement_fulfilled: bool = (not self.rules.requires_forbids.single_token.is_forbidden
                                                   or match().word_variant().word.is_custom_compound)
 
         surface_is_not = self.rules.configurable_rules.surface_is_not.get()
-        self.surface_is_not_requirement_fulfilled = (not any(surface_is_not)
+        self.surface_is_not_requirement_fulfilled: bool = (not any(surface_is_not)
                                                      or match().word_variant().is_surface
                                                      or match().word_variant().word.surface_variant.form not in surface_is_not)
 
         # todo: this should be in display requirements but due to the messed up way we intermingle logic for validity and display that breaks the display. For now we have it here.
         yield_to_surface = self.rules.configurable_rules.yield_to_surface.get()
-        self.yield_to_surface_requirement_fulfilled = (not any(yield_to_surface)
+        self.yield_to_surface_requirement_fulfilled: bool = (not any(yield_to_surface)
                                                        or match().word_variant().is_surface
                                                        or match().word_variant().word.surface_variant.form not in yield_to_surface)
 
-        self.are_fulfilled = (self.is_requires_exact_match_requirement_fulfilled
+        self.are_fulfilled: bool = (self.is_requires_exact_match_requirement_fulfilled
                               and self.is_forbids_exact_match_requirement_fulfilled
                               and self.is_single_token_requirement_fulfilled
                               and self.surface_is_not_requirement_fulfilled
