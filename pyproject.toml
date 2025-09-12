@@ -62,7 +62,6 @@ typeCheckingMode="recommended" # "off", "basic", "standard", "strict", "recommen
 reportPrivateUsage =  "none"
 reportUnknownVariableType =  "none"
 reportUnknownMemberType =  "none"
-#reportUnannotatedClassAttribute = "none" #refactoring etc works far FAR more reliably if these are all in place
 reportUnknownArgumentType =  "none"
 reportExplicitAny = "none" #yeah, we probably don't want to go declaring anything as Any
 reportAny = "none"
