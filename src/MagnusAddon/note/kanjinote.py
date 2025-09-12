@@ -24,7 +24,7 @@ from wanikani.wanikani_api_client import WanikaniClient
 class KanjiNote(WaniNote, Slots):
     def __init__(self, note: Note) -> None:
         super().__init__(note)
-        self.weakref: WeakRef[KanjiNote] = cast(WeakRef[KanjiNote], self.weakref)  # pyright: ignore[reportUnnecessaryCast]
+        self.weakref_kanji: WeakRef[KanjiNote] = cast(WeakRef[KanjiNote], self.weakref)
 
     @override
     def get_direct_dependencies(self) -> set[JPNote]:
