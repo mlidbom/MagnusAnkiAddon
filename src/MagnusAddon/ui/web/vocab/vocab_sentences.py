@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from aqt import gui_hooks
+from autoslot import Slots
 from note.note_constants import Tags
 from note.vocabulary.vocabnote import VocabNote
 from sysutils import ex_str, kana_utils
@@ -12,6 +13,16 @@ from ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
 if TYPE_CHECKING:
     from note.sentences.parsed_word import ParsedMatch
     from note.sentences.sentencenote import SentenceNote
+
+
+class VocabSentenceViewModel(Slots):
+    def __init__(self, _vocab_note: VocabNote, sentence_note: SentenceNote) -> None:
+        self.vocab: VocabNote = _vocab_note
+        self.sentence: SentenceNote = sentence_note
+        self.result = sentence_note.parsing_result.get()
+        self.matches = [match for match in self.result.parsed_words if match.vocab_id == _vocab_note.get_id()]
+        self.displayed_matches = [match for match in self.matches if match.is_displayed]
+
 
 def generate_sentences_list_html(_vocab_note: VocabNote) -> str:
     primary_form = _vocab_note.question.without_noise_characters
@@ -30,7 +41,7 @@ def generate_sentences_list_html(_vocab_note: VocabNote) -> str:
     def format_sentence_new(sentence_note: SentenceNote) -> str:
         result = sentence_note.parsing_result.get()
 
-        def highlight_match(match: ParsedMatch, class_name: str) -> str:
+        def highlight_displayed_match(match: ParsedMatch, class_name: str) -> str:
             head = result.sentence[:match.start_index]
             hit_range = result.sentence[match.start_index:match.end_index]
             tail = result.sentence[match.end_index:]
@@ -41,23 +52,22 @@ def generate_sentences_list_html(_vocab_note: VocabNote) -> str:
         if displayed_matches:
             match = displayed_matches[0]
             if any(form for form in conjugations.secondary_forms_containing_primary_form_forms if form.startswith(match.parsed_form)):
-                return highlight_match(match, "secondaryForm")
+                return highlight_displayed_match(match, "secondaryForm")
             if any(form for form in conjugations.secondary_forms_forms if form.startswith(match.parsed_form)):
-                return highlight_match(match, "secondaryForm")
+                return highlight_displayed_match(match, "secondaryForm")
 
-            return highlight_match(match, "primaryForm")
+            return highlight_displayed_match(match, "primaryForm")
 
         shaded_matches = [match for match in matches if not match.is_displayed]
         first_shaded_match = shaded_matches[0]
         match_shading_our_match = [match for match in reversed(result.parsed_words) if match.is_displayed and match.start_index <= first_shaded_match.start_index][0]
         if match_shading_our_match.vocab_id in conjugations.derived_compound_ids:
             if any(form for form in conjugations.secondary_forms_derived_compounds_forms if form.startswith(match_shading_our_match.parsed_form)):
-                return highlight_match(match_shading_our_match, "secondaryFormDerivedCompoundForm")
-            return highlight_match(match_shading_our_match, "derivedCompoundForm")
+                return highlight_displayed_match(match_shading_our_match, "secondaryFormDerivedCompoundForm")
+            return highlight_displayed_match(match_shading_our_match, "derivedCompoundForm")
 
-        return highlight_match(first_shaded_match, "undisplayedMatch")
+        return highlight_displayed_match(first_shaded_match, "undisplayedMatch")
 
-    sorted_sentences: set[str] = set()
     highlighted_sentences = set(_vocab_note.sentences.user_highlighted())
     studying_sentences = set(_vocab_note.sentences.studying())
 
@@ -74,11 +84,6 @@ def generate_sentences_list_html(_vocab_note: VocabNote) -> str:
         def prefer_short_questions(_sentence: SentenceNote) -> int: return len(_sentence.get_question())
         def prefer_lower_priority_tag_values(_sentence: SentenceNote) -> int: return _sentence.priority_tag_value()
         def dislike_no_translation(_sentence: SentenceNote) -> int: return 1 if not _sentence.get_answer().strip() else 0
-
-        def prefer_non_duplicates(_sentence: SentenceNote) -> int:
-            if _sentence.get_question() in sorted_sentences: return 1
-            sorted_sentences.add(_sentence.get_question())
-            return 0
 
         def dislike_sentences_containing_secondary_form(_sentence: SentenceNote) -> int:
             clean_sentence = ex_str.strip_html_and_bracket_markup(_sentence.get_question())
@@ -97,7 +102,6 @@ def generate_sentences_list_html(_vocab_note: VocabNote) -> str:
                                                  dislike_tts_sentences(x),
                                                  prefer_primary_form(x),
                                                  prefer_highlighted(x),
-                                                 prefer_non_duplicates(x),
                                                  dislike_contains_derived_compound(x),
                                                  dislike_sentences_containing_secondary_form(x),
                                                  prefer_short_questions(x)))

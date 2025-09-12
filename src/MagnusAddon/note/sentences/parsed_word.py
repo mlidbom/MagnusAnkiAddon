@@ -6,7 +6,6 @@ from anki.notes import NoteId
 from autoslot import Slots
 from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
 from note.sentences.serialization.parsed_word_serializer import ParsedWordSerializer
-from sysutils.ex_str import invisible_space
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.match import Match

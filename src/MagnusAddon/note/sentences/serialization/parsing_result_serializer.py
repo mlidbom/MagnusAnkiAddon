@@ -27,7 +27,7 @@ class ParsingResultSerializer(ObjectSerializer["ParsingResult"], Slots):
         except Exception as ex:
             mylog.warning(f"""Failed to deserialize ParsingResult:
             message:
-{ex} 
+{ex}
 {serialized}""")
             return ParsingResult([], "", "")
 
