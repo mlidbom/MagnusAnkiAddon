@@ -36,7 +36,7 @@ def _monkey_patch(html:str, _card:object, _something_else_again:object) -> str:
 
         scheduler.suspend_cards = _monkey_patched_suspend_cards  # type: ignore
         scheduler.unsuspend_cards = _monkey_patched_unsuspend_cards  # type: ignore
-        scheduler.is_patched_by_magnus_addon_for_suspend = True  # type: ignore
+        scheduler.is_patched_by_magnus_addon_for_suspend = True  # type: ignore  # pyright: ignore[reportAttributeAccessIssue]
 
     return html
 

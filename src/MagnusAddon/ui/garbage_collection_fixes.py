@@ -22,5 +22,5 @@ def visible_garbage_collection(_self:AnkiQt) -> None:
         gc.collect()
 
 def init() -> None:
-    aqt.main.AnkiQt.garbage_collect_on_dialog_finish = noop_gc_on_dialog_finish  # type: ignore
-    aqt.main.AnkiQt.garbage_collect_now = visible_garbage_collection  # type: ignore
+    aqt.main.AnkiQt.garbage_collect_on_dialog_finish = noop_gc_on_dialog_finish  # type: ignore  # pyright: ignore[reportAttributeAccessIssue]
+    aqt.main.AnkiQt.garbage_collect_now = visible_garbage_collection  # type: ignore  # pyright: ignore[reportAttributeAccessIssue]

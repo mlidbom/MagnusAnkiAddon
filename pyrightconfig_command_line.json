@@ -13,14 +13,15 @@
   "ignore": [],
   "extraPaths": ["src/MagnusAddon"],
 
-  "nonsense_because_comments_not_allowed": "",
-  "typeCheckingMode": "strict",
+  "nonsense_because_comments_not_allowed": "off, basic, standard, strict, recommended, all",
+  "typeCheckingMode": "recommended",
 
   "#added for now, remove once the typeCheckingMode has been upgraded:": 0,
   "reportImplicitOverride": "error",
 
   "trying to enable highher level by disabling the stuff that causes a ton of warnings we should get to these soon": "",
   "reportPrivateUsage": "none",
+  "reportImportCycles": "none",
   "reportUnknownVariableType": "none",
   "reportUnknownMemberType": "none",
   "reportUnknownArgumentType": "none",

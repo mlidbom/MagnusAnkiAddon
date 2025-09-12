@@ -25,4 +25,4 @@ def set_again_time_for_previously_failed_today_cards(queue:QueuedCards) -> V3Car
         return info
 
 def init() -> None:
-    V3CardInfo.from_queue = set_again_time_for_previously_failed_today_cards  # type: ignore
+    V3CardInfo.from_queue = set_again_time_for_previously_failed_today_cards  # type: ignore  # pyright: ignore[reportAttributeAccessIssue]

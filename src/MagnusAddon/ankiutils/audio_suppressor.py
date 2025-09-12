@@ -21,7 +21,7 @@ class AudioSuppressor(Slots):
         def null_op(_tags: list[AVTag]) -> None:
             pass
 
-        av_player.play_tags = null_op  # type: ignore
+        av_player.play_tags = null_op  # type: ignore  # pyright: ignore[reportAttributeAccessIssue]
         threading.Timer(time, self.restore_play_tags_method).start()
 
 audio_suppressor: AudioSuppressor = AudioSuppressor()

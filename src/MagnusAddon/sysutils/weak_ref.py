@@ -25,4 +25,4 @@ class WeakRef(Generic[T], Slots):
     def __repr__(self) -> str: return f"WeakRef: {self.instance.__repr__()}"
 
 class WeakRefable(Slots):
-    __slots__ = ["__weakref__"]
+    __slots__ = ["__weakref__"]  # pyright: ignore[reportUnannotatedClassAttribute, reportUninitializedInstanceVariable]

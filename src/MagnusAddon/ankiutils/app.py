@@ -125,7 +125,7 @@ def _collection_closed(_collection: Collection, _downgrade: bool = False) -> Non
 def _wrap_collection_close() -> None:
     import anki
     from anki.collection import Collection
-    Collection.close = anki.hooks.wrap(Collection.close, _collection_closed, "before")  # type: ignore
+    Collection.close = anki.hooks.wrap(Collection.close, _collection_closed, "before")  # type: ignore  # pyright: ignore[reportAttributeAccessIssue]
 
 _wrap_collection_close()
 
