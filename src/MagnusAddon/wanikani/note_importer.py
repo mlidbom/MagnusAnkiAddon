@@ -33,7 +33,7 @@ def import_missing_vocab() -> None:
     all_wani_vocabulary = waniClient.list_vocabulary()
     imported = 0
     for wani_vocab in all_wani_vocabulary:
-        question = str(wani_vocab.characters)
+        question = str(wani_vocab.characters)  # pyright: ignore[reportUnknownArgumentType]
         if not app.col().vocab.with_question(question):
             print(f"""Importing: {wani_vocab.slug}""")
             VocabNote.factory.create_from_wani_vocabulary(wani_vocab)
@@ -51,9 +51,9 @@ def import_missing_context_sentences() -> None:
 
     def handle_vocab(wani_vocab: Vocabulary) -> None:
         for sentence in wani_vocab.context_sentences:
-            vocab = str(wani_vocab.characters)
-            question = str(sentence.japanese).strip()
-            answer = str(sentence.english).strip()
+            vocab = str(wani_vocab.characters)  # pyright: ignore[reportUnknownArgumentType]
+            question = str(sentence.japanese).strip()  # pyright: ignore[reportUnknownArgumentType]
+            answer = str(sentence.english).strip()  # pyright: ignore[reportUnknownArgumentType]
 
             existing_sentences = sentence_collection.with_question(question)
 

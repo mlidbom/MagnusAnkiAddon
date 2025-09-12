@@ -38,10 +38,10 @@ class WaniDownloader(Slots):
         female_audio_mp3 = [audio for audio in wani_vocab.pronunciation_audios if audio.metadata.gender == "female" and audio.content_type == "audio/mpeg"]
         male_audio_mp3 = [audio for audio in wani_vocab.pronunciation_audios if audio.metadata.gender == "male" and audio.content_type == "audio/mpeg"]
 
-        female_audios = [cls.download_file(value.url, f"Wani_{wani_vocab.id}_{value.metadata.pronunciation}_female.mp3") for value in female_audio_mp3]
+        female_audios = [cls.download_file(value.url, f"Wani_{wani_vocab.id}_{value.metadata.pronunciation}_female.mp3") for value in female_audio_mp3]  # pyright: ignore[reportUnknownArgumentType]
         vocab.audio.second.set_multiple(female_audios[::-1])
 
-        male_audios = [cls.download_file(value.url, f"Wani_{wani_vocab.id}_{value.metadata.pronunciation}_male.mp3") for value in male_audio_mp3]
+        male_audios = [cls.download_file(value.url, f"Wani_{wani_vocab.id}_{value.metadata.pronunciation}_male.mp3") for value in male_audio_mp3]  # pyright: ignore[reportUnknownArgumentType]
         value1 = male_audios[::-1]
         vocab.audio.first.set_multiple(value1)
 

@@ -304,16 +304,16 @@ class KanjiNote(WaniNote, Slots):
     def update_from_wani(self, wani_model: models.Kanji) -> None:  # pyright: ignore[reportIncompatibleMethodOverride]
         super().update_from_wani(wani_model)
 
-        self.set_source_meaning_mnemonic(wani_model.meaning_mnemonic)
-        self.set_meaning_hint(wani_model.meaning_hint)
+        self.set_source_meaning_mnemonic(wani_model.meaning_mnemonic)  # pyright: ignore[reportUnknownArgumentType]
+        self.set_meaning_hint(wani_model.meaning_hint)  # pyright: ignore[reportUnknownArgumentType]
 
-        self.set_reading_mnemonic(wani_model.reading_mnemonic)
-        self.set_reading_hint(wani_model.reading_hint)
+        self.set_reading_mnemonic(wani_model.reading_mnemonic)  # pyright: ignore[reportUnknownArgumentType]
+        self.set_reading_hint(wani_model.reading_hint)  # pyright: ignore[reportUnknownArgumentType]
 
         meanings = [f"<primary>{meaning.meaning}</primary>" if meaning.primary else meaning.meaning  # pyright: ignore[reportUnknownVariableType]
                     for meaning in wani_model.meanings]
 
-        self._set_source_answer(", ".join(meanings))
+        self._set_source_answer(", ".join(meanings))  # pyright: ignore[reportUnknownArgumentType]
 
         onyomi_readings = [f"<primary>{reading.reading}</primary>" if reading.primary else reading.reading  # pyright: ignore[reportUnknownVariableType]
                            for reading in wani_model.readings if reading.type == "onyomi"]  # pyright: ignore[reportAttributeAccessIssue]
@@ -321,10 +321,10 @@ class KanjiNote(WaniNote, Slots):
         kunyomi_readings = [f"<primary>{reading.reading}</primary>" if reading.primary else reading.reading  # pyright: ignore[reportUnknownVariableType]
                             for reading in wani_model.readings if reading.type == "kunyomi"]  # pyright: ignore[reportAttributeAccessIssue]
 
-        self.set_reading_on(", ".join(onyomi_readings))
-        self.set_reading_kun(", ".join(kunyomi_readings))
+        self.set_reading_on(", ".join(onyomi_readings))  # pyright: ignore[reportUnknownArgumentType]
+        self.set_reading_kun(", ".join(kunyomi_readings))  # pyright: ignore[reportUnknownArgumentType]
 
-        component_subject_ids = [str(subject_id) for subject_id in wani_model.component_subject_ids]  # pyright: ignore[reportUnknownVariableType]
+        component_subject_ids = [str(subject_id) for subject_id in wani_model.component_subject_ids]  # pyright: ignore[reportUnknownVariableType, reportUnknownArgumentType]
 
         client = WanikaniClient.get_instance()
         radicals = [client.get_radical_by_id(int(radical_id)) for radical_id in component_subject_ids]
@@ -332,7 +332,7 @@ class KanjiNote(WaniNote, Slots):
 
         radical_characters = [radical.characters for radical in radicals_with_characters]  # pyright: ignore[reportUnknownVariableType]
         if len(self.get_radicals()) == 0:  # Absolutely never overwrite any locally configured kanji with stuff from wani that has a completely different strategy for radicals
-            self._set_radicals(", ".join(radical_characters))
+            self._set_radicals(", ".join(radical_characters))  # pyright: ignore[reportUnknownArgumentType]
 
     def populate_radicals_from_mnemonic_tags(self) -> None:
         def detect_radicals_from_mnemonic() -> list[str]:
@@ -355,7 +355,7 @@ class KanjiNote(WaniNote, Slots):
         note.add_tag(Tags.Wani)
         kanji_note = KanjiNote(note)
         app.anki_collection().addNote(note)
-        kanji_note.set_question(wani_kanji.characters)
+        kanji_note.set_question(wani_kanji.characters)  # pyright: ignore[reportUnknownArgumentType]
         kanji_note.update_from_wani(wani_kanji)
 
     @classmethod

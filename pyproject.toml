@@ -61,8 +61,6 @@ typeCheckingMode="recommended" # "off", "basic", "standard", "strict", "recommen
 #todo: errors we should enable detection of ASAP
 reportPrivateUsage =  "none"
 reportUnknownMemberType =  "none"
-reportUnknownArgumentType =  "none"
-#reportAny = "none"
 reportImportCycles =  "none"
 
 #  "questionable if these are useful =  "",

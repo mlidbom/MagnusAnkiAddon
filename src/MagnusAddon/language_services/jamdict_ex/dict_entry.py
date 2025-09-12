@@ -11,10 +11,10 @@ if TYPE_CHECKING:
     from jamdict.jmdict import JMDEntry, Sense  # pyright: ignore[reportMissingTypeStubs]
 
 def _sense_is_transitive_verb(sense: Sense) -> bool:
-    return any(pos_item == "transitive verb" for pos_item in sense.pos)  # pyright: ignore[reportUnknownVariableType]
+    return any(pos_item == "transitive verb" for pos_item in sense.pos)  # pyright: ignore[reportUnknownVariableType, reportUnknownArgumentType]
 
 def _sense_is_intransitive_verb(sense: Sense) -> bool:
-    return any(pos_item == "intransitive verb" for pos_item in sense.pos)  # pyright: ignore[reportUnknownVariableType]
+    return any(pos_item == "intransitive verb" for pos_item in sense.pos)  # pyright: ignore[reportUnknownVariableType, reportUnknownArgumentType]
 
 @final
 class DictEntry(Slots):
@@ -46,8 +46,8 @@ class DictEntry(Slots):
         return set(self.kana_forms()) | set(self.kanji_forms()) if self.is_kana_only() or force_allow_kana_only else set(self.kanji_forms())
 
     def priority_tags(self) -> set[str]:
-        kanji_priorities: list[str] = ex_sequence.flatten([form.pri for form in self.entry.kanji_forms if form.text == self.lookup_word])
-        kana_priorities: list[str] = ex_sequence.flatten([form.pri for form in self.entry.kana_forms if form.text in self.lookup_readings])
+        kanji_priorities: list[str] = ex_sequence.flatten([form.pri for form in self.entry.kanji_forms if form.text == self.lookup_word])  # pyright: ignore[reportUnknownArgumentType]
+        kana_priorities: list[str] = ex_sequence.flatten([form.pri for form in self.entry.kana_forms if form.text in self.lookup_readings])  # pyright: ignore[reportUnknownArgumentType]
 
         return set(kanji_priorities + kana_priorities)
 
@@ -60,7 +60,7 @@ class DictEntry(Slots):
     def _is_verb(self) -> bool:
         return (any(_sense_is_intransitive_verb(sense) for sense in self.entry.senses)
                 or any(_sense_is_transitive_verb(sense) for sense in self.entry.senses)
-                or any(" verb " in s.pos[0] for s in self.entry.senses if len(s.pos) > 0))
+                or any(" verb " in s.pos[0] for s in self.entry.senses if len(s.pos) > 0))  # pyright: ignore[reportUnknownArgumentType]
 
     def _answer_prefix(self) -> str:
         if self._is_verb():
@@ -79,11 +79,11 @@ class DictEntry(Slots):
         if not self._is_verb():
             return False
 
-        glosses_text: list[str] = ex_sequence.flatten([[str(gloss.text) for gloss in sense.gloss] for sense in self.entry.senses])
+        glosses_text: list[str] = ex_sequence.flatten([[str(gloss.text) for gloss in sense.gloss] for sense in self.entry.senses])  # pyright: ignore[reportUnknownArgumentType]
         return all(gloss.startswith("to be ") for gloss in glosses_text)
 
     def format_sense(self, sense: Sense) -> str:
-        glosses_text = [str(gloss.text) for gloss in sense.gloss]
+        glosses_text = [str(gloss.text) for gloss in sense.gloss]  # pyright: ignore[reportUnknownArgumentType]
         glosses_text = [gloss.replace(" ", "-") for gloss in glosses_text]
         if self._is_verb():
             if all(gloss[:6] == "to-be-" for gloss in glosses_text):  # noqa: SIM108
@@ -160,4 +160,4 @@ class DictEntry(Slots):
         def try_get_pos(pos: str) -> list[str]:
             return self._parts_of_speech_map[pos] if pos in self._parts_of_speech_map else ["unmapped-pos-" + pos]
 
-        return set(ex_sequence.flatten([ex_sequence.flatten([try_get_pos(pos) for pos in sense.pos]) for sense in self.entry.senses]))  # pyright: ignore[reportUnknownVariableType]
+        return set(ex_sequence.flatten([ex_sequence.flatten([try_get_pos(pos) for pos in sense.pos]) for sense in self.entry.senses]))  # pyright: ignore[reportUnknownVariableType, reportUnknownArgumentType]
