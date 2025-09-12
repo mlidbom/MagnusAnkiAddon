@@ -70,7 +70,7 @@ class NoteSearchDialog(QDialog):
         # Create results table
         self.results_table = QTableWidget()
         self.results_table.setColumnCount(3)
-        self.results_table.setHorizontalHeaderLabels(["Type", "Question", "Answer"])
+        self.results_table.setHorizontalHeaderLabels(["Type", "Question", "Answer"])  # pyright: ignore[reportUnknownMemberType]
         non_optional(self.results_table.horizontalHeader()).setSectionResizeMode(QHeaderView.ResizeMode.Interactive)  # Make all columns resizable
         self.results_table.setColumnWidth(1, 200)  # Set Question column width to 200 pixels
         self.results_table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
@@ -78,10 +78,10 @@ class NoteSearchDialog(QDialog):
         layout.addWidget(self.results_table)
 
         # Connect signals
-        typed.checked_cast(pyqtBoundSignal, self.search_input.returnPressed).connect(self.perform_search)
-        typed.checked_cast(pyqtBoundSignal, self.results_table.cellDoubleClicked).connect(self.on_cell_double_clicked)
+        typed.checked_cast(pyqtBoundSignal, self.search_input.returnPressed).connect(self.perform_search)  # pyright: ignore[reportUnknownMemberType]
+        typed.checked_cast(pyqtBoundSignal, self.results_table.cellDoubleClicked).connect(self.on_cell_double_clicked)  # pyright: ignore[reportUnknownMemberType]
         # Add selection change signal to handle keyboard/mouse selection
-        typed.checked_cast(pyqtBoundSignal, self.results_table.itemSelectionChanged).connect(self.on_selection_changed)
+        typed.checked_cast(pyqtBoundSignal, self.results_table.itemSelectionChanged).connect(self.on_selection_changed)  # pyright: ignore[reportUnknownMemberType]
 
         self.search_input.setFocus()
 
@@ -305,7 +305,7 @@ class NoteSearchDialog(QDialog):
         for row in rows:
             note_id = cast(NoteId, non_optional(self.results_table.item(row, 0)).data(Qt.ItemDataRole.UserRole))
             if note_id:
-                note_ids.append(note_id)
+                note_ids.append(note_id)  # pyright: ignore[reportUnknownMemberType]
 
         if note_ids:
             from ankiutils import query_builder, search_executor

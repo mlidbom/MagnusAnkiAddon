@@ -20,7 +20,7 @@ class CommaSeparatedStringsSetField(Slots):
         return self._value()
 
     def set(self, value: set[str]) -> None:
-        self._value = Lazy.from_value(value)
+        self._value = Lazy[set[str]].from_value(value)
         self._field.set(list(value))
 
     def remove(self, value: str) -> None:

@@ -36,8 +36,8 @@ class CacheRunner(Slots):
         self._note_types: list[NoteTypeEx] = [note_type for note_type in all_note_types if note_type.name in NoteTypes.ALL]
         ex_assert.equal(len(self._note_types), len(NoteTypes.ALL))
 
-        hooks.notes_will_be_deleted.append(self._on_will_be_removed)
-        hooks.note_will_be_added.append(self._on_will_be_added)
+        hooks.notes_will_be_deleted.append(self._on_will_be_removed)  # pyright: ignore[reportUnknownMemberType]
+        hooks.note_will_be_added.append(self._on_will_be_added)  # pyright: ignore[reportUnknownMemberType]
         hooks.note_will_flush.append(self._on_will_flush)
 
     def start(self) -> None:
@@ -56,8 +56,8 @@ class CacheRunner(Slots):
             self._running = False
             self._internal_flush_updates()
 
-            hooks.notes_will_be_deleted.remove(self._on_will_be_removed)
-            hooks.note_will_be_added.remove(self._on_will_be_added)
+            hooks.notes_will_be_deleted.remove(self._on_will_be_removed)  # pyright: ignore[reportUnknownMemberType]
+            hooks.note_will_be_added.remove(self._on_will_be_added)  # pyright: ignore[reportUnknownMemberType]
             hooks.note_will_flush.remove(self._on_will_flush)
 
             for destructor in self._destructors: destructor()

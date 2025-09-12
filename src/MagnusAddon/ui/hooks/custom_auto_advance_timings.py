@@ -67,7 +67,7 @@ def _auto_advance_to_answer_if_enabled(reviewer: Reviewer) -> None:
     mw.reviewer._clear_auto_advance_timers()  # noqa
     allowed_milliseconds = int(seconds_to_show_question(card) * 1000)
 
-    mw.reviewer._show_answer_timer = mw.reviewer.mw.progress.timer(
+    mw.reviewer._show_answer_timer = mw.reviewer.mw.progress.timer(  # pyright: ignore[reportUnknownMemberType]
         allowed_milliseconds,
         mw.reviewer._on_show_answer_timeout,  # noqa
         repeat=False,

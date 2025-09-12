@@ -32,4 +32,4 @@ def typed_in_editor(note:Note) -> None: ugly_timing_hacks.typed_in_note(note)
 
 def init() -> None:
     gui_hooks.reviewer_did_show_answer.append(on_reviewer_show_answer)
-    gui_hooks.editor_did_fire_typing_timer.append(typed_in_editor)
+    gui_hooks.editor_did_fire_typing_timer.append(typed_in_editor)  # pyright: ignore[reportUnknownMemberType]

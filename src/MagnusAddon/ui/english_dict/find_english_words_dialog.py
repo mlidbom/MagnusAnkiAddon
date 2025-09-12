@@ -48,7 +48,7 @@ class EnglishWordSearchDialog(QDialog):
         # Create results table
         self.results_table = QTableWidget()
         self.results_table.setColumnCount(2)  # Two columns: word and definition
-        self.results_table.setHorizontalHeaderLabels(["Word", "Definition"])
+        self.results_table.setHorizontalHeaderLabels(["Word", "Definition"])  # pyright: ignore[reportUnknownMemberType]
         self.results_table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
         self.results_table.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
         self.results_table.setSelectionMode(QTableWidget.SelectionMode.SingleSelection)
@@ -60,8 +60,8 @@ class EnglishWordSearchDialog(QDialog):
 
         layout.addWidget(self.results_table)
 
-        typed.checked_cast(pyqtBoundSignal, self.search_input.textChanged).connect(self.perform_search)
-        typed.checked_cast(pyqtBoundSignal, self.results_table.cellDoubleClicked).connect(self.on_cell_double_clicked)
+        typed.checked_cast(pyqtBoundSignal, self.search_input.textChanged).connect(self.perform_search)  # pyright: ignore[reportUnknownMemberType]
+        typed.checked_cast(pyqtBoundSignal, self.results_table.cellDoubleClicked).connect(self.on_cell_double_clicked)  # pyright: ignore[reportUnknownMemberType]
 
         self.search_input.setFocus()
 

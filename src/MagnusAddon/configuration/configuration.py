@@ -30,7 +30,7 @@ class JapaneseOptionsDialog(QDialog):
             number_input = QSpinBox()
             number_input.setRange(0, 99999)
             number_input.setValue(config_value.get_value())
-            checked_cast(pyqtBoundSignal, number_input.valueChanged).connect(config_value.set_value)
+            checked_cast(pyqtBoundSignal, number_input.valueChanged).connect(config_value.set_value)  # pyright: ignore[reportUnknownMemberType]
             grid.addWidget(number_input, row, 1)
 
         def add_double_spinner_value(grid: QGridLayout, row: int, config_value: ConfigurationValueFloat) -> None:
@@ -45,7 +45,7 @@ class JapaneseOptionsDialog(QDialog):
             double_input.setSingleStep(0.05)  # Set step size for increment/decrementb
 
             # Connect the valueChanged signal to update the config value
-            checked_cast(pyqtBoundSignal, double_input.valueChanged).connect(config_value.set_value)
+            checked_cast(pyqtBoundSignal, double_input.valueChanged).connect(config_value.set_value)  # pyright: ignore[reportUnknownMemberType]
 
             grid.addWidget(double_input, row, 1)
 
@@ -149,7 +149,7 @@ class JapaneseOptionsDialog(QDialog):
         # layout.addWidget(checkbox_group)
 
         self.button_box: QDialogButtonBox = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok)
-        checked_cast(pyqtBoundSignal, self.button_box.clicked).connect(self.accept)
+        checked_cast(pyqtBoundSignal, self.button_box.clicked).connect(self.accept)  # pyright: ignore[reportUnknownMemberType]
         window_layout.addWidget(self.button_box)
 
         self.setLayout(window_layout)

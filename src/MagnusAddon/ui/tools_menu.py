@@ -35,8 +35,8 @@ def add_menu_ui_action(sub_menu: QMenu, heading: str, callback: Callable[[], Non
     def ui_callback() -> None:
         get_ui_utils().run_ui_action(callback)
 
-    checked_cast(pyqtBoundSignal, action.triggered).connect(ui_callback)
-    sub_menu.addAction(action)
+    checked_cast(pyqtBoundSignal, action.triggered).connect(ui_callback)  # pyright: ignore[reportUnknownMemberType]
+    sub_menu.addAction(action)  # pyright: ignore[reportUnknownMemberType]
 
 def build_main_menu() -> None:
     my_menu = non_optional(main_window().form.menubar.addMenu(shortcutfinger.home1("Japanese")))
@@ -51,18 +51,18 @@ def build_lookup_menu(lookup_menu: QMenu) -> None:
         text, ok = QInputDialog.getText(None, "input", "enter text", QLineEdit.EchoMode.Normal, "")
         return text if ok and text else ""
 
-    lookup_menu.addAction(shortcutfinger.home1("Open note Ctrl+o"), lambda: NoteSearchDialog.toggle_dialog_visibility())
+    lookup_menu.addAction(shortcutfinger.home1("Open note Ctrl+o"), lambda: NoteSearchDialog.toggle_dialog_visibility())  # pyright: ignore[reportUnknownMemberType]
     build_open_in_anki_menu(non_optional(lookup_menu.addMenu(shortcutfinger.home2("Anki"))), get_text_input)
     build_web_search_menu(non_optional(lookup_menu.addMenu(shortcutfinger.home3("Web"))), get_text_input)
 
 def build_debug_menu(debug_menu: QMenu) -> None:
-    debug_menu.addAction(shortcutfinger.home1("Show instance report"), lambda: app.get_ui_utils().tool_tip(object_instance_tracker.single_line_report(), 10000))
-    debug_menu.addAction(shortcutfinger.home2("Take Snapshot"), object_instance_tracker.take_snapshot)
-    debug_menu.addAction(shortcutfinger.home3("Show current snapshot diff"), lambda: app.get_ui_utils().tool_tip(object_instance_tracker.current_snapshot().single_line_diff_report(), 10000))
-    debug_menu.addAction(shortcutfinger.home4("Show diff against first snapshot"), lambda: app.get_ui_utils().tool_tip(object_instance_tracker.create_transient_snapshot_against_first_snapshot().single_line_diff_report(), 10000))
-    debug_menu.addAction(shortcutfinger.home5("Show diff against current snapshot"), lambda: app.get_ui_utils().tool_tip(object_instance_tracker.create_transient_snapshot_against_last_snapshot().single_line_diff_report(), 10000))
-    debug_menu.addAction(shortcutfinger.up1("Run GC and report"), local_note_updater.print_gc_status_and_collect)
-    debug_menu.addAction(shortcutfinger.up2("Reset"), app.reset)
+    debug_menu.addAction(shortcutfinger.home1("Show instance report"), lambda: app.get_ui_utils().tool_tip(object_instance_tracker.single_line_report(), 10000))  # pyright: ignore[reportUnknownMemberType]
+    debug_menu.addAction(shortcutfinger.home2("Take Snapshot"), object_instance_tracker.take_snapshot)  # pyright: ignore[reportUnknownMemberType]
+    debug_menu.addAction(shortcutfinger.home3("Show current snapshot diff"), lambda: app.get_ui_utils().tool_tip(object_instance_tracker.current_snapshot().single_line_diff_report(), 10000))  # pyright: ignore[reportUnknownMemberType]
+    debug_menu.addAction(shortcutfinger.home4("Show diff against first snapshot"), lambda: app.get_ui_utils().tool_tip(object_instance_tracker.create_transient_snapshot_against_first_snapshot().single_line_diff_report(), 10000))  # pyright: ignore[reportUnknownMemberType]
+    debug_menu.addAction(shortcutfinger.home5("Show diff against current snapshot"), lambda: app.get_ui_utils().tool_tip(object_instance_tracker.create_transient_snapshot_against_last_snapshot().single_line_diff_report(), 10000))  # pyright: ignore[reportUnknownMemberType]  # pyright: ignore[reportUnknownMemberType]
+    debug_menu.addAction(shortcutfinger.up1("Run GC and report"), local_note_updater.print_gc_status_and_collect)  # pyright: ignore[reportUnknownMemberType]
+    debug_menu.addAction(shortcutfinger.up2("Reset"), app.reset)  # pyright: ignore[reportUnknownMemberType]
     add_menu_ui_action(debug_menu, shortcutfinger.down1("Refresh UI ('F5')"), refresh)
 
 def build_config_menu(config_menu: QMenu) -> None:
@@ -76,8 +76,8 @@ def build_config_menu(config_menu: QMenu) -> None:
         add_menu_ui_action(toggles_menu, shortcutfinger.finger_by_priority_order(section_index + 1, "Toggle all sentence auto yield compound last token flags (Ctrl+Shift+Alt+d)"), app.config().toggle_all_sentence_display_auto_yield_flags)
 
     build_feature_toggles_menu(shortcutfinger.home1("Feature Toggles"))
-    non_optional(config_menu.addAction(shortcutfinger.home2("Readings mappings"), show_readings_mappings)).setShortcut("Ctrl+Shift+m")
-    non_optional(config_menu.addAction(shortcutfinger.home3("Options"), show_japanese_options)).setShortcut("Ctrl+Shift+s")
+    non_optional(config_menu.addAction(shortcutfinger.home2("Readings mappings"), show_readings_mappings)).setShortcut("Ctrl+Shift+m")  # pyright: ignore[reportUnknownMemberType]
+    non_optional(config_menu.addAction(shortcutfinger.home3("Options"), show_japanese_options)).setShortcut("Ctrl+Shift+s")  # pyright: ignore[reportUnknownMemberType]
 
 def build_local_menu(local_menu: QMenu) -> None:
     def build_update_menu(update_menu: QMenu) -> None:

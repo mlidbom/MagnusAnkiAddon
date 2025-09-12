@@ -25,10 +25,10 @@ def build_matching_settings_menu(toggle_flags_menu: QMenu, vocab: VocabNote) -> 
                 local_note_updater.reparse_sentences_for_vocab(vocab)
             app.get_ui_utils().refresh()
 
-        action = non_optional(menu.addAction(title))
+        action = non_optional(menu.addAction(title))  # pyright: ignore[reportUnknownMemberType]
         action.setCheckable(True)
         action.setChecked(getter())
-        checked_cast(pyqtBoundSignal, action.triggered).connect(set_value)
+        checked_cast(pyqtBoundSignal, action.triggered).connect(set_value)  # pyright: ignore[reportUnknownMemberType]
 
     def build_requires_forbids_menu(requires_forbids_menu: QMenu) -> None:
         def add_require_forbid_menu(menu: QMenu, title: str, field: RequireForbidFlagField, reparse_sentences: bool = True) -> None:

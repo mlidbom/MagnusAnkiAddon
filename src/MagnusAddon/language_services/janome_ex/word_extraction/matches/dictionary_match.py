@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
 from language_services.janome_ex.word_extraction.matches.match import Match
+from sysutils import typed
 
 if TYPE_CHECKING:
     from language_services.jamdict_ex.dict_entry import DictEntry
@@ -20,7 +21,7 @@ class DictionaryMatch(Match, Slots):
     def answer(self) -> str: return self.dictionary_entry.generate_answer()
     @property
     @override
-    def readings(self) -> list[str]: return [f.text for f in self.dictionary_entry.entry.kana_forms]
+    def readings(self) -> list[str]: return [typed.str_(f.text) for f in self.dictionary_entry.entry.kana_forms]  # pyright: ignore[reportUnknownArgumentType, reportUnknownMemberType]
 
     @property
     @override

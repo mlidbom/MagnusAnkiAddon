@@ -32,7 +32,7 @@ class RelatedVocab(Slots):
         self.see_also: SeeAlso = SeeAlso(vocab, self._data)
         self.derived_from: FieldWrapper[str, RelatedVocabData] = FieldWrapper(self._data, self._data.get().derived_from)
 
-        self.confused_with: FieldSetWrapper[str] = FieldSetWrapper.for_json_object_field(self._data, self._data.get().confused_with)
+        self.confused_with: FieldSetWrapper[str] = FieldSetWrapper.for_json_object_field(self._data, self._data.get().confused_with)  # pyright: ignore[reportUnknownMemberType]
 
     def in_compounds(self) -> list[VocabNote]:
         return col().vocab.with_compound_part(self._vocab().question.without_noise_characters)

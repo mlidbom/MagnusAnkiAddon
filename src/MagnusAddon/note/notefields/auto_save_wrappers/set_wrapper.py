@@ -36,7 +36,7 @@ class FieldSetWrapper(Generic[TValue], Slots):
 
     @classmethod
     def for_json_object_field(cls, field: SerializedObjectField[Any], value: set[TValue]) -> FieldSetWrapper[TValue]:  # pyright: ignore[reportExplicitAny]
-        return cls(lambda: field.save(), lambda: value, FieldSetWrapper._secret)
+        return FieldSetWrapper(lambda: field.save(), lambda: value, FieldSetWrapper._secret)
 
     @override
     def __repr__(self) -> str: return self._value().__repr__() if self._value() else "{}"

@@ -11,10 +11,10 @@ if TYPE_CHECKING:
     from jamdict.jmdict import JMDEntry, Sense  # pyright: ignore[reportMissingTypeStubs]
 
 def _sense_is_transitive_verb(sense: Sense) -> bool:
-    return any(pos_item == "transitive verb" for pos_item in sense.pos)  # pyright: ignore[reportUnknownVariableType, reportUnknownArgumentType]
+    return any(pos_item == "transitive verb" for pos_item in sense.pos)  # pyright: ignore[reportUnknownVariableType, reportUnknownArgumentType, reportUnknownMemberType]
 
 def _sense_is_intransitive_verb(sense: Sense) -> bool:
-    return any(pos_item == "intransitive verb" for pos_item in sense.pos)  # pyright: ignore[reportUnknownVariableType, reportUnknownArgumentType]
+    return any(pos_item == "intransitive verb" for pos_item in sense.pos)  # pyright: ignore[reportUnknownVariableType, reportUnknownArgumentType, reportUnknownMemberType]
 
 @final
 class DictEntry(Slots):
@@ -26,7 +26,7 @@ class DictEntry(Slots):
     def is_kana_only(self) -> bool:
         return not self.entry.kanji_forms or any(sense for sense
                                                  in self.entry.senses
-                                                 if "word usually written using kana alone" in sense.misc)
+                                                 if "word usually written using kana alone" in sense.misc)  # pyright: ignore[reportUnknownMemberType]
 
     @classmethod
     def create(cls, entries: Sequence[JMDEntry], lookup_word: str, lookup_reading: list[str]) -> list[DictEntry]:
@@ -40,14 +40,14 @@ class DictEntry(Slots):
         search = kana_utils.katakana_to_hiragana(search)  # todo: this converting to hiragana is worrisome. Is this really the behavior we want? What false positives might we run into?
         return any(search == kana_utils.katakana_to_hiragana(form) for form in self.kanji_forms())
 
-    def kana_forms(self) -> list[str]: return [ent.text for ent in self.entry.kana_forms]
-    def kanji_forms(self) -> list[str]: return [ent.text for ent in self.entry.kanji_forms]
+    def kana_forms(self) -> list[str]: return [ent.text for ent in self.entry.kana_forms]  # pyright: ignore[reportUnknownMemberType]
+    def kanji_forms(self) -> list[str]: return [ent.text for ent in self.entry.kanji_forms]  # pyright: ignore[reportUnknownMemberType]
     def valid_forms(self, force_allow_kana_only: bool = False) -> set[str]:
         return set(self.kana_forms()) | set(self.kanji_forms()) if self.is_kana_only() or force_allow_kana_only else set(self.kanji_forms())
 
     def priority_tags(self) -> set[str]:
-        kanji_priorities: list[str] = ex_sequence.flatten([form.pri for form in self.entry.kanji_forms if form.text == self.lookup_word])  # pyright: ignore[reportUnknownArgumentType]
-        kana_priorities: list[str] = ex_sequence.flatten([form.pri for form in self.entry.kana_forms if form.text in self.lookup_readings])  # pyright: ignore[reportUnknownArgumentType]
+        kanji_priorities: list[str] = ex_sequence.flatten([form.pri for form in self.entry.kanji_forms if form.text == self.lookup_word])  # pyright: ignore[reportUnknownArgumentType, reportUnknownMemberType]
+        kana_priorities: list[str] = ex_sequence.flatten([form.pri for form in self.entry.kana_forms if form.text in self.lookup_readings])  # pyright: ignore[reportUnknownArgumentType, reportUnknownMemberType]
 
         return set(kanji_priorities + kana_priorities)
 
@@ -60,7 +60,7 @@ class DictEntry(Slots):
     def _is_verb(self) -> bool:
         return (any(_sense_is_intransitive_verb(sense) for sense in self.entry.senses)
                 or any(_sense_is_transitive_verb(sense) for sense in self.entry.senses)
-                or any(" verb " in s.pos[0] for s in self.entry.senses if len(s.pos) > 0))  # pyright: ignore[reportUnknownArgumentType]
+                or any(" verb " in s.pos[0] for s in self.entry.senses if len(s.pos) > 0))  # pyright: ignore[reportUnknownArgumentType, reportUnknownMemberType]
 
     def _answer_prefix(self) -> str:
         if self._is_verb():
@@ -160,4 +160,4 @@ class DictEntry(Slots):
         def try_get_pos(pos: str) -> list[str]:
             return self._parts_of_speech_map[pos] if pos in self._parts_of_speech_map else ["unmapped-pos-" + pos]
 
-        return set(ex_sequence.flatten([ex_sequence.flatten([try_get_pos(pos) for pos in sense.pos]) for sense in self.entry.senses]))  # pyright: ignore[reportUnknownVariableType, reportUnknownArgumentType]
+        return set(ex_sequence.flatten([ex_sequence.flatten([try_get_pos(pos) for pos in sense.pos]) for sense in self.entry.senses]))  # pyright: ignore[reportUnknownVariableType, reportUnknownArgumentType, reportUnknownMemberType]

@@ -43,7 +43,7 @@ class JamdictThreadingWrapper(Slots):
     def create_jamdict_and_log_loading_time() -> Jamdict:
         with StopWatch.log_execution_time("Loading Jamdict into memory"):
             jamdict = Jamdict(memory_mode=True) if not app.is_testing() else Jamdict(reuse_ctx=True)
-            jamdict.lookup("俺", lookup_chars=False, lookup_ne=True)
+            jamdict.lookup("俺", lookup_chars=False, lookup_ne=True)  # pyright: ignore[reportUnknownMemberType]
             return jamdict
 
     def _worker(self) -> None:
@@ -59,7 +59,7 @@ class JamdictThreadingWrapper(Slots):
         future: Future[LookupResult] = Future()
 
         def do_actual_lookup(jamdict: Jamdict) -> LookupResult:
-            return jamdict.lookup(word, lookup_chars=False, lookup_ne=include_names)
+            return jamdict.lookup(word, lookup_chars=False, lookup_ne=include_names)  # pyright: ignore[reportUnknownMemberType]
 
         self._queue.put(Request(do_actual_lookup, future))
         return future.result()
@@ -192,7 +192,7 @@ class DictLookup(Slots):
     def _is_kana_only(entry: JMDEntry) -> bool:
         return not entry.kanji_forms or any(sense for sense
                                             in entry.senses
-                                            if "word usually written using kana alone" in sense.misc)
+                                            if "word usually written using kana alone" in sense.misc)  # pyright: ignore[reportUnknownMemberType]
 
     @classmethod
     def might_be_word(cls, word: str) -> bool:

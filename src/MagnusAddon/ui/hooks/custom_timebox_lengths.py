@@ -44,4 +44,4 @@ def adjust_timebox(_web_content: WebContent, context: object) -> None:
                 aqt.utils.tooltip(f"Set timebox to {timebox} minutes")
 
 def init() -> None:
-    gui_hooks.webview_will_set_content.append(adjust_timebox)
+    gui_hooks.webview_will_set_content.append(adjust_timebox)  # pyright: ignore[reportUnknownMemberType]

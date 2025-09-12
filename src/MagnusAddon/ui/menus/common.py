@@ -36,7 +36,7 @@ def build_right_click_menu_webview_hook(view: AnkiWebView, root_menu: QMenu) -> 
 # noinspection PyPep8
 def build_right_click_menu(right_click_menu: QMenu, note: JPNote | None, selection: str, clipboard: str) -> None:
     if not app.is_initialized():
-        right_click_menu.addAction(Mine.app_still_loading_message)
+        right_click_menu.addAction(Mine.app_still_loading_message)  # pyright: ignore[reportUnknownMemberType]
         return
 
     selection_menu = non_optional(right_click_menu.addMenu(shortcutfinger.home1(f'''Selection: "{selection[:40]}"'''))) if selection else None
@@ -95,7 +95,7 @@ def build_string_menu(menu: QMenu, string: str, string_note_menu_factory: typing
 def build_universal_note_actions_menu(universal_actions_menu: QMenu, note: JPNote | None) -> None:
     if not note: return
 
-    universal_actions_menu.addAction(shortcutfinger.home1("Open in previewer"), search_executor.lookup_and_show_previewer_promise(lambda: query_builder.notes_lookup([note])))
+    universal_actions_menu.addAction(shortcutfinger.home1("Open in previewer"), search_executor.lookup_and_show_previewer_promise(lambda: query_builder.notes_lookup([note])))  # pyright: ignore[reportUnknownMemberType]
     note_actions_menu = non_optional(universal_actions_menu.addMenu(shortcutfinger.home2("Note actions")))
 
     add_ui_action(universal_actions_menu, shortcutfinger.home3("Unsuspend all cards"), note.unsuspend_all_cards, note.has_suspended_cards())
@@ -114,5 +114,5 @@ def null_op_factory(_menu: QMenu, _string: str) -> None:
     pass
 
 def init() -> None:
-    gui_hooks.webview_will_show_context_menu.append(build_right_click_menu_webview_hook)
-    gui_hooks.editor_will_show_context_menu.append(build_right_click_menu_webview_hook)
+    gui_hooks.webview_will_show_context_menu.append(build_right_click_menu_webview_hook)  # pyright: ignore[reportUnknownMemberType]
+    gui_hooks.editor_will_show_context_menu.append(build_right_click_menu_webview_hook)  # pyright: ignore[reportUnknownMemberType]

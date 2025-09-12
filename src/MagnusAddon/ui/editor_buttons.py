@@ -24,4 +24,4 @@ def setup_editor_buttons(buttons: list[str], the_editor: Editor) -> None:
     ui_action_button("Fetch audio from wanikani", lambda note: WaniDownloader.fetch_audio_from_wanikani(VocabNote(note)))
 
 def init() -> None:
-    gui_hooks.editor_did_init_buttons.append(setup_editor_buttons)
+    gui_hooks.editor_did_init_buttons.append(setup_editor_buttons)  # pyright: ignore[reportUnknownMemberType]

@@ -91,7 +91,7 @@ def init() -> None:
         refresh_shallow()
 
     def set_shortcut(widget: QWidget, shortcut: str, callback: Callable[[], None]) -> None:
-        typed.checked_cast(pyqtBoundSignal, QShortcut(QKeySequence(shortcut), widget).activated).connect(callback)
+        typed.checked_cast(pyqtBoundSignal, QShortcut(QKeySequence(shortcut), widget).activated).connect(callback)  # pyright: ignore[reportUnknownMemberType]
 
     def inject_shortcuts_in_widget(widget: QWidget) -> None:
         for key, callback in stortcuts.items():
@@ -123,5 +123,5 @@ def init() -> None:
                                                 "Ctrl+Shift+Alt+t": toggle_yield_last_token_in_causative_verb_compounds_to_overlapping_compound,
                                                 "Ctrl+Shift+Alt+d": toggle_all_yield_last_token_flags}
 
-    gui_hooks.previewer_did_init.append(inject_shortcuts_in_widget)
-    gui_hooks.state_shortcuts_will_change.append(inject_shortcuts_in_reviewer)
+    gui_hooks.previewer_did_init.append(inject_shortcuts_in_widget)  # pyright: ignore[reportUnknownMemberType]
+    gui_hooks.state_shortcuts_will_change.append(inject_shortcuts_in_reviewer)  # pyright: ignore[reportUnknownMemberType]

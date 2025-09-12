@@ -81,7 +81,7 @@ def _profile_closing() -> None:
     gui_hooks.sync_will_start.remove(_collection_is_being_invalidated)
     _collection_closed_hooks.remove(_destruct)
     gui_hooks.sync_did_finish.remove(_init)
-    gui_hooks.collection_did_load.remove(_reset)
+    gui_hooks.collection_did_load.remove(_reset)  # pyright: ignore[reportUnknownMemberType]
     _destruct()
 
 def _profile_opened() -> None:
@@ -90,7 +90,7 @@ def _profile_opened() -> None:
     gui_hooks.sync_will_start.append(_collection_is_being_invalidated)
     _collection_closed_hooks.add(_destruct)
     gui_hooks.sync_did_finish.append(_init)
-    gui_hooks.collection_did_load.append(_reset)
+    gui_hooks.collection_did_load.append(_reset)  # pyright: ignore[reportUnknownMemberType]
     _init(delay_seconds=1.0)
 
 def anki_config() -> ConfigManagerEx:
@@ -125,7 +125,7 @@ def _collection_closed(_collection: Collection, _downgrade: bool = False) -> Non
 def _wrap_collection_close() -> None:
     import anki
     from anki.collection import Collection
-    Collection.close = anki.hooks.wrap(Collection.close, _collection_closed, "before")  # type: ignore  # pyright: ignore[reportAttributeAccessIssue]
+    Collection.close = anki.hooks.wrap(Collection.close, _collection_closed, "before")  # type: ignore  # pyright: ignore[reportAttributeAccessIssue, reportUnknownMemberType]
 
 _wrap_collection_close()
 

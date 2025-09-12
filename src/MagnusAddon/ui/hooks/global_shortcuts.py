@@ -24,7 +24,7 @@ def init() -> None:
     }
 
     def set_shortcut(widget: QWidget, shortcut: str, callback: Callable[[], None]) -> None:
-        typed.checked_cast(pyqtBoundSignal, QShortcut(QKeySequence(shortcut), widget).activated).connect(callback)
+        typed.checked_cast(pyqtBoundSignal, QShortcut(QKeySequence(shortcut), widget).activated).connect(callback)  # pyright: ignore[reportUnknownMemberType]
 
     def bind_universal_shortcuts(widget: QWidget) -> None:
         for key, callback in shortcuts.items():
@@ -39,7 +39,7 @@ def init() -> None:
     bind_universal_shortcuts(NoteSearchDialog.instance())
     bind_universal_shortcuts(EnglishWordSearchDialog.instance())
 
-    gui_hooks.previewer_did_init.append(bind_universal_shortcuts)
-    gui_hooks.previewer_did_init.append(disable_escape)
+    gui_hooks.previewer_did_init.append(bind_universal_shortcuts)  # pyright: ignore[reportUnknownMemberType]
+    gui_hooks.previewer_did_init.append(disable_escape)  # pyright: ignore[reportUnknownMemberType]
     gui_hooks.browser_will_show.append(bind_universal_shortcuts)
     gui_hooks.browser_will_show.append(disable_escape)

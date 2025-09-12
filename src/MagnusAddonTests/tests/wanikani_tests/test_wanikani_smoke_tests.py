@@ -24,4 +24,4 @@ def test_fetch_data_doesnt_crash() -> None:
     kana_vocab = client.list_kana_vocabulary()
 
     for vocab in kana_vocab:
-        print(vocab.characters)  # pyright: ignore[reportUnknownArgumentType]
+        print(vocab.characters)  # pyright: ignore[reportUnknownArgumentType, reportUnknownMemberType]

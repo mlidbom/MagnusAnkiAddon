@@ -102,7 +102,7 @@ class UIUtils(IUIUtils, Slots):
         def force_browser_rerender() -> None:
             browser: list[Browser] = [window for window in self._mw.app.topLevelWidgets() if isinstance(window, Browser)]
             if len(browser) > 0:
-                browser[0].onSearchActivated()
+                browser[0].onSearchActivated()  # pyright: ignore[reportUnknownMemberType]
 
         app.col().flush_cache_updates()
         audio_suppressor.suppress_for_seconds(.3)

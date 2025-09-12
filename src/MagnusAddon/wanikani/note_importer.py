@@ -22,8 +22,8 @@ def import_missing_kanji() -> None:
     all_wani_kanji = waniClient.list_kanji()
     imported = 0
     for wani_kanji in all_wani_kanji:
-        if wani_kanji.characters not in local_kanji_dictionary:
-            print(f"Importing: {wani_kanji.slug}")
+        if wani_kanji.characters not in local_kanji_dictionary:  # pyright: ignore[reportUnknownMemberType]
+            print(f"Importing: {wani_kanji.slug}")  # pyright: ignore[reportUnknownMemberType]
             KanjiNote.create_from_wani_kanji(wani_kanji)
             imported += 1
 
@@ -33,9 +33,9 @@ def import_missing_vocab() -> None:
     all_wani_vocabulary = waniClient.list_vocabulary()
     imported = 0
     for wani_vocab in all_wani_vocabulary:
-        question = str(wani_vocab.characters)  # pyright: ignore[reportUnknownArgumentType]
+        question = str(wani_vocab.characters)  # pyright: ignore[reportUnknownArgumentType, reportUnknownMemberType]
         if not app.col().vocab.with_question(question):
-            print(f"""Importing: {wani_vocab.slug}""")
+            print(f"""Importing: {wani_vocab.slug}""")  # pyright: ignore[reportUnknownMemberType]
             VocabNote.factory.create_from_wani_vocabulary(wani_vocab)
             imported += 1
 
@@ -51,9 +51,9 @@ def import_missing_context_sentences() -> None:
 
     def handle_vocab(wani_vocab: Vocabulary) -> None:
         for sentence in wani_vocab.context_sentences:
-            vocab = str(wani_vocab.characters)  # pyright: ignore[reportUnknownArgumentType]
-            question = str(sentence.japanese).strip()  # pyright: ignore[reportUnknownArgumentType]
-            answer = str(sentence.english).strip()  # pyright: ignore[reportUnknownArgumentType]
+            vocab = str(wani_vocab.characters)  # pyright: ignore[reportUnknownArgumentType, reportUnknownMemberType]
+            question = str(sentence.japanese).strip()  # pyright: ignore[reportUnknownArgumentType, reportUnknownMemberType]
+            answer = str(sentence.english).strip()  # pyright: ignore[reportUnknownArgumentType, reportUnknownMemberType]
 
             existing_sentences = sentence_collection.with_question(question)
 

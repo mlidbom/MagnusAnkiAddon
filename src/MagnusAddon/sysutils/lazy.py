@@ -20,9 +20,9 @@ class Lazy(Generic[T], Slots):
 
     def __call__(self) -> T: return self.instance()
 
-    @classmethod
-    def from_value(cls, result: T) -> Lazy[T]:
-        return cls(lambda: result)
+    @staticmethod
+    def from_value(result: T) -> Lazy[T]:
+        return Lazy[T](lambda: result)
 
     def reset(self) -> None:
         self._instance = None

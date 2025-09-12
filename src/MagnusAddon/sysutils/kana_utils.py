@@ -75,10 +75,10 @@ def romanize(text:str) -> str:
     return "".join([item["hepburn"] for item in result])
 
 def romaji_to_hiragana(string:str) -> str:
-    return typed.str_(romkan.to_hiragana(string))
+    return typed.str_(romkan.to_hiragana(string))  # pyright: ignore[reportUnknownMemberType]
 
 def romaji_to_katakana(string:str) -> str:
-    return typed.str_(romkan.to_katakana(string))
+    return typed.str_(romkan.to_katakana(string))  # pyright: ignore[reportUnknownMemberType]
 
 def anything_to_hiragana(string:str) -> str:
     return katakana_to_hiragana(string) if is_only_kana(string) else romaji_to_hiragana(string)

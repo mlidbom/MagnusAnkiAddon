@@ -33,7 +33,7 @@ class ReadingsOptionsDialog(QDialog):
         search_layout.addWidget(self.search_edit)
 
         # Connect search field to search function
-        checked_cast(pyqtBoundSignal, self.search_edit.textChanged).connect(self.search_text)
+        checked_cast(pyqtBoundSignal, self.search_edit.textChanged).connect(self.search_text)  # pyright: ignore[reportUnknownMemberType]
 
         self.text_edit: QTextEdit = QTextEdit(self)
         self.text_edit.setPlainText(mappings_text)
@@ -46,8 +46,8 @@ class ReadingsOptionsDialog(QDialog):
         shortcut = "Alt+Return"
         self.button_box.setToolTip(f"Save ({shortcut})")
         save_shortcut = QShortcut(QKeySequence(shortcut), self)
-        checked_cast(pyqtBoundSignal, save_shortcut.activated).connect(self.save)
-        checked_cast(pyqtBoundSignal, self.button_box.clicked).connect(self.save)
+        checked_cast(pyqtBoundSignal, save_shortcut.activated).connect(self.save)  # pyright: ignore[reportUnknownMemberType]
+        checked_cast(pyqtBoundSignal, self.button_box.clicked).connect(self.save)  # pyright: ignore[reportUnknownMemberType]
         window_layout.addWidget(self.button_box)
         self.setLayout(window_layout)
 

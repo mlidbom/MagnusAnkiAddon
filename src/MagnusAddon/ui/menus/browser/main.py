@@ -35,7 +35,7 @@ def setup_browser_context_menu(browser: Browser, menu: QMenu) -> None:
     selected_cards = browser.selected_cards()
 
     if len(selected_cards) == 1:
-        magnus_menu.addAction("Prioritize selected cards", lambda: queue_manager.prioritize_selected_cards(selected_cards))
+        magnus_menu.addAction("Prioritize selected cards", lambda: queue_manager.prioritize_selected_cards(selected_cards))  # pyright: ignore[reportUnknownMemberType]
 
         card = app.anki_collection().get_card(selected_cards[0])
         note = JPNote.note_from_card(card)
@@ -46,7 +46,7 @@ def setup_browser_context_menu(browser: Browser, menu: QMenu) -> None:
         for start_day in [0,1,2,3,4,5,6,7,8,9]:
             start_day_menu: QMenu = non_optional(spread_menu.addMenu(f"First card in {start_day} days"))
             for days_apart in [1,2,3,4,5,6,7,8,9]:
-                start_day_menu.addAction(f"{days_apart} days apart", ex_lambda.bind3(spread_due_dates, selected_cards, start_day, days_apart))
+                start_day_menu.addAction(f"{days_apart} days apart", ex_lambda.bind3(spread_due_dates, selected_cards, start_day, days_apart))  # pyright: ignore[reportUnknownMemberType]
 
     selected_notes = {app.col().note_from_note_id(note_id) for note_id in browser.selectedNotes()}
 
@@ -54,7 +54,7 @@ def setup_browser_context_menu(browser: Browser, menu: QMenu) -> None:
     if selected_sentences:
         from batches import local_note_updater
 
-        magnus_menu.addAction("Reparse sentence words", lambda: local_note_updater.reparse_sentences(selected_sentences))
+        magnus_menu.addAction("Reparse sentence words", lambda: local_note_updater.reparse_sentences(selected_sentences))  # pyright: ignore[reportUnknownMemberType]
 
 
 def init() -> None:

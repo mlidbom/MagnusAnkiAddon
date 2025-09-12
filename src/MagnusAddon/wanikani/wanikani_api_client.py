@@ -46,21 +46,21 @@ class WanikaniClient(Slots):
             try:
                 client = self._client
 
-                self._radical_list = list(client.subjects(types="radical", fetch_all=True))
-                self._kanji_list = list(client.subjects(types="kanji", fetch_all=True))
-                self._vocab_list = list(client.subjects(types="vocabulary", fetch_all=True))
+                self._radical_list = list(client.subjects(types="radical", fetch_all=True))  # pyright: ignore[reportUnknownMemberType]
+                self._kanji_list = list(client.subjects(types="kanji", fetch_all=True))  # pyright: ignore[reportUnknownMemberType]
+                self._vocab_list = list(client.subjects(types="vocabulary", fetch_all=True))  # pyright: ignore[reportUnknownMemberType]
 
-                self._radical_list = [radical for radical in self._radical_list if radical.hidden_at is None]
-                self._kanji_list = [kanji for kanji in self._kanji_list if kanji.hidden_at is None]
-                self._vocab_list = [vocab for vocab in self._vocab_list if vocab.hidden_at is None]
+                self._radical_list = [radical for radical in self._radical_list if radical.hidden_at is None]  # pyright: ignore[reportUnknownMemberType]
+                self._kanji_list = [kanji for kanji in self._kanji_list if kanji.hidden_at is None]  # pyright: ignore[reportUnknownMemberType]
+                self._vocab_list = [vocab for vocab in self._vocab_list if vocab.hidden_at is None]  # pyright: ignore[reportUnknownMemberType]
 
-                self._radical_dictionary = {radical.slug: radical for radical in self._radical_list}
-                self._kanji_dictionary = {kanji.characters: kanji for kanji in self._kanji_list}
-                self._vocab_dictionary = {vocab.characters: vocab for vocab in self._vocab_list}
+                self._radical_dictionary = {radical.slug: radical for radical in self._radical_list}  # pyright: ignore[reportUnknownMemberType]
+                self._kanji_dictionary = {kanji.characters: kanji for kanji in self._kanji_list}  # pyright: ignore[reportUnknownMemberType]
+                self._vocab_dictionary = {vocab.characters: vocab for vocab in self._vocab_list}  # pyright: ignore[reportUnknownMemberType]
 
-                self._radical_id_dictionary = {radical.id: radical for radical in self._radical_list}
-                self._kanji_id_dictionary = {kanji.id: kanji for kanji in self._kanji_list}
-                self._vocab_id_dictionary = {vocab.id: vocab for vocab in self._vocab_list}
+                self._radical_id_dictionary = {radical.id: radical for radical in self._radical_list}  # pyright: ignore[reportUnknownMemberType]
+                self._kanji_id_dictionary = {kanji.id: kanji for kanji in self._kanji_list}  # pyright: ignore[reportUnknownMemberType]
+                self._vocab_id_dictionary = {vocab.id: vocab for vocab in self._vocab_list}  # pyright: ignore[reportUnknownMemberType]
             finally:
                 # noinspection PyInconsistentReturns
                 progress.close()
@@ -84,11 +84,11 @@ class WanikaniClient(Slots):
             try:
                 client = self._client
 
-                self._kana_vocab_list = list(client.subjects(types="kana_vocabulary", fetch_all=True))
-                self._kana_vocab_list = [kana_vocab for kana_vocab in self._kana_vocab_list if kana_vocab.hidden_at is None]
+                self._kana_vocab_list = list(client.subjects(types="kana_vocabulary", fetch_all=True))  # pyright: ignore[reportUnknownMemberType]
+                self._kana_vocab_list = [kana_vocab for kana_vocab in self._kana_vocab_list if kana_vocab.hidden_at is None]  # pyright: ignore[reportUnknownMemberType]
 
-                self._kana_vocab_dictionary = {vocab.characters: vocab for vocab in self._kana_vocab_list}
-                self._kana_vocab_id_dictionary = {vocab.id: vocab for vocab in self._kana_vocab_list}
+                self._kana_vocab_dictionary = {vocab.characters: vocab for vocab in self._kana_vocab_list}  # pyright: ignore[reportUnknownMemberType]
+                self._kana_vocab_id_dictionary = {vocab.id: vocab for vocab in self._kana_vocab_list}  # pyright: ignore[reportUnknownMemberType]
             finally:
                 # noinspection PyInconsistentReturns
                 progress.close()
