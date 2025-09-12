@@ -58,9 +58,6 @@ exclude=["**/node_modules", "**/__pycache__", "**/.*", "src/MagnusAddon/_lib/", 
 extraPaths=["src/MagnusAddon"]
 typeCheckingMode="recommended" # "off", "basic", "standard", "strict", "recommended", "all"
 
-#added for now, remove once the typeCheckingMode has been upgraded:
-reportImplicitOverride="error"
-
 #todo: errors we should enable detection of ASAP
 reportPrivateUsage =  "none"
 reportImportCycles =  "none"
