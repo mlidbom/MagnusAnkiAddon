@@ -15,5 +15,4 @@ class WaniNote(JPNote, Slots):
         super().__init__(note)
         self.weakref = cast(WeakRef[WaniNote], self.weakref)
 
-    def update_from_wani(self, wani_model: models.Subject) -> None:
-        pass
+    def update_from_wani(self, wani_model: models.Subject) -> None: raise NotImplementedError()  # pyright: ignore[reportUnusedParameter]

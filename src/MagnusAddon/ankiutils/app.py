@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from anki.scheduler.v3 import Scheduler
     from anki_extentions.config_manager_ex import ConfigManagerEx
     from ankiutils.ui_utils_interface import IUIUtils
-    from aqt import AnkiQt  # type: ignore[attr-defined]
+    from aqt import AnkiQt  # type: ignore[attr-defined]  # pyright: ignore[reportPrivateImportUsage]
     from configuration.configuration_value import JapaneseConfig
     from note.collection.jp_collection import JPCollection
 

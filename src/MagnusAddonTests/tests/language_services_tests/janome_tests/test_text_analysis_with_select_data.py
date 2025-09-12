@@ -17,6 +17,7 @@ def setup_collection_with_select_data() -> Iterator[None]:
     with inject_anki_collection_with_select_data(special_vocab=True):
         yield
 
+@pytest.mark.usefixtures("setup_collection_with_select_data")
 @pytest.mark.parametrize("sentence, expected_output", [
     ("走る",
      ["走る"]),
@@ -53,41 +54,45 @@ def setup_collection_with_select_data() -> Iterator[None]:
     ("もう逃がしません", ["もう", "逃がす", "ません", "ます", "ん"]),
     ("死んどる", ["死ぬ", "んどる"])
 ])
-def test_identify_words(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
+def test_identify_words(sentence: str, expected_output: list[str]) -> None:
     sentence_note = SentenceNote.create_test_note(sentence, "")
     words = [w.parsed_form for w in sentence_note.parsing_result.get().parsed_words]
     assert words == expected_output
 
+@pytest.mark.usefixtures("setup_collection_with_select_data")
 @pytest.mark.parametrize("sentence, expected_output", [
     ("言わず", ["言う", "ず"]),
     ("声出したら駄目だからね", ["声", "出す", "たら", "駄目", "だから", "だ", "から", "ね"]),
     ("無理して思い出す", ["無理", "して", "する", "て", "思い出す"]),
     ("私が頼んだの", ["私", "が", "頼む", "んだ", "の"]),
 ])
-def test_excluded_surfaces(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
+def test_excluded_surfaces(sentence: str, expected_output: list[str]) -> None:
     sentence_note = SentenceNote.create_test_note(sentence, "")
     words = [w.parsed_form for w in sentence_note.parsing_result.get().parsed_words]
     assert words == expected_output
 
+@pytest.mark.usefixtures("setup_collection_with_select_data")
 @pytest.mark.parametrize("sentence, expected_output", [
     ("うわ こわっ", ["うわ", "こい", "わっ"]),
 ])
-def test_strictly_suffix(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
+def test_strictly_suffix(sentence: str, expected_output: list[str]) -> None:
     sentence_note = SentenceNote.create_test_note(sentence, "")
     words = [w.parsed_form for w in sentence_note.parsing_result.get().parsed_words]
     assert words == expected_output
 
+@pytest.mark.usefixtures("setup_collection_with_select_data")
 @pytest.mark.parametrize("sentence, expected_output", [
     ("うるせえ", ["うるせえ", "せえ", "せる", "せ", "え"]),
     # todo: losing the 貸せ here does not feel right. It's because we have stopped including words not in the dictionary in the parsing results, but as this shows, that means we lose imperative and potential godan verbs. That's not OK.
     ("お金貸せって", ["お金", "って"])
 ])
-def test_requires_a_stem(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
+def test_requires_a_stem(sentence: str, expected_output: list[str]) -> None:
     sentence_note = SentenceNote.create_test_note(sentence, "")
     root_words = [w.parsed_form for w in sentence_note.parsing_result.get().parsed_words]
     assert root_words == expected_output
 
-def test_ignores_noise_characters(setup_collection_with_select_data: object) -> None:
+@pytest.mark.usefixtures("setup_collection_with_select_data")
+def test_ignores_noise_characters() -> None:
     sentence = ". , : ; / | 。 、ー ? !"
     expected = {"ー"}
 
@@ -95,7 +100,8 @@ def test_ignores_noise_characters(setup_collection_with_select_data: object) -> 
     words = {w.parsed_form for w in sentence_note.parsing_result.get().parsed_words}
     assert words == expected
 
-def test_no_memory_leak_weak_references_are_disposed(setup_collection_with_select_data: object) -> None:
+@pytest.mark.usefixtures("setup_collection_with_select_data")
+def test_no_memory_leak_weak_references_are_disposed() -> None:
     def return_an_object_that_is_not_a_gc_root_so_it_should_not_keep_the_analysis_in_memory() -> TextAnalysisLocation:
         sentence_note = SentenceNote.create_test_note("作るに決まってるだろ, ", "")
         analysis = sentence_note.create_analysis()

@@ -16,7 +16,7 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
 
     from anki.cards import Card, CardId
-    from aqt.browser import Browser  # type: ignore[attr-defined]
+    from aqt.browser import Browser  # type: ignore[attr-defined]  # pyright: ignore[reportPrivateImportUsage]
     from PyQt6.QtWidgets import QMenu
 
 

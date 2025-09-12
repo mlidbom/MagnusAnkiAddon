@@ -57,10 +57,10 @@ def test_missing(word: str, readings: list[str]) -> None:
     dict_entry = get_dict_entry(word, readings)
     assert dict_entry.found_words_count() == 1
 
-@pytest.mark.parametrize("word, readings", [
-    ("しない", ["しない"]),
+@pytest.mark.parametrize("word", [
+    ("しない"),
 ])
-def test_should_be_missing(word: str, readings: list[str]) -> None:
+def test_should_be_missing(word: str) -> None:
     result = DictLookup.lookup_word(word)
     assert len(result.entries) == 0
 

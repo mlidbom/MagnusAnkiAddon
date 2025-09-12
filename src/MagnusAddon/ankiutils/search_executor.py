@@ -7,7 +7,7 @@ from ankiutils import app
 from sysutils.typed import non_optional
 
 if TYPE_CHECKING:
-    from aqt.browser import Browser  # type: ignore[attr-defined]
+    from aqt.browser import Browser  # type: ignore[attr-defined]  # pyright: ignore[reportPrivateImportUsage]
 
 
 def do_lookup_and_show_previewer(text: str) -> None:

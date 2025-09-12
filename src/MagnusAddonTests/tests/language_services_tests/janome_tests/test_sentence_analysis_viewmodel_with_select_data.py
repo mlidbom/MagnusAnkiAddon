@@ -16,6 +16,7 @@ def setup_collection_with_select_data() -> Iterator[None]:
     with inject_anki_collection_with_select_data(special_vocab=True):
         yield
 
+@pytest.mark.usefixtures("setup_collection_with_select_data")
 @pytest.mark.parametrize("sentence, expected_output", [
     ("厳密に言えば　俺一人が友達だけど",
      ["厳密に言えば", "俺", "一人", "が", "友達", "だけど"]),
@@ -74,16 +75,18 @@ def setup_collection_with_select_data() -> Iterator[None]:
     ("死んどる", ["死ぬ", "んどる"]),
     ("馴染めないでいる", ["馴染め:[MISSING]", "ない", "でいる"])
 ])
-def test_misc_stuff(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
+def test_misc_stuff(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal(sentence, [], expected_output)
 
+@pytest.mark.usefixtures("setup_collection_with_select_data")
 @pytest.mark.parametrize("sentence, expected_output", [
     ("しろ", ["しろ"]),
     ("後で下に下りてらっしゃいね", ["後で", "下に", "下りる", "て", "らっしゃい", "ね"]),
 ])
-def test_yield_to_surface(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
+def test_yield_to_surface(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal(sentence, [], expected_output)
 
+@pytest.mark.usefixtures("setup_collection_with_select_data")
 @pytest.mark.parametrize("sentence, excluded, expected_output", [
     ("厳密に言えば　俺一人が友達だけど",
      [WordExclusion.global_("厳密に言えば"), WordExclusion.global_("言え"), WordExclusion.global_("だけど")],
@@ -101,11 +104,12 @@ def test_yield_to_surface(setup_collection_with_select_data: object, sentence: s
     ("いらっしゃいません", [WordExclusion.global_("いらっしゃいませ")], ["いらっしゃいます", "ん"]),
     ("風の強さに驚きました", [WordExclusion.global_("風の強い")], ["風", "の", "強さ", "に", "驚き", "ます", "た"])
 ])
-def test_exclusions(setup_collection_with_select_data: object, sentence: str, excluded: list[WordExclusion], expected_output: list[str]) -> None:
+def test_exclusions(sentence: str, excluded: list[WordExclusion], expected_output: list[str]) -> None:
     assert_display_words_equal(sentence, excluded, expected_output)
 
+@pytest.mark.usefixtures("setup_collection_with_select_data")
 @pytest.mark.parametrize("sentence, expected_output", [
     ("風の強さに驚きました", ["風の強い", "風", "の", "強さ", "強", "強い", "さ", "に", "驚き", "驚く", "まし:ませ", "ます", "た"])
 ])
-def test_all_words_equal(setup_collection_with_select_data: object, sentence: str, expected_output: list[str]) -> None:
+def test_all_words_equal(sentence: str, expected_output: list[str]) -> None:
     assert_all_words_equal(sentence, expected_output)

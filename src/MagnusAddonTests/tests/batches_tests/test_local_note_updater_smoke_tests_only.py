@@ -16,6 +16,7 @@ def setup() -> Iterator[None]:
     with (stub_ui_dependencies(), inject_anki_collection_with_all_sample_data()):
         yield
 
-def test_smoke_full_rebuild(setup: object) -> None:
+@pytest.mark.usefixtures("setup")
+def test_smoke_full_rebuild() -> None:
     from batches import local_note_updater
     local_note_updater.full_rebuild()

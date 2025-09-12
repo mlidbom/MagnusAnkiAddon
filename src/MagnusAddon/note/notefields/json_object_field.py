@@ -14,8 +14,8 @@ if TYPE_CHECKING:
 T = TypeVar("T")
 
 class ObjectSerializer(Generic[T], Slots):
-    def serialize(self, instance: T) -> str: raise NotImplementedError()
-    def deserialize(self, serialized: str) -> T: raise NotImplementedError()
+    def serialize(self, instance: T) -> str: raise NotImplementedError()  # pyright: ignore[reportUnusedParameter]
+    def deserialize(self, serialized: str) -> T: raise NotImplementedError()  # pyright: ignore[reportUnusedParameter]
 
 class SerializedObjectField(Generic[T], WeakRefable, Slots):
     def __init__(self, note: WeakRef[JPNote], field: str, serializer: ObjectSerializer[T]) -> None:

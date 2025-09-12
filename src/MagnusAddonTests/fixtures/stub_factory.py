@@ -52,11 +52,11 @@ T = TypeVar("T")
 @contextmanager
 def _stub_progress_runner() -> Iterator[None]:
     # noinspection PyUnusedLocal
-    def _open_spinning_progress_dialog(message: str) -> Closable:
+    def _open_spinning_progress_dialog(message: str) -> Closable:  # pyright: ignore[reportUnusedParameter]
         return Closable(lambda: None)
 
     # noinspection PyUnusedLocal
-    def _process_with_progress(items: list[T], process_item: Callable[[T], None], message:str, allow_cancel: bool = True, display_delay_seconds: float = 0.0, pause_cache_updates: bool = True) -> None:
+    def _process_with_progress(items: list[T], process_item: Callable[[T], None], _message:str, _allow_cancel: bool = True, _display_delay_seconds: float = 0.0, _pause_cache_updates: bool = True) -> None:
         for item in items:
             process_item(item)
 

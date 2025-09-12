@@ -54,9 +54,9 @@ class NoteCache(Generic[TNote, TSnapshot], Slots):
     def with_question(self, question: str) -> list[TNote]:
         return list(self._by_question[question])
 
-    def _create_snapshot(self, note: TNote) -> TSnapshot: raise NotImplementedError()
-    def _inheritor_remove_from_cache(self, note: TNote, snapshot: TSnapshot) -> None: raise NotImplementedError()
-    def _inheritor_add_to_cache(self, note: TNote, snapshot: TSnapshot) -> None: raise NotImplementedError()
+    def _create_snapshot(self, note: TNote) -> TSnapshot: raise NotImplementedError()  # pyright: ignore[reportUnusedParameter]
+    def _inheritor_remove_from_cache(self, note: TNote, snapshot: TSnapshot) -> None: raise NotImplementedError()  # pyright: ignore[reportUnusedParameter]
+    def _inheritor_add_to_cache(self, note: TNote, snapshot: TSnapshot) -> None: raise NotImplementedError()  # pyright: ignore[reportUnusedParameter]
 
     def _merge_pending_added_notes(self) -> None:
         completely_added_list = [pending for pending in self._pending_add if pending.id]

@@ -56,21 +56,26 @@ ignore = [
 include=["src"]
 exclude=["**/node_modules", "**/__pycache__", "**/.*", "src/MagnusAddon/_lib/", "**/_lib_patched/*", "**venv/*"]
 extraPaths=["src/MagnusAddon"]
-typeCheckingMode="strict" # "off", "basic", "standard", "strict", "recommended", "all"
+typeCheckingMode="recommended" # "off", "basic", "standard", "strict", "recommended", "all"
 
 #added for now, remove once the typeCheckingMode has been upgraded:
 reportImplicitOverride="error"
 
 #todo: errors we should enable detection of ASAP
-  reportPrivateUsage =  "none"
-  reportImportCycles =  "none"
-  reportUnknownVariableType =  "none"
-  reportUnknownMemberType =  "none"
-  reportUnknownArgumentType =  "none"
-  reportMissingTypeStubs = "none"
+reportPrivateUsage =  "none"
+reportImportCycles =  "none"
+reportUnknownVariableType =  "none"
+reportUnknownMemberType =  "none"
+reportUnannotatedClassAttribute = "none" #refactoring etc works far FAR more reliably if these are all in place
+reportUnknownArgumentType =  "none"
+reportExplicitAny = "none" #yeah, we probably don't want to go declaring anything as Any
+reportAny = "none"
+
+reportMissingTypeStubs = "none"
 
 #  "questionable if these are useful =  "",
 reportUnusedExpression= "none"
+reportUnusedCallResult = "none"
 
 # we probably really don't need these
 reportImplicitRelativeImport="none"
