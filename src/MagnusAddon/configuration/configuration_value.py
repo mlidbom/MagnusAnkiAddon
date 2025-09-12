@@ -7,6 +7,7 @@ from ankiutils import app
 from aqt import mw
 from autoslot import Slots
 from sysutils.lazy import Lazy
+from sysutils.typed import non_optional
 
 T = TypeVar("T")
 
@@ -59,7 +60,7 @@ class JapaneseConfig(Slots):
 
         def set_enable_fsrs_short_term_with_steps(toggle: bool) -> None:
             # noinspection PyProtectedMember, PyArgumentList
-            mw.col._set_enable_fsrs_short_term_with_steps(toggle)
+            non_optional(mw.col)._set_enable_fsrs_short_term_with_steps(toggle)
 
         self.autoadvance_vocab_starting_seconds = ConfigurationValueFloat("autoadvance_vocab_starting_seconds", "Starting Seconds", 3.0)
         self.autoadvance_vocab_hiragana_seconds = ConfigurationValueFloat("autoadvance_vocab_hiragana_seconds", "Hiragana Seconds", 0.7)
@@ -97,6 +98,8 @@ class JapaneseConfig(Slots):
         self.automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound = ConfigurationValueBool("automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound", "Automatically yield last token in suru verb compounds to overlapping compounds (Ctrl+Shift+Alt+s)", True)
         self.automatically_yield_last_token_in_passive_verb_compounds_to_overlapping_compound = ConfigurationValueBool("automatically_yield_last_token_in_passive_verb_compounds_to_overlapping_compound", "Automatically yield last token in passive verb compounds to overlapping compounds (Ctrl+Shift+Alt+h)", True)
         self.automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound = ConfigurationValueBool("automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound", "Automatically yield last token in causative verb compounds to overlapping compounds (Ctrl+Shift+Alt+t)", True)
+        self.run_additional_pre_caching = ConfigurationValueBool("run_additional_pre_caching", "Run additional pre caching on startup", False)
+        self.run_any_additional_pre_caching_on_background_thread = ConfigurationValueBool("run_additional_pre_caching_on_background_thread", "Run any additional pre caching on background thread", False)
 
         self.decrease_failed_card_intervals_interval = ConfigurationValueInt("decrease_failed_card_intervals_interval", "Failed card again seconds for next again", 60)
 
@@ -118,6 +121,8 @@ class JapaneseConfig(Slots):
                        self.prevent_double_clicks,
                        self.boost_failed_card_allowed_time,
                        self.prefer_default_mnemonics_to_source_mnemonics]),
+             ("Performance", [self.run_additional_pre_caching,
+                              self.run_any_additional_pre_caching_on_background_thread]),
              ("Memory", [self.enable_garbage_collection_during_batches,
                          self.enable_automatic_garbage_collection,
                          self.track_instances_in_memory])]

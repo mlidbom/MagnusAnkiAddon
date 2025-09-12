@@ -22,7 +22,7 @@ if TYPE_CHECKING:
     from anki.collection import Collection
     from anki.notes import NoteId
 
-class JPCollection(WeakRefable,Slots):
+class JPCollection(WeakRefable, Slots):
     def __init__(self, anki_collection: Collection) -> None:
         self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker.tracker_for(self)
         mylog.info("JPCollection.__init__")
@@ -44,30 +44,35 @@ class JPCollection(WeakRefable,Slots):
             if not app.is_testing():
                 self._instance_tracker.run_gc_and_assert_single_instance()
 
+            if app.config().run_additional_pre_caching.get_value() and not app.config().run_any_additional_pre_caching_on_background_thread.get_value():
+                self._populate_additional_caches()
+
             self.cache_runner.start()
             app.get_ui_utils().tool_tip(f"{Mine.app_name} done loading in {str(stopwatch.elapsed_seconds())[0:4]} seconds.", milliseconds=6000)
 
             self._is_running = True
-            self._populate_additional_caches_on_background_thread()
+
+            if app.config().run_additional_pre_caching.get_value() and app.config().run_any_additional_pre_caching_on_background_thread.get_value():
+                self._populate_additional_caches_on_background_thread()
+
+    def _populate_additional_caches(self) -> None:
+        if not self._is_running: return
+        from language_services.jamdict_ex.dict_lookup import DictLookup
+        DictLookup.ensure_loaded_into_memory()
+
+        with StopWatch.log_execution_time("Populating studying status cache"):
+            def cache_notes_studying_status(notelist: Sequence[JPNote]) -> None:
+                for note in notelist:
+                    if not self._is_running: return
+                    note.is_studying(CardTypes.reading)
+                    note.is_studying(CardTypes.listening)
+
+            cache_notes_studying_status(self.vocab.all())
+            cache_notes_studying_status(self.kanji.all())
+            cache_notes_studying_status(self.sentences.all())
 
     def _populate_additional_caches_on_background_thread(self) -> None:
-        def populate_caches() -> None:
-            if not self._is_running: return
-            from language_services.jamdict_ex.dict_lookup import DictLookup
-            DictLookup.ensure_loaded_into_memory()
-
-            with StopWatch.log_execution_time("Populating studying status cache"):
-                def cache_notes_studying_status(notelist: Sequence[JPNote]) -> None:
-                    for note in notelist:
-                        if not self._is_running: return
-                        note.is_studying(CardTypes.reading)
-                        note.is_studying(CardTypes.listening)
-
-                cache_notes_studying_status(self.vocab.all())
-                cache_notes_studying_status(self.kanji.all())
-                cache_notes_studying_status(self.sentences.all())
-
-        app_thread_pool.pool.submit(populate_caches)
+        app_thread_pool.pool.submit(self._populate_additional_caches)
 
     @classmethod
     def note_from_note_id(cls, note_id: NoteId) -> JPNote:
