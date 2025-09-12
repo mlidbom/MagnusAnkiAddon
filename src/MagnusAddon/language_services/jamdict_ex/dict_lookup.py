@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from functools import cache
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from ankiutils import app
 from autoslot import Slots
@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 import queue
 import threading
 from concurrent.futures import Future
-from typing import Any, Callable, Generic, TypeVar
+from typing import Callable, Generic, TypeVar
 
 from jamdict import Jamdict
 from language_services.jamdict_ex.dict_entry import DictEntry
@@ -33,7 +33,7 @@ class Request(Generic[T], Slots):
 
 class JamdictThreadingWrapper(Slots):
     def __init__(self) -> None:
-        self._queue: queue.Queue[Request[Any]] = queue.Queue()
+        self._queue: queue.Queue[Request[Any]] = queue.Queue()  # pyright: ignore[reportExplicitAny]
         self._thread: threading.Thread = threading.Thread(target=self._worker, daemon=True)
         self._running: bool = True
         self._thread.start()

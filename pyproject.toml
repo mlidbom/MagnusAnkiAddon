@@ -62,7 +62,6 @@ typeCheckingMode="recommended" # "off", "basic", "standard", "strict", "recommen
 reportPrivateUsage =  "none"
 reportUnknownMemberType =  "none"
 reportUnknownArgumentType =  "none"
-reportExplicitAny = "none" #yeah, we probably don't want to go declaring anything as Any
 reportAny = "none"
 reportImportCycles =  "none"
 

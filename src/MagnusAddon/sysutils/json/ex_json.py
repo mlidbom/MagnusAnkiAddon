@@ -11,6 +11,6 @@ _json_library_shim = JsonLibraryShimBuiltInJson()
 #_json_library_shim = JsonLibraryShimOrjson()
 
 
-def dict_to_json(object_dict: dict[str, Any], indent: int | None = None) -> str:
+def dict_to_json(object_dict: dict[str, Any], indent: int | None = None) -> str:  # pyright: ignore[reportExplicitAny]
     return _json_library_shim.dumps(object_dict, indent=indent)
 

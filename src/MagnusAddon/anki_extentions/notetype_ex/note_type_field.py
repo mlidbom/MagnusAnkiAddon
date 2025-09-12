@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Any
-
 from autoslot import Slots
 from sysutils import typed
 
@@ -18,9 +16,9 @@ class NoteFieldEx(Slots):
         self.plainText: bool = False
         self.collapsed: bool = False
         self.excludeFromSearch: bool = False
-        self.media: list[Any] = []
+        self.media: list[object] = []
 
-    def to_dict(self) -> dict[str, Any]:
+    def to_dict(self) -> dict[str, object]:
         return {
             "name": self.name,
             "ord": self.ord,
@@ -35,8 +33,8 @@ class NoteFieldEx(Slots):
             "media": self.media}
 
     @classmethod
-    def from_dict(cls, d: dict[str, Any]) -> NoteFieldEx:
-        instance = NoteFieldEx(d["name"])
+    def from_dict(cls, d: dict[str, object]) -> NoteFieldEx:
+        instance = NoteFieldEx(typed.str_(d["name"]))
 
         instance.ord = typed.int_(d["ord"])
         instance.sticky = typed.bool_(d["sticky"])

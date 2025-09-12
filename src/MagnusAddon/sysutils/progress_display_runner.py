@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import time
-from typing import Any, Callable, TypeVar
+from typing import Callable, TypeVar
 
 from autoslot import Slots
 from PyQt6.QtCore import Qt
@@ -18,7 +18,7 @@ class Closable(Slots):
 
 
 
-def run_on_background_thread_with_spinning_progress_dialog(message:str, action: Callable[[], Any]) -> None:
+def run_on_background_thread_with_spinning_progress_dialog(message:str, action: Callable[[], object]) -> None:
     dialog = _create_spinning_progress_dialog(message)
 
     future = app_thread_pool.pool.submit(action)

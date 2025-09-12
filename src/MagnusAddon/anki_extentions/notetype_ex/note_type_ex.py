@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, cast
+from typing import cast
 
 from anki.models import NotetypeDict, NotetypeId
 from anki_extentions.notetype_ex.note_type_field import NoteFieldEx
@@ -24,9 +24,9 @@ class NoteTypeEx(Slots):
         self.latexPre:str = ""
         self.latexPost:str = ""
         self.latexsvg:bool = False
-        self.req: list[Any] = []
-        self.vers: list[Any] = []
-        self.tags: list[Any] = []
+        self.req: list[object] = []
+        self.vers: list[object] = []
+        self.tags: list[object] = []
 
         for index, field in enumerate(self.flds):
             field.ord = index

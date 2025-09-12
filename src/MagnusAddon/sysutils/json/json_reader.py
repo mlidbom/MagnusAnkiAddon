@@ -9,10 +9,10 @@ from sysutils.json.ex_json import _json_library_shim
 TProp = TypeVar("TProp")
 
 class JsonReader(Slots):
-    def __init__(self, json_dict: dict[str, Any]) -> None:
-        self._dict: dict[str, Any] = json_dict
+    def __init__(self, json_dict: dict[str, Any]) -> None:  # pyright: ignore[reportExplicitAny]
+        self._dict: dict[str, Any] = json_dict  # pyright: ignore[reportExplicitAny]
 
-    def _get_prop(self, prop: str | list[str], default: object | None) -> Any:  # noqa: ANN401
+    def _get_prop(self, prop: str | list[str], default: object | None) -> Any:  # noqa: ANN401  # pyright: ignore[reportExplicitAny]
         if isinstance(prop, str):
             value = self._dict.get(prop, None)
             if value is None:
@@ -36,7 +36,7 @@ class JsonReader(Slots):
     def string_set(self, prop: str | list[str], default: set[str] | None = None) -> set[str]: return set(self.string_list(prop, list(default) if default is not None else None))
 
     def object_list(self, prop: str | list[str], factory: Callable[[JsonReader], TProp], default: list[TProp] | None = None) -> list[TProp]:
-        prop_value = cast(list[dict[str, Any]], self._get_prop(prop, default))
+        prop_value = cast(list[dict[str, Any]], self._get_prop(prop, default))  # pyright: ignore[reportExplicitAny]
         reader_list = [JsonReader(json_dict) for json_dict in prop_value]
         return [factory(reader) for reader in reader_list]
 
@@ -47,7 +47,7 @@ class JsonReader(Slots):
 
     def _reader_or_none(self, prop: str) -> JsonReader | None:
         dict_ = self._dict.get(prop, None)
-        return None if dict_ is None else JsonReader(cast(dict[str, Any], dict_))
+        return None if dict_ is None else JsonReader(cast(dict[str, Any], dict_))  # pyright: ignore[reportExplicitAny]
 
     @classmethod
     def from_json(cls, json_str: str) -> JsonReader:

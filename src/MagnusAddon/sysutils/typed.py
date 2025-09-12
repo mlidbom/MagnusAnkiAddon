@@ -1,14 +1,14 @@
 from __future__ import annotations
 
-from typing import Any, TypeVar, cast, get_origin
+from typing import TypeVar, cast, get_origin
 
 from beartype.door import is_bearable
 
 
-def str_(value: Any) -> str: return checked_cast(str, value)  # noqa: ANN401
-def int_(value: Any) -> int: return checked_cast(int, value)  # noqa: ANN401
-def float_(value: Any) -> float: return checked_cast(float, value)  # noqa: ANN401
-def bool_(value: Any) -> bool: return checked_cast(bool, value)  # noqa: ANN401
+def str_(value: object) -> str: return checked_cast(str, value)  # noqa: ANN401
+def int_(value: object) -> int: return checked_cast(int, value)  # noqa: ANN401
+def float_(value: object) -> float: return checked_cast(float, value)  # noqa: ANN401
+def bool_(value: object) -> bool: return checked_cast(bool, value)  # noqa: ANN401
 
 CastT = TypeVar("CastT")
 

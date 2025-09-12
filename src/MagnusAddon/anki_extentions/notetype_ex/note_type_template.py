@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Any
-
 from autoslot import Slots
 from sysutils import typed
 
@@ -18,7 +16,7 @@ class NoteTemplateEx(Slots):
         self.bfont: str = "Arial"
         self.bsize: int = 30
 
-    def to_dict(self) -> dict[str, Any]:
+    def to_dict(self) -> dict[str, object]:
         return {"name": self.name,
                 "ord": self.ord,
                 "qfmt": self.qfmt,
@@ -30,8 +28,8 @@ class NoteTemplateEx(Slots):
                 "bsize": self.bsize}
 
     @classmethod
-    def from_dict(cls, d: dict[str, Any]) -> NoteTemplateEx:
-        instance = NoteTemplateEx(d["name"])
+    def from_dict(cls, d: dict[str, str | int | None]) -> NoteTemplateEx:
+        instance = NoteTemplateEx(typed.str_(d["name"]))
 
         instance.ord = typed.int_(d["ord"])
         instance.qfmt = typed.str_(d["qfmt"])

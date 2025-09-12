@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import threading
 from contextlib import contextmanager
-from typing import TYPE_CHECKING, Any, Callable, TypeVar
+from typing import TYPE_CHECKING, Callable, TypeVar
 
 from ankiutils import app
 from fixtures.stubs.ui_utils_stub import UIUtilsStub
@@ -12,17 +12,14 @@ from sysutils.progress_display_runner import Closable
 from sysutils.typed import checked_cast
 
 if TYPE_CHECKING:
-
     from collections.abc import Iterator
 
     from ankiutils.ui_utils_interface import IUIUtils
 
 _thread_local = threading.local()
 
-
 def get_thread_local_ui_utils() -> IUIUtils:
     return checked_cast(UIUtilsStub, _thread_local.ui_utils)
-
 
 @contextmanager
 def _stub_ui_utils_real() -> Iterator[None]:
@@ -32,7 +29,7 @@ def _stub_ui_utils_real() -> Iterator[None]:
 
 @contextmanager
 def _stub_config_dict() -> Iterator[None]:
-    _config_dict:dict[str,Any] = {}
+    _config_dict: dict[str, object] = {}
 
     from configuration import configuration_value
 
@@ -49,6 +46,7 @@ def stub_ui_dependencies() -> Iterator[None]:
         yield
 
 T = TypeVar("T")
+
 @contextmanager
 def _stub_progress_runner() -> Iterator[None]:
     # noinspection PyUnusedLocal
@@ -56,7 +54,7 @@ def _stub_progress_runner() -> Iterator[None]:
         return Closable(lambda: None)
 
     # noinspection PyUnusedLocal
-    def _process_with_progress(items: list[T], process_item: Callable[[T], None], _message:str, _allow_cancel: bool = True, _display_delay_seconds: float = 0.0, _pause_cache_updates: bool = True) -> None:
+    def _process_with_progress(items: list[T], process_item: Callable[[T], None], _message: str, _allow_cancel: bool = True, _display_delay_seconds: float = 0.0, _pause_cache_updates: bool = True) -> None:
         for item in items:
             process_item(item)
 

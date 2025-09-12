@@ -7,7 +7,6 @@ from autoslot import Slots
 if TYPE_CHECKING:
     from sysutils.json.json_reader import JsonReader
 
-from typing import Any
 
 
 @final
@@ -44,7 +43,7 @@ class WordExclusion(Slots):
     def excludes_all_words_excluded_by(self, other: WordExclusion) -> bool:
         return self.word == other.word and (self.index == WordExclusion._no_index or self.index == other.index)
 
-    def to_dict(self) -> dict[str, Any]:
+    def to_dict(self) -> dict[str, object]:
         return {"word": self.word, "index": self.index}
 
     @classmethod

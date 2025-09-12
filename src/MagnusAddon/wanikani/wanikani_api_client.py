@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, final
+from typing import TYPE_CHECKING, final
 
 from autoslot import Slots
 from wanikani_api.client import Client
@@ -24,19 +24,19 @@ class WanikaniClient(Slots):
         v2_api_key = "ebeda84c-2f6a-423e-bfc7-3068796ed50a"
         self._client = Client(v2_api_key)
         self._kana_vocab_list: list[models.Vocabulary] = []
-        self._kana_vocab_dictionary: dict[Any, models.Vocabulary] = {}
-        self._kana_vocab_id_dictionary: dict[Any, models.Vocabulary] = {}
+        self._kana_vocab_dictionary: dict[object, models.Vocabulary] = {}
+        self._kana_vocab_id_dictionary: dict[object, models.Vocabulary] = {}
         self._radical_list: list[models.Radical] = []
         self._kanji_list: list[models.Kanji] = []
         self._vocab_list: list[models.Vocabulary] = []
 
-        self._radical_dictionary: dict[Any, Radical] = {}
-        self._kanji_dictionary: dict[Any, Kanji] = {}
-        self._vocab_dictionary: dict[Any, Vocabulary] = {}
+        self._radical_dictionary: dict[object, Radical] = {}
+        self._kanji_dictionary: dict[object, Kanji] = {}
+        self._vocab_dictionary: dict[object, Vocabulary] = {}
 
-        self._radical_id_dictionary: dict[Any, Radical] = {}
-        self._kanji_id_dictionary: dict[Any, Kanji] = {}
-        self._vocab_id_dictionary: dict[Any, Vocabulary] = {}
+        self._radical_id_dictionary: dict[object, Radical] = {}
+        self._kanji_id_dictionary: dict[object, Kanji] = {}
+        self._vocab_id_dictionary: dict[object, Vocabulary] = {}
 
     # noinspection PyTypeChecker
     def _init(self) -> WanikaniClient:

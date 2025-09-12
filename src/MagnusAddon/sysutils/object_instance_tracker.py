@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import sys
-from typing import Any
 
 from ankiutils import app
 from autoslot import Slots
@@ -48,7 +47,7 @@ def current_snapshot() -> Snapshot:
 
 class ObjectInstanceTracker(Slots):
 
-    def __init__(self, cls_type: type[Any]) -> None:
+    def __init__(self, cls_type: type[object]) -> None:
         self.type_name: str = self._get_fully_qualified_name(cls_type)
         current_instance_count[self.type_name] = current_instance_count.get(self.type_name, 0) + 1
 
@@ -64,7 +63,7 @@ class ObjectInstanceTracker(Slots):
         current_instance_count[self.type_name] -= 1
 
     @staticmethod
-    def _get_fully_qualified_name(cls_type: type[Any]) -> str:
+    def _get_fully_qualified_name(cls_type: type[object]) -> str:
         if cls_type.__module__ != "__builtin__":
             return sys.intern(cls_type.__module__ + "." + cls_type.__qualname__)
         return sys.intern(cls_type.__qualname__)
