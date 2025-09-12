@@ -52,3 +52,6 @@ ignore = [
     "TRY002", #Create your own exception ... Not unless I need to catch it
 ]
 
+[tool.pyright]
+include=["src"]
+extraPaths=["src/MagnusAddon"]
