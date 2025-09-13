@@ -18,17 +18,11 @@ class DisplayRequirements(Slots):
         self.match = match
 
         self.is_yield_last_token_to_overlapping_compound_requirement_fulfilled = self._is_yield_last_token_to_overlapping_compound_requirement_fulfilled()
-
-        # if we have matches that owns the form, it calls the shots for display, no other matches are allowed to be displayed
-        self.yields_to_form_owning_match: bool = match().is_secondary_match
-
-        self.are_fulfilled: bool = (self.is_yield_last_token_to_overlapping_compound_requirement_fulfilled
-                                    and not self.yields_to_form_owning_match)
+        self.are_fulfilled: bool = self.is_yield_last_token_to_overlapping_compound_requirement_fulfilled
 
     def failure_reasons(self) -> list[str]:
         return (SimpleStringListBuilder()
                 .append_if_lambda(not self.is_yield_last_token_to_overlapping_compound_requirement_fulfilled, lambda: f"yield_last_token_to_overlapping_compound:{self.match().word_variant().word.end_location.display_words[0].display_variants[0].form}")
-                .append_if(self.yields_to_form_owning_match, "yields_to_form_owning_match")
                 .value)
 
     @override

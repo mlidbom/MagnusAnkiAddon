@@ -7,7 +7,9 @@ from language_services.janome_ex.word_extraction.matches.match import Match
 from language_services.janome_ex.word_extraction.matches.requirements.display_requirements import DisplayRequirements
 from language_services.janome_ex.word_extraction.matches.requirements.head_requirements import HeadRequirements
 from language_services.janome_ex.word_extraction.matches.requirements.misc_requirements import MiscRequirements
+from language_services.janome_ex.word_extraction.matches.requirements.requirement import NotInState
 from language_services.janome_ex.word_extraction.matches.requirements.tail_requirements import TailRequirements
+from language_services.janome_ex.word_extraction.matches.state_tests.another_match_owns_the_form import AnotherMatchOwnsTheForm
 from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
@@ -18,7 +20,11 @@ if TYPE_CHECKING:
 @final
 class VocabMatch(Match, Slots):
     def __init__(self, word_variant: WeakRef[CandidateWordVariant], vocab: VocabNote) -> None:
-        super().__init__(word_variant, validity_requirements=[], display_requirements=[])
+        super().__init__(word_variant,
+                         validity_requirements=[
+                             NotInState(AnotherMatchOwnsTheForm(self))
+                         ],
+                         display_requirements=[])
         self.vocab: VocabNote = vocab
         self.word_variant: WeakRef[CandidateWordVariant] = word_variant
         self.weakref = WeakRef(self)
@@ -97,7 +103,7 @@ class VocabMatch(Match, Slots):
     @property
     @override
     def hiding_reasons(self) -> list[str]: return (super().hiding_reasons
-                                                  + self.display_requirements.failure_reasons())
+                                                   + self.display_requirements.failure_reasons())
 
     @override
     def __repr__(self) -> str: return f"""{self.vocab.get_question()}, {self.vocab.get_answer()[:10]}: {" ".join(self.failure_reasons)} {" ".join(self.hiding_reasons)}"""
