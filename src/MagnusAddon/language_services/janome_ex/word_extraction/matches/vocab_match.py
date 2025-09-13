@@ -27,7 +27,7 @@ class VocabMatch(Match, Slots):
                              NotInState(AnotherMatchOwnsTheForm(self)),
                              # head reqiuirements
                              NotInState(PrefixIsIn(self, vocab.matching_configuration.configurable_rules.prefix_is_not.get(), true_if_no_prefixes=False)),
-                             #InState(PrefixIsIn(self, vocab.matching_configuration.configurable_rules.required_prefix.get(), true_if_no_prefixes=True))
+                             InState(PrefixIsIn(self, vocab.matching_configuration.configurable_rules.required_prefix.get(), true_if_no_prefixes=True))
                          ],
                          display_requirements=[
                              NotInState(YieldToFollowingOverlappingCompound(self))

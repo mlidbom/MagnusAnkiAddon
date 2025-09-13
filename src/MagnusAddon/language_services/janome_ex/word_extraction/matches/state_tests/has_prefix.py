@@ -19,6 +19,6 @@ class PrefixIsIn(MatchStateTest):
         if self.true_if_no_prefixes and not any(self.prefixes):
             return True
 
-        if any(prefix for prefix in self.prefixes if self.prefix.startswith(prefix)):  # noqa: SIM103
+        if any(prefix for prefix in self.prefixes if self.prefix.endswith(prefix)):  # noqa: SIM103
             return True
         return False
