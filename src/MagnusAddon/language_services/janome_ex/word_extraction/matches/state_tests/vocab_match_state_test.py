@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, cast, override
 
 from language_services.janome_ex.word_extraction.matches.state_tests.match_state_test import MatchStateTest
+from note.vocabulary.vocabnote import VocabNote
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
@@ -22,3 +23,6 @@ class VocabMatchStateTest(MatchStateTest):
 
     @property
     def rules(self) -> VocabNoteMatchingConfiguration: return self.match.vocab.matching_configuration
+
+    @property
+    def vocab(self) -> VocabNote: return self.match.vocab

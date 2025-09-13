@@ -41,7 +41,7 @@ def build_matching_settings_menu(toggle_flags_menu: QMenu, vocab: VocabNote) -> 
         def build_misc_menu(misc_menu: QMenu) -> None:
             add_require_forbid_menu(misc_menu, shortcutfinger.home1("Sentence start"), vocab.matching_configuration.requires_forbids.sentence_start)
             add_require_forbid_menu(misc_menu, shortcutfinger.home2("Sentence end"), vocab.matching_configuration.requires_forbids.sentence_end)
-            add_require_forbid_menu(misc_menu, shortcutfinger.home3("exact match"), vocab.matching_configuration.requires_forbids.requires_exact_match)
+            add_require_forbid_menu(misc_menu, shortcutfinger.home3("exact match"), vocab.matching_configuration.requires_forbids.exact_match)
             add_require_forbid_menu(misc_menu, shortcutfinger.home4("single token"), vocab.matching_configuration.requires_forbids.single_token)
 
         def build_stem_menu(stem_menu: QMenu) -> None:

@@ -63,7 +63,7 @@ class VocabMatchingRulesConfigurationRequiresForbidsFlags(Slots):
         self.single_token: RequireForbidFlagField = RequireForbidFlagField(vocab, Tags.Vocab.Matching.Requires.single_token, Tags.Vocab.Matching.Requires.compound)
         self.sentence_end: RequireForbidFlagField = RequireForbidFlagField(vocab, Tags.Vocab.Matching.Requires.sentence_end, Tags.Vocab.Matching.Forbids.sentence_end)
         self.sentence_start: RequireForbidFlagField = RequireForbidFlagField(vocab, Tags.Vocab.Matching.Requires.sentence_start, Tags.Vocab.Matching.Forbids.sentence_start)
-        self.requires_exact_match: RequireForbidFlagField = RequireForbidFlagField(vocab, Tags.Vocab.Matching.Requires.exact_match, Tags.Vocab.Matching.Forbids.exact_match)
+        self.exact_match: RequireForbidFlagField = RequireForbidFlagField(vocab, Tags.Vocab.Matching.Requires.exact_match, Tags.Vocab.Matching.Forbids.exact_match)
         self.yield_last_token: RequireForbidFlagField = YieldLastTokenToOverlappingCompound(vocab)
 
 class VocabMatchingRulesConfigurationBoolFlags(Slots):
@@ -89,8 +89,8 @@ class VocabNoteMatchingConfiguration(WeakRefable, Slots):
 
     @override
     def __repr__(self) -> str: return (SkipFalsyValuesDebugReprBuilder()
-                                       .flag("requires_exact_match", self.requires_forbids.requires_exact_match.is_required)
-                                       .flag("forbids_exact_match", self.requires_forbids.requires_exact_match.is_forbidden)
+                                       .flag("requires_exact_match", self.requires_forbids.exact_match.is_required)
+                                       .flag("forbids_exact_match", self.requires_forbids.exact_match.is_forbidden)
                                        .flag("requires_single_token", self.requires_forbids.single_token.is_required)
                                        .flag("requires_compound", self.requires_forbids.single_token.is_forbidden)
                                        .flag("requires_a_stem", self.requires_forbids.a_stem.is_required)
