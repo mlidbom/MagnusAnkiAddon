@@ -20,10 +20,6 @@ class HeadRequirements(Slots):
         rules: VocabNoteMatchingConfiguration = match.vocab.matching_configuration
         self.config: VocabNoteMatchingConfiguration = rules
 
-        self.has_past_tense_stem: bool = end_of_stem is not None and (end_of_stem().token.is_past_tense_stem() or word_variant().word.start_location.token.is_past_tense_marker())
-        self.fulfills_forbids_past_tense_stem: bool = not rules.requires_forbids.past_tense_stem.is_forbidden or not self.has_past_tense_stem
-        self.fulfills_requires_past_tense_stem: bool = not rules.requires_forbids.past_tense_stem.is_required or self.has_past_tense_stem
-
         self.has_e_stem: bool = (end_of_stem is not None and
                                  (end_of_stem().token.surface[-1] in conjugator.e_stem_characters
                                   or kana_utils.character_is_kanji(end_of_stem().token.surface[-1])))
@@ -34,16 +30,12 @@ class HeadRequirements(Slots):
         self.are_fulfilled = (True
                               and self.fulfills_requires_e_stem_requirement
                               and self.fulfills_forbids_e_stem_requirement
-                              and self.fulfills_requires_past_tense_stem
-                              and self.fulfills_forbids_past_tense_stem
                               )
 
     def failure_reasons(self) -> list[str]:
         return (SimpleStringListBuilder()
                 .append_if(not self.fulfills_forbids_e_stem_requirement, "forbids_e_stem")
                 .append_if(not self.fulfills_requires_e_stem_requirement, "requires_e_stem")
-                .append_if(not self.fulfills_forbids_past_tense_stem, "forbids_past_tense_stem")
-                .append_if(not self.fulfills_requires_past_tense_stem, "requires_past_tense_stem")
                 .value)
 
     @override
