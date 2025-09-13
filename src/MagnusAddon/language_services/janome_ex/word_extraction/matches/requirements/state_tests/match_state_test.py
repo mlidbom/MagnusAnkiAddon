@@ -17,3 +17,6 @@ class MatchStateTest:
     @property
     def match_is_in_state(self) -> bool: raise NotImplementedError()
 
+    @property
+    def name_if_match_is_in_state(self) -> str | None: return self.name if self.match_is_in_state else None
+
