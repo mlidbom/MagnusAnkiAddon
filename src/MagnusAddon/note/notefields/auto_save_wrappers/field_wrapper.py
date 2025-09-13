@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Generic, TypeVar
+from typing import TYPE_CHECKING
 
 from autoslot import Slots
 
@@ -8,10 +8,8 @@ if TYPE_CHECKING:
     from note.notefields.auto_save_wrappers.value_wrapper import ValueWrapper
     from note.notefields.json_object_field import SerializedObjectField
 
-TValue = TypeVar("TValue")
-TWrapper = TypeVar("TWrapper")
 
-class FieldWrapper(Generic[TValue, TWrapper], Slots):
+class FieldWrapper[TValue, TWrapper](Slots):
     def __init__(self, field: SerializedObjectField[TWrapper], value: ValueWrapper[TValue]) -> None:
         self._field: SerializedObjectField[TWrapper] = field
         self._value: ValueWrapper[TValue] = value

@@ -1,13 +1,11 @@
 from __future__ import annotations
 
 from collections import deque
-from typing import Generic, TypeVar
 
 from autoslot import Slots
 
-T = TypeVar("T")
 
-class RecentItems(Generic[T], Slots):
+class RecentItems[T](Slots):
     def __init__(self, max_size: int) -> None:
         self.items: deque[T] = deque(maxlen=max_size)
         self.max_size: int = max_size

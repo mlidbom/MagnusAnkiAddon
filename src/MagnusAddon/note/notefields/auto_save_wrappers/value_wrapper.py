@@ -1,12 +1,9 @@
 from __future__ import annotations
 
-from typing import Generic, TypeVar
-
 from autoslot import Slots
 
-TValue = TypeVar("TValue")
 
-class ValueWrapper(Generic[TValue], Slots):
+class ValueWrapper[TValue](Slots):
     def __init__(self, value: TValue) -> None:
         self._value: TValue = value
 

@@ -2,16 +2,14 @@ from __future__ import annotations
 
 import threading
 from concurrent.futures import Future
-from typing import TYPE_CHECKING, Generic, TypeVar, cast
+from typing import TYPE_CHECKING, cast
 
 from autoslot import Slots
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-T = TypeVar("T")
-
-class Lazy(Generic[T], Slots):
+class Lazy[T](Slots):
     def __init__(self, factory: Callable[[], T]) -> None:
         self.factory: Callable[[], T] = factory
         self._instance: T | None = None
@@ -30,7 +28,7 @@ class Lazy(Generic[T], Slots):
     def reset(self) -> None:
         self._instance = None
 
-class BackgroundInitialingLazy(Generic[T], Slots):
+class BackgroundInitialingLazy[T](Slots):
     def __init__(self, factory: Callable[[], T], delay_seconds: float = 0) -> None:
         self._lock: threading.Lock = threading.Lock()
         self._future_instance: Future[T] | None = None

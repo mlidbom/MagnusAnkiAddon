@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Generic, TypeVar
+from typing import TYPE_CHECKING
 
 from autoslot import Slots
 from note.notefields.string_field import AutoStrippingStringField
@@ -10,13 +10,11 @@ from sysutils.weak_ref import WeakRef, WeakRefable
 if TYPE_CHECKING:
     from note.jpnote import JPNote
 
-T = TypeVar("T")
-
-class ObjectSerializer(Generic[T], Slots):
+class ObjectSerializer[T](Slots):
     def serialize(self, instance: T) -> str: raise NotImplementedError()  # pyright: ignore[reportUnusedParameter]
     def deserialize(self, serialized: str) -> T: raise NotImplementedError()  # pyright: ignore[reportUnusedParameter]
 
-class SerializedObjectField(Generic[T], WeakRefable, Slots):
+class SerializedObjectField[T](WeakRefable, Slots):
     def __init__(self, note: WeakRef[JPNote], field: str, serializer: ObjectSerializer[T]) -> None:
         self._note: WeakRef[JPNote] = note
         self._field: AutoStrippingStringField = AutoStrippingStringField(note, field)

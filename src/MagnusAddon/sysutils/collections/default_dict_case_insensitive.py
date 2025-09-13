@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import collections
-from typing import TYPE_CHECKING, Generic, TypeVar, override
+from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
 from sysutils import typed
@@ -9,9 +9,7 @@ from sysutils import typed
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-VT = TypeVar("VT")  # Value type
-
-class DefaultDictCaseInsensitive(collections.defaultdict[str, VT], Generic[VT], Slots):
+class DefaultDictCaseInsensitive[VT](collections.defaultdict[str, VT], Slots):
     def __init__(self, default_factory: Callable[[], VT], **kwargs: object) -> None:
         super().__init__(default_factory, **{key.lower(): value for key, value in kwargs.items()})
 

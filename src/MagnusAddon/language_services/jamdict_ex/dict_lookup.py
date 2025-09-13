@@ -20,15 +20,13 @@ if TYPE_CHECKING:
 import queue
 import threading
 from concurrent.futures import Future
-from typing import Generic, TypeVar
 
 from jamdict import Jamdict  # pyright: ignore[reportMissingTypeStubs]
 from language_services.jamdict_ex.dict_entry import DictEntry
 from sysutils import ex_iterable, ex_sequence, kana_utils
 
-T = TypeVar("T")
 
-class Request(Generic[T], Slots):
+class Request[T](Slots):
     def __init__(self, func: Callable[[Jamdict], T], future: Future[T]) -> None:
         self.func: Callable[[Jamdict], T] = func
         self.future: Future[T] = future

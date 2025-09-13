@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Generic, TypeVar, override
+from typing import TYPE_CHECKING, Any, override
 
 from autoslot import Slots
 
@@ -9,9 +9,7 @@ if TYPE_CHECKING:
 
     from note.notefields.json_object_field import SerializedObjectField
 
-TValue = TypeVar("TValue")
-
-class FieldSetWrapper(Generic[TValue], Slots):
+class FieldSetWrapper[TValue](Slots):
     _secret: str = "aoeulrcaboeusthb"
     def __init__(self, save_callback: Callable[[], None], value: Callable[[], set[TValue]], secret: str) -> None:
         if FieldSetWrapper._secret != secret: raise ValueError("use the factory methods, not this private constructor")
