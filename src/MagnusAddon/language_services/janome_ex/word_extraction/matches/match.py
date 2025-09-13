@@ -23,7 +23,7 @@ class Match(WeakRefable, Slots):
         self._validity_requirements: list[MatchRequirement] = ([
                                                                    NotInState(IsConfiguredIncorrect(self))
                                                                ]
-                                                               + display_requirements)
+                                                               + validity_requirements)
         self._display_requirements: list[MatchRequirement] = ([
                                                                   NotInState(IsShadowed(self)),
                                                                   NotInState(IsConfiguredHidden(self))
