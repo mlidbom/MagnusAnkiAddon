@@ -37,7 +37,8 @@ class VocabMatch(Match, Slots):
                              # head requirements
                              NotInState(PrefixIsIn(self, vocab.matching_configuration.configurable_rules.prefix_is_not.get()),
                                         is_requirement_active=vocab.matching_configuration.configurable_rules.prefix_is_not.any()),
-                             InState(PrefixIsIn(self, vocab.matching_configuration.configurable_rules.required_prefix.get()), is_requirement_active=vocab.matching_configuration.configurable_rules.required_prefix.any()),
+                             InState(PrefixIsIn(self, vocab.matching_configuration.configurable_rules.required_prefix.get()),
+                                     is_requirement_active=vocab.matching_configuration.configurable_rules.required_prefix.any()),
                              RequiresForbidsRequirement(IsSentenceStart(self), vocab.matching_configuration.requires_forbids.sentence_start),
                              RequiresForbidsRequirement(HasTeFormStem(self), vocab.matching_configuration.requires_forbids.te_form_stem),
                              RequiresForbidsRequirement(HasAStem(self), vocab.matching_configuration.requires_forbids.a_stem),
