@@ -21,26 +21,3 @@ class MatchRequirement(Slots):
     @override
     def __repr__(self) -> str: return self.failure_reason
 
-class InState(MatchRequirement, Slots):
-    def __init__(self, state_test: MatchStateTest) -> None:
-        super().__init__(state_test)
-
-    @property
-    @override
-    def is_fulfilled(self) -> bool: return self.state_test.match_is_in_state
-
-    @property
-    @override
-    def failure_reason(self) -> str: return f"not_{self.state_test.state_description}"
-
-class NotInState(MatchRequirement, Slots):
-    def __init__(self, state_test: MatchStateTest) -> None:
-        super().__init__(state_test)
-
-    @property
-    @override
-    def is_fulfilled(self) -> bool: return not self.state_test.match_is_in_state
-
-    @property
-    @override
-    def failure_reason(self) -> str: return self.state_test.state_description or ""

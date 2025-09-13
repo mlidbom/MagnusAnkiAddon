@@ -6,7 +6,7 @@ from autoslot import Slots
 from language_services.janome_ex.word_extraction.matches.match import Match
 from language_services.janome_ex.word_extraction.matches.requirements.head_requirements import HeadRequirements
 from language_services.janome_ex.word_extraction.matches.requirements.misc_requirements import MiscRequirements
-from language_services.janome_ex.word_extraction.matches.requirements.requirement import NotInState
+from language_services.janome_ex.word_extraction.matches.requirements.not_in_state import NotInState
 from language_services.janome_ex.word_extraction.matches.requirements.tail_requirements import TailRequirements
 from language_services.janome_ex.word_extraction.matches.state_tests.another_match_owns_the_form import AnotherMatchOwnsTheForm
 from language_services.janome_ex.word_extraction.matches.state_tests.yield_to_following_overlapping_compound import YieldToFollowingOverlappingCompound
