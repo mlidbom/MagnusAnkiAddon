@@ -7,9 +7,10 @@ from language_services.janome_ex.word_extraction.matches.state_tests.match_state
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.match import Match
+    from sysutils.weak_ref import WeakRef
 
 class HasAStem(MatchStateTest):
-    def __init__(self, match: Match) -> None:
+    def __init__(self, match: WeakRef[Match]) -> None:
         super().__init__(match, "a_stem")
 
     @property

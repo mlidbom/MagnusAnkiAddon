@@ -19,11 +19,8 @@ class CandidateWordVariantViewModel:
         self.display_matches: list[MatchViewModel] = [match for match in self.matches if match.match.is_displayed]
         self.has_perfect_match: bool = any(match.match_owns_form for match in self.matches if match.match.is_displayed)
 
-        def primary_matches_first(form: MatchViewModel) -> int:
-            return 1 if form.match.is_secondary_match else 0
-
-        self.primary_display_forms: list[MatchViewModel] = [form for form in self.matches if primary_matches_first(form)]
-        self.matches = sorted(self.matches, key=primary_matches_first)
+        self.primary_display_forms: list[MatchViewModel] = [form for form in self.matches if form.match.is_displayed]
+        self.matches = sorted(self.matches, key=lambda match_vm: 0 if match_vm.match.is_displayed else 1)
 
     @override
     def __repr__(self) -> str: return (

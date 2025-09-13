@@ -24,7 +24,3 @@ class DictionaryMatch(Match, Slots):
     @property
     @override
     def readings(self) -> list[str]: return [typed.str_(f.text) for f in self.dictionary_entry.entry.kana_forms]  # pyright: ignore[reportUnknownArgumentType, reportUnknownMemberType]
-
-    @property
-    @override
-    def is_secondary_match(self) -> bool: return True

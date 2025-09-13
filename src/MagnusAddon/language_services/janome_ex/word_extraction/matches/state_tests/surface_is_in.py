@@ -6,9 +6,10 @@ from language_services.janome_ex.word_extraction.matches.state_tests.match_state
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.match import Match
+    from sysutils.weak_ref import WeakRef
 
 class SurfaceIsIn(MatchStateTest):
-    def __init__(self, match: Match, surfaces: set[str]) -> None:
+    def __init__(self, match: WeakRef[Match], surfaces: set[str]) -> None:
         super().__init__(match, f"""surface_in:{",".join(surfaces)}""")
         self.surfaces: set[str] = surfaces
 

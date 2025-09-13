@@ -7,26 +7,26 @@ from language_services.janome_ex.word_extraction.matches.requirements.not_in_sta
 from language_services.janome_ex.word_extraction.matches.state_tests.is_configured_hidden import IsConfiguredHidden
 from language_services.janome_ex.word_extraction.matches.state_tests.is_configured_incorrect import IsConfiguredIncorrect
 from language_services.janome_ex.word_extraction.matches.state_tests.is_shadowed import IsShadowed
-from sysutils.weak_ref import WeakRefable
+from sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.candidate_word import CandidateWord
     from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
     from language_services.janome_ex.word_extraction.matches.requirements.requirement import MatchRequirement
-    from sysutils.weak_ref import WeakRef
 
 class Match(WeakRefable, Slots):
     def __init__(self, word_variant: WeakRef[CandidateWordVariant],
                  validity_requirements: list[MatchRequirement],
                  display_requirements: list[MatchRequirement]) -> None:
+        self.weakref = WeakRef(self)
         self._variant: WeakRef[CandidateWordVariant] = word_variant
         self._validity_requirements: list[MatchRequirement] = ([
-                                                                   NotInState(IsConfiguredIncorrect(self))
+                                                                   NotInState(IsConfiguredIncorrect(self.weakref))
                                                                ]
                                                                + validity_requirements)
         self._display_requirements: list[MatchRequirement] = ([
-                                                                  NotInState(IsShadowed(self)),
-                                                                  NotInState(IsConfiguredHidden(self))
+                                                                  NotInState(IsShadowed(self.weakref)),
+                                                                  NotInState(IsConfiguredHidden(self.weakref))
                                                               ]
                                                               + display_requirements)
 
@@ -34,8 +34,6 @@ class Match(WeakRefable, Slots):
     def answer(self) -> str: raise NotImplementedError()
     @property
     def readings(self) -> list[str]: raise NotImplementedError()
-    @property
-    def is_secondary_match(self) -> bool: raise NotImplementedError()
 
     @property
     def tokenized_form(self) -> str: return self.variant.form

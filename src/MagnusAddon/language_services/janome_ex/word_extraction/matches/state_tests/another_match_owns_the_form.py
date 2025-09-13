@@ -6,12 +6,23 @@ from language_services.janome_ex.word_extraction.matches.state_tests.vocab_match
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
+    from sysutils.weak_ref import WeakRef
+
     pass
 
 class AnotherMatchOwnsTheForm(VocabMatchStateTest):
-    def __init__(self, match: VocabMatch) -> None:
+    def __init__(self, match: WeakRef[VocabMatch]) -> None:
         super().__init__(match, "another_match_owns_the_form")
 
     @property
     @override
-    def match_is_in_state(self) -> bool: return self.match.is_secondary_match
+    def match_is_in_state(self) -> bool:
+        if self.vocab.forms.is_owned_form(self.tokenized_form):
+            return False
+
+        if any(other_match for other_match in self.variant.vocab_matches  # noqa: SIM103
+               if other_match != self.match
+                  and other_match.vocab.forms.is_owned_form(self.tokenized_form)
+                  and other_match.is_valid):
+            return True
+        return False

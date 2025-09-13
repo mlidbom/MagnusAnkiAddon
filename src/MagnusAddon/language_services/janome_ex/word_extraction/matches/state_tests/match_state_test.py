@@ -8,14 +8,15 @@ if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.match import Match
     from language_services.janome_ex.word_extraction.text_location import TextAnalysisLocation
     from note.sentences.sentence_configuration import SentenceConfiguration
+    from sysutils.weak_ref import WeakRef
 
 class MatchStateTest:
-    def __init__(self, match: Match, name: str) -> None:
-        self._match: Match = match
+    def __init__(self, match: WeakRef[Match], name: str) -> None:
+        self._match: WeakRef[Match] = match
         self.description: str = name
 
     @property
-    def match(self) -> Match: return self._match
+    def match(self) -> Match: return self._match()
     @property
     def match_is_in_state(self) -> bool: raise NotImplementedError()
     @property

@@ -6,11 +6,12 @@ from language_services.janome_ex.word_extraction.matches.state_tests.vocab_match
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
+    from sysutils.weak_ref import WeakRef
 
     pass
 
 class IsExactMatch(VocabMatchStateTest):
-    def __init__(self, match: VocabMatch) -> None:
+    def __init__(self, match: WeakRef[VocabMatch]) -> None:
         super().__init__(match, "exact_match")
 
     @property

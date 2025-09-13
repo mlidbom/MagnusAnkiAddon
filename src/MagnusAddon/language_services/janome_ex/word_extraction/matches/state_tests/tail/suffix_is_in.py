@@ -6,9 +6,10 @@ from language_services.janome_ex.word_extraction.matches.state_tests.match_state
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.match import Match
+    from sysutils.weak_ref import WeakRef
 
 class SuffixIsIn(MatchStateTest):
-    def __init__(self, match: Match, suffixes: set[str]) -> None:
+    def __init__(self, match: WeakRef[Match], suffixes: set[str]) -> None:
         super().__init__(match, f"""suffix_in:{",".join(suffixes)}""")
         self.suffixes: set[str] = suffixes
 

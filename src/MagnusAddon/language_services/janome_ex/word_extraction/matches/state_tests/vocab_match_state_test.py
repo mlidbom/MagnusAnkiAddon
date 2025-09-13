@@ -8,10 +8,11 @@ if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
     from note.vocabulary.vocabnote import VocabNote
     from note.vocabulary.vocabnote_matching_rules import VocabNoteMatchingConfiguration
+    from sysutils.weak_ref import WeakRef
 
 
 class VocabMatchStateTest(MatchStateTest):
-    def __init__(self, match: VocabMatch, name: str) -> None:
+    def __init__(self, match: WeakRef[VocabMatch], name: str) -> None:
         super().__init__(match, name)
         self.name: str = name
 

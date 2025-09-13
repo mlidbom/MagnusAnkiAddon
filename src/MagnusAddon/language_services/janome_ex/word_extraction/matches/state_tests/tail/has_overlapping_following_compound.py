@@ -2,15 +2,16 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from language_services.janome_ex.word_extraction.matches.state_tests.vocab_match_state_test import VocabMatchStateTest
+from language_services.janome_ex.word_extraction.matches.state_tests.match_state_test import MatchStateTest
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
+    from language_services.janome_ex.word_extraction.matches.match import Match
+    from sysutils.weak_ref import WeakRef
 
     pass
 
-class HasOverlappingFollowingCompound(VocabMatchStateTest):
-    def __init__(self, match: VocabMatch) -> None:
+class HasOverlappingFollowingCompound(MatchStateTest):
+    def __init__(self, match: WeakRef[Match]) -> None:
         super().__init__(match, "has_following_overlapping_compound")
 
     @property
