@@ -36,6 +36,10 @@ class MatchStateTest:
     def previous_location(self) -> TextAnalysisLocation | None: return self.word.start_location.previous() if self.word.start_location.previous else None
     @property
     def prefix(self) -> str: return self.previous_location.token.surface if self.previous_location else ""
+    @property
+    def next_location(self) -> TextAnalysisLocation | None: return self.word.end_location.next() if self.word.end_location.next else None
+    @property
+    def suffix(self) -> str: return self.next_location.token.surface if self.next_location else ""
 
     @override
     def __repr__(self) -> str: return self.state_description

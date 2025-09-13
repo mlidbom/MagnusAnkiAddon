@@ -38,6 +38,9 @@ class VocabMatch(Match, Slots):
                              RequiresForbidsRequirement(HasAStem(self), vocab.matching_configuration.requires_forbids.a_stem),
                              RequiresForbidsRequirement(HasPastTenseStem(self), vocab.matching_configuration.requires_forbids.past_tense_stem),
                              RequiresForbidsRequirement(HasEStem(self), vocab.matching_configuration.requires_forbids.e_stem)
+
+                             #tail requirements
+
                          ],
                          display_requirements=[
                              NotInState(YieldToFollowingOverlappingCompound(self))
