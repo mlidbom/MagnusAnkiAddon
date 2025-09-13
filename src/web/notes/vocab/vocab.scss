@@ -210,9 +210,10 @@
                         .vocabInContext {
                             &.primaryForm { background-color: var(--colorBgVoc); }
                             &.secondaryForm { background-color: var(--colorBgRad); }
-                            &.derivedCompoundForm { background-color: var(--colorBgRead); }
-                            &.secondaryFormDerivedCompoundForm { background-color: color-mix(in lch, var(--colorBgVoc), var(--colorBgRead) 80%); }
-                            &.undisplayedMatch { background-color: lightgrey }
+                            &.primaryCompoundForm { background-color: var(--colorBgRead); }
+                            &.secondaryCompoundForm { background-color: color-mix(in lch, var(--colorBgVoc), var(--colorBgRead) 80%); }
+                            //&.shadedMatch, &.yieldedMatch  { background-color: lightgrey }
+                            &.yieldedToMatch, &.shadingMatch { background-color: lightgrey }
                         }
                     }
                     .sentenceAnswer { color: var(--colorTextMeaning);
