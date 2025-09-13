@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, final, override
 
 from autoslot import Slots
-from language_services.janome_ex.word_extraction.analysis_constants import non_word_characters
 from sysutils.simple_string_list_builder import SimpleStringListBuilder
 
 if TYPE_CHECKING:
@@ -19,7 +18,7 @@ class TailRequirements(Slots):
         self.config = vocab.matching_configuration
         rules = vocab.matching_configuration
 
-        self.has_suffix: bool = tail is not None and tail().token.surface != "" and tail().token.surface[-1] not in non_word_characters
+        self.has_suffix: bool = tail is not None and tail().token.surface != "" and not tail().token.surface[-1].isspace()
 
         self.fulfills_requires_sentence_end_requirement: bool = (not self.config.requires_forbids.sentence_end.is_required
                                                                  or (tail is None or tail().token.is_non_word_character or tail().token.surface in _quote_characters))
