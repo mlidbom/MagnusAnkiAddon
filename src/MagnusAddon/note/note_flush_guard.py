@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from note.jpnote import JPNote
     from sysutils.weak_ref import WeakRef
 
-class NoteFlushGuard(Slots):
+class NoteRecursiveFlushGuard(Slots):
     def __init__(self, note: WeakRef[JPNote]) -> None:
         self._note: WeakRef[JPNote] = note
         self._depth:int = 0

@@ -70,13 +70,13 @@ class NoteCache[TNote: JPNote, TSnapshot: CachedNote](Slots):
                 self._refresh_in_cache(cached_note)
             else:  # a note has been edited outside of our control, we need to switch to that up-to-date note and refresh generated data
                 note = self._create_note(backend_note)
-                with note.flush_guard.pause_flushing():
+                with note.recursive_flush_guard.pause_flushing():
                     note.update_generated_data()
                     self._refresh_in_cache(note)
         elif backend_note.id in self._deleted:  # undeleted note
             self._deleted.remove(backend_note.id)
             note = self._create_note(backend_note)
-            with note.flush_guard.pause_flushing():
+            with note.recursive_flush_guard.pause_flushing():
                 note.update_generated_data()
                 self._add_to_cache(note)
 

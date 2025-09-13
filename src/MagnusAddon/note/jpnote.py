@@ -9,7 +9,7 @@ from ankiutils import app
 from autoslot import Slots
 from note import noteutils
 from note.note_constants import CardTypes, MyNoteFields, NoteTypes, Tags
-from note.note_flush_guard import NoteFlushGuard
+from note.note_flush_guard import NoteRecursiveFlushGuard
 from sysutils import ex_assert, ex_str
 from sysutils.object_instance_tracker import ObjectInstanceTracker
 from sysutils.typed import non_optional, str_
@@ -24,12 +24,12 @@ class JPNote(WeakRefable,Slots):
     def __init__(self, note: Note) -> None:
         self.weakref: WeakRef[JPNote] = WeakRef(self)
         self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
-        self.flush_guard: NoteFlushGuard = NoteFlushGuard(self.weakref)
+        self.recursive_flush_guard: NoteRecursiveFlushGuard = NoteRecursiveFlushGuard(self.weakref)
         self.backend_note: Note = note
         self.__hash_value = 0
 
     @property
-    def is_flushing(self) -> bool: return self.flush_guard.is_flushing
+    def is_flushing(self) -> bool: return self.recursive_flush_guard.is_flushing
 
     @override
     def __eq__(self, other: object) -> bool:
@@ -137,7 +137,7 @@ class JPNote(WeakRefable,Slots):
 
     def _flush(self) -> None:
         if self._is_persisted():
-            self.flush_guard.flush()
+            self.recursive_flush_guard.flush()
 
     def set_field(self, field_name: str, value: str) -> None:
         field_value = self.backend_note[field_name]
