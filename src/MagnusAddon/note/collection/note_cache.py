@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Generic, TypeVar
+from typing import TYPE_CHECKING
 
 from autoslot import Slots
 from note.jpnote import JPNote
@@ -20,10 +20,7 @@ class CachedNote(Slots):
         self.answer: str = note.get_answer()
         self.question: str = note.get_question()
 
-TNote = TypeVar("TNote", bound=JPNote)
-TSnapshot = TypeVar("TSnapshot", bound=CachedNote)
-
-class NoteCache(Generic[TNote, TSnapshot], Slots):
+class NoteCache[TNote: JPNote, TSnapshot: CachedNote](Slots):
     def __init__(self, all_notes: list[TNote], cached_note_type: type[TNote], cache_runner: CacheRunner) -> None:
         self._note_type: type[TNote] = cached_note_type
         self._by_question: DefaultDictCaseInsensitive[set[TNote]] = DefaultDictCaseInsensitive(set)

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Generic, TypeVar
+from typing import TYPE_CHECKING
 
 from ankiutils import app, ui_utils
 from autoslot import Slots
@@ -16,9 +16,7 @@ if TYPE_CHECKING:
 
     from anki.cards import Card
 
-TNote = TypeVar("TNote", bound=JPNote)
-
-class PrerenderingAnswerContentRenderer(Generic[TNote], Slots):
+class PrerenderingAnswerContentRenderer[TNote: JPNote](Slots):
     def __init__(self, cls: type[TNote], render_methods: dict[str, Callable[[TNote], str]]) -> None:
         self._cls: type[TNote] = cls
         self._render_methods: dict[str, Callable[[TNote], str]] = render_methods

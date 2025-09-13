@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 T = TypeVar("T", covariant=True)
 
-class WeakRef(Generic[T], Slots):
+class WeakRef(Generic[T], Slots):  # noqa: UP046 the automatic inference thinks this in invariant even though it is covariant so we need the old syntax
     def __init__(self, obj: T) -> None:
         self._weakreference: ReferenceType[T] = weakref.ref(obj)
 
