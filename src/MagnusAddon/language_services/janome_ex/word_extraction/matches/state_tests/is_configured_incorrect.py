@@ -10,10 +10,9 @@ if TYPE_CHECKING:
 
 class IsConfiguredIncorrect(MatchStateTest):
     def __init__(self, match: WeakRef[Match]) -> None:
-        super().__init__(match, "configured_incorrect")
+        super().__init__(match, "configured_incorrect", cache_is_in_state=True)
 
-    @property
     @override
-    def match_is_in_state(self) -> bool:
+    def _internal_match_is_in_state(self) -> bool:
         return self.configuration.incorrect_matches.excludes_at_index(self.tokenized_form,
                                                                       self.match.start_index)

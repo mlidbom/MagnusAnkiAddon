@@ -10,12 +10,11 @@ if TYPE_CHECKING:
 
 class PrefixIsIn(MatchStateTest):
     def __init__(self, match: WeakRef[Match], prefixes: set[str]) -> None:
-        super().__init__(match, f"""prefix_in:{",".join(prefixes)}""")
+        super().__init__(match, f"""prefix_in:{",".join(prefixes)}""", cache_is_in_state=True)
         self.prefixes: set[str] = prefixes
 
-    @property
     @override
-    def match_is_in_state(self) -> bool:
+    def _internal_match_is_in_state(self) -> bool:
         if any(prefix for prefix in self.prefixes if self.prefix.endswith(prefix)):  # noqa: SIM103
             return True
         return False

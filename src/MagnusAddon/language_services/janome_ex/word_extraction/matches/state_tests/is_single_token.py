@@ -10,11 +10,10 @@ if TYPE_CHECKING:
 
 class IsSingleToken(MatchStateTest):
     def __init__(self, match: WeakRef[Match]) -> None:
-        super().__init__(match, "single_token")
+        super().__init__(match, "single_token", cache_is_in_state=True)
 
-    @property
     @override
-    def match_is_in_state(self) -> bool:
+    def _internal_match_is_in_state(self) -> bool:
         if not self.word.is_custom_compound:  # noqa: SIM103
             return True
         return False

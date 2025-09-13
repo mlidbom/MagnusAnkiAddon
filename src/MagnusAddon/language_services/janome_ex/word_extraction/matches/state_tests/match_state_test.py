@@ -1,6 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, override
+from typing import TYPE_CHECKING, final, override
+
+from sysutils.lazy import Lazy
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.candidate_word import CandidateWord
@@ -11,14 +13,18 @@ if TYPE_CHECKING:
     from sysutils.weak_ref import WeakRef
 
 class MatchStateTest:
-    def __init__(self, match: WeakRef[Match], name: str) -> None:
+    def __init__(self, match: WeakRef[Match], name: str, cache_is_in_state: bool) -> None:
         self._match: WeakRef[Match] = match
         self.description: str = name
+        self.is_cachable: bool = cache_is_in_state
+        self._future_match_is_in_state: Lazy[bool] | None = Lazy(self._internal_match_is_in_state) if cache_is_in_state else None
+
+    @property
+    @final
+    def match_is_in_state(self) -> bool: return self._future_match_is_in_state() if self._future_match_is_in_state else self._internal_match_is_in_state()
 
     @property
     def match(self) -> Match: return self._match()
-    @property
-    def match_is_in_state(self) -> bool: raise NotImplementedError()
     @property
     def state_description(self) -> str: return self.description
     @property
@@ -41,6 +47,8 @@ class MatchStateTest:
     def next_location(self) -> TextAnalysisLocation | None: return self.word.end_location.next() if self.word.end_location.next else None
     @property
     def suffix(self) -> str: return self.next_location.token.surface if self.next_location else ""
+
+    def _internal_match_is_in_state(self) -> bool: raise NotImplementedError()
 
     @override
     def __repr__(self) -> str: return self.state_description

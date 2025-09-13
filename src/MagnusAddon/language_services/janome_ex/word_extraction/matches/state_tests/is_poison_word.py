@@ -11,11 +11,10 @@ if TYPE_CHECKING:
 
 class IsPoisonWord(VocabMatchStateTest):
     def __init__(self, match: WeakRef[VocabMatch]) -> None:
-        super().__init__(match, "poison_word")
+        super().__init__(match, "poison_word", cache_is_in_state=True)
 
-    @property
     @override
-    def match_is_in_state(self) -> bool:
+    def _internal_match_is_in_state(self) -> bool:
         if self.rules.bool_flags.is_poison_word.is_set():  # noqa: SIM103
             return True
         return False

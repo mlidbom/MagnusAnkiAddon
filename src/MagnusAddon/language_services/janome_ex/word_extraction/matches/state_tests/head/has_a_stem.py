@@ -11,11 +11,10 @@ if TYPE_CHECKING:
 
 class HasAStem(MatchStateTest):
     def __init__(self, match: WeakRef[Match]) -> None:
-        super().__init__(match, "a_stem")
+        super().__init__(match, "a_stem", cache_is_in_state=True)
 
-    @property
     @override
-    def match_is_in_state(self) -> bool:
+    def _internal_match_is_in_state(self) -> bool:
         if len(self.prefix) > 0 and self.prefix[-1] in conjugator.a_stem_characters:  # noqa: SIM103
             return True
 

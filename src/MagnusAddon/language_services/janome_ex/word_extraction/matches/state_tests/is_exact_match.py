@@ -12,11 +12,10 @@ if TYPE_CHECKING:
 
 class IsExactMatch(VocabMatchStateTest):
     def __init__(self, match: WeakRef[VocabMatch]) -> None:
-        super().__init__(match, "exact_match")
+        super().__init__(match, "exact_match", cache_is_in_state=True)
 
-    @property
     @override
-    def match_is_in_state(self) -> bool:
+    def _internal_match_is_in_state(self) -> bool:
         if not self.variant.is_surface:
             return False
 

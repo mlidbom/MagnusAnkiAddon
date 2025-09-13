@@ -10,11 +10,10 @@ if TYPE_CHECKING:
 
 class IsSentenceStart(MatchStateTest):
     def __init__(self, match: WeakRef[Match]) -> None:
-        super().__init__(match, "sentence_start")
+        super().__init__(match, "sentence_start", cache_is_in_state=True)
 
-    @property
     @override
-    def match_is_in_state(self) -> bool:
+    def _internal_match_is_in_state(self) -> bool:
         if len(self.prefix) == 0 or self.prefix[-1].isspace():  # noqa: SIM103
             return True
         return False

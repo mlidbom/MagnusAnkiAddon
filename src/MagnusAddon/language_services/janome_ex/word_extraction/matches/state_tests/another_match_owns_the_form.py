@@ -12,11 +12,10 @@ if TYPE_CHECKING:
 
 class AnotherMatchOwnsTheForm(VocabMatchStateTest):
     def __init__(self, match: WeakRef[VocabMatch]) -> None:
-        super().__init__(match, "another_match_owns_the_form")
+        super().__init__(match, "another_match_owns_the_form", cache_is_in_state=True)
 
-    @property
     @override
-    def match_is_in_state(self) -> bool:
+    def _internal_match_is_in_state(self) -> bool:
         if self.vocab.forms.is_owned_form(self.tokenized_form):
             return False
 

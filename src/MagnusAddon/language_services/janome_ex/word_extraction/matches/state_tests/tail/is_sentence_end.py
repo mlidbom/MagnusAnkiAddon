@@ -11,11 +11,10 @@ if TYPE_CHECKING:
 class IsSentenceEnd(MatchStateTest):
     _quote_characters:set[str] = {"と", "って"}
     def __init__(self, match: WeakRef[Match]) -> None:
-        super().__init__(match, "sentence_end")
+        super().__init__(match, "sentence_end", cache_is_in_state=True)
 
-    @property
     @override
-    def match_is_in_state(self) -> bool:
+    def _internal_match_is_in_state(self) -> bool:
         if len(self.suffix) == 0:
             return True
 

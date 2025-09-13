@@ -11,11 +11,10 @@ if TYPE_CHECKING:
 class HasTeFormStem(MatchStateTest):
     _te_forms: set[str] = {"て", "って", "で"}
     def __init__(self, match: WeakRef[Match]) -> None:
-        super().__init__(match, "te_form_stem")
+        super().__init__(match, "te_form_stem", cache_is_in_state=True)
 
-    @property
     @override
-    def match_is_in_state(self) -> bool:
+    def _internal_match_is_in_state(self) -> bool:
         #todo get this stuff moved into the tokenizing stage...
         if self.previous_location is None:
             return False

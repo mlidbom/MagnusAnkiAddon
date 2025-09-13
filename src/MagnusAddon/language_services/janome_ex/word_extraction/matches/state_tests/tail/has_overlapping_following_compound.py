@@ -10,13 +10,12 @@ if TYPE_CHECKING:
 
     pass
 
-class HasOverlappingFollowingCompound(MatchStateTest):
+class HasDisplayedOverlappingFollowingCompound(MatchStateTest):
     def __init__(self, match: WeakRef[Match]) -> None:
-        super().__init__(match, "has_following_overlapping_compound")
+        super().__init__(match, "has_displayed_following_overlapping_compound", cache_is_in_state=False)
 
-    @property
     @override
-    def match_is_in_state(self) -> bool:
+    def _internal_match_is_in_state(self) -> bool:
         # todo: this is a problematic reference to display_words_starting_here. Thot collection is initialized using this class,
         # so this class will return different results depending on whether it is used after or before display_words_starting_here is first initialized. Ouch
         if not any(self.end_location.display_words):

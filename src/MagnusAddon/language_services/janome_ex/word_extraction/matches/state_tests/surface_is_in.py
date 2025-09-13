@@ -10,12 +10,11 @@ if TYPE_CHECKING:
 
 class SurfaceIsIn(MatchStateTest):
     def __init__(self, match: WeakRef[Match], surfaces: set[str]) -> None:
-        super().__init__(match, f"""surface_in:{",".join(surfaces)}""")
+        super().__init__(match, f"""surface_in:{",".join(surfaces)}""", cache_is_in_state=True)
         self.surfaces: set[str] = surfaces
 
-    @property
     @override
-    def match_is_in_state(self) -> bool:
+    def _internal_match_is_in_state(self) -> bool:
         if self.word.surface_variant.form in self.surfaces:  # noqa: SIM103
             return True
         return False

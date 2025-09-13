@@ -18,7 +18,7 @@ class Match(WeakRefable, Slots):
     def __init__(self, word_variant: WeakRef[CandidateWordVariant],
                  validity_requirements: list[MatchRequirement],
                  display_requirements: list[MatchRequirement]) -> None:
-        self.weakref = WeakRef(self)
+        self.weakref: WeakRef[Match] = WeakRef(self)
         self._variant: WeakRef[CandidateWordVariant] = word_variant
         self._validity_requirements: list[MatchRequirement] = ([
                                                                    NotInState(IsConfiguredIncorrect(self.weakref))

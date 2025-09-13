@@ -18,7 +18,7 @@ from language_services.janome_ex.word_extraction.matches.state_tests.is_exact_ma
 from language_services.janome_ex.word_extraction.matches.state_tests.is_poison_word import IsPoisonWord
 from language_services.janome_ex.word_extraction.matches.state_tests.is_single_token import IsSingleToken
 from language_services.janome_ex.word_extraction.matches.state_tests.surface_is_in import SurfaceIsIn
-from language_services.janome_ex.word_extraction.matches.state_tests.tail.has_overlapping_following_compound import HasOverlappingFollowingCompound
+from language_services.janome_ex.word_extraction.matches.state_tests.tail.has_overlapping_following_compound import HasDisplayedOverlappingFollowingCompound
 from language_services.janome_ex.word_extraction.matches.state_tests.tail.is_sentence_end import IsSentenceEnd
 from language_services.janome_ex.word_extraction.matches.state_tests.tail.suffix_is_in import SuffixIsIn
 from sysutils.weak_ref import WeakRef
@@ -61,7 +61,7 @@ class VocabMatch(Match, Slots):
                                         is_requirement_active=vocab.matching_configuration.configurable_rules.yield_to_surface.any()),
                          ],
                          display_requirements=[
-                             NotInState(HasOverlappingFollowingCompound(self.weakref),
+                             NotInState(HasDisplayedOverlappingFollowingCompound(self.weakref),
                                         is_requirement_active=vocab.matching_configuration.requires_forbids.yield_last_token.is_required)
                          ])
         self.vocab: VocabNote = vocab

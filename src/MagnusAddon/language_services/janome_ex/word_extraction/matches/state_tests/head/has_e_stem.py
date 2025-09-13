@@ -12,11 +12,10 @@ if TYPE_CHECKING:
 
 class HasEStem(MatchStateTest):
     def __init__(self, match: WeakRef[Match]) -> None:
-        super().__init__(match, "e_stem")
+        super().__init__(match, "e_stem", cache_is_in_state=True)
 
-    @property
     @override
-    def match_is_in_state(self) -> bool:
+    def _internal_match_is_in_state(self) -> bool:
         if not self.prefix:
             return False
 

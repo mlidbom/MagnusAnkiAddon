@@ -10,12 +10,11 @@ if TYPE_CHECKING:
 
 class SuffixIsIn(MatchStateTest):
     def __init__(self, match: WeakRef[Match], suffixes: set[str]) -> None:
-        super().__init__(match, f"""suffix_in:{",".join(suffixes)}""")
+        super().__init__(match, f"""suffix_in:{",".join(suffixes)}""", cache_is_in_state=True)
         self.suffixes: set[str] = suffixes
 
-    @property
     @override
-    def match_is_in_state(self) -> bool:
+    def _internal_match_is_in_state(self) -> bool:
         if any(suffix for suffix in self.suffixes if self.suffix.startswith(suffix)):  # noqa: SIM103
             return True
 
