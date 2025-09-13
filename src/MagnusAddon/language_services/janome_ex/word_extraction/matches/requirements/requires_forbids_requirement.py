@@ -38,9 +38,9 @@ class RequiresForbidsRequirement(MatchRequirement, Slots):
             return ""
 
         if self.is_required:
-            return f"required::{self.state_test.name}"
+            return f"required::{self.state_test.description}"
 
         if self.is_forbidden:
-            return f"forbids::{self.state_test.name}"
+            return f"forbids::{self.state_test.description}"
 
         raise AssertionError("This should never happen")

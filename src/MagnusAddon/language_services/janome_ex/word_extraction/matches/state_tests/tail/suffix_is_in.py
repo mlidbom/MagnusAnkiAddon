@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 
 class SuffixIsIn(MatchStateTest):
     def __init__(self, match: Match, suffixes: set[str]) -> None:
-        super().__init__(match, f"""suffix_is_in:{",".join(suffixes)}""")
+        super().__init__(match, f"""suffix_in:{",".join(suffixes)}""")
         self.suffixes: set[str] = suffixes
 
     @property

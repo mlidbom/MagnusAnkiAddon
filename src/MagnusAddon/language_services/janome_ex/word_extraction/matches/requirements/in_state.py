@@ -20,4 +20,4 @@ class InState(MatchRequirement, Slots):
 
     @property
     @override
-    def failure_reason(self) -> str: return f"is::{self.state_test.state_description}" if not self.is_fulfilled else ""
+    def failure_reason(self) -> str: return f"requires::{self.state_test.state_description}" if not self.is_fulfilled else ""

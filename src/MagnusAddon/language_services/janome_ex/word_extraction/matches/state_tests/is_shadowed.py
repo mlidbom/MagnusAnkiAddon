@@ -20,4 +20,4 @@ class IsShadowed(MatchStateTest):
     def state_description(self) -> str:
         return f"shadowed_by:{self.match.word.shadowed_by_text}" \
             if self.match_is_in_state \
-            else "not::shadowed"
+            else "forbids::shadowed"

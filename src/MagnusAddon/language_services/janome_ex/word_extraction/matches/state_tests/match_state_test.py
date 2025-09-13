@@ -12,14 +12,14 @@ if TYPE_CHECKING:
 class MatchStateTest:
     def __init__(self, match: Match, name: str) -> None:
         self._match: Match = match
-        self.name: str = name
+        self.description: str = name
 
     @property
     def match(self) -> Match: return self._match
     @property
     def match_is_in_state(self) -> bool: raise NotImplementedError()
     @property
-    def state_description(self) -> str: return self.name if self.match_is_in_state else f"not::{self.name}"
+    def state_description(self) -> str: return self.description
     @property
     def tokenized_form(self) -> str: return self.match.tokenized_form
     @property
