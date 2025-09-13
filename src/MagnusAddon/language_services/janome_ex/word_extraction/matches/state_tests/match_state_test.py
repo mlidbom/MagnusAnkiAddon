@@ -31,7 +31,9 @@ class MatchStateTest:
     @property
     def configuration(self) -> SentenceConfiguration: return self.variant.configuration
     @property
-    def start_index(self) -> int: return self.match.start_index
+    def previous_location(self) -> TextAnalysisLocation | None: return self.word.start_location.previous() if self.word.start_location.previous else None
+    @property
+    def prefix(self) -> str: return self.previous_location.token.surface if self.previous_location else ""
 
     @override
     def __repr__(self) -> str: return self.state_description

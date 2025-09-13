@@ -23,6 +23,7 @@ class VocabMatch(Match, Slots):
         super().__init__(word_variant,
                          validity_requirements=[
                              NotInState(AnotherMatchOwnsTheForm(self))
+                             #head reqiuirements
                          ],
                          display_requirements=[
                              NotInState(YieldToFollowingOverlappingCompound(self))
