@@ -48,7 +48,8 @@ class Match(WeakRefable, Slots):
     def variant(self) -> CandidateWordVariant: return self._variant()
 
     @property
-    def is_valid(self) -> bool: return self._is_valid_internal or self.is_highlighted
+    def is_valid(self) -> bool: return (self._is_valid_internal or self.is_highlighted
+                                        and not any(valid_sibling for valid_sibling in self._sibling_matches if valid_sibling._is_valid_internal))
     @property
     def _is_valid_internal(self) -> bool: return all(requirement.is_fulfilled for requirement in self._validity_requirements)
     @property

@@ -102,6 +102,15 @@ def test_ignores_noise_characters() -> None:
     assert words == expected
 
 @pytest.mark.usefixtures("setup_collection_with_select_data")
+def test_that_vocab_is_not_indexed_even_if_form_is_highlighted_if_invalid_and_there_is_another_valid_vocab_with_the_form() -> None:
+    sentence = SentenceNote.create_test_note("勝つんだ", "")
+    sentence.configuration.highlighted_words().add("んだ")
+    sentence.update_parsed_words(force=True)
+    parsing_result = sentence.parsing_result.get()
+    words = [w.parsed_form for w in parsing_result.parsed_words]
+    assert words == ["勝つ", "んだ", "ん", "だ"]
+
+@pytest.mark.usefixtures("setup_collection_with_select_data")
 def test_no_memory_leak_weak_references_are_disposed() -> None:
     sentence_note = SentenceNote.create_test_note("作るに決まってるだろ, ", "")
 
