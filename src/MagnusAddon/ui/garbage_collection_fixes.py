@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-import gc
 from typing import TYPE_CHECKING
 
 import aqt
 from ankiutils import app
 from PyQt6.QtCore import pyqtBoundSignal
+from sysutils import ex_gc
 from sysutils.typed import checked_cast
 
 if TYPE_CHECKING:
@@ -18,9 +18,9 @@ def noop_gc_on_dialog_finish(_self: AnkiQt, dialog: QDialog) -> None:
 
 def visible_garbage_collection(_self: AnkiQt) -> None:
     if not app.config().enable_automatic_garbage_collection.get_value():
-        app.get_ui_utils().tool_tip("running garbage collection triggered by internal Anki code", milliseconds=10000)
-        gc.collect()
+        ex_gc.collect_on_ui_thread_and_display_message()
 
 def init() -> None:
-    aqt.main.AnkiQt.garbage_collect_on_dialog_finish = noop_gc_on_dialog_finish  # type: ignore  # pyright: ignore[reportAttributeAccessIssue, reportUnknownMemberType]
+    if app.config().prevent_anki_from_garbage_collecting_every_time_a_window_closes.get_value():
+        aqt.main.AnkiQt.garbage_collect_on_dialog_finish = noop_gc_on_dialog_finish  # type: ignore  # pyright: ignore[reportAttributeAccessIssue, reportUnknownMemberType]
     aqt.main.AnkiQt.garbage_collect_now = visible_garbage_collection  # type: ignore  # pyright: ignore[reportAttributeAccessIssue, reportUnknownMemberType]

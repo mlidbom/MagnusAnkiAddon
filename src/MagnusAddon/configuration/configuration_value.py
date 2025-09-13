@@ -111,14 +111,15 @@ class JapaneseConfig(Slots):
                                                                     self.show_kanji_in_sentence_breakdown]
 
         # performance
-        self.run_additional_pre_caching: ConfigurationValueBool = ConfigurationValueBool("run_additional_pre_caching", "Run additional pre caching on startup", False)
-        self.run_any_additional_pre_caching_on_background_thread: ConfigurationValueBool = ConfigurationValueBool("run_additional_pre_caching_on_background_thread", "Run any additional pre caching on background thread", False)
-        self.load_jamdict_db_into_memory: ConfigurationValueBool = ConfigurationValueBool("load_jamdict_db_into_memory", "Load Jamdict DB into memory", False)
+        self.run_additional_pre_caching: ConfigurationValueBool = ConfigurationValueBool("run_additional_pre_caching", "Run additional pre caching on startup [Requires restart]", False)
+        self.run_any_additional_pre_caching_on_background_thread: ConfigurationValueBool = ConfigurationValueBool("run_additional_pre_caching_on_background_thread", "Run any additional pre caching on background thread [Requires restart]", False)
+        self.load_jamdict_db_into_memory: ConfigurationValueBool = ConfigurationValueBool("load_jamdict_db_into_memory", "Load Jamdict DB into memory [Requires restart]", False)
+        self.prevent_anki_from_garbage_collecting_every_time_a_window_closes: ConfigurationValueBool = ConfigurationValueBool("prevent_anki_from_garbage_collecting_every_time_a_window_closes", "Prevent Anki from garbage collecting every time a window closes, causing a short hang every time. [Requires restart]", True)
 
         # memory
-        self.enable_garbage_collection_during_batches: ConfigurationValueBool = ConfigurationValueBool("enable_garbage_collection_during_batches", "Enable Batch GC. Requires restart. (Eliminates LARGE memory leak on sync, but slows down startup and batches and introduces short 'hangs'.", True)
-        self.enable_automatic_garbage_collection: ConfigurationValueBool = ConfigurationValueBool("enable_automatic_garbage_collection", "Enable automatic GC. Requires restart. (Reduces memory usage the most but slows Anki down and may cause crashes due to Qt incompatibility.", False)
-        self.track_instances_in_memory: ConfigurationValueBool = ConfigurationValueBool("track_instances_in_memory", "Track instances in memory. Requires restart. Only useful to developers and will use extra memory.", False)
+        self.enable_garbage_collection_during_batches: ConfigurationValueBool = ConfigurationValueBool("enable_garbage_collection_during_batches", "Enable Batch GC. [Requires restart]", True)
+        self.enable_automatic_garbage_collection: ConfigurationValueBool = ConfigurationValueBool("enable_automatic_garbage_collection", "Enable automatic GC. [Requires restart. Reduces memory usage the most but slows Anki down and may cause crashes due to Qt incompatibility.]", False)
+        self.track_instances_in_memory: ConfigurationValueBool = ConfigurationValueBool("track_instances_in_memory", "Track instances in memory. [Requires restart.. Only useful to developers and will use extra memory.]", False)
 
         self.feature_toggles: list[tuple[str, list[ConfigurationValueBool]]] = \
             [("Sentence Display", self.sentence_view_toggles),
@@ -131,6 +132,7 @@ class JapaneseConfig(Slots):
              ("Performance and memory usage", [self.run_additional_pre_caching,
                                                self.run_any_additional_pre_caching_on_background_thread,
                                                self.load_jamdict_db_into_memory,
+                                               self.prevent_anki_from_garbage_collecting_every_time_a_window_closes,
                                                self.enable_garbage_collection_during_batches,
                                                self.enable_automatic_garbage_collection,
                                                self.track_instances_in_memory])]
