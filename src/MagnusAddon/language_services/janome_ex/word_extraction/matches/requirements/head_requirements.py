@@ -20,10 +20,6 @@ class HeadRequirements(Slots):
         rules: VocabNoteMatchingConfiguration = match.vocab.matching_configuration
         self.config: VocabNoteMatchingConfiguration = rules
 
-        self.has_a_stem: bool = end_of_stem is not None and end_of_stem().token.surface[-1] in conjugator.a_stem_characters
-        self.fulfills_forbids_a_stem_requirement: bool = not rules.requires_forbids.a_stem.is_forbidden or not self.has_a_stem
-        self.fulfills_requires_a_stem: bool = not rules.requires_forbids.a_stem.is_required or self.has_a_stem
-
         self.has_past_tense_stem: bool = end_of_stem is not None and (end_of_stem().token.is_past_tense_stem() or word_variant().word.start_location.token.is_past_tense_marker())
         self.fulfills_forbids_past_tense_stem: bool = not rules.requires_forbids.past_tense_stem.is_forbidden or not self.has_past_tense_stem
         self.fulfills_requires_past_tense_stem: bool = not rules.requires_forbids.past_tense_stem.is_required or self.has_past_tense_stem
@@ -36,8 +32,6 @@ class HeadRequirements(Slots):
         self.fulfills_forbids_e_stem_requirement: bool = not rules.requires_forbids.e_stem.is_forbidden or not self.has_e_stem
 
         self.are_fulfilled = (True
-                              and self.fulfills_forbids_a_stem_requirement
-                              and self.fulfills_requires_a_stem
                               and self.fulfills_requires_e_stem_requirement
                               and self.fulfills_forbids_e_stem_requirement
                               and self.fulfills_requires_past_tense_stem
@@ -46,8 +40,6 @@ class HeadRequirements(Slots):
 
     def failure_reasons(self) -> list[str]:
         return (SimpleStringListBuilder()
-                .append_if(not self.fulfills_forbids_a_stem_requirement, "forbids_a_stem")
-                .append_if(not self.fulfills_requires_a_stem, "requires_a_stem")
                 .append_if(not self.fulfills_forbids_e_stem_requirement, "forbids_e_stem")
                 .append_if(not self.fulfills_requires_e_stem_requirement, "requires_e_stem")
                 .append_if(not self.fulfills_forbids_past_tense_stem, "forbids_past_tense_stem")
