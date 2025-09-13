@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 
 class IsConfiguredIncorrect(MatchStateTest):
     def __init__(self, match: Match) -> None:
-        super().__init__(match, "is_shadowed")
+        super().__init__(match, "configured_incorrect")
 
     @property
     @override

@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 
 class IsConfiguredHidden(MatchStateTest):
     def __init__(self, match: Match) -> None:
-        super().__init__(match, "is_shadowed")
+        super().__init__(match, "configured_hidden")
 
     @property
     @override

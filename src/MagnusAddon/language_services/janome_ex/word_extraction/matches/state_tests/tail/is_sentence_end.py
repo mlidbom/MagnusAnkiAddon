@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.match import Match
 
 class IsSentenceEnd(MatchStateTest):
-    _quote_characters = {"と", "って"}
+    _quote_characters:set[str] = {"と", "って"}
     def __init__(self, match: Match) -> None:
         super().__init__(match, "sentence_end")
 
