@@ -14,6 +14,6 @@ class IsSentenceStart(MatchStateTest):
     @property
     @override
     def match_is_in_state(self) -> bool:
-        if not self.prefix:  # noqa: SIM103
+        if len(self.prefix) == 0 or self.prefix[-1].isspace():  # noqa: SIM103
             return True
         return False
