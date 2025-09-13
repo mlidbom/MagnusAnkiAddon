@@ -8,6 +8,7 @@ from aqt import mw
 from autoslot import Slots
 from sysutils.lazy import Lazy
 from sysutils.typed import non_optional
+from sysutils.weak_ref import WeakRefable
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -22,7 +23,7 @@ _config_dict = Lazy(lambda: mw.addonManager.getConfig(_addon_name) or {})
 def _write_config_dict() -> None:
     mw.addonManager.writeConfig(_addon_name, _config_dict.instance())  # pyright: ignore[reportUnknownMemberType]
 
-class ConfigurationValue[T](Slots):
+class ConfigurationValue[T](WeakRefable, Slots):
     def __init__(self, name: str, title: str, default: T, feature_toggler: Callable[[T], None] | None = None) -> None:
         self.title: str = title
         self.feature_toggler: Callable[[T], None] | None = feature_toggler

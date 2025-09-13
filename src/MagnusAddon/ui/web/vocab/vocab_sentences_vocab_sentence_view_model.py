@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from note.sentences.sentencenote import SentenceNote
     from note.vocabulary.vocabnote import VocabNote
 
-class VocabSentenceMatchViewModel:
+class VocabSentenceMatchViewModel(Slots):
     def __init__(self, match: ParsedMatch, sentence_view_model: VocabSentenceViewModel) -> None:
         self.match: ParsedMatch = match
         self.sentence_view_model: VocabSentenceViewModel = sentence_view_model

@@ -11,7 +11,7 @@ from wanikani.wanikani_api_client import WanikaniClient
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
 
-class FileDownloadError(Exception):
+class FileDownloadError(Exception, Slots):
     pass
 
 class WaniDownloader(Slots):

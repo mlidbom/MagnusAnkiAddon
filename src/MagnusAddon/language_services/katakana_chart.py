@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+from autoslot import Slots
+
 
 # noinspection PyUnusedName,PyUnusedClass
-class KatakanaChart:
+class KatakanaChart(Slots):
     k_index: int = 1
     s_index: int = 2
     t_index: int = 3

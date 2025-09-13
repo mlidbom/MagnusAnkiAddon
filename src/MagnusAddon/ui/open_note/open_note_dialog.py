@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 
 
 @final
-class NoteSearchDialog(QDialog):
+class NoteSearchDialog(QDialog): # Cannot inherit Slots for some QT internal reason
     # Singleton instance
     _instance: NoteSearchDialog | None = None
 

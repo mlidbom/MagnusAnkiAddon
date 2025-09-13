@@ -13,7 +13,7 @@ from sysutils.typed import non_optional
 if TYPE_CHECKING:
     from language_services.english_dictionary.english_dict_search import EnglishWord
 @final
-class EnglishWordSearchDialog(QDialog):
+class EnglishWordSearchDialog(QDialog): # Cannot inherit Slots for some QT internal reason
     # Singleton instance
     _instance: EnglishWordSearchDialog | None = None
 

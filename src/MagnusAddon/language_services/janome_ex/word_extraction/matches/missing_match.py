@@ -2,13 +2,14 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
+from autoslot import Slots
 from language_services.janome_ex.word_extraction.matches.match import Match
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
     from sysutils.weak_ref import WeakRef
 
-class MissingMatch(Match):
+class MissingMatch(Match, Slots):
     def __init__(self, word_variant: WeakRef[CandidateWordVariant]) -> None:
         super().__init__(word_variant, validity_requirements=[], display_requirements=[])
 

@@ -2,14 +2,15 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
+from autoslot import Slots
 from sysutils.debug_repr_builder import SkipFalsyValuesDebugReprBuilder
-from sysutils.weak_ref import WeakRef
+from sysutils.weak_ref import WeakRef, WeakRefable
 from ui.web.sentence.match_viewmodel import MatchViewModel
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
 
-class CandidateWordVariantViewModel:
+class CandidateWordVariantViewModel(WeakRefable, Slots):
     def __init__(self, variant: CandidateWordVariant) -> None:
         self.candidate_word: CandidateWordVariant = variant
         self.weakref: WeakRef[CandidateWordVariantViewModel] = WeakRef(self)

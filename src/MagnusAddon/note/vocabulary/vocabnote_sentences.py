@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from note.sentences.sentencenote import SentenceNote
     from note.vocabulary.vocabnote import VocabNote
 
-class SentenceCounts:
+class SentenceCounts(Slots):
     def __init__(self, parent: WeakRef[VocabNoteSentences]) -> None:
         self._parent: WeakRef[VocabNoteSentences] = parent
         self._studying_reading: int = 0

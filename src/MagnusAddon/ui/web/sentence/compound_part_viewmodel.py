@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from ankiutils import app
+from autoslot import Slots
 from sysutils import ex_sequence
 
 if TYPE_CHECKING:
@@ -10,7 +11,7 @@ if TYPE_CHECKING:
     from note.sentences.sentence_configuration import SentenceConfiguration
     from note.vocabulary.vocabnote import VocabNote
 
-class CompoundPartViewModel:
+class CompoundPartViewModel(Slots):
     def __init__(self, vocab_note: VocabNote, depth: int, config: SentenceConfiguration) -> None:
         self.vocab_note: VocabNote = vocab_note
         self.depth: int = depth

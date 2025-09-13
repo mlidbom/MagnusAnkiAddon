@@ -12,7 +12,7 @@ from sysutils.typed import checked_cast, non_optional
 if TYPE_CHECKING:
     from configuration.configuration_value import JapaneseConfig
 
-class ReadingsOptionsDialog(QDialog):
+class ReadingsOptionsDialog(QDialog): # Cannot inherit Slots for some QT internal reason
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.config: JapaneseConfig = app.config()

@@ -125,12 +125,12 @@ f_vocab_matching_todo: str = f"{f_vocab_matching}todo::"
 f_vocab_matching_uses: str = f"{f_vocab_matching}uses::"
 
 class Tags(Slots):
-    class Sentence:
-        class Uses:
+    class Sentence(Slots):
+        class Uses(Slots):
             incorrect_matches: str = f"{f_sentence_uses}incorrect-matches"
             hidden_matches: str = f"{f_sentence_uses}hidden-matches"
 
-    class Kanji:
+    class Kanji(Slots):
         is_radical: str = f"{f_kanji}is-radical"
         is_radical_purely: str = f"{f_kanji}is-radical-purely"
         is_radical_silent: str = f"{f_kanji}is-radical-silent"
@@ -152,17 +152,17 @@ class Tags(Slots):
         has_non_primary_on_reading_vocab: str = f"{f_kanji}has-non-primary-on-reading-vocab"
         has_non_primary_on_reading_vocab_with_only_known_kanji: str = f"{f_kanji}has-non-primary-on-reading-vocab-with-only-known-kanji"
 
-    class Vocab:
+    class Vocab(Slots):
         root: str = f_vocab
         has_no_studying_sentences: str = f"{f_vocab}has-no-studying-sentences"
         question_overrides_form: str = f"{f_vocab}question-overrides-form"
 
-        class Matching:
+        class Matching(Slots):
             yield_last_token_to_overlapping_compound: str = f"{f_vocab_matching}yield-last-token-to-upcoming-compound"
             is_poison_word: str = f"{f_vocab_matching}is-poison-word"
             is_inflecting_word: str = f"{f_vocab_matching}is-inflecting-word"
 
-            class Requires:
+            class Requires(Slots):
                 a_stem: str = f"{f_vocab_matching_requires}a-stem"
                 e_stem: str = f"{f_vocab_matching_requires}e-stem"
                 past_tense_stem: str = f"{f_vocab_matching_requires}past-tense-stem"
@@ -173,7 +173,7 @@ class Tags(Slots):
                 single_token: str = f"{f_vocab_matching_requires}single-token"
                 compound: str = f"{f_vocab_matching_requires}compound"
 
-            class Forbids:
+            class Forbids(Slots):
                 a_stem: str = f"{f_vocab_matching_forbids}a-stem"
                 e_stem: str = f"{f_vocab_matching_forbids}e-stem"
                 past_tense_stem: str = f"{f_vocab_matching_forbids}past-tense-stem"
@@ -183,10 +183,10 @@ class Tags(Slots):
                 exact_match: str = f"{f_vocab_matching_forbids}exact-match"
                 auto_yielding: str = f"{f_vocab_matching_forbids}auto_yielding"
 
-            class Todo:
+            class Todo(Slots):
                 with_preceding_vowel: str = f"{f_vocab_matching_todo}match-with-preceding-vowel"
 
-            class Uses:
+            class Uses(Slots):
                 prefix_is_not: str = f"{f_vocab_matching_uses}prefix-is-not"
                 suffix_is_not: str = f"{f_vocab_matching_uses}suffix-is-not"
                 required_prefix: str = f"{f_vocab_matching_uses}required-prefix"

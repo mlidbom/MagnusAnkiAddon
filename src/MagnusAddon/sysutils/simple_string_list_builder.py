@@ -2,11 +2,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from autoslot import Slots
+
 if TYPE_CHECKING:
     from collections.abc import Callable
 
 
-class SimpleStringListBuilder:
+class SimpleStringListBuilder(Slots):
     def __init__(self) -> None:
         self.value: list[str] = []
 
