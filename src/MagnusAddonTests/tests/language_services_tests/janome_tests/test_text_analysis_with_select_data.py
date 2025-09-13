@@ -1,16 +1,15 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Callable, TypeVar
+from typing import TYPE_CHECKING, Any, TypeVar
 
 import pytest
 from fixtures.collection_factory import inject_anki_collection_with_select_data
-from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
-from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 from note.sentences.sentencenote import SentenceNote
-from sysutils.typed import non_optional
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator
+    from collections.abc import Callable, Iterator
+
+    from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 
 
 # noinspection PyUnusedFunction

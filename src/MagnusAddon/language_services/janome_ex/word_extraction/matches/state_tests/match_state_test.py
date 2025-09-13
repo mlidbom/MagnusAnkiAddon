@@ -18,9 +18,9 @@ class MatchStateTest(WeakRefable, Slots):
         self._match: WeakRef[Match] = match
         self.description: str = name
         self.is_cachable: bool = cache_is_in_state
-        weakself = WeakRef(self)
-        self.weakref = weakself
-        self._future_match_is_in_state: Lazy[bool] | None = Lazy(lambda: weakself()._internal_match_is_in_state()) if cache_is_in_state else None
+        weakrefthis = WeakRef(self)
+        self.weakref = weakrefthis
+        self._future_match_is_in_state: Lazy[bool] | None = Lazy(lambda: weakrefthis()._internal_match_is_in_state()) if cache_is_in_state else None
 
     @property
     @final

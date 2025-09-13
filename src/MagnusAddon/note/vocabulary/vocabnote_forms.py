@@ -45,14 +45,14 @@ class VocabNoteForms(WeakRefable, Slots):
         self._vocab: WeakRef[VocabNote] = vocab
         field = CommaSeparatedStringsListFieldDeDuplicated(vocab, NoteFields.Vocab.Forms)
         self._field: CommaSeparatedStringsListFieldDeDuplicated = field
-        weakrefself = WeakRef(self)
-        self._all_raw_set: Lazy[set[str]] = Lazy(lambda: set(weakrefself()._field.get()))
-        self._conjugations: Lazy[Conjugations] = field.lazy_reader(lambda: Conjugations(self, vocab()))
+        weakrefthis = WeakRef(self)
+        self._all_raw_set: Lazy[set[str]] = Lazy(lambda: set(weakrefthis()._field.get()))
+        self._conjugations: Lazy[Conjugations] = field.lazy_reader(lambda: Conjugations(weakrefthis(), vocab()))
 
-        self._all_list: Lazy[list[str]] = field.lazy_reader(lambda: [ex_str.strip_brackets(form) for form in weakrefself()._field.get()])
-        self._all_set: Lazy[set[str]] = field.lazy_reader(lambda: set(weakrefself()._all_list()))
-        self._owned_forms: Lazy[set[str]] = field.lazy_reader(lambda: {weakrefself()._vocab().get_question()} | {ex_str.strip_brackets(form) for form in weakrefself()._all_raw_set() if form.startswith("[")})
-        self._not_owned_by_other_vocab: Lazy[set[str]] = field.lazy_reader(lambda: weakrefself().___not_owned_by_other_vocab())
+        self._all_list: Lazy[list[str]] = field.lazy_reader(lambda: [ex_str.strip_brackets(form) for form in weakrefthis()._field.get()])
+        self._all_set: Lazy[set[str]] = field.lazy_reader(lambda: set(weakrefthis()._all_list()))
+        self._owned_forms: Lazy[set[str]] = field.lazy_reader(lambda: {weakrefthis()._vocab().get_question()} | {ex_str.strip_brackets(form) for form in weakrefthis()._all_raw_set() if form.startswith("[")})
+        self._not_owned_by_other_vocab: Lazy[set[str]] = field.lazy_reader(lambda: weakrefthis().___not_owned_by_other_vocab())
 
     @property
     def conjugations(self) -> Conjugations: return self._conjugations()

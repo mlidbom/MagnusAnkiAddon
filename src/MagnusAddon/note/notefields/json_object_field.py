@@ -5,11 +5,10 @@ from typing import TYPE_CHECKING, Generic, TypeVar
 from autoslot import Slots
 from note.notefields.string_field import AutoStrippingStringField
 from sysutils.lazy import Lazy
-from sysutils.weak_ref import WeakRefable
+from sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
     from note.jpnote import JPNote
-    from sysutils.weak_ref import WeakRef
 
 T = TypeVar("T")
 
@@ -22,8 +21,8 @@ class SerializedObjectField(Generic[T], WeakRefable, Slots):
         self._note: WeakRef[JPNote] = note
         self._field: AutoStrippingStringField = AutoStrippingStringField(note, field)
         self._serializer: ObjectSerializer[T] = serializer
-        self._value: Lazy[T] = Lazy(lambda: serializer.deserialize(self._field.get()))
-        self._weakref: WeakRef[SerializedObjectField[T]] | None = None
+        weakrefthis = WeakRef(self)
+        self._value: Lazy[T] = Lazy(lambda: serializer.deserialize(weakrefthis()._field.get()))
 
     def get(self) -> T: return self._value()
     def set(self, value: T) -> None:

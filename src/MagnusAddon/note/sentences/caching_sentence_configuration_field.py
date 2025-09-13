@@ -20,8 +20,8 @@ class CachingSentenceConfigurationField(WeakRefable, Slots):
         self._sentence: WeakRef[SentenceNote] = sentence
         self.field: AutoStrippingStringField = AutoStrippingStringField(sentence, SentenceNoteFields.configuration)
 
-        weak_self_ref = WeakRef(self)
-        self._value: Lazy[SentenceConfiguration] = Lazy(lambda: SentenceConfiguration.serializer.deserialize(self.field.get(), weak_self_ref()._save))
+        weakrefthis = WeakRef(self)
+        self._value: Lazy[SentenceConfiguration] = Lazy(lambda: SentenceConfiguration.serializer.deserialize(weakrefthis().field.get(), weakrefthis()._save))
 
     @property
     def configuration(self) -> SentenceConfiguration:

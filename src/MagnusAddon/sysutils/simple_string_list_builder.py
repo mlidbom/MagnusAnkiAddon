@@ -19,7 +19,7 @@ class SimpleStringListBuilder(Slots):
         if condition: self.value.append(text)
         return self
 
-    def append_if_lambda(self, condition: bool, text: Callable[[], str]) -> SimpleStringListBuilder:
+    def append_if_func(self, condition: bool, text: Callable[[], str]) -> SimpleStringListBuilder:
         if condition: self.value.append(text())
         return self
 

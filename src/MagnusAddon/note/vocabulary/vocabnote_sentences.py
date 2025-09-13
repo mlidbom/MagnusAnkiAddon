@@ -50,7 +50,8 @@ class SentenceCounts(Slots):
 class VocabNoteSentences(WeakRefable, Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self.__vocab = vocab
-        self.counts: Lazy[SentenceCounts] = Lazy(lambda: SentenceCounts(WeakRef(self)))
+        weakrefthis = WeakRef(self)
+        self.counts: Lazy[SentenceCounts] = Lazy(lambda: SentenceCounts(weakrefthis))
 
     @property
     def _vocab(self) -> VocabNote: return self.__vocab()
