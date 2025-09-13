@@ -35,8 +35,8 @@ class VocabMatch(Match, Slots):
                          validity_requirements=[
                              NotInState(AnotherMatchOwnsTheForm(self)),
                              # head requirements
-                             NotInState(PrefixIsIn(self, vocab.matching_configuration.configurable_rules.prefix_is_not.get(), true_if_no_prefixes=False)),
-                             InState(PrefixIsIn(self, vocab.matching_configuration.configurable_rules.required_prefix.get(), true_if_no_prefixes=True)),
+                             NotInState(PrefixIsIn(self, vocab.matching_configuration.configurable_rules.prefix_is_not.get()), is_requirement_active=vocab.matching_configuration.configurable_rules.prefix_is_not.any()),
+                             InState(PrefixIsIn(self, vocab.matching_configuration.configurable_rules.required_prefix.get()), is_requirement_active=vocab.matching_configuration.configurable_rules.required_prefix.any()),
                              RequiresForbidsRequirement(IsSentenceStart(self), vocab.matching_configuration.requires_forbids.sentence_start),
                              RequiresForbidsRequirement(HasTeFormStem(self), vocab.matching_configuration.requires_forbids.te_form_stem),
                              RequiresForbidsRequirement(HasAStem(self), vocab.matching_configuration.requires_forbids.a_stem),
@@ -45,9 +45,9 @@ class VocabMatch(Match, Slots):
 
                              # tail requirements
                              RequiresForbidsRequirement(IsSentenceEnd(self), vocab.matching_configuration.requires_forbids.sentence_end),
-                             NotInState(SuffixIsIn(self, vocab.matching_configuration.configurable_rules.suffix_is_not.get(), true_if_no_suffixes=False)),
+                             NotInState(SuffixIsIn(self, vocab.matching_configuration.configurable_rules.suffix_is_not.get()), is_requirement_active=vocab.matching_configuration.configurable_rules.suffix_is_not.any()),
 
-                             #misc requirements
+                             # misc requirements
                              NotInState(IsPoisonWord(self))
                          ],
                          display_requirements=[

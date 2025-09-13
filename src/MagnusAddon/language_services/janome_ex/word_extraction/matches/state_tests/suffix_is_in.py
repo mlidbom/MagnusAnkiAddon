@@ -8,17 +8,13 @@ if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.match import Match
 
 class SuffixIsIn(MatchStateTest):
-    def __init__(self, match: Match, suffixes: set[str], true_if_no_suffixes: bool) -> None:
+    def __init__(self, match: Match, suffixes: set[str]) -> None:
         super().__init__(match, f"""suffix_is_in:{",".join(suffixes)}""")
-        self.true_if_no_suffixes: bool = true_if_no_suffixes
         self.suffixes: set[str] = suffixes
 
     @property
     @override
     def match_is_in_state(self) -> bool:
-        if self.true_if_no_suffixes and not any(self.suffixes):
-            return True
-
         if any(suffix for suffix in self.suffixes if self.suffix.startswith(suffix)):  # noqa: SIM103
             return True
 
