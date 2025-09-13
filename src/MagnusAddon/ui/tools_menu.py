@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Callable
+from typing import TYPE_CHECKING
 
 from ankiutils import app, ui_utils
 from ankiutils.app import get_ui_utils, main_window
@@ -18,6 +18,9 @@ from ui.menus.web_search import build_web_search_menu
 from ui.open_note.open_note_dialog import NoteSearchDialog
 from wanikani import note_importer
 from wanikani.wani_downloader import WaniDownloader
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 
 def refresh() -> None:

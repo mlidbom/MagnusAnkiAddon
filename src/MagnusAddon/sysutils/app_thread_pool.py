@@ -2,11 +2,14 @@ from __future__ import annotations
 
 from concurrent.futures.thread import ThreadPoolExecutor
 from time import sleep
-from typing import Callable, TypeVar
+from typing import TYPE_CHECKING, TypeVar
 
 from ankiutils import app
 from PyQt6.QtCore import QCoreApplication, QThread
 from sysutils.typed import non_optional
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 pool = ThreadPoolExecutor()
 
@@ -14,7 +17,7 @@ def current_is_ui_thread() -> bool:
     return bool(QCoreApplication.instance() and non_optional(QCoreApplication.instance()).thread() == QThread.currentThread())
 
 T = TypeVar("T")
-def run_on_ui_thread_synchronously(func: Callable[[], T]) -> T:
+def run_on_ui_thread_synchronously[T](func: Callable[[], T]) -> T:
     if app.is_testing() or current_is_ui_thread():
         return func()
 

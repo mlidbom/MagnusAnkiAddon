@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import threading
 import time
-from typing import TYPE_CHECKING, Callable, cast
+from typing import TYPE_CHECKING, cast
 
 from anki import hooks
 from anki.models import ModelManager, NotetypeDict
@@ -14,7 +14,7 @@ from sysutils import app_thread_pool, ex_assert
 from sysutils.typed import checked_cast
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
+    from collections.abc import Callable, Sequence
 
     from anki.collection import Collection
     from anki.decks import DeckId

@@ -16,8 +16,6 @@ class MiscRequirements(Slots):
         self.rules = vocab.matching_configuration
         self.match = match
 
-        self.is_poison_word: bool = self.rules.bool_flags.is_poison_word.is_set()
-
         self.is_exact_match: bool = match().word_variant().is_surface and match().word_variant().form in vocab.forms.all_set()
 
         self.is_requires_exact_match_requirement_fulfilled: bool = (not self.rules.requires_forbids.requires_exact_match.is_required or self.is_exact_match)
@@ -45,8 +43,7 @@ class MiscRequirements(Slots):
                                     and self.is_single_token_requirement_fulfilled
                                     and self.surface_is_not_requirement_fulfilled
                                     and self.yield_to_surface_requirement_fulfilled
-                                    and self.is_compound_requirement_fulfilled
-                                    and not self.is_poison_word)
+                                    and self.is_compound_requirement_fulfilled)
 
     def failure_reasons(self) -> list[str]:
         return (SimpleStringListBuilder()
@@ -56,7 +53,6 @@ class MiscRequirements(Slots):
                 .append_if(not self.yield_to_surface_requirement_fulfilled, f"yield_to_surface_{self.match().word_variant().word.surface_variant.form}")
                 .append_if(not self.is_compound_requirement_fulfilled, "requires_compound")
                 .append_if(not self.surface_is_not_requirement_fulfilled, f"surface_is_not_{self.match().word_variant().word.surface_variant.form}")
-                .append_if(self.is_poison_word, "is_poison_word")
                 .value)
 
     @override

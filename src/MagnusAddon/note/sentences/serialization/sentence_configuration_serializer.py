@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING
 
 from autoslot import Slots
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
@@ -9,6 +9,8 @@ from sysutils.json import ex_json
 from sysutils.json.json_reader import JsonReader
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+
     from note.sentences.sentence_configuration import SentenceConfiguration
 
 class SentenceConfigurationSerializer(Slots):

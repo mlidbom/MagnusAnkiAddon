@@ -1,12 +1,14 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Callable, override
+from typing import TYPE_CHECKING, override
 
 from ankiutils import app
 from autoslot import Slots
 from PyQt6.QtWidgets import QApplication
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+
     from anki.notes import Note
     from note.jpnote import JPNote
 

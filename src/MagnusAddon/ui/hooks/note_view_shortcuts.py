@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Callable, TypeVar
+from typing import TYPE_CHECKING, TypeVar
 
 from ankiutils import app, ui_utils
 from aqt import gui_hooks
@@ -13,6 +13,8 @@ from sysutils import typed
 from sysutils.typed import try_cast
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+
     from aqt.main import MainWindowState
     from PyQt6.QtWidgets import QWidget
 

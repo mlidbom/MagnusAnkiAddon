@@ -1,12 +1,14 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Callable, TypeVar
+from typing import TYPE_CHECKING, TypeVar
 
 from autoslot import Slots
 from note.notefields.string_field import AutoStrippingStringField
 from sysutils import ex_str
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+
     from note.jpnote import JPNote
     from sysutils.lazy import Lazy
     from sysutils.weak_ref import WeakRef

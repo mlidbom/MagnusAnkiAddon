@@ -1,13 +1,13 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Callable, Generic, TypeVar, final
+from typing import TYPE_CHECKING, Generic, TypeVar, final
 
 from autoslot import Slots
 from note.jpnote import JPNote
 from note.note_constants import Builtin
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator, Sequence
+    from collections.abc import Callable, Iterator, Sequence
 
     from anki.collection import Collection
     from anki.notes import Note, NoteId

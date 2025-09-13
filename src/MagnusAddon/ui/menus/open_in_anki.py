@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING
 
 from ankiutils import app, query_builder
 from sysutils.typed import non_optional
@@ -8,6 +8,8 @@ from ui.menus.menu_utils import shortcutfinger
 from ui.menus.menu_utils.ex_qmenu import add_lookup_action_lambda
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+
     from PyQt6.QtWidgets import QMenu
 
 

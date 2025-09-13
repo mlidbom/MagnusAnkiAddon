@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import threading
-from typing import Callable, TypeVar, cast, final
+from typing import TYPE_CHECKING, TypeVar, cast, final
 
 from anki.notes import NoteId
 from ankiutils.app import col
@@ -13,6 +13,9 @@ from PyQt6.QtCore import Qt, pyqtBoundSignal
 from PyQt6.QtWidgets import QDialog, QHBoxLayout, QHeaderView, QLabel, QLineEdit, QProgressBar, QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget
 from sysutils import ex_str, kana_utils, typed
 from sysutils.typed import non_optional
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 
 @final

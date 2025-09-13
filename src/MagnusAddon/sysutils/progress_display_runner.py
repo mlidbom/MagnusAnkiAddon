@@ -1,12 +1,15 @@
 from __future__ import annotations
 
 import time
-from typing import Callable, TypeVar
+from typing import TYPE_CHECKING, TypeVar
 
 from autoslot import Slots
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication, QMessageBox, QProgressDialog
 from sysutils import app_thread_pool, timeutil
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 T = TypeVar("T")
 

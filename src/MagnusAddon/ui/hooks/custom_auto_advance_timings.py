@@ -24,7 +24,7 @@ def is_handled_card(card: CardEx) -> bool:
         return False
 
     note = JPNote.note_from_card(non_optional(mw.reviewer.card))
-    return isinstance(note, (SentenceNote, VocabNote, KanjiNote))
+    return isinstance(note, SentenceNote | VocabNote | KanjiNote)
 
 def seconds_to_show_question(card: CardEx) -> float:
     note = card.note()

@@ -13,6 +13,7 @@ from language_services.janome_ex.word_extraction.matches.state_tests.has_a_stem_
 from language_services.janome_ex.word_extraction.matches.state_tests.has_e_stem import HasEStem
 from language_services.janome_ex.word_extraction.matches.state_tests.has_past_tense_stem import HasPastTenseStem
 from language_services.janome_ex.word_extraction.matches.state_tests.has_te_form_stem import HasTeFormStem
+from language_services.janome_ex.word_extraction.matches.state_tests.is_poison_word import IsPoisonWord
 from language_services.janome_ex.word_extraction.matches.state_tests.is_sentence_end import IsSentenceEnd
 from language_services.janome_ex.word_extraction.matches.state_tests.is_sentence_start import IsSentenceStart
 from language_services.janome_ex.word_extraction.matches.state_tests.prefix_is_in import PrefixIsIn
@@ -31,7 +32,7 @@ class VocabMatch(Match, Slots):
         super().__init__(word_variant,
                          validity_requirements=[
                              NotInState(AnotherMatchOwnsTheForm(self)),
-                             # head reqiuirements
+                             # head requirements
                              NotInState(PrefixIsIn(self, vocab.matching_configuration.configurable_rules.prefix_is_not.get(), true_if_no_prefixes=False)),
                              InState(PrefixIsIn(self, vocab.matching_configuration.configurable_rules.required_prefix.get(), true_if_no_prefixes=True)),
                              RequiresForbidsRequirement(IsSentenceStart(self), vocab.matching_configuration.requires_forbids.sentence_start),
@@ -42,7 +43,10 @@ class VocabMatch(Match, Slots):
 
                              # tail requirements
                              RequiresForbidsRequirement(IsSentenceEnd(self), vocab.matching_configuration.requires_forbids.sentence_end),
-                             NotInState(SuffixIsIn(self, vocab.matching_configuration.configurable_rules.suffix_is_not.get(), true_if_no_suffixes=False))
+                             NotInState(SuffixIsIn(self, vocab.matching_configuration.configurable_rules.suffix_is_not.get(), true_if_no_suffixes=False)),
+
+                             #misc requirements
+                             NotInState(IsPoisonWord(self))
                          ],
                          display_requirements=[
                              NotInState(YieldToFollowingOverlappingCompound(self))

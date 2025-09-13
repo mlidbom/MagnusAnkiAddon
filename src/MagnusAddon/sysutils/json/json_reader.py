@@ -1,10 +1,13 @@
 from __future__ import annotations
 
-from typing import Any, Callable, TypeVar, cast
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from autoslot import Slots
 from sysutils import typed
 from sysutils.json.ex_json import json_library_shim
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 TProp = TypeVar("TProp")
 

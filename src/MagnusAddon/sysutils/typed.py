@@ -12,13 +12,13 @@ def bool_(value: object) -> bool: return checked_cast(bool, value)  # noqa: ANN4
 
 CastT = TypeVar("CastT")
 
-def checked_cast(cls: type[CastT], instance: object) -> CastT:
+def checked_cast[CastT](cls: type[CastT], instance: object) -> CastT:
     """ Runtime-check an object for simple built in types and return it cast as such """
     if not isinstance(instance, cls):
         raise TypeError(f"{repr(instance)}: expected {cls.__name__}, not {instance.__class__.__name__}")
     return instance
 
-def checked_cast_generics(cls: type[CastT], instance: object) -> CastT:
+def checked_cast_generics[CastT](cls: type[CastT], instance: object) -> CastT:
     """ Runtime-check an object for a specific generic type and return it cast as such """
     if not is_bearable(instance, cls):
         msg = f"{repr(instance)}: expected {cls.__name__}, not {instance.__class__.__name__}"  # pyright: ignore[reportUnreachable]
@@ -26,16 +26,16 @@ def checked_cast_generics(cls: type[CastT], instance: object) -> CastT:
 
     return cast(CastT, instance)
 
-def _is_compatible_with_isinstance(cls: type[CastT]) -> bool:
+def _is_compatible_with_isinstance[CastT](cls: type[CastT]) -> bool:
     return cls.__module__ == "builtins" and get_origin(cls) is None
 
-def checked_cast_dynamic(cls: type[CastT], instance: object) -> CastT:
+def checked_cast_dynamic[CastT](cls: type[CastT], instance: object) -> CastT:
     """ Runtime-check an object for a specific type and return it cast as such """
     return checked_cast(cls, instance) if _is_compatible_with_isinstance(cls) else checked_cast_generics(cls, instance)
 
-def non_optional(instance:CastT | None) -> CastT:
+def non_optional[CastT](instance:CastT | None) -> CastT:
     if instance is None: raise AssertionError()
     return instance
 
-def try_cast(cls: type[CastT], instance: object) -> CastT | None:
+def try_cast[CastT](cls: type[CastT], instance: object) -> CastT | None:
     return instance if isinstance(instance, cls) else None

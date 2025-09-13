@@ -1,9 +1,12 @@
 from __future__ import annotations
 
-from typing import Callable, override
+from typing import TYPE_CHECKING, override
 
 from ankiutils.ui_utils_interface import IUIUtils
 from autoslot import Slots
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 
 class UIUtilsStub(IUIUtils, Slots):

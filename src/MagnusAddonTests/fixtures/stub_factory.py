@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import threading
 from contextlib import contextmanager
-from typing import TYPE_CHECKING, Callable, TypeVar
+from typing import TYPE_CHECKING, TypeVar
 
 from ankiutils import app
 from fixtures.stubs.ui_utils_stub import UIUtilsStub
@@ -12,7 +12,7 @@ from sysutils.progress_display_runner import Closable
 from sysutils.typed import checked_cast
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator
+    from collections.abc import Callable, Iterator
 
     from ankiutils.ui_utils_interface import IUIUtils
 

@@ -1,10 +1,13 @@
 from __future__ import annotations
 
 import collections
-from typing import Callable, Generic, TypeVar, override
+from typing import TYPE_CHECKING, Generic, TypeVar, override
 
 from autoslot import Slots
 from sysutils import typed
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 VT = TypeVar("VT")  # Value type
 

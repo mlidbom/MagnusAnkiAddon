@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING
 
 from ankiutils import app, query_builder, search_executor
 from ankiutils.app import get_ui_utils
@@ -12,6 +12,8 @@ from sysutils.typed import checked_cast, non_optional
 from ui.menus.menu_utils import shortcutfinger
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+
     from configuration.configuration_value import ConfigurationValueBool
     from note.jpnote import JPNote
     from note.vocabulary.vocabnote import VocabNote

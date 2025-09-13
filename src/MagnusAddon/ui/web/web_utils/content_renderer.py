@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Callable, Generic, TypeVar
+from typing import TYPE_CHECKING, Generic, TypeVar
 
 from ankiutils import app, ui_utils
 from autoslot import Slots
@@ -11,6 +11,7 @@ from sysutils.timeutil import StopWatch
 from sysutils.typed import non_optional
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
     from concurrent.futures import Future
 
     from anki.cards import Card

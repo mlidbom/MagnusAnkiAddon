@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING
 
 from ankiutils import app
 from aqt import gui_hooks
@@ -9,6 +9,8 @@ from sysutils.typed import non_optional
 from wanikani.wani_downloader import WaniDownloader
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+
     from anki.notes import Note
     from aqt.editor import Editor
 

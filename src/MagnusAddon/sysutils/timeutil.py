@@ -3,14 +3,14 @@ from __future__ import annotations
 import sys
 import time
 from contextlib import contextmanager
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING
 
 import mylog
 from autoslot import Slots
 from sysutils import typed
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator
+    from collections.abc import Callable, Iterator
 
 SECONDS_PER_DAY = 24 * 60 * 60
 MILLISECONDS_PER_SECOND = 1000

@@ -1,13 +1,16 @@
 from __future__ import annotations
 
 import os
-from typing import Callable, Generic, TypeVar
+from typing import TYPE_CHECKING, TypeVar
 
 from ankiutils import app
 from aqt import mw
 from autoslot import Slots
 from sysutils.lazy import Lazy
 from sysutils.typed import non_optional
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 T = TypeVar("T")
 
@@ -19,7 +22,7 @@ _config_dict = Lazy(lambda: mw.addonManager.getConfig(_addon_name) or {})
 def _write_config_dict() -> None:
     mw.addonManager.writeConfig(_addon_name, _config_dict.instance())  # pyright: ignore[reportUnknownMemberType]
 
-class ConfigurationValue(Generic[T]):
+class ConfigurationValue[T]:
     def __init__(self, name: str, title: str, default: T, feature_toggler: Callable[[T], None] | None = None) -> None:
         self.title: str = title
         self.feature_toggler: Callable[[T], None] | None = feature_toggler

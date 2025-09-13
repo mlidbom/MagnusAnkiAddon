@@ -2,9 +2,12 @@ from __future__ import annotations
 
 import threading
 from concurrent.futures import Future
-from typing import Callable, Generic, TypeVar, cast
+from typing import TYPE_CHECKING, Generic, TypeVar, cast
 
 from autoslot import Slots
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 T = TypeVar("T")
 

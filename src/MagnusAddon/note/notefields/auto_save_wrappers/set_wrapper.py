@@ -1,10 +1,12 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Callable, Generic, TypeVar, override
+from typing import TYPE_CHECKING, Any, Generic, TypeVar, override
 
 from autoslot import Slots
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+
     from note.notefields.json_object_field import SerializedObjectField
 
 TValue = TypeVar("TValue")
