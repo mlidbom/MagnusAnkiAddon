@@ -23,6 +23,7 @@ if TYPE_CHECKING:
     from anki.notes import NoteId
 
 class JPCollection(WeakRefable, Slots):
+    _is_inital_load = True # running the GC on initial load slows startup a lot but does not decrease memory usage in any significant way.
     def __init__(self, anki_collection: Collection) -> None:
         self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker.tracker_for(self)
         self._is_running: bool = False
@@ -30,8 +31,8 @@ class JPCollection(WeakRefable, Slots):
         app.get_ui_utils().tool_tip(f"{Mine.app_name} loading", 60000)
         stopwatch = StopWatch()
         with StopWatch.log_warning_if_slower_than(5, "Full collection setup"):
-            if not app.is_testing():
-                self._instance_tracker.run_gc_and_assert_single_instance()
+            if not app.is_testing() and not JPCollection._is_inital_load:
+                self._instance_tracker.run_gc_if_multiple_instances_and_assert_single_instance_after_gc()
                 app.get_ui_utils().tool_tip(f"{Mine.app_name} loading", 60000)
 
             with StopWatch.log_warning_if_slower_than(5, "Core collection setup - no gc"):
@@ -42,8 +43,8 @@ class JPCollection(WeakRefable, Slots):
                 self.kanji: KanjiCollection = KanjiCollection(anki_collection, self.cache_runner)
                 self.sentences: SentenceCollection = SentenceCollection(anki_collection, self.cache_runner)
 
-            if not app.is_testing():
-                self._instance_tracker.run_gc_and_assert_single_instance()
+            if not app.is_testing() and not JPCollection._is_inital_load:
+                self._instance_tracker.run_gc_if_multiple_instances_and_assert_single_instance_after_gc()
 
             if app.config().run_additional_pre_caching.get_value() and not app.config().run_any_additional_pre_caching_on_background_thread.get_value():
                 self.populate_additional_caches()
@@ -52,6 +53,7 @@ class JPCollection(WeakRefable, Slots):
             app.get_ui_utils().tool_tip(f"{Mine.app_name} done loading in {str(stopwatch.elapsed_seconds())[0:4]} seconds.", milliseconds=6000)
 
             self._is_running = True
+            JPCollection._is_inital_load = False
 
             if app.config().run_additional_pre_caching.get_value() and app.config().run_any_additional_pre_caching_on_background_thread.get_value():
                 self._populate_additional_caches_on_background_thread()
