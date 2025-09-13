@@ -13,7 +13,7 @@ from language_services.janome_ex.word_extraction.matches.state_tests.another_mat
 from language_services.janome_ex.word_extraction.matches.state_tests.has_a_stem_start import HasAStem
 from language_services.janome_ex.word_extraction.matches.state_tests.has_e_stem import HasEStem
 from language_services.janome_ex.word_extraction.matches.state_tests.has_past_tense_stem import HasPastTenseStem
-from language_services.janome_ex.word_extraction.matches.state_tests.has_prefix import PrefixIsIn
+from language_services.janome_ex.word_extraction.matches.state_tests.prefix_is_in import PrefixIsIn
 from language_services.janome_ex.word_extraction.matches.state_tests.has_te_form_stem import HasTeFormStem
 from language_services.janome_ex.word_extraction.matches.state_tests.is_sentence_end import IsSentenceEnd
 from language_services.janome_ex.word_extraction.matches.state_tests.is_sentence_start import IsSentenceStart
