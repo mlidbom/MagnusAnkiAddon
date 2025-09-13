@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING, final, override
 
 from autoslot import Slots
 from language_services.janome_ex.word_extraction.matches.match import Match
-from language_services.janome_ex.word_extraction.matches.requirements.head_requirements import HeadRequirements
 from language_services.janome_ex.word_extraction.matches.requirements.in_state import InState
 from language_services.janome_ex.word_extraction.matches.requirements.misc_requirements import MiscRequirements
 from language_services.janome_ex.word_extraction.matches.requirements.not_in_state import NotInState
@@ -12,6 +11,7 @@ from language_services.janome_ex.word_extraction.matches.requirements.requires_f
 from language_services.janome_ex.word_extraction.matches.requirements.tail_requirements import TailRequirements
 from language_services.janome_ex.word_extraction.matches.state_tests.another_match_owns_the_form import AnotherMatchOwnsTheForm
 from language_services.janome_ex.word_extraction.matches.state_tests.has_a_stem_start import HasAStem
+from language_services.janome_ex.word_extraction.matches.state_tests.has_e_stem import HasEStem
 from language_services.janome_ex.word_extraction.matches.state_tests.has_past_tense_stem import HasPastTenseStem
 from language_services.janome_ex.word_extraction.matches.state_tests.has_prefix import PrefixIsIn
 from language_services.janome_ex.word_extraction.matches.state_tests.has_te_form_stem import HasTeFormStem
@@ -36,7 +36,8 @@ class VocabMatch(Match, Slots):
                              RequiresForbidsRequirement(IsSentenceStart(self), vocab.matching_configuration.requires_forbids.sentence_start),
                              RequiresForbidsRequirement(HasTeFormStem(self), vocab.matching_configuration.requires_forbids.te_form_stem),
                              RequiresForbidsRequirement(HasAStem(self), vocab.matching_configuration.requires_forbids.a_stem),
-                             RequiresForbidsRequirement(HasPastTenseStem(self), vocab.matching_configuration.requires_forbids.past_tense_stem)
+                             RequiresForbidsRequirement(HasPastTenseStem(self), vocab.matching_configuration.requires_forbids.past_tense_stem),
+                             RequiresForbidsRequirement(HasEStem(self), vocab.matching_configuration.requires_forbids.e_stem)
                          ],
                          display_requirements=[
                              NotInState(YieldToFollowingOverlappingCompound(self))
@@ -45,7 +46,6 @@ class VocabMatch(Match, Slots):
         self.word_variant: WeakRef[CandidateWordVariant] = word_variant
         self.weakref = WeakRef(self)
 
-        self.head_requirements: HeadRequirements = HeadRequirements(self, word_variant, self.word_variant().word.start_location.previous)
         self.tail_requirements: TailRequirements = TailRequirements(self.vocab, self.word_variant().word.end_location.next)
         self.misc_requirements: MiscRequirements = MiscRequirements(self.weakref)
 
@@ -85,7 +85,6 @@ class VocabMatch(Match, Slots):
     @override
     def _is_valid_internal(self) -> bool:
         return (super()._is_valid_internal
-                and self.head_requirements.are_fulfilled
                 and self.tail_requirements.are_fulfilled
                 and self.misc_requirements.are_fulfilled)
 
@@ -107,7 +106,6 @@ class VocabMatch(Match, Slots):
     def failure_reasons(self) -> list[str]:
         return (super().failure_reasons
                 + self.misc_requirements.failure_reasons()
-                + self.head_requirements.failure_reasons()
                 + self.tail_requirements.failure_reasons())
 
     @override
