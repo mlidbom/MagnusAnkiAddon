@@ -5,10 +5,12 @@ from typing import TYPE_CHECKING, final, override
 from autoslot import Slots
 from language_services.janome_ex.word_extraction.matches.match import Match
 from language_services.janome_ex.word_extraction.matches.requirements.head_requirements import HeadRequirements
+from language_services.janome_ex.word_extraction.matches.requirements.in_state import InState
 from language_services.janome_ex.word_extraction.matches.requirements.misc_requirements import MiscRequirements
 from language_services.janome_ex.word_extraction.matches.requirements.not_in_state import NotInState
 from language_services.janome_ex.word_extraction.matches.requirements.tail_requirements import TailRequirements
 from language_services.janome_ex.word_extraction.matches.state_tests.another_match_owns_the_form import AnotherMatchOwnsTheForm
+from language_services.janome_ex.word_extraction.matches.state_tests.has_prefix import PrefixIsIn
 from language_services.janome_ex.word_extraction.matches.state_tests.yield_to_following_overlapping_compound import YieldToFollowingOverlappingCompound
 from sysutils.weak_ref import WeakRef
 
@@ -22,8 +24,10 @@ class VocabMatch(Match, Slots):
     def __init__(self, word_variant: WeakRef[CandidateWordVariant], vocab: VocabNote) -> None:
         super().__init__(word_variant,
                          validity_requirements=[
-                             NotInState(AnotherMatchOwnsTheForm(self))
-                             #head reqiuirements
+                             NotInState(AnotherMatchOwnsTheForm(self)),
+                             # head reqiuirements
+                             NotInState(PrefixIsIn(self, vocab.matching_configuration.configurable_rules.prefix_is_not.get(), true_if_no_prefixes=False)),
+                             #InState(PrefixIsIn(self, vocab.matching_configuration.configurable_rules.required_prefix.get(), true_if_no_prefixes=True))
                          ],
                          display_requirements=[
                              NotInState(YieldToFollowingOverlappingCompound(self))

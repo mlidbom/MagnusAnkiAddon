@@ -8,10 +8,17 @@ if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.match import Match
 
 class PrefixIsIn(MatchStateTest):
-    def __init__(self, match: Match, allowed_prefixes: set[str]) -> None:
-        super().__init__(match, f"prefix_is_in{",".join(allowed_prefixes)}")
-        self.allowed_prefixes = allowed_prefixes
+    def __init__(self, match: Match, prefixes: set[str], true_if_no_prefixes: bool) -> None:
+        super().__init__(match, f"prefix_is_in{",".join(prefixes)}")
+        self.true_if_no_prefixes = true_if_no_prefixes
+        self.prefixes = prefixes
 
     @property
     @override
-    def match_is_in_state(self) -> bool: return self.prefix in self.allowed_prefixes
+    def match_is_in_state(self) -> bool:
+        if self.true_if_no_prefixes and not any(self.prefixes):
+            return True
+
+        if any(prefix for prefix in self.prefixes if self.prefix.startswith(prefix)):  # noqa: SIM103
+            return True
+        return False
