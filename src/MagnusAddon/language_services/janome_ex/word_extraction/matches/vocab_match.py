@@ -20,6 +20,7 @@ from language_services.janome_ex.word_extraction.matches.state_tests.is_sentence
 from language_services.janome_ex.word_extraction.matches.state_tests.is_single_token import IsSingleToken
 from language_services.janome_ex.word_extraction.matches.state_tests.prefix_is_in import PrefixIsIn
 from language_services.janome_ex.word_extraction.matches.state_tests.suffix_is_in import SuffixIsIn
+from language_services.janome_ex.word_extraction.matches.state_tests.surface_is_in import SurfaceIsIn
 from language_services.janome_ex.word_extraction.matches.state_tests.yield_to_following_overlapping_compound import HasOverlappingFollowingCompound
 from sysutils.weak_ref import WeakRef
 
@@ -35,7 +36,8 @@ class VocabMatch(Match, Slots):
                          validity_requirements=[
                              NotInState(AnotherMatchOwnsTheForm(self)),
                              # head requirements
-                             NotInState(PrefixIsIn(self, vocab.matching_configuration.configurable_rules.prefix_is_not.get()), is_requirement_active=vocab.matching_configuration.configurable_rules.prefix_is_not.any()),
+                             NotInState(PrefixIsIn(self, vocab.matching_configuration.configurable_rules.prefix_is_not.get()),
+                                        is_requirement_active=vocab.matching_configuration.configurable_rules.prefix_is_not.any()),
                              InState(PrefixIsIn(self, vocab.matching_configuration.configurable_rules.required_prefix.get()), is_requirement_active=vocab.matching_configuration.configurable_rules.required_prefix.any()),
                              RequiresForbidsRequirement(IsSentenceStart(self), vocab.matching_configuration.requires_forbids.sentence_start),
                              RequiresForbidsRequirement(HasTeFormStem(self), vocab.matching_configuration.requires_forbids.te_form_stem),
@@ -45,15 +47,19 @@ class VocabMatch(Match, Slots):
 
                              # tail requirements
                              RequiresForbidsRequirement(IsSentenceEnd(self), vocab.matching_configuration.requires_forbids.sentence_end),
-                             NotInState(SuffixIsIn(self, vocab.matching_configuration.configurable_rules.suffix_is_not.get()), is_requirement_active=vocab.matching_configuration.configurable_rules.suffix_is_not.any()),
+                             NotInState(SuffixIsIn(self, vocab.matching_configuration.configurable_rules.suffix_is_not.get()),
+                                        is_requirement_active=vocab.matching_configuration.configurable_rules.suffix_is_not.any()),
 
                              # misc requirements
-                             NotInState(IsPoisonWord(self))
+                             NotInState(IsPoisonWord(self)),
+                             RequiresForbidsRequirement(IsExactMatch(self), vocab.matching_configuration.requires_forbids.exact_match),
+                             RequiresForbidsRequirement(IsSingleToken(self), vocab.matching_configuration.requires_forbids.single_token),
+                             NotInState(SurfaceIsIn(self, vocab.matching_configuration.configurable_rules.surface_is_not.get()),
+                                        is_requirement_active=vocab.matching_configuration.configurable_rules.surface_is_not.any()),
                          ],
                          display_requirements=[
-                             NotInState(HasOverlappingFollowingCompound(self), is_requirement_active=vocab.matching_configuration.requires_forbids.yield_last_token.is_required),
-                             RequiresForbidsRequirement(IsExactMatch(self), vocab.matching_configuration.requires_forbids.exact_match),
-                             RequiresForbidsRequirement(IsSingleToken(self), vocab.matching_configuration.requires_forbids.single_token)
+                             NotInState(HasOverlappingFollowingCompound(self),
+                                        is_requirement_active=vocab.matching_configuration.requires_forbids.yield_last_token.is_required)
                          ])
         self.vocab: VocabNote = vocab
         self.word_variant: WeakRef[CandidateWordVariant] = word_variant

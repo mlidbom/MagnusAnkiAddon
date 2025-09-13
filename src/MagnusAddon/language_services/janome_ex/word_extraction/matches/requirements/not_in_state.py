@@ -15,8 +15,14 @@ class NotInState(MatchRequirement, Slots):
 
     @property
     @override
-    def is_fulfilled(self) -> bool: return (not self.is_requirement_active
-                                            or not self.state_test.match_is_in_state)
+    def is_fulfilled(self) -> bool:
+        if not self.is_requirement_active:
+            return True
+
+        if not self.state_test.match_is_in_state:  # noqa: SIM103
+            return True
+
+        return False
 
     @property
     @override

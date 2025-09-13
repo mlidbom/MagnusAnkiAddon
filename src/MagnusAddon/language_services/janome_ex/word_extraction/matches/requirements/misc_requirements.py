@@ -16,24 +16,17 @@ class MiscRequirements(Slots):
         self.rules = vocab.matching_configuration
         self.match = match
 
-        surface_is_not = self.rules.configurable_rules.surface_is_not.get()
-        self.surface_is_not_requirement_fulfilled: bool = (not any(surface_is_not)
-                                                           or match().word_variant().is_surface
-                                                           or match().word_variant().word.surface_variant.form not in surface_is_not)
-
         # todo: this should be in display requirements but due to the messed up way we intermingle logic for validity and display that breaks the display. For now we have it here.
         yield_to_surface = self.rules.configurable_rules.yield_to_surface.get()
         self.yield_to_surface_requirement_fulfilled: bool = (not any(yield_to_surface)
                                                              or match().word_variant().is_surface
                                                              or match().word_variant().word.surface_variant.form not in yield_to_surface)
 
-        self.are_fulfilled: bool = (self.surface_is_not_requirement_fulfilled
-                                    and self.yield_to_surface_requirement_fulfilled)
+        self.are_fulfilled: bool = (self.yield_to_surface_requirement_fulfilled)
 
     def failure_reasons(self) -> list[str]:
         return (SimpleStringListBuilder()
                 .append_if(not self.yield_to_surface_requirement_fulfilled, f"yield_to_surface_{self.match().word_variant().word.surface_variant.form}")
-                .append_if(not self.surface_is_not_requirement_fulfilled, f"surface_is_not_{self.match().word_variant().word.surface_variant.form}")
                 .value)
 
     @override
