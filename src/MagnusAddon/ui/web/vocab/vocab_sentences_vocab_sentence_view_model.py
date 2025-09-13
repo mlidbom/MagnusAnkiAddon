@@ -55,10 +55,11 @@ class VocabSentenceViewModel(Slots):
 
         def highlight_shaded_match(match: VocabSentenceMatchViewModel, shaded_by: ParsedMatch, inner_class_name: str, outer_class_name: str) -> str:
             outer_head = result.sentence[:shaded_by.start_index]
+            outer_range = result.sentence[shaded_by.start_index:match.start_index]
             outer_tail = result.sentence[shaded_by.end_index:]
             inner_range = result.sentence[match.start_index:match.end_index]
             formatted_match = f"""<span class="vocabInContext {inner_class_name}">{inner_range}</span>"""
-            return f"""{outer_head}<span class="vocabInContext {outer_class_name}">{formatted_match}</span>{outer_tail}"""
+            return f"""{outer_head}<span class="vocabInContext {outer_class_name}">{outer_range}{formatted_match}</span>{outer_tail}"""
 
         if self.first_match.is_displayed:
             if any(form for form in conjugations.secondary_forms_containing_primary_form_forms if form.startswith(self.first_match.parsed_form)):
@@ -71,8 +72,8 @@ class VocabSentenceViewModel(Slots):
         match_shading_our_match = self.first_match.shaded_by
         if match_shading_our_match.vocab_id in conjugations.derived_compound_ids:
             if any(form for form in conjugations.secondary_forms_derived_compounds_forms if form.startswith(match_shading_our_match.parsed_form)):
-                return highlight_shaded_match(self.first_match, match_shading_our_match, "secondaryFormDerivedCompoundForm", "primaryForm")
-            return highlight_shaded_match(self.first_match, match_shading_our_match, "derivedCompoundForm", "primaryForm")
+                return highlight_shaded_match(self.first_match, match_shading_our_match, "secondaryForm", "secondaryFormDerivedCompoundForm")
+            return highlight_shaded_match(self.first_match, match_shading_our_match, "primaryForm", "derivedCompoundForm")
 
         return highlight_displayed_match(self.first_shaded_match, "undisplayedMatch")
 
