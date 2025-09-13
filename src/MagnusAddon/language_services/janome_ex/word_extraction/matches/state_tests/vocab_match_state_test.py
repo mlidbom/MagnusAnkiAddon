@@ -6,6 +6,7 @@ from language_services.janome_ex.word_extraction.matches.state_tests.match_state
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
+    from note.vocabulary.vocabnote_matching_rules import VocabNoteMatchingConfiguration
 
 
 class VocabMatchStateTest(MatchStateTest):
@@ -18,3 +19,6 @@ class VocabMatchStateTest(MatchStateTest):
     def match(self) -> VocabMatch:
         from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
         return cast(VocabMatch, super().match)
+
+    @property
+    def rules(self) -> VocabNoteMatchingConfiguration: return self.match.vocab.matching_configuration

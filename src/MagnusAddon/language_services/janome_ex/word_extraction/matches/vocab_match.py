@@ -4,12 +4,12 @@ from typing import TYPE_CHECKING, final, override
 
 from autoslot import Slots
 from language_services.janome_ex.word_extraction.matches.match import Match
-from language_services.janome_ex.word_extraction.matches.requirements.display_requirements import DisplayRequirements
 from language_services.janome_ex.word_extraction.matches.requirements.head_requirements import HeadRequirements
 from language_services.janome_ex.word_extraction.matches.requirements.misc_requirements import MiscRequirements
 from language_services.janome_ex.word_extraction.matches.requirements.requirement import NotInState
 from language_services.janome_ex.word_extraction.matches.requirements.tail_requirements import TailRequirements
 from language_services.janome_ex.word_extraction.matches.state_tests.another_match_owns_the_form import AnotherMatchOwnsTheForm
+from language_services.janome_ex.word_extraction.matches.state_tests.yield_to_following_overlapping_compound import YieldToFollowingOverlappingCompound
 from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
@@ -24,7 +24,9 @@ class VocabMatch(Match, Slots):
                          validity_requirements=[
                              NotInState(AnotherMatchOwnsTheForm(self))
                          ],
-                         display_requirements=[])
+                         display_requirements=[
+                             NotInState(YieldToFollowingOverlappingCompound(self))
+                         ])
         self.vocab: VocabNote = vocab
         self.word_variant: WeakRef[CandidateWordVariant] = word_variant
         self.weakref = WeakRef(self)
@@ -84,12 +86,6 @@ class VocabMatch(Match, Slots):
                                                            and other_match.is_valid)
 
     @property
-    @override
-    def is_valid_for_display(self) -> bool: return super().is_valid_for_display and self.display_requirements.are_fulfilled
-    @property
-    def display_requirements(self) -> DisplayRequirements: return DisplayRequirements(self.weakref)
-
-    @property
     def owns_form(self) -> bool: return self.vocab.forms.is_owned_form(self.tokenized_form)
 
     @property
@@ -99,11 +95,6 @@ class VocabMatch(Match, Slots):
                 + self.misc_requirements.failure_reasons()
                 + self.head_requirements.failure_reasons()
                 + self.tail_requirements.failure_reasons())
-
-    @property
-    @override
-    def hiding_reasons(self) -> list[str]: return (super().hiding_reasons
-                                                   + self.display_requirements.failure_reasons())
 
     @override
     def __repr__(self) -> str: return f"""{self.vocab.get_question()}, {self.vocab.get_answer()[:10]}: {" ".join(self.failure_reasons)} {" ".join(self.hiding_reasons)}"""
