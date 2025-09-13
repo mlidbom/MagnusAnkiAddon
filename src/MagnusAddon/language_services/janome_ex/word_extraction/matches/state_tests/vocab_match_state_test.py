@@ -3,10 +3,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, cast, override
 
 from language_services.janome_ex.word_extraction.matches.state_tests.match_state_test import MatchStateTest
-from note.vocabulary.vocabnote import VocabNote
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
+    from note.vocabulary.vocabnote import VocabNote
     from note.vocabulary.vocabnote_matching_rules import VocabNoteMatchingConfiguration
 
 

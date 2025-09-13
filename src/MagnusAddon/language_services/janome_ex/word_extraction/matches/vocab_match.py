@@ -17,6 +17,7 @@ from language_services.janome_ex.word_extraction.matches.state_tests.is_exact_ma
 from language_services.janome_ex.word_extraction.matches.state_tests.is_poison_word import IsPoisonWord
 from language_services.janome_ex.word_extraction.matches.state_tests.is_sentence_end import IsSentenceEnd
 from language_services.janome_ex.word_extraction.matches.state_tests.is_sentence_start import IsSentenceStart
+from language_services.janome_ex.word_extraction.matches.state_tests.is_single_token import IsSingleToken
 from language_services.janome_ex.word_extraction.matches.state_tests.prefix_is_in import PrefixIsIn
 from language_services.janome_ex.word_extraction.matches.state_tests.suffix_is_in import SuffixIsIn
 from language_services.janome_ex.word_extraction.matches.state_tests.yield_to_following_overlapping_compound import YieldToFollowingOverlappingCompound
@@ -51,7 +52,8 @@ class VocabMatch(Match, Slots):
                          ],
                          display_requirements=[
                              NotInState(YieldToFollowingOverlappingCompound(self)),
-                             RequiresForbidsRequirement(IsExactMatch(self), vocab.matching_configuration.requires_forbids.exact_match)
+                             RequiresForbidsRequirement(IsExactMatch(self), vocab.matching_configuration.requires_forbids.exact_match),
+                             RequiresForbidsRequirement(IsSingleToken(self), vocab.matching_configuration.requires_forbids.single_token)
                          ])
         self.vocab: VocabNote = vocab
         self.word_variant: WeakRef[CandidateWordVariant] = word_variant

@@ -16,12 +16,6 @@ class MiscRequirements(Slots):
         self.rules = vocab.matching_configuration
         self.match = match
 
-        self.is_single_token_requirement_fulfilled: bool = (not self.rules.requires_forbids.single_token.is_required
-                                                            or not match().word_variant().word.is_custom_compound)
-
-        self.is_compound_requirement_fulfilled: bool = (not self.rules.requires_forbids.single_token.is_forbidden
-                                                        or match().word_variant().word.is_custom_compound)
-
         surface_is_not = self.rules.configurable_rules.surface_is_not.get()
         self.surface_is_not_requirement_fulfilled: bool = (not any(surface_is_not)
                                                            or match().word_variant().is_surface
@@ -33,16 +27,12 @@ class MiscRequirements(Slots):
                                                              or match().word_variant().is_surface
                                                              or match().word_variant().word.surface_variant.form not in yield_to_surface)
 
-        self.are_fulfilled: bool = (self.is_single_token_requirement_fulfilled
-                                    and self.surface_is_not_requirement_fulfilled
-                                    and self.yield_to_surface_requirement_fulfilled
-                                    and self.is_compound_requirement_fulfilled)
+        self.are_fulfilled: bool = (self.surface_is_not_requirement_fulfilled
+                                    and self.yield_to_surface_requirement_fulfilled)
 
     def failure_reasons(self) -> list[str]:
         return (SimpleStringListBuilder()
-                .append_if(not self.is_single_token_requirement_fulfilled, "requires_single_token")
                 .append_if(not self.yield_to_surface_requirement_fulfilled, f"yield_to_surface_{self.match().word_variant().word.surface_variant.form}")
-                .append_if(not self.is_compound_requirement_fulfilled, "requires_compound")
                 .append_if(not self.surface_is_not_requirement_fulfilled, f"surface_is_not_{self.match().word_variant().word.surface_variant.form}")
                 .value)
 
