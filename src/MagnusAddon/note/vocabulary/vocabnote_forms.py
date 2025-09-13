@@ -25,9 +25,6 @@ class Conjugations(Slots):
         self.secondary_forms_forms: set[str] = {form for form in _vocab_note.conjugator.get_text_matching_forms_for_all_form()
                                                 if form not in self.primary_form_forms}
 
-        self.secondary_forms_containing_primary_form_forms: set[str] = {sec_form for sec_form in self.secondary_forms_forms
-                                                                        if any(pri_form for pri_form in self.primary_form_forms if pri_form in sec_form)}
-
         derived_compounds = _vocab_note.related_notes.in_compounds()
         self.derived_compound_ids: set[NoteId] = {der.get_id() for der in derived_compounds}
         self.derived_compounds_forms: set[str] = set(ex_sequence.flatten([der.conjugator.get_text_matching_forms_for_all_form() for der in derived_compounds]))

@@ -86,13 +86,8 @@ class VocabSentenceViewModel(Slots):
         return any(base_form for base_form in self.vocab.forms.conjugations.secondary_forms_with_their_own_vocab_forms
                    if base_form in self.result.sentence)
 
-    def primary_form_is_displayed(self) -> bool:
-        return (not any(covering_secondary_form for covering_secondary_form
-                        in self.vocab.forms.conjugations.secondary_forms_containing_primary_form_forms
-                        if covering_secondary_form in self.result.sentence)
-                and any(base_form for base_form
-                        in self.vocab.forms.conjugations.primary_form_forms
-                        if base_form in self.result.sentence))
+    def contains_primary_form(self) -> bool:
+        return any(match for match in self.displayed_matches if match.is_primary_form_of(self.vocab))
 
     def contains_secondary_form(self) -> bool:
         return any(base_forms for base_forms

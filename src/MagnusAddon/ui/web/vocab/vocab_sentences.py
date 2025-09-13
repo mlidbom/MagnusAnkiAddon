@@ -20,8 +20,8 @@ def generate_sentences_list_html(_vocab_note: VocabNote) -> str:
         def prefer_highlighted(_sentence: VocabSentenceViewModel) -> int: return 0 if _sentence.is_highlighted() else 1
         def prefer_studying_read(_sentence: VocabSentenceViewModel) -> int: return 0 if _sentence.sentence.is_studying_read() else 1
         def prefer_studying_listening(_sentence: VocabSentenceViewModel) -> int: return 0 if _sentence.sentence.is_studying_listening() else 1
-        def dislike_secondary_form_with_vocab(_sentence: VocabSentenceViewModel) -> int: return 1 if (not _sentence.primary_form_is_displayed() and _sentence.contains_secondary_form_with_its_own_vocabulary_note()) else 0
-        def prefer_primary_form(_sentence: VocabSentenceViewModel) -> int: return 0 if _sentence.primary_form_is_displayed() else 1
+        def dislike_secondary_form_with_vocab(_sentence: VocabSentenceViewModel) -> int: return 1 if (not _sentence.contains_primary_form() and _sentence.contains_secondary_form_with_its_own_vocabulary_note()) else 0
+        def prefer_primary_form(_sentence: VocabSentenceViewModel) -> int: return 0 if _sentence.contains_primary_form() else 1
         def dislike_tts_sentences(_sentence: VocabSentenceViewModel) -> int: return 1 if _sentence.sentence.has_tag(Tags.TTSAudio) else 0
         def prefer_short_questions(_sentence: VocabSentenceViewModel) -> int: return len(_sentence.sentence.get_question())
         def prefer_lower_priority_tag_values(_sentence: VocabSentenceViewModel) -> int: return _sentence.sentence.priority_tag_value()
@@ -47,7 +47,7 @@ def generate_sentences_list_html(_vocab_note: VocabNote) -> str:
                                      prefer_short_questions(x)))
 
     sentences = sort_sentences([VocabSentenceViewModel(_vocab_note, sentence_note) for sentence_note in _vocab_note.sentences.all()])
-    primary_form_matches = len([x for x in sentences if x.primary_form_is_displayed()])
+    primary_form_matches = len([x for x in sentences if x.contains_primary_form()])
     sentences = sentences[:30]
 
     return f'''
