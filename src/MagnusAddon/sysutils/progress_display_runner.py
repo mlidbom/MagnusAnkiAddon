@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import time
-from typing import TYPE_CHECKING, TypeVar
+from typing import TYPE_CHECKING
 
 from autoslot import Slots
 from PyQt6.QtCore import Qt
@@ -10,8 +10,6 @@ from sysutils import app_thread_pool, timeutil
 
 if TYPE_CHECKING:
     from collections.abc import Callable
-
-T = TypeVar("T")
 
 class Closable(Slots):
     def __init__(self, close_action: Callable[[], None]) -> None:
@@ -50,7 +48,7 @@ def _create_spinning_progress_dialog(message: str) -> QProgressDialog:
     progress_dialog.show()
     return progress_dialog
 
-def process_with_progress(items: list[T], process_item: Callable[[T], None], message:str, allow_cancel: bool = True, display_delay_seconds: float = 0.0) -> None:
+def process_with_progress[T](items: list[T], process_item: Callable[[T], None], message:str, allow_cancel: bool = True, display_delay_seconds: float = 0.0) -> None:
     total_items = len(items)
     start_time = time.time()
     progress_dialog: QProgressDialog | None = None

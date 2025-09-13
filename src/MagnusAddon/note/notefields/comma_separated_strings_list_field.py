@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, TypeVar
+from typing import TYPE_CHECKING
 
 from autoslot import Slots
 from note.notefields.string_field import AutoStrippingStringField
@@ -13,7 +13,6 @@ if TYPE_CHECKING:
     from sysutils.lazy import Lazy
     from sysutils.weak_ref import WeakRef
 
-TValue = TypeVar("TValue")
 class CommaSeparatedStringsListField(Slots):
     def __init__(self, note: WeakRef[JPNote], field_name: str) -> None:
         field = AutoStrippingStringField(note, field_name)
@@ -38,4 +37,4 @@ class CommaSeparatedStringsListField(Slots):
     def add(self, add: str) -> None:
         self.set(self.get() + [add])
 
-    def lazy_reader(self, reader: Callable[[], TValue]) -> Lazy[TValue]: return self._field.lazy_reader(reader)
+    def lazy_reader[TValue](self, reader: Callable[[], TValue]) -> Lazy[TValue]: return self._field.lazy_reader(reader)

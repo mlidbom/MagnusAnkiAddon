@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import threading
-from typing import TYPE_CHECKING, TypeVar, cast, final
+from typing import TYPE_CHECKING, cast, final
 
 from anki.notes import NoteId
 from ankiutils.app import col
@@ -181,10 +181,9 @@ class NoteSearchDialog(QDialog): # Cannot inherit Slots for some QT internal rea
                 # Hide the busy indicator
                 self.progress_bar.hide()
 
-    TNote = TypeVar("TNote", bound=JPNote)
 
     @staticmethod
-    def _search_in_notes(max_notes: int, notes: list[TNote], search_text: str, **extractors: Callable[[TNote], str]) -> list[JPNote]:
+    def _search_in_notes[TNote: JPNote](max_notes: int, notes: list[TNote], search_text: str, **extractors: Callable[[TNote], str]) -> list[JPNote]:
         matches: list[JPNote] = []
 
         if max_notes <= 0:

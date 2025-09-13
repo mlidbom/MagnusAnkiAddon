@@ -1,12 +1,10 @@
 """extensions to the built in Sequence type"""
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, TypeVar
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Sequence
-
-T = TypeVar("T")
 
 def flatten[T](this: Sequence[Sequence[T]]) -> list[T]:
     """`returns` all the items in `this` in order, flattened into a one dimensional list"""
@@ -23,5 +21,5 @@ def remove_duplicates_while_retaining_order[T](sequence: Sequence[T]) -> list[T]
 
 def remove_duplicates[T](sequence: Sequence[T]) -> list[T]: return list(set(sequence))
 
-def count(sequence: Sequence[T], predicate: Callable[[T], bool]) -> int:
+def count[T](sequence: Sequence[T], predicate: Callable[[T], bool]) -> int:
     return len([t for t in sequence if predicate(t)])

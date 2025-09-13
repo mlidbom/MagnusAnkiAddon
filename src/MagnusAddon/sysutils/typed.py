@@ -1,16 +1,17 @@
 from __future__ import annotations
 
-from typing import TypeVar, cast, get_origin
+from typing import cast, get_origin
 
 from beartype.door import is_bearable
 
 
 def str_(value: object) -> str: return checked_cast(str, value)  # noqa: ANN401
-def int_(value: object) -> int: return checked_cast(int, value)  # noqa: ANN401
-def float_(value: object) -> float: return checked_cast(float, value)  # noqa: ANN401
-def bool_(value: object) -> bool: return checked_cast(bool, value)  # noqa: ANN401
 
-CastT = TypeVar("CastT")
+def int_(value: object) -> int: return checked_cast(int, value)  # noqa: ANN401
+
+def float_(value: object) -> float: return checked_cast(float, value)  # noqa: ANN401
+
+def bool_(value: object) -> bool: return checked_cast(bool, value)  # noqa: ANN401
 
 def checked_cast[CastT](cls: type[CastT], instance: object) -> CastT:
     """ Runtime-check an object for simple built in types and return it cast as such """
@@ -33,7 +34,7 @@ def checked_cast_dynamic[CastT](cls: type[CastT], instance: object) -> CastT:
     """ Runtime-check an object for a specific type and return it cast as such """
     return checked_cast(cls, instance) if _is_compatible_with_isinstance(cls) else checked_cast_generics(cls, instance)
 
-def non_optional[CastT](instance:CastT | None) -> CastT:
+def non_optional[CastT](instance: CastT | None) -> CastT:
     if instance is None: raise AssertionError()
     return instance
 

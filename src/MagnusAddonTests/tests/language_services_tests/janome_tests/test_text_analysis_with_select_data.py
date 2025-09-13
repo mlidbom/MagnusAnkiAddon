@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, TypeVar
+from typing import TYPE_CHECKING
 
 import pytest
 from fixtures.collection_factory import inject_anki_collection_with_select_data
@@ -101,12 +101,11 @@ def test_ignores_noise_characters() -> None:
     words = {w.parsed_form for w in sentence_note.parsing_result.get().parsed_words}
     assert words == expected
 
-T1 = TypeVar("T1")
 @pytest.mark.usefixtures("setup_collection_with_select_data")
 def test_no_memory_leak_weak_references_are_disposed() -> None:
     sentence_note = SentenceNote.create_test_note("作るに決まってるだろ, ", "")
 
-    def assert_that_the_inner_weakref_has_been_destroyed(fetch_member_from_analysis: Callable[[TextAnalysis], T1], access_weakref_that_should_have_been_deleted: Callable[[T1], object]) -> None:
+    def assert_that_the_inner_weakref_has_been_destroyed[T1](fetch_member_from_analysis: Callable[[TextAnalysis], T1], access_weakref_that_should_have_been_deleted: Callable[[T1], object]) -> None:
         def create_analysis_and_return_value_of_first_func() -> T1:
             return fetch_member_from_analysis(sentence_note.create_analysis())
         first_value: T1 = create_analysis_and_return_value_of_first_func()

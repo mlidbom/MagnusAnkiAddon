@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, TypeVar
+from typing import TYPE_CHECKING
 
 from ankiutils import app, ui_utils
 from aqt import gui_hooks
@@ -18,10 +18,9 @@ if TYPE_CHECKING:
     from aqt.main import MainWindowState
     from PyQt6.QtWidgets import QWidget
 
-T = TypeVar("T")
 
 def init() -> None:
-    def try_get_review_note_of_type(note_type: type[T]) -> T | None:
+    def try_get_review_note_of_type[T](note_type: type[T]) -> T | None:
         return try_cast(note_type, ui_utils.try_get_review_note())
 
     def refresh_shallow() -> None: app.get_ui_utils().refresh(refresh_browser=False)

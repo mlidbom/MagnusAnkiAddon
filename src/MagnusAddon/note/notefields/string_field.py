@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, TypeVar
+from typing import TYPE_CHECKING
 
 from autoslot import Slots
 from note.notefields.readonly_string_field import AutoStrippingReadOnlyStringField
@@ -12,7 +12,6 @@ if TYPE_CHECKING:
     from note.jpnote import JPNote
     from sysutils.weak_ref import WeakRef
 
-TValue = TypeVar("TValue")
 class AutoStrippingStringField(AutoStrippingReadOnlyStringField, Slots):
     def __init__(self, note: WeakRef[JPNote], field_name: str) -> None:
         super().__init__(note, field_name)
@@ -25,7 +24,7 @@ class AutoStrippingStringField(AutoStrippingReadOnlyStringField, Slots):
 
     def empty(self) -> None: self.set("")
 
-    def lazy_reader(self, reader: Callable[[], TValue]) -> Lazy[TValue]:
+    def lazy_reader[TValue](self, reader: Callable[[], TValue]) -> Lazy[TValue]:
         lazy = Lazy(reader)
         self._reset_callbacks.append(lazy.reset)
         return lazy

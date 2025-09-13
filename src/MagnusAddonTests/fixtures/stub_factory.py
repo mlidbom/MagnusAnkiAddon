@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import threading
 from contextlib import contextmanager
-from typing import TYPE_CHECKING, TypeVar
+from typing import TYPE_CHECKING
 
 from ankiutils import app
 from fixtures.stubs.ui_utils_stub import UIUtilsStub
@@ -45,8 +45,6 @@ def stub_ui_dependencies() -> Iterator[None]:
     with (_stub_ui_utils_real(), _stub_progress_runner(), _stub_config_dict()):
         yield
 
-T = TypeVar("T")
-
 @contextmanager
 def _stub_progress_runner() -> Iterator[None]:
     # noinspection PyUnusedLocal
@@ -54,7 +52,7 @@ def _stub_progress_runner() -> Iterator[None]:
         return Closable(lambda: None)
 
     # noinspection PyUnusedLocal
-    def _process_with_progress(items: list[T], process_item: Callable[[T], None], _message: str, _allow_cancel: bool = True, _display_delay_seconds: float = 0.0, _pause_cache_updates: bool = True) -> None:
+    def _process_with_progress[T](items: list[T], process_item: Callable[[T], None], _message: str, _allow_cancel: bool = True, _display_delay_seconds: float = 0.0, _pause_cache_updates: bool = True) -> None:
         for item in items:
             process_item(item)
 
