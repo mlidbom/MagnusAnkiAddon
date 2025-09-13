@@ -29,11 +29,13 @@ def generate_sentences_list_html(_vocab_note: VocabNote) -> str:
 
         def dislike_sentences_containing_secondary_form(_sentence: VocabSentenceViewModel) -> int: return 1 if _sentence.contains_secondary_form() else 0
         def dislike_contains_derived_compound(_sentence: VocabSentenceViewModel) -> int: return 1 if _sentence.contains_derived_compound() else 0
+        def prefer_displayed(_sentence: VocabSentenceViewModel) -> int: return 0 if _sentence.vocab_is_displayed else 1
 
         return sorted(_sentences,
                       key=lambda x: (dislike_secondary_form_with_vocab(x),
                                      prefer_studying_read(x),
                                      prefer_studying_listening(x),
+                                     prefer_displayed(x),
                                      prefer_highlighted_for_low_reliability_matches(x),
                                      dislike_no_translation(x),
                                      prefer_lower_priority_tag_values(x),

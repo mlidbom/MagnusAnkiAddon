@@ -21,8 +21,7 @@ class VocabSentenceMatchViewModel(Slots):
     def start_index(self) -> int: return self.match.start_index
     @property
     def end_index(self) -> int: return self.match.end_index
-    @property
-    def parsed_form(self) -> str: return self.match.parsed_form
+    def is_primary_form_of(self, vocab: VocabNote) -> bool: return self.match.parsed_form == vocab.question.without_noise_characters
     @property
     def shaded_by(self) -> ParsedMatch: return [match for match in reversed(self.sentence_view_model.result.parsed_words)
                                                 if match.is_displayed and match.start_index <= self.start_index][0]
@@ -62,12 +61,7 @@ class VocabSentenceViewModel(Slots):
             return f"""{outer_head}<span class="vocabInContext {outer_class_name}">{outer_range}{formatted_match}</span>{outer_tail}"""
 
         if self.first_match.is_displayed:
-            if any(form for form in conjugations.secondary_forms_containing_primary_form_forms if form.startswith(self.first_match.parsed_form)):
-                return highlight_displayed_match(self.first_match, "secondaryForm")
-            if any(form for form in conjugations.secondary_forms_forms if form.startswith(self.first_match.parsed_form)):
-                return highlight_displayed_match(self.first_match, "secondaryForm")
-
-            return highlight_displayed_match(self.first_match, "primaryForm")
+            return highlight_displayed_match(self.first_match, "primaryForm" if self.first_match.is_primary_form_of(self.vocab) else "secondaryForm")
 
         match_shading_our_match = self.first_match.shaded_by
         if match_shading_our_match.vocab_id in conjugations.derived_compound_ids:
@@ -78,6 +72,9 @@ class VocabSentenceViewModel(Slots):
         return highlight_displayed_match(self.first_shaded_match, "undisplayedMatch")
 
     def is_highlighted(self) -> bool: return self.sentence in self.highlighted_sentences
+
+    @property
+    def vocab_is_displayed(self) -> bool: return any(self.displayed_matches)
 
     def sentence_classes(self) -> str:
         classes = ""
