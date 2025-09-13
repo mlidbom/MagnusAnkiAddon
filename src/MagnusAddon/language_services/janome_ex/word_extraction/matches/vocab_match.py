@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING, final, override
 from autoslot import Slots
 from language_services.janome_ex.word_extraction.matches.match import Match
 from language_services.janome_ex.word_extraction.matches.requirements.in_state import InState
-from language_services.janome_ex.word_extraction.matches.requirements.misc_requirements import MiscRequirements
 from language_services.janome_ex.word_extraction.matches.requirements.not_in_state import NotInState
 from language_services.janome_ex.word_extraction.matches.requirements.requires_forbids_requirement import RequiresForbidsRequirement
 from language_services.janome_ex.word_extraction.matches.state_tests.another_match_owns_the_form import AnotherMatchOwnsTheForm
@@ -56,6 +55,8 @@ class VocabMatch(Match, Slots):
                              RequiresForbidsRequirement(IsSingleToken(self), vocab.matching_configuration.requires_forbids.single_token),
                              NotInState(SurfaceIsIn(self, vocab.matching_configuration.configurable_rules.surface_is_not.get()),
                                         is_requirement_active=vocab.matching_configuration.configurable_rules.surface_is_not.any()),
+                             NotInState(SurfaceIsIn(self, vocab.matching_configuration.configurable_rules.yield_to_surface.get()),
+                                        is_requirement_active=vocab.matching_configuration.configurable_rules.yield_to_surface.any()),
                          ],
                          display_requirements=[
                              NotInState(HasOverlappingFollowingCompound(self),
@@ -64,8 +65,6 @@ class VocabMatch(Match, Slots):
         self.vocab: VocabNote = vocab
         self.word_variant: WeakRef[CandidateWordVariant] = word_variant
         self.weakref = WeakRef(self)
-
-        self.misc_requirements: MiscRequirements = MiscRequirements(self.weakref)
 
     @property
     def matching(self) -> VocabNoteMatchingConfiguration: return self.vocab.matching_configuration
@@ -101,12 +100,6 @@ class VocabMatch(Match, Slots):
 
     @property
     @override
-    def _is_valid_internal(self) -> bool:
-        return (super()._is_valid_internal
-                and self.misc_requirements.are_fulfilled)
-
-    @property
-    @override
     def is_secondary_match(self) -> bool: return not self.owns_form and self._another_match_owns_form
 
     @property
@@ -117,12 +110,6 @@ class VocabMatch(Match, Slots):
 
     @property
     def owns_form(self) -> bool: return self.vocab.forms.is_owned_form(self.tokenized_form)
-
-    @property
-    @override
-    def failure_reasons(self) -> list[str]:
-        return (super().failure_reasons
-                + self.misc_requirements.failure_reasons())
 
     @override
     def __repr__(self) -> str: return f"""{self.vocab.get_question()}, {self.vocab.get_answer()[:10]}: {" ".join(self.failure_reasons)} {" ".join(self.hiding_reasons)}"""
