@@ -23,7 +23,7 @@ if TYPE_CHECKING:
     from anki.notes import NoteId
 
 class JPCollection(WeakRefable, Slots):
-    _is_inital_load = True # running the GC on initial load slows startup a lot but does not decrease memory usage in any significant way.
+    _is_inital_load: bool = True  # running the GC on initial load slows startup a lot but does not decrease memory usage in any significant way.
     def __init__(self, anki_collection: Collection) -> None:
         self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker.tracker_for(self)
         self._is_running: bool = False

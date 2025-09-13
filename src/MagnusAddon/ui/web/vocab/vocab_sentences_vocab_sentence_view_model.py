@@ -35,6 +35,7 @@ class VocabSentenceViewModel(Slots):
         self.displayed_matches: list[VocabSentenceMatchViewModel] = [match for match in self.matches if match.is_displayed]
         self.highlighted_sentences: set[SentenceNote] = set(_vocab_note.sentences.user_highlighted())
         self.shaded_matches: list[VocabSentenceMatchViewModel] = [match for match in self.matches if not match.is_displayed]
+        self.matched_vocab_ids:set[int] = {match.vocab_id for match in self.result.parsed_words}
 
     @property
     def first_shaded_match(self) -> VocabSentenceMatchViewModel: return self.shaded_matches[0]
@@ -44,7 +45,6 @@ class VocabSentenceViewModel(Slots):
 
     def format_sentence(self) -> str:
         result = self.result
-        conjugations = self.vocab.forms.conjugations
 
         def highlight_displayed_match(match: VocabSentenceMatchViewModel, class_name: str) -> str:
             head = result.sentence[:match.start_index]
@@ -65,7 +65,7 @@ class VocabSentenceViewModel(Slots):
             return highlight_displayed_match(self.first_match, f"{primary_secondary_class}Form")
 
         match_shading_our_match = self.first_match.shaded_by
-        if match_shading_our_match.vocab_id in conjugations.derived_compound_ids:
+        if match_shading_our_match.vocab_id in self.vocab.related_notes.in_compound_ids:
             return highlight_shaded_match(self.first_match, match_shading_our_match, f"{primary_secondary_class}Form", f"{primary_secondary_class}CompoundForm")
 
         return highlight_displayed_match(self.first_shaded_match, "undisplayedMatch")
@@ -81,19 +81,5 @@ class VocabSentenceViewModel(Slots):
         classes += " ".join(self.sentence.get_meta_tags())
         return classes
 
-    def contains_secondary_form_with_its_own_vocabulary_note(self) -> bool:
-        return any(base_form for base_form in self.vocab.forms.conjugations.secondary_forms_with_their_own_vocab_forms
-                   if base_form in self.result.sentence)
-
     def contains_primary_form(self) -> bool:
         return any(match for match in self.displayed_matches if match.is_primary_form_of(self.vocab))
-
-    def contains_secondary_form(self) -> bool:
-        return any(base_forms for base_forms
-                   in self.vocab.forms.conjugations.secondary_forms_forms
-                   if any(base_form for base_form in base_forms
-                          if base_form in self.result.sentence))
-
-    def contains_derived_compound(self) -> bool:
-        return any(stem for stem in self.vocab.forms.conjugations.derived_compounds_forms
-                   if stem in self.result.sentence)

@@ -14,6 +14,7 @@ from note.vocabulary.related_vocab.related_vocab_data import RelatedVocabData
 from note.vocabulary.related_vocab.SeeAlso import SeeAlso
 from note.vocabulary.related_vocab.Synonyms import Synonyms
 from sysutils import ex_sequence
+from sysutils.lazy import Lazy
 
 if TYPE_CHECKING:
     from note.jpnote import JPNote
@@ -33,6 +34,11 @@ class RelatedVocab(Slots):
         self.derived_from: FieldWrapper[str, RelatedVocabData] = FieldWrapper(self._data, self._data.get().derived_from)
 
         self.confused_with: FieldSetWrapper[str] = FieldSetWrapper.for_json_object_field(self._data, self._data.get().confused_with)  # pyright: ignore[reportUnknownMemberType]
+
+        self._in_compound_ids: Lazy[set[int]] = Lazy(lambda: {voc.get_id() for voc in vocab().related_notes.in_compounds()})
+
+    @property
+    def in_compound_ids(self) -> set[int]: return self._in_compound_ids()
 
     def in_compounds(self) -> list[VocabNote]:
         return col().vocab.with_compound_part(self._vocab().question.without_noise_characters)
