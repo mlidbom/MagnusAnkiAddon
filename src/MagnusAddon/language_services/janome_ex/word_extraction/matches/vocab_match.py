@@ -8,15 +8,15 @@ from language_services.janome_ex.word_extraction.matches.requirements.in_state i
 from language_services.janome_ex.word_extraction.matches.requirements.misc_requirements import MiscRequirements
 from language_services.janome_ex.word_extraction.matches.requirements.not_in_state import NotInState
 from language_services.janome_ex.word_extraction.matches.requirements.requires_forbids_requirement import RequiresForbidsRequirement
-from language_services.janome_ex.word_extraction.matches.requirements.tail_requirements import TailRequirements
 from language_services.janome_ex.word_extraction.matches.state_tests.another_match_owns_the_form import AnotherMatchOwnsTheForm
 from language_services.janome_ex.word_extraction.matches.state_tests.has_a_stem_start import HasAStem
 from language_services.janome_ex.word_extraction.matches.state_tests.has_e_stem import HasEStem
 from language_services.janome_ex.word_extraction.matches.state_tests.has_past_tense_stem import HasPastTenseStem
-from language_services.janome_ex.word_extraction.matches.state_tests.prefix_is_in import PrefixIsIn
 from language_services.janome_ex.word_extraction.matches.state_tests.has_te_form_stem import HasTeFormStem
 from language_services.janome_ex.word_extraction.matches.state_tests.is_sentence_end import IsSentenceEnd
 from language_services.janome_ex.word_extraction.matches.state_tests.is_sentence_start import IsSentenceStart
+from language_services.janome_ex.word_extraction.matches.state_tests.prefix_is_in import PrefixIsIn
+from language_services.janome_ex.word_extraction.matches.state_tests.suffix_is_in import SuffixIsIn
 from language_services.janome_ex.word_extraction.matches.state_tests.yield_to_following_overlapping_compound import YieldToFollowingOverlappingCompound
 from sysutils.weak_ref import WeakRef
 
@@ -42,6 +42,7 @@ class VocabMatch(Match, Slots):
 
                              # tail requirements
                              RequiresForbidsRequirement(IsSentenceEnd(self), vocab.matching_configuration.requires_forbids.sentence_end),
+                             NotInState(SuffixIsIn(self, vocab.matching_configuration.configurable_rules.suffix_is_not.get(), true_if_no_suffixes=False))
                          ],
                          display_requirements=[
                              NotInState(YieldToFollowingOverlappingCompound(self))
@@ -50,7 +51,6 @@ class VocabMatch(Match, Slots):
         self.word_variant: WeakRef[CandidateWordVariant] = word_variant
         self.weakref = WeakRef(self)
 
-        self.tail_requirements: TailRequirements = TailRequirements(self.vocab, self.word_variant().word.end_location.next)
         self.misc_requirements: MiscRequirements = MiscRequirements(self.weakref)
 
     @property
@@ -89,7 +89,6 @@ class VocabMatch(Match, Slots):
     @override
     def _is_valid_internal(self) -> bool:
         return (super()._is_valid_internal
-                and self.tail_requirements.are_fulfilled
                 and self.misc_requirements.are_fulfilled)
 
     @property
@@ -109,8 +108,7 @@ class VocabMatch(Match, Slots):
     @override
     def failure_reasons(self) -> list[str]:
         return (super().failure_reasons
-                + self.misc_requirements.failure_reasons()
-                + self.tail_requirements.failure_reasons())
+                + self.misc_requirements.failure_reasons())
 
     @override
     def __repr__(self) -> str: return f"""{self.vocab.get_question()}, {self.vocab.get_answer()[:10]}: {" ".join(self.failure_reasons)} {" ".join(self.hiding_reasons)}"""

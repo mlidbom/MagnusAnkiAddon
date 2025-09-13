@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 
 class PrefixIsIn(MatchStateTest):
     def __init__(self, match: Match, prefixes: set[str], true_if_no_prefixes: bool) -> None:
-        super().__init__(match, f"prefix_is_in{",".join(prefixes)}")
+        super().__init__(match, f"""prefix_is_in:{",".join(prefixes)}""")
         self.true_if_no_prefixes: bool = true_if_no_prefixes
         self.prefixes: set[str] = prefixes
 
