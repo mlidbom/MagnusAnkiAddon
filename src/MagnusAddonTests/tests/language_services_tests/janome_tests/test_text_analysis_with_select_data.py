@@ -7,6 +7,7 @@ from fixtures.collection_factory import inject_anki_collection_with_select_data
 from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
 from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 from note.sentences.sentencenote import SentenceNote
+from sysutils.typed import non_optional
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -124,3 +125,5 @@ def test_no_memory_leak_weak_references_are_disposed() -> None:
                                                      lambda requirement: requirement.state_test.match)
     assert_that_the_inner_weakref_has_been_destroyed(lambda analysis: analysis.all_matches[0]._validity_requirements[0],
                                                      lambda requirement: requirement.state_test.match)
+    assert_that_the_inner_weakref_has_been_destroyed(lambda analysis: analysis.all_matches[0]._validity_requirements[0].state_test.weakref,
+                                                     lambda state_test_weak_ref: state_test_weak_ref())
