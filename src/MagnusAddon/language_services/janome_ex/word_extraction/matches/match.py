@@ -79,6 +79,10 @@ class Match(WeakRefable, Slots):
     def is_shadowed(self) -> bool: return self.word.is_shadowed
 
     @property
+    def failed_validity_requirements(self) -> list[MatchRequirement]:
+        return [requirement for requirement in self._validity_requirements if not requirement.is_fulfilled]
+
+    @property
     def failure_reasons(self) -> set[str]:
         return (SimpleStringListBuilder()
                 .append_if(self.is_configured_incorrect, "configured_incorrect")

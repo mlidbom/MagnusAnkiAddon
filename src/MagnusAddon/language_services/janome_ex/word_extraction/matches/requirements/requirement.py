@@ -2,15 +2,18 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
-    pass
+from autoslot import Slots
 
-class MatchRequirement:
-    def __init__(self, match: VocabMatch, name: str) -> None:
-        self.match: VocabMatch = match
-        self.name: str = name
+if TYPE_CHECKING:
+    from language_services.janome_ex.word_extraction.matches.requirements.state_tests.match_state_test import MatchStateTest
+
+class MatchRequirement(Slots):
+    @property
+    def is_fulfilled(self) -> bool: raise NotImplementedError()
+
+class MustBeInStateMatchRequirement(MatchRequirement, Slots):
+    def __init__(self, state_test: MatchStateTest) -> None:
+        self.state_test: MatchStateTest = state_test
 
     @property
-    def match_is_in_state(self) -> bool: raise NotImplementedError()
-
+    def is_fulfilled(self) -> bool: return self.state_test.match_is_in_state

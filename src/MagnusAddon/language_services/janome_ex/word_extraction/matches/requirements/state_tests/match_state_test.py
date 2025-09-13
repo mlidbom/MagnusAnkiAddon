@@ -14,3 +14,6 @@ class MatchStateTest:
     @property
     def match(self) -> Match: return self._match
 
+    @property
+    def match_is_in_state(self) -> bool: raise NotImplementedError()
+

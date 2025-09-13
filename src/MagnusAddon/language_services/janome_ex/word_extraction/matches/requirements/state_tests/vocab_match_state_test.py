@@ -14,6 +14,3 @@ class VocabMatchStateTest(MatchStateTest):
     @property
     @override
     def match(self) -> VocabMatch: return cast(VocabMatch, super().match)
-
-    @property
-    def match_is_in_state(self) -> bool: raise NotImplementedError()
