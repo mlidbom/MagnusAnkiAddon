@@ -20,7 +20,7 @@ from language_services.janome_ex.word_extraction.matches.state_tests.is_sentence
 from language_services.janome_ex.word_extraction.matches.state_tests.is_single_token import IsSingleToken
 from language_services.janome_ex.word_extraction.matches.state_tests.prefix_is_in import PrefixIsIn
 from language_services.janome_ex.word_extraction.matches.state_tests.suffix_is_in import SuffixIsIn
-from language_services.janome_ex.word_extraction.matches.state_tests.yield_to_following_overlapping_compound import YieldToFollowingOverlappingCompound
+from language_services.janome_ex.word_extraction.matches.state_tests.yield_to_following_overlapping_compound import HasOverlappingFollowingCompound
 from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
@@ -51,7 +51,7 @@ class VocabMatch(Match, Slots):
                              NotInState(IsPoisonWord(self))
                          ],
                          display_requirements=[
-                             NotInState(YieldToFollowingOverlappingCompound(self)),
+                             NotInState(HasOverlappingFollowingCompound(self), is_requirement_active=vocab.matching_configuration.requires_forbids.yield_last_token.is_required),
                              RequiresForbidsRequirement(IsExactMatch(self), vocab.matching_configuration.requires_forbids.exact_match),
                              RequiresForbidsRequirement(IsSingleToken(self), vocab.matching_configuration.requires_forbids.single_token)
                          ])

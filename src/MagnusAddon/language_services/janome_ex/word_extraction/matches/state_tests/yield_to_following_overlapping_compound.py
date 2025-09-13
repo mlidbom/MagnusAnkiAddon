@@ -9,16 +9,13 @@ if TYPE_CHECKING:
 
     pass
 
-class YieldToFollowingOverlappingCompound(VocabMatchStateTest):
+class HasOverlappingFollowingCompound(VocabMatchStateTest):
     def __init__(self, match: VocabMatch) -> None:
-        super().__init__(match, "yield_to_following_overlapping_compound")
+        super().__init__(match, "has_following_overlapping_compound")
 
     @property
     @override
     def match_is_in_state(self) -> bool:
-        if not self.rules.requires_forbids.yield_last_token.is_required:
-            return False
-
         # todo: this is a problematic reference to display_words_starting_here. Thot collection is initialized using this class,
         # so this class will return different results depending on whether it is used after or before display_words_starting_here is first initialized. Ouch
         if not any(self.end_location.display_words):
