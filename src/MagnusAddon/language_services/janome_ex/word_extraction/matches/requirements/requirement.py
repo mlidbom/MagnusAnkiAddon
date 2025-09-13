@@ -23,6 +23,7 @@ class MustBeInStateMatchRequirement(MatchRequirement, Slots):
         super().__init__(state_test)
 
     @property
+    @override
     def is_fulfilled(self) -> bool: return self.state_test.match_is_in_state
 
     @property
@@ -34,6 +35,7 @@ class MustNotBeInStateMatchRequirement(MatchRequirement, Slots):
         super().__init__(state_test)
 
     @property
+    @override
     def is_fulfilled(self) -> bool: return not self.state_test.match_is_in_state
 
     @property
