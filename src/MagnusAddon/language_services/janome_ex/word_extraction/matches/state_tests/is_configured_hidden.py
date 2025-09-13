@@ -14,7 +14,7 @@ class IsConfiguredHidden(MatchStateTest):
     @property
     @override
     def match_is_in_state(self) -> bool:
-        if self.configuration.hidden_matches.excludes_at_index(self.tokenized_form,  # noqa: SIM103 helpful for breakpoints
-                                                                   self.match.start_index):
+        #todo: think a bit about this. Now we use the variant start index, which may differ from the match start index. Which should be used?
+        if self.variant.configuration.hidden_matches.excludes_at_index(self.tokenized_form, self.variant.start_index):  # noqa: SIM103
             return True
         return False

@@ -7,7 +7,6 @@ from language_services.janome_ex.word_extraction.matches.requirements.requiremen
 from language_services.janome_ex.word_extraction.matches.state_tests.is_configured_hidden import IsConfiguredHidden
 from language_services.janome_ex.word_extraction.matches.state_tests.is_configured_incorrect import IsConfiguredIncorrect
 from language_services.janome_ex.word_extraction.matches.state_tests.is_shadowed import IsShadowed
-from sysutils.simple_string_list_builder import SimpleStringListBuilder
 from sysutils.weak_ref import WeakRefable
 
 if TYPE_CHECKING:
@@ -46,9 +45,6 @@ class Match(WeakRefable, Slots):
     def parsed_form(self) -> str: return self.tokenized_form
 
     @property
-    def is_configured_hidden(self) -> bool: return self.variant.configuration.hidden_matches.excludes_at_index(self.tokenized_form, self.variant.start_index)
-
-    @property
     def word(self) -> CandidateWord: return self.variant.word
     @property
     def variant(self) -> CandidateWordVariant: return self._variant()
@@ -64,8 +60,7 @@ class Match(WeakRefable, Slots):
     @property
     def start_index(self) -> int: return self.variant.start_index
     @property
-    def is_valid_for_display(self) -> bool: return (all(requirement.is_fulfilled for requirement in self._display_requirements)
-                                                    and self.is_valid and not self.is_configured_hidden)
+    def is_valid_for_display(self) -> bool: return self.is_valid and all(requirement.is_fulfilled for requirement in self._display_requirements)
 
     @property
     def is_emergency_displayed(self) -> bool:
@@ -87,23 +82,10 @@ class Match(WeakRefable, Slots):
 
     @property
     def is_shadowed(self) -> bool: return self.word.is_shadowed
-
     @property
-    def failed_validity_requirement_reasons(self) -> list[str]:
-        return [requirement.failure_reason for requirement in self._validity_requirements if not requirement.is_fulfilled]
-
+    def failure_reasons(self) -> list[str]: return [requirement.failure_reason for requirement in self._validity_requirements if not requirement.is_fulfilled]
     @property
-    def failed_display_requirement_reasons(self) -> list[str]:
-        return [requirement.failure_reason for requirement in self._display_requirements if not requirement.is_fulfilled]
-
-    @property
-    def failure_reasons(self) -> list[str]: return self.failed_validity_requirement_reasons
-
-    @property
-    def hiding_reasons(self) -> list[str]:
-        return self.failed_display_requirement_reasons + (SimpleStringListBuilder()
-                                                          .append_if(self.is_configured_hidden, "configured_hidden")
-                                                          .value)
+    def hiding_reasons(self) -> list[str]: return [requirement.failure_reason for requirement in self._display_requirements if not requirement.is_fulfilled]
 
     @override
     def __repr__(self) -> str: return f"""{self.parsed_form}, {self.match_form[:10]}: {" ".join(self.failure_reasons)} {" ".join(self.hiding_reasons)}"""
