@@ -61,7 +61,7 @@ class Match(WeakRefable, Slots):
     def start_index(self) -> int: return self.variant.start_index
     @property
     def is_valid_for_display(self) -> bool: return (all(requirement.is_fulfilled for requirement in self._display_requirements)
-                                                    and self.is_valid and not self.is_configured_hidden and not self.is_shadowed)
+                                                    and self.is_valid and not self.is_configured_hidden)
 
     @property
     def is_emergency_displayed(self) -> bool:
@@ -102,7 +102,6 @@ class Match(WeakRefable, Slots):
     def hiding_reasons(self) -> list[str]:
         return self.failed_display_requirement_reasons + (SimpleStringListBuilder()
                                                           .append_if(self.is_configured_hidden, "configured_hidden")
-                                                          .append_if_lambda(self.is_shadowed, lambda: f"shadowed_by:{self.word.shadowed_by_text}")
                                                           .value)
 
     @override
