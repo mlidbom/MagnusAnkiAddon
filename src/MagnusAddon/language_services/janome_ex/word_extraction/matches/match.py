@@ -9,11 +9,16 @@ from sysutils.weak_ref import WeakRefable
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.candidate_word import CandidateWord
     from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
+    from language_services.janome_ex.word_extraction.matches.requirements.requirement import MatchRequirement
     from sysutils.weak_ref import WeakRef
 
 class Match(WeakRefable, Slots):
-    def __init__(self, word_variant: WeakRef[CandidateWordVariant]) -> None:
+    def __init__(self, word_variant: WeakRef[CandidateWordVariant],
+                 validity_requirements: list[MatchRequirement],
+                 display_requirements: list[MatchRequirement]) -> None:
         self._variant: WeakRef[CandidateWordVariant] = word_variant
+        self._validity_requirements: list[MatchRequirement] = validity_requirements
+        self._display_requirements: list[MatchRequirement] = display_requirements
 
     @property
     def answer(self) -> str: raise NotImplementedError()

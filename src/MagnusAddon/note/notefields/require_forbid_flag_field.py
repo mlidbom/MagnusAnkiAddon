@@ -24,6 +24,9 @@ class RequireForbidFlagField(Slots):
     @property
     def is_forbidden(self) -> bool: return self.is_configured_forbidden
 
+    @property
+    def is_configured(self) -> bool: return self.is_configured_required or self.is_configured_forbidden
+
     def set_forbidden(self, value: bool) -> None:
         self._forbidden_field.set_to(value)
         if value: self._required_field.set_to(False)

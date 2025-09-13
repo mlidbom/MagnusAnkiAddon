@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 class MissingMatch(Match):
     def __init__(self, word_variant: WeakRef[CandidateWordVariant]) -> None:
-        super().__init__(word_variant)
+        super().__init__(word_variant, validity_requirements=[], display_requirements=[])
 
     @property
     @override
