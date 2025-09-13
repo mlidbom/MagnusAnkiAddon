@@ -17,7 +17,7 @@ class VocabMatchStateTest(MatchStateTest):
     @property
     @override
     def match(self) -> VocabMatch:
-        from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
+        from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch  # pyright: ignore[reportUnusedImport]
         return cast(VocabMatch, super().match)
 
     @property

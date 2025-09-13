@@ -22,13 +22,6 @@ class HeadRequirements(Slots):
         rules: VocabNoteMatchingConfiguration = match.vocab.matching_configuration
         self.config: VocabNoteMatchingConfiguration = rules
 
-        self.has_prefix: bool = end_of_stem is not None and end_of_stem().token.surface != "" and end_of_stem().token.surface[-1] not in non_word_characters
-        self.fulfills_requires_sentence_start_requirement: bool = (not self.config.requires_forbids.sentence_start.is_required
-                                                                   or not self.has_prefix)
-
-        self.fulfills_forbids_sentence_start_requirement: bool = (not self.config.requires_forbids.sentence_start.is_forbidden
-                                                                  or self.has_prefix)
-
         self.has_a_stem: bool = end_of_stem is not None and end_of_stem().token.surface[-1] in conjugator.a_stem_characters
         self.fulfills_forbids_a_stem_requirement: bool = not rules.requires_forbids.a_stem.is_forbidden or not self.has_a_stem
         self.fulfills_requires_a_stem: bool = not rules.requires_forbids.a_stem.is_required or self.has_a_stem
@@ -54,8 +47,6 @@ class HeadRequirements(Slots):
         self.fulfills_forbids_e_stem_requirement: bool = not rules.requires_forbids.e_stem.is_forbidden or not self.has_e_stem
 
         self.are_fulfilled = (True
-                              and self.fulfills_requires_sentence_start_requirement
-                              and self.fulfills_forbids_sentence_start_requirement
                               and self.fulfills_forbids_a_stem_requirement
                               and self.fulfills_requires_a_stem
                               and self.fulfills_requires_e_stem_requirement
