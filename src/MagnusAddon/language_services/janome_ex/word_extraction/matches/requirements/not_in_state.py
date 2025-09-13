@@ -26,4 +26,4 @@ class NotInState(MatchRequirement, Slots):
 
     @property
     @override
-    def failure_reason(self) -> str: return self.state_test.state_description if not self.is_fulfilled else ""
+    def failure_reason(self) -> str: return f"""not::{self.state_test.state_description}""" if not self.is_fulfilled else ""
