@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, cast, override
 
+from autoslot import Slots
 from language_services.janome_ex.word_extraction.matches.state_tests.match_state_test import MatchStateTest
 
 if TYPE_CHECKING:
@@ -11,7 +12,7 @@ if TYPE_CHECKING:
     from sysutils.weak_ref import WeakRef
 
 
-class VocabMatchStateTest(MatchStateTest):
+class VocabMatchStateTest(MatchStateTest, Slots):
     def __init__(self, match: WeakRef[VocabMatch], name: str, cache_is_in_state: bool) -> None:
         super().__init__(match, name, cache_is_in_state)
         self.name: str = name

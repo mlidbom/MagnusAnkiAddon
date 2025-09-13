@@ -2,7 +2,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, final, override
 
+from autoslot import Slots
 from sysutils.lazy import Lazy
+from sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.candidate_word import CandidateWord
@@ -10,14 +12,14 @@ if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.match import Match
     from language_services.janome_ex.word_extraction.text_location import TextAnalysisLocation
     from note.sentences.sentence_configuration import SentenceConfiguration
-    from sysutils.weak_ref import WeakRef
 
-class MatchStateTest:
+class MatchStateTest(WeakRefable, Slots):
     def __init__(self, match: WeakRef[Match], name: str, cache_is_in_state: bool) -> None:
         self._match: WeakRef[Match] = match
         self.description: str = name
         self.is_cachable: bool = cache_is_in_state
-        self._future_match_is_in_state: Lazy[bool] | None = Lazy(self._internal_match_is_in_state) if cache_is_in_state else None
+        weakrefself = WeakRef(self)
+        self._future_match_is_in_state: Lazy[bool] | None = Lazy(weakrefself()._internal_match_is_in_state) if cache_is_in_state else None
 
     @property
     @final

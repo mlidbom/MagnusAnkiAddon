@@ -22,7 +22,7 @@ _config_dict = Lazy(lambda: mw.addonManager.getConfig(_addon_name) or {})
 def _write_config_dict() -> None:
     mw.addonManager.writeConfig(_addon_name, _config_dict.instance())  # pyright: ignore[reportUnknownMemberType]
 
-class ConfigurationValue[T]:
+class ConfigurationValue[T](Slots):
     def __init__(self, name: str, title: str, default: T, feature_toggler: Callable[[T], None] | None = None) -> None:
         self.title: str = title
         self.feature_toggler: Callable[[T], None] | None = feature_toggler
