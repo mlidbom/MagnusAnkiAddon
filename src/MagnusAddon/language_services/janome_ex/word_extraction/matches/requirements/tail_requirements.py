@@ -35,12 +35,12 @@ class TailRequirements(Slots):
                                     and self.fulfills_forbids_sentence_end_requirement
                                     and self.fulfills_suffix_is_not)
 
-    def failure_reasons(self) -> set[str]:
+    def failure_reasons(self) -> list[str]:
         return (SimpleStringListBuilder()
                 .append_if(not self.fulfills_requires_sentence_end_requirement, "requires_sentence_end")
                 .append_if(not self.fulfills_forbids_sentence_end_requirement, "forbids_sentence_end")
                 .append_if(not self.fulfills_suffix_is_not, "suffix_is_not")
-                .as_set())
+                .value)
 
     @override
     def __repr__(self) -> str: return " ".join(self.failure_reasons())

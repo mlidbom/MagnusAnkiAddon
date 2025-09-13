@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.matches.requirements.state_tests.vocab_match_state_test import VocabMatchStateTest
+    from language_services.janome_ex.word_extraction.matches.state_tests.vocab_match_state_test import VocabMatchStateTest
     from note.notefields.require_forbid_flag_field import RequireForbidFlagField
 
 

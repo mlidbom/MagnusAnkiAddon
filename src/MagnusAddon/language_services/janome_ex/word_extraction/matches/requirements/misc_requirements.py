@@ -48,7 +48,7 @@ class MiscRequirements(Slots):
                                     and self.is_compound_requirement_fulfilled
                                     and not self.is_poison_word)
 
-    def failure_reasons(self) -> set[str]:
+    def failure_reasons(self) -> list[str]:
         return (SimpleStringListBuilder()
                 .append_if(not self.is_requires_exact_match_requirement_fulfilled, "requires_exact_match")
                 .append_if(not self.is_forbids_exact_match_requirement_fulfilled, "forbids_exact_match")
@@ -57,7 +57,7 @@ class MiscRequirements(Slots):
                 .append_if(not self.is_compound_requirement_fulfilled, "requires_compound")
                 .append_if(not self.surface_is_not_requirement_fulfilled, f"surface_is_not_{self.match().word_variant().word.surface_variant.form}")
                 .append_if(self.is_poison_word, "is_poison_word")
-                .as_set())
+                .value)
 
     @override
     def __repr__(self) -> str: return " ".join(self.failure_reasons())

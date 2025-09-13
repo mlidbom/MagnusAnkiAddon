@@ -5,7 +5,8 @@ from typing import TYPE_CHECKING, override
 from autoslot import Slots
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.matches.requirements.state_tests.match_state_test import MatchStateTest
+    from language_services.janome_ex.word_extraction.matches.state_tests.match_state_test import MatchStateTest
+
 
 class MatchRequirement(Slots):
     def __init__(self, state_test: MatchStateTest) -> None:
@@ -17,6 +18,8 @@ class MatchRequirement(Slots):
     @property
     def failure_reason(self) -> str: raise NotImplementedError()
 
+    @override
+    def __repr__(self) -> str: return self.failure_reason
 
 class MustBeInStateMatchRequirement(MatchRequirement, Slots):
     def __init__(self, state_test: MatchStateTest) -> None:
@@ -28,7 +31,7 @@ class MustBeInStateMatchRequirement(MatchRequirement, Slots):
 
     @property
     @override
-    def failure_reason(self) -> str: return f"not_{self.state_test.name_if_match_is_in_state}"
+    def failure_reason(self) -> str: return f"not_{self.state_test.state_description}"
 
 class MustNotBeInStateMatchRequirement(MatchRequirement, Slots):
     def __init__(self, state_test: MatchStateTest) -> None:
@@ -40,4 +43,4 @@ class MustNotBeInStateMatchRequirement(MatchRequirement, Slots):
 
     @property
     @override
-    def failure_reason(self) -> str: return self.state_test.name_if_match_is_in_state or ""
+    def failure_reason(self) -> str: return self.state_test.state_description or ""

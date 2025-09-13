@@ -3,6 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
+from language_services.janome_ex.word_extraction.matches.requirements.requirement import MustNotBeInStateMatchRequirement
+from language_services.janome_ex.word_extraction.matches.state_tests.is_shadowed import IsShadowed
 from sysutils.simple_string_list_builder import SimpleStringListBuilder
 from sysutils.weak_ref import WeakRefable
 
@@ -18,7 +20,10 @@ class Match(WeakRefable, Slots):
                  display_requirements: list[MatchRequirement]) -> None:
         self._variant: WeakRef[CandidateWordVariant] = word_variant
         self._validity_requirements: list[MatchRequirement] = validity_requirements
-        self._display_requirements: list[MatchRequirement] = display_requirements
+        self._display_requirements: list[MatchRequirement] = ([
+                                                                  MustNotBeInStateMatchRequirement(IsShadowed(self))
+                                                              ]
+                                                              + display_requirements)
 
     @property
     def answer(self) -> str: raise NotImplementedError()
@@ -55,7 +60,8 @@ class Match(WeakRefable, Slots):
     @property
     def start_index(self) -> int: return self.variant.start_index
     @property
-    def is_valid_for_display(self) -> bool: return self.is_valid and not self.is_configured_hidden and not self.is_shadowed
+    def is_valid_for_display(self) -> bool: return (all(requirement.is_fulfilled for requirement in self._display_requirements)
+                                                    and self.is_valid and not self.is_configured_hidden and not self.is_shadowed)
 
     @property
     def is_emergency_displayed(self) -> bool:
@@ -83,17 +89,21 @@ class Match(WeakRefable, Slots):
         return [requirement.failure_reason for requirement in self._validity_requirements if not requirement.is_fulfilled]
 
     @property
-    def failure_reasons(self) -> set[str]:
-        return (SimpleStringListBuilder()
-                .append_if(self.is_configured_incorrect, "configured_incorrect")
-                .as_set())
+    def failed_display_requirement_reasons(self) -> list[str]:
+        return [requirement.failure_reason for requirement in self._display_requirements if not requirement.is_fulfilled]
 
     @property
-    def hiding_reasons(self) -> set[str]:
-        return (SimpleStringListBuilder()
-                .append_if(self.is_configured_hidden, "configured_hidden")
-                .append_if_lambda(self.is_shadowed, lambda: f"shadowed_by:{self.word.shadowed_by_text}")
-                .as_set())
+    def failure_reasons(self) -> list[str]:
+        return self.failed_validity_requirement_reasons + (SimpleStringListBuilder()
+                                                           .append_if(self.is_configured_incorrect, "configured_incorrect")
+                                                           .value)
+
+    @property
+    def hiding_reasons(self) -> list[str]:
+        return self.failed_display_requirement_reasons + (SimpleStringListBuilder()
+                                                          .append_if(self.is_configured_hidden, "configured_hidden")
+                                                          .append_if_lambda(self.is_shadowed, lambda: f"shadowed_by:{self.word.shadowed_by_text}")
+                                                          .value)
 
     @override
     def __repr__(self) -> str: return f"""{self.parsed_form}, {self.match_form[:10]}: {" ".join(self.failure_reasons)} {" ".join(self.hiding_reasons)}"""

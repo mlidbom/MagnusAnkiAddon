@@ -25,11 +25,11 @@ class DisplayRequirements(Slots):
         self.are_fulfilled: bool = (self.is_yield_last_token_to_overlapping_compound_requirement_fulfilled
                                     and not self.yields_to_form_owning_match)
 
-    def failure_reasons(self) -> set[str]:
+    def failure_reasons(self) -> list[str]:
         return (SimpleStringListBuilder()
                 .append_if_lambda(not self.is_yield_last_token_to_overlapping_compound_requirement_fulfilled, lambda: f"yield_last_token_to_overlapping_compound:{self.match().word_variant().word.end_location.display_words[0].display_variants[0].form}")
                 .append_if(self.yields_to_form_owning_match, "yields_to_form_owning_match")
-                .as_set())
+                .value)
 
     @override
     def __repr__(self) -> str: return " ".join(self.failure_reasons())

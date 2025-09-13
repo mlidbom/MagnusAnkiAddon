@@ -75,7 +75,7 @@ class HeadRequirements(Slots):
                               and self.fulfills_forbids_t_form_stem
                               )
 
-    def failure_reasons(self) -> set[str]:
+    def failure_reasons(self) -> list[str]:
         return (SimpleStringListBuilder()
                 .append_if(not self.fulfills_requires_sentence_start_requirement, "requires_sentence_start")
                 .append_if(not self.fulfills_forbids_sentence_start_requirement, "forbids_sentence_start")
@@ -89,7 +89,7 @@ class HeadRequirements(Slots):
                 .append_if(not self.fulfills_requires_past_tense_stem, "requires_past_tense_stem")
                 .append_if(not self.fulfills_forbids_t_form_stem, "forbids_t_form_stem")
                 .append_if(not self.fulfills_requires_t_form_stem, "requires_t_form_stem")
-                .as_set())
+                .value)
 
     @override
     def __repr__(self) -> str: return " ".join(self.failure_reasons())

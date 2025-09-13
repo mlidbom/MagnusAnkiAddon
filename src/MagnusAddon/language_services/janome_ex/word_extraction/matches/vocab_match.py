@@ -88,16 +88,16 @@ class VocabMatch(Match, Slots):
 
     @property
     @override
-    def failure_reasons(self) -> set[str]:
+    def failure_reasons(self) -> list[str]:
         return (super().failure_reasons
-                | self.misc_requirements.failure_reasons()
-                | self.head_requirements.failure_reasons()
-                | self.tail_requirements.failure_reasons())
+                + self.misc_requirements.failure_reasons()
+                + self.head_requirements.failure_reasons()
+                + self.tail_requirements.failure_reasons())
 
     @property
     @override
-    def hiding_reasons(self) -> set[str]: return (super().hiding_reasons
-                                                  | self.display_requirements.failure_reasons())
+    def hiding_reasons(self) -> list[str]: return (super().hiding_reasons
+                                                  + self.display_requirements.failure_reasons())
 
     @override
     def __repr__(self) -> str: return f"""{self.vocab.get_question()}, {self.vocab.get_answer()[:10]}: {" ".join(self.failure_reasons)} {" ".join(self.hiding_reasons)}"""
