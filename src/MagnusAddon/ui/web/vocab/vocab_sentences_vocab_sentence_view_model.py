@@ -60,14 +60,13 @@ class VocabSentenceViewModel(Slots):
             formatted_match = f"""<span class="vocabInContext {inner_class_name}">{inner_range}</span>"""
             return f"""{outer_head}<span class="vocabInContext {outer_class_name}">{outer_range}{formatted_match}</span>{outer_tail}"""
 
+        primary_secondary_class = "primary" if self.first_match.is_primary_form_of(self.vocab) else "secondary"
         if self.first_match.is_displayed:
-            return highlight_displayed_match(self.first_match, "primaryForm" if self.first_match.is_primary_form_of(self.vocab) else "secondaryForm")
+            return highlight_displayed_match(self.first_match, f"{primary_secondary_class}Form")
 
         match_shading_our_match = self.first_match.shaded_by
         if match_shading_our_match.vocab_id in conjugations.derived_compound_ids:
-            if any(form for form in conjugations.secondary_forms_derived_compounds_forms if form.startswith(match_shading_our_match.parsed_form)):
-                return highlight_shaded_match(self.first_match, match_shading_our_match, "secondaryForm", "secondaryFormDerivedCompoundForm")
-            return highlight_shaded_match(self.first_match, match_shading_our_match, "primaryForm", "derivedCompoundForm")
+            return highlight_shaded_match(self.first_match, match_shading_our_match, f"{primary_secondary_class}Form", f"{primary_secondary_class}CompoundForm")
 
         return highlight_displayed_match(self.first_shaded_match, "undisplayedMatch")
 
