@@ -21,7 +21,7 @@ class MatchRequirement(Slots):
     @override
     def __repr__(self) -> str: return self.failure_reason
 
-class MustBeInStateMatchRequirement(MatchRequirement, Slots):
+class InState(MatchRequirement, Slots):
     def __init__(self, state_test: MatchStateTest) -> None:
         super().__init__(state_test)
 
@@ -33,7 +33,7 @@ class MustBeInStateMatchRequirement(MatchRequirement, Slots):
     @override
     def failure_reason(self) -> str: return f"not_{self.state_test.state_description}"
 
-class MustNotBeInStateMatchRequirement(MatchRequirement, Slots):
+class NotInState(MatchRequirement, Slots):
     def __init__(self, state_test: MatchStateTest) -> None:
         super().__init__(state_test)
 

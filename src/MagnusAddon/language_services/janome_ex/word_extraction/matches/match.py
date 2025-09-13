@@ -3,7 +3,9 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
-from language_services.janome_ex.word_extraction.matches.requirements.requirement import MustNotBeInStateMatchRequirement
+from language_services.janome_ex.word_extraction.matches.requirements.requirement import NotInState
+from language_services.janome_ex.word_extraction.matches.state_tests.is_configured_hidden import IsConfiguredHidden
+from language_services.janome_ex.word_extraction.matches.state_tests.is_configured_incorrect import IsConfiguredIncorrect
 from language_services.janome_ex.word_extraction.matches.state_tests.is_shadowed import IsShadowed
 from sysutils.simple_string_list_builder import SimpleStringListBuilder
 from sysutils.weak_ref import WeakRefable
@@ -19,9 +21,13 @@ class Match(WeakRefable, Slots):
                  validity_requirements: list[MatchRequirement],
                  display_requirements: list[MatchRequirement]) -> None:
         self._variant: WeakRef[CandidateWordVariant] = word_variant
-        self._validity_requirements: list[MatchRequirement] = validity_requirements
+        self._validity_requirements: list[MatchRequirement] = ([
+                                                                   NotInState(IsConfiguredIncorrect(self))
+                                                               ]
+                                                               + display_requirements)
         self._display_requirements: list[MatchRequirement] = ([
-                                                                  MustNotBeInStateMatchRequirement(IsShadowed(self))
+                                                                  NotInState(IsShadowed(self)),
+                                                                  NotInState(IsConfiguredHidden(self))
                                                               ]
                                                               + display_requirements)
 
@@ -41,8 +47,6 @@ class Match(WeakRefable, Slots):
 
     @property
     def is_configured_hidden(self) -> bool: return self.variant.configuration.hidden_matches.excludes_at_index(self.tokenized_form, self.variant.start_index)
-    @property
-    def is_configured_incorrect(self) -> bool: return self.variant.configuration.incorrect_matches.excludes_at_index(self.tokenized_form, self.variant.start_index)
 
     @property
     def word(self) -> CandidateWord: return self.variant.word
@@ -52,7 +56,7 @@ class Match(WeakRefable, Slots):
     @property
     def is_valid(self) -> bool: return self._is_valid_internal or self.is_highlighted
     @property
-    def _is_valid_internal(self) -> bool: return not self.is_configured_incorrect
+    def _is_valid_internal(self) -> bool: return all(requirement.is_fulfilled for requirement in self._validity_requirements)
     @property
     def is_highlighted(self) -> bool: return self.match_form in self.variant.configuration.highlighted_words
     @property
@@ -93,10 +97,7 @@ class Match(WeakRefable, Slots):
         return [requirement.failure_reason for requirement in self._display_requirements if not requirement.is_fulfilled]
 
     @property
-    def failure_reasons(self) -> list[str]:
-        return self.failed_validity_requirement_reasons + (SimpleStringListBuilder()
-                                                           .append_if(self.is_configured_incorrect, "configured_incorrect")
-                                                           .value)
+    def failure_reasons(self) -> list[str]: return self.failed_validity_requirement_reasons
 
     @property
     def hiding_reasons(self) -> list[str]:
