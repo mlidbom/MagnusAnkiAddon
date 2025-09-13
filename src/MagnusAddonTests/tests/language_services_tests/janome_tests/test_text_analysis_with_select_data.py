@@ -1,15 +1,16 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Callable, TypeVar
 
 import pytest
 from fixtures.collection_factory import inject_anki_collection_with_select_data
+from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
+from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 from note.sentences.sentencenote import SentenceNote
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
-    from language_services.janome_ex.word_extraction.text_location import TextAnalysisLocation
 
 # noinspection PyUnusedFunction
 @pytest.fixture(scope="module")
@@ -100,13 +101,26 @@ def test_ignores_noise_characters() -> None:
     words = {w.parsed_form for w in sentence_note.parsing_result.get().parsed_words}
     assert words == expected
 
+T1 = TypeVar("T1")
 @pytest.mark.usefixtures("setup_collection_with_select_data")
 def test_no_memory_leak_weak_references_are_disposed() -> None:
-    def return_an_object_that_is_not_a_gc_root_so_it_should_not_keep_the_analysis_in_memory() -> TextAnalysisLocation:
-        sentence_note = SentenceNote.create_test_note("作るに決まってるだろ, ", "")
-        analysis = sentence_note.create_analysis()
-        return analysis.locations[0]
+    sentence_note = SentenceNote.create_test_note("作るに決まってるだろ, ", "")
 
-    with pytest.raises(ReferenceError):
-        return_an_object_that_is_not_a_gc_root_so_it_should_not_keep_the_analysis_in_memory().analysis()
+    def assert_that_the_inner_weakref_has_been_destroyed(fetch_member_from_analysis: Callable[[TextAnalysis], T1], access_weakref_that_should_have_been_deleted: Callable[[T1], Any]) -> None:
+        def create_analysis_and_return_value_of_first_func() -> T1:
+            return fetch_member_from_analysis(sentence_note.create_analysis())
+        first_value: T1 = create_analysis_and_return_value_of_first_func()
 
+        with pytest.raises(ReferenceError):
+            access_weakref_that_should_have_been_deleted(first_value)
+
+    assert_that_the_inner_weakref_has_been_destroyed(lambda analysis: analysis.locations[0],
+                                                     lambda location: location.analysis())
+    assert_that_the_inner_weakref_has_been_destroyed(lambda analysis: analysis.locations[0].candidate_words[0],
+                                                     lambda cand: cand.start_location)
+    assert_that_the_inner_weakref_has_been_destroyed(lambda analysis: analysis.all_matches[0],
+                                                     lambda match: match.word)
+    assert_that_the_inner_weakref_has_been_destroyed(lambda analysis: analysis.all_matches[0]._display_requirements[0],
+                                                     lambda requirement: requirement.state_test.match)
+    assert_that_the_inner_weakref_has_been_destroyed(lambda analysis: analysis.all_matches[0]._validity_requirements[0],
+                                                     lambda requirement: requirement.state_test.match)
