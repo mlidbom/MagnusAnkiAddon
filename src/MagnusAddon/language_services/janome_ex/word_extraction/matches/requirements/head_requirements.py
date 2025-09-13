@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING, final, override
 
 from autoslot import Slots
 from language_services import conjugator
-from language_services.janome_ex.word_extraction.analysis_constants import non_word_characters
 from sysutils import kana_utils
 from sysutils.simple_string_list_builder import SimpleStringListBuilder
 
@@ -17,7 +16,6 @@ if TYPE_CHECKING:
 
 @final
 class HeadRequirements(Slots):
-    _te_forms = {"て", "って", "で"}
     def __init__(self, match: VocabMatch, word_variant: WeakRef[CandidateWordVariant], end_of_stem: WeakRef[TextAnalysisLocation] | None) -> None:
         rules: VocabNoteMatchingConfiguration = match.vocab.matching_configuration
         self.config: VocabNoteMatchingConfiguration = rules
@@ -29,15 +27,6 @@ class HeadRequirements(Slots):
         self.has_past_tense_stem: bool = end_of_stem is not None and (end_of_stem().token.is_past_tense_stem() or word_variant().word.start_location.token.is_past_tense_marker())
         self.fulfills_forbids_past_tense_stem: bool = not rules.requires_forbids.past_tense_stem.is_forbidden or not self.has_past_tense_stem
         self.fulfills_requires_past_tense_stem: bool = not rules.requires_forbids.past_tense_stem.is_required or self.has_past_tense_stem
-
-        # todo: get this stuff moved into the tokenizing stage...
-        self.has_t_form_stem: bool = (end_of_stem is not None
-                                      and not end_of_stem().token.is_special_nai_negative()  # todo: review: this code means that we do not consider ない to be a te form stem, but it seems that janome does.....
-                                      and (end_of_stem().token.is_t_form_stem()
-                                           or (end_of_stem().token.is_past_tense_stem() and any(tform for tform in HeadRequirements._te_forms if match.parsed_form.startswith(tform)))
-                                           or (end_of_stem().token.is_ichidan_masu_stem() and any(tform for tform in HeadRequirements._te_forms if match.parsed_form.startswith(tform)))))
-        self.fulfills_requires_t_form_stem: bool = not rules.requires_forbids.t_form_stem.is_required or self.has_t_form_stem
-        self.fulfills_forbids_t_form_stem: bool = not rules.requires_forbids.t_form_stem.is_forbidden or not self.has_t_form_stem
 
         self.has_e_stem: bool = (end_of_stem is not None and
                                  (end_of_stem().token.surface[-1] in conjugator.e_stem_characters
@@ -53,8 +42,6 @@ class HeadRequirements(Slots):
                               and self.fulfills_forbids_e_stem_requirement
                               and self.fulfills_requires_past_tense_stem
                               and self.fulfills_forbids_past_tense_stem
-                              and self.fulfills_requires_t_form_stem
-                              and self.fulfills_forbids_t_form_stem
                               )
 
     def failure_reasons(self) -> list[str]:
@@ -65,8 +52,6 @@ class HeadRequirements(Slots):
                 .append_if(not self.fulfills_requires_e_stem_requirement, "requires_e_stem")
                 .append_if(not self.fulfills_forbids_past_tense_stem, "forbids_past_tense_stem")
                 .append_if(not self.fulfills_requires_past_tense_stem, "requires_past_tense_stem")
-                .append_if(not self.fulfills_forbids_t_form_stem, "forbids_t_form_stem")
-                .append_if(not self.fulfills_requires_t_form_stem, "requires_t_form_stem")
                 .value)
 
     @override

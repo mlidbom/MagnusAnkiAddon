@@ -46,7 +46,7 @@ def build_matching_settings_menu(toggle_flags_menu: QMenu, vocab: VocabNote) -> 
             add_require_forbid_menu(stem_menu, shortcutfinger.home1("e stem"), vocab.matching_configuration.requires_forbids.e_stem)
             add_require_forbid_menu(stem_menu, shortcutfinger.home2("a stem"), vocab.matching_configuration.requires_forbids.a_stem)
             add_require_forbid_menu(stem_menu, shortcutfinger.home3("past tense stem"), vocab.matching_configuration.requires_forbids.past_tense_stem)
-            add_require_forbid_menu(stem_menu, shortcutfinger.home4("て-form stem"), vocab.matching_configuration.requires_forbids.t_form_stem)
+            add_require_forbid_menu(stem_menu, shortcutfinger.home4("て-form stem"), vocab.matching_configuration.requires_forbids.te_form_stem)
 
         add_require_forbid_menu(requires_forbids_menu, shortcutfinger.home1("Display: yield to overlapping following compound"), vocab.matching_configuration.requires_forbids.yield_last_token, reparse_sentences=False)
         build_misc_menu(non_optional(requires_forbids_menu.addMenu(shortcutfinger.home2("Misc matching rules"))))

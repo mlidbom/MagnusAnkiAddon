@@ -8,19 +8,19 @@ vm = Tags.Vocab.Matching
 
 test_special_vocab: list[VocabSpec] = [
     # <te-stem-required>
-    VocabSpec("て", "{continuing-action}", ["て"], tags=[vm.is_inflecting_word, vm.Requires.t_form_stem]),
-    VocabSpec("てる", "{continuing-{activity | state}} / {progressive | perfect}", ["てる"], tags=[vm.is_inflecting_word, vm.Requires.t_form_stem]),
-    VocabSpec("ている", "is-_-ing", readings=["ている"], tags=[vm.is_inflecting_word, vm.Requires.t_form_stem]),
-    VocabSpec("てた", "{was}-{_-ing|_ed}", ["てた"], tags=[vm.is_inflecting_word, vm.Requires.t_form_stem]),
-    VocabSpec("てたら", "{was}-{_-ing|_ed}", ["てたら"], tags=[vm.is_inflecting_word, vm.Requires.t_form_stem]),
+    VocabSpec("て", "{continuing-action}", ["て"], tags=[vm.is_inflecting_word, vm.Requires.te_form_stem]),
+    VocabSpec("てる", "{continuing-{activity | state}} / {progressive | perfect}", ["てる"], tags=[vm.is_inflecting_word, vm.Requires.te_form_stem]),
+    VocabSpec("ている", "is-_-ing", readings=["ている"], tags=[vm.is_inflecting_word, vm.Requires.te_form_stem]),
+    VocabSpec("てた", "{was}-{_-ing|_ed}", ["てた"], tags=[vm.is_inflecting_word, vm.Requires.te_form_stem]),
+    VocabSpec("てたら", "{was}-{_-ing|_ed}", ["てたら"], tags=[vm.is_inflecting_word, vm.Requires.te_form_stem]),
 
-    VocabSpec("んで", "and/て", forms=["で"], prefix_in={"ん"}, tags=[vm.Requires.t_form_stem, Tags.Vocab.question_overrides_form]),
-    VocabSpec("んどる", forms=["どる"], prefix_in={"ん"}, tags=[Tags.Vocab.question_overrides_form, vm.Requires.t_form_stem]),
+    VocabSpec("んで", "and/て", forms=["で"], prefix_in={"ん"}, tags=[vm.Requires.te_form_stem, Tags.Vocab.question_overrides_form]),
+    VocabSpec("んどる", forms=["どる"], prefix_in={"ん"}, tags=[Tags.Vocab.question_overrides_form, vm.Requires.te_form_stem]),
     # </te-stem-required>
     # <te-stem-forbidden>
-    VocabSpec("で", tags=[vm.Forbids.t_form_stem]),
-    VocabSpec("でいる", tags=[vm.Forbids.t_form_stem]),
-    VocabSpec("んで", "thing-is", tags=[vm.Forbids.t_form_stem]),
+    VocabSpec("で", tags=[vm.Forbids.te_form_stem]),
+    VocabSpec("でいる", tags=[vm.Forbids.te_form_stem]),
+    VocabSpec("んで", "thing-is", tags=[vm.Forbids.te_form_stem]),
     # </te-stem-forbidden>
     VocabSpec("１人で", compounds=["で", "１人"], tags=[vm.yield_last_token_to_overlapping_compound]),
     VocabSpec("ないで", compounds=["ない", "で"], tags=[vm.yield_last_token_to_overlapping_compound]),

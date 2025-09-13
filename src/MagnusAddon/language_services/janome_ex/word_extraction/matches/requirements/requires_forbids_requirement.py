@@ -26,7 +26,7 @@ class RequiresForbidsRequirement(MatchRequirement, Slots):
         if self.is_required and not self.state_test.match_is_in_state:
             return False
 
-        if self.is_forbidden and not self.state_test.match_is_in_state:  # noqa: SIM103 these returns are useful for breakpoints when debugging
+        if self.is_forbidden and self.state_test.match_is_in_state:  # noqa: SIM103 these returns are useful for breakpoints when debugging
             return False
 
         return True

@@ -23,6 +23,8 @@ class MatchStateTest:
     @property
     def tokenized_form(self) -> str: return self.match.tokenized_form
     @property
+    def parsed_form(self) -> str: return self.match.parsed_form
+    @property
     def variant(self) -> CandidateWordVariant: return self.match.variant
     @property
     def word(self) -> CandidateWord: return self.variant.word

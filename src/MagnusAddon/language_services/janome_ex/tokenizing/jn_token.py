@@ -91,7 +91,7 @@ class JNToken(Slots):
         return self.inflected_form == InflectionForms.Continuative.ta_connection  # "連用タ接続"
 
     _te_connections: set[InflectionForm] = {InflectionForms.Continuative.te_connection, InflectionForms.Continuative.de_connection}
-    def is_t_form_stem(self) -> bool:
+    def is_te_form_stem(self) -> bool:
         return (self.inflected_form in JNToken._te_connections or
                 (self.is_past_tense_stem() and self.surface.endswith("ん")))
 
