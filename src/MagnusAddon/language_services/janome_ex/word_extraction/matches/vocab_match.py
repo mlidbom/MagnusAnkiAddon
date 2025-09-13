@@ -15,6 +15,7 @@ from language_services.janome_ex.word_extraction.matches.state_tests.has_e_stem 
 from language_services.janome_ex.word_extraction.matches.state_tests.has_past_tense_stem import HasPastTenseStem
 from language_services.janome_ex.word_extraction.matches.state_tests.has_prefix import PrefixIsIn
 from language_services.janome_ex.word_extraction.matches.state_tests.has_te_form_stem import HasTeFormStem
+from language_services.janome_ex.word_extraction.matches.state_tests.is_sentence_end import IsSentenceEnd
 from language_services.janome_ex.word_extraction.matches.state_tests.is_sentence_start import IsSentenceStart
 from language_services.janome_ex.word_extraction.matches.state_tests.yield_to_following_overlapping_compound import YieldToFollowingOverlappingCompound
 from sysutils.weak_ref import WeakRef
@@ -37,10 +38,10 @@ class VocabMatch(Match, Slots):
                              RequiresForbidsRequirement(HasTeFormStem(self), vocab.matching_configuration.requires_forbids.te_form_stem),
                              RequiresForbidsRequirement(HasAStem(self), vocab.matching_configuration.requires_forbids.a_stem),
                              RequiresForbidsRequirement(HasPastTenseStem(self), vocab.matching_configuration.requires_forbids.past_tense_stem),
-                             RequiresForbidsRequirement(HasEStem(self), vocab.matching_configuration.requires_forbids.e_stem)
+                             RequiresForbidsRequirement(HasEStem(self), vocab.matching_configuration.requires_forbids.e_stem),
 
-                             #tail requirements
-
+                             # tail requirements
+                             RequiresForbidsRequirement(IsSentenceEnd(self), vocab.matching_configuration.requires_forbids.sentence_end),
                          ],
                          display_requirements=[
                              NotInState(YieldToFollowingOverlappingCompound(self))

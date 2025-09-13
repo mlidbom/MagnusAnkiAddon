@@ -10,8 +10,6 @@ if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
     from sysutils.weak_ref import WeakRef
 
-_quote_characters = {"と", "って"}
-
 @final
 class TailRequirements(Slots):
     def __init__(self, vocab: VocabNote, tail: WeakRef[TextAnalysisLocation] | None) -> None:
@@ -20,24 +18,14 @@ class TailRequirements(Slots):
 
         self.has_suffix: bool = tail is not None and tail().token.surface != "" and not tail().token.surface[-1].isspace()
 
-        self.fulfills_requires_sentence_end_requirement: bool = (not self.config.requires_forbids.sentence_end.is_required
-                                                                 or (tail is None or tail().token.is_non_word_character or tail().token.surface in _quote_characters))
-
-        self.fulfills_forbids_sentence_end_requirement: bool = (not self.config.requires_forbids.sentence_end.is_forbidden
-                                                                or (tail is not None and not tail().token.is_non_word_character and tail().token.surface not in _quote_characters))
-
         self.fulfills_suffix_is_not: bool = (not rules.configurable_rules.suffix_is_not.get()
                                              or not self.has_suffix
                                              or (tail is not None and not any(forbidden for forbidden in rules.configurable_rules.suffix_is_not.get() if tail().token.surface.startswith(forbidden))))
 
-        self.are_fulfilled: bool = (self.fulfills_requires_sentence_end_requirement
-                                    and self.fulfills_forbids_sentence_end_requirement
-                                    and self.fulfills_suffix_is_not)
+        self.are_fulfilled: bool =  self.fulfills_suffix_is_not
 
     def failure_reasons(self) -> list[str]:
         return (SimpleStringListBuilder()
-                .append_if(not self.fulfills_requires_sentence_end_requirement, "requires_sentence_end")
-                .append_if(not self.fulfills_forbids_sentence_end_requirement, "forbids_sentence_end")
                 .append_if(not self.fulfills_suffix_is_not, "suffix_is_not")
                 .value)
 
