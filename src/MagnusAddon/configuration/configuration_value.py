@@ -91,17 +91,12 @@ class JapaneseConfig(Slots):
         self.prevent_double_clicks: ConfigurationValueBool = ConfigurationValueBool("prevent_double_clicks", "Prevent double clicks", True)
         self.prefer_default_mnemonics_to_source_mnemonics: ConfigurationValueBool = ConfigurationValueBool("prefer_default_mnemocs_to_source_mnemonics", "Prefer default mnemonics to source mnemonics", False)
 
-        self.enable_garbage_collection_during_batches: ConfigurationValueBool = ConfigurationValueBool("enable_garbage_collection_during_batches", "Enable Batch GC. Requires restart. (Eliminates LARGE memory leak on sync, but slows down startup and batches and introduces short 'hangs'.", True)
-        self.enable_automatic_garbage_collection: ConfigurationValueBool = ConfigurationValueBool("enable_automatic_garbage_collection", "Enable automatic GC. Requires restart. (Reduces memory usage the most but slows Anki down and may cause crashes due to Qt incompatibility.", False)
-        self.track_instances_in_memory: ConfigurationValueBool = ConfigurationValueBool("track_instances_in_memory", "Track instances in memory. Requires restart. Only useful to developers and will use extra memory.", False)
         self.show_compound_parts_in_sentence_breakdown: ConfigurationValueBool = ConfigurationValueBool("show_compound_parts_in_sentence_breakdown", "Show compound parts in sentence breakdown", True)
         self.show_kanji_in_sentence_breakdown: ConfigurationValueBool = ConfigurationValueBool("show_kanji_in_sentence_breakdown", "Show kanji in sentence breakdown", True)
         self.show_sentence_breakdown_in_edit_mode: ConfigurationValueBool = ConfigurationValueBool("show_sentence_breakdown_in_edit_mode", "Show sentence breakdown in edit mode", False)
         self.automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound: ConfigurationValueBool = ConfigurationValueBool("automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound", "Automatically yield last token in suru verb compounds to overlapping compounds (Ctrl+Shift+Alt+s)", True)
         self.automatically_yield_last_token_in_passive_verb_compounds_to_overlapping_compound: ConfigurationValueBool = ConfigurationValueBool("automatically_yield_last_token_in_passive_verb_compounds_to_overlapping_compound", "Automatically yield last token in passive verb compounds to overlapping compounds (Ctrl+Shift+Alt+h)", True)
         self.automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound: ConfigurationValueBool = ConfigurationValueBool("automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound", "Automatically yield last token in causative verb compounds to overlapping compounds (Ctrl+Shift+Alt+t)", True)
-        self.run_additional_pre_caching: ConfigurationValueBool = ConfigurationValueBool("run_additional_pre_caching", "Run additional pre caching on startup", False)
-        self.run_any_additional_pre_caching_on_background_thread: ConfigurationValueBool = ConfigurationValueBool("run_additional_pre_caching_on_background_thread", "Run any additional pre caching on background thread", False)
 
         self.decrease_failed_card_intervals_interval: ConfigurationValueInt = ConfigurationValueInt("decrease_failed_card_intervals_interval", "Failed card again seconds for next again", 60)
 
@@ -115,6 +110,16 @@ class JapaneseConfig(Slots):
                                                                     self.show_sentence_breakdown_in_edit_mode,
                                                                     self.show_kanji_in_sentence_breakdown]
 
+        # performance
+        self.run_additional_pre_caching: ConfigurationValueBool = ConfigurationValueBool("run_additional_pre_caching", "Run additional pre caching on startup", False)
+        self.run_any_additional_pre_caching_on_background_thread: ConfigurationValueBool = ConfigurationValueBool("run_additional_pre_caching_on_background_thread", "Run any additional pre caching on background thread", False)
+        self.load_jamdict_db_into_memory: ConfigurationValueBool = ConfigurationValueBool("load_jamdict_db_into_memory", "Load Jamdict DB into memory", False)
+
+        # memory
+        self.enable_garbage_collection_during_batches: ConfigurationValueBool = ConfigurationValueBool("enable_garbage_collection_during_batches", "Enable Batch GC. Requires restart. (Eliminates LARGE memory leak on sync, but slows down startup and batches and introduces short 'hangs'.", True)
+        self.enable_automatic_garbage_collection: ConfigurationValueBool = ConfigurationValueBool("enable_automatic_garbage_collection", "Enable automatic GC. Requires restart. (Reduces memory usage the most but slows Anki down and may cause crashes due to Qt incompatibility.", False)
+        self.track_instances_in_memory: ConfigurationValueBool = ConfigurationValueBool("track_instances_in_memory", "Track instances in memory. Requires restart. Only useful to developers and will use extra memory.", False)
+
         self.feature_toggles: list[tuple[str, list[ConfigurationValueBool]]] = \
             [("Sentence Display", self.sentence_view_toggles),
              ("Misc", [self.yomitan_integration_copy_answer_to_clipboard,
@@ -123,11 +128,12 @@ class JapaneseConfig(Slots):
                        self.prevent_double_clicks,
                        self.boost_failed_card_allowed_time,
                        self.prefer_default_mnemonics_to_source_mnemonics]),
-             ("Performance", [self.run_additional_pre_caching,
-                              self.run_any_additional_pre_caching_on_background_thread]),
-             ("Memory", [self.enable_garbage_collection_during_batches,
-                         self.enable_automatic_garbage_collection,
-                         self.track_instances_in_memory])]
+             ("Performance and memory usage", [self.run_additional_pre_caching,
+                                               self.run_any_additional_pre_caching_on_background_thread,
+                                               self.load_jamdict_db_into_memory,
+                                               self.enable_garbage_collection_during_batches,
+                                               self.enable_automatic_garbage_collection,
+                                               self.track_instances_in_memory])]
 
         self.readings_mappings_dict: dict[str, str] = self._read_reading_mappings_from_file()
 
