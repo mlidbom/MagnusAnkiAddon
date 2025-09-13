@@ -67,7 +67,7 @@ class VocabMatch(Match, Slots):
         self.weakref = WeakRef(self)
 
     @property
-    def matching(self) -> VocabNoteMatchingConfiguration: return self.vocab.matching_configuration
+    def matching_configuration(self) -> VocabNoteMatchingConfiguration: return self.vocab.matching_configuration
     @property
     @override
     def match_form(self) -> str: return self.vocab.get_question()
@@ -82,15 +82,15 @@ class VocabMatch(Match, Slots):
     @override
     def parsed_form(self) -> str:
         return self.vocab.question.raw \
-            if self.matching.bool_flags.question_overrides_form.is_set() \
+            if self.matching_configuration.bool_flags.question_overrides_form.is_set() \
             else super().parsed_form
 
     @property
     @override
     def start_index(self) -> int:
-        if (self.matching.bool_flags.question_overrides_form.is_set()
-                and self.matching.configurable_rules.required_prefix.any()):
-            matched_prefixes = [prefix for prefix in self.matching.configurable_rules.required_prefix.get()
+        if (self.matching_configuration.bool_flags.question_overrides_form.is_set()
+                and self.matching_configuration.configurable_rules.required_prefix.any()):
+            matched_prefixes = [prefix for prefix in self.matching_configuration.configurable_rules.required_prefix.get()
                                 if self.parsed_form.startswith(prefix)]
             if matched_prefixes:
                 matched_prefix_length = max(len(prefix) for prefix in matched_prefixes)
