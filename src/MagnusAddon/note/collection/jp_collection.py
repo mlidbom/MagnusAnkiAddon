@@ -12,7 +12,7 @@ from note.collection.sentence_collection import SentenceCollection
 from note.collection.vocab_collection import VocabCollection
 from note.jpnote import JPNote
 from note.note_constants import CardTypes, Mine
-from qt_utils.task_runner_progress_dialog import TaskRunner, ITaskRunner
+from qt_utils.task_runner_progress_dialog import ITaskRunner, TaskRunner
 from sysutils import app_thread_pool, progress_display_runner
 from sysutils.timeutil import StopWatch
 from sysutils.typed import non_optional
