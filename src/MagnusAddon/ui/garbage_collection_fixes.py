@@ -18,7 +18,8 @@ def noop_gc_on_dialog_finish(_self: AnkiQt, dialog: QDialog) -> None:
     app.get_ui_utils().tool_tip("prevented garbage collection", 6000)
 
 def visible_garbage_collection(_self: AnkiQt) -> None:
-    if not app.config().enable_automatic_garbage_collection.get_value():
+    if (not app.config().enable_automatic_garbage_collection.get_value()
+            and app.is_initialized()):
         ex_gc.collect_on_ui_thread_and_display_message("Garbage collection triggered by anki internal code")
 
 def init() -> None:

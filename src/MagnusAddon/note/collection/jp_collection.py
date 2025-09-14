@@ -90,6 +90,7 @@ class JPCollection(WeakRefable, Slots):
                 from language_services.jamdict_ex.dict_lookup import DictLookup
                 DictLookup.ensure_loaded_into_memory()
 
+            task_runner.set_label_text("Caching card studying status")
             noteutils.initialize_studying_cache(self.anki_collection, task_runner)
 
             if not app.is_testing() and not JPCollection._is_inital_load:
