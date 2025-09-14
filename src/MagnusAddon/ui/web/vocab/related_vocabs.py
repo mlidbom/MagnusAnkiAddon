@@ -92,13 +92,13 @@ def generate_derived_from(_vocab_note: VocabNote) -> str:
     return render_vocab_list(derived_from, "derived from", css_class="derived_from")
 
 def generate_in_compounds_list(_vocab_note: VocabNote) -> str:
-    compound_parts = app.col().vocab.with_compound_part(_vocab_note.question.without_noise_characters)
-    return render_vocab_list(compound_parts, "part of compound", css_class="in_compound_words")
+    in_compounds = app.col().vocab.with_compound_part(_vocab_note.question.without_noise_characters)[:30]
+    return render_vocab_list(in_compounds, "part of compound", css_class="in_compound_words")
 
 def generate_stem_in_compounds_list(_vocab_note: VocabNote) -> str:
     if _vocab_note.question.stems().masu_stem() is None: return ""
-    compound_parts = app.col().vocab.with_compound_part(_vocab_note.question.stems().masu_stem() or "")
-    return render_vocab_list(compound_parts, "masu stem is part of compound", css_class="in_compound_words")
+    masu_stem_in_compounds = app.col().vocab.with_compound_part(_vocab_note.question.stems().masu_stem() or "")[:30]
+    return render_vocab_list(masu_stem_in_compounds, "masu stem is part of compound", css_class="in_compound_words")
 
 def generate_derived_list(_vocab_note: VocabNote) -> str:
     derived_vocabs = app.col().vocab.derived_from(_vocab_note.get_question())
