@@ -46,7 +46,7 @@ def current_snapshot() -> Snapshot:
     return snapshots[-1]
 
 class ObjectInstanceTracker(Slots):
-
+    _track_instances_in_memory: bool = app.config().track_instances_in_memory.get_value()
     def __init__(self, cls_type: type[object]) -> None:
         self.type_name: str = self._get_fully_qualified_name(cls_type)
         current_instance_count[self.type_name] = current_instance_count.get(self.type_name, 0) + 1
@@ -66,7 +66,7 @@ class ObjectInstanceTracker(Slots):
         return sys.intern(cls_type.__qualname__)
 
     @staticmethod
-    def configured_tracker_for(obj: object) -> object | None: return ObjectInstanceTracker(obj.__class__) if app.config().track_instances_in_memory.get_value() else None
+    def configured_tracker_for(obj: object) -> object | None: return ObjectInstanceTracker(obj.__class__) if ObjectInstanceTracker._track_instances_in_memory else None
 
     @staticmethod
     def tracker_for(obj: object) -> ObjectInstanceTracker: return ObjectInstanceTracker(obj.__class__)
