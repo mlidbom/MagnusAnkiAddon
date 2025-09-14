@@ -50,10 +50,7 @@ class NoteBulkLoader:
             self.usn = db_row[4]
             self.tags = db_row[5].split() if db_row[5] else []
 
-            # Parse field data
             field_values = db_row[6].split("\x1f") if db_row[6] else []
             while len(field_values) < field_count: field_values.append("")
             self.fields = field_values
-
-            # Essential for compatibility
             self._fmap = field_map

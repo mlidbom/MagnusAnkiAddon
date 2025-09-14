@@ -67,6 +67,7 @@ class QtTaskProgressRunner(ITaskRunner, Slots):
 
     @override
     def process_with_progress[TInput, TOutput](self, items: list[TInput], process_item: Callable[[TInput], TOutput], message: str) -> list[TOutput]:
+        self.set_label_text(f"{message} 0 of ?? Remaining: ??") # len may take a while so make sure we set the label first
         total_items = len(items)
         watch = StopWatch()
         start_time = time.time()
@@ -79,7 +80,7 @@ class QtTaskProgressRunner(ITaskRunner, Slots):
 
         for current_item, item in enumerate(items):
             results.append(process_item(item))
-            if time.time() - last_refresh > 0.3 or current_item == total_items - 1:
+            if time.time() - last_refresh > 0.1 or current_item == total_items - 1:
                 last_refresh = time.time()
                 self.dialog.setValue(current_item + 1)
                 elapsed_time = time.time() - start_time
