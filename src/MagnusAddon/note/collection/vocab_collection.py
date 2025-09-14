@@ -3,6 +3,7 @@ from __future__ import annotations
 from collections import defaultdict
 from typing import TYPE_CHECKING, override
 
+from anki_extentions.note_ex import NoteBulkLoader
 from autoslot import Slots
 from note.collection.backend_facade import BackEndFacade
 from note.collection.note_cache import CachedNote, NoteCache
@@ -96,6 +97,10 @@ class VocabCollection(Slots):
 
     def all_wani(self) -> list[VocabNote]:
         return [vocab for vocab in self.all() if vocab.is_wani_note()]
+
+    def batch_all(self) -> list[VocabNote]:
+        backend_notes = NoteBulkLoader.load_all_notes_of_type(self.collection.anki_collection, NoteTypes.Vocab)
+        return [VocabNote(backend_note) for backend_note in backend_notes]
 
     def is_word(self, form: str) -> bool: return any(self._cache.with_form(form))
     def all(self) -> list[VocabNote]: return self._cache.all()
