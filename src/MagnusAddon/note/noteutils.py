@@ -54,6 +54,7 @@ def initialize_studying_cache(col: Collection, task_runner: ITaskRunner) -> None
     WHERE notetypes.name COLLATE NOCASE IN ('{NoteTypes.Sentence}', '{NoteTypes.Vocab}', '{NoteTypes.Kanji}')
 """
 
+    task_runner.set_label_text("Fetching card studying status from Anki db...")
     studying_status_rows: list[Row] = non_optional(col.db).all(query)
 
     clear_studying_cache()

@@ -112,6 +112,7 @@ class JapaneseConfig(Slots):
 
         # performance
         self.load_jamdict_db_into_memory: ConfigurationValueBool = ConfigurationValueBool("load_jamdict_db_into_memory", "Load Jamdict DB into memory [Requires restart]", False)
+        self.pre_cache_card_studying_status: ConfigurationValueBool = ConfigurationValueBool("pre_cache_card_studying_status", "Makes the app much more responsive. Only disable for dev/testing purposes. [Requires restart]", False)
         self.prevent_anki_from_garbage_collecting_every_time_a_window_closes: ConfigurationValueBool = ConfigurationValueBool("prevent_anki_from_garbage_collecting_every_time_a_window_closes", "Prevent Anki from garbage collecting every time a window closes, causing a short hang every time. [Requires restart]", True)
         self.load_studio_in_foreground: ConfigurationValueBool = ConfigurationValueBool("load_studio_in_foreground", "Load Studio in foreground. Makes it clear when done. Anki will be responsive when done. But you can't use anki while loading.", True)
 
@@ -130,6 +131,7 @@ class JapaneseConfig(Slots):
                        self.prefer_default_mnemonics_to_source_mnemonics]),
              ("Performance and memory usage", [self.load_studio_in_foreground,
                                                self.load_jamdict_db_into_memory,
+                                               self.pre_cache_card_studying_status,
                                                self.prevent_anki_from_garbage_collecting_every_time_a_window_closes,
                                                self.enable_garbage_collection_during_batches,
                                                self.enable_automatic_garbage_collection,
