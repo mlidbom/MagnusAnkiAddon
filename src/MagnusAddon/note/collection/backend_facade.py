@@ -7,7 +7,7 @@ from note.jpnote import JPNote
 from note.note_constants import Builtin
 
 if TYPE_CHECKING:
-    from collections.abc import Callable, Iterator, Sequence
+    from collections.abc import Callable, Sequence
 
     from anki.collection import Collection
     from anki.notes import Note, NoteId
@@ -19,12 +19,12 @@ class BackEndFacade[TNote: JPNote](Slots):
         self.constructor = constructor
         self.note_type = note_type
 
-    def all(self) -> Iterator[TNote]:
+    def all(self) -> Sequence[TNote]:
         return self.search(f"{Builtin.Note}:{self.note_type}")
 
     # noinspection PySameParameterValue
-    def search(self, query: str) -> Iterator[TNote]:
+    def search(self, query: str) -> Sequence[TNote]:
         return self.by_id(self.anki_collection.find_notes(query))
 
-    def by_id(self, note_ids: Sequence[NoteId]) -> Iterator[TNote]:
-        return (self.constructor(self.anki_collection.get_note(note_id)) for note_id in note_ids)
+    def by_id(self, note_ids: Sequence[NoteId]) -> Sequence[TNote]:
+        return [self.constructor(self.anki_collection.get_note(note_id)) for note_id in note_ids]

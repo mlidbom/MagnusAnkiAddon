@@ -6,13 +6,14 @@ from typing import TYPE_CHECKING
 import mylog
 from ankiutils import app
 from autoslot import Slots
+from note import noteutils
 from note.collection.cache_runner import CacheRunner
 from note.collection.kanji_collection import KanjiCollection
 from note.collection.sentence_collection import SentenceCollection
 from note.collection.vocab_collection import VocabCollection
 from note.jpnote import JPNote
-from note.note_constants import CardTypes, Mine
-from qt_utils.task_runner_progress_dialog import ITaskRunner, TaskRunner
+from note.note_constants import Mine
+from qt_utils.task_runner_progress_dialog import TaskRunner
 from sysutils import app_thread_pool, progress_display_runner
 from sysutils.timeutil import StopWatch
 from sysutils.typed import non_optional
@@ -70,6 +71,7 @@ class JPCollection(WeakRefable, Slots):
         stopwatch = StopWatch()
         with StopWatch.log_warning_if_slower_than(5, "Full collection setup"):
             task_runner = TaskRunner.create(f"Loading {Mine.app_name}", "reading notes from anki", not app.is_testing() and app.config().load_studio_in_foreground.get_value())
+            noteutils.initialize_studying_cache(self.anki_collection, task_runner)
             if not app.is_testing() and not JPCollection._is_inital_load:
                 task_runner.set_label_text("Running garbage collection")
                 self._instance_tracker.run_gc_if_multiple_instances_and_assert_single_instance_after_gc()
@@ -84,18 +86,17 @@ class JPCollection(WeakRefable, Slots):
 
             self._cache_runner.start()
 
-            self._is_initialized = True
-
-            if app.config().run_additional_pre_caching.get_value():
-                if app.config().run_any_additional_pre_caching_on_background_thread.get_value():
-                    self._populate_additional_caches_on_background_thread()
-                else:
-                    self.populate_additional_caches(task_runner)
+            if app.config().load_jamdict_db_into_memory.get_value():
+                progress_display_runner.open_spinning_progress_dialog("Loading Jamdict db into memory")
+                from language_services.jamdict_ex.dict_lookup import DictLookup
+                DictLookup.ensure_loaded_into_memory()
 
             if not app.is_testing() and not JPCollection._is_inital_load:
                 self._instance_tracker.run_gc_if_multiple_instances_and_assert_single_instance_after_gc()
 
+            self._is_initialized = True
             JPCollection._is_inital_load = False
+
             task_runner.close()
             app.get_ui_utils().tool_tip(f"{Mine.app_name} done loading in {str(stopwatch.elapsed_seconds())[0:4]} seconds.", milliseconds=6000)
 
@@ -109,26 +110,6 @@ class JPCollection(WeakRefable, Slots):
     def kanji(self) -> KanjiCollection: return non_optional(self._initialized_self()._kanji)
     @property
     def sentences(self) -> SentenceCollection: return non_optional(self._initialized_self()._sentences)
-
-    def populate_additional_caches(self, task_runner: ITaskRunner) -> None:
-        if not self._is_initialized: return
-        from language_services.jamdict_ex.dict_lookup import DictLookup
-        DictLookup.ensure_loaded_into_memory()
-        progress_display_runner.open_spinning_progress_dialog("Loading dictionary lookup cache")
-        with StopWatch.log_execution_time("Populating studying status cache"):
-            def cache_note_studying_status(note_to_cache: JPNote) -> None:
-                note_to_cache.is_studying(CardTypes.reading)
-                note_to_cache.is_studying(CardTypes.listening)
-
-            notes_to_cache: list[JPNote] = list(self.vocab.all() + self.kanji.all() + self.sentences.all())
-
-            if app_thread_pool.current_is_ui_thread():
-                task_runner.process_with_progress(notes_to_cache, cache_note_studying_status, "Populating studying status cache")
-            else:
-                for note in notes_to_cache: cache_note_studying_status(note)
-
-    def _populate_additional_caches_on_background_thread(self) -> None:
-        app_thread_pool.pool.submit(lambda: self.populate_additional_caches(TaskRunner.invisible()))
 
     @classmethod
     def note_from_note_id(cls, note_id: NoteId) -> JPNote:

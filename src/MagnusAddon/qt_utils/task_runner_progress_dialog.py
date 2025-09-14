@@ -66,6 +66,7 @@ class QtTaskProgressRunner(ITaskRunner, Slots):
         results: list[TOutput] = []
         self.dialog.setRange(0, total_items + 1) # add one to keep the dialog open
         original_label = self.dialog.labelText()
+        self.set_label_text(f"{message} 0 of {total_items} Remaining: ??")
 
         last_refresh = 0.0
 
