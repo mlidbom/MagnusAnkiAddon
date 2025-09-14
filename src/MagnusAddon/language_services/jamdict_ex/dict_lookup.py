@@ -53,7 +53,7 @@ class JamdictThreadingWrapper(Slots):
         while self._running:
             request = self._queue.get()
             try:
-                result = request.func(self.jamdict.instance())  # pyright: ignore[reportAny]
+                result = request.func(self.jamdict())  # pyright: ignore[reportAny]
                 request.future.set_result(result)
             except Exception as e:
                 request.future.set_exception(e)
@@ -200,12 +200,12 @@ class DictLookup(Slots):
     @classmethod
     def might_be_word(cls, word: str) -> bool:
         # this method is a pure optimization to save on dictionary calls during real runtime. During tests populating all the words is a suboptimization, so just always return true when testing
-        return app.is_testing() or word in _all_word_forms.instance()
+        return app.is_testing() or word in _all_word_forms()
 
     @classmethod
     def might_be_name(cls, word: str) -> bool:
         # this method is a pure optimization to save on dictionary calls during real runtime. During tests populating all the words is a suboptimization, so just always return true when testing
-        return app.is_testing() or word in _all_name_forms.instance()
+        return app.is_testing() or word in _all_name_forms()
 
     @classmethod
     def might_be_entry(cls, word: str) -> bool:

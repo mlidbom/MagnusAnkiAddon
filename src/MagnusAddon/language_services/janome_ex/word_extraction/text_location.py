@@ -21,7 +21,6 @@ _max_lookahead = 12
 @final
 class TextAnalysisLocation(WeakRefable, Slots):
     def __init__(self, analysis: WeakRef[TextAnalysis], token: ProcessedToken, character_start_index: int, token_index: int) -> None:
-        self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
         self.weakref = WeakRef(self)
         self.next: WeakRef[TextAnalysisLocation] | None = None
         self.previous: WeakRef[TextAnalysisLocation] | None = None

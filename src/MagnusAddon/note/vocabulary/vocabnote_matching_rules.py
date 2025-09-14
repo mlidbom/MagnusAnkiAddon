@@ -83,7 +83,7 @@ class VocabNoteMatchingConfiguration(WeakRefable, Slots):
         self.bool_flags: VocabMatchingRulesConfigurationBoolFlags = VocabMatchingRulesConfigurationBoolFlags(vocab)
 
     @property
-    def configurable_rules(self) -> VocabNoteMatchingRules: return self._rules.instance()
+    def configurable_rules(self) -> VocabNoteMatchingRules: return self._rules()
 
     def save(self) -> None: self.configurable_rules.save()
 

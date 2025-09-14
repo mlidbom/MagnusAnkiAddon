@@ -19,14 +19,14 @@ _addon_name = os.path.basename(_addon_dir)
 _config_dict = Lazy(lambda: mw.addonManager.getConfig(_addon_name) or {})
 
 def _write_config_dict() -> None:
-    mw.addonManager.writeConfig(_addon_name, _config_dict.instance())  # pyright: ignore[reportUnknownMemberType]
+    mw.addonManager.writeConfig(_addon_name, _config_dict())  # pyright: ignore[reportUnknownMemberType]
 
 class ConfigurationValue[T](WeakRefable, Slots):
     def __init__(self, name: str, title: str, default: T, feature_toggler: Callable[[T], None] | None = None) -> None:
         self.title: str = title
         self.feature_toggler: Callable[[T], None] | None = feature_toggler
         self.name: str = name
-        self._value: T = _config_dict.instance().get(name, default)
+        self._value: T = _config_dict().get(name, default)
 
         if self.feature_toggler:
             app.add_init_hook(self.toggle_feature)
@@ -38,7 +38,7 @@ class ConfigurationValue[T](WeakRefable, Slots):
 
     def set_value(self, value: T) -> None:
         self._value = value
-        _config_dict.instance()[self.name] = value
+        _config_dict()[self.name] = value
         self.toggle_feature()
         _write_config_dict()
         for callback in self._change_callbacks:

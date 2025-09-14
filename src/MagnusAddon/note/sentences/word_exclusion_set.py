@@ -11,7 +11,6 @@ if TYPE_CHECKING:
 
 class WordExclusionSet(Slots):
     def __init__(self, save_callback: Callable[[], None], exclusions: list[WordExclusion]) -> None:
-        self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
         self._save: Callable[[], None] = save_callback
         self._exclusions: set[WordExclusion] = set(exclusions)
         self._excluded_words: set[str] = self._extract_words()

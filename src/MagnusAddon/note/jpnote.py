@@ -23,7 +23,6 @@ if TYPE_CHECKING:
 class JPNote(WeakRefable,Slots):
     def __init__(self, note: Note) -> None:
         self.weakref: WeakRef[JPNote] = WeakRef(self)
-        self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
         self.recursive_flush_guard: NoteRecursiveFlushGuard = NoteRecursiveFlushGuard(self.weakref)
         self.backend_note: Note = note
         self.__hash_value = 0

@@ -65,6 +65,7 @@ class ObjectInstanceTracker(Slots):
             return sys.intern(cls_type.__module__ + "." + cls_type.__qualname__)
         return sys.intern(cls_type.__qualname__)
 
+    # noinspection PyUnusedFunction
     @staticmethod
     def configured_tracker_for(obj: object) -> object | None: return ObjectInstanceTracker(obj.__class__) if ObjectInstanceTracker._track_instances_in_memory else None
 

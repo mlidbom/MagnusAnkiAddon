@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING
 
 from autoslot import Slots
 from sysutils.lazy import Lazy
-from sysutils.object_instance_tracker import ObjectInstanceTracker
 
 if TYPE_CHECKING:
     from note.jpnote import JPNote
@@ -12,10 +11,10 @@ if TYPE_CHECKING:
 
 class AutoStrippingReadOnlyStringField(Slots):
     def __init__(self, note: WeakRef[JPNote], field_name: str) -> None:
-        self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
         self._note: WeakRef[JPNote] = note
         self._field_name: str = field_name
-        self._value: Lazy[str] = Lazy(lambda: note().get_field(field_name).strip())
+        def get_field_value() -> str: return note().get_field(field_name).strip()
+        self._value: Lazy[str] = Lazy(get_field_value)
 
     def get(self) -> str: return self._value()
     def has_value(self) -> bool: return self.get() != ""

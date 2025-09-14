@@ -21,7 +21,6 @@ if TYPE_CHECKING:
 @final
 class CandidateWordVariant(WeakRefable, Slots):
     def __init__(self, word: WeakRef[CandidateWord], form: str) -> None:
-        self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
 
         self.weak_ref = WeakRef(self)
         from language_services.jamdict_ex.dict_lookup import DictLookup

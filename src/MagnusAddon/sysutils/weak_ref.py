@@ -15,14 +15,14 @@ class WeakRef(Generic[T], Slots):  # noqa: UP046 the automatic inference thinks 
         self._weakreference: ReferenceType[T] = weakref.ref(obj)
 
     @property
-    def instance(self) -> T:
+    def _weakref_get_instance(self) -> T:
         instance = self._weakreference()
         if instance is None: raise ReferenceError("This WeakRef instance has been destroyed by the reference counting in python. No GC roots referencing it remain.")
         return instance
-    def __call__(self) -> T: return self.instance
+    def __call__(self) -> T: return self._weakref_get_instance
 
     @override
-    def __repr__(self) -> str: return f"WeakRef: {self.instance.__repr__()}"
+    def __repr__(self) -> str: return f"WeakRef: {self._weakref_get_instance.__repr__()}"
 
 class WeakRefable(Slots):
     __slots__ = ["__weakref__"]  # pyright: ignore[reportUninitializedInstanceVariable, reportUnannotatedClassAttribute]

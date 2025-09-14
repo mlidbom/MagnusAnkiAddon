@@ -11,7 +11,6 @@ if TYPE_CHECKING:
 
 class TagFlagField(Slots):
     def __init__(self, note: WeakRef[JPNote], tag: str) -> None:
-        self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
         self._note: WeakRef[JPNote] = note
         self.tag: str = tag
 

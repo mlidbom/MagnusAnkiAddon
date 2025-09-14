@@ -20,7 +20,6 @@ from sysutils.ex_str import newline
 class CandidateWord(WeakRefable, Slots):
     def __init__(self, locations: list[WeakRef[TextAnalysisLocation]]) -> None:
         self.weakref = WeakRef(self)
-        self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
         self.locations: list[WeakRef[TextAnalysisLocation]] = locations
 
         self.surface_form = "".join([t().token.surface for t in self.locations])

@@ -23,7 +23,6 @@ class TextAnalysis(WeakRefable,Slots):
     version = "text_analysis_0.1"
 
     def __init__(self, sentence: str, sentence_configuration: SentenceConfiguration) -> None:
-        self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
         self.weakref = WeakRef(self)
         self.text = sentence
         self.configuration = sentence_configuration

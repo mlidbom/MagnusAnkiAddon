@@ -14,12 +14,12 @@ class Lazy[T](Slots):
         self.factory: Callable[[], T] = factory
         self._instance: T | None = None
 
-    def instance(self) -> T:
+    def _lazy_get_instance(self) -> T:
         if self._instance is None:
             self._instance = self.factory()
         return self._instance
 
-    def __call__(self) -> T: return self.instance()
+    def __call__(self) -> T: return self._lazy_get_instance()
 
     @staticmethod
     def from_value(result: T) -> Lazy[T]:

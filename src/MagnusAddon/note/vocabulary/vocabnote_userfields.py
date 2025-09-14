@@ -14,7 +14,6 @@ if TYPE_CHECKING:
 
 class VocabNoteUserfields(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
-        self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
         self.mnemonic: AutoStrippingStringField = AutoStrippingStringField(vocab, NoteFields.Vocab.user_mnemonic)
         self.answer: AutoStrippingStringField = AutoStrippingStringField(vocab, NoteFields.Vocab.user_answer)
         self.explanation: AutoStrippingStringField = AutoStrippingStringField(vocab, NoteFields.Vocab.user_explanation)

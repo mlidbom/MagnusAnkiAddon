@@ -28,12 +28,12 @@ class CachingSentenceConfigurationField(WeakRefable, Slots):
         return self._value()
 
     @property
-    def incorrect_matches(self) -> WordExclusionSet: return self._value.instance().incorrect_matches
+    def incorrect_matches(self) -> WordExclusionSet: return self._value().incorrect_matches
 
     @property
-    def hidden_matches(self) -> WordExclusionSet: return self._value.instance().hidden_matches
+    def hidden_matches(self) -> WordExclusionSet: return self._value().hidden_matches
 
-    def highlighted_words(self) -> set[str]: return self._value.instance().highlighted_words
+    def highlighted_words(self) -> set[str]: return self._value().highlighted_words
 
     @property
     def highlighted_vocab(self) -> set[VocabNote]:
@@ -45,7 +45,7 @@ class CachingSentenceConfigurationField(WeakRefable, Slots):
         self._save()
 
     def reset_highlighted_words(self) -> None:
-        self._value.instance().highlighted_words.clear()
+        self._value().highlighted_words.clear()
         self._save()
 
     def add_highlighted_word(self, vocab: str) -> None:
@@ -53,5 +53,5 @@ class CachingSentenceConfigurationField(WeakRefable, Slots):
         self._save()
 
     def _save(self) -> None:
-        self.field.set(SentenceConfiguration.serializer.serialize(self._value.instance()))
+        self.field.set(SentenceConfiguration.serializer.serialize(self._value()))
         self._sentence().update_parsed_words(force=True)

@@ -33,7 +33,7 @@ def add_init_hook(hook: Callable[[], None]) -> None:
 
 def config() -> JapaneseConfig:
     from configuration import configuration_value
-    return configuration_value.config.instance()
+    return configuration_value.config()
 
 def _init(delay_seconds: float = 1.0) -> None:
     mylog.info(f"_init delay= {delay_seconds}")
