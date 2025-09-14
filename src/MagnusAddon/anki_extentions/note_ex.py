@@ -40,7 +40,9 @@ class NoteBulkLoader:
 
         return task_runner.process_with_progress(rows, note_bulkloader_note_constructor, f"Loading {note_type_name} notes from Anki db")
 
+    # noinspection PyMissingConstructor
     class _NoteEx(Note):
+        # noinspection PyMissingConstructor this is very much intentional. We do NOT want the base class to go fetching the note's data from the db. Avoiding that is the whole point of this class and improves performance tenfold or more.
         def __init__(self, collection_weak_ref: Collection, db_row: Row, field_map: dict[str, tuple[int, FieldDict]], field_count: int) -> None:
             self.col = collection_weak_ref
             self.id = NoteId(db_row[0])
