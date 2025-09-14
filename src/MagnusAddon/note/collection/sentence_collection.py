@@ -54,8 +54,7 @@ class SentenceCollection(Slots):
     def __init__(self, collection: Collection, cache_manager: CacheRunner, task_runner: ITaskRunner) -> None:
         def sentence_constructor(note: Note) -> SentenceNote: return SentenceNote(note)
         self.collection: BackEndFacade[SentenceNote] = BackEndFacade[SentenceNote](collection, sentence_constructor, NoteTypes.Sentence)
-        task_runner.set_label_text("Loading Sentence notes from Anki db")
-        all_sentences = list(self.collection.all())
+        all_sentences = list(self.collection.all(task_runner, NoteTypes.Sentence))
         self._cache: _SentenceCache = _SentenceCache(all_sentences, cache_manager, task_runner)
 
     def all(self) -> list[SentenceNote]: return self._cache.all()

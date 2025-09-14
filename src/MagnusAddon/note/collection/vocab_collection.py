@@ -89,8 +89,7 @@ class VocabCollection(Slots):
     def __init__(self, collection: Collection, cache_manager: CacheRunner, task_runner: ITaskRunner) -> None:
         def vocab_constructor(note: Note) -> VocabNote: return VocabNote(note)
         self.collection:BackEndFacade[VocabNote] = BackEndFacade[VocabNote](collection, vocab_constructor, NoteTypes.Vocab)
-        task_runner.set_label_text("Loading Vocabulary notes from Anki db")
-        all_vocab = list(self.collection.all())
+        all_vocab = self.collection.all(task_runner, NoteTypes.Vocab)
         self._cache: _VocabCache = _VocabCache(all_vocab, cache_manager, task_runner)
 
     def search(self, query: str) -> list[VocabNote]: return list(self.collection.search(query))

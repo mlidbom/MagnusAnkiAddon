@@ -14,7 +14,7 @@ from note.collection.vocab_collection import VocabCollection
 from note.jpnote import JPNote
 from note.note_constants import Mine
 from qt_utils.task_runner_progress_dialog import TaskRunner
-from sysutils import app_thread_pool, progress_display_runner
+from sysutils import app_thread_pool
 from sysutils.timeutil import StopWatch
 from sysutils.typed import non_optional
 from sysutils.weak_ref import WeakRefable
@@ -87,7 +87,7 @@ class JPCollection(WeakRefable, Slots):
             self._cache_runner.start()
 
             if app.config().load_jamdict_db_into_memory.get_value():
-                progress_display_runner.open_spinning_progress_dialog("Loading Jamdict db into memory")
+                task_runner.set_label_text("Loading Jamdict db into memory")
                 from language_services.jamdict_ex.dict_lookup import DictLookup
                 DictLookup.ensure_loaded_into_memory()
 

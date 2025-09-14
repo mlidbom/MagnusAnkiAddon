@@ -65,4 +65,3 @@ def initialize_studying_cache(col: Collection, task_runner: ITaskRunner) -> None
         _studying_status_cache[note_id][card_type] = queue != QUEUE_TYPE_SUSPENDED
 
     task_runner.process_with_progress(studying_status_rows, cache_card, "Populating studying status cache")
-    something = 12

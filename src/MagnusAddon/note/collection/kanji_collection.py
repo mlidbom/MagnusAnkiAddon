@@ -50,8 +50,7 @@ class KanjiCollection(Slots):
     def __init__(self, collection: Collection, cache_manager: CacheRunner, task_runner: ITaskRunner) -> None:
         def kanji_constructor(note: Note) -> KanjiNote: return KanjiNote(note)
         self.collection: BackEndFacade[KanjiNote] = BackEndFacade[KanjiNote](collection, kanji_constructor, NoteTypes.Kanji)
-        task_runner.set_label_text("Loading kanji notes from Anki db")
-        all_kanji = list(self.collection.all())
+        all_kanji = self.collection.all(task_runner, NoteTypes.Kanji)
         self._cache: _KanjiCache = _KanjiCache(all_kanji, cache_manager, task_runner)
 
     def search(self, query: str) -> list[KanjiNote]:
