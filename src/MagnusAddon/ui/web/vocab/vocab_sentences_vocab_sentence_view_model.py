@@ -69,7 +69,7 @@ class VocabSentenceViewModel(Slots):
                 tail = result.sentence[max(shaded_by.end_index, match.end_index):]
                 formatted_match = f"""<span class="vocabInContext {match_class}">{match_range}</span>"""
                 return f"""{shading_head}<span class="vocabInContext {shaded_by_class}">{shading_range}{formatted_match}</span>{tail}"""
-            else:
+            else:  # noqa: RET505
                 shading_head = result.sentence[:shaded_by.start_index]
                 shading_pre_range = result.sentence[shaded_by.start_index:match.start_index]
                 match_range = result.sentence[match.start_index:match.end_index]
