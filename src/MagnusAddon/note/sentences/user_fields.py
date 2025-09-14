@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING
 from autoslot import Slots
 from note.note_constants import SentenceNoteFields
 from note.notefields.strip_html_on_read_string_field import StripHtmlOnReadStringField
-from sysutils.object_instance_tracker import ObjectInstanceTracker
 
 if TYPE_CHECKING:
     from note.sentences.sentencenote import SentenceNote

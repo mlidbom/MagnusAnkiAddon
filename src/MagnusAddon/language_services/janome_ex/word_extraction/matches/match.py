@@ -7,6 +7,7 @@ from language_services.janome_ex.word_extraction.matches.requirements.not_in_sta
 from language_services.janome_ex.word_extraction.matches.state_tests.is_configured_hidden import IsConfiguredHidden
 from language_services.janome_ex.word_extraction.matches.state_tests.is_configured_incorrect import IsConfiguredIncorrect
 from language_services.janome_ex.word_extraction.matches.state_tests.is_shadowed import IsShadowed
+from sysutils.lazy import Lazy
 from sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
@@ -18,7 +19,8 @@ class Match(WeakRefable, Slots):
     def __init__(self, word_variant: WeakRef[CandidateWordVariant],
                  validity_requirements: list[MatchRequirement],
                  display_requirements: list[MatchRequirement]) -> None:
-        self.weakref: WeakRef[Match] = WeakRef(self)
+        weakref = WeakRef(self)
+        self.weakref: WeakRef[Match] = weakref
         self._variant: WeakRef[CandidateWordVariant] = word_variant
         self._validity_requirements: list[MatchRequirement] = ([
                                                                    NotInState(IsConfiguredIncorrect(self.weakref))
@@ -29,6 +31,9 @@ class Match(WeakRefable, Slots):
                                                                   NotInState(IsConfiguredHidden(self.weakref))
                                                               ]
                                                               + display_requirements)
+
+        self.can_cache_validity = all(requirement.state_test.is_cachable for requirement in self._validity_requirements)
+        self._cached_is_valid_internal: Lazy[bool] | None = Lazy(lambda: weakref().__is_valid_internal_implementation()) if self.can_cache_validity else None
 
     @property
     def answer(self) -> str: raise NotImplementedError()
@@ -48,10 +53,16 @@ class Match(WeakRefable, Slots):
     def variant(self) -> CandidateWordVariant: return self._variant()
 
     @property
-    def is_valid(self) -> bool: return (self._is_valid_internal or self.is_highlighted
-                                        and not any(valid_sibling for valid_sibling in self._sibling_matches if valid_sibling._is_valid_internal))
+    def is_valid(self) -> bool: return (self._is_valid_internal
+                                        or (self.is_highlighted
+                                            and not any(valid_sibling for valid_sibling in self._sibling_matches if valid_sibling._is_valid_internal)))
     @property
-    def _is_valid_internal(self) -> bool: return all(requirement.is_fulfilled for requirement in self._validity_requirements)
+    def _is_valid_internal(self) -> bool:
+        return self._cached_is_valid_internal() \
+            if self._cached_is_valid_internal is not None \
+            else self.__is_valid_internal_implementation()
+
+    def __is_valid_internal_implementation(self) -> bool: return all(requirement.is_fulfilled for requirement in self._validity_requirements)
     @property
     def is_highlighted(self) -> bool: return self.match_form in self.variant.configuration.highlighted_words
     @property

@@ -9,7 +9,6 @@ from language_services.janome_ex.word_extraction.matches.missing_match import Mi
 from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from sysutils import ex_assert
-from sysutils.object_instance_tracker import ObjectInstanceTracker
 from sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:

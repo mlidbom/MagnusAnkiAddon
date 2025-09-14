@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING
 from autoslot import Slots
 from note.note_constants import NoteFields
 from note.notefields.string_field import AutoStrippingStringField
-from sysutils.object_instance_tracker import ObjectInstanceTracker
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote

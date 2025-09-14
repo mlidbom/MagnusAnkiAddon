@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
-from sysutils.object_instance_tracker import ObjectInstanceTracker
 
 if TYPE_CHECKING:
     from collections.abc import Callable

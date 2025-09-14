@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-from ui import editor_buttons, garbage_collection_fixes, hooks, menus, timing_hacks, tools_menu, web
-
 
 def init() -> None:
+    from ui import editor_buttons, garbage_collection_fixes, hooks, menus, timing_hacks, tools_menu, web
     hooks.init()
     timing_hacks.init()
     tools_menu.init()

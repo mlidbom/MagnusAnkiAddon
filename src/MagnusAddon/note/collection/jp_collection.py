@@ -12,7 +12,6 @@ from note.collection.vocab_collection import VocabCollection
 from note.jpnote import JPNote
 from note.note_constants import CardTypes, Mine
 from sysutils import app_thread_pool
-from sysutils.object_instance_tracker import ObjectInstanceTracker
 from sysutils.timeutil import StopWatch
 from sysutils.weak_ref import WeakRefable
 
@@ -25,6 +24,7 @@ if TYPE_CHECKING:
 class JPCollection(WeakRefable, Slots):
     _is_inital_load: bool = True  # running the GC on initial load slows startup a lot but does not decrease memory usage in any significant way.
     def __init__(self, anki_collection: Collection) -> None:
+        from sysutils.object_instance_tracker import ObjectInstanceTracker
         self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker.tracker_for(self)
         self._is_running: bool = False
         mylog.info("JPCollection.__init__")

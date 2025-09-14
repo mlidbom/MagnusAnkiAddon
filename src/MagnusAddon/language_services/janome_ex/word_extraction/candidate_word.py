@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING, final, override
 from autoslot import Slots
 from language_services.janome_ex.word_extraction.analysis_constants import noise_characters
 from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
-from sysutils.object_instance_tracker import ObjectInstanceTracker
 from sysutils.typed import non_optional
 from sysutils.weak_ref import WeakRef, WeakRefable
 
