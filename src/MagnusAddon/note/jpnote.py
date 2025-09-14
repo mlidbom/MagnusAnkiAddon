@@ -50,7 +50,7 @@ class JPNote(WeakRefable,Slots):
         return app.col()
 
     def get_question(self) -> str:
-        value = self.get_field(MyNoteFields.question).strip()
+        value = self.get_field(MyNoteFields.question)
         return value if value else "[EMPTY]"
 
     def get_answer(self) -> str:

@@ -6,7 +6,7 @@ from ankiutils import anki_module_import_issues_fix_just_import_this_module_befo
 from autoslot import Slots
 from note.note_constants import NoteFields
 from note.notefields.comma_separated_strings_list_field import CommaSeparatedStringsListField
-from note.notefields.string_field import AutoStrippingStringField
+from note.notefields.string_field import StringField
 from note.vocabnote_cloner import VocabCloner
 from note.vocabulary import vocabnote_generated_data
 from note.vocabulary.related_vocab.related_vocab import RelatedVocab
@@ -44,8 +44,8 @@ class VocabNote(WaniNote, Slots):
 
         self.user: VocabNoteUserfields = VocabNoteUserfields(self.weakref_vocab)
 
-        self._source_answer: AutoStrippingStringField = AutoStrippingStringField(self.weakref, NoteFields.Vocab.source_answer)
-        self.active_answer: AutoStrippingStringField = AutoStrippingStringField(self.weakref, NoteFields.Vocab.active_answer)
+        self._source_answer: StringField = StringField(self.weakref, NoteFields.Vocab.source_answer)
+        self.active_answer: StringField = StringField(self.weakref, NoteFields.Vocab.active_answer)
 
         self.cloner: VocabCloner = VocabCloner(self.weakref_vocab)
         self.related_notes: RelatedVocab = RelatedVocab(self.weakref_vocab)

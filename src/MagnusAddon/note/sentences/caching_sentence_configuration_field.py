@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from ankiutils import app
 from autoslot import Slots
 from note.note_constants import SentenceNoteFields
-from note.notefields.string_field import AutoStrippingStringField
+from note.notefields.string_field import StringField
 from note.sentences.sentence_configuration import SentenceConfiguration
 from sysutils.lazy import Lazy
 from sysutils.weak_ref import WeakRef, WeakRefable
@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 class CachingSentenceConfigurationField(WeakRefable, Slots):
     def __init__(self, sentence: WeakRef[SentenceNote]) -> None:
         self._sentence: WeakRef[SentenceNote] = sentence
-        self.field: AutoStrippingStringField = AutoStrippingStringField(sentence, SentenceNoteFields.configuration)
+        self.field: StringField = StringField(sentence, SentenceNoteFields.configuration)
 
         weakrefthis = WeakRef(self)
         self._value: Lazy[SentenceConfiguration] = Lazy(lambda: SentenceConfiguration.serializer.deserialize(weakrefthis().field.get(), weakrefthis()._save))

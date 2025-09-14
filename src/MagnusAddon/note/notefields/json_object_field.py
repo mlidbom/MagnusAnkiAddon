@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
-from note.notefields.string_field import AutoStrippingStringField
+from note.notefields.string_field import StringField
 from sysutils.lazy import Lazy
 from sysutils.weak_ref import WeakRef, WeakRefable
 
@@ -17,7 +17,7 @@ class ObjectSerializer[T](Slots):
 class SerializedObjectField[T](WeakRefable, Slots):
     def __init__(self, note: WeakRef[JPNote], field: str, serializer: ObjectSerializer[T]) -> None:
         self._note: WeakRef[JPNote] = note
-        self._field: AutoStrippingStringField = AutoStrippingStringField(note, field)
+        self._field: StringField = StringField(note, field)
         self._serializer: ObjectSerializer[T] = serializer
         weakrefthis = WeakRef(self)
         self._value: Lazy[T] = Lazy(lambda: serializer.deserialize(weakrefthis()._field.get()))
