@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from anki.notes import NoteId
 from autoslot import Slots
@@ -31,3 +31,6 @@ class ParsedMatch(Slots):
                            match.parsed_form,
                            f"""{" ".join(match.failure_reasons)}{" # " if match.failure_reasons else ""}{" ".join(match.hiding_reasons)} {"highlighted" if match.is_highlighted else ""}""",
                            match.vocab.get_id() if isinstance(match, VocabMatch) else NoteId(-1))
+
+    @override
+    def __repr__(self) -> str: return self.serializer.to_row(self)

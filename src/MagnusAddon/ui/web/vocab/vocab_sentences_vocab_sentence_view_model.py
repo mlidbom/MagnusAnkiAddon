@@ -1,8 +1,9 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
+from sysutils.typed import non_optional
 
 if TYPE_CHECKING:
     from note.sentences.parsed_word import ParsedMatch
@@ -32,11 +33,14 @@ class VocabSentenceMatchViewModel(Slots):
 
     @property
     def yields_to(self) -> ParsedMatch | None:
-        shading = [match for match in self.sentence_view_model.result.parsed_words
-                   if match.is_displayed
-                   and self.start_index < match.start_index <= self.end_index < match.end_index]
+        yields_to = [match for match in self.sentence_view_model.result.parsed_words
+                     if match.is_displayed
+                     and self.start_index < match.start_index <= self.end_index < match.end_index]
 
-        return shading[0] if shading else None
+        return yields_to[0] if yields_to else None
+
+    @override
+    def __repr__(self) -> str: return self.match.__repr__()
 
 class VocabSentenceViewModel(Slots):
     def __init__(self, _vocab_note: VocabNote, sentence_note: SentenceNote) -> None:
@@ -50,46 +54,33 @@ class VocabSentenceViewModel(Slots):
         self.matched_vocab_ids: set[int] = {match.vocab_id for match in self.result.parsed_words}
 
     @property
-    def prioritized_match(self) -> VocabSentenceMatchViewModel: return self.displayed_matches[0] if self.displayed_matches else self.matches[0]
+    def primary_match(self) -> VocabSentenceMatchViewModel: return self.displayed_matches[0] if self.displayed_matches else self.matches[0]
 
     def format_sentence(self) -> str:
         result = self.result
 
-        is_primary = "primary" if self.prioritized_match.is_primary_form_of(self.vocab) else "secondary"
-        match_class = f"{is_primary}Form"
+        match = self.primary_match
+        is_primary = "primary" if match.is_primary_form_of(self.vocab) else "secondary"
+        match_class = f"{is_primary}FormMatch"
 
-        def highlight_prioritized_match() -> str:
-            head = result.sentence[:self.prioritized_match.start_index]
-            match_range = result.sentence[self.prioritized_match.start_index:self.prioritized_match.end_index]
-            tail = result.sentence[self.prioritized_match.end_index:]
+        if match.is_displayed:
+            head = result.sentence[:match.start_index]
+            match_range = result.sentence[match.start_index:match.end_index]
+            tail = result.sentence[match.end_index:]
             return f"""{head}<span class="vocabInContext {match_class}">{match_range}</span>{tail}"""
-
-        def highlight_shaded_match(shaded_by: ParsedMatch, shaded_by_class: str) -> str:
-            head = result.sentence[:min(shaded_by.start_index, self.prioritized_match.start_index)]
-            shading_pre_range = result.sentence[shaded_by.start_index:self.prioritized_match.start_index]
-            match_range = result.sentence[self.prioritized_match.start_index:self.prioritized_match.end_index]
-            shading_post_range = result.sentence[self.prioritized_match.end_index:shaded_by.end_index]
-            tail = result.sentence[max(shaded_by.end_index, self.prioritized_match.end_index):]
+        else:  # noqa: RET505
+            covering_match = non_optional(match.shaded_by or match.yields_to)
+            covering_match_class = "compound" if covering_match.vocab_id in self.vocab.related_notes.in_compound_ids else "shadingMatch"
+            head = result.sentence[:min(covering_match.start_index, match.start_index)]
+            shading_pre_range = result.sentence[covering_match.start_index:match.start_index]
+            match_range = result.sentence[match.start_index:match.end_index]
+            shading_post_range = result.sentence[match.end_index:covering_match.end_index]
+            tail = result.sentence[max(covering_match.end_index, match.end_index):]
             return "".join([head,
-                            f"""<span class="vocabInContext {shaded_by_class}">{shading_pre_range}</span>""",
+                            f"""<span class="vocabInContext {match_class} {covering_match_class}">{shading_pre_range}</span>""",
                             f"""<span class="vocabInContext {match_class}">{match_range}</span>""",
-                            f"""<span class="vocabInContext {shaded_by_class}">{shading_post_range}</span>""",
+                            f"""<span class="vocabInContext {match_class} {covering_match_class}">{shading_post_range}</span>""",
                             tail])
-
-        if self.prioritized_match.is_displayed:
-            return highlight_prioritized_match()
-
-        match_yielded_to = self.prioritized_match.yields_to
-        if match_yielded_to:
-            return highlight_shaded_match(match_yielded_to, "yieldedToMatch")
-
-        match_shading_our_match = self.prioritized_match.shaded_by
-        if not match_shading_our_match: raise AssertionError("This should never happen")
-
-        if match_shading_our_match.vocab_id in self.vocab.related_notes.in_compound_ids:
-            return highlight_shaded_match(match_shading_our_match, f"{is_primary}CompoundForm")
-
-        return highlight_shaded_match(match_shading_our_match, "shadingMatch")
 
     def is_highlighted(self) -> bool: return self.sentence in self.highlighted_sentences
 

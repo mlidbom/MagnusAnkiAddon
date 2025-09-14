@@ -208,10 +208,10 @@
                         }
 
                         .vocabInContext {
-                            &.primaryForm { background-color: var(--colorBgVoc); }
-                            &.secondaryForm { background-color: var(--colorBgRad); }
-                            &.primaryCompoundForm { background-color: var(--colorBgRead); }
-                            &.secondaryCompoundForm { background-color: color-mix(in lch, var(--colorBgVoc), var(--colorBgRead) 80%); }
+                            &.primaryFormMatch { background-color: var(--colorBgVoc); }
+                            &.secondaryFormMatch { background-color: var(--colorBgRad); }
+                            &.primaryFormMatch.compound { background-color: var(--colorBgRead); }
+                            &.primaryFormMatch.compound { background-color: color-mix(in lch, var(--colorBgVoc), var(--colorBgRead) 80%); }
                             //&.shadedMatch, &.yieldedMatch  { background-color: lightgrey }
                             &.yieldedToMatch, &.shadingMatch { background-color: lightgrey }
                         }
