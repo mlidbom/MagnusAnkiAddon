@@ -32,7 +32,7 @@ class Match(WeakRefable, Slots):
                                                               ]
                                                               + display_requirements)
 
-        self.can_cache_validity = all(requirement.state_test.is_cachable for requirement in self._validity_requirements)
+        self.can_cache_validity: bool = all(requirement.state_test.is_cachable for requirement in self._validity_requirements)
         self._cached_is_valid_internal: Lazy[bool] | None = Lazy(lambda: weakref().__is_valid_internal_implementation()) if self.can_cache_validity else None
 
     @property

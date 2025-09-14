@@ -4,7 +4,6 @@ import os
 from typing import TYPE_CHECKING
 
 import mylog
-from sysutils.lazy import BackgroundInitialingLazy
 from sysutils.typed import checked_cast, non_optional
 
 if TYPE_CHECKING:
@@ -19,7 +18,7 @@ if TYPE_CHECKING:
     from configuration.configuration_value import JapaneseConfig
     from note.collection.jp_collection import JPCollection
 
-_collection: BackgroundInitialingLazy[JPCollection] | None = None
+_collection: JPCollection | None = None
 
 _init_hooks: set[Callable[[], None]] = set()
 _collection_closed_hooks: set[Callable[[], None]] = set()
@@ -41,13 +40,14 @@ def _init(delay_seconds: float = 1.0) -> None:
     from aqt import mw
     from note.collection.jp_collection import JPCollection
     global _collection
-    if _collection and not _collection.try_cancel_scheduled_init():
-        return
-    _collection = BackgroundInitialingLazy(lambda: JPCollection(non_optional(mw.col)), delay_seconds=delay_seconds)
+    if _collection is not None:
+        _collection.reshchedule_init_for(delay_seconds)
+
+    _collection = JPCollection(non_optional(mw.col), delay_seconds)
     _call_init_hooks()
 
 def is_initialized() -> bool:
-    return _collection is not None and _collection.is_initialized()
+    return _collection is not None and _collection.is_initialized
 
 def reset(delay_seconds: float = 0) -> None:
     mylog.info(f"reset: delay= {delay_seconds}")
@@ -67,8 +67,8 @@ def _destruct() -> None:
     from sysutils.timeutil import StopWatch
     with StopWatch.log_warning_if_slower_than(0.2):
         global _collection
-        if _collection and not _collection.try_cancel_scheduled_init():
-            _collection.instance().destruct_sync()
+        if _collection is not None:
+            _collection.destruct_sync()
 
         _collection = None
 
@@ -103,11 +103,13 @@ def anki_config() -> ConfigManagerEx:
 def col() -> JPCollection:
     from sysutils.timeutil import StopWatch
     with StopWatch.log_warning_if_slower_than(0.01, "waiting_for_initialization"):
-        assert _collection
-        return _collection.instance()
+        if _collection is None: raise AssertionError("Collection not initialized")
+        return _collection
 
 def anki_collection() -> Collection: return col().anki_collection
+
 def anki_db() -> DBProxy: return non_optional(col().anki_collection.db)
+
 def anki_scheduler() -> Scheduler:
     from anki.scheduler.v3 import Scheduler  # pyright: ignore[reportMissingTypeStubs]
     return checked_cast(Scheduler, col().anki_collection.sched)
