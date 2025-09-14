@@ -31,38 +31,40 @@ if TYPE_CHECKING:
 @final
 class VocabMatch(Match, Slots):
     def __init__(self, word_variant: WeakRef[CandidateWordVariant], vocab: VocabNote) -> None:
-        self.weakref = WeakRef(self)
+        weakref: WeakRef[VocabMatch] = WeakRef(self)
+        self.requires_forbids = vocab.matching_configuration.requires_forbids
+        self.rules = vocab.matching_configuration.configurable_rules
         super().__init__(word_variant,
                          validity_requirements=[
-                             NotInState(AnotherMatchOwnsTheForm(self.weakref)),
+                             NotInState(AnotherMatchOwnsTheForm(weakref)),
                              # head requirements
-                             NotInState(PrefixIsIn(self.weakref, vocab.matching_configuration.configurable_rules.prefix_is_not.get()),
-                                        is_requirement_active=vocab.matching_configuration.configurable_rules.prefix_is_not.any()),
-                             InState(PrefixIsIn(self.weakref, vocab.matching_configuration.configurable_rules.required_prefix.get()),
-                                     is_requirement_active=vocab.matching_configuration.configurable_rules.required_prefix.any()),
-                             RequiresForbidsRequirement(IsSentenceStart(self.weakref), vocab.matching_configuration.requires_forbids.sentence_start),
-                             RequiresForbidsRequirement(HasTeFormStem(self.weakref), vocab.matching_configuration.requires_forbids.te_form_stem),
-                             RequiresForbidsRequirement(HasAStem(self.weakref), vocab.matching_configuration.requires_forbids.a_stem),
-                             RequiresForbidsRequirement(HasPastTenseStem(self.weakref), vocab.matching_configuration.requires_forbids.past_tense_stem),
-                             RequiresForbidsRequirement(HasEStem(self.weakref), vocab.matching_configuration.requires_forbids.e_stem),
+                             NotInState(PrefixIsIn(weakref, self.rules.prefix_is_not.get()),
+                                        is_requirement_active=self.rules.prefix_is_not.any()),
+                             InState(PrefixIsIn(weakref, self.rules.required_prefix.get()),
+                                     is_requirement_active=self.rules.required_prefix.any()),
+                             RequiresForbidsRequirement(IsSentenceStart(weakref), self.requires_forbids.sentence_start),
+                             RequiresForbidsRequirement(HasTeFormStem(weakref), self.requires_forbids.te_form_stem),
+                             RequiresForbidsRequirement(HasAStem(weakref), self.requires_forbids.a_stem),
+                             RequiresForbidsRequirement(HasPastTenseStem(weakref), self.requires_forbids.past_tense_stem),
+                             RequiresForbidsRequirement(HasEStem(weakref), self.requires_forbids.e_stem),
 
                              # tail requirements
-                             RequiresForbidsRequirement(IsSentenceEnd(self.weakref), vocab.matching_configuration.requires_forbids.sentence_end),
-                             NotInState(SuffixIsIn(self.weakref, vocab.matching_configuration.configurable_rules.suffix_is_not.get()),
-                                        is_requirement_active=vocab.matching_configuration.configurable_rules.suffix_is_not.any()),
+                             RequiresForbidsRequirement(IsSentenceEnd(weakref), self.requires_forbids.sentence_end),
+                             NotInState(SuffixIsIn(weakref, self.rules.suffix_is_not.get()),
+                                        is_requirement_active=self.rules.suffix_is_not.any()),
 
                              # misc requirements
-                             NotInState(IsPoisonWord(self.weakref)),
-                             RequiresForbidsRequirement(IsExactMatch(self.weakref), vocab.matching_configuration.requires_forbids.exact_match),
-                             RequiresForbidsRequirement(IsSingleToken(self.weakref), vocab.matching_configuration.requires_forbids.single_token),
-                             NotInState(SurfaceIsIn(self.weakref, vocab.matching_configuration.configurable_rules.surface_is_not.get()),
-                                        is_requirement_active=vocab.matching_configuration.configurable_rules.surface_is_not.any()),
-                             NotInState(SurfaceIsIn(self.weakref, vocab.matching_configuration.configurable_rules.yield_to_surface.get()),
-                                        is_requirement_active=vocab.matching_configuration.configurable_rules.yield_to_surface.any()),
+                             NotInState(IsPoisonWord(weakref)),
+                             RequiresForbidsRequirement(IsExactMatch(weakref), self.requires_forbids.exact_match),
+                             RequiresForbidsRequirement(IsSingleToken(weakref), self.requires_forbids.single_token),
+                             NotInState(SurfaceIsIn(weakref, self.rules.surface_is_not.get()),
+                                        is_requirement_active=self.rules.surface_is_not.any()),
+                             NotInState(SurfaceIsIn(weakref, self.rules.yield_to_surface.get()),
+                                        is_requirement_active=self.rules.yield_to_surface.any()),
                          ],
                          display_requirements=[
-                             NotInState(HasDisplayedOverlappingFollowingCompound(self.weakref),
-                                        is_requirement_active=vocab.matching_configuration.requires_forbids.yield_last_token.is_required)
+                             NotInState(HasDisplayedOverlappingFollowingCompound(weakref),
+                                        is_requirement_active=self.requires_forbids.yield_last_token.is_required)
                          ])
         self.vocab: VocabNote = vocab
         self.word_variant: WeakRef[CandidateWordVariant] = word_variant
@@ -89,13 +91,15 @@ class VocabMatch(Match, Slots):
     @property
     @override
     def start_index(self) -> int:
-        if (self.matching_configuration.bool_flags.question_overrides_form.is_set()
-                and self.matching_configuration.configurable_rules.required_prefix.any()):
-            matched_prefixes = [prefix for prefix in self.matching_configuration.configurable_rules.required_prefix.get()
-                                if self.parsed_form.startswith(prefix)]
-            if matched_prefixes:
-                matched_prefix_length = max(len(prefix) for prefix in matched_prefixes)
-                return super().start_index - matched_prefix_length
+        if self.matching_configuration.bool_flags.question_overrides_form.is_set():
+            if self.requires_forbids.a_stem.is_required or self.requires_forbids.e_stem.is_required:
+                return super().start_index - 1
+            if self.rules.required_prefix.any():
+                matched_prefixes = [prefix for prefix in self.rules.required_prefix.get()
+                                    if self.parsed_form.startswith(prefix)]
+                if matched_prefixes:
+                    matched_prefix_length = max(len(prefix) for prefix in matched_prefixes)
+                    return super().start_index - matched_prefix_length
 
         return super().start_index
 
