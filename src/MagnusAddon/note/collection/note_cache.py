@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING
 
 from autoslot import Slots
 from note.jpnote import JPNote
-from sysutils import app_thread_pool, progress_display_runner
 from sysutils.collections.default_dict_case_insensitive import DefaultDictCaseInsensitive
 from sysutils.timeutil import StopWatch
 from sysutils.typed import checked_cast
@@ -14,6 +13,7 @@ if TYPE_CHECKING:
 
     from anki.notes import Note, NoteId
     from note.collection.cache_runner import CacheRunner
+    from qt_utils.task_runner_progress_dialog import ITaskRunner
 
 class CachedNote(Slots):
     def __init__(self, note: JPNote) -> None:
@@ -22,7 +22,7 @@ class CachedNote(Slots):
         self.question: str = note.get_question()
 
 class NoteCache[TNote: JPNote, TSnapshot: CachedNote](Slots):
-    def __init__(self, all_notes: list[TNote], cached_note_type: type[TNote], cache_runner: CacheRunner) -> None:
+    def __init__(self, all_notes: list[TNote], cached_note_type: type[TNote], cache_runner: CacheRunner, task_runner: ITaskRunner) -> None:
         self._note_type: type[TNote] = cached_note_type
         self._by_question: DefaultDictCaseInsensitive[set[TNote]] = DefaultDictCaseInsensitive(set)
         self._by_id: dict[NoteId, TNote] = {}
@@ -35,10 +35,8 @@ class NoteCache[TNote: JPNote, TSnapshot: CachedNote](Slots):
         self._pending_add: list[Note] = []
 
         with StopWatch.log_execution_time(f"pushing {cached_note_type.__name__}s into cache"):
-            if app_thread_pool.current_is_ui_thread():
-                progress_display_runner.process_with_progress(all_notes, self._add_to_cache, f"Populating {all_notes[0].__class__.__name__} cache")
-            else:
-                for _note in all_notes: self._add_to_cache(_note)
+            if len(all_notes) > 0:
+                task_runner.process_with_progress(all_notes, self._add_to_cache, f"Pushing {all_notes[0].__class__.__name__} notes into cache")
 
         cache_runner.connect_merge_pending_adds(self._merge_pending_added_notes)
         cache_runner.connect_will_remove(self._on_will_be_removed)

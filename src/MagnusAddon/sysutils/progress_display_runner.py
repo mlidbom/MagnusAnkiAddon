@@ -46,6 +46,7 @@ def _create_spinning_progress_dialog(message: str) -> QProgressDialog:
     progress_dialog.setWindowModality(Qt.WindowModality.ApplicationModal)
     progress_dialog.setRange(0, 0)  # Indeterminate range for spinning effect
     progress_dialog.show()
+    QApplication.processEvents()
     return progress_dialog
 
 def process_with_progress[T](items: list[T], process_item: Callable[[T], None], message:str, allow_cancel: bool = True, display_delay_seconds: float = 0.0) -> None:

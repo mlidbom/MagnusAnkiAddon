@@ -9,6 +9,7 @@ if TYPE_CHECKING:
     from anki.collection import Collection
     from anki.notes import Note, NoteId
     from note.collection.cache_runner import CacheRunner
+    from qt_utils.task_runner_progress_dialog import ITaskRunner
 
 from note.collection.backend_facade import BackEndFacade
 from note.collection.note_cache import CachedNote, NoteCache
@@ -25,10 +26,10 @@ class _KanjiSnapshot(CachedNote, Slots):
         self.readings: set[str] = set(note.get_readings_clean())
 
 class _KanjiCache(NoteCache[KanjiNote, _KanjiSnapshot], Slots):
-    def __init__(self, all_kanji: list[KanjiNote], cache_runner: CacheRunner) -> None:
+    def __init__(self, all_kanji: list[KanjiNote], cache_runner: CacheRunner, task_runner: ITaskRunner) -> None:
         self._by_radical: dict[str, set[KanjiNote]] = defaultdict(set)
         self.by_reading: dict[str, set[KanjiNote]] = defaultdict(set)
-        super().__init__(all_kanji, KanjiNote, cache_runner)
+        super().__init__(all_kanji, KanjiNote, cache_runner, task_runner)
 
     @override
     def _create_snapshot(self, note: KanjiNote) -> _KanjiSnapshot: return _KanjiSnapshot(note)
@@ -46,10 +47,12 @@ class _KanjiCache(NoteCache[KanjiNote, _KanjiSnapshot], Slots):
     def with_radical(self, radical: str) -> list[KanjiNote]: return list(self._by_radical[radical])
 
 class KanjiCollection(Slots):
-    def __init__(self, collection: Collection, cache_manager: CacheRunner) -> None:
+    def __init__(self, collection: Collection, cache_manager: CacheRunner, task_runner: ITaskRunner) -> None:
         def kanji_constructor(note: Note) -> KanjiNote: return KanjiNote(note)
         self.collection: BackEndFacade[KanjiNote] = BackEndFacade[KanjiNote](collection, kanji_constructor, NoteTypes.Kanji)
-        self._cache: _KanjiCache = _KanjiCache(list(self.collection.all()), cache_manager)
+        task_runner.set_label_text("Loading kanji notes from Anki db")
+        all_kanji = list(self.collection.all())
+        self._cache: _KanjiCache = _KanjiCache(all_kanji, cache_manager, task_runner)
 
     def search(self, query: str) -> list[KanjiNote]:
         return list(self.collection.search(query))

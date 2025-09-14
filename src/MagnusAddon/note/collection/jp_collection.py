@@ -12,6 +12,7 @@ from note.collection.sentence_collection import SentenceCollection
 from note.collection.vocab_collection import VocabCollection
 from note.jpnote import JPNote
 from note.note_constants import CardTypes, Mine
+from qt_utils.task_runner_progress_dialog import TaskRunner, ITaskRunner
 from sysutils import app_thread_pool, progress_display_runner
 from sysutils.timeutil import StopWatch
 from sysutils.typed import non_optional
@@ -68,33 +69,34 @@ class JPCollection(WeakRefable, Slots):
         app.get_ui_utils().tool_tip(f"{Mine.app_name} loading", 60000)
         stopwatch = StopWatch()
         with StopWatch.log_warning_if_slower_than(5, "Full collection setup"):
+            task_runner = TaskRunner.create(f"Loading {Mine.app_name}", "reading notes from anki", not app.is_testing() and app.config().load_studio_in_foreground.get_value())
             if not app.is_testing() and not JPCollection._is_inital_load:
+                task_runner.set_label_text("Running garbage collection")
                 self._instance_tracker.run_gc_if_multiple_instances_and_assert_single_instance_after_gc()
                 app.get_ui_utils().tool_tip(f"{Mine.app_name} loading", 60000)
 
             with StopWatch.log_warning_if_slower_than(5, "Core collection setup - no gc"):
                 self._cache_runner = CacheRunner(self.anki_collection)
 
-                dialog = progress_display_runner.open_spinning_progress_dialog("Loading collections") if app.config().load_studio_in_foreground.get_value() else None
-                self._vocab = VocabCollection(self.anki_collection, self._cache_runner)
-                self._kanji = KanjiCollection(self.anki_collection, self._cache_runner)
-                self._sentences = SentenceCollection(self.anki_collection, self._cache_runner)
-                if dialog is not None: dialog.close()
-
-            if not app.is_testing() and not JPCollection._is_inital_load:
-                self._instance_tracker.run_gc_if_multiple_instances_and_assert_single_instance_after_gc()
+                self._vocab = VocabCollection(self.anki_collection, self._cache_runner, task_runner)
+                self._kanji = KanjiCollection(self.anki_collection, self._cache_runner, task_runner)
+                self._sentences = SentenceCollection(self.anki_collection, self._cache_runner, task_runner)
 
             self._cache_runner.start()
 
             self._is_initialized = True
-            JPCollection._is_inital_load = False
 
             if app.config().run_additional_pre_caching.get_value():
                 if app.config().run_any_additional_pre_caching_on_background_thread.get_value():
                     self._populate_additional_caches_on_background_thread()
                 else:
-                    self.populate_additional_caches()
+                    self.populate_additional_caches(task_runner)
 
+            if not app.is_testing() and not JPCollection._is_inital_load:
+                self._instance_tracker.run_gc_if_multiple_instances_and_assert_single_instance_after_gc()
+
+            JPCollection._is_inital_load = False
+            task_runner.close()
             app.get_ui_utils().tool_tip(f"{Mine.app_name} done loading in {str(stopwatch.elapsed_seconds())[0:4]} seconds.", milliseconds=6000)
 
     @property
@@ -108,13 +110,11 @@ class JPCollection(WeakRefable, Slots):
     @property
     def sentences(self) -> SentenceCollection: return non_optional(self._initialized_self()._sentences)
 
-    def populate_additional_caches(self) -> None:
+    def populate_additional_caches(self, task_runner: ITaskRunner) -> None:
         if not self._is_initialized: return
         from language_services.jamdict_ex.dict_lookup import DictLookup
-        dialog = progress_display_runner.open_spinning_progress_dialog("Loading dictionary lookup cache")
         DictLookup.ensure_loaded_into_memory()
-        dialog.close()
-
+        progress_display_runner.open_spinning_progress_dialog("Loading dictionary lookup cache")
         with StopWatch.log_execution_time("Populating studying status cache"):
             def cache_note_studying_status(note_to_cache: JPNote) -> None:
                 note_to_cache.is_studying(CardTypes.reading)
@@ -123,12 +123,12 @@ class JPCollection(WeakRefable, Slots):
             notes_to_cache: list[JPNote] = list(self.vocab.all() + self.kanji.all() + self.sentences.all())
 
             if app_thread_pool.current_is_ui_thread():
-                progress_display_runner.process_with_progress(notes_to_cache, cache_note_studying_status, "Populating studying status cache")
+                task_runner.process_with_progress(notes_to_cache, cache_note_studying_status, "Populating studying status cache")
             else:
                 for note in notes_to_cache: cache_note_studying_status(note)
 
     def _populate_additional_caches_on_background_thread(self) -> None:
-        app_thread_pool.pool.submit(self.populate_additional_caches)
+        app_thread_pool.pool.submit(lambda: self.populate_additional_caches(TaskRunner.invisible()))
 
     @classmethod
     def note_from_note_id(cls, note_id: NoteId) -> JPNote:

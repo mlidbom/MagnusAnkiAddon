@@ -1,13 +1,18 @@
 from __future__ import annotations
 
+import gc
+
 import mylog
 from ankiutils import app
 from sysutils import app_thread_pool
 
 
-def collect_on_on_ui_thread_if_collection_during_batches_enabled() -> bool:
+def collect_on_on_ui_thread_if_collection_during_batches_enabled(display: bool = True) -> bool:
     if app.config().enable_garbage_collection_during_batches.get_value():
-        collect_on_ui_thread_and_display_message()
+        if display:
+            collect_on_ui_thread_and_display_message()
+        else:
+            app_thread_pool.run_on_ui_thread_synchronously(lambda : gc.collect())
         return True
 
     return False

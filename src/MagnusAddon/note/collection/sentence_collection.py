@@ -15,6 +15,7 @@ if TYPE_CHECKING:
     from anki.notes import Note, NoteId
     from note.collection.cache_runner import CacheRunner
     from note.vocabulary.vocabnote import VocabNote
+    from qt_utils.task_runner_progress_dialog import ITaskRunner
 
 class _SentenceSnapshot(CachedNote, Slots):
     def __init__(self, note: SentenceNote) -> None:
@@ -24,11 +25,11 @@ class _SentenceSnapshot(CachedNote, Slots):
         self.user_highlighted_vocab: set[str] = set(note.configuration.highlighted_words())
 
 class _SentenceCache(NoteCache[SentenceNote, _SentenceSnapshot], Slots):
-    def __init__(self, all_kanji: list[SentenceNote], cache_runner: CacheRunner) -> None:
+    def __init__(self, all_kanji: list[SentenceNote], cache_runner: CacheRunner, task_runner: ITaskRunner) -> None:
         self._by_vocab_form: dict[str, set[SentenceNote]] = defaultdict(set)
         self._by_user_highlighted_vocab: dict[str, set[SentenceNote]] = defaultdict(set)
         self._by_vocab_id: dict[int, set[SentenceNote]] = defaultdict(set)
-        super().__init__(all_kanji, SentenceNote, cache_runner)
+        super().__init__(all_kanji, SentenceNote, cache_runner, task_runner)
 
     @override
     def _create_snapshot(self, note: SentenceNote) -> _SentenceSnapshot: return _SentenceSnapshot(note)
@@ -50,10 +51,12 @@ class _SentenceCache(NoteCache[SentenceNote, _SentenceSnapshot], Slots):
         for vocab_id in snapshot.detected_vocab: self._by_vocab_id[vocab_id].add(note)
 
 class SentenceCollection(Slots):
-    def __init__(self, collection: Collection, cache_manager: CacheRunner) -> None:
+    def __init__(self, collection: Collection, cache_manager: CacheRunner, task_runner: ITaskRunner) -> None:
         def sentence_constructor(note: Note) -> SentenceNote: return SentenceNote(note)
         self.collection: BackEndFacade[SentenceNote] = BackEndFacade[SentenceNote](collection, sentence_constructor, NoteTypes.Sentence)
-        self._cache: _SentenceCache = _SentenceCache(list(self.collection.all()), cache_manager)
+        task_runner.set_label_text("Loading Sentence notes from Anki db")
+        all_sentences = list(self.collection.all())
+        self._cache: _SentenceCache = _SentenceCache(all_sentences, cache_manager, task_runner)
 
     def all(self) -> list[SentenceNote]: return self._cache.all()
 

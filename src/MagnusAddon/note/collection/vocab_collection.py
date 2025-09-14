@@ -15,6 +15,7 @@ if TYPE_CHECKING:
     from anki.notes import Note, NoteId
     from note.collection.cache_runner import CacheRunner
     from note.kanjinote import KanjiNote
+    from qt_utils.task_runner_progress_dialog import ITaskRunner
 
 class _VocabSnapshot(CachedNote, Slots):
     def __init__(self, note: VocabNote) -> None:
@@ -28,7 +29,7 @@ class _VocabSnapshot(CachedNote, Slots):
         self.stems: list[str] = note.conjugator.get_stems_for_primary_form()
 
 class _VocabCache(NoteCache[VocabNote, _VocabSnapshot], Slots):
-    def __init__(self, all_vocab: list[VocabNote], cache_runner: CacheRunner) -> None:
+    def __init__(self, all_vocab: list[VocabNote], cache_runner: CacheRunner, task_runner: ITaskRunner) -> None:
         self._by_form: dict[str, set[VocabNote]] = defaultdict(set)
         self._by_kanji_in_main_form: dict[str, set[VocabNote]] = defaultdict(set)
         self._by_kanji_in_any_form: dict[str, set[VocabNote]] = defaultdict(set)
@@ -36,7 +37,7 @@ class _VocabCache(NoteCache[VocabNote, _VocabSnapshot], Slots):
         self._by_derived_from: dict[str, set[VocabNote]] = defaultdict(set)
         self._by_reading: dict[str, set[VocabNote]] = defaultdict(set)
         self._by_stem: dict[str, set[VocabNote]] = defaultdict(set)
-        super().__init__(all_vocab, VocabNote, cache_runner)
+        super().__init__(all_vocab, VocabNote, cache_runner, task_runner)
 
     def with_form(self, form: str) -> list[VocabNote]: return list(self._by_form[form]) if form in self._by_form else []
 
@@ -85,10 +86,12 @@ class _VocabCache(NoteCache[VocabNote, _VocabSnapshot], Slots):
         for stem in snapshot.stems: self._by_stem[stem].add(note)
 
 class VocabCollection(Slots):
-    def __init__(self, collection: Collection, cache_manager: CacheRunner) -> None:
+    def __init__(self, collection: Collection, cache_manager: CacheRunner, task_runner: ITaskRunner) -> None:
         def vocab_constructor(note: Note) -> VocabNote: return VocabNote(note)
         self.collection:BackEndFacade[VocabNote] = BackEndFacade[VocabNote](collection, vocab_constructor, NoteTypes.Vocab)
-        self._cache: _VocabCache = _VocabCache(list(self.collection.all()), cache_manager)
+        task_runner.set_label_text("Loading Vocabulary notes from Anki db")
+        all_vocab = list(self.collection.all())
+        self._cache: _VocabCache = _VocabCache(all_vocab, cache_manager, task_runner)
 
     def search(self, query: str) -> list[VocabNote]: return list(self.collection.search(query))
 
