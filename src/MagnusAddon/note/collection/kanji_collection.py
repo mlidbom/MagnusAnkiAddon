@@ -3,7 +3,6 @@ from __future__ import annotations
 from collections import defaultdict
 from typing import TYPE_CHECKING, final, override
 
-from anki_extentions.note_ex import NoteBulkLoader
 from autoslot import Slots
 
 if TYPE_CHECKING:
@@ -51,7 +50,7 @@ class KanjiCollection(Slots):
     def __init__(self, collection: Collection, cache_manager: CacheRunner, task_runner: ITaskRunner) -> None:
         def kanji_constructor(note: Note) -> KanjiNote: return KanjiNote(note)
         self.collection: BackEndFacade[KanjiNote] = BackEndFacade[KanjiNote](collection, kanji_constructor, NoteTypes.Kanji)
-        all_kanji = self.collection.all(task_runner, NoteTypes.Kanji)
+        all_kanji = self.collection.all(task_runner)
         self._cache: _KanjiCache = _KanjiCache(all_kanji, cache_manager, task_runner)
 
     def search(self, query: str) -> list[KanjiNote]:
@@ -59,9 +58,8 @@ class KanjiCollection(Slots):
 
     def all(self) -> list[KanjiNote]: return self._cache.all()
 
-    def batch_all(self) -> list[KanjiNote]:
-        backend_notes = NoteBulkLoader.load_all_notes_of_type(self.collection.anki_collection, NoteTypes.Kanji)
-        return [KanjiNote(backend_note) for backend_note in backend_notes]
+    def all_old(self, task_runner: ITaskRunner) -> list[KanjiNote]:
+        return self.collection.all_old(task_runner)
 
     def with_id_or_none(self, note_id:NoteId) -> KanjiNote | None:
         return self._cache.with_id_or_none(note_id)

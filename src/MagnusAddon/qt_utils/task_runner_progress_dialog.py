@@ -3,11 +3,13 @@ from __future__ import annotations
 import time
 from typing import TYPE_CHECKING, override
 
+import mylog
 from aqt import QLabel
 from autoslot import Slots
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication, QProgressDialog
 from sysutils import timeutil
+from sysutils.timeutil import StopWatch
 from sysutils.typed import non_optional
 
 if TYPE_CHECKING:
@@ -35,7 +37,11 @@ class InvisibleTaskRunner(ITaskRunner, Slots):
 
     @override
     def process_with_progress[TInput, TOutput](self, items: list[TInput], process_item: Callable[[TInput], TOutput], message: str) -> list[TOutput]:
-        return [process_item(item) for item in items]
+        result = [process_item(item) for item in items]
+        total_items = len(items)
+        watch = StopWatch()
+        mylog.info(f"##--InvisibleTaskRunner--## Finished {message} in {watch.elapsed_formatted()} handled {total_items} items")
+        return result
     @override
     def set_label_text(self, text: str) -> None: pass
     @override
@@ -62,9 +68,10 @@ class QtTaskProgressRunner(ITaskRunner, Slots):
     @override
     def process_with_progress[TInput, TOutput](self, items: list[TInput], process_item: Callable[[TInput], TOutput], message: str) -> list[TOutput]:
         total_items = len(items)
+        watch = StopWatch()
         start_time = time.time()
         results: list[TOutput] = []
-        self.dialog.setRange(0, total_items + 1) # add one to keep the dialog open
+        self.dialog.setRange(0, total_items + 1)  # add one to keep the dialog open
         original_label = self.dialog.labelText()
         self.set_label_text(f"{message} 0 of {total_items} Remaining: ??")
 
@@ -82,6 +89,8 @@ class QtTaskProgressRunner(ITaskRunner, Slots):
                     self.set_label_text(f"{message} {current_item} of {total_items} Remaining: {timeutil.format_seconds_as_hh_mm_ss(estimated_remaining_time)}")
 
                 QApplication.processEvents()
+
+        mylog.info(f"##--QtTaskProgressRunner--## Finished {message} in {watch.elapsed_formatted()} handled {total_items} items")
 
         self.dialog.setRange(0, 0)
         self.set_label_text(original_label)

@@ -4,17 +4,17 @@ from typing import TYPE_CHECKING
 
 from anki.models import FieldDict, NotetypeDict, NotetypeId
 from anki.notes import Note, NoteId
-from ankiutils import app
 from sysutils import typed
 from sysutils.typed import non_optional
 
 if TYPE_CHECKING:
     from anki.collection import Collection
     from anki.dbproxy import Row
+    from qt_utils.task_runner_progress_dialog import ITaskRunner
 
 class NoteBulkLoader:
     @staticmethod
-    def load_all_notes_of_type(col: Collection, note_type_name: str) -> list[Note]:
+    def load_all_notes_of_type(col: Collection, note_type_name: str, task_runner: ITaskRunner) -> list[Note]:
         note_type: NotetypeDict = typed.non_optional(col.models.by_name(note_type_name))
         field_map: dict[str, tuple[int, FieldDict]] = col.models.field_map(non_optional(note_type))
         field_count = len(note_type["flds"])
@@ -33,9 +33,12 @@ class NoteBulkLoader:
                 WHERE notetypes.name COLLATE NOCASE = ?
                 """
 
-        rows = app.anki_db().all(query, note_type_name)
+        rows = non_optional(col.db).all(query, note_type_name)
 
-        return [NoteBulkLoader._NoteEx(col_weak_ref, row, field_map, field_count) for row in rows]
+        def note_bulkloader_note_constructor(row: Row) -> Note:
+            return NoteBulkLoader._NoteEx(col_weak_ref, row, field_map, field_count)
+
+        return task_runner.process_with_progress(rows, note_bulkloader_note_constructor, f"Loading {note_type_name} notes from Anki db")
 
     class _NoteEx(Note):
         def __init__(self, collection_weak_ref: Collection, db_row: Row, field_map: dict[str, tuple[int, FieldDict]], field_count: int) -> None:

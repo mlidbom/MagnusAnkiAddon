@@ -90,7 +90,7 @@ class VocabCollection(Slots):
     def __init__(self, collection: Collection, cache_manager: CacheRunner, task_runner: ITaskRunner) -> None:
         def vocab_constructor(note: Note) -> VocabNote: return VocabNote(note)
         self.collection:BackEndFacade[VocabNote] = BackEndFacade[VocabNote](collection, vocab_constructor, NoteTypes.Vocab)
-        all_vocab = self.collection.all(task_runner, NoteTypes.Vocab)
+        all_vocab = self.collection.all(task_runner)
         self._cache: _VocabCache = _VocabCache(all_vocab, cache_manager, task_runner)
 
     def search(self, query: str) -> list[VocabNote]: return list(self.collection.search(query))
@@ -98,8 +98,8 @@ class VocabCollection(Slots):
     def all_wani(self) -> list[VocabNote]:
         return [vocab for vocab in self.all() if vocab.is_wani_note()]
 
-    def batch_all(self) -> list[VocabNote]:
-        backend_notes = NoteBulkLoader.load_all_notes_of_type(self.collection.anki_collection, NoteTypes.Vocab)
+    def all_old(self, task_runner: ITaskRunner) -> list[VocabNote]:
+        backend_notes = NoteBulkLoader.load_all_notes_of_type(self.collection.anki_collection, NoteTypes.Vocab, task_runner)
         return [VocabNote(backend_note) for backend_note in backend_notes]
 
     def is_word(self, form: str) -> bool: return any(self._cache.with_form(form))

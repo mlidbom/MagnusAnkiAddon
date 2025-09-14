@@ -7,6 +7,7 @@ from ankiutils import app
 from fixtures.collection_factory import inject_anki_collection_with_all_sample_data
 from fixtures.stub_factory import stub_ui_dependencies
 from note.collection.jp_collection import JPCollection
+from qt_utils.task_runner_progress_dialog import TaskRunner
 
 if TYPE_CHECKING:
     from collections.abc import Iterator, Sequence
@@ -46,8 +47,10 @@ def test_batch_loading_all_notes() -> None:
 
     new_collection = JPCollection(app.anki_collection())
 
-    assert_all_notes_equal(new_collection.kanji.all(), new_collection.kanji.batch_all())
-    assert_all_notes_equal(new_collection.sentences.all(), new_collection.sentences.batch_all())
-    assert_all_notes_equal(new_collection.vocab.all(), new_collection.vocab.batch_all())
+    task_runner = TaskRunner.invisible()
+
+    assert_all_notes_equal(new_collection.kanji.all(), new_collection.kanji.all_old(task_runner))
+    assert_all_notes_equal(new_collection.sentences.all(), new_collection.sentences.all_old(task_runner))
+    assert_all_notes_equal(new_collection.vocab.all(), new_collection.vocab.all_old(task_runner))
 
     new_collection.destruct_sync()
