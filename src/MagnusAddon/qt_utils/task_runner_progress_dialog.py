@@ -3,10 +3,12 @@ from __future__ import annotations
 import time
 from typing import TYPE_CHECKING, override
 
+from aqt import QLabel
 from autoslot import Slots
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication, QProgressDialog
 from sysutils import timeutil
+from sysutils.typed import non_optional
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -41,13 +43,15 @@ class InvisibleTaskRunner(ITaskRunner, Slots):
 
 class QtTaskProgressRunner(ITaskRunner, Slots):
     def __init__(self, window_title: str, label_text: str) -> None:
-        self.dialog: QProgressDialog = QProgressDialog(f"""{window_title}...""", None, 0, 0)
-        self.dialog.setWindowTitle(f"""{window_title}""")
-        self.dialog.setFixedWidth(600)
-        self.dialog.setWindowModality(Qt.WindowModality.ApplicationModal)
+        dialog = QProgressDialog(f"""{window_title}...""", None, 0, 0)
+        self.dialog: QProgressDialog = dialog
+        dialog.setWindowTitle(f"""{window_title}""")
+        dialog.setFixedWidth(600)
+        non_optional(dialog.findChild(QLabel)).setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
+        dialog.setWindowModality(Qt.WindowModality.ApplicationModal)
+        dialog.setRange(0, 0)  # Indeterminate range for spinning effect
         self.set_label_text(label_text)
-        self.dialog.setRange(0, 0)  # Indeterminate range for spinning effect
-        self.dialog.show()
+        dialog.show()
         QApplication.processEvents()
 
     @override

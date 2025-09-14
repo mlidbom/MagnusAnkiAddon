@@ -78,8 +78,8 @@ class JPCollection(WeakRefable, Slots):
             with StopWatch.log_warning_if_slower_than(5, "Core collection setup - no gc"):
                 self._cache_runner = CacheRunner(self.anki_collection)
 
-                self._vocab = VocabCollection(self.anki_collection, self._cache_runner, task_runner)
                 self._kanji = KanjiCollection(self.anki_collection, self._cache_runner, task_runner)
+                self._vocab = VocabCollection(self.anki_collection, self._cache_runner, task_runner)
                 self._sentences = SentenceCollection(self.anki_collection, self._cache_runner, task_runner)
 
             self._cache_runner.start()
