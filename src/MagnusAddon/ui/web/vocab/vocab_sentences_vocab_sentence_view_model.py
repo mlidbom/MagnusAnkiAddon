@@ -62,28 +62,16 @@ class VocabSentenceViewModel(Slots):
             return f"""{head}<span class="vocabInContext {class_name}">{hit_range}</span>{tail}"""
 
         def highlight_shaded_match(match: VocabSentenceMatchViewModel, shaded_by: ParsedMatch, match_class: str, shaded_by_class: str) -> str:
-            if shaded_by.end_index < match.end_index:
-                shading_head = result.sentence[:shaded_by.start_index]
-                shading_range = result.sentence[shaded_by.start_index:match.start_index]
-                match_range = result.sentence[match.start_index:match.end_index]
-                tail = result.sentence[max(shaded_by.end_index, match.end_index):]
-                formatted_match = f"""<span class="vocabInContext {match_class}">{match_range}</span>"""
-                return f"""{shading_head}<span class="vocabInContext {shaded_by_class}">{shading_range}{formatted_match}</span>{tail}"""
-            else:  # noqa: RET505
-                shading_head = result.sentence[:shaded_by.start_index]
-                shading_pre_range = result.sentence[shaded_by.start_index:match.start_index]
-                match_range = result.sentence[match.start_index:match.end_index]
-                shading_post_range = result.sentence[match.end_index:shaded_by.end_index]
-                tail = result.sentence[shaded_by.end_index:]
-                formatted_match = f"""<span class="vocabInContext {match_class}">{match_range}</span>"""
-                return f"""{shading_head}<span class="vocabInContext {shaded_by_class}">{shading_pre_range}{formatted_match}{shading_post_range}</span>{tail}"""
-
-        def highlight_yielded_to_match(match: VocabSentenceMatchViewModel, yielded_to: ParsedMatch, yielded_to_class: str, match_class: str) -> str:
-            match_head = result.sentence[:match.start_index]
-            match_range = result.sentence[match.start_index:yielded_to.start_index]
-            yielded_to_range = result.sentence[yielded_to.start_index:yielded_to.end_index]
-            yielded_to_tail = result.sentence[yielded_to.end_index:]
-            return f"""{match_head}<span class="vocabInContext {match_class}">{match_range}</span><span class="vocabInContext {yielded_to_class}">{yielded_to_range}</span>{yielded_to_tail}"""
+            head = result.sentence[:min(shaded_by.start_index, match.start_index)]
+            shading_pre_range = result.sentence[shaded_by.start_index:match.start_index]
+            match_range = result.sentence[match.start_index:match.end_index]
+            shading_post_range = result.sentence[match.end_index:shaded_by.end_index]
+            tail = result.sentence[max(shaded_by.end_index, match.end_index):]
+            return "".join([head,
+                            f"""<span class="vocabInContext {shaded_by_class}">{shading_pre_range}</span>""",
+                            f"""<span class="vocabInContext {match_class}">{match_range}</span>""",
+                            f"""<span class="vocabInContext {shaded_by_class}">{shading_post_range}</span>""",
+                            tail])
 
         match_class = "primary" if self.prioritized_match.is_primary_form_of(self.vocab) else "secondary"
         if self.prioritized_match.is_displayed:
@@ -91,7 +79,7 @@ class VocabSentenceViewModel(Slots):
 
         match_yielded_to = self.prioritized_match.yields_to
         if match_yielded_to:
-            return highlight_yielded_to_match(self.prioritized_match, match_yielded_to, f"{match_class}Form yieldedMatch", "yieldedToMatch")
+            return highlight_shaded_match(self.prioritized_match, match_yielded_to, f"{match_class}Form yieldedMatch", "yieldedToMatch")
 
         match_shading_our_match = self.prioritized_match.shaded_by
         if not match_shading_our_match: raise AssertionError("This should never happen")
