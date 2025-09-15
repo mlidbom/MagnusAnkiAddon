@@ -13,12 +13,8 @@ if TYPE_CHECKING:
 class RequiresForbidsRequirement(MatchRequirement, Slots):
     def __init__(self, state_test: MatchStateTest, requires_forbids: RequireForbidFlagField) -> None:
         super().__init__(state_test)
-        self.requires_forbids: RequireForbidFlagField = requires_forbids
-
-    @property
-    def is_required(self) -> bool: return self.requires_forbids.is_required
-    @property
-    def is_forbidden(self) -> bool: return self.requires_forbids.is_forbidden
+        self.is_required = requires_forbids.is_required
+        self.is_forbidden = requires_forbids.is_forbidden
 
     @property
     @override
