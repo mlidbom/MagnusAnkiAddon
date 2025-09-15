@@ -117,10 +117,7 @@ class LFrozenSet[TItem](frozenset[TItem], LIterable[TItem]):
     @override
     def _value(self) -> Iterable[TItem]: return self
 
-class LSequence[TItem](Sequence[TItem], LIterable[TItem]):
-    pass
-
-class LList[TItem](list[TItem], LSequence[TItem]):  # pyright: ignore [reportIncompatibleMethodOverride] things break in fascinating ways unless list is inherited first. I'm pretty sure list implements Sequence correctly...
+class LList[TItem](list[TItem], LIterable[TItem]):
     def __init__(self, iterable: Iterable[TItem]) -> None:
         list.__init__(self, iterable)
 
