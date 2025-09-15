@@ -50,7 +50,10 @@ class InvisibleTaskRunner(ITaskRunner, Slots):
     def close(self) -> None: pass
     @override
     def run_on_background_thread_with_spinning_progress_dialog[TResult](self, message: str, action: Callable[[], TResult]) -> TResult:  # pyright: ignore
-        return action()
+        watch = StopWatch()
+        result = action()
+        mylog.info(f"##--QtTaskProgressRunner--## Finished {message} in {watch.elapsed_formatted()}")
+        return result
 
 class QtTaskProgressRunner(ITaskRunner, Slots):
     def __init__(self, window_title: str, label_text: str) -> None:
@@ -75,6 +78,7 @@ class QtTaskProgressRunner(ITaskRunner, Slots):
 
     @override
     def run_on_background_thread_with_spinning_progress_dialog[TResult](self, message: str, action: Callable[[], TResult]) -> TResult:
+        watch = StopWatch()
         self._set_spinning_with_message(message)
 
         future = app_thread_pool.pool.submit(action)
@@ -83,6 +87,7 @@ class QtTaskProgressRunner(ITaskRunner, Slots):
             QApplication.processEvents()
             ex_thread.sleep_ex(0.05)
 
+        mylog.info(f"##--QtTaskProgressRunner--## Finished {message} in {watch.elapsed_formatted()}")
         return future.result()
 
     @override
