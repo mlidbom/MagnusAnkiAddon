@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING
 from autoslot import Slots
 from note.jpnote import JPNote
 from sysutils.collections.default_dict_case_insensitive import DefaultDictCaseInsensitive
-from sysutils.timeutil import StopWatch
 from sysutils.typed import checked_cast
 
 if TYPE_CHECKING:
@@ -34,9 +33,8 @@ class NoteCache[TNote: JPNote, TSnapshot: CachedNote](Slots):
         self._flushing: bool = False
         self._pending_add: list[Note] = []
 
-        with StopWatch.log_execution_time(f"pushing {cached_note_type.__name__}s into cache"):
-            if len(all_notes) > 0:
-                task_runner.process_with_progress(all_notes, self._add_to_cache, f"Pushing {all_notes[0].__class__.__name__} notes into cache")
+        if len(all_notes) > 0:
+            task_runner.process_with_progress(all_notes, self._add_to_cache, f"Pushing {all_notes[0].__class__.__name__} notes into cache")
 
         cache_runner.connect_merge_pending_adds(self._merge_pending_added_notes)
         cache_runner.connect_will_remove(self._on_will_be_removed)

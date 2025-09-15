@@ -41,11 +41,10 @@ class JamdictThreadingWrapper(Slots):
 
     @staticmethod
     def create_jamdict_and_log_loading_time() -> Jamdict:
-        if app.config().load_jamdict_db_into_memory.get_value() and not app.is_testing:
-            with StopWatch.log_execution_time("Loading Jamdict into memory"):
-                jamdict = Jamdict(memory_mode=True)
-        else:
-            jamdict = Jamdict(reuse_ctx=True)
+        jamdict = Jamdict(memory_mode=True) \
+            if (app.config().load_jamdict_db_into_memory.get_value()
+                and not app.is_testing) \
+            else Jamdict(reuse_ctx=True)
         jamdict.lookup("俺", lookup_chars=False, lookup_ne=True)  # pyright: ignore[reportUnknownMemberType]
         return jamdict
 
