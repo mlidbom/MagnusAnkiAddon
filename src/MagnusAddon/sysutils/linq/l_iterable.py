@@ -15,9 +15,6 @@ class LIterable[TItem](Iterable[TItem]):
     @property
     def _value(self) -> Iterable[TItem]: raise NotImplementedError()
 
-    def __iter__(self) -> Iterator[TItem]:
-        yield from self._value
-
     # region filtering
     def where(self, predicate: Callable[[TItem], bool]) -> LIterable[TItem]:
         return _LIterable(item for item in self._value if predicate(item))
@@ -104,6 +101,9 @@ class _LIterable[TItem](LIterable[TItem]):
     @override
     def _value(self) -> Iterable[TItem]: return self.__value
 
+    @override
+    def __iter__(self) -> Iterator[TItem]: yield from self._value
+
 class LFrozenSet[TItem](frozenset[TItem], LIterable[TItem]):
     def __new__(cls, iterable: Iterable[TItem]) -> LFrozenSet[TItem]:
         return super().__new__(cls, iterable)
@@ -125,6 +125,7 @@ class LList[TItem](list[TItem], LSequence[TItem]):  # pyright: ignore [reportInc
 
     @override
     def to_list(self) -> LList[TItem]: return self
+
 
 class LSet[TItem](set[TItem], LIterable[TItem]):
     def __init__(self, iterable: Iterable[TItem]) -> None:
