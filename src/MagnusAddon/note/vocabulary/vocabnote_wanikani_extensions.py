@@ -6,7 +6,6 @@ from anki.notes import Note
 from ankiutils import app
 from autoslot import Slots
 from note.note_constants import NoteFields, NoteTypes, Tags
-from note.notefields.comma_separated_strings_set_field import CommaSeparatedStringsSetField
 from note.notefields.mutable_string_field import MutableStringField
 
 if typing.TYPE_CHECKING:
