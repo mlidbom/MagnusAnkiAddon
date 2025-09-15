@@ -10,7 +10,6 @@ from note.notefields.require_forbid_flag_field import RequireForbidFlagField
 from note.notefields.tag_flag_field import TagFlagField
 from note.vocabulary.serialization.matching_rules_serializer import VocabNoteMatchingRulesSerializer
 from note.vocabulary.vocabnote_matching_rules_is_inflecting_word import IsInflectingWord
-from note.vocabulary.vocabnote_matching_rules_question_overrides_form import QuestionOverridesForm
 from note.vocabulary.vocabnote_matching_rules_yield_last_token_to_next_compound import YieldLastTokenToOverlappingCompound
 from sysutils.debug_repr_builder import SkipFalsyValuesDebugReprBuilder
 from sysutils.lazy import Lazy
@@ -71,7 +70,7 @@ class VocabMatchingRulesConfigurationBoolFlags(Slots):
         self.is_inflecting_word: IsInflectingWord = IsInflectingWord(vocab)
         self.is_poison_word: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.is_poison_word)
         self.match_with_preceding_vowel: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.Todo.with_preceding_vowel)
-        self.question_overrides_form: QuestionOverridesForm = QuestionOverridesForm(vocab)
+        self.question_overrides_form: TagFlagField = TagFlagField(vocab, Tags.Vocab.question_overrides_form)
 
 class VocabNoteMatchingConfiguration(WeakRefable, Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
