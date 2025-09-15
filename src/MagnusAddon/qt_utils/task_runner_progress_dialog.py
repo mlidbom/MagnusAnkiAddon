@@ -15,46 +15,11 @@ from sysutils.typed import non_optional
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-class Closable(Slots):
-    def __init__(self, close_action: Callable[[], None]) -> None:
-        self.close_action: Callable[[], None] = close_action
-
-    def close(self) -> None: self.close_action()
-
-def run_on_background_thread_with_spinning_progress_dialog(message: str, action: Callable[[], object]) -> None:
-    dialog = _create_spinning_progress_dialog(message)
-
-    future = app_thread_pool.pool.submit(action)
-
-    while not future.done():
-        QApplication.processEvents()
-        ex_thread.sleep_ex(0.1)
-
-    dialog.close()
-
-def open_spinning_progress_dialog(message: str) -> Closable:
-    progress_dialog = _create_spinning_progress_dialog(message)
-    QApplication.processEvents()
-
-    def close() -> None:
-        progress_dialog.close()
-
-    return Closable(close)
-
-def _create_spinning_progress_dialog(message: str) -> QProgressDialog:
-    progress_dialog = QProgressDialog(f"{message}", None, 0, 0)
-    progress_dialog.setWindowTitle(f"{message}")
-    progress_dialog.setWindowModality(Qt.WindowModality.ApplicationModal)
-    progress_dialog.setRange(0, 0)  # Indeterminate range for spinning effect
-    progress_dialog.show()
-    QApplication.processEvents()
-    return progress_dialog
-
 class ITaskRunner:
     def process_with_progress[TInput, TOutput](self, items: list[TInput], process_item: Callable[[TInput], TOutput], message: str) -> list[TOutput]: raise NotImplementedError()  # pyright: ignore
     def set_label_text(self, text: str) -> None: raise NotImplementedError()  # pyright: ignore
     def close(self) -> None: raise NotImplementedError()
-    def run_on_background_thread_with_spinning_progress_dialog[TResult](self, message: str, action: Callable[[], TResult]) -> TResult: raise NotImplementedError()
+    def run_on_background_thread_with_spinning_progress_dialog[TResult](self, message: str, action: Callable[[], TResult]) -> TResult: raise NotImplementedError()  # pyright: ignore
 
 class TaskRunner(Slots):
     @staticmethod
@@ -68,6 +33,7 @@ class TaskRunner(Slots):
         return InvisibleTaskRunner("", "")
 
 class InvisibleTaskRunner(ITaskRunner, Slots):
+    # noinspection PyUnusedLocal
     def __init__(self, window_title: str, label_text: str) -> None:  # pyright: ignore
         pass
 
@@ -79,11 +45,11 @@ class InvisibleTaskRunner(ITaskRunner, Slots):
         mylog.info(f"##--InvisibleTaskRunner--## Finished {message} in {watch.elapsed_formatted()} handled {total_items} items")
         return result
     @override
-    def set_label_text(self, text: str) -> None: pass
+    def set_label_text(self, text: str) -> None: pass  # pyright: ignore
     @override
     def close(self) -> None: pass
     @override
-    def run_on_background_thread_with_spinning_progress_dialog[TResult](self, message: str, action: Callable[[], TResult]) -> TResult:
+    def run_on_background_thread_with_spinning_progress_dialog[TResult](self, message: str, action: Callable[[], TResult]) -> TResult:  # pyright: ignore
         return action()
 
 class QtTaskProgressRunner(ITaskRunner, Slots):

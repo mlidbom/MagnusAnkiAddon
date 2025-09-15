@@ -14,5 +14,3 @@ class ReadOnlyStringField(Slots):
         # this method is interesting for profiling so we want a unuique name we can find in the trace
         def read_only_string_field_get_initial_value_for_caching() -> str: return note().get_field(field_name)
         self.value: str = read_only_string_field_get_initial_value_for_caching()
-
-    def has_value(self) -> bool: return self.value != ""

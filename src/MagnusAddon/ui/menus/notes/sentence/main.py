@@ -35,7 +35,7 @@ def build_note_menu(note_menu: QMenu, sentence: SentenceNote) -> None:
     build_remove_menu(non_optional(note_menu.addMenu(shortcutfinger.home2("Remove"))))
     build_remove_user(non_optional(note_menu.addMenu(shortcutfinger.home3("Remove User"))))
 
-def build_view_menu(view_menu: QMenu, _vocab: SentenceNote) -> None:
+def build_view_menu(view_menu: QMenu, _vocab: SentenceNote) -> None:  # pyright: ignore
     index = 0
     for index, toggle in enumerate(app.config().sentence_view_toggles):
         add_checkbox_config(view_menu, toggle, shortcutfinger.finger_by_priority_order(index, toggle.title))
