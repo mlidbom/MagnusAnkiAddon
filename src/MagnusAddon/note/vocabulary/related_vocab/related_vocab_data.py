@@ -11,11 +11,12 @@ if TYPE_CHECKING:
 
 class RelatedVocabData(Slots):
     serializer: RelatedVocabDataSerializer = RelatedVocabDataSerializer()
-    def __init__(self, ergative_twin: str, derived_from: ValueWrapper[str], similar: set[str], antonyms: set[str], confused_with: set[str], see_also:set[str]) -> None:
+    def __init__(self, ergative_twin: str, derived_from: ValueWrapper[str], perfect_synonyms: set[str], similar: set[str], antonyms: set[str], confused_with: set[str], see_also:set[str]) -> None:
         self.ergative_twin: str = ergative_twin
         self.derived_from: ValueWrapper[str] = derived_from
 
         self.synonyms: set[str] = similar
+        self.perfect_synonyms: set[str] = perfect_synonyms
         self.antonyms: set[str] = antonyms
         self.confused_with: set[str] = confused_with
         self.see_also:set[str] = see_also

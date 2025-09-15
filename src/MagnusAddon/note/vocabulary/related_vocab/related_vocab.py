@@ -10,6 +10,7 @@ from note.notefields.auto_save_wrappers.set_wrapper import FieldSetWrapper
 from note.notefields.json_object_field import MutableSerializedObjectField
 from note.vocabulary.related_vocab.Antonyms import Antonyms
 from note.vocabulary.related_vocab.ergative_twin import ErgativeTwin
+from note.vocabulary.related_vocab.perfect_synonyms import PerfectSynonyms
 from note.vocabulary.related_vocab.related_vocab_data import RelatedVocabData
 from note.vocabulary.related_vocab.SeeAlso import SeeAlso
 from note.vocabulary.related_vocab.Synonyms import Synonyms
@@ -29,6 +30,7 @@ class RelatedVocab(Slots):
 
         self.ergative_twin: ErgativeTwin = ErgativeTwin(vocab, self._data)
         self.synonyms: Synonyms = Synonyms(vocab, self._data)
+        self.perfect_synonyms: PerfectSynonyms = PerfectSynonyms(vocab, FieldSetWrapper.for_json_object_field(self._data, self._data.get().perfect_synonyms))
         self.antonyms: Antonyms = Antonyms(vocab, self._data)
         self.see_also: SeeAlso = SeeAlso(vocab, self._data)
         self.derived_from: FieldWrapper[str, RelatedVocabData] = FieldWrapper(self._data, self._data.get().derived_from)

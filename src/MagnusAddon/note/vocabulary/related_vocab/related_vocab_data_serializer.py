@@ -11,17 +11,17 @@ from sysutils.json.json_reader import JsonReader
 if TYPE_CHECKING:
     from note.vocabulary.related_vocab.related_vocab_data import RelatedVocabData
 
-
 class RelatedVocabDataSerializer(ObjectSerializer["RelatedVocabData"], Slots):
     @override
     def deserialize(self, serialized: str) -> RelatedVocabData:
         from note.vocabulary.related_vocab.related_vocab_data import RelatedVocabData
-        if not serialized: return RelatedVocabData("", ValueWrapper(""), set(), set(), set(), set())
+        if not serialized: return RelatedVocabData("", ValueWrapper(""), set(), set(), set(), set(), set())
 
         reader = JsonReader.from_json(serialized)
         return RelatedVocabData(reader.string("ergative_twin"),
                                 ValueWrapper(reader.string("derived_from")),
                                 reader.string_set("synonyms"),
+                                reader.string_set("perfect_synonyms", default=set()),
                                 reader.string_set("antonyms"),
                                 reader.string_set("confused_with"),
                                 reader.string_set("see_also"))
@@ -31,6 +31,7 @@ class RelatedVocabDataSerializer(ObjectSerializer["RelatedVocabData"], Slots):
         return ex_json.dict_to_json({"ergative_twin": instance.ergative_twin,
                                      "derived_from": instance.derived_from.get(),
                                      "synonyms": list(instance.synonyms),
+                                     "perfect_synonyms": list(instance.perfect_synonyms),
                                      "antonyms": list(instance.antonyms),
                                      "confused_with": list(instance.confused_with),
                                      "see_also": list(instance.see_also)})

@@ -12,6 +12,8 @@ from note.vocabulary.vocabnote import VocabNote
 from sysutils import ex_sequence
 
 if TYPE_CHECKING:
+    from collections.abc import Iterable
+
     from anki.collection import Collection
     from anki.notes import Note, NoteId
     from note.collection.cache_runner import CacheRunner
@@ -89,7 +91,7 @@ class _VocabCache(NoteCache[VocabNote, _VocabSnapshot], Slots):
 class VocabCollection(Slots):
     def __init__(self, collection: Collection, cache_manager: CacheRunner, task_runner: ITaskRunner) -> None:
         def vocab_constructor(note: Note) -> VocabNote: return VocabNote(note)
-        self.collection:BackEndFacade[VocabNote] = BackEndFacade[VocabNote](collection, vocab_constructor, NoteTypes.Vocab)
+        self.collection: BackEndFacade[VocabNote] = BackEndFacade[VocabNote](collection, vocab_constructor, NoteTypes.Vocab)
         all_vocab = self.collection.all(task_runner)
         self._cache: _VocabCache = _VocabCache(all_vocab, cache_manager, task_runner)
 
@@ -121,3 +123,6 @@ class VocabCollection(Slots):
 
     def with_any_form_in(self, forms: list[str]) -> list[VocabNote]:
         return ex_sequence.remove_duplicates_while_retaining_order(ex_sequence.flatten([self.with_form(form) for form in forms]))
+
+    def with_any_question_in(self, questions: Iterable[str]) -> list[VocabNote]:
+        return ex_sequence.flatten([self.with_question(question) for question in questions])
