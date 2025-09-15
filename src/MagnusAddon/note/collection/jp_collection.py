@@ -86,9 +86,8 @@ class JPCollection(WeakRefable, Slots):
             self._cache_runner.start()
 
             if app.config().load_jamdict_db_into_memory.get_value():
-                task_runner.set_label_text("Loading Jamdict db into memory")
                 from language_services.jamdict_ex.dict_lookup import DictLookup
-                DictLookup.ensure_loaded_into_memory()
+                task_runner.run_on_background_thread_with_spinning_progress_dialog("Loading Jamdict db into memory", DictLookup.ensure_loaded_into_memory)
 
             if app.config().pre_cache_card_studying_status.get_value():
                 noteutils.initialize_studying_cache(self.anki_collection, task_runner)

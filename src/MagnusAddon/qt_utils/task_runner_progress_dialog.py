@@ -8,17 +8,53 @@ from aqt import QLabel
 from autoslot import Slots
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication, QProgressDialog
-from sysutils import timeutil
+from sysutils import app_thread_pool, ex_thread, timeutil
 from sysutils.timeutil import StopWatch
 from sysutils.typed import non_optional
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
+class Closable(Slots):
+    def __init__(self, close_action: Callable[[], None]) -> None:
+        self.close_action: Callable[[], None] = close_action
+
+    def close(self) -> None: self.close_action()
+
+def run_on_background_thread_with_spinning_progress_dialog(message: str, action: Callable[[], object]) -> None:
+    dialog = _create_spinning_progress_dialog(message)
+
+    future = app_thread_pool.pool.submit(action)
+
+    while not future.done():
+        QApplication.processEvents()
+        ex_thread.sleep_ex(0.1)
+
+    dialog.close()
+
+def open_spinning_progress_dialog(message: str) -> Closable:
+    progress_dialog = _create_spinning_progress_dialog(message)
+    QApplication.processEvents()
+
+    def close() -> None:
+        progress_dialog.close()
+
+    return Closable(close)
+
+def _create_spinning_progress_dialog(message: str) -> QProgressDialog:
+    progress_dialog = QProgressDialog(f"{message}", None, 0, 0)
+    progress_dialog.setWindowTitle(f"{message}")
+    progress_dialog.setWindowModality(Qt.WindowModality.ApplicationModal)
+    progress_dialog.setRange(0, 0)  # Indeterminate range for spinning effect
+    progress_dialog.show()
+    QApplication.processEvents()
+    return progress_dialog
+
 class ITaskRunner:
     def process_with_progress[TInput, TOutput](self, items: list[TInput], process_item: Callable[[TInput], TOutput], message: str) -> list[TOutput]: raise NotImplementedError()  # pyright: ignore
     def set_label_text(self, text: str) -> None: raise NotImplementedError()  # pyright: ignore
     def close(self) -> None: raise NotImplementedError()
+    def run_on_background_thread_with_spinning_progress_dialog[TResult](self, message: str, action: Callable[[], TResult]) -> TResult: raise NotImplementedError()
 
 class TaskRunner(Slots):
     @staticmethod
@@ -46,6 +82,9 @@ class InvisibleTaskRunner(ITaskRunner, Slots):
     def set_label_text(self, text: str) -> None: pass
     @override
     def close(self) -> None: pass
+    @override
+    def run_on_background_thread_with_spinning_progress_dialog[TResult](self, message: str, action: Callable[[], TResult]) -> TResult:
+        return action()
 
 class QtTaskProgressRunner(ITaskRunner, Slots):
     def __init__(self, window_title: str, label_text: str) -> None:
@@ -55,8 +94,7 @@ class QtTaskProgressRunner(ITaskRunner, Slots):
         dialog.setFixedWidth(600)
         non_optional(dialog.findChild(QLabel)).setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
         dialog.setWindowModality(Qt.WindowModality.ApplicationModal)
-        dialog.setRange(0, 0)  # Indeterminate range for spinning effect
-        self.set_label_text(label_text)
+        self._set_spinning_with_message(label_text)
         dialog.show()
         QApplication.processEvents()
 
@@ -65,9 +103,25 @@ class QtTaskProgressRunner(ITaskRunner, Slots):
         self.dialog.setLabelText(text)
         QApplication.processEvents()
 
+    def _set_spinning_with_message(self, message: str) -> None:
+        self.dialog.setLabelText(message)
+        self.dialog.setRange(0, 0)
+
+    @override
+    def run_on_background_thread_with_spinning_progress_dialog[TResult](self, message: str, action: Callable[[], TResult]) -> TResult:
+        self._set_spinning_with_message(message)
+
+        future = app_thread_pool.pool.submit(action)
+
+        while not future.done():
+            QApplication.processEvents()
+            ex_thread.sleep_ex(0.05)
+
+        return future.result()
+
     @override
     def process_with_progress[TInput, TOutput](self, items: list[TInput], process_item: Callable[[TInput], TOutput], message: str) -> list[TOutput]:
-        self.set_label_text(f"{message} 0 of ?? Remaining: ??") # len may take a while so make sure we set the label first
+        self.set_label_text(f"{message} 0 of ?? Remaining: ??")  # len may take a while so make sure we set the label first
         total_items = len(items)
         watch = StopWatch()
         start_time = time.time()
