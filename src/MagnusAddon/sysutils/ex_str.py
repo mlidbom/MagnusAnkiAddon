@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import re
 
-from sysutils.linq.l_iterable import LList
+from sysutils.collections.linq.l_iterable import LList
 
 newline = "\n"
 invisible_space = "​"

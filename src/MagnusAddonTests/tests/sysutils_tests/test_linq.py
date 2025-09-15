@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import pytest
-from sysutils.linq.l_iterable import LFrozenSet, LIterable, LList, LSet, linq
+from sysutils.collections.linq.l_iterable import LFrozenSet, LIterable, LList, LSet, linq
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterable
