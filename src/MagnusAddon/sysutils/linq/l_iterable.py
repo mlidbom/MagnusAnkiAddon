@@ -86,6 +86,7 @@ class LIterable[TItem](Iterable[TItem]):
 
     # region factory methods
     def to_list(self) -> LList[TItem]: return LList(self)
+    def to_built_in_list(self) -> list[TItem]: return list(self)
     def to_set(self) -> LSet[TItem]: return LSet(self)
     def to_frozenset(self) -> LFrozenSet[TItem]: return LFrozenSet(self)
 
@@ -125,7 +126,6 @@ class LList[TItem](list[TItem], LSequence[TItem]):  # pyright: ignore [reportInc
 
     @override
     def to_list(self) -> LList[TItem]: return self
-
 
 class LSet[TItem](set[TItem], LIterable[TItem]):
     def __init__(self, iterable: Iterable[TItem]) -> None:
