@@ -9,11 +9,11 @@ from language_services.janome_ex.word_extraction.text_analysis import TextAnalys
 from note.jpnote import JPNote
 from note.note_constants import ImmersionKitSentenceNoteFields, NoteFields, NoteTypes, SentenceNoteFields, Tags
 from note.notefields.audio_field import WritableAudioField
-from note.notefields.json_object_field import SerializedObjectField
+from note.notefields.json_object_field import MutableSerializedObjectField
 from note.notefields.mutable_string_field import MutableStringField
 from note.notefields.sentence_question_field import SentenceQuestionField
 from note.notefields.strip_html_on_read_fallback_string_field import StripHtmlOnReadFallbackStringField
-from note.notefields.strip_html_on_read_string_field import StripHtmlOnReadStringField
+from note.notefields.strip_html_on_read_string_field import MutableStripHtmlOnReadStringField
 from note.sentences.caching_sentence_configuration_field import CachingSentenceConfigurationField
 from note.sentences.parsing_result import ParsingResult
 from note.sentences.serialization.parsing_result_serializer import ParsingResultSerializer
@@ -31,8 +31,8 @@ class SentenceNote(JPNote, Slots):
         self.weakref_sentence: WeakRef[SentenceNote] = cast(WeakRef[SentenceNote], self.weakref)
 
         self._source_answer: MutableStringField = MutableStringField(self.weakref, SentenceNoteFields.source_answer)
-        self.source_question: StripHtmlOnReadStringField = StripHtmlOnReadStringField(self.weakref, SentenceNoteFields.source_question)
-        self.source_comments: StripHtmlOnReadStringField = StripHtmlOnReadStringField(self.weakref, SentenceNoteFields.source_comments)
+        self.source_question: MutableStripHtmlOnReadStringField = MutableStripHtmlOnReadStringField(self.weakref, SentenceNoteFields.source_question)
+        self.source_comments: MutableStripHtmlOnReadStringField = MutableStripHtmlOnReadStringField(self.weakref, SentenceNoteFields.source_comments)
 
         self.user: SentenceUserFields = SentenceUserFields(self.weakref_sentence)
 
@@ -41,7 +41,7 @@ class SentenceNote(JPNote, Slots):
         self._screenshot: MutableStringField = MutableStringField(self.weakref, SentenceNoteFields.screenshot)
         self.audio: WritableAudioField = WritableAudioField(self.weakref, SentenceNoteFields.audio)
         self.configuration: CachingSentenceConfigurationField = CachingSentenceConfigurationField(self.weakref_sentence)
-        self.parsing_result: SerializedObjectField[ParsingResult] = SerializedObjectField[ParsingResult](self.weakref, SentenceNoteFields.parsing_result, ParsingResultSerializer())
+        self.parsing_result: MutableSerializedObjectField[ParsingResult] = MutableSerializedObjectField[ParsingResult](self.weakref, SentenceNoteFields.parsing_result, ParsingResultSerializer())
 
     @override
     def get_question(self) -> str: return self.question.get()

@@ -14,7 +14,7 @@ class ObjectSerializer[T](Slots):
     def serialize(self, instance: T) -> str: raise NotImplementedError()  # pyright: ignore[reportUnusedParameter]
     def deserialize(self, serialized: str) -> T: raise NotImplementedError()  # pyright: ignore[reportUnusedParameter]
 
-class SerializedObjectField[T](WeakRefable, Slots):
+class MutableSerializedObjectField[T](WeakRefable, Slots):
     def __init__(self, note: WeakRef[JPNote], field: str, serializer: ObjectSerializer[T]) -> None:
         self._note: WeakRef[JPNote] = note
         self._field: MutableStringField = MutableStringField(note, field)

@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from sysutils.weak_ref import WeakRef
 
 
-class StripHtmlOnReadStringField(Slots):
+class MutableStripHtmlOnReadStringField(Slots):
     def __init__(self, note: WeakRef[JPNote], field_name: str) -> None:
         self._field: MutableStringField = MutableStringField(note, field_name)
 

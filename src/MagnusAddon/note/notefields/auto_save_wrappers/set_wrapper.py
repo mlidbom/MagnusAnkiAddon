@@ -7,7 +7,7 @@ from autoslot import Slots
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from note.notefields.json_object_field import SerializedObjectField
+    from note.notefields.json_object_field import MutableSerializedObjectField
 
 class FieldSetWrapper[TValue](Slots):
     _secret: str = "aoeulrcaboeusthb"
@@ -35,7 +35,7 @@ class FieldSetWrapper[TValue](Slots):
     def any(self) -> bool: return any(self._value())
 
     @classmethod
-    def for_json_object_field(cls, field: SerializedObjectField[Any], value: set[TValue]) -> FieldSetWrapper[TValue]:  # pyright: ignore[reportExplicitAny]
+    def for_json_object_field(cls, field: MutableSerializedObjectField[Any], value: set[TValue]) -> FieldSetWrapper[TValue]:  # pyright: ignore[reportExplicitAny]
         return FieldSetWrapper(lambda: field.save(), lambda: value, FieldSetWrapper._secret)
 
     @override
