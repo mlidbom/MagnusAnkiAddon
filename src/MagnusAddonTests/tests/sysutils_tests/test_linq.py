@@ -41,6 +41,8 @@ def test_indexer_returns_last_value() -> None: value_test((1, 2, 3), lambda x: x
 def test_none_returns_false_if_there_are_elements() -> None: value_test([1], lambda x: x.none(), False)
 def test_none_returns_true_if_there_are_no_elements() -> None: value_test([], lambda x: x.none(), True)
 
+def test_select_many_flattens_nested_sequences() -> None: value_test([[1, 2], [3, 4]], lambda x: x.select_many(lambda y: y).to_list(), [1, 2, 3, 4], skip_sets=True)
+
 def test_reverse_returns_reversed_sequence() -> None: value_test([1, 2, 3], lambda x: x.reversed().to_list(), [3, 2, 1])
 
 def test_not_none_returns_only_elements_that_are_not_none() -> None: value_test([1, None], lambda x: x.where_not_none().to_list(), [1])
@@ -53,7 +55,6 @@ def test_length_returns_length_of_sequence() -> None:
     value_test([0], lambda x: x.length(), 1)
     value_test([0, 3], lambda x: x.length(), 2)
     value_test([0, 3, 5], lambda x: x.length(), 3)
-
 
 def test_for_each_executes_action_for_each_element() -> None:
     value_test(lambda: [CallCounter(), CallCounter(), CallCounter()],
@@ -88,43 +89,49 @@ def test_assert_on_collection_throws_if_predicate_returns_false() -> None:
 def test_assert_on_collection_does_not_throw_if_predicate_returns_true() -> None:
     value_test([1, 2], lambda x: x.assert_on_collection(lambda _: True).to_list(), [1, 2])
 
-def create_sequences[T](iterable: Iterable[T] | Callable[[], Iterable[T]]) -> list[tuple[str, LIterable[T]]]:
+def create_sequences[T](iterable: Iterable[T] | Callable[[], Iterable[T]], skip_sets: bool = False) -> list[tuple[str, LIterable[T]]]:
     factory: Callable[[], Iterable[T]] = cast(Callable[[], Iterable[T]], iterable) if not isinstance(iterable, Iterable) else lambda: iterable
 
-    return [
+    values = [
         ("linq", linq(factory())),
         ("LList", LList(factory())),
-        ("LSet", LSet(factory())),
-        ("LFRozenSet", LFrozenSet(factory())),
         ("LIterable.create", LIterable.create(factory()))
     ]
+    if not skip_sets:
+        values = values + [("LSet", LSet(factory())),
+                           ("LFRozenSet", LFrozenSet(factory()))]
+    return values
 
 def where_test[TIn, TOut](items: Iterable[TIn],
                           selector: Callable[[TIn], bool],
-                          expected_output: list[TOut]) -> None:
-    for name, sequence in create_sequences(items):
+                          expected_output: list[TOut],
+                          skip_sets: bool = False) -> None:
+    for name, sequence in create_sequences(items, skip_sets):
         result = sequence.where(selector)
         assert result.to_list() == expected_output, name
 
 def select_test[TIn, TOut](items: Iterable[TIn],
                            selector: Callable[[TIn], TOut],
-                           expected_output: list[TOut]) -> None:
-    for name, sequence in create_sequences(items):
+                           expected_output: list[TOut],
+                           skip_sets: bool = False) -> None:
+    for name, sequence in create_sequences(items, skip_sets):
         result = sequence.select(selector)
         assert result.to_list() == expected_output, name
 
 def value_test[TIn, TOut](items: Iterable[TIn] | Callable[[], Iterable[TIn]],
                           selector: Callable[[LIterable[TIn]], TOut],
-                          expected_output: TOut) -> None:
-    for name, sequence in create_sequences(items):
+                          expected_output: TOut,
+                          skip_sets: bool = False) -> None:
+    for name, sequence in create_sequences(items, skip_sets):
         result = selector(sequence)
         print(name)
         assert result == expected_output
 
 def throws_test[TIn, TOut](items: Iterable[TIn],
                            selector: Callable[[LIterable[TIn]], TOut],
-                           exception_type: type[Exception] = Exception) -> None:
-    for name, sequence in create_sequences(items):
+                           exception_type: type[Exception] = Exception,
+                           skip_sets: bool = False) -> None:
+    for name, sequence in create_sequences(items, skip_sets):
         print(name)
         with pytest.raises(exception_type):  # noqa: PT012
             selector(sequence)

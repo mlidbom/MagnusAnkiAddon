@@ -29,16 +29,19 @@ class LIterable[TItem](Iterable[TItem], ABC):
 
     def any(self, predicate: Callable[[TItem], bool] | None = None) -> bool:
         if predicate is None:
-            for _ in self._value: return True
+            for _ in self: return True
             return False
-        return any(predicate(item) for item in self._value)
+        return any(predicate(item) for item in self)
 
     def select[TReturn](self, selector: Callable[[TItem], TReturn]) -> LIterable[TReturn]:
-        return _LIterable(selector(item) for item in self._value)
+        return _LIterable(selector(item) for item in self)
+
+    def select_many[TInner](self, selector: Callable[[TItem], Iterable[TInner]]) -> LIterable[TInner]:
+        return _LIterable(child_item for child_item in (selector(parent_item) for parent_item in self) for child_item in child_item)
 
     def length(self) -> int:
-        if isinstance(self._value, list): return len(cast(list[TItem], self._value))
-        return sum(1 for _ in self._value)
+        if isinstance(self, list): return len(cast(list[TItem], self))
+        return sum(1 for _ in self)
 
     def single(self, predicate: Callable[[TItem], bool] | None = None) -> TItem:
         result = self.single_or_none(predicate)

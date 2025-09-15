@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 from autoslot import Slots
 from note.jpnote import JPNote
 from sysutils.collections.default_dict_case_insensitive import DefaultDictCaseInsensitive
+from sysutils.collections.linq.l_iterable import LList
 from sysutils.typed import checked_cast
 
 if TYPE_CHECKING:
@@ -47,8 +48,8 @@ class NoteCache[TNote: JPNote, TSnapshot: CachedNote](Slots):
     def with_id_or_none(self, note_id: NoteId) -> TNote | None:
         return self._by_id.get(note_id, None)
 
-    def with_question(self, question: str) -> list[TNote]:
-        return list(self._by_question[question])
+    def with_question(self, question: str) -> LList[TNote]:
+        return LList(self._by_question[question])
 
     def _create_snapshot(self, note: TNote) -> TSnapshot: raise NotImplementedError()  # pyright: ignore[reportUnusedParameter]
     def _inheritor_remove_from_cache(self, note: TNote, snapshot: TSnapshot) -> None: raise NotImplementedError()  # pyright: ignore[reportUnusedParameter]

@@ -10,6 +10,7 @@ from note.collection.note_cache import CachedNote, NoteCache
 from note.note_constants import NoteTypes
 from note.vocabulary.vocabnote import VocabNote
 from sysutils import ex_sequence
+from sysutils.collections.linq.l_iterable import LList
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
@@ -109,7 +110,7 @@ class VocabCollection(Slots):
     def derived_from(self, derived_from: str) -> list[VocabNote]: return self._cache.derived_from(derived_from)
     def with_kanji_in_main_form(self, kanji: KanjiNote) -> list[VocabNote]: return self._cache.with_kanji_in_main_form(kanji.get_question())
     def with_kanji_in_any_form(self, kanji: KanjiNote) -> list[VocabNote]: return self._cache.with_kanji_in_any_form(kanji.get_question())
-    def with_question(self, question: str) -> list[VocabNote]: return self._cache.with_question(question)
+    def with_question(self, question: str) -> LList[VocabNote]: return self._cache.with_question(question)
     def with_reading(self, question: str) -> list[VocabNote]: return self._cache.with_reading(question)
     def with_stem(self, question: str) -> list[VocabNote]: return self._cache.with_stem(question)
 
