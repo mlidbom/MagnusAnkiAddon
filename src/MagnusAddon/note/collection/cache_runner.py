@@ -72,7 +72,7 @@ class CacheRunner(Slots):
             self._check_for_updated_note_types_and_reset_app_if_found()
             self._internal_flush_updates()
 
-    def _on_will_be_added(self, _collection: Collection, backend_note: Note, _deck_id: DeckId) -> None:  # pyright: ignore
+    def _on_will_be_added(self, _collection: Collection, backend_note: Note, _deck_id: DeckId) -> None:
         if not self._running: return
         with self._lock:
             for callback in self._will_add_subscribers: callback(backend_note)

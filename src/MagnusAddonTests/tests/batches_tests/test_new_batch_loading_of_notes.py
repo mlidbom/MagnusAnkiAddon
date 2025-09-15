@@ -38,7 +38,7 @@ def test_batch_loading_all_notes() -> None:
             assert old.usn == new.usn
             assert old.tags == new.tags
             assert old.fields == new.fields
-            assert old._fmap == new._fmap
+            assert old._fmap == new._fmap # pyright: ignore[reportPrivateUsage]
 
             assert old.flags == new.flags
             assert old.data == new.data

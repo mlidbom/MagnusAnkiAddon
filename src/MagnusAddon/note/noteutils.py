@@ -59,9 +59,9 @@ def initialize_studying_cache(col: Collection, task_runner: ITaskRunner) -> None
     clear_studying_cache()
 
     def cache_card(row: Row) -> None:
-        note_id = NoteId(typed.int_(row[0]))
-        card_type = typed.str_(row[1])
-        queue = typed.int_(row[2])
+        note_id = NoteId(typed.int_(row[0])) # pyright: ignore[reportAny]
+        card_type = typed.str_(row[1])  # pyright: ignore[reportAny]
+        queue = typed.int_(row[2])  # pyright: ignore[reportAny]
         if note_id not in _studying_status_cache: _studying_status_cache[note_id] = {}
         _studying_status_cache[note_id][card_type] = queue != QUEUE_TYPE_SUSPENDED
 

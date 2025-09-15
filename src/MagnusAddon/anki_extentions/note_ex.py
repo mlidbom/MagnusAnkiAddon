@@ -17,7 +17,7 @@ class NoteBulkLoader:
     def load_all_notes_of_type(col: Collection, note_type_name: str, task_runner: ITaskRunner) -> list[Note]:
         note_type: NotetypeDict = typed.non_optional(col.models.by_name(note_type_name))
         field_map: dict[str, tuple[int, FieldDict]] = col.models.field_map(non_optional(note_type))
-        field_count = len(note_type["flds"])
+        field_count = len(note_type["flds"]) # pyright: ignore[reportAny]
         col_weak_ref = col.weakref()
 
         query = """
@@ -43,16 +43,16 @@ class NoteBulkLoader:
     # noinspection PyMissingConstructor
     class _NoteEx(Note):
         # noinspection PyMissingConstructor this is very much intentional. We do NOT want the base class to go fetching the note's data from the db. Avoiding that is the whole point of this class and improves performance tenfold or more.
-        def __init__(self, collection_weak_ref: Collection, db_row: Row, field_map: dict[str, tuple[int, FieldDict]], field_count: int) -> None:
+        def __init__(self, collection_weak_ref: Collection, db_row: Row, field_map: dict[str, tuple[int, FieldDict]], field_count: int) -> None: # pyright: ignore[reportMissingSuperCall]
             self.col: Collection = collection_weak_ref
-            self.id: NoteId = NoteId(db_row[0])
+            self.id: NoteId = NoteId(db_row[0]) # pyright: ignore[reportAny]
             self.guid: str = db_row[1]
-            self.mid: NotetypeId = NotetypeId(db_row[2])
+            self.mid: NotetypeId = NotetypeId(db_row[2]) # pyright: ignore[reportAny]
             self.mod: int = db_row[3]
             self.usn: int = db_row[4]
-            self.tags: list[str] = db_row[5].split() if db_row[5] else []
+            self.tags: list[str] = db_row[5].split() if db_row[5] else [] # pyright: ignore[reportAny]
 
-            field_values = db_row[6].split("\x1f") if db_row[6] else []
-            while len(field_values) < field_count: field_values.append("")
+            field_values = db_row[6].split("\x1f") if db_row[6] else [] # pyright: ignore
+            while len(field_values) < field_count: field_values.append("") # pyright: ignore
             self.fields:list[str] = field_values
             self._fmap:dict[str, tuple[int, FieldDict]] = field_map

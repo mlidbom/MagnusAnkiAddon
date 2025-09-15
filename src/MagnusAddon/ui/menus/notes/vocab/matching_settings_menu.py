@@ -59,7 +59,7 @@ def build_matching_settings_menu(toggle_flags_menu: QMenu, vocab: VocabNote) -> 
         add_tag_field_check_box(is_menu, shortcutfinger.home2("Inflecting word"), vocab.matching_configuration.bool_flags.is_inflecting_word)
 
     def build_misc_flags_menu(misc_menu: QMenu) -> None:
-        add_tag_field_check_box(misc_menu, shortcutfinger.home1("Question overrides form: Show the question in results even if the match was another form"), vocab.matching_configuration.bool_flags.question_overrides_form.tag_field)
+        add_tag_field_check_box(misc_menu, shortcutfinger.home1("Question overrides form: Show the question in results even if the match was another form"), vocab.matching_configuration.bool_flags.question_overrides_form)
         add_tag_field_check_box(misc_menu, shortcutfinger.home3("Match with preceding vowel"), vocab.matching_configuration.bool_flags.match_with_preceding_vowel)
 
     build_requires_forbids_menu(non_optional(toggle_flags_menu.addMenu(shortcutfinger.home1("Requireds/Forbids"))))
