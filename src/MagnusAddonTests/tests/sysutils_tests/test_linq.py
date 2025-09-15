@@ -28,6 +28,10 @@ def test_to_builtin_list() -> None: value_test((1, 2, 3), lambda x: x.to_built_i
 def test_to_set() -> None: value_test((1, 2, 3), lambda x: x.to_set(), {1, 2, 3})
 def test_to_frozenset() -> None: value_test((1, 2, 3), lambda x: x.to_frozenset(), frozenset({1, 2, 3}))
 
+def indexer_returns_first_value() -> None: value_test((1, 2, 3), lambda x: x.to_list()[0], 1)
+def indexer_returns_middle_value() -> None: value_test((1, 2, 3), lambda x: x.to_list()[1], 2)
+def indexer_returns_last_value() -> None: value_test((1, 2, 3), lambda x: x.to_list()[2], 3)
+
 def test_none_returns_false_if_there_are_elements() -> None: value_test([1], lambda x: x.none(), False)
 def test_none_returns_true_if_there_are_no_elements() -> None: value_test([], lambda x: x.none(), True)
 
