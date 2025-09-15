@@ -1,4 +1,4 @@
-# Japonese Language Studio for Anki
+# Japanese Language Studio for Anki
 Turns anki into a full featured tool for studying japanese in anki. A short sample, anything but complete, list of features:
 * Automatic breakdown and explanation of sentences
 * Playing the audio for each word/phrase in the sentence
