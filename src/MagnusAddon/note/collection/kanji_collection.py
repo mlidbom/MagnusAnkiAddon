@@ -64,9 +64,6 @@ class KanjiCollection(Slots):
     def with_id_or_none(self, note_id:NoteId) -> KanjiNote | None:
         return self._cache.with_id_or_none(note_id)
 
-    def all_wani(self) -> list[KanjiNote]:
-        return [kanji for kanji in self.all() if kanji.is_wani_note()]
-
     def with_any_kanji_in(self, kanji_list: list[str]) -> list[KanjiNote]:
         return ex_sequence.flatten([self._cache.with_question(kanji) for kanji in kanji_list])
 

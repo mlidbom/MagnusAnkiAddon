@@ -99,9 +99,6 @@ class JPNote(WeakRefable,Slots):
     def get_id(self) -> NoteId:
         return self.backend_note.id
 
-    def is_wani_note(self) -> bool:
-        return Tags.Wani in self.backend_note.tags
-
     def cards(self) -> list[CardEx]:
         return [CardEx(card) for card in self.backend_note.cards()]
 

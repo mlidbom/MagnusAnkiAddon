@@ -16,8 +16,6 @@ from ui.menus.menu_utils import ex_qmenu, shortcutfinger
 from ui.menus.open_in_anki import build_open_in_anki_menu
 from ui.menus.web_search import build_web_search_menu
 from ui.open_note.open_note_dialog import NoteSearchDialog
-from wanikani import note_importer
-from wanikani.wani_downloader import WaniDownloader
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -92,20 +90,11 @@ def build_local_menu(local_menu: QMenu) -> None:
         add_menu_ui_action(update_menu, shortcutfinger.up1("Reparse sentences"), local_note_updater.reparse_all_sentences)
         add_menu_ui_action(update_menu, shortcutfinger.down1("All the above: Full rebuild"), local_note_updater.full_rebuild)
 
-    def build_danger_zone_menu(danger_zone: QMenu) -> None:
-        build_wani_menu(non_optional(danger_zone.addMenu("Wanikani Actions")))
 
     build_update_menu(non_optional(local_menu.addMenu(shortcutfinger.home1("Update"))))
 
     add_menu_ui_action(local_menu, shortcutfinger.home2("Convert &Immersion Kit sentences"), local_note_updater.convert_immersion_kit_sentences)
     add_menu_ui_action(local_menu, shortcutfinger.home3("Update everyting except reparsing sentences"), local_note_updater.update_all)
-    build_danger_zone_menu(non_optional(local_menu.addMenu(shortcutfinger.home4("Danger Zone"))))
-
-def build_wani_menu(sub_menu: QMenu) -> None:
-    add_menu_ui_action(sub_menu, "Import Missing Kanji", note_importer.import_missing_kanji)
-    add_menu_ui_action(sub_menu, "Import Missing Vocabulary", note_importer.import_missing_vocab)
-    add_menu_ui_action(sub_menu, "Import Missing context sentences", note_importer.import_missing_context_sentences)
-    add_menu_ui_action(sub_menu, "Download Missing Vocabulary audio", WaniDownloader.fetch_missing_vocab_audio)
 
 def init() -> None:
     build_main_menu()
