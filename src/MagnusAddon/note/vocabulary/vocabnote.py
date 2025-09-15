@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, cast, override
 from ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules  # noqa  # pyright: ignore[reportUnusedImport]
 from autoslot import Slots
 from note.note_constants import NoteFields
-from note.notefields.comma_separated_strings_list_field import CommaSeparatedStringsListField
+from note.notefields.comma_separated_strings_list_field import MutableCommaSeparatedStringsListField
 from note.notefields.mutable_string_field import MutableStringField
 from note.vocabnote_cloner import VocabCloner
 from note.vocabulary import vocabnote_generated_data
@@ -40,7 +40,7 @@ class VocabNote(WaniNote, Slots):
 
         self.question: VocabNoteQuestion = VocabNoteQuestion(self.weakref_vocab)
 
-        self.readings: CommaSeparatedStringsListField = CommaSeparatedStringsListField(self.weakref, NoteFields.Vocab.Reading)
+        self.readings: MutableCommaSeparatedStringsListField = MutableCommaSeparatedStringsListField(self.weakref, NoteFields.Vocab.Reading)
 
         self.user: VocabNoteUserfields = VocabNoteUserfields(self.weakref_vocab)
 

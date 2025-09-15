@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from sysutils.lazy import Lazy
     from sysutils.weak_ref import WeakRef
 
-class CommaSeparatedStringsListField(Slots):
+class MutableCommaSeparatedStringsListField(Slots):
     def __init__(self, note: WeakRef[JPNote], field_name: str) -> None:
         field = MutableStringField(note, field_name)
         self._field: MutableStringField = field

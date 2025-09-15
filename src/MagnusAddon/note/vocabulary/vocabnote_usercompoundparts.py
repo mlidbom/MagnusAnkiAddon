@@ -6,7 +6,7 @@ from autoslot import Slots
 from language_services.jamdict_ex.dict_lookup import DictLookup
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from note.note_constants import NoteFields
-from note.notefields.comma_separated_strings_list_field import CommaSeparatedStringsListField
+from note.notefields.comma_separated_strings_list_field import MutableCommaSeparatedStringsListField
 from note.sentences.sentence_configuration import SentenceConfiguration
 
 if TYPE_CHECKING:
@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 class VocabNoteUserCompoundParts(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self.__vocab = vocab
-        self._field: CommaSeparatedStringsListField = CommaSeparatedStringsListField(vocab, NoteFields.Vocab.user_compounds)
+        self._field: MutableCommaSeparatedStringsListField = MutableCommaSeparatedStringsListField(vocab, NoteFields.Vocab.user_compounds)
 
     @property
     def _vocab(self) -> VocabNote: return self.__vocab()
