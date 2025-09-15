@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from collections.abc import Iterable, Sequence
+from abc import ABC, abstractmethod
+from collections.abc import Iterable
 from typing import TYPE_CHECKING, Any, cast, override
 
 if TYPE_CHECKING:
@@ -8,11 +9,12 @@ if TYPE_CHECKING:
 
 def linq[TItem](value: Iterable[TItem]) -> LIterable[TItem]: return _LIterable(value)
 
-class LIterable[TItem](Iterable[TItem]):
+class LIterable[TItem](Iterable[TItem], ABC):
     @staticmethod
     def create(value: Iterable[TItem]) -> LIterable[TItem]: return _LIterable(value)
 
     @property
+    @abstractmethod
     def _value(self) -> Iterable[TItem]: raise NotImplementedError()
 
     # region filtering
