@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import pytest
-from fixtures.collection_factory import inject_anki_collection_with_select_data
+from fixtures.collection_factory import inject_collection_with_select_data
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from tests.language_services_tests.janome_tests.test_sentence_analysis_viewmodel_common import assert_all_words_equal, assert_display_words_equal
 
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 # noinspection PyUnusedFunction
 @pytest.fixture(scope="module")
 def setup_collection_with_select_data() -> Iterator[None]:
-    with inject_anki_collection_with_select_data(special_vocab=True):
+    with inject_collection_with_select_data(special_vocab=True):
         yield
 
 @pytest.mark.usefixtures("setup_collection_with_select_data")

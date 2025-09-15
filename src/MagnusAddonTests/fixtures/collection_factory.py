@@ -18,9 +18,10 @@ from src.MagnusAddonTests.fixtures.base_data.sample_data import vocab_lists
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
+    from note.collection.jp_collection import JPCollection
 
 @contextmanager
-def inject_empty_anki_collection_with_note_types() -> Iterator[None]:
+def inject_empty_collection() -> Iterator[JPCollection]:
     from note.collection.jp_collection import JPCollection
     jp_collection: JPCollection
     def get_jp_collection() -> JPCollection: return jp_collection
@@ -32,19 +33,18 @@ def inject_empty_anki_collection_with_note_types() -> Iterator[None]:
             populate_collection(anki_collection)
             jp_collection = JPCollection(anki_collection)
             with unittest.mock.patch("ankiutils.app.col", new=get_jp_collection):
-                yield
+                yield jp_collection
                 jp_collection.destruct_sync()
         finally:
             anki_collection.close()
-
 
 def populate_collection(collection: Collection) -> None:
     note_type_factory.add_note_types(collection)
 
 @contextmanager
-def inject_anki_collection_with_select_data(kanji:bool = False, special_vocab:bool = False, ordinary_vocab: bool = False, sentences:bool = False) -> Iterator[None]:
+def inject_collection_with_select_data(kanji: bool = False, special_vocab: bool = False, ordinary_vocab: bool = False, sentences: bool = False) -> Iterator[JPCollection]:
     from ankiutils import app
-    with inject_empty_anki_collection_with_note_types():
+    with inject_empty_collection() as collection:
         if kanji:
             for _kanji in kanji_spec.test_kanji_list:
                 KanjiNote.create(_kanji.question, _kanji.answer, _kanji.on_readings, _kanji.kun_reading)
@@ -61,12 +61,11 @@ def inject_anki_collection_with_select_data(kanji:bool = False, special_vocab:bo
             for sentence in sentence_spec.test_sentence_list:
                 SentenceNote.create_test_note(sentence.question, sentence.answer)
 
-
         app.col().flush_cache_updates()
 
-        yield
+        yield collection
 
 @contextmanager
-def inject_anki_collection_with_all_sample_data() -> Iterator[None]:
-    with inject_anki_collection_with_select_data(kanji=True, special_vocab=True, ordinary_vocab=True, sentences=True):
-        yield
+def inject_collection_with_all_sample_data() -> Iterator[JPCollection]:
+    with inject_collection_with_select_data(kanji=True, special_vocab=True, ordinary_vocab=True, sentences=True) as collection:
+        yield collection

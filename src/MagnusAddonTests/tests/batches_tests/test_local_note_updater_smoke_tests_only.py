@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import pytest
-from fixtures.collection_factory import inject_anki_collection_with_all_sample_data
+from fixtures.collection_factory import inject_collection_with_all_sample_data
 from fixtures.stub_factory import stub_ui_dependencies
 
 if TYPE_CHECKING:
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 # noinspection PyUnusedFunction
 @pytest.fixture(scope="function")
 def setup() -> Iterator[None]:
-    with (stub_ui_dependencies(), inject_anki_collection_with_all_sample_data()):
+    with (stub_ui_dependencies(), inject_collection_with_all_sample_data()):
         yield
 
 @pytest.mark.usefixtures("setup")

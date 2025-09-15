@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 # noinspection PyUnusedFunction
 @pytest.fixture(scope="function", autouse=True)
 def setup() -> Iterator[None]:
-    with (stub_ui_dependencies(), collection_factory.inject_anki_collection_with_select_data(kanji=True)):
+    with (stub_ui_dependencies(), collection_factory.inject_collection_with_select_data(kanji=True)):
         app.config().set_readings_mappings_for_testing(_readings_mappings)
         yield
 

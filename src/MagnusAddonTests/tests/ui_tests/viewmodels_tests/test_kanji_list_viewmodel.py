@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 import pytest
 from ankiutils import app
-from fixtures.collection_factory import inject_anki_collection_with_all_sample_data
+from fixtures.collection_factory import inject_collection_with_all_sample_data
 from viewmodels.kanji_list import sentence_kanji_list_viewmodel
 
 if TYPE_CHECKING:
@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 # noinspection PyUnusedFunction
 @pytest.fixture(scope="function", autouse=True)
 def setup_object() -> Iterator[None]:
-    with inject_anki_collection_with_all_sample_data():
+    with inject_collection_with_all_sample_data():
         yield
 
 
