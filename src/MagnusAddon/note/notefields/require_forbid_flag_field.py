@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
-from note.notefields.tag_flag_field import TagFlagField
 
 if TYPE_CHECKING:
     from note.jpnote import JPNote
@@ -11,13 +10,16 @@ if TYPE_CHECKING:
 
 class RequireForbidFlagField(Slots):
     def __init__(self, note: WeakRef[JPNote], required_tag: str, forbidden_tag: str) -> None:
-        self._required_field: TagFlagField = TagFlagField(note, required_tag)
-        self._forbidden_field: TagFlagField = TagFlagField(note, forbidden_tag)
+        self._note: WeakRef[JPNote] = note
+        self._required_tag = required_tag
+        self._forbidden_tag = forbidden_tag
+        self._is_required = note().has_tag(required_tag)
+        self._is_forbidden = note().has_tag(forbidden_tag)
 
     @property
-    def is_configured_required(self) -> bool: return self._required_field.is_set()
+    def is_configured_required(self) -> bool: return self._is_required
     @property
-    def is_configured_forbidden(self) -> bool: return self._forbidden_field.is_set()
+    def is_configured_forbidden(self) -> bool: return self._is_forbidden
 
     @property
     def is_required(self) -> bool: return self.is_configured_required
@@ -28,9 +30,12 @@ class RequireForbidFlagField(Slots):
     def is_configured(self) -> bool: return self.is_configured_required or self.is_configured_forbidden
 
     def set_forbidden(self, value: bool) -> None:
-        self._forbidden_field.set_to(value)
-        if value: self._required_field.set_to(False)
+        self.set_required(not value)
 
     def set_required(self, value: bool) -> None:
-        self._required_field.set_to(value)
-        if value: self._forbidden_field.set_to(False)
+        if value:
+            self._note().set_tag(self._required_tag)
+            self._note().remove_tag(self._forbidden_tag)
+        else:
+            self._note().set_tag(self._forbidden_tag)
+            self._note().remove_tag(self._required_tag)
