@@ -7,7 +7,7 @@ from ankiutils import app
 from autoslot import Slots
 from note.note_constants import NoteFields, NoteTypes, Tags
 from note.notefields.comma_separated_strings_set_field import CommaSeparatedStringsSetField
-from note.notefields.string_field import StringField
+from note.notefields.mutable_string_field import MutableStringField
 
 if typing.TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
@@ -26,9 +26,8 @@ def create_from_wani_vocabulary(wani_vocab: models.Vocabulary) -> None:
 class VocabNoteWaniExtensions(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self.__vocab = vocab
-        self._meaning_mnemonic: StringField = StringField(vocab, NoteFields.Vocab.source_mnemonic)
-        self.component_subject_ids: CommaSeparatedStringsSetField = CommaSeparatedStringsSetField(vocab, NoteFields.Vocab.component_subject_ids)
-        self.reading_mnemonic: StringField = StringField(vocab, NoteFields.Vocab.source_reading_mnemonic)
+        self._meaning_mnemonic: MutableStringField = MutableStringField(vocab, NoteFields.Vocab.source_mnemonic)
+        self.reading_mnemonic: MutableStringField = MutableStringField(vocab, NoteFields.Vocab.source_reading_mnemonic)
 
     @property
     def _vocab(self) -> VocabNote: return self.__vocab()
@@ -44,6 +43,3 @@ class VocabNoteWaniExtensions(Slots):
         self.reading_mnemonic.set(wani_vocab.reading_mnemonic)  # pyright: ignore[reportUnknownArgumentType, reportUnknownMemberType]
 
         self._vocab.readings.set([reading.reading for reading in wani_vocab.readings])  # pyright: ignore[reportUnknownMemberType]
-
-        component_subject_ids = {str(subject_id) for subject_id in wani_vocab.component_subject_ids}  # pyright: ignore[reportUnknownVariableType, reportUnknownArgumentType, reportUnknownMemberType]
-        self.component_subject_ids.set(component_subject_ids)

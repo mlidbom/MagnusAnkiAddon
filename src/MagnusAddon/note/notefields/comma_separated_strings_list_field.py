@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
-from note.notefields.string_field import StringField
+from note.notefields.mutable_string_field import MutableStringField
 from sysutils import ex_str
 
 if TYPE_CHECKING:
@@ -15,8 +15,8 @@ if TYPE_CHECKING:
 
 class CommaSeparatedStringsListField(Slots):
     def __init__(self, note: WeakRef[JPNote], field_name: str) -> None:
-        field = StringField(note, field_name)
-        self._field: StringField = field
+        field = MutableStringField(note, field_name)
+        self._field: MutableStringField = field
         self._value: Lazy[list[str]] = self._field.lazy_reader(lambda: ex_str.extract_comma_separated_values(field.get()))
 
     def get(self) -> list[str]:
