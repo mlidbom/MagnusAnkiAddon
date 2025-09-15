@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import re
 
+from sysutils.linq.l_iterable import LList
+
 newline = "\n"
 invisible_space = "​"
 full_width_space = "　"
@@ -12,8 +14,8 @@ def pad_to_length(value: str, target_length: int, space_scaling: float = 1.0) ->
 
 _commaSeparatedPattern = f"""[{''.join(map(re.escape, (",", "、")))}]"""
 _commaSeparatedCompiled = re.compile(_commaSeparatedPattern)
-def extract_comma_separated_values(string: str) -> list[str]:
-    return [item for item in (item.strip() for item in _commaSeparatedCompiled.split(string.strip())) if item]
+def extract_comma_separated_values(string: str) -> LList[str]:
+    return LList(item for item in (item.strip() for item in _commaSeparatedCompiled.split(string.strip())) if item)
 
 _html_bracket_pattern = re.compile('<.*?>|\[.*?\]') # noqa  # pyright: ignore[reportInvalidStringEscapeSequence] don't know what's going on here but it has been working for ages
 def strip_html_and_bracket_markup(string: str) -> str:

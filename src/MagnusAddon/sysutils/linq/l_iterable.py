@@ -15,6 +15,9 @@ class LIterable[TItem](Iterable[TItem]):
     @property
     def _value(self) -> Iterable[TItem]: raise NotImplementedError()
 
+    def __iter__(self) -> Iterator[TItem]:
+        yield from self._value
+
     # region filtering
     def where(self, predicate: Callable[[TItem], bool]) -> LIterable[TItem]:
         return _LIterable(item for item in self._value if predicate(item))
@@ -101,9 +104,6 @@ class _LIterable[TItem](LIterable[TItem]):
     @override
     def _value(self) -> Iterable[TItem]: return self.__value
 
-    def __iter__(self) -> Iterator[TItem]:
-        yield from self._value
-
 class LFrozenSet[TItem](frozenset[TItem], LIterable[TItem]):
     def __new__(cls, iterable: Iterable[TItem]) -> LFrozenSet[TItem]:
         return super().__new__(cls, iterable)
@@ -115,9 +115,9 @@ class LFrozenSet[TItem](frozenset[TItem], LIterable[TItem]):
 class LSequence[TItem](Sequence[TItem], LIterable[TItem]):
     pass
 
-class LList[TItem](list[TItem], LIterable[TItem]):
+class LList[TItem](list[TItem], LSequence[TItem]):  # pyright: ignore [reportIncompatibleMethodOverride] things break in fascinating ways unless list is inherited first. I'm pretty sure list implements Sequence correctly...
     def __init__(self, iterable: Iterable[TItem]) -> None:
-        super().__init__(iterable)
+        list.__init__(self, iterable)
 
     @property
     @override
