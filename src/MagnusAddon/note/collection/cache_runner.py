@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import threading
-import time
 from typing import TYPE_CHECKING, cast
 
 from anki import hooks
@@ -10,7 +9,7 @@ from anki_extentions.notetype_ex.note_type_ex import NoteTypeEx
 from ankiutils import app
 from autoslot import Slots
 from note.note_constants import NoteTypes
-from sysutils import app_thread_pool, ex_assert
+from sysutils import app_thread_pool, ex_assert, ex_thread
 from sysutils.typed import checked_cast
 
 if TYPE_CHECKING:
@@ -49,7 +48,7 @@ class CacheRunner(Slots):
     def _run_periodic_flushes(self) -> None:
         while self._running:
             self.flush_updates()
-            time.sleep(0.1)
+            ex_thread.sleep_ex(0.1)
 
     def destruct(self) -> None:
         with self._lock:
@@ -73,7 +72,7 @@ class CacheRunner(Slots):
             self._check_for_updated_note_types_and_reset_app_if_found()
             self._internal_flush_updates()
 
-    def _on_will_be_added(self, _collection: Collection, backend_note: Note, _deck_id: DeckId) -> None:
+    def _on_will_be_added(self, _collection: Collection, backend_note: Note, _deck_id: DeckId) -> None:  # pyright: ignore
         if not self._running: return
         with self._lock:
             for callback in self._will_add_subscribers: callback(backend_note)

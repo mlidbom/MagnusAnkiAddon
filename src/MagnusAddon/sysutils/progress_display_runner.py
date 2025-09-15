@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 from autoslot import Slots
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication, QMessageBox, QProgressDialog
-from sysutils import app_thread_pool, timeutil
+from sysutils import app_thread_pool, ex_thread, timeutil
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -26,7 +26,7 @@ def run_on_background_thread_with_spinning_progress_dialog(message:str, action: 
 
     while not future.done():
         QApplication.processEvents()
-        time.sleep(0.1)
+        ex_thread.sleep_ex(0.1)
 
     dialog.close()
 

@@ -1,11 +1,11 @@
 from __future__ import annotations
 
 from concurrent.futures.thread import ThreadPoolExecutor
-from time import sleep
 from typing import TYPE_CHECKING
 
 from ankiutils import app
 from PyQt6.QtCore import QCoreApplication, QThread
+from sysutils import ex_thread
 from sysutils.typed import non_optional
 
 if TYPE_CHECKING:
@@ -26,7 +26,7 @@ def run_on_ui_thread_synchronously[T](func: Callable[[], T]) -> T:
     mw.taskman.run_on_main(lambda: done_running.append(func()))
 
     while not len(done_running) > 0:
-        sleep(0.001)
+        ex_thread.sleep_ex(0.001)
 
     return done_running[0]
 
