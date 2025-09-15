@@ -11,10 +11,10 @@ if TYPE_CHECKING:
 class RequireForbidFlagField(Slots):
     def __init__(self, note: WeakRef[JPNote], required_tag: str, forbidden_tag: str) -> None:
         self._note: WeakRef[JPNote] = note
-        self._required_tag = required_tag
-        self._forbidden_tag = forbidden_tag
-        self._is_required = note().has_tag(required_tag)
-        self._is_forbidden = note().has_tag(forbidden_tag)
+        self._required_tag: str = required_tag
+        self._forbidden_tag: str = forbidden_tag
+        self._is_required: bool = note().has_tag(required_tag)
+        self._is_forbidden: bool = note().has_tag(forbidden_tag)
 
     @property
     def is_configured_required(self) -> bool: return self._is_required

@@ -13,6 +13,8 @@ def create_sentence() -> NoteTypeEx:
                           NoteFieldEx(SentenceNoteFields.source_question),
                           NoteFieldEx(SentenceNoteFields.source_comments),
                           NoteFieldEx(SentenceNoteFields.user_question),
+                          NoteFieldEx(SentenceNoteFields.user_answer_analysis),
+                          NoteFieldEx(SentenceNoteFields.user_comments),
                           NoteFieldEx(SentenceNoteFields.active_answer),
                           NoteFieldEx(SentenceNoteFields.source_answer),
                           NoteFieldEx(SentenceNoteFields.user_answer),

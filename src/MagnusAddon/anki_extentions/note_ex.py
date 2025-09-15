@@ -44,15 +44,15 @@ class NoteBulkLoader:
     class _NoteEx(Note):
         # noinspection PyMissingConstructor this is very much intentional. We do NOT want the base class to go fetching the note's data from the db. Avoiding that is the whole point of this class and improves performance tenfold or more.
         def __init__(self, collection_weak_ref: Collection, db_row: Row, field_map: dict[str, tuple[int, FieldDict]], field_count: int) -> None:
-            self.col = collection_weak_ref
-            self.id = NoteId(db_row[0])
-            self.guid = db_row[1]
-            self.mid = NotetypeId(db_row[2])
-            self.mod = db_row[3]
-            self.usn = db_row[4]
-            self.tags = db_row[5].split() if db_row[5] else []
+            self.col: Collection = collection_weak_ref
+            self.id: NoteId = NoteId(db_row[0])
+            self.guid: str = db_row[1]
+            self.mid: NotetypeId = NotetypeId(db_row[2])
+            self.mod: int = db_row[3]
+            self.usn: int = db_row[4]
+            self.tags: list[str] = db_row[5].split() if db_row[5] else []
 
             field_values = db_row[6].split("\x1f") if db_row[6] else []
             while len(field_values) < field_count: field_values.append("")
-            self.fields = field_values
-            self._fmap = field_map
+            self.fields:list[str] = field_values
+            self._fmap:dict[str, tuple[int, FieldDict]] = field_map

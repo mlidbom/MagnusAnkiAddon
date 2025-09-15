@@ -95,6 +95,8 @@ class NoteFields(Slots):
         active_answer: str = MyNoteFields.answer
         source_answer: str = "source_answer"
         user_answer: str = "__answer"
+        user_explanation: str = "__explanation"
+        user_explanation_long: str = "__explanation_long"
         user_compounds: str = "__compounds"
         user_mnemonic: str = "__mnemonic"
         Reading: str = "Reading"
