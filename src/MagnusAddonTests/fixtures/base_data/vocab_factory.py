@@ -23,7 +23,6 @@ def create_vocab() -> NoteTypeEx:
                        NoteFieldEx(NoteFields.Vocab.Homophones),
                        NoteFieldEx(NoteFields.Vocab.ParsedTypeOfSpeech),
                        NoteFieldEx(NoteFields.Vocab.user_mnemonic),
-                       NoteFieldEx(NoteFields.Vocab.component_subject_ids),
                        NoteFieldEx(NoteFields.Vocab.sentence_count),
                        NoteFieldEx(NoteFields.Vocab.user_compounds),
                        NoteFieldEx(NoteFields.Vocab.matching_rules),

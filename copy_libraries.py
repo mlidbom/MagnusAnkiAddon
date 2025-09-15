@@ -12,7 +12,6 @@ target_dir = os.path.join(script_dir, "./src/MagnusAddon/_lib")
 
 # One line per library and its dependencies
 libraries_to_copy = [
-    "wanikani_api", "dateutil", "six.py",
     "janome",
     "pyperclip",
     "beartype",

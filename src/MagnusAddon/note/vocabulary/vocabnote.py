@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, cast, override
 
 from ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules  # noqa  # pyright: ignore[reportUnusedImport]
 from autoslot import Slots
+from note.jpnote import JPNote
 from note.note_constants import NoteFields
 from note.notefields.comma_separated_strings_list_field import MutableCommaSeparatedStringsListField
 from note.notefields.mutable_string_field import MutableStringField
@@ -22,17 +23,13 @@ from note.vocabulary.vocabnote_question import VocabNoteQuestion
 from note.vocabulary.vocabnote_sentences import VocabNoteSentences
 from note.vocabulary.vocabnote_usercompoundparts import VocabNoteUserCompoundParts
 from note.vocabulary.vocabnote_userfields import VocabNoteUserfields
-from note.vocabulary.vocabnote_wanikani_extensions import VocabNoteWaniExtensions
-from note.waninote import WaniNote
 from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
     from anki.notes import Note
-    from note.jpnote import JPNote
-    from wanikani_api import models  # pyright: ignore[reportMissingTypeStubs]
 
 
-class VocabNote(WaniNote, Slots):
+class VocabNote(JPNote, Slots):
     factory: VocabNoteFactory = VocabNoteFactory()
     def __init__(self, note: Note) -> None:
         super().__init__(note)
@@ -55,7 +52,6 @@ class VocabNote(WaniNote, Slots):
         self.parts_of_speech: VocabNotePartsOfSpeech = VocabNotePartsOfSpeech(self.weakref_vocab)
         self.compound_parts: VocabNoteUserCompoundParts = VocabNoteUserCompoundParts(self.weakref_vocab)
         self.conjugator: VocabNoteConjugator = VocabNoteConjugator(self.weakref_vocab)
-        self.wani_extensions: VocabNoteWaniExtensions = VocabNoteWaniExtensions(self.weakref_vocab)
         self.kanji: VocabNoteKanji = VocabNoteKanji(self.weakref_vocab)
         self.meta_data: VocabNoteMetaData = VocabNoteMetaData(self.weakref_vocab)
         self.matching_configuration: VocabNoteMatchingConfiguration = VocabNoteMatchingConfiguration(self.weakref_vocab)
@@ -88,8 +84,3 @@ class VocabNote(WaniNote, Slots):
         field = self.user.answer
         string_field = self._source_answer
         return field.value or string_field.value
-
-    @override
-    def update_from_wani(self, wani_model: models.Vocabulary) -> None:  # pyright: ignore[reportIncompatibleMethodOverride]
-        super().update_from_wani(wani_model)
-        self.wani_extensions.update_from_wani(wani_model)

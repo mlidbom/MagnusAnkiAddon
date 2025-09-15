@@ -9,7 +9,6 @@ PyQt6-WebEngine==6.9.0
 PyQt6-WebEngine-Qt6==6.9.1
 #PyQt6-WebEngineSubwheel-Qt6==6.7.3
 
-wanikani-api==0.6.1
 jamdict==0.1a11.post2
 #jamdict-data==1.
 jamdict-data-fix==1.5.1a2

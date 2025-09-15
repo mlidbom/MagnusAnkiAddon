@@ -96,8 +96,6 @@ class NoteFields(Slots):
         source_answer: str = "source_answer"
         user_answer: str = "__answer"
         user_compounds: str = "__compounds"
-        user_explanation: str = "__explanation"
-        user_explanation_long: str = "__explanation_long"
         user_mnemonic: str = "__mnemonic"
         Reading: str = "Reading"
         parts_of_speech: str = "TOS"
@@ -110,8 +108,6 @@ class NoteFields(Slots):
         source_reading_mnemonic: str = "source_reading_mnemonic"
         Homophones: str = "Homophones"
         ParsedTypeOfSpeech: str = "ParsedTypeOfSpeech"
-
-        component_subject_ids: str = "component_subject_ids"
 
 f_root = "-::"
 f_sentence: str = f"{f_root}sentence::"
@@ -195,10 +191,6 @@ class Tags(Slots):
     priority_folder: str = f"{f_root}priority::"
 
     source_folder: str = "source::"
-
-    Wani: str = f"{source_folder}wani"
-    wani_sentence_current: str = f"{Wani}::current"
-    wani_sentence_removed_on_wani: str = f"{Wani}::removed"
 
     immersion_kit: str = f"{source_folder}immersion_kit"
 

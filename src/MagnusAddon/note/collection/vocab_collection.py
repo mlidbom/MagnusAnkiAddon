@@ -95,9 +95,6 @@ class VocabCollection(Slots):
 
     def search(self, query: str) -> list[VocabNote]: return list(self.collection.search(query))
 
-    def all_wani(self) -> list[VocabNote]:
-        return [vocab for vocab in self.all() if vocab.is_wani_note()]
-
     def all_old(self, task_runner: ITaskRunner) -> list[VocabNote]:
         backend_notes = NoteBulkLoader.load_all_notes_of_type(self.collection.anki_collection, NoteTypes.Vocab, task_runner)
         return [VocabNote(backend_note) for backend_note in backend_notes]
