@@ -13,8 +13,8 @@ class ReadOnlyStringField(Slots):
     def __init__(self, note: WeakRef[JPNote], field_name: str) -> None:
         self._note: WeakRef[JPNote] = note
         self._field_name: str = field_name
-        def get_field_value() -> str: return note().get_field(field_name)
-        self._value: Lazy[str] = Lazy(get_field_value)
+        def read_only_string_field_get_initial_value_for_caching() -> str: return note().get_field(field_name) # this method is interesting for profiling so we want a unuique name we can find in the trace
+        self._value: Lazy[str] = Lazy(read_only_string_field_get_initial_value_for_caching)
 
     def get(self) -> str: return self._value()
     def has_value(self) -> bool: return self.get() != ""
