@@ -17,7 +17,7 @@ def current_is_ui_thread() -> bool:
     return bool(QCoreApplication.instance() and non_optional(QCoreApplication.instance()).thread() == QThread.currentThread())
 
 def run_on_ui_thread_synchronously[T](func: Callable[[], T]) -> T:
-    if app.is_testing() or current_is_ui_thread():
+    if app.is_testing or current_is_ui_thread():
         return func()
 
     done_running: list[T] = []
@@ -32,7 +32,7 @@ def run_on_ui_thread_synchronously[T](func: Callable[[], T]) -> T:
 
 
 def run_on_ui_thread_fire_and_forget(func: Callable[[], None]) -> None:
-    if app.is_testing() or current_is_ui_thread():
+    if app.is_testing or current_is_ui_thread():
         func()
 
     return app.main_window().taskman.run_on_main(func)

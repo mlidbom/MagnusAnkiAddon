@@ -41,7 +41,7 @@ class JamdictThreadingWrapper(Slots):
 
     @staticmethod
     def create_jamdict_and_log_loading_time() -> Jamdict:
-        if app.config().load_jamdict_db_into_memory.get_value() and not app.is_testing():
+        if app.config().load_jamdict_db_into_memory.get_value() and not app.is_testing:
             with StopWatch.log_execution_time("Loading Jamdict into memory"):
                 jamdict = Jamdict(memory_mode=True)
         else:
@@ -83,12 +83,14 @@ class JamdictThreadingWrapper(Slots):
 
 _jamdict_threading_wrapper: JamdictThreadingWrapper = JamdictThreadingWrapper()
 
+# noinspection SqlResolve
 def _find_all_words() -> set[str]:
     with StopWatch.log_execution_time("Prepopulating all word forms from jamdict."):
         kanji_forms: set[str] = set(_jamdict_threading_wrapper.run_string_query("SELECT distinct text FROM Kanji"))
         kana_forms: set[str] = set(_jamdict_threading_wrapper.run_string_query("SELECT distinct text FROM Kana"))
     return kanji_forms | kana_forms
 
+# noinspection SqlResolve
 def _find_all_names() -> set[str]:
     with StopWatch.log_execution_time("Prepopulating all name forms from jamdict."):
         _jamdict = Jamdict(reuse_ctx=False)
@@ -200,12 +202,12 @@ class DictLookup(Slots):
     @classmethod
     def might_be_word(cls, word: str) -> bool:
         # this method is a pure optimization to save on dictionary calls during real runtime. During tests populating all the words is a suboptimization, so just always return true when testing
-        return app.is_testing() or word in _all_word_forms()
+        return app.is_testing or word in _all_word_forms()
 
     @classmethod
     def might_be_name(cls, word: str) -> bool:
         # this method is a pure optimization to save on dictionary calls during real runtime. During tests populating all the words is a suboptimization, so just always return true when testing
-        return app.is_testing() or word in _all_name_forms()
+        return app.is_testing or word in _all_name_forms()
 
     @classmethod
     def might_be_entry(cls, word: str) -> bool:
