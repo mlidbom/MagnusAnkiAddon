@@ -80,9 +80,6 @@ class KanjiNote(JPNote, Slots):
     def set_user_answer(self, value: str) -> None:
         return self.set_field(NoteFields.Kanji.user_answer, value)
 
-    def _set_source_answer(self, value: str) -> None:
-        self.set_field(NoteFields.Kanji.source_answer, value)
-
     @override
     def update_generated_data(self) -> None:
         super().update_generated_data()
@@ -198,9 +195,6 @@ class KanjiNote(JPNote, Slots):
     def get_source_meaning_mnemonic(self) -> str:
         return self.get_field(NoteFields.Kanji.Source_Meaning_Mnemonic)
 
-    def set_source_meaning_mnemonic(self, value: str) -> None:
-        self.set_field(NoteFields.Kanji.Source_Meaning_Mnemonic, value)
-
     def get_related_confused_with(self) -> set[str]:
         return set(ex_str.extract_comma_separated_values(self.get_field(NoteFields.Kanji.related_confused_with)))
 
@@ -208,15 +202,6 @@ class KanjiNote(JPNote, Slots):
         confused_with = self.get_related_confused_with()
         confused_with.add(new_confused_with)
         self.set_field(NoteFields.Kanji.related_confused_with, ", ".join(confused_with))
-
-    def set_meaning_hint(self, value: str | None) -> None:
-        self.set_field(NoteFields.Kanji.Meaning_Info, value if value is not None else "")
-
-    def set_reading_mnemonic(self, value: str) -> None:
-        self.set_field(NoteFields.Kanji.Reading_Mnemonic, value)
-
-    def set_reading_hint(self, value: str | None) -> None:
-        self.set_field(NoteFields.Kanji.Reading_Info, value if value is not None else "")
 
     def get_primary_vocabs_or_defaults(self) -> list[str]:
         return self.get_primary_vocab() if self.get_primary_vocab() else self.generate_default_primary_vocab()

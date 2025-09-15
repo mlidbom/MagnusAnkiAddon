@@ -148,7 +148,7 @@ def tag_kanji_metadata() -> None:
                 for reading in vocab.readings.get():
                     if reading not in primary_readings:
                         kanji.set_tag(Tags.Kanji.with_single_kanji_vocab_with_different_reading)
-                        if vocab.is_studying(reading):#todo: Bug: this code looks nuts. You cannot pass a reading to is_studying.
+                        if vocab.is_studying(reading):  # todo: Bug: this code looks nuts. You cannot pass a reading to is_studying.
                             kanji.set_tag(Tags.Kanji.with_studying_single_kanji_vocab_with_different_reading)
 
     all_kanji = app.col().kanji.all()
@@ -186,7 +186,7 @@ def print_gc_status_and_collect() -> None:
 
 def reparse_sentences_for_vocab(vocab: VocabNote) -> None:
     query = query_builder.potentially_matching_sentences_for_vocab(vocab)
-    sentences:set[SentenceNote] = set(app.col().sentences.search(query))
+    sentences: set[SentenceNote] = set(app.col().sentences.search(query))
     # noinspection PyAugmentAssignment
     sentences = sentences | set(vocab.sentences.all())
     reparse_sentences(list(sentences))

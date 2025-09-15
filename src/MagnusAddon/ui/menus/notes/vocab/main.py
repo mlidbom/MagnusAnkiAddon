@@ -53,8 +53,7 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
             add_single_vocab_lookup_action(note_lookup_menu, shortcutfinger.home4("Ergative twin"), related_vocab.ergative_twin.get())
 
     def build_misc_menu(misc_menu: QMenu) -> None:
-        field = vocab.user.answer
-        add_ui_action(misc_menu, shortcutfinger.home1("Accept meaning"), lambda: vocab.user.answer.set(format_vocab_meaning(vocab.get_answer())), not field.value)
+        add_ui_action(misc_menu, shortcutfinger.home1("Accept meaning"), lambda: vocab.user.answer.set(format_vocab_meaning(vocab.get_answer())), not vocab.user.answer.value)
         add_ui_action(misc_menu, shortcutfinger.home2("Generate answer"), lambda: vocab.generate_and_set_answer())
 
         from batches import local_note_updater
@@ -80,5 +79,5 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
 def format_vocab_meaning(meaning: str) -> str:
     return ex_str.strip_html_and_bracket_markup(meaning.replace(" SOURCE", "").replace(", ", "/").replace(" ", "-").lower())
 
-def build_view_menu(_view_menu: QMenu, _vocab: VocabNote) -> None:
+def build_view_menu(_view_menu: QMenu, _vocab: VocabNote) -> None:  # pyright: ignore
     pass

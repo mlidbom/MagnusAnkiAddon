@@ -32,7 +32,7 @@ class TaskRunner(Slots):
         return InvisibleTaskRunner("", "")
 
 class InvisibleTaskRunner(ITaskRunner, Slots):
-    def __init__(self, window_title: str, label_text: str) -> None:
+    def __init__(self, window_title: str, label_text: str) -> None:  # pyright: ignore
         pass
 
     @override

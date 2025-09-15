@@ -12,7 +12,7 @@ def collect_on_on_ui_thread_if_collection_during_batches_enabled(display: bool =
         if display:
             collect_on_ui_thread_and_display_message()
         else:
-            app_thread_pool.run_on_ui_thread_synchronously(lambda : gc.collect())
+            app_thread_pool.run_on_ui_thread_synchronously(lambda: gc.collect())
         return True
 
     return False

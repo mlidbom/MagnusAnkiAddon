@@ -1,10 +1,6 @@
 from __future__ import annotations
 
 import re
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from collections.abc import Sequence
 
 newline = "\n"
 invisible_space = "​"
@@ -45,6 +41,3 @@ def first_number(string:str) -> int:
 
 def replace_word(word:str, replacement:str, text:str) -> str:
     return re.sub(rf"\b{re.escape(word)}\b", replacement, text)
-
-
-def sort_by_length_descending(strings: Sequence[str]) -> list[str]: return sorted(strings, key=len, reverse=True)
