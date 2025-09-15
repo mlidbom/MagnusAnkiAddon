@@ -8,7 +8,6 @@ from ankiutils import app
 from fixtures.stubs.ui_utils_stub import UIUtilsStub
 from sysutils import progress_display_runner
 from sysutils.lazy import Lazy
-from sysutils.progress_display_runner import Closable
 from sysutils.typed import checked_cast
 
 if TYPE_CHECKING:
@@ -48,15 +47,10 @@ def stub_ui_dependencies() -> Iterator[None]:
 @contextmanager
 def _stub_progress_runner() -> Iterator[None]:
     # noinspection PyUnusedLocal
-    def _open_spinning_progress_dialog(message: str) -> Closable:  # pyright: ignore[reportUnusedParameter]
-        return Closable(lambda: None)
-
-    # noinspection PyUnusedLocal
     def _process_with_progress[T](items: list[T], process_item: Callable[[T], None], _message: str, _allow_cancel: bool = True, _display_delay_seconds: float = 0.0, _pause_cache_updates: bool = True) -> None:
         for item in items:
             process_item(item)
 
-    progress_display_runner.open_spinning_progress_dialog = _open_spinning_progress_dialog
     progress_display_runner.process_with_progress = _process_with_progress
 
     yield
