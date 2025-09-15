@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Iterable, Sequence
-from typing import TYPE_CHECKING, cast, override
+from typing import TYPE_CHECKING, Any, cast, override
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterator
@@ -19,7 +19,7 @@ class LIterable[TItem](Iterable[TItem]):
     def where(self, predicate: Callable[[TItem], bool]) -> LIterable[TItem]:
         return _LIterable(item for item in self._value if predicate(item))
 
-    def not_none(self) -> LIterable[TItem]:
+    def where_not_none(self) -> LIterable[TItem]:
         return self.where(lambda item: item is not None)
     # endregion
 
@@ -39,11 +39,11 @@ class LIterable[TItem](Iterable[TItem]):
         return sum(1 for _ in self._value)
 
     def single(self, predicate: Callable[[TItem], bool] | None = None) -> TItem:
-        result = self.single_or_default(predicate)
+        result = self.single_or_none(predicate)
         if result is None: raise ValueError("Sequence contains no elements")
         return result
 
-    def single_or_default(self, predicate: Callable[[TItem], bool] | None = None) -> TItem | None:
+    def single_or_none(self, predicate: Callable[[TItem], bool] | None = None) -> TItem | None:
         if predicate is None:
             iterator: Iterator[TItem] = iter(self._value)
             try:
@@ -55,7 +55,7 @@ class LIterable[TItem](Iterable[TItem]):
                     return first
             except StopIteration:
                 return None
-        return self.where(predicate).single_or_default()
+        return self.where(predicate).single_or_none()
 
     # region assertions on the collection or it's values
 
@@ -63,6 +63,9 @@ class LIterable[TItem](Iterable[TItem]):
         for item in self:
             if not predicate(item): raise AssertionError(message)
         return self
+
+    def reversed(self) -> LIterable[TItem]:
+        return _LIterable[TItem](reversed(self.to_built_in_list()))
 
     def assert_on_collection(self, predicate: Callable[[LIterable[TItem]], bool], message: str | None = None) -> LIterable[TItem]:
         if not predicate(self): raise AssertionError(message)
@@ -75,13 +78,14 @@ class LIterable[TItem](Iterable[TItem]):
         for item in self._value: action(item)
         return self
 
-    def for_single(self, action: Callable[[TItem], None]) -> LIterable[TItem]:
-        return (self.assert_on_collection(lambda seq: seq.length() == 1)
-                .for_each(action))
+    def for_single(self, action: Callable[[TItem], Any]) -> LIterable[TItem]:
+        action(self.single())
+        return self
 
-    def for_single_or_none(self, action: Callable[[TItem], None]) -> LIterable[TItem]:
-        return (self.assert_on_collection(lambda seq: seq.length() <= 1)
-                .for_each(action))
+    def for_single_or_none(self, action: Callable[[TItem], Any]) -> LIterable[TItem]:
+        value = self.single_or_none()
+        if value is not None: action(value)
+        return self
     # endregion
 
     # region factory methods
