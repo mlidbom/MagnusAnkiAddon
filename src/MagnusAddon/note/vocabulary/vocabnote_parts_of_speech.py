@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from autoslot import Slots
 from note.note_constants import NoteFields, Tags
-from note.notefields.comma_separated_strings_set_field import CommaSeparatedStringsSetField
+from note.notefields.comma_separated_strings_set_field import MutableCommaSeparatedStringsSetField
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 class VocabNotePartsOfSpeech(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self.__vocab = vocab
-        self._field: CommaSeparatedStringsSetField = CommaSeparatedStringsSetField(vocab, NoteFields.Vocab.parts_of_speech)
+        self._field: MutableCommaSeparatedStringsSetField = MutableCommaSeparatedStringsSetField(vocab, NoteFields.Vocab.parts_of_speech)
 
     @property
     def _vocab(self) -> VocabNote: return self.__vocab()

@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from note.jpnote import JPNote
     from sysutils.weak_ref import WeakRef
 
-class CommaSeparatedStringsSetField(Slots):
+class MutableCommaSeparatedStringsSetField(Slots):
     def __init__(self, note: WeakRef[JPNote], field_name: str) -> None:
         self._field: MutableCommaSeparatedStringsListField = MutableCommaSeparatedStringsListField(note, field_name)
         field_with_no_reference_loop = self._field
