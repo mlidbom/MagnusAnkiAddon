@@ -21,7 +21,8 @@ class CachingSentenceConfigurationField(WeakRefable, Slots):
         self.field: MutableStringField = MutableStringField(sentence, SentenceNoteFields.configuration)
 
         weakrefthis = WeakRef(self)
-        self._value: Lazy[SentenceConfiguration] = Lazy(lambda: SentenceConfiguration.serializer.deserialize(weakrefthis().field.get(), weakrefthis()._save))
+        string_field = weakrefthis().field
+        self._value: Lazy[SentenceConfiguration] = Lazy(lambda: SentenceConfiguration.serializer.deserialize(string_field.value, weakrefthis()._save))
 
     @property
     def configuration(self) -> SentenceConfiguration:

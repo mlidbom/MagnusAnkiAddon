@@ -53,7 +53,8 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
             add_single_vocab_lookup_action(note_lookup_menu, shortcutfinger.home4("Ergative twin"), related_vocab.ergative_twin.get())
 
     def build_misc_menu(misc_menu: QMenu) -> None:
-        add_ui_action(misc_menu, shortcutfinger.home1("Accept meaning"), lambda: vocab.user.answer.set(format_vocab_meaning(vocab.get_answer())), not vocab.user.answer.get())
+        field = vocab.user.answer
+        add_ui_action(misc_menu, shortcutfinger.home1("Accept meaning"), lambda: vocab.user.answer.set(format_vocab_meaning(vocab.get_answer())), not field.value)
         add_ui_action(misc_menu, shortcutfinger.home2("Generate answer"), lambda: vocab.generate_and_set_answer())
 
         from batches import local_note_updater

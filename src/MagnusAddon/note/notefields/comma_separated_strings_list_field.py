@@ -17,7 +17,7 @@ class CommaSeparatedStringsListField(Slots):
     def __init__(self, note: WeakRef[JPNote], field_name: str) -> None:
         field = MutableStringField(note, field_name)
         self._field: MutableStringField = field
-        self._value: Lazy[list[str]] = self._field.lazy_reader(lambda: ex_str.extract_comma_separated_values(field.get()))
+        self._value: Lazy[list[str]] = self._field.lazy_reader(lambda: ex_str.extract_comma_separated_values(field.value))
 
     def get(self) -> list[str]:
         return self._value()
@@ -29,7 +29,8 @@ class CommaSeparatedStringsListField(Slots):
         self._field.set(", ".join(value))
 
     def raw_string_value(self) -> str:
-        return self._field.get()
+        field = self._field
+        return field.value
 
     def set_raw_string_value(self, value: str) -> None:
         self.set(ex_str.extract_comma_separated_values(value))

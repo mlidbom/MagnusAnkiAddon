@@ -14,6 +14,9 @@ class FallbackStringField(Slots):
         self._field: MutableStringField = MutableStringField(note, primary_field)
         self._fallback_field: MutableStringField = MutableStringField(note, fallback_field)
 
-    def get(self) -> str: return self._field.get() or self._fallback_field.get()
+    def get(self) -> str:
+        field = self._field
+        string_field = self._fallback_field
+        return field.value or string_field.value
 
 

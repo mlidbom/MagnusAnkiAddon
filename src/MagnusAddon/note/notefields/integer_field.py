@@ -16,7 +16,8 @@ class IntegerField(Slots):
 
     # noinspection PyUnusedFunction
     def get(self) -> int:
-        return int(self._field.get()) if self._field.has_value() else 0
+        field = self._field
+        return int(field.value) if self._field.has_value() else 0
 
     def set(self, value: int) -> None:
         self._field.set(str(value))

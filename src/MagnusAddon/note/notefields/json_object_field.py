@@ -20,7 +20,8 @@ class SerializedObjectField[T](WeakRefable, Slots):
         self._field: MutableStringField = MutableStringField(note, field)
         self._serializer: ObjectSerializer[T] = serializer
         weakrefthis = WeakRef(self)
-        self._value: Lazy[T] = Lazy(lambda: serializer.deserialize(weakrefthis()._field.get()))
+        string_field = weakrefthis()._field
+        self._value: Lazy[T] = Lazy(lambda: serializer.deserialize(string_field.value))
 
     def get(self) -> T: return self._value()
     def set(self, value: T) -> None:

@@ -18,20 +18,21 @@ class MutableStringField(Slots):
         self._note: WeakRef[JPNote] = note
         self._field_name: str = field_name
         self._reset_callbacks: list[Callable[[], None]] | None = None
-        self.value: str = self._string_field_get_initial_value_for_caching()
+        self._value: str = self._string_field_get_initial_value_for_caching()
 
     # this method is interesting for profiling so we want a unuique name we can find in the trace
     def _string_field_get_initial_value_for_caching(self) -> str: return self._note().get_field(self._field_name)
 
-    def get(self) -> str: return self.value
+    @property
+    def value(self) -> str: return self._value
 
     def set(self, value: str) -> None:
         self._note().set_field(self._field_name, value.strip())
-        self.value = self._string_field_get_initial_value_for_caching()
+        self._value = self._string_field_get_initial_value_for_caching()
         if self._reset_callbacks is not None:
             for callback in self._reset_callbacks: callback()
 
-    def has_value(self) -> bool: return self.get() != ""
+    def has_value(self) -> bool: return self.value != ""
     def empty(self) -> None: self.set("")
 
     def lazy_reader[TValue](self, reader: Callable[[], TValue]) -> Lazy[TValue]:

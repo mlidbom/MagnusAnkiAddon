@@ -14,7 +14,9 @@ class StripHtmlOnReadStringField(Slots):
     def __init__(self, note: WeakRef[JPNote], field_name: str) -> None:
         self._field: MutableStringField = MutableStringField(note, field_name)
 
-    def get_raw(self) -> str: return self._field.get()
+    def get_raw(self) -> str:
+        field = self._field
+        return field.value
 
     def set(self, value: str) -> None: self._field.set(value)
     def empty(self) -> None: self.set("")

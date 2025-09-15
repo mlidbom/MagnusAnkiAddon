@@ -25,8 +25,8 @@ class VocabNoteQuestion(Slots):
         self._vocab: WeakRef[VocabNote] = vocab
         field = MutableStringField(vocab, NoteFields.Vocab.question)
         self._field: MutableStringField = field
-        self._raw: Lazy[str] = field.lazy_reader(lambda: field.get())
-        self._without_noise_characters: Lazy[str] = field.lazy_reader(lambda: field.get().replace(Mine.VocabPrefixSuffixMarker, ""))
+        self._raw: Lazy[str] = field.lazy_reader(lambda: field.value)
+        self._without_noise_characters: Lazy[str] = field.lazy_reader(lambda: field.value.replace(Mine.VocabPrefixSuffixMarker, ""))
 
     @property
     def raw(self) -> str: return self._raw()

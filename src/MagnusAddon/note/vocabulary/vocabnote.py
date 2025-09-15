@@ -85,7 +85,9 @@ class VocabNote(WaniNote, Slots):
 
     @override
     def get_answer(self) -> str:
-        return self.user.answer.get() or self._source_answer.get()
+        field = self.user.answer
+        string_field = self._source_answer
+        return field.value or string_field.value
 
     @override
     def update_from_wani(self, wani_model: models.Vocabulary) -> None:  # pyright: ignore[reportIncompatibleMethodOverride]

@@ -14,17 +14,21 @@ class AudioField(Slots):
         self._field: MutableStringField = MutableStringField(note, field_name)
 
     def has_audio(self) -> bool:
-        return self._field.get().strip().startswith("[sound:")
+        field = self._field
+        return field.value.strip().startswith("[sound:")
 
     def first_audiofile_path(self) -> str:
         return self.audio_files_paths()[0] if self.has_audio() else ""
 
-    def raw_walue(self) -> str: return self._field.get()
+    def raw_walue(self) -> str:
+        field = self._field
+        return field.value
 
     def audio_files_paths(self) -> list[str]:
         if not self.has_audio(): return []
 
-        stripped_paths = self._field.get().strip().replace("[sound:", "").split("]")
+        field = self._field
+        stripped_paths = field.value.strip().replace("[sound:", "").split("]")
         return [path.strip() for path in stripped_paths]
 
 class WritableAudioField(AudioField, Slots):
