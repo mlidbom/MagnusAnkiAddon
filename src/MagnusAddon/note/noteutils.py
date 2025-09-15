@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from time import sleep
 from typing import TYPE_CHECKING
 
 from anki.consts import QUEUE_TYPE_SUSPENDED

@@ -6,11 +6,11 @@ from ankiutils import app
 from autoslot import Slots
 from note.note_constants import Tags
 from note.notefields.require_forbid_flag_field import RequireForbidFlagField
-from note.vocabulary.vocabnote_parts_of_speech import VocabNotePartsOfSpeech
 from sysutils.simple_string_builder import SimpleStringBuilder
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
+    from note.vocabulary.vocabnote_parts_of_speech import VocabNotePartsOfSpeech
     from sysutils.weak_ref import WeakRef
 
 class YieldLastTokenToOverlappingCompound(RequireForbidFlagField, Slots):
