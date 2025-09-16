@@ -18,14 +18,14 @@ class PerfectSynonyms(Slots):
 
     def notes(self) -> LList[VocabNote]: return app.col().vocab.with_any_question_in(list(self._value.get()))
 
-    def add(self, synonym: str) -> None:
-        self._value.add(synonym)
-        (app.col().vocab.with_question(synonym)
-         .select_many(lambda syn: syn.related_notes.perfect_synonyms.notes())
+    def add(self, synonym_question: str) -> None:
+        self._value.add(synonym_question)
+        (app.col().vocab.with_question(synonym_question)
+         .select_many(lambda synonym_note: synonym_note.related_notes.perfect_synonyms.notes())
          .for_each(lambda syn: syn.related_notes.perfect_synonyms._value.add(self._vocab().get_question())))
 
-    def remove(self, to_remove: str) -> None:
-        self._value.remove(to_remove)
+    def remove(self, synonym_question: str) -> None:
+        self._value.remove(synonym_question)
         (self.notes()
-         .select(lambda syn: syn.related_notes.perfect_synonyms)
-         .for_each(lambda other_synonyms: other_synonyms._value.remove(self._vocab().get_question())))
+         .for_each(lambda syn: syn.related_notes.perfect_synonyms._value.remove(self._vocab().get_question())))
+      
