@@ -200,6 +200,10 @@ class LList[TItem](list[TItem], LIterable[TItem]):
     @override
     def reversed(self) -> LIterable[TItem]: return LList[TItem](reversed(self))
 
+    @override
+    def element_at(self, index: int) -> TItem: return self[index]
+
+
 class LFrozenSet[TItem](frozenset[TItem], LIterable[TItem]):
     def __new__(cls, iterable: Iterable[TItem]) -> LFrozenSet[TItem]:
         return super().__new__(cls, iterable)

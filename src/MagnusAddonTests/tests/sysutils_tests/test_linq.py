@@ -26,6 +26,7 @@ def test_element_at_returns_first_element() -> None: value_test((1, 2, 3), lambd
 def test_element_at_return_middle_element() -> None: value_test((1, 2, 3), lambda x: x.element_at(1), 2)
 def test_element_at_returns_last_element() -> None: value_test((1, 2, 3), lambda x: x.element_at(2), 3)
 def test_element_at_throws_if_index_is_out_of_range() -> None: throws_test((1, 2, 3), lambda x: x.element_at(3), IndexError)
+def test_element_at_after_to_list_throws_if_index_is_out_of_range() -> None: throws_test((1, 2, 3), lambda x: x.element_at(3), IndexError)
 
 def test_where_excluding_first_element() -> None: where_test((1, 2, 3), lambda x: x != 1, [2, 3])
 def test_where_excluding_middle_element() -> None: where_test((1, 2, 3), lambda x: x != 2, [1, 3])
