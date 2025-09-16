@@ -3,18 +3,15 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
-from note.notefields.readonly_string_field import ReadOnlyStringField
+from sysutils.weak_ref import WeakRefable
 
 if TYPE_CHECKING:
-    from note.jpnote import JPNote
-    from sysutils.weak_ref import WeakRef
+    from note.notefields.mutable_string_field import MutableStringField
 
-class FallbackStringField(Slots):
-    def __init__(self, note: WeakRef[JPNote], primary_field: str, fallback_field: str) -> None:
-        self._field: ReadOnlyStringField = ReadOnlyStringField(note, primary_field)
-        self._fallback_field: ReadOnlyStringField = ReadOnlyStringField(note, fallback_field)
+class FallbackStringField(WeakRefable, Slots):
+    def __init__(self, primary_field: MutableStringField, fallback_field: MutableStringField) -> None:
+        self._field: MutableStringField = primary_field
+        self._fallback_field: MutableStringField = fallback_field
 
     def get(self) -> str:
-        field = self._field
-        string_field = self._fallback_field
-        return field.value or string_field.value
+        return self._field.value or self._fallback_field.value

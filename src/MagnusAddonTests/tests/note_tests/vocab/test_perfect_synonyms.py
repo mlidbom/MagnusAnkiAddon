@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import pytest
-
 from ankiutils import app
 from fixtures.collection_factory import inject_empty_collection
 from note.vocabulary.vocabnote import VocabNote

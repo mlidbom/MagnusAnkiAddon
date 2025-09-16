@@ -76,3 +76,5 @@ class KanjiCollection(Slots):
 
     def add(self, note: KanjiNote) -> None:
         self.collection.anki_collection.addNote(note.backend_note)
+        fresh_note = KanjiNote(note.backend_note)
+        self._cache.add(fresh_note)

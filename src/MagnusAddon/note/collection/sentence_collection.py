@@ -91,4 +91,5 @@ class SentenceCollection(Slots):
 
     def add(self, note: SentenceNote) -> None:
         self.collection.anki_collection.addNote(note.backend_note)
+        self._cache.add(note)
 

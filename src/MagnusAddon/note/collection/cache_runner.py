@@ -49,7 +49,7 @@ class CacheRunner(Slots):
         while self._running:
             self.flush_updates()
             ex_thread.sleep_ex(0.1)
-
+#
     def destruct(self) -> None:
         with self._lock:
             self._running = False

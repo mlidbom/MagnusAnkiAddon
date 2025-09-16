@@ -43,7 +43,6 @@ def populate_collection(collection: Collection) -> None:
 
 @contextmanager
 def inject_collection_with_select_data(kanji: bool = False, special_vocab: bool = False, ordinary_vocab: bool = False, sentences: bool = False) -> Iterator[JPCollection]:
-    from ankiutils import app
     with inject_empty_collection() as collection:
         if kanji:
             for _kanji in kanji_spec.test_kanji_list:
@@ -61,7 +60,7 @@ def inject_collection_with_select_data(kanji: bool = False, special_vocab: bool 
             for sentence in sentence_spec.test_sentence_list:
                 SentenceNote.create_test_note(sentence.question, sentence.answer)
 
-        app.col().flush_cache_updates()
+        #app.col().flush_cache_updates()
 
         yield collection
 
