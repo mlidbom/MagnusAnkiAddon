@@ -3,7 +3,7 @@ from __future__ import annotations
 import itertools
 from abc import ABC, abstractmethod
 from collections.abc import Iterable
-from typing import TYPE_CHECKING, Any, cast, override
+from typing import TYPE_CHECKING, Any, Reversible, cast, override
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterator
@@ -88,6 +88,9 @@ class LIterable[TItem](Iterable[TItem], ABC):
         return self
 
     def reversed(self) -> LIterable[TItem]:
+        if hasattr(self._value, "__reversed__"):
+            return _LIterable[TItem](reversed(cast(Reversible[TItem], self._value)))
+
         return _LIterable[TItem](reversed(self.to_built_in_list()))
 
     def assert_on_collection(self, predicate: Callable[[LIterable[TItem]], bool], message: str | None = None) -> LIterable[TItem]:
@@ -111,6 +114,7 @@ class LIterable[TItem](Iterable[TItem], ABC):
     # endregion
 
     # region factory methods
+    # note: we do not "optimize" by returning self in any subclass because the contract is to create a new independent copy
     def to_list(self) -> LList[TItem]: return LList(self)
     def to_built_in_list(self) -> list[TItem]: return list(self)
     def to_set(self) -> LSet[TItem]: return LSet(self)
