@@ -32,15 +32,22 @@ class LIterable[TItem](Iterable[TItem], ABC):
 
     # endregion
 
+    # region scalar aggregations
+
     def length(self) -> int:
         if isinstance(self, list): return len(cast(list[TItem], self))
         return sum(1 for _ in self)
 
+    # endregion
+
+    # region order_by
     def order_by(self, key_selector: Callable[[TItem], SupportsRichComparison]) -> LOrderedLIterable[TItem]:
         return LOrderedLIterable(self, [SortInstruction(key_selector, False)])
 
     def order_by_descending(self, key_selector: Callable[[TItem], SupportsRichComparison]) -> LOrderedLIterable[TItem]:
         return LOrderedLIterable(self, [SortInstruction(key_selector, True)])
+
+    # endregion
 
     # region boolean queries
 
@@ -187,6 +194,9 @@ class LFrozenSet[TItem](frozenset[TItem], LIterable[TItem]):
     @override
     def _value(self) -> Iterable[TItem]: return self
 
+    @override
+    def length(self) -> int: return len(self)
+
 class LList[TItem](list[TItem], LIterable[TItem]):
     def __init__(self, iterable: Iterable[TItem]) -> None:
         super().__init__(iterable)
@@ -195,6 +205,9 @@ class LList[TItem](list[TItem], LIterable[TItem]):
     @override
     def _value(self) -> Iterable[TItem]: return self
 
+    @override
+    def length(self) -> int: return len(self)
+
 class LSet[TItem](set[TItem], LIterable[TItem]):
     def __init__(self, iterable: Iterable[TItem]) -> None:
         super().__init__(iterable)
@@ -202,6 +215,9 @@ class LSet[TItem](set[TItem], LIterable[TItem]):
     @property
     @override
     def _value(self) -> Iterable[TItem]: return self
+
+    @override
+    def length(self) -> int: return len(self)
 
 # endregion
 
