@@ -62,23 +62,36 @@ class LIterable[TItem](Iterable[TItem], ABC):
 
     # region single item selecting methods
     def single(self, predicate: Callable[[TItem], bool] | None = None) -> TItem:
-        result = self.single_or_default(predicate)
-        if result is None: raise ValueError("Sequence contains no elements")
-        return result
-
-    def single_or_default(self, predicate: Callable[[TItem], bool] | None = None) -> TItem | None:
-        if predicate is None:
-            iterator: Iterator[TItem] = iter(self._value)
-            try:
-                first: TItem = next(iterator)
-                try:
-                    next(iterator)  # Check if there's a second item
+        if not predicate:
+            first: TItem | None = None
+            found = False
+            for current_index, item in enumerate(self):
+                if current_index > 0:
                     raise ValueError("Sequence contains more than one element")
-                except StopIteration:
-                    return first
-            except StopIteration:
-                return None
-        return self.where(predicate).single_or_default()
+                first = item
+                found = True
+            if found: return cast(TItem, first)
+            raise IndexError("Index 0 was outside the bounds of the collection.")
+
+        return self.where(predicate).single()
+
+    def single_or_none(self, predicate: Callable[[TItem], bool] | None = None) -> TItem | None:
+        if predicate is None:
+            first: TItem | None = None
+            for current_index, item in enumerate(self):
+                if current_index > 0:
+                    raise ValueError("Sequence contains more than one element")
+                first = item
+            return first
+
+        return self.where(predicate).single_or_none()
+
+    def element_at(self, index: int) -> TItem:
+        for current_index, item in enumerate(self):
+            if current_index == index:
+                return item
+        raise IndexError(f"Index {index} was outside the bounds of the collection.")
+
     # endregion
 
     # region assertions on the collection or it's values
@@ -105,7 +118,7 @@ class LIterable[TItem](Iterable[TItem], ABC):
         return self
 
     def for_single_or_none(self, action: Callable[[TItem], Any]) -> LIterable[TItem]:  # pyright: ignore[reportExplicitAny]
-        value = self.single_or_default()
+        value = self.single_or_none()
         if value is not None: action(value)
         return self
     # endregion
