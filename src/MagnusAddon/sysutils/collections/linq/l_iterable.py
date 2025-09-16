@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import itertools
+from _typeshed import SupportsRichComparison
 from abc import ABC, abstractmethod
 from collections.abc import Iterable
 from typing import TYPE_CHECKING, Any, cast, override
@@ -134,18 +135,24 @@ class _LIterable[TItem](LIterable[TItem]):
     @override
     def __iter__(self) -> Iterator[TItem]: yield from self._value
 
-class SortInstruction[TItem]:
+class SortInstruction[TItem: SupportsRichComparison]:
     def __init__(self, key_selector: Callable[[TItem], object], descending: bool):
         self.key_selector = key_selector
         self.descending = descending
 
-class LOrderedLIterable[TItem](LIterable[TItem]):
+class LOrderedLIterable[TItem: SupportsRichComparison](LIterable[TItem]):
     def __init__(self, iterable: Iterable[TItem], sorting_instructions: list[SortInstruction[TItem]]):
         self.sorting_instructions: list[SortInstruction[TItem]] = sorting_instructions
         self._unsorted: Iterable[TItem] = iterable
 
     def _sort_according_to_sorting_instructions(self) -> list[TItem]:
-        return []
+        items = list(self._unsorted)
+
+        # Sort by all instructions in reverse order (last instruction has highest priority)
+        for instruction in reversed(self.sorting_instructions):
+            items.sort(key=instruction.key_selector, reverse=instruction.descending)
+
+        return items
 
     def then_by(self, key_selector: Callable[[TItem], object]) -> LOrderedLIterable[TItem]:
         self.sorting_instructions.append(SortInstruction(key_selector, descending=False))
