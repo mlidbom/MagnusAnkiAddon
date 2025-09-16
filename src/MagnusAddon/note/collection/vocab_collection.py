@@ -130,5 +130,4 @@ class VocabCollection(Slots):
 
     def add(self, note: VocabNote) -> None:
         self.collection.anki_collection.addNote(note.backend_note)
-        fresh_note = VocabNote(note.backend_note)
-        self._cache.add(fresh_note)
+        self._cache.add(note)

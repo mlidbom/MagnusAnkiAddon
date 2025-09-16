@@ -26,9 +26,10 @@ class VocabNoteFactory(Slots):
         return created
 
     @staticmethod
-    def create(question: str, answer: str, readings: list[str]) -> VocabNote:
+    def create(question: str, answer: str, readings: list[str], tags: list[str] | None = None) -> VocabNote:
         from note.vocabulary.vocabnote import VocabNote
         backend_note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Vocab))
+        backend_note.tags = tags or []
         note = VocabNote(backend_note)
         note.question.set(question)
         note.user.answer.set(answer)

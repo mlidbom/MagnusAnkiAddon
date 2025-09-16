@@ -1,11 +1,10 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, override
+from typing import override
 
+from ankiutils import app
 from autoslot import Slots
-
-if TYPE_CHECKING:
-    from note.vocabulary.vocabnote import VocabNote
+from note.vocabulary.vocabnote_matching_rules import VocabNoteMatchingConfiguration
 
 
 class VocabSpec(Slots):
@@ -50,9 +49,9 @@ class VocabSpec(Slots):
                 and other.answer == self.answer
                 and other.readings == self.readings)
 
-    def create_vocab_note(self) -> VocabNote:
+    def create_vocab_note(self) -> None:
         from note.vocabulary.vocabnote import VocabNote
-        vocab_note = VocabNote.factory.create(self.question, self.answer, self.readings)
+        vocab_note = VocabNote.factory.create(self.question, self.answer, self.readings, list(self.tags))
         vocab_note.compound_parts.set(self.compounds)
 
         if self.extra_forms:
@@ -78,5 +77,3 @@ class VocabSpec(Slots):
 
         if self.tos:
             vocab_note.parts_of_speech.set_raw_string_value(self.tos)
-
-        return vocab_note
