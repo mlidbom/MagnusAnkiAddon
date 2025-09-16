@@ -30,6 +30,15 @@ class LIterable[TItem](Iterable[TItem], ABC):
 
     # endregion
 
+    def length(self) -> int:
+        if isinstance(self, list): return len(cast(list[TItem], self))
+        return sum(1 for _ in self)
+
+    def order_by(self, key_selector: Callable[[TItem], object]) -> LOrderedLIterable[TItem]:
+        return LOrderedLIterable(self, [SortInstruction(key_selector, False)])
+
+    # region boolean queries
+
     def none(self, predicate: Callable[[TItem], bool] | None = None) -> bool: return not self.any(predicate)
 
     def any(self, predicate: Callable[[TItem], bool] | None = None) -> bool:
@@ -38,15 +47,19 @@ class LIterable[TItem](Iterable[TItem], ABC):
             return False
         return any(predicate(item) for item in self)
 
+    # endregion
+
+    # region mapping methods
+
     def select[TReturn](self, selector: Callable[[TItem], TReturn]) -> LIterable[TReturn]:
         return _LIterable(selector(item) for item in self)
 
     def select_many[TInner](self, selector: Callable[[TItem], Iterable[TInner]]) -> LIterable[TInner]:
         return _LIterable(itertools.chain.from_iterable(selector(item) for item in self))
 
-    def length(self) -> int:
-        if isinstance(self, list): return len(cast(list[TItem], self))
-        return sum(1 for _ in self)
+    # endregion
+
+    # region single item selecting methods
 
     def single(self, predicate: Callable[[TItem], bool] | None = None) -> TItem:
         result = self.single_or_default(predicate)
@@ -66,6 +79,8 @@ class LIterable[TItem](Iterable[TItem], ABC):
             except StopIteration:
                 return None
         return self.where(predicate).single_or_default()
+
+    # endregion
 
     # region assertions on the collection or it's values
 
@@ -124,7 +139,7 @@ class SortInstruction[TItem]:
         self.key_selector = key_selector
         self.descending = descending
 
-class LLIterableSorted[TItem](LIterable[TItem]):
+class LOrderedLIterable[TItem](LIterable[TItem]):
     def __init__(self, iterable: Iterable[TItem], sorting_instructions: list[SortInstruction[TItem]]):
         self.sorting_instructions: list[SortInstruction[TItem]] = sorting_instructions
         self._unsorted: Iterable[TItem] = iterable
@@ -132,13 +147,13 @@ class LLIterableSorted[TItem](LIterable[TItem]):
     def _sort_according_to_sorting_instructions(self) -> list[TItem]:
         return []
 
-    def then_by(self, key_selector: Callable[[TItem], object]) -> LLIterableSorted[TItem]:
+    def then_by(self, key_selector: Callable[[TItem], object]) -> LOrderedLIterable[TItem]:
         self.sorting_instructions.append(SortInstruction(key_selector, descending=False))
-        return LLIterableSorted(self._unsorted, self.sorting_instructions)
+        return LOrderedLIterable(self._unsorted, self.sorting_instructions)
 
-    def then_by_descending(self, key_selector: Callable[[TItem], object]) -> LLIterableSorted[TItem]:
+    def then_by_descending(self, key_selector: Callable[[TItem], object]) -> LOrderedLIterable[TItem]:
         self.sorting_instructions.append(SortInstruction(key_selector, descending=True))
-        return LLIterableSorted(self, self.sorting_instructions)
+        return LOrderedLIterable(self, self.sorting_instructions)
 
     @property
     @override
