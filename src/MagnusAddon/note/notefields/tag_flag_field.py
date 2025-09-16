@@ -13,6 +13,10 @@ class TagFlagField(Slots):
         self._note: WeakRef[JPNote] = note
         self.tag: str = tag
         self._value: bool = self._note().has_tag(self.tag)
+        note().on_tag_updated(self.tag, self._on_tag_updated)
+
+    def _on_tag_updated(self) -> None:
+        self._value = self._note().has_tag(self.tag)
 
     def is_set(self) -> bool: return self._value
 

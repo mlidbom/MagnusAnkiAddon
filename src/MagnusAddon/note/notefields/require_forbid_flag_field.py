@@ -15,6 +15,12 @@ class RequireForbidFlagField(Slots):
         self._forbidden_tag: str = forbidden_tag
         self._is_required: bool = note().has_tag(required_tag)
         self._is_forbidden: bool = note().has_tag(forbidden_tag)
+        note().on_tag_updated(required_tag, self._on_tag_updated)
+        note().on_tag_updated(forbidden_tag, self._on_tag_updated)
+
+    def _on_tag_updated(self) -> None:
+        self._is_required = self._note().has_tag(self._required_tag)
+        self._is_forbidden = self._note().has_tag(self._forbidden_tag)
 
     @property
     def is_configured_required(self) -> bool: return self._is_required

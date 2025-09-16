@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, override
 
 from ankiutils import app
 from autoslot import Slots
-from sysutils.collections.linq.l_iterable import LSet, linq
+from sysutils.collections.linq.l_iterable import LSet
 
 if TYPE_CHECKING:
     from note.notefields.auto_save_wrappers.set_wrapper import FieldSetWrapper

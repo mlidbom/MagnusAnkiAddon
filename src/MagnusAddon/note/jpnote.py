@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections import defaultdict
 from typing import TYPE_CHECKING, cast, override
 
 from anki.models import NotetypeDict
@@ -15,6 +16,8 @@ from sysutils.typed import non_optional, str_
 from sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+
     from anki.cards import Card
     from anki.notes import Note, NoteId
     from note.collection.jp_collection import JPCollection
@@ -25,6 +28,7 @@ class JPNote(WeakRefable,Slots):
         self.recursive_flush_guard: NoteRecursiveFlushGuard = NoteRecursiveFlushGuard(self.weakref)
         self.backend_note: Note = note
         self.__hash_value = 0
+        self._tag_updated_callbacks: dict[str, list[Callable[[], None]]] = defaultdict(list)
 
     @property
     def is_flushing(self) -> bool: return self.recursive_flush_guard.is_flushing
@@ -176,11 +180,18 @@ class JPNote(WeakRefable,Slots):
     def remove_tag(self, tag: str) -> None:
         if self.has_tag(tag):
             self.backend_note.remove_tag(tag)
+            for callback in self._tag_updated_callbacks[tag]: callback()
             self._flush()
+
+
+    def on_tag_updated(self, tag: str, callback: Callable[[], None]) -> None:
+        self._tag_updated_callbacks[tag].append(callback)
+
 
     def set_tag(self, tag: str) -> None:
         if not self.has_tag(tag):
             self.backend_note.tags.append(tag)
+            for callback in self._tag_updated_callbacks[tag]: callback()
             self._flush()
 
     def toggle_tag(self, tag: str, on: bool) -> None:

@@ -10,6 +10,8 @@ from note.note_constants import NoteTypes
 from sysutils import ex_sequence
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+
     from note.vocabulary.vocabnote import VocabNote
 
 
@@ -26,14 +28,14 @@ class VocabNoteFactory(Slots):
         return created
 
     @staticmethod
-    def create(question: str, answer: str, readings: list[str], tags: list[str] | None = None) -> VocabNote:
+    def create(question: str, answer: str, readings: list[str], initializer: Callable[[VocabNote], None] | None = None) -> VocabNote:
         from note.vocabulary.vocabnote import VocabNote
         backend_note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Vocab))
-        backend_note.tags = tags or []
         note = VocabNote(backend_note)
         note.question.set(question)
         note.user.answer.set(answer)
         note.readings.set(readings)
         note.update_generated_data()
+        if initializer is not None: initializer(note)
         app.col().vocab.add(note)
         return note

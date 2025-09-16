@@ -1,8 +1,11 @@
 from __future__ import annotations
 
-from typing import override
+from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
+
+if TYPE_CHECKING:
+    from note.vocabulary.vocabnote import VocabNote
 
 
 class VocabSpec(Slots):
@@ -47,9 +50,7 @@ class VocabSpec(Slots):
                 and other.answer == self.answer
                 and other.readings == self.readings)
 
-    def create_vocab_note(self) -> None:
-        from note.vocabulary.vocabnote import VocabNote
-        vocab_note = VocabNote.factory.create(self.question, self.answer, self.readings, list(self.tags))
+    def _initialize_note(self, vocab_note: VocabNote) -> None:
         vocab_note.compound_parts.set(self.compounds)
 
         if self.extra_forms:
@@ -75,3 +76,7 @@ class VocabSpec(Slots):
 
         if self.tos:
             vocab_note.parts_of_speech.set_raw_string_value(self.tos)
+
+    def create_vocab_note(self) -> None:
+        from note.vocabulary.vocabnote import VocabNote
+        VocabNote.factory.create(self.question, self.answer, self.readings, self._initialize_note)
