@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
     from note.collection.jp_collection import JPCollection
 
-
+# noinspection PyUnusedFunction
 @pytest.fixture(scope="module", autouse=True)
 def empty_collection() -> Iterator[JPCollection]:
     with inject_empty_collection() as collection:
@@ -29,6 +29,7 @@ def test_generate_from_dictionary() -> None:
     assert vocab.get_answer() == "totally-willing/fully-motivated"
     assert vocab.readings.get() == ["やるきまんまん"]
     print(vocab.readings.get())
+
 
 
 def test_perfect_synonyms() -> None:
