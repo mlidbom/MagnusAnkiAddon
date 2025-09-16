@@ -85,7 +85,7 @@ class QtTaskProgressRunner(ITaskRunner, Slots):
 
         while not future.done():
             QApplication.processEvents()
-            ex_thread.sleep_ex(0.05)
+            ex_thread.sleep_thread_not_doing_the_current_work(0.05)
 
         mylog.info(f"##--QtTaskProgressRunner--## Finished {message} in {watch.elapsed_formatted()}")
         return future.result()

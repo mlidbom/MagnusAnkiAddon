@@ -26,7 +26,7 @@ def run_on_ui_thread_synchronously[T](func: Callable[[], T]) -> T:
     mw.taskman.run_on_main(lambda: done_running.append(func()))
 
     while not len(done_running) > 0:
-        ex_thread.sleep_ex(0.001)
+        ex_thread.sleep_thread_not_doing_the_current_work(0.001)
 
     return done_running[0]
 

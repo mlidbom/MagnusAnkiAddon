@@ -48,7 +48,7 @@ class CacheRunner(Slots):
     def _run_periodic_flushes(self) -> None:
         while self._running:
             self.flush_updates()
-            ex_thread.sleep_ex(0.1)
+            ex_thread.sleep_thread_not_doing_the_current_work(0.1)
 #
     def destruct(self) -> None:
         with self._lock:

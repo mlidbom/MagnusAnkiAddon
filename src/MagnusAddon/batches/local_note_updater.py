@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 from ankiutils import app, query_builder
 from note.note_constants import CardTypes, Tags
 from note.sentences.sentencenote import SentenceNote
-from sysutils import ex_str, ex_thread
+from sysutils import ex_str
 
 if TYPE_CHECKING:
     from anki.notes import NoteId
@@ -181,7 +181,6 @@ def print_gc_status_and_collect() -> None:
 
     instances = gc.collect()
     app.get_ui_utils().tool_tip(f"collected: {instances} instances", 10000)
-    ex_thread.sleep_ex(2)
     object_instance_tracker.print_instance_counts()
 
 def reparse_sentences_for_vocab(vocab: VocabNote) -> None:
