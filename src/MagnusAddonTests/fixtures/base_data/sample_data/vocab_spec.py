@@ -2,9 +2,7 @@ from __future__ import annotations
 
 from typing import override
 
-from ankiutils import app
 from autoslot import Slots
-from note.vocabulary.vocabnote_matching_rules import VocabNoteMatchingConfiguration
 
 
 class VocabSpec(Slots):

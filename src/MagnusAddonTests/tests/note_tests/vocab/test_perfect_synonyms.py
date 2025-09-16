@@ -56,3 +56,21 @@ def test_answer_syncs_to_added_synonym_on_update() -> None:
     assert first.get_answer() == "first_latest"
     assert second.get_answer() == "first_latest"
     assert third.get_answer() == "third_new"
+
+def test_perfect_synonyms_are_kept_in_sync_on_add() -> None:
+    first = VocabNote.factory.create("first", "", [])
+    second = VocabNote.factory.create("second", "", [])
+    first.related_notes.perfect_synonyms.add_overwriting_the_answer_of_the_added_synonym(second.get_question())
+
+    assert first.related_notes.perfect_synonyms.get() == {"second"}
+    assert second.related_notes.perfect_synonyms.get() == {"first"}
+
+    third = VocabNote.factory.create("third", "", [])
+    fourth = VocabNote.factory.create("fourth", "", [])
+    second.related_notes.perfect_synonyms.add_overwriting_the_answer_of_the_added_synonym(third.get_question())
+    second.related_notes.perfect_synonyms.add_overwriting_the_answer_of_the_added_synonym(fourth.get_question())
+
+    assert first.related_notes.perfect_synonyms.get() == {"second", "third", "fourth"}
+    assert second.related_notes.perfect_synonyms.get() == {"first", "third", "fourth"}
+    assert third.related_notes.perfect_synonyms.get() == {"first", "second", "fourth"}
+    assert fourth.related_notes.perfect_synonyms.get() == {"first", "second", "third"}

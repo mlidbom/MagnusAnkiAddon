@@ -20,8 +20,8 @@ class RelatedVocabDataSerializer(ObjectSerializer["RelatedVocabData"], Slots):
         reader = JsonReader.from_json(serialized)
         return RelatedVocabData(reader.string("ergative_twin"),
                                 ValueWrapper(reader.string("derived_from")),
-                                reader.string_set("synonyms"),
                                 reader.string_set("perfect_synonyms", default=set()),
+                                reader.string_set("synonyms"),
                                 reader.string_set("antonyms"),
                                 reader.string_set("confused_with"),
                                 reader.string_set("see_also"))

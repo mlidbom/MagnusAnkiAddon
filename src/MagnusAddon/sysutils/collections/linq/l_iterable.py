@@ -216,7 +216,7 @@ class LFrozenSet[TItem](frozenset[TItem], LIterable[TItem]):
     def length(self) -> int: return len(self)
 
 class LSet[TItem](set[TItem], LIterable[TItem]):
-    def __init__(self, iterable: Iterable[TItem]) -> None:
+    def __init__(self, iterable: Iterable[TItem] = ()) -> None:
         super().__init__(iterable)
 
     @property

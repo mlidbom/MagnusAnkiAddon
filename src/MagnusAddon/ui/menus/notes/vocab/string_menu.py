@@ -47,6 +47,7 @@ def build_string_menu(string_menu: QMenu, vocab: VocabNote, menu_string: str) ->
         build_add_rule_menu(non_optional(vocab_add_menu.addMenu(shortcutfinger.home5("Rule"))))
         add_ui_action(vocab_add_menu, shortcutfinger.up1("Form"), lambda: vocab.forms.add(menu_string), menu_string not in vocab.forms.all_set())
         add_ui_action(vocab_add_menu, shortcutfinger.up2("See also"), lambda: vocab.related_notes.see_also.add(menu_string), menu_string not in vocab.related_notes.see_also.strings())
+        add_ui_action(vocab_add_menu, shortcutfinger.down1("Perfect synonym, automatically syncronize answers"), lambda: vocab.related_notes.perfect_synonyms.add_overwriting_the_answer_of_the_added_synonym(menu_string), menu_string not in vocab.related_notes.perfect_synonyms.get())
 
     def build_remove_menu(vocab_remove_menu: QMenu) -> None:
         def build_remove_rule_menu(remove_rule_menu: QMenu) -> None:
@@ -63,7 +64,8 @@ def build_string_menu(string_menu: QMenu, vocab: VocabNote, menu_string: str) ->
         build_remove_rule_menu(non_optional(vocab_remove_menu.addMenu(shortcutfinger.home5("Rule"))))
         add_ui_action(vocab_remove_menu, shortcutfinger.up1("Form"), lambda: vocab.forms.remove(menu_string), menu_string in vocab.forms.all_set())
         add_ui_action(vocab_remove_menu, shortcutfinger.up2("See also"), lambda: vocab.related_notes.see_also.remove(menu_string), menu_string in vocab.related_notes.see_also.strings())
-        add_ui_action(vocab_remove_menu, shortcutfinger.down1("Derived from"), lambda: vocab.related_notes.derived_from.set(""), menu_string == vocab.related_notes.derived_from.get())
+        add_ui_action(vocab_remove_menu, shortcutfinger.down1("Perfect synonym"), lambda: vocab.related_notes.perfect_synonyms.remove(menu_string), menu_string in vocab.related_notes.perfect_synonyms.get())
+        add_ui_action(vocab_remove_menu, shortcutfinger.down2("Derived from"), lambda: vocab.related_notes.derived_from.set(""), menu_string == vocab.related_notes.derived_from.get())
 
     def build_set_menu(note_set_menu: QMenu) -> None:
         add_ui_action(note_set_menu, shortcutfinger.home1("Ergative twin"), lambda: vocab.related_notes.ergative_twin.set(menu_string))

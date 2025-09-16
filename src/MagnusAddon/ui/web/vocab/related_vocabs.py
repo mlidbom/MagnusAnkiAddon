@@ -5,6 +5,7 @@ from ankiutils import app
 from aqt import gui_hooks
 from note.vocabulary.vocabnote import VocabNote
 from sysutils import ex_sequence
+from sysutils.collections.linq.l_iterable import linq
 from sysutils.ex_str import newline
 from ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
 
@@ -59,9 +60,17 @@ def generate_homophones_html_list(vocab_note: VocabNote) -> str:
 
 def generate_synonyms_meaning_html_list(_vocab_note: VocabNote) -> str:
     synonym_notes = _vocab_note.related_notes.synonyms.notes()
+    perfect_synonyms = _vocab_note.related_notes.perfect_synonyms.notes().to_set()
+    synonym_notes = linq(synonym_notes).where(lambda synonym: synonym not in perfect_synonyms).to_list()
     synonym_notes = note.vocabulary.vocabnote_sorting.sort_vocab_list_by_studying_status(synonym_notes)
 
     return render_vocab_list(synonym_notes, "synonyms", css_class="similar")
+
+def generate_perfect_synonyms_meaning_html_list(_vocab_note: VocabNote) -> str:
+    perfect_synonym_notes = _vocab_note.related_notes.perfect_synonyms.notes()
+    perfect_synonym_notes = note.vocabulary.vocabnote_sorting.sort_vocab_list_by_studying_status(perfect_synonym_notes)
+
+    return render_vocab_list(perfect_synonym_notes, "perfect synonyms, answer automatically synced", css_class="similar")
 
 def generate_antonyms_meaning_html_list(_vocab_note: VocabNote) -> str:
     antonym_notes = _vocab_note.related_notes.antonyms.notes()
@@ -127,6 +136,7 @@ def init() -> None:
         "##ERGATIVE_TWIN##": generate_ergative_twin_html,
         "##DERIVED_FROM##": generate_derived_from,
         "##HOMOPHONES_LIST##": generate_homophones_html_list,
+        "##PERFECT_SYNONYMS_LIST##": generate_perfect_synonyms_meaning_html_list,
         "##SYNONYMS_LIST##": generate_synonyms_meaning_html_list,
         "##SEE_ALSO_LIST##": generate_see_also_html_list,
         "##ANTONYMS_LIST##": generate_antonyms_meaning_html_list,

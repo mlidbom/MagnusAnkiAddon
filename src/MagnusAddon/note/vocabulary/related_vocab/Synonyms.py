@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ankiutils.app import col
+from ankiutils import app
 from autoslot import Slots
 from sysutils import ex_sequence
 
@@ -24,20 +24,20 @@ class Synonyms(Slots):
         self._data.save()
 
     def notes(self) -> list[VocabNote]:
-        return col().vocab.with_any_form_in_prefer_exact_match(list(self.strings()))
+        return app.col().vocab.with_any_form_in_prefer_exact_match(list(self.strings()))
 
     def add(self, synonym: str) -> None:
         if synonym == self._vocab().get_question(): return
         self.strings().add(synonym)
 
-        for similar in col().vocab.with_question(synonym):
+        for similar in app.col().vocab.with_question(synonym):
             if self._vocab().get_question() not in similar.related_notes.synonyms.strings():
                 similar.related_notes.synonyms.add(self._vocab().get_question())
 
         self._save()
 
     def add_transitively_one_level(self, synonym: str) -> None:
-        new_synonym_notes = col().vocab.with_any_form_in_prefer_exact_match([synonym])
+        new_synonym_notes = app.col().vocab.with_any_form_in_prefer_exact_match([synonym])
 
         for synonym_note in new_synonym_notes:
             for my_synonym in self.strings():
@@ -50,7 +50,7 @@ class Synonyms(Slots):
     def remove(self, to_remove: str) -> None:
         self.strings().remove(to_remove)
 
-        for similar in col().vocab.with_question(to_remove):
+        for similar in app.col().vocab.with_question(to_remove):
             if self._vocab().get_question() in similar.related_notes.synonyms.strings():
                 similar.related_notes.synonyms.remove(self._vocab().get_question())
 
