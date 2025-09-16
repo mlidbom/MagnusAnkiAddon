@@ -3,7 +3,7 @@ from __future__ import annotations
 import itertools
 from abc import ABC, abstractmethod
 from collections.abc import Iterable
-from typing import TYPE_CHECKING, Any, Reversible, cast, override
+from typing import TYPE_CHECKING, Any, cast, override
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterator
@@ -88,9 +88,6 @@ class LIterable[TItem](Iterable[TItem], ABC):
         return self
 
     def reversed(self) -> LIterable[TItem]:
-        if hasattr(self._value, "__reversed__"):
-            return _LIterable[TItem](reversed(cast(Reversible[TItem], self._value)))
-
         return _LIterable[TItem](reversed(self.to_built_in_list()))
 
     def assert_on_collection(self, predicate: Callable[[LIterable[TItem]], bool], message: str | None = None) -> LIterable[TItem]:
@@ -175,7 +172,7 @@ class LOrderedLIterable[TItem](LIterable[TItem]):
     def __iter__(self) -> Iterator[TItem]: yield from self._value
 # endregion
 
-# region LList, LSet, LFrozenSet: concrete classes that do nothing but inherit a built in collection and LIterable
+# region LList, LSet, LFrozenSet: concrete classes that do very little but inherit a built in collection and LIterable and provide an override or two for performance
 class LFrozenSet[TItem](frozenset[TItem], LIterable[TItem]):
     def __new__(cls, iterable: Iterable[TItem]) -> LFrozenSet[TItem]:
         return super().__new__(cls, iterable)
@@ -197,6 +194,9 @@ class LList[TItem](list[TItem], LIterable[TItem]):
 
     @override
     def length(self) -> int: return len(self)
+
+    @override
+    def reversed(self) -> LIterable[TItem]: return LList[TItem](reversed(self))
 
 class LSet[TItem](set[TItem], LIterable[TItem]):
     def __init__(self, iterable: Iterable[TItem]) -> None:
