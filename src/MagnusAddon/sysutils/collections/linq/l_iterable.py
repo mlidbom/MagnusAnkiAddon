@@ -173,17 +173,6 @@ class LOrderedLIterable[TItem](LIterable[TItem]):
 # endregion
 
 # region LList, LSet, LFrozenSet: concrete classes that do very little but inherit a built in collection and LIterable and provide an override or two for performance
-class LFrozenSet[TItem](frozenset[TItem], LIterable[TItem]):
-    def __new__(cls, iterable: Iterable[TItem]) -> LFrozenSet[TItem]:
-        return super().__new__(cls, iterable)
-
-    @property
-    @override
-    def _value(self) -> Iterable[TItem]: return self
-
-    @override
-    def length(self) -> int: return len(self)
-
 class LList[TItem](list[TItem], LIterable[TItem]):
     def __init__(self, iterable: Iterable[TItem]) -> None:
         super().__init__(iterable)
@@ -197,6 +186,17 @@ class LList[TItem](list[TItem], LIterable[TItem]):
 
     @override
     def reversed(self) -> LIterable[TItem]: return LList[TItem](reversed(self))
+
+class LFrozenSet[TItem](frozenset[TItem], LIterable[TItem]):
+    def __new__(cls, iterable: Iterable[TItem]) -> LFrozenSet[TItem]:
+        return super().__new__(cls, iterable)
+
+    @property
+    @override
+    def _value(self) -> Iterable[TItem]: return self
+
+    @override
+    def length(self) -> int: return len(self)
 
 class LSet[TItem](set[TItem], LIterable[TItem]):
     def __init__(self, iterable: Iterable[TItem]) -> None:
