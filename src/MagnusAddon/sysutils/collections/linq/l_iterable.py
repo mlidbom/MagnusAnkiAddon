@@ -139,6 +139,8 @@ class _LIterable[TItem](LIterable[TItem]):
     @override
     def __iter__(self) -> Iterator[TItem]: yield from self._value
 
+# region LOrderedLIterable
+
 class SortInstruction[TItem]:
     def __init__(self, key_selector: Callable[[TItem], SupportsRichComparison], descending: bool) -> None:
         self.key_selector = key_selector
@@ -160,6 +162,9 @@ class LOrderedLIterable[TItem](LIterable[TItem]):
     @property
     @override
     def _value(self) -> Iterable[TItem]:
+        return self._l_ordered_iterable_sort()
+
+    def _l_ordered_iterable_sort(self) -> list[TItem]:  # the name is so that the method is understandable in a profiling result that does not include the type
         items = list(self._unsorted)
 
         for instruction in self.sorting_instructions:
@@ -169,6 +174,10 @@ class LOrderedLIterable[TItem](LIterable[TItem]):
 
     @override
     def __iter__(self) -> Iterator[TItem]: yield from self._value
+
+# endregion
+
+# region LList, LSet, LFrozenSet: concrete classes that do nothing but inherit a built in collection and LIterable
 
 class LFrozenSet[TItem](frozenset[TItem], LIterable[TItem]):
     def __new__(cls, iterable: Iterable[TItem]) -> LFrozenSet[TItem]:
@@ -186,9 +195,6 @@ class LList[TItem](list[TItem], LIterable[TItem]):
     @override
     def _value(self) -> Iterable[TItem]: return self
 
-    @override
-    def to_list(self) -> LList[TItem]: return self
-
 class LSet[TItem](set[TItem], LIterable[TItem]):
     def __init__(self, iterable: Iterable[TItem]) -> None:
         super().__init__(iterable)
@@ -196,5 +202,7 @@ class LSet[TItem](set[TItem], LIterable[TItem]):
     @property
     @override
     def _value(self) -> Iterable[TItem]: return self
+
+# endregion
 
 # endregion
