@@ -29,13 +29,19 @@ class SentenceNote(JPNote, Slots):
         super().__init__(note)
         self.weakref_sentence: WeakRef[SentenceNote] = cast(WeakRef[SentenceNote], self.weakref)
 
+        self.id: MutableStringField = MutableStringField(self.weakref, SentenceNoteFields.id)
+        self.reading: MutableStringField = MutableStringField(self.weakref, SentenceNoteFields.reading)
+
+        self.active_question: MutableStringField = MutableStringField(self.weakref, SentenceNoteFields.active_question)
+        self.active_answer: MutableStringField = MutableStringField(self.weakref, SentenceNoteFields.active_answer)
+
         self._source_answer: MutableStringField = MutableStringField(self.weakref, SentenceNoteFields.source_answer)
         self.source_question: MutableStringField = MutableStringField(self.weakref, SentenceNoteFields.source_question)
         self.source_comments: MutableStringField = MutableStringField(self.weakref, SentenceNoteFields.source_comments)
 
         self.user: SentenceUserFields = SentenceUserFields(self.weakref_sentence)
 
-        self.question: SentenceQuestionField = SentenceQuestionField(self.weakref, SentenceNoteFields.user_question, SentenceNoteFields.source_question)
+        self.question: SentenceQuestionField = SentenceQuestionField(self.user.question, self.source_question)
         self.answer: StripHtmlOnReadFallbackStringField = StripHtmlOnReadFallbackStringField(self.user.answer, self._source_answer)
         self._screenshot: MutableStringField = MutableStringField(self.weakref, SentenceNoteFields.screenshot)
         self.audio: WritableAudioField = WritableAudioField(self.weakref, SentenceNoteFields.audio)
@@ -82,8 +88,8 @@ class SentenceNote(JPNote, Slots):
     def update_generated_data(self) -> None:
         super().update_generated_data()
         self.update_parsed_words()
-        self.set_field(SentenceNoteFields.active_answer, self.get_answer())
-        self.set_field(SentenceNoteFields.active_question, self.get_question())
+        self.active_answer.set(self.get_answer())
+        self.active_question.set(self.get_question())
 
     def update_parsed_words(self, force: bool = False) -> None:
         from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
@@ -142,8 +148,8 @@ class SentenceNote(JPNote, Slots):
                                    screenshot=immersion_kit_note[ImmersionKitSentenceNoteFields.screenshot],
                                    tags={Tags.immersion_kit})
 
-        created.set_field(SentenceNoteFields.id, immersion_kit_note[ImmersionKitSentenceNoteFields.id])
-        created.set_field(SentenceNoteFields.reading, immersion_kit_note[ImmersionKitSentenceNoteFields.reading])
+        created.id.set(immersion_kit_note[ImmersionKitSentenceNoteFields.id])
+        created.reading.set(immersion_kit_note[ImmersionKitSentenceNoteFields.reading])
 
         return created
 

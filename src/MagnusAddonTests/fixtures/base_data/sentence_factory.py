@@ -9,6 +9,8 @@ from note.note_constants import NoteTypes, SentenceNoteFields
 def create_sentence() -> NoteTypeEx:
     return NoteTypeEx(NoteTypes.Sentence,
                       [
+                          NoteFieldEx(SentenceNoteFields.id),
+                          NoteFieldEx(SentenceNoteFields.reading),
                           NoteFieldEx(SentenceNoteFields.active_question),
                           NoteFieldEx(SentenceNoteFields.source_question),
                           NoteFieldEx(SentenceNoteFields.source_comments),
