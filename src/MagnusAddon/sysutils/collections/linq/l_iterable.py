@@ -87,11 +87,11 @@ class LIterable[TItem](Iterable[TItem], ABC):
         for item in self._value: action(item)
         return self
 
-    def for_single(self, action: Callable[[TItem], Any]) -> LIterable[TItem]:
+    def for_single(self, action: Callable[[TItem], Any]) -> LIterable[TItem]: # pyright: ignore[reportExplicitAny]
         action(self.single())
         return self
 
-    def for_single_or_none(self, action: Callable[[TItem], Any]) -> LIterable[TItem]:
+    def for_single_or_none(self, action: Callable[[TItem], Any]) -> LIterable[TItem]: # pyright: ignore[reportExplicitAny]
         value = self.single_or_none()
         if value is not None: action(value)
         return self
@@ -128,7 +128,7 @@ class LFrozenSet[TItem](frozenset[TItem], LIterable[TItem]):
 
 class LList[TItem](list[TItem], LIterable[TItem]):
     def __init__(self, iterable: Iterable[TItem]) -> None:
-        list.__init__(self, iterable)
+        super().__init__(iterable)
 
     @property
     @override

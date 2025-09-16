@@ -21,8 +21,9 @@ class PerfectSynonyms(Slots):
     def add(self, synonym: str) -> None:
         self._value.add(synonym)
         (app.col().vocab.with_question(synonym)
+         .select_many(lambda syn: syn.related_notes.perfect_synonyms.notes())
          .select(lambda syn: syn.related_notes.perfect_synonyms)
-         .for_single_or_none(lambda other_synonyms: other_synonyms._value.add(self._vocab().get_question())))
+         .for_each(lambda other_synonyms: other_synonyms._value.add(self._vocab().get_question())))
 
     def remove(self, to_remove: str) -> None:
         self._value.remove(to_remove)

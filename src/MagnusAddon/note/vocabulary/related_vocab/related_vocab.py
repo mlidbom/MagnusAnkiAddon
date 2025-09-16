@@ -30,7 +30,7 @@ class RelatedVocab(Slots):
 
         self.ergative_twin: ErgativeTwin = ErgativeTwin(vocab, self._data)
         self.synonyms: Synonyms = Synonyms(vocab, self._data)
-        self.perfect_synonyms: PerfectSynonyms = PerfectSynonyms(vocab, FieldSetWrapper.for_json_object_field(self._data, self._data.get().perfect_synonyms))
+        self.perfect_synonyms: PerfectSynonyms = PerfectSynonyms(vocab, FieldSetWrapper[str].for_json_object_field(self._data, self._data.get().perfect_synonyms))
         self.antonyms: Antonyms = Antonyms(vocab, self._data)
         self.see_also: SeeAlso = SeeAlso(vocab, self._data)
         self.derived_from: FieldWrapper[str, RelatedVocabData] = FieldWrapper(self._data, self._data.get().derived_from)

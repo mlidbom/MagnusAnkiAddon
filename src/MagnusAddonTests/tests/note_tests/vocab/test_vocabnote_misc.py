@@ -31,7 +31,7 @@ def test_generate_from_dictionary() -> None:
     print(vocab.readings.get())
 
 
-def test_perfect_synonyms(empty_collection: JPCollection) -> None:
+def test_perfect_synonyms() -> None:
     first = VocabNote.factory.create("first", "", [])
     second = VocabNote.factory.create("second", "", [])
     third = VocabNote.factory.create("third", "", [])
