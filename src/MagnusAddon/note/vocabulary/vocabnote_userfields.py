@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
 from note.note_constants import NoteFields
@@ -17,3 +17,7 @@ class VocabNoteUserfields(Slots):
         self.answer: MutableStringField = MutableStringField(vocab, NoteFields.Vocab.user_answer)
         self.explanation: MutableStringField = MutableStringField(vocab, NoteFields.Vocab.user_explanation)
         self.explanation_long: MutableStringField = MutableStringField(vocab, NoteFields.Vocab.user_explanation_long)
+
+
+    @override
+    def __repr__(self) -> str: return f"Answer: {self.answer.value}, Mnemonic: {self.mnemonic.value}, Explanation: {self.explanation.value}, Explanation Long: {self.explanation_long.value}"

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
 from note.note_constants import NoteFields
@@ -22,3 +22,6 @@ class VocabNoteAudio(Slots):
 
     def get_primary_audio(self) -> str:
         return self.first.raw_walue() or self.second.raw_walue() or self.tts.raw_walue() or ""
+
+    @override
+    def __repr__(self) -> str: return f"""first: {self.first}, second: {self.second}, tts: {self.tts}"""

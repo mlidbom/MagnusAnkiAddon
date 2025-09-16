@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
 from sysutils.lazy import Lazy
@@ -46,3 +46,6 @@ class MutableStringField(Slots):
         if self._reset_callbacks is None:
             self._reset_callbacks = []
         self._reset_callbacks.append(callback)
+
+    @override
+    def __repr__(self) -> str: return self.value

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
 from note.note_constants import NoteFields, Tags
@@ -83,3 +83,6 @@ class VocabNotePartsOfSpeech(Slots):
     _na_adjective_tos_names: set[str] = {"な adjective", "na-adjective"}
     def is_complete_na_adjective(self) -> bool:
         return self.__vocab().question.raw.endswith("な") and any(na for na in self._na_adjective_tos_names if na in self.get())
+
+    @override
+    def __repr__(self) -> str: return self._field.__repr__()

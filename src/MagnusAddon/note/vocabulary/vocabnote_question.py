@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
 from language_services import conjugator
@@ -36,3 +36,6 @@ class VocabNoteQuestion(Slots):
     def stems(self) -> VocabStems: return VocabStems(self._vocab)
 
     def set(self, value: str) -> None: self._field.set(value)
+
+    @override
+    def __repr__(self) -> str: return self.raw

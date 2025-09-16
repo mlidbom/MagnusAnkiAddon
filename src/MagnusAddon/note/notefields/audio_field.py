@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
 from note.notefields.mutable_string_field import MutableStringField
@@ -30,6 +30,9 @@ class AudioField(Slots):
         field = self._field
         stripped_paths = field.value.strip().replace("[sound:", "").split("]")
         return [path.strip() for path in stripped_paths]
+
+    @override
+    def __repr__(self) -> str: return self._field.__repr__()
 
 class WritableAudioField(AudioField, Slots):
     def __init__(self, note: WeakRef[JPNote], field_name: str) -> None:

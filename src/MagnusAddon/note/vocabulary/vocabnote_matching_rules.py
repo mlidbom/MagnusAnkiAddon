@@ -72,6 +72,9 @@ class VocabMatchingRulesConfigurationBoolFlags(Slots):
         self.match_with_preceding_vowel: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.Todo.with_preceding_vowel)
         self.question_overrides_form: TagFlagField = TagFlagField(vocab, Tags.Vocab.question_overrides_form)
 
+    @override
+    def __repr__(self) -> str: return f"""{self.is_inflecting_word}, {self.is_poison_word}, {self.match_with_preceding_vowel}, {self.question_overrides_form}"""
+
 class VocabNoteMatchingConfiguration(WeakRefable, Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self.vocab: WeakRef[VocabNote] = vocab

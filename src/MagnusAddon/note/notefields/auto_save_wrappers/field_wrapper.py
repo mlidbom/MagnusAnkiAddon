@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
 
@@ -20,3 +20,6 @@ class FieldWrapper[TValue, TWrapper](Slots):
 
     def get(self) -> TValue:
         return self._value.get()
+
+    @override
+    def __repr__(self) -> str: return self._value.__repr__()

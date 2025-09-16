@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from ankiutils import app
 from ankiutils.app import col
@@ -75,3 +75,6 @@ class VocabNoteForms(WeakRefable, Slots):
 
         for add_note in [voc for voc in col().vocab.with_question(add) if self._vocab().get_question() not in voc.forms.all_set()]:
             add_note.forms.add(self._vocab().get_question())
+
+    @override
+    def __repr__(self) -> str: return self._field.__repr__()

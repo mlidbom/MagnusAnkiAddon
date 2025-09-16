@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
 from note.notefields.mutable_string_field import MutableStringField
@@ -39,3 +39,6 @@ class MutableCommaSeparatedStringsListField(Slots):
         self.set(self.get() + [add])
 
     def lazy_reader[TValue](self, reader: Callable[[], TValue]) -> Lazy[TValue]: return self._field.lazy_reader(reader)
+
+    @override
+    def __repr__(self) -> str: return ", ".join(self.get())

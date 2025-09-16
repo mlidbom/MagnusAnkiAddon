@@ -22,4 +22,4 @@ class TagFlagField(Slots):
         self._value = set_
 
     @override
-    def __repr__(self) -> str: return self.is_set().__repr__()
+    def __repr__(self) -> str: return f"""{self.tag}: {self.is_set()}"""

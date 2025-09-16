@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
 
@@ -36,3 +36,6 @@ class RequireForbidFlagField(Slots):
         else:
             self._note().set_tag(self._forbidden_tag)
             self._note().remove_tag(self._required_tag)
+
+    @override
+    def __repr__(self) -> str: return f"""{self._required_tag.replace("requires::", "")} required: {self.is_required}, forbidden: {self.is_forbidden}"""

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import override
+
 from autoslot import Slots
 
 
@@ -12,3 +14,6 @@ class ValueWrapper[TValue](Slots):
 
     def get(self) -> TValue:
         return self._value
+
+    @override
+    def __repr__(self) -> str: return self._value.__repr__()

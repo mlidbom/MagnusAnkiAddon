@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from ankiutils import app
 from autoslot import Slots
@@ -37,3 +37,6 @@ class PerfectSynonyms(Slots):
         self._value.remove(synonym_question)
         (self.notes()
          .for_each(lambda syn: syn.related_notes.perfect_synonyms._value.remove(self._vocab().get_question())))
+
+    @override
+    def __repr__(self) -> str: return self._value.__repr__()

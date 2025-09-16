@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
 from note.note_constants import Tags
@@ -18,3 +18,6 @@ class IsInflectingWord(TagFlagField, Slots):
     @property
     def is_active(self) -> bool:
         return self.is_set() or self._vocab().parts_of_speech.is_inflecting_word_type()
+
+    @override
+    def __repr__(self) -> str: return f"""{self.tag}: {self.is_active}"""

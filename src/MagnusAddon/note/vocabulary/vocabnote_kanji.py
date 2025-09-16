@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
 from sysutils import ex_str, kana_utils
@@ -23,3 +23,6 @@ class VocabNoteKanji(Slots):
     def extract_all_kanji(self) -> set[str]:
         clean = ex_str.strip_html_and_bracket_markup(self._vocab.get_question() + self._vocab.forms.all_raw_string())
         return {char for char in clean if kana_utils.character_is_kanji(char)}
+
+    @override
+    def __repr__(self) -> str: return f"""main: {self.extract_main_form_kanji()}, all: {self.extract_all_kanji()}"""

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
 from language_services.jamdict_ex.dict_lookup import DictLookup
@@ -50,3 +50,6 @@ class VocabNoteUserCompoundParts(Slots):
     @staticmethod
     def _strip_brackets(part: str) -> str:
         return part.replace("[", "").replace("]", "")
+
+    @override
+    def __repr__(self) -> str: return self._field.__repr__()

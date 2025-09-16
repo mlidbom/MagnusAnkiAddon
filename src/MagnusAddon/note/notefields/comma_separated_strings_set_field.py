@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
 from note.notefields.comma_separated_strings_list_field import MutableCommaSeparatedStringsListField
@@ -31,3 +31,6 @@ class MutableCommaSeparatedStringsSetField(Slots):
 
     def set_raw_string_value(self, value: str) -> None:
         self._field.set_raw_string_value(value)
+
+    @override
+    def __repr__(self) -> str: return self.raw_string_value()

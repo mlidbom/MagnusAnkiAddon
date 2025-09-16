@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
 from note.notefields.mutable_string_field import MutableStringField
@@ -30,3 +30,6 @@ class MutableSerializedObjectField[T](WeakRefable, Slots):
 
     def save(self) -> None:
         self._field.set(self._serializer.serialize(self._value()))
+
+    @override
+    def __repr__(self) -> str: return self.get().__repr__()

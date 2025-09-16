@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from ankiutils import app
 from ankiutils.app import col
@@ -11,7 +11,6 @@ if TYPE_CHECKING:
     from note.vocabulary.related_vocab.related_vocab_data import RelatedVocabData
     from note.vocabulary.vocabnote import VocabNote
     from sysutils.weak_ref import WeakRef
-
 
 class Antonyms(Slots):
     def __init__(self, vocab: WeakRef[VocabNote], data: MutableSerializedObjectField[RelatedVocabData]) -> None:
@@ -39,3 +38,6 @@ class Antonyms(Slots):
                 similar.related_notes.antonyms.remove(self._vocab().get_question())
 
         self._data.save()
+
+    @override
+    def __repr__(self) -> str: return self._data.__repr__()

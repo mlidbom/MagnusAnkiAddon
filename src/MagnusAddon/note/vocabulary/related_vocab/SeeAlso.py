@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from ankiutils import app
 from ankiutils.app import col
@@ -39,3 +39,6 @@ class SeeAlso(Slots):
                 removed_note.related_notes.see_also.remove(self._vocab().get_question())
 
         self._data.save()
+
+    @override
+    def __repr__(self) -> str: return self._data.__repr__()
