@@ -68,8 +68,7 @@ class KanjiCollection(Slots):
         return ex_sequence.flatten([self._cache.with_question(kanji) for kanji in kanji_list])
 
     def with_kanji(self, kanji: str) -> KanjiNote | None:
-        found = self._cache.with_question(kanji)
-        return found[0] if found else None
+        return self._cache.with_question(kanji).single_or_none()
 
     def with_radical(self, radical:str) -> list[KanjiNote]: return self._cache.with_radical(radical)
     def with_reading(self, reading:str) -> set[KanjiNote]:

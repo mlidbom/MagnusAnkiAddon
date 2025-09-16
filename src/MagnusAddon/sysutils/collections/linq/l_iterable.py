@@ -23,6 +23,10 @@ class LIterable[TItem](Iterable[TItem], ABC):
 
     def where_not_none(self) -> LIterable[TItem]:
         return self.where(lambda item: item is not None)
+
+    def unique(self) -> LList[TItem]:
+        return LList(dict.fromkeys(self._value))
+
     # endregion
 
     def none(self, predicate: Callable[[TItem], bool] | None = None) -> bool: return not self.any(predicate)

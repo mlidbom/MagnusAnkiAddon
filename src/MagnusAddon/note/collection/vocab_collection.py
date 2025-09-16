@@ -10,7 +10,7 @@ from note.collection.note_cache import CachedNote, NoteCache
 from note.note_constants import NoteTypes
 from note.vocabulary.vocabnote import VocabNote
 from sysutils import ex_sequence
-from sysutils.collections.linq.l_iterable import LList
+from sysutils.collections.linq.l_iterable import LList, linq
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
@@ -125,5 +125,5 @@ class VocabCollection(Slots):
     def with_any_form_in(self, forms: list[str]) -> list[VocabNote]:
         return ex_sequence.remove_duplicates_while_retaining_order(ex_sequence.flatten([self.with_form(form) for form in forms]))
 
-    def with_any_question_in(self, questions: Iterable[str]) -> list[VocabNote]:
-        return ex_sequence.flatten([self.with_question(question) for question in questions])
+    def with_any_question_in(self, questions: Iterable[str]) -> LList[VocabNote]:
+        return linq(questions).select(self.with_question).select_many(lambda x: x).to_list()
