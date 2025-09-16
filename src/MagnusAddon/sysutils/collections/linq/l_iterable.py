@@ -16,10 +16,6 @@ class LIterable[TItem](Iterable[TItem], ABC):
     @staticmethod
     def create(value: Iterable[TItem]) -> LIterable[TItem]: return _LIterable(value)
 
-    @property
-    @abstractmethod
-    def _value(self) -> Iterable[TItem]: raise NotImplementedError()
-
     # region filtering
     def where(self, predicate: Callable[[TItem], bool]) -> LIterable[TItem]:
         return _LIterable(item for item in self._value if predicate(item))
@@ -130,6 +126,14 @@ class LIterable[TItem](Iterable[TItem], ABC):
     def to_built_in_list(self) -> list[TItem]: return list(self)
     def to_set(self) -> LSet[TItem]: return LSet(self)
     def to_frozenset(self) -> LFrozenSet[TItem]: return LFrozenSet(self)
+
+    # endregion
+
+    # region the abstract _value property
+
+    @property
+    @abstractmethod
+    def _value(self) -> Iterable[TItem]: raise NotImplementedError()
 
     # endregion
 
