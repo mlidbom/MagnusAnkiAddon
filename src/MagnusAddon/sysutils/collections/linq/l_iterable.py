@@ -1,13 +1,14 @@
 from __future__ import annotations
 
 import itertools
-from _typeshed import SupportsRichComparison
 from abc import ABC, abstractmethod
 from collections.abc import Iterable
 from typing import TYPE_CHECKING, Any, cast, override
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterator
+
+    from _typeshed import SupportsRichComparison
 
 def linq[TItem](value: Iterable[TItem]) -> LIterable[TItem]: return _LIterable(value)
 
@@ -35,8 +36,11 @@ class LIterable[TItem](Iterable[TItem], ABC):
         if isinstance(self, list): return len(cast(list[TItem], self))
         return sum(1 for _ in self)
 
-    def order_by(self, key_selector: Callable[[TItem], object]) -> LOrderedLIterable[TItem]:
+    def order_by(self, key_selector: Callable[[TItem], SupportsRichComparison]) -> LOrderedLIterable[TItem]:
         return LOrderedLIterable(self, [SortInstruction(key_selector, False)])
+
+    def order_by_descending(self, key_selector: Callable[[TItem], SupportsRichComparison]) -> LOrderedLIterable[TItem]:
+        return LOrderedLIterable(self, [SortInstruction(key_selector, True)])
 
     # region boolean queries
 
@@ -135,36 +139,33 @@ class _LIterable[TItem](LIterable[TItem]):
     @override
     def __iter__(self) -> Iterator[TItem]: yield from self._value
 
-class SortInstruction[TItem: SupportsRichComparison]:
-    def __init__(self, key_selector: Callable[[TItem], object], descending: bool):
+class SortInstruction[TItem]:
+    def __init__(self, key_selector: Callable[[TItem], SupportsRichComparison], descending: bool) -> None:
         self.key_selector = key_selector
         self.descending = descending
 
-class LOrderedLIterable[TItem: SupportsRichComparison](LIterable[TItem]):
-    def __init__(self, iterable: Iterable[TItem], sorting_instructions: list[SortInstruction[TItem]]):
+class LOrderedLIterable[TItem](LIterable[TItem]):
+    def __init__(self, iterable: Iterable[TItem], sorting_instructions: list[SortInstruction[TItem]]) -> None:
         self.sorting_instructions: list[SortInstruction[TItem]] = sorting_instructions
         self._unsorted: Iterable[TItem] = iterable
 
-    def _sort_according_to_sorting_instructions(self) -> list[TItem]:
-        items = list(self._unsorted)
-
-        # Sort by all instructions in reverse order (last instruction has highest priority)
-        for instruction in reversed(self.sorting_instructions):
-            items.sort(key=instruction.key_selector, reverse=instruction.descending)
-
-        return items
-
-    def then_by(self, key_selector: Callable[[TItem], object]) -> LOrderedLIterable[TItem]:
+    def then_by(self, key_selector: Callable[[TItem], SupportsRichComparison]) -> LOrderedLIterable[TItem]:
         self.sorting_instructions.append(SortInstruction(key_selector, descending=False))
         return LOrderedLIterable(self._unsorted, self.sorting_instructions)
 
-    def then_by_descending(self, key_selector: Callable[[TItem], object]) -> LOrderedLIterable[TItem]:
+    def then_by_descending(self, key_selector: Callable[[TItem], SupportsRichComparison]) -> LOrderedLIterable[TItem]:
         self.sorting_instructions.append(SortInstruction(key_selector, descending=True))
-        return LOrderedLIterable(self, self.sorting_instructions)
+        return LOrderedLIterable(self._unsorted, self.sorting_instructions)
 
     @property
     @override
-    def _value(self) -> Iterable[TItem]: return self._sort_according_to_sorting_instructions()
+    def _value(self) -> Iterable[TItem]:
+        items = list(self._unsorted)
+
+        for instruction in self.sorting_instructions:
+            items.sort(key=instruction.key_selector, reverse=instruction.descending)
+
+        return items
 
     @override
     def __iter__(self) -> Iterator[TItem]: yield from self._value
