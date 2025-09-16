@@ -18,13 +18,22 @@ class PerfectSynonyms(Slots):
 
     def notes(self) -> LList[VocabNote]: return app.col().vocab.with_any_question_in(list(self._value.get()))
 
-    def add(self, synonym_question: str) -> None:
+    def push_answer_to_other_synonyms(self) -> None:
+        pass
+
+    def add_overwriting_the_answer_of_the_added_synonym(self, synonym_question: str) -> None:
         self._value.add(synonym_question)
-        (app.col().vocab.with_question(synonym_question)
-         .select_many(lambda synonym_note: synonym_note.related_notes.perfect_synonyms.notes())
-         .for_each(lambda syn: syn.related_notes.perfect_synonyms._value.add(self._vocab().get_question())))
+        synonyms = app.col().vocab.with_question(synonym_question)
+        if len(synonyms) == 0:
+            raise ValueError(f"No synonym found with question '{synonym_question}'")
+        for synonym in app.col().vocab.with_question(synonym_question):
+            synonym.related_notes.perfect_synonyms._value.add(self._vocab().get_question())
+            synonym.user.answer.set(self._vocab().user.answer.value)
+
 
     def remove(self, synonym_question: str) -> None:
+        if synonym_question not in self._value(): return
+
         self._value.remove(synonym_question)
         (self.notes()
          .for_each(lambda syn: syn.related_notes.perfect_synonyms._value.remove(self._vocab().get_question())))

@@ -73,3 +73,6 @@ class KanjiCollection(Slots):
     def with_radical(self, radical:str) -> list[KanjiNote]: return self._cache.with_radical(radical)
     def with_reading(self, reading:str) -> set[KanjiNote]:
         return self._cache.by_reading[kana_utils.anything_to_hiragana(reading)]
+
+    def add(self, note: KanjiNote) -> None:
+        self.collection.anki_collection.addNote(note.backend_note)

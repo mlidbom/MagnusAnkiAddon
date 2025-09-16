@@ -127,3 +127,6 @@ class VocabCollection(Slots):
 
     def with_any_question_in(self, questions: Iterable[str]) -> LList[VocabNote]:
         return linq(questions).select(self.with_question).select_many(lambda x: x).to_list()
+
+    def add(self, note: VocabNote) -> None:
+        self.collection.anki_collection.addNote(note.backend_note)

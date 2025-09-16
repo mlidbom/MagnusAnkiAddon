@@ -88,3 +88,7 @@ class SentenceCollection(Slots):
         return ex_sequence.remove_duplicates(ex_sequence.flatten([self._cache.with_user_highlighted_vocab(form) for form in vocab_note.forms.all_set()]))
 
     def search(self, query: str) -> list[SentenceNote]: return list(self.collection.search(query))
+
+    def add(self, note: SentenceNote) -> None:
+        self.collection.anki_collection.addNote(note.backend_note)
+

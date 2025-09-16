@@ -48,5 +48,3 @@ class RelatedVocab(Slots):
     def get_direct_dependencies(self) -> set[JPNote]:
         return set(set(col().kanji.with_any_kanji_in(list(self._vocab().kanji.extract_main_form_kanji()))) |
                    set(ex_sequence.flatten([col().vocab.with_question(compound_part) for compound_part in self._vocab().compound_parts.all()])))
-
-    def save(self) -> None: self._data.save()

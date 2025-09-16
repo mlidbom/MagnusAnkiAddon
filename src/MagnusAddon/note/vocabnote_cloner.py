@@ -109,7 +109,7 @@ class VocabCloner(Slots):
         for related in clone.related_notes.synonyms.strings():
             clone.related_notes.synonyms.add(related)
 
-        app.anki_collection().addNote(clone_backend_note)
+        app.col().vocab.add(clone)
 
         return clone
 

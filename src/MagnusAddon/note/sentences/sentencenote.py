@@ -106,7 +106,7 @@ class SentenceNote(JPNote, Slots):
         note.source_question.set(question)
         note.user.answer.set(answer)
         note.update_generated_data()
-        app.anki_collection().addNote(inner_note)
+        app.col().sentences.add(note)
         return note
 
     @classmethod
@@ -132,7 +132,7 @@ class SentenceNote(JPNote, Slots):
             for tag in tags:
                 note.set_tag(tag)
 
-        app.anki_collection().addNote(inner_note)
+        app.col().sentences.add(note)
         return note
 
     @classmethod
@@ -154,5 +154,5 @@ class SentenceNote(JPNote, Slots):
         note = SentenceNote(inner_note)
         note.source_question.set(question)
         note.update_generated_data()
-        app.anki_collection().addNote(inner_note)
+        app.col().sentences.add(note)
         return note

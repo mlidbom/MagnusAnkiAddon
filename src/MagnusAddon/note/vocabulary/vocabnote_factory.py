@@ -34,5 +34,5 @@ class VocabNoteFactory(Slots):
         note.user.answer.set(answer)
         note.readings.set(readings)
         note.update_generated_data()
-        app.anki_collection().addNote(backend_note)
+        app.col().vocab.add(note)
         return note

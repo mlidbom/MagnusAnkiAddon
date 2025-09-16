@@ -43,7 +43,7 @@ class JPNote(WeakRefable,Slots):
 
     @override
     def __repr__(self) -> str:
-        return self.get_question()
+        return f"""{self.get_question()}: {self.get_answer()}"""
 
     @property
     def collection(self) -> JPCollection:

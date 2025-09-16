@@ -140,7 +140,7 @@ def value_test[TIn, TOut](items: Iterable[TIn] | Callable[[], Iterable[TIn]],
                           selector: Callable[[LIterable[TIn]], TOut],
                           expected_output: TOut,
                           skip_sets: bool = False) -> None:
-    for name, sequence in create_sequences(items, skip_sets):
+    for _name, sequence in create_sequences(items, skip_sets):
         result = selector(sequence)
         assert result == expected_output
 

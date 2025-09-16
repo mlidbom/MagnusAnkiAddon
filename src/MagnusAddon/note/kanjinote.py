@@ -305,7 +305,7 @@ class KanjiNote(JPNote, Slots):
         note.set_reading_on(on_readings)
         note.set_reading_kun(kun_reading)
         note.update_generated_data()
-        app.anki_collection().addNote(backend_note)
+        app.col().kanji.add(note)
         return note
 
     def get_romaji_readings(self) -> str:

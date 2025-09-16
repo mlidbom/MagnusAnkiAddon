@@ -2,15 +2,16 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from note.note_constants import NoteFields, Tags
+from note.note_constants import Tags
 from sysutils import kana_utils
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
 
 def update_generated_data(vocab: VocabNote) -> None:
-    vocab.set_field(NoteFields.Vocab.sentence_count, str(len(vocab.sentences.all())))
-    vocab.set_field(NoteFields.Vocab.active_answer, vocab.get_answer())
+    vocab.meta_data.sentence_count.set(len(vocab.sentences.all()))
+    vocab.active_answer.set(vocab.get_answer())
+    vocab.related_notes.perfect_synonyms.push_answer_to_other_synonyms()
 
     from language_services.jamdict_ex.dict_lookup import DictLookup
 

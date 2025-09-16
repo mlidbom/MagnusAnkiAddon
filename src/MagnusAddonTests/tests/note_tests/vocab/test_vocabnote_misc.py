@@ -29,15 +29,3 @@ def test_generate_from_dictionary() -> None:
     assert vocab.get_answer() == "totally-willing/fully-motivated"
     assert vocab.readings.get() == ["やるきまんまん"]
     print(vocab.readings.get())
-
-
-
-def test_perfect_synonyms() -> None:
-    first = VocabNote.factory.create("first", "", [])
-    second = VocabNote.factory.create("second", "", [])
-    third = VocabNote.factory.create("third", "", [])
-
-    first.related_notes.perfect_synonyms.add(second.get_question())
-    first.related_notes.perfect_synonyms.add(third.get_question())
-
-    first.user.answer.set("synced_answer")

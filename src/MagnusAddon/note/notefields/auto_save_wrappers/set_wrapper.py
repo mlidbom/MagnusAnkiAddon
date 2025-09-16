@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any, override
 from autoslot import Slots
 
 if TYPE_CHECKING:
-    from collections.abc import Callable
+    from collections.abc import Callable, Iterable
 
     from note.notefields.json_object_field import MutableSerializedObjectField
 
@@ -17,10 +17,14 @@ class FieldSetWrapper[TValue](Slots):
         self._value: Callable[[], set[TValue]] = value #never replace _value or the save method will stop working...
 
     def get(self) -> set[TValue]: return self._value()
+    def __call__(self) -> set[TValue]: return self.get()
 
     def add(self, value: TValue) -> None:
         self._value().add(value)
         self._save()
+
+    def add_all(self, values: Iterable[TValue]) -> None:
+        self._value().update(values)
 
     def remove(self, key: TValue) -> None:
         self._value().remove(key)
