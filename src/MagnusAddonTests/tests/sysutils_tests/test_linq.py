@@ -16,11 +16,16 @@ def test_single_returns_single_none_value() -> None: value_test([None], lambda x
 
 def test_single_or_none_returns_single_value() -> None: value_test([1], lambda x: x.single_or_none(), 1)
 def test_single_or_none_returns_none_if_no_values() -> None: value_test([], lambda x: x.single_or_none(), None)
-def test_single_or_none_throws_if_multiple_values() -> None: throws_test([1, 2], lambda x: x.single_or_none(), Exception)
+def test_single_or_none_throws_if_multiple_values() -> None: throws_test([1, 2], lambda x: x.single_or_none(), ValueError)
 
 def test_where_first_element() -> None: where_test((1, 2, 3), lambda x: x == 1, [1])
 def test_where_middle_element() -> None: where_test((1, 2, 3), lambda x: x == 2, [2])
 def test_where_end_element() -> None: where_test((1, 2, 3), lambda x: x == 3, [3])
+
+def test_element_at_returns_first_element() -> None: value_test((1, 2, 3), lambda x: x.element_at(0), 1)
+def test_element_at_return_middle_element() -> None: value_test((1, 2, 3), lambda x: x.element_at(1), 2)
+def test_element_at_returns_last_element() -> None: value_test((1, 2, 3), lambda x: x.element_at(2), 3)
+def test_element_at_throws_if_index_is_out_of_range() -> None: throws_test((1, 2, 3), lambda x: x.element_at(3), IndexError)
 
 def test_where_excluding_first_element() -> None: where_test((1, 2, 3), lambda x: x != 1, [2, 3])
 def test_where_excluding_middle_element() -> None: where_test((1, 2, 3), lambda x: x != 2, [1, 3])
