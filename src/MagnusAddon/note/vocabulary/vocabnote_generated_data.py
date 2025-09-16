@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 def update_generated_data(vocab: VocabNote) -> None:
     vocab.meta_data.sentence_count.set(len(vocab.sentences.all()))
     vocab.active_answer.set(vocab.get_answer())
-    vocab.related_notes.perfect_synonyms._push_answer_to_other_synonyms()
+    vocab.related_notes.perfect_synonyms.push_answer_to_other_synonyms()
 
     from language_services.jamdict_ex.dict_lookup import DictLookup
 

@@ -16,11 +16,11 @@ class PerfectSynonyms(Slots):
     def __init__(self, vocab: WeakRef[VocabNote], data: FieldSetWrapper[str]) -> None:
         self._vocab: WeakRef[VocabNote] = vocab
         self._value: FieldSetWrapper[str] = data
-        vocab().user.answer.on_change(self._push_answer_to_other_synonyms)
+        vocab().user.answer.on_change(self.push_answer_to_other_synonyms)
 
     def notes(self) -> LList[VocabNote]: return app.col().vocab.with_any_question_in(list(self._value.get()))
 
-    def _push_answer_to_other_synonyms(self) -> None:
+    def push_answer_to_other_synonyms(self) -> None:
         for synonym in self.notes():
             synonym.user.answer.set(self._vocab().user.answer.value)
 
@@ -60,7 +60,7 @@ class PerfectSynonyms(Slots):
         if added_question == self._vocab().get_question(): return
         self._add_internal(added_question)
         self._ensure_all_perfect_synonyms_are_connected()
-        self._push_answer_to_other_synonyms()
+        self.push_answer_to_other_synonyms()
 
     def remove(self, synonym_to_remove: str) -> None:
         for to_remove in app.col().vocab.with_question(synonym_to_remove):

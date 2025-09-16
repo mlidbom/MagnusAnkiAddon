@@ -16,6 +16,7 @@ test_special_vocab: list[VocabSpec] = [
 
     VocabSpec("んで", "and/て", forms=["で"], prefix_in={"ん"}, tags=[vm.Requires.te_form_stem, Tags.Vocab.question_overrides_form]),
     VocabSpec("んどる", forms=["どる"], prefix_in={"ん"}, tags=[Tags.Vocab.question_overrides_form, vm.Requires.te_form_stem]),
+    VocabSpec("んでる", forms=["でる"], prefix_in={"ん"}, tags=[Tags.Vocab.question_overrides_form, vm.Requires.te_form_stem]),
     # </te-stem-required>
     # <te-stem-forbidden>
     VocabSpec("で", tags=[vm.Forbids.te_form_stem]),
@@ -37,7 +38,6 @@ test_special_vocab: list[VocabSpec] = [
 
     VocabSpec("たら", "conj{if/when} prt{as-for | why-not..  | I-said!/I-tell-you!}", ["たら"], tags=[vm.is_inflecting_word]),
     VocabSpec("ちゃう", "to do: accidentally/unfortunately | completely", ["ちゃう"], tags=[vm.is_inflecting_word]),
-    VocabSpec("無い", "{negation} | nonexistent | unowned | impossible/won't-happen", ["ない"], tags=[vm.is_inflecting_word]),
     VocabSpec("ても良い", "{concession/compromise} | {permission}", ["てもいい"], tags=[vm.is_inflecting_word]),
     VocabSpec("すぎる", "too-much", ["すぎる"], tags=[vm.is_inflecting_word]),
     VocabSpec("いらっしゃいます", "to: come/be/do", ["いらっしゃいます"]),
@@ -69,13 +69,13 @@ test_special_vocab: list[VocabSpec] = [
     VocabSpec("こ", "familiarizing-suffix", ["こ"], forms=["っこ"], tags=[vm.Forbids.sentence_start]),
 
     # multiple form to trigger a certain bug
-    VocabSpec("ない", "not", ["ない"], forms=["無い"]),
-    VocabSpec("無い", "not", ["ない"], forms=["ない"]),
+    VocabSpec("ない", "not", forms=["ない"], tags=[vm.is_inflecting_word]),
+    VocabSpec("無い", "not", forms=["ない"], tags=[vm.is_inflecting_word]),
     VocabSpec("うまい", yield_to_surface={"うまく"}),
     VocabSpec("うまく"),
     VocabSpec("笑える", tos="ichidan verb"),
 
-    VocabSpec("にする", "to: turn-into", readings=["にする"]),
+    VocabSpec("にする", "to: turn-into"),
     VocabSpec("のか", tags=[vm.Requires.sentence_end]),
     VocabSpec("ないと", tags=[vm.yield_last_token_to_overlapping_compound]),
     VocabSpec("して", tags=[vm.yield_last_token_to_overlapping_compound]),
@@ -113,7 +113,7 @@ test_special_vocab: list[VocabSpec] = [
 
     VocabSpec("うと", compounds=["う", "と"], tags=[vm.yield_last_token_to_overlapping_compound]),
     VocabSpec("と思って", compounds=["と思う", "て"], tags=[vm.yield_last_token_to_overlapping_compound]),
-    VocabSpec("ませ", suffix_not={"ん"}),
+    VocabSpec("ませ", forms=["まし"], suffix_not={"ん"}),
     VocabSpec("ところが", tags=[vm.Requires.sentence_start]),
 ]
 

@@ -13,10 +13,10 @@ def render_wbr(question: str) -> str:
         else question
 
 def render_user_question(note: SentenceNote) -> str:
-    return render_wbr(note.user.question.get_raw())
+    return render_wbr(note.user.question.value)
 
 def render_source_question(note: SentenceNote) -> str:
-    return render_wbr(note.source_question.get_raw())
+    return render_wbr(note.source_question.value)
 
 def init() -> None:
     gui_hooks.card_will_show.append(PrerenderingAnswerContentRenderer(SentenceNote, {

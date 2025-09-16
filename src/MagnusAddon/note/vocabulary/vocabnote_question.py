@@ -35,7 +35,10 @@ class VocabNoteQuestion(Slots):
 
     def stems(self) -> VocabStems: return VocabStems(self._vocab)
 
-    def set(self, value: str) -> None: self._field.set(value)
+    def set(self, value: str) -> None:
+        self._field.set(value)
+        if value not in self._vocab().forms.all_set():
+            self._vocab().forms.set_set(self._vocab().forms.all_set() | {value})
 
     @override
     def __repr__(self) -> str: return self.raw

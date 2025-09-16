@@ -14,7 +14,6 @@ if TYPE_CHECKING:
 
     from note.vocabulary.vocabnote import VocabNote
 
-
 class VocabNoteFactory(Slots):
     @staticmethod
     def create_with_dictionary(question: str) -> VocabNote:
@@ -24,6 +23,7 @@ class VocabNoteFactory(Slots):
             return VocabNote.factory.create(question, "TODO", [])
         readings = list(set(ex_sequence.flatten([ent.kana_forms() for ent in dict_entry.entries])))
         created = VocabNote.factory.create(question, "TODO", readings)
+        created.update_generated_data()
         created.generate_and_set_answer()
         return created
 
@@ -35,7 +35,6 @@ class VocabNoteFactory(Slots):
         note.question.set(question)
         note.user.answer.set(answer)
         note.readings.set(readings)
-        note.update_generated_data()
         if initializer is not None: initializer(note)
         app.col().vocab.add(note)
         return note

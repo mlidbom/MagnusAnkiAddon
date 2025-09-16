@@ -152,8 +152,8 @@ class _LIterable[TItem](LIterable[TItem]):
 # region LOrderedLIterable
 class SortInstruction[TItem]:
     def __init__(self, key_selector: Callable[[TItem], SupportsRichComparison], descending: bool) -> None:
-        self.key_selector = key_selector
-        self.descending = descending
+        self.key_selector: Callable[[TItem], SupportsRichComparison] = key_selector
+        self.descending: bool = descending
 
 class LOrderedLIterable[TItem](LIterable[TItem]):
     def __init__(self, iterable: Iterable[TItem], sorting_instructions: list[SortInstruction[TItem]]) -> None:

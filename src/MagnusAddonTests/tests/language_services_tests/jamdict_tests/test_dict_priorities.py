@@ -58,5 +58,5 @@ def run_priority_test(word: str, readings: list[str], expected: str) -> None:
     assert spec.priority_string == expected
 
 def get_dict_entry(word: str, readings: list[str]) -> DictLookup:
-    mock_vocab = VocabNote.factory.create(word, "", readings)
-    return DictLookup.lookup_vocab_word_or_name(mock_vocab)
+    vocab = VocabNote.factory.create(word, "", readings)
+    return DictLookup.lookup_vocab_word_or_name(vocab)

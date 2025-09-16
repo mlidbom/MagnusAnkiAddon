@@ -36,9 +36,6 @@ class VocabNoteMatchingRules(Slots):
         self.suffix_is_not: FieldSetWrapper[str] = FieldSetWrapper.for_json_object_field(self._data, self._data.get().suffix_is_not)  # pyright: ignore[reportUnknownMemberType]
         self.required_prefix: FieldSetWrapper[str] = FieldSetWrapper.for_json_object_field(self._data, self._data.get().required_prefix)  # pyright: ignore[reportUnknownMemberType]
 
-    def save(self) -> None:
-        self._data.save()
-
     def overwrite_with(self, other: VocabNoteMatchingRules) -> None:
         self.surface_is_not.overwrite_with(other.surface_is_not)
         self.yield_to_surface.overwrite_with(other.yield_to_surface)
@@ -86,8 +83,6 @@ class VocabNoteMatchingConfiguration(WeakRefable, Slots):
 
     @property
     def configurable_rules(self) -> VocabNoteMatchingRules: return self._rules()
-
-    def save(self) -> None: self.configurable_rules.save()
 
     @override
     def __repr__(self) -> str: return (SkipFalsyValuesDebugReprBuilder()
