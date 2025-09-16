@@ -47,7 +47,7 @@ def test_select_many_flattens_nested_sequences() -> None: value_test([[1, 2], [3
 def test_reverse_returns_reversed_sequence() -> None: value_test([1, 2, 3], lambda x: x.reversed().to_list(), [3, 2, 1])
 
 def test_not_none_returns_only_elements_that_are_not_none() -> None: value_test([1, None], lambda x: x.where_not_none().to_list(), [1])
-def test_not_none_returns_empty_list_if_all_elements_are_none() -> None: value_test(LList[str|None]([None, None]), lambda x: x.where_not_none().to_list(), list[str]())
+def test_not_none_returns_empty_list_if_all_elements_are_none() -> None: value_test(LList[str | None]([None, None]), lambda x: x.where_not_none().to_list(), list[str]())
 
 def test_assert_each_throws_if_any_element_does_not_match_predicate() -> None: throws_test([1, 2, 3], lambda x: x.assert_each(lambda y: y != 2), Exception)
 def test_assert_each_does_not_throw_if_all_elements_match_predicate() -> None: value_test([1, 2, 3], lambda x: x.assert_each(lambda y: y != 0).to_list(), [1, 2, 3])

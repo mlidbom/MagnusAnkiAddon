@@ -28,4 +28,3 @@ class PerfectSynonyms(Slots):
         self._value.remove(synonym_question)
         (self.notes()
          .for_each(lambda syn: syn.related_notes.perfect_synonyms._value.remove(self._vocab().get_question())))
-      
