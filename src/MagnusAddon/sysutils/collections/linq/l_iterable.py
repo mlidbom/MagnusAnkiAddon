@@ -29,11 +29,9 @@ class LIterable[TItem](Iterable[TItem], ABC):
     # endregion
 
     # region scalar aggregations
-
     def length(self) -> int:
         if isinstance(self, list): return len(cast(list[TItem], self))
         return sum(1 for _ in self)
-
     # endregion
 
     # region order_by
@@ -42,11 +40,9 @@ class LIterable[TItem](Iterable[TItem], ABC):
 
     def order_by_descending(self, key_selector: Callable[[TItem], SupportsRichComparison]) -> LOrderedLIterable[TItem]:
         return LOrderedLIterable(self, [SortInstruction(key_selector, True)])
-
     # endregion
 
     # region boolean queries
-
     def none(self, predicate: Callable[[TItem], bool] | None = None) -> bool: return not self.any(predicate)
 
     def any(self, predicate: Callable[[TItem], bool] | None = None) -> bool:
@@ -54,21 +50,17 @@ class LIterable[TItem](Iterable[TItem], ABC):
             for _ in self: return True
             return False
         return any(predicate(item) for item in self)
-
     # endregion
 
     # region mapping methods
-
     def select[TReturn](self, selector: Callable[[TItem], TReturn]) -> LIterable[TReturn]:
         return _LIterable(selector(item) for item in self)
 
     def select_many[TInner](self, selector: Callable[[TItem], Iterable[TInner]]) -> LIterable[TInner]:
         return _LIterable(itertools.chain.from_iterable(selector(item) for item in self))
-
     # endregion
 
     # region single item selecting methods
-
     def single(self, predicate: Callable[[TItem], bool] | None = None) -> TItem:
         result = self.single_or_default(predicate)
         if result is None: raise ValueError("Sequence contains no elements")
@@ -87,11 +79,9 @@ class LIterable[TItem](Iterable[TItem], ABC):
             except StopIteration:
                 return None
         return self.where(predicate).single_or_default()
-
     # endregion
 
     # region assertions on the collection or it's values
-
     def assert_each(self, predicate: Callable[[TItem], bool], message: str | None = None) -> LIterable[TItem]:
         for item in self:
             if not predicate(item): raise AssertionError(message)
@@ -103,7 +93,6 @@ class LIterable[TItem](Iterable[TItem], ABC):
     def assert_on_collection(self, predicate: Callable[[LIterable[TItem]], bool], message: str | None = None) -> LIterable[TItem]:
         if not predicate(self): raise AssertionError(message)
         return self
-
     # endregion
 
     # region methods to avoid needing to manually write loops
@@ -126,19 +115,15 @@ class LIterable[TItem](Iterable[TItem], ABC):
     def to_built_in_list(self) -> list[TItem]: return list(self)
     def to_set(self) -> LSet[TItem]: return LSet(self)
     def to_frozenset(self) -> LFrozenSet[TItem]: return LFrozenSet(self)
-
     # endregion
 
     # region the abstract _value property
-
     @property
     @abstractmethod
     def _value(self) -> Iterable[TItem]: raise NotImplementedError()
-
     # endregion
 
 # region implementing classes
-
 class _LIterable[TItem](LIterable[TItem]):
     def __init__(self, iterable: Iterable[TItem]) -> None:
         self.__value: Iterable[TItem] = iterable
@@ -151,7 +136,6 @@ class _LIterable[TItem](LIterable[TItem]):
     def __iter__(self) -> Iterator[TItem]: yield from self._value
 
 # region LOrderedLIterable
-
 class SortInstruction[TItem]:
     def __init__(self, key_selector: Callable[[TItem], SupportsRichComparison], descending: bool) -> None:
         self.key_selector = key_selector
@@ -185,11 +169,9 @@ class LOrderedLIterable[TItem](LIterable[TItem]):
 
     @override
     def __iter__(self) -> Iterator[TItem]: yield from self._value
-
 # endregion
 
 # region LList, LSet, LFrozenSet: concrete classes that do nothing but inherit a built in collection and LIterable
-
 class LFrozenSet[TItem](frozenset[TItem], LIterable[TItem]):
     def __new__(cls, iterable: Iterable[TItem]) -> LFrozenSet[TItem]:
         return super().__new__(cls, iterable)
@@ -222,7 +204,5 @@ class LSet[TItem](set[TItem], LIterable[TItem]):
 
     @override
     def length(self) -> int: return len(self)
-
 # endregion
-
 # endregion
