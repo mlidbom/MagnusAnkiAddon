@@ -30,6 +30,10 @@ class FieldSetWrapper[TValue](Slots):
         self._value().remove(key)
         self._save()
 
+    def discard(self, key: TValue) -> None:
+        self._value().discard(key)
+        self._save()
+
     def overwrite_with(self, other: FieldSetWrapper[TValue]) -> None:
         self._value().clear()
         self._value().update(other.get())
