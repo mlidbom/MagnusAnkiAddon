@@ -6,6 +6,7 @@ from ankiutils import app
 from ex_autoslot import ProfilableAutoSlots
 from note.note_constants import Tags
 from note.notefields.require_forbid_flag_field import RequireForbidFlagField
+from sysutils.lazy import Lazy
 from sysutils.simple_string_builder import SimpleStringBuilder
 
 if TYPE_CHECKING:
@@ -24,10 +25,9 @@ class YieldLastTokenToOverlappingCompound(RequireForbidFlagField, ProfilableAuto
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         super().__init__(vocab, Tags.Vocab.Matching.yield_last_token_to_overlapping_compound, Tags.Vocab.Matching.Forbids.auto_yielding)
         self._pos:VocabNotePartsOfSpeech = vocab().parts_of_speech
+        self._required = Lazy(self._decide_if_required)
 
-    @property
-    @override
-    def is_required(self) -> bool:
+    def _decide_if_required(self) -> bool:
         return (super().is_required
                 or (not self.is_forbidden
                     and (  # na adjectives
@@ -43,6 +43,10 @@ class YieldLastTokenToOverlappingCompound(RequireForbidFlagField, ProfilableAuto
                             or (self.automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound.get_value()
                                 and self._pos.is_causative_verb_compound())
                     )))
+
+    @property
+    @override
+    def is_required(self) -> bool: return self._required()
 
     @override
     def __repr__(self) -> str: return (SimpleStringBuilder()
