@@ -48,8 +48,8 @@ class _KanjiCache(NoteCache[KanjiNote, _KanjiSnapshot], Slots):
 
 class KanjiCollection(Slots):
     def __init__(self, collection: Collection, cache_manager: CacheRunner, task_runner: ITaskRunner) -> None:
-        def kanji_constructor(note: Note) -> KanjiNote: return KanjiNote(note)
-        self.collection: BackEndFacade[KanjiNote] = BackEndFacade[KanjiNote](collection, kanji_constructor, NoteTypes.Kanji)
+        def kanji_constructor_call_while_populating_kanji_collection(note: Note) -> KanjiNote: return KanjiNote(note)
+        self.collection: BackEndFacade[KanjiNote] = BackEndFacade[KanjiNote](collection, kanji_constructor_call_while_populating_kanji_collection, NoteTypes.Kanji)
         all_kanji = self.collection.all(task_runner)
         self._cache: _KanjiCache = _KanjiCache(all_kanji, cache_manager, task_runner)
 
@@ -76,4 +76,4 @@ class KanjiCollection(Slots):
 
     def add(self, note: KanjiNote) -> None:
         self.collection.anki_collection.addNote(note.backend_note)
-        self._cache.add(note)
+        self._cache.add_note_to_cache(note)

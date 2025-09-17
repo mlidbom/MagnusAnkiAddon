@@ -35,7 +35,7 @@ class NoteCache[TNote: JPNote, TSnapshot: CachedNote](Slots):
         self._pending_add: list[Note] = []
 
         if len(all_notes) > 0:
-            task_runner.process_with_progress(all_notes, self.add, f"Pushing {all_notes[0].__class__.__name__} notes into cache")
+            task_runner.process_with_progress(all_notes, self.add_note_to_cache, f"Pushing {all_notes[0].__class__.__name__} notes into cache")
 
         cache_runner.connect_merge_pending_adds(self._merge_pending_added_notes)
         cache_runner.connect_will_remove(self._on_will_be_removed)
@@ -60,7 +60,7 @@ class NoteCache[TNote: JPNote, TSnapshot: CachedNote](Slots):
         for backend_note in completely_added_list:
             self._pending_add.remove(backend_note)
             note = checked_cast(self._note_type, JPNote.note_from_note(backend_note))
-            self.add(note)
+            self.add_note_to_cache(note)
 
     def _on_will_flush(self, backend_note: Note) -> None:
         if backend_note.id and backend_note.id in self._by_id:
@@ -78,7 +78,7 @@ class NoteCache[TNote: JPNote, TSnapshot: CachedNote](Slots):
             note = self._create_note(backend_note)
             with note.recursive_flush_guard.pause_flushing():
                 note.update_generated_data()
-                self.add(note)
+                self.add_note_to_cache(note)
 
     def _on_will_be_added(self, backend_note: Note) -> None:
         note = JPNote.note_from_note(backend_note)
@@ -97,7 +97,7 @@ class NoteCache[TNote: JPNote, TSnapshot: CachedNote](Slots):
 
     def _refresh_in_cache(self, note: TNote) -> None:
         self._remove_from_cache(note)
-        self.add(note)
+        self.add_note_to_cache(note)
 
     def _remove_from_cache(self, note: TNote) -> None:
         assert note.get_id()
@@ -107,7 +107,7 @@ class NoteCache[TNote: JPNote, TSnapshot: CachedNote](Slots):
         self._by_answer[cached.answer].remove(note)
         self._inheritor_remove_from_cache(note, cached)
 
-    def add(self, note: TNote) -> None:
+    def add_note_to_cache(self, note: TNote) -> None:
         assert note.get_id()
         self._by_id[note.get_id()] = note
         snapshot = self._create_snapshot(note)

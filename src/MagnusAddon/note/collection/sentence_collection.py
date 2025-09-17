@@ -52,8 +52,8 @@ class _SentenceCache(NoteCache[SentenceNote, _SentenceSnapshot], Slots):
 
 class SentenceCollection(Slots):
     def __init__(self, collection: Collection, cache_manager: CacheRunner, task_runner: ITaskRunner) -> None:
-        def sentence_constructor(note: Note) -> SentenceNote: return SentenceNote(note)
-        self.collection: BackEndFacade[SentenceNote] = BackEndFacade[SentenceNote](collection, sentence_constructor, NoteTypes.Sentence)
+        def sentence_constructor_call_while_populating_sentence_collection(note: Note) -> SentenceNote: return SentenceNote(note)
+        self.collection: BackEndFacade[SentenceNote] = BackEndFacade[SentenceNote](collection, sentence_constructor_call_while_populating_sentence_collection, NoteTypes.Sentence)
         all_sentences = list(self.collection.all(task_runner))
         self._cache: _SentenceCache = _SentenceCache(all_sentences, cache_manager, task_runner)
 
@@ -91,5 +91,5 @@ class SentenceCollection(Slots):
 
     def add(self, note: SentenceNote) -> None:
         self.collection.anki_collection.addNote(note.backend_note)
-        self._cache.add(note)
+        self._cache.add_note_to_cache(note)
 
