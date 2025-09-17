@@ -2,14 +2,14 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from autoslot import Slots
+from ex_autoslot import ProfilableAutoSlots
 from sysutils.typed import float_
 
 if TYPE_CHECKING:
     from anki.decks import DeckConfigDict
 
 
-class DeckConfigDictEx(Slots):
+class DeckConfigDictEx(ProfilableAutoSlots):
     def __init__(self, deck_config_dict:DeckConfigDict) -> None:
         self._dict:DeckConfigDict = deck_config_dict
 

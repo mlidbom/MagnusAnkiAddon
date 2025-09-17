@@ -3,7 +3,7 @@ from __future__ import annotations
 from contextlib import contextmanager
 from typing import TYPE_CHECKING
 
-from autoslot import Slots
+from ex_autoslot import ProfilableAutoSlots
 from sysutils import ex_assert
 
 if TYPE_CHECKING:
@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from note.jpnote import JPNote
     from sysutils.weak_ref import WeakRef
 
-class NoteRecursiveFlushGuard(Slots):
+class NoteRecursiveFlushGuard(ProfilableAutoSlots):
     def __init__(self, note: WeakRef[JPNote]) -> None:
         self._note: WeakRef[JPNote] = note
         self._depth:int = 0

@@ -62,7 +62,7 @@ def _reset(_col: object | None = None) -> None:
     reset()
 
 def _destruct() -> None:
-    mylog.info("_destruct")
+    mylog.info("_destruct_ja_app")
     from sysutils.timeutil import StopWatch
     with StopWatch.log_warning_if_slower_than(0.2):
         global _collection
@@ -77,7 +77,7 @@ def _collection_is_being_invalidated(_col: object | None = None) -> None:
     reset(delay_seconds=9999)  # Unless forced by the user we don't actually want to run an initialization here
 
 def _profile_closing() -> None:
-    mylog.info("profile_closing")
+    mylog.info("anki_profile_closing")
     from aqt import gui_hooks
     gui_hooks.sync_will_start.remove(_collection_is_being_invalidated)
     _collection_closed_hooks.remove(_destruct)

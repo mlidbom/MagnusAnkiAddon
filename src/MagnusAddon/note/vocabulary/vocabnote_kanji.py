@@ -2,14 +2,14 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from autoslot import Slots
+from ex_autoslot import ProfilableAutoSlots
 from sysutils import ex_str, kana_utils
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
     from sysutils.weak_ref import WeakRef
 
-class VocabNoteKanji(Slots):
+class VocabNoteKanji(ProfilableAutoSlots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self.__vocab = vocab
 

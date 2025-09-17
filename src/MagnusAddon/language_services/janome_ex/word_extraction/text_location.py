@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, final, override
 
 from ankiutils import app
-from autoslot import Slots
+from ex_autoslot import ProfilableAutoSlots
 from sysutils import ex_sequence
 from sysutils.weak_ref import WeakRef, WeakRefable
 
@@ -18,7 +18,7 @@ from sysutils.ex_str import newline
 _max_lookahead = 12
 
 @final
-class TextAnalysisLocation(WeakRefable, Slots):
+class TextAnalysisLocation(WeakRefable, ProfilableAutoSlots):
     def __init__(self, analysis: WeakRef[TextAnalysis], token: ProcessedToken, character_start_index: int, token_index: int) -> None:
         self.weakref = WeakRef(self)
         self.next: WeakRef[TextAnalysisLocation] | None = None

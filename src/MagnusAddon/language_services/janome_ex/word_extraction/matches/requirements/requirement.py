@@ -2,13 +2,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from autoslot import Slots
+from ex_autoslot import ProfilableAutoSlots
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.state_tests.match_state_test import MatchStateTest
 
 
-class MatchRequirement(Slots):
+class MatchRequirement(ProfilableAutoSlots):
     def __init__(self, state_test: MatchStateTest) -> None:
         self.state_test: MatchStateTest = state_test
 

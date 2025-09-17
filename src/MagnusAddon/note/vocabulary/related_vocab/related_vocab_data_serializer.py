@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from autoslot import Slots
+from ex_autoslot import ProfilableAutoSlots
 from note.notefields.auto_save_wrappers.value_wrapper import ValueWrapper
 from note.notefields.json_object_field import ObjectSerializer
 from sysutils.json import ex_json
@@ -11,7 +11,7 @@ from sysutils.json.json_reader import JsonReader
 if TYPE_CHECKING:
     from note.vocabulary.related_vocab.related_vocab_data import RelatedVocabData
 
-class RelatedVocabDataSerializer(ObjectSerializer["RelatedVocabData"], Slots):
+class RelatedVocabDataSerializer(ObjectSerializer["RelatedVocabData"], ProfilableAutoSlots):
     @override
     def deserialize(self, serialized: str) -> RelatedVocabData:
         from note.vocabulary.related_vocab.related_vocab_data import RelatedVocabData

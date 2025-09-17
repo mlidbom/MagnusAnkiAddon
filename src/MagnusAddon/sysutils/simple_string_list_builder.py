@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from autoslot import Slots
+from ex_autoslot import ProfilableAutoSlots
 
 
-class SimpleStringListBuilder(Slots):
+class SimpleStringListBuilder(ProfilableAutoSlots):
     def __init__(self) -> None:
         self.value: list[str] = []
 

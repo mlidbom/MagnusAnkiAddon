@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from autoslot import Slots
+from ex_autoslot import ProfilableAutoSlots
 from note.sentences.serialization.sentence_configuration_serializer import SentenceConfigurationSerializer
 from note.sentences.word_exclusion_set import WordExclusionSet
 from sysutils.debug_repr_builder import SkipFalsyValuesDebugReprBuilder
@@ -10,7 +10,7 @@ from sysutils.debug_repr_builder import SkipFalsyValuesDebugReprBuilder
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 
-class SentenceConfiguration(Slots):
+class SentenceConfiguration(ProfilableAutoSlots):
     serializer: SentenceConfigurationSerializer = SentenceConfigurationSerializer()
 
     def __init__(self, highlighted_words: set[str], incorrect_matches: WordExclusionSet, hidden_matches: WordExclusionSet) -> None:

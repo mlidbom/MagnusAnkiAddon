@@ -1,21 +1,21 @@
 # noinspection PyUnusedName
 from __future__ import annotations
 
-from autoslot import Slots
+from ex_autoslot import ProfilableAutoSlots
 
 
-class Builtin(Slots):
+class Builtin(ProfilableAutoSlots):
     # noinspection PyUnusedName
     Tag: str = "tag"
     Note: str = "note"
     Deck: str = "deck"
     Card: str = "card"
 
-class MyNoteFields(Slots):
+class MyNoteFields(ProfilableAutoSlots):
     question: str = "Q"
     answer: str = "A"
 
-class ImmersionKitSentenceNoteFields(Slots):
+class ImmersionKitSentenceNoteFields(ProfilableAutoSlots):
     audio: str = "Audio Sentence"
     id: str = "ID"
     screenshot: str = "Screenshot"
@@ -23,7 +23,7 @@ class ImmersionKitSentenceNoteFields(Slots):
     answer: str = "English"
     question: str = "Expression"
 
-class SentenceNoteFields(Slots):
+class SentenceNoteFields(ProfilableAutoSlots):
     reading: str = "Reading"
     id: str = "ID"
     active_question: str = MyNoteFields.question
@@ -42,11 +42,11 @@ class SentenceNoteFields(Slots):
     screenshot: str = "Screenshot"
     configuration: str = "__configuration"
 
-class CardTypes(Slots):
+class CardTypes(ProfilableAutoSlots):
     reading: str = "Reading"
     listening: str = "Listening"
 
-class NoteTypes(Slots):
+class NoteTypes(ProfilableAutoSlots):
     immersion_kit: str = "Immersion Kit Sentence"
     Kanji: str = "_Kanji"
     Vocab: str = "_Vocab"
@@ -54,20 +54,20 @@ class NoteTypes(Slots):
 
     ALL: set[str] = {Kanji, Vocab, Sentence}
 
-class NoteFields(Slots):
+class NoteFields(ProfilableAutoSlots):
     note_id: str = "nid"
 
-    class VocabNoteType(Slots):
-        class Card(Slots):
+    class VocabNoteType(ProfilableAutoSlots):
+        class Card(ProfilableAutoSlots):
             Reading: str = CardTypes.reading
             Listening: str = CardTypes.listening
 
-    class SentencesNoteType(Slots):
-        class Card(Slots):
+    class SentencesNoteType(ProfilableAutoSlots):
+        class Card(ProfilableAutoSlots):
             Reading: str = CardTypes.reading
             Listening: str = CardTypes.listening
 
-    class Kanji(Slots):
+    class Kanji(ProfilableAutoSlots):
         question: str = MyNoteFields.question
         active_answer: str = MyNoteFields.answer
         source_answer: str = "source_answer"
@@ -87,7 +87,7 @@ class NoteFields(Slots):
         user_similar_meaning: str = "__similar_meaning"
         related_confused_with: str = "__confused_with"
 
-    class Vocab(Slots):
+    class Vocab(ProfilableAutoSlots):
         matching_rules: str = "__matching_rules"
         related_vocab: str = "__related_vocab"
         sentence_count: str = "sentence_count"
@@ -122,13 +122,13 @@ f_vocab_matching_forbids: str = f"{f_vocab_matching}forbids::"
 f_vocab_matching_todo: str = f"{f_vocab_matching}todo::"
 f_vocab_matching_uses: str = f"{f_vocab_matching}uses::"
 
-class Tags(Slots):
-    class Sentence(Slots):
-        class Uses(Slots):
+class Tags(ProfilableAutoSlots):
+    class Sentence(ProfilableAutoSlots):
+        class Uses(ProfilableAutoSlots):
             incorrect_matches: str = f"{f_sentence_uses}incorrect-matches"
             hidden_matches: str = f"{f_sentence_uses}hidden-matches"
 
-    class Kanji(Slots):
+    class Kanji(ProfilableAutoSlots):
         is_radical: str = f"{f_kanji}is-radical"
         is_radical_purely: str = f"{f_kanji}is-radical-purely"
         is_radical_silent: str = f"{f_kanji}is-radical-silent"
@@ -150,17 +150,17 @@ class Tags(Slots):
         has_non_primary_on_reading_vocab: str = f"{f_kanji}has-non-primary-on-reading-vocab"
         has_non_primary_on_reading_vocab_with_only_known_kanji: str = f"{f_kanji}has-non-primary-on-reading-vocab-with-only-known-kanji"
 
-    class Vocab(Slots):
+    class Vocab(ProfilableAutoSlots):
         root: str = f_vocab
         has_no_studying_sentences: str = f"{f_vocab}has-no-studying-sentences"
         question_overrides_form: str = f"{f_vocab}question-overrides-form"
 
-        class Matching(Slots):
+        class Matching(ProfilableAutoSlots):
             yield_last_token_to_overlapping_compound: str = f"{f_vocab_matching}yield-last-token-to-upcoming-compound"
             is_poison_word: str = f"{f_vocab_matching}is-poison-word"
             is_inflecting_word: str = f"{f_vocab_matching}is-inflecting-word"
 
-            class Requires(Slots):
+            class Requires(ProfilableAutoSlots):
                 a_stem: str = f"{f_vocab_matching_requires}a-stem"
                 e_stem: str = f"{f_vocab_matching_requires}e-stem"
                 past_tense_stem: str = f"{f_vocab_matching_requires}past-tense-stem"
@@ -171,7 +171,7 @@ class Tags(Slots):
                 single_token: str = f"{f_vocab_matching_requires}single-token"
                 compound: str = f"{f_vocab_matching_requires}compound"
 
-            class Forbids(Slots):
+            class Forbids(ProfilableAutoSlots):
                 a_stem: str = f"{f_vocab_matching_forbids}a-stem"
                 e_stem: str = f"{f_vocab_matching_forbids}e-stem"
                 past_tense_stem: str = f"{f_vocab_matching_forbids}past-tense-stem"
@@ -181,10 +181,10 @@ class Tags(Slots):
                 exact_match: str = f"{f_vocab_matching_forbids}exact-match"
                 auto_yielding: str = f"{f_vocab_matching_forbids}auto_yielding"
 
-            class Todo(Slots):
+            class Todo(ProfilableAutoSlots):
                 with_preceding_vowel: str = f"{f_vocab_matching_todo}match-with-preceding-vowel"
 
-            class Uses(Slots):
+            class Uses(ProfilableAutoSlots):
                 prefix_is_not: str = f"{f_vocab_matching_uses}prefix-is-not"
                 suffix_is_not: str = f"{f_vocab_matching_uses}suffix-is-not"
                 required_prefix: str = f"{f_vocab_matching_uses}required-prefix"
@@ -200,7 +200,7 @@ class Tags(Slots):
     UsuallyKanaOnly: str = "_uk"
     TTSAudio: str = "_tts_audio"
 
-class Mine(Slots):
+class Mine(ProfilableAutoSlots):
     app_name: str = "JA-Studio"
     app_still_loading_message: str = f"{app_name} still loading....."
     VocabPrefixSuffixMarker: str = "〜"

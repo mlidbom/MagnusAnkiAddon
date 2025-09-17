@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, final, override
 
-from autoslot import Slots
+from ex_autoslot import ProfilableAutoSlots
 from language_services.janome_ex.word_extraction.analysis_constants import noise_characters
 from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
 from sysutils.typed import non_optional
@@ -16,7 +16,7 @@ from sysutils.ex_str import newline
 
 
 @final
-class CandidateWord(WeakRefable, Slots):
+class CandidateWord(WeakRefable, ProfilableAutoSlots):
     def __init__(self, locations: list[WeakRef[TextAnalysisLocation]]) -> None:
         self.weakref = WeakRef(self)
         self.locations: list[WeakRef[TextAnalysisLocation]] = locations

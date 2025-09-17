@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, cast, override
 
 from anki.notes import Note
 from ankiutils import app
-from autoslot import Slots
+from ex_autoslot import ProfilableAutoSlots
 from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 from note.jpnote import JPNote
 from note.note_constants import ImmersionKitSentenceNoteFields, NoteFields, NoteTypes, SentenceNoteFields, Tags
@@ -24,7 +24,7 @@ if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
     from note.vocabulary.vocabnote import VocabNote
 
-class SentenceNote(JPNote, Slots):
+class SentenceNote(JPNote, ProfilableAutoSlots):
     def __init__(self, note: Note) -> None:
         super().__init__(note)
         self.weakref_sentence: WeakRef[SentenceNote] = cast(WeakRef[SentenceNote], self.weakref)

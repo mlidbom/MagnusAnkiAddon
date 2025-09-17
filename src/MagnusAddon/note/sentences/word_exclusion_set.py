@@ -2,13 +2,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from autoslot import Slots
+from ex_autoslot import ProfilableAutoSlots
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-class WordExclusionSet(Slots):
+class WordExclusionSet(ProfilableAutoSlots):
     def __init__(self, save_callback: Callable[[], None], exclusions: list[WordExclusion]) -> None:
         self._save: Callable[[], None] = save_callback
         self._exclusions: set[WordExclusion] = set(exclusions)

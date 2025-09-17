@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from autoslot import Slots
+from ex_autoslot import ProfilableAutoSlots
 from sysutils.simple_string_list_builder import SimpleStringListBuilder
 
 
-class SimpleStringBuilder(Slots):
+class SimpleStringBuilder(ProfilableAutoSlots):
     def __init__(self, auto_separator: str = "") -> None:
         self._builder: SimpleStringListBuilder = SimpleStringListBuilder()
         self.auto_separator: str = auto_separator

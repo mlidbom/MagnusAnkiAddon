@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, final, override
 
-from autoslot import Slots
+from ex_autoslot import ProfilableAutoSlots
 from sysutils.lazy import Lazy
 from sysutils.weak_ref import WeakRef, WeakRefable
 
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.text_location import TextAnalysisLocation
     from note.sentences.sentence_configuration import SentenceConfiguration
 
-class MatchStateTest(WeakRefable, Slots):
+class MatchStateTest(WeakRefable, ProfilableAutoSlots):
     def __init__(self, match: WeakRef[Match], name: str, cache_is_in_state: bool) -> None:
         self._match: WeakRef[Match] = match
         self.description: str = name

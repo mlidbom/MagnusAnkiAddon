@@ -4,7 +4,7 @@ from functools import cache
 from typing import TYPE_CHECKING, Any
 
 from ankiutils import app
-from autoslot import Slots
+from ex_autoslot import ProfilableAutoSlots
 from language_services.jamdict_ex.priority_spec import PrioritySpec
 from sysutils.lazy import Lazy
 from sysutils.timeutil import StopWatch
@@ -26,12 +26,12 @@ from language_services.jamdict_ex.dict_entry import DictEntry
 from sysutils import ex_iterable, ex_sequence, kana_utils
 
 
-class Request[T](Slots):
+class Request[T](ProfilableAutoSlots):
     def __init__(self, func: Callable[[Jamdict], T], future: Future[T]) -> None:
         self.func: Callable[[Jamdict], T] = func
         self.future: Future[T] = future
 
-class JamdictThreadingWrapper(Slots):
+class JamdictThreadingWrapper(ProfilableAutoSlots):
     def __init__(self) -> None:
         self._queue: queue.Queue[Request[Any]] = queue.Queue()  # pyright: ignore[reportExplicitAny]
         self._thread: threading.Thread = threading.Thread(target=self._worker, daemon=True)
@@ -100,7 +100,7 @@ def _find_all_names() -> set[str]:
 _all_word_forms = Lazy(_find_all_words)
 _all_name_forms = Lazy(_find_all_names)
 
-class DictLookup(Slots):
+class DictLookup(ProfilableAutoSlots):
     def __init__(self, entries: list[DictEntry], lookup_word: str, lookup_reading: list[str]) -> None:
         self.word: str = lookup_word
         self.lookup_reading: list[str] = lookup_reading

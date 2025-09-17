@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, final
 
-from autoslot import Slots
+from ex_autoslot import ProfilableAutoSlots
 from sysutils import ex_sequence, kana_utils
 
 if TYPE_CHECKING:
@@ -17,7 +17,7 @@ def _sense_is_intransitive_verb(sense: Sense) -> bool:
     return any(pos_item == "intransitive verb" for pos_item in sense.pos)  # pyright: ignore[reportUnknownVariableType, reportUnknownArgumentType, reportUnknownMemberType]
 
 @final
-class DictEntry(Slots):
+class DictEntry(ProfilableAutoSlots):
     def __init__(self, entry: JMDEntry, lookup_word: str, lookup_readings: list[str]) -> None:
         self.entry: JMDEntry = entry
         self.lookup_word: str = lookup_word

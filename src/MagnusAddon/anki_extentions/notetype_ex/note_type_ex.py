@@ -5,11 +5,11 @@ from typing import cast
 from anki.models import NotetypeDict, NotetypeId
 from anki_extentions.notetype_ex.note_type_field import NoteFieldEx
 from anki_extentions.notetype_ex.note_type_template import NoteTemplateEx
-from autoslot import Slots
+from ex_autoslot import ProfilableAutoSlots
 from sysutils import ex_assert, typed
 
 
-class NoteTypeEx(Slots):
+class NoteTypeEx(ProfilableAutoSlots):
     def __init__(self, name: str, fields: list[NoteFieldEx], templates: list[NoteTemplateEx]) -> None:
         self.name: str = name
         self.id: NotetypeId = NotetypeId(0)

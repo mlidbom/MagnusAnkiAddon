@@ -2,13 +2,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from autoslot import Slots
+from ex_autoslot import ProfilableAutoSlots
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
 
 
-class VocabSpec(Slots):
+class VocabSpec(ProfilableAutoSlots):
     # noinspection PyDefaultArgument
     def __init__(self, question: str,
                  answer: str | None = None,

@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from autoslot import Slots
+from ex_autoslot import ProfilableAutoSlots
 
 
-class SkipFalsyValuesDebugReprBuilder(Slots):
+class SkipFalsyValuesDebugReprBuilder(ProfilableAutoSlots):
     def __init__(self) -> None:
         self.repr: str = ""
 

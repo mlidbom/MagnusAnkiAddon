@@ -3,14 +3,14 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from anki.notes import NoteId
-from autoslot import Slots
+from ex_autoslot import ProfilableAutoSlots
 from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
 from note.sentences.serialization.parsed_word_serializer import ParsedWordSerializer
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.match import Match
 
-class ParsedMatch(Slots):
+class ParsedMatch(ProfilableAutoSlots):
     serializer: ParsedWordSerializer = ParsedWordSerializer()
     def __init__(self, variant: str, start_index: int, is_displayed: bool, word: str, information_string: str, vocab_id: NoteId) -> None:
         self.start_index: int = start_index

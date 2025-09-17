@@ -5,7 +5,8 @@ from typing import TYPE_CHECKING
 
 import mylog
 from ankiutils import app
-from autoslot import Slots
+from ex_autoslot import ProfilableAutoSlots
+from line_profiler_pycharm import profile
 from note import noteutils
 from note.collection.cache_runner import CacheRunner
 from note.collection.kanji_collection import KanjiCollection
@@ -23,8 +24,9 @@ if TYPE_CHECKING:
     from anki.collection import Collection
     from anki.notes import NoteId
 
-class JPCollection(WeakRefable, Slots):
+class JPCollection(WeakRefable, ProfilableAutoSlots):
     _is_inital_load: bool = True  # running the GC on initial load slows startup a lot but does not decrease memory usage in any significant way.
+    @profile
     def __init__(self, anki_collection: Collection, delay_seconds: float | None = None) -> None:
         from sysutils.object_instance_tracker import ObjectInstanceTracker
         self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker.tracker_for(self)

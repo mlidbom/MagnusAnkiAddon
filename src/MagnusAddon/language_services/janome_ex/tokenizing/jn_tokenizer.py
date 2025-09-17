@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import final
 
-from autoslot import Slots
+from ex_autoslot import ProfilableAutoSlots
 from janome.tokenizer import Token, Tokenizer  # pyright: ignore[reportMissingTypeStubs]
 from language_services.janome_ex.tokenizing.jn_parts_of_speech import JNPartsOfSpeech
 from language_services.janome_ex.tokenizing.jn_token import JNToken
@@ -11,7 +11,7 @@ from sysutils import ex_str, typed
 
 
 @final
-class JNTokenizer(Slots):
+class JNTokenizer(ProfilableAutoSlots):
     def __init__(self) -> None:
         self._tokenizer = Tokenizer()
 

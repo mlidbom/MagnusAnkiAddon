@@ -2,13 +2,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from autoslot import Slots
+from ex_autoslot import ProfilableAutoSlots
 
 if TYPE_CHECKING:
     from anki.config import ConfigManager
 
 
-class ConfigManagerEx(Slots):
+class ConfigManagerEx(ProfilableAutoSlots):
     def __init__(self, config:ConfigManager) -> None:
         self.config: ConfigManager = config
 

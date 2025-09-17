@@ -6,13 +6,13 @@ import os
 from anki.cards import Card, CardId
 from ankiutils import app, query_builder, search_executor, ui_utils
 from aqt import gui_hooks, mw
-from autoslot import Slots
+from ex_autoslot import ProfilableAutoSlots
 from sysutils import typed
 from sysutils.typed import non_optional
 from sysutils.weak_ref import WeakRefable
 
 
-class CardHistoryNavigator(WeakRefable, Slots):
+class CardHistoryNavigator(WeakRefable, ProfilableAutoSlots):
     def __init__(self) -> None:
         self.card_history: list[CardId] = []  # Stores card IDs
         self.current_position: int = -1

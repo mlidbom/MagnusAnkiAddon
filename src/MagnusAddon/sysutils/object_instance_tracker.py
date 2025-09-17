@@ -3,14 +3,14 @@ from __future__ import annotations
 import sys
 
 from ankiutils import app
-from autoslot import Slots
+from ex_autoslot import ProfilableAutoSlots
 from sysutils import ex_gc
 from sysutils.ex_str import newline
 from sysutils.timeutil import StopWatch
 
 current_instance_count: dict[str, int] = {}
 
-class Snapshot(Slots):
+class Snapshot(ProfilableAutoSlots):
     def __init__(self, current_state: dict[str, int], previous_state: dict[str, int]) -> None:
         self.previous: dict[str, int] = previous_state
         self.current_counts: dict[str, int] = current_state
@@ -45,7 +45,7 @@ def current_snapshot() -> Snapshot:
         take_snapshot()
     return snapshots[-1]
 
-class ObjectInstanceTracker(Slots):
+class ObjectInstanceTracker(ProfilableAutoSlots):
     _track_instances_in_memory: bool = app.config().track_instances_in_memory.get_value()
     def __init__(self, cls_type: type[object]) -> None:
         self.type_name: str = self._get_fully_qualified_name(cls_type)

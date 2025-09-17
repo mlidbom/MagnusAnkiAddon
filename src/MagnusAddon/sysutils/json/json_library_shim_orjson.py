@@ -2,12 +2,12 @@
 #
 # from typing import Any
 #
-# from autoslot import Slots
+# from ex_autoslot import ProfilableAutoSlots
 # from sysutils.json.json_library_shim import JsonLibraryShim
 #
 #
 # # noinspection PyUnusedClass,PyUnusedFunction
-# class JsonLibraryShimOrjson(JsonLibraryShim, Slots):
+# class JsonLibraryShimOrjson(JsonLibraryShim, ProfilableAutoSlots):
 #     def __init__(self) -> None:
 #         import orjson
 #

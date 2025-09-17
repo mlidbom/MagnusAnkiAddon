@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from autoslot import Slots
+from ex_autoslot import ProfilableAutoSlots
 from sysutils import typed
 
 
-class NoteFieldEx(Slots):
+class NoteFieldEx(ProfilableAutoSlots):
     def __init__(self, name: str) -> None:
         self.name: str = name
         self.ord: int = 0

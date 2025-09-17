@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from autoslot import Slots
+from ex_autoslot import ProfilableAutoSlots
 from language_services.janome_ex.word_extraction.matches.state_tests.vocab_match_state_test import VocabMatchStateTest
 
 if TYPE_CHECKING:
@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from sysutils.weak_ref import WeakRef
     pass
 
-class IsPoisonWord(VocabMatchStateTest, Slots):
+class IsPoisonWord(VocabMatchStateTest, ProfilableAutoSlots):
     def __init__(self, match: WeakRef[VocabMatch]) -> None:
         super().__init__(match, "poison_word", cache_is_in_state=True)
 

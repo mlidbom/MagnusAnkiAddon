@@ -3,7 +3,7 @@ from __future__ import annotations
 from collections import defaultdict
 from typing import TYPE_CHECKING, override
 
-from autoslot import Slots
+from ex_autoslot import ProfilableAutoSlots
 from note.collection.backend_facade import BackEndFacade
 from note.collection.note_cache import CachedNote, NoteCache
 from note.note_constants import NoteTypes
@@ -17,14 +17,14 @@ if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
     from qt_utils.task_runner_progress_dialog import ITaskRunner
 
-class _SentenceSnapshot(CachedNote, Slots):
+class _SentenceSnapshot(CachedNote, ProfilableAutoSlots):
     def __init__(self, note: SentenceNote) -> None:
         super().__init__(note)
         self.words: set[str] = note.get_words()
         self.detected_vocab: set[int] = note.parsing_result.get().matched_vocab_ids
         self.user_highlighted_vocab: set[str] = set(note.configuration.highlighted_words())
 
-class _SentenceCache(NoteCache[SentenceNote, _SentenceSnapshot], Slots):
+class _SentenceCache(NoteCache[SentenceNote, _SentenceSnapshot], ProfilableAutoSlots):
     def __init__(self, all_kanji: list[SentenceNote], cache_runner: CacheRunner, task_runner: ITaskRunner) -> None:
         self._by_vocab_form: dict[str, set[SentenceNote]] = defaultdict(set)
         self._by_user_highlighted_vocab: dict[str, set[SentenceNote]] = defaultdict(set)
@@ -50,7 +50,7 @@ class _SentenceCache(NoteCache[SentenceNote, _SentenceSnapshot], Slots):
         for vocab_form in snapshot.user_highlighted_vocab: self._by_user_highlighted_vocab[vocab_form].add(note)
         for vocab_id in snapshot.detected_vocab: self._by_vocab_id[vocab_id].add(note)
 
-class SentenceCollection(Slots):
+class SentenceCollection(ProfilableAutoSlots):
     def __init__(self, collection: Collection, cache_manager: CacheRunner, task_runner: ITaskRunner) -> None:
         def sentence_constructor_call_while_populating_sentence_collection(note: Note) -> SentenceNote: return SentenceNote(note)
         self.collection: BackEndFacade[SentenceNote] = BackEndFacade[SentenceNote](collection, sentence_constructor_call_while_populating_sentence_collection, NoteTypes.Sentence)

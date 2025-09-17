@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from autoslot import Slots
+from ex_autoslot import ProfilableAutoSlots
 from note.notefields.mutable_string_field import MutableStringField
 
 if TYPE_CHECKING:
@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from sysutils.weak_ref import WeakRef
 
 # todo: this class actually does not do anything!
-class MutableStripHtmlOnReadStringField(Slots):
+class MutableStripHtmlOnReadStringField(ProfilableAutoSlots):
     def __init__(self, note: WeakRef[JPNote], field_name: str) -> None:
         self._field: MutableStringField = MutableStringField(note, field_name)
 

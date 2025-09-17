@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from autoslot import Slots
+from ex_autoslot import ProfilableAutoSlots
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from note.sentences.word_exclusion_set import WordExclusionSet
 from sysutils.json import ex_json
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
     from note.sentences.sentence_configuration import SentenceConfiguration
 
-class SentenceConfigurationSerializer(Slots):
+class SentenceConfigurationSerializer(ProfilableAutoSlots):
     @staticmethod
     def deserialize(json: str, save_callback: Callable[[], None]) -> SentenceConfiguration:
         from note.sentences.sentence_configuration import SentenceConfiguration

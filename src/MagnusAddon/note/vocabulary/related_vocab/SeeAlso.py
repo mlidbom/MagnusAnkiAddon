@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, override
 
 from ankiutils import app
 from ankiutils.app import col
-from autoslot import Slots
+from ex_autoslot import ProfilableAutoSlots
 
 if TYPE_CHECKING:
     from note.notefields.json_object_field import MutableSerializedObjectField
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from sysutils.weak_ref import WeakRef
 
 
-class SeeAlso(Slots):
+class SeeAlso(ProfilableAutoSlots):
     def __init__(self, vocab: WeakRef[VocabNote], data: MutableSerializedObjectField[RelatedVocabData]) -> None:
         self._vocab: WeakRef[VocabNote] = vocab
         self._data: MutableSerializedObjectField[RelatedVocabData] = data

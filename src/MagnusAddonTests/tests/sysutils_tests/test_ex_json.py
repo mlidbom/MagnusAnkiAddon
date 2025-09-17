@@ -4,8 +4,8 @@ from typing import override
 
 from anki.notes import NoteId
 from ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules  # noqa  # pyright: ignore[reportUnusedImport]
-from autoslot import Slots
 from deepdiff import DeepDiff
+from ex_autoslot import ProfilableAutoSlots
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from note.sentences.sentence_configuration import SentenceConfiguration
 from note.sentences.word_exclusion_set import WordExclusionSet
@@ -13,7 +13,7 @@ from sysutils.json import ex_json
 from sysutils.json.json_reader import JsonReader
 
 
-class IntObject(Slots):
+class IntObject(ProfilableAutoSlots):
     def __init__(self, value: int) -> None:
         self.value: int = value
 
@@ -34,7 +34,7 @@ class IntObject(Slots):
     def __repr__(self) -> str:
         return f"IntObject({self.value})"
 
-class HasObjectList(Slots):
+class HasObjectList(ProfilableAutoSlots):
     def __init__(self, values: list[IntObject]) -> None:
         self.values: list[IntObject] = values
 

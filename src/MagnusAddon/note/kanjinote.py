@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, cast, override
 
 from anki.notes import Note
 from ankiutils import app
-from autoslot import Slots
+from ex_autoslot import ProfilableAutoSlots
 from note import kanjinote_mnemonic_maker
 from note.vocabulary import vocabnote_sorting
 from sysutils.weak_ref import WeakRef
@@ -18,7 +18,7 @@ from note.note_constants import CardTypes, NoteFields, NoteTypes
 from sysutils import ex_sequence, ex_str, kana_utils
 
 
-class KanjiNote(JPNote, Slots):
+class KanjiNote(JPNote, ProfilableAutoSlots):
     def __init__(self, note: Note) -> None:
         super().__init__(note)
         self.weakref_kanji: WeakRef[KanjiNote] = cast(WeakRef[KanjiNote], self.weakref)

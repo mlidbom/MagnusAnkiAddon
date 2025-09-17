@@ -2,14 +2,14 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, cast
 
-from autoslot import Slots
+from ex_autoslot import ProfilableAutoSlots
 from sysutils import typed
 from sysutils.json.ex_json import json_library_shim
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-class JsonReader(Slots):
+class JsonReader(ProfilableAutoSlots):
     def __init__(self, json_dict: dict[str, Any]) -> None:  # pyright: ignore[reportExplicitAny]
         self._dict: dict[str, Any] = json_dict  # pyright: ignore[reportExplicitAny]
 

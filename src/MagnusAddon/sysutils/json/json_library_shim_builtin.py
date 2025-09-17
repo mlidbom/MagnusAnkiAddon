@@ -3,12 +3,12 @@ from __future__ import annotations
 import json
 from typing import Any, cast, override
 
-from autoslot import Slots
+from ex_autoslot import ProfilableAutoSlots
 from sysutils.json.json_library_shim import JsonLibraryShim
 
 
 # noinspection PyUnusedClass,PyUnusedFunction
-class JsonLibraryShimBuiltInJson(JsonLibraryShim, Slots):
+class JsonLibraryShimBuiltInJson(JsonLibraryShim, ProfilableAutoSlots):
     @override
     def loads(self, json_str: str) -> dict[str, Any]: return cast(dict[str, Any], json.loads(json_str))  # pyright: ignore[reportExplicitAny]
     @override

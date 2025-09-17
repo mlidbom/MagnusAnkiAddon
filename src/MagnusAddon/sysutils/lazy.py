@@ -2,12 +2,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from autoslot import Slots
+from ex_autoslot import ProfilableAutoSlots
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-class Lazy[T](Slots):
+class Lazy[T](ProfilableAutoSlots):
     def __init__(self, factory: Callable[[], T]) -> None:
         self.factory: Callable[[], T] = factory
         self._instance: T | None = None

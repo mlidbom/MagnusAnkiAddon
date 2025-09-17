@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from typing import override
 
-from autoslot import Slots
+from ex_autoslot import ProfilableAutoSlots
 
 
-class KanjiSpec(Slots):
+class KanjiSpec(ProfilableAutoSlots):
     def __init__(self, question: str, answer: str, kun_readings: str, on_readings: str) -> None:
         self.question: str = question
         self.answer: str = answer

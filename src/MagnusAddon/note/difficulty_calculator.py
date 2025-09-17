@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from autoslot import Slots
+from ex_autoslot import ProfilableAutoSlots
 from sysutils import ex_sequence, kana_utils
 
 
-class DifficultyCalculator(Slots):
+class DifficultyCalculator(ProfilableAutoSlots):
     def __init__(self, starting_seconds: float, hiragana_seconds: float, katakata_seconds: float, kanji_seconds: float) -> None:
         self.starting_seconds: float = starting_seconds
         self.hiragana_seconds: float = hiragana_seconds

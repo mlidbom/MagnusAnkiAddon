@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from ankiutils import app
-from autoslot import Slots
+from ex_autoslot import ProfilableAutoSlots
 from PyQt6.QtWidgets import QApplication
 
 if TYPE_CHECKING:
@@ -68,7 +68,7 @@ def get_note_from_web_view(view: AnkiWebView) -> JPNote | None:
     from note.jpnote import JPNote
     return JPNote.note_from_note(inner_note)
 
-class UIUtils(IUIUtils, Slots):
+class UIUtils(IUIUtils, ProfilableAutoSlots):
     def __init__(self, mw: AnkiQt) -> None:
         self._mw: AnkiQt = mw
 

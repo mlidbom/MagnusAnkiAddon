@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from autoslot import Slots
+from ex_autoslot import ProfilableAutoSlots
 from note.note_constants import NoteFields
 from note.notefields.audio_field import WritableAudioField
 
@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
     from sysutils.weak_ref import WeakRef
 
-class VocabNoteAudio(Slots):
+class VocabNoteAudio(ProfilableAutoSlots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self._vocab: WeakRef[VocabNote] = vocab
         self.first: WritableAudioField = WritableAudioField(vocab, NoteFields.Vocab.Audio_b)
