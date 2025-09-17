@@ -26,7 +26,7 @@ if TYPE_CHECKING:
 
 class JPCollection(WeakRefable, ProfilableAutoSlots):
     _is_inital_load: bool = True  # running the GC on initial load slows startup a lot but does not decrease memory usage in any significant way.
-    @profile
+
     def __init__(self, anki_collection: Collection, delay_seconds: float | None = None) -> None:
         from sysutils.object_instance_tracker import ObjectInstanceTracker
         self._instance_tracker: ObjectInstanceTracker = ObjectInstanceTracker.tracker_for(self)
@@ -62,6 +62,7 @@ class JPCollection(WeakRefable, ProfilableAutoSlots):
         else:
             self._initialize()
 
+    @profile
     def _initialize(self) -> None:
         if self._initialization_started:
             return

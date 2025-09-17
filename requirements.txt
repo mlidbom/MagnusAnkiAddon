@@ -29,9 +29,9 @@ python-romkan-ng
 ruff
 deepdiff~=8.6.1
 typing_extensions~=4.15.0
-autoslot~=2024.12.1
+#autoslot~=2024.12.1 # we manually copied this into the project because pyright did not understand the types when imported as a library and since we inherit these everywhere analysis broke down completely
 basedpyright # used via the basedpyright-wrapper.bat since it messes up source navigation in the IDE and because the IDE only reports some errors on code insection. To get all errors the command line is needed&
 pyright # used in the IDE since basedpyright messes up source navigation
 pyinstrument # run pyinstrument.exe runanki.py, then run pyinstrument.exe  --load-prev [the-name-output-by-previous-call] -r html
 line-profiler # with the line-profiler plugin for pycharm you get line by line information about the time taken within pycharm
-line-profiler-pycharm # the plugin currently does not work due to incompatibility, this allows for running the proling from the command aoeu
+line-profiler-pycharm # this is needed for the line-profiler pycharm plugin to work
