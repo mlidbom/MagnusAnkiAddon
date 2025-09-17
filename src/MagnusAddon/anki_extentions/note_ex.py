@@ -18,7 +18,8 @@ class NoteBulkLoader:
         note_type: NotetypeDict = typed.non_optional(col.models.by_name(note_type_name))
         field_map: dict[str, tuple[int, FieldDict]] = col.models.field_map(non_optional(note_type))
         field_count = len(note_type["flds"]) # pyright: ignore[reportAny]
-        col_weak_ref = col.weakref()
+        note_type_id: NotetypeId = NotetypeId(note_type["id"])
+        col_weak_ref: Collection = col.weakref()
 
         query = """
                 SELECT notes.id,  -- 0
@@ -29,11 +30,10 @@ class NoteBulkLoader:
                        notes.tags,-- 5
                        notes.flds -- 6
                 FROM notes
-                         JOIN notetypes ON notes.mid = notetypes.id
-                WHERE notetypes.name COLLATE NOCASE = ?
+                WHERE notes.mid = ?
                 """
 
-        rows = non_optional(col.db).all(query, note_type_name)
+        rows = non_optional(col.db).all(query, note_type_id)
 
         def note_bulkloader_note_constructor(row: Row) -> Note:
             return NoteBulkLoader._NoteEx(col_weak_ref, row, field_map, field_count)
