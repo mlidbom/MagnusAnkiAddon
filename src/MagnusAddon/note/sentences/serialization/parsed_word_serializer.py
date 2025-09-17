@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 from anki.notes import NoteId
 from autoslot import Slots
@@ -29,7 +29,7 @@ class ParsedWordSerializer(Slots):
 
         return ParsedMatch(values[0],
                            int(values[1]),
-                           bool(int(values[2])),
+                           values[2] != "0",
                            values[3],
                            values[4],
-                           NoteId(int(values[5])))
+                           cast(NoteId, int(values[5])))
