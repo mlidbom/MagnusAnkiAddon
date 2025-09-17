@@ -100,10 +100,8 @@ def anki_config() -> ConfigManagerEx:
     return ConfigManagerEx(non_optional(mw.col).conf)
 
 def col() -> JPCollection:
-    from sysutils.timeutil import StopWatch
-    with StopWatch.log_warning_if_slower_than(0.01, "waiting_for_initialization"):
-        if _collection is None: raise AssertionError("Collection not initialized")
-        return _collection
+    if _collection is None: raise AssertionError("Collection not initialized")
+    return _collection
 
 def anki_collection() -> Collection: return col().anki_collection
 
