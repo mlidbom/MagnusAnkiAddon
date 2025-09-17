@@ -9,6 +9,7 @@ from language_services.janome_ex.word_extraction.matches.missing_match import Mi
 from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from sysutils import ex_assert
+from sysutils.lazy import Lazy
 from sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
@@ -27,7 +28,7 @@ class CandidateWordVariant(WeakRefable, ProfilableAutoSlots):
         self._word: WeakRef[CandidateWord] = word
         self.form: str = form
 
-        self.dict_lookup: DictLookup = DictLookup.lookup_word(form)
+        self._dict_lookup: Lazy[DictLookup] = Lazy(lambda: DictLookup.lookup_word(form))
         self.vocab_matches: list[VocabMatch] = [VocabMatch(self.weak_ref, vocab) for vocab in app.col().vocab.with_form(form)]
 
         # will be completed in complete_analysis
@@ -40,7 +41,7 @@ class CandidateWordVariant(WeakRefable, ProfilableAutoSlots):
     def vocabs_control_match_status(self) -> bool:
         return (any(self.valid_vocab_matches)
                 or any(self.form_owning_vocab_matches)
-                or (any(self.vocab_matches) and not self.dict_lookup.found_words() and self.word.is_custom_compound))
+                or (any(self.vocab_matches) and not self._dict_lookup().found_words() and self.word.is_custom_compound))
 
     def run_validity_analysis(self) -> None:
         ex_assert.that(not self.completed_analysis)
@@ -48,8 +49,8 @@ class CandidateWordVariant(WeakRefable, ProfilableAutoSlots):
         if self.vocabs_control_match_status:
             self.matches = list(self.vocab_matches)
         else:
-            if self.dict_lookup.found_words():
-                self.matches = [DictionaryMatch(self.weak_ref, self.dict_lookup.entries[0])]
+            if self._dict_lookup().found_words():
+                self.matches = [DictionaryMatch(self.weak_ref, self._dict_lookup().entries[0])]
             else:
                 self.matches = [MissingMatch(self.weak_ref)]
 
@@ -62,7 +63,7 @@ class CandidateWordVariant(WeakRefable, ProfilableAutoSlots):
     @property
     def word(self) -> CandidateWord: return self._word()
     @property
-    def is_known_word(self) -> bool: return self.dict_lookup.found_words() or len(self.vocab_matches) > 0
+    def is_known_word(self) -> bool: return len(self.vocab_matches) > 0 or self._dict_lookup().found_words()
     @property
     def form_owning_vocab_matches(self) -> list[VocabMatch]: return [vm for vm in self.vocab_matches if vm.vocab.forms.is_owned_form(self.form)]
     @property
