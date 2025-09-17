@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from note.notefields.require_forbid_flag_field import RequireForbidFlagField
 
 
-class RequiresForbidsRequirement(MatchRequirement, ProfilableAutoSlots):
+class RequiresOrForbids(MatchRequirement, ProfilableAutoSlots):
     def __init__(self, state_test: MatchStateTest, requires_forbids: RequireForbidFlagField) -> None:
         super().__init__(state_test)
         self.is_required: bool = requires_forbids.is_required

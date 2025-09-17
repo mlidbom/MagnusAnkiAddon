@@ -6,7 +6,7 @@ from ex_autoslot import ProfilableAutoSlots
 from language_services.janome_ex.word_extraction.matches.match import Match
 from language_services.janome_ex.word_extraction.matches.requirements.requires_state import Requires
 from language_services.janome_ex.word_extraction.matches.requirements.forbids_state import Forbids
-from language_services.janome_ex.word_extraction.matches.requirements.requires_forbids_requirement import RequiresForbidsRequirement
+from language_services.janome_ex.word_extraction.matches.requirements.requires_forbids_requirement import RequiresOrForbids
 from language_services.janome_ex.word_extraction.matches.state_tests.another_match_owns_the_form import AnotherMatchOwnsTheForm
 from language_services.janome_ex.word_extraction.matches.state_tests.head.has_a_stem import HasAStem
 from language_services.janome_ex.word_extraction.matches.state_tests.head.has_e_stem import HasEStem
@@ -42,21 +42,21 @@ class VocabMatch(Match, ProfilableAutoSlots):
                                      is_requirement_active=self.rules.prefix_is_not.any()),
                              Requires(PrefixIsIn(weakref, self.rules.required_prefix.get()),
                                       is_requirement_active=self.rules.required_prefix.any()),
-                             RequiresForbidsRequirement(IsSentenceStart(weakref), self.requires_forbids.sentence_start),
-                             RequiresForbidsRequirement(HasTeFormStem(weakref), self.requires_forbids.te_form_stem),
-                             RequiresForbidsRequirement(HasAStem(weakref), self.requires_forbids.a_stem),
-                             RequiresForbidsRequirement(HasPastTenseStem(weakref), self.requires_forbids.past_tense_stem),
-                             RequiresForbidsRequirement(HasEStem(weakref), self.requires_forbids.e_stem),
+                             RequiresOrForbids(IsSentenceStart(weakref), self.requires_forbids.sentence_start),
+                             RequiresOrForbids(HasTeFormStem(weakref), self.requires_forbids.te_form_stem),
+                             RequiresOrForbids(HasAStem(weakref), self.requires_forbids.a_stem),
+                             RequiresOrForbids(HasPastTenseStem(weakref), self.requires_forbids.past_tense_stem),
+                             RequiresOrForbids(HasEStem(weakref), self.requires_forbids.e_stem),
 
                              # tail requirements
-                             RequiresForbidsRequirement(IsSentenceEnd(weakref), self.requires_forbids.sentence_end),
+                             RequiresOrForbids(IsSentenceEnd(weakref), self.requires_forbids.sentence_end),
                              Forbids(SuffixIsIn(weakref, self.rules.suffix_is_not.get()),
                                      is_requirement_active=self.rules.suffix_is_not.any()),
 
                              # misc requirements
                              Forbids(IsPoisonWord(weakref)),
-                             RequiresForbidsRequirement(IsExactMatch(weakref), self.requires_forbids.exact_match),
-                             RequiresForbidsRequirement(IsSingleToken(weakref), self.requires_forbids.single_token),
+                             RequiresOrForbids(IsExactMatch(weakref), self.requires_forbids.exact_match),
+                             RequiresOrForbids(IsSingleToken(weakref), self.requires_forbids.single_token),
                              Forbids(SurfaceIsIn(weakref, self.rules.surface_is_not.get()),
                                      is_requirement_active=self.rules.surface_is_not.any()),
                              Forbids(SurfaceIsIn(weakref, self.rules.yield_to_surface.get()),
