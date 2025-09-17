@@ -1,10 +1,13 @@
+from __future__ import annotations
+
 from time import sleep
 
-from manually_copied_in_libraries.line_profiler_py_charm import profile
+from line_profiling_hacks import profile_lines
 
-@profile
+
+@profile_lines
 def wait() -> None:
-    for i in range(2):
+    for _i in range(2):
         sleep(1)
 
 

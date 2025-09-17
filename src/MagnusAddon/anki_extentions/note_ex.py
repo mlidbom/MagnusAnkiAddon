@@ -18,7 +18,7 @@ class NoteBulkLoader:
         note_type: NotetypeDict = typed.non_optional(col.models.by_name(note_type_name))
         field_map: dict[str, tuple[int, FieldDict]] = col.models.field_map(non_optional(note_type))
         field_count = len(note_type["flds"]) # pyright: ignore[reportAny]
-        note_type_id: NotetypeId = NotetypeId(note_type["id"])
+        note_type_id: NotetypeId = NotetypeId(note_type["id"]) # pyright: ignore[reportAny]
         col_weak_ref: Collection = col.weakref()
 
         query = """

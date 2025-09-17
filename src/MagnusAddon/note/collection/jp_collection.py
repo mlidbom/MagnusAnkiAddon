@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 import mylog
 from ankiutils import app
 from ex_autoslot import ProfilableAutoSlots
-from line_profiler_pycharm import profile
+from line_profiling_hacks import profile_lines
 from note import noteutils
 from note.collection.cache_runner import CacheRunner
 from note.collection.kanji_collection import KanjiCollection
@@ -62,7 +62,7 @@ class JPCollection(WeakRefable, ProfilableAutoSlots):
         else:
             self._initialize()
 
-    @profile
+    @profile_lines
     def _initialize(self) -> None:
         if self._initialization_started:
             return
