@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, final
 
 from anki_extentions.note_ex import NoteBulkLoader
 from ex_autoslot import ProfilableAutoSlots
+from line_profiling_hacks import profile_lines
 from note.jpnote import JPNote
 from note.note_constants import Builtin
 
@@ -21,6 +22,7 @@ class BackEndFacade[TNote: JPNote](ProfilableAutoSlots):
         self.jp_note_constructor = constructor
         self.note_type = note_type
 
+    @profile_lines
     def all(self, task_runner: ITaskRunner) -> list[TNote]:
         backend_notes = NoteBulkLoader.load_all_notes_of_type(self.anki_collection, self.note_type, task_runner)
         return task_runner.process_with_progress(backend_notes, self.jp_note_constructor, f"Constructing {self.note_type} notes")

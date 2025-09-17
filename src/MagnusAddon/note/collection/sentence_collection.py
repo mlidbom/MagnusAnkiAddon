@@ -4,6 +4,7 @@ from collections import defaultdict
 from typing import TYPE_CHECKING, override
 
 from ex_autoslot import ProfilableAutoSlots
+from line_profiling_hacks import profile_lines
 from note.collection.backend_facade import BackEndFacade
 from note.collection.note_cache import CachedNote, NoteCache
 from note.note_constants import NoteTypes
@@ -18,6 +19,7 @@ if TYPE_CHECKING:
     from qt_utils.task_runner_progress_dialog import ITaskRunner
 
 class _SentenceSnapshot(CachedNote, ProfilableAutoSlots):
+    @profile_lines
     def __init__(self, note: SentenceNote) -> None:
         super().__init__(note)
         self.words: set[str] = note.get_words()
@@ -25,6 +27,7 @@ class _SentenceSnapshot(CachedNote, ProfilableAutoSlots):
         self.user_highlighted_vocab: set[str] = set(note.configuration.highlighted_words())
 
 class _SentenceCache(NoteCache[SentenceNote, _SentenceSnapshot], ProfilableAutoSlots):
+    @profile_lines
     def __init__(self, all_kanji: list[SentenceNote], cache_runner: CacheRunner, task_runner: ITaskRunner) -> None:
         self._by_vocab_form: dict[str, set[SentenceNote]] = defaultdict(set)
         self._by_user_highlighted_vocab: dict[str, set[SentenceNote]] = defaultdict(set)
@@ -51,6 +54,7 @@ class _SentenceCache(NoteCache[SentenceNote, _SentenceSnapshot], ProfilableAutoS
         for vocab_id in snapshot.detected_vocab: self._by_vocab_id[vocab_id].add(note)
 
 class SentenceCollection(ProfilableAutoSlots):
+    @profile_lines
     def __init__(self, collection: Collection, cache_manager: CacheRunner, task_runner: ITaskRunner) -> None:
         def sentence_constructor_call_while_populating_sentence_collection(note: Note) -> SentenceNote: return SentenceNote(note)
         self.collection: BackEndFacade[SentenceNote] = BackEndFacade[SentenceNote](collection, sentence_constructor_call_while_populating_sentence_collection, NoteTypes.Sentence)

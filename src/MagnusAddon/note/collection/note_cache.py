@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from ex_autoslot import ProfilableAutoSlots
+from line_profiling_hacks import profile_lines
 from note.jpnote import JPNote
 from sysutils.collections.default_dict_case_insensitive import DefaultDictCaseInsensitive
 from sysutils.collections.linq.l_iterable import LList
@@ -22,6 +23,7 @@ class CachedNote(ProfilableAutoSlots):
         self.question: str = note.get_question()
 
 class NoteCache[TNote: JPNote, TSnapshot: CachedNote](ProfilableAutoSlots):
+    @profile_lines
     def __init__(self, all_notes: list[TNote], cached_note_type: type[TNote], cache_runner: CacheRunner, task_runner: ITaskRunner) -> None:
         self._note_type: type[TNote] = cached_note_type
         self._by_question: DefaultDictCaseInsensitive[set[TNote]] = DefaultDictCaseInsensitive(set)

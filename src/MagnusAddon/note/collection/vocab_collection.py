@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, override
 
 from anki_extentions.note_ex import NoteBulkLoader
 from ex_autoslot import ProfilableAutoSlots
+from line_profiling_hacks import profile_lines
 from note.collection.backend_facade import BackEndFacade
 from note.collection.note_cache import CachedNote, NoteCache
 from note.note_constants import NoteTypes
@@ -33,6 +34,7 @@ class _VocabSnapshot(CachedNote, ProfilableAutoSlots):
         self.stems: list[str] = note.conjugator.get_stems_for_primary_form()
 
 class _VocabCache(NoteCache[VocabNote, _VocabSnapshot], ProfilableAutoSlots):
+    @profile_lines
     def __init__(self, all_vocab: list[VocabNote], cache_runner: CacheRunner, task_runner: ITaskRunner) -> None:
         self._by_form: dict[str, set[VocabNote]] = defaultdict(set)
         self._by_kanji_in_main_form: dict[str, set[VocabNote]] = defaultdict(set)
@@ -90,6 +92,7 @@ class _VocabCache(NoteCache[VocabNote, _VocabSnapshot], ProfilableAutoSlots):
         for stem in snapshot.stems: self._by_stem[stem].add(note)
 
 class VocabCollection(ProfilableAutoSlots):
+    @profile_lines
     def __init__(self, collection: Collection, cache_manager: CacheRunner, task_runner: ITaskRunner) -> None:
         def vocab_constructor_call_while_populating_vocab_collection(note: Note) -> VocabNote: return VocabNote(note)
         self.collection: BackEndFacade[VocabNote] = BackEndFacade[VocabNote](collection, vocab_constructor_call_while_populating_vocab_collection, NoteTypes.Vocab)
