@@ -4,8 +4,8 @@ from typing import TYPE_CHECKING, final, override
 
 from ex_autoslot import ProfilableAutoSlots
 from language_services.janome_ex.word_extraction.matches.match import Match
-from language_services.janome_ex.word_extraction.matches.requirements.in_state import InState
-from language_services.janome_ex.word_extraction.matches.requirements.not_in_state import NotInState
+from language_services.janome_ex.word_extraction.matches.requirements.requires_state import Requires
+from language_services.janome_ex.word_extraction.matches.requirements.forbids_state import Forbids
 from language_services.janome_ex.word_extraction.matches.requirements.requires_forbids_requirement import RequiresForbidsRequirement
 from language_services.janome_ex.word_extraction.matches.state_tests.another_match_owns_the_form import AnotherMatchOwnsTheForm
 from language_services.janome_ex.word_extraction.matches.state_tests.head.has_a_stem import HasAStem
@@ -36,12 +36,12 @@ class VocabMatch(Match, ProfilableAutoSlots):
         self.rules = vocab.matching_configuration.configurable_rules
         super().__init__(word_variant,
                          validity_requirements=[
-                             NotInState(AnotherMatchOwnsTheForm(weakref)),
+                             Forbids(AnotherMatchOwnsTheForm(weakref)),
                              # head requirements
-                             NotInState(PrefixIsIn(weakref, self.rules.prefix_is_not.get()),
-                                        is_requirement_active=self.rules.prefix_is_not.any()),
-                             InState(PrefixIsIn(weakref, self.rules.required_prefix.get()),
-                                     is_requirement_active=self.rules.required_prefix.any()),
+                             Forbids(PrefixIsIn(weakref, self.rules.prefix_is_not.get()),
+                                     is_requirement_active=self.rules.prefix_is_not.any()),
+                             Requires(PrefixIsIn(weakref, self.rules.required_prefix.get()),
+                                      is_requirement_active=self.rules.required_prefix.any()),
                              RequiresForbidsRequirement(IsSentenceStart(weakref), self.requires_forbids.sentence_start),
                              RequiresForbidsRequirement(HasTeFormStem(weakref), self.requires_forbids.te_form_stem),
                              RequiresForbidsRequirement(HasAStem(weakref), self.requires_forbids.a_stem),
@@ -50,21 +50,21 @@ class VocabMatch(Match, ProfilableAutoSlots):
 
                              # tail requirements
                              RequiresForbidsRequirement(IsSentenceEnd(weakref), self.requires_forbids.sentence_end),
-                             NotInState(SuffixIsIn(weakref, self.rules.suffix_is_not.get()),
-                                        is_requirement_active=self.rules.suffix_is_not.any()),
+                             Forbids(SuffixIsIn(weakref, self.rules.suffix_is_not.get()),
+                                     is_requirement_active=self.rules.suffix_is_not.any()),
 
                              # misc requirements
-                             NotInState(IsPoisonWord(weakref)),
+                             Forbids(IsPoisonWord(weakref)),
                              RequiresForbidsRequirement(IsExactMatch(weakref), self.requires_forbids.exact_match),
                              RequiresForbidsRequirement(IsSingleToken(weakref), self.requires_forbids.single_token),
-                             NotInState(SurfaceIsIn(weakref, self.rules.surface_is_not.get()),
-                                        is_requirement_active=self.rules.surface_is_not.any()),
-                             NotInState(SurfaceIsIn(weakref, self.rules.yield_to_surface.get()),
-                                        is_requirement_active=self.rules.yield_to_surface.any()),
+                             Forbids(SurfaceIsIn(weakref, self.rules.surface_is_not.get()),
+                                     is_requirement_active=self.rules.surface_is_not.any()),
+                             Forbids(SurfaceIsIn(weakref, self.rules.yield_to_surface.get()),
+                                     is_requirement_active=self.rules.yield_to_surface.any()),
                          ],
                          display_requirements=[
-                             NotInState(HasDisplayedOverlappingFollowingCompound(weakref),
-                                        is_requirement_active=self.requires_forbids.yield_last_token.is_required)
+                             Forbids(HasDisplayedOverlappingFollowingCompound(weakref),
+                                     is_requirement_active=self.requires_forbids.yield_last_token.is_required)
                          ])
         self.vocab: VocabNote = vocab
         self.word_variant: WeakRef[CandidateWordVariant] = word_variant

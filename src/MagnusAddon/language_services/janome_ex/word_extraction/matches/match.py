@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from ex_autoslot import ProfilableAutoSlots
-from language_services.janome_ex.word_extraction.matches.requirements.not_in_state import NotInState
+from language_services.janome_ex.word_extraction.matches.requirements.forbids_state import Forbids
 from language_services.janome_ex.word_extraction.matches.state_tests.is_configured_hidden import IsConfiguredHidden
 from language_services.janome_ex.word_extraction.matches.state_tests.is_configured_incorrect import IsConfiguredIncorrect
 from language_services.janome_ex.word_extraction.matches.state_tests.is_shadowed import IsShadowed
@@ -23,12 +23,12 @@ class Match(WeakRefable, ProfilableAutoSlots):
         self.weakref: WeakRef[Match] = weakref
         self._variant: WeakRef[CandidateWordVariant] = word_variant
         self._validity_requirements: list[MatchRequirement] = ([
-                                                                   NotInState(IsConfiguredIncorrect(self.weakref))
+                                                                   Forbids(IsConfiguredIncorrect(self.weakref))
                                                                ]
                                                                + validity_requirements)
         self._display_requirements: list[MatchRequirement] = ([
-                                                                  NotInState(IsShadowed(self.weakref)),
-                                                                  NotInState(IsConfiguredHidden(self.weakref))
+                                                                  Forbids(IsShadowed(self.weakref)),
+                                                                  Forbids(IsConfiguredHidden(self.weakref))
                                                               ]
                                                               + display_requirements)
 

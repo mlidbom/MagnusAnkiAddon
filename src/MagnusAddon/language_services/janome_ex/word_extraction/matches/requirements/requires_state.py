@@ -8,22 +8,16 @@ from language_services.janome_ex.word_extraction.matches.requirements.requiremen
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.state_tests.match_state_test import MatchStateTest
 
-class NotInState(MatchRequirement, ProfilableAutoSlots):
+class Requires(MatchRequirement, ProfilableAutoSlots):
     def __init__(self, state_test: MatchStateTest, is_requirement_active: bool = True) -> None:
         super().__init__(state_test)
-        self.is_requirement_active: bool = is_requirement_active
+        self.rule_active: bool = is_requirement_active
 
     @property
     @override
-    def is_fulfilled(self) -> bool:
-        if not self.is_requirement_active:
-            return True
-
-        if not self.state_test.match_is_in_state:  # noqa: SIM103
-            return True
-
-        return False
+    def is_fulfilled(self) -> bool: return (not self.rule_active
+                                            or self.state_test.match_is_in_state)
 
     @property
     @override
-    def failure_reason(self) -> str: return f"""forbids::{self.state_test.state_description}""" if not self.is_fulfilled else ""
+    def failure_reason(self) -> str: return f"requires::{self.state_test.state_description}" if not self.is_fulfilled else ""
