@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import os
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 from ankiutils import app
 from aqt import mw
@@ -16,17 +16,21 @@ if TYPE_CHECKING:
 _addon_dir = os.path.dirname(os.path.dirname(__file__))
 _addon_name = os.path.basename(_addon_dir)
 
-_config_dict = Lazy(lambda: mw.addonManager.getConfig(_addon_name) or {})
+def _get_config_dict() -> dict[str, object]:
+    return mw.addonManager.getConfig(_addon_name) or {} if not app.is_testing else {}
+
+_config_dict = Lazy(_get_config_dict)
 
 def _write_config_dict() -> None:
-    mw.addonManager.writeConfig(_addon_name, _config_dict())  # pyright: ignore[reportUnknownMemberType]
+    if not app.is_testing:
+        mw.addonManager.writeConfig(_addon_name, _config_dict())  # pyright: ignore[reportUnknownMemberType]
 
 class ConfigurationValue[T](WeakRefable, ProfilableAutoSlots):
     def __init__(self, name: str, title: str, default: T, feature_toggler: Callable[[T], None] | None = None) -> None:
         self.title: str = title
         self.feature_toggler: Callable[[T], None] | None = feature_toggler
         self.name: str = name
-        self._value: T = _config_dict().get(name, default)
+        self._value: T = cast(T, _config_dict().get(name, default))
 
         if self.feature_toggler:
             app.add_init_hook(self.toggle_feature)

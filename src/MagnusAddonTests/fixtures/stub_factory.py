@@ -7,7 +7,6 @@ from typing import TYPE_CHECKING
 from ankiutils import app
 from fixtures.stubs.ui_utils_stub import UIUtilsStub
 from sysutils import progress_display_runner
-from sysutils.lazy import Lazy
 from sysutils.typed import checked_cast
 
 if TYPE_CHECKING:
@@ -27,21 +26,8 @@ def _stub_ui_utils_real() -> Iterator[None]:
     yield
 
 @contextmanager
-def _stub_config_dict() -> Iterator[None]:
-    _config_dict: dict[str, object] = {}
-
-    from configuration import configuration_value
-
-    def _write_config_dict() -> None: pass
-
-    configuration_value._config_dict = Lazy(lambda: _config_dict)  # pyright: ignore[reportPrivateUsage]
-    configuration_value._write_config_dict = _write_config_dict  # pyright: ignore[reportPrivateUsage]
-
-    yield
-
-@contextmanager
 def stub_ui_dependencies() -> Iterator[None]:
-    with (_stub_ui_utils_real(), _stub_progress_runner(), _stub_config_dict()):
+    with (_stub_ui_utils_real(), _stub_progress_runner()):
         yield
 
 @contextmanager

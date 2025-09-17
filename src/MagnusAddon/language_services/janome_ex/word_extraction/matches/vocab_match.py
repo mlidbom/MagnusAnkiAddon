@@ -4,9 +4,9 @@ from typing import TYPE_CHECKING, final, override
 
 from ex_autoslot import ProfilableAutoSlots
 from language_services.janome_ex.word_extraction.matches.match import Match
-from language_services.janome_ex.word_extraction.matches.requirements.requires_state import Requires
 from language_services.janome_ex.word_extraction.matches.requirements.forbids_state import Forbids
 from language_services.janome_ex.word_extraction.matches.requirements.requires_forbids_requirement import RequiresOrForbids
+from language_services.janome_ex.word_extraction.matches.requirements.requires_state import Requires
 from language_services.janome_ex.word_extraction.matches.state_tests.another_match_owns_the_form import AnotherMatchOwnsTheForm
 from language_services.janome_ex.word_extraction.matches.state_tests.head.has_a_stem import HasAStem
 from language_services.janome_ex.word_extraction.matches.state_tests.head.has_e_stem import HasEStem
