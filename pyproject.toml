@@ -54,9 +54,9 @@ ignore = [
 
 [tool.pyright]
 include=["src"]
-exclude=["**/node_modules", "**/__pycache__", "**/.*", "src/MagnusAddon/_lib/", "**/_lib_patched/*", "**venv/*"]
+exclude=["**/node_modules", "**/__pycache__", "**/.*", "src/MagnusAddon/_lib/", "**/_lib_patched/*", "**venv/*", "**/manually_copied_in_libraries/*"]
 extraPaths=["src/MagnusAddon"]
-typeCheckingMode="recommended" # "off", "basic", "standard", "strict", "recommended", "all"
+typeCheckingMode="strict" # "off", "basic", "standard", "strict", "recommended", "all"
 
 #forced because of incompatibility between basedpyright and pyright, remove once we can use only basedpyright
 reportIgnoreCommentWithoutRule = "none"
