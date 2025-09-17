@@ -8,7 +8,8 @@
     "**/.*",
     "src/MagnusAddon/_lib/",
     "**/_lib_patched/*",
-    "**venv/*"
+    "**venv/*",
+    "**/manually_copied_in_libraries/*"
   ],
   "ignore": [],
   "extraPaths": ["src/MagnusAddon"],
@@ -16,19 +17,15 @@
   "nonsense_because_comments_not_allowed": "off, basic, standard, strict, recommended, all",
   "typeCheckingMode": "recommended",
 
-  "#added for now, remove once the typeCheckingMode has been upgraded:": 0,
-  "reportImplicitOverride": "error",
+  "#forced because of incompatibility between basedpyright and pyright, remove once we can use only basedpyright": 0,
+  "reportIgnoreCommentWithoutRule": "none",
+  "reportUnnecessaryTypeIgnoreComment": "none",
 
-  "trying to enable highher level by disabling the stuff that causes a ton of warnings we should get to these soon": "",
-  "reportPrivateUsage": "none",
+  "not too sure about this one. Gives some hella confusing results making me wonder if it is really accurate....": "",
   "reportImportCycles": "none",
-  "reportUnknownVariableType": "none",
-  "reportUnknownMemberType": "none",
-  "reportUnknownArgumentType": "none",
-  "reportMissingTypeStubs" : "none",
 
   "questionable if these are useful": "",
-  "reportUnusedExpression": "none",
+  "reportUnusedCallResult": "none",
 
   "we probably really don't need these": "",
   "reportImplicitRelativeImport": "none"
