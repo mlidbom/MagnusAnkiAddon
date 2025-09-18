@@ -7,8 +7,8 @@ from ankiutils.app import col
 from ex_autoslot import ProfilableAutoSlots
 from note.note_constants import Mine, NoteFields
 from note.notefields.comma_separated_strings_list_field_de_duplicated import MutableCommaSeparatedStringsListFieldDeDuplicated
-from sysutils import ex_sequence, ex_str
-from sysutils.collections.linq.q_iterable import QSet
+from sysutils import ex_str
+from sysutils.collections.linq.q_iterable import QList, QSet, query
 from sysutils.lazy import Lazy
 from sysutils.weak_ref import WeakRef, WeakRefable
 
@@ -23,19 +23,19 @@ class VocabNoteForms(WeakRefable, ProfilableAutoSlots):
         weakrefthis = WeakRef(self)
         self._all_raw_set: Lazy[set[str]] = Lazy(lambda: set(weakrefthis()._field.get()))
 
-        self._all_list: Lazy[list[str]] = field.lazy_reader(lambda: [ex_str.strip_brackets(form) for form in weakrefthis()._field.get()])
-        self._all_set: Lazy[QSet[str]] = field.lazy_reader(lambda: QSet(weakrefthis()._all_list()))
+        self._all_list: Lazy[QList[str]] = field.lazy_reader(lambda: query(weakrefthis()._field.get()).select(ex_str.strip_brackets).to_list()) # [ex_str.strip_brackets(form) for form in weakrefthis()._field.get()]
+        self._all_set: Lazy[QSet[str]] = field.lazy_reader(lambda: weakrefthis()._all_list().to_set())
         self._owned_forms: Lazy[set[str]] = field.lazy_reader(lambda: {weakrefthis()._vocab().get_question()} | {ex_str.strip_brackets(form) for form in weakrefthis()._all_raw_set() if form.startswith("[")})
         self._not_owned_by_other_vocab: Lazy[QSet[str]] = field.lazy_reader(lambda: weakrefthis().___not_owned_by_other_vocab())
 
     def is_owned_form(self, form: str) -> bool: return form in self._owned_forms()
 
-    def all_list(self) -> list[str]: return self._all_list()
+    def all_list(self) -> QList[str]: return self._all_list()
     def all_set(self) -> QSet[str]: return self._all_set()
     def all_raw_string(self) -> str: return self._field.raw_string_value()
 
-    def all_list_notes(self) -> list[VocabNote]:
-        return ex_sequence.flatten([app.col().vocab.with_question(form) for form in self.all_list()])
+    def all_list_notes(self) -> QList[VocabNote]:
+        return self._all_list().select_many(app.col().vocab.with_question).to_list() #ex_sequence.flatten([app.col().vocab.with_question(form) for form in self.all_list()])
 
     def all_list_notes_by_sentence_count(self) -> list[VocabNote]:
         def prefer_more_sentences(vocab: VocabNote) -> int:

@@ -7,7 +7,6 @@ from ankiutils import app
 from ex_autoslot import ProfilableAutoSlots
 from language_services.jamdict_ex.dict_lookup import DictLookup
 from note.note_constants import NoteTypes
-from sysutils import ex_sequence
 
 if TYPE_CHECKING:
     from collections.abc import Callable
