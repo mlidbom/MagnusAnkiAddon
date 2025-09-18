@@ -33,6 +33,10 @@ class QIterable[TItem](Iterable[TItem], ABC):
     def unique(self) -> QList[TItem]:
         return QList(dict.fromkeys(self._value))
 
+    def take_while(self, predicate: Callable[[TItem], bool]) -> QIterable[TItem]:
+        """`returns` an iterable containing the items in `iterable` until (exclusive) `condition` returns false"""
+        return _Qiterable(itertools.takewhile(predicate, self))
+
     # endregion
 
     # region scalar aggregations

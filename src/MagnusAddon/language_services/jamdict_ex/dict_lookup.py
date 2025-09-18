@@ -24,7 +24,7 @@ from concurrent.futures import Future
 
 from jamdict import Jamdict  # pyright: ignore[reportMissingTypeStubs]
 from language_services.jamdict_ex.dict_entry import DictEntry
-from sysutils import ex_iterable, kana_utils
+from sysutils import kana_utils
 
 
 class Request[T](ProfilableAutoSlots):
@@ -126,7 +126,7 @@ class DictLookup(ProfilableAutoSlots):
         return query(self.entries).select_many(lambda entry: entry.parts_of_speech()).to_set()  # set(ex_sequence.flatten([list(ent.parts_of_speech()) for ent in self.entries]))
 
     def priority_spec(self) -> PrioritySpec:
-        return PrioritySpec(set(ex_iterable.flatten(entry.priority_tags() for entry in self.entries)))
+        return PrioritySpec(self.entries.select_many(lambda entry: entry.priority_tags()).to_set())  #PrioritySpec(set(ex_iterable.flatten(entry.priority_tags() for entry in self.entries)))
 
     @classmethod
     def lookup_vocab_word_or_name(cls, vocab: VocabNote) -> DictLookup:
