@@ -10,11 +10,13 @@ if TYPE_CHECKING:
 
     from _typeshed import SupportsRichComparison
 
-def linq[TItem](value: Iterable[TItem]) -> LIterable[TItem]: return _LIterable(value)
+def query[TItem](value: Iterable[TItem]) -> LIterable[TItem]: return _LIterable(value)
 
 class LIterable[TItem](Iterable[TItem], ABC):
     @staticmethod
     def create(value: Iterable[TItem]) -> LIterable[TItem]: return _LIterable(value)
+
+    # region queries that need to be static so that we can know the type of the
 
     # region filtering
     def where(self, predicate: Callable[[TItem], bool]) -> LIterable[TItem]:

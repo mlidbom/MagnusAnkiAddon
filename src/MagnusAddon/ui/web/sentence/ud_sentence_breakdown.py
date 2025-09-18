@@ -7,7 +7,7 @@ from aqt import gui_hooks
 from note.sentences.sentencenote import SentenceNote
 from sysutils import ex_str
 from sysutils.ex_str import newline
-from ui.web.sentence.sentence_viewmodel import SentenceAnalysisViewModel
+from ui.web.sentence.sentence_viewmodel import SentenceViewModel
 from ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
 from viewmodels.kanji_list import sentence_kanji_list_viewmodel
 
@@ -43,7 +43,7 @@ def render_match_kanji(match: MatchViewModel) -> str:
         """
 
 def render_sentence_analysis(note: SentenceNote) -> str:
-    sentence_analysis: SentenceAnalysisViewModel = SentenceAnalysisViewModel(note)
+    sentence_analysis: SentenceViewModel = SentenceViewModel(note)
     html = """
     <div class="breakdown page_section">
         <div class="page_section_title">Sentence breakdown</div>

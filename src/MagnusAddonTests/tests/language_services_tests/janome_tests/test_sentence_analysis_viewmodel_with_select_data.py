@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 import pytest
 from fixtures.collection_factory import inject_collection_with_select_data
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
-from tests.language_services_tests.janome_tests.test_sentence_analysis_viewmodel_common import assert_all_words_equal, assert_display_words_equal_and_that_failed_matches_have_proper_messages
+from tests.language_services_tests.janome_tests.test_sentence_analysis_viewmodel_common import assert_all_words_equal, assert_display_words_equal_and_that_analysis_internal_state_is_valid
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -77,7 +77,7 @@ def setup_collection_with_select_data() -> Iterator[None]:
     ("ちょっと強引なところがあるから", ["ちょっと", "強引", "な", "ところ", "が", "ある", "から"])
 ])
 def test_misc_stuff(sentence: str, expected_output: list[str]) -> None:
-    assert_display_words_equal_and_that_failed_matches_have_proper_messages(sentence, [], expected_output)
+    assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
 
 @pytest.mark.usefixtures("setup_collection_with_select_data")
 @pytest.mark.parametrize("sentence, expected_output", [
@@ -85,7 +85,7 @@ def test_misc_stuff(sentence: str, expected_output: list[str]) -> None:
     ("後で下に下りてらっしゃいね", ["後で", "下に", "下りる", "て", "らっしゃい", "ね"]),
 ])
 def test_yield_to_surface(sentence: str, expected_output: list[str]) -> None:
-    assert_display_words_equal_and_that_failed_matches_have_proper_messages(sentence, [], expected_output)
+    assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
 
 @pytest.mark.usefixtures("setup_collection_with_select_data")
 @pytest.mark.parametrize("sentence, excluded, expected_output", [
@@ -106,7 +106,7 @@ def test_yield_to_surface(sentence: str, expected_output: list[str]) -> None:
     ("風の強さに驚きました", [WordExclusion.global_("風の強い")], ["風", "の", "強さ", "に", "驚き", "ます", "た"])
 ])
 def test_exclusions(sentence: str, excluded: list[WordExclusion], expected_output: list[str]) -> None:
-    assert_display_words_equal_and_that_failed_matches_have_proper_messages(sentence, excluded, expected_output)
+    assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, excluded, expected_output)
 
 @pytest.mark.usefixtures("setup_collection_with_select_data")
 @pytest.mark.parametrize("sentence, expected_output", [

@@ -11,7 +11,7 @@ from note.collection.note_cache import CachedNote, NoteCache
 from note.note_constants import NoteTypes
 from note.vocabulary.vocabnote import VocabNote
 from sysutils import ex_sequence
-from sysutils.collections.linq.l_iterable import LList, linq
+from sysutils.collections.linq.l_iterable import LList, query
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
@@ -129,7 +129,7 @@ class VocabCollection(ProfilableAutoSlots):
         return ex_sequence.remove_duplicates_while_retaining_order(ex_sequence.flatten([self.with_form(form) for form in forms]))
 
     def with_any_question_in(self, questions: Iterable[str]) -> LList[VocabNote]:
-        return linq(questions).select(self.with_question).select_many(lambda x: x).to_list()
+        return query(questions).select(self.with_question).select_many(lambda x: x).to_list()
 
     def add(self, note: VocabNote) -> None:
         self.collection.anki_collection.addNote(note.backend_note)

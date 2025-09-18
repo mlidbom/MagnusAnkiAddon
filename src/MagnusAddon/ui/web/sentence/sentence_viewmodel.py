@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from note.sentences.sentencenote import SentenceNote
     from ui.web.sentence.match_viewmodel import MatchViewModel
 
-class SentenceAnalysisViewModel(ProfilableAutoSlots):
+class SentenceViewModel(ProfilableAutoSlots):
     def __init__(self, sentence: SentenceNote) -> None:
         self.sentence: SentenceNote = sentence
         self.analysis: TextAnalysisViewModel = TextAnalysisViewModel(sentence.create_analysis())

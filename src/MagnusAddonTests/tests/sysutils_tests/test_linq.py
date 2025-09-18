@@ -3,7 +3,7 @@ from __future__ import annotations
 from collections.abc import Callable, Iterable
 
 import pytest
-from sysutils.collections.linq.l_iterable import LFrozenSet, LIterable, LList, LSet, linq
+from sysutils.collections.linq.l_iterable import LFrozenSet, LIterable, LList, LSet, query
 
 
 def test_select() -> None:
@@ -111,7 +111,7 @@ def create_sequences[T](iterable: Iterable[T] | Callable[[], Iterable[T]], skip_
     factory: Callable[[], Iterable[T]] = iterable if not isinstance(iterable, Iterable) else lambda: iterable
 
     values = [
-        ("linq", linq(factory())),
+        ("linq", query(factory())),
         ("LList", LList(factory())),
         ("LIterable.create", LIterable[T].create(factory()))
     ]
