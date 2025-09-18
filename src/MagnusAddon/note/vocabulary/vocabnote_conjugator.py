@@ -23,7 +23,9 @@ class VocabNoteConjugator(AutoSlots):
                 .to_list())
 
     def get_stems_for_primary_form(self) -> QList[str]:
-        return self._get_stems_for_form(self._vocab.get_question()).unique()  # ex_sequence.remove_duplicates_while_retaining_order(self._get_stems_for_form(self._vocab.get_question()))
+        return (self._get_stems_for_form(self._vocab.get_question())
+                .unique()
+                .to_list())  # ex_sequence.remove_duplicates_while_retaining_order(self._get_stems_for_form(self._vocab.get_question()))
 
     def get_stems_for_all_forms(self) -> QList[str]:
-        return self._vocab.forms.all_set().select_many(self._get_stems_for_form).to_list().unique()  # ex_sequence.flatten([self._get_stems_for_form(form) for form in self._vocab.forms.all_set()])
+        return self._vocab.forms.all_set().select_many(self._get_stems_for_form).unique().to_list()  # ex_sequence.flatten([self._get_stems_for_form(form) for form in self._vocab.forms.all_set()])

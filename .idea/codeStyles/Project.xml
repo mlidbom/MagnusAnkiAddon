@@ -3,6 +3,9 @@
     <Python>
       <option name="BLANK_LINES_AROUND_TOP_LEVEL_CLASSES_FUNCTIONS" value="0" />
       <option name="NEW_LINE_AFTER_COLON_MULTI_CLAUSE" value="false" />
+      <option name="USE_CONTINUATION_INDENT_FOR_ARGUMENTS" value="true" />
+      <option name="USE_CONTINUATION_INDENT_FOR_COLLECTION_AND_COMPREHENSIONS" value="true" />
+      <option name="FORMAT_INJECTED_FRAGMENTS" value="false" />
     </Python>
     <ScssCodeStyleSettings>
       <option name="BLANK_LINES_BETWEEN_BLOCKS" value="0" />
