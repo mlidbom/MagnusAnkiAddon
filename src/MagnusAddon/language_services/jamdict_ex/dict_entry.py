@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, final
 
 from ex_autoslot import ProfilableAutoSlots
-from sysutils import ex_sequence, kana_utils
+from sysutils import kana_utils
 from sysutils.collections.linq.q_iterable import QList, query
 from sysutils.typed import checked_cast_generics, str_
 
@@ -167,7 +167,10 @@ class DictEntry(ProfilableAutoSlots):
 
     }
     def parts_of_speech(self) -> set[str]:
-        def try_get_pos(pos: str) -> list[str]:
+        def try_get_our_pos_name(pos: str) -> list[str]:
             return self._parts_of_speech_map[pos] if pos in self._parts_of_speech_map else ["unmapped-pos-" + pos]
 
-        return set(ex_sequence.flatten([ex_sequence.flatten([try_get_pos(pos) for pos in sense.pos]) for sense in self.entry.senses]))  # pyright: ignore[reportUnknownVariableType, reportUnknownArgumentType, reportUnknownMemberType]
+        return (query(self.entry.senses)
+                .select_many(lambda sense: checked_cast_generics(list[str], sense.pos))  # pyright: ignore [reportUnknownArgumentType, reportUnknownMemberType]
+                .select_many(try_get_our_pos_name)
+                .to_set())
