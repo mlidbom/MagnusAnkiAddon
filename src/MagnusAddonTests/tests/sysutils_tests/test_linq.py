@@ -69,7 +69,6 @@ def test_then_by_descending_sorts_in_descending_order() -> None:
     value_test([3, 2, 1], lambda x: x.order_by(lambda y: y).then_by_descending(lambda y: y).to_list(), [3, 2, 1])
     value_test([3, 2, 1], lambda x: x.order_by(lambda y: y).then_by_descending(lambda y: 1 if y == 2 else 0).to_list(), [2, 1, 3])
 
-
 def test_length_returns_length_of_sequence() -> None:
     value_test([0], lambda x: x.length(), 1)
     value_test([0, 3], lambda x: x.length(), 2)
@@ -109,7 +108,9 @@ def test_assert_on_collection_does_not_throw_if_predicate_returns_true() -> None
     value_test([1, 2], lambda x: x.assert_on_collection(lambda _: True).to_list(), [1, 2])
 
 def create_sequences[T](iterable: Iterable[T] | Callable[[], Iterable[T]], skip_sets: bool = False) -> list[tuple[str, QIterable[T]]]:
-    factory: Callable[[], Iterable[T]] = iterable if not isinstance(iterable, Iterable) else lambda: cast(Iterable[T], iterable) # pyright: ignore[reportUnnecessaryCast] while basedpyright understands it is not needed, pyright does not
+    factory: Callable[[], Iterable[T]] = (iterable
+                                          if not isinstance(iterable, Iterable)
+                                          else lambda: cast(Iterable[T], iterable))  # pyright: ignore[reportUnnecessaryCast] while basedpyright understands it is not needed, pyright does not
 
     values = [
         ("linq", query(factory())),
