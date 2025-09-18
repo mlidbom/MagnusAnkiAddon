@@ -9,6 +9,8 @@ from sysutils.json.ex_json import json_library_shim
 if TYPE_CHECKING:
     from collections.abc import Callable
 
+    from sysutils.standard_type_aliases import Selector
+
 class JsonReader(ProfilableAutoSlots):
     def __init__(self, json_dict: dict[str, Any]) -> None:  # pyright: ignore[reportExplicitAny]
         self._dict: dict[str, Any] = json_dict  # pyright: ignore[reportExplicitAny]
@@ -36,13 +38,13 @@ class JsonReader(ProfilableAutoSlots):
 
     def string_set(self, prop: str | list[str], default: set[str] | None = None) -> set[str]: return set(self.string_list(prop, list(default) if default is not None else None))
 
-    def object_list[TProp](self, prop: str | list[str], factory: Callable[[JsonReader], TProp], default: list[TProp] | None = None) -> list[TProp]:
+    def object_list[TProp](self, prop: str | list[str], factory: Selector[JsonReader, TProp], default: list[TProp] | None = None) -> list[TProp]:
         prop_value = cast(list[dict[str, Any]], self._get_prop(prop, default))  # pyright: ignore[reportExplicitAny]
         reader_list = [JsonReader(json_dict) for json_dict in prop_value]
         return [factory(reader) for reader in reader_list]
 
     # noinspection PyUnusedFunction
-    def object[TProp](self, prop: str, factory: Callable[[JsonReader], TProp], default: Callable[[], TProp] | None = None) -> TProp | None:
+    def object[TProp](self, prop: str, factory: Selector[JsonReader, TProp], default: Callable[[], TProp] | None = None) -> TProp | None:
         reader = self._reader_or_none(prop)
         return default() if reader is None and default is not None else factory(typed.non_optional(reader))
 

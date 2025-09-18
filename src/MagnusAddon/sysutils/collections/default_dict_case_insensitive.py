@@ -7,10 +7,11 @@ from ex_autoslot import ProfilableAutoSlots
 from sysutils import typed
 
 if TYPE_CHECKING:
-    from collections.abc import Callable
+    from sysutils.standard_type_aliases import Func
+    pass
 
 class DefaultDictCaseInsensitive[VT](collections.defaultdict[str, VT], ProfilableAutoSlots):
-    def __init__(self, default_factory: Callable[[], VT], **kwargs: object) -> None:
+    def __init__(self, default_factory: Func[VT], **kwargs: object) -> None:
         super().__init__(default_factory, **{key.lower(): value for key, value in kwargs.items()})
 
     @override

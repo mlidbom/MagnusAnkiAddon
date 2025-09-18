@@ -10,12 +10,14 @@ from ex_autoslot import ProfilableAutoSlots
 from sysutils import typed
 
 if TYPE_CHECKING:
-    from collections.abc import Callable, Iterator
+    from collections.abc import Iterator
+
+    from sysutils.standard_type_aliases import Action
 
 SECONDS_PER_DAY = 24 * 60 * 60
 MILLISECONDS_PER_SECOND = 1000
 
-def time_execution(callback: Callable[[], None]) -> str:
+def time_execution(callback: Action) -> str:
     start_time = time.time()
     callback()
     elapsed_time = time.time() - start_time

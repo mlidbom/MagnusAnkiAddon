@@ -8,16 +8,15 @@ from PyQt6.QtWidgets import QApplication, QProgressDialog
 from sysutils import timeutil
 
 if TYPE_CHECKING:
-    from collections.abc import Callable
+    from sysutils.standard_type_aliases import Action1
 
-def process_with_progress[T](items: list[T], process_item: Callable[[T], None], message:str, allow_cancel: bool = True, display_delay_seconds: float = 0.0) -> None:
+def process_with_progress[T](items: list[T], process_item: Action1[T], message: str, allow_cancel: bool = True, display_delay_seconds: float = 0.0) -> None:
     total_items = len(items)
     start_time = time.time()
     progress_dialog: QProgressDialog | None = None
     last_refresh = 0.0
 
     try:
-
         for current_item, item in enumerate(items):
             if not progress_dialog and (time.time() - start_time >= display_delay_seconds):
                 progress_dialog = QProgressDialog(f"""{message}...""", "Cancel" if allow_cancel else None, 0, total_items)

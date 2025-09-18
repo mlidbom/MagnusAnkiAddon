@@ -6,9 +6,10 @@ from collections.abc import Iterable
 from typing import TYPE_CHECKING, Any, cast, override
 
 if TYPE_CHECKING:
-    from collections.abc import Callable, Iterator
+    from collections.abc import Iterator
 
     from _typeshed import SupportsRichComparison
+    from sysutils.standard_type_aliases import Action1, Predicate, Selector
 
 def query[TItem](value: Iterable[TItem]) -> QIterable[TItem]: return _Qiterable(value)
 
@@ -19,12 +20,12 @@ class QIterable[TItem](Iterable[TItem], ABC):
     # region queries that need to be static so that we can know the type of the the LLitearble
 
     # region operations on the whole collection, not the items
-    def pipe_to[TReturn](self, action: Callable[[QIterable[TItem]], TReturn]) -> TReturn:
+    def pipe_to[TReturn](self, action: Selector[QIterable[TItem], TReturn]) -> TReturn:
         return action(self)
     # endregion
 
     # region filtering
-    def where(self, predicate: Callable[[TItem], bool]) -> QIterable[TItem]:
+    def where(self, predicate: Predicate[TItem]) -> QIterable[TItem]:
         return _Qiterable(item for item in self if predicate(item))
 
     def where_not_none(self) -> QIterable[TItem]:
@@ -33,7 +34,7 @@ class QIterable[TItem](Iterable[TItem], ABC):
     def unique(self) -> QList[TItem]:
         return QList(dict.fromkeys(self))
 
-    def take_while(self, predicate: Callable[[TItem], bool]) -> QIterable[TItem]:
+    def take_while(self, predicate: Predicate[TItem]) -> QIterable[TItem]:
         """`returns` an iterable containing the items in `iterable` until (exclusive) `condition` returns false"""
         return _Qiterable(itertools.takewhile(predicate, self))
 
@@ -45,16 +46,16 @@ class QIterable[TItem](Iterable[TItem], ABC):
         return sum(1 for _ in self)
 
     # todo: consider whether this is the best name. We need to avoid collisions with the built in count member, but...
-    def length_where(self, predicate: Callable[[TItem], bool]) -> int:
+    def length_where(self, predicate: Predicate[TItem]) -> int:
         return self.where(predicate).length()
 
     # endregion
 
     # region sorting
-    def order_by(self, key_selector: Callable[[TItem], SupportsRichComparison]) -> QOrderedIterable[TItem]:
+    def order_by(self, key_selector: Selector[TItem, SupportsRichComparison]) -> QOrderedIterable[TItem]:
         return QOrderedIterable(self, [SortInstruction(key_selector, False)])
 
-    def order_by_descending(self, key_selector: Callable[[TItem], SupportsRichComparison]) -> QOrderedIterable[TItem]:
+    def order_by_descending(self, key_selector: Selector[TItem, SupportsRichComparison]) -> QOrderedIterable[TItem]:
         return QOrderedIterable(self, [SortInstruction(key_selector, True)])
 
     def reversed(self) -> QIterable[TItem]:
@@ -62,28 +63,28 @@ class QIterable[TItem](Iterable[TItem], ABC):
     # endregion
 
     # region boolean queries
-    def none(self, predicate: Callable[[TItem], bool] | None = None) -> bool: return not self.any(predicate)
+    def none(self, predicate: Predicate[TItem] | None = None) -> bool: return not self.any(predicate)
 
-    def any(self, predicate: Callable[[TItem], bool] | None = None) -> bool:
+    def any(self, predicate: Predicate[TItem] | None = None) -> bool:
         if predicate is None:
             for _ in self: return True
             return False
         return any(predicate(item) for item in self)
 
-    def all(self, predicate: Callable[[TItem], bool]) -> bool:
+    def all(self, predicate: Predicate[TItem]) -> bool:
         return not self.any(lambda item: not predicate(item))
     # endregion
 
     # region mapping methods
-    def select[TReturn](self, selector: Callable[[TItem], TReturn]) -> QIterable[TReturn]:
+    def select[TReturn](self, selector: Selector[TItem, TReturn]) -> QIterable[TReturn]:
         return _Qiterable(selector(item) for item in self)
 
-    def select_many[TInner](self, selector: Callable[[TItem], Iterable[TInner]]) -> QIterable[TInner]:
+    def select_many[TInner](self, selector: Selector[TItem, Iterable[TInner]]) -> QIterable[TInner]:
         return _Qiterable(itertools.chain.from_iterable(selector(item) for item in self))
     # endregion
 
     # region single item selecting methods
-    def single(self, predicate: Callable[[TItem], bool] | None = None) -> TItem:
+    def single(self, predicate: Predicate[TItem] | None = None) -> TItem:
         if not predicate:
             first: TItem | None = None
             found = False
@@ -97,7 +98,7 @@ class QIterable[TItem](Iterable[TItem], ABC):
 
         return self.where(predicate).single()
 
-    def single_or_none(self, predicate: Callable[[TItem], bool] | None = None) -> TItem | None:
+    def single_or_none(self, predicate: Predicate[TItem] | None = None) -> TItem | None:
         if predicate is None:
             first: TItem | None = None
             for current_index, item in enumerate(self):
@@ -117,26 +118,26 @@ class QIterable[TItem](Iterable[TItem], ABC):
     # endregion
 
     # region assertions on the collection or it's values
-    def assert_each(self, predicate: Callable[[TItem], bool], message: str | None = None) -> QIterable[TItem]:
+    def assert_each(self, predicate: Predicate[TItem], message: str | None = None) -> QIterable[TItem]:
         for item in self:
             if not predicate(item): raise AssertionError(message or "")
         return self
 
-    def assert_on_collection(self, predicate: Callable[[QIterable[TItem]], bool], message: str | None = None) -> QIterable[TItem]:
+    def assert_on_collection(self, predicate: Predicate[QIterable[TItem]], message: str | None = None) -> QIterable[TItem]:
         if not predicate(self): raise AssertionError(message)
         return self
     # endregion
 
     # region methods to avoid needing to manually write loops
-    def for_each(self, action: Callable[[TItem], None]) -> QIterable[TItem]:
+    def for_each(self, action: Action1[TItem]) -> QIterable[TItem]:
         for item in self: action(item)
         return self
 
-    def for_single(self, action: Callable[[TItem], Any]) -> QIterable[TItem]:  # pyright: ignore[reportExplicitAny]
+    def for_single(self, action: Selector[TItem, Any]) -> QIterable[TItem]:  # pyright: ignore[reportExplicitAny]
         action(self.single())
         return self
 
-    def for_single_or_none(self, action: Callable[[TItem], Any]) -> QIterable[TItem]:  # pyright: ignore[reportExplicitAny]
+    def for_single_or_none(self, action: Selector[TItem, Any]) -> QIterable[TItem]:  # pyright: ignore[reportExplicitAny]
         value = self.single_or_none()
         if value is not None: action(value)
         return self
@@ -160,8 +161,8 @@ class _Qiterable[TItem](QIterable[TItem]):
 
 # region LOrderedLIterable
 class SortInstruction[TItem]:
-    def __init__(self, key_selector: Callable[[TItem], SupportsRichComparison], descending: bool) -> None:
-        self.key_selector: Callable[[TItem], SupportsRichComparison] = key_selector
+    def __init__(self, key_selector: Selector[TItem, SupportsRichComparison], descending: bool) -> None:
+        self.key_selector: Selector[TItem, SupportsRichComparison] = key_selector
         self.descending: bool = descending
 
 class QOrderedIterable[TItem](QIterable[TItem]):
@@ -169,10 +170,10 @@ class QOrderedIterable[TItem](QIterable[TItem]):
         self.sorting_instructions: list[SortInstruction[TItem]] = sorting_instructions
         self._unsorted: Iterable[TItem] = iterable
 
-    def then_by(self, key_selector: Callable[[TItem], SupportsRichComparison]) -> QOrderedIterable[TItem]:
+    def then_by(self, key_selector: Selector[TItem, SupportsRichComparison]) -> QOrderedIterable[TItem]:
         return QOrderedIterable(self._unsorted, self.sorting_instructions + [SortInstruction(key_selector, descending=False)])
 
-    def then_by_descending(self, key_selector: Callable[[TItem], SupportsRichComparison]) -> QOrderedIterable[TItem]:
+    def then_by_descending(self, key_selector: Selector[TItem, SupportsRichComparison]) -> QOrderedIterable[TItem]:
         return QOrderedIterable(self._unsorted, self.sorting_instructions + [SortInstruction(key_selector, descending=True)])
 
     @override

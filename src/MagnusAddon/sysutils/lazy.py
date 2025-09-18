@@ -5,11 +5,12 @@ from typing import TYPE_CHECKING
 from ex_autoslot import ProfilableAutoSlots
 
 if TYPE_CHECKING:
-    from collections.abc import Callable
+
+    from sysutils.standard_type_aliases import Func
 
 class Lazy[T](ProfilableAutoSlots):
-    def __init__(self, factory: Callable[[], T]) -> None:
-        self.factory: Callable[[], T] = factory
+    def __init__(self, factory: Func[T]) -> None:
+        self.factory: Func[T] = factory
         self._instance: T | None = None
 
     def _lazy_get_instance(self) -> T:
