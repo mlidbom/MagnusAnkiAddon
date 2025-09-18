@@ -109,7 +109,7 @@ def test_assert_on_collection_does_not_throw_if_predicate_returns_true() -> None
     value_test([1, 2], lambda x: x.assert_on_collection(lambda _: True).to_list(), [1, 2])
 
 def create_sequences[T](iterable: Iterable[T] | Callable[[], Iterable[T]], skip_sets: bool = False) -> list[tuple[str, QIterable[T]]]:
-    factory: Callable[[], Iterable[T]] = iterable if not isinstance(iterable, Iterable) else lambda: cast(Iterable[T], iterable)
+    factory: Callable[[], Iterable[T]] = iterable if not isinstance(iterable, Iterable) else lambda: cast(Iterable[T], iterable) # pyright: ignore[reportUnnecessaryCast] while basedpyright understands it is not needed, pyright does not
 
     values = [
         ("linq", query(factory())),
