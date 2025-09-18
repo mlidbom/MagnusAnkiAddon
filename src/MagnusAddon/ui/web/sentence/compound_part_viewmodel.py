@@ -35,7 +35,7 @@ class CompoundPartViewModel(ProfilableAutoSlots):
 
         visited.add(vocab_note.get_id())
 
-        compound_parts = ex_sequence.flatten([app.col().vocab.with_form_prefer_exact_match(part) for part in vocab_note.compound_parts.primary()])
+        compound_parts = vocab_note.compound_parts.primary().select_many(app.col().vocab.with_form_prefer_exact_match)  #ex_sequence.flatten([app.col().vocab.with_form_prefer_exact_match(part) for part in vocab_note.compound_parts.primary()])
 
         result: list[CompoundPartViewModel] = []
 
