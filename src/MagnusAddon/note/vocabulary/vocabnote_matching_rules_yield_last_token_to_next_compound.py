@@ -25,7 +25,7 @@ class YieldLastTokenToOverlappingCompound(RequireForbidFlagField, ProfilableAuto
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         super().__init__(vocab, Tags.Vocab.Matching.yield_last_token_to_overlapping_compound, Tags.Vocab.Matching.Forbids.auto_yielding)
         self._pos:VocabNotePartsOfSpeech = vocab().parts_of_speech
-        self._required = Lazy(self._decide_if_required)
+        self._required:Lazy[bool] = Lazy(self._decide_if_required)
 
     def _decide_if_required(self) -> bool:
         return (super().is_required
