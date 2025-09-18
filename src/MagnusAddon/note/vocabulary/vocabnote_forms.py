@@ -37,6 +37,7 @@ class VocabNoteForms(WeakRefable, ProfilableAutoSlots):
     def all_list_notes(self) -> QList[VocabNote]:
         return self._all_list().select_many(app.col().vocab.with_question).to_list() #ex_sequence.flatten([app.col().vocab.with_question(form) for form in self.all_list()])
 
+
     def all_list_notes_by_sentence_count(self) -> list[VocabNote]:
         def prefer_more_sentences(vocab: VocabNote) -> int:
             return -vocab.sentences.counts().total
