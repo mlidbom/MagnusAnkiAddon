@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, override
 
 from ex_autoslot import ProfilableAutoSlots
 from note.notefields.comma_separated_strings_list_field import MutableCommaSeparatedStringsListField
-from sysutils import ex_sequence
+from sysutils.collections.linq.q_iterable import query
 
 if TYPE_CHECKING:
     from note.jpnote import JPNote
@@ -16,4 +16,4 @@ class MutableCommaSeparatedStringsListFieldDeDuplicated(MutableCommaSeparatedStr
 
     @override
     def set(self, value: list[str]) -> None:
-        super().set(ex_sequence.remove_duplicates_while_retaining_order(value))
+        super().set(query(value).unique().to_list())

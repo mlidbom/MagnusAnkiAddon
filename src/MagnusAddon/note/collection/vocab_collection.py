@@ -10,7 +10,6 @@ from note.collection.backend_facade import BackEndFacade
 from note.collection.note_cache import CachedNote, NoteCache
 from note.note_constants import NoteTypes
 from note.vocabulary.vocabnote import VocabNote
-from sysutils import ex_sequence
 from sysutils.collections.linq.q_iterable import QList, query
 
 if TYPE_CHECKING:
@@ -120,7 +119,8 @@ class VocabCollection(ProfilableAutoSlots):
     def with_form_prefer_exact_match(self, form: str) -> list[VocabNote]:
         matches: list[VocabNote] = self.with_form(form)
         exact_match = [voc for voc in matches if voc.question.without_noise_characters == form]
-        return ex_sequence.remove_duplicates_while_retaining_order(exact_match if exact_match else matches)
+        sequence = exact_match if exact_match else matches
+        return query(sequence).unique().to_list()
 
     def with_any_form_in_prefer_exact_match(self, forms: list[str]) -> QList[VocabNote]:
         return query(forms).select_many(self.with_form_prefer_exact_match).unique()  #ex_sequence.remove_duplicates_while_retaining_order(ex_sequence.flatten([self.with_form_prefer_exact_match(form) for form in forms]))

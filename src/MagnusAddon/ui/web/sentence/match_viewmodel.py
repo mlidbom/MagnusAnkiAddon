@@ -5,7 +5,8 @@ from typing import TYPE_CHECKING, override
 from ankiutils import app
 from ex_autoslot import ProfilableAutoSlots
 from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
-from sysutils import ex_sequence, kana_utils, typed
+from sysutils import kana_utils, typed
+from sysutils.collections.linq.q_iterable import query
 from sysutils.debug_repr_builder import SkipFalsyValuesDebugReprBuilder
 from sysutils.simple_string_list_builder import SimpleStringListBuilder
 from ui.web.sentence.compound_part_viewmodel import CompoundPartViewModel
@@ -73,7 +74,8 @@ class MatchViewModel(ProfilableAutoSlots):
 
     @property
     def kanji(self) -> list[str]:
-        return ex_sequence.remove_duplicates_while_retaining_order(kana_utils.extract_kanji(self.parsed_form + self.vocab_form))
+        sequence = kana_utils.extract_kanji(self.parsed_form + self.vocab_form)
+        return query(sequence).unique().to_list()
 
     @override
     def __repr__(self) -> str:

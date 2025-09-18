@@ -8,7 +8,7 @@ from ankiutils import app
 from ex_autoslot import ProfilableAutoSlots
 from note import kanjinote_mnemonic_maker
 from note.vocabulary import vocabnote_sorting
-from sysutils.collections.linq.q_iterable import QList
+from sysutils.collections.linq.q_iterable import QList, query
 from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 
 from note.jpnote import JPNote
 from note.note_constants import CardTypes, NoteFields, NoteTypes
-from sysutils import ex_sequence, ex_str, kana_utils, typed
+from sysutils import ex_str, kana_utils, typed
 
 
 class KanjiNote(JPNote, ProfilableAutoSlots):
@@ -252,7 +252,8 @@ class KanjiNote(JPNote, ProfilableAutoSlots):
 
         studying_reading_vocab_in_descending_studying_sentences_order = sorted((voc for voc in self.get_vocab_notes() if voc.is_studying(CardTypes.reading)), key=sort_key)
 
-        primary_readings = ex_sequence.remove_duplicates_while_retaining_order(self.get_primary_readings())
+        sequence = self.get_primary_readings()
+        primary_readings = query(sequence).unique().to_list()
         for primary_reading in primary_readings:
             for vocab in studying_reading_vocab_in_descending_studying_sentences_order:
                 if any(vocab.readings.get()) and self.reading_in_vocab_reading(primary_reading, vocab.readings.get()[0], vocab.get_question()):
