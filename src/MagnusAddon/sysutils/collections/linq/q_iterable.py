@@ -44,7 +44,7 @@ class QIterable[TItem](Iterable[TItem], ABC):
         if isinstance(self, list): return len(cast(list[TItem], self))
         return sum(1 for _ in self)
 
-    #todo: consider whether this is the best name. We need to avoid collisions with the built in count member, but...
+    # todo: consider whether this is the best name. We need to avoid collisions with the built in count member, but...
     def length_where(self, predicate: Callable[[TItem], bool]) -> int:
         return self.where(predicate).length()
 
@@ -170,23 +170,18 @@ class LOrderedQIterable[TItem](QIterable[TItem]):
         self._unsorted: Iterable[TItem] = iterable
 
     def then_by(self, key_selector: Callable[[TItem], SupportsRichComparison]) -> LOrderedQIterable[TItem]:
-        self.sorting_instructions.append(SortInstruction(key_selector, descending=False))
-        return LOrderedQIterable(self._unsorted, self.sorting_instructions)
+        return LOrderedQIterable(self._unsorted, self.sorting_instructions + [SortInstruction(key_selector, descending=False)])
 
     def then_by_descending(self, key_selector: Callable[[TItem], SupportsRichComparison]) -> LOrderedQIterable[TItem]:
-        self.sorting_instructions.append(SortInstruction(key_selector, descending=True))
-        return LOrderedQIterable(self._unsorted, self.sorting_instructions)
+        return LOrderedQIterable(self._unsorted, self.sorting_instructions + [SortInstruction(key_selector, descending=True)])
 
-    def _l_ordered_iterable_sort(self) -> list[TItem]:  # the name is so that the method is understandable in a profiling result that does not include the type
+    @override
+    def __iter__(self) -> Iterator[TItem]:
         items = list(self._unsorted)
-
         for instruction in self.sorting_instructions:
             items.sort(key=instruction.key_selector, reverse=instruction.descending)
 
-        return items
-
-    @override
-    def __iter__(self) -> Iterator[TItem]: yield from self._l_ordered_iterable_sort()
+        yield from items
 # endregion
 
 # region LList, LSet, LFrozenSet: concrete classes that do very little but inherit a built in collection and LIterable and provide an override or two for performance
