@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, final
 
 from ex_autoslot import ProfilableAutoSlots
 from sysutils import ex_sequence, kana_utils
+from sysutils.collections.linq.q_iterable import QList
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -28,9 +29,9 @@ class DictEntry(ProfilableAutoSlots):
                                                  in self.entry.senses
                                                  if "word usually written using kana alone" in sense.misc)  # pyright: ignore[reportUnknownMemberType]
 
-    @classmethod
-    def create(cls, entries: Sequence[JMDEntry], lookup_word: str, lookup_reading: list[str]) -> list[DictEntry]:
-        return [cls(entry, lookup_word, lookup_reading) for entry in entries]
+    @staticmethod
+    def create(entries: Sequence[JMDEntry], lookup_word: str, lookup_reading: list[str]) -> QList[DictEntry]:
+        return QList(DictEntry(entry, lookup_word, lookup_reading) for entry in entries)
 
     def has_matching_kana_form(self, search: str) -> bool:
         search = kana_utils.katakana_to_hiragana(search)  # todo: this converting to hiragana is worrisome. Is this really the behavior we want? What false positives might we run into?

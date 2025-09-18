@@ -108,11 +108,9 @@ class DictLookup(ProfilableAutoSlots):
         self.lookup_reading: QList[str] = lookup_reading
         self.entries: QList[DictEntry] = entries
 
-
     @staticmethod
     def _failed_for_word(word: str) -> DictLookup:
         return DictLookup(QList(), word, QList())
-
 
     def found_words_count(self) -> int: return len(self.entries)
     def found_words(self) -> bool: return len(self.entries) > 0
@@ -122,10 +120,10 @@ class DictLookup(ProfilableAutoSlots):
                                         if ent.is_kana_only())
 
     def valid_forms(self, force_allow_kana_only: bool = False) -> set[str]:
-        return query(self.entries).select_many(lambda entry: entry.valid_forms(force_allow_kana_only)).to_set()  #set(ex_sequence.flatten([list(entry.valid_forms(force_allow_kana_only)) for entry in self.entries]))
+        return query(self.entries).select_many(lambda entry: entry.valid_forms(force_allow_kana_only)).to_set()  # set(ex_sequence.flatten([list(entry.valid_forms(force_allow_kana_only)) for entry in self.entries]))
 
     def parts_of_speech(self) -> set[str]:
-        return query(self.entries).select_many(lambda entry: entry.parts_of_speech()).to_set()  #set(ex_sequence.flatten([list(ent.parts_of_speech()) for ent in self.entries]))
+        return query(self.entries).select_many(lambda entry: entry.parts_of_speech()).to_set()  # set(ex_sequence.flatten([list(ent.parts_of_speech()) for ent in self.entries]))
 
     def priority_spec(self) -> PrioritySpec:
         return PrioritySpec(set(ex_iterable.flatten(entry.priority_tags() for entry in self.entries)))
@@ -147,18 +145,25 @@ class DictLookup(ProfilableAutoSlots):
     def _try_lookup_word_or_name_with_matching_reading(cls, word: str, readings: tuple[str, ...]) -> DictLookup:  # needs to be a tuple to be hashable for caching
         if not cls.might_be_entry(word): return DictLookup._failed_for_word(word)
 
-        def kanji_form_matches() -> list[DictEntry]:
-            return [ent for ent in lookup
-                    if any(ent.has_matching_kana_form(reading) for reading in readings)
-                    and ent.kanji_forms()
-                    and ent.has_matching_kanji_form(word)]
+        def kanji_form_matches() -> QList[DictEntry]:
+            return (lookup
+                    .where(lambda entry: any(entry.has_matching_kana_form(reading) for reading in readings)
+                                         and len(entry.kanji_forms()) > 0
+                                         and entry.has_matching_kanji_form(word))
+                    .to_list())
+            # return [ent for ent in lookup
+            #         if any(ent.has_matching_kana_form(reading) for reading in readings)
+            #         and ent.kanji_forms()
+            #         and ent.has_matching_kanji_form(word)]
 
-        def any_kana_only_matches() -> list[DictEntry]:
-            return [ent for ent in lookup
-                    if any(ent.has_matching_kana_form(reading) for reading in readings)
-                    and ent.is_kana_only()]
+        def any_kana_only_matches() -> QList[DictEntry]:
+            return (lookup.where(lambda entry: any(entry.has_matching_kana_form(reading) for reading in readings)
+                                               and entry.is_kana_only()).to_list())
+            # return [ent for ent in lookup
+            #         if any(ent.has_matching_kana_form(reading) for reading in readings)
+            #         and ent.is_kana_only()]
 
-        lookup: list[DictEntry] = DictEntry.create(cls._lookup_word_raw(word), word, list(readings))
+        lookup: QList[DictEntry] = DictEntry.create(cls._lookup_word_raw(word), word, list(readings))
         if not lookup:
             lookup = DictEntry.create(cls._lookup_name_raw(word), word, list(readings))
 
