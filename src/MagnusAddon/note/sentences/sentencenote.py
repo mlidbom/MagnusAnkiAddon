@@ -18,6 +18,7 @@ from note.sentences.parsing_result import ParsingResult
 from note.sentences.serialization.parsing_result_serializer import ParsingResultSerializer
 from note.sentences.user_fields import SentenceUserFields
 from sysutils import ex_sequence, ex_str, kana_utils
+from sysutils.collections.linq.q_iterable import QList
 from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
@@ -56,10 +57,10 @@ class SentenceNote(JPNote, ProfilableAutoSlots):
     def is_studying_read(self) -> bool: return self.is_studying(NoteFields.SentencesNoteType.Card.Reading)
     def is_studying_listening(self) -> bool: return self.is_studying(NoteFields.SentencesNoteType.Card.Listening)
 
-    def get_valid_parsed_non_child_words_strings(self) -> list[str]:
-        return [w.form for w in self.get_valid_parsed_non_child_words()]
+    def get_valid_parsed_non_child_words_strings(self) -> QList[str]:
+        return self.get_valid_parsed_non_child_words().select(lambda word: word.form).to_list()  #[w.form for w in self.get_valid_parsed_non_child_words()]
 
-    def get_valid_parsed_non_child_words(self) -> list[CandidateWordVariant]:
+    def get_valid_parsed_non_child_words(self) -> QList[CandidateWordVariant]:
         return self.create_analysis().display_word_variants
 
     def create_analysis(self) -> TextAnalysis:
@@ -82,7 +83,8 @@ class SentenceNote(JPNote, ProfilableAutoSlots):
     def get_words(self) -> set[str]: return (set(self.parsing_result.get().parsed_words_strings()) | set(self.configuration.highlighted_words())) - self.configuration.incorrect_matches.words()
 
     def get_parsed_words_notes(self) -> list[VocabNote]:
-        return ex_sequence.flatten([app.col().vocab.with_question(q) for q in self.get_valid_parsed_non_child_words_strings()])
+        return (self.get_valid_parsed_non_child_words_strings()
+                .select_many(app.col().vocab.with_question).to_list()) #ex_sequence.flatten([app.col().vocab.with_question(q) for q in self.get_valid_parsed_non_child_words_strings()])
 
     @override
     def update_generated_data(self) -> None:
