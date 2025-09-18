@@ -10,17 +10,17 @@ if TYPE_CHECKING:
 
     from _typeshed import SupportsRichComparison
 
-def query[TItem](value: Iterable[TItem]) -> LIterable[TItem]: return _LIterable(value)
+def query[TItem](value: Iterable[TItem]) -> LIterable[TItem]: return _Literable(value)
 
 class LIterable[TItem](Iterable[TItem], ABC):
     @staticmethod
-    def create(value: Iterable[TItem]) -> LIterable[TItem]: return _LIterable(value)
+    def create(value: Iterable[TItem]) -> LIterable[TItem]: return _Literable(value)
 
-    # region queries that need to be static so that we can know the type of the
+    # region queries that need to be static so that we can know the type of the the LLitearble
 
     # region filtering
     def where(self, predicate: Callable[[TItem], bool]) -> LIterable[TItem]:
-        return _LIterable(item for item in self._value if predicate(item))
+        return _Literable(item for item in self._value if predicate(item))
 
     def where_not_none(self) -> LIterable[TItem]:
         return self.where(lambda item: item is not None)
@@ -56,10 +56,10 @@ class LIterable[TItem](Iterable[TItem], ABC):
 
     # region mapping methods
     def select[TReturn](self, selector: Callable[[TItem], TReturn]) -> LIterable[TReturn]:
-        return _LIterable(selector(item) for item in self)
+        return _Literable(selector(item) for item in self)
 
     def select_many[TInner](self, selector: Callable[[TItem], Iterable[TInner]]) -> LIterable[TInner]:
-        return _LIterable(itertools.chain.from_iterable(selector(item) for item in self))
+        return _Literable(itertools.chain.from_iterable(selector(item) for item in self))
     # endregion
 
     # region single item selecting methods
@@ -103,7 +103,7 @@ class LIterable[TItem](Iterable[TItem], ABC):
         return self
 
     def reversed(self) -> LIterable[TItem]:
-        return _LIterable[TItem](reversed(self.to_built_in_list()))
+        return _Literable[TItem](reversed(self.to_built_in_list()))
 
     def assert_on_collection(self, predicate: Callable[[LIterable[TItem]], bool], message: str | None = None) -> LIterable[TItem]:
         if not predicate(self): raise AssertionError(message)
@@ -140,7 +140,7 @@ class LIterable[TItem](Iterable[TItem], ABC):
     # endregion
 
 # region implementing classes
-class _LIterable[TItem](LIterable[TItem]):
+class _Literable[TItem](LIterable[TItem]):
     def __init__(self, iterable: Iterable[TItem]) -> None:
         self.__value: Iterable[TItem] = iterable
 

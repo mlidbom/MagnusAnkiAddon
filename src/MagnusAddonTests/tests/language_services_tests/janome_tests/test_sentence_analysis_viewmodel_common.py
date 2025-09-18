@@ -47,7 +47,7 @@ def assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentenc
 
 
 
-def assert_analysis_state_is_valid(analysis):
+def assert_analysis_state_is_valid(analysis) -> None:
     # not_displayed = analysis.all_matches.whe
     #
     # def all_not_displayed_matches_should_have_is_displayed_false():
