@@ -51,11 +51,11 @@ class QIterable[TItem](Iterable[TItem], ABC):
     # endregion
 
     # region order_by
-    def order_by(self, key_selector: Callable[[TItem], SupportsRichComparison]) -> LOrderedQIterable[TItem]:
-        return LOrderedQIterable(self, [SortInstruction(key_selector, False)])
+    def order_by(self, key_selector: Callable[[TItem], SupportsRichComparison]) -> QOrderedIterable[TItem]:
+        return QOrderedIterable(self, [SortInstruction(key_selector, False)])
 
-    def order_by_descending(self, key_selector: Callable[[TItem], SupportsRichComparison]) -> LOrderedQIterable[TItem]:
-        return LOrderedQIterable(self, [SortInstruction(key_selector, True)])
+    def order_by_descending(self, key_selector: Callable[[TItem], SupportsRichComparison]) -> QOrderedIterable[TItem]:
+        return QOrderedIterable(self, [SortInstruction(key_selector, True)])
     # endregion
 
     # region boolean queries
@@ -164,16 +164,16 @@ class SortInstruction[TItem]:
         self.key_selector: Callable[[TItem], SupportsRichComparison] = key_selector
         self.descending: bool = descending
 
-class LOrderedQIterable[TItem](QIterable[TItem]):
+class QOrderedIterable[TItem](QIterable[TItem]):
     def __init__(self, iterable: Iterable[TItem], sorting_instructions: list[SortInstruction[TItem]]) -> None:
         self.sorting_instructions: list[SortInstruction[TItem]] = sorting_instructions
         self._unsorted: Iterable[TItem] = iterable
 
-    def then_by(self, key_selector: Callable[[TItem], SupportsRichComparison]) -> LOrderedQIterable[TItem]:
-        return LOrderedQIterable(self._unsorted, self.sorting_instructions + [SortInstruction(key_selector, descending=False)])
+    def then_by(self, key_selector: Callable[[TItem], SupportsRichComparison]) -> QOrderedIterable[TItem]:
+        return QOrderedIterable(self._unsorted, self.sorting_instructions + [SortInstruction(key_selector, descending=False)])
 
-    def then_by_descending(self, key_selector: Callable[[TItem], SupportsRichComparison]) -> LOrderedQIterable[TItem]:
-        return LOrderedQIterable(self._unsorted, self.sorting_instructions + [SortInstruction(key_selector, descending=True)])
+    def then_by_descending(self, key_selector: Callable[[TItem], SupportsRichComparison]) -> QOrderedIterable[TItem]:
+        return QOrderedIterable(self._unsorted, self.sorting_instructions + [SortInstruction(key_selector, descending=True)])
 
     @override
     def __iter__(self) -> Iterator[TItem]:
