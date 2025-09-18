@@ -2,12 +2,14 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
+from ankiutils import app
 from ex_autoslot import ProfilableAutoSlots
 from language_services.jamdict_ex.dict_lookup import DictLookup
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from note.note_constants import NoteFields
 from note.notefields.comma_separated_strings_list_field import MutableCommaSeparatedStringsListField
 from note.sentences.sentence_configuration import SentenceConfiguration
+from sysutils.collections.linq.q_iterable import QList, QSet, query
 
 if TYPE_CHECKING:
     from note.collection.jp_collection import JPCollection
@@ -26,8 +28,11 @@ class VocabNoteUserCompoundParts(ProfilableAutoSlots):
     def _collection(self) -> JPCollection: return self._vocab.collection
 
     def primary(self) -> list[str]: return [part for part in self._field.get() if not part.startswith("[")]
-    def all(self) -> list[str]: return [self._strip_brackets(part) for part in self._field.get()]
+    def all(self) -> QList[str]: return query(self._field.get()).select(self._strip_brackets).to_list() #[self._strip_brackets(part) for part in self._field.get()]
     def set(self, value: list[str]) -> None: self._field.set(value)
+
+    def all_notes(self) -> QSet[VocabNote]:
+        return self.all().select_many(app.col().vocab.with_question).to_set()
 
     def auto_generate(self) -> None:
         from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis

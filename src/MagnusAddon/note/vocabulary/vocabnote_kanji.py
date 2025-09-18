@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, override
 
 from ex_autoslot import ProfilableAutoSlots
 from sysutils import ex_str, kana_utils
+from sysutils.collections.linq.q_iterable import QList, query
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
@@ -16,9 +17,9 @@ class VocabNoteKanji(ProfilableAutoSlots):
     @property
     def _vocab(self) -> VocabNote: return self.__vocab()
 
-    def extract_main_form_kanji(self) -> list[str]:
+    def extract_main_form_kanji(self) -> QList[str]:
         clean = ex_str.strip_html_and_bracket_markup(self._vocab.get_question())
-        return [char for char in clean if kana_utils.character_is_kanji(char)]
+        return query(clean).where(kana_utils.character_is_kanji).to_list() #[char for char in clean if kana_utils.character_is_kanji(char)]
 
     def extract_all_kanji(self) -> set[str]:
         clean = ex_str.strip_html_and_bracket_markup(self._vocab.get_question() + self._vocab.forms.all_raw_string())
