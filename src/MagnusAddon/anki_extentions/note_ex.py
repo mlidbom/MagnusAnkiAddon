@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING
 
 from anki.models import FieldDict, NotetypeDict, NotetypeId
 from anki.notes import Note, NoteId
-
 from line_profiling_hacks import profile_lines
 from sysutils import typed
 from sysutils.typed import non_optional
