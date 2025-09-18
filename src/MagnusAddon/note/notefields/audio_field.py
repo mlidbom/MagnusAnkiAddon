@@ -2,14 +2,14 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from ex_autoslot import ProfilableAutoSlots
+from ex_autoslot import AutoSlots
 from note.notefields.mutable_string_field import MutableStringField
 
 if TYPE_CHECKING:
     from note.jpnote import JPNote
     from sysutils.weak_ref import WeakRef
 
-class AudioField(ProfilableAutoSlots):
+class AudioField(AutoSlots):
     def __init__(self, note: WeakRef[JPNote], field_name: str) -> None:
         self._field: MutableStringField = MutableStringField(note, field_name)
 
@@ -34,7 +34,7 @@ class AudioField(ProfilableAutoSlots):
     @override
     def __repr__(self) -> str: return self._field.__repr__()
 
-class WritableAudioField(AudioField, ProfilableAutoSlots):
+class WritableAudioField(AudioField, AutoSlots):
     def __init__(self, note: WeakRef[JPNote], field_name: str) -> None:
         super().__init__(note, field_name)
 

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from ex_autoslot import ProfilableAutoSlots
+from ex_autoslot import AutoSlots
 from language_services.janome_ex.tokenizing import inflection_forms, inflection_types
 from language_services.janome_ex.tokenizing.inflection_forms import InflectionForms
 from language_services.janome_ex.tokenizing.inflection_types import InflectionTypes
@@ -15,7 +15,7 @@ if TYPE_CHECKING:
     from language_services.janome_ex.tokenizing.inflection_types import InflectionType
 
 # noinspection PyUnusedFunction
-class JNToken(ProfilableAutoSlots):
+class JNToken(AutoSlots):
     def __init__(self,
                  parts_of_speech: JNPartsOfSpeech,
                  base_form: str,

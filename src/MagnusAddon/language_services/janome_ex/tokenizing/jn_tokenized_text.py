@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from ankiutils import app
-from ex_autoslot import ProfilableAutoSlots
+from ex_autoslot import AutoSlots
 from language_services import conjugator
 from language_services.jamdict_ex.dict_lookup import DictLookup
 
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from note.collection.vocab_collection import VocabCollection
     from sysutils.collections.linq.q_iterable import QList
 
-class ProcessedToken(ProfilableAutoSlots):
+class ProcessedToken(AutoSlots):
     def __init__(self, surface: str, base: str, is_non_word_character: bool) -> None:
         self.surface: str = surface
         self.base_form: str = base
@@ -31,7 +31,7 @@ class ProcessedToken(ProfilableAutoSlots):
     def __repr__(self) -> str:
         return f"ProcessedToken('{self.surface}', '{self.base_form}', {self.is_inflectable_word})"
 
-class JNTokenWrapper(ProcessedToken, ProfilableAutoSlots):
+class JNTokenWrapper(ProcessedToken, AutoSlots):
     def __init__(self, token: JNToken, vocabs: VocabCollection) -> None:
         super().__init__(token.surface, token.base_form, token.parts_of_speech.is_non_word_character())
         self.token: JNToken = token
@@ -86,7 +86,7 @@ class JNTokenWrapper(ProcessedToken, ProfilableAutoSlots):
                 return root_verb
         return None
 
-class JNTokenizedText(ProfilableAutoSlots):
+class JNTokenizedText(AutoSlots):
     def __init__(self, text: str, raw_tokens: QList[Token], tokens: QList[JNToken]) -> None:
         self.raw_tokens: list[Token] = raw_tokens
         self.text: str = text

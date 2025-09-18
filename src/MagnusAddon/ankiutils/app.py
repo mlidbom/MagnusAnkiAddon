@@ -2,10 +2,12 @@ from __future__ import annotations
 
 import os
 from typing import TYPE_CHECKING
+is_running_line_profiling = os.environ.get("LINE_PROFILE") == "1"
 
 import mylog
 from sysutils.typed import checked_cast, non_optional
 from testutils import ex_pytest
+is_testing = ex_pytest.is_testing
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -19,8 +21,6 @@ if TYPE_CHECKING:
     from configuration.configuration_value import JapaneseConfig
     from note.collection.jp_collection import JPCollection
 
-
-is_testing = ex_pytest.is_testing
 _collection: JPCollection | None = None
 
 _init_hooks: set[Callable[[], None]] = set()

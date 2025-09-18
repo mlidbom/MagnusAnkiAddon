@@ -5,11 +5,11 @@ from typing import cast
 from anki.decks import DeckDict, DeckId
 from anki_extentions.deck_configdict_ex import DeckConfigDictEx
 from ankiutils import app
-from ex_autoslot import ProfilableAutoSlots
+from ex_autoslot import AutoSlots
 from sysutils.typed import str_
 
 
-class DeckEx(ProfilableAutoSlots):
+class DeckEx(AutoSlots):
     def __init__(self, deck_dict: DeckDict) -> None:
         self.deck_dict: DeckDict = deck_dict
         self.name: str = str_(deck_dict["name"])  # pyright: ignore[reportAny]

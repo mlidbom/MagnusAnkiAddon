@@ -2,14 +2,14 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ex_autoslot import ProfilableAutoSlots
+from ex_autoslot import AutoSlots
 from note.sentences.parsed_word import ParsedMatch
 from note.sentences.serialization.parsing_result_serializer import ParsingResultSerializer
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 
-class ParsingResult(ProfilableAutoSlots):
+class ParsingResult(AutoSlots):
     serializer: ParsingResultSerializer = ParsingResultSerializer()
     def __init__(self, words: list[ParsedMatch], sentence: str, parser_version: str) -> None:
         self.parsed_words: list[ParsedMatch] = words

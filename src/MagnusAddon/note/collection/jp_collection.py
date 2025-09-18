@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 import mylog
 from ankiutils import app
-from ex_autoslot import ProfilableAutoSlots
+from ex_autoslot import AutoSlots
 from line_profiling_hacks import profile_lines
 from note import noteutils
 from note.collection.cache_runner import CacheRunner
@@ -24,7 +24,7 @@ if TYPE_CHECKING:
     from anki.collection import Collection
     from anki.notes import NoteId
 
-class JPCollection(WeakRefable, ProfilableAutoSlots):
+class JPCollection(WeakRefable, AutoSlots):
     _is_inital_load: bool = True  # running the GC on initial load slows startup a lot but does not decrease memory usage in any significant way.
 
     def __init__(self, anki_collection: Collection, delay_seconds: float | None = None) -> None:
@@ -82,9 +82,9 @@ class JPCollection(WeakRefable, ProfilableAutoSlots):
             with StopWatch.log_warning_if_slower_than(5, "Core collection setup - no gc"):
                 self._cache_runner = CacheRunner(self.anki_collection)
 
-                self._kanji = KanjiCollection(self.anki_collection, self._cache_runner, task_runner)
                 self._vocab = VocabCollection(self.anki_collection, self._cache_runner, task_runner)
                 self._sentences = SentenceCollection(self.anki_collection, self._cache_runner, task_runner)
+                self._kanji = KanjiCollection(self.anki_collection, self._cache_runner, task_runner)
 
             self._cache_runner.start()
 

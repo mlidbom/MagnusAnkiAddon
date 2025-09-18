@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-import os
 from typing import TYPE_CHECKING, ParamSpec, TypeVar
+
+from ankiutils import app
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -11,7 +12,7 @@ ParameterSpec = ParamSpec("ParameterSpec")  # Preserves parameter types and name
 # noinspection PyUnusedName
 ReturnValueType = TypeVar("ReturnValueType")    # Preserves return type
 
-if os.environ.get("PC_LINE_PROFILER_STATS_FILENAME") is not None or os.environ.get("LINE_PROFILE") == "1":
+if app.is_running_line_profiling:
     from line_profiler_pycharm import profile  # pyright: ignore [reportMissingTypeStubs, reportUnknownVariableType, reportAssignmentType]
 else:
     def profile[**ParameterSpec, ReturnValueType](func: Callable[ParameterSpec, ReturnValueType]) -> Callable[ParameterSpec, ReturnValueType]:

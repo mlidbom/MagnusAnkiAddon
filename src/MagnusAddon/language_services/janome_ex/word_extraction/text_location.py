@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, final, override
 
 from ankiutils import app
-from ex_autoslot import ProfilableAutoSlots
+from ex_autoslot import AutoSlots
 from sysutils.collections.linq.q_iterable import QList
 from sysutils.weak_ref import WeakRef, WeakRefable
 
@@ -18,7 +18,7 @@ from sysutils.ex_str import newline
 _max_lookahead = 12 # In my collection the longest so far is 9, so 12 seems a pretty good choice.
 
 @final
-class TextAnalysisLocation(WeakRefable, ProfilableAutoSlots):
+class TextAnalysisLocation(WeakRefable, AutoSlots):
     def __init__(self, analysis: WeakRef[TextAnalysis], token: ProcessedToken, character_start_index: int, token_index: int) -> None:
         self.weakref = WeakRef(self)
         self.next: WeakRef[TextAnalysisLocation] | None = None

@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from typing import override
 
-from ex_autoslot import ProfilableAutoSlots
+from ex_autoslot import AutoSlots
 
 
-class SentenceSpec(ProfilableAutoSlots):
+class SentenceSpec(AutoSlots):
     def __init__(self, question: str, answer: str) -> None:
         self.question: str = question
         self.answer: str = answer

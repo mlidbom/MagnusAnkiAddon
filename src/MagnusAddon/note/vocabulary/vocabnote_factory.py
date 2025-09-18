@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from anki.notes import Note
 from ankiutils import app
-from ex_autoslot import ProfilableAutoSlots
+from ex_autoslot import AutoSlots
 from language_services.jamdict_ex.dict_lookup import DictLookup
 from note.note_constants import NoteTypes
 
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
     from note.vocabulary.vocabnote import VocabNote
 
-class VocabNoteFactory(ProfilableAutoSlots):
+class VocabNoteFactory(AutoSlots):
     @staticmethod
     def create_with_dictionary(question: str) -> VocabNote:
         from note.vocabulary.vocabnote import VocabNote

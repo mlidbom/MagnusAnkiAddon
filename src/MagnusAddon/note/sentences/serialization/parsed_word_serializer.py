@@ -3,13 +3,13 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, cast
 
 from anki.notes import NoteId
-from ex_autoslot import ProfilableAutoSlots
+from ex_autoslot import AutoSlots
 from sysutils.ex_str import invisible_space
 
 if TYPE_CHECKING:
     from note.sentences.parsed_word import ParsedMatch
 
-class ParsedWordSerializer(ProfilableAutoSlots):
+class ParsedWordSerializer(AutoSlots):
     separator: str = f" {invisible_space} "
 
     @staticmethod

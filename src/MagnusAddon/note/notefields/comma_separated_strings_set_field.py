@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from ex_autoslot import ProfilableAutoSlots
+from ex_autoslot import AutoSlots
 from note.notefields.comma_separated_strings_list_field import MutableCommaSeparatedStringsListField
 from sysutils.lazy import Lazy
 
@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from note.jpnote import JPNote
     from sysutils.weak_ref import WeakRef
 
-class MutableCommaSeparatedStringsSetField(ProfilableAutoSlots):
+class MutableCommaSeparatedStringsSetField(AutoSlots):
     def __init__(self, note: WeakRef[JPNote], field_name: str) -> None:
         self._field: MutableCommaSeparatedStringsListField = MutableCommaSeparatedStringsListField(note, field_name)
         field_with_no_reference_loop = self._field

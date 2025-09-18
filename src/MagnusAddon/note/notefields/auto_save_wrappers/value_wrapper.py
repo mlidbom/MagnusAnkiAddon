@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from typing import override
 
-from ex_autoslot import ProfilableAutoSlots
+from ex_autoslot import AutoSlots
 
 
-class ValueWrapper[TValue](ProfilableAutoSlots):
+class ValueWrapper[TValue](AutoSlots):
     def __init__(self, value: TValue) -> None:
         self._value: TValue = value
 

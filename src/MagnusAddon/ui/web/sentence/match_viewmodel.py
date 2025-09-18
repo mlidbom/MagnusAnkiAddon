@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from ankiutils import app
-from ex_autoslot import ProfilableAutoSlots
+from ex_autoslot import AutoSlots
 from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
 from sysutils import kana_utils, typed
 from sysutils.collections.linq.q_iterable import query
@@ -17,7 +17,7 @@ if TYPE_CHECKING:
     from sysutils.weak_ref import WeakRef
     from ui.web.sentence.candidate_word_variant_viewmodel import CandidateWordVariantViewModel
 
-class MatchViewModel(ProfilableAutoSlots):
+class MatchViewModel(AutoSlots):
     def __init__(self, word_variant_vm: WeakRef[CandidateWordVariantViewModel], match: Match) -> None:
         self.match: Match = match
         self.vocab_match: VocabMatch | None = typed.try_cast(VocabMatch, match)

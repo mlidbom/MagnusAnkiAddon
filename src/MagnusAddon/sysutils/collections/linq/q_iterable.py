@@ -4,18 +4,17 @@ import itertools
 from collections.abc import Iterable
 from typing import TYPE_CHECKING, Any, cast, override
 
-from ex_autoslot import ProfilableAutoSlotsABC
-from sysutils.standard_type_aliases import Func
+from ex_autoslot import AutoSlotsABC
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
     from _typeshed import SupportsRichComparison
-    from sysutils.standard_type_aliases import Action1, Predicate, Selector
+    from sysutils.standard_type_aliases import Action1, Func, Predicate, Selector
 
 def query[TItem](value: Iterable[TItem]) -> QIterable[TItem]: return _Qiterable(value)
 
-class QIterable[TItem](Iterable[TItem], ProfilableAutoSlotsABC):
+class QIterable[TItem](Iterable[TItem], AutoSlotsABC):
     @staticmethod
     def create(value: Iterable[TItem]) -> QIterable[TItem]: return _Qiterable(value)
 
@@ -192,7 +191,7 @@ class QOrderedIterable[TItem](QIterable[TItem]):
 # endregion
 
 # region LList, LSet, LFrozenSet: concrete classes that do very little but inherit a built in collection and LIterable and provide an override or two for performance
-class QList[TItem](list[TItem], QIterable[TItem], ProfilableAutoSlotsABC):
+class QList[TItem](list[TItem], QIterable[TItem], AutoSlotsABC):
     def __init__(self, iterable: Iterable[TItem] = ()) -> None:
         super().__init__(iterable)
 
@@ -205,14 +204,14 @@ class QList[TItem](list[TItem], QIterable[TItem], ProfilableAutoSlotsABC):
     @override
     def element_at(self, index: int) -> TItem: return self[index]
 
-class QFrozenSet[TItem](frozenset[TItem], QIterable[TItem], ProfilableAutoSlotsABC):
+class QFrozenSet[TItem](frozenset[TItem], QIterable[TItem], AutoSlotsABC):
     def __new__(cls, iterable: Iterable[TItem] = ()) -> QFrozenSet[TItem]:
         return super().__new__(cls, iterable)
 
     @override
     def _optimized_length(self) -> int: return len(self)
 
-class QSet[TItem](set[TItem], QIterable[TItem], ProfilableAutoSlotsABC):
+class QSet[TItem](set[TItem], QIterable[TItem], AutoSlotsABC):
     def __init__(self, iterable: Iterable[TItem] = ()) -> None:
         super().__init__(iterable)
 

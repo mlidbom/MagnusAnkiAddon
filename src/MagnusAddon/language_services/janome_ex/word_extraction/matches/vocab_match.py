@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, final, override
 
-from ex_autoslot import ProfilableAutoSlots
+from ex_autoslot import AutoSlots
 from language_services.janome_ex.word_extraction.matches.match import Match
 from language_services.janome_ex.word_extraction.matches.requirements.forbids_state import Forbids
 from language_services.janome_ex.word_extraction.matches.requirements.requires_forbids_requirement import RequiresOrForbids
@@ -29,7 +29,7 @@ if TYPE_CHECKING:
     from note.vocabulary.vocabnote_matching_rules import VocabNoteMatchingConfiguration
 
 @final
-class VocabMatch(Match, ProfilableAutoSlots):
+class VocabMatch(Match, AutoSlots):
     def __init__(self, word_variant: WeakRef[CandidateWordVariant], vocab: VocabNote) -> None:
         weakref: WeakRef[VocabMatch] = WeakRef(self)
         self.requires_forbids = vocab.matching_configuration.requires_forbids

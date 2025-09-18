@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from ankiutils import app
-from ex_autoslot import ProfilableAutoSlots
+from ex_autoslot import AutoSlots
 from language_services.jamdict_ex.dict_lookup import DictLookup
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from note.note_constants import NoteFields
@@ -16,7 +16,7 @@ if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
     from sysutils.weak_ref import WeakRef
 
-class VocabNoteUserCompoundParts(ProfilableAutoSlots):
+class VocabNoteUserCompoundParts(AutoSlots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self.__vocab = vocab
         self._field: MutableCommaSeparatedStringsListField = MutableCommaSeparatedStringsListField(vocab, NoteFields.Vocab.user_compounds)

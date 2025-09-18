@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from ex_autoslot import ProfilableAutoSlots
+from ex_autoslot import AutoSlots
 from language_services.janome_ex.word_extraction.matches.requirements.forbids_state import Forbids
 from language_services.janome_ex.word_extraction.matches.state_tests.is_configured_hidden import IsConfiguredHidden
 from language_services.janome_ex.word_extraction.matches.state_tests.is_configured_incorrect import IsConfiguredIncorrect
@@ -15,7 +15,7 @@ if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
     from language_services.janome_ex.word_extraction.matches.requirements.requirement import MatchRequirement
 
-class Match(WeakRefable, ProfilableAutoSlots):
+class Match(WeakRefable, AutoSlots):
     def __init__(self, word_variant: WeakRef[CandidateWordVariant],
                  validity_requirements: list[MatchRequirement],
                  display_requirements: list[MatchRequirement]) -> None:

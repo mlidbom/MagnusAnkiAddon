@@ -2,16 +2,16 @@ from __future__ import annotations
 
 import os
 
-from ex_autoslot import ProfilableAutoSlots
+from ex_autoslot import AutoSlots
 from sysutils.lazy import Lazy
 
 
-class WordSense(ProfilableAutoSlots):
+class WordSense(AutoSlots):
     def __init__(self, definition: str, pos: str) -> None:
         self.definition: str = definition
         self.pos: str = pos
 
-class EnglishWord(ProfilableAutoSlots):
+class EnglishWord(AutoSlots):
     def __init__(self, word: str, definition: str = "", pos: str = "") -> None:
         self.word: str = word
         self.lower_case_word: str = word.lower()
@@ -24,7 +24,7 @@ class EnglishWord(ProfilableAutoSlots):
     def add_sense(self, definition: str, pos: str) -> None:
         self.senses.append(WordSense(definition, pos))
 
-class EnglishDictionary(ProfilableAutoSlots):
+class EnglishDictionary(AutoSlots):
     def __init__(self) -> None:
         self.words: list[EnglishWord] = []
         self.word_map: dict[str, EnglishWord] = {}  # Map words to their EnglishWord objects

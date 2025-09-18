@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from ex_autoslot import ProfilableAutoSlots
+from ex_autoslot import AutoSlots
 from sysutils.debug_repr_builder import SkipFalsyValuesDebugReprBuilder
 from sysutils.weak_ref import WeakRef, WeakRefable
 from ui.web.sentence.match_viewmodel import MatchViewModel
@@ -10,7 +10,7 @@ from ui.web.sentence.match_viewmodel import MatchViewModel
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
 
-class CandidateWordVariantViewModel(WeakRefable, ProfilableAutoSlots):
+class CandidateWordVariantViewModel(WeakRefable, AutoSlots):
     def __init__(self, variant: CandidateWordVariant) -> None:
         self.candidate_word: CandidateWordVariant = variant
         self.weakref: WeakRef[CandidateWordVariantViewModel] = WeakRef(self)

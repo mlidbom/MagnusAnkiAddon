@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from ex_autoslot import ProfilableAutoSlots
+from ex_autoslot import AutoSlots
 from note.note_constants import NoteFields, Tags
 from note.notefields.comma_separated_strings_set_field import MutableCommaSeparatedStringsSetField
 
@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
     from sysutils.weak_ref import WeakRef
 
-class VocabNotePartsOfSpeech(ProfilableAutoSlots):
+class VocabNotePartsOfSpeech(AutoSlots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self.__vocab = vocab
         self._field: MutableCommaSeparatedStringsSetField = MutableCommaSeparatedStringsSetField(vocab, NoteFields.Vocab.parts_of_speech)

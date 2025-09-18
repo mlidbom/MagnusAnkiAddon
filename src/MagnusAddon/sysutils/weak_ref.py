@@ -3,14 +3,14 @@ from __future__ import annotations
 import weakref
 from typing import TYPE_CHECKING, Generic, TypeVar, override
 
-from ex_autoslot import ProfilableAutoSlots
+from ex_autoslot import AutoSlots
 
 if TYPE_CHECKING:
     from _weakref import ReferenceType
 
 T = TypeVar("T", covariant=True)
 
-class WeakRef(Generic[T], ProfilableAutoSlots):  # noqa: UP046 the automatic inference thinks this in invariant even though it is covariant so we need the old syntax
+class WeakRef(Generic[T], AutoSlots):  # noqa: UP046 the automatic inference thinks this in invariant even though it is covariant so we need the old syntax
     def __init__(self, obj: T) -> None:
         self._weakreference: ReferenceType[T] = weakref.ref(obj)
 
@@ -24,5 +24,5 @@ class WeakRef(Generic[T], ProfilableAutoSlots):  # noqa: UP046 the automatic inf
     @override
     def __repr__(self) -> str: return f"WeakRef: {self().__repr__()}"
 
-class WeakRefable(ProfilableAutoSlots):
+class WeakRefable(AutoSlots):
     __slots__ = ["__weakref__"]  # pyright: ignore[reportUninitializedInstanceVariable, reportUnannotatedClassAttribute]

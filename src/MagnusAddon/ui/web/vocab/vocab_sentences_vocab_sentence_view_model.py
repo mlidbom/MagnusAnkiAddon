@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from ex_autoslot import ProfilableAutoSlots
+from ex_autoslot import AutoSlots
 from sysutils.typed import non_optional
 
 if TYPE_CHECKING:
@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from note.sentences.sentencenote import SentenceNote
     from note.vocabulary.vocabnote import VocabNote
 
-class VocabSentenceMatchViewModel(ProfilableAutoSlots):
+class VocabSentenceMatchViewModel(AutoSlots):
     def __init__(self, match: ParsedMatch, sentence_view_model: VocabSentenceViewModel) -> None:
         self.match: ParsedMatch = match
         self.sentence_view_model: VocabSentenceViewModel = sentence_view_model
@@ -42,7 +42,7 @@ class VocabSentenceMatchViewModel(ProfilableAutoSlots):
     @override
     def __repr__(self) -> str: return self.match.__repr__()
 
-class VocabSentenceViewModel(ProfilableAutoSlots):
+class VocabSentenceViewModel(AutoSlots):
     def __init__(self, _vocab_note: VocabNote, sentence_note: SentenceNote) -> None:
         self.vocab: VocabNote = _vocab_note
         self.sentence: SentenceNote = sentence_note

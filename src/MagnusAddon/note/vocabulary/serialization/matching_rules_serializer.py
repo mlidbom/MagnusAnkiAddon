@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from ex_autoslot import ProfilableAutoSlots
+from ex_autoslot import AutoSlots
 from note.notefields.json_object_field import ObjectSerializer
 from sysutils.json import ex_json
 from sysutils.json.json_reader import JsonReader
@@ -10,7 +10,7 @@ from sysutils.json.json_reader import JsonReader
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote_matching_rules import VocabNoteMatchingRulesData
 
-class VocabNoteMatchingRulesSerializer(ObjectSerializer["VocabNoteMatchingRulesData"], ProfilableAutoSlots):
+class VocabNoteMatchingRulesSerializer(ObjectSerializer["VocabNoteMatchingRulesData"], AutoSlots):
     @override
     def deserialize(self, serialized: str) -> VocabNoteMatchingRulesData:
         from note.vocabulary.vocabnote_matching_rules import VocabNoteMatchingRulesData

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ex_autoslot import ProfilableAutoSlots
+from ex_autoslot import AutoSlots
 from language_services.jamdict_ex.priority_spec import PrioritySpec
 from note.note_constants import NoteFields
 from note.notefields.integer_field import IntegerField
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from sysutils.weak_ref import WeakRef
 
 
-class VocabNoteMetaData(ProfilableAutoSlots):
+class VocabNoteMetaData(AutoSlots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self.__vocab: WeakRef[VocabNote] = vocab
         self.sentence_count: IntegerField = IntegerField(vocab, NoteFields.Vocab.sentence_count)

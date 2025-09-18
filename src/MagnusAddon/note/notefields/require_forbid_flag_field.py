@@ -2,13 +2,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from ex_autoslot import ProfilableAutoSlots
+from ex_autoslot import AutoSlots
 
 if TYPE_CHECKING:
     from note.jpnote import JPNote
     from sysutils.weak_ref import WeakRef
 
-class RequireForbidFlagField(ProfilableAutoSlots):
+class RequireForbidFlagField(AutoSlots):
     def __init__(self, note: WeakRef[JPNote], required_tag: str, forbidden_tag: str) -> None:
         self._note: WeakRef[JPNote] = note
         self._required_tag: str = required_tag

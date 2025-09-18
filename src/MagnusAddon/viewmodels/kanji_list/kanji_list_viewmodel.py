@@ -2,13 +2,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from ex_autoslot import ProfilableAutoSlots
+from ex_autoslot import AutoSlots
 
 if TYPE_CHECKING:
     from viewmodels.kanji_list.sentence_kanji_viewmodel import KanjiViewModel
 
 
-class KanjiListViewModel(ProfilableAutoSlots):
+class KanjiListViewModel(AutoSlots):
     def __init__(self, kanji_list: list[KanjiViewModel]) -> None:
         self.kanji_list: list[KanjiViewModel] = kanji_list
 

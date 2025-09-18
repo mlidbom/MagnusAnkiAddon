@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ex_autoslot import ProfilableAutoSlots
+from ex_autoslot import AutoSlots
 from line_profiling_hacks import profile_lines
 from note.jpnote import JPNote
 from sysutils.collections.default_dict_case_insensitive import DefaultDictCaseInsensitive
@@ -16,13 +16,13 @@ if TYPE_CHECKING:
     from note.collection.cache_runner import CacheRunner
     from qt_utils.task_runner_progress_dialog import ITaskRunner
 
-class CachedNote(ProfilableAutoSlots):
+class CachedNote(AutoSlots):
     def __init__(self, note: JPNote) -> None:
         self.id: NoteId = note.get_id()
         self.answer: str = note.get_answer()
         self.question: str = note.get_question()
 
-class NoteCache[TNote: JPNote, TSnapshot: CachedNote](ProfilableAutoSlots):
+class NoteCache[TNote: JPNote, TSnapshot: CachedNote](AutoSlots):
     @profile_lines
     def __init__(self, all_notes: list[TNote], cached_note_type: type[TNote], cache_runner: CacheRunner, task_runner: ITaskRunner) -> None:
         self._note_type: type[TNote] = cached_note_type

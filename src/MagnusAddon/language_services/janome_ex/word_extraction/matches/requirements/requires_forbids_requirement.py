@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from ex_autoslot import ProfilableAutoSlots
+from ex_autoslot import AutoSlots
 from language_services.janome_ex.word_extraction.matches.requirements.requirement import MatchRequirement
 
 if TYPE_CHECKING:
@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from note.notefields.require_forbid_flag_field import RequireForbidFlagField
 
 
-class RequiresOrForbids(MatchRequirement, ProfilableAutoSlots):
+class RequiresOrForbids(MatchRequirement, AutoSlots):
     def __init__(self, state_test: MatchStateTest, requires_forbids: RequireForbidFlagField) -> None:
         super().__init__(state_test)
         self.is_required: bool = requires_forbids.is_required

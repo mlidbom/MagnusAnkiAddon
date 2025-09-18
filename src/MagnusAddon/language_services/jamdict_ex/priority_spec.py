@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from ex_autoslot import ProfilableAutoSlots
+from ex_autoslot import AutoSlots
 
 _frequency_maximum = {f"nf{num:02}" for num in range(1, 10)}
 _frequency_high = {f"nf{num}" for num in range(11, 20)}
@@ -11,7 +11,7 @@ _tags_maximum = {"ichi1"}
 _tags_high = {"news1", "spec1"}
 _tags_medium = {"news2", "spec2"}
 
-class PrioritySpec(ProfilableAutoSlots):
+class PrioritySpec(AutoSlots):
     def __init__(self, tags: set[str]) -> None:
         self.tags: set[str] = tags
 

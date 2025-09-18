@@ -2,13 +2,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ex_autoslot import ProfilableAutoSlots
+from ex_autoslot import AutoSlots
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
 
-class IUIUtils(ProfilableAutoSlots):
+class IUIUtils(AutoSlots):
     def is_edit_current_open(self) -> bool: raise NotImplementedError()
     def refresh(self, refresh_browser:bool = True) -> None: raise NotImplementedError()  # pyright: ignore[reportUnusedParameter]
     def run_ui_action(self, callback: Callable[[],None]) -> None: raise NotImplementedError()  # pyright: ignore[reportUnusedParameter]

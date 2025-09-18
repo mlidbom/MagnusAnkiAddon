@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from ankiutils import app
-from ex_autoslot import ProfilableAutoSlots
+from ex_autoslot import AutoSlots
 from note.note_constants import SentenceNoteFields
 from note.notefields.mutable_string_field import MutableStringField
 from note.sentences.sentence_configuration import SentenceConfiguration
@@ -15,7 +15,7 @@ if TYPE_CHECKING:
     from note.sentences.word_exclusion_set import WordExclusionSet
     from note.vocabulary.vocabnote import VocabNote
 
-class CachingSentenceConfigurationField(WeakRefable, ProfilableAutoSlots):
+class CachingSentenceConfigurationField(WeakRefable, AutoSlots):
     def __init__(self, sentence: WeakRef[SentenceNote]) -> None:
         self._sentence: WeakRef[SentenceNote] = sentence
         self.field: MutableStringField = MutableStringField(sentence, SentenceNoteFields.configuration)

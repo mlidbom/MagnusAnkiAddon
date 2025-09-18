@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from ankiutils import app, ui_utils
-from ex_autoslot import ProfilableAutoSlots
+from ex_autoslot import AutoSlots
 from note.jpnote import JPNote
 from note.note_constants import Mine
 from sysutils import app_thread_pool
@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 
     from anki.cards import Card
 
-class PrerenderingAnswerContentRenderer[TNote: JPNote](ProfilableAutoSlots):
+class PrerenderingAnswerContentRenderer[TNote: JPNote](AutoSlots):
     def __init__(self, cls: type[TNote], render_methods: dict[str, Callable[[TNote], str]]) -> None:
         self._cls: type[TNote] = cls
         self._render_methods: dict[str, Callable[[TNote], str]] = render_methods

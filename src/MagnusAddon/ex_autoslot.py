@@ -2,15 +2,25 @@ from __future__ import annotations
 
 from abc import ABCMeta
 
-from manually_copied_in_libraries.autoslot import SlotsPlusDict, SlotsPlusDictMeta
+from ankiutils import app
+from manually_copied_in_libraries.autoslot import Slots, SlotsMeta, SlotsPlusDict, SlotsPlusDictMeta
 
+# when running line profiling we have to have __dict__ in our classes, when not running line profiling we do not want that overhead
+if app.is_running_line_profiling:
+    class AutoSlots(SlotsPlusDict):  # pyright: ignore [reportRedeclaration]
+        pass
 
-# todo prorably add some code here to only use PlusDict when profiling and save us that overhead when not profiling, like ProfilableAutoSlots = SlotsPlusDict if os.environ.get('LINE_PROFILE') else Slots
-class ProfilableAutoSlots(SlotsPlusDict):
-    pass
+    class SlotsPlusDictABC(ABCMeta, SlotsPlusDictMeta):  # pyright: ignore [reportRedeclaration]
+        pass
 
-class SlotsPlusDictABC(ABCMeta, SlotsPlusDictMeta):
-    pass
+    class AutoSlotsABC(metaclass=SlotsPlusDictABC):  # pyright: ignore [reportRedeclaration]
+        pass
+else:
+    class AutoSlots(Slots):
+        pass
 
-class ProfilableAutoSlotsABC(metaclass=SlotsPlusDictABC):
-    pass
+    class SlotsABC(ABCMeta, SlotsMeta):
+        pass
+
+    class AutoSlotsABC(metaclass=SlotsABC):
+        pass

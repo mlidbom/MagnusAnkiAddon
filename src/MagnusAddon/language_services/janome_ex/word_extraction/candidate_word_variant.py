@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, final, override
 
 from ankiutils import app
-from ex_autoslot import ProfilableAutoSlots
+from ex_autoslot import AutoSlots
 from language_services.janome_ex.word_extraction.matches.dictionary_match import DictionaryMatch
 from language_services.janome_ex.word_extraction.matches.missing_match import MissingMatch
 from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
@@ -19,7 +19,7 @@ if TYPE_CHECKING:
     from note.sentences.sentence_configuration import SentenceConfiguration
 
 @final
-class CandidateWordVariant(WeakRefable, ProfilableAutoSlots):
+class CandidateWordVariant(WeakRefable, AutoSlots):
     def __init__(self, word: WeakRef[CandidateWord], form: str) -> None:
 
         self.weak_ref = WeakRef(self)

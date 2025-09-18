@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ex_autoslot import ProfilableAutoSlots
+from ex_autoslot import AutoSlots
 from sysutils import ex_str
 from sysutils.lazy import Lazy
 from sysutils.weak_ref import WeakRef, WeakRefable
@@ -10,7 +10,7 @@ from sysutils.weak_ref import WeakRef, WeakRefable
 if TYPE_CHECKING:
     from note.notefields.mutable_string_field import MutableStringField
 
-class SentenceQuestionField(WeakRefable,ProfilableAutoSlots):
+class SentenceQuestionField(WeakRefable, AutoSlots):
     word_break_tag: str = "<wbr>"
     def __init__(self, primary_field: MutableStringField, fallback_field: MutableStringField) -> None:
         self._field: MutableStringField = primary_field

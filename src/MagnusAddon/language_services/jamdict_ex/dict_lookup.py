@@ -4,7 +4,7 @@ from functools import cache
 from typing import TYPE_CHECKING, Any
 
 from ankiutils import app
-from ex_autoslot import ProfilableAutoSlots
+from ex_autoslot import AutoSlots
 from language_services.jamdict_ex.priority_spec import PrioritySpec
 from sysutils.collections.linq.q_iterable import QList, query
 from sysutils.lazy import Lazy
@@ -27,12 +27,12 @@ from language_services.jamdict_ex.dict_entry import DictEntry
 from sysutils import kana_utils
 
 
-class Request[T](ProfilableAutoSlots):
+class Request[T](AutoSlots):
     def __init__(self, func: Callable[[Jamdict], T], future: Future[T]) -> None:
         self.func: Callable[[Jamdict], T] = func
         self.future: Future[T] = future
 
-class JamdictThreadingWrapper(ProfilableAutoSlots):
+class JamdictThreadingWrapper(AutoSlots):
     def __init__(self) -> None:
         self._queue: queue.Queue[Request[Any]] = queue.Queue()  # pyright: ignore[reportExplicitAny]
         self._thread: threading.Thread = threading.Thread(target=self._worker, daemon=True)
@@ -102,7 +102,7 @@ _all_word_forms = Lazy(_find_all_words)
 _all_name_forms = Lazy(_find_all_names)
 
 # todo: This mixes up static querying with the results. Let's keep the two separate and readable huh?
-class DictLookup(ProfilableAutoSlots):
+class DictLookup(AutoSlots):
     def __init__(self, entries: QList[DictEntry], lookup_word: str, lookup_reading: QList[str]) -> None:
         self.word: str = lookup_word
         self.lookup_reading: QList[str] = lookup_reading

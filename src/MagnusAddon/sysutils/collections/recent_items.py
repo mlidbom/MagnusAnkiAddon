@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from collections import deque
 
-from ex_autoslot import ProfilableAutoSlots
+from ex_autoslot import AutoSlots
 
 
-class RecentItems[T](ProfilableAutoSlots):
+class RecentItems[T](AutoSlots):
     def __init__(self, max_size: int) -> None:
         self.items: deque[T] = deque(maxlen=max_size)
         self.max_size: int = max_size

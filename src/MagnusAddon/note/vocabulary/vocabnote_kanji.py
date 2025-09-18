@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from ex_autoslot import ProfilableAutoSlots
+from ex_autoslot import AutoSlots
 from sysutils import ex_str, kana_utils
 from sysutils.collections.linq.q_iterable import QList, query
 
@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
     from sysutils.weak_ref import WeakRef
 
-class VocabNoteKanji(ProfilableAutoSlots):
+class VocabNoteKanji(AutoSlots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self.__vocab = vocab
 

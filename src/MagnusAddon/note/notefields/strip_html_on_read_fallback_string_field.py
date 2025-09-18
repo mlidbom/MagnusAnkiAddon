@@ -2,14 +2,14 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ex_autoslot import ProfilableAutoSlots
+from ex_autoslot import AutoSlots
 from note.notefields.fallback_string_field import FallbackStringField
 from sysutils import ex_str
 
 if TYPE_CHECKING:
     from note.notefields.mutable_string_field import MutableStringField
 
-class StripHtmlOnReadFallbackStringField(ProfilableAutoSlots):
+class StripHtmlOnReadFallbackStringField(AutoSlots):
     def __init__(self, primary_field: MutableStringField, fallback_field: MutableStringField) -> None:
         self._field: FallbackStringField = FallbackStringField(primary_field, fallback_field)
 

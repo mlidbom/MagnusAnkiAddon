@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from ex_autoslot import ProfilableAutoSlots
+from ex_autoslot import AutoSlots
 from language_services.janome_ex.word_extraction.matches.state_tests.vocab_match_state_test import VocabMatchStateTest
 
 if TYPE_CHECKING:
@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
     pass
 
-class IsExactMatch(VocabMatchStateTest, ProfilableAutoSlots):
+class IsExactMatch(VocabMatchStateTest, AutoSlots):
     def __init__(self, match: WeakRef[VocabMatch]) -> None:
         super().__init__(match, "exact_match", cache_is_in_state=True)
 

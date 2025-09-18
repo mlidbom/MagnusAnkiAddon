@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, final
 
-from ex_autoslot import ProfilableAutoSlots
+from ex_autoslot import AutoSlots
 from sysutils import kana_utils
 from sysutils.collections.linq.q_iterable import QList, query
 from sysutils.typed import checked_cast_generics, str_
@@ -19,7 +19,7 @@ def _sense_is_intransitive_verb(sense: Sense) -> bool:
     return any(pos_item == "intransitive verb" for pos_item in sense.pos)  # pyright: ignore[reportUnknownVariableType, reportUnknownArgumentType, reportUnknownMemberType]
 
 @final
-class DictEntry(ProfilableAutoSlots):
+class DictEntry(AutoSlots):
     def __init__(self, entry: JMDEntry, lookup_word: str, lookup_readings: list[str]) -> None:
         self.entry: JMDEntry = entry
         self.lookup_word: str = lookup_word

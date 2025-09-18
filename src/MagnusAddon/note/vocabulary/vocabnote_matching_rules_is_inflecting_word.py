@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from ex_autoslot import ProfilableAutoSlots
+from ex_autoslot import AutoSlots
 from note.note_constants import Tags
 from note.notefields.tag_flag_field import TagFlagField
 from sysutils.lazy import Lazy
@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
     from sysutils.weak_ref import WeakRef
 
-class IsInflectingWord(TagFlagField, ProfilableAutoSlots):
+class IsInflectingWord(TagFlagField, AutoSlots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         super().__init__(vocab, Tags.Vocab.Matching.is_inflecting_word)
         self._vocab: WeakRef[VocabNote] = vocab

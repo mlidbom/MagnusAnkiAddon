@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, final, override
 
-from ex_autoslot import ProfilableAutoSlots
+from ex_autoslot import AutoSlots
 
 if TYPE_CHECKING:
     from sysutils.json.json_reader import JsonReader
@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 
 @final
-class WordExclusion(ProfilableAutoSlots):
+class WordExclusion(AutoSlots):
     secret = "aoesunth9cgrcgf"
     _no_index = -1
     def __init__(self, word: str, index: int, _secret: str) -> None:

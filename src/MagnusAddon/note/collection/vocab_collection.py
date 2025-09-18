@@ -4,7 +4,7 @@ from collections import defaultdict
 from typing import TYPE_CHECKING, override
 
 from anki_extentions.note_ex import NoteBulkLoader
-from ex_autoslot import ProfilableAutoSlots
+from ex_autoslot import AutoSlots
 from line_profiling_hacks import profile_lines
 from note.collection.backend_facade import BackEndFacade
 from note.collection.note_cache import CachedNote, NoteCache
@@ -21,7 +21,7 @@ if TYPE_CHECKING:
     from note.kanjinote import KanjiNote
     from qt_utils.task_runner_progress_dialog import ITaskRunner
 
-class _VocabSnapshot(CachedNote, ProfilableAutoSlots):
+class _VocabSnapshot(CachedNote, AutoSlots):
     def __init__(self, note: VocabNote) -> None:
         super().__init__(note)
         self.forms: set[str] = set(note.forms.all_set())
@@ -32,7 +32,7 @@ class _VocabSnapshot(CachedNote, ProfilableAutoSlots):
         self.derived_from: str = note.related_notes.derived_from.get()
         self.stems: list[str] = note.conjugator.get_stems_for_primary_form()
 
-class _VocabCache(NoteCache[VocabNote, _VocabSnapshot], ProfilableAutoSlots):
+class _VocabCache(NoteCache[VocabNote, _VocabSnapshot], AutoSlots):
     @profile_lines
     def __init__(self, all_vocab: list[VocabNote], cache_runner: CacheRunner, task_runner: ITaskRunner) -> None:
         self._by_form: dict[str, set[VocabNote]] = defaultdict(set)
@@ -90,7 +90,7 @@ class _VocabCache(NoteCache[VocabNote, _VocabSnapshot], ProfilableAutoSlots):
         for reading in snapshot.readings: self._by_reading[reading].add(note)
         for stem in snapshot.stems: self._by_stem[stem].add(note)
 
-class VocabCollection(ProfilableAutoSlots):
+class VocabCollection(AutoSlots):
     @profile_lines
     def __init__(self, collection: Collection, cache_manager: CacheRunner, task_runner: ITaskRunner) -> None:
         def vocab_constructor_call_while_populating_vocab_collection(note: Note) -> VocabNote: return VocabNote(note)

@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, final
 
 from anki_extentions.note_ex import NoteBulkLoader
-from ex_autoslot import ProfilableAutoSlots
+from ex_autoslot import AutoSlots
 from line_profiling_hacks import profile_lines
 from note.jpnote import JPNote
 from note.note_constants import Builtin
@@ -16,7 +16,7 @@ if TYPE_CHECKING:
     from qt_utils.task_runner_progress_dialog import ITaskRunner
 
 @final
-class BackEndFacade[TNote: JPNote](ProfilableAutoSlots):
+class BackEndFacade[TNote: JPNote](AutoSlots):
     def __init__(self, anki_collection: Collection, constructor: Callable[[Note], TNote], note_type: str) -> None:
         self.anki_collection = anki_collection
         self.jp_note_constructor = constructor

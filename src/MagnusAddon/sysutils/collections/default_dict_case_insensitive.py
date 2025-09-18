@@ -3,14 +3,14 @@ from __future__ import annotations
 import collections
 from typing import TYPE_CHECKING, override
 
-from ex_autoslot import ProfilableAutoSlots
+from ex_autoslot import AutoSlots
 from sysutils import typed
 
 if TYPE_CHECKING:
     from sysutils.standard_type_aliases import Func
     pass
 
-class DefaultDictCaseInsensitive[VT](collections.defaultdict[str, VT], ProfilableAutoSlots):
+class DefaultDictCaseInsensitive[VT](collections.defaultdict[str, VT], AutoSlots):
     def __init__(self, default_factory: Func[VT], **kwargs: object) -> None:
         super().__init__(default_factory, **{key.lower(): value for key, value in kwargs.items()})
 
