@@ -9,8 +9,6 @@ from note.collection.backend_facade import BackEndFacade
 from note.collection.note_cache import CachedNote, NoteCache
 from note.note_constants import NoteTypes
 from note.sentences.sentencenote import SentenceNote
-from sysutils import ex_sequence
-from sysutils.collections.linq.q_iterable import QList
 
 if TYPE_CHECKING:
     from anki.collection import Collection
@@ -18,6 +16,7 @@ if TYPE_CHECKING:
     from note.collection.cache_runner import CacheRunner
     from note.vocabulary.vocabnote import VocabNote
     from qt_utils.task_runner_progress_dialog import ITaskRunner
+    from sysutils.collections.linq.q_iterable import QList
 
 class _SentenceSnapshot(CachedNote, ProfilableAutoSlots):
     @profile_lines
@@ -70,7 +69,7 @@ class SentenceCollection(ProfilableAutoSlots):
     def with_id_or_none(self, note_id: NoteId) -> SentenceNote | None:
         return self._cache.with_id_or_none(note_id)
 
-    def with_question(self, question: str) -> list[SentenceNote]:
+    def with_question(self, question: str) -> QList[SentenceNote]:
         return self._cache.with_question(question)
 
     def with_vocab(self, vocab_note: VocabNote) -> list[SentenceNote]:

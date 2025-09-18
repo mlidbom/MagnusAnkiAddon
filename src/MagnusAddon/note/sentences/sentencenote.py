@@ -17,13 +17,13 @@ from note.sentences.caching_sentence_configuration_field import CachingSentenceC
 from note.sentences.parsing_result import ParsingResult
 from note.sentences.serialization.parsing_result_serializer import ParsingResultSerializer
 from note.sentences.user_fields import SentenceUserFields
-from sysutils import ex_sequence, ex_str, kana_utils
-from sysutils.collections.linq.q_iterable import QList
+from sysutils import ex_str, kana_utils
 from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
     from note.vocabulary.vocabnote import VocabNote
+    from sysutils.collections.linq.q_iterable import QList
 
 class SentenceNote(JPNote, ProfilableAutoSlots):
     def __init__(self, note: Note) -> None:

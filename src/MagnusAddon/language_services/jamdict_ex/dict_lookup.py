@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Any
 from ankiutils import app
 from ex_autoslot import ProfilableAutoSlots
 from language_services.jamdict_ex.priority_spec import PrioritySpec
-from sysutils.collections.linq.q_iterable import query
+from sysutils.collections.linq.q_iterable import QList, query
 from sysutils.lazy import Lazy
 from sysutils.timeutil import StopWatch
 from sysutils.typed import non_optional, str_
@@ -101,11 +101,18 @@ def _find_all_names() -> set[str]:
 _all_word_forms = Lazy(_find_all_words)
 _all_name_forms = Lazy(_find_all_names)
 
+# todo: This mixes up static querying with the results. Let's keep the two separate and readable huh?
 class DictLookup(ProfilableAutoSlots):
-    def __init__(self, entries: list[DictEntry], lookup_word: str, lookup_reading: list[str]) -> None:
+    def __init__(self, entries: list[DictEntry], lookup_word: str, lookup_reading: QList[str]) -> None:
         self.word: str = lookup_word
-        self.lookup_reading: list[str] = lookup_reading
-        self.entries: list[DictEntry] = entries
+        self.lookup_reading: QList[str] = lookup_reading
+        self.entries: QList[DictEntry] = QList(entries)
+
+
+    @staticmethod
+    def _failed_for_word(word: str) -> DictLookup:
+        return DictLookup(QList(), word, QList())
+
 
     def found_words_count(self) -> int: return len(self.entries)
     def found_words(self) -> bool: return len(self.entries) > 0
@@ -138,7 +145,7 @@ class DictLookup(ProfilableAutoSlots):
     @classmethod
     @cache
     def _try_lookup_word_or_name_with_matching_reading(cls, word: str, readings: tuple[str, ...]) -> DictLookup:  # needs to be a tuple to be hashable for caching
-        if not cls.might_be_entry(word): return DictLookup([], word, [])
+        if not cls.might_be_entry(word): return DictLookup._failed_for_word(word)
 
         def kanji_form_matches() -> list[DictEntry]:
             return [ent for ent in lookup
@@ -157,27 +164,27 @@ class DictLookup(ProfilableAutoSlots):
 
         matching = any_kana_only_matches() if kana_utils.is_only_kana(word) else kanji_form_matches()
 
-        return DictLookup(matching, word, list(readings))
+        return DictLookup(matching, word, QList(readings))
 
     @classmethod
-    def lookup_word_or_name(cls, search: str) -> DictLookup:
-        if not cls.might_be_entry(search): return DictLookup([], search, [])
-        word_hit = cls.lookup_word(search)
+    def lookup_word_or_name(cls, word: str) -> DictLookup:
+        if not cls.might_be_entry(word): return DictLookup._failed_for_word(word)
+        word_hit = cls.lookup_word(word)
         if word_hit.found_words():
             return word_hit
-        return cls.lookup_name(search)
+        return cls.lookup_name(word)
 
     @classmethod
     def lookup_word(cls, word: str) -> DictLookup:
-        if not cls.might_be_word(word): return DictLookup([], word, [])
+        if not cls.might_be_word(word): return DictLookup._failed_for_word(word)
         entries = DictEntry.create(cls._lookup_word_raw(word), word, [])
-        return DictLookup(entries, word, [])
+        return DictLookup(entries, word, QList())
 
     @classmethod
     def lookup_name(cls, word: str) -> DictLookup:
-        if not cls.might_be_word(word): return DictLookup([], word, [])
+        if not cls.might_be_word(word): return DictLookup._failed_for_word(word)
         entries = DictEntry.create(cls._lookup_name_raw(word), word, [])
-        return DictLookup(entries, word, [])
+        return DictLookup(entries, word, QList())
 
     @classmethod
     @cache  # _lookup_word_shallow.cache_clear(), _lookup_word_shallow.cache_info()

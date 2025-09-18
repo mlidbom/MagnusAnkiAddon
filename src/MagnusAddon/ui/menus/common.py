@@ -12,6 +12,7 @@ from note.sentences.sentencenote import SentenceNote
 from note.vocabulary.vocabnote import VocabNote
 from qt_utils.ex_qmenu import ExQmenu
 from sysutils import ex_lambda, typed
+from sysutils.collections.linq.q_iterable import QList
 from sysutils.typed import non_optional
 from ui import menus
 from ui.menus.menu_utils import shortcutfinger
@@ -76,7 +77,7 @@ def build_string_menu(menu: QMenu, string: str, string_note_menu_factory: typing
     def build_matching_note_menu(matching_note_menu: QMenu, search_string: str) -> None:
         vocabs = app.col().vocab.with_question(search_string)
         sentences = app.col().sentences.with_question(search_string)
-        kanjis = app.col().kanji.with_any_kanji_in([search_string]) if len(search_string) == 1 else []
+        kanjis = app.col().kanji.with_any_kanji_in([search_string]) if len(search_string) == 1 else QList()
 
         if not any(vocabs) and not any(sentences) and not any(kanjis):
             return
