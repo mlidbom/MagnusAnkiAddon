@@ -126,7 +126,7 @@ class VocabCollection(ProfilableAutoSlots):
         return query(forms).select_many(self.with_form_prefer_exact_match).unique()  #ex_sequence.remove_duplicates_while_retaining_order(ex_sequence.flatten([self.with_form_prefer_exact_match(form) for form in forms]))
 
     def with_any_form_in(self, forms: list[str]) -> list[VocabNote]:
-        return ex_sequence.remove_duplicates_while_retaining_order(ex_sequence.flatten([self.with_form(form) for form in forms]))
+        return query(forms).select_many(self.with_form).unique()  #ex_sequence.remove_duplicates_while_retaining_order(ex_sequence.flatten([self.with_form(form) for form in forms]))
 
     def with_any_question_in(self, questions: Iterable[str]) -> QList[VocabNote]:
         return query(questions).select(self.with_question).select_many(lambda x: x).to_list()
