@@ -103,10 +103,10 @@ _all_name_forms = Lazy(_find_all_names)
 
 # todo: This mixes up static querying with the results. Let's keep the two separate and readable huh?
 class DictLookup(ProfilableAutoSlots):
-    def __init__(self, entries: list[DictEntry], lookup_word: str, lookup_reading: QList[str]) -> None:
+    def __init__(self, entries: QList[DictEntry], lookup_word: str, lookup_reading: QList[str]) -> None:
         self.word: str = lookup_word
         self.lookup_reading: QList[str] = lookup_reading
-        self.entries: QList[DictEntry] = QList(entries)
+        self.entries: QList[DictEntry] = entries
 
 
     @staticmethod
