@@ -48,11 +48,16 @@ class VocabNoteForms(WeakRefable, ProfilableAutoSlots):
     def ___not_owned_by_other_vocab(self) -> QSet[str]:
         vocab_note = self._vocab()
 
-        def is_owned_by_other_form_note(form: str) -> bool:
-            return any(owner for owner in app.col().vocab.with_question(form)
-                       if owner != vocab_note and vocab_note.get_question() in owner.forms.all_set())
+        def is_not_owned_by_other_form_note(form: str) -> bool:
+            return (app.col().vocab.with_question(form)
+                    .where(lambda form_owning_vocab:
+                           form_owning_vocab != vocab_note
+                           and vocab_note.get_question() in form_owning_vocab.forms.all_set())
+                    .none())
+            # return not any(owner for owner in app.col().vocab.with_question(form)
+            #                if owner != vocab_note and vocab_note.get_question() in owner.forms.all_set())
 
-        return vocab_note.forms.all_set().where(lambda form: not is_owned_by_other_form_note(form)).to_set()  #{form for form in vocab_note.forms.all_set() if not is_owned_by_other_form_note(form)}
+        return vocab_note.forms.all_set().where(is_not_owned_by_other_form_note).to_set()  # {form for form in vocab_note.forms.all_set() if not is_owned_by_other_form_note(form)}
 
     def without_noise_characters(self) -> list[str]:
         return [self._strip_noise_characters(form) for form in self.all_list()]
