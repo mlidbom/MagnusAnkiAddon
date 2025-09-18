@@ -5,10 +5,11 @@ from typing import TYPE_CHECKING
 from ankiutils import app
 from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 from note.note_constants import Builtin, MyNoteFields, NoteFields, NoteTypes, SentenceNoteFields
-from sysutils import ex_sequence, kana_utils
+from sysutils import kana_utils
+from sysutils.collections.linq.l_iterable import LSet
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
+    from collections.abc import Iterable
 
     from anki.cards import CardId
     from anki.notes import NoteId
@@ -51,7 +52,7 @@ def sentence_search(word: str, exact: bool = False) -> str:
     if not exact:
         vocabs = app.col().vocab.with_form(word)
         if vocabs:
-            forms: set[str] = set(ex_sequence.flatten([v.forms.all_list() for v in vocabs]))
+            forms: set[str] = vocabs.select_many(lambda voc: voc.forms.all_list()).to_set()  # set(ex_sequence.flatten([v.forms.all_list() for v in vocabs]))
             return result + "(" + "　OR ".join([form_query(form) for form in forms]) + ")"
 
     return result + f"""({form_query(word)})"""
@@ -69,7 +70,7 @@ def potentially_matching_sentences_for_vocab(word: VocabNote) -> str:
 def sentences_with_question_substring(substring: str) -> str:
     return f"""{note_sentence} {field_contains_string(SentenceNoteFields.active_question, substring)}"""
 
-def notes_lookup(notes: Sequence[JPNote]) -> str:
+def notes_lookup(notes: Iterable[JPNote]) -> str:
     return notes_by_id([note.get_id() for note in notes])
 
 def notes_by_id(note_ids: list[NoteId]) -> str:
@@ -137,10 +138,12 @@ def immersion_kit_sentences() -> str:
     return f'''"{Builtin.Note}:{NoteTypes.immersion_kit}"'''
 
 def kanji_with_radicals_in_string(search: str) -> str:
-    radicals = search.strip().replace(",", "").replace(" ", "")
-    notes = ex_sequence.flatten([app.col().kanji.with_radical(rad) for rad in radicals])
-    notes = [note for note in notes if not any(rad for rad in radicals if rad not in note.get_radicals())]
-    return notes_lookup(notes)
+    radicals = LSet(search.strip().replace(",", "").replace(" ", ""))
+    def kanji_contails_all_radicals(kanji: KanjiNote) -> bool: return not any(rad for rad in radicals if rad not in kanji.get_radicals())
+    return (radicals
+            .select_many(lambda radical: app.col().kanji.with_radical(radical))
+            .where(kanji_contails_all_radicals)
+            .pipe_to(notes_lookup))
 
 def open_card_by_id(card_id: CardId) -> str:
     return f"cid:{card_id}"

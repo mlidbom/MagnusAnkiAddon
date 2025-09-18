@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 from note.sentences.sentence_configuration import SentenceConfiguration
 from note.sentences.sentencenote import SentenceNote
 from sysutils import ex_sequence
@@ -47,7 +48,8 @@ def assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentenc
 
 
 
-def assert_analysis_state_is_valid(analysis) -> None:
+def assert_analysis_state_is_valid(analysis: TextAnalysis) -> None:
+    print(analysis.text)
     # not_displayed = analysis.all_matches.whe
     #
     # def all_not_displayed_matches_should_have_is_displayed_false():

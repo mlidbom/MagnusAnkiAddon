@@ -3,12 +3,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from sysutils.collections.linq.LQuery import Q
+
 if TYPE_CHECKING:
     from collections.abc import Callable, Sequence
 
 def flatten[T](this: Sequence[Sequence[T]]) -> list[T]:
-    """`returns` all the items in `this` in order, flattened into a one dimensional list"""
-    return [item for sub_list in this for item in sub_list]
+    return Q.flatten(this).to_built_in_list()
 
 def remove_duplicates_while_retaining_order[T](sequence: Sequence[T]) -> list[T]:
     seen: set[object] = set()

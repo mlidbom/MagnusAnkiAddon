@@ -18,6 +18,11 @@ class LIterable[TItem](Iterable[TItem], ABC):
 
     # region queries that need to be static so that we can know the type of the the LLitearble
 
+    # region operations on the whole collection, not the items
+    def pipe_to[TReturn](self, action: Callable[[LIterable[TItem]], TReturn]) -> TReturn:
+        return action(self)
+    # endregion
+
     # region filtering
     def where(self, predicate: Callable[[TItem], bool]) -> LIterable[TItem]:
         return _Literable(item for item in self._value if predicate(item))
@@ -189,7 +194,7 @@ class LOrderedLIterable[TItem](LIterable[TItem]):
 
 # region LList, LSet, LFrozenSet: concrete classes that do very little but inherit a built in collection and LIterable and provide an override or two for performance
 class LList[TItem](list[TItem], LIterable[TItem]):
-    def __init__(self, iterable: Iterable[TItem]) -> None:
+    def __init__(self, iterable: Iterable[TItem] = ()) -> None:
         super().__init__(iterable)
 
     @property
@@ -204,7 +209,6 @@ class LList[TItem](list[TItem], LIterable[TItem]):
 
     @override
     def element_at(self, index: int) -> TItem: return self[index]
-
 
 class LFrozenSet[TItem](frozenset[TItem], LIterable[TItem]):
     def __new__(cls, iterable: Iterable[TItem]) -> LFrozenSet[TItem]:
