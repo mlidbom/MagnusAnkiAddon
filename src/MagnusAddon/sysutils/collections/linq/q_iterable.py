@@ -50,12 +50,15 @@ class QIterable[TItem](Iterable[TItem], ABC):
 
     # endregion
 
-    # region order_by
+    # region sorting
     def order_by(self, key_selector: Callable[[TItem], SupportsRichComparison]) -> QOrderedIterable[TItem]:
         return QOrderedIterable(self, [SortInstruction(key_selector, False)])
 
     def order_by_descending(self, key_selector: Callable[[TItem], SupportsRichComparison]) -> QOrderedIterable[TItem]:
         return QOrderedIterable(self, [SortInstruction(key_selector, True)])
+
+    def reversed(self) -> QIterable[TItem]:
+        return _Qiterable[TItem](reversed(self.to_built_in_list()))
     # endregion
 
     # region boolean queries
@@ -118,9 +121,6 @@ class QIterable[TItem](Iterable[TItem], ABC):
         for item in self:
             if not predicate(item): raise AssertionError(message or "")
         return self
-
-    def reversed(self) -> QIterable[TItem]:
-        return _Qiterable[TItem](reversed(self.to_built_in_list()))
 
     def assert_on_collection(self, predicate: Callable[[QIterable[TItem]], bool], message: str | None = None) -> QIterable[TItem]:
         if not predicate(self): raise AssertionError(message)
