@@ -3,10 +3,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from sysutils.collections.linq.query_module import Q
-
 if TYPE_CHECKING:
-    from collections.abc import Callable, Sequence
+    from collections.abc import Sequence
 
 def remove_duplicates_while_retaining_order[T](sequence: Sequence[T]) -> list[T]:
     seen: set[object] = set()
@@ -17,5 +15,3 @@ def remove_duplicates_while_retaining_order[T](sequence: Sequence[T]) -> list[T]
             result.append(item)
     return result
 
-def count[T](sequence: Sequence[T], predicate: Callable[[T], bool]) -> int:
-    return len([t for t in sequence if predicate(t)])

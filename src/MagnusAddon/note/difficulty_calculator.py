@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from ex_autoslot import ProfilableAutoSlots
-from sysutils import ex_sequence, kana_utils
+from sysutils import kana_utils
+from sysutils.collections.linq.q_iterable import query
 
 
 class DifficultyCalculator(ProfilableAutoSlots):
@@ -16,10 +17,11 @@ class DifficultyCalculator(ProfilableAutoSlots):
         return not kana_utils.character_is_kana(char) and not kana_utils.character_is_kanji(char)
 
     def allowed_seconds(self, string: str) -> float:
-        hiragana_seconds = ex_sequence.count(string, kana_utils.character_is_hiragana) * self.hiragana_seconds
-        katakana_seconds = ex_sequence.count(string, kana_utils.character_is_katakana) * self.katakata_seconds
-        kanji_seconds = ex_sequence.count(string, kana_utils.character_is_kanji) * self.kanji_seconds
+        qstring = query(string)
+        hiragana_seconds = qstring.length_where(kana_utils.character_is_hiragana) * self.hiragana_seconds  # ex_sequence.count(string, kana_utils.character_is_hiragana) * self.hiragana_seconds
+        katakana_seconds = qstring.length_where(kana_utils.character_is_katakana) * self.katakata_seconds  # ex_sequence.count(string, kana_utils.character_is_katakana) * self.katakata_seconds
+        kanji_seconds = qstring.length_where(kana_utils.character_is_kanji) * self.kanji_seconds  # ex_sequence.count(string, kana_utils.character_is_kanji) * self.kanji_seconds
 
-        other_character_seconds = ex_sequence.count(string, self.is_other_character) * self.hiragana_seconds
+        other_character_seconds = qstring.length_where(self.is_other_character) * self.hiragana_seconds #ex_sequence.count(string, self.is_other_character) * self.hiragana_seconds
 
         return self.starting_seconds + hiragana_seconds + katakana_seconds + kanji_seconds + other_character_seconds

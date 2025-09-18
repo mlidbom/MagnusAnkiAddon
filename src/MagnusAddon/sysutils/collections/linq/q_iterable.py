@@ -39,6 +39,11 @@ class QIterable[TItem](Iterable[TItem], ABC):
     def length(self) -> int:
         if isinstance(self, list): return len(cast(list[TItem], self))
         return sum(1 for _ in self)
+
+    #todo: consider whether this is the best name. We need to avoid collisions with the built in count member, but...
+    def length_where(self, predicate: Callable[[TItem], bool]) -> int:
+        return self.where(predicate).length()
+
     # endregion
 
     # region order_by
