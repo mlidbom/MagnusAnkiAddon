@@ -46,17 +46,8 @@ def render_vocab_list(vocab_list: list[VocabNote], title: str, css_class: str, r
             '''
 
 def generate_homophones_html_list(vocab_note: VocabNote) -> str:
-    forms = ex_sequence.flatten([app.col().vocab.with_question(reading) for reading in vocab_note.forms.all_list()])
-    forms = [form for form in forms if form.get_id() != vocab_note.get_id()]
-    forms = note.vocabulary.vocabnote_sorting.sort_vocab_list_by_studying_status(forms)
-
-    forms_set = set(forms) | {vocab_note}
-
-    homophones = ex_sequence.flatten([app.col().vocab.with_reading(reading) for reading in vocab_note.readings.get()])
-    homophones = [homophone for homophone in homophones if homophone not in forms_set]
-    homophones = note.vocabulary.vocabnote_sorting.sort_vocab_list_by_studying_status(homophones)
-
-    return render_vocab_list(homophones, "homophones", css_class="homophones")
+    homophone_notes = [vocab_note] + note.vocabulary.vocabnote_sorting.sort_vocab_list_by_studying_status(vocab_note.related_notes.homophones())
+    return render_vocab_list(homophone_notes, "homophones", css_class="homophones")
 
 def generate_synonyms_meaning_html_list(_vocab_note: VocabNote) -> str:
     synonym_notes = _vocab_note.related_notes.synonyms.notes()

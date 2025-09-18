@@ -14,6 +14,7 @@ from note.vocabulary.related_vocab.perfect_synonyms import PerfectSynonyms
 from note.vocabulary.related_vocab.related_vocab_data import RelatedVocabData
 from note.vocabulary.related_vocab.SeeAlso import SeeAlso
 from note.vocabulary.related_vocab.Synonyms import Synonyms
+from sysutils.collections.linq.q_iterable import query
 from sysutils.lazy import Lazy
 
 if TYPE_CHECKING:
@@ -45,6 +46,12 @@ class RelatedVocab(ProfilableAutoSlots):
 
     def in_compounds(self) -> list[VocabNote]:
         return app.col().vocab.with_compound_part(self._vocab().question.without_noise_characters)
+
+    def homophones(self) -> QSet[VocabNote]:
+        return (query(self._vocab().readings.get())
+                .select_many(app.col().vocab.with_reading)
+                .where(lambda homophone: homophone != self._vocab())
+                .to_set())
 
     @property
     def _main_form_kanji_notes(self) -> QSet[KanjiNote]:

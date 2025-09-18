@@ -2,10 +2,14 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from sysutils.collections.linq.q_iterable import QList
+
 if TYPE_CHECKING:
+    from collections.abc import Iterable
+
     from note.vocabulary.vocabnote import VocabNote
 
-def sort_vocab_list_by_studying_status(vocabs: list[VocabNote], primary_voc: list[str] | None = None, preferred_kanji: str | None = None) -> list[VocabNote]:
+def sort_vocab_list_by_studying_status(vocabs: Iterable[VocabNote], primary_voc: list[str] | None = None, preferred_kanji: str | None = None) -> QList[VocabNote]:
     def prefer_primary_vocab_in_order(local_vocab: VocabNote) -> int:
         for index, primary in enumerate(_primary_voc):
             if local_vocab.get_question() == primary or local_vocab.question.without_noise_characters == primary or (local_vocab.readings.get() and local_vocab.readings.get()[0] == primary):
@@ -30,7 +34,7 @@ def sort_vocab_list_by_studying_status(vocabs: list[VocabNote], primary_voc: lis
 
     _primary_voc = primary_voc if primary_voc else []
 
-    result = vocabs.copy()
+    result = QList(vocabs)
 
     result.sort(key=lambda local_vocab: (prefer_vocab_with_kanji(local_vocab),
                                          prefer_primary_vocab_in_order(local_vocab),
