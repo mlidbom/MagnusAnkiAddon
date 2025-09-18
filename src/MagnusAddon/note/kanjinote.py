@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 
 from note.jpnote import JPNote
 from note.note_constants import CardTypes, NoteFields, NoteTypes
-from sysutils import ex_sequence, ex_str, kana_utils
+from sysutils import ex_sequence, ex_str, kana_utils, typed
 
 
 class KanjiNote(JPNote, ProfilableAutoSlots):
@@ -285,10 +285,18 @@ class KanjiNote(JPNote, ProfilableAutoSlots):
 
     def populate_radicals_from_mnemonic_tags(self) -> None:
         def detect_radicals_from_mnemonic() -> list[str]:
-            radical_names = re.findall(r"<rad>(.*?)</rad>", self.get_user_mnemonic())
+            radical_names = QList(typed.checked_cast_generics(list[str], re.findall(r"<rad>(.*?)</rad>", self.get_user_mnemonic())))
 
-            matching_radicals = ex_sequence.flatten([([rad for rad in app.col().kanji.all() if re.search(r"\b" + re.escape(radical_name) + r"\b", rad.get_answer())]) for radical_name in radical_names])  # pyright: ignore[reportAny]
-            return [match.get_question() for match in matching_radicals]
+            def kanji_answer_contains_radical_name_as_a_separate_word(radical_name: str, radical: KanjiNote) -> bool:
+                return re.search(r"\b" + re.escape(radical_name) + r"\b", radical.get_answer()) is not None
+
+            def kanji_answer_contains_any_radical_name_as_a_separate_word(kanji: KanjiNote) -> bool:
+                return radical_names.any(lambda name: kanji_answer_contains_radical_name_as_a_separate_word(name, kanji))
+
+            return (app.col().kanji.all()
+                    .where(kanji_answer_contains_any_radical_name_as_a_separate_word)
+                    .select(lambda kanji: kanji.get_question())
+                    .to_list())
 
         radicals = self.get_radicals()
         for radical in detect_radicals_from_mnemonic():

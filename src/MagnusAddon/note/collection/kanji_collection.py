@@ -57,7 +57,7 @@ class KanjiCollection(ProfilableAutoSlots):
     def search(self, query: str) -> list[KanjiNote]:
         return list(self.collection.search(query))
 
-    def all(self) -> list[KanjiNote]: return self._cache.all()
+    def all(self) -> QList[KanjiNote]: return self._cache.all()
 
     def all_old(self, task_runner: ITaskRunner) -> list[KanjiNote]:
         return self.collection.all_old(task_runner)

@@ -44,8 +44,8 @@ class NoteCache[TNote: JPNote, TSnapshot: CachedNote](ProfilableAutoSlots):
         cache_runner.connect_will_add(self._on_will_be_added)
         cache_runner.connect_will_flush(self._on_will_flush)
 
-    def all(self) -> list[TNote]:
-        return list(self._by_id.values())
+    def all(self) -> QList[TNote]:
+        return QList(self._by_id.values())
 
     def with_id_or_none(self, note_id: NoteId) -> TNote | None:
         return self._by_id.get(note_id, None)
