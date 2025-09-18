@@ -57,6 +57,9 @@ class QIterable[TItem](Iterable[TItem], ABC):
             for _ in self: return True
             return False
         return any(predicate(item) for item in self)
+
+    def all(self, predicate: Callable[[TItem], bool]) -> bool:
+        return not self.any(lambda item: not predicate(item))
     # endregion
 
     # region mapping methods

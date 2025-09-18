@@ -87,8 +87,10 @@ class DictEntry(ProfilableAutoSlots):
         if not self._is_verb():
             return False
 
-        glosses_text: list[str] = ex_sequence.flatten([[str(gloss.text) for gloss in sense.gloss] for sense in self.entry.senses])  # pyright: ignore[reportUnknownArgumentType]
-        return all(gloss.startswith("to be ") for gloss in glosses_text)
+        return (query(self.entry.senses)
+                .select_many(lambda sense: sense.gloss)
+                .select(lambda gloss: str_(gloss.text))  # pyright: ignore [reportUnknownArgumentType, reportUnknownMemberType]
+                .all(lambda gloss: gloss.startswith("to be ")))
 
     def format_sense(self, sense: Sense) -> str:
         glosses_text = [str(gloss.text) for gloss in sense.gloss]  # pyright: ignore[reportUnknownArgumentType]
