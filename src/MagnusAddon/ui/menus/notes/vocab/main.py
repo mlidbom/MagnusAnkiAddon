@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 import pyperclip
 from ankiutils import app, query_builder
 from note.note_constants import NoteFields, NoteTypes
-from sysutils import ex_sequence, ex_str
+from sysutils import ex_str
 from sysutils.ex_str import newline
 from sysutils.typed import non_optional
 from ui.menus.menu_utils import shortcutfinger
