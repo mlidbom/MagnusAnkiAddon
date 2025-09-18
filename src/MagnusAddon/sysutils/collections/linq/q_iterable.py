@@ -25,13 +25,13 @@ class QIterable[TItem](Iterable[TItem], ABC):
 
     # region filtering
     def where(self, predicate: Callable[[TItem], bool]) -> QIterable[TItem]:
-        return _Qiterable(item for item in self._value if predicate(item))
+        return _Qiterable(item for item in self if predicate(item))
 
     def where_not_none(self) -> QIterable[TItem]:
         return self.where(lambda item: item is not None)
 
     def unique(self) -> QList[TItem]:
-        return QList(dict.fromkeys(self._value))
+        return QList(dict.fromkeys(self))
 
     def take_while(self, predicate: Callable[[TItem], bool]) -> QIterable[TItem]:
         """`returns` an iterable containing the items in `iterable` until (exclusive) `condition` returns false"""
@@ -129,7 +129,7 @@ class QIterable[TItem](Iterable[TItem], ABC):
 
     # region methods to avoid needing to manually write loops
     def for_each(self, action: Callable[[TItem], None]) -> QIterable[TItem]:
-        for item in self._value: action(item)
+        for item in self: action(item)
         return self
 
     def for_single(self, action: Callable[[TItem], Any]) -> QIterable[TItem]:  # pyright: ignore[reportExplicitAny]
@@ -150,20 +150,10 @@ class QIterable[TItem](Iterable[TItem], ABC):
     def to_frozenset(self) -> QFrozenSet[TItem]: return QFrozenSet(self)
     # endregion
 
-    # region the abstract _value property
-    @property
-    @abstractmethod
-    def _value(self) -> Iterable[TItem]: raise NotImplementedError()
-    # endregion
-
 # region implementing classes
 class _Qiterable[TItem](QIterable[TItem]):
     def __init__(self, iterable: Iterable[TItem]) -> None:
-        self.__value: Iterable[TItem] = iterable
-
-    @property
-    @override
-    def _value(self) -> Iterable[TItem]: return self.__value
+        self._value: Iterable[TItem] = iterable
 
     @override
     def __iter__(self) -> Iterator[TItem]: yield from self._value
@@ -187,11 +177,6 @@ class LOrderedQIterable[TItem](QIterable[TItem]):
         self.sorting_instructions.append(SortInstruction(key_selector, descending=True))
         return LOrderedQIterable(self._unsorted, self.sorting_instructions)
 
-    @property
-    @override
-    def _value(self) -> Iterable[TItem]:
-        return self._l_ordered_iterable_sort()
-
     def _l_ordered_iterable_sort(self) -> list[TItem]:  # the name is so that the method is understandable in a profiling result that does not include the type
         items = list(self._unsorted)
 
@@ -201,17 +186,13 @@ class LOrderedQIterable[TItem](QIterable[TItem]):
         return items
 
     @override
-    def __iter__(self) -> Iterator[TItem]: yield from self._value
+    def __iter__(self) -> Iterator[TItem]: yield from self._l_ordered_iterable_sort()
 # endregion
 
 # region LList, LSet, LFrozenSet: concrete classes that do very little but inherit a built in collection and LIterable and provide an override or two for performance
 class QList[TItem](list[TItem], QIterable[TItem]):
     def __init__(self, iterable: Iterable[TItem] = ()) -> None:
         super().__init__(iterable)
-
-    @property
-    @override
-    def _value(self) -> Iterable[TItem]: return self
 
     @override
     def length(self) -> int: return len(self)
@@ -226,20 +207,12 @@ class QFrozenSet[TItem](frozenset[TItem], QIterable[TItem]):
     def __new__(cls, iterable: Iterable[TItem]) -> QFrozenSet[TItem]:
         return super().__new__(cls, iterable)
 
-    @property
-    @override
-    def _value(self) -> Iterable[TItem]: return self
-
     @override
     def length(self) -> int: return len(self)
 
 class QSet[TItem](set[TItem], QIterable[TItem]):
     def __init__(self, iterable: Iterable[TItem] = ()) -> None:
         super().__init__(iterable)
-
-    @property
-    @override
-    def _value(self) -> Iterable[TItem]: return self
 
     @override
     def length(self) -> int: return len(self)
