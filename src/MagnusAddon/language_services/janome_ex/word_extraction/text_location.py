@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, final, override
 from ankiutils import app
 from ex_autoslot import ProfilableAutoSlots
 from sysutils import ex_sequence
+from sysutils.collections.linq.l_iterable import LList
 from sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
@@ -32,11 +33,11 @@ class TextAnalysisLocation(WeakRefable, ProfilableAutoSlots):
         self.character_end_index: int = character_start_index + len(self.token.surface) - 1
 
         self.known_words: list[CandidateWord] = []
-        self.valid_words: list[CandidateWord] = []
+        self.valid_words: LList[CandidateWord] = LList()
         self.display_variants: list[CandidateWordVariant] = []
-        self.valid_variants: list[CandidateWordVariant] = []
-        self.variants: list[CandidateWordVariant] = []
-        self.candidate_words: list[CandidateWord] = []
+        self.valid_variants: LList[CandidateWordVariant] = LList()
+        self.variants: LList[CandidateWordVariant] = LList()
+        self.candidate_words: LList[CandidateWord] = LList()
         self.display_words: list[CandidateWord] = []
 
     @override
@@ -51,17 +52,17 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
 
     def analysis_step_1_analyze_non_compound_validity(self) -> None:
         lookahead_max = min(_max_lookahead, len(self.forward_list(_max_lookahead)))
-        self.candidate_words = [CandidateWord([location.weakref for location in self.forward_list(index)]) for index in range(lookahead_max - 1, -1, -1)]
+        self.candidate_words = LList(CandidateWord([location.weakref for location in self.forward_list(index)]) for index in range(lookahead_max - 1, -1, -1))
         self.candidate_words[-1].run_validity_analysis()  # the non-compound part needs to be completed first
 
     def analysis_step_2_analyze_compound_validity(self) -> None:
         for range_ in self.candidate_words[:-1]:  # we already have the last one completed
             range_.run_validity_analysis()
 
-        self.known_words = [candidate for candidate in self.candidate_words if candidate.is_word]
-        self.valid_words = [candidate for candidate in self.candidate_words if candidate.has_valid_words()]
-        self.variants = ex_sequence.flatten([v.indexing_variants for v in self.candidate_words])
-        self.valid_variants = ex_sequence.flatten([word.valid_variants for word in self.valid_words])
+        self.known_words = self.candidate_words.where(lambda candidate: candidate.is_word).to_list()
+        self.valid_words = self.candidate_words.where(lambda candidate: candidate.has_valid_words()).to_list()
+        self.variants = self.candidate_words.select_many(lambda candidate: candidate.indexing_variants).to_list()
+        self.valid_variants = self.valid_words.select_many(lambda valid: valid.valid_variants).to_list()
 
     def _run_display_analysis_pass_true_if_there_were_changes(self) -> bool:
         changes_made = False
