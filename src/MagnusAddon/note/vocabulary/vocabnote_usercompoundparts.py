@@ -34,6 +34,9 @@ class VocabNoteUserCompoundParts(ProfilableAutoSlots):
     def all_notes(self) -> QSet[VocabNote]:
         return self.all().select_many(app.col().vocab.with_question).to_set()
 
+    def primary_parts_notes(self) -> QSet[VocabNote]:
+        return self.primary().select_many(app.col().vocab.with_form_prefer_exact_match).to_set()
+
     def auto_generate(self) -> None:
         from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
         from note.vocabulary.vocabnote import VocabNote

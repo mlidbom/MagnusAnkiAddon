@@ -35,11 +35,9 @@ class CompoundPartViewModel(ProfilableAutoSlots):
 
         visited.add(vocab_note.get_id())
 
-        compound_parts = vocab_note.compound_parts.primary().select_many(app.col().vocab.with_form_prefer_exact_match)  #ex_sequence.flatten([app.col().vocab.with_form_prefer_exact_match(part) for part in vocab_note.compound_parts.primary()])
-
         result: list[CompoundPartViewModel] = []
 
-        for part in compound_parts:
+        for part in vocab_note.compound_parts.primary_parts_notes(): #ex_sequence.flatten([app.col().vocab.with_form_prefer_exact_match(part) for part in vocab_note.compound_parts.primary()])
             wrapper = CompoundPartViewModel(part, depth, config)
             result.append(wrapper)
             nested_parts = cls.get_compound_parts_recursive(part, config, depth + 1, visited)
