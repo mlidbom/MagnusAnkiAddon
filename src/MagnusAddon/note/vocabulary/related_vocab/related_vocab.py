@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING
 
 from ankiutils import app
 from ex_autoslot import ProfilableAutoSlots
-from note.kanjinote import KanjiNote
 from note.note_constants import NoteFields
 from note.notefields.auto_save_wrappers.field_wrapper import FieldWrapper
 from note.notefields.auto_save_wrappers.set_wrapper import FieldSetWrapper
@@ -15,12 +14,13 @@ from note.vocabulary.related_vocab.perfect_synonyms import PerfectSynonyms
 from note.vocabulary.related_vocab.related_vocab_data import RelatedVocabData
 from note.vocabulary.related_vocab.SeeAlso import SeeAlso
 from note.vocabulary.related_vocab.Synonyms import Synonyms
-from sysutils.collections.linq.q_iterable import QSet
 from sysutils.lazy import Lazy
 
 if TYPE_CHECKING:
     from note.jpnote import JPNote
+    from note.kanjinote import KanjiNote
     from note.vocabulary.vocabnote import VocabNote
+    from sysutils.collections.linq.q_iterable import QSet
     from sysutils.weak_ref import WeakRef
 
 class RelatedVocab(ProfilableAutoSlots):

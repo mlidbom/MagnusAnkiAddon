@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING
 
 from ankiutils import app
 from ex_autoslot import ProfilableAutoSlots
-from sysutils import ex_sequence
 
 if TYPE_CHECKING:
     from note.notefields.json_object_field import MutableSerializedObjectField
@@ -43,7 +42,8 @@ class Synonyms(ProfilableAutoSlots):
             for my_synonym in self.strings():
                 synonym_note.related_notes.synonyms.add(my_synonym)
 
-        synonyms_of_new_synonym_strings = set(ex_sequence.flatten([list(note.related_notes.synonyms.strings()) for note in new_synonym_notes])) | {note.get_question() for note in new_synonym_notes}
+        synonyms_of_new_synonym_strings = (new_synonym_notes.select_many(lambda new_synonym_note: new_synonym_note.related_notes.synonyms.strings()).to_set()  # set(ex_sequence.flatten([list(note.related_notes.synonyms.strings()) for note in new_synonym_notes]))
+                                           | new_synonym_notes.select(lambda new_synonym_note: new_synonym_note.get_question()).to_set())  # {note.get_question() for note in new_synonym_notes}
         for new_synonym in synonyms_of_new_synonym_strings:
             self.add(new_synonym)
 
