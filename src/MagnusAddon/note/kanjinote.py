@@ -8,6 +8,7 @@ from ankiutils import app
 from ex_autoslot import ProfilableAutoSlots
 from note import kanjinote_mnemonic_maker
 from note.vocabulary import vocabnote_sorting
+from sysutils.collections.linq.q_iterable import QList
 from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
@@ -87,7 +88,7 @@ class KanjiNote(JPNote, ProfilableAutoSlots):
         self.set_reading_on(kana_utils.katakana_to_hiragana(self.get_reading_on_html()))  # Katakana sneaks in via yomitan etc
 
         def update_primary_audios() -> None:
-            vocab_we_should_play = ex_sequence.flatten([app.col().vocab.with_question(vocab) for vocab in self.get_primary_vocab()])
+            vocab_we_should_play = self.get_primary_vocab().select_many(app.col().vocab.with_question)  # ex_sequence.flatten([app.col().vocab.with_question(vocab) for vocab in self.get_primary_vocab()])
             self.set_primary_vocab_audio("".join([vo.audio.get_primary_audio() for vo in vocab_we_should_play]) if vocab_we_should_play else "")
 
         self.set_field(NoteFields.Kanji.active_answer, self.get_answer())
@@ -206,8 +207,8 @@ class KanjiNote(JPNote, ProfilableAutoSlots):
     def get_primary_vocabs_or_defaults(self) -> list[str]:
         return self.get_primary_vocab() if self.get_primary_vocab() else self.generate_default_primary_vocab()
 
-    def get_primary_vocab(self) -> list[str]:
-        return ex_str.extract_comma_separated_values(self.get_field(NoteFields.Kanji.PrimaryVocab))
+    def get_primary_vocab(self) -> QList[str]:
+        return QList(ex_str.extract_comma_separated_values(self.get_field(NoteFields.Kanji.PrimaryVocab)))
 
     def set_primary_vocab(self, value: list[str]) -> None:
         self.set_field(NoteFields.Kanji.PrimaryVocab, ", ".join(value))

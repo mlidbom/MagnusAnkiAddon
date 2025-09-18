@@ -8,6 +8,7 @@ from ex_autoslot import ProfilableAutoSlots
 from note.note_constants import Mine, NoteFields
 from note.notefields.comma_separated_strings_list_field_de_duplicated import MutableCommaSeparatedStringsListFieldDeDuplicated
 from sysutils import ex_sequence, ex_str
+from sysutils.collections.linq.q_iterable import QSet
 from sysutils.lazy import Lazy
 from sysutils.weak_ref import WeakRef, WeakRefable
 
@@ -23,14 +24,14 @@ class VocabNoteForms(WeakRefable, ProfilableAutoSlots):
         self._all_raw_set: Lazy[set[str]] = Lazy(lambda: set(weakrefthis()._field.get()))
 
         self._all_list: Lazy[list[str]] = field.lazy_reader(lambda: [ex_str.strip_brackets(form) for form in weakrefthis()._field.get()])
-        self._all_set: Lazy[set[str]] = field.lazy_reader(lambda: set(weakrefthis()._all_list()))
+        self._all_set: Lazy[QSet[str]] = field.lazy_reader(lambda: QSet(weakrefthis()._all_list()))
         self._owned_forms: Lazy[set[str]] = field.lazy_reader(lambda: {weakrefthis()._vocab().get_question()} | {ex_str.strip_brackets(form) for form in weakrefthis()._all_raw_set() if form.startswith("[")})
-        self._not_owned_by_other_vocab: Lazy[set[str]] = field.lazy_reader(lambda: weakrefthis().___not_owned_by_other_vocab())
+        self._not_owned_by_other_vocab: Lazy[QSet[str]] = field.lazy_reader(lambda: weakrefthis().___not_owned_by_other_vocab())
 
     def is_owned_form(self, form: str) -> bool: return form in self._owned_forms()
 
     def all_list(self) -> list[str]: return self._all_list()
-    def all_set(self) -> set[str]: return self._all_set()
+    def all_set(self) -> QSet[str]: return self._all_set()
     def all_raw_string(self) -> str: return self._field.raw_string_value()
 
     def all_list_notes(self) -> list[VocabNote]:
@@ -42,16 +43,16 @@ class VocabNoteForms(WeakRefable, ProfilableAutoSlots):
 
         return sorted(self.all_list_notes(), key=prefer_more_sentences)
 
-    def not_owned_by_other_vocab(self) -> set[str]: return self._not_owned_by_other_vocab()
+    def not_owned_by_other_vocab(self) -> QSet[str]: return self._not_owned_by_other_vocab()
 
-    def ___not_owned_by_other_vocab(self) -> set[str]:
+    def ___not_owned_by_other_vocab(self) -> QSet[str]:
         vocab_note = self._vocab()
 
         def is_owned_by_other_form_note(form: str) -> bool:
             return any(owner for owner in app.col().vocab.with_question(form)
                        if owner != vocab_note and vocab_note.get_question() in owner.forms.all_set())
 
-        return {form for form in vocab_note.forms.all_set() if not is_owned_by_other_form_note(form)}
+        return vocab_note.forms.all_set().where(lambda form: not is_owned_by_other_form_note(form)).to_set()  #{form for form in vocab_note.forms.all_set() if not is_owned_by_other_form_note(form)}
 
     def without_noise_characters(self) -> list[str]:
         return [self._strip_noise_characters(form) for form in self.all_list()]

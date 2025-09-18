@@ -4,7 +4,7 @@ from collections import defaultdict
 from typing import TYPE_CHECKING, final, override
 
 from ex_autoslot import ProfilableAutoSlots
-from sysutils.collections.linq.q_iterable import QList
+from sysutils.collections.linq.q_iterable import QList, query
 
 if TYPE_CHECKING:
     from anki.collection import Collection
@@ -16,7 +16,7 @@ from note.collection.backend_facade import BackEndFacade
 from note.collection.note_cache import CachedNote, NoteCache
 from note.kanjinote import KanjiNote
 from note.note_constants import NoteTypes
-from sysutils import ex_sequence, kana_utils
+from sysutils import kana_utils
 
 
 @final
@@ -65,8 +65,8 @@ class KanjiCollection(ProfilableAutoSlots):
     def with_id_or_none(self, note_id:NoteId) -> KanjiNote | None:
         return self._cache.with_id_or_none(note_id)
 
-    def with_any_kanji_in(self, kanji_list: list[str]) -> list[KanjiNote]:
-        return ex_sequence.flatten([self._cache.with_question(kanji) for kanji in kanji_list])
+    def with_any_kanji_in(self, kanji_list: list[str]) -> QList[KanjiNote]:
+        return query(kanji_list).select_many(self._cache.with_question).to_list()  # ex_sequence.flatten([self._cache.with_question(kanji) for kanji in kanji_list])
 
     def with_kanji(self, kanji: str) -> KanjiNote | None:
         return self._cache.with_question(kanji).single_or_none()
