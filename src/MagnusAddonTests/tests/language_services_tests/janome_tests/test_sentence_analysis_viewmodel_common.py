@@ -31,7 +31,6 @@ def assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentenc
     if len(excluded) != 0:
         sentence_note.configuration._value = Lazy[SentenceConfiguration].from_value(SentenceConfiguration.from_hidden_matches(excluded))  # pyright: ignore[reportPrivateUsage]
 
-        run_note_assertions("running assertions with exclusions hidden")
     sentence_view_model = SentenceViewModel(sentence_note)
     analysis = sentence_view_model.analysis.analysis
 
