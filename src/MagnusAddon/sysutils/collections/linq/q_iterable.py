@@ -204,7 +204,7 @@ class QList[TItem](list[TItem], QIterable[TItem]):
     def element_at(self, index: int) -> TItem: return self[index]
 
 class QFrozenSet[TItem](frozenset[TItem], QIterable[TItem]):
-    def __new__(cls, iterable: Iterable[TItem]) -> QFrozenSet[TItem]:
+    def __new__(cls, iterable: Iterable[TItem] = ()) -> QFrozenSet[TItem]:
         return super().__new__(cls, iterable)
 
     @override
