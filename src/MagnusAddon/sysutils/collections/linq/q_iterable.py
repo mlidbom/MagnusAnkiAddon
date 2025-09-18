@@ -116,7 +116,7 @@ class QIterable[TItem](Iterable[TItem], ABC):
     # region assertions on the collection or it's values
     def assert_each(self, predicate: Callable[[TItem], bool], message: str | None = None) -> QIterable[TItem]:
         for item in self:
-            if not predicate(item): raise AssertionError(message)
+            if not predicate(item): raise AssertionError(message or "")
         return self
 
     def reversed(self) -> QIterable[TItem]:
