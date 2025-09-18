@@ -10,6 +10,7 @@ from note.collection.note_cache import CachedNote, NoteCache
 from note.note_constants import NoteTypes
 from note.sentences.sentencenote import SentenceNote
 from sysutils import ex_sequence
+from sysutils.collections.linq.q_iterable import QList
 
 if TYPE_CHECKING:
     from anki.collection import Collection
@@ -78,13 +79,19 @@ class SentenceCollection(ProfilableAutoSlots):
         # todo: isn't this check redundant, won't the match have been removed during indexing?
         return [match for match in matches if question not in match.configuration.incorrect_matches.words()]
 
-    def with_vocab_owned_form(self, vocab_note: VocabNote) -> list[SentenceNote]:
-        owned_forms = vocab_note.forms.not_owned_by_other_vocab()
-
-        matches = ex_sequence.remove_duplicates(ex_sequence.flatten([self._cache.with_vocab_form(form) for form in owned_forms]))
+    def with_vocab_owned_form(self, vocab_note: VocabNote) -> QList[SentenceNote]:
         question = vocab_note.get_question()
-        # todo: isn't this check redundant, won't the match have been removed during indexing?
-        return [match for match in matches if question not in match.configuration.incorrect_matches.words()]
+        return (vocab_note.forms.not_owned_by_other_vocab()
+                .select_many(self._cache.with_vocab_form)
+                .unique()
+                .where(lambda match: question not in match.configuration.incorrect_matches.words())  # todo: isn't this check redundant, won't the match have been removed during indexing?
+                .to_list())
+        # owned_forms = vocab_note.forms.not_owned_by_other_vocab()
+        #
+        # matches = ex_sequence.remove_duplicates(ex_sequence.flatten([self._cache.with_vocab_form(form) for form in owned_forms]))
+        # question = vocab_note.get_question()
+        # # todo: isn't this check redundant, won't the match have been removed during indexing?
+        # return [match for match in matches if question not in match.configuration.incorrect_matches.words()]
 
     def with_form(self, form: str) -> list[SentenceNote]: return self._cache.with_vocab_form(form)
 
@@ -96,4 +103,3 @@ class SentenceCollection(ProfilableAutoSlots):
     def add(self, note: SentenceNote) -> None:
         self.collection.anki_collection.addNote(note.backend_note)
         self._cache.add_note_to_cache(note)
-
