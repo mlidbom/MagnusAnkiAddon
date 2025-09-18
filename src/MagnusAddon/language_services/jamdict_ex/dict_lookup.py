@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, Any
 from ankiutils import app
 from ex_autoslot import ProfilableAutoSlots
 from language_services.jamdict_ex.priority_spec import PrioritySpec
+from sysutils.collections.linq.l_iterable import query
 from sysutils.lazy import Lazy
 from sysutils.timeutil import StopWatch
 from sysutils.typed import non_optional, str_
@@ -23,7 +24,7 @@ from concurrent.futures import Future
 
 from jamdict import Jamdict  # pyright: ignore[reportMissingTypeStubs]
 from language_services.jamdict_ex.dict_entry import DictEntry
-from sysutils import ex_iterable, ex_sequence, kana_utils
+from sysutils import ex_iterable, kana_utils
 
 
 class Request[T](ProfilableAutoSlots):
@@ -114,10 +115,10 @@ class DictLookup(ProfilableAutoSlots):
                                         if ent.is_kana_only())
 
     def valid_forms(self, force_allow_kana_only: bool = False) -> set[str]:
-        return set(ex_sequence.flatten([list(entry.valid_forms(force_allow_kana_only)) for entry in self.entries]))
+        return query(self.entries).select_many(lambda entry: entry.valid_forms(force_allow_kana_only)).to_set()  #set(ex_sequence.flatten([list(entry.valid_forms(force_allow_kana_only)) for entry in self.entries]))
 
     def parts_of_speech(self) -> set[str]:
-        return set(ex_sequence.flatten([list(ent.parts_of_speech()) for ent in self.entries]))
+        return query(self.entries).select_many(lambda entry: entry.parts_of_speech()).to_set()  #set(ex_sequence.flatten([list(ent.parts_of_speech()) for ent in self.entries]))
 
     def priority_spec(self) -> PrioritySpec:
         return PrioritySpec(set(ex_iterable.flatten(entry.priority_tags() for entry in self.entries)))

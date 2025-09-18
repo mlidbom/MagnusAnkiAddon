@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 from note.sentences.sentence_configuration import SentenceConfiguration
 from note.sentences.sentencenote import SentenceNote
 from sysutils import ex_sequence
@@ -10,6 +9,7 @@ from sysutils.lazy import Lazy
 from ui.web.sentence.sentence_viewmodel import SentenceViewModel
 
 if TYPE_CHECKING:
+    from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
     from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
     from ui.web.sentence.match_viewmodel import MatchViewModel
 

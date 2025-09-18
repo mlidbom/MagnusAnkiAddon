@@ -6,12 +6,12 @@ from ankiutils import app
 from ex_autoslot import ProfilableAutoSlots
 from language_services import conjugator
 from language_services.jamdict_ex.dict_lookup import DictLookup
-from sysutils import ex_sequence
 
 if TYPE_CHECKING:
     from janome.tokenizer import Token  # pyright: ignore[reportMissingTypeStubs]
     from language_services.janome_ex.tokenizing.jn_token import JNToken
     from note.collection.vocab_collection import VocabCollection
+    from sysutils.collections.linq.l_iterable import LList
 
 class ProcessedToken(ProfilableAutoSlots):
     def __init__(self, surface: str, base: str, is_non_word_character: bool) -> None:
@@ -87,13 +87,14 @@ class JNTokenWrapper(ProcessedToken, ProfilableAutoSlots):
         return None
 
 class JNTokenizedText(ProfilableAutoSlots):
-    def __init__(self, text: str, raw_tokens: list[Token], tokens: list[JNToken]) -> None:
+    def __init__(self, text: str, raw_tokens: LList[Token], tokens: LList[JNToken]) -> None:
         self.raw_tokens: list[Token] = raw_tokens
         self.text: str = text
-        self.tokens: list[JNToken] = tokens
+        self.tokens: LList[JNToken] = tokens
 
-    def pre_process(self) -> list[ProcessedToken]:
+    def pre_process(self) -> LList[ProcessedToken]:
         vocab = app.col().vocab
 
-        step1 = [JNTokenWrapper(token, vocab) for token in self.tokens]
-        return ex_sequence.flatten([token.pre_process() for token in step1])
+        return self.tokens.select_many(lambda token: JNTokenWrapper(token, vocab).pre_process()).to_list()
+        # query(JNTokenWrapper(token, vocab) for token in self.tokens)
+        #return ex_sequence.flatten([token.pre_process() for token in step1])

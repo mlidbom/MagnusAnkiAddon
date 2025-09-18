@@ -8,6 +8,7 @@ from language_services.janome_ex.tokenizing.jn_parts_of_speech import JNPartsOfS
 from language_services.janome_ex.tokenizing.jn_token import JNToken
 from language_services.janome_ex.tokenizing.jn_tokenized_text import JNTokenizedText
 from sysutils import ex_str, typed
+from sysutils.collections.linq.l_iterable import LList
 
 
 @final
@@ -21,8 +22,8 @@ class JNTokenizer(ProfilableAutoSlots):
         tokens = [typed.checked_cast(Token, token) for token in self._tokenizer.tokenize(sanitized_text)]
 
         return JNTokenizedText(text,
-                               tokens,
-                               [JNToken(JNPartsOfSpeech.fetch(typed.str_(token.part_of_speech)),  # pyright: ignore[reportAny]
+                               LList(tokens),
+                               LList(JNToken(JNPartsOfSpeech.fetch(typed.str_(token.part_of_speech)),  # pyright: ignore[reportAny]
                                         typed.str_(token.base_form),  # pyright: ignore[reportAny]
                                         typed.str_(token.surface),  # pyright: ignore[reportAny]
                                         typed.str_(token.infl_type),  # pyright: ignore[reportAny]
@@ -30,4 +31,4 @@ class JNTokenizer(ProfilableAutoSlots):
                                         typed.str_(token.reading),  # pyright: ignore[reportAny]
                                         typed.str_(token.phonetic),  # pyright: ignore[reportAny]
                                         typed.str_(token.node_type),  # pyright: ignore[reportAny]
-                                        token) for token in tokens])
+                                        token) for token in tokens))

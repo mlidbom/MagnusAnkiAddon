@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, final, override
 
 from ex_autoslot import ProfilableAutoSlots
+from sysutils.collections.linq.l_iterable import LList
 from sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
@@ -13,7 +14,6 @@ if TYPE_CHECKING:
 from language_services.janome_ex.tokenizing.jn_tokenizer import JNTokenizer
 from language_services.janome_ex.word_extraction.text_location import TextAnalysisLocation
 from note.sentences.sentence_configuration import SentenceConfiguration
-from sysutils import ex_sequence
 
 _tokenizer = JNTokenizer()
 
@@ -26,9 +26,9 @@ class TextAnalysis(WeakRefable,ProfilableAutoSlots):
         self.text = sentence
         self.configuration = sentence_configuration
         self.tokenized_text = _tokenizer.tokenize(sentence)
-        self.pre_processed_tokens: list[ProcessedToken] = self.tokenized_text.pre_process()
+        self.pre_processed_tokens: LList[ProcessedToken] = self.tokenized_text.pre_process()
 
-        self.locations: list[TextAnalysisLocation] = []
+        self.locations: LList[TextAnalysisLocation] = LList()
 
         character_index = 0
         for token_index, token in enumerate(self.pre_processed_tokens):
@@ -42,16 +42,16 @@ class TextAnalysis(WeakRefable,ProfilableAutoSlots):
         self._analysis_step_3_run_initial_display_analysis()
         self._analysis_step_5_calculate_preference_between_overlapping_display_candidates()
 
-        self.all_word_variants: list[CandidateWordVariant] = ex_sequence.flatten([loc.variants for loc in self.locations])
-        self.valid_word_variants: list[CandidateWordVariant] = ex_sequence.flatten([loc.valid_variants for loc in self.locations])
-        self.display_word_variants: list[CandidateWordVariant] = ex_sequence.flatten([loc.display_variants for loc in self.locations])
+        self.all_word_variants: LList[CandidateWordVariant] = self.locations.select_many(lambda location: location.variants).to_list()
+        self.valid_word_variants: LList[CandidateWordVariant] = self.locations.select_many(lambda location: location.valid_variants).to_list()
+        self.display_word_variants: LList[CandidateWordVariant] = self.locations.select_many(lambda location: location.display_variants).to_list()
 
-        self.all_matches: list[Match] = ex_sequence.flatten([cand.matches for cand in self.all_word_variants])
-        self.valid_word_variant_matches: list[Match] = ex_sequence.flatten([cand.matches for cand in self.valid_word_variants])
+        self.all_matches: LList[Match] = self.all_word_variants.select_many(lambda variant: variant.matches).to_list()
+        self.valid_word_variant_matches: LList[Match] = self.valid_word_variants.select_many(lambda variant: variant.matches).to_list()
         #todo: bug valid_matches here and valid_word_variant_valid_matches should be identical. Once they are, the valid_word_variant_valid_matches collection should be removed
-        self.valid_matches: list[Match] = [match for match in self.all_matches if match.is_valid]
-        self.valid_word_variant_valid_matches: list[Match] = [match for match in self.valid_word_variant_matches if match.is_valid]
-        self.display_matches = [match for match in self.all_matches if match.is_displayed]
+        self.valid_matches: LList[Match] = self.all_matches.where(lambda match: match.is_valid).to_list()
+        self.valid_word_variant_valid_matches: list[Match] = self.valid_word_variant_matches.where(lambda match: match.is_valid).to_list()
+        self.display_matches = self.all_matches.where(lambda match: match.is_displayed)
 
     @classmethod
     def from_text(cls, text: str) -> TextAnalysis:
