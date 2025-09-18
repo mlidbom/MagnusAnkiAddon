@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING
 
 from ankiutils import app
 from ex_autoslot import ProfilableAutoSlots
-from sysutils import ex_sequence
 
 if TYPE_CHECKING:
     from anki.notes import NoteId
