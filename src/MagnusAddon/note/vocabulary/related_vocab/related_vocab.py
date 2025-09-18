@@ -47,11 +47,16 @@ class RelatedVocab(ProfilableAutoSlots):
     def in_compounds(self) -> list[VocabNote]:
         return app.col().vocab.with_compound_part(self._vocab().question.without_noise_characters)
 
-    def homophones(self) -> QSet[VocabNote]:
+    def homophones_notes(self) -> QSet[VocabNote]:
         return (query(self._vocab().readings.get())
                 .select_many(app.col().vocab.with_reading)
                 .where(lambda homophone: homophone != self._vocab())
                 .to_set())
+
+    def stems_notes(self) -> QSet[VocabNote]:
+        return (self._vocab().conjugator.get_stems_for_primary_form()
+                .select_many(app.col().vocab.with_question)
+                .to_set())  # ex_sequence.flatten([app.col().vocab.with_question(stem) for stem in (_vocab_note.conjugator.get_stems_for_primary_form())])
 
     @property
     def _main_form_kanji_notes(self) -> QSet[KanjiNote]:

@@ -46,7 +46,7 @@ def render_vocab_list(vocab_list: list[VocabNote], title: str, css_class: str, r
             '''
 
 def generate_homophones_html_list(vocab_note: VocabNote) -> str:
-    homophone_notes = [vocab_note] + note.vocabulary.vocabnote_sorting.sort_vocab_list_by_studying_status(vocab_note.related_notes.homophones())
+    homophone_notes = [vocab_note] + note.vocabulary.vocabnote_sorting.sort_vocab_list_by_studying_status(vocab_note.related_notes.homophones_notes())
     return render_vocab_list(homophone_notes, "homophones", css_class="homophones")
 
 def generate_synonyms_meaning_html_list(_vocab_note: VocabNote) -> str:
@@ -105,8 +105,7 @@ def generate_derived_list(_vocab_note: VocabNote) -> str:
     return render_vocab_list(derived_vocabs, "derived vocabulaty", css_class="derived_vocabulary")
 
 def generate_stem_vocabs(_vocab_note: VocabNote) -> str:
-    stem_vocabs = ex_sequence.flatten([app.col().vocab.with_question(stem) for stem in (_vocab_note.conjugator.get_stems_for_primary_form())])
-    return render_vocab_list(stem_vocabs, "conjugation forms", css_class="stem_vocabulary")
+    return render_vocab_list(_vocab_note.related_notes.stems_notes().to_list(), "conjugation forms", css_class="stem_vocabulary")
 
 def generate_stem_of_vocabs(_vocab_note: VocabNote) -> str:
     return render_vocab_list(app.col().vocab.with_stem(_vocab_note.get_question()), "dictionary form", css_class="is_stem_of")
