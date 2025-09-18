@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from abc import ABC
 import itertools
 from collections.abc import Iterable
 from typing import TYPE_CHECKING, Any, cast, override
@@ -14,7 +15,7 @@ if TYPE_CHECKING:
 
 def query[TItem](value: Iterable[TItem]) -> QIterable[TItem]: return _Qiterable(value)
 
-class QIterable[TItem](Iterable[TItem], AutoSlotsABC):
+class QIterable[TItem](Iterable[TItem], ABC, AutoSlotsABC):
     @staticmethod
     def create(value: Iterable[TItem]) -> QIterable[TItem]: return _Qiterable(value)
 
