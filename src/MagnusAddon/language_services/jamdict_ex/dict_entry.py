@@ -4,7 +4,8 @@ from typing import TYPE_CHECKING, final
 
 from ex_autoslot import ProfilableAutoSlots
 from sysutils import ex_sequence, kana_utils
-from sysutils.collections.linq.q_iterable import QList
+from sysutils.collections.linq.q_iterable import QList, query
+from sysutils.typed import checked_cast_generics, str_
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -47,8 +48,14 @@ class DictEntry(ProfilableAutoSlots):
         return set(self.kana_forms()) | set(self.kanji_forms()) if self.is_kana_only() or force_allow_kana_only else set(self.kanji_forms())
 
     def priority_tags(self) -> set[str]:
-        kanji_priorities: list[str] = ex_sequence.flatten([form.pri for form in self.entry.kanji_forms if form.text == self.lookup_word])  # pyright: ignore[reportUnknownArgumentType, reportUnknownMemberType]
-        kana_priorities: list[str] = ex_sequence.flatten([form.pri for form in self.entry.kana_forms if form.text in self.lookup_readings])  # pyright: ignore[reportUnknownArgumentType, reportUnknownMemberType]
+        kanji_priorities: QList[str] = (query(self.entry.kanji_forms)
+                                        .where(lambda form: str_(form.text) == self.lookup_word)  # pyright: ignore [reportUnknownArgumentType, reportUnknownMemberType]
+                                        .select_many(lambda form: checked_cast_generics(list[str], form.pri))  # pyright: ignore [reportUnknownArgumentType, reportUnknownMemberType]
+                                        .to_list())
+        kana_priorities: list[str] = (query(self.entry.kana_forms)
+                                      .where(lambda form: str_(form.text) in self.lookup_readings)  # pyright: ignore [reportUnknownArgumentType, reportUnknownMemberType]
+                                      .select_many(lambda form: checked_cast_generics(list[str], form.pri))  # pyright: ignore [reportUnknownArgumentType, reportUnknownMemberType]
+                                      .to_list())  # ex_sequence.flatten([str_(form.pri) for form in self.entry.kana_forms if str_(form.text) in self.lookup_readings])  # pyright: ignore [reportUnknownArgumentType, reportUnknownMemberType]
 
         return set(kanji_priorities + kana_priorities)
 
