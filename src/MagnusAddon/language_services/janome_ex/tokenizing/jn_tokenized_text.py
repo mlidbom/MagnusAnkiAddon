@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from janome.tokenizer import Token  # pyright: ignore[reportMissingTypeStubs]
     from language_services.janome_ex.tokenizing.jn_token import JNToken
     from note.collection.vocab_collection import VocabCollection
-    from sysutils.collections.linq.l_iterable import LList
+    from sysutils.collections.linq.q_iterable import QList
 
 class ProcessedToken(ProfilableAutoSlots):
     def __init__(self, surface: str, base: str, is_non_word_character: bool) -> None:
@@ -87,12 +87,12 @@ class JNTokenWrapper(ProcessedToken, ProfilableAutoSlots):
         return None
 
 class JNTokenizedText(ProfilableAutoSlots):
-    def __init__(self, text: str, raw_tokens: LList[Token], tokens: LList[JNToken]) -> None:
+    def __init__(self, text: str, raw_tokens: QList[Token], tokens: QList[JNToken]) -> None:
         self.raw_tokens: list[Token] = raw_tokens
         self.text: str = text
-        self.tokens: LList[JNToken] = tokens
+        self.tokens: QList[JNToken] = tokens
 
-    def pre_process(self) -> LList[ProcessedToken]:
+    def pre_process(self) -> QList[ProcessedToken]:
         vocab = app.col().vocab
 
         return self.tokens.select_many(lambda token: JNTokenWrapper(token, vocab).pre_process()).to_list()

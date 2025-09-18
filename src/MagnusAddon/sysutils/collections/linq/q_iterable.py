@@ -10,28 +10,28 @@ if TYPE_CHECKING:
 
     from _typeshed import SupportsRichComparison
 
-def query[TItem](value: Iterable[TItem]) -> LIterable[TItem]: return _Literable(value)
+def query[TItem](value: Iterable[TItem]) -> QIterable[TItem]: return _Qiterable(value)
 
-class LIterable[TItem](Iterable[TItem], ABC):
+class QIterable[TItem](Iterable[TItem], ABC):
     @staticmethod
-    def create(value: Iterable[TItem]) -> LIterable[TItem]: return _Literable(value)
+    def create(value: Iterable[TItem]) -> QIterable[TItem]: return _Qiterable(value)
 
     # region queries that need to be static so that we can know the type of the the LLitearble
 
     # region operations on the whole collection, not the items
-    def pipe_to[TReturn](self, action: Callable[[LIterable[TItem]], TReturn]) -> TReturn:
+    def pipe_to[TReturn](self, action: Callable[[QIterable[TItem]], TReturn]) -> TReturn:
         return action(self)
     # endregion
 
     # region filtering
-    def where(self, predicate: Callable[[TItem], bool]) -> LIterable[TItem]:
-        return _Literable(item for item in self._value if predicate(item))
+    def where(self, predicate: Callable[[TItem], bool]) -> QIterable[TItem]:
+        return _Qiterable(item for item in self._value if predicate(item))
 
-    def where_not_none(self) -> LIterable[TItem]:
+    def where_not_none(self) -> QIterable[TItem]:
         return self.where(lambda item: item is not None)
 
-    def unique(self) -> LList[TItem]:
-        return LList(dict.fromkeys(self._value))
+    def unique(self) -> QList[TItem]:
+        return QList(dict.fromkeys(self._value))
 
     # endregion
 
@@ -42,11 +42,11 @@ class LIterable[TItem](Iterable[TItem], ABC):
     # endregion
 
     # region order_by
-    def order_by(self, key_selector: Callable[[TItem], SupportsRichComparison]) -> LOrderedLIterable[TItem]:
-        return LOrderedLIterable(self, [SortInstruction(key_selector, False)])
+    def order_by(self, key_selector: Callable[[TItem], SupportsRichComparison]) -> LOrderedQIterable[TItem]:
+        return LOrderedQIterable(self, [SortInstruction(key_selector, False)])
 
-    def order_by_descending(self, key_selector: Callable[[TItem], SupportsRichComparison]) -> LOrderedLIterable[TItem]:
-        return LOrderedLIterable(self, [SortInstruction(key_selector, True)])
+    def order_by_descending(self, key_selector: Callable[[TItem], SupportsRichComparison]) -> LOrderedQIterable[TItem]:
+        return LOrderedQIterable(self, [SortInstruction(key_selector, True)])
     # endregion
 
     # region boolean queries
@@ -60,11 +60,11 @@ class LIterable[TItem](Iterable[TItem], ABC):
     # endregion
 
     # region mapping methods
-    def select[TReturn](self, selector: Callable[[TItem], TReturn]) -> LIterable[TReturn]:
-        return _Literable(selector(item) for item in self)
+    def select[TReturn](self, selector: Callable[[TItem], TReturn]) -> QIterable[TReturn]:
+        return _Qiterable(selector(item) for item in self)
 
-    def select_many[TInner](self, selector: Callable[[TItem], Iterable[TInner]]) -> LIterable[TInner]:
-        return _Literable(itertools.chain.from_iterable(selector(item) for item in self))
+    def select_many[TInner](self, selector: Callable[[TItem], Iterable[TInner]]) -> QIterable[TInner]:
+        return _Qiterable(itertools.chain.from_iterable(selector(item) for item in self))
     # endregion
 
     # region single item selecting methods
@@ -102,29 +102,29 @@ class LIterable[TItem](Iterable[TItem], ABC):
     # endregion
 
     # region assertions on the collection or it's values
-    def assert_each(self, predicate: Callable[[TItem], bool], message: str | None = None) -> LIterable[TItem]:
+    def assert_each(self, predicate: Callable[[TItem], bool], message: str | None = None) -> QIterable[TItem]:
         for item in self:
             if not predicate(item): raise AssertionError(message)
         return self
 
-    def reversed(self) -> LIterable[TItem]:
-        return _Literable[TItem](reversed(self.to_built_in_list()))
+    def reversed(self) -> QIterable[TItem]:
+        return _Qiterable[TItem](reversed(self.to_built_in_list()))
 
-    def assert_on_collection(self, predicate: Callable[[LIterable[TItem]], bool], message: str | None = None) -> LIterable[TItem]:
+    def assert_on_collection(self, predicate: Callable[[QIterable[TItem]], bool], message: str | None = None) -> QIterable[TItem]:
         if not predicate(self): raise AssertionError(message)
         return self
     # endregion
 
     # region methods to avoid needing to manually write loops
-    def for_each(self, action: Callable[[TItem], None]) -> LIterable[TItem]:
+    def for_each(self, action: Callable[[TItem], None]) -> QIterable[TItem]:
         for item in self._value: action(item)
         return self
 
-    def for_single(self, action: Callable[[TItem], Any]) -> LIterable[TItem]:  # pyright: ignore[reportExplicitAny]
+    def for_single(self, action: Callable[[TItem], Any]) -> QIterable[TItem]:  # pyright: ignore[reportExplicitAny]
         action(self.single())
         return self
 
-    def for_single_or_none(self, action: Callable[[TItem], Any]) -> LIterable[TItem]:  # pyright: ignore[reportExplicitAny]
+    def for_single_or_none(self, action: Callable[[TItem], Any]) -> QIterable[TItem]:  # pyright: ignore[reportExplicitAny]
         value = self.single_or_none()
         if value is not None: action(value)
         return self
@@ -132,10 +132,10 @@ class LIterable[TItem](Iterable[TItem], ABC):
 
     # region factory methods
     # note: we do not "optimize" by returning self in any subclass because the contract is to create a new independent copy
-    def to_list(self) -> LList[TItem]: return LList(self)
+    def to_list(self) -> QList[TItem]: return QList(self)
     def to_built_in_list(self) -> list[TItem]: return list(self)
-    def to_set(self) -> LSet[TItem]: return LSet(self)
-    def to_frozenset(self) -> LFrozenSet[TItem]: return LFrozenSet(self)
+    def to_set(self) -> QSet[TItem]: return QSet(self)
+    def to_frozenset(self) -> QFrozenSet[TItem]: return QFrozenSet(self)
     # endregion
 
     # region the abstract _value property
@@ -145,7 +145,7 @@ class LIterable[TItem](Iterable[TItem], ABC):
     # endregion
 
 # region implementing classes
-class _Literable[TItem](LIterable[TItem]):
+class _Qiterable[TItem](QIterable[TItem]):
     def __init__(self, iterable: Iterable[TItem]) -> None:
         self.__value: Iterable[TItem] = iterable
 
@@ -162,18 +162,18 @@ class SortInstruction[TItem]:
         self.key_selector: Callable[[TItem], SupportsRichComparison] = key_selector
         self.descending: bool = descending
 
-class LOrderedLIterable[TItem](LIterable[TItem]):
+class LOrderedQIterable[TItem](QIterable[TItem]):
     def __init__(self, iterable: Iterable[TItem], sorting_instructions: list[SortInstruction[TItem]]) -> None:
         self.sorting_instructions: list[SortInstruction[TItem]] = sorting_instructions
         self._unsorted: Iterable[TItem] = iterable
 
-    def then_by(self, key_selector: Callable[[TItem], SupportsRichComparison]) -> LOrderedLIterable[TItem]:
+    def then_by(self, key_selector: Callable[[TItem], SupportsRichComparison]) -> LOrderedQIterable[TItem]:
         self.sorting_instructions.append(SortInstruction(key_selector, descending=False))
-        return LOrderedLIterable(self._unsorted, self.sorting_instructions)
+        return LOrderedQIterable(self._unsorted, self.sorting_instructions)
 
-    def then_by_descending(self, key_selector: Callable[[TItem], SupportsRichComparison]) -> LOrderedLIterable[TItem]:
+    def then_by_descending(self, key_selector: Callable[[TItem], SupportsRichComparison]) -> LOrderedQIterable[TItem]:
         self.sorting_instructions.append(SortInstruction(key_selector, descending=True))
-        return LOrderedLIterable(self._unsorted, self.sorting_instructions)
+        return LOrderedQIterable(self._unsorted, self.sorting_instructions)
 
     @property
     @override
@@ -193,7 +193,7 @@ class LOrderedLIterable[TItem](LIterable[TItem]):
 # endregion
 
 # region LList, LSet, LFrozenSet: concrete classes that do very little but inherit a built in collection and LIterable and provide an override or two for performance
-class LList[TItem](list[TItem], LIterable[TItem]):
+class QList[TItem](list[TItem], QIterable[TItem]):
     def __init__(self, iterable: Iterable[TItem] = ()) -> None:
         super().__init__(iterable)
 
@@ -205,13 +205,13 @@ class LList[TItem](list[TItem], LIterable[TItem]):
     def length(self) -> int: return len(self)
 
     @override
-    def reversed(self) -> LIterable[TItem]: return LList[TItem](reversed(self))
+    def reversed(self) -> QIterable[TItem]: return QList[TItem](reversed(self))
 
     @override
     def element_at(self, index: int) -> TItem: return self[index]
 
-class LFrozenSet[TItem](frozenset[TItem], LIterable[TItem]):
-    def __new__(cls, iterable: Iterable[TItem]) -> LFrozenSet[TItem]:
+class QFrozenSet[TItem](frozenset[TItem], QIterable[TItem]):
+    def __new__(cls, iterable: Iterable[TItem]) -> QFrozenSet[TItem]:
         return super().__new__(cls, iterable)
 
     @property
@@ -221,7 +221,7 @@ class LFrozenSet[TItem](frozenset[TItem], LIterable[TItem]):
     @override
     def length(self) -> int: return len(self)
 
-class LSet[TItem](set[TItem], LIterable[TItem]):
+class QSet[TItem](set[TItem], QIterable[TItem]):
     def __init__(self, iterable: Iterable[TItem] = ()) -> None:
         super().__init__(iterable)
 

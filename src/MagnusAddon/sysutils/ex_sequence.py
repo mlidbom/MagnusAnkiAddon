@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from sysutils.collections.linq.LQuery import Q
+from sysutils.collections.linq.query_module import Q
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Sequence

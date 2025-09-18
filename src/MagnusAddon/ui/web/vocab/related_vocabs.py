@@ -5,7 +5,7 @@ from ankiutils import app
 from aqt import gui_hooks
 from note.vocabulary.vocabnote import VocabNote
 from sysutils import ex_sequence
-from sysutils.collections.linq.l_iterable import query
+from sysutils.collections.linq.q_iterable import query
 from sysutils.ex_str import newline
 from ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
 

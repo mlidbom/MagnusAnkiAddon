@@ -4,12 +4,12 @@ from typing import TYPE_CHECKING, override
 
 from ankiutils import app
 from ex_autoslot import ProfilableAutoSlots
-from sysutils.collections.linq.l_iterable import LSet
+from sysutils.collections.linq.q_iterable import QSet
 
 if TYPE_CHECKING:
     from note.notefields.auto_save_wrappers.set_wrapper import FieldSetWrapper
     from note.vocabulary.vocabnote import VocabNote
-    from sysutils.collections.linq.l_iterable import LList
+    from sysutils.collections.linq.q_iterable import QList
     from sysutils.weak_ref import WeakRef
 
 class PerfectSynonyms(ProfilableAutoSlots):
@@ -18,7 +18,7 @@ class PerfectSynonyms(ProfilableAutoSlots):
         self._value: FieldSetWrapper[str] = data
         vocab().user.answer.on_change(self.push_answer_to_other_synonyms)
 
-    def notes(self) -> LList[VocabNote]: return app.col().vocab.with_any_question_in(list(self._value.get()))
+    def notes(self) -> QList[VocabNote]: return app.col().vocab.with_any_question_in(list(self._value.get()))
 
     def push_answer_to_other_synonyms(self) -> None:
         for synonym in self.notes():
@@ -35,8 +35,8 @@ class PerfectSynonyms(ProfilableAutoSlots):
         self._value.add(synonym)
         self._vocab().related_notes.synonyms.add(synonym)
 
-    def _resolve_whole_web(self) -> LSet[VocabNote]:
-        found: LSet[VocabNote] = LSet()
+    def _resolve_whole_web(self) -> QSet[VocabNote]:
+        found: QSet[VocabNote] = QSet()
         def recurse_into(syn: VocabNote) -> None:
             found.add(syn)
             for related in syn.related_notes.perfect_synonyms.notes():

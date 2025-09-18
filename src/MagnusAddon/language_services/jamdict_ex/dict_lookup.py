@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Any
 from ankiutils import app
 from ex_autoslot import ProfilableAutoSlots
 from language_services.jamdict_ex.priority_spec import PrioritySpec
-from sysutils.collections.linq.l_iterable import query
+from sysutils.collections.linq.q_iterable import query
 from sysutils.lazy import Lazy
 from sysutils.timeutil import StopWatch
 from sysutils.typed import non_optional, str_

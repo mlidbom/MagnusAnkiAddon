@@ -6,7 +6,7 @@ from ankiutils import app
 from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 from note.note_constants import Builtin, MyNoteFields, NoteFields, NoteTypes, SentenceNoteFields
 from sysutils import kana_utils
-from sysutils.collections.linq.l_iterable import LSet
+from sysutils.collections.linq.q_iterable import QSet
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
@@ -138,7 +138,7 @@ def immersion_kit_sentences() -> str:
     return f'''"{Builtin.Note}:{NoteTypes.immersion_kit}"'''
 
 def kanji_with_radicals_in_string(search: str) -> str:
-    radicals = LSet(search.strip().replace(",", "").replace(" ", ""))
+    radicals = QSet(search.strip().replace(",", "").replace(" ", ""))
     def kanji_contails_all_radicals(kanji: KanjiNote) -> bool: return not any(rad for rad in radicals if rad not in kanji.get_radicals())
     return (radicals
             .select_many(lambda radical: app.col().kanji.with_radical(radical))

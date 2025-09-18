@@ -4,7 +4,7 @@ from collections import defaultdict
 from typing import TYPE_CHECKING, final, override
 
 from ex_autoslot import ProfilableAutoSlots
-from sysutils.collections.linq.l_iterable import LList
+from sysutils.collections.linq.q_iterable import QList
 
 if TYPE_CHECKING:
     from anki.collection import Collection
@@ -45,7 +45,7 @@ class _KanjiCache(NoteCache[KanjiNote, _KanjiSnapshot], ProfilableAutoSlots):
         for form in snapshot.radicals: self._by_radical[form].add(note)
         for reading in snapshot.readings: self.by_reading[reading].add(note)
 
-    def with_radical(self, radical: str) -> LList[KanjiNote]: return LList(self._by_radical[radical])
+    def with_radical(self, radical: str) -> QList[KanjiNote]: return QList(self._by_radical[radical])
 
 class KanjiCollection(ProfilableAutoSlots):
     def __init__(self, collection: Collection, cache_manager: CacheRunner, task_runner: ITaskRunner) -> None:
@@ -71,7 +71,7 @@ class KanjiCollection(ProfilableAutoSlots):
     def with_kanji(self, kanji: str) -> KanjiNote | None:
         return self._cache.with_question(kanji).single_or_none()
 
-    def with_radical(self, radical:str) -> LList[KanjiNote]: return self._cache.with_radical(radical)
+    def with_radical(self, radical:str) -> QList[KanjiNote]: return self._cache.with_radical(radical)
     def with_reading(self, reading:str) -> set[KanjiNote]:
         return self._cache.by_reading[kana_utils.anything_to_hiragana(reading)]
 

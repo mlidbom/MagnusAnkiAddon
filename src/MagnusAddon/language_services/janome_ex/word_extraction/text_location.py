@@ -4,8 +4,7 @@ from typing import TYPE_CHECKING, final, override
 
 from ankiutils import app
 from ex_autoslot import ProfilableAutoSlots
-from sysutils import ex_sequence
-from sysutils.collections.linq.l_iterable import LList
+from sysutils.collections.linq.q_iterable import QList
 from sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
@@ -33,11 +32,11 @@ class TextAnalysisLocation(WeakRefable, ProfilableAutoSlots):
         self.character_end_index: int = character_start_index + len(self.token.surface) - 1
 
         self.known_words: list[CandidateWord] = []
-        self.valid_words: LList[CandidateWord] = LList()
+        self.valid_words: QList[CandidateWord] = QList()
         self.display_variants: list[CandidateWordVariant] = []
-        self.valid_variants: LList[CandidateWordVariant] = LList()
-        self.variants: LList[CandidateWordVariant] = LList()
-        self.candidate_words: LList[CandidateWord] = LList()
+        self.valid_variants: QList[CandidateWordVariant] = QList()
+        self.variants: QList[CandidateWordVariant] = QList()
+        self.candidate_words: QList[CandidateWord] = QList()
         self.display_words: list[CandidateWord] = []
 
     @override
@@ -52,7 +51,7 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
 
     def analysis_step_1_analyze_non_compound_validity(self) -> None:
         lookahead_max = min(_max_lookahead, len(self.forward_list(_max_lookahead)))
-        self.candidate_words = LList(CandidateWord([location.weakref for location in self.forward_list(index)]) for index in range(lookahead_max - 1, -1, -1))
+        self.candidate_words = QList(CandidateWord([location.weakref for location in self.forward_list(index)]) for index in range(lookahead_max - 1, -1, -1))
         self.candidate_words[-1].run_validity_analysis()  # the non-compound part needs to be completed first
 
     def analysis_step_2_analyze_compound_validity(self) -> None:

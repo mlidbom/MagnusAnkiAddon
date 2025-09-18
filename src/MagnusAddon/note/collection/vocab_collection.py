@@ -11,7 +11,7 @@ from note.collection.note_cache import CachedNote, NoteCache
 from note.note_constants import NoteTypes
 from note.vocabulary.vocabnote import VocabNote
 from sysutils import ex_sequence
-from sysutils.collections.linq.l_iterable import LList, query
+from sysutils.collections.linq.q_iterable import QList, query
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
@@ -45,7 +45,7 @@ class _VocabCache(NoteCache[VocabNote, _VocabSnapshot], ProfilableAutoSlots):
         self._by_stem: dict[str, set[VocabNote]] = defaultdict(set)
         super().__init__(all_vocab, VocabNote, cache_runner, task_runner)
 
-    def with_form(self, form: str) -> LList[VocabNote]: return LList(self._by_form[form]) if form in self._by_form else LList[VocabNote]()
+    def with_form(self, form: str) -> QList[VocabNote]: return QList(self._by_form[form]) if form in self._by_form else QList[VocabNote]()
 
     def with_compound_part(self, form: str) -> list[VocabNote]:
         compound_parts: set[VocabNote] = set()
@@ -108,12 +108,12 @@ class VocabCollection(ProfilableAutoSlots):
     def is_word(self, form: str) -> bool: return any(self._cache.with_form(form))
     def all(self) -> list[VocabNote]: return self._cache.all()
     def with_id_or_none(self, note_id: NoteId) -> VocabNote | None: return self._cache.with_id_or_none(note_id)
-    def with_form(self, form: str) -> LList[VocabNote]: return self._cache.with_form(form)
+    def with_form(self, form: str) -> QList[VocabNote]: return self._cache.with_form(form)
     def with_compound_part(self, compound_part: str) -> list[VocabNote]: return self._cache.with_compound_part(compound_part)
     def derived_from(self, derived_from: str) -> list[VocabNote]: return self._cache.derived_from(derived_from)
     def with_kanji_in_main_form(self, kanji: KanjiNote) -> list[VocabNote]: return self._cache.with_kanji_in_main_form(kanji.get_question())
     def with_kanji_in_any_form(self, kanji: KanjiNote) -> list[VocabNote]: return self._cache.with_kanji_in_any_form(kanji.get_question())
-    def with_question(self, question: str) -> LList[VocabNote]: return self._cache.with_question(question)
+    def with_question(self, question: str) -> QList[VocabNote]: return self._cache.with_question(question)
     def with_reading(self, question: str) -> list[VocabNote]: return self._cache.with_reading(question)
     def with_stem(self, question: str) -> list[VocabNote]: return self._cache.with_stem(question)
 
@@ -128,7 +128,7 @@ class VocabCollection(ProfilableAutoSlots):
     def with_any_form_in(self, forms: list[str]) -> list[VocabNote]:
         return ex_sequence.remove_duplicates_while_retaining_order(ex_sequence.flatten([self.with_form(form) for form in forms]))
 
-    def with_any_question_in(self, questions: Iterable[str]) -> LList[VocabNote]:
+    def with_any_question_in(self, questions: Iterable[str]) -> QList[VocabNote]:
         return query(questions).select(self.with_question).select_many(lambda x: x).to_list()
 
     def add(self, note: VocabNote) -> None:
