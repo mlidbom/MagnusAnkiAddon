@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import itertools
-from abc import ABC
 from collections.abc import Iterable
 from typing import TYPE_CHECKING, Any, cast, override
+
+from ex_autoslot import ProfilableAutoSlotsABC
+from sysutils.standard_type_aliases import Func
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -13,7 +15,7 @@ if TYPE_CHECKING:
 
 def query[TItem](value: Iterable[TItem]) -> QIterable[TItem]: return _Qiterable(value)
 
-class QIterable[TItem](Iterable[TItem], ABC):
+class QIterable[TItem](Iterable[TItem], ProfilableAutoSlotsABC):
     @staticmethod
     def create(value: Iterable[TItem]) -> QIterable[TItem]: return _Qiterable(value)
 
@@ -31,23 +33,20 @@ class QIterable[TItem](Iterable[TItem], ABC):
     def where_not_none(self) -> QIterable[TItem]:
         return self.where(lambda item: item is not None)
 
-    def unique(self) -> QList[TItem]:
-        return QList(dict.fromkeys(self))
+    def unique(self) -> QIterable[TItem]:
+        return _LazyQiterable(lambda: dict.fromkeys(self))
 
     def take_while(self, predicate: Predicate[TItem]) -> QIterable[TItem]:
-        """`returns` an iterable containing the items in `iterable` until (exclusive) `condition` returns false"""
         return _Qiterable(itertools.takewhile(predicate, self))
 
     # endregion
 
     # region scalar aggregations
-    def length(self) -> int:
-        if isinstance(self, list): return len(cast(list[TItem], self))
-        return sum(1 for _ in self)
+    def length(self, predicate: Predicate[TItem] | None = None) -> int:
+        if predicate is not None: return self.where(predicate).length()
+        return self._optimized_length()
 
-    # todo: consider whether this is the best name. We need to avoid collisions with the built in count member, but...
-    def length_where(self, predicate: Predicate[TItem]) -> int:
-        return self.where(predicate).length()
+    def _optimized_length(self) -> int: return sum(1 for _ in self)
 
     # endregion
 
@@ -59,7 +58,7 @@ class QIterable[TItem](Iterable[TItem], ABC):
         return QOrderedIterable(self, [SortInstruction(key_selector, True)])
 
     def reversed(self) -> QIterable[TItem]:
-        return _Qiterable[TItem](reversed(self.to_built_in_list()))
+        return _LazyQiterable[TItem](lambda: reversed(self.to_built_in_list()))
     # endregion
 
     # region boolean queries
@@ -159,6 +158,13 @@ class _Qiterable[TItem](QIterable[TItem]):
     @override
     def __iter__(self) -> Iterator[TItem]: yield from self._value
 
+class _LazyQiterable[TItem](QIterable[TItem]):
+    def __init__(self, iterable_factory: Func[Iterable[TItem]]) -> None:
+        self._factory: Func[Iterable[TItem]] = iterable_factory
+
+    @override
+    def __iter__(self) -> Iterator[TItem]: yield from self._factory()
+
 # region LOrderedLIterable
 class SortInstruction[TItem]:
     def __init__(self, key_selector: Selector[TItem, SupportsRichComparison], descending: bool) -> None:
@@ -186,31 +192,31 @@ class QOrderedIterable[TItem](QIterable[TItem]):
 # endregion
 
 # region LList, LSet, LFrozenSet: concrete classes that do very little but inherit a built in collection and LIterable and provide an override or two for performance
-class QList[TItem](list[TItem], QIterable[TItem]):
+class QList[TItem](list[TItem], QIterable[TItem], ProfilableAutoSlotsABC):
     def __init__(self, iterable: Iterable[TItem] = ()) -> None:
         super().__init__(iterable)
 
     @override
-    def length(self) -> int: return len(self)
+    def _optimized_length(self) -> int: return len(self)
 
     @override
-    def reversed(self) -> QIterable[TItem]: return QList[TItem](reversed(self))
+    def reversed(self) -> QIterable[TItem]: return _LazyQiterable[TItem](lambda: reversed(self))
 
     @override
     def element_at(self, index: int) -> TItem: return self[index]
 
-class QFrozenSet[TItem](frozenset[TItem], QIterable[TItem]):
+class QFrozenSet[TItem](frozenset[TItem], QIterable[TItem], ProfilableAutoSlotsABC):
     def __new__(cls, iterable: Iterable[TItem] = ()) -> QFrozenSet[TItem]:
         return super().__new__(cls, iterable)
 
     @override
-    def length(self) -> int: return len(self)
+    def _optimized_length(self) -> int: return len(self)
 
-class QSet[TItem](set[TItem], QIterable[TItem]):
+class QSet[TItem](set[TItem], QIterable[TItem], ProfilableAutoSlotsABC):
     def __init__(self, iterable: Iterable[TItem] = ()) -> None:
         super().__init__(iterable)
 
     @override
-    def length(self) -> int: return len(self)
+    def _optimized_length(self) -> int: return len(self)
 # endregion
 # endregion
