@@ -45,11 +45,17 @@ def assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentenc
 
 def assert_analysis_state_is_valid(analysis: TextAnalysis) -> None:
     print(analysis.text)
-    # not_displayed = analysis.all_matches.whe
-    #
-    # def all_not_displayed_matches_should_have_is_displayed_false():
+    not_displayed = analysis.all_matches.where(lambda match: not match.is_displayed).to_list()
+    displayed = analysis.all_matches.where(lambda match: match.is_displayed).to_list()
 
-    pass
+    def all_not_displayed_matches_should_have_is_displayed_false() -> None:
+        not_displayed.assert_each(lambda match: not match.is_displayed)
+
+    def all_matches_with_is_displayed_true_should_be_in_display_matches() -> None:
+        assert displayed.to_set() == analysis.display_matches.to_set()
+
+    all_not_displayed_matches_should_have_is_displayed_false()
+    all_matches_with_is_displayed_true_should_be_in_display_matches()
 
 def assert_all_words_equal(sentence: str, expected_output: list[str]) -> None:
     sentence_note = SentenceNote.create(sentence)
