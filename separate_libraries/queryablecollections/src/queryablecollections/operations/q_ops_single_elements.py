@@ -10,12 +10,28 @@ if TYPE_CHECKING:
 
     from queryablecollections.type_aliases import Predicate
 
+def first[TItem](self: Iterable[TItem], predicate: Predicate[TItem] | None = None):
+    if predicate is not None:
+        self = where(self, predicate)
+    try:
+        return next(iter(self))
+    except StopIteration:
+        raise IndexError("Sequece contains no elements.") from None
+
+def first_or_none[TItem](self: Iterable[TItem], predicate: Predicate[TItem] | None = None) -> TItem | None:
+    if predicate is not None:
+        self = where(self, predicate)
+    try:
+        return next(iter(self))
+    except StopIteration:
+        return None
+
 def single[TItem](self: Iterable[TItem], predicate: Predicate[TItem] | None = None):
     if predicate is not None:
         self = where(self, predicate)
     iterator = iter(self)
     try:
-        first = next(iterator)
+        first_element = next(iterator)
     except StopIteration:
         raise IndexError("Sequece contains no elements.") from None
 
@@ -23,14 +39,14 @@ def single[TItem](self: Iterable[TItem], predicate: Predicate[TItem] | None = No
         next(iterator)  # Check if there's a second element
         raise ValueError("Sequence contains more than one element")
     except StopIteration:
-        return first
+        return first_element
 
 def single_or_none[TItem](self: Iterable[TItem], predicate: Predicate[TItem] | None = None) -> TItem | None:
     if predicate is not None:
         self = where(self, predicate)
     iterator = iter(self)
     try:
-        first = next(iterator)
+        first_element = next(iterator)
     except StopIteration:
         return None
 
@@ -38,7 +54,7 @@ def single_or_none[TItem](self: Iterable[TItem], predicate: Predicate[TItem] | N
         next(iterator)  # Check if there's a second element
         raise ValueError("Sequence contains more than one element")
     except StopIteration:
-        return first
+        return first_element
 
 def element_at[TItem](self: Iterable[TItem], index: int) -> TItem:
     try:

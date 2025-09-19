@@ -11,7 +11,6 @@ if TYPE_CHECKING:
     from collections.abc import Iterator
 
     from _typeshed import SupportsRichComparison
-
     from queryablecollections.collections.q_frozen_set import QFrozenSet
     from queryablecollections.collections.q_list import QList
     from queryablecollections.collections.q_sequence import QSequence
@@ -28,7 +27,10 @@ class QIterable[TItem](Iterable[TItem], ABC):
     # region queries that need to be static so that we can know the type of the the LLitearble
 
     # region operations on the whole collection, not the items
-    def concat(self, other: Iterable[TItem]) -> QIterable[TItem]: return _Qiterable(q_ops_transform.concat(self, other))
+    def concat(self, *others: Iterable[TItem]) -> QIterable[TItem]: return _Qiterable(q_ops_transform.concat(self, *others))
+    # endregion
+
+    # region functional programming helpers
     def pipe_to[TReturn](self, action: Selector[QIterable[TItem], TReturn]) -> TReturn: return action(self)
     # endregion
 
@@ -66,11 +68,13 @@ class QIterable[TItem](Iterable[TItem], ABC):
     # endregion
 
     # region mapping methods
-    def select[TReturn](self, selector: Selector[TItem, TReturn]) -> QIterable[TReturn]: return _Qiterable(q_ops_transform.select(selector, self))
+    def select[TReturn](self, selector: Selector[TItem, TReturn]) -> QIterable[TReturn]: return _Qiterable(q_ops_transform.select(self, selector))
     def select_many[TInner](self, selector: Selector[TItem, Iterable[TInner]]) -> QIterable[TInner]: return _Qiterable(q_ops_transform.select_many(self, selector))
     # endregion
 
     # region single item selecting methods
+    def first(self, predicate: Predicate[TItem] | None = None) -> TItem: return q_ops_single_elements.first(self, predicate)
+    def first_or_none(self, predicate: Predicate[TItem] | None = None) -> TItem | None: return q_ops_single_elements.first_or_none(self, predicate)
     def single(self, predicate: Predicate[TItem] | None = None) -> TItem: return q_ops_single_elements.single(self, predicate)
     def single_or_none(self, predicate: Predicate[TItem] | None = None) -> TItem | None: return q_ops_single_elements.single_or_none(self, predicate)
 
