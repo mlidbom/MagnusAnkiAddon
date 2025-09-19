@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 import itertools
+import sys
 from abc import ABC
 from collections.abc import Iterable, Sequence
-from typing import TYPE_CHECKING, Any, cast, override
+from typing import TYPE_CHECKING, Any, SupportsIndex, cast, overload, override
 
 from ex_autoslot import AutoSlotsABC
 from sysutils.collections.immutable_sequence import ImmutableSequence
@@ -221,7 +222,7 @@ class QImmutableSequence[TItem](ImmutableSequence[TItem], QSequence[TItem]):
         super().__init__(sequence)
 
 # region LList, LSet, LFrozenSet: concrete classes that do very little but inherit a built in collection and LIterable and provide an override or two for performance
-class QList[TItem](list[TItem], QSequence[TItem], QIterable[TItem], AutoSlotsABC):  # pyright: ignore [reportIncompatibleMethodOverride] apparently there's a conflict between the definitions of index in list and Sequence, well list will win and that should be the same as for any list type...
+class QList[TItem](list[TItem], QSequence[TItem], QIterable[TItem], AutoSlotsABC):
     def __init__(self, iterable: Iterable[TItem] = ()) -> None:
         super().__init__(iterable)
 
@@ -233,6 +234,25 @@ class QList[TItem](list[TItem], QSequence[TItem], QIterable[TItem], AutoSlotsABC
 
     @override
     def element_at(self, index: int) -> TItem: return self[index]
+
+    @override
+    def index(self, value: TItem, start: SupportsIndex = 0, stop: SupportsIndex = sys.maxsize) -> int:
+        return super().index(value, start, stop)
+
+    @override
+    def count(self, value: TItem): return super().count(value)
+
+    @overload
+    def __getitem__(self, index: SupportsIndex) -> TItem: ...
+
+    @overload
+    def __getitem__(self, index: slice) -> QList[TItem]: ...
+
+    @override
+    def __getitem__(self, index: SupportsIndex | slice) -> TItem | QList[TItem]:
+        if isinstance(index, slice):
+            return QList(super().__getitem__(index))
+        return super().__getitem__(index)
 
     @staticmethod
     @override
