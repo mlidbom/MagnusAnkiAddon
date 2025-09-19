@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, override
 
 from ex_autoslot import AutoSlots
 from sysutils import ex_str, kana_utils
-from sysutils.collections.linq.q_iterable import QList, query
+from sysutils.collections.queryable.q_iterable import QList, query
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote

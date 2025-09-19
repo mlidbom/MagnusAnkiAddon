@@ -10,7 +10,7 @@ from note.collection.backend_facade import BackEndFacade
 from note.collection.note_cache import CachedNote, NoteCache
 from note.note_constants import NoteTypes
 from note.vocabulary.vocabnote import VocabNote
-from sysutils.collections.linq.q_iterable import QList, query
+from sysutils.collections.queryable.q_iterable import QList, query
 
 if TYPE_CHECKING:
     from collections.abc import Iterable

@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, final, override
 
 from ankiutils import app
 from ex_autoslot import AutoSlots
-from sysutils.collections.linq.q_iterable import QList
+from sysutils.collections.queryable.q_iterable import QList
 from sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:

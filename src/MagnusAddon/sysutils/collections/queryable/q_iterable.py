@@ -7,6 +7,7 @@ from collections.abc import Iterable, Sequence
 from typing import TYPE_CHECKING, Any, SupportsIndex, cast, overload, override
 
 from ex_autoslot import AutoSlotsABC
+from sysutils.collections.queryable import ex_itertools
 from sysutils.collections.immutable_sequence import ImmutableSequence
 
 if TYPE_CHECKING:
@@ -91,27 +92,12 @@ class QIterable[TItem](Iterable[TItem], ABC, AutoSlotsABC):
     # region single item selecting methods
     def single(self, predicate: Predicate[TItem] | None = None) -> TItem:
         if not predicate:
-            first: TItem | None = None
-            found = False
-            for current_index, item in enumerate(self):
-                if current_index > 0:
-                    raise ValueError("Sequence contains more than one element")
-                first = item
-                found = True
-            if found: return cast(TItem, first)
-            raise IndexError("Index 0 was outside the bounds of the collection.")
-
+            return ex_itertools.single(self)
         return self.where(predicate).single()
 
     def single_or_none(self, predicate: Predicate[TItem] | None = None) -> TItem | None:
         if predicate is None:
-            first: TItem | None = None
-            for current_index, item in enumerate(self):
-                if current_index > 0:
-                    raise ValueError("Sequence contains more than one element")
-                first = item
-            return first
-
+            return ex_itertools.single_or_none(self)
         return self.where(predicate).single_or_none()
 
     def element_at(self, index: int) -> TItem:

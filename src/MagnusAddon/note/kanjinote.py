@@ -8,7 +8,7 @@ from ankiutils import app
 from ex_autoslot import AutoSlots
 from note import kanjinote_mnemonic_maker
 from note.vocabulary import vocabnote_sorting
-from sysutils.collections.linq.q_iterable import QList, query
+from sysutils.collections.queryable.q_iterable import QList, query
 from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:

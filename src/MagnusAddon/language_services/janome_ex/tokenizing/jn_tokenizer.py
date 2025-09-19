@@ -8,7 +8,7 @@ from language_services.janome_ex.tokenizing.jn_parts_of_speech import JNPartsOfS
 from language_services.janome_ex.tokenizing.jn_token import JNToken
 from language_services.janome_ex.tokenizing.jn_tokenized_text import JNTokenizedText
 from sysutils import ex_str, typed
-from sysutils.collections.linq.q_iterable import QList
+from sysutils.collections.queryable.q_iterable import QList
 
 
 @final

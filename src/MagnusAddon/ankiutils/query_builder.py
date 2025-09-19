@@ -6,7 +6,7 @@ from ankiutils import app
 from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 from note.note_constants import Builtin, MyNoteFields, NoteFields, NoteTypes, SentenceNoteFields
 from sysutils import kana_utils
-from sysutils.collections.linq.q_iterable import QSet
+from sysutils.collections.queryable.q_iterable import QSet
 
 if TYPE_CHECKING:
     from collections.abc import Iterable

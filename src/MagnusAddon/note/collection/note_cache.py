@@ -6,7 +6,7 @@ from ex_autoslot import AutoSlots
 from line_profiling_hacks import profile_lines
 from note.jpnote import JPNote
 from sysutils.collections.default_dict_case_insensitive import DefaultDictCaseInsensitive
-from sysutils.collections.linq.q_iterable import QList
+from sysutils.collections.queryable.q_iterable import QList
 from sysutils.typed import checked_cast
 
 if TYPE_CHECKING:

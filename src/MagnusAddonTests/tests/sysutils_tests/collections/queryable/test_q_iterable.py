@@ -4,7 +4,7 @@ from collections.abc import Callable, Iterable
 from typing import cast
 
 import pytest
-from sysutils.collections.linq.q_iterable import QFrozenSet, QImmutableSequence, QIterable, QList, QSet, query
+from sysutils.collections.queryable.q_iterable import QFrozenSet, QImmutableSequence, QIterable, QList, QSet, query
 
 
 def test_select() -> None:

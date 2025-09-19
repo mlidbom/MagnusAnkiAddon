@@ -23,7 +23,7 @@ from sysutils.weak_ref import WeakRef
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
     from note.vocabulary.vocabnote import VocabNote
-    from sysutils.collections.linq.q_iterable import QList
+    from sysutils.collections.queryable.q_iterable import QList
 
 class SentenceNote(JPNote, AutoSlots):
     def __init__(self, note: Note) -> None:

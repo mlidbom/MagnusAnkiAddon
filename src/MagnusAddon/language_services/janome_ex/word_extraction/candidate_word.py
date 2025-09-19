@@ -6,7 +6,7 @@ from ex_autoslot import AutoSlots
 from language_services.janome_ex.word_extraction.analysis_constants import noise_characters
 from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
 from language_services.janome_ex.word_extraction.matches.match import Match
-from sysutils.collections.linq.q_iterable import QIterable, QList
+from sysutils.collections.queryable.q_iterable import QIterable, QList
 from sysutils.typed import non_optional
 from sysutils.weak_ref import WeakRef, WeakRefable
 

@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from ex_autoslot import AutoSlots
 from language_services import conjugator
-from sysutils.collections.linq.q_iterable import QList, query
+from sysutils.collections.queryable.q_iterable import QList, query
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote

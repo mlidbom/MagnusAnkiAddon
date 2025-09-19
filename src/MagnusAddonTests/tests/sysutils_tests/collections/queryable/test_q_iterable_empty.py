@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from sysutils import typed
-from sysutils.collections.linq.q_iterable import QFrozenSet, QImmutableSequence, QIterable, QList, QSequence, QSet
+from sysutils.collections.queryable.q_iterable import QFrozenSet, QImmutableSequence, QIterable, QList, QSequence, QSet
 
 
 def test_iterable_empty_returns_empty_sequence_the_same_instance_each_time() -> None:

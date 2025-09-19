@@ -4,7 +4,7 @@ import note.vocabulary.vocabnote_sorting
 from ankiutils import app
 from aqt import gui_hooks
 from note.vocabulary.vocabnote import VocabNote
-from sysutils.collections.linq.q_iterable import query
+from sysutils.collections.queryable.q_iterable import query
 from sysutils.ex_str import newline
 from ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
 
