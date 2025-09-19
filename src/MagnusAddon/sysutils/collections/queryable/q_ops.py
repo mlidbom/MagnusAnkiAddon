@@ -23,6 +23,10 @@ class SortInstruction[TItem]:
 def where[TItem](self: Iterable[TItem], predicate: Predicate[TItem]) -> Iterable[TItem]:
     return filter(predicate, self)
 
+def _item_not_none(value: object) -> bool: return value is not None  # pyright: ignore [reportInvalidTypeVarUse]
+def where_not_none[TItem](self: Iterable[TItem]) -> Iterable[TItem]:
+    return where(self, _item_not_none)
+
 def single[TItem](self: Iterable[TItem], predicate: Predicate[TItem] | None = None):
     if predicate is not None:
         self = where(self, predicate)

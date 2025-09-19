@@ -33,7 +33,7 @@ class QIterable[TItem](Iterable[TItem], ABC, AutoSlotsABC):
 
     # region filtering
     def where(self, predicate: Predicate[TItem]) -> QIterable[TItem]: return _Qiterable(q_ops.where(self, predicate))
-    def where_not_none(self) -> QIterable[TItem]: return self.where(lambda item: item is not None)
+    def where_not_none(self) -> QIterable[TItem]: return _Qiterable(q_ops.where_not_none(self))
     def distinct(self) -> QIterable[TItem]: return LazyQiterable(lambda: q_ops.distinct(self))
     def take_while(self, predicate: Predicate[TItem]) -> QIterable[TItem]: return _Qiterable(q_ops.take_while(predicate, self))
 
