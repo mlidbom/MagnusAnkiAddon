@@ -75,22 +75,14 @@ class QIterable[TItem](Iterable[TItem], ABC, AutoSlotsABC):
         if predicate is None: return q_ops.single_or_none(self)
         return self.where(predicate).single_or_none()
 
-    def element_at(self, index: int) -> TItem:
-        try:
-            return next(itertools.islice(self, index, index + 1))
-        except StopIteration:
-            raise IndexError(f"Index {index} was outside the bounds of the collection.") from None
-
-    def element_at_or_default(self, index: int) -> TItem | None:
-        return next(itertools.islice(self, index, index + 1), None)
+    def element_at(self, index: int) -> TItem: return q_ops.element_at(self, index)
+    def element_at_or_none(self, index: int) -> TItem | None: return q_ops.element_at_or_none(self, index)
 
     # endregion
 
     # region assertions on the collection or it's values
     def assert_each(self, predicate: Predicate[TItem], message: str | Selector[TItem, str] | None = None) -> QIterable[TItem]:
-        for item in self:
-            actual_message = message if isinstance(message, str) else message(item) if message is not None else ""
-            if not predicate(item): raise AssertionError(actual_message)
+        q_ops.assert_each(self, predicate, message)
         return self
 
     def assert_on_collection(self, predicate: Predicate[QIterable[TItem]], message: str | None = None) -> QIterable[TItem]:
