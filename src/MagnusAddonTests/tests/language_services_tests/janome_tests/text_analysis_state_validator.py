@@ -19,12 +19,12 @@ class TextAnalysisStateValidator:
 
     def assert_is_valid(self) -> None:
         print(self.analysis.text)
-        self.is_displayed_false_matches_should_not_be_in_displayed_matches_list()
+        self.is_displayed_false_matches_should_not_be_in_display_matches_list()
         self.is_displayed_true_matches_should_be_in_display_matches()
         self.is_valid_false_matches_should_have_failure_reasons()
         self.is_valid_true_is_displayed_false_matches_should_have_hiding_reasons()
 
-    def is_displayed_false_matches_should_not_be_in_displayed_matches_list(self) -> None:
+    def is_displayed_false_matches_should_not_be_in_display_matches_list(self) -> None:
         self.is_valid_true_is_displayed_false_matches.assert_each(lambda match: match not in self.display_matches, lambda match: f"""Match: {match} has is_displayed=False yet is displayed""")
 
     def is_displayed_true_matches_should_be_in_display_matches(self) -> None:
