@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import itertools
 import sys
 from abc import ABC
 from collections.abc import Iterable, Sequence
