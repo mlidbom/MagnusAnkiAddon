@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from abc import ABC
-from collections.abc import Sequence
+from collections.abc import Iterable, Sequence
 from typing import cast, overload, override
 
 from queryablecollections.immutable_sequence import ImmutableSequence
@@ -9,7 +9,7 @@ from queryablecollections.q_iterable import QIterable, QLazyiterable
 
 
 class QSequence[TItem](Sequence[TItem], QIterable[TItem], ABC):
-    __slots__ = ()
+    __slots__: tuple[str, ...] = ()
     @override
     def _optimized_length(self) -> int: return len(self)
 
@@ -23,9 +23,9 @@ class QSequence[TItem](Sequence[TItem], QIterable[TItem], ABC):
         return cast(QSequence[TItem], QSequence._empty_sequence)  # pyright: ignore [reportGeneralTypeIssues, reportUnknownMemberType] an empty QList can serve as any QList in python since generic types are not present at runtime and this gives as such an instance at virtually zero cost
 
 class QImmutableSequence[TItem](ImmutableSequence[TItem], QSequence[TItem]):
-    __slots__ = ()
-    def __init__(self, sequence: Sequence[TItem] = ()) -> None:
-        super().__init__(sequence)
+    __slots__: tuple[str, ...] = ()
+    def __init__(self, iterable: Iterable[TItem] = ()) -> None:
+        super().__init__(list(iterable))
 
     @overload
     def __getitem__(self, index: int) -> TItem: ...

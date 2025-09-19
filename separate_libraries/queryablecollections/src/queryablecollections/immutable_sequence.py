@@ -5,7 +5,7 @@ from typing import overload, override
 
 
 class ImmutableSequence[TItem](Sequence[TItem]):
-    __slots__ = ("_items",)
+    __slots__: tuple[str, ...] = ("_items",)
     def __init__(self, items: Sequence[TItem] = ()) -> None:
         self._items: Sequence[TItem] = items  # Direct reference - no copying
 

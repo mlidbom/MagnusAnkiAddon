@@ -13,7 +13,7 @@
     "**/included_libraries/*"
   ],
   "ignore": [],
-  "extraPaths": ["src/MagnusAddon", "separate_libraries/queryablecollections/src"],
+  "extraPaths": ["src/MagnusAddon", "separate_libraries/queryablecollections/src", "separate_libraries/queryablecollections/queryablecollections_tests"],
 
   "nonsense_because_comments_not_allowed": "off, basic, standard, strict, recommended, all",
   "typeCheckingMode": "recommended",

@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     from collections.abc import Iterable
 
 class QFrozenSet[TItem](frozenset[TItem], QIterable[TItem]):
-    __slots__ = ()
+    __slots__: tuple[str, ...] = ()
     def __new__(cls, iterable: Iterable[TItem] = ()) -> QFrozenSet[TItem]:
         return super().__new__(cls, iterable)
 

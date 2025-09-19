@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from abc import ABC
 from collections.abc import Iterable
+from decimal import InvalidOperation
 from typing import TYPE_CHECKING, Any, cast, override
 
 from queryablecollections.operations import q_ops_bool, q_ops_filtering, q_ops_loop, q_ops_ordering, q_ops_single_elements, q_ops_transform
@@ -11,23 +12,28 @@ if TYPE_CHECKING:
     from collections.abc import Iterator
 
     from _typeshed import SupportsRichComparison
+
     from queryablecollections.collections.q_frozen_set import QFrozenSet
     from queryablecollections.collections.q_list import QList
     from queryablecollections.collections.q_sequence import QSequence
     from queryablecollections.collections.q_set import QSet
+    from queryablecollections.q_cast import QCast
     from queryablecollections.type_aliases import Action1, Func, Predicate, Selector
 
-def query[TItem](value: Iterable[TItem]) -> QIterable[TItem]: return _Qiterable(value)
+def query[TItem](value: Iterable[TItem]) -> QIterable[TItem]: return QiterableImplementation(value)
 
 class QIterable[TItem](Iterable[TItem], ABC):
-    __slots__ = ()
+    __slots__: tuple[str, ...] = ()
     @staticmethod
-    def create(value: Iterable[TItem]) -> QIterable[TItem]: return _Qiterable(value)
+    def create(value: Iterable[TItem]) -> QIterable[TItem]: return QiterableImplementation(value)
 
-    # region queries that need to be static so that we can know the type of the the LLitearble
+    @property
+    def cast(self) -> QCast[TItem]:
+        from queryablecollections.q_cast import QCast
+        return QCast(self)
 
     # region operations on the whole collection, not the items
-    def concat(self, *others: Iterable[TItem]) -> QIterable[TItem]: return _Qiterable(q_ops_transform.concat(self, *others))
+    def concat(self, *others: Iterable[TItem]) -> QIterable[TItem]: return QiterableImplementation(q_ops_transform.concat(self, *others))
     # endregion
 
     # region functional programming helpers
@@ -35,10 +41,10 @@ class QIterable[TItem](Iterable[TItem], ABC):
     # endregion
 
     # region filtering
-    def where(self, predicate: Predicate[TItem]) -> QIterable[TItem]: return _Qiterable(q_ops_filtering.where(self, predicate))
-    def where_not_none(self) -> QIterable[TItem]: return _Qiterable(q_ops_filtering.where_not_none(self))
+    def where(self, predicate: Predicate[TItem]) -> QIterable[TItem]: return QiterableImplementation(q_ops_filtering.where(self, predicate))
+    def where_not_none(self) -> QIterable[TItem]: return QiterableImplementation(q_ops_filtering.where_not_none(self))
     def distinct(self) -> QIterable[TItem]: return QLazyiterable(lambda: q_ops_filtering.distinct(self))
-    def take_while(self, predicate: Predicate[TItem]) -> QIterable[TItem]: return _Qiterable(q_ops_filtering.take_while(predicate, self))
+    def take_while(self, predicate: Predicate[TItem]) -> QIterable[TItem]: return QiterableImplementation(q_ops_filtering.take_while(predicate, self))
 
     # endregion
 
@@ -68,8 +74,8 @@ class QIterable[TItem](Iterable[TItem], ABC):
     # endregion
 
     # region mapping methods
-    def select[TReturn](self, selector: Selector[TItem, TReturn]) -> QIterable[TReturn]: return _Qiterable(q_ops_transform.select(self, selector))
-    def select_many[TInner](self, selector: Selector[TItem, Iterable[TInner]]) -> QIterable[TInner]: return _Qiterable(q_ops_transform.select_many(self, selector))
+    def select[TReturn](self, selector: Selector[TItem, TReturn]) -> QIterable[TReturn]: return QiterableImplementation(q_ops_transform.select(self, selector))
+    def select_many[TInner](self, selector: Selector[TItem, Iterable[TInner]]) -> QIterable[TInner]: return QiterableImplementation(q_ops_transform.select_many(self, selector))
     # endregion
 
     # region single item selecting methods
@@ -80,6 +86,10 @@ class QIterable[TItem](Iterable[TItem], ABC):
 
     def element_at(self, index: int) -> TItem: return q_ops_single_elements.element_at(self, index)
     def element_at_or_none(self, index: int) -> TItem | None: return q_ops_single_elements.element_at_or_none(self, index)
+
+    def _assert_not_empty(self) -> QIterable[TItem]:
+        if self.none(): raise InvalidOperation("The collection is empty")
+        return self
 
     # endregion
 
@@ -131,8 +141,8 @@ class QIterable[TItem](Iterable[TItem], ABC):
         return cast(QIterable[TItem], QIterable._empty_iterable)  # pyright: ignore [reportGeneralTypeIssues, reportUnknownMemberType] an empty QIterable can serve or any QIterable type in python since generic types are not present at runtime and this gives as such an instance at virtually zero cost
 
 # region implementing classes
-class _Qiterable[TItem](QIterable[TItem]):
-    __slots__ = ("_value",)
+class QiterableImplementation[TItem](QIterable[TItem]):
+    __slots__: tuple[str, ...] = ("_value",)
     def __init__(self, iterable: Iterable[TItem]) -> None:
         self._value: Iterable[TItem] = iterable
 
@@ -140,7 +150,7 @@ class _Qiterable[TItem](QIterable[TItem]):
     def __iter__(self) -> Iterator[TItem]: yield from self._value
 
 class QLazyiterable[TItem](QIterable[TItem]):
-    __slots__ = ("_factory",)
+    __slots__: tuple[str, ...] = ("_factory",)
     def __init__(self, iterable_factory: Func[Iterable[TItem]]) -> None:
         self._factory: Func[Iterable[TItem]] = iterable_factory
 
@@ -150,7 +160,7 @@ class QLazyiterable[TItem](QIterable[TItem]):
 # region LOrderedLIterable
 
 class QOrderedIterable[TItem](QIterable[TItem]):
-    __slots__ = ("sorting_instructions", "_unsorted")
+    __slots__: tuple[str, ...] = ("sorting_instructions", "_unsorted")
     def __init__(self, iterable: Iterable[TItem], sorting_instructions: list[SortInstruction[TItem]]) -> None:
         self.sorting_instructions: list[SortInstruction[TItem]] = sorting_instructions
         self._unsorted: Iterable[TItem] = iterable
@@ -169,7 +179,7 @@ class QOrderedIterable[TItem](QIterable[TItem]):
 # region LList, LSet, LFrozenSet: concrete classes
 
 # an empty immutable Q* can serve or any Q* type in python since generic types are not present at runtime and this gives as such an instance at virtually zero cost
-QIterable._empty_iterable = _Qiterable(())  # pyright: ignore [reportGeneralTypeIssues, reportPrivateUsage]
+QIterable._empty_iterable = QiterableImplementation(())  # pyright: ignore [reportGeneralTypeIssues, reportPrivateUsage]
 
 # endregion
 # endregion

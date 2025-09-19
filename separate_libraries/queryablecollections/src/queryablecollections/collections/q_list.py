@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from collections.abc import Iterable
 
 class QList[TItem](list[TItem], QSequence[TItem], QIterable[TItem]):
-    __slots__ = ()
+    __slots__: tuple[str, ...] = ()
     def __init__(self, iterable: Iterable[TItem] = ()) -> None:
         super().__init__(iterable)
 

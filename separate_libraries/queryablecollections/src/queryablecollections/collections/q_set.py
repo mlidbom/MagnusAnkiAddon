@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 
 
 class QSet[TItem](set[TItem], QIterable[TItem]):
-    __slots__ = ()
+    __slots__: tuple[str, ...] = ()
     def __init__(self, iterable: Iterable[TItem] = ()) -> None:
         super().__init__(iterable)
 

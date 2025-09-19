@@ -20,4 +20,4 @@ def any_[TItem](self: Iterable[TItem], predicate: Predicate[TItem] | None = None
             return True  # noqa: TRY300
         except StopIteration:
             return False
-    return any(select(predicate, self))
+    return any(select(self, predicate, ))

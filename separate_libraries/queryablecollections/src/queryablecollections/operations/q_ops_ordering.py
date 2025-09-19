@@ -14,7 +14,7 @@ def reverse_lazy[TItem](self: Iterable[TItem]) -> Func[Iterable[TItem]]:
     return lambda: reversed(list(self))
 
 class SortInstruction[TItem]:
-    __slots__ = ("key_selector", "descending")
+    __slots__: tuple[str, ...] = ("key_selector", "descending")
     def __init__(self, key_selector: Selector[TItem, SupportsRichComparison], descending: bool) -> None:
         self.key_selector: Selector[TItem, SupportsRichComparison] = key_selector
         self.descending: bool = descending
