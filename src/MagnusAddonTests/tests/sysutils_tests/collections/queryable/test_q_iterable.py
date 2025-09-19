@@ -5,8 +5,8 @@ from typing import cast
 
 import pytest
 from sysutils.collections.queryable.collections.q_frozen_set import QFrozenSet
-from sysutils.collections.queryable.collections.q_immutable_sequence import QImmutableSequence
 from sysutils.collections.queryable.collections.q_list import QList
+from sysutils.collections.queryable.collections.q_sequence import QImmutableSequence
 from sysutils.collections.queryable.collections.q_set import QSet
 from sysutils.collections.queryable.q_iterable import QIterable, query
 

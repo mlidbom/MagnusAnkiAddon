@@ -115,7 +115,7 @@ class QIterable[TItem](Iterable[TItem], ABC, AutoSlotsABC):
         from sysutils.collections.queryable.collections.q_frozen_set import QFrozenSet
         return QFrozenSet(self)
     def to_sequence(self) -> QSequence[TItem]:
-        from sysutils.collections.queryable.collections.q_immutable_sequence import QImmutableSequence
+        from sysutils.collections.queryable.collections.q_sequence import QImmutableSequence
         return QImmutableSequence(list(self))
     def to_built_in_list(self) -> list[TItem]: return list(self)
     # endregion
