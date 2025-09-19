@@ -67,7 +67,8 @@ class QIterable[TItem](Iterable[TItem], ABC, AutoSlotsABC):
     # endregion
 
     # region boolean queries
-    def none(self, predicate: Predicate[TItem] | None = None) -> bool: return not self.any(predicate)
+    def none(self, predicate: Predicate[TItem] | None = None) -> bool:
+        return not self.any(predicate)
 
     def any(self, predicate: Predicate[TItem] | None = None) -> bool:
         if predicate is None:
@@ -221,7 +222,17 @@ class QImmutableSequence[TItem](ImmutableSequence[TItem], QSequence[TItem]):
     def __init__(self, sequence: Sequence[TItem] = ()) -> None:
         super().__init__(sequence)
 
-# region LList, LSet, LFrozenSet: concrete classes that do very little but inherit a built in collection and LIterable and provide an override or two for performance
+    @overload
+    def __getitem__(self, index: int) -> TItem: ...
+    @overload
+    def __getitem__(self, index: slice) -> QImmutableSequence[TItem]: ...
+    @override
+    def __getitem__(self, index: int | slice) -> TItem | QImmutableSequence[TItem]:
+        if isinstance(index, slice):
+            return QImmutableSequence(super().__getitem__(index))
+        return super().__getitem__(index)
+
+# region LList, LSet, LFrozenSet: concrete classes
 class QList[TItem](list[TItem], QSequence[TItem], QIterable[TItem], AutoSlotsABC):
     def __init__(self, iterable: Iterable[TItem] = ()) -> None:
         super().__init__(iterable)
