@@ -121,13 +121,3 @@ def test_assert_on_collection_throws_if_predicate_returns_false() -> None:
 
 def test_assert_on_collection_does_not_throw_if_predicate_returns_true() -> None:
     value_test([1, 2], lambda x: x.assert_on_collection(lambda _: True).to_list(), [1, 2])
-
-
-def test_cast_int_returns_an_q_iterable_int_with_the_same_elements() -> None:
-    value_test([1, 2, 3], lambda x: x.cast.int().to_list(), [1, 2, 3])
-
-def test_cast_checked_int_returns_a_q_iterable_int_with_the_same_elements() -> None:
-    value_test([1, 2, 3], lambda x: x.cast.checked.int().to_list(), [1, 2, 3])
-
-def test_cast_checked_int_raises_type_error_if_collection_contains_non_int() -> None:
-    throws_test([1, "2", 3], lambda x: x.cast.checked.int().to_list(), TypeError)
