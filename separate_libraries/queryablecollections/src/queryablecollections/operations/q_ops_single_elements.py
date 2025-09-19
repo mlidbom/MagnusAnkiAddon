@@ -8,7 +8,7 @@ from queryablecollections.operations.q_ops import where
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
-    from sysutils.standard_type_aliases import Predicate
+    from queryablecollections.type_aliases import Predicate
 
 def single[TItem](self: Iterable[TItem], predicate: Predicate[TItem] | None = None):
     if predicate is not None:

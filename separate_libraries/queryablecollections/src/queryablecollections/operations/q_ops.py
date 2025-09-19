@@ -8,7 +8,7 @@ if TYPE_CHECKING:
 
     from _typeshed import SupportsRichComparison
 
-    from queryablecollections.standard_type_aliases import Predicate, Selector
+    from queryablecollections.type_aliases import Predicate, Selector
 
 concat = itertools.chain
 select = map

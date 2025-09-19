@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from collections.abc import Iterator
 
     from _typeshed import SupportsRichComparison
-    from sysutils.standard_type_aliases import Action1, Func, Predicate, Selector
+    from queryablecollections.type_aliases import Action1, Func, Predicate, Selector
 
     from queryablecollections.collections.q_frozen_set import QFrozenSet
     from queryablecollections.collections.q_list import QList
