@@ -31,7 +31,7 @@ class TextAnalysisStateValidator:
         self.is_displayed_true_matches.assert_each(lambda match: match in self.display_matches, lambda match: f"""Match: {match} has is_displayed=True yet is not in display_matches""")
 
     def is_valid_true_is_displayed_false_matches_should_have_hiding_reasons(self) -> None:
-        self.is_valid_true_is_displayed_false_matches.assert_each(lambda match: len(match.hiding_reasons) == 0, lambda match: f"""Match: {match} has is_displayed=False yet has no hiding_reasons""")
+        self.is_valid_true_is_displayed_false_matches.assert_each(lambda match: len(match.hiding_reasons) > 0, lambda match: f"""Match: {match} has is_displayed=False yet has no hiding_reasons""")
 
     def is_valid_false_matches_should_have_failure_reasons(self) -> None:
         self.is_valid_false_matches.assert_each(lambda match: len(match.failure_reasons) > 0, lambda match: f"""Match: {match} has is_valid=False yet has no failure_reasons""")
