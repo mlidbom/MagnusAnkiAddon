@@ -31,7 +31,7 @@ class QIterable[TItem](Iterable[TItem], ABC, AutoSlotsABC):
     # endregion
 
     # region filtering
-    def where(self, predicate: Predicate[TItem]) -> QIterable[TItem]: return _Qiterable(q_ops.where(predicate, self))
+    def where(self, predicate: Predicate[TItem]) -> QIterable[TItem]: return _Qiterable(q_ops.where(self, predicate))
     def where_not_none(self) -> QIterable[TItem]: return self.where(lambda item: item is not None)
     def distinct(self) -> QIterable[TItem]: return _LazyQiterable(lambda: q_ops.distinct(self))
     def take_while(self, predicate: Predicate[TItem]) -> QIterable[TItem]: return _Qiterable(q_ops.take_while(predicate, self))
@@ -60,7 +60,7 @@ class QIterable[TItem](Iterable[TItem], ABC, AutoSlotsABC):
     # region boolean queries
     def none(self, predicate: Predicate[TItem] | None = None) -> bool: return not q_ops.any_(self, predicate)
     def any(self, predicate: Predicate[TItem] | None = None) -> bool: return q_ops.any_(self, predicate)
-    def all(self, predicate: Predicate[TItem]) -> bool: return not self.any(lambda item: not predicate(item))
+    def all(self, predicate: Predicate[TItem]) -> bool: return q_ops.all(self, predicate)
     # endregion
 
     # region mapping methods
