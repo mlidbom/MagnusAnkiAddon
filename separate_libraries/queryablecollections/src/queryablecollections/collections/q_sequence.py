@@ -17,8 +17,8 @@ class QSequence[TItem](Sequence[TItem], QIterable[TItem], ABC):
     def reversed(self) -> QIterable[TItem]: return LazyQiterable[TItem](lambda: reversed(self))
 
     _empty_sequence: QSequence[TItem]
-    @override
     @staticmethod
+    @override
     def empty() -> QSequence[TItem]:
         return cast(QSequence[TItem], QSequence._empty_sequence)  # pyright: ignore [reportGeneralTypeIssues, reportUnknownMemberType] an empty QList can serve as any QList in python since generic types are not present at runtime and this gives as such an instance at virtually zero cost
 
