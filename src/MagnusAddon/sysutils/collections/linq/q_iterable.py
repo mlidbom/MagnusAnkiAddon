@@ -153,6 +153,7 @@ class QIterable[TItem](Iterable[TItem], ABC, AutoSlotsABC):
     def to_built_in_list(self) -> list[TItem]: return list(self)
     def to_set(self) -> QSet[TItem]: return QSet(self)
     def to_frozenset(self) -> QFrozenSet[TItem]: return QFrozenSet(self)
+    def to_sequence(self) -> QSequence[TItem]: return QImmutableSequence(list(self))
     # endregion
 
     _empty_iterable: QIterable[TItem]
