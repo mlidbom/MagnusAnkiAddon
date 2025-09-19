@@ -7,7 +7,7 @@ from ui.web.sentence.candidate_word_variant_viewmodel import CandidateWordVarian
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
-    from sysutils.collections.queryable.q_list import QList
+    from sysutils.collections.queryable.collections.q_list import QList
     from ui.web.sentence.match_viewmodel import MatchViewModel
 
 

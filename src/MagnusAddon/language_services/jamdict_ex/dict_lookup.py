@@ -6,8 +6,8 @@ from typing import TYPE_CHECKING, Any
 from ankiutils import app
 from ex_autoslot import AutoSlots
 from language_services.jamdict_ex.priority_spec import PrioritySpec
+from sysutils.collections.queryable.collections.q_list import QList
 from sysutils.collections.queryable.q_iterable import query
-from sysutils.collections.queryable.q_list import QList
 from sysutils.lazy import Lazy
 from sysutils.timeutil import StopWatch
 from sysutils.typed import non_optional, str_

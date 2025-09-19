@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, overload, override
 
 from sysutils.collections.immutable_sequence import ImmutableSequence
-from sysutils.collections.queryable.q_sequence import QSequence
+from sysutils.collections.queryable.collections.q_sequence import QSequence
 
 if TYPE_CHECKING:
     from collections.abc import Sequence

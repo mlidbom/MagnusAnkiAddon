@@ -12,7 +12,7 @@ from note.sentences.sentencenote import SentenceNote
 from note.vocabulary.vocabnote import VocabNote
 from qt_utils.ex_qmenu import ExQmenu
 from sysutils import ex_lambda, typed
-from sysutils.collections.queryable.q_list import QList
+from sysutils.collections.queryable.collections.q_list import QList
 from sysutils.typed import non_optional
 from ui import menus
 from ui.menus.menu_utils import shortcutfinger

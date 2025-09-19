@@ -14,8 +14,8 @@ from sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
-    from sysutils.collections.queryable.q_list import QList
-    from sysutils.collections.queryable.q_set import QSet
+    from sysutils.collections.queryable.collections.q_list import QList
+    from sysutils.collections.queryable.collections.q_set import QSet
 
 class VocabNoteForms(WeakRefable, AutoSlots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:

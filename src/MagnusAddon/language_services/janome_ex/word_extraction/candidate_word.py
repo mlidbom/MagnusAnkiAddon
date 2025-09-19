@@ -13,7 +13,7 @@ from sysutils.weak_ref import WeakRef, WeakRefable
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
     from language_services.janome_ex.word_extraction.text_location import TextAnalysisLocation
-    from sysutils.collections.queryable.q_list import QList
+    from sysutils.collections.queryable.collections.q_list import QList
 
 from sysutils.ex_str import newline
 

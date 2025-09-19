@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from anki import consts
 from anki_extentions.deck_ex import DeckEx
 from ex_autoslot import AutoSlots
-from sysutils.collections.queryable.q_list import QList
+from sysutils.collections.queryable.collections.q_list import QList
 from sysutils.timeutil import StopWatch
 from sysutils.typed import non_optional
 

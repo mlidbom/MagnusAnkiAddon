@@ -4,8 +4,8 @@ import sys
 from typing import TYPE_CHECKING, SupportsIndex, overload, override
 
 from ex_autoslot import AutoSlotsABC
+from sysutils.collections.queryable.collections.q_sequence import QSequence
 from sysutils.collections.queryable.q_iterable import LazyQiterable, QIterable
-from sysutils.collections.queryable.q_sequence import QSequence
 
 if TYPE_CHECKING:
     from collections.abc import Iterable

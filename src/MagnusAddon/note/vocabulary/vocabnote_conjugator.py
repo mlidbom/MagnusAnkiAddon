@@ -8,7 +8,7 @@ from sysutils.collections.queryable.q_iterable import query
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
-    from sysutils.collections.queryable.q_list import QList
+    from sysutils.collections.queryable.collections.q_list import QList
     from sysutils.weak_ref import WeakRef
 
 class VocabNoteConjugator(AutoSlots):

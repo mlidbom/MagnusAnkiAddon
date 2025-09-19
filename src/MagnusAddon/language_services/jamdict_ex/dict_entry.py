@@ -4,8 +4,8 @@ from typing import TYPE_CHECKING, final
 
 from ex_autoslot import AutoSlots
 from sysutils import kana_utils
+from sysutils.collections.queryable.collections.q_list import QList
 from sysutils.collections.queryable.q_iterable import query
-from sysutils.collections.queryable.q_list import QList
 from sysutils.typed import checked_cast_generics, str_
 
 if TYPE_CHECKING:

@@ -9,7 +9,7 @@ from language_services.janome_ex.word_extraction.matches.missing_match import Mi
 from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from sysutils import ex_assert
-from sysutils.collections.queryable.q_list import QList
+from sysutils.collections.queryable.collections.q_list import QList
 from sysutils.lazy import Lazy
 from sysutils.weak_ref import WeakRef, WeakRefable
 
