@@ -63,9 +63,6 @@ class SentenceCollection(AutoSlots):
 
     def all(self) -> list[SentenceNote]: return self._cache.all()
 
-    def all_old(self, task_runner: ITaskRunner) -> list[SentenceNote]:
-        return self.collection.all_old(task_runner)
-
     def with_id_or_none(self, note_id: NoteId) -> SentenceNote | None:
         return self._cache.with_id_or_none(note_id)
 

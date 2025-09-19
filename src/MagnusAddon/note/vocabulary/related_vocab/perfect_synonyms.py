@@ -44,8 +44,8 @@ class PerfectSynonyms(AutoSlots):
                     recurse_into(related)
 
         recurse_into(self._vocab())
-        for syn in self.notes():
-            recurse_into(syn)
+        for synonym in self.notes():
+            recurse_into(synonym)
         return found
 
     def _ensure_all_perfect_synonyms_are_connected(self) -> None:

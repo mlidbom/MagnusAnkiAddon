@@ -77,9 +77,6 @@ class SentenceNote(JPNote, AutoSlots):
         kanji = set(self.collection.kanji.with_any_kanji_in(self.extract_kanji()))
         return set(highlighted | displayed_vocab | kanji)
 
-    def parse_words_from_expression(self) -> list[str]:
-        return TextAnalysis.from_text(self.get_question()).all_words_strings()
-
     def get_words(self) -> set[str]: return (set(self.parsing_result.get().parsed_words_strings()) | set(self.configuration.highlighted_words())) - self.configuration.incorrect_matches.words()
 
     def get_parsed_words_notes(self) -> list[VocabNote]:

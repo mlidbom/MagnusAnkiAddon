@@ -289,8 +289,8 @@ class KanjiNote(JPNote, AutoSlots):
         def detect_radicals_from_mnemonic() -> list[str]:
             radical_names = QList(typed.checked_cast_generics(list[str], re.findall(r"<rad>(.*?)</rad>", self.get_user_mnemonic())))
 
-            def kanji_answer_contains_radical_name_as_a_separate_word(radical_name: str, radical: KanjiNote) -> bool:
-                return re.search(r"\b" + re.escape(radical_name) + r"\b", radical.get_answer()) is not None
+            def kanji_answer_contains_radical_name_as_a_separate_word(radical_name: str, kanji: KanjiNote) -> bool:
+                return re.search(r"\b" + re.escape(radical_name) + r"\b", kanji.get_answer()) is not None
 
             def kanji_answer_contains_any_radical_name_as_a_separate_word(kanji: KanjiNote) -> bool:
                 return radical_names.any(lambda name: kanji_answer_contains_radical_name_as_a_separate_word(name, kanji))

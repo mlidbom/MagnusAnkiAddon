@@ -23,12 +23,12 @@ class Match(WeakRefable, AutoSlots):
         self.weakref: WeakRef[Match] = weakref
         self._variant: WeakRef[CandidateWordVariant] = word_variant
         self._validity_requirements: list[MatchRequirement] = ([
-                                                                   Forbids(IsConfiguredIncorrect(self.weakref))
+                                                                       Forbids(IsConfiguredIncorrect(self.weakref))
                                                                ]
                                                                + validity_requirements)
         self._display_requirements: list[MatchRequirement] = ([
-                                                                  Forbids(IsShadowed(self.weakref)),
-                                                                  Forbids(IsConfiguredHidden(self.weakref))
+                                                                      Forbids(IsShadowed(self.weakref)),
+                                                                      Forbids(IsConfiguredHidden(self.weakref))
                                                               ]
                                                               + display_requirements)
 
@@ -98,7 +98,7 @@ class Match(WeakRefable, AutoSlots):
     def hiding_reasons(self) -> list[str]: return [requirement.failure_reason for requirement in self._display_requirements if not requirement.is_fulfilled]
 
     @override
-    def __repr__(self) -> str: return f"""{self.parsed_form}, {self.match_form[:10]}: failure_reasons: {" ".join(self.failure_reasons) or "None" } ## hiding_reasons: {" ".join(self.hiding_reasons) or "None"}"""
+    def __repr__(self) -> str: return f"""{self.parsed_form}, {self.match_form[:10]}: failure_reasons: {" ".join(self.failure_reasons) or "None"} ## hiding_reasons: {" ".join(self.hiding_reasons) or "None"}"""
 
     @override
     def __str__(self) -> str: return self.__repr__()

@@ -3,7 +3,6 @@ from __future__ import annotations
 from collections import defaultdict
 from typing import TYPE_CHECKING, override
 
-from anki_extentions.note_ex import NoteBulkLoader
 from ex_autoslot import AutoSlots
 from line_profiling_hacks import profile_lines
 from note.collection.backend_facade import BackEndFacade
@@ -98,12 +97,6 @@ class VocabCollection(AutoSlots):
         self.collection: BackEndFacade[VocabNote] = BackEndFacade[VocabNote](collection, vocab_constructor_call_while_populating_vocab_collection, NoteTypes.Vocab)
         all_vocab = self.collection.all(task_runner)
         self._cache: _VocabCache = _VocabCache(all_vocab, cache_manager, task_runner)
-
-    def search(self, query: str) -> list[VocabNote]: return list(self.collection.search(query))
-
-    def all_old(self, task_runner: ITaskRunner) -> list[VocabNote]:
-        backend_notes = NoteBulkLoader.load_all_notes_of_type(self.collection.anki_collection, NoteTypes.Vocab, task_runner)
-        return [VocabNote(backend_note) for backend_note in backend_notes]
 
     def is_word(self, form: str) -> bool: return any(self._cache.with_form(form))
     def all(self) -> list[VocabNote]: return self._cache.all()

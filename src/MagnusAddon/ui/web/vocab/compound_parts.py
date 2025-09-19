@@ -57,7 +57,7 @@ def get_compound_parts_recursive(vocab_note: VocabNote, depth: int = 0, visited:
 
     visited.add(vocab_note.get_id())
 
-    compound_parts =  vocab_note.compound_parts.primary_parts_notes() # ex_sequence.flatten([app.col().vocab.with_form_prefer_exact_match(part) for part in vocab_note.compound_parts.primary()])
+    compound_parts = vocab_note.compound_parts.primary_parts_notes()  # ex_sequence.flatten([app.col().vocab.with_form_prefer_exact_match(part) for part in vocab_note.compound_parts.primary()])
 
     result: list[CompoundPart] = []
 
@@ -75,5 +75,5 @@ def generate_compounds(_vocab_note: VocabNote) -> str:
 
 def init() -> None:
     gui_hooks.card_will_show.append(PrerenderingAnswerContentRenderer(VocabNote, {
-        "##VOCAB_COMPOUNDS##": generate_compounds,
+            "##VOCAB_COMPOUNDS##": generate_compounds,
     }).render)

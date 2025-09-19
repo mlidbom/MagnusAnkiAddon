@@ -55,13 +55,7 @@ class KanjiCollection(AutoSlots):
         all_kanji = self.collection.all(task_runner)
         self._cache: _KanjiCache = _KanjiCache(all_kanji, cache_manager, task_runner)
 
-    def search(self, query: str) -> list[KanjiNote]:
-        return list(self.collection.search(query))
-
     def all(self) -> QList[KanjiNote]: return self._cache.all()
-
-    def all_old(self, task_runner: ITaskRunner) -> list[KanjiNote]:
-        return self.collection.all_old(task_runner)
 
     def with_id_or_none(self, note_id:NoteId) -> KanjiNote | None:
         return self._cache.with_id_or_none(note_id)

@@ -68,10 +68,10 @@ class JamdictThreadingWrapper(AutoSlots):
         self._queue.put(Request(do_actual_lookup, future))
         return future.result()
 
-    def run_string_query(self, query: str) -> list[str]:
+    def run_string_query(self, sql_query: str) -> list[str]:
         def perform_query(jamdict: Jamdict) -> list[str]:
             result: list[str] = []
-            for batch in non_optional(non_optional(jamdict.jmdict).ctx().conn).execute(query):  # pyright: ignore[reportAny]
+            for batch in non_optional(non_optional(jamdict.jmdict).ctx().conn).execute(sql_query):  # pyright: ignore[reportAny]
                 for row in batch:  # pyright: ignore[reportAny]
                     result.append(str_(row))  # noqa: PERF401  # pyright: ignore[reportAny]
 
@@ -94,7 +94,6 @@ def _find_all_words() -> set[str]:
 # noinspection SqlResolve
 def _find_all_names() -> set[str]:
     with StopWatch.log_execution_time("Prepopulating all name forms from jamdict."):
-        _jamdict = Jamdict(reuse_ctx=False)
         kanji_forms: set[str] = set(_jamdict_threading_wrapper.run_string_query("SELECT distinct text FROM NEKanji"))
         kana_forms: set[str] = set(_jamdict_threading_wrapper.run_string_query("SELECT distinct text FROM NEKana"))
         return kanji_forms | kana_forms
@@ -127,7 +126,7 @@ class DictLookup(AutoSlots):
         return query(self.entries).select_many(lambda entry: entry.parts_of_speech()).to_set()  # set(ex_sequence.flatten([list(ent.parts_of_speech()) for ent in self.entries]))
 
     def priority_spec(self) -> PrioritySpec:
-        return PrioritySpec(self.entries.select_many(lambda entry: entry.priority_tags()).to_set())  #PrioritySpec(set(ex_iterable.flatten(entry.priority_tags() for entry in self.entries)))
+        return PrioritySpec(self.entries.select_many(lambda entry: entry.priority_tags()).to_set())  # PrioritySpec(set(ex_iterable.flatten(entry.priority_tags() for entry in self.entries)))
 
     @classmethod
     def lookup_vocab_word_or_name(cls, vocab: VocabNote) -> DictLookup:

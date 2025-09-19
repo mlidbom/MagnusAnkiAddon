@@ -28,10 +28,6 @@ class TaskRunner(AutoSlots):
             return InvisibleTaskRunner(window_title, label_text)
         return QtTaskProgressRunner(window_title, label_text)
 
-    @staticmethod
-    def invisible() -> ITaskRunner:
-        return InvisibleTaskRunner("", "")
-
 class InvisibleTaskRunner(ITaskRunner, AutoSlots):
     # noinspection PyUnusedLocal
     def __init__(self, window_title: str, label_text: str) -> None:  # pyright: ignore
