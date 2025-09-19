@@ -92,9 +92,9 @@ def test_then_by_descending_sorts_in_descending_order() -> None:
     value_test([3, 2, 1], lambda x: x.order_by(lambda y: y).then_by_descending(lambda y: 1 if y == 2 else 0).to_list(), [2, 1, 3])
 
 def test_length_returns_length_of_sequence() -> None:
-    value_test([0], lambda x: x.length(), 1)
-    value_test([0, 3], lambda x: x.length(), 2)
-    value_test([0, 3, 5], lambda x: x.length(), 3)
+    value_test([0], lambda x: x.qcount(), 1)
+    value_test([0, 3], lambda x: x.qcount(), 2)
+    value_test([0, 3, 5], lambda x: x.qcount(), 3)
 
 def test_for_each_executes_action_for_each_element() -> None:
     value_test(lambda: [CallCounter(), CallCounter(), CallCounter()],

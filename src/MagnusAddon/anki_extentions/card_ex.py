@@ -57,7 +57,7 @@ class CardEx(AutoSlots):
 
     def sequential_again_answers_today(self) -> int:
         answers = _get_answers_since_last_day_cutoff_for_card(self.card.id)
-        return answers.take_while(lambda x: AnswerAction(x) == AnswerAction.ANSWER_AGAIN).length() # len(list(ex_iterable.take_while(lambda x: AnswerAction(x) == AnswerAction.ANSWER_AGAIN, answers)))
+        return answers.take_while(lambda x: AnswerAction(x) == AnswerAction.ANSWER_AGAIN).qcount() # len(list(ex_iterable.take_while(lambda x: AnswerAction(x) == AnswerAction.ANSWER_AGAIN, answers)))
 
     def note(self) -> JPNote:
         from note.jpnote import JPNote
@@ -77,7 +77,7 @@ class Card2Ex(AutoSlots):
 
     def sequential_again_answers_today(self) -> int:
         answers = _get_answers_since_last_day_cutoff_for_card(self.card.id)
-        return answers.take_while(lambda x: AnswerAction(x) == AnswerAction.ANSWER_AGAIN).length()  #len(list(ex_iterable.take_while(lambda x: AnswerAction(x) == AnswerAction.ANSWER_AGAIN, answers)))
+        return answers.take_while(lambda x: AnswerAction(x) == AnswerAction.ANSWER_AGAIN).qcount()  #len(list(ex_iterable.take_while(lambda x: AnswerAction(x) == AnswerAction.ANSWER_AGAIN, answers)))
 
     def last_answer_today_was_fail_db_call(self) -> bool:
         return self.sequential_again_answers_today() > 0

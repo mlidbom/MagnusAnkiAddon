@@ -43,8 +43,8 @@ class QIterable[TItem](Iterable[TItem], ABC):
     # endregion
 
     # region scalar aggregations
-    def length(self, predicate: Predicate[TItem] | None = None) -> int:
-        if predicate is not None: return self.where(predicate).length()
+    def qcount(self, predicate: Predicate[TItem] | None = None) -> int:
+        if predicate is not None: return self.where(predicate).qcount()
         return self._optimized_length()
 
     def _optimized_length(self) -> int: return sum(1 for _ in self)
