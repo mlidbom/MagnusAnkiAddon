@@ -26,6 +26,7 @@ class TextAnalysisStateValidator:
         self.is_valid_false_matches_should_have_failure_reasons()
         self.is_valid_true_is_displayed_false_matches_should_have_hiding_reasons()
         self.is_valid_true_matches_should_be_in_valid_matches()
+        #self.is_valid_true_matches_should_be_in_valid_variant_valid_matches()
         #self.valid_matches_and_valid_variant_matches_should_be_identical()
 
     def is_displayed_false_matches_should_not_be_in_display_matches_list(self) -> None:
@@ -42,6 +43,9 @@ class TextAnalysisStateValidator:
 
     def is_valid_false_matches_should_have_failure_reasons(self) -> None:
         self.is_valid_false_matches.assert_each(lambda match: len(match.failure_reasons) > 0, lambda match: f"""Match: {match} has is_valid=False yet has no failure_reasons""")
+
+    def is_valid_true_matches_should_be_in_valid_variant_valid_matches(self) -> None:
+        self.is_valid_true_matches.assert_each(lambda match: match in self.valid_variant_valid_matches, lambda match: f"""Match: {match} has is_valid=True yet is not in valid_variant_valid_matches""")
 
     def valid_matches_and_valid_variant_matches_should_be_identical(self) -> None:
         self.valid_matches.assert_each(lambda match: match in self.valid_variant_valid_matches, lambda match: f"""Match: {match} is in valid_matches but not in valid_variant_valid_matches""")
