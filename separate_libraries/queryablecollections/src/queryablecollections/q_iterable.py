@@ -56,7 +56,7 @@ class QIterable[TItem](Iterable[TItem], ABC):
     def order_by_descending(self, key_selector: Selector[TItem, SupportsRichComparison]) -> QOrderedIterable[TItem]:
         return QOrderedIterable(self, [SortInstruction(key_selector, True)])
 
-    def reversed(self) -> QIterable[TItem]: return QLazyiterable[TItem](lambda: reversed(self.to_built_in_list()))
+    def reversed(self) -> QIterable[TItem]: return QLazyiterable[TItem](q_ops.reverse_lazy(self))
     # endregion
 
     # region boolean queries
@@ -72,8 +72,8 @@ class QIterable[TItem](Iterable[TItem], ABC):
 
     # region single item selecting methods
     def single(self, predicate: Predicate[TItem] | None = None) -> TItem: return q_ops_single_elements.single(self, predicate)
-
     def single_or_none(self, predicate: Predicate[TItem] | None = None) -> TItem | None: return q_ops_single_elements.single_or_none(self, predicate)
+
     def element_at(self, index: int) -> TItem: return q_ops_single_elements.element_at(self, index)
     def element_at_or_none(self, index: int) -> TItem | None: return q_ops_single_elements.element_at_or_none(self, index)
 

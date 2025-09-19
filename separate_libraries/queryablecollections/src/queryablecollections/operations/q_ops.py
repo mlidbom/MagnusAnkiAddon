@@ -3,11 +3,12 @@ from __future__ import annotations
 import itertools
 from typing import TYPE_CHECKING
 
+from sysutils.standard_type_aliases import Func
+
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
     from _typeshed import SupportsRichComparison
-
     from queryablecollections.type_aliases import Predicate, Selector
 
 concat = itertools.chain
@@ -15,6 +16,9 @@ select = map
 distinct = dict.fromkeys
 take_while = itertools.takewhile
 flatten = itertools.chain.from_iterable
+
+def reverse_lazy[TItem](self: Iterable[TItem]) -> Func[Iterable[TItem]]:
+    return lambda: reversed(list(self))
 
 class SortInstruction[TItem]:
     __slots__ = ("key_selector", "descending")
