@@ -4,7 +4,7 @@ import sys
 from typing import TYPE_CHECKING, SupportsIndex, overload, override
 
 from queryablecollections.collections.q_sequence import QSequence
-from queryablecollections.q_iterable import LazyQiterable, QIterable
+from queryablecollections.q_iterable import QLazyiterable, QIterable
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
@@ -18,7 +18,7 @@ class QList[TItem](list[TItem], QSequence[TItem], QIterable[TItem]):
     def _optimized_length(self) -> int: return len(self)
 
     @override
-    def reversed(self) -> QIterable[TItem]: return LazyQiterable[TItem](lambda: reversed(self))
+    def reversed(self) -> QIterable[TItem]: return QLazyiterable[TItem](lambda: reversed(self))
 
     @override
     def element_at(self, index: int) -> TItem: return self[index]

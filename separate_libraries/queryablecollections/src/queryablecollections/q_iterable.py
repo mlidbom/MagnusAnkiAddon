@@ -35,7 +35,7 @@ class QIterable[TItem](Iterable[TItem], ABC):
     # region filtering
     def where(self, predicate: Predicate[TItem]) -> QIterable[TItem]: return _Qiterable(q_ops.where(self, predicate))
     def where_not_none(self) -> QIterable[TItem]: return _Qiterable(q_ops.where_not_none(self))
-    def distinct(self) -> QIterable[TItem]: return LazyQiterable(lambda: q_ops.distinct(self))
+    def distinct(self) -> QIterable[TItem]: return QLazyiterable(lambda: q_ops.distinct(self))
     def take_while(self, predicate: Predicate[TItem]) -> QIterable[TItem]: return _Qiterable(q_ops.take_while(predicate, self))
 
     # endregion
@@ -56,7 +56,7 @@ class QIterable[TItem](Iterable[TItem], ABC):
     def order_by_descending(self, key_selector: Selector[TItem, SupportsRichComparison]) -> QOrderedIterable[TItem]:
         return QOrderedIterable(self, [SortInstruction(key_selector, True)])
 
-    def reversed(self) -> QIterable[TItem]: return LazyQiterable[TItem](lambda: reversed(self.to_built_in_list()))
+    def reversed(self) -> QIterable[TItem]: return QLazyiterable[TItem](lambda: reversed(self.to_built_in_list()))
     # endregion
 
     # region boolean queries
@@ -135,7 +135,7 @@ class _Qiterable[TItem](QIterable[TItem]):
     @override
     def __iter__(self) -> Iterator[TItem]: yield from self._value
 
-class LazyQiterable[TItem](QIterable[TItem]):
+class QLazyiterable[TItem](QIterable[TItem]):
     __slots__ = ("_factory",)
     def __init__(self, iterable_factory: Func[Iterable[TItem]]) -> None:
         self._factory: Func[Iterable[TItem]] = iterable_factory

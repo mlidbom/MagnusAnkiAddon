@@ -5,7 +5,7 @@ from collections.abc import Sequence
 from typing import cast, overload, override
 
 from queryablecollections.immutable_sequence import ImmutableSequence
-from queryablecollections.q_iterable import LazyQiterable, QIterable
+from queryablecollections.q_iterable import QLazyiterable, QIterable
 
 
 class QSequence[TItem](Sequence[TItem], QIterable[TItem], ABC):
@@ -14,7 +14,7 @@ class QSequence[TItem](Sequence[TItem], QIterable[TItem], ABC):
     def _optimized_length(self) -> int: return len(self)
 
     @override
-    def reversed(self) -> QIterable[TItem]: return LazyQiterable[TItem](lambda: reversed(self))
+    def reversed(self) -> QIterable[TItem]: return QLazyiterable[TItem](lambda: reversed(self))
 
     _empty_sequence: QSequence[TItem]
     @staticmethod
