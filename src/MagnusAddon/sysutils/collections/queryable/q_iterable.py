@@ -7,8 +7,9 @@ from collections.abc import Iterable, Sequence
 from typing import TYPE_CHECKING, Any, SupportsIndex, cast, overload, override
 
 from ex_autoslot import AutoSlotsABC
-from sysutils.collections.queryable import ex_itertools
 from sysutils.collections.immutable_sequence import ImmutableSequence
+from sysutils.collections.queryable import q_ops
+from sysutils.collections.queryable.q_ops import SortInstruction
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -25,25 +26,15 @@ class QIterable[TItem](Iterable[TItem], ABC, AutoSlotsABC):
     # region queries that need to be static so that we can know the type of the the LLitearble
 
     # region operations on the whole collection, not the items
-    def concat(self, other: Iterable[TItem]) -> QIterable[TItem]:
-        return _Qiterable(itertools.chain(self, other))
-
-    def pipe_to[TReturn](self, action: Selector[QIterable[TItem], TReturn]) -> TReturn:
-        return action(self)
+    def concat(self, other: Iterable[TItem]) -> QIterable[TItem]: return _Qiterable(q_ops.concat(self, other))
+    def pipe_to[TReturn](self, action: Selector[QIterable[TItem], TReturn]) -> TReturn: return action(self)
     # endregion
 
     # region filtering
-    def where(self, predicate: Predicate[TItem]) -> QIterable[TItem]:
-        return _Qiterable(item for item in self if predicate(item))
-
-    def where_not_none(self) -> QIterable[TItem]:
-        return self.where(lambda item: item is not None)
-
-    def distinct(self) -> QIterable[TItem]:
-        return _LazyQiterable(lambda: dict.fromkeys(self))
-
-    def take_while(self, predicate: Predicate[TItem]) -> QIterable[TItem]:
-        return _Qiterable(itertools.takewhile(predicate, self))
+    def where(self, predicate: Predicate[TItem]) -> QIterable[TItem]: return _Qiterable(q_ops.where(predicate, self))
+    def where_not_none(self) -> QIterable[TItem]: return self.where(lambda item: item is not None)
+    def distinct(self) -> QIterable[TItem]: return _LazyQiterable(lambda: q_ops.distinct(self))
+    def take_while(self, predicate: Predicate[TItem]) -> QIterable[TItem]: return _Qiterable(q_ops.take_while(predicate, self))
 
     # endregion
 
@@ -63,41 +54,25 @@ class QIterable[TItem](Iterable[TItem], ABC, AutoSlotsABC):
     def order_by_descending(self, key_selector: Selector[TItem, SupportsRichComparison]) -> QOrderedIterable[TItem]:
         return QOrderedIterable(self, [SortInstruction(key_selector, True)])
 
-    def reversed(self) -> QIterable[TItem]:
-        return _LazyQiterable[TItem](lambda: reversed(self.to_built_in_list()))
+    def reversed(self) -> QIterable[TItem]: return _LazyQiterable[TItem](lambda: reversed(self.to_built_in_list()))
     # endregion
 
     # region boolean queries
-    def none(self, predicate: Predicate[TItem] | None = None) -> bool:
-        return not self.any(predicate)
-
-    def any(self, predicate: Predicate[TItem] | None = None) -> bool:
-        if predicate is None:
-            for _ in self: return True
-            return False
-        return any(predicate(item) for item in self)
-
-    def all(self, predicate: Predicate[TItem]) -> bool:
-        return not self.any(lambda item: not predicate(item))
+    def none(self, predicate: Predicate[TItem] | None = None) -> bool: return not q_ops.any_(self, predicate)
+    def any(self, predicate: Predicate[TItem] | None = None) -> bool: return q_ops.any_(self, predicate)
+    def all(self, predicate: Predicate[TItem]) -> bool: return not self.any(lambda item: not predicate(item))
     # endregion
 
     # region mapping methods
-    def select[TReturn](self, selector: Selector[TItem, TReturn]) -> QIterable[TReturn]:
-        return _Qiterable(selector(item) for item in self)
-
-    def select_many[TInner](self, selector: Selector[TItem, Iterable[TInner]]) -> QIterable[TInner]:
-        return _Qiterable(itertools.chain.from_iterable(selector(item) for item in self))
+    def select[TReturn](self, selector: Selector[TItem, TReturn]) -> QIterable[TReturn]: return _Qiterable(q_ops.select(selector, self))
+    def select_many[TInner](self, selector: Selector[TItem, Iterable[TInner]]) -> QIterable[TInner]: return _Qiterable(q_ops.select_many(self, selector))
     # endregion
 
     # region single item selecting methods
-    def single(self, predicate: Predicate[TItem] | None = None) -> TItem:
-        if not predicate:
-            return ex_itertools.single(self)
-        return self.where(predicate).single()
+    def single(self, predicate: Predicate[TItem] | None = None) -> TItem: return q_ops.single(self, predicate)
 
     def single_or_none(self, predicate: Predicate[TItem] | None = None) -> TItem | None:
-        if predicate is None:
-            return ex_itertools.single_or_none(self)
+        if predicate is None: return q_ops.single_or_none(self)
         return self.where(predicate).single_or_none()
 
     def element_at(self, index: int) -> TItem:
@@ -168,10 +143,6 @@ class _LazyQiterable[TItem](QIterable[TItem]):
     def __iter__(self) -> Iterator[TItem]: yield from self._factory()
 
 # region LOrderedLIterable
-class SortInstruction[TItem]:
-    def __init__(self, key_selector: Selector[TItem, SupportsRichComparison], descending: bool) -> None:
-        self.key_selector: Selector[TItem, SupportsRichComparison] = key_selector
-        self.descending: bool = descending
 
 class QOrderedIterable[TItem](QIterable[TItem]):
     def __init__(self, iterable: Iterable[TItem], sorting_instructions: list[SortInstruction[TItem]]) -> None:
@@ -185,12 +156,7 @@ class QOrderedIterable[TItem](QIterable[TItem]):
         return QOrderedIterable(self._unsorted, self.sorting_instructions + [SortInstruction(key_selector, descending=True)])
 
     @override
-    def __iter__(self) -> Iterator[TItem]:
-        items = list(self._unsorted)
-        for instruction in self.sorting_instructions:
-            items.sort(key=instruction.key_selector, reverse=instruction.descending)
-
-        yield from items
+    def __iter__(self) -> Iterator[TItem]: yield from q_ops.sort_by_instructions(self._unsorted, self.sorting_instructions)
 # endregion
 
 
