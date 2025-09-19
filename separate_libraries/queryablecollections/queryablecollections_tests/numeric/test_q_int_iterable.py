@@ -38,3 +38,8 @@ def test_average_throws_on_on_empty_collection() -> None:
 
 def test_average_or_default_returns_average_of_the_values() -> None: assert QIntList([1, 2, 3]).average_or_default() == 2
 def test_average_or_default_returns_0_on_on_empty_collection() -> None: assert QIntList().average_or_default() == 0
+
+def test_to_list_returns_a_list_with_the_same_elements() -> None: assert QIntList([1, 2, 3]).to_list() == [1, 2, 3]
+def test_to_set_returns_a_set_with_the_same_elements() -> None: assert QIntList([1, 2, 3]).to_set() == {1, 2, 3}
+def test_to_frozenset_returns_a_frozenset_with_the_same_elements() -> None: assert QIntList([1, 2, 3]).to_frozenset() == frozenset({1, 2, 3})
+def test_to_sequence_returns_a_sequence_with_the_same_elements() -> None: assert QIntList([1, 2, 3]).to_sequence().to_list() == [1, 2, 3]

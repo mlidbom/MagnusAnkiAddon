@@ -38,3 +38,9 @@ def test_average_throws_on_on_empty_collection() -> None:
 
 def test_average_or_default_returns_average_of_the_values() -> None: assert QFloatList([1.1, 2.1, 3.1]).average_or_default() == 2.1
 def test_average_or_default_returns_0_on_on_empty_collection() -> None: assert QFloatList().average_or_default() == 0
+
+def test_to_list_returns_a_list_with_the_same_elements() -> None: assert QFloatList([1.1, 2.1, 3.1]).to_list() == [1.1, 2.1, 3.1]
+def test_to_set_returns_a_set_with_the_same_elements() -> None: assert QFloatList([1.1, 2.1, 3.1]).to_set() == {1.1, 2.1, 3.1}
+def test_to_frozenset_returns_a_frozenset_with_the_same_elements() -> None: assert QFloatList([1.1, 2.1, 3.1]).to_frozenset() == frozenset({1.1, 2.1, 3.1})
+def test_to_sequence_returns_a_sequence_with_the_same_elements() -> None: assert QFloatList([1.1, 2.1, 3.1]).to_sequence().to_list() == [1.1, 2.1, 3.1]
+
