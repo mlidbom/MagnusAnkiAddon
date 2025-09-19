@@ -2,11 +2,13 @@ from __future__ import annotations
 
 import os
 from typing import TYPE_CHECKING
+
 is_running_line_profiling = os.environ.get("LINE_PROFILE") == "1"
 
 import mylog
 from sysutils.typed import checked_cast, non_optional
 from testutils import ex_pytest
+
 is_testing = ex_pytest.is_testing
 
 if TYPE_CHECKING:

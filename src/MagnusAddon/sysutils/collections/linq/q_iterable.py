@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from abc import ABC
 import itertools
+from abc import ABC
 from collections.abc import Iterable
 from typing import TYPE_CHECKING, Any, cast, override
 

@@ -5,6 +5,7 @@ from abc import ABCMeta
 from ankiutils import app
 from manually_copied_in_libraries.autoslot import Slots, SlotsMeta, SlotsPlusDict, SlotsPlusDictMeta
 
+
 class SlotsABCMeta(ABCMeta, SlotsMeta):
     pass
 
