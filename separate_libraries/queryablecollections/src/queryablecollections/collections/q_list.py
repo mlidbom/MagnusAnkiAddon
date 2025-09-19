@@ -3,14 +3,14 @@ from __future__ import annotations
 import sys
 from typing import TYPE_CHECKING, SupportsIndex, overload, override
 
-from queryablecollections.autoslot_shim import SlotsABC
 from queryablecollections.collections.q_sequence import QSequence
 from queryablecollections.q_iterable import LazyQiterable, QIterable
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
-class QList[TItem](list[TItem], QSequence[TItem], QIterable[TItem], SlotsABC):
+class QList[TItem](list[TItem], QSequence[TItem], QIterable[TItem]):
+    __slots__ = ()
     def __init__(self, iterable: Iterable[TItem] = ()) -> None:
         super().__init__(iterable)
 

@@ -4,7 +4,6 @@ from abc import ABC
 from collections.abc import Iterable
 from typing import TYPE_CHECKING, Any, cast, override
 
-from queryablecollections.autoslot_shim import SlotsABC
 from queryablecollections.operations import q_ops, q_ops_bool, q_ops_loop, q_ops_single_elements
 from queryablecollections.operations.q_ops import SortInstruction
 
@@ -12,16 +11,16 @@ if TYPE_CHECKING:
     from collections.abc import Iterator
 
     from _typeshed import SupportsRichComparison
-    from queryablecollections.type_aliases import Action1, Func, Predicate, Selector
-
     from queryablecollections.collections.q_frozen_set import QFrozenSet
     from queryablecollections.collections.q_list import QList
     from queryablecollections.collections.q_sequence import QSequence
     from queryablecollections.collections.q_set import QSet
+    from queryablecollections.type_aliases import Action1, Func, Predicate, Selector
 
 def query[TItem](value: Iterable[TItem]) -> QIterable[TItem]: return _Qiterable(value)
 
-class QIterable[TItem](Iterable[TItem], ABC, SlotsABC):
+class QIterable[TItem](Iterable[TItem], ABC):
+    __slots__ = ()
     @staticmethod
     def create(value: Iterable[TItem]) -> QIterable[TItem]: return _Qiterable(value)
 
@@ -128,6 +127,7 @@ class QIterable[TItem](Iterable[TItem], ABC, SlotsABC):
 
 # region implementing classes
 class _Qiterable[TItem](QIterable[TItem]):
+    __slots__ = ("_value",)
     def __init__(self, iterable: Iterable[TItem]) -> None:
         self._value: Iterable[TItem] = iterable
 
@@ -135,6 +135,7 @@ class _Qiterable[TItem](QIterable[TItem]):
     def __iter__(self) -> Iterator[TItem]: yield from self._value
 
 class LazyQiterable[TItem](QIterable[TItem]):
+    __slots__ = ("_factory",)
     def __init__(self, iterable_factory: Func[Iterable[TItem]]) -> None:
         self._factory: Func[Iterable[TItem]] = iterable_factory
 
@@ -144,6 +145,7 @@ class LazyQiterable[TItem](QIterable[TItem]):
 # region LOrderedLIterable
 
 class QOrderedIterable[TItem](QIterable[TItem]):
+    __slots__ = ("sorting_instructions", "_unsorted")
     def __init__(self, iterable: Iterable[TItem], sorting_instructions: list[SortInstruction[TItem]]) -> None:
         self.sorting_instructions: list[SortInstruction[TItem]] = sorting_instructions
         self._unsorted: Iterable[TItem] = iterable

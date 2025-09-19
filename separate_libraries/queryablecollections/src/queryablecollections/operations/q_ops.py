@@ -17,6 +17,7 @@ take_while = itertools.takewhile
 flatten = itertools.chain.from_iterable
 
 class SortInstruction[TItem]:
+    __slots__ = ("key_selector", "descending")
     def __init__(self, key_selector: Selector[TItem, SupportsRichComparison], descending: bool) -> None:
         self.key_selector: Selector[TItem, SupportsRichComparison] = key_selector
         self.descending: bool = descending

@@ -2,14 +2,14 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from queryablecollections.autoslot_shim import SlotsABC
 from queryablecollections.q_iterable import QIterable
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
 
-class QSet[TItem](set[TItem], QIterable[TItem], SlotsABC):
+class QSet[TItem](set[TItem], QIterable[TItem]):
+    __slots__ = ()
     def __init__(self, iterable: Iterable[TItem] = ()) -> None:
         super().__init__(iterable)
 
