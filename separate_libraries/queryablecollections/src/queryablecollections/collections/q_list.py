@@ -4,7 +4,7 @@ import sys
 from typing import TYPE_CHECKING, SupportsIndex, overload, override
 
 from queryablecollections.collections.q_sequence import QSequence
-from queryablecollections.q_iterable import QLazyiterable, QIterable
+from queryablecollections.q_iterable import QIterable, QLazyiterable
 
 if TYPE_CHECKING:
     from collections.abc import Iterable

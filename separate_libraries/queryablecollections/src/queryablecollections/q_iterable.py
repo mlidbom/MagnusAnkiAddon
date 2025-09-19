@@ -4,8 +4,8 @@ from abc import ABC
 from collections.abc import Iterable
 from typing import TYPE_CHECKING, Any, cast, override
 
-from queryablecollections.operations import q_ops, q_ops_bool, q_ops_loop, q_ops_single_elements
-from queryablecollections.operations.q_ops import SortInstruction
+from queryablecollections.operations import q_ops_bool, q_ops_filtering, q_ops_loop, q_ops_ordering, q_ops_single_elements, q_ops_transform
+from queryablecollections.operations.q_ops_ordering import SortInstruction
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -28,15 +28,15 @@ class QIterable[TItem](Iterable[TItem], ABC):
     # region queries that need to be static so that we can know the type of the the LLitearble
 
     # region operations on the whole collection, not the items
-    def concat(self, other: Iterable[TItem]) -> QIterable[TItem]: return _Qiterable(q_ops.concat(self, other))
+    def concat(self, other: Iterable[TItem]) -> QIterable[TItem]: return _Qiterable(q_ops_transform.concat(self, other))
     def pipe_to[TReturn](self, action: Selector[QIterable[TItem], TReturn]) -> TReturn: return action(self)
     # endregion
 
     # region filtering
-    def where(self, predicate: Predicate[TItem]) -> QIterable[TItem]: return _Qiterable(q_ops.where(self, predicate))
-    def where_not_none(self) -> QIterable[TItem]: return _Qiterable(q_ops.where_not_none(self))
-    def distinct(self) -> QIterable[TItem]: return QLazyiterable(lambda: q_ops.distinct(self))
-    def take_while(self, predicate: Predicate[TItem]) -> QIterable[TItem]: return _Qiterable(q_ops.take_while(predicate, self))
+    def where(self, predicate: Predicate[TItem]) -> QIterable[TItem]: return _Qiterable(q_ops_filtering.where(self, predicate))
+    def where_not_none(self) -> QIterable[TItem]: return _Qiterable(q_ops_filtering.where_not_none(self))
+    def distinct(self) -> QIterable[TItem]: return QLazyiterable(lambda: q_ops_filtering.distinct(self))
+    def take_while(self, predicate: Predicate[TItem]) -> QIterable[TItem]: return _Qiterable(q_ops_filtering.take_while(predicate, self))
 
     # endregion
 
@@ -56,7 +56,7 @@ class QIterable[TItem](Iterable[TItem], ABC):
     def order_by_descending(self, key_selector: Selector[TItem, SupportsRichComparison]) -> QOrderedIterable[TItem]:
         return QOrderedIterable(self, [SortInstruction(key_selector, True)])
 
-    def reversed(self) -> QIterable[TItem]: return QLazyiterable[TItem](q_ops.reverse_lazy(self))
+    def reversed(self) -> QIterable[TItem]: return QLazyiterable[TItem](q_ops_ordering.reverse_lazy(self))
     # endregion
 
     # region boolean queries
@@ -66,8 +66,8 @@ class QIterable[TItem](Iterable[TItem], ABC):
     # endregion
 
     # region mapping methods
-    def select[TReturn](self, selector: Selector[TItem, TReturn]) -> QIterable[TReturn]: return _Qiterable(q_ops.select(selector, self))
-    def select_many[TInner](self, selector: Selector[TItem, Iterable[TInner]]) -> QIterable[TInner]: return _Qiterable(q_ops.select_many(self, selector))
+    def select[TReturn](self, selector: Selector[TItem, TReturn]) -> QIterable[TReturn]: return _Qiterable(q_ops_transform.select(selector, self))
+    def select_many[TInner](self, selector: Selector[TItem, Iterable[TInner]]) -> QIterable[TInner]: return _Qiterable(q_ops_transform.select_many(self, selector))
     # endregion
 
     # region single item selecting methods
@@ -158,7 +158,7 @@ class QOrderedIterable[TItem](QIterable[TItem]):
         return QOrderedIterable(self._unsorted, self.sorting_instructions + [SortInstruction(key_selector, descending=True)])
 
     @override
-    def __iter__(self) -> Iterator[TItem]: yield from q_ops.sort_by_instructions(self._unsorted, self.sorting_instructions)
+    def __iter__(self) -> Iterator[TItem]: yield from q_ops_ordering.sort_by_instructions(self._unsorted, self.sorting_instructions)
 # endregion
 
 

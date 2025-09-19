@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING, cast, override
 from anki.notes import Note
 from ankiutils import app
 from ex_autoslot import AutoSlots
-from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 from note.jpnote import JPNote
 from note.note_constants import ImmersionKitSentenceNoteFields, NoteFields, NoteTypes, SentenceNoteFields, Tags
 from note.notefields.audio_field import WritableAudioField
@@ -22,6 +21,7 @@ from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
+    from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
     from note.vocabulary.vocabnote import VocabNote
     from queryablecollections.collections.q_list import QList
 
