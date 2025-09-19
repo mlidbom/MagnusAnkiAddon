@@ -35,7 +35,7 @@ class TextAnalysisLocation(WeakRefable, AutoSlots):
         self.valid_words: QList[CandidateWord] = QList()
         self.display_variants: list[CandidateWordVariant] = []
         self.valid_variants: QList[CandidateWordVariant] = QList()
-        self.variants: QList[CandidateWordVariant] = QList()
+        self.indexing_variants: QList[CandidateWordVariant] = QList()
         self.candidate_words: QList[CandidateWord] = QList()
         self.display_words: list[CandidateWord] = []
 
@@ -60,7 +60,7 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
 
         self.known_words = self.candidate_words.where(lambda candidate: candidate.is_word).to_list()
         self.valid_words = self.candidate_words.where(lambda candidate: candidate.has_valid_words()).to_list()
-        self.variants = self.candidate_words.select_many(lambda candidate: candidate.indexing_variants).to_list()
+        self.indexing_variants = self.candidate_words.select_many(lambda candidate: candidate.indexing_variants).to_list()
         self.valid_variants = self.valid_words.select_many(lambda valid: valid.valid_variants).to_list()
 
     def _run_display_analysis_pass_true_if_there_were_changes(self) -> bool:
