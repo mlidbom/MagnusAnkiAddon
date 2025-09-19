@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from abc import ABCMeta
 
-from ankiutils import app
+import line_profiling_hacks
 from manually_copied_in_libraries.autoslot import Slots, SlotsMeta, SlotsPlusDict, SlotsPlusDictMeta
 
 
@@ -13,7 +13,7 @@ class SlotsPlusDictABCMeta(ABCMeta, SlotsPlusDictMeta):  # pyright: ignore [repo
     pass
 
 # when running line profiling we have to have __dict__ in our classes, when not running line profiling we do not want that overhead
-if app.is_running_line_profiling:
+if line_profiling_hacks.is_running_line_profiling:
     class AutoSlots(SlotsPlusDict):  # pyright: ignore [reportRedeclaration]
         pass
 

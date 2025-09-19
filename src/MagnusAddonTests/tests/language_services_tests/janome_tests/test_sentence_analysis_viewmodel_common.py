@@ -7,7 +7,7 @@ from note.sentences.sentencenote import SentenceNote
 from sysutils.lazy import Lazy
 from ui.web.sentence.sentence_viewmodel import SentenceViewModel
 
-from src.MagnusAddonTests.tests.language_services_tests.janome_tests.text_analysis_state_validator import TextAnalysisStateValidator
+from src.MagnusAddonTests.tests.language_services_tests.janome_tests.text_analysis_state_validator import TextAnalysisValidator
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
@@ -34,7 +34,7 @@ def assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentenc
     sentence_view_model = SentenceViewModel(sentence_note)
     analysis = sentence_view_model.analysis.analysis
 
-    TextAnalysisStateValidator(analysis).assert_is_valid()
+    TextAnalysisValidator(analysis).assert_is_valid()
 
     if len(excluded) == 0:
         run_note_assertions("running assertions with no exclusions")

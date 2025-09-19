@@ -9,6 +9,7 @@ from language_services.janome_ex.word_extraction.matches.missing_match import Mi
 from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from sysutils import ex_assert
+from sysutils.collections.linq.q_iterable import QList
 from sysutils.lazy import Lazy
 from sysutils.weak_ref import WeakRef, WeakRefable
 
@@ -29,11 +30,11 @@ class CandidateWordVariant(WeakRefable, AutoSlots):
         self.form: str = form
 
         self._dict_lookup: Lazy[DictLookup] = Lazy(lambda: DictLookup.lookup_word(form))
-        self.vocab_matches: list[VocabMatch] = [VocabMatch(self.weak_ref, vocab) for vocab in app.col().vocab.with_form(form)]
+        self.vocab_matches: QList[VocabMatch] = QList(VocabMatch(self.weak_ref, vocab) for vocab in app.col().vocab.with_form(form))
 
         # will be completed in complete_analysis
         self.completed_analysis = False
-        self.matches: list[Match] = []
+        self.matches: QList[Match] = QList()
 
     @property
     def is_surface(self) -> bool: return self.form == self.word.surface_form
@@ -47,12 +48,12 @@ class CandidateWordVariant(WeakRefable, AutoSlots):
         ex_assert.that(not self.completed_analysis)
 
         if self.vocabs_control_match_status:
-            self.matches = list(self.vocab_matches)
+            self.matches = QList(self.vocab_matches)
         else:
             if self._dict_lookup().found_words():
-                self.matches = [DictionaryMatch(self.weak_ref, self._dict_lookup().entries[0])]
+                self.matches = QList([DictionaryMatch(self.weak_ref, self._dict_lookup().entries[0])])
             else:
-                self.matches = [MissingMatch(self.weak_ref)]
+                self.matches = QList([MissingMatch(self.weak_ref)])
 
         self.completed_analysis = True
 

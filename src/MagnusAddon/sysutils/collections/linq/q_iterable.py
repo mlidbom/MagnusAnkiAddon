@@ -2,10 +2,11 @@ from __future__ import annotations
 
 import itertools
 from abc import ABC
-from collections.abc import Iterable
+from collections.abc import Iterable, Sequence
 from typing import TYPE_CHECKING, Any, cast, override
 
 from ex_autoslot import AutoSlotsABC
+from sysutils.collections.immutable_sequence import ImmutableSequence
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -22,6 +23,9 @@ class QIterable[TItem](Iterable[TItem], ABC, AutoSlotsABC):
     # region queries that need to be static so that we can know the type of the the LLitearble
 
     # region operations on the whole collection, not the items
+    def concat(self, other: Iterable[TItem]) -> QIterable[TItem]:
+        return _Qiterable(itertools.chain(self, other))
+
     def pipe_to[TReturn](self, action: Selector[QIterable[TItem], TReturn]) -> TReturn:
         return action(self)
     # endregion
@@ -151,6 +155,11 @@ class QIterable[TItem](Iterable[TItem], ABC, AutoSlotsABC):
     def to_frozenset(self) -> QFrozenSet[TItem]: return QFrozenSet(self)
     # endregion
 
+    _empty_iterable: QIterable[TItem]
+    @staticmethod
+    def empty() -> QIterable[TItem]:
+        return cast(QIterable[TItem], QIterable._empty_iterable)  # pyright: ignore [reportGeneralTypeIssues, reportUnknownMemberType] an empty QIterable can serve or any QIterable type in python since generic types are not present at runtime and this gives as such an instance at virtually zero cost
+
 # region implementing classes
 class _Qiterable[TItem](QIterable[TItem]):
     def __init__(self, iterable: Iterable[TItem]) -> None:
@@ -192,8 +201,27 @@ class QOrderedIterable[TItem](QIterable[TItem]):
         yield from items
 # endregion
 
+
+class QSequence[TItem](Sequence[TItem], QIterable[TItem], ABC, AutoSlotsABC):
+    @override
+    def _optimized_length(self) -> int: return len(self)
+
+    @override
+    def reversed(self) -> QIterable[TItem]: return _LazyQiterable[TItem](lambda: reversed(self))
+
+    _empty_sequence: QSequence[TItem]
+    @override
+    @staticmethod
+    def empty() -> QSequence[TItem]:
+        return cast(QSequence[TItem], QSequence._empty_sequence)  # pyright: ignore [reportGeneralTypeIssues, reportUnknownMemberType] an empty QList can serve as any QList in python since generic types are not present at runtime and this gives as such an instance at virtually zero cost
+
+
+class QImmutableSequence[TItem](ImmutableSequence[TItem], QSequence[TItem]):
+    def __init__(self, sequence: Sequence[TItem] = ()) -> None:
+        super().__init__(sequence)
+
 # region LList, LSet, LFrozenSet: concrete classes that do very little but inherit a built in collection and LIterable and provide an override or two for performance
-class QList[TItem](list[TItem], QIterable[TItem], AutoSlotsABC):
+class QList[TItem](list[TItem], QSequence[TItem], QIterable[TItem], AutoSlotsABC): # pyright: ignore [reportIncompatibleMethodOverride] apparently there's a conflict between the definitions of index in list and Sequence, well list will win and that should be the same as for any list type...
     def __init__(self, iterable: Iterable[TItem] = ()) -> None:
         super().__init__(iterable)
 
@@ -206,6 +234,10 @@ class QList[TItem](list[TItem], QIterable[TItem], AutoSlotsABC):
     @override
     def element_at(self, index: int) -> TItem: return self[index]
 
+    @staticmethod
+    @override
+    def empty() -> QList[TItem]: return QList() # QList is mutable, so unlike our base types we cannot reuse an instance
+
 class QFrozenSet[TItem](frozenset[TItem], QIterable[TItem], AutoSlotsABC):
     def __new__(cls, iterable: Iterable[TItem] = ()) -> QFrozenSet[TItem]:
         return super().__new__(cls, iterable)
@@ -213,11 +245,27 @@ class QFrozenSet[TItem](frozenset[TItem], QIterable[TItem], AutoSlotsABC):
     @override
     def _optimized_length(self) -> int: return len(self)
 
+    _empty_set: QFrozenSet[TItem]
+    @override
+    @staticmethod
+    def empty() -> QFrozenSet[TItem]:
+        return cast(QFrozenSet[TItem], QFrozenSet._empty_set)  # pyright: ignore [reportGeneralTypeIssues, reportUnknownMemberType] an empty QList can serve as any QList in python since generic types are not present at runtime and this gives as such an instance at virtually zero cost
+
 class QSet[TItem](set[TItem], QIterable[TItem], AutoSlotsABC):
     def __init__(self, iterable: Iterable[TItem] = ()) -> None:
         super().__init__(iterable)
 
     @override
     def _optimized_length(self) -> int: return len(self)
+
+    @staticmethod
+    @override
+    def empty() -> QSet[TItem]: return QSet() # QSet is mutable, so unlike our base types we cannot reuse an instance
+
+# an empty immutable Q* can serve or any Q* type in python since generic types are not present at runtime and this gives as such an instance at virtually zero cost
+QSequence._empty_sequence = QImmutableSequence()  # pyright: ignore [reportGeneralTypeIssues, reportPrivateUsage]
+QIterable._empty_iterable = _Qiterable(())  # pyright: ignore [reportGeneralTypeIssues, reportPrivateUsage]
+QFrozenSet._empty_set = QFrozenSet()  # pyright: ignore [reportGeneralTypeIssues, reportPrivateUsage]
+
 # endregion
 # endregion

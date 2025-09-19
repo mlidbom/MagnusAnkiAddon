@@ -5,6 +5,8 @@ from typing import TYPE_CHECKING, final, override
 from ex_autoslot import AutoSlots
 from language_services.janome_ex.word_extraction.analysis_constants import noise_characters
 from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
+from language_services.janome_ex.word_extraction.matches.match import Match
+from sysutils.collections.linq.q_iterable import QIterable, QList
 from sysutils.typed import non_optional
 from sysutils.weak_ref import WeakRef, WeakRefable
 
@@ -46,6 +48,11 @@ class CandidateWord(WeakRefable, AutoSlots):
     def should_index_base(self) -> bool: return self.base_variant is not None and (self.base_variant.is_known_word or self.has_valid_base_variant)
     @property
     def should_index_surface(self) -> bool: return self.surface_variant.is_known_word or self.should_include_surface_in_all_words
+
+
+    @property
+    def all_matches(self) -> QList[Match]:
+        return self.surface_variant.matches.concat(self.base_variant.matches if self.base_variant else QIterable[Match].empty()).to_list()
 
     def run_validity_analysis(self) -> None:
         self.surface_variant.run_validity_analysis()

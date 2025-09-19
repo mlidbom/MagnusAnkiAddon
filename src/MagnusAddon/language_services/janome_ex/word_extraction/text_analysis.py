@@ -42,6 +42,7 @@ class TextAnalysis(WeakRefable, AutoSlots):
         self._analysis_step_3_run_initial_display_analysis()
         self._analysis_step_5_calculate_preference_between_overlapping_display_candidates()
 
+        #self.word_variants: QList[CandidateWordVariant] = self.locations.select_many(lambda location: location.valid_words).to_list()
         self.indexing_word_variants: QList[CandidateWordVariant] = self.locations.select_many(lambda location: location.indexing_variants).to_list()
         self.valid_word_variants: QList[CandidateWordVariant] = self.locations.select_many(lambda location: location.valid_variants).to_list()
         self.display_word_variants: QList[CandidateWordVariant] = self.locations.select_many(lambda location: location.display_variants).to_list()

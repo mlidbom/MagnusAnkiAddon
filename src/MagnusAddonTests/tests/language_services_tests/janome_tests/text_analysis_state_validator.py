@@ -7,7 +7,7 @@ if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
     from sysutils.collections.linq.q_iterable import QSet
 
-class TextAnalysisStateValidator:
+class TextAnalysisValidator:
     def __init__(self, analysis: TextAnalysis) -> None:
         self.analysis:TextAnalysis = analysis
 
@@ -55,3 +55,7 @@ class TextAnalysisStateValidator:
     def valid_matches_and_valid_variant_matches_should_be_identical(self) -> None:
         self.valid_matches.assert_each(lambda match: match in self.valid_variant_valid_matches, lambda match: f"""Match: {match} is in valid_matches but not in valid_variant_valid_matches""")
         self.valid_variant_valid_matches.assert_each(lambda match: match in self.valid_matches, lambda match: f"""Match: {match} is in valid_variant_valid_matches but not in valid_matches""")
+
+class WordVariantValidator:
+    def __init__(self, analysis: TextAnalysis) -> None:
+        self.analysis:TextAnalysis = analysis
