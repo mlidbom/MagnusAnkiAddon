@@ -3,7 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, cast, override
 
 from ex_autoslot import AutoSlotsABC
-from sysutils.collections.queryable.q_iterable import QIterable
+
+from queryablecollections.q_iterable import QIterable
 
 if TYPE_CHECKING:
     from collections.abc import Iterable

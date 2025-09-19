@@ -4,8 +4,8 @@ from collections import defaultdict
 from typing import TYPE_CHECKING, final, override
 
 from ex_autoslot import AutoSlots
-from sysutils.collections.queryable.collections.q_list import QList
-from sysutils.collections.queryable.q_iterable import query
+from queryablecollections.collections.q_list import QList
+from queryablecollections.q_iterable import query
 
 if TYPE_CHECKING:
     from anki.collection import Collection

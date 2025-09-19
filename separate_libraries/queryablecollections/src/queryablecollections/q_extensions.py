@@ -3,12 +3,12 @@ from __future__ import annotations
 import itertools
 from typing import TYPE_CHECKING
 
-from sysutils.collections.queryable.q_iterable import query
+from queryablecollections.q_iterable import query
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
-    from sysutils.collections.queryable.q_iterable import QIterable
+    from queryablecollections.q_iterable import QIterable
 
 class Query:
     @staticmethod

@@ -11,7 +11,7 @@ source_dir = os.path.join(script_dir, "venv/lib/site-packages")
 target_dir = os.path.join(script_dir, "src/MagnusAddon/_lib")
 
 # One line per library and its dependencies
-libraries_to_copy = [
+pip_libraries_to_copy = [
     "janome",
     "pyperclip",
     "beartype",
@@ -25,8 +25,8 @@ libraries_to_copy = [
 # Create the target directory if it doesn't exist
 os.makedirs(target_dir, exist_ok=True)
 
-# Copy the libraries
-for library in libraries_to_copy:
+# Copy the pip libraries
+for library in pip_libraries_to_copy:
     source_path = os.path.join(source_dir, library)
     target_path = os.path.join(target_dir, library)
     print(f"Copying {source_path}       =>       {target_path}")

@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from ex_autoslot import AutoSlots
+from queryablecollections.q_iterable import query
 from sysutils import kana_utils
-from sysutils.collections.queryable.q_iterable import query
 
 
 class DifficultyCalculator(AutoSlots):

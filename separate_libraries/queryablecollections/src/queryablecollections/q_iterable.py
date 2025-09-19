@@ -5,18 +5,20 @@ from collections.abc import Iterable
 from typing import TYPE_CHECKING, Any, cast, override
 
 from ex_autoslot import AutoSlotsABC
-from sysutils.collections.queryable.operations import q_ops, q_ops_bool, q_ops_loop, q_ops_single_elements
-from sysutils.collections.queryable.operations.q_ops import SortInstruction
+
+from queryablecollections.operations import q_ops, q_ops_bool, q_ops_loop, q_ops_single_elements
+from queryablecollections.operations.q_ops import SortInstruction
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
     from _typeshed import SupportsRichComparison
-    from sysutils.collections.queryable.collections.q_frozen_set import QFrozenSet
-    from sysutils.collections.queryable.collections.q_list import QList
-    from sysutils.collections.queryable.collections.q_sequence import QSequence
-    from sysutils.collections.queryable.collections.q_set import QSet
     from sysutils.standard_type_aliases import Action1, Func, Predicate, Selector
+
+    from queryablecollections.collections.q_frozen_set import QFrozenSet
+    from queryablecollections.collections.q_list import QList
+    from queryablecollections.collections.q_sequence import QSequence
+    from queryablecollections.collections.q_set import QSet
 
 def query[TItem](value: Iterable[TItem]) -> QIterable[TItem]: return _Qiterable(value)
 
@@ -106,16 +108,16 @@ class QIterable[TItem](Iterable[TItem], ABC, AutoSlotsABC):
     # region factory methods
     # note: we do not "optimize" by returning self in any subclass because the contract is to create a new independent copy
     def to_list(self) -> QList[TItem]:
-        from sysutils.collections.queryable.collections.q_list import QList
+        from queryablecollections.collections.q_list import QList
         return QList(self)
     def to_set(self) -> QSet[TItem]:
-        from sysutils.collections.queryable.collections.q_set import QSet
+        from queryablecollections.collections.q_set import QSet
         return QSet(self)
     def to_frozenset(self) -> QFrozenSet[TItem]:
-        from sysutils.collections.queryable.collections.q_frozen_set import QFrozenSet
+        from queryablecollections.collections.q_frozen_set import QFrozenSet
         return QFrozenSet(self)
     def to_sequence(self) -> QSequence[TItem]:
-        from sysutils.collections.queryable.collections.q_sequence import QImmutableSequence
+        from queryablecollections.collections.q_sequence import QImmutableSequence
         return QImmutableSequence(list(self))
     def to_built_in_list(self) -> list[TItem]: return list(self)
     # endregion

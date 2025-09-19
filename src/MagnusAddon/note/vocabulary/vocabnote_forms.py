@@ -7,15 +7,15 @@ from ankiutils.app import col
 from ex_autoslot import AutoSlots
 from note.note_constants import Mine, NoteFields
 from note.notefields.comma_separated_strings_list_field_de_duplicated import MutableCommaSeparatedStringsListFieldDeDuplicated
+from queryablecollections.q_iterable import query
 from sysutils import ex_str
-from sysutils.collections.queryable.q_iterable import query
 from sysutils.lazy import Lazy
 from sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
-    from sysutils.collections.queryable.collections.q_list import QList
-    from sysutils.collections.queryable.collections.q_set import QSet
+    from queryablecollections.collections.q_list import QList
+    from queryablecollections.collections.q_set import QSet
 
 class VocabNoteForms(WeakRefable, AutoSlots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:

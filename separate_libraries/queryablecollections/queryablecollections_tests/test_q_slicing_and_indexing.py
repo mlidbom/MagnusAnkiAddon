@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from sysutils.collections.queryable.collections.q_list import QList
-from sysutils.collections.queryable.collections.q_sequence import QImmutableSequence
+from queryablecollections.collections.q_list import QList
+from queryablecollections.collections.q_sequence import QImmutableSequence
 
 
 def test_list_slice_from_start() -> None:

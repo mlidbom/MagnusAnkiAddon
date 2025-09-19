@@ -5,8 +5,9 @@ from collections.abc import Sequence
 from typing import cast, overload, override
 
 from ex_autoslot import AutoSlotsABC
-from sysutils.collections.immutable_sequence import ImmutableSequence
-from sysutils.collections.queryable.q_iterable import LazyQiterable, QIterable
+
+from queryablecollections.immutable_sequence import ImmutableSequence
+from queryablecollections.q_iterable import LazyQiterable, QIterable
 
 
 class QSequence[TItem](Sequence[TItem], QIterable[TItem], ABC, AutoSlotsABC):

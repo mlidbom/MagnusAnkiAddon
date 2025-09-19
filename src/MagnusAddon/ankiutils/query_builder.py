@@ -5,8 +5,8 @@ from typing import TYPE_CHECKING
 from ankiutils import app
 from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 from note.note_constants import Builtin, MyNoteFields, NoteFields, NoteTypes, SentenceNoteFields
+from queryablecollections.collections.q_set import QSet
 from sysutils import kana_utils
-from sysutils.collections.queryable.collections.q_set import QSet
 
 if TYPE_CHECKING:
     from collections.abc import Iterable

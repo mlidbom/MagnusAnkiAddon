@@ -1,6 +1,6 @@
 {
   "include": [
-    "src"
+    "src", "separate_libraries/queryablecollections/src"
   ],
   "exclude": [
     "**/node_modules",
@@ -12,7 +12,7 @@
     "**/manually_copied_in_libraries/*"
   ],
   "ignore": [],
-  "extraPaths": ["src/MagnusAddon"],
+  "extraPaths": ["src/MagnusAddon", "separate_libraries/queryablecollections/src"],
 
   "nonsense_because_comments_not_allowed": "off, basic, standard, strict, recommended, all",
   "typeCheckingMode": "recommended",

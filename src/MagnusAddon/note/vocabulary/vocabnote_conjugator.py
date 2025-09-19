@@ -4,11 +4,11 @@ from typing import TYPE_CHECKING
 
 from ex_autoslot import AutoSlots
 from language_services import conjugator
-from sysutils.collections.queryable.q_iterable import query
+from queryablecollections.q_iterable import query
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
-    from sysutils.collections.queryable.collections.q_list import QList
+    from queryablecollections.collections.q_list import QList
     from sysutils.weak_ref import WeakRef
 
 class VocabNoteConjugator(AutoSlots):

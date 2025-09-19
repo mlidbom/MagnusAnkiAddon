@@ -4,11 +4,11 @@ from collections.abc import Callable, Iterable
 from typing import cast
 
 import pytest
-from sysutils.collections.queryable.collections.q_frozen_set import QFrozenSet
-from sysutils.collections.queryable.collections.q_list import QList
-from sysutils.collections.queryable.collections.q_sequence import QImmutableSequence
-from sysutils.collections.queryable.collections.q_set import QSet
-from sysutils.collections.queryable.q_iterable import QIterable, query
+from queryablecollections.collections.q_frozen_set import QFrozenSet
+from queryablecollections.collections.q_list import QList
+from queryablecollections.collections.q_sequence import QImmutableSequence
+from queryablecollections.collections.q_set import QSet
+from queryablecollections.q_iterable import QIterable, query
 
 
 def test_select() -> None:

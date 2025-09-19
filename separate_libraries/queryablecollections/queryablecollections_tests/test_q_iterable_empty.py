@@ -1,11 +1,11 @@
 from __future__ import annotations
 
+from queryablecollections.collections.q_frozen_set import QFrozenSet
+from queryablecollections.collections.q_list import QList
+from queryablecollections.collections.q_sequence import QImmutableSequence, QSequence
+from queryablecollections.collections.q_set import QSet
+from queryablecollections.q_iterable import QIterable
 from sysutils import typed
-from sysutils.collections.queryable.collections.q_frozen_set import QFrozenSet
-from sysutils.collections.queryable.collections.q_list import QList
-from sysutils.collections.queryable.collections.q_sequence import QImmutableSequence, QSequence
-from sysutils.collections.queryable.collections.q_set import QSet
-from sysutils.collections.queryable.q_iterable import QIterable
 
 
 def test_iterable_empty_returns_empty_sequence_the_same_instance_each_time() -> None:

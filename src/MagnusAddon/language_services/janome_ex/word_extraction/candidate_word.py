@@ -6,14 +6,14 @@ from ex_autoslot import AutoSlots
 from language_services.janome_ex.word_extraction.analysis_constants import noise_characters
 from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
 from language_services.janome_ex.word_extraction.matches.match import Match
-from sysutils.collections.queryable.q_iterable import QIterable
+from queryablecollections.q_iterable import QIterable
 from sysutils.typed import non_optional
 from sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
     from language_services.janome_ex.word_extraction.text_location import TextAnalysisLocation
-    from sysutils.collections.queryable.collections.q_list import QList
+    from queryablecollections.collections.q_list import QList
 
 from sysutils.ex_str import newline
 
