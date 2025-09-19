@@ -9,7 +9,8 @@
     "src/MagnusAddon/_lib/",
     "**/_lib_patched/*",
     "**venv/*",
-    "**/manually_copied_in_libraries/*"
+    "**/manually_copied_in_libraries/*",
+    "**/included_libraries/*"
   ],
   "ignore": [],
   "extraPaths": ["src/MagnusAddon", "separate_libraries/queryablecollections/src"],

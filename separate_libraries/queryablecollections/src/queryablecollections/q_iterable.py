@@ -4,8 +4,7 @@ from abc import ABC
 from collections.abc import Iterable
 from typing import TYPE_CHECKING, Any, cast, override
 
-from ex_autoslot import AutoSlotsABC
-
+from queryablecollections.autoslot_shim import SlotsABC
 from queryablecollections.operations import q_ops, q_ops_bool, q_ops_loop, q_ops_single_elements
 from queryablecollections.operations.q_ops import SortInstruction
 
@@ -22,7 +21,7 @@ if TYPE_CHECKING:
 
 def query[TItem](value: Iterable[TItem]) -> QIterable[TItem]: return _Qiterable(value)
 
-class QIterable[TItem](Iterable[TItem], ABC, AutoSlotsABC):
+class QIterable[TItem](Iterable[TItem], ABC, SlotsABC):
     @staticmethod
     def create(value: Iterable[TItem]) -> QIterable[TItem]: return _Qiterable(value)
 

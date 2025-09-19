@@ -4,13 +4,12 @@ from abc import ABC
 from collections.abc import Sequence
 from typing import cast, overload, override
 
-from ex_autoslot import AutoSlotsABC
-
+from queryablecollections.autoslot_shim import SlotsABC
 from queryablecollections.immutable_sequence import ImmutableSequence
 from queryablecollections.q_iterable import LazyQiterable, QIterable
 
 
-class QSequence[TItem](Sequence[TItem], QIterable[TItem], ABC, AutoSlotsABC):
+class QSequence[TItem](Sequence[TItem], QIterable[TItem], ABC, SlotsABC):
     @override
     def _optimized_length(self) -> int: return len(self)
 

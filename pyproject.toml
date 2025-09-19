@@ -54,7 +54,7 @@ ignore = [
 
 [tool.pyright]
 include=["src", "separate_libraries/queryablecollections/src"]
-exclude=["**/node_modules", "**/__pycache__", "**/.*", "src/MagnusAddon/_lib/", "**/_lib_patched/*", "**venv/*", "**/manually_copied_in_libraries/*"]
+exclude=["**/node_modules", "**/__pycache__", "**/.*", "src/MagnusAddon/_lib/", "**/_lib_patched/*", "**venv/*", "**/manually_copied_in_libraries/*", "**/included_libraries/*"]
 extraPaths=["src/MagnusAddon", "separate_libraries/queryablecollections/src"]
 typeCheckingMode="strict" # "off", "basic", "standard", "strict", "recommended", "all"
 

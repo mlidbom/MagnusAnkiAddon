@@ -2,15 +2,14 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, cast, override
 
-from ex_autoslot import AutoSlotsABC
-
+from queryablecollections.autoslot_shim import SlotsABC
 from queryablecollections.q_iterable import QIterable
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
 
-class QFrozenSet[TItem](frozenset[TItem], QIterable[TItem], AutoSlotsABC):
+class QFrozenSet[TItem](frozenset[TItem], QIterable[TItem], SlotsABC):
     def __new__(cls, iterable: Iterable[TItem] = ()) -> QFrozenSet[TItem]:
         return super().__new__(cls, iterable)
 
