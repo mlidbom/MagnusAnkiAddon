@@ -117,9 +117,10 @@ class QIterable[TItem](Iterable[TItem], ABC, AutoSlotsABC):
     # endregion
 
     # region assertions on the collection or it's values
-    def assert_each(self, predicate: Predicate[TItem], message: str | None = None) -> QIterable[TItem]:
+    def assert_each(self, predicate: Predicate[TItem], message: str | Selector[TItem, str] | None = None) -> QIterable[TItem]:
         for item in self:
-            if not predicate(item): raise AssertionError(message or "")
+            actual_message = message if isinstance(message, str) else message(item) if message is not None else ""
+            if not predicate(item): raise AssertionError(actual_message)
         return self
 
     def assert_on_collection(self, predicate: Predicate[QIterable[TItem]], message: str | None = None) -> QIterable[TItem]:

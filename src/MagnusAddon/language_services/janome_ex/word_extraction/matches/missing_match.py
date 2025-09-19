@@ -11,7 +11,9 @@ if TYPE_CHECKING:
 
 class MissingMatch(Match, AutoSlots):
     def __init__(self, word_variant: WeakRef[CandidateWordVariant]) -> None:
-        super().__init__(word_variant, validity_requirements=[], display_requirements=[])
+        super().__init__(word_variant,
+                         validity_requirements=[],
+                         display_requirements=[])
 
     @property
     @override
@@ -25,3 +27,7 @@ class MissingMatch(Match, AutoSlots):
     @property
     @override
     def readings(self) -> list[str]: return []
+    @property
+    @override
+    def failure_reasons(self) -> list[str]:
+        return super().failure_reasons + ["no_dictionary_or_vocabulary_match_found"]
