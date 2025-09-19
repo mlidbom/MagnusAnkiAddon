@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Any, SupportsIndex, cast, overload, override
 
 from ex_autoslot import AutoSlotsABC
 from sysutils.collections.immutable_sequence import ImmutableSequence
-from sysutils.collections.queryable import q_ops
+from sysutils.collections.queryable import q_ops, q_ops_bool, q_ops_loop
 from sysutils.collections.queryable.q_ops import SortInstruction
 
 if TYPE_CHECKING:
@@ -57,9 +57,9 @@ class QIterable[TItem](Iterable[TItem], ABC, AutoSlotsABC):
     # endregion
 
     # region boolean queries
-    def none(self, predicate: Predicate[TItem] | None = None) -> bool: return not q_ops.any_(self, predicate)
-    def any(self, predicate: Predicate[TItem] | None = None) -> bool: return q_ops.any_(self, predicate)
-    def all(self, predicate: Predicate[TItem]) -> bool: return q_ops.all(self, predicate)
+    def none(self, predicate: Predicate[TItem] | None = None) -> bool: return not q_ops_bool.any_(self, predicate)
+    def any(self, predicate: Predicate[TItem] | None = None) -> bool: return q_ops_bool.any_(self, predicate)
+    def all(self, predicate: Predicate[TItem]) -> bool: return q_ops_bool.all_(self, predicate)
     # endregion
 
     # region mapping methods
@@ -70,10 +70,7 @@ class QIterable[TItem](Iterable[TItem], ABC, AutoSlotsABC):
     # region single item selecting methods
     def single(self, predicate: Predicate[TItem] | None = None) -> TItem: return q_ops.single(self, predicate)
 
-    def single_or_none(self, predicate: Predicate[TItem] | None = None) -> TItem | None:
-        if predicate is None: return q_ops.single_or_none(self)
-        return self.where(predicate).single_or_none()
-
+    def single_or_none(self, predicate: Predicate[TItem] | None = None) -> TItem | None: return q_ops.single_or_none(self, predicate)
     def element_at(self, index: int) -> TItem: return q_ops.element_at(self, index)
     def element_at_or_none(self, index: int) -> TItem | None: return q_ops.element_at_or_none(self, index)
 
@@ -81,7 +78,7 @@ class QIterable[TItem](Iterable[TItem], ABC, AutoSlotsABC):
 
     # region assertions on the collection or it's values
     def assert_each(self, predicate: Predicate[TItem], message: str | Selector[TItem, str] | None = None) -> QIterable[TItem]:
-        q_ops.assert_each(self, predicate, message)
+        q_ops_loop.assert_each(self, predicate, message)
         return self
 
     def assert_on_collection(self, predicate: Predicate[QIterable[TItem]], message: str | None = None) -> QIterable[TItem]:
