@@ -23,9 +23,9 @@ def test_where_first_element() -> None: where_test((1, 2, 3), lambda x: x == 1, 
 def test_where_middle_element() -> None: where_test((1, 2, 3), lambda x: x == 2, [2])
 def test_where_end_element() -> None: where_test((1, 2, 3), lambda x: x == 3, [3])
 
-def test_element_at_returns_first_element() -> None: value_test((1, 2, 3), lambda x: x.element_at(0), 1)
-def test_element_at_return_middle_element() -> None: value_test((1, 2, 3), lambda x: x.element_at(1), 2)
-def test_element_at_returns_last_element() -> None: value_test((1, 2, 3), lambda x: x.element_at(2), 3)
+def test_element_at_returns_first_element() -> None: value_test([1, 2, 3], lambda x: x.element_at(0), 1)
+def test_element_at_return_middle_element() -> None: value_test([1, 2, 3], lambda x: x.element_at(1), 2)
+def test_element_at_returns_last_element() -> None: value_test([1, 2, 3], lambda x: x.element_at(2), 3)
 def test_element_at_throws_if_index_is_out_of_range() -> None: throws_test((1, 2, 3), lambda x: x.element_at(3), IndexError)
 def test_element_at_after_to_list_throws_if_index_is_out_of_range() -> None: throws_test((1, 2, 3), lambda x: x.element_at(3), IndexError)
 
@@ -33,18 +33,20 @@ def test_where_excluding_first_element() -> None: where_test((1, 2, 3), lambda x
 def test_where_excluding_middle_element() -> None: where_test((1, 2, 3), lambda x: x != 2, [1, 3])
 def test_where_excluding_end_element() -> None: where_test((1, 2, 3), lambda x: x != 3, [1, 2])
 
-def test_to_list() -> None: value_test((1, 2, 3), lambda x: x.to_list(), [1, 2, 3])
-def test_to_sequence() -> None: value_test((1, 2, 3), lambda x: x.to_sequence().to_list(), [1, 2, 3])
-def test_to_builtin_list() -> None: value_test((1, 2, 3), lambda x: x.to_built_in_list(), [1, 2, 3])
-def test_to_set() -> None: value_test((1, 2, 3), lambda x: x.to_set(), {1, 2, 3})
-def test_to_frozenset() -> None: value_test((1, 2, 3), lambda x: x.to_frozenset(), frozenset({1, 2, 3}))
+def test_to_list() -> None: value_test([1, 2, 3], lambda x: x.to_list(), [1, 2, 3])
+def test_to_sequence() -> None: value_test([1, 2, 3], lambda x: x.to_sequence().to_list(), [1, 2, 3])
+def test_to_builtin_list() -> None: value_test([1, 2, 3], lambda x: x.to_built_in_list(), [1, 2, 3])
+def test_to_set() -> None: value_test([1, 2, 3], lambda x: x.to_set(), {1, 2, 3})
+def test_to_frozenset() -> None: value_test([1, 2, 3], lambda x: x.to_frozenset(), frozenset({1, 2, 3}))
+
+def test_concat_appends_second_sequence_to_first() -> None: value_test([1, 2], lambda x: x.concat([3, 4]).to_list(), [1, 2, 3, 4])
 
 def test_any_returns_true_if_there_are_elements() -> None: value_test([1], lambda x: x.any(), True)
 def test_any_returns_false_if_there_are_no_elements() -> None: value_test([], lambda x: x.any(), False)
 
-def test_indexer_returns_first_value() -> None: value_test((1, 2, 3), lambda x: x.to_list()[0], 1)
-def test_indexer_returns_middle_value() -> None: value_test((1, 2, 3), lambda x: x.to_list()[1], 2)
-def test_indexer_returns_last_value() -> None: value_test((1, 2, 3), lambda x: x.to_list()[2], 3)
+def test_indexer_returns_first_value() -> None: value_test([1, 2, 3], lambda x: x.to_list()[0], 1)
+def test_indexer_returns_middle_value() -> None: value_test([1, 2, 3], lambda x: x.to_list()[1], 2)
+def test_indexer_returns_last_value() -> None: value_test([1, 2, 3], lambda x: x.to_list()[2], 3)
 
 def test_none_returns_false_if_there_are_elements() -> None: value_test([1], lambda x: x.none(), False)
 def test_none_returns_true_if_there_are_no_elements() -> None: value_test([], lambda x: x.none(), True)
@@ -140,7 +142,7 @@ def select_test[TIn, TOut](items: Iterable[TIn],
         result = sequence.select(selector)
         assert result.to_list() == expected_output, name
 
-def value_test[TIn, TOut](items: Iterable[TIn] | Callable[[], Iterable[TIn]],
+def value_test[TIn, TOut](items: list[TIn] | Callable[[], Iterable[TIn]],
                           selector: Callable[[QIterable[TIn]], TOut],
                           expected_output: TOut,
                           skip_sets: bool = False) -> None:

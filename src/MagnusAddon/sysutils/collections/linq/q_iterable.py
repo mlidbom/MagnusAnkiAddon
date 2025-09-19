@@ -216,13 +216,12 @@ class QSequence[TItem](Sequence[TItem], QIterable[TItem], ABC, AutoSlotsABC):
     def empty() -> QSequence[TItem]:
         return cast(QSequence[TItem], QSequence._empty_sequence)  # pyright: ignore [reportGeneralTypeIssues, reportUnknownMemberType] an empty QList can serve as any QList in python since generic types are not present at runtime and this gives as such an instance at virtually zero cost
 
-
 class QImmutableSequence[TItem](ImmutableSequence[TItem], QSequence[TItem]):
     def __init__(self, sequence: Sequence[TItem] = ()) -> None:
         super().__init__(sequence)
 
 # region LList, LSet, LFrozenSet: concrete classes that do very little but inherit a built in collection and LIterable and provide an override or two for performance
-class QList[TItem](list[TItem], QSequence[TItem], QIterable[TItem], AutoSlotsABC): # pyright: ignore [reportIncompatibleMethodOverride] apparently there's a conflict between the definitions of index in list and Sequence, well list will win and that should be the same as for any list type...
+class QList[TItem](list[TItem], QSequence[TItem], QIterable[TItem], AutoSlotsABC):  # pyright: ignore [reportIncompatibleMethodOverride] apparently there's a conflict between the definitions of index in list and Sequence, well list will win and that should be the same as for any list type...
     def __init__(self, iterable: Iterable[TItem] = ()) -> None:
         super().__init__(iterable)
 
@@ -237,7 +236,7 @@ class QList[TItem](list[TItem], QSequence[TItem], QIterable[TItem], AutoSlotsABC
 
     @staticmethod
     @override
-    def empty() -> QList[TItem]: return QList() # QList is mutable, so unlike our base types we cannot reuse an instance
+    def empty() -> QList[TItem]: return QList()  # QList is mutable, so unlike our base types we cannot reuse an instance
 
 class QFrozenSet[TItem](frozenset[TItem], QIterable[TItem], AutoSlotsABC):
     def __new__(cls, iterable: Iterable[TItem] = ()) -> QFrozenSet[TItem]:
@@ -261,7 +260,7 @@ class QSet[TItem](set[TItem], QIterable[TItem], AutoSlotsABC):
 
     @staticmethod
     @override
-    def empty() -> QSet[TItem]: return QSet() # QSet is mutable, so unlike our base types we cannot reuse an instance
+    def empty() -> QSet[TItem]: return QSet()  # QSet is mutable, so unlike our base types we cannot reuse an instance
 
 # an empty immutable Q* can serve or any Q* type in python since generic types are not present at runtime and this gives as such an instance at virtually zero cost
 QSequence._empty_sequence = QImmutableSequence()  # pyright: ignore [reportGeneralTypeIssues, reportPrivateUsage]
