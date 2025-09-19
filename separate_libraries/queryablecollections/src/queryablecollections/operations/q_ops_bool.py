@@ -17,7 +17,7 @@ def any_[TItem](self: Iterable[TItem], predicate: Predicate[TItem] | None = None
         iterator = iter(self)
         try:
             next(iterator)
-            return True
+            return True  # noqa: TRY300
         except StopIteration:
             return False
     return any(select(predicate, self))
