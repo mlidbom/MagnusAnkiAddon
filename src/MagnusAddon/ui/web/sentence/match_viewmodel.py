@@ -75,7 +75,7 @@ class MatchViewModel(AutoSlots):
     @property
     def kanji(self) -> list[str]:
         sequence = kana_utils.extract_kanji(self.parsed_form + self.vocab_form)
-        return query(sequence).unique().to_list()
+        return query(sequence).distinct().to_list()
 
     @override
     def __repr__(self) -> str:

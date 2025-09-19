@@ -38,7 +38,7 @@ class QIterable[TItem](Iterable[TItem], ABC, AutoSlotsABC):
     def where_not_none(self) -> QIterable[TItem]:
         return self.where(lambda item: item is not None)
 
-    def unique(self) -> QIterable[TItem]:
+    def distinct(self) -> QIterable[TItem]:
         return _LazyQiterable(lambda: dict.fromkeys(self))
 
     def take_while(self, predicate: Predicate[TItem]) -> QIterable[TItem]:

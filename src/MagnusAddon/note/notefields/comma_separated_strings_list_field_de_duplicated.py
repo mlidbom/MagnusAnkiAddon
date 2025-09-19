@@ -16,4 +16,4 @@ class MutableCommaSeparatedStringsListFieldDeDuplicated(MutableCommaSeparatedStr
 
     @override
     def set(self, value: list[str]) -> None:
-        super().set(query(value).unique().to_list())
+        super().set(query(value).distinct().to_list())

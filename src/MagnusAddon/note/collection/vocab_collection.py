@@ -120,13 +120,13 @@ class VocabCollection(AutoSlots):
         matches: list[VocabNote] = self.with_form(form)
         exact_match = [voc for voc in matches if voc.question.without_noise_characters == form]
         sequence = exact_match if exact_match else matches
-        return query(sequence).unique().to_list()
+        return query(sequence).distinct().to_list()
 
     def with_any_form_in_prefer_exact_match(self, forms: list[str]) -> QList[VocabNote]:
-        return query(forms).select_many(self.with_form_prefer_exact_match).unique().to_list()  #ex_sequence.remove_duplicates_while_retaining_order(ex_sequence.flatten([self.with_form_prefer_exact_match(form) for form in forms]))
+        return query(forms).select_many(self.with_form_prefer_exact_match).distinct().to_list()  #ex_sequence.remove_duplicates_while_retaining_order(ex_sequence.flatten([self.with_form_prefer_exact_match(form) for form in forms]))
 
     def with_any_form_in(self, forms: list[str]) -> list[VocabNote]:
-        return query(forms).select_many(self.with_form).unique().to_list()  #ex_sequence.remove_duplicates_while_retaining_order(ex_sequence.flatten([self.with_form(form) for form in forms]))
+        return query(forms).select_many(self.with_form).distinct().to_list()  #ex_sequence.remove_duplicates_while_retaining_order(ex_sequence.flatten([self.with_form(form) for form in forms]))
 
     def with_any_question_in(self, questions: Iterable[str]) -> QList[VocabNote]:
         return query(questions).select(self.with_question).select_many(lambda x: x).to_list()

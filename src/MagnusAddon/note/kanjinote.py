@@ -253,7 +253,7 @@ class KanjiNote(JPNote, AutoSlots):
         studying_reading_vocab_in_descending_studying_sentences_order = sorted((voc for voc in self.get_vocab_notes() if voc.is_studying(CardTypes.reading)), key=sort_key)
 
         sequence = self.get_primary_readings()
-        primary_readings = query(sequence).unique().to_list()
+        primary_readings = query(sequence).distinct().to_list()
         for primary_reading in primary_readings:
             for vocab in studying_reading_vocab_in_descending_studying_sentences_order:
                 if any(vocab.readings.get()) and self.reading_in_vocab_reading(primary_reading, vocab.readings.get()[0], vocab.get_question()):

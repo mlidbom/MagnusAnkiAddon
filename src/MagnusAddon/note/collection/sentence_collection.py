@@ -82,7 +82,7 @@ class SentenceCollection(AutoSlots):
         question = vocab_note.get_question()
         return (vocab_note.forms.not_owned_by_other_vocab()
                 .select_many(self._cache.with_vocab_form)
-                .unique()
+                .distinct()
                 .where(lambda match: question not in match.configuration.incorrect_matches.words())  # todo: isn't this check redundant, won't the match have been removed during indexing?
                 .to_list())
         # owned_forms = vocab_note.forms.not_owned_by_other_vocab()

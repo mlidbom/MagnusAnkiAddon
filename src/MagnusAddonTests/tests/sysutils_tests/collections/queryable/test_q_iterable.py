@@ -51,7 +51,7 @@ def test_indexer_returns_last_value() -> None: value_test([1, 2, 3], lambda x: x
 def test_none_returns_false_if_there_are_elements() -> None: value_test([1], lambda x: x.none(), False)
 def test_none_returns_true_if_there_are_no_elements() -> None: value_test([], lambda x: x.none(), True)
 
-def test_unique_removes_duplicates_while_retaining_order() -> None: value_test([1, 2, 2, 3, 3], lambda x: x.unique().to_list(), [1, 2, 3])
+def test_distinct_removes_duplicates_while_retaining_order() -> None: value_test([1, 2, 2, 3, 3], lambda x: x.distinct().to_list(), [1, 2, 3])
 
 def test_select_many_flattens_nested_sequences() -> None: value_test([[1, 2], [3, 4]], lambda x: x.select_many(lambda y: y).to_list(), [1, 2, 3, 4], skip_sets=True)
 
