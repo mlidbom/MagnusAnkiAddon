@@ -4,7 +4,7 @@ from collections.abc import Callable, Iterable
 from typing import cast
 
 import pytest
-from sysutils.collections.linq.q_iterable import QFrozenSet, QIterable, QList, QSet, query
+from sysutils.collections.linq.q_iterable import QFrozenSet, QImmutableSequence, QIterable, QList, QSet, query
 
 
 def test_select() -> None:
@@ -113,13 +113,14 @@ def create_sequences[T](iterable: Iterable[T] | Callable[[], Iterable[T]], skip_
                                           else lambda: cast(Iterable[T], iterable))  # pyright: ignore[reportUnnecessaryCast] while basedpyright understands it is not needed, pyright does not
 
     values = [
-        ("linq", query(factory())),
-        ("LList", QList(factory())),
-        ("LIterable.create", QIterable[T].create(factory()))
+            ("linq", query(factory())),
+            ("QList", QList(factory())),
+            ("QIterable.create", QIterable[T].create(factory())),
+            ("QImmutableSequence", QImmutableSequence(list(factory()))),
     ]
     if not skip_sets:
-        values += [("LSet", QSet(factory())),
-                   ("LFRozenSet", QFrozenSet(factory()))]
+        values += [("QSet", QSet(factory())),
+                   ("QFRozenSet", QFrozenSet(factory()))]
     return values
 
 def where_test[TIn, TOut](items: Iterable[TIn],
