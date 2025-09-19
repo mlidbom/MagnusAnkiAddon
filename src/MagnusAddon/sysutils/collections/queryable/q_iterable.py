@@ -5,7 +5,7 @@ from collections.abc import Iterable
 from typing import TYPE_CHECKING, Any, cast, override
 
 from ex_autoslot import AutoSlotsABC
-from sysutils.collections.queryable import q_ops, q_ops_bool, q_ops_loop
+from sysutils.collections.queryable import q_ops, q_ops_bool, q_ops_loop, q_ops_single_elements
 from sysutils.collections.queryable.q_ops import SortInstruction
 
 if TYPE_CHECKING:
@@ -70,11 +70,11 @@ class QIterable[TItem](Iterable[TItem], ABC, AutoSlotsABC):
     # endregion
 
     # region single item selecting methods
-    def single(self, predicate: Predicate[TItem] | None = None) -> TItem: return q_ops.single(self, predicate)
+    def single(self, predicate: Predicate[TItem] | None = None) -> TItem: return q_ops_single_elements.single(self, predicate)
 
-    def single_or_none(self, predicate: Predicate[TItem] | None = None) -> TItem | None: return q_ops.single_or_none(self, predicate)
-    def element_at(self, index: int) -> TItem: return q_ops.element_at(self, index)
-    def element_at_or_none(self, index: int) -> TItem | None: return q_ops.element_at_or_none(self, index)
+    def single_or_none(self, predicate: Predicate[TItem] | None = None) -> TItem | None: return q_ops_single_elements.single_or_none(self, predicate)
+    def element_at(self, index: int) -> TItem: return q_ops_single_elements.element_at(self, index)
+    def element_at_or_none(self, index: int) -> TItem | None: return q_ops_single_elements.element_at_or_none(self, index)
 
     # endregion
 
