@@ -45,27 +45,28 @@ def assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentenc
 
 def assert_analysis_state_is_valid(analysis: TextAnalysis) -> None:
     print(analysis.text)
-    matched_with_is_displayed_false = analysis.all_matches.where(lambda match: not match.is_displayed).to_set()
+    valid_matches = analysis.all_matches.where(lambda match: match.is_valid).to_set()
+    valid_matches_with_is_displayed_false = valid_matches.where(lambda match: not match.is_displayed).to_set()
     matches_with_is_displayed_true = analysis.all_matches.where(lambda match: match.is_displayed).to_set()
     matches_with_is_valid_false = analysis.all_matches.where(lambda match: not match.is_valid).to_set()
     displayed_matches = analysis.display_matches.to_set()
 
     def no_matches_with_is_displayed_false_should_be_displayed() -> None:
-        matched_with_is_displayed_false.assert_each(lambda match: match not in displayed_matches, lambda match: f"""Match: {match.match_form} has is_displayed=False yet is displayed""")
+        valid_matches_with_is_displayed_false.assert_each(lambda match: match not in displayed_matches, lambda match: f"""Match: {match.match_form} has is_displayed=False yet is displayed""")
 
     def all_matches_with_is_displayed_true_should_be_in_display_matches() -> None:
         assert matches_with_is_displayed_true.assert_each(lambda match: match in displayed_matches, lambda match: f"""Match: {match.match_form} has is_displayed=True yet is not in display_matches""")
 
-    def all_matches_with_is_displayed_false_should_have_hiding_reasons() -> None:
-        matched_with_is_displayed_false.assert_each(lambda match: len(match.hiding_reasons) > 0, lambda match: f"""Match: {match.match_form} has is_displayed=False yet has no hiding_reasons""")
+    def all_valid_matches_with_is_displayed_false_should_have_hiding_reasons() -> None:
+        valid_matches_with_is_displayed_false.assert_each(lambda match: len(match.hiding_reasons) > 0, lambda match: f"""Match: {match.match_form} has is_displayed=False yet has no hiding_reasons""")
 
     def all_matches_with_is_valid_false_should_have_failure_reasons() -> None:
         matches_with_is_valid_false.assert_each(lambda match: len(match.failure_reasons) > 0, lambda match: f"""Match: {match.match_form} has is_valid=False yet has no failure_reasons""")
 
     no_matches_with_is_displayed_false_should_be_displayed()
     all_matches_with_is_displayed_true_should_be_in_display_matches()
-    # all_matches_with_is_displayed_false_should_have_hiding_reasons()
     all_matches_with_is_valid_false_should_have_failure_reasons()
+    all_valid_matches_with_is_displayed_false_should_have_hiding_reasons()
 
 def assert_all_words_equal(sentence: str, expected_output: list[str]) -> None:
     sentence_note = SentenceNote.create(sentence)
