@@ -115,10 +115,13 @@ class QIterable[TItem](Iterable[TItem], ABC, AutoSlotsABC):
         return self.where(predicate).single_or_none()
 
     def element_at(self, index: int) -> TItem:
-        for current_index, item in enumerate(self):
-            if current_index == index:
-                return item
-        raise IndexError(f"Index {index} was outside the bounds of the collection.")
+        try:
+            return next(itertools.islice(self, index, index + 1))
+        except StopIteration:
+            raise IndexError(f"Index {index} was outside the bounds of the collection.") from None
+
+    def element_at_or_default(self, index: int) -> TItem | None:
+        return next(itertools.islice(self, index, index + 1), None)
 
     # endregion
 
