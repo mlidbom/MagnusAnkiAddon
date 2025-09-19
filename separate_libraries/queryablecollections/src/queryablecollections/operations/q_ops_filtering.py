@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from queryablecollections.type_aliases import Predicate
 
 
-distinct = dict.fromkeys
+distinct = dict.fromkeys # highly optimized and guaranteed to keep ordering
 take_while = itertools.takewhile
 
 
