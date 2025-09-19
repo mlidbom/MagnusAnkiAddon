@@ -4,10 +4,11 @@ from typing import TYPE_CHECKING, override
 
 from ex_autoslot import AutoSlots
 from sysutils import ex_str, kana_utils
-from sysutils.collections.queryable.q_iterable import QList, query
+from sysutils.collections.queryable.q_iterable import query
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
+    from sysutils.collections.queryable.q_list import QList
     from sysutils.weak_ref import WeakRef
 
 class VocabNoteKanji(AutoSlots):

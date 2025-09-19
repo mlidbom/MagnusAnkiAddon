@@ -8,12 +8,14 @@ from ex_autoslot import AutoSlots
 from note.note_constants import Mine, NoteFields
 from note.notefields.comma_separated_strings_list_field_de_duplicated import MutableCommaSeparatedStringsListFieldDeDuplicated
 from sysutils import ex_str
-from sysutils.collections.queryable.q_iterable import QList, QSet, query
+from sysutils.collections.queryable.q_iterable import query
 from sysutils.lazy import Lazy
 from sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
+    from sysutils.collections.queryable.q_list import QList
+    from sysutils.collections.queryable.q_set import QSet
 
 class VocabNoteForms(WeakRefable, AutoSlots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:

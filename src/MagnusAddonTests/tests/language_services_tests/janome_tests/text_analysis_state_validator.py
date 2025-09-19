@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.match import Match
     from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
-    from sysutils.collections.queryable.q_iterable import QSet
+    from sysutils.collections.queryable.q_set import QSet
 
 class TextAnalysisValidator:
     def __init__(self, analysis: TextAnalysis) -> None:

@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from janome.tokenizer import Token  # pyright: ignore[reportMissingTypeStubs]
     from language_services.janome_ex.tokenizing.jn_token import JNToken
     from note.collection.vocab_collection import VocabCollection
-    from sysutils.collections.queryable.q_iterable import QList
+    from sysutils.collections.queryable.q_list import QList
 
 class ProcessedToken(AutoSlots):
     def __init__(self, surface: str, base: str, is_non_word_character: bool) -> None:

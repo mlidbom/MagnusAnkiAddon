@@ -4,12 +4,12 @@ from typing import TYPE_CHECKING, override
 
 from ankiutils import app
 from ex_autoslot import AutoSlots
-from sysutils.collections.queryable.q_iterable import QSet
+from sysutils.collections.queryable.q_set import QSet
 
 if TYPE_CHECKING:
     from note.notefields.auto_save_wrappers.set_wrapper import FieldSetWrapper
     from note.vocabulary.vocabnote import VocabNote
-    from sysutils.collections.queryable.q_iterable import QList
+    from sysutils.collections.queryable.q_list import QList
     from sysutils.weak_ref import WeakRef
 
 class PerfectSynonyms(AutoSlots):

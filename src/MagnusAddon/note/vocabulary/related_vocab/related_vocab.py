@@ -21,7 +21,7 @@ if TYPE_CHECKING:
     from note.jpnote import JPNote
     from note.kanjinote import KanjiNote
     from note.vocabulary.vocabnote import VocabNote
-    from sysutils.collections.queryable.q_iterable import QSet
+    from sysutils.collections.queryable.q_set import QSet
     from sysutils.weak_ref import WeakRef
 
 class RelatedVocab(AutoSlots):
