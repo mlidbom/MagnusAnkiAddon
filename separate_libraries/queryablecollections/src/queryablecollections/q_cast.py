@@ -12,6 +12,7 @@ if TYPE_CHECKING:
     from queryablecollections.collections.numeric.q_int_types import QIterableInt
     from queryablecollections.q_iterable import QIterable
 
+# noinspection DuplicatedCode
 def _checked_cast_int(item: object) -> int:
     if not isinstance(item, int): raise TypeError(f"Expected int, got {type(item).__name__}")
     return item
@@ -20,6 +21,7 @@ def _checked_cast_float(item: object) -> float:
     if not isinstance(item, float): raise TypeError(f"Expected float, got {type(item).__name__}")
     return item
 
+# noinspection DuplicatedCode
 def _checked_cast_fraction(item: object) -> Fraction:
     if not isinstance(item, Fraction): raise TypeError(f"Expected Fraction, got {type(item).__name__}")
     return item

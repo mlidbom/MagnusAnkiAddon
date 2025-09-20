@@ -36,7 +36,7 @@ class TestSkipOperations:
         assert query([]).skip(5).to_list() == []
 
 class TestTakeLastOperations:
-    def test_take_last_returns_the_last_X_elements(self) -> None:
+    def test_take_last_returns_the_last_x_elements(self) -> None:
         assert query([1, 2, 3, 4, 5]).take_last(3).to_list() == [3, 4, 5]
 
     def test_take_last_zero_returns_no_elements(self) -> None:
@@ -76,7 +76,7 @@ class TestSkipLastOperations:
 class TestLazyness:
     def test_take_is_lazy(self) -> None:
         call_count = 0
-        def expensive_operation(x: int) -> int:
+        def expensive_operation(_: int) -> int:
             nonlocal call_count
             call_count += 1
             return 0
@@ -85,7 +85,7 @@ class TestLazyness:
 
     def test_take_last_is_lazy(self) -> None:
         call_count = 0
-        def expensive_operation(x: int) -> int:
+        def expensive_operation(_: int) -> int:
             nonlocal call_count
             call_count += 1
             return 0
@@ -94,7 +94,7 @@ class TestLazyness:
 
     def test_skip_is_lazy(self) -> None:
         call_count = 0
-        def expensive_operation(x: int) -> int:
+        def expensive_operation(_: int) -> int:
             nonlocal call_count
             call_count += 1
             return 0
@@ -103,7 +103,7 @@ class TestLazyness:
 
     def test_skip_last_is_lazy(self) -> None:
         call_count = 0
-        def expensive_operation(x: int) -> int:
+        def expensive_operation(_: int) -> int:
             nonlocal call_count
             call_count += 1
             return 0
