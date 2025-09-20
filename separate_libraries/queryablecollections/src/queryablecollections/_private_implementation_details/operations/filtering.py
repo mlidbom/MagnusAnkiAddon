@@ -51,6 +51,11 @@ def skip_last[TItem](self: QIterable[TItem], count: int) -> QIterable[TItem]:
         return items[:-count]
     return C.lazy_iterable(internal_skip_last)
 
+class _TypeTester:
+    def __init__(self, type_: type) -> None:
+        self.type_ = type_
+    def __call__(self, value: object) -> bool:
+        return isinstance(value, self.type_)
 
 def of_type[TItem, TResult](self: QIterable[TItem], type_: type[TResult]) -> QIterable[TResult]:
-    return C.iterable(item for item in self if isinstance(item, type_))
+    return self.where(_TypeTester(type_)).cast.to(type_)
