@@ -55,6 +55,9 @@ class QCast[TItem]:
         from queryablecollections.collections.numeric.q_decimal_types import QIterableDecimalImplementation
         return QIterableDecimalImplementation(cast(Iterable[Decimal], self._iterable))
 
+    def to[TNew](self, type: type[TNew]) -> QIterable[TNew]:  # pyright: ignore [reportInvalidTypeVarUse]
+        return cast(QIterable[TNew], self._iterable)
+
 class QCheckedCast[TItem]:
     __slots__: tuple[str, ...] = ("_iterable",)
     def __init__(self, iterable: QIterable[TItem]) -> None:
