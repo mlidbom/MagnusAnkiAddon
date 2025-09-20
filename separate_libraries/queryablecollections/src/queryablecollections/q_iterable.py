@@ -89,6 +89,9 @@ class QIterable[TItem](Iterable[TItem], ABC):
     def zip[TOther, TResult](self, other: Iterable[TOther], selector: Callable[[TItem, TOther], TResult]) -> QIterable[TResult]:
         return QiterableImplementation(q_ops_transform.zip_with_selector(self, other, selector))
 
+    def join[TInner, TKey, TResult](self, inner: Iterable[TInner], outer_key: Selector[TItem, TKey], inner_key: Selector[TInner, TKey], result: Callable[[TItem, TInner], TResult]) -> QIterable[TResult]:
+        return QiterableImplementation(q_ops_transform.join(self, inner, outer_key, inner_key, result))
+
     @overload
     def group_by[TKey](self, key: Selector[TItem, TKey]) -> QIterable[QGrouping[TKey, TItem]]:
         """Groups the elements of a sequence according to the specified key selector"""
