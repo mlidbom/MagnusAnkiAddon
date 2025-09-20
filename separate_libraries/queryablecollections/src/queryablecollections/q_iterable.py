@@ -22,6 +22,8 @@ if TYPE_CHECKING:
 
 def query[TItem](value: Iterable[TItem]) -> QIterable[TItem]: return C.iterable(value)
 
+# note to coders, you can trust that the methods in QIterable do nothing except delegate to the corresponding operations method,
+# or to ZeroImportOverheadConstructors, that's why we keep all the methods on single lines to make it easier to read through the definitions
 class QIterable[TItem](Iterable[TItem], ABC):
     __slots__: tuple[str, ...] = ()
     @staticmethod
@@ -35,7 +37,7 @@ class QIterable[TItem](Iterable[TItem], ABC):
     # endregion
 
     # region functional programming helpers
-    def pipe_to[TReturn](self, action: Selector[QIterable[TItem], TReturn]) -> TReturn: return action(self)
+    def pipe_to[TReturn](self, action: Selector[QIterable[TItem], TReturn]) -> TReturn: return ops.functional.pipe_to(self, action)
     def for_each(self, action: Action1[TItem]) -> QIterable[TItem]: return ops.functional.for_each(self, action)
     def for_single(self, action: Selector[TItem, Any]) -> QIterable[TItem]:  return ops.functional.for_single(self, action)
     def for_single_or_none(self, action: Selector[TItem, Any]) -> QIterable[TItem]: return ops.functional.for_single_or_none(self, action)

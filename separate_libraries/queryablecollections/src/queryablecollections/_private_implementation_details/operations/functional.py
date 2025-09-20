@@ -18,3 +18,6 @@ def for_single_or_none[TItem](self: QIterable[TItem], action: Selector[TItem, An
     value = self.single_or_none()
     if value is not None: action(value)
     return self
+
+def pipe_to[TItem, TReturn](self: QIterable[TItem], action: Selector[QIterable[TItem], TReturn]) -> TReturn:
+    return action(self)
