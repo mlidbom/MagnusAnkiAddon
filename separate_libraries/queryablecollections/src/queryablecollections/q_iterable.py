@@ -11,7 +11,6 @@ from queryablecollections._private_implementation_details.q_zero_overhead_collec
 
 if TYPE_CHECKING:
     from _typeshed import SupportsRichComparison
-
     from queryablecollections._private_implementation_details.type_aliases import Action1, Predicate, Selector
     from queryablecollections.collections.q_dict import QDict
     from queryablecollections.collections.q_frozen_set import QFrozenSet
@@ -75,8 +74,20 @@ class QIterable[TItem](Iterable[TItem], ABC):
     # region mapping/transformation methods
     def select[TReturn](self, selector: Selector[TItem, TReturn]) -> QIterable[TReturn]: return ops.transforms.select(self, selector)
     def select_many[TInner](self, selector: Selector[TItem, Iterable[TInner]]) -> QIterable[TInner]: return ops.transforms.select_many(self, selector)
-    def zip[TOther, TResult](self, other: Iterable[TOther], selector: Callable[[TItem, TOther], TResult]) -> QIterable[TResult]: return ops.transforms.zip_with_selector(self, other, selector)
     def join[TInner, TKey, TResult](self, inner: Iterable[TInner], outer_key: Selector[TItem, TKey], inner_key: Selector[TInner, TKey], result: Callable[[TItem, TInner], TResult]) -> QIterable[TResult]: return ops.transforms.join(self, inner, outer_key, inner_key, result)
+
+    @overload
+    def zip[T2, TResult](self, second: Iterable[T2], result_selector: Callable[[TItem, T2], TResult], /) -> QIterable[TResult]: ...
+
+    @overload
+    def zip[T2](self, second: Iterable[T2], /) -> QIterable[tuple[TItem, T2]]: ...
+
+    @overload
+    def zip[T2, T3](self, second: Iterable[T2], third: Iterable[T3], /) -> QIterable[tuple[TItem, T2, T3]]: ...
+
+    def zip[T2, T3, TResult](self, second: Iterable[T2], third: Iterable[T3] | Callable[[TItem, T2], TResult] | None = None) \
+            -> QIterable[TResult] | QIterable[tuple[TItem, T2]] | QIterable[tuple[TItem, T2, T3]]:
+        return ops.transforms.zip_new(self, second, third)
 
     @overload
     def to_dict[TKey, TValue](self, key_selector: Selector[TItem, TKey], value_selector: Selector[TItem, TValue]) -> QDict[TKey, TValue]:
@@ -125,12 +136,7 @@ class QIterable[TItem](Iterable[TItem], ABC):
     def to_sequence(self) -> QSequence[TItem]: return C.sequence(self)
     def to_built_in_list(self) -> list[TItem]: return list(self)
 
-
-    # endregion
-
     # endregion
 
     @staticmethod
     def empty() -> QIterable[TItem]: return C.empty_iterable()
-
-# region implementing classes
