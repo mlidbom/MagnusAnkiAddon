@@ -2,11 +2,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from queryablecollections._private_implementation_details.type_aliases import Func
-
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
+    from queryablecollections._private_implementation_details.type_aliases import Func
     from queryablecollections.collections.q_frozen_set import QFrozenSet
     from queryablecollections.collections.q_list import QList
     from queryablecollections.collections.q_sequence import QSequence
@@ -54,8 +53,15 @@ class ZeroImportOverheadCollectionConstructors:
         return ZeroImportOverheadCollectionConstructors.qiterable(qiterable)  # use the new version to prove from the very first call that it works
 
     @staticmethod
+    def qemptyiterable[TItem]() -> QIterable[TItem]:  # pyright: ignore [reportInvalidTypeVarUse]
+        empty_iterable = ZeroImportOverheadCollectionConstructors.qiterable(())
+        def get_empty() -> QIterable[TItem]: return empty_iterable  # pyright: ignore [reportReturnType]
+        ZeroImportOverheadCollectionConstructors.qemptyiterable = get_empty  # replace this method itself with  # pyright: ignore [reportAttributeAccessIssue]
+        return ZeroImportOverheadCollectionConstructors.qemptyiterable()
+
+    @staticmethod
     def qlazyiterable[TItem](iterable_factory: Func[Iterable[TItem]]) -> QIterable[TItem]:
-        from queryablecollections.q_iterable import QLazyiterable
+        from queryablecollections._private_implementation_details.q_lazy_iterable import QLazyiterable
         ZeroImportOverheadCollectionConstructors.qlazyiterable = QLazyiterable  # replace this method with a direct call so that future calls have zero import overhead  # pyright: ignore [reportAttributeAccessIssue]
         return ZeroImportOverheadCollectionConstructors.qlazyiterable(iterable_factory)  # use the new version to prove from the very first call that it works
 

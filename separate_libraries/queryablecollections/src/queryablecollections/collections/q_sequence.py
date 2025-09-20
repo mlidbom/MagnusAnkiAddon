@@ -5,7 +5,8 @@ from collections.abc import Iterable, Sequence
 from typing import cast, overload, override
 
 from queryablecollections._private_implementation_details.immutable_sequence import ImmutableSequence
-from queryablecollections.q_iterable import QIterable, QLazyiterable
+from queryablecollections._private_implementation_details.q_lazy_iterable import QLazyiterable
+from queryablecollections.q_iterable import QIterable
 
 
 class QSequence[TItem](Sequence[TItem], QIterable[TItem], ABC):

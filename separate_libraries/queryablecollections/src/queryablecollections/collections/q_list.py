@@ -3,8 +3,9 @@ from __future__ import annotations
 import sys
 from typing import TYPE_CHECKING, SupportsIndex, overload, override
 
+from queryablecollections._private_implementation_details.q_lazy_iterable import QLazyiterable
 from queryablecollections.collections.q_sequence import QSequence
-from queryablecollections.q_iterable import QIterable, QLazyiterable
+from queryablecollections.q_iterable import QIterable
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
