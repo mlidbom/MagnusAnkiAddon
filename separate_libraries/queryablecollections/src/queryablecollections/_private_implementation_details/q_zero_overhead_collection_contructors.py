@@ -13,6 +13,7 @@ if TYPE_CHECKING:
     from queryablecollections.collections.q_list import QList
     from queryablecollections.collections.q_sequence import QSequence
     from queryablecollections.collections.q_set import QSet
+    from queryablecollections.q_as import QAs
     from queryablecollections.q_cast import QCast
     from queryablecollections.q_grouping import QGrouping
     from queryablecollections.q_iterable import QIterable
@@ -92,3 +93,9 @@ class ZeroImportOverheadConstructors:
         from queryablecollections.collections.q_dict import QDict
         ZeroImportOverheadConstructors.dict = QDict  # replace this method with a direct call so that future calls have zero import overhead
         return ZeroImportOverheadConstructors.dict(elements)  # use the new version to prove from the very first call that it works
+
+    @staticmethod
+    def qas[T](iterable: QIterable[T]) -> QAs[T]:
+        from queryablecollections.q_as import QAs
+        ZeroImportOverheadConstructors.qas = QAs  # replace this method with a direct call so that future calls have zero import overhead  # pyright: ignore [reportAttributeAccessIssue]
+        return ZeroImportOverheadConstructors.qas(iterable)

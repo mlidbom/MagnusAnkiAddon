@@ -1,11 +1,7 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
 from queryablecollections.q_iterable import query
 
-if TYPE_CHECKING:
-    pass
 
 def test_of_type_filters_by_type() -> None:
     mixed_type_values = query([1, "hello", 2.5, "world", 42, 3.14, True, False])

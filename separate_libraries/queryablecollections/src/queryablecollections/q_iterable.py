@@ -10,14 +10,22 @@ import queryablecollections._private_implementation_details.operations as ops
 from queryablecollections._private_implementation_details.q_zero_overhead_collection_contructors import ZeroImportOverheadConstructors as C
 
 if TYPE_CHECKING:
+    from decimal import Decimal
+    from fractions import Fraction
+
     from _typeshed import SupportsRichComparison
 
     from queryablecollections._private_implementation_details.type_aliases import Action1, Predicate, Selector
+    from queryablecollections.collections.numeric.q_decimal_types import QIterableDecimal
+    from queryablecollections.collections.numeric.q_float_types import QIterableFloat
+    from queryablecollections.collections.numeric.q_fraction_types import QIterableFraction
+    from queryablecollections.collections.numeric.q_int_types import QIterableInt
     from queryablecollections.collections.q_dict import QDict
     from queryablecollections.collections.q_frozen_set import QFrozenSet
     from queryablecollections.collections.q_list import QList
     from queryablecollections.collections.q_sequence import QSequence
     from queryablecollections.collections.q_set import QSet
+    from queryablecollections.q_as import QAs
     from queryablecollections.q_cast import QCast
     from queryablecollections.q_grouping import QGrouping
     from queryablecollections.q_ordered_iterable import QOrderedIterable
@@ -31,6 +39,9 @@ class QIterable[T](Iterable[T], ABC):
     @property
     def cast(self) -> QCast[T]: return C.cast(self)
 
+    @property
+    def qas(self) -> QAs[T]: return C.qas(self)
+
     # region operations on the whole collection, not the items
     def concat(self, *others: Iterable[T]) -> QIterable[T]: return ops.transforms.concat(self, *others)
     # endregion
@@ -41,6 +52,27 @@ class QIterable[T](Iterable[T], ABC):
     def for_single(self, action: Selector[T, Any]) -> QIterable[T]:  return ops.functional.for_single(self, action)  # pyright: ignore[reportExplicitAny]
     def for_single_or_none(self, action: Selector[T, Any]) -> QIterable[T]: return ops.functional.for_single_or_none(self, action)  # pyright: ignore[reportExplicitAny]
     # endregion
+
+
+    # region typed convertions to access type specific functionality
+
+    @overload
+    def as_int(self: QIterable[int]) -> QIterableInt: ...  # pyright: ignore [reportInconsistentOverload]
+    def as_int(self) -> QIterableInt: return self.cast.int()
+
+    @overload
+    def as_float(self: QIterable[float]) -> QIterableFloat: ...  # pyright: ignore [reportInconsistentOverload]
+    def as_float(self) -> QIterableFloat: return self.cast.float()
+
+    @overload
+    def as_fraction(self: QIterable[Fraction]) -> QIterableFraction: ...  # pyright: ignore [reportInconsistentOverload]
+    def as_fraction(self) -> QIterableFraction: return self.cast.fraction()
+
+    @overload
+    def as_decimal(self: QIterable[Decimal]) -> QIterableDecimal: ...  # pyright: ignore [reportInconsistentOverload]
+    def as_decimal(self) -> QIterableDecimal: return self.cast.decimal()
+
+    #endregion
 
     # region filtering
     def where(self, predicate: Predicate[T]) -> QIterable[T]: return ops.filtering.where(self, predicate)
