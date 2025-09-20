@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from queryablecollections.collections.q_list import QList
+from queryablecollections.empty_iterable_exception import InvalidOperationError
 from test_q_iterable_common import CallCounter, select_test, throws_test, value_test, where_test
 
 
@@ -15,7 +16,7 @@ def test_single_returns_single_none_value() -> None: value_test([None], lambda x
 
 def test_single_or_none_returns_single_value() -> None: value_test([1], lambda x: x.single_or_none(), 1)
 def test_single_or_none_returns_none_if_no_values() -> None: value_test([], lambda x: x.single_or_none(), None)
-def test_single_or_none_throws_if_multiple_values() -> None: throws_test([1, 2], lambda x: x.single_or_none(), ValueError)
+def test_single_or_none_throws_if_multiple_values() -> None: throws_test([1, 2], lambda x: x.single_or_none(), InvalidOperationError)
 
 def test_first_returns_first_value() -> None: value_test([1,2,3], lambda x: x.first(), 1)
 def test_first_throws_if_no_values() -> None: throws_test([], lambda x: x.first())

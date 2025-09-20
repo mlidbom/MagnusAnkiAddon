@@ -3,6 +3,7 @@ from __future__ import annotations
 import itertools
 from typing import TYPE_CHECKING
 
+from queryablecollections.empty_iterable_exception import EmptyIterableError, InvalidOperationError
 from queryablecollections.operations.q_ops_filtering import where
 
 if TYPE_CHECKING:
@@ -16,7 +17,7 @@ def first[TItem](self: Iterable[TItem], predicate: Predicate[TItem] | None = Non
     try:
         return next(iter(self))
     except StopIteration:
-        raise IndexError("Sequece contains no elements.") from None
+        raise EmptyIterableError() from None
 
 def first_or_none[TItem](self: Iterable[TItem], predicate: Predicate[TItem] | None = None) -> TItem | None:
     if predicate is not None:
@@ -33,11 +34,11 @@ def single[TItem](self: Iterable[TItem], predicate: Predicate[TItem] | None = No
     try:
         first_element = next(iterator)
     except StopIteration:
-        raise IndexError("Sequece contains no elements.") from None
+        raise EmptyIterableError() from None
 
     try:
         next(iterator)  # Check if there's a second element
-        raise ValueError("Sequence contains more than one element")
+        raise InvalidOperationError("Sequence contains more than one element")
     except StopIteration:
         return first_element
 
@@ -52,7 +53,7 @@ def single_or_none[TItem](self: Iterable[TItem], predicate: Predicate[TItem] | N
 
     try:
         next(iterator)  # Check if there's a second element
-        raise ValueError("Sequence contains more than one element")
+        raise InvalidOperationError("Sequence contains more than one element")
     except StopIteration:
         return first_element
 
