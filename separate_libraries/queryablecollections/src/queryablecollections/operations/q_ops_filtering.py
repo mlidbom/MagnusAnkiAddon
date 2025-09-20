@@ -9,7 +9,6 @@ if TYPE_CHECKING:
     from queryablecollections.type_aliases import Predicate
 
 distinct = dict.fromkeys  # highly optimized and guaranteed to keep ordering
-take_while = itertools.takewhile
 
 def where[TItem](self: Iterable[TItem], predicate: Predicate[TItem]) -> Iterable[TItem]:
     return filter(predicate, self)
@@ -17,6 +16,9 @@ def where[TItem](self: Iterable[TItem], predicate: Predicate[TItem]) -> Iterable
 def _item_not_none(value: object) -> bool: return value is not None  # pyright: ignore [reportInvalidTypeVarUse]
 def where_not_none[TItem](self: Iterable[TItem]) -> Iterable[TItem]:
     return where(self, _item_not_none)
+
+def take_while[TItem](self: Iterable[TItem], predicate: Predicate[TItem]) -> Iterable[TItem]:
+    return itertools.takewhile(predicate, self)
 
 def take[TItem](self: Iterable[TItem], count: int) -> Iterable[TItem]:
     if count <= 0: return ()
