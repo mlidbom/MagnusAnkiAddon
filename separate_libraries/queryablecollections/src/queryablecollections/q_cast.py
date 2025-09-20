@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 from collections.abc import Iterable
+from decimal import Decimal
 from fractions import Fraction
 from typing import TYPE_CHECKING, cast
 
 if TYPE_CHECKING:
+    from queryablecollections.collections.numeric.q_decimal_types import QIterableDecimalImplementation
     from queryablecollections.collections.numeric.q_float_types import QIterableFloat
     from queryablecollections.collections.numeric.q_fraction_types import QIterableFraction
     from queryablecollections.collections.numeric.q_int_types import QIterableInt
@@ -20,6 +22,10 @@ def _checked_cast_float(item: object) -> float:
 
 def _checked_cast_fraction(item: object) -> Fraction:
     if not isinstance(item, Fraction): raise TypeError(f"Expected Fraction, got {type(item).__name__}")
+    return item
+
+def _checked_cast_decimal(item: object) -> Decimal:
+    if not isinstance(item, Decimal): raise TypeError(f"Expected Decimal, got {type(item).__name__}")
     return item
 
 class QCast[TItem]:
@@ -43,6 +49,10 @@ class QCast[TItem]:
         from queryablecollections.collections.numeric.q_fraction_types import QIterableFractionImplementation
         return QIterableFractionImplementation(cast(Iterable[Fraction], self._iterable))
 
+    def decimal(self) -> QIterableDecimalImplementation:
+        from queryablecollections.collections.numeric.q_decimal_types import QIterableDecimalImplementation
+        return QIterableDecimalImplementation(cast(Iterable[Decimal], self._iterable))
+
 class QCheckedCast[TItem]:
     __slots__: tuple[str, ...] = ("_iterable",)
     def __init__(self, iterable: QIterable[TItem]) -> None:
@@ -50,12 +60,16 @@ class QCheckedCast[TItem]:
 
     def int(self) -> QIterableInt:
         from queryablecollections.collections.numeric.q_int_types import QIterableIntImplementation
-        return QIterableIntImplementation(cast(Iterable[int], self._iterable.select(_checked_cast_int)))
+        return QIterableIntImplementation(self._iterable.select(_checked_cast_int))
 
     def float(self) -> QIterableFloat:
         from queryablecollections.collections.numeric.q_float_types import QIterableFloatImplementation
-        return QIterableFloatImplementation(cast(Iterable[float], self._iterable.select(_checked_cast_float)))
+        return QIterableFloatImplementation(self._iterable.select(_checked_cast_float))
 
     def fraction(self) -> QIterableFraction:
         from queryablecollections.collections.numeric.q_fraction_types import QIterableFractionImplementation
-        return QIterableFractionImplementation(cast(Iterable[Fraction], self._iterable.select(_checked_cast_fraction)))
+        return QIterableFractionImplementation(self._iterable.select(_checked_cast_fraction))
+
+    def decimal(self) -> QIterableDecimalImplementation:
+        from queryablecollections.collections.numeric.q_decimal_types import QIterableDecimalImplementation
+        return QIterableDecimalImplementation(self._iterable.select(_checked_cast_decimal))
