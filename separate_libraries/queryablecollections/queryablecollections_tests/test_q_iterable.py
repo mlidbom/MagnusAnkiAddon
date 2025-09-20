@@ -61,6 +61,9 @@ def test_indexer_returns_first_value() -> None: value_test([1, 2, 3], lambda x: 
 def test_indexer_returns_middle_value() -> None: value_test([1, 2, 3], lambda x: x.to_list()[1], 2)
 def test_indexer_returns_last_value() -> None: value_test([1, 2, 3], lambda x: x.to_list()[2], 3)
 
+def test_all_returns_true_if_all_elements_match_predicate() -> None: value_test([1, 2, 3], lambda x: x.all(lambda y: y != 0), True)
+def test_all_returns_false_if_any_element_does_not_match_predicate() -> None: value_test([1, 2, 3], lambda x: x.all(lambda y: y != 1), False)
+
 def test_none_returns_false_if_there_are_elements() -> None: value_test([1], lambda x: x.none(), False)
 def test_none_returns_true_if_there_are_no_elements() -> None: value_test([], lambda x: x.none(), True)
 

@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from queryablecollections.type_aliases import Predicate
 
 def all_[TItem](self: Iterable[TItem], predicate: Predicate[TItem]) -> bool:
-    return not any_(self, lambda item: not predicate(item))  # use named functions over lambdas where possible because: https://switowski.com/blog/map-vs-list-comprehension/
+    return all(select(self, predicate))  # use named functions over lambdas where possible because: https://switowski.com/blog/map-vs-list-comprehension/
 
 def any_[TItem](self: Iterable[TItem], predicate: Predicate[TItem] | None = None) -> bool:
     if predicate is None:
