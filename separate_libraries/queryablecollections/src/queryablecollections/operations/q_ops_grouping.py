@@ -23,10 +23,10 @@ class QGrouping[TKey, TElement]:
     def __len__(self) -> int:
         return len(self.elements)
 
-def group_by[TItem, TKey](self: Iterable[TItem], key_selector: Selector[TItem, TKey]) -> Iterable[QGrouping[TKey, TItem]]:
+def group_by[TElement, TKey](self: Iterable[TElement], key_selector: Selector[TElement, TKey]) -> Iterable[QGrouping[TKey, TElement]]:
     """Groups the elements of a sequence according to a specified key selector function."""
     from queryablecollections.collections.q_list import QList
-    groups: dict[TKey, QList[TItem]] = defaultdict(QList[TItem])
+    groups: dict[TKey, QList[TElement]] = defaultdict(QList[TElement])
 
     for item in self:
         key = key_selector(item)
@@ -34,12 +34,12 @@ def group_by[TItem, TKey](self: Iterable[TItem], key_selector: Selector[TItem, T
 
     return (QGrouping(key, elements) for key, elements in groups.items())
 
-def group_by_with_element_selector[TItem, TKey, TElement](self: Iterable[TItem],
-                                                          key_selector: Selector[TItem, TKey],
-                                                          element_selector: Selector[TItem, TElement]) -> Iterable[QGrouping[TKey, TElement]]:
+def group_by_with_element_selector[TSourceElement, TKey, TGroupElement](self: Iterable[TSourceElement],
+                                                                        key_selector: Selector[TSourceElement, TKey],
+                                                                        element_selector: Selector[TSourceElement, TGroupElement]) -> Iterable[QGrouping[TKey, TGroupElement]]:
     """Groups the elements of a sequence according to key and element selector functions."""
     from queryablecollections.collections.q_list import QList
-    groups: dict[TKey, QList[TElement]] = defaultdict(QList[TElement])
+    groups: dict[TKey, QList[TGroupElement]] = defaultdict(QList[TGroupElement])
 
     for item in self:
         key = key_selector(item)
@@ -48,9 +48,9 @@ def group_by_with_element_selector[TItem, TKey, TElement](self: Iterable[TItem],
 
     return (QGrouping(key, elements) for key, elements in groups.items())
 
-def group_by_with_result_selector[TItem, TKey, TResult](self: Iterable[TItem],
-                                                        key_selector: Selector[TItem, TKey],
-                                                        result_selector: Selector[QGrouping[TKey, TItem], TResult]) -> Iterable[TResult]:
+def group_by_with_result_selector[TSourceElement, TKey, TGroupElement](self: Iterable[TSourceElement],
+                                                                       key_selector: Selector[TSourceElement, TKey],
+                                                                       result_selector: Selector[QGrouping[TKey, TSourceElement], TGroupElement]) -> Iterable[TGroupElement]:
     """Groups elements and projects each group using a result selector."""
     return (result_selector(group) for group in group_by(self, key_selector))
 

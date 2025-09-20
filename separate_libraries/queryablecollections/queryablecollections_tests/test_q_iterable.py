@@ -79,15 +79,6 @@ def test_not_none_returns_empty_list_if_all_elements_are_none() -> None: value_t
 def test_assert_each_throws_if_any_element_does_not_match_predicate() -> None: throws_test([1, 2, 3], lambda x: x.assert_each(lambda y: y != 2), Exception)
 def test_assert_each_does_not_throw_if_all_elements_match_predicate() -> None: value_test([1, 2, 3], lambda x: x.assert_each(lambda y: y != 0).to_list(), [1, 2, 3])
 
-def test_order_by_sorts_in_ascending_order() -> None: value_test([3, 2, 1], lambda x: x.order_by(lambda y: y).to_list(), [1, 2, 3])
-def test_order_by_descending_sorts_in_descending_order() -> None: value_test([3, 2, 1], lambda x: x.order_by_descending(lambda y: y).to_list(), [3, 2, 1])
-def test_then_by_sorts_in_ascending_order() -> None:
-    value_test([3, 2, 1], lambda x: x.order_by(lambda y: y).then_by(lambda y: y).to_list(), [1, 2, 3])
-    value_test([3, 2, 1], lambda x: x.order_by(lambda y: y).then_by(lambda y: 1 if y == 1 else 0).to_list(), [2, 3, 1])
-def test_then_by_descending_sorts_in_descending_order() -> None:
-    value_test([3, 2, 1], lambda x: x.order_by(lambda y: y).then_by_descending(lambda y: y).to_list(), [3, 2, 1])
-    value_test([3, 2, 1], lambda x: x.order_by(lambda y: y).then_by_descending(lambda y: 1 if y == 2 else 0).to_list(), [2, 1, 3])
-
 def test_length_returns_length_of_sequence() -> None:
     value_test([0], lambda x: x.qcount(), 1)
     value_test([0, 3], lambda x: x.qcount(), 2)

@@ -11,9 +11,9 @@ def test_group_by_basic() -> None:
 
     assert len(groups) == 3
 
-    a_group = next(group for group in groups if group.key == "a")
-    b_group = next(group for group in groups if group.key == "b")
-    c_group = next(group for group in groups if group.key == "c")
+    a_group = groups.single(lambda group: group.key == "a")
+    b_group = groups.single(lambda group: group.key == "b")
+    c_group = groups.single(lambda group: group.key == "c")
 
     assert sorted(a_group.elements) == ["apple", "apricot"]
     assert sorted(b_group.elements) == ["banana", "blueberry"]
@@ -23,14 +23,12 @@ def test_group_by_with_element_selector() -> None:
     data = ["apple", "apricot", "banana", "blueberry", "cherry"]
 
     groups = (query(data)
-              .group_by_with_element_selector(
-            lambda x: x[0],  # group by first letter
-            lambda x: len(x))  # select length as element
+              .group_by_with_element_selector(lambda x: x[0], lambda x: len(x))
               .to_list())
 
     assert len(groups) == 3
 
-    a_group = next(group for group in groups if group.key == "a")
+    a_group = groups.single(lambda group: group.key == "a")
     assert sorted(a_group.elements) == [5, 7]  # apple=5, apricot=7
 
 def test_group_by_with_result_selector() -> None:

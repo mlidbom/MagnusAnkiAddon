@@ -66,6 +66,9 @@ class QIterable[TItem](Iterable[TItem], ABC):
         return QOrderedIterable(self, [SortInstruction(key_selector, True)])
 
     def reversed(self) -> QIterable[TItem]: return QLazyiterable[TItem](q_ops_ordering.reverse_lazy(self))
+
+    def ordered(self) -> QIterable[TItem]:
+        return QLazyiterable(lambda: q_ops_ordering.ordered(self))  # pyright: ignore [reportUnknownArgumentType, reportArgumentType, reportUnknownLambdaType]
     # endregion
 
     # region boolean queries
