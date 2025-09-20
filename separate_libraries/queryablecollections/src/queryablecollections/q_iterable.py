@@ -26,9 +26,6 @@ def query[TItem](value: Iterable[TItem]) -> QIterable[TItem]: return C.iterable(
 # or to ZeroImportOverheadConstructors, that's why we keep all the methods on single lines to make it easier to read through the definitions
 class QIterable[TItem](Iterable[TItem], ABC):
     __slots__: tuple[str, ...] = ()
-    @staticmethod
-    def create(value: Iterable[TItem]) -> QIterable[TItem]: return C.iterable(value)
-
     @property
     def cast(self) -> QCast[TItem]: return C.cast(self)
 

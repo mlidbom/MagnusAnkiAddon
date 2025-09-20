@@ -18,9 +18,8 @@ def create_sequences[T](iterable: Iterable[T] | Callable[[], Iterable[T]], skip_
                                           else lambda: cast(Iterable[T], iterable))  # pyright: ignore[reportUnnecessaryCast] while basedpyright understands it is not needed, pyright does not
 
     values = [
-            ("linq", query(factory())),
+            ("query", query(factory())),
             ("QList", QList(factory())),
-            ("QIterable.create", QIterable[T].create(factory())),
             ("QImmutableSequence", QImmutableSequence(list(factory()))),
     ]
     if not skip_sets:
