@@ -12,6 +12,7 @@ if TYPE_CHECKING:
     from collections.abc import Iterator
 
     from _typeshed import SupportsRichComparison
+
     from queryablecollections.collections.q_frozen_set import QFrozenSet
     from queryablecollections.collections.q_list import QList
     from queryablecollections.collections.q_sequence import QSequence
@@ -45,6 +46,11 @@ class QIterable[TItem](Iterable[TItem], ABC):
     def where_not_none(self) -> QIterable[TItem]: return QiterableImplementation(q_ops_filtering.where_not_none(self))
     def distinct(self) -> QIterable[TItem]: return QLazyiterable(lambda: q_ops_filtering.distinct(self))
     def take_while(self, predicate: Predicate[TItem]) -> QIterable[TItem]: return QiterableImplementation(q_ops_filtering.take_while(predicate, self))
+    def take(self, count: int) -> QIterable[TItem]: return QiterableImplementation(q_ops_filtering.take(self, count))
+    def take_last(self, count: int) -> QIterable[TItem]: return QLazyiterable(lambda: q_ops_filtering.take_last(self, count))
+    def skip(self, count: int) -> QIterable[TItem]: return QiterableImplementation(q_ops_filtering.skip(self, count))
+    def skip_last(self, count: int) -> QIterable[TItem]: return QLazyiterable(lambda: q_ops_filtering.skip_last(self, count))
+
 
     # endregion
 

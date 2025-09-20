@@ -8,10 +8,8 @@ if TYPE_CHECKING:
 
     from queryablecollections.type_aliases import Predicate
 
-
-distinct = dict.fromkeys # highly optimized and guaranteed to keep ordering
+distinct = dict.fromkeys  # highly optimized and guaranteed to keep ordering
 take_while = itertools.takewhile
-
 
 def where[TItem](self: Iterable[TItem], predicate: Predicate[TItem]) -> Iterable[TItem]:
     return filter(predicate, self)
@@ -19,3 +17,25 @@ def where[TItem](self: Iterable[TItem], predicate: Predicate[TItem]) -> Iterable
 def _item_not_none(value: object) -> bool: return value is not None  # pyright: ignore [reportInvalidTypeVarUse]
 def where_not_none[TItem](self: Iterable[TItem]) -> Iterable[TItem]:
     return where(self, _item_not_none)
+
+def take[TItem](self: Iterable[TItem], count: int) -> Iterable[TItem]:
+    if count <= 0: return ()
+    return itertools.islice(self, count)
+
+def skip[TItem](self: Iterable[TItem], count: int) -> Iterable[TItem]:
+    if count <= 0: return self
+    return itertools.islice(self, count, None)
+
+def take_last[TItem](self: Iterable[TItem], count: int) -> Iterable[TItem]:
+    if count <= 0: return ()
+    items = list(self)
+    if count >= len(items):
+        return items
+    return items[-count:]
+
+def skip_last[TItem](self: Iterable[TItem], count: int) -> Iterable[TItem]:
+    if count <= 0: return self
+    items = list(self)
+    if count >= len(items):
+        return ()
+    return items[:-count]
