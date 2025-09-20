@@ -12,7 +12,6 @@ if TYPE_CHECKING:
     from collections.abc import Iterator
 
     from _typeshed import SupportsRichComparison
-
     from queryablecollections.collections.q_frozen_set import QFrozenSet
     from queryablecollections.collections.q_list import QList
     from queryablecollections.collections.q_sequence import QSequence
@@ -93,9 +92,9 @@ class QIterable[TItem](Iterable[TItem], ABC):
         """Groups the elements of a sequence according to the specified key selector and element selector"""
 
     def group_by[TKey, TElement](self, key: Selector[TItem, TKey], element: Selector[TItem, TElement] | None = None) -> QIterable[QGrouping[TKey, TItem]] | QIterable[QGrouping[TKey, TElement]]:
-        if element is None:
-            return QiterableImplementation(q_ops_grouping.group_by(self, key))
-        return QiterableImplementation(q_ops_grouping.group_by_with_element_selector(self, key, element))
+        return (QiterableImplementation(q_ops_grouping.group_by(self, key))
+                if element is None
+                else QiterableImplementation(q_ops_grouping.group_by_with_element_selector(self, key, element)))
     # endregion
 
     # region single item selecting methods
