@@ -31,7 +31,7 @@ class QIterable[TItem](Iterable[TItem], ABC):
     @property
     def cast(self) -> QCast[TItem]:
         from queryablecollections.q_cast import QCast
-        return QCast(self)
+        return QCast[TItem](self)
 
     # region operations on the whole collection, not the items
     def concat(self, *others: Iterable[TItem]) -> QIterable[TItem]: return QiterableImplementation(q_ops_transform.concat(self, *others))
