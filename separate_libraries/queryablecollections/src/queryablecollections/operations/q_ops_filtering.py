@@ -25,16 +25,16 @@ def take[TItem](self: Iterable[TItem], count: int) -> Iterable[TItem]:
     if count <= 0: return ()
     return itertools.islice(self, count)
 
-def skip[TItem](self: Iterable[TItem], count: int) -> Iterable[TItem]:
-    if count <= 0: return self
-    return itertools.islice(self, count, None)
-
 def take_last[TItem](self: Iterable[TItem], count: int) -> Iterable[TItem]:
     if count <= 0: return ()
     items = list(self)
     if count >= len(items):
         return items
     return items[-count:]
+
+def skip[TItem](self: Iterable[TItem], count: int) -> Iterable[TItem]:
+    if count <= 0: return self
+    return itertools.islice(self, count, None)
 
 def skip_last[TItem](self: Iterable[TItem], count: int) -> Iterable[TItem]:
     if count <= 0: return self
