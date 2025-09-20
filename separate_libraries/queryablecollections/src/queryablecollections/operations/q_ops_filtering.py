@@ -8,7 +8,8 @@ if TYPE_CHECKING:
 
     from queryablecollections.type_aliases import Predicate
 
-distinct = dict.fromkeys  # highly optimized and guaranteed to keep ordering
+def distinct[TItem](self: Iterable[TItem]) -> Iterable[TItem]:
+    return dict.fromkeys(self)  # highly optimized and guaranteed to keep ordering
 
 def where[TItem](self: Iterable[TItem], predicate: Predicate[TItem]) -> Iterable[TItem]:
     return filter(predicate, self)
