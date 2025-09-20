@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
+import queryablecollections._private_implementation_details.operations as ops
 from queryablecollections._private_implementation_details.operations.ordering import SortInstruction
 from queryablecollections.q_iterable import QIterable
 
@@ -26,4 +27,4 @@ class QOrderedIterable[TItem](QIterable[TItem]):
         return QOrderedIterable(self._unsorted, self.sorting_instructions + [SortInstruction(key_selector, descending=True)])
 
     @override
-    def __iter__(self) -> Iterator[TItem]: yield from q_ops_ordering.sort_by_instructions(self._unsorted, self.sorting_instructions)
+    def __iter__(self) -> Iterator[TItem]: yield from ops.ordering.sort_by_instructions(self._unsorted, self.sorting_instructions)
