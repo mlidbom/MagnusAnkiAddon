@@ -6,28 +6,17 @@ from typing import TYPE_CHECKING
 from queryablecollections.operations.q_ops_transform import select
 
 if TYPE_CHECKING:
-    from collections.abc import Iterable, Iterator
+    from collections.abc import Iterable
 
-    from queryablecollections.collections.q_list import QList
+    from queryablecollections.q_grouping import QGrouping
     from queryablecollections.type_aliases import Selector
 
-class QGrouping[TKey, TElement]:
-    """Represents a collection of objects that have a common key."""
-    __slots__: tuple[str, ...] = ("key", "elements")
-
-    def __init__(self, values: tuple[TKey, QList[TElement]]) -> None:
-        self.key: TKey = values[0]
-        self.elements: QList[TElement] = values[1]
-
-    def __iter__(self) -> Iterator[TElement]:
-        return iter(self.elements)
-
-    def __len__(self) -> int:
-        return len(self.elements)
-
+# pycharm is wrong. Pyright sees no problem
+# noinspection PyTypeHints
 def group_by[TElement, TKey](self: Iterable[TElement], key_selector: Selector[TElement, TKey]) -> Iterable[QGrouping[TKey, TElement]]:
     """Groups the elements of a sequence according to a specified key selector function."""
     from queryablecollections.collections.q_list import QList
+    from queryablecollections.q_grouping import QGrouping
     groups: dict[TKey, QList[TElement]] = defaultdict(QList[TElement])
 
     for item in self:
@@ -36,11 +25,14 @@ def group_by[TElement, TKey](self: Iterable[TElement], key_selector: Selector[TE
 
     return select(groups.items(), QGrouping)
 
+# pycharm is wrong. Pyright sees no problem
+# noinspection PyTypeHints
 def group_by_with_element_selector[TSourceElement, TKey, TGroupElement](self: Iterable[TSourceElement],
                                                                         key_selector: Selector[TSourceElement, TKey],
                                                                         element_selector: Selector[TSourceElement, TGroupElement]) -> Iterable[QGrouping[TKey, TGroupElement]]:
     """Groups the elements of a sequence according to key and element selector functions."""
     from queryablecollections.collections.q_list import QList
+    from queryablecollections.q_grouping import QGrouping
     groups: dict[TKey, QList[TGroupElement]] = defaultdict(QList[TGroupElement])
 
     for item in self:

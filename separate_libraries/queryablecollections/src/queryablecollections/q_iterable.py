@@ -2,23 +2,23 @@ from __future__ import annotations
 
 from abc import ABC
 from collections.abc import Iterable
-from typing import TYPE_CHECKING, Any, cast, override
+from typing import TYPE_CHECKING, Any, cast, overload, override
 
 from queryablecollections.empty_iterable_exception import EmptyIterableError
 from queryablecollections.operations import q_ops_bool, q_ops_filtering, q_ops_grouping, q_ops_loop, q_ops_ordering, q_ops_single_elements, q_ops_transform
 from queryablecollections.operations.q_ops_ordering import SortInstruction
-from typing_extensions import overload
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
     from _typeshed import SupportsRichComparison
+
     from queryablecollections.collections.q_frozen_set import QFrozenSet
     from queryablecollections.collections.q_list import QList
     from queryablecollections.collections.q_sequence import QSequence
     from queryablecollections.collections.q_set import QSet
-    from queryablecollections.operations.q_ops_grouping import QGrouping
     from queryablecollections.q_cast import QCast
+    from queryablecollections.q_grouping import QGrouping
     from queryablecollections.type_aliases import Action1, Func, Predicate, Selector
 
 def query[TItem](value: Iterable[TItem]) -> QIterable[TItem]: return QiterableImplementation(value)
@@ -95,8 +95,7 @@ class QIterable[TItem](Iterable[TItem], ABC):
     def group_by[TKey, TElement](self, key: Selector[TItem, TKey], element: Selector[TItem, TElement] | None = None) -> QIterable[QGrouping[TKey, TItem]] | QIterable[QGrouping[TKey, TElement]]:
         if element is None:
             return QiterableImplementation(q_ops_grouping.group_by(self, key))
-        else:
-            return QiterableImplementation(q_ops_grouping.group_by_with_element_selector(self, key, element))
+        return QiterableImplementation(q_ops_grouping.group_by_with_element_selector(self, key, element))
     # endregion
 
     # region single item selecting methods

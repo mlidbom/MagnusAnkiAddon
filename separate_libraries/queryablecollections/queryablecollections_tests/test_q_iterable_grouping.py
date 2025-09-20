@@ -18,9 +18,9 @@ def test_group_by_basic() -> None:
     c_group = groups.single(lambda group: group.key == "c")
     assert c_group == groups[2]
 
-    assert a_group.elements == ["apple", "apricot"]
-    assert b_group.elements == ["banana", "blueberry"]
-    assert c_group.elements == ["cherry"]
+    assert a_group == ["apple", "apricot"]
+    assert b_group == ["banana", "blueberry"]
+    assert c_group == ["cherry"]
 
 def test_group_by_with_element_selector() -> None:
     data = ["apple", "apricot", "banana", "blueberry", "cherry"]
@@ -37,9 +37,9 @@ def test_group_by_with_element_selector() -> None:
     assert b_group == groups[1]
     c_group = groups.single(lambda group: group.key == "c")
     assert c_group == groups[2]
-    assert a_group.elements.ordered().to_list() == [len("apple"), len("apricot")]  # apple=5, apricot=7
-    assert b_group.elements == [len("banana"), len("blueberry")]
-    assert c_group.elements == [len("cherry")]
+    assert a_group.ordered().to_list() == [len("apple"), len("apricot")]  # apple=5, apricot=7
+    assert b_group == [len("banana"), len("blueberry")]
+    assert c_group == [len("cherry")]
 
 def test_group_by_empty() -> None:
     result = QList[int]([]).group_by(lambda element: element).to_list()
@@ -53,10 +53,10 @@ def test_group_by_with_numbers() -> None:
     assert len(groups) == 3
 
     assert groups[0].key == 1
-    assert groups[0].elements.ordered().to_list() == [1, 4, 7, 10]
+    assert groups[0].ordered().to_list() == [1, 4, 7, 10]
 
     assert groups[1].key == 2
-    assert groups[1].elements.ordered().to_list() == [2, 5, 8]
+    assert groups[1].ordered().to_list() == [2, 5, 8]
 
     assert groups[2].key == 0
-    assert groups[2].elements.ordered().to_list() == [3, 6, 9]
+    assert groups[2].ordered().to_list() == [3, 6, 9]
