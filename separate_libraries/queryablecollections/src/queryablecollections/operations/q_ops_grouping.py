@@ -20,8 +20,7 @@ def group_by[TElement, TKey](self: Iterable[TElement], key_selector: Selector[TE
     groups: dict[TKey, QList[TElement]] = defaultdict(QList[TElement])
 
     for item in self:
-        key = key_selector(item)
-        groups[key].append(item)
+        groups[key_selector(item)].append(item)
 
     return select(groups.items(), QGrouping)
 
@@ -36,8 +35,6 @@ def group_by_with_element_selector[TSourceElement, TKey, TGroupElement](self: It
     groups: dict[TKey, QList[TGroupElement]] = defaultdict(QList[TGroupElement])
 
     for item in self:
-        key = key_selector(item)
-        element = element_selector(item)
-        groups[key].append(element)
+        groups[key_selector(item)].append(element_selector(item))
 
     return select(groups.items(), QGrouping)
