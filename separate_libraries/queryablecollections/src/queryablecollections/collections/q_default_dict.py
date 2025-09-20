@@ -4,6 +4,7 @@ from collections import defaultdict
 from typing import TYPE_CHECKING, override
 
 from queryablecollections._private_implementation_details.q_zero_overhead_collection_contructors import ZeroImportOverheadConstructors as C
+from queryablecollections.collections.q_key_value_pair import KeyValuePair
 from queryablecollections.q_iterable import QIterable
 
 if TYPE_CHECKING:
@@ -15,7 +16,7 @@ class QDefaultDict[TKey, TItem](defaultdict[TKey, TItem], QIterable[TKey]):
     def __init__(self, factory: Func[TItem]) -> None:
         super().__init__(factory)
 
-    def qitems(self) -> QIterable[tuple[TKey, TItem]]: return C.iterable(super().items())
+    def qitems(self) -> QIterable[KeyValuePair[TKey, TItem]]: return C.iterable(super().items()).select(KeyValuePair)
 
     @override
     def _optimized_length(self) -> int: return len(self)
