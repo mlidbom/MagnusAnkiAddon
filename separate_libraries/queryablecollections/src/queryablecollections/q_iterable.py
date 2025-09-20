@@ -81,12 +81,9 @@ class QIterable[TItem](Iterable[TItem], ABC):
     def all(self, predicate: Predicate[TItem]) -> bool: return q_ops_bool.all_(self, predicate)
     # endregion
 
-    # region mapping methods
+    # region mapping/transformation methods
     def select[TReturn](self, selector: Selector[TItem, TReturn]) -> QIterable[TReturn]: return QiterableImplementation(q_ops_transform.select(self, selector))
     def select_many[TInner](self, selector: Selector[TItem, Iterable[TInner]]) -> QIterable[TInner]: return QiterableImplementation(q_ops_transform.select_many(self, selector))
-    # endregion
-
-    # region grouping
 
     @overload
     def group_by[TKey](self, key: Selector[TItem, TKey]) -> QIterable[QGrouping[TKey, TItem]]:
