@@ -31,7 +31,7 @@ def _checked_cast_decimal(item: object) -> Decimal:
 class QCast[TItem]:
     __slots__: tuple[str, ...] = ("_iterable",)
     def __init__(self, iterable: QIterable[TItem]) -> None:
-        self._iterable = iterable
+        self._iterable: QIterable[TItem] = iterable
 
     @property
     def checked(self) -> QCheckedCast[TItem]:
@@ -56,7 +56,7 @@ class QCast[TItem]:
 class QCheckedCast[TItem]:
     __slots__: tuple[str, ...] = ("_iterable",)
     def __init__(self, iterable: QIterable[TItem]) -> None:
-        self._iterable = iterable
+        self._iterable: QIterable[TItem] = iterable
 
     def int(self) -> QIterableInt:
         from queryablecollections.collections.numeric.q_int_types import QIterableIntImplementation
