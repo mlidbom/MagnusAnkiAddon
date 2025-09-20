@@ -9,11 +9,9 @@ from queryablecollections._private_implementation_details.operations.ordering im
 
 # noinspection PyPep8Naming
 from queryablecollections._private_implementation_details.q_zero_overhead_collection_contructors import ZeroImportOverheadConstructors as C
-from queryablecollections.q_errors import EmptyIterableError
 
 if TYPE_CHECKING:
     from _typeshed import SupportsRichComparison
-
     from queryablecollections._private_implementation_details.type_aliases import Action1, Predicate, Selector
     from queryablecollections.collections.q_frozen_set import QFrozenSet
     from queryablecollections.collections.q_list import QList
@@ -116,21 +114,12 @@ class QIterable[TItem](Iterable[TItem], ABC):
 
     def element_at(self, index: int) -> TItem: return ops.single_elements.element_at(self, index)
     def element_at_or_none(self, index: int) -> TItem | None: return ops.single_elements.element_at_or_none(self, index)
-
-    def _assert_not_empty(self) -> QIterable[TItem]:
-        if self.none(): raise EmptyIterableError()
-        return self
-
+    def _assert_not_empty(self) -> QIterable[TItem]: return ops.asserts.not_empty(self)
     # endregion
 
     # region assertions on the collection or it's values
-    def assert_each(self, predicate: Predicate[TItem], message: str | Selector[TItem, str] | None = None) -> QIterable[TItem]:
-        ops.loops.assert_each(self, predicate, message)
-        return self
-
-    def assert_on_collection(self, predicate: Predicate[QIterable[TItem]], message: str | None = None) -> QIterable[TItem]:
-        if not predicate(self): raise AssertionError(message)
-        return self
+    def assert_each(self, predicate: Predicate[TItem], message: str | Selector[TItem, str] | None = None) -> QIterable[TItem]: return ops.asserts.each_element(self, predicate, message)
+    def assert_on_collection(self, predicate: Predicate[QIterable[TItem]], message: str | None = None) -> QIterable[TItem]: return ops.asserts.collection(self, predicate, message)
     # endregion
 
     # region methods to avoid needing to manually write loops
