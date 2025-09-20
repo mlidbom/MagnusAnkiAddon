@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 from collections.abc import Iterable
+from fractions import Fraction
 from typing import TYPE_CHECKING, cast
 
 if TYPE_CHECKING:
     from queryablecollections.collections.numeric.q_float_types import QIterableFloat
+    from queryablecollections.collections.numeric.q_fraction_types import QIterableFraction
     from queryablecollections.collections.numeric.q_int_types import QIterableInt
     from queryablecollections.q_iterable import QIterable
 
@@ -14,6 +16,10 @@ def _checked_cast_int(item: object) -> int:
 
 def _checked_cast_float(item: object) -> float:
     if not isinstance(item, float): raise TypeError(f"Expected float, got {type(item).__name__}")
+    return item
+
+def _checked_cast_fraction(item: object) -> Fraction:
+    if not isinstance(item, Fraction): raise TypeError(f"Expected Fraction, got {type(item).__name__}")
     return item
 
 class QCast[TItem]:
@@ -33,6 +39,10 @@ class QCast[TItem]:
         from queryablecollections.collections.numeric.q_float_types import QIterableFloatImplementation
         return QIterableFloatImplementation(cast(Iterable[int], self._iterable))
 
+    def fraction(self) -> QIterableFraction:
+        from queryablecollections.collections.numeric.q_fraction_types import QIterableFractionImplementation
+        return QIterableFractionImplementation(cast(Iterable[Fraction], self._iterable))
+
 class QCheckedCast[TItem]:
     __slots__: tuple[str, ...] = ("_iterable",)
     def __init__(self, iterable: QIterable[TItem]) -> None:
@@ -45,3 +55,7 @@ class QCheckedCast[TItem]:
     def float(self) -> QIterableFloat:
         from queryablecollections.collections.numeric.q_float_types import QIterableFloatImplementation
         return QIterableFloatImplementation(cast(Iterable[float], self._iterable.select(_checked_cast_float)))
+
+    def fraction(self) -> QIterableFraction:
+        from queryablecollections.collections.numeric.q_fraction_types import QIterableFractionImplementation
+        return QIterableFractionImplementation(cast(Iterable[Fraction], self._iterable.select(_checked_cast_fraction)))

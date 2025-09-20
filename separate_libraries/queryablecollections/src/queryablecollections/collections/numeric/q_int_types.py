@@ -18,16 +18,19 @@ class QIterableInt(QIterable[int], ABC):
     __slots__: tuple[str, ...] = ()
 
     def sum(self) -> int: return sum(self)
+
     def min(self) -> int:
         try:
             return min(self)
         except ValueError:
             raise EmptyIterableError() from None
+
     def max(self) -> int:
         try:
             return max(self)
         except ValueError:
             raise EmptyIterableError() from None
+
     def min_or_default(self) -> int: return min(self) if self.any() else 0
     def max_or_default(self) -> int: return max(self) if self.any() else 0
     def average(self) -> float: return statistics.mean(self._assert_not_empty())

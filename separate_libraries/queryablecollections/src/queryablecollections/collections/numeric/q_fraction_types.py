@@ -9,6 +9,7 @@ from queryablecollections.collections.q_frozen_set import QFrozenSet
 from queryablecollections.collections.q_list import QList
 from queryablecollections.collections.q_sequence import QImmutableSequence
 from queryablecollections.collections.q_set import QSet
+from queryablecollections.empty_iterable_exception import EmptyIterableError
 from queryablecollections.q_iterable import QIterable, QiterableImplementation
 
 if TYPE_CHECKING:
@@ -18,8 +19,19 @@ class QIterableFraction(QIterable[Fraction], ABC):
     __slots__: tuple[str, ...] = ()
 
     def sum(self) -> Fraction: return sum(self, Fraction(0))
-    def min(self) -> Fraction: return min(self._assert_not_empty())
-    def max(self) -> Fraction: return max(self._assert_not_empty())
+
+    def min(self) -> Fraction:
+        try:
+            return min(self)
+        except ValueError:
+            raise EmptyIterableError() from None
+
+    def max(self) -> Fraction:
+        try:
+            return max(self)
+        except ValueError:
+            raise EmptyIterableError() from None
+
     def min_or_default(self) -> Fraction: return min(self) if self.any() else Fraction(0)
     def max_or_default(self) -> Fraction: return max(self) if self.any() else Fraction(0)
     def average(self) -> Fraction: return statistics.mean(self._assert_not_empty())
