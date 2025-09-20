@@ -81,7 +81,7 @@ class QIterable[TItem](Iterable[TItem], ABC):
     def select_many[TInner](self, selector: Selector[TItem, Iterable[TInner]]) -> QIterable[TInner]: return QiterableImplementation(q_ops_transform.select_many(self, selector))
     # endregion
 
-    # regioun grouping
+    # region grouping
 
     @overload
     def group_by[TKey](self, key: Selector[TItem, TKey]) -> QIterable[QGrouping[TKey, TItem]]:

@@ -43,7 +43,7 @@ class QCast[TItem]:
 
     def float(self) -> QIterableFloat:
         from queryablecollections.collections.numeric.q_float_types import QIterableFloatImplementation
-        return QIterableFloatImplementation(cast(Iterable[int], self._iterable))
+        return QIterableFloatImplementation(cast(Iterable[float], self._iterable))
 
     def fraction(self) -> QIterableFraction:
         from queryablecollections.collections.numeric.q_fraction_types import QIterableFractionImplementation
