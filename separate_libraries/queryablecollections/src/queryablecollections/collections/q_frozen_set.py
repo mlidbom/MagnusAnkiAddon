@@ -20,6 +20,6 @@ class QFrozenSet[TItem](frozenset[TItem], QIterable[TItem]):
     @staticmethod
     @override
     def empty() -> QFrozenSet[TItem]:
-        return cast(QFrozenSet[TItem], QFrozenSet._empty_set)  # pyright: ignore [reportGeneralTypeIssues, reportUnknownMemberType] an empty QList can serve as any QList in python since generic types are not present at runtime and this gives as such an instance at virtually zero cost
+        return cast(QFrozenSet[TItem], QFrozenSet._empty_set)  # pyright: ignore [reportGeneralTypeIssues, reportUnknownMemberType] an empty instance can serve as any item type in python since generic types are not present at runtime and this gives as such an instance at virtually zero cost
 
 QFrozenSet._empty_set = QFrozenSet()  # pyright: ignore [reportGeneralTypeIssues, reportPrivateUsage]
