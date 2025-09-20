@@ -4,22 +4,22 @@ from queryablecollections.collections.q_list import QList
 from queryablecollections.collections.q_sequence import QImmutableSequence
 
 
-def test_list_slice_from_start() -> None:
+def test_list_slice_from_start_returns_the_specified_slice() -> None:
     assert QList((1, 2, 3, 4, 5, 6, 7))[:2] == QList([1, 2])
 
-def test_sequence_slice_from_start() -> None:
+def test_sequence_slice_from_start_returns_the_specified_slice() -> None:
     assert QImmutableSequence((1, 2, 3, 4, 5, 6, 7))[:2].to_list() == QList([1, 2])
 
-def test_list_slice_middle() -> None:
+def test_list_slice_middle__returns_the_specified_slice() -> None:
     assert QList((1, 2, 3, 4, 5))[2:4] == QList([3, 4])
 
-def test_sequence_slice_middle() -> None:
+def test_sequence_slice_middle_returns_the_specified_slice() -> None:
     assert QImmutableSequence((1, 2, 3, 4, 5))[2:4].to_list() == QList([3, 4])
 
-def test_list_slice_end() -> None:
+def test_list_slice_end_returns_the_specified_slice() -> None:
     assert QList((1, 2, 3, 4, 5))[3:] == QList([4, 5])
 
-def test_sequence_slice_end() -> None:
+def test_sequence_slice_end_returns_the_specified_slice() -> None:
     assert QImmutableSequence((1, 2, 3, 4, 5))[3:].to_list() == QList([4, 5])
 
 def test_list_slice_returns_qlist() -> None:
