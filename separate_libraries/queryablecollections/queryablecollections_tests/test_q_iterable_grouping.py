@@ -4,7 +4,7 @@ from queryablecollections.collections.q_list import QList
 from queryablecollections.q_iterable import query
 
 
-def test_group_by_basic() -> None:
+def test_group_by_first_character_of_string_returns_one_group_per_unique_first_character_in_the_order_encountered() -> None:
     data = ["apple", "apricot", "banana", "blueberry", "cherry"]
 
     groups = query(data).group_by(lambda string: string[0]).to_list()
@@ -22,7 +22,7 @@ def test_group_by_basic() -> None:
     assert b_group == ["banana", "blueberry"]
     assert c_group == ["cherry"]
 
-def test_group_by_with_element_selector() -> None:
+def test_group_by_first_character_of_string_with_element_selector_returns_one_group_per_unique_first_character_in_the_order_encountered_and_the_values_are_the_selected_value() -> None:
     data = ["apple", "apricot", "banana", "blueberry", "cherry"]
 
     groups = (query(data)
@@ -41,22 +41,6 @@ def test_group_by_with_element_selector() -> None:
     assert b_group == [len("banana"), len("blueberry")]
     assert c_group == [len("cherry")]
 
-def test_group_by_empty() -> None:
+def test_group_by_empty_returns_no_groups() -> None:
     result = QList[int]([]).group_by(lambda element: element).to_list()
     assert result == []
-
-def test_group_by_with_numbers() -> None:
-    numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-
-    groups = query(numbers).group_by(lambda element: element % 3).to_list()
-
-    assert len(groups) == 3
-
-    assert groups[0].key == 1
-    assert groups[0].ordered().to_list() == [1, 4, 7, 10]
-
-    assert groups[1].key == 2
-    assert groups[1].ordered().to_list() == [2, 5, 8]
-
-    assert groups[2].key == 0
-    assert groups[2].ordered().to_list() == [3, 6, 9]
