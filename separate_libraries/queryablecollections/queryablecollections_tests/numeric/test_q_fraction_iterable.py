@@ -8,40 +8,40 @@ from test_q_iterable_common import *
 
 
 def test_cast_fraction_returns_an_q_iterable_fraction_with_the_same_elements() -> None:
-    value_test([Fraction(1.1), Fraction(2.1), Fraction(3.1)], lambda x: x.cast.fraction().to_list(), [Fraction(1.1), Fraction(2.1), Fraction(3.1)])
+    value_test([Fraction.from_float(1.1), Fraction.from_float(2.1), Fraction.from_float(3.1)], lambda x: x.cast.fraction().to_list(), [Fraction.from_float(1.1), Fraction.from_float(2.1), Fraction.from_float(3.1)])
 
 def test_cast_checked_fraction_returns_a_q_iterable_fraction_with_the_same_elements() -> None:
-    value_test([Fraction(1.1), Fraction(2.1), Fraction(3.1)], lambda x: x.cast.checked.fraction().to_list(), [Fraction(1.1), Fraction(2.1), Fraction(3.1)])
+    value_test([Fraction.from_float(1.1), Fraction.from_float(2.1), Fraction.from_float(3.1)], lambda x: x.cast.checked.fraction().to_list(), [Fraction.from_float(1.1), Fraction.from_float(2.1), Fraction.from_float(3.1)])
 
 def test_cast_checked_fraction_raises_type_error_if_collection_contains_non_fraction() -> None:
-    throws_test([Fraction(1.1), "2.1", Fraction(3.1)], lambda x: x.cast.checked.fraction().to_list(), TypeError)
+    throws_test([Fraction.from_float(1.1), "2.1", Fraction.from_float(3.1)], lambda x: x.cast.checked.fraction().to_list(), TypeError)
 
-def test_sum_returns_sum_of_the_values() -> None: assert QFractionList([Fraction(1.1), Fraction(2.1), Fraction(3.1)]).sum() == Fraction(6.300000000000001)
+def test_sum_returns_sum_of_the_values() -> None: assert QFractionList([Fraction(11, 10), Fraction(21, 10), Fraction(31, 10)]).sum() == Fraction(63, 10)
 def test_sum_returns_zero_on_on_empty_collection() -> None: assert QFractionList().sum() == 0
 
-def test_min_returns_min_of_the_values() -> None: assert QFractionList([Fraction(6.1), Fraction(2.1), Fraction(5.1), Fraction(3.1)]).min() == Fraction(2.1)
+def test_min_returns_min_of_the_values() -> None: assert QFractionList([Fraction.from_float(6.1), Fraction.from_float(2.1), Fraction.from_float(5.1), Fraction.from_float(3.1)]).min() == Fraction.from_float(2.1)
 def test_min_raises_invalid_operation_on_on_empty_collection() -> None:
     with pytest.raises(EmptyIterableError): QFractionList().min()
 
-def test_min_or_default_returns_min_of_the_values() -> None: assert QFractionList([Fraction(6.1), Fraction(2.1), Fraction(5.1), Fraction(3.1)]).min_or_default() == Fraction(2.1)
+def test_min_or_default_returns_min_of_the_values() -> None: assert QFractionList([Fraction.from_float(6.1), Fraction.from_float(2.1), Fraction.from_float(5.1), Fraction.from_float(3.1)]).min_or_default() == Fraction.from_float(2.1)
 def test_min_or_default_returns_0_on_on_empty_collection() -> None: assert QFractionList().min_or_default() == 0
 
-def test_max_returns_max_of_the_values() -> None: assert QFractionList([Fraction(1.1), Fraction(5.1), Fraction(3.1)]).max() == Fraction(5.1)
+def test_max_returns_max_of_the_values() -> None: assert QFractionList([Fraction.from_float(1.1), Fraction.from_float(5.1), Fraction.from_float(3.1)]).max() == Fraction.from_float(5.1)
 def test_max_raises_invalid_operation_on_on_empty_collection() -> None:
     with pytest.raises(EmptyIterableError): QFractionList().max()
 
-def test_max_or_default_returns_max_of_the_values() -> None: assert QFractionList([Fraction(1.1), Fraction(5.1), Fraction(3.1)]).max_or_default() == Fraction(5.1)
+def test_max_or_default_returns_max_of_the_values() -> None: assert QFractionList([Fraction.from_float(1.1), Fraction.from_float(5.1), Fraction.from_float(3.1)]).max_or_default() == Fraction.from_float(5.1)
 def test_max_or_default_returns_0_on_on_empty_collection() -> None: assert QFractionList().max_or_default() == 0
 
-def test_average_returns_average_of_the_values() -> None: assert QFractionList([Fraction(1.1), Fraction(2.1), Fraction(3.1)]).average() == Fraction(2.1)
+def test_average_returns_average_of_the_values() -> None: assert QFractionList([Fraction.from_float(1.1), Fraction.from_float(2.1), Fraction.from_float(3.1)]).average() == Fraction.from_float(2.1)
 def test_average_throws_on_on_empty_collection() -> None:
     with pytest.raises(EmptyIterableError): QFractionList().average()
 
-def test_average_or_default_returns_average_of_the_values() -> None: assert QFractionList([Fraction(1.1), Fraction(2.1), Fraction(3.1)]).average_or_default() == Fraction(2.1)
+def test_average_or_default_returns_average_of_the_values() -> None: assert QFractionList([Fraction.from_float(1.1), Fraction.from_float(2.1), Fraction.from_float(3.1)]).average_or_default() == Fraction.from_float(2.1)
 def test_average_or_default_returns_0_on_on_empty_collection() -> None: assert QFractionList().average_or_default() == 0
 
-def test_to_list_returns_a_list_with_the_same_elements() -> None: assert QFractionList([Fraction(1.1), Fraction(2.1), Fraction(3.1)]).to_list() == [Fraction(1.1), Fraction(2.1), Fraction(3.1)]
-def test_to_set_returns_a_set_with_the_same_elements() -> None: assert QFractionList([Fraction(1.1), Fraction(2.1), Fraction(3.1)]).to_set() == {Fraction(1.1), Fraction(2.1), Fraction(3.1)}
-def test_to_frozenset_returns_a_frozenset_with_the_same_elements() -> None: assert QFractionList([Fraction(1.1), Fraction(2.1), Fraction(3.1)]).to_frozenset() == frozenset({Fraction(1.1), Fraction(2.1), Fraction(3.1)})
-def test_to_sequence_returns_a_sequence_with_the_same_elements() -> None: assert QFractionList([Fraction(1.1), Fraction(2.1), Fraction(3.1)]).to_sequence().to_list() == [Fraction(1.1), Fraction(2.1), Fraction(3.1)]
+def test_to_list_returns_a_list_with_the_same_elements() -> None: assert QFractionList([Fraction.from_float(1.1), Fraction.from_float(2.1), Fraction.from_float(3.1)]).to_list() == [Fraction.from_float(1.1), Fraction.from_float(2.1), Fraction.from_float(3.1)]
+def test_to_set_returns_a_set_with_the_same_elements() -> None: assert QFractionList([Fraction.from_float(1.1), Fraction.from_float(2.1), Fraction.from_float(3.1)]).to_set() == {Fraction.from_float(1.1), Fraction.from_float(2.1), Fraction.from_float(3.1)}
+def test_to_frozenset_returns_a_frozenset_with_the_same_elements() -> None: assert QFractionList([Fraction.from_float(1.1), Fraction.from_float(2.1), Fraction.from_float(3.1)]).to_frozenset() == frozenset({Fraction.from_float(1.1), Fraction.from_float(2.1), Fraction.from_float(3.1)})
+def test_to_sequence_returns_a_sequence_with_the_same_elements() -> None: assert QFractionList([Fraction.from_float(1.1), Fraction.from_float(2.1), Fraction.from_float(3.1)]).to_sequence().to_list() == [Fraction.from_float(1.1), Fraction.from_float(2.1), Fraction.from_float(3.1)]
 
