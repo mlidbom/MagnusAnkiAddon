@@ -8,7 +8,7 @@ from queryablecollections._private_implementation_details import q_ops_bool, q_o
 from queryablecollections._private_implementation_details.q_ops_ordering import SortInstruction
 
 # noinspection PyPep8Naming
-from queryablecollections._private_implementation_details.q_zero_overhead_collection_contructors import ZeroImportOverheadCollectionConstructors as C
+from queryablecollections._private_implementation_details.q_zero_overhead_collection_contructors import ZeroImportOverheadConstructors as C
 from queryablecollections.q_errors import EmptyIterableError
 
 if TYPE_CHECKING:
