@@ -20,7 +20,7 @@ class QSequence[TItem](Sequence[TItem], QIterable[TItem], ABC):
     @staticmethod
     @override
     def empty() -> QSequence[TItem]:
-        return cast(QSequence[TItem], QSequence._empty_sequence)  # pyright: ignore [reportGeneralTypeIssues, reportUnknownMemberType] an empty QList can serve as any QList in python since generic types are not present at runtime and this gives as such an instance at virtually zero cost
+        return cast(QSequence[TItem], QSequence._empty_sequence)  # pyright: ignore [reportGeneralTypeIssues, reportUnknownMemberType] an empty instance can serve as any item type in python since generic types are not present at runtime and this gives as such an instance at virtually zero cost
 
 class QImmutableSequence[TItem](ImmutableSequence[TItem], QSequence[TItem]):
     __slots__: tuple[str, ...] = ()
