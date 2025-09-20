@@ -50,3 +50,7 @@ def skip_last[TItem](self: QIterable[TItem], count: int) -> QIterable[TItem]:
             return C.empty_iterable()
         return items[:-count]
     return C.lazy_iterable(internal_skip_last)
+
+
+def of_type[TItem, TResult](self: QIterable[TItem], type_: type[TResult]) -> QIterable[TResult]:
+    return C.iterable(item for item in self if isinstance(item, type_))

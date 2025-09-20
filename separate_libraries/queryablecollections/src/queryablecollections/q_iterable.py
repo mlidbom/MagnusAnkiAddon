@@ -53,6 +53,9 @@ class QIterable[T](Iterable[T], ABC):
     def take_last(self, count: int) -> QIterable[T]: return ops.filtering.take_last(self, count)
     def skip(self, count: int) -> QIterable[T]: return ops.filtering.skip(self, count)
     def skip_last(self, count: int) -> QIterable[T]: return ops.filtering.skip_last(self, count)
+
+    def of_type[TResult](self, target_type: type[TResult]) -> QIterable[TResult]: return ops.filtering.of_type(self, target_type)
+
     # endregion
 
     # region value queries
