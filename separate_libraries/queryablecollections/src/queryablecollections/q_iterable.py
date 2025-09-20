@@ -37,6 +37,9 @@ class QIterable[TItem](Iterable[TItem], ABC):
 
     # region functional programming helpers
     def pipe_to[TReturn](self, action: Selector[QIterable[TItem], TReturn]) -> TReturn: return action(self)
+    def for_each(self, action: Action1[TItem]) -> QIterable[TItem]: return ops.functional.for_each(self, action)
+    def for_single(self, action: Selector[TItem, Any]) -> QIterable[TItem]:  return ops.functional.for_single(self, action)
+    def for_single_or_none(self, action: Selector[TItem, Any]) -> QIterable[TItem]: return ops.functional.for_single_or_none(self, action)
     # endregion
 
     # region filtering
@@ -101,9 +104,7 @@ class QIterable[TItem](Iterable[TItem], ABC):
         """Groups the elements of a sequence according to the specified key selector and element selector"""
 
     def group_by[TKey, TElement](self, key: Selector[TItem, TKey], element: Selector[TItem, TElement] | None = None) -> QIterable[QGrouping[TKey, TItem]] | QIterable[QGrouping[TKey, TElement]]:
-        return (C.iterable(ops.grouping.group_by(self, key))
-                if element is None
-                else C.iterable(ops.grouping.group_by_with_element_selector(self, key, element)))
+        return ops.grouping.group_by_q(self, key, element)
     # endregion
 
     # region single item selecting methods
@@ -120,21 +121,6 @@ class QIterable[TItem](Iterable[TItem], ABC):
     # region assertions on the collection or it's values
     def assert_each(self, predicate: Predicate[TItem], message: str | Selector[TItem, str] | None = None) -> QIterable[TItem]: return ops.asserts.each_element(self, predicate, message)
     def assert_on_collection(self, predicate: Predicate[QIterable[TItem]], message: str | None = None) -> QIterable[TItem]: return ops.asserts.collection(self, predicate, message)
-    # endregion
-
-    # region methods to avoid needing to manually write loops
-    def for_each(self, action: Action1[TItem]) -> QIterable[TItem]:
-        for item in self: action(item)
-        return self
-
-    def for_single(self, action: Selector[TItem, Any]) -> QIterable[TItem]:  # pyright: ignore[reportExplicitAny]
-        action(self.single())
-        return self
-
-    def for_single_or_none(self, action: Selector[TItem, Any]) -> QIterable[TItem]:  # pyright: ignore[reportExplicitAny]
-        value = self.single_or_none()
-        if value is not None: action(value)
-        return self
     # endregion
 
     # region factory methods
