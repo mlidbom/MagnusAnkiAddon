@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from queryablecollections._private_implementation_details.q_ops_transform import select
+from queryablecollections._private_implementation_details.operations.transforms import select
 
 if TYPE_CHECKING:
     from collections.abc import Iterable

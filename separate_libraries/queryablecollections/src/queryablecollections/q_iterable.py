@@ -4,8 +4,8 @@ from abc import ABC
 from collections.abc import Callable, Iterable
 from typing import TYPE_CHECKING, Any, overload
 
-from queryablecollections._private_implementation_details import q_ops_bool, q_ops_filtering, q_ops_grouping, q_ops_loop, q_ops_ordering, q_ops_single_elements, q_ops_transform
-from queryablecollections._private_implementation_details.q_ops_ordering import SortInstruction
+import queryablecollections._private_implementation_details.operations as ops
+from queryablecollections._private_implementation_details.operations.ordering import SortInstruction
 
 # noinspection PyPep8Naming
 from queryablecollections._private_implementation_details.q_zero_overhead_collection_contructors import ZeroImportOverheadConstructors as C
@@ -34,7 +34,7 @@ class QIterable[TItem](Iterable[TItem], ABC):
     def cast(self) -> QCast[TItem]: return C.cast(self)
 
     # region operations on the whole collection, not the items
-    def concat(self, *others: Iterable[TItem]) -> QIterable[TItem]: return C.iterable(q_ops_transform.concat(self, *others))
+    def concat(self, *others: Iterable[TItem]) -> QIterable[TItem]: return C.iterable(ops.transforms.concat(self, *others))
     # endregion
 
     # region functional programming helpers
@@ -42,16 +42,16 @@ class QIterable[TItem](Iterable[TItem], ABC):
     # endregion
 
     # region filtering
-    def where(self, predicate: Predicate[TItem]) -> QIterable[TItem]: return C.iterable(q_ops_filtering.where(self, predicate))
-    def where_not_none(self) -> QIterable[TItem]: return C.iterable(q_ops_filtering.where_not_none(self))
+    def where(self, predicate: Predicate[TItem]) -> QIterable[TItem]: return C.iterable(ops.filtering.where(self, predicate))
+    def where_not_none(self) -> QIterable[TItem]: return C.iterable(ops.filtering.where_not_none(self))
 
-    def distinct(self) -> QIterable[TItem]: return C.lazy_iterable(lambda: q_ops_filtering.distinct(self))
+    def distinct(self) -> QIterable[TItem]: return C.lazy_iterable(lambda: ops.filtering.distinct(self))
 
-    def take_while(self, predicate: Predicate[TItem]) -> QIterable[TItem]: return C.iterable(q_ops_filtering.take_while(self, predicate))
-    def take(self, count: int) -> QIterable[TItem]: return C.iterable(q_ops_filtering.take(self, count))
-    def take_last(self, count: int) -> QIterable[TItem]: return C.lazy_iterable(lambda: q_ops_filtering.take_last(self, count))
-    def skip(self, count: int) -> QIterable[TItem]: return C.iterable(q_ops_filtering.skip(self, count))
-    def skip_last(self, count: int) -> QIterable[TItem]: return C.lazy_iterable(lambda: q_ops_filtering.skip_last(self, count))
+    def take_while(self, predicate: Predicate[TItem]) -> QIterable[TItem]: return C.iterable(ops.filtering.take_while(self, predicate))
+    def take(self, count: int) -> QIterable[TItem]: return C.iterable(ops.filtering.take(self, count))
+    def take_last(self, count: int) -> QIterable[TItem]: return C.lazy_iterable(lambda: ops.filtering.take_last(self, count))
+    def skip(self, count: int) -> QIterable[TItem]: return C.iterable(ops.filtering.skip(self, count))
+    def skip_last(self, count: int) -> QIterable[TItem]: return C.lazy_iterable(lambda: ops.filtering.skip_last(self, count))
     # endregion
 
     # region scalar aggregations
@@ -72,27 +72,27 @@ class QIterable[TItem](Iterable[TItem], ABC):
         from queryablecollections.q_ordered_iterable import QOrderedIterable
         return QOrderedIterable(self, [SortInstruction(key_selector, True)])
 
-    def reversed(self) -> QIterable[TItem]: return C.lazy_iterable(q_ops_ordering.reverse_lazy(self))
+    def reversed(self) -> QIterable[TItem]: return C.lazy_iterable(ops.ordering.reverse_lazy(self))
 
     def ordered(self) -> QIterable[TItem]:
-        return C.lazy_iterable(lambda: q_ops_ordering.ordered(self))  # pyright: ignore [reportUnknownArgumentType, reportArgumentType, reportUnknownLambdaType]
+        return C.lazy_iterable(lambda: ops.ordering.ordered(self))  # pyright: ignore [reportUnknownArgumentType, reportArgumentType, reportUnknownLambdaType]
     # endregion
 
     # region boolean queries
-    def none(self, predicate: Predicate[TItem] | None = None) -> bool: return not q_ops_bool.any_(self, predicate)
-    def any(self, predicate: Predicate[TItem] | None = None) -> bool: return q_ops_bool.any_(self, predicate)
-    def all(self, predicate: Predicate[TItem]) -> bool: return q_ops_bool.all_(self, predicate)
+    def none(self, predicate: Predicate[TItem] | None = None) -> bool: return not ops.bools.any_(self, predicate)
+    def any(self, predicate: Predicate[TItem] | None = None) -> bool: return ops.bools.any_(self, predicate)
+    def all(self, predicate: Predicate[TItem]) -> bool: return ops.bools.all_(self, predicate)
     # endregion
 
     # region mapping/transformation methods
-    def select[TReturn](self, selector: Selector[TItem, TReturn]) -> QIterable[TReturn]: return C.iterable(q_ops_transform.select(self, selector))
-    def select_many[TInner](self, selector: Selector[TItem, Iterable[TInner]]) -> QIterable[TInner]: return C.iterable(q_ops_transform.select_many(self, selector))
+    def select[TReturn](self, selector: Selector[TItem, TReturn]) -> QIterable[TReturn]: return C.iterable(ops.transforms.select(self, selector))
+    def select_many[TInner](self, selector: Selector[TItem, Iterable[TInner]]) -> QIterable[TInner]: return C.iterable(ops.transforms.select_many(self, selector))
 
     def zip[TOther, TResult](self, other: Iterable[TOther], selector: Callable[[TItem, TOther], TResult]) -> QIterable[TResult]:
-        return C.iterable(q_ops_transform.zip_with_selector(self, other, selector))
+        return C.iterable(ops.transforms.zip_with_selector(self, other, selector))
 
     def join[TInner, TKey, TResult](self, inner: Iterable[TInner], outer_key: Selector[TItem, TKey], inner_key: Selector[TInner, TKey], result: Callable[[TItem, TInner], TResult]) -> QIterable[TResult]:
-        return C.iterable(q_ops_transform.join(self, inner, outer_key, inner_key, result))
+        return C.iterable(ops.transforms.join(self, inner, outer_key, inner_key, result))
 
     @overload
     def group_by[TKey](self, key: Selector[TItem, TKey]) -> QIterable[QGrouping[TKey, TItem]]:
@@ -103,19 +103,19 @@ class QIterable[TItem](Iterable[TItem], ABC):
         """Groups the elements of a sequence according to the specified key selector and element selector"""
 
     def group_by[TKey, TElement](self, key: Selector[TItem, TKey], element: Selector[TItem, TElement] | None = None) -> QIterable[QGrouping[TKey, TItem]] | QIterable[QGrouping[TKey, TElement]]:
-        return (C.iterable(q_ops_grouping.group_by(self, key))
+        return (C.iterable(ops.grouping.group_by(self, key))
                 if element is None
-                else C.iterable(q_ops_grouping.group_by_with_element_selector(self, key, element)))
+                else C.iterable(ops.grouping.group_by_with_element_selector(self, key, element)))
     # endregion
 
     # region single item selecting methods
-    def first(self, predicate: Predicate[TItem] | None = None) -> TItem: return q_ops_single_elements.first(self, predicate)
-    def first_or_none(self, predicate: Predicate[TItem] | None = None) -> TItem | None: return q_ops_single_elements.first_or_none(self, predicate)
-    def single(self, predicate: Predicate[TItem] | None = None) -> TItem: return q_ops_single_elements.single(self, predicate)
-    def single_or_none(self, predicate: Predicate[TItem] | None = None) -> TItem | None: return q_ops_single_elements.single_or_none(self, predicate)
+    def first(self, predicate: Predicate[TItem] | None = None) -> TItem: return ops.single_elements.first(self, predicate)
+    def first_or_none(self, predicate: Predicate[TItem] | None = None) -> TItem | None: return ops.single_elements.first_or_none(self, predicate)
+    def single(self, predicate: Predicate[TItem] | None = None) -> TItem: return ops.single_elements.single(self, predicate)
+    def single_or_none(self, predicate: Predicate[TItem] | None = None) -> TItem | None: return ops.single_elements.single_or_none(self, predicate)
 
-    def element_at(self, index: int) -> TItem: return q_ops_single_elements.element_at(self, index)
-    def element_at_or_none(self, index: int) -> TItem | None: return q_ops_single_elements.element_at_or_none(self, index)
+    def element_at(self, index: int) -> TItem: return ops.single_elements.element_at(self, index)
+    def element_at_or_none(self, index: int) -> TItem | None: return ops.single_elements.element_at_or_none(self, index)
 
     def _assert_not_empty(self) -> QIterable[TItem]:
         if self.none(): raise EmptyIterableError()
@@ -125,7 +125,7 @@ class QIterable[TItem](Iterable[TItem], ABC):
 
     # region assertions on the collection or it's values
     def assert_each(self, predicate: Predicate[TItem], message: str | Selector[TItem, str] | None = None) -> QIterable[TItem]:
-        q_ops_loop.assert_each(self, predicate, message)
+        ops.loops.assert_each(self, predicate, message)
         return self
 
     def assert_on_collection(self, predicate: Predicate[QIterable[TItem]], message: str | None = None) -> QIterable[TItem]:

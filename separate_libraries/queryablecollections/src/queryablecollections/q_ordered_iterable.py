@@ -2,8 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from queryablecollections._private_implementation_details import q_ops_ordering
-from queryablecollections._private_implementation_details.q_ops_ordering import SortInstruction
+from queryablecollections._private_implementation_details.operations.ordering import SortInstruction
 from queryablecollections.q_iterable import QIterable
 
 if TYPE_CHECKING:
