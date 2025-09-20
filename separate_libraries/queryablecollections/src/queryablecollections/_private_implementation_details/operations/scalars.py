@@ -5,16 +5,13 @@ from typing import TYPE_CHECKING
 from queryablecollections._private_implementation_details.operations.transforms import select
 
 if TYPE_CHECKING:
-    from collections.abc import Iterable
-
-    from test_q_iterable_common import QIterable
-
     from queryablecollections._private_implementation_details.type_aliases import Predicate
+    from queryablecollections.q_iterable import QIterable
 
-def all_[TItem](self: Iterable[TItem], predicate: Predicate[TItem]) -> bool:
+def all_[TItem](self: QIterable[TItem], predicate: Predicate[TItem]) -> bool:
     return all(select(self, predicate))  # use named functions over lambdas where possible because: https://switowski.com/blog/map-vs-list-comprehension/
 
-def any_[TItem](self: Iterable[TItem], predicate: Predicate[TItem] | None = None) -> bool:
+def any_[TItem](self: QIterable[TItem], predicate: Predicate[TItem] | None = None) -> bool:
     if predicate is None:
         iterator = iter(self)
         try:

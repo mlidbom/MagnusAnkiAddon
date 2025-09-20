@@ -11,6 +11,7 @@ from queryablecollections._private_implementation_details.q_zero_overhead_collec
 
 if TYPE_CHECKING:
     from _typeshed import SupportsRichComparison
+
     from queryablecollections._private_implementation_details.type_aliases import Action1, Predicate, Selector
     from queryablecollections.collections.q_frozen_set import QFrozenSet
     from queryablecollections.collections.q_list import QList
@@ -36,8 +37,8 @@ class QIterable[TItem](Iterable[TItem], ABC):
     # region functional programming helpers
     def pipe_to[TReturn](self, action: Selector[QIterable[TItem], TReturn]) -> TReturn: return ops.functional.pipe_to(self, action)
     def for_each(self, action: Action1[TItem]) -> QIterable[TItem]: return ops.functional.for_each(self, action)
-    def for_single(self, action: Selector[TItem, Any]) -> QIterable[TItem]:  return ops.functional.for_single(self, action)
-    def for_single_or_none(self, action: Selector[TItem, Any]) -> QIterable[TItem]: return ops.functional.for_single_or_none(self, action)
+    def for_single(self, action: Selector[TItem, Any]) -> QIterable[TItem]:  return ops.functional.for_single(self, action)  # pyright: ignore[reportExplicitAny]
+    def for_single_or_none(self, action: Selector[TItem, Any]) -> QIterable[TItem]: return ops.functional.for_single_or_none(self, action)  # pyright: ignore[reportExplicitAny]
     # endregion
 
     # region filtering
@@ -54,7 +55,7 @@ class QIterable[TItem](Iterable[TItem], ABC):
     # endregion
 
     # region value queries
-    def qcount(self, predicate: Predicate[TItem] | None = None) -> int: return ops.scalars.count(self)
+    def qcount(self, predicate: Predicate[TItem] | None = None) -> int: return ops.scalars.count(self, predicate)
     def none(self, predicate: Predicate[TItem] | None = None) -> bool: return not ops.scalars.any_(self, predicate)
     def any(self, predicate: Predicate[TItem] | None = None) -> bool: return ops.scalars.any_(self, predicate)
     def all(self, predicate: Predicate[TItem]) -> bool: return ops.scalars.all_(self, predicate)

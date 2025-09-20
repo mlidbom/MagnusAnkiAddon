@@ -8,9 +8,9 @@ if TYPE_CHECKING:
     from collections.abc import Iterable
 
     from _typeshed import SupportsRichComparison
-    from test_q_iterable_common import QIterable
 
     from queryablecollections._private_implementation_details.type_aliases import Selector
+    from queryablecollections.q_iterable import QIterable
     from queryablecollections.q_ordered_iterable import QOrderedIterable
 
 def reverse_lazy[TItem](self: QIterable[TItem]) -> QIterable[TItem]:

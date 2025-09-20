@@ -12,6 +12,7 @@ if TYPE_CHECKING:
     from queryablecollections.collections.q_sequence import QSequence
     from queryablecollections.collections.q_set import QSet
     from queryablecollections.q_cast import QCast
+    from queryablecollections.q_grouping import QGrouping
     from queryablecollections.q_iterable import QIterable
     from queryablecollections.q_ordered_iterable import QOrderedIterable
 
@@ -26,8 +27,8 @@ class ZeroImportOverheadConstructors:
     @staticmethod
     def sequence[TItem](iterable: Iterable[TItem]) -> QSequence[TItem]:
         from queryablecollections.collections.q_sequence import QImmutableSequence
-        ZeroImportOverheadConstructors.qimmutablesequence = QImmutableSequence  # replace this method with a direct call so that future calls have zero import overhead
-        return ZeroImportOverheadConstructors.list(iterable)  # use the new version to prove from the very first call that it works
+        ZeroImportOverheadConstructors.sequence = QImmutableSequence  # replace this method with a direct call so that future calls have zero import overhead
+        return ZeroImportOverheadConstructors.sequence(iterable)  # use the new version to prove from the very first call that it works
 
     @staticmethod
     def set[TItem](iterable: Iterable[TItem]) -> QSet[TItem]:
@@ -71,3 +72,9 @@ class ZeroImportOverheadConstructors:
         from queryablecollections.q_ordered_iterable import QOrderedIterable
         ZeroImportOverheadConstructors.ordered_iterable = QOrderedIterable  # replace this method with a direct call so that future calls have zero import overhead  # pyright: ignore [reportAttributeAccessIssue]
         return ZeroImportOverheadConstructors.ordered_iterable(qiterable, sorting_instructions)  # use the new version to prove from the very first call that it works
+
+    @staticmethod
+    def grouping[TKey, TItem](values: tuple[TKey, QList[TItem]]) -> QGrouping[TKey, TItem]:
+        from queryablecollections.q_grouping import QGrouping
+        ZeroImportOverheadConstructors.grouping = QGrouping  # replace this method with a direct call so that future calls have zero import overhead  # pyright: ignore [reportAttributeAccessIssue]
+        return ZeroImportOverheadConstructors.grouping(values)  # use the new version to prove from the very first call that it works
