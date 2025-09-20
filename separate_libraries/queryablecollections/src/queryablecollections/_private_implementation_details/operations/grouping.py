@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 def _group_by[TElement, TKey](self: Iterable[TElement], key_selector: Selector[TElement, TKey]) -> Iterable[QGrouping[TKey, TElement]]:
     """Groups the elements of a sequence according to a specified key selector function."""
     from queryablecollections.collections.q_list import QList
-    groups: dict[TKey, QList[TElement]] = defaultdict(QList[TElement])
+    groups: dict[TKey, QList[TElement]] = defaultdict(QList[TElement]) #todo: replace with QDefaultDict
 
     for item in self:
         groups[key_selector(item)].append(item)
@@ -32,7 +32,7 @@ def _group_by_with_element_selector[TSourceElement, TKey, TGroupElement](self: I
                                                                          element_selector: Selector[TSourceElement, TGroupElement]) -> Iterable[QGrouping[TKey, TGroupElement]]:
     """Groups the elements of a sequence according to key and element selector functions."""
     from queryablecollections.collections.q_list import QList
-    groups: dict[TKey, QList[TGroupElement]] = defaultdict(QList[TGroupElement])
+    groups: dict[TKey, QList[TGroupElement]] = defaultdict(QList[TGroupElement]) #todo: replace with QDefaultDict
 
     for item in self:
         groups[key_selector(item)].append(element_selector(item))
