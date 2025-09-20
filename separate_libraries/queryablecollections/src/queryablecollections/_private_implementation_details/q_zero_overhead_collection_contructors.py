@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
+    from queryablecollections._private_implementation_details.operations.ordering import SortInstruction
     from queryablecollections._private_implementation_details.type_aliases import Func
     from queryablecollections.collections.q_frozen_set import QFrozenSet
     from queryablecollections.collections.q_list import QList
@@ -66,7 +67,7 @@ class ZeroImportOverheadConstructors:
         return ZeroImportOverheadConstructors.lazy_iterable(iterable_factory)  # use the new version to prove from the very first call that it works
 
     @staticmethod
-    def ordered_iterable[TItem](qiterable: Iterable[TItem]) -> QOrderedIterable[TItem]:
-        from queryablecollections.q_iterable import QOrderedIterable
+    def ordered_iterable[TItem](qiterable: QIterable[TItem], sorting_instructions: list[SortInstruction[TItem]]) -> QOrderedIterable[TItem]:
+        from queryablecollections.q_ordered_iterable import QOrderedIterable
         ZeroImportOverheadConstructors.ordered_iterable = QOrderedIterable  # replace this method with a direct call so that future calls have zero import overhead  # pyright: ignore [reportAttributeAccessIssue]
-        return ZeroImportOverheadConstructors.ordered_iterable(qiterable)  # use the new version to prove from the very first call that it works
+        return ZeroImportOverheadConstructors.ordered_iterable(qiterable, sorting_instructions)  # use the new version to prove from the very first call that it works

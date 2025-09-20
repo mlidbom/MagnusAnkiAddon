@@ -7,6 +7,8 @@ from queryablecollections._private_implementation_details.operations.transforms 
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
+    from test_q_iterable_common import QIterable
+
     from queryablecollections._private_implementation_details.type_aliases import Predicate
 
 def all_[TItem](self: Iterable[TItem], predicate: Predicate[TItem]) -> bool:
@@ -21,3 +23,7 @@ def any_[TItem](self: Iterable[TItem], predicate: Predicate[TItem] | None = None
         except StopIteration:
             return False
     return any(select(self, predicate, ))
+
+def count[TItem](self: QIterable[TItem], predicate: Predicate[TItem] | None = None) -> int:
+    if predicate is not None: return self.where(predicate).qcount()
+    return self._optimized_length()  # pyright: ignore [reportPrivateUsage]

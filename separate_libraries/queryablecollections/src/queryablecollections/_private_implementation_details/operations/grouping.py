@@ -11,9 +11,10 @@ from queryablecollections._private_implementation_details.q_zero_overhead_collec
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
+    from test_q_iterable_common import QIterable
+
     from queryablecollections._private_implementation_details.type_aliases import Selector
     from queryablecollections.q_grouping import QGrouping
-    from test_q_iterable_common import QIterable
 
 # pycharm is wrong. Pyright sees no problem
 # noinspection PyTypeHints

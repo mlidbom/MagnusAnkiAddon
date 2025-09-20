@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from . import asserts, bools, filtering, grouping, ordering, single_elements, transforms, functional
+from . import asserts, filtering, functional, grouping, ordering, scalars, single_elements, transforms
 
 __all__ = [
-        "bools",
+        "scalars",
         "filtering",
         "grouping",
         "asserts",

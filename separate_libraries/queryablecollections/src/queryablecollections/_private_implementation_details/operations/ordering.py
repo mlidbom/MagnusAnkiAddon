@@ -2,16 +2,19 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from queryablecollections._private_implementation_details.q_zero_overhead_collection_contructors import ZeroImportOverheadConstructors as C
+
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
     from _typeshed import SupportsRichComparison
-    from sysutils.standard_type_aliases import Func
+    from test_q_iterable_common import QIterable
 
     from queryablecollections._private_implementation_details.type_aliases import Selector
+    from queryablecollections.q_ordered_iterable import QOrderedIterable
 
-def reverse_lazy[TItem](self: Iterable[TItem]) -> Func[Iterable[TItem]]:
-    return lambda: reversed(list(self))
+def reverse_lazy[TItem](self: QIterable[TItem]) -> QIterable[TItem]:
+    return C.lazy_iterable(lambda: reversed(list(self)))
 
 class SortInstruction[TItem]:
     __slots__: tuple[str, ...] = ("key_selector", "descending")
@@ -26,5 +29,12 @@ def sort_by_instructions[TItem](self: Iterable[TItem], sort_instructions: list[S
 
     yield from items
 
-def ordered[TElement: SupportsRichComparison](self: Iterable[TElement]) -> Iterable[TElement]:
-    return sorted(self)
+def ordered[TElement: SupportsRichComparison](self: QIterable[TElement]) -> QIterable[TElement]:
+    return C.lazy_iterable(lambda: sorted(self))
+
+
+def order_by[TItem](self: QIterable[TItem], key_selector: Selector[TItem, SupportsRichComparison]) -> QOrderedIterable[TItem]:
+    return C.ordered_iterable(self, [SortInstruction(key_selector, False)])
+
+def order_by_descending[TItem](self: QIterable[TItem], key_selector: Selector[TItem, SupportsRichComparison]) -> QOrderedIterable[TItem]:
+    return C.ordered_iterable(self, [SortInstruction(key_selector, True)])
