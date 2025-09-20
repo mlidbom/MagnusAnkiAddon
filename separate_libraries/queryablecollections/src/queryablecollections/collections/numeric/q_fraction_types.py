@@ -5,12 +5,13 @@ from abc import ABC
 from fractions import Fraction
 from typing import TYPE_CHECKING, override
 
+from queryablecollections._private_implementation_details.q_iterable_implementation import QiterableImplementation
 from queryablecollections.collections.q_frozen_set import QFrozenSet
 from queryablecollections.collections.q_list import QList
 from queryablecollections.collections.q_sequence import QImmutableSequence
 from queryablecollections.collections.q_set import QSet
 from queryablecollections.q_errors import EmptyIterableError
-from queryablecollections.q_iterable import QIterable, QiterableImplementation
+from queryablecollections.q_iterable import QIterable
 
 if TYPE_CHECKING:
     from collections.abc import Iterable

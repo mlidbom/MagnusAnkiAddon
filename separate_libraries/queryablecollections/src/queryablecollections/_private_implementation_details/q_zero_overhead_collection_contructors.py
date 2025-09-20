@@ -17,56 +17,56 @@ if TYPE_CHECKING:
 class ZeroImportOverheadCollectionConstructors:
 
     @staticmethod
-    def qlist[TItem](iterable: Iterable[TItem]) -> QList[TItem]:
+    def list[TItem](iterable: Iterable[TItem]) -> QList[TItem]:
         from queryablecollections.collections.q_list import QList
-        ZeroImportOverheadCollectionConstructors.qlist = QList  # replace this method with a direct call so that future calls have zero import overhead
-        return ZeroImportOverheadCollectionConstructors.qlist(iterable)  # use the new version to prove from the very first call that it works
+        ZeroImportOverheadCollectionConstructors.list = QList  # replace this method with a direct call so that future calls have zero import overhead
+        return ZeroImportOverheadCollectionConstructors.list(iterable)  # use the new version to prove from the very first call that it works
 
     @staticmethod
-    def qsequence[TItem](iterable: Iterable[TItem]) -> QSequence[TItem]:
+    def sequence[TItem](iterable: Iterable[TItem]) -> QSequence[TItem]:
         from queryablecollections.collections.q_sequence import QImmutableSequence
         ZeroImportOverheadCollectionConstructors.qimmutablesequence = QImmutableSequence  # replace this method with a direct call so that future calls have zero import overhead
-        return ZeroImportOverheadCollectionConstructors.qlist(iterable)  # use the new version to prove from the very first call that it works
+        return ZeroImportOverheadCollectionConstructors.list(iterable)  # use the new version to prove from the very first call that it works
 
     @staticmethod
-    def qset[TItem](iterable: Iterable[TItem]) -> QSet[TItem]:
+    def set[TItem](iterable: Iterable[TItem]) -> QSet[TItem]:
         from queryablecollections.collections.q_set import QSet
-        ZeroImportOverheadCollectionConstructors.qset = QSet  # replace this method with a direct call so that future calls have zero import overhead
-        return ZeroImportOverheadCollectionConstructors.qset(iterable)  # use the new version to prove from the very first call that it works
+        ZeroImportOverheadCollectionConstructors.set = QSet  # replace this method with a direct call so that future calls have zero import overhead
+        return ZeroImportOverheadCollectionConstructors.set(iterable)  # use the new version to prove from the very first call that it works
 
     @staticmethod
-    def qfrozenset[TItem](iterable: Iterable[TItem]) -> QFrozenSet[TItem]:
+    def frozen_set[TItem](iterable: Iterable[TItem]) -> QFrozenSet[TItem]:
         from queryablecollections.collections.q_frozen_set import QFrozenSet
-        ZeroImportOverheadCollectionConstructors.qfrozenset = QFrozenSet  # replace this method with a direct call so that future calls have zero import overhead
-        return ZeroImportOverheadCollectionConstructors.qfrozenset(iterable)  # use the new version to prove from the very first call that it works
+        ZeroImportOverheadCollectionConstructors.frozen_set = QFrozenSet  # replace this method with a direct call so that future calls have zero import overhead
+        return ZeroImportOverheadCollectionConstructors.frozen_set(iterable)  # use the new version to prove from the very first call that it works
 
     @staticmethod
-    def qcast[TItem](qiterable: QIterable[TItem]) -> QCast[TItem]:
+    def cast[TItem](qiterable: QIterable[TItem]) -> QCast[TItem]:
         from queryablecollections.q_cast import QCast
-        ZeroImportOverheadCollectionConstructors.qcast = QCast  # replace this method with a direct call so that future calls have zero import overhead  # pyright: ignore [reportAttributeAccessIssue]
-        return ZeroImportOverheadCollectionConstructors.qcast(qiterable)  # use the new version to prove from the very first call that it works
+        ZeroImportOverheadCollectionConstructors.cast = QCast  # replace this method with a direct call so that future calls have zero import overhead  # pyright: ignore [reportAttributeAccessIssue]
+        return ZeroImportOverheadCollectionConstructors.cast(qiterable)  # use the new version to prove from the very first call that it works
 
     @staticmethod
-    def qiterable[TItem](qiterable: Iterable[TItem]) -> QIterable[TItem]:
-        from queryablecollections.q_iterable import QiterableImplementation
-        ZeroImportOverheadCollectionConstructors.qiterable = QiterableImplementation  # replace this method with a direct call so that future calls have zero import overhead  # pyright: ignore [reportAttributeAccessIssue]
-        return ZeroImportOverheadCollectionConstructors.qiterable(qiterable)  # use the new version to prove from the very first call that it works
+    def iterable[TItem](qiterable: Iterable[TItem]) -> QIterable[TItem]:
+        from queryablecollections._private_implementation_details.q_iterable_implementation import QiterableImplementation
+        ZeroImportOverheadCollectionConstructors.iterable = QiterableImplementation  # replace this method with a direct call so that future calls have zero import overhead  # pyright: ignore [reportAttributeAccessIssue]
+        return ZeroImportOverheadCollectionConstructors.iterable(qiterable)  # use the new version to prove from the very first call that it works
 
     @staticmethod
-    def qemptyiterable[TItem]() -> QIterable[TItem]:  # pyright: ignore [reportInvalidTypeVarUse]
-        empty_iterable = ZeroImportOverheadCollectionConstructors.qiterable(())
+    def empty_iterable[TItem]() -> QIterable[TItem]:  # pyright: ignore [reportInvalidTypeVarUse]
+        empty_iterable = ZeroImportOverheadCollectionConstructors.iterable(())
         def get_empty() -> QIterable[TItem]: return empty_iterable  # pyright: ignore [reportReturnType]
-        ZeroImportOverheadCollectionConstructors.qemptyiterable = get_empty  # replace this method itself with  # pyright: ignore [reportAttributeAccessIssue]
-        return ZeroImportOverheadCollectionConstructors.qemptyiterable()
+        ZeroImportOverheadCollectionConstructors.empty_iterable = get_empty  # replace this method itself with  # pyright: ignore [reportAttributeAccessIssue]
+        return ZeroImportOverheadCollectionConstructors.empty_iterable()
 
     @staticmethod
-    def qlazyiterable[TItem](iterable_factory: Func[Iterable[TItem]]) -> QIterable[TItem]:
+    def lazy_iterable[TItem](iterable_factory: Func[Iterable[TItem]]) -> QIterable[TItem]:
         from queryablecollections._private_implementation_details.q_lazy_iterable import QLazyiterable
-        ZeroImportOverheadCollectionConstructors.qlazyiterable = QLazyiterable  # replace this method with a direct call so that future calls have zero import overhead  # pyright: ignore [reportAttributeAccessIssue]
-        return ZeroImportOverheadCollectionConstructors.qlazyiterable(iterable_factory)  # use the new version to prove from the very first call that it works
+        ZeroImportOverheadCollectionConstructors.lazy_iterable = QLazyiterable  # replace this method with a direct call so that future calls have zero import overhead  # pyright: ignore [reportAttributeAccessIssue]
+        return ZeroImportOverheadCollectionConstructors.lazy_iterable(iterable_factory)  # use the new version to prove from the very first call that it works
 
     @staticmethod
-    def qordered_iterable[TItem](qiterable: Iterable[TItem]) -> QOrderedIterable[TItem]:
+    def ordered_iterable[TItem](qiterable: Iterable[TItem]) -> QOrderedIterable[TItem]:
         from queryablecollections.q_iterable import QOrderedIterable
-        ZeroImportOverheadCollectionConstructors.qordered_iterable = QOrderedIterable  # replace this method with a direct call so that future calls have zero import overhead  # pyright: ignore [reportAttributeAccessIssue]
-        return ZeroImportOverheadCollectionConstructors.qordered_iterable(qiterable)  # use the new version to prove from the very first call that it works
+        ZeroImportOverheadCollectionConstructors.ordered_iterable = QOrderedIterable  # replace this method with a direct call so that future calls have zero import overhead  # pyright: ignore [reportAttributeAccessIssue]
+        return ZeroImportOverheadCollectionConstructors.ordered_iterable(qiterable)  # use the new version to prove from the very first call that it works
