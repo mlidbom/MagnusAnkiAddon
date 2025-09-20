@@ -25,118 +25,118 @@ def query[TItem](value: Iterable[TItem]) -> QIterable[TItem]: return C.iterable(
 
 # note to coders, you can trust that the methods in QIterable do nothing except delegate to the corresponding operations method,
 # or to ZeroImportOverheadConstructors, that's why we keep all the methods on single lines to make it easier to read through the definitions
-class QIterable[TItem](Iterable[TItem], ABC):
+class QIterable[T](Iterable[T], ABC):
     __slots__: tuple[str, ...] = ()
     @property
-    def cast(self) -> QCast[TItem]: return C.cast(self)
+    def cast(self) -> QCast[T]: return C.cast(self)
 
     # region operations on the whole collection, not the items
-    def concat(self, *others: Iterable[TItem]) -> QIterable[TItem]: return ops.transforms.concat(self, *others)
+    def concat(self, *others: Iterable[T]) -> QIterable[T]: return ops.transforms.concat(self, *others)
     # endregion
 
     # region functional programming helpers
-    def pipe_to[TReturn](self, action: Selector[QIterable[TItem], TReturn]) -> TReturn: return ops.functional.pipe_to(self, action)
-    def for_each(self, action: Action1[TItem]) -> QIterable[TItem]: return ops.functional.for_each(self, action)
-    def for_single(self, action: Selector[TItem, Any]) -> QIterable[TItem]:  return ops.functional.for_single(self, action)  # pyright: ignore[reportExplicitAny]
-    def for_single_or_none(self, action: Selector[TItem, Any]) -> QIterable[TItem]: return ops.functional.for_single_or_none(self, action)  # pyright: ignore[reportExplicitAny]
+    def pipe_to[TReturn](self, action: Selector[QIterable[T], TReturn]) -> TReturn: return ops.functional.pipe_to(self, action)
+    def for_each(self, action: Action1[T]) -> QIterable[T]: return ops.functional.for_each(self, action)
+    def for_single(self, action: Selector[T, Any]) -> QIterable[T]:  return ops.functional.for_single(self, action)  # pyright: ignore[reportExplicitAny]
+    def for_single_or_none(self, action: Selector[T, Any]) -> QIterable[T]: return ops.functional.for_single_or_none(self, action)  # pyright: ignore[reportExplicitAny]
     # endregion
 
     # region filtering
-    def where(self, predicate: Predicate[TItem]) -> QIterable[TItem]: return ops.filtering.where(self, predicate)
-    def where_not_none(self) -> QIterable[TItem]: return ops.filtering.where_not_none(self)
+    def where(self, predicate: Predicate[T]) -> QIterable[T]: return ops.filtering.where(self, predicate)
+    def where_not_none(self) -> QIterable[T]: return ops.filtering.where_not_none(self)
 
-    def distinct(self) -> QIterable[TItem]: return ops.filtering.distinct(self)
+    def distinct(self) -> QIterable[T]: return ops.filtering.distinct(self)
 
-    def take_while(self, predicate: Predicate[TItem]) -> QIterable[TItem]: return ops.filtering.take_while(self, predicate)
-    def take(self, count: int) -> QIterable[TItem]: return ops.filtering.take(self, count)
-    def take_last(self, count: int) -> QIterable[TItem]: return ops.filtering.take_last(self, count)
-    def skip(self, count: int) -> QIterable[TItem]: return ops.filtering.skip(self, count)
-    def skip_last(self, count: int) -> QIterable[TItem]: return ops.filtering.skip_last(self, count)
+    def take_while(self, predicate: Predicate[T]) -> QIterable[T]: return ops.filtering.take_while(self, predicate)
+    def take(self, count: int) -> QIterable[T]: return ops.filtering.take(self, count)
+    def take_last(self, count: int) -> QIterable[T]: return ops.filtering.take_last(self, count)
+    def skip(self, count: int) -> QIterable[T]: return ops.filtering.skip(self, count)
+    def skip_last(self, count: int) -> QIterable[T]: return ops.filtering.skip_last(self, count)
     # endregion
 
     # region value queries
-    def qcount(self, predicate: Predicate[TItem] | None = None) -> int: return ops.scalars.count(self, predicate)
-    def none(self, predicate: Predicate[TItem] | None = None) -> bool: return not ops.scalars.any_(self, predicate)
-    def any(self, predicate: Predicate[TItem] | None = None) -> bool: return ops.scalars.any_(self, predicate)
-    def all(self, predicate: Predicate[TItem]) -> bool: return ops.scalars.all_(self, predicate)
+    def qcount(self, predicate: Predicate[T] | None = None) -> int: return ops.scalars.count(self, predicate)
+    def none(self, predicate: Predicate[T] | None = None) -> bool: return not ops.scalars.any_(self, predicate)
+    def any(self, predicate: Predicate[T] | None = None) -> bool: return ops.scalars.any_(self, predicate)
+    def all(self, predicate: Predicate[T]) -> bool: return ops.scalars.all_(self, predicate)
 
     # endregion
 
     # region sorting
-    def order_by(self, key_selector: Selector[TItem, SupportsRichComparison]) -> QOrderedIterable[TItem]: return ops.ordering.order_by(self, key_selector)
-    def order_by_descending(self, key_selector: Selector[TItem, SupportsRichComparison]) -> QOrderedIterable[TItem]: return ops.ordering.order_by_descending(self, key_selector)
+    def order_by(self, key_selector: Selector[T, SupportsRichComparison]) -> QOrderedIterable[T]: return ops.ordering.order_by(self, key_selector)
+    def order_by_descending(self, key_selector: Selector[T, SupportsRichComparison]) -> QOrderedIterable[T]: return ops.ordering.order_by_descending(self, key_selector)
 
-    def reversed(self) -> QIterable[TItem]: return ops.ordering.reverse_lazy(self)
+    def reversed(self) -> QIterable[T]: return ops.ordering.reverse_lazy(self)
 
-    def ordered(self) -> QIterable[TItem]: return ops.ordering.ordered(self)  # pyright: ignore [reportUnknownVariableType, reportArgumentType]
+    def ordered(self) -> QIterable[T]: return ops.ordering.ordered(self)  # pyright: ignore [reportUnknownVariableType, reportArgumentType]
     # endregion
 
     # region mapping/transformation methods
-    def select[TReturn](self, selector: Selector[TItem, TReturn]) -> QIterable[TReturn]: return ops.transforms.select(self, selector)
-    def select_many[TInner](self, selector: Selector[TItem, Iterable[TInner]]) -> QIterable[TInner]: return ops.transforms.select_many(self, selector)
-    def join[TInner, TKey, TResult](self, inner: Iterable[TInner], outer_key: Selector[TItem, TKey], inner_key: Selector[TInner, TKey], result: Callable[[TItem, TInner], TResult]) -> QIterable[TResult]: return ops.transforms.join(self, inner, outer_key, inner_key, result)
+    def select[TReturn](self, selector: Selector[T, TReturn]) -> QIterable[TReturn]: return ops.transforms.select(self, selector)
+    def select_many[TInner](self, selector: Selector[T, Iterable[TInner]]) -> QIterable[TInner]: return ops.transforms.select_many(self, selector)
+    def join[TInner, TKey, TResult](self, inner: Iterable[TInner], outer_key: Selector[T, TKey], inner_key: Selector[TInner, TKey], result: Callable[[T, TInner], TResult]) -> QIterable[TResult]: return ops.transforms.join(self, inner, outer_key, inner_key, result)
 
     @overload
-    def zip[T2, TResult](self, second: Iterable[T2], result_selector: Callable[[TItem, T2], TResult], /) -> QIterable[TResult]: ...
+    def zip[T2, TResult](self, second: Iterable[T2], result_selector: Callable[[T, T2], TResult], /) -> QIterable[TResult]: ...
 
     @overload
-    def zip[T2](self, second: Iterable[T2], /) -> QIterable[tuple[TItem, T2]]: ...
+    def zip[T2](self, second: Iterable[T2], /) -> QIterable[tuple[T, T2]]: ...
 
     @overload
-    def zip[T2, T3](self, second: Iterable[T2], third: Iterable[T3], /) -> QIterable[tuple[TItem, T2, T3]]: ...
+    def zip[T2, T3](self, second: Iterable[T2], third: Iterable[T3], /) -> QIterable[tuple[T, T2, T3]]: ...
 
-    def zip[T2, T3, TResult](self, second: Iterable[T2], third: Iterable[T3] | Callable[[TItem, T2], TResult] | None = None) \
-            -> QIterable[TResult] | QIterable[tuple[TItem, T2]] | QIterable[tuple[TItem, T2, T3]]:
+    def zip[T2, T3, TResult](self, second: Iterable[T2], third: Iterable[T3] | Callable[[T, T2], TResult] | None = None) \
+            -> QIterable[TResult] | QIterable[tuple[T, T2]] | QIterable[tuple[T, T2, T3]]:
         return ops.transforms.zip_new(self, second, third)
 
     @overload
-    def to_dict[TKey, TValue](self, key_selector: Selector[TItem, TKey], value_selector: Selector[TItem, TValue]) -> QDict[TKey, TValue]:
+    def to_dict[TKey, TValue](self, key_selector: Selector[T, TKey], value_selector: Selector[T, TValue]) -> QDict[TKey, TValue]:
         """Creates a QDict from the sequence using the specified key and value selectors"""
     @overload
     def to_dict[TKey, TValue](self: QIterable[tuple[TKey, TValue]]) -> QDict[TKey, TValue]:
         """Creates a QDict from a sequence of key-value tuples"""
-    def to_dict[TKey, TValue](self, key_selector: Selector[TItem, TKey] | None = None, value_selector: Selector[TItem, TValue] | None = None) -> QDict[TKey, TValue]: return ops.transforms.to_dict(self, key_selector, value_selector)
+    def to_dict[TKey, TValue](self, key_selector: Selector[T, TKey] | None = None, value_selector: Selector[T, TValue] | None = None) -> QDict[TKey, TValue]: return ops.transforms.to_dict(self, key_selector, value_selector)
 
     @overload
-    def group_by[TKey](self, key: Selector[TItem, TKey]) -> QIterable[QGrouping[TKey, TItem]]:
+    def group_by[TKey](self, key: Selector[T, TKey]) -> QIterable[QGrouping[TKey, T]]:
         """Groups the elements of a sequence according to the specified key selector"""
 
     @overload
-    def group_by[TKey, TElement](self, key: Selector[TItem, TKey], element: Selector[TItem, TElement]) -> QIterable[QGrouping[TKey, TElement]]:
+    def group_by[TKey, TElement](self, key: Selector[T, TKey], element: Selector[T, TElement]) -> QIterable[QGrouping[TKey, TElement]]:
         """Groups the elements of a sequence according to the specified key selector and element selector"""
 
-    def group_by[TKey, TElement](self, key: Selector[TItem, TKey], element: Selector[TItem, TElement] | None = None) -> QIterable[QGrouping[TKey, TItem]] | QIterable[QGrouping[TKey, TElement]]: return ops.grouping.group_by_q(self, key, element)
+    def group_by[TKey, TElement](self, key: Selector[T, TKey], element: Selector[T, TElement] | None = None) -> QIterable[QGrouping[TKey, T]] | QIterable[QGrouping[TKey, TElement]]: return ops.grouping.group_by_q(self, key, element)
     # endregion
 
     # region single item selecting methods
-    def first(self, predicate: Predicate[TItem] | None = None) -> TItem: return ops.single_elements.first(self, predicate)
-    def first_or_none(self, predicate: Predicate[TItem] | None = None) -> TItem | None: return ops.single_elements.first_or_none(self, predicate)
-    def single(self, predicate: Predicate[TItem] | None = None) -> TItem: return ops.single_elements.single(self, predicate)
-    def single_or_none(self, predicate: Predicate[TItem] | None = None) -> TItem | None: return ops.single_elements.single_or_none(self, predicate)
+    def first(self, predicate: Predicate[T] | None = None) -> T: return ops.single_elements.first(self, predicate)
+    def first_or_none(self, predicate: Predicate[T] | None = None) -> T | None: return ops.single_elements.first_or_none(self, predicate)
+    def single(self, predicate: Predicate[T] | None = None) -> T: return ops.single_elements.single(self, predicate)
+    def single_or_none(self, predicate: Predicate[T] | None = None) -> T | None: return ops.single_elements.single_or_none(self, predicate)
 
-    def element_at(self, index: int) -> TItem: return ops.single_elements.element_at(self, index)
-    def element_at_or_none(self, index: int) -> TItem | None: return ops.single_elements.element_at_or_none(self, index)
+    def element_at(self, index: int) -> T: return ops.single_elements.element_at(self, index)
+    def element_at_or_none(self, index: int) -> T | None: return ops.single_elements.element_at_or_none(self, index)
     # endregion
 
     # region assertions on the collection or it's values
-    def assert_each(self, predicate: Predicate[TItem], message: str | Selector[TItem, str] | None = None) -> QIterable[TItem]: return ops.asserts.each_element(self, predicate, message)
-    def assert_on_collection(self, predicate: Predicate[QIterable[TItem]], message: str | None = None) -> QIterable[TItem]: return ops.asserts.collection(self, predicate, message)
+    def assert_each(self, predicate: Predicate[T], message: str | Selector[T, str] | None = None) -> QIterable[T]: return ops.asserts.each_element(self, predicate, message)
+    def assert_on_collection(self, predicate: Predicate[QIterable[T]], message: str | None = None) -> QIterable[T]: return ops.asserts.collection(self, predicate, message)
     # endregion
 
     # region methods subclasses may want to override for perfarmonce reasons
 
     def _optimized_length(self) -> int: return sum(1 for _ in self)
-    def _assert_not_empty(self) -> QIterable[TItem]: return ops.asserts.not_empty(self)
+    def _assert_not_empty(self) -> QIterable[T]: return ops.asserts.not_empty(self)
 
     # region factory methods
     # note: we do not "optimize" by returning self in any subclass because the contract is to create a new independent copy
-    def to_list(self) -> QList[TItem]: return C.list(self)
-    def to_set(self) -> QSet[TItem]: return C.set(self)
-    def to_frozenset(self) -> QFrozenSet[TItem]: return C.frozen_set(self)
-    def to_sequence(self) -> QSequence[TItem]: return C.sequence(self)
-    def to_built_in_list(self) -> list[TItem]: return list(self)
+    def to_list(self) -> QList[T]: return C.list(self)
+    def to_set(self) -> QSet[T]: return C.set(self)
+    def to_frozenset(self) -> QFrozenSet[T]: return C.frozen_set(self)
+    def to_sequence(self) -> QSequence[T]: return C.sequence(self)
+    def to_built_in_list(self) -> list[T]: return list(self)
 
     # endregion
 
     @staticmethod
-    def empty() -> QIterable[TItem]: return C.empty_iterable()
+    def empty() -> QIterable[T]: return C.empty_iterable()
