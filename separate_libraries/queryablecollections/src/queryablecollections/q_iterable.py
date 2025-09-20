@@ -4,9 +4,9 @@ from abc import ABC
 from collections.abc import Callable, Iterable
 from typing import TYPE_CHECKING, Any, cast, overload, override
 
-from queryablecollections.q_errors import EmptyIterableError
 from queryablecollections.operations import q_ops_bool, q_ops_filtering, q_ops_grouping, q_ops_loop, q_ops_ordering, q_ops_single_elements, q_ops_transform
 from queryablecollections.operations.q_ops_ordering import SortInstruction
+from queryablecollections.q_errors import EmptyIterableError
 
 if TYPE_CHECKING:
     from collections.abc import Iterator

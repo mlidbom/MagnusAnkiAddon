@@ -3,8 +3,8 @@ from __future__ import annotations
 import itertools
 from typing import TYPE_CHECKING
 
-from queryablecollections.q_errors import EmptyIterableError, InvalidOperationError
 from queryablecollections.operations.q_ops_filtering import where
+from queryablecollections.q_errors import EmptyIterableError, InvalidOperationError
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
