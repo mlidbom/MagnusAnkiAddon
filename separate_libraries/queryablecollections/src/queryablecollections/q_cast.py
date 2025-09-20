@@ -5,30 +5,27 @@ from decimal import Decimal
 from fractions import Fraction
 from typing import TYPE_CHECKING, cast
 
+from queryablecollections.q_iterable import QIterable
+
 if TYPE_CHECKING:
     from queryablecollections.collections.numeric.q_decimal_types import QIterableDecimalImplementation
     from queryablecollections.collections.numeric.q_float_types import QIterableFloat
     from queryablecollections.collections.numeric.q_fraction_types import QIterableFraction
     from queryablecollections.collections.numeric.q_int_types import QIterableInt
-    from queryablecollections.q_iterable import QIterable
 
-# noinspection DuplicatedCode
-def _checked_cast_int(item: object) -> int:
-    if not isinstance(item, int): raise TypeError(f"Expected int, got {type(item).__name__}")
-    return item
+class CheckedCast[TValue]:
+    __slots__: tuple[str, ...] = ("_type",)
+    def __init__(self, type: type[TValue]) -> None:
+        self._type: type[TValue] = type
 
-def _checked_cast_float(item: object) -> float:
-    if not isinstance(item, float): raise TypeError(f"Expected float, got {type(item).__name__}")
-    return item
+    def __call__(self, value: object) -> TValue:
+        if not isinstance(value, self._type): raise TypeError(f"Expected {self._type.__name__}, got {type(value).__name__}")
+        return value
 
-# noinspection DuplicatedCode
-def _checked_cast_fraction(item: object) -> Fraction:
-    if not isinstance(item, Fraction): raise TypeError(f"Expected Fraction, got {type(item).__name__}")
-    return item
-
-def _checked_cast_decimal(item: object) -> Decimal:
-    if not isinstance(item, Decimal): raise TypeError(f"Expected Decimal, got {type(item).__name__}")
-    return item
+_checked_cast_int = CheckedCast(int)
+_checked_cast_float = CheckedCast(float)
+_checked_cast_fraction = CheckedCast(Fraction)
+_checked_cast_decimal = CheckedCast(Decimal)
 
 class QCast[TItem]:
     __slots__: tuple[str, ...] = ("_iterable",)
@@ -55,7 +52,7 @@ class QCast[TItem]:
         from queryablecollections.collections.numeric.q_decimal_types import QIterableDecimalImplementation
         return QIterableDecimalImplementation(cast(Iterable[Decimal], self._iterable))
 
-    def to[TNew](self, type: type[TNew]) -> QIterable[TNew]:  # pyright: ignore [reportInvalidTypeVarUse]
+    def to[TNew](self, _type: type[TNew]) -> QIterable[TNew]:  # pyright: ignore
         return cast(QIterable[TNew], self._iterable)
 
 class QCheckedCast[TItem]:
@@ -78,3 +75,6 @@ class QCheckedCast[TItem]:
     def decimal(self) -> QIterableDecimalImplementation:
         from queryablecollections.collections.numeric.q_decimal_types import QIterableDecimalImplementation
         return QIterableDecimalImplementation(self._iterable.select(_checked_cast_decimal))
+
+    def to[TNew](self, _type: type[TNew]) -> QIterable[TNew]:  # pyright: ignore
+        return self._iterable.select(CheckedCast(_type))

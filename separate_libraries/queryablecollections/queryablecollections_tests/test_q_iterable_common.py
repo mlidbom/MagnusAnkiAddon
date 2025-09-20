@@ -43,6 +43,11 @@ def select_test[TIn, TOut](items: Iterable[TIn],
         result = sequence.select(selector)
         assert result.to_list() == expected_output, name
 
+def lists_value_test[TIn, TOut](items: list[TIn] | Callable[[], Iterable[TIn]],
+                          selector: Callable[[QIterable[TIn]], TOut],
+                          expected_output: TOut) -> None:
+    value_test(items, selector, expected_output, skip_sets=True)
+
 def value_test[TIn, TOut](items: list[TIn] | Callable[[], Iterable[TIn]],
                           selector: Callable[[QIterable[TIn]], TOut],
                           expected_output: TOut,
