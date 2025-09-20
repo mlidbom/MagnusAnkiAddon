@@ -7,6 +7,7 @@ if TYPE_CHECKING:
 
     from queryablecollections._private_implementation_details.operations.ordering import SortInstruction
     from queryablecollections._private_implementation_details.type_aliases import Func
+    from queryablecollections.collections.q_default_dict import QDefaultDict
     from queryablecollections.collections.q_frozen_set import QFrozenSet
     from queryablecollections.collections.q_list import QList
     from queryablecollections.collections.q_sequence import QSequence
@@ -78,3 +79,9 @@ class ZeroImportOverheadConstructors:
         from queryablecollections.q_grouping import QGrouping
         ZeroImportOverheadConstructors.grouping = QGrouping  # replace this method with a direct call so that future calls have zero import overhead  # pyright: ignore [reportAttributeAccessIssue]
         return ZeroImportOverheadConstructors.grouping(values)  # use the new version to prove from the very first call that it works
+
+    @staticmethod
+    def default_dict[TKey, TElement](factory: Func[TElement]) -> QDefaultDict[TKey, TElement]:  # pyright: ignore [reportInvalidTypeVarUse]
+        from queryablecollections.collections.q_default_dict import QDefaultDict
+        ZeroImportOverheadConstructors.default_dict = QDefaultDict  # replace this method with a direct call so that future calls have zero import overhead  # pyright: ignore [reportAttributeAccessIssue]
+        return ZeroImportOverheadConstructors.default_dict(factory)
