@@ -13,6 +13,7 @@ if TYPE_CHECKING:
     from _typeshed import SupportsRichComparison
 
     from queryablecollections._private_implementation_details.type_aliases import Action1, Predicate, Selector
+    from queryablecollections.collections.q_dict import QDict
     from queryablecollections.collections.q_frozen_set import QFrozenSet
     from queryablecollections.collections.q_list import QList
     from queryablecollections.collections.q_sequence import QSequence
@@ -78,6 +79,14 @@ class QIterable[TItem](Iterable[TItem], ABC):
     def join[TInner, TKey, TResult](self, inner: Iterable[TInner], outer_key: Selector[TItem, TKey], inner_key: Selector[TInner, TKey], result: Callable[[TItem, TInner], TResult]) -> QIterable[TResult]: return ops.transforms.join(self, inner, outer_key, inner_key, result)
 
     @overload
+    def to_dict[TKey, TValue](self, key_selector: Selector[TItem, TKey], value_selector: Selector[TItem, TValue]) -> QDict[TKey, TValue]:
+        """Creates a QDict from the sequence using the specified key and value selectors"""
+    @overload
+    def to_dict[TKey, TValue](self: QIterable[tuple[TKey, TValue]]) -> QDict[TKey, TValue]:
+        """Creates a QDict from a sequence of key-value tuples"""
+    def to_dict[TKey, TValue](self, key_selector: Selector[TItem, TKey] | None = None, value_selector: Selector[TItem, TValue] | None = None) -> QDict[TKey, TValue]: return ops.transforms.to_dict(self, key_selector, value_selector)
+
+    @overload
     def group_by[TKey](self, key: Selector[TItem, TKey]) -> QIterable[QGrouping[TKey, TItem]]:
         """Groups the elements of a sequence according to the specified key selector"""
 
@@ -115,6 +124,8 @@ class QIterable[TItem](Iterable[TItem], ABC):
     def to_frozenset(self) -> QFrozenSet[TItem]: return C.frozen_set(self)
     def to_sequence(self) -> QSequence[TItem]: return C.sequence(self)
     def to_built_in_list(self) -> list[TItem]: return list(self)
+
+
     # endregion
 
     # endregion

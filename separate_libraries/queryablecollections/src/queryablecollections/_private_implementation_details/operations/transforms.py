@@ -1,14 +1,17 @@
 from __future__ import annotations
 
 import itertools
-from typing import TYPE_CHECKING
+from collections.abc import Iterable
+from typing import TYPE_CHECKING, cast
 
 from queryablecollections._private_implementation_details.q_zero_overhead_collection_contructors import ZeroImportOverheadConstructors as C
+from queryablecollections.q_errors import ArgumentNoneError
 
 if TYPE_CHECKING:
-    from collections.abc import Callable, Iterable
+    from collections.abc import Callable
 
     from queryablecollections._private_implementation_details.type_aliases import Selector
+    from queryablecollections.collections.q_dict import QDict
     from queryablecollections.q_iterable import QIterable
 
 def concat[TItem](self: QIterable[TItem], *others: Iterable[TItem]) -> QIterable[TItem]:
@@ -28,6 +31,13 @@ def flatten[TItem](self: QIterable[Iterable[TItem]]) -> QIterable[TItem]:
 
 def select_many[TItem, TSubItem](self: QIterable[TItem], selector: Selector[TItem, Iterable[TSubItem]]) -> QIterable[TSubItem]:
     return flatten(select(self, selector))
+
+def to_dict[TItem, TKey, TValue](self: QIterable[TItem], key_selector: Selector[TItem, TKey] | None = None, value_selector: Selector[TItem, TValue] | None = None) -> QDict[TKey, TValue]:
+    if key_selector is not None:
+        if value_selector is None: raise ArgumentNoneError("value_selector")
+        return C.dict((key_selector(item), value_selector(item)) for item in self)
+    # Assume self is a sequence of tuples. Unless the user is working without pyright and/or ignoring the errors it will be
+    return C.dict(cast(Iterable[tuple[TKey, TValue]], self))
 
 def join[TOuter, TInner, TKey, TResult](
         outer: QIterable[TOuter],

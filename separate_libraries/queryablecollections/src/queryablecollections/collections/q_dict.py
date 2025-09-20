@@ -1,12 +1,13 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Iterable, override
+from typing import TYPE_CHECKING, override
 
 from queryablecollections._private_implementation_details.q_zero_overhead_collection_contructors import ZeroImportOverheadConstructors as C
 from queryablecollections.q_iterable import QIterable
 
 if TYPE_CHECKING:
-    pass
+    from collections.abc import Iterable
+
 
 class QDict[TKey, TItem](dict[TKey, TItem], QIterable[TKey]):
     __slots__: tuple[str, ...] = ()

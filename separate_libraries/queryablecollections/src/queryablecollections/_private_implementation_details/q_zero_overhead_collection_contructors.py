@@ -8,6 +8,7 @@ if TYPE_CHECKING:
     from queryablecollections._private_implementation_details.operations.ordering import SortInstruction
     from queryablecollections._private_implementation_details.type_aliases import Func
     from queryablecollections.collections.q_default_dict import QDefaultDict
+    from queryablecollections.collections.q_dict import QDict
     from queryablecollections.collections.q_frozen_set import QFrozenSet
     from queryablecollections.collections.q_list import QList
     from queryablecollections.collections.q_sequence import QSequence
@@ -85,3 +86,9 @@ class ZeroImportOverheadConstructors:
         from queryablecollections.collections.q_default_dict import QDefaultDict
         ZeroImportOverheadConstructors.default_dict = QDefaultDict  # replace this method with a direct call so that future calls have zero import overhead  # pyright: ignore [reportAttributeAccessIssue]
         return ZeroImportOverheadConstructors.default_dict(factory)
+
+    @staticmethod
+    def dict[TKey, TValue](elements: Iterable[tuple[TKey, TValue]]) -> QDict[TKey, TValue]:
+        from queryablecollections.collections.q_dict import QDict
+        ZeroImportOverheadConstructors.dict = QDict  # replace this method with a direct call so that future calls have zero import overhead
+        return ZeroImportOverheadConstructors.dict(elements)  # use the new version to prove from the very first call that it works
