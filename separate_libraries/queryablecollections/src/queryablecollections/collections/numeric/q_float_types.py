@@ -16,8 +16,8 @@ if TYPE_CHECKING:
 class QIterableFloat(QIterable[float], ABC):
     __slots__: tuple[str, ...] = ()
 
-    def sum(self) -> float: return sum(self) if self.any() else 0
-    def min(self) -> float: return min(self._assert_not_empty())
+    def sum(self) -> float: return sum(self)
+    def min(self) -> float: return min(self)
     def max(self) -> float: return max(self._assert_not_empty())
     def min_or_default(self) -> float: return min(self) if self.any() else 0
     def max_or_default(self) -> float: return max(self) if self.any() else 0

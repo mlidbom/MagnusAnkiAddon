@@ -8,6 +8,7 @@ from queryablecollections.collections.q_frozen_set import QFrozenSet
 from queryablecollections.collections.q_list import QList
 from queryablecollections.collections.q_sequence import QImmutableSequence
 from queryablecollections.collections.q_set import QSet
+from queryablecollections.empty_iterable_exception import EmptyIterableError
 from queryablecollections.q_iterable import QIterable, QiterableImplementation
 
 if TYPE_CHECKING:
@@ -16,9 +17,17 @@ if TYPE_CHECKING:
 class QIterableInt(QIterable[int], ABC):
     __slots__: tuple[str, ...] = ()
 
-    def sum(self) -> int: return sum(self) if self.any() else 0
-    def min(self) -> int: return min(self._assert_not_empty())
-    def max(self) -> int: return max(self._assert_not_empty())
+    def sum(self) -> int: return sum(self)
+    def min(self) -> int:
+        try:
+            return min(self)
+        except ValueError:
+            raise EmptyIterableError() from None
+    def max(self) -> int:
+        try:
+            return max(self)
+        except ValueError:
+            raise EmptyIterableError() from None
     def min_or_default(self) -> int: return min(self) if self.any() else 0
     def max_or_default(self) -> int: return max(self) if self.any() else 0
     def average(self) -> float: return statistics.mean(self._assert_not_empty())

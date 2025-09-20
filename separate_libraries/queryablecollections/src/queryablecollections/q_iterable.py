@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from abc import ABC
 from collections.abc import Iterable
-from decimal import InvalidOperation
 from typing import TYPE_CHECKING, Any, cast, override
 
+from queryablecollections.empty_iterable_exception import EmptyIterableError
 from queryablecollections.operations import q_ops_bool, q_ops_filtering, q_ops_loop, q_ops_ordering, q_ops_single_elements, q_ops_transform
 from queryablecollections.operations.q_ops_ordering import SortInstruction
 
@@ -88,7 +88,7 @@ class QIterable[TItem](Iterable[TItem], ABC):
     def element_at_or_none(self, index: int) -> TItem | None: return q_ops_single_elements.element_at_or_none(self, index)
 
     def _assert_not_empty(self) -> QIterable[TItem]:
-        if self.none(): raise InvalidOperation("The collection is empty")
+        if self.none(): raise EmptyIterableError()
         return self
 
     # endregion
