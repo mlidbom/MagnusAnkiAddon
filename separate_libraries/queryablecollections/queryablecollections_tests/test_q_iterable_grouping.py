@@ -26,7 +26,7 @@ def test_group_by_with_element_selector() -> None:
     data = ["apple", "apricot", "banana", "blueberry", "cherry"]
 
     groups = (query(data)
-              .group_by_with_element_selector(lambda element: element[0], lambda element: len(element))
+              .group_by(lambda element: element[0], lambda element: len(element))
               .to_list())
 
     assert len(groups) == 3
@@ -40,24 +40,6 @@ def test_group_by_with_element_selector() -> None:
     assert a_group.elements.ordered().to_list() == [len("apple"), len("apricot")]  # apple=5, apricot=7
     assert b_group.elements == [len("banana"), len("blueberry")]
     assert c_group.elements == [len("cherry")]
-
-def test_group_by_with_result_selector() -> None:
-    data = ["apple", "apricot", "banana", "blueberry", "cherry"]
-
-    result = (query(data)
-              .group_by_with_result_selector(
-            lambda element: element[0],
-            lambda group: f"{group.key}: {len(group.elements)} items")
-              .to_list())
-
-    assert result[0] == "a: 2 items"
-    assert result[1] == "b: 2 items"
-    assert result[2] == "c: 1 items"
-
-    result_set = result.to_set()
-
-    expected = {"a: 2 items", "b: 2 items", "c: 1 items"}
-    assert result_set == expected
 
 def test_group_by_empty() -> None:
     result = QList[int]([]).group_by(lambda element: element).to_list()

@@ -3,6 +3,8 @@ from __future__ import annotations
 from collections import defaultdict
 from typing import TYPE_CHECKING
 
+from queryablecollections.operations.q_ops_transform import select
+
 if TYPE_CHECKING:
     from collections.abc import Iterable, Iterator
 
@@ -13,9 +15,9 @@ class QGrouping[TKey, TElement]:
     """Represents a collection of objects that have a common key."""
     __slots__: tuple[str, ...] = ("key", "elements")
 
-    def __init__(self, key: TKey, elements: QList[TElement]) -> None:
-        self.key: TKey = key
-        self.elements: QList[TElement] = elements
+    def __init__(self, values: tuple[TKey, QList[TElement]]) -> None:
+        self.key: TKey = values[0]
+        self.elements: QList[TElement] = values[1]
 
     def __iter__(self) -> Iterator[TElement]:
         return iter(self.elements)
@@ -32,7 +34,7 @@ def group_by[TElement, TKey](self: Iterable[TElement], key_selector: Selector[TE
         key = key_selector(item)
         groups[key].append(item)
 
-    return (QGrouping(key, elements) for key, elements in groups.items())
+    return select(groups.items(), QGrouping)
 
 def group_by_with_element_selector[TSourceElement, TKey, TGroupElement](self: Iterable[TSourceElement],
                                                                         key_selector: Selector[TSourceElement, TKey],
@@ -46,17 +48,4 @@ def group_by_with_element_selector[TSourceElement, TKey, TGroupElement](self: It
         element = element_selector(item)
         groups[key].append(element)
 
-    return (QGrouping(key, elements) for key, elements in groups.items())
-
-def group_by_with_result_selector[TSourceElement, TKey, TGroupElement](self: Iterable[TSourceElement],
-                                                                       key_selector: Selector[TSourceElement, TKey],
-                                                                       result_selector: Selector[QGrouping[TKey, TSourceElement], TGroupElement]) -> Iterable[TGroupElement]:
-    """Groups elements and projects each group using a result selector."""
-    return (result_selector(group) for group in group_by(self, key_selector))
-
-def group_by_with_element_and_result_selector[TItem, TKey, TElement, TResult](self: Iterable[TItem],
-                                                                              key_selector: Selector[TItem, TKey],
-                                                                              element_selector: Selector[TItem, TElement],
-                                                                              result_selector: Selector[QGrouping[TKey, TElement], TResult]) -> Iterable[TResult]:
-    """Groups elements with element selector and projects each group using a result selector."""
-    return (result_selector(group) for group in group_by_with_element_selector(self, key_selector, element_selector))
+    return select(groups.items(), QGrouping)

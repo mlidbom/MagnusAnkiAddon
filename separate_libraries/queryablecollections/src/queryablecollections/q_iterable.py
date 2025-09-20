@@ -7,12 +7,12 @@ from typing import TYPE_CHECKING, Any, cast, override
 from queryablecollections.empty_iterable_exception import EmptyIterableError
 from queryablecollections.operations import q_ops_bool, q_ops_filtering, q_ops_grouping, q_ops_loop, q_ops_ordering, q_ops_single_elements, q_ops_transform
 from queryablecollections.operations.q_ops_ordering import SortInstruction
+from typing_extensions import overload
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
     from _typeshed import SupportsRichComparison
-
     from queryablecollections.collections.q_frozen_set import QFrozenSet
     from queryablecollections.collections.q_list import QList
     from queryablecollections.collections.q_sequence import QSequence
@@ -84,21 +84,19 @@ class QIterable[TItem](Iterable[TItem], ABC):
 
     # regioun grouping
 
-    def group_by[TKey](self, key_selector: Selector[TItem, TKey]) -> QIterable[QGrouping[TKey, TItem]]:
-        """Groups the elements of a sequence according to a specified key selector function."""
-        return QiterableImplementation(q_ops_grouping.group_by(self, key_selector))
+    @overload
+    def group_by[TKey](self, key: Selector[TItem, TKey]) -> QIterable[QGrouping[TKey, TItem]]:
+        """Groups the elements of a sequence according to the specified key selector"""
 
-    def group_by_with_element_selector[TKey, TElement](self, key_selector: Selector[TItem, TKey], element_selector: Selector[TItem, TElement]) -> QIterable[QGrouping[TKey, TElement]]:
-        """Groups the elements of a sequence according to key and element selector functions."""
-        return QiterableImplementation(q_ops_grouping.group_by_with_element_selector(self, key_selector, element_selector))
+    @overload
+    def group_by[TKey, TElement](self, key: Selector[TItem, TKey], element: Selector[TItem, TElement]) -> QIterable[QGrouping[TKey, TElement]]:
+        """Groups the elements of a sequence according to the specified key selector and element selector"""
 
-    def group_by_with_result_selector[TKey, TResult](self, key_selector: Selector[TItem, TKey], result_selector: Selector[QGrouping[TKey, TItem], TResult]) -> QIterable[TResult]:
-        """Groups elements and projects each group using a result selector."""
-        return QiterableImplementation(q_ops_grouping.group_by_with_result_selector(self, key_selector, result_selector))
-
-    def group_by_with_element_and_result_selector[TKey, TElement, TResult](self, key_selector: Selector[TItem, TKey], element_selector: Selector[TItem, TElement], result_selector: Selector[QGrouping[TKey, TElement], TResult]) -> QIterable[TResult]:
-        """Groups elements with element selector and projects each group using a result selector."""
-        return QiterableImplementation(q_ops_grouping.group_by_with_element_and_result_selector(self, key_selector, element_selector, result_selector))
+    def group_by[TKey, TElement](self, key: Selector[TItem, TKey], element: Selector[TItem, TElement] | None = None) -> QIterable[QGrouping[TKey, TItem]] | QIterable[QGrouping[TKey, TElement]]:
+        if element is None:
+            return QiterableImplementation(q_ops_grouping.group_by(self, key))
+        else:
+            return QiterableImplementation(q_ops_grouping.group_by_with_element_selector(self, key, element))
     # endregion
 
     # region single item selecting methods
