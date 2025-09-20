@@ -11,6 +11,7 @@ from queryablecollections._private_implementation_details.q_zero_overhead_collec
 
 if TYPE_CHECKING:
     from _typeshed import SupportsRichComparison
+
     from queryablecollections._private_implementation_details.type_aliases import Action1, Predicate, Selector
     from queryablecollections.collections.q_dict import QDict
     from queryablecollections.collections.q_frozen_set import QFrozenSet

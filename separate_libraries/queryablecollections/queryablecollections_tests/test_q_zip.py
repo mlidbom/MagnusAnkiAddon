@@ -6,7 +6,7 @@ from queryablecollections.collections.q_list import QList
 from queryablecollections.q_iterable import query
 
 
-class TestZip:
+class TestZip2IterablesWithResultSelector:
     def test_zip_with_equal_length_sequences_returns_each_combination(self) -> None:
         assert (query([1, 2, 3])
                 .zip([10, 20, 30], lambda x, y: x + y)

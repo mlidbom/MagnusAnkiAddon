@@ -14,10 +14,10 @@ if TYPE_CHECKING:
     from queryablecollections.collections.q_dict import QDict
     from queryablecollections.q_iterable import QIterable
 
-def concat[TItem](self: QIterable[TItem], *others: Iterable[TItem]) -> QIterable[TItem]:
+def concat[T](self: QIterable[T], *others: Iterable[T]) -> QIterable[T]:
     return C.iterable(itertools.chain(self, *others))
 
-def select[TItem, TResult](self: QIterable[TItem], selector: Selector[TItem, TResult]) -> QIterable[TResult]:
+def select[T, TResult](self: QIterable[T], selector: Selector[T, TResult]) -> QIterable[TResult]:
     return C.iterable(map(selector, self))
 
 def qzip_2[TFirst, TSecond, TResult](first: QIterable[TFirst], second: Iterable[TSecond], selector: Callable[[TFirst, TSecond], TResult]) -> QIterable[TResult]:
@@ -28,26 +28,24 @@ def qzip_2[TFirst, TSecond, TResult](first: QIterable[TFirst], second: Iterable[
 
 def qzip_3[TFirst, TSecond, TThird](first: QIterable[TFirst], second: Iterable[TSecond], third: Iterable[TThird]) -> QIterable[tuple[TFirst, TSecond, TThird]]:
     def inner_zip() -> Iterable[tuple[TFirst, TSecond, TThird]]:
-        for first_item, second_item, third_item in zip(first, second, third, strict=False):
-            yield first_item, second_item, third_item
+        yield from zip(first, second, third, strict=False)
     return C.lazy_iterable(inner_zip)
 
-def zip_new[TItem, T2, T3, TResult](self: QIterable[TItem], second: Iterable[T2], third_or_result_selector: Iterable[T3] | Callable[[TItem, T2], TResult] | None = None) -> QIterable[TResult] | QIterable[tuple[TItem, T2]] | QIterable[tuple[TItem, T2, T3]]:
+def zip_new[T, T2, T3, TResult](self: QIterable[T], second: Iterable[T2], third_or_result_selector: Iterable[T3] | Callable[[T, T2], TResult] | None = None) -> QIterable[TResult] | QIterable[tuple[T, T2]] | QIterable[tuple[T, T2, T3]]:
     if third_or_result_selector is None:
         return qzip_2(self, second, lambda first_elem, second_elem: (first_elem, second_elem))
-    elif callable(third_or_result_selector):
+    if callable(third_or_result_selector):
         result_selector = third_or_result_selector
         return qzip_2(self, second, result_selector)
-    else:
-        return qzip_3(self, second, third_or_result_selector)
+    return qzip_3(self, second, third_or_result_selector)
 
-def flatten[TItem](self: QIterable[Iterable[TItem]]) -> QIterable[TItem]:
+def flatten[T](self: QIterable[Iterable[T]]) -> QIterable[T]:
     return C.iterable(itertools.chain.from_iterable(self))
 
-def select_many[TItem, TSubItem](self: QIterable[TItem], selector: Selector[TItem, Iterable[TSubItem]]) -> QIterable[TSubItem]:
+def select_many[T, TSubItem](self: QIterable[T], selector: Selector[T, Iterable[TSubItem]]) -> QIterable[TSubItem]:
     return flatten(select(self, selector))
 
-def to_dict[TItem, TKey, TValue](self: QIterable[TItem], key_selector: Selector[TItem, TKey] | None = None, value_selector: Selector[TItem, TValue] | None = None) -> QDict[TKey, TValue]:
+def to_dict[T, TKey, TValue](self: QIterable[T], key_selector: Selector[T, TKey] | None = None, value_selector: Selector[T, TValue] | None = None) -> QDict[TKey, TValue]:
     if key_selector is not None:
         if value_selector is None: raise ArgumentNoneError("value_selector")
         return C.dict((key_selector(item), value_selector(item)) for item in self)
