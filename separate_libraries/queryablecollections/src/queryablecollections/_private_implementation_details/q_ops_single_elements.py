@@ -3,13 +3,13 @@ from __future__ import annotations
 import itertools
 from typing import TYPE_CHECKING
 
-from queryablecollections.operations.q_ops_filtering import where
+from queryablecollections._private_implementation_details.q_ops_filtering import where
 from queryablecollections.q_errors import EmptyIterableError, InvalidOperationError
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
-    from queryablecollections.type_aliases import Predicate
+    from queryablecollections._private_implementation_details.type_aliases import Predicate
 
 def first[TItem](self: Iterable[TItem], predicate: Predicate[TItem] | None = None):
     if predicate is not None:

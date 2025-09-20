@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     from _typeshed import SupportsRichComparison
     from sysutils.standard_type_aliases import Func
 
-    from queryablecollections.type_aliases import Selector
+    from queryablecollections._private_implementation_details.type_aliases import Selector
 
 def reverse_lazy[TItem](self: Iterable[TItem]) -> Func[Iterable[TItem]]:
     return lambda: reversed(list(self))

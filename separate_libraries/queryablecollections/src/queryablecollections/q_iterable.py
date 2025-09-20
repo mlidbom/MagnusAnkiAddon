@@ -4,24 +4,27 @@ from abc import ABC
 from collections.abc import Callable, Iterable
 from typing import TYPE_CHECKING, Any, cast, overload, override
 
-from queryablecollections.operations import q_ops_bool, q_ops_filtering, q_ops_grouping, q_ops_loop, q_ops_ordering, q_ops_single_elements, q_ops_transform
-from queryablecollections.operations.q_ops_ordering import SortInstruction
+from queryablecollections._private_implementation_details import q_ops_bool, q_ops_filtering, q_ops_grouping, q_ops_loop, q_ops_ordering, q_ops_single_elements, q_ops_transform
+from queryablecollections._private_implementation_details.q_ops_ordering import SortInstruction
+
+# noinspection PyPep8Naming
+from queryablecollections._private_implementation_details.q_zero_overhead_collection_contructors import ZeroImportOverheadCollectionConstructors as C
 from queryablecollections.q_errors import EmptyIterableError
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
     from _typeshed import SupportsRichComparison
-
+    from queryablecollections._private_implementation_details.type_aliases import Action1, Func, Predicate, Selector
     from queryablecollections.collections.q_frozen_set import QFrozenSet
     from queryablecollections.collections.q_list import QList
     from queryablecollections.collections.q_sequence import QSequence
     from queryablecollections.collections.q_set import QSet
     from queryablecollections.q_cast import QCast
     from queryablecollections.q_grouping import QGrouping
-    from queryablecollections.type_aliases import Action1, Func, Predicate, Selector
+    from queryablecollections.q_ordered_iterable import QOrderedIterable
 
-def query[TItem](value: Iterable[TItem]) -> QIterable[TItem]: return QiterableImplementation(value)
+def query[TItem](value: Iterable[TItem]) -> QIterable[TItem]: return C.qiterable(value)
 
 class QIterable[TItem](Iterable[TItem], ABC):
     __slots__: tuple[str, ...] = ()
@@ -29,9 +32,7 @@ class QIterable[TItem](Iterable[TItem], ABC):
     def create(value: Iterable[TItem]) -> QIterable[TItem]: return QiterableImplementation(value)
 
     @property
-    def cast(self) -> QCast[TItem]:
-        from queryablecollections.q_cast import QCast
-        return QCast[TItem](self)
+    def cast(self) -> QCast[TItem]: return C.qcast(self)
 
     # region operations on the whole collection, not the items
     def concat(self, *others: Iterable[TItem]) -> QIterable[TItem]: return QiterableImplementation(q_ops_transform.concat(self, *others))
@@ -45,13 +46,13 @@ class QIterable[TItem](Iterable[TItem], ABC):
     def where(self, predicate: Predicate[TItem]) -> QIterable[TItem]: return QiterableImplementation(q_ops_filtering.where(self, predicate))
     def where_not_none(self) -> QIterable[TItem]: return QiterableImplementation(q_ops_filtering.where_not_none(self))
 
-    def distinct(self) -> QIterable[TItem]: return QLazyiterable(lambda: q_ops_filtering.distinct(self))
+    def distinct(self) -> QIterable[TItem]: return C.qlazyiterable(lambda: q_ops_filtering.distinct(self))
 
     def take_while(self, predicate: Predicate[TItem]) -> QIterable[TItem]: return QiterableImplementation(q_ops_filtering.take_while(self, predicate))
     def take(self, count: int) -> QIterable[TItem]: return QiterableImplementation(q_ops_filtering.take(self, count))
-    def take_last(self, count: int) -> QIterable[TItem]: return QLazyiterable(lambda: q_ops_filtering.take_last(self, count))
+    def take_last(self, count: int) -> QIterable[TItem]: return C.qlazyiterable(lambda: q_ops_filtering.take_last(self, count))
     def skip(self, count: int) -> QIterable[TItem]: return QiterableImplementation(q_ops_filtering.skip(self, count))
-    def skip_last(self, count: int) -> QIterable[TItem]: return QLazyiterable(lambda: q_ops_filtering.skip_last(self, count))
+    def skip_last(self, count: int) -> QIterable[TItem]: return C.qlazyiterable(lambda: q_ops_filtering.skip_last(self, count))
     # endregion
 
     # region scalar aggregations
@@ -65,15 +66,17 @@ class QIterable[TItem](Iterable[TItem], ABC):
 
     # region sorting
     def order_by(self, key_selector: Selector[TItem, SupportsRichComparison]) -> QOrderedIterable[TItem]:
+        from queryablecollections.q_ordered_iterable import QOrderedIterable
         return QOrderedIterable(self, [SortInstruction(key_selector, False)])
 
     def order_by_descending(self, key_selector: Selector[TItem, SupportsRichComparison]) -> QOrderedIterable[TItem]:
+        from queryablecollections.q_ordered_iterable import QOrderedIterable
         return QOrderedIterable(self, [SortInstruction(key_selector, True)])
 
     def reversed(self) -> QIterable[TItem]: return QLazyiterable[TItem](q_ops_ordering.reverse_lazy(self))
 
     def ordered(self) -> QIterable[TItem]:
-        return QLazyiterable(lambda: q_ops_ordering.ordered(self))  # pyright: ignore [reportUnknownArgumentType, reportArgumentType, reportUnknownLambdaType]
+        return C.qlazyiterable(lambda: q_ops_ordering.ordered(self))  # pyright: ignore [reportUnknownArgumentType, reportArgumentType, reportUnknownLambdaType]
     # endregion
 
     # region boolean queries
@@ -148,18 +151,10 @@ class QIterable[TItem](Iterable[TItem], ABC):
 
     # region factory methods
     # note: we do not "optimize" by returning self in any subclass because the contract is to create a new independent copy
-    def to_list(self) -> QList[TItem]:
-        from queryablecollections.collections.q_list import QList
-        return QList(self)
-    def to_set(self) -> QSet[TItem]:
-        from queryablecollections.collections.q_set import QSet
-        return QSet(self)
-    def to_frozenset(self) -> QFrozenSet[TItem]:
-        from queryablecollections.collections.q_frozen_set import QFrozenSet
-        return QFrozenSet(self)
-    def to_sequence(self) -> QSequence[TItem]:
-        from queryablecollections.collections.q_sequence import QImmutableSequence
-        return QImmutableSequence(list(self))
+    def to_list(self) -> QList[TItem]: return C.qlist(self)
+    def to_set(self) -> QSet[TItem]: return C.qset(self)
+    def to_frozenset(self) -> QFrozenSet[TItem]: return C.qfrozenset(self)
+    def to_sequence(self) -> QSequence[TItem]: return C.qsequence(self)
     def to_built_in_list(self) -> list[TItem]: return list(self)
     # endregion
 
@@ -187,20 +182,6 @@ class QLazyiterable[TItem](QIterable[TItem]):
 
 # region LOrderedLIterable
 
-class QOrderedIterable[TItem](QIterable[TItem]):
-    __slots__: tuple[str, ...] = ("sorting_instructions", "_unsorted")
-    def __init__(self, iterable: Iterable[TItem], sorting_instructions: list[SortInstruction[TItem]]) -> None:
-        self.sorting_instructions: list[SortInstruction[TItem]] = sorting_instructions
-        self._unsorted: Iterable[TItem] = iterable
-
-    def then_by(self, key_selector: Selector[TItem, SupportsRichComparison]) -> QOrderedIterable[TItem]:
-        return QOrderedIterable(self._unsorted, self.sorting_instructions + [SortInstruction(key_selector, descending=False)])
-
-    def then_by_descending(self, key_selector: Selector[TItem, SupportsRichComparison]) -> QOrderedIterable[TItem]:
-        return QOrderedIterable(self._unsorted, self.sorting_instructions + [SortInstruction(key_selector, descending=True)])
-
-    @override
-    def __iter__(self) -> Iterator[TItem]: yield from q_ops_ordering.sort_by_instructions(self._unsorted, self.sorting_instructions)
 # endregion
 
 

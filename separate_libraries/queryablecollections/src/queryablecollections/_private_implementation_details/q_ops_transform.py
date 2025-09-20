@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterable
 
-    from queryablecollections.type_aliases import Selector
+    from queryablecollections._private_implementation_details.type_aliases import Selector
 
 def concat[TItem](self: Iterable[TItem], *others: Iterable[TItem]) -> Iterable[TItem]:
     return itertools.chain(self, *others)

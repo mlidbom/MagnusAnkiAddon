@@ -2,12 +2,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from queryablecollections.operations.q_ops_transform import select
+from queryablecollections._private_implementation_details.q_ops_transform import select
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
-    from queryablecollections.type_aliases import Predicate
+    from queryablecollections._private_implementation_details.type_aliases import Predicate
 
 def all_[TItem](self: Iterable[TItem], predicate: Predicate[TItem]) -> bool:
     return all(select(self, predicate))  # use named functions over lambdas where possible because: https://switowski.com/blog/map-vs-list-comprehension/

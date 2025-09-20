@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
-    from queryablecollections.type_aliases import Predicate, Selector
+    from queryablecollections._private_implementation_details.type_aliases import Predicate, Selector
 
 def assert_each[TItem](self: Iterable[TItem], predicate: Predicate[TItem], message: str | Selector[TItem, str] | None = None) -> None:
     for item in self:

@@ -3,13 +3,13 @@ from __future__ import annotations
 from collections import defaultdict
 from typing import TYPE_CHECKING
 
-from queryablecollections.operations.q_ops_transform import select
+from queryablecollections._private_implementation_details.q_ops_transform import select
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
+    from queryablecollections._private_implementation_details.type_aliases import Selector
     from queryablecollections.q_grouping import QGrouping
-    from queryablecollections.type_aliases import Selector
 
 # pycharm is wrong. Pyright sees no problem
 # noinspection PyTypeHints

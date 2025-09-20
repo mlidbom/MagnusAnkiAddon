@@ -4,7 +4,7 @@ from abc import ABC
 from collections.abc import Iterable, Sequence
 from typing import cast, overload, override
 
-from queryablecollections.operations.immutable_sequence import ImmutableSequence
+from queryablecollections._private_implementation_details.immutable_sequence import ImmutableSequence
 from queryablecollections.q_iterable import QIterable, QLazyiterable
 
 
