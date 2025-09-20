@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from queryablecollections.collections.numeric.q_int_types import QIntList
-from queryablecollections.empty_iterable_exception import EmptyIterableError
+from queryablecollections.q_errors import EmptyIterableError
 from test_q_iterable_common import *
 
 

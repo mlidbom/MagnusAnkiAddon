@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from queryablecollections.collections.q_list import QList
-from queryablecollections.empty_iterable_exception import InvalidOperationError
+from queryablecollections.q_errors import InvalidOperationError
 from test_q_iterable_common import CallCounter, select_test, throws_test, value_test, where_test
 
 

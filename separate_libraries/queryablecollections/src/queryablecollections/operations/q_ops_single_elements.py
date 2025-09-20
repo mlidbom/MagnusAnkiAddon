@@ -3,7 +3,7 @@ from __future__ import annotations
 import itertools
 from typing import TYPE_CHECKING
 
-from queryablecollections.empty_iterable_exception import EmptyIterableError, InvalidOperationError
+from queryablecollections.q_errors import EmptyIterableError, InvalidOperationError
 from queryablecollections.operations.q_ops_filtering import where
 
 if TYPE_CHECKING:

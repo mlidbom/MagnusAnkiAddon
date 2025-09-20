@@ -3,7 +3,7 @@ from __future__ import annotations
 from fractions import Fraction
 
 from queryablecollections.collections.numeric.q_fraction_types import QFractionList
-from queryablecollections.empty_iterable_exception import EmptyIterableError
+from queryablecollections.q_errors import EmptyIterableError
 from test_q_iterable_common import *
 
 
