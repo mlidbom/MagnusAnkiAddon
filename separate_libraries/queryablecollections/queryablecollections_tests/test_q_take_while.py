@@ -28,7 +28,7 @@ class TestTakeWhileOperations:
     def test_take_while_is_lazy(self) -> None:
         call_count = 0
 
-        def expensive_operation(x: int) -> int:
+        def expensive_operation(_: int) -> int:
             nonlocal call_count
             call_count += 1
             return 0
