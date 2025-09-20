@@ -36,6 +36,9 @@ def to_dict[TItem, TKey, TValue](self: QIterable[TItem], key_selector: Selector[
     if key_selector is not None:
         if value_selector is None: raise ArgumentNoneError("value_selector")
         return C.dict((key_selector(item), value_selector(item)) for item in self)
+
+    if value_selector is not None: raise ArgumentNoneError("key_selector")
+
     # Assume self is a sequence of tuples. Unless the user is working without pyright and/or ignoring the errors it will be
     return C.dict(cast(Iterable[tuple[TKey, TValue]], self))
 
