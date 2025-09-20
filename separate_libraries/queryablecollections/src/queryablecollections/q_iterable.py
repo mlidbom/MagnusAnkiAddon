@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from abc import ABC
-from collections.abc import Iterable
+from collections.abc import Callable, Iterable
 from typing import TYPE_CHECKING, Any, cast, overload, override
 
 from queryablecollections.empty_iterable_exception import EmptyIterableError
@@ -12,6 +12,7 @@ if TYPE_CHECKING:
     from collections.abc import Iterator
 
     from _typeshed import SupportsRichComparison
+
     from queryablecollections.collections.q_frozen_set import QFrozenSet
     from queryablecollections.collections.q_list import QList
     from queryablecollections.collections.q_sequence import QSequence
@@ -84,6 +85,9 @@ class QIterable[TItem](Iterable[TItem], ABC):
     # region mapping/transformation methods
     def select[TReturn](self, selector: Selector[TItem, TReturn]) -> QIterable[TReturn]: return QiterableImplementation(q_ops_transform.select(self, selector))
     def select_many[TInner](self, selector: Selector[TItem, Iterable[TInner]]) -> QIterable[TInner]: return QiterableImplementation(q_ops_transform.select_many(self, selector))
+
+    def zip[TOther, TResult](self, other: Iterable[TOther], selector: Callable[[TItem, TOther], TResult]) -> QIterable[TResult]:
+        return QiterableImplementation(q_ops_transform.zip_with_selector(self, other, selector))
 
     @overload
     def group_by[TKey](self, key: Selector[TItem, TKey]) -> QIterable[QGrouping[TKey, TItem]]:
