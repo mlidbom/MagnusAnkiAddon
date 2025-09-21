@@ -77,7 +77,7 @@ def auto_type[T](iterable: QIterable[T]) -> QIntIterable | QFloatIterable | QFra
 
     except StopIteration:
         # noinspection PyTypeChecker
-        return C.empty_iterable()  # Empty collection effectively have to type in python so this is fine  # pyright: ignore [reportReturnType, reportUnknownVariableType]
+        return C.empty_iterable()  # Empty collection effectively have no type in python so this is fine  # pyright: ignore [reportReturnType, reportUnknownVariableType]
 
 def join[TOuter, TInner, TKey, TResult](
         outer: QIterable[TOuter],
