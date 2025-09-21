@@ -7,7 +7,6 @@ from queryablecollections.collections.numeric.q_decimal_types import QDecimalIte
 from queryablecollections.collections.numeric.q_float_types import QFloatIterable
 from queryablecollections.collections.numeric.q_fraction_types import QFractionIterable
 from queryablecollections.collections.numeric.q_int_types import QIntIterable
-from queryablecollections.collections.numeric.q_string_types import QStrIterable
 from queryablecollections.collections.q_list import QList
 from queryablecollections.q_iterable import query
 
@@ -35,9 +34,3 @@ def test_iterable_of_decimal_returns_a_decimal_iterable_with_all_the_values_in_o
 
     assert test.to_list() == [Decimal("1.2"), Decimal("2.1")]
     assert isinstance(test, QDecimalIterable)
-
-def test_iterable_of_str_returns_an_str_iterable_with_all_the_values_in_order() -> None:
-    test = query(["1.1", "2.1", "3.1"]).auto_type()
-
-    assert test.to_list() == ["1.1", "2.1", "3.1"]
-    assert isinstance(test, QStrIterable)

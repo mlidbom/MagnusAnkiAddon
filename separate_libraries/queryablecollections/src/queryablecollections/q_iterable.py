@@ -20,7 +20,6 @@ if TYPE_CHECKING:
     from queryablecollections.collections.numeric.q_float_types import QFloatIterable
     from queryablecollections.collections.numeric.q_fraction_types import QFractionIterable
     from queryablecollections.collections.numeric.q_int_types import QIntIterable
-    from queryablecollections.collections.numeric.q_string_types import QStrIterable
     from queryablecollections.collections.q_dict import QDict
     from queryablecollections.collections.q_frozen_set import QFrozenSet
     from queryablecollections.collections.q_list import QList
@@ -61,10 +60,8 @@ class QIterable[T](Iterable[T], ABC):
     def auto_type(self: QIterable[Fraction]) -> QFractionIterable: ...  # pyright: ignore [reportInconsistentOverload]
     @overload
     def auto_type(self: QIterable[Decimal]) -> QDecimalIterable: ...  # pyright: ignore [reportInconsistentOverload]
-    @overload
-    def auto_type(self: QIterable[str]) -> QStrIterable: ...  # pyright: ignore [reportInconsistentOverload]
 
-    def auto_type(self) -> QIntIterable | QFloatIterable | QFractionIterable | QDecimalIterable | QStrIterable: return ops.transforms.auto_type(self)
+    def auto_type(self) -> QIntIterable | QFloatIterable | QFractionIterable | QDecimalIterable: return ops.transforms.auto_type(self)
 
     #endregion
 

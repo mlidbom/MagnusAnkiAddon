@@ -17,7 +17,6 @@ if TYPE_CHECKING:
     from queryablecollections.collections.numeric.q_float_types import QFloatIterable
     from queryablecollections.collections.numeric.q_fraction_types import QFractionIterable
     from queryablecollections.collections.numeric.q_int_types import QIntIterable
-    from queryablecollections.collections.numeric.q_string_types import QStrIterable
     from queryablecollections.collections.q_dict import QDict
     from queryablecollections.q_iterable import QIterable
 
@@ -62,12 +61,10 @@ def to_dict[T, TKey, TValue](self: QIterable[T], key_selector: Selector[T, TKey]
     # Assume self is a sequence of tuples. Unless the user is working without pyright and/or ignoring the errors it will be
     return C.dict(cast(Iterable[tuple[TKey, TValue]], self))
 
-def auto_type[T](iterable: QIterable[T]) -> QIntIterable | QFloatIterable | QFractionIterable | QDecimalIterable | QStrIterable:
+def auto_type[T](iterable: QIterable[T]) -> QIntIterable | QFloatIterable | QFractionIterable | QDecimalIterable:
     try:
         element_type = type(next(iter(iterable)))
 
-        if element_type == str:
-            return C.str_iterable(lambda: iterable)  # pyright: ignore [reportArgumentType]
         if element_type == int:
             return C.int_iterable(lambda: iterable)  # pyright: ignore [reportArgumentType]
         if element_type == float:
