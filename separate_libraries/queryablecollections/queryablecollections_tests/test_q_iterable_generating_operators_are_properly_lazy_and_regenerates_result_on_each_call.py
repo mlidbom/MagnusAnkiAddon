@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from collections.abc import Callable, Iterable
-from typing import Any
+from collections.abc import Callable, Iterable, dict_keys
+from typing import Any, Sequence, KeysView
 
 from queryablecollections.q_iterable import QIterable, query
 
@@ -46,7 +46,13 @@ iterator_generating_operators: list[tuple[str, CollectionReturningOperator]] = [
         ("of_type", lambda x1: x1.of_type(int)),
         ("order_by", lambda x1: x1.order_by(lambda x2: x2)),
         ("order_by_descending", lambda x1: x1.order_by_descending(lambda x2: x2)),
-        ("reversed", lambda x1: x1.reversed())
+        ("reversed", lambda x1: x1.reversed()),
+        ("zip", lambda x1: x1.zip([1,2,3,4])),
+        ("join", lambda x1: x1.join([1,2,3,4], lambda key1: key1, lambda key2: key2, lambda val1, val2: val1 + val2)),
+        ("select_many", lambda x1: x1.select_many(lambda x2: [1,2,3])),
+        ("cast", lambda x1: x1.cast.checked.to(int)),
+        ("group_by", lambda x1: x1.group_by(lambda x2: x2)),
+        #("ordered", lambda x1: x1.ordered()),
 ]
 
 def null_op(_: object) -> None: pass
@@ -66,13 +72,36 @@ scalar_or_action_operators: list[tuple[str, ScalarOrActionOperator]] = [
         ("any", lambda x1: x1.any()),
         ("all", lambda x1: x1.all(lambda x2: True)),
         ("first", lambda x1: x1.first()),
+        ("first_or_none", lambda x1: x1.first_or_none()),
         ("single", swallow_exception_decorator(lambda x1: x1.single())),
         ("single_or_none", swallow_exception_decorator(lambda x1: x1.single_or_none())),
         ("for_each", lambda x1: x1.for_each(null_op)),
         ("to_list", lambda x1: x1.to_list()),
+        ("to_set", lambda x1: x1.to_set()),
+        ("to_frozenset", lambda x1: x1.to_frozenset()),
+        ("to_sequence", lambda x1: x1.to_sequence()),
+        ("to_built_in_list", lambda x1: x1.to_built_in_list()),
+        ("to_dict", lambda x1: x1.to_dict(lambda x2: x2, lambda x2: x2)),
+        ("to_frozenset", lambda x1: x1.to_frozenset()),
+        ("element_at", lambda x1: x1.element_at(0)),
+        ("element_at_or_none", lambda x1: x1.element_at_or_none(0)),
+        ("assert_each", lambda x1: x1.assert_each(lambda x2: True)),
+        #("assert_on_collection", lambda x1: x1.assert_on_collection(lambda x2: True)),
+        #("pipe", lambda x1: x1.pipe(lambda x2: x2)),
+        #("empty", lambda x1: x1.empty()),
 ]
 
 all_tested_operator_names: set[str] = query(iterator_generating_operators).select(lambda x: x[0]).to_set() | query(scalar_or_action_operators).select(lambda x: x[0]).to_set()
+
+def get_all_operator_names_defined_in__QIterable_mixin() -> set[str]:
+    return (query(QIterable.__dict__.items())
+            .select(lambda x: x[0]) # member names
+            .where(lambda x: not x.startswith("_"))
+            .to_set())
+
+def test_all_operators_are_tested() -> None:
+    missing_tests = get_all_operator_names_defined_in__QIterable_mixin() - all_tested_operator_names
+    if missing_tests: raise AssertionError(f"Missing tests for operators: {missing_tests}")
 
 def test_all_iterator_generating_operators_when_called_on_generator_backed_iterable_consume_elements_and_the_results_they_return_change() -> None:
     for operator_name, operator in iterator_generating_operators:
