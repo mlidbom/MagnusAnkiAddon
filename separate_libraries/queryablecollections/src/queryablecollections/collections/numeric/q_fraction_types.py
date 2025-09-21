@@ -5,7 +5,7 @@ from abc import ABC
 from fractions import Fraction
 from typing import TYPE_CHECKING, override
 
-from queryablecollections._private_implementation_details.q_lazy_iterable import QIterableImplementation
+from queryablecollections._private_implementation_details.q_lazy_iterable import QLazyIterableImplementation
 from queryablecollections.collections.q_frozen_set import QFrozenSet
 from queryablecollections.collections.q_immutable_sequence import QImmutableSequence
 from queryablecollections.collections.q_list import QList
@@ -52,7 +52,7 @@ class QFractionIterable(QIterable[Fraction], ABC):
     @override
     def to_frozenset(self) -> QFractionFrozenSet: return QFractionFrozenSet(self)
 
-class QFractionIterableImplementation(QIterableImplementation[Fraction], QFractionIterable):
+class QFractionIterableImplementation(QLazyIterableImplementation[Fraction], QFractionIterable):
     __slots__: tuple[str, ...] = ()
     def __init__(self, factory: Func[Iterable[Fraction]]) -> None:
         super().__init__(factory)

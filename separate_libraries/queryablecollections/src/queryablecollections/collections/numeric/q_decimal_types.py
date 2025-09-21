@@ -5,7 +5,7 @@ from abc import ABC
 from decimal import Decimal
 from typing import TYPE_CHECKING, override
 
-from queryablecollections._private_implementation_details.q_lazy_iterable import QIterableImplementation
+from queryablecollections._private_implementation_details.q_lazy_iterable import QLazyIterableImplementation
 from queryablecollections.collections.q_frozen_set import QFrozenSet
 from queryablecollections.collections.q_immutable_sequence import QImmutableSequence
 from queryablecollections.collections.q_list import QList
@@ -52,7 +52,7 @@ class QDecimalIterable(QIterable[Decimal], ABC):
     @override
     def to_frozenset(self) -> QDecimalFrozenSet: return QDecimalFrozenSet(self)
 
-class QDecimalIterableImplementation(QIterableImplementation[Decimal], QDecimalIterable):
+class QDecimalIterableImplementation(QLazyIterableImplementation[Decimal], QDecimalIterable):
     __slots__: tuple[str, ...] = ()
     def __init__(self, factory: Func[Iterable[Decimal]]) -> None:
         super().__init__(factory)

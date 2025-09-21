@@ -3,7 +3,7 @@ from __future__ import annotations
 import sys
 from typing import TYPE_CHECKING, SupportsIndex, overload, override
 
-from queryablecollections._private_implementation_details.q_lazy_iterable import QIterableImplementation
+from queryablecollections._private_implementation_details.q_lazy_iterable import QLazyIterableImplementation
 from queryablecollections.collections.q_sequence import QSequence
 from queryablecollections.q_iterable import QIterable
 
@@ -19,7 +19,7 @@ class QList[TItem](list[TItem], QSequence[TItem], QIterable[TItem]):
     def _optimized_length(self) -> int: return len(self)
 
     @override
-    def reversed(self) -> QIterable[TItem]: return QIterableImplementation[TItem](lambda: reversed(self))
+    def reversed(self) -> QIterable[TItem]: return QLazyIterableImplementation[TItem](lambda: reversed(self))
 
     @override
     def element_at(self, index: int) -> TItem: return self[index]

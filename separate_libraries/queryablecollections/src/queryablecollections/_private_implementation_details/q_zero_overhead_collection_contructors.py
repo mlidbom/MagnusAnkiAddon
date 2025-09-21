@@ -65,9 +65,15 @@ class ZeroImportOverheadConstructors:
 
     @staticmethod
     def lazy_iterable[TItem](iterable_factory: Func[Iterable[TItem]]) -> QIterable[TItem]:
-        from queryablecollections._private_implementation_details.q_lazy_iterable import QIterableImplementation
-        ZeroImportOverheadConstructors.lazy_iterable = QIterableImplementation  # replace this method with a direct call so that future calls have zero import overhead  # pyright: ignore [reportAttributeAccessIssue]
+        from queryablecollections._private_implementation_details.q_lazy_iterable import QLazyIterableImplementation
+        ZeroImportOverheadConstructors.lazy_iterable = QLazyIterableImplementation  # replace this method with a direct call so that future calls have zero import overhead  # pyright: ignore [reportAttributeAccessIssue]
         return ZeroImportOverheadConstructors.lazy_iterable(iterable_factory)  # use the new version to prove from the very first call that it works
+
+    @staticmethod
+    def caching_iterable[TItem](iterable: Iterable[TItem]) -> QIterable[TItem]:
+        from queryablecollections._private_implementation_details.q_lazy_iterable import QCachingIterableImplementation
+        ZeroImportOverheadConstructors.caching_iterable = QCachingIterableImplementation  # replace this method with a direct call so that future calls have zero import overhead  # pyright: ignore [reportAttributeAccessIssue]
+        return ZeroImportOverheadConstructors.caching_iterable(iterable)  # use the new version to prove from the very first call that it works
 
     @staticmethod
     def ordered_iterable[TItem](factory: Func[QIterable[TItem]], sorting_instructions: list[SortInstruction[TItem]]) -> QOrderedIterable[TItem]:

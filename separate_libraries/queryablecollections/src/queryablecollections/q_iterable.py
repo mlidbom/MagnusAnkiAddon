@@ -29,7 +29,7 @@ if TYPE_CHECKING:
     from queryablecollections.q_grouping import QGrouping
     from queryablecollections.q_ordered_iterable import QOrderedIterable
 
-def query[TItem](value: Iterable[TItem]) -> QIterable[TItem]: return C.lazy_iterable(lambda: value)
+def query[TItem](value: Iterable[TItem]) -> QIterable[TItem]: return C.caching_iterable(value)
 
 # note to coders, you can trust that the methods in QIterable do nothing except delegate to the corresponding operations method,
 # or to ZeroImportOverheadConstructors, that's why we keep all the methods on single lines to make it easier to read through the definitions
@@ -45,8 +45,6 @@ class QIterable[T](Iterable[T], ABC):
     # region functional programming helpers
     def pipe[TReturn](self, action: Selector[QIterable[T], TReturn]) -> TReturn: return ops.functional.pipe_to(self, action)
     def for_each(self, action: Action1[T]) -> QIterable[T]: return ops.functional.for_each(self, action)
-    def for_single(self, action: Selector[T, Any]) -> QIterable[T]:  return ops.functional.for_single(self, action)  # pyright: ignore[reportExplicitAny]
-    def for_single_or_none(self, action: Selector[T, Any]) -> QIterable[T]: return ops.functional.for_single_or_none(self, action)  # pyright: ignore[reportExplicitAny]
     # endregion
 
 
@@ -71,8 +69,8 @@ class QIterable[T](Iterable[T], ABC):
 
     def distinct(self) -> QIterable[T]: return ops.filtering.distinct(self)
 
-    def take_while(self, predicate: Predicate[T]) -> QIterable[T]: return ops.filtering.take_while(self, predicate)
     def take(self, count: int) -> QIterable[T]: return ops.filtering.take(self, count)
+    def take_while(self, predicate: Predicate[T]) -> QIterable[T]: return ops.filtering.take_while(self, predicate)
     def take_last(self, count: int) -> QIterable[T]: return ops.filtering.take_last(self, count)
     def skip(self, count: int) -> QIterable[T]: return ops.filtering.skip(self, count)
     def skip_last(self, count: int) -> QIterable[T]: return ops.filtering.skip_last(self, count)

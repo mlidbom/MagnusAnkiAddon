@@ -96,28 +96,6 @@ def test_for_each_executes_action_for_each_element() -> None:
                lambda x: x.for_each(lambda y: y.increment()).select(lambda y: y.call_count).to_list(),
                [1, 1, 1])
 
-def test_for_single_throws_if_there_are_no_elements() -> None:
-    throws_test([], lambda x: x.for_single(lambda _: 1), Exception)
-
-def test_for_single_throws_if_there_are_multiple_elements() -> None:
-    throws_test([1, 2], lambda x: x.for_single(lambda _: 1), Exception)
-
-def test_for_single_executes_action_if_there_is_exactly_one_element() -> None:
-    value_test(lambda: [CallCounter()],
-               lambda x: x.for_single(lambda y: y.increment()).select(lambda z: z.call_count).to_list(),
-               [1])
-
-def test_for_single_or_none_does_nothing_if_there_are_no_elements() -> None:
-    value_test(QList[str]([]), lambda x: x.for_single_or_none(lambda _: 1).to_list(), list[str]())
-
-def test_for_single_or_none_throws_if_there_are_multiple_elements() -> None:
-    throws_test([1, 2], lambda x: x.for_single_or_none(lambda _: 1), Exception)
-
-def test_for_single_or_none_executes_action_if_there_is_exactly_one_element() -> None:
-    value_test(lambda: [CallCounter()],
-               lambda x: x.for_single_or_none(lambda y: y.increment()).select(lambda z: z.call_count).to_list(),
-               [1])
-
 def test_assert_on_collection_throws_if_predicate_returns_false() -> None:
     throws_test([1, 2], lambda x: x.assert_on_collection(lambda _: False), Exception)
 

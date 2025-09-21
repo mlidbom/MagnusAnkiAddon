@@ -10,10 +10,19 @@ if TYPE_CHECKING:
     from queryablecollections._private_implementation_details.type_aliases import Func
 
 
-class QIterableImplementation[TItem](QIterable[TItem]):
+class QLazyIterableImplementation[TItem](QIterable[TItem]):
     __slots__: tuple[str, ...] = ("_factory",)
     def __init__(self, iterable_factory: Func[Iterable[TItem]]) -> None:
         self._factory: Func[Iterable[TItem]] = iterable_factory
 
     @override
     def __iter__(self) -> Iterator[TItem]: yield from self._factory()
+
+class QCachingIterableImplementation[TItem](QIterable[TItem]):
+    __slots__: tuple[str, ...] = ("_iterable",)
+    def __init__(self, iterable: Iterable[TItem]) -> None:
+        self._iterable: Iterable[TItem] = iterable
+
+    @override
+    def __iter__(self) -> Iterator[TItem]:
+        yield from iter(self._iterable)
