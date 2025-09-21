@@ -34,7 +34,7 @@ class ZeroImportOverheadConstructors:
 
     @staticmethod
     def sequence[TItem](iterable: Iterable[TItem]) -> QSequence[TItem]:
-        from queryablecollections.collections.q_sequence import QImmutableSequence
+        from queryablecollections.collections.q_immutable_sequence import QImmutableSequence
         ZeroImportOverheadConstructors.sequence = QImmutableSequence  # replace this method with a direct call so that future calls have zero import overhead
         return ZeroImportOverheadConstructors.sequence(iterable)  # use the new version to prove from the very first call that it works
 

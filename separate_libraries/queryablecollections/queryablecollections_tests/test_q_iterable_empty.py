@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 from queryablecollections.collections.q_frozen_set import QFrozenSet
+from queryablecollections.collections.q_immutable_sequence import QImmutableSequence
 from queryablecollections.collections.q_list import QList
-from queryablecollections.collections.q_sequence import QImmutableSequence, QSequence
+from queryablecollections.collections.q_sequence import QSequence
 from queryablecollections.collections.q_set import QSet
 from queryablecollections.q_iterable import QIterable
 from sysutils import typed

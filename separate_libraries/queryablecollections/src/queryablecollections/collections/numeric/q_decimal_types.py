@@ -7,8 +7,8 @@ from typing import TYPE_CHECKING, override
 
 from queryablecollections._private_implementation_details.q_lazy_iterable import QIterableImplementation
 from queryablecollections.collections.q_frozen_set import QFrozenSet
+from queryablecollections.collections.q_immutable_sequence import QImmutableSequence
 from queryablecollections.collections.q_list import QList
-from queryablecollections.collections.q_sequence import QImmutableSequence
 from queryablecollections.collections.q_set import QSet
 from queryablecollections.q_errors import EmptyIterableError
 from queryablecollections.q_iterable import QIterable
