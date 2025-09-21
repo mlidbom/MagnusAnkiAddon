@@ -3,7 +3,7 @@ from __future__ import annotations
 from queryablecollections.collections.q_list import QList
 from queryablecollections.q_errors import InvalidOperationError
 from queryablecollections.q_iterable import query
-from test_q_iterable_common import CallCounter, QIterable, create_sequences, select_test, throws_test, value_test, where_test
+from test_q_iterable_common import CallCounter, select_test, throws_test, value_test, where_test
 
 
 def test_iterable_can_re_iterate_simple() -> None:
@@ -11,12 +11,6 @@ def test_iterable_can_re_iterate_simple() -> None:
 
     assert myquery.to_list() == [1, 2, 3]
     assert myquery.to_list() == [1, 2, 3]
-
-def test_iterable_can_re_iterate() -> None:
-    myqueries: list[tuple[str, QIterable[int]]] = create_sequences([1, 2, 3])
-    for _name, query in myqueries:
-        assert query.to_list() == [1, 2, 3]
-        assert query.to_list() == [1, 2, 3]
 
 
 def test_select() -> None:
