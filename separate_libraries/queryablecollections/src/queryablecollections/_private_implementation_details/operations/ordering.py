@@ -32,9 +32,8 @@ def sort_by_instructions[TItem](self: Iterable[TItem], sort_instructions: list[S
 def ordered[TElement: SupportsRichComparison](self: QIterable[TElement]) -> QIterable[TElement]:
     return C.lazy_iterable(lambda: sorted(self))
 
-
 def order_by[TItem](self: QIterable[TItem], key_selector: Selector[TItem, SupportsRichComparison]) -> QOrderedIterable[TItem]:
-    return C.ordered_iterable(self, [SortInstruction(key_selector, False)])
+    return C.ordered_iterable(lambda: self, [SortInstruction(key_selector, False)])
 
 def order_by_descending[TItem](self: QIterable[TItem], key_selector: Selector[TItem, SupportsRichComparison]) -> QOrderedIterable[TItem]:
-    return C.ordered_iterable(self, [SortInstruction(key_selector, True)])
+    return C.ordered_iterable(lambda: self, [SortInstruction(key_selector, True)])

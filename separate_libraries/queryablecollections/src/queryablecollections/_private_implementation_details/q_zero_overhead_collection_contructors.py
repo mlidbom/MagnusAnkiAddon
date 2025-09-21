@@ -13,6 +13,7 @@ if TYPE_CHECKING:
     from queryablecollections.collections.numeric.q_float_types import QIterableFloat
     from queryablecollections.collections.numeric.q_fraction_types import QIterableFraction
     from queryablecollections.collections.numeric.q_int_types import QIterableInt
+    from queryablecollections.collections.numeric.q_string_types import QStrIterable
     from queryablecollections.collections.q_default_dict import QDefaultDict
     from queryablecollections.collections.q_dict import QDict
     from queryablecollections.collections.q_frozen_set import QFrozenSet
@@ -70,10 +71,10 @@ class ZeroImportOverheadConstructors:
         return ZeroImportOverheadConstructors.lazy_iterable(iterable_factory)  # use the new version to prove from the very first call that it works
 
     @staticmethod
-    def ordered_iterable[TItem](qiterable: QIterable[TItem], sorting_instructions: list[SortInstruction[TItem]]) -> QOrderedIterable[TItem]:
+    def ordered_iterable[TItem](factory: Func[QIterable[TItem]], sorting_instructions: list[SortInstruction[TItem]]) -> QOrderedIterable[TItem]:
         from queryablecollections.q_ordered_iterable import QOrderedIterable
         ZeroImportOverheadConstructors.ordered_iterable = QOrderedIterable  # replace this method with a direct call so that future calls have zero import overhead  # pyright: ignore [reportAttributeAccessIssue]
-        return ZeroImportOverheadConstructors.ordered_iterable(qiterable, sorting_instructions)  # use the new version to prove from the very first call that it works
+        return ZeroImportOverheadConstructors.ordered_iterable(factory, sorting_instructions)  # use the new version to prove from the very first call that it works
 
     @staticmethod
     def grouping[TKey, TItem](values: tuple[TKey, QList[TItem]]) -> QGrouping[TKey, TItem]:
@@ -116,5 +117,11 @@ class ZeroImportOverheadConstructors:
         from queryablecollections.collections.numeric.q_decimal_types import QIterableDecimalImplementation
         ZeroImportOverheadConstructors.decimal_iterable = QIterableDecimalImplementation  # replace this method with a direct call so that future calls have zero import overhead  # pyright: ignore [reportAttributeAccessIssue]
         return ZeroImportOverheadConstructors.decimal_iterable(factory)  # use the new version to prove from the very first call that it works
+
+    @staticmethod
+    def str_iterable(factory: Func[Iterable[str]]) -> QStrIterable:  # pyright: ignore [reportInvalidTypeVarUse]
+        from queryablecollections.collections.numeric.q_string_types import QStrIterableImplementation
+        ZeroImportOverheadConstructors.str_iterable = QStrIterableImplementation  # replace this method with a direct call so that future calls have zero import overhead  # pyright: ignore [reportAttributeAccessIssue]
+        return ZeroImportOverheadConstructors.str_iterable(factory)  # use the new version to prove from the very first call that it works
 
 
