@@ -57,7 +57,6 @@ scalar_or_action_operators: list[tuple[str, ScalarOrActionOperator]] = [
         ("for_each", lambda x1: x1.for_each(null_op)),
         ("to_list", lambda x1: x1.to_list()),
         ("to_set", lambda x1: x1.to_set()),
-        ("to_frozenset", lambda x1: x1.to_frozenset()),
         ("to_sequence", lambda x1: x1.to_sequence()),
         ("to_built_in_list", lambda x1: x1.to_built_in_list()),
         ("to_dict", lambda x1: x1.to_dict(lambda x2: x2, lambda x2: x2)),
