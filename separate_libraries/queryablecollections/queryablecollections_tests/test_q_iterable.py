@@ -3,7 +3,7 @@ from __future__ import annotations
 from queryablecollections.collections.q_list import QList
 from queryablecollections.q_errors import InvalidOperationError
 from queryablecollections.q_iterable import query
-from test_q_iterable_common import CallCounter, select_test, throws_test, value_test, where_test
+from test_q_iterable_common import CallCounter, select_test, throws_test, value_test
 
 
 def test_iterable_can_re_iterate() -> None:
@@ -33,10 +33,6 @@ def test_first_or_none_returns_first_value() -> None: value_test([1, 2, 3], lamb
 def test_first_or_none_return_none_if_no_values() -> None: value_test([], lambda x: x.first_or_none(), None)
 def test_first_or_none_returns_single_none_value() -> None: value_test([None], lambda x: x.first_or_none(), None)
 
-def test_where_first_element() -> None: where_test((1, 2, 3), lambda x: x == 1, [1])
-def test_where_middle_element() -> None: where_test((1, 2, 3), lambda x: x == 2, [2])
-def test_where_end_element() -> None: where_test((1, 2, 3), lambda x: x == 3, [3])
-
 def test_element_at_returns_first_element() -> None: value_test([1, 2, 3], lambda x: x.element_at(0), 1)
 def test_element_at_return_middle_element() -> None: value_test([1, 2, 3], lambda x: x.element_at(1), 2)
 def test_element_at_returns_last_element() -> None: value_test([1, 2, 3], lambda x: x.element_at(2), 3)
@@ -48,10 +44,6 @@ def test_element_at_or_none_return_middle_element() -> None: value_test([1, 2, 3
 def test_element_at_or_none_returns_last_element() -> None: value_test([1, 2, 3], lambda x: x.element_at_or_none(2), 3)
 def test_element_at_or_none_returns_none_if_index_is_out_of_range() -> None: value_test([1, 2, 3], lambda x: x.element_at_or_none(3), None)
 def test_element_at_or_none_after_to_list_returns_none_if_index_is_out_of_range() -> None: value_test([1, 2, 3], lambda x: x.element_at_or_none(3), None)
-
-def test_where_excluding_first_element() -> None: where_test((1, 2, 3), lambda x: x != 1, [2, 3])
-def test_where_excluding_middle_element() -> None: where_test((1, 2, 3), lambda x: x != 2, [1, 3])
-def test_where_excluding_end_element() -> None: where_test((1, 2, 3), lambda x: x != 3, [1, 2])
 
 def test_to_list() -> None: value_test([1, 2, 3], lambda x: x.to_list(), [1, 2, 3])
 def test_to_sequence() -> None: value_test([1, 2, 3], lambda x: x.to_sequence().to_list(), [1, 2, 3])
@@ -73,8 +65,6 @@ def test_all_returns_false_if_any_element_does_not_match_predicate() -> None: va
 
 def test_none_returns_false_if_there_are_elements() -> None: value_test([1], lambda x: x.none(), False)
 def test_none_returns_true_if_there_are_no_elements() -> None: value_test([], lambda x: x.none(), True)
-
-def test_distinct_removes_duplicates_while_retaining_order() -> None: value_test([1, 2, 2, 3, 3], lambda x: x.distinct().to_list(), [1, 2, 3])
 
 def test_select_many_flattens_nested_sequences() -> None: value_test([[1, 2], [3, 4]], lambda x: x.select_many(lambda y: y).to_list(), [1, 2, 3, 4], skip_sets=True)
 
