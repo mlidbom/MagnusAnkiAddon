@@ -28,7 +28,11 @@ class TextAnalysisValidator:
         self.is_valid_true_is_displayed_false_matches_should_have_hiding_reasons()
         self.is_valid_true_matches_should_be_in_valid_matches()
         self.is_valid_true_hiding_reasons_empty_matches_should_have_is_displayed_true()
-        # self.is_valid_true_matches_should_be_in_valid_variant_valid_matches()
+        self.is_valid_true_matches_should_be_in_indexing_matches()
+        #self.display_matches_should_be_in_valid_matches()
+        #self.is_displayed_true_matches_should_have_is_valid_true()
+        #self.is_valid_false_matches_should_not_be_in_indexing_matches()
+        #self.is_valid_true_matches_should_be_in_valid_variant_valid_matches()
         # self.valid_matches_and_valid_variant_matches_should_be_identical()
 
     def is_displayed_false_matches_should_not_be_in_display_matches_list(self) -> None:
@@ -40,8 +44,20 @@ class TextAnalysisValidator:
     def is_valid_true_hiding_reasons_empty_matches_should_have_is_displayed_true(self) -> None:
         self.is_valid_true_hiding_reasons_empty_matches.assert_each(lambda match: match.is_displayed, lambda match: f"""Match: {match} has is_valid=True and hiding_reasons=Empty yet has is_displayed=False""")
 
+    def is_valid_false_matches_should_not_be_in_indexing_matches(self) -> None:
+        self.is_valid_false_matches.assert_each(lambda match: match not in self.analysis.indexing_matches, lambda match: f"""Match: {match} has is_valid=False yet is in indexing_matches""")
+
+    def is_displayed_true_matches_should_have_is_valid_true(self) -> None:
+        self.is_displayed_true_matches.assert_each(lambda match: match.is_valid, lambda match: f"""Match: {match} has is_displayed=True yet has is_valid=False""")
+
     def is_valid_true_matches_should_be_in_valid_matches(self) -> None:
         self.is_valid_true_matches.assert_each(lambda match: match in self.valid_matches, lambda match: f"""Match: {match} has is_valid=True yet is not in valid_matches""")
+
+    def is_valid_true_matches_should_be_in_indexing_matches(self) -> None:
+        self.is_valid_true_matches.assert_each(lambda match: match in self.analysis.indexing_matches, lambda match: f"""Match: {match} has is_valid=True yet is not in valid_matches""")
+
+    def display_matches_should_be_in_valid_matches(self) -> None:
+        self.display_matches.assert_each(lambda match: match in self.valid_matches, lambda match: f"""Match: {match} ##  is in display matches, yet is not in valid_matches""")
 
     def is_displayed_true_matches_should_be_in_display_matches(self) -> None:
         self.is_displayed_true_matches.assert_each(lambda match: match in self.display_matches, lambda match: f"""Match: {match} has is_displayed=True yet is not in display_matches""")
