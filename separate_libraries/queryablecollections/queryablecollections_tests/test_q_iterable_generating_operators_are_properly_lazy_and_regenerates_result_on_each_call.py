@@ -140,10 +140,10 @@ def test_all_scalar_or_action_operators_when_called_on_generator_backed_iterable
     for operator_name, operator in scalar_or_action_operators:
         original_iterator = generate_10_ints()
         operator(original_iterator)
-        if original_iterator.qcount() == 10: raise AssertionError(f"Operator {operator_name} consumed no elements")
+        assert original_iterator.qcount() != 10, f"Operator {operator_name} consumed no elements"
 
 def test_no_scalar_or_action_operators_when_called_on_collection_backed_iterator_consume_elements() -> None:
     for operator_name, operator in scalar_or_action_operators:
-        original_iterator = generate_10_ints()
+        original_iterator = collection_10_ints()
         operator(original_iterator)
-        if original_iterator.qcount() == 10: raise AssertionError(f"Operator {operator_name} mutated source collection")
+        assert original_iterator.qcount() == 10, f"Operator {operator_name} mutated source collection"
