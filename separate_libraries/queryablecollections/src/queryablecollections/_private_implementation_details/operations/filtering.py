@@ -8,11 +8,20 @@ from queryablecollections._private_implementation_details.q_zero_overhead_collec
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
-    from queryablecollections._private_implementation_details.type_aliases import Predicate
+    from queryablecollections._private_implementation_details.type_aliases import Predicate, Selector
     from queryablecollections.q_iterable import QIterable
 
 def distinct[TItem](self: Iterable[TItem]) -> Iterable[TItem]:
     return dict.fromkeys(self)  # highly optimized and guaranteed to keep ordering
+
+def distinct_by[TItem, TKey](self: Iterable[TItem], key_selector: Selector[TItem, TKey]) -> Iterable[TItem]:
+    seen: dict[TKey, TItem] = {}
+    for item in self:
+        key = key_selector(item)
+        if key not in seen:
+            seen[key] = item
+    return seen.values()
+
 
 def where[TItem](self: Iterable[TItem], predicate: Predicate[TItem]) -> Iterable[TItem]:
     return filter(predicate, self)

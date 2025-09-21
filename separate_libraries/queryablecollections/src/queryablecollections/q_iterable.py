@@ -69,6 +69,8 @@ class QIterable[T](Iterable[T], ABC):
 
     def distinct(self) -> QIterable[T]: return self._lazy(lambda: ops.filtering.distinct(self))
 
+    def distinct_by[TKey](self, key_selector: Selector[T, TKey]) -> QIterable[T]: return self._lazy(lambda: ops.filtering.distinct_by(self, key_selector))
+
     def take(self, count: int) -> QIterable[T]: return self._lazy(lambda: ops.filtering.take(self, count))
     def take_while(self, predicate: Predicate[T]) -> QIterable[T]: return self._lazy(lambda: ops.filtering.take_while(self, predicate))
     def take_last(self, count: int) -> QIterable[T]: return self._lazy(lambda: ops.filtering.take_last(self, count))

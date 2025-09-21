@@ -60,6 +60,8 @@ class QIntIterable(QIterable[int], ABC):
     @override
     def distinct(self) -> QIntIterable: return self._selfcast(super().distinct())
     @override
+    def distinct_by[TKey](self, key_selector: Selector[int, TKey]) -> QIntIterable: return self._selfcast(super().distinct_by(key_selector))
+    @override
     def take(self, count: int) -> QIntIterable: return self._selfcast(super().take(count))
     @override
     def take_while(self, predicate: Predicate[int]) -> QIntIterable: return self._selfcast(super().take_while(predicate))

@@ -61,6 +61,8 @@ class QDecimalIterable(QIterable[Decimal], ABC):
     @override
     def distinct(self) -> QDecimalIterable: return self._selfcast(super().distinct())
     @override
+    def distinct_by[TKey](self, key_selector: Selector[Decimal, TKey]) -> QDecimalIterable: return self._selfcast(super().distinct_by(key_selector))
+    @override
     def take(self, count: int) -> QDecimalIterable: return self._selfcast(super().take(count))
     @override
     def take_while(self, predicate: Predicate[Decimal]) -> QDecimalIterable: return self._selfcast(super().take_while(predicate))

@@ -61,6 +61,8 @@ class QFractionIterable(QIterable[Fraction], ABC):
     @override
     def distinct(self) -> QFractionIterable: return self._selfcast(super().distinct())
     @override
+    def distinct_by[TKey](self, key_selector: Selector[Fraction, TKey]) -> QFractionIterable: return self._selfcast(super().distinct_by(key_selector))
+    @override
     def take(self, count: int) -> QFractionIterable: return self._selfcast(super().take(count))
     @override
     def take_while(self, predicate: Predicate[Fraction]) -> QFractionIterable: return self._selfcast(super().take_while(predicate))

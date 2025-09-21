@@ -25,6 +25,7 @@ iterator_generating_operators: list[tuple[str, CollectionReturningOperator]] = [
         ("where", lambda x1: x1.where(lambda _: True)),
         ("where_not_none", lambda x1: x1.where_not_none()),
         ("distinct", lambda x1: x1.distinct()),
+        ("distinct_by", lambda x1: x1.distinct_by(lambda x2: x2)),
         ("take", lambda x1: x1.take(10)),
         ("take_while", lambda x1: x1.take_while(lambda _: True)),
         ("take_last", lambda x1: x1.take_last(1)),
