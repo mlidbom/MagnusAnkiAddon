@@ -27,6 +27,9 @@ class QStrIterable(QIterable[str], ABC):
     @override
     def to_frozenset(self) -> QStrFrozenSet: return QStrFrozenSet(self)
 
+    def join_str(self, separator: str) -> str:
+        return separator.join(self)
+
 class QStrIterableImplementation(QIterableImplementation[str], QStrIterable):
     __slots__: tuple[str, ...] = ()
     def __init__(self, factory: Func[Iterable[str]]) -> None:

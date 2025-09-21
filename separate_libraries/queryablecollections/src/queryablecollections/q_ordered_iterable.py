@@ -18,7 +18,6 @@ class QOrderedIterable[TItem](QIterable[TItem]):
     __slots__: tuple[str, ...] = ("sorting_instructions", "_factory")
     def __init__(self, factory: Func[Iterable[TItem]], sorting_instructions: list[SortInstruction[TItem]]) -> None:
         self.sorting_instructions: list[SortInstruction[TItem]] = sorting_instructions
-        if not callable(factory): raise TypeError("factory must be callable")
         self._factory: Func[Iterable[TItem]] = factory
 
     def then_by(self, key_selector: Selector[TItem, SupportsRichComparison]) -> QOrderedIterable[TItem]:
