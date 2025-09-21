@@ -83,9 +83,6 @@ def test_reverse_returns_reversed_sequence() -> None: value_test([1, 2, 3], lamb
 def test_not_none_returns_only_elements_that_are_not_none() -> None: value_test([1, None], lambda x: x.where_not_none().to_list(), [1])
 def test_not_none_returns_empty_list_if_all_elements_are_none() -> None: value_test(QList[str | None]([None, None]), lambda x: x.where_not_none().to_list(), list[str]())
 
-def test_assert_each_throws_if_any_element_does_not_match_predicate() -> None: throws_test([1, 2, 3], lambda x: x.assert_each(lambda y: y != 2), Exception)
-def test_assert_each_does_not_throw_if_all_elements_match_predicate() -> None: value_test([1, 2, 3], lambda x: x.assert_each(lambda y: y != 0).to_list(), [1, 2, 3])
-
 def test_length_returns_length_of_sequence() -> None:
     value_test([0], lambda x: x.qcount(), 1)
     value_test([0, 3], lambda x: x.qcount(), 2)
@@ -95,9 +92,3 @@ def test_for_each_executes_action_for_each_element() -> None:
     value_test(lambda: [CallCounter(), CallCounter(), CallCounter()],
                lambda x: x.for_each(lambda y: y.increment()).select(lambda y: y.call_count).to_list(),
                [1, 1, 1])
-
-def test_assert_on_collection_throws_if_predicate_returns_false() -> None:
-    throws_test([1, 2], lambda x: x.assert_on_collection(lambda _: False), Exception)
-
-def test_assert_on_collection_does_not_throw_if_predicate_returns_true() -> None:
-    value_test([1, 2], lambda x: x.assert_on_collection(lambda _: True).to_list(), [1, 2])

@@ -64,8 +64,6 @@ scalar_or_action_operators: list[tuple[str, ScalarOrActionOperator]] = [
         ("to_frozenset", lambda x1: x1.to_frozenset()),
         ("element_at", lambda x1: x1.element_at(0)),
         ("element_at_or_none", lambda x1: x1.element_at_or_none(0)),
-        ("assert_each", lambda x1: x1.assert_each(lambda x2: True)),
-        ("assert_on_collection", lambda x1: x1.assert_on_collection(lambda iterator: iterator.qcount() == 10)),
         ("pipe", lambda x1: x1.pipe(lambda iterator: iterator.for_each(null_op))),
 ]
 

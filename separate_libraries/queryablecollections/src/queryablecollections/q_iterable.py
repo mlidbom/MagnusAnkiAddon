@@ -2,12 +2,13 @@ from __future__ import annotations
 
 from abc import ABC
 from collections.abc import Callable, Iterable
-from typing import TYPE_CHECKING, overload
+from typing import TYPE_CHECKING, Self, overload
 
 import queryablecollections._private_implementation_details.operations as ops
 
 # noinspection PyPep8Naming
 from queryablecollections._private_implementation_details.q_zero_overhead_collection_contructors import ZeroImportOverheadConstructors as C
+from queryablecollections.q_errors import EmptyIterableError
 
 if TYPE_CHECKING:
     from decimal import Decimal
@@ -31,8 +32,8 @@ if TYPE_CHECKING:
 
 def query[TItem](value: Iterable[TItem]) -> QIterable[TItem]: return C.caching_iterable(value)
 
-# note to coders, you can trust that the methods in QIterable do nothing except delegate to the corresponding operations method,
-# or to ZeroImportOverheadConstructors, that's why we keep all the methods on single lines to make it easier to read through the definitions
+# note to coders, you can trust that the on single lines do nothing except delegate to the corresponding operations method,
+# or to ZeroImportOverheadConstructors, knowing taht, keeping them on single lines to make it easier to read through the definitions
 class QIterable[T](Iterable[T], ABC):
     __slots__: tuple[str, ...] = ()
     @property
@@ -44,7 +45,9 @@ class QIterable[T](Iterable[T], ABC):
 
     # region functional programming helpers
     def pipe[TReturn](self, action: Selector[QIterable[T], TReturn]) -> TReturn: return ops.functional.pipe_to(self, action)
-    def for_each(self, action: Action1[T]) -> QIterable[T]: return ops.functional.for_each(self, action)
+    def for_each(self, action: Action1[T]) -> Self:
+        for item in self: action(item)
+        return self
     # endregion
 
     # region typed convertions to access type specific functionality type checkers will only allow calls if the instance is the correct type
@@ -136,15 +139,12 @@ class QIterable[T](Iterable[T], ABC):
     def element_at_or_none(self, index: int) -> T | None: return ops.single_elements.element_at_or_none(self, index)
     # endregion
 
-    # region assertions on the collection or it's values
-    def assert_each(self, predicate: Predicate[T], message: str | Selector[T, str] | None = None) -> QIterable[T]: return ops.asserts.each_element(self, predicate, message)
-    def assert_on_collection(self, predicate: Predicate[QIterable[T]], message: str | None = None) -> QIterable[T]: return ops.asserts.collection(self, predicate, message)
-    # endregion
-
     # region methods subclasses may want to override for perfarmonce reasons
 
     def _optimized_length(self) -> int: return sum(1 for _ in self)
-    def _assert_not_empty(self) -> QIterable[T]: return ops.asserts.not_empty(self)
+    def _assert_not_empty(self) -> Self:
+        if not self.any(): raise EmptyIterableError()
+        return self
 
     # region factory methods
     # note: we do not "optimize" by returning self in any subclass because the contract is to create a new independent copy
