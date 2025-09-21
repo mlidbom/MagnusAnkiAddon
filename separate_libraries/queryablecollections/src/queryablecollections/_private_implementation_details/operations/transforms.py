@@ -20,8 +20,8 @@ if TYPE_CHECKING:
     from queryablecollections.collections.q_dict import QDict
     from queryablecollections.q_iterable import QIterable
 
-def concat[T](self: QIterable[T], *others: Iterable[T]) -> QIterable[T]:
-    return C.lazy_iterable(lambda: itertools.chain(self, *others))
+def concat[T](self: Iterable[T], *others: Iterable[T]) -> Iterable[T]:
+    return itertools.chain(self, *others)
 
 def select[T, TResult](self: QIterable[T], selector: Selector[T, TResult]) -> QIterable[TResult]:
     return C.lazy_iterable(lambda: map(selector, self))

@@ -10,9 +10,8 @@ if TYPE_CHECKING:
     from collections.abc import Iterable
 
     from queryablecollections._private_implementation_details.type_aliases import Predicate
-    from queryablecollections.q_iterable import QIterable
 
-def first[TItem](self: QIterable[TItem], predicate: Predicate[TItem] | None = None):
+def first[TItem](self: Iterable[TItem], predicate: Predicate[TItem] | None = None) -> TItem:
     if predicate is not None:
         self = where(self, predicate)
     try:
@@ -20,7 +19,7 @@ def first[TItem](self: QIterable[TItem], predicate: Predicate[TItem] | None = No
     except StopIteration:
         raise EmptyIterableError() from None
 
-def first_or_none[TItem](self: QIterable[TItem], predicate: Predicate[TItem] | None = None) -> TItem | None:
+def first_or_none[TItem](self: Iterable[TItem], predicate: Predicate[TItem] | None = None) -> TItem | None:
     if predicate is not None:
         self = where(self, predicate)
     try:
@@ -28,7 +27,7 @@ def first_or_none[TItem](self: QIterable[TItem], predicate: Predicate[TItem] | N
     except StopIteration:
         return None
 
-def single[TItem](self: QIterable[TItem], predicate: Predicate[TItem] | None = None):
+def single[TItem](self: Iterable[TItem], predicate: Predicate[TItem] | None = None) -> TItem:
     if predicate is not None:
         self = where(self, predicate)
     iterator = iter(self)
@@ -43,7 +42,7 @@ def single[TItem](self: QIterable[TItem], predicate: Predicate[TItem] | None = N
     except StopIteration:
         return first_element
 
-def single_or_none[TItem](self: QIterable[TItem], predicate: Predicate[TItem] | None = None) -> TItem | None:
+def single_or_none[TItem](self: Iterable[TItem], predicate: Predicate[TItem] | None = None) -> TItem | None:
     if predicate is not None:
         self = where(self, predicate)
     iterator = iter(self)

@@ -7,6 +7,9 @@ from queryablecollections.q_errors import EmptyIterableError
 from test_q_iterable_common import *
 
 
+def test_typing() -> None:
+    QDecimalList([Decimal("1.1"), Decimal("2.1"), Decimal("3.1")]).where(lambda item: True).sum()
+
 def test_cast_decimal_returns_an_q_iterable_decimal_with_the_same_elements() -> None:
     value_test([Decimal("1.1"), Decimal("2.1"), Decimal("3.1")], lambda x: x.cast.decimal().to_list(), [Decimal("1.1"), Decimal("2.1"), Decimal("3.1")])
 

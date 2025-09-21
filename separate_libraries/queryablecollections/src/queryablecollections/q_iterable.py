@@ -5,6 +5,7 @@ from collections.abc import Callable, Iterable
 from typing import TYPE_CHECKING, Self, overload
 
 import queryablecollections._private_implementation_details.operations as ops
+from queryablecollections._private_implementation_details.operations.ordering import SortInstruction
 
 # noinspection PyPep8Naming
 from queryablecollections._private_implementation_details.q_zero_overhead_collection_contructors import ZeroImportOverheadConstructors as C
@@ -39,11 +40,11 @@ class QIterable[T](Iterable[T], ABC):
     @property
     def cast(self) -> QCast[T]: return C.cast(self)
 
-    def _filtered(self, factory: Func[Iterable[T]]) -> QIterable[T]:
+    def _lazy(self, factory: Func[Iterable[T]]) -> QIterable[T]:
         return C.lazy_iterable(factory)
 
     # region operations on the whole collection, not the items
-    def concat(self, *others: Iterable[T]) -> QIterable[T]: return ops.transforms.concat(self, *others)
+    def concat(self, *others: Iterable[T]) -> QIterable[T]: return self._lazy(lambda: ops.transforms.concat(self, *others))
     # endregion
 
     # region functional programming helpers
@@ -63,16 +64,16 @@ class QIterable[T](Iterable[T], ABC):
     # endregion
 
     # region filtering
-    def where(self, predicate: Predicate[T]) -> QIterable[T]: return self._filtered(lambda: ops.filtering.where(self, predicate))
-    def where_not_none(self) -> QIterable[T]: return self._filtered(lambda: ops.filtering.where_not_none(self))
+    def where(self, predicate: Predicate[T]) -> QIterable[T]: return self._lazy(lambda: ops.filtering.where(self, predicate))
+    def where_not_none(self) -> QIterable[T]: return self._lazy(lambda: ops.filtering.where_not_none(self))
 
-    def distinct(self) -> QIterable[T]: return self._filtered(lambda: ops.filtering.distinct(self))
+    def distinct(self) -> QIterable[T]: return self._lazy(lambda: ops.filtering.distinct(self))
 
-    def take(self, count: int) -> QIterable[T]: return self._filtered(lambda: ops.filtering.take(self, count))
-    def take_while(self, predicate: Predicate[T]) -> QIterable[T]: return self._filtered(lambda: ops.filtering.take_while(self, predicate))
-    def take_last(self, count: int) -> QIterable[T]: return self._filtered(lambda: ops.filtering.take_last(self, count))
-    def skip(self, count: int) -> QIterable[T]: return self._filtered(lambda: ops.filtering.skip(self, count))
-    def skip_last(self, count: int) -> QIterable[T]: return self._filtered(lambda: ops.filtering.skip_last(self, count))
+    def take(self, count: int) -> QIterable[T]: return self._lazy(lambda: ops.filtering.take(self, count))
+    def take_while(self, predicate: Predicate[T]) -> QIterable[T]: return self._lazy(lambda: ops.filtering.take_while(self, predicate))
+    def take_last(self, count: int) -> QIterable[T]: return self._lazy(lambda: ops.filtering.take_last(self, count))
+    def skip(self, count: int) -> QIterable[T]: return self._lazy(lambda: ops.filtering.skip(self, count))
+    def skip_last(self, count: int) -> QIterable[T]: return self._lazy(lambda: ops.filtering.skip_last(self, count))
 
     def of_type[TResult](self, target_type: type[TResult]) -> QIterable[TResult]: return C.lazy_iterable(lambda: ops.filtering.of_type(self, target_type))
 
@@ -87,12 +88,17 @@ class QIterable[T](Iterable[T], ABC):
     # endregion
 
     # region sorting
-    def order_by(self, key_selector: Selector[T, SupportsRichComparison]) -> QOrderedIterable[T]: return ops.ordering.order_by(self, key_selector)
-    def order_by_descending(self, key_selector: Selector[T, SupportsRichComparison]) -> QOrderedIterable[T]: return ops.ordering.order_by_descending(self, key_selector)
+    def _order_by(self, key_selector: Selector[T, SupportsRichComparison], descending: bool) -> QOrderedIterable[T]:
+        return C.ordered_iterable(lambda: self, [SortInstruction(key_selector, descending)])
 
-    def reversed(self) -> QIterable[T]: return ops.ordering.reverse_lazy(self)
+    def order_by(self, key_selector: Selector[T, SupportsRichComparison]) -> QOrderedIterable[T]:
+        return self._order_by(key_selector, False)
+    def order_by_descending(self, key_selector: Selector[T, SupportsRichComparison]) -> QOrderedIterable[T]:
+        return self._order_by(key_selector, True)
 
-    def ordered(self) -> QIterable[T]: return ops.ordering.ordered(self)  # pyright: ignore [reportUnknownVariableType, reportArgumentType]
+    def reversed(self) -> QIterable[T]: return self._lazy(lambda:ops.ordering.reverse_lazy(self))
+
+    def ordered(self) -> QIterable[T]: return self._lazy(lambda: ops.ordering.ordered(self))  # pyright: ignore [reportUnknownVariableType, reportArgumentType, reportUnknownLambdaType]
     # endregion
 
     # region mapping/transformation methods
