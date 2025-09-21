@@ -46,6 +46,7 @@ class QDecimalIterable(QIterable[Decimal], ABC):
 
     @override
     def _lazy(self, factory: Func[Iterable[Decimal]]) -> QDecimalIterable: return QDecimalIterableImplementation(factory)
+    @override
     def _order_by(self, key_selector: Selector[Decimal, SupportsRichComparison], descending: bool) -> QOrderedIterable[Decimal]:
         return QDecimalOrderedIterable(lambda: self, [SortInstruction(key_selector, descending)])
     def _selfcast(self, iterable: QIterable[Decimal]) -> QDecimalIterable: return cast(QDecimalIterable, iterable)

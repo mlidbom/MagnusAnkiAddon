@@ -45,6 +45,7 @@ class QFloatIterable(QIterable[float], ABC):
 
     @override
     def _lazy(self, factory: Func[Iterable[float]]) -> QFloatIterable: return QFloatIterableImplementation(factory)
+    @override
     def _order_by(self, key_selector: Selector[float, SupportsRichComparison], descending: bool) -> QOrderedIterable[float]:
         return QFloatOrderedIterable(lambda: self, [SortInstruction(key_selector, descending)])
     def _selfcast(self, iterable: QIterable[float]) -> QFloatIterable: return cast(QFloatIterable, iterable)

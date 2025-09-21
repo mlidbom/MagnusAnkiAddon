@@ -46,6 +46,7 @@ class QFractionIterable(QIterable[Fraction], ABC):
 
     @override
     def _lazy(self, factory: Func[Iterable[Fraction]]) -> QFractionIterable: return QFractionIterableImplementation(factory)
+    @override
     def _order_by(self, key_selector: Selector[Fraction, SupportsRichComparison], descending: bool) -> QOrderedIterable[Fraction]:
         return QFractionOrderedIterable(lambda: self, [SortInstruction(key_selector, descending)])
     def _selfcast(self, iterable: QIterable[Fraction]) -> QFractionIterable: return cast(QFractionIterable, iterable)

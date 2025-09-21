@@ -45,6 +45,7 @@ class QIntIterable(QIterable[int], ABC):
 
     @override
     def _lazy(self, factory: Func[Iterable[int]]) -> QIntIterable: return QIntIterableImplementation(factory)
+    @override
     def _order_by(self, key_selector: Selector[int, SupportsRichComparison], descending: bool) -> QOrderedIterable[int]:
         return QIntOrderedIterable(lambda: self, [SortInstruction(key_selector, descending)])
     def _selfcast(self, iterable: QIterable[int]) -> QIntIterable: return cast(QIntIterable, iterable)
