@@ -6,7 +6,7 @@ from queryablecollections.q_iterable import query
 from test_q_iterable_common import CallCounter, select_test, throws_test, value_test, where_test
 
 
-def test_iterable_can_re_iterate_simple() -> None:
+def test_iterable_can_re_iterate() -> None:
     myquery = query([1, 2, 3]).select(lambda x: x)
 
     assert myquery.to_list() == [1, 2, 3]
