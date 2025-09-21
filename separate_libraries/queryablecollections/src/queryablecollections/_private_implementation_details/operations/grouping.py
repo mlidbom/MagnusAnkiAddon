@@ -40,6 +40,6 @@ def _group_by_with_element_selector[TSourceElement, TKey, TGroupElement](self: I
     return groups.qitems().select(C.grouping)
 
 def group_by_q[TItem, TKey, TElement](self: QIterable[TItem], key: Selector[TItem, TKey], element: Selector[TItem, TElement] | None = None) -> QIterable[QGrouping[TKey, TItem]] | QIterable[QGrouping[TKey, TElement]]:
-    return (C.iterable(_group_by(self, key))
+    return (C.lazy_iterable(lambda: _group_by(self, key))
             if element is None
-            else C.iterable(_group_by_with_element_selector(self, key, element)))
+            else C.lazy_iterable(lambda: _group_by_with_element_selector(self, key, element)))

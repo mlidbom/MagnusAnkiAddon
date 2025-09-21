@@ -25,12 +25,11 @@ if TYPE_CHECKING:
     from queryablecollections.collections.q_list import QList
     from queryablecollections.collections.q_sequence import QSequence
     from queryablecollections.collections.q_set import QSet
-    from queryablecollections.q_as import QAs
     from queryablecollections.q_cast import QCast
     from queryablecollections.q_grouping import QGrouping
     from queryablecollections.q_ordered_iterable import QOrderedIterable
 
-def query[TItem](value: Iterable[TItem]) -> QIterable[TItem]: return C.iterable(value)
+def query[TItem](value: Iterable[TItem]) -> QIterable[TItem]: return C.lazy_iterable(lambda: value)
 
 # note to coders, you can trust that the methods in QIterable do nothing except delegate to the corresponding operations method,
 # or to ZeroImportOverheadConstructors, that's why we keep all the methods on single lines to make it easier to read through the definitions
@@ -38,9 +37,6 @@ class QIterable[T](Iterable[T], ABC):
     __slots__: tuple[str, ...] = ()
     @property
     def cast(self) -> QCast[T]: return C.cast(self)
-
-    @property
-    def qas(self) -> QAs[T]: return C.qas(self)
 
     # region operations on the whole collection, not the items
     def concat(self, *others: Iterable[T]) -> QIterable[T]: return ops.transforms.concat(self, *others)
@@ -57,20 +53,15 @@ class QIterable[T](Iterable[T], ABC):
     # region typed convertions to access type specific functionality
 
     @overload
-    def as_int(self: QIterable[int]) -> QIterableInt: ...  # pyright: ignore [reportInconsistentOverload]
-    def as_int(self) -> QIterableInt: return self.cast.int()
-
+    def auto_type(self: QIterable[int]) -> QIterableInt: ...  # pyright: ignore [reportInconsistentOverload]
     @overload
-    def as_float(self: QIterable[float]) -> QIterableFloat: ...  # pyright: ignore [reportInconsistentOverload]
-    def as_float(self) -> QIterableFloat: return self.cast.float()
-
+    def auto_type(self: QIterable[float]) -> QIterableFloat: ...  # pyright: ignore [reportInconsistentOverload]
     @overload
-    def as_fraction(self: QIterable[Fraction]) -> QIterableFraction: ...  # pyright: ignore [reportInconsistentOverload]
-    def as_fraction(self) -> QIterableFraction: return self.cast.fraction()
-
+    def auto_type(self: QIterable[Fraction]) -> QIterableFraction: ...  # pyright: ignore [reportInconsistentOverload]
     @overload
-    def as_decimal(self: QIterable[Decimal]) -> QIterableDecimal: ...  # pyright: ignore [reportInconsistentOverload]
-    def as_decimal(self) -> QIterableDecimal: return self.cast.decimal()
+    def auto_type(self: QIterable[Decimal]) -> QIterableDecimal: ...  # pyright: ignore [reportInconsistentOverload]
+
+    def auto_type(self) -> QIterableInt | QIterableFloat | QIterableFraction | QIterableDecimal: return ops.transforms.auto_type(self)
 
     #endregion
 
@@ -166,7 +157,7 @@ class QIterable[T](Iterable[T], ABC):
 
     # region factory methods
     # note: we do not "optimize" by returning self in any subclass because the contract is to create a new independent copy
-    def to_list(self) -> QList[T]: return C.list(self)
+    def to_list(self) -> QList[T]: return C.list_(self)
     def to_set(self) -> QSet[T]: return C.set(self)
     def to_frozenset(self) -> QFrozenSet[T]: return C.frozen_set(self)
     def to_sequence(self) -> QSequence[T]: return C.sequence(self)

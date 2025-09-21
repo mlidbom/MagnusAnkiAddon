@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import itertools
 from collections.abc import Iterable
+from decimal import Decimal
+from fractions import Fraction
 from typing import TYPE_CHECKING, cast
 
 from queryablecollections._private_implementation_details.q_zero_overhead_collection_contructors import ZeroImportOverheadConstructors as C
@@ -11,14 +13,18 @@ if TYPE_CHECKING:
     from collections.abc import Callable
 
     from queryablecollections._private_implementation_details.type_aliases import Selector
+    from queryablecollections.collections.numeric.q_decimal_types import QIterableDecimal
+    from queryablecollections.collections.numeric.q_float_types import QIterableFloat
+    from queryablecollections.collections.numeric.q_fraction_types import QIterableFraction
+    from queryablecollections.collections.numeric.q_int_types import QIterableInt
     from queryablecollections.collections.q_dict import QDict
     from queryablecollections.q_iterable import QIterable
 
 def concat[T](self: QIterable[T], *others: Iterable[T]) -> QIterable[T]:
-    return C.iterable(itertools.chain(self, *others))
+    return C.lazy_iterable(lambda: itertools.chain(self, *others))
 
 def select[T, TResult](self: QIterable[T], selector: Selector[T, TResult]) -> QIterable[TResult]:
-    return C.iterable(map(selector, self))
+    return C.lazy_iterable(lambda: map(selector, self))
 
 def qzip_2[TFirst, TSecond, TResult](first: QIterable[TFirst], second: Iterable[TSecond], selector: Callable[[TFirst, TSecond], TResult]) -> QIterable[TResult]:
     def inner_zip() -> Iterable[TResult]:
@@ -40,7 +46,7 @@ def zip_new[T, T2, T3, TResult](self: QIterable[T], second: Iterable[T2], third_
     return qzip_3(self, second, third_or_result_selector)
 
 def flatten[T](self: QIterable[Iterable[T]]) -> QIterable[T]:
-    return C.iterable(itertools.chain.from_iterable(self))
+    return C.lazy_iterable(lambda: itertools.chain.from_iterable(self))
 
 def select_many[T, TSubItem](self: QIterable[T], selector: Selector[T, Iterable[TSubItem]]) -> QIterable[TSubItem]:
     return flatten(select(self, selector))
@@ -54,6 +60,26 @@ def to_dict[T, TKey, TValue](self: QIterable[T], key_selector: Selector[T, TKey]
 
     # Assume self is a sequence of tuples. Unless the user is working without pyright and/or ignoring the errors it will be
     return C.dict(cast(Iterable[tuple[TKey, TValue]], self))
+
+def auto_type[T](iterable: QIterable[T]) -> QIterableInt | QIterableFloat | QIterableFraction | QIterableDecimal:
+    try:
+        # element_type = type(next(iter(iterable)))
+
+        element_type = type(iterable.first_or_none())
+
+        if element_type == int:
+            return C.int_iterable(lambda: iterable)  # pyright: ignore [reportArgumentType]
+        if element_type == float:
+            return C.float_iterable(lambda: iterable)  # pyright: ignore [reportArgumentType]
+        if element_type == Fraction:
+            return C.fraction_iterable(lambda: iterable)  # pyright: ignore [reportArgumentType]
+        if element_type == Decimal:
+            return C.decimal_iterable(lambda: iterable)  # pyright: ignore [reportArgumentType]
+        raise ValueError(f"auto_type() doesn't support type {element_type} your python type checker should not allow this call. If you have none, please try basedpyright or pyright")
+
+    except StopIteration:
+        # noinspection PyTypeChecker
+        return C.empty_iterable()  # Empty collection effectively have to type in python so this is fine  # pyright: ignore [reportReturnType, reportUnknownVariableType]
 
 def join[TOuter, TInner, TKey, TResult](
         outer: QIterable[TOuter],

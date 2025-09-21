@@ -10,9 +10,10 @@ if TYPE_CHECKING:
     from queryablecollections._private_implementation_details.type_aliases import Func
 
 
-class QLazyiterable[TItem](QIterable[TItem]):
+class QIterableImplementation[TItem](QIterable[TItem]):
     __slots__: tuple[str, ...] = ("_factory",)
     def __init__(self, iterable_factory: Func[Iterable[TItem]]) -> None:
+        if not callable(iterable_factory): raise TypeError("iterable_factory must be callable")
         self._factory: Func[Iterable[TItem]] = iterable_factory
 
     @override

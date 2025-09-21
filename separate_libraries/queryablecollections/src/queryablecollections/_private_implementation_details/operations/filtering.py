@@ -15,18 +15,18 @@ def distinct[TItem](self: QIterable[TItem]) -> QIterable[TItem]:
     return C.lazy_iterable(lambda: dict.fromkeys(self))  # highly optimized and guaranteed to keep ordering
 
 def where[TItem](self: QIterable[TItem], predicate: Predicate[TItem]) -> QIterable[TItem]:
-    return C.iterable(filter(predicate, self))
+    return C.lazy_iterable(lambda: filter(predicate, self))
 
 def _item_not_none(value: object) -> bool: return value is not None  # pyright: ignore [reportInvalidTypeVarUse]
 def where_not_none[TItem](self: QIterable[TItem]) -> QIterable[TItem]:
-    return C.iterable(where(self, _item_not_none))
+    return C.lazy_iterable(lambda: where(self, _item_not_none))
 
 def take_while[TItem](self: QIterable[TItem], predicate: Predicate[TItem]) -> QIterable[TItem]:
-    return C.iterable(itertools.takewhile(predicate, self))
+    return C.lazy_iterable(lambda: itertools.takewhile(predicate, self))
 
 def take[TItem](self: QIterable[TItem], count: int) -> QIterable[TItem]:
     if count <= 0: return C.empty_iterable()
-    return C.iterable(itertools.islice(self, count))
+    return C.lazy_iterable(lambda: itertools.islice(self, count))
 
 def take_last[TItem](self: QIterable[TItem], count: int) -> QIterable[TItem]:
     def internal_take_last() -> Iterable[TItem]:
@@ -40,7 +40,7 @@ def take_last[TItem](self: QIterable[TItem], count: int) -> QIterable[TItem]:
 
 def skip[TItem](self: QIterable[TItem], count: int) -> QIterable[TItem]:
     if count <= 0: return self
-    return C.iterable(itertools.islice(self, count, None))
+    return C.lazy_iterable(lambda: itertools.islice(self, count, None))
 
 def skip_last[TItem](self: QIterable[TItem], count: int) -> QIterable[TItem]:
     def internal_skip_last() -> Iterable[TItem]:
@@ -53,7 +53,7 @@ def skip_last[TItem](self: QIterable[TItem], count: int) -> QIterable[TItem]:
 
 class _TypeTester:
     def __init__(self, type_: type) -> None:
-        self.type_ = type_
+        self.type_:type = type_
     def __call__(self, value: object) -> bool:
         return isinstance(value, self.type_)
 

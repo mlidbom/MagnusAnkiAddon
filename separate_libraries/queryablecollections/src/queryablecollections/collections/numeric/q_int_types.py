@@ -4,7 +4,7 @@ import statistics
 from abc import ABC
 from typing import TYPE_CHECKING, override
 
-from queryablecollections._private_implementation_details.q_iterable_implementation import QiterableImplementation
+from queryablecollections._private_implementation_details.q_lazy_iterable import QIterableImplementation
 from queryablecollections.collections.q_frozen_set import QFrozenSet
 from queryablecollections.collections.q_list import QList
 from queryablecollections.collections.q_sequence import QImmutableSequence
@@ -14,6 +14,8 @@ from queryablecollections.q_iterable import QIterable
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
+
+    from queryablecollections._private_implementation_details.type_aliases import Func
 
 class QIterableInt(QIterable[int], ABC):
     __slots__: tuple[str, ...] = ()
@@ -49,10 +51,10 @@ class QIterableInt(QIterable[int], ABC):
     @override
     def to_frozenset(self) -> QIntFrozenSet: return QIntFrozenSet(self)
 
-class QIterableIntImplementation(QiterableImplementation[int], QIterableInt):
+class QIterableIntImplementation(QIterableImplementation[int], QIterableInt):
     __slots__: tuple[str, ...] = ()
-    def __init__(self, value: Iterable[int]) -> None:
-        super().__init__(value)
+    def __init__(self, factory: Func[Iterable[int]]) -> None:
+        super().__init__(factory)
 
 class QIntList(QList[int], QIterableInt):
     __slots__: tuple[str, ...] = ()

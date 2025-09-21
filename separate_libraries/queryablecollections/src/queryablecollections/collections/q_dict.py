@@ -14,7 +14,7 @@ class QDict[TKey, TItem](dict[TKey, TItem], QIterable[TKey]):
     def __init__(self, elements: Iterable[tuple[TKey, TItem]]) -> None:
         super().__init__(elements)
 
-    def qitems(self) -> QIterable[KeyValuePair[TKey, TItem]]: return C.iterable(super().items()).select(KeyValuePair)
+    def qitems(self) -> QIterable[KeyValuePair[TKey, TItem]]: return C.lazy_iterable(lambda: super().items()).select(KeyValuePair)
 
     @override
     def _optimized_length(self) -> int: return len(self)

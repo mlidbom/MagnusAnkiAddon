@@ -16,7 +16,7 @@ class QDefaultDict[TKey, TItem](defaultdict[TKey, TItem], QIterable[TKey]):
     def __init__(self, factory: Func[TItem]) -> None:
         super().__init__(factory)
 
-    def qitems(self) -> QIterable[KeyValuePair[TKey, TItem]]: return C.iterable(super().items()).select(KeyValuePair)
+    def qitems(self) -> QIterable[KeyValuePair[TKey, TItem]]: return C.lazy_iterable(lambda: self.items()).select(KeyValuePair)
 
     @override
     def _optimized_length(self) -> int: return len(self)
