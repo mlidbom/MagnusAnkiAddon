@@ -2,8 +2,6 @@ from __future__ import annotations
 
 import itertools
 from collections.abc import Iterable
-from decimal import Decimal
-from fractions import Fraction
 from typing import TYPE_CHECKING, cast
 
 from queryablecollections._private_implementation_details.q_zero_overhead_collection_contructors import ZeroImportOverheadConstructors as C
@@ -11,6 +9,8 @@ from queryablecollections.q_errors import ArgumentNoneError
 
 if TYPE_CHECKING:
     from collections.abc import Callable
+    from decimal import Decimal
+    from fractions import Fraction
 
     from queryablecollections._private_implementation_details.type_aliases import Selector
     from queryablecollections.collections.numeric.q_decimal_types import QDecimalIterable
@@ -61,23 +61,10 @@ def to_dict[T, TKey, TValue](self: QIterable[T], key_selector: Selector[T, TKey]
     # Assume self is a sequence of tuples. Unless the user is working without pyright and/or ignoring the errors it will be
     return C.dict(cast(Iterable[tuple[TKey, TValue]], self))
 
-def auto_type[T](iterable: QIterable[T]) -> QIntIterable | QFloatIterable | QFractionIterable | QDecimalIterable:
-    try:
-        element_type = type(next(iter(iterable)))
-
-        if element_type is int:
-            return C.int_iterable(lambda: iterable)  # pyright: ignore [reportArgumentType]
-        if element_type is float:
-            return C.float_iterable(lambda: iterable)  # pyright: ignore [reportArgumentType]
-        if element_type is Fraction:
-            return C.fraction_iterable(lambda: iterable)  # pyright: ignore [reportArgumentType]
-        if element_type is Decimal:
-            return C.decimal_iterable(lambda: iterable)  # pyright: ignore [reportArgumentType]
-        raise ValueError(f"auto_type() doesn't support type {element_type} your python type checker should not allow this call. If you have none, please try basedpyright or pyright")
-
-    except StopIteration:
-        # noinspection PyTypeChecker
-        return C.empty_iterable()  # Empty collection effectively have no type in python so this is fine  # pyright: ignore [reportReturnType, reportUnknownVariableType]
+def as_int_interable(self: QIterable[int]) -> QIntIterable: return C.int_iterable(lambda: self)
+def as_float_iterable(self: QIterable[float]) -> QFloatIterable: return C.float_iterable(lambda: self)
+def as_fraction_iterable(self: QIterable[Fraction]) -> QFractionIterable: return C.fraction_iterable(lambda: self)
+def as_decimal_iterable(self: QIterable[Decimal]) -> QDecimalIterable: return C.decimal_iterable(lambda: self)
 
 def join[TOuter, TInner, TKey, TResult](
         outer: QIterable[TOuter],

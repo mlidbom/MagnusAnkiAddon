@@ -47,21 +47,14 @@ class QIterable[T](Iterable[T], ABC):
     def for_each(self, action: Action1[T]) -> QIterable[T]: return ops.functional.for_each(self, action)
     # endregion
 
+    # region typed convertions to access type specific functionality type checkers will only allow calls if the instance is the correct type
 
-    # region typed convertions to access type specific functionality
+    def as_int_iterable(self: QIterable[int]) -> QIntIterable: return ops.transforms.as_int_interable(self)
+    def as_float_iterable(self: QIterable[float]) -> QFloatIterable: return ops.transforms.as_float_iterable(self)
+    def as_fraction_iterable(self: QIterable[Fraction]) -> QFractionIterable: return ops.transforms.as_fraction_iterable(self)
+    def as_decimal_iterable(self: QIterable[Decimal]) -> QDecimalIterable: return ops.transforms.as_decimal_iterable(self)
 
-    @overload
-    def auto_type(self: QIterable[int]) -> QIntIterable: ...  # pyright: ignore [reportInconsistentOverload]
-    @overload
-    def auto_type(self: QIterable[float]) -> QFloatIterable: ...  # pyright: ignore [reportInconsistentOverload]
-    @overload
-    def auto_type(self: QIterable[Fraction]) -> QFractionIterable: ...  # pyright: ignore [reportInconsistentOverload]
-    @overload
-    def auto_type(self: QIterable[Decimal]) -> QDecimalIterable: ...  # pyright: ignore [reportInconsistentOverload]
-
-    def auto_type(self) -> QIntIterable | QFloatIterable | QFractionIterable | QDecimalIterable: return ops.transforms.auto_type(self)
-
-    #endregion
+    # endregion
 
     # region filtering
     def where(self, predicate: Predicate[T]) -> QIterable[T]: return ops.filtering.where(self, predicate)
