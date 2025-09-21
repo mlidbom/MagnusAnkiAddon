@@ -63,9 +63,7 @@ def to_dict[T, TKey, TValue](self: QIterable[T], key_selector: Selector[T, TKey]
 
 def auto_type[T](iterable: QIterable[T]) -> QIterableInt | QIterableFloat | QIterableFraction | QIterableDecimal:
     try:
-        # element_type = type(next(iter(iterable)))
-
-        element_type = type(iterable.first_or_none())
+        element_type = type(next(iter(iterable)))
 
         if element_type == int:
             return C.int_iterable(lambda: iterable)  # pyright: ignore [reportArgumentType]
