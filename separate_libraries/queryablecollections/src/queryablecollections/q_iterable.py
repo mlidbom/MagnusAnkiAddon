@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from abc import ABC
 from collections.abc import Callable, Iterable
-from typing import TYPE_CHECKING, Any, overload
+from typing import TYPE_CHECKING, overload
 
 import queryablecollections._private_implementation_details.operations as ops
 

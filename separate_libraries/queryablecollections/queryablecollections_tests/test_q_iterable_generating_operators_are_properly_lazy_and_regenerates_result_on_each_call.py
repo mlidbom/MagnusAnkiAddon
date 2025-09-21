@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from collections.abc import Callable, Iterable, dict_keys
-from typing import Any, Sequence, KeysView
+from collections.abc import Callable, Iterable
+from typing import Any
 
 from queryablecollections.q_iterable import QIterable, query
 
