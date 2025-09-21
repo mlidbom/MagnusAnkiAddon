@@ -43,7 +43,7 @@ class QIterable[T](Iterable[T], ABC):
     # endregion
 
     # region functional programming helpers
-    def pipe_to[TReturn](self, action: Selector[QIterable[T], TReturn]) -> TReturn: return ops.functional.pipe_to(self, action)
+    def pipe[TReturn](self, action: Selector[QIterable[T], TReturn]) -> TReturn: return ops.functional.pipe_to(self, action)
     def for_each(self, action: Action1[T]) -> QIterable[T]: return ops.functional.for_each(self, action)
     def for_single(self, action: Selector[T, Any]) -> QIterable[T]:  return ops.functional.for_single(self, action)  # pyright: ignore[reportExplicitAny]
     def for_single_or_none(self, action: Selector[T, Any]) -> QIterable[T]: return ops.functional.for_single_or_none(self, action)  # pyright: ignore[reportExplicitAny]

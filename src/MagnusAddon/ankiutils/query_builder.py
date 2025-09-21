@@ -143,7 +143,7 @@ def kanji_with_radicals_in_string(search: str) -> str:
     return (radicals
             .select_many(lambda radical: app.col().kanji.with_radical(radical))
             .where(kanji_contails_all_radicals)
-            .pipe_to(notes_lookup))
+            .pipe(notes_lookup))
 
 def open_card_by_id(card_id: CardId) -> str:
     return f"cid:{card_id}"

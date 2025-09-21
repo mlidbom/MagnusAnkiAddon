@@ -8,7 +8,6 @@ from queryablecollections.collections.numeric.q_float_types import QFloatIterabl
 from queryablecollections.collections.numeric.q_fraction_types import QFractionIterable
 from queryablecollections.collections.numeric.q_int_types import QIntIterable
 from queryablecollections.collections.q_list import QList
-from queryablecollections.q_iterable import query
 
 
 def test_iterable_of_int_returns_an_int_iterable_with_all_the_values_in_order() -> None:
