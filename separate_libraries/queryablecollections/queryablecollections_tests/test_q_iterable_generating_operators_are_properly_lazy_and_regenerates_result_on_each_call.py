@@ -111,25 +111,32 @@ def test_all_operators_are_tested() -> None:
     missing_tests = get_all_operator_names_defined_in__QIterable_mixin() - all_tested_operator_names - exceptional_operators
     if missing_tests: raise AssertionError(f"Missing tests for operators: {missing_tests}")
 
-def test_all_iterator_generating_operators_when_called_on_generator_backed_iterable_consume_elements_and_the_results_they_return_change() -> None:
+def test_no_iterator_generating_operator_consumes_elements_on_call_without_iteration() -> None:
+    for operator_name, operator in iterator_generating_operators:
+        original_iterator = generate_10_ints()
+        operator(original_iterator)
+        if original_iterator.qcount() != 10: raise AssertionError(f"Operator {operator_name} consumed elements on first call")
+
+def test_all_iterator_generating_operators_when_called_on_generator_backed_iterable_consume_elements_but_only_once_iterated_and_the_results_they_return_change_on_second_iteration() -> None:
     for operator_name, operator in iterator_generating_operators:
         original_iterator = generate_10_ints()
         result = operator(original_iterator)
-        original_length = sum(1 for _ in result)
-        new_length = sum(1 for _ in result)
-        if original_length == 0: raise AssertionError(f"Operator {operator_name} did not return any elements")
-        if new_length == original_length: raise AssertionError(f"Operator {operator_name} did not consume any elements")
-        if original_iterator.qcount() == 10: raise AssertionError(f"Operator {operator_name} did not consume any from source generator")
+        length_of_iterable_returned_by_operator = sum(1 for _ in result)
+        length_of_iterator_returned_by_operator_on_second_iteration = sum(1 for _ in result)
+
+        assert length_of_iterable_returned_by_operator != 0, f"Operator {operator_name} did not return any elements"
+        assert length_of_iterator_returned_by_operator_on_second_iteration != length_of_iterable_returned_by_operator, f"Operator {operator_name} returned the same results on second call"
+        assert original_iterator.qcount() != 10, f"Operator {operator_name} did not consume any elements from source generator"
 
 def test_no_iterator_generating_operators_when_called_on_collection_backed_iterator_consume_elements_and_they_return_the_same_result_repeatedly() -> None:
     for operator_name, operator in iterator_generating_operators:
         original_iterator = collection_10_ints()
         result_iterator = operator(original_iterator)
-        original_length = sum(1 for _ in result_iterator)
-        new_length = sum(1 for _ in result_iterator)
-        if original_length == 0: raise AssertionError(f"Operator {operator_name} did not return any elements")
-        if new_length != original_length: raise AssertionError(f"Operator {operator_name} did consumed elements")
-        if original_iterator.qcount() != 10: raise AssertionError(f"Operator {operator_name} mutated source collection")
+        length_of_iterable_returned_by_operator = sum(1 for _ in result_iterator)
+        length_of_iterator_returned_by_operator_on_second_iteration = sum(1 for _ in result_iterator)
+        assert length_of_iterable_returned_by_operator != 0, f"Operator {operator_name} did not return any elements"
+        assert length_of_iterator_returned_by_operator_on_second_iteration == length_of_iterable_returned_by_operator, f"Operator {operator_name} consumed elements"
+        assert original_iterator.qcount() == 10, f"Operator {operator_name} mutated source collection"
 
 def test_all_scalar_or_action_operators_when_called_on_generator_backed_iterable_consume_elements() -> None:
     for operator_name, operator in scalar_or_action_operators:
