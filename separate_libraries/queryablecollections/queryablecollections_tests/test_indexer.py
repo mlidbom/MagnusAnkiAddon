@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from test_q_iterable_common import value_test
+from test_iterable_common import value_test
 
 
 def test_indexer_returns_first_value() -> None: value_test([1, 2, 3], lambda x: x.to_list()[0], 1)

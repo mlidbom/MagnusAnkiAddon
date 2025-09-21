@@ -4,7 +4,7 @@ from fractions import Fraction
 
 from queryablecollections.collections.numeric.q_fraction_types import QFractionList
 from queryablecollections.q_errors import EmptyIterableError
-from test_q_iterable_common import *
+from test_iterable_common import *
 
 
 def test_cast_fraction_returns_an_q_iterable_fraction_with_the_same_elements() -> None:

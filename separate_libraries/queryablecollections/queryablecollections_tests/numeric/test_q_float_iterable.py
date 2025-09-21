@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from queryablecollections.collections.numeric.q_float_types import QFloatList
 from queryablecollections.q_errors import EmptyIterableError
-from test_q_iterable_common import *
+from test_iterable_common import *
 
 
 def test_cast_float_returns_an_q_iterable_float_with_the_same_elements() -> None:
