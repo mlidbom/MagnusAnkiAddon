@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 
     from queryablecollections._private_implementation_details.type_aliases import Func
 
-class QIterableDecimal(QIterable[Decimal], ABC):
+class QDecimalIterable(QIterable[Decimal], ABC):
     __slots__: tuple[str, ...] = ()
 
     def sum(self) -> Decimal: return sum(self, Decimal(0))
@@ -52,27 +52,27 @@ class QIterableDecimal(QIterable[Decimal], ABC):
     @override
     def to_frozenset(self) -> QDecimalFrozenSet: return QDecimalFrozenSet(self)
 
-class QIterableDecimalImplementation(QIterableImplementation[Decimal], QIterableDecimal):
+class QDecimalIterableImplementation(QIterableImplementation[Decimal], QDecimalIterable):
     __slots__: tuple[str, ...] = ()
     def __init__(self, factory: Func[Iterable[Decimal]]) -> None:
         super().__init__(factory)
 
-class QDecimalList(QList[Decimal], QIterableDecimal):
+class QDecimalList(QList[Decimal], QDecimalIterable):
     __slots__: tuple[str, ...] = ()
     def __init__(self, iterable: Iterable[Decimal] = ()) -> None:
         super().__init__(iterable)
 
-class QDecimalSet(QSet[Decimal], QIterableDecimal):
+class QDecimalSet(QSet[Decimal], QDecimalIterable):
     __slots__: tuple[str, ...] = ()
     def __init__(self, iterable: Iterable[Decimal] = ()) -> None:
         super().__init__(iterable)
 
-class QDecimalFrozenSet(QFrozenSet[Decimal], QIterableDecimal):
+class QDecimalFrozenSet(QFrozenSet[Decimal], QDecimalIterable):
     __slots__: tuple[str, ...] = ()
     def __new__(cls, iterable: Iterable[Decimal] = ()) -> QDecimalFrozenSet:
         return super().__new__(cls, iterable)  # pyright: ignore [reportReturnType]
 
-class QDecimalSequence(QImmutableSequence[Decimal], QIterableDecimal):
+class QDecimalSequence(QImmutableSequence[Decimal], QDecimalIterable):
     __slots__: tuple[str, ...] = ()
     def __init__(self, iterable: Iterable[Decimal] = ()) -> None:
         super().__init__(iterable)

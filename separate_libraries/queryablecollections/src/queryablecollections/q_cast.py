@@ -9,10 +9,10 @@ from queryablecollections._private_implementation_details.q_zero_overhead_collec
 from queryablecollections.q_iterable import QIterable
 
 if TYPE_CHECKING:
-    from queryablecollections.collections.numeric.q_decimal_types import QIterableDecimal
-    from queryablecollections.collections.numeric.q_float_types import QIterableFloat
-    from queryablecollections.collections.numeric.q_fraction_types import QIterableFraction
-    from queryablecollections.collections.numeric.q_int_types import QIterableInt
+    from queryablecollections.collections.numeric.q_decimal_types import QDecimalIterable
+    from queryablecollections.collections.numeric.q_float_types import QFloatIterable
+    from queryablecollections.collections.numeric.q_fraction_types import QFractionIterable
+    from queryablecollections.collections.numeric.q_int_types import QIntIterable
 
 class CheckedCast[TValue]:
     __slots__: tuple[str, ...] = ("_type",)
@@ -37,16 +37,16 @@ class QCast[TItem]:
     def checked(self) -> QCheckedCast[TItem]:
         return QCheckedCast(self._iterable)
 
-    def int(self) -> QIterableInt:
+    def int(self) -> QIntIterable:
         return C.int_iterable(lambda: (cast(Iterable[int], self._iterable)))
 
-    def float(self) -> QIterableFloat:
+    def float(self) -> QFloatIterable:
         return C.float_iterable(lambda: (cast(Iterable[float], self._iterable)))
 
-    def fraction(self) -> QIterableFraction:
+    def fraction(self) -> QFractionIterable:
         return C.fraction_iterable(lambda: (cast(Iterable[Fraction], self._iterable)))
 
-    def decimal(self) -> QIterableDecimal:
+    def decimal(self) -> QDecimalIterable:
         return C.decimal_iterable(lambda: cast(Iterable[Decimal], self._iterable))
 
     def to[TNew](self, _type: type[TNew]) -> QIterable[TNew]:  # pyright: ignore
@@ -57,16 +57,16 @@ class QCheckedCast[TItem]:
     def __init__(self, iterable: QIterable[TItem]) -> None:
         self._iterable: QIterable[TItem] = iterable
 
-    def int(self) -> QIterableInt:
+    def int(self) -> QIntIterable:
         return C.int_iterable(lambda: self._iterable.select(_checked_cast_int))
 
-    def float(self) -> QIterableFloat:
+    def float(self) -> QFloatIterable:
         return C.float_iterable(lambda: self._iterable.select(_checked_cast_float))
 
-    def fraction(self) -> QIterableFraction:
+    def fraction(self) -> QFractionIterable:
         return C.fraction_iterable(lambda: self._iterable.select(_checked_cast_fraction))
 
-    def decimal(self) -> QIterableDecimal:
+    def decimal(self) -> QDecimalIterable:
         return C.decimal_iterable(lambda: self._iterable.select(_checked_cast_decimal))
 
     def to[TNew](self, _type: type[TNew]) -> QIterable[TNew]:  # pyright: ignore

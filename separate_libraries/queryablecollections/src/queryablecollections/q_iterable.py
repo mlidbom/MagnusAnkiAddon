@@ -16,10 +16,10 @@ if TYPE_CHECKING:
     from _typeshed import SupportsRichComparison
 
     from queryablecollections._private_implementation_details.type_aliases import Action1, Predicate, Selector
-    from queryablecollections.collections.numeric.q_decimal_types import QIterableDecimal
-    from queryablecollections.collections.numeric.q_float_types import QIterableFloat
-    from queryablecollections.collections.numeric.q_fraction_types import QIterableFraction
-    from queryablecollections.collections.numeric.q_int_types import QIterableInt
+    from queryablecollections.collections.numeric.q_decimal_types import QDecimalIterable
+    from queryablecollections.collections.numeric.q_float_types import QFloatIterable
+    from queryablecollections.collections.numeric.q_fraction_types import QFractionIterable
+    from queryablecollections.collections.numeric.q_int_types import QIntIterable
     from queryablecollections.collections.numeric.q_string_types import QStrIterable
     from queryablecollections.collections.q_dict import QDict
     from queryablecollections.collections.q_frozen_set import QFrozenSet
@@ -54,17 +54,17 @@ class QIterable[T](Iterable[T], ABC):
     # region typed convertions to access type specific functionality
 
     @overload
-    def auto_type(self: QIterable[int]) -> QIterableInt: ...  # pyright: ignore [reportInconsistentOverload]
+    def auto_type(self: QIterable[int]) -> QIntIterable: ...  # pyright: ignore [reportInconsistentOverload]
     @overload
-    def auto_type(self: QIterable[float]) -> QIterableFloat: ...  # pyright: ignore [reportInconsistentOverload]
+    def auto_type(self: QIterable[float]) -> QFloatIterable: ...  # pyright: ignore [reportInconsistentOverload]
     @overload
-    def auto_type(self: QIterable[Fraction]) -> QIterableFraction: ...  # pyright: ignore [reportInconsistentOverload]
+    def auto_type(self: QIterable[Fraction]) -> QFractionIterable: ...  # pyright: ignore [reportInconsistentOverload]
     @overload
-    def auto_type(self: QIterable[Decimal]) -> QIterableDecimal: ...  # pyright: ignore [reportInconsistentOverload]
+    def auto_type(self: QIterable[Decimal]) -> QDecimalIterable: ...  # pyright: ignore [reportInconsistentOverload]
     @overload
     def auto_type(self: QIterable[str]) -> QStrIterable: ...  # pyright: ignore [reportInconsistentOverload]
 
-    def auto_type(self) -> QIterableInt | QIterableFloat | QIterableFraction | QIterableDecimal | QStrIterable: return ops.transforms.auto_type(self)
+    def auto_type(self) -> QIntIterable | QFloatIterable | QFractionIterable | QDecimalIterable | QStrIterable: return ops.transforms.auto_type(self)
 
     #endregion
 

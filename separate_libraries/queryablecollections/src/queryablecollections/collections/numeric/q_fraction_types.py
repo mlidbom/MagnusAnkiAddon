@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 
     from queryablecollections._private_implementation_details.type_aliases import Func
 
-class QIterableFraction(QIterable[Fraction], ABC):
+class QFractionIterable(QIterable[Fraction], ABC):
     __slots__: tuple[str, ...] = ()
 
     def sum(self) -> Fraction: return sum(self, Fraction(0))
@@ -52,27 +52,27 @@ class QIterableFraction(QIterable[Fraction], ABC):
     @override
     def to_frozenset(self) -> QFractionFrozenSet: return QFractionFrozenSet(self)
 
-class QIterableFractionImplementation(QIterableImplementation[Fraction], QIterableFraction):
+class QFractionIterableImplementation(QIterableImplementation[Fraction], QFractionIterable):
     __slots__: tuple[str, ...] = ()
     def __init__(self, factory: Func[Iterable[Fraction]]) -> None:
         super().__init__(factory)
 
-class QFractionList(QList[Fraction], QIterableFraction):
+class QFractionList(QList[Fraction], QFractionIterable):
     __slots__: tuple[str, ...] = ()
     def __init__(self, iterable: Iterable[Fraction] = ()) -> None:
         super().__init__(iterable)
 
-class QFractionSet(QSet[Fraction], QIterableFraction):
+class QFractionSet(QSet[Fraction], QFractionIterable):
     __slots__: tuple[str, ...] = ()
     def __init__(self, iterable: Iterable[Fraction] = ()) -> None:
         super().__init__(iterable)
 
-class QFractionFrozenSet(QFrozenSet[Fraction], QIterableFraction):
+class QFractionFrozenSet(QFrozenSet[Fraction], QFractionIterable):
     __slots__: tuple[str, ...] = ()
     def __new__(cls, iterable: Iterable[Fraction] = ()) -> QFractionFrozenSet:
         return super().__new__(cls, iterable)  # pyright: ignore [reportReturnType]
 
-class QFractionSequence(QImmutableSequence[Fraction], QIterableFraction):
+class QFractionSequence(QImmutableSequence[Fraction], QFractionIterable):
     __slots__: tuple[str, ...] = ()
     def __init__(self, iterable: Iterable[Fraction] = ()) -> None:
         super().__init__(iterable)

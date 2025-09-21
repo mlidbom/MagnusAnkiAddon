@@ -13,10 +13,10 @@ if TYPE_CHECKING:
     from collections.abc import Callable
 
     from queryablecollections._private_implementation_details.type_aliases import Selector
-    from queryablecollections.collections.numeric.q_decimal_types import QIterableDecimal
-    from queryablecollections.collections.numeric.q_float_types import QIterableFloat
-    from queryablecollections.collections.numeric.q_fraction_types import QIterableFraction
-    from queryablecollections.collections.numeric.q_int_types import QIterableInt
+    from queryablecollections.collections.numeric.q_decimal_types import QDecimalIterable
+    from queryablecollections.collections.numeric.q_float_types import QFloatIterable
+    from queryablecollections.collections.numeric.q_fraction_types import QFractionIterable
+    from queryablecollections.collections.numeric.q_int_types import QIntIterable
     from queryablecollections.collections.numeric.q_string_types import QStrIterable
     from queryablecollections.collections.q_dict import QDict
     from queryablecollections.q_iterable import QIterable
@@ -62,7 +62,7 @@ def to_dict[T, TKey, TValue](self: QIterable[T], key_selector: Selector[T, TKey]
     # Assume self is a sequence of tuples. Unless the user is working without pyright and/or ignoring the errors it will be
     return C.dict(cast(Iterable[tuple[TKey, TValue]], self))
 
-def auto_type[T](iterable: QIterable[T]) -> QIterableInt | QIterableFloat | QIterableFraction | QIterableDecimal | QStrIterable:
+def auto_type[T](iterable: QIterable[T]) -> QIntIterable | QFloatIterable | QFractionIterable | QDecimalIterable | QStrIterable:
     try:
         element_type = type(next(iter(iterable)))
 

@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 
     from queryablecollections._private_implementation_details.type_aliases import Func
 
-class QIterableFloat(QIterable[float], ABC):
+class QFloatIterable(QIterable[float], ABC):
     __slots__: tuple[str, ...] = ()
 
     def sum(self) -> float: return sum(self)
@@ -51,27 +51,27 @@ class QIterableFloat(QIterable[float], ABC):
     @override
     def to_frozenset(self) -> QFloatFrozenSet: return QFloatFrozenSet(self)
 
-class QIterableFloatImplementation(QIterableImplementation[float], QIterableFloat):
+class QFloatIterableImplementation(QIterableImplementation[float], QFloatIterable):
     __slots__: tuple[str, ...] = ()
     def __init__(self, factory: Func[Iterable[float]]) -> None:
         super().__init__(factory)
 
-class QFloatList(QList[float], QIterableFloat):
+class QFloatList(QList[float], QFloatIterable):
     __slots__: tuple[str, ...] = ()
     def __init__(self, iterable: Iterable[float] = ()) -> None:
         super().__init__(iterable)
 
-class QFloatSet(QSet[float], QIterableFloat):
+class QFloatSet(QSet[float], QFloatIterable):
     __slots__: tuple[str, ...] = ()
     def __init__(self, iterable: Iterable[float] = ()) -> None:
         super().__init__(iterable)
 
-class QFloatFrozenSet(QFrozenSet[float], QIterableFloat):
+class QFloatFrozenSet(QFrozenSet[float], QFloatIterable):
     __slots__: tuple[str, ...] = ()
     def __new__(cls, iterable: Iterable[float] = ()) -> QFloatFrozenSet:
         return super().__new__(cls, iterable)  # pyright: ignore [reportReturnType]
 
-class QFloatSequence(QImmutableSequence[float], QIterableFloat):
+class QFloatSequence(QImmutableSequence[float], QFloatIterable):
     __slots__: tuple[str, ...] = ()
     def __init__(self, iterable: Iterable[float] = ()) -> None:
         super().__init__(iterable)

@@ -9,10 +9,10 @@ if TYPE_CHECKING:
 
     from queryablecollections._private_implementation_details.operations.ordering import SortInstruction
     from queryablecollections._private_implementation_details.type_aliases import Func
-    from queryablecollections.collections.numeric.q_decimal_types import QIterableDecimal
-    from queryablecollections.collections.numeric.q_float_types import QIterableFloat
-    from queryablecollections.collections.numeric.q_fraction_types import QIterableFraction
-    from queryablecollections.collections.numeric.q_int_types import QIterableInt
+    from queryablecollections.collections.numeric.q_decimal_types import QDecimalIterable
+    from queryablecollections.collections.numeric.q_float_types import QFloatIterable
+    from queryablecollections.collections.numeric.q_fraction_types import QFractionIterable
+    from queryablecollections.collections.numeric.q_int_types import QIntIterable
     from queryablecollections.collections.numeric.q_string_types import QStrIterable
     from queryablecollections.collections.q_default_dict import QDefaultDict
     from queryablecollections.collections.q_dict import QDict
@@ -95,27 +95,27 @@ class ZeroImportOverheadConstructors:
         return ZeroImportOverheadConstructors.dict(elements)  # use the new version to prove from the very first call that it works
 
     @staticmethod
-    def int_iterable(factory: Func[Iterable[int]]) -> QIterableInt:  # pyright: ignore [reportInvalidTypeVarUse]
-        from queryablecollections.collections.numeric.q_int_types import QIterableIntImplementation
-        ZeroImportOverheadConstructors.int_iterable = QIterableIntImplementation  # replace this method with a direct call so that future calls have zero import overhead  # pyright: ignore [reportAttributeAccessIssue]
+    def int_iterable(factory: Func[Iterable[int]]) -> QIntIterable:  # pyright: ignore [reportInvalidTypeVarUse]
+        from queryablecollections.collections.numeric.q_int_types import QIntIterableImplementation
+        ZeroImportOverheadConstructors.int_iterable = QIntIterableImplementation  # replace this method with a direct call so that future calls have zero import overhead  # pyright: ignore [reportAttributeAccessIssue]
         return ZeroImportOverheadConstructors.int_iterable(factory)  # use the new version to prove from the very first call that it works
 
     @staticmethod
-    def float_iterable(factory: Func[Iterable[float]]) -> QIterableFloat:  # pyright: ignore [reportInvalidTypeVarUse]
-        from queryablecollections.collections.numeric.q_float_types import QIterableFloatImplementation
-        ZeroImportOverheadConstructors.float_iterable = QIterableFloatImplementation  # replace this method with a direct call so that future calls have zero import overhead  # pyright: ignore [reportAttributeAccessIssue]
+    def float_iterable(factory: Func[Iterable[float]]) -> QFloatIterable:  # pyright: ignore [reportInvalidTypeVarUse]
+        from queryablecollections.collections.numeric.q_float_types import QFloatIterableImplementation
+        ZeroImportOverheadConstructors.float_iterable = QFloatIterableImplementation  # replace this method with a direct call so that future calls have zero import overhead  # pyright: ignore [reportAttributeAccessIssue]
         return ZeroImportOverheadConstructors.float_iterable(factory)  # use the new version to prove from the very first call that it works
 
     @staticmethod
-    def fraction_iterable(factory: Func[Iterable[Fraction]]) -> QIterableFraction:  # pyright: ignore [reportInvalidTypeVarUse]
-        from queryablecollections.collections.numeric.q_fraction_types import QIterableFractionImplementation
-        ZeroImportOverheadConstructors.fraction_iterable = QIterableFractionImplementation  # replace this method with a direct call so that future calls have zero import overhead  # pyright: ignore [reportAttributeAccessIssue]
+    def fraction_iterable(factory: Func[Iterable[Fraction]]) -> QFractionIterable:  # pyright: ignore [reportInvalidTypeVarUse]
+        from queryablecollections.collections.numeric.q_fraction_types import QFractionIterableImplementation
+        ZeroImportOverheadConstructors.fraction_iterable = QFractionIterableImplementation  # replace this method with a direct call so that future calls have zero import overhead  # pyright: ignore [reportAttributeAccessIssue]
         return ZeroImportOverheadConstructors.fraction_iterable(factory)  # use the new version to prove from the very first call that it works
 
     @staticmethod
-    def decimal_iterable(factory: Func[Iterable[Decimal]]) -> QIterableDecimal:  # pyright: ignore [reportInvalidTypeVarUse]
-        from queryablecollections.collections.numeric.q_decimal_types import QIterableDecimalImplementation
-        ZeroImportOverheadConstructors.decimal_iterable = QIterableDecimalImplementation  # replace this method with a direct call so that future calls have zero import overhead  # pyright: ignore [reportAttributeAccessIssue]
+    def decimal_iterable(factory: Func[Iterable[Decimal]]) -> QDecimalIterable:  # pyright: ignore [reportInvalidTypeVarUse]
+        from queryablecollections.collections.numeric.q_decimal_types import QDecimalIterableImplementation
+        ZeroImportOverheadConstructors.decimal_iterable = QDecimalIterableImplementation  # replace this method with a direct call so that future calls have zero import overhead  # pyright: ignore [reportAttributeAccessIssue]
         return ZeroImportOverheadConstructors.decimal_iterable(factory)  # use the new version to prove from the very first call that it works
 
     @staticmethod

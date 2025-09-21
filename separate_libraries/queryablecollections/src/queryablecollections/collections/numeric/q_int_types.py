@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 
     from queryablecollections._private_implementation_details.type_aliases import Func
 
-class QIterableInt(QIterable[int], ABC):
+class QIntIterable(QIterable[int], ABC):
     __slots__: tuple[str, ...] = ()
 
     def sum(self) -> int: return sum(self)
@@ -51,27 +51,27 @@ class QIterableInt(QIterable[int], ABC):
     @override
     def to_frozenset(self) -> QIntFrozenSet: return QIntFrozenSet(self)
 
-class QIterableIntImplementation(QIterableImplementation[int], QIterableInt):
+class QIntIterableImplementation(QIterableImplementation[int], QIntIterable):
     __slots__: tuple[str, ...] = ()
     def __init__(self, factory: Func[Iterable[int]]) -> None:
         super().__init__(factory)
 
-class QIntList(QList[int], QIterableInt):
+class QIntList(QList[int], QIntIterable):
     __slots__: tuple[str, ...] = ()
     def __init__(self, iterable: Iterable[int] = ()) -> None:
         super().__init__(iterable)
 
-class QIntSet(QSet[int], QIterableInt):
+class QIntSet(QSet[int], QIntIterable):
     __slots__: tuple[str, ...] = ()
     def __init__(self, iterable: Iterable[int] = ()) -> None:
         super().__init__(iterable)
 
-class QIntFrozenSet(QFrozenSet[int], QIterableInt):
+class QIntFrozenSet(QFrozenSet[int], QIntIterable):
     __slots__: tuple[str, ...] = ()
     def __new__(cls, iterable: Iterable[int] = ()) -> QIntFrozenSet:
         return super().__new__(cls, iterable)  # pyright: ignore [reportReturnType]
 
-class QIntSequence(QImmutableSequence[int], QIterableInt):
+class QIntSequence(QImmutableSequence[int], QIntIterable):
     __slots__: tuple[str, ...] = ()
     def __init__(self, iterable: Iterable[int] = ()) -> None:
         super().__init__(iterable)
