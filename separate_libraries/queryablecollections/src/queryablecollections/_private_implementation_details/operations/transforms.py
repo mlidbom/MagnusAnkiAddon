@@ -61,7 +61,7 @@ def to_dict[T, TKey, TValue](self: QIterable[T], key_selector: Selector[T, TKey]
     # Assume self is a sequence of tuples. Unless the user is working without pyright and/or ignoring the errors it will be
     return C.dict(cast(Iterable[tuple[TKey, TValue]], self))
 
-def as_int_interable(self: QIterable[int]) -> QIntIterable: return C.int_iterable(lambda: self)
+def as_int_iterable(self: QIterable[int]) -> QIntIterable: return C.int_iterable(lambda: self)
 def as_float_iterable(self: QIterable[float]) -> QFloatIterable: return C.float_iterable(lambda: self)
 def as_fraction_iterable(self: QIterable[Fraction]) -> QFractionIterable: return C.fraction_iterable(lambda: self)
 def as_decimal_iterable(self: QIterable[Decimal]) -> QDecimalIterable: return C.decimal_iterable(lambda: self)

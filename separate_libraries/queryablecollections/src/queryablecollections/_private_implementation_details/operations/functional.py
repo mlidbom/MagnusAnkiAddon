@@ -10,5 +10,5 @@ def for_each[TItem](self: QIterable[TItem], action: Action1[TItem]) -> QIterable
     for item in self: action(item)
     return self
 
-def pipe_to[TItem, TReturn](self: QIterable[TItem], action: Selector[QIterable[TItem], TReturn]) -> TReturn:
+def pipe[TItem, TReturn](self: QIterable[TItem], action: Selector[QIterable[TItem], TReturn]) -> TReturn:
     return action(self)
