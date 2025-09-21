@@ -11,24 +11,24 @@ if TYPE_CHECKING:
     from queryablecollections._private_implementation_details.type_aliases import Predicate
     from queryablecollections.q_iterable import QIterable
 
-def distinct[TItem](self: QIterable[TItem]) -> QIterable[TItem]:
-    return C.lazy_iterable(lambda: dict.fromkeys(self))  # highly optimized and guaranteed to keep ordering
+def distinct[TItem](self: Iterable[TItem]) -> Iterable[TItem]:
+    return dict.fromkeys(self)  # highly optimized and guaranteed to keep ordering
 
-def where[TItem](self: QIterable[TItem], predicate: Predicate[TItem]) -> QIterable[TItem]:
-    return C.lazy_iterable(lambda: filter(predicate, self))
+def where[TItem](self: Iterable[TItem], predicate: Predicate[TItem]) -> Iterable[TItem]:
+    return filter(predicate, self)
 
 def _item_not_none(value: object) -> bool: return value is not None  # pyright: ignore [reportInvalidTypeVarUse]
-def where_not_none[TItem](self: QIterable[TItem]) -> QIterable[TItem]:
-    return C.lazy_iterable(lambda: where(self, _item_not_none))
+def where_not_none[TItem](self: Iterable[TItem]) -> Iterable[TItem]:
+    return where(self, _item_not_none)
 
-def take_while[TItem](self: QIterable[TItem], predicate: Predicate[TItem]) -> QIterable[TItem]:
-    return C.lazy_iterable(lambda: itertools.takewhile(predicate, self))
+def take_while[TItem](self: Iterable[TItem], predicate: Predicate[TItem]) -> Iterable[TItem]:
+    return itertools.takewhile(predicate, self)
 
-def take[TItem](self: QIterable[TItem], count: int) -> QIterable[TItem]:
+def take[TItem](self: Iterable[TItem], count: int) -> Iterable[TItem]:
     if count <= 0: return C.empty_iterable()
-    return C.lazy_iterable(lambda: itertools.islice(self, count))
+    return itertools.islice(self, count)
 
-def take_last[TItem](self: QIterable[TItem], count: int) -> QIterable[TItem]:
+def take_last[TItem](self: Iterable[TItem], count: int) -> Iterable[TItem]:
     def internal_take_last() -> Iterable[TItem]:
         if count <= 0: return ()
         items = list(self)
@@ -38,11 +38,11 @@ def take_last[TItem](self: QIterable[TItem], count: int) -> QIterable[TItem]:
     return C.lazy_iterable(internal_take_last)
 
 
-def skip[TItem](self: QIterable[TItem], count: int) -> QIterable[TItem]:
+def skip[TItem](self: Iterable[TItem], count: int) -> Iterable[TItem]:
     if count <= 0: return self
-    return C.lazy_iterable(lambda: itertools.islice(self, count, None))
+    return itertools.islice(self, count, None)
 
-def skip_last[TItem](self: QIterable[TItem], count: int) -> QIterable[TItem]:
+def skip_last[TItem](self: Iterable[TItem], count: int) -> Iterable[TItem]:
     def internal_skip_last() -> Iterable[TItem]:
         if count <= 0: return self
         items = list(self)
@@ -57,5 +57,5 @@ class _TypeTester:
     def __call__(self, value: object) -> bool:
         return isinstance(value, self.type_)
 
-def of_type[TItem, TResult](self: QIterable[TItem], type_: type[TResult]) -> QIterable[TResult]:
+def of_type[TItem, TResult](self: QIterable[TItem], type_: type[TResult]) -> Iterable[TResult]:
     return self.where(_TypeTester(type_)).cast.to(type_)

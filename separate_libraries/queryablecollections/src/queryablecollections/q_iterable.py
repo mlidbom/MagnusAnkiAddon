@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 
     from _typeshed import SupportsRichComparison
 
-    from queryablecollections._private_implementation_details.type_aliases import Action1, Predicate, Selector
+    from queryablecollections._private_implementation_details.type_aliases import Action1, Func, Predicate, Selector
     from queryablecollections.collections.numeric.q_decimal_types import QDecimalIterable
     from queryablecollections.collections.numeric.q_float_types import QFloatIterable
     from queryablecollections.collections.numeric.q_fraction_types import QFractionIterable
@@ -39,6 +39,9 @@ class QIterable[T](Iterable[T], ABC):
     @property
     def cast(self) -> QCast[T]: return C.cast(self)
 
+    def _filtered(self, factory: Func[Iterable[T]]) -> QIterable[T]:
+        return C.lazy_iterable(factory)
+
     # region operations on the whole collection, not the items
     def concat(self, *others: Iterable[T]) -> QIterable[T]: return ops.transforms.concat(self, *others)
     # endregion
@@ -60,18 +63,18 @@ class QIterable[T](Iterable[T], ABC):
     # endregion
 
     # region filtering
-    def where(self, predicate: Predicate[T]) -> QIterable[T]: return ops.filtering.where(self, predicate)
-    def where_not_none(self) -> QIterable[T]: return ops.filtering.where_not_none(self)
+    def where(self, predicate: Predicate[T]) -> QIterable[T]: return self._filtered(lambda: ops.filtering.where(self, predicate))
+    def where_not_none(self) -> QIterable[T]: return self._filtered(lambda: ops.filtering.where_not_none(self))
 
-    def distinct(self) -> QIterable[T]: return ops.filtering.distinct(self)
+    def distinct(self) -> QIterable[T]: return self._filtered(lambda: ops.filtering.distinct(self))
 
-    def take(self, count: int) -> QIterable[T]: return ops.filtering.take(self, count)
-    def take_while(self, predicate: Predicate[T]) -> QIterable[T]: return ops.filtering.take_while(self, predicate)
-    def take_last(self, count: int) -> QIterable[T]: return ops.filtering.take_last(self, count)
-    def skip(self, count: int) -> QIterable[T]: return ops.filtering.skip(self, count)
-    def skip_last(self, count: int) -> QIterable[T]: return ops.filtering.skip_last(self, count)
+    def take(self, count: int) -> QIterable[T]: return self._filtered(lambda: ops.filtering.take(self, count))
+    def take_while(self, predicate: Predicate[T]) -> QIterable[T]: return self._filtered(lambda: ops.filtering.take_while(self, predicate))
+    def take_last(self, count: int) -> QIterable[T]: return self._filtered(lambda: ops.filtering.take_last(self, count))
+    def skip(self, count: int) -> QIterable[T]: return self._filtered(lambda: ops.filtering.skip(self, count))
+    def skip_last(self, count: int) -> QIterable[T]: return self._filtered(lambda: ops.filtering.skip_last(self, count))
 
-    def of_type[TResult](self, target_type: type[TResult]) -> QIterable[TResult]: return ops.filtering.of_type(self, target_type)
+    def of_type[TResult](self, target_type: type[TResult]) -> QIterable[TResult]: return C.lazy_iterable(lambda: ops.filtering.of_type(self, target_type))
 
     # endregion
 
