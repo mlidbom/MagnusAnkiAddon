@@ -65,13 +65,13 @@ def auto_type[T](iterable: QIterable[T]) -> QIntIterable | QFloatIterable | QFra
     try:
         element_type = type(next(iter(iterable)))
 
-        if element_type == int:
+        if element_type is int:
             return C.int_iterable(lambda: iterable)  # pyright: ignore [reportArgumentType]
-        if element_type == float:
+        if element_type is float:
             return C.float_iterable(lambda: iterable)  # pyright: ignore [reportArgumentType]
-        if element_type == Fraction:
+        if element_type is Fraction:
             return C.fraction_iterable(lambda: iterable)  # pyright: ignore [reportArgumentType]
-        if element_type == Decimal:
+        if element_type is Decimal:
             return C.decimal_iterable(lambda: iterable)  # pyright: ignore [reportArgumentType]
         raise ValueError(f"auto_type() doesn't support type {element_type} your python type checker should not allow this call. If you have none, please try basedpyright or pyright")
 

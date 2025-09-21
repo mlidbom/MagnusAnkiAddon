@@ -11,11 +11,11 @@ class TextAnalysisValidator:
     def __init__(self, analysis: TextAnalysis) -> None:
         self.analysis:TextAnalysis = analysis
 
-        self.is_valid_true_matches: QSet[Match] = analysis.indexing_matches.where(lambda match: match.is_valid).to_set()
+        self.is_valid_true_matches: QSet[Match] = analysis.all_matches.where(lambda match: match.is_valid).to_set()
         self.is_valid_true_hiding_reasons_empty_matches: QSet[Match] = self.is_valid_true_matches.where(lambda match: len(match.hiding_reasons) == 0).to_set()
         self.is_valid_true_is_displayed_false_matches: QSet[Match] = self.is_valid_true_matches.where(lambda match: not match.is_displayed).to_set()
-        self.is_displayed_true_matches: QSet[Match] = analysis.indexing_matches.where(lambda match: match.is_displayed).to_set()
-        self.is_valid_false_matches: QSet[Match] = analysis.indexing_matches.where(lambda match: not match.is_valid).to_set()
+        self.is_displayed_true_matches: QSet[Match] = analysis.all_matches.where(lambda match: match.is_displayed).to_set()
+        self.is_valid_false_matches: QSet[Match] = analysis.all_matches.where(lambda match: not match.is_valid).to_set()
         self.display_matches: QSet[Match] = analysis.display_matches.to_set()
         self.valid_matches: QSet[Match] = analysis.valid_matches.to_set()
         self.valid_variant_valid_matches: QSet[Match] = analysis.valid_word_variant_valid_matches.to_set()
