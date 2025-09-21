@@ -16,3 +16,4 @@ collection.anki2
 /profile_output.txt
 *.py.pclprof
 *.lprof
+/repomix-output.xml
