@@ -3,7 +3,7 @@ from __future__ import annotations
 from decimal import Decimal
 from fractions import Fraction
 
-from test_iterable_common import *
+from test_iterable_common import lists_value_test, throws_test
 
 
 class TestUncheckedCast:

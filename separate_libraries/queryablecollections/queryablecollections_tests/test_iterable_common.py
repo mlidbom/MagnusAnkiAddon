@@ -1,4 +1,3 @@
-
 from __future__ import annotations
 
 from collections.abc import Callable, Iterable
@@ -27,43 +26,43 @@ def create_sequences[T](iterable: Iterable[T] | Callable[[], Iterable[T]], skip_
                    ("QFRozenSet", QFrozenSet(factory()))]
     return values
 
-def where_test[TIn, TOut](items: Iterable[TIn],
-                          selector: Callable[[TIn], bool],
-                          expected_output: list[TOut],
+def where_test[TIn, TOut](input: Iterable[TIn],
+                          select: Callable[[TIn], bool],
+                          output: list[TOut],
                           skip_sets: bool = False) -> None:
-    for name, sequence in create_sequences(items, skip_sets):
-        result = sequence.where(selector)
-        assert result.to_list() == expected_output, name
+    for name, sequence in create_sequences(input, skip_sets):
+        result = sequence.where(select)
+        assert result.to_list() == output, name
 
-def select_test[TIn, TOut](items: Iterable[TIn],
-                           selector: Callable[[TIn], TOut],
-                           expected_output: list[TOut],
+def select_test[TIn, TOut](input: Iterable[TIn],
+                           select: Callable[[TIn], TOut],
+                           output: list[TOut],
                            skip_sets: bool = False) -> None:
-    for name, sequence in create_sequences(items, skip_sets):
-        result = sequence.select(selector)
-        assert result.to_list() == expected_output, name
+    for name, sequence in create_sequences(input, skip_sets):
+        result = sequence.select(select)
+        assert result.to_list() == output, name
 
-def lists_value_test[TIn, TOut](items: list[TIn] | Callable[[], Iterable[TIn]],
-                          selector: Callable[[QIterable[TIn]], TOut],
-                          expected_output: TOut) -> None:
-    value_test(items, selector, expected_output, skip_sets=True)
+def lists_value_test[TIn, TOut](input: list[TIn] | Callable[[], Iterable[TIn]],
+                                select: Callable[[QIterable[TIn]], TOut],
+                                output: TOut) -> None:
+    value_test(input, select, output, skip_sets=True)
 
-def value_test[TIn, TOut](items: list[TIn] | Callable[[], Iterable[TIn]],
-                          selector: Callable[[QIterable[TIn]], TOut],
-                          expected_output: TOut,
+def value_test[TIn, TOut](input: list[TIn] | Callable[[], Iterable[TIn]],
+                          select: Callable[[QIterable[TIn]], TOut],
+                          output: TOut,
                           skip_sets: bool = False) -> None:
-    for _name, sequence in create_sequences(items, skip_sets):
-        result = selector(sequence)
-        assert result == expected_output
+    for _name, sequence in create_sequences(input, skip_sets):
+        result = select(sequence)
+        assert result == output
 
-def throws_test[TIn, TOut](items: Iterable[TIn],
-                           selector: Callable[[QIterable[TIn]], TOut],
-                           exception_type: type[Exception] = Exception,
+def throws_test[TIn, TOut](input: Iterable[TIn],
+                           select: Callable[[QIterable[TIn]], TOut],
+                           output: type[Exception] = Exception,
                            skip_sets: bool = False) -> None:
-    for name, sequence in create_sequences(items, skip_sets):
-        with pytest.raises(exception_type):  # noqa: PT012
-            selector(sequence)
-            pytest.fail(f"{name}: Expected {exception_type} to be raised")
+    for name, sequence in create_sequences(input, skip_sets):
+        with pytest.raises(output):  # noqa: PT012
+            select(sequence)
+            pytest.fail(f"{name}: Expected {output} to be raised")
 
 class CallCounter:
     def __init__(self) -> None:
