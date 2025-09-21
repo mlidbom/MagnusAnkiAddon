@@ -24,8 +24,9 @@ if TYPE_CHECKING:
     from queryablecollections.q_iterable import QIterable
     from queryablecollections.q_ordered_iterable import QOrderedIterable
 
-class ZeroImportOverheadConstructors:
 
+class ZeroImportOverheadConstructors:
+    """This class contains static methods that are used to construct the collection classes with zero import overhead and without the need to complicate methods thoughouht the library by having to import these classes within functions in order to avoid circular imports."""
     @staticmethod
     def list_[TItem](iterable: Iterable[TItem]) -> QList[TItem]:
         from queryablecollections.collections.q_list import QList
