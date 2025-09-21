@@ -2,9 +2,10 @@ from __future__ import annotations
 
 from decimal import Decimal
 
+import pytest
 from queryablecollections.collections.numeric.q_decimal_types import QDecimalList
 from queryablecollections.q_errors import EmptyIterableError
-from test_q_iterable_common import *
+from test_q_iterable_common import throws_test, value_test
 
 
 def test_typing() -> None:
