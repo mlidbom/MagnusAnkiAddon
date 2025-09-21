@@ -74,7 +74,7 @@ scalar_or_action_operators: list[tuple[str, ScalarOrActionOperator]] = [
 
 all_tested_operator_names: set[str] = query(iterator_generating_operators).select(lambda x: x[0]).to_set() | query(scalar_or_action_operators).select(lambda x: x[0]).to_set()
 
-def test_all_iterator_generating_operators_when_called_on_generator_backed_iterable_consume_elements() -> None:
+def test_all_iterator_generating_operators_when_called_on_generator_backed_iterable_consume_elements_and_the_results_they_return_change() -> None:
     for operator_name, operator in iterator_generating_operators:
         original_iterator = generate_10_ints()
         result = operator(original_iterator)
@@ -84,7 +84,7 @@ def test_all_iterator_generating_operators_when_called_on_generator_backed_itera
         if new_length == original_length: raise AssertionError(f"Operator {operator_name} did not consume any elements")
         if original_iterator.qcount() == 10: raise AssertionError(f"Operator {operator_name} did not consume any from source generator")
 
-def test_no_iterator_generating_operators_when_called_on_collection_backed_iterator_consume_elements() -> None:
+def test_no_iterator_generating_operators_when_called_on_collection_backed_iterator_consume_elements_and_they_return_the_same_result_repeatedly() -> None:
     for operator_name, operator in iterator_generating_operators:
         original_iterator = collection_10_ints()
         result_iterator = operator(original_iterator)
