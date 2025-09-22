@@ -4,10 +4,7 @@ from queryablecollections._private_implementation_details.sort_by_instructions i
 
 from .all import all
 from .any import any
-from .as_decimals import as_decimals
-from .as_floats import as_floats
-from .as_fractions import as_fractions
-from .as_ints import as_ints
+from .as_ import as_decimals, as_floats, as_fractions, as_ints
 from .concat import concat
 from .count import count
 from .distinct import distinct
