@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from test_iterable_common import value_test
+from common_helpers import value_test
 
 
 def test_concat_appends_second_sequence_to_first() -> None:

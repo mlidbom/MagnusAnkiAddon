@@ -1,8 +1,8 @@
 from __future__ import annotations
 
+from common_helpers import *
 from queryablecollections.collections.numeric.q_int_types import QIntList
 from queryablecollections.q_errors import EmptyIterableError
-from test_iterable_common import *
 
 
 def test_cast_int_returns_an_q_iterable_int_with_the_same_elements() -> None:

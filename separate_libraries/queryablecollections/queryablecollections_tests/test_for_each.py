@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from test_iterable_common import CallCounter, value_test
+from common_helpers import CallCounter, value_test
 
 
 def test_executes_action_for_each_element() -> None:

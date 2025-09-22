@@ -31,15 +31,3 @@ def test_sequence_slice_returns_qimmutable_sequence() -> None:
     value = QImmutableSequence((1, 2, 3))[1:]
     assert isinstance(value, QImmutableSequence)
     assert value.element_at(0) == 2
-
-def test_list_indexer_returns_element_at_index() -> None:
-    values = QList((0, 1, 2))
-    assert values[0] == 0
-    assert values[1] == 1
-    assert values[2] == 2
-
-def test_sequence_indexer_returns_element_at_index() -> None:
-    values = QImmutableSequence((0, 1, 2))
-    assert values[0] == 0
-    assert values[1] == 1
-    assert values[2] == 2

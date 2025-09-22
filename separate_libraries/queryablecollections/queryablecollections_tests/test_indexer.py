@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from test_iterable_common import value_test
+from common_helpers import value_test
 
 
 def test_indexer_returns_first_value() -> None:

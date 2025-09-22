@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from test_iterable_common import value_test
+from common_helpers import value_test
 
 
 def test_0_test_returns_element_1() -> None:
