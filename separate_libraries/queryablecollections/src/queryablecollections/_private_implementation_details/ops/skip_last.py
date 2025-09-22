@@ -9,10 +9,10 @@ if TYPE_CHECKING:
 
 
 def skip_last[TItem](self: Iterable[TItem], count: int) -> Iterable[TItem]:
-    def internal_skip_last() -> Iterable[TItem]:
+    def skip_last_implementation() -> Iterable[TItem]:
         if count <= 0: return self
         items = list(self)
         if count >= len(items):
             return C.empty_iterable()
         return items[:-count]
-    return C.lazy_iterable(internal_skip_last)
+    return C.lazy_iterable(skip_last_implementation)

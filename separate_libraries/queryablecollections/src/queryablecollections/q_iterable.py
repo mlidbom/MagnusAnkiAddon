@@ -5,10 +5,10 @@ from collections.abc import Callable, Iterable
 from typing import TYPE_CHECKING, Self, overload
 
 from queryablecollections._private_implementation_details import ops
-from queryablecollections._private_implementation_details.sort_instruction import SortInstruction
 
 # noinspection PyPep8Naming
 from queryablecollections._private_implementation_details.q_zero_overhead_collection_contructors import ZeroImportOverheadConstructors as C
+from queryablecollections._private_implementation_details.sort_instruction import SortInstruction
 from queryablecollections.q_errors import EmptyIterableError
 
 if TYPE_CHECKING:

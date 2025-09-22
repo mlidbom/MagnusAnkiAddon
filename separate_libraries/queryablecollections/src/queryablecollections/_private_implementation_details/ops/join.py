@@ -18,7 +18,7 @@ def join[TOuter, TInner, TKey, TResult](
         second_key: Selector[TInner, TKey],
         select: Callable[[TOuter, TInner], TResult]
 ) -> QIterable[TResult]:
-    def inner_join() -> Iterable[TResult]:
+    def join_implementation() -> Iterable[TResult]:
         inner_lookup: dict[TKey, list[TInner]] = {}
         for inner_item in second:
             key = second_key(inner_item)
@@ -33,4 +33,4 @@ def join[TOuter, TInner, TKey, TResult](
                 for inner_item in inner_lookup[outer_key]:
                     yield select(outer_item, inner_item)
 
-    return C.lazy_iterable(inner_join)
+    return C.lazy_iterable(join_implementation)

@@ -7,5 +7,6 @@ if TYPE_CHECKING:
     from collections.abc import Iterable
 
 
-def element_at_or_none[TItem](self: Iterable[TItem], index: int) -> TItem | None:
+def element_at_or_none[TItem](self: Iterable[TItem],
+                              index: int) -> TItem | None:
     return next(itertools.islice(self, index, index + 1), None)

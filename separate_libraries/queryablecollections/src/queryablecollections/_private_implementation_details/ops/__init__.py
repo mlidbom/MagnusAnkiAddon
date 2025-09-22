@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from queryablecollections._private_implementation_details.sort_by_instructions import sort_by_instructions
+
 from .all import all
 from .any import any
 from .as_decimals import as_decimals
@@ -27,7 +29,6 @@ from .single import single
 from .single_or_none import single_or_none
 from .skip import skip
 from .skip_last import skip_last
-from .sort_by_instructions import sort_by_instructions
 from .take import take
 from .take_last import take_last
 from .take_while import take_while
@@ -39,41 +40,41 @@ from .zip2 import zip2
 from .zip3 import zip3
 
 __all__ = [
-    "all",
-    "any",
-    "count",
-    "distinct",
-    "distinct_by",
-    "where",
-    "where_not_none",
-    "take_while",
-    "take",
-    "take_last",
-    "skip",
-    "skip_last",
-    "of_type",
-    "for_each",
-    "pipe",
-    "group_by_q",
+        "all",
+        "any",
+        "count",
+        "distinct",
+        "distinct_by",
+        "where",
+        "where_not_none",
+        "take_while",
+        "take",
+        "take_last",
+        "skip",
+        "skip_last",
+        "of_type",
+        "for_each",
+        "pipe",
+        "group_by_q",
         "reversed",
-    "sort_by_instructions",
-    "first",
-    "first_or_none",
-    "single",
-    "single_or_none",
-    "element_at",
-    "element_at_or_none",
-    "concat",
-    "select",
-    "flatten",
-    "select_many",
-    "to_dict",
-    "as_ints",
-    "as_floats",
-    "as_fractions",
-    "as_decimals",
-    "join",
-    "zip",
-    "zip2",
-    "zip3",
+        "sort_by_instructions",
+        "first",
+        "first_or_none",
+        "single",
+        "single_or_none",
+        "element_at",
+        "element_at_or_none",
+        "concat",
+        "select",
+        "flatten",
+        "select_many",
+        "to_dict",
+        "as_ints",
+        "as_floats",
+        "as_fractions",
+        "as_decimals",
+        "join",
+        "zip",
+        "zip2",
+        "zip3",
 ]

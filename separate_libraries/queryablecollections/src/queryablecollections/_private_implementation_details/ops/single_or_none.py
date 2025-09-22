@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from queryablecollections._private_implementation_details.ops.where import where
+from queryablecollections._private_implementation_details import ops
 from queryablecollections.q_errors import InvalidOperationError
 
 if TYPE_CHECKING:
@@ -10,10 +10,10 @@ if TYPE_CHECKING:
 
     from queryablecollections._private_implementation_details.type_aliases import Predicate
 
-
-def single_or_none[TItem](self: Iterable[TItem], predicate: Predicate[TItem] | None = None) -> TItem | None:
+def single_or_none[TItem](self: Iterable[TItem],
+                          predicate: Predicate[TItem] | None = None) -> TItem | None:
     if predicate is not None:
-        self = where(self, predicate)
+        self = ops.where(self, predicate)
     iterator = iter(self)
     try:
         first_element = next(iterator)
