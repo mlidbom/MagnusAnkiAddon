@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any
 
 from queryablecollections.collections.q_list import QList
 from queryablecollections.q_iterable import query
@@ -116,7 +115,7 @@ class TestJoin:
     def test_join_is_lazy(self) -> None:
         call_count = 0
 
-        def counting_result_selector(p: Person, o: Order) -> Any:
+        def counting_result_selector(p: Person, o: Order) -> str:
             nonlocal call_count
             call_count += 1
             return f"{p.name}: ${o.amount}"

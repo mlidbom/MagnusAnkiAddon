@@ -48,11 +48,11 @@ def lists_value_test[TIn, TOut](input: list[TIn] | Callable[[], Iterable[TIn]],
     value_test(input, select, output, skip_sets=True)
 
 def value_test[TIn, TOut](input: list[TIn] | Callable[[], Iterable[TIn]],
-                          select: Callable[[QIterable[TIn]], TOut],
+                          operation: Callable[[QIterable[TIn]], TOut],
                           output: TOut,
                           skip_sets: bool = False) -> None:
     for _name, sequence in create_sequences(input, skip_sets):
-        result = select(sequence)
+        result = operation(sequence)
         assert result == output
 
 def throws_test[TIn, TOut](input: Iterable[TIn],
