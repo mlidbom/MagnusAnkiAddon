@@ -35,9 +35,7 @@ from .take_while import take_while
 from .to_dict import to_dict
 from .where import where
 from .where_not_none import where_not_none
-from .zip import zip
-from .zip2 import zip2
-from .zip3 import zip3
+from .zip import zip, zip2, zip3
 
 __all__ = [
         "all",
