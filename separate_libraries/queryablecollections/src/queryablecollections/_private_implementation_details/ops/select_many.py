@@ -8,8 +8,7 @@ if TYPE_CHECKING:
     from collections.abc import Iterable
 
     from queryablecollections._private_implementation_details.type_aliases import Selector
-    from queryablecollections.q_iterable import QIterable
 
 
-def select_many[T, TSubItem](self: QIterable[T], selector: Selector[T, Iterable[TSubItem]]) -> QIterable[TSubItem]:
+def select_many[T, TSubItem](self: Iterable[T], selector: Selector[T, Iterable[TSubItem]]) -> Iterable[TSubItem]:
     return ops.flatten(ops.select(self, selector))
