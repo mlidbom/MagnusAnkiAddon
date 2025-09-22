@@ -25,6 +25,7 @@ iterator_generating_operators: list[tuple[str, CollectionReturningOperator]] = [
         ("as_floats", lambda x1: x1.select(float).as_floats()),
         ("as_fractions", lambda x1: x1.select(Fraction).as_fractions()),
         ("as_ints", lambda x1: x1.as_ints()),
+        ("as_iterable", lambda x1: x1.as_iterable()),
         ("cast", lambda x1: x1.cast.checked.to(int)),
         ("distinct", lambda x1: x1.distinct()),
         ("distinct_by", lambda x1: x1.distinct_by(lambda x2: x2)),

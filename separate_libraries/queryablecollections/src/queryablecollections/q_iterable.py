@@ -54,6 +54,8 @@ class QIterable[T](Iterable[T], ABC):
         return self
     # endregion
 
+    def as_iterable(self) -> QIterable[T]: return self
+
     # region typed convertions to access type specific functionality type checkers will only allow calls if the instance is the correct type
 
     def as_ints(self: QIterable[int]) -> QIntIterable: return ops.as_ints(self)
