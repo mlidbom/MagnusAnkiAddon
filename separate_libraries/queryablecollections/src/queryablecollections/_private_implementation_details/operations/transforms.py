@@ -26,25 +26,6 @@ def concat[T](self: Iterable[T], *others: Iterable[T]) -> Iterable[T]:
 def select[T, TResult](self: QIterable[T], selector: Selector[T, TResult]) -> QIterable[TResult]:
     return C.lazy_iterable(lambda: map(selector, self))
 
-def qzip_2[TFirst, TSecond, TResult](first: QIterable[TFirst], second: Iterable[TSecond], selector: Callable[[TFirst, TSecond], TResult]) -> QIterable[TResult]:
-    def inner_zip() -> Iterable[TResult]:
-        for first_item, second_item in zip(first, second, strict=False):
-            yield selector(first_item, second_item)
-    return C.lazy_iterable(inner_zip)
-
-def qzip_3[TFirst, TSecond, TThird](first: QIterable[TFirst], second: Iterable[TSecond], third: Iterable[TThird]) -> QIterable[tuple[TFirst, TSecond, TThird]]:
-    def inner_zip() -> Iterable[tuple[TFirst, TSecond, TThird]]:
-        yield from zip(first, second, third, strict=False)
-    return C.lazy_iterable(inner_zip)
-
-def zip_new[T, T2, T3, TResult](self: QIterable[T], second: Iterable[T2], third_or_result_selector: Iterable[T3] | Callable[[T, T2], TResult] | None = None) -> QIterable[TResult] | QIterable[tuple[T, T2]] | QIterable[tuple[T, T2, T3]]:
-    if third_or_result_selector is None:
-        return qzip_2(self, second, lambda first_elem, second_elem: (first_elem, second_elem))
-    if callable(third_or_result_selector):
-        result_selector = third_or_result_selector
-        return qzip_2(self, second, result_selector)
-    return qzip_3(self, second, third_or_result_selector)
-
 def flatten[T](self: QIterable[Iterable[T]]) -> QIterable[T]:
     return C.lazy_iterable(lambda: itertools.chain.from_iterable(self))
 

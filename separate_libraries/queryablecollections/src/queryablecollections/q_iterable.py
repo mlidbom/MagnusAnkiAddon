@@ -16,7 +16,6 @@ if TYPE_CHECKING:
     from fractions import Fraction
 
     from _typeshed import SupportsRichComparison
-
     from queryablecollections._private_implementation_details.type_aliases import Action1, Func, Predicate, Selector
     from queryablecollections.collections.numeric.q_decimal_types import QDecimalIterable
     from queryablecollections.collections.numeric.q_float_types import QFloatIterable
@@ -98,7 +97,7 @@ class QIterable[T](Iterable[T], ABC):
     def order_by_descending(self, key_selector: Selector[T, SupportsRichComparison]) -> QOrderedIterable[T]:
         return self._order_by(key_selector, True)
 
-    def reversed(self) -> QIterable[T]: return self._lazy(lambda:ops.ordering.reverse_lazy(self))
+    def reversed(self) -> QIterable[T]: return self._lazy(lambda: ops.ordering.reverse_lazy(self))
 
     def ordered(self) -> QIterable[T]: return self._lazy(lambda: ops.ordering.ordered(self))  # pyright: ignore [reportUnknownVariableType, reportArgumentType, reportUnknownLambdaType]
     # endregion
@@ -108,18 +107,14 @@ class QIterable[T](Iterable[T], ABC):
     def select_many[TInner](self, selector: Selector[T, Iterable[TInner]]) -> QIterable[TInner]: return ops.transforms.select_many(self, selector)
     def join[TInner, TKey, TResult](self, other: Iterable[TInner], self_key: Selector[T, TKey], other_key: Selector[TInner, TKey], select: Callable[[T, TInner], TResult]) -> QIterable[TResult]: return ops.transforms.join(self, other, self_key, other_key, select)
 
-    @overload
-    def zip[T2, TResult](self, second: Iterable[T2], result_selector: Callable[[T, T2], TResult], /) -> QIterable[TResult]: ...
+    def zip[T2, TResult](self, second: Iterable[T2], select: Callable[[T, T2], TResult]) -> QIterable[TResult]:
+        return ops.zip.zip(self, second, select)
 
-    @overload
-    def zip[T2](self, second: Iterable[T2], /) -> QIterable[tuple[T, T2]]: ...
+    def zip2[T2, T3, TResult](self, second: Iterable[T2], third: Iterable[T3], select: Callable[[T, T2, T3], TResult]) -> QIterable[TResult]:
+        return ops.zip.zip2(self, second, third, select)
 
-    @overload
-    def zip[T2, T3](self, second: Iterable[T2], third: Iterable[T3], /) -> QIterable[tuple[T, T2, T3]]: ...
-
-    def zip[T2, T3, TResult](self, second: Iterable[T2], third: Iterable[T3] | Callable[[T, T2], TResult] | None = None) \
-            -> QIterable[TResult] | QIterable[tuple[T, T2]] | QIterable[tuple[T, T2, T3]]:
-        return ops.transforms.zip_new(self, second, third)
+    def zip3[T2, T3, T4, TResult](self, second: Iterable[T2], third: Iterable[T3], fourth: Iterable[T4], select: Callable[[T, T2, T3, T4], TResult]) -> QIterable[TResult]:
+        return ops.zip.zip3(self, second, third, fourth, select)
 
     @overload
     def to_dict[TKey, TValue](self, key_selector: Selector[T, TKey], value_selector: Selector[T, TValue]) -> QDict[TKey, TValue]:

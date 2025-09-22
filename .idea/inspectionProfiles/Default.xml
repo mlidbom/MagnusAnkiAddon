@@ -82,6 +82,7 @@
           <option value="any" />
           <option value="all" />
           <option value="id" />
+          <option value="zip" />
         </list>
       </option>
     </inspection_tool>

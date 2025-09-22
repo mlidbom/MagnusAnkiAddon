@@ -35,7 +35,9 @@ iterator_generating_operators: list[tuple[str, CollectionReturningOperator]] = [
         ("order_by", lambda x1: x1.order_by(lambda x2: x2)),
         ("order_by_descending", lambda x1: x1.order_by_descending(lambda x2: x2)),
         ("reversed", lambda x1: x1.reversed()),
-        ("zip", lambda x1: x1.zip([1, 2, 3, 4])),
+        ("zip", lambda x1: x1.zip([1, 2, 3, 4], lambda x2, x3: (x2, x3))),
+        ("zip2", lambda x1: x1.zip2([1, 2, 3], [1, 2, 3], lambda x2, x3, x4: (x2, x3, x4))),
+        ("zip3", lambda x1: x1.zip3([1, 2, 3], [1, 2, 3], [1, 2, 3], lambda x2, x3, x4, x5: (x2, x3, x4, x5))),
         ("join", lambda x1: x1.join([1, 2, 3, 4], lambda key1: key1, lambda key2: key2, lambda val1, val2: val1 + val2)),
         ("select_many", lambda x1: x1.select_many(lambda _: [1, 2, 3])),
         ("cast", lambda x1: x1.cast.checked.to(int)),
@@ -67,7 +69,6 @@ scalar_or_action_operators: list[tuple[str, ScalarOrActionOperator]] = [
         ("element_at_or_none", lambda x1: x1.element_at_or_none(0)),
         ("pipe", lambda x1: x1.pipe(lambda iterator: iterator.for_each(null_op))),
 ]
-
 
 def assert_has_10_elements[T](iterable: QIterable[T]) -> QIterable[T]:
     assert sum(1 for _ in iterable) == 10

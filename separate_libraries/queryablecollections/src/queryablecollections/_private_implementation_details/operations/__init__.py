@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from . import filtering, functional, grouping, ordering, scalars, single_elements, transforms
+from . import filtering, functional, grouping, ordering, scalars, single_elements, transforms, zip
 
 __all__ = [
         "scalars",
@@ -9,5 +9,6 @@ __all__ = [
         "ordering",
         "single_elements",
         "transforms",
-        "functional"
+        "functional",
+        "zip"
 ]
