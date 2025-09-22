@@ -105,7 +105,7 @@ class QIterable[T](Iterable[T], ABC):
     # region mapping/transformation methods
     def select[TReturn](self, selector: Selector[T, TReturn]) -> QIterable[TReturn]: return C.lazy_iterable(lambda: ops.select(self, selector))
     def select_many[TInner](self, selector: Selector[T, Iterable[TInner]]) -> QIterable[TInner]: return C.lazy_iterable(lambda: ops.select_many(self, selector))
-    def join[TInner, TKey, TResult](self, other: Iterable[TInner], self_key: Selector[T, TKey], other_key: Selector[TInner, TKey], select: Callable[[T, TInner], TResult]) -> QIterable[TResult]: return ops.join(self, other, self_key, other_key, select)
+    def join[TInner, TKey, TResult](self, other: Iterable[TInner], self_key: Selector[T, TKey], other_key: Selector[TInner, TKey], select: Callable[[T, TInner], TResult]) -> QIterable[TResult]: return C.lazy_iterable(lambda: ops.join(self, other, self_key, other_key, select))
 
     def zip[T2, TResult](self, second: Iterable[T2], select: Callable[[T, T2], TResult]) -> QIterable[TResult]: return C.lazy_iterable(lambda: ops.zip(self, second, select))
     def zip2[T2, T3, TResult](self, second: Iterable[T2], third: Iterable[T3], select: Callable[[T, T2, T3], TResult]) -> QIterable[TResult]: return C.lazy_iterable(lambda: ops.zip2(self, second, third, select))
@@ -118,10 +118,10 @@ class QIterable[T](Iterable[T], ABC):
         """Groups the elements of a sequence according to the specified key selector"""
 
     @overload
-    def group_by[TKey, TElement](self, key: Selector[T, TKey], element: Selector[T, TElement]) -> QIterable[QGrouping[TKey, TElement]]:
+    def group_by[TKey, TElement](self, key: Selector[T, TKey], select: Selector[T, TElement]) -> QIterable[QGrouping[TKey, TElement]]:
         """Groups the elements of a sequence according to the specified key selector and element selector"""
 
-    def group_by[TKey, TElement](self, key: Selector[T, TKey], element: Selector[T, TElement] | None = None) -> QIterable[QGrouping[TKey, T]] | QIterable[QGrouping[TKey, TElement]]: return ops.group_by_q(self, key, element)
+    def group_by[TKey, TElement](self, key: Selector[T, TKey], select: Selector[T, TElement] | None = None) -> QIterable[QGrouping[TKey, T]] | QIterable[QGrouping[TKey, TElement]]: return ops.group_by_q(self, key, select)
     # endregion
 
     # region single item selecting methods
