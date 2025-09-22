@@ -2,8 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from queryablecollections._private_implementation_details.operations.flatten import flatten
-from queryablecollections._private_implementation_details.operations.select import select
+from queryablecollections._private_implementation_details import operations as ops
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
@@ -13,4 +12,4 @@ if TYPE_CHECKING:
 
 
 def select_many[T, TSubItem](self: QIterable[T], selector: Selector[T, Iterable[TSubItem]]) -> QIterable[TSubItem]:
-    return flatten(select(self, selector))
+    return ops.flatten(ops.select(self, selector))

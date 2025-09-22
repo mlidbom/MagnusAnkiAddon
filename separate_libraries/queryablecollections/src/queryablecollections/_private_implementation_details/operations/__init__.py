@@ -20,7 +20,7 @@ from .group_by_q import group_by_q
 from .join import join
 from .of_type import of_type
 from .pipe import pipe
-from .reverse_lazy import reverse_lazy
+from .reversed import reversed
 from .select import select
 from .select_many import select_many
 from .single import single
@@ -55,7 +55,7 @@ __all__ = [
     "for_each",
     "pipe",
     "group_by_q",
-    "reverse_lazy",
+        "reversed",
     "sort_by_instructions",
     "first",
     "first_or_none",

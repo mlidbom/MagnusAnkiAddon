@@ -98,7 +98,7 @@ class QIterable[T](Iterable[T], ABC):
     def order_by_descending(self, key_selector: Selector[T, SupportsRichComparison]) -> QOrderedIterable[T]:
         return self._order_by(key_selector, True)
 
-    def reversed(self) -> QIterable[T]: return self._lazy(lambda: ops.reverse_lazy(self))
+    def reversed(self) -> QIterable[T]: return self._lazy(lambda: ops.reversed(self))
 
     # endregion
 
