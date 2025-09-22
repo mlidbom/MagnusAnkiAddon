@@ -42,10 +42,10 @@ iterator_generating_operators: list[tuple[str, CollectionReturningOperator]] = [
         ("select_many", lambda x1: x1.select_many(lambda _: [1, 2, 3])),
         ("cast", lambda x1: x1.cast.checked.to(int)),
         ("group_by", lambda x1: x1.group_by(lambda x2: x2)),
-        ("as_int_iterable", lambda x1: x1.as_int_iterable()),
-        ("as_float_iterable", lambda x1: x1.select(float).as_float_iterable()),
-        ("as_fraction_iterable", lambda x1: x1.select(Fraction).as_fraction_iterable()),
-        ("as_decimal_iterable", lambda x1: x1.select(Decimal).as_decimal_iterable()),
+        ("as_ints", lambda x1: x1.as_ints()),
+        ("as_floats", lambda x1: x1.select(float).as_floats()),
+        ("as_fractions", lambda x1: x1.select(Fraction).as_fractions()),
+        ("as_decimals", lambda x1: x1.select(Decimal).as_decimals()),
         ("ordered", lambda x1: x1.ordered()),
 ]
 

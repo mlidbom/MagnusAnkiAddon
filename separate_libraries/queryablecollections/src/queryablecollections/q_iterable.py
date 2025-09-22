@@ -56,10 +56,10 @@ class QIterable[T](Iterable[T], ABC):
 
     # region typed convertions to access type specific functionality type checkers will only allow calls if the instance is the correct type
 
-    def as_int_iterable(self: QIterable[int]) -> QIntIterable: return ops.transforms.as_int_iterable(self)
-    def as_float_iterable(self: QIterable[float]) -> QFloatIterable: return ops.transforms.as_float_iterable(self)
-    def as_fraction_iterable(self: QIterable[Fraction]) -> QFractionIterable: return ops.transforms.as_fraction_iterable(self)
-    def as_decimal_iterable(self: QIterable[Decimal]) -> QDecimalIterable: return ops.transforms.as_decimal_iterable(self)
+    def as_ints(self: QIterable[int]) -> QIntIterable: return ops.transforms.as_int_iterable(self)
+    def as_floats(self: QIterable[float]) -> QFloatIterable: return ops.transforms.as_float_iterable(self)
+    def as_fractions(self: QIterable[Fraction]) -> QFractionIterable: return ops.transforms.as_fraction_iterable(self)
+    def as_decimals(self: QIterable[Decimal]) -> QDecimalIterable: return ops.transforms.as_decimal_iterable(self)
 
     # endregion
 
