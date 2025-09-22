@@ -33,7 +33,6 @@ iterator_generating_operators: list[tuple[str, CollectionReturningOperator]] = [
         ("of_type", lambda x1: x1.of_type(int)),
         ("order_by", lambda x1: x1.order_by(lambda x2: x2)),
         ("order_by_descending", lambda x1: x1.order_by_descending(lambda x2: x2)),
-        ("ordered", lambda x1: x1.ordered()),
         ("reversed", lambda x1: x1.reversed()),
         ("select", lambda x1: x1.select(lambda x2: x2)),
         ("select_many", lambda x1: x1.select_many(lambda _: [1, 2, 3])),

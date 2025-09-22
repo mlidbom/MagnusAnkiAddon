@@ -78,8 +78,6 @@ class QFloatIterable(QIterable[float], ABC):
     def concat(self, *others: Iterable[float]) -> QFloatIterable: return self._selfcast(super().concat(*others))
 
     @override
-    def ordered(self) -> QFloatIterable: return self._selfcast(super().ordered())
-    @override
     def order_by(self, key_selector: Selector[float, SupportsRichComparison]) -> QFloatOrderedIterable: return self._selfcast_ordered(super().order_by(key_selector))
     @override
     def order_by_descending(self, key_selector: Selector[float, SupportsRichComparison]) -> QFloatOrderedIterable: return self._selfcast_ordered(super().order_by_descending(key_selector))

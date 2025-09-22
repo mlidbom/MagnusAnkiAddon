@@ -78,8 +78,6 @@ class QIntIterable(QIterable[int], ABC):
     def concat(self, *others: Iterable[int]) -> QIntIterable: return self._selfcast(super().concat(*others))
 
     @override
-    def ordered(self) -> QIntIterable: return self._selfcast(super().ordered())
-    @override
     def order_by(self, key_selector: Selector[int, SupportsRichComparison]) -> QIntOrderedIterable: return self._selfcast_ordered(super().order_by(key_selector))
     @override
     def order_by_descending(self, key_selector: Selector[int, SupportsRichComparison]) -> QIntOrderedIterable: return self._selfcast_ordered(super().order_by_descending(key_selector))

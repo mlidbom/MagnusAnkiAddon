@@ -3,7 +3,7 @@ from __future__ import annotations
 from .filtering import distinct, distinct_by, of_type, skip, skip_last, take, take_last, take_while, where, where_not_none
 from .functional import for_each, pipe
 from .grouping import group_by_q
-from .ordering import ordered, reverse_lazy, sort_by_instructions
+from .ordering import reverse_lazy, sort_by_instructions
 from .scalars import all, any, count
 from .single_elements import element_at, element_at_or_none, first, first_or_none, single, single_or_none
 from .transforms import as_decimals, as_floats, as_fractions, as_ints, concat, flatten, join, select, select_many, to_dict
@@ -35,7 +35,6 @@ __all__ = [
         "group_by_q",
         "reverse_lazy",
         "sort_by_instructions",
-        "ordered",
         "all",
         "any",
         "count",

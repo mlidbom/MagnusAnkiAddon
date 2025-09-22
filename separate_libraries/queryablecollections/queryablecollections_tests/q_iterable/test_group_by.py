@@ -37,7 +37,7 @@ def test_group_by_first_character_of_string_with_element_selector_returns_one_gr
     assert b_group == groups[1]
     c_group = groups.single(lambda group: group.key == "c")
     assert c_group == groups[2]
-    assert a_group.ordered().to_list() == [len("apple"), len("apricot")]  # apple=5, apricot=7
+    assert a_group.order_by(lambda x: x).to_list() == [len("apple"), len("apricot")]  # apple=5, apricot=7
     assert b_group == [len("banana"), len("blueberry")]
     assert c_group == [len("cherry")]
 

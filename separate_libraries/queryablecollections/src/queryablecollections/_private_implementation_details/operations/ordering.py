@@ -24,6 +24,3 @@ def sort_by_instructions[TItem](self: Iterable[TItem], sort_instructions: list[S
         items.sort(key=instruction.key_selector, reverse=instruction.descending)
 
     yield from items
-
-def ordered[TElement: SupportsRichComparison](self: Iterable[TElement]) -> Iterable[TElement]:
-    return sorted(self)

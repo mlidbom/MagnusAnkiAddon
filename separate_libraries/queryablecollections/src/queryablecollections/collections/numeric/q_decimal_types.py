@@ -79,8 +79,6 @@ class QDecimalIterable(QIterable[Decimal], ABC):
     def concat(self, *others: Iterable[Decimal]) -> QDecimalIterable: return self._selfcast(super().concat(*others))
 
     @override
-    def ordered(self) -> QDecimalIterable: return self._selfcast(super().ordered())
-    @override
     def order_by(self, key_selector: Selector[Decimal, SupportsRichComparison]) -> QDecimalOrderedIterable: return self._selfcast_ordered(super().order_by(key_selector))
     @override
     def order_by_descending(self, key_selector: Selector[Decimal, SupportsRichComparison]) -> QDecimalOrderedIterable: return self._selfcast_ordered(super().order_by_descending(key_selector))

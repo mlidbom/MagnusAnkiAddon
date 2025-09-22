@@ -79,8 +79,6 @@ class QFractionIterable(QIterable[Fraction], ABC):
     def concat(self, *others: Iterable[Fraction]) -> QFractionIterable: return self._selfcast(super().concat(*others))
 
     @override
-    def ordered(self) -> QFractionIterable: return self._selfcast(super().ordered())
-    @override
     def order_by(self, key_selector: Selector[Fraction, SupportsRichComparison]) -> QFractionOrderedIterable: return self._selfcast_ordered(super().order_by(key_selector))
     @override
     def order_by_descending(self, key_selector: Selector[Fraction, SupportsRichComparison]) -> QFractionOrderedIterable: return self._selfcast_ordered(super().order_by_descending(key_selector))

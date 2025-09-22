@@ -100,7 +100,6 @@ class QIterable[T](Iterable[T], ABC):
 
     def reversed(self) -> QIterable[T]: return self._lazy(lambda: ops.reverse_lazy(self))
 
-    def ordered(self) -> QIterable[T]: return self._lazy(lambda: ops.ordered(self))  # pyright: ignore [reportUnknownVariableType, reportArgumentType, reportUnknownLambdaType]
     # endregion
 
     # region mapping/transformation methods
