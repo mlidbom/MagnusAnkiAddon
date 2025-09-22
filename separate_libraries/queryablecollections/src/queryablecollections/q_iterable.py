@@ -106,7 +106,7 @@ class QIterable[T](Iterable[T], ABC):
     # region mapping/transformation methods
     def select[TReturn](self, selector: Selector[T, TReturn]) -> QIterable[TReturn]: return ops.transforms.select(self, selector)
     def select_many[TInner](self, selector: Selector[T, Iterable[TInner]]) -> QIterable[TInner]: return ops.transforms.select_many(self, selector)
-    def join[TInner, TKey, TResult](self, inner: Iterable[TInner], outer_key: Selector[T, TKey], inner_key: Selector[TInner, TKey], result: Callable[[T, TInner], TResult]) -> QIterable[TResult]: return ops.transforms.join(self, inner, outer_key, inner_key, result)
+    def join[TInner, TKey, TResult](self, other: Iterable[TInner], self_key: Selector[T, TKey], other_key: Selector[TInner, TKey], select: Callable[[T, TInner], TResult]) -> QIterable[TResult]: return ops.transforms.join(self, other, self_key, other_key, select)
 
     @overload
     def zip[T2, TResult](self, second: Iterable[T2], result_selector: Callable[[T, T2], TResult], /) -> QIterable[TResult]: ...

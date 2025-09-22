@@ -25,9 +25,9 @@ class TestJoin:
 
         result = (query(people)
                   .join(orders,
-                        lambda p: p.id,
-                        lambda o: o.person_id,
-                        lambda p, o: f"{p.name}: ${o.amount}")
+                        lambda this: this.id,
+                        lambda other: other.person_id,
+                        lambda this, other: f"{this.name}: ${other.amount}")
                   .to_list())
 
         expected = ["Alice: $100.0", "Alice: $150.0", "Bob: $200.0"]
@@ -39,9 +39,9 @@ class TestJoin:
 
         result = (query(people)
                   .join(orders,
-                        lambda p: p.id,
-                        lambda o: o.person_id,
-                        lambda p, o: f"{p.name}: ${o.amount}")
+                        lambda this: this.id,
+                        lambda other: other.person_id,
+                        lambda this, other: f"{this.name}: ${other.amount}")
                   .to_list())
 
         assert result == []
@@ -52,9 +52,9 @@ class TestJoin:
 
         result = (query(people)
                   .join(orders,
-                        lambda p: p.id,
-                        lambda o: o.person_id,
-                        lambda p, o: f"{p.name}: ${o.amount}")
+                        lambda this: this.id,
+                        lambda other: other.person_id,
+                        lambda this, other: f"{this.name}: ${other.amount}")
                   .to_list())
 
         assert result == []
@@ -65,9 +65,9 @@ class TestJoin:
 
         result = (query(people)
                   .join(orders,
-                        lambda p: p.id,
-                        lambda o: o.person_id,
-                        lambda p, o: f"{p.name}: ${o.amount}")
+                        lambda this: this.id,
+                        lambda other: other.person_id,
+                        lambda this, other: f"{this.name}: ${other.amount}")
                   .to_list())
 
         assert result == []
@@ -78,9 +78,9 @@ class TestJoin:
 
         result = (query(people)
                   .join(orders,
-                        lambda p: p.id,
-                        lambda o: o.person_id,
-                        lambda p, o: f"{p.name}: ${o.amount}")
+                        lambda this: this.id,
+                        lambda other: other.person_id,
+                        lambda this, other: f"{this.name}: ${other.amount}")
                   .to_list())
 
         assert result == []
@@ -91,9 +91,9 @@ class TestJoin:
 
         result = (query(numbers)
                   .join(letters,
-                        lambda number: str(number),
-                        lambda string: string[0],
-                        lambda number, string: f"{number}-{string}")
+                        lambda this: str(this),
+                        lambda other: other[0],
+                        lambda this, other: f"{this}-{other}")
                   .to_list())
 
         assert result == ["1-1a", "2-2a", "3-3a", "2-2a"]
@@ -105,9 +105,9 @@ class TestJoin:
 
         result = (query(categories)
                   .join(products,
-                        lambda c: c[0],  # category id
-                        lambda p: p[1],  # product category
-                        lambda c, p: f"{p[0]} in {c[1]}")
+                        lambda this: this[0],  # category id
+                        lambda other: other[1],  # product category
+                        lambda this, other: f"{other[0]} in {this[1]}")
                   .to_list())
 
         expected = ["laptop in Technology", "tablet in Technology", "vitamins in Health"]
@@ -125,8 +125,8 @@ class TestJoin:
         orders = [Order(101, 1, 100.0), Order(102, 2, 200.0)]
 
         joined = query(people).join(orders,
-                                    lambda p: p.id,
-                                    lambda o: o.person_id,
+                                    lambda this: this.id,
+                                    lambda other: other.person_id,
                                     counting_result_selector)
 
         assert call_count == 0
@@ -141,9 +141,9 @@ class TestJoin:
 
         result = (query(people)
                   .join(orders,
-                        lambda p: p.id,
-                        lambda o: o.person_id,
-                        lambda p, o: f"{p.name}: ${o.amount}")
+                        lambda this: this.id,
+                        lambda other: other.person_id,
+                        lambda this, other: f"{this.name}: ${other.amount}")
                   .to_list())
 
         expected = ["Alice: $100.0", "Bob: $200.0"]
@@ -155,9 +155,9 @@ class TestJoin:
 
         result = (query(people)
                   .join(orders,
-                        lambda p: p.id,
-                        lambda o: o.person_id,
-                        lambda p, o: f"{p.name}: ${o.amount}")
+                        lambda this: this.id,
+                        lambda other: other.person_id,
+                        lambda this, other: f"{this.name}: ${other.amount}")
                   .to_list())
 
         expected = ["Alice: $100.0", "Alice2: $100.0", "Bob: $200.0"]
