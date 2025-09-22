@@ -27,6 +27,7 @@ iterator_generating_operators: list[tuple[str, CollectionReturningOperator]] = [
         ("as_ints", lambda x1: x1.as_ints()),
         ("as_iterable", lambda x1: x1.as_iterable()),
         ("cast", lambda x1: x1.cast.checked.to(int)),
+        ("chunk", lambda x1: x1.chunk(2)),
         ("distinct", lambda x1: x1.distinct()),
         ("distinct_by", lambda x1: x1.distinct_by(lambda x2: x2)),
         ("group_by", lambda x1: x1.group_by(lambda x2: x2)),

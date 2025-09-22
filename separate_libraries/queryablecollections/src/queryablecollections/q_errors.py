@@ -11,7 +11,7 @@ class EmptyIterableError(InvalidOperationError):
     def __init__(self) -> None:
         super().__init__("The operation cannot be performed on an empty Iterable.")
 
-class ArgumentError(Exception):
+class ArgumentError(ValueError):
     """Raised when an argument is invalid."""
     def __init__(self, message: str = "The argument is invalid.") -> None:
         super().__init__(message)

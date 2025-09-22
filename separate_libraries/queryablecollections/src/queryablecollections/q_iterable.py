@@ -120,6 +120,8 @@ class QIterable[T](Iterable[T], ABC):
 
     def to_dict[TKey, TValue](self, key_selector: Selector[T, TKey], value_selector: Selector[T, TValue]) -> QDict[TKey, TValue]: return ops.to_dict(self, key_selector, value_selector)
 
+    def chunk(self, size: int) -> QIterable[list[T]]: return C.lazy_iterable(lambda: ops.chunk(self, size))
+
     @overload
     def group_by[TKey](self, key: Selector[T, TKey]) -> QIterable[QGrouping[TKey, T]]:
         """Groups the elements of a sequence according to the specified key selector"""

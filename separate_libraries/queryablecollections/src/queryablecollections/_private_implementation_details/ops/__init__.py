@@ -5,6 +5,7 @@ from queryablecollections._private_implementation_details.sort_by_instructions i
 from .all import all
 from .any import any
 from .as_ import as_decimals, as_floats, as_fractions, as_ints
+from .chunk import chunk
 from .concat import concat
 from .count import count
 from .distinct import distinct
@@ -43,6 +44,7 @@ __all__ = [
         "as_floats",
         "as_fractions",
         "as_ints",
+        "chunk",
         "concat",
         "count",
         "distinct",
