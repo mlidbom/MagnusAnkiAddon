@@ -29,6 +29,7 @@ iterator_generating_operators: list[tuple[str, CollectionReturningOperator]] = [
         ("distinct", lambda x1: x1.distinct()),
         ("distinct_by", lambda x1: x1.distinct_by(lambda x2: x2)),
         ("group_by", lambda x1: x1.group_by(lambda x2: x2)),
+        ("group_join", lambda x1: x1.group_join([1, 2, 3, 4], lambda key1: key1, lambda key2: key2, lambda val1, val2: (val1, list(val2)))),
         ("join", lambda x1: x1.join([1, 2, 3, 4], lambda key1: key1, lambda key2: key2, lambda val1, val2: val1 + val2)),
         ("of_type", lambda x1: x1.of_type(int)),
         ("order_by", lambda x1: x1.order_by(lambda x2: x2)),

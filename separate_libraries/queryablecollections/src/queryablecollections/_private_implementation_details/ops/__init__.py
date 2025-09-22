@@ -16,6 +16,7 @@ from .first_or_none import first_or_none
 from .flatten import flatten
 from .for_each import for_each
 from .group_by_q import group_by_q
+from .group_join import group_join
 from .join import join
 from .of_type import of_type
 from .pipe import pipe
@@ -53,6 +54,7 @@ __all__ = [
         "flatten",
         "for_each",
         "group_by_q",
+        "group_join",
         "join",
         "of_type",
         "pipe",
