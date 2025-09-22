@@ -22,6 +22,7 @@ from .group_join import group_join
 from .join import join
 from .of_type import of_type
 from .pipe import pipe
+from .prepend import prepend
 from .reversed import reversed
 from .select import select
 from .select_many import select_many
@@ -62,6 +63,7 @@ __all__ = [
         "join",
         "of_type",
         "pipe",
+        "prepend",
         "reversed",
         "select",
         "select_many",
