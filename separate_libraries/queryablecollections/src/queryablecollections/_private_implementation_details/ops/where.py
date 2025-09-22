@@ -7,6 +7,5 @@ if TYPE_CHECKING:
 
     from queryablecollections._private_implementation_details.type_aliases import Predicate
 
-
 def where[TItem](self: Iterable[TItem], predicate: Predicate[TItem]) -> Iterable[TItem]:
-    return filter(predicate, self)
+    return (item for item in self if predicate(item))
