@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from test_common_helpers import *
 from queryablecollections.collections.numeric.q_float_types import QFloatList
 from queryablecollections.q_errors import EmptyIterableError
+from test_common_helpers import *
 
 
 def test_cast_float_returns_an_q_iterable_float_with_the_same_elements() -> None:

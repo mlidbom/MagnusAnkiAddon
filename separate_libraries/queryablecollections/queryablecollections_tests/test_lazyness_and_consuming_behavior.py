@@ -59,6 +59,7 @@ iterator_generating_operators: list[tuple[str, CollectionReturningOperator]] = [
 scalar_or_action_operators: list[tuple[str, ScalarOrActionOperator]] = [
         ("all", lambda x1: x1.all(lambda _: True)),
         ("any", lambda x1: x1.any()),
+        ("count_by", lambda x1: x1.count_by(lambda x: x)),
         ("element_at", lambda x1: x1.element_at(0)),
         ("element_at_or_none", lambda x1: x1.element_at_or_none(0)),
         ("first", lambda x1: x1.first()),

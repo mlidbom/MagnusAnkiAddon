@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from test_common_helpers import value_test
 from queryablecollections.collections.q_list import QList
+from test_common_helpers import value_test
 
 
 def test_not_none_returns_only_elements_that_are_not_none() -> None:

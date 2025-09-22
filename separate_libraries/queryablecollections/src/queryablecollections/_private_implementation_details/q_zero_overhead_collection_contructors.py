@@ -95,7 +95,7 @@ class ZeroImportOverheadConstructors:
         return ZeroImportOverheadConstructors.default_dict(factory)
 
     @staticmethod
-    def dict[TKey, TValue](elements: Iterable[tuple[TKey, TValue]]) -> QDict[TKey, TValue]:
+    def dict[TKey, TValue](elements: Iterable[tuple[TKey, TValue]] = ()) -> QDict[TKey, TValue]:
         from queryablecollections.collections.q_dict import QDict
         ZeroImportOverheadConstructors.dict = QDict  # replace this method with a direct call so that future calls have zero import overhead
         return ZeroImportOverheadConstructors.dict(elements)  # use the new version to prove from the very first call that it works

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from test_common_helpers import throws_test, value_test
 from queryablecollections.q_errors import ArgumentError
+from test_common_helpers import throws_test, value_test
 
 
 def test_divides_evenly_into_chunks_of_the_given_size_preserving_order() -> None:

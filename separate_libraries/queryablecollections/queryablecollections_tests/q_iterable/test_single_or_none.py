@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from test_common_helpers import throws_test, value_test
 from queryablecollections.q_errors import InvalidOperationError
+from test_common_helpers import throws_test, value_test
 
 
 def test_single_or_none_returns_single_value() -> None:

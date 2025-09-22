@@ -11,10 +11,10 @@ if TYPE_CHECKING:
 
 class QDict[TKey, TItem](dict[TKey, TItem], QIterable[TKey]):
     __slots__: tuple[str, ...] = ()
-    def __init__(self, elements: Iterable[tuple[TKey, TItem]]) -> None:
+    def __init__(self, elements: Iterable[tuple[TKey, TItem]] = ()) -> None:
         super().__init__(elements)
 
-    def qitems(self) -> QIterable[KeyValuePair[TKey, TItem]]: return C.lazy_iterable(lambda: super().items()).select(KeyValuePair)
+    def qitems(self) -> QIterable[KeyValuePair[TKey, TItem]]: return C.lazy_iterable(lambda: self.items()).select(KeyValuePair)
 
     @override
     def _optimized_length(self) -> int: return len(self)

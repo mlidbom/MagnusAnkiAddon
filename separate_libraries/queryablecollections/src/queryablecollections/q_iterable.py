@@ -24,6 +24,7 @@ if TYPE_CHECKING:
     from queryablecollections.collections.numeric.q_int_types import QIntIterable
     from queryablecollections.collections.q_dict import QDict
     from queryablecollections.collections.q_frozen_set import QFrozenSet
+    from queryablecollections.collections.q_key_value_pair import KeyValuePair
     from queryablecollections.collections.q_list import QList
     from queryablecollections.collections.q_sequence import QSequence
     from queryablecollections.collections.q_set import QSet
@@ -86,6 +87,7 @@ class QIterable[T](Iterable[T], ABC):
     # endregion
 
     # region value queries
+    def count_by[TKey](self, key_selector: Selector[T, TKey]) -> QIterable[KeyValuePair[TKey, int]]: return ops.count_by(self, key_selector)
     def qcount(self, predicate: Predicate[T] | None = None) -> int: return ops.count(self, predicate)
     def none(self, predicate: Predicate[T] | None = None) -> bool: return not ops.any(self, predicate)
     def any(self, predicate: Predicate[T] | None = None) -> bool: return ops.any(self, predicate)

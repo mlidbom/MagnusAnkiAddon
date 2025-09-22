@@ -53,7 +53,7 @@ def value_test[TIn, TOut](input: list[TIn] | Callable[[], Iterable[TIn]],
                           skip_sets: bool = False) -> None:
     for _name, sequence in create_sequences(input, skip_sets):
         result = operation(sequence)
-        assert result == output
+        assert result == output, f"Test failed for {_name}"
 
 def throws_test[TIn, TOut](input: Iterable[TIn],
                            operation: Callable[[QIterable[TIn]], TOut],
