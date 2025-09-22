@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from collections.abc import Callable, Iterable
+from collections.abc import Callable, Iterable, Iterator
+from contextlib import contextmanager
 from typing import cast
 
 import pytest
@@ -10,6 +11,16 @@ from queryablecollections.collections.q_list import QList
 from queryablecollections.collections.q_set import QSet
 from queryablecollections.q_iterable import QIterable, query
 
+
+@contextmanager
+def sane_asserting() -> Iterator[None]:
+    try:
+        yield
+    except AssertionError as e:
+        print(f"""
+Failure message: {str(e).split("\n")[0]}
+""")
+        raise
 
 def create_sequences[T](iterable: Iterable[T] | Callable[[], Iterable[T]], skip_sets: bool = False) -> list[tuple[str, QIterable[T]]]:
     factory: Callable[[], Iterable[T]] = (iterable
@@ -52,17 +63,18 @@ def value_test[TIn, TOut](input: list[TIn] | Callable[[], Iterable[TIn]],
                           output: TOut,
                           skip_sets: bool = False) -> None:
     for _name, sequence in create_sequences(input, skip_sets):
-        result = operation(sequence)
-        assert result == output, f"Test failed for {_name}"
+        with sane_asserting():
+            result = operation(sequence)
+            assert result == output, f"Test failed for {_name}"
 
 def throws_test[TIn, TOut](input: Iterable[TIn],
                            operation: Callable[[QIterable[TIn]], TOut],
-                           output: type[Exception] = Exception,
+                           exception: type[Exception] = Exception,
                            skip_sets: bool = False) -> None:
     for name, sequence in create_sequences(input, skip_sets):
-        with pytest.raises(output):  # noqa: PT012
+        with pytest.raises(exception):  # noqa: PT012
             operation(sequence)
-            pytest.fail(f"{name}: Expected {output} to be raised")
+            pytest.fail(f"{name}: Expected {exception} to be raised")
 
 class CallCounter:
     def __init__(self) -> None:
