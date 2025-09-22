@@ -4,8 +4,8 @@ from abc import ABC
 from collections.abc import Callable, Iterable
 from typing import TYPE_CHECKING, Self, overload
 
-import queryablecollections._private_implementation_details.operations as ops
-from queryablecollections._private_implementation_details.operations.ordering import SortInstruction
+from queryablecollections._private_implementation_details import ops
+from queryablecollections._private_implementation_details.sort_instruction import SortInstruction
 
 # noinspection PyPep8Naming
 from queryablecollections._private_implementation_details.q_zero_overhead_collection_contructors import ZeroImportOverheadConstructors as C

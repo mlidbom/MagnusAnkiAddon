@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
-    from queryablecollections._private_implementation_details.operations.ordering import SortInstruction
+    from queryablecollections._private_implementation_details.sort_instruction import SortInstruction
 
 
 def sort_by_instructions[TItem](self: Iterable[TItem], sort_instructions: list[SortInstruction[TItem]]) -> Iterable[TItem]:
