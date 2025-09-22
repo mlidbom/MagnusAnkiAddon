@@ -75,10 +75,13 @@
     </inspection_tool>
     <inspection_tool class="PyProtectedMemberInspection" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="PySameParameterValueInspection" enabled="false" level="WARNING" enabled_by_default="false" />
-    <inspection_tool class="PyShadowingBuiltinsInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+    <inspection_tool class="PyShadowingBuiltinsInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true" editorAttributes="INFO_ATTRIBUTES">
       <option name="ignoredNames">
         <list>
           <option value="input" />
+          <option value="any" />
+          <option value="all" />
+          <option value="id" />
         </list>
       </option>
     </inspection_tool>

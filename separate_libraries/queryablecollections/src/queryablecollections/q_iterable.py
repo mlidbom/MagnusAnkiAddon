@@ -83,9 +83,9 @@ class QIterable[T](Iterable[T], ABC):
 
     # region value queries
     def qcount(self, predicate: Predicate[T] | None = None) -> int: return ops.scalars.count(self, predicate)
-    def none(self, predicate: Predicate[T] | None = None) -> bool: return not ops.scalars.any_(self, predicate)
-    def any(self, predicate: Predicate[T] | None = None) -> bool: return ops.scalars.any_(self, predicate)
-    def all(self, predicate: Predicate[T]) -> bool: return ops.scalars.all_(self, predicate)
+    def none(self, predicate: Predicate[T] | None = None) -> bool: return not ops.scalars.any(self, predicate)
+    def any(self, predicate: Predicate[T] | None = None) -> bool: return ops.scalars.any(self, predicate)
+    def all(self, predicate: Predicate[T]) -> bool: return ops.scalars.all(self, predicate)
 
     # endregion
 
