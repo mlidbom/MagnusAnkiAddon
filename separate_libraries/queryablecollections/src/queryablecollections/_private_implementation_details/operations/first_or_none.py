@@ -1,0 +1,19 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+from queryablecollections._private_implementation_details.operations.where import where
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
+
+    from queryablecollections._private_implementation_details.type_aliases import Predicate
+
+
+def first_or_none[TItem](self: Iterable[TItem], predicate: Predicate[TItem] | None = None) -> TItem | None:
+    if predicate is not None:
+        self = where(self, predicate)
+    try:
+        return next(iter(self))
+    except StopIteration:
+        return None

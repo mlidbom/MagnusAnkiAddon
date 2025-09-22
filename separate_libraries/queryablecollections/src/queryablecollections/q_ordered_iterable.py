@@ -27,4 +27,4 @@ class QOrderedIterable[TItem](QIterable[TItem]):
         return QOrderedIterable(self._factory, self.sorting_instructions + [SortInstruction(key_selector, descending=True)])
 
     @override
-    def __iter__(self) -> Iterator[TItem]: yield from ops.ordering.sort_by_instructions(self._factory(), self.sorting_instructions)
+    def __iter__(self) -> Iterator[TItem]: yield from ops.sort_by_instructions(self._factory(), self.sorting_instructions)

@@ -1,58 +1,79 @@
 from __future__ import annotations
 
-from .as_ import as_decimals, as_floats, as_fractions, as_ints
-from .filtering import distinct, distinct_by, of_type, skip, skip_last, take, take_last, take_while, where, where_not_none
-from .functional import for_each, pipe
-from .grouping import group_by_q
-from .ordering import reverse_lazy, sort_by_instructions
-from .scalars import all, any, count
-from .single_elements import element_at, element_at_or_none, first, first_or_none, single, single_or_none
-from .transforms import concat, flatten, join, select, select_many, to_dict
-from .zip import zip, zip2, zip3
+from .all import all
+from .any import any
+from .as_decimals import as_decimals
+from .as_floats import as_floats
+from .as_fractions import as_fractions
+from .as_ints import as_ints
+from .concat import concat
+from .count import count
+from .distinct import distinct
+from .distinct_by import distinct_by
+from .element_at import element_at
+from .element_at_or_none import element_at_or_none
+from .first import first
+from .first_or_none import first_or_none
+from .flatten import flatten
+from .for_each import for_each
+from .group_by_q import group_by_q
+from .join import join
+from .of_type import of_type
+from .pipe import pipe
+from .reverse_lazy import reverse_lazy
+from .select import select
+from .select_many import select_many
+from .single import single
+from .single_or_none import single_or_none
+from .skip import skip
+from .skip_last import skip_last
+from .sort_by_instructions import sort_by_instructions
+from .take import take
+from .take_last import take_last
+from .take_while import take_while
+from .to_dict import to_dict
+from .where import where
+from .where_not_none import where_not_none
+from .zip import zip
+from .zip2 import zip2
+from .zip3 import zip3
 
 __all__ = [
-        "scalars",
-        "filtering",
-        "grouping",
-        "ordering",
-        "single_elements",
-        "transforms",
-        "functional",
-        "zip",
-        "zip2",
-        "zip3",
-        "distinct",
-        "distinct_by",
-        "where",
-        "where_not_none",
-        "take_while",
-        "take",
-        "take_last",
-        "skip",
-        "skip_last",
-        "of_type",
-        "for_each",
-        "pipe",
-        "group_by_q",
-        "reverse_lazy",
-        "sort_by_instructions",
-        "all",
-        "any",
-        "count",
-        "first",
-        "first_or_none",
-        "single",
-        "single_or_none",
-        "element_at",
-        "element_at_or_none",
-        "concat",
-        "select",
-        "flatten",
-        "select_many",
-        "to_dict",
-        "as_ints",
-        "as_floats",
-        "as_fractions",
-        "as_decimals",
-        "join"
+    "all",
+    "any",
+    "count",
+    "distinct",
+    "distinct_by",
+    "where",
+    "where_not_none",
+    "take_while",
+    "take",
+    "take_last",
+    "skip",
+    "skip_last",
+    "of_type",
+    "for_each",
+    "pipe",
+    "group_by_q",
+    "reverse_lazy",
+    "sort_by_instructions",
+    "first",
+    "first_or_none",
+    "single",
+    "single_or_none",
+    "element_at",
+    "element_at_or_none",
+    "concat",
+    "select",
+    "flatten",
+    "select_many",
+    "to_dict",
+    "as_ints",
+    "as_floats",
+    "as_fractions",
+    "as_decimals",
+    "join",
+    "zip",
+    "zip2",
+    "zip3",
 ]
