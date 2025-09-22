@@ -16,6 +16,7 @@ if TYPE_CHECKING:
     from fractions import Fraction
 
     from _typeshed import SupportsRichComparison
+
     from queryablecollections._private_implementation_details.type_aliases import Action1, Func, Predicate, Selector
     from queryablecollections.collections.numeric.q_decimal_types import QDecimalIterable
     from queryablecollections.collections.numeric.q_float_types import QFloatIterable
