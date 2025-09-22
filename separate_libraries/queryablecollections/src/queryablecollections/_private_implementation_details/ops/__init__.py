@@ -33,6 +33,7 @@ from .to_dict import to_dict
 from .where import where
 from .where_not_none import where_not_none
 from .zip import zip, zip2, zip3
+from .zip_tuple import zip_tuple, zip_tuple2, zip_tuple3
 
 __all__ = [
         "all",
@@ -72,4 +73,7 @@ __all__ = [
         "zip",
         "zip2",
         "zip3",
+        "zip_tuple",
+        "zip_tuple2",
+        "zip_tuple3"
 ]

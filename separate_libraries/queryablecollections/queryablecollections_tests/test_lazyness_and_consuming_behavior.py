@@ -46,6 +46,9 @@ iterator_generating_operators: list[tuple[str, CollectionReturningOperator]] = [
         ("zip", lambda x1: x1.zip([1, 2, 3, 4], lambda x2, x3: (x2, x3))),
         ("zip2", lambda x1: x1.zip2([1, 2, 3], [1, 2, 3], lambda x2, x3, x4: (x2, x3, x4))),
         ("zip3", lambda x1: x1.zip3([1, 2, 3], [1, 2, 3], [1, 2, 3], lambda x2, x3, x4, x5: (x2, x3, x4, x5))),
+        ("zip_tuple", lambda x1: x1.zip_tuple([1, 2, 3])),
+        ("zip_tuple2", lambda x1: x1.zip_tuple2([1, 2, 3], [1, 2, 3])),
+        ("zip_tuple3", lambda x1: x1.zip_tuple3([1, 2, 3], [1, 2, 3], [1, 2, 3])),
 ]
 
 scalar_or_action_operators: list[tuple[str, ScalarOrActionOperator]] = [

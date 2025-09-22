@@ -111,6 +111,11 @@ class QIterable[T](Iterable[T], ABC):
     def zip2[T2, T3, TResult](self, second: Iterable[T2], third: Iterable[T3], select: Callable[[T, T2, T3], TResult]) -> QIterable[TResult]: return C.lazy_iterable(lambda: ops.zip2(self, second, third, select))
     def zip3[T2, T3, T4, TResult](self, second: Iterable[T2], third: Iterable[T3], fourth: Iterable[T4], select: Callable[[T, T2, T3, T4], TResult]) -> QIterable[TResult]: return C.lazy_iterable(lambda: ops.zip3(self, second, third, fourth, select))
 
+    def zip_tuple[T2](self, second: Iterable[T2]) -> QIterable[tuple[T, T2]]: return C.lazy_iterable(lambda: ops.zip_tuple(self, second))
+    def zip_tuple2[T2, T3](self, second: Iterable[T2], third: Iterable[T3]) -> QIterable[tuple[T, T2, T3]]: return C.lazy_iterable(lambda: ops.zip_tuple2(self, second, third))
+    def zip_tuple3[T2, T3, T4](self, second: Iterable[T2], third: Iterable[T3], fourth: Iterable[T4]) -> QIterable[tuple[T, T2, T3, T4]]: return C.lazy_iterable(lambda: ops.zip_tuple3(self, second, third, fourth))
+
+
     def to_dict[TKey, TValue](self, key_selector: Selector[T, TKey], value_selector: Selector[T, TValue]) -> QDict[TKey, TValue]: return ops.to_dict(self, key_selector, value_selector)
 
     @overload
