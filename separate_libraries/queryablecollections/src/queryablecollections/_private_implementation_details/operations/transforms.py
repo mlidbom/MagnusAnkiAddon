@@ -1,14 +1,12 @@
 from __future__ import annotations
 
 import itertools
-from collections.abc import Iterable
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING
 
 from queryablecollections._private_implementation_details.q_zero_overhead_collection_contructors import ZeroImportOverheadConstructors as C
-from queryablecollections.q_errors import ArgumentNoneError
 
 if TYPE_CHECKING:
-    from collections.abc import Callable
+    from collections.abc import Callable, Iterable
     from decimal import Decimal
     from fractions import Fraction
 
@@ -32,15 +30,8 @@ def flatten[T](self: QIterable[Iterable[T]]) -> QIterable[T]:
 def select_many[T, TSubItem](self: QIterable[T], selector: Selector[T, Iterable[TSubItem]]) -> QIterable[TSubItem]:
     return flatten(select(self, selector))
 
-def to_dict[T, TKey, TValue](self: QIterable[T], key_selector: Selector[T, TKey] | None = None, value_selector: Selector[T, TValue] | None = None) -> QDict[TKey, TValue]:
-    if key_selector is not None:
-        if value_selector is None: raise ArgumentNoneError("value_selector")
-        return C.dict((key_selector(item), value_selector(item)) for item in self)
-
-    if value_selector is not None: raise ArgumentNoneError("key_selector")
-
-    # Assume self is a sequence of tuples. Unless the user is working without pyright and/or ignoring the errors it will be
-    return C.dict(cast(Iterable[tuple[TKey, TValue]], self))
+def to_dict[T, TKey, TValue](self: QIterable[T], key_selector: Selector[T, TKey], value_selector: Selector[T, TValue]) -> QDict[TKey, TValue]:
+    return C.dict((key_selector(item), value_selector(item)) for item in self)
 
 def as_ints(self: QIterable[int]) -> QIntIterable: return C.int_iterable(lambda: self)
 def as_floats(self: QIterable[float]) -> QFloatIterable: return C.float_iterable(lambda: self)
