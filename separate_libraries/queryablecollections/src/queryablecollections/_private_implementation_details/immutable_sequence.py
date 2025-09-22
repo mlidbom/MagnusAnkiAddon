@@ -24,3 +24,14 @@ class ImmutableSequence[TItem](Sequence[TItem]):
         if isinstance(index, slice):
             return ImmutableSequence(self._items[index])
         return self._items[index]
+
+    @override
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Sequence):
+            return False
+        if len(self) != len(other):  # pyright: ignore [reportUnknownArgumentType]
+            return False
+        return all(self_item == other_item for self_item, other_item in zip(self._items, other, strict=False))  # pyright: ignore [reportUnknownArgumentType, reportUnknownVariableType]
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}({list(self._items)!r})"

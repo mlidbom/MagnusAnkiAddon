@@ -22,6 +22,5 @@ class QSequence[TItem](Sequence[TItem], QIterable[TItem], ABC):
         from queryablecollections.collections.q_immutable_sequence import QImmutableSequence
         empty = QImmutableSequence[TItem]()
         def get_empty() -> QSequence[TItem]: return empty
-        QSequence.empty = get_empty # replace this method with get_empty so that future calls have zero overhead, just returning a reference
-        return QSequence[TItem].empty() # call the new version so we know from the very first call that it works
-
+        QSequence.empty = get_empty  # replace this method with get_empty so that future calls have zero overhead, just returning a reference
+        return QSequence[TItem].empty()  # call the new version so we know from the very first call that it works
