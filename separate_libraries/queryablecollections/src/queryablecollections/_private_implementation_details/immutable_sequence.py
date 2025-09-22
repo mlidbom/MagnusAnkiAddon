@@ -33,5 +33,6 @@ class ImmutableSequence[TItem](Sequence[TItem]):
             return False
         return all(self_item == other_item for self_item, other_item in zip(self._items, other, strict=False))  # pyright: ignore [reportUnknownArgumentType, reportUnknownVariableType]
 
+    @override
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({list(self._items)!r})"

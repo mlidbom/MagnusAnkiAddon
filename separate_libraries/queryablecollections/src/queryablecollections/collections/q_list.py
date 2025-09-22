@@ -42,7 +42,3 @@ class QList[TItem](list[TItem], QSequence[TItem], QIterable[TItem]):
         if isinstance(index, slice):
             return QList(super().__getitem__(index))
         return super().__getitem__(index)
-
-    @staticmethod
-    @override
-    def empty() -> QList[TItem]: return QList()  # QList is mutable, so unlike our base types we cannot reuse an instance

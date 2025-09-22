@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, cast, override
+from typing import TYPE_CHECKING, Never, override
 
 from queryablecollections.q_iterable import QIterable
 
@@ -15,11 +15,11 @@ class QFrozenSet[TItem](frozenset[TItem], QIterable[TItem]):
     @override
     def _optimized_length(self) -> int: return len(self)
 
-    _empty_set: QFrozenSet[TItem]
+    _empty_set: QFrozenSet[Never]
 
     @staticmethod
     @override
-    def empty() -> QFrozenSet[TItem]:
-        return cast(QFrozenSet[TItem], QFrozenSet._empty_set)  # pyright: ignore [reportGeneralTypeIssues, reportUnknownMemberType] an empty instance can serve as any item type in python since generic types are not present at runtime and this gives as such an instance at virtually zero cost
+    def empty() -> QFrozenSet[Never]:
+        return QFrozenSet._empty_set
 
 QFrozenSet._empty_set = QFrozenSet()  # pyright: ignore [reportGeneralTypeIssues, reportPrivateUsage]

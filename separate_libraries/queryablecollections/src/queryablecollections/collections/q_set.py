@@ -15,7 +15,3 @@ class QSet[TItem](set[TItem], QIterable[TItem]):
 
     @override
     def _optimized_length(self) -> int: return len(self)
-
-    @staticmethod
-    @override
-    def empty() -> QSet[TItem]: return QSet()  # QSet is mutable, so unlike our base types we cannot reuse an instance

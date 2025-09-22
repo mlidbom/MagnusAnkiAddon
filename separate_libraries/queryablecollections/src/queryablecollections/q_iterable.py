@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from abc import ABC
 from collections.abc import Callable, Iterable
-from typing import TYPE_CHECKING, Self, overload
+from typing import TYPE_CHECKING, Never, Self, overload
 
 from queryablecollections._private_implementation_details import ops
 
@@ -156,4 +156,4 @@ class QIterable[T](Iterable[T], ABC):
     # endregion
 
     @staticmethod
-    def empty() -> QIterable[T]: return C.empty_iterable()
+    def empty() -> QIterable[Never]: return C.empty_iterable()

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Never
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
@@ -58,7 +58,7 @@ class ZeroImportOverheadConstructors:
         return ZeroImportOverheadConstructors.cast(qiterable)  # use the new version to prove from the very first call that it works
 
     @staticmethod
-    def empty_iterable[TItem]() -> QIterable[TItem]:  # pyright: ignore [reportInvalidTypeVarUse]
+    def empty_iterable[TItem]() -> QIterable[Never]:  # pyright: ignore [reportInvalidTypeVarUse]
         empty_iterable = ZeroImportOverheadConstructors.lazy_iterable(lambda: ())
         def get_empty() -> QIterable[TItem]: return empty_iterable  # pyright: ignore [reportReturnType]
         ZeroImportOverheadConstructors.empty_iterable = get_empty  # replace this method itself with  # pyright: ignore [reportAttributeAccessIssue]
