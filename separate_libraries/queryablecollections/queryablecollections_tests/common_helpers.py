@@ -27,11 +27,11 @@ def create_sequences[T](iterable: Iterable[T] | Callable[[], Iterable[T]], skip_
     return values
 
 def where_test[TIn, TOut](input: Iterable[TIn],
-                          select: Callable[[TIn], bool],
+                          predicate: Callable[[TIn], bool],
                           output: list[TOut],
                           skip_sets: bool = False) -> None:
     for name, sequence in create_sequences(input, skip_sets):
-        result = sequence.where(select)
+        result = sequence.where(predicate)
         assert result.to_list() == output, name
 
 def select_test[TIn, TOut](input: Iterable[TIn],
@@ -43,9 +43,9 @@ def select_test[TIn, TOut](input: Iterable[TIn],
         assert result.to_list() == output, name
 
 def lists_value_test[TIn, TOut](input: list[TIn] | Callable[[], Iterable[TIn]],
-                                select: Callable[[QIterable[TIn]], TOut],
+                                operation: Callable[[QIterable[TIn]], TOut],
                                 output: TOut) -> None:
-    value_test(input, select, output, skip_sets=True)
+    value_test(input, operation, output, skip_sets=True)
 
 def value_test[TIn, TOut](input: list[TIn] | Callable[[], Iterable[TIn]],
                           operation: Callable[[QIterable[TIn]], TOut],
@@ -56,12 +56,12 @@ def value_test[TIn, TOut](input: list[TIn] | Callable[[], Iterable[TIn]],
         assert result == output
 
 def throws_test[TIn, TOut](input: Iterable[TIn],
-                           select: Callable[[QIterable[TIn]], TOut],
+                           operation: Callable[[QIterable[TIn]], TOut],
                            output: type[Exception] = Exception,
                            skip_sets: bool = False) -> None:
     for name, sequence in create_sequences(input, skip_sets):
         with pytest.raises(output):  # noqa: PT012
-            select(sequence)
+            operation(sequence)
             pytest.fail(f"{name}: Expected {output} to be raised")
 
 class CallCounter:
