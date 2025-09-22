@@ -44,6 +44,7 @@ class QIterable[T](Iterable[T], ABC):
         return C.lazy_iterable(factory)
 
     # region operations on the whole collection, not the items
+    def qappend(self, item: T) -> QIterable[T]: return self._lazy(lambda: ops.append(self, item))
     def concat(self, *others: Iterable[T]) -> QIterable[T]: return self._lazy(lambda: ops.concat(self, *others))
     # endregion
 

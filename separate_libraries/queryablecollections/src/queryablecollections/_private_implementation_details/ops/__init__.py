@@ -4,6 +4,7 @@ from queryablecollections._private_implementation_details.sort_by_instructions i
 
 from .all import all
 from .any import any
+from .append import append
 from .as_ import as_decimals, as_floats, as_fractions, as_ints
 from .chunk import chunk
 from .concat import concat
@@ -40,6 +41,7 @@ from .zip_tuple import zip_tuple, zip_tuple2, zip_tuple3
 __all__ = [
         "all",
         "any",
+        "append",
         "as_decimals",
         "as_floats",
         "as_fractions",

@@ -21,6 +21,7 @@ def swallow_exception_decorator(inner: ScalarOrActionOperator) -> ScalarOrAction
 type CollectionReturningOperator = Callable[[QIterable[int]], Iterable[object]]
 type ScalarOrActionOperator = Callable[[QIterable[int]], Any]
 iterator_generating_operators: list[tuple[str, CollectionReturningOperator]] = [
+        ("qappend", lambda x1: x1.qappend(999)),
         ("as_decimals", lambda x1: x1.select(Decimal).as_decimals()),
         ("as_floats", lambda x1: x1.select(float).as_floats()),
         ("as_fractions", lambda x1: x1.select(Fraction).as_fractions()),
