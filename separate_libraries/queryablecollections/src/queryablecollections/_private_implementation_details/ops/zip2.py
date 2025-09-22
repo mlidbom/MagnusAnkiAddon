@@ -15,7 +15,7 @@ def zip2[T, T2, T3, TOut](first: QIterable[T],
                           second: Iterable[T2],
                           third: Iterable[T3],
                           select: Callable[[T, T2, T3], TOut]) -> QIterable[TOut]:
-    def inner_zip() -> Iterable[TOut]:
+    def zip2_implementation() -> Iterable[TOut]:
         for first_item, second_item, third_item in builtins.zip(first, second, third, strict=False):
             yield select(first_item, second_item, third_item)
-    return C.lazy_iterable(inner_zip)
+    return C.lazy_iterable(zip2_implementation)

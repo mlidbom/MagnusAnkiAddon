@@ -13,9 +13,9 @@ if TYPE_CHECKING:
 def zip[T, T2, TOut](first: QIterable[T],
                      second: Iterable[T2],
                      select: Callable[[T, T2], TOut]) -> QIterable[TOut]:
-    def inner_zip() -> Iterable[TOut]:
+    def zip_implementation() -> Iterable[TOut]:
         for (first_item, second_item) in builtins.zip(first, second, strict=False):
             yield select(first_item, second_item)
-    return C.lazy_iterable(inner_zip)
+    return C.lazy_iterable(zip_implementation)
 
 
