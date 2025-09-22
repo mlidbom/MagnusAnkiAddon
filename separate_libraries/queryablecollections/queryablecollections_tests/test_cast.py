@@ -7,12 +7,12 @@ from test_iterable_common import lists_value_test, throws_test
 
 
 class TestUncheckedCast:
-    def test_returns_q_iterable_with_same_elements(self) -> None:
+    def test_to_returns_q_iterable_with_same_elements(self) -> None:
         lists_value_test([1, 2, 3],
                          lambda x: x.cast.to(int).to_list(),
                          [1, 2, 3])
 
-    def test_with_string_type_returns_q_iterable_with_same_elements(self) -> None:
+    def test_to_with_string_type_returns_q_iterable_with_same_elements(self) -> None:
         lists_value_test(["a", "b", "c"],
                          lambda x: x.cast.to(str).to_list(),
                          ["a", "b", "c"])
