@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from common_helpers import value_test
+from test_common_helpers import value_test
 
 
 def test_distinct_removes_duplicates_while_retaining_order() -> None:

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from common_helpers import select_test
+from test_common_helpers import select_test
 
 
 def test_select() -> None:

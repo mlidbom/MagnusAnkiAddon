@@ -3,7 +3,7 @@ from __future__ import annotations
 from decimal import Decimal
 from fractions import Fraction
 
-from common_helpers import lists_value_test
+from test_common_helpers import lists_value_test
 
 
 def test_to_int_returns_q_iterable_with_same_elements() -> None:

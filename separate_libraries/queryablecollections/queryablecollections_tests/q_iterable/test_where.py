@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from common_helpers import where_test
+from test_common_helpers import where_test
 
 
 def test_where_first_element_returns_only_first_element() -> None:

@@ -3,7 +3,7 @@ from __future__ import annotations
 from decimal import Decimal
 
 import pytest
-from common_helpers import throws_test, value_test
+from test_common_helpers import throws_test, value_test
 from queryablecollections.collections.numeric.q_decimal_types import QDecimalList
 from queryablecollections.q_errors import EmptyIterableError
 

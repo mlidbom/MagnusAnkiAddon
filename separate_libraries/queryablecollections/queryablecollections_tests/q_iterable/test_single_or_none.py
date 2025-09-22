@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from common_helpers import throws_test, value_test
+from test_common_helpers import throws_test, value_test
 from queryablecollections.q_errors import InvalidOperationError
 
 
