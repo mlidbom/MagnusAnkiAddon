@@ -21,6 +21,6 @@ class QSequence[TItem](Sequence[TItem], QIterable[TItem], ABC):
     def empty() -> QSequence[Never]:
         from queryablecollections.collections.q_immutable_sequence import QImmutableSequence
         empty = QImmutableSequence[Never]()
-        def get_empty() -> QSequence[Never]: return empty
+        def get_empty() -> QSequence[Never]: return empty  # pyright: ignore [reportReturnType]
         QSequence.empty = get_empty
         return QSequence[TItem].empty()
