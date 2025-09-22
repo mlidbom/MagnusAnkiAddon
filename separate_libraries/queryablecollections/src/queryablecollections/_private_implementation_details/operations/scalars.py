@@ -13,14 +13,15 @@ def all[TItem](self: QIterable[TItem], predicate: Predicate[TItem]) -> bool:
     return builtins.all(select(self, predicate))  # use named functions over lambdas where possible because: https://switowski.com/blog/map-vs-list-comprehension/
 
 def any[TItem](self: QIterable[TItem], predicate: Predicate[TItem] | None = None) -> bool:
-    if predicate is None:
-        iterator = iter(self)
-        try:
-            next(iterator)
-            return True  # noqa: TRY300
-        except StopIteration:
-            return False
-    return builtins.any(select(self, predicate, ))
+    if predicate:
+        self = self.where(predicate)
+
+    iterator = iter(self)
+    try:
+        next(iterator)
+        return True  # noqa: TRY300
+    except StopIteration:
+        return False
 
 def count[TItem](self: QIterable[TItem], predicate: Predicate[TItem] | None = None) -> int:
     if predicate is not None: return self.where(predicate).qcount()
