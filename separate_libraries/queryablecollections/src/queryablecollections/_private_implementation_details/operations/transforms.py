@@ -39,25 +39,25 @@ def as_fractions(self: QIterable[Fraction]) -> QFractionIterable: return C.fract
 def as_decimals(self: QIterable[Decimal]) -> QDecimalIterable: return C.decimal_iterable(lambda: self)
 
 def join[TOuter, TInner, TKey, TResult](
-        outer: QIterable[TOuter],
-        inner: Iterable[TInner],
-        outer_key_selector: Selector[TOuter, TKey],
-        inner_key_selector: Selector[TInner, TKey],
-        result_selector: Callable[[TOuter, TInner], TResult]
+        first: QIterable[TOuter],
+        second: Iterable[TInner],
+        first_key: Selector[TOuter, TKey],
+        second_key: Selector[TInner, TKey],
+        select: Callable[[TOuter, TInner], TResult]
 ) -> QIterable[TResult]:
     def inner_join() -> Iterable[TResult]:
         inner_lookup: dict[TKey, list[TInner]] = {}
-        for inner_item in inner:
-            key = inner_key_selector(inner_item)
+        for inner_item in second:
+            key = second_key(inner_item)
             if key not in inner_lookup:
                 inner_lookup[key] = []
             inner_lookup[key].append(inner_item)
 
         # For each outer element, find matching inner elements and yield results
-        for outer_item in outer:
-            outer_key = outer_key_selector(outer_item)
+        for outer_item in first:
+            outer_key = first_key(outer_item)
             if outer_key in inner_lookup:
                 for inner_item in inner_lookup[outer_key]:
-                    yield result_selector(outer_item, inner_item)
+                    yield select(outer_item, inner_item)
 
     return C.lazy_iterable(inner_join)
