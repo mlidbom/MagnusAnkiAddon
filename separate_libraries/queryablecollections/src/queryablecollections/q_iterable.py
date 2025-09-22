@@ -120,7 +120,7 @@ class QIterable[T](Iterable[T], ABC):
 
     def to_dict[TKey, TValue](self, key_selector: Selector[T, TKey], value_selector: Selector[T, TValue]) -> QDict[TKey, TValue]: return ops.to_dict(self, key_selector, value_selector)
 
-    def chunk(self, size: int) -> QIterable[list[T]]: return C.lazy_iterable(lambda: ops.chunk(self, size))
+    def chunk(self, size: int) -> QIterable[QList[T]]: return C.lazy_iterable(lambda: ops.chunk(self, size))
 
     @overload
     def group_by[TKey](self, key: Selector[T, TKey]) -> QIterable[QGrouping[TKey, T]]:
@@ -152,7 +152,7 @@ class QIterable[T](Iterable[T], ABC):
 
     # region factory methods
     # note: we do not "optimize" by returning self in any subclass because the contract is to create a new independent copy
-    def to_list(self) -> QList[T]: return C.list_(self)
+    def to_list(self) -> QList[T]: return C.list(self)
     def to_set(self) -> QSet[T]: return C.set(self)
     def to_frozenset(self) -> QFrozenSet[T]: return C.frozen_set(self)
     def to_sequence(self) -> QSequence[T]: return C.sequence(self)

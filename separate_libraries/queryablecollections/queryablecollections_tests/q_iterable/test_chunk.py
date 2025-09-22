@@ -10,6 +10,12 @@ def test_divides_evenly_into_chunks_of_the_given_size_preserving_order() -> None
                [[1, 2], [3, 4], [5, 6]],
                skip_sets=True)
 
+def test_chunk_can_be_queried() -> None:
+    value_test([1, 2, 3, 4, 5, 6],
+               lambda x: x.chunk(2).to_list().first().element_at(1),
+               2,
+               skip_sets=True)
+
 def test_with_remainder_includes_partial_last_chunk() -> None:
     value_test([1, 2, 3, 4, 5],
                lambda x: x.chunk(2).to_list(),
