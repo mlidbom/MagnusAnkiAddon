@@ -34,8 +34,8 @@ if TYPE_CHECKING:
 
 def query[TItem](value: Iterable[TItem]) -> QIterable[TItem]: return C.caching_iterable(value)
 
-# note to coders, you can trust that the on single lines do nothing except delegate to the corresponding operations method,
-# or to ZeroImportOverheadConstructors, knowing taht, keeping them on single lines to make it easier to read through the definitions
+# note to coders, you can trust that the methods on single lines do nothing except delegate to the corresponding operations method,
+# or to ZeroImportOverheadConstructors, knowing that, keeping them on single lines make it easier to read through the definitions
 class QIterable[T](Iterable[T], ABC):
     __slots__: tuple[str, ...] = ()
     @property
@@ -43,6 +43,25 @@ class QIterable[T](Iterable[T], ABC):
 
     def _lazy(self, factory: Func[Iterable[T]]) -> QIterable[T]:
         return C.lazy_iterable(factory)
+
+    # region  static factory methods
+    @staticmethod
+    def empty() -> QIterable[Never]: return C.empty_iterable()
+
+    @staticmethod
+    @overload
+    def range(stop: int, /) -> QIntIterable: ...
+    """Behaves just like the built-in range function, but returns a QIntIterable"""
+
+    @staticmethod
+    @overload
+    def range(start: int, stop: int, step: int = 1, /) -> QIntIterable: ...
+    """Behaves just like the built-in range function, but returns a QIntIterable"""
+
+    @staticmethod
+    def range(start_or_stop: int, stop: int | None = None, step: int = 1, /) -> QIntIterable: return ops.range(start_or_stop, stop, step)
+
+    # endregion
 
     # region operations on the whole collection, not the items
     def qappend(self, item: T) -> QIterable[T]: return self._lazy(lambda: ops.append(self, item))
@@ -203,6 +222,3 @@ class QIterable[T](Iterable[T], ABC):
     def to_built_in_list(self) -> list[T]: return list(self)
 
     # endregion
-
-    @staticmethod
-    def empty() -> QIterable[Never]: return C.empty_iterable()

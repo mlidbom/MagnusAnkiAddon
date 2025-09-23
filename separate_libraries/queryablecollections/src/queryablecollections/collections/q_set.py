@@ -15,3 +15,6 @@ class QSet[TItem](set[TItem], QIterable[TItem]):
 
     @override
     def _optimized_length(self) -> int: return len(self)
+
+    @override
+    def contains(self, value: TItem) -> bool: return value in self

@@ -31,6 +31,7 @@ from .qindex import qindex
 from .qintersect import qintersect
 from .qunion import qunion
 from .qunion_by import qunion_by
+from .range import range
 from .reversed import reversed
 from .select import select
 from .select_index import select_index
@@ -87,6 +88,7 @@ __all__ = [
         "where_key_in",
         "qunion",
         "qunion_by",
+        "range",
         "reversed",
         "select",
         "select_index",
