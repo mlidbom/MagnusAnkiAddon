@@ -206,6 +206,8 @@ class QIterable[T](Iterable[T], ABC):
     def first_or_none(self, predicate: Predicate[T] | None = None) -> T | None: return ops.first_or_none(self, predicate)
     def single(self, predicate: Predicate[T] | None = None) -> T: return ops.single(self, predicate)
     def single_or_none(self, predicate: Predicate[T] | None = None) -> T | None: return ops.single_or_none(self, predicate)
+    def last(self, predicate: Predicate[T] | None = None) -> T: return ops.last(self, predicate)
+    def last_or_none(self, predicate: Predicate[T] | None = None) -> T | None: return ops.last_or_none(self, predicate)
 
     def element_at(self, index: int) -> T: return ops.element_at(self, index)
     def element_at_or_none(self, index: int) -> T | None: return ops.element_at_or_none(self, index)

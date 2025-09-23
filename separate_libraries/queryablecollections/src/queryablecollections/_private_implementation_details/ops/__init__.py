@@ -21,6 +21,8 @@ from .for_each import for_each
 from .group_by_q import group_by_q
 from .group_join import group_join
 from .join import join
+from .last import last
+from .last_or_none import last_or_none
 from .of_type import of_type
 from .pipe import pipe
 from .prepend import prepend
@@ -77,6 +79,8 @@ __all__ = [
         "group_by_q",
         "group_join",
         "join",
+        "last",
+        "last_or_none",
         "of_type",
         "pipe",
         "prepend",
