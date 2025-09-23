@@ -95,6 +95,7 @@ class QIterable[T](Iterable[T], ABC):
     def any(self, predicate: Predicate[T] | None = None) -> bool: return ops.any(self, predicate)
     def all(self, predicate: Predicate[T]) -> bool: return ops.all(self, predicate)
 
+    def contains(self, value: T) -> bool: return ops.contains(self, value)
     # endregion
 
     # region aggregation methods

@@ -9,6 +9,7 @@ from .append import append
 from .as_ import as_decimals, as_floats, as_fractions, as_ints
 from .chunk import chunk
 from .concat import concat
+from .contains import contains
 from .count import count
 from .count_by import count_by
 from .distinct import distinct
@@ -54,6 +55,7 @@ __all__ = [
         "as_ints",
         "chunk",
         "concat",
+        "contains",
         "count",
         "count_by",
         "distinct",

@@ -65,6 +65,7 @@ scalar_or_action_operators: list[tuple[str, ScalarOrActionOperator]] = [
         ("aggregate_seed_result", lambda x1: x1.aggregate(lambda acc, item: acc + item, 0, lambda acc: acc)),
         ("any", lambda x1: x1.any()),
         ("count_by", lambda x1: x1.count_by(lambda x: x)),
+        ("contains", lambda x1: x1.contains(1)),
         ("element_at", lambda x1: x1.element_at(0)),
         ("element_at_or_none", lambda x1: x1.element_at_or_none(0)),
         ("first", lambda x1: x1.first()),
