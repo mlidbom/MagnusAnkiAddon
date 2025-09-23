@@ -174,7 +174,7 @@ class QIterable[T](Iterable[T], ABC):
     def select_index[TReturn](self, selector: Callable[[T, int], TReturn]) -> QIterable[TReturn]: return C.lazy_iterable(lambda: ops.select_index(self, selector))
     def select_many[TInner](self, selector: Selector[T, Iterable[TInner]]) -> QIterable[TInner]: return C.lazy_iterable(lambda: ops.select_many(self, selector))
     def join[TInner, TKey, TResult](self, other: Iterable[TInner], self_key: Selector[T, TKey], other_key: Selector[TInner, TKey], select: Callable[[T, TInner], TResult]) -> QIterable[TResult]: return C.lazy_iterable(lambda: ops.join(self, other, self_key, other_key, select))
-    def group_join[TInner, TKey, TResult](self, other: Iterable[TInner], self_key: Selector[T, TKey], group_key: Selector[TInner, TKey], select: Callable[[T, Iterable[TInner]], TResult]) -> QIterable[TResult]: return C.lazy_iterable(lambda: ops.group_join(self, other, self_key, group_key, select))
+    def group_join[TInner, TKey, TResult](self, other: Iterable[TInner], self_key: Selector[T, TKey], group_key: Selector[TInner, TKey], select: Callable[[T, QList[TInner]], TResult]) -> QIterable[TResult]: return C.lazy_iterable(lambda: ops.group_join(self, other, self_key, group_key, select))
 
     def qindex(self) -> QIterable[tuple[int, T]]: return C.lazy_iterable(lambda: ops.qindex(self))
 
@@ -212,7 +212,7 @@ class QIterable[T](Iterable[T], ABC):
     def element_at(self, index: int) -> T: return ops.element_at(self, index)
     def element_at_or_none(self, index: int) -> T | None: return ops.element_at_or_none(self, index)
 
-    def min_by[TKey: SupportsRichComparison](self, key_selector: Selector[T, TKey]) -> T:return ops.min_by(self, key_selector)
+    def min_by[TKey: SupportsRichComparison](self, key_selector: Selector[T, TKey]) -> T: return ops.min_by(self, key_selector)
     def max_by[TKey: SupportsRichComparison](self, key_selector: Selector[T, TKey]) -> T: return ops.max_by(self, key_selector)
 
     # endregion
