@@ -45,7 +45,7 @@ def test_with_no_matching_keys_returns_empty_groups() -> None:
               .group_join(orders,
                           lambda person: person.id,
                           lambda order: order.person_id,
-                          lambda person, person_orders: f"{person.name}: {len(list(person_orders))} orders")
+                          lambda person, person_orders: f"{person.name}: {person_orders.qcount()} orders")
               .to_list())
 
     expected = ["Alice: 0 orders", "Bob: 0 orders"]
@@ -59,7 +59,7 @@ def test_with_empty_outer_sequence_returns_empty_result() -> None:
               .group_join(orders,
                           lambda person: person.id,
                           lambda order: order.person_id,
-                          lambda person, person_orders: f"{person.name}: {len(list(person_orders))} orders")
+                          lambda person, person_orders: f"{person.name}: {person_orders.qcount()} orders")
               .to_list())
 
     assert result == []
@@ -72,7 +72,7 @@ def test_with_empty_inner_sequence_returns_all_outer_with_empty_groups() -> None
               .group_join(orders,
                           lambda person: person.id,
                           lambda order: order.person_id,
-                          lambda person, person_orders: f"{person.name}: {len(list(person_orders))} orders")
+                          lambda person, person_orders: f"{person.name}: {person_orders.qcount()} orders")
               .to_list())
 
     expected = ["Alice: 0 orders", "Bob: 0 orders"]
@@ -86,7 +86,7 @@ def test_with_both_empty_sequences_returns_empty_result() -> None:
               .group_join(orders,
                           lambda person: person.id,
                           lambda order: order.person_id,
-                          lambda person, person_orders: f"{person.name}: {len(list(person_orders))} orders")
+                          lambda person, person_orders: f"{person.name}: {person_orders.qcount()} orders")
               .to_list())
 
     assert result == []
@@ -99,7 +99,7 @@ def test_items_with_none_keys_match_each_other() -> None:
               .group_join(orders,
                           lambda person: person.id,
                           lambda order: order.person_id,
-                          lambda person, person_orders: f"{person.name}: {len(list(person_orders))} orders")
+                          lambda person, person_orders: f"{person.name}: {person_orders.qcount()} orders")
               .to_list())
 
     expected = ["Alice: 1 orders", "Unknown: 1 orders"]
@@ -113,7 +113,7 @@ def test_duplicate_keys_in_outer_sequence_stay_duplicated_and_the_same_group_app
               .group_join(orders,
                           lambda person: person.id,
                           lambda order: order.person_id,
-                          lambda person, person_orders: f"{person.name}: {len(list(person_orders))} orders")
+                          lambda person, person_orders: f"{person.name}: {person_orders.qcount()} orders")
               .to_list())
 
     expected = ["Alice1: 2 orders", "Alice2: 2 orders", "Bob: 1 orders"]
