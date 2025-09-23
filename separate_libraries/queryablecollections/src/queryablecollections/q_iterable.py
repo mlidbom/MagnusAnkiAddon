@@ -73,8 +73,8 @@ class QIterable[T](Iterable[T], ABC):
     def where_not_none(self) -> QIterable[T]: return self._lazy(lambda: ops.where_not_none(self))
 
     def distinct(self) -> QIterable[T]: return self._lazy(lambda: ops.distinct(self))
-
     def distinct_by[TKey](self, key_selector: Selector[T, TKey]) -> QIterable[T]: return self._lazy(lambda: ops.distinct_by(self, key_selector))
+
     def qexcept(self, other: Iterable[T]) -> QIterable[T]: return self._lazy(lambda: ops.qexcept(self, other))
     def qexcept_by[TKey](self, other: Iterable[TKey], key_selector: Selector[T, TKey]) -> QIterable[T]: return self._lazy(lambda: ops.qexcept_by(self, other, key_selector))
 
