@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     from queryablecollections._private_implementation_details.type_aliases import Selector
 
 
-def qexcept_by[TItem, TKey](self: Iterable[TItem], keys: Iterable[TKey], key_selector: Selector[TItem, TKey]) -> Iterable[TItem]:
+def where_key_not_in[TItem, TKey](self: Iterable[TItem], keys: Iterable[TKey], key_selector: Selector[TItem, TKey]) -> Iterable[TItem]:
     excluded_keys:set[TKey] = set(keys)
     seen_keys: set[TKey] = set()
     for item in self:

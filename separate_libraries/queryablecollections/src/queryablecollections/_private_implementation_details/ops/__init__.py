@@ -27,7 +27,6 @@ from .prepend import prepend
 from .qcount import qcount
 from .qcount_by import qcount_by
 from .qexcept import qexcept
-from .qexcept_by import qexcept_by
 from .qindex import qindex
 from .qintersect import qintersect
 from .qunion import qunion
@@ -47,6 +46,8 @@ from .take_last import take_last
 from .take_while import take_while
 from .to_dict import to_dict
 from .where import where
+from .where_key_in import where_key_in
+from .where_key_not_in import where_key_not_in
 from .where_not_none import where_not_none
 from .zip import zip, zip2, zip3
 from .zip_tuple import zip_tuple, zip_tuple2, zip_tuple3
@@ -80,8 +81,10 @@ __all__ = [
         "qcount",
         "qcount_by",
         "qexcept",
-        "qexcept_by",
+        "where_key_not_in",
         "qindex",
+        "qintersect",
+        "where_key_in",
         "qunion",
         "qunion_by",
         "reversed",
@@ -106,6 +109,5 @@ __all__ = [
         "zip_tuple2",
         "zip_tuple3",
         "skip_while",
-        "sequence_equal",
-        "qintersect"
+        "sequence_equal"
 ]

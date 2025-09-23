@@ -70,10 +70,19 @@ class QIterable[T](Iterable[T], ABC):
 
     # region set operations
     def qexcept(self, other: Iterable[T]) -> QIterable[T]: return self._lazy(lambda: ops.qexcept(self, other))
-    def qexcept_by[TKey](self, other: Iterable[TKey], key_selector: Selector[T, TKey]) -> QIterable[T]: return self._lazy(lambda: ops.qexcept_by(self, other, key_selector))
+    def qexcept_by[TKey](self, keys: Iterable[TKey], key_selector: Selector[T, TKey]) -> QIterable[T]:
+        """Alias for where_key_not_in, for consistency with other set operations and for those used to the .Net API. Consider using the more descriptive where_key_not_in instead."""
+        return self.where_key_not_in(keys, key_selector)
+    def where_key_not_in[TKey](self, keys: Iterable[TKey], key_selector: Selector[T, TKey]) -> QIterable[T]: return self._lazy(lambda: ops.where_key_not_in(self, keys, key_selector))
     def qunion(self, other: Iterable[T]) -> QIterable[T]: return self._lazy(lambda: ops.qunion(self, other))
     def qunion_by[TKey](self, other: Iterable[T], key_selector: Selector[T, TKey]) -> QIterable[T]: return self._lazy(lambda: ops.qunion_by(self, other, key_selector))
     def qintersect(self, other: Iterable[T]) -> QIterable[T]: return self._lazy(lambda: ops.qintersect(self, other))
+    def qintersect_by[TKey](self, keys: Iterable[TKey], key_selector: Selector[T, TKey]) -> QIterable[T]:
+        """Alias for where_key_in, for consistency with other set operations and for those used to the .Net API. Consider using the more descriptive where_key_in instead."""
+        return self.where_key_in(keys, key_selector)
+    def where_key_in[TKey](self, keys: Iterable[TKey], key_selector: Selector[T, TKey]) -> QIterable[T]: return self._lazy(lambda: ops.where_key_in(self, keys, key_selector))
+
+    def contains(self, value: T) -> bool: return ops.contains(self, value)
 
     # endregion
 
@@ -101,8 +110,6 @@ class QIterable[T](Iterable[T], ABC):
     def none(self, predicate: Predicate[T] | None = None) -> bool: return not ops.any(self, predicate)
     def any(self, predicate: Predicate[T] | None = None) -> bool: return ops.any(self, predicate)
     def all(self, predicate: Predicate[T]) -> bool: return ops.all(self, predicate)
-
-    def contains(self, value: T) -> bool: return ops.contains(self, value)
 
     def sequence_equal(self, other: Iterable[T]) -> bool: return ops.sequence_equal(self, other)
 
