@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from test_common_helpers import value_test
+from test_common_helpers import value_test_including_unordered_collections
 
 
-def test_to_list() -> None: value_test([1, 2, 3], lambda x: x.to_list(), [1, 2, 3])
-def test_to_sequence() -> None: value_test([1, 2, 3], lambda x: x.to_sequence(), [1, 2, 3])
-def test_to_builtin_list() -> None: value_test([1, 2, 3], lambda x: x.to_built_in_list(), [1, 2, 3])
-def test_to_set() -> None: value_test([1, 2, 3], lambda x: x.to_set(), {1, 2, 3})
-def test_to_frozenset() -> None: value_test([1, 2, 3], lambda x: x.to_frozenset(), frozenset({1, 2, 3}))
+def test_to_list() -> None: value_test_including_unordered_collections([1, 2, 3], lambda x: x.to_list(), [1, 2, 3])
+def test_to_sequence() -> None: value_test_including_unordered_collections([1, 2, 3], lambda x: x.to_sequence(), [1, 2, 3])
+def test_to_builtin_list() -> None: value_test_including_unordered_collections([1, 2, 3], lambda x: x.to_built_in_list(), [1, 2, 3])
+def test_to_set() -> None: value_test_including_unordered_collections([1, 2, 3], lambda x: x.to_set(), {1, 2, 3})
+def test_to_frozenset() -> None: value_test_including_unordered_collections([1, 2, 3], lambda x: x.to_frozenset(), frozenset({1, 2, 3}))

@@ -5,17 +5,17 @@ from decimal import Decimal
 import pytest
 from queryablecollections.collections.numeric.q_decimal_types import QDecimalList
 from queryablecollections.q_errors import EmptyIterableError
-from test_common_helpers import throws_test, value_test
+from test_common_helpers import throws_test, value_test_including_unordered_collections
 
 
 def test_typing() -> None:
     QDecimalList([Decimal("1.1"), Decimal("2.1"), Decimal("3.1")]).where(lambda item: True).sum()
 
 def test_cast_decimal_returns_an_q_iterable_decimal_with_the_same_elements() -> None:
-    value_test([Decimal("1.1"), Decimal("2.1"), Decimal("3.1")], lambda x: x.cast.decimal().to_list(), [Decimal("1.1"), Decimal("2.1"), Decimal("3.1")])
+    value_test_including_unordered_collections([Decimal("1.1"), Decimal("2.1"), Decimal("3.1")], lambda x: x.cast.decimal().to_list(), [Decimal("1.1"), Decimal("2.1"), Decimal("3.1")])
 
 def test_cast_checked_decimal_returns_a_q_iterable_decimal_with_the_same_elements() -> None:
-    value_test([Decimal("1.1"), Decimal("2.1"), Decimal("3.1")], lambda x: x.cast.checked.decimal().to_list(), [Decimal("1.1"), Decimal("2.1"), Decimal("3.1")])
+    value_test_including_unordered_collections([Decimal("1.1"), Decimal("2.1"), Decimal("3.1")], lambda x: x.cast.checked.decimal().to_list(), [Decimal("1.1"), Decimal("2.1"), Decimal("3.1")])
 
 def test_cast_checked_decimal_raises_type_error_if_collection_contains_non_decimal() -> None:
     throws_test([Decimal("1.1"), "2.1", Decimal("3.1")], lambda x: x.cast.checked.decimal().to_list(), TypeError)

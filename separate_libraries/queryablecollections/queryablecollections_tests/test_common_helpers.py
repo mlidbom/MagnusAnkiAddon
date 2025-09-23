@@ -56,12 +56,12 @@ def select_test[TIn, TOut](input: Iterable[TIn],
 def lists_value_test[TIn, TOut](input: list[TIn] | Callable[[], Iterable[TIn]],
                                 operation: Callable[[QIterable[TIn]], TOut],
                                 output: TOut) -> None:
-    value_test(input, operation, output, skip_sets=True)
+    value_test_including_unordered_collections(input, operation, output, skip_sets=True)
 
-def value_test[TIn, TOut](input: list[TIn] | Callable[[], Iterable[TIn]],
-                          operation: Callable[[QIterable[TIn]], TOut],
-                          output: TOut,
-                          skip_sets: bool = False) -> None:
+def value_test_including_unordered_collections[TIn, TOut](input: list[TIn] | Callable[[], Iterable[TIn]],
+                                                          operation: Callable[[QIterable[TIn]], TOut],
+                                                          output: TOut,
+                                                          skip_sets: bool = False) -> None:
     for _name, sequence in create_sequences(input, skip_sets):
         with sane_asserting():
             result = operation(sequence)

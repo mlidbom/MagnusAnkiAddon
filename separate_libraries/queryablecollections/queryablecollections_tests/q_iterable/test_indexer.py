@@ -1,19 +1,19 @@
 from __future__ import annotations
 
-from test_common_helpers import value_test
+from test_common_helpers import value_test_including_unordered_collections
 
 
 def test_indexer_returns_first_value() -> None:
-    value_test([1, 2, 3],
-               lambda x: x.to_list()[0],
-               1)
+    value_test_including_unordered_collections([1, 2, 3],
+                                               lambda x: x.to_list()[0],
+                                               1)
 
 def test_indexer_returns_middle_value() -> None:
-    value_test([1, 2, 3],
-               lambda x: x.to_list()[1],
-               2)
+    value_test_including_unordered_collections([1, 2, 3],
+                                               lambda x: x.to_list()[1],
+                                               2)
 
 def test_indexer_returns_last_value() -> None:
-    value_test([1, 2, 3],
-               lambda x: x.to_list()[2],
-               3)
+    value_test_including_unordered_collections([1, 2, 3],
+                                               lambda x: x.to_list()[2],
+                                               3)

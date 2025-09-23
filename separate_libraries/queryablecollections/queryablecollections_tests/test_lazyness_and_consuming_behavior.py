@@ -43,6 +43,7 @@ iterator_generating_operators: list[tuple[str, CollectionReturningOperator]] = [
         ("qexcept_by", lambda x1: x1.qexcept_by([1, 2, 3, 4], lambda x2: x2)),
         ("reversed", lambda x1: x1.reversed()),
         ("select", lambda x1: x1.select(lambda x2: x2)),
+        ("select_index", lambda x1: x1.select_index(lambda index, element: (index, element))),
         ("select_many", lambda x1: x1.select_many(lambda _: [1, 2, 3])),
         ("skip", lambda x1: x1.skip(1)),
         ("skip_last", lambda x1: x1.skip_last(1)),

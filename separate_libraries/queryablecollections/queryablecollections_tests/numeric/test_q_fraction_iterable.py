@@ -8,10 +8,10 @@ from test_common_helpers import *
 
 
 def test_cast_fraction_returns_an_q_iterable_fraction_with_the_same_elements() -> None:
-    value_test([Fraction(11, 10), Fraction(21, 10), Fraction(31, 10)], lambda x: x.cast.fraction().to_list(), [Fraction(11, 10), Fraction(21, 10), Fraction(31, 10)])
+    value_test_including_unordered_collections([Fraction(11, 10), Fraction(21, 10), Fraction(31, 10)], lambda x: x.cast.fraction().to_list(), [Fraction(11, 10), Fraction(21, 10), Fraction(31, 10)])
 
 def test_cast_checked_fraction_returns_a_q_iterable_fraction_with_the_same_elements() -> None:
-    value_test([Fraction(11, 10), Fraction(21, 10), Fraction(31, 10)], lambda x: x.cast.checked.fraction().to_list(), [Fraction(11, 10), Fraction(21, 10), Fraction(31, 10)])
+    value_test_including_unordered_collections([Fraction(11, 10), Fraction(21, 10), Fraction(31, 10)], lambda x: x.cast.checked.fraction().to_list(), [Fraction(11, 10), Fraction(21, 10), Fraction(31, 10)])
 
 def test_cast_checked_fraction_raises_type_error_if_collection_contains_non_fraction() -> None:
     throws_test([Fraction(11, 10), "2.1", Fraction(31, 10)], lambda x: x.cast.checked.fraction().to_list(), TypeError)

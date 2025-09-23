@@ -130,6 +130,7 @@ class QIterable[T](Iterable[T], ABC):
 
     # region mapping/transformation methods
     def select[TReturn](self, selector: Selector[T, TReturn]) -> QIterable[TReturn]: return C.lazy_iterable(lambda: ops.select(self, selector))
+    def select_index[TReturn](self, selector: Callable[[T, int], TReturn]) -> QIterable[TReturn]: return C.lazy_iterable(lambda: ops.select_index(self, selector))
     def select_many[TInner](self, selector: Selector[T, Iterable[TInner]]) -> QIterable[TInner]: return C.lazy_iterable(lambda: ops.select_many(self, selector))
     def join[TInner, TKey, TResult](self, other: Iterable[TInner], self_key: Selector[T, TKey], other_key: Selector[TInner, TKey], select: Callable[[T, TInner], TResult]) -> QIterable[TResult]: return C.lazy_iterable(lambda: ops.join(self, other, self_key, other_key, select))
     def group_join[TInner, TKey, TResult](self, other: Iterable[TInner], self_key: Selector[T, TKey], group_key: Selector[TInner, TKey], select: Callable[[T, Iterable[TInner]], TResult]) -> QIterable[TResult]: return C.lazy_iterable(lambda: ops.group_join(self, other, self_key, group_key, select))

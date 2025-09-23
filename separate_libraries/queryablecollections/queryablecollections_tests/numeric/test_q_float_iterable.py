@@ -6,10 +6,10 @@ from test_common_helpers import *
 
 
 def test_cast_float_returns_an_q_iterable_float_with_the_same_elements() -> None:
-    value_test([1.1, 2.1, 3.1], lambda x: x.cast.float().to_list(), [1.1, 2.1, 3.1])
+    value_test_including_unordered_collections([1.1, 2.1, 3.1], lambda x: x.cast.float().to_list(), [1.1, 2.1, 3.1])
 
 def test_cast_checked_float_returns_a_q_iterable_float_with_the_same_elements() -> None:
-    value_test([1.1, 2.1, 3.1], lambda x: x.cast.checked.float().to_list(), [1.1, 2.1, 3.1])
+    value_test_including_unordered_collections([1.1, 2.1, 3.1], lambda x: x.cast.checked.float().to_list(), [1.1, 2.1, 3.1])
 
 def test_cast_checked_float_raises_type_error_if_collection_contains_non_float() -> None:
     throws_test([1.1, "2.1", 3.1], lambda x: x.cast.checked.float().to_list(), TypeError)

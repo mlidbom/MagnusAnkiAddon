@@ -31,6 +31,7 @@ from .qexcept_by import qexcept_by
 from .qindex import qindex
 from .reversed import reversed
 from .select import select
+from .select_index import select_index
 from .select_many import select_many
 from .single import single
 from .single_or_none import single_or_none
@@ -78,6 +79,7 @@ __all__ = [
         "qindex",
         "reversed",
         "select",
+        "select_index",
         "select_many",
         "single",
         "single_or_none",
