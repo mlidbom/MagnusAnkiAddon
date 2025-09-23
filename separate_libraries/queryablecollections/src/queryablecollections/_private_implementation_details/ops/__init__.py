@@ -29,6 +29,7 @@ from .qcount_by import qcount_by
 from .qexcept import qexcept
 from .qexcept_by import qexcept_by
 from .qindex import qindex
+from .qintersect import qintersect
 from .qunion import qunion
 from .qunion_by import qunion_by
 from .reversed import reversed
@@ -105,5 +106,6 @@ __all__ = [
         "zip_tuple2",
         "zip_tuple3",
         "skip_while",
-        "sequence_equal"
+        "sequence_equal",
+        "qintersect"
 ]

@@ -43,6 +43,7 @@ iterator_generating_operators: list[tuple[str, CollectionReturningOperator]] = [
         ("qindex", lambda x1: x1.qindex()),
         ("qunion", lambda x1: x1.qunion([1, 2, 3, 4])),
         ("qunion_by", lambda x1: x1.qunion_by([1, 2, 3, 4], lambda x2: x2)),
+        ("qintersect", lambda x1: x1.qintersect([1, 2, 3, 4])),
         ("reversed", lambda x1: x1.reversed()),
         ("select", lambda x1: x1.select(lambda x2: x2)),
         ("select_index", lambda x1: x1.select_index(lambda index, element: (index, element))),
