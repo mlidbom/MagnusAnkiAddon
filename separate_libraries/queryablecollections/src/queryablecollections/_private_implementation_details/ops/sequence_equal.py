@@ -15,7 +15,7 @@ def sequence_equal[TItem](self: Iterable[TItem], other: Iterable[TItem]) -> bool
         except StopIteration:
             try:
                 next(other_iterator)
-                return False  # self shorter than other noqa: TRY300
+                return False  # self shorter than other  # noqa: TRY300
             except StopIteration:
                 return True
 
