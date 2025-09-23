@@ -84,6 +84,7 @@
           <option value="id" />
           <option value="zip" />
           <option value="reversed" />
+          <option value="range" />
         </list>
       </option>
     </inspection_tool>

@@ -50,16 +50,16 @@ class QIterable[T](Iterable[T], ABC):
 
     @staticmethod
     @overload
-    def range(stop: int, /) -> QIntIterable: ...
-    """Behaves just like the builtins range function, but returns a queryable QIntIterable"""
+    def range(stop_before: int, /) -> QIntIterable: ...
+    """Returns a QIntIterable with values from 0 to stop_before - 1"""
 
     @staticmethod
     @overload
-    def range(start: int, stop: int, step: int = 1, /) -> QIntIterable: ...
-    """Behaves just like the builtins range function, but returns a queryable QIntIterable"""
+    def range(start: int, stop_before: int, step: int = 1, /) -> QIntIterable: ...
+    """Returns a QIntIterable with values from start to stop_before - 1 in steps of step"""
 
     @staticmethod
-    def range(start_or_stop: int, stop: int | None = None, step: int = 1, /) -> QIntIterable: return ops.range(start_or_stop, stop, step)
+    def range(start_or_stop_before: int, stop_before: int | None = None, step: int = 1, /) -> QIntIterable: return C.int_iterable(lambda: ops.range(start_or_stop_before, stop_before, step))
 
     # endregion
 

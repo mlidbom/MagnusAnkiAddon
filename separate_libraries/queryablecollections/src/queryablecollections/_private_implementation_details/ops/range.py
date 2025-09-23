@@ -1,17 +1,14 @@
 from __future__ import annotations
 
+import builtins
 from typing import TYPE_CHECKING
 
-from queryablecollections._private_implementation_details.q_zero_overhead_collection_contructors import ZeroImportOverheadConstructors as C
-
 if TYPE_CHECKING:
-    from queryablecollections.collections.numeric.q_int_types import QIntIterable
+    from collections.abc import Iterable
 
-def range(start_or_stop: int, stop: int | None = None, step: int = 1, /) -> QIntIterable:
-    if stop is None:
-        start = 0
-        stop = start_or_stop
-    else:
-        start = start_or_stop
+    pass
 
-    return C.int_iterable(lambda: range(start, stop, step))
+def range(start_or_stop_before: int, stop_before: int | None = None, step: int = 1, /) -> Iterable[int]:
+    return (builtins.range(start_or_stop_before)
+            if stop_before is None
+            else builtins.range(start_or_stop_before, stop_before, step))
