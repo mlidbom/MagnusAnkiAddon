@@ -50,16 +50,21 @@ class QIterable[T](Iterable[T], ABC):
 
     @staticmethod
     @overload
-    def range(stop_before: int, /) -> QIntIterable: ...
-    """Returns a QIntIterable with values from 0 to stop_before - 1"""
+    def range(stop_before: int, /) -> QIntIterable:
+        """Returns a QIntIterable with values from 0 to stop_before - 1"""
 
     @staticmethod
     @overload
-    def range(start: int, stop_before: int, step: int = 1, /) -> QIntIterable: ...
-    """Returns a QIntIterable with values from start to stop_before - 1 in steps of step"""
+    def range(start: int, stop_before: int, step: int = 1, /) -> QIntIterable:
+        """Returns a QIntIterable with values from start to stop_before - 1 in steps of step"""
 
     @staticmethod
     def range(start_or_stop_before: int, stop_before: int | None = None, step: int = 1, /) -> QIntIterable: return C.int_iterable(lambda: ops.range(start_or_stop_before, stop_before, step))
+
+    @staticmethod
+    def repeat[TElement](element: TElement, count: int) -> QIterable[TElement]:
+        """Returns a QIterable with the given element repeated count times"""
+        return C.lazy_iterable(lambda: ops.repeat(element, count))
 
     # endregion
 

@@ -32,6 +32,7 @@ from .qintersect import qintersect
 from .qunion import qunion
 from .qunion_by import qunion_by
 from .range import range
+from .repeat import repeat
 from .reversed import reversed
 from .select import select
 from .select_index import select_index
@@ -111,5 +112,6 @@ __all__ = [
         "zip_tuple2",
         "zip_tuple3",
         "skip_while",
-        "sequence_equal"
+        "sequence_equal",
+        "repeat"
 ]
