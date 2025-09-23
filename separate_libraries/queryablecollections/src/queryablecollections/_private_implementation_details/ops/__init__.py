@@ -39,6 +39,7 @@ from .single import single
 from .single_or_none import single_or_none
 from .skip import skip
 from .skip_last import skip_last
+from .skip_while import skip_while
 from .take import take
 from .take_last import take_last
 from .take_while import take_while
@@ -101,5 +102,6 @@ __all__ = [
         "zip3",
         "zip_tuple",
         "zip_tuple2",
-        "zip_tuple3"
+        "zip_tuple3",
+        "skip_while"
 ]

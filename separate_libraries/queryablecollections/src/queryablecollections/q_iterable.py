@@ -87,6 +87,7 @@ class QIterable[T](Iterable[T], ABC):
     def take_while(self, predicate: Predicate[T]) -> QIterable[T]: return self._lazy(lambda: ops.take_while(self, predicate))
     def take_last(self, count: int) -> QIterable[T]: return self._lazy(lambda: ops.take_last(self, count))
     def skip(self, count: int) -> QIterable[T]: return self._lazy(lambda: ops.skip(self, count))
+    def skip_while(self, predicate: Predicate[T]) -> QIterable[T]: return self._lazy(lambda: ops.skip_while(self, predicate))
     def skip_last(self, count: int) -> QIterable[T]: return self._lazy(lambda: ops.skip_last(self, count))
 
     def of_type[TResult](self, target_type: type[TResult]) -> QIterable[TResult]: return C.lazy_iterable(lambda: ops.of_type(self, target_type))

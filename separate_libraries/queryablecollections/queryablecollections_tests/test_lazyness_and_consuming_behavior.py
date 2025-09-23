@@ -48,6 +48,7 @@ iterator_generating_operators: list[tuple[str, CollectionReturningOperator]] = [
         ("select_index", lambda x1: x1.select_index(lambda index, element: (index, element))),
         ("select_many", lambda x1: x1.select_many(lambda _: [1, 2, 3])),
         ("skip", lambda x1: x1.skip(1)),
+        ("skip_while", lambda x1: x1.skip_while(lambda val: val < 2)),
         ("skip_last", lambda x1: x1.skip_last(1)),
         ("take", lambda x1: x1.take(10)),
         ("take_last", lambda x1: x1.take_last(1)),
