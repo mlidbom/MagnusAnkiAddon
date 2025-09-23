@@ -25,6 +25,7 @@ from .join import join
 from .of_type import of_type
 from .pipe import pipe
 from .prepend import prepend
+from .qexcept import qexcept
 from .reversed import reversed
 from .select import select
 from .select_many import select_many

@@ -16,6 +16,7 @@ if TYPE_CHECKING:
     from fractions import Fraction
 
     from _typeshed import SupportsRichComparison
+
     from queryablecollections._private_implementation_details.type_aliases import Action1, Func, Predicate, Selector
     from queryablecollections.collections.numeric.q_decimal_types import QDecimalIterable
     from queryablecollections.collections.numeric.q_float_types import QFloatIterable
@@ -74,6 +75,7 @@ class QIterable[T](Iterable[T], ABC):
     def distinct(self) -> QIterable[T]: return self._lazy(lambda: ops.distinct(self))
 
     def distinct_by[TKey](self, key_selector: Selector[T, TKey]) -> QIterable[T]: return self._lazy(lambda: ops.distinct_by(self, key_selector))
+    def qexcept(self, other: Iterable[T]) -> QIterable[T]: return self._lazy(lambda: ops.qexcept(self, other))
 
     def take(self, count: int) -> QIterable[T]: return self._lazy(lambda: ops.take(self, count))
     def take_while(self, predicate: Predicate[T]) -> QIterable[T]: return self._lazy(lambda: ops.take_while(self, predicate))
