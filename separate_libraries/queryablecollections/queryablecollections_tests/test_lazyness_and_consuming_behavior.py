@@ -58,6 +58,9 @@ iterator_generating_operators: list[tuple[str, CollectionReturningOperator]] = [
 
 scalar_or_action_operators: list[tuple[str, ScalarOrActionOperator]] = [
         ("all", lambda x1: x1.all(lambda _: True)),
+        ("aggregate", lambda x1: x1.aggregate(lambda acc, item: acc + item)),
+        ("aggregate_seed", lambda x1: x1.aggregate(lambda acc, item: acc + item, 0)),
+        ("aggregate_seed_result", lambda x1: x1.aggregate(lambda acc, item: acc + item, 0, lambda acc: acc)),
         ("any", lambda x1: x1.any()),
         ("count_by", lambda x1: x1.count_by(lambda x: x)),
         ("element_at", lambda x1: x1.element_at(0)),

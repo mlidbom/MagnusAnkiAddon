@@ -95,6 +95,21 @@ class QIterable[T](Iterable[T], ABC):
 
     # endregion
 
+    # region aggregation methods
+    @overload
+    def aggregate(self, func: Callable[[T, T], T]) -> T: ...
+
+    @overload
+    def aggregate[TAccumulate](self, func: Callable[[TAccumulate, T], TAccumulate], seed: TAccumulate) -> TAccumulate: ...
+
+    @overload
+    def aggregate[TAccumulate, TResult](self, func: Callable[[TAccumulate, T], TAccumulate], seed: TAccumulate, result_selector: Selector[TAccumulate, TResult]) -> TResult: ...
+
+    def aggregate[TAccumulate, TResult](self, func: Callable[[T, T], T] | Callable[[TAccumulate, T], TAccumulate], seed: TAccumulate | None = None, result_selector: Selector[TAccumulate, TResult] | None = None) -> T | TAccumulate | TResult:
+        return ops.aggregate(self, func, seed, result_selector)
+
+    # endregion
+
     # region sorting
     def _order_by(self, key_selector: Selector[T, SupportsRichComparison], descending: bool) -> QOrderedIterable[T]:
         return C.ordered_iterable(lambda: self, [SortInstruction(key_selector, descending)])

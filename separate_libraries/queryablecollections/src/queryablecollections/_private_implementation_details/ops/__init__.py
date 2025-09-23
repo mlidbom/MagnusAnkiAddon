@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from queryablecollections._private_implementation_details.sort_by_instructions import sort_by_instructions
 
+from .aggregate import aggregate
 from .all import all
 from .any import any
 from .append import append
@@ -41,6 +42,7 @@ from .zip import zip, zip2, zip3
 from .zip_tuple import zip_tuple, zip_tuple2, zip_tuple3
 
 __all__ = [
+        "aggregate",
         "all",
         "any",
         "append",
