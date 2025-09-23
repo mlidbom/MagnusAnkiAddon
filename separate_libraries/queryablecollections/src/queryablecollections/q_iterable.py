@@ -134,6 +134,8 @@ class QIterable[T](Iterable[T], ABC):
     def join[TInner, TKey, TResult](self, other: Iterable[TInner], self_key: Selector[T, TKey], other_key: Selector[TInner, TKey], select: Callable[[T, TInner], TResult]) -> QIterable[TResult]: return C.lazy_iterable(lambda: ops.join(self, other, self_key, other_key, select))
     def group_join[TInner, TKey, TResult](self, other: Iterable[TInner], self_key: Selector[T, TKey], group_key: Selector[TInner, TKey], select: Callable[[T, Iterable[TInner]], TResult]) -> QIterable[TResult]: return C.lazy_iterable(lambda: ops.group_join(self, other, self_key, group_key, select))
 
+    def qindex(self) -> QIterable[tuple[int, T]]: return C.lazy_iterable(lambda: ops.qindex(self))
+
     def zip[T2, TResult](self, second: Iterable[T2], select: Callable[[T, T2], TResult]) -> QIterable[TResult]: return C.lazy_iterable(lambda: ops.zip(self, second, select))
     def zip2[T2, T3, TResult](self, second: Iterable[T2], third: Iterable[T3], select: Callable[[T, T2, T3], TResult]) -> QIterable[TResult]: return C.lazy_iterable(lambda: ops.zip2(self, second, third, select))
     def zip3[T2, T3, T4, TResult](self, second: Iterable[T2], third: Iterable[T3], fourth: Iterable[T4], select: Callable[[T, T2, T3, T4], TResult]) -> QIterable[TResult]: return C.lazy_iterable(lambda: ops.zip3(self, second, third, fourth, select))

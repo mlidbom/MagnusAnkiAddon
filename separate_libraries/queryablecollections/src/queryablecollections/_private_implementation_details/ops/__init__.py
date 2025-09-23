@@ -28,6 +28,7 @@ from .qcount import qcount
 from .qcount_by import qcount_by
 from .qexcept import qexcept
 from .qexcept_by import qexcept_by
+from .qindex import qindex
 from .reversed import reversed
 from .select import select
 from .select_many import select_many
@@ -74,6 +75,7 @@ __all__ = [
         "qcount_by",
         "qexcept",
         "qexcept_by",
+        "qindex",
         "reversed",
         "select",
         "select_many",
