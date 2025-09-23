@@ -14,4 +14,4 @@ def distinct_by[TItem, TKey](self: Iterable[TItem], key_selector: Selector[TItem
         key = key_selector(item)
         if key not in seen:
             seen[key] = item
-    return seen.values()
+            yield item
