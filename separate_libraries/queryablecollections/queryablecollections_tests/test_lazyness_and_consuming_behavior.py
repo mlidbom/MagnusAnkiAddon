@@ -80,6 +80,8 @@ scalar_or_action_operators: list[tuple[str, ScalarOrActionOperator]] = [
         ("first_or_none", lambda x1: x1.first_or_none()),
         ("last", lambda x1: x1.last()),
         ("last_or_none", lambda x1: x1.last_or_none()),
+        ("max_by", lambda x1: x1.max_by(lambda v: v)),
+        ("min_by", lambda x1: x1.min_by(lambda v: v)),
         ("for_each", lambda x1: x1.for_each(null_op)),
         ("none", lambda x1: x1.none()),
         ("pipe", lambda x1: x1.pipe(lambda iterator: iterator.for_each(null_op))),

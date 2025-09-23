@@ -23,6 +23,8 @@ from .group_join import group_join
 from .join import join
 from .last import last
 from .last_or_none import last_or_none
+from .max_by import max_by
+from .min_by import min_by
 from .of_type import of_type
 from .pipe import pipe
 from .prepend import prepend
@@ -85,6 +87,8 @@ __all__ = [
         "pipe",
         "prepend",
         "qcount",
+        "max_by",
+        "min_by",
         "qcount_by",
         "qexcept",
         "where_key_not_in",

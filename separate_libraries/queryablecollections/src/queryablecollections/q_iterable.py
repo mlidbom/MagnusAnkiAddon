@@ -211,6 +211,10 @@ class QIterable[T](Iterable[T], ABC):
 
     def element_at(self, index: int) -> T: return ops.element_at(self, index)
     def element_at_or_none(self, index: int) -> T | None: return ops.element_at_or_none(self, index)
+
+    def min_by[TKey: SupportsRichComparison](self, key_selector: Selector[T, TKey]) -> T:return ops.min_by(self, key_selector)
+    def max_by[TKey: SupportsRichComparison](self, key_selector: Selector[T, TKey]) -> T: return ops.max_by(self, key_selector)
+
     # endregion
 
     # region methods subclasses may want to override for perfarmonce reasons
