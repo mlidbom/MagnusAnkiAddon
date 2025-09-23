@@ -10,5 +10,5 @@ if TYPE_CHECKING:
     from queryablecollections._private_implementation_details.type_aliases import Selector
 
 
-def select_many[T, TSubItem](self: Iterable[T], selector: Selector[T, Iterable[TSubItem]]) -> Iterable[TSubItem]:
-    return ops.flatten(ops.select(self, selector))
+def select_many[T, TSubItem](self: Iterable[T], select_children: Selector[T, Iterable[TSubItem]]) -> Iterable[TSubItem]:
+    return (child for parent in self for child in select_children(parent))
