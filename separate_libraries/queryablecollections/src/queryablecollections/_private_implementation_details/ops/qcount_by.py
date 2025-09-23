@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from queryablecollections.collections.q_key_value_pair import KeyValuePair
     from queryablecollections.q_iterable import QIterable
 
-def count_by[TItem, TKey](self: Iterable[TItem], key_selector: Selector[TItem, TKey]) -> QIterable[KeyValuePair[TKey, int]]:
+def qcount_by[TItem, TKey](self: Iterable[TItem], key_selector: Selector[TItem, TKey]) -> QIterable[KeyValuePair[TKey, int]]:
     counts: QDict[TKey, int] = C.dict()
 
     for item in self:

@@ -10,8 +10,6 @@ from .as_ import as_decimals, as_floats, as_fractions, as_ints
 from .chunk import chunk
 from .concat import concat
 from .contains import contains
-from .count import count
-from .count_by import count_by
 from .distinct import distinct
 from .distinct_by import distinct_by
 from .element_at import element_at
@@ -26,6 +24,8 @@ from .join import join
 from .of_type import of_type
 from .pipe import pipe
 from .prepend import prepend
+from .qcount import qcount
+from .qcount_by import qcount_by
 from .qexcept import qexcept
 from .qexcept_by import qexcept_by
 from .reversed import reversed
@@ -56,8 +56,6 @@ __all__ = [
         "chunk",
         "concat",
         "contains",
-        "count",
-        "count_by",
         "distinct",
         "distinct_by",
         "element_at",
@@ -72,6 +70,8 @@ __all__ = [
         "of_type",
         "pipe",
         "prepend",
+        "qcount",
+        "qcount_by",
         "qexcept",
         "qexcept_by",
         "reversed",

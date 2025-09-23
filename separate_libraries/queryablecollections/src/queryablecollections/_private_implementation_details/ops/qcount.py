@@ -7,7 +7,7 @@ if TYPE_CHECKING:
     from queryablecollections.q_iterable import QIterable
 
 
-def count[TItem](self: QIterable[TItem], predicate: Predicate[TItem] | None = None) -> int:
+def qcount[TItem](self: QIterable[TItem], predicate: Predicate[TItem] | None = None) -> int:
     if predicate is not None:
         self = self.where(predicate)
 
