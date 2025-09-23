@@ -32,7 +32,9 @@ def aggregate_seed[TItem, TAccumulate](
         accumulated_value = func(accumulated_value, item)
     return accumulated_value
 
-def aggregate[T, TAccumulate, TResult](self: Iterable[T], func: Callable[[T, T], T] | Callable[[TAccumulate, T], TAccumulate], seed: TAccumulate | None = None, result_selector: Selector[TAccumulate, TResult] | None = None) -> T | TAccumulate | TResult:
+def aggregate[T, TAccumulate, TResult](self: Iterable[T], func: Callable[[T, T], T] | Callable[[TAccumulate, T], TAccumulate],
+                                       seed: TAccumulate | None = None,
+                                       result_selector: Selector[TAccumulate, TResult] | None = None) -> T | TAccumulate | TResult:
     if seed is None:
         return aggregate_simple(self, cast(Callable[[T, T], T], func))
 

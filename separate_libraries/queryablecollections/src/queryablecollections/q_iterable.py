@@ -16,7 +16,6 @@ if TYPE_CHECKING:
     from fractions import Fraction
 
     from _typeshed import SupportsRichComparison
-
     from queryablecollections._private_implementation_details.type_aliases import Action1, Func, Predicate, Selector
     from queryablecollections.collections.numeric.q_decimal_types import QDecimalIterable
     from queryablecollections.collections.numeric.q_float_types import QFloatIterable
@@ -103,10 +102,12 @@ class QIterable[T](Iterable[T], ABC):
     def aggregate[TAccumulate](self, func: Callable[[TAccumulate, T], TAccumulate], seed: TAccumulate) -> TAccumulate: ...
 
     @overload
-    def aggregate[TAccumulate, TResult](self, func: Callable[[TAccumulate, T], TAccumulate], seed: TAccumulate, result_selector: Selector[TAccumulate, TResult]) -> TResult: ...
+    def aggregate[TAccumulate, TResult](self, func: Callable[[TAccumulate, T], TAccumulate], seed: TAccumulate, select: Selector[TAccumulate, TResult]) -> TResult: ...
 
-    def aggregate[TAccumulate, TResult](self, func: Callable[[T, T], T] | Callable[[TAccumulate, T], TAccumulate], seed: TAccumulate | None = None, result_selector: Selector[TAccumulate, TResult] | None = None) -> T | TAccumulate | TResult:
-        return ops.aggregate(self, func, seed, result_selector)
+    def aggregate[TAccumulate, TResult](self, func: Callable[[T, T], T] | Callable[[TAccumulate, T], TAccumulate],
+                                        seed: TAccumulate | None = None,
+                                        select: Selector[TAccumulate, TResult] | None = None) -> T | TAccumulate | TResult:
+        return ops.aggregate(self, func, seed, select)
 
     # endregion
 
