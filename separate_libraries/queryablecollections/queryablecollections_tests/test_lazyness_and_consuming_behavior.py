@@ -39,6 +39,7 @@ iterator_generating_operators: list[tuple[str, CollectionReturningOperator]] = [
         ("order_by_descending", lambda x1: x1.order_by_descending(lambda x2: x2)),
         ("prepend", lambda x1: x1.prepend(999)),
         ("qexcept", lambda x1: x1.qexcept([1, 2, 3, 4])),
+        ("qexcept_by", lambda x1: x1.qexcept_by([1, 2, 3, 4], lambda x2: x2)),
         ("reversed", lambda x1: x1.reversed()),
         ("select", lambda x1: x1.select(lambda x2: x2)),
         ("select_many", lambda x1: x1.select_many(lambda _: [1, 2, 3])),

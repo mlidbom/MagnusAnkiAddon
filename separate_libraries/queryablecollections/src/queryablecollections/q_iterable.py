@@ -76,6 +76,7 @@ class QIterable[T](Iterable[T], ABC):
 
     def distinct_by[TKey](self, key_selector: Selector[T, TKey]) -> QIterable[T]: return self._lazy(lambda: ops.distinct_by(self, key_selector))
     def qexcept(self, other: Iterable[T]) -> QIterable[T]: return self._lazy(lambda: ops.qexcept(self, other))
+    def qexcept_by[TKey](self, other: Iterable[TKey], key_selector: Selector[T, TKey]) -> QIterable[T]: return self._lazy(lambda: ops.qexcept_by(self, other, key_selector))
 
     def take(self, count: int) -> QIterable[T]: return self._lazy(lambda: ops.take(self, count))
     def take_while(self, predicate: Predicate[T]) -> QIterable[T]: return self._lazy(lambda: ops.take_while(self, predicate))

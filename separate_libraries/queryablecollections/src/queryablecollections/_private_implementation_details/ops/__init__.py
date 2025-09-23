@@ -26,6 +26,7 @@ from .of_type import of_type
 from .pipe import pipe
 from .prepend import prepend
 from .qexcept import qexcept
+from .qexcept_by import qexcept_by
 from .reversed import reversed
 from .select import select
 from .select_many import select_many
@@ -69,6 +70,8 @@ __all__ = [
         "of_type",
         "pipe",
         "prepend",
+        "qexcept",
+        "qexcept_by",
         "reversed",
         "select",
         "select_many",
