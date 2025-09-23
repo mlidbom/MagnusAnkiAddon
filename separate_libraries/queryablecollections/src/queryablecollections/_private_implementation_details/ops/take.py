@@ -3,6 +3,7 @@ from __future__ import annotations
 import itertools
 from typing import TYPE_CHECKING
 
+# noinspection PyPep8Naming
 from queryablecollections._private_implementation_details.q_zero_overhead_collection_contructors import ZeroImportOverheadConstructors as C
 
 if TYPE_CHECKING:

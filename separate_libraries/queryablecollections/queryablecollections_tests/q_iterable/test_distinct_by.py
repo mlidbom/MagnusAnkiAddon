@@ -11,5 +11,5 @@ def test_distinct_by_removes_duplicates_by_selected_key_while_retaining_order_ke
                                                 ("b", 5)],
                                                lambda x: x.distinct_by(lambda y: y[0]).to_list(),
                                                [("a", 1),
-                ("b", 3)],
+                                                ("b", 3)],
                                                skip_sets=True)

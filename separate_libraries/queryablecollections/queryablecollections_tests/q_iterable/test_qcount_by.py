@@ -65,17 +65,17 @@ def test_count_by_with_mixed_types() -> None:
 
 def test_count_by_maintains_insertion_order() -> None:
     lists_value_test(["z", "a", "z", "b", "a", "z"],
-                     lambda x: x.qcount_by(lambda x: x).select(to_tuple).to_list(),
+                     lambda x: x.qcount_by(lambda y: y).select(to_tuple).to_list(),
                      [("z", 3), ("a", 2), ("b", 1)])
 
 def test_count_by_can_be_chained_with_other_operations() -> None:
     lists_value_test([1, 2, 2, 3, 3, 3],
-                     lambda x: x.qcount_by(lambda x: x).where(lambda kv: kv.value > 1).select(to_tuple).to_list(),
+                     lambda x: x.qcount_by(lambda y: y).where(lambda kv: kv.value > 1).select(to_tuple).to_list(),
                      [(2, 2), (3, 3)])
 
 def test_count_by_with_duplicate_consecutive_values() -> None:
     lists_value_test([1, 1, 2, 2, 2, 1],
-                     lambda x: x.qcount_by(lambda x: x).select(to_tuple).to_list(),
+                     lambda x: x.qcount_by(lambda y: y).select(to_tuple).to_list(),
                      [(1, 3), (2, 3)])
 
 def test_count_by_with_complex_objects() -> None:

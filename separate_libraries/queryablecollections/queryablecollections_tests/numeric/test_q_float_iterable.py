@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import pytest
 from queryablecollections.collections.numeric.q_float_types import QFloatList
 from queryablecollections.q_errors import EmptyIterableError
 from test_common_helpers import *

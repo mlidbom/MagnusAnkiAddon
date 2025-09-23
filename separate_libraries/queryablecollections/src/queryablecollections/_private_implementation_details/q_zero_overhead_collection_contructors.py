@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Never
 
 if TYPE_CHECKING:
+    import builtins
     from collections.abc import Iterable
     from decimal import Decimal
     from fractions import Fraction
@@ -77,7 +78,7 @@ class ZeroImportOverheadConstructors:
         return ZeroImportOverheadConstructors.caching_iterable(iterable)  # use the new version to prove from the very first call that it works
 
     @staticmethod
-    def ordered_iterable[TItem](factory: Func[QIterable[TItem]], sorting_instructions: list[SortInstruction[TItem]]) -> QOrderedIterable[TItem]:
+    def ordered_iterable[TItem](factory: Func[QIterable[TItem]], sorting_instructions: builtins.list[SortInstruction[TItem]]) -> QOrderedIterable[TItem]:
         from queryablecollections.q_ordered_iterable import QOrderedIterable
         ZeroImportOverheadConstructors.ordered_iterable = QOrderedIterable  # replace this method with a direct call so that future calls have zero import overhead  # pyright: ignore [reportAttributeAccessIssue]
         return ZeroImportOverheadConstructors.ordered_iterable(factory, sorting_instructions)  # use the new version to prove from the very first call that it works

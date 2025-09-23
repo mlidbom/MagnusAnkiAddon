@@ -15,8 +15,3 @@ class ArgumentError(ValueError):
     """Raised when an argument is invalid."""
     def __init__(self, message: str = "The argument is invalid.") -> None:
         super().__init__(message)
-
-class ArgumentNoneError(ArgumentError):
-    """Raised when an argument is None."""
-    def __init__(self, argument_name: str) -> None:
-        super().__init__(f"{argument_name} cannot be None.")
