@@ -87,6 +87,7 @@ scalar_or_action_operators: list[tuple[str, ScalarOrActionOperator]] = [
         ("to_list", lambda x1: x1.to_list()),
         ("to_sequence", lambda x1: x1.to_sequence()),
         ("to_set", lambda x1: x1.to_set()),
+        ("sequence_equal", lambda x1: x1.sequence_equal([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])),
 ]
 
 def assert_has_10_elements[T](iterable: QIterable[T]) -> QIterable[T]:

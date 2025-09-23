@@ -102,6 +102,9 @@ class QIterable[T](Iterable[T], ABC):
     def all(self, predicate: Predicate[T]) -> bool: return ops.all(self, predicate)
 
     def contains(self, value: T) -> bool: return ops.contains(self, value)
+
+    def sequence_equal(self, other: Iterable[T]) -> bool: return ops.sequence_equal(self, other)
+
     # endregion
 
     # region aggregation methods

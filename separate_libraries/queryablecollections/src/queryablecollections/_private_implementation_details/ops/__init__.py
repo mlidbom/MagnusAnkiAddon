@@ -35,6 +35,7 @@ from .reversed import reversed
 from .select import select
 from .select_index import select_index
 from .select_many import select_many
+from .sequence_equal import sequence_equal
 from .single import single
 from .single_or_none import single_or_none
 from .skip import skip
@@ -103,5 +104,6 @@ __all__ = [
         "zip_tuple",
         "zip_tuple2",
         "zip_tuple3",
-        "skip_while"
+        "skip_while",
+        "sequence_equal"
 ]
