@@ -7,9 +7,8 @@ from queryablecollections._private_implementation_details.q_zero_overhead_collec
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterable
 
-    from test_common_helpers import QList
-
     from queryablecollections._private_implementation_details.type_aliases import Selector
+    from queryablecollections.collections.q_list import QList
 
 def group_join[TOuter, TInner, TKey, TResult](
         self: Iterable[TOuter],
