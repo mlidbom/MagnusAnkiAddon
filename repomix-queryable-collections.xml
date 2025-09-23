@@ -255,7 +255,6 @@ def test_to_sequence_returns_a_sequence_with_the_same_elements() -> None: assert
 <file path="queryablecollections_tests/numeric/test_q_float_iterable.py">
 from __future__ import annotations
 
-import pytest
 from queryablecollections.collections.numeric.q_float_types import QFloatList
 from queryablecollections.q_errors import EmptyIterableError
 from test_common_helpers import *
@@ -787,7 +786,7 @@ def test_distinct_by_removes_duplicates_by_selected_key_while_retaining_order_ke
                                                 ("b", 5)],
                                                lambda x: x.distinct_by(lambda y: y[0]).to_list(),
                                                [("a", 1),
-                ("b", 3)],
+                                                ("b", 3)],
                                                skip_sets=True)
 </file>
 
@@ -1027,7 +1026,7 @@ def test_with_no_matching_keys_returns_empty_groups() -> None:
               .group_join(orders,
                           lambda person: person.id,
                           lambda order: order.person_id,
-                          lambda person, person_orders: f"{person.name}: {len(list(person_orders))} orders")
+                          lambda person, person_orders: f"{person.name}: {person_orders.qcount()} orders")
               .to_list())
 
     expected = ["Alice: 0 orders", "Bob: 0 orders"]
@@ -1041,7 +1040,7 @@ def test_with_empty_outer_sequence_returns_empty_result() -> None:
               .group_join(orders,
                           lambda person: person.id,
                           lambda order: order.person_id,
-                          lambda person, person_orders: f"{person.name}: {len(list(person_orders))} orders")
+                          lambda person, person_orders: f"{person.name}: {person_orders.qcount()} orders")
               .to_list())
 
     assert result == []
@@ -1054,7 +1053,7 @@ def test_with_empty_inner_sequence_returns_all_outer_with_empty_groups() -> None
               .group_join(orders,
                           lambda person: person.id,
                           lambda order: order.person_id,
-                          lambda person, person_orders: f"{person.name}: {len(list(person_orders))} orders")
+                          lambda person, person_orders: f"{person.name}: {person_orders.qcount()} orders")
               .to_list())
 
     expected = ["Alice: 0 orders", "Bob: 0 orders"]
@@ -1068,7 +1067,7 @@ def test_with_both_empty_sequences_returns_empty_result() -> None:
               .group_join(orders,
                           lambda person: person.id,
                           lambda order: order.person_id,
-                          lambda person, person_orders: f"{person.name}: {len(list(person_orders))} orders")
+                          lambda person, person_orders: f"{person.name}: {person_orders.qcount()} orders")
               .to_list())
 
     assert result == []
@@ -1081,7 +1080,7 @@ def test_items_with_none_keys_match_each_other() -> None:
               .group_join(orders,
                           lambda person: person.id,
                           lambda order: order.person_id,
-                          lambda person, person_orders: f"{person.name}: {len(list(person_orders))} orders")
+                          lambda person, person_orders: f"{person.name}: {person_orders.qcount()} orders")
               .to_list())
 
     expected = ["Alice: 1 orders", "Unknown: 1 orders"]
@@ -1095,7 +1094,7 @@ def test_duplicate_keys_in_outer_sequence_stay_duplicated_and_the_same_group_app
               .group_join(orders,
                           lambda person: person.id,
                           lambda order: order.person_id,
-                          lambda person, person_orders: f"{person.name}: {len(list(person_orders))} orders")
+                          lambda person, person_orders: f"{person.name}: {person_orders.qcount()} orders")
               .to_list())
 
     expected = ["Alice1: 2 orders", "Alice2: 2 orders", "Bob: 1 orders"]
@@ -1715,17 +1714,17 @@ def test_count_by_with_mixed_types() -> None:
 
 def test_count_by_maintains_insertion_order() -> None:
     lists_value_test(["z", "a", "z", "b", "a", "z"],
-                     lambda x: x.qcount_by(lambda x: x).select(to_tuple).to_list(),
+                     lambda x: x.qcount_by(lambda y: y).select(to_tuple).to_list(),
                      [("z", 3), ("a", 2), ("b", 1)])
 
 def test_count_by_can_be_chained_with_other_operations() -> None:
     lists_value_test([1, 2, 2, 3, 3, 3],
-                     lambda x: x.qcount_by(lambda x: x).where(lambda kv: kv.value > 1).select(to_tuple).to_list(),
+                     lambda x: x.qcount_by(lambda y: y).where(lambda kv: kv.value > 1).select(to_tuple).to_list(),
                      [(2, 2), (3, 3)])
 
 def test_count_by_with_duplicate_consecutive_values() -> None:
     lists_value_test([1, 1, 2, 2, 2, 1],
-                     lambda x: x.qcount_by(lambda x: x).select(to_tuple).to_list(),
+                     lambda x: x.qcount_by(lambda y: y).select(to_tuple).to_list(),
                      [(1, 3), (2, 3)])
 
 def test_count_by_with_complex_objects() -> None:
@@ -3822,7 +3821,7 @@ def distinct_by[TItem, TKey](self: Iterable[TItem], key_selector: Selector[TItem
         key = key_selector(item)
         if key not in seen:
             seen[key] = item
-    return seen.values()
+            yield item
 </file>
 
 <file path="src/queryablecollections/_private_implementation_details/ops/distinct.py">
@@ -3992,28 +3991,32 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+# noinspection PyPep8Naming
+from queryablecollections._private_implementation_details.q_zero_overhead_collection_contructors import ZeroImportOverheadConstructors as C
+
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterable
 
     from queryablecollections._private_implementation_details.type_aliases import Selector
+    from queryablecollections.collections.q_list import QList
 
 def group_join[TOuter, TInner, TKey, TResult](
         self: Iterable[TOuter],
         other: Iterable[TInner],
         self_key: Selector[TOuter, TKey],
         group_key: Selector[TInner, TKey],
-        select: Callable[[TOuter, Iterable[TInner]], TResult]
+        select: Callable[[TOuter, QList[TInner]], TResult]
 ) -> Iterable[TResult]:
-    groups_by_key: dict[TKey, list[TInner]] = {}
+    groups_by_key: dict[TKey, QList[TInner]] = {}
     for other_item in other:
         key = group_key(other_item)
         if key not in groups_by_key:
-            groups_by_key[key] = []
+            groups_by_key[key] = C.list()
         groups_by_key[key].append(other_item)
 
     for self_item in self:
         self_key_value = self_key(self_item)
-        yield select(self_item, groups_by_key.get(self_key_value, []))
+        yield select(self_item, groups_by_key.get(self_key_value, C.list()))
 </file>
 
 <file path="src/queryablecollections/_private_implementation_details/ops/join.py">
@@ -4219,6 +4222,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+# noinspection PyPep8Naming
 from queryablecollections._private_implementation_details.q_zero_overhead_collection_contructors import ZeroImportOverheadConstructors as C
 
 if TYPE_CHECKING:
@@ -4427,8 +4431,8 @@ if TYPE_CHECKING:
     from queryablecollections._private_implementation_details.type_aliases import Selector
 
 
-def select_many[T, TSubItem](self: Iterable[T], selector: Selector[T, Iterable[TSubItem]]) -> Iterable[TSubItem]:
-    return ops.flatten(ops.select(self, selector))
+def select_many[T, TSubItem](self: Iterable[T], select_children: Selector[T, Iterable[TSubItem]]) -> Iterable[TSubItem]:
+    return (child for parent in self for child in select_children(parent))
 </file>
 
 <file path="src/queryablecollections/_private_implementation_details/ops/select.py">
@@ -4539,22 +4543,28 @@ def single[TItem](self: Iterable[TItem],
 <file path="src/queryablecollections/_private_implementation_details/ops/skip_last.py">
 from __future__ import annotations
 
+from collections import deque
 from typing import TYPE_CHECKING
-
-from queryablecollections._private_implementation_details.q_zero_overhead_collection_contructors import ZeroImportOverheadConstructors as C
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
-
 def skip_last[TItem](self: Iterable[TItem], count: int) -> Iterable[TItem]:
-    def skip_last_implementation() -> Iterable[TItem]:
-        if count <= 0: return self
-        items = list(self)
-        if count >= len(items):
-            return C.empty_iterable()
-        return items[:-count]
-    return C.lazy_iterable(skip_last_implementation)
+    if count <= 0:
+        yield from self
+    else:
+        iterator = iter(self)
+        buffer_into_the_past_of_the_iteration_count_items_long = deque[TItem](maxlen=count)
+
+        try:
+            for _ in range(count):
+                buffer_into_the_past_of_the_iteration_count_items_long.append(next(iterator))  # fill the sliding window with the first count items without yielding them, we don't yet know if we are allowed to yield any of them
+        except StopIteration:  # there are less items in the collection than we are supposed to skip, return no items
+            return
+
+        for item in iterator:  # start normal iteration of the items after the sliding window that we have created
+            yield buffer_into_the_past_of_the_iteration_count_items_long[0]  # yield the oldest item in the sliding window, the one that we iterated through count items ago so we know we are allowed to yield it
+            buffer_into_the_past_of_the_iteration_count_items_long.append(item)  # push the item we just iterated through into the sliding window pushing the yielded item out of the window
 </file>
 
 <file path="src/queryablecollections/_private_implementation_details/ops/skip_while.py">
@@ -4630,6 +4640,7 @@ from __future__ import annotations
 import itertools
 from typing import TYPE_CHECKING
 
+# noinspection PyPep8Naming
 from queryablecollections._private_implementation_details.q_zero_overhead_collection_contructors import ZeroImportOverheadConstructors as C
 
 if TYPE_CHECKING:
@@ -4646,6 +4657,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+# noinspection PyPep8Naming
 from queryablecollections._private_implementation_details.q_zero_overhead_collection_contructors import ZeroImportOverheadConstructors as C
 
 if TYPE_CHECKING:
@@ -4822,6 +4834,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Never
 
 if TYPE_CHECKING:
+    import builtins
     from collections.abc import Iterable
     from decimal import Decimal
     from fractions import Fraction
@@ -4896,7 +4909,7 @@ class ZeroImportOverheadConstructors:
         return ZeroImportOverheadConstructors.caching_iterable(iterable)  # use the new version to prove from the very first call that it works
 
     @staticmethod
-    def ordered_iterable[TItem](factory: Func[QIterable[TItem]], sorting_instructions: list[SortInstruction[TItem]]) -> QOrderedIterable[TItem]:
+    def ordered_iterable[TItem](factory: Func[QIterable[TItem]], sorting_instructions: builtins.list[SortInstruction[TItem]]) -> QOrderedIterable[TItem]:
         from queryablecollections.q_ordered_iterable import QOrderedIterable
         ZeroImportOverheadConstructors.ordered_iterable = QOrderedIterable  # replace this method with a direct call so that future calls have zero import overhead  # pyright: ignore [reportAttributeAccessIssue]
         return ZeroImportOverheadConstructors.ordered_iterable(factory, sorting_instructions)  # use the new version to prove from the very first call that it works
@@ -5552,6 +5565,7 @@ from __future__ import annotations
 from collections import defaultdict
 from typing import TYPE_CHECKING, override
 
+# noinspection PyPep8Naming
 from queryablecollections._private_implementation_details.q_zero_overhead_collection_contructors import ZeroImportOverheadConstructors as C
 from queryablecollections.collections.q_key_value_pair import KeyValuePair
 from queryablecollections.q_iterable import QIterable
@@ -5576,6 +5590,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
+# noinspection PyPep8Naming
 from queryablecollections._private_implementation_details.q_zero_overhead_collection_contructors import ZeroImportOverheadConstructors as C
 from queryablecollections.collections.q_key_value_pair import KeyValuePair
 from queryablecollections.q_iterable import QIterable
@@ -5863,11 +5878,6 @@ class ArgumentError(ValueError):
     """Raised when an argument is invalid."""
     def __init__(self, message: str = "The argument is invalid.") -> None:
         super().__init__(message)
-
-class ArgumentNoneError(ArgumentError):
-    """Raised when an argument is None."""
-    def __init__(self, argument_name: str) -> None:
-        super().__init__(f"{argument_name} cannot be None.")
 </file>
 
 <file path="src/queryablecollections/q_grouping.py">
@@ -5944,7 +5954,7 @@ class QIterable[T](Iterable[T], ABC):
     @staticmethod
     @overload
     def range(start: int, stop_before: int, step: int = 1, /) -> QIntIterable:
-        """Returns a QIntIterable with values from start to stop_before - 1 in steps of step"""
+        """Returns a QIntIterable with values from start to stop_before - 1 in steps of step, defaulting to 1 if step is omitted"""
 
     @staticmethod
     def range(start_or_stop_before: int, stop_before: int | None = None, step: int = 1, /) -> QIntIterable: return C.int_iterable(lambda: ops.range(start_or_stop_before, stop_before, step))
@@ -6062,7 +6072,7 @@ class QIterable[T](Iterable[T], ABC):
     def select_index[TReturn](self, selector: Callable[[T, int], TReturn]) -> QIterable[TReturn]: return C.lazy_iterable(lambda: ops.select_index(self, selector))
     def select_many[TInner](self, selector: Selector[T, Iterable[TInner]]) -> QIterable[TInner]: return C.lazy_iterable(lambda: ops.select_many(self, selector))
     def join[TInner, TKey, TResult](self, other: Iterable[TInner], self_key: Selector[T, TKey], other_key: Selector[TInner, TKey], select: Callable[[T, TInner], TResult]) -> QIterable[TResult]: return C.lazy_iterable(lambda: ops.join(self, other, self_key, other_key, select))
-    def group_join[TInner, TKey, TResult](self, other: Iterable[TInner], self_key: Selector[T, TKey], group_key: Selector[TInner, TKey], select: Callable[[T, Iterable[TInner]], TResult]) -> QIterable[TResult]: return C.lazy_iterable(lambda: ops.group_join(self, other, self_key, group_key, select))
+    def group_join[TInner, TKey, TResult](self, other: Iterable[TInner], self_key: Selector[T, TKey], group_key: Selector[TInner, TKey], select: Callable[[T, QList[TInner]], TResult]) -> QIterable[TResult]: return C.lazy_iterable(lambda: ops.group_join(self, other, self_key, group_key, select))
 
     def qindex(self) -> QIterable[tuple[int, T]]: return C.lazy_iterable(lambda: ops.qindex(self))
 
@@ -6100,7 +6110,7 @@ class QIterable[T](Iterable[T], ABC):
     def element_at(self, index: int) -> T: return ops.element_at(self, index)
     def element_at_or_none(self, index: int) -> T | None: return ops.element_at_or_none(self, index)
 
-    def min_by[TKey: SupportsRichComparison](self, key_selector: Selector[T, TKey]) -> T:return ops.min_by(self, key_selector)
+    def min_by[TKey: SupportsRichComparison](self, key_selector: Selector[T, TKey]) -> T: return ops.min_by(self, key_selector)
     def max_by[TKey: SupportsRichComparison](self, key_selector: Selector[T, TKey]) -> T: return ops.max_by(self, key_selector)
 
     # endregion
