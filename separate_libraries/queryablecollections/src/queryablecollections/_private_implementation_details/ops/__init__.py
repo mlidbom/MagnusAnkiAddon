@@ -30,6 +30,7 @@ from .qexcept import qexcept
 from .qexcept_by import qexcept_by
 from .qindex import qindex
 from .qunion import qunion
+from .qunion_by import qunion_by
 from .reversed import reversed
 from .select import select
 from .select_index import select_index
@@ -79,6 +80,7 @@ __all__ = [
         "qexcept_by",
         "qindex",
         "qunion",
+        "qunion_by",
         "reversed",
         "select",
         "select_index",

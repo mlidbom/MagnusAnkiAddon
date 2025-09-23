@@ -72,6 +72,7 @@ class QIterable[T](Iterable[T], ABC):
     def qexcept(self, other: Iterable[T]) -> QIterable[T]: return self._lazy(lambda: ops.qexcept(self, other))
     def qexcept_by[TKey](self, other: Iterable[TKey], key_selector: Selector[T, TKey]) -> QIterable[T]: return self._lazy(lambda: ops.qexcept_by(self, other, key_selector))
     def qunion(self, other: Iterable[T]) -> QIterable[T]: return self._lazy(lambda: ops.qunion(self, other))
+    def qunion_by[TKey](self, other: Iterable[T], key_selector: Selector[T, TKey]) -> QIterable[T]: return self._lazy(lambda: ops.qunion_by(self, other, key_selector))
 
     # endregion
 
