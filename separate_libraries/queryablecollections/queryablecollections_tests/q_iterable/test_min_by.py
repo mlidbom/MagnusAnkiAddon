@@ -30,6 +30,6 @@ def test_raises_type_error_if_selector_returns_non_comparable() -> None:
 
     throws_test(
             ["a", "b", "c"],
-            lambda x: x.max_by(lambda y: NonComparable(y)),  # pyright: ignore [reportArgumentType]
+            lambda x: x.min_by(lambda y: NonComparable(y)),  # pyright: ignore [reportArgumentType]
             TypeError
     )

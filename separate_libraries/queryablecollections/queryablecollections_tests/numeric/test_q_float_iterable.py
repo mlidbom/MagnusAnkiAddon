@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import pytest
 from queryablecollections.collections.numeric.q_float_types import QFloatList
 from queryablecollections.q_errors import EmptyIterableError
 from test_common_helpers import *
@@ -14,7 +15,7 @@ def test_cast_checked_float_returns_a_q_iterable_float_with_the_same_elements() 
 def test_cast_checked_float_raises_type_error_if_collection_contains_non_float() -> None:
     throws_test([1.1, "2.1", 3.1], lambda x: x.cast.checked.float().to_list(), TypeError)
 
-def test_sum_returns_sum_of_the_values() -> None: assert QFloatList([1.1, 2.1, 3.1]).sum() == 6.300000000000001
+def test_sum_returns_sum_of_the_values() -> None: assert QFloatList([1.1, 2.1, 3.1]).sum() == pytest.approx(6.3)  # pyright: ignore [reportUnknownMemberType]
 def test_sum_returns_zero_on_on_empty_collection() -> None: assert QFloatList().sum() == 0
 
 def test_min_returns_min_of_the_values() -> None: assert QFloatList([6.1, 2.1, 5.1, 3.1]).min() == 2.1
