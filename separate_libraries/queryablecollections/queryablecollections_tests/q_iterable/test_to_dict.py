@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import override
+
 from queryablecollections.collections.q_list import QList
 from queryablecollections.q_iterable import query
 
@@ -9,6 +11,7 @@ class DummyObj:
         self.name: str = name
         self.val: int = val
 
+    @override
     def __eq__(self, other: object) -> bool:
         return isinstance(other, DummyObj) and self.name == other.name and self.val == other.val
 

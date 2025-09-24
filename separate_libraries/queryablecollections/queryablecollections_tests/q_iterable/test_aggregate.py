@@ -1,7 +1,8 @@
 from __future__ import annotations
 
+from queryablecollections.collections.q_list import QList
 from queryablecollections.q_errors import EmptyIterableError
-from test_common_helpers import QList, lists_value_test, throws_test
+from test_common_helpers import lists_value_test, throws_test
 
 
 def test_summing_numbers_returns_sum_of_the_elements() -> None:

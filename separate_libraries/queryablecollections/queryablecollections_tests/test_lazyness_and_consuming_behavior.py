@@ -3,13 +3,12 @@ from __future__ import annotations
 from collections.abc import Callable, Iterable
 from decimal import Decimal
 from fractions import Fraction
-from typing import Any
 
 from queryablecollections.q_iterable import QIterable, query
 
 
 def swallow_exception_decorator(inner: ScalarOrActionOperator) -> ScalarOrActionOperator:
-    def wrapper(argument: QIterable[int]) -> Any:  # noqa: ANN401
+    def wrapper(argument: QIterable[int]) -> object:
         # noinspection PyBroadException
         try:
             return inner(argument)
@@ -19,7 +18,7 @@ def swallow_exception_decorator(inner: ScalarOrActionOperator) -> ScalarOrAction
     return wrapper
 
 type CollectionReturningOperator = Callable[[QIterable[int]], Iterable[object]]
-type ScalarOrActionOperator = Callable[[QIterable[int]], Any]
+type ScalarOrActionOperator = Callable[[QIterable[int]], object]
 iterator_generating_operators: list[tuple[str, CollectionReturningOperator]] = [
         ("qappend", lambda x1: x1.qappend(999)),
         ("as_decimals", lambda x1: x1.select(Decimal).as_decimals()),

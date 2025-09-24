@@ -13,7 +13,7 @@ def test_of_type_filters_by_type() -> None:
 def test_of_type_with_inheritance() -> None:
     class Animal:
         def __init__(self, name: str) -> None:
-            self.name = name
+            self.name: str = name
 
     class Dog(Animal): pass
 

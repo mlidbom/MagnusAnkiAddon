@@ -27,7 +27,7 @@ def test_max_by_with_ties_returns_first_encountered() -> None:
 def test_raises_type_error_if_selector_returns_non_comparable() -> None:
     class NonComparable:
         def __init__(self, value: str) -> None:
-            self.value = value
+            self.value: str = value
 
     throws_test(
             ["a", "b", "c"],

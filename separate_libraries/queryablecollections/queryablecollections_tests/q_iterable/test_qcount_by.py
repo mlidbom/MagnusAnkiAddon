@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 from queryablecollections.collections.q_key_value_pair import KeyValuePair
-from test_common_helpers import QList, lists_value_test, query
+from queryablecollections.collections.q_list import QList
+from queryablecollections.q_iterable import query
+from test_common_helpers import lists_value_test
 
 
 def to_tuple[TKey, TValue](x: KeyValuePair[TKey, TValue]) -> tuple[TKey, TValue]:
@@ -81,8 +83,8 @@ def test_count_by_with_duplicate_consecutive_values() -> None:
 def test_count_by_with_complex_objects() -> None:
     class Person:
         def __init__(self, name: str, age: int) -> None:
-            self.name = name
-            self.age = age
+            self.name: str = name
+            self.age: int = age
 
     people = [Person("Alice", 25), Person("Bob", 30), Person("Charlie", 25), Person("Diana", 30)]
     lists_value_test(people,

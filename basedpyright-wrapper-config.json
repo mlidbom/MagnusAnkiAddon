@@ -1,7 +1,12 @@
 {
   "include": [
     "src",
-    "separate_libraries/queryablecollections/src"
+    "separate_libraries"
+  ],
+    "extraPaths": [
+    "src/MagnusAddon",
+    "separate_libraries/queryablecollections/src",
+    "separate_libraries/queryablecollections/queryablecollections_tests"
   ],
   "exclude": [
     "**/node_modules",
@@ -14,11 +19,6 @@
     "**/included_libraries/*"
   ],
   "ignore": [],
-  "extraPaths": [
-    "src/MagnusAddon",
-    "separate_libraries/queryablecollections/src",
-    "separate_libraries/queryablecollections/queryablecollections_tests"
-  ],
   //"off, basic, standard, strict, recommended, all
   "typeCheckingMode": "recommended",
   "reportIgnoreCommentWithoutRule": "none",
