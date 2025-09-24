@@ -4,6 +4,7 @@ import os
 from typing import TYPE_CHECKING
 
 from sysutils.lazy import Lazy
+from testutils import ex_pytest
 
 if TYPE_CHECKING:
     import logging
@@ -73,5 +74,8 @@ def get_logger(module: str) -> logging.Logger:
 _addon_name = os.path.basename(os.path.dirname(__file__))
 _logger: Lazy[logging.Logger] = Lazy(lambda: get_logger(_addon_name))
 
-def info(msg: str) -> None: _logger().info(msg)
+def debug(msg: str) -> None:
+    if not ex_pytest.is_testing: _logger().debug(msg)
+def info(msg: str) -> None: 
+    if not ex_pytest.is_testing: _logger().info(msg)
 def warning(msg: str) -> None: _logger().warning(msg)
