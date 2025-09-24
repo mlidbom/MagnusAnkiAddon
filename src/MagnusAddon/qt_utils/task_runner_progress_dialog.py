@@ -38,7 +38,7 @@ class InvisibleTaskRunner(ITaskRunner, AutoSlots):
         result = [process_item(item) for item in items]
         total_items = len(items)
         watch = StopWatch()
-        mylog.info(f"##--InvisibleTaskRunner--## Finished {message} in {watch.elapsed_formatted()} handled {total_items} items")
+        mylog.debug(f"##--InvisibleTaskRunner--## Finished {message} in {watch.elapsed_formatted()} handled {total_items} items")
         return result
     @override
     def set_label_text(self, text: str) -> None: pass  # pyright: ignore
@@ -48,7 +48,7 @@ class InvisibleTaskRunner(ITaskRunner, AutoSlots):
     def run_on_background_thread_with_spinning_progress_dialog[TResult](self, message: str, action: Callable[[], TResult]) -> TResult:  # pyright: ignore
         watch = StopWatch()
         result = action()
-        mylog.info(f"##--QtTaskProgressRunner--## Finished {message} in {watch.elapsed_formatted()}")
+        mylog.debug(f"##--QtTaskProgressRunner--## Finished {message} in {watch.elapsed_formatted()}")
         return result
 
 class QtTaskProgressRunner(ITaskRunner, AutoSlots):
