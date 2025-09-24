@@ -34,8 +34,5 @@ def create_collection(collection_file_path: str) -> Collection:
     script_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..\\")
     source_file = os.path.join(script_dir, "collection.anki2")
     shutil.copyfile(source_file, collection_file_path)
-    print()
-    print(source_file)
-    print(collection_file_path)
 
     return Collection(collection_file_path)

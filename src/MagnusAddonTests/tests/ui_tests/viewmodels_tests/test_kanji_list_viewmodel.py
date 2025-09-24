@@ -26,13 +26,8 @@ def test_kanji_list_viewmodel() -> None:
     for sentence in sentences:
         extracted_kanji = sentence.extract_kanji()
         view_model = sentence_kanji_list_viewmodel.create(extracted_kanji)
-        print()
-        print(sentence.get_question())
-        print(view_model)
 
         extracted_kanji_set = set(extracted_kanji)
         found_kanji_set = {m.question() for m in view_model.kanji_list}
-
-        print(f"""{len(extracted_kanji_set)}:{len(found_kanji_set)}""")
 
         assert found_kanji_set == extracted_kanji_set

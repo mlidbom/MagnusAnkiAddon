@@ -28,4 +28,3 @@ def test_generate_from_dictionary() -> None:
     assert vocab.get_question() == "やる気満々"
     assert vocab.get_answer() == "totally-willing/fully-motivated"
     assert vocab.readings.get() == ["やるきまんまん"]
-    print(vocab.readings.get())

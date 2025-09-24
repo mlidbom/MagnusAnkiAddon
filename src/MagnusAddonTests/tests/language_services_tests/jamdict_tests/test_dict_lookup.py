@@ -90,7 +90,6 @@ def test_valid_forms(word: str, readings: list[str], forms: set[str]) -> None:
 def test_generate_answer(word: str, readings: list[str], answer: str) -> None:
     dict_entry = get_single_dict_entry(word, readings)
     generated_answer = dict_entry.generate_answer()
-    print(generated_answer)
     assert generated_answer == answer
 
 @pytest.mark.parametrize("word, readings, pos", [

@@ -38,9 +38,6 @@ def test_bootstrap_mnemonic(kanji:str, radicals:list[str], mnemonic:str) -> None
 
     kanji_note.bootstrap_mnemonic_from_radicals()
 
-    print()
-    print(kanji_note.get_user_mnemonic())
-    print(mnemonic)
     assert kanji_note.get_user_mnemonic() == mnemonic
 
 
