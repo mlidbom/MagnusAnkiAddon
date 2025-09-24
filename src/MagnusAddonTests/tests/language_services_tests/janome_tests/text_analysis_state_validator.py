@@ -23,7 +23,6 @@ class TextAnalysisValidator:
         self.valid_variant_valid_matches: QSet[Match] = analysis.valid_word_variant_valid_matches.to_set()
 
     def assert_is_valid(self) -> None:
-        print(self.analysis.text)
         self.is_displayed_false_matches_should_not_be_in_display_matches_list()
         self.is_displayed_true_matches_should_be_in_display_matches()
         self.is_valid_false_matches_should_have_failure_reasons()
