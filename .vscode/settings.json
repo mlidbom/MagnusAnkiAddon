@@ -12,4 +12,5 @@
     "python-envs.pythonProjects": [],
     "python.terminal.activateEnvironment": true,
     "python.terminal.activateEnvInCurrentTerminal": true,
+    //"python.analysis.logLevel": "Trace"
 }
