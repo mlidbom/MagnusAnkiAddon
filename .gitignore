@@ -17,3 +17,4 @@ collection.anki2
 *.py.pclprof
 *.lprof
 /repomix-output.xml
+/repomix-queryable-collections.xml
