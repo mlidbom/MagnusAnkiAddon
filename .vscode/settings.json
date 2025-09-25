@@ -1,7 +1,7 @@
 {
     "terminal.integrated.rightClickBehavior": "default",
     "python.testing.pytestArgs": [
-        "src/MagnusAddonTests", 
+        "src/MagnusAddonTests",
         "separate_libraries/queryablecollections/queryablecollections_tests"
     ],
     "python.envFile": "${workspaceFolder}/.env",
@@ -12,5 +12,7 @@
     "python-envs.pythonProjects": [],
     "python.terminal.activateEnvironment": true,
     "python.terminal.activateEnvInCurrentTerminal": true,
-    //"python.analysis.logLevel": "Trace"
+    "search.exclude": {
+        "**/language_services/english_dictionary/**": true
+    }
 }
