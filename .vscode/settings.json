@@ -14,5 +14,11 @@
     "python.terminal.activateEnvInCurrentTerminal": true,
     "search.exclude": {
         "**/language_services/english_dictionary/**": true
-    }
+    },
+    "python.analysis.inlayHints.callArgumentNames": "all",
+    "python.analysis.inlayHints.variableTypes": true,
+    "python.analysis.inlayHints.pytestParameters": true,
+    "python.analysis.inlayHints.functionReturnTypes": true,
+    "editor.inlayHints.enabled": "offUnlessPressed",
+    "editor.inlayHints.maximumLength": 0
 }
