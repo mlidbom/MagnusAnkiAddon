@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, final, override
 
 from ex_autoslot import AutoSlots
-from queryablecollections.collections.q_list import QList
+from typed_linq_collections.collections.q_list import QList
 from sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:

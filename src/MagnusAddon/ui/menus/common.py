@@ -11,7 +11,7 @@ from note.note_constants import Mine
 from note.sentences.sentencenote import SentenceNote
 from note.vocabulary.vocabnote import VocabNote
 from qt_utils.ex_qmenu import ExQmenu
-from queryablecollections.collections.q_list import QList
+from typed_linq_collections.collections.q_list import QList
 from sysutils import ex_lambda, typed
 from sysutils.typed import non_optional
 from ui import menus

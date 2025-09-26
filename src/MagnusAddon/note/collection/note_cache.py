@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from ex_autoslot import AutoSlots
 from line_profiling_hacks import profile_lines
 from note.jpnote import JPNote
-from queryablecollections.collections.q_list import QList
+from typed_linq_collections.collections.q_list import QList
 from sysutils.collections.default_dict_case_insensitive import DefaultDictCaseInsensitive
 from sysutils.typed import checked_cast
 

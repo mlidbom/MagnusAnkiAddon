@@ -9,13 +9,13 @@ from language_services.janome_ex.word_extraction.word_exclusion import WordExclu
 from note.note_constants import NoteFields
 from note.notefields.comma_separated_strings_list_field import MutableCommaSeparatedStringsListField
 from note.sentences.sentence_configuration import SentenceConfiguration
-from queryablecollections.q_iterable import query
+from typed_linq_collections.q_iterable import query
 
 if TYPE_CHECKING:
     from note.collection.jp_collection import JPCollection
     from note.vocabulary.vocabnote import VocabNote
-    from queryablecollections.collections.q_list import QList
-    from queryablecollections.collections.q_set import QSet
+    from typed_linq_collections.collections.q_list import QList
+    from typed_linq_collections.collections.q_set import QSet
     from sysutils.weak_ref import WeakRef
 
 class VocabNoteUserCompoundParts(AutoSlots):

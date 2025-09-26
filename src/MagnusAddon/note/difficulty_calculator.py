@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from ex_autoslot import AutoSlots
-from queryablecollections.q_iterable import query
+from typed_linq_collections.q_iterable import query
 from sysutils import kana_utils
 
 

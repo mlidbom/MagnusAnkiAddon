@@ -3,12 +3,12 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from ex_autoslot import AutoSlots
-from queryablecollections.q_iterable import query
+from typed_linq_collections.q_iterable import query
 from sysutils import ex_str, kana_utils
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
-    from queryablecollections.collections.q_list import QList
+    from typed_linq_collections.collections.q_list import QList
     from sysutils.weak_ref import WeakRef
 
 class VocabNoteKanji(AutoSlots):

@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, override
 
 from ex_autoslot import AutoSlots
 from note.notefields.comma_separated_strings_list_field import MutableCommaSeparatedStringsListField
-from queryablecollections.q_iterable import query
+from typed_linq_collections.q_iterable import query
 
 if TYPE_CHECKING:
     from note.jpnote import JPNote

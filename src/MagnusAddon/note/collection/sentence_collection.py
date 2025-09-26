@@ -16,7 +16,7 @@ if TYPE_CHECKING:
     from note.collection.cache_runner import CacheRunner
     from note.vocabulary.vocabnote import VocabNote
     from qt_utils.task_runner_progress_dialog import ITaskRunner
-    from queryablecollections.collections.q_list import QList
+    from typed_linq_collections.collections.q_list import QList
 
 class _SentenceSnapshot(CachedNote, AutoSlots):
     @profile_lines

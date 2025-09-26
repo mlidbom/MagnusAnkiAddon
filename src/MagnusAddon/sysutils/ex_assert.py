@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from queryablecollections._private_implementation_details.type_aliases import Func
+    from typed_linq_collections._private_implementation_details.type_aliases import Func
 
 
 def that(condition: bool, message: str | Func[str] = "assertion failed") -> None:

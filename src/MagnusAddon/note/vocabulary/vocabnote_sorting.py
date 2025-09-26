@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from queryablecollections.collections.q_list import QList
+from typed_linq_collections.collections.q_list import QList
 
 if TYPE_CHECKING:
     from collections.abc import Iterable

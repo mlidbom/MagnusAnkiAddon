@@ -14,14 +14,14 @@ from note.vocabulary.related_vocab.perfect_synonyms import PerfectSynonyms
 from note.vocabulary.related_vocab.related_vocab_data import RelatedVocabData
 from note.vocabulary.related_vocab.SeeAlso import SeeAlso
 from note.vocabulary.related_vocab.Synonyms import Synonyms
-from queryablecollections.q_iterable import query
+from typed_linq_collections.q_iterable import query
 from sysutils.lazy import Lazy
 
 if TYPE_CHECKING:
     from note.jpnote import JPNote
     from note.kanjinote import KanjiNote
     from note.vocabulary.vocabnote import VocabNote
-    from queryablecollections.collections.q_set import QSet
+    from typed_linq_collections.collections.q_set import QSet
     from sysutils.weak_ref import WeakRef
 
 class RelatedVocab(AutoSlots):

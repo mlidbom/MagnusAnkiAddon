@@ -23,7 +23,7 @@ if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
     from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
     from note.vocabulary.vocabnote import VocabNote
-    from queryablecollections.collections.q_list import QList
+    from typed_linq_collections.collections.q_list import QList
 
 class SentenceNote(JPNote, AutoSlots):
     def __init__(self, note: Note) -> None:
