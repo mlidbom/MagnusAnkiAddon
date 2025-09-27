@@ -4,8 +4,8 @@ from typing import TYPE_CHECKING, final, override
 
 from ankiutils import app
 from ex_autoslot import AutoSlots
-from typed_linq_collections.collections.q_list import QList
 from sysutils.weak_ref import WeakRef, WeakRefable
+from typed_linq_collections.collections.q_list import QList
 
 if TYPE_CHECKING:
     from language_services.janome_ex.tokenizing.jn_tokenized_text import ProcessedToken

@@ -8,8 +8,8 @@ from typed_linq_collections.q_iterable import query
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
-    from typed_linq_collections.collections.q_list import QList
     from sysutils.weak_ref import WeakRef
+    from typed_linq_collections.collections.q_list import QList
 
 class VocabNoteConjugator(AutoSlots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:

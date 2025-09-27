@@ -76,6 +76,6 @@ _logger: Lazy[logging.Logger] = Lazy(lambda: get_logger(_addon_name))
 
 def debug(msg: str) -> None:
     if not ex_pytest.is_testing: _logger().debug(msg)
-def info(msg: str) -> None: 
+def info(msg: str) -> None:
     if not ex_pytest.is_testing: _logger().info(msg)
 def warning(msg: str) -> None: _logger().warning(msg)

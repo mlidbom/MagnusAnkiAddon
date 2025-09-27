@@ -8,9 +8,9 @@ from ankiutils import app
 from ex_autoslot import AutoSlots
 from note import kanjinote_mnemonic_maker
 from note.vocabulary import vocabnote_sorting
+from sysutils.weak_ref import WeakRef
 from typed_linq_collections.collections.q_list import QList
 from typed_linq_collections.q_iterable import query
-from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote

@@ -9,8 +9,8 @@ from typed_linq_collections.collections.q_set import QSet
 if TYPE_CHECKING:
     from note.notefields.auto_save_wrappers.set_wrapper import FieldSetWrapper
     from note.vocabulary.vocabnote import VocabNote
-    from typed_linq_collections.collections.q_list import QList
     from sysutils.weak_ref import WeakRef
+    from typed_linq_collections.collections.q_list import QList
 
 class PerfectSynonyms(AutoSlots):
     def __init__(self, vocab: WeakRef[VocabNote], data: FieldSetWrapper[str]) -> None:

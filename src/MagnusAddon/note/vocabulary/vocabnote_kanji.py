@@ -3,13 +3,13 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from ex_autoslot import AutoSlots
-from typed_linq_collections.q_iterable import query
 from sysutils import ex_str, kana_utils
+from typed_linq_collections.q_iterable import query
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
-    from typed_linq_collections.collections.q_list import QList
     from sysutils.weak_ref import WeakRef
+    from typed_linq_collections.collections.q_list import QList
 
 class VocabNoteKanji(AutoSlots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:

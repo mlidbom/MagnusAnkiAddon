@@ -14,9 +14,9 @@ from typed_linq_collections.q_iterable import query
 if TYPE_CHECKING:
     from note.collection.jp_collection import JPCollection
     from note.vocabulary.vocabnote import VocabNote
+    from sysutils.weak_ref import WeakRef
     from typed_linq_collections.collections.q_list import QList
     from typed_linq_collections.collections.q_set import QSet
-    from sysutils.weak_ref import WeakRef
 
 class VocabNoteUserCompoundParts(AutoSlots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:

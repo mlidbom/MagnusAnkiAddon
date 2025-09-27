@@ -11,9 +11,9 @@ from note.note_constants import Mine
 from note.sentences.sentencenote import SentenceNote
 from note.vocabulary.vocabnote import VocabNote
 from qt_utils.ex_qmenu import ExQmenu
-from typed_linq_collections.collections.q_list import QList
 from sysutils import ex_lambda, typed
 from sysutils.typed import non_optional
+from typed_linq_collections.collections.q_list import QList
 from ui import menus
 from ui.menus.menu_utils import shortcutfinger
 from ui.menus.menu_utils.ex_qmenu import add_ui_action, create_note_action, create_vocab_note_action

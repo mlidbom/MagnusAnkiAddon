@@ -8,10 +8,10 @@ from language_services.janome_ex.word_extraction.matches.dictionary_match import
 from language_services.janome_ex.word_extraction.matches.missing_match import MissingMatch
 from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
-from typed_linq_collections.collections.q_list import QList
 from sysutils import ex_assert
 from sysutils.lazy import Lazy
 from sysutils.weak_ref import WeakRef, WeakRefable
+from typed_linq_collections.collections.q_list import QList
 
 if TYPE_CHECKING:
     from language_services.jamdict_ex.dict_lookup import DictLookup

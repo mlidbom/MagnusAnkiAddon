@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from ex_autoslot import AutoSlots
-from typed_linq_collections.q_iterable import query
 from sysutils import kana_utils
+from typed_linq_collections.q_iterable import query
 
 
 class DifficultyCalculator(AutoSlots):
