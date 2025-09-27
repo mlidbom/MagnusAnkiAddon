@@ -18,3 +18,4 @@ collection.anki2
 *.lprof
 /repomix-output.xml
 /repomix-queryable-collections.xml
+/.coverage
