@@ -5,9 +5,8 @@ from typing import TYPE_CHECKING
 from note.sentences.sentence_configuration import SentenceConfiguration
 from note.sentences.sentencenote import SentenceNote
 from sysutils.lazy import Lazy
+from tests.language_services_tests.janome_tests.text_analysis_state_validator import TextAnalysisValidator
 from ui.web.sentence.sentence_viewmodel import SentenceViewModel
-
-from src.MagnusAddonTests.tests.language_services_tests.janome_tests.text_analysis_state_validator import TextAnalysisValidator
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
