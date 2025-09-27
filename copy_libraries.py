@@ -12,6 +12,7 @@ target_dir = os.path.join(script_dir, "src/MagnusAddon/_lib")
 
 # One line per library and its dependencies
 pip_libraries_to_copy = [
+    "typed_linq_collections",
     "janome",
     "pyperclip",
     "beartype",
