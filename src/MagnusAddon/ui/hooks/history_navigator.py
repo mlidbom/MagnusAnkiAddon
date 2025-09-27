@@ -77,7 +77,7 @@ class CardHistoryNavigator(WeakRefable, AutoSlots):
         # noinspection PyBroadException
         try:
             _discarded = non_optional(mw.col).get_card(card_id)
-            return True
+            return True  # noqa: TRY300
         except:  # noqa: E722
             return False
 
