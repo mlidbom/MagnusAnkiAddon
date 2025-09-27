@@ -1,8 +1,7 @@
 {
     "terminal.integrated.rightClickBehavior": "default",
     "python.testing.pytestArgs": [
-        "src/MagnusAddonTests",
-        "separate_libraries/queryablecollections/queryablecollections_tests"
+        "src/MagnusAddonTests"
     ],
     "python.envFile": "${workspaceFolder}/.env",
     "python.terminal.useEnvFile": true,
