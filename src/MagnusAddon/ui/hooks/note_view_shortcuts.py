@@ -18,7 +18,6 @@ if TYPE_CHECKING:
     from aqt.main import MainWindowState
     from PyQt6.QtWidgets import QWidget
 
-
 def init() -> None:
     def try_get_review_note_of_type[T](note_type: type[T]) -> T | None:
         return try_cast(note_type, ui_utils.try_get_review_note())
@@ -74,17 +73,17 @@ def init() -> None:
 
     def toggle_yield_last_token_in_suru_verb_compounds_to_overlapping_compound() -> None:
         app.config().automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound.set_value(
-            not app.config().automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound.get_value())
+                not app.config().automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound.get_value())
         refresh_shallow()
 
     def toggle_yield_last_token_in_passive_verb_compounds_to_overlapping_compound() -> None:
         app.config().automatically_yield_last_token_in_passive_verb_compounds_to_overlapping_compound.set_value(
-            not app.config().automatically_yield_last_token_in_passive_verb_compounds_to_overlapping_compound.get_value())
+                not app.config().automatically_yield_last_token_in_passive_verb_compounds_to_overlapping_compound.get_value())
         refresh_shallow()
 
     def toggle_yield_last_token_in_causative_verb_compounds_to_overlapping_compound() -> None:
         app.config().automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound.set_value(
-            not app.config().automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound.get_value())
+                not app.config().automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound.get_value())
         refresh_shallow()
 
     def toggle_all_yield_last_token_flags() -> None:
@@ -105,16 +104,16 @@ def init() -> None:
                     state_shortcuts.remove(shortcut)
                     return
 
-        for char in ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "u"]:
+        for char in ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "o", "e", "u"]:
             remove_shortcut(char)
 
         for key, callback in stortcuts.items():
             state_shortcuts.append((key, callback))
 
-    stortcuts: dict[str, Callable[[], None]] = {"1": toggle_show_compound_parts_in_sentence_breakdown,
-                                                "2": toggle_show_sentence_breakdown_in_edit_mode,
-                                                "3": toggle_all_yield_last_token_flags,
-                                                "4": toggle_show_kanji_in_sentence_breakdown,
+    stortcuts: dict[str, Callable[[], None]] = {"a": toggle_show_compound_parts_in_sentence_breakdown,
+                                                "o": toggle_show_kanji_in_sentence_breakdown,
+                                                "e": toggle_all_yield_last_token_flags,
+                                                "u": toggle_show_sentence_breakdown_in_edit_mode,
                                                 "0": remove_mnemonic,
                                                 "7": reset_source_comments,
                                                 "8": reset_incorrect_matches,
