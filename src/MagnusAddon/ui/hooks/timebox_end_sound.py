@@ -22,7 +22,7 @@ def _check_timebox(reviewer: Reviewer) -> bool:
         seconds_per_card = float(seconds_studied) / cards_studied
 
         dialog = askUserDialog(f"""
-Studied {cards_studied} cards in {timeutil.format_seconds_as_hh_mm_ss(seconds_studied)}.  # pyright: ignore[reportAny]  # pyright: ignore[reportAny]
+Studied {cards_studied} cards in {timeutil.format_seconds_as_hh_mm_ss(seconds_studied)}.
 {seconds_per_card:.2f} seconds per card.
 """, ["OK"])
         dialog.setIcon(QMessageBox.Icon.Information)

@@ -45,7 +45,9 @@ def render_vocab_list(vocab_list: list[VocabNote], title: str, css_class: str, r
             '''
 
 def generate_homophones_html_list(vocab_note: VocabNote) -> str:
-    homophone_notes = [vocab_note] + note.vocabulary.vocabnote_sorting.sort_vocab_list_by_studying_status(vocab_note.related_notes.homophones_notes())
+    homophone_notes = note.vocabulary.vocabnote_sorting.sort_vocab_list_by_studying_status(vocab_note.related_notes.homophones_notes())
+    if len(homophone_notes) > 0:
+        homophone_notes = [vocab_note] + homophone_notes
     return render_vocab_list(homophone_notes, "homophones", css_class="homophones")
 
 def generate_synonyms_meaning_html_list(_vocab_note: VocabNote) -> str:
