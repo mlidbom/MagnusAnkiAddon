@@ -18,7 +18,7 @@ def _check_timebox(reviewer: Reviewer) -> bool:
         av_player.play_file(sound_file)
         assert not isinstance(elapsed, bool)
         cards_studied = elapsed[1]
-        seconds_studied = typed.float_(elapsed[0])  # pyright: ignore[reportAny]
+        seconds_studied = typed.int_(elapsed[0])  # pyright: ignore[reportAny]
         seconds_per_card = float(seconds_studied) / cards_studied
 
         dialog = askUserDialog(f"""
