@@ -33,14 +33,18 @@ class RequireForbidFlagField(AutoSlots):
     def is_forbidden(self) -> bool: return self.is_configured_forbidden
 
     def set_forbidden(self, value: bool) -> None:
-        self.set_required(not value)
+        if value:
+            self._note().set_tag(self._forbidden_tag)
+            self._note().remove_tag(self._required_tag)
+        else:
+            self._note().remove_tag(self._forbidden_tag)
+
 
     def set_required(self, value: bool) -> None:
         if value:
             self._note().set_tag(self._required_tag)
             self._note().remove_tag(self._forbidden_tag)
         else:
-            self._note().set_tag(self._forbidden_tag)
             self._note().remove_tag(self._required_tag)
 
     @override
