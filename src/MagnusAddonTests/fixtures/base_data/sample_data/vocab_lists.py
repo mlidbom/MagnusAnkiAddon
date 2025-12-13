@@ -115,6 +115,10 @@ test_special_vocab: list[VocabSpec] = [
     VocabSpec("と思って", compounds=["と思う", "て"], tags=[vm.yield_last_token_to_overlapping_compound]),
     VocabSpec("ませ", forms=["まし"], suffix_not={"ん"}),
     VocabSpec("ところが", tags=[vm.Requires.sentence_start]),
+
+    VocabSpec("成る", "to: become | result-in | turn-into", ["なる"], prefix_not={"く"}),
+    VocabSpec("なる", "to: become | result-in | turn-into", ["なる"], prefix_not={"く"}),
+    VocabSpec("くなる", "to: become", ["くなる"], forms=["なる"], prefix_in={"く"}, tags=[Tags.Vocab.question_overrides_form]),
 ]
 
 test_ordinary_vocab_list = [
@@ -201,7 +205,6 @@ test_ordinary_vocab_list = [
     VocabSpec("出てくる", "to: come-out/appear/turn-up/emerge", ["でてくる"]),
     VocabSpec("から", "from/since | because", ["から"]),
     VocabSpec("として", "as(role) | apart-from | !even | vol&gt;{thinking-that/trying-to}...", ["として"]),
-    VocabSpec("成る", "to: become | result-in | turn-into", ["なる"]),
     VocabSpec("が", "{subject} | passive:{object} | but/however/still", ["が"]),
     VocabSpec("寝る", "to: lie(sleeping|down|flat|idle|fermenting) | have-sex", ["ねる"]),
     VocabSpec("けど", "but/however/although", ["けど"]),

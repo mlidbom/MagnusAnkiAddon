@@ -18,10 +18,10 @@ class VocabSpec(AutoSlots):
                  compounds: list[str] | None = None,
                  surface_not: set[str] | None = None,
                  yield_to_surface: set[str] | None = None,
+                 prefix_in: set[str] | None = None,
                  prefix_not: set[str] | None = None,
                  suffix_not: set[str] | None = None,
-                 tos: str | None = None,
-                 prefix_in: set[str] | None = None) -> None:
+                 tos: str | None = None) -> None:
         self.question: str = question
         self.answer: str = answer or question
         self.readings: list[str] = readings or [self.question]

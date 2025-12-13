@@ -74,7 +74,8 @@ def setup_collection_with_select_data() -> Iterator[None]:
     ("沈んで", ["沈む", "んで"]),
     ("死んどる", ["死ぬ", "んどる"]),
     ("馴染めないでいる", ["馴染め:[MISSING]", "ない", "でいる"]),
-    ("ちょっと強引なところがあるから", ["ちょっと", "強引", "な", "ところ", "が", "ある", "から"])
+    ("ちょっと強引なところがあるから", ["ちょっと", "強引", "な", "ところ", "が", "ある", "から"]),
+    ("また寒くなるな", ["また", "寒い", "くなる", "な"])
 ])
 def test_misc_stuff(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
