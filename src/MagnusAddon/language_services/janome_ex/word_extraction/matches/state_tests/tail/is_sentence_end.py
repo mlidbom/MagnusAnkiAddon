@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from sysutils.weak_ref import WeakRef
 
 class IsSentenceEnd(MatchStateTest, AutoSlots):
-    _quote_characters:set[str] = {"と", "って"}
+    _quote_characters:set[str] = {"と", "って", "？", "?", ".", "。"}
     def __init__(self, match: WeakRef[Match]) -> None:
         super().__init__(match, "sentence_end", cache_is_in_state=True)
 
