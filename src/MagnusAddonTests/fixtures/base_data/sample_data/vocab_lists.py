@@ -50,7 +50,7 @@ test_special_vocab: list[VocabSpec] = [
 
     VocabSpec("える", "to-be-able-to", ["える"],
               #forms=["える", "ける", "せる", "てる", "ねる", "へる", "める", "れる", "げる", "ぜる", "でる", "べる", "ぺる"],
-              tags=[vm.is_inflecting_word, vm.Requires.te_form_stem]),
+              tags=[vm.is_inflecting_word, vm.Requires.godan_potential]),
     #VocabSpec("れる", "can-_/possible-to-_ | ??get-_??", ["れる"], tags=[vm.is_inflecting_word, vm.Forbids.a_stem]),
 
     # require a stems
