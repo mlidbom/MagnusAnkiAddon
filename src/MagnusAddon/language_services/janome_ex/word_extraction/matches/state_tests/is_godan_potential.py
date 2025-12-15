@@ -15,6 +15,6 @@ class IsGodanPotential(MatchStateTest, AutoSlots):
 
     @override
     def _internal_match_is_in_state(self) -> bool:
-        if not self.word.start_location.token.is_potential_godan:  # noqa: SIM103
+        if self.word.start_location.token.is_potential_godan:  # noqa: SIM103
             return True
         return False
