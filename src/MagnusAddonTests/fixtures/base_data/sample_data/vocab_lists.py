@@ -48,8 +48,10 @@ test_special_vocab: list[VocabSpec] = [
     VocabSpec("たい", "want to", ["たい"], tags=[vm.is_inflecting_word]),
     VocabSpec("解放する", "to{} release", ["かいほうする"]),
 
-    VocabSpec("える", "to-be-able-to", ["える"], tags=[vm.is_inflecting_word]),
-    VocabSpec("れる", "can-_/possible-to-_ | ??get-_??", ["れる"], tags=[vm.is_inflecting_word, vm.Forbids.a_stem]),
+    VocabSpec("える", "to-be-able-to", ["える"],
+              #forms=["える", "ける", "せる", "てる", "ねる", "へる", "める", "れる", "げる", "ぜる", "でる", "べる", "ぺる"],
+              tags=[vm.is_inflecting_word, vm.Requires.te_form_stem]),
+    #VocabSpec("れる", "can-_/possible-to-_ | ??get-_??", ["れる"], tags=[vm.is_inflecting_word, vm.Forbids.a_stem]),
 
     # require a stems
     VocabSpec("あれる", "get-_/is-_", ["あれる"], forms=["れる"], tags=[vm.Requires.a_stem, v.question_overrides_form, vm.is_inflecting_word]),

@@ -6,6 +6,7 @@ from ankiutils import app
 from ex_autoslot import AutoSlots
 from language_services import conjugator
 from language_services.jamdict_ex.dict_lookup import DictLookup
+from sysutils import typed
 
 if TYPE_CHECKING:
     from janome.tokenizer import Token  # pyright: ignore[reportMissingTypeStubs]
@@ -14,12 +15,13 @@ if TYPE_CHECKING:
     from typed_linq_collections.collections.q_list import QList
 
 class ProcessedToken(AutoSlots):
-    def __init__(self, surface: str, base: str, is_non_word_character: bool) -> None:
+    def __init__(self, surface: str, base: str, is_non_word_character: bool, is_inflectable_word: bool = False, is_potential_godan: bool = False) -> None:
         self.surface: str = surface
         self.base_form: str = base
-        self.is_inflectable_word: bool = False
+        self.is_inflectable_word: bool = is_inflectable_word
         self.is_non_word_character: bool = is_non_word_character
         self.potential_godan_verb: str | None = None
+        self.is_potential_godan:bool = is_potential_godan
 
     def is_past_tense_stem(self) -> bool: return False
     def is_ichidan_masu_stem(self) -> bool: return False
@@ -50,9 +52,8 @@ class JNTokenWrapper(ProcessedToken, AutoSlots):
     def is_special_nai_negative(self) -> bool: return self.token.is_special_nai_negative()
 
     # todo: restore the splitting of godan verbs, but this time around:
-    # 1. Output a first token that does NOT contain the え sound.
-    # 2. Output a second token that contains the え sound. That is, move the え sound to a separate token instead of keeping it in the verb stem in the way that is linguistically correct.
-    #   so, for example, 作れた will be tokenized as:
+    # Move the え sound to a separate token instead of keeping it in the verb stem in the way that is linguistically correct. We don't care about that, we care about being able to create breakdowns including potential forms and their conjugations.
+    # So, for example, 作れた will be tokenized as:
     #   surfaces: 作 　れ 　た
     #      bases: 作る れる た
     # this should result in pretty much everything just working, as long as the potential conjugations have a form for each consonant, える, ける, せる, てる, ねる, へる, める,　れる, げる, ぜる, でる, べる, ぺる
@@ -71,7 +72,21 @@ class JNTokenWrapper(ProcessedToken, AutoSlots):
     #       7. Note, when calculating shadowing the empty tokens must not be counted, or words that are actually shadowed will be displayed.
     def pre_process(self) -> list[ProcessedToken]:
         self.potential_godan_verb: str | None = self._try_find_vocab_based_potential_verb_compound() or self._try_find_dictionary_based_potential_godan_verb()
+        # if self.potential_godan_verb is not None:
+        #     return self._split_potential_godan()
         return [self]
+
+    def _split_potential_godan(self) -> list[ProcessedToken]:
+        godan_base = typed.non_optional(self.potential_godan_verb)
+        godan_surface = godan_base[:-1]
+
+        potential_surface = self.surface[len(godan_surface):]
+        potential_base = potential_surface
+        if not potential_base.endswith("る"):
+            potential_base = potential_surface + "る"
+
+        return [ProcessedToken(surface=godan_surface, base=godan_base, is_non_word_character=False, is_inflectable_word=True),
+                ProcessedToken(surface=potential_surface, base=potential_base, is_non_word_character=False, is_inflectable_word=True, is_potential_godan=True)]
 
     def _try_find_vocab_based_potential_verb_compound(self) -> str | None:
         for vocab in self._vocabs.with_question(self.base_form):
@@ -106,4 +121,4 @@ class JNTokenizedText(AutoSlots):
 
         return self.tokens.select_many(lambda token: JNTokenWrapper(token, vocab).pre_process()).to_list()
         # query(JNTokenWrapper(token, vocab) for token in self.tokens)
-        #return ex_sequence.flatten([token.pre_process() for token in step1])
+        # return ex_sequence.flatten([token.pre_process() for token in step1])
