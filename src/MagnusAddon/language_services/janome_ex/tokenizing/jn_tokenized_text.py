@@ -57,7 +57,7 @@ class JNTokenWrapper(ProcessedToken, AutoSlots):
 
     def _split_potential_or_imperative_godan(self, godan_base: str) -> list[ProcessedToken]:
         if not self.surface.endswith("る"): #this is not the dictionary form of the potential part  # noqa: SIM102
-            if self.token.is_end_of_statement():  # this is an imperative
+            if self.token.next is None or not self.token.next.is_valid_potential_form_inflection():  # this is an imperative
                 return [ProcessedToken(surface=self.surface, base=godan_base, is_non_word_character=False, is_inflectable_word=True)]
 
         godan_surface = self.surface.removesuffix("る")

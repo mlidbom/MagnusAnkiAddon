@@ -116,6 +116,13 @@ class JNToken(AutoSlots):
     def is_end_of_statement(self) -> bool:
         return self.next is None or self.next.surface in self._end_of_sentence_characters or self.parts_of_speech.is_non_word_character()
 
+    _valid_potential_form_inflections: set[str] = {"た", "ない", "そう"}
+    _valid_potential_form_inflections_pos: set[JNPartsOfSpeech] = {POS.bound_auxiliary, POS.Noun.Suffix.auxiliary_verb_stem}
+    def is_valid_potential_form_inflection(self) -> bool:
+        if self.parts_of_speech in self._valid_potential_form_inflections_pos:
+            return True
+        return False
+
     def is_end_of_phrase_particle(self) -> bool:
         if self.parts_of_speech in _end_of_phrase_particles:
             return True
