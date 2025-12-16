@@ -62,10 +62,11 @@ class JNTokenWrapper(ProcessedToken, AutoSlots):
                 return [ProcessedToken(surface=self.surface, base=godan_base, is_non_word_character=False, is_inflectable_word=True, is_godan_imperative=True)]
 
         godan_surface = self.surface.removesuffix("る")[:-1]
-        potential_stem = self.surface.removesuffix("る")[-1]
-        potential_base = potential_stem + "る"
+        potential_surface = self.surface.removeprefix(godan_surface)
+        potential_base = potential_surface if potential_surface[-1] == "る" else potential_surface + "る"
+
         return [ProcessedToken(surface=godan_surface, base=godan_base, is_non_word_character=False, is_inflectable_word=True, is_godan_potential=True),
-                ProcessedToken(surface=potential_stem, base=potential_base, is_non_word_character=False, is_inflectable_word=True, is_godan_potential=True)]
+                ProcessedToken(surface=potential_surface, base=potential_base, is_non_word_character=False, is_inflectable_word=True, is_godan_potential=True)]
 
     def _try_find_vocab_based_potential_verb_compound(self) -> str | None:
         for vocab in self._vocabs.with_question(self.base_form):

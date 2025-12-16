@@ -16,6 +16,15 @@ def setup_collection_with_select_data() -> Iterator[None]:
     with inject_collection_with_select_data(special_vocab=True):
         yield
 
+
+@pytest.mark.usefixtures("setup_collection_with_select_data")
+@pytest.mark.parametrize("sentence, expected_output", [
+    #("田沼から出ていけ", ["田沼:[MISSING]", "から", "出ていく"]), #todo: bug
+    ("私たちなら嘘をつかずに付き合っていけるかもしれないね", ["私たち", "なら", "嘘をつく", "ずに", "付き合う", "ていける", "かもしれない", "ね"]) #todo: bug
+])
+def test_new_stuff(sentence: str, expected_output: list[str]) -> None:
+    assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
+
 @pytest.mark.usefixtures("setup_collection_with_select_data")
 @pytest.mark.parametrize("sentence, expected_output", [
     ("厳密に言えば　俺一人が友達だけど",
