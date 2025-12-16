@@ -16,7 +16,6 @@ from language_services.janome_ex.word_extraction.matches.state_tests.head.is_sen
 from language_services.janome_ex.word_extraction.matches.state_tests.head.prefix_is_in import PrefixIsIn
 from language_services.janome_ex.word_extraction.matches.state_tests.is_exact_match import IsExactMatch
 from language_services.janome_ex.word_extraction.matches.state_tests.is_godan_potential import IsGodanPotential
-from language_services.janome_ex.word_extraction.matches.state_tests.is_godan_potential_surface_with_base import IsGodanPotentialSurfaceWithBase
 from language_services.janome_ex.word_extraction.matches.state_tests.is_poison_word import IsPoisonWord
 from language_services.janome_ex.word_extraction.matches.state_tests.is_single_token import IsSingleToken
 from language_services.janome_ex.word_extraction.matches.state_tests.surface_is_in import SurfaceIsIn
@@ -57,7 +56,6 @@ class VocabMatch(Match, AutoSlots):
 
                              # misc requirements
                              Forbids(IsPoisonWord(weakref)),
-                             Forbids(IsGodanPotentialSurfaceWithBase(weakref)),
                              RequiresOrForbids(IsGodanPotential(weakref), self.requires_forbids.godan_potential),
                              RequiresOrForbids(IsExactMatch(weakref), self.requires_forbids.exact_match),
                              RequiresOrForbids(IsSingleToken(weakref), self.requires_forbids.single_token),

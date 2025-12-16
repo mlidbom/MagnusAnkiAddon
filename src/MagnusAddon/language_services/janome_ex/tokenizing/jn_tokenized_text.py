@@ -6,7 +6,6 @@ from ankiutils import app
 from ex_autoslot import AutoSlots
 from language_services import conjugator
 from language_services.jamdict_ex.dict_lookup import DictLookup
-from sysutils import typed
 
 if TYPE_CHECKING:
     from janome.tokenizer import Token  # pyright: ignore[reportMissingTypeStubs]
@@ -56,20 +55,16 @@ class JNTokenWrapper(ProcessedToken, AutoSlots):
             return self._split_potential_or_imperative_godan(potential_godan_verb)
         return [self]
 
-    def _split_potential_or_imperative_godan(self, potential_godan_verb: str) -> list[ProcessedToken]:
-        godan_base = typed.non_optional(potential_godan_verb)
-        godan_surface = godan_base[:-1]
-
-        potential_surface = self.surface[len(godan_surface):]
-        potential_base = potential_surface
-
-        if not potential_base.endswith("る"):
+    def _split_potential_or_imperative_godan(self, godan_base: str) -> list[ProcessedToken]:
+        if not self.surface.endswith("る"): #this is not the dictionary form of the potential part  # noqa: SIM102
             if self.token.is_end_of_statement():  # this is an imperative
                 return [ProcessedToken(surface=self.surface, base=godan_base, is_non_word_character=False, is_inflectable_word=True)]
-            potential_base = potential_surface + "る"
 
+        godan_surface = self.surface.removesuffix("る")
+        potential_stem = godan_surface[-1]
+        potential_base = potential_stem + "る"
         return [ProcessedToken(surface=godan_surface, base=godan_base, is_non_word_character=False, is_inflectable_word=True),
-                ProcessedToken(surface=potential_surface, base=potential_base, is_non_word_character=False, is_inflectable_word=True, is_potential_godan=True)]
+                ProcessedToken(surface=potential_stem, base=potential_base, is_non_word_character=False, is_inflectable_word=True, is_potential_godan=True)]
 
     def _try_find_vocab_based_potential_verb_compound(self) -> str | None:
         for vocab in self._vocabs.with_question(self.base_form):
@@ -79,7 +74,7 @@ class JNTokenWrapper(ProcessedToken, AutoSlots):
         return None
 
     def _try_find_dictionary_based_potential_godan_verb(self) -> str | None:
-        if (len(self.token.base_form) >= 3
+        if (len(self.token.base_form) >= 2
                 and self.token.base_form[-2:] in conjugator.godan_potential_verb_ending_to_dictionary_form_endings
                 and self.token.is_ichidan_verb()
                 and not DictLookup.is_word(self.token.base_form)):  # the potential verbs are generally not in the dictionary this is how we know them
