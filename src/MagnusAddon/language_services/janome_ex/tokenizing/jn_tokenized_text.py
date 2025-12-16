@@ -53,20 +53,23 @@ class JNTokenWrapper(ProcessedToken, AutoSlots):
     def pre_process(self) -> list[ProcessedToken]:
         potential_godan_verb: str | None = self._try_find_vocab_based_potential_verb_compound() or self._try_find_dictionary_based_potential_godan_verb()
         if potential_godan_verb is not None:
-            return self._split_potential_godan(potential_godan_verb)
+            return self._split_potential_or_imperative_godan(potential_godan_verb)
         return [self]
 
-    def _split_potential_godan(self, potential_godan_verb: str) -> list[ProcessedToken]:
+    def _split_potential_or_imperative_godan(self, potential_godan_verb: str) -> list[ProcessedToken]:
         godan_base = typed.non_optional(potential_godan_verb)
         godan_surface = godan_base[:-1]
 
-        potential_surface = self.surface[len(godan_surface):]
-        potential_base = potential_surface
-        if not potential_base.endswith("る"):
-            potential_base = potential_surface + "る"
+        potential_or_imperative_surface = self.surface[len(godan_surface):]
+        potential_base = potential_or_imperative_surface
 
-        return [ProcessedToken(surface=godan_surface, base=godan_base, is_non_word_character=False, is_inflectable_word=True),
-                ProcessedToken(surface=potential_surface, base=potential_base, is_non_word_character=False, is_inflectable_word=True, is_potential_godan=True)]
+        split:list[ProcessedToken] = [ProcessedToken(surface=godan_surface, base=godan_base, is_non_word_character=False, is_inflectable_word=True, is_potential_godan=True)]
+        if not potential_base.endswith("る"):
+            if self.token.is_end_of_sentence():
+                return split # this is an imperative, not a potential
+            potential_base = potential_or_imperative_surface + "る"
+
+        return split + [ProcessedToken(surface=potential_or_imperative_surface, base=potential_base, is_non_word_character=False, is_inflectable_word=True, is_potential_godan=True)]
 
     def _try_find_vocab_based_potential_verb_compound(self) -> str | None:
         for vocab in self._vocabs.with_question(self.base_form):

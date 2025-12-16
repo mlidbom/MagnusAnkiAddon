@@ -35,6 +35,8 @@ class JNToken(AutoSlots):
         self.node_type: str = typed.str_(node_type)
         self.parts_of_speech: JNPartsOfSpeech = parts_of_speech
         self.raw_token: Token | None = raw_token
+        self.previous: JNToken | None = None
+        self.next: JNToken | None = None
 
     @override
     def __repr__(self) -> str:
@@ -109,6 +111,10 @@ class JNToken(AutoSlots):
 
     def is_noun_auxiliary(self) -> bool:
         return self.parts_of_speech in _noun_auxiliary_parts_of_speech
+
+    _end_of_sentence_characters: set[str] = {"と", "って", "？", "?", ".", "。"}
+    def is_end_of_sentence(self) -> bool:
+        return self.next is None or self.next.surface in self._end_of_sentence_characters
 
     def is_end_of_phrase_particle(self) -> bool:
         if self.parts_of_speech in _end_of_phrase_particles:
