@@ -20,7 +20,6 @@ class ProcessedToken(AutoSlots):
         self.base_form: str = base
         self.is_inflectable_word: bool = is_inflectable_word
         self.is_non_word_character: bool = is_non_word_character
-        self.potential_godan_verb: str | None = None
         self.is_potential_godan:bool = is_potential_godan
 
     def is_past_tense_stem(self) -> bool: return False
@@ -52,13 +51,13 @@ class JNTokenWrapper(ProcessedToken, AutoSlots):
     def is_special_nai_negative(self) -> bool: return self.token.is_special_nai_negative()
 
     def pre_process(self) -> list[ProcessedToken]:
-        self.potential_godan_verb: str | None = self._try_find_vocab_based_potential_verb_compound() or self._try_find_dictionary_based_potential_godan_verb()
-        if self.potential_godan_verb is not None:
-            return self._split_potential_godan()
+        potential_godan_verb: str | None = self._try_find_vocab_based_potential_verb_compound() or self._try_find_dictionary_based_potential_godan_verb()
+        if potential_godan_verb is not None:
+            return self._split_potential_godan(potential_godan_verb)
         return [self]
 
-    def _split_potential_godan(self) -> list[ProcessedToken]:
-        godan_base = typed.non_optional(self.potential_godan_verb)
+    def _split_potential_godan(self, potential_godan_verb: str) -> list[ProcessedToken]:
+        godan_base = typed.non_optional(potential_godan_verb)
         godan_surface = godan_base[:-1]
 
         potential_surface = self.surface[len(godan_surface):]
