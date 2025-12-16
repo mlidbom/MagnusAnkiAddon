@@ -60,8 +60,8 @@ class JNTokenWrapper(ProcessedToken, AutoSlots):
             if self.token.next is None or not self.token.next.is_valid_potential_form_inflection():  # this is an imperative
                 return [ProcessedToken(surface=self.surface, base=godan_base, is_non_word_character=False, is_inflectable_word=True)]
 
-        godan_surface = self.surface.removesuffix("る")
-        potential_stem = godan_surface[-1]
+        godan_surface = self.surface.removesuffix("る")[:-1]
+        potential_stem = self.surface.removesuffix("る")[-1]
         potential_base = potential_stem + "る"
         return [ProcessedToken(surface=godan_surface, base=godan_base, is_non_word_character=False, is_inflectable_word=True),
                 ProcessedToken(surface=potential_stem, base=potential_base, is_non_word_character=False, is_inflectable_word=True, is_potential_godan=True)]

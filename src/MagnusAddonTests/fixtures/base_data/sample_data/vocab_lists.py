@@ -123,7 +123,8 @@ test_special_vocab: list[VocabSpec] = [
     VocabSpec("成る", "to: become | result-in | turn-into", ["なる"], prefix_not={"く"}),
     VocabSpec("なる", "to: become | result-in | turn-into", ["なる"], prefix_not={"く"}),
     VocabSpec("くなる", "to: become", ["くなる"], forms=["なる"], prefix_in={"く"}, tags=[Tags.Vocab.question_overrides_form]),
-    VocabSpec("言える", "to-be: able-to-say", compounds=["言う","える"])
+    VocabSpec("言える", "to-be: able-to-say", compounds=["言う","える"]),
+    VocabSpec("出会える", "to: be-{able/fortunate-enough}-to-{meet/come-across}")
 ]
 
 test_ordinary_vocab_list = [
