@@ -48,16 +48,18 @@ test_special_vocab: list[VocabSpec] = [
     VocabSpec("たい", "want to", ["たい"], tags=[vm.is_inflecting_word]),
     VocabSpec("解放する", "to{} release", ["かいほうする"]),
 
+
+    VocabSpec("せ", "so/really/seeming", tags=[vm.Forbids.godan_potential]),
     VocabSpec("える", "to-be-able-to", ["える"],
-              #forms=["える", "ける", "せる", "てる", "ねる", "へる", "める", "れる", "げる", "ぜる", "でる", "べる", "ぺる"],
-              tags=[vm.is_inflecting_word, vm.Requires.godan_potential]),
+              forms=["える", "ける", "せる", "てる", "ねる", "へる", "める", "れる", "げる", "ぜる", "でる", "べる", "ぺる"],
+              tags=[vm.is_inflecting_word, vm.Requires.godan_potential, Tags.Vocab.question_overrides_form]),
     #VocabSpec("れる", "can-_/possible-to-_ | ??get-_??", ["れる"], tags=[vm.is_inflecting_word, vm.Forbids.a_stem]),
 
     # require a stems
-    VocabSpec("あれる", "get-_/is-_", ["あれる"], forms=["れる"], tags=[vm.Requires.a_stem, v.question_overrides_form, vm.is_inflecting_word]),
-    VocabSpec("あせる", "get-_/is-_", ["あせる"], forms=["せる"], tags=[vm.Requires.a_stem, v.question_overrides_form, vm.is_inflecting_word]),
+    VocabSpec("あれる", "get-_/is-_", ["あれる"], forms=["れる"], tags=[vm.Requires.a_stem, v.question_overrides_form, vm.is_inflecting_word, vm.Forbids.godan_potential]),
+    VocabSpec("あせる", "get-_/is-_", ["あせる"], forms=["せる"], tags=[vm.Requires.a_stem, v.question_overrides_form, vm.is_inflecting_word, vm.Forbids.godan_potential]),
 
-    VocabSpec("させる", "get-_/is-_", ["させる"], forms=["せる"], tags=[vm.is_inflecting_word]),
+    VocabSpec("させる", "get-_/is-_", ["させる"], forms=["せる"], tags=[vm.is_inflecting_word, vm.Forbids.godan_potential]),
 
     VocabSpec("する", "to: do", yield_to_surface={"しろ"}),
     VocabSpec("しろ", "do!", ["しろ"]),

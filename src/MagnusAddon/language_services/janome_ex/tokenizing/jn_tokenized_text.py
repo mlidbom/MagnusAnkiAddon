@@ -72,8 +72,8 @@ class JNTokenWrapper(ProcessedToken, AutoSlots):
     #       7. Note, when calculating shadowing the empty tokens must not be counted, or words that are actually shadowed will be displayed.
     def pre_process(self) -> list[ProcessedToken]:
         self.potential_godan_verb: str | None = self._try_find_vocab_based_potential_verb_compound() or self._try_find_dictionary_based_potential_godan_verb()
-        # if self.potential_godan_verb is not None:
-        #     return self._split_potential_godan()
+        if self.potential_godan_verb is not None:
+            return self._split_potential_godan()
         return [self]
 
     def _split_potential_godan(self) -> list[ProcessedToken]:

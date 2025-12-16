@@ -16,6 +16,7 @@ from language_services.janome_ex.word_extraction.matches.state_tests.head.is_sen
 from language_services.janome_ex.word_extraction.matches.state_tests.head.prefix_is_in import PrefixIsIn
 from language_services.janome_ex.word_extraction.matches.state_tests.is_exact_match import IsExactMatch
 from language_services.janome_ex.word_extraction.matches.state_tests.is_godan_potential import IsGodanPotential
+from language_services.janome_ex.word_extraction.matches.state_tests.is_godan_potential_surface import IsGodanPotentialSurface
 from language_services.janome_ex.word_extraction.matches.state_tests.is_poison_word import IsPoisonWord
 from language_services.janome_ex.word_extraction.matches.state_tests.is_single_token import IsSingleToken
 from language_services.janome_ex.word_extraction.matches.state_tests.surface_is_in import SurfaceIsIn
@@ -43,7 +44,6 @@ class VocabMatch(Match, AutoSlots):
                                      is_requirement_active=self.rules.prefix_is_not.any()),
                              Requires(PrefixIsIn(weakref, self.rules.required_prefix.get()),
                                       is_requirement_active=self.rules.required_prefix.any()),
-                             RequiresOrForbids(IsGodanPotential(weakref), self.requires_forbids.godan_potential),
                              RequiresOrForbids(IsSentenceStart(weakref), self.requires_forbids.sentence_start),
                              RequiresOrForbids(HasTeFormStem(weakref), self.requires_forbids.te_form_stem),
                              RequiresOrForbids(HasAStem(weakref), self.requires_forbids.a_stem),
@@ -57,6 +57,8 @@ class VocabMatch(Match, AutoSlots):
 
                              # misc requirements
                              Forbids(IsPoisonWord(weakref)),
+                             Forbids(IsGodanPotentialSurface(weakref)),
+                             RequiresOrForbids(IsGodanPotential(weakref), self.requires_forbids.godan_potential),
                              RequiresOrForbids(IsExactMatch(weakref), self.requires_forbids.exact_match),
                              RequiresOrForbids(IsSingleToken(weakref), self.requires_forbids.single_token),
                              Forbids(SurfaceIsIn(weakref, self.rules.surface_is_not.get()),
