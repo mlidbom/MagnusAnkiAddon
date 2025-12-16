@@ -94,7 +94,7 @@ class VocabMatch(Match, AutoSlots):
     @override
     def start_index(self) -> int:
         if self.matching_configuration.bool_flags.question_overrides_form.is_set():
-            if self.requires_forbids.a_stem.is_required or self.requires_forbids.e_stem.is_required:
+            if self.requires_forbids.a_stem.is_required or self.requires_forbids.e_stem.is_required or self.requires_forbids.godan_potential.is_required:
                 return super().start_index - 1
             if self.rules.required_prefix.any():
                 matched_prefixes = [prefix for prefix in self.rules.required_prefix.get()
