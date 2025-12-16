@@ -126,7 +126,6 @@ test_special_vocab: list[VocabSpec] = [
     VocabSpec("言える", "to-be: able-to-say", compounds=["言う","える"]),
     VocabSpec("出会える", "to: be-{able/fortunate-enough}-to-{meet/come-across}"),
     VocabSpec("頑張れ", "do-your-best!", tags=[vm.Forbids.godan_potential]),
-    VocabSpec("てけ", "and-go!", forms=["ていけ"]),
     VocabSpec("ていける", "can-go-on")
 ]
 
