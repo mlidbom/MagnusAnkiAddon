@@ -43,6 +43,7 @@ def build_matching_settings_menu(toggle_flags_menu: QMenu, vocab: VocabNote) -> 
             add_require_forbid_menu(misc_menu, shortcutfinger.home2("Sentence end"), vocab.matching_configuration.requires_forbids.sentence_end)
             add_require_forbid_menu(misc_menu, shortcutfinger.home3("exact match"), vocab.matching_configuration.requires_forbids.exact_match)
             add_require_forbid_menu(misc_menu, shortcutfinger.home4("single token"), vocab.matching_configuration.requires_forbids.single_token)
+            add_require_forbid_menu(misc_menu, shortcutfinger.home5("godan potential"), vocab.matching_configuration.requires_forbids.godan_potential)
 
         def build_stem_menu(stem_menu: QMenu) -> None:
             add_require_forbid_menu(stem_menu, shortcutfinger.home1("e stem"), vocab.matching_configuration.requires_forbids.e_stem)
