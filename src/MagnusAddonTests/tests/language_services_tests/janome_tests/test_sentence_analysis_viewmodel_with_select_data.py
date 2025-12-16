@@ -78,7 +78,9 @@ def setup_collection_with_select_data() -> Iterator[None]:
     ("また寒くなるな", ["また", "寒い", "くなる", "な"]),
     ("空を飛べる機械", ["空を飛ぶ", "える", "機械"]),
     ("だったら普通に金<wbr>貸せって言えよ", ["だったら", "普通に", "金", "貸す", "って言う", "よ"]),
-    ("出会える", ["出会える"])
+    ("出会える", ["出会える"]),
+    ("頑張れた", ["頑張る", "える", "た"]),
+    ("頑張れ", ["頑張れ"])
 ])
 def test_misc_stuff(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)

@@ -15,6 +15,6 @@ class IsGodanPotentialSurfaceWithBase(MatchStateTest, AutoSlots):
 
     @override
     def _internal_match_is_in_state(self) -> bool:
-        if self.word.start_location.token.is_potential_godan and self.word.location_count == 1 and self.variant.is_surface and self.word.base_variant is not None:  # noqa: SIM103
+        if self.word.start_location.token.is_godan_potential and self.word.location_count == 1 and self.variant.is_surface and self.word.base_variant is not None:  # noqa: SIM103
             return True
         return False

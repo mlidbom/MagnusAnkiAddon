@@ -14,12 +14,13 @@ if TYPE_CHECKING:
     from typed_linq_collections.collections.q_list import QList
 
 class ProcessedToken(AutoSlots):
-    def __init__(self, surface: str, base: str, is_non_word_character: bool, is_inflectable_word: bool = False, is_potential_godan: bool = False) -> None:
+    def __init__(self, surface: str, base: str, is_non_word_character: bool, is_inflectable_word: bool = False, is_godan_potential: bool = False, is_godan_imperative: bool = False) -> None:
         self.surface: str = surface
         self.base_form: str = base
         self.is_inflectable_word: bool = is_inflectable_word
         self.is_non_word_character: bool = is_non_word_character
-        self.is_potential_godan: bool = is_potential_godan
+        self.is_godan_potential: bool = is_godan_potential
+        self.is_godan_imperative: bool = is_godan_imperative
 
     def is_past_tense_stem(self) -> bool: return False
     def is_ichidan_masu_stem(self) -> bool: return False
@@ -58,13 +59,13 @@ class JNTokenWrapper(ProcessedToken, AutoSlots):
     def _split_potential_or_imperative_godan(self, godan_base: str) -> list[ProcessedToken]:
         if not self.surface.endswith("る"): #this is not the dictionary form of the potential part  # noqa: SIM102
             if self.token.next is None or not self.token.next.is_valid_potential_form_inflection():  # this is an imperative
-                return [ProcessedToken(surface=self.surface, base=godan_base, is_non_word_character=False, is_inflectable_word=True)]
+                return [ProcessedToken(surface=self.surface, base=godan_base, is_non_word_character=False, is_inflectable_word=True, is_godan_imperative=True)]
 
         godan_surface = self.surface.removesuffix("る")[:-1]
         potential_stem = self.surface.removesuffix("る")[-1]
         potential_base = potential_stem + "る"
-        return [ProcessedToken(surface=godan_surface, base=godan_base, is_non_word_character=False, is_inflectable_word=True),
-                ProcessedToken(surface=potential_stem, base=potential_base, is_non_word_character=False, is_inflectable_word=True, is_potential_godan=True)]
+        return [ProcessedToken(surface=godan_surface, base=godan_base, is_non_word_character=False, is_inflectable_word=True, is_godan_potential=True),
+                ProcessedToken(surface=potential_stem, base=potential_base, is_non_word_character=False, is_inflectable_word=True, is_godan_potential=True)]
 
     def _try_find_vocab_based_potential_verb_compound(self) -> str | None:
         for vocab in self._vocabs.with_question(self.base_form):

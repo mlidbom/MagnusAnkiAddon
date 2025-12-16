@@ -15,6 +15,7 @@ from language_services.janome_ex.word_extraction.matches.state_tests.head.has_te
 from language_services.janome_ex.word_extraction.matches.state_tests.head.is_sentence_start import IsSentenceStart
 from language_services.janome_ex.word_extraction.matches.state_tests.head.prefix_is_in import PrefixIsIn
 from language_services.janome_ex.word_extraction.matches.state_tests.is_exact_match import IsExactMatch
+from language_services.janome_ex.word_extraction.matches.state_tests.is_godan_imperative import IsGodanImperative
 from language_services.janome_ex.word_extraction.matches.state_tests.is_godan_potential import IsGodanPotential
 from language_services.janome_ex.word_extraction.matches.state_tests.is_poison_word import IsPoisonWord
 from language_services.janome_ex.word_extraction.matches.state_tests.is_single_token import IsSingleToken
@@ -57,6 +58,7 @@ class VocabMatch(Match, AutoSlots):
                              # misc requirements
                              Forbids(IsPoisonWord(weakref)),
                              RequiresOrForbids(IsGodanPotential(weakref), self.requires_forbids.godan_potential),
+                             RequiresOrForbids(IsGodanImperative(weakref), self.requires_forbids.godan_imperative),
                              RequiresOrForbids(IsExactMatch(weakref), self.requires_forbids.exact_match),
                              RequiresOrForbids(IsSingleToken(weakref), self.requires_forbids.single_token),
                              Forbids(SurfaceIsIn(weakref, self.rules.surface_is_not.get()),
