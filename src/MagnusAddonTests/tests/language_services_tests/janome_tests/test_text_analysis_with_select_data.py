@@ -84,7 +84,7 @@ def test_strictly_suffix(sentence: str, expected_output: list[str]) -> None:
 @pytest.mark.usefixtures("setup_collection_with_select_data")
 @pytest.mark.parametrize("sentence, expected_output", [
     ("うるせえ", ["うるせえ", "せえ", "せる", "せ", "え"]),
-    ("お金貸せって", ["お金", "貸す", "貸", "って"])
+    ("お金貸せって", ["お金", "貸す", "って"])
 ])
 def test_requires_a_stem(sentence: str, expected_output: list[str]) -> None:
     sentence_note = SentenceNote.create_test_note(sentence, "")

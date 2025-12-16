@@ -113,8 +113,8 @@ class JNToken(AutoSlots):
         return self.parts_of_speech in _noun_auxiliary_parts_of_speech
 
     _end_of_sentence_characters: set[str] = {"と", "って", "？", "?", ".", "。"}
-    def is_end_of_sentence(self) -> bool:
-        return self.next is None or self.next.surface in self._end_of_sentence_characters
+    def is_end_of_statement(self) -> bool:
+        return self.next is None or self.next.surface in self._end_of_sentence_characters or self.parts_of_speech.is_non_word_character()
 
     def is_end_of_phrase_particle(self) -> bool:
         if self.parts_of_speech in _end_of_phrase_particles:
