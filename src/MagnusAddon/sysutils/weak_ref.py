@@ -7,6 +7,7 @@ from ex_autoslot import AutoSlots
 
 if TYPE_CHECKING:
     from _weakref import ReferenceType
+    from collections.abc import Callable
 
 T = TypeVar("T", covariant=True)
 
@@ -23,6 +24,9 @@ class WeakRef(Generic[T], AutoSlots):  # noqa: UP046 the automatic inference thi
 
     @override
     def __repr__(self) -> str: return f"WeakRef: {self().__repr__()}"
+
+    def run_if_live(self, action: Callable[[T], None]) -> None:
+        if self._weakreference() is not None: action(self())
 
 class WeakRefable(AutoSlots):
     __slots__ = ["__weakref__"]  # pyright: ignore[reportUninitializedInstanceVariable, reportUnannotatedClassAttribute]

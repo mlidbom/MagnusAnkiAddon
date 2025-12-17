@@ -25,9 +25,9 @@ class YieldLastTokenToOverlappingCompound(RequireForbidFlagField, WeakRefable, A
         self._pos: VocabNotePartsOfSpeech = vocab().parts_of_speech
         self._required: Lazy[bool] = Lazy(self._decide_if_required)
         self_weakref = WeakRef(self)
-        self.automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound.on_change(lambda _: self_weakref()._required.reset())
-        self.automatically_yield_last_token_in_passive_verb_compounds_to_overlapping_compound.on_change(lambda _: self_weakref()._required.reset())
-        self.automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound.on_change(lambda _: self_weakref()._required.reset())
+        self.automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound.on_change(lambda _: self_weakref.run_if_live(lambda me: me._required.reset()))
+        self.automatically_yield_last_token_in_passive_verb_compounds_to_overlapping_compound.on_change(lambda _: self_weakref.run_if_live(lambda me: me._required.reset()))
+        self.automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound.on_change(lambda _: self_weakref.run_if_live(lambda me: me._required.reset()))
 
     @override
     def _on_tag_updated(self) -> None:
