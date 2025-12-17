@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from ex_autoslot import AutoSlots
+from language_services.janome_ex.word_extraction import analysis_constants
 from note.note_constants import NoteFields, Tags
 from note.notefields.comma_separated_strings_set_field import MutableCommaSeparatedStringsSetField
 
@@ -68,17 +69,16 @@ class VocabNotePartsOfSpeech(AutoSlots):
             self.set_raw_string_value(value1)
 
     # todo in terms of using this for yielding compounds, される is apt not to work since in for instance 左右されます, され is tokenized as する、れる so two tokens would need to be yielded, not one. How to fix?
-    _passive_verb_endings: set[str] = {"あれる", "られる", "される"}
     def is_passive_verb_compound(self) -> bool:
         compounds = self._vocab.compound_parts.primary()
         if len(compounds) == 0: return False
-        return compounds[-1] in self._passive_verb_endings
+        return compounds[-1] in analysis_constants.passive_verb_endings
 
-    _causative_verb_endings: set[str] = {"あせる", "させる", "あす", "さす"}
+
     def is_causative_verb_compound(self) -> bool:
         compounds = self._vocab.compound_parts.primary()
         if len(compounds) == 0: return False
-        return compounds[-1] in self._causative_verb_endings
+        return compounds[-1] in analysis_constants.causative_verb_endings
 
     _na_adjective_tos_names: set[str] = {"な adjective", "na-adjective"}
     def is_complete_na_adjective(self) -> bool:

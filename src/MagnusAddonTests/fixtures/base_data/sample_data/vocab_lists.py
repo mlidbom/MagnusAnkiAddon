@@ -48,14 +48,18 @@ test_special_vocab: list[VocabSpec] = [
     VocabSpec("たい", "want to", ["たい"], tags=[vm.is_inflecting_word]),
     VocabSpec("解放する", "to{} release", ["かいほうする"]),
 
-    VocabSpec("える", "to-be-able-to", ["える"], tags=[vm.is_inflecting_word]),
-    VocabSpec("れる", "can-_/possible-to-_ | ??get-_??", ["れる"], tags=[vm.is_inflecting_word, vm.Forbids.a_stem]),
+
+    VocabSpec("せ", "so/really/seeming", tags=[vm.Forbids.godan_potential]),
+    VocabSpec("える", "to-be-able-to", ["える"],
+              forms=["える", "ける", "せる", "てる", "ねる", "へる", "める", "れる", "げる", "ぜる", "でる", "べる", "ぺる"],
+              tags=[vm.is_inflecting_word, vm.Requires.godan_potential, Tags.Vocab.question_overrides_form]),
+    #VocabSpec("れる", "can-_/possible-to-_ | ??get-_??", ["れる"], tags=[vm.is_inflecting_word, vm.Forbids.a_stem]),
 
     # require a stems
     VocabSpec("あれる", "get-_/is-_", ["あれる"], forms=["れる"], tags=[vm.Requires.a_stem, v.question_overrides_form, vm.is_inflecting_word]),
     VocabSpec("あせる", "get-_/is-_", ["あせる"], forms=["せる"], tags=[vm.Requires.a_stem, v.question_overrides_form, vm.is_inflecting_word]),
 
-    VocabSpec("させる", "get-_/is-_", ["させる"], forms=["せる"], tags=[vm.is_inflecting_word]),
+    VocabSpec("させる", "get-_/is-_", ["させる"], forms=["せる"], tags=[vm.is_inflecting_word, vm.Forbids.godan_potential]),
 
     VocabSpec("する", "to: do", yield_to_surface={"しろ"}),
     VocabSpec("しろ", "do!", ["しろ"]),
@@ -119,6 +123,10 @@ test_special_vocab: list[VocabSpec] = [
     VocabSpec("成る", "to: become | result-in | turn-into", ["なる"], prefix_not={"く"}),
     VocabSpec("なる", "to: become | result-in | turn-into", ["なる"], prefix_not={"く"}),
     VocabSpec("くなる", "to: become", ["くなる"], forms=["なる"], prefix_in={"く"}, tags=[Tags.Vocab.question_overrides_form]),
+    VocabSpec("言える", "to-be: able-to-say", compounds=["言う","える"]),
+    VocabSpec("出会える", "to: be-{able/fortunate-enough}-to-{meet/come-across}"),
+    VocabSpec("頑張れ", "do-your-best!", tags=[vm.Forbids.godan_potential]),
+    VocabSpec("ていける", "can-go-on")
 ]
 
 test_ordinary_vocab_list = [

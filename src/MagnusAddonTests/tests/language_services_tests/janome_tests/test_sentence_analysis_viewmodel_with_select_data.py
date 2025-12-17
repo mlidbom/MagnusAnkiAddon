@@ -16,6 +16,14 @@ def setup_collection_with_select_data() -> Iterator[None]:
     with inject_collection_with_select_data(special_vocab=True):
         yield
 
+
+@pytest.mark.usefixtures("setup_collection_with_select_data")
+@pytest.mark.parametrize("sentence, expected_output", [
+
+])
+def test_new_stuff(sentence: str, expected_output: list[str]) -> None:
+    assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
+
 @pytest.mark.usefixtures("setup_collection_with_select_data")
 @pytest.mark.parametrize("sentence, expected_output", [
     ("厳密に言えば　俺一人が友達だけど",
@@ -33,7 +41,7 @@ def setup_collection_with_select_data() -> Iterator[None]:
     ("待ってました", ["待つ", "て", "ます", "た"]),
     ("落ちてないかな", ["落ちる", "てる", "ないか", "な"]),
     ("分かってたら", ["分かる", "てたら"]),
-    ("思い出せそうな気がする", ["思い出せ:[MISSING]", "そうだ", "気がする"]),
+    ("思い出せそうな気がする", ["思い出す", "える", "そうだ", "気がする"]),
     ("代筆を頼みたいんだが", ["代筆", "を", "頼む", "たい", "ん", "だが"]),
     ("飛ばされる", ["飛ばす", "あれる"]),
     ("食べれる", ["食べる", "れる"]),
@@ -73,9 +81,15 @@ def setup_collection_with_select_data() -> Iterator[None]:
     ("聞こうと思ってた", ["聞く", "う", "と思う", "てた"]),
     ("沈んで", ["沈む", "んで"]),
     ("死んどる", ["死ぬ", "んどる"]),
-    ("馴染めないでいる", ["馴染め:[MISSING]", "ない", "でいる"]),
+    ("馴染めないでいる", ["馴染む", "える", "ない", "でいる"]),
     ("ちょっと強引なところがあるから", ["ちょっと", "強引", "な", "ところ", "が", "ある", "から"]),
-    ("また寒くなるな", ["また", "寒い", "くなる", "な"])
+    ("また寒くなるな", ["また", "寒い", "くなる", "な"]),
+    ("空を飛べる機械", ["空を飛ぶ", "える", "機械"]),
+    ("だったら普通に金<wbr>貸せって言えよ", ["だったら", "普通に", "金", "貸す", "って言う", "よ"]),
+    ("出会える", ["出会える"]),
+    ("頑張れた", ["頑張る", "える", "た"]),
+    ("頑張れ", ["頑張れ"]),
+    ("私たちなら嘘をつかずに付き合っていけるかもしれないね", ["私たち", "なら", "嘘をつく", "ずに", "付き合う", "ていける", "かもしれない", "ね"])
 ])
 def test_misc_stuff(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
@@ -102,7 +116,7 @@ def test_yield_to_surface(sentence: str, expected_output: list[str]) -> None:
     ("私は毎日ジョギングをすることを習慣にしています。",
      [WordExclusion.at_index("にして", 17), WordExclusion.at_index("にし", 17), WordExclusion.at_index("して", 18), WordExclusion.at_index("し", 18), WordExclusion.at_index("してい", 18)],
      ["私", "は", "毎日", "ジョギング", "を", "する", "こと", "を", "習慣", "にする", "ている", "ます"]),
-    ("頑張れたというか", [WordExclusion.global_("頑張れ")], ["頑張れ", "た", "というか"]),
+    ("頑張れたというか", [WordExclusion.global_("頑張る"),WordExclusion.global_("頑張れ")], ["える", "た", "というか"]),
     ("いらっしゃいません", [WordExclusion.global_("いらっしゃいませ")], ["いらっしゃいます", "ん"]),
     ("風の強さに驚きました", [WordExclusion.global_("風の強い")], ["風", "の", "強さ", "に", "驚き", "ます", "た"])
 ])

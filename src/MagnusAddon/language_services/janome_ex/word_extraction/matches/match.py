@@ -6,6 +6,7 @@ from ex_autoslot import AutoSlots
 from language_services.janome_ex.word_extraction.matches.requirements.forbids_state import Forbids
 from language_services.janome_ex.word_extraction.matches.state_tests.is_configured_hidden import IsConfiguredHidden
 from language_services.janome_ex.word_extraction.matches.state_tests.is_configured_incorrect import IsConfiguredIncorrect
+from language_services.janome_ex.word_extraction.matches.state_tests.is_godan_potential_surface_with_base import IsGodanPotentialSurfaceWithBase
 from language_services.janome_ex.word_extraction.matches.state_tests.is_shadowed import IsShadowed
 from sysutils.lazy import Lazy
 from sysutils.weak_ref import WeakRef, WeakRefable
@@ -23,7 +24,8 @@ class Match(WeakRefable, AutoSlots):
         self.weakref: WeakRef[Match] = weakref
         self._variant: WeakRef[CandidateWordVariant] = word_variant
         self._validity_requirements: list[MatchRequirement] = ([
-                                                                       Forbids(IsConfiguredIncorrect(self.weakref))
+                                                                       Forbids(IsConfiguredIncorrect(self.weakref)),
+                                                                       Forbids(IsGodanPotentialSurfaceWithBase(weakref))
                                                                ]
                                                                + validity_requirements)
         self._display_requirements: list[MatchRequirement] = ([

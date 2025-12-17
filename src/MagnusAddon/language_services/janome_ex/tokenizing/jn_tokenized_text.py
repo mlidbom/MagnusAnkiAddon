@@ -14,12 +14,13 @@ if TYPE_CHECKING:
     from typed_linq_collections.collections.q_list import QList
 
 class ProcessedToken(AutoSlots):
-    def __init__(self, surface: str, base: str, is_non_word_character: bool) -> None:
+    def __init__(self, surface: str, base: str, is_non_word_character: bool, is_inflectable_word: bool = False, is_godan_potential: bool = False, is_godan_imperative: bool = False) -> None:
         self.surface: str = surface
         self.base_form: str = base
-        self.is_inflectable_word: bool = False
+        self.is_inflectable_word: bool = is_inflectable_word
         self.is_non_word_character: bool = is_non_word_character
-        self.potential_godan_verb: str | None = None
+        self.is_godan_potential: bool = is_godan_potential
+        self.is_godan_imperative: bool = is_godan_imperative
 
     def is_past_tense_stem(self) -> bool: return False
     def is_ichidan_masu_stem(self) -> bool: return False
@@ -49,29 +50,23 @@ class JNTokenWrapper(ProcessedToken, AutoSlots):
     @override
     def is_special_nai_negative(self) -> bool: return self.token.is_special_nai_negative()
 
-    # todo: restore the splitting of godan verbs, but this time around:
-    # 1. Output a first token that does NOT contain the え sound.
-    # 2. Output a second token that contains the え sound. That is, move the え sound to a separate token instead of keeping it in the verb stem in the way that is linguistically correct.
-    #   so, for example, 作れた will be tokenized as:
-    #   surfaces: 作 　れ 　た
-    #      bases: 作る れる た
-    # this should result in pretty much everything just working, as long as the potential conjugations have a form for each consonant, える, ける, せる, てる, ねる, へる, める,　れる, げる, ぜる, でる, べる, ぺる
-    # see AI chat here: https://www.perplexity.ai/search/jue-dui-niaiturawojiang-fu-sas-P7TjirP4QSyOpAHP.UJKcQ (the programming discussion starts quite a bit down in the chat)
-    #
-    #   Legacy idea that is much more complicated:
-    #       1. output a first token that has the whole current surface, but with the normal Godan as it's base, along with the metadata that this is a potential godan stem token.
-    #       2. output a second token with an EMPTY surface and a base that is える. Via the base the potential compound will be matched later.
-    #       3. add a fallback/alternative surface member to ProcessedToken. For potential godans that will be え.
-    #       4. When a CandidateWord encounters an empty form at the start of it's token chain, it will replace it with the alternative surface,
-    #           thus effectively creating an alternative repretation of that index in the analysis, since the next token starts at the same index.
-    #       5. All that would have been matched before will be matched normally from the next token, while the potential token/location will allow any compounds starting with e
-    #           and marked as requiring a potential godan stem, to correctly match all the potential conjugations.
-    #       6. A configuration option can determine whether the matches from the original surface or the alternative surface should be the ones used in the display,
-    #           in the indexing both will of course always be output so that all the sentences containing える will be correctly identified.
-    #       7. Note, when calculating shadowing the empty tokens must not be counted, or words that are actually shadowed will be displayed.
     def pre_process(self) -> list[ProcessedToken]:
-        self.potential_godan_verb: str | None = self._try_find_vocab_based_potential_verb_compound() or self._try_find_dictionary_based_potential_godan_verb()
+        potential_godan_verb: str | None = self._try_find_vocab_based_potential_verb_compound() or self._try_find_dictionary_based_potential_godan_verb()
+        if potential_godan_verb is not None:
+            return self._split_potential_or_imperative_godan(potential_godan_verb)
         return [self]
+
+    def _split_potential_or_imperative_godan(self, godan_base: str) -> list[ProcessedToken]:
+        if not self.surface.endswith("る"): #this is not the dictionary form of the potential part  # noqa: SIM102
+            if self.token.next is None or not self.token.next.is_valid_potential_form_inflection():  # this is an imperative
+                return [ProcessedToken(surface=self.surface, base=godan_base, is_non_word_character=False, is_inflectable_word=True, is_godan_imperative=True)]
+
+        godan_surface = self.surface.removesuffix("る")[:-1]
+        potential_surface = self.surface.removeprefix(godan_surface)
+        potential_base = potential_surface if potential_surface[-1] == "る" else potential_surface + "る"
+
+        return [ProcessedToken(surface=godan_surface, base=godan_base, is_non_word_character=False, is_inflectable_word=True, is_godan_potential=True),
+                ProcessedToken(surface=potential_surface, base=potential_base, is_non_word_character=False, is_inflectable_word=True, is_godan_potential=True)]
 
     def _try_find_vocab_based_potential_verb_compound(self) -> str | None:
         for vocab in self._vocabs.with_question(self.base_form):
@@ -81,7 +76,7 @@ class JNTokenWrapper(ProcessedToken, AutoSlots):
         return None
 
     def _try_find_dictionary_based_potential_godan_verb(self) -> str | None:
-        if (len(self.token.base_form) >= 3
+        if (len(self.token.base_form) >= 2
                 and self.token.base_form[-2:] in conjugator.godan_potential_verb_ending_to_dictionary_form_endings
                 and self.token.is_ichidan_verb()
                 and not DictLookup.is_word(self.token.base_form)):  # the potential verbs are generally not in the dictionary this is how we know them
@@ -106,4 +101,4 @@ class JNTokenizedText(AutoSlots):
 
         return self.tokens.select_many(lambda token: JNTokenWrapper(token, vocab).pre_process()).to_list()
         # query(JNTokenWrapper(token, vocab) for token in self.tokens)
-        #return ex_sequence.flatten([token.pre_process() for token in step1])
+        # return ex_sequence.flatten([token.pre_process() for token in step1])
