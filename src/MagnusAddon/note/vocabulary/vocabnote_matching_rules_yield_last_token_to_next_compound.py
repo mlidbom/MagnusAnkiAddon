@@ -8,24 +8,31 @@ from note.note_constants import Tags
 from note.notefields.require_forbid_flag_field import RequireForbidFlagField
 from sysutils.lazy import Lazy
 from sysutils.simple_string_builder import SimpleStringBuilder
+from sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
     from configuration.configuration_value import ConfigurationValueBool
     from note.vocabulary.vocabnote import VocabNote
     from note.vocabulary.vocabnote_parts_of_speech import VocabNotePartsOfSpeech
-    from sysutils.weak_ref import WeakRef
 
-class YieldLastTokenToOverlappingCompound(RequireForbidFlagField, AutoSlots):
+class YieldLastTokenToOverlappingCompound(RequireForbidFlagField, WeakRefable, AutoSlots):
     automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound: ConfigurationValueBool = app.config().automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound
     automatically_yield_last_token_in_passive_verb_compounds_to_overlapping_compound: ConfigurationValueBool = app.config().automatically_yield_last_token_in_passive_verb_compounds_to_overlapping_compound
     automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound: ConfigurationValueBool = app.config().automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound
 
-
-
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         super().__init__(vocab, Tags.Vocab.Matching.yield_last_token_to_overlapping_compound, Tags.Vocab.Matching.Forbids.auto_yielding)
-        self._pos:VocabNotePartsOfSpeech = vocab().parts_of_speech
-        self._required:Lazy[bool] = Lazy(self._decide_if_required)
+        self._pos: VocabNotePartsOfSpeech = vocab().parts_of_speech
+        self._required: Lazy[bool] = Lazy(self._decide_if_required)
+        self_weakref = WeakRef(self)
+        self.automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound.on_change(lambda _: self_weakref()._required.reset())
+        self.automatically_yield_last_token_in_passive_verb_compounds_to_overlapping_compound.on_change(lambda _: self_weakref()._required.reset())
+        self.automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound.on_change(lambda _: self_weakref()._required.reset())
+
+    @override
+    def _on_tag_updated(self) -> None:
+        super()._on_tag_updated()
+        self._required.reset()
 
     def _decide_if_required(self) -> bool:
         return (super().is_required
