@@ -7,6 +7,7 @@ from language_services.janome_ex.tokenizing import inflection_forms, inflection_
 from language_services.janome_ex.tokenizing.inflection_forms import InflectionForms
 from language_services.janome_ex.tokenizing.inflection_types import InflectionTypes
 from language_services.janome_ex.tokenizing.jn_parts_of_speech import POS, JNPartsOfSpeech
+from language_services.janome_ex.word_extraction import analysis_constants
 from sysutils import kana_utils, typed
 
 if TYPE_CHECKING:
@@ -112,9 +113,8 @@ class JNToken(AutoSlots):
     def is_noun_auxiliary(self) -> bool:
         return self.parts_of_speech in _noun_auxiliary_parts_of_speech
 
-    _end_of_sentence_characters: set[str] = {"と", "って", "？", "?", ".", "。"}
     def is_end_of_statement(self) -> bool:
-        return self.next is None or self.next.surface in self._end_of_sentence_characters or self.parts_of_speech.is_non_word_character()
+        return self.next is None or self.next.surface in analysis_constants.sentence_end_characters or self.parts_of_speech.is_non_word_character()
 
     _valid_potential_form_inflections_pos: set[JNPartsOfSpeech] = {POS.bound_auxiliary, POS.Noun.Suffix.auxiliary_verb_stem}
     def is_valid_potential_form_inflection(self) -> bool:

@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from ex_autoslot import AutoSlots
+from language_services.janome_ex.word_extraction import analysis_constants
 from language_services.janome_ex.word_extraction.matches.state_tests.match_state_test import MatchStateTest
 
 if TYPE_CHECKING:
@@ -15,6 +16,6 @@ class IsSentenceStart(MatchStateTest, AutoSlots):
 
     @override
     def _internal_match_is_in_state(self) -> bool:
-        if len(self.prefix) == 0 or self.prefix[-1].isspace():  # noqa: SIM103
+        if len(self.prefix) == 0 or self.prefix[-1] in analysis_constants.sentence_start_characters:  # noqa: SIM103
             return True
         return False
