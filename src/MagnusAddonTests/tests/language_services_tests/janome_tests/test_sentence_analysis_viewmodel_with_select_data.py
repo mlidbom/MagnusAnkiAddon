@@ -11,20 +11,24 @@ if TYPE_CHECKING:
     from collections.abc import Iterator
 
 # noinspection PyUnusedFunction
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="module" , autouse=True)
 def setup_collection_with_select_data() -> Iterator[None]:
     with inject_collection_with_select_data(special_vocab=True):
         yield
 
 
-@pytest.mark.usefixtures("setup_collection_with_select_data")
 @pytest.mark.parametrize("sentence, expected_output", [
-
+    ("どやされても知らんぞ", ["どやす", "あれても", "知る", "ん", "ぞ"]) # todo bug fixme
 ])
 def test_new_stuff(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
 
-@pytest.mark.usefixtures("setup_collection_with_select_data")
+@pytest.mark.parametrize("sentence, expected_output", [
+    ("どやされても知らんぞ", ["どやす", "あれても", "知る", "ん", "ぞ"]) # todo bug fixme あれても should yield to ても知らん
+])
+def test_bugs_todo_fixme(sentence: str, expected_output: list[str]) -> None:
+    assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
+
 @pytest.mark.parametrize("sentence, expected_output", [
     ("厳密に言えば　俺一人が友達だけど",
      ["厳密に言えば", "俺", "一人", "が", "友達", "だけど"]),
@@ -94,7 +98,6 @@ def test_new_stuff(sentence: str, expected_output: list[str]) -> None:
 def test_misc_stuff(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
 
-@pytest.mark.usefixtures("setup_collection_with_select_data")
 @pytest.mark.parametrize("sentence, expected_output", [
     ("しろ", ["しろ"]),
     ("後で下に下りてらっしゃいね", ["後で", "下に", "下りる", "て", "らっしゃい", "ね"]),
@@ -102,7 +105,6 @@ def test_misc_stuff(sentence: str, expected_output: list[str]) -> None:
 def test_yield_to_surface(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
 
-@pytest.mark.usefixtures("setup_collection_with_select_data")
 @pytest.mark.parametrize("sentence, excluded, expected_output", [
     ("厳密に言えば　俺一人が友達だけど",
      [WordExclusion.global_("厳密に言えば"), WordExclusion.global_("言え"), WordExclusion.global_("だけど")],
@@ -123,7 +125,6 @@ def test_yield_to_surface(sentence: str, expected_output: list[str]) -> None:
 def test_exclusions(sentence: str, excluded: list[WordExclusion], expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, excluded, expected_output)
 
-@pytest.mark.usefixtures("setup_collection_with_select_data")
 @pytest.mark.parametrize("sentence, expected_output", [
     ("風の強さに驚きました", ["風の強い", "風", "の", "強さ", "強", "強い", "さ", "に", "驚き", "驚く", "まし:ませ", "ます", "た"])
 ])

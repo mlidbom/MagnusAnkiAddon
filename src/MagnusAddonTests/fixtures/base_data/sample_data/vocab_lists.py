@@ -126,5 +126,8 @@ test_special_vocab: list[VocabSpec] = [
     VocabSpec("言える", "to-be: able-to-say", compounds=["言う","える"]),
     VocabSpec("出会える", "to: be-{able/fortunate-enough}-to-{meet/come-across}"),
     VocabSpec("頑張れ", "do-your-best!", tags=[vm.Forbids.godan_potential]),
-    VocabSpec("ていける", "can-go-on")
+    VocabSpec("ていける", "can-go-on"),
+
+    VocabSpec("あれても", forms=["れても"], compounds=["あれる", "ても"], tags=[vm.yield_last_token_to_overlapping_compound, vm.Requires.a_stem, vm.Forbids.godan_potential, Tags.Vocab.question_overrides_form]),
+    VocabSpec("ても知らない", forms=["ても知らん"], compounds=["ても", "知る", "ん"], tags=[vm.Requires.te_form_stem])
 ]
