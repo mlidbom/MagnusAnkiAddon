@@ -31,5 +31,5 @@ def init() -> None:
 
     if app.config().disable_all_automatic_garbage_collection.get_value():
         aqt.main.AnkiQt.garbage_collect_now = noop_gc_now  # type: ignore  # pyright: ignore[reportAttributeAccessIssue, reportUnknownMemberType]
-
-    aqt.main.AnkiQt.garbage_collect_now = visible_garbage_collection  # type: ignore  # pyright: ignore[reportAttributeAccessIssue, reportUnknownMemberType]
+    else:
+        aqt.main.AnkiQt.garbage_collect_now = visible_garbage_collection  # type: ignore  # pyright: ignore[reportAttributeAccessIssue, reportUnknownMemberType]
