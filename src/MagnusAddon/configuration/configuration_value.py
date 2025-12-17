@@ -118,6 +118,7 @@ class JapaneseConfig(AutoSlots):
         self.load_jamdict_db_into_memory: ConfigurationValueBool = ConfigurationValueBool("load_jamdict_db_into_memory", "Load Jamdict DB into memory [Requires restart]", False)
         self.pre_cache_card_studying_status: ConfigurationValueBool = ConfigurationValueBool("pre_cache_card_studying_status", "Cache card studying status on startup. Only disable for dev/testing purposes. [Requires restart]", False)
         self.prevent_anki_from_garbage_collecting_every_time_a_window_closes: ConfigurationValueBool = ConfigurationValueBool("prevent_anki_from_garbage_collecting_every_time_a_window_closes", "Prevent Anki from garbage collecting every time a window closes, causing a short hang every time. [Requires restart]", True)
+        self.disable_all_automatic_garbage_collection: ConfigurationValueBool = ConfigurationValueBool("disable_periodic_garbage_collection", "Prevent all automatic garbage collection. Will stop the mini-hangs but memory usage will grow gradually. [Requires restart]", False)
         self.load_studio_in_foreground: ConfigurationValueBool = ConfigurationValueBool("load_studio_in_foreground", "Load Studio in foreground. Makes it clear when done. Anki will be responsive when done. But you can't use anki while loading.", True)
 
         # memory
@@ -137,6 +138,7 @@ class JapaneseConfig(AutoSlots):
                                                self.load_jamdict_db_into_memory,
                                                self.pre_cache_card_studying_status,
                                                self.prevent_anki_from_garbage_collecting_every_time_a_window_closes,
+                                               self.disable_all_automatic_garbage_collection,
                                                self.enable_garbage_collection_during_batches,
                                                self.enable_automatic_garbage_collection,
                                                self.track_instances_in_memory])]
