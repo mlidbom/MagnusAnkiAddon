@@ -40,7 +40,7 @@ def populate_collection(collection: Collection) -> None:
     note_type_factory.add_note_types(collection)
 
 @contextmanager
-def inject_collection_with_select_data(kanji: bool = False, special_vocab: bool = False, ordinary_vocab: bool = False, sentences: bool = False) -> Iterator[JPCollection]:
+def inject_collection_with_select_data(kanji: bool = False, special_vocab: bool = False, sentences: bool = False) -> Iterator[JPCollection]:
     with inject_empty_collection() as collection:
         if kanji:
             for _kanji in kanji_spec.test_kanji_list:
@@ -48,10 +48,6 @@ def inject_collection_with_select_data(kanji: bool = False, special_vocab: bool 
 
         if special_vocab:
             for vocab in vocab_lists.test_special_vocab:
-                vocab.create_vocab_note()
-
-        if ordinary_vocab:
-            for vocab in vocab_lists.test_ordinary_vocab_list:
                 vocab.create_vocab_note()
 
         if sentences:
@@ -64,5 +60,5 @@ def inject_collection_with_select_data(kanji: bool = False, special_vocab: bool 
 
 @contextmanager
 def inject_collection_with_all_sample_data() -> Iterator[JPCollection]:
-    with inject_collection_with_select_data(kanji=True, special_vocab=True, ordinary_vocab=True, sentences=True) as collection:
+    with inject_collection_with_select_data(kanji=True, special_vocab=True, sentences=True) as collection:
         yield collection
