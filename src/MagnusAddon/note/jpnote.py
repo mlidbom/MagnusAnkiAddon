@@ -3,6 +3,7 @@ from __future__ import annotations
 from collections import defaultdict
 from typing import TYPE_CHECKING, cast, override
 
+from anki.cards import sys
 from anki.models import NotetypeDict
 from anki_extentions.card_ex import CardEx
 from anki_extentions.notetype_ex.note_type_ex import NoteTypeEx
@@ -29,6 +30,8 @@ class JPNote(WeakRefable, Slots):
         self.backend_note: Note = note
         self.__hash_value = 0
         self._tag_updated_callbacks: dict[str, list[Callable[[], None]]] = defaultdict(list)
+
+        for index, tag in enumerate( self.backend_note.tags): self.backend_note.tags[index] = sys.intern(tag) #saves something like 20-30MB of memory on my collection
 
     @property
     def is_flushing(self) -> bool: return self.recursive_flush_guard.is_flushing
