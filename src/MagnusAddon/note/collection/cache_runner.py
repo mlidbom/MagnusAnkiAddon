@@ -7,7 +7,7 @@ from anki import hooks
 from anki.models import ModelManager
 from anki_extentions.notetype_ex.note_type_ex import NoteTypeEx
 from ankiutils import app
-from ex_autoslot import AutoSlots
+from manually_copied_in_libraries.autoslot import Slots
 from note.note_constants import NoteTypes
 from sysutils import app_thread_pool, ex_assert, ex_thread
 from sysutils.typed import checked_cast, non_optional
@@ -19,7 +19,7 @@ if TYPE_CHECKING:
     from anki.decks import DeckId
     from anki.notes import Note, NoteId
 
-class CacheRunner(AutoSlots):
+class CacheRunner(Slots):
     def __init__(self, anki_collection: Collection) -> None:
         self._merge_pending_subscribers: list[Callable[[], None]] = []
         self._will_add_subscribers: list[Callable[[Note], None]] = []

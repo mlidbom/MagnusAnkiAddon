@@ -3,11 +3,11 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, final, override
 
 from ankiutils import app
-from ex_autoslot import AutoSlots
 from language_services.janome_ex.word_extraction.matches.dictionary_match import DictionaryMatch
 from language_services.janome_ex.word_extraction.matches.missing_match import MissingMatch
 from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
+from manually_copied_in_libraries.autoslot import Slots
 from sysutils import ex_assert
 from sysutils.lazy import Lazy
 from sysutils.weak_ref import WeakRef, WeakRefable
@@ -20,7 +20,7 @@ if TYPE_CHECKING:
     from note.sentences.sentence_configuration import SentenceConfiguration
 
 @final
-class CandidateWordVariant(WeakRefable, AutoSlots):
+class CandidateWordVariant(WeakRefable, Slots):
     def __init__(self, word: WeakRef[CandidateWord], form: str) -> None:
 
         self.weak_ref = WeakRef(self)

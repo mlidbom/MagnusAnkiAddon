@@ -2,8 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ex_autoslot import AutoSlots
-from line_profiling_hacks import profile_lines
+from manually_copied_in_libraries.autoslot import Slots
 from note.jpnote import JPNote
 from sysutils.collections.default_dict_case_insensitive import DefaultDictCaseInsensitive
 from sysutils.typed import checked_cast
@@ -16,14 +15,13 @@ if TYPE_CHECKING:
     from note.collection.cache_runner import CacheRunner
     from qt_utils.task_runner_progress_dialog import ITaskRunner
 
-class CachedNote(AutoSlots):
+class CachedNote(Slots):
     def __init__(self, note: JPNote) -> None:
         self.id: NoteId = note.get_id()
         self.answer: str = note.get_answer()
         self.question: str = note.get_question()
 
-class NoteCache[TNote: JPNote, TSnapshot: CachedNote](AutoSlots):
-    @profile_lines
+class NoteCache[TNote: JPNote, TSnapshot: CachedNote](Slots):
     def __init__(self, all_notes: list[TNote], cached_note_type: type[TNote], cache_runner: CacheRunner, task_runner: ITaskRunner) -> None:
         self._note_type: type[TNote] = cached_note_type
         self._by_question: DefaultDictCaseInsensitive[set[TNote]] = DefaultDictCaseInsensitive(set)

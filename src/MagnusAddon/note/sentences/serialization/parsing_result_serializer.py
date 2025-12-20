@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 import mylog
-from ex_autoslot import AutoSlots
+from manually_copied_in_libraries.autoslot import Slots
 from note.notefields.json_object_field import ObjectSerializer
 from note.sentences.parsed_word import ParsedMatch
 from sysutils.ex_str import invisible_space, newline
@@ -11,7 +11,7 @@ from sysutils.ex_str import invisible_space, newline
 if TYPE_CHECKING:
     from note.sentences.parsing_result import ParsingResult
 
-class ParsingResultSerializer(ObjectSerializer["ParsingResult"], AutoSlots):
+class ParsingResultSerializer(ObjectSerializer["ParsingResult"], Slots):
     newline_replacement: str = f"NEWLINE{invisible_space}"
     @override
     def deserialize(self, serialized: str) -> ParsingResult:

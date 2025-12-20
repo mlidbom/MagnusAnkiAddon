@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from ex_autoslot import AutoSlots
+from manually_copied_in_libraries.autoslot import Slots
 from sysutils.lazy import Lazy
 
 if TYPE_CHECKING:
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 # this field is used extremely much, so its design is crucial for both performance and memory usage, keep in mind when changing anything
 # if a field is read-only, make sure to to use ReadOnlyStringField instead, which uses less memory
-class MutableStringField(AutoSlots):
+class MutableStringField(Slots):
     def __init__(self, note: WeakRef[JPNote], field_name: str) -> None:
         self._note: WeakRef[JPNote] = note
         self._field_name: str = field_name

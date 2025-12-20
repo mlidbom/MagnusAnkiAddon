@@ -2,13 +2,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ex_autoslot import AutoSlots
+from manually_copied_in_libraries.autoslot import Slots
 
 if TYPE_CHECKING:
     from PyQt6.QtWidgets import QMenu
 
 
-class ExQmenu(AutoSlots):
+class ExQmenu(Slots):
     @classmethod
     def disable_empty_submenus(cls, menu: QMenu | None) -> None:
         if menu is None:

@@ -2,17 +2,17 @@ from __future__ import annotations
 
 from typing import final
 
-from ex_autoslot import AutoSlots
 from janome.tokenizer import Token, Tokenizer  # pyright: ignore[reportMissingTypeStubs]
 from language_services.janome_ex.tokenizing.jn_parts_of_speech import JNPartsOfSpeech
 from language_services.janome_ex.tokenizing.jn_token import JNToken
 from language_services.janome_ex.tokenizing.jn_tokenized_text import JNTokenizedText
+from manually_copied_in_libraries.autoslot import Slots
 from sysutils import ex_str, typed
 from typed_linq_collections.collections.q_list import QList
 
 
 @final
-class JNTokenizer(AutoSlots):
+class JNTokenizer(Slots):
     def __init__(self) -> None:
         self._tokenizer = Tokenizer()
 

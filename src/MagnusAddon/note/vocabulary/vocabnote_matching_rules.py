@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from ex_autoslot import AutoSlots
+from manually_copied_in_libraries.autoslot import Slots
 from note.note_constants import NoteFields, Tags
 from note.notefields.auto_save_wrappers.set_wrapper import FieldSetWrapper
 from note.notefields.json_object_field import MutableSerializedObjectField
@@ -18,7 +18,7 @@ from sysutils.weak_ref import WeakRef, WeakRefable
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
 
-class VocabNoteMatchingRulesData(AutoSlots):
+class VocabNoteMatchingRulesData(Slots):
     serializer: VocabNoteMatchingRulesSerializer = VocabNoteMatchingRulesSerializer()
     def __init__(self, surface_is_not: set[str], prefix_is_not: set[str], suffix_is_not: set[str], required_prefix: set[str], yield_to_surface: set[str]) -> None:
         self.prefix_is_not: set[str] = prefix_is_not
@@ -27,7 +27,7 @@ class VocabNoteMatchingRulesData(AutoSlots):
         self.yield_to_surface: set[str] = yield_to_surface
         self.required_prefix: set[str] = required_prefix
 
-class VocabNoteMatchingRules(AutoSlots):
+class VocabNoteMatchingRules(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self._data: MutableSerializedObjectField[VocabNoteMatchingRulesData] = MutableSerializedObjectField(vocab, NoteFields.Vocab.matching_rules, VocabNoteMatchingRulesData.serializer)
         self.surface_is_not: FieldSetWrapper[str] = FieldSetWrapper.for_json_object_field(self._data, self._data.get().surface_is_not)  # pyright: ignore[reportUnknownMemberType]
@@ -50,7 +50,7 @@ class VocabNoteMatchingRules(AutoSlots):
                                        .prop("suffix_is_not", self.suffix_is_not.get())
                                        .prop("required_prefix", self.required_prefix.get()).repr)
 
-class VocabMatchingRulesConfigurationRequiresForbidsFlags(AutoSlots):
+class VocabMatchingRulesConfigurationRequiresForbidsFlags(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self.e_stem: RequireForbidFlagField = RequireForbidFlagField(vocab, Tags.Vocab.Matching.Requires.e_stem, Tags.Vocab.Matching.Forbids.e_stem)
         self.a_stem: RequireForbidFlagField = RequireForbidFlagField(vocab, Tags.Vocab.Matching.Requires.a_stem, Tags.Vocab.Matching.Forbids.a_stem)
@@ -64,7 +64,7 @@ class VocabMatchingRulesConfigurationRequiresForbidsFlags(AutoSlots):
         self.exact_match: RequireForbidFlagField = RequireForbidFlagField(vocab, Tags.Vocab.Matching.Requires.exact_match, Tags.Vocab.Matching.Forbids.exact_match)
         self.yield_last_token: RequireForbidFlagField = YieldLastTokenToOverlappingCompound(vocab)
 
-class VocabMatchingRulesConfigurationBoolFlags(AutoSlots):
+class VocabMatchingRulesConfigurationBoolFlags(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self.is_inflecting_word: IsInflectingWord = IsInflectingWord(vocab)
         self.is_poison_word: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.is_poison_word)
@@ -74,7 +74,7 @@ class VocabMatchingRulesConfigurationBoolFlags(AutoSlots):
     @override
     def __repr__(self) -> str: return f"""{self.is_inflecting_word}, {self.is_poison_word}, {self.match_with_preceding_vowel}, {self.question_overrides_form}"""
 
-class VocabNoteMatchingConfiguration(WeakRefable, AutoSlots):
+class VocabNoteMatchingConfiguration(WeakRefable, Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self.vocab: WeakRef[VocabNote] = vocab
         self.weakref: WeakRef[VocabNoteMatchingConfiguration] = WeakRef(self)

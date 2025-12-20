@@ -3,7 +3,7 @@ from __future__ import annotations
 from collections import defaultdict
 from typing import TYPE_CHECKING, final, override
 
-from ex_autoslot import AutoSlots
+from manually_copied_in_libraries.autoslot import Slots
 from typed_linq_collections.collections.q_list import QList
 from typed_linq_collections.q_iterable import query
 
@@ -21,13 +21,13 @@ from sysutils import kana_utils
 
 
 @final
-class _KanjiSnapshot(CachedNote, AutoSlots):
+class _KanjiSnapshot(CachedNote, Slots):
     def __init__(self, note: KanjiNote) -> None:
         super().__init__(note)
         self.radicals: set[str] = set(note.get_radicals())
         self.readings: set[str] = set(note.get_readings_clean())
 
-class _KanjiCache(NoteCache[KanjiNote, _KanjiSnapshot], AutoSlots):
+class _KanjiCache(NoteCache[KanjiNote, _KanjiSnapshot], Slots):
     def __init__(self, all_kanji: list[KanjiNote], cache_runner: CacheRunner, task_runner: ITaskRunner) -> None:
         self._by_radical: dict[str, set[KanjiNote]] = defaultdict(set)
         self.by_reading: dict[str, set[KanjiNote]] = defaultdict(set)
@@ -48,7 +48,7 @@ class _KanjiCache(NoteCache[KanjiNote, _KanjiSnapshot], AutoSlots):
 
     def with_radical(self, radical: str) -> QList[KanjiNote]: return QList(self._by_radical[radical])
 
-class KanjiCollection(AutoSlots):
+class KanjiCollection(Slots):
     def __init__(self, collection: Collection, cache_manager: CacheRunner, task_runner: ITaskRunner) -> None:
         def kanji_constructor_call_while_populating_kanji_collection(note: Note) -> KanjiNote: return KanjiNote(note)
         self.collection: BackEndFacade[KanjiNote] = BackEndFacade[KanjiNote](collection, kanji_constructor_call_while_populating_kanji_collection, NoteTypes.Kanji)

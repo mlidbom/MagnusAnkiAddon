@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from anki import consts
 from anki_extentions.deck_ex import DeckEx
-from ex_autoslot import AutoSlots
+from manually_copied_in_libraries.autoslot import Slots
 from sysutils.timeutil import StopWatch
 from sysutils.typed import non_optional
 from typed_linq_collections.collections.q_list import QList
@@ -32,7 +32,7 @@ def _get_answers_since_last_day_cutoff_for_card(card_id: int) -> QList[int]:
         reviews: list[Row] = app.anki_db().all("SELECT ease FROM revlog WHERE cid = ? AND id > ? ORDER BY id DESC", card_id, _latest_day_cutoff_timestamp() * timeutil.MILLISECONDS_PER_SECOND)
         return QList(typed.int_(review[0]) for review in reviews)  # pyright: ignore[reportAny]
 
-class CardEx(AutoSlots):
+class CardEx(Slots):
     def __init__(self, card:anki.cards.Card) -> None:
         self.card:anki.cards.Card = card
 
@@ -71,7 +71,7 @@ class CardEx(AutoSlots):
         return DeckEx(non_optional(self._deck_manager().get(self.card.current_deck_id())))
 
 
-class Card2Ex(AutoSlots):
+class Card2Ex(Slots):
     def __init__(self, card:anki.cards_pb2.Card) -> None:
         self.card:anki.cards_pb2.Card = card
 

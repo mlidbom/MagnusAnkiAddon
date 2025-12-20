@@ -3,7 +3,7 @@ from __future__ import annotations
 import time
 from typing import TYPE_CHECKING
 
-from ex_autoslot import AutoSlots
+from manually_copied_in_libraries.autoslot import Slots
 from note.note_constants import NoteFields
 from sysutils.lazy import Lazy
 from sysutils.weak_ref import WeakRef, WeakRefable
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from note.sentences.sentencenote import SentenceNote
     from note.vocabulary.vocabnote import VocabNote
 
-class SentenceCounts(AutoSlots):
+class SentenceCounts(Slots):
     def __init__(self, parent: WeakRef[VocabNoteSentences]) -> None:
         self._parent: WeakRef[VocabNoteSentences] = parent
         self._studying_reading: int = 0
@@ -47,7 +47,7 @@ class SentenceCounts(AutoSlots):
             self._cache_seconds = _how_long_to_cache_for()
         return self
 
-class VocabNoteSentences(WeakRefable, AutoSlots):
+class VocabNoteSentences(WeakRefable, Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self.__vocab = vocab
         weakrefthis = WeakRef(self)

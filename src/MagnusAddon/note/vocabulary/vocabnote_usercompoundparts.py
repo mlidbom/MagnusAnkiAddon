@@ -3,9 +3,9 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from ankiutils import app
-from ex_autoslot import AutoSlots
 from language_services.jamdict_ex.dict_lookup import DictLookup
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
+from manually_copied_in_libraries.autoslot import Slots
 from note.note_constants import NoteFields
 from note.notefields.comma_separated_strings_list_field import MutableCommaSeparatedStringsListField
 from note.sentences.sentence_configuration import SentenceConfiguration
@@ -18,7 +18,7 @@ if TYPE_CHECKING:
     from typed_linq_collections.collections.q_list import QList
     from typed_linq_collections.collections.q_set import QSet
 
-class VocabNoteUserCompoundParts(AutoSlots):
+class VocabNoteUserCompoundParts(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self.__vocab = vocab
         self._field: MutableCommaSeparatedStringsListField = MutableCommaSeparatedStringsListField(vocab, NoteFields.Vocab.user_compounds)

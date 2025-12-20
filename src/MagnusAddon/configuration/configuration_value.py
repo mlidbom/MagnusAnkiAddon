@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, cast
 
 from ankiutils import app
 from aqt import mw
-from ex_autoslot import AutoSlots
+from manually_copied_in_libraries.autoslot import Slots
 from sysutils.lazy import Lazy
 from sysutils.typed import non_optional
 from sysutils.weak_ref import WeakRefable
@@ -25,7 +25,7 @@ def _write_config_dict() -> None:
     if not app.is_testing:
         mw.addonManager.writeConfig(_addon_name, _config_dict())  # pyright: ignore[reportUnknownMemberType]
 
-class ConfigurationValue[T](WeakRefable, AutoSlots):
+class ConfigurationValue[T](WeakRefable, Slots):
     def __init__(self, name: str, title: str, default: T, feature_toggler: Callable[[T], None] | None = None) -> None:
         self.title: str = title
         self.feature_toggler: Callable[[T], None] | None = feature_toggler
@@ -59,7 +59,7 @@ ConfigurationValueInt = ConfigurationValue[int]
 ConfigurationValueFloat = ConfigurationValue[float]
 ConfigurationValueBool = ConfigurationValue[bool]
 
-class JapaneseConfig(AutoSlots):
+class JapaneseConfig(Slots):
     def __init__(self) -> None:
         self.boost_failed_card_allowed_time_by_factor: ConfigurationValueFloat = ConfigurationValueFloat("boost_failed_card_allowed_time_by_factor", "Boost Failed Card Allowed Time Factor", 1.5)
         self.boost_failed_card_allowed_time: ConfigurationValueBool = ConfigurationValueBool("boost_failed_card_allowed_time", "Boost failed card allowed time", True)

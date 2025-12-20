@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from ex_autoslot import AutoSlots
 from language_services import conjugator
+from manually_copied_in_libraries.autoslot import Slots
 from note.note_constants import Mine, NoteFields
 from note.notefields.mutable_string_field import MutableStringField
 
@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from sysutils.lazy import Lazy
     from sysutils.weak_ref import WeakRef
 
-class VocabStems(AutoSlots):
+class VocabStems(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self._vocab: WeakRef[VocabNote] = vocab
 
@@ -20,7 +20,7 @@ class VocabStems(AutoSlots):
         masu_stem = conjugator.get_i_stem_vocab(self._vocab())
         return masu_stem if masu_stem != self._vocab().question.raw else None
 
-class VocabNoteQuestion(AutoSlots):
+class VocabNoteQuestion(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self._vocab: WeakRef[VocabNote] = vocab
         field = MutableStringField(vocab, NoteFields.Vocab.question)

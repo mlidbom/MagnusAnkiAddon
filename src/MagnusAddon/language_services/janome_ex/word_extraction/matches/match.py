@@ -2,12 +2,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from ex_autoslot import AutoSlots
 from language_services.janome_ex.word_extraction.matches.requirements.forbids_state import Forbids
 from language_services.janome_ex.word_extraction.matches.state_tests.is_configured_hidden import IsConfiguredHidden
 from language_services.janome_ex.word_extraction.matches.state_tests.is_configured_incorrect import IsConfiguredIncorrect
 from language_services.janome_ex.word_extraction.matches.state_tests.is_godan_potential_surface_with_base import IsGodanPotentialSurfaceWithBase
 from language_services.janome_ex.word_extraction.matches.state_tests.is_shadowed import IsShadowed
+from manually_copied_in_libraries.autoslot import Slots
 from sysutils.lazy import Lazy
 from sysutils.weak_ref import WeakRef, WeakRefable
 
@@ -16,7 +16,7 @@ if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
     from language_services.janome_ex.word_extraction.matches.requirements.requirement import MatchRequirement
 
-class Match(WeakRefable, AutoSlots):
+class Match(WeakRefable, Slots):
     def __init__(self, word_variant: WeakRef[CandidateWordVariant],
                  validity_requirements: list[MatchRequirement],
                  display_requirements: list[MatchRequirement]) -> None:

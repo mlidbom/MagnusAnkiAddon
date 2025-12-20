@@ -2,13 +2,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from ex_autoslot import AutoSlots
+from manually_copied_in_libraries.autoslot import Slots
 
 if TYPE_CHECKING:
     from note.jpnote import JPNote
     from sysutils.weak_ref import WeakRef
 
-class TagFlagField(AutoSlots):
+class TagFlagField(Slots):
     def __init__(self, note: WeakRef[JPNote], tag: str) -> None:
         self._note: WeakRef[JPNote] = note
         self.tag: str = tag

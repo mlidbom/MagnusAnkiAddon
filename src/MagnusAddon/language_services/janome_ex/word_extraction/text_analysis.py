@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, final, override
 
-from ex_autoslot import AutoSlots
+from manually_copied_in_libraries.autoslot import Slots
 from sysutils.weak_ref import WeakRef, WeakRefable
 from typed_linq_collections.collections.q_list import QList
 
@@ -18,7 +18,7 @@ from note.sentences.sentence_configuration import SentenceConfiguration
 _tokenizer = JNTokenizer()
 
 @final
-class TextAnalysis(WeakRefable, AutoSlots):
+class TextAnalysis(WeakRefable, Slots):
     version = "text_analysis_0.1"
 
     def __init__(self, sentence: str, sentence_configuration: SentenceConfiguration) -> None:

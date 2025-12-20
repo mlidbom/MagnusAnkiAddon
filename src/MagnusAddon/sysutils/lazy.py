@@ -2,13 +2,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ex_autoslot import AutoSlots
+from manually_copied_in_libraries.autoslot import Slots
 
 if TYPE_CHECKING:
 
     from sysutils.standard_type_aliases import Func
 
-class Lazy[T](AutoSlots):
+class Lazy[T](Slots):
     def __init__(self, factory: Func[T]) -> None:
         self.factory: Func[T] = factory
         self._instance: T | None = None

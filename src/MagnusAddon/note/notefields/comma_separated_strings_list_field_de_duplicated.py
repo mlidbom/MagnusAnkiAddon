@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from ex_autoslot import AutoSlots
+from manually_copied_in_libraries.autoslot import Slots
 from note.notefields.comma_separated_strings_list_field import MutableCommaSeparatedStringsListField
 from typed_linq_collections.q_iterable import query
 
@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from note.jpnote import JPNote
     from sysutils.weak_ref import WeakRef
 
-class MutableCommaSeparatedStringsListFieldDeDuplicated(MutableCommaSeparatedStringsListField, AutoSlots):
+class MutableCommaSeparatedStringsListFieldDeDuplicated(MutableCommaSeparatedStringsListField, Slots):
     def __init__(self, note: WeakRef[JPNote], field_name: str) -> None:
         super().__init__(note, field_name)
 

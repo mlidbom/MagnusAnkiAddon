@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from aqt import gui_hooks
-from ex_autoslot import AutoSlots
+from manually_copied_in_libraries.autoslot import Slots
 from note.vocabulary.vocabnote import VocabNote
 from sysutils.ex_str import newline
 from ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
@@ -11,7 +11,7 @@ from ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
 if TYPE_CHECKING:
     from anki.notes import NoteId
 
-class CompoundPart(AutoSlots):
+class CompoundPart(Slots):
     def __init__(self, vocab_note: VocabNote, depth: int = 0) -> None:
         self.vocab_note: VocabNote = vocab_note
         self.depth: int = depth

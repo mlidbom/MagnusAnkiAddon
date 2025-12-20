@@ -3,13 +3,13 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from ankiutils.ui_utils_interface import IUIUtils
-from ex_autoslot import AutoSlots
+from manually_copied_in_libraries.autoslot import Slots
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
 
-class UIUtilsStub(IUIUtils, AutoSlots):
+class UIUtilsStub(IUIUtils, Slots):
     @override
     def run_ui_action(self, callback: Callable[[], None]) -> None:
         callback()

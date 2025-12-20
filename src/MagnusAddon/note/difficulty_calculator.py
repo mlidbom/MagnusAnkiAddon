@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-from ex_autoslot import AutoSlots
+from manually_copied_in_libraries.autoslot import Slots
 from sysutils import kana_utils
 from typed_linq_collections.q_iterable import query
 
 
-class DifficultyCalculator(AutoSlots):
+class DifficultyCalculator(Slots):
     def __init__(self, starting_seconds: float, hiragana_seconds: float, katakata_seconds: float, kanji_seconds: float) -> None:
         self.starting_seconds: float = starting_seconds
         self.hiragana_seconds: float = hiragana_seconds

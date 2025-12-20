@@ -3,14 +3,14 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from ankiutils import app
-from ex_autoslot import AutoSlots
+from manually_copied_in_libraries.autoslot import Slots
 
 if TYPE_CHECKING:
     from anki.notes import NoteId
     from note.sentences.sentence_configuration import SentenceConfiguration
     from note.vocabulary.vocabnote import VocabNote
 
-class CompoundPartViewModel(AutoSlots):
+class CompoundPartViewModel(Slots):
     def __init__(self, vocab_note: VocabNote, depth: int, config: SentenceConfiguration) -> None:
         self.vocab_note: VocabNote = vocab_note
         self.depth: int = depth

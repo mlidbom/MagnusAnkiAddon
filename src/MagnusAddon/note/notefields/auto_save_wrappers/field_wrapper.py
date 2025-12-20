@@ -2,14 +2,14 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from ex_autoslot import AutoSlots
+from manually_copied_in_libraries.autoslot import Slots
 
 if TYPE_CHECKING:
     from note.notefields.auto_save_wrappers.value_wrapper import ValueWrapper
     from note.notefields.json_object_field import MutableSerializedObjectField
 
 
-class FieldWrapper[TValue, TWrapper](AutoSlots):
+class FieldWrapper[TValue, TWrapper](Slots):
     def __init__(self, field: MutableSerializedObjectField[TWrapper], value: ValueWrapper[TValue]) -> None:
         self._field: MutableSerializedObjectField[TWrapper] = field
         self._value: ValueWrapper[TValue] = value

@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from ex_autoslot import AutoSlots
 from language_services.janome_ex.word_extraction.matches.state_tests.vocab_match_state_test import VocabMatchStateTest
+from manually_copied_in_libraries.autoslot import Slots
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
     pass
 
-class AnotherMatchOwnsTheForm(VocabMatchStateTest, AutoSlots):
+class AnotherMatchOwnsTheForm(VocabMatchStateTest, Slots):
     def __init__(self, match: WeakRef[VocabMatch]) -> None:
         super().__init__(match, "another_match_owns_the_form", cache_is_in_state=True)
 

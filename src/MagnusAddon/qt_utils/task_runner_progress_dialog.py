@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, override
 
 import mylog
 from aqt import QLabel
-from ex_autoslot import AutoSlots
+from manually_copied_in_libraries.autoslot import Slots
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication, QProgressDialog
 from sysutils import app_thread_pool, ex_thread, timeutil
@@ -21,14 +21,14 @@ class ITaskRunner:
     def close(self) -> None: raise NotImplementedError()
     def run_on_background_thread_with_spinning_progress_dialog[TResult](self, message: str, action: Callable[[], TResult]) -> TResult: raise NotImplementedError()  # pyright: ignore
 
-class TaskRunner(AutoSlots):
+class TaskRunner(Slots):
     @staticmethod
     def create(window_title: str, label_text: str, visible: bool) -> ITaskRunner:
         if not visible:
             return InvisibleTaskRunner(window_title, label_text)
         return QtTaskProgressRunner(window_title, label_text)
 
-class InvisibleTaskRunner(ITaskRunner, AutoSlots):
+class InvisibleTaskRunner(ITaskRunner, Slots):
     # noinspection PyUnusedLocal
     def __init__(self, window_title: str, label_text: str) -> None:  # pyright: ignore
         pass
@@ -51,7 +51,7 @@ class InvisibleTaskRunner(ITaskRunner, AutoSlots):
         mylog.debug(f"##--QtTaskProgressRunner--## Finished {message} in {watch.elapsed_formatted()}")
         return result
 
-class QtTaskProgressRunner(ITaskRunner, AutoSlots):
+class QtTaskProgressRunner(ITaskRunner, Slots):
     def __init__(self, window_title: str, label_text: str) -> None:
         dialog = QProgressDialog(f"""{window_title}...""", None, 0, 0)
         self.dialog: QProgressDialog = dialog

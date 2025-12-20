@@ -3,9 +3,9 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from ankiutils import app
-from ex_autoslot import AutoSlots
 from language_services import conjugator
 from language_services.jamdict_ex.dict_lookup import DictLookup
+from manually_copied_in_libraries.autoslot import Slots
 
 if TYPE_CHECKING:
     from janome.tokenizer import Token  # pyright: ignore[reportMissingTypeStubs]
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from note.collection.vocab_collection import VocabCollection
     from typed_linq_collections.collections.q_list import QList
 
-class ProcessedToken(AutoSlots):
+class ProcessedToken(Slots):
     def __init__(self, surface: str, base: str, is_non_word_character: bool, is_inflectable_word: bool = False, is_godan_potential: bool = False, is_godan_imperative: bool = False) -> None:
         self.surface: str = surface
         self.base_form: str = base
@@ -32,7 +32,7 @@ class ProcessedToken(AutoSlots):
     def __repr__(self) -> str:
         return f"ProcessedToken('{self.surface}', '{self.base_form}', {self.is_inflectable_word})"
 
-class JNTokenWrapper(ProcessedToken, AutoSlots):
+class JNTokenWrapper(ProcessedToken, Slots):
     def __init__(self, token: JNToken, vocabs: VocabCollection) -> None:
         super().__init__(token.surface, token.base_form, token.parts_of_speech.is_non_word_character())
         self.token: JNToken = token
@@ -90,7 +90,7 @@ class JNTokenWrapper(ProcessedToken, AutoSlots):
                 return root_verb
         return None
 
-class JNTokenizedText(AutoSlots):
+class JNTokenizedText(Slots):
     def __init__(self, text: str, raw_tokens: QList[Token], tokens: QList[JNToken]) -> None:
         self.raw_tokens: list[Token] = raw_tokens
         self.text: str = text

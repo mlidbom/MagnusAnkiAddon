@@ -2,14 +2,14 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from ex_autoslot import AutoSlots
 from language_services.janome_ex.word_extraction.matches.state_tests.match_state_test import MatchStateTest
+from manually_copied_in_libraries.autoslot import Slots
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.match import Match
     from sysutils.weak_ref import WeakRef
 
-class HasPastTenseStem(MatchStateTest, AutoSlots):
+class HasPastTenseStem(MatchStateTest, Slots):
     def __init__(self, match: WeakRef[Match]) -> None:
         super().__init__(match, "past_tense_stem", cache_is_in_state=True)
 

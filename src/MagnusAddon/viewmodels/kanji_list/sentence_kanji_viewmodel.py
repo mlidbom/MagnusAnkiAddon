@@ -2,14 +2,14 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from ex_autoslot import AutoSlots
+from manually_copied_in_libraries.autoslot import Slots
 from sysutils import ex_str, kana_utils
 
 if TYPE_CHECKING:
     from note.kanjinote import KanjiNote
 
 
-class KanjiViewModel(AutoSlots):
+class KanjiViewModel(Slots):
     def __init__(self, kanji: KanjiNote) -> None:
         self.kanji: KanjiNote = kanji
 

@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from ankiutils import app
-from ex_autoslot import AutoSlots
+from manually_copied_in_libraries.autoslot import Slots
 from note.note_constants import NoteFields
 from note.notefields.auto_save_wrappers.field_wrapper import FieldWrapper
 from note.notefields.auto_save_wrappers.set_wrapper import FieldSetWrapper
@@ -24,7 +24,7 @@ if TYPE_CHECKING:
     from sysutils.weak_ref import WeakRef
     from typed_linq_collections.collections.q_set import QSet
 
-class RelatedVocab(AutoSlots):
+class RelatedVocab(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self._vocab: WeakRef[VocabNote] = vocab
 

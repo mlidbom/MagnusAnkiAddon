@@ -2,17 +2,17 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ex_autoslot import AutoSlots
+from manually_copied_in_libraries.autoslot import Slots
 
 if TYPE_CHECKING:
     from anki.scheduler.v3 import SchedulingState, SchedulingStates  # pyright: ignore[reportMissingTypeStubs]
 
-class SchedulingStatesEx(AutoSlots):
+class SchedulingStatesEx(Slots):
     def __init__(self, states: SchedulingStates) -> None:
         self._states: SchedulingStates = states
         self.again: SchedulingStateEx = SchedulingStateEx(states.again)
 
-class SchedulingStateEx(AutoSlots):
+class SchedulingStateEx(Slots):
     def __init__(self, state: SchedulingState) -> None:
         self._state: SchedulingState = state
 

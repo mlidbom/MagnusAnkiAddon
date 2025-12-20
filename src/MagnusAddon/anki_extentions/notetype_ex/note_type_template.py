@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from ex_autoslot import AutoSlots
+from manually_copied_in_libraries.autoslot import Slots
 from sysutils import typed
 
 
-class NoteTemplateEx(AutoSlots):
+class NoteTemplateEx(Slots):
     def __init__(self, name: str) -> None:
         self.name: str = name
         self.ord: int = 0

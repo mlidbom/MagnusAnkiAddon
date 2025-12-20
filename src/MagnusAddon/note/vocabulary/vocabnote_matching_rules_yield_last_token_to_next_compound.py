@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from ankiutils import app
-from ex_autoslot import AutoSlots
+from manually_copied_in_libraries.autoslot import Slots
 from note.note_constants import Tags
 from note.notefields.require_forbid_flag_field import RequireForbidFlagField
 from sysutils.lazy import Lazy
@@ -15,7 +15,7 @@ if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
     from note.vocabulary.vocabnote_parts_of_speech import VocabNotePartsOfSpeech
 
-class YieldLastTokenToOverlappingCompound(RequireForbidFlagField, WeakRefable, AutoSlots):
+class YieldLastTokenToOverlappingCompound(RequireForbidFlagField, WeakRefable, Slots):
     automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound: ConfigurationValueBool = app.config().automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound
     automatically_yield_last_token_in_passive_verb_compounds_to_overlapping_compound: ConfigurationValueBool = app.config().automatically_yield_last_token_in_passive_verb_compounds_to_overlapping_compound
     automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound: ConfigurationValueBool = app.config().automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound

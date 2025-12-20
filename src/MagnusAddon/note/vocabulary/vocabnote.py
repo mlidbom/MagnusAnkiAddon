@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, cast, override
 
 from ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules  # noqa  # pyright: ignore[reportUnusedImport]
-from ex_autoslot import AutoSlots
+from manually_copied_in_libraries.autoslot import Slots
 from note.jpnote import JPNote
 from note.note_constants import NoteFields
 from note.notefields.comma_separated_strings_list_field import MutableCommaSeparatedStringsListField
@@ -29,7 +29,7 @@ if TYPE_CHECKING:
     from anki.notes import Note
 
 
-class VocabNote(JPNote, AutoSlots):
+class VocabNote(JPNote, Slots):
     factory: VocabNoteFactory = VocabNoteFactory()
     def __init__(self, note: Note) -> None:
         super().__init__(note)

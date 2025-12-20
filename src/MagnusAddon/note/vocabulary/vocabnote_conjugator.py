@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ex_autoslot import AutoSlots
 from language_services import conjugator
+from manually_copied_in_libraries.autoslot import Slots
 from typed_linq_collections.q_iterable import query
 
 if TYPE_CHECKING:
@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from sysutils.weak_ref import WeakRef
     from typed_linq_collections.collections.q_list import QList
 
-class VocabNoteConjugator(AutoSlots):
+class VocabNoteConjugator(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self.__vocab = vocab
 

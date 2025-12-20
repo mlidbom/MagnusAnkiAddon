@@ -3,8 +3,7 @@ from __future__ import annotations
 from collections import defaultdict
 from typing import TYPE_CHECKING, override
 
-from ex_autoslot import AutoSlots
-from line_profiling_hacks import profile_lines
+from manually_copied_in_libraries.autoslot import Slots
 from note.collection.backend_facade import BackEndFacade
 from note.collection.note_cache import CachedNote, NoteCache
 from note.note_constants import NoteTypes
@@ -21,7 +20,7 @@ if TYPE_CHECKING:
     from note.kanjinote import KanjiNote
     from qt_utils.task_runner_progress_dialog import ITaskRunner
 
-class _VocabSnapshot(CachedNote, AutoSlots):
+class _VocabSnapshot(CachedNote, Slots):
     def __init__(self, note: VocabNote) -> None:
         super().__init__(note)
         self.forms: set[str] = set(note.forms.all_set())
@@ -32,8 +31,7 @@ class _VocabSnapshot(CachedNote, AutoSlots):
         self.derived_from: str = note.related_notes.derived_from.get()
         self.stems: list[str] = note.conjugator.get_stems_for_primary_form()
 
-class _VocabCache(NoteCache[VocabNote, _VocabSnapshot], AutoSlots):
-    @profile_lines
+class _VocabCache(NoteCache[VocabNote, _VocabSnapshot], Slots):
     def __init__(self, all_vocab: list[VocabNote], cache_runner: CacheRunner, task_runner: ITaskRunner) -> None:
         self._by_form: dict[str, set[VocabNote]] = defaultdict(set)
         self._by_kanji_in_main_form: dict[str, set[VocabNote]] = defaultdict(set)
@@ -90,8 +88,7 @@ class _VocabCache(NoteCache[VocabNote, _VocabSnapshot], AutoSlots):
         for reading in snapshot.readings: self._by_reading[reading].add(note)
         for stem in snapshot.stems: self._by_stem[stem].add(note)
 
-class VocabCollection(AutoSlots):
-    @profile_lines
+class VocabCollection(Slots):
     def __init__(self, collection: Collection, cache_manager: CacheRunner, task_runner: ITaskRunner) -> None:
         def vocab_constructor_call_while_populating_vocab_collection(note: Note) -> VocabNote: return VocabNote(note)
         self.collection: BackEndFacade[VocabNote] = BackEndFacade[VocabNote](collection, vocab_constructor_call_while_populating_vocab_collection, NoteTypes.Vocab)

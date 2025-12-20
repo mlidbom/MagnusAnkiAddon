@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, final, override
 
-from ex_autoslot import AutoSlots
 from language_services.janome_ex.word_extraction.analysis_constants import noise_characters
 from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
 from language_services.janome_ex.word_extraction.matches.match import Match
+from manually_copied_in_libraries.autoslot import Slots
 from sysutils.typed import non_optional
 from sysutils.weak_ref import WeakRef, WeakRefable
 from typed_linq_collections.q_iterable import QIterable
@@ -19,7 +19,7 @@ from sysutils.ex_str import newline
 
 
 @final
-class CandidateWord(WeakRefable, AutoSlots):
+class CandidateWord(WeakRefable, Slots):
     def __init__(self, locations: list[WeakRef[TextAnalysisLocation]]) -> None:
         self.weakref = WeakRef(self)
         self.locations: list[WeakRef[TextAnalysisLocation]] = locations

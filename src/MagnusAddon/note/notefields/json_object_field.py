@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from ex_autoslot import AutoSlots
+from manually_copied_in_libraries.autoslot import Slots
 from note.notefields.mutable_string_field import MutableStringField
 from sysutils.lazy import Lazy
 from sysutils.weak_ref import WeakRef, WeakRefable
@@ -10,11 +10,11 @@ from sysutils.weak_ref import WeakRef, WeakRefable
 if TYPE_CHECKING:
     from note.jpnote import JPNote
 
-class ObjectSerializer[T](AutoSlots):
+class ObjectSerializer[T](Slots):
     def serialize(self, instance: T) -> str: raise NotImplementedError()  # pyright: ignore[reportUnusedParameter]
     def deserialize(self, serialized: str) -> T: raise NotImplementedError()  # pyright: ignore[reportUnusedParameter]
 
-class MutableSerializedObjectField[T](WeakRefable, AutoSlots):
+class MutableSerializedObjectField[T](WeakRefable, Slots):
     def __init__(self, note: WeakRef[JPNote], field: str, serializer: ObjectSerializer[T]) -> None:
         self._note: WeakRef[JPNote] = note
         self._field: MutableStringField = MutableStringField(note, field)

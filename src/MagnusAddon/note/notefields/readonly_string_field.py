@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from ex_autoslot import AutoSlots
+from manually_copied_in_libraries.autoslot import Slots
 
 if TYPE_CHECKING:
     from note.jpnote import JPNote
@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 # this field is used extremely much, so its design is crucial for both performance and memory usage, keep in mind when changing anything
 # if a field is read-only, make sure to to use ReadOnlyStringField instead, which uses less memory
-class ReadonlyStringField(AutoSlots):
+class ReadonlyStringField(Slots):
     def __init__(self, note: WeakRef[JPNote], field_name: str) -> None:
         self._value: str = note().get_field(field_name)
 

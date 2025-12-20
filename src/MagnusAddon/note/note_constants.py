@@ -1,21 +1,21 @@
 # noinspection PyUnusedName
 from __future__ import annotations
 
-from ex_autoslot import AutoSlots
+from manually_copied_in_libraries.autoslot import Slots
 
 
-class Builtin(AutoSlots):
+class Builtin(Slots):
     # noinspection PyUnusedName
     Tag: str = "tag"
     Note: str = "note"
     Deck: str = "deck"
     Card: str = "card"
 
-class MyNoteFields(AutoSlots):
+class MyNoteFields(Slots):
     question: str = "Q"
     answer: str = "A"
 
-class ImmersionKitSentenceNoteFields(AutoSlots):
+class ImmersionKitSentenceNoteFields(Slots):
     audio: str = "Audio Sentence"
     id: str = "ID"
     screenshot: str = "Screenshot"
@@ -23,7 +23,7 @@ class ImmersionKitSentenceNoteFields(AutoSlots):
     answer: str = "English"
     question: str = "Expression"
 
-class SentenceNoteFields(AutoSlots):
+class SentenceNoteFields(Slots):
     reading: str = "Reading"
     id: str = "ID"
     active_question: str = MyNoteFields.question
@@ -42,11 +42,11 @@ class SentenceNoteFields(AutoSlots):
     screenshot: str = "Screenshot"
     configuration: str = "__configuration"
 
-class CardTypes(AutoSlots):
+class CardTypes(Slots):
     reading: str = "Reading"
     listening: str = "Listening"
 
-class NoteTypes(AutoSlots):
+class NoteTypes(Slots):
     immersion_kit: str = "Immersion Kit Sentence"
     Kanji: str = "_Kanji"
     Vocab: str = "_Vocab"
@@ -54,20 +54,20 @@ class NoteTypes(AutoSlots):
 
     ALL: set[str] = {Kanji, Vocab, Sentence}
 
-class NoteFields(AutoSlots):
+class NoteFields(Slots):
     note_id: str = "nid"
 
-    class VocabNoteType(AutoSlots):
-        class Card(AutoSlots):
+    class VocabNoteType(Slots):
+        class Card(Slots):
             Reading: str = CardTypes.reading
             Listening: str = CardTypes.listening
 
-    class SentencesNoteType(AutoSlots):
-        class Card(AutoSlots):
+    class SentencesNoteType(Slots):
+        class Card(Slots):
             Reading: str = CardTypes.reading
             Listening: str = CardTypes.listening
 
-    class Kanji(AutoSlots):
+    class Kanji(Slots):
         question: str = MyNoteFields.question
         active_answer: str = MyNoteFields.answer
         source_answer: str = "source_answer"
@@ -87,7 +87,7 @@ class NoteFields(AutoSlots):
         user_similar_meaning: str = "__similar_meaning"
         related_confused_with: str = "__confused_with"
 
-    class Vocab(AutoSlots):
+    class Vocab(Slots):
         matching_rules: str = "__matching_rules"
         related_vocab: str = "__related_vocab"
         sentence_count: str = "sentence_count"
@@ -122,13 +122,13 @@ f_vocab_matching_forbids: str = f"{f_vocab_matching}forbids::"
 f_vocab_matching_todo: str = f"{f_vocab_matching}todo::"
 f_vocab_matching_uses: str = f"{f_vocab_matching}uses::"
 
-class Tags(AutoSlots):
-    class Sentence(AutoSlots):
-        class Uses(AutoSlots):
+class Tags(Slots):
+    class Sentence(Slots):
+        class Uses(Slots):
             incorrect_matches: str = f"{f_sentence_uses}incorrect-matches"
             hidden_matches: str = f"{f_sentence_uses}hidden-matches"
 
-    class Kanji(AutoSlots):
+    class Kanji(Slots):
         is_radical: str = f"{f_kanji}is-radical"
         is_radical_purely: str = f"{f_kanji}is-radical-purely"
         is_radical_silent: str = f"{f_kanji}is-radical-silent"
@@ -150,17 +150,17 @@ class Tags(AutoSlots):
         has_non_primary_on_reading_vocab: str = f"{f_kanji}has-non-primary-on-reading-vocab"
         has_non_primary_on_reading_vocab_with_only_known_kanji: str = f"{f_kanji}has-non-primary-on-reading-vocab-with-only-known-kanji"
 
-    class Vocab(AutoSlots):
+    class Vocab(Slots):
         root: str = f_vocab
         has_no_studying_sentences: str = f"{f_vocab}has-no-studying-sentences"
         question_overrides_form: str = f"{f_vocab}question-overrides-form"
 
-        class Matching(AutoSlots):
+        class Matching(Slots):
             yield_last_token_to_overlapping_compound: str = f"{f_vocab_matching}yield-last-token-to-upcoming-compound"
             is_poison_word: str = f"{f_vocab_matching}is-poison-word"
             is_inflecting_word: str = f"{f_vocab_matching}is-inflecting-word"
 
-            class Requires(AutoSlots):
+            class Requires(Slots):
                 a_stem: str = f"{f_vocab_matching_requires}a-stem"
                 e_stem: str = f"{f_vocab_matching_requires}e-stem"
                 past_tense_stem: str = f"{f_vocab_matching_requires}past-tense-stem"
@@ -173,7 +173,7 @@ class Tags(AutoSlots):
                 single_token: str = f"{f_vocab_matching_requires}single-token"
                 compound: str = f"{f_vocab_matching_requires}compound"
 
-            class Forbids(AutoSlots):
+            class Forbids(Slots):
                 a_stem: str = f"{f_vocab_matching_forbids}a-stem"
                 e_stem: str = f"{f_vocab_matching_forbids}e-stem"
                 past_tense_stem: str = f"{f_vocab_matching_forbids}past-tense-stem"
@@ -185,10 +185,10 @@ class Tags(AutoSlots):
                 exact_match: str = f"{f_vocab_matching_forbids}exact-match"
                 auto_yielding: str = f"{f_vocab_matching_forbids}auto_yielding"
 
-            class Todo(AutoSlots):
+            class Todo(Slots):
                 with_preceding_vowel: str = f"{f_vocab_matching_todo}match-with-preceding-vowel"
 
-            class Uses(AutoSlots):
+            class Uses(Slots):
                 prefix_is_not: str = f"{f_vocab_matching_uses}prefix-is-not"
                 suffix_is_not: str = f"{f_vocab_matching_uses}suffix-is-not"
                 required_prefix: str = f"{f_vocab_matching_uses}required-prefix"
@@ -204,7 +204,7 @@ class Tags(AutoSlots):
     UsuallyKanaOnly: str = "_uk"
     TTSAudio: str = "_tts_audio"
 
-class Mine(AutoSlots):
+class Mine(Slots):
     app_name: str = "JA-Studio"
     app_still_loading_message: str = f"{app_name} still loading....."
     VocabPrefixSuffixMarker: str = "〜"

@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from ankiutils import app
-from ex_autoslot import AutoSlots
+from manually_copied_in_libraries.autoslot import Slots
 from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:
@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from sysutils.weak_ref import WeakRef
     from typed_linq_collections.collections.q_list import QList
 
-class PerfectSynonyms(AutoSlots):
+class PerfectSynonyms(Slots):
     def __init__(self, vocab: WeakRef[VocabNote], data: FieldSetWrapper[str]) -> None:
         self._vocab: WeakRef[VocabNote] = vocab
         self._value: FieldSetWrapper[str] = data

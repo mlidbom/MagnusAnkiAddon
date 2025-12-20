@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, final, override
 
-from ex_autoslot import AutoSlots
 from language_services.janome_ex.word_extraction.matches.match import Match
 from language_services.janome_ex.word_extraction.matches.requirements.forbids_state import Forbids
 from language_services.janome_ex.word_extraction.matches.requirements.requires_forbids_requirement import RequiresOrForbids
@@ -23,6 +22,7 @@ from language_services.janome_ex.word_extraction.matches.state_tests.surface_is_
 from language_services.janome_ex.word_extraction.matches.state_tests.tail.has_overlapping_following_compound import HasDisplayedOverlappingFollowingCompound
 from language_services.janome_ex.word_extraction.matches.state_tests.tail.is_sentence_end import IsSentenceEnd
 from language_services.janome_ex.word_extraction.matches.state_tests.tail.suffix_is_in import SuffixIsIn
+from manually_copied_in_libraries.autoslot import Slots
 from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
@@ -31,7 +31,7 @@ if TYPE_CHECKING:
     from note.vocabulary.vocabnote_matching_rules import VocabNoteMatchingConfiguration
 
 @final
-class VocabMatch(Match, AutoSlots):
+class VocabMatch(Match, Slots):
     def __init__(self, word_variant: WeakRef[CandidateWordVariant], vocab: VocabNote) -> None:
         weakref: WeakRef[VocabMatch] = WeakRef(self)
         self.requires_forbids = vocab.matching_configuration.requires_forbids

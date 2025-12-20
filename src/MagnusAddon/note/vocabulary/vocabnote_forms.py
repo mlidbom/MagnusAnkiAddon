@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, override
 
 from ankiutils import app
 from ankiutils.app import col
-from ex_autoslot import AutoSlots
+from manually_copied_in_libraries.autoslot import Slots
 from note.note_constants import Mine, NoteFields
 from note.notefields.comma_separated_strings_list_field_de_duplicated import MutableCommaSeparatedStringsListFieldDeDuplicated
 from sysutils import ex_str
@@ -17,7 +17,7 @@ if TYPE_CHECKING:
     from typed_linq_collections.collections.q_list import QList
     from typed_linq_collections.collections.q_set import QSet
 
-class VocabNoteForms(WeakRefable, AutoSlots):
+class VocabNoteForms(WeakRefable, Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self._vocab: WeakRef[VocabNote] = vocab
         field = MutableCommaSeparatedStringsListFieldDeDuplicated(vocab, NoteFields.Vocab.Forms)

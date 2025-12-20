@@ -2,14 +2,14 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ex_autoslot import AutoSlots
+from manually_copied_in_libraries.autoslot import Slots
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
 
 
 
-class VocabMetaTag(AutoSlots):
+class VocabMetaTag(Slots):
     def __init__(self, name: str, display: str, tooltip: str) -> None:
         self.name: str = name
         self.display: str = display
