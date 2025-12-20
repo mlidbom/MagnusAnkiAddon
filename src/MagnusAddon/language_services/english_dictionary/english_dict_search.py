@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import os
 
-from manually_copied_in_libraries.autoslot import Slots
+from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
 from sysutils.lazy import Lazy
 
 

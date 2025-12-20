@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, cast
 
 from anki.notes import NoteId
-from manually_copied_in_libraries.autoslot import Slots
+from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
 from sysutils.ex_str import invisible_space
 
 if TYPE_CHECKING:

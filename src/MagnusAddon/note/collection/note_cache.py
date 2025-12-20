@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from manually_copied_in_libraries.autoslot import Slots
+from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
 from note.jpnote import JPNote
 from sysutils.collections.default_dict_case_insensitive import DefaultDictCaseInsensitive
 from sysutils.typed import checked_cast

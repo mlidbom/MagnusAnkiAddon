@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, final
 
 from anki_extentions.note_ex import NoteBulkLoader
-from manually_copied_in_libraries.autoslot import Slots
+from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
 from note.jpnote import JPNote
 
 if TYPE_CHECKING:

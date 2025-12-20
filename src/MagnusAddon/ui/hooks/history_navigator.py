@@ -6,7 +6,7 @@ import os
 from anki.cards import Card, CardId
 from ankiutils import app, query_builder, search_executor, ui_utils
 from aqt import gui_hooks, mw
-from manually_copied_in_libraries.autoslot import Slots
+from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
 from sysutils import typed
 from sysutils.typed import non_optional
 from sysutils.weak_ref import WeakRefable

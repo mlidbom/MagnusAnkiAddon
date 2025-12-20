@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from language_services.janome_ex.word_extraction.matches.state_tests.match_state_test import MatchStateTest
-from manually_copied_in_libraries.autoslot import Slots
+from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
 from sysutils.typed import non_optional
 
 if TYPE_CHECKING:

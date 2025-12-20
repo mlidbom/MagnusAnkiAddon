@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from anki.notes import Note
 from ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules, app  # noqa  # pyright: ignore[reportUnusedImport]
 from language_services import conjugator
-from manually_copied_in_libraries.autoslot import Slots
+from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
 from note.note_constants import NoteTypes, Tags
 
 if TYPE_CHECKING:

@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from typing import Any, cast, override
 
-from manually_copied_in_libraries.autoslot import Slots
+from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
 from sysutils.json.json_library_shim import JsonLibraryShim
 
 

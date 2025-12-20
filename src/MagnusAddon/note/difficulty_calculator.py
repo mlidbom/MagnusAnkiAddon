@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from manually_copied_in_libraries.autoslot import Slots
+from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
 from sysutils import kana_utils
 from typed_linq_collections.q_iterable import query
 

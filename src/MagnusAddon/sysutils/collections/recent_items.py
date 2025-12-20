@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from collections import deque
 
-from manually_copied_in_libraries.autoslot import Slots
+from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
 
 
 class RecentItems[T](Slots):

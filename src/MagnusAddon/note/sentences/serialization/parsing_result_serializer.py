@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 import mylog
-from manually_copied_in_libraries.autoslot import Slots
+from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
 from note.notefields.json_object_field import ObjectSerializer
 from note.sentences.parsed_word import ParsedMatch
 from sysutils.ex_str import invisible_space, newline

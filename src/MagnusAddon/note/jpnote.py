@@ -7,7 +7,7 @@ from anki.models import NotetypeDict
 from anki_extentions.card_ex import CardEx
 from anki_extentions.notetype_ex.note_type_ex import NoteTypeEx
 from ankiutils import app
-from manually_copied_in_libraries.autoslot import Slots
+from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
 from note import noteutils
 from note.note_constants import CardTypes, MyNoteFields, NoteTypes, Tags
 from note.note_flush_guard import NoteRecursiveFlushGuard

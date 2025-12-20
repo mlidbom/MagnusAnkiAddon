@@ -5,7 +5,7 @@ from typing import cast
 from anki.models import NotetypeDict, NotetypeId
 from anki_extentions.notetype_ex.note_type_field import NoteFieldEx
 from anki_extentions.notetype_ex.note_type_template import NoteTemplateEx
-from manually_copied_in_libraries.autoslot import Slots
+from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
 from sysutils import ex_assert, typed
 
 

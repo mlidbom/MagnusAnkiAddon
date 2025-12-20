@@ -7,7 +7,7 @@ from language_services.janome_ex.word_extraction.matches.state_tests.is_configur
 from language_services.janome_ex.word_extraction.matches.state_tests.is_configured_incorrect import IsConfiguredIncorrect
 from language_services.janome_ex.word_extraction.matches.state_tests.is_godan_potential_surface_with_base import IsGodanPotentialSurfaceWithBase
 from language_services.janome_ex.word_extraction.matches.state_tests.is_shadowed import IsShadowed
-from manually_copied_in_libraries.autoslot import Slots
+from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
 from sysutils.lazy import Lazy
 from sysutils.weak_ref import WeakRef, WeakRefable
 

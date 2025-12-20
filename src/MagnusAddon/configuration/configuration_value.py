@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, cast
 
 from ankiutils import app
 from aqt import mw
-from manually_copied_in_libraries.autoslot import Slots
+from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
 from sysutils.lazy import Lazy
 from sysutils.typed import non_optional
 from sysutils.weak_ref import WeakRefable

@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, override
 from ankiutils import app
 from language_services.jamdict_ex.dict_lookup import DictLookup
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
-from manually_copied_in_libraries.autoslot import Slots
+from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
 from note.note_constants import NoteFields
 from note.notefields.comma_separated_strings_list_field import MutableCommaSeparatedStringsListField
 from note.sentences.sentence_configuration import SentenceConfiguration

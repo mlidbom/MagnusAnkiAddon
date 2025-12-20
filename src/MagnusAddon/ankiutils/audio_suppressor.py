@@ -4,7 +4,7 @@ import threading
 from typing import TYPE_CHECKING
 
 from aqt.sound import av_player
-from manually_copied_in_libraries.autoslot import Slots
+from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
 
 if TYPE_CHECKING:
     from anki.sound import AVTag

@@ -1,7 +1,7 @@
 # noinspection PyUnusedName
 from __future__ import annotations
 
-from manually_copied_in_libraries.autoslot import Slots
+from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
 
 
 class Builtin(Slots):

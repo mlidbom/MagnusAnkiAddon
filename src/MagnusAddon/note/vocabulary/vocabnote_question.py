@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from language_services import conjugator
-from manually_copied_in_libraries.autoslot import Slots
+from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
 from note.note_constants import Mine, NoteFields
 from note.notefields.mutable_string_field import MutableStringField
 

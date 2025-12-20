@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from anki import consts
 from anki_extentions.deck_ex import DeckEx
-from manually_copied_in_libraries.autoslot import Slots
+from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
 from sysutils.timeutil import StopWatch
 from sysutils.typed import non_optional
 from typed_linq_collections.collections.q_list import QList

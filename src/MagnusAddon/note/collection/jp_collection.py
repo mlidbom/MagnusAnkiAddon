@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 import mylog
 from ankiutils import app
-from manually_copied_in_libraries.autoslot import Slots
+from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
 from note import noteutils
 from note.collection.cache_runner import CacheRunner
 from note.collection.kanji_collection import KanjiCollection

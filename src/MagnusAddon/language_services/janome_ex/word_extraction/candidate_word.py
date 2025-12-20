@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, final, override
 from language_services.janome_ex.word_extraction.analysis_constants import noise_characters
 from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
 from language_services.janome_ex.word_extraction.matches.match import Match
-from manually_copied_in_libraries.autoslot import Slots
+from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
 from sysutils.typed import non_optional
 from sysutils.weak_ref import WeakRef, WeakRefable
 from typed_linq_collections.q_iterable import QIterable

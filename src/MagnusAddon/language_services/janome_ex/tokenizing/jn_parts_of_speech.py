@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from typing import override
 
-from manually_copied_in_libraries.autoslot import Slots
+from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
 from sysutils import kana_utils
 
 

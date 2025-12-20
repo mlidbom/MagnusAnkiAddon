@@ -3,7 +3,7 @@ from __future__ import annotations
 import time
 from typing import TYPE_CHECKING
 
-from manually_copied_in_libraries.autoslot import Slots
+from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
 from note.note_constants import NoteFields
 from sysutils.lazy import Lazy
 from sysutils.weak_ref import WeakRef, WeakRefable

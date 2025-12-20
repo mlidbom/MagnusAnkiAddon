@@ -7,7 +7,7 @@ from anki import hooks
 from anki.models import ModelManager
 from anki_extentions.notetype_ex.note_type_ex import NoteTypeEx
 from ankiutils import app
-from manually_copied_in_libraries.autoslot import Slots
+from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
 from note.note_constants import NoteTypes
 from sysutils import app_thread_pool, ex_assert, ex_thread
 from sysutils.typed import checked_cast, non_optional

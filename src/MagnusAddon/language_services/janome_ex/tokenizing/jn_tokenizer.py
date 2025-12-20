@@ -6,7 +6,7 @@ from janome.tokenizer import Token, Tokenizer  # pyright: ignore[reportMissingTy
 from language_services.janome_ex.tokenizing.jn_parts_of_speech import JNPartsOfSpeech
 from language_services.janome_ex.tokenizing.jn_token import JNToken
 from language_services.janome_ex.tokenizing.jn_tokenized_text import JNTokenizedText
-from manually_copied_in_libraries.autoslot import Slots
+from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
 from sysutils import ex_str, typed
 from typed_linq_collections.collections.q_list import QList
 
