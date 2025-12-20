@@ -125,6 +125,7 @@ class JapaneseConfig(Slots):
         self.enable_garbage_collection_during_batches: ConfigurationValueBool = ConfigurationValueBool("enable_garbage_collection_during_batches", "Enable Batch GC. [Requires restart]", True)
         self.enable_automatic_garbage_collection: ConfigurationValueBool = ConfigurationValueBool("enable_automatic_garbage_collection", "Enable automatic GC. [Requires restart. Reduces memory usage the most but slows Anki down and may cause crashes due to Qt incompatibility.]", False)
         self.track_instances_in_memory: ConfigurationValueBool = ConfigurationValueBool("track_instances_in_memory", "Track instances in memory. [Requires restart.. Only useful to developers and will use extra memory.]", False)
+        self.enable_trace_malloc: ConfigurationValueBool = ConfigurationValueBool("enable_trace_malloc", "Enable tracemalloc. Will show memory usage in logs and increase memory usage A LOT. [Requires restart]", False)
 
         self.feature_toggles: list[tuple[str, list[ConfigurationValueBool]]] = \
             [("Sentence Display", self.sentence_view_toggles),
@@ -141,7 +142,8 @@ class JapaneseConfig(Slots):
                                                self.disable_all_automatic_garbage_collection,
                                                self.enable_garbage_collection_during_batches,
                                                self.enable_automatic_garbage_collection,
-                                               self.track_instances_in_memory])]
+                                               self.track_instances_in_memory,
+                                               self.enable_trace_malloc])]
 
         self.readings_mappings_dict: dict[str, str] = self._read_reading_mappings_from_file()
 

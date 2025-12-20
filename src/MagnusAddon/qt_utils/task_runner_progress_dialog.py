@@ -9,6 +9,7 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication, QProgressDialog
 from sysutils import app_thread_pool, ex_thread, timeutil
+from sysutils.ex_trace_malloc import ex_trace_malloc_instance
 from sysutils.timeutil import StopWatch
 from sysutils.typed import non_optional
 
@@ -53,6 +54,8 @@ class InvisibleTaskRunner(ITaskRunner, Slots):
 
 class QtTaskProgressRunner(ITaskRunner, Slots):
     def __init__(self, window_title: str, label_text: str) -> None:
+        ex_trace_malloc_instance.ensure_initialized()
+
         dialog = QProgressDialog(f"""{window_title}...""", None, 0, 0)
         self.dialog: QProgressDialog = dialog
         dialog.setWindowTitle(f"""{window_title}""")
@@ -83,7 +86,7 @@ class QtTaskProgressRunner(ITaskRunner, Slots):
             QApplication.processEvents()
             ex_thread.sleep_thread_not_doing_the_current_work(0.05)
 
-        mylog.info(f"##--QtTaskProgressRunner--## Finished {message} in {watch.elapsed_formatted()}")
+        mylog.info(f"##--QtTaskProgressRunner--## Finished {message} in {watch.elapsed_formatted()}{ex_trace_malloc_instance.get_memory_delta_message(' | ')}")
         return future.result()
 
     @override
@@ -111,8 +114,7 @@ class QtTaskProgressRunner(ITaskRunner, Slots):
                     self.set_label_text(f"{message} {current_item} of {total_items} Remaining: {timeutil.format_seconds_as_hh_mm_ss(estimated_remaining_time)}")
 
                 QApplication.processEvents()
-
-        mylog.info(f"##--QtTaskProgressRunner--## Finished {message} in {watch.elapsed_formatted()} handled {total_items} items")
+        mylog.info(f"##--QtTaskProgressRunner--## Finished {message} in {watch.elapsed_formatted()} handled {total_items} items{ex_trace_malloc_instance.get_memory_delta_message(' | ')}")
 
         self.dialog.setRange(0, 0)
         self.set_label_text(original_label)
