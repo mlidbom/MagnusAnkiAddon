@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from typing import final
 
+from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from janome.tokenizer import Token, Tokenizer  # pyright: ignore[reportMissingTypeStubs]
 from language_services.janome_ex.tokenizing.jn_parts_of_speech import JNPartsOfSpeech
 from language_services.janome_ex.tokenizing.jn_token import JNToken
 from language_services.janome_ex.tokenizing.jn_tokenized_text import JNTokenizedText
-from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from sysutils import ex_str, typed
 from typed_linq_collections.collections.q_list import QList
 

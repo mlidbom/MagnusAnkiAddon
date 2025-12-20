@@ -3,11 +3,11 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, final, override
 
 from ankiutils import app
+from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from language_services.janome_ex.word_extraction.matches.dictionary_match import DictionaryMatch
 from language_services.janome_ex.word_extraction.matches.missing_match import MissingMatch
 from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
-from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from sysutils import ex_assert
 from sysutils.lazy import Lazy
 from sysutils.weak_ref import WeakRef, WeakRefable

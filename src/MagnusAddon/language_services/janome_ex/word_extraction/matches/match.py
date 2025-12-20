@@ -2,12 +2,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
+from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from language_services.janome_ex.word_extraction.matches.requirements.forbids_state import Forbids
 from language_services.janome_ex.word_extraction.matches.state_tests.is_configured_hidden import IsConfiguredHidden
 from language_services.janome_ex.word_extraction.matches.state_tests.is_configured_incorrect import IsConfiguredIncorrect
 from language_services.janome_ex.word_extraction.matches.state_tests.is_godan_potential_surface_with_base import IsGodanPotentialSurfaceWithBase
 from language_services.janome_ex.word_extraction.matches.state_tests.is_shadowed import IsShadowed
-from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from sysutils.lazy import Lazy
 from sysutils.weak_ref import WeakRef, WeakRefable
 

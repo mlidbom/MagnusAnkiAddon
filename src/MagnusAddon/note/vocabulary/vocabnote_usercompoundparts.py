@@ -3,9 +3,9 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from ankiutils import app
+from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from language_services.jamdict_ex.dict_lookup import DictLookup
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
-from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from note.note_constants import NoteFields
 from note.notefields.comma_separated_strings_list_field import MutableCommaSeparatedStringsListField
 from note.sentences.sentence_configuration import SentenceConfiguration

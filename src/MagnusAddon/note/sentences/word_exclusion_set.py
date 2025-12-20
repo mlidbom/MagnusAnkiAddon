@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 
 if TYPE_CHECKING:
     from collections.abc import Callable
