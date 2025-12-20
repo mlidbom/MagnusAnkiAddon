@@ -11,8 +11,8 @@ if TYPE_CHECKING:
     from note.jpnote import JPNote
 
 class ObjectSerializer[T](AutoSlots):
-    def serialize(self, instance: T) -> str: raise NotImplementedError()  # pyright: ignore
-    def deserialize(self, serialized: str) -> T: raise NotImplementedError()  # pyright: ignore
+    def serialize(self, instance: T) -> str: raise NotImplementedError()  # pyright: ignore[reportUnusedParameter]
+    def deserialize(self, serialized: str) -> T: raise NotImplementedError()  # pyright: ignore[reportUnusedParameter]
 
 class MutableSerializedObjectField[T](WeakRefable, AutoSlots):
     def __init__(self, note: WeakRef[JPNote], field: str, serializer: ObjectSerializer[T]) -> None:

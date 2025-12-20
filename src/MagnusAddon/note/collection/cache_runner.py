@@ -1,16 +1,16 @@
 from __future__ import annotations
 
 import threading
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING
 
 from anki import hooks
-from anki.models import ModelManager, NotetypeDict
+from anki.models import ModelManager
 from anki_extentions.notetype_ex.note_type_ex import NoteTypeEx
 from ankiutils import app
 from ex_autoslot import AutoSlots
 from note.note_constants import NoteTypes
 from sysutils import app_thread_pool, ex_assert, ex_thread
-from sysutils.typed import checked_cast
+from sysutils.typed import checked_cast, non_optional
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Sequence
@@ -72,7 +72,7 @@ class CacheRunner(AutoSlots):
             self._check_for_updated_note_types_and_reset_app_if_found()
             self._internal_flush_updates()
 
-    def _on_will_be_added(self, _collection: Collection, backend_note: Note, _deck_id: DeckId) -> None:
+    def _on_will_be_added(self, _collection: Collection, backend_note: Note, _deck_id: DeckId) -> None:  # pyright: ignore[reportUnusedParameter]
         if not self._running: return
         with self._lock:
             for callback in self._will_add_subscribers: callback(backend_note)
@@ -106,7 +106,7 @@ class CacheRunner(AutoSlots):
     def _check_for_updated_note_types_and_reset_app_if_found(self) -> None:
         for cached_note_type in self._note_types:
             ex_assert.not_none(self._anki_collection.db)
-            current = NoteTypeEx.from_dict(cast(NotetypeDict, checked_cast(ModelManager, self._anki_collection.models).get(cached_note_type.id)))
+            current = NoteTypeEx.from_dict(non_optional(checked_cast(ModelManager, self._anki_collection.models).get(cached_note_type.id)))
             try:
                 current.assert_schema_matches(cached_note_type)
             except AssertionError:

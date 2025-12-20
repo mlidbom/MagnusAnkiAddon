@@ -22,7 +22,7 @@ def checked_cast[CastT](cls: type[CastT], instance: object) -> CastT:
 def checked_cast_generics[CastT](cls: type[CastT], instance: object) -> CastT:
     """ Runtime-check an object for a specific generic type and return it cast as such """
     if not is_bearable(instance, cls):
-        msg = f"{repr(instance)}: expected {cls.__name__}, not {instance.__class__.__name__}"  # pyright: ignore[reportUnreachable]
+        msg = f"{repr(instance)}: expected {cls.__name__}, not {instance.__class__.__name__}"  # pyright: ignore
         raise TypeError(msg)
 
     return cast(CastT, instance)

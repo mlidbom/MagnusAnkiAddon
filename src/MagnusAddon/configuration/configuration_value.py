@@ -19,7 +19,7 @@ _addon_name = os.path.basename(_addon_dir)
 def _get_config_dict() -> dict[str, object]:
     return mw.addonManager.getConfig(_addon_name) or {} if not app.is_testing else {}
 
-_config_dict = Lazy(_get_config_dict)
+_config_dict: Lazy[dict[str, object]] = Lazy(_get_config_dict)
 
 def _write_config_dict() -> None:
     if not app.is_testing:
