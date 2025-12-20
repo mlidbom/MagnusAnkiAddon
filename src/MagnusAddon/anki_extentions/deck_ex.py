@@ -5,7 +5,7 @@ from typing import cast
 from anki.decks import DeckDict, DeckId
 from anki_extentions.deck_configdict_ex import DeckConfigDictEx
 from ankiutils import app
-from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
+from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from sysutils.typed import str_
 
 

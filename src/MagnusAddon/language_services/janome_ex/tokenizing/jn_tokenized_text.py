@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, override
 from ankiutils import app
 from language_services import conjugator
 from language_services.jamdict_ex.dict_lookup import DictLookup
-from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
+from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 
 if TYPE_CHECKING:
     from janome.tokenizer import Token  # pyright: ignore[reportMissingTypeStubs]

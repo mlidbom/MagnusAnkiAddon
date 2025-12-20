@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from anki.notes import Note
 from ankiutils import app
 from language_services.jamdict_ex.dict_lookup import DictLookup
-from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
+from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from note.note_constants import NoteTypes
 
 if TYPE_CHECKING:

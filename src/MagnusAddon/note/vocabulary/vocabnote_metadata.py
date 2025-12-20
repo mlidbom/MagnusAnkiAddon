@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from language_services.jamdict_ex.priority_spec import PrioritySpec
-from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
+from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from note.note_constants import NoteFields
 from note.notefields.integer_field import IntegerField
 from note.vocabulary import vocabnote_meta_tag

@@ -3,7 +3,7 @@ from __future__ import annotations
 import collections
 from typing import TYPE_CHECKING, override
 
-from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
+from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from sysutils import typed
 
 if TYPE_CHECKING:

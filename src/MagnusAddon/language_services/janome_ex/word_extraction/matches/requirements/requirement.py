@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
+from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.state_tests.match_state_test import MatchStateTest

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
+from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from note.sentences.serialization.sentence_configuration_serializer import SentenceConfigurationSerializer
 from note.sentences.word_exclusion_set import WordExclusionSet
 from sysutils.debug_repr_builder import SkipFalsyValuesDebugReprBuilder

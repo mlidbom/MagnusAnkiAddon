@@ -3,7 +3,7 @@ from __future__ import annotations
 import sys
 
 from ankiutils import app
-from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
+from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from sysutils import ex_gc
 from sysutils.ex_str import newline
 from sysutils.timeutil import StopWatch

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
+from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from note.sentences.parsed_word import ParsedMatch
 from note.sentences.serialization.parsing_result_serializer import ParsingResultSerializer
 

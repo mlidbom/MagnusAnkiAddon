@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, final
 
-from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
+from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from sysutils import kana_utils
 from sysutils.typed import checked_cast_generics, str_
 from typed_linq_collections.collections.q_list import QList

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
+from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from sysutils.debug_repr_builder import SkipFalsyValuesDebugReprBuilder
 from sysutils.weak_ref import WeakRef, WeakRefable
 from ui.web.sentence.match_viewmodel import MatchViewModel

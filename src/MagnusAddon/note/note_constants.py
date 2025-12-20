@@ -1,7 +1,7 @@
 # noinspection PyUnusedName
 from __future__ import annotations
 
-from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
+from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 
 
 class Builtin(Slots):

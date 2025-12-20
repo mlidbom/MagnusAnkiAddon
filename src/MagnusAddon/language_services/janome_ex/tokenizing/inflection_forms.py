@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from typing import override
 
-from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
+from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 
 all_dict: dict[str, InflectionForm] = {}
 

@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, override
 
 from language_services import conjugator
 from language_services.janome_ex.word_extraction.matches.state_tests.match_state_test import MatchStateTest
-from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
+from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.match import Match

@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, cast, override
 
 from anki.notes import Note
 from ankiutils import app
-from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
+from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from note import kanjinote_mnemonic_maker
 from note.vocabulary import vocabnote_sorting
 from sysutils.weak_ref import WeakRef

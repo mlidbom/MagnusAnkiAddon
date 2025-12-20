@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
+from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 
 _frequency_maximum = {f"nf{num:02}" for num in range(1, 10)}
 _frequency_high = {f"nf{num}" for num in range(11, 20)}

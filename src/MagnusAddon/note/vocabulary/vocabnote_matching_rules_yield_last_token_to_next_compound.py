@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from ankiutils import app
-from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
+from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from note.note_constants import Tags
 from note.notefields.require_forbid_flag_field import RequireForbidFlagField
 from sysutils.lazy import Lazy

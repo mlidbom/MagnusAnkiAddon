@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, override
 
 import mylog
 from aqt import QLabel
-from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
+from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication, QProgressDialog
 from sysutils import app_thread_pool, ex_thread, timeutil

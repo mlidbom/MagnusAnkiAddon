@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
+from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from note.vocabulary.related_vocab.related_vocab_data_serializer import RelatedVocabDataSerializer
 
 if TYPE_CHECKING:

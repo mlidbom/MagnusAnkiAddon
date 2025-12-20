@@ -3,7 +3,7 @@ from __future__ import annotations
 import weakref
 from typing import TYPE_CHECKING, Generic, TypeVar, override
 
-from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
+from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 
 if TYPE_CHECKING:
     from _weakref import ReferenceType

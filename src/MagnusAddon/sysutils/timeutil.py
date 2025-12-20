@@ -6,7 +6,7 @@ from contextlib import contextmanager
 from typing import TYPE_CHECKING
 
 import mylog
-from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
+from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from sysutils import typed
 
 if TYPE_CHECKING:

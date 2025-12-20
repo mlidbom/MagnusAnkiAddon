@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, override
 
 from anki.notes import NoteId
 from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
-from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
+from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from note.sentences.serialization.parsed_word_serializer import ParsedWordSerializer
 
 if TYPE_CHECKING:

@@ -19,7 +19,7 @@ pip_libraries_to_copy = [
     "jamdict", "jamdict_data", "puchikarui", "chirptext",
     "pykakasi", "jaconv", "deprecated",
     "romkan",
-    #"autoslot.py",
+    "autoslot.py",
     "line_profiler_pycharm", "line_profiler", "wrapt"
     ]
 

@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 from ankiutils.audio_suppressor import audio_suppressor
 from aqt import gui_hooks
-from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
+from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 
 if TYPE_CHECKING:
     from anki.cards import Card

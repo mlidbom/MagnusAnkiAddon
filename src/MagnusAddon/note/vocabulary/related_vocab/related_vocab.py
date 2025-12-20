@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from ankiutils import app
-from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
+from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from note.note_constants import NoteFields
 from note.notefields.auto_save_wrappers.field_wrapper import FieldWrapper
 from note.notefields.auto_save_wrappers.set_wrapper import FieldSetWrapper

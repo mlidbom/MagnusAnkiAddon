@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, override
 
 from ankiutils import app
 from ankiutils.app import col
-from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
+from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 
 if TYPE_CHECKING:
     from note.notefields.json_object_field import MutableSerializedObjectField

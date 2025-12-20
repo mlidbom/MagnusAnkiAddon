@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
+from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 
 
 # noinspection PyUnusedName,PyUnusedClass

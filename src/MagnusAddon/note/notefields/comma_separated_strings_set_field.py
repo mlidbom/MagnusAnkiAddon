@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
+from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from note.notefields.comma_separated_strings_list_field import MutableCommaSeparatedStringsListField
 from sysutils.lazy import Lazy
 

@@ -22,7 +22,7 @@ from language_services.janome_ex.word_extraction.matches.state_tests.surface_is_
 from language_services.janome_ex.word_extraction.matches.state_tests.tail.has_overlapping_following_compound import HasDisplayedOverlappingFollowingCompound
 from language_services.janome_ex.word_extraction.matches.state_tests.tail.is_sentence_end import IsSentenceEnd
 from language_services.janome_ex.word_extraction.matches.state_tests.tail.suffix_is_in import SuffixIsIn
-from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
+from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:

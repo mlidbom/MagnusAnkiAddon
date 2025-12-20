@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from language_services.janome_ex.word_extraction import analysis_constants
-from autoslot import Slots  # type: ignore[reportMissingTypeStubs]
+from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from note.note_constants import NoteFields, Tags
 from note.notefields.comma_separated_strings_set_field import MutableCommaSeparatedStringsSetField
 
