@@ -16,7 +16,9 @@ if TYPE_CHECKING:
 class VocabNoteMetaData(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self.__vocab: WeakRef[VocabNote] = vocab
-        self.sentence_count: IntegerField = IntegerField(vocab, NoteFields.Vocab.sentence_count)
+
+    @property
+    def sentence_count(self) -> IntegerField: return IntegerField(self.__vocab, NoteFields.Vocab.sentence_count)
 
     @property
     def _vocab(self) -> VocabNote: return self.__vocab()

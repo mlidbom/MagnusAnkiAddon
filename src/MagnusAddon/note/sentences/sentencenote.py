@@ -8,6 +8,7 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from note.jpnote import JPNote
 from note.note_constants import ImmersionKitSentenceNoteFields, NoteFields, NoteTypes, SentenceNoteFields, Tags
 from note.notefields.audio_field import WritableAudioField
+from note.notefields.caching_mutable_string_field import CachingMutableStringField
 from note.notefields.json_object_field import MutableSerializedObjectField
 from note.notefields.mutable_string_field import MutableStringField
 from note.notefields.sentence_question_field import SentenceQuestionField
@@ -30,24 +31,30 @@ class SentenceNote(JPNote, Slots):
         super().__init__(note)
         self.weakref_sentence: WeakRef[SentenceNote] = cast(WeakRef[SentenceNote], self.weakref)
 
-        self.id: MutableStringField = MutableStringField(self.weakref, SentenceNoteFields.id)
-        self.reading: MutableStringField = MutableStringField(self.weakref, SentenceNoteFields.reading)
-
-        self.active_question: MutableStringField = MutableStringField(self.weakref, SentenceNoteFields.active_question)
-        self.active_answer: MutableStringField = MutableStringField(self.weakref, SentenceNoteFields.active_answer)
-
         self._source_answer: MutableStringField = MutableStringField(self.weakref, SentenceNoteFields.source_answer)
-        self.source_question: MutableStringField = MutableStringField(self.weakref, SentenceNoteFields.source_question)
-        self.source_comments: MutableStringField = MutableStringField(self.weakref, SentenceNoteFields.source_comments)
+        self.source_question: CachingMutableStringField = CachingMutableStringField(self.weakref, SentenceNoteFields.source_question)
 
         self.user: SentenceUserFields = SentenceUserFields(self.weakref_sentence)
 
         self.question: SentenceQuestionField = SentenceQuestionField(self.user.question, self.source_question)
         self.answer: StripHtmlOnReadFallbackStringField = StripHtmlOnReadFallbackStringField(self.user.answer, self._source_answer)
-        self._screenshot: MutableStringField = MutableStringField(self.weakref, SentenceNoteFields.screenshot)
         self.audio: WritableAudioField = WritableAudioField(self.weakref, SentenceNoteFields.audio)
         self.configuration: CachingSentenceConfigurationField = CachingSentenceConfigurationField(self.weakref_sentence)
         self.parsing_result: MutableSerializedObjectField[ParsingResult] = MutableSerializedObjectField[ParsingResult](self.weakref, SentenceNoteFields.parsing_result, ParsingResultSerializer())
+
+
+    @property
+    def id(self) -> MutableStringField:  return MutableStringField(self.weakref, SentenceNoteFields.id)
+    @property
+    def reading(self) -> MutableStringField:  return MutableStringField(self.weakref, SentenceNoteFields.reading)
+    @property
+    def active_question(self) -> MutableStringField:  return MutableStringField(self.weakref, SentenceNoteFields.active_question)
+    @property
+    def active_answer(self) -> MutableStringField:  return MutableStringField(self.weakref, SentenceNoteFields.active_answer)
+    @property
+    def source_comments(self) -> MutableStringField:  return MutableStringField(self.weakref, SentenceNoteFields.source_comments)
+    @property
+    def _screenshot(self) -> MutableStringField:  return MutableStringField(self.weakref, SentenceNoteFields.screenshot)
 
     @override
     def get_question(self) -> str: return self.question.get()
