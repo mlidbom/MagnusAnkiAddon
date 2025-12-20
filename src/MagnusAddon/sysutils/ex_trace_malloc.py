@@ -15,10 +15,11 @@ class ExMalloc(Slots):
     def ensure_initialized(self) -> None:
         if not app.config().enable_trace_malloc.get_value(): return
 
-        ex_gc.collect_on_ui_thread_and_display_message()
         if not tracemalloc.is_tracing():
+            ex_gc.collect_on_ui_thread_synchronously()
+            mylog.info("Started tracing malloc")
             tracemalloc.start()
-        _last_memory = tracemalloc.get_traced_memory()[0] / 1024 / 1024  # MB
+        self._last_memory = tracemalloc.get_traced_memory()[0] / 1024 / 1024  # MB
 
     def get_memory_delta(self) -> tuple[float, float]:
         """Returns (current_mb, delta_mb) and updates last_memory"""
@@ -31,13 +32,13 @@ class ExMalloc(Slots):
 
     def get_memory_delta_message(self, message:str) -> str:
         if not app.config().enable_trace_malloc.get_value(): return ""
+        ex_gc.collect_on_ui_thread_synchronously()
 
         current_mem, delta_mem = self.get_memory_delta()
         return f"{message}Mem: {current_mem:.1f}MB ({delta_mem:+.1f}MB)"
 
     def log_memory_delta(self, message: str) -> None:
         if not app.config().enable_trace_malloc.get_value(): return
-        ex_gc.collect_on_on_ui_thread_if_collection_during_batches_enabled()
         mylog.info(f"{message} | {self.get_memory_delta_message('')}")
 
 
