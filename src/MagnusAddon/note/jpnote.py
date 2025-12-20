@@ -31,7 +31,7 @@ class JPNote(WeakRefable, Slots):
         self.__hash_value = 0
         self._tag_updated_callbacks: dict[str, list[Callable[[], None]]] = defaultdict(list)
 
-        for index, tag in enumerate( self.backend_note.tags): self.backend_note.tags[index] = sys.intern(tag) #saves something like 20-30MB of memory on my collection
+        for index, tag in enumerate(self.backend_note.tags): self.backend_note.tags[index] = sys.intern(tag) #saves something like 20-30MB of memory on my collection
 
     @property
     def is_flushing(self) -> bool: return self.recursive_flush_guard.is_flushing
