@@ -54,8 +54,6 @@ class InvisibleTaskRunner(ITaskRunner, Slots):
 
 class QtTaskProgressRunner(ITaskRunner, Slots):
     def __init__(self, window_title: str, label_text: str) -> None:
-        ex_trace_malloc_instance.ensure_initialized()
-
         dialog = QProgressDialog(f"""{window_title}...""", None, 0, 0)
         self.dialog: QProgressDialog = dialog
         dialog.setWindowTitle(f"""{window_title}""")
