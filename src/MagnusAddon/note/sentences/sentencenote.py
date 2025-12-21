@@ -31,30 +31,34 @@ class SentenceNote(JPNote, Slots):
         super().__init__(note)
         self.weakref_sentence: WeakRef[SentenceNote] = cast(WeakRef[SentenceNote], self.weakref)
 
-        self._source_answer: MutableStringField = MutableStringField(self.weakref, SentenceNoteFields.source_answer)
         self.source_question: CachingMutableStringField = CachingMutableStringField(self.weakref, SentenceNoteFields.source_question)
 
         self.user: SentenceUserFields = SentenceUserFields(self.weakref_sentence)
 
-        self.question: SentenceQuestionField = SentenceQuestionField(self.user.question, self.source_question)
-        self.answer: StripHtmlOnReadFallbackStringField = StripHtmlOnReadFallbackStringField(self.user.answer, self._source_answer)
-        self.audio: WritableAudioField = WritableAudioField(self.weakref, SentenceNoteFields.audio)
         self.configuration: CachingSentenceConfigurationField = CachingSentenceConfigurationField(self.weakref_sentence)
         self.parsing_result: MutableSerializedObjectField[ParsingResult] = MutableSerializedObjectField[ParsingResult](self.weakref, SentenceNoteFields.parsing_result, ParsingResultSerializer())
 
 
     @property
-    def id(self) -> MutableStringField:  return MutableStringField(self.weakref, SentenceNoteFields.id)
+    def id(self) -> MutableStringField: return MutableStringField(self.weakref, SentenceNoteFields.id)
     @property
-    def reading(self) -> MutableStringField:  return MutableStringField(self.weakref, SentenceNoteFields.reading)
+    def reading(self) -> MutableStringField: return MutableStringField(self.weakref, SentenceNoteFields.reading)
     @property
-    def active_question(self) -> MutableStringField:  return MutableStringField(self.weakref, SentenceNoteFields.active_question)
+    def active_question(self) -> MutableStringField: return MutableStringField(self.weakref, SentenceNoteFields.active_question)
     @property
-    def active_answer(self) -> MutableStringField:  return MutableStringField(self.weakref, SentenceNoteFields.active_answer)
+    def question(self) -> SentenceQuestionField: return SentenceQuestionField(self.user.question, self.source_question)
     @property
-    def source_comments(self) -> MutableStringField:  return MutableStringField(self.weakref, SentenceNoteFields.source_comments)
+    def answer(self) -> StripHtmlOnReadFallbackStringField: return StripHtmlOnReadFallbackStringField(self.user.answer, self._source_answer)
     @property
-    def _screenshot(self) -> MutableStringField:  return MutableStringField(self.weakref, SentenceNoteFields.screenshot)
+    def _source_answer(self) -> MutableStringField: return MutableStringField(self.weakref, SentenceNoteFields.active_answer)
+    @property
+    def active_answer(self) -> MutableStringField: return MutableStringField(self.weakref, SentenceNoteFields.active_answer)
+    @property
+    def source_comments(self) -> MutableStringField: return MutableStringField(self.weakref, SentenceNoteFields.source_comments)
+    @property
+    def _screenshot(self) -> MutableStringField: return MutableStringField(self.weakref, SentenceNoteFields.screenshot)
+    @property
+    def audio(self) -> WritableAudioField: return WritableAudioField(self.weakref, SentenceNoteFields.audio)
 
     @override
     def get_question(self) -> str: return self.question.get()
