@@ -11,6 +11,7 @@ from note.sentences.sentence_configuration import SentenceConfiguration
 from note.sentences.word_exclusion_set import WordExclusionSet
 from sysutils.json import ex_json
 from sysutils.json.json_reader import JsonReader
+from typed_linq_collections.collections.q_set import QSet
 
 
 class IntObject(Slots):
@@ -64,7 +65,7 @@ def test_roundtrip_parsing_result() -> None:
     assert_object_graphs_identical(parsing_result, round_tripped_result)
 
 def test_roundtrip_configuration() -> None:
-    config = SentenceConfiguration({"1", "2"},
+    config = SentenceConfiguration(QSet({"1", "2"}),
                                    WordExclusionSet(lambda: None, [WordExclusion.global_("111"), WordExclusion.global_("222")]),
                                    WordExclusionSet(lambda: None, [WordExclusion.global_("333"), WordExclusion.global_("444")]))
     json = SentenceConfiguration.serializer.serialize(config)
