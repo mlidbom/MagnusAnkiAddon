@@ -84,8 +84,12 @@ class QtTaskProgressRunner(ITaskRunner, Slots):
             QApplication.processEvents()
             ex_thread.sleep_thread_not_doing_the_current_work(0.05)
 
+        # make sure we are done before logging, and that we have done what we can to ensure gc can run efficiently
+        result = future.result()
+        future = None
+
         mylog.info(f"##--QtTaskProgressRunner--## Finished {message} in {watch.elapsed_formatted()}{ex_trace_malloc_instance.get_memory_delta_message(' | ')}")
-        return future.result()
+        return result
 
     @override
     def process_with_progress[TInput, TOutput](self, items: list[TInput], process_item: Callable[[TInput], TOutput], message: str) -> list[TOutput]:
@@ -117,6 +121,7 @@ class QtTaskProgressRunner(ITaskRunner, Slots):
         self.set_label_text(original_label)
         QApplication.processEvents()
 
+        items = [] # Make the garbage collection happening on the next line able to get rid of the items
         mylog.info(f"##--QtTaskProgressRunner--## Finished {message} in {watch.elapsed_formatted()} handled {total_items} items{ex_trace_malloc_instance.get_memory_delta_message(' | ')}")
         return results
     @override

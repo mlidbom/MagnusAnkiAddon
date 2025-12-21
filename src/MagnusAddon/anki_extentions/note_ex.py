@@ -33,12 +33,11 @@ class NoteBulkLoader:
                 WHERE notes.mid = ?
                 """
 
-        rows = non_optional(col.db).all(query, note_type_id)
-
         def note_bulkloader_note_constructor(row: Row) -> Note:
             return NoteBulkLoader._NoteEx(col_weak_ref, row, field_map, field_count)
 
-        return task_runner.process_with_progress(rows, note_bulkloader_note_constructor, f"Loading {note_type_name} notes from Anki db")
+        #do not use a temporary variable for the rows, that will prevent the garbage collector from collecting them, giving us incorrect data about what takes how much memory in our tracemalloc code.
+        return task_runner.process_with_progress(non_optional(col.db).all(query, note_type_id), note_bulkloader_note_constructor, f"Loading {note_type_name} notes from Anki db")
 
     # noinspection PyMissingConstructor
     class _NoteEx(Note):

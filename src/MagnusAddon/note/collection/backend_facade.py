@@ -21,8 +21,9 @@ class BackEndFacade[TNote: JPNote](Slots):
         self.note_type = note_type
 
     def all(self, task_runner: ITaskRunner) -> list[TNote]:
-        backend_notes = NoteBulkLoader.load_all_notes_of_type(self.anki_collection, self.note_type, task_runner)
-        return task_runner.process_with_progress(backend_notes, self.jp_note_constructor, f"Constructing {self.note_type} notes")
+        #do not use temporary variables, it will break our memory profiling using tracemalloc
+        return task_runner.process_with_progress(NoteBulkLoader.load_all_notes_of_type(self.anki_collection, self.note_type, task_runner),
+                                                 self.jp_note_constructor, f"Constructing {self.note_type} notes")
 
     def search(self, query: str) -> list[TNote]:
         return self.by_id(self.anki_collection.find_notes(query))
