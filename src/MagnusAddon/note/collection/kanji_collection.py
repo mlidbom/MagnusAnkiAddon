@@ -24,8 +24,8 @@ from sysutils import kana_utils
 class _KanjiSnapshot(CachedNote, Slots):
     def __init__(self, note: KanjiNote) -> None:
         super().__init__(note)
-        self.radicals: set[str] = set(note.get_radicals())
-        self.readings: set[str] = set(note.get_readings_clean())
+        self.radicals: tuple[str] = tuple[str](set(note.get_radicals()))
+        self.readings: tuple[str] = tuple[str](set(note.get_readings_clean()))
 
 class _KanjiCache(NoteCache[KanjiNote, _KanjiSnapshot], Slots):
     def __init__(self, all_kanji: list[KanjiNote], cache_runner: CacheRunner, task_runner: ITaskRunner) -> None:

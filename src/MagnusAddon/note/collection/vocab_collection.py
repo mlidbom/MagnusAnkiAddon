@@ -23,13 +23,13 @@ if TYPE_CHECKING:
 class _VocabSnapshot(CachedNote, Slots):
     def __init__(self, note: VocabNote) -> None:
         super().__init__(note)
-        self.forms: set[str] = set(note.forms.all_set())
-        self.compound_parts: set[str] = set(note.compound_parts.all())
-        self.main_form_kanji: set[str] = set(note.kanji.extract_main_form_kanji())
-        self.all_kanji: set[str] = note.kanji.extract_all_kanji()
-        self.readings: set[str] = set(note.readings.get())
+        self.forms: tuple[str] = tuple[str](note.forms.all_set())
+        self.compound_parts: tuple[str] = tuple[str](note.compound_parts.all())
+        self.main_form_kanji: tuple[str] = tuple[str](note.kanji.extract_main_form_kanji())
+        self.all_kanji: tuple[str] = tuple[str](note.kanji.extract_all_kanji())
+        self.readings: tuple[str] = tuple[str](note.readings.get())
         self.derived_from: str = note.related_notes.derived_from.get()
-        self.stems: list[str] = note.conjugator.get_stems_for_primary_form()
+        self.stems: tuple[str] = tuple[str](note.conjugator.get_stems_for_primary_form())
 
 class _VocabCache(NoteCache[VocabNote, _VocabSnapshot], Slots):
     def __init__(self, all_vocab: list[VocabNote], cache_runner: CacheRunner, task_runner: ITaskRunner) -> None:

@@ -20,9 +20,9 @@ if TYPE_CHECKING:
 class _SentenceSnapshot(CachedNote, Slots):
     def __init__(self, note: SentenceNote) -> None:
         super().__init__(note)
-        self.words: set[str] = note.get_words()
-        self.detected_vocab: set[int] = note.parsing_result.get().matched_vocab_ids
-        self.user_highlighted_vocab: set[str] = set(note.configuration.highlighted_words())
+        self.words: tuple[str] = tuple[str](note.get_words())
+        self.detected_vocab: tuple[int] = tuple[int](note.parsing_result.get().matched_vocab_ids)
+        self.user_highlighted_vocab: tuple[str] = tuple[str](note.configuration.highlighted_words())
 
 class _SentenceCache(NoteCache[SentenceNote, _SentenceSnapshot], Slots):
     def __init__(self, all_kanji: list[SentenceNote], cache_runner: CacheRunner, task_runner: ITaskRunner) -> None:
