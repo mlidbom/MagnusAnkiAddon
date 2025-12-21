@@ -28,7 +28,6 @@ from sysutils.weak_ref import WeakRef
 if TYPE_CHECKING:
     from anki.notes import Note
 
-
 class VocabNote(JPNote, Slots):
     factory: VocabNoteFactory = VocabNoteFactory()
     def __init__(self, note: Note) -> None:
@@ -41,20 +40,28 @@ class VocabNote(JPNote, Slots):
 
         self.user: VocabNoteUserfields = VocabNoteUserfields(self.weakref_vocab)
 
-        self._source_answer: MutableStringField = MutableStringField(self.weakref, NoteFields.Vocab.source_answer)
-        self.active_answer: MutableStringField = MutableStringField(self.weakref, NoteFields.Vocab.active_answer)
-
-        self.cloner: VocabCloner = VocabCloner(self.weakref_vocab)
         self.related_notes: RelatedVocab = RelatedVocab(self.weakref_vocab)
-        self.audio: VocabNoteAudio = VocabNoteAudio(self.weakref_vocab)
         self.sentences: VocabNoteSentences = VocabNoteSentences(self.weakref_vocab)
         self.forms: VocabNoteForms = VocabNoteForms(self.weakref_vocab)
         self.parts_of_speech: VocabNotePartsOfSpeech = VocabNotePartsOfSpeech(self.weakref_vocab)
         self.compound_parts: VocabNoteUserCompoundParts = VocabNoteUserCompoundParts(self.weakref_vocab)
-        self.conjugator: VocabNoteConjugator = VocabNoteConjugator(self.weakref_vocab)
-        self.kanji: VocabNoteKanji = VocabNoteKanji(self.weakref_vocab)
-        self.meta_data: VocabNoteMetaData = VocabNoteMetaData(self.weakref_vocab)
         self.matching_configuration: VocabNoteMatchingConfiguration = VocabNoteMatchingConfiguration(self.weakref_vocab)
+
+    @property
+    def meta_data(self) -> VocabNoteMetaData: return VocabNoteMetaData(self.weakref_vocab)
+    @property
+    def kanji(self) -> VocabNoteKanji: return VocabNoteKanji(self.weakref_vocab)
+    @property
+    def audio(self) -> VocabNoteAudio: return VocabNoteAudio(self.weakref_vocab)
+    @property
+    def cloner(self) -> VocabCloner: return VocabCloner(self.weakref_vocab)
+    @property
+    def conjugator(self) -> VocabNoteConjugator: return VocabNoteConjugator(self.weakref_vocab)
+    @property
+    def _source_answer(self) -> MutableStringField: return MutableStringField(self.weakref_vocab, NoteFields.Vocab.source_answer)
+    @property
+    def active_answer(self) -> MutableStringField: return MutableStringField(self.weakref_vocab, NoteFields.Vocab.active_answer)
+
 
     @override
     def get_direct_dependencies(self) -> set[JPNote]:
