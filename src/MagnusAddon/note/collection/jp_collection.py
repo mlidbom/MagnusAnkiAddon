@@ -101,8 +101,9 @@ class JPCollection(WeakRefable, Slots):
             self._is_initialized = True
             JPCollection._is_inital_load = False
 
-            ex_trace_malloc_instance.log_memory_delta("Done loading add-on")
             task_runner.close()
+            ex_trace_malloc_instance.log_memory_delta("Done loading add-on")
+            ex_trace_malloc_instance.stop()
             app.get_ui_utils().tool_tip(f"{Mine.app_name} done loading in {str(stopwatch.elapsed_seconds())[0:4]} seconds.", milliseconds=6000)
 
     @property
