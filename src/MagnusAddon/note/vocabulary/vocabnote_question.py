@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, override
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from language_services import conjugator
 from note.note_constants import Mine, NoteFields
-from note.notefields.mutable_string_field import MutableStringField
+from note.notefields.caching_mutable_string_field import CachingMutableStringField
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
@@ -23,8 +23,8 @@ class VocabStems(Slots):
 class VocabNoteQuestion(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self._vocab: WeakRef[VocabNote] = vocab
-        field = MutableStringField(vocab, NoteFields.Vocab.question)
-        self._field: MutableStringField = field
+        field = CachingMutableStringField(vocab, NoteFields.Vocab.question)
+        self._field: CachingMutableStringField = field
         self._raw: Lazy[str] = field.lazy_reader(lambda: field.value)
         self._without_noise_characters: Lazy[str] = field.lazy_reader(lambda: field.value.replace(Mine.VocabPrefixSuffixMarker, ""))
 

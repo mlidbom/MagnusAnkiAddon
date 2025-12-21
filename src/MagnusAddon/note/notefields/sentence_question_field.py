@@ -8,13 +8,14 @@ from sysutils.lazy import Lazy
 from sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
-    from note.notefields.mutable_string_field import MutableStringField
+    from note.notefields.caching_mutable_string_field import CachingMutableStringField
+    pass
 
 class SentenceQuestionField(WeakRefable, Slots):
     word_break_tag: str = "<wbr>"
-    def __init__(self, primary_field: MutableStringField, fallback_field: MutableStringField) -> None:
-        self._field: MutableStringField = primary_field
-        self._fallback_field: MutableStringField = fallback_field
+    def __init__(self, primary_field: CachingMutableStringField, fallback_field: CachingMutableStringField) -> None:
+        self._field: CachingMutableStringField = primary_field
+        self._fallback_field: CachingMutableStringField = fallback_field
         weakself = WeakRef(self)
         self._value: Lazy[str] = Lazy(lambda: ex_str.strip_html_markup(weakself()._sentence_question_field_raw_value().replace(self.word_break_tag, ex_str.invisible_space)))
         self._field.on_change(self._value.reset)
