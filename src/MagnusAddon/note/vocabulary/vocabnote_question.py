@@ -5,11 +5,9 @@ from typing import TYPE_CHECKING, override
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from language_services import conjugator
 from note.note_constants import Mine, NoteFields
-from note.notefields.caching_mutable_string_field import CachingMutableStringField
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
-    from sysutils.lazy import Lazy
     from sysutils.weak_ref import WeakRef
 
 class VocabStems(Slots):
@@ -23,20 +21,16 @@ class VocabStems(Slots):
 class VocabNoteQuestion(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self._vocab: WeakRef[VocabNote] = vocab
-        field = CachingMutableStringField(vocab, NoteFields.Vocab.question)
-        self._field: CachingMutableStringField = field
-        self._raw: Lazy[str] = field.lazy_reader(lambda: field.value)
-        self._without_noise_characters: Lazy[str] = field.lazy_reader(lambda: field.value.replace(Mine.VocabPrefixSuffixMarker, ""))
 
     @property
-    def raw(self) -> str: return self._raw()
+    def raw(self) -> str: return self._vocab().get_field(NoteFields.Vocab.question)
     @property
-    def without_noise_characters(self) -> str: return self._without_noise_characters()
+    def without_noise_characters(self) -> str: return self.raw.replace(Mine.VocabPrefixSuffixMarker, "")
 
     def stems(self) -> VocabStems: return VocabStems(self._vocab)
 
     def set(self, value: str) -> None:
-        self._field.set(value)
+        self._vocab().set_field(NoteFields.Vocab.question, value)
         if value not in self._vocab().forms.all_set():
             self._vocab().forms.set_set(self._vocab().forms.all_set() | {value})
 

@@ -8,7 +8,6 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from note.jpnote import JPNote
 from note.note_constants import ImmersionKitSentenceNoteFields, NoteFields, NoteTypes, SentenceNoteFields, Tags
 from note.notefields.audio_field import WritableAudioField
-from note.notefields.caching_mutable_string_field import CachingMutableStringField
 from note.notefields.json_object_field import MutableSerializedObjectField
 from note.notefields.mutable_string_field import MutableStringField
 from note.notefields.sentence_question_field import SentenceQuestionField
@@ -31,7 +30,7 @@ class SentenceNote(JPNote, Slots):
         super().__init__(note)
         self.weakref_sentence: WeakRef[SentenceNote] = cast(WeakRef[SentenceNote], self.weakref)
 
-        self.source_question: CachingMutableStringField = CachingMutableStringField(self.weakref, SentenceNoteFields.source_question)
+        self.source_question: MutableStringField = MutableStringField(self.weakref, SentenceNoteFields.source_question)
 
         self.user: SentenceUserFields = SentenceUserFields(self.weakref_sentence)
 
