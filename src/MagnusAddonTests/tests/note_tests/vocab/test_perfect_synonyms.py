@@ -6,6 +6,7 @@ import pytest
 from ankiutils import app
 from fixtures.collection_factory import inject_empty_collection
 from note.vocabulary.vocabnote import VocabNote
+from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -50,7 +51,7 @@ def test_answer_syncs_to_added_synonym_on_update() -> None:
     first.related_notes.perfect_synonyms.remove(third.get_question())
     assert first.related_notes.perfect_synonyms.get() == {second.get_question()}
     assert second.related_notes.perfect_synonyms.get() == {first.get_question()}
-    assert third.related_notes.perfect_synonyms.get() == set()
+    assert third.related_notes.perfect_synonyms.get() == QSet()
 
     first.user.answer.set("first_latest")
     assert first.get_answer() == "first_latest"

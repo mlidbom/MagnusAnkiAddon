@@ -10,12 +10,12 @@ from note.notefields.comma_separated_strings_list_field_de_duplicated import Mut
 from sysutils import ex_str
 from sysutils.lazy import Lazy
 from sysutils.weak_ref import WeakRef, WeakRefable
+from typed_linq_collections.collections.q_set import QSet
 from typed_linq_collections.q_iterable import query
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
     from typed_linq_collections.collections.q_list import QList
-    from typed_linq_collections.collections.q_set import QSet
 
 class VocabNoteForms(WeakRefable, Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
@@ -23,11 +23,11 @@ class VocabNoteForms(WeakRefable, Slots):
         field = MutableCommaSeparatedStringsListFieldDeDuplicated(vocab, NoteFields.Vocab.Forms)
         self._field: MutableCommaSeparatedStringsListFieldDeDuplicated = field
         weakrefthis = WeakRef(self)
-        self._all_raw_set: Lazy[set[str]] = Lazy(lambda: set(weakrefthis()._field.get()))
+        self._all_raw_set: Lazy[QSet[str]] = Lazy(lambda: QSet(weakrefthis()._field.get()))
 
         self._all_list: Lazy[QList[str]] = field.lazy_reader(lambda: query(weakrefthis()._field.get()).select(ex_str.strip_brackets).to_list()) # [ex_str.strip_brackets(form) for form in weakrefthis()._field.get()]
         self._all_set: Lazy[QSet[str]] = field.lazy_reader(lambda: weakrefthis()._all_list().to_set())
-        self._owned_forms: Lazy[set[str]] = field.lazy_reader(lambda: {weakrefthis()._vocab().get_question()} | {ex_str.strip_brackets(form) for form in weakrefthis()._all_raw_set() if form.startswith("[")})
+        self._owned_forms: Lazy[QSet[str]] = field.lazy_reader(lambda: QSet([weakrefthis()._vocab().get_question()]) | QSet(ex_str.strip_brackets(form) for form in weakrefthis()._all_raw_set() if form.startswith("[")))
         self._not_owned_by_other_vocab: Lazy[QSet[str]] = field.lazy_reader(lambda: weakrefthis().___not_owned_by_other_vocab())
 
     def is_owned_form(self, form: str) -> bool: return form in self._owned_forms()
@@ -69,7 +69,7 @@ class VocabNoteForms(WeakRefable, Slots):
     def _strip_noise_characters(string: str) -> str:
         return string.replace(Mine.VocabPrefixSuffixMarker, "")
 
-    def set_set(self, forms: set[str]) -> None: self.set_list(list(forms))
+    def set_set(self, forms: QSet[str]) -> None: self.set_list(list(forms))
 
     def set_list(self, forms: list[str]) -> None: self._field.set(forms)
 

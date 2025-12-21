@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
+from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -11,20 +12,20 @@ if TYPE_CHECKING:
 class WordExclusionSet(Slots):
     def __init__(self, save_callback: Callable[[], None], exclusions: list[WordExclusion]) -> None:
         self._save: Callable[[], None] = save_callback
-        self._exclusions: set[WordExclusion] = set(exclusions)
-        self._excluded_words: set[str] = self._extract_words()
+        self._exclusions: QSet[WordExclusion] = QSet(exclusions)
+        self._excluded_words: QSet[str] = self._extract_words()
 
-    def get(self) -> set[WordExclusion]: return self._exclusions
+    def get(self) -> QSet[WordExclusion]: return self._exclusions
 
-    def _extract_words(self) -> set[str]:
-        return {exclusion.word for exclusion in self._exclusions}
+    def _extract_words(self) -> QSet[str]:
+        return QSet(exclusion.word for exclusion in self._exclusions)
 
-    def words(self) -> set[str]:
+    def words(self) -> QSet[str]:
         return self._excluded_words
 
     def reset(self) -> None:
-        self._exclusions = set()
-        self._excluded_words = set()
+        self._exclusions = QSet()
+        self._excluded_words = QSet()
         self._save()
 
     def add_global(self, vocab: str) -> None:

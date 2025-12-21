@@ -12,14 +12,15 @@ if TYPE_CHECKING:
     from note.jpnote import JPNote
     from sysutils.lazy import Lazy
     from sysutils.weak_ref import WeakRef
+    from typed_linq_collections.collections.q_list import QList
 
 class MutableCommaSeparatedStringsListField(Slots):
     def __init__(self, note: WeakRef[JPNote], field_name: str) -> None:
         field = CachingMutableStringField(note, field_name)
         self._field: CachingMutableStringField = field
-        self._value: Lazy[list[str]] = self._field.lazy_reader(lambda: ex_str.extract_comma_separated_values(field.value))
+        self._value: Lazy[QList[str]] = self._field.lazy_reader(lambda: ex_str.extract_comma_separated_values(field.value))
 
-    def get(self) -> list[str]:
+    def get(self) -> QList[str]:
         return self._value()
 
     def remove(self, remove: str) -> None:

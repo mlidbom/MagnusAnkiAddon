@@ -17,15 +17,16 @@ from sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
+    from typed_linq_collections.collections.q_set import QSet
 
 class VocabNoteMatchingRulesData(Slots):
     serializer: VocabNoteMatchingRulesSerializer = VocabNoteMatchingRulesSerializer()
-    def __init__(self, surface_is_not: set[str], prefix_is_not: set[str], suffix_is_not: set[str], required_prefix: set[str], yield_to_surface: set[str]) -> None:
-        self.prefix_is_not: set[str] = prefix_is_not
-        self.suffix_is_not: set[str] = suffix_is_not
-        self.surface_is_not: set[str] = surface_is_not
-        self.yield_to_surface: set[str] = yield_to_surface
-        self.required_prefix: set[str] = required_prefix
+    def __init__(self, surface_is_not: QSet[str], prefix_is_not: QSet[str], suffix_is_not: QSet[str], required_prefix: QSet[str], yield_to_surface: QSet[str]) -> None:
+        self.prefix_is_not: QSet[str] = prefix_is_not
+        self.suffix_is_not: QSet[str] = suffix_is_not
+        self.surface_is_not: QSet[str] = surface_is_not
+        self.yield_to_surface: QSet[str] = yield_to_surface
+        self.required_prefix: QSet[str] = required_prefix
 
 class VocabNoteMatchingRules(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:

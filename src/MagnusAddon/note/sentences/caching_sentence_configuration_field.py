@@ -9,6 +9,7 @@ from note.notefields.mutable_string_field import MutableStringField
 from note.sentences.sentence_configuration import SentenceConfiguration
 from sysutils.lazy import Lazy
 from sysutils.weak_ref import WeakRef, WeakRefable
+from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:
     from note.sentences.sentencenote import SentenceNote
@@ -34,12 +35,12 @@ class CachingSentenceConfigurationField(WeakRefable, Slots):
     @property
     def hidden_matches(self) -> WordExclusionSet: return self._value().hidden_matches
 
-    def highlighted_words(self) -> set[str]: return self._value().highlighted_words
+    def highlighted_words(self) -> QSet[str]: return self._value().highlighted_words
 
     @property
-    def highlighted_vocab(self) -> set[VocabNote]:
-        return {vocab for vocab in (app.col().vocab.with_any_form_in(list(self.highlighted_words())))
-                if vocab.get_id() in self._sentence().parsing_result.get().matched_vocab_ids}
+    def highlighted_vocab(self) -> QSet[VocabNote]:
+        return QSet(vocab for vocab in (app.col().vocab.with_any_form_in(list(self.highlighted_words())))
+                    if vocab.get_id() in self._sentence().parsing_result.get().matched_vocab_ids)
 
     def remove_highlighted_word(self, word: str) -> None:
         self.highlighted_words().discard(word)

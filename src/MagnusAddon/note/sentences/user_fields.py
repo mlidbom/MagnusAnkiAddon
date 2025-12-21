@@ -15,10 +15,10 @@ class SentenceUserFields(Slots):
         self._sentence: WeakRef[SentenceNote] = sentence
 
     @property
-    def comments(self) -> MutableStringField:  return MutableStringField(self._sentence, SentenceNoteFields.user_comments)
+    def comments(self) -> MutableStringField: return MutableStringField(self._sentence, SentenceNoteFields.user_comments)
     @property
-    def answer(self) -> MutableStringField:  return MutableStringField(self._sentence, SentenceNoteFields.user_answer)
+    def answer(self) -> MutableStringField: return MutableStringField(self._sentence, SentenceNoteFields.user_answer)
     @property
-    def question(self) -> MutableStringField:  return MutableStringField(self._sentence, SentenceNoteFields.user_question)
+    def question(self) -> MutableStringField: return MutableStringField(self._sentence, SentenceNoteFields.user_question)
     @property
-    def answer_analysis(self) -> MutableStringField:  return MutableStringField(self._sentence, SentenceNoteFields.user_answer_analysis)
+    def answer_analysis(self) -> MutableStringField: return MutableStringField(self._sentence, SentenceNoteFields.user_answer_analysis)

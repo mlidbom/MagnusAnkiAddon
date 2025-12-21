@@ -86,6 +86,7 @@ class QtTaskProgressRunner(ITaskRunner, Slots):
 
         # make sure we are done before logging, and that we have done what we can to ensure gc can run efficiently
         result = future.result()
+        # noinspection PyUnusedLocal
         future = None
 
         mylog.info(f"##--QtTaskProgressRunner--## Finished {message} in {watch.elapsed_formatted()}{ex_trace_malloc_instance.get_memory_delta_message(' | ')}")
@@ -121,6 +122,7 @@ class QtTaskProgressRunner(ITaskRunner, Slots):
         self.set_label_text(original_label)
         QApplication.processEvents()
 
+        # noinspection PyUnusedLocal
         items = [] # Make the garbage collection happening on the next line able to get rid of the items
         mylog.info(f"##--QtTaskProgressRunner--## Finished {message} in {watch.elapsed_formatted()} handled {total_items} items{ex_trace_malloc_instance.get_memory_delta_message(' | ')}")
         return results

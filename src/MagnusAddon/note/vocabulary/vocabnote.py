@@ -27,6 +27,7 @@ from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
     from anki.notes import Note
+    from typed_linq_collections.collections.q_set import QSet
 
 class VocabNote(JPNote, Slots):
     factory: VocabNoteFactory = VocabNoteFactory()
@@ -65,7 +66,7 @@ class VocabNote(JPNote, Slots):
 
 
     @override
-    def get_direct_dependencies(self) -> set[JPNote]:
+    def get_direct_dependencies(self) -> QSet[JPNote]:
         return self.related_notes.get_direct_dependencies()
 
     @override

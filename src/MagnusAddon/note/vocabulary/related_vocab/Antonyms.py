@@ -11,13 +11,14 @@ if TYPE_CHECKING:
     from note.vocabulary.related_vocab.related_vocab_data import RelatedVocabData
     from note.vocabulary.vocabnote import VocabNote
     from sysutils.weak_ref import WeakRef
+    from typed_linq_collections.collections.q_set import QSet
 
 class Antonyms(Slots):
     def __init__(self, vocab: WeakRef[VocabNote], data: MutableSerializedObjectField[RelatedVocabData]) -> None:
         self._vocab: WeakRef[VocabNote] = vocab
         self._data: MutableSerializedObjectField[RelatedVocabData] = data
 
-    def strings(self) -> set[str]: return self._data.get().antonyms
+    def strings(self) -> QSet[str]: return self._data.get().antonyms
     def notes(self) -> list[VocabNote]:
         return col().vocab.with_any_form_in_prefer_exact_match(list(self.strings()))
 

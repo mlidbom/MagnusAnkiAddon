@@ -6,6 +6,7 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from language_services.janome_ex.word_extraction import analysis_constants
 from note.note_constants import NoteFields, Tags
 from note.notefields.comma_separated_strings_set_field import MutableCommaSeparatedStringsSetField
+from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
@@ -25,7 +26,7 @@ class VocabNotePartsOfSpeech(Slots):
     def set_raw_string_value(self, value: str) -> None:
         self._field.set_raw_string_value(value)
 
-    def get(self) -> set[str]:
+    def get(self) -> QSet[str]:
         return self._field.get()
 
     def is_ichidan(self) -> bool:
@@ -41,7 +42,7 @@ class VocabNotePartsOfSpeech(Slots):
         question = self._vocab.question.without_noise_characters
         return len(question) > 2 and question[-2:] == "する"
 
-    _ga_suru_ni_suru_endings: set[str] = {"がする", "にする", "くする"}
+    _ga_suru_ni_suru_endings: QSet[str] = QSet(("がする", "にする", "くする"))
     def is_ni_suru_ga_suru_ku_suru_compound(self) -> bool:
         question = self._vocab.question.without_noise_characters
         return len(question) > 3 and question[-3:] in self._ga_suru_ni_suru_endings
@@ -80,7 +81,7 @@ class VocabNotePartsOfSpeech(Slots):
         if len(compounds) == 0: return False
         return compounds[-1] in analysis_constants.causative_verb_endings
 
-    _na_adjective_tos_names: set[str] = {"な adjective", "na-adjective"}
+    _na_adjective_tos_names: QSet[str] = QSet(("な adjective", "na-adjective"))
     def is_complete_na_adjective(self) -> bool:
         return self.__vocab().question.raw.endswith("な") and any(na for na in self._na_adjective_tos_names if na in self.get())
 

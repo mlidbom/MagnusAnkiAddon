@@ -1,10 +1,9 @@
 from __future__ import annotations
 
-from collections import defaultdict
 from typing import TYPE_CHECKING, final, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from typed_linq_collections.collections.q_list import QList
+from typed_linq_collections.collections.q_default_dict import QDefaultDict
 from typed_linq_collections.q_iterable import query
 
 if TYPE_CHECKING:
@@ -12,25 +11,27 @@ if TYPE_CHECKING:
     from anki.notes import Note, NoteId
     from note.collection.cache_runner import CacheRunner
     from qt_utils.task_runner_progress_dialog import ITaskRunner
+    from typed_linq_collections.collections.q_list import QList
 
 from note.collection.backend_facade import BackEndFacade
 from note.collection.note_cache import CachedNote, NoteCache
 from note.kanjinote import KanjiNote
 from note.note_constants import NoteTypes
 from sysutils import kana_utils
+from typed_linq_collections.collections.q_set import QSet
 
 
 @final
 class _KanjiSnapshot(CachedNote, Slots):
     def __init__(self, note: KanjiNote) -> None:
         super().__init__(note)
-        self.radicals: tuple[str] = tuple[str](set(note.get_radicals()))
-        self.readings: tuple[str] = tuple[str](set(note.get_readings_clean()))
+        self.radicals: tuple[str, ...] = note.get_radicals().to_set().to_tuple()
+        self.readings: tuple[str, ...] = note.get_readings_clean().to_set().to_tuple()
 
 class _KanjiCache(NoteCache[KanjiNote, _KanjiSnapshot], Slots):
     def __init__(self, all_kanji: list[KanjiNote], cache_runner: CacheRunner, task_runner: ITaskRunner) -> None:
-        self._by_radical: dict[str, set[KanjiNote]] = defaultdict(set)
-        self.by_reading: dict[str, set[KanjiNote]] = defaultdict(set)
+        self._by_radical: QDefaultDict[str, QSet[KanjiNote]] = QDefaultDict(QSet[KanjiNote])
+        self.by_reading: QDefaultDict[str, QSet[KanjiNote]] = QDefaultDict(QSet[KanjiNote])
         super().__init__(all_kanji, KanjiNote, cache_runner, task_runner)
 
     @override
@@ -46,7 +47,7 @@ class _KanjiCache(NoteCache[KanjiNote, _KanjiSnapshot], Slots):
         for form in snapshot.radicals: self._by_radical[form].add(note)
         for reading in snapshot.readings: self.by_reading[reading].add(note)
 
-    def with_radical(self, radical: str) -> QList[KanjiNote]: return QList(self._by_radical[radical])
+    def with_radical(self, radical: str) -> QList[KanjiNote]: return self._by_radical[radical].to_list()
 
 class KanjiCollection(Slots):
     def __init__(self, collection: Collection, cache_manager: CacheRunner, task_runner: ITaskRunner) -> None:
@@ -67,7 +68,7 @@ class KanjiCollection(Slots):
         return self._cache.with_question(kanji).single_or_none()
 
     def with_radical(self, radical:str) -> QList[KanjiNote]: return self._cache.with_radical(radical)
-    def with_reading(self, reading:str) -> set[KanjiNote]:
+    def with_reading(self, reading:str) -> QSet[KanjiNote]:
         return self._cache.by_reading[kana_utils.anything_to_hiragana(reading)]
 
     def add(self, note: KanjiNote) -> None:

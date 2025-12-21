@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
@@ -25,15 +26,15 @@ class VocabSpec(Slots):
         self.question: str = question
         self.answer: str = answer or question
         self.readings: list[str] = readings or [self.question]
-        self.extra_forms: set[str] = set(forms if forms else [])
-        self.tags: set[str] = set(tags if tags else [])
+        self.extra_forms: QSet[str] = QSet(forms if forms else [])
+        self.tags: QSet[str] = QSet(tags if tags else [])
         self.compounds: list[str] = compounds if compounds else []
-        self.surface_is_not: set[str] = surface_not if surface_not else set()
-        self.yield_to_surface: set[str] = yield_to_surface if yield_to_surface else set()
-        self.prefix_is_not: set[str] = prefix_not if prefix_not else set()
-        self.suffix_is_not: set[str] = suffix_not if suffix_not else set()
+        self.surface_is_not: QSet[str] = QSet(surface_not if surface_not else ())
+        self.yield_to_surface: set[str] = QSet(yield_to_surface if yield_to_surface else ())
+        self.prefix_is_not: set[str] = QSet(prefix_not if prefix_not else ())
+        self.suffix_is_not: set[str] = QSet(suffix_not if suffix_not else ())
         self.tos: str = tos if tos else ""
-        self.required_prefix: set[str] = prefix_in if prefix_in else set()
+        self.required_prefix: set[str] = QSet(prefix_in if prefix_in else ())
 
     @override
     def __repr__(self) -> str:

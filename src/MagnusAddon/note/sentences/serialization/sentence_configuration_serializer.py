@@ -2,11 +2,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from autoslot import Slots  # pyright: ignore [reportMissingTypeStubs]
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from note.sentences.word_exclusion_set import WordExclusionSet
 from sysutils.json import ex_json
 from sysutils.json.json_reader import JsonReader
+from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -17,7 +18,7 @@ class SentenceConfigurationSerializer(Slots):
     @staticmethod
     def deserialize(json: str, save_callback: Callable[[], None]) -> SentenceConfiguration:
         from note.sentences.sentence_configuration import SentenceConfiguration
-        if not json: return SentenceConfiguration(set(), WordExclusionSet(save_callback, []), WordExclusionSet(save_callback, []))
+        if not json: return SentenceConfiguration(QSet(), WordExclusionSet(save_callback, []), WordExclusionSet(save_callback, []))
 
         reader = JsonReader.from_json(json)
         return SentenceConfiguration(reader.string_set("highlighted_words"),

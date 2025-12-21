@@ -7,6 +7,7 @@ from note.jpnote import JPNote
 from sysutils.collections.default_dict_case_insensitive import DefaultDictCaseInsensitive
 from sysutils.typed import checked_cast
 from typed_linq_collections.collections.q_list import QList
+from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -29,7 +30,7 @@ class NoteCache[TNote: JPNote, TSnapshot: CachedNote](Slots):
         self._snapshot_by_id: dict[NoteId, TSnapshot] = {}
         self._by_answer: DefaultDictCaseInsensitive[set[TNote]] = DefaultDictCaseInsensitive(set)
 
-        self._deleted: set[NoteId] = set()
+        self._deleted: QSet[NoteId] = QSet()
 
         self._flushing: bool = False
         self._pending_add: list[Note] = []

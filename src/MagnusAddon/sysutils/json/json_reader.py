@@ -2,9 +2,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, cast
 
-from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from autoslot import Slots  # pyright: ignore [reportMissingTypeStubs]
 from sysutils import typed
 from sysutils.json.ex_json import json_library_shim
+from typed_linq_collections.collections.q_set import QSet  # pyright: ignore[reportMissingTypeStubs]
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -36,7 +37,7 @@ class JsonReader(Slots):
     def string_list(self, prop: str | list[str], default: list[str] | None = None) -> list[str]:
         return cast(list[str], self._get_prop(prop, default))
 
-    def string_set(self, prop: str | list[str], default: set[str] | None = None) -> set[str]: return set(self.string_list(prop, list(default) if default is not None else None))
+    def string_set(self, prop: str | list[str], default: QSet[str] | None = None) -> QSet[str]: return QSet(self.string_list(prop, list(default) if default is not None else None))
 
     def object_list[TProp](self, prop: str | list[str], factory: Selector[JsonReader, TProp], default: list[TProp] | None = None) -> list[TProp]:
         prop_value = cast(list[dict[str, Any]], self._get_prop(prop, default))  # pyright: ignore[reportExplicitAny]

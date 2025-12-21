@@ -18,6 +18,7 @@ from note.sentences.serialization.parsing_result_serializer import ParsingResult
 from note.sentences.user_fields import SentenceUserFields
 from sysutils import ex_str, kana_utils
 from sysutils.weak_ref import WeakRef
+from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
@@ -78,16 +79,16 @@ class SentenceNote(JPNote, Slots):
         return TextAnalysis(self.get_question(), self.configuration.configuration)
 
     @override
-    def get_direct_dependencies(self) -> set[JPNote]:
+    def get_direct_dependencies(self) -> QSet[JPNote]:
         highlighted = self.configuration.highlighted_vocab
-        displayed_vocab = {voc for voc in {app.col().vocab.with_id_or_none(voc.vocab_id)
+        displayed_vocab = (voc for voc in {app.col().vocab.with_id_or_none(voc.vocab_id)
                                            for voc in self.parsing_result.get().parsed_words
                                            if voc.is_displayed}
-                           if voc is not None}
-        kanji = set(self.collection.kanji.with_any_kanji_in(self.extract_kanji()))
-        return set(highlighted | displayed_vocab | kanji)
+                           if voc is not None)
+        kanji = self.collection.kanji.with_any_kanji_in(self.extract_kanji())
+        return QSet.create(highlighted, displayed_vocab, kanji)
 
-    def get_words(self) -> set[str]: return (set(self.parsing_result.get().parsed_words_strings()) | set(self.configuration.highlighted_words())) - self.configuration.incorrect_matches.words()
+    def get_words(self) -> QSet[str]: return (self.parsing_result.get().parsed_words_strings().to_set() | self.configuration.highlighted_words()) - self.configuration.incorrect_matches.words()
 
     def get_parsed_words_notes(self) -> list[VocabNote]:
         return (self.get_valid_parsed_non_child_words_strings()
@@ -124,7 +125,7 @@ class SentenceNote(JPNote, Slots):
         return note
 
     @classmethod
-    def add_sentence(cls, question: str, answer: str, audio: str = "", screenshot: str = "", highlighted_vocab: set[str] | None = None, tags: set[str] | None = None) -> SentenceNote:
+    def add_sentence(cls, question: str, answer: str, audio: str = "", screenshot: str = "", highlighted_vocab: QSet[str] | None = None, tags: QSet[str] | None = None) -> SentenceNote:
         inner_note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Sentence))
         note = SentenceNote(inner_note)
         note.source_question.set(question)
@@ -155,7 +156,7 @@ class SentenceNote(JPNote, Slots):
                                    answer=immersion_kit_note[ImmersionKitSentenceNoteFields.answer],
                                    audio=immersion_kit_note[ImmersionKitSentenceNoteFields.audio],
                                    screenshot=immersion_kit_note[ImmersionKitSentenceNoteFields.screenshot],
-                                   tags={Tags.immersion_kit})
+                                   tags=QSet([Tags.immersion_kit]))
 
         created.id.set(immersion_kit_note[ImmersionKitSentenceNoteFields.id])
         created.reading.set(immersion_kit_note[ImmersionKitSentenceNoteFields.reading])

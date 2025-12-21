@@ -15,6 +15,7 @@ from note.vocabulary.related_vocab.related_vocab_data import RelatedVocabData
 from note.vocabulary.related_vocab.SeeAlso import SeeAlso
 from note.vocabulary.related_vocab.Synonyms import Synonyms
 from sysutils.lazy import Lazy
+from typed_linq_collections.collections.q_set import QSet
 from typed_linq_collections.q_iterable import query
 
 if TYPE_CHECKING:
@@ -22,7 +23,6 @@ if TYPE_CHECKING:
     from note.kanjinote import KanjiNote
     from note.vocabulary.vocabnote import VocabNote
     from sysutils.weak_ref import WeakRef
-    from typed_linq_collections.collections.q_set import QSet
 
 class RelatedVocab(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
@@ -39,10 +39,10 @@ class RelatedVocab(Slots):
 
         self.confused_with: FieldSetWrapper[str] = FieldSetWrapper.for_json_object_field(self._data, self._data.get().confused_with)  # pyright: ignore[reportUnknownMemberType]
 
-        self._in_compound_ids: Lazy[set[int]] = Lazy(lambda: {voc.get_id() for voc in vocab().related_notes.in_compounds()})
+        self._in_compound_ids: Lazy[QSet[int]] = Lazy(lambda: QSet(voc.get_id() for voc in vocab().related_notes.in_compounds()))
 
     @property
-    def in_compound_ids(self) -> set[int]: return self._in_compound_ids()
+    def in_compound_ids(self) -> QSet[int]: return self._in_compound_ids()
 
     def in_compounds(self) -> list[VocabNote]:
         return app.col().vocab.with_compound_part(self._vocab().question.without_noise_characters)
@@ -62,5 +62,5 @@ class RelatedVocab(Slots):
     def _main_form_kanji_notes(self) -> QSet[KanjiNote]:
         return app.col().kanji.with_any_kanji_in(self._vocab().kanji.extract_main_form_kanji()).to_set()
 
-    def get_direct_dependencies(self) -> set[JPNote]:
-        return set(self._main_form_kanji_notes | self._vocab().compound_parts.all_notes())
+    def get_direct_dependencies(self) -> QSet[JPNote]:
+        return QSet.create(self._main_form_kanji_notes, self._vocab().compound_parts.all_notes())

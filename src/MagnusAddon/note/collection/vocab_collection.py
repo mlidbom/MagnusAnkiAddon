@@ -3,12 +3,13 @@ from __future__ import annotations
 from collections import defaultdict
 from typing import TYPE_CHECKING, override
 
-from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from autoslot import Slots
 from note.collection.backend_facade import BackEndFacade
 from note.collection.note_cache import CachedNote, NoteCache
 from note.note_constants import NoteTypes
 from note.vocabulary.vocabnote import VocabNote
 from typed_linq_collections.collections.q_list import QList
+from typed_linq_collections.collections.q_set import QSet  # pyright: ignore[reportMissingTypeStubs]
 from typed_linq_collections.q_iterable import query
 
 if TYPE_CHECKING:
@@ -23,13 +24,13 @@ if TYPE_CHECKING:
 class _VocabSnapshot(CachedNote, Slots):
     def __init__(self, note: VocabNote) -> None:
         super().__init__(note)
-        self.forms: tuple[str] = tuple[str](note.forms.all_set())
-        self.compound_parts: tuple[str] = tuple[str](note.compound_parts.all())
-        self.main_form_kanji: tuple[str] = tuple[str](note.kanji.extract_main_form_kanji())
-        self.all_kanji: tuple[str] = tuple[str](note.kanji.extract_all_kanji())
-        self.readings: tuple[str] = tuple[str](note.readings.get())
+        self.forms: tuple[str, ...] = note.forms.all_set().to_tuple()
+        self.compound_parts: tuple[str, ...] = note.compound_parts.all().to_tuple()
+        self.main_form_kanji: tuple[str, ...] = note.kanji.extract_main_form_kanji().to_tuple()
+        self.all_kanji: tuple[str, ...] = note.kanji.extract_all_kanji().to_tuple()
+        self.readings: tuple[str, ...] = note.readings.get().to_tuple()
         self.derived_from: str = note.related_notes.derived_from.get()
-        self.stems: tuple[str] = tuple[str](note.conjugator.get_stems_for_primary_form())
+        self.stems: tuple[str, ...] = note.conjugator.get_stems_for_primary_form().to_tuple()
 
 class _VocabCache(NoteCache[VocabNote, _VocabSnapshot], Slots):
     def __init__(self, all_vocab: list[VocabNote], cache_runner: CacheRunner, task_runner: ITaskRunner) -> None:
@@ -45,7 +46,7 @@ class _VocabCache(NoteCache[VocabNote, _VocabSnapshot], Slots):
     def with_form(self, form: str) -> QList[VocabNote]: return QList(self._by_form[form]) if form in self._by_form else QList[VocabNote]()
 
     def with_compound_part(self, form: str) -> list[VocabNote]:
-        compound_parts: set[VocabNote] = set()
+        compound_parts: QSet[VocabNote] = QSet()
 
         def fetch_parts(part_form: str) -> None:
             for vocab in self._by_compound_part[part_form]:

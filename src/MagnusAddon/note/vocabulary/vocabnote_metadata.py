@@ -7,6 +7,7 @@ from language_services.jamdict_ex.priority_spec import PrioritySpec
 from note.note_constants import NoteFields
 from note.notefields.integer_field import IntegerField
 from note.vocabulary import vocabnote_meta_tag
+from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
@@ -29,4 +30,4 @@ class VocabNoteMetaData(Slots):
     def priority_spec(self) -> PrioritySpec:
         from language_services.jamdict_ex.dict_lookup import DictLookup
         lookup = DictLookup.lookup_vocab_word_or_name(self._vocab)
-        return lookup.priority_spec() if lookup else PrioritySpec(set())
+        return lookup.priority_spec() if lookup else PrioritySpec(QSet())
