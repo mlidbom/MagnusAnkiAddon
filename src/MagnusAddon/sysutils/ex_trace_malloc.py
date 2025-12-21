@@ -4,7 +4,7 @@ import tracemalloc
 
 import mylog
 from ankiutils import app
-from autoslot import Slots  # pyright: ignore [reportMissingTypeStubs]
+from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from sysutils import ex_gc
 
 
@@ -19,11 +19,12 @@ class ExMalloc(Slots):
             ex_gc.collect_on_ui_thread_synchronously()
             tracemalloc.start()
             mylog.info("Started tracing malloc")
-        self._last_memory = tracemalloc.get_traced_memory()[0] / 1024 / 1024  # MB
+            self._last_memory = tracemalloc.get_traced_memory()[0] / 1024 / 1024  # MB
 
     def get_memory_delta(self) -> tuple[float, float]:
         """Returns (current_mb, delta_mb) and updates last_memory"""
         if not app.config().enable_trace_malloc.get_value(): return 0.0, 0.0
+        if not tracemalloc.is_tracing(): raise Exception("You must call ensure_initialized before calling get_memory_delta")
 
         ex_gc.collect_on_ui_thread_synchronously()
 
@@ -40,5 +41,11 @@ class ExMalloc(Slots):
     def log_memory_delta(self, message: str) -> None:
         if not app.config().enable_trace_malloc.get_value(): return
         mylog.info(f"{message} | {self.get_memory_delta_message('')}")
+
+    @staticmethod
+    def stop() -> None:
+        if not app.config().enable_trace_malloc.get_value(): return
+        tracemalloc.stop()
+        ex_gc.collect_on_ui_thread_synchronously()
 
 ex_trace_malloc_instance = ExMalloc()
