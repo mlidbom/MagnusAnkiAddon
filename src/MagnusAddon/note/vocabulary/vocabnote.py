@@ -34,8 +34,6 @@ class VocabNote(JPNote, Slots):
         super().__init__(note)
         self.weakref_vocab: WeakRef[VocabNote] = cast(WeakRef[VocabNote], self.weakref)
 
-        self.question: VocabNoteQuestion = VocabNoteQuestion(self.weakref_vocab)
-
         self.readings: MutableCommaSeparatedStringsListField = MutableCommaSeparatedStringsListField(self.weakref, NoteFields.Vocab.Reading)
 
         self.user: VocabNoteUserfields = VocabNoteUserfields(self.weakref_vocab)
@@ -47,6 +45,9 @@ class VocabNote(JPNote, Slots):
         self.compound_parts: VocabNoteUserCompoundParts = VocabNoteUserCompoundParts(self.weakref_vocab)
         self.matching_configuration: VocabNoteMatchingConfiguration = VocabNoteMatchingConfiguration(self.weakref_vocab)
 
+
+    @property
+    def question(self) -> VocabNoteQuestion: return VocabNoteQuestion(self.weakref_vocab)
     @property
     def meta_data(self) -> VocabNoteMetaData: return VocabNoteMetaData(self.weakref_vocab)
     @property

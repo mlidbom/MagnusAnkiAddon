@@ -30,10 +30,6 @@ class SentenceNote(JPNote, Slots):
         super().__init__(note)
         self.weakref_sentence: WeakRef[SentenceNote] = cast(WeakRef[SentenceNote], self.weakref)
 
-        self.source_question: MutableStringField = MutableStringField(self.weakref, SentenceNoteFields.source_question)
-
-        self.user: SentenceUserFields = SentenceUserFields(self.weakref_sentence)
-
         self.configuration: CachingSentenceConfigurationField = CachingSentenceConfigurationField(self.weakref_sentence)
         self.parsing_result: MutableSerializedObjectField[ParsingResult] = MutableSerializedObjectField[ParsingResult](self.weakref, SentenceNoteFields.parsing_result, ParsingResultSerializer())
 
@@ -42,6 +38,10 @@ class SentenceNote(JPNote, Slots):
     def id(self) -> MutableStringField: return MutableStringField(self.weakref, SentenceNoteFields.id)
     @property
     def reading(self) -> MutableStringField: return MutableStringField(self.weakref, SentenceNoteFields.reading)
+    @property
+    def user(self) -> SentenceUserFields: return SentenceUserFields(self.weakref_sentence)
+    @property
+    def source_question(self) -> MutableStringField: return MutableStringField(self.weakref, SentenceNoteFields.source_question)
     @property
     def active_question(self) -> MutableStringField: return MutableStringField(self.weakref, SentenceNoteFields.active_question)
     @property
