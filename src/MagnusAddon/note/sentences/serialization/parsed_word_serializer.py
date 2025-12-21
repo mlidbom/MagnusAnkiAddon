@@ -31,5 +31,5 @@ class ParsedWordSerializer(Slots):
                            int(values[1]),
                            values[2] != "0",
                            values[3],
-                           values[4],
+                           "", #values[4],
                            cast(NoteId, int(values[5])))
