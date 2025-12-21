@@ -29,10 +29,10 @@ class VocabNotePartsOfSpeech(Slots):
         return self._field.get()
 
     def is_ichidan(self) -> bool:
-        return "ichidan" in self.raw_string_value().lower()
+        return "ichidan" in self.raw_string_value().lower() #todo performance auto harmonize the content of the dict and use a dict lookup
 
     def is_godan(self) -> bool:
-        return "godan" in self.raw_string_value().lower()
+        return "godan" in self.raw_string_value().lower() #todo performance auto harmonize the content of the dict and use a dict lookup
 
     def is_inflecting_word_type(self) -> bool:
         return self.is_godan() or self.is_ichidan()
