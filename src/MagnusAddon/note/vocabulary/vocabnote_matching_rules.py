@@ -66,10 +66,15 @@ class VocabMatchingRulesConfigurationRequiresForbidsFlags(Slots):
 
 class VocabMatchingRulesConfigurationBoolFlags(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
+        self._vocab: WeakRef[VocabNote] = vocab
         self.is_inflecting_word: IsInflectingWord = IsInflectingWord(vocab)
-        self.is_poison_word: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.is_poison_word)
-        self.match_with_preceding_vowel: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.Todo.with_preceding_vowel)
-        self.question_overrides_form: TagFlagField = TagFlagField(vocab, Tags.Vocab.question_overrides_form)
+
+    @property
+    def is_poison_word(self) -> TagFlagField: return TagFlagField(self._vocab, Tags.Vocab.Matching.is_poison_word)
+    @property
+    def match_with_preceding_vowel(self) -> TagFlagField: return TagFlagField(self._vocab, Tags.Vocab.Matching.Todo.with_preceding_vowel)
+    @property
+    def question_overrides_form(self) -> TagFlagField: return TagFlagField(self._vocab, Tags.Vocab.question_overrides_form)
 
     @override
     def __repr__(self) -> str: return f"""{self.is_inflecting_word}, {self.is_poison_word}, {self.match_with_preceding_vowel}, {self.question_overrides_form}"""
