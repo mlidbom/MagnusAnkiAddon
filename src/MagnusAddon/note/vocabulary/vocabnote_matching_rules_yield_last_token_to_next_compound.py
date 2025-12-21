@@ -29,11 +29,6 @@ class YieldLastTokenToOverlappingCompound(RequireForbidFlagField, WeakRefable, S
         self.automatically_yield_last_token_in_passive_verb_compounds_to_overlapping_compound.on_change(lambda _: self_weakref.run_if_live(lambda me: me._required.reset()))
         self.automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound.on_change(lambda _: self_weakref.run_if_live(lambda me: me._required.reset()))
 
-    @override
-    def _on_tag_updated(self) -> None:
-        super()._on_tag_updated()
-        self._required.reset()
-
     def _decide_if_required(self) -> bool:
         return (super().is_required
                 or (not self.is_forbidden
