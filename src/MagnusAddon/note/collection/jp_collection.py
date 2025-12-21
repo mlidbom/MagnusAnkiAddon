@@ -74,10 +74,10 @@ class JPCollection(WeakRefable, Slots):
         stopwatch = StopWatch()
         with StopWatch.log_warning_if_slower_than(5, "Full collection setup"):
             task_runner = TaskRunner.create(f"Loading {Mine.app_name}", "reading notes from anki", not app.is_testing and app.config().load_studio_in_foreground.get_value())
-            # if not app.is_testing and not JPCollection._is_inital_load:
-            #     task_runner.set_label_text("Running garbage collection")
-            #     self._instance_tracker.run_gc_if_multiple_instances_and_assert_single_instance_after_gc()
-            #     app.get_ui_utils().tool_tip(f"{Mine.app_name} loading", 60000)
+            if not app.is_testing and not JPCollection._is_inital_load:
+                task_runner.set_label_text("Running garbage collection")
+                self._instance_tracker.run_gc_if_multiple_instances_and_assert_single_instance_after_gc()
+                app.get_ui_utils().tool_tip(f"{Mine.app_name} loading", 60000)
 
             with StopWatch.log_warning_if_slower_than(5, "Core collection setup - no gc"):
                 self._cache_runner = CacheRunner(self.anki_collection)

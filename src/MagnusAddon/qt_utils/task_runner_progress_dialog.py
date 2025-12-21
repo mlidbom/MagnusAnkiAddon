@@ -112,12 +112,12 @@ class QtTaskProgressRunner(ITaskRunner, Slots):
                     self.set_label_text(f"{message} {current_item} of {total_items} Remaining: {timeutil.format_seconds_as_hh_mm_ss(estimated_remaining_time)}")
 
                 QApplication.processEvents()
-        mylog.info(f"##--QtTaskProgressRunner--## Finished {message} in {watch.elapsed_formatted()} handled {total_items} items{ex_trace_malloc_instance.get_memory_delta_message(' | ')}")
 
         self.dialog.setRange(0, 0)
         self.set_label_text(original_label)
         QApplication.processEvents()
 
+        mylog.info(f"##--QtTaskProgressRunner--## Finished {message} in {watch.elapsed_formatted()} handled {total_items} items{ex_trace_malloc_instance.get_memory_delta_message(' | ')}")
         return results
     @override
     def close(self) -> None:
