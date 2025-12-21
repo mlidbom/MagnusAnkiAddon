@@ -6,7 +6,6 @@ from ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from note.note_constants import Tags
 from note.notefields.require_forbid_flag_field import RequireForbidFlagField
-from sysutils.lazy import Lazy
 from sysutils.simple_string_builder import SimpleStringBuilder
 from sysutils.weak_ref import WeakRef, WeakRefable
 
@@ -23,16 +22,6 @@ class YieldLastTokenToOverlappingCompound(RequireForbidFlagField, WeakRefable, S
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         super().__init__(vocab, Tags.Vocab.Matching.yield_last_token_to_overlapping_compound, Tags.Vocab.Matching.Forbids.auto_yielding)
         self._pos: VocabNotePartsOfSpeech = vocab().parts_of_speech
-        self._required: Lazy[bool] = Lazy(self._decide_if_required)
-        self_weakref = WeakRef(self)
-        self.automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound.on_change(lambda _: self_weakref.run_if_live(lambda me: me._required.reset()))
-        self.automatically_yield_last_token_in_passive_verb_compounds_to_overlapping_compound.on_change(lambda _: self_weakref.run_if_live(lambda me: me._required.reset()))
-        self.automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound.on_change(lambda _: self_weakref.run_if_live(lambda me: me._required.reset()))
-
-    @override
-    def _on_tag_updated(self) -> None:
-        super()._on_tag_updated()
-        self._required.reset()
 
     def _decide_if_required(self) -> bool:
         return (super().is_required
@@ -53,7 +42,7 @@ class YieldLastTokenToOverlappingCompound(RequireForbidFlagField, WeakRefable, S
 
     @property
     @override
-    def is_required(self) -> bool: return self._required()
+    def is_required(self) -> bool: return self._decide_if_required()
 
     @override
     def __repr__(self) -> str: return (SimpleStringBuilder()
