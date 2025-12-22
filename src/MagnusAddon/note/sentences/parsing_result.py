@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from note.sentences.parsed_match import ParsedMatch
 from note.sentences.serialization.parsing_result_serializer import ParsingResultSerializer
+from sysutils.memory_usage import string_auto_interner
 from typed_linq_collections.collections.q_list import QList
 from typed_linq_collections.collections.q_set import QSet
 
@@ -15,8 +16,8 @@ class ParsingResult(Slots):
     serializer: ParsingResultSerializer = ParsingResultSerializer()
     def __init__(self, words: list[ParsedMatch], sentence: str, parser_version: str) -> None:
         self.parsed_words: list[ParsedMatch] = words
-        self.sentence: str = sentence
-        self.parser_version: str = parser_version
+        self.sentence: str = string_auto_interner.auto_intern(sentence)
+        self.parser_version: str = string_auto_interner.auto_intern(parser_version)
         self.matched_vocab_ids: QSet[int] = QSet(parsed.vocab_id for parsed in self.parsed_words if parsed.vocab_id != -1)
 
     def parsed_words_strings(self) -> QList[str]: return QList(parsed.parsed_form for parsed in self.parsed_words)
