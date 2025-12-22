@@ -9,7 +9,6 @@ from note.note_constants import NoteTypes
 from note.sentences.sentencenote import SentenceNote
 from typed_linq_collections.collections.q_default_dict import QDefaultDict
 from typed_linq_collections.collections.q_list import QList
-from typed_linq_collections.collections.q_unique_list import QUniqueList
 
 if TYPE_CHECKING:
     from anki.collection import Collection
@@ -27,9 +26,10 @@ class _SentenceSnapshot(CachedNote, Slots):
 
 class _SentenceCache(NoteCache[SentenceNote, _SentenceSnapshot], Slots):
     def __init__(self, all_kanji: list[SentenceNote], cache_runner: CacheRunner, task_runner: ITaskRunner) -> None:
-        self._by_vocab_form: QDefaultDict[str, QUniqueList[SentenceNote]] = QDefaultDict[str, QUniqueList[SentenceNote]](QUniqueList[SentenceNote])
-        self._by_user_highlighted_vocab: QDefaultDict[str, QUniqueList[SentenceNote]] = QDefaultDict[str, QUniqueList[SentenceNote]](QUniqueList[SentenceNote])
-        self._by_vocab_id: QDefaultDict[int, QUniqueList[SentenceNote]] = QDefaultDict[int, QUniqueList[SentenceNote]](QUniqueList[SentenceNote])
+        # Since notes with a given Id are guaranteed to only exist once in the cache, we can use lists within the dictionary to cut memory usage a ton compared to using sets
+        self._by_vocab_form: QDefaultDict[str, QList[SentenceNote]] = QDefaultDict[str, QList[SentenceNote]](QList[SentenceNote])
+        self._by_user_highlighted_vocab: QDefaultDict[str, QList[SentenceNote]] = QDefaultDict[str, QList[SentenceNote]](QList[SentenceNote])
+        self._by_vocab_id: QDefaultDict[int, QList[SentenceNote]] = QDefaultDict[int, QList[SentenceNote]](QList[SentenceNote])
         super().__init__(all_kanji, SentenceNote, cache_runner, task_runner)
 
     @override
@@ -47,9 +47,9 @@ class _SentenceCache(NoteCache[SentenceNote, _SentenceSnapshot], Slots):
 
     @override
     def _inheritor_add_to_cache(self, note: SentenceNote, snapshot: _SentenceSnapshot) -> None:
-        for vocab_form in snapshot.words: self._by_vocab_form[vocab_form].add(note)
-        for vocab_form in snapshot.user_highlighted_vocab: self._by_user_highlighted_vocab[vocab_form].add(note)
-        for vocab_id in snapshot.detected_vocab: self._by_vocab_id[vocab_id].add(note)
+        for vocab_form in snapshot.words: self._by_vocab_form[vocab_form].append(note)
+        for vocab_form in snapshot.user_highlighted_vocab: self._by_user_highlighted_vocab[vocab_form].append(note)
+        for vocab_id in snapshot.detected_vocab: self._by_vocab_id[vocab_id].append(note)
 
 class SentenceCollection(Slots):
     def __init__(self, collection: Collection, cache_manager: CacheRunner, task_runner: ITaskRunner) -> None:
