@@ -18,7 +18,10 @@ class ParsingResult(Slots):
         self.parsed_words: list[ParsedMatch] = words
         self.sentence: str = string_auto_interner.auto_intern(sentence)
         self.parser_version: str = string_auto_interner.auto_intern(parser_version)
-        self.matched_vocab_ids: QSet[int] = QSet(parsed.vocab_id for parsed in self.parsed_words if parsed.vocab_id != -1)
+
+    @property
+    def matched_vocab_ids(self) -> QSet[int]: return QSet(parsed.vocab_id for parsed in self.parsed_words if parsed.vocab_id != -1)
+
 
     def parsed_words_strings(self) -> QList[str]: return QList(parsed.parsed_form for parsed in self.parsed_words)
 
