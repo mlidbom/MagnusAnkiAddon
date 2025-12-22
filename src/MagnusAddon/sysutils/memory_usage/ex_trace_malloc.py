@@ -11,8 +11,10 @@ from sysutils import ex_gc
 
 class ExMalloc(Slots):
     def __init__(self) -> None:
+        self.disabled: bool = not app.config().enable_trace_malloc.get_value()
         env_override = os.environ.get("TRACEMALLOC")
-        self.disabled = (env_override is not None and env_override != "1") or not app.config().enable_trace_malloc.get_value()
+        if env_override is not None:
+            self.disabled = env_override != "1"
 
         self._last_memory: float = 0.0
 
