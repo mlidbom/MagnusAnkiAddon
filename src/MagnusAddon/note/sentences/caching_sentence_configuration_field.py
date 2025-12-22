@@ -7,7 +7,6 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from note.note_constants import SentenceNoteFields
 from note.notefields.mutable_string_field import MutableStringField
 from note.sentences.sentence_configuration import SentenceConfiguration
-from sysutils.lazy import Lazy
 from sysutils.weak_ref import WeakRef, WeakRefable
 from typed_linq_collections.collections.q_set import QSet
 
@@ -20,22 +19,19 @@ class CachingSentenceConfigurationField(WeakRefable, Slots):
     def __init__(self, sentence: WeakRef[SentenceNote]) -> None:
         self._sentence: WeakRef[SentenceNote] = sentence
         self.field: MutableStringField = MutableStringField(sentence, SentenceNoteFields.configuration)
-
-        weakrefthis = WeakRef(self)
-        string_field = weakrefthis().field
-        self._value: Lazy[SentenceConfiguration] = Lazy(lambda: SentenceConfiguration.serializer.deserialize(string_field.value, weakrefthis()._save))
+        self._value: SentenceConfiguration = SentenceConfiguration.serializer.deserialize(self.field.value, self._save)
 
     @property
     def configuration(self) -> SentenceConfiguration:
-        return self._value()
+        return self._value
 
     @property
-    def incorrect_matches(self) -> WordExclusionSet: return self._value().incorrect_matches
+    def incorrect_matches(self) -> WordExclusionSet: return self._value.incorrect_matches
 
     @property
-    def hidden_matches(self) -> WordExclusionSet: return self._value().hidden_matches
+    def hidden_matches(self) -> WordExclusionSet: return self._value.hidden_matches
 
-    def highlighted_words(self) -> QSet[str]: return self._value().highlighted_words
+    def highlighted_words(self) -> QSet[str]: return self._value.highlighted_words
 
     @property
     def highlighted_vocab(self) -> QSet[VocabNote]:
@@ -47,7 +43,7 @@ class CachingSentenceConfigurationField(WeakRefable, Slots):
         self._save()
 
     def reset_highlighted_words(self) -> None:
-        self._value().highlighted_words.clear()
+        self._value.highlighted_words.clear()
         self._save()
 
     def add_highlighted_word(self, vocab: str) -> None:
@@ -55,5 +51,5 @@ class CachingSentenceConfigurationField(WeakRefable, Slots):
         self._save()
 
     def _save(self) -> None:
-        self.field.set(SentenceConfiguration.serializer.serialize(self._value()))
+        self.field.set(SentenceConfiguration.serializer.serialize(self._value))
         self._sentence().update_parsed_words(force=True)
