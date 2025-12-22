@@ -1,13 +1,14 @@
 from __future__ import annotations
 
-from collections import defaultdict
 from typing import TYPE_CHECKING, override
 
-from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from autoslot import Slots
 from note.collection.backend_facade import BackEndFacade
 from note.collection.note_cache import CachedNote, NoteCache
 from note.note_constants import NoteTypes
 from note.sentences.sentencenote import SentenceNote
+from typed_linq_collections.collections.q_default_dict import QDefaultDict
+from typed_linq_collections.collections.q_set import QSet  # pyright: ignore[reportMissingTypeStubs]
 
 if TYPE_CHECKING:
     from anki.collection import Collection
@@ -26,9 +27,9 @@ class _SentenceSnapshot(CachedNote, Slots):
 
 class _SentenceCache(NoteCache[SentenceNote, _SentenceSnapshot], Slots):
     def __init__(self, all_kanji: list[SentenceNote], cache_runner: CacheRunner, task_runner: ITaskRunner) -> None:
-        self._by_vocab_form: dict[str, set[SentenceNote]] = defaultdict(set)
-        self._by_user_highlighted_vocab: dict[str, set[SentenceNote]] = defaultdict(set)
-        self._by_vocab_id: dict[int, set[SentenceNote]] = defaultdict(set)
+        self._by_vocab_form: QDefaultDict[str, QSet[SentenceNote]] = QDefaultDict[str, QSet[SentenceNote]](QSet[SentenceNote])
+        self._by_user_highlighted_vocab: QDefaultDict[str, QSet[SentenceNote]] = QDefaultDict[str, QSet[SentenceNote]](QSet[SentenceNote])
+        self._by_vocab_id: QDefaultDict[int, QSet[SentenceNote]] = QDefaultDict[int, QSet[SentenceNote]](QSet[SentenceNote])
         super().__init__(all_kanji, SentenceNote, cache_runner, task_runner)
 
     @override
