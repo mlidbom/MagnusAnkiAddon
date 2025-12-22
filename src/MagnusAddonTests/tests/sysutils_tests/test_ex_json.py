@@ -54,7 +54,7 @@ def test_round_object_list() -> None:
     assert_object_graphs_identical(start_value, round_tripped_value)
 
 def test_roundtrip_parsing_result() -> None:
-    from note.sentences.parsed_word import ParsedMatch
+    from note.sentences.parsed_match import ParsedMatch
     from note.sentences.parsing_result import ParsingResult
 
     parsing_result = ParsingResult([ParsedMatch("B", 0, True, "foo", "", NoteId(1)), #the information string is not read when loading so don't set it to anything

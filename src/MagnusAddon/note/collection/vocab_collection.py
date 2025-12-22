@@ -3,13 +3,13 @@ from __future__ import annotations
 from collections import defaultdict
 from typing import TYPE_CHECKING, override
 
-from autoslot import Slots
+from autoslot import Slots  # pyright: ignore [reportMissingTypeStubs]
 from note.collection.backend_facade import BackEndFacade
 from note.collection.note_cache import CachedNote, NoteCache
 from note.note_constants import NoteTypes
 from note.vocabulary.vocabnote import VocabNote
 from typed_linq_collections.collections.q_list import QList
-from typed_linq_collections.collections.q_set import QSet  # pyright: ignore[reportMissingTypeStubs]
+from typed_linq_collections.collections.q_set import QSet
 from typed_linq_collections.q_iterable import query
 
 if TYPE_CHECKING:

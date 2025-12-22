@@ -15,6 +15,7 @@ from note.jpnote import JPNote
 from note.note_constants import Mine
 from qt_utils.task_runner_progress_dialog import TaskRunner
 from sysutils import app_thread_pool
+from sysutils.memory_usage import string_auto_interner
 from sysutils.memory_usage.ex_trace_malloc import ex_trace_malloc_instance
 from sysutils.timeutil import StopWatch
 from sysutils.typed import non_optional
@@ -102,6 +103,7 @@ class JPCollection(WeakRefable, Slots):
             JPCollection._is_inital_load = False
 
             task_runner.close()
+            string_auto_interner.flush_store()
             ex_trace_malloc_instance.log_memory_delta("Done loading add-on")
             ex_trace_malloc_instance.stop()
             app.get_ui_utils().tool_tip(f"{Mine.app_name} done loading in {str(stopwatch.elapsed_seconds())[0:4]} seconds.", milliseconds=6000)

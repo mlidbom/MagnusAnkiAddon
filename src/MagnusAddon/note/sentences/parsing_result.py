@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from note.sentences.parsed_word import ParsedMatch
+from note.sentences.parsed_match import ParsedMatch
 from note.sentences.serialization.parsing_result_serializer import ParsingResultSerializer
 from typed_linq_collections.collections.q_list import QList
 from typed_linq_collections.collections.q_set import QSet

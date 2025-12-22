@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, override
 import mylog
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from note.notefields.json_object_field import ObjectSerializer
-from note.sentences.parsed_word import ParsedMatch
+from note.sentences.parsed_match import ParsedMatch
 from sysutils.ex_str import invisible_space, newline
 
 if TYPE_CHECKING:
