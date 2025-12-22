@@ -33,6 +33,11 @@ def auto_intern(string: str) -> str:  # replace every string placed in any memor
     value.increment_usage_count()
     return value.value
 
+
+def auto_intern_list(strings: list[str]) -> None:
+    for index, value in enumerate(strings):
+        strings[index] = auto_intern(value)
+
 def flush_store() -> None:  # call this after populating the application memory cache, thus discarding the unhelpful strings from interning and ensuring that the helpful ones stay using a single instance.
     non_interned = store.qcount()
     store.clear()

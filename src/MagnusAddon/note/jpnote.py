@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, cast, override
 
-from anki.cards import sys
 from anki.models import NotetypeDict
 from anki_extentions.card_ex import CardEx
 from anki_extentions.notetype_ex.note_type_ex import NoteTypeEx
@@ -12,6 +11,7 @@ from note import noteutils
 from note.note_constants import CardTypes, MyNoteFields, NoteTypes, Tags
 from note.note_flush_guard import NoteRecursiveFlushGuard
 from sysutils import ex_assert, ex_str
+from sysutils.memory_usage import string_auto_interner
 from sysutils.typed import non_optional, str_
 from sysutils.weak_ref import WeakRef, WeakRefable
 from typed_linq_collections.collections.q_set import QSet
@@ -29,7 +29,8 @@ class JPNote(WeakRefable, Slots):
         self.backend_note: Note = note
         self.__hash_value = 0
 
-        for index, tag in enumerate(self.backend_note.tags): self.backend_note.tags[index] = sys.intern(tag) #saves something like 20-30MB of memory on my collection
+        string_auto_interner.auto_intern_list(note.fields) # saves something like 20-30MB of memory on my collection
+        string_auto_interner.auto_intern_list(note.tags) #saves something like 20-30MB of memory on my collection
 
     @property
     def is_flushing(self) -> bool: return self.recursive_flush_guard.is_flushing
