@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import tracemalloc
 
 import mylog
@@ -10,10 +11,13 @@ from sysutils import ex_gc
 
 class ExMalloc(Slots):
     def __init__(self) -> None:
+        env_override = os.environ.get("TRACEMALLOC")
+        self.disabled = (env_override is not None and env_override != "1") or not app.config().enable_trace_malloc.get_value()
+
         self._last_memory: float = 0.0
 
     def ensure_initialized(self) -> None:
-        if not app.config().enable_trace_malloc.get_value(): return
+        if self.disabled: return
 
         if not tracemalloc.is_tracing():
             ex_gc.collect_on_ui_thread_synchronously()
@@ -23,7 +27,7 @@ class ExMalloc(Slots):
 
     def get_memory_delta(self) -> tuple[float, float]:
         """Returns (current_mb, delta_mb) and updates last_memory"""
-        if not app.config().enable_trace_malloc.get_value(): return 0.0, 0.0
+        if self.disabled: return 0.0, 0.0
         if not tracemalloc.is_tracing(): raise Exception("You must call ensure_initialized before calling get_memory_delta")
 
         ex_gc.collect_on_ui_thread_synchronously()
@@ -34,17 +38,16 @@ class ExMalloc(Slots):
         return current, delta
 
     def get_memory_delta_message(self, message: str) -> str:
-        if not app.config().enable_trace_malloc.get_value(): return ""
+        if self.disabled: return ""
         current_mem, delta_mem = self.get_memory_delta()
         return f"{message}Mem: {current_mem:.1f}MB ({delta_mem:+.1f}MB)"
 
     def log_memory_delta(self, message: str) -> None:
-        if not app.config().enable_trace_malloc.get_value(): return
+        if self.disabled: return
         mylog.info(f"{message} | {self.get_memory_delta_message('')}")
 
-    @staticmethod
-    def stop() -> None:
-        if not app.config().enable_trace_malloc.get_value(): return
+    def stop(self) -> None:
+        if self.disabled: return
         tracemalloc.stop()
         ex_gc.collect_on_ui_thread_synchronously()
 

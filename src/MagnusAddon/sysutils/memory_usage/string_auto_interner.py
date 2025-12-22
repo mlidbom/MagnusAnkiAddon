@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import sys
 
 import mylog
@@ -8,6 +9,9 @@ from typed_linq_collections.collections.q_dict import QDict
 from typed_linq_collections.collections.string_interning import set_default_intern_func
 
 _is_enabled = app.config().enable_auto_string_interning.get_value()
+_env_override = os.environ.get("STRING_INTERNING")
+if _env_override:
+    _is_enabled = _env_override == "1"
 
 intern_hit_count = 0
 intern_miss_count = 0
