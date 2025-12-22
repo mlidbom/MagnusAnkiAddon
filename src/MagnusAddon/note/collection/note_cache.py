@@ -24,7 +24,8 @@ class CachedNote(Slots):
 class NoteCache[TNote: JPNote, TSnapshot: CachedNote](Slots):
     def __init__(self, all_notes: list[TNote], cached_note_type: type[TNote], cache_runner: CacheRunner, task_runner: ITaskRunner) -> None:
         self._note_type: type[TNote] = cached_note_type
-        self._by_question: DefaultDictCaseInsensitive[set[TNote]] = DefaultDictCaseInsensitive(set)
+        # Since notes with a given Id are guaranteed to only exist once in the cache, we can use lists within the dictionary to cut memory usage a ton compared to using sets
+        self._by_question: DefaultDictCaseInsensitive[QList[TNote]] = DefaultDictCaseInsensitive(QList[TNote])
         self._by_id: dict[NoteId, TNote] = {}
         self._snapshot_by_id: dict[NoteId, TSnapshot] = {}
 
@@ -48,7 +49,7 @@ class NoteCache[TNote: JPNote, TSnapshot: CachedNote](Slots):
         return self._by_id.get(note_id, None)
 
     def with_question(self, question: str) -> QList[TNote]:
-        return QList(self._by_question.get_value_or_default(question))
+        return self._by_question.get_value_or_default(question).to_list()
 
     def _create_snapshot(self, note: TNote) -> TSnapshot: raise NotImplementedError()  # pyright: ignore[reportUnusedParameter]
     def _inheritor_remove_from_cache(self, note: TNote, snapshot: TSnapshot) -> None: raise NotImplementedError()  # pyright: ignore[reportUnusedParameter]
@@ -110,5 +111,5 @@ class NoteCache[TNote: JPNote, TSnapshot: CachedNote](Slots):
         self._by_id[note.get_id()] = note
         snapshot = self._create_snapshot(note)
         self._snapshot_by_id[note.get_id()] = snapshot
-        self._by_question[note.get_question()].add(note)
+        self._by_question[note.get_question()].append(note)
         self._inheritor_add_to_cache(note, snapshot)
