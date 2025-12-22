@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import re
 
+from sysutils.memory_usage import string_auto_interner
 from typed_linq_collections.collections.q_list import QList
 
 newline = "\n"
@@ -43,3 +44,6 @@ def first_number(string:str) -> int:
 
 def replace_word(word:str, replacement:str, text:str) -> str:
     return re.sub(rf"\b{re.escape(word)}\b", replacement, text)
+
+def auto_intern(string: str) -> str:
+    return string_auto_interner.auto_intern(string)

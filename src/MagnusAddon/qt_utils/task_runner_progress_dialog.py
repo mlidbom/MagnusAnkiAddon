@@ -9,7 +9,7 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication, QProgressDialog
 from sysutils import app_thread_pool, ex_thread, timeutil
-from sysutils.ex_trace_malloc import ex_trace_malloc_instance
+from sysutils.memory_usage.ex_trace_malloc import ex_trace_malloc_instance
 from sysutils.timeutil import StopWatch
 from sysutils.typed import non_optional
 

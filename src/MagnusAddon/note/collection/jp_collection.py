@@ -15,7 +15,7 @@ from note.jpnote import JPNote
 from note.note_constants import Mine
 from qt_utils.task_runner_progress_dialog import TaskRunner
 from sysutils import app_thread_pool
-from sysutils.ex_trace_malloc import ex_trace_malloc_instance
+from sysutils.memory_usage.ex_trace_malloc import ex_trace_malloc_instance
 from sysutils.timeutil import StopWatch
 from sysutils.typed import non_optional
 from sysutils.weak_ref import WeakRefable
