@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING
 import mylog
 from ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from language_services.jamdict_ex.dict_lookup import DictLookup
 from note import noteutils
 from note.collection.cache_runner import CacheRunner
 from note.collection.kanji_collection import KanjiCollection
@@ -25,7 +24,6 @@ from sysutils.weak_ref import WeakRefable
 if TYPE_CHECKING:
     from anki.collection import Collection
     from anki.notes import NoteId
-
 
 class JPCollection(WeakRefable, Slots):
     _is_inital_load: bool = True  # running the GC on initial load slows startup a lot but does not decrease memory usage in any significant way.
@@ -91,8 +89,9 @@ class JPCollection(WeakRefable, Slots):
 
             self._cache_runner.start()
 
-
-            task_runner.run_on_background_thread_with_spinning_progress_dialog("Loading Jamdict db into memory", DictLookup.do_pre_loading)
+            if app.config().load_jamdict_db_into_memory.get_value():
+                from language_services.jamdict_ex.dict_lookup import DictLookup
+                task_runner.run_on_background_thread_with_spinning_progress_dialog("Loading Jamdict db into memory", DictLookup.ensure_loaded_into_memory)
 
             if app.config().pre_cache_card_studying_status.get_value():
                 noteutils.initialize_studying_cache(self.anki_collection, task_runner)
