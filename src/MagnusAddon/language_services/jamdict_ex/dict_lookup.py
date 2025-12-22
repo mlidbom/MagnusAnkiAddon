@@ -10,7 +10,6 @@ from sysutils.lazy import Lazy
 from sysutils.timeutil import StopWatch
 from sysutils.typed import non_optional, str_
 from typed_linq_collections.collections.q_list import QList
-from typed_linq_collections.collections.string_interning import QInterningStringSet
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -88,8 +87,8 @@ _jamdict_threading_wrapper: JamdictThreadingWrapper = JamdictThreadingWrapper()
 # noinspection SqlResolve
 def _find_all_words() -> QSet[str]:
     with StopWatch.log_execution_time("Prepopulating all word forms from jamdict."):
-        kanji_forms: QSet[str] = QInterningStringSet(_jamdict_threading_wrapper.run_string_query("SELECT distinct text FROM Kanji"))
-        kana_forms: QSet[str] = QInterningStringSet(_jamdict_threading_wrapper.run_string_query("SELECT distinct text FROM Kana"))
+        kanji_forms: QSet[str] = _jamdict_threading_wrapper.run_string_query("SELECT distinct text FROM Kanji").to_set()
+        kana_forms: QSet[str] = _jamdict_threading_wrapper.run_string_query("SELECT distinct text FROM Kana").to_set()
     return kanji_forms | kana_forms
 
 # noinspection SqlResolve
