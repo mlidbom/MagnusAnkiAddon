@@ -35,13 +35,14 @@ class _VocabSnapshot(CachedNote, Slots):
 
 class _VocabCache(NoteCache[VocabNote, _VocabSnapshot], Slots):
     def __init__(self, all_vocab: list[VocabNote], cache_runner: CacheRunner, task_runner: ITaskRunner) -> None:
+        # Since notes with a given Id are guaranteed to only exist once in the cache, we can use lists within the dictionary to cut memory usage a ton compared to using sets
         self._by_form: dict[str, set[VocabNote]] = defaultdict(set)
-        self._by_kanji_in_main_form: QDefaultDict[str, QSet[VocabNote]] = QDefaultDict[str, QSet[VocabNote]](QSet[VocabNote])
-        self._by_kanji_in_any_form: QDefaultDict[str, QSet[VocabNote]] = QDefaultDict[str, QSet[VocabNote]](QSet[VocabNote])
-        self._by_compound_part: QDefaultDict[str, QSet[VocabNote]] = QDefaultDict[str, QSet[VocabNote]](QSet[VocabNote])
-        self._by_derived_from: QDefaultDict[str, QSet[VocabNote]] = QDefaultDict[str, QSet[VocabNote]](QSet[VocabNote])
-        self._by_reading: QDefaultDict[str, QSet[VocabNote]] = QDefaultDict[str, QSet[VocabNote]](QSet[VocabNote])
-        self._by_stem: QDefaultDict[str, QSet[VocabNote]] = QDefaultDict[str, QSet[VocabNote]](QSet[VocabNote])
+        self._by_kanji_in_main_form: QDefaultDict[str, QList[VocabNote]] = QDefaultDict[str, QList[VocabNote]](QList[VocabNote])
+        self._by_kanji_in_any_form: QDefaultDict[str, QList[VocabNote]] = QDefaultDict[str, QList[VocabNote]](QList[VocabNote])
+        self._by_compound_part: QDefaultDict[str, QList[VocabNote]] = QDefaultDict[str, QList[VocabNote]](QList[VocabNote])
+        self._by_derived_from: QDefaultDict[str, QList[VocabNote]] = QDefaultDict[str, QList[VocabNote]](QList[VocabNote])
+        self._by_reading: QDefaultDict[str, QList[VocabNote]] = QDefaultDict[str, QList[VocabNote]](QList[VocabNote])
+        self._by_stem: QDefaultDict[str, QList[VocabNote]] = QDefaultDict[str, QList[VocabNote]](QList[VocabNote])
         super().__init__(all_vocab, VocabNote, cache_runner, task_runner)
 
     def with_form(self, form: str) -> QList[VocabNote]: return QList(self._by_form[form]) if form in self._by_form else QList[VocabNote]()
@@ -82,13 +83,13 @@ class _VocabCache(NoteCache[VocabNote, _VocabSnapshot], Slots):
     @override
     def _inheritor_add_to_cache(self, note: VocabNote, snapshot: _VocabSnapshot) -> None:
         for form in snapshot.forms: self._by_form[form].add(note)
-        for compound_part in snapshot.compound_parts: self._by_compound_part[compound_part].add(note)
+        for compound_part in snapshot.compound_parts: self._by_compound_part[compound_part].append(note)
         # todo: We add these regardless of whether they have a value in derived from? Won't there be a ton of instances for the empty string?
-        self._by_derived_from[snapshot.derived_from].add(note)
-        for kanji in snapshot.main_form_kanji: self._by_kanji_in_main_form[kanji].add(note)
-        for kanji in snapshot.all_kanji: self._by_kanji_in_any_form[kanji].add(note)
-        for reading in snapshot.readings: self._by_reading[reading].add(note)
-        for stem in snapshot.stems: self._by_stem[stem].add(note)
+        self._by_derived_from[snapshot.derived_from].append(note)
+        for kanji in snapshot.main_form_kanji: self._by_kanji_in_main_form[kanji].append(note)
+        for kanji in snapshot.all_kanji: self._by_kanji_in_any_form[kanji].append(note)
+        for reading in snapshot.readings: self._by_reading[reading].append(note)
+        for stem in snapshot.stems: self._by_stem[stem].append(note)
 
 class VocabCollection(Slots):
     def __init__(self, collection: Collection, cache_manager: CacheRunner, task_runner: ITaskRunner) -> None:

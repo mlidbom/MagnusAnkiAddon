@@ -11,14 +11,14 @@ if TYPE_CHECKING:
     from anki.notes import Note, NoteId
     from note.collection.cache_runner import CacheRunner
     from qt_utils.task_runner_progress_dialog import ITaskRunner
-    from typed_linq_collections.collections.q_list import QList
+    from typed_linq_collections.collections.q_set import QSet
 
 from note.collection.backend_facade import BackEndFacade
 from note.collection.note_cache import CachedNote, NoteCache
 from note.kanjinote import KanjiNote
 from note.note_constants import NoteTypes
 from sysutils import kana_utils
-from typed_linq_collections.collections.q_set import QSet
+from typed_linq_collections.collections.q_list import QList
 
 
 @final
@@ -30,8 +30,9 @@ class _KanjiSnapshot(CachedNote, Slots):
 
 class _KanjiCache(NoteCache[KanjiNote, _KanjiSnapshot], Slots):
     def __init__(self, all_kanji: list[KanjiNote], cache_runner: CacheRunner, task_runner: ITaskRunner) -> None:
-        self._by_radical: QDefaultDict[str, QSet[KanjiNote]] = QDefaultDict(QSet[KanjiNote])
-        self.by_reading: QDefaultDict[str, QSet[KanjiNote]] = QDefaultDict(QSet[KanjiNote])
+        # Since notes with a given Id are guaranteed to only exist once in the cache, we can use lists within the dictionary to cut memory usage a ton compared to using sets
+        self._by_radical: QDefaultDict[str, QList[KanjiNote]] = QDefaultDict(QList[KanjiNote])
+        self.by_reading: QDefaultDict[str, QList[KanjiNote]] = QDefaultDict(QList[KanjiNote])
         super().__init__(all_kanji, KanjiNote, cache_runner, task_runner)
 
     @override
@@ -44,8 +45,8 @@ class _KanjiCache(NoteCache[KanjiNote, _KanjiSnapshot], Slots):
 
     @override
     def _inheritor_add_to_cache(self, note: KanjiNote, snapshot: _KanjiSnapshot) -> None:
-        for form in snapshot.radicals: self._by_radical[form].add(note)
-        for reading in snapshot.readings: self.by_reading[reading].add(note)
+        for form in snapshot.radicals: self._by_radical[form].append(note)
+        for reading in snapshot.readings: self.by_reading[reading].append(note)
 
     def with_radical(self, radical: str) -> QList[KanjiNote]: return self._by_radical.get_value_or_default(radical).to_list()
 
@@ -69,7 +70,7 @@ class KanjiCollection(Slots):
 
     def with_radical(self, radical:str) -> QList[KanjiNote]: return self._cache.with_radical(radical)
     def with_reading(self, reading:str) -> QSet[KanjiNote]:
-        return self._cache.by_reading.get_value_or_default(kana_utils.anything_to_hiragana(reading))
+        return self._cache.by_reading.get_value_or_default(kana_utils.anything_to_hiragana(reading)).to_set()
 
     def add(self, note: KanjiNote) -> None:
         self.collection.anki_collection.addNote(note.backend_note)
