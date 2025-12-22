@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import sys
 from typing import TYPE_CHECKING, override
 
 from anki.notes import NoteId
@@ -15,8 +16,8 @@ class ParsedMatch(Slots):
     def __init__(self, variant: str, start_index: int, is_displayed: bool, word: str, information_string: str, vocab_id: NoteId) -> None:
         self.start_index: int = start_index
         self.is_displayed: bool = is_displayed
-        self.variant: str = variant
-        self.parsed_form: str = word
+        self.variant: str = sys.intern(variant)
+        self.parsed_form: str = sys.intern(word)
         self.vocab_id: NoteId = vocab_id
         self.information_string: str = information_string
 
