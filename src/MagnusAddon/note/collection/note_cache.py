@@ -107,6 +107,7 @@ class NoteCache[TNote: JPNote, TSnapshot: CachedNote](Slots):
         self._inheritor_remove_from_cache(note, cached)
 
     def add_note_to_cache(self, note: TNote) -> None:
+        if note.get_id() in self._by_id: return
         assert note.get_id()
         self._by_id[note.get_id()] = note
         snapshot = self._create_snapshot(note)
