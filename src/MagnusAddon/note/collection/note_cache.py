@@ -28,7 +28,6 @@ class NoteCache[TNote: JPNote, TSnapshot: CachedNote](Slots):
         self._by_question: DefaultDictCaseInsensitive[set[TNote]] = DefaultDictCaseInsensitive(set)
         self._by_id: dict[NoteId, TNote] = {}
         self._snapshot_by_id: dict[NoteId, TSnapshot] = {}
-        self._by_answer: DefaultDictCaseInsensitive[set[TNote]] = DefaultDictCaseInsensitive(set)
 
         self._deleted: QSet[NoteId] = QSet()
 
@@ -105,7 +104,6 @@ class NoteCache[TNote: JPNote, TSnapshot: CachedNote](Slots):
         cached = self._snapshot_by_id.pop(note.get_id())
         self._by_id.pop(note.get_id())
         self._by_question[cached.question].remove(note)
-        self._by_answer[cached.answer].remove(note)
         self._inheritor_remove_from_cache(note, cached)
 
     def add_note_to_cache(self, note: TNote) -> None:
@@ -114,5 +112,4 @@ class NoteCache[TNote: JPNote, TSnapshot: CachedNote](Slots):
         snapshot = self._create_snapshot(note)
         self._snapshot_by_id[note.get_id()] = snapshot
         self._by_question[note.get_question()].add(note)
-        self._by_answer[note.get_answer()].add(note)
         self._inheritor_add_to_cache(note, snapshot)
