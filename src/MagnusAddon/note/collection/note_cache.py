@@ -19,7 +19,6 @@ if TYPE_CHECKING:
 class CachedNote(Slots):
     def __init__(self, note: JPNote) -> None:
         self.id: NoteId = note.get_id()
-        self.answer: str = note.get_answer()
         self.question: str = note.get_question()
 
 class NoteCache[TNote: JPNote, TSnapshot: CachedNote](Slots):
