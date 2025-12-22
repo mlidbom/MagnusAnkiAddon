@@ -14,7 +14,6 @@ from note.notefields.sentence_question_field import SentenceQuestionField
 from note.notefields.strip_html_on_read_fallback_string_field import StripHtmlOnReadFallbackStringField
 from note.sentences.caching_sentence_configuration_field import CachingSentenceConfigurationField
 from note.sentences.parsing_result import ParsingResult
-from note.sentences.serialization.parsing_result_serializer import ParsingResultSerializer
 from note.sentences.user_fields import SentenceUserFields
 from sysutils import ex_str, kana_utils
 from sysutils.weak_ref import WeakRef
@@ -32,7 +31,7 @@ class SentenceNote(JPNote, Slots):
         self.weakref_sentence: WeakRef[SentenceNote] = cast(WeakRef[SentenceNote], self.weakref)
 
         self.configuration: CachingSentenceConfigurationField = CachingSentenceConfigurationField(self.weakref_sentence)
-        self.parsing_result: MutableSerializedObjectField[ParsingResult] = MutableSerializedObjectField[ParsingResult](self.weakref, SentenceNoteFields.parsing_result, ParsingResultSerializer())
+        self.parsing_result: MutableSerializedObjectField[ParsingResult] = MutableSerializedObjectField[ParsingResult](self.weakref, SentenceNoteFields.parsing_result, ParsingResult.serializer)
 
 
     @property
