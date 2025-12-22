@@ -50,7 +50,7 @@ class NoteCache[TNote: JPNote, TSnapshot: CachedNote](Slots):
         return self._by_id.get(note_id, None)
 
     def with_question(self, question: str) -> QList[TNote]:
-        return QList(self._by_question[question])
+        return QList(self._by_question.get_value_or_default(question))
 
     def _create_snapshot(self, note: TNote) -> TSnapshot: raise NotImplementedError()  # pyright: ignore[reportUnusedParameter]
     def _inheritor_remove_from_cache(self, note: TNote, snapshot: TSnapshot) -> None: raise NotImplementedError()  # pyright: ignore[reportUnusedParameter]
