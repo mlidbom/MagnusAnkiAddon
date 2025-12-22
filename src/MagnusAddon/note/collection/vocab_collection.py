@@ -3,11 +3,12 @@ from __future__ import annotations
 from collections import defaultdict
 from typing import TYPE_CHECKING, override
 
-from autoslot import Slots  # pyright: ignore [reportMissingTypeStubs]
+from autoslot import Slots
 from note.collection.backend_facade import BackEndFacade
 from note.collection.note_cache import CachedNote, NoteCache
 from note.note_constants import NoteTypes
 from note.vocabulary.vocabnote import VocabNote
+from typed_linq_collections.collections.q_default_dict import QDefaultDict  # pyright: ignore [reportMissingTypeStubs]
 from typed_linq_collections.collections.q_list import QList
 from typed_linq_collections.collections.q_set import QSet
 from typed_linq_collections.q_iterable import query
@@ -35,21 +36,21 @@ class _VocabSnapshot(CachedNote, Slots):
 class _VocabCache(NoteCache[VocabNote, _VocabSnapshot], Slots):
     def __init__(self, all_vocab: list[VocabNote], cache_runner: CacheRunner, task_runner: ITaskRunner) -> None:
         self._by_form: dict[str, set[VocabNote]] = defaultdict(set)
-        self._by_kanji_in_main_form: dict[str, set[VocabNote]] = defaultdict(set)
-        self._by_kanji_in_any_form: dict[str, set[VocabNote]] = defaultdict(set)
-        self._by_compound_part: dict[str, set[VocabNote]] = defaultdict(set)
-        self._by_derived_from: dict[str, set[VocabNote]] = defaultdict(set)
-        self._by_reading: dict[str, set[VocabNote]] = defaultdict(set)
-        self._by_stem: dict[str, set[VocabNote]] = defaultdict(set)
+        self._by_kanji_in_main_form: QDefaultDict[str, QSet[VocabNote]] = QDefaultDict[str, QSet[VocabNote]](QSet[VocabNote])
+        self._by_kanji_in_any_form: QDefaultDict[str, QSet[VocabNote]] = QDefaultDict[str, QSet[VocabNote]](QSet[VocabNote])
+        self._by_compound_part: QDefaultDict[str, QSet[VocabNote]] = QDefaultDict[str, QSet[VocabNote]](QSet[VocabNote])
+        self._by_derived_from: QDefaultDict[str, QSet[VocabNote]] = QDefaultDict[str, QSet[VocabNote]](QSet[VocabNote])
+        self._by_reading: QDefaultDict[str, QSet[VocabNote]] = QDefaultDict[str, QSet[VocabNote]](QSet[VocabNote])
+        self._by_stem: QDefaultDict[str, QSet[VocabNote]] = QDefaultDict[str, QSet[VocabNote]](QSet[VocabNote])
         super().__init__(all_vocab, VocabNote, cache_runner, task_runner)
 
     def with_form(self, form: str) -> QList[VocabNote]: return QList(self._by_form[form]) if form in self._by_form else QList[VocabNote]()
 
-    def with_compound_part(self, form: str) -> list[VocabNote]:
+    def with_compound_part(self, form: str) -> QList[VocabNote]:
         compound_parts: QSet[VocabNote] = QSet()
 
         def fetch_parts(part_form: str) -> None:
-            for vocab in self._by_compound_part[part_form]:
+            for vocab in self._by_compound_part.get_value_or_default(part_form):
                 if vocab not in compound_parts:
                     compound_parts.add(vocab)
                     fetch_parts(vocab.get_question())
@@ -57,13 +58,13 @@ class _VocabCache(NoteCache[VocabNote, _VocabSnapshot], Slots):
         fetch_parts(form)
 
         def get_vocab_question(vocab: VocabNote) -> str: return vocab.get_question()
-        return sorted(compound_parts, key=get_vocab_question)
+        return compound_parts.order_by(get_vocab_question).to_list()
 
-    def derived_from(self, form: str) -> list[VocabNote]: return list(self._by_derived_from[form])
-    def with_kanji_in_main_form(self, kanji: str) -> list[VocabNote]: return list(self._by_kanji_in_main_form[kanji])
-    def with_kanji_in_any_form(self, kanji: str) -> list[VocabNote]: return list(self._by_kanji_in_any_form[kanji])
-    def with_reading(self, reading: str) -> list[VocabNote]: return list(self._by_reading[reading])
-    def with_stem(self, stem: str) -> list[VocabNote]: return list(self._by_stem[stem])
+    def derived_from(self, form: str) -> QList[VocabNote]: return self._by_derived_from.get_value_or_default(form).to_list()
+    def with_kanji_in_main_form(self, kanji: str) -> QList[VocabNote]: return self._by_kanji_in_main_form.get_value_or_default(kanji).to_list()
+    def with_kanji_in_any_form(self, kanji: str) -> QList[VocabNote]: return self._by_kanji_in_any_form.get_value_or_default(kanji).to_list()
+    def with_reading(self, reading: str) -> QList[VocabNote]: return self._by_reading.get_value_or_default(reading).to_list()
+    def with_stem(self, stem: str) -> QList[VocabNote]: return self._by_stem.get_value_or_default(stem).to_list()
 
     @override
     def _create_snapshot(self, note: VocabNote) -> _VocabSnapshot: return _VocabSnapshot(note)
@@ -100,15 +101,15 @@ class VocabCollection(Slots):
     def all(self) -> list[VocabNote]: return self._cache.all()
     def with_id_or_none(self, note_id: NoteId) -> VocabNote | None: return self._cache.with_id_or_none(note_id)
     def with_form(self, form: str) -> QList[VocabNote]: return self._cache.with_form(form)
-    def with_compound_part(self, compound_part: str) -> list[VocabNote]: return self._cache.with_compound_part(compound_part)
-    def derived_from(self, derived_from: str) -> list[VocabNote]: return self._cache.derived_from(derived_from)
-    def with_kanji_in_main_form(self, kanji: KanjiNote) -> list[VocabNote]: return self._cache.with_kanji_in_main_form(kanji.get_question())
-    def with_kanji_in_any_form(self, kanji: KanjiNote) -> list[VocabNote]: return self._cache.with_kanji_in_any_form(kanji.get_question())
+    def with_compound_part(self, compound_part: str) -> QList[VocabNote]: return self._cache.with_compound_part(compound_part)
+    def derived_from(self, derived_from: str) -> QList[VocabNote]: return self._cache.derived_from(derived_from)
+    def with_kanji_in_main_form(self, kanji: KanjiNote) -> QList[VocabNote]: return self._cache.with_kanji_in_main_form(kanji.get_question())
+    def with_kanji_in_any_form(self, kanji: KanjiNote) -> QList[VocabNote]: return self._cache.with_kanji_in_any_form(kanji.get_question())
     def with_question(self, question: str) -> QList[VocabNote]: return self._cache.with_question(question)
-    def with_reading(self, question: str) -> list[VocabNote]: return self._cache.with_reading(question)
-    def with_stem(self, question: str) -> list[VocabNote]: return self._cache.with_stem(question)
+    def with_reading(self, question: str) -> QList[VocabNote]: return self._cache.with_reading(question)
+    def with_stem(self, question: str) -> QList[VocabNote]: return self._cache.with_stem(question)
 
-    def with_form_prefer_exact_match(self, form: str) -> list[VocabNote]:
+    def with_form_prefer_exact_match(self, form: str) -> QList[VocabNote]:
         matches: list[VocabNote] = self.with_form(form)
         exact_match = [voc for voc in matches if voc.question.without_noise_characters == form]
         sequence = exact_match if exact_match else matches
@@ -117,7 +118,7 @@ class VocabCollection(Slots):
     def with_any_form_in_prefer_exact_match(self, forms: list[str]) -> QList[VocabNote]:
         return query(forms).select_many(self.with_form_prefer_exact_match).distinct().to_list()  #ex_sequence.remove_duplicates_while_retaining_order(ex_sequence.flatten([self.with_form_prefer_exact_match(form) for form in forms]))
 
-    def with_any_form_in(self, forms: list[str]) -> list[VocabNote]:
+    def with_any_form_in(self, forms: list[str]) -> QList[VocabNote]:
         return query(forms).select_many(self.with_form).distinct().to_list()  #ex_sequence.remove_duplicates_while_retaining_order(ex_sequence.flatten([self.with_form(form) for form in forms]))
 
     def with_any_question_in(self, questions: Iterable[str]) -> QList[VocabNote]:

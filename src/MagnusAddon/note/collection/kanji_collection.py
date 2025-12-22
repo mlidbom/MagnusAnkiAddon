@@ -47,7 +47,7 @@ class _KanjiCache(NoteCache[KanjiNote, _KanjiSnapshot], Slots):
         for form in snapshot.radicals: self._by_radical[form].add(note)
         for reading in snapshot.readings: self.by_reading[reading].add(note)
 
-    def with_radical(self, radical: str) -> QList[KanjiNote]: return self._by_radical[radical].to_list()
+    def with_radical(self, radical: str) -> QList[KanjiNote]: return self._by_radical.get_value_or_default(radical).to_list()
 
 class KanjiCollection(Slots):
     def __init__(self, collection: Collection, cache_manager: CacheRunner, task_runner: ITaskRunner) -> None:
@@ -69,7 +69,7 @@ class KanjiCollection(Slots):
 
     def with_radical(self, radical:str) -> QList[KanjiNote]: return self._cache.with_radical(radical)
     def with_reading(self, reading:str) -> QSet[KanjiNote]:
-        return self._cache.by_reading[kana_utils.anything_to_hiragana(reading)]
+        return self._cache.by_reading.get_value_or_default(kana_utils.anything_to_hiragana(reading))
 
     def add(self, note: KanjiNote) -> None:
         self.collection.anki_collection.addNote(note.backend_note)

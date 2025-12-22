@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, final
 from anki_extentions.note_ex import NoteBulkLoader
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from note.jpnote import JPNote
+from typed_linq_collections.collections.q_list import QList
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Sequence
@@ -25,8 +26,8 @@ class BackEndFacade[TNote: JPNote](Slots):
         return task_runner.process_with_progress(NoteBulkLoader.load_all_notes_of_type(self.anki_collection, self.note_type, task_runner),
                                                  self.jp_note_constructor, f"Constructing {self.note_type} notes")
 
-    def search(self, query: str) -> list[TNote]:
+    def search(self, query: str) -> QList[TNote]:
         return self.by_id(self.anki_collection.find_notes(query))
 
-    def by_id(self, note_ids: Sequence[NoteId]) -> list[TNote]:
-        return [self.jp_note_constructor(self.anki_collection.get_note(note_id)) for note_id in note_ids]
+    def by_id(self, note_ids: Sequence[NoteId]) -> QList[TNote]:
+        return QList(self.jp_note_constructor(self.anki_collection.get_note(note_id)) for note_id in note_ids)
