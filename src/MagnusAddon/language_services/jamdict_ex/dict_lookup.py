@@ -237,6 +237,6 @@ class DictLookup(Slots):
         return app.col().vocab.is_word(word) or cls.is_word(word)
 
     @classmethod
-    def ensure_loaded_into_memory(cls) -> None:
+    def do_pre_loading(cls) -> None:
         cls._lookup_name_raw("桜")
         cls._lookup_word_raw("俺")
