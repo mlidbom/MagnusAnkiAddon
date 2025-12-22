@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
+from anki.notes import NoteId
 from autoslot import Slots
 from note.collection.backend_facade import BackEndFacade
 from note.collection.note_cache import CachedNote, NoteCache
@@ -9,11 +10,11 @@ from note.note_constants import NoteTypes
 from note.sentences.sentencenote import SentenceNote
 from typed_linq_collections.collections.q_default_dict import QDefaultDict
 from typed_linq_collections.collections.q_list import QList
-from typed_linq_collections.collections.q_set import QSet  # pyright: ignore[reportMissingTypeStubs]
+from typed_linq_collections.q_iterable import query
 
 if TYPE_CHECKING:
     from anki.collection import Collection
-    from anki.notes import Note, NoteId
+    from anki.notes import Note
     from note.collection.cache_runner import CacheRunner
     from note.vocabulary.vocabnote import VocabNote
     from qt_utils.task_runner_progress_dialog import ITaskRunner
@@ -25,31 +26,32 @@ class _SentenceSnapshot(CachedNote, Slots):
         self.detected_vocab: tuple[int, ...] = note.parsing_result.get().matched_vocab_ids.to_tuple()
         self.user_highlighted_vocab: tuple[str, ...] = note.configuration.highlighted_words().to_tuple()
 
+
 class _SentenceCache(NoteCache[SentenceNote, _SentenceSnapshot], Slots):
     def __init__(self, all_kanji: list[SentenceNote], cache_runner: CacheRunner, task_runner: ITaskRunner) -> None:
-        self._by_vocab_form: QDefaultDict[str, QSet[SentenceNote]] = QDefaultDict[str, QSet[SentenceNote]](QSet[SentenceNote])
-        self._by_user_highlighted_vocab: QDefaultDict[str, QSet[SentenceNote]] = QDefaultDict[str, QSet[SentenceNote]](QSet[SentenceNote])
-        self._by_vocab_id: QDefaultDict[int, QSet[SentenceNote]] = QDefaultDict[int, QSet[SentenceNote]](QSet[SentenceNote])
+        self._by_vocab_form: QDefaultDict[str, QList[NoteId]] = QDefaultDict[str, QList[NoteId]](QList[NoteId])
+        self._by_user_highlighted_vocab: QDefaultDict[str, QList[NoteId]] = QDefaultDict[str, QList[NoteId]](QList[NoteId])
+        self._by_vocab_id: QDefaultDict[int, QList[NoteId]] = QDefaultDict[int, QList[NoteId]](QList[NoteId])
         super().__init__(all_kanji, SentenceNote, cache_runner, task_runner)
 
     @override
     def _create_snapshot(self, note: SentenceNote) -> _SentenceSnapshot: return _SentenceSnapshot(note)
 
-    def with_vocab(self, vocab: VocabNote) -> QList[SentenceNote]: return self._by_vocab_id.get_value_or_default(vocab.get_id()).to_list()
-    def with_vocab_form(self, form: str) -> QList[SentenceNote]: return self._by_vocab_form.get_value_or_default(form).to_list()
-    def with_user_highlighted_vocab(self, form: str) -> QList[SentenceNote]: return self._by_user_highlighted_vocab.get_value_or_default(form).to_list()
+    def with_vocab(self, vocab: VocabNote) -> QList[SentenceNote]: return query(self._by_vocab_id.get_value_or_default(vocab.get_id())).select(self._by_id.__getitem__).to_list()
+    def with_vocab_form(self, form: str) -> QList[SentenceNote]: return query(self._by_vocab_form.get_value_or_default(form)).select(self._by_id.__getitem__).to_list()
+    def with_user_highlighted_vocab(self, form: str) -> QList[SentenceNote]: return query(self._by_user_highlighted_vocab.get_value_or_default(form)).select(self._by_id.__getitem__).to_list()
 
     @override
     def _inheritor_remove_from_cache(self, note: SentenceNote, snapshot: _SentenceSnapshot) -> None:
-        for vocab_form in snapshot.words: self._by_vocab_form[vocab_form].remove(note)
-        for vocab_form in snapshot.user_highlighted_vocab: self._by_user_highlighted_vocab[vocab_form].remove(note)
-        for vocab_id in snapshot.detected_vocab: self._by_vocab_id[vocab_id].remove(note)
+        for vocab_form in snapshot.words: self._by_vocab_form[vocab_form].remove(note.get_id())
+        for vocab_form in snapshot.user_highlighted_vocab: self._by_user_highlighted_vocab[vocab_form].remove(note.get_id())
+        for vocab_id in snapshot.detected_vocab: self._by_vocab_id[vocab_id].remove(note.get_id())
 
     @override
     def _inheritor_add_to_cache(self, note: SentenceNote, snapshot: _SentenceSnapshot) -> None:
-        for vocab_form in snapshot.words: self._by_vocab_form[vocab_form].add(note)
-        for vocab_form in snapshot.user_highlighted_vocab: self._by_user_highlighted_vocab[vocab_form].add(note)
-        for vocab_id in snapshot.detected_vocab: self._by_vocab_id[vocab_id].add(note)
+        for vocab_form in snapshot.words: self._by_vocab_form[vocab_form].append(note.get_id())
+        for vocab_form in snapshot.user_highlighted_vocab: self._by_user_highlighted_vocab[vocab_form].append(note.get_id())
+        for vocab_id in snapshot.detected_vocab: self._by_vocab_id[vocab_id].append(note.get_id())
 
 class SentenceCollection(Slots):
     def __init__(self, collection: Collection, cache_manager: CacheRunner, task_runner: ITaskRunner) -> None:
