@@ -141,10 +141,14 @@ class DictLookup(Slots):
         return cls._try_lookup_word_or_name_with_matching_reading(word, tuple(readings))
 
     @classmethod
-    @cache
     def _try_lookup_word_or_name_with_matching_reading(cls, word: str, readings: tuple[str, ...]) -> DictLookup:  # needs to be a tuple to be hashable for caching
         if not cls.might_be_entry(word): return DictLookup._failed_for_word(word)
 
+        return cls._try_lookup_word_or_name_with_matching_reading_inner(word, readings)
+
+    @classmethod
+    @cache
+    def _try_lookup_word_or_name_with_matching_reading_inner(cls, word: str, readings: tuple[str, ...]) -> DictLookup:  # needs to be a tuple to be hashable for caching
         def kanji_form_matches() -> QList[DictEntry]:
             return (lookup
                     .where(lambda entry: any(entry.has_matching_kana_form(reading) for reading in readings)
@@ -192,17 +196,25 @@ class DictLookup(Slots):
         return DictLookup(entries, word, QList())
 
     @classmethod
-    @cache  # _lookup_word_shallow.cache_clear(), _lookup_word_shallow.cache_info()
     def _lookup_word_raw(cls, word: str) -> list[JMDEntry]:
         if not cls.might_be_word(word): return []
+        return cls._lookup_word_raw_inner(word)
 
+    @classmethod
+    @cache  # _lookup_word_shallow.cache_clear(), _lookup_word_shallow.cache_info()
+    def _lookup_word_raw_inner(cls, word: str) -> list[JMDEntry]:
         entries = list(_jamdict_threading_wrapper.lookup(word, include_names=False).entries)
         return entries if not kana_utils.is_only_kana(word) else [ent for ent in entries if cls._is_kana_only(ent)]
 
     @classmethod
-    @cache  # _lookup_word_shallow.cache_clear(), _lookup_word_shallow.cache_info()
     def _lookup_name_raw(cls, word: str) -> list[JMDEntry]:
         if not cls.might_be_name(word): return []
+        return cls._lookup_name_raw_inner(word)
+
+
+    @classmethod
+    @cache  # _lookup_word_shallow.cache_clear(), _lookup_word_shallow.cache_info()
+    def _lookup_name_raw_inner(cls, word: str) -> list[JMDEntry]:
         return list(_jamdict_threading_wrapper.lookup(word, include_names=True).names)
 
     @staticmethod
@@ -226,12 +238,19 @@ class DictLookup(Slots):
         return cls.might_be_word(word) or cls.might_be_name(word)
 
     @classmethod
-    @cache
     def is_word(cls, word: str) -> bool:
-        return cls.might_be_word(word) and cls.lookup_word(word).found_words()
+        if not cls.might_be_word(word):
+            return False
+
+        return cls._is_word_inner(word)
 
     @classmethod
     @cache
+    def _is_word_inner(cls, word: str) -> bool:
+        return cls.lookup_word(word).found_words()
+
+
+    @classmethod
     def is_dictionary_or_collection_word(cls, word: str) -> bool:
         from ankiutils import app
         return app.col().vocab.is_word(word) or cls.is_word(word)
