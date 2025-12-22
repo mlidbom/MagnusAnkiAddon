@@ -14,6 +14,7 @@ if TYPE_CHECKING:
     from note.sentences.sentencenote import SentenceNote
     from note.sentences.word_exclusion_set import WordExclusionSet
     from note.vocabulary.vocabnote import VocabNote
+    from typed_linq_collections.collections.q_unique_list import QUniqueList
 
 class CachingSentenceConfigurationField(WeakRefable, Slots):
     def __init__(self, sentence: WeakRef[SentenceNote]) -> None:
@@ -31,7 +32,7 @@ class CachingSentenceConfigurationField(WeakRefable, Slots):
     @property
     def hidden_matches(self) -> WordExclusionSet: return self._value.hidden_matches
 
-    def highlighted_words(self) -> QSet[str]: return self._value.highlighted_words
+    def highlighted_words(self) -> QUniqueList[str]: return self._value.highlighted_words
 
     @property
     def highlighted_vocab(self) -> QSet[VocabNote]:

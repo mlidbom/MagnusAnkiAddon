@@ -103,7 +103,7 @@ def test_ignores_noise_characters() -> None:
 @pytest.mark.usefixtures("setup_collection_with_select_data")
 def test_that_vocab_is_not_indexed_even_if_form_is_highlighted_if_invalid_and_there_is_another_valid_vocab_with_the_form() -> None:
     sentence = SentenceNote.create_test_note("勝つんだ", "")
-    sentence.configuration.highlighted_words().add("んだ")
+    sentence.configuration.add_highlighted_word("んだ")
     sentence.update_parsed_words(force=True)
     parsing_result = sentence.parsing_result.get()
     words = [w.parsed_form for w in parsing_result.parsed_words]

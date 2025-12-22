@@ -24,6 +24,7 @@ if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
     from note.vocabulary.vocabnote import VocabNote
     from typed_linq_collections.collections.q_list import QList
+    from typed_linq_collections.collections.q_unique_list import QUniqueList
 
 class SentenceNote(JPNote, Slots):
     def __init__(self, note: Note) -> None:
@@ -87,7 +88,7 @@ class SentenceNote(JPNote, Slots):
         kanji = self.collection.kanji.with_any_kanji_in(self.extract_kanji())
         return QSet.create(highlighted, displayed_vocab, kanji)
 
-    def get_words(self) -> QSet[str]: return (self.parsing_result.get().parsed_words_strings().to_set() | self.configuration.highlighted_words()) - self.configuration.incorrect_matches.words()
+    def get_words(self) -> QUniqueList[str]: return (self.parsing_result.get().parsed_words_strings() | self.configuration.highlighted_words()) - self.configuration.incorrect_matches.words()
 
     def get_parsed_words_notes(self) -> list[VocabNote]:
         return (self.get_valid_parsed_non_child_words_strings()
