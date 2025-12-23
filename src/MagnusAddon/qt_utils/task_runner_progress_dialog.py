@@ -88,7 +88,7 @@ class InvisibleTaskRunner(ITaskRunner, Slots):
 
 class QtTaskProgressRunner(ITaskRunner, Slots):
     def __init__(self, window_title: str, label_text: str, allow_cancel: bool = True) -> None:
-        self.allow_cancel = allow_cancel
+        self.allow_cancel: bool = allow_cancel
         dialog = QProgressDialog(f"""{window_title}...""", "Cancel" if allow_cancel else None, 0, 0)
         self.dialog: QProgressDialog = dialog
         dialog.setWindowTitle(f"""{window_title}""")
