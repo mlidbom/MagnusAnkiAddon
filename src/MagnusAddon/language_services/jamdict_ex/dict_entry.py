@@ -3,8 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, cast, final
 
 from autoslot import Slots
-from typed_linq_collections.collections.q_unique_list import QUniqueList
-
 from language_services.jamdict_ex import jmd_pos_map
 from sysutils import kana_utils, typed
 from sysutils.typed import str_
