@@ -3,8 +3,11 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, cast, final
 
 from autoslot import Slots
+from typed_linq_collections.collections.q_unique_list import QUniqueList
+
+from language_services.jamdict_ex import jmd_pos_map
 from sysutils import kana_utils, typed
-from sysutils.typed import checked_cast_generics, str_
+from sysutils.typed import str_
 from typed_linq_collections.collections.q_list import QList
 from typed_linq_collections.q_iterable import query
 
@@ -14,22 +17,22 @@ if TYPE_CHECKING:
     from jamdict.jmdict import JMDEntry, KanaForm, KanjiForm, Sense, SenseGloss  # pyright: ignore[reportMissingTypeStubs]
     from typed_linq_collections.collections.q_set import QSet
 
-class KanaFormEX:
+class KanaFormEX(Slots):
     def __init__(self, source: KanaForm) -> None:
         self.text:str = typed.str_(source.text)  # pyright: ignore [reportUnknownMemberType, reportUnknownArgumentType]
         self.pri: QList[str] = QList(cast(list[str], source.pri))  # pyright: ignore [reportUnknownMemberType]
 
-class KanjiFormEX:
+class KanjiFormEX(Slots):
     def __init__(self, source: KanjiForm) -> None:
         self.text:str = typed.str_(source.text)  # pyright: ignore [reportUnknownArgumentType, reportUnknownMemberType]
         self.pri:QList[str] = QList(cast(list[str], source.pri))  # pyright: ignore [reportUnknownMemberType]
 
 
-class SenceGlossEX:
+class SenceGlossEX(Slots):
     def __init__(self, source: SenseGloss) -> None:
         self.text:str = typed.str_(source.text)  # pyright: ignore [reportUnknownArgumentType, reportUnknownMemberType]
 
-class SenseEX:
+class SenseEX(Slots):
     def __init__(self, source: Sense) -> None:
         self.gloss:QList[SenceGlossEX] = query(source.gloss).select(SenceGlossEX).to_list()  # pyright: ignore [reportUnknownArgumentType, reportUnknownMemberType]
         self.misc:QList[str] = QList(cast(list[str], source.misc))  # pyright: ignore [reportUnknownMemberType]
@@ -38,7 +41,7 @@ class SenseEX:
     def is_transitive_verb(self) -> bool: return any(pos_item == "transitive verb" for pos_item in self.pos)
     def is_intransitive_verb(self) -> bool: return any(pos_item == "intransitive verb" for pos_item in self.pos)
 
-class JMDEntryEX:
+class JMDEntryEX(Slots):
     def __init__(self, source: JMDEntry) -> None:
         self.kana_forms: QList[KanaFormEX] = query(source.kana_forms).select(KanaFormEX).to_list()
         self.kanji_forms: QList[KanjiFormEX] = query(source.kanji_forms).select(KanjiFormEX).to_list()
@@ -74,10 +77,10 @@ class DictEntry(Slots):
         return self.kana_forms().to_set() | self.kanji_forms().to_set() if self.is_kana_only() or force_allow_kana_only else self.kanji_forms().to_set()
 
     def _is_transitive_verb(self) -> bool:
-        return all(sense.is_transitive_verb() for sense in self.entry.senses)
+        return self.entry.senses.all(lambda it: it.is_transitive_verb())
 
     def _is_intransitive_verb(self) -> bool:
-        return all(sense.is_intransitive_verb() for sense in self.entry.senses)
+        return self.entry.senses.all(lambda it: it.is_intransitive_verb())
 
     def _is_verb(self) -> bool:
         return (any(sense.is_intransitive_verb() for sense in self.entry.senses)
@@ -122,69 +125,8 @@ class DictEntry(Slots):
         formatted_senses = [self.format_sense(sense) for sense in senses]
         return prefix + " | ".join(formatted_senses)
 
-    _parts_of_speech_map = {
-        "transitive verb": ["transitive"],
-        "intransitive verb": ["intransitive"],
-        "noun or participle which takes the aux. verb suru": ["suru verb"],
-        "noun (common) (futsuumeishi)": ["noun"],
-        "adjectival nouns or quasi-adjectives (keiyodoshi)": ["na-adjective"],
-        "noun, used as a suffix": ["noun", "suffix"],
-        "Godan verb with 'u' ending": ["godan verb"],
-        "Godan verb with 'ru' ending": ["godan verb"],
-        "Godan verb with 'mu' ending": ["godan verb"],
-        "Godan verb with 'nu' ending": ["godan verb"],
-        "Godan verb with 'gu' ending": ["godan verb"],
-        "Godan verb with 'ku' ending": ["godan verb"],
-        "Godan verb with 'su' ending": ["godan verb"],
-        "Godan verb with 'bu' ending": ["godan verb"],
-        "Godan verb with 'u' ending (special class)": ["godan verb", "special-class"],
-        "Godan verb - -aru special class": ["godan verb", "special-class-aru"],
-        "Godan verb with 'tsu' ending": ["godan verb"],
-        "irregular nu verb": ["nu verb"],
-        "Godan verb - Iku/Yuku special class": ["godan verb", "special-class"],
-        "Godan verb with 'ru' ending (irregular verb)": ["godan verb", "irregular"],
-        "Ichidan verb": ["ichidan verb"],
-        "Ichidan verb - zuru verb (alternative form of -jiru verbs)": ["ichidan verb", "zuru verb"],
-        "Kuru verb - special class": ["kuru verb", "special-class"],
-        "Yodan verb with 'ru' ending (archaic)": ["yodan verb"],
-        "Yodan verb with 'ku' ending (archaic)": ["yodan verb"],
-        "Nidan verb (lower class) with 'ru' ending (archaic)": ["nidan verb"],
-        "Nidan verb (upper class) with 'ru' ending (archaic)": ["nidan verb"],
-        "adjective (keiyoushi)": ["i-adjective"],
-        "adjective (keiyoushi) - yoi/ii class": ["i-adjective"],
-        "adverb (fukushi)": ["adverb"],
-        "adverb taking the 'to' particle": ["to-adverb"],
-        "auxiliary": ["auxiliary"],
-        "auxiliary adjective": ["adjective", "auxiliary"],
-        "auxiliary verb": ["auxiliary"],
-        "conjunction": ["conjunction"],
-        "copula": ["copula"],
-        "expressions (phrases, clauses, etc.)": ["expression"],
-        "interjection (kandoushi)": ["interjection"],
-        "irregular ru verb, plain form ends with -ri": [""],
-        "noun, used as a prefix": ["prefix", "noun"],
-        "nouns which may take the genitive case particle 'no'": ["noun", "no-adjective"],
-        "particle": ["particle"],
-        "pre-noun adjectival (rentaishi)": ["pre-noun-adjectival"],
-        "prefix": ["prefix"],
-        "pronoun": ["pronoun"],
-        "suffix": ["suffix"],
-        "suru verb - included": ["suru verb"],
-        "suru verb": ["suru verb"],
-        "su verb - precursor to the modern suru": ["su verb"],
-        "counter": ["counter"],
-        "numeric": ["numeric"],
-        "noun or verb acting prenominally": ["prenominal"],
-        "suru verb - special class": ["suru verb", "special-class"],
-        "Ichidan verb - kureru special class": ["ichidan verb", "special-class"],
-        "'taru' adjective": ["taru-adjective"]
-
-    }
     def parts_of_speech(self) -> QSet[str]:
-        def try_get_our_pos_name(pos: str) -> list[str]:
-            return self._parts_of_speech_map[pos] if pos in self._parts_of_speech_map else ["unmapped-pos-" + pos]
-
         return (query(self.entry.senses)
-                .select_many(lambda sense: checked_cast_generics(list[str], sense.pos))
-                .select_many(try_get_our_pos_name)
+                .select_many(lambda sense: sense.pos)
+                .select_many(jmd_pos_map.try_get_our_pos_name)
                 .to_set())
