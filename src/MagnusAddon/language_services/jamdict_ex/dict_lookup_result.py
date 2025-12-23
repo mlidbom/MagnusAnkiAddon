@@ -2,8 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from language_services.jamdict_ex.priority_spec import PrioritySpec
+from autoslot import Slots
 
 if TYPE_CHECKING:
     from language_services.jamdict_ex.dict_entry import DictEntry
@@ -30,6 +29,3 @@ class DictLookupResult(Slots):
 
     def parts_of_speech(self) -> QSet[str]:
         return self.entries.select_many(lambda entry: entry.parts_of_speech()).to_set()  # set(ex_sequence.flatten([list(ent.parts_of_speech()) for ent in self.entries]))
-
-    def priority_spec(self) -> PrioritySpec:
-        return PrioritySpec(self.entries.select_many(lambda entry: entry.priority_tags()).to_set())  # PrioritySpec(set(ex_iterable.flatten(entry.priority_tags() for entry in self.entries)))

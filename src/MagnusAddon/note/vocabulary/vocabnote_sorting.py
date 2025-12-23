@@ -29,8 +29,6 @@ def sort_vocab_list_by_studying_status(vocabs: Iterable[VocabNote], primary_voc:
     def prefer_more_sentences(local_vocab: VocabNote) -> int:
         return -len(local_vocab.sentences.all())
 
-    def prefer_high_priority(_vocab: VocabNote) -> int:
-        return _vocab.meta_data.priority_spec().priority
 
     _primary_voc = primary_voc if primary_voc else []
 
@@ -41,7 +39,6 @@ def sort_vocab_list_by_studying_status(vocabs: Iterable[VocabNote], primary_voc:
                                          prefer_studying_vocab(local_vocab),
                                          prefer_studying_sentences(local_vocab),
                                          prefer_more_sentences(local_vocab),
-                                         prefer_high_priority(local_vocab),
                                          local_vocab.get_question()))
 
     return result

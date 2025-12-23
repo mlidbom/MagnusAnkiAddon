@@ -10,13 +10,7 @@ from ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
 
 
 def _create_classes(_vocab: VocabNote) -> str:
-    # noinspection DuplicatedCode
-    tags = list(_vocab.meta_data.priority_spec().tags)
-    tags.sort()
-    classes = " ".join([f"""common_ness_{prio}""" for prio in tags])
-    classes += f""" {_vocab.meta_data.priority_spec().priority_string}"""
-    classes += " " + " ".join(_vocab.get_meta_tags())
-    return classes
+    return " ".join(_vocab.get_meta_tags())
 
 def render_vocab_list(vocab_list: list[VocabNote], title: str, css_class: str, reading: bool = True, no_sentense_statistics: bool = True) -> str:
     def render_readings(_vocab_note: VocabNote) -> str:

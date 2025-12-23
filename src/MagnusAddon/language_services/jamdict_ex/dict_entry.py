@@ -73,18 +73,6 @@ class DictEntry(Slots):
     def valid_forms(self, force_allow_kana_only: bool = False) -> QSet[str]:
         return self.kana_forms().to_set() | self.kanji_forms().to_set() if self.is_kana_only() or force_allow_kana_only else self.kanji_forms().to_set()
 
-    def priority_tags(self) -> QSet[str]:
-        kanji_priorities: QList[str] = (query(self.entry.kanji_forms)
-                                        .where(lambda form: str_(form.text) == self.lookup_word)
-                                        .select_many(lambda form: checked_cast_generics(list[str], form.pri))
-                                        .to_list())
-        kana_priorities: QList[str] = (query(self.entry.kana_forms)
-                                       .where(lambda form: str_(form.text) in self.lookup_readings)
-                                       .select_many(lambda form: checked_cast_generics(list[str], form.pri))
-                                       .to_list())
-
-        return (kanji_priorities + kana_priorities).to_set()
-
     def _is_transitive_verb(self) -> bool:
         return all(sense.is_transitive_verb() for sense in self.entry.senses)
 

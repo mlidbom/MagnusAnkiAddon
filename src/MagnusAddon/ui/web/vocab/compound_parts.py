@@ -19,11 +19,7 @@ class CompoundPart(Slots):
 
 def _create_classes(_vocab: VocabNote, depth: int = 0) -> str:
     # noinspection DuplicatedCode
-    tags = list(_vocab.meta_data.priority_spec().tags)
-    tags.sort()
-    classes = " ".join([f"""common_ness_{prio}""" for prio in tags])
-    classes += f""" {_vocab.meta_data.priority_spec().priority_string}"""
-    classes += " " + " ".join(_vocab.get_meta_tags())
+    classes = " ".join(_vocab.get_meta_tags())
     classes += f" compound_part_depth_{depth}"
     return classes
 

@@ -14,11 +14,7 @@ if TYPE_CHECKING:
 def generate_vocab_html_list(_kanji_note: KanjiNote) -> str:
     def _create_classes(_kanji: KanjiNote, _vocab: VocabNote) -> str:
         # noinspection DuplicatedCode
-        tags = list(_vocab.meta_data.priority_spec().tags)
-        tags.sort()
-        classes = " ".join([f"""common_ness_{prio}""" for prio in tags])
-        classes += f""" {_vocab.meta_data.priority_spec().priority_string}"""
-        classes += " " + " ".join(_vocab.get_meta_tags())
+        classes = " ".join(_vocab.get_meta_tags())
 
         if _vocab.get_question() in primary_vocab or (_vocab.readings.get() and _vocab.readings.get()[0] in _kanji.get_primary_vocab()):
             classes += " primary_vocab" if has_real_primary_vocabs else " default_primary_vocab"
