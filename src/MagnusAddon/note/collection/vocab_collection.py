@@ -20,7 +20,6 @@ if TYPE_CHECKING:
     from anki.notes import Note, NoteId
     from note.collection.cache_runner import CacheRunner
     from note.kanjinote import KanjiNote
-    from qt_utils.task_runner_progress_dialog import ITaskRunner
 
 class _VocabSnapshot(CachedNote, Slots):
     def __init__(self, note: VocabNote) -> None:
@@ -34,7 +33,7 @@ class _VocabSnapshot(CachedNote, Slots):
         self.stems: tuple[str, ...] = note.conjugator.get_stems_for_primary_form().to_tuple()
 
 class _VocabCache(NoteCache[VocabNote, _VocabSnapshot], Slots):
-    def __init__(self, all_vocab: list[VocabNote], cache_runner: CacheRunner, task_runner: ITaskRunner) -> None:
+    def __init__(self, all_vocab: list[VocabNote], cache_runner: CacheRunner) -> None:
         # Since notes with a given Id are guaranteed to only exist once in the cache, we can use lists within the dictionary to cut memory usage a ton compared to using sets
         self._by_form: dict[str, set[VocabNote]] = defaultdict(set)
         self._by_kanji_in_main_form: QDefaultDict[str, QList[VocabNote]] = QDefaultDict[str, QList[VocabNote]](QList[VocabNote])
@@ -43,7 +42,7 @@ class _VocabCache(NoteCache[VocabNote, _VocabSnapshot], Slots):
         self._by_derived_from: QDefaultDict[str, QList[VocabNote]] = QDefaultDict[str, QList[VocabNote]](QList[VocabNote])
         self._by_reading: QDefaultDict[str, QList[VocabNote]] = QDefaultDict[str, QList[VocabNote]](QList[VocabNote])
         self._by_stem: QDefaultDict[str, QList[VocabNote]] = QDefaultDict[str, QList[VocabNote]](QList[VocabNote])
-        super().__init__(all_vocab, VocabNote, cache_runner, task_runner)
+        super().__init__(all_vocab, VocabNote, cache_runner)
 
     def with_form(self, form: str) -> QList[VocabNote]: return QList(self._by_form[form]) if form in self._by_form else QList[VocabNote]()
 
@@ -92,11 +91,11 @@ class _VocabCache(NoteCache[VocabNote, _VocabSnapshot], Slots):
         for stem in snapshot.stems: self._by_stem[stem].append(note)
 
 class VocabCollection(Slots):
-    def __init__(self, collection: Collection, cache_manager: CacheRunner, task_runner: ITaskRunner) -> None:
+    def __init__(self, collection: Collection, cache_manager: CacheRunner) -> None:
         def vocab_constructor_call_while_populating_vocab_collection(note: Note) -> VocabNote: return VocabNote(note)
         self.collection: BackEndFacade[VocabNote] = BackEndFacade[VocabNote](collection, vocab_constructor_call_while_populating_vocab_collection, NoteTypes.Vocab)
-        all_vocab = self.collection.all(task_runner)
-        self._cache: _VocabCache = _VocabCache(all_vocab, cache_manager, task_runner)
+        all_vocab = self.collection.all()
+        self._cache: _VocabCache = _VocabCache(all_vocab, cache_manager)
 
     def is_word(self, form: str) -> bool: return any(self._cache.with_form(form))
     def all(self) -> list[VocabNote]: return self._cache.all()

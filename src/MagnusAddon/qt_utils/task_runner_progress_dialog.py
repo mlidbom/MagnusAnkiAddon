@@ -1,9 +1,12 @@
 from __future__ import annotations
 
+import gc
 import time
+from contextlib import contextmanager
 from typing import TYPE_CHECKING, override
 
 import mylog
+from ankiutils import app
 from aqt import QLabel
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from PyQt6.QtCore import Qt
@@ -14,20 +17,51 @@ from sysutils.timeutil import StopWatch
 from sysutils.typed import non_optional
 
 if TYPE_CHECKING:
-    from collections.abc import Callable
+    from collections.abc import Callable, Iterator
 
 class ITaskRunner:
-    def process_with_progress[TInput, TOutput](self, items: list[TInput], process_item: Callable[[TInput], TOutput], message: str) -> list[TOutput]: raise NotImplementedError()  # pyright: ignore
+    def process_with_progress[TInput, TOutput](self, items: list[TInput], process_item: Callable[[TInput], TOutput], message: str, run_gc: bool = False) -> list[TOutput]: raise NotImplementedError()  # pyright: ignore
     def set_label_text(self, text: str) -> None: raise NotImplementedError()  # pyright: ignore
     def close(self) -> None: raise NotImplementedError()
     def run_on_background_thread_with_spinning_progress_dialog[TResult](self, message: str, action: Callable[[], TResult]) -> TResult: raise NotImplementedError()  # pyright: ignore
+    def run_gc(self) -> None: pass
+    def is_hidden(self) -> bool: return True
 
 class TaskRunner(Slots):
     @staticmethod
-    def create(window_title: str, label_text: str, visible: bool) -> ITaskRunner:
+    def create(window_title: str, label_text: str, visible: bool | None = None) -> ITaskRunner:
+        if visible is None: visible = not app.is_testing
         if not visible:
             return InvisibleTaskRunner(window_title, label_text)
         return QtTaskProgressRunner(window_title, label_text)
+
+    _depth: int = 0
+    _current: ITaskRunner | None = None
+
+    @classmethod
+    @contextmanager
+    def current(cls, window_title: str, label_text: str | None = None, force_hide: bool = False, inhibit_gc: bool = False, force_gc: bool = False) -> Iterator[ITaskRunner]:
+        cls._depth += 1
+        if cls._depth == 1:
+            visible = (not app.is_testing) and not force_hide
+            cls._current = cls.create(window_title, label_text or window_title, visible)
+            if not inhibit_gc:
+                cls._current.run_gc()
+        else:
+            non_optional(cls._current).set_label_text(label_text or window_title)
+
+        runner = non_optional(cls._current)
+
+        try: yield non_optional(cls._current)
+        finally:
+            cls._depth -= 1
+            if cls._depth == 0:
+                if not inhibit_gc:
+                    runner.run_gc()
+                runner.close()
+                cls._current = None
+            elif force_gc:
+                runner.run_gc()
 
 class InvisibleTaskRunner(ITaskRunner, Slots):
     # noinspection PyUnusedLocal
@@ -35,7 +69,7 @@ class InvisibleTaskRunner(ITaskRunner, Slots):
         pass
 
     @override
-    def process_with_progress[TInput, TOutput](self, items: list[TInput], process_item: Callable[[TInput], TOutput], message: str) -> list[TOutput]:
+    def process_with_progress[TInput, TOutput](self, items: list[TInput], process_item: Callable[[TInput], TOutput], message: str, run_gc: bool = False) -> list[TOutput]:
         result = [process_item(item) for item in items]
         total_items = len(items)
         watch = StopWatch()
@@ -65,6 +99,9 @@ class QtTaskProgressRunner(ITaskRunner, Slots):
         QApplication.processEvents()
 
     @override
+    def is_hidden(self) -> bool: return False
+
+    @override
     def set_label_text(self, text: str) -> None:
         self.dialog.setLabelText(text)
         QApplication.processEvents()
@@ -77,9 +114,9 @@ class QtTaskProgressRunner(ITaskRunner, Slots):
     def run_on_background_thread_with_spinning_progress_dialog[TResult](self, message: str, action: Callable[[], TResult]) -> TResult:
         watch = StopWatch()
         self._set_spinning_with_message(message)
+        QApplication.processEvents()
 
         future = app_thread_pool.pool.submit(action)
-
         while not future.done():
             QApplication.processEvents()
             ex_thread.sleep_thread_not_doing_the_current_work(0.05)
@@ -93,13 +130,22 @@ class QtTaskProgressRunner(ITaskRunner, Slots):
         return result
 
     @override
-    def process_with_progress[TInput, TOutput](self, items: list[TInput], process_item: Callable[[TInput], TOutput], message: str) -> list[TOutput]:
+    def run_gc(self) -> None:
+        old_label = self.dialog.labelText()
+        self.run_on_background_thread_with_spinning_progress_dialog("Running garbage collection", lambda: app_thread_pool.run_on_ui_thread_synchronously(lambda: gc.collect()))
+        self.set_label_text(old_label)
+
+    @override
+    def process_with_progress[TInput, TOutput](self, items: list[TInput], process_item: Callable[[TInput], TOutput], message: str, run_gc: bool = False) -> list[TOutput]:
         self.set_label_text(f"{message} 0 of ?? Remaining: ??")  # len may take a while so make sure we set the label first
         total_items = len(items)
         watch = StopWatch()
         start_time = time.time()
         results: list[TOutput] = []
         self.dialog.setRange(0, total_items + 1)  # add one to keep the dialog open
+
+        if run_gc: self.run_gc()
+
         original_label = self.dialog.labelText()
         self.set_label_text(f"{message} 0 of {total_items} Remaining: ??")
 
@@ -118,13 +164,14 @@ class QtTaskProgressRunner(ITaskRunner, Slots):
 
                 QApplication.processEvents()
 
-        self.dialog.setRange(0, 0)
         self.set_label_text(original_label)
+        self.dialog.setRange(0, 0)
         QApplication.processEvents()
 
         # noinspection PyUnusedLocal
-        items = [] # Make the garbage collection happening on the next line able to get rid of the items
+        items = []  # Make the garbage collection happening on the next line able to get rid of the items
         mylog.info(f"##--QtTaskProgressRunner--## Finished {message} in {watch.elapsed_formatted()} handled {total_items} items{ex_trace_malloc_instance.get_memory_delta_message(' | ')}")
+        if run_gc: self.run_gc()
         return results
     @override
     def close(self) -> None:

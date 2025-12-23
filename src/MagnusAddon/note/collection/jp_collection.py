@@ -72,38 +72,32 @@ class JPCollection(WeakRefable, Slots):
         if self._pending_init_timer is not None:
             self._pending_init_timer.cancel()
         ex_trace_malloc_instance.ensure_initialized()
-        app.get_ui_utils().tool_tip(f"{Mine.app_name} loading", 60000)
         stopwatch = StopWatch()
-        with StopWatch.log_warning_if_slower_than(5, "Full collection setup"):
-            task_runner = TaskRunner.create(f"Loading {Mine.app_name}", "reading notes from anki", not app.is_testing and app.config().load_studio_in_foreground.get_value())
-            if not app.is_testing and not JPCollection._is_inital_load:
-                task_runner.set_label_text("Running garbage collection")
-                self._instance_tracker.run_gc_if_multiple_instances_and_assert_single_instance_after_gc()
-                app.get_ui_utils().tool_tip(f"{Mine.app_name} loading", 60000)
+        with StopWatch.log_warning_if_slower_than(5, "Full collection setup"):  # noqa: SIM117
+            with TaskRunner.current(f"Loading {Mine.app_name}", "reading notes from anki", force_hide=not app.config().load_studio_in_foreground.get_value()) as task_runner:
+                if task_runner.is_hidden():
+                    app.get_ui_utils().tool_tip(f"{Mine.app_name} loading", 60000)
 
-            with StopWatch.log_warning_if_slower_than(5, "Core collection setup - no gc"):
-                self._cache_runner = CacheRunner(self.anki_collection)
+                with StopWatch.log_warning_if_slower_than(5, "Core collection setup - no gc"):
+                    self._cache_runner = CacheRunner(self.anki_collection)
 
-                self._vocab = VocabCollection(self.anki_collection, self._cache_runner, task_runner)
-                self._sentences = SentenceCollection(self.anki_collection, self._cache_runner, task_runner)
-                self._kanji = KanjiCollection(self.anki_collection, self._cache_runner, task_runner)
+                    self._vocab = VocabCollection(self.anki_collection, self._cache_runner)
+                    self._sentences = SentenceCollection(self.anki_collection, self._cache_runner)
+                    self._kanji = KanjiCollection(self.anki_collection, self._cache_runner)
 
-            self._cache_runner.start()
+                self._cache_runner.start()
 
-            if app.config().load_jamdict_db_into_memory.get_value():
-                from language_services.jamdict_ex.dict_lookup import DictLookup
-                task_runner.run_on_background_thread_with_spinning_progress_dialog("Loading Jamdict db into memory", DictLookup.ensure_loaded_into_memory)
+                if app.config().load_jamdict_db_into_memory.get_value():
+                    from language_services.jamdict_ex.dict_lookup import DictLookup
+                    task_runner.run_on_background_thread_with_spinning_progress_dialog("Loading Jamdict db into memory", DictLookup.ensure_loaded_into_memory)
 
-            if app.config().pre_cache_card_studying_status.get_value():
-                noteutils.initialize_studying_cache(self.anki_collection, task_runner)
+                if app.config().pre_cache_card_studying_status.get_value():
+                    noteutils.initialize_studying_cache(self.anki_collection, task_runner)
 
-            # task_runner.run_on_background_thread_with_spinning_progress_dialog("Flush auto string interner cache", string_auto_interner.flush_store_and_disable)
-            task_runner.close()
+                # task_runner.run_on_background_thread_with_spinning_progress_dialog("Flush auto string interner cache", string_auto_interner.flush_store_and_disable)
+
             ex_trace_malloc_instance.log_memory_delta("Done loading add-on")
             ex_trace_malloc_instance.stop()
-
-            #if not app.is_testing and not JPCollection._is_inital_load:
-            self._instance_tracker.run_gc_if_multiple_instances_and_assert_single_instance_after_gc()
 
             self._is_initialized = True
             JPCollection._is_inital_load = False

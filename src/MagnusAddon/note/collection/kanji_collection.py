@@ -10,7 +10,6 @@ if TYPE_CHECKING:
     from anki.collection import Collection
     from anki.notes import Note, NoteId
     from note.collection.cache_runner import CacheRunner
-    from qt_utils.task_runner_progress_dialog import ITaskRunner
     from typed_linq_collections.collections.q_set import QSet
 
 from note.collection.backend_facade import BackEndFacade
@@ -29,11 +28,11 @@ class _KanjiSnapshot(CachedNote, Slots):
         self.readings: tuple[str, ...] = note.get_readings_clean().to_set().to_tuple()
 
 class _KanjiCache(NoteCache[KanjiNote, _KanjiSnapshot], Slots):
-    def __init__(self, all_kanji: list[KanjiNote], cache_runner: CacheRunner, task_runner: ITaskRunner) -> None:
+    def __init__(self, all_kanji: list[KanjiNote], cache_runner: CacheRunner) -> None:
         # Since notes with a given Id are guaranteed to only exist once in the cache, we can use lists within the dictionary to cut memory usage a ton compared to using sets
         self._by_radical: QDefaultDict[str, QList[KanjiNote]] = QDefaultDict(QList[KanjiNote])
         self.by_reading: QDefaultDict[str, QList[KanjiNote]] = QDefaultDict(QList[KanjiNote])
-        super().__init__(all_kanji, KanjiNote, cache_runner, task_runner)
+        super().__init__(all_kanji, KanjiNote, cache_runner)
 
     @override
     def _create_snapshot(self, note: KanjiNote) -> _KanjiSnapshot: return _KanjiSnapshot(note)
@@ -51,11 +50,11 @@ class _KanjiCache(NoteCache[KanjiNote, _KanjiSnapshot], Slots):
     def with_radical(self, radical: str) -> QList[KanjiNote]: return self._by_radical.get_value_or_default(radical).to_list()
 
 class KanjiCollection(Slots):
-    def __init__(self, collection: Collection, cache_manager: CacheRunner, task_runner: ITaskRunner) -> None:
+    def __init__(self, collection: Collection, cache_manager: CacheRunner) -> None:
         def kanji_constructor_call_while_populating_kanji_collection(note: Note) -> KanjiNote: return KanjiNote(note)
         self.collection: BackEndFacade[KanjiNote] = BackEndFacade[KanjiNote](collection, kanji_constructor_call_while_populating_kanji_collection, NoteTypes.Kanji)
-        all_kanji = self.collection.all(task_runner)
-        self._cache: _KanjiCache = _KanjiCache(all_kanji, cache_manager, task_runner)
+        all_kanji = self.collection.all()
+        self._cache: _KanjiCache = _KanjiCache(all_kanji, cache_manager)
 
     def all(self) -> QList[KanjiNote]: return self._cache.all()
 

@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from note.jpnote import JPNote
+from qt_utils.task_runner_progress_dialog import TaskRunner
 from sysutils.collections.default_dict_case_insensitive import DefaultDictCaseInsensitive
 from sysutils.typed import checked_cast
 from typed_linq_collections.collections.q_list import QList
@@ -14,7 +15,6 @@ if TYPE_CHECKING:
 
     from anki.notes import Note, NoteId
     from note.collection.cache_runner import CacheRunner
-    from qt_utils.task_runner_progress_dialog import ITaskRunner
 
 class CachedNote(Slots):
     def __init__(self, note: JPNote) -> None:
@@ -22,7 +22,7 @@ class CachedNote(Slots):
         self.question: str = note.get_question()
 
 class NoteCache[TNote: JPNote, TSnapshot: CachedNote](Slots):
-    def __init__(self, all_notes: list[TNote], cached_note_type: type[TNote], cache_runner: CacheRunner, task_runner: ITaskRunner) -> None:
+    def __init__(self, all_notes: list[TNote], cached_note_type: type[TNote], cache_runner: CacheRunner) -> None:
         self._note_type: type[TNote] = cached_note_type
         # Since notes with a given Id are guaranteed to only exist once in the cache, we can use lists within the dictionary to cut memory usage a ton compared to using sets
         self._by_question: DefaultDictCaseInsensitive[QList[TNote]] = DefaultDictCaseInsensitive(QList[TNote])
@@ -35,7 +35,8 @@ class NoteCache[TNote: JPNote, TSnapshot: CachedNote](Slots):
         self._pending_add: list[Note] = []
 
         if len(all_notes) > 0:
-            task_runner.process_with_progress(all_notes, self.add_note_to_cache, f"Pushing {all_notes[0].__class__.__name__} notes into cache")
+            with TaskRunner.current(f"Pushing {all_notes[0].__class__.__name__} notes into cache") as task_runner:
+                task_runner.process_with_progress(all_notes, self.add_note_to_cache, f"Pushing {all_notes[0].__class__.__name__} notes into cache")
 
         cache_runner.connect_merge_pending_adds(self._merge_pending_added_notes)
         cache_runner.connect_will_remove(self._on_will_be_removed)

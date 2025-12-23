@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING
 from ankiutils import app, query_builder
 from note.note_constants import CardTypes, Tags
 from note.sentences.sentencenote import SentenceNote
+from qt_utils.task_runner_progress_dialog import TaskRunner
 from sysutils import ex_str
 
 if TYPE_CHECKING:
@@ -15,62 +16,64 @@ if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
 
 def update_all() -> None:
-    update_sentences()
-    update_kanji()
-    update_vocab()
-    tag_note_metadata()
-    # update_vocab_parsed_parts_of_speech()
+    with TaskRunner.current("Updating everything but sentence reparsing"):
+        update_sentences()
+        update_kanji()
+        update_vocab()
+        tag_note_metadata()
+        # update_vocab_parsed_parts_of_speech()
 
 def full_rebuild() -> None:
-    update_all()
-    reparse_all_sentences()
+    with TaskRunner.current("Full rebuild"):
+        update_all()
+        reparse_all_sentences()
 
 def update_sentences() -> None:
-    from sysutils import progress_display_runner
     def update_sentence(sentence: SentenceNote) -> None:
         sentence.update_generated_data()
 
-    progress_display_runner.process_with_progress(app.col().sentences.all(), update_sentence, "Updating sentences")
+    with TaskRunner.current("Updating sentences") as runner:
+        runner.process_with_progress(app.col().sentences.all(), update_sentence, "Updating sentences")
 
 def update_kanji() -> None:
-    from sysutils import progress_display_runner
     def _update_kanji(kanji: KanjiNote) -> None:
         kanji.update_generated_data()
 
-    progress_display_runner.process_with_progress(app.col().kanji.all(), _update_kanji, "Updating kanji")
+    with TaskRunner.current("Updating kanji") as runner:
+        runner.process_with_progress(app.col().kanji.all(), _update_kanji, "Updating kanji")
 
 def update_vocab() -> None:
-    from sysutils import progress_display_runner
     def _update_vocab(vocab: VocabNote) -> None:
         vocab.update_generated_data()
 
-    progress_display_runner.process_with_progress(app.col().vocab.all(), _update_vocab, "Updating vocab")
+    with TaskRunner.current("Updating vocab") as runner:
+        runner.process_with_progress(app.col().vocab.all(), _update_vocab, "Updating vocab")
 
 def convert_immersion_kit_sentences() -> None:
-    from sysutils import progress_display_runner
     def convert_note(note_id: NoteId) -> None:
         immersion_kit_note = app.anki_collection().get_note(note_id)
         SentenceNote.import_immersion_kit_sentence(immersion_kit_note)
         app.anki_collection().remove_notes([note_id])
 
-    immersion_kit_sences = list(app.anki_collection().find_notes(query_builder.immersion_kit_sentences()))
-    progress_display_runner.process_with_progress(immersion_kit_sences, convert_note, "Converting immersion kit sentences")
+    with TaskRunner.current("Converting immersion kit sentences") as runner:
+        immersion_kit_sences = list(app.anki_collection().find_notes(query_builder.immersion_kit_sentences()))
+        runner.process_with_progress(immersion_kit_sences, convert_note, "Converting immersion kit sentences")
 
 def tag_note_metadata() -> None:
-    tag_kanji_metadata()
-    tag_vocab_metadata()
-    tag_sentence_metadata()
+    with TaskRunner.current("Tagging notes"):
+        tag_kanji_metadata()
+        tag_vocab_metadata()
+        tag_sentence_metadata()
 
 def tag_sentence_metadata() -> None:
-    from sysutils import progress_display_runner
     def tag_sentence(sentence: SentenceNote) -> None:
         sentence.toggle_tag(Tags.Sentence.Uses.incorrect_matches, any(sentence.configuration.incorrect_matches.get()))
         sentence.toggle_tag(Tags.Sentence.Uses.hidden_matches, any(sentence.configuration.hidden_matches.get()))
 
-    progress_display_runner.process_with_progress(app.col().sentences.all(), tag_sentence, "Tag sentence notes")
+    with TaskRunner.current("Tagging sentence notes") as runner:
+        runner.process_with_progress(app.col().sentences.all(), tag_sentence, "Tagging sentence notes")
 
 def tag_vocab_metadata() -> None:
-    from sysutils import progress_display_runner
     def tag_note(vocab: VocabNote) -> None:
         vocab.toggle_tag(Tags.Vocab.has_no_studying_sentences, not any(vocab.sentences.studying()))
         vocab.toggle_tag(Tags.Vocab.Matching.Uses.required_prefix, not vocab.matching_configuration.configurable_rules.required_prefix.none())
@@ -78,10 +81,10 @@ def tag_vocab_metadata() -> None:
         vocab.toggle_tag(Tags.Vocab.Matching.Uses.suffix_is_not, not vocab.matching_configuration.configurable_rules.suffix_is_not.none())
         vocab.toggle_tag(Tags.Vocab.Matching.Uses.surface_is_not, not vocab.matching_configuration.configurable_rules.surface_is_not.none())
 
-    progress_display_runner.process_with_progress(app.col().vocab.all(), tag_note, "Tag vocab notes")
+    with TaskRunner.current("Tagging vocab") as runner:
+        runner.process_with_progress(app.col().vocab.all(), tag_note, "Tag vocab notes")
 
 def tag_kanji_metadata() -> None:
-    from sysutils import progress_display_runner
     primary_reading = re.compile(r"<primary>(.*?)</primary>")
 
     known_kanji = {kanji.get_question() for kanji in app.col().kanji.all() if kanji.is_studying()}
@@ -151,12 +154,14 @@ def tag_kanji_metadata() -> None:
                         if vocab.is_studying(reading):  # todo: Bug: this code looks nuts. You cannot pass a reading to is_studying.
                             kanji.set_tag(Tags.Kanji.with_studying_single_kanji_vocab_with_different_reading)
 
-    all_kanji = app.col().kanji.all()
-    progress_display_runner.process_with_progress(all_kanji, tag_kanji, "Tagging kanji with studying metadata")
-    progress_display_runner.process_with_progress(all_kanji, tag_has_single_kanji_vocab_with_reading_different_from_kanji_primary_reading, "Tagging kanji with single kanji vocab")
+    with TaskRunner.current("Tagging kanji") as runner:
+        all_kanji = app.col().kanji.all()
+        runner.process_with_progress(all_kanji, tag_kanji, "Tagging kanji with studying metadata")
+        runner.process_with_progress(all_kanji, tag_has_single_kanji_vocab_with_reading_different_from_kanji_primary_reading, "Tagging kanji with single kanji vocab")
 
 def reparse_all_sentences() -> None:
-    reparse_sentences(app.col().sentences.all(), run_gc=True)
+    with TaskRunner.current("Reparse all sentences"):
+        reparse_sentences(app.col().sentences.all())
 
 def reading_in_vocab_reading(kanji: KanjiNote, kanji_reading: str, vocab_reading: str, vocab_form: str) -> bool:
     vocab_form = ex_str.strip_html_and_bracket_markup_and_noise_characters(vocab_form)
@@ -166,12 +171,12 @@ def reading_in_vocab_reading(kanji: KanjiNote, kanji_reading: str, vocab_reading
         return vocab_reading.endswith(kanji_reading)
     return kanji_reading in vocab_reading[1:-1]
 
-def reparse_sentences(sentences: list[SentenceNote], run_gc:bool = False) -> None:
-    from sysutils import progress_display_runner
+def reparse_sentences(sentences: list[SentenceNote]) -> None:
     def reparse_sentence(sentence: SentenceNote) -> None:
         sentence.update_parsed_words(force=True)
 
-    progress_display_runner.process_with_progress(sentences, reparse_sentence, "Reparsing sentences.", run_gc=run_gc)
+    with TaskRunner.current("Reparse Sentences") as runner:
+        runner.process_with_progress(sentences, reparse_sentence, "Reparsing sentences.")
 
 def print_gc_status_and_collect() -> None:
     from sysutils import object_instance_tracker

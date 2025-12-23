@@ -15,7 +15,6 @@ if TYPE_CHECKING:
     from anki.notes import Note, NoteId
     from note.collection.cache_runner import CacheRunner
     from note.vocabulary.vocabnote import VocabNote
-    from qt_utils.task_runner_progress_dialog import ITaskRunner
 
 class _SentenceSnapshot(CachedNote, Slots):
     def __init__(self, note: SentenceNote) -> None:
@@ -25,12 +24,12 @@ class _SentenceSnapshot(CachedNote, Slots):
         self.user_highlighted_vocab: tuple[str, ...] = note.configuration.highlighted_words().to_tuple()
 
 class _SentenceCache(NoteCache[SentenceNote, _SentenceSnapshot], Slots):
-    def __init__(self, all_kanji: list[SentenceNote], cache_runner: CacheRunner, task_runner: ITaskRunner) -> None:
+    def __init__(self, all_kanji: list[SentenceNote], cache_runner: CacheRunner) -> None:
         # Since notes with a given Id are guaranteed to only exist once in the cache, we can use lists within the dictionary to cut memory usage a ton compared to using sets
         self._by_vocab_form: QDefaultDict[str, QList[SentenceNote]] = QDefaultDict[str, QList[SentenceNote]](QList[SentenceNote])
         self._by_user_highlighted_vocab: QDefaultDict[str, QList[SentenceNote]] = QDefaultDict[str, QList[SentenceNote]](QList[SentenceNote])
         self._by_vocab_id: QDefaultDict[int, QList[SentenceNote]] = QDefaultDict[int, QList[SentenceNote]](QList[SentenceNote])
-        super().__init__(all_kanji, SentenceNote, cache_runner, task_runner)
+        super().__init__(all_kanji, SentenceNote, cache_runner)
 
     @override
     def _create_snapshot(self, note: SentenceNote) -> _SentenceSnapshot: return _SentenceSnapshot(note)
@@ -52,11 +51,11 @@ class _SentenceCache(NoteCache[SentenceNote, _SentenceSnapshot], Slots):
         for vocab_id in snapshot.detected_vocab: self._by_vocab_id[vocab_id].append(note)
 
 class SentenceCollection(Slots):
-    def __init__(self, collection: Collection, cache_manager: CacheRunner, task_runner: ITaskRunner) -> None:
+    def __init__(self, collection: Collection, cache_manager: CacheRunner) -> None:
         def sentence_constructor_call_while_populating_sentence_collection(note: Note) -> SentenceNote: return SentenceNote(note)
         self.collection: BackEndFacade[SentenceNote] = BackEndFacade[SentenceNote](collection, sentence_constructor_call_while_populating_sentence_collection, NoteTypes.Sentence)
-        all_sentences = list(self.collection.all(task_runner))
-        self._cache: _SentenceCache = _SentenceCache(all_sentences, cache_manager, task_runner)
+        all_sentences = list(self.collection.all())
+        self._cache: _SentenceCache = _SentenceCache(all_sentences, cache_manager)
 
     def all(self) -> QList[SentenceNote]: return self._cache.all()
 

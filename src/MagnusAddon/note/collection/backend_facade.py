@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, final
 from anki_extentions.note_ex import NoteBulkLoader
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from note.jpnote import JPNote
+from qt_utils.task_runner_progress_dialog import TaskRunner
 from typed_linq_collections.collections.q_list import QList
 
 if TYPE_CHECKING:
@@ -12,7 +13,6 @@ if TYPE_CHECKING:
 
     from anki.collection import Collection
     from anki.notes import Note, NoteId
-    from qt_utils.task_runner_progress_dialog import ITaskRunner
 
 @final
 class BackEndFacade[TNote: JPNote](Slots):
@@ -21,10 +21,11 @@ class BackEndFacade[TNote: JPNote](Slots):
         self.jp_note_constructor = constructor
         self.note_type = note_type
 
-    def all(self, task_runner: ITaskRunner) -> list[TNote]:
-        #do not use temporary variables, it will break our memory profiling using tracemalloc
-        return task_runner.process_with_progress(NoteBulkLoader.load_all_notes_of_type(self.anki_collection, self.note_type, task_runner),
-                                                 self.jp_note_constructor, f"Constructing {self.note_type} notes")
+    def all(self) -> list[TNote]:
+        with TaskRunner.current(f"Fetching all {self.note_type} notes from Anki backend") as task_runner:
+            #do not use temporary variables, it will break our memory profiling using tracemalloc
+            return task_runner.process_with_progress(NoteBulkLoader.load_all_notes_of_type(self.anki_collection, self.note_type),
+                                                     self.jp_note_constructor, f"Constructing {self.note_type} notes")
 
     def search(self, query: str) -> QList[TNote]:
         return self.by_id(self.anki_collection.find_notes(query))
