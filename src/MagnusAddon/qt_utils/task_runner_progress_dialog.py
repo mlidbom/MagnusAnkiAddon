@@ -29,22 +29,22 @@ class ITaskRunner:
 
 class TaskRunner(Slots):
     @staticmethod
-    def create(window_title: str, label_text: str, visible: bool | None = None) -> ITaskRunner:
+    def create(window_title: str, label_text: str, visible: bool | None = None, allow_cancel: bool = True) -> ITaskRunner:
         if visible is None: visible = not app.is_testing
         if not visible:
             return InvisibleTaskRunner(window_title, label_text)
-        return QtTaskProgressRunner(window_title, label_text)
+        return QtTaskProgressRunner(window_title, label_text, allow_cancel)
 
     _depth: int = 0
     _current: ITaskRunner | None = None
 
     @classmethod
     @contextmanager
-    def current(cls, window_title: str, label_text: str | None = None, force_hide: bool = False, inhibit_gc: bool = False, force_gc: bool = False) -> Iterator[ITaskRunner]:
+    def current(cls, window_title: str, label_text: str | None = None, force_hide: bool = False, inhibit_gc: bool = False, force_gc: bool = False, allow_cancel: bool = True) -> Iterator[ITaskRunner]:
         cls._depth += 1
         if cls._depth == 1:
             visible = (not app.is_testing) and not force_hide
-            cls._current = cls.create(window_title, label_text or window_title, visible)
+            cls._current = cls.create(window_title, label_text or window_title, visible, allow_cancel)
             if not inhibit_gc:
                 cls._current.run_gc()
         else:
@@ -87,8 +87,9 @@ class InvisibleTaskRunner(ITaskRunner, Slots):
         return result
 
 class QtTaskProgressRunner(ITaskRunner, Slots):
-    def __init__(self, window_title: str, label_text: str) -> None:
-        dialog = QProgressDialog(f"""{window_title}...""", None, 0, 0)
+    def __init__(self, window_title: str, label_text: str, allow_cancel: bool = True) -> None:
+        self.allow_cancel = allow_cancel
+        dialog = QProgressDialog(f"""{window_title}...""", "Cancel" if allow_cancel else None, 0, 0)
         self.dialog: QProgressDialog = dialog
         dialog.setWindowTitle(f"""{window_title}""")
         dialog.setFixedWidth(600)
@@ -153,6 +154,7 @@ class QtTaskProgressRunner(ITaskRunner, Slots):
 
         for current_item, item in enumerate(items):
             results.append(process_item(item))
+            if self.allow_cancel and self.dialog.wasCanceled(): break
             if time.time() - last_refresh > 0.1 or current_item == total_items - 1:
                 last_refresh = time.time()
                 self.dialog.setValue(current_item + 1)

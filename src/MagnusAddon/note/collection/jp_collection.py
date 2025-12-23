@@ -74,7 +74,10 @@ class JPCollection(WeakRefable, Slots):
         ex_trace_malloc_instance.ensure_initialized()
         stopwatch = StopWatch()
         with StopWatch.log_warning_if_slower_than(5, "Full collection setup"):  # noqa: SIM117
-            with TaskRunner.current(f"Loading {Mine.app_name}", "reading notes from anki", force_hide=not app.config().load_studio_in_foreground.get_value(), inhibit_gc=JPCollection._is_inital_load) as task_runner:
+            with TaskRunner.current(f"Loading {Mine.app_name}", "reading notes from anki",
+                                    force_hide=not app.config().load_studio_in_foreground.get_value(),
+                                    inhibit_gc=JPCollection._is_inital_load,
+                                    allow_cancel=False) as task_runner:
                 if task_runner.is_hidden():
                     app.get_ui_utils().tool_tip(f"{Mine.app_name} loading", 60000)
 
