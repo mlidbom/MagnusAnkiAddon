@@ -103,11 +103,11 @@ class DictEntry(Slots):
 
         return (query(self.entry.senses)
                 .select_many(lambda sense: sense.gloss)
-                .select(lambda gloss: str_(gloss.text))  # pyright: ignore [reportUnknownArgumentType, reportUnknownMemberType]
+                .select(lambda gloss: str_(gloss.text))
                 .all(lambda gloss: gloss.startswith("to be ")))
 
     def format_sense(self, sense: SenseEX) -> str:
-        glosses_text = [str(gloss.text) for gloss in sense.gloss]  # pyright: ignore[reportUnknownArgumentType]
+        glosses_text = [str(gloss.text) for gloss in sense.gloss]
         glosses_text = [gloss.replace(" ", "-") for gloss in glosses_text]
         if self._is_verb():
             if all(gloss[:6] == "to-be-" for gloss in glosses_text):  # noqa: SIM108
@@ -185,6 +185,6 @@ class DictEntry(Slots):
             return self._parts_of_speech_map[pos] if pos in self._parts_of_speech_map else ["unmapped-pos-" + pos]
 
         return (query(self.entry.senses)
-                .select_many(lambda sense: checked_cast_generics(list[str], sense.pos))  # pyright: ignore [reportUnknownArgumentType, reportUnknownMemberType]
+                .select_many(lambda sense: checked_cast_generics(list[str], sense.pos))
                 .select_many(try_get_our_pos_name)
                 .to_set())
