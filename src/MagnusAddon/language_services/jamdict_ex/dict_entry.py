@@ -14,13 +14,6 @@ if TYPE_CHECKING:
     from jamdict.jmdict import JMDEntry, KanaForm, KanjiForm, Sense, SenseGloss  # pyright: ignore[reportMissingTypeStubs]
     from typed_linq_collections.collections.q_set import QSet
 
-def _sense_is_transitive_verb(sense: SenseEX) -> bool:
-    return any(pos_item == "transitive verb" for pos_item in sense.pos)  # pyright: ignore[reportUnknownVariableType, reportUnknownArgumentType, reportUnknownMemberType]
-
-def _sense_is_intransitive_verb(sense: SenseEX) -> bool:
-    return any(pos_item == "intransitive verb" for pos_item in sense.pos)  # pyright: ignore[reportUnknownVariableType, reportUnknownArgumentType, reportUnknownMemberType]
-
-
 class KanaFormEX:
     def __init__(self, source: KanaForm) -> None:
         self.text:str = typed.str_(source.text)  # pyright: ignore [reportUnknownMemberType, reportUnknownArgumentType]
@@ -41,6 +34,9 @@ class SenseEX:
         self.gloss:QList[SenceGlossEX] = query(source.gloss).select(SenceGlossEX).to_list()  # pyright: ignore [reportUnknownArgumentType, reportUnknownMemberType]
         self.misc:QList[str] = QList(cast(list[str], source.misc))  # pyright: ignore [reportUnknownMemberType]
         self.pos: QList[str] = QList(cast(list[str], source.pos))  # pyright: ignore [reportUnknownMemberType]
+
+    def is_transitive_verb(self) -> bool: return any(pos_item == "transitive verb" for pos_item in self.pos)
+    def is_intransitive_verb(self) -> bool: return any(pos_item == "intransitive verb" for pos_item in self.pos)
 
 class JMDEntryEX:
     def __init__(self, source: JMDEntry) -> None:
@@ -90,14 +86,14 @@ class DictEntry(Slots):
         return (kanji_priorities + kana_priorities).to_set()
 
     def _is_transitive_verb(self) -> bool:
-        return all(_sense_is_transitive_verb(sense) for sense in self.entry.senses)
+        return all(sense.is_transitive_verb() for sense in self.entry.senses)
 
     def _is_intransitive_verb(self) -> bool:
-        return all(_sense_is_intransitive_verb(sense) for sense in self.entry.senses)
+        return all(sense.is_intransitive_verb() for sense in self.entry.senses)
 
     def _is_verb(self) -> bool:
-        return (any(_sense_is_intransitive_verb(sense) for sense in self.entry.senses)
-                or any(_sense_is_transitive_verb(sense) for sense in self.entry.senses)
+        return (any(sense.is_intransitive_verb() for sense in self.entry.senses)
+                or any(sense.is_transitive_verb() for sense in self.entry.senses)
                 or any(" verb " in s.pos[0] for s in self.entry.senses if len(s.pos) > 0))
 
     def _answer_prefix(self) -> str:
