@@ -5,16 +5,18 @@ from typing import TYPE_CHECKING
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication, QProgressDialog
-from sysutils import timeutil
+from sysutils import ex_gc, timeutil
 
 if TYPE_CHECKING:
     from sysutils.standard_type_aliases import Action1
 
-def process_with_progress[T](items: list[T], process_item: Action1[T], message: str, allow_cancel: bool = True, display_delay_seconds: float = 0.0) -> None:
+def process_with_progress[T](items: list[T], process_item: Action1[T], message: str, allow_cancel: bool = True, display_delay_seconds: float = 0.0, run_gc:bool = False) -> None:
     total_items = len(items)
     start_time = time.time()
     progress_dialog: QProgressDialog | None = None
     last_refresh = 0.0
+
+    if run_gc: ex_gc.collect_on_on_ui_thread_if_collection_during_batches_enabled()
 
     try:
         for current_item, item in enumerate(items):
@@ -38,3 +40,4 @@ def process_with_progress[T](items: list[T], process_item: Action1[T], message: 
                 QApplication.processEvents()
     finally:
         if progress_dialog: progress_dialog.close()
+        if run_gc: ex_gc.collect_on_on_ui_thread_if_collection_during_batches_enabled()

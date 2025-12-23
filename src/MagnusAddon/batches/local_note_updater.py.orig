@@ -156,7 +156,11 @@ def tag_kanji_metadata() -> None:
     progress_display_runner.process_with_progress(all_kanji, tag_has_single_kanji_vocab_with_reading_different_from_kanji_primary_reading, "Tagging kanji with single kanji vocab")
 
 def reparse_all_sentences() -> None:
+<<<<<<< HEAD
+    reparse_sentences(app.col().sentences.all())
+=======
     reparse_sentences(app.col().sentences.all(), run_gc=True)
+>>>>>>> f689a269 (Don't flush the interning cache, just leave it)
 
 def reading_in_vocab_reading(kanji: KanjiNote, kanji_reading: str, vocab_reading: str, vocab_form: str) -> bool:
     vocab_form = ex_str.strip_html_and_bracket_markup_and_noise_characters(vocab_form)

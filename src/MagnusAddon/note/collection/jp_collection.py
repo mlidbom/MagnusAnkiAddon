@@ -97,16 +97,16 @@ class JPCollection(WeakRefable, Slots):
             if app.config().pre_cache_card_studying_status.get_value():
                 noteutils.initialize_studying_cache(self.anki_collection, task_runner)
 
-            self._is_initialized = True
-            JPCollection._is_inital_load = False
-
-            task_runner.run_on_background_thread_with_spinning_progress_dialog("Flush auto string interner cache", string_auto_interner.flush_store_and_disable)
+            # task_runner.run_on_background_thread_with_spinning_progress_dialog("Flush auto string interner cache", string_auto_interner.flush_store_and_disable)
             task_runner.close()
             ex_trace_malloc_instance.log_memory_delta("Done loading add-on")
             ex_trace_malloc_instance.stop()
 
-            if not app.is_testing and not JPCollection._is_inital_load:
-                self._instance_tracker.run_gc_if_multiple_instances_and_assert_single_instance_after_gc()
+            #if not app.is_testing and not JPCollection._is_inital_load:
+            self._instance_tracker.run_gc_if_multiple_instances_and_assert_single_instance_after_gc()
+
+            self._is_initialized = True
+            JPCollection._is_inital_load = False
 
             app.get_ui_utils().tool_tip(f"{Mine.app_name} done loading in {str(stopwatch.elapsed_seconds())[0:4]} seconds.", milliseconds=6000)
 
