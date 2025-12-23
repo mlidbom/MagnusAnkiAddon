@@ -33,7 +33,7 @@ def process_with_progress[T](items: list[T], process_item: Action1[T], message: 
                 if current_item > 0:
                     estimated_total_time = (elapsed_time / current_item) * total_items
                     estimated_remaining_time = estimated_total_time - elapsed_time
-                    if progress_dialog: progress_dialog.setLabelText(f"{message} {current_item} of {total_items} Remaining: {timeutil.format_seconds_as_hh_mm_ss(estimated_remaining_time)}")
+                    if progress_dialog: progress_dialog.setLabelText(f"{message} {current_item} of {total_items}  Elapsed: {timeutil.format_seconds_as_hh_mm_ss(elapsed_time)} Remaining: {timeutil.format_seconds_as_hh_mm_ss(estimated_remaining_time)}")
 
                 QApplication.processEvents()
     finally:

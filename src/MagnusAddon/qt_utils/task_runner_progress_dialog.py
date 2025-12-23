@@ -114,7 +114,7 @@ class QtTaskProgressRunner(ITaskRunner, Slots):
                 if current_item > 0:
                     estimated_total_time = (elapsed_time / current_item) * total_items
                     estimated_remaining_time = estimated_total_time - elapsed_time
-                    self.set_label_text(f"{message} {current_item} of {total_items} Remaining: {timeutil.format_seconds_as_hh_mm_ss(estimated_remaining_time)}")
+                    self.set_label_text(f"{message} {current_item} of {total_items} Elapsed: {timeutil.format_seconds_as_hh_mm_ss(elapsed_time)} Remaining: {timeutil.format_seconds_as_hh_mm_ss(estimated_remaining_time)}")
 
                 QApplication.processEvents()
 
