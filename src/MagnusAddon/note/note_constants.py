@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from typed_linq_collections.collections.q_set import QSet
 
 
 class Builtin(Slots):
@@ -52,7 +53,7 @@ class NoteTypes(Slots):
     Vocab: str = "_Vocab"
     Sentence: str = "_japanese_sentence"
 
-    ALL: set[str] = {Kanji, Vocab, Sentence}
+    ALL: QSet[str] = QSet((Kanji, Vocab, Sentence))
 
 class NoteFields(Slots):
     note_id: str = "nid"

@@ -1,9 +1,7 @@
 from __future__ import annotations
 
-from collections import defaultdict
 from typing import TYPE_CHECKING, cast, override
 
-from anki.cards import sys
 from anki.models import NotetypeDict
 from anki_extentions.card_ex import CardEx
 from anki_extentions.notetype_ex.note_type_ex import NoteTypeEx
@@ -13,11 +11,12 @@ from note import noteutils
 from note.note_constants import CardTypes, MyNoteFields, NoteTypes, Tags
 from note.note_flush_guard import NoteRecursiveFlushGuard
 from sysutils import ex_assert, ex_str
+from sysutils.memory_usage import string_auto_interner
 from sysutils.typed import non_optional, str_
 from sysutils.weak_ref import WeakRef, WeakRefable
+from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:
-    from collections.abc import Callable
 
     from anki.cards import Card
     from anki.notes import Note, NoteId
@@ -29,9 +28,9 @@ class JPNote(WeakRefable, Slots):
         self.recursive_flush_guard: NoteRecursiveFlushGuard = NoteRecursiveFlushGuard(self.weakref)
         self.backend_note: Note = note
         self.__hash_value = 0
-        self._tag_updated_callbacks: dict[str, list[Callable[[], None]]] = defaultdict(list)
 
-        for index, tag in enumerate(self.backend_note.tags): self.backend_note.tags[index] = sys.intern(tag) #saves something like 20-30MB of memory on my collection
+        string_auto_interner.auto_intern_list(note.fields) # saves something like 20-30MB of memory on my collection
+        string_auto_interner.auto_intern_list(note.tags) #saves something like 20-30MB of memory on my collection
 
     @property
     def is_flushing(self) -> bool: return self.recursive_flush_guard.is_flushing
@@ -89,10 +88,10 @@ class JPNote(WeakRefable, Slots):
     def get_type(self) -> NoteTypeEx:
         return NoteTypeEx.from_dict(non_optional(self.backend_note.note_type()))
 
-    def get_direct_dependencies(self) -> set[JPNote]:
-        return set()
+    def get_direct_dependencies(self) -> QSet[JPNote]:
+        return QSet()
 
-    def _get_dependencies_recursive(self, found: set[JPNote]) -> set[JPNote]:
+    def _get_dependencies_recursive(self, found: QSet[JPNote]) -> QSet[JPNote]:
         if self in found:
             return found
         found.add(self)
@@ -100,8 +99,8 @@ class JPNote(WeakRefable, Slots):
             dependency._get_dependencies_recursive(found)
         return found
 
-    def get_dependencies_recursive(self) -> set[JPNote]:
-        return self._get_dependencies_recursive(set())
+    def get_dependencies_recursive(self) -> QSet[JPNote]:
+        return self._get_dependencies_recursive(QSet())
 
     def get_id(self) -> NoteId:
         return self.backend_note.id
@@ -159,8 +158,8 @@ class JPNote(WeakRefable, Slots):
                 return int(ex_str.first_number(tag))
         return 0
 
-    def get_meta_tags(self) -> set[str]:
-        tags: set[str] = set()
+    def get_meta_tags(self) -> QSet[str]:
+        tags: QSet[str] = QSet()
         for tag in self.backend_note.tags:
             if tag.startswith(Tags.priority_folder):
                 if "high" in tag: tags.add("high_priority")
@@ -183,18 +182,12 @@ class JPNote(WeakRefable, Slots):
     def remove_tag(self, tag: str) -> None:
         if self.has_tag(tag):
             self.backend_note.remove_tag(tag)
-            for callback in self._tag_updated_callbacks[tag]: callback()
             self._flush()
-
-
-    def on_tag_updated(self, tag: str, callback: Callable[[], None]) -> None:
-        self._tag_updated_callbacks[tag].append(callback)
 
 
     def set_tag(self, tag: str) -> None:
         if not self.has_tag(tag):
             self.backend_note.tags.append(tag)
-            for callback in self._tag_updated_callbacks[tag]: callback()
             self._flush()
 
     def toggle_tag(self, tag: str, on: bool) -> None:

@@ -10,7 +10,6 @@ from sysutils.lazy import Lazy
 from sysutils.timeutil import StopWatch
 from sysutils.typed import non_optional, str_
 from typed_linq_collections.collections.q_list import QList
-from typed_linq_collections.q_iterable import query
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -18,6 +17,7 @@ if TYPE_CHECKING:
     from jamdict.jmdict import JMDEntry  # pyright: ignore[reportMissingTypeStubs]
     from jamdict.util import LookupResult  # pyright: ignore[reportMissingTypeStubs]
     from note.vocabulary.vocabnote import VocabNote
+    from typed_linq_collections.collections.q_set import QSet
 
 import queue
 import threading
@@ -68,16 +68,16 @@ class JamdictThreadingWrapper(Slots):
         self._queue.put(Request(do_actual_lookup, future))
         return future.result()
 
-    def run_string_query(self, sql_query: str) -> list[str]:
-        def perform_query(jamdict: Jamdict) -> list[str]:
-            result: list[str] = []
+    def run_string_query(self, sql_query: str) -> QList[str]:
+        def perform_query(jamdict: Jamdict) -> QList[str]:
+            result: QList[str] = QList()
             for batch in non_optional(non_optional(jamdict.jmdict).ctx().conn).execute(sql_query):  # pyright: ignore[reportAny]
                 for row in batch:  # pyright: ignore[reportAny]
                     result.append(str_(row))  # noqa: PERF401  # pyright: ignore[reportAny]
 
             return result
 
-        future: Future[list[str]] = Future()
+        future: Future[QList[str]] = Future()
 
         self._queue.put(Request(perform_query, future))
         return future.result()
@@ -85,17 +85,17 @@ class JamdictThreadingWrapper(Slots):
 _jamdict_threading_wrapper: JamdictThreadingWrapper = JamdictThreadingWrapper()
 
 # noinspection SqlResolve
-def _find_all_words() -> set[str]:
+def _find_all_words() -> QSet[str]:
     with StopWatch.log_execution_time("Prepopulating all word forms from jamdict."):
-        kanji_forms: set[str] = set(_jamdict_threading_wrapper.run_string_query("SELECT distinct text FROM Kanji"))
-        kana_forms: set[str] = set(_jamdict_threading_wrapper.run_string_query("SELECT distinct text FROM Kana"))
+        kanji_forms: QSet[str] = _jamdict_threading_wrapper.run_string_query("SELECT distinct text FROM Kanji").to_set()
+        kana_forms: QSet[str] = _jamdict_threading_wrapper.run_string_query("SELECT distinct text FROM Kana").to_set()
     return kanji_forms | kana_forms
 
 # noinspection SqlResolve
-def _find_all_names() -> set[str]:
+def _find_all_names() -> QSet[str]:
     with StopWatch.log_execution_time("Prepopulating all name forms from jamdict."):
-        kanji_forms: set[str] = set(_jamdict_threading_wrapper.run_string_query("SELECT distinct text FROM NEKanji"))
-        kana_forms: set[str] = set(_jamdict_threading_wrapper.run_string_query("SELECT distinct text FROM NEKana"))
+        kanji_forms: QSet[str] = _jamdict_threading_wrapper.run_string_query("SELECT distinct text FROM NEKanji").to_set()
+        kana_forms: QSet[str] = _jamdict_threading_wrapper.run_string_query("SELECT distinct text FROM NEKana").to_set()
         return kanji_forms | kana_forms
 
 _all_word_forms = Lazy(_find_all_words)
@@ -119,11 +119,11 @@ class DictLookup(Slots):
                                         in self.entries
                                         if ent.is_kana_only())
 
-    def valid_forms(self, force_allow_kana_only: bool = False) -> set[str]:
-        return query(self.entries).select_many(lambda entry: entry.valid_forms(force_allow_kana_only)).to_set()  # set(ex_sequence.flatten([list(entry.valid_forms(force_allow_kana_only)) for entry in self.entries]))
+    def valid_forms(self, force_allow_kana_only: bool = False) -> QSet[str]:
+        return self.entries.select_many(lambda entry: entry.valid_forms(force_allow_kana_only)).to_set()  # set(ex_sequence.flatten([list(entry.valid_forms(force_allow_kana_only)) for entry in self.entries]))
 
-    def parts_of_speech(self) -> set[str]:
-        return query(self.entries).select_many(lambda entry: entry.parts_of_speech()).to_set()  # set(ex_sequence.flatten([list(ent.parts_of_speech()) for ent in self.entries]))
+    def parts_of_speech(self) -> QSet[str]:
+        return self.entries.select_many(lambda entry: entry.parts_of_speech()).to_set()  # set(ex_sequence.flatten([list(ent.parts_of_speech()) for ent in self.entries]))
 
     def priority_spec(self) -> PrioritySpec:
         return PrioritySpec(self.entries.select_many(lambda entry: entry.priority_tags()).to_set())  # PrioritySpec(set(ex_iterable.flatten(entry.priority_tags() for entry in self.entries)))
@@ -141,10 +141,14 @@ class DictLookup(Slots):
         return cls._try_lookup_word_or_name_with_matching_reading(word, tuple(readings))
 
     @classmethod
-    @cache
     def _try_lookup_word_or_name_with_matching_reading(cls, word: str, readings: tuple[str, ...]) -> DictLookup:  # needs to be a tuple to be hashable for caching
         if not cls.might_be_entry(word): return DictLookup._failed_for_word(word)
 
+        return cls._try_lookup_word_or_name_with_matching_reading_inner(word, readings)
+
+    @classmethod
+    @cache
+    def _try_lookup_word_or_name_with_matching_reading_inner(cls, word: str, readings: tuple[str, ...]) -> DictLookup:  # needs to be a tuple to be hashable for caching
         def kanji_form_matches() -> QList[DictEntry]:
             return (lookup
                     .where(lambda entry: any(entry.has_matching_kana_form(reading) for reading in readings)
@@ -192,17 +196,25 @@ class DictLookup(Slots):
         return DictLookup(entries, word, QList())
 
     @classmethod
-    @cache  # _lookup_word_shallow.cache_clear(), _lookup_word_shallow.cache_info()
     def _lookup_word_raw(cls, word: str) -> list[JMDEntry]:
         if not cls.might_be_word(word): return []
+        return cls._lookup_word_raw_inner(word)
 
+    @classmethod
+    @cache  # _lookup_word_shallow.cache_clear(), _lookup_word_shallow.cache_info()
+    def _lookup_word_raw_inner(cls, word: str) -> list[JMDEntry]:
         entries = list(_jamdict_threading_wrapper.lookup(word, include_names=False).entries)
         return entries if not kana_utils.is_only_kana(word) else [ent for ent in entries if cls._is_kana_only(ent)]
 
     @classmethod
-    @cache  # _lookup_word_shallow.cache_clear(), _lookup_word_shallow.cache_info()
     def _lookup_name_raw(cls, word: str) -> list[JMDEntry]:
         if not cls.might_be_name(word): return []
+        return cls._lookup_name_raw_inner(word)
+
+
+    @classmethod
+    @cache  # _lookup_word_shallow.cache_clear(), _lookup_word_shallow.cache_info()
+    def _lookup_name_raw_inner(cls, word: str) -> list[JMDEntry]:
         return list(_jamdict_threading_wrapper.lookup(word, include_names=True).names)
 
     @staticmethod
@@ -226,12 +238,19 @@ class DictLookup(Slots):
         return cls.might_be_word(word) or cls.might_be_name(word)
 
     @classmethod
-    @cache
     def is_word(cls, word: str) -> bool:
-        return cls.might_be_word(word) and cls.lookup_word(word).found_words()
+        if not cls.might_be_word(word):
+            return False
+
+        return cls._is_word_inner(word)
 
     @classmethod
     @cache
+    def _is_word_inner(cls, word: str) -> bool:
+        return cls.lookup_word(word).found_words()
+
+
+    @classmethod
     def is_dictionary_or_collection_word(cls, word: str) -> bool:
         from ankiutils import app
         return app.col().vocab.is_word(word) or cls.is_word(word)

@@ -27,7 +27,7 @@ from sysutils.weak_ref import WeakRef
 
 if TYPE_CHECKING:
     from anki.notes import Note
-
+    from typed_linq_collections.collections.q_set import QSet
 
 class VocabNote(JPNote, Slots):
     factory: VocabNoteFactory = VocabNoteFactory()
@@ -35,29 +35,38 @@ class VocabNote(JPNote, Slots):
         super().__init__(note)
         self.weakref_vocab: WeakRef[VocabNote] = cast(WeakRef[VocabNote], self.weakref)
 
-        self.question: VocabNoteQuestion = VocabNoteQuestion(self.weakref_vocab)
-
         self.readings: MutableCommaSeparatedStringsListField = MutableCommaSeparatedStringsListField(self.weakref, NoteFields.Vocab.Reading)
 
         self.user: VocabNoteUserfields = VocabNoteUserfields(self.weakref_vocab)
 
-        self._source_answer: MutableStringField = MutableStringField(self.weakref, NoteFields.Vocab.source_answer)
-        self.active_answer: MutableStringField = MutableStringField(self.weakref, NoteFields.Vocab.active_answer)
-
-        self.cloner: VocabCloner = VocabCloner(self.weakref_vocab)
         self.related_notes: RelatedVocab = RelatedVocab(self.weakref_vocab)
-        self.audio: VocabNoteAudio = VocabNoteAudio(self.weakref_vocab)
         self.sentences: VocabNoteSentences = VocabNoteSentences(self.weakref_vocab)
         self.forms: VocabNoteForms = VocabNoteForms(self.weakref_vocab)
         self.parts_of_speech: VocabNotePartsOfSpeech = VocabNotePartsOfSpeech(self.weakref_vocab)
         self.compound_parts: VocabNoteUserCompoundParts = VocabNoteUserCompoundParts(self.weakref_vocab)
-        self.conjugator: VocabNoteConjugator = VocabNoteConjugator(self.weakref_vocab)
-        self.kanji: VocabNoteKanji = VocabNoteKanji(self.weakref_vocab)
-        self.meta_data: VocabNoteMetaData = VocabNoteMetaData(self.weakref_vocab)
         self.matching_configuration: VocabNoteMatchingConfiguration = VocabNoteMatchingConfiguration(self.weakref_vocab)
 
+
+    @property
+    def question(self) -> VocabNoteQuestion: return VocabNoteQuestion(self.weakref_vocab)
+    @property
+    def meta_data(self) -> VocabNoteMetaData: return VocabNoteMetaData(self.weakref_vocab)
+    @property
+    def kanji(self) -> VocabNoteKanji: return VocabNoteKanji(self.weakref_vocab)
+    @property
+    def audio(self) -> VocabNoteAudio: return VocabNoteAudio(self.weakref_vocab)
+    @property
+    def cloner(self) -> VocabCloner: return VocabCloner(self.weakref_vocab)
+    @property
+    def conjugator(self) -> VocabNoteConjugator: return VocabNoteConjugator(self.weakref_vocab)
+    @property
+    def _source_answer(self) -> MutableStringField: return MutableStringField(self.weakref_vocab, NoteFields.Vocab.source_answer)
+    @property
+    def active_answer(self) -> MutableStringField: return MutableStringField(self.weakref_vocab, NoteFields.Vocab.active_answer)
+
+
     @override
-    def get_direct_dependencies(self) -> set[JPNote]:
+    def get_direct_dependencies(self) -> QSet[JPNote]:
         return self.related_notes.get_direct_dependencies()
 
     @override

@@ -13,7 +13,12 @@ if TYPE_CHECKING:
 class SentenceUserFields(Slots):
     def __init__(self, sentence: WeakRef[SentenceNote]) -> None:
         self._sentence: WeakRef[SentenceNote] = sentence
-        self.comments: MutableStringField = MutableStringField(sentence, SentenceNoteFields.user_comments)
-        self.question: MutableStringField = MutableStringField(sentence, SentenceNoteFields.user_question)
-        self.answer: MutableStringField = MutableStringField(sentence, SentenceNoteFields.user_answer)
-        self.answer_analysis: MutableStringField = MutableStringField(sentence, SentenceNoteFields.user_answer_analysis)
+
+    @property
+    def comments(self) -> MutableStringField: return MutableStringField(self._sentence, SentenceNoteFields.user_comments)
+    @property
+    def answer(self) -> MutableStringField: return MutableStringField(self._sentence, SentenceNoteFields.user_answer)
+    @property
+    def question(self) -> MutableStringField: return MutableStringField(self._sentence, SentenceNoteFields.user_question)
+    @property
+    def answer_analysis(self) -> MutableStringField: return MutableStringField(self._sentence, SentenceNoteFields.user_answer_analysis)

@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
@@ -18,7 +19,7 @@ class VocabMetaTag(Slots):
 def get_meta_tags_html(vocab: VocabNote, display_extended_sentence_statistics: bool = True, no_sentense_statistics: bool = False) -> str:
     tags = set(vocab.get_tags())
     meta: list[VocabMetaTag] = []
-    tos = {t.lower().strip() for t in vocab.parts_of_speech.raw_string_value().split(",")}
+    tos = QSet(t.lower().strip() for t in vocab.parts_of_speech.raw_string_value().split(","))
 
     if not no_sentense_statistics:
         def max_nine_number(value: int) -> str: return f"""{value}""" if value < 10 else "+"
@@ -93,7 +94,7 @@ def get_meta_tags_html(vocab: VocabNote, display_extended_sentence_statistics: b
 
     return """<ol class="vocab_tag_list">""" + "".join([f"""<li class="vocab_tag vocab_tag_{tag.name}" title="{tag.tooltip}">{tag.display}</li>""" for tag in meta]) + "</ol>"
 
-def _create_verb_meta_tag(name: str, display: str, tooltip: str, tos: set[str]) -> VocabMetaTag:
+def _create_verb_meta_tag(name: str, display: str, tooltip: str, tos: QSet[str]) -> VocabMetaTag:
     tag = VocabMetaTag(name, display, tooltip)
 
     if "intransitive verb" in tos or "intransitive" in tos:

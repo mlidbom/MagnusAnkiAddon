@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 from ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:
     from anki.notes import NoteId
@@ -27,9 +28,9 @@ class CompoundPartViewModel(Slots):
         self.meta_tags_string += " highlighted" if self.is_highlighted else ""
 
     @classmethod
-    def get_compound_parts_recursive(cls, vocab_note: VocabNote, config: SentenceConfiguration, depth: int = 0, visited: set[NoteId] | None = None) -> list[CompoundPartViewModel]:
+    def get_compound_parts_recursive(cls, vocab_note: VocabNote, config: SentenceConfiguration, depth: int = 0, visited: QSet[NoteId] | None = None) -> list[CompoundPartViewModel]:
         if not app.config().show_compound_parts_in_sentence_breakdown.get_value(): return []
-        if visited is None: visited = set()
+        if visited is None: visited = QSet()
         if vocab_note.get_id() in visited: return []
 
         visited.add(vocab_note.get_id())

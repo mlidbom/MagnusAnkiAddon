@@ -14,6 +14,7 @@ from typed_linq_collections.q_iterable import query
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
+    from typed_linq_collections.collections.q_set import QSet
 
 from note.jpnote import JPNote
 from note.note_constants import CardTypes, NoteFields, NoteTypes
@@ -26,8 +27,8 @@ class KanjiNote(JPNote, Slots):
         self.weakref_kanji: WeakRef[KanjiNote] = cast(WeakRef[KanjiNote], self.weakref)
 
     @override
-    def get_direct_dependencies(self) -> set[JPNote]:
-        return set(self.get_radicals_notes())
+    def get_direct_dependencies(self) -> QSet[JPNote]:
+        return self.get_radicals_notes().cast.to(JPNote).to_set()
 
     def tag_vocab_readings(self, vocab: VocabNote) -> list[str]:
         def primary_reading(read: str) -> str:
@@ -122,8 +123,8 @@ class KanjiNote(JPNote, Slots):
     def get_reading_nan_list_html(self) -> list[str]:
         return ex_str.extract_comma_separated_values(self.get_reading_nan_html())
 
-    def get_readings_clean(self) -> list[str]:
-        return [ex_str.strip_html_markup(reading) for reading in self.get_reading_on_list_html() + self.get_reading_kun_list_html() + self.get_reading_nan_list_html()]
+    def get_readings_clean(self) -> QList[str]:
+        return QList(ex_str.strip_html_markup(reading) for reading in self.get_reading_on_list_html() + self.get_reading_kun_list_html() + self.get_reading_nan_list_html())
 
     def get_reading_on_html(self) -> str:
         return self.get_field(NoteFields.Kanji.Reading_On)
@@ -166,22 +167,22 @@ class KanjiNote(JPNote, Slots):
     def remove_primary_kun_reading(self, reading: str) -> None:
         self.set_reading_kun(self.get_reading_kun_html().replace(f"<primary>{reading}</primary>", reading))
 
-    def get_radicals(self) -> list[str]:
-        return [rad for rad in ex_str.extract_comma_separated_values(self.get_field(NoteFields.Kanji.Radicals)) if rad != self.get_question()]
+    def get_radicals(self) -> QList[str]:
+        return QList(rad for rad in ex_str.extract_comma_separated_values(self.get_field(NoteFields.Kanji.Radicals)) if rad != self.get_question())
 
     def _set_radicals(self, value: str) -> None:
         self.set_field(NoteFields.Kanji.Radicals, value)
 
-    def get_radicals_notes(self) -> list[KanjiNote]:
-        return [kanji_radical for kanji_radical in (app.col().kanji.with_kanji(radical) for radical in self.get_radicals()) if kanji_radical]
+    def get_radicals_notes(self) -> QList[KanjiNote]:
+        return QList(kanji_radical for kanji_radical in (app.col().kanji.with_kanji(radical) for radical in self.get_radicals()) if kanji_radical)
 
     def get_active_mnemonic(self) -> str:
         return self.get_user_mnemonic() if self.get_user_mnemonic() \
             else f"# {kanjinote_mnemonic_maker.create_default_mnemonic(self)}" if app.config().prefer_default_mnemonics_to_source_mnemonics.get_value() \
             else self.get_source_meaning_mnemonic()
 
-    def get_user_similar_meaning(self) -> set[str]:
-        return set(ex_str.extract_comma_separated_values(self.get_field(NoteFields.Kanji.user_similar_meaning)))
+    def get_user_similar_meaning(self) -> QSet[str]:
+        return ex_str.extract_comma_separated_values(self.get_field(NoteFields.Kanji.user_similar_meaning)).to_set()
 
     def add_user_similar_meaning(self, new_synonym_question: str, _is_recursive_call: bool = False) -> None:
         near_synonyms_questions = self.get_user_similar_meaning()
@@ -197,8 +198,8 @@ class KanjiNote(JPNote, Slots):
     def get_source_meaning_mnemonic(self) -> str:
         return self.get_field(NoteFields.Kanji.Source_Meaning_Mnemonic)
 
-    def get_related_confused_with(self) -> set[str]:
-        return set(ex_str.extract_comma_separated_values(self.get_field(NoteFields.Kanji.related_confused_with)))
+    def get_related_confused_with(self) -> QSet[str]:
+        return ex_str.extract_comma_separated_values(self.get_field(NoteFields.Kanji.related_confused_with)).to_set()
 
     def add_related_confused_with(self, new_confused_with: str) -> None:
         confused_with = self.get_related_confused_with()
@@ -300,10 +301,10 @@ class KanjiNote(JPNote, Slots):
                     .select(lambda kanji: kanji.get_question())
                     .to_list())
 
-        radicals = self.get_radicals()
+        radicals:QList[str] = self.get_radicals()
         for radical in detect_radicals_from_mnemonic():
             if radical not in radicals:
-                radicals += radical
+                radicals.append(radical)
 
         self._set_radicals(", ".join(radicals))
 

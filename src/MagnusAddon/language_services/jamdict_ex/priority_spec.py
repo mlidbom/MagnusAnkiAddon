@@ -1,6 +1,11 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+
+if TYPE_CHECKING:
+    from typed_linq_collections.collections.q_set import QSet
 
 _frequency_maximum = {f"nf{num:02}" for num in range(1, 10)}
 _frequency_high = {f"nf{num}" for num in range(11, 20)}
@@ -12,8 +17,8 @@ _tags_high = {"news1", "spec1"}
 _tags_medium = {"news2", "spec2"}
 
 class PrioritySpec(Slots):
-    def __init__(self, tags: set[str]) -> None:
-        self.tags: set[str] = tags
+    def __init__(self, tags: QSet[str]) -> None:
+        self.tags: QSet[str] = tags
 
         if self.tags & _tags_maximum:
             self.priority_string: str = "priority_maximum"

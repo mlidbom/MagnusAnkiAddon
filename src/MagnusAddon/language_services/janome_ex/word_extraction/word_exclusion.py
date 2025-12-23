@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, final, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from typed_linq_collections.collections.q_dict import QDict
 
 if TYPE_CHECKING:
     from sysutils.json.json_reader import JsonReader
@@ -43,8 +44,8 @@ class WordExclusion(Slots):
     def excludes_all_words_excluded_by(self, other: WordExclusion) -> bool:
         return self.word == other.word and (self.index == WordExclusion._no_index or self.index == other.index)
 
-    def to_dict(self) -> dict[str, object]:
-        return {"word": self.word, "index": self.index}
+    def to_dict(self) -> QDict[str, object]:
+        return QDict({"word": self.word, "index": self.index})
 
     @classmethod
     def from_reader(cls, reader: JsonReader) -> WordExclusion:

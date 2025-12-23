@@ -6,6 +6,7 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from note.notefields.json_object_field import ObjectSerializer
 from sysutils.json import ex_json
 from sysutils.json.json_reader import JsonReader
+from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote_matching_rules import VocabNoteMatchingRulesData
@@ -14,14 +15,14 @@ class VocabNoteMatchingRulesSerializer(ObjectSerializer["VocabNoteMatchingRulesD
     @override
     def deserialize(self, serialized: str) -> VocabNoteMatchingRulesData:
         from note.vocabulary.vocabnote_matching_rules import VocabNoteMatchingRulesData
-        if not serialized: return VocabNoteMatchingRulesData(set(), set(), set(), set(), set())
+        if not serialized: return VocabNoteMatchingRulesData(QSet(), QSet(), QSet(), QSet(), QSet())
 
         reader = JsonReader.from_json(serialized)
         return VocabNoteMatchingRulesData(reader.string_set("surface_is_not"),
                                           reader.string_set("prefix_is_not"),
-                                          reader.string_set("suffix_is_not", set()),
+                                          reader.string_set("suffix_is_not", QSet()),
                                           reader.string_set("required_prefix"),
-                                          reader.string_set("yield_to_surface", set()))
+                                          reader.string_set("yield_to_surface", QSet()))
 
     @override
     def serialize(self, instance: VocabNoteMatchingRulesData) -> str:

@@ -25,3 +25,7 @@ class DefaultDictCaseInsensitive[VT](collections.defaultdict[str, VT], Slots):
     @override
     def __contains__(self, key: object) -> bool:
         return super().__contains__(typed.str_(key).lower())
+
+    def get_value_or_default(self, key: str) -> VT:
+        if key in self: return self[key]
+        return self.default_factory()  # pyright: ignore [reportOptionalCall]

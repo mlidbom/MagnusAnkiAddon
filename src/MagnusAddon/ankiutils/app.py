@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 import mylog
 from sysutils.typed import checked_cast, non_optional
 from testutils import ex_pytest
+from typed_linq_collections.collections.q_set import QSet
 
 is_testing = ex_pytest.is_testing
 
@@ -23,8 +24,8 @@ if TYPE_CHECKING:
 
 _collection: JPCollection | None = None
 
-_init_hooks: set[Callable[[], None]] = set()
-_collection_closed_hooks: set[Callable[[], None]] = set()
+_init_hooks: QSet[Callable[[], None]] = QSet()
+_collection_closed_hooks: QSet[Callable[[], None]] = QSet()
 
 def _call_init_hooks() -> None:
     global _init_hooks

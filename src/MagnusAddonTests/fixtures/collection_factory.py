@@ -7,6 +7,7 @@ from os import path
 from typing import TYPE_CHECKING
 
 from anki.collection import Collection
+from ankiutils import app
 from fixtures.base_data import note_type_factory
 from fixtures.base_data.sample_data import kanji_spec, sentence_spec, vocab_lists
 from fixtures.stub_factory import stub_ui_dependencies
@@ -54,7 +55,7 @@ def inject_collection_with_select_data(kanji: bool = False, special_vocab: bool 
             for sentence in sentence_spec.test_sentence_list:
                 SentenceNote.create_test_note(sentence.question, sentence.answer)
 
-        #app.col().flush_cache_updates()
+        app.col().flush_cache_updates()
 
         yield collection
 

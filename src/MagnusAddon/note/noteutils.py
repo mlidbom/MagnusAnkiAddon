@@ -7,6 +7,7 @@ from anki.notes import NoteId
 from note.note_constants import NoteTypes
 from sysutils import typed
 from sysutils.typed import non_optional, str_
+from typed_linq_collections.q_iterable import query
 
 if TYPE_CHECKING:
     from anki.cards import Card
@@ -43,8 +44,16 @@ def _ensure_card_status_is_cached(note: Note) -> None:
     if note.id not in _studying_status_cache:
         _studying_status_cache[note.id] = {_card_type(card): _is_being_studied(card) for card in note.cards()}
 
+class CardStudyingStatus:
+    def __init__(self, row: Row) -> None:
+        self.note_id: NoteId = NoteId(typed.int_(row[0])) # pyright: ignore[reportAny]
+        self.card_type: str = typed.str_(row[1]) # pyright: ignore[reportAny]
+        self.queue: int = typed.int_(row[2]) # pyright: ignore[reportAny]
+
 def initialize_studying_cache(col: Collection, task_runner: ITaskRunner) -> None:
-    query = f"""
+    clear_studying_cache()
+
+    sql_query = f"""
     SELECT cards.nid as note_id, templates.name as card_type, cards.queue as queue
     FROM cards
     JOIN notes ON cards.nid = notes.id
@@ -53,15 +62,12 @@ def initialize_studying_cache(col: Collection, task_runner: ITaskRunner) -> None
     WHERE notetypes.name COLLATE NOCASE IN ('{NoteTypes.Sentence}', '{NoteTypes.Vocab}', '{NoteTypes.Kanji}')
 """
 
-    studying_status_rows: list[Row] = task_runner.run_on_background_thread_with_spinning_progress_dialog("Fetching card studying status from Anki db", lambda: non_optional(col.db).all(query))
+    #don't use temporary variables, it will break our memory profiling using tracemalloc
+    def fetch_card_studying_statuses() -> list[CardStudyingStatus]:
+        return task_runner.run_on_background_thread_with_spinning_progress_dialog("Fetching card studying status from Anki db", lambda: query(non_optional(col.db).all(sql_query)).select(CardStudyingStatus).to_list())
 
-    clear_studying_cache()
+    def cache_card(row: CardStudyingStatus) -> None:
+        if row.note_id not in _studying_status_cache: _studying_status_cache[row.note_id] = {}
+        _studying_status_cache[row.note_id][row.card_type] = row.queue != QUEUE_TYPE_SUSPENDED
 
-    def cache_card(row: Row) -> None:
-        note_id = NoteId(typed.int_(row[0])) # pyright: ignore[reportAny]
-        card_type = typed.str_(row[1])  # pyright: ignore[reportAny]
-        queue = typed.int_(row[2])  # pyright: ignore[reportAny]
-        if note_id not in _studying_status_cache: _studying_status_cache[note_id] = {}
-        _studying_status_cache[note_id][card_type] = queue != QUEUE_TYPE_SUSPENDED
-
-    task_runner.process_with_progress(studying_status_rows, cache_card, "Populating studying status cache")
+    task_runner.process_with_progress(fetch_card_studying_statuses(), cache_card, "Populating studying status cache")

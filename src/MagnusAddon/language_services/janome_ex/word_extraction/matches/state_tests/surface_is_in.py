@@ -8,11 +8,12 @@ from language_services.janome_ex.word_extraction.matches.state_tests.match_state
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.match import Match
     from sysutils.weak_ref import WeakRef
+    from typed_linq_collections.collections.q_set import QSet
 
 class SurfaceIsIn(MatchStateTest, Slots):
-    def __init__(self, match: WeakRef[Match], surfaces: set[str]) -> None:
+    def __init__(self, match: WeakRef[Match], surfaces: QSet[str]) -> None:
         super().__init__(match, f"""surface_in:{",".join(surfaces)}""", cache_is_in_state=True)
-        self.surfaces: set[str] = surfaces
+        self.surfaces: QSet[str] = surfaces
 
     @override
     def _internal_match_is_in_state(self) -> bool:

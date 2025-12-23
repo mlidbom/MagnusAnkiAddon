@@ -52,7 +52,7 @@ def sentence_search(word: str, exact: bool = False) -> str:
     if not exact:
         vocabs = app.col().vocab.with_form(word)
         if vocabs:
-            forms: set[str] = vocabs.select_many(lambda voc: voc.forms.all_list()).to_set()  # set(ex_sequence.flatten([v.forms.all_list() for v in vocabs]))
+            forms: QSet[str] = vocabs.select_many(lambda voc: voc.forms.all_list()).to_set()  # set(ex_sequence.flatten([v.forms.all_list() for v in vocabs]))
             return result + "(" + "　OR ".join([form_query(form) for form in forms]) + ")"
 
     return result + f"""({form_query(word)})"""

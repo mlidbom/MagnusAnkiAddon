@@ -8,16 +8,17 @@ if TYPE_CHECKING:
     from collections.abc import Callable
 
     from note.notefields.json_object_field import MutableSerializedObjectField
+    from typed_linq_collections.collections.q_set import QSet
 
 class FieldSetWrapper[TValue](Slots):
     _secret: str = "aoeulrcaboeusthb"
-    def __init__(self, save_callback: Callable[[], None], value: Callable[[], set[TValue]], secret: str) -> None:
+    def __init__(self, save_callback: Callable[[], None], value: Callable[[], QSet[TValue]], secret: str) -> None:
         if FieldSetWrapper._secret != secret: raise ValueError("use the factory methods, not this private constructor")
         self._save: Callable[[], None] = save_callback
-        self._value: Callable[[], set[TValue]] = value #never replace _value or the save method will stop working...
+        self._value: Callable[[], QSet[TValue]] = value #never replace _value or the save method will stop working...
 
-    def get(self) -> set[TValue]: return self._value()
-    def __call__(self) -> set[TValue]: return self.get()
+    def get(self) -> QSet[TValue]: return self._value()
+    def __call__(self) -> QSet[TValue]: return self.get()
 
     def add(self, value: TValue) -> None:
         self._value().add(value)
@@ -42,7 +43,7 @@ class FieldSetWrapper[TValue](Slots):
     def any(self) -> bool: return any(self._value())
 
     @classmethod
-    def for_json_object_field(cls, field: MutableSerializedObjectField[Any], value: set[TValue]) -> FieldSetWrapper[TValue]:  # pyright: ignore[reportExplicitAny]
+    def for_json_object_field(cls, field: MutableSerializedObjectField[Any], value: QSet[TValue]) -> FieldSetWrapper[TValue]:  # pyright: ignore[reportExplicitAny]
         return FieldSetWrapper(lambda: field.save(), lambda: value, FieldSetWrapper._secret)
 
     @override

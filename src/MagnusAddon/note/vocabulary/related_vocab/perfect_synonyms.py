@@ -24,7 +24,7 @@ class PerfectSynonyms(Slots):
         for synonym in self.notes():
             synonym.user.answer.set(self._vocab().user.answer.value)
 
-    def get(self) -> set[str]: return self._value.get()
+    def get(self) -> QSet[str]: return self._value.get()
 
     def _remove_internal(self, synonym: str) -> None:
         self._value.discard(synonym)

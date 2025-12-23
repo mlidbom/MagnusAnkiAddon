@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING
 
 from note.sentences.sentence_configuration import SentenceConfiguration
 from note.sentences.sentencenote import SentenceNote
-from sysutils.lazy import Lazy
 from tests.language_services_tests.janome_tests.text_analysis_state_validator import TextAnalysisValidator
 from ui.web.sentence.sentence_viewmodel import SentenceViewModel
 
@@ -28,7 +27,7 @@ def assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentenc
 
     sentence_note = SentenceNote.create(sentence)
     if len(excluded) != 0:
-        sentence_note.configuration._value = Lazy[SentenceConfiguration].from_value(SentenceConfiguration.from_hidden_matches(excluded))  # pyright: ignore[reportPrivateUsage]
+        sentence_note.configuration._value = SentenceConfiguration.from_hidden_matches(excluded)  # pyright: ignore[reportPrivateUsage]
 
     sentence_view_model = SentenceViewModel(sentence_note)
     analysis = sentence_view_model.analysis.analysis
@@ -40,7 +39,7 @@ def assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentenc
     else:
         run_note_assertions("running assertions with exclusions hidden")
 
-        sentence_note.configuration._value = Lazy[SentenceConfiguration].from_value(SentenceConfiguration.from_incorrect_matches(excluded))  # pyright: ignore[reportPrivateUsage]
+        sentence_note.configuration._value = SentenceConfiguration.from_incorrect_matches(excluded)  # pyright: ignore[reportPrivateUsage]
         run_note_assertions("running assertions with exclusions marked as incorrect matches")
 
 def assert_all_words_equal(sentence: str, expected_output: list[str]) -> None:

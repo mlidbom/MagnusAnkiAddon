@@ -14,40 +14,51 @@ from note.notefields.sentence_question_field import SentenceQuestionField
 from note.notefields.strip_html_on_read_fallback_string_field import StripHtmlOnReadFallbackStringField
 from note.sentences.caching_sentence_configuration_field import CachingSentenceConfigurationField
 from note.sentences.parsing_result import ParsingResult
-from note.sentences.serialization.parsing_result_serializer import ParsingResultSerializer
 from note.sentences.user_fields import SentenceUserFields
 from sysutils import ex_str, kana_utils
 from sysutils.weak_ref import WeakRef
+from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
     from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
     from note.vocabulary.vocabnote import VocabNote
     from typed_linq_collections.collections.q_list import QList
+    from typed_linq_collections.collections.q_unique_list import QUniqueList
 
 class SentenceNote(JPNote, Slots):
     def __init__(self, note: Note) -> None:
         super().__init__(note)
         self.weakref_sentence: WeakRef[SentenceNote] = cast(WeakRef[SentenceNote], self.weakref)
 
-        self.id: MutableStringField = MutableStringField(self.weakref, SentenceNoteFields.id)
-        self.reading: MutableStringField = MutableStringField(self.weakref, SentenceNoteFields.reading)
-
-        self.active_question: MutableStringField = MutableStringField(self.weakref, SentenceNoteFields.active_question)
-        self.active_answer: MutableStringField = MutableStringField(self.weakref, SentenceNoteFields.active_answer)
-
-        self._source_answer: MutableStringField = MutableStringField(self.weakref, SentenceNoteFields.source_answer)
-        self.source_question: MutableStringField = MutableStringField(self.weakref, SentenceNoteFields.source_question)
-        self.source_comments: MutableStringField = MutableStringField(self.weakref, SentenceNoteFields.source_comments)
-
-        self.user: SentenceUserFields = SentenceUserFields(self.weakref_sentence)
-
-        self.question: SentenceQuestionField = SentenceQuestionField(self.user.question, self.source_question)
-        self.answer: StripHtmlOnReadFallbackStringField = StripHtmlOnReadFallbackStringField(self.user.answer, self._source_answer)
-        self._screenshot: MutableStringField = MutableStringField(self.weakref, SentenceNoteFields.screenshot)
-        self.audio: WritableAudioField = WritableAudioField(self.weakref, SentenceNoteFields.audio)
         self.configuration: CachingSentenceConfigurationField = CachingSentenceConfigurationField(self.weakref_sentence)
-        self.parsing_result: MutableSerializedObjectField[ParsingResult] = MutableSerializedObjectField[ParsingResult](self.weakref, SentenceNoteFields.parsing_result, ParsingResultSerializer())
+        self.parsing_result: MutableSerializedObjectField[ParsingResult] = MutableSerializedObjectField[ParsingResult](self.weakref, SentenceNoteFields.parsing_result, ParsingResult.serializer)
+
+
+    @property
+    def id(self) -> MutableStringField: return MutableStringField(self.weakref, SentenceNoteFields.id)
+    @property
+    def reading(self) -> MutableStringField: return MutableStringField(self.weakref, SentenceNoteFields.reading)
+    @property
+    def user(self) -> SentenceUserFields: return SentenceUserFields(self.weakref_sentence)
+    @property
+    def source_question(self) -> MutableStringField: return MutableStringField(self.weakref, SentenceNoteFields.source_question)
+    @property
+    def active_question(self) -> MutableStringField: return MutableStringField(self.weakref, SentenceNoteFields.active_question)
+    @property
+    def question(self) -> SentenceQuestionField: return SentenceQuestionField(self.user.question, self.source_question)
+    @property
+    def answer(self) -> StripHtmlOnReadFallbackStringField: return StripHtmlOnReadFallbackStringField(self.user.answer, self._source_answer)
+    @property
+    def _source_answer(self) -> MutableStringField: return MutableStringField(self.weakref, SentenceNoteFields.active_answer)
+    @property
+    def active_answer(self) -> MutableStringField: return MutableStringField(self.weakref, SentenceNoteFields.active_answer)
+    @property
+    def source_comments(self) -> MutableStringField: return MutableStringField(self.weakref, SentenceNoteFields.source_comments)
+    @property
+    def _screenshot(self) -> MutableStringField: return MutableStringField(self.weakref, SentenceNoteFields.screenshot)
+    @property
+    def audio(self) -> WritableAudioField: return WritableAudioField(self.weakref, SentenceNoteFields.audio)
 
     @override
     def get_question(self) -> str: return self.question.get()
@@ -68,16 +79,16 @@ class SentenceNote(JPNote, Slots):
         return TextAnalysis(self.get_question(), self.configuration.configuration)
 
     @override
-    def get_direct_dependencies(self) -> set[JPNote]:
+    def get_direct_dependencies(self) -> QSet[JPNote]:
         highlighted = self.configuration.highlighted_vocab
-        displayed_vocab = {voc for voc in {app.col().vocab.with_id_or_none(voc.vocab_id)
+        displayed_vocab = (voc for voc in {app.col().vocab.with_id_or_none(voc.vocab_id)
                                            for voc in self.parsing_result.get().parsed_words
                                            if voc.is_displayed}
-                           if voc is not None}
-        kanji = set(self.collection.kanji.with_any_kanji_in(self.extract_kanji()))
-        return set(highlighted | displayed_vocab | kanji)
+                           if voc is not None)
+        kanji = self.collection.kanji.with_any_kanji_in(self.extract_kanji())
+        return QSet.create(highlighted, displayed_vocab, kanji)
 
-    def get_words(self) -> set[str]: return (set(self.parsing_result.get().parsed_words_strings()) | set(self.configuration.highlighted_words())) - self.configuration.incorrect_matches.words()
+    def get_words(self) -> QUniqueList[str]: return (self.parsing_result.get().parsed_words_strings() | self.configuration.highlighted_words()) - self.configuration.incorrect_matches.words()
 
     def get_parsed_words_notes(self) -> list[VocabNote]:
         return (self.get_valid_parsed_non_child_words_strings()
@@ -114,7 +125,7 @@ class SentenceNote(JPNote, Slots):
         return note
 
     @classmethod
-    def add_sentence(cls, question: str, answer: str, audio: str = "", screenshot: str = "", highlighted_vocab: set[str] | None = None, tags: set[str] | None = None) -> SentenceNote:
+    def add_sentence(cls, question: str, answer: str, audio: str = "", screenshot: str = "", highlighted_vocab: QSet[str] | None = None, tags: QSet[str] | None = None) -> SentenceNote:
         inner_note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Sentence))
         note = SentenceNote(inner_note)
         note.source_question.set(question)
@@ -145,7 +156,7 @@ class SentenceNote(JPNote, Slots):
                                    answer=immersion_kit_note[ImmersionKitSentenceNoteFields.answer],
                                    audio=immersion_kit_note[ImmersionKitSentenceNoteFields.audio],
                                    screenshot=immersion_kit_note[ImmersionKitSentenceNoteFields.screenshot],
-                                   tags={Tags.immersion_kit})
+                                   tags=QSet([Tags.immersion_kit]))
 
         created.id.set(immersion_kit_note[ImmersionKitSentenceNoteFields.id])
         created.reading.set(immersion_kit_note[ImmersionKitSentenceNoteFields.reading])

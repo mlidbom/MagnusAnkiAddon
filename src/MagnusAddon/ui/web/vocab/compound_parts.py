@@ -6,6 +6,7 @@ from aqt import gui_hooks
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from note.vocabulary.vocabnote import VocabNote
 from sysutils.ex_str import newline
+from typed_linq_collections.collections.q_set import QSet
 from ui.web.web_utils.content_renderer import PrerenderingAnswerContentRenderer
 
 if TYPE_CHECKING:
@@ -51,8 +52,8 @@ def render_vocab_list(vocab_list: list[CompoundPart], title: str, css_class: str
             </div>
             '''
 
-def get_compound_parts_recursive(vocab_note: VocabNote, depth: int = 0, visited: set[NoteId] | None = None) -> list[CompoundPart]:
-    if visited is None: visited = set()
+def get_compound_parts_recursive(vocab_note: VocabNote, depth: int = 0, visited: QSet[NoteId] | None = None) -> list[CompoundPart]:
+    if visited is None: visited = QSet()
     if vocab_note.get_id() in visited: return []
 
     visited.add(vocab_note.get_id())

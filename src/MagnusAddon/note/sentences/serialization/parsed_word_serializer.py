@@ -7,7 +7,7 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from sysutils.ex_str import invisible_space
 
 if TYPE_CHECKING:
-    from note.sentences.parsed_word import ParsedMatch
+    from note.sentences.parsed_match import ParsedMatch
 
 class ParsedWordSerializer(Slots):
     separator: str = f" {invisible_space} "
@@ -24,12 +24,12 @@ class ParsedWordSerializer(Slots):
 
     @staticmethod
     def from_row(serialized: str) -> ParsedMatch:
-        from note.sentences.parsed_word import ParsedMatch
+        from note.sentences.parsed_match import ParsedMatch
         values = serialized.split(ParsedWordSerializer.separator)
 
         return ParsedMatch(values[0],
                            int(values[1]),
                            values[2] != "0",
                            values[3],
-                           values[4],
+                           "", #values[4],
                            cast(NoteId, int(values[5])))

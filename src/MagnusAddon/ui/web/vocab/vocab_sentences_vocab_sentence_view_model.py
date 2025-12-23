@@ -6,7 +6,7 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from sysutils.typed import non_optional
 
 if TYPE_CHECKING:
-    from note.sentences.parsed_word import ParsedMatch
+    from note.sentences.parsed_match import ParsedMatch
     from note.sentences.parsing_result import ParsingResult
     from note.sentences.sentencenote import SentenceNote
     from note.vocabulary.vocabnote import VocabNote

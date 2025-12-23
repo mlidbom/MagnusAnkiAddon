@@ -11,6 +11,7 @@ from note.sentences.sentence_configuration import SentenceConfiguration
 from note.sentences.word_exclusion_set import WordExclusionSet
 from sysutils.json import ex_json
 from sysutils.json.json_reader import JsonReader
+from typed_linq_collections.collections.q_unique_list import QUniqueList
 
 
 class IntObject(Slots):
@@ -53,18 +54,18 @@ def test_round_object_list() -> None:
     assert_object_graphs_identical(start_value, round_tripped_value)
 
 def test_roundtrip_parsing_result() -> None:
-    from note.sentences.parsed_word import ParsedMatch
+    from note.sentences.parsed_match import ParsedMatch
     from note.sentences.parsing_result import ParsingResult
 
-    parsing_result = ParsingResult([ParsedMatch("B", 0, True, "foo", "inf", NoteId(1)),
-                                    ParsedMatch("B", 4, False, "bar", "inf", NoteId(2))], "foo bar", "1.0")
+    parsing_result = ParsingResult([ParsedMatch("B", 0, True, "foo", "", NoteId(1)), #the information string is not read when loading so don't set it to anything
+                                    ParsedMatch("B", 4, False, "bar", "", NoteId(2))], "foo bar", "1.0") #the information string is not read when loading so don't set it to anything
     serialized = ParsingResult.serializer.serialize(parsing_result)
     round_tripped_result = ParsingResult.serializer.deserialize(serialized)
 
     assert_object_graphs_identical(parsing_result, round_tripped_result)
 
 def test_roundtrip_configuration() -> None:
-    config = SentenceConfiguration({"1", "2"},
+    config = SentenceConfiguration(QUniqueList({"1", "2"}),
                                    WordExclusionSet(lambda: None, [WordExclusion.global_("111"), WordExclusion.global_("222")]),
                                    WordExclusionSet(lambda: None, [WordExclusion.global_("333"), WordExclusion.global_("444")]))
     json = SentenceConfiguration.serializer.serialize(config)

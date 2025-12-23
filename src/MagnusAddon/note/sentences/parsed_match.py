@@ -6,6 +6,7 @@ from anki.notes import NoteId
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
 from note.sentences.serialization.parsed_word_serializer import ParsedWordSerializer
+from sysutils import ex_str
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.match import Match
@@ -15,8 +16,8 @@ class ParsedMatch(Slots):
     def __init__(self, variant: str, start_index: int, is_displayed: bool, word: str, information_string: str, vocab_id: NoteId) -> None:
         self.start_index: int = start_index
         self.is_displayed: bool = is_displayed
-        self.variant: str = variant
-        self.parsed_form: str = word
+        self.variant: str = ex_str.auto_intern(variant)
+        self.parsed_form: str = ex_str.auto_intern(word)
         self.vocab_id: NoteId = vocab_id
         self.information_string: str = information_string
 

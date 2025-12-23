@@ -15,6 +15,8 @@ from note.jpnote import JPNote
 from note.note_constants import Mine
 from qt_utils.task_runner_progress_dialog import TaskRunner
 from sysutils import app_thread_pool
+from sysutils.memory_usage import string_auto_interner
+from sysutils.memory_usage.ex_trace_malloc import ex_trace_malloc_instance
 from sysutils.timeutil import StopWatch
 from sysutils.typed import non_optional
 from sysutils.weak_ref import WeakRefable
@@ -68,6 +70,7 @@ class JPCollection(WeakRefable, Slots):
         mylog.info("JPCollection.__init__")
         if self._pending_init_timer is not None:
             self._pending_init_timer.cancel()
+        ex_trace_malloc_instance.ensure_initialized()
         app.get_ui_utils().tool_tip(f"{Mine.app_name} loading", 60000)
         stopwatch = StopWatch()
         with StopWatch.log_warning_if_slower_than(5, "Full collection setup"):
@@ -99,7 +102,10 @@ class JPCollection(WeakRefable, Slots):
             self._is_initialized = True
             JPCollection._is_inital_load = False
 
+            task_runner.run_on_background_thread_with_spinning_progress_dialog("Flush auto string interner cache", string_auto_interner.flush_store)
             task_runner.close()
+            ex_trace_malloc_instance.log_memory_delta("Done loading add-on")
+            ex_trace_malloc_instance.stop()
             app.get_ui_utils().tool_tip(f"{Mine.app_name} done loading in {str(stopwatch.elapsed_seconds())[0:4]} seconds.", milliseconds=6000)
 
     @property

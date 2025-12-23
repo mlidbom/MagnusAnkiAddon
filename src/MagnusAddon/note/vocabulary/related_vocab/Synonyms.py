@@ -10,13 +10,14 @@ if TYPE_CHECKING:
     from note.vocabulary.related_vocab.related_vocab_data import RelatedVocabData
     from note.vocabulary.vocabnote import VocabNote
     from sysutils.weak_ref import WeakRef
+    from typed_linq_collections.collections.q_set import QSet
 
 class Synonyms(Slots):
     def __init__(self, vocab: WeakRef[VocabNote], data: MutableSerializedObjectField[RelatedVocabData]) -> None:
         self._vocab: WeakRef[VocabNote] = vocab
         self._data: MutableSerializedObjectField[RelatedVocabData] = data
 
-    def strings(self) -> set[str]: return self._data.get().synonyms
+    def strings(self) -> QSet[str]: return self._data.get().synonyms
 
     def _save(self) -> None:
         self.strings().discard(self._vocab().get_question())  # todo: this is cleanup after a bug. Remove soon

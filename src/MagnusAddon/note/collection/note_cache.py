@@ -7,6 +7,7 @@ from note.jpnote import JPNote
 from sysutils.collections.default_dict_case_insensitive import DefaultDictCaseInsensitive
 from sysutils.typed import checked_cast
 from typed_linq_collections.collections.q_list import QList
+from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -18,18 +19,17 @@ if TYPE_CHECKING:
 class CachedNote(Slots):
     def __init__(self, note: JPNote) -> None:
         self.id: NoteId = note.get_id()
-        self.answer: str = note.get_answer()
         self.question: str = note.get_question()
 
 class NoteCache[TNote: JPNote, TSnapshot: CachedNote](Slots):
     def __init__(self, all_notes: list[TNote], cached_note_type: type[TNote], cache_runner: CacheRunner, task_runner: ITaskRunner) -> None:
         self._note_type: type[TNote] = cached_note_type
-        self._by_question: DefaultDictCaseInsensitive[set[TNote]] = DefaultDictCaseInsensitive(set)
+        # Since notes with a given Id are guaranteed to only exist once in the cache, we can use lists within the dictionary to cut memory usage a ton compared to using sets
+        self._by_question: DefaultDictCaseInsensitive[QList[TNote]] = DefaultDictCaseInsensitive(QList[TNote])
         self._by_id: dict[NoteId, TNote] = {}
         self._snapshot_by_id: dict[NoteId, TSnapshot] = {}
-        self._by_answer: DefaultDictCaseInsensitive[set[TNote]] = DefaultDictCaseInsensitive(set)
 
-        self._deleted: set[NoteId] = set()
+        self._deleted: QSet[NoteId] = QSet()
 
         self._flushing: bool = False
         self._pending_add: list[Note] = []
@@ -49,7 +49,7 @@ class NoteCache[TNote: JPNote, TSnapshot: CachedNote](Slots):
         return self._by_id.get(note_id, None)
 
     def with_question(self, question: str) -> QList[TNote]:
-        return QList(self._by_question[question])
+        return self._by_question.get_value_or_default(question).to_list()
 
     def _create_snapshot(self, note: TNote) -> TSnapshot: raise NotImplementedError()  # pyright: ignore[reportUnusedParameter]
     def _inheritor_remove_from_cache(self, note: TNote, snapshot: TSnapshot) -> None: raise NotImplementedError()  # pyright: ignore[reportUnusedParameter]
@@ -104,14 +104,13 @@ class NoteCache[TNote: JPNote, TSnapshot: CachedNote](Slots):
         cached = self._snapshot_by_id.pop(note.get_id())
         self._by_id.pop(note.get_id())
         self._by_question[cached.question].remove(note)
-        self._by_answer[cached.answer].remove(note)
         self._inheritor_remove_from_cache(note, cached)
 
     def add_note_to_cache(self, note: TNote) -> None:
+        if note.get_id() in self._by_id: return
         assert note.get_id()
         self._by_id[note.get_id()] = note
         snapshot = self._create_snapshot(note)
         self._snapshot_by_id[note.get_id()] = snapshot
-        self._by_question[note.get_question()].add(note)
-        self._by_answer[note.get_answer()].add(note)
+        self._by_question[note.get_question()].append(note)
         self._inheritor_add_to_cache(note, snapshot)

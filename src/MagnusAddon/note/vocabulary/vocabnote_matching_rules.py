@@ -17,15 +17,16 @@ from sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
+    from typed_linq_collections.collections.q_set import QSet
 
 class VocabNoteMatchingRulesData(Slots):
     serializer: VocabNoteMatchingRulesSerializer = VocabNoteMatchingRulesSerializer()
-    def __init__(self, surface_is_not: set[str], prefix_is_not: set[str], suffix_is_not: set[str], required_prefix: set[str], yield_to_surface: set[str]) -> None:
-        self.prefix_is_not: set[str] = prefix_is_not
-        self.suffix_is_not: set[str] = suffix_is_not
-        self.surface_is_not: set[str] = surface_is_not
-        self.yield_to_surface: set[str] = yield_to_surface
-        self.required_prefix: set[str] = required_prefix
+    def __init__(self, surface_is_not: QSet[str], prefix_is_not: QSet[str], suffix_is_not: QSet[str], required_prefix: QSet[str], yield_to_surface: QSet[str]) -> None:
+        self.prefix_is_not: QSet[str] = prefix_is_not
+        self.suffix_is_not: QSet[str] = suffix_is_not
+        self.surface_is_not: QSet[str] = surface_is_not
+        self.yield_to_surface: QSet[str] = yield_to_surface
+        self.required_prefix: QSet[str] = required_prefix
 
 class VocabNoteMatchingRules(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
@@ -66,10 +67,15 @@ class VocabMatchingRulesConfigurationRequiresForbidsFlags(Slots):
 
 class VocabMatchingRulesConfigurationBoolFlags(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
+        self._vocab: WeakRef[VocabNote] = vocab
         self.is_inflecting_word: IsInflectingWord = IsInflectingWord(vocab)
-        self.is_poison_word: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.is_poison_word)
-        self.match_with_preceding_vowel: TagFlagField = TagFlagField(vocab, Tags.Vocab.Matching.Todo.with_preceding_vowel)
-        self.question_overrides_form: TagFlagField = TagFlagField(vocab, Tags.Vocab.question_overrides_form)
+
+    @property
+    def is_poison_word(self) -> TagFlagField: return TagFlagField(self._vocab, Tags.Vocab.Matching.is_poison_word)
+    @property
+    def match_with_preceding_vowel(self) -> TagFlagField: return TagFlagField(self._vocab, Tags.Vocab.Matching.Todo.with_preceding_vowel)
+    @property
+    def question_overrides_form(self) -> TagFlagField: return TagFlagField(self._vocab, Tags.Vocab.question_overrides_form)
 
     @override
     def __repr__(self) -> str: return f"""{self.is_inflecting_word}, {self.is_poison_word}, {self.match_with_preceding_vowel}, {self.question_overrides_form}"""

@@ -12,6 +12,7 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
 
     from jamdict.jmdict import JMDEntry, Sense  # pyright: ignore[reportMissingTypeStubs]
+    from typed_linq_collections.collections.q_set import QSet
 
 def _sense_is_transitive_verb(sense: Sense) -> bool:
     return any(pos_item == "transitive verb" for pos_item in sense.pos)  # pyright: ignore[reportUnknownVariableType, reportUnknownArgumentType, reportUnknownMemberType]
@@ -43,22 +44,22 @@ class DictEntry(Slots):
         search = kana_utils.katakana_to_hiragana(search)  # todo: this converting to hiragana is worrisome. Is this really the behavior we want? What false positives might we run into?
         return any(search == kana_utils.katakana_to_hiragana(form) for form in self.kanji_forms())
 
-    def kana_forms(self) -> list[str]: return [ent.text for ent in self.entry.kana_forms]  # pyright: ignore[reportUnknownMemberType]
-    def kanji_forms(self) -> list[str]: return [ent.text for ent in self.entry.kanji_forms]  # pyright: ignore[reportUnknownMemberType]
-    def valid_forms(self, force_allow_kana_only: bool = False) -> set[str]:
-        return set(self.kana_forms()) | set(self.kanji_forms()) if self.is_kana_only() or force_allow_kana_only else set(self.kanji_forms())
+    def kana_forms(self) -> QList[str]: return QList(ent.text for ent in self.entry.kana_forms)  # pyright: ignore[reportUnknownMemberType, reportUnknownArgumentType]
+    def kanji_forms(self) -> QList[str]: return QList(ent.text for ent in self.entry.kanji_forms)  # pyright: ignore[reportUnknownMemberType, reportUnknownArgumentType]
+    def valid_forms(self, force_allow_kana_only: bool = False) -> QSet[str]:
+        return self.kana_forms().to_set() | self.kanji_forms().to_set() if self.is_kana_only() or force_allow_kana_only else self.kanji_forms().to_set()
 
-    def priority_tags(self) -> set[str]:
+    def priority_tags(self) -> QSet[str]:
         kanji_priorities: QList[str] = (query(self.entry.kanji_forms)
                                         .where(lambda form: str_(form.text) == self.lookup_word)  # pyright: ignore [reportUnknownArgumentType, reportUnknownMemberType]
                                         .select_many(lambda form: checked_cast_generics(list[str], form.pri))  # pyright: ignore [reportUnknownArgumentType, reportUnknownMemberType]
                                         .to_list())
-        kana_priorities: list[str] = (query(self.entry.kana_forms)
-                                      .where(lambda form: str_(form.text) in self.lookup_readings)  # pyright: ignore [reportUnknownArgumentType, reportUnknownMemberType]
-                                      .select_many(lambda form: checked_cast_generics(list[str], form.pri))  # pyright: ignore [reportUnknownArgumentType, reportUnknownMemberType]
-                                      .to_list())  # ex_sequence.flatten([str_(form.pri) for form in self.entry.kana_forms if str_(form.text) in self.lookup_readings])  # pyright: ignore [reportUnknownArgumentType, reportUnknownMemberType]
+        kana_priorities: QList[str] = (query(self.entry.kana_forms)
+                                       .where(lambda form: str_(form.text) in self.lookup_readings)  # pyright: ignore [reportUnknownArgumentType, reportUnknownMemberType]
+                                       .select_many(lambda form: checked_cast_generics(list[str], form.pri))  # pyright: ignore [reportUnknownArgumentType, reportUnknownMemberType]
+                                       .to_list())  # ex_sequence.flatten([str_(form.pri) for form in self.entry.kana_forms if str_(form.text) in self.lookup_readings])  # pyright: ignore [reportUnknownArgumentType, reportUnknownMemberType]
 
-        return set(kanji_priorities + kana_priorities)
+        return (kanji_priorities + kana_priorities).to_set()
 
     def _is_transitive_verb(self) -> bool:
         return all(_sense_is_transitive_verb(sense) for sense in self.entry.senses)
@@ -167,7 +168,7 @@ class DictEntry(Slots):
         "'taru' adjective": ["taru-adjective"]
 
     }
-    def parts_of_speech(self) -> set[str]:
+    def parts_of_speech(self) -> QSet[str]:
         def try_get_our_pos_name(pos: str) -> list[str]:
             return self._parts_of_speech_map[pos] if pos in self._parts_of_speech_map else ["unmapped-pos-" + pos]
 

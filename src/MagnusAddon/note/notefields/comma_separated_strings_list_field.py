@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from note.notefields.mutable_string_field import MutableStringField
+from autoslot import Slots
+from note.notefields.caching_mutable_string_field import CachingMutableStringField
 from sysutils import ex_str
 
 if TYPE_CHECKING:
@@ -12,14 +12,16 @@ if TYPE_CHECKING:
     from note.jpnote import JPNote
     from sysutils.lazy import Lazy
     from sysutils.weak_ref import WeakRef
+    from typed_linq_collections.collections.q_list import QList
+    from typed_linq_collections.collections.string_interning import QInterningList
 
 class MutableCommaSeparatedStringsListField(Slots):
     def __init__(self, note: WeakRef[JPNote], field_name: str) -> None:
-        field = MutableStringField(note, field_name)
-        self._field: MutableStringField = field
-        self._value: Lazy[list[str]] = self._field.lazy_reader(lambda: ex_str.extract_comma_separated_values(field.value))
+        field = CachingMutableStringField(note, field_name)
+        self._field: CachingMutableStringField = field
+        self._value: Lazy[QInterningList] = self._field.lazy_reader(lambda: ex_str.extract_comma_separated_values(field.value))
 
-    def get(self) -> list[str]:
+    def get(self) -> QList[str]:
         return self._value()
 
     def remove(self, remove: str) -> None:

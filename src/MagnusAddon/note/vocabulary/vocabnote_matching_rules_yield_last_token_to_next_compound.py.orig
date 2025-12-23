@@ -22,6 +22,14 @@ class YieldLastTokenToOverlappingCompound(RequireForbidFlagField, WeakRefable, S
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         super().__init__(vocab, Tags.Vocab.Matching.yield_last_token_to_overlapping_compound, Tags.Vocab.Matching.Forbids.auto_yielding)
         self._pos: VocabNotePartsOfSpeech = vocab().parts_of_speech
+<<<<<<< HEAD
+        self._required: Lazy[bool] = Lazy(self._decide_if_required)
+        self_weakref = WeakRef(self)
+        self.automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound.on_change(lambda _: self_weakref.run_if_live(lambda me: me._required.reset()))
+        self.automatically_yield_last_token_in_passive_verb_compounds_to_overlapping_compound.on_change(lambda _: self_weakref.run_if_live(lambda me: me._required.reset()))
+        self.automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound.on_change(lambda _: self_weakref.run_if_live(lambda me: me._required.reset()))
+=======
+>>>>>>> 87ecc945 (Stop Caching YieldLastTokenToOverlappingCompound, 13MB reduced memory usage.)
 
     def _decide_if_required(self) -> bool:
         return (super().is_required

@@ -8,11 +8,12 @@ from language_services.janome_ex.word_extraction.matches.state_tests.match_state
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.match import Match
     from sysutils.weak_ref import WeakRef
+    from typed_linq_collections.collections.q_set import QSet
 
 class SuffixIsIn(MatchStateTest, Slots):
-    def __init__(self, match: WeakRef[Match], suffixes: set[str]) -> None:
+    def __init__(self, match: WeakRef[Match], suffixes: QSet[str]) -> None:
         super().__init__(match, f"""suffix_in:{",".join(suffixes)}""", cache_is_in_state=True)
-        self.suffixes: set[str] = suffixes
+        self.suffixes: QSet[str] = suffixes
 
     @override
     def _internal_match_is_in_state(self) -> bool:

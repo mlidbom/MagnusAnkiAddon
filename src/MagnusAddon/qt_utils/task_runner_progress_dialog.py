@@ -9,6 +9,7 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication, QProgressDialog
 from sysutils import app_thread_pool, ex_thread, timeutil
+from sysutils.memory_usage.ex_trace_malloc import ex_trace_malloc_instance
 from sysutils.timeutil import StopWatch
 from sysutils.typed import non_optional
 
@@ -83,8 +84,13 @@ class QtTaskProgressRunner(ITaskRunner, Slots):
             QApplication.processEvents()
             ex_thread.sleep_thread_not_doing_the_current_work(0.05)
 
-        mylog.info(f"##--QtTaskProgressRunner--## Finished {message} in {watch.elapsed_formatted()}")
-        return future.result()
+        # make sure we are done before logging, and that we have done what we can to ensure gc can run efficiently
+        result = future.result()
+        # noinspection PyUnusedLocal
+        future = None
+
+        mylog.info(f"##--QtTaskProgressRunner--## Finished {message} in {watch.elapsed_formatted()}{ex_trace_malloc_instance.get_memory_delta_message(' | ')}")
+        return result
 
     @override
     def process_with_progress[TInput, TOutput](self, items: list[TInput], process_item: Callable[[TInput], TOutput], message: str) -> list[TOutput]:
@@ -112,12 +118,13 @@ class QtTaskProgressRunner(ITaskRunner, Slots):
 
                 QApplication.processEvents()
 
-        mylog.info(f"##--QtTaskProgressRunner--## Finished {message} in {watch.elapsed_formatted()} handled {total_items} items")
-
         self.dialog.setRange(0, 0)
         self.set_label_text(original_label)
         QApplication.processEvents()
 
+        # noinspection PyUnusedLocal
+        items = [] # Make the garbage collection happening on the next line able to get rid of the items
+        mylog.info(f"##--QtTaskProgressRunner--## Finished {message} in {watch.elapsed_formatted()} handled {total_items} items{ex_trace_malloc_instance.get_memory_delta_message(' | ')}")
         return results
     @override
     def close(self) -> None:
