@@ -10,6 +10,8 @@ from note.vocabulary.vocabnote import VocabNote
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
+    from language_services.jamdict_ex.dict_lookup_result import DictLookupResult
+
 
 # noinspection PyUnusedFunction
 @pytest.fixture(scope="function", autouse=True)
@@ -57,6 +59,6 @@ def run_priority_test(word: str, readings: list[str], expected: str) -> None:
     spec = dict_entry.priority_spec()
     assert spec.priority_string == expected
 
-def get_dict_entry(word: str, readings: list[str]) -> DictLookup:
+def get_dict_entry(word: str, readings: list[str]) -> DictLookupResult:
     vocab = VocabNote.factory.create(word, "", readings)
     return DictLookup.lookup_vocab_word_or_name(vocab)

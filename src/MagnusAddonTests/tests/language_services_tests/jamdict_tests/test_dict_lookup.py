@@ -12,6 +12,7 @@ if TYPE_CHECKING:
     from collections.abc import Iterator
 
     from language_services.jamdict_ex.dict_entry import DictEntry
+    from language_services.jamdict_ex.dict_lookup_result import DictLookupResult
 
 # noinspection PyUnusedFunction
 @pytest.fixture(scope="module", autouse=True)
@@ -119,6 +120,6 @@ def get_single_dict_entry(word: str, readings: list[str]) -> DictEntry:
     assert dict_entry.found_words_count() == 1
     return dict_entry.entries[0]
 
-def get_dict_entry(word: str, readings: list[str]) -> DictLookup:
+def get_dict_entry(word: str, readings: list[str]) -> DictLookupResult:
     vocab = VocabNote.factory.create(word, "", readings)
     return DictLookup.lookup_vocab_word_or_name(vocab)

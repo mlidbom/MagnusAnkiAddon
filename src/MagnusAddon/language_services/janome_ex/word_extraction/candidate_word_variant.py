@@ -14,7 +14,7 @@ from sysutils.weak_ref import WeakRef, WeakRefable
 from typed_linq_collections.collections.q_list import QList
 
 if TYPE_CHECKING:
-    from language_services.jamdict_ex.dict_lookup import DictLookup
+    from language_services.jamdict_ex.dict_lookup_result import DictLookupResult
     from language_services.janome_ex.word_extraction.candidate_word import CandidateWord
     from language_services.janome_ex.word_extraction.matches.match import Match
     from note.sentences.sentence_configuration import SentenceConfiguration
@@ -29,7 +29,7 @@ class CandidateWordVariant(WeakRefable, Slots):
         self._word: WeakRef[CandidateWord] = word
         self.form: str = form
 
-        self._dict_lookup: Lazy[DictLookup] = Lazy(lambda: DictLookup.lookup_word(form))
+        self._dict_lookup: Lazy[DictLookupResult] = Lazy(lambda: DictLookup.lookup_word(form))
         self.vocab_matches: QList[VocabMatch] = QList(VocabMatch(self.weak_ref, vocab) for vocab in app.col().vocab.with_form(form))
 
         # will be completed in complete_analysis
