@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, final
+from typing import TYPE_CHECKING, cast, final
 
-from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from sysutils import kana_utils
+from autoslot import Slots
+from sysutils import kana_utils, typed
 from sysutils.typed import checked_cast_generics, str_
 from typed_linq_collections.collections.q_list import QList
 from typed_linq_collections.q_iterable import query
@@ -11,26 +11,54 @@ from typed_linq_collections.q_iterable import query
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
-    from jamdict.jmdict import JMDEntry, Sense  # pyright: ignore[reportMissingTypeStubs]
+    from jamdict.jmdict import JMDEntry, KanaForm, KanjiForm, Sense, SenseGloss  # pyright: ignore[reportMissingTypeStubs]
     from typed_linq_collections.collections.q_set import QSet
 
-def _sense_is_transitive_verb(sense: Sense) -> bool:
+def _sense_is_transitive_verb(sense: SenseEX) -> bool:
     return any(pos_item == "transitive verb" for pos_item in sense.pos)  # pyright: ignore[reportUnknownVariableType, reportUnknownArgumentType, reportUnknownMemberType]
 
-def _sense_is_intransitive_verb(sense: Sense) -> bool:
+def _sense_is_intransitive_verb(sense: SenseEX) -> bool:
     return any(pos_item == "intransitive verb" for pos_item in sense.pos)  # pyright: ignore[reportUnknownVariableType, reportUnknownArgumentType, reportUnknownMemberType]
+
+
+class KanaFormEX:
+    def __init__(self, source: KanaForm) -> None:
+        self.text:str = typed.str_(source.text)  # pyright: ignore [reportUnknownMemberType, reportUnknownArgumentType]
+        self.pri: QList[str] = QList(cast(list[str], source.pri))  # pyright: ignore [reportUnknownMemberType]
+
+class KanjiFormEX:
+    def __init__(self, source: KanjiForm) -> None:
+        self.text:str = typed.str_(source.text)  # pyright: ignore [reportUnknownArgumentType, reportUnknownMemberType]
+        self.pri:QList[str] = QList(cast(list[str], source.pri))  # pyright: ignore [reportUnknownMemberType]
+
+
+class SenceGlossEX:
+    def __init__(self, source: SenseGloss) -> None:
+        self.text:str = typed.str_(source.text)  # pyright: ignore [reportUnknownArgumentType, reportUnknownMemberType]
+
+class SenseEX:
+    def __init__(self, source: Sense) -> None:
+        self.gloss:QList[SenceGlossEX] = query(source.gloss).select(SenceGlossEX).to_list()  # pyright: ignore [reportUnknownArgumentType, reportUnknownMemberType]
+        self.misc:QList[str] = QList(cast(list[str], source.misc))  # pyright: ignore [reportUnknownMemberType]
+        self.pos: QList[str] = QList(cast(list[str], source.pos))  # pyright: ignore [reportUnknownMemberType]
+
+class JMDEntryEX:
+    def __init__(self, source: JMDEntry) -> None:
+        self.kana_forms: QList[KanaFormEX] = query(source.kana_forms).select(KanaFormEX).to_list()
+        self.kanji_forms: QList[KanjiFormEX] = query(source.kanji_forms).select(KanjiFormEX).to_list()
+        self.senses: QList[SenseEX] = query(source.senses).select(SenseEX).to_list()
 
 @final
 class DictEntry(Slots):
     def __init__(self, entry: JMDEntry, lookup_word: str, lookup_readings: list[str]) -> None:
-        self.entry: JMDEntry = entry
+        self.entry: JMDEntryEX = JMDEntryEX(entry)
         self.lookup_word: str = lookup_word
         self.lookup_readings: list[str] = lookup_readings
 
     def is_kana_only(self) -> bool:
         return not self.entry.kanji_forms or any(sense for sense
                                                  in self.entry.senses
-                                                 if "word usually written using kana alone" in sense.misc)  # pyright: ignore[reportUnknownMemberType]
+                                                 if "word usually written using kana alone" in sense.misc)
 
     @staticmethod
     def create(entries: Sequence[JMDEntry], lookup_word: str, lookup_reading: list[str]) -> QList[DictEntry]:
@@ -44,20 +72,20 @@ class DictEntry(Slots):
         search = kana_utils.katakana_to_hiragana(search)  # todo: this converting to hiragana is worrisome. Is this really the behavior we want? What false positives might we run into?
         return any(search == kana_utils.katakana_to_hiragana(form) for form in self.kanji_forms())
 
-    def kana_forms(self) -> QList[str]: return QList(ent.text for ent in self.entry.kana_forms)  # pyright: ignore[reportUnknownMemberType, reportUnknownArgumentType]
-    def kanji_forms(self) -> QList[str]: return QList(ent.text for ent in self.entry.kanji_forms)  # pyright: ignore[reportUnknownMemberType, reportUnknownArgumentType]
+    def kana_forms(self) -> QList[str]: return QList(ent.text for ent in self.entry.kana_forms)
+    def kanji_forms(self) -> QList[str]: return QList(ent.text for ent in self.entry.kanji_forms)
     def valid_forms(self, force_allow_kana_only: bool = False) -> QSet[str]:
         return self.kana_forms().to_set() | self.kanji_forms().to_set() if self.is_kana_only() or force_allow_kana_only else self.kanji_forms().to_set()
 
     def priority_tags(self) -> QSet[str]:
         kanji_priorities: QList[str] = (query(self.entry.kanji_forms)
-                                        .where(lambda form: str_(form.text) == self.lookup_word)  # pyright: ignore [reportUnknownArgumentType, reportUnknownMemberType]
-                                        .select_many(lambda form: checked_cast_generics(list[str], form.pri))  # pyright: ignore [reportUnknownArgumentType, reportUnknownMemberType]
+                                        .where(lambda form: str_(form.text) == self.lookup_word)
+                                        .select_many(lambda form: checked_cast_generics(list[str], form.pri))
                                         .to_list())
         kana_priorities: QList[str] = (query(self.entry.kana_forms)
-                                       .where(lambda form: str_(form.text) in self.lookup_readings)  # pyright: ignore [reportUnknownArgumentType, reportUnknownMemberType]
-                                       .select_many(lambda form: checked_cast_generics(list[str], form.pri))  # pyright: ignore [reportUnknownArgumentType, reportUnknownMemberType]
-                                       .to_list())  # ex_sequence.flatten([str_(form.pri) for form in self.entry.kana_forms if str_(form.text) in self.lookup_readings])  # pyright: ignore [reportUnknownArgumentType, reportUnknownMemberType]
+                                       .where(lambda form: str_(form.text) in self.lookup_readings)
+                                       .select_many(lambda form: checked_cast_generics(list[str], form.pri))
+                                       .to_list())
 
         return (kanji_priorities + kana_priorities).to_set()
 
@@ -70,7 +98,7 @@ class DictEntry(Slots):
     def _is_verb(self) -> bool:
         return (any(_sense_is_intransitive_verb(sense) for sense in self.entry.senses)
                 or any(_sense_is_transitive_verb(sense) for sense in self.entry.senses)
-                or any(" verb " in s.pos[0] for s in self.entry.senses if len(s.pos) > 0))  # pyright: ignore[reportUnknownArgumentType, reportUnknownMemberType]
+                or any(" verb " in s.pos[0] for s in self.entry.senses if len(s.pos) > 0))
 
     def _answer_prefix(self) -> str:
         if self._is_verb():
@@ -94,7 +122,7 @@ class DictEntry(Slots):
                 .select(lambda gloss: str_(gloss.text))  # pyright: ignore [reportUnknownArgumentType, reportUnknownMemberType]
                 .all(lambda gloss: gloss.startswith("to be ")))
 
-    def format_sense(self, sense: Sense) -> str:
+    def format_sense(self, sense: SenseEX) -> str:
         glosses_text = [str(gloss.text) for gloss in sense.gloss]  # pyright: ignore[reportUnknownArgumentType]
         glosses_text = [gloss.replace(" ", "-") for gloss in glosses_text]
         if self._is_verb():
