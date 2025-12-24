@@ -2,7 +2,7 @@
 requires-python = ">=3.13"
 
 [tool.ruff]
-extend-exclude = ["_lib", "_lib_patched", "manually_copied_in_libraries"]
+extend-exclude = ["_lib", "_lib_patched", "manually_copied_in_libraries", "typings"]
 line-length = 320
 
 [tool.ruff.lint]
