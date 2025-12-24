@@ -38,9 +38,8 @@ class NoteCache[TNote: JPNote, TSnapshot: CachedNote](Slots):
             with TaskRunner.current(f"Pushing {all_notes[0].__class__.__name__} notes into cache") as task_runner:
                 task_runner.process_with_progress(all_notes, self.add_note_to_cache, f"Pushing {all_notes[0].__class__.__name__} notes into cache")
 
-        cache_runner.connect_merge_pending_adds(self._merge_pending_added_notes)
         cache_runner.connect_will_remove(self._on_will_be_removed)
-        cache_runner.connect_will_add(self._on_will_be_added)
+        cache_runner.connect_note_addded(self._on_added)
         cache_runner.connect_will_flush(self._on_will_flush)
 
     def all(self) -> QList[TNote]:
@@ -55,13 +54,6 @@ class NoteCache[TNote: JPNote, TSnapshot: CachedNote](Slots):
     def _create_snapshot(self, note: TNote) -> TSnapshot: raise NotImplementedError()  # pyright: ignore[reportUnusedParameter]
     def _inheritor_remove_from_cache(self, note: TNote, snapshot: TSnapshot) -> None: raise NotImplementedError()  # pyright: ignore[reportUnusedParameter]
     def _inheritor_add_to_cache(self, note: TNote, snapshot: TSnapshot) -> None: raise NotImplementedError()  # pyright: ignore[reportUnusedParameter]
-
-    def _merge_pending_added_notes(self) -> None:
-        completely_added_list = [pending for pending in self._pending_add if pending.id]
-        for backend_note in completely_added_list:
-            self._pending_add.remove(backend_note)
-            note = checked_cast(self._note_type, JPNote.note_from_note(backend_note))
-            self.add_note_to_cache(note)
 
     def _on_will_flush(self, backend_note: Note) -> None:
         if backend_note.id and backend_note.id in self._by_id:
@@ -81,10 +73,10 @@ class NoteCache[TNote: JPNote, TSnapshot: CachedNote](Slots):
                 note.update_generated_data()
                 self.add_note_to_cache(note)
 
-    def _on_will_be_added(self, backend_note: Note) -> None:
+    def _on_added(self, backend_note: Note) -> None:
         note = JPNote.note_from_note(backend_note)
         if isinstance(note, self._note_type):
-            self._pending_add.append(backend_note)
+            self.add_note_to_cache(note)
 
     def _on_will_be_removed(self, note_ids: Sequence[NoteId]) -> None:
         my_notes_ids = [note_id for note_id in note_ids if note_id in self._by_id]

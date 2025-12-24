@@ -11,6 +11,7 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from note.note_constants import NoteTypes
 from sysutils import app_thread_pool, ex_assert, ex_thread
 from sysutils.typed import checked_cast, non_optional
+from typed_linq_collections.collections.q_list import QList
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Sequence
@@ -22,13 +23,15 @@ if TYPE_CHECKING:
 class CacheRunner(Slots):
     def __init__(self, anki_collection: Collection) -> None:
         self._merge_pending_subscribers: list[Callable[[], None]] = []
-        self._will_add_subscribers: list[Callable[[Note], None]] = []
+        self._added_subscribers: list[Callable[[Note], None]] = []
         self._will_flush_subscribers: list[Callable[[Note], None]] = []
         self._will_remove_subscribers: list[Callable[[Sequence[NoteId]], None]] = []
         self._destructors: list[Callable[[], None]] = []
         self._anki_collection: Collection = anki_collection
         self._running: bool = False
         self._lock: threading.RLock = threading.RLock()
+
+        self._pending_add: QList[Note] = QList()
 
         model_manager: ModelManager = anki_collection.models
         all_note_types: list[NoteTypeEx] = [NoteTypeEx.from_dict(model) for model in model_manager.all()]
@@ -49,7 +52,7 @@ class CacheRunner(Slots):
         while self._running:
             self.flush_updates()
             ex_thread.sleep_thread_not_doing_the_current_work(0.1)
-#
+    #
     def destruct(self) -> None:
         with self._lock:
             self._running = False
@@ -65,7 +68,10 @@ class CacheRunner(Slots):
             noteutils.clear_studying_cache()
 
     def _internal_flush_updates(self) -> None:
-        for callback in self._merge_pending_subscribers: callback()
+        completely_added_list = self._pending_add.where(lambda it: it.id != 0).to_list()
+        self._pending_add = self._pending_add.where(lambda it: it.id == 0).to_list()
+        for note in completely_added_list:
+            for subscriber in self._added_subscribers: subscriber(note)
 
     def flush_updates(self) -> None:
         with self._lock:
@@ -75,7 +81,7 @@ class CacheRunner(Slots):
     def _on_will_be_added(self, _collection: Collection, backend_note: Note, _deck_id: DeckId) -> None:  # pyright: ignore[reportUnusedParameter]
         if not self._running: return
         with self._lock:
-            for callback in self._will_add_subscribers: callback(backend_note)
+            self._pending_add.append(backend_note)
 
     def _on_will_flush(self, backend_note: Note) -> None:
         if not self._running: return
@@ -87,13 +93,9 @@ class CacheRunner(Slots):
         with self._lock:
             for callback in self._will_remove_subscribers: callback(note_ids)
 
-    def connect_merge_pending_adds(self, on_merge_pending: Callable[[], None]) -> None:
+    def connect_note_addded(self, on_added: Callable[[Note], None]) -> None:
         with self._lock:
-            self._merge_pending_subscribers.append(on_merge_pending)
-
-    def connect_will_add(self, on_will_add: Callable[[Note], None]) -> None:
-        with self._lock:
-            self._will_add_subscribers.append(on_will_add)
+            self._added_subscribers.append(on_added)
 
     def connect_will_flush(self, on_will_flush: Callable[[Note], None]) -> None:
         with self._lock:
