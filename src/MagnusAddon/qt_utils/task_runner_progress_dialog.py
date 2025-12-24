@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, override
 import mylog
 from ankiutils import app
 from aqt import QLabel
-from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from autoslot import Slots
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication, QProgressDialog
 from sysutils import app_thread_pool, ex_thread, timeutil
@@ -19,8 +19,9 @@ from sysutils.typed import non_optional
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterator
 
+
 class ITaskRunner:
-    def process_with_progress[TInput, TOutput](self, items: list[TInput], process_item: Callable[[TInput], TOutput], message: str, run_gc: bool = False) -> list[TOutput]: raise NotImplementedError()  # pyright: ignore
+    def process_with_progress[TInput, TOutput](self, items: list[TInput], process_item: Callable[[TInput], TOutput], message: str, run_gc: bool = False, minimum_items_to_gc: int = 0) -> list[TOutput]: raise NotImplementedError()  # pyright: ignore
     def set_label_text(self, text: str) -> None: raise NotImplementedError()  # pyright: ignore
     def close(self) -> None: raise NotImplementedError()
     def run_on_background_thread_with_spinning_progress_dialog[TResult](self, message: str, action: Callable[[], TResult]) -> TResult: raise NotImplementedError()  # pyright: ignore
@@ -69,7 +70,7 @@ class InvisibleTaskRunner(ITaskRunner, Slots):
         pass
 
     @override
-    def process_with_progress[TInput, TOutput](self, items: list[TInput], process_item: Callable[[TInput], TOutput], message: str, run_gc: bool = False) -> list[TOutput]:
+    def process_with_progress[TInput, TOutput](self, items: list[TInput], process_item: Callable[[TInput], TOutput], message: str, run_gc: bool = False, minimum_items_to_gc: int = 0) -> list[TOutput]:
         result = [process_item(item) for item in items]
         total_items = len(items)
         watch = StopWatch()
@@ -137,7 +138,7 @@ class QtTaskProgressRunner(ITaskRunner, Slots):
         self.set_label_text(old_label)
 
     @override
-    def process_with_progress[TInput, TOutput](self, items: list[TInput], process_item: Callable[[TInput], TOutput], message: str, run_gc: bool = False) -> list[TOutput]:
+    def process_with_progress[TInput, TOutput](self, items: list[TInput], process_item: Callable[[TInput], TOutput], message: str, run_gc: bool = False, minimum_items_to_gc: int = 0) -> list[TOutput]:
         self.set_label_text(f"{message} 0 of ?? Remaining: ??")  # len may take a while so make sure we set the label first
         total_items = len(items)
         watch = StopWatch()
@@ -145,6 +146,7 @@ class QtTaskProgressRunner(ITaskRunner, Slots):
         results: list[TOutput] = []
         self.dialog.setRange(0, total_items + 1)  # add one to keep the dialog open
 
+        run_gc = run_gc and len(items) >= minimum_items_to_gc
         if run_gc: self.run_gc()
 
         original_label = self.dialog.labelText()

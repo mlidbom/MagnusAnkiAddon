@@ -171,12 +171,14 @@ def reading_in_vocab_reading(kanji: KanjiNote, kanji_reading: str, vocab_reading
         return vocab_reading.endswith(kanji_reading)
     return kanji_reading in vocab_reading[1:-1]
 
-def reparse_sentences(sentences: list[SentenceNote]) -> None:
+def reparse_sentences(sentences: list[SentenceNote], run_gc_during_batch: bool = False) -> None:
     def reparse_sentence(sentence: SentenceNote) -> None:
         sentence.update_parsed_words(force=True)
 
-    with TaskRunner.current("Reparse Sentences") as runner:
-        runner.process_with_progress(sentences, reparse_sentence, "Reparsing sentences.")
+
+
+    with TaskRunner.current("Reparse Sentences", inhibit_gc=run_gc_during_batch) as runner:
+        runner.process_with_progress(sentences, reparse_sentence, "Reparsing sentences.", run_gc=run_gc_during_batch, minimum_items_to_gc=500)
 
 def print_gc_status_and_collect() -> None:
     from sysutils import object_instance_tracker
@@ -193,8 +195,8 @@ def reparse_sentences_for_vocab(vocab: VocabNote) -> None:
     sentences: set[SentenceNote] = set(app.col().sentences.search(query))
     # noinspection PyAugmentAssignment
     sentences = sentences | set(vocab.sentences.all())
-    reparse_sentences(list(sentences))
+    reparse_sentences(list(sentences), run_gc_during_batch=True)
 
 def reparse_matching_sentences(question_substring: str) -> None:
     sentences_to_update = app.col().sentences.search(query_builder.sentences_with_question_substring(question_substring))
-    reparse_sentences(sentences_to_update)
+    reparse_sentences(sentences_to_update, run_gc_during_batch=True)
