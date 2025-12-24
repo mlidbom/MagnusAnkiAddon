@@ -87,21 +87,21 @@ class CacheRunner(Slots):
         with self._lock:
             for callback in self._will_remove_subscribers: callback(note_ids)
 
-    def connect_merge_pending_adds(self, _merge_pending_added_notes: Callable[[], None]) -> None:
+    def connect_merge_pending_adds(self, on_merge_pending: Callable[[], None]) -> None:
         with self._lock:
-            self._merge_pending_subscribers.append(_merge_pending_added_notes)
+            self._merge_pending_subscribers.append(on_merge_pending)
 
-    def connect_will_add(self, _merge_pending_added_notes: Callable[[Note], None]) -> None:
+    def connect_will_add(self, on_will_add: Callable[[Note], None]) -> None:
         with self._lock:
-            self._will_add_subscribers.append(_merge_pending_added_notes)
+            self._will_add_subscribers.append(on_will_add)
 
-    def connect_will_flush(self, _merge_pending_added_notes: Callable[[Note], None]) -> None:
+    def connect_will_flush(self, on_will_flush: Callable[[Note], None]) -> None:
         with self._lock:
-            self._will_flush_subscribers.append(_merge_pending_added_notes)
+            self._will_flush_subscribers.append(on_will_flush)
 
-    def connect_will_remove(self, _merge_pending_added_notes: Callable[[Sequence[NoteId]], None]) -> None:
+    def connect_will_remove(self, on_will_remove: Callable[[Sequence[NoteId]], None]) -> None:
         with self._lock:
-            self._will_remove_subscribers.append(_merge_pending_added_notes)
+            self._will_remove_subscribers.append(on_will_remove)
 
     def _check_for_updated_note_types_and_reset_app_if_found(self) -> None:
         for cached_note_type in self._note_types:
