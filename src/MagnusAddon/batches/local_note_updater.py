@@ -175,8 +175,6 @@ def reparse_sentences(sentences: list[SentenceNote], run_gc_during_batch: bool =
     def reparse_sentence(sentence: SentenceNote) -> None:
         sentence.update_parsed_words(force=True)
 
-
-
     with TaskRunner.current("Reparse Sentences", inhibit_gc=run_gc_during_batch) as runner:
         runner.process_with_progress(sentences, reparse_sentence, "Reparsing sentences.", run_gc=run_gc_during_batch, minimum_items_to_gc=500)
 
