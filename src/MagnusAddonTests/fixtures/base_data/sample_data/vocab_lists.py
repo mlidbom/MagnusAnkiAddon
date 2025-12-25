@@ -18,6 +18,7 @@ test_special_vocab: list[VocabSpec] = [
 
     VocabSpec("ろ", "_!/do! (ichidan imperative)", ["ろ"], tags=[vm.is_inflecting_word, vm.Requires.ichidan_imperative]),
     VocabSpec("よ", "_!/do! (ichidan imperative)", ["よ"], tags=[vm.is_inflecting_word, vm.Requires.ichidan_imperative]),
+    VocabSpec("い", "_!/do! (godan-special imperative)", ["い"], tags=[vm.is_inflecting_word, vm.Requires.godan_imperative]),
 
     # needs exclusion
     VocabSpec("させる", "get-_/is-_", ["させる"], forms=["せる"], tags=[vm.is_inflecting_word, vm.Forbids.godan_potential]),
@@ -104,6 +105,7 @@ test_special_vocab: list[VocabSpec] = [
     VocabSpec("ていうか", forms=["と言うか", "というか", "っていうか", "[て言うか]"]),
     VocabSpec("鰻", forms=["[うな]"], prefix_not={"ろ", "よ"}),
     VocabSpec("書き"),
+    VocabSpec("なさる", tags=[vm.is_inflecting_word]),
     VocabSpec("なさい", tags=[vm.is_inflecting_word]),
     VocabSpec("風の強い", tags=[vm.Requires.exact_match]),
     VocabSpec("たね", tags=[vm.Requires.single_token]),

@@ -29,7 +29,7 @@ def test_new_stuff(sentence: str, expected_output: list[str]) -> None:
     ("黙れ", ["黙る", "え"]),
     ("楽しめてる", ["楽しめる", "てる"]),
     ("会えたりしない", ["会う", "える", "たり", "する", "ない"]),
-("くれよ", ["くれる", "え", "よ"])
+    ("くれよ", ["くれる", "え", "よ"])
 ])
 def test_godan_potential_and_imperative(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
@@ -43,6 +43,12 @@ def test_godan_potential_and_imperative(sentence: str, expected_output: list[str
     ("食べよう", ["食べる", "う"]), # not an imperative, just a suggestion
 ])
 def test_ichidan_imperative(sentence: str, expected_output: list[str]) -> None:
+    assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
+
+@pytest.mark.parametrize("sentence, expected_output", [
+    ("書きなさい", ["書く", "なさい"]),
+])
+def test_i_imerative_forms(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
 
 @pytest.mark.parametrize("sentence, expected_output", [
@@ -87,7 +93,6 @@ def test_bugs_todo_fixme(sentence: str, expected_output: list[str]) -> None:
     ("何て言うか<wbr>さ", ["何", "て言うか:ていうか", "さ"]),
     ("また来ような", ["また", "来る", "う", "な"]),
     ("何なんだろうな", ["何だ", "ん", "だろう", "な"]),
-    ("書きなさい", ["書く", "なさい"]),
     ("存在したね", ["存在", "する", "た", "ね"]),
     ("作るに決まってるだろ", ["作る", "に決まってる", "だろ"]),
     ("知らないんでしょう", ["知らない", "ん", "でしょう"]),
