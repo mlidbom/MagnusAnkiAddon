@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 from ankiutils import app, query_builder
 from note.note_constants import CardTypes, Tags
 from note.sentences.sentencenote import SentenceNote
-from qt_utils.task_runner_progress_dialog import TaskRunner
+from qt_utils.task_progress_runner import TaskRunner
 from sysutils import ex_str
 
 if TYPE_CHECKING:

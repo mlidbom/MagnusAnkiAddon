@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from note.jpnote import JPNote
-from qt_utils.task_runner_progress_dialog import TaskRunner
+from qt_utils.task_progress_runner import TaskRunner
 from sysutils.collections.default_dict_case_insensitive import DefaultDictCaseInsensitive
 from sysutils.typed import checked_cast
 from typed_linq_collections.collections.q_list import QList

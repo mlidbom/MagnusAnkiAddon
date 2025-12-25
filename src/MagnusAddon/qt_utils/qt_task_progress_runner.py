@@ -2,90 +2,21 @@ from __future__ import annotations
 
 import gc
 import time
-from contextlib import contextmanager
 from typing import TYPE_CHECKING, override
 
 import mylog
-from ankiutils import app
-from aqt import QLabel
 from autoslot import Slots
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QApplication, QProgressDialog
+from PyQt6.QtWidgets import QApplication, QLabel, QProgressDialog
+from qt_utils.i_task_progress_runner import ITaskRunner
 from sysutils import app_thread_pool, ex_thread, timeutil
 from sysutils.memory_usage.ex_trace_malloc import ex_trace_malloc_instance
 from sysutils.timeutil import StopWatch
 from sysutils.typed import non_optional
 
 if TYPE_CHECKING:
-    from collections.abc import Callable, Iterator
+    from collections.abc import Callable
 
-
-class ITaskRunner:
-    def process_with_progress[TInput, TOutput](self, items: list[TInput], process_item: Callable[[TInput], TOutput], message: str, run_gc: bool = False, minimum_items_to_gc: int = 0) -> list[TOutput]: raise NotImplementedError()  # pyright: ignore
-    def set_label_text(self, text: str) -> None: raise NotImplementedError()  # pyright: ignore
-    def close(self) -> None: raise NotImplementedError()
-    def run_on_background_thread_with_spinning_progress_dialog[TResult](self, message: str, action: Callable[[], TResult]) -> TResult: raise NotImplementedError()  # pyright: ignore
-    def run_gc(self) -> None: pass
-    def is_hidden(self) -> bool: return True
-
-class TaskRunner(Slots):
-    @staticmethod
-    def create(window_title: str, label_text: str, visible: bool | None = None, allow_cancel: bool = True) -> ITaskRunner:
-        if visible is None: visible = not app.is_testing
-        if not visible:
-            return InvisibleTaskRunner(window_title, label_text)
-        return QtTaskProgressRunner(window_title, label_text, allow_cancel)
-
-    _depth: int = 0
-    _current: ITaskRunner | None = None
-
-    @classmethod
-    @contextmanager
-    def current(cls, window_title: str, label_text: str | None = None, force_hide: bool = False, inhibit_gc: bool = False, force_gc: bool = False, allow_cancel: bool = True) -> Iterator[ITaskRunner]:
-        cls._depth += 1
-        if cls._depth == 1:
-            visible = (not app.is_testing) and not force_hide
-            cls._current = cls.create(window_title, label_text or window_title, visible, allow_cancel)
-            if not inhibit_gc:
-                cls._current.run_gc()
-        else:
-            non_optional(cls._current).set_label_text(label_text or window_title)
-
-        runner = non_optional(cls._current)
-
-        try: yield non_optional(cls._current)
-        finally:
-            cls._depth -= 1
-            if cls._depth == 0:
-                if not inhibit_gc:
-                    runner.run_gc()
-                runner.close()
-                cls._current = None
-            elif force_gc:
-                runner.run_gc()
-
-class InvisibleTaskRunner(ITaskRunner, Slots):
-    # noinspection PyUnusedLocal
-    def __init__(self, window_title: str, label_text: str) -> None:  # pyright: ignore
-        pass
-
-    @override
-    def process_with_progress[TInput, TOutput](self, items: list[TInput], process_item: Callable[[TInput], TOutput], message: str, run_gc: bool = False, minimum_items_to_gc: int = 0) -> list[TOutput]:
-        result = [process_item(item) for item in items]
-        total_items = len(items)
-        watch = StopWatch()
-        mylog.debug(f"##--InvisibleTaskRunner--## Finished {message} in {watch.elapsed_formatted()} handled {total_items} items")
-        return result
-    @override
-    def set_label_text(self, text: str) -> None: pass  # pyright: ignore
-    @override
-    def close(self) -> None: pass
-    @override
-    def run_on_background_thread_with_spinning_progress_dialog[TResult](self, message: str, action: Callable[[], TResult]) -> TResult:  # pyright: ignore
-        watch = StopWatch()
-        result = action()
-        mylog.debug(f"##--QtTaskProgressRunner--## Finished {message} in {watch.elapsed_formatted()}")
-        return result
 
 class QtTaskProgressRunner(ITaskRunner, Slots):
     def __init__(self, window_title: str, label_text: str, allow_cancel: bool = True) -> None:

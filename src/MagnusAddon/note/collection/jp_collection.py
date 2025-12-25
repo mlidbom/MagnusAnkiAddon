@@ -13,7 +13,7 @@ from note.collection.sentence_collection import SentenceCollection
 from note.collection.vocab_collection import VocabCollection
 from note.jpnote import JPNote
 from note.note_constants import Mine
-from qt_utils.task_runner_progress_dialog import TaskRunner
+from qt_utils.task_progress_runner import TaskRunner
 from sysutils import app_thread_pool
 from sysutils.memory_usage import string_auto_interner
 from sysutils.memory_usage.ex_trace_malloc import ex_trace_malloc_instance
