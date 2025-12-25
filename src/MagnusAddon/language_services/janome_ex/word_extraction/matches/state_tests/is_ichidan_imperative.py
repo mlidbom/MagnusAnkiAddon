@@ -15,6 +15,6 @@ class IsIchidanImperative(MatchStateTest, Slots):
 
     @override
     def _internal_match_is_in_state(self) -> bool:
-        if self.word.start_location.token.is_ichidan_imperative:  # noqa: SIM103
+        if self.word.start_location.token.is_ichidan_imperative_inflection:  # noqa: SIM103
             return True
         return False
