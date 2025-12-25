@@ -63,6 +63,11 @@ class JNTokenWrapper(ProcessedToken, Slots):
             return [ProcessedToken(surface=ichidan_surface, base=self.base_form, is_non_word_character=False, is_inflectable_word=True, is_ichidan_imperative=True),
                     ProcessedToken(surface="よ", base="よ", is_non_word_character=False, is_inflectable_word=True, is_ichidan_imperative=True)]
 
+        if self.token.inflected_form == InflectionForms.ImperativeMeireikei.i:
+            godan_surface = self.surface[:-1]
+            return [ProcessedToken(surface=godan_surface, base=self.base_form, is_non_word_character=False, is_inflectable_word=True, is_godan_imperative=True),
+                    ProcessedToken(surface="い", base="い", is_non_word_character=False, is_inflectable_word=True, is_godan_imperative=True)]
+
         if self.token.inflected_form == InflectionForms.ImperativeMeireikei.e:
             godan_surface = self.surface[:-1]
             imperative_part = self.surface[-1]
