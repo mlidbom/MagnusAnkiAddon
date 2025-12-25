@@ -54,7 +54,7 @@ def setup_browser_context_menu(browser: Browser, menu: QMenu) -> None:
     if selected_sentences:
         from batches import local_note_updater
 
-        magnus_menu.addAction("Reparse sentence words", lambda: local_note_updater.reparse_sentences(selected_sentences))  # pyright: ignore[reportUnknownMemberType]
+        magnus_menu.addAction("Reparse sentence words", lambda: local_note_updater.reparse_sentences(selected_sentences, run_gc_during_batch=True))  # pyright: ignore[reportUnknownMemberType]
 
 
 def init() -> None:
