@@ -23,6 +23,7 @@ test_special_vocab: list[VocabSpec] = [
     VocabSpec("させる", "get-_/is-_", ["させる"], forms=["せる"], tags=[vm.is_inflecting_word, vm.Forbids.godan_potential]),
     VocabSpec("頑張れ", "do-your-best!", tags=[vm.Forbids.godan_potential]),
     VocabSpec("あれても", forms=["れても"], compounds=["あれる", "ても"], tags=[vm.yield_last_token_to_overlapping_compound, vm.Requires.a_stem, vm.Forbids.godan_potential, Tags.Vocab.question_overrides_form]),
+    VocabSpec("くえ", "longtooth-grouper", tags=[vm.Forbids.godan_imperative]),
     # /needs exclusion
     # </non-standard-token-splitting-to-enable-more-pedagogical-breakdowns-for-conjugations>
 
