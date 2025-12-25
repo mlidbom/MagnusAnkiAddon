@@ -42,7 +42,7 @@ def setup_collection_with_select_data() -> Iterator[None]:
     ("清めの一波", ["清める", "清め", "の"]),
     ("さっさと傷を清めてこい",
      ["傷", "を", "清める", "て", "くる", "こい"]),
-    ("すげえ", ["すげえ", "すげ", "え"]),
+    ("すげえ", ["すげえ", "すげ"]),
     ("「コーヒーはいかがですか？」「いえ、結構です。お構いなく。」", ["コーヒー", "は", "いかが", "ですか", "です", "か", "いえ", "結構", "です", "お構いなく"]),
     ("解放する", ["解放する", "解放", "する"]),
     ("落書きしたろ", ["落書き", "する", "た"]),
@@ -83,8 +83,8 @@ def test_strictly_suffix(sentence: str, expected_output: list[str]) -> None:
 
 @pytest.mark.usefixtures("setup_collection_with_select_data")
 @pytest.mark.parametrize("sentence, expected_output", [
-    ("うるせえ", ["うるせえ", "せえ", "せる", "せ", "え"]),
-    ("お金貸せって", ["お金", "貸す", "って"])
+    ("うるせえ", ["うるせえ", "せえ", "せる"]),
+    ("お金貸せって", ["お金", "貸す", "え", "って"])
 ])
 def test_requires_a_stem(sentence: str, expected_output: list[str]) -> None:
     sentence_note = SentenceNote.create_test_note(sentence, "")

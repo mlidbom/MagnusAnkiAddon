@@ -7,6 +7,20 @@ v = Tags.Vocab
 vm = Tags.Vocab.Matching
 
 test_special_vocab: list[VocabSpec] = [
+    # <non-standard-token-splitting-to-enable-more-pedagogical-breakdowns-for-conjugations>
+    # godan potential
+    VocabSpec("える", "to-be-able-to", ["える"],
+              forms=["える", "ける", "せる", "てる", "ねる", "へる", "める", "れる", "げる", "ぜる", "でる", "べる", "ぺる"],
+              tags=[vm.is_inflecting_word, vm.Requires.godan_potential, Tags.Vocab.question_overrides_form]),
+    VocabSpec("えない", "unable-able-to", ["えない"], compounds=["える", "ない"], tags=[vm.is_inflecting_word]),
+    # /godan potential
+    VocabSpec("え", "_!/do! (godan imperative)", ["え"], forms=["え", "け", "せ", "ね", "へ", "め", "れ", "げ", "ぜ", "で", "べ", "ぺ"], tags=[vm.is_inflecting_word, vm.Requires.godan_imperative, Tags.Vocab.question_overrides_form]),
+
+    # needs exclusion
+    VocabSpec("せ", "so/really/seeming", tags=[vm.Forbids.godan_potential, vm.Forbids.godan_imperative]),
+    # /needs exclusion
+    # </non-standard-token-splitting-to-enable-more-pedagogical-breakdowns-for-conjugations>
+
     # <te-stem-required>
     VocabSpec("て", "{continuing-action}", ["て"], tags=[vm.is_inflecting_word, vm.Requires.te_form_stem]),
     VocabSpec("てる", "{continuing-{activity | state}} / {progressive | perfect}", ["てる"], tags=[vm.is_inflecting_word, vm.Requires.te_form_stem]),
@@ -44,16 +58,9 @@ test_special_vocab: list[VocabSpec] = [
     VocabSpec("を頼む", "I-entrust-to-you", ["を頼む"], tags=[vm.Requires.exact_match]),
     VocabSpec("会える", "to-be-able: to-meet", ["あえる"], compounds=["会う", "える"]),
     VocabSpec("作れる", "to-be-able: to-make", ["つくれる"], compounds=["作る", "える"]),
-    VocabSpec("えない", "unable-able-to", ["えない"], compounds=["える", "ない"], tags=[vm.is_inflecting_word]),
     VocabSpec("たい", "want to", ["たい"], tags=[vm.is_inflecting_word]),
     VocabSpec("解放する", "to{} release", ["かいほうする"]),
 
-
-    VocabSpec("せ", "so/really/seeming", tags=[vm.Forbids.godan_potential]),
-    VocabSpec("える", "to-be-able-to", ["える"],
-              forms=["える", "ける", "せる", "てる", "ねる", "へる", "める", "れる", "げる", "ぜる", "でる", "べる", "ぺる"],
-              tags=[vm.is_inflecting_word, vm.Requires.godan_potential, Tags.Vocab.question_overrides_form]),
-    #VocabSpec("れる", "can-_/possible-to-_ | ??get-_??", ["れる"], tags=[vm.is_inflecting_word, vm.Forbids.a_stem]),
 
     # require a stems
     VocabSpec("あれる", "get-_/is-_", ["あれる"], forms=["れる"], tags=[vm.Requires.a_stem, v.question_overrides_form, vm.is_inflecting_word]),
@@ -72,7 +79,6 @@ test_special_vocab: list[VocabSpec] = [
 
     VocabSpec("こ", "familiarizing-suffix", ["こ"], forms=["っこ"], tags=[vm.Forbids.sentence_start]),
 
-    # multiple form to trigger a certain bug
     VocabSpec("ない", "not", forms=["ない"], tags=[vm.is_inflecting_word]),
     VocabSpec("無い", "not", forms=["ない"], tags=[vm.is_inflecting_word]),
     VocabSpec("うまい", yield_to_surface={"うまく"}),
