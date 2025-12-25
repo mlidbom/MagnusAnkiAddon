@@ -4,6 +4,7 @@ import gc
 import time
 from typing import TYPE_CHECKING, override
 
+from ankiutils import app
 import mylog
 from autoslot import Slots
 from PyQt6.QtCore import Qt
@@ -112,3 +113,4 @@ class QtTaskProgressRunner(ITaskRunner, Slots):
     def close(self) -> None:
         self.dialog.close()
         self.dialog.deleteLater()
+        app.get_ui_utils().refresh()
