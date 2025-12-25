@@ -101,7 +101,6 @@ def _find_all_names() -> QSet[str]:
 _all_word_forms = Lazy(_find_all_words)
 _all_name_forms = Lazy(_find_all_names)
 
-
 class DictLookup(Slots):
     @staticmethod
     def _failed_for_word(word: str) -> DictLookupResult:
@@ -146,9 +145,9 @@ class DictLookup(Slots):
             #         if any(ent.has_matching_kana_form(reading) for reading in readings)
             #         and ent.is_kana_only()]
 
-        lookup: QList[DictEntry] = DictEntry.create(cls._lookup_word_raw(word), word, list(readings))
+        lookup: QList[DictEntry] = cls._lookup_word_raw(word)
         if not lookup:
-            lookup = DictEntry.create(cls._lookup_name_raw(word), word, list(readings))
+            lookup = cls._lookup_name_raw(word)
 
         matching = any_kana_only_matches() if kana_utils.is_only_kana(word) else kanji_form_matches()
 
@@ -165,36 +164,37 @@ class DictLookup(Slots):
     @classmethod
     def lookup_word(cls, word: str) -> DictLookupResult:
         if not cls.might_be_word(word): return DictLookup._failed_for_word(word)
-        entries = DictEntry.create(cls._lookup_word_raw(word), word, [])
+        entries = cls._lookup_word_raw(word)
         return DictLookupResult(entries, word, QList())
 
     @classmethod
     def lookup_name(cls, word: str) -> DictLookupResult:
         if not cls.might_be_word(word): return DictLookup._failed_for_word(word)
-        entries = DictEntry.create(cls._lookup_name_raw(word), word, [])
+        entries = cls._lookup_name_raw(word)
         return DictLookupResult(entries, word, QList())
 
     @classmethod
-    def _lookup_word_raw(cls, word: str) -> list[JMDEntry]:
-        if not cls.might_be_word(word): return []
+    def _lookup_word_raw(cls, word: str) -> QList[DictEntry]:
+        if not cls.might_be_word(word): return QList()
         return cls._lookup_word_raw_inner(word)
 
     @classmethod
     @cache  # _lookup_word_shallow.cache_clear(), _lookup_word_shallow.cache_info()
-    def _lookup_word_raw_inner(cls, word: str) -> list[JMDEntry]:
+    def _lookup_word_raw_inner(cls, word: str) -> QList[DictEntry]:
         entries = list(_jamdict_threading_wrapper.lookup(word, include_names=False).entries)
-        return entries if not kana_utils.is_only_kana(word) else [ent for ent in entries if cls._is_kana_only(ent)]
+        transformed = entries if not kana_utils.is_only_kana(word) else [ent for ent in entries if cls._is_kana_only(ent)]
+        return DictEntry.create(transformed)
 
     @classmethod
-    def _lookup_name_raw(cls, word: str) -> list[JMDEntry]:
-        if not cls.might_be_name(word): return []
+    def _lookup_name_raw(cls, word: str) -> QList[DictEntry]:
+        if not cls.might_be_name(word): return QList()
         return cls._lookup_name_raw_inner(word)
-
 
     @classmethod
     @cache  # _lookup_word_shallow.cache_clear(), _lookup_word_shallow.cache_info()
-    def _lookup_name_raw_inner(cls, word: str) -> list[JMDEntry]:
-        return list(_jamdict_threading_wrapper.lookup(word, include_names=True).names)
+    def _lookup_name_raw_inner(cls, word: str) -> QList[DictEntry]:
+        result = list(_jamdict_threading_wrapper.lookup(word, include_names=True).names)
+        return DictEntry.create(result)
 
     @staticmethod
     def _is_kana_only(entry: JMDEntry) -> bool:
@@ -227,7 +227,6 @@ class DictLookup(Slots):
     @cache
     def _is_word_inner(cls, word: str) -> bool:
         return cls.lookup_word(word).found_words()
-
 
     @classmethod
     def is_dictionary_or_collection_word(cls, word: str) -> bool:

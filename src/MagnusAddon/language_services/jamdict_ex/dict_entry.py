@@ -47,10 +47,8 @@ class JMDEntryEX(Slots):
 
 @final
 class DictEntry(Slots):
-    def __init__(self, entry: JMDEntry, lookup_word: str, lookup_readings: list[str]) -> None:
+    def __init__(self, entry: JMDEntry) -> None:
         self.entry: JMDEntryEX = JMDEntryEX(entry)
-        self.lookup_word: str = lookup_word
-        self.lookup_readings: list[str] = lookup_readings
 
     def is_kana_only(self) -> bool:
         return not self.entry.kanji_forms or any(sense for sense
@@ -58,8 +56,8 @@ class DictEntry(Slots):
                                                  if "word usually written using kana alone" in sense.misc)
 
     @staticmethod
-    def create(entries: Sequence[JMDEntry], lookup_word: str, lookup_reading: list[str]) -> QList[DictEntry]:
-        return QList(DictEntry(entry, lookup_word, lookup_reading) for entry in entries)
+    def create(entries: Sequence[JMDEntry]) -> QList[DictEntry]:
+        return QList(DictEntry(entry) for entry in entries)
 
     def has_matching_kana_form(self, search: str) -> bool:
         search = kana_utils.katakana_to_hiragana(search)  # todo: this converting to hiragana is worrisome. Is this really the behavior we want? What false positives might we run into?
