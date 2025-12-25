@@ -27,6 +27,15 @@ class MatchStateTest(WeakRefable, Slots):
     def match_is_in_state(self) -> bool: return self._future_match_is_in_state() if self._future_match_is_in_state else self._internal_match_is_in_state()
 
     @property
+    def has_godan_imperative_part(self) -> bool: return self.word.start_location.token.is_godan_imperative_inflection or self.word.start_location.token.is_godan_imperative_stem
+
+    @property
+    def has_godan_potential_part(self) -> bool: return self.word.start_location.token.is_godan_potential_inflection or self.word.start_location.token.is_godan_potential_stem
+
+    @property
+    def has_godan_ichidan_imperative_part(self) -> bool: return self.word.start_location.token.is_ichidan_imperative_stem or self.word.start_location.token.is_ichidan_imperative_inflection
+
+    @property
     def match(self) -> Match: return self._match()
     @property
     def state_description(self) -> str: return self.description
