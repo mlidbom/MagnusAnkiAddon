@@ -58,7 +58,6 @@ test_special_vocab: list[VocabSpec] = [
     VocabSpec("すぎる", "too-much", ["すぎる"], tags=[vm.is_inflecting_word]),
     VocabSpec("いらっしゃいます", "to: come/be/do", ["いらっしゃいます"]),
     VocabSpec("を頼む", "I-entrust-to-you", ["を頼む"], tags=[vm.Requires.exact_match]),
-    VocabSpec("会える", "to-be-able: to-meet", ["あえる"], compounds=["会う", "える"]),
     VocabSpec("作れる", "to-be-able: to-make", ["つくれる"], compounds=["作る", "える"]),
     VocabSpec("たい", "want to", ["たい"], tags=[vm.is_inflecting_word]),
     VocabSpec("解放する", "to{} release", ["かいほうする"]),
