@@ -50,7 +50,7 @@ class SentenceNote(JPNote, Slots):
     @property
     def answer(self) -> StripHtmlOnReadFallbackStringField: return StripHtmlOnReadFallbackStringField(self.user.answer, self._source_answer)
     @property
-    def _source_answer(self) -> MutableStringField: return MutableStringField(self.weakref, SentenceNoteFields.active_answer)
+    def _source_answer(self) -> MutableStringField: return MutableStringField(self.weakref, SentenceNoteFields.source_answer)
     @property
     def active_answer(self) -> MutableStringField: return MutableStringField(self.weakref, SentenceNoteFields.active_answer)
     @property
