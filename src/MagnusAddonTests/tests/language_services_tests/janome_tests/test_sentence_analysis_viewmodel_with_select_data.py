@@ -18,7 +18,6 @@ def setup_collection_with_select_data() -> Iterator[None]:
 
 
 @pytest.mark.parametrize("sentence, expected_output", [
-        ("放せよ　俺は…",["放す", "え", "よ", "俺", "は"]) #todo bug よ missing
 ])
 def test_new_stuff(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
@@ -30,7 +29,8 @@ def test_new_stuff(sentence: str, expected_output: list[str]) -> None:
     ("黙れ", ["黙る", "え"]),
     ("楽しめてる", ["楽しめる", "てる"]),
     ("会えたりしない", ["会う", "える", "たり", "する", "ない"]),
-    ("くれよ", ["くれる", "え", "よ"])
+    ("くれよ", ["くれる", "え", "よ"]),
+    ("放せよ　俺は…",["放す", "え", "よ", "俺", "は"])
 ])
 def test_godan_potential_and_imperative(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
