@@ -17,7 +17,6 @@ test_special_vocab: list[VocabSpec] = [
     VocabSpec("え", "_!/do! (godan imperative)", ["え"], forms=["え", "け", "せ", "ね", "へ", "め", "れ", "げ", "ぜ", "で", "べ", "ぺ"], tags=[vm.is_inflecting_word, vm.Requires.godan_imperative, Tags.Vocab.question_overrides_form]),
 
     # needs exclusion
-    VocabSpec("せ", "so/really/seeming", tags=[vm.Forbids.godan_potential, vm.Forbids.godan_imperative]),
     VocabSpec("させる", "get-_/is-_", ["させる"], forms=["せる"], tags=[vm.is_inflecting_word, vm.Forbids.godan_potential]),
     VocabSpec("頑張れ", "do-your-best!", tags=[vm.Forbids.godan_potential]),
     VocabSpec("あれても", forms=["れても"], compounds=["あれる", "ても"], tags=[vm.yield_last_token_to_overlapping_compound, vm.Requires.a_stem, vm.Forbids.godan_potential, Tags.Vocab.question_overrides_form]),
