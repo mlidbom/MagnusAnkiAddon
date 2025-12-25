@@ -26,6 +26,11 @@ test_special_vocab: list[VocabSpec] = [
     VocabSpec("あれても", forms=["れても"], compounds=["あれる", "ても"], tags=[vm.yield_last_token_to_overlapping_compound, vm.Requires.a_stem, vm.Forbids.godan_potential, Tags.Vocab.question_overrides_form]),
     VocabSpec("くえ", "longtooth-grouper", tags=[vm.Forbids.godan_imperative]),
     # /needs exclusion
+
+    #related
+    VocabSpec("なさる", tags=[vm.is_inflecting_word]),
+    VocabSpec("なさい", tags=[vm.is_inflecting_word]),
+    #/related
     # </non-standard-token-splitting-to-enable-more-pedagogical-breakdowns-for-conjugations>
 
     # <te-stem-required>
@@ -105,8 +110,6 @@ test_special_vocab: list[VocabSpec] = [
     VocabSpec("ていうか", forms=["と言うか", "というか", "っていうか", "[て言うか]"]),
     VocabSpec("鰻", forms=["[うな]"], prefix_not={"ろ", "よ"}),
     VocabSpec("書き"),
-    VocabSpec("なさる", tags=[vm.is_inflecting_word]),
-    VocabSpec("なさい", tags=[vm.is_inflecting_word]),
     VocabSpec("風の強い", tags=[vm.Requires.exact_match]),
     VocabSpec("たね", tags=[vm.Requires.single_token]),
     VocabSpec("たらしい", tags=[vm.Requires.single_token]),
