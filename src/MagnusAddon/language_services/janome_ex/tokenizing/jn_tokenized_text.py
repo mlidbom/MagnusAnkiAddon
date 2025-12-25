@@ -6,6 +6,7 @@ from ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from language_services import conjugator
 from language_services.jamdict_ex.dict_lookup import DictLookup
+from language_services.janome_ex.tokenizing.inflection_forms import InflectionForms
 
 if TYPE_CHECKING:
     from janome.tokenizer import Token  # pyright: ignore[reportMissingTypeStubs]
@@ -51,6 +52,12 @@ class JNTokenWrapper(ProcessedToken, Slots):
     def is_special_nai_negative(self) -> bool: return self.token.is_special_nai_negative()
 
     def pre_process(self) -> list[ProcessedToken]:
+        if self.token.inflected_form == InflectionForms.ImperativeMeireikei.e:
+            godan_surface = self.surface[:-1]
+            imperative_part = self.surface[-1]
+            return [ProcessedToken(surface=godan_surface, base=self.base_form, is_non_word_character=False, is_inflectable_word=True, is_godan_imperative=True),
+                    ProcessedToken(surface=imperative_part, base="え", is_non_word_character=False, is_inflectable_word=True, is_godan_imperative=True)]
+
         potential_godan_verb: str | None = self._try_find_vocab_based_potential_verb_compound() or self._try_find_dictionary_based_potential_godan_verb()
         if potential_godan_verb is not None:
             return self._split_potential_or_imperative_godan(potential_godan_verb)
@@ -71,10 +78,11 @@ class JNTokenWrapper(ProcessedToken, Slots):
         return [ProcessedToken(surface=godan_surface, base=godan_base, is_non_word_character=False, is_inflectable_word=True, is_godan_potential=True),
                 ProcessedToken(surface=potential_surface, base=potential_base, is_non_word_character=False, is_inflectable_word=True, is_godan_potential=True)]
 
+    _potential_or_imperative_godan_last_compound_parts:set[str] = {"える", "え"}
     def _try_find_vocab_based_potential_verb_compound(self) -> str | None:
         for vocab in self._vocabs.with_question(self.base_form):
             compound_parts = vocab.compound_parts.all()
-            if len(compound_parts) == 2 and compound_parts[1] == "える":
+            if len(compound_parts) == 2 and compound_parts[1] in self._potential_or_imperative_godan_last_compound_parts:
                 return compound_parts[0]
         return None
 

@@ -20,7 +20,10 @@ def setup_collection_with_select_data() -> Iterator[None]:
 @pytest.mark.parametrize("sentence, expected_output", [
     ("お金貸せって", ["お金", "貸す", "え", "って"]),
     ("お前に会えて", ["お前", "に", "会える", "て"]),
-    ("逆に大丈夫に思えてくる", ["逆に", "大丈夫", "に", "思える", "て", "くる"])
+    ("逆に大丈夫に思えてくる", ["逆に", "大丈夫", "に", "思える", "て", "くる"]),
+    ("黙れ", ["黙る", "え"]),
+    ("会えたりしない", ["会う", "え", "たり", "する", "ない"]),
+    ("楽しめてる", ["楽しめる", "てる"])
 ])
 def test_new_stuff(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
@@ -91,7 +94,7 @@ def test_bugs_todo_fixme(sentence: str, expected_output: list[str]) -> None:
     ("ちょっと強引なところがあるから", ["ちょっと", "強引", "な", "ところ", "が", "ある", "から"]),
     ("また寒くなるな", ["また", "寒い", "くなる", "な"]),
     ("空を飛べる機械", ["空を飛ぶ", "える", "機械"]),
-    ("だったら普通に金<wbr>貸せって言えよ", ["だったら", "普通に", "金", "貸す", "って言う", "え", "よ"]),
+    ("だったら普通に金<wbr>貸せって言えよ", ["だったら", "普通に", "金", "貸す", "え", "って言う", "え", "よ"]),
     ("出会える", ["出会える"]),
     ("頑張れた", ["頑張る", "える", "た"]),
     ("頑張れ", ["頑張れ"]),
