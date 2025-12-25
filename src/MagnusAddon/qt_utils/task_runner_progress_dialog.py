@@ -144,11 +144,11 @@ class QtTaskProgressRunner(ITaskRunner, Slots):
         watch = StopWatch()
         start_time = time.time()
         results: list[TOutput] = []
-        self.dialog.setRange(0, total_items + 1)  # add one to keep the dialog open
 
-        run_gc = run_gc and len(items) >= minimum_items_to_gc
+        run_gc = run_gc and total_items >= minimum_items_to_gc
         if run_gc: self.run_gc()
 
+        self.dialog.setRange(0, total_items + 1)  # add one to keep the dialog open
         original_label = self.dialog.labelText()
         self.set_label_text(f"{message} 0 of {total_items} Remaining: ??")
 
