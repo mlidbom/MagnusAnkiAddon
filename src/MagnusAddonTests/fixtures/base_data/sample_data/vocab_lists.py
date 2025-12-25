@@ -142,5 +142,7 @@ test_special_vocab: list[VocabSpec] = [
         VocabSpec("出会える", "to: be-{able/fortunate-enough}-to-{meet/come-across}"),
         VocabSpec("ていける", "can-go-on"),
 
-        VocabSpec("ても知らない", forms=["ても知らん"], compounds=["ても", "知る", "ん"], tags=[vm.Requires.te_form_stem])
+        VocabSpec("ても知らない", forms=["ても知らん"], compounds=["ても", "知る", "ん"], tags=[vm.Requires.te_form_stem]),
+
+        VocabSpec("とおり"),
 ]

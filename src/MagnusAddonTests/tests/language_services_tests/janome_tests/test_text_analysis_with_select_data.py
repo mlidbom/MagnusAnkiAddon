@@ -20,6 +20,14 @@ def setup_collection_with_select_data() -> Iterator[None]:
 
 @pytest.mark.usefixtures("setup_collection_with_select_data")
 @pytest.mark.parametrize("sentence, expected_output", [
+])
+def test_new_stuff(sentence: str, expected_output: list[str]) -> None:
+    sentence_note = SentenceNote.create_test_note(sentence, "")
+    words = [w.parsed_form for w in sentence_note.parsing_result.get().parsed_words]
+    assert words == expected_output
+
+@pytest.mark.usefixtures("setup_collection_with_select_data")
+@pytest.mark.parametrize("sentence, expected_output", [
     ("走る",
      ["走る"]),
     ("走って",
@@ -53,7 +61,8 @@ def setup_collection_with_select_data() -> Iterator[None]:
     ("良いものを食べる", ["良い", "もの", "を", "食べる"]),
     ("のに", ["のに"]),
     ("もう逃がしません", ["もう", "逃がす", "ません", "ます", "ん"]),
-    ("死んどる", ["死ぬ", "んどる"])
+    ("死んどる", ["死ぬ", "んどる"]),
+    ("そうよ　あんたの言うとおりよ！", ["そう", "よ", "あんた", "の", "言うとおり", "言う", "とおり", "よ"]), #janome is sometimes confused by ending ! characters, so test that we have worked around that by replacing the !
 ])
 def test_identify_words(sentence: str, expected_output: list[str]) -> None:
     sentence_note = SentenceNote.create_test_note(sentence, "")

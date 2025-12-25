@@ -16,9 +16,16 @@ class JNTokenizer(Slots):
     def __init__(self) -> None:
         self._tokenizer = Tokenizer()
 
+    # apparently janome get's confused by some characters, so we replace them with ordinary spaces
+    _character_that_confuses_janome_so_we_replace_them_with_ordinary_full_width_spaces = {ex_str.invisible_space, "!", "！"}
+
     def tokenize(self, text: str) -> JNTokenizedText:
-        # apparently janome does not fully understand that invisible spaces are word separators, so we replace them with ordinary spaces
-        sanitized_text = text.replace(ex_str.invisible_space, " ")
+        # apparently janome does not fully understand that invisible spaces are word separators, so we replace them with ordinary spaces since they are not anything that should need to be parsed...
+        sanitized_text = text
+        for character in self._character_that_confuses_janome_so_we_replace_them_with_ordinary_full_width_spaces:
+            sanitized_text = sanitized_text.replace(character, " ")
+
+        #it seems that janome is sometimes confused and changes its parsing if there is no whitespace after the text, so lets add one
         tokens = [typed.checked_cast(Token, token) for token in self._tokenizer.tokenize(sanitized_text)]
 
         # Create JNToken objects

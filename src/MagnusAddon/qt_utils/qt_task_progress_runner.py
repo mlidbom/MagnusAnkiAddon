@@ -4,8 +4,8 @@ import gc
 import time
 from typing import TYPE_CHECKING, override
 
-from ankiutils import app
 import mylog
+from ankiutils import app
 from autoslot import Slots
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication, QLabel, QProgressDialog
