@@ -18,6 +18,9 @@ test_special_vocab: list[VocabSpec] = [
 
     # needs exclusion
     VocabSpec("せ", "so/really/seeming", tags=[vm.Forbids.godan_potential, vm.Forbids.godan_imperative]),
+    VocabSpec("させる", "get-_/is-_", ["させる"], forms=["せる"], tags=[vm.is_inflecting_word, vm.Forbids.godan_potential]),
+    VocabSpec("頑張れ", "do-your-best!", tags=[vm.Forbids.godan_potential]),
+    VocabSpec("あれても", forms=["れても"], compounds=["あれる", "ても"], tags=[vm.yield_last_token_to_overlapping_compound, vm.Requires.a_stem, vm.Forbids.godan_potential, Tags.Vocab.question_overrides_form]),
     # /needs exclusion
     # </non-standard-token-splitting-to-enable-more-pedagogical-breakdowns-for-conjugations>
 
@@ -65,8 +68,6 @@ test_special_vocab: list[VocabSpec] = [
     # require a stems
     VocabSpec("あれる", "get-_/is-_", ["あれる"], forms=["れる"], tags=[vm.Requires.a_stem, v.question_overrides_form, vm.is_inflecting_word]),
     VocabSpec("あせる", "get-_/is-_", ["あせる"], forms=["せる"], tags=[vm.Requires.a_stem, v.question_overrides_form, vm.is_inflecting_word]),
-
-    VocabSpec("させる", "get-_/is-_", ["させる"], forms=["せる"], tags=[vm.is_inflecting_word, vm.Forbids.godan_potential]),
 
     VocabSpec("する", "to: do", yield_to_surface={"しろ"}),
     VocabSpec("しろ", "do!", ["しろ"]),
@@ -131,9 +132,7 @@ test_special_vocab: list[VocabSpec] = [
     VocabSpec("くなる", "to: become", ["くなる"], forms=["なる"], prefix_in={"く"}, tags=[Tags.Vocab.question_overrides_form]),
     VocabSpec("言える", "to-be: able-to-say", compounds=["言う","える"]),
     VocabSpec("出会える", "to: be-{able/fortunate-enough}-to-{meet/come-across}"),
-    VocabSpec("頑張れ", "do-your-best!", tags=[vm.Forbids.godan_potential]),
     VocabSpec("ていける", "can-go-on"),
 
-    VocabSpec("あれても", forms=["れても"], compounds=["あれる", "ても"], tags=[vm.yield_last_token_to_overlapping_compound, vm.Requires.a_stem, vm.Forbids.godan_potential, Tags.Vocab.question_overrides_form]),
     VocabSpec("ても知らない", forms=["ても知らん"], compounds=["ても", "知る", "ん"], tags=[vm.Requires.te_form_stem])
 ]
