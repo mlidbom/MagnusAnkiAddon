@@ -10,6 +10,7 @@ from language_services.janome_ex.word_extraction.matches.requirements.requires_s
 from language_services.janome_ex.word_extraction.matches.state_tests.another_match_owns_the_form import AnotherMatchOwnsTheForm
 from language_services.janome_ex.word_extraction.matches.state_tests.head.has_a_stem import HasAStem
 from language_services.janome_ex.word_extraction.matches.state_tests.head.has_e_stem import HasEStem
+from language_services.janome_ex.word_extraction.matches.state_tests.head.has_godan_imperative_prefix import HasGodanImperativePrefix
 from language_services.janome_ex.word_extraction.matches.state_tests.head.has_past_tense_stem import HasPastTenseStem
 from language_services.janome_ex.word_extraction.matches.state_tests.head.has_te_form_stem import HasTeFormStem
 from language_services.janome_ex.word_extraction.matches.state_tests.head.is_sentence_start import IsSentenceStart
@@ -51,6 +52,7 @@ class VocabMatch(Match, Slots):
                              RequiresOrForbids(HasPastTenseStem(weakref), self.requires_forbids.past_tense_stem),
                              RequiresOrForbids(HasEStem(weakref), self.requires_forbids.e_stem),
 
+                             RequiresOrForbids(HasGodanImperativePrefix(weakref), self.requires_forbids.godan_imperative_prefix),
                              RequiresOrForbids(StartsWithGodanPotentialStemOrInflection(weakref), self.requires_forbids.godan_potential),
                              RequiresOrForbids(StartsWithGodanImperativeStemOrInflection(weakref), self.requires_forbids.godan_imperative),
                              RequiresOrForbids(StartsWithIchidanImperativeStemOrInflection(weakref), self.requires_forbids.ichidan_imperative),

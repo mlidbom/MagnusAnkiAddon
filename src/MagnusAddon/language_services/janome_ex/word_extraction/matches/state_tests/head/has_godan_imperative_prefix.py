@@ -9,12 +9,16 @@ if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.match import Match
     from sysutils.weak_ref import WeakRef
 
-class IsGodanImperativeInflectionWithBase(MatchStateTest, Slots):
+class HasGodanImperativePrefix(MatchStateTest, Slots):
     def __init__(self, match: WeakRef[Match]) -> None:
-        super().__init__(match, "godan_potential_surface", cache_is_in_state=True)
+        super().__init__(match, "te_form_stem", cache_is_in_state=True)
 
     @override
     def _internal_match_is_in_state(self) -> bool:
-        if self.has_godan_imperative_part and self.word.location_count == 1 and self.variant.is_surface and self.word.base_variant is not None:  # noqa: SIM103
+        if self.previous_location is None:
+            return False
+
+        if self.previous_location.token.is_godan_imperative_inflection:  # noqa: SIM103
             return True
         return False
+

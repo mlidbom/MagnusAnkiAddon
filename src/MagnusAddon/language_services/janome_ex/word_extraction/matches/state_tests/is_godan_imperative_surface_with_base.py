@@ -9,12 +9,12 @@ if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.match import Match
     from sysutils.weak_ref import WeakRef
 
-class StartsWithIchidanImperativeStemOrInflection(MatchStateTest, Slots):
+class IsGodanImperativeInflectionWithBase(MatchStateTest, Slots):
     def __init__(self, match: WeakRef[Match]) -> None:
-        super().__init__(match, "ichidan_imperative", cache_is_in_state=True)
+        super().__init__(match, "godan_imperative_surface_with_base", cache_is_in_state=True)
 
     @override
     def _internal_match_is_in_state(self) -> bool:
-        if self.has_godan_ichidan_imperative_part:  # noqa: SIM103
+        if self.has_godan_imperative_part and self.word.location_count == 1 and self.variant.is_surface and self.word.base_variant is not None:  # noqa: SIM103
             return True
         return False
