@@ -53,6 +53,16 @@ class JNTokenWrapper(ProcessedToken, Slots):
     def is_special_nai_negative(self) -> bool: return self.token.is_special_nai_negative()
 
     def pre_process(self) -> list[ProcessedToken]:
+        if self.token.inflected_form == InflectionForms.ImperativeMeireikei.ro:
+            ichidan_surface = self.surface[:-1]
+            return [ProcessedToken(surface=ichidan_surface, base=self.base_form, is_non_word_character=False, is_inflectable_word=True, is_ichidan_imperative=True),
+                    ProcessedToken(surface="ろ", base="ろ", is_non_word_character=False, is_inflectable_word=True, is_ichidan_imperative=True)]
+
+        if self.token.inflected_form == InflectionForms.ImperativeMeireikei.yo:
+            ichidan_surface = self.surface[:-1]
+            return [ProcessedToken(surface=ichidan_surface, base=self.base_form, is_non_word_character=False, is_inflectable_word=True, is_ichidan_imperative=True),
+                    ProcessedToken(surface="よ", base="よ", is_non_word_character=False, is_inflectable_word=True, is_ichidan_imperative=True)]
+
         if self.token.inflected_form == InflectionForms.ImperativeMeireikei.e:
             godan_surface = self.surface[:-1]
             imperative_part = self.surface[-1]

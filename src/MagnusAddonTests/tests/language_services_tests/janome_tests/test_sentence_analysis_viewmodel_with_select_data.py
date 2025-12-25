@@ -34,6 +34,13 @@ def test_godan_potential_and_imperative(sentence: str, expected_output: list[str
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
 
 @pytest.mark.parametrize("sentence, expected_output", [
+    ("食べろ", ["食べる", "ろ"]),
+    ("食べよ", ["食べる", "よ"]),
+])
+def test_ichidan_imperative(sentence: str, expected_output: list[str]) -> None:
+    assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
+
+@pytest.mark.parametrize("sentence, expected_output", [
 
 ])
 def test_bugs_todo_fixme(sentence: str, expected_output: list[str]) -> None:

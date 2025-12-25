@@ -17,6 +17,7 @@ from language_services.janome_ex.word_extraction.matches.state_tests.head.prefix
 from language_services.janome_ex.word_extraction.matches.state_tests.is_exact_match import IsExactMatch
 from language_services.janome_ex.word_extraction.matches.state_tests.is_godan_imperative import IsGodanImperative
 from language_services.janome_ex.word_extraction.matches.state_tests.is_godan_potential import IsGodanPotential
+from language_services.janome_ex.word_extraction.matches.state_tests.is_ichidan_imperative import IsIchidanImperative
 from language_services.janome_ex.word_extraction.matches.state_tests.is_poison_word import IsPoisonWord
 from language_services.janome_ex.word_extraction.matches.state_tests.is_single_token import IsSingleToken
 from language_services.janome_ex.word_extraction.matches.state_tests.surface_is_in import SurfaceIsIn
@@ -59,7 +60,7 @@ class VocabMatch(Match, Slots):
                              Forbids(IsPoisonWord(weakref)),
                              RequiresOrForbids(IsGodanPotential(weakref), self.requires_forbids.godan_potential),
                              RequiresOrForbids(IsGodanImperative(weakref), self.requires_forbids.godan_imperative),
-                                 RequiresOrForbids(IsGodanImperative(weakref), self.requires_forbids.ichidan_imperative),
+                             RequiresOrForbids(IsIchidanImperative(weakref), self.requires_forbids.ichidan_imperative),
                              RequiresOrForbids(IsExactMatch(weakref), self.requires_forbids.exact_match),
                              RequiresOrForbids(IsSingleToken(weakref), self.requires_forbids.single_token),
                              Forbids(SurfaceIsIn(weakref, self.rules.surface_is_not.get()),

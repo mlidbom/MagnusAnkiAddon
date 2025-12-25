@@ -16,6 +16,9 @@ test_special_vocab: list[VocabSpec] = [
     # /godan potential
     VocabSpec("え", "_!/do! (godan imperative)", ["え"], forms=["え", "け", "せ", "ね", "へ", "め", "れ", "げ", "ぜ", "で", "べ", "ぺ"], tags=[vm.is_inflecting_word, vm.Requires.godan_imperative, Tags.Vocab.question_overrides_form]),
 
+    VocabSpec("ろ", "_!/do! (ichidan imperative)", ["ろ"], tags=[vm.is_inflecting_word, vm.Requires.ichidan_imperative]),
+    VocabSpec("よ", "_!/do! (ichidan imperative)", ["よ"], tags=[vm.is_inflecting_word, vm.Requires.ichidan_imperative]),
+
     # needs exclusion
     VocabSpec("させる", "get-_/is-_", ["させる"], forms=["せる"], tags=[vm.is_inflecting_word, vm.Forbids.godan_potential]),
     VocabSpec("頑張れ", "do-your-best!", tags=[vm.Forbids.godan_potential]),
