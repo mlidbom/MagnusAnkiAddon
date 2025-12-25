@@ -15,13 +15,14 @@ if TYPE_CHECKING:
     from typed_linq_collections.collections.q_list import QList
 
 class ProcessedToken(Slots):
-    def __init__(self, surface: str, base: str, is_non_word_character: bool, is_inflectable_word: bool = False, is_godan_potential: bool = False, is_godan_imperative: bool = False) -> None:
+    def __init__(self, surface: str, base: str, is_non_word_character: bool, is_inflectable_word: bool = False, is_godan_potential: bool = False, is_godan_imperative: bool = False, is_ichidan_imperative: bool = False) -> None:
         self.surface: str = surface
         self.base_form: str = base
         self.is_inflectable_word: bool = is_inflectable_word
         self.is_non_word_character: bool = is_non_word_character
         self.is_godan_potential: bool = is_godan_potential
         self.is_godan_imperative: bool = is_godan_imperative
+        self.is_ichidan_imperative: bool = is_ichidan_imperative
 
     def is_past_tense_stem(self) -> bool: return False
     def is_ichidan_masu_stem(self) -> bool: return False

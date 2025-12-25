@@ -59,6 +59,7 @@ class VocabMatch(Match, Slots):
                              Forbids(IsPoisonWord(weakref)),
                              RequiresOrForbids(IsGodanPotential(weakref), self.requires_forbids.godan_potential),
                              RequiresOrForbids(IsGodanImperative(weakref), self.requires_forbids.godan_imperative),
+                                 RequiresOrForbids(IsGodanImperative(weakref), self.requires_forbids.ichidan_imperative),
                              RequiresOrForbids(IsExactMatch(weakref), self.requires_forbids.exact_match),
                              RequiresOrForbids(IsSingleToken(weakref), self.requires_forbids.single_token),
                              Forbids(SurfaceIsIn(weakref, self.rules.surface_is_not.get()),
