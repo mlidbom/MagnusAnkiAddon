@@ -109,6 +109,7 @@ class QtTaskProgressRunner(ITaskRunner, Slots):
         mylog.info(f"##--QtTaskProgressRunner--## Finished {message} in {watch.elapsed_formatted()} handled {total_items} items{ex_trace_malloc_instance.get_memory_delta_message(' | ')}")
         if run_gc: self.run_gc()
         return results
+
     @override
     def close(self) -> None:
         self.dialog.close()
