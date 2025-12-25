@@ -24,13 +24,25 @@ def test_new_stuff(sentence: str, expected_output: list[str]) -> None:
 
 @pytest.mark.parametrize("sentence, expected_output", [
     ("お金貸せって", ["お金", "貸す", "え", "って"]),
-    ("お前に会えて", ["お前", "に", "会える", "て"]),
+    ("お前に会えて", ["お前", "に", "会う", "える", "て"]),
     ("逆に大丈夫に思えてくる", ["逆に", "大丈夫", "に", "思える", "て", "くる"]),
     ("黙れ", ["黙る", "え"]),
     ("楽しめてる", ["楽しめる", "てる"]),
-    ("会えたりしない", ["会う", "える", "たり", "する", "ない"])
+    ("会えたりしない", ["会う", "える", "たり", "する", "ない"]),
+("くれよ", ["くれる", "え", "よ"])
 ])
 def test_godan_potential_and_imperative(sentence: str, expected_output: list[str]) -> None:
+    assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
+
+@pytest.mark.parametrize("sentence, expected_output", [
+    ("食べろ", ["食べる", "ろ"]),
+    ("食べよ", ["食べる", "よ"]), # rare in contemporary japanese, may well be a missspelling of 食べよう
+    ("見つけよ",["見つける", "よ"]),
+    ("捕まえよ", ["捕まえる", "よ"]),
+    ("離れよ", ["離れる", "よ"]),
+    ("食べよう", ["食べる", "う"]), # not an imperative, just a suggestion
+])
+def test_ichidan_imperative(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
 
 @pytest.mark.parametrize("sentence, expected_output", [

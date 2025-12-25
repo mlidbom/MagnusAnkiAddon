@@ -16,10 +16,14 @@ test_special_vocab: list[VocabSpec] = [
     # /godan potential
     VocabSpec("え", "_!/do! (godan imperative)", ["え"], forms=["え", "け", "せ", "ね", "へ", "め", "れ", "げ", "ぜ", "で", "べ", "ぺ"], tags=[vm.is_inflecting_word, vm.Requires.godan_imperative, Tags.Vocab.question_overrides_form]),
 
+    VocabSpec("ろ", "_!/do! (ichidan imperative)", ["ろ"], tags=[vm.is_inflecting_word, vm.Requires.ichidan_imperative]),
+    VocabSpec("よ", "_!/do! (ichidan imperative)", ["よ"], tags=[vm.is_inflecting_word, vm.Requires.ichidan_imperative]),
+
     # needs exclusion
     VocabSpec("させる", "get-_/is-_", ["させる"], forms=["せる"], tags=[vm.is_inflecting_word, vm.Forbids.godan_potential]),
     VocabSpec("頑張れ", "do-your-best!", tags=[vm.Forbids.godan_potential]),
     VocabSpec("あれても", forms=["れても"], compounds=["あれる", "ても"], tags=[vm.yield_last_token_to_overlapping_compound, vm.Requires.a_stem, vm.Forbids.godan_potential, Tags.Vocab.question_overrides_form]),
+    VocabSpec("くえ", "longtooth-grouper", tags=[vm.Forbids.godan_imperative]),
     # /needs exclusion
     # </non-standard-token-splitting-to-enable-more-pedagogical-breakdowns-for-conjugations>
 
