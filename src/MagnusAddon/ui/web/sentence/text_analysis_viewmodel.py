@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 class TextAnalysisViewModel(Slots):
     def __init__(self, text_analysis: TextAnalysis) -> None:
         self.analysis: TextAnalysis = text_analysis
-        self.candidate_words: QList[CandidateWordVariantViewModel] = text_analysis.indexing_word_variants.select(CandidateWordVariantViewModel).to_list() #[CandidateWordVariantViewModel(candidate_word) for candidate_word in text_analysis.all_word_variants]
+        self.candidate_words: QList[CandidateWordVariantViewModel] = text_analysis.indexing_word_variants.select(CandidateWordVariantViewModel).to_list()
         variant_view_models: QList[CandidateWordVariantViewModel] = self.candidate_words
-        matches: QList[MatchViewModel] = variant_view_models.select_many(lambda variant_vm: variant_vm.matches).to_list() #ex_sequence.flatten([cand.matches for cand in variant_view_models])
-        self.displayed_matches:QList[MatchViewModel] = matches.where(lambda match: match.is_displayed).to_list() #[display_form for display_form in matches if display_form.is_displayed]
+        matches: QList[MatchViewModel] = variant_view_models.select_many(lambda variant_vm: variant_vm.matches).to_list()
+        self.displayed_matches:QList[MatchViewModel] = matches.where(lambda match: match.is_displayed).to_list()
