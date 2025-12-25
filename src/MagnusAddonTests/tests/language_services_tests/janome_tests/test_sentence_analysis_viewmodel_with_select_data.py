@@ -49,7 +49,7 @@ def test_ichidan_imperative(sentence: str, expected_output: list[str]) -> None:
 @pytest.mark.parametrize("sentence, expected_output", [
         ("書きなさい", ["書く", "なさい"]),
 ])
-def test_i_imerative_forms(sentence: str, expected_output: list[str]) -> None:
+def test_i_imperative_forms(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
 
 @pytest.mark.parametrize("sentence, expected_output", [
