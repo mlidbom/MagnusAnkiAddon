@@ -130,7 +130,7 @@ class DictLookup(Slots):
         def kanji_form_matches() -> QList[DictEntry]:
             return (lookup
                     .where(lambda entry: any(entry.has_matching_kana_form(reading) for reading in readings)
-                                         and len(entry.kanji_forms()) > 0
+                                         and len(entry.kanji_forms_text()) > 0
                                          and entry.has_matching_kanji_form(word))
                     .to_list())
             # return [ent for ent in lookup
