@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, cast, final
 
 from autoslot import Slots
 from language_services.jamdict_ex import jmd_pos_map
-from sysutils import kana_utils, typed
+from sysutils import kana_utils
 from typed_linq_collections.collections.q_list import QList
 from typed_linq_collections.q_iterable import query
 
@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 
 class SenseEX(Slots):
     def __init__(self, source: Sense) -> None:
-        self.gloss:QList[str] = query(source.gloss).select(lambda it: typed.str_(it.text)).to_list()  # pyright: ignore [reportUnknownArgumentType, reportUnknownMemberType]
+        self.gloss:QList[str] = query(source.gloss).select(lambda it: cast(str, it.text)).to_list()  # pyright: ignore [reportUnknownArgumentType, reportUnknownMemberType]
         self.pos: QList[str] = QList(cast(list[str], source.pos))  # pyright: ignore [reportUnknownMemberType]
         self.is_kana_only = "word usually written using kana alone" in cast(list[str], source.misc) # pyright: ignore [reportUnknownMemberType]
 
@@ -26,8 +26,8 @@ class SenseEX(Slots):
 @final
 class DictEntry(Slots):
     def __init__(self, source: JMDEntry) -> None:
-        self.kana_forms: QList[str] = query(source.kana_forms).select(lambda it: typed.str_(it.text)).to_list()  # pyright: ignore [reportUnknownMemberType, reportUnknownArgumentType]
-        self.kanji_forms: QList[str] = query(source.kanji_forms).select(lambda it: typed.str_(it.text)).to_list()  # pyright: ignore [reportUnknownArgumentType, reportUnknownMemberType]
+        self.kana_forms: QList[str] = query(source.kana_forms).select(lambda it: cast(str, it.text)).to_list()  # pyright: ignore [reportUnknownMemberType, reportUnknownArgumentType]
+        self.kanji_forms: QList[str] = query(source.kanji_forms).select(lambda it: cast(str, it.text)).to_list()  # pyright: ignore [reportUnknownArgumentType, reportUnknownMemberType]
         self.senses: QList[SenseEX] = query(source.senses).select(SenseEX).to_list()
 
     def is_kana_only(self) -> bool:
