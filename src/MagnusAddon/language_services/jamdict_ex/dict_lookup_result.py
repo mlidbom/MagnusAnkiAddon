@@ -25,7 +25,7 @@ class DictLookupResult(Slots):
                                         if ent.is_kana_only())
 
     def valid_forms(self, force_allow_kana_only: bool = False) -> QSet[str]:
-        return self.entries.select_many(lambda entry: entry.valid_forms(force_allow_kana_only)).to_set()  # set(ex_sequence.flatten([list(entry.valid_forms(force_allow_kana_only)) for entry in self.entries]))
+        return self.entries.select_many(lambda entry: entry.valid_forms(force_allow_kana_only)).to_set()
 
     def parts_of_speech(self) -> QSet[str]:
-        return self.entries.select_many(lambda entry: entry.parts_of_speech()).to_set()  # set(ex_sequence.flatten([list(ent.parts_of_speech()) for ent in self.entries]))
+        return self.entries.select_many(lambda entry: entry.parts_of_speech()).to_set()
