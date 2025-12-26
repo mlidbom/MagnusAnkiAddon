@@ -3,8 +3,9 @@ from __future__ import annotations
 from functools import cache
 from typing import TYPE_CHECKING, Any
 
+import mylog
 from ankiutils import app
-from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from autoslot import Slots
 from language_services.jamdict_ex.dict_lookup_result import DictLookupResult
 from sysutils.lazy import Lazy
 from sysutils.timeutil import StopWatch
@@ -40,7 +41,7 @@ class JamdictThreadingWrapper(Slots):
         self._thread: threading.Thread = threading.Thread(target=self._worker, daemon=True)
         self._running: bool = True
         self._thread.start()
-#        self._calls = 0
+        self._calls = 0
         self.jamdict: Lazy[Jamdict] = Lazy(self.create_jamdict)
 
     @staticmethod
@@ -60,13 +61,13 @@ class JamdictThreadingWrapper(Slots):
             except Exception as e:
                 request.future.set_exception(e)
 
-    #         #memory after reparse all sentences with this hack: 1870 or something
-    #         self._calls += 1
-    #         if self._calls >= self._calls_before_reload:
-    #             mylog.info("Reloading Jamdict to try and preserve memory usage.")
-    #             self.jamdict = Lazy[Jamdict].from_value(self.create_jamdict())
-    #             self._calls = 0
-    # _calls_before_reload: int = 100
+            #memory after reparse all sentences with this hack: 1870 or something
+            self._calls += 1
+            if self._calls >= self._calls_before_reload:
+                mylog.info("Reloading Jamdict to try and preserve memory usage.")
+                self.jamdict = Lazy[Jamdict].from_value(self.create_jamdict())
+                self._calls = 0
+    _calls_before_reload: int = 100
 
     def lookup(self, word: str, include_names: bool) -> LookupResult:
         future: Future[LookupResult] = Future()
