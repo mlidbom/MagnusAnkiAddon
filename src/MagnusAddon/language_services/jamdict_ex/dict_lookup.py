@@ -40,7 +40,6 @@ class JamdictThreadingWrapper(Slots):
         self._thread: threading.Thread = threading.Thread(target=self._worker, daemon=True)
         self._running: bool = True
         self._thread.start()
-#        self._calls = 0
         self.jamdict: Lazy[Jamdict] = Lazy(self.create_jamdict)
 
     @staticmethod
@@ -49,7 +48,6 @@ class JamdictThreadingWrapper(Slots):
             if (app.config().load_jamdict_db_into_memory.get_value()
                 and not app.is_testing) \
             else Jamdict(reuse_ctx=True)
-        #jamdict.lookup("俺", lookup_chars=False, lookup_ne=True)  # pyright: ignore[reportUnknownMemberType]
 
     def _worker(self) -> None:
         while self._running:
@@ -59,14 +57,6 @@ class JamdictThreadingWrapper(Slots):
                 request.future.set_result(result)
             except Exception as e:
                 request.future.set_exception(e)
-
-    #         #memory after reparse all sentences with this hack: 1870 or something
-    #         self._calls += 1
-    #         if self._calls >= self._calls_before_reload:
-    #             mylog.info("Reloading Jamdict to try and preserve memory usage.")
-    #             self.jamdict = Lazy[Jamdict].from_value(self.create_jamdict())
-    #             self._calls = 0
-    # _calls_before_reload: int = 100
 
     def lookup(self, word: str, include_names: bool) -> LookupResult:
         future: Future[LookupResult] = Future()
