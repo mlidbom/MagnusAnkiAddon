@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
+from sysutils.object_instance_tracker import ObjectInstanceTracker
 
 if TYPE_CHECKING:
     from language_services.jamdict_ex.dict_entry import DictEntry
@@ -12,6 +13,7 @@ if TYPE_CHECKING:
 
 class DictLookupResult(Slots):
     def __init__(self, entries: QList[DictEntry], lookup_word: str, lookup_reading: QList[str]) -> None:
+        self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
         self.word: str = lookup_word
         self.lookup_reading: QList[str] = lookup_reading
         self.entries: QList[DictEntry] = entries

@@ -12,6 +12,7 @@ from note.note_constants import CardTypes, MyNoteFields, NoteTypes, Tags
 from note.note_flush_guard import NoteRecursiveFlushGuard
 from sysutils import ex_assert, ex_str
 from sysutils.memory_usage import string_auto_interner
+from sysutils.object_instance_tracker import ObjectInstanceTracker
 from sysutils.typed import non_optional, str_
 from sysutils.weak_ref import WeakRef, WeakRefable
 from typed_linq_collections.collections.q_set import QSet
@@ -24,6 +25,7 @@ if TYPE_CHECKING:
 
 class JPNote(WeakRefable, Slots):
     def __init__(self, note: Note) -> None:
+        self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
         self.weakref: WeakRef[JPNote] = WeakRef(self)
         self.recursive_flush_guard: NoteRecursiveFlushGuard = NoteRecursiveFlushGuard(self.weakref)
         self.backend_note: Note = note

@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from sysutils.debug_repr_builder import SkipFalsyValuesDebugReprBuilder
+from sysutils.object_instance_tracker import ObjectInstanceTracker
 from sysutils.weak_ref import WeakRef, WeakRefable
 from ui.web.sentence.match_viewmodel import MatchViewModel
 
@@ -12,6 +13,7 @@ if TYPE_CHECKING:
 
 class CandidateWordVariantViewModel(WeakRefable, Slots):
     def __init__(self, variant: CandidateWordVariant) -> None:
+        self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
         self.candidate_word: CandidateWordVariant = variant
         self.weakref: WeakRef[CandidateWordVariantViewModel] = WeakRef(self)
         self.is_shadowed: bool = variant.word.is_shadowed

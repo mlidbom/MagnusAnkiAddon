@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from sysutils.object_instance_tracker import ObjectInstanceTracker
 from ui.web.sentence.candidate_word_variant_viewmodel import CandidateWordVariantViewModel
 
 if TYPE_CHECKING:
@@ -13,6 +14,7 @@ if TYPE_CHECKING:
 
 class TextAnalysisViewModel(Slots):
     def __init__(self, text_analysis: TextAnalysis) -> None:
+        self._instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
         self.analysis: TextAnalysis = text_analysis
         self.candidate_words: QList[CandidateWordVariantViewModel] = text_analysis.indexing_word_variants.select(CandidateWordVariantViewModel).to_list()
         variant_view_models: QList[CandidateWordVariantViewModel] = self.candidate_words

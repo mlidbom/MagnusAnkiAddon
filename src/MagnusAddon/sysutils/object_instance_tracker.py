@@ -7,8 +7,9 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from sysutils import ex_gc
 from sysutils.ex_str import newline
 from sysutils.timeutil import StopWatch
+from typed_linq_collections.collections.q_dict import QDict
 
-current_instance_count: dict[str, int] = {}
+current_instance_count: QDict[str, int] = QDict()
 
 class Snapshot(Slots):
     def __init__(self, current_state: dict[str, int], previous_state: dict[str, int]) -> None:
@@ -74,7 +75,7 @@ class ObjectInstanceTracker(Slots):
 
 def print_instance_counts() -> None:
     print("################### Instance counts ###################")
-    for type_name, count in current_instance_count.items():
+    for type_name, count in current_instance_count.qitems().order_by_descending(lambda kv: kv.value):
         print(f"{type_name}: {count}")
 
 def single_line_report() -> str:
