@@ -132,17 +132,10 @@ class DictLookup(Slots):
                                          and len(entry.kanji_forms) > 0
                                          and entry.has_matching_kanji_form(word))
                     .to_list())
-            # return [ent for ent in lookup
-            #         if any(ent.has_matching_kana_form(reading) for reading in readings)
-            #         and ent.kanji_forms()
-            #         and ent.has_matching_kanji_form(word)]
 
         def any_kana_only_matches() -> QList[DictEntry]:
             return (lookup.where(lambda entry: any(entry.has_matching_kana_form(reading) for reading in readings)
                                                and entry.is_kana_only()).to_list())
-            # return [ent for ent in lookup
-            #         if any(ent.has_matching_kana_form(reading) for reading in readings)
-            #         and ent.is_kana_only()]
 
         lookup: QList[DictEntry] = cls._lookup_word_raw(word)
         if not lookup:
