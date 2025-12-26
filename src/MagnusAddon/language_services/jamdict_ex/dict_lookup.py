@@ -34,21 +34,22 @@ class Request[T](Slots):
         self.future: Future[T] = future
 
 class JamdictThreadingWrapper(Slots):
+
     def __init__(self) -> None:
         self._queue: queue.Queue[Request[Any]] = queue.Queue()  # pyright: ignore[reportExplicitAny]
         self._thread: threading.Thread = threading.Thread(target=self._worker, daemon=True)
         self._running: bool = True
         self._thread.start()
-        self.jamdict: Lazy[Jamdict] = Lazy(self.create_jamdict_and_log_loading_time)
+#        self._calls = 0
+        self.jamdict: Lazy[Jamdict] = Lazy(self.create_jamdict)
 
     @staticmethod
-    def create_jamdict_and_log_loading_time() -> Jamdict:
-        jamdict = Jamdict(memory_mode=True) \
+    def create_jamdict() -> Jamdict:
+        return Jamdict(memory_mode=True) \
             if (app.config().load_jamdict_db_into_memory.get_value()
                 and not app.is_testing) \
             else Jamdict(reuse_ctx=True)
-        jamdict.lookup("俺", lookup_chars=False, lookup_ne=True)  # pyright: ignore[reportUnknownMemberType]
-        return jamdict
+        #jamdict.lookup("俺", lookup_chars=False, lookup_ne=True)  # pyright: ignore[reportUnknownMemberType]
 
     def _worker(self) -> None:
         while self._running:
@@ -58,6 +59,14 @@ class JamdictThreadingWrapper(Slots):
                 request.future.set_result(result)
             except Exception as e:
                 request.future.set_exception(e)
+
+    #         #memory after reparse all sentences with this hack: 1870 or something
+    #         self._calls += 1
+    #         if self._calls >= self._calls_before_reload:
+    #             mylog.info("Reloading Jamdict to try and preserve memory usage.")
+    #             self.jamdict = Lazy[Jamdict].from_value(self.create_jamdict())
+    #             self._calls = 0
+    # _calls_before_reload: int = 100
 
     def lookup(self, word: str, include_names: bool) -> LookupResult:
         future: Future[LookupResult] = Future()
@@ -101,7 +110,6 @@ def _find_all_names() -> QSet[str]:
 _all_word_forms = Lazy(_find_all_words)
 _all_name_forms = Lazy(_find_all_names)
 
-
 class DictLookup(Slots):
     @staticmethod
     def _failed_for_word(word: str) -> DictLookupResult:
@@ -131,7 +139,7 @@ class DictLookup(Slots):
         def kanji_form_matches() -> QList[DictEntry]:
             return (lookup
                     .where(lambda entry: any(entry.has_matching_kana_form(reading) for reading in readings)
-                                         and len(entry.kanji_forms()) > 0
+                                         and len(entry.kanji_forms) > 0
                                          and entry.has_matching_kanji_form(word))
                     .to_list())
             # return [ent for ent in lookup
@@ -146,9 +154,9 @@ class DictLookup(Slots):
             #         if any(ent.has_matching_kana_form(reading) for reading in readings)
             #         and ent.is_kana_only()]
 
-        lookup: QList[DictEntry] = DictEntry.create(cls._lookup_word_raw(word), word, list(readings))
+        lookup: QList[DictEntry] = cls._lookup_word_raw(word)
         if not lookup:
-            lookup = DictEntry.create(cls._lookup_name_raw(word), word, list(readings))
+            lookup = cls._lookup_name_raw(word)
 
         matching = any_kana_only_matches() if kana_utils.is_only_kana(word) else kanji_form_matches()
 
@@ -165,36 +173,37 @@ class DictLookup(Slots):
     @classmethod
     def lookup_word(cls, word: str) -> DictLookupResult:
         if not cls.might_be_word(word): return DictLookup._failed_for_word(word)
-        entries = DictEntry.create(cls._lookup_word_raw(word), word, [])
+        entries = cls._lookup_word_raw(word)
         return DictLookupResult(entries, word, QList())
 
     @classmethod
     def lookup_name(cls, word: str) -> DictLookupResult:
         if not cls.might_be_word(word): return DictLookup._failed_for_word(word)
-        entries = DictEntry.create(cls._lookup_name_raw(word), word, [])
+        entries = cls._lookup_name_raw(word)
         return DictLookupResult(entries, word, QList())
 
     @classmethod
-    def _lookup_word_raw(cls, word: str) -> list[JMDEntry]:
-        if not cls.might_be_word(word): return []
+    def _lookup_word_raw(cls, word: str) -> QList[DictEntry]:
+        if not cls.might_be_word(word): return QList()
         return cls._lookup_word_raw_inner(word)
 
     @classmethod
     @cache  # _lookup_word_shallow.cache_clear(), _lookup_word_shallow.cache_info()
-    def _lookup_word_raw_inner(cls, word: str) -> list[JMDEntry]:
+    def _lookup_word_raw_inner(cls, word: str) -> QList[DictEntry]:
         entries = list(_jamdict_threading_wrapper.lookup(word, include_names=False).entries)
-        return entries if not kana_utils.is_only_kana(word) else [ent for ent in entries if cls._is_kana_only(ent)]
+        transformed = entries if not kana_utils.is_only_kana(word) else [ent for ent in entries if cls._is_kana_only(ent)]
+        return DictEntry.create(transformed)
 
     @classmethod
-    def _lookup_name_raw(cls, word: str) -> list[JMDEntry]:
-        if not cls.might_be_name(word): return []
+    def _lookup_name_raw(cls, word: str) -> QList[DictEntry]:
+        if not cls.might_be_name(word): return QList()
         return cls._lookup_name_raw_inner(word)
-
 
     @classmethod
     @cache  # _lookup_word_shallow.cache_clear(), _lookup_word_shallow.cache_info()
-    def _lookup_name_raw_inner(cls, word: str) -> list[JMDEntry]:
-        return list(_jamdict_threading_wrapper.lookup(word, include_names=True).names)
+    def _lookup_name_raw_inner(cls, word: str) -> QList[DictEntry]:
+        result = list(_jamdict_threading_wrapper.lookup(word, include_names=True).names)
+        return DictEntry.create(result)
 
     @staticmethod
     def _is_kana_only(entry: JMDEntry) -> bool:
@@ -204,11 +213,13 @@ class DictLookup(Slots):
 
     @classmethod
     def might_be_word(cls, word: str) -> bool:
+        #return False #memory after reparse all sentences with this hack: 1687
         # this method is a pure optimization to save on dictionary calls during real runtime. During tests populating all the words is a suboptimization, so just always return true when testing
         return app.is_testing or word in _all_word_forms()
 
     @classmethod
     def might_be_name(cls, word: str) -> bool:
+        #return False #memory after reparse all sentences with this hack: 1687
         # this method is a pure optimization to save on dictionary calls during real runtime. During tests populating all the words is a suboptimization, so just always return true when testing
         return app.is_testing or word in _all_name_forms()
 
@@ -227,7 +238,6 @@ class DictLookup(Slots):
     @cache
     def _is_word_inner(cls, word: str) -> bool:
         return cls.lookup_word(word).found_words()
-
 
     @classmethod
     def is_dictionary_or_collection_word(cls, word: str) -> bool:

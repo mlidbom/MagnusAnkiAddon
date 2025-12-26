@@ -20,7 +20,7 @@ class VocabNoteFactory(Slots):
         dict_entry = DictLookup.lookup_word(question)
         if not dict_entry.found_words():
             return VocabNote.factory.create(question, "TODO", [])
-        readings = dict_entry.entries.select_many(lambda entry: entry.kana_forms()).to_list()  #list(set(ex_sequence.flatten([ent.kana_forms() for ent in dict_entry.entries])))
+        readings = dict_entry.entries.select_many(lambda entry: entry.kana_forms).distinct().to_list()
         created = VocabNote.factory.create(question, "TODO", readings)
         created.update_generated_data()
         created.generate_and_set_answer()
