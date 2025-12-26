@@ -34,21 +34,22 @@ class Request[T](Slots):
         self.future: Future[T] = future
 
 class JamdictThreadingWrapper(Slots):
+
     def __init__(self) -> None:
         self._queue: queue.Queue[Request[Any]] = queue.Queue()  # pyright: ignore[reportExplicitAny]
         self._thread: threading.Thread = threading.Thread(target=self._worker, daemon=True)
         self._running: bool = True
         self._thread.start()
-        self.jamdict: Lazy[Jamdict] = Lazy(self.create_jamdict_and_log_loading_time)
+#        self._calls = 0
+        self.jamdict: Lazy[Jamdict] = Lazy(self.create_jamdict)
 
     @staticmethod
-    def create_jamdict_and_log_loading_time() -> Jamdict:
-        jamdict = Jamdict(memory_mode=True) \
+    def create_jamdict() -> Jamdict:
+        return Jamdict(memory_mode=True) \
             if (app.config().load_jamdict_db_into_memory.get_value()
                 and not app.is_testing) \
             else Jamdict(reuse_ctx=True)
-        jamdict.lookup("俺", lookup_chars=False, lookup_ne=True)  # pyright: ignore[reportUnknownMemberType]
-        return jamdict
+        #jamdict.lookup("俺", lookup_chars=False, lookup_ne=True)  # pyright: ignore[reportUnknownMemberType]
 
     def _worker(self) -> None:
         while self._running:
@@ -58,6 +59,14 @@ class JamdictThreadingWrapper(Slots):
                 request.future.set_result(result)
             except Exception as e:
                 request.future.set_exception(e)
+
+    #         #memory after reparse all sentences with this hack: 1870 or something
+    #         self._calls += 1
+    #         if self._calls >= self._calls_before_reload:
+    #             mylog.info("Reloading Jamdict to try and preserve memory usage.")
+    #             self.jamdict = Lazy[Jamdict].from_value(self.create_jamdict())
+    #             self._calls = 0
+    # _calls_before_reload: int = 100
 
     def lookup(self, word: str, include_names: bool) -> LookupResult:
         future: Future[LookupResult] = Future()
@@ -130,7 +139,7 @@ class DictLookup(Slots):
         def kanji_form_matches() -> QList[DictEntry]:
             return (lookup
                     .where(lambda entry: any(entry.has_matching_kana_form(reading) for reading in readings)
-                                         and len(entry.kanji_forms_text()) > 0
+                                         and len(entry.kanji_forms) > 0
                                          and entry.has_matching_kanji_form(word))
                     .to_list())
             # return [ent for ent in lookup
@@ -204,11 +213,13 @@ class DictLookup(Slots):
 
     @classmethod
     def might_be_word(cls, word: str) -> bool:
+        #return False #memory after reparse all sentences with this hack: 1687
         # this method is a pure optimization to save on dictionary calls during real runtime. During tests populating all the words is a suboptimization, so just always return true when testing
         return app.is_testing or word in _all_word_forms()
 
     @classmethod
     def might_be_name(cls, word: str) -> bool:
+        #return False #memory after reparse all sentences with this hack: 1687
         # this method is a pure optimization to save on dictionary calls during real runtime. During tests populating all the words is a suboptimization, so just always return true when testing
         return app.is_testing or word in _all_name_forms()
 
