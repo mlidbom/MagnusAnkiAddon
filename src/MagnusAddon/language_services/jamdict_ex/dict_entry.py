@@ -18,7 +18,7 @@ class SenseEX(Slots):
     def __init__(self, source: Sense) -> None:
         self.gloss:QList[str] = query(source.gloss).select(lambda it: cast(str, it.text)).to_list()  # pyright: ignore [reportUnknownArgumentType, reportUnknownMemberType]
         self.pos: QList[str] = QList(cast(list[str], source.pos))  # pyright: ignore [reportUnknownMemberType]
-        self.is_kana_only = "word usually written using kana alone" in cast(list[str], source.misc) # pyright: ignore [reportUnknownMemberType]
+        self.is_kana_only: bool = "word usually written using kana alone" in cast(list[str], source.misc) # pyright: ignore [reportUnknownMemberType]
 
     def is_transitive_verb(self) -> bool: return any(pos_item == "transitive verb" for pos_item in self.pos)
     def is_intransitive_verb(self) -> bool: return any(pos_item == "intransitive verb" for pos_item in self.pos)
