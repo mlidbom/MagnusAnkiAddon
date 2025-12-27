@@ -33,6 +33,11 @@ test_special_vocab: list[VocabSpec] = [
         VocabSpec("なさる", tags=[vm.is_inflecting_word]),
         VocabSpec("なさい", tags=[vm.is_inflecting_word]),
         # /related
+
+        # compounds
+        VocabSpec("落ち着ける", compounds=["落ち着く", "える"]),
+        # /compounds
+
         # </non-standard-token-splitting-to-enable-more-pedagogical-breakdowns-for-conjugations>
 
         # <te-stem-required>

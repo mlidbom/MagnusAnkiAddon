@@ -40,6 +40,7 @@ def test_godan_potential_and_imperative(sentence: str, expected_output: list[str
         ("見つけよ", ["見つける", "よ"]),
         ("捕まえよ", ["捕まえる", "よ"]),
         ("離れよ", ["離れる", "よ"]),
+        ("落ち着け！", ["落ち着く", "え"]),
         ("食べよう", ["食べる", "う"]),  # not an imperative, just a suggestion
 ])
 def test_ichidan_imperative(sentence: str, expected_output: list[str]) -> None:
