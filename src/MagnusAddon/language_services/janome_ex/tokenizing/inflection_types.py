@@ -8,7 +8,8 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 all_dict: dict[str, InflectionType] = {}
 
 class InflectionType(Slots):
-    def __init__(self, name: str, description: str) -> None:
+    def __init__(self, name: str, description: str, base: str) -> None:
+        self.base: str = base
         self.name: str = name
         self.description: str = description
 
@@ -24,7 +25,9 @@ class InflectionType(Slots):
         return False
 
 def _add_form(name: str, description: str) -> InflectionType:
-    form = InflectionType(name, description)
+    parts = name.split("・")
+    base = parts[0] if len(parts) > 1 else ""
+    form = InflectionType(name, description, base)
     all_dict[name] = form
     return form
 
@@ -34,6 +37,7 @@ class InflectionTypes(Slots):
 
     # noinspection PyUnusedClass,PyUnusedName
     class Godan(Slots):
+        base: str = "五段"
         su: InflectionType = _add_form("五段・サ行", "Godan verb with 'su' ending")
         mu: InflectionType = _add_form("五段・マ行", "Godan verb with 'mu' ending")
         bu: InflectionType = _add_form("五段・バ行", "Godan verb with 'bu' ending")
@@ -53,6 +57,7 @@ class InflectionTypes(Slots):
 
     # noinspection PyUnusedClass,PyUnusedName
     class Ichidan(Slots):
+        base: str = "一段"
         regular: InflectionType = _add_form("一段", "Ichidan (one-step) verb - Regular -eru/-iru verb pattern")
         #turns out this is not what we need, rather it only occurs in rare cases like ありうる
         eru: InflectionType = _add_form("一段・得ル", "Ichidan verb 'eru' (to get/obtain) - Special case ichidan verb")
@@ -60,23 +65,27 @@ class InflectionTypes(Slots):
 
     # noinspection PyUnusedClass,PyUnusedName
     class Adjective(Slots):
+        base: str = "形容詞"
         i_ending: InflectionType = _add_form("形容詞・イ段", "I-adjective - Ends with 'i' and conjugates like 'takai' (high)")
         auo_ending: InflectionType = _add_form("形容詞・アウオ段", "Adjective with 'a', 'u', 'o' row - Special adjective conjugation pattern")
         ii: InflectionType = _add_form("形容詞・イイ", "Adjective 'ii' (good) - Special case adjective")
 
     # noinspection PyUnusedClass,PyUnusedName
     class Sahen(Slots):
+        base: str = "サ変"
         suru: InflectionType = _add_form("サ変・スル", "Suru verb - Irregular verb 'suru' (to do)")
         suru_compound: InflectionType = _add_form("サ変・−スル", "Suru compound verb - Noun + suru combination")
         zuru: InflectionType = _add_form("サ変・−ズル", "Zuru verb - Classical variation of suru")
 
     # noinspection PyUnusedClass,PyUnusedName
     class Kahen(Slots):
+        base: str = "カ変"
         kuru_kanji: InflectionType = _add_form("カ変・来ル", "Kuru verb - Irregular verb 'kuru' (to come) in kanji form")
         kuru_kana: InflectionType = _add_form("カ変・クル", "Kuru verb - Irregular verb 'kuru' (to come) in kana form")
 
     # noinspection PyUnusedClass,PyUnusedName
     class Bungo(Slots):
+        base: str = "文語"
         nari: InflectionType = _add_form("文語・ナリ", "Classical 'nari' - Classical Japanese copula")
         ru: InflectionType = _add_form("文語・ル", "Classical 'ru' ending - Classical verb ending")
         ki: InflectionType = _add_form("文語・キ", "Classical 'ki' ending - Classical past tense marker")
@@ -87,6 +96,7 @@ class InflectionTypes(Slots):
 
     # noinspection PyUnusedClass,PyUnusedName
     class Special(Slots):
+        base: str = "特殊"
         masu: InflectionType = _add_form("特殊・マス", "Special 'masu' form - Polite verb ending")
         ya: InflectionType = _add_form("特殊・ヤ", "Special 'ya' - Dialectal copula/question marker")
         ja: InflectionType = _add_form("特殊・ジャ", "Special 'ja' - Dialectal copula")
@@ -99,15 +109,18 @@ class InflectionTypes(Slots):
 
     # noinspection PyUnusedClass,PyUnusedName
     class Yodan(Slots):
+        base: str = "四段"
         ha_ending: InflectionType = _add_form("四段・ハ行", "Classical yodan verb with 'ha' ending - Classical conjugation pattern")
         ba_ending: InflectionType = _add_form("四段・バ行", "Classical yodan verb with 'ba' ending - Classical conjugation pattern")
 
     # noinspection PyUnusedClass,PyUnusedName
     class Ruhen(Slots):
+        base: str = "ラ変"
         ra_hen: InflectionType = _add_form("ラ変", "Classical ra-hen irregular verb - Classical irregular conjugation")
 
     # noinspection PyUnusedClass,PyUnusedName
     class Nidan(Slots):
+        base: str = "下二"
         lower_da: InflectionType = _add_form("下二・ダ行", "Lower bigrade with 'da' ending - Classical conjugation pattern")
         lower_ta: InflectionType = _add_form("下二・タ行", "Lower bigrade with 'ta' ending - Classical conjugation pattern")
 

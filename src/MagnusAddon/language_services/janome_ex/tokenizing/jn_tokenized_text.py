@@ -7,6 +7,7 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from language_services import conjugator
 from language_services.jamdict_ex.dict_lookup import DictLookup
 from language_services.janome_ex.tokenizing.inflection_forms import InflectionForms
+from language_services.janome_ex.tokenizing.inflection_types import InflectionTypes
 
 if TYPE_CHECKING:
     from janome.tokenizer import Token  # pyright: ignore[reportMissingTypeStubs]
@@ -76,6 +77,11 @@ class JNTokenWrapper(ProcessedToken, Slots):
             return [ProcessedToken(surface=godan_surface, base=self.base_form, is_inflectable_word=True, is_godan_imperative_stem=True),
                     ProcessedToken(surface=imperative_part, base="え", is_inflectable_word=True, is_godan_imperative_inflection=True)]
 
+        if (self.token.inflection_type.base == InflectionTypes.Godan.base
+                and self.token.inflected_form == InflectionForms.Hypothetical.general_hypothetical_kateikei
+                and self.token.is_end_of_statement()):
+            return self._split_godan_imperative(self.base_form)
+
         potential_godan_verb: str | None = self._try_find_vocab_based_potential_verb_compound() or self._try_find_dictionary_based_potential_godan_verb()
         if potential_godan_verb is not None:
             return self._split_potential_or_imperative_godan(potential_godan_verb)
@@ -93,10 +99,16 @@ class JNTokenWrapper(ProcessedToken, Slots):
 
         return [self]
 
+    def _split_godan_imperative(self, godan_base: str) -> list[ProcessedToken]:
+        godan_surface = self.surface[:-1]
+        imperative_part = self.surface[-1]
+        return [ProcessedToken(surface=godan_surface, base=godan_base, is_inflectable_word=True, is_godan_imperative_stem=True),
+                ProcessedToken(surface=imperative_part, base="え", is_inflectable_word=True, is_godan_imperative_inflection=True)]
+
     def _split_potential_or_imperative_godan(self, godan_base: str) -> list[ProcessedToken]:
         if not self.surface.endswith("る"):  # this is not the dictionary form of the potential part so this might be an imperative because janome groups imperatives and potential forms together  # noqa: SIM102
             if self.token.next is None or not self.token.next.is_valid_potential_form_inflection():  # this is an imperative
-                if self.token.inflected_form == InflectionForms.ImperativeMeireikei.yo: #handles cases like 放せよ which janome turns into a single token and believes is an ichidan よ imperative
+                if self.token.inflected_form == InflectionForms.ImperativeMeireikei.yo:  # handles cases like 放せよ which janome turns into a single token and believes is an ichidan よ imperative
                     godan_surface = self.surface[:-2]
                     imperative_part = self.surface[-2]
                     return [ProcessedToken(surface=godan_surface, base=godan_base, is_inflectable_word=True, is_godan_imperative_stem=True),
@@ -105,10 +117,7 @@ class JNTokenWrapper(ProcessedToken, Slots):
                 elif self.token.inflected_form == InflectionForms.ImperativeMeireikei.ro:  # noqa: RET505
                     raise Exception("I doubt this ever happens, but let's explode if it does so we can add support")
                 else:  # noqa: RET505
-                    godan_surface = self.surface[:-1]
-                    imperative_part = self.surface[-1]
-                    return [ProcessedToken(surface=godan_surface, base=godan_base, is_inflectable_word=True, is_godan_imperative_stem=True),
-                            ProcessedToken(surface=imperative_part, base="え", is_inflectable_word=True, is_godan_imperative_inflection=True)]
+                    return self._split_godan_imperative(godan_base)
 
         godan_surface = self.surface.removesuffix("る")[:-1]
         potential_surface = self.surface.removeprefix(godan_surface)
