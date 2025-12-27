@@ -77,11 +77,11 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
         self._run_display_analysis_pass_true_if_there_were_changes()
 
     def analysis_step_5_resolve_chains_of_compounds_yielding_to_the_next_compound_pass_true_if_there_were_changes(self) -> bool:
-        # todo this does not feel great. Currently we need the first version of display_words_starting_here to be created
+        # todo this does not feel great. Currently we need the first version of display_words to be created
         # in order for the DisplayRequirements class to inspect it and mark itself as not being displayed so that it can be removed here.
         # this is some truly strange invisible order dependency that is making me quite uncomfortable
         # it also relies on the check for is_yield_last_token_to_overlapping_compound_requirement_fulfilled to return different values at different times
-        # because that method has a circular dependency to display_words_starting_here which we set up here.
+        # because that method has a circular dependency to display_words which we set up here.
 
         the_next_compound_yields_to_the_one_after_that_so_this_one_no_longer_yields = self._run_display_analysis_pass_true_if_there_were_changes()
         if self.display_words and not any(self.is_shadowed_by):

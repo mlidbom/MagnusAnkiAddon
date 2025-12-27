@@ -18,8 +18,8 @@ class HasDisplayedOverlappingFollowingCompound(MatchStateTest, Slots):
 
     @override
     def _internal_match_is_in_state(self) -> bool:
-        # todo: this is a problematic reference to display_words_starting_here. That collection is initialized using this class,
-        # so this class will return different results depending on whether it is used after or before display_words_starting_here is first initialized. Ouch
+        # todo: this is a problematic reference to display_words. That collection is initialized using this class,
+        # so this class will return different results depending on whether it is used after or before display_words is first initialized. Ouch
 
         tail_location = self.end_location
         while tail_location is not self.word.start_location:
