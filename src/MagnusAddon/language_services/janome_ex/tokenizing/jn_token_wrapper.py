@@ -49,15 +49,11 @@ class JNTokenWrapper(ProcessedToken, Slots):
             return self._split_potential_or_imperative_godan(potential_godan_verb)
 
         # the ichidan imperative detection needs to come after the godan detection since janome might already have parsed something like 放せよ　as an ichidan imperative, when it is actually a godan imperative followed by よ
-        if self.token.inflected_form == InflectionForms.ImperativeMeireikei.yo:
+        if self.token.inflected_form == InflectionForms.ImperativeMeireikei.yo or self.token.inflected_form == InflectionForms.ImperativeMeireikei.ro:
             ichidan_surface = self.surface[:-1]
+            ichidan_imperative_part = self.surface[-1]
             return [ProcessedToken(surface=ichidan_surface, base=self.base_form, is_inflectable_word=True, is_ichidan_imperative_stem=True),
-                    ProcessedToken(surface="よ", base="よ", is_inflectable_word=True, is_ichidan_imperative_inflection=True)]
-
-        if self.token.inflected_form == InflectionForms.ImperativeMeireikei.ro:
-            ichidan_surface = self.surface[:-1]
-            return [ProcessedToken(surface=ichidan_surface, base=self.base_form, is_inflectable_word=True, is_ichidan_imperative_stem=True),
-                    ProcessedToken(surface="ろ", base="ろ", is_inflectable_word=True, is_ichidan_imperative_inflection=True)]
+                    ProcessedToken(surface=ichidan_imperative_part, base=ichidan_imperative_part, is_inflectable_word=True, is_ichidan_imperative_inflection=True)]
 
         return [self]
 
