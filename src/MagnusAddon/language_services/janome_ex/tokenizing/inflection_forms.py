@@ -76,8 +76,8 @@ class InflectionForms(Slots):
         ro: InflectionForm = _add_form("命令ｒｏ", 'Imperative/command/meireikei - ro [食べろ] - Command form ending in "ro"')
         yo: InflectionForm = _add_form("命令ｙｏ", 'Imperative/command/meireikei - yo [食べよ] - Command form ending in "yo"')
         i: InflectionForm = _add_form("命令ｉ", 'Imperative/command/meireikei - i-form - Command form ending in "i"')
-        godan_forms = QSet([e, i])
-        ichidan_forms = QSet([ro, yo])
+        godan_forms: QSet[InflectionForm] = QSet([e, i])
+        ichidan_forms: QSet[InflectionForm] = QSet([ro, yo])
 
     # noinspection PyUnusedClass,PyUnusedName
     class NounConnection(Slots):

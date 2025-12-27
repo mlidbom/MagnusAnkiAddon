@@ -10,6 +10,7 @@ from language_services.janome_ex.tokenizing.inflection_types import InflectionTy
 from language_services.janome_ex.tokenizing.processed_token import ProcessedToken
 
 if TYPE_CHECKING:
+    from language_services.jamdict_ex.dict_entry import DictEntry
     from language_services.janome_ex.tokenizing.jn_token import JNToken
     from note.collection.vocab_collection import VocabCollection
 
@@ -105,14 +106,12 @@ class JNTokenWrapper(ProcessedToken, Slots):
     def _try_find_dictionary_based_potential_or_imperative_godan(self) -> str | None:
         if (len(self.token.base_form) >= 2
                 and self.token.base_form[-2:] in conjugator.godan_potential_verb_ending_to_dictionary_form_endings
-                and self.token.is_ichidan_verb()
-                and not DictLookup.is_word(self.token.base_form)):  # the potential verbs are generally not in the dictionary this is how we know them
+                and self.token.is_ichidan_verb()):
             root_verb = conjugator.construct_root_verb_for_possibly_potential_godan_verb_dictionary_form(self.token.base_form)
-            if DictLookup.is_word(root_verb):
-                lookup = DictLookup.lookup_word(root_verb)
-                if lookup.found_words():
-                    is_godan = any(e for e in lookup.entries if "godan verb" in e.parts_of_speech())
-                    if not is_godan:
-                        return None
+            godan_verb: DictEntry | None = DictLookup.lookup_word(root_verb).try_get_godan_verb()
+            if godan_verb is not None:
+                if (godan_verb.is_intransitive_verb() and self.token.previous is not None and self.token.previous.surface == "を"  # intransitive verbs don't take を so this is most likely actually the ichidan verb
+                        and DictLookup.lookup_word(self.base_form).try_get_ichidan_verb() is not None):  # if one actally exists in the dictionary, if not this is most likely one of the godan verbs of motion that use を to refer to the space traversed
+                    return None
                 return root_verb
         return None

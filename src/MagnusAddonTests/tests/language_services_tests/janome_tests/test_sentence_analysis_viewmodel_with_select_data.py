@@ -17,6 +17,9 @@ def setup_collection_with_select_data() -> Iterator[None]:
         yield
 
 @pytest.mark.parametrize("sentence, expected_output", [
+        ("進めない", ["進める", "ない"]),
+        ("さっさと傷を清めてこい", ["さっさと:[MISSING]", "傷", "を", "清める", "てこ", "い"]),
+        ("清めの一波", ["清め", "の", "一波:[MISSING]"]),
 ])
 def test_new_stuff(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)

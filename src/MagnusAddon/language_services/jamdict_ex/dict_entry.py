@@ -48,10 +48,10 @@ class DictEntry(Slots):
     def valid_forms(self, force_allow_kana_only: bool = False) -> QSet[str]:
         return self.kana_forms.to_set() | self.kanji_forms.to_set() if self.is_kana_only() or force_allow_kana_only else self.kanji_forms.to_set()
 
-    def _is_transitive_verb(self) -> bool:
+    def is_transitive_verb(self) -> bool:
         return self.senses.all(lambda it: it.is_transitive_verb())
 
-    def _is_intransitive_verb(self) -> bool:
+    def is_intransitive_verb(self) -> bool:
         return self.senses.all(lambda it: it.is_intransitive_verb())
 
     def _is_verb(self) -> bool:
@@ -61,9 +61,9 @@ class DictEntry(Slots):
 
     def _answer_prefix(self) -> str:
         if self._is_verb():
-            if self._is_intransitive_verb():
+            if self.is_intransitive_verb():
                 return "to: "
-            if self._is_transitive_verb():
+            if self.is_transitive_verb():
                 return "to{} "
             if self._is_to_be_verb():
                 return "to: be: "
