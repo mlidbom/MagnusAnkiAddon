@@ -77,7 +77,7 @@ class JNTokenWrapper(ProcessedToken, Slots):
                 and self.token.is_end_of_statement()):
             return self._split_godan_imperative(self.base_form)
 
-        potential_godan_verb: str | None = self._try_find_vocab_based_potential_verb_compound() or self._try_find_dictionary_based_potential_godan_verb()
+        potential_godan_verb: str | None = self._try_find_vocab_based_potential_or_imperative_godan_compound() or self._try_find_dictionary_based_potential_or_imperative_godan()
         if potential_godan_verb is not None:
             return self._split_potential_or_imperative_godan(potential_godan_verb)
 
@@ -123,14 +123,14 @@ class JNTokenWrapper(ProcessedToken, Slots):
                 ProcessedToken(surface=potential_surface, base=potential_base, is_inflectable_word=True, is_godan_potential_inflection=True)]
 
     _potential_or_imperative_godan_last_compound_parts: set[str] = {"える", "え"}
-    def _try_find_vocab_based_potential_verb_compound(self) -> str | None:
+    def _try_find_vocab_based_potential_or_imperative_godan_compound(self) -> str | None:
         for vocab in self._vocabs.with_question(self.base_form):
             compound_parts = vocab.compound_parts.all()
             if len(compound_parts) == 2 and compound_parts[1] in self._potential_or_imperative_godan_last_compound_parts:
                 return compound_parts[0]
         return None
 
-    def _try_find_dictionary_based_potential_godan_verb(self) -> str | None:
+    def _try_find_dictionary_based_potential_or_imperative_godan(self) -> str | None:
         if (len(self.token.base_form) >= 2
                 and self.token.base_form[-2:] in conjugator.godan_potential_verb_ending_to_dictionary_form_endings
                 and self.token.is_ichidan_verb()
