@@ -12,4 +12,5 @@ class ITaskRunner:
     def close(self) -> None: raise NotImplementedError()
     def run_on_background_thread_with_spinning_progress_dialog[TResult](self, message: str, action: Callable[[], TResult]) -> TResult: raise NotImplementedError()  # pyright: ignore
     def run_gc(self) -> None: pass
+    # noinspection PyUnusedFunction
     def is_hidden(self) -> bool: return True

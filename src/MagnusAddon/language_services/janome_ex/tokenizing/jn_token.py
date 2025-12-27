@@ -66,29 +66,17 @@ class JNToken(Slots):
         return False
 
     def is_verb(self) -> bool:
-        return self.parts_of_speech in _verb_parts_of_speech
+        return self.parts_of_speech in POS.Verb.all_types
 
     _pseudo_verbs_for_inflection_purposes: set[str] = {"ます"}
     def is_inflectable_word(self) -> bool:
         return self.is_verb() or self.is_adjective() or self.base_form in self._pseudo_verbs_for_inflection_purposes
 
-    def is_verb_auxiliary(self) -> bool:
-        return self.parts_of_speech in _verb_auxiliary_parts_of_speech
-
     def is_adjective(self) -> bool:
-        return self.parts_of_speech in _adjective_parts_of_speech
-
-    def is_adjective_auxiliary(self) -> bool:
-        if self.parts_of_speech in _adjective_auxiliary_parts_of_speech:
-            return True
-
-        return self.inflection_type == InflectionTypes.Sahen.suru and self.inflected_form == InflectionForms.Continuative.renyoukei_masu_stem  # "連用形" # irregular conjugations of する like し # "サ変・スル"
+        return self.parts_of_speech in POS.Adjective.all_types
 
     def is_ichidan_verb(self) -> bool:
         return self.inflection_type == InflectionTypes.Ichidan.regular
-
-    def is_noun(self) -> bool:
-        return self.parts_of_speech in _noun_parts_of_speech
 
     def is_past_tense_stem(self) -> bool:
         return self.inflected_form == InflectionForms.Continuative.ta_connection  # "連用タ接続"
@@ -110,8 +98,6 @@ class JNToken(Slots):
     def is_t_form_marker(self) -> bool:
         return self.inflection_type == InflectionTypes.Special.ta  # "連用タ接続"
 
-    def is_noun_auxiliary(self) -> bool:
-        return self.parts_of_speech in _noun_auxiliary_parts_of_speech
 
     def is_end_of_statement(self) -> bool:
         return self.next is None or self.next.surface in analysis_constants.sentence_end_characters or self.next.parts_of_speech.is_non_word_character()
@@ -121,68 +107,3 @@ class JNToken(Slots):
         if self.parts_of_speech in self._valid_potential_form_inflections_pos:  # noqa: SIM103
             return True
         return False
-
-    def is_end_of_phrase_particle(self) -> bool:
-        if self.parts_of_speech in _end_of_phrase_particles:
-            return True
-
-        return self.parts_of_speech == POS.Particle.conjunctive and self.surface != "て"
-
-_end_of_phrase_particles = {
-    POS.Particle.CaseMarking.general,
-    POS.Particle.CaseMarking.compound,
-    POS.Particle.CaseMarking.quotation,
-    POS.Particle.adverbial  # まで : this feels strange, but works so far.
-}
-
-_noun_parts_of_speech = {
-    POS.Noun.general,  # 自分
-    POS.Noun.Pronoun.general,  # あいつ
-    POS.Noun.suru_verb,  # 話
-    POS.Noun.adverbial,  # 今
-    POS.Noun.na_adjective_stem  # 余慶
-}
-
-_adjective_auxiliary_parts_of_speech = {
-    POS.bound_auxiliary,  # た, ない past, negation
-    POS.Particle.conjunctive,  # て,と,し
-    # POS.Adverb.general, # もう
-}
-
-_adjective_parts_of_speech = {
-    POS.Adjective.independent,
-    POS.Adjective.dependent
-}
-
-_noun_auxiliary_parts_of_speech = {
-                                      POS.Noun.general,  # 自分
-
-                                      POS.Particle.CaseMarking.general,  # が
-                                      POS.Particle.adnominalization,  # の
-                                      POS.Particle.binding,  # は
-                                      POS.Noun.Dependent.adverbial,  # なか
-                                      POS.Noun.Dependent.general,  # こと
-                                      POS.Particle.adverbial,  # まで
-                                      POS.Particle.adverbialization  # に
-                                  } | _adjective_parts_of_speech | _adjective_auxiliary_parts_of_speech
-
-_verb_parts_of_speech = {
-    POS.Verb.independent,
-    POS.Verb.dependent,
-    POS.Verb.suffix
-}
-
-_verb_auxiliary_parts_of_speech = {
-                                      POS.bound_auxiliary,  # た, ない past, negation
-                                      POS.Particle.binding,  # は, も
-                                      POS.Particle.sentence_ending,  # な
-                                      POS.Verb.dependent,  # いる progressive/perfect, いく
-                                      POS.Verb.suffix,  # れる passive
-                                      POS.Particle.conjunctive,  # て,と,し
-                                      POS.Particle.coordinating_conjunction,  # たり
-                                      POS.Particle.adverbial,  # まで
-                                      POS.Adjective.dependent,  # よかった
-                                      POS.Adjective.independent,  # ない
-                                      POS.Noun.Dependent.general,  # こと
-                                      POS.Noun.general
-                                  } | _verb_parts_of_speech

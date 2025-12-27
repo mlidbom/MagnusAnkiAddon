@@ -5,6 +5,7 @@ from typing import override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from sysutils import kana_utils
+from typed_linq_collections.collections.q_set import QSet
 
 
 class JNPartsOfSpeech(Slots):
@@ -23,10 +24,10 @@ class JNPartsOfSpeech(Slots):
     @override
     def __repr__(self) -> str:
         return "".join([
-            "1:" + kana_utils.pad_to_length(self.level1.japanese, 5),
-            "2:" + kana_utils.pad_to_length(self.level2.japanese.replace("*", ""), 6),
-            "3:" + kana_utils.pad_to_length(self.level3.japanese.replace("*", ""), 6),
-            "4:" + kana_utils.pad_to_length(self.level4.japanese.replace("*", ""), 6)])
+                "1:" + kana_utils.pad_to_length(self.level1.japanese, 5),
+                "2:" + kana_utils.pad_to_length(self.level2.japanese.replace("*", ""), 6),
+                "3:" + kana_utils.pad_to_length(self.level3.japanese.replace("*", ""), 6),
+                "4:" + kana_utils.pad_to_length(self.level4.japanese.replace("*", ""), 6)])
 
 class PartOfSpeechDescription(Slots):
     def __init__(self, japanese: str, english: str, explanation: str) -> None:
@@ -38,82 +39,82 @@ class PartOfSpeechDescription(Slots):
     def __repr__(self) -> str: return self.english
 
 _level_1 = [
-    PartOfSpeechDescription("名詞", "noun", "Names things or ideas"),
-    PartOfSpeechDescription("形容詞", "i-adjective", "Describes nouns"),
-    PartOfSpeechDescription("連体詞", "pre-noun adjectival / adnominal-adjective", "Modifies nouns directly"),
-    PartOfSpeechDescription("接続詞的", "conjunctive", "words or expressions that function in a manner similar to conjunctions"),
-    PartOfSpeechDescription("動詞", "verb", "Indicates action"),
-    PartOfSpeechDescription("副詞", "adverb", "Modifies verbs/adjectives"),
-    PartOfSpeechDescription("助動詞", "bound-auxiliary", "Modifies verb tense/mood"),
-    PartOfSpeechDescription("助詞", "particle", "Functional word indicating relation such as marking direct object, subject etc"),
-    PartOfSpeechDescription("接続詞", "conjunction", "Connects words/clauses"),
-    PartOfSpeechDescription("感動詞", "interjection", "Expresses emotion"),
-    PartOfSpeechDescription("接頭詞", "prefix", "Added to beginning of words"),
-    PartOfSpeechDescription("フィラー", "filler", "Sound/word filling a pause"),
-    PartOfSpeechDescription("記号", "symbol", "Punctuation, special symbols"),
-    PartOfSpeechDescription("その他", "others", "Miscellaneous, doesn't fit other categories")
+        PartOfSpeechDescription("名詞", "noun", "Names things or ideas"),
+        PartOfSpeechDescription("形容詞", "i-adjective", "Describes nouns"),
+        PartOfSpeechDescription("連体詞", "pre-noun adjectival / adnominal-adjective", "Modifies nouns directly"),
+        PartOfSpeechDescription("接続詞的", "conjunctive", "words or expressions that function in a manner similar to conjunctions"),
+        PartOfSpeechDescription("動詞", "verb", "Indicates action"),
+        PartOfSpeechDescription("副詞", "adverb", "Modifies verbs/adjectives"),
+        PartOfSpeechDescription("助動詞", "bound-auxiliary", "Modifies verb tense/mood"),
+        PartOfSpeechDescription("助詞", "particle", "Functional word indicating relation such as marking direct object, subject etc"),
+        PartOfSpeechDescription("接続詞", "conjunction", "Connects words/clauses"),
+        PartOfSpeechDescription("感動詞", "interjection", "Expresses emotion"),
+        PartOfSpeechDescription("接頭詞", "prefix", "Added to beginning of words"),
+        PartOfSpeechDescription("フィラー", "filler", "Sound/word filling a pause"),
+        PartOfSpeechDescription("記号", "symbol", "Punctuation, special symbols"),
+        PartOfSpeechDescription("その他", "others", "Miscellaneous, doesn't fit other categories")
 ]
 
 _level_2_3_4 = [
-    PartOfSpeechDescription("*", "*", "Wildcard or general category"),
-    PartOfSpeechDescription("一般", "general", "Generic, non-specific")
+        PartOfSpeechDescription("*", "*", "Wildcard or general category"),
+        PartOfSpeechDescription("一般", "general", "Generic, non-specific")
 ]
 
 _level_2_3 = [
-    PartOfSpeechDescription("サ変接続", "suru-verb", "Nouns convertible into verbs with 'する'"),
-    PartOfSpeechDescription("特殊", "special", "Irregular forms"),
-    PartOfSpeechDescription("副詞可能", "adverbial", "Nouns/verbs that can function as adverbs"),
-    PartOfSpeechDescription("形容動詞語幹", "na-adjective stem", "Base form of na-adjectives")
+        PartOfSpeechDescription("サ変接続", "suru-verb", "Nouns convertible into verbs with 'する'"),
+        PartOfSpeechDescription("特殊", "special", "Irregular forms"),
+        PartOfSpeechDescription("副詞可能", "adverbial", "Nouns/verbs that can function as adverbs"),
+        PartOfSpeechDescription("形容動詞語幹", "na-adjective stem", "Base form of na-adjectives")
 ]
 
 _level_2 = _level_2_3_4 + _level_2_3 + [
-    PartOfSpeechDescription("自立", "independent", "Not dependent on other words"),
-    PartOfSpeechDescription("動詞接続", "verb-connective", "indicates a form or a word that is used to connect with or modify a verb"),
-    PartOfSpeechDescription("代名詞", "pronoun", "Replaces a noun, e.g., he, she, it"),
-    PartOfSpeechDescription("係助詞", "binding", "Connects words/clauses, e.g., は, も"),
-    PartOfSpeechDescription("読点", "comma", "Punctuation to separate elements"),
-    PartOfSpeechDescription("連体化", "adnominalization", "Turns word into modifier for nouns"),
-    PartOfSpeechDescription("副助詞", "adverbial", "Adverbial particle, modifies verbs"),
-    PartOfSpeechDescription("副助詞／並立助詞／終助詞", "adverbial/coordinating-conjunction/ending", "Various particle types"),
-    PartOfSpeechDescription("形容詞接続", "adjective-connection", "Connects adjectives"),
-    PartOfSpeechDescription("副詞化", "adverbialization", "Turns word into adverb"),
-    PartOfSpeechDescription("間投", "interjection", "Expresses emotion or marks a pause"),
-    PartOfSpeechDescription("非自立", "dependent", "Depends on another word to convey meaning"),
-    PartOfSpeechDescription("括弧閉", "closing-bracket", "Closing bracket punctuation"),
-    PartOfSpeechDescription("括弧開", "opening-bracket", "Opening bracket punctuation"),
-    PartOfSpeechDescription("接尾", "suffix", "Appended to end of words"),
-    PartOfSpeechDescription("接続助詞", "conjunctive", "Connects clauses or sentences"),
-    PartOfSpeechDescription("助詞類接続", "particle-connection", "Connects particles"),
-    PartOfSpeechDescription("数", "numeric", "Numerical expressions"),
-    PartOfSpeechDescription("動詞非自立的", "auxiliary-verb", "Auxiliary verb form"),
-    PartOfSpeechDescription("数接続", "numeric-connection", "Numeric connectors"),
-    PartOfSpeechDescription("句点", "period", "Ending punctuation mark"),
-    PartOfSpeechDescription("格助詞", "case-particle", "Indicates grammatical case"),
-    PartOfSpeechDescription("アルファベット", "alphabet", "Alphabetical characters"),
-    PartOfSpeechDescription("ナイ形容詞語幹", "negative-adjective-stem", "Negative adjective stem form"),
-    PartOfSpeechDescription("空白", "space", "Whitespace or blank space"),
-    PartOfSpeechDescription("名詞接続", "noun-connection", "Noun connectors"),
-    PartOfSpeechDescription("終助詞", "sentence-ending", "Ends the sentence"),
-    PartOfSpeechDescription("固有名詞", "proper-noun", "Names of specific entities, like Tokyo"),
-    PartOfSpeechDescription("並立助詞", "coordinating-conjunction", "Connects equal grammatical items, e.g., and, or"),
-    PartOfSpeechDescription("引用文字列", "quoted-character-string", "quoted-character-string")
+        PartOfSpeechDescription("自立", "independent", "Not dependent on other words"),
+        PartOfSpeechDescription("動詞接続", "verb-connective", "indicates a form or a word that is used to connect with or modify a verb"),
+        PartOfSpeechDescription("代名詞", "pronoun", "Replaces a noun, e.g., he, she, it"),
+        PartOfSpeechDescription("係助詞", "binding", "Connects words/clauses, e.g., は, も"),
+        PartOfSpeechDescription("読点", "comma", "Punctuation to separate elements"),
+        PartOfSpeechDescription("連体化", "adnominalization", "Turns word into modifier for nouns"),
+        PartOfSpeechDescription("副助詞", "adverbial", "Adverbial particle, modifies verbs"),
+        PartOfSpeechDescription("副助詞／並立助詞／終助詞", "adverbial/coordinating-conjunction/ending", "Various particle types"),
+        PartOfSpeechDescription("形容詞接続", "adjective-connection", "Connects adjectives"),
+        PartOfSpeechDescription("副詞化", "adverbialization", "Turns word into adverb"),
+        PartOfSpeechDescription("間投", "interjection", "Expresses emotion or marks a pause"),
+        PartOfSpeechDescription("非自立", "dependent", "Depends on another word to convey meaning"),
+        PartOfSpeechDescription("括弧閉", "closing-bracket", "Closing bracket punctuation"),
+        PartOfSpeechDescription("括弧開", "opening-bracket", "Opening bracket punctuation"),
+        PartOfSpeechDescription("接尾", "suffix", "Appended to end of words"),
+        PartOfSpeechDescription("接続助詞", "conjunctive", "Connects clauses or sentences"),
+        PartOfSpeechDescription("助詞類接続", "particle-connection", "Connects particles"),
+        PartOfSpeechDescription("数", "numeric", "Numerical expressions"),
+        PartOfSpeechDescription("動詞非自立的", "auxiliary-verb", "Auxiliary verb form"),
+        PartOfSpeechDescription("数接続", "numeric-connection", "Numeric connectors"),
+        PartOfSpeechDescription("句点", "period", "Ending punctuation mark"),
+        PartOfSpeechDescription("格助詞", "case-particle", "Indicates grammatical case"),
+        PartOfSpeechDescription("アルファベット", "alphabet", "Alphabetical characters"),
+        PartOfSpeechDescription("ナイ形容詞語幹", "negative-adjective-stem", "Negative adjective stem form"),
+        PartOfSpeechDescription("空白", "space", "Whitespace or blank space"),
+        PartOfSpeechDescription("名詞接続", "noun-connection", "Noun connectors"),
+        PartOfSpeechDescription("終助詞", "sentence-ending", "Ends the sentence"),
+        PartOfSpeechDescription("固有名詞", "proper-noun", "Names of specific entities, like Tokyo"),
+        PartOfSpeechDescription("並立助詞", "coordinating-conjunction", "Connects equal grammatical items, e.g., and, or"),
+        PartOfSpeechDescription("引用文字列", "quoted-character-string", "quoted-character-string")
 ]
 
 _level_3 = _level_2_3_4 + _level_2_3 + [
-    PartOfSpeechDescription("助数詞", "counter", "Counting words, e.g., つ, 本"),
-    PartOfSpeechDescription("連語", "compound", "Compound words, two or more words combined"),
-    PartOfSpeechDescription("人名", "person-name", "Names of people"),
-    PartOfSpeechDescription("地域", "region", "Names of regions, cities, countries"),
-    PartOfSpeechDescription("引用", "quotation", "Quotation or citation"),
-    PartOfSpeechDescription("組織", "organization", "Names of organizations, companies"),
-    PartOfSpeechDescription("助動詞語幹", "auxiliary-verb-stem", "Base form of auxiliary verbs"),
-    PartOfSpeechDescription("縮約", "contraction", "Contracted forms, e.g., can't, don't")
+        PartOfSpeechDescription("助数詞", "counter", "Counting words, e.g., つ, 本"),
+        PartOfSpeechDescription("連語", "compound", "Compound words, two or more words combined"),
+        PartOfSpeechDescription("人名", "person-name", "Names of people"),
+        PartOfSpeechDescription("地域", "region", "Names of regions, cities, countries"),
+        PartOfSpeechDescription("引用", "quotation", "Quotation or citation"),
+        PartOfSpeechDescription("組織", "organization", "Names of organizations, companies"),
+        PartOfSpeechDescription("助動詞語幹", "auxiliary-verb-stem", "Base form of auxiliary verbs"),
+        PartOfSpeechDescription("縮約", "contraction", "Contracted forms, e.g., can't, don't")
 ]
 
 _level_4 = _level_2_3_4 + [
-    PartOfSpeechDescription("名", "first-name", "Given names"),
-    PartOfSpeechDescription("姓", "surname", "Family names or surnames"),
-    PartOfSpeechDescription("国", "country", "Names of countries")
+        PartOfSpeechDescription("名", "first-name", "Given names"),
+        PartOfSpeechDescription("姓", "surname", "Family names or surnames"),
+        PartOfSpeechDescription("国", "country", "Names of countries")
 ]
 _all_parts_of_speech = _level_1 + _level_2 + _level_3 + _level_4
 
@@ -154,6 +155,7 @@ class POS(Slots):
         sentence_ending: JNPartsOfSpeech = _add_full_part_of_speech("助詞", "終助詞")  # な
         adnominalization: JNPartsOfSpeech = _add_full_part_of_speech("助詞", "連体化")  # の
 
+        # noinspection PyUnusedClass, PyUnusedName
         class CaseMarking(Slots):
             general: JNPartsOfSpeech = _add_full_part_of_speech("助詞", "格助詞", "一般")  # が, に
             quotation: JNPartsOfSpeech = _add_full_part_of_speech("助詞", "格助詞", "引用")
@@ -163,6 +165,8 @@ class POS(Slots):
         suffix: JNPartsOfSpeech = _add_full_part_of_speech("動詞", "接尾")  # れる passive
         independent: JNPartsOfSpeech = _add_full_part_of_speech("動詞", "自立")  # 疲れる, する, 走る
         dependent: JNPartsOfSpeech = _add_full_part_of_speech("動詞", "非自立")  # いる progressive/perfect, いく
+
+        all_types: QSet[JNPartsOfSpeech] = QSet((independent, dependent, suffix))
 
     # noinspection PyUnusedClass, PyUnusedName
     class Noun(Slots):
@@ -225,6 +229,7 @@ class POS(Slots):
         suffix: JNPartsOfSpeech = _add_full_part_of_speech("形容詞", "接尾")
         independent: JNPartsOfSpeech = _add_full_part_of_speech("形容詞", "自立")
         dependent: JNPartsOfSpeech = _add_full_part_of_speech("形容詞", "非自立")  # よかった
+        all_types: QSet[JNPartsOfSpeech] = QSet((independent, dependent, suffix))
 
     # noinspection PyUnusedClass, PyUnusedName
     class Prefix(Slots):

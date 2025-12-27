@@ -4,9 +4,7 @@ import sys
 
 from ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from sysutils import ex_gc
 from sysutils.ex_str import newline
-from sysutils.timeutil import StopWatch
 
 current_instance_count: dict[str, int] = {}
 
@@ -51,10 +49,8 @@ class ObjectInstanceTracker(Slots):
         self.type_name: str = self._get_fully_qualified_name(cls_type)
         current_instance_count[self.type_name] = current_instance_count.get(self.type_name, 0) + 1
 
-    def run_gc_if_multiple_instances_and_assert_single_instance_after_gc(self) -> None:
-        with StopWatch.log_execution_time():
-            if ex_gc.collect_on_on_ui_thread_if_collection_during_batches_enabled(display=False):  # noqa: SIM102
-                if not current_instance_count[self.type_name] == 1: raise Exception(f"Expected single instance of {self.type_name}, found {current_instance_count[self.type_name]}")
+    def assert_single_instance(self) -> None:
+        if not current_instance_count[self.type_name] == 1: raise Exception(f"Expected single instance of {self.type_name}, found {current_instance_count[self.type_name]}")
 
     def __del__(self) -> None:
         current_instance_count[self.type_name] -= 1

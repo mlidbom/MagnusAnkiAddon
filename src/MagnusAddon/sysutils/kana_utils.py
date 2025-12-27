@@ -44,13 +44,10 @@ def character_is_kanji(ch: str) -> bool:
     return (0x4E00 <= ordinal <= 0x9FAF or
             0x3400 <= ordinal <= 0x4DBF)
 
-def contains_kanji(string: str) -> bool:
-    return any(character_is_kanji(c) for c in string)
-
 # def is_kanji(char) -> bool:
 #     ordinal = ord(char)
-#     return (0x4e00 <= ordinal <= 0x9faf or
-#             0x3400 <= ordinal <= 0x4dbf or
+#     return (0x3400 <= ordinal <= 0x4dbf or
+#             0x4e00 <= ordinal <= 0x9faf or
 #             0x20000 <= ordinal <= 0x2a6df or
 #             0x2a700 <= ordinal <= 0x2b73f or
 #             0x2b740 <= ordinal <= 0x2b81f or

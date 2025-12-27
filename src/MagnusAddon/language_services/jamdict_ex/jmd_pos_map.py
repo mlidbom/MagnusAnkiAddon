@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typed_linq_collections.collections.q_dict import QDict
 
-map:QDict[str, list[str]] = QDict({
+jamdict_pos_to_our_pos_map:QDict[str, list[str]] = QDict({
         "transitive verb": ["transitive"],
         "intransitive verb": ["intransitive"],
         "noun or participle which takes the aux. verb suru": ["suru verb"],
@@ -62,4 +62,4 @@ map:QDict[str, list[str]] = QDict({
     })
 
 def try_get_our_pos_name(pos: str) -> list[str]:
-    return map[pos] if pos in map else ["unmapped-pos-" + pos]
+    return jamdict_pos_to_our_pos_map[pos] if pos in jamdict_pos_to_our_pos_map else ["unmapped-pos-" + pos]

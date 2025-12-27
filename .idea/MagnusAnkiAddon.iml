@@ -28,6 +28,7 @@
       <excludeFolder url="file://$MODULE_DIR$/src/web/obj" />
       <excludeFolder url="file://$MODULE_DIR$/src/MagnusAddon/language_services/english_dictionary/data" />
       <excludeFolder url="file://$MODULE_DIR$/src/MagnusAddon/manually_copied_in_libraries" />
+      <excludeFolder url="file://$MODULE_DIR$/typings" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.13 (MagnusAnkiAddon)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />

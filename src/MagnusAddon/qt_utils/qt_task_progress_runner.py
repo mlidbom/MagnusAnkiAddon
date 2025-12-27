@@ -32,6 +32,7 @@ class QtTaskProgressRunner(ITaskRunner, Slots):
         dialog.show()
         QApplication.processEvents()
 
+    # noinspection PyUnusedFunction
     @override
     def is_hidden(self) -> bool: return False
 
