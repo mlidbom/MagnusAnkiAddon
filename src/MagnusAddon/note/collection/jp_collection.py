@@ -76,7 +76,6 @@ class JPCollection(WeakRefable, Slots):
         with StopWatch.log_warning_if_slower_than(5, "Full collection setup"):  # noqa: SIM117
             with TaskRunner.current(f"Loading {Mine.app_name}", "reading notes from anki",
                                     force_hide=not app.config().load_studio_in_foreground.get_value(),
-                                    inhibit_gc=JPCollection._is_inital_load,
                                     allow_cancel=False) as task_runner:
                 if task_runner.is_hidden():
                     app.get_ui_utils().tool_tip(f"{Mine.app_name} loading", 60000)
@@ -96,8 +95,6 @@ class JPCollection(WeakRefable, Slots):
 
                 if app.config().pre_cache_card_studying_status.get_value():
                     noteutils.initialize_studying_cache(self.anki_collection, task_runner)
-
-                # task_runner.run_on_background_thread_with_spinning_progress_dialog("Flush auto string interner cache", string_auto_interner.flush_store_and_disable)
 
             ex_trace_malloc_instance.log_memory_delta("Done loading add-on")
             ex_trace_malloc_instance.stop()
