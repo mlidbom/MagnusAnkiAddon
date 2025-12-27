@@ -20,7 +20,7 @@ exclamations: QSet[str] = QSet(["!"]) #todo: isn't there a full size exclamation
 all_punctuation_characters: QSet[str] = all_quote_characters | question_marks | periods | commas | exclamations | tilde | QSet((":", ";", "/", "|"))
 
 
-sentence_start_characters: QSet[str] = real_quote_characters | space_characters
+sentence_start_characters: QSet[str] = real_quote_characters | space_characters | question_marks | periods
 sentence_end_characters: QSet[str] = all_quote_characters | space_characters | question_marks | periods
 noise_characters = all_punctuation_characters | space_characters | pseudo_quote_characters | sentence_end_characters
 
