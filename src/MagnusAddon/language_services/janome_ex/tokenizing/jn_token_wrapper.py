@@ -13,7 +13,6 @@ if TYPE_CHECKING:
     from language_services.janome_ex.tokenizing.jn_token import JNToken
     from note.collection.vocab_collection import VocabCollection
 
-
 class JNTokenWrapper(ProcessedToken, Slots):
     def __init__(self, token: JNToken, vocabs: VocabCollection) -> None:
         super().__init__(token.surface, token.base_form, token.parts_of_speech.is_non_word_character())
@@ -32,30 +31,26 @@ class JNTokenWrapper(ProcessedToken, Slots):
     @override
     def is_special_nai_negative(self) -> bool: return self.token.is_special_nai_negative()
 
-    def pre_process(self) -> list[ProcessedToken]:
-        if self.token.inflected_form == InflectionForms.ImperativeMeireikei.i:
-            return self._split_godan_imperative(self.base_form)
-
-        if self.token.inflected_form == InflectionForms.ImperativeMeireikei.e:
-            return self._split_godan_imperative(self.base_form)
-
-        if (self.token.inflection_type.base == InflectionTypes.Godan.base
-                and self.token.inflected_form == InflectionForms.Hypothetical.general_hypothetical_kateikei
-                and self.token.is_end_of_statement()):
+    def pre_process(self) -> list[ProcessedToken]: #note: The order here matters, it's not random. any change will break things even should the tests be incomplete and not show it.
+        if self._is_godan_imperative():
             return self._split_godan_imperative(self.base_form)
 
         potential_godan_verb: str | None = self._try_find_vocab_based_potential_or_imperative_godan_compound() or self._try_find_dictionary_based_potential_or_imperative_godan()
         if potential_godan_verb is not None:
             return self._split_potential_or_imperative_godan(potential_godan_verb)
 
-        # the ichidan imperative detection needs to come after the godan detection since janome might already have parsed something like 放せよ　as an ichidan imperative, when it is actually a godan imperative followed by よ
-        if self.token.inflected_form == InflectionForms.ImperativeMeireikei.yo or self.token.inflected_form == InflectionForms.ImperativeMeireikei.ro:
-            ichidan_surface = self.surface[:-1]
-            ichidan_imperative_part = self.surface[-1]
-            return [ProcessedToken(surface=ichidan_surface, base=self.base_form, is_inflectable_word=True, is_ichidan_imperative_stem=True),
-                    ProcessedToken(surface=ichidan_imperative_part, base=ichidan_imperative_part, is_inflectable_word=True, is_ichidan_imperative_inflection=True)]
+        if self._is_ichidan_imperative():
+            return self._split_ichidan_imperative()
 
         return [self]
+
+    def _is_ichidan_imperative(self) -> bool: return self.token.inflected_form in InflectionForms.ImperativeMeireikei.ichidan_forms
+
+    def _split_ichidan_imperative(self) -> list[ProcessedToken]:
+        ichidan_surface = self.surface[:-1]
+        ichidan_imperative_part = self.surface[-1]
+        return [ProcessedToken(surface=ichidan_surface, base=self.base_form, is_inflectable_word=True, is_ichidan_imperative_stem=True),
+                ProcessedToken(surface=ichidan_imperative_part, base=ichidan_imperative_part, is_inflectable_word=True, is_ichidan_imperative_inflection=True)]
 
     def _split_godan_imperative(self, godan_base: str) -> list[ProcessedToken]:
         godan_surface = self.surface[:-1]
@@ -63,6 +58,17 @@ class JNTokenWrapper(ProcessedToken, Slots):
         imperative_base = "い" if imperative_part == "い" else "え"
         return [ProcessedToken(surface=godan_surface, base=godan_base, is_inflectable_word=True, is_godan_imperative_stem=True),
                 ProcessedToken(surface=imperative_part, base=imperative_base, is_inflectable_word=True, is_godan_imperative_inflection=True)]
+
+    def _is_godan_imperative(self) -> bool:
+        if self.token.inflected_form in InflectionForms.ImperativeMeireikei.godan_forms:
+            return True
+
+        if (self.token.inflection_type.base == InflectionTypes.Godan.base  # noqa: SIM103
+                and self.token.inflected_form == InflectionForms.Hypothetical.general_hypothetical_kateikei
+                and self.token.is_end_of_statement()):
+            return True
+
+        return False
 
     def _split_potential_or_imperative_godan(self, godan_base: str) -> list[ProcessedToken]:
         if not self.surface.endswith("る"):  # this is not the dictionary form of the potential part so this might be an imperative because janome groups imperatives and potential forms together  # noqa: SIM102
