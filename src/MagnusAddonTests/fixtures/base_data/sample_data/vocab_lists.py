@@ -38,6 +38,10 @@ test_special_vocab: list[VocabSpec] = [
         VocabSpec("落ち着ける", compounds=["落ち着く", "える"]),
         # /compounds
 
+        # untangle offending actual dictionary entry
+        VocabSpec("楽しめる", compounds=["楽しむ", "える"], tags=[vm.is_poison_word]), #janome detects it as an ichidan so this sets it straight without showing the word, since it's a poison word...
+        # /untangle offending actual dictionary entry
+
         # </non-standard-token-splitting-to-enable-more-pedagogical-breakdowns-for-conjugations>
 
         # <te-stem-required>

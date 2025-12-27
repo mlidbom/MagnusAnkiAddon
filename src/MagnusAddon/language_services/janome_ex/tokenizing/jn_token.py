@@ -116,7 +116,7 @@ class JNToken(Slots):
     def is_end_of_statement(self) -> bool:
         return self.next is None or self.next.surface in analysis_constants.sentence_end_characters or self.next.parts_of_speech.is_non_word_character()
 
-    _valid_potential_form_inflections_pos: set[JNPartsOfSpeech] = {POS.bound_auxiliary, POS.Noun.Suffix.auxiliary_verb_stem, POS.Particle.conjunctive, POS.Particle.coordinating_conjunction}
+    _valid_potential_form_inflections_pos: set[JNPartsOfSpeech] = {POS.bound_auxiliary, POS.Noun.Suffix.auxiliary_verb_stem, POS.Verb.dependent, POS.Particle.conjunctive, POS.Particle.coordinating_conjunction}
     def is_valid_potential_form_inflection(self) -> bool:
         if self.parts_of_speech in self._valid_potential_form_inflections_pos:  # noqa: SIM103
             return True
