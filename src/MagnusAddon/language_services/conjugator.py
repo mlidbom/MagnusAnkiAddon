@@ -39,7 +39,7 @@ _1_character_mappings: dict[str, list[str]] = {"う": ["い", "わ", "え", "っ
                                                "ぶ": ["び", "ば", "べ", "ん"],
                                                "む": ["み", "ま", "め", "ん"],
                                                "る": _godan_ru_endings,
-                                               "い": ["く", "け", "か"]}
+                                               "い": ["く", "け", "か"]} #I adjective stems
 
 _2_character_mappings: dict[str, list[str]] = {"する": ["し", "さ", "すれ", "し", "せ"],
                                                "くる": ["き", "こ", "くれ", "き"],
