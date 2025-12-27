@@ -30,6 +30,7 @@ def setup_note_menu(note_menu: QMenu, vocab: VocabNote, selection: str, clipboar
             add_lookup_action(sentences_lookup_menu, shortcutfinger.home2("Sentences"), query_builder.notes_lookup(vocab.sentences.all()))
             add_lookup_action(sentences_lookup_menu, shortcutfinger.home3("Sentences with primary form"), query_builder.notes_lookup(vocab.sentences.with_primary_form()))
             add_lookup_action(sentences_lookup_menu, shortcutfinger.home4("Sentences with this word highlighted"), query_builder.notes_lookup(vocab.sentences.user_highlighted()))
+            add_lookup_action(sentences_lookup_menu, shortcutfinger.home5("Potentially matching sentences"), query_builder.potentially_matching_sentences_for_vocab(vocab))
 
         def build_vocab_lookup_menu(vocab_lookup_menu: QMenu) -> None:
             def build_readings_menu(readings_vocab_lookup_menu: QMenu) -> None:
