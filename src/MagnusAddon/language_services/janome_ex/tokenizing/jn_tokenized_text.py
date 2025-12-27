@@ -67,15 +67,10 @@ class JNTokenWrapper(ProcessedToken, Slots):
 
     def pre_process(self) -> list[ProcessedToken]:
         if self.token.inflected_form == InflectionForms.ImperativeMeireikei.i:
-            godan_surface = self.surface[:-1]
-            return [ProcessedToken(surface=godan_surface, base=self.base_form, is_inflectable_word=True, is_godan_imperative_stem=True),
-                    ProcessedToken(surface="い", base="い", is_inflectable_word=True, is_godan_imperative_inflection=True)]
+            return self._split_godan_imperative(self.base_form)
 
         if self.token.inflected_form == InflectionForms.ImperativeMeireikei.e:
-            godan_surface = self.surface[:-1]
-            imperative_part = self.surface[-1]
-            return [ProcessedToken(surface=godan_surface, base=self.base_form, is_inflectable_word=True, is_godan_imperative_stem=True),
-                    ProcessedToken(surface=imperative_part, base="え", is_inflectable_word=True, is_godan_imperative_inflection=True)]
+            return self._split_godan_imperative(self.base_form)
 
         if (self.token.inflection_type.base == InflectionTypes.Godan.base
                 and self.token.inflected_form == InflectionForms.Hypothetical.general_hypothetical_kateikei
@@ -102,8 +97,9 @@ class JNTokenWrapper(ProcessedToken, Slots):
     def _split_godan_imperative(self, godan_base: str) -> list[ProcessedToken]:
         godan_surface = self.surface[:-1]
         imperative_part = self.surface[-1]
+        imperative_base = "い" if imperative_part == "い" else "え"
         return [ProcessedToken(surface=godan_surface, base=godan_base, is_inflectable_word=True, is_godan_imperative_stem=True),
-                ProcessedToken(surface=imperative_part, base="え", is_inflectable_word=True, is_godan_imperative_inflection=True)]
+                ProcessedToken(surface=imperative_part, base=imperative_base, is_inflectable_word=True, is_godan_imperative_inflection=True)]
 
     def _split_potential_or_imperative_godan(self, godan_base: str) -> list[ProcessedToken]:
         if not self.surface.endswith("る"):  # this is not the dictionary form of the potential part so this might be an imperative because janome groups imperatives and potential forms together  # noqa: SIM102
