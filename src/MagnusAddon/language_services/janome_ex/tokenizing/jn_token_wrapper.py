@@ -31,7 +31,7 @@ class JNTokenWrapper(ProcessedToken, Slots):
     @override
     def is_special_nai_negative(self) -> bool: return self.token.is_special_nai_negative()
 
-    def pre_process(self) -> list[ProcessedToken]: #note: The order here matters, it's not random. any change will break things even should the tests be incomplete and not show it.
+    def pre_process(self) -> list[ProcessedToken]:  # note: The order here matters, it's not random. any change will break things even should the tests be incomplete and not show it.
         if self._is_godan_imperative():
             return self._split_godan_imperative(self.base_form)
 
@@ -59,6 +59,14 @@ class JNTokenWrapper(ProcessedToken, Slots):
         return [ProcessedToken(surface=godan_surface, base=godan_base, is_inflectable_word=True, is_godan_imperative_stem=True),
                 ProcessedToken(surface=imperative_part, base=imperative_base, is_inflectable_word=True, is_godan_imperative_inflection=True)]
 
+    def _split_godan_potential(self, godan_base: str) -> list[ProcessedToken]:
+        godan_surface = self.surface.removesuffix("る")[:-1]
+        potential_surface = self.surface.removeprefix(godan_surface)
+        potential_base = potential_surface if potential_surface[-1] == "る" else potential_surface + "る"
+
+        return [ProcessedToken(surface=godan_surface, base=godan_base, is_inflectable_word=True, is_godan_potential_stem=True),
+                ProcessedToken(surface=potential_surface, base=potential_base, is_inflectable_word=True, is_godan_potential_inflection=True)]
+
     def _is_godan_imperative(self) -> bool:
         if self.token.inflected_form in InflectionForms.ImperativeMeireikei.godan_forms:
             return True
@@ -84,12 +92,7 @@ class JNTokenWrapper(ProcessedToken, Slots):
                 else:  # noqa: RET505
                     return self._split_godan_imperative(godan_base)
 
-        godan_surface = self.surface.removesuffix("る")[:-1]
-        potential_surface = self.surface.removeprefix(godan_surface)
-        potential_base = potential_surface if potential_surface[-1] == "る" else potential_surface + "る"
-
-        return [ProcessedToken(surface=godan_surface, base=godan_base, is_inflectable_word=True, is_godan_potential_stem=True),
-                ProcessedToken(surface=potential_surface, base=potential_base, is_inflectable_word=True, is_godan_potential_inflection=True)]
+        return self._split_godan_potential(godan_base)
 
     _potential_or_imperative_godan_last_compound_parts: set[str] = {"える", "え"}
     def _try_find_vocab_based_potential_or_imperative_godan_compound(self) -> str | None:
