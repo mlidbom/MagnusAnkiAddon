@@ -17,9 +17,7 @@ def setup_collection_with_select_data() -> Iterator[None]:
         yield
 
 @pytest.mark.parametrize("sentence, expected_output", [
-        ("進めない", ["進める", "ない"]),
-        ("さっさと傷を清めてこい", ["さっさと:[MISSING]", "傷", "を", "清める", "てこ", "い"]),
-        ("清めの一波", ["清め", "の", "一波:[MISSING]"]),
+        ("ここは清められ", ["ここ", "は", "清め", "られる"])
 ])
 def test_new_stuff(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
@@ -34,6 +32,9 @@ def test_new_stuff(sentence: str, expected_output: list[str]) -> None:
         ("くれよ", ["くれる", "え", "よ"]),
         ("放せよ　俺は…", ["放す", "え", "よ", "俺", "は"]),
         ("出ていけ", ["出ていく", "え"]),
+        ("進めない", ["進める", "ない"]),
+        ("さっさと傷を清めてこい", ["さっさと:[MISSING]", "傷", "を", "清める", "てこ", "い"]),
+        ("清めの一波", ["清め", "の", "一波:[MISSING]"]),
 ])
 def test_godan_potential_and_imperative(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
