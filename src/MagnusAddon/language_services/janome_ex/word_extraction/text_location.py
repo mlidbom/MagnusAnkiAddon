@@ -8,7 +8,7 @@ from sysutils.weak_ref import WeakRef, WeakRefable
 from typed_linq_collections.collections.q_list import QList
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.tokenizing.jn_tokenized_text import ProcessedToken
+    from language_services.janome_ex.tokenizing.processed_token import ProcessedToken
     from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
     from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 
