@@ -29,8 +29,8 @@ def update_all() -> None:
 
 def full_rebuild() -> None:
     with TaskRunner.current("Full rebuild"):
-        update_all()
         reparse_all_sentences()
+        update_all()
 
 def update_sentences() -> None:
     def update_sentence(sentence: SentenceNote) -> None:
