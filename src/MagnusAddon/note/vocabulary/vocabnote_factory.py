@@ -37,4 +37,5 @@ class VocabNoteFactory(Slots):
         note.readings.set(readings)
         if initializer is not None: initializer(note)
         app.col().vocab.add(note)
+        note.suspend_all_cards()
         return note

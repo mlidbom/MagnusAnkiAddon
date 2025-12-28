@@ -42,7 +42,7 @@ class DictLookupResult(Slots):
 
         def format_readings(readings: QList[str]) -> str:
             def format_reading(reading: str) -> str: return f"<read>{reading}</read>"
-            return f"""{"|".join(readings.select(format_reading))}: """
+            return f"""{"|".join(readings.select(format_reading))}:"""
 
         def _create_separating_description(entry: DictEntry) -> str:
             reading_diff = ""
@@ -55,11 +55,11 @@ class DictLookupResult(Slots):
                                 .to_set())
 
             if entry.kanji_forms.any() and entry.kanji_forms[0] != self.word:
-                kanji_diff = f"""<tag><ja>{entry.kanji_forms[0]}</ja></tag>: """
+                kanji_diff = f"""<tag><ja>{entry.kanji_forms[0]}</ja></tag>:"""
 
             if entry.kana_forms[0] != self.word and kana_forms != other_kana_forms:
                 reading_diff = format_readings(entry.kana_forms.select(kana_utils.katakana_to_hiragana).distinct().to_list())
 
-            return f"""{reading_diff}{kanji_diff}"""
+            return f"""{reading_diff}{kanji_diff}: """ if reading_diff or kanji_diff else ""
 
         return ex_str.newline.join(self.entries.select(lambda entry: f"""{_create_separating_description(entry)}{entry.format_answer()}"""))
