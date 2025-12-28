@@ -98,7 +98,6 @@ class JNToken(Slots):
     def is_t_form_marker(self) -> bool:
         return self.inflection_type == InflectionTypes.Special.ta  # "連用タ接続"
 
-
     def is_end_of_statement(self) -> bool:
         return self.next is None or self.next.surface in analysis_constants.sentence_end_characters or self.next.parts_of_speech.is_non_word_character()
 
