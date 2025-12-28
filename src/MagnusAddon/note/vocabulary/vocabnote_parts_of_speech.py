@@ -2,41 +2,40 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from autoslot import Slots
 from language_services.janome_ex.word_extraction import analysis_constants
 from note.note_constants import NoteFields, Tags
-from note.notefields.comma_separated_strings_set_field import MutableCommaSeparatedStringsSetField
+from note.vocabulary.pos_set_interner import POSSetManager
 from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
     from sysutils.weak_ref import WeakRef
+    from typed_linq_collections.collections.q_frozen_set import QFrozenSet
 
 class VocabNotePartsOfSpeech(Slots):
+    _field_name = NoteFields.Vocab.parts_of_speech
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self.__vocab = vocab
-        self._field: MutableCommaSeparatedStringsSetField = MutableCommaSeparatedStringsSetField(vocab, NoteFields.Vocab.parts_of_speech)
+        self.set_raw_string_value(self.raw_string_value())
 
     @property
     def _vocab(self) -> VocabNote: return self.__vocab()
 
-    def raw_string_value(self) -> str:
-        return self._field.raw_string_value()
+    def raw_string_value(self) -> str: return self._vocab.get_field(VocabNotePartsOfSpeech._field_name)
 
     def set_raw_string_value(self, value: str) -> None:
-        self._field.set_raw_string_value(value)
+        self._vocab.set_field(VocabNotePartsOfSpeech._field_name, POSSetManager.intern_and_harmonize(value))
 
-    def get(self) -> QSet[str]:
-        return self._field.get()
+    def get(self) -> QFrozenSet[str]: return POSSetManager.get(self.raw_string_value())
 
-    def is_ichidan(self) -> bool:
-        return "ichidan" in self.raw_string_value().lower()
+    def is_ichidan(self) -> bool: return "ichidan" in self.get()
+    def is_godan(self) -> bool: return "godan" in self.get()
 
-    def is_godan(self) -> bool:
-        return "godan" in self.raw_string_value().lower()
+    def is_transitive(self) -> bool: return "transitive" in self.get()
+    def is_intransitive(self) -> bool: return "intransitive" in self.get()
 
-    def is_inflecting_word_type(self) -> bool:
-        return self.is_godan() or self.is_ichidan()
+    def is_inflecting_word_type(self) -> bool: return self.is_godan() or self.is_ichidan()
 
     def is_suru_verb_included(self) -> bool:
         question = self._vocab.question.without_noise_characters
@@ -48,11 +47,6 @@ class VocabNotePartsOfSpeech(Slots):
         return len(question) > 3 and question[-3:] in self._ga_suru_ni_suru_endings
 
     def is_uk(self) -> bool: return self._vocab.has_tag(Tags.UsuallyKanaOnly)
-
-    _transitive_string_values: list[str] = ["transitive", "transitive verb"]
-    _intransitive_string_values: list[str] = ["intransitive", "intransitive verb"]
-    def is_transitive(self) -> bool: return any(val for val in self._transitive_string_values if val in self.get())
-    def is_intransitive(self) -> bool: return any(val for val in self._intransitive_string_values if val in self.get())
 
     def set_automatically_from_dictionary(self) -> None:
         from language_services.jamdict_ex.dict_lookup import DictLookup
@@ -75,7 +69,6 @@ class VocabNotePartsOfSpeech(Slots):
         if len(compounds) == 0: return False
         return compounds[-1] in analysis_constants.passive_verb_endings
 
-
     def is_causative_verb_compound(self) -> bool:
         compounds = self._vocab.compound_parts.primary()
         if len(compounds) == 0: return False
@@ -86,4 +79,4 @@ class VocabNotePartsOfSpeech(Slots):
         return self.__vocab().question.raw.endswith("な") and any(na for na in self._na_adjective_tos_names if na in self.get())
 
     @override
-    def __repr__(self) -> str: return self._field.__repr__()
+    def __repr__(self) -> str: return self.raw_string_value()
