@@ -154,4 +154,5 @@ test_special_vocab: list[VocabSpec] = [
         VocabSpec("ても知らない", forms=["ても知らん"], compounds=["ても", "知る", "ん"], tags=[vm.Requires.te_form_stem]),
 
         VocabSpec("とおり"),
+        VocabSpec("られる", tags=[vm.is_inflecting_word]),
 ]
