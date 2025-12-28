@@ -6,8 +6,8 @@ from autoslot import Slots
 from language_services import conjugator
 from language_services.jamdict_ex.dict_lookup import DictLookup
 from language_services.janome_ex.tokenizing.inflection_forms import InflectionForms
-from language_services.janome_ex.tokenizing.inflection_types import InflectionTypes
 from language_services.janome_ex.tokenizing.pre_processing_stage.godan_imperative_splitter import GodanImperativeSplitter
+from language_services.janome_ex.tokenizing.pre_processing_stage.ichidan_imperative_splitter import IchidanImperativeSplitter
 from language_services.janome_ex.tokenizing.processed_token import ProcessedToken
 from sysutils.typed import non_optional
 
@@ -34,7 +34,7 @@ class JNTokenWrapper(ProcessedToken, Slots):
     def is_special_nai_negative(self) -> bool: return self.token.is_special_nai_negative()
 
     def pre_process(self) -> list[ProcessedToken]:  # note: The order here matters, it's not random. any change will break things even should the tests be incomplete and not show it.
-        split_godan_imperative = GodanImperativeSplitter(self.token, self._vocabs).try_split()
+        split_godan_imperative = GodanImperativeSplitter(self.token).try_split()
         if split_godan_imperative is not None:
             return split_godan_imperative
 
@@ -45,18 +45,11 @@ class JNTokenWrapper(ProcessedToken, Slots):
             if self._is_imperative_godan(hidden_godan):
                 return self._split_godan_imperative(hidden_godan)
 
-        if self._is_ichidan_imperative():
-            return self._split_ichidan_imperative()
+        split_ichidan_imperative = IchidanImperativeSplitter(self.token).try_split()
+        if split_ichidan_imperative is not None:
+            return split_ichidan_imperative
 
         return [self]
-
-    def _is_ichidan_imperative(self) -> bool: return self.token.inflected_form in InflectionForms.ImperativeMeireikei.ichidan_forms
-
-    def _split_ichidan_imperative(self) -> list[ProcessedToken]:
-        ichidan_surface = self.surface[:-1]
-        ichidan_imperative_part = self.surface[-1]
-        return [ProcessedToken(surface=ichidan_surface, base=self.base_form, is_inflectable_word=True, is_ichidan_imperative_stem=True),
-                ProcessedToken(surface=ichidan_imperative_part, base=ichidan_imperative_part, is_inflectable_word=True, is_ichidan_imperative_inflection=True)]
 
     def _split_godan_imperative(self, godan_base: str) -> list[ProcessedToken]:
         if self.token.inflected_form == InflectionForms.ImperativeMeireikei.yo:  # handles cases like 放せよ which janome turns into a single token and believes is an ichidan よ imperative

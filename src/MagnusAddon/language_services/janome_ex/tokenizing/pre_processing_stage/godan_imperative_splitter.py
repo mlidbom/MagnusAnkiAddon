@@ -8,12 +8,10 @@ from language_services.janome_ex.tokenizing.processed_token import ProcessedToke
 
 if TYPE_CHECKING:
     from language_services.janome_ex.tokenizing.jn_token import JNToken
-    from note.collection.vocab_collection import VocabCollection
 
 class GodanImperativeSplitter:
-    def __init__(self, token: JNToken, vocabs: VocabCollection) -> None:
+    def __init__(self, token: JNToken) -> None:
         self.token: JNToken = token
-        self.vocabs: VocabCollection = vocabs
 
     def try_split(self) -> list[ProcessedToken] | None:
         if self._is_godan_imperative():
