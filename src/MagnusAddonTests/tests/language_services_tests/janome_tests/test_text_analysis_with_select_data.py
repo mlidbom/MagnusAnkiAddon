@@ -7,9 +7,8 @@ from fixtures.collection_factory import inject_collection_with_select_data
 from note.sentences.sentencenote import SentenceNote
 
 if TYPE_CHECKING:
-    from collections.abc import Callable, Iterator
+    from collections.abc import Iterator
 
-    from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 
 
 # noinspection PyUnusedFunction

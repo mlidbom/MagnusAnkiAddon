@@ -6,6 +6,7 @@ from anki.consts import QUEUE_TYPE_SUSPENDED
 from anki.notes import NoteId
 from note.note_constants import NoteTypes
 from sysutils import typed
+from sysutils.memory_usage import string_auto_interner
 from sysutils.typed import non_optional, str_
 from typed_linq_collections.q_iterable import query
 
@@ -47,7 +48,7 @@ def _ensure_card_status_is_cached(note: Note) -> None:
 class CardStudyingStatus:
     def __init__(self, row: Row) -> None:
         self.note_id: NoteId = NoteId(typed.int_(row[0])) # pyright: ignore[reportAny]
-        self.card_type: str = typed.str_(row[1]) # pyright: ignore[reportAny]
+        self.card_type: str = string_auto_interner.auto_intern(typed.str_(row[1])) # pyright: ignore[reportAny]
         self.queue: int = typed.int_(row[2]) # pyright: ignore[reportAny]
 
 def initialize_studying_cache(col: Collection, task_runner: ITaskRunner) -> None:
