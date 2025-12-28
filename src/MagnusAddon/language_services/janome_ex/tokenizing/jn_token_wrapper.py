@@ -3,9 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
-from language_services.janome_ex.tokenizing.pre_processing_stage.godan_imperative_splitter import GodanImperativeSplitter
-from language_services.janome_ex.tokenizing.pre_processing_stage.ichidan_godan_potential_or_imperative_hybrid_splitter import IchidanGodanPotentialOrImperativeHybridSplitter
-from language_services.janome_ex.tokenizing.pre_processing_stage.ichidan_imperative_splitter import IchidanImperativeSplitter
 from language_services.janome_ex.tokenizing.processed_token import ProcessedToken
 
 if TYPE_CHECKING:
@@ -29,19 +26,4 @@ class JNTokenWrapper(ProcessedToken, Slots):
     def is_past_tense_marker(self) -> bool: return self.token.is_past_tense_marker()
     @override
     def is_special_nai_negative(self) -> bool: return self.token.is_special_nai_negative()
-
-    def pre_process(self) -> list[ProcessedToken]:  # note: The order here matters, it's not random. any change will break things even should the tests be incomplete and not show it.
-        split_godan_imperative = GodanImperativeSplitter(self.token).try_split()
-        if split_godan_imperative is not None:
-            return split_godan_imperative
-
-        split_godan_imperative = IchidanGodanPotentialOrImperativeHybridSplitter(self.token, self._vocabs).try_split()
-        if split_godan_imperative is not None:
-            return split_godan_imperative
-
-        split_ichidan_imperative = IchidanImperativeSplitter(self.token).try_split()
-        if split_ichidan_imperative is not None:
-            return split_ichidan_imperative
-
-        return [self]
 
