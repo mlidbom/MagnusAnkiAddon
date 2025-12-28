@@ -115,7 +115,9 @@ class JNTokenWrapper(ProcessedToken, Slots):
             return True  # we check for potential godan before this, so if there is no ichidan verb in the dictonary, the only thing left is an imperative godan
         elif godan_dict_entry.is_intransitive_verb() and self.token.previous is not None and self.token.previous.surface == "を":  # intransitive verbs don't take を so this is most likely actually the ichidan verb  # noqa: RET505, SIM103
             return False
-        elif self.token.next is None or self.token.is_end_of_statement():
+        elif self.token.next is None or self.token.is_end_of_statement():  # noqa: SIM114
+            return True
+        elif self.token.inflected_form == InflectionForms.ImperativeMeireikei.yo:  # handles cases like 放せよ which janome turns into a single token and believes is an ichidan よ imperative
             return True
 
         return False

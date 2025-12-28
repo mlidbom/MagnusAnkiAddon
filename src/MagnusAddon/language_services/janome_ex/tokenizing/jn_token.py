@@ -99,7 +99,10 @@ class JNToken(Slots):
         return self.inflection_type == InflectionTypes.Special.ta  # "連用タ接続"
 
     def is_end_of_statement(self) -> bool:
-        return self.next is None or self.next.surface in analysis_constants.sentence_end_characters or self.next.parts_of_speech.is_non_word_character()
+        return (self.next is None
+                or self.next.parts_of_speech == POS.Particle.sentence_ending
+                or self.next.surface in analysis_constants.sentence_end_characters
+                or self.next.parts_of_speech.is_non_word_character())
 
     _valid_potential_form_inflections_pos: set[JNPartsOfSpeech] = {POS.bound_auxiliary, POS.Noun.Suffix.auxiliary_verb_stem, POS.Verb.dependent, POS.Particle.conjunctive, POS.Particle.coordinating_conjunction}
     def is_valid_potential_form_inflection(self) -> bool:
