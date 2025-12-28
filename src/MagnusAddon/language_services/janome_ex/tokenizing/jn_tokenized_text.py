@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from language_services.janome_ex.tokenizing.jn_token_wrapper import JNTokenWrapper
+from language_services.janome_ex.tokenizing.pre_processing_stage.pre_processing_stage import PreProcessingStage
 
 if TYPE_CHECKING:
     from janome.tokenizer import Token  # pyright: ignore[reportMissingTypeStubs]
@@ -19,8 +19,4 @@ class JNTokenizedText(Slots):
         self.tokens: QList[JNToken] = tokens
 
     def pre_process(self) -> QList[ProcessedToken]:
-        vocab = app.col().vocab
-
-        return self.tokens.select_many(lambda token: JNTokenWrapper(token, vocab).pre_process()).to_list()
-        # query(JNTokenWrapper(token, vocab) for token in self.tokens)
-        # return ex_sequence.flatten([token.pre_process() for token in step1])
+        return PreProcessingStage(app.col().vocab).pre_process(self.tokens)
