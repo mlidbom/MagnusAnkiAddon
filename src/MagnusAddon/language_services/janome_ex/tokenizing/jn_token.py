@@ -36,8 +36,8 @@ class JNToken(Slots):
         self.node_type: str = typed.str_(node_type)
         self.parts_of_speech: JNPartsOfSpeech = parts_of_speech
         self.raw_token: Token | None = raw_token
-        self.previous: JNToken | None = None
-        self.next: JNToken | None = None
+        self.previous: JNToken | None = None #todo: possible memory leak, circular reference
+        self.next: JNToken | None = None #todo: possible memory leak, circular reference
 
     @override
     def __repr__(self) -> str:
