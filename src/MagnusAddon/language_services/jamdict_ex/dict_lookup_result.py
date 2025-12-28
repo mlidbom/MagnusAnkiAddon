@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
-from sysutils import ex_str
+from sysutils import ex_str, kana_utils
 
 if TYPE_CHECKING:
     from language_services.jamdict_ex.dict_entry import DictEntry
@@ -38,4 +38,26 @@ class DictLookupResult(Slots):
     def format_answer(self) -> str:
         if self.entries.qcount() == 1: return self.entries[0].format_answer()
 
-        return ex_str.newline.join(self.entries.select(lambda entry: entry.format_answer()))
+        def format_readings(readings: QList[str]) -> str:
+            def format_reading(reading: str) -> str: return f"<read>{reading}</read>"
+            return f"""{"|".join(readings.select(format_reading))}: """
+
+        def _create_separating_description(entry: DictEntry) -> str:
+            reading_diff = ""
+            kanji_diff = ""
+            other_entries = self.entries.where(lambda other_entry: other_entry != entry).to_list()
+
+            kana_forms = entry.kana_forms.select(kana_utils.katakana_to_hiragana).to_set()
+            other_kana_forms = (other_entries.select_many(lambda it: it.kana_forms)
+                                .select(kana_utils.katakana_to_hiragana)
+                                .to_set())
+
+            if entry.kanji_forms.any() and entry.kanji_forms[0] != self.word:
+                kanji_diff = f"""<tag><ja>{entry.kanji_forms[0]}</ja></tag>: """
+
+            if entry.kana_forms[0] != self.word and kana_forms != other_kana_forms:
+                reading_diff = format_readings(entry.kana_forms.select(kana_utils.katakana_to_hiragana).distinct().to_list())
+
+            return f"""{reading_diff}{kanji_diff}"""
+
+        return ex_str.newline.join(self.entries.select(lambda entry: f"""{_create_separating_description(entry)}{entry.format_answer()}"""))

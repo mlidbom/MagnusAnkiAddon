@@ -6,18 +6,18 @@ from typing import TYPE_CHECKING
 
 from ankiutils import app, query_builder
 from language_services.jamdict_ex.dict_lookup import DictLookup
-from language_services.jamdict_ex.dict_lookup_result import DictLookupResult
 from note.note_constants import CardTypes, Tags
 from note.sentences.parsed_match import ParsedMatch
 from note.sentences.sentencenote import SentenceNote
 from qt_utils.task_progress_runner import TaskRunner
 from sysutils import ex_str
-from typed_linq_collections.collections.q_list import QList
 
 if TYPE_CHECKING:
     from anki.notes import NoteId
+    from language_services.jamdict_ex.dict_lookup_result import DictLookupResult
     from note.kanjinote import KanjiNote
     from note.vocabulary.vocabnote import VocabNote
+    from typed_linq_collections.collections.q_list import QList
 
 def update_all() -> None:
     with TaskRunner.current("Updating everything but sentence reparsing"):
@@ -217,6 +217,6 @@ def report_on_missing_vocab() -> None:
 
     for lookup_result in dictionary_words_with_no_vocab_with_multiple_entries:
         print(f"""
-{lookup_result.word}
+{lookup_result.word} POS:{" | ".join(lookup_result.parts_of_speech())}
 {ex_str.indent(lookup_result.format_answer())}
 """)
