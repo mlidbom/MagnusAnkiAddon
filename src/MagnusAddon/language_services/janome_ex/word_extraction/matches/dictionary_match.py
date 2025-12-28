@@ -22,4 +22,4 @@ class DictionaryMatch(Match, Slots):
     def answer(self) -> str: return self.dictionary_entry.format_answer()
     @property
     @override
-    def readings(self) -> list[str]: return self.dictionary_entry.kana_forms
+    def readings(self) -> list[str]: return self.dictionary_entry.kana_forms_text()

@@ -65,8 +65,6 @@ def build_debug_menu(debug_menu: QMenu) -> None:
     debug_menu.addAction(shortcutfinger.up2("Reset"), app.reset)  # pyright: ignore[reportUnknownMemberType]
     add_menu_ui_action(debug_menu, shortcutfinger.down1("Refresh UI ('F5')"), refresh)
 
-    debug_menu.addAction(shortcutfinger.down2("report_on_missing_vocab"), local_note_updater.report_on_missing_vocab)  # pyright: ignore [reportUnknownMemberType]
-
 def build_config_menu(config_menu: QMenu) -> None:
     def build_feature_toggles_menu(_title: str) -> None:
         section_index = 0
@@ -95,6 +93,7 @@ def build_local_menu(local_menu: QMenu) -> None:
 
     add_menu_ui_action(local_menu, shortcutfinger.home2("Convert &Immersion Kit sentences"), local_note_updater.convert_immersion_kit_sentences)
     add_menu_ui_action(local_menu, shortcutfinger.home3("Update everyting except reparsing sentences"), local_note_updater.update_all)
+    add_menu_ui_action(local_menu, shortcutfinger.home4("Create vocab notes for parsed words with no vocab notes"), local_note_updater.create_missing_vocab_with_dictionary_entries)
 
 def init() -> None:
     build_main_menu()

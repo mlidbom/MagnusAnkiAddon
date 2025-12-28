@@ -204,7 +204,7 @@ class Tags(Slots):
     priority_folder: str = f"{f_root}priority::"
 
     class Source(Slots):
-        folder = f_source
+        folder: str = f_source
         immersion_kit: str = f"{f_source}immersion_kit"
         jamdict: str = f"{f_source}jamdict"
 
