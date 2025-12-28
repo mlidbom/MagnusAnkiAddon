@@ -5,8 +5,9 @@ import sys
 from ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from sysutils.ex_str import newline
+from typed_linq_collections.collections.q_dict import QDict
 
-current_instance_count: dict[str, int] = {}
+current_instance_count: QDict[str, int] = QDict()
 
 class Snapshot(Slots):
     def __init__(self, current_state: dict[str, int], previous_state: dict[str, int]) -> None:
@@ -70,8 +71,11 @@ class ObjectInstanceTracker(Slots):
 
 def print_instance_counts() -> None:
     print("################### Instance counts ###################")
-    for type_name, count in current_instance_count.items():
-        print(f"{type_name}: {count}")
+    for type_name, count in (current_instance_count.qitems()
+            .order_by(lambda kv: kv.key)
+            .order_by_descending(lambda kv: kv.value)
+            .to_list()):
+        print(f"{count} {type_name}")
 
 def single_line_report() -> str:
     return f"""{', '.join([f"{type_name.split('.')[-1]}:{count}" for type_name, count in current_instance_count.items()])}"""

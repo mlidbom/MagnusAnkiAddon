@@ -8,6 +8,7 @@ from language_services.janome_ex.word_extraction.matches.dictionary_match import
 from language_services.janome_ex.word_extraction.matches.missing_match import MissingMatch
 from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
+from note.vocabulary.vocabnote import VocabNote
 from sysutils import ex_assert
 from sysutils.lazy import Lazy
 from sysutils.weak_ref import WeakRef, WeakRefable
@@ -22,7 +23,6 @@ if TYPE_CHECKING:
 @final
 class CandidateWordVariant(WeakRefable, Slots):
     def __init__(self, word: WeakRef[CandidateWord], form: str) -> None:
-
         self.weak_ref = WeakRef(self)
         from language_services.jamdict_ex.dict_lookup import DictLookup
 
@@ -31,6 +31,8 @@ class CandidateWordVariant(WeakRefable, Slots):
 
         self._dict_lookup: Lazy[DictLookupResult] = Lazy(lambda: DictLookup.lookup_word(form))
         self.vocab_matches: QList[VocabMatch] = QList(VocabMatch(self.weak_ref, vocab) for vocab in app.col().vocab.with_form(form))
+        if self.vocab_matches.none() and self._dict_lookup().found_words() and app.config().create_vocab_if_missing_when_parsing.get_value():
+            self.vocab_matches = QList([VocabMatch(self.weak_ref, VocabNote.factory.create_with_dictionary(form))])
 
         # will be completed in complete_analysis
         self.completed_analysis = False

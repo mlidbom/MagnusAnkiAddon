@@ -9,6 +9,7 @@ from language_services.janome_ex.tokenizing.inflection_types import InflectionTy
 from language_services.janome_ex.tokenizing.jn_parts_of_speech import POS, JNPartsOfSpeech
 from language_services.janome_ex.word_extraction import analysis_constants
 from sysutils import kana_utils, typed
+from sysutils.object_instance_tracker import ObjectInstanceTracker
 
 if TYPE_CHECKING:
     from janome.tokenizer import Token  # pyright: ignore[reportMissingTypeStubs]
@@ -27,6 +28,7 @@ class JNToken(Slots):
                  phonetic: str = "",
                  node_type: str = "",
                  raw_token: Token | None = None) -> None:
+        self.object_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
         self.base_form: str = typed.str_(base_form)
         self.surface: str = typed.str_(surface)
         self.inflection_type: InflectionType = inflection_types.all_dict[inflection_type] if isinstance(inflection_type, str) else inflection_type
@@ -36,8 +38,8 @@ class JNToken(Slots):
         self.node_type: str = typed.str_(node_type)
         self.parts_of_speech: JNPartsOfSpeech = parts_of_speech
         self.raw_token: Token | None = raw_token
-        self.previous: JNToken | None = None
-        self.next: JNToken | None = None
+        self.previous: JNToken | None = None #todo: possible memory leak, circular reference
+        self.next: JNToken | None = None #todo: possible memory leak, circular reference
 
     @override
     def __repr__(self) -> str:

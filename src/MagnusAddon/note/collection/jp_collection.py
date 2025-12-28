@@ -102,8 +102,6 @@ class JPCollection(WeakRefable, Slots):
             self._is_initialized = True
             JPCollection._is_inital_load = False
 
-            self._instance_tracker.assert_single_instance()
-
             app.get_ui_utils().tool_tip(f"{Mine.app_name} done loading in {str(stopwatch.elapsed_seconds())[0:4]} seconds.", milliseconds=6000)
 
     @property

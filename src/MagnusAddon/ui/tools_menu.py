@@ -20,7 +20,6 @@ from ui.open_note.open_note_dialog import NoteSearchDialog
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-
 def refresh() -> None:
     if not app.is_initialized():
         return
@@ -90,11 +89,11 @@ def build_local_menu(local_menu: QMenu) -> None:
         add_menu_ui_action(update_menu, shortcutfinger.up1("Reparse sentences"), local_note_updater.reparse_all_sentences)
         add_menu_ui_action(update_menu, shortcutfinger.down1("All the above: Full rebuild"), local_note_updater.full_rebuild)
 
-
     build_update_menu(non_optional(local_menu.addMenu(shortcutfinger.home1("Update"))))
 
     add_menu_ui_action(local_menu, shortcutfinger.home2("Convert &Immersion Kit sentences"), local_note_updater.convert_immersion_kit_sentences)
     add_menu_ui_action(local_menu, shortcutfinger.home3("Update everyting except reparsing sentences"), local_note_updater.update_all)
+    add_menu_ui_action(local_menu, shortcutfinger.home4("Create vocab notes for parsed words with no vocab notes"), local_note_updater.create_missing_vocab_with_dictionary_entries)
 
 def init() -> None:
     build_main_menu()

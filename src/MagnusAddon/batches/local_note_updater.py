@@ -5,15 +5,19 @@ import re
 from typing import TYPE_CHECKING
 
 from ankiutils import app, query_builder
+from language_services.jamdict_ex.dict_lookup import DictLookup
 from note.note_constants import CardTypes, Tags
+from note.sentences.parsed_match import ParsedMatch
 from note.sentences.sentencenote import SentenceNote
+from note.vocabulary.vocabnote import VocabNote
 from qt_utils.task_progress_runner import TaskRunner
 from sysutils import ex_str
 
 if TYPE_CHECKING:
     from anki.notes import NoteId
+    from language_services.jamdict_ex.dict_lookup_result import DictLookupResult
     from note.kanjinote import KanjiNote
-    from note.vocabulary.vocabnote import VocabNote
+    from typed_linq_collections.collections.q_list import QList
 
 def update_all() -> None:
     with TaskRunner.current("Updating everything but sentence reparsing"):
@@ -25,8 +29,8 @@ def update_all() -> None:
 
 def full_rebuild() -> None:
     with TaskRunner.current("Full rebuild"):
-        update_all()
         reparse_all_sentences()
+        update_all()
 
 def update_sentences() -> None:
     def update_sentence(sentence: SentenceNote) -> None:
@@ -198,3 +202,25 @@ def reparse_sentences_for_vocab(vocab: VocabNote) -> None:
 def reparse_matching_sentences(question_substring: str) -> None:
     sentences_to_update = app.col().sentences.search(query_builder.sentences_with_question_substring(question_substring))
     reparse_sentences(sentences_to_update, run_gc_during_batch=True)
+
+def create_missing_vocab_with_dictionary_entries() -> None:
+    with TaskRunner.current("Creating vocab notes for parsed words with no vocab notes") as runner:
+        dictionary_words_with_no_vocab: QList[DictLookupResult] = (
+                runner.
+                run_on_background_thread_with_spinning_progress_dialog("Fetching parsed words with no vocab notes from parsing results",
+                                                                       lambda: (app.col().sentences.all()
+                                                                                .select_many(lambda it: it.parsing_result.get()
+                                                                                             .parsed_words
+                                                                                             .where(lambda word: word.vocab_id == ParsedMatch.missing_note_id)
+                                                                                             .select(lambda word: word.parsed_form))
+                                                                                .distinct()
+                                                                                .select(DictLookup.lookup_word)
+                                                                                .where(lambda it: it.found_words())
+                                                                                .order_by(lambda it: it.priority_spec().priority)
+                                                                                .to_list())))
+
+        def create_vocab_if_not_already_created(result: DictLookupResult) -> None:
+            if not app.col().vocab.with_form(result.word).any(): # we may well have created a vocab that provides this form already...
+                VocabNote.factory.create_with_dictionary(result.word)
+
+        runner.process_with_progress(dictionary_words_with_no_vocab, create_vocab_if_not_already_created, "Creating vocab notes")

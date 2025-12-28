@@ -22,7 +22,7 @@ class PerfectSynonyms(Slots):
 
     def push_answer_to_other_synonyms(self) -> None:
         for synonym in self.notes():
-            synonym.user.answer.set(self._vocab().user.answer.value)
+            synonym.user.answer.set(self._vocab().get_answer())
 
     def get(self) -> QSet[str]: return self._value.get()
 

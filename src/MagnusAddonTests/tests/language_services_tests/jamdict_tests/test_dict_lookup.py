@@ -82,14 +82,14 @@ def test_valid_forms(word: str, readings: list[str], forms: set[str]) -> None:
     assert dict_entry.valid_forms() == forms
 
 @pytest.mark.parametrize("word, readings, answer", [
-    ("張り切る", ["はりきる"], "to? be-in-high-spirits/be-full-of-vigor-(vigour)/be-enthusiastic/be-eager/stretch-to-breaking-point"),
+    ("張り切る", ["はりきる"], "to-be-in-high-spirits/to-be-full-of-vigor-(vigour)/to-be-enthusiastic/to-be-eager/to-stretch-to-breaking-point"),
     ("部屋", ["へや"], "room/chamber | apartment/flat/pad | stable"),
-    ("拭く", ["ふく"], "to{} wipe/dry"),
-    ("歩く", ["あるく"], "to: walk")
+    ("拭く", ["ふく"], "to-wipe/to-dry"),
+    ("歩く", ["あるく"], "to-walk")
 ])
 def test_generate_answer(word: str, readings: list[str], answer: str) -> None:
     dict_entry = get_single_dict_entry(word, readings)
-    generated_answer = dict_entry.generate_answer()
+    generated_answer = dict_entry.format_answer()
     assert generated_answer == answer
 
 @pytest.mark.parametrize("word, readings, pos", [

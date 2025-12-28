@@ -176,10 +176,10 @@ class JPNote(WeakRefable, Slots):
         return tags
 
     def get_source_tag(self) -> str:
-        source_tags = [t for t in self.get_tags() if t.startswith(Tags.source_folder)]
+        source_tags = [t for t in self.get_tags() if t.startswith(Tags.Source.folder)]
         if source_tags:
             source_tags = sorted(source_tags, key=lambda tag: len(tag))
-            return source_tags[0][len(Tags.source_folder):]
+            return source_tags[0][len(Tags.Source.folder):]
         return ""
 
     def remove_tag(self, tag: str) -> None:

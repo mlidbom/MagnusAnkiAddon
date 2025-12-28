@@ -156,7 +156,7 @@ class SentenceNote(JPNote, Slots):
                                    answer=immersion_kit_note[ImmersionKitSentenceNoteFields.answer],
                                    audio=immersion_kit_note[ImmersionKitSentenceNoteFields.audio],
                                    screenshot=immersion_kit_note[ImmersionKitSentenceNoteFields.screenshot],
-                                   tags=QSet([Tags.immersion_kit]))
+                                   tags=QSet([Tags.Source.immersion_kit]))
 
         created.id.set(immersion_kit_note[ImmersionKitSentenceNoteFields.id])
         created.reading.set(immersion_kit_note[ImmersionKitSentenceNoteFields.reading])
