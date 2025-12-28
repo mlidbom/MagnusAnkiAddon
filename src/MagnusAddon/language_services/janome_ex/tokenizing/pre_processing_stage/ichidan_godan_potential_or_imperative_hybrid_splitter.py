@@ -57,8 +57,9 @@ class IchidanGodanPotentialOrImperativeHybridSplitter(Slots):
     def _try_find_vocab_based_potential_or_imperative_godan_compound(self) -> str | None:
         for vocab in self._vocabs.with_question(self.token.base_form):
             compound_parts = vocab.compound_parts.all()
-            if len(compound_parts) == 2 and compound_parts[1] in self._potential_or_imperative_godan_last_compound_parts:
-                return compound_parts[0]
+            if len(compound_parts) == 2 and compound_parts[1] in self._potential_or_imperative_godan_last_compound_parts:  # noqa: SIM102
+                if WordInfo.is_godan(compound_parts[0]):
+                    return compound_parts[0]
         return None
 
     def _is_potential_godan(self, godan_base: str) -> bool:
