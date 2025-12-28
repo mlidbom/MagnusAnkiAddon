@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import override
 
 from autoslot import Slots
+from sysutils.object_instance_tracker import ObjectInstanceTracker
 
 
 class ProcessedToken(Slots):
@@ -16,6 +17,8 @@ class ProcessedToken(Slots):
                  is_godan_imperative_inflection: bool = False,
                  is_ichidan_imperative_inflection: bool = False
                  ) -> None:
+        self.object_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
+
         self.surface: str = surface
         self.base_form: str = base
         self.is_inflectable_word: bool = is_inflectable_word

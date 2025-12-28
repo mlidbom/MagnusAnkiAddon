@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, cast, final
 from autoslot import Slots
 from language_services.jamdict_ex import jmd_pos_map
 from sysutils import kana_utils
+from sysutils.object_instance_tracker import ObjectInstanceTracker
 from typed_linq_collections.collections.q_list import QList
 from typed_linq_collections.q_iterable import query
 
@@ -37,6 +38,7 @@ class KanjiFormEX(Slots):
 @final
 class DictEntry(Slots):
     def __init__(self, source: JMDEntry) -> None:
+        self.object_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
         self.kana_forms: QList[KanaFormEX] = query(source.kana_forms).select(KanaFormEX).to_list()
         self.kanji_forms: QList[KanjiFormEX] = query(source.kanji_forms).select(KanjiFormEX).to_list()
         self.senses: QList[SenseEX] = query(source.senses).select(SenseEX).to_list()
