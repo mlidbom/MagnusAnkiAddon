@@ -6,7 +6,7 @@ from anki.notes import Note
 from ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from language_services.jamdict_ex.dict_lookup import DictLookup
-from note.note_constants import NoteTypes
+from note.note_constants import NoteTypes, Tags
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -23,6 +23,7 @@ class VocabNoteFactory(Slots):
             return VocabNote.factory.create(question, "", [])
 
         created = VocabNote.factory.create(question, lookup_result.format_answer(), lookup_result.readings())
+        created.set_tag(Tags.Source.jamdict)
         created.update_generated_data()
         return created
 

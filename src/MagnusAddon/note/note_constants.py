@@ -123,6 +123,8 @@ f_vocab_matching_forbids: str = f"{f_vocab_matching}forbids::"
 f_vocab_matching_todo: str = f"{f_vocab_matching}todo::"
 f_vocab_matching_uses: str = f"{f_vocab_matching}uses::"
 
+f_source = "source::"
+
 class Tags(Slots):
     class Sentence(Slots):
         class Uses(Slots):
@@ -201,9 +203,10 @@ class Tags(Slots):
 
     priority_folder: str = f"{f_root}priority::"
 
-    source_folder: str = "source::"
-
-    immersion_kit: str = f"{source_folder}immersion_kit"
+    class Source(Slots):
+        folder = f_source
+        immersion_kit: str = f"{f_source}immersion_kit"
+        jamdict: str = f"{f_source}jamdict"
 
     DisableKanaOnly: str = "_disable_uk"
     UsuallyKanaOnly: str = "_uk"
