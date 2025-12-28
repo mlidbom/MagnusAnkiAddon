@@ -12,6 +12,7 @@ if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.match import Match
 
 class ParsedMatch(Slots):
+    missing_note_id:NoteId = NoteId(-1)
     serializer: ParsedWordSerializer = ParsedWordSerializer()
     def __init__(self, variant: str, start_index: int, is_displayed: bool, word: str, information_string: str, vocab_id: NoteId) -> None:
         self.start_index: int = start_index
@@ -31,7 +32,7 @@ class ParsedMatch(Slots):
                            match.is_displayed,
                            match.parsed_form,
                            f"""{" ".join(match.failure_reasons)}{" # " if match.failure_reasons else ""}{" ".join(match.hiding_reasons)} {"highlighted" if match.is_highlighted else ""}""",
-                           match.vocab.get_id() if isinstance(match, VocabMatch) else NoteId(-1))
+                           match.vocab.get_id() if isinstance(match, VocabMatch) else cls.missing_note_id)
 
     @override
     def __repr__(self) -> str: return self.serializer.to_row(self)

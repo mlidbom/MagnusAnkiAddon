@@ -20,7 +20,6 @@ from ui.open_note.open_note_dialog import NoteSearchDialog
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-
 def refresh() -> None:
     if not app.is_initialized():
         return
@@ -66,6 +65,8 @@ def build_debug_menu(debug_menu: QMenu) -> None:
     debug_menu.addAction(shortcutfinger.up2("Reset"), app.reset)  # pyright: ignore[reportUnknownMemberType]
     add_menu_ui_action(debug_menu, shortcutfinger.down1("Refresh UI ('F5')"), refresh)
 
+    debug_menu.addAction(shortcutfinger.down2("report_on_missing_vocab"), local_note_updater.report_on_missing_vocab)  # pyright: ignore [reportUnknownMemberType]
+
 def build_config_menu(config_menu: QMenu) -> None:
     def build_feature_toggles_menu(_title: str) -> None:
         section_index = 0
@@ -89,7 +90,6 @@ def build_local_menu(local_menu: QMenu) -> None:
         add_menu_ui_action(update_menu, shortcutfinger.home5("All the above"), local_note_updater.update_all)
         add_menu_ui_action(update_menu, shortcutfinger.up1("Reparse sentences"), local_note_updater.reparse_all_sentences)
         add_menu_ui_action(update_menu, shortcutfinger.down1("All the above: Full rebuild"), local_note_updater.full_rebuild)
-
 
     build_update_menu(non_optional(local_menu.addMenu(shortcutfinger.home1("Update"))))
 
