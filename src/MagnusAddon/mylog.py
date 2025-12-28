@@ -79,3 +79,4 @@ def debug(msg: str) -> None:
 def info(msg: str) -> None:
     if not ex_pytest.is_testing: _logger().info(msg)
 def warning(msg: str) -> None: _logger().warning(msg)
+def error(msg: str) -> None: _logger().error(msg)

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+import mylog
 from ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from language_services.janome_ex.tokenizing.pre_processing_stage.pre_processing_stage import PreProcessingStage
@@ -19,4 +20,8 @@ class JNTokenizedText(Slots):
         self.tokens: QList[JNToken] = tokens
 
     def pre_process(self) -> QList[ProcessedToken]:
-        return PreProcessingStage(app.col().vocab).pre_process(self.tokens)
+        try:
+            return PreProcessingStage(app.col().vocab).pre_process(self.tokens)
+        except Exception:
+            mylog.error(f"""Failed to pre-process text: {self.text}""")
+            raise
