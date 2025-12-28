@@ -12,6 +12,7 @@ from note.note_constants import CardTypes, MyNoteFields, NoteTypes, Tags
 from note.note_flush_guard import NoteRecursiveFlushGuard
 from sysutils import ex_assert, ex_str
 from sysutils.memory_usage import string_auto_interner
+from sysutils.memory_usage.tag_set_interner import tag_set_interner
 from sysutils.typed import non_optional, str_
 from sysutils.weak_ref import WeakRef, WeakRefable
 from typed_linq_collections.collections.q_set import QSet
@@ -27,10 +28,12 @@ class JPNote(WeakRefable, Slots):
         self.weakref: WeakRef[JPNote] = WeakRef(self)
         self.recursive_flush_guard: NoteRecursiveFlushGuard = NoteRecursiveFlushGuard(self.weakref)
         self.backend_note: Note = note
-        self.__hash_value = 0
+        self.__hash_value: int = 0
 
         string_auto_interner.auto_intern_list(note.fields) # saves something like 20-30MB of memory on my collection
-        string_auto_interner.auto_intern_list(note.tags) #saves something like 20-30MB of memory on my collection
+
+        tag_set, note.tags = tag_set_interner.intern(note.tags)
+        self._tags: QSet[str] = tag_set
 
     @property
     def is_flushing(self) -> bool: return self.recursive_flush_guard.is_flushing
@@ -150,7 +153,7 @@ class JPNote(WeakRefable, Slots):
         return self.backend_note.tags
 
     def has_tag(self, tag: str) -> bool:
-        return self.backend_note.has_tag(tag)
+        return tag in self._tags
 
     def priority_tag_value(self) -> int:
         for tag in self.backend_note.tags:
@@ -181,13 +184,12 @@ class JPNote(WeakRefable, Slots):
 
     def remove_tag(self, tag: str) -> None:
         if self.has_tag(tag):
-            self.backend_note.remove_tag(tag)
+            self._tags, self.backend_note.tags = tag_set_interner.intern([t for t in self.backend_note.tags if t != tag])
             self._flush()
-
 
     def set_tag(self, tag: str) -> None:
         if not self.has_tag(tag):
-            self.backend_note.tags.append(tag)
+            self._tags, self.backend_note.tags = tag_set_interner.intern(self.backend_note.tags + [tag])
             self._flush()
 
     def toggle_tag(self, tag: str, on: bool) -> None:
