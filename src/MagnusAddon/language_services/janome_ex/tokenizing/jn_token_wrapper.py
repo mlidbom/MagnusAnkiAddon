@@ -7,6 +7,7 @@ from language_services import conjugator
 from language_services.jamdict_ex.dict_lookup import DictLookup
 from language_services.janome_ex.tokenizing.inflection_forms import InflectionForms
 from language_services.janome_ex.tokenizing.inflection_types import InflectionTypes
+from language_services.janome_ex.tokenizing.pre_processing_stage.godan_imperative_splitter import GodanImperativeSplitter
 from language_services.janome_ex.tokenizing.processed_token import ProcessedToken
 from sysutils.typed import non_optional
 
@@ -33,8 +34,9 @@ class JNTokenWrapper(ProcessedToken, Slots):
     def is_special_nai_negative(self) -> bool: return self.token.is_special_nai_negative()
 
     def pre_process(self) -> list[ProcessedToken]:  # note: The order here matters, it's not random. any change will break things even should the tests be incomplete and not show it.
-        if self._is_godan_imperative():
-            return self._split_godan_imperative(self.base_form)
+        split_godan_imperative = GodanImperativeSplitter(self.token, self._vocabs).try_split()
+        if split_godan_imperative is not None:
+            return split_godan_imperative
 
         hidden_godan = self._try_find_godan_hidden_in_ichidan_using_dictionary() or self._try_find_vocab_based_potential_or_imperative_godan_compound()
         if hidden_godan is not None:
@@ -79,17 +81,6 @@ class JNTokenWrapper(ProcessedToken, Slots):
 
         return [ProcessedToken(surface=godan_surface, base=godan_base, is_inflectable_word=True, is_godan_potential_stem=True),
                 ProcessedToken(surface=potential_surface, base=potential_base, is_inflectable_word=True, is_godan_potential_inflection=True)]
-
-    def _is_godan_imperative(self) -> bool:
-        if self.token.inflected_form in InflectionForms.ImperativeMeireikei.godan_forms:
-            return True
-
-        if (self.token.inflection_type.base == InflectionTypes.Godan.base  # noqa: SIM103
-                and self.token.inflected_form == InflectionForms.Hypothetical.general_hypothetical_kateikei
-                and self.token.is_end_of_statement()):
-            return True
-
-        return False
 
     _potential_or_imperative_godan_last_compound_parts: set[str] = {"える", "え"}
     def _try_find_vocab_based_potential_or_imperative_godan_compound(self) -> str | None:
