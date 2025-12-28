@@ -19,6 +19,9 @@ class IchidanGodanPotentialOrImperativeHybridSplitter(Slots):
         self._vocabs: VocabCollection = vocabs
 
     def try_split(self) -> list[ProcessedToken] | None:
+        if self.token.inflected_form == InflectionForms.ImperativeMeireikei.ro:
+            return None
+
         hidden_godan = self._try_find_godan_hidden_in_ichidan_using_dictionary() or self._try_find_vocab_based_potential_or_imperative_godan_compound()
         if hidden_godan is not None:
             if self._is_potential_godan(hidden_godan):
@@ -35,8 +38,6 @@ class IchidanGodanPotentialOrImperativeHybridSplitter(Slots):
             return [ProcessedToken(surface=godan_surface, base=godan_base, is_inflectable_word=True, is_godan_imperative_stem=True),
                     ProcessedToken(surface=imperative_part, base="え", is_inflectable_word=True, is_godan_imperative_inflection=True),
                     ProcessedToken(surface="よ", base="よ", is_inflectable_word=False)]
-        elif self.token.inflected_form == InflectionForms.ImperativeMeireikei.ro:  # noqa: RET505
-            raise Exception("I doubt this ever happens, but let's explode if it does so we can add support")
         else:  # noqa: RET505
             godan_surface = self.token.surface[:-1]
             imperative_part = self.token.surface[-1]
@@ -91,5 +92,3 @@ class IchidanGodanPotentialOrImperativeHybridSplitter(Slots):
             if DictLookup.lookup_word(possible_godan_form).try_get_godan_verb() is not None:
                 return possible_godan_form
         return None
-
-
