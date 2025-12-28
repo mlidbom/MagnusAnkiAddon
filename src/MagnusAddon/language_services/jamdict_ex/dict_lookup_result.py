@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
+from sysutils import ex_str
 
 if TYPE_CHECKING:
     from language_services.jamdict_ex.dict_entry import DictEntry
@@ -33,3 +34,8 @@ class DictLookupResult(Slots):
 
     def try_get_ichidan_verb(self) -> DictEntry | None:
         return self.entries.first_or_none(lambda entry: "ichidan verb" in entry.parts_of_speech())
+
+    def format_answer(self) -> str:
+        if self.entries.qcount() == 1: return self.entries[0].format_answer()
+
+        return ex_str.newline.join(self.entries.select(lambda entry: entry.format_answer()))

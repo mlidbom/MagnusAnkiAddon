@@ -19,7 +19,7 @@ class DictionaryMatch(Match, Slots):
 
     @property
     @override
-    def answer(self) -> str: return self.dictionary_entry.generate_answer()
+    def answer(self) -> str: return self.dictionary_entry.format_answer()
     @property
     @override
     def readings(self) -> list[str]: return self.dictionary_entry.kana_forms

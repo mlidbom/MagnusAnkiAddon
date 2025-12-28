@@ -4,14 +4,15 @@ import gc
 import re
 from typing import TYPE_CHECKING
 
-import mylog
 from ankiutils import app, query_builder
 from language_services.jamdict_ex.dict_lookup import DictLookup
+from language_services.jamdict_ex.dict_lookup_result import DictLookupResult
 from note.note_constants import CardTypes, Tags
 from note.sentences.parsed_match import ParsedMatch
 from note.sentences.sentencenote import SentenceNote
 from qt_utils.task_progress_runner import TaskRunner
 from sysutils import ex_str
+from typed_linq_collections.collections.q_list import QList
 
 if TYPE_CHECKING:
     from anki.notes import NoteId
@@ -210,34 +211,12 @@ def report_on_missing_vocab() -> None:
                                   .distinct()
                                   .to_set())
 
-    dictionary_words_with_no_vocab = parsed_words_with_no_vocab.select(lambda word: DictLookup.lookup_word(word)).where(lambda lookup: lookup.found_words()).to_list()
+    dictionary_words_with_no_vocab: QList[DictLookupResult] = parsed_words_with_no_vocab.select(lambda word: DictLookup.lookup_word(word)).where(lambda lookup: lookup.found_words()).to_list()
 
-    dictionary_words_with_no_vocab_with_single_entry = dictionary_words_with_no_vocab.where(lambda lookup: lookup.entries.qcount() == 1).to_list()
+    dictionary_words_with_no_vocab_with_multiple_entries: QList[DictLookupResult] = dictionary_words_with_no_vocab.where(lambda lookup: lookup.entries.qcount() > 1).to_list()
 
-    dictionary_words_with_no_vocab_with_multiple_entries = dictionary_words_with_no_vocab.where(lambda lookup: lookup.entries.qcount() > 1).to_list()
-
-    dictionary_words_with_no_vocab_with_multiple_entries_but_one_entry_exactly_matching_parsed_form = (dictionary_words_with_no_vocab_with_multiple_entries
-                                                                                                       .where(lambda lookup: lookup.entries.qcount(lambda entry: entry.kanji_forms.contains(lookup.word)
-                                                                                                                                                                 or entry.kana_forms.contains(lookup.word)) == 1)
-                                                                                                       .to_list())
-
-    dictionary_words_with_no_vocab_with_multiple_entries_but_one_entry_kanji_form_exactly_matching_parsed_form = (dictionary_words_with_no_vocab_with_multiple_entries
-                                                                                                       .where(lambda lookup: lookup.entries.qcount(lambda entry: entry.kanji_forms.contains(lookup.word)) == 1)
-                                                                                                       .to_list())
-
-    dictionary_words_with_no_vocab_with_multiple_kanji_entries_matching_parsed_form = (dictionary_words_with_no_vocab_with_multiple_entries
-                                                                                                       .where(lambda lookup: lookup.entries.qcount(lambda entry: entry.kanji_forms.contains(lookup.word)) > 1)
-                                                                                                       .to_list())
-
-    dictionary_words_with_no_vocab_with_multiple_kana_entries_matching_parsed_form = (dictionary_words_with_no_vocab_with_multiple_entries
-                                                                                                       .where(lambda lookup: lookup.entries.qcount(lambda entry: entry.kana_forms.contains(lookup.word)) > 1)
-                                                                                                       .to_list())
-
-    mylog.info(f"Found {len(parsed_words_with_no_vocab)} words with no vocab")
-    mylog.info(f"Found {len(dictionary_words_with_no_vocab)} dictionary words with no vocab")
-    mylog.info(f"Found {len(dictionary_words_with_no_vocab_with_single_entry)} dictionary words with no vocab and single entry")
-    mylog.info(f"Found {len(dictionary_words_with_no_vocab_with_multiple_entries)} dictionary words with no vocab and multiple entries")
-    mylog.info(f"Found {len(dictionary_words_with_no_vocab_with_multiple_entries_but_one_entry_exactly_matching_parsed_form)} dictionary words with no vocab and multiple entries, but exactly one entry exactly matching parsed form")
-    mylog.info(f"Found {len(dictionary_words_with_no_vocab_with_multiple_entries_but_one_entry_kanji_form_exactly_matching_parsed_form)} dictionary words with no vocab and multiple entries, but exactly one entry containing kanji form exactly matching parsed form")
-    mylog.info(f"Found {len(dictionary_words_with_no_vocab_with_multiple_kanji_entries_matching_parsed_form)} dictionary words with no vocab and multiple kanji entries matching parsed form")
-    mylog.info(f"Found {len(dictionary_words_with_no_vocab_with_multiple_kana_entries_matching_parsed_form)} dictionary words with no vocab and multiple kana entries matching parsed form")
+    for lookup_result in dictionary_words_with_no_vocab_with_multiple_entries:
+        print(f"""
+{lookup_result.word}
+{ex_str.indent(lookup_result.format_answer())}
+""")
