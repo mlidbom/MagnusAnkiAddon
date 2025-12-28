@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from autoslot import Slots
 from language_services.janome_ex.tokenizing.jn_token_wrapper import JNTokenWrapper
 from language_services.janome_ex.tokenizing.pre_processing_stage.godan_imperative_splitter import GodanImperativeSplitter
 from language_services.janome_ex.tokenizing.pre_processing_stage.ichidan_godan_potential_or_imperative_hybrid_splitter import IchidanGodanPotentialOrImperativeHybridSplitter
@@ -14,7 +15,7 @@ if TYPE_CHECKING:
     from typed_linq_collections.collections.q_list import QList
 
 
-class PreProcessingStage:
+class PreProcessingStage(Slots):
     def __init__(self, vocabs: VocabCollection) -> None:
         self._vocabs: VocabCollection = vocabs
 

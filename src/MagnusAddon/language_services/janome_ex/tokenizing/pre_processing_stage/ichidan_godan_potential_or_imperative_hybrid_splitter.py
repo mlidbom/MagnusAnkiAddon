@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from autoslot import Slots
 from language_services import conjugator
 from language_services.jamdict_ex.dict_lookup import DictLookup
 from language_services.janome_ex.tokenizing.inflection_forms import InflectionForms
@@ -12,7 +13,7 @@ if TYPE_CHECKING:
     from language_services.janome_ex.tokenizing.jn_token import JNToken
     from note.collection.vocab_collection import VocabCollection
 
-class IchidanGodanPotentialOrImperativeHybridSplitter:
+class IchidanGodanPotentialOrImperativeHybridSplitter(Slots):
     def __init__(self, token: JNToken, vocabs: VocabCollection) -> None:
         self.token: JNToken = token
         self._vocabs: VocabCollection = vocabs

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from autoslot import Slots
 from language_services.janome_ex.tokenizing.inflection_forms import InflectionForms
 from language_services.janome_ex.tokenizing.inflection_types import InflectionTypes
 from language_services.janome_ex.tokenizing.processed_token import ProcessedToken
@@ -9,7 +10,7 @@ from language_services.janome_ex.tokenizing.processed_token import ProcessedToke
 if TYPE_CHECKING:
     from language_services.janome_ex.tokenizing.jn_token import JNToken
 
-class GodanImperativeSplitter:
+class GodanImperativeSplitter(Slots):
     def __init__(self, token: JNToken) -> None:
         self.token: JNToken = token
 
