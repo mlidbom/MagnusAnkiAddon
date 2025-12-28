@@ -6,15 +6,15 @@ from autoslot import Slots
 from language_services.janome_ex.word_extraction import analysis_constants
 from note.note_constants import NoteFields, Tags
 from note.vocabulary.pos_set_interner import POSSetManager
+from typed_linq_collections.collections.q_frozen_set import QFrozenSet
 from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
     from sysutils.weak_ref import WeakRef
-    from typed_linq_collections.collections.q_frozen_set import QFrozenSet
 
 class VocabNotePartsOfSpeech(Slots):
-    _field_name = NoteFields.Vocab.parts_of_speech
+    _field_name: str = NoteFields.Vocab.parts_of_speech
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self.__vocab = vocab
         self.set_raw_string_value(self.raw_string_value())
@@ -59,7 +59,7 @@ class VocabNotePartsOfSpeech(Slots):
             question = self._vocab.question.without_noise_characters[:-2]
             readings = [reading[:-2] for reading in self._vocab.readings.get()]
             lookup = DictLookup.lookup_word_or_name_with_matching_reading(question, readings)
-            pos = lookup.parts_of_speech() & {"transitive", "intransitive"}
+            pos = lookup.parts_of_speech() & QFrozenSet({"transitive", "intransitive"})
             value1 = "suru verb, " + ", ".join(pos)
             self.set_raw_string_value(value1)
 
