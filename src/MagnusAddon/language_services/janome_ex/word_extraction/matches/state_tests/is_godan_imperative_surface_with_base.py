@@ -11,7 +11,11 @@ if TYPE_CHECKING:
 
 class IsGodanImperativeInflectionWithBase(MatchStateTest, Slots):
     def __init__(self, match: WeakRef[Match]) -> None:
-        super().__init__(match, "godan_imperative_surface_with_base", cache_is_in_state=True)
+        super().__init__(match)
+
+    @property
+    @override
+    def description(self) -> str: return "godan_imperative_surface_with_base"
 
     @override
     def _internal_match_is_in_state(self) -> bool:

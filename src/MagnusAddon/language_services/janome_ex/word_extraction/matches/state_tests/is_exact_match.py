@@ -13,7 +13,11 @@ if TYPE_CHECKING:
 
 class IsExactMatch(VocabMatchStateTest, Slots):
     def __init__(self, match: WeakRef[VocabMatch]) -> None:
-        super().__init__(match, "exact_match", cache_is_in_state=True)
+        super().__init__(match)
+
+    @property
+    @override
+    def description(self) -> str: return "exact_match"
 
     @override
     def _internal_match_is_in_state(self) -> bool:

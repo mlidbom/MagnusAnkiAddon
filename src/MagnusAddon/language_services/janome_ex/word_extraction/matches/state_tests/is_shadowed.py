@@ -11,10 +11,19 @@ if TYPE_CHECKING:
 
 class IsShadowed(MatchStateTest, Slots):
     def __init__(self, match: WeakRef[Match]) -> None:
-        super().__init__(match, "shadowed", cache_is_in_state=False)
+        super().__init__(match)
 
+    @property
     @override
-    def _internal_match_is_in_state(self) -> bool: return self.match.is_shadowed
+    def description(self) -> str: return "shadowed"
+
+    @property
+    @override
+    def is_cachable(self) -> bool: return False
+
+    @property
+    @override
+    def match_is_in_state(self) -> bool: return self.match.is_shadowed
 
     @property
     @override

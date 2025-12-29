@@ -11,7 +11,11 @@ if TYPE_CHECKING:
 
 class HasPastTenseStem(MatchStateTest, Slots):
     def __init__(self, match: WeakRef[Match]) -> None:
-        super().__init__(match, "past_tense_stem", cache_is_in_state=True)
+        super().__init__(match)
+
+    @property
+    @override
+    def description(self) -> str: return "past_tense_stem"
 
     @override
     def _internal_match_is_in_state(self) -> bool:

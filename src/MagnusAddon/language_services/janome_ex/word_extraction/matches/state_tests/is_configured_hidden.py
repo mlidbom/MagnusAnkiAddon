@@ -11,11 +11,15 @@ if TYPE_CHECKING:
 
 class IsConfiguredHidden(MatchStateTest, Slots):
     def __init__(self, match: WeakRef[Match]) -> None:
-        super().__init__(match, "configured_hidden", cache_is_in_state=True)
+        super().__init__(match)
+
+    @property
+    @override
+    def description(self) -> str: return "configured_hidden"
 
     @override
     def _internal_match_is_in_state(self) -> bool:
-        #todo: think a bit about this. Now we use the variant start index, which may differ from the match start index. Which should be used?
+        # todo: think a bit about this. Now we use the variant start index, which may differ from the match start index. Which should be used?
         if self.variant.configuration.hidden_matches.excludes_at_index(self.tokenized_form, self.variant.start_index):  # noqa: SIM103
             return True
         return False

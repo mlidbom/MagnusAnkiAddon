@@ -13,7 +13,11 @@ if TYPE_CHECKING:
 class HasTeFormStem(MatchStateTest, Slots):
     _te_forms: QSet[str] = QSet(("て", "って", "で"))
     def __init__(self, match: WeakRef[Match]) -> None:
-        super().__init__(match, "te_form_stem", cache_is_in_state=True)
+        super().__init__(match)
+
+    @property
+    @override
+    def description(self) -> str: return "te_form_stem"
 
     @override
     def _internal_match_is_in_state(self) -> bool:

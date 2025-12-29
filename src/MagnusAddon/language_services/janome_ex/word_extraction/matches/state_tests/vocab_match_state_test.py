@@ -13,9 +13,8 @@ if TYPE_CHECKING:
 
 
 class VocabMatchStateTest(MatchStateTest, Slots):
-    def __init__(self, match: WeakRef[VocabMatch], name: str, cache_is_in_state: bool) -> None:
-        super().__init__(match, name, cache_is_in_state)
-        self.name: str = name
+    def __init__(self, match: WeakRef[VocabMatch]) -> None:
+        super().__init__(match)
 
     @property
     @override

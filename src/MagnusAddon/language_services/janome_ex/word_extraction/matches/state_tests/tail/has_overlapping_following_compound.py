@@ -14,10 +14,19 @@ if TYPE_CHECKING:
 
 class HasDisplayedOverlappingFollowingCompound(MatchStateTest, Slots):
     def __init__(self, match: WeakRef[Match]) -> None:
-        super().__init__(match, "has_displayed_following_overlapping_compound", cache_is_in_state=False)
+        super().__init__(match)
 
+    @property
     @override
-    def _internal_match_is_in_state(self) -> bool:
+    def description(self) -> str: return "has_displayed_following_overlapping_compound"
+
+    @property
+    @override
+    def is_cachable(self) -> bool: return False
+
+    @property
+    @override
+    def match_is_in_state(self) -> bool:
         # todo: this is a problematic reference to display_words. That collection is initialized using this class,
         # so this class will return different results depending on whether it is used after or before display_words is first initialized. Ouch
 

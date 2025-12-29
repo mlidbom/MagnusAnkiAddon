@@ -11,7 +11,11 @@ if TYPE_CHECKING:
 
 class StartsWithIchidanImperativeStemOrInflection(MatchStateTest, Slots):
     def __init__(self, match: WeakRef[Match]) -> None:
-        super().__init__(match, "ichidan_imperative", cache_is_in_state=True)
+        super().__init__(match)
+
+    @property
+    @override
+    def description(self) -> str: return "ichidan_imperative"
 
     @override
     def _internal_match_is_in_state(self) -> bool:

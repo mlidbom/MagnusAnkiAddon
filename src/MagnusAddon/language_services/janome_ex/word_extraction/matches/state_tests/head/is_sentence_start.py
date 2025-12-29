@@ -12,7 +12,11 @@ if TYPE_CHECKING:
 
 class IsSentenceStart(MatchStateTest, Slots):
     def __init__(self, match: WeakRef[Match]) -> None:
-        super().__init__(match, "sentence_start", cache_is_in_state=True)
+        super().__init__(match)
+
+    @property
+    @override
+    def description(self) -> str: return "sentence_start"
 
     @override
     def _internal_match_is_in_state(self) -> bool:

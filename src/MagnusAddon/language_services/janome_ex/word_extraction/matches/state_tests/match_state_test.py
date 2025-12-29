@@ -13,22 +13,23 @@ if TYPE_CHECKING:
     from sysutils.weak_ref import WeakRef
 
 class MatchStateTest(Slots):
-    def __init__(self, match: WeakRef[Match], name: str, cache_is_in_state: bool) -> None:
+    def __init__(self, match: WeakRef[Match]) -> None:
         self._match: WeakRef[Match] = match
-        self.description: str = name
-        self.is_cachable: bool = cache_is_in_state
         self._cached_state: bool | None = None
 
     @property
-    def match_is_in_state(self) -> bool: #Profiling: don't use a lazy because this class is intantiated in very tight loops and the overhead of the required WeakRef and Lazy together becomes quite significant
+    def match_is_in_state(self) -> bool:  # Profiling: don't use a lazy because this class is intantiated in very tight loops and the overhead of the required WeakRef and Lazy together becomes quite significant
         if self._cached_state is not None:
             return self._cached_state
 
-        if not self.is_cachable:
-            return self._internal_match_is_in_state()
-
         self._cached_state = self._internal_match_is_in_state()
         return self._cached_state
+
+    @property
+    def is_cachable(self) -> bool: return True
+
+    @property
+    def description(self) -> str: raise NotImplementedError()
 
     @property
     def has_godan_imperative_part(self) -> bool: return self.word.start_location.token.is_godan_imperative_inflection or self.word.start_location.token.is_godan_imperative_stem

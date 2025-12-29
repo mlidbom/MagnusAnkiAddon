@@ -12,8 +12,12 @@ if TYPE_CHECKING:
 
 class SurfaceIsIn(MatchStateTest, Slots):
     def __init__(self, match: WeakRef[Match], surfaces: QSet[str]) -> None:
-        super().__init__(match, f"""surface_in:{",".join(surfaces)}""", cache_is_in_state=True)
+        super().__init__(match)
         self.surfaces: QSet[str] = surfaces
+
+    @property
+    @override
+    def description(self) -> str: return f"""surface_in:{",".join(self.surfaces)}"""
 
     @override
     def _internal_match_is_in_state(self) -> bool:

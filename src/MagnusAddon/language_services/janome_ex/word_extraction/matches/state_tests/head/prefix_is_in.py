@@ -12,8 +12,12 @@ if TYPE_CHECKING:
 
 class PrefixIsIn(MatchStateTest, Slots):
     def __init__(self, match: WeakRef[Match], prefixes: QSet[str]) -> None:
-        super().__init__(match, f"""prefix_in:{",".join(prefixes)}""", cache_is_in_state=True)
+        super().__init__(match)
         self.prefixes: QSet[str] = prefixes
+
+    @property
+    @override
+    def description(self) -> str: return f"""prefix_in:{",".join(self.prefixes)}"""
 
     @override
     def _internal_match_is_in_state(self) -> bool:

@@ -12,7 +12,11 @@ if TYPE_CHECKING:
 
 class IsPoisonWord(VocabMatchStateTest, Slots):
     def __init__(self, match: WeakRef[VocabMatch]) -> None:
-        super().__init__(match, "poison_word", cache_is_in_state=True)
+        super().__init__(match)
+
+    @property
+    @override
+    def description(self) -> str: return "poison_word"
 
     @override
     def _internal_match_is_in_state(self) -> bool:

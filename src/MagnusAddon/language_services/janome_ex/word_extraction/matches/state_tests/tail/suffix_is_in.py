@@ -12,8 +12,12 @@ if TYPE_CHECKING:
 
 class SuffixIsIn(MatchStateTest, Slots):
     def __init__(self, match: WeakRef[Match], suffixes: QSet[str]) -> None:
-        super().__init__(match, f"""suffix_in:{",".join(suffixes)}""", cache_is_in_state=True)
+        super().__init__(match)
         self.suffixes: QSet[str] = suffixes
+
+    @property
+    @override
+    def description(self) -> str: return f"""suffix_in:{",".join(self.suffixes)}"""
 
     @override
     def _internal_match_is_in_state(self) -> bool:
