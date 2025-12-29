@@ -10,6 +10,7 @@ from autoslot import Slots
 from jamdict import Jamdict  # pyright: ignore [reportMissingTypeStubs]
 from sysutils.lazy import Lazy
 from sysutils.typed import non_optional, str_
+from sysutils.weak_ref import WeakRef, WeakRefable
 from typed_linq_collections.collections.q_list import QList
 
 if TYPE_CHECKING:
@@ -22,13 +23,14 @@ class Request[T](Slots):
         self.func: Callable[[Jamdict], T] = func
         self.future: Future[T] = future
 
-class JamdictThreadingWrapper(Slots):
+class JamdictThreadingWrapper(WeakRefable,Slots):
     def __init__(self) -> None:
         self._queue: queue.Queue[Request[Any]] = queue.Queue()  # pyright: ignore[reportExplicitAny]
         self._thread: threading.Thread = threading.Thread(target=self._worker, daemon=True)
         self._running: bool = True
         self._thread.start()
-        self.jamdict: Lazy[Jamdict] = Lazy(self.create_jamdict)
+        weak_self = WeakRef(self)
+        self.jamdict: Lazy[Jamdict] = Lazy(lambda: weak_self().create_jamdict()) # todo: earlier attempts to save memory by resetting the jamdict instance periodically were flawed since the lazy did not use a weak reference, creatinga circular referenene that kept the instance in memory.
 
     @staticmethod
     def create_jamdict() -> Jamdict:
