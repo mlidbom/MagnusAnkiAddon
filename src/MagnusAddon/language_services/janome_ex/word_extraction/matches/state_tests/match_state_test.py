@@ -3,8 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, final, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from sysutils.lazy import Lazy
-from sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.candidate_word import CandidateWord
@@ -12,19 +10,25 @@ if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.match import Match
     from language_services.janome_ex.word_extraction.text_location import TextAnalysisLocation
     from note.sentences.sentence_configuration import SentenceConfiguration
+    from sysutils.weak_ref import WeakRef
 
-class MatchStateTest(WeakRefable, Slots):
+class MatchStateTest(Slots):
     def __init__(self, match: WeakRef[Match], name: str, cache_is_in_state: bool) -> None:
         self._match: WeakRef[Match] = match
         self.description: str = name
         self.is_cachable: bool = cache_is_in_state
-        weakrefthis = WeakRef(self)
-        self.weakref: WeakRef[MatchStateTest] = weakrefthis
-        self._future_match_is_in_state: Lazy[bool] | None = Lazy(lambda: weakrefthis()._internal_match_is_in_state()) if cache_is_in_state else None
+        self._cached_state: bool | None = None
 
     @property
-    @final
-    def match_is_in_state(self) -> bool: return self._future_match_is_in_state() if self._future_match_is_in_state else self._internal_match_is_in_state()
+    def match_is_in_state(self) -> bool: #Profiling: don't use a lazy because this class is intantiated in very tight loops and the overhead of the required WeakRef and Lazy together becomes quite significant
+        if self._cached_state is not None:
+            return self._cached_state
+
+        if not self.is_cachable:
+            return self._internal_match_is_in_state()
+
+        self._cached_state = self._internal_match_is_in_state()
+        return self._cached_state
 
     @property
     def has_godan_imperative_part(self) -> bool: return self.word.start_location.token.is_godan_imperative_inflection or self.word.start_location.token.is_godan_imperative_stem

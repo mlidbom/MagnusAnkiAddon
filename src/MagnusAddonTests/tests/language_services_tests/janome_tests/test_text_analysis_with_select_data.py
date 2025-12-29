@@ -140,5 +140,3 @@ def test_no_memory_leak_weak_references_are_disposed() -> None:
                                                      lambda requirement: requirement.state_test.match)
     assert_that_the_inner_weakref_has_been_destroyed(lambda analysis: analysis.indexing_matches[0]._validity_requirements[0],  # pyright: ignore[reportPrivateUsage]
                                                      lambda requirement: requirement.state_test.match)
-    assert_that_the_inner_weakref_has_been_destroyed(lambda analysis: analysis.indexing_matches[0]._validity_requirements[0].state_test.weakref,  # pyright: ignore[reportPrivateUsage]
-                                                     lambda state_test_weak_ref: state_test_weak_ref())
