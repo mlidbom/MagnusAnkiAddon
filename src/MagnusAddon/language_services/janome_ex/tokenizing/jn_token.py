@@ -9,7 +9,6 @@ from language_services.janome_ex.tokenizing.inflection_types import InflectionTy
 from language_services.janome_ex.tokenizing.jn_parts_of_speech import POS, JNPartsOfSpeech
 from language_services.janome_ex.word_extraction import analysis_constants
 from sysutils import kana_utils, typed
-from sysutils.object_instance_tracker import ObjectInstanceTracker
 from sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
@@ -29,7 +28,6 @@ class JNToken(WeakRefable, Slots):
                  phonetic: str = "",
                  node_type: str = "",
                  raw_token: Token | None = None) -> None:
-        self.instance_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
         self.weak_ref: WeakRef[JNToken] = WeakRef(self)
         self.base_form: str = typed.str_(base_form)
         self.surface: str = typed.str_(surface)
