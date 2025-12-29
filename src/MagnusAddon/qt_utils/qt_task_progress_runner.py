@@ -18,7 +18,6 @@ from sysutils.typed import non_optional
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-
 class QtTaskProgressRunner(ITaskRunner, Slots):
     def __init__(self, window_title: str, label_text: str, allow_cancel: bool = True) -> None:
         self.allow_cancel: bool = allow_cancel
@@ -74,12 +73,13 @@ class QtTaskProgressRunner(ITaskRunner, Slots):
     def process_with_progress[TInput, TOutput](self, items: list[TInput], process_item: Callable[[TInput], TOutput], message: str, run_gc: bool = False, minimum_items_to_gc: int = 0) -> list[TOutput]:
         self.set_label_text(f"{message} 0 of ?? Remaining: ??")  # len may take a while so make sure we set the label first
         total_items = len(items)
-        watch = StopWatch()
-        start_time = time.time()
-        results: list[TOutput] = []
 
         run_gc = run_gc and total_items >= minimum_items_to_gc
         if run_gc: self.run_gc()
+
+        watch = StopWatch()
+        start_time = time.time()
+        results: list[TOutput] = []
 
         self.dialog.setRange(0, total_items + 1)  # add one to keep the dialog open
         original_label = self.dialog.labelText()
