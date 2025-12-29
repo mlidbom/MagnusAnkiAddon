@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import gc
+import random
 import re
 from typing import TYPE_CHECKING
 
@@ -178,6 +179,8 @@ def reading_in_vocab_reading(kanji: KanjiNote, kanji_reading: str, vocab_reading
 def reparse_sentences(sentences: list[SentenceNote], run_gc_during_batch: bool = False) -> None:
     def reparse_sentence(sentence: SentenceNote) -> None:
         sentence.update_parsed_words(force=True)
+
+    random.shuffle(sentences) # hopefully this will get us accurate time estimations by preventing all the long sentenences from turning up last
 
     with TaskRunner.current("Reparse Sentences", inhibit_gc=run_gc_during_batch) as runner:
         runner.process_with_progress(sentences, reparse_sentence, "Reparsing sentences.", run_gc=run_gc_during_batch, minimum_items_to_gc=500)
