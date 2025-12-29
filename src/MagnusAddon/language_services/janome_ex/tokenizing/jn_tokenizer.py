@@ -42,9 +42,9 @@ class JNTokenizer(Slots):
         # Link tokens with previous/next pointers
         for i in range(len(jn_tokens)):
             if i > 0:
-                jn_tokens[i].previous = jn_tokens[i - 1]
+                jn_tokens[i]._previous = jn_tokens[i - 1].weak_ref  # pyright: ignore [reportPrivateUsage]
             if i < len(jn_tokens) - 1:
-                jn_tokens[i].next = jn_tokens[i + 1]
+                jn_tokens[i]._next = jn_tokens[i + 1].weak_ref  # pyright: ignore [reportPrivateUsage]
 
         return JNTokenizedText(text,
                                QList(tokens),
