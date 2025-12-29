@@ -24,7 +24,7 @@ if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
     from sysutils.weak_ref import WeakRef
 
-class RelatedVocab(Slots):
+class RelatedVocab(Slots): # todo performance: memory: do we need to cache all of this, could it be created on demand by properties instead?
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self._vocab: WeakRef[VocabNote] = vocab
 

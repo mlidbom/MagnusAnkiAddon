@@ -18,7 +18,7 @@ class CachingMutableStringField(Slots):
         self._note: WeakRef[JPNote] = note
         self._field_name: str = field_name
         self._reset_callbacks: list[Callable[[], None]] | None = None
-        self._value: str = self._string_field_get_initial_value_for_caching()
+        self._value: str = self._string_field_get_initial_value_for_caching()  # todo performance: check if this actually improves performance, or just costs us memory
 
     # this method is interesting for profiling so we want a unuique name we can find in the trace
     def _string_field_get_initial_value_for_caching(self) -> str: return self._note().get_field(self._field_name)
@@ -37,7 +37,7 @@ class CachingMutableStringField(Slots):
     def has_value(self) -> bool: return self.value != ""
     def empty(self) -> None: self.set("")
 
-    def lazy_reader[TValue](self, reader: Callable[[], TValue]) -> Lazy[TValue]:
+    def lazy_reader[TValue](self, reader: Callable[[], TValue]) -> Lazy[TValue]: # todo performance: Check out whether we can do without this callback mechanism in such a commonly used place
         lazy = Lazy(reader)
         self.on_change(lazy.reset)
         return lazy

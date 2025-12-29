@@ -86,7 +86,7 @@ class VocabNoteMatchingConfiguration(WeakRefable, Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self.vocab: WeakRef[VocabNote] = vocab
         self.weakref: WeakRef[VocabNoteMatchingConfiguration] = WeakRef(self)
-        self._rules: Lazy[VocabNoteMatchingRules] = Lazy(lambda: VocabNoteMatchingRules(vocab))
+        self._rules: Lazy[VocabNoteMatchingRules] = Lazy(lambda: VocabNoteMatchingRules(vocab)) # todo performance: memory: do we need to make this lazy? does it help?
 
         self.requires_forbids: VocabMatchingRulesConfigurationRequiresForbidsFlags = VocabMatchingRulesConfigurationRequiresForbidsFlags(vocab)
         self.bool_flags: VocabMatchingRulesConfigurationBoolFlags = VocabMatchingRulesConfigurationBoolFlags(vocab)

@@ -21,23 +21,23 @@ class Match(WeakRefable, Slots):
     def __init__(self, word_variant: WeakRef[CandidateWordVariant],
                  validity_requirements: list[MatchRequirement],
                  display_requirements: list[MatchRequirement]) -> None:
-        weakref = WeakRef(self)
-        self.weakref: WeakRef[Match] = weakref
+        weakref_self = WeakRef(self)
+        self.weakref: WeakRef[Match] = weakref_self
         self._variant: WeakRef[CandidateWordVariant] = word_variant
         self._validity_requirements: list[MatchRequirement] = ([
-                                                                       Forbids(IsConfiguredIncorrect(self.weakref)),
-                                                                       Forbids(IsGodanPotentialInflectionWithBase(weakref)),
-                                                                       Forbids(IsGodanImperativeInflectionWithBase(weakref))
+                                                                       Forbids(IsConfiguredIncorrect(weakref_self)),
+                                                                       Forbids(IsGodanPotentialInflectionWithBase(weakref_self)),
+                                                                       Forbids(IsGodanImperativeInflectionWithBase(weakref_self))
                                                                ]
                                                                + validity_requirements)
         self._display_requirements: list[MatchRequirement] = ([
-                                                                      Forbids(IsShadowed(self.weakref)),
-                                                                      Forbids(IsConfiguredHidden(self.weakref))
+                                                                      Forbids(IsShadowed(weakref_self)),
+                                                                      Forbids(IsConfiguredHidden(weakref_self))
                                                               ]
                                                               + display_requirements)
 
         self.can_cache_validity: bool = all(requirement.state_test.is_cachable for requirement in self._validity_requirements)
-        self._cached_is_valid_internal: Lazy[bool] | None = Lazy(lambda: weakref().__is_valid_internal_implementation()) if self.can_cache_validity else None
+        self._cached_is_valid_internal: Lazy[bool] | None = Lazy(lambda: weakref_self().__is_valid_internal_implementation()) if self.can_cache_validity else None
 
     @property
     def answer(self) -> str: raise NotImplementedError()
