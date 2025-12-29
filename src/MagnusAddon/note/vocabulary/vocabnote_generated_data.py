@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 from note.note_constants import Tags
 from sysutils import kana_utils
+from typed_linq_collections.collections.q_frozen_set import QFrozenSet
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
@@ -27,10 +28,10 @@ def update_generated_data(vocab: VocabNote) -> None:
         vocab.compound_parts.set(compounds)
 
     if vocab.get_question():
-        speech_types = vocab.parts_of_speech.get() - {"Unknown",
-                                                      "Godan verbIchidan verb",
-                                                      "Ichidan verbGodan verb" # crap inserted by bug in yomitan
-                                                      }
+        speech_types = vocab.parts_of_speech.get() - QFrozenSet({"Unknown",
+                                                                 "Godan verbIchidan verb",
+                                                                 "Ichidan verbGodan verb"  # crap inserted by bug in yomitan
+                                                                 })
 
         if vocab.readings.get():  # if we don't have a reading, the lookup will be too unreliable
             lookup = DictLookup.lookup_vocab_word_or_name(vocab)

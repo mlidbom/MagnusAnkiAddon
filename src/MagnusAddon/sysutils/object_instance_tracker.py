@@ -44,6 +44,8 @@ def current_snapshot() -> Snapshot:
         take_snapshot()
     return snapshots[-1]
 
+
+#NOTE: THIS IS NOT RELIABLE, IT WILL SOMETIMES, IN UNKNOWN CIRCUMSTANCES REPORT ZERO INSTANCES OF A CLASS, AND STILL A MAJOR MEMORY LEAK WILL BE RESOLVED WHENE A CIRCULAR REFERENCE WITHIN THAT CLASS IS FIXED
 class ObjectInstanceTracker(Slots):
     _track_instances_in_memory: bool = app.config().track_instances_in_memory.get_value()
     def __init__(self, cls_type: type[object]) -> None:

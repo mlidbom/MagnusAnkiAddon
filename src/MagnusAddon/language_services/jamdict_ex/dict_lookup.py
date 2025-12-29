@@ -8,6 +8,7 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from language_services.jamdict_ex.dict_lookup_result import DictLookupResult
 from language_services.jamdict_ex.jamdict_threading_wrapper import JamdictThreadingWrapper
 from sysutils.lazy import Lazy
+from sysutils.memory_usage import string_auto_interner
 from sysutils.timeutil import StopWatch
 from typed_linq_collections.collections.q_list import QList
 
@@ -24,8 +25,8 @@ _jamdict_threading_wrapper: JamdictThreadingWrapper = JamdictThreadingWrapper()
 # noinspection SqlResolve
 def _find_all_words() -> QSet[str]:
     with StopWatch.log_execution_time("Prepopulating all word forms from jamdict."):
-        kanji_forms: QSet[str] = _jamdict_threading_wrapper.run_string_query("SELECT distinct text FROM Kanji").to_set()
-        kana_forms: QSet[str] = _jamdict_threading_wrapper.run_string_query("SELECT distinct text FROM Kana").to_set()
+        kanji_forms: QSet[str] = _jamdict_threading_wrapper.run_string_query("SELECT distinct text FROM Kanji").select(string_auto_interner.auto_intern).to_set()
+        kana_forms: QSet[str] = _jamdict_threading_wrapper.run_string_query("SELECT distinct text FROM Kana").select(string_auto_interner.auto_intern).to_set()
     return kanji_forms | kana_forms
 
 # noinspection SqlResolve

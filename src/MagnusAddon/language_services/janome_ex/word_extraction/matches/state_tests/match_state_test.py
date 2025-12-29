@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING, final, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from sysutils.lazy import Lazy
-from sysutils.object_instance_tracker import ObjectInstanceTracker
 from sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
@@ -16,7 +15,6 @@ if TYPE_CHECKING:
 
 class MatchStateTest(WeakRefable, Slots):
     def __init__(self, match: WeakRef[Match], name: str, cache_is_in_state: bool) -> None:
-        self.object_tracker: object | None = ObjectInstanceTracker.configured_tracker_for(self)
         self._match: WeakRef[Match] = match
         self.description: str = name
         self.is_cachable: bool = cache_is_in_state

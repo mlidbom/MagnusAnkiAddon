@@ -4,8 +4,8 @@ from typing import TYPE_CHECKING
 
 from autoslot import Slots
 from language_services import conjugator
-from language_services.jamdict_ex.dict_lookup import DictLookup
 from language_services.janome_ex.tokenizing.inflection_forms import InflectionForms
+from language_services.janome_ex.tokenizing.pre_processing_stage.word_info import WordInfo
 from language_services.janome_ex.tokenizing.processed_token import ProcessedToken
 from sysutils.typed import non_optional
 
@@ -57,25 +57,25 @@ class IchidanGodanPotentialOrImperativeHybridSplitter(Slots):
     def _try_find_vocab_based_potential_or_imperative_godan_compound(self) -> str | None:
         for vocab in self._vocabs.with_question(self.token.base_form):
             compound_parts = vocab.compound_parts.all()
-            if len(compound_parts) == 2 and compound_parts[1] in self._potential_or_imperative_godan_last_compound_parts:
-                return compound_parts[0]
+            if len(compound_parts) == 2 and compound_parts[1] in self._potential_or_imperative_godan_last_compound_parts:  # noqa: SIM102
+                if WordInfo.is_godan(compound_parts[0]):
+                    return compound_parts[0]
         return None
 
     def _is_potential_godan(self, godan_base: str) -> bool:
         if self.token.surface.endswith("る") or (self.token.next is not None and self.token.next.is_valid_potential_form_inflection()):  # noqa: SIM103
-            godan_dict_entry = non_optional(DictLookup.lookup_word(godan_base).try_get_godan_verb())
-            if (godan_dict_entry.is_intransitive_verb() and self.token.previous is not None and self.token.previous.surface == "を"  # intransitive verbs don't take を so this is most likely actually the ichidan verb  # noqa: SIM103
-                    and DictLookup.lookup_word(self.token.base_form).try_get_ichidan_verb() is not None):  # if one actally exists in the dictionary, if not this is most likely one of the godan verbs of motion that use を to refer to the space traversed
+            godan_dict_entry = non_optional(WordInfo.lookup_godan(godan_base))
+            if (godan_dict_entry.is_intransitive and self.token.previous is not None and self.token.previous.surface == "を"  # intransitive verbs don't take を so this is most likely actually the ichidan verb  # noqa: SIM103
+                    and WordInfo.is_ichidan(self.token.base_form)):  # if one actally exists in the dictionary, if not this is most likely one of the godan verbs of motion that use を to refer to the space traversed
                 return False
             return True
         return False
 
     def _is_imperative_godan(self, godan_base: str) -> bool:
-        godan_dict_entry = non_optional(DictLookup.lookup_word(godan_base).try_get_godan_verb())
-        ichidan_verb = DictLookup.lookup_word(self.token.base_form).try_get_ichidan_verb()
-        if ichidan_verb is None:
+        godan_word_info = WordInfo.lookup(godan_base)
+        if WordInfo.lookup(self.token.base_form) is None:
             return True  # we check for potential godan before this, so if there is no ichidan verb in the dictonary, the only thing left is an imperative godan
-        elif godan_dict_entry.is_intransitive_verb() and self.token.previous is not None and self.token.previous.surface == "を":  # intransitive verbs don't take を so this is most likely actually the ichidan verb  # noqa: RET505, SIM103
+        elif (godan_word_info is not None and godan_word_info.is_intransitive) and self.token.previous is not None and self.token.previous.surface == "を":  # intransitive verbs don't take を so this is most likely actually the ichidan verb  # noqa: RET505, SIM103
             return False
         elif self.token.next is None or self.token.is_end_of_statement():  # noqa: SIM114
             return True
@@ -89,6 +89,6 @@ class IchidanGodanPotentialOrImperativeHybridSplitter(Slots):
                 and self.token.base_form[-2:] in conjugator.godan_potential_verb_ending_to_dictionary_form_endings
                 and self.token.is_ichidan_verb()):
             possible_godan_form = conjugator.construct_root_verb_for_possibly_potential_godan_verb_dictionary_form(self.token.base_form)
-            if DictLookup.lookup_word(possible_godan_form).try_get_godan_verb() is not None:
+            if WordInfo.is_godan(possible_godan_form):
                 return possible_godan_form
         return None

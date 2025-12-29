@@ -8,6 +8,7 @@ from sysutils import ex_str, kana_utils
 
 if TYPE_CHECKING:
     from language_services.jamdict_ex.dict_entry import DictEntry
+    from typed_linq_collections.collections.q_frozen_set import QFrozenSet
     from typed_linq_collections.collections.q_list import QList
     from typed_linq_collections.collections.q_set import QSet
 
@@ -29,8 +30,8 @@ class DictLookupResult(Slots):
 
     def readings(self) -> QList[str]: return self.entries.select_many(lambda entry: entry.kana_forms_text()).distinct().to_list()
 
-    def parts_of_speech(self) -> QSet[str]:
-        return self.entries.select_many(lambda entry: entry.parts_of_speech()).to_set()
+    def parts_of_speech(self) -> QFrozenSet[str]:
+        return self.entries.select_many(lambda entry: entry.parts_of_speech()).to_frozenset()
 
     def try_get_godan_verb(self) -> DictEntry | None:
         return self.entries.first_or_none(lambda entry: "godan verb" in entry.parts_of_speech())
