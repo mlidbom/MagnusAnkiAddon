@@ -3,8 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from note.tags import Tags
 from note.notefields.tag_flag_field import TagFlagField
+from note.tags import Tags
 
 if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote

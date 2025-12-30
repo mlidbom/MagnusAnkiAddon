@@ -9,8 +9,8 @@ from ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from note import noteutils
 from note.note_constants import CardTypes, MyNoteFields, NoteTypes
-from note.tags import Tags
 from note.note_flush_guard import NoteRecursiveFlushGuard
+from note.tags import Tags
 from sysutils import ex_assert, ex_str
 from sysutils.memory_usage import string_auto_interner
 from sysutils.memory_usage.tag_set_interner import tag_set_interner

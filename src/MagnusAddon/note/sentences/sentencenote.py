@@ -7,7 +7,6 @@ from ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from note.jpnote import JPNote
 from note.note_constants import ImmersionKitSentenceNoteFields, NoteFields, NoteTypes, SentenceNoteFields
-from note.tags import Tags
 from note.notefields.audio_field import WritableAudioField
 from note.notefields.json_object_field import MutableSerializedObjectField
 from note.notefields.mutable_string_field import MutableStringField
@@ -16,6 +15,7 @@ from note.notefields.strip_html_on_read_fallback_string_field import StripHtmlOn
 from note.sentences.caching_sentence_configuration_field import CachingSentenceConfigurationField
 from note.sentences.parsing_result import ParsingResult
 from note.sentences.user_fields import SentenceUserFields
+from note.tags import Tags
 from sysutils import ex_str, kana_utils
 from sysutils.weak_ref import WeakRef
 from typed_linq_collections.collections.q_set import QSet

@@ -8,9 +8,9 @@ from typing import TYPE_CHECKING
 from ankiutils import app, query_builder
 from language_services.jamdict_ex.dict_lookup import DictLookup
 from note.note_constants import CardTypes
-from note.tags import Tags
 from note.sentences.parsed_match import ParsedMatch
 from note.sentences.sentencenote import SentenceNote
+from note.tags import Tags
 from note.vocabulary.vocabnote import VocabNote
 from qt_utils.task_progress_runner import TaskRunner
 from sysutils import ex_str
