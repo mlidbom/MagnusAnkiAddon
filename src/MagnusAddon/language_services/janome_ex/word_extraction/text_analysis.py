@@ -41,11 +41,6 @@ class TextAnalysis(WeakRefable, Slots):
         self._analysis_step_2_analyze_compounds()
         self._analysis_step_3_resolve_display_and_shadowing()
 
-        self.all_matches: QList[Match] = (self.locations
-                                          .select_many(lambda location: location.candidate_words)
-                                          .select_many(lambda candidate: candidate.all_matches)
-                                          .to_list())
-
         self.indexing_word_variants: QList[CandidateWordVariant] = self.locations.select_many(lambda location: location.indexing_variants).to_list()
         self.display_word_variants: QList[CandidateWordVariant] = self.locations.select_many(lambda location: location.display_variants).to_list()
 
