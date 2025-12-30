@@ -51,11 +51,7 @@ class TextAnalysis(WeakRefable, Slots):
         self.display_word_variants: QList[CandidateWordVariant] = self.locations.select_many(lambda location: location.display_variants).to_list()
 
         self.indexing_matches: QList[Match] = self.indexing_word_variants.select_many(lambda variant: variant.matches).to_list()
-        self.valid_word_variant_matches: QList[Match] = self.valid_word_variants.select_many(lambda variant: variant.matches).to_list()
-        # todo: bug valid_matches here and valid_word_variant_valid_matches should be identical. Once they are, the valid_word_variant_valid_matches collection should be removed
         self.valid_matches: QList[Match] = self.indexing_matches.where(lambda match: match.is_valid).to_list()
-        self.valid_word_variant_valid_matches: QList[Match] = self.valid_word_variant_matches.where(lambda match: match.is_valid).to_list()
-        self.display_matches: QList[Match] = self.indexing_matches.where(lambda match: match.is_displayed).to_list()
 
     @classmethod
     def from_text(cls, text: str) -> TextAnalysis:
