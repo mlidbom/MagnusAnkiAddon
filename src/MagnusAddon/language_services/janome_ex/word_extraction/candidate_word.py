@@ -116,8 +116,6 @@ class CandidateWord(WeakRefable, Slots):
     @property
     def is_shadowed(self) -> bool: return self.is_shadowed_by is not None
     @property
-    def shadowed_by_text(self) -> str: return non_optional(self.is_shadowed_by).form if self.is_shadowed else ""
-    @property
     def is_shadowed_by(self) -> CandidateWordVariant | None:
         if any(self.start_location.is_shadowed_by):
             return self.start_location.is_shadowed_by[0]().display_variants[0]
