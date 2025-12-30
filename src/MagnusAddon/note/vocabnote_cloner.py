@@ -6,7 +6,8 @@ from anki.notes import Note
 from ankiutils import anki_module_import_issues_fix_just_import_this_module_before_any_other_anki_modules, app  # noqa  # pyright: ignore[reportUnusedImport]
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from language_services import conjugator
-from note.note_constants import NoteTypes, Tags
+from note.note_constants import NoteTypes
+from note.tags import Tags
 
 if TYPE_CHECKING:
     from collections.abc import Callable

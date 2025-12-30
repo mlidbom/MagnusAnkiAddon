@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, override
 
 from ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from note.note_constants import Tags
+from note.tags import Tags
 from note.notefields.require_forbid_flag_field import RequireForbidFlagField
 from sysutils.simple_string_builder import SimpleStringBuilder
 from sysutils.weak_ref import WeakRef, WeakRefable

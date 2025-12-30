@@ -6,7 +6,8 @@ from anki.notes import Note
 from ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from note.jpnote import JPNote
-from note.note_constants import ImmersionKitSentenceNoteFields, NoteFields, NoteTypes, SentenceNoteFields, Tags
+from note.note_constants import ImmersionKitSentenceNoteFields, NoteFields, NoteTypes, SentenceNoteFields
+from note.tags import Tags
 from note.notefields.audio_field import WritableAudioField
 from note.notefields.json_object_field import MutableSerializedObjectField
 from note.notefields.mutable_string_field import MutableStringField

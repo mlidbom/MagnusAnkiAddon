@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from note.note_constants import Tags
+from note.tags import Tags
 from note.notefields.tag_flag_field import TagFlagField
 
 if TYPE_CHECKING:

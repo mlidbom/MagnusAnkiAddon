@@ -6,7 +6,8 @@ from anki.notes import Note
 from ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from language_services.jamdict_ex.dict_lookup import DictLookup
-from note.note_constants import NoteTypes, Tags
+from note.note_constants import NoteTypes
+from note.tags import Tags
 
 if TYPE_CHECKING:
     from collections.abc import Callable

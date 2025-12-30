@@ -4,7 +4,8 @@ from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
 from language_services.janome_ex.word_extraction import analysis_constants
-from note.note_constants import NoteFields, Tags
+from note.note_constants import NoteFields
+from note.tags import Tags
 from note.vocabulary.pos_set_interner import POSSetManager
 from typed_linq_collections.collections.q_frozen_set import QFrozenSet
 from typed_linq_collections.collections.q_set import QSet

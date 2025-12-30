@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from fixtures.base_data.sample_data.vocab_spec import VocabSpec
-from note.note_constants import Tags
+from note.tags import Tags
 
 v = Tags.Vocab
 vm = Tags.Vocab.Matching

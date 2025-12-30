@@ -3,7 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from note.note_constants import NoteFields, Tags
+from note.note_constants import NoteFields
+from note.tags import Tags
 from note.notefields.auto_save_wrappers.set_wrapper import FieldSetWrapper
 from note.notefields.json_object_field import MutableSerializedObjectField
 from note.notefields.require_forbid_flag_field import RequireForbidFlagField
@@ -51,9 +52,9 @@ class VocabNoteMatchingRules(Slots):
                                        .prop("suffix_is_not", self.suffix_is_not.get())
                                        .prop("required_prefix", self.required_prefix.get()).repr)
 
+#todo performance: memory: high-priority: combine into a single bitfield in memory
 class VocabMatchingRulesConfigurationRequiresForbidsFlags(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
-        #todo performance: memory: high-priority: combine into a single bitfield saving a ton of memory and performance. Keep the tags in the anki data though
         self.e_stem: RequireForbidFlagField = RequireForbidFlagField(vocab, Tags.Vocab.Matching.Requires.e_stem, Tags.Vocab.Matching.Forbids.e_stem)
         self.a_stem: RequireForbidFlagField = RequireForbidFlagField(vocab, Tags.Vocab.Matching.Requires.a_stem, Tags.Vocab.Matching.Forbids.a_stem)
         self.past_tense_stem: RequireForbidFlagField = RequireForbidFlagField(vocab, Tags.Vocab.Matching.Requires.past_tense_stem, Tags.Vocab.Matching.Forbids.past_tense_stem)
@@ -68,6 +69,7 @@ class VocabMatchingRulesConfigurationRequiresForbidsFlags(Slots):
         self.exact_match: RequireForbidFlagField = RequireForbidFlagField(vocab, Tags.Vocab.Matching.Requires.exact_match, Tags.Vocab.Matching.Forbids.exact_match)
         self.yield_last_token: RequireForbidFlagField = YieldLastTokenToOverlappingCompound(vocab)
 
+#todo performance: memory: high-priority: combine into a single bitfield in memory
 class VocabMatchingRulesConfigurationBoolFlags(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self._vocab: WeakRef[VocabNote] = vocab

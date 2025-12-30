@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from aqt import gui_hooks
-from note.note_constants import Tags
+from note.tags import Tags
 from note.vocabulary.vocabnote import VocabNote
 from sysutils.ex_str import newline
 from ui.web.vocab.vocab_sentences_vocab_sentence_view_model import VocabSentenceViewModel

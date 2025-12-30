@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from note.note_constants import Tags
+from note.tags import Tags
 from sysutils import kana_utils
 from typed_linq_collections.collections.q_frozen_set import QFrozenSet
 

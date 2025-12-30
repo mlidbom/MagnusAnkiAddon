@@ -8,7 +8,8 @@ from anki_extentions.notetype_ex.note_type_ex import NoteTypeEx
 from ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from note import noteutils
-from note.note_constants import CardTypes, MyNoteFields, NoteTypes, Tags
+from note.note_constants import CardTypes, MyNoteFields, NoteTypes
+from note.tags import Tags
 from note.note_flush_guard import NoteRecursiveFlushGuard
 from sysutils import ex_assert, ex_str
 from sysutils.memory_usage import string_auto_interner
