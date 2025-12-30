@@ -32,7 +32,6 @@ class TextAnalysisLocation(WeakRefable, Slots):
         self.character_start_index: int = character_start_index
         self.character_end_index: int = character_start_index + len(self.token.surface) - 1
 
-        self.known_words: list[CandidateWord] = []
         self.valid_words: QList[CandidateWord] = QList()
         self.display_variants: list[CandidateWordVariant] = []
         self.valid_variants: QList[CandidateWordVariant] = QList()
@@ -50,7 +49,7 @@ class TextAnalysisLocation(WeakRefable, Slots):
     def __repr__(self) -> str:
         return f"""
 TextLocation('{self.character_start_index}-{self.character_end_index}, {self.token.surface} | {self.token.base_form})
-{newline.join([cand.__repr__() for cand in self.known_words])}
+{newline.join([cand.__repr__() for cand in self.indexing_variants])}
 """
 
     def forward_list(self, length: int = 99999) -> list[TextAnalysisLocation]:
@@ -65,7 +64,6 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
         for range_ in self.candidate_words[:-1]:  # we already have the last one completed
             range_.run_validity_analysis()
 
-        self.known_words = self.candidate_words.where(lambda candidate: candidate.is_word).to_list()
         self.valid_words = self.candidate_words.where(lambda candidate: candidate.has_valid_words()).to_list()
         self.indexing_variants = self.candidate_words.select_many(lambda candidate: candidate.indexing_variants).to_list()
         self.valid_variants = self.valid_words.select_many(lambda valid: valid.valid_variants).to_list()
