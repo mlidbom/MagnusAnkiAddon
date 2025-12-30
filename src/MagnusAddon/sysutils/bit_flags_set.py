@@ -31,12 +31,6 @@ class BitFlagsSet(QIterable[int]):
             bitfield >>= 1
             bit_pos += 1
 
-    def count(self) -> int:
-        return self._bitfield.bit_count()
-
-    def is_empty(self) -> bool:
-        return self._bitfield == 0
-
     @property
     def bitfield(self) -> int:
         return self._bitfield
