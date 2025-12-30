@@ -61,11 +61,10 @@ class NoteTags(QIterable[Tag]):
     def __iter__(self) -> Iterator[Tag]:
         yield from self._flags.select(Tag.from_id)
 
-    _interned_string_lists: QDict[int, list[str]] = QDict()
+    _interned_string_lists: QDict[BitFlagsSet, list[str]] = QDict()
     def to_interned_string_list(self) -> list[str]:
-        bitfield = self._flags.bitfield
-        if bitfield not in self._interned_string_lists:
+        if self._flags not in self._interned_string_lists:
             sorted_name_list = query(self).select(lambda it: it.name).order_by(lambda it: it).to_list()
-            self._interned_string_lists[bitfield] = string_auto_interner.auto_intern_qlist(sorted_name_list)
+            self._interned_string_lists[self._flags] = string_auto_interner.auto_intern_qlist(sorted_name_list)
 
-        return self._interned_string_lists[bitfield]
+        return self._interned_string_lists[self._flags]

@@ -24,13 +24,19 @@ class BitFlagsSet(QIterable[int]):
     @override
     def __iter__(self) -> Iterator[int]:
         bitfield = self._bitfield
-        bit_pos = 0
+        flag = 0
         while bitfield:
             if bitfield & 1:
-                yield bit_pos
+                yield flag
             bitfield >>= 1
-            bit_pos += 1
+            flag += 1
 
-    @property
-    def bitfield(self) -> int:
+    @override
+    def __hash__(self) -> int:
         return self._bitfield
+
+    @override
+    def __eq__(self, other: object) -> bool:
+        if isinstance(other, BitFlagsSet):
+            return self._bitfield == other._bitfield
+        return False
