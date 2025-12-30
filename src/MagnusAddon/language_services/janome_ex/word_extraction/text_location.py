@@ -77,13 +77,12 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
             for overlapped_location in valid_word.locations[:-1]:  # All locations except the last
                 overlapped_location().yield_target_candidates.append(valid_word)
 
-        # Register each valid compound as covering each location it spans (excluding start and end).
-        # A compound at [start, end] covers locations start+1..end-1 for shadowing purposes.
-        # (It doesn't shadow things at its own start, and doesn't shadow things starting at its end)
+        # Register each valid compound as covering each location in its interior.
+        # A compound at [start, end] covers locations start+1..end-1.
+        # (It doesn't cover its own start, and doesn't cover things starting at its end)
         for valid_word in self.valid_words:
-            if len(valid_word.locations) > 2:  # Must span at least 3 positions to have interior
-                for covered_location in valid_word.locations[1:-1]:  # Interior locations only
-                    covered_location().covering_words.append(valid_word)
+            for covered_location in valid_word.locations[1:-1]:  # Interior locations only
+                covered_location().covering_words.append(valid_word)
 
     def _run_display_analysis_pass_true_if_there_were_changes(self) -> bool:
         changes_made = False
