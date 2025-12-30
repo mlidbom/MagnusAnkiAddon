@@ -22,6 +22,12 @@ class BitFlagsSet(QIterable[int]):
     def unset_flag(self, flag: int) -> None:
         self._bitfield &= ~(1 << flag)
 
+    def toggle_flag(self, flag: int, on: bool) -> None:
+        if on:
+            self.set_flag(flag)
+        else:
+            self.unset_flag(flag)
+
     @override
     def __iter__(self) -> Iterator[int]:
         bitfield = self._bitfield
@@ -41,3 +47,7 @@ class BitFlagsSet(QIterable[int]):
         if isinstance(other, BitFlagsSet):
             return self._bitfield == other._bitfield
         return False
+
+    @staticmethod
+    def flag_for(flag: int) -> int:
+        return 1 << flag

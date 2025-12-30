@@ -31,7 +31,9 @@ class VocabNoteUserCompoundParts(Slots):
 
     def primary(self) -> QList[str]: return query(self._field.get()).where(lambda part: not part.startswith("[")).to_list() #[part for part in self._field.get() if not part.startswith("[")]
     def all(self) -> QList[str]: return query(self._field.get()).select(self._strip_brackets).to_list() #[self._strip_brackets(part) for part in self._field.get()]
-    def set(self, value: list[str]) -> None: self._field.set(value)
+    def set(self, value: list[str]) -> None:
+        self._field.set(value)
+        self._vocab.parts_of_speech.reset_cache()
 
     def all_notes(self) -> QSet[VocabNote]:
         return self.all().select_many(app.col().vocab.with_question).to_set()

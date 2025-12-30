@@ -17,6 +17,7 @@ class POSSetManager:
     _remappings: QDict[str, str] = QDict({"intransitive verb": "intransitive",
                                           "transitive verb": "transitive",
                                           "godan": "godan verb",
+                                          "な adjective": "na-adjective",
                                           "ichidan": "ichidan verb"})
 
     @staticmethod

@@ -34,5 +34,7 @@ class VocabNoteQuestion(Slots):
         if value not in self._vocab().forms.all_set():
             self._vocab().forms.set_set(self._vocab().forms.all_set() | {value})
 
+        self._vocab().parts_of_speech.reset_cache()
+
     @override
     def __repr__(self) -> str: return self.raw

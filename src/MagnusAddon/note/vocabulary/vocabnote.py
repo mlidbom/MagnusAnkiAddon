@@ -42,9 +42,9 @@ class VocabNote(JPNote, Slots):
         self.related_notes: RelatedVocab = RelatedVocab(self.weakref_vocab)
         self.sentences: VocabNoteSentences = VocabNoteSentences(self.weakref_vocab)
         self.forms: VocabNoteForms = VocabNoteForms(self.weakref_vocab)
-        self.parts_of_speech: VocabNotePartsOfSpeech = VocabNotePartsOfSpeech(self.weakref_vocab)
         self.compound_parts: VocabNoteUserCompoundParts = VocabNoteUserCompoundParts(self.weakref_vocab)
         self.matching_configuration: VocabNoteMatchingConfiguration = VocabNoteMatchingConfiguration(self.weakref_vocab)
+        self.parts_of_speech: VocabNotePartsOfSpeech = VocabNotePartsOfSpeech(self.weakref_vocab)
 
 
     @property

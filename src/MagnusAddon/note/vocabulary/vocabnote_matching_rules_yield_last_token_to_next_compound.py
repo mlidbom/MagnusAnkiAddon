@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, override
+from typing import TYPE_CHECKING, cast, override
 
 from ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
@@ -21,7 +21,12 @@ class YieldLastTokenToOverlappingCompound(RequireForbidFlagField, WeakRefable, S
 
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         super().__init__(vocab, Tags.Vocab.Matching.yield_last_token_to_overlapping_compound, Tags.Vocab.Matching.Forbids.auto_yielding)
-        self._pos: VocabNotePartsOfSpeech = vocab().parts_of_speech
+
+    @property
+    def _vocab(self) -> VocabNote: return cast("VocabNote", self._note())
+
+    @property
+    def _pos(self) -> VocabNotePartsOfSpeech: return self._vocab.parts_of_speech
 
     def _decide_if_required(self) -> bool:
         return (super().is_required
