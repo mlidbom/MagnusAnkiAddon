@@ -53,6 +53,8 @@ class MatchStateTest(Slots):
     @property
     def word(self) -> CandidateWord: return self.variant.word
     @property
+    def start_location(self) -> TextAnalysisLocation: return self.word.start_location
+    @property
     def end_location(self) -> TextAnalysisLocation: return self.word.end_location
     @property
     def configuration(self) -> SentenceConfiguration: return self.variant.configuration

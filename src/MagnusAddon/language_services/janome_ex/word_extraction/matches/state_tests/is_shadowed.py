@@ -2,23 +2,14 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from autoslot import Slots
 from language_services.janome_ex.word_extraction.matches.state_tests.match_state_test import MatchStateTest
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.match import Match
     from sysutils.weak_ref import WeakRef
 
-
 class IsShadowed(MatchStateTest, Slots):
-    """Checks if this match is shadowed by a covering match.
-
-    A covering match is one that starts BEFORE this match and extends OVER this match's
-    start position. This match is shadowed if ANY covering match would NOT yield to it.
-
-    Covering matches are pre-computed (valid, non-hidden) in TextAnalysisLocation.covering_matches.
-    """
-
     def __init__(self, match: WeakRef[Match]) -> None:
         super().__init__(match)
 
@@ -32,35 +23,18 @@ class IsShadowed(MatchStateTest, Slots):
 
     @override
     def _internal_match_is_in_state(self) -> bool:
-        from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
-
-        my_start_idx = self.word.start_location.token_index
-        my_end_idx = self.word.end_location.token_index
-
-        for covering_match in self.word.start_location.covering_matches:
-            # Would this covering match yield to us?
-            if self._would_yield_to_us(covering_match, my_start_idx, my_end_idx):
-                continue  # It yields, doesn't shadow us
-
-            # This match wouldn't yield - it shadows us
+        if self.start_location.covering_matches.none():
+            return False
+        if not self.word.is_custom_compound:
             return True
-
-        return False
-
-    def _would_yield_to_us(self, match: Match, my_start_idx: int, my_end_idx: int) -> bool:
-        """Check if match would yield to our word."""
-        from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
-
-        if not isinstance(match, VocabMatch):
-            return False
-        if not match.requires_forbids.yield_last_token.is_required:
+        if self.start_location.covering_matches.all(IsShadowed._match_would_yield_to_upcoming_overlapping_compound):  # noqa: SIM103
             return False
 
-        # We're a valid yield target if we start in match's tail and extend beyond match
-        match_start_idx = match.word.start_location.token_index
-        match_end_idx = match.word.end_location.token_index
+        return True
 
-        return my_start_idx > match_start_idx and my_end_idx > match_end_idx
+    @staticmethod
+    def _match_would_yield_to_upcoming_overlapping_compound(match: Match) -> bool:
+        return match.would_yield_to_upcoming_overlapping_compound
 
     @property
     @override

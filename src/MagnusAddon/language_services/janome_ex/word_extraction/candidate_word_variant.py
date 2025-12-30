@@ -35,6 +35,7 @@ class CandidateWordVariant(WeakRefable, Slots):
         self.completed_analysis = False
         self.matches: QList[Match] = QList()
         self._is_valid: bool = False
+        self._valid_matches:QList[Match] = QList()
 
     @property
     def is_surface(self) -> bool: return self.form == self.word.surface_form
@@ -57,6 +58,8 @@ class CandidateWordVariant(WeakRefable, Slots):
 
         self.completed_analysis = True
         self._is_valid = any(match for match in self._once_analyzed.matches if match.is_valid)
+        self._valid_matches = self.matches.where(lambda match: match.is_valid).to_list()
+
 
     @property
     def start_index(self) -> int: return self.word.start_location.character_start_index
@@ -74,6 +77,8 @@ class CandidateWordVariant(WeakRefable, Slots):
     def is_valid(self) -> bool: return self._once_analyzed._is_valid
     @property
     def display_matches(self) -> list[Match]: return [match for match in self._once_analyzed.matches if match.is_displayed]
+    @property
+    def valid_matches(self) -> QList[Match]: return self._once_analyzed._valid_matches
 
     @property
     def _once_analyzed(self) -> CandidateWordVariant:

@@ -45,7 +45,7 @@ class TextAnalysisLocation(WeakRefable, Slots):
         self.yield_target_candidates: list[CandidateWord] = []
         # Valid, non-hidden matches that start BEFORE this location and extend OVER it.
         # Used by IsShadowed to check if this location is shadowed by an earlier match.
-        self.covering_matches: list[Match] = []
+        self.covering_matches: QList[Match] = QList()
 
     @override
     def __repr__(self) -> str:
