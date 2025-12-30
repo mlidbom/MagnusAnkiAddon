@@ -1,13 +1,12 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
-from autoslot import Slots
 from note.tag import Tag
 from sysutils.bit_flags_set import BitFlagsSet
 from sysutils.memory_usage import string_auto_interner
 from typed_linq_collections.collections.q_dict import QDict
-from typed_linq_collections.q_iterable import query
+from typed_linq_collections.q_iterable import QIterable, query
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -15,8 +14,8 @@ if TYPE_CHECKING:
     from note.jpnote import JPNote
     from sysutils.weak_ref import WeakRef
 
-
-class NoteTags(Slots):
+class NoteTags(QIterable[Tag]):
+    __slots__: tuple[str, ...] = ("_note", "_flags")
     """Manages tags for a note using a compact bitfield representation."""
     _flags: BitFlagsSet
 
@@ -33,8 +32,9 @@ class NoteTags(Slots):
     def _sync_to_backend(self) -> None:
         self._note().backend_note.tags = self.to_interned_string_list()
 
-    def contains(self, tag: Tag) -> bool:
-        return self._flags.has(tag.id)
+    @override
+    def contains(self, value: Tag) -> bool:
+        return self._flags.has(value.id)
 
     def set(self, tag: Tag) -> None:
         if not self.contains(tag):
@@ -54,12 +54,10 @@ class NoteTags(Slots):
         else:
             self.unset(tag)
 
-    def all(self) -> list[Tag]:
-        return list(self)
-
     def __contains__(self, tag: Tag) -> bool:  # Support 'tag in tags' syntax.
         return self.contains(tag)
 
+    @override
     def __iter__(self) -> Iterator[Tag]:
         for bit_pos in self._flags.all_flags():
             yield Tag.from_id(bit_pos)

@@ -150,14 +150,14 @@ class JPNote(WeakRefable, Slots):
             self._flush()
 
     def priority_tag_value(self) -> int:
-        for tag in self.tags.all():
+        for tag in self.tags:
             if tag.name.startswith(Tags.priority_folder):
                 return int(ex_str.first_number(tag.name))
         return 0
 
     def get_meta_tags(self) -> QSet[str]:
         tags: QSet[str] = QSet()
-        for tag in self.tags.all():
+        for tag in self.tags:
             if tag.name.startswith(Tags.priority_folder):
                 if "high" in tag.name: tags.add("high_priority")
                 if "low" in tag.name: tags.add("low_priority")
@@ -170,7 +170,7 @@ class JPNote(WeakRefable, Slots):
         return tags
 
     def get_source_tag(self) -> str:
-        source_tags = [t for t in self.tags.all() if t.name.startswith(Tags.Source.folder)]
+        source_tags = [t for t in self.tags if t.name.startswith(Tags.Source.folder)]
         if source_tags:
             source_tags = sorted(source_tags, key=lambda tag: len(tag.name))
             return source_tags[0].name[len(Tags.Source.folder):]

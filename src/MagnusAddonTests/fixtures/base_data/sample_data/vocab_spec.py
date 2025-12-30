@@ -3,10 +3,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from note.tag import Tag
 from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:
+    from note.tag import Tag
     from note.vocabulary.vocabnote import VocabNote
 
 
