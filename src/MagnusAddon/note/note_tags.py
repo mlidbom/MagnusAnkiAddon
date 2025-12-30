@@ -59,8 +59,7 @@ class NoteTags(QIterable[Tag]):
 
     @override
     def __iter__(self) -> Iterator[Tag]:
-        for bit_pos in self._flags.all_flags():
-            yield Tag.from_id(bit_pos)
+        yield from self._flags.select(Tag.from_id)
 
     _interned_string_lists: QDict[int, list[str]] = QDict()
     def to_interned_string_list(self) -> list[str]:

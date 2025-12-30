@@ -1,13 +1,14 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
-from autoslot import Slots
+from typed_linq_collections.q_iterable import QIterable
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
-class BitFlagsSet(Slots):
+class BitFlagsSet(QIterable[int]):
+    __slots__: tuple[str, ...] = ("_bitfield",)
     def __init__(self, bitfield: int = 0) -> None:
         self._bitfield: int = bitfield
 
@@ -20,7 +21,8 @@ class BitFlagsSet(Slots):
     def unset_flag(self, flag: int) -> None:
         self._bitfield &= ~(1 << flag)
 
-    def all_flags(self) -> Iterator[int]:
+    @override
+    def __iter__(self) -> Iterator[int]:
         bitfield = self._bitfield
         bit_pos = 0
         while bitfield:
