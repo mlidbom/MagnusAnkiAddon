@@ -39,10 +39,9 @@ class TextAnalysisLocation(WeakRefable, Slots):
         self.indexing_variants: QList[CandidateWordVariant] = QList()
         self.candidate_words: QList[CandidateWord] = QList()
         self.display_words: list[CandidateWord] = []
-        # Valid compounds that overlap this location and extend beyond it.
-        # A match ending at this location might yield to one of these if it has yield_last_token.
-        # Pre-computed for efficient lookup by HasDisplayedOverlappingFollowingCompound.
-        self.yield_target_candidates: list[CandidateWord] = []
+        # Valid, non-hidden, non-yielding matches that overlap this location and extend beyond it.
+        # A match ending at this location should yield if this list is non-empty.
+        self.yield_target_matches: QList[Match] = QList()
         # Valid, non-hidden matches that start BEFORE this location and extend OVER it.
         # Used by IsShadowed to check if this location is shadowed by an earlier match.
         self.covering_matches: QList[Match] = QList()
@@ -71,21 +70,24 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
         self.indexing_variants = self.candidate_words.select_many(lambda candidate: candidate.indexing_variants).to_list()
         self.valid_variants = self.valid_words.select_many(lambda valid: valid.valid_variants).to_list()
 
-        # Register each valid compound as a potential yield target at each location it overlaps.
-        # A compound at [start, end] is a yield target candidate for locations start..end-1
-        # (i.e., locations where it overlaps AND extends beyond).
-        for valid_word in self.valid_words:
-            for overlapped_location in valid_word.locations[:-1]:  # All locations except the last
-                overlapped_location().yield_target_candidates.append(valid_word)
-
-        # Register each valid, non-hidden match as covering each location in its word's interior.
-        # A word at [start, end] covers locations start+1..end-1.
+        # Register valid, non-hidden, non-yielding matches as yield targets.
+        # A match at word [start, end] is a yield target for locations start..end-1.
+        # Only non-yielding matches count - if a match would itself yield, it won't be displayed.
         from language_services.janome_ex.word_extraction.matches.state_tests.is_configured_hidden import IsConfiguredHidden
         for valid_word in self.valid_words:
             for variant in valid_word.valid_variants:
-                for match in variant.matches:
-                    if not match.is_valid:
+                for match in variant.valid_matches:
+                    if IsConfiguredHidden(match.weakref).match_is_in_state:
                         continue
+                    # Register this non-yielding match as a yield target for earlier locations
+                    for overlapped_location in valid_word.locations[:-1]:
+                        overlapped_location().yield_target_matches.append(match)
+
+        # Register each valid, non-hidden match as covering each location in its word's interior.
+        # A word at [start, end] covers locations start+1..end-1.
+        for valid_word in self.valid_words:
+            for variant in valid_word.valid_variants:
+                for match in variant.valid_matches:
                     if IsConfiguredHidden(match.weakref).match_is_in_state:
                         continue
                     # Register this match as covering interior locations
