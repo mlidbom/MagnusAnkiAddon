@@ -34,7 +34,7 @@ class NoteTags(QIterable[Tag]):
 
     @override
     def contains(self, value: Tag) -> bool:
-        return self._flags.has(value.id)
+        return self._flags.contains(value.id)
 
     def set(self, tag: Tag) -> None:
         if not self.contains(tag):

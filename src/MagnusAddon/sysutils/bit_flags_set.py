@@ -12,8 +12,9 @@ class BitFlagsSet(QIterable[int]):
     def __init__(self, bitfield: int = 0) -> None:
         self._bitfield: int = bitfield
 
-    def has(self, flag: int) -> bool:
-        return bool(self._bitfield & (1 << flag))
+    @override
+    def contains(self, value: int) -> bool:
+        return bool(self._bitfield & (1 << value))
 
     def set_flag(self, flag: int) -> None:
         self._bitfield |= (1 << flag)
