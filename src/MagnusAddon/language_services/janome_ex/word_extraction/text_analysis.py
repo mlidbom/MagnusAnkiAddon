@@ -47,18 +47,17 @@ class TextAnalysis(WeakRefable, Slots):
                                           .to_list())
 
         self.indexing_word_variants: QList[CandidateWordVariant] = self.locations.select_many(lambda location: location.indexing_variants).to_list()
-        self.valid_word_variants: QList[CandidateWordVariant] = self.locations.select_many(lambda location: location.valid_variants).to_list()
         self.display_word_variants: QList[CandidateWordVariant] = self.locations.select_many(lambda location: location.display_variants).to_list()
 
         self.indexing_matches: QList[Match] = self.indexing_word_variants.select_many(lambda variant: variant.matches).to_list()
-        self.valid_matches: QList[Match] = self.indexing_matches.where(lambda match: match.is_valid).to_list()
+        self.valid_matches: QList[Match] = self.indexing_matches.where(lambda match: match.is_valid).to_list() #todo WTH should this differ from indexing_matches. Do we index invalid matches?
 
     @classmethod
     def from_text(cls, text: str) -> TextAnalysis:
         return cls(text, SentenceConfiguration.empty())
 
     def all_words_strings(self) -> list[str]:
-        return [w.form for w in self.valid_word_variants]
+        return [w.parsed_form for w in self.indexing_matches]
     @override
     def __repr__(self) -> str:
         return self.text

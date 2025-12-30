@@ -19,7 +19,7 @@ def build_string_menu(string_menu: QMenu, sentence: SentenceNote, menu_string: s
     def add_add_word_exclusion_action(add_menu: QMenu, exclusion_type_title: str, exclusion_set: WordExclusionSet) -> None:
         menu_string_as_word_exclusion = WordExclusion.global_(menu_string)
         analysis = sentence.create_analysis()
-        valid_words = Lazy(lambda: analysis.valid_word_variants) #these little tricks with the Lazy is to capture the analysis in a closure so that the weak references within the analysis don't get cleaned up before the action is invoked in the UI by the user.
+        valid_words = Lazy(lambda: analysis.indexing_word_variants) #these little tricks with the Lazy is to capture the analysis in a closure so that the weak references within the analysis don't get cleaned up before the action is invoked in the UI by the user.
         words_excluded_by_menu_string: Lazy[list[CandidateWordVariant]] = Lazy(lambda: [w for w in valid_words() if menu_string_as_word_exclusion.excludes_form_at_index(w.form, w.start_index)])
         if any(words_excluded_by_menu_string()):
             if len(words_excluded_by_menu_string()) == 1:
