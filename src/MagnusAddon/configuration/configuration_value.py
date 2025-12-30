@@ -90,7 +90,6 @@ class JapaneseConfig(Slots):
                                                                                                                        default=False,
                                                                                                                        feature_toggler=set_enable_fsrs_short_term_with_steps)
 
-        self.create_vocab_if_missing_when_parsing: ConfigurationValueBool = ConfigurationValueBool("create_vocab_if_missing_when_parsing", "Create vocab if missing when parsing", False)
         self.decrease_failed_card_intervals: ConfigurationValueBool = ConfigurationValueBool("decrease_failed_card_intervals", "Decrease failed card intervals", False)
 
         self.prevent_double_clicks: ConfigurationValueBool = ConfigurationValueBool("prevent_double_clicks", "Prevent double clicks", True)
@@ -139,8 +138,7 @@ class JapaneseConfig(Slots):
                        self.decrease_failed_card_intervals,
                        self.prevent_double_clicks,
                        self.boost_failed_card_allowed_time,
-                       self.prefer_default_mnemonics_to_source_mnemonics,
-                       self.create_vocab_if_missing_when_parsing]),
+                       self.prefer_default_mnemonics_to_source_mnemonics]),
              ("Performance and memory usage", [self.load_studio_in_foreground,
                                                self.load_jamdict_db_into_memory,
                                                self.pre_cache_card_studying_status,

@@ -31,8 +31,6 @@ class CandidateWordVariant(WeakRefable, Slots):
 
         self._dict_lookup: Lazy[DictLookupResult] = Lazy(lambda: DictLookup.lookup_word(form))
         self.vocab_matches: QList[VocabMatch] = QList(VocabMatch(self.weak_ref, vocab) for vocab in app.col().vocab.with_form(form))
-        if self.vocab_matches.none() and self._dict_lookup().found_words() and app.config().create_vocab_if_missing_when_parsing.get_value():
-            self.vocab_matches = QList([VocabMatch(self.weak_ref, VocabNote.factory.create_with_dictionary(form))])
 
         # will be completed in complete_analysis
         self.completed_analysis = False
