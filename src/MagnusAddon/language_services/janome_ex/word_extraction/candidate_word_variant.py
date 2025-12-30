@@ -76,7 +76,7 @@ class CandidateWordVariant(WeakRefable, Slots):
     @property
     def is_valid(self) -> bool: return self._once_analyzed._is_valid
     @property
-    def display_matches(self) -> list[Match]: return [match for match in self._once_analyzed.matches if match.is_displayed]
+    def display_matches(self) -> QList[Match]: return self._once_analyzed.matches.where(lambda it: it.is_displayed).to_list()
     @property
     def valid_matches(self) -> QList[Match]: return self._once_analyzed._valid_matches
 

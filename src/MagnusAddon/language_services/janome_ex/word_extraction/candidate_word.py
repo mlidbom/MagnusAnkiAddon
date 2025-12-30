@@ -41,8 +41,6 @@ class CandidateWord(WeakRefable, Slots):
     @property
     def has_valid_base_with_display_matches(self) -> bool: return self.has_valid_base_variant and any(non_optional(self.base_variant).display_matches)
     @property
-    def should_include_surface_in_display_variants(self) -> bool: return self.should_include_surface_in_all_words and any(self.surface_variant.display_matches)
-    @property
     def should_index_base(self) -> bool: return self.base_variant is not None and (self.base_variant.is_known_word or self.has_valid_base_variant)
     @property
     def should_index_surface(self) -> bool: return self.surface_variant.is_known_word or self.should_include_surface_in_all_words
@@ -72,7 +70,7 @@ class CandidateWord(WeakRefable, Slots):
         old_display_word_variants = self.display_variants
         self.display_variants = []
 
-        if self.should_include_surface_in_display_variants:
+        if self.surface_variant.display_matches.any():
             self.display_variants.append(self.surface_variant)
         elif self.has_valid_base_with_display_matches:
             self.display_variants.append(non_optional(self.base_variant))
