@@ -38,9 +38,10 @@ class TextAnalysisLocation(WeakRefable, Slots):
         self.indexing_variants: QList[CandidateWordVariant] = QList()
         self.candidate_words: QList[CandidateWord] = QList()
         self.display_words: list[CandidateWord] = []
-        # Valid compounds that cover this location and extend beyond it.
-        # Used by HasDisplayedOverlappingFollowingCompound to quickly find yield targets.
-        self.covering_compounds_extending_beyond: list[CandidateWord] = []
+        # Valid compounds that overlap this location and extend beyond it.
+        # A match ending at this location might yield to one of these if it has yield_last_token.
+        # Pre-computed for efficient lookup by HasDisplayedOverlappingFollowingCompound.
+        self.yield_target_candidates: list[CandidateWord] = []
 
     @override
     def __repr__(self) -> str:
@@ -66,12 +67,12 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
         self.indexing_variants = self.candidate_words.select_many(lambda candidate: candidate.indexing_variants).to_list()
         self.valid_variants = self.valid_words.select_many(lambda valid: valid.valid_variants).to_list()
 
-        # Register each valid compound as covering the locations it spans (excluding its end).
-        # A compound at [start, end] covers locations start..end-1 with "extending beyond".
+        # Register each valid compound as a potential yield target at each location it overlaps.
+        # A compound at [start, end] is a yield target candidate for locations start..end-1
+        # (i.e., locations where it overlaps AND extends beyond).
         for valid_word in self.valid_words:
-            end_idx = valid_word.end_location.token_index
-            for covered_location in valid_word.locations[:-1]:  # All locations except the last
-                covered_location().covering_compounds_extending_beyond.append(valid_word)
+            for overlapped_location in valid_word.locations[:-1]:  # All locations except the last
+                overlapped_location().yield_target_candidates.append(valid_word)
 
     def _run_display_analysis_pass_true_if_there_were_changes(self) -> bool:
         changes_made = False

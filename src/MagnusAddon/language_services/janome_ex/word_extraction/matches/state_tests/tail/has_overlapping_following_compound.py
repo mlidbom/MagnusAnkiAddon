@@ -36,12 +36,12 @@ class HasDisplayedOverlappingFollowingCompound(MatchStateTest, Slots):
     @property
     @override
     def match_is_in_state(self) -> bool:
-        # Get pre-computed covering compounds at our end location that extend beyond it.
+        # Get pre-computed yield target candidates at our end location.
         # Filter for those starting in our tail (after our start position).
         my_start_idx = self.word.start_location.token_index
         my_end_idx = self.word.end_location.token_index
 
-        for compound in self.end_location.covering_compounds_extending_beyond:
+        for compound in self.end_location.yield_target_candidates:
             compound_start_idx = compound.start_location.token_index
             # Must start in our tail (after our start) and extend beyond our end
             if compound_start_idx > my_start_idx and compound.end_location.token_index > my_end_idx:
@@ -82,11 +82,11 @@ class HasDisplayedOverlappingFollowingCompound(MatchStateTest, Slots):
         if not match.requires_forbids.yield_last_token.is_required:
             return False
 
-        # Use pre-computed covering compounds for this match's end location
+        # Use pre-computed yield target candidates for this match's end location
         match_start_idx = match.word.start_location.token_index
         match_end_idx = match.word.end_location.token_index
 
-        for candidate in match.word.end_location.covering_compounds_extending_beyond:
+        for candidate in match.word.end_location.yield_target_candidates:
             candidate_start_idx = candidate.start_location.token_index
             # Must start in match's tail and extend beyond match's end
             if candidate_start_idx > match_start_idx and candidate.end_location.token_index > match_end_idx:
