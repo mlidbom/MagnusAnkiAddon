@@ -15,16 +15,13 @@ class TagFlagField(Slots):
         self.tag: Tag = tag
 
     def is_set(self) -> bool:
-        jp_note = self._note()
-        return jp_note.tags.contains(self.tag)
+        return self._note().tags.contains(self.tag)
 
     def set_to(self, set_: bool) -> None:
         if set_:
-            jp_note = self._note()
-            jp_note.tags.set(self.tag)
+            self._note().tags.set(self.tag)
         else:
-            jp_note1 = self._note()
-            jp_note1.tags.unset(self.tag)
+            self._note().tags.unset(self.tag)
 
     @override
     def __repr__(self) -> str: return f"""{self.tag.name}: {self.is_set()}"""
