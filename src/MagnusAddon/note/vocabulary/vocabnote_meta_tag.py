@@ -17,7 +17,7 @@ class VocabMetaTag(Slots):
         self.tooltip: str = tooltip
 
 def get_meta_tags_html(vocab: VocabNote, display_extended_sentence_statistics: bool = True, no_sentense_statistics: bool = False) -> str:
-    tags = {tag.name for tag in vocab.get_tags()}
+    tags = {tag.name for tag in vocab.tags.get_all()}
     meta: list[VocabMetaTag] = []
     tos = QSet(t.lower().strip() for t in vocab.parts_of_speech.raw_string_value().split(","))
 

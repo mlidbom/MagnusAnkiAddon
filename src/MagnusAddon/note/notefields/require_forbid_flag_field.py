@@ -16,9 +16,13 @@ class RequireForbidFlagField(Slots):
         self._forbidden_tag: Tag = forbidden_tag
 
     @property
-    def is_configured_required(self) -> bool: return self._note().has_tag(self._required_tag)
+    def is_configured_required(self) -> bool:
+        jp_note = self._note()
+        return jp_note.tags.has_tag(self._required_tag)
     @property
-    def is_configured_forbidden(self) -> bool: return self._note().has_tag(self._forbidden_tag)
+    def is_configured_forbidden(self) -> bool:
+        jp_note = self._note()
+        return jp_note.tags.has_tag(self._forbidden_tag)
 
     @property
     def is_required(self) -> bool: return self.is_configured_required
@@ -27,18 +31,23 @@ class RequireForbidFlagField(Slots):
 
     def set_forbidden(self, value: bool) -> None:
         if value:
-            self._note().set_tag(self._forbidden_tag)
-            self._note().remove_tag(self._required_tag)
+            jp_note = self._note()
+            jp_note.tags.set_tag(self._forbidden_tag)
+            jp_note1 = self._note()
+            jp_note1.tags.remove_tag(self._required_tag)
         else:
-            self._note().remove_tag(self._forbidden_tag)
-
+            jp_note2 = self._note()
+            jp_note2.tags.remove_tag(self._forbidden_tag)
 
     def set_required(self, value: bool) -> None:
         if value:
-            self._note().set_tag(self._required_tag)
-            self._note().remove_tag(self._forbidden_tag)
+            jp_note = self._note()
+            jp_note.tags.set_tag(self._required_tag)
+            jp_note1 = self._note()
+            jp_note1.tags.remove_tag(self._forbidden_tag)
         else:
-            self._note().remove_tag(self._required_tag)
+            jp_note2 = self._note()
+            jp_note2.tags.remove_tag(self._required_tag)
 
     @override
     def __repr__(self) -> str:

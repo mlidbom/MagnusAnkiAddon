@@ -136,7 +136,7 @@ class SentenceNote(JPNote, Slots):
         note.update_generated_data()
 
         if not audio.strip():
-            note.set_tag(Tags.TTSAudio)
+            note.tags.set_tag(Tags.TTSAudio)
         else:
             audio1 = audio.strip()
             note.audio.set_raw_value(audio1)
@@ -147,7 +147,7 @@ class SentenceNote(JPNote, Slots):
 
         if tags:
             for tag in tags:
-                note.set_tag(tag)
+                note.tags.set_tag(tag)
 
         app.col().sentences.add(note)
         return note

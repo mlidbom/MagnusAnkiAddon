@@ -21,7 +21,7 @@ def update_generated_data(vocab: VocabNote) -> None:
 
     if not readings and kana_utils.is_only_kana(question):
         vocab.readings.set([question])
-        vocab.set_tag(Tags.UsuallyKanaOnly)
+        vocab.tags.set_tag(Tags.UsuallyKanaOnly)
 
     if len(vocab.compound_parts.all()) == 0 and vocab.parts_of_speech.is_suru_verb_included():
         compounds = [question[:-2], "する"]
@@ -35,8 +35,8 @@ def update_generated_data(vocab: VocabNote) -> None:
 
         if vocab.readings.get():  # if we don't have a reading, the lookup will be too unreliable
             lookup = DictLookup.lookup_vocab_word_or_name(vocab)
-            if lookup.is_uk() and not vocab.has_tag(Tags.DisableKanaOnly):
-                vocab.set_tag(Tags.UsuallyKanaOnly)
+            if lookup.is_uk() and not vocab.tags.has_tag(Tags.DisableKanaOnly):
+                vocab.tags.set_tag(Tags.UsuallyKanaOnly)
 
             if not vocab.forms.all_set():
                 if lookup.found_words():

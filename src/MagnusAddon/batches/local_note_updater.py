@@ -73,19 +73,26 @@ def tag_note_metadata() -> None:
 
 def tag_sentence_metadata() -> None:
     def tag_sentence(sentence: SentenceNote) -> None:
-        sentence.toggle_tag(Tags.Sentence.Uses.incorrect_matches, any(sentence.configuration.incorrect_matches.get()))
-        sentence.toggle_tag(Tags.Sentence.Uses.hidden_matches, any(sentence.configuration.hidden_matches.get()))
+        on = any(sentence.configuration.incorrect_matches.get())
+        sentence.tags.toggle_tag(Tags.Sentence.Uses.incorrect_matches, on)
+        on1 = any(sentence.configuration.hidden_matches.get())
+        sentence.tags.toggle_tag(Tags.Sentence.Uses.hidden_matches, on1)
 
     with TaskRunner.current("Tagging sentence notes") as runner:
         runner.process_with_progress(app.col().sentences.all(), tag_sentence, "Tagging sentence notes")
 
 def tag_vocab_metadata() -> None:
     def tag_note(vocab: VocabNote) -> None:
-        vocab.toggle_tag(Tags.Vocab.has_no_studying_sentences, not any(vocab.sentences.studying()))
-        vocab.toggle_tag(Tags.Vocab.Matching.Uses.required_prefix, not vocab.matching_configuration.configurable_rules.required_prefix.none())
-        vocab.toggle_tag(Tags.Vocab.Matching.Uses.prefix_is_not, not vocab.matching_configuration.configurable_rules.prefix_is_not.none())
-        vocab.toggle_tag(Tags.Vocab.Matching.Uses.suffix_is_not, not vocab.matching_configuration.configurable_rules.suffix_is_not.none())
-        vocab.toggle_tag(Tags.Vocab.Matching.Uses.surface_is_not, not vocab.matching_configuration.configurable_rules.surface_is_not.none())
+        on = not any(vocab.sentences.studying())
+        vocab.tags.toggle_tag(Tags.Vocab.has_no_studying_sentences, on)
+        on1 = not vocab.matching_configuration.configurable_rules.required_prefix.none()
+        vocab.tags.toggle_tag(Tags.Vocab.Matching.Uses.required_prefix, on1)
+        on2 = not vocab.matching_configuration.configurable_rules.prefix_is_not.none()
+        vocab.tags.toggle_tag(Tags.Vocab.Matching.Uses.prefix_is_not, on2)
+        on3 = not vocab.matching_configuration.configurable_rules.suffix_is_not.none()
+        vocab.tags.toggle_tag(Tags.Vocab.Matching.Uses.suffix_is_not, on3)
+        on4 = not vocab.matching_configuration.configurable_rules.surface_is_not.none()
+        vocab.tags.toggle_tag(Tags.Vocab.Matching.Uses.surface_is_not, on4)
 
     with TaskRunner.current("Tagging vocab") as runner:
         runner.process_with_progress(app.col().vocab.all(), tag_note, "Tag vocab notes")
@@ -100,19 +107,24 @@ def tag_kanji_metadata() -> None:
         vocab_with_kanji_in_any_form = app.col().vocab.with_kanji_in_any_form(kanji)
 
         is_radical = any(app.col().kanji.with_radical(kanji.get_question()))
-        kanji.toggle_tag(Tags.Kanji.in_vocab_main_form, any(vocab_with_kanji_in_main_form))
-        kanji.toggle_tag(Tags.Kanji.in_any_vocab_form, any(vocab_with_kanji_in_any_form))
+        on = any(vocab_with_kanji_in_main_form)
+        kanji.tags.toggle_tag(Tags.Kanji.in_vocab_main_form, on)
+        on1 = any(vocab_with_kanji_in_any_form)
+        kanji.tags.toggle_tag(Tags.Kanji.in_any_vocab_form, on1)
 
         studying_reading_vocab = [voc for voc in vocab_with_kanji_in_main_form if voc.is_studying(CardTypes.reading)]
-        kanji.toggle_tag(Tags.Kanji.with_studying_vocab, any(studying_reading_vocab))
+        on2 = any(studying_reading_vocab)
+        kanji.tags.toggle_tag(Tags.Kanji.with_studying_vocab, on2)
 
         primary_readings: list[str] = primary_reading.findall(f"{kanji.get_reading_on_html()} {kanji.get_reading_kun_html()} {kanji.get_reading_nan_html()}")
-        kanji.toggle_tag(Tags.Kanji.with_no_primary_readings, not primary_readings)
+        on3 = not primary_readings
+        kanji.tags.toggle_tag(Tags.Kanji.with_no_primary_readings, on3)
 
         primary_on_readings: list[str] = primary_reading.findall(kanji.get_reading_on_html())
         non_primary_on_readings: list[str] = [reading for reading in kanji.get_readings_on() if reading not in primary_readings]
 
-        kanji.toggle_tag(Tags.Kanji.with_no_primary_on_readings, not primary_on_readings)
+        on4 = not primary_on_readings
+        kanji.tags.toggle_tag(Tags.Kanji.with_no_primary_on_readings, on4)
 
         def reading_is_in_vocab_readings(kanji_reading: str, voc: VocabNote) -> bool: return any(vocab_reading for vocab_reading in voc.readings.get() if reading_in_vocab_reading(kanji, kanji_reading, vocab_reading, voc.get_question()))
         def has_vocab_with_reading(kanji_reading: str) -> bool: return any(voc for voc in vocab_with_kanji_in_main_form if any(vocab_reading for vocab_reading in voc.readings.get() if reading_in_vocab_reading(kanji, kanji_reading, vocab_reading, voc.get_question())))
@@ -120,14 +132,20 @@ def tag_kanji_metadata() -> None:
         def vocab_has_only_known_kanji(voc: VocabNote) -> bool: return not any(kan for kan in voc.kanji.extract_all_kanji() if kan not in known_kanji)
         def has_vocab_with_reading_and_no_unknown_kanji(kanji_reading: str) -> bool: return any(voc for voc in vocab_with_kanji_in_main_form if reading_is_in_vocab_readings(kanji_reading, voc) and vocab_has_only_known_kanji(voc))
 
-        kanji.toggle_tag(Tags.Kanji.with_vocab_with_primary_on_reading, any(primary_on_readings) and has_vocab_with_reading(primary_on_readings[0]))
+        on5 = any(primary_on_readings) and has_vocab_with_reading(primary_on_readings[0])
+        kanji.tags.toggle_tag(Tags.Kanji.with_vocab_with_primary_on_reading, on5)
 
         def has_studying_vocab_with_reading(kanji_reading: str) -> bool: return any(voc for voc in studying_reading_vocab if any(vocab_reading for vocab_reading in voc.readings.get() if reading_in_vocab_reading(kanji, kanji_reading, vocab_reading, voc.get_question())))
-        kanji.toggle_tag(Tags.Kanji.with_studying_vocab_with_primary_on_reading, any(primary_on_readings) and has_studying_vocab_with_reading(primary_on_readings[0]))
-        kanji.toggle_tag(Tags.Kanji.has_studying_vocab_for_each_primary_reading, any(primary_readings) and not any(reading for reading in primary_readings if not has_studying_vocab_with_reading(reading)))
-        kanji.toggle_tag(Tags.Kanji.has_primary_reading_with_no_studying_vocab, any(primary_readings) and any(studying_reading_vocab) and any(reading for reading in primary_readings if not has_studying_vocab_with_reading(reading)))
-        kanji.toggle_tag(Tags.Kanji.has_non_primary_on_reading_vocab, any(reading for reading in non_primary_on_readings if has_vocab_with_reading(reading)))
-        kanji.toggle_tag(Tags.Kanji.has_non_primary_on_reading_vocab_with_only_known_kanji, any(reading for reading in non_primary_on_readings if has_vocab_with_reading_and_no_unknown_kanji(reading)))
+        on6 = any(primary_on_readings) and has_studying_vocab_with_reading(primary_on_readings[0])
+        kanji.tags.toggle_tag(Tags.Kanji.with_studying_vocab_with_primary_on_reading, on6)
+        on7 = any(primary_readings) and not any(reading for reading in primary_readings if not has_studying_vocab_with_reading(reading))
+        kanji.tags.toggle_tag(Tags.Kanji.has_studying_vocab_for_each_primary_reading, on7)
+        on8 = any(primary_readings) and any(studying_reading_vocab) and any(reading for reading in primary_readings if not has_studying_vocab_with_reading(reading))
+        kanji.tags.toggle_tag(Tags.Kanji.has_primary_reading_with_no_studying_vocab, on8)
+        on9 = any(reading for reading in non_primary_on_readings if has_vocab_with_reading(reading))
+        kanji.tags.toggle_tag(Tags.Kanji.has_non_primary_on_reading_vocab, on9)
+        on10 = any(reading for reading in non_primary_on_readings if has_vocab_with_reading_and_no_unknown_kanji(reading))
+        kanji.tags.toggle_tag(Tags.Kanji.has_non_primary_on_reading_vocab_with_only_known_kanji, on10)
 
         all_readings = kanji.get_readings_clean()
 
@@ -137,28 +155,32 @@ def tag_kanji_metadata() -> None:
         def vocab_matches_reading(_vocab: VocabNote) -> bool:
             return any(_reading for _reading in all_readings if any(_vocab_reading for _vocab_reading in _vocab.readings.get() if _reading in _vocab_reading))
 
-        kanji.toggle_tag(Tags.Kanji.has_studying_vocab_with_no_matching_primary_reading, any(_vocab for _vocab in studying_reading_vocab if (not vocab_matches_primary_reading(_vocab) and vocab_matches_reading(_vocab))))
+        on11 = any(_vocab for _vocab in studying_reading_vocab if (not vocab_matches_primary_reading(_vocab) and vocab_matches_reading(_vocab)))
+        kanji.tags.toggle_tag(Tags.Kanji.has_studying_vocab_with_no_matching_primary_reading, on11)
 
-        kanji.toggle_tag(Tags.Kanji.is_radical, is_radical)
-        kanji.toggle_tag(Tags.Kanji.is_radical_purely, is_radical and not any(vocab_with_kanji_in_any_form))
-        kanji.toggle_tag(Tags.Kanji.is_radical_silent, is_radical and not any(primary_readings))
+        kanji.tags.toggle_tag(Tags.Kanji.is_radical, is_radical)
+        on12 = is_radical and not any(vocab_with_kanji_in_any_form)
+        kanji.tags.toggle_tag(Tags.Kanji.is_radical_purely, on12)
+        on13 = is_radical and not any(primary_readings)
+        kanji.tags.toggle_tag(Tags.Kanji.is_radical_silent, on13)
 
     def tag_has_single_kanji_vocab_with_reading_different_from_kanji_primary_reading(kanji: KanjiNote) -> None:
         vocabs = app.col().vocab.with_kanji_in_main_form(kanji)
         single_kanji_vocab = [v for v in vocabs if v.get_question() == kanji.get_question()]
-        kanji.toggle_tag(Tags.Kanji.with_single_kanji_vocab, any(single_kanji_vocab))
+        on = any(single_kanji_vocab)
+        kanji.tags.toggle_tag(Tags.Kanji.with_single_kanji_vocab, on)
         if single_kanji_vocab:
             primary_readings: list[str] = primary_reading.findall(f"{kanji.get_reading_on_html()} {kanji.get_reading_kun_html()} {kanji.get_reading_nan_html()}")
 
-            kanji.remove_tag(Tags.Kanji.with_single_kanji_vocab_with_different_reading)
-            kanji.remove_tag(Tags.Kanji.with_studying_single_kanji_vocab_with_different_reading)
+            kanji.tags.remove_tag(Tags.Kanji.with_single_kanji_vocab_with_different_reading)
+            kanji.tags.remove_tag(Tags.Kanji.with_studying_single_kanji_vocab_with_different_reading)
 
             for vocab in single_kanji_vocab:
                 for reading in vocab.readings.get():
                     if reading not in primary_readings:
-                        kanji.set_tag(Tags.Kanji.with_single_kanji_vocab_with_different_reading)
+                        kanji.tags.set_tag(Tags.Kanji.with_single_kanji_vocab_with_different_reading)
                         if vocab.is_studying(reading):  # todo: Bug: this code looks nuts. You cannot pass a reading to is_studying.
-                            kanji.set_tag(Tags.Kanji.with_studying_single_kanji_vocab_with_different_reading)
+                            kanji.tags.set_tag(Tags.Kanji.with_studying_single_kanji_vocab_with_different_reading)
 
     with TaskRunner.current("Tagging kanji") as runner:
         all_kanji = app.col().kanji.all()

@@ -3,10 +3,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from note.tag import Tag
 from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:
-    from note.tag import Tag
     from note.vocabulary.vocabnote import VocabNote
 
 
@@ -29,7 +29,7 @@ class VocabSpec(Slots):
         self.readings: list[str] = readings or [self.question]
         self.extra_forms: QSet[str] = QSet(forms if forms else [])
         # Convert Tag objects to strings for storage
-        self.tags: QSet[str] = QSet(tag.name for tag in (tags if tags else []))
+        self.tags: QSet[Tag] = QSet(tags) if tags else QSet()
         self.compounds: list[str] = compounds if compounds else []
         self.surface_is_not: QSet[str] = QSet(surface_not if surface_not else ())
         self.yield_to_surface: set[str] = QSet(yield_to_surface if yield_to_surface else ())
@@ -59,9 +59,8 @@ class VocabSpec(Slots):
         if self.extra_forms:
             vocab_note.forms.set_set(vocab_note.forms.all_set() | self.extra_forms)
 
-        from note.tags import Tag
-        for tag_str in self.tags:
-            vocab_note.set_tag(Tag.from_name(tag_str))
+        for tag in self.tags:
+            vocab_note.tags.set_tag(tag)
 
         for excluded_surface in self.surface_is_not:
             vocab_note.matching_configuration.configurable_rules.surface_is_not.add(excluded_surface)

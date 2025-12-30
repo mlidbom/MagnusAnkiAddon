@@ -47,7 +47,9 @@ class VocabNotePartsOfSpeech(Slots):
         question = self._vocab.question.without_noise_characters
         return len(question) > 3 and question[-3:] in self._ga_suru_ni_suru_endings
 
-    def is_uk(self) -> bool: return self._vocab.has_tag(Tags.UsuallyKanaOnly)
+    def is_uk(self) -> bool:
+        jp_note = self._vocab
+        return jp_note.tags.has_tag(Tags.UsuallyKanaOnly)
 
     def set_automatically_from_dictionary(self) -> None:
         from language_services.jamdict_ex.dict_lookup import DictLookup

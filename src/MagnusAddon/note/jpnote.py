@@ -23,7 +23,6 @@ if TYPE_CHECKING:
     from anki.cards import Card
     from anki.notes import Note, NoteId
     from note.collection.jp_collection import JPCollection
-    from note.tag import Tag
 
 class JPNote(WeakRefable, Slots):
     def __init__(self, note: Note) -> None:
@@ -34,7 +33,7 @@ class JPNote(WeakRefable, Slots):
 
         string_auto_interner.auto_intern_list(note.fields) # saves something like 20-30MB of memory on my collection
 
-        self._tags: NoteTags = NoteTags(self.weakref)
+        self.tags: NoteTags = NoteTags(self.weakref)
 
     @property
     def is_flushing(self) -> bool: return self.recursive_flush_guard.is_flushing
@@ -150,30 +149,15 @@ class JPNote(WeakRefable, Slots):
             self.backend_note[field_name] = value
             self._flush()
 
-    def get_tags(self) -> list[Tag]:
-        return self._tags.get_all()
-
-    def has_tag(self, tag: Tag) -> bool:
-        return self._tags.has_tag(tag)
-
-    def set_tag(self, tag: Tag) -> None:
-        self._tags.set_tag(tag)
-
-    def remove_tag(self, tag: Tag) -> None:
-        self._tags.remove_tag(tag)
-
-    def toggle_tag(self, tag: Tag, on: bool) -> None:
-        self._tags.toggle_tag(tag, on)
-
     def priority_tag_value(self) -> int:
-        for tag in self.get_tags():
+        for tag in self.tags.get_all():
             if tag.name.startswith(Tags.priority_folder):
                 return int(ex_str.first_number(tag.name))
         return 0
 
     def get_meta_tags(self) -> QSet[str]:
         tags: QSet[str] = QSet()
-        for tag in self.get_tags():
+        for tag in self.tags.get_all():
             if tag.name.startswith(Tags.priority_folder):
                 if "high" in tag.name: tags.add("high_priority")
                 if "low" in tag.name: tags.add("low_priority")
@@ -181,12 +165,12 @@ class JPNote(WeakRefable, Slots):
         if self.is_studying(CardTypes.reading) or self.is_studying(CardTypes.listening): tags.add("is_studying")
         if self.is_studying(CardTypes.reading): tags.add("is_studying_reading")
         if self.is_studying(CardTypes.listening): tags.add("is_studying_listening")
-        if self.has_tag(Tags.TTSAudio): tags.add("tts_audio")
+        if self.tags.has_tag(Tags.TTSAudio): tags.add("tts_audio")
 
         return tags
 
     def get_source_tag(self) -> str:
-        source_tags = [t for t in self.get_tags() if t.name.startswith(Tags.Source.folder)]
+        source_tags = [t for t in self.tags.get_all() if t.name.startswith(Tags.Source.folder)]
         if source_tags:
             source_tags = sorted(source_tags, key=lambda tag: len(tag.name))
             return source_tags[0].name[len(Tags.Source.folder):]
