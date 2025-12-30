@@ -34,13 +34,14 @@ class CandidateWordVariant(WeakRefable, Slots):
         # will be completed in complete_analysis
         self.completed_analysis = False
         self.matches: QList[Match] = QList()
+        self._is_valid: bool = False
 
     @property
     def is_surface(self) -> bool: return self.form == self.word.surface_form
     @property
     def vocabs_control_match_status(self) -> bool:
-        return (any(self.valid_vocab_matches)
-                or any(self.form_owning_vocab_matches)
+        return (any(self._valid_vocab_matches)
+                or any(self._form_owning_vocab_matches)
                 or (any(self.vocab_matches) and not self._dict_lookup().found_words() and self.word.is_custom_compound))
 
     def run_validity_analysis(self) -> None:
@@ -55,6 +56,7 @@ class CandidateWordVariant(WeakRefable, Slots):
                 self.matches = QList([MissingMatch(self.weak_ref)])
 
         self.completed_analysis = True
+        self._is_valid = any(match for match in self._once_analyzed.matches if match.is_valid)
 
     @property
     def start_index(self) -> int: return self.word.start_location.character_start_index
@@ -65,11 +67,11 @@ class CandidateWordVariant(WeakRefable, Slots):
     @property
     def is_known_word(self) -> bool: return len(self.vocab_matches) > 0 or self._dict_lookup().found_words()
     @property
-    def form_owning_vocab_matches(self) -> list[VocabMatch]: return [vm for vm in self.vocab_matches if vm.vocab.forms.is_owned_form(self.form)]
+    def _form_owning_vocab_matches(self) -> list[VocabMatch]: return [vm for vm in self.vocab_matches if vm.vocab.forms.is_owned_form(self.form)]
     @property
-    def valid_vocab_matches(self) -> list[VocabMatch]: return [vm for vm in self.vocab_matches if vm.is_valid]
+    def _valid_vocab_matches(self) -> list[VocabMatch]: return [vm for vm in self.vocab_matches if vm.is_valid]
     @property
-    def is_valid(self) -> bool: return any(match for match in self._once_analyzed.matches if match.is_valid)
+    def is_valid(self) -> bool: return self._once_analyzed._is_valid
     @property
     def display_matches(self) -> list[Match]: return [match for match in self._once_analyzed.matches if match.is_displayed]
 
