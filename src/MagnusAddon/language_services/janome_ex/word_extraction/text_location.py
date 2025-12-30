@@ -42,6 +42,9 @@ class TextAnalysisLocation(WeakRefable, Slots):
         # A match ending at this location might yield to one of these if it has yield_last_token.
         # Pre-computed for efficient lookup by HasDisplayedOverlappingFollowingCompound.
         self.yield_target_candidates: list[CandidateWord] = []
+        # Valid compounds that start BEFORE this location and extend OVER it.
+        # Used by IsShadowed to check if this location is covered by an earlier word.
+        self.covering_words: list[CandidateWord] = []
 
     @override
     def __repr__(self) -> str:
@@ -73,6 +76,14 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
         for valid_word in self.valid_words:
             for overlapped_location in valid_word.locations[:-1]:  # All locations except the last
                 overlapped_location().yield_target_candidates.append(valid_word)
+
+        # Register each valid compound as covering each location it spans (excluding start and end).
+        # A compound at [start, end] covers locations start+1..end-1 for shadowing purposes.
+        # (It doesn't shadow things at its own start, and doesn't shadow things starting at its end)
+        for valid_word in self.valid_words:
+            if len(valid_word.locations) > 2:  # Must span at least 3 positions to have interior
+                for covered_location in valid_word.locations[1:-1]:  # Interior locations only
+                    covered_location().covering_words.append(valid_word)
 
     def _run_display_analysis_pass_true_if_there_were_changes(self) -> bool:
         changes_made = False

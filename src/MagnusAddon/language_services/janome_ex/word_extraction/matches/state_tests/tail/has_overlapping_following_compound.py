@@ -18,8 +18,8 @@ class HasDisplayedOverlappingFollowingCompound(MatchStateTest, Slots):
     compound displayed?" (which creates circular dependencies), we ask "Would the overlapping
     compound be displayed if this match yielded to it?"
 
-    The covering compounds are pre-computed during analysis step 2 and stored in
-    TextAnalysisLocation.covering_compounds_extending_beyond for efficient lookup.
+    The yield target candidates are pre-computed during analysis step 2 and stored in
+    TextAnalysisLocation.yield_target_candidates for efficient lookup.
     """
 
     def __init__(self, match: WeakRef[Match]) -> None:
@@ -31,11 +31,10 @@ class HasDisplayedOverlappingFollowingCompound(MatchStateTest, Slots):
 
     @property
     @override
-    def is_cachable(self) -> bool: return False
+    def is_cachable(self) -> bool: return True  # Now cacheable - no circular dependencies!
 
-    @property
     @override
-    def match_is_in_state(self) -> bool:
+    def _internal_match_is_in_state(self) -> bool:
         # Get pre-computed yield target candidates at our end location.
         # Filter for those starting in our tail (after our start position).
         my_start_idx = self.word.start_location.token_index
