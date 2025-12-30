@@ -76,14 +76,28 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
     def analysis_step_3_run_initial_display_analysis(self) -> None:
         self._run_display_analysis_pass_true_if_there_were_changes()
 
-    def analysis_step_5_resolve_chains_of_compounds_yielding_to_the_next_compound_pass_true_if_there_were_changes(self) -> bool:
-        # todo this does not feel great. Currently we need the first version of display_words to be created
-        # in order for the DisplayRequirements class to inspect it and mark itself as not being displayed so that it can be removed here.
-        # this is some truly strange invisible order dependency that is making me quite uncomfortable
-        # it also relies on the check for is_yield_last_token_to_overlapping_compound_requirement_fulfilled to return different values at different times
-        # because that method has a circular dependency to display_words which we set up here.
+    def run_display_analysis_and_update_display_words(self) -> bool:
+        """Re-evaluate display status of all candidate words at this location.
 
-        the_next_compound_yields_to_the_one_after_that_so_this_one_no_longer_yields = self._run_display_analysis_pass_true_if_there_were_changes()
+        This method checks each candidate word's matches for display eligibility,
+        which includes checking HasDisplayedOverlappingFollowingCompound (for words
+        marked with yield_last_token). When called right-to-left, the display_words
+        at forward locations are already resolved, so yield decisions are accurate.
+
+        Returns True if any changes were made to display_variants.
+        """
+        return self._run_display_analysis_pass_true_if_there_were_changes()
+
+    def resolve_shadowing_for_display_word(self) -> None:
+        """Set up shadowing relationships based on the first display word at this location.
+
+        If this location has display_words and isn't already shadowed by a longer word:
+        - Set this location's display_variants to the first display word's variants
+        - Mark all forward locations within the display word's range as shadowed
+
+        This method should be called left-to-right after yield resolution, so that
+        longer words at earlier positions can shadow shorter/later words.
+        """
         if self.display_words and not any(self.is_shadowed_by):
             self.display_variants = self.display_words[0].display_variants
 
@@ -91,11 +105,10 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
             for shadowed in self.forward_list(covering_forward_count)[1:]:
                 shadowed.is_shadowed_by.append(self.weakref)
                 self.shadows.append(shadowed.weakref)
+                # If the shadowed location was shadowing others, clear that
                 for shadowed_shadowed in shadowed.shadows:
                     shadowed_shadowed().is_shadowed_by.remove(shadowed.weakref)
                 shadowed.shadows.clear()
-
-        return the_next_compound_yields_to_the_one_after_that_so_this_one_no_longer_yields
 
     def is_next_location_inflecting_word(self) -> bool:
         return self.next is not None and self.next().is_inflecting_word()

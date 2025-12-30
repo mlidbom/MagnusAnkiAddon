@@ -89,9 +89,28 @@ class TextAnalysis(WeakRefable, Slots):
             location.analysis_step_3_run_initial_display_analysis()
 
     def _analysis_step_5_calculate_preference_between_overlapping_display_candidates(self) -> None:
-        changes_made = True
-        while changes_made:
+        # Phase 1: Resolve yield chains by processing right-to-left.
+        # Words can only yield to words starting AFTER them (or overlapping but extending beyond).
+        # By processing right-to-left, when we evaluate a word's yield status, all potential
+        # yield targets have already been resolved, so we see their final display state.
+        for location in reversed(self.locations):
+            location.run_display_analysis_and_update_display_words()
+
+        # Phase 2: Resolve shadowing by processing left-to-right.
+        # Longer words shadow shorter words at the same or following positions.
+        # By processing left-to-right, when a word is chosen for display, it shadows
+        # forward positions before they're processed.
+        for location in self.locations:
+            location.resolve_shadowing_for_display_word()
+
+        # Phase 3: Final cleanup - re-run display analysis with shadowing applied.
+        # This ensures display_variants and display_words correctly reflect shadowed state.
+        # We bound iterations for safety, though typically only 1-2 passes are needed.
+        max_iterations = 10
+        for _ in range(max_iterations):
             changes_made = False
-            for location in self.locations:
-                if location.analysis_step_5_resolve_chains_of_compounds_yielding_to_the_next_compound_pass_true_if_there_were_changes():
+            for location in reversed(self.locations):
+                if location.run_display_analysis_and_update_display_words():
                     changes_made = True
+            if not changes_made:
+                break

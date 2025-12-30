@@ -27,8 +27,10 @@ class HasDisplayedOverlappingFollowingCompound(MatchStateTest, Slots):
     @property
     @override
     def match_is_in_state(self) -> bool:
-        # todo: this is a problematic reference to display_words. That collection is initialized using this class,
-        # so this class will return different results depending on whether it is used after or before display_words is first initialized. Ouch
+        # This checks if there's a displayed word starting within this word's tail
+        # that extends beyond this word's end position. When step 5 processes locations
+        # right-to-left, display_words at forward positions are already resolved,
+        # so yield decisions are made based on final display state (not stale data).
 
         tail_location = self.end_location
         while tail_location is not self.word.start_location:
