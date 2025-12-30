@@ -15,7 +15,7 @@ from note.notefields.strip_html_on_read_fallback_string_field import StripHtmlOn
 from note.sentences.caching_sentence_configuration_field import CachingSentenceConfigurationField
 from note.sentences.parsing_result import ParsingResult
 from note.sentences.user_fields import SentenceUserFields
-from note.tags import Tags
+from note.tags import Tag, Tags
 from sysutils import ex_str, kana_utils
 from sysutils.weak_ref import WeakRef
 from typed_linq_collections.collections.q_set import QSet
@@ -126,7 +126,7 @@ class SentenceNote(JPNote, Slots):
         return note
 
     @classmethod
-    def add_sentence(cls, question: str, answer: str, audio: str = "", screenshot: str = "", highlighted_vocab: QSet[str] | None = None, tags: QSet[str] | None = None) -> SentenceNote:
+    def add_sentence(cls, question: str, answer: str, audio: str = "", screenshot: str = "", highlighted_vocab: QSet[str] | None = None, tags: QSet[Tag] | None = None) -> SentenceNote:
         inner_note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Sentence))
         note = SentenceNote(inner_note)
         note.source_question.set(question)

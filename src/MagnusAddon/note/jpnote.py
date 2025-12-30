@@ -10,12 +10,12 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from note import noteutils
 from note.note_constants import CardTypes, MyNoteFields, NoteTypes
 from note.note_flush_guard import NoteRecursiveFlushGuard
-from note.tags import Tags
+from note.tags import Tag, Tags, TagSet
 from sysutils import ex_assert, ex_str
 from sysutils.memory_usage import string_auto_interner
-from sysutils.memory_usage.tag_set_interner import tag_set_interner
 from sysutils.typed import non_optional, str_
 from sysutils.weak_ref import WeakRef, WeakRefable
+from typed_linq_collections.collections.q_list import QList
 from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:
@@ -33,8 +33,8 @@ class JPNote(WeakRefable, Slots):
 
         string_auto_interner.auto_intern_list(note.fields) # saves something like 20-30MB of memory on my collection
 
-        tag_set, note.tags = tag_set_interner.intern(note.tags)
-        self._tags: QSet[str] = tag_set
+        self._tags: TagSet = TagSet.from_string_list(QList(note.tags))
+        note.tags = self._tags.to_interned_string_list()
 
     @property
     def is_flushing(self) -> bool: return self.recursive_flush_guard.is_flushing
@@ -150,24 +150,24 @@ class JPNote(WeakRefable, Slots):
             self.backend_note[field_name] = value
             self._flush()
 
-    def get_tags(self) -> list[str]:
-        return self.backend_note.tags
+    def get_tags(self) -> list[Tag]:
+        return list(self._tags)
 
-    def has_tag(self, tag: str) -> bool:
-        return tag in self._tags
+    def has_tag(self, tag: Tag) -> bool:
+        return self._tags.has_tag(tag)
 
     def priority_tag_value(self) -> int:
-        for tag in self.backend_note.tags:
-            if tag.startswith(Tags.priority_folder):
-                return int(ex_str.first_number(tag))
+        for tag in self.get_tags():
+            if tag.name.startswith(Tags.priority_folder):
+                return int(ex_str.first_number(tag.name))
         return 0
 
     def get_meta_tags(self) -> QSet[str]:
         tags: QSet[str] = QSet()
-        for tag in self.backend_note.tags:
-            if tag.startswith(Tags.priority_folder):
-                if "high" in tag: tags.add("high_priority")
-                if "low" in tag: tags.add("low_priority")
+        for tag in self.get_tags():
+            if tag.name.startswith(Tags.priority_folder):
+                if "high" in tag.name: tags.add("high_priority")
+                if "low" in tag.name: tags.add("low_priority")
 
         if self.is_studying(CardTypes.reading) or self.is_studying(CardTypes.listening): tags.add("is_studying")
         if self.is_studying(CardTypes.reading): tags.add("is_studying_reading")
@@ -177,23 +177,25 @@ class JPNote(WeakRefable, Slots):
         return tags
 
     def get_source_tag(self) -> str:
-        source_tags = [t for t in self.get_tags() if t.startswith(Tags.Source.folder)]
+        source_tags = [t for t in self.get_tags() if t.name.startswith(Tags.Source.folder)]
         if source_tags:
-            source_tags = sorted(source_tags, key=lambda tag: len(tag))
-            return source_tags[0][len(Tags.Source.folder):]
+            source_tags = sorted(source_tags, key=lambda tag: len(tag.name))
+            return source_tags[0].name[len(Tags.Source.folder):]
         return ""
 
-    def remove_tag(self, tag: str) -> None:
+    def remove_tag(self, tag: Tag) -> None:
         if self.has_tag(tag):
-            self._tags, self.backend_note.tags = tag_set_interner.intern([t for t in self.backend_note.tags if t != tag])
+            self._tags.unset_tag(tag)
+            self.backend_note.tags = self._tags.to_interned_string_list()
             self._flush()
 
-    def set_tag(self, tag: str) -> None:
+    def set_tag(self, tag: Tag) -> None:
         if not self.has_tag(tag):
-            self._tags, self.backend_note.tags = tag_set_interner.intern(self.backend_note.tags + [tag])
+            self._tags.set_tag(tag)
+            self.backend_note.tags = self._tags.to_interned_string_list()
             self._flush()
 
-    def toggle_tag(self, tag: str, on: bool) -> None:
+    def toggle_tag(self, tag: Tag, on: bool) -> None:
         if on:
             self.set_tag(tag)
         else:
