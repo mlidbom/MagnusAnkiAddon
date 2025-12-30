@@ -6,19 +6,17 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from language_services.janome_ex.word_extraction.matches.state_tests.match_state_test import MatchStateTest
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.candidate_word import CandidateWord
     from language_services.janome_ex.word_extraction.matches.match import Match
     from sysutils.weak_ref import WeakRef
 
 
 class IsShadowed(MatchStateTest, Slots):
-    """Checks if this match is shadowed by a covering word.
+    """Checks if this match is shadowed by a covering match.
 
-    A covering word is one that starts BEFORE this match and extends OVER this match's
-    start position. This match is shadowed if ANY covering word would NOT yield to it.
+    A covering match is one that starts BEFORE this match and extends OVER this match's
+    start position. This match is shadowed if ANY covering match would NOT yield to it.
 
-    Simple logic: Coverer C shadows me unless C would yield to me.
-    C yields to me if: C has yield_last_token AND I'm in C's tail AND I extend beyond C.
+    Covering matches are pre-computed (valid, non-hidden) in TextAnalysisLocation.covering_matches.
     """
 
     def __init__(self, match: WeakRef[Match]) -> None:
@@ -34,27 +32,18 @@ class IsShadowed(MatchStateTest, Slots):
 
     @override
     def _internal_match_is_in_state(self) -> bool:
-        from language_services.janome_ex.word_extraction.matches.state_tests.is_configured_hidden import IsConfiguredHidden
         from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
 
         my_start_idx = self.word.start_location.token_index
         my_end_idx = self.word.end_location.token_index
 
-        for covering_word in self.word.start_location.covering_words:
-            # Check if covering_word has any valid, non-hidden match that wouldn't yield to us
-            for variant in covering_word.valid_variants:
-                for match in variant.matches:
-                    if not match.is_valid:
-                        continue
-                    if IsConfiguredHidden(match.weakref).match_is_in_state:
-                        continue
+        for covering_match in self.word.start_location.covering_matches:
+            # Would this covering match yield to us?
+            if self._would_yield_to_us(covering_match, my_start_idx, my_end_idx):
+                continue  # It yields, doesn't shadow us
 
-                    # Would this match yield to us?
-                    if self._would_yield_to_us(match, my_start_idx, my_end_idx):
-                        continue  # It yields, doesn't shadow us
-
-                    # This match wouldn't yield - it shadows us
-                    return True
+            # This match wouldn't yield - it shadows us
+            return True
 
         return False
 
@@ -76,4 +65,4 @@ class IsShadowed(MatchStateTest, Slots):
     @property
     @override
     def state_description(self) -> str:
-        return "shadowed_by_covering_word" if self.match_is_in_state else "forbids::shadowed"
+        return "shadowed_by_covering_match" if self.match_is_in_state else "forbids::shadowed"

@@ -10,6 +10,7 @@ from typed_linq_collections.collections.q_list import QList
 if TYPE_CHECKING:
     from language_services.janome_ex.tokenizing.processed_token import ProcessedToken
     from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
+    from language_services.janome_ex.word_extraction.matches.match import Match
     from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 
 from language_services.janome_ex.word_extraction.candidate_word import CandidateWord
@@ -42,9 +43,9 @@ class TextAnalysisLocation(WeakRefable, Slots):
         # A match ending at this location might yield to one of these if it has yield_last_token.
         # Pre-computed for efficient lookup by HasDisplayedOverlappingFollowingCompound.
         self.yield_target_candidates: list[CandidateWord] = []
-        # Valid compounds that start BEFORE this location and extend OVER it.
-        # Used by IsShadowed to check if this location is covered by an earlier word.
-        self.covering_words: list[CandidateWord] = []
+        # Valid, non-hidden matches that start BEFORE this location and extend OVER it.
+        # Used by IsShadowed to check if this location is shadowed by an earlier match.
+        self.covering_matches: list[Match] = []
 
     @override
     def __repr__(self) -> str:
@@ -77,12 +78,19 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
             for overlapped_location in valid_word.locations[:-1]:  # All locations except the last
                 overlapped_location().yield_target_candidates.append(valid_word)
 
-        # Register each valid compound as covering each location in its interior.
-        # A compound at [start, end] covers locations start+1..end-1.
-        # (It doesn't cover its own start, and doesn't cover things starting at its end)
+        # Register each valid, non-hidden match as covering each location in its word's interior.
+        # A word at [start, end] covers locations start+1..end-1.
+        from language_services.janome_ex.word_extraction.matches.state_tests.is_configured_hidden import IsConfiguredHidden
         for valid_word in self.valid_words:
-            for covered_location in valid_word.locations[1:-1]:  # Interior locations only
-                covered_location().covering_words.append(valid_word)
+            for variant in valid_word.valid_variants:
+                for match in variant.matches:
+                    if not match.is_valid:
+                        continue
+                    if IsConfiguredHidden(match.weakref).match_is_in_state:
+                        continue
+                    # Register this match as covering interior locations
+                    for covered_location in valid_word.locations[1:-1]:
+                        covered_location().covering_matches.append(match)
 
     def _run_display_analysis_pass_true_if_there_were_changes(self) -> bool:
         changes_made = False
