@@ -115,8 +115,8 @@ class VocabCloner(Slots):
         return clone
 
     def _copy_vocab_tags_to(self, target: VocabNote) -> None:
-        for tag in [tag for tag in self.note.get_tags() if tag.startswith(Tags.Vocab.root)]:
-            target.set_tag(tag)
+        for tag in self.note.tags.where(lambda it: it.name.startswith(Tags.Vocab.root)):
+            target.tags.set(tag)
 
     def clone_to_form(self, form: str) -> VocabNote:
         clone = self.clone()

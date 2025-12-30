@@ -9,11 +9,11 @@ from ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from note import noteutils
 from note.note_constants import CardTypes, MyNoteFields, NoteTypes
-from note.tags import Tags
 from note.note_flush_guard import NoteRecursiveFlushGuard
+from note.note_tags import NoteTags
+from note.tags import Tags
 from sysutils import ex_assert, ex_str
 from sysutils.memory_usage import string_auto_interner
-from sysutils.memory_usage.tag_set_interner import tag_set_interner
 from sysutils.typed import non_optional, str_
 from sysutils.weak_ref import WeakRef, WeakRefable
 from typed_linq_collections.collections.q_set import QSet
@@ -33,8 +33,7 @@ class JPNote(WeakRefable, Slots):
 
         string_auto_interner.auto_intern_list(note.fields) # saves something like 20-30MB of memory on my collection
 
-        tag_set, note.tags = tag_set_interner.intern(note.tags)
-        self._tags: QSet[str] = tag_set
+        self.tags: NoteTags = NoteTags(self.weakref)
 
     @property
     def is_flushing(self) -> bool: return self.recursive_flush_guard.is_flushing
@@ -150,51 +149,29 @@ class JPNote(WeakRefable, Slots):
             self.backend_note[field_name] = value
             self._flush()
 
-    def get_tags(self) -> list[str]:
-        return self.backend_note.tags
-
-    def has_tag(self, tag: str) -> bool:
-        return tag in self._tags
-
     def priority_tag_value(self) -> int:
-        for tag in self.backend_note.tags:
-            if tag.startswith(Tags.priority_folder):
-                return int(ex_str.first_number(tag))
+        for tag in self.tags:
+            if tag.name.startswith(Tags.priority_folder):
+                return int(ex_str.first_number(tag.name))
         return 0
 
     def get_meta_tags(self) -> QSet[str]:
         tags: QSet[str] = QSet()
-        for tag in self.backend_note.tags:
-            if tag.startswith(Tags.priority_folder):
-                if "high" in tag: tags.add("high_priority")
-                if "low" in tag: tags.add("low_priority")
+        for tag in self.tags:
+            if tag.name.startswith(Tags.priority_folder):
+                if "high" in tag.name: tags.add("high_priority")
+                if "low" in tag.name: tags.add("low_priority")
 
         if self.is_studying(CardTypes.reading) or self.is_studying(CardTypes.listening): tags.add("is_studying")
         if self.is_studying(CardTypes.reading): tags.add("is_studying_reading")
         if self.is_studying(CardTypes.listening): tags.add("is_studying_listening")
-        if self.has_tag(Tags.TTSAudio): tags.add("tts_audio")
+        if self.tags.contains(Tags.TTSAudio): tags.add("tts_audio")
 
         return tags
 
     def get_source_tag(self) -> str:
-        source_tags = [t for t in self.get_tags() if t.startswith(Tags.Source.folder)]
+        source_tags = [t for t in self.tags if t.name.startswith(Tags.Source.folder)]
         if source_tags:
-            source_tags = sorted(source_tags, key=lambda tag: len(tag))
-            return source_tags[0][len(Tags.Source.folder):]
+            source_tags = sorted(source_tags, key=lambda tag: len(tag.name))
+            return source_tags[0].name[len(Tags.Source.folder):]
         return ""
-
-    def remove_tag(self, tag: str) -> None:
-        if self.has_tag(tag):
-            self._tags, self.backend_note.tags = tag_set_interner.intern([t for t in self.backend_note.tags if t != tag])
-            self._flush()
-
-    def set_tag(self, tag: str) -> None:
-        if not self.has_tag(tag):
-            self._tags, self.backend_note.tags = tag_set_interner.intern(self.backend_note.tags + [tag])
-            self._flush()
-
-    def toggle_tag(self, tag: str, on: bool) -> None:
-        if on:
-            self.set_tag(tag)
-        else:
-            self.remove_tag(tag)

@@ -4,11 +4,11 @@ from typing import TYPE_CHECKING, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from note.note_constants import NoteFields
-from note.tags import Tags
 from note.notefields.auto_save_wrappers.set_wrapper import FieldSetWrapper
 from note.notefields.json_object_field import MutableSerializedObjectField
 from note.notefields.require_forbid_flag_field import RequireForbidFlagField
 from note.notefields.tag_flag_field import TagFlagField
+from note.tags import Tags
 from note.vocabulary.serialization.matching_rules_serializer import VocabNoteMatchingRulesSerializer
 from note.vocabulary.vocabnote_matching_rules_is_inflecting_word import IsInflectingWord
 from note.vocabulary.vocabnote_matching_rules_yield_last_token_to_next_compound import YieldLastTokenToOverlappingCompound

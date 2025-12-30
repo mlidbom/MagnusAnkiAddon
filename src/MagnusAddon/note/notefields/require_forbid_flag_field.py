@@ -6,18 +6,21 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 
 if TYPE_CHECKING:
     from note.jpnote import JPNote
+    from note.tag import Tag
     from sysutils.weak_ref import WeakRef
 
 class RequireForbidFlagField(Slots):
-    def __init__(self, note: WeakRef[JPNote], required_tag: str, forbidden_tag: str) -> None:
+    def __init__(self, note: WeakRef[JPNote], required_tag: Tag, forbidden_tag: Tag) -> None:
         self._note: WeakRef[JPNote] = note
-        self._required_tag: str = required_tag
-        self._forbidden_tag: str = forbidden_tag
+        self._required_tag: Tag = required_tag
+        self._forbidden_tag: Tag = forbidden_tag
 
     @property
-    def is_configured_required(self) -> bool: return self._note().has_tag(self._required_tag)
+    def is_configured_required(self) -> bool:
+        return self._note().tags.contains(self._required_tag)
     @property
-    def is_configured_forbidden(self) -> bool: return self._note().has_tag(self._forbidden_tag)
+    def is_configured_forbidden(self) -> bool:
+        return self._note().tags.contains(self._forbidden_tag)
 
     @property
     def is_required(self) -> bool: return self.is_configured_required
@@ -26,18 +29,18 @@ class RequireForbidFlagField(Slots):
 
     def set_forbidden(self, value: bool) -> None:
         if value:
-            self._note().set_tag(self._forbidden_tag)
-            self._note().remove_tag(self._required_tag)
+            self._note().tags.set(self._forbidden_tag)
+            self._note().tags.unset(self._required_tag)
         else:
-            self._note().remove_tag(self._forbidden_tag)
-
+            self._note().tags.unset(self._forbidden_tag)
 
     def set_required(self, value: bool) -> None:
         if value:
-            self._note().set_tag(self._required_tag)
-            self._note().remove_tag(self._forbidden_tag)
+            self._note().tags.set(self._required_tag)
+            self._note().tags.unset(self._forbidden_tag)
         else:
-            self._note().remove_tag(self._required_tag)
+            self._note().tags.unset(self._required_tag)
 
     @override
-    def __repr__(self) -> str: return f"""{self._required_tag.replace("requires::", "")} required: {self.is_required}, forbidden: {self.is_forbidden}"""
+    def __repr__(self) -> str:
+        return f"""{self._required_tag.name.replace("requires::", "")} required: {self.is_required}, forbidden: {self.is_forbidden}"""
