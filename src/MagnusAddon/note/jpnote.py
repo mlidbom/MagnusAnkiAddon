@@ -10,7 +10,8 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from note import noteutils
 from note.note_constants import CardTypes, MyNoteFields, NoteTypes
 from note.note_flush_guard import NoteRecursiveFlushGuard
-from note.tags import NoteTags, Tag, Tags
+from note.note_tags import NoteTags
+from note.tags import Tags
 from sysutils import ex_assert, ex_str
 from sysutils.memory_usage import string_auto_interner
 from sysutils.typed import non_optional, str_
@@ -22,6 +23,7 @@ if TYPE_CHECKING:
     from anki.cards import Card
     from anki.notes import Note, NoteId
     from note.collection.jp_collection import JPCollection
+    from note.tag import Tag
 
 class JPNote(WeakRefable, Slots):
     def __init__(self, note: Note) -> None:

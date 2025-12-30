@@ -15,7 +15,7 @@ from note.notefields.strip_html_on_read_fallback_string_field import StripHtmlOn
 from note.sentences.caching_sentence_configuration_field import CachingSentenceConfigurationField
 from note.sentences.parsing_result import ParsingResult
 from note.sentences.user_fields import SentenceUserFields
-from note.tags import Tag, Tags
+from note.tags import Tags
 from sysutils import ex_str, kana_utils
 from sysutils.weak_ref import WeakRef
 from typed_linq_collections.collections.q_set import QSet
@@ -23,6 +23,7 @@ from typed_linq_collections.collections.q_set import QSet
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
     from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
+    from note.tag import Tag
     from note.vocabulary.vocabnote import VocabNote
     from typed_linq_collections.collections.q_list import QList
     from typed_linq_collections.collections.q_unique_list import QUniqueList

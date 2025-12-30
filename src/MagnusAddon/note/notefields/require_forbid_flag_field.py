@@ -6,7 +6,7 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 
 if TYPE_CHECKING:
     from note.jpnote import JPNote
-    from note.tags import Tag
+    from note.tag import Tag
     from sysutils.weak_ref import WeakRef
 
 class RequireForbidFlagField(Slots):

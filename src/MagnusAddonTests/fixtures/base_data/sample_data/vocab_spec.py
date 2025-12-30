@@ -6,7 +6,7 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:
-    from note.tags import Tag
+    from note.tag import Tag
     from note.vocabulary.vocabnote import VocabNote
 
 
