@@ -49,7 +49,7 @@ class VocabNotePartsOfSpeech(Slots):
 
     def is_uk(self) -> bool:
         jp_note = self._vocab
-        return jp_note.tags.has_tag(Tags.UsuallyKanaOnly)
+        return jp_note.tags.contains(Tags.UsuallyKanaOnly)
 
     def set_automatically_from_dictionary(self) -> None:
         from language_services.jamdict_ex.dict_lookup import DictLookup

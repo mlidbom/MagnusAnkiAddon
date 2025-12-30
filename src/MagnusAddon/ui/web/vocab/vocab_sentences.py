@@ -19,7 +19,7 @@ def generate_sentences_list_html(_vocab_note: VocabNote) -> str:
         def prefer_primary_form(_sentence: VocabSentenceViewModel) -> int: return 0 if _sentence.contains_primary_form() else 1
         def dislike_tts_sentences(_sentence: VocabSentenceViewModel) -> int:
             jp_note = _sentence.sentence
-            return 1 if jp_note.tags.has_tag(Tags.TTSAudio) else 0
+            return 1 if jp_note.tags.contains(Tags.TTSAudio) else 0
         def prefer_short_questions(_sentence: VocabSentenceViewModel) -> int: return len(_sentence.sentence.get_question())
         def prefer_lower_priority_tag_values(_sentence: VocabSentenceViewModel) -> int: return _sentence.sentence.priority_tag_value()
         def dislike_no_translation(_sentence: VocabSentenceViewModel) -> int: return 1 if not _sentence.sentence.get_answer() else 0

@@ -24,7 +24,7 @@ class VocabNoteFactory(Slots):
             return VocabNote.factory.create(question, "", [])
 
         created = VocabNote.factory.create(question, lookup_result.format_answer(), lookup_result.readings())
-        created.tags.set_tag(Tags.Source.jamdict)
+        created.tags.set(Tags.Source.jamdict)
         created.update_generated_data()
         return created
 

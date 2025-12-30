@@ -33,32 +33,32 @@ class NoteTags(Slots):
     def _sync_to_backend(self) -> None:
         self._note().backend_note.tags = self.to_interned_string_list()
 
-    def has_tag(self, tag: Tag) -> bool:
+    def contains(self, tag: Tag) -> bool:
         return self._flags.has(tag.id)
 
-    def set_tag(self, tag: Tag) -> None:
-        if not self.has_tag(tag):
+    def set(self, tag: Tag) -> None:
+        if not self.contains(tag):
             self._flags.set_flag(tag.id)
             self._sync_to_backend()
             self._note()._flush()  # pyright: ignore [reportPrivateUsage]
 
-    def remove_tag(self, tag: Tag) -> None:
-        if self.has_tag(tag):
+    def unset(self, tag: Tag) -> None:
+        if self.contains(tag):
             self._flags.unset_flag(tag.id)
             self._sync_to_backend()
             self._note()._flush()  # pyright: ignore [reportPrivateUsage]
 
-    def toggle_tag(self, tag: Tag, on: bool) -> None:
+    def toggle(self, tag: Tag, on: bool) -> None:
         if on:
-            self.set_tag(tag)
+            self.set(tag)
         else:
-            self.remove_tag(tag)
+            self.unset(tag)
 
-    def get_all(self) -> list[Tag]:
+    def all(self) -> list[Tag]:
         return list(self)
 
     def __contains__(self, tag: Tag) -> bool:  # Support 'tag in tags' syntax.
-        return self.has_tag(tag)
+        return self.contains(tag)
 
     def __iter__(self) -> Iterator[Tag]:
         for bit_pos in self._flags.all_flags():

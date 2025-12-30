@@ -150,14 +150,14 @@ class JPNote(WeakRefable, Slots):
             self._flush()
 
     def priority_tag_value(self) -> int:
-        for tag in self.tags.get_all():
+        for tag in self.tags.all():
             if tag.name.startswith(Tags.priority_folder):
                 return int(ex_str.first_number(tag.name))
         return 0
 
     def get_meta_tags(self) -> QSet[str]:
         tags: QSet[str] = QSet()
-        for tag in self.tags.get_all():
+        for tag in self.tags.all():
             if tag.name.startswith(Tags.priority_folder):
                 if "high" in tag.name: tags.add("high_priority")
                 if "low" in tag.name: tags.add("low_priority")
@@ -165,12 +165,12 @@ class JPNote(WeakRefable, Slots):
         if self.is_studying(CardTypes.reading) or self.is_studying(CardTypes.listening): tags.add("is_studying")
         if self.is_studying(CardTypes.reading): tags.add("is_studying_reading")
         if self.is_studying(CardTypes.listening): tags.add("is_studying_listening")
-        if self.tags.has_tag(Tags.TTSAudio): tags.add("tts_audio")
+        if self.tags.contains(Tags.TTSAudio): tags.add("tts_audio")
 
         return tags
 
     def get_source_tag(self) -> str:
-        source_tags = [t for t in self.tags.get_all() if t.name.startswith(Tags.Source.folder)]
+        source_tags = [t for t in self.tags.all() if t.name.startswith(Tags.Source.folder)]
         if source_tags:
             source_tags = sorted(source_tags, key=lambda tag: len(tag.name))
             return source_tags[0].name[len(Tags.Source.folder):]

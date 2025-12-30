@@ -60,7 +60,7 @@ class VocabSpec(Slots):
             vocab_note.forms.set_set(vocab_note.forms.all_set() | self.extra_forms)
 
         for tag in self.tags:
-            vocab_note.tags.set_tag(tag)
+            vocab_note.tags.set(tag)
 
         for excluded_surface in self.surface_is_not:
             vocab_note.matching_configuration.configurable_rules.surface_is_not.add(excluded_surface)
