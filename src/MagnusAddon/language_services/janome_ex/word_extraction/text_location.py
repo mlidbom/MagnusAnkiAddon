@@ -73,9 +73,6 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
             self.display_words = [candidate for candidate in self.candidate_words if candidate.display_variants]
         return changes_made
 
-    def analysis_step_3_run_initial_display_analysis(self) -> None:
-        self._run_display_analysis_pass_true_if_there_were_changes()
-
     def run_display_analysis_and_update_display_words(self) -> bool:
         """Re-evaluate display status of all candidate words at this location.
 

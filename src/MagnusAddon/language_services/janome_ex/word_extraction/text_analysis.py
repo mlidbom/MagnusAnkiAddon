@@ -39,8 +39,7 @@ class TextAnalysis(WeakRefable, Slots):
         self._connect_next_and_previous_to_locations()
         self._analysis_step_1_analyze_non_compound()
         self._analysis_step_2_analyze_compounds()
-        self._analysis_step_3_run_initial_display_analysis()
-        self._analysis_step_5_calculate_preference_between_overlapping_display_candidates()
+        self._analysis_step_3_resolve_display_and_shadowing()
 
         self.all_matches: QList[Match] = (self.locations
                                           .select_many(lambda location: location.candidate_words)
@@ -84,33 +83,21 @@ class TextAnalysis(WeakRefable, Slots):
         for location in self.locations:
             location.analysis_step_2_analyze_compound_validity()
 
-    def _analysis_step_3_run_initial_display_analysis(self) -> None:
-        for location in self.locations:
-            location.analysis_step_3_run_initial_display_analysis()
+    def _analysis_step_3_resolve_display_and_shadowing(self) -> None:
+        """Resolve which matches are displayed, handling yields and shadowing.
 
-    def _analysis_step_5_calculate_preference_between_overlapping_display_candidates(self) -> None:
-        # Phase 1: Resolve yield chains by processing right-to-left.
-        # Words can only yield to words starting AFTER them (or overlapping but extending beyond).
-        # By processing right-to-left, when we evaluate a word's yield status, all potential
-        # yield targets have already been resolved, so we see their final display state.
-        for location in reversed(self.locations):
+        This uses "negotiation" for yield resolution: instead of checking "Is the overlapping
+        compound displayed?" (circular), matches ask "Would that compound be displayed if I
+        yielded?" This breaks circular dependencies because the question becomes hypothetical.
+
+        The algorithm:
+        1. Compute display_words at each location (yields resolved via negotiation)
+        2. Apply shadowing: longer displayed words shadow shorter words at following positions
+        """
+        # Phase 1: Compute display_words (includes yield resolution via negotiation)
+        for location in self.locations:
             location.run_display_analysis_and_update_display_words()
 
-        # Phase 2: Resolve shadowing by processing left-to-right.
-        # Longer words shadow shorter words at the same or following positions.
-        # By processing left-to-right, when a word is chosen for display, it shadows
-        # forward positions before they're processed.
+        # Phase 2: Apply shadowing - longer displayed words shadow shorter words
         for location in self.locations:
             location.resolve_shadowing_for_display_word()
-
-        # Phase 3: Final cleanup - re-run display analysis with shadowing applied.
-        # This ensures display_variants and display_words correctly reflect shadowed state.
-        # We bound iterations for safety, though typically only 1-2 passes are needed.
-        max_iterations = 10
-        for _ in range(max_iterations):
-            changes_made = False
-            for location in reversed(self.locations):
-                if location.run_display_analysis_and_update_display_words():
-                    changes_made = True
-            if not changes_made:
-                break
