@@ -34,12 +34,9 @@ class CandidateWord(WeakRefable, Slots):
         self.display_variants: list[CandidateWordVariant] = []
 
     @property
-    def should_include_surface_in_valid_words(self) -> bool: return (self.surface_variant.is_valid
-                                                                     and (not self.is_inflected_word or not self.has_valid_base_variant))
-    @property
     def has_valid_base_variant(self) -> bool: return self.base_variant is not None and self.base_variant.is_valid
     @property
-    def should_include_surface_in_all_words(self) -> bool: return (self.should_include_surface_in_valid_words
+    def should_include_surface_in_all_words(self) -> bool: return (self.surface_variant.is_valid
                                                                    or (not self.has_valid_base_variant and self.has_seemingly_valid_single_token))
     @property
     def has_valid_base_with_display_matches(self) -> bool: return self.has_valid_base_variant and any(non_optional(self.base_variant).display_matches)
@@ -56,13 +53,13 @@ class CandidateWord(WeakRefable, Slots):
         return self.surface_variant.matches.concat(self.base_variant.matches if self.base_variant else QIterable[Match].empty()).to_list()
 
     def run_validity_analysis(self) -> None:
-        self.surface_variant.run_validity_analysis()
         if self.base_variant is not None: self.base_variant.run_validity_analysis()
+        self.surface_variant.run_validity_analysis()
 
         self.valid_variants = []
         if self.has_valid_base_variant:
             self.valid_variants.append(non_optional(self.base_variant))
-        if self.should_include_surface_in_valid_words:
+        if self.surface_variant.is_valid:
             self.valid_variants.append(self.surface_variant)
 
         if self.should_index_surface:

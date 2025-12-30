@@ -8,6 +8,7 @@ from language_services.janome_ex.word_extraction.matches.state_tests.is_configur
 from language_services.janome_ex.word_extraction.matches.state_tests.is_configured_incorrect import IsConfiguredIncorrect
 from language_services.janome_ex.word_extraction.matches.state_tests.is_godan_imperative_surface_with_base import IsGodanImperativeInflectionWithBase
 from language_services.janome_ex.word_extraction.matches.state_tests.is_godan_potential_surface_with_base import IsGodanPotentialInflectionWithBase
+from language_services.janome_ex.word_extraction.matches.state_tests.is_inflected_surface_with_valid_base import IsInflectedSurfaceWithValidBase
 from language_services.janome_ex.word_extraction.matches.state_tests.is_shadowed import IsShadowed
 from sysutils.lazy import Lazy
 from sysutils.weak_ref import WeakRef, WeakRefable
@@ -27,7 +28,8 @@ class Match(WeakRefable, Slots):
         self._validity_requirements: list[MatchRequirement] = ([
                                                                        Forbids(IsConfiguredIncorrect(weakref_self)),
                                                                        Forbids(IsGodanPotentialInflectionWithBase(weakref_self)),
-                                                                       Forbids(IsGodanImperativeInflectionWithBase(weakref_self))
+                                                                       Forbids(IsGodanImperativeInflectionWithBase(weakref_self)),
+                                                                       Forbids(IsInflectedSurfaceWithValidBase(weakref_self)),
                                                                ]
                                                                + validity_requirements)
         self._display_requirements: list[MatchRequirement] = ([
