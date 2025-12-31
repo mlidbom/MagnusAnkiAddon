@@ -18,18 +18,18 @@ from sysutils.ex_str import newline
 
 @final
 class CandidateWord(WeakRefable, Slots):
-    def __init__(self, locations: list[WeakRef[TextAnalysisLocation]]) -> None:
+    def __init__(self, locations: QList[WeakRef[TextAnalysisLocation]]) -> None:
         self.weakref = WeakRef(self)
-        self.locations: list[WeakRef[TextAnalysisLocation]] = locations
+        self.locations: QList[WeakRef[TextAnalysisLocation]] = locations
 
         self.surface_form = "".join([t().token.surface for t in self.locations])
         self.base_form = "".join([location().token.surface for location in self.locations[:-1]]) + self.locations[-1]().token.base_form
         self.surface_variant: CandidateWordVariant = CandidateWordVariant(self.weakref, self.surface_form)
         self.base_variant: CandidateWordVariant | None = CandidateWordVariant(self.weakref, self.base_form) if self.base_form != self.surface_form else None
 
-        self.indexing_variants: list[CandidateWordVariant] = []
-        self.valid_variants: list[CandidateWordVariant] = []
-        self.display_variants: QList[CandidateWordVariant] = []
+        self.indexing_variants: QList[CandidateWordVariant] = QList()
+        self.valid_variants: QList[CandidateWordVariant] = QList()
+        self.display_variants: QList[CandidateWordVariant] = QList()
 
     @property
     def has_base_variant_with_valid_match(self) -> bool: return self.base_variant is not None and self.base_variant.has_valid_match

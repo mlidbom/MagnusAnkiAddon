@@ -46,12 +46,12 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
 {newline.join([cand.__repr__() for cand in self.indexing_variants])}
 """
 
-    def forward_list(self, length: int = 99999) -> list[TextAnalysisLocation]:
+    def forward_list(self, length: int = 99999) -> QList[TextAnalysisLocation]:
         return self.analysis().locations[self.token_index: self.token_index + length + 1]
 
     def analysis_step_1_analyze_non_compound_validity(self) -> None:
         lookahead_max = min(_max_lookahead, len(self.forward_list(_max_lookahead)))
-        self._candidate_words = QList(CandidateWord([location.weakref for location in self.forward_list(index)]) for index in range(lookahead_max - 1, -1, -1))
+        self._candidate_words = QList(CandidateWord(self.forward_list(index).select(lambda it: it.weakref).to_list()) for index in range(lookahead_max - 1, -1, -1))
         self._candidate_words[-1].run_validity_analysis()  # the non-compound part needs to be completed first
 
     def analysis_step_2_analyze_compound_validity(self) -> None:
