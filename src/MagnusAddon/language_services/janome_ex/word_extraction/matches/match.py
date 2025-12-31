@@ -38,8 +38,8 @@ class Match(WeakRefable, Slots):
                                                                       self._preliminarily_valid_for_display_requirement
                                                               ]
                                                               + display_requirements)
-        self._is_valid: bool | None = None
-
+        self._is_valid_internal_cache: bool | None = None
+        self._is_valid_cache: bool | None = None
 
     @property
     def answer(self) -> str: raise NotImplementedError()
@@ -59,14 +59,31 @@ class Match(WeakRefable, Slots):
     def variant(self) -> CandidateWordVariant: return self._variant()
 
     @property
-    def is_valid(self) -> bool: return (self._is_valid_internal
-                                        or (self.is_highlighted
-                                            and not any(valid_sibling for valid_sibling in self._sibling_matches if valid_sibling._is_valid_internal)))
+    def is_valid(self) -> bool:
+        if self._is_valid_cache is not None:
+            return self._is_valid_cache
+
+        if self.variant.completed_validity_analysis:
+            self._is_valid_cache = self._is_valid()
+            return self._is_valid_cache
+
+        return self._is_valid()
+
+    def _is_valid(self) -> bool:
+        return (self._is_valid_internal
+                or (self.is_highlighted
+                    and not any(valid_sibling for valid_sibling in self._sibling_matches if valid_sibling._is_valid_internal)))
+
     @property
     def _is_valid_internal(self) -> bool:
-        if self._is_valid is None:
-            self._is_valid = self.__is_valid_internal_implementation()
-        return self._is_valid
+        if self._is_valid_internal_cache is not None:
+            return self._is_valid_internal_cache
+
+        if self.variant.completed_validity_analysis:
+            self._is_valid_internal_cache = self.__is_valid_internal_implementation()
+            return self._is_valid_internal_cache
+
+        return self.__is_valid_internal_implementation()
 
     def __is_valid_internal_implementation(self) -> bool: return all(requirement.is_fulfilled for requirement in self._validity_requirements)
     @property
