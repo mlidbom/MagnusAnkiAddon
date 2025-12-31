@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING, final, override
 from ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from sysutils.weak_ref import WeakRef, WeakRefable
-from typed_linq_collections.collections.q_list import QList
 
 if TYPE_CHECKING:
     from language_services.janome_ex.tokenizing.processed_token import ProcessedToken
@@ -24,17 +23,17 @@ class TextAnalysisLocation(WeakRefable, Slots):
         self.next: WeakRef[TextAnalysisLocation] | None = None
         self.previous: WeakRef[TextAnalysisLocation] | None = None
         self.token: ProcessedToken = token
-        self.is_shadowed_by: QList[WeakRef[TextAnalysisLocation]] = QList()
-        self.shadows: QList[WeakRef[TextAnalysisLocation]] = QList()
+        self.is_shadowed_by: list[WeakRef[TextAnalysisLocation]] = []
+        self.shadows: list[WeakRef[TextAnalysisLocation]] = []
         self.analysis: WeakRef[TextAnalysis] = analysis
         self.token_index: int = token_index
         self.character_start_index: int = character_start_index
         self.character_end_index: int = character_start_index + len(self.token.surface) - 1
 
-        self.display_variants: QList[CandidateWordVariant] = QList()
-        self.indexing_variants: QList[CandidateWordVariant] = QList()
-        self.candidate_words: QList[CandidateWord] = QList()
-        self.display_words: QList[CandidateWord] = QList()
+        self.display_variants: list[CandidateWordVariant] = []
+        self.indexing_variants: list[CandidateWordVariant] = []
+        self.candidate_words: list[CandidateWord] = []
+        self.display_words: list[CandidateWord] = []
 
     @override
     def __repr__(self) -> str:
@@ -43,19 +42,19 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
 {newline.join([cand.__repr__() for cand in self.indexing_variants])}
 """
 
-    def forward_list(self, length: int = 99999) -> QList[TextAnalysisLocation]:
+    def forward_list(self, length: int = 99999) -> list[TextAnalysisLocation]:
         return self.analysis().locations[self.token_index: self.token_index + length + 1]
 
     def analysis_step_1_analyze_non_compound_validity(self) -> None:
         lookahead_max = min(_max_lookahead, len(self.forward_list(_max_lookahead)))
-        self.candidate_words = QList(CandidateWord(QList(x.weakref for x in self.forward_list(index))) for index in range(lookahead_max - 1, -1, -1))
+        self.candidate_words = [CandidateWord([location.weakref for location in self.forward_list(index)]) for index in range(lookahead_max - 1, -1, -1)]
         self.candidate_words[-1].run_validity_analysis()  # the non-compound part needs to be completed first
 
     def analysis_step_2_analyze_compound_validity(self) -> None:
         for range_ in self.candidate_words[:-1]:  # we already have the last one completed
             range_.run_validity_analysis()
 
-        self.indexing_variants = QList(variant for cand in self.candidate_words for variant in cand.indexing_variants)
+        self.indexing_variants = [variant for cand in self.candidate_words for variant in cand.indexing_variants]
 
     def run_display_analysis_and_update_display_words_pass_true_if_there_were_changes(self) -> bool:
         changes_made = False
@@ -64,7 +63,7 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
                 changes_made = True
 
         if changes_made:
-            self.display_words = QList(it for it in self.candidate_words if it.display_variants)
+            self.display_words = [it for it in self.candidate_words if it.display_variants]
         return changes_made
 
     def analysis_step_3_run_display_analysis_without_shadowing_information_so_that_all_valid_matches_are_displayed_and_can_be_accounted_for_in_yielding_to_upcoming_compounds(self) -> None:

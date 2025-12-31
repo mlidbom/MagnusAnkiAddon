@@ -7,7 +7,6 @@ from language_services.janome_ex.word_extraction.analysis_constants import noise
 from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
 from sysutils.typed import non_optional
 from sysutils.weak_ref import WeakRef, WeakRefable
-from typed_linq_collections.collections.q_list import QList  # pyright: ignore[reportMissingTypeStubs]
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
@@ -18,18 +17,18 @@ from sysutils.ex_str import newline
 
 @final
 class CandidateWord(WeakRefable, Slots):
-    def __init__(self, locations: QList[WeakRef[TextAnalysisLocation]]) -> None:
+    def __init__(self, locations: list[WeakRef[TextAnalysisLocation]]) -> None:
         self.weakref = WeakRef(self)
-        self.locations: QList[WeakRef[TextAnalysisLocation]] = locations
+        self.locations: list[WeakRef[TextAnalysisLocation]] = locations
 
         self.surface_form = "".join([t().token.surface for t in self.locations])
         self.base_form = "".join([location().token.surface for location in self.locations[:-1]]) + self.locations[-1]().token.base_form
         self.surface_variant: CandidateWordVariant = CandidateWordVariant(self.weakref, self.surface_form)
         self.base_variant: CandidateWordVariant | None = CandidateWordVariant(self.weakref, self.base_form) if self.base_form != self.surface_form else None
 
-        self.indexing_variants: QList[CandidateWordVariant] = QList()
-        self.valid_variants: QList[CandidateWordVariant] = QList()
-        self.display_variants: QList[CandidateWordVariant] = QList()
+        self.indexing_variants: list[CandidateWordVariant] = []
+        self.valid_variants: list[CandidateWordVariant] = []
+        self.display_variants: list[CandidateWordVariant] = []
 
     @property
     def has_base_variant_with_valid_match(self) -> bool: return self.base_variant is not None and self.base_variant.has_valid_match
@@ -46,7 +45,7 @@ class CandidateWord(WeakRefable, Slots):
         if self.base_variant is not None: self.base_variant.run_validity_analysis()
         self.surface_variant.run_validity_analysis()
 
-        self.valid_variants = QList()
+        self.valid_variants = []
         if self.has_base_variant_with_valid_match:
             self.valid_variants.append(non_optional(self.base_variant))
         if self.surface_variant.has_valid_match:
@@ -63,7 +62,7 @@ class CandidateWord(WeakRefable, Slots):
         self.surface_variant.run_visibility_analysis()
 
         old_display_word_variants = self.display_variants
-        self.display_variants = QList()
+        self.display_variants = []
 
         if self.surface_variant.display_matches:
             self.display_variants.append(self.surface_variant)
