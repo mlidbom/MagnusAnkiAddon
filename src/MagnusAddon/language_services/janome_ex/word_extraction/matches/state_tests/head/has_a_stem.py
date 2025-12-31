@@ -7,22 +7,21 @@ from language_services import conjugator
 from language_services.janome_ex.word_extraction.matches.requirements.custom_requires_or_forbids import CustomRequiresOrForbids
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
-    from sysutils.weak_ref import WeakRef
+    from language_services.janome_ex.word_extraction.matches.requirements.vocab_match_inspector import VocabMatchInspector
 
 class RequiresOrForbidsHasAStem(CustomRequiresOrForbids, Slots):
-    def __init__(self, match: WeakRef[VocabMatch]) -> None:
-        super().__init__(match)
+    def __init__(self, inspector: VocabMatchInspector) -> None:
+        super().__init__(inspector)
 
     @property
     @override
     def is_required(self) -> bool:
-        return self.match.requires_forbids.a_stem.is_required
+        return self.inspector.match.requires_forbids.a_stem.is_required
 
     @property
     @override
     def is_forbidden(self) -> bool:
-        return self.match.requires_forbids.a_stem.is_forbidden
+        return self.inspector.match.requires_forbids.a_stem.is_forbidden
 
     @property
     @override
@@ -30,7 +29,7 @@ class RequiresOrForbidsHasAStem(CustomRequiresOrForbids, Slots):
 
     @override
     def _internal_is_in_state(self) -> bool:
-        if len(self.prefix) > 0 and self.prefix[-1] in conjugator.a_stem_characters:  # noqa: SIM103
+        if len(self.inspector.prefix) > 0 and self.inspector.prefix[-1] in conjugator.a_stem_characters:  # noqa: SIM103
             return True
 
         return False

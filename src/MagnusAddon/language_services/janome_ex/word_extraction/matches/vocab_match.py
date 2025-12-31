@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, final, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from language_services.janome_ex.word_extraction.matches.match import Match
+from language_services.janome_ex.word_extraction.matches.requirements.vocab_match_inspector import VocabMatchInspector
 from language_services.janome_ex.word_extraction.matches.state_tests.another_match_owns_the_form import ForbidsAnotherMatchOwnsTheForm
 from language_services.janome_ex.word_extraction.matches.state_tests.head.has_a_stem import RequiresOrForbidsHasAStem
 from language_services.janome_ex.word_extraction.matches.state_tests.head.has_e_stem import RequiresOrForbidsHasEStem
@@ -33,44 +34,45 @@ if TYPE_CHECKING:
 class VocabMatch(Match, Slots):
     def __init__(self, word_variant: WeakRef[CandidateWordVariant], vocab: VocabNote) -> None:
         weakref: WeakRef[VocabMatch] = WeakRef(self)
+        inspector = VocabMatchInspector(weakref)
         self.requires_forbids = vocab.matching_configuration.requires_forbids
         self.rules = vocab.matching_configuration.configurable_rules
         super().__init__(word_variant,
                          validity_requirements=[
-                             ForbidsAnotherMatchOwnsTheForm(weakref),
+                             ForbidsAnotherMatchOwnsTheForm(inspector),
                              # head requirements
-                             ForbidsPrefixIsIn(weakref, self.rules.prefix_is_not.get(),
+                             ForbidsPrefixIsIn(inspector, self.rules.prefix_is_not.get(),
                                      is_requirement_active=self.rules.prefix_is_not.any()),
-                             RequiresPrefixIsIn(weakref, self.rules.required_prefix.get(),
+                             RequiresPrefixIsIn(inspector, self.rules.required_prefix.get(),
                                       is_requirement_active=self.rules.required_prefix.any()),
-                             RequiresOrForbidsIsSentenceStart(weakref),
-                             RequiresOrForbidsHasTeFormStem(weakref),
-                             RequiresOrForbidsHasAStem(weakref),
-                             RequiresOrForbidsHasPastTenseStem(weakref),
-                             RequiresOrForbidsHasEStem(weakref),
+                             RequiresOrForbidsIsSentenceStart(inspector),
+                             RequiresOrForbidsHasTeFormStem(inspector),
+                             RequiresOrForbidsHasAStem(inspector),
+                             RequiresOrForbidsHasPastTenseStem(inspector),
+                             RequiresOrForbidsHasEStem(inspector),
 
-                             RequiresOrForbidsHasGodanImperativePrefix(weakref),
-                             RequiresOrForbidsStartsWithGodanPotentialStemOrInflection(weakref),
-                             RequiresOrForbidsStartsWithGodanImperativeStemOrInflection(weakref),
-                             RequiresOrForbidsStartsWithIchidanImperativeStemOrInflection(weakref),
+                             RequiresOrForbidsHasGodanImperativePrefix(inspector),
+                             RequiresOrForbidsStartsWithGodanPotentialStemOrInflection(inspector),
+                             RequiresOrForbidsStartsWithGodanImperativeStemOrInflection(inspector),
+                             RequiresOrForbidsStartsWithIchidanImperativeStemOrInflection(inspector),
 
                              # tail requirements
-                             RequiresOrForbidsIsSentenceEnd(weakref),
-                             ForbidsSuffixIsIn(weakref, self.rules.suffix_is_not.get(),
+                             RequiresOrForbidsIsSentenceEnd(inspector),
+                             ForbidsSuffixIsIn(inspector, self.rules.suffix_is_not.get(),
                                      is_requirement_active=self.rules.suffix_is_not.any()),
 
                              # misc requirements
-                             ForbidsIsPoisonWord(weakref),
+                             ForbidsIsPoisonWord(inspector),
 
-                             RequiresOrForbidsIsExactMatch(weakref),
-                             RequiresOrForbidsIsSingleToken(weakref),
-                             ForbidsSurfaceIsIn(weakref, self.rules.surface_is_not.get(),
+                             RequiresOrForbidsIsExactMatch(inspector),
+                             RequiresOrForbidsIsSingleToken(inspector),
+                             ForbidsSurfaceIsIn(inspector, self.rules.surface_is_not.get(),
                                      is_requirement_active=self.rules.surface_is_not.any()),
-                             ForbidsSurfaceIsIn(weakref, self.rules.yield_to_surface.get(),
+                             ForbidsSurfaceIsIn(inspector, self.rules.yield_to_surface.get(),
                                      is_requirement_active=self.rules.yield_to_surface.any()),
                          ],
                          display_requirements=[
-                             ForbidsHasDisplayedOverlappingFollowingCompound(weakref,
+                             ForbidsHasDisplayedOverlappingFollowingCompound(inspector,
                                      is_requirement_active=self.requires_forbids.yield_last_token.is_required)
                          ])
         self.vocab: VocabNote = vocab

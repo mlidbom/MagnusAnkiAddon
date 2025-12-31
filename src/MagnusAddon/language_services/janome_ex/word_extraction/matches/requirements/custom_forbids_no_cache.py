@@ -4,24 +4,21 @@ from typing import TYPE_CHECKING, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from language_services.janome_ex.word_extraction.matches.requirements.requirement import MatchRequirement
-from language_services.janome_ex.word_extraction.matches.requirements.vocab_match_inspector import VocabMatchInspector
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
-    from sysutils.weak_ref import WeakRef
+    from language_services.janome_ex.word_extraction.matches.requirements.vocab_match_inspector import VocabMatchInspector
 
 
-class CustomForbidsNoCache(VocabMatchInspector, MatchRequirement, Slots):
+class CustomForbidsNoCache(MatchRequirement, Slots):
     """Base class for fused Forbids + MatchStateTest implementations that cannot cache state.
-    
+
     Used for display_requirements that must evaluate state freshly each time.
-    Inherits from VocabMatchInspector to access match context.
+    Uses composition with VocabMatchInspector for match context.
     Subclasses must implement: _internal_is_in_state.
     """
-    
-    def __init__(self, match: WeakRef[VocabMatch], is_requirement_active: bool = True) -> None:
-        # Don't call MatchRequirement.__init__() since we don't have a state_test
-        VocabMatchInspector.__init__(self, match)
+
+    def __init__(self, inspector: VocabMatchInspector, is_requirement_active: bool = True) -> None:
+        self.inspector: VocabMatchInspector = inspector
         self.is_requirement_active: bool = is_requirement_active
 
     @property

@@ -6,13 +6,12 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from language_services.janome_ex.word_extraction.matches.requirements.custom_forbids import CustomForbids
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
-    from sysutils.weak_ref import WeakRef
+    from language_services.janome_ex.word_extraction.matches.requirements.vocab_match_inspector import VocabMatchInspector
     from typed_linq_collections.collections.q_set import QSet
 
 class ForbidsSuffixIsIn(CustomForbids, Slots):
-    def __init__(self, match: WeakRef[VocabMatch], suffixes: QSet[str], is_requirement_active: bool = True) -> None:
-        super().__init__(match, is_requirement_active)
+    def __init__(self, inspector: VocabMatchInspector, suffixes: QSet[str], is_requirement_active: bool = True) -> None:
+        super().__init__(inspector, is_requirement_active)
         self.suffixes: QSet[str] = suffixes
 
     @property
@@ -21,7 +20,7 @@ class ForbidsSuffixIsIn(CustomForbids, Slots):
 
     @override
     def _internal_is_in_state(self) -> bool:
-        if any(suffix for suffix in self.suffixes if self.suffix.startswith(suffix)):  # noqa: SIM103
+        if any(suffix for suffix in self.suffixes if self.inspector.suffix.startswith(suffix)):  # noqa: SIM103
             return True
 
         return False

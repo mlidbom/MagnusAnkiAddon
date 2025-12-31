@@ -6,22 +6,21 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from language_services.janome_ex.word_extraction.matches.requirements.custom_requires_or_forbids import CustomRequiresOrForbids
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
-    from sysutils.weak_ref import WeakRef
+    from language_services.janome_ex.word_extraction.matches.requirements.vocab_match_inspector import VocabMatchInspector
 
 class RequiresOrForbidsStartsWithIchidanImperativeStemOrInflection(CustomRequiresOrForbids, Slots):
-    def __init__(self, match: WeakRef[VocabMatch]) -> None:
-        super().__init__(match)
+    def __init__(self, inspector: VocabMatchInspector) -> None:
+        super().__init__(inspector)
 
     @property
     @override
     def is_required(self) -> bool:
-        return self.match.requires_forbids.ichidan_imperative.is_required
+        return self.inspector.match.requires_forbids.ichidan_imperative.is_required
 
     @property
     @override
     def is_forbidden(self) -> bool:
-        return self.match.requires_forbids.ichidan_imperative.is_forbidden
+        return self.inspector.match.requires_forbids.ichidan_imperative.is_forbidden
 
     @property
     @override
@@ -29,7 +28,7 @@ class RequiresOrForbidsStartsWithIchidanImperativeStemOrInflection(CustomRequire
 
     @property
     def has_godan_ichidan_imperative_part(self) -> bool:
-        return self.word.start_location.token.is_ichidan_imperative_stem or self.word.start_location.token.is_ichidan_imperative_inflection
+        return self.inspector.word.start_location.token.is_ichidan_imperative_stem or self.inspector.word.start_location.token.is_ichidan_imperative_inflection
 
     @override
     def _internal_is_in_state(self) -> bool:

@@ -6,12 +6,11 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from language_services.janome_ex.word_extraction.matches.requirements.match_custom_forbids import MatchCustomForbids
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.matches.match import Match
-    from sysutils.weak_ref import WeakRef
+    from language_services.janome_ex.word_extraction.matches.requirements.match_inspector import MatchInspector
 
 class ForbidsIsInflectedSurfaceWithValidBase(MatchCustomForbids, Slots):
-    def __init__(self, match: WeakRef[Match]) -> None:
-        super().__init__(match, is_requirement_active=True)
+    def __init__(self, inspector: MatchInspector) -> None:
+        super().__init__(inspector, is_requirement_active=True)
 
     @property
     @override
@@ -19,4 +18,4 @@ class ForbidsIsInflectedSurfaceWithValidBase(MatchCustomForbids, Slots):
 
     @override
     def _internal_is_in_state(self) -> bool:
-        return self.variant.is_surface and self.word.is_inflected_word and self.word.has_base_variant_with_valid_match
+        return self.inspector.variant.is_surface and self.inspector.word.is_inflected_word and self.inspector.word.has_base_variant_with_valid_match

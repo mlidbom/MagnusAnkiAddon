@@ -6,22 +6,21 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from language_services.janome_ex.word_extraction.matches.requirements.custom_requires_or_forbids import CustomRequiresOrForbids
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
-    from sysutils.weak_ref import WeakRef
+    from language_services.janome_ex.word_extraction.matches.requirements.vocab_match_inspector import VocabMatchInspector
 
 class RequiresOrForbidsIsSingleToken(CustomRequiresOrForbids, Slots):
-    def __init__(self, match: WeakRef[VocabMatch]) -> None:
-        super().__init__(match)
+    def __init__(self, inspector: VocabMatchInspector) -> None:
+        super().__init__(inspector)
 
     @property
     @override
     def is_required(self) -> bool:
-        return self.match.requires_forbids.single_token.is_required
+        return self.inspector.match.requires_forbids.single_token.is_required
 
     @property
     @override
     def is_forbidden(self) -> bool:
-        return self.match.requires_forbids.single_token.is_forbidden
+        return self.inspector.match.requires_forbids.single_token.is_forbidden
 
     @property
     @override
@@ -29,6 +28,6 @@ class RequiresOrForbidsIsSingleToken(CustomRequiresOrForbids, Slots):
 
     @override
     def _internal_is_in_state(self) -> bool:
-        if not self.word.is_custom_compound:  # noqa: SIM103
+        if not self.inspector.word.is_custom_compound:  # noqa: SIM103
             return True
         return False

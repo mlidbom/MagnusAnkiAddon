@@ -7,13 +7,12 @@ from language_services.janome_ex.word_extraction.matches.requirements.custom_for
 from language_services.janome_ex.word_extraction.matches.requirements.requirement import MatchRequirement
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
-    from sysutils.weak_ref import WeakRef
+    from language_services.janome_ex.word_extraction.matches.requirements.vocab_match_inspector import VocabMatchInspector
     from typed_linq_collections.collections.q_set import QSet
 
 class ForbidsPrefixIsIn(CustomForbids, Slots):
-    def __init__(self, match: WeakRef[VocabMatch], prefixes: QSet[str], is_requirement_active: bool = True) -> None:
-        super().__init__(match, is_requirement_active)
+    def __init__(self, inspector: VocabMatchInspector, prefixes: QSet[str], is_requirement_active: bool = True) -> None:
+        super().__init__(inspector, is_requirement_active)
         self.prefixes: QSet[str] = prefixes
 
     @property
@@ -22,15 +21,15 @@ class ForbidsPrefixIsIn(CustomForbids, Slots):
 
     @override
     def _internal_is_in_state(self) -> bool:
-        if any(prefix for prefix in self.prefixes if self.prefix.endswith(prefix)):  # noqa: SIM103
+        if any(prefix for prefix in self.prefixes if self.inspector.prefix.endswith(prefix)):  # noqa: SIM103
             return True
         return False
 
 
 class RequiresPrefixIsIn(MatchRequirement, Slots):
     """Requires version of PrefixIsIn check."""
-    def __init__(self, match: WeakRef[VocabMatch], prefixes: QSet[str], is_requirement_active: bool = True) -> None:
-        self._match: WeakRef[VocabMatch] = match
+    def __init__(self, inspector: VocabMatchInspector, prefixes: QSet[str], is_requirement_active: bool = True) -> None:
+        self.inspector: VocabMatchInspector = inspector
         self.prefixes: QSet[str] = prefixes
         self.rule_active: bool = is_requirement_active
         self._cached_state: bool | None = None
@@ -39,8 +38,7 @@ class RequiresPrefixIsIn(MatchRequirement, Slots):
     def is_in_state(self) -> bool:
         if self._cached_state is not None:
             return self._cached_state
-        prefix = self._match().variant.word.start_location.previous().token.surface if self._match().variant.word.start_location.previous else ""
-        self._cached_state = any(p for p in self.prefixes if prefix.endswith(p))
+        self._cached_state = any(prefix for prefix in self.prefixes if self.inspector.prefix.endswith(prefix))
         return self._cached_state
 
     @property

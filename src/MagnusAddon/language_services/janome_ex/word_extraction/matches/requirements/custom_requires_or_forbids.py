@@ -4,23 +4,20 @@ from typing import TYPE_CHECKING, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from language_services.janome_ex.word_extraction.matches.requirements.requirement import MatchRequirement
-from language_services.janome_ex.word_extraction.matches.requirements.vocab_match_inspector import VocabMatchInspector
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
-    from sysutils.weak_ref import WeakRef
+    from language_services.janome_ex.word_extraction.matches.requirements.vocab_match_inspector import VocabMatchInspector
 
 
-class CustomRequiresOrForbids(VocabMatchInspector, MatchRequirement, Slots):
+class CustomRequiresOrForbids(MatchRequirement, Slots):
     """Base class for fused RequiresOrForbids + MatchStateTest implementations.
-    
-    Inherits from VocabMatchInspector to access match context.
+
+    Uses composition with VocabMatchInspector for match context.
     Subclasses must implement: is_required, is_forbidden, and _internal_is_in_state.
     """
-    
-    def __init__(self, match: WeakRef[VocabMatch]) -> None:
-        # Don't call MatchRequirement.__init__() since we don't have a state_test
-        VocabMatchInspector.__init__(self, match)
+
+    def __init__(self, inspector: VocabMatchInspector) -> None:
+        self.inspector: VocabMatchInspector = inspector
         self._cached_state: bool | None = None
 
     @property
@@ -38,7 +35,7 @@ class CustomRequiresOrForbids(VocabMatchInspector, MatchRequirement, Slots):
         """Whether the match is currently in this state."""
         if self._cached_state is not None:
             return self._cached_state
-        
+
         self._cached_state = self._internal_is_in_state()
         return self._cached_state
 

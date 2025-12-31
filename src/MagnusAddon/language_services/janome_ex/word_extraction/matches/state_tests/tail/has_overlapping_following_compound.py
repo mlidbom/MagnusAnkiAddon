@@ -7,14 +7,13 @@ from language_services.janome_ex.word_extraction.matches.requirements.custom_for
 from sysutils.typed import non_optional
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
-    from sysutils.weak_ref import WeakRef
+    from language_services.janome_ex.word_extraction.matches.requirements.vocab_match_inspector import VocabMatchInspector
 
     pass
 
 class ForbidsHasDisplayedOverlappingFollowingCompound(CustomForbidsNoCache, Slots):
-    def __init__(self, match: WeakRef[VocabMatch], is_requirement_active: bool = True) -> None:
-        super().__init__(match, is_requirement_active)
+    def __init__(self, inspector: VocabMatchInspector, is_requirement_active: bool = True) -> None:
+        super().__init__(inspector, is_requirement_active)
 
     @property
     @override
@@ -25,10 +24,10 @@ class ForbidsHasDisplayedOverlappingFollowingCompound(CustomForbidsNoCache, Slot
         # todo: this is a problematic reference to display_words. That collection is initialized using this class,
         # so this class will return different results depending on whether it is used after or before display_words is first initialized. Ouch
 
-        tail_location = self.end_location
-        while tail_location is not self.word.start_location:
+        tail_location = self.inspector.end_location
+        while tail_location is not self.inspector.word.start_location:
             for display_word in tail_location.display_words:
-                if display_word.end_location.token_index > self.word.end_location.token_index:
+                if display_word.end_location.token_index > self.inspector.word.end_location.token_index:
                     return True
 
             tail_location = non_optional(tail_location.previous)()

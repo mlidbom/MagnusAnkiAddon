@@ -6,29 +6,26 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from language_services.janome_ex.word_extraction.matches.requirements.custom_requires_or_forbids import CustomRequiresOrForbids
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
+    from language_services.janome_ex.word_extraction.matches.requirements.vocab_match_inspector import VocabMatchInspector
     from note.vocabulary.vocabnote import VocabNote
-    from sysutils.weak_ref import WeakRef
-
-    pass
 
 class RequiresOrForbidsIsExactMatch(CustomRequiresOrForbids, Slots):
-    def __init__(self, match: WeakRef[VocabMatch]) -> None:
-        super().__init__(match)
+    def __init__(self, inspector: VocabMatchInspector) -> None:
+        super().__init__(inspector)
 
     @property
     @override
     def is_required(self) -> bool:
-        return self.match.requires_forbids.exact_match.is_required
+        return self.inspector.match.requires_forbids.exact_match.is_required
 
     @property
     @override
     def is_forbidden(self) -> bool:
-        return self.match.requires_forbids.exact_match.is_forbidden
+        return self.inspector.match.requires_forbids.exact_match.is_forbidden
 
     @property
     def vocab(self) -> VocabNote:
-        return self.match.vocab
+        return self.inspector.match.vocab
 
     @property
     @override
@@ -36,9 +33,9 @@ class RequiresOrForbidsIsExactMatch(CustomRequiresOrForbids, Slots):
 
     @override
     def _internal_is_in_state(self) -> bool:
-        if not self.variant.is_surface:
+        if not self.inspector.variant.is_surface:
             return False
 
-        if self.variant.form in self.vocab.forms.all_set():  # noqa: SIM103
+        if self.inspector.variant.form in self.vocab.forms.all_set():  # noqa: SIM103
             return True
         return False

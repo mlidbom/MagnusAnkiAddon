@@ -6,12 +6,11 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from language_services.janome_ex.word_extraction.matches.requirements.match_custom_forbids import MatchCustomForbids
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.matches.match import Match
-    from sysutils.weak_ref import WeakRef
+    from language_services.janome_ex.word_extraction.matches.requirements.match_inspector import MatchInspector
 
 class ForbidsIsConfiguredHidden(MatchCustomForbids, Slots):
-    def __init__(self, match: WeakRef[Match]) -> None:
-        super().__init__(match, is_requirement_active=True)
+    def __init__(self, inspector: MatchInspector) -> None:
+        super().__init__(inspector, is_requirement_active=True)
 
     @property
     @override
@@ -20,6 +19,6 @@ class ForbidsIsConfiguredHidden(MatchCustomForbids, Slots):
     @override
     def _internal_is_in_state(self) -> bool:
         # todo: think a bit about this. Now we use the variant start index, which may differ from the match start index. Which should be used?
-        if self.variant.configuration.hidden_matches.excludes_at_index(self.tokenized_form, self.variant.start_index):  # noqa: SIM103
+        if self.inspector.variant.configuration.hidden_matches.excludes_at_index(self.inspector.tokenized_form, self.inspector.variant.start_index):  # noqa: SIM103
             return True
         return False

@@ -6,22 +6,21 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from language_services.janome_ex.word_extraction.matches.requirements.custom_requires_or_forbids import CustomRequiresOrForbids
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
-    from sysutils.weak_ref import WeakRef
+    from language_services.janome_ex.word_extraction.matches.requirements.vocab_match_inspector import VocabMatchInspector
 
 class RequiresOrForbidsHasGodanImperativePrefix(CustomRequiresOrForbids, Slots):
-    def __init__(self, match: WeakRef[VocabMatch]) -> None:
-        super().__init__(match)
+    def __init__(self, inspector: VocabMatchInspector) -> None:
+        super().__init__(inspector)
 
     @property
     @override
     def is_required(self) -> bool:
-        return self.match.requires_forbids.godan_imperative_prefix.is_required
+        return self.inspector.match.requires_forbids.godan_imperative_prefix.is_required
 
     @property
     @override
     def is_forbidden(self) -> bool:
-        return self.match.requires_forbids.godan_imperative_prefix.is_forbidden
+        return self.inspector.match.requires_forbids.godan_imperative_prefix.is_forbidden
 
     @property
     @override
@@ -29,10 +28,10 @@ class RequiresOrForbidsHasGodanImperativePrefix(CustomRequiresOrForbids, Slots):
 
     @override
     def _internal_is_in_state(self) -> bool:
-        if self.previous_location is None:
+        if self.inspector.previous_location is None:
             return False
 
-        if self.previous_location.token.is_godan_imperative_inflection:  # noqa: SIM103
+        if self.inspector.previous_location.token.is_godan_imperative_inflection:  # noqa: SIM103
             return True
         return False
 

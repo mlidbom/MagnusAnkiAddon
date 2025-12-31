@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
 class MatchInspector(Slots):
     """Base class providing access to Match context and helper properties.
-    
+
     This class holds a weak reference to a Match and provides convenient
     properties for inspecting the match's word, variant, location, and surrounding context.
     """

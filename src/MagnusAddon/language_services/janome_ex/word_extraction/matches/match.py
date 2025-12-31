@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from language_services.janome_ex.word_extraction.matches.requirements.match_inspector import MatchInspector
 from language_services.janome_ex.word_extraction.matches.state_tests.is_configured_hidden import ForbidsIsConfiguredHidden
 from language_services.janome_ex.word_extraction.matches.state_tests.is_configured_incorrect import ForbidsIsConfiguredIncorrect
 from language_services.janome_ex.word_extraction.matches.state_tests.is_godan_imperative_surface_with_base import ForbidsIsGodanImperativeInflectionWithBase
@@ -21,15 +22,16 @@ class Match(WeakRefable, Slots):
                  validity_requirements: list[MatchRequirement],
                  display_requirements: list[MatchRequirement]) -> None:
         weakref_self = WeakRef(self)
-        self._is_not_shadowed_requirement: MatchRequirement = ForbidsIsShadowed(weakref_self)
-        self._preliminarily_valid_for_display_requirement: MatchRequirement = ForbidsIsConfiguredHidden(weakref_self)
+        inspector = MatchInspector(weakref_self)
+        self._is_not_shadowed_requirement: MatchRequirement = ForbidsIsShadowed(inspector)
+        self._preliminarily_valid_for_display_requirement: MatchRequirement = ForbidsIsConfiguredHidden(inspector)
         self.weakref: WeakRef[Match] = weakref_self
         self._variant: WeakRef[CandidateWordVariant] = word_variant
         self._validity_requirements: list[MatchRequirement] = ([
-                                                                       ForbidsIsConfiguredIncorrect(weakref_self),
-                                                                       ForbidsIsGodanPotentialInflectionWithBase(weakref_self),
-                                                                       ForbidsIsGodanImperativeInflectionWithBase(weakref_self),
-                                                                       ForbidsIsInflectedSurfaceWithValidBase(weakref_self),
+                                                                       ForbidsIsConfiguredIncorrect(inspector),
+                                                                       ForbidsIsGodanPotentialInflectionWithBase(inspector),
+                                                                       ForbidsIsGodanImperativeInflectionWithBase(inspector),
+                                                                       ForbidsIsInflectedSurfaceWithValidBase(inspector),
                                                                ]
                                                                + validity_requirements)
         self._display_requirements: list[MatchRequirement] = ([
