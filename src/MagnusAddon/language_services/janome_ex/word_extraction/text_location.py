@@ -57,8 +57,8 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
         self.candidate_words[-1].run_validity_analysis()  # the non-compound part needs to be completed first
 
     def analysis_step_2_analyze_compound_validity(self) -> None:
-        for range_ in self.candidate_words[:-1]:  # we already have the last one completed
-            range_.run_validity_analysis()
+        for candidate_word in self.candidate_words[:-1]:  # we already have the last one completed
+            candidate_word.run_validity_analysis()
 
         self.valid_words = self.candidate_words.where(lambda candidate: candidate.has_valid_words()).to_list()
         self.indexing_variants = self.candidate_words.select_many(lambda candidate: candidate.indexing_variants).to_list()
