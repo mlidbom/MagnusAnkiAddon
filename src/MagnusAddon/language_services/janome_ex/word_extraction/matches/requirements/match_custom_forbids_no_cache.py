@@ -10,15 +10,14 @@ if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.match import Match
     from sysutils.weak_ref import WeakRef
 
-
 class MatchCustomForbidsNoCache(MatchInspector, MatchRequirement, Slots):
     """Base class for fused Forbids + MatchStateTest implementations that cannot cache state.
-    
+
     Used for display_requirements that must evaluate state freshly each time (like IsShadowed).
     Inherits from MatchInspector to access match context.
     Subclasses must implement: _internal_is_in_state and description.
     """
-    
+
     def __init__(self, match: WeakRef[Match], is_requirement_active: bool = True) -> None:
         # Don't call MatchRequirement.__init__() since we don't have a state_test
         MatchInspector.__init__(self, match)

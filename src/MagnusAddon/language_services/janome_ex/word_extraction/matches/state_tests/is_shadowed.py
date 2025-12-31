@@ -23,6 +23,10 @@ class ForbidsIsShadowed(MatchCustomForbidsNoCache, Slots):
     @property
     @override
     def failure_reason(self) -> str:
-        return f"shadowed_by:{self.match.word.shadowed_by_text}" \
-            if self.is_in_state \
-            else "forbids::shadowed"
+        if not self.is_requirement_active:
+            return ""
+        
+        if not self.is_in_state:
+            return ""
+        
+        return f"forbids::shadowed_by:{self.match.word.shadowed_by_text}"

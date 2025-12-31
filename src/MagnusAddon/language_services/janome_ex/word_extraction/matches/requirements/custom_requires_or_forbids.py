@@ -67,7 +67,7 @@ class CustomRequiresOrForbids(VocabMatchInspector, MatchRequirement, Slots):
         if self.is_forbidden:
             return f"forbids::{self.description}"
 
-        raise AssertionError("This should never happen")
+        return ""
 
     def _internal_is_in_state(self) -> bool:
         """Internal implementation of state checking. Override this in subclasses."""
