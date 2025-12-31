@@ -3,24 +3,34 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from language_services.janome_ex.word_extraction.matches.state_tests.match_state_test import MatchStateTest
+from language_services.janome_ex.word_extraction.matches.requirements.custom_requires_or_forbids import CustomRequiresOrForbids
 from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.matches.match import Match
+    from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
     from sysutils.weak_ref import WeakRef
 
-class HasTeFormStem(MatchStateTest, Slots):
+class RequiresOrForbidsHasTeFormStem(CustomRequiresOrForbids, Slots):
     _te_forms: QSet[str] = QSet(("て", "って", "で"))
-    def __init__(self, match: WeakRef[Match]) -> None:
+    def __init__(self, match: WeakRef[VocabMatch]) -> None:
         super().__init__(match)
+
+    @property
+    @override
+    def is_required(self) -> bool:
+        return self.match.requires_forbids.te_form_stem.is_required
+
+    @property
+    @override
+    def is_forbidden(self) -> bool:
+        return self.match.requires_forbids.te_form_stem.is_forbidden
 
     @property
     @override
     def description(self) -> str: return "te_form_stem"
 
     @override
-    def _internal_match_is_in_state(self) -> bool:
+    def _internal_is_in_state(self) -> bool:
         #todo get this stuff moved into the tokenizing stage...
         if self.previous_location is None:
             return False
@@ -31,7 +41,7 @@ class HasTeFormStem(MatchStateTest, Slots):
         if self.previous_location.token.is_te_form_stem():
             return True
 
-        if not any(te_form_start for te_form_start in HasTeFormStem._te_forms if self.parsed_form.startswith(te_form_start)):
+        if not any(te_form_start for te_form_start in RequiresOrForbidsHasTeFormStem._te_forms if self.parsed_form.startswith(te_form_start)):
             return False
 
         if self.previous_location.token.is_past_tense_stem():

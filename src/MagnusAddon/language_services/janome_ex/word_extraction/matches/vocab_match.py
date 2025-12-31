@@ -5,25 +5,24 @@ from typing import TYPE_CHECKING, final, override
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from language_services.janome_ex.word_extraction.matches.match import Match
 from language_services.janome_ex.word_extraction.matches.requirements.forbids_state import Forbids
-from language_services.janome_ex.word_extraction.matches.requirements.requires_forbids_requirement import RequiresOrForbids
 from language_services.janome_ex.word_extraction.matches.requirements.requires_state import Requires
 from language_services.janome_ex.word_extraction.matches.state_tests.another_match_owns_the_form import AnotherMatchOwnsTheForm
-from language_services.janome_ex.word_extraction.matches.state_tests.head.has_a_stem import HasAStem
-from language_services.janome_ex.word_extraction.matches.state_tests.head.has_e_stem import HasEStem
-from language_services.janome_ex.word_extraction.matches.state_tests.head.has_godan_imperative_prefix import HasGodanImperativePrefix
-from language_services.janome_ex.word_extraction.matches.state_tests.head.has_past_tense_stem import HasPastTenseStem
-from language_services.janome_ex.word_extraction.matches.state_tests.head.has_te_form_stem import HasTeFormStem
-from language_services.janome_ex.word_extraction.matches.state_tests.head.is_sentence_start import IsSentenceStart
+from language_services.janome_ex.word_extraction.matches.state_tests.head.has_a_stem import RequiresOrForbidsHasAStem
+from language_services.janome_ex.word_extraction.matches.state_tests.head.has_e_stem import RequiresOrForbidsHasEStem
+from language_services.janome_ex.word_extraction.matches.state_tests.head.has_godan_imperative_prefix import RequiresOrForbidsHasGodanImperativePrefix
+from language_services.janome_ex.word_extraction.matches.state_tests.head.has_past_tense_stem import RequiresOrForbidsHasPastTenseStem
+from language_services.janome_ex.word_extraction.matches.state_tests.head.has_te_form_stem import RequiresOrForbidsHasTeFormStem
+from language_services.janome_ex.word_extraction.matches.state_tests.head.is_sentence_start import RequiresOrForbidsIsSentenceStart
 from language_services.janome_ex.word_extraction.matches.state_tests.head.prefix_is_in import PrefixIsIn
-from language_services.janome_ex.word_extraction.matches.state_tests.is_exact_match import IsExactMatch
-from language_services.janome_ex.word_extraction.matches.state_tests.is_ichidan_imperative import StartsWithIchidanImperativeStemOrInflection
+from language_services.janome_ex.word_extraction.matches.state_tests.is_exact_match import RequiresOrForbidsIsExactMatch
+from language_services.janome_ex.word_extraction.matches.state_tests.is_ichidan_imperative import RequiresOrForbidsStartsWithIchidanImperativeStemOrInflection
 from language_services.janome_ex.word_extraction.matches.state_tests.is_poison_word import IsPoisonWord
-from language_services.janome_ex.word_extraction.matches.state_tests.is_single_token import IsSingleToken
-from language_services.janome_ex.word_extraction.matches.state_tests.starts_with_godan_imperative_stem_or_inflection import StartsWithGodanImperativeStemOrInflection
-from language_services.janome_ex.word_extraction.matches.state_tests.starts_with_godan_potential_stem_or_inflection import StartsWithGodanPotentialStemOrInflection
+from language_services.janome_ex.word_extraction.matches.state_tests.is_single_token import RequiresOrForbidsIsSingleToken
+from language_services.janome_ex.word_extraction.matches.state_tests.starts_with_godan_imperative_stem_or_inflection import RequiresOrForbidsStartsWithGodanImperativeStemOrInflection
+from language_services.janome_ex.word_extraction.matches.state_tests.starts_with_godan_potential_stem_or_inflection import RequiresOrForbidsStartsWithGodanPotentialStemOrInflection
 from language_services.janome_ex.word_extraction.matches.state_tests.surface_is_in import SurfaceIsIn
 from language_services.janome_ex.word_extraction.matches.state_tests.tail.has_overlapping_following_compound import HasDisplayedOverlappingFollowingCompound
-from language_services.janome_ex.word_extraction.matches.state_tests.tail.is_sentence_end import IsSentenceEnd
+from language_services.janome_ex.word_extraction.matches.state_tests.tail.is_sentence_end import RequiresOrForbidsIsSentenceEnd
 from language_services.janome_ex.word_extraction.matches.state_tests.tail.suffix_is_in import SuffixIsIn
 from sysutils.weak_ref import WeakRef
 
@@ -46,27 +45,27 @@ class VocabMatch(Match, Slots):
                                      is_requirement_active=self.rules.prefix_is_not.any()),
                              Requires(PrefixIsIn(weakref, self.rules.required_prefix.get()),
                                       is_requirement_active=self.rules.required_prefix.any()),
-                             RequiresOrForbids(IsSentenceStart(weakref), self.requires_forbids.sentence_start),
-                             RequiresOrForbids(HasTeFormStem(weakref), self.requires_forbids.te_form_stem),
-                             RequiresOrForbids(HasAStem(weakref), self.requires_forbids.a_stem),
-                             RequiresOrForbids(HasPastTenseStem(weakref), self.requires_forbids.past_tense_stem),
-                             RequiresOrForbids(HasEStem(weakref), self.requires_forbids.e_stem),
+                             RequiresOrForbidsIsSentenceStart(weakref),
+                             RequiresOrForbidsHasTeFormStem(weakref),
+                             RequiresOrForbidsHasAStem(weakref),
+                             RequiresOrForbidsHasPastTenseStem(weakref),
+                             RequiresOrForbidsHasEStem(weakref),
 
-                             RequiresOrForbids(HasGodanImperativePrefix(weakref), self.requires_forbids.godan_imperative_prefix),
-                             RequiresOrForbids(StartsWithGodanPotentialStemOrInflection(weakref), self.requires_forbids.godan_potential),
-                             RequiresOrForbids(StartsWithGodanImperativeStemOrInflection(weakref), self.requires_forbids.godan_imperative),
-                             RequiresOrForbids(StartsWithIchidanImperativeStemOrInflection(weakref), self.requires_forbids.ichidan_imperative),
+                             RequiresOrForbidsHasGodanImperativePrefix(weakref),
+                             RequiresOrForbidsStartsWithGodanPotentialStemOrInflection(weakref),
+                             RequiresOrForbidsStartsWithGodanImperativeStemOrInflection(weakref),
+                             RequiresOrForbidsStartsWithIchidanImperativeStemOrInflection(weakref),
 
                              # tail requirements
-                             RequiresOrForbids(IsSentenceEnd(weakref), self.requires_forbids.sentence_end),
+                             RequiresOrForbidsIsSentenceEnd(weakref),
                              Forbids(SuffixIsIn(weakref, self.rules.suffix_is_not.get()),
                                      is_requirement_active=self.rules.suffix_is_not.any()),
 
                              # misc requirements
                              Forbids(IsPoisonWord(weakref)),
 
-                             RequiresOrForbids(IsExactMatch(weakref), self.requires_forbids.exact_match),
-                             RequiresOrForbids(IsSingleToken(weakref), self.requires_forbids.single_token),
+                             RequiresOrForbidsIsExactMatch(weakref),
+                             RequiresOrForbidsIsSingleToken(weakref),
                              Forbids(SurfaceIsIn(weakref, self.rules.surface_is_not.get()),
                                      is_requirement_active=self.rules.surface_is_not.any()),
                              Forbids(SurfaceIsIn(weakref, self.rules.yield_to_surface.get()),
