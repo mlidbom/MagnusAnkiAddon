@@ -6,7 +6,7 @@ from autoslot import Slots
 from language_services.janome_ex.word_extraction import analysis_constants
 from note.note_constants import NoteFields
 from note.tags import Tags
-from note.vocabulary.pos_set_interner import POSSetManager
+from note.vocabulary.pos_set_interner import POS, POSSetManager
 from typed_linq_collections.collections.q_frozen_set import QFrozenSet
 from typed_linq_collections.collections.q_set import QSet
 
@@ -30,11 +30,11 @@ class VocabNotePartsOfSpeech(Slots):
 
     def get(self) -> frozenset[str]: return POSSetManager.get(self.raw_string_value())
 
-    def is_ichidan(self) -> bool: return POSSetManager.ICHIDAN_VERB in self.get()
-    def is_godan(self) -> bool: return POSSetManager.GODAN_VERB in self.get()
+    def is_ichidan(self) -> bool: return POS.ICHIDAN_VERB in self.get()
+    def is_godan(self) -> bool: return POS.GODAN_VERB in self.get()
 
-    def is_transitive(self) -> bool: return POSSetManager.TRANSITIVE in self.get()
-    def is_intransitive(self) -> bool: return POSSetManager.INTRANSITIVE in self.get()
+    def is_transitive(self) -> bool: return POS.TRANSITIVE in self.get()
+    def is_intransitive(self) -> bool: return POS.INTRANSITIVE in self.get()
 
     def is_inflecting_word_type(self) -> bool: return self.is_godan() or self.is_ichidan()
 
@@ -61,8 +61,8 @@ class VocabNotePartsOfSpeech(Slots):
             question = self._vocab.question.without_noise_characters[:-2]
             readings = [reading[:-2] for reading in self._vocab.readings.get()]
             lookup = DictLookup.lookup_word_or_name_with_matching_reading(question, readings)
-            pos = lookup.parts_of_speech() & QFrozenSet({POSSetManager.TRANSITIVE, POSSetManager.INTRANSITIVE})
-            value1 = POSSetManager.SURU_VERB + ", " + ", ".join(pos)
+            pos = lookup.parts_of_speech() & QFrozenSet({POS.TRANSITIVE, POS.INTRANSITIVE})
+            value1 = POS.SURU_VERB + ", " + ", ".join(pos)
             self.set_raw_string_value(value1)
 
     # todo in terms of using this for yielding compounds, される is apt not to work since in for instance 左右されます, され is tokenized as する、れる so two tokens would need to be yielded, not one. How to fix?

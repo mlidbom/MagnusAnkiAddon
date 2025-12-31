@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
-from note.vocabulary.pos_set_interner import POSSetManager
+from note.vocabulary.pos_set_interner import POS
 from language_services.jamdict_ex.priority_spec import PrioritySpec
 from sysutils import ex_str, kana_utils
 
@@ -35,10 +35,10 @@ class DictLookupResult(Slots):
         return self.entries.select_many(lambda entry: entry.parts_of_speech()).to_frozenset()
 
     def try_get_godan_verb(self) -> DictEntry | None:
-        return self.entries.first_or_none(lambda entry: POSSetManager.GODAN_VERB in entry.parts_of_speech())
+        return self.entries.first_or_none(lambda entry: POS.GODAN_VERB in entry.parts_of_speech())
 
     def try_get_ichidan_verb(self) -> DictEntry | None:
-        return self.entries.first_or_none(lambda entry: POSSetManager.ICHIDAN_VERB in entry.parts_of_speech())
+        return self.entries.first_or_none(lambda entry: POS.ICHIDAN_VERB in entry.parts_of_speech())
 
     def priority_spec(self) -> PrioritySpec:
         kana_tags = self.entries.select_many(lambda entry: entry.kana_forms).where(lambda it: it.text == self.word).select_many(lambda it: it.priority_tags).to_set()

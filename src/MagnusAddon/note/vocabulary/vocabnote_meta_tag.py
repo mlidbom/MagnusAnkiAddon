@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
-from note.vocabulary.pos_set_interner import POSSetManager  # pyright: ignore[reportMissingTypeStubs]
+from note.vocabulary.pos_set_interner import POS  # pyright: ignore[reportMissingTypeStubs]
 from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:
@@ -48,7 +48,7 @@ def get_meta_tags_html(vocab: VocabNote, display_extended_sentence_statistics: b
 
     # overarching info
     if "_uk" in tags: meta.append(VocabMetaTag("uk", "uk", "usually written using kana only"))
-    if POSSetManager.EXPRESSION in tos: meta.append(VocabMetaTag(POSSetManager.EXPRESSION, "x", "expression"))
+    if POS.EXPRESSION in tos: meta.append(VocabMetaTag(POS.EXPRESSION, "x", "expression"))
     if "abbreviation" in tos: meta.append(VocabMetaTag("abbreviation", "abbr", "abbreviation"))
     if "auxiliary" in tos: meta.append(VocabMetaTag("auxiliary", "aux", "auxiliary"))
     if "prefix" in tos: meta.append(VocabMetaTag("prefix", "頭", "prefix"))
@@ -57,14 +57,14 @@ def get_meta_tags_html(vocab: VocabNote, display_extended_sentence_statistics: b
     # nouns
     if "proper noun" in tos: meta.append(VocabMetaTag("proper-noun", "p-名", "proper noun"))
     elif "pronoun" in tos: meta.append(VocabMetaTag("pronoun", "pr-名", "pronoun"))
-    elif POSSetManager.NOUN in tos: meta.append(VocabMetaTag(POSSetManager.NOUN, "名", "noun"))
+    elif POS.NOUN in tos: meta.append(VocabMetaTag(POS.NOUN, "名", "noun"))
     if "adverbial noun" in tos: meta.append(VocabMetaTag("adverbial-noun", "副-名", "adverbial noun"))
     if "independent noun" in tos: meta.append(VocabMetaTag("independent-noun", "i-名", "independent noun"))
 
     # verbs
-    if POSSetManager.ICHIDAN_VERB in tos: meta.append(_create_verb_meta_tag("ichidan", "1", POSSetManager.ICHIDAN_VERB, tos))
-    if POSSetManager.GODAN_VERB in tos: meta.append(_create_verb_meta_tag("godan", "5", POSSetManager.GODAN_VERB, tos))
-    if POSSetManager.SURU_VERB in tos or "verbal noun" in tos or "する verb" in tos: meta.append(_create_verb_meta_tag("suru-verb", "為", POSSetManager.SURU_VERB, tos))
+    if POS.ICHIDAN_VERB in tos: meta.append(_create_verb_meta_tag("ichidan", "1", POS.ICHIDAN_VERB, tos))
+    if POS.GODAN_VERB in tos: meta.append(_create_verb_meta_tag("godan", "5", POS.GODAN_VERB, tos))
+    if POS.SURU_VERB in tos or "verbal noun" in tos or "する verb" in tos: meta.append(_create_verb_meta_tag("suru-verb", "為", POS.SURU_VERB, tos))
     if "kuru verb" in tos: meta.append(_create_verb_meta_tag("kuru-verb", "k-v", "kuru verb", tos))
     if "auxiliary verb" in tos: meta.append(_create_verb_meta_tag("auxiliary-verb", "aux-v", "auxiliary verb", tos))
 

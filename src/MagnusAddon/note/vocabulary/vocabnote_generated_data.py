@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from note.tags import Tags
-from note.vocabulary.pos_set_interner import POSSetManager
+from note.vocabulary.pos_set_interner import POS
 from sysutils import kana_utils
 from typed_linq_collections.collections.q_frozen_set import QFrozenSet
 
@@ -29,7 +29,7 @@ def update_generated_data(vocab: VocabNote) -> None:
         vocab.compound_parts.set(compounds)
 
     if vocab.get_question():
-        speech_types = vocab.parts_of_speech.get() - QFrozenSet({POSSetManager.UNKNOWN,
+        speech_types = vocab.parts_of_speech.get() - QFrozenSet({POS.UNKNOWN,
                                                                  "Godan verbIchidan verb",
                                                                  "Ichidan verbGodan verb"  # crap inserted by bug in yomitan
                                                                  })
