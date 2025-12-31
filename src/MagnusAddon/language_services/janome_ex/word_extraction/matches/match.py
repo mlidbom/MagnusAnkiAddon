@@ -80,12 +80,12 @@ class Match(WeakRefable, Slots):
             return self._is_valid_internal_cache
 
         if self.variant.completed_validity_analysis:
-            self._is_valid_internal_cache = self.__is_valid_internal_implementation()
+            self._is_valid_internal_cache = self._is_valid_internal_implementation()
             return self._is_valid_internal_cache
 
-        return self.__is_valid_internal_implementation()
+        return self._is_valid_internal_implementation()
 
-    def __is_valid_internal_implementation(self) -> bool: return all(requirement.is_fulfilled for requirement in self._validity_requirements)
+    def _is_valid_internal_implementation(self) -> bool: return all(requirement.is_fulfilled for requirement in self._validity_requirements)
     @property
     def is_highlighted(self) -> bool: return self.match_form in self.variant.configuration.highlighted_words
     @property
