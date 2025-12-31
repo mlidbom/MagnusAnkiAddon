@@ -3,11 +3,11 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, final, override
 
 from autoslot import Slots
-from typed_linq_collections.collections.q_list import QList  # pyright: ignore[reportMissingTypeStubs]
 from language_services.janome_ex.word_extraction.analysis_constants import noise_characters
 from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
 from sysutils.typed import non_optional
 from sysutils.weak_ref import WeakRef, WeakRefable
+from typed_linq_collections.collections.q_list import QList  # pyright: ignore[reportMissingTypeStubs]
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis

@@ -26,11 +26,19 @@ class IsShadowed(MatchStateTest, Slots):
         if self.start_location.covering_matches.none():
             return False
         if not self.word.is_custom_compound:
-            return True
+            if self.start_location.covering_matches.any(lambda match: match.is_displayed):  # noqa: SIM103
+                return True
+            return False
+
+        if self.start_location.covering_matches.any(lambda match: match.word.end_location.token_index >= self.end_location.token_index):
+            return True  # fully covered yielding does not enter the picture
+
         if self.start_location.covering_matches.all(IsShadowed._match_would_yield_to_upcoming_overlapping_compound):  # noqa: SIM103
             return False
 
-        return True
+        if self.start_location.covering_matches.any(lambda match: match.is_displayed):  # noqa: SIM103
+            return True
+        return False
 
     @staticmethod
     def _match_would_yield_to_upcoming_overlapping_compound(match: Match) -> bool:

@@ -74,7 +74,4 @@ class TextAnalysis(WeakRefable, Slots):
 
     def _analysis_step_3_resolve_display_and_shadowing(self) -> None:
         for location in self.locations:
-            location.run_display_analysis_and_update_display_words()
-
-        for location in self.locations:
-            location.resolve_shadowing_for_display_word()
+            location.analysis_step_3_display_analysis()

@@ -37,7 +37,7 @@ class TextAnalysisLocation(WeakRefable, Slots):
         self.valid_variants: QList[CandidateWordVariant] = QList()
         self.indexing_variants: QList[CandidateWordVariant] = QList()
         self.candidate_words: QList[CandidateWord] = QList()
-        self.display_words: QList[CandidateWord] = []
+        self.display_words: QList[CandidateWord] = QList()
         self.yield_target_matches: QList[Match] = QList()
         self.covering_matches: QList[Match] = QList()
 
@@ -78,26 +78,15 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
                 for match in variant.valid_matches:
                     if IsConfiguredHidden(match.weakref).match_is_in_state:
                         continue
-                    for covered_location in valid_word.locations[1:-1]:
+                    for covered_location in valid_word.locations[1:]:
                         covered_location().covering_matches.append(match)
 
-    def run_display_analysis_and_update_display_words(self) -> None:
+    def analysis_step_3_display_analysis(self) -> None:
         for candidate_word in self.candidate_words:
             candidate_word.run_display_analysis()
 
         self.display_words = self.candidate_words.where(lambda it: it.display_variants.any()).to_list()
-
-    def resolve_shadowing_for_display_word(self) -> None:
-        if self.display_words and not any(self.is_shadowed_by):
-            self.display_variants = self.display_words[0].display_variants
-
-            covering_forward_count = self.display_words[0].location_count - 1
-            for shadowed in self.forward_list(covering_forward_count)[1:]:
-                shadowed.is_shadowed_by.append(self.weakref)
-                self.shadows.append(shadowed.weakref)
-                for shadowed_shadowed in shadowed.shadows:
-                    shadowed_shadowed().is_shadowed_by.remove(shadowed.weakref)
-                shadowed.shadows.clear()
+        self.display_variants = self.display_words[0].display_variants if self.display_words.any() else []
 
     def is_next_location_inflecting_word(self) -> bool:
         return self.next is not None and self.next().is_inflecting_word()
