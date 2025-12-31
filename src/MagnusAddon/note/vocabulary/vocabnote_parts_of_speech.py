@@ -28,7 +28,7 @@ class VocabNotePartsOfSpeech(Slots):
     def set_raw_string_value(self, value: str) -> None:
         self._vocab.set_field(VocabNotePartsOfSpeech._field_name, POSSetManager.intern_and_harmonize(value))
 
-    def get(self) -> QFrozenSet[str]: return POSSetManager.get(self.raw_string_value())
+    def get(self) -> frozenset[str]: return POSSetManager.get(self.raw_string_value())
 
     def is_ichidan(self) -> bool: return "ichidan" in self.get()
     def is_godan(self) -> bool: return "godan" in self.get()
