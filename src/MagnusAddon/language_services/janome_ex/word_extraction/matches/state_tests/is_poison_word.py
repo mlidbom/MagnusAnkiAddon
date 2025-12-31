@@ -3,23 +3,26 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from language_services.janome_ex.word_extraction.matches.state_tests.vocab_match_state_test import VocabMatchStateTest
+from language_services.janome_ex.word_extraction.matches.requirements.custom_forbids import CustomForbids
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
-    from sysutils.weak_ref import WeakRef
-    pass
+    from language_services.janome_ex.word_extraction.matches.requirements.vocab_match_inspector import VocabMatchInspector
+    from note.vocabulary.vocabnote_matching_rules import VocabNoteMatchingConfiguration
 
-class IsPoisonWord(VocabMatchStateTest, Slots):
-    def __init__(self, match: WeakRef[VocabMatch]) -> None:
-        super().__init__(match)
+class ForbidsIsPoisonWord(CustomForbids, Slots):
+    def __init__(self, inspector: VocabMatchInspector) -> None:
+        super().__init__(inspector)
+
+    @property
+    def rules(self) -> VocabNoteMatchingConfiguration:
+        return self.inspector.match.vocab.matching_configuration
 
     @property
     @override
     def description(self) -> str: return "poison_word"
 
     @override
-    def _internal_match_is_in_state(self) -> bool:
+    def _internal_is_in_state(self) -> bool:
         if self.rules.bool_flags.is_poison_word.is_set():  # noqa: SIM103
             return True
         return False

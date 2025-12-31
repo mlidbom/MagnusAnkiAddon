@@ -9,12 +9,16 @@ if TYPE_CHECKING:
 
 class BitFlagsSet(QIterable[int]):
     __slots__: tuple[str, ...] = ("_bitfield",)
+
     def __init__(self, bitfield: int = 0) -> None:
         self._bitfield: int = bitfield
 
     @override
     def contains(self, value: int) -> bool:
-        return bool(self._bitfield & (1 << value))
+        return (self._bitfield & (1 << value)) != 0
+
+    def contains_bit(self, value: int) -> bool:
+        return (self._bitfield & value) != 0
 
     def set_flag(self, flag: int) -> None:
         self._bitfield |= (1 << flag)

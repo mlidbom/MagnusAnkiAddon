@@ -13,8 +13,8 @@ if TYPE_CHECKING:
 class DictionaryMatch(Match, Slots):
     def __init__(self, word_variant: WeakRef[CandidateWordVariant], dictionary_entry: DictEntry) -> None:
         super().__init__(word_variant,
-                         validity_requirements=[],
-                         display_requirements=[])
+                         validity_requirements=(),
+                         display_requirements=())
         self.dictionary_entry: DictEntry = dictionary_entry
 
     @property

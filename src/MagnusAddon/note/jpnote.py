@@ -94,6 +94,10 @@ class JPNote(WeakRefable, Slots):
     def get_direct_dependencies(self) -> QSet[JPNote]:
         return QSet()
 
+    def _on_tags_updated(self) -> None:
+        """Called when tags are modified. Subclasses can override to invalidate cached state."""
+        pass
+
     def _get_dependencies_recursive(self, found: QSet[JPNote]) -> QSet[JPNote]:
         if self in found:
             return found

@@ -3,33 +3,35 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from language_services.janome_ex.word_extraction.matches.state_tests.match_state_test import MatchStateTest
+from language_services.janome_ex.word_extraction.matches.requirements.custom_forbids_no_cache import CustomForbidsNoCache
 from sysutils.typed import non_optional
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.matches.match import Match
-    from sysutils.weak_ref import WeakRef
+    from language_services.janome_ex.word_extraction.matches.requirements.vocab_match_inspector import VocabMatchInspector
 
     pass
 
-class HasDisplayedOverlappingFollowingCompound(MatchStateTest, Slots):
-    def __init__(self, match: WeakRef[Match]) -> None:
-        super().__init__(match)
+class ForbidsHasDisplayedOverlappingFollowingCompound(CustomForbidsNoCache, Slots):
+    def __init__(self, inspector: VocabMatchInspector) -> None:
+        super().__init__(inspector)
+
+    @staticmethod
+    def for_if(inspector: VocabMatchInspector, is_active: bool) -> ForbidsHasDisplayedOverlappingFollowingCompound | None:
+        return ForbidsHasDisplayedOverlappingFollowingCompound(inspector) if is_active else None
 
     @property
     @override
     def description(self) -> str: return "has_displayed_following_overlapping_compound"
 
-    @property
     @override
-    def match_is_in_state(self) -> bool:
+    def _internal_is_in_state(self) -> bool:
         # todo: this is a problematic reference to display_words. That collection is initialized using this class,
         # so this class will return different results depending on whether it is used after or before display_words is first initialized. Ouch
 
-        tail_location = self.end_location
-        while tail_location is not self.word.start_location:
+        tail_location = self.inspector.end_location
+        while tail_location is not self.inspector.word.start_location:
             for display_word in tail_location.display_words:
-                if display_word.end_location.token_index > self.word.end_location.token_index:
+                if display_word.end_location.token_index > self.inspector.word.end_location.token_index:
                     return True
 
             tail_location = non_optional(tail_location.previous)()

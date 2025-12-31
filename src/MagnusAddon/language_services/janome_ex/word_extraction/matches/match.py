@@ -3,13 +3,13 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from language_services.janome_ex.word_extraction.matches.requirements.forbids_state import Forbids
-from language_services.janome_ex.word_extraction.matches.state_tests.is_configured_hidden import IsConfiguredHidden
-from language_services.janome_ex.word_extraction.matches.state_tests.is_configured_incorrect import IsConfiguredIncorrect
-from language_services.janome_ex.word_extraction.matches.state_tests.is_godan_imperative_surface_with_base import IsGodanImperativeInflectionWithBase
-from language_services.janome_ex.word_extraction.matches.state_tests.is_godan_potential_surface_with_base import IsGodanPotentialInflectionWithBase
-from language_services.janome_ex.word_extraction.matches.state_tests.is_inflected_surface_with_valid_base import IsInflectedSurfaceWithValidBase
-from language_services.janome_ex.word_extraction.matches.state_tests.is_shadowed import IsShadowed
+from language_services.janome_ex.word_extraction.matches.requirements.match_inspector import MatchInspector
+from language_services.janome_ex.word_extraction.matches.state_tests.is_configured_hidden import ForbidsIsConfiguredHidden
+from language_services.janome_ex.word_extraction.matches.state_tests.is_configured_incorrect import ForbidsIsConfiguredIncorrect
+from language_services.janome_ex.word_extraction.matches.state_tests.is_godan_imperative_surface_with_base import ForbidsIsGodanImperativeInflectionWithBase
+from language_services.janome_ex.word_extraction.matches.state_tests.is_godan_potential_surface_with_base import ForbidsIsGodanPotentialInflectionWithBase
+from language_services.janome_ex.word_extraction.matches.state_tests.is_inflected_surface_with_valid_base import ForbidsIsInflectedSurfaceWithValidBase
+from language_services.janome_ex.word_extraction.matches.state_tests.is_shadowed import ForbidsIsShadowed
 from sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
@@ -19,25 +19,26 @@ if TYPE_CHECKING:
 
 class Match(WeakRefable, Slots):
     def __init__(self, word_variant: WeakRef[CandidateWordVariant],
-                 validity_requirements: list[MatchRequirement],
-                 display_requirements: list[MatchRequirement]) -> None:
+                 validity_requirements: tuple[MatchRequirement | None, ...],
+                 display_requirements: tuple[MatchRequirement | None, ...]) -> None:
         weakref_self = WeakRef(self)
-        self._is_not_shadowed_requirement: MatchRequirement = Forbids(IsShadowed(weakref_self))
-        self._preliminarily_valid_for_display_requirement: MatchRequirement = Forbids(IsConfiguredHidden(weakref_self))
+        inspector = MatchInspector(weakref_self)
+        self._is_not_shadowed_requirement: MatchRequirement = ForbidsIsShadowed(inspector)
+        self._preliminarily_valid_for_display_requirement: MatchRequirement = ForbidsIsConfiguredHidden(inspector)
         self.weakref: WeakRef[Match] = weakref_self
         self._variant: WeakRef[CandidateWordVariant] = word_variant
-        self._validity_requirements: list[MatchRequirement] = ([
-                                                                       Forbids(IsConfiguredIncorrect(weakref_self)),
-                                                                       Forbids(IsGodanPotentialInflectionWithBase(weakref_self)),
-                                                                       Forbids(IsGodanImperativeInflectionWithBase(weakref_self)),
-                                                                       Forbids(IsInflectedSurfaceWithValidBase(weakref_self)),
-                                                               ]
-                                                               + validity_requirements)
-        self._display_requirements: list[MatchRequirement] = ([
-                                                                      self._is_not_shadowed_requirement,
-                                                                      self._preliminarily_valid_for_display_requirement
-                                                              ]
-                                                              + display_requirements)
+        self._validity_requirements: list[MatchRequirement] = [r for r in (
+                ForbidsIsConfiguredIncorrect(inspector),
+                ForbidsIsGodanPotentialInflectionWithBase(inspector),
+                ForbidsIsGodanImperativeInflectionWithBase(inspector),
+                ForbidsIsInflectedSurfaceWithValidBase(inspector),
+                *validity_requirements
+        ) if r is not None]
+        self._display_requirements: list[MatchRequirement] = [r for r in (
+                self._is_not_shadowed_requirement,
+                self._preliminarily_valid_for_display_requirement,
+                *display_requirements
+        ) if r is not None]
         self._is_valid_internal_cache: bool | None = None
         self._is_valid_cache: bool | None = None
         self._start_index_cache: int | None = None
@@ -92,7 +93,6 @@ class Match(WeakRefable, Slots):
     @property
     def is_displayed(self) -> bool: return self._is_valid_for_display or self._is_emergency_displayed
 
-
     @property
     def start_index(self) -> int:
         if self._start_index_cache is not None:
@@ -106,8 +106,8 @@ class Match(WeakRefable, Slots):
 
     @property
     def _is_emergency_displayed(self) -> bool:
-        return (self._surface_is_seemingly_valid_single_token
-                and self.variant.is_surface
+        return (self.variant.is_surface
+                and self._surface_is_seemingly_valid_single_token
                 and self._is_not_shadowed_requirement.is_fulfilled
                 and not self._base_is_valid_word
                 and not self._has_valid_for_display_sibling)

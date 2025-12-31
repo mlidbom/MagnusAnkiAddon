@@ -1,0 +1,26 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, cast, override
+
+from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from language_services.janome_ex.word_extraction.matches.requirements.match_inspector import MatchInspector
+
+if TYPE_CHECKING:
+    from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
+    from sysutils.weak_ref import WeakRef
+
+
+class VocabMatchInspector(MatchInspector, Slots):
+    """Base class providing access to VocabMatch context and helper properties.
+
+    This class holds a weak reference to a VocabMatch and provides convenient
+    properties for inspecting the match's word, variant, location, and surrounding context.
+    """
+
+    def __init__(self, match: WeakRef[VocabMatch]) -> None:
+        super().__init__(match)  # type: ignore[arg-type]
+
+    @property
+    @override
+    def match(self) -> VocabMatch:
+        return cast("VocabMatch", self._match())
