@@ -34,9 +34,8 @@ class TextAnalysisLocation(WeakRefable, Slots):
 
         self.valid_words: QList[CandidateWord] = QList()
         self.display_variants: list[CandidateWordVariant] = []
-        self.valid_variants: QList[CandidateWordVariant] = QList()
         self.indexing_variants: QList[CandidateWordVariant] = QList()
-        self.candidate_words: QList[CandidateWord] = QList()
+        self._candidate_words: QList[CandidateWord] = QList()
         self.compound_matches_extending_past_this_location: QList[Match] = QList()
         self.compound_matches_covering_this_location: QList[Match] = QList()
 
@@ -52,16 +51,15 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
 
     def analysis_step_1_analyze_non_compound_validity(self) -> None:
         lookahead_max = min(_max_lookahead, len(self.forward_list(_max_lookahead)))
-        self.candidate_words = QList(CandidateWord([location.weakref for location in self.forward_list(index)]) for index in range(lookahead_max - 1, -1, -1))
-        self.candidate_words[-1].run_validity_analysis()  # the non-compound part needs to be completed first
+        self._candidate_words = QList(CandidateWord([location.weakref for location in self.forward_list(index)]) for index in range(lookahead_max - 1, -1, -1))
+        self._candidate_words[-1].run_validity_analysis()  # the non-compound part needs to be completed first
 
     def analysis_step_2_analyze_compound_validity(self) -> None:
-        for candidate_word in self.candidate_words[:-1]:  # we already have the last one completed
+        for candidate_word in self._candidate_words[:-1]:  # we already have the last one completed
             candidate_word.run_validity_analysis()
 
-        self.valid_words = self.candidate_words.where(lambda candidate: candidate.has_valid_words()).to_list()
-        self.indexing_variants = self.candidate_words.select_many(lambda candidate: candidate.indexing_variants).to_list()
-        self.valid_variants = self.valid_words.select_many(lambda valid: valid.valid_variants).to_list()
+        self.valid_words = self._candidate_words.where(lambda candidate: candidate.has_valid_words()).to_list()
+        self.indexing_variants = self._candidate_words.select_many(lambda candidate: candidate.indexing_variants).to_list()
 
         for valid_word in self.valid_words:
             for variant in valid_word.valid_variants:
@@ -72,10 +70,10 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
                         covered_location().compound_matches_covering_this_location.append(match)
 
     def analysis_step_3_display_analysis(self) -> None:
-        for candidate_word in self.candidate_words:
+        for candidate_word in self._candidate_words:
             candidate_word.run_display_analysis()
 
-        display_words = self.candidate_words.where(lambda it: it.display_variants.any()).to_list()
+        display_words = self._candidate_words.where(lambda it: it.display_variants.any()).to_list()
         self.display_variants = display_words[0].display_variants if display_words.any() else []
 
     def is_next_location_inflecting_word(self) -> bool:

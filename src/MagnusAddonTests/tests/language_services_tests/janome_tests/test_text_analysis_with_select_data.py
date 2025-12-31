@@ -132,7 +132,7 @@ def test_no_memory_leak_weak_references_are_disposed() -> None:
 
     assert_that_the_inner_weakref_has_been_destroyed(lambda analysis: analysis.locations[0],
                                                      lambda location: location.analysis())
-    assert_that_the_inner_weakref_has_been_destroyed(lambda analysis: analysis.locations[0].candidate_words[0],
+    assert_that_the_inner_weakref_has_been_destroyed(lambda analysis: analysis.locations[0]._candidate_words[0],
                                                      lambda cand: cand.start_location)
     assert_that_the_inner_weakref_has_been_destroyed(lambda analysis: analysis.valid_matches[0],
                                                      lambda match: match.word)
