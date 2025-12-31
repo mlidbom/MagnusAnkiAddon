@@ -40,6 +40,7 @@ class Match(WeakRefable, Slots):
                                                               + display_requirements)
         self._is_valid_internal_cache: bool | None = None
         self._is_valid_cache: bool | None = None
+        self._start_index_cache: int | None = None
 
     @property
     def answer(self) -> str: raise NotImplementedError()
@@ -90,8 +91,16 @@ class Match(WeakRefable, Slots):
     def is_highlighted(self) -> bool: return self.match_form in self.variant.configuration.highlighted_words
     @property
     def is_displayed(self) -> bool: return self._is_valid_for_display or self._is_emergency_displayed
+
+
     @property
-    def start_index(self) -> int: return self.variant.start_index
+    def start_index(self) -> int:
+        if self._start_index_cache is not None:
+            return self._start_index_cache
+        self._start_index_cache = self._start_index()
+        return self.variant.start_index
+
+    def _start_index(self) -> int: return self.variant.start_index
     @property
     def _is_valid_for_display(self) -> bool: return self.is_valid and all(requirement.is_fulfilled for requirement in self._display_requirements)
 
