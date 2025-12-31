@@ -128,7 +128,7 @@ def _add_full_part_of_speech(level1: str, level2: str = "*", level3: str = "*", 
     return parts_of_speech
 
 # noinspection PyUnusedClass, PyUnusedName
-class POS(Slots):
+class JNPOS(Slots):
     filler: JNPartsOfSpeech = _add_full_part_of_speech("フィラー")
     bound_auxiliary: JNPartsOfSpeech = _add_full_part_of_speech("助動詞")  # た, ない, だ
     pre_noun_adjectival: JNPartsOfSpeech = _add_full_part_of_speech("連体詞")  # こんな

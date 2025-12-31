@@ -6,7 +6,7 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from language_services.janome_ex.tokenizing import inflection_forms, inflection_types
 from language_services.janome_ex.tokenizing.inflection_forms import InflectionForms
 from language_services.janome_ex.tokenizing.inflection_types import InflectionTypes
-from language_services.janome_ex.tokenizing.jn_parts_of_speech import POS, JNPartsOfSpeech
+from language_services.janome_ex.tokenizing.jn_parts_of_speech import JNPOS, JNPartsOfSpeech
 from language_services.janome_ex.word_extraction import analysis_constants
 from sysutils import kana_utils, typed
 from sysutils.weak_ref import WeakRef, WeakRefable
@@ -73,14 +73,14 @@ class JNToken(WeakRefable, Slots):
         return False
 
     def is_verb(self) -> bool:
-        return self.parts_of_speech in POS.Verb.all_types
+        return self.parts_of_speech in JNPOS.Verb.all_types
 
     _pseudo_verbs_for_inflection_purposes: set[str] = {"ます"}
     def is_inflectable_word(self) -> bool:
         return self.is_verb() or self.is_adjective() or self.base_form in self._pseudo_verbs_for_inflection_purposes
 
     def is_adjective(self) -> bool:
-        return self.parts_of_speech in POS.Adjective.all_types
+        return self.parts_of_speech in JNPOS.Adjective.all_types
 
     def is_ichidan_verb(self) -> bool:
         return self.inflection_type == InflectionTypes.Ichidan.regular
@@ -107,11 +107,11 @@ class JNToken(WeakRefable, Slots):
 
     def is_end_of_statement(self) -> bool:
         return (self.next is None
-                or self.next.parts_of_speech == POS.Particle.sentence_ending
+                or self.next.parts_of_speech == JNPOS.Particle.sentence_ending
                 or self.next.surface in analysis_constants.sentence_end_characters
                 or self.next.parts_of_speech.is_non_word_character())
 
-    _valid_potential_form_inflections_pos: set[JNPartsOfSpeech] = {POS.bound_auxiliary, POS.Noun.Suffix.auxiliary_verb_stem, POS.Verb.dependent, POS.Particle.conjunctive, POS.Particle.coordinating_conjunction}
+    _valid_potential_form_inflections_pos: set[JNPartsOfSpeech] = {JNPOS.bound_auxiliary, JNPOS.Noun.Suffix.auxiliary_verb_stem, JNPOS.Verb.dependent, JNPOS.Particle.conjunctive, JNPOS.Particle.coordinating_conjunction}
     def is_valid_potential_form_inflection(self) -> bool:
         if self.parts_of_speech in self._valid_potential_form_inflections_pos:  # noqa: SIM103
             return True
