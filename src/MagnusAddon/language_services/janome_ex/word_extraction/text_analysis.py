@@ -40,8 +40,8 @@ class TextAnalysis(WeakRefable, Slots):
         self._analysis_step_1_analyze_non_compound()
         self._analysis_step_2_analyze_compounds()
         self._analysis_step_3_run_initial_display_analysis()
+        self._analysis_step_4_set_initial_shadowing_state()
         self._analysis_step_5_calculate_preference_between_overlapping_display_candidates()
-
 
         self.indexing_word_variants: QList[CandidateWordVariant] = self.locations.select_many(lambda location: location.indexing_variants).to_list()
         self.display_word_variants: QList[CandidateWordVariant] = self.locations.select_many(lambda location: location.display_variants).to_list()
@@ -75,22 +75,18 @@ class TextAnalysis(WeakRefable, Slots):
             location.analysis_step_2_analyze_compound_validity()
 
     def _analysis_step_3_run_initial_display_analysis(self) -> None:
-        for location in reversed(self.locations):
-            location.run_display_analysis_and_update_display_words_pass_true_if_there_were_changes()
+        for location in self.locations:
+            location.analysis_step_3_run_display_analysis_without_shadowing_information()
+
+    def _analysis_step_4_set_initial_shadowing_state(self) -> None:
+        pass
+        # for location in self.locations:
+        #     location.update_shadowing()
 
     def _analysis_step_5_calculate_preference_between_overlapping_display_candidates(self) -> None:
-
-
-        for location in self.locations:
-            location.resolve_shadowing_for_display_word()
-
         changes_made = True
-        iterations = 0
         while changes_made:
             changes_made = False
-            for location in reversed(self.locations):
-                if location.run_display_analysis_and_update_display_words_pass_true_if_there_were_changes():
+            for location in self.locations:
+                if location.analysis_step_5_resolve_chains_of_compounds_yielding_to_the_next_compound_pass_true_if_there_were_changes():
                     changes_made = True
-            iterations += 1
-            if iterations > 10:
-                raise Exception("Display analysis seems stuck in an infinite loop.")
