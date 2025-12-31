@@ -80,10 +80,6 @@ class VocabMatch(Match, Slots):
         self.word_variant: WeakRef[CandidateWordVariant] = word_variant
 
     @property
-    @override
-    def would_yield_to_upcoming_overlapping_compound(self) -> bool: return self.requires_forbids.yield_last_token.is_required
-
-    @property
     def matching_configuration(self) -> VocabNoteMatchingConfiguration: return self.vocab.matching_configuration
     @property
     @override

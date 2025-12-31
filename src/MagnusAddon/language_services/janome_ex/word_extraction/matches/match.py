@@ -89,14 +89,14 @@ class Match(WeakRefable, Slots):
     @property
     def is_highlighted(self) -> bool: return self.match_form in self.variant.configuration.highlighted_words
     @property
-    def is_displayed(self) -> bool: return self.is_valid_for_display or self.is_emergency_displayed
+    def is_displayed(self) -> bool: return self._is_valid_for_display or self._is_emergency_displayed
     @property
     def start_index(self) -> int: return self.variant.start_index
     @property
-    def is_valid_for_display(self) -> bool: return self.is_valid and all(requirement.is_fulfilled for requirement in self._display_requirements)
+    def _is_valid_for_display(self) -> bool: return self.is_valid and all(requirement.is_fulfilled for requirement in self._display_requirements)
 
     @property
-    def is_emergency_displayed(self) -> bool:
+    def _is_emergency_displayed(self) -> bool:
         return (self._surface_is_seemingly_valid_single_token
                 and self.variant.is_surface
                 and self._is_not_shadowed_requirement.is_fulfilled
@@ -104,7 +104,7 @@ class Match(WeakRefable, Slots):
                 and not self._has_valid_for_display_sibling)
 
     @property
-    def _has_valid_for_display_sibling(self) -> bool: return any(other_match for other_match in self._sibling_matches if other_match.is_valid_for_display)
+    def _has_valid_for_display_sibling(self) -> bool: return any(other_match for other_match in self._sibling_matches if other_match._is_valid_for_display)
     @property
     def _sibling_matches(self) -> list[Match]: return [match for match in self.variant.matches if match != self]
     @property

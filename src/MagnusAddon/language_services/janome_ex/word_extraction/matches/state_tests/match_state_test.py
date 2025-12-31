@@ -29,9 +29,6 @@ class MatchStateTest(Slots):
     def description(self) -> str: raise NotImplementedError()
 
     @property
-    def description(self) -> str: raise NotImplementedError()
-
-    @property
     def has_godan_imperative_part(self) -> bool: return self.word.start_location.token.is_godan_imperative_inflection or self.word.start_location.token.is_godan_imperative_stem
 
     @property
