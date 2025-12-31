@@ -73,20 +73,8 @@ class TextAnalysis(WeakRefable, Slots):
             location.analysis_step_2_analyze_compound_validity()
 
     def _analysis_step_3_resolve_display_and_shadowing(self) -> None:
-        """Resolve which matches are displayed, handling yields and shadowing.
-
-        This uses "negotiation" for yield resolution: instead of checking "Is the overlapping
-        compound displayed?" (circular), matches ask "Would that compound be displayed if I
-        yielded?" This breaks circular dependencies because the question becomes hypothetical.
-
-        The algorithm:
-        1. Compute display_words at each location (yields resolved via negotiation)
-        2. Apply shadowing: longer displayed words shadow shorter words at following positions
-        """
-        # Phase 1: Compute display_words (includes yield resolution via negotiation)
         for location in self.locations:
             location.run_display_analysis_and_update_display_words()
 
-        # Phase 2: Apply shadowing - longer displayed words shadow shorter words
         for location in self.locations:
             location.resolve_shadowing_for_display_word()
