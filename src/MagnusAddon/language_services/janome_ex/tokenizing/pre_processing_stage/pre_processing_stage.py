@@ -12,15 +12,14 @@ if TYPE_CHECKING:
     from language_services.janome_ex.tokenizing.jn_token import JNToken
     from language_services.janome_ex.tokenizing.processed_token import ProcessedToken
     from note.collection.vocab_collection import VocabCollection
-    from typed_linq_collections.collections.q_list import QList
 
 
 class PreProcessingStage(Slots):
     def __init__(self, vocabs: VocabCollection) -> None:
         self._vocabs: VocabCollection = vocabs
 
-    def pre_process(self, tokens: QList[JNToken]) -> QList[ProcessedToken]:
-        return tokens.select_many(self.pre_process_token).to_list()
+    def pre_process(self, tokens: list[JNToken]) -> list[ProcessedToken]:
+        return [processed for token in tokens for processed in self.pre_process_token(token)]
 
 
     def pre_process_token(self, token: JNToken) -> list[ProcessedToken]:  # note: The order here matters, it's not random. any change will break things even should the tests be incomplete and not show it.

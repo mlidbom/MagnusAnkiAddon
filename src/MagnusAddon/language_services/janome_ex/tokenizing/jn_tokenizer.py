@@ -8,7 +8,6 @@ from language_services.janome_ex.tokenizing.jn_parts_of_speech import JNPartsOfS
 from language_services.janome_ex.tokenizing.jn_token import JNToken
 from language_services.janome_ex.tokenizing.jn_tokenized_text import JNTokenizedText
 from sysutils import ex_str, typed
-from typed_linq_collections.collections.q_list import QList
 
 
 @final
@@ -25,7 +24,7 @@ class JNTokenizer(Slots):
         for character in self._character_that_confuses_janome_so_we_replace_them_with_ordinary_full_width_spaces:
             sanitized_text = sanitized_text.replace(character, " ")
 
-        #it seems that janome is sometimes confused and changes its parsing if there is no whitespace after the text, so lets add one
+        # it seems that janome is sometimes confused and changes its parsing if there is no whitespace after the text, so lets add one
         tokens = [typed.checked_cast(Token, token) for token in self._tokenizer.tokenize(sanitized_text)]
 
         # Create JNToken objects
@@ -46,6 +45,4 @@ class JNTokenizer(Slots):
             if i < len(jn_tokens) - 1:
                 jn_tokens[i]._next = jn_tokens[i + 1].weak_ref  # pyright: ignore [reportPrivateUsage]
 
-        return JNTokenizedText(text,
-                               QList(tokens),
-                               QList(jn_tokens))
+        return JNTokenizedText(text, tokens, jn_tokens)

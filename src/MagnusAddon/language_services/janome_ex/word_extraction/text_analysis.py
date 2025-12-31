@@ -26,7 +26,7 @@ class TextAnalysis(WeakRefable, Slots):
         self.text = sentence
         self.configuration = sentence_configuration
         self.tokenized_text = _tokenizer.tokenize(sentence)
-        self.pre_processed_tokens: QList[ProcessedToken] = self.tokenized_text.pre_process()
+        self.pre_processed_tokens: list[ProcessedToken] = self.tokenized_text.pre_process()
 
         self.locations: QList[TextAnalysisLocation] = QList()
 
