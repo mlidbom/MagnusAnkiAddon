@@ -53,7 +53,7 @@ class POSSetManager:
         "transitive verb": [POS.TRANSITIVE],
         "godan": [POS.GODAN_VERB],
         "ichidan": [POS.ICHIDAN_VERB],
-        
+
         # JMDict POS mappings
         "noun or participle which takes the aux. verb suru": [POS.SURU_VERB],
         "noun (common) (futsuumeishi)": [POS.NOUN],

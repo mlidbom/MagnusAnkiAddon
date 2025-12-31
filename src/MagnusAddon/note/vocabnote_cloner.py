@@ -8,7 +8,7 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from language_services import conjugator
 from note.note_constants import NoteTypes
 from note.tags import Tags
-from note.vocabulary.pos_set_interner import POS, POSSetManager
+from note.vocabulary.pos_set_interner import POS
 
 if TYPE_CHECKING:
     from collections.abc import Callable
