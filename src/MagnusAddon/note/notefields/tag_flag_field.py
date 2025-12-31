@@ -13,9 +13,11 @@ class TagFlagField(Slots):
     def __init__(self, note: WeakRef[JPNote], tag: Tag) -> None:
         self._note: WeakRef[JPNote] = note
         self.tag: Tag = tag
+        # Cache tag state during construction - invalidated when matching_configuration is recreated
+        self._cached_is_set: bool = note().tags.contains(tag)
 
     def is_set(self) -> bool:
-        return self._note().tags.contains(self.tag)
+        return self._cached_is_set
 
     def set_to(self, set_: bool) -> None:
         if set_:

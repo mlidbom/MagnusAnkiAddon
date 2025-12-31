@@ -29,24 +29,24 @@ class NoteTags(QIterable[Tag]):
 
         backend_note.tags = self.to_interned_string_list()
 
-    def _sync_to_backend(self) -> None:
+    def _persist(self) -> None:
+        self._note()._on_tags_updated()  # pyright: ignore [reportPrivateUsage]
+        self._note()._flush()  # pyright: ignore [reportPrivateUsage]
         self._note().backend_note.tags = self.to_interned_string_list()
 
     @override
     def contains(self, value: Tag) -> bool:
-        return self._flags.contains(value.id)
+        return self._flags.contains_bit(value.bit)
 
     def set(self, tag: Tag) -> None:
         if not self.contains(tag):
             self._flags.set_flag(tag.id)
-            self._sync_to_backend()
-            self._note()._flush()  # pyright: ignore [reportPrivateUsage]
+            self._persist()
 
     def unset(self, tag: Tag) -> None:
         if self.contains(tag):
             self._flags.unset_flag(tag.id)
-            self._sync_to_backend()
-            self._note()._flush()  # pyright: ignore [reportPrivateUsage]
+            self._persist()
 
     def toggle(self, tag: Tag, on: bool) -> None:
         if on:

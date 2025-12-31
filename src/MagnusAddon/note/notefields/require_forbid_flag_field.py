@@ -14,18 +14,21 @@ class RequireForbidFlagField(Slots):
         self._note: WeakRef[JPNote] = note
         self._required_tag: Tag = required_tag
         self._forbidden_tag: Tag = forbidden_tag
+        # Cache tag states during construction - invalidated when matching_configuration is recreated
+        self._cached_is_required: bool = note().tags.contains(required_tag)
+        self._cached_is_forbidden: bool = note().tags.contains(forbidden_tag)
 
     @property
     def is_configured_required(self) -> bool:
-        return self._note().tags.contains(self._required_tag)
+        return self._cached_is_required
     @property
     def is_configured_forbidden(self) -> bool:
-        return self._note().tags.contains(self._forbidden_tag)
+        return self._cached_is_forbidden
 
     @property
-    def is_required(self) -> bool: return self.is_configured_required
+    def is_required(self) -> bool: return self._cached_is_required
     @property
-    def is_forbidden(self) -> bool: return self.is_configured_forbidden
+    def is_forbidden(self) -> bool: return self._cached_is_forbidden
 
     def set_forbidden(self, value: bool) -> None:
         if value:

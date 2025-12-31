@@ -70,6 +70,12 @@ class VocabNote(JPNote, Slots):
         return self.related_notes.get_direct_dependencies()
 
     @override
+    def _on_tags_updated(self) -> None:
+        """Recreate matching configuration when tags are modified to refresh cached flag values."""
+        from note.vocabulary.vocabnote_matching_rules import VocabNoteMatchingConfiguration
+        self.matching_configuration = VocabNoteMatchingConfiguration(self.weakref_vocab)
+
+    @override
     def update_generated_data(self) -> None:
         super().update_generated_data()
         vocabnote_generated_data.update_generated_data(self)
