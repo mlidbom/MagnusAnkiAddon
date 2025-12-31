@@ -40,8 +40,6 @@ class Match(WeakRefable, Slots):
                                                               + display_requirements)
         self._is_valid: bool | None = None
 
-    @property
-    def would_yield_to_upcoming_overlapping_compound(self) -> bool: return False
 
     @property
     def answer(self) -> str: raise NotImplementedError()
