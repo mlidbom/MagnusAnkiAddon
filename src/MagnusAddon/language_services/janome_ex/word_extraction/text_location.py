@@ -48,14 +48,14 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
 
     def analysis_step_1_analyze_non_compound_validity(self) -> None:
         lookahead_max = min(_max_lookahead, len(self.forward_list(_max_lookahead)))
-        self.candidate_words = QList(CandidateWord(self.forward_list(index).select(lambda it: it.weakref).to_list()) for index in range(lookahead_max - 1, -1, -1))
+        self.candidate_words = QList(CandidateWord(QList(x.weakref for x in self.forward_list(index))) for index in range(lookahead_max - 1, -1, -1))
         self.candidate_words[-1].run_validity_analysis()  # the non-compound part needs to be completed first
 
     def analysis_step_2_analyze_compound_validity(self) -> None:
         for range_ in self.candidate_words[:-1]:  # we already have the last one completed
             range_.run_validity_analysis()
 
-        self.indexing_variants = self.candidate_words.select_many(lambda candidate: candidate.indexing_variants).to_list()
+        self.indexing_variants = QList(variant for cand in self.candidate_words for variant in cand.indexing_variants)
 
     def run_display_analysis_and_update_display_words_pass_true_if_there_were_changes(self) -> bool:
         changes_made = False
@@ -64,7 +64,7 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
                 changes_made = True
 
         if changes_made:
-            self.display_words = self.candidate_words.where(lambda it: it.display_variants.any()).to_list()
+            self.display_words = QList(it for it in self.candidate_words if it.display_variants)
         return changes_made
 
     def analysis_step_3_run_display_analysis_without_shadowing_information_so_that_all_valid_matches_are_displayed_and_can_be_accounted_for_in_yielding_to_upcoming_compounds(self) -> None:

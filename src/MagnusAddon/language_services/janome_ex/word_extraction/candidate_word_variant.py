@@ -60,10 +60,10 @@ class CandidateWordVariant(WeakRefable, Slots):
 
         self.completed_validity_analysis = True
         self._is_valid = any(match for match in self._once_validity_analyzed.matches if match.is_valid)
-        self._valid_matches = self.matches.where(lambda match: match.is_valid).to_list()
+        self._valid_matches = QList(match for match in self.matches if match.is_valid)
 
     def run_visibility_analysis(self) -> None:
-        self._display_matches = self._once_validity_analyzed.matches.where(lambda it: it.is_displayed).to_list()
+        self._display_matches = QList(match for match in self._once_validity_analyzed.matches if match.is_displayed)
         self.completed_visibility_analysis = True
 
     @property

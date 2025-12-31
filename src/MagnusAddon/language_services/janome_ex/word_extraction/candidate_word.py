@@ -65,9 +65,9 @@ class CandidateWord(WeakRefable, Slots):
         old_display_word_variants = self.display_variants
         self.display_variants = QList()
 
-        if self.surface_variant.display_matches.any():
+        if self.surface_variant.display_matches:
             self.display_variants.append(self.surface_variant)
-        elif self.base_variant is not None and self.base_variant.display_matches.any():
+        elif self.base_variant is not None and self.base_variant.display_matches:
             self.display_variants.append(non_optional(self.base_variant))
 
         def displaywords_were_changed() -> bool:
