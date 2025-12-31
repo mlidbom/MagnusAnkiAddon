@@ -93,17 +93,6 @@ class CandidateWord(WeakRefable, Slots):
     @property
     def starts_with_non_word_character(self) -> bool: return self.starts_with_non_word_token or self.surface_form in noise_characters
 
-    @property
-    def is_shadowed(self) -> bool: return self.is_shadowed_by is not None
-    @property
-    def is_shadowed_by(self) -> CandidateWordVariant | None:
-        if any(self.start_location.is_shadowed_by):
-            return self.start_location.is_shadowed_by[0]().display_variants[0]
-        if (any(self.start_location.display_variants)
-                and self.start_location.display_variants[0].word.location_count > self.location_count):
-            return self.start_location.display_variants[0]
-        return None
-
     @override
     def __repr__(self) -> str: return f"""
 surface: {self.surface_variant.__repr__()} | base:{self.base_variant.__repr__()},
