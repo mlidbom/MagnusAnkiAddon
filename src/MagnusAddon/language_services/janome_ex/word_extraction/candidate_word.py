@@ -59,6 +59,9 @@ class CandidateWord(WeakRefable, Slots):
             self.indexing_variants.append(non_optional(self.base_variant))
 
     def run_display_analysis_pass_true_if_there_were_changes(self) -> bool:
+        if self.base_variant is not None: self.base_variant.run_visibility_analysis()
+        self.surface_variant.run_visibility_analysis()
+
         old_display_word_variants = self.display_variants
         self.display_variants = QList()
 
