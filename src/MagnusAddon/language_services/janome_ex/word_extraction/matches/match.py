@@ -94,7 +94,7 @@ class Match(WeakRefable, Slots):
     @property
     def _sibling_matches(self) -> list[Match]: return [match for match in self.variant.matches if match != self]
     @property
-    def _base_is_valid_word(self) -> bool: return self.word.base_variant is not None and self.word.base_variant.is_valid
+    def _base_is_valid_word(self) -> bool: return self.word.base_variant is not None and self.word.base_variant.has_valid_match
 
     @property
     def _surface_is_seemingly_valid_single_token(self) -> bool: return self.word.has_seemingly_valid_single_token

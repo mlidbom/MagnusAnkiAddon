@@ -19,4 +19,4 @@ class IsInflectedSurfaceWithValidBase(MatchStateTest, Slots):
 
     @override
     def _internal_match_is_in_state(self) -> bool:
-        return self.variant.is_surface and self.word.is_inflected_word and self.word.has_valid_base_variant
+        return self.variant.is_surface and self.word.is_inflected_word and self.word.has_base_variant_with_valid_match

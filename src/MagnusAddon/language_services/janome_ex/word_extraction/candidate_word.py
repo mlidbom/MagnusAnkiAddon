@@ -34,30 +34,24 @@ class CandidateWord(WeakRefable, Slots):
         self.display_variants: list[CandidateWordVariant] = []
 
     @property
-    def has_valid_base_variant(self) -> bool: return self.base_variant is not None and self.base_variant.is_valid
+    def has_base_variant_with_valid_match(self) -> bool: return self.base_variant is not None and self.base_variant.has_valid_match
     @property
-    def should_include_surface_in_all_words(self) -> bool: return (self.surface_variant.is_valid
-                                                                   or (not self.has_valid_base_variant and self.has_seemingly_valid_single_token))
+    def should_include_surface_in_all_words(self) -> bool: return (self.surface_variant.has_valid_match
+                                                                   or (not self.has_base_variant_with_valid_match and self.has_seemingly_valid_single_token))
+
     @property
-    def has_valid_base_with_display_matches(self) -> bool: return self.has_valid_base_variant and any(non_optional(self.base_variant).display_matches)
-    @property
-    def should_index_base(self) -> bool: return self.base_variant is not None and (self.base_variant.is_known_word or self.has_valid_base_variant)
+    def should_index_base(self) -> bool: return self.base_variant is not None and (self.base_variant.has_valid_match or self.base_variant.is_known_word)
     @property
     def should_index_surface(self) -> bool: return self.surface_variant.is_known_word or self.should_include_surface_in_all_words
-
-
-    @property
-    def all_matches(self) -> QList[Match]:
-        return self.surface_variant.matches.concat(self.base_variant.matches if self.base_variant else QIterable[Match].empty()).to_list()
 
     def run_validity_analysis(self) -> None:
         if self.base_variant is not None: self.base_variant.run_validity_analysis()
         self.surface_variant.run_validity_analysis()
 
         self.valid_variants = []
-        if self.has_valid_base_variant:
+        if self.has_base_variant_with_valid_match:
             self.valid_variants.append(non_optional(self.base_variant))
-        if self.surface_variant.is_valid:
+        if self.surface_variant.has_valid_match:
             self.valid_variants.append(self.surface_variant)
 
         if self.should_index_surface:
@@ -72,7 +66,7 @@ class CandidateWord(WeakRefable, Slots):
 
         if self.surface_variant.display_matches.any():
             self.display_variants.append(self.surface_variant)
-        elif self.has_valid_base_with_display_matches:
+        elif self.base_variant is not None and self.base_variant.display_matches.any():
             self.display_variants.append(non_optional(self.base_variant))
 
         def displaywords_were_changed() -> bool:

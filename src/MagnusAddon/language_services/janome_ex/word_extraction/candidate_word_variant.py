@@ -74,7 +74,7 @@ class CandidateWordVariant(WeakRefable, Slots):
     @property
     def _valid_vocab_matches(self) -> list[VocabMatch]: return [vm for vm in self.vocab_matches if vm.is_valid]
     @property
-    def is_valid(self) -> bool: return self._once_analyzed._is_valid
+    def has_valid_match(self) -> bool: return self._once_analyzed._is_valid
     @property
     def display_matches(self) -> QList[Match]: return self._once_analyzed.matches.where(lambda it: it.is_displayed).to_list()
     @property
@@ -90,4 +90,4 @@ class CandidateWordVariant(WeakRefable, Slots):
 
     @override
     def __repr__(self) -> str:
-        return f"""{self.form}, is_valid_candidate:{self.is_valid}"""
+        return f"""{self.form}, is_valid_candidate:{self.has_valid_match}"""
