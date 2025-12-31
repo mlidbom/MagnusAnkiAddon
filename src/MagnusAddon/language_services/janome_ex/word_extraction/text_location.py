@@ -37,7 +37,7 @@ class TextAnalysisLocation(WeakRefable, Slots):
         self.valid_variants: QList[CandidateWordVariant] = QList()
         self.indexing_variants: QList[CandidateWordVariant] = QList()
         self.candidate_words: QList[CandidateWord] = QList()
-        self.display_words: list[CandidateWord] = []
+        self.display_words: QList[CandidateWord] = []
         self.yield_target_matches: QList[Match] = QList()
         self.covering_matches: QList[Match] = QList()
 
@@ -85,7 +85,7 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
         for candidate_word in self.candidate_words:
             candidate_word.run_display_analysis()
 
-        self.display_words = [candidate for candidate in self.candidate_words if candidate.display_variants]
+        self.display_words = self.candidate_words.where(lambda it: it.display_variants.any()).to_list()
 
     def resolve_shadowing_for_display_word(self) -> None:
         if self.display_words and not any(self.is_shadowed_by):

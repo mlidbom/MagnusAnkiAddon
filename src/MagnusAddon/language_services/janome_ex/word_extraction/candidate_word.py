@@ -2,7 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, final, override
 
-from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from autoslot import Slots
+from typed_linq_collections.collections.q_list import QList  # pyright: ignore[reportMissingTypeStubs]
 from language_services.janome_ex.word_extraction.analysis_constants import noise_characters
 from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
 from sysutils.typed import non_optional
@@ -28,7 +29,7 @@ class CandidateWord(WeakRefable, Slots):
 
         self.indexing_variants: list[CandidateWordVariant] = []
         self.valid_variants: list[CandidateWordVariant] = []
-        self.display_variants: list[CandidateWordVariant] = []
+        self.display_variants: QList[CandidateWordVariant] = []
 
     @property
     def has_base_variant_with_valid_match(self) -> bool: return self.base_variant is not None and self.base_variant.has_valid_match
@@ -58,7 +59,7 @@ class CandidateWord(WeakRefable, Slots):
             self.indexing_variants.append(non_optional(self.base_variant))
 
     def run_display_analysis(self) -> None:
-        self.display_variants = []
+        self.display_variants = QList()
 
         if self.surface_variant.display_matches.any():
             self.display_variants.append(self.surface_variant)
