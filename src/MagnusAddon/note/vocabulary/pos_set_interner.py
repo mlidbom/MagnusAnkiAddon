@@ -109,11 +109,6 @@ class POSSetManager:
     def get(pos: str) -> frozenset[str]: return POSSetManager._pos_by_str[pos]
 
     @staticmethod
-    def contains(pos_set: frozenset[str], value: str) -> bool:
-        """Check if a harmonized value is in the POS set."""
-        return value in pos_set
-
-    @staticmethod
     def is_transitive_verb(pos_set: frozenset[str]) -> bool:
         return POS.TRANSITIVE in pos_set
 
