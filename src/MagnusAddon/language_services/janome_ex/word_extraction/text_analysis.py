@@ -39,9 +39,9 @@ class TextAnalysis(WeakRefable, Slots):
         self._connect_next_and_previous_to_locations()
         self._analysis_step_1_analyze_non_compound()
         self._analysis_step_2_analyze_compounds()
-        self._analysis_step_3_run_initial_display_analysis()
-        self._analysis_step_4_set_initial_shadowing_state()
-        self._analysis_step_5_calculate_preference_between_overlapping_display_candidates()
+        self._analysis_step_3_run_display_analysis_without_shadowing_information_so_that_all_valid_matches_are_displayed_and_can_be_accounted_for_in_yielding_to_upcoming_compounds_return_true_on_changes()
+        if self._analysis_step_4_set_initial_shadowing_state_return_true_on_changes():
+            self._analysis_step_5_calculate_preference_between_overlapping_display_candidates()
 
         self.indexing_word_variants: QList[CandidateWordVariant] = self.locations.select_many(lambda location: location.indexing_variants).to_list()
         self.display_word_variants: QList[CandidateWordVariant] = self.locations.select_many(lambda location: location.display_variants).to_list()
@@ -74,18 +74,21 @@ class TextAnalysis(WeakRefable, Slots):
         for location in self.locations:
             location.analysis_step_2_analyze_compound_validity()
 
-    def _analysis_step_3_run_initial_display_analysis(self) -> None:
+    def _analysis_step_3_run_display_analysis_without_shadowing_information_so_that_all_valid_matches_are_displayed_and_can_be_accounted_for_in_yielding_to_upcoming_compounds_return_true_on_changes(self) -> None:
         for location in self.locations:
             location.analysis_step_3_run_display_analysis_without_shadowing_information_so_that_all_valid_matches_are_displayed_and_can_be_accounted_for_in_yielding_to_upcoming_compounds()
 
-    def _analysis_step_4_set_initial_shadowing_state(self) -> None:
+    def _analysis_step_4_set_initial_shadowing_state_return_true_on_changes(self) -> bool:
+        change_made = False
         for location in self.locations:
-            location.analysis_step_5_recalculate_display_words_based_on_current_shadowing_and_yielding_return_true_if_there_were_changes(True)
+            if location.analysis_step_4_set_initial_shadowing_and_recalculate_display_words_return_true_on_changes():
+                change_made = True
+        return change_made
 
     def _analysis_step_5_calculate_preference_between_overlapping_display_candidates(self) -> None:
         changes_made = True
         while changes_made:
             changes_made = False
             for location in self.locations:
-                if location.analysis_step_5_recalculate_display_words_based_on_current_shadowing_and_yielding_return_true_if_there_were_changes():
+                if location.analysis_step_5_update_shadowing_and_recalculate_display_words_return_true_on_changes():
                     changes_made = True

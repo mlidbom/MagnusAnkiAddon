@@ -70,9 +70,14 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
     def analysis_step_3_run_display_analysis_without_shadowing_information_so_that_all_valid_matches_are_displayed_and_can_be_accounted_for_in_yielding_to_upcoming_compounds(self) -> None:
         self.run_display_analysis_and_update_display_words_pass_true_if_there_were_changes()
 
-    def analysis_step_5_recalculate_display_words_based_on_current_shadowing_and_yielding_return_true_if_there_were_changes(self, initial_run: bool = False) -> bool:
+    def analysis_step_4_set_initial_shadowing_and_recalculate_display_words_return_true_on_changes(self) -> bool:
         display_words_updated = self.run_display_analysis_and_update_display_words_pass_true_if_there_were_changes()
-        if initial_run or display_words_updated:
+        self.update_shadowing()
+        return display_words_updated
+
+    def analysis_step_5_update_shadowing_and_recalculate_display_words_return_true_on_changes(self) -> bool:
+        display_words_updated = self.run_display_analysis_and_update_display_words_pass_true_if_there_were_changes()
+        if display_words_updated:
             self.update_shadowing()
         return display_words_updated
 
