@@ -67,20 +67,14 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
             self.display_words = self.candidate_words.where(lambda it: it.display_variants.any()).to_list()
         return changes_made
 
-    def analysis_step_3_run_display_analysis_without_shadowing_information(self) -> None:
+    def analysis_step_3_run_display_analysis_without_shadowing_information_so_that_all_valid_matches_are_displayed_and_can_be_accounted_for_in_yielding_to_upcoming_compounds(self) -> None:
         self.run_display_analysis_and_update_display_words_pass_true_if_there_were_changes()
 
     def analysis_step_5_recalculate_display_words_based_on_current_shadowing_and_yielding_return_true_if_there_were_changes(self, initial_run: bool = False) -> bool:
-        # todo this does not feel great. Currently we need the first version of display_words to be created
-        # in order for the DisplayRequirements class to inspect it and mark itself as not being displayed so that it can be removed here.
-        # this is some truly strange invisible order dependency that is making me quite uncomfortable
-        # it also relies on the check for is_yield_last_token_to_overlapping_compound_requirement_fulfilled to return different values at different times
-        # because that method has a circular dependency to display_words which we set up here.
-
-        the_next_compound_yields_to_the_one_after_that_so_this_one_no_longer_yields = self.run_display_analysis_and_update_display_words_pass_true_if_there_were_changes()
-        if initial_run or the_next_compound_yields_to_the_one_after_that_so_this_one_no_longer_yields:
+        display_words_updated = self.run_display_analysis_and_update_display_words_pass_true_if_there_were_changes()
+        if initial_run or display_words_updated:
             self.update_shadowing()
-        return the_next_compound_yields_to_the_one_after_that_so_this_one_no_longer_yields
+        return display_words_updated
 
     def update_shadowing(self) -> None:
         if self.display_words and not any(self.is_shadowed_by):

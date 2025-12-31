@@ -76,7 +76,7 @@ class TextAnalysis(WeakRefable, Slots):
 
     def _analysis_step_3_run_initial_display_analysis(self) -> None:
         for location in self.locations:
-            location.analysis_step_3_run_display_analysis_without_shadowing_information()
+            location.analysis_step_3_run_display_analysis_without_shadowing_information_so_that_all_valid_matches_are_displayed_and_can_be_accounted_for_in_yielding_to_upcoming_compounds()
 
     def _analysis_step_4_set_initial_shadowing_state(self) -> None:
         for location in self.locations:
