@@ -1,18 +1,16 @@
 from __future__ import annotations
 
-import mylog
 from sysutils import ex_str
 from sysutils.memory_usage import string_auto_interner
-from typed_linq_collections.collections.q_dict import QDict
 
 
 class POSSetManager:
-    _pos_by_str: QDict[str, frozenset[str]] = QDict()
+    _pos_by_str: dict[str, frozenset[str]] = {}
 
-    _remappings: QDict[str, str] = QDict({"intransitive verb": "intransitive",
-                                          "transitive verb": "transitive",
-                                          "godan": "godan verb",
-                                          "ichidan": "ichidan verb"})
+    _remappings: dict[str, str] = {"intransitive verb": "intransitive",
+                                   "transitive verb": "transitive",
+                                   "godan": "godan verb",
+                                   "ichidan": "ichidan verb"}
 
     @staticmethod
     def _harmonize(pos: set[str]) -> set[str]:
@@ -31,7 +29,3 @@ class POSSetManager:
 
     @staticmethod
     def get(pos: str) -> frozenset[str]: return POSSetManager._pos_by_str[pos]
-
-    @staticmethod
-    def log_stats() -> None:
-        mylog.info(f"pos_set_interner: {len(POSSetManager._pos_by_str)} unique tag sets")
