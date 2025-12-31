@@ -37,7 +37,6 @@ class TextAnalysisLocation(WeakRefable, Slots):
         self.valid_variants: QList[CandidateWordVariant] = QList()
         self.indexing_variants: QList[CandidateWordVariant] = QList()
         self.candidate_words: QList[CandidateWord] = QList()
-        self.display_words: QList[CandidateWord] = QList()
         self.compound_matches_extending_past_this_location: QList[Match] = QList()
         self.compound_matches_covering_this_location: QList[Match] = QList()
 
@@ -76,8 +75,8 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
         for candidate_word in self.candidate_words:
             candidate_word.run_display_analysis()
 
-        self.display_words = self.candidate_words.where(lambda it: it.display_variants.any()).to_list()
-        self.display_variants = self.display_words[0].display_variants if self.display_words.any() else []
+        display_words = self.candidate_words.where(lambda it: it.display_variants.any()).to_list()
+        self.display_variants = display_words[0].display_variants if display_words.any() else []
 
     def is_next_location_inflecting_word(self) -> bool:
         return self.next is not None and self.next().is_inflecting_word()
