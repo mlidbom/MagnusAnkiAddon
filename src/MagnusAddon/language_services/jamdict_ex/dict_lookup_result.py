@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from autoslot import Slots
 from language_services.jamdict_ex.priority_spec import PrioritySpec
-from note.vocabulary.pos_set_interner import POS
+from note.vocabulary.pos import POS
 from sysutils import ex_str, kana_utils
 
 if TYPE_CHECKING:

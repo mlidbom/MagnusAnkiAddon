@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from note.tags import Tags
-from note.vocabulary.pos_set_interner import POS
+from note.vocabulary.pos import POS
 from sysutils import kana_utils
 from typed_linq_collections.collections.q_frozen_set import QFrozenSet
 

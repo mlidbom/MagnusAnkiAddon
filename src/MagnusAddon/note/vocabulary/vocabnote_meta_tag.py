@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from autoslot import Slots
-from note.vocabulary.pos_set_interner import POS  # pyright: ignore[reportMissingTypeStubs]
+from note.vocabulary.pos import POS
 from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:

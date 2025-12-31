@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from autoslot import Slots
-from note.vocabulary.pos_set_interner import POS
+from note.vocabulary.pos import POS
 
 
 class WordInfoEntry(Slots):
