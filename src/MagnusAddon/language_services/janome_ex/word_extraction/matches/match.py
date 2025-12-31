@@ -23,6 +23,7 @@ class Match(WeakRefable, Slots):
                  validity_requirements: list[MatchRequirement],
                  display_requirements: list[MatchRequirement]) -> None:
         weakref_self = WeakRef(self)
+        self._is_not_shadowed_requirement: MatchRequirement = Forbids(IsShadowed(weakref_self))
         self.weakref: WeakRef[Match] = weakref_self
         self._variant: WeakRef[CandidateWordVariant] = word_variant
         self._validity_requirements: list[MatchRequirement] = ([
@@ -33,7 +34,7 @@ class Match(WeakRefable, Slots):
                                                                ]
                                                                + validity_requirements)
         self._display_requirements: list[MatchRequirement] = ([
-                                                                      Forbids(IsShadowed(weakref_self)),
+                                                                      self._is_not_shadowed_requirement,
                                                                       Forbids(IsConfiguredHidden(weakref_self))
                                                               ]
                                                               + display_requirements)
@@ -85,7 +86,7 @@ class Match(WeakRefable, Slots):
     def is_emergency_displayed(self) -> bool:
         return (self._surface_is_seemingly_valid_single_token
                 and self.variant.is_surface
-                and not self.is_shadowed
+                and self._is_not_shadowed_requirement.is_fulfilled
                 and not self._base_is_valid_word
                 and not self._has_valid_for_display_sibling)
 
@@ -99,8 +100,6 @@ class Match(WeakRefable, Slots):
     @property
     def _surface_is_seemingly_valid_single_token(self) -> bool: return self.word.has_seemingly_valid_single_token
 
-    @property
-    def is_shadowed(self) -> bool: return self.word.is_shadowed
     @property
     def failure_reasons(self) -> list[str]: return [] if self.is_valid else [requirement.failure_reason for requirement in self._validity_requirements if not requirement.is_fulfilled]
     @property

@@ -23,7 +23,6 @@ class MatchViewModel(Slots):
         self.vocab_match: VocabMatch | None = typed.try_cast(VocabMatch, match)
         self._config: SentenceConfiguration = word_variant_vm().candidate_word.word.analysis.configuration
         self.word_variant_vm: WeakRef[CandidateWordVariantViewModel] = word_variant_vm
-        self.is_shadowed: bool = word_variant_vm().is_shadowed
         self.is_display_word: bool = word_variant_vm().is_display_word
         self.parsed_form: str = match.parsed_form
         self.answer: str = match.answer
@@ -68,8 +67,7 @@ class MatchViewModel(Slots):
     def is_displayed(self) -> bool:
         if app.config().show_sentence_breakdown_in_edit_mode.get_value(): return True
         #todo: this absolutely does not belong here. This is a viewmodel for crying out loud, it should not be implementing core domain logic.
-        return (not self.is_shadowed
-                and self.is_display_word
+        return (self.is_display_word
                 and self.match.is_displayed)
 
     @property
@@ -82,6 +80,5 @@ class MatchViewModel(Slots):
         return (
             SkipFalsyValuesDebugReprBuilder()
             .include(self.parsed_form)
-            .flag("shadowed", self.is_shadowed)
             .flag("is_display_word", self.is_display_word)
             .flag("displayed", self.is_displayed).repr)
