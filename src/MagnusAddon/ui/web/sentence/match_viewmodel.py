@@ -20,6 +20,7 @@ if TYPE_CHECKING:
 class MatchViewModel(Slots):
     def __init__(self, word_variant_vm: WeakRef[CandidateWordVariantViewModel], match: Match) -> None:
         self.match: Match = match
+        self.match_is_displayed: bool = match.is_displayed
         self.vocab_match: VocabMatch | None = typed.try_cast(VocabMatch, match)
         self._config: SentenceConfiguration = word_variant_vm().candidate_word.word.analysis.configuration
         self.word_variant_vm: WeakRef[CandidateWordVariantViewModel] = word_variant_vm
