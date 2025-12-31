@@ -10,7 +10,6 @@ from language_services.janome_ex.word_extraction.matches.state_tests.is_godan_im
 from language_services.janome_ex.word_extraction.matches.state_tests.is_godan_potential_surface_with_base import IsGodanPotentialInflectionWithBase
 from language_services.janome_ex.word_extraction.matches.state_tests.is_inflected_surface_with_valid_base import IsInflectedSurfaceWithValidBase
 from language_services.janome_ex.word_extraction.matches.state_tests.is_shadowed import IsShadowed
-from sysutils.lazy import Lazy
 from sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
@@ -39,9 +38,7 @@ class Match(WeakRefable, Slots):
                                                                       self._preliminarily_valid_for_display_requirement
                                                               ]
                                                               + display_requirements)
-
-        self.can_cache_validity: bool = all(requirement.state_test.is_cachable for requirement in self._validity_requirements)
-        self._cached_is_valid_internal: Lazy[bool] | None = Lazy(lambda: weakref_self().__is_valid_internal_implementation()) if self.can_cache_validity else None
+        self._is_valid: bool | None = None
 
     @property
     def would_yield_to_upcoming_overlapping_compound(self) -> bool: return False
@@ -71,9 +68,9 @@ class Match(WeakRefable, Slots):
                                             and not any(valid_sibling for valid_sibling in self._sibling_matches if valid_sibling._is_valid_internal)))
     @property
     def _is_valid_internal(self) -> bool:
-        return self._cached_is_valid_internal() \
-            if self._cached_is_valid_internal is not None \
-            else self.__is_valid_internal_implementation()
+        if self._is_valid is None:
+            self._is_valid = self.__is_valid_internal_implementation()
+        return self._is_valid
 
     def __is_valid_internal_implementation(self) -> bool: return all(requirement.is_fulfilled for requirement in self._validity_requirements)
     @property
