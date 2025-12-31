@@ -38,8 +38,8 @@ class TextAnalysisLocation(WeakRefable, Slots):
         self.indexing_variants: QList[CandidateWordVariant] = QList()
         self.candidate_words: QList[CandidateWord] = QList()
         self.display_words: QList[CandidateWord] = QList()
-        self.yield_target_matches: QList[Match] = QList()
-        self.covering_matches: QList[Match] = QList()
+        self.compound_matches_extending_past_this_location: QList[Match] = QList()
+        self.compound_matches_covering_this_location: QList[Match] = QList()
 
     @override
     def __repr__(self) -> str:
@@ -68,9 +68,9 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
             for variant in valid_word.valid_variants:
                 for match in variant.valid_matches.where(lambda it: it.is_preliminarily_valid_for_display):
                     for overlapped_location in valid_word.locations[:-1]:
-                        overlapped_location().yield_target_matches.append(match)
+                        overlapped_location().compound_matches_extending_past_this_location.append(match)
                     for covered_location in valid_word.locations[1:]:
-                        covered_location().covering_matches.append(match)
+                        covered_location().compound_matches_covering_this_location.append(match)
 
     def analysis_step_3_display_analysis(self) -> None:
         for candidate_word in self.candidate_words:

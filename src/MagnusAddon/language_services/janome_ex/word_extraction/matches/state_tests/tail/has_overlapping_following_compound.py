@@ -30,4 +30,4 @@ class HasDisplayedOverlappingFollowingCompound(MatchStateTest, Slots):
 
     @override
     def _internal_match_is_in_state(self) -> bool:
-        return self.end_location.yield_target_matches.any(lambda it: it.is_displayed)
+        return self.end_location.compound_matches_extending_past_this_location.any(lambda it: it.is_displayed)
