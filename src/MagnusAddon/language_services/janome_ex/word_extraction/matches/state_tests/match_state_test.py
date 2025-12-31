@@ -26,9 +26,6 @@ class MatchStateTest(Slots):
         return self._cached_state
 
     @property
-    def is_cachable(self) -> bool: return True
-
-    @property
     def description(self) -> str: raise NotImplementedError()
 
     @property
@@ -52,6 +49,8 @@ class MatchStateTest(Slots):
     def variant(self) -> CandidateWordVariant: return self.match.variant
     @property
     def word(self) -> CandidateWord: return self.variant.word
+    @property
+    def start_location(self) -> TextAnalysisLocation: return self.word.start_location
     @property
     def end_location(self) -> TextAnalysisLocation: return self.word.end_location
     @property

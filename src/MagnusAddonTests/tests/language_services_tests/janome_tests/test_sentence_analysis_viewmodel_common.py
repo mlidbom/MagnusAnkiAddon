@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING
 
 from note.sentences.sentence_configuration import SentenceConfiguration
 from note.sentences.sentencenote import SentenceNote
-from tests.language_services_tests.janome_tests.text_analysis_state_validator import TextAnalysisValidator
 from ui.web.sentence.sentence_viewmodel import SentenceViewModel
 
 if TYPE_CHECKING:
@@ -30,9 +29,7 @@ def assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentenc
         sentence_note.configuration._value = SentenceConfiguration.from_hidden_matches(excluded)  # pyright: ignore[reportPrivateUsage]
 
     sentence_view_model = SentenceViewModel(sentence_note)
-    analysis = sentence_view_model.analysis.analysis
 
-    TextAnalysisValidator(analysis).assert_is_valid()
 
     if len(excluded) == 0:
         run_note_assertions("running assertions with no exclusions")

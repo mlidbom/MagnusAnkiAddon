@@ -17,7 +17,7 @@ def setup_collection_with_select_data() -> Iterator[None]:
         yield
 
 @pytest.mark.parametrize("sentence, expected_output", [
-
+        ("服を引き出しの中に入れてください", ["服", "を", "引き出し", "の中", "に入る", "える", "て", "ください"])
 ])
 def test_new_stuff(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
@@ -163,7 +163,7 @@ def test_exclusions(sentence: str, excluded: list[WordExclusion], expected_outpu
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, excluded, expected_output)
 
 @pytest.mark.parametrize("sentence, expected_output", [
-        ("風の強さに驚きました", ["風の強い", "風", "の", "強さ", "強", "強い", "さ", "に", "驚き", "驚く", "まし:ませ", "ます", "た"])
+        ("風の強さに驚きました", ["風の強い", "風", "の", "強さ", "強", "強い", "さ", "に", "驚き", "驚く", "まし", "ます", "た"])
 ])
 def test_all_words_equal(sentence: str, expected_output: list[str]) -> None:
     assert_all_words_equal(sentence, expected_output)

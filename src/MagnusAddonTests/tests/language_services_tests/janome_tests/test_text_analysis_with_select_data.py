@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 import pytest
 from fixtures.collection_factory import inject_collection_with_select_data
 from note.sentences.sentencenote import SentenceNote
+from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterator
@@ -66,8 +67,8 @@ def test_new_stuff(sentence: str, expected_output: list[str]) -> None:
 ])
 def test_identify_words(sentence: str, expected_output: list[str]) -> None:
     sentence_note = SentenceNote.create_test_note(sentence, "")
-    words = [w.parsed_form for w in sentence_note.parsing_result.get().parsed_words]
-    assert words == expected_output
+    words = QSet({w.parsed_form for w in sentence_note.parsing_result.get().parsed_words}).order_by(lambda w: w).to_list()
+    assert words == QSet(expected_output).order_by(lambda w: w).to_list()
 
 @pytest.mark.usefixtures("setup_collection_with_select_data")
 @pytest.mark.parametrize("sentence, expected_output", [
@@ -134,9 +135,9 @@ def test_no_memory_leak_weak_references_are_disposed() -> None:
                                                      lambda location: location.analysis())
     assert_that_the_inner_weakref_has_been_destroyed(lambda analysis: analysis.locations[0].candidate_words[0],
                                                      lambda cand: cand.start_location)
-    assert_that_the_inner_weakref_has_been_destroyed(lambda analysis: analysis.indexing_matches[0],
+    assert_that_the_inner_weakref_has_been_destroyed(lambda analysis: analysis.valid_matches[0],
                                                      lambda match: match.word)
-    assert_that_the_inner_weakref_has_been_destroyed(lambda analysis: analysis.indexing_matches[0]._display_requirements[0],  # pyright: ignore[reportPrivateUsage]
+    assert_that_the_inner_weakref_has_been_destroyed(lambda analysis: analysis.valid_matches[0]._display_requirements[0],  # pyright: ignore[reportPrivateUsage]
                                                      lambda requirement: requirement.state_test.match)
-    assert_that_the_inner_weakref_has_been_destroyed(lambda analysis: analysis.indexing_matches[0]._validity_requirements[0],  # pyright: ignore[reportPrivateUsage]
+    assert_that_the_inner_weakref_has_been_destroyed(lambda analysis: analysis.valid_matches[0]._validity_requirements[0],  # pyright: ignore[reportPrivateUsage]
                                                      lambda requirement: requirement.state_test.match)

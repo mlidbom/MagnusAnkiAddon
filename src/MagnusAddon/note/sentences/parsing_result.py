@@ -28,6 +28,6 @@ class ParsingResult(Slots):
 
     @classmethod
     def from_analysis(cls, analysis: TextAnalysis) -> ParsingResult:
-        return ParsingResult([ParsedMatch.from_match(match) for match in analysis.valid_word_variant_valid_matches],
+        return ParsingResult([ParsedMatch.from_match(match) for match in analysis.valid_matches],
                              analysis.text,
                              analysis.version)

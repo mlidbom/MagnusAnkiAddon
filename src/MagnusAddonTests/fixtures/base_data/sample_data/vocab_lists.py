@@ -39,10 +39,18 @@ test_special_vocab: list[VocabSpec] = [
         # /compounds
 
         # untangle offending actual dictionary entry
-        VocabSpec("楽しめる", compounds=["楽しむ", "える"], tags=[vm.is_poison_word]), #janome detects it as an ichidan so this sets it straight without showing the word, since it's a poison word...
+        VocabSpec("楽しめる", compounds=["楽しむ", "える"], tags=[vm.is_poison_word]),  # janome detects it as an ichidan so this sets it straight without showing the word, since it's a poison word...
         # /untangle offending actual dictionary entry
 
         # </non-standard-token-splitting-to-enable-more-pedagogical-breakdowns-for-conjugations>
+
+        # infinite recursion with recursive shadowed and yielding implementetion for sentence: 服を引き出しの中に入れてください
+        VocabSpec("の中に", compounds=["の中", "に"], tags=[vm.yield_last_token_to_overlapping_compound]),
+        VocabSpec("の中", compounds=["の", "中"]),
+        VocabSpec("中に", compounds=["中", "に"]),
+        VocabSpec("に入る", compounds=["に", "入る"]),
+        VocabSpec("入れる"),
+        # infinite recursion with recursive shadowed and yielding implementetion
 
         # <te-stem-required>
         VocabSpec("て", "{continuing-action}", ["て"], tags=[vm.is_inflecting_word, vm.Requires.te_form_stem]),

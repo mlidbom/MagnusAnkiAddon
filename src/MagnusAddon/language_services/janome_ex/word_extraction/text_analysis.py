@@ -26,7 +26,7 @@ class TextAnalysis(WeakRefable, Slots):
         self.text = sentence
         self.configuration = sentence_configuration
         self.tokenized_text = _tokenizer.tokenize(sentence)
-        self.pre_processed_tokens: QList[ProcessedToken] = self.tokenized_text.pre_process()
+        self.pre_processed_tokens: list[ProcessedToken] = self.tokenized_text.pre_process()
 
         self.locations: QList[TextAnalysisLocation] = QList()
 
@@ -39,31 +39,21 @@ class TextAnalysis(WeakRefable, Slots):
         self._connect_next_and_previous_to_locations()
         self._analysis_step_1_analyze_non_compound()
         self._analysis_step_2_analyze_compounds()
-        self._analysis_step_3_run_initial_display_analysis()
-        self._analysis_step_5_calculate_preference_between_overlapping_display_candidates()
-
-        self.all_matches: QList[Match] = (self.locations
-                                          .select_many(lambda location: location.candidate_words)
-                                          .select_many(lambda candidate: candidate.all_matches)
-                                          .to_list())
+        self._analysis_step_3_run_display_analysis_without_shadowing_information_so_that_all_valid_matches_are_displayed_and_can_be_accounted_for_in_yielding_to_upcoming_compounds_return_true_on_changes()
+        if self._analysis_step_4_set_initial_shadowing_state_return_true_on_changes():
+            self._analysis_step_5_calculate_preference_between_overlapping_display_candidates()
 
         self.indexing_word_variants: QList[CandidateWordVariant] = self.locations.select_many(lambda location: location.indexing_variants).to_list()
-        self.valid_word_variants: QList[CandidateWordVariant] = self.locations.select_many(lambda location: location.valid_variants).to_list()
         self.display_word_variants: QList[CandidateWordVariant] = self.locations.select_many(lambda location: location.display_variants).to_list()
 
-        self.indexing_matches: QList[Match] = self.indexing_word_variants.select_many(lambda variant: variant.matches).to_list()
-        self.valid_word_variant_matches: QList[Match] = self.valid_word_variants.select_many(lambda variant: variant.matches).to_list()
-        # todo: bug valid_matches here and valid_word_variant_valid_matches should be identical. Once they are, the valid_word_variant_valid_matches collection should be removed
-        self.valid_matches: QList[Match] = self.indexing_matches.where(lambda match: match.is_valid).to_list()
-        self.valid_word_variant_valid_matches: QList[Match] = self.valid_word_variant_matches.where(lambda match: match.is_valid).to_list()
-        self.display_matches: QList[Match] = self.indexing_matches.where(lambda match: match.is_displayed).to_list()
+        self.valid_matches: QList[Match] = self.indexing_word_variants.select_many(lambda variant: variant.valid_matches).to_list()
 
     @classmethod
     def from_text(cls, text: str) -> TextAnalysis:
         return cls(text, SentenceConfiguration.empty())
 
     def all_words_strings(self) -> list[str]:
-        return [w.form for w in self.valid_word_variants]
+        return [w.parsed_form for w in self.valid_matches]
     @override
     def __repr__(self) -> str:
         return self.text
@@ -84,14 +74,21 @@ class TextAnalysis(WeakRefable, Slots):
         for location in self.locations:
             location.analysis_step_2_analyze_compound_validity()
 
-    def _analysis_step_3_run_initial_display_analysis(self) -> None:
+    def _analysis_step_3_run_display_analysis_without_shadowing_information_so_that_all_valid_matches_are_displayed_and_can_be_accounted_for_in_yielding_to_upcoming_compounds_return_true_on_changes(self) -> None:
         for location in self.locations:
-            location.analysis_step_3_run_initial_display_analysis()
+            location.analysis_step_3_run_display_analysis_without_shadowing_information_so_that_all_valid_matches_are_displayed_and_can_be_accounted_for_in_yielding_to_upcoming_compounds()
+
+    def _analysis_step_4_set_initial_shadowing_state_return_true_on_changes(self) -> bool:
+        change_made = False
+        for location in self.locations:
+            if location.analysis_step_4_set_initial_shadowing_and_recalculate_display_words_return_true_on_changes():
+                change_made = True
+        return change_made
 
     def _analysis_step_5_calculate_preference_between_overlapping_display_candidates(self) -> None:
         changes_made = True
         while changes_made:
             changes_made = False
             for location in self.locations:
-                if location.analysis_step_5_resolve_chains_of_compounds_yielding_to_the_next_compound_pass_true_if_there_were_changes():
+                if location.analysis_step_5_update_shadowing_and_recalculate_display_words_return_true_on_changes():
                     changes_made = True

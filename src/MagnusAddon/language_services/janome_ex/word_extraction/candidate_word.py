@@ -2,18 +2,15 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, final, override
 
-from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from autoslot import Slots
 from language_services.janome_ex.word_extraction.analysis_constants import noise_characters
 from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
-from language_services.janome_ex.word_extraction.matches.match import Match
 from sysutils.typed import non_optional
 from sysutils.weak_ref import WeakRef, WeakRefable
-from typed_linq_collections.q_iterable import QIterable
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
     from language_services.janome_ex.word_extraction.text_location import TextAnalysisLocation
-    from typed_linq_collections.collections.q_list import QList
 
 from sysutils.ex_str import newline
 
@@ -34,35 +31,24 @@ class CandidateWord(WeakRefable, Slots):
         self.display_variants: list[CandidateWordVariant] = []
 
     @property
-    def should_include_surface_in_valid_words(self) -> bool: return (self.surface_variant.is_valid
-                                                                     and (not self.is_inflected_word or not self.has_valid_base_variant))
+    def has_base_variant_with_valid_match(self) -> bool: return self.base_variant is not None and self.base_variant.has_valid_match
     @property
-    def has_valid_base_variant(self) -> bool: return self.base_variant is not None and self.base_variant.is_valid
+    def should_include_surface_in_all_words(self) -> bool: return (self.surface_variant.has_valid_match
+                                                                   or (not self.has_base_variant_with_valid_match and self.has_seemingly_valid_single_token))
+
     @property
-    def should_include_surface_in_all_words(self) -> bool: return (self.should_include_surface_in_valid_words
-                                                                   or (not self.has_valid_base_variant and self.has_seemingly_valid_single_token))
-    @property
-    def has_valid_base_with_display_matches(self) -> bool: return self.has_valid_base_variant and any(non_optional(self.base_variant).display_matches)
-    @property
-    def should_include_surface_in_display_variants(self) -> bool: return self.should_include_surface_in_all_words and any(self.surface_variant.display_matches)
-    @property
-    def should_index_base(self) -> bool: return self.base_variant is not None and (self.base_variant.is_known_word or self.has_valid_base_variant)
+    def should_index_base(self) -> bool: return self.base_variant is not None and (self.base_variant.has_valid_match or self.base_variant.is_known_word)
     @property
     def should_index_surface(self) -> bool: return self.surface_variant.is_known_word or self.should_include_surface_in_all_words
 
-
-    @property
-    def all_matches(self) -> QList[Match]:
-        return self.surface_variant.matches.concat(self.base_variant.matches if self.base_variant else QIterable[Match].empty()).to_list()
-
     def run_validity_analysis(self) -> None:
-        self.surface_variant.run_validity_analysis()
         if self.base_variant is not None: self.base_variant.run_validity_analysis()
+        self.surface_variant.run_validity_analysis()
 
         self.valid_variants = []
-        if self.has_valid_base_variant:
+        if self.has_base_variant_with_valid_match:
             self.valid_variants.append(non_optional(self.base_variant))
-        if self.should_include_surface_in_valid_words:
+        if self.surface_variant.has_valid_match:
             self.valid_variants.append(self.surface_variant)
 
         if self.should_index_surface:
@@ -72,12 +58,15 @@ class CandidateWord(WeakRefable, Slots):
             self.indexing_variants.append(non_optional(self.base_variant))
 
     def run_display_analysis_pass_true_if_there_were_changes(self) -> bool:
+        if self.base_variant is not None: self.base_variant.run_visibility_analysis()
+        self.surface_variant.run_visibility_analysis()
+
         old_display_word_variants = self.display_variants
         self.display_variants = []
 
-        if self.should_include_surface_in_display_variants:
+        if self.surface_variant.display_matches:
             self.display_variants.append(self.surface_variant)
-        elif self.has_valid_base_with_display_matches:
+        elif self.base_variant is not None and self.base_variant.display_matches:
             self.display_variants.append(non_optional(self.base_variant))
 
         def displaywords_were_changed() -> bool:

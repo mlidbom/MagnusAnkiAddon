@@ -98,20 +98,19 @@ class VocabMatch(Match, Slots):
             if self.matching_configuration.bool_flags.question_overrides_form.is_set() \
             else super().parsed_form
 
-    @property
     @override
-    def start_index(self) -> int:
+    def _start_index(self) -> int:
         if self.matching_configuration.bool_flags.question_overrides_form.is_set():
             if self.requires_forbids.a_stem.is_required or self.requires_forbids.e_stem.is_required:
-                return super().start_index - 1
+                return super()._start_index() - 1
             if self.rules.required_prefix.any():
                 matched_prefixes = [prefix for prefix in self.rules.required_prefix.get()
                                     if self.parsed_form.startswith(prefix)]
                 if matched_prefixes:
                     matched_prefix_length = max(len(prefix) for prefix in matched_prefixes)
-                    return super().start_index - matched_prefix_length
+                    return super()._start_index() - matched_prefix_length
 
-        return super().start_index
+        return super()._start_index()
 
     @override
     def __repr__(self) -> str: return f"""{self.vocab.get_question()}, {self.vocab.get_answer()[:10]}: {self.match_form[:10]}: failure_reasons: {" ".join(self.failure_reasons) or "None"} ## hiding_reasons: {" ".join(self.hiding_reasons) or "None"}"""
