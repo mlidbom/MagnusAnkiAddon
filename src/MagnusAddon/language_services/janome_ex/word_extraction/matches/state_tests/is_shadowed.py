@@ -28,4 +28,6 @@ class IsShadowed(MatchStateTest, Slots):
     @property
     @override
     def state_description(self) -> str:
-        return f"shadowed_by:{self.match.word.shadowed_by_text}" if self.match_is_in_state else "forbids::shadowed"
+        return f"shadowed_by:{self.match.word.shadowed_by_text}" \
+            if self.match_is_in_state \
+            else "forbids::shadowed"
