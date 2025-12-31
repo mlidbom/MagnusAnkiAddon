@@ -9,9 +9,8 @@ if TYPE_CHECKING:
 
 
 class MatchRequirement(Slots):
-    def __init__(self, state_test: MatchStateTest) -> None:
-        self.state_test: MatchStateTest = state_test
-
+    """Base class for all match requirements."""
+    
     @property
     def is_fulfilled(self) -> bool: raise NotImplementedError()
 
@@ -20,4 +19,11 @@ class MatchRequirement(Slots):
 
     @override
     def __repr__(self) -> str: return self.failure_reason
+
+
+class MatchRequirementWithStateTest(MatchRequirement, Slots):
+    """Match requirement that wraps a state test."""
+    
+    def __init__(self, state_test: MatchStateTest) -> None:
+        self.state_test: MatchStateTest = state_test
 

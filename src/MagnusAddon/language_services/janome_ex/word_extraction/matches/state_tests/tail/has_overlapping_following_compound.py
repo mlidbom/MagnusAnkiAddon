@@ -3,26 +3,25 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from language_services.janome_ex.word_extraction.matches.state_tests.match_state_test import MatchStateTest
+from language_services.janome_ex.word_extraction.matches.requirements.custom_forbids_no_cache import CustomForbidsNoCache
 from sysutils.typed import non_optional
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.matches.match import Match
+    from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
     from sysutils.weak_ref import WeakRef
 
     pass
 
-class HasDisplayedOverlappingFollowingCompound(MatchStateTest, Slots):
-    def __init__(self, match: WeakRef[Match]) -> None:
-        super().__init__(match)
+class ForbidsHasDisplayedOverlappingFollowingCompound(CustomForbidsNoCache, Slots):
+    def __init__(self, match: WeakRef[VocabMatch], is_requirement_active: bool = True) -> None:
+        super().__init__(match, is_requirement_active)
 
     @property
     @override
     def description(self) -> str: return "has_displayed_following_overlapping_compound"
 
-    @property
     @override
-    def match_is_in_state(self) -> bool:
+    def _internal_is_in_state(self) -> bool:
         # todo: this is a problematic reference to display_words. That collection is initialized using this class,
         # so this class will return different results depending on whether it is used after or before display_words is first initialized. Ouch
 

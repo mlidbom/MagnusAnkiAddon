@@ -11,27 +11,18 @@ if TYPE_CHECKING:
     from sysutils.weak_ref import WeakRef
 
 
-class CustomRequiresOrForbids(VocabMatchInspector, MatchRequirement, Slots):
-    """Base class for fused RequiresOrForbids + MatchStateTest implementations.
+class CustomForbids(VocabMatchInspector, MatchRequirement, Slots):
+    """Base class for fused Forbids + MatchStateTest implementations.
     
     Inherits from VocabMatchInspector to access match context.
-    Subclasses must implement: is_required, is_forbidden, and _internal_is_in_state.
+    Subclasses must implement: _internal_is_in_state.
     """
     
-    def __init__(self, match: WeakRef[VocabMatch]) -> None:
+    def __init__(self, match: WeakRef[VocabMatch], is_requirement_active: bool = True) -> None:
         # Don't call MatchRequirement.__init__() since we don't have a state_test
         VocabMatchInspector.__init__(self, match)
+        self.is_requirement_active: bool = is_requirement_active
         self._cached_state: bool | None = None
-
-    @property
-    def is_required(self) -> bool:
-        """Whether this state is required."""
-        raise NotImplementedError()
-
-    @property
-    def is_forbidden(self) -> bool:
-        """Whether this state is forbidden."""
-        raise NotImplementedError()
 
     @property
     def is_in_state(self) -> bool:
@@ -50,24 +41,15 @@ class CustomRequiresOrForbids(VocabMatchInspector, MatchRequirement, Slots):
     @property
     @override
     def is_fulfilled(self) -> bool:
-        if self.is_required and not self.is_in_state:
-            return False
+        if not self.is_requirement_active:
+            return True
 
-        return not (self.is_forbidden and self.is_in_state)
+        return not self.is_in_state
 
     @property
     @override
     def failure_reason(self) -> str:
-        if self.is_fulfilled:
-            return ""
-
-        if self.is_required:
-            return f"required::{self.description}"
-
-        if self.is_forbidden:
-            return f"forbids::{self.description}"
-
-        raise AssertionError("This should never happen")
+        return f"""forbids::{self.description}""" if not self.is_fulfilled else ""
 
     def _internal_is_in_state(self) -> bool:
         """Internal implementation of state checking. Override this in subclasses."""

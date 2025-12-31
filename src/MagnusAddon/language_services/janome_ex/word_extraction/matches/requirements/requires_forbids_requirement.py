@@ -3,14 +3,14 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from language_services.janome_ex.word_extraction.matches.requirements.requirement import MatchRequirement
+from language_services.janome_ex.word_extraction.matches.requirements.requirement import MatchRequirementWithStateTest
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.state_tests.match_state_test import MatchStateTest
     from note.notefields.require_forbid_flag_field import RequireForbidFlagField
 
 
-class RequiresOrForbids(MatchRequirement, Slots):
+class RequiresOrForbids(MatchRequirementWithStateTest, Slots):
     def __init__(self, state_test: MatchStateTest, requires_forbids: RequireForbidFlagField) -> None:
         super().__init__(state_test)
         self.is_required: bool = requires_forbids.is_required

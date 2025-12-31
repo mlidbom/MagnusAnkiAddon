@@ -7,12 +7,13 @@ from language_services.janome_ex.word_extraction.matches.requirements.custom_req
 from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.matches.requirements.vocab_match_inspector import VocabMatchInspector
+    from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
+    from sysutils.weak_ref import WeakRef
 
 class RequiresOrForbidsHasTeFormStem(CustomRequiresOrForbids, Slots):
     _te_forms: QSet[str] = QSet(("て", "って", "で"))
-    def __init__(self, inspector: VocabMatchInspector) -> None:
-        super().__init__(inspector)
+    def __init__(self, match: WeakRef[VocabMatch]) -> None:
+        super().__init__(match)
 
     @property
     @override

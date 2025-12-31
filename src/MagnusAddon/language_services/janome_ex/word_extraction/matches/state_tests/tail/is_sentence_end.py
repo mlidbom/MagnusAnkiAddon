@@ -7,12 +7,13 @@ from language_services.janome_ex.word_extraction import analysis_constants
 from language_services.janome_ex.word_extraction.matches.requirements.custom_requires_or_forbids import CustomRequiresOrForbids
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.matches.requirements.vocab_match_inspector import VocabMatchInspector
+    from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
+    from sysutils.weak_ref import WeakRef
 
 class RequiresOrForbidsIsSentenceEnd(CustomRequiresOrForbids, Slots):
 
-    def __init__(self, inspector: VocabMatchInspector) -> None:
-        super().__init__(inspector)
+    def __init__(self, match: WeakRef[VocabMatch]) -> None:
+        super().__init__(match)
 
     @property
     @override
