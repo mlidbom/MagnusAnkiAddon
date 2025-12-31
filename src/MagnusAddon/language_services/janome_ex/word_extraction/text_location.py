@@ -70,7 +70,7 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
     def analysis_step_3_run_display_analysis_without_shadowing_information(self) -> None:
         self.run_display_analysis_and_update_display_words_pass_true_if_there_were_changes()
 
-    def analysis_step_5_resolve_chains_of_compounds_yielding_to_the_next_compound_pass_true_if_there_were_changes(self) -> bool:
+    def analysis_step_5_recalculate_display_words_based_on_current_shadowing_and_yielding_return_true_if_there_were_changes(self, initial_run: bool = False) -> bool:
         # todo this does not feel great. Currently we need the first version of display_words to be created
         # in order for the DisplayRequirements class to inspect it and mark itself as not being displayed so that it can be removed here.
         # this is some truly strange invisible order dependency that is making me quite uncomfortable
@@ -78,7 +78,8 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
         # because that method has a circular dependency to display_words which we set up here.
 
         the_next_compound_yields_to_the_one_after_that_so_this_one_no_longer_yields = self.run_display_analysis_and_update_display_words_pass_true_if_there_were_changes()
-        self.update_shadowing()
+        if initial_run or the_next_compound_yields_to_the_one_after_that_so_this_one_no_longer_yields:
+            self.update_shadowing()
         return the_next_compound_yields_to_the_one_after_that_so_this_one_no_longer_yields
 
     def update_shadowing(self) -> None:

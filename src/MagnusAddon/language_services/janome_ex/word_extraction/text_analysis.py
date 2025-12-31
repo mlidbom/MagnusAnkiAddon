@@ -79,14 +79,13 @@ class TextAnalysis(WeakRefable, Slots):
             location.analysis_step_3_run_display_analysis_without_shadowing_information()
 
     def _analysis_step_4_set_initial_shadowing_state(self) -> None:
-        pass
-        # for location in self.locations:
-        #     location.update_shadowing()
+        for location in self.locations:
+            location.analysis_step_5_recalculate_display_words_based_on_current_shadowing_and_yielding_return_true_if_there_were_changes(True)
 
     def _analysis_step_5_calculate_preference_between_overlapping_display_candidates(self) -> None:
         changes_made = True
         while changes_made:
             changes_made = False
             for location in self.locations:
-                if location.analysis_step_5_resolve_chains_of_compounds_yielding_to_the_next_compound_pass_true_if_there_were_changes():
+                if location.analysis_step_5_recalculate_display_words_based_on_current_shadowing_and_yielding_return_true_if_there_were_changes():
                     changes_made = True
