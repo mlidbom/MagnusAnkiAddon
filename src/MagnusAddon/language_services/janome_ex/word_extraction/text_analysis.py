@@ -2,14 +2,15 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, final, override
 
-from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from autoslot import Slots
 from sysutils.weak_ref import WeakRef, WeakRefable
-from typed_linq_collections.collections.q_list import QList
+from typed_linq_collections.q_iterable import query  # pyright: ignore[reportMissingTypeStubs]
 
 if TYPE_CHECKING:
     from language_services.janome_ex.tokenizing.processed_token import ProcessedToken
     from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
     from language_services.janome_ex.word_extraction.matches.match import Match
+    from typed_linq_collections.collections.q_list import QList
 
 from language_services.janome_ex.tokenizing.jn_tokenizer import JNTokenizer
 from language_services.janome_ex.word_extraction.text_location import TextAnalysisLocation
@@ -28,7 +29,7 @@ class TextAnalysis(WeakRefable, Slots):
         self.tokenized_text = _tokenizer.tokenize(sentence)
         self.pre_processed_tokens: list[ProcessedToken] = self.tokenized_text.pre_process()
 
-        self.locations: QList[TextAnalysisLocation] = QList()
+        self.locations: list[TextAnalysisLocation] = []
 
         character_index = 0
         for token_index, token in enumerate(self.pre_processed_tokens):
@@ -43,8 +44,8 @@ class TextAnalysis(WeakRefable, Slots):
         if self._analysis_step_4_set_initial_shadowing_state_return_true_on_changes():
             self._analysis_step_5_calculate_preference_between_overlapping_display_candidates()
 
-        self.indexing_word_variants: QList[CandidateWordVariant] = self.locations.select_many(lambda location: location.indexing_variants).to_list()
-        self.display_word_variants: QList[CandidateWordVariant] = self.locations.select_many(lambda location: location.display_variants).to_list()
+        self.indexing_word_variants: QList[CandidateWordVariant] = query(self.locations).select_many(lambda location: location.indexing_variants).to_list()
+        self.display_word_variants: QList[CandidateWordVariant] = query(self.locations).select_many(lambda location: location.display_variants).to_list()
 
         self.valid_matches: QList[Match] = self.indexing_word_variants.select_many(lambda variant: variant.valid_matches).to_list()
 
