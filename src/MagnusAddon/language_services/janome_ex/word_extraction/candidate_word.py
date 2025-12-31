@@ -57,7 +57,7 @@ class CandidateWord(WeakRefable, Slots):
         if self.should_index_base:
             self.indexing_variants.append(non_optional(self.base_variant))
 
-    def run_display_analysis_pass_true_if_there_were_changes(self) -> None:
+    def run_display_analysis(self) -> None:
         self.display_variants = []
 
         if self.surface_variant.display_matches.any():

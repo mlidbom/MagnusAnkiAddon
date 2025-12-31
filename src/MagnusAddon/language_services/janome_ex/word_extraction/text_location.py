@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 from language_services.janome_ex.word_extraction.candidate_word import CandidateWord
 from sysutils.ex_str import newline
 
-_max_lookahead = 12 # In my collection the longest so far is 9, so 12 seems a pretty good choice.
+_max_lookahead = 12  # In my collection the longest so far is 9, so 12 seems a pretty good choice.
 
 @final
 class TextAnalysisLocation(WeakRefable, Slots):
@@ -82,8 +82,8 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
                         covered_location().covering_matches.append(match)
 
     def run_display_analysis_and_update_display_words(self) -> None:
-        for range_ in self.candidate_words:
-             range_.run_display_analysis_pass_true_if_there_were_changes()
+        for candidate_word in self.candidate_words:
+            candidate_word.run_display_analysis()
 
         self.display_words = [candidate for candidate in self.candidate_words if candidate.display_variants]
 
