@@ -69,10 +69,6 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
                 for match in variant.valid_matches.where(lambda it: it.is_preliminarily_valid_for_display):
                     for overlapped_location in valid_word.locations[:-1]:
                         overlapped_location().yield_target_matches.append(match)
-
-        for valid_word in self.valid_words:
-            for variant in valid_word.valid_variants:
-                for match in variant.valid_matches.where(lambda it: it.is_preliminarily_valid_for_display):
                     for covered_location in valid_word.locations[1:]:
                         covered_location().covering_matches.append(match)
 
