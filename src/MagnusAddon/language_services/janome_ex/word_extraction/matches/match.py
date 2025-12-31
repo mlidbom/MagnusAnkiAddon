@@ -59,8 +59,6 @@ class Match(WeakRefable, Slots):
     def word(self) -> CandidateWord: return self.variant.word
     @property
     def variant(self) -> CandidateWordVariant: return self._variant()
-    @property
-    def is_preliminarily_valid_for_display(self) -> bool: return self._preliminarily_valid_for_display_requirement.is_fulfilled
 
     @property
     def is_valid(self) -> bool: return (self._is_valid_internal
