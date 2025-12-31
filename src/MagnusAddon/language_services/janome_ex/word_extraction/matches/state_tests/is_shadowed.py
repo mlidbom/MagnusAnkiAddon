@@ -26,23 +26,30 @@ class IsShadowed(MatchStateTest, Slots):
         if self.start_location.compound_matches_covering_this_location.none():
             return False
         if not self.word.is_custom_compound:
-            if self.start_location.compound_matches_covering_this_location.any(lambda match: match.is_displayed):  # noqa: SIM103
+            if self.start_location.compound_matches_covering_this_location.any(IsShadowed._match_is_displayed):  # noqa: SIM103
                 return True
             return False
 
-        if self.start_location.compound_matches_covering_this_location.any(lambda match: match.word.end_location.token_index >= self.end_location.token_index):
-            return True  # fully covered yielding does not enter the picture
-
-        if self.start_location.compound_matches_covering_this_location.all(IsShadowed._match_would_yield_to_upcoming_overlapping_compound):  # noqa: SIM103
-            return False
-
-        if self.start_location.compound_matches_covering_this_location.any(lambda match: match.is_displayed):  # noqa: SIM103
+        if self.start_location.compound_matches_covering_this_location.any(self._match_is_displayed_and_fully_covers_this_match):
             return True
+
+        if (self.start_location.compound_matches_covering_this_location  # noqa: SIM103
+                .where(IsShadowed._match_is_displayed_and_would_not_yield_to_upcoming_overlapping_compound)
+                .any()):  # noqa: SIM103
+            return True
+
         return False
 
+    def _match_is_displayed_and_fully_covers_this_match(self, match: Match) -> bool:
+        return match.word.end_location.token_index >= self.end_location.token_index and match.is_displayed
+
     @staticmethod
-    def _match_would_yield_to_upcoming_overlapping_compound(match: Match) -> bool:
-        return match.would_yield_to_upcoming_overlapping_compound
+    def _match_is_displayed_and_would_not_yield_to_upcoming_overlapping_compound(match: Match) -> bool:
+        return not match.would_yield_to_upcoming_overlapping_compound and match.is_displayed
+
+    @staticmethod
+    def _match_is_displayed(match: Match) -> bool:
+        return match.is_displayed
 
     @property
     @override
