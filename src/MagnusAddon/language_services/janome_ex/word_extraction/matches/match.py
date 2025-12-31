@@ -101,6 +101,8 @@ class Match(WeakRefable, Slots):
     def _surface_is_seemingly_valid_single_token(self) -> bool: return self.word.has_seemingly_valid_single_token
 
     @property
+    def is_shadowed(self) -> bool: return self.word.is_shadowed
+    @property
     def failure_reasons(self) -> list[str]: return [] if self.is_valid else [requirement.failure_reason for requirement in self._validity_requirements if not requirement.is_fulfilled]
     @property
     def hiding_reasons(self) -> list[str]: return [requirement.failure_reason for requirement in self._display_requirements if not requirement.is_fulfilled]

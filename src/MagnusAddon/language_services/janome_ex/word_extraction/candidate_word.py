@@ -46,6 +46,7 @@ class CandidateWord(WeakRefable, Slots):
         if self.base_variant is not None: self.base_variant.run_validity_analysis()
         self.surface_variant.run_validity_analysis()
 
+        self.valid_variants = QList()
         if self.has_base_variant_with_valid_match:
             self.valid_variants.append(non_optional(self.base_variant))
         if self.surface_variant.has_valid_match:
@@ -57,13 +58,22 @@ class CandidateWord(WeakRefable, Slots):
         if self.should_index_base:
             self.indexing_variants.append(non_optional(self.base_variant))
 
-    def run_display_analysis(self) -> None:
+    def run_display_analysis_pass_true_if_there_were_changes(self) -> bool:
+        old_display_word_variants = self.display_variants
         self.display_variants = QList()
 
         if self.surface_variant.display_matches.any():
             self.display_variants.append(self.surface_variant)
         elif self.base_variant is not None and self.base_variant.display_matches.any():
             self.display_variants.append(non_optional(self.base_variant))
+
+        def displaywords_were_changed() -> bool:
+            if len(old_display_word_variants) != len(self.display_variants):
+                return True
+
+            return any(old_display_word_variants[index] != self.display_variants[index] for index in range(len(old_display_word_variants)))
+
+        return displaywords_were_changed()
 
     def has_valid_words(self) -> bool: return len(self.valid_variants) > 0
 
@@ -92,6 +102,19 @@ class CandidateWord(WeakRefable, Slots):
     def is_inflected_word(self) -> bool: return self.is_inflectable_word and self.next_token_is_inflecting_word
     @property
     def starts_with_non_word_character(self) -> bool: return self.starts_with_non_word_token or self.surface_form in noise_characters
+
+    @property
+    def is_shadowed(self) -> bool: return self.is_shadowed_by is not None
+    @property
+    def shadowed_by_text(self) -> str: return non_optional(self.is_shadowed_by).form if self.is_shadowed else ""
+    @property
+    def is_shadowed_by(self) -> CandidateWordVariant | None:
+        if any(self.start_location.is_shadowed_by):
+            return self.start_location.is_shadowed_by[0]().display_variants[0]
+        if (any(self.start_location.display_variants)
+                and self.start_location.display_variants[0].word.location_count > self.location_count):
+            return self.start_location.display_variants[0]
+        return None
 
     @override
     def __repr__(self) -> str: return f"""

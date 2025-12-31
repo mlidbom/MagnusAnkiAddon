@@ -30,7 +30,6 @@ def assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentenc
 
     sentence_view_model = SentenceViewModel(sentence_note)
 
-    analysis = sentence_view_model.analysis.analysis  # pyright: ignore [reportUnusedVariable]
 
     if len(excluded) == 0:
         run_note_assertions("running assertions with no exclusions")

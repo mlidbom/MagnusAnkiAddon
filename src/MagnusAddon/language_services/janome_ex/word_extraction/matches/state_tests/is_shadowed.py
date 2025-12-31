@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from autoslot import Slots
+from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from language_services.janome_ex.word_extraction.matches.state_tests.match_state_test import MatchStateTest
 
 if TYPE_CHECKING:
@@ -19,35 +19,13 @@ class IsShadowed(MatchStateTest, Slots):
 
     @property
     @override
-    def is_cachable(self) -> bool: return True
+    def is_cachable(self) -> bool: return False
 
+    @property
     @override
-    def _internal_match_is_in_state(self) -> bool:
-        if self.start_location.compound_matches_covering_this_location.none():
-            return False
-        if not self.word.is_custom_compound:
-            if self.start_location.compound_matches_covering_this_location.any(IsShadowed._match_is_displayed):  # noqa: SIM103
-                return True
-            return False
-
-        if self.start_location.compound_matches_covering_this_location.any(self._match_is_displayed_and_fully_covers_this_match):
-            return True
-
-        if (self.start_location.unyielding_compound_matches_covering_this_location  # noqa: SIM103
-                .any(IsShadowed._match_is_displayed)):  # noqa: SIM103
-            return True
-
-        return False
-
-    def _match_is_displayed_and_fully_covers_this_match(self, match: Match) -> bool:
-        return match.word.end_location.token_index >= self.end_location.token_index and match.is_displayed
-
-
-    @staticmethod
-    def _match_is_displayed(match: Match) -> bool:
-        return match.is_displayed
+    def match_is_in_state(self) -> bool: return self.match.is_shadowed
 
     @property
     @override
     def state_description(self) -> str:
-        return "shadowed_by_covering_match" if self.match_is_in_state else "forbids::shadowed"
+        return f"shadowed_by:{self.match.word.shadowed_by_text}" if self.match_is_in_state else "forbids::shadowed"
