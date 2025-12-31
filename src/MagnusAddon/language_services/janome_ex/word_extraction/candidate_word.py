@@ -46,7 +46,6 @@ class CandidateWord(WeakRefable, Slots):
         if self.base_variant is not None: self.base_variant.run_validity_analysis()
         self.surface_variant.run_validity_analysis()
 
-        self.valid_variants = []
         if self.has_base_variant_with_valid_match:
             self.valid_variants.append(non_optional(self.base_variant))
         if self.surface_variant.has_valid_match:
