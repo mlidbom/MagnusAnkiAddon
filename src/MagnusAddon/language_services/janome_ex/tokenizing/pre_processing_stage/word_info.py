@@ -4,12 +4,13 @@ from ankiutils import app
 from autoslot import Slots
 from language_services.jamdict_ex.dict_lookup import DictLookup
 from language_services.janome_ex.tokenizing.pre_processing_stage.word_info_entry import WordInfoEntry
+from typed_linq_collections.q_iterable import query
 
 
 class WordInfo(Slots):
     @staticmethod
     def lookup(word: str) -> WordInfoEntry | None:
-        vocab_entries = app.col().vocab.with_form(word)
+        vocab_entries = query(app.col().vocab.with_form(word))
         if vocab_entries.any():
             for vocab in vocab_entries:
                 if vocab.get_question() == word:

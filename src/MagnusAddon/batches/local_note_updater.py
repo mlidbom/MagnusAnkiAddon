@@ -224,7 +224,7 @@ def create_missing_vocab_with_dictionary_entries() -> None:
                                                                                 .to_list())))
 
         def create_vocab_if_not_already_created(result: DictLookupResult) -> None:
-            if not app.col().vocab.with_form(result.word).any(): # we may well have created a vocab that provides this form already...
+            if not any(app.col().vocab.with_form(result.word)): # we may well have created a vocab that provides this form already...
                 VocabNote.factory.create_with_dictionary(result.word)
 
         runner.process_with_progress(dictionary_words_with_no_vocab, create_vocab_if_not_already_created, "Creating vocab notes")

@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 from ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from typed_linq_collections.q_iterable import query
 
 if TYPE_CHECKING:
     from note.notefields.json_object_field import MutableSerializedObjectField
@@ -37,7 +38,7 @@ class Synonyms(Slots):
         self._save()
 
     def add_transitively_one_level(self, synonym: str) -> None:
-        new_synonym_notes = app.col().vocab.with_any_form_in_prefer_exact_match([synonym])
+        new_synonym_notes = query(app.col().vocab.with_any_form_in_prefer_exact_match([synonym]))
 
         for synonym_note in new_synonym_notes:
             for my_synonym in self.strings():

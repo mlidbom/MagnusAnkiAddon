@@ -53,7 +53,7 @@ class VocabNoteForms(WeakRefable, Slots):
         vocab_note = self._vocab()
 
         def is_not_owned_by_other_form_note(form: str) -> bool:
-            return (app.col().vocab.with_question(form)
+            return (query(app.col().vocab.with_question(form))
                     .where(lambda form_owning_vocab:
                            form_owning_vocab != vocab_note
                            and vocab_note.get_question() in form_owning_vocab.forms.all_set())

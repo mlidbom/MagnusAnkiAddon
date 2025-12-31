@@ -46,7 +46,7 @@ def generate_homophones_html_list(vocab_note: VocabNote) -> str:
 
 def generate_synonyms_meaning_html_list(_vocab_note: VocabNote) -> str:
     synonym_notes = _vocab_note.related_notes.synonyms.notes()
-    perfect_synonyms = _vocab_note.related_notes.perfect_synonyms.notes().to_set()
+    perfect_synonyms = set(_vocab_note.related_notes.perfect_synonyms.notes())
     synonym_notes = query(synonym_notes).where(lambda synonym: synonym not in perfect_synonyms).to_list()
     synonym_notes = note.vocabulary.vocabnote_sorting.sort_vocab_list_by_studying_status(synonym_notes)
 

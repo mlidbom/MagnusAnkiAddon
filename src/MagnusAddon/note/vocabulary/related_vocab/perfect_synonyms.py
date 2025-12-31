@@ -10,7 +10,6 @@ if TYPE_CHECKING:
     from note.notefields.auto_save_wrappers.set_wrapper import FieldSetWrapper
     from note.vocabulary.vocabnote import VocabNote
     from sysutils.weak_ref import WeakRef
-    from typed_linq_collections.collections.q_list import QList
 
 class PerfectSynonyms(Slots):
     def __init__(self, vocab: WeakRef[VocabNote], data: FieldSetWrapper[str]) -> None:
@@ -18,7 +17,7 @@ class PerfectSynonyms(Slots):
         self._value: FieldSetWrapper[str] = data
         vocab().user.answer.on_change(self.push_answer_to_other_synonyms)
 
-    def notes(self) -> QList[VocabNote]: return app.col().vocab.with_any_question_in(list(self._value.get()))
+    def notes(self) -> list[VocabNote]: return app.col().vocab.with_any_question_in(list(self._value.get()))
 
     def push_answer_to_other_synonyms(self) -> None:
         for synonym in self.notes():
