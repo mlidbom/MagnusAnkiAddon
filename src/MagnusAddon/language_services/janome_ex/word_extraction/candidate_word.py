@@ -57,22 +57,13 @@ class CandidateWord(WeakRefable, Slots):
         if self.should_index_base:
             self.indexing_variants.append(non_optional(self.base_variant))
 
-    def run_display_analysis_pass_true_if_there_were_changes(self) -> bool:
-        old_display_word_variants = self.display_variants
+    def run_display_analysis_pass_true_if_there_were_changes(self) -> None:
         self.display_variants = []
 
         if self.surface_variant.display_matches.any():
             self.display_variants.append(self.surface_variant)
         elif self.base_variant is not None and self.base_variant.display_matches.any():
             self.display_variants.append(non_optional(self.base_variant))
-
-        def displaywords_were_changed() -> bool:
-            if len(old_display_word_variants) != len(self.display_variants):
-                return True
-
-            return any(old_display_word_variants[index] != self.display_variants[index] for index in range(len(old_display_word_variants)))
-
-        return displaywords_were_changed()
 
     def has_valid_words(self) -> bool: return len(self.valid_variants) > 0
 

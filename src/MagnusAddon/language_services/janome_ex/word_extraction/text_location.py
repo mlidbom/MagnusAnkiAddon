@@ -81,18 +81,11 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
                     for covered_location in valid_word.locations[1:-1]:
                         covered_location().covering_matches.append(match)
 
-    def _run_display_analysis_pass_true_if_there_were_changes(self) -> bool:
-        changes_made = False
+    def run_display_analysis_and_update_display_words(self) -> None:
         for range_ in self.candidate_words:
-            if range_.run_display_analysis_pass_true_if_there_were_changes():
-                changes_made = True
+             range_.run_display_analysis_pass_true_if_there_were_changes()
 
-        if changes_made:
-            self.display_words = [candidate for candidate in self.candidate_words if candidate.display_variants]
-        return changes_made
-
-    def run_display_analysis_and_update_display_words(self) -> bool:
-        return self._run_display_analysis_pass_true_if_there_were_changes()
+        self.display_words = [candidate for candidate in self.candidate_words if candidate.display_variants]
 
     def resolve_shadowing_for_display_word(self) -> None:
         if self.display_words and not any(self.is_shadowed_by):
