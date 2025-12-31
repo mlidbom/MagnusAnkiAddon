@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from collections import defaultdict
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
@@ -11,7 +10,7 @@ from note.vocabulary.vocabnote import VocabNote
 from typed_linq_collections.collections.q_default_dict import QDefaultDict  # pyright: ignore [reportMissingTypeStubs]
 from typed_linq_collections.collections.q_list import QList
 from typed_linq_collections.collections.q_set import QSet
-from typed_linq_collections.q_iterable import query
+from typed_linq_collections.q_iterable import QIterable, query
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
@@ -35,7 +34,7 @@ class _VocabSnapshot(CachedNote, Slots):
 class _VocabCache(NoteCache[VocabNote, _VocabSnapshot], Slots):
     def __init__(self, all_vocab: list[VocabNote], cache_runner: CacheRunner) -> None:
         # Since notes with a given Id are guaranteed to only exist once in the cache, we can use lists within the dictionary to cut memory usage a ton compared to using sets
-        self._by_form: dict[str, set[VocabNote]] = defaultdict(set)
+        self._by_form: QDefaultDict[str, QList[VocabNote]] = QDefaultDict[str, QList[VocabNote]](QList[VocabNote])
         self._by_kanji_in_main_form: QDefaultDict[str, QList[VocabNote]] = QDefaultDict[str, QList[VocabNote]](QList[VocabNote])
         self._by_kanji_in_any_form: QDefaultDict[str, QList[VocabNote]] = QDefaultDict[str, QList[VocabNote]](QList[VocabNote])
         self._by_compound_part: QDefaultDict[str, QList[VocabNote]] = QDefaultDict[str, QList[VocabNote]](QList[VocabNote])
@@ -44,7 +43,7 @@ class _VocabCache(NoteCache[VocabNote, _VocabSnapshot], Slots):
         self._by_stem: QDefaultDict[str, QList[VocabNote]] = QDefaultDict[str, QList[VocabNote]](QList[VocabNote])
         super().__init__(all_vocab, VocabNote, cache_runner)
 
-    def with_form(self, form: str) -> QList[VocabNote]: return QList(self._by_form[form]) if form in self._by_form else QList[VocabNote]()
+    def with_form(self, form: str) -> QIterable[VocabNote]: return self._by_form.get_value_or_default(form)
 
     def with_compound_part(self, form: str) -> QList[VocabNote]:
         compound_parts: QSet[VocabNote] = QSet()
@@ -81,7 +80,7 @@ class _VocabCache(NoteCache[VocabNote, _VocabSnapshot], Slots):
 
     @override
     def _inheritor_add_to_cache(self, note: VocabNote, snapshot: _VocabSnapshot) -> None:
-        for form in snapshot.forms: self._by_form[form].add(note)
+        for form in snapshot.forms: self._by_form[form].append(note)
         for compound_part in snapshot.compound_parts: self._by_compound_part[compound_part].append(note)
         # todo: We add these regardless of whether they have a value in derived from? Won't there be a ton of instances for the empty string?
         self._by_derived_from[snapshot.derived_from].append(note)
@@ -100,7 +99,7 @@ class VocabCollection(Slots):
     def is_word(self, form: str) -> bool: return any(self._cache.with_form(form))
     def all(self) -> list[VocabNote]: return self._cache.all()
     def with_id_or_none(self, note_id: NoteId) -> VocabNote | None: return self._cache.with_id_or_none(note_id)
-    def with_form(self, form: str) -> QList[VocabNote]: return self._cache.with_form(form)
+    def with_form(self, form: str) -> QIterable[VocabNote]: return self._cache.with_form(form)
     def with_compound_part(self, compound_part: str) -> QList[VocabNote]: return self._cache.with_compound_part(compound_part)
     def derived_from(self, derived_from: str) -> QList[VocabNote]: return self._cache.derived_from(derived_from)
     def with_kanji_in_main_form(self, kanji: KanjiNote) -> QList[VocabNote]: return self._cache.with_kanji_in_main_form(kanji.get_question())
@@ -110,7 +109,7 @@ class VocabCollection(Slots):
     def with_stem(self, question: str) -> QList[VocabNote]: return self._cache.with_stem(question)
 
     def with_form_prefer_exact_match(self, form: str) -> QList[VocabNote]:
-        matches: list[VocabNote] = self.with_form(form)
+        matches: QIterable[VocabNote] = self.with_form(form)
         exact_match = [voc for voc in matches if voc.question.without_noise_characters == form]
         sequence = exact_match if exact_match else matches
         return query(sequence).distinct().to_list()
