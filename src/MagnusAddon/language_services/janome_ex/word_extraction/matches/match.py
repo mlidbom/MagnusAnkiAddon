@@ -24,6 +24,7 @@ class Match(WeakRefable, Slots):
                  display_requirements: list[MatchRequirement]) -> None:
         weakref_self = WeakRef(self)
         self._is_not_shadowed_requirement: MatchRequirement = Forbids(IsShadowed(weakref_self))
+        self._preliminarily_valid_for_display_requirement: MatchRequirement = Forbids(IsConfiguredHidden(weakref_self))
         self.weakref: WeakRef[Match] = weakref_self
         self._variant: WeakRef[CandidateWordVariant] = word_variant
         self._validity_requirements: list[MatchRequirement] = ([
@@ -35,7 +36,7 @@ class Match(WeakRefable, Slots):
                                                                + validity_requirements)
         self._display_requirements: list[MatchRequirement] = ([
                                                                       self._is_not_shadowed_requirement,
-                                                                      Forbids(IsConfiguredHidden(weakref_self))
+                                                                      self._preliminarily_valid_for_display_requirement
                                                               ]
                                                               + display_requirements)
 
@@ -61,6 +62,8 @@ class Match(WeakRefable, Slots):
     def word(self) -> CandidateWord: return self.variant.word
     @property
     def variant(self) -> CandidateWordVariant: return self._variant()
+    @property
+    def is_preliminarily_valid_for_display(self) -> bool: return self._preliminarily_valid_for_display_requirement.is_fulfilled
 
     @property
     def is_valid(self) -> bool: return (self._is_valid_internal

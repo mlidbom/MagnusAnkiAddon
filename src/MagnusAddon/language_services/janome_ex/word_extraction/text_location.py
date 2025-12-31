@@ -64,20 +64,15 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
         self.indexing_variants = self.candidate_words.select_many(lambda candidate: candidate.indexing_variants).to_list()
         self.valid_variants = self.valid_words.select_many(lambda valid: valid.valid_variants).to_list()
 
-        from language_services.janome_ex.word_extraction.matches.state_tests.is_configured_hidden import IsConfiguredHidden
         for valid_word in self.valid_words:
             for variant in valid_word.valid_variants:
-                for match in variant.valid_matches:
-                    if IsConfiguredHidden(match.weakref).match_is_in_state:
-                        continue
+                for match in variant.valid_matches.where(lambda it: it.is_preliminarily_valid_for_display):
                     for overlapped_location in valid_word.locations[:-1]:
                         overlapped_location().yield_target_matches.append(match)
 
         for valid_word in self.valid_words:
             for variant in valid_word.valid_variants:
-                for match in variant.valid_matches:
-                    if IsConfiguredHidden(match.weakref).match_is_in_state:
-                        continue
+                for match in variant.valid_matches.where(lambda it: it.is_preliminarily_valid_for_display):
                     for covered_location in valid_word.locations[1:]:
                         covered_location().covering_matches.append(match)
 
