@@ -58,8 +58,8 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
         for candidate_word in self._candidate_words[:-1]:  # we already have the last one completed
             candidate_word.run_validity_analysis()
 
-        valid_words = self._candidate_words.where(lambda candidate: candidate.has_valid_words()).to_list()
         self.indexing_variants = self._candidate_words.select_many(lambda candidate: candidate.indexing_variants).to_list()
+        valid_words = self._candidate_words.where(lambda candidate: candidate.has_valid_words()).to_list()
 
         for valid_word in valid_words:
             for variant in valid_word.valid_variants:
