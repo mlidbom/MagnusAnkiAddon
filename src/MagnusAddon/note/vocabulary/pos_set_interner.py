@@ -5,69 +5,106 @@ from sysutils.memory_usage import string_auto_interner
 
 
 class POSSetManager:
+    # Canonical POS value constants
+    TRANSITIVE: str = "transitive"
+    INTRANSITIVE: str = "intransitive"
+    GODAN_VERB: str = "godan verb"
+    ICHIDAN_VERB: str = "ichidan verb"
+    SURU_VERB: str = "suru verb"
+    KURU_VERB: str = "kuru verb"
+    NU_VERB: str = "nu verb"
+    SU_VERB: str = "su verb"
+    YODAN_VERB: str = "yodan verb"
+    NIDAN_VERB: str = "nidan verb"
+    NOUN: str = "noun"
+    NA_ADJECTIVE: str = "na-adjective"
+    I_ADJECTIVE: str = "i-adjective"
+    TARU_ADJECTIVE: str = "taru-adjective"
+    ADVERB: str = "adverb"
+    TO_ADVERB: str = "to-adverb"
+    EXPRESSION: str = "expression"
+    AUXILIARY: str = "auxiliary"
+    CONJUNCTION: str = "conjunction"
+    COPULA: str = "copula"
+    INTERJECTION: str = "interjection"
+    PARTICLE: str = "particle"
+    PREFIX: str = "prefix"
+    SUFFIX: str = "suffix"
+    PRONOUN: str = "pronoun"
+    COUNTER: str = "counter"
+    NUMERIC: str = "numeric"
+    PRENOMINAL: str = "prenominal"
+    PRE_NOUN_ADJECTIVAL: str = "pre-noun-adjectival"
+    NO_ADJECTIVE: str = "no-adjective"
+    SPECIAL_CLASS: str = "special-class"
+    SPECIAL_CLASS_ARU: str = "special-class-aru"
+    ZURU_VERB: str = "zuru verb"
+    IRREGULAR: str = "irregular"
+    UNKNOWN: str = "Unknown"
+
     _pos_by_str: dict[str, frozenset[str]] = {}
 
     # Maps both JMDict POS names and our own harmonizations to canonical forms
     _remappings: dict[str, list[str]] = {
             # Our own harmonizations (for VocabNote usage)
-            "intransitive verb": ["intransitive"],
-            "transitive verb": ["transitive"],
-            "godan": ["godan verb"],
-            "ichidan": ["ichidan verb"],
-
-            # JMDict POS mappings
-            "noun or participle which takes the aux. verb suru": ["suru verb"],
-            "noun (common) (futsuumeishi)": ["noun"],
-            "adjectival nouns or quasi-adjectives (keiyodoshi)": ["na-adjective"],
-            "noun, used as a suffix": ["noun", "suffix"],
-            "godan verb with 'u' ending": ["godan verb"],
-            "godan verb with 'ru' ending": ["godan verb"],
-            "godan verb with 'mu' ending": ["godan verb"],
-            "godan verb with 'nu' ending": ["godan verb"],
-            "godan verb with 'gu' ending": ["godan verb"],
-            "godan verb with 'ku' ending": ["godan verb"],
-            "godan verb with 'su' ending": ["godan verb"],
-            "godan verb with 'bu' ending": ["godan verb"],
-            "godan verb with 'u' ending (special class)": ["godan verb", "special-class"],
-            "godan verb - -aru special class": ["godan verb", "special-class-aru"],
-            "godan verb with 'tsu' ending": ["godan verb"],
-            "irregular nu verb": ["nu verb"],
-            "godan verb - iku/yuku special class": ["godan verb", "special-class"],
-            "godan verb with 'ru' ending (irregular verb)": ["godan verb", "irregular"],
-            "ichidan verb": ["ichidan verb"],
-            "ichidan verb - zuru verb (alternative form of -jiru verbs)": ["ichidan verb", "zuru verb"],
-            "kuru verb - special class": ["kuru verb", "special-class"],
-            "yodan verb with 'ru' ending (archaic)": ["yodan verb"],
-            "yodan verb with 'ku' ending (archaic)": ["yodan verb"],
-            "nidan verb (lower class) with 'ru' ending (archaic)": ["nidan verb"],
-            "nidan verb (upper class) with 'ru' ending (archaic)": ["nidan verb"],
-            "adjective (keiyoushi)": ["i-adjective"],
-            "adjective (keiyoushi) - yoi/ii class": ["i-adjective"],
-            "adverb (fukushi)": ["adverb"],
-            "adverb taking the 'to' particle": ["to-adverb"],
-            "auxiliary": ["auxiliary"],
-            "auxiliary adjective": ["adjective", "auxiliary"],
-            "auxiliary verb": ["auxiliary"],
-            "conjunction": ["conjunction"],
-            "copula": ["copula"],
-            "expressions (phrases, clauses, etc.)": ["expression"],
-            "interjection (kandoushi)": ["interjection"],
-            "noun, used as a prefix": ["prefix", "noun"],
-            "nouns which may take the genitive case particle 'no'": ["noun", "no-adjective"],
-            "particle": ["particle"],
-            "pre-noun adjectival (rentaishi)": ["pre-noun-adjectival"],
-            "prefix": ["prefix"],
-            "pronoun": ["pronoun"],
-            "suffix": ["suffix"],
-            "suru verb - included": ["suru verb"],
-            "suru verb": ["suru verb"],
-            "su verb - precursor to the modern suru": ["su verb"],
-            "counter": ["counter"],
-            "numeric": ["numeric"],
-            "noun or verb acting prenominally": ["prenominal"],
-            "suru verb - special class": ["suru verb", "special-class"],
-            "ichidan verb - kureru special class": ["ichidan verb", "special-class"],
-            "'taru' adjective": ["taru-adjective"],
+        "intransitive verb": [INTRANSITIVE],
+        "transitive verb": [TRANSITIVE],
+        "godan": [GODAN_VERB],
+        "ichidan": [ICHIDAN_VERB],
+        
+        # JMDict POS mappings
+        "noun or participle which takes the aux. verb suru": [SURU_VERB],
+        "noun (common) (futsuumeishi)": [NOUN],
+        "adjectival nouns or quasi-adjectives (keiyodoshi)": [NA_ADJECTIVE],
+        "noun, used as a suffix": [NOUN, SUFFIX],
+        "godan verb with 'u' ending": [GODAN_VERB],
+        "godan verb with 'ru' ending": [GODAN_VERB],
+        "godan verb with 'mu' ending": [GODAN_VERB],
+        "godan verb with 'nu' ending": [GODAN_VERB],
+        "godan verb with 'gu' ending": [GODAN_VERB],
+        "godan verb with 'ku' ending": [GODAN_VERB],
+        "godan verb with 'su' ending": [GODAN_VERB],
+        "godan verb with 'bu' ending": [GODAN_VERB],
+        "godan verb with 'u' ending (special class)": [GODAN_VERB, SPECIAL_CLASS],
+        "godan verb - -aru special class": [GODAN_VERB, SPECIAL_CLASS_ARU],
+        "godan verb with 'tsu' ending": [GODAN_VERB],
+        "irregular nu verb": [NU_VERB],
+        "godan verb - iku/yuku special class": [GODAN_VERB, SPECIAL_CLASS],
+        "godan verb with 'ru' ending (irregular verb)": [GODAN_VERB, IRREGULAR],
+        "ichidan verb": [ICHIDAN_VERB],
+        "ichidan verb - zuru verb (alternative form of -jiru verbs)": [ICHIDAN_VERB, ZURU_VERB],
+        "kuru verb - special class": [KURU_VERB, SPECIAL_CLASS],
+        "yodan verb with 'ru' ending (archaic)": [YODAN_VERB],
+        "yodan verb with 'ku' ending (archaic)": [YODAN_VERB],
+        "nidan verb (lower class) with 'ru' ending (archaic)": [NIDAN_VERB],
+        "nidan verb (upper class) with 'ru' ending (archaic)": [NIDAN_VERB],
+        "adjective (keiyoushi)": [I_ADJECTIVE],
+        "adjective (keiyoushi) - yoi/ii class": [I_ADJECTIVE],
+        "adverb (fukushi)": [ADVERB],
+        "adverb taking the 'to' particle": [TO_ADVERB],
+        "auxiliary": [AUXILIARY],
+        "auxiliary adjective": [I_ADJECTIVE, AUXILIARY],
+        "auxiliary verb": [AUXILIARY],
+        "conjunction": [CONJUNCTION],
+        "copula": [COPULA],
+        "expressions (phrases, clauses, etc.)": [EXPRESSION],
+        "interjection (kandoushi)": [INTERJECTION],
+        "noun, used as a prefix": [PREFIX, NOUN],
+        "nouns which may take the genitive case particle 'no'": [NOUN, NO_ADJECTIVE],
+        "particle": [PARTICLE],
+        "pre-noun adjectival (rentaishi)": [PRE_NOUN_ADJECTIVAL],
+        "prefix": [PREFIX],
+        "pronoun": [PRONOUN],
+        "suffix": [SUFFIX],
+        "suru verb - included": [SURU_VERB],
+        "suru verb": [SURU_VERB],
+        "su verb - precursor to the modern suru": [SU_VERB],
+        "counter": [COUNTER],
+        "numeric": [NUMERIC],
+        "noun or verb acting prenominally": [PRENOMINAL],
+        "suru verb - special class": [SURU_VERB, SPECIAL_CLASS],
+        "ichidan verb - kureru special class": [ICHIDAN_VERB, SPECIAL_CLASS],
+        "'taru' adjective": [TARU_ADJECTIVE],
     }
 
     @staticmethod
@@ -114,8 +151,8 @@ class POSSetManager:
 
     @staticmethod
     def is_transitive_verb(pos_set: frozenset[str]) -> bool:
-        return "transitive" in pos_set
+        return POSSetManager.TRANSITIVE in pos_set
 
     @staticmethod
     def is_intransitive_verb(pos_set: frozenset[str]) -> bool:
-        return "intransitive" in pos_set
+        return POSSetManager.INTRANSITIVE in pos_set

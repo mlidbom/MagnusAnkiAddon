@@ -8,6 +8,7 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from language_services import conjugator
 from note.note_constants import NoteTypes
 from note.tags import Tags
+from note.vocabulary.pos_set_interner import POSSetManager
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -22,10 +23,10 @@ class VocabCloner(Slots):
     @property
     def note(self) -> VocabNote: return self._note_ref()
 
-    def create_prefix_version(self, prefix: str, speech_type: str = "expression", set_compounds: bool = True, truncate_characters: int = 0) -> VocabNote:
+    def create_prefix_version(self, prefix: str, speech_type: str = POSSetManager.EXPRESSION, set_compounds: bool = True, truncate_characters: int = 0) -> VocabNote:
         return self._create_postfix_prefix_version(prefix, speech_type, is_prefix=True, set_compounds=set_compounds, truncate_characters=truncate_characters)
 
-    def create_suffix_version(self, suffix: str, speech_type: str = "expression", set_compounds: bool = True, truncate_characters: int = 0) -> VocabNote:
+    def create_suffix_version(self, suffix: str, speech_type: str = POSSetManager.EXPRESSION, set_compounds: bool = True, truncate_characters: int = 0) -> VocabNote:
         return self._create_postfix_prefix_version(suffix, speech_type, set_compounds=set_compounds, truncate_characters=truncate_characters)
 
     def _create_postfix_prefix_version(self, addendum: str, speech_type: str, is_prefix: bool = False, set_compounds: bool = True, truncate_characters: int = 0) -> VocabNote:
@@ -71,24 +72,24 @@ class VocabCloner(Slots):
         return self._create_postfix_prefix_version("お", note.parts_of_speech.raw_string_value(), is_prefix=True)
 
     def create_n_suffixed_word(self) -> VocabNote:
-        return self._create_postfix_prefix_version("ん", "expression")
+        return self._create_postfix_prefix_version("ん", POSSetManager.EXPRESSION)
 
     def create_ka_suffixed_word(self) -> VocabNote:
-        return self._create_postfix_prefix_version("か", "expression")
+        return self._create_postfix_prefix_version("か", POSSetManager.EXPRESSION)
 
     def create_suru_verb(self, shimasu: bool = False) -> VocabNote:
-        suru_verb = self._create_postfix_prefix_version("する" if not shimasu else "します", "suru verb")
+        suru_verb = self._create_postfix_prefix_version("する" if not shimasu else "します", POSSetManager.SURU_VERB)
 
         forms = list(suru_verb.forms.all_set()) + [form.replace("する", "をする") for form in suru_verb.forms.all_set()]
         suru_verb.forms.set_list(forms)
 
         note = self.note
         if note.parts_of_speech.is_transitive():
-            value = suru_verb.parts_of_speech.raw_string_value() + ", transitive"
+            value = suru_verb.parts_of_speech.raw_string_value() + ", " + POSSetManager.TRANSITIVE
             suru_verb.parts_of_speech.set_raw_string_value(value)
         vocab_note = self.note
         if vocab_note.parts_of_speech.is_intransitive():
-            value1 = suru_verb.parts_of_speech.raw_string_value() + ", intransitive"
+            value1 = suru_verb.parts_of_speech.raw_string_value() + ", " + POSSetManager.INTRANSITIVE
             suru_verb.parts_of_speech.set_raw_string_value(value1)
 
         return suru_verb
@@ -128,7 +129,7 @@ class VocabCloner(Slots):
         return self._create_postfix_prefix_version("く", "adverb", set_compounds=True, truncate_characters=1)
 
     def create_sa_form(self) -> VocabNote:
-        return self._create_postfix_prefix_version("さ", "noun", set_compounds=True, truncate_characters=1)
+        return self._create_postfix_prefix_version("さ", POSSetManager.NOUN, set_compounds=True, truncate_characters=1)
 
     def clone_to_derived_form(self, form_suffix: str, create_form_root: Callable[[VocabNote, str], str]) -> VocabNote:
         def create_full_form(form: str) -> str: return create_form_root(self.note, form) + form_suffix
@@ -138,7 +139,7 @@ class VocabCloner(Slots):
         vocab_note = self.note
         readings = [create_full_form(reading) for reading in vocab_note.readings.get()]
         clone.readings.set(readings)
-        clone.parts_of_speech.set_raw_string_value("expression")
+        clone.parts_of_speech.set_raw_string_value(POSSetManager.EXPRESSION)
         compounds = [self.note.get_question(), form_suffix]
         clone.compound_parts.set(compounds)
         return clone
@@ -207,7 +208,7 @@ class VocabCloner(Slots):
         vocab_note = self.note
         readings = [create_imperative(reading) for reading in vocab_note.readings.get()]
         clone.readings.set(readings)
-        clone.parts_of_speech.set_raw_string_value("expression")
+        clone.parts_of_speech.set_raw_string_value(POSSetManager.EXPRESSION)
         return clone
 
     def create_potential_godan(self) -> VocabNote:
