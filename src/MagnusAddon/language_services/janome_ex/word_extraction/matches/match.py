@@ -19,26 +19,26 @@ if TYPE_CHECKING:
 
 class Match(WeakRefable, Slots):
     def __init__(self, word_variant: WeakRef[CandidateWordVariant],
-                 validity_requirements: list[MatchRequirement],
-                 display_requirements: list[MatchRequirement]) -> None:
+                 validity_requirements: tuple[MatchRequirement | None, ...],
+                 display_requirements: tuple[MatchRequirement | None, ...]) -> None:
         weakref_self = WeakRef(self)
         inspector = MatchInspector(weakref_self)
         self._is_not_shadowed_requirement: MatchRequirement = ForbidsIsShadowed(inspector)
         self._preliminarily_valid_for_display_requirement: MatchRequirement = ForbidsIsConfiguredHidden(inspector)
         self.weakref: WeakRef[Match] = weakref_self
         self._variant: WeakRef[CandidateWordVariant] = word_variant
-        self._validity_requirements: list[MatchRequirement] = ([
-                                                                       ForbidsIsConfiguredIncorrect(inspector),
-                                                                       ForbidsIsGodanPotentialInflectionWithBase(inspector),
-                                                                       ForbidsIsGodanImperativeInflectionWithBase(inspector),
-                                                                       ForbidsIsInflectedSurfaceWithValidBase(inspector),
-                                                               ]
-                                                               + validity_requirements)
-        self._display_requirements: list[MatchRequirement] = ([
-                                                                      self._is_not_shadowed_requirement,
-                                                                      self._preliminarily_valid_for_display_requirement
-                                                              ]
-                                                              + display_requirements)
+        self._validity_requirements: list[MatchRequirement] = [r for r in (
+                ForbidsIsConfiguredIncorrect(inspector),
+                ForbidsIsGodanPotentialInflectionWithBase(inspector),
+                ForbidsIsGodanImperativeInflectionWithBase(inspector),
+                ForbidsIsInflectedSurfaceWithValidBase(inspector),
+                *validity_requirements
+        ) if r is not None]
+        self._display_requirements: list[MatchRequirement] = [r for r in (
+                self._is_not_shadowed_requirement,
+                self._preliminarily_valid_for_display_requirement,
+                *display_requirements
+        ) if r is not None]
         self._is_valid_internal_cache: bool | None = None
         self._is_valid_cache: bool | None = None
         self._start_index_cache: int | None = None
@@ -92,7 +92,6 @@ class Match(WeakRefable, Slots):
     def is_highlighted(self) -> bool: return self.match_form in self.variant.configuration.highlighted_words
     @property
     def is_displayed(self) -> bool: return self._is_valid_for_display or self._is_emergency_displayed
-
 
     @property
     def start_index(self) -> int:

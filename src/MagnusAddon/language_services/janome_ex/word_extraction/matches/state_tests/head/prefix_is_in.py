@@ -11,9 +11,13 @@ if TYPE_CHECKING:
     from typed_linq_collections.collections.q_set import QSet
 
 class ForbidsPrefixIsIn(CustomForbids, Slots):
-    def __init__(self, inspector: VocabMatchInspector, prefixes: QSet[str], is_requirement_active: bool = True) -> None:
-        super().__init__(inspector, is_requirement_active)
+    def __init__(self, inspector: VocabMatchInspector, prefixes: QSet[str]) -> None:
+        super().__init__(inspector)
         self.prefixes: QSet[str] = prefixes
+
+    @staticmethod
+    def for_if(inspector: VocabMatchInspector, prefixes: QSet[str]) -> ForbidsPrefixIsIn | None:
+        return ForbidsPrefixIsIn(inspector, prefixes) if prefixes else None
 
     @property
     @override
@@ -28,11 +32,14 @@ class ForbidsPrefixIsIn(CustomForbids, Slots):
 
 class RequiresPrefixIsIn(MatchRequirement, Slots):
     """Requires version of PrefixIsIn check."""
-    def __init__(self, inspector: VocabMatchInspector, prefixes: QSet[str], is_requirement_active: bool = True) -> None:
+    def __init__(self, inspector: VocabMatchInspector, prefixes: QSet[str]) -> None:
         self.inspector: VocabMatchInspector = inspector
         self.prefixes: QSet[str] = prefixes
-        self.rule_active: bool = is_requirement_active
         self._cached_state: bool | None = None
+
+    @staticmethod
+    def for_if(inspector: VocabMatchInspector, prefixes: QSet[str]) -> RequiresPrefixIsIn | None:
+        return RequiresPrefixIsIn(inspector, prefixes) if prefixes else None
 
     @property
     def is_in_state(self) -> bool:
@@ -44,7 +51,7 @@ class RequiresPrefixIsIn(MatchRequirement, Slots):
     @property
     @override
     def is_fulfilled(self) -> bool:
-        return not self.rule_active or self.is_in_state
+        return self.is_in_state
 
     @property
     @override

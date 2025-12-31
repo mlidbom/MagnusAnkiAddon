@@ -10,9 +10,13 @@ if TYPE_CHECKING:
     from typed_linq_collections.collections.q_set import QSet
 
 class ForbidsSuffixIsIn(CustomForbids, Slots):
-    def __init__(self, inspector: VocabMatchInspector, suffixes: QSet[str], is_requirement_active: bool = True) -> None:
-        super().__init__(inspector, is_requirement_active)
+    def __init__(self, inspector: VocabMatchInspector, suffixes: QSet[str]) -> None:
+        super().__init__(inspector)
         self.suffixes: QSet[str] = suffixes
+
+    @staticmethod
+    def for_if(inspector: VocabMatchInspector, suffixes: QSet[str]) -> ForbidsSuffixIsIn | None:
+        return ForbidsSuffixIsIn(inspector, suffixes) if suffixes else None
 
     @property
     @override

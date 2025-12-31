@@ -13,6 +13,10 @@ class RequiresOrForbidsIsExactMatch(CustomRequiresOrForbids, Slots):
     def __init__(self, inspector: VocabMatchInspector) -> None:
         super().__init__(inspector)
 
+    @staticmethod
+    def for_if(inspector: VocabMatchInspector) -> RequiresOrForbidsIsExactMatch | None:
+        return RequiresOrForbidsIsExactMatch(inspector) if inspector.match.requires_forbids.exact_match.is_active else None
+
     @property
     @override
     def is_required(self) -> bool:

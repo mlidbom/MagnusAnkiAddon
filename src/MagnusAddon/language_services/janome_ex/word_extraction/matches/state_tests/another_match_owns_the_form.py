@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 class ForbidsAnotherMatchOwnsTheForm(CustomForbids, Slots):
     def __init__(self, inspector: VocabMatchInspector) -> None:
-        super().__init__(inspector, is_requirement_active=True)
+        super().__init__(inspector)
 
     @property
     def vocab(self) -> VocabNote:

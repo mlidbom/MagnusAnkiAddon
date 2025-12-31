@@ -10,9 +10,13 @@ if TYPE_CHECKING:
     from typed_linq_collections.collections.q_set import QSet
 
 class ForbidsSurfaceIsIn(CustomForbids, Slots):
-    def __init__(self, inspector: VocabMatchInspector, surfaces: QSet[str], is_requirement_active: bool = True) -> None:
-        super().__init__(inspector, is_requirement_active)
+    def __init__(self, inspector: VocabMatchInspector, surfaces: QSet[str]) -> None:
+        super().__init__(inspector)
         self.surfaces: QSet[str] = surfaces
+
+    @staticmethod
+    def for_if(inspector: VocabMatchInspector, surfaces: QSet[str]) -> ForbidsSurfaceIsIn | None:
+        return ForbidsSurfaceIsIn(inspector, surfaces) if surfaces else None
 
     @property
     @override

@@ -12,8 +12,8 @@ if TYPE_CHECKING:
 class MissingMatch(Match, Slots):
     def __init__(self, word_variant: WeakRef[CandidateWordVariant]) -> None:
         super().__init__(word_variant,
-                         validity_requirements=[],
-                         display_requirements=[])
+                         validity_requirements=(),
+                         display_requirements=())
 
     @property
     @override

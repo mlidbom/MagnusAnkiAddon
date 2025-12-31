@@ -13,6 +13,10 @@ class RequiresOrForbidsIsSentenceStart(CustomRequiresOrForbids, Slots):
     def __init__(self, inspector: VocabMatchInspector) -> None:
         super().__init__(inspector)
 
+    @staticmethod
+    def for_if(inspector: VocabMatchInspector) -> RequiresOrForbidsIsSentenceStart | None:
+        return RequiresOrForbidsIsSentenceStart(inspector) if inspector.match.requires_forbids.sentence_start.is_active else None
+
     @property
     @override
     def is_required(self) -> bool:

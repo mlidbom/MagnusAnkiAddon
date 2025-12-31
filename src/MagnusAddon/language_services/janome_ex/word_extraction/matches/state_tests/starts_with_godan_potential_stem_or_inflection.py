@@ -12,6 +12,10 @@ class RequiresOrForbidsStartsWithGodanPotentialStemOrInflection(CustomRequiresOr
     def __init__(self, inspector: VocabMatchInspector) -> None:
         super().__init__(inspector)
 
+    @staticmethod
+    def for_if(inspector: VocabMatchInspector) -> RequiresOrForbidsStartsWithGodanPotentialStemOrInflection | None:
+        return RequiresOrForbidsStartsWithGodanPotentialStemOrInflection(inspector) if inspector.match.requires_forbids.godan_potential.is_active else None
+
     @property
     @override
     def is_required(self) -> bool:

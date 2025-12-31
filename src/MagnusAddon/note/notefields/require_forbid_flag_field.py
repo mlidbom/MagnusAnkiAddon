@@ -29,6 +29,8 @@ class RequireForbidFlagField(Slots):
     def is_required(self) -> bool: return self._cached_is_required
     @property
     def is_forbidden(self) -> bool: return self._cached_is_forbidden
+    @property
+    def is_active(self) -> bool: return self._cached_is_required or self._cached_is_forbidden
 
     def set_forbidden(self, value: bool) -> None:
         if value:

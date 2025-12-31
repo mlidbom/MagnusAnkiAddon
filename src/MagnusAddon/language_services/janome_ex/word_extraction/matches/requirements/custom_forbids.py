@@ -16,9 +16,8 @@ class CustomForbids(MatchRequirement, Slots):
     Subclasses must implement: _internal_is_in_state.
     """
 
-    def __init__(self, inspector: VocabMatchInspector, is_requirement_active: bool = True) -> None:
+    def __init__(self, inspector: VocabMatchInspector) -> None:
         self.inspector: VocabMatchInspector = inspector
-        self.is_requirement_active: bool = is_requirement_active
         self._cached_state: bool | None = None
 
     @property
@@ -38,9 +37,6 @@ class CustomForbids(MatchRequirement, Slots):
     @property
     @override
     def is_fulfilled(self) -> bool:
-        if not self.is_requirement_active:
-            return True
-
         return not self.is_in_state
 
     @property

@@ -12,8 +12,12 @@ if TYPE_CHECKING:
     pass
 
 class ForbidsHasDisplayedOverlappingFollowingCompound(CustomForbidsNoCache, Slots):
-    def __init__(self, inspector: VocabMatchInspector, is_requirement_active: bool = True) -> None:
-        super().__init__(inspector, is_requirement_active)
+    def __init__(self, inspector: VocabMatchInspector) -> None:
+        super().__init__(inspector)
+
+    @staticmethod
+    def for_if(inspector: VocabMatchInspector, is_active: bool) -> ForbidsHasDisplayedOverlappingFollowingCompound | None:
+        return ForbidsHasDisplayedOverlappingFollowingCompound(inspector) if is_active else None
 
     @property
     @override

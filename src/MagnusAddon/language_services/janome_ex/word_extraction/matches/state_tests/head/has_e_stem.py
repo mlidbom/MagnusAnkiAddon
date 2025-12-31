@@ -14,6 +14,10 @@ class RequiresOrForbidsHasEStem(CustomRequiresOrForbids, Slots):
     def __init__(self, inspector: VocabMatchInspector) -> None:
         super().__init__(inspector)
 
+    @staticmethod
+    def for_if(inspector: VocabMatchInspector) -> RequiresOrForbidsHasEStem | None:
+        return RequiresOrForbidsHasEStem(inspector) if inspector.match.requires_forbids.e_stem.is_active else None
+
     @property
     @override
     def is_required(self) -> bool:

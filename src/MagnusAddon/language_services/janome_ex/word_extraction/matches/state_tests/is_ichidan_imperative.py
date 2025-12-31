@@ -12,6 +12,10 @@ class RequiresOrForbidsStartsWithIchidanImperativeStemOrInflection(CustomRequire
     def __init__(self, inspector: VocabMatchInspector) -> None:
         super().__init__(inspector)
 
+    @staticmethod
+    def for_if(inspector: VocabMatchInspector) -> RequiresOrForbidsStartsWithIchidanImperativeStemOrInflection | None:
+        return RequiresOrForbidsStartsWithIchidanImperativeStemOrInflection(inspector) if inspector.match.requires_forbids.ichidan_imperative.is_active else None
+
     @property
     @override
     def is_required(self) -> bool:
