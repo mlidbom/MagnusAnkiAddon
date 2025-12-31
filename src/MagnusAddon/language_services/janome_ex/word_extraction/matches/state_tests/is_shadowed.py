@@ -33,9 +33,8 @@ class IsShadowed(MatchStateTest, Slots):
         if self.start_location.compound_matches_covering_this_location.any(self._match_is_displayed_and_fully_covers_this_match):
             return True
 
-        if (self.start_location.compound_matches_covering_this_location  # noqa: SIM103
-                .where(IsShadowed._match_is_displayed_and_would_not_yield_to_upcoming_overlapping_compound)
-                .any()):  # noqa: SIM103
+        if (self.start_location.unyielding_compound_matches_covering_this_location  # noqa: SIM103
+                .any(IsShadowed._match_is_displayed)):  # noqa: SIM103
             return True
 
         return False
@@ -43,9 +42,6 @@ class IsShadowed(MatchStateTest, Slots):
     def _match_is_displayed_and_fully_covers_this_match(self, match: Match) -> bool:
         return match.word.end_location.token_index >= self.end_location.token_index and match.is_displayed
 
-    @staticmethod
-    def _match_is_displayed_and_would_not_yield_to_upcoming_overlapping_compound(match: Match) -> bool:
-        return not match.would_yield_to_upcoming_overlapping_compound and match.is_displayed
 
     @staticmethod
     def _match_is_displayed(match: Match) -> bool:
