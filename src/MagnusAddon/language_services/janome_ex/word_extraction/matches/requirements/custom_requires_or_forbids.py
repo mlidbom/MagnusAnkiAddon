@@ -6,24 +6,19 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from language_services.janome_ex.word_extraction.matches.requirements.requirement import MatchRequirement
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.word_extraction.candidate_word import CandidateWord
-    from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
-    from language_services.janome_ex.word_extraction.matches.vocab_match import VocabMatch
-    from language_services.janome_ex.word_extraction.text_location import TextAnalysisLocation
-    from note.sentences.sentence_configuration import SentenceConfiguration
-    from sysutils.weak_ref import WeakRef
+    from language_services.janome_ex.word_extraction.matches.requirements.vocab_match_inspector import VocabMatchInspector
 
 
 class CustomRequiresOrForbids(MatchRequirement, Slots):
     """Base class for fused RequiresOrForbids + MatchStateTest implementations.
     
-    Eliminates the double-wrapping overhead by combining both responsibilities.
-    Subclasses must implement: is_required, is_forbidden, and is_in_state.
+    Uses composition with a shared VocabMatchInspector for memory efficiency.
+    Subclasses must implement: is_required, is_forbidden, and _internal_is_in_state.
     """
     
-    def __init__(self, match: WeakRef[VocabMatch]) -> None:
+    def __init__(self, inspector: VocabMatchInspector) -> None:
         # Don't call super().__init__() since we don't have a state_test
-        self._match: WeakRef[VocabMatch] = match
+        self.inspector: VocabMatchInspector = inspector
         self._cached_state: bool | None = None
 
     @property
@@ -76,51 +71,51 @@ class CustomRequiresOrForbids(MatchRequirement, Slots):
         """Internal implementation of state checking. Override this in subclasses."""
         raise NotImplementedError()
 
-    # Convenience properties for accessing match context
+    # Delegate to inspector for convenience
     @property
-    def match(self) -> VocabMatch:
-        return self._match()
-    
-    @property
-    def variant(self) -> CandidateWordVariant:
-        return self.match.variant
-    
-    @property
-    def word(self) -> CandidateWord:
-        return self.variant.word
-    
-    @property
-    def start_location(self) -> TextAnalysisLocation:
-        return self.word.start_location
-    
-    @property
-    def end_location(self) -> TextAnalysisLocation:
-        return self.word.end_location
-    
-    @property
-    def configuration(self) -> SentenceConfiguration:
-        return self.variant.configuration
-    
-    @property
-    def previous_location(self) -> TextAnalysisLocation | None:
-        return self.word.start_location.previous() if self.word.start_location.previous else None
-    
-    @property
-    def prefix(self) -> str:
-        return self.previous_location.token.surface if self.previous_location else ""
-    
-    @property
-    def next_location(self) -> TextAnalysisLocation | None:
-        return self.word.end_location.next() if self.word.end_location.next else None
-    
-    @property
-    def suffix(self) -> str:
-        return self.next_location.token.surface if self.next_location else ""
+    def match(self):
+        return self.inspector.match
 
     @property
-    def tokenized_form(self) -> str:
-        return self.match.tokenized_form
-    
+    def variant(self):
+        return self.inspector.variant
+
     @property
-    def parsed_form(self) -> str:
-        return self.match.parsed_form
+    def word(self):
+        return self.inspector.word
+
+    @property
+    def start_location(self):
+        return self.inspector.start_location
+
+    @property
+    def end_location(self):
+        return self.inspector.end_location
+
+    @property
+    def configuration(self):
+        return self.inspector.configuration
+
+    @property
+    def previous_location(self):
+        return self.inspector.previous_location
+
+    @property
+    def prefix(self):
+        return self.inspector.prefix
+
+    @property
+    def next_location(self):
+        return self.inspector.next_location
+
+    @property
+    def suffix(self):
+        return self.inspector.suffix
+
+    @property
+    def tokenized_form(self):
+        return self.inspector.tokenized_form
+
+    @property
+    def parsed_form(self):
+        return self.inspector.parsed_form

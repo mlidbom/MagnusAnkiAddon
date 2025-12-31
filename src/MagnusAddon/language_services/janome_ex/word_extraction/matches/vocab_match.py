@@ -6,6 +6,7 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from language_services.janome_ex.word_extraction.matches.match import Match
 from language_services.janome_ex.word_extraction.matches.requirements.forbids_state import Forbids
 from language_services.janome_ex.word_extraction.matches.requirements.requires_state import Requires
+from language_services.janome_ex.word_extraction.matches.requirements.vocab_match_inspector import VocabMatchInspector
 from language_services.janome_ex.word_extraction.matches.state_tests.another_match_owns_the_form import AnotherMatchOwnsTheForm
 from language_services.janome_ex.word_extraction.matches.state_tests.head.has_a_stem import RequiresOrForbidsHasAStem
 from language_services.janome_ex.word_extraction.matches.state_tests.head.has_e_stem import RequiresOrForbidsHasEStem
@@ -35,6 +36,7 @@ if TYPE_CHECKING:
 class VocabMatch(Match, Slots):
     def __init__(self, word_variant: WeakRef[CandidateWordVariant], vocab: VocabNote) -> None:
         weakref: WeakRef[VocabMatch] = WeakRef(self)
+        inspector = VocabMatchInspector(weakref)
         self.requires_forbids = vocab.matching_configuration.requires_forbids
         self.rules = vocab.matching_configuration.configurable_rules
         super().__init__(word_variant,
@@ -45,27 +47,27 @@ class VocabMatch(Match, Slots):
                                      is_requirement_active=self.rules.prefix_is_not.any()),
                              Requires(PrefixIsIn(weakref, self.rules.required_prefix.get()),
                                       is_requirement_active=self.rules.required_prefix.any()),
-                             RequiresOrForbidsIsSentenceStart(weakref),
-                             RequiresOrForbidsHasTeFormStem(weakref),
-                             RequiresOrForbidsHasAStem(weakref),
-                             RequiresOrForbidsHasPastTenseStem(weakref),
-                             RequiresOrForbidsHasEStem(weakref),
+                             RequiresOrForbidsIsSentenceStart(inspector),
+                             RequiresOrForbidsHasTeFormStem(inspector),
+                             RequiresOrForbidsHasAStem(inspector),
+                             RequiresOrForbidsHasPastTenseStem(inspector),
+                             RequiresOrForbidsHasEStem(inspector),
 
-                             RequiresOrForbidsHasGodanImperativePrefix(weakref),
-                             RequiresOrForbidsStartsWithGodanPotentialStemOrInflection(weakref),
-                             RequiresOrForbidsStartsWithGodanImperativeStemOrInflection(weakref),
-                             RequiresOrForbidsStartsWithIchidanImperativeStemOrInflection(weakref),
+                             RequiresOrForbidsHasGodanImperativePrefix(inspector),
+                             RequiresOrForbidsStartsWithGodanPotentialStemOrInflection(inspector),
+                             RequiresOrForbidsStartsWithGodanImperativeStemOrInflection(inspector),
+                             RequiresOrForbidsStartsWithIchidanImperativeStemOrInflection(inspector),
 
                              # tail requirements
-                             RequiresOrForbidsIsSentenceEnd(weakref),
+                             RequiresOrForbidsIsSentenceEnd(inspector),
                              Forbids(SuffixIsIn(weakref, self.rules.suffix_is_not.get()),
                                      is_requirement_active=self.rules.suffix_is_not.any()),
 
                              # misc requirements
                              Forbids(IsPoisonWord(weakref)),
 
-                             RequiresOrForbidsIsExactMatch(weakref),
-                             RequiresOrForbidsIsSingleToken(weakref),
+                             RequiresOrForbidsIsExactMatch(inspector),
+                             RequiresOrForbidsIsSingleToken(inspector),
                              Forbids(SurfaceIsIn(weakref, self.rules.surface_is_not.get()),
                                      is_requirement_active=self.rules.surface_is_not.any()),
                              Forbids(SurfaceIsIn(weakref, self.rules.yield_to_surface.get()),
