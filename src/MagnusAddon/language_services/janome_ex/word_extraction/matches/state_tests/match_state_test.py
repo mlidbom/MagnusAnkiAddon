@@ -26,7 +26,7 @@ class MatchStateTest(Slots):
         return self._cached_state
 
     @property
-    def is_cachable(self) -> bool: return True
+    def description(self) -> str: raise NotImplementedError()
 
     @property
     def description(self) -> str: raise NotImplementedError()

@@ -19,10 +19,6 @@ class IsShadowed(MatchStateTest, Slots):
 
     @property
     @override
-    def is_cachable(self) -> bool: return False
-
-    @property
-    @override
     def match_is_in_state(self) -> bool: return self.match.is_shadowed
 
     @property
