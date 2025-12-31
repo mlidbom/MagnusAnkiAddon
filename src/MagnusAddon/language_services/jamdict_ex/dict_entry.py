@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, cast, final
 
 from autoslot import Slots
-from language_services.jamdict_ex import jmd_pos_map
+from note.vocabulary.pos_set_interner import POSSetManager
 from sysutils import kana_utils
 from typed_linq_collections.collections.q_list import QList
 from typed_linq_collections.q_iterable import query
@@ -17,11 +17,12 @@ if TYPE_CHECKING:
 class SenseEX(Slots):
     def __init__(self, source: Sense) -> None:
         self.glosses: QList[str] = query(source.gloss).select(lambda it: cast(str, it.text)).to_list()  # pyright: ignore [reportUnknownArgumentType, reportUnknownMemberType]
-        self.pos: QList[str] = QList(cast(list[str], source.pos))  # pyright: ignore [reportUnknownMemberType]
+        # POSSetManager handles JMDict -> our names mapping and interning
+        self.pos: frozenset[str] = POSSetManager.intern_and_harmonize_from_list(cast(list[str], source.pos))  # pyright: ignore [reportUnknownMemberType]
         self.is_kana_only: bool = "word usually written using kana alone" in cast(list[str], source.misc)  # pyright: ignore [reportUnknownMemberType]
 
-    def is_transitive_verb(self) -> bool: return any(pos_item == "transitive verb" for pos_item in self.pos)
-    def is_intransitive_verb(self) -> bool: return any(pos_item == "intransitive verb" for pos_item in self.pos)
+    def is_transitive_verb(self) -> bool: return POSSetManager.is_transitive_verb(self.pos)
+    def is_intransitive_verb(self) -> bool: return POSSetManager.is_intransitive_verb(self.pos)
     def format_glosses(self) -> str: return "/".join(self.glosses.select(lambda it: it.replace(" ", "-")))
 
 class KanaFormEX(Slots):
@@ -72,7 +73,7 @@ class DictEntry(Slots):
         return " | ".join(self.senses.select(lambda it: it.format_glosses()))
 
     def parts_of_speech(self) -> QSet[str]:
+        # POS values are already mapped and harmonized in SenseEX
         return (query(self.senses)
                 .select_many(lambda sense: sense.pos)
-                .select_many(jmd_pos_map.try_get_our_pos_name)
                 .to_set())
