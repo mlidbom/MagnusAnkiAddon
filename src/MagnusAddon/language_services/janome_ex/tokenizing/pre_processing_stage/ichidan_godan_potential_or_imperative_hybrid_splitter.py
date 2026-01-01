@@ -63,7 +63,7 @@ class IchidanGodanPotentialOrImperativeHybridSplitter(Slots):
         return None
 
     def _is_potential_godan(self, godan_base: str) -> bool:
-        if self.token.surface.endswith("る") or (self.token.next is not None and self.token.next.is_valid_potential_form_inflection()):  # noqa: SIM103
+        if self.token.surface.endswith("る") or (self.token.next is not None and self.token.next.is_valid_godan_potential_form_inflection()):  # noqa: SIM103
             godan_dict_entry = non_optional(WordInfo.lookup_godan(godan_base))
             if (godan_dict_entry.is_intransitive and self.token.previous is not None and self.token.previous.surface == "を"  # intransitive verbs don't take を so this is most likely actually the ichidan verb  # noqa: SIM103
                     and WordInfo.is_ichidan(self.token.base_form)):  # if one actally exists in the dictionary, if not this is most likely one of the godan verbs of motion that use を to refer to the space traversed

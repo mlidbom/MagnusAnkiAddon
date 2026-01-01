@@ -112,7 +112,9 @@ class JNToken(WeakRefable, Slots):
                 or self.next.parts_of_speech.is_non_word_character())
 
     _valid_potential_form_inflections_pos: set[JNPartsOfSpeech] = {JNPOS.bound_auxiliary, JNPOS.Noun.Suffix.auxiliary_verb_stem, JNPOS.Verb.dependent, JNPOS.Particle.conjunctive, JNPOS.Particle.coordinating_conjunction}
-    def is_valid_potential_form_inflection(self) -> bool:
-        if self.parts_of_speech in self._valid_potential_form_inflections_pos:  # noqa: SIM103
-            return True
+    _invalid_godan_potential_form_surfaces: set[str] = {"っ"}
+    def is_valid_godan_potential_form_inflection(self) -> bool:
+        if self.parts_of_speech in self._valid_potential_form_inflections_pos:  # noqa: SIM102, SIM103
+            if self.surface not in JNToken._invalid_godan_potential_form_surfaces:
+                return True
         return False
