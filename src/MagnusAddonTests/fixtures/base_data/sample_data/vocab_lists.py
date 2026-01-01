@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from fixtures.base_data.sample_data.vocab_spec import VocabSpec
 from note.tags import Tags
+from note.vocabulary.pos import POS
 
 v = Tags.Vocab
 vm = Tags.Vocab.Matching
@@ -110,7 +111,7 @@ test_special_vocab: list[VocabSpec] = [
         VocabSpec("無い", "not", forms=["ない"], tags=[vm.is_inflecting_word]),
         VocabSpec("うまい", yield_to_surface={"うまく"}),
         VocabSpec("うまく"),
-        VocabSpec("笑える", tos="ichidan verb"),
+        VocabSpec("笑える", tos={POS.ICHIDAN_VERB}),
 
         VocabSpec("にする", "to: turn-into"),
         VocabSpec("のか", tags=[vm.Requires.sentence_end]),
@@ -163,4 +164,5 @@ test_special_vocab: list[VocabSpec] = [
 
         VocabSpec("とおり"),
         VocabSpec("られる", tags=[vm.is_inflecting_word]),
+        VocabSpec("返せる", tos={POS.ICHIDAN_VERB}) #exposes a bug in godan imperative detection
 ]

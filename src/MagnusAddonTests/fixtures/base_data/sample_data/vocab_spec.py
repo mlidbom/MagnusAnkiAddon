@@ -23,7 +23,7 @@ class VocabSpec(Slots):
                  prefix_in: set[str] | None = None,
                  prefix_not: set[str] | None = None,
                  suffix_not: set[str] | None = None,
-                 tos: str | None = None) -> None:
+                 tos: set[str] | None = None) -> None:
         self.question: str = question
         self.answer: str = answer or question
         self.readings: list[str] = readings or [self.question]
@@ -34,7 +34,7 @@ class VocabSpec(Slots):
         self.yield_to_surface: set[str] = QSet(yield_to_surface if yield_to_surface else ())
         self.prefix_is_not: set[str] = QSet(prefix_not if prefix_not else ())
         self.suffix_is_not: set[str] = QSet(suffix_not if suffix_not else ())
-        self.tos: str = tos if tos else ""
+        self.tos: set[str] = tos if tos else set()
         self.required_prefix: set[str] = QSet(prefix_in if prefix_in else ())
 
     @override
@@ -77,7 +77,7 @@ class VocabSpec(Slots):
             vocab_note.matching_configuration.configurable_rules.required_prefix.add(required_prefix)
 
         if self.tos:
-            vocab_note.parts_of_speech.set_raw_string_value(self.tos)
+            vocab_note.parts_of_speech.set(self.tos)
 
     def create_vocab_note(self) -> None:
         from note.vocabulary.vocabnote import VocabNote

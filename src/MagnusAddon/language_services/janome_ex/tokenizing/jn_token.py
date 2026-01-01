@@ -111,6 +111,10 @@ class JNToken(WeakRefable, Slots):
                 or self.next.surface in analysis_constants.sentence_end_characters
                 or self.next.parts_of_speech.is_non_word_character())
 
+    _invalid_ichidan_inflection_surfaces: set[str] = {"っ"}
+    def cannot_be_ichidan_inflection(self) -> bool:
+        return self.surface in JNToken._invalid_ichidan_inflection_surfaces
+
     _valid_potential_form_inflections_pos: set[JNPartsOfSpeech] = {JNPOS.bound_auxiliary, JNPOS.Noun.Suffix.auxiliary_verb_stem, JNPOS.Verb.dependent, JNPOS.Particle.conjunctive, JNPOS.Particle.coordinating_conjunction}
     _invalid_godan_potential_form_surfaces: set[str] = {"っ"}
     def is_valid_godan_potential_form_inflection(self) -> bool:

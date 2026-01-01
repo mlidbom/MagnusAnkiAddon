@@ -12,6 +12,8 @@ from typed_linq_collections.collections.q_frozen_set import QFrozenSet
 from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:
+    from collections.abc import Iterable
+
     from note.vocabulary.vocabnote import VocabNote
     from sysutils.weak_ref import WeakRef
 
@@ -28,6 +30,9 @@ class VocabNotePartsOfSpeech(Slots):
 
     def set_raw_string_value(self, value: str) -> None:
         self._vocab.set_field(VocabNotePartsOfSpeech._field_name, POSSetManager.intern_and_harmonize(value))
+
+    def set(self, value: Iterable[str]) -> None:
+        self.set_raw_string_value(",".join(value))
 
     def get(self) -> frozenset[str]: return POSSetManager.get(self.raw_string_value())
 
