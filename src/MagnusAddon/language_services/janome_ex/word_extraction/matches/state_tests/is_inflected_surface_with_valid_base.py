@@ -8,7 +8,7 @@ from language_services.janome_ex.word_extraction.matches.requirements.match_cust
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.requirements.match_inspector import MatchInspector
 
-class ForbidsIsInflectedSurfaceWithValidBase(MatchCustomForbids, Slots):
+class ForbidsSurfaceIfBaseIsValidAndContextIndicatesAVerb(MatchCustomForbids, Slots):
     def __init__(self, inspector: MatchInspector) -> None:
         super().__init__(inspector, is_requirement_active=True)
 
@@ -18,4 +18,12 @@ class ForbidsIsInflectedSurfaceWithValidBase(MatchCustomForbids, Slots):
 
     @override
     def _internal_is_in_state(self) -> bool:
-        return self.inspector.variant.is_surface and self.inspector.word.is_inflected_word and self.inspector.word.has_base_variant_with_valid_match
+        # nouns are not inflected
+        if self.inspector.variant.is_surface and self.inspector.word.has_base_variant_with_valid_match:
+            if self.inspector.word.is_inflected_word :
+                return True
+            elif self.inspector.prefix.endswith("を") and self.inspector.is_end_of_statement:
+                return True
+            return False
+
+        return False

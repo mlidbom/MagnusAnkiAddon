@@ -2,7 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from autoslot import Slots
+from language_services.janome_ex.word_extraction import analysis_constants  # pyright: ignore[reportMissingTypeStubs]
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.candidate_word import CandidateWord
@@ -11,7 +12,6 @@ if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.text_location import TextAnalysisLocation
     from note.sentences.sentence_configuration import SentenceConfiguration
     from sysutils.weak_ref import WeakRef
-
 
 class MatchInspector(Slots):
     """Base class providing access to Match context and helper properties.
@@ -82,3 +82,16 @@ class MatchInspector(Slots):
     @property
     def has_godan_ichidan_imperative_part(self) -> bool:
         return self.word.start_location.token.is_ichidan_imperative_stem or self.word.start_location.token.is_ichidan_imperative_inflection
+
+    @property
+    def is_end_of_statement(self) -> bool:
+        if len(self.suffix) == 0:
+            return True
+
+        if self.suffix[0].isspace():
+            return True
+
+        if self.suffix in analysis_constants.sentence_end_characters:  # noqa: SIM103
+            return True
+
+        return False

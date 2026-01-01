@@ -8,7 +8,7 @@ from language_services.janome_ex.word_extraction.matches.state_tests.is_configur
 from language_services.janome_ex.word_extraction.matches.state_tests.is_configured_incorrect import ForbidsIsConfiguredIncorrect
 from language_services.janome_ex.word_extraction.matches.state_tests.is_godan_imperative_surface_with_base import ForbidsIsGodanImperativeInflectionWithBase
 from language_services.janome_ex.word_extraction.matches.state_tests.is_godan_potential_surface_with_base import ForbidsIsGodanPotentialInflectionWithBase
-from language_services.janome_ex.word_extraction.matches.state_tests.is_inflected_surface_with_valid_base import ForbidsIsInflectedSurfaceWithValidBase
+from language_services.janome_ex.word_extraction.matches.state_tests.is_inflected_surface_with_valid_base import ForbidsSurfaceIfBaseIsValidAndContextIndicatesAVerb
 from language_services.janome_ex.word_extraction.matches.state_tests.is_shadowed import ForbidsIsShadowed
 from sysutils.weak_ref import WeakRef, WeakRefable
 
@@ -31,7 +31,7 @@ class Match(WeakRefable, Slots):
                 ForbidsIsConfiguredIncorrect(inspector),
                 ForbidsIsGodanPotentialInflectionWithBase(inspector),
                 ForbidsIsGodanImperativeInflectionWithBase(inspector),
-                ForbidsIsInflectedSurfaceWithValidBase(inspector),
+                ForbidsSurfaceIfBaseIsValidAndContextIndicatesAVerb(inspector),
                 *validity_requirements
         ) if r is not None]
         self._display_requirements: list[MatchRequirement] = [r for r in (

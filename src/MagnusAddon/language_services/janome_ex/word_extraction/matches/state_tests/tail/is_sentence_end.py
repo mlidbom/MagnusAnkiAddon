@@ -34,13 +34,7 @@ class RequiresOrForbidsIsSentenceEnd(CustomRequiresOrForbids, Slots):
 
     @override
     def _internal_is_in_state(self) -> bool:
-        if len(self.inspector.suffix) == 0:
-            return True
-
-        if self.inspector.suffix[0].isspace():
-            return True
-
-        if self.inspector.suffix in analysis_constants.sentence_end_characters:  # noqa: SIM103
+        if self.inspector.is_end_of_statement:
             return True
 
         return False
