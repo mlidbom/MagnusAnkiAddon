@@ -21,6 +21,8 @@ class JNPartsOfSpeech(Slots):
 
     def is_non_word_character(self) -> bool: return self.level1.japanese in ["記号"]
 
+    def is_noun(self) -> bool: return self.level1.japanese in ["名詞"]
+
     @override
     def __repr__(self) -> str:
         return "".join([

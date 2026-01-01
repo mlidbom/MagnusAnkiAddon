@@ -115,8 +115,10 @@ class JNToken(WeakRefable, Slots):
     def cannot_follow_ichidan_stem(self) -> bool:
         return self.surface in JNToken._invalid_ichidan_inflection_surfaces
 
-    _pos_more_likely_to_follow_imperative_than_ichidan_stem: set[JNPartsOfSpeech] = {JNPOS.Noun.general}
+    _pos_more_likely_to_follow_imperative_than_ichidan_stem: set[JNPartsOfSpeech] = set()
     def is_more_likely_to_follow_imperative_than_ichidan_stem(self) -> bool:
+        if self.parts_of_speech.is_noun():
+            return True
         if self.parts_of_speech in JNToken._pos_more_likely_to_follow_imperative_than_ichidan_stem:
             return True
         return False

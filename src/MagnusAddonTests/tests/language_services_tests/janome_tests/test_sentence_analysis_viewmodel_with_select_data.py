@@ -17,6 +17,7 @@ def setup_collection_with_select_data() -> Iterator[None]:
         yield
 
 @pytest.mark.parametrize("sentence, expected_output", [
+        ("返せ俺の", ["返す", "え", "俺", "の"]),
         ("返せ盗人", ["返す", "え", "盗人"])
 ])
 def test_new_stuff(sentence: str, expected_output: list[str]) -> None:
