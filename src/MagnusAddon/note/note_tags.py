@@ -30,9 +30,9 @@ class NoteTags(QIterable[Tag]):
         backend_note.tags = self.to_interned_string_list()
 
     def _persist(self) -> None:
-        self._note()._on_tags_updated()  # pyright: ignore [reportPrivateUsage]
-        self._note()._flush()  # pyright: ignore [reportPrivateUsage]
         self._note().backend_note.tags = self.to_interned_string_list()
+        self._note()._flush()  # pyright: ignore [reportPrivateUsage]
+        self._note()._on_tags_updated()  # pyright: ignore [reportPrivateUsage]
 
     @override
     def contains(self, value: Tag) -> bool:
