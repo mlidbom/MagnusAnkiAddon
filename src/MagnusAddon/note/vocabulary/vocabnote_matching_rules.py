@@ -81,6 +81,8 @@ class VocabMatchingRulesConfigurationBoolFlags(Slots):
     def match_with_preceding_vowel(self) -> TagFlagField: return TagFlagField(self._vocab, Tags.Vocab.Matching.Todo.with_preceding_vowel)
     @property
     def question_overrides_form(self) -> TagFlagField: return TagFlagField(self._vocab, Tags.Vocab.question_overrides_form)
+    @property
+    def is_compositionally_transparent_compound(self) -> TagFlagField: return TagFlagField(self._vocab, Tags.Vocab.is_compositionally_transparent_compound)
 
     @override
     def __repr__(self) -> str: return f"""{self.is_inflecting_word}, {self.is_poison_word}, {self.match_with_preceding_vowel}, {self.question_overrides_form}"""
@@ -129,4 +131,5 @@ class VocabNoteMatchingConfiguration(WeakRefable, Slots):
                                        .flag("forbid_auto_yielding_last_token", self.requires_forbids.yield_last_token.is_forbidden)
                                        .flag("match_with_preceding_vowel", self.bool_flags.match_with_preceding_vowel.is_set())
                                        .flag("question_overrides_form", self.bool_flags.question_overrides_form.is_set())
+                                       .flag("is_compositionally_transparent_compound", self.bool_flags.is_compositionally_transparent_compound.is_set())
                                        .include(self.configurable_rules).repr)

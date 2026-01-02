@@ -61,6 +61,7 @@ def build_matching_settings_menu(toggle_flags_menu: QMenu, vocab: VocabNote) -> 
     def build_is_menu(is_menu: QMenu) -> None:
         add_tag_field_check_box(is_menu, shortcutfinger.home1("Poison word"), vocab.matching_configuration.bool_flags.is_poison_word)
         add_tag_field_check_box(is_menu, shortcutfinger.home2("Inflecting word"), vocab.matching_configuration.bool_flags.is_inflecting_word)
+        add_tag_field_check_box(is_menu, shortcutfinger.home3("Compositionally transparent compound"), vocab.matching_configuration.bool_flags.is_compositionally_transparent_compound)
 
     def build_misc_flags_menu(misc_menu: QMenu) -> None:
         add_tag_field_check_box(misc_menu, shortcutfinger.home1("Question overrides form: Show the question in results even if the match was another form"), vocab.matching_configuration.bool_flags.question_overrides_form)

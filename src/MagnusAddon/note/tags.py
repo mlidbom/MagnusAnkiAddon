@@ -47,6 +47,7 @@ class Tags(Slots):
         root: str = f_vocab  # Keep as string for startswith() checks
         has_no_studying_sentences: Tag = Tag.from_name(f"{f_vocab}has-no-studying-sentences")
         question_overrides_form: Tag = Tag.from_name(f"{f_vocab}question-overrides-form")
+        is_compositionally_transparent_compound: Tag = Tag.from_name(f"{f_vocab}is-compositionally-transparent-compound")
 
         class Matching(Slots):
             yield_last_token_to_overlapping_compound: Tag = Tag.from_name(f"{f_vocab_matching}yield-last-token-to-upcoming-compound")
