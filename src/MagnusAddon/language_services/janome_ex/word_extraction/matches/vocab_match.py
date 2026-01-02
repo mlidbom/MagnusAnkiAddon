@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, final, override
 
-from ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from language_services.janome_ex.word_extraction.matches.match import Match
 from language_services.janome_ex.word_extraction.matches.requirements.vocab_match_inspector import VocabMatchInspector
@@ -70,7 +69,7 @@ class VocabMatch(Match, Slots):
                          ),
                          display_requirements=(
                                  ForbidsHasDisplayedOverlappingFollowingCompound.for_if(inspector, self.requires_forbids.yield_last_token.is_required),
-                                 ForbidsCompositionallyTransparentCompound(inspector).for_if(inspector, app.config().hide_compositionally_transparent_compounds.get_value()),
+                                 ForbidsCompositionallyTransparentCompound.for_if(inspector, self.is_hide_transparent_compounds_enabled() and vocab.matching_configuration.bool_flags.is_compositionally_transparent_compound.is_set()),
                          ))
         self.vocab: VocabNote = vocab
         self.word_variant: WeakRef[CandidateWordVariant] = word_variant
