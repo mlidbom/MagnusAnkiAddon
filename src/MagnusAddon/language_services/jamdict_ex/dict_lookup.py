@@ -136,14 +136,10 @@ class DictLookup(Slots):
 
     @classmethod
     def might_be_word(cls, word: str) -> bool:
-        #return False #memory after reparse all sentences with this hack: 1687
-        # this method is a pure optimization to save on dictionary calls during real runtime. During tests populating all the words is a suboptimization, so just always return true when testing
         return app.is_testing or word in _all_word_forms()
 
     @classmethod
     def might_be_name(cls, word: str) -> bool:
-        #return False #memory after reparse all sentences with this hack: 1687
-        # this method is a pure optimization to save on dictionary calls during real runtime. During tests populating all the words is a suboptimization, so just always return true when testing
         return app.is_testing or word in _all_name_forms()
 
     @classmethod
