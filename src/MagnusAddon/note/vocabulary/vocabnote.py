@@ -8,7 +8,7 @@ from note.jpnote import JPNote
 from note.note_constants import NoteFields
 from note.notefields.comma_separated_strings_list_field import MutableCommaSeparatedStringsListField
 from note.notefields.mutable_string_field import MutableStringField
-from note.vocabnote_cloner import VocabCloner
+from note.vocabulary.vocabnote_cloner import VocabCloner
 from note.vocabulary import vocabnote_generated_data
 from note.vocabulary.related_vocab.related_vocab import RelatedVocab
 from note.vocabulary.vocabnote_audio import VocabNoteAudio

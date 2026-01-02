@@ -94,6 +94,9 @@ class VocabMatch(Match, Slots):
     @override
     def _start_index(self) -> int:
         if self.matching_configuration.bool_flags.question_overrides_form.is_set():
+            length_diff = (len(self.vocab.get_question()) - len(self.tokenized_form))
+            if length_diff != 0 and self.tokenized_form in self.vocab.get_question():  # we often "steal" characters backwards, forwards is not supported so this should be sufficient, we don't need all the complexity below
+                return super()._start_index() - length_diff
             if self.requires_forbids.a_stem.is_required or self.requires_forbids.e_stem.is_required:
                 return super()._start_index() - 1
             if self.rules.required_prefix.any():
