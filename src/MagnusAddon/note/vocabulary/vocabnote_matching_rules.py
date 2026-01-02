@@ -21,7 +21,8 @@ if TYPE_CHECKING:
     from typed_linq_collections.collections.q_set import QSet
 
 class VocabNoteMatchingRulesData(Slots):
-    serializer: VocabNoteMatchingRulesSerializer = VocabNoteMatchingRulesSerializer()
+    serializer: Lazy[VocabNoteMatchingRulesSerializer] = Lazy(VocabNoteMatchingRulesSerializer)
+
     def __init__(self, surface_is_not: QSet[str], prefix_is_not: QSet[str], suffix_is_not: QSet[str], required_prefix: QSet[str], yield_to_surface: QSet[str]) -> None:
         self.prefix_is_not: QSet[str] = prefix_is_not
         self.suffix_is_not: QSet[str] = suffix_is_not
@@ -31,7 +32,7 @@ class VocabNoteMatchingRulesData(Slots):
 
 class VocabNoteMatchingRules(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
-        self._data: MutableSerializedObjectField[VocabNoteMatchingRulesData] = MutableSerializedObjectField(vocab, NoteFields.Vocab.matching_rules, VocabNoteMatchingRulesData.serializer)
+        self._data: MutableSerializedObjectField[VocabNoteMatchingRulesData] = MutableSerializedObjectField(vocab, NoteFields.Vocab.matching_rules, VocabNoteMatchingRulesData.serializer())
         self.surface_is_not: FieldSetWrapper[str] = FieldSetWrapper.for_json_object_field(self._data, self._data.get().surface_is_not)  # pyright: ignore[reportUnknownMemberType]
         self.yield_to_surface: FieldSetWrapper[str] = FieldSetWrapper.for_json_object_field(self._data, self._data.get().yield_to_surface)  # pyright: ignore[reportUnknownMemberType]
         self.prefix_is_not: FieldSetWrapper[str] = FieldSetWrapper.for_json_object_field(self._data, self._data.get().prefix_is_not)  # pyright: ignore[reportUnknownMemberType]
@@ -52,7 +53,7 @@ class VocabNoteMatchingRules(Slots):
                                        .prop("suffix_is_not", self.suffix_is_not.get())
                                        .prop("required_prefix", self.required_prefix.get()).repr)
 
-#todo performance: memory: high-priority: combine into a single bitfield in memory
+# todo performance: memory: high-priority: combine into a single bitfield in memory
 class VocabMatchingRulesConfigurationRequiresForbidsFlags(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self.e_stem: RequireForbidFlagField = RequireForbidFlagField(vocab, Tags.Vocab.Matching.Requires.e_stem, Tags.Vocab.Matching.Forbids.e_stem)
@@ -69,7 +70,7 @@ class VocabMatchingRulesConfigurationRequiresForbidsFlags(Slots):
         self.exact_match: RequireForbidFlagField = RequireForbidFlagField(vocab, Tags.Vocab.Matching.Requires.exact_match, Tags.Vocab.Matching.Forbids.exact_match)
         self.yield_last_token: RequireForbidFlagField = YieldLastTokenToOverlappingCompound(vocab)
 
-#todo performance: memory: high-priority: combine into a single bitfield in memory
+# todo performance: memory: high-priority: combine into a single bitfield in memory
 class VocabMatchingRulesConfigurationBoolFlags(Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self._vocab: WeakRef[VocabNote] = vocab
@@ -91,7 +92,7 @@ class VocabNoteMatchingConfiguration(WeakRefable, Slots):
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self.vocab: WeakRef[VocabNote] = vocab
         self.weakref: WeakRef[VocabNoteMatchingConfiguration] = WeakRef(self)
-        self._rules: Lazy[VocabNoteMatchingRules] = Lazy(lambda: VocabNoteMatchingRules(vocab)) # todo performance: memory: do we need to make this lazy? does it help?
+        self._rules: Lazy[VocabNoteMatchingRules] = Lazy(lambda: VocabNoteMatchingRules(vocab))  # todo performance: memory: do we need to make this lazy? does it help?
 
         self.requires_forbids: VocabMatchingRulesConfigurationRequiresForbidsFlags = VocabMatchingRulesConfigurationRequiresForbidsFlags(vocab)
         self.bool_flags: VocabMatchingRulesConfigurationBoolFlags = VocabMatchingRulesConfigurationBoolFlags(vocab)

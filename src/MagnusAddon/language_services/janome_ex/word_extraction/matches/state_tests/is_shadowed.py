@@ -10,22 +10,11 @@ if TYPE_CHECKING:
 
 class ForbidsIsShadowed(MatchCustomForbidsNoCache, Slots):
     def __init__(self, inspector: MatchInspector) -> None:
-        super().__init__(inspector, is_requirement_active=True)
+        super().__init__(inspector)
 
     @property
     @override
-    def description(self) -> str: return "shadowed"
+    def description(self) -> str: return f"shadowed_by:{self.inspector.match.word.shadowed_by_text}"
 
     @override
     def _internal_is_in_state(self) -> bool: return self.inspector.match.is_shadowed
-
-    @property
-    @override
-    def failure_reason(self) -> str:
-        if not self.is_requirement_active:
-            return ""
-
-        if not self.is_in_state:
-            return ""
-
-        return f"forbids::shadowed_by:{self.inspector.match.word.shadowed_by_text}"

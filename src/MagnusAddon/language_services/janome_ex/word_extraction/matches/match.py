@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
+from ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from language_services.janome_ex.word_extraction.matches.requirements.match_inspector import MatchInspector
 from language_services.janome_ex.word_extraction.matches.state_tests.is_configured_hidden import ForbidsIsConfiguredHidden
@@ -10,6 +11,7 @@ from language_services.janome_ex.word_extraction.matches.state_tests.is_godan_im
 from language_services.janome_ex.word_extraction.matches.state_tests.is_godan_potential_surface_with_base import ForbidsIsGodanPotentialInflectionWithBase
 from language_services.janome_ex.word_extraction.matches.state_tests.is_inflected_surface_with_valid_base import ForbidsSurfaceIfBaseIsValidAndContextIndicatesAVerb
 from language_services.janome_ex.word_extraction.matches.state_tests.is_shadowed import ForbidsIsShadowed
+from sysutils.lazy import Lazy
 from sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
@@ -18,6 +20,17 @@ if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.requirements.requirement import MatchRequirement
 
 class Match(WeakRefable, Slots):
+    _hide_static_compounds_cache: Lazy[bool] = Lazy(lambda: Match._init_static_compounds_cache())
+
+    @staticmethod
+    def _init_static_compounds_cache() -> bool:
+        app.config().hide_compositionally_transparent_compounds.on_change(lambda _: Match._hide_static_compounds_cache.reset())
+        return app.config().hide_compositionally_transparent_compounds.get_value()
+
+    @staticmethod
+    def is_hide_transparent_compounds_enabled() -> bool: return Match._hide_static_compounds_cache()
+
+
     def __init__(self, word_variant: WeakRef[CandidateWordVariant],
                  validity_requirements: tuple[MatchRequirement | None, ...],
                  display_requirements: tuple[MatchRequirement | None, ...]) -> None:

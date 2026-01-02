@@ -68,8 +68,8 @@ def test_roundtrip_configuration() -> None:
     config = SentenceConfiguration(QUniqueList({"1", "2"}),
                                    WordExclusionSet(lambda: None, [WordExclusion.global_("111"), WordExclusion.global_("222")]),
                                    WordExclusionSet(lambda: None, [WordExclusion.global_("333"), WordExclusion.global_("444")]))
-    json = SentenceConfiguration.serializer.serialize(config)
-    round_tripped_result = SentenceConfiguration.serializer.deserialize(json, lambda: None)
+    json = SentenceConfiguration.serializer().serialize(config)
+    round_tripped_result = SentenceConfiguration.serializer().deserialize(json, lambda: None)
     assert_object_graphs_identical(config, round_tripped_result)
 
 def assert_object_graphs_identical(expected: object, actual: object) -> None:

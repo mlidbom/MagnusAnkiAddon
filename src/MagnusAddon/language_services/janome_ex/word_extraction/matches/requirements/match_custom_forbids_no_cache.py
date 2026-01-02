@@ -16,26 +16,20 @@ class MatchCustomForbidsNoCache(MatchRequirement, Slots):
     Subclasses must implement: _internal_is_in_state and description.
     """
 
-    def __init__(self, inspector: MatchInspector, is_requirement_active: bool = True) -> None:
+    def __init__(self, inspector: MatchInspector) -> None:
         self.inspector: MatchInspector = inspector
-        self.is_requirement_active: bool = is_requirement_active
 
     @property
     def is_in_state(self) -> bool:
-        """Whether the match is currently in this state. NOT cached!"""
         return self._internal_is_in_state()
 
     @property
     def description(self) -> str:
-        """Description of this state for error messages."""
         raise NotImplementedError()
 
     @property
     @override
     def is_fulfilled(self) -> bool:
-        if not self.is_requirement_active:
-            return True
-
         return not self.is_in_state
 
     @property

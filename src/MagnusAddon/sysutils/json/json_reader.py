@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING, Any, cast
 from autoslot import Slots  # pyright: ignore [reportMissingTypeStubs]
 from sysutils import typed
 from sysutils.json.ex_json import json_library_shim
-from sysutils.memory_usage import string_auto_interner  # pyright: ignore[reportMissingTypeStubs]
 from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:
@@ -32,15 +31,13 @@ class JsonReader(Slots):
         if default is not None: return default
         raise KeyError(f"None of the following keys were found in the JSON: {prop}")
 
-    def string(self, prop: str | list[str], default: str | None = None) -> str: return string_auto_interner.auto_intern(cast(str, self._get_prop(prop, default)))
+    def string(self, prop: str | list[str], default: str | None = None) -> str: return cast(str, self._get_prop(prop, default))
     def integer(self, prop: str | list[str], default: int | None = None) -> int: return cast(int, self._get_prop(prop, default))
 
     def string_list(self, prop: str | list[str], default: list[str] | None = None) -> list[str]:
-        value = cast(list[str], self._get_prop(prop, default))
-        string_auto_interner.auto_intern_list(value)
-        return value
+        return cast(list[str], self._get_prop(prop, default))
 
-    def string_set(self, prop: str | list[str], default: QSet[str] | None = None) -> QSet[str]: return QSet(self.string_list(prop, list(default) if default is not None else None))
+    def string_set(self, prop: str | list[str], default: list[str] | None = None) -> QSet[str]: return QSet(self.string_list(prop, default))
 
     def object_list[TProp](self, prop: str | list[str], factory: Selector[JsonReader, TProp], default: list[TProp] | None = None) -> list[TProp]:
         prop_value = cast(list[dict[str, Any]], self._get_prop(prop, default))  # pyright: ignore[reportExplicitAny]

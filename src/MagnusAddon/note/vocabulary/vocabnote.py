@@ -71,8 +71,6 @@ class VocabNote(JPNote, Slots):
 
     @override
     def _on_tags_updated(self) -> None:
-        """Recreate matching configuration when tags are modified to refresh cached flag values."""
-        from note.vocabulary.vocabnote_matching_rules import VocabNoteMatchingConfiguration
         self.matching_configuration = VocabNoteMatchingConfiguration(self.weakref_vocab)
 
     @override
