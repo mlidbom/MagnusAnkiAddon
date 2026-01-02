@@ -40,7 +40,7 @@ class JsonReader(Slots):
         string_auto_interner.auto_intern_list(value)
         return value
 
-    def string_set(self, prop: str | list[str], default: QSet[str] | None = None) -> QSet[str]: return QSet(self.string_list(prop, list(default) if default is not None else None))
+    def string_set(self, prop: str | list[str], default: list[str] | None = None) -> QSet[str]: return QSet(self.string_list(prop, default))
 
     def object_list[TProp](self, prop: str | list[str], factory: Selector[JsonReader, TProp], default: list[TProp] | None = None) -> list[TProp]:
         prop_value = cast(list[dict[str, Any]], self._get_prop(prop, default))  # pyright: ignore[reportExplicitAny]
