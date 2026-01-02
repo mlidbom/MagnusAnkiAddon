@@ -28,7 +28,7 @@ class RelatedVocab(Slots): # todo performance: memory: do we need to cache all o
     def __init__(self, vocab: WeakRef[VocabNote]) -> None:
         self._vocab: WeakRef[VocabNote] = vocab
 
-        self._data: MutableSerializedObjectField[RelatedVocabData] = MutableSerializedObjectField(vocab, NoteFields.Vocab.related_vocab, RelatedVocabData.serializer)
+        self._data: MutableSerializedObjectField[RelatedVocabData] = MutableSerializedObjectField(vocab, NoteFields.Vocab.related_vocab, RelatedVocabData.serializer())
 
         self.ergative_twin: ErgativeTwin = ErgativeTwin(vocab, self._data)
         self.synonyms: Synonyms = Synonyms(vocab, self._data)

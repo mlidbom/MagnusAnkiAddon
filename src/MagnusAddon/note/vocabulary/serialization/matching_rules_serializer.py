@@ -12,6 +12,10 @@ if TYPE_CHECKING:
     from note.vocabulary.vocabnote_matching_rules import VocabNoteMatchingRulesData
 
 class VocabNoteMatchingRulesSerializer(ObjectSerializer["VocabNoteMatchingRulesData"], Slots):
+    def __init__(self) -> None:
+        if VocabNoteMatchingRulesSerializer._empty_object_json == "":
+            VocabNoteMatchingRulesSerializer._empty_object_json = self.serialize(self.deserialize(""))
+
     @override
     def deserialize(self, serialized: str) -> VocabNoteMatchingRulesData:
         from note.vocabulary.vocabnote_matching_rules import VocabNoteMatchingRulesData
@@ -24,10 +28,13 @@ class VocabNoteMatchingRulesSerializer(ObjectSerializer["VocabNoteMatchingRulesD
                                           reader.string_set("required_prefix"),
                                           reader.string_set("yield_to_surface", QSet()))
 
+    _empty_object_json: str = ""
     @override
     def serialize(self, instance: VocabNoteMatchingRulesData) -> str:
-        return ex_json.dict_to_json({"surface_is_not": list(instance.surface_is_not),
+        json = ex_json.dict_to_json({"surface_is_not": list(instance.surface_is_not),
                                      "prefix_is_not": list(instance.prefix_is_not),
                                      "suffix_is_not": list(instance.suffix_is_not),
                                      "required_prefix": list(instance.required_prefix),
                                      "yield_to_surface": list(instance.yield_to_surface)})
+
+        return json if json != VocabNoteMatchingRulesSerializer._empty_object_json else ""

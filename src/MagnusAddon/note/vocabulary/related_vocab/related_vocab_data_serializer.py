@@ -13,6 +13,10 @@ if TYPE_CHECKING:
     from note.vocabulary.related_vocab.related_vocab_data import RelatedVocabData
 
 class RelatedVocabDataSerializer(ObjectSerializer["RelatedVocabData"], Slots):
+    def __init__(self) -> None:
+        if RelatedVocabDataSerializer._empty_object_json == "":
+            RelatedVocabDataSerializer._empty_object_json = self.serialize(self.deserialize(""))
+
     @override
     def deserialize(self, serialized: str) -> RelatedVocabData:
         from note.vocabulary.related_vocab.related_vocab_data import RelatedVocabData
@@ -27,12 +31,15 @@ class RelatedVocabDataSerializer(ObjectSerializer["RelatedVocabData"], Slots):
                                 reader.string_set("confused_with"),
                                 reader.string_set("see_also"))
 
+    _empty_object_json: str = ""
     @override
     def serialize(self, instance: RelatedVocabData) -> str:
-        return ex_json.dict_to_json({"ergative_twin": instance.ergative_twin,
+        json = ex_json.dict_to_json({"ergative_twin": instance.ergative_twin,
                                      "derived_from": instance.derived_from.get(),
                                      "synonyms": list(instance.synonyms),
                                      "perfect_synonyms": list(instance.perfect_synonyms),
                                      "antonyms": list(instance.antonyms),
                                      "confused_with": list(instance.confused_with),
                                      "see_also": list(instance.see_also)})
+
+        return json if json != RelatedVocabDataSerializer._empty_object_json else ""
