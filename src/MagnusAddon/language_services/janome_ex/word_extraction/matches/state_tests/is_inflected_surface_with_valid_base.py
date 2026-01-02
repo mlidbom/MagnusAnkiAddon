@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 class ForbidsSurfaceIfBaseIsValidAndContextIndicatesAVerb(MatchCustomForbids, Slots):
     def __init__(self, inspector: MatchInspector) -> None:
-        super().__init__(inspector, is_requirement_active=True)
+        super().__init__(inspector)
 
     @property
     @override

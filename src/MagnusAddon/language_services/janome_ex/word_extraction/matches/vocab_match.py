@@ -69,7 +69,7 @@ class VocabMatch(Match, Slots):
                          ),
                          display_requirements=(
                                  ForbidsHasDisplayedOverlappingFollowingCompound.for_if(inspector, self.requires_forbids.yield_last_token.is_required),
-                                 ForbidsCompositionallyTransparentCompound.for_if(inspector, self.is_hide_transparent_compounds_enabled() and vocab.matching_configuration.bool_flags.is_compositionally_transparent_compound.is_set()),
+                                 ForbidsCompositionallyTransparentCompound.for_if(self.is_hide_transparent_compounds_enabled() and vocab.matching_configuration.bool_flags.is_compositionally_transparent_compound.is_set()),
                          ))
         self.vocab: VocabNote = vocab
         self.word_variant: WeakRef[CandidateWordVariant] = word_variant
