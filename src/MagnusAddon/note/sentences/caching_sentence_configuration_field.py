@@ -20,7 +20,7 @@ class CachingSentenceConfigurationField(WeakRefable, Slots):
     def __init__(self, sentence: WeakRef[SentenceNote]) -> None:
         self._sentence: WeakRef[SentenceNote] = sentence
         self.field: MutableStringField = MutableStringField(sentence, SentenceNoteFields.configuration)
-        self._value: SentenceConfiguration = SentenceConfiguration.serializer.deserialize(self.field.value, self._save)
+        self._value: SentenceConfiguration = SentenceConfiguration.serializer().deserialize(self.field.value, self._save)
 
     @property
     def configuration(self) -> SentenceConfiguration:
@@ -52,5 +52,5 @@ class CachingSentenceConfigurationField(WeakRefable, Slots):
         self._save()
 
     def _save(self) -> None:
-        self.field.set(SentenceConfiguration.serializer.serialize(self._value))
+        self.field.set(SentenceConfiguration.serializer().serialize(self._value))
         self._sentence().update_parsed_words(force=True)

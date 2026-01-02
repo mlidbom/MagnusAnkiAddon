@@ -15,8 +15,11 @@ if TYPE_CHECKING:
     from note.sentences.sentence_configuration import SentenceConfiguration
 
 class SentenceConfigurationSerializer(Slots):
-    @staticmethod
-    def deserialize(json: str, save_callback: Callable[[], None]) -> SentenceConfiguration:
+    def __init__(self) -> None:
+        if SentenceConfigurationSerializer._empty_object_json == "":
+            SentenceConfigurationSerializer._empty_object_json = self.serialize(self.deserialize("", lambda: None))
+
+    def deserialize(self, json: str, save_callback: Callable[[], None]) -> SentenceConfiguration:
         from note.sentences.sentence_configuration import SentenceConfiguration
         if not json: return SentenceConfiguration(QUniqueList(), WordExclusionSet(save_callback, []), WordExclusionSet(save_callback, []))
 
@@ -25,8 +28,10 @@ class SentenceConfigurationSerializer(Slots):
                                      WordExclusionSet(save_callback, reader.object_list("incorrect_matches", WordExclusion.from_reader)),
                                      WordExclusionSet(save_callback, reader.object_list("hidden_matches", WordExclusion.from_reader)))
 
-    @staticmethod
-    def serialize(config: SentenceConfiguration) -> str:
-        return ex_json.dict_to_json({"highlighted_words": list(config.highlighted_words),
+    _empty_object_json: str = ""
+    def serialize(self, config: SentenceConfiguration) -> str:
+        json = ex_json.dict_to_json({"highlighted_words": list(config.highlighted_words),
                                      "incorrect_matches": [exclusion.to_dict() for exclusion in config.incorrect_matches.get()],
                                      "hidden_matches": [exclusion.to_dict() for exclusion in config.hidden_matches.get()]})
+
+        return json if json != SentenceConfigurationSerializer._empty_object_json else ""

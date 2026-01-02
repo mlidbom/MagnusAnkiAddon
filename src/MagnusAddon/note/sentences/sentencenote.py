@@ -102,6 +102,8 @@ class SentenceNote(JPNote, Slots):
         self.update_parsed_words()
         self.active_answer.set(self.get_answer())
         self.active_question.set(self.get_question())
+        #todo remove
+        self.configuration._save()
 
     def update_parsed_words(self, force: bool = False) -> None:
         from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis

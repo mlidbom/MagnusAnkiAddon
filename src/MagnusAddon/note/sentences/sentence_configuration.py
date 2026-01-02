@@ -6,13 +6,14 @@ from autoslot import Slots
 from note.sentences.serialization.sentence_configuration_serializer import SentenceConfigurationSerializer
 from note.sentences.word_exclusion_set import WordExclusionSet
 from sysutils.debug_repr_builder import SkipFalsyValuesDebugReprBuilder
-from typed_linq_collections.collections.q_unique_list import QUniqueList  # pyright: ignore[reportMissingTypeStubs]
+from sysutils.lazy import Lazy  # pyright: ignore[reportMissingTypeStubs]
+from typed_linq_collections.collections.q_unique_list import QUniqueList
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 
 class SentenceConfiguration(Slots):
-    serializer: SentenceConfigurationSerializer = SentenceConfigurationSerializer()
+    serializer: Lazy[SentenceConfigurationSerializer] = Lazy(SentenceConfigurationSerializer)
 
     def __init__(self, highlighted_words: QUniqueList[str], incorrect_matches: WordExclusionSet, hidden_matches: WordExclusionSet) -> None:
         self.highlighted_words: QUniqueList[str] = highlighted_words
