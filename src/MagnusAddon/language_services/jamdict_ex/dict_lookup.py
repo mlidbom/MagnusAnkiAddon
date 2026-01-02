@@ -15,26 +15,27 @@ from typed_linq_collections.collections.q_list import QList
 if TYPE_CHECKING:
     from jamdict.jmdict import JMDEntry  # pyright: ignore[reportMissingTypeStubs]
     from note.vocabulary.vocabnote import VocabNote
-    from typed_linq_collections.collections.q_set import QSet
+    from typed_linq_collections.q_iterable import QIterable
 
 from language_services.jamdict_ex.dict_entry import DictEntry
 from sysutils import kana_utils
+from typed_linq_collections.collections.q_set import QSet
 
 _jamdict_threading_wrapper: JamdictThreadingWrapper = JamdictThreadingWrapper()
 
 # noinspection SqlResolve
 def _find_all_words() -> QSet[str]:
     with StopWatch.log_execution_time("Prepopulating all word forms from jamdict."):
-        kanji_forms: QSet[str] = _jamdict_threading_wrapper.run_string_query("SELECT distinct text FROM Kanji").select(string_auto_interner.auto_intern).to_set()
-        kana_forms: QSet[str] = _jamdict_threading_wrapper.run_string_query("SELECT distinct text FROM Kana").select(string_auto_interner.auto_intern).to_set()
-    return kanji_forms | kana_forms
+        kanji_forms: QIterable[str] = _jamdict_threading_wrapper.run_string_query("SELECT distinct text FROM Kanji").select(string_auto_interner.auto_intern)
+        kana_forms: QIterable[str] = _jamdict_threading_wrapper.run_string_query("SELECT distinct text FROM Kana").select(string_auto_interner.auto_intern)
+    return QSet.create(kanji_forms, kana_forms)
 
 # noinspection SqlResolve
 def _find_all_names() -> QSet[str]:
     with StopWatch.log_execution_time("Prepopulating all name forms from jamdict."):
-        kanji_forms: QSet[str] = _jamdict_threading_wrapper.run_string_query("SELECT distinct text FROM NEKanji").to_set()
-        kana_forms: QSet[str] = _jamdict_threading_wrapper.run_string_query("SELECT distinct text FROM NEKana").to_set()
-        return kanji_forms | kana_forms
+        kanji_forms: QIterable[str] = _jamdict_threading_wrapper.run_string_query("SELECT distinct text FROM NEKanji")
+        kana_forms: QIterable[str] = _jamdict_threading_wrapper.run_string_query("SELECT distinct text FROM NEKana")
+        return QSet.create(kanji_forms, kana_forms)
 
 _all_word_forms = Lazy(_find_all_words)
 _all_name_forms = Lazy(_find_all_names)
