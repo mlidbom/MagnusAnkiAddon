@@ -17,4 +17,6 @@ class ForbidsConfiguredToHideCompounds(MatchRequirement, Slots):
 
     @staticmethod
     def for_if(is_enabled: bool) -> ForbidsConfiguredToHideCompounds | None:
-        return ForbidsConfiguredToHideCompounds() if is_enabled else None
+        return _instance if is_enabled else None
+
+_instance = ForbidsConfiguredToHideCompounds()

@@ -17,4 +17,6 @@ class ForbidsCompositionallyTransparentCompound(MatchRequirement, Slots):
 
     @staticmethod
     def for_if(is_enabled: bool) -> ForbidsCompositionallyTransparentCompound | None:
-        return ForbidsCompositionallyTransparentCompound() if is_enabled else None
+        return _instance if is_enabled else None
+
+_instance = ForbidsCompositionallyTransparentCompound()
