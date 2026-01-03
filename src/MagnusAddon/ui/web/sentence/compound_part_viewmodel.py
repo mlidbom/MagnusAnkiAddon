@@ -59,5 +59,6 @@ class CompoundPartViewModel(Slots):
                             (CompoundPartViewModel(godan_potential[0], depth, config))]
                 else:
                     return []
-            else:
-                return []
+            else: # we may still have parts if janome tokenizes a word we consider a compound as a single token
+                return (vocab_note.compound_parts.primary_parts_notes()
+                        .select(lambda _part: CompoundPartViewModel(_part, depth, config)).to_list())
