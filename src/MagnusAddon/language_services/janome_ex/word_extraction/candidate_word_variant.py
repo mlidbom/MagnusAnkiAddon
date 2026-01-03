@@ -44,7 +44,7 @@ class CandidateWordVariant(WeakRefable, Slots):
     def vocabs_control_match_status(self) -> bool:
         return (any(self._valid_vocab_matches)
                 or any(self._form_owning_vocab_matches)
-                or (any(self.vocab_matches) and not self._dict_lookup().found_words() and self.word.is_custom_compound))
+                or (any(self.vocab_matches) and not self._dict_lookup().found_words() and self.word.is_compound))
 
     def run_validity_analysis(self) -> None:
         ex_assert.that(not self.completed_validity_analysis)

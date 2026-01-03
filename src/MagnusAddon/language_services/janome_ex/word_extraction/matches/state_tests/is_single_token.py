@@ -32,6 +32,6 @@ class RequiresOrForbidsIsSingleToken(CustomRequiresOrForbids, Slots):
 
     @override
     def _internal_is_in_state(self) -> bool:
-        if not self.inspector.word.is_custom_compound:  # noqa: SIM103
+        if not self.inspector.word.is_compound:  # noqa: SIM103
             return True
         return False

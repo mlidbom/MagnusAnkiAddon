@@ -17,7 +17,6 @@ def setup_collection_with_select_data() -> Iterator[None]:
         yield
 
 @pytest.mark.parametrize("sentence, expected_output", [
-        ("外出中", ["外出", "中"])
 ])
 def test_new_stuff(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
@@ -135,7 +134,9 @@ def test_bugs_todo_fixme(sentence: str, expected_output: list[str]) -> None:
         ("私たちなら嘘をつかずに付き合っていけるかもしれないね", ["私たち", "なら", "嘘をつく", "ずに", "付き合う", "ていける", "かもしれない", "ね"]),
         ("どやされても知らんぞ", ["どやす", "あれる", "ても知らん:ても知らない", "ぞ"]),
         ("服を引き出しの中に入れてください", ["服", "を", "引き出し", "の中", "に入る", "える", "て", "ください"]),
-        ("他人を気遣い", ["他人", "を", "気遣う"])
+        ("他人を気遣い", ["他人", "を", "気遣う"]),
+        ("外出中", ["外出", "中"]),
+        ("買い替えています", ["買い替える", "ている", "ます"])
 ])
 def test_misc_stuff(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)

@@ -80,11 +80,11 @@ class CandidateWord(WeakRefable, Slots):
     def has_valid_words(self) -> bool: return len(self.valid_variants) > 0
 
     @property
-    def has_seemingly_valid_single_token(self) -> bool: return not self.is_custom_compound and not self.starts_with_non_word_character
+    def has_seemingly_valid_single_token(self) -> bool: return not self.is_compound and not self.starts_with_non_word_character
     @property
     def analysis(self) -> TextAnalysis: return self.locations[0]().analysis()
     @property
-    def is_custom_compound(self) -> bool: return self.location_count > 1
+    def is_compound(self) -> bool: return self.location_count > 1
     @property
     def start_location(self) -> TextAnalysisLocation: return self.locations[0]()
     @property
@@ -123,4 +123,4 @@ class CandidateWord(WeakRefable, Slots):
 surface: {self.surface_variant.__repr__()} | base:{self.base_variant.__repr__()},
 hdc:{self.has_valid_words()},
 iw:{self.is_word}
-icc:{self.is_custom_compound})""".replace(newline, "")
+icc:{self.is_compound})""".replace(newline, "")

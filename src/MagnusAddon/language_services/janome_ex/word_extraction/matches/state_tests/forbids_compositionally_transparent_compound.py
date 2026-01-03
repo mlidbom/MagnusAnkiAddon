@@ -23,6 +23,7 @@ class ForbidsCompositionallyTransparentCompound(MatchRequirement, Slots):
     def for_if(match: VocabMatch) -> ForbidsCompositionallyTransparentCompound | None:
         if (ConfigurationCache.hide_transparent_compounds()
                 and match.word.analysis.for_ui
+                and match.word.is_compound
                 and match.vocab.matching_configuration.bool_flags.is_compositionally_transparent_compound.is_set()):
             return _instance
         return None

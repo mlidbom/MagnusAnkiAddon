@@ -21,7 +21,7 @@ class ForbidsConfiguredToHideCompounds(MatchRequirement, Slots):
     @staticmethod
     def for_if(match: Match) -> ForbidsConfiguredToHideCompounds | None:
         if (ConfigurationCache.hide_all_compounds()
-                and match.inspector.word.is_custom_compound
+                and match.inspector.word.is_compound
                 and match.word.analysis.for_ui
                 and not match.inspector.is_ichidan_covering_godan_potential):  # we can't tell whether it is really the potential or the ichidan in this case, so we don't hide those "compounds"
             return _instance
