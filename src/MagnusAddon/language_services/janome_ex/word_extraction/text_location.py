@@ -45,6 +45,9 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
     def forward_list(self, length: int = 99999) -> list[TextAnalysisLocation]:
         return self.analysis().locations[self.token_index: self.token_index + length + 1]
 
+    @property
+    def non_compound_candidate(self) -> CandidateWord: return self.candidate_words[-1]
+
     def analysis_step_1_analyze_non_compound_validity(self) -> None:
         lookahead_max = min(_max_lookahead, len(self.forward_list(_max_lookahead)))
         self.candidate_words = [CandidateWord([location.weakref for location in self.forward_list(index)]) for index in range(lookahead_max - 1, -1, -1)]

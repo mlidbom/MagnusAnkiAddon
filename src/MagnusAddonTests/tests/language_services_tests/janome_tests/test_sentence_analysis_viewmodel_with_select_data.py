@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import pytest
+from ankiutils import app
 from fixtures.collection_factory import inject_collection_with_select_data
 from language_services.janome_ex.word_extraction.word_exclusion import WordExclusion
 from tests.language_services_tests.janome_tests.test_sentence_analysis_viewmodel_common import assert_all_words_equal, assert_display_words_equal_and_that_analysis_internal_state_is_valid
@@ -19,6 +20,23 @@ def setup_collection_with_select_data() -> Iterator[None]:
 @pytest.mark.parametrize("sentence, expected_output", [
 ])
 def test_new_stuff(sentence: str, expected_output: list[str]) -> None:
+    assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
+
+@pytest.mark.parametrize("sentence, expected_output", [
+        ("教えにしたがって", ["教え", "に", "したがって"])  # should not hide the compound when there parts with no valid matches.
+])
+def test_hide_all_compounds(sentence: str, expected_output: list[str]) -> None:
+    try:
+        app.config().hide_all_compounds.set_value(True)
+        assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
+    finally:
+        app.config().hide_all_compounds.set_value(False)
+
+@pytest.mark.parametrize("sentence, expected_output", [
+        ("外出中", ["外出", "中"]),
+        ("買い替えています", ["買い替える", "ている", "ます"])
+])
+def test_hide_transparent_compounds(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)
 
 @pytest.mark.parametrize("sentence, expected_output", [
@@ -134,9 +152,7 @@ def test_bugs_todo_fixme(sentence: str, expected_output: list[str]) -> None:
         ("私たちなら嘘をつかずに付き合っていけるかもしれないね", ["私たち", "なら", "嘘をつく", "ずに", "付き合う", "ていける", "かもしれない", "ね"]),
         ("どやされても知らんぞ", ["どやす", "あれる", "ても知らん:ても知らない", "ぞ"]),
         ("服を引き出しの中に入れてください", ["服", "を", "引き出し", "の中", "に入る", "える", "て", "ください"]),
-        ("他人を気遣い", ["他人", "を", "気遣う"]),
-        ("外出中", ["外出", "中"]),
-        ("買い替えています", ["買い替える", "ている", "ます"])
+        ("他人を気遣い", ["他人", "を", "気遣う"])
 ])
 def test_misc_stuff(sentence: str, expected_output: list[str]) -> None:
     assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence, [], expected_output)

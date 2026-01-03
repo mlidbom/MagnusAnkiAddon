@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 from autoslot import Slots
 from language_services.janome_ex.word_extraction import analysis_constants  # pyright: ignore[reportMissingTypeStubs]
+from typed_linq_collections.q_iterable import query
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.candidate_word import CandidateWord
@@ -83,7 +84,6 @@ class MatchInspector(Slots):
     def is_ichidan_covering_godan_potential(self) -> bool:
         return self.word.location_count == 2 and self.has_godan_potential_start and self.has_godan_potential_ending
 
-
     @property
     def has_godan_potential_ending(self) -> bool:
         return self.word.end_location.token.is_godan_potential_inflection
@@ -91,6 +91,12 @@ class MatchInspector(Slots):
     @property
     def has_godan_ichidan_imperative_part(self) -> bool:
         return self.word.start_location.token.is_ichidan_imperative_stem or self.word.start_location.token.is_ichidan_imperative_inflection
+
+    @property
+    def compound_locations_all_have_valid_non_compound_matches(self) -> bool:
+        return (query(self.word.locations)
+                .select(lambda it: it())
+                .all(lambda it: it.non_compound_candidate.has_valid_words()))
 
     @property
     def is_end_of_statement(self) -> bool:
