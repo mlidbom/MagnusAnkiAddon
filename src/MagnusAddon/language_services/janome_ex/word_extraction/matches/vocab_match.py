@@ -71,7 +71,7 @@ class VocabMatch(Match, Slots):
                          ),
                          display_requirements=(
                                  ForbidsHasDisplayedOverlappingFollowingCompound.for_if(inspector, self.requires_forbids.yield_last_token.is_required),
-                                 ForbidsCompositionallyTransparentCompound.for_if(self)
+                                 ForbidsCompositionallyTransparentCompound.for_if(weakref)
                          ))
 
     @property
