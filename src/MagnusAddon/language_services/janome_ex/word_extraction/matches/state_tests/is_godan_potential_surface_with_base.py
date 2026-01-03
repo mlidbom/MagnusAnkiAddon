@@ -18,6 +18,6 @@ class ForbidsIsGodanPotentialInflectionWithBase(MatchCustomForbids, Slots):
 
     @override
     def _internal_is_in_state(self) -> bool:
-        if self.inspector.has_godan_potential_part and self.inspector.word.location_count == 1 and self.inspector.variant.is_surface and self.inspector.word.base_variant is not None:  # noqa: SIM103
+        if self.inspector.has_godan_potential_start and self.inspector.word.location_count == 1 and self.inspector.variant.is_surface and self.inspector.word.base_variant is not None:  # noqa: SIM103
             return True
         return False

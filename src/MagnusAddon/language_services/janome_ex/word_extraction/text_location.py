@@ -83,7 +83,6 @@ TextLocation('{self.character_start_index}-{self.character_end_index}, {self.tok
     def update_shadowing(self) -> None:
         if self.display_words and not any(self.is_shadowed_by):
             self.display_variants = self.display_words[0].display_variants
-
             covering_forward_count = self.display_words[0].location_count - 1
             for shadowed in self.forward_list(covering_forward_count)[1:]:
                 shadowed.is_shadowed_by.append(self.weakref)

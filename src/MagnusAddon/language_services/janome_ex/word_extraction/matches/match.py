@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from configuration.configuration_cache_impl import ConfigurationCache
 from language_services.janome_ex.word_extraction.matches.requirements.match_inspector import MatchInspector
 from language_services.janome_ex.word_extraction.matches.state_tests.forbids_compounds import ForbidsConfiguredToHideCompounds
 from language_services.janome_ex.word_extraction.matches.state_tests.is_configured_hidden import ForbidsIsConfiguredHidden
@@ -25,6 +24,7 @@ class Match(WeakRefable, Slots):
                  display_requirements: tuple[MatchRequirement | None, ...]) -> None:
         weakref_self = WeakRef(self)
         inspector = MatchInspector(weakref_self)
+        self.inspector: MatchInspector = inspector
         self._is_not_shadowed_requirement: MatchRequirement = ForbidsIsShadowed(inspector)
         self.weakref: WeakRef[Match] = weakref_self
         self._variant: WeakRef[CandidateWordVariant] = word_variant
@@ -38,7 +38,7 @@ class Match(WeakRefable, Slots):
         self._display_requirements: list[MatchRequirement] = [r for r in (
                 self._is_not_shadowed_requirement,
                 ForbidsIsConfiguredHidden(inspector),
-                ForbidsConfiguredToHideCompounds.for_if(ConfigurationCache.hide_all_compounds() and inspector.word.is_custom_compound),
+                ForbidsConfiguredToHideCompounds.for_if(self),
                 *display_requirements
         ) if r is not None]
         self._is_valid_internal_cache: bool | None = None

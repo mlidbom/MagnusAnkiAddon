@@ -76,8 +76,17 @@ class MatchInspector(Slots):
         return self.word.start_location.token.is_godan_imperative_inflection or self.word.start_location.token.is_godan_imperative_stem
 
     @property
-    def has_godan_potential_part(self) -> bool:
+    def has_godan_potential_start(self) -> bool:
         return self.word.start_location.token.is_godan_potential_inflection or self.word.start_location.token.is_godan_potential_stem
+
+    @property
+    def is_ichidan_covering_godan_potential(self) -> bool:
+        return self.word.location_count == 2 and self.has_godan_potential_start and self.has_godan_potential_ending
+
+
+    @property
+    def has_godan_potential_ending(self) -> bool:
+        return self.word.end_location.token.is_godan_potential_inflection
 
     @property
     def has_godan_ichidan_imperative_part(self) -> bool:

@@ -4,12 +4,14 @@ from typing import TYPE_CHECKING
 
 from ankiutils import app
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from configuration.configuration_cache_impl import ConfigurationCache
 from typed_linq_collections.collections.q_set import QSet
 
 if TYPE_CHECKING:
     from anki.notes import NoteId
     from note.sentences.sentence_configuration import SentenceConfiguration
     from note.vocabulary.vocabnote import VocabNote
+    from ui.web.sentence.match_viewmodel import MatchViewModel
 
 class CompoundPartViewModel(Slots):
     def __init__(self, vocab_note: VocabNote, depth: int, config: SentenceConfiguration) -> None:
@@ -28,19 +30,34 @@ class CompoundPartViewModel(Slots):
         self.meta_tags_string += " highlighted" if self.is_highlighted else ""
 
     @classmethod
-    def get_compound_parts_recursive(cls, vocab_note: VocabNote, config: SentenceConfiguration, depth: int = 0, visited: QSet[NoteId] | None = None) -> list[CompoundPartViewModel]:
-        if not app.config().show_compound_parts_in_sentence_breakdown.get_value(): return []
-        if visited is None: visited = QSet()
-        if vocab_note.get_id() in visited: return []
+    def get_compound_parts_recursive(cls, match_viewmodel: MatchViewModel, vocab_note: VocabNote, config: SentenceConfiguration, depth: int = 0, visited: QSet[NoteId] | None = None) -> list[CompoundPartViewModel]:
+        if not ConfigurationCache.hide_all_compounds():
+            if not app.config().show_compound_parts_in_sentence_breakdown.get_value(): return []
+            if visited is None: visited = QSet()
+            if vocab_note.get_id() in visited: return []
 
-        visited.add(vocab_note.get_id())
+            visited.add(vocab_note.get_id())
 
-        result: list[CompoundPartViewModel] = []
+            result: list[CompoundPartViewModel] = []
 
-        for part in vocab_note.compound_parts.primary_parts_notes(): #ex_sequence.flatten([app.col().vocab.with_form_prefer_exact_match(part) for part in vocab_note.compound_parts.primary()])
-            wrapper = CompoundPartViewModel(part, depth, config)
-            result.append(wrapper)
-            nested_parts = cls.get_compound_parts_recursive(part, config, depth + 1, visited)
-            result.extend(nested_parts)
+            for part in vocab_note.compound_parts.primary_parts_notes():  # ex_sequence.flatten([app.col().vocab.with_form_prefer_exact_match(part) for part in vocab_note.compound_parts.primary()])
+                wrapper = CompoundPartViewModel(part, depth, config)
+                result.append(wrapper)
+                nested_parts = cls.get_compound_parts_recursive(match_viewmodel, part, config, depth + 1, visited)
+                result.extend(nested_parts)
 
-        return result
+            return result
+        else:
+            match = match_viewmodel.match
+            if match.inspector.is_ichidan_covering_godan_potential:
+                godan_base = match.word.start_location.token.base_form
+                godan_potential_part_base = match.word.end_location.token.base_form
+                godan = app.col().vocab.with_form_prefer_exact_match(godan_base)
+                godan_potential = app.col().vocab.with_form_prefer_exact_match(godan_potential_part_base)
+                if godan and godan_potential:
+                    return [(CompoundPartViewModel(godan[0], depth, config)),
+                            (CompoundPartViewModel(godan_potential[0], depth, config))]
+                else:
+                    return []
+            else:
+                return []
