@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 def surface_and_match_form(match_vm: MatchViewModel) -> str:
     return f"""{match_vm.match.parsed_form}:{match_vm.vocab_form}""" if match_vm.display_vocab_form else match_vm.match.parsed_form
 
-def assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence: str, excluded: list[WordExclusion], expected_output: list[str]) -> None:
+def assert_display_words_equal_and_that_analysis_internal_state_is_valid(sentence: str, excluded: list[WordExclusion], expected_output: list[str], for_up:bool= False) -> None:
     def run_note_assertions(message: str) -> None:
         root_words = [surface_and_match_form(dm) for dm in sentence_view_model.displayed_matches]
         try:

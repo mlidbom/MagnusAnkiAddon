@@ -76,9 +76,9 @@ class SentenceNote(JPNote, Slots):
     def get_valid_parsed_non_child_words(self) -> QList[CandidateWordVariant]:
         return self.create_analysis().display_word_variants
 
-    def create_analysis(self) -> TextAnalysis:
+    def create_analysis(self, for_ui: bool = False) -> TextAnalysis:
         from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
-        return TextAnalysis(self.get_question(), self.configuration.configuration)
+        return TextAnalysis(self.get_question(), self.configuration.configuration, for_ui=for_ui)
 
     @override
     def get_direct_dependencies(self) -> QSet[JPNote]:

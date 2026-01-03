@@ -33,7 +33,4 @@ class RequiresOrForbidsIsSentenceEnd(CustomRequiresOrForbids, Slots):
 
     @override
     def _internal_is_in_state(self) -> bool:
-        if self.inspector.is_end_of_statement:
-            return True
-
-        return False
+        return bool(self.inspector.is_end_of_statement)

@@ -20,10 +20,6 @@ class ForbidsSurfaceIfBaseIsValidAndContextIndicatesAVerb(MatchCustomForbids, Sl
     def _internal_is_in_state(self) -> bool:
         # nouns are not inflected
         if self.inspector.variant.is_surface and self.inspector.word.has_base_variant_with_valid_match:
-            if self.inspector.word.is_inflected_word:
-                return True
-            elif self.inspector.prefix.endswith("を") and self.inspector.is_end_of_statement:
-                return True
-            return False
+            return bool(self.inspector.word.is_inflected_word or self.inspector.prefix.endswith("を") and self.inspector.is_end_of_statement)
 
         return False

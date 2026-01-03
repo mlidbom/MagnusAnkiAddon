@@ -47,18 +47,16 @@ class CompoundPartViewModel(Slots):
                 result.extend(nested_parts)
 
             return result
-        else:
-            match = match_viewmodel.match
-            if match.inspector.is_ichidan_covering_godan_potential:
-                godan_base = match.word.start_location.token.base_form
-                godan_potential_part_base = match.word.end_location.token.base_form
-                godan = app.col().vocab.with_form_prefer_exact_match(godan_base)
-                godan_potential = app.col().vocab.with_form_prefer_exact_match(godan_potential_part_base)
-                if godan and godan_potential:
-                    return [(CompoundPartViewModel(godan[0], depth, config)),
-                            (CompoundPartViewModel(godan_potential[0], depth, config))]
-                else:
-                    return []
-            else: # we may still have parts if janome tokenizes a word we consider a compound as a single token
-                return (vocab_note.compound_parts.primary_parts_notes()
-                        .select(lambda _part: CompoundPartViewModel(_part, depth, config)).to_list())
+        match = match_viewmodel.match
+        if match.inspector.is_ichidan_covering_godan_potential:
+            godan_base = match.word.start_location.token.base_form
+            godan_potential_part_base = match.word.end_location.token.base_form
+            godan = app.col().vocab.with_form_prefer_exact_match(godan_base)
+            godan_potential = app.col().vocab.with_form_prefer_exact_match(godan_potential_part_base)
+            if godan and godan_potential:
+                return [(CompoundPartViewModel(godan[0], depth, config)),
+                        (CompoundPartViewModel(godan_potential[0], depth, config))]
+            return []
+        # we may still have parts if janome tokenizes a word we consider a compound as a single token
+        return (vocab_note.compound_parts.primary_parts_notes()
+                .select(lambda _part: CompoundPartViewModel(_part, depth, config)).to_list())

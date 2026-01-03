@@ -22,8 +22,9 @@ _tokenizer = JNTokenizer()
 class TextAnalysis(WeakRefable, Slots):
     version = "text_analysis_0.1"
 
-    def __init__(self, sentence: str, sentence_configuration: SentenceConfiguration) -> None:
+    def __init__(self, sentence: str, sentence_configuration: SentenceConfiguration, for_ui: bool = False) -> None:
         self.weakref = WeakRef(self)
+        self.for_ui = for_ui
         self.text = sentence
         self.configuration = sentence_configuration
         self.tokenized_text = _tokenizer.tokenize(sentence)
