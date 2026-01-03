@@ -16,8 +16,8 @@ if TYPE_CHECKING:
     from PyQt6.QtWidgets import QMenu
 
 def build_matching_settings_menu(toggle_flags_menu: QMenu, vocab: VocabNote) -> None:
-    def add_tag_field_check_box(menu: QMenu, title: str, field: TagFlagField) -> None:
-        add_checkbox(menu, title, field.is_set, field.set_to)
+    def add_tag_field_check_box(menu: QMenu, title: str, field: TagFlagField, reparse_sentences: bool = True) -> None:
+        add_checkbox(menu, title, field.is_set, field.set_to, reparse_sentences=reparse_sentences)
 
     def add_checkbox(menu: QMenu, title: str, getter: Callable[[], bool], setter: Callable[[bool], None], reparse_sentences: bool = True) -> None:
         def set_value(value: bool) -> None:
@@ -61,7 +61,7 @@ def build_matching_settings_menu(toggle_flags_menu: QMenu, vocab: VocabNote) -> 
     def build_is_menu(is_menu: QMenu) -> None:
         add_tag_field_check_box(is_menu, shortcutfinger.home1("Poison word"), vocab.matching_configuration.bool_flags.is_poison_word)
         add_tag_field_check_box(is_menu, shortcutfinger.home2("Inflecting word"), vocab.matching_configuration.bool_flags.is_inflecting_word)
-        add_tag_field_check_box(is_menu, shortcutfinger.home3("Compositionally transparent compound"), vocab.matching_configuration.bool_flags.is_compositionally_transparent_compound)
+        add_tag_field_check_box(is_menu, shortcutfinger.home3("Compositionally transparent compound"), vocab.matching_configuration.bool_flags.is_compositionally_transparent_compound, reparse_sentences=False)
 
     def build_misc_flags_menu(misc_menu: QMenu) -> None:
         add_tag_field_check_box(misc_menu, shortcutfinger.home1("Question overrides form: Show the question in results even if the match was another form"), vocab.matching_configuration.bool_flags.question_overrides_form)
