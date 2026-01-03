@@ -110,11 +110,13 @@ class JapaneseConfig(Slots):
         self.minimum_time_viewing_question: ConfigurationValueFloat = ConfigurationValueFloat("minimum_time_viewing_question", "Minimum time viewing question", 0.5)
         self.minimum_time_viewing_answer: ConfigurationValueFloat = ConfigurationValueFloat("minimum_time_viewing_answer", "Minimum time viewing answer", 0.5)
         self.hide_compositionally_transparent_compounds: ConfigurationValueBool = ConfigurationValueBool("hide_compositionally_transparent_compounds", "Hide compositionally transparent compounds", True)
+        self.hide_all_compounds: ConfigurationValueBool = ConfigurationValueBool("hide_all_compounds", "Hide all compounds", False)
 
         self.sentence_view_toggles: list[ConfigurationValueBool] = [self.automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound,
                                                                     self.automatically_yield_last_token_in_passive_verb_compounds_to_overlapping_compound,
                                                                     self.automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound,
                                                                     self.hide_compositionally_transparent_compounds,
+                                                                    self.hide_all_compounds,
                                                                     self.show_compound_parts_in_sentence_breakdown,
                                                                     self.show_sentence_breakdown_in_edit_mode,
                                                                     self.show_kanji_in_sentence_breakdown]

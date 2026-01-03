@@ -16,6 +16,7 @@ if TYPE_CHECKING:
     from collections.abc import Callable
 
     from aqt.main import MainWindowState
+    from configuration.configuration_value import ConfigurationValueBool
     from PyQt6.QtWidgets import QWidget
 
 def init() -> None:
@@ -60,34 +61,38 @@ def init() -> None:
             app.config().show_sentence_breakdown_in_edit_mode.set_value(False)
         refresh_shallow()
 
-    def toggle_show_kanji_in_sentence_breakdown() -> None:
-        app.config().show_kanji_in_sentence_breakdown.set_value(not app.config().show_kanji_in_sentence_breakdown.get_value())
+    def toggle_expando_flag(flag: ConfigurationValueBool, exit_edit_mode: bool = True) -> None:
+        flag.set_value(not flag.get_value())
+
+        if exit_edit_mode:
+            app.config().show_compound_parts_in_sentence_breakdown.set_value(False)
+
         refresh_shallow()
 
-    # noinspection DuplicatedCode
+    def toggle_hide_transparent_compounds__in_sentence_breakdown() -> None:
+        toggle_expando_flag(app.config().hide_compositionally_transparent_compounds)
+
+    def toggle_hide_all_compounds_in_sentence_breakdown() -> None:
+        toggle_expando_flag(app.config().hide_all_compounds)
+
+    def toggle_show_kanji_in_sentence_breakdown() -> None:
+        toggle_expando_flag(app.config().show_kanji_in_sentence_breakdown)
+
     def toggle_show_sentence_breakdown_in_edit_mode() -> None:
-        app.config().show_sentence_breakdown_in_edit_mode.set_value(not app.config().show_sentence_breakdown_in_edit_mode.get_value())
-        if app.config().show_sentence_breakdown_in_edit_mode.get_value():
-            app.config().show_compound_parts_in_sentence_breakdown.set_value(False)
-        refresh_shallow()
+        toggle_expando_flag(app.config().show_sentence_breakdown_in_edit_mode, exit_edit_mode=False)
 
     def toggle_yield_last_token_in_suru_verb_compounds_to_overlapping_compound() -> None:
-        app.config().automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound.set_value(
-                not app.config().automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound.get_value())
-        refresh_shallow()
+        toggle_expando_flag(app.config().automatically_yield_last_token_in_suru_verb_compounds_to_overlapping_compound)
 
     def toggle_yield_last_token_in_passive_verb_compounds_to_overlapping_compound() -> None:
-        app.config().automatically_yield_last_token_in_passive_verb_compounds_to_overlapping_compound.set_value(
-                not app.config().automatically_yield_last_token_in_passive_verb_compounds_to_overlapping_compound.get_value())
-        refresh_shallow()
+        toggle_expando_flag(app.config().automatically_yield_last_token_in_passive_verb_compounds_to_overlapping_compound)
 
     def toggle_yield_last_token_in_causative_verb_compounds_to_overlapping_compound() -> None:
-        app.config().automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound.set_value(
-                not app.config().automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound.get_value())
-        refresh_shallow()
+        toggle_expando_flag(app.config().automatically_yield_last_token_in_causative_verb_compounds_to_overlapping_compound)
 
     def toggle_all_yield_last_token_flags() -> None:
         app.config().toggle_all_sentence_display_auto_yield_flags()
+        app.config().show_compound_parts_in_sentence_breakdown.set_value(False)
         refresh_shallow()
 
     def set_shortcut(widget: QWidget, shortcut: str, callback: Callable[[], None]) -> None:
@@ -110,10 +115,12 @@ def init() -> None:
         for key, callback in stortcuts.items():
             state_shortcuts.append((key, callback))
 
-    stortcuts: dict[str, Callable[[], None]] = {"a": toggle_show_compound_parts_in_sentence_breakdown,
-                                                "o": toggle_show_kanji_in_sentence_breakdown,
+    stortcuts: dict[str, Callable[[], None]] = {"a": toggle_show_kanji_in_sentence_breakdown,
+                                                "o": toggle_show_compound_parts_in_sentence_breakdown,
                                                 "e": toggle_all_yield_last_token_flags,
-                                                "u": toggle_show_sentence_breakdown_in_edit_mode,
+                                                "u": toggle_hide_all_compounds_in_sentence_breakdown,
+                                                "i": toggle_hide_transparent_compounds__in_sentence_breakdown,
+                                                "k": toggle_show_sentence_breakdown_in_edit_mode,
                                                 "0": remove_mnemonic,
                                                 "7": reset_source_comments,
                                                 "8": reset_incorrect_matches,

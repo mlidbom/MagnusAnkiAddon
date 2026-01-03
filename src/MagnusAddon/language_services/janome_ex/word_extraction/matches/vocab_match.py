@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, final, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
+from configuration.configuration_cache_impl import ConfigurationCache
 from language_services.janome_ex.word_extraction.matches.match import Match
 from language_services.janome_ex.word_extraction.matches.requirements.vocab_match_inspector import VocabMatchInspector
 from language_services.janome_ex.word_extraction.matches.state_tests.another_match_owns_the_form import ForbidsAnotherMatchOwnsTheForm
@@ -69,7 +70,7 @@ class VocabMatch(Match, Slots):
                          ),
                          display_requirements=(
                                  ForbidsHasDisplayedOverlappingFollowingCompound.for_if(inspector, self.requires_forbids.yield_last_token.is_required),
-                                 ForbidsCompositionallyTransparentCompound.for_if(self.is_hide_transparent_compounds_enabled() and vocab.matching_configuration.bool_flags.is_compositionally_transparent_compound.is_set()),
+                                 ForbidsCompositionallyTransparentCompound.for_if(ConfigurationCache.hide_transparent_compounds() and vocab.matching_configuration.bool_flags.is_compositionally_transparent_compound.is_set())
                          ))
         self.vocab: VocabNote = vocab
         self.word_variant: WeakRef[CandidateWordVariant] = word_variant
