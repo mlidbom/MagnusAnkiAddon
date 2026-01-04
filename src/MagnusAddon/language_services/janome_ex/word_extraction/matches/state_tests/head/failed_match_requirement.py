@@ -16,3 +16,9 @@ class FailedMatchRequirement(MatchRequirement):
     @property
     @override
     def failure_reason(self) -> str: return self.reason
+
+    @staticmethod
+    def forbids(message: str) -> FailedMatchRequirement: return FailedMatchRequirement(f"forbids::{message}")
+
+    @staticmethod
+    def required(message: str) -> FailedMatchRequirement: return FailedMatchRequirement(f"required::{message}")

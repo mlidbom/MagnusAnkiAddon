@@ -47,40 +47,40 @@ class VocabMatch(Match, Slots):
     @override
     def _create_display_requirements(self) -> tuple[MatchRequirement | None, ...]:
         return (
-                ForbidsHasDisplayedOverlappingFollowingCompound.for_if(self.vocab_inspector, self.requires_forbids.yield_last_token.is_required),
-                ForbidsCompositionallyTransparentCompound.for_if(self.vocab_inspector)
+                ForbidsHasDisplayedOverlappingFollowingCompound.apply_to(self.vocab_inspector, self.requires_forbids.yield_last_token.is_required),
+                ForbidsCompositionallyTransparentCompound.apply_to(self.vocab_inspector)
         )
 
     @override
     def _create_validity_requirements(self) -> tuple[MatchRequirement | None, ...]:
         return (
-                ForbidsAnotherMatchOwnsTheForm(self.vocab_inspector),
+                ForbidsAnotherMatchOwnsTheForm.apply_to(self.vocab_inspector),
                 # head requirements
-                ForbidsPrefixIsIn.for_if(self.vocab_inspector, self.rules.prefix_is_not.get()),
-                RequiresPrefixIsIn.for_if(self.vocab_inspector, self.rules.required_prefix.get()),
-                RequiresOrForbidsIsSentenceStart.for_if(self.vocab_inspector),
-                RequiresOrForbidsHasTeFormStem.for_if(self.vocab_inspector),
-                RequiresOrForbidsHasAStem.for_if(self.vocab_inspector),
-                RequiresOrForbidsHasPastTenseStem.for_if(self.vocab_inspector),
-                RequiresOrForbidsHasEStem.for_if(self.vocab_inspector),
+                ForbidsPrefixIsIn.apply_to(self.vocab_inspector, self.rules.prefix_is_not.get()),
+                RequiresPrefixIsIn.apply_to(self.vocab_inspector, self.rules.required_prefix.get()),
+                RequiresOrForbidsIsSentenceStart.apply_to(self.vocab_inspector),
+                RequiresOrForbidsHasTeFormStem.apply_to(self.vocab_inspector),
+                RequiresOrForbidsHasAStem.apply_to(self.vocab_inspector),
+                RequiresOrForbidsHasPastTenseStem.apply_to(self.vocab_inspector),
+                RequiresOrForbidsHasEStem.apply_to(self.vocab_inspector),
 
-                RequiresOrForbidsHasGodanImperativePrefix.for_if(self.vocab_inspector),
-                RequiresOrForbidsStartsWithGodanPotentialStemOrInflection.for_if(self.vocab_inspector),
-                RequiresOrForbidsStartsWithGodanImperativeStemOrInflection.for_if(self.vocab_inspector),
-                RequiresOrForbidsStartsWithIchidanImperativeStemOrInflection.for_if(self.vocab_inspector),
+                RequiresOrForbidsHasGodanImperativePrefix.apply_to(self.vocab_inspector),
+                RequiresOrForbidsStartsWithGodanPotentialStemOrInflection.apply_to(self.vocab_inspector),
+                RequiresOrForbidsStartsWithGodanImperativeStemOrInflection.apply_to(self.vocab_inspector),
+                RequiresOrForbidsStartsWithIchidanImperativeStemOrInflection.apply_to(self.vocab_inspector),
 
                 # tail requirements
-                RequiresOrForbidsIsSentenceEnd.for_if(self.vocab_inspector),
-                ForbidsSuffixIsIn.for_if(self.vocab_inspector, self.rules.suffix_is_not.get()),
+                RequiresOrForbidsIsSentenceEnd.apply_to(self.vocab_inspector),
+                ForbidsSuffixIsIn.apply_to(self.vocab_inspector, self.rules.suffix_is_not.get()),
 
                 # misc requirements
-                ForbidsIsPoisonWord(self.vocab_inspector),
+                ForbidsIsPoisonWord.apply_to(self.vocab_inspector),
                 RequiresOrForbidsMasuStem.apply_to(self.vocab_inspector),
 
-                RequiresOrForbidsIsExactMatch.for_if(self.vocab_inspector),
-                RequiresOrForbidsIsSingleToken.for_if(self.vocab_inspector),
-                ForbidsSurfaceIsIn.for_if(self.vocab_inspector, self.rules.surface_is_not.get()),
-                ForbidsSurfaceIsIn.for_if(self.vocab_inspector, self.rules.yield_to_surface.get()),
+                RequiresOrForbidsIsExactMatch.apply_to(self.vocab_inspector),
+                RequiresOrForbidsIsSingleToken.apply_to(self.vocab_inspector),
+                ForbidsSurfaceIsIn.apply_to(self.vocab_inspector, self.rules.surface_is_not.get()),
+                ForbidsSurfaceIsIn.apply_to(self.vocab_inspector, self.rules.yield_to_surface.get()),  # todo this should be in display requirements right?
         )
 
     @property

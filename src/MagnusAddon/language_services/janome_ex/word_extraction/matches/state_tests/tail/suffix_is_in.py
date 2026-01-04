@@ -1,30 +1,19 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, override
+from typing import TYPE_CHECKING
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from language_services.janome_ex.word_extraction.matches.requirements.custom_forbids import CustomForbids
+from language_services.janome_ex.word_extraction.matches.state_tests.head.failed_match_requirement import FailedMatchRequirement
 
 if TYPE_CHECKING:
+    from language_services.janome_ex.word_extraction.matches.requirements.requirement import MatchRequirement
     from language_services.janome_ex.word_extraction.matches.requirements.vocab_match_inspector import VocabMatchInspector
     from typed_linq_collections.collections.q_set import QSet
 
-class ForbidsSuffixIsIn(CustomForbids, Slots):
-    def __init__(self, inspector: VocabMatchInspector, suffixes: QSet[str]) -> None:
-        super().__init__(inspector)
-        self.suffixes: QSet[str] = suffixes
-
+class ForbidsSuffixIsIn(Slots):
     @staticmethod
-    def for_if(inspector: VocabMatchInspector, suffixes: QSet[str]) -> ForbidsSuffixIsIn | None:
-        return ForbidsSuffixIsIn(inspector, suffixes) if suffixes else None
+    def apply_to(inspector: VocabMatchInspector, suffixes: QSet[str]) -> MatchRequirement | None:
+        if suffixes and any(suffix for suffix in suffixes if inspector.suffix.startswith(suffix)):
+            return FailedMatchRequirement.forbids(f"""suffix_in:{",".join(suffixes)}""")
 
-    @property
-    @override
-    def description(self) -> str: return f"""suffix_in:{",".join(self.suffixes)}"""
-
-    @override
-    def _internal_is_in_state(self) -> bool:
-        if any(suffix for suffix in self.suffixes if self.inspector.suffix.startswith(suffix)):  # noqa: SIM103
-            return True
-
-        return False
+        return None

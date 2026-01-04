@@ -1,25 +1,21 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, override
+from typing import TYPE_CHECKING
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from language_services.janome_ex.word_extraction.matches.requirements.match_custom_forbids import MatchCustomForbids
+from language_services.janome_ex.word_extraction.matches.state_tests.head.failed_match_requirement import FailedMatchRequirement
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.requirements.match_inspector import MatchInspector
+    from language_services.janome_ex.word_extraction.matches.requirements.requirement import MatchRequirement
 
-class ForbidsSurfaceIfBaseIsValidAndContextIndicatesAVerb(MatchCustomForbids, Slots):
-    def __init__(self, inspector: MatchInspector) -> None:
-        super().__init__(inspector)
+class ForbidsSurfaceIfBaseIsValidAndContextIndicatesAVerb(Slots):
+    _failed: MatchRequirement = FailedMatchRequirement.forbids("inflected_surface_with_valid_base")
 
-    @property
-    @override
-    def description(self) -> str: return "inflected_surface_with_valid_base"
-
-    @override
-    def _internal_is_in_state(self) -> bool:
-        # nouns are not inflected
-        if self.inspector.variant.is_surface and self.inspector.word.has_base_variant_with_valid_match:
-            return bool(self.inspector.word.is_inflected_word or self.inspector.prefix.endswith("を") and self.inspector.is_end_of_statement)
-
-        return False
+    @staticmethod
+    def apply_to(inspector: MatchInspector) -> MatchRequirement | None:
+        if (inspector.variant.is_surface
+                and inspector.word.has_base_variant_with_valid_match
+                and (inspector.word.is_inflected_word or (inspector.prefix.endswith("を") and inspector.is_end_of_statement))):
+            return ForbidsSurfaceIfBaseIsValidAndContextIndicatesAVerb._failed
+        return None

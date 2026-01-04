@@ -16,7 +16,7 @@ class ForbidsHasDisplayedOverlappingFollowingCompound(CustomForbidsNoCache, Slot
         super().__init__(inspector)
 
     @staticmethod
-    def for_if(inspector: VocabMatchInspector, is_active: bool) -> ForbidsHasDisplayedOverlappingFollowingCompound | None:
+    def apply_to(inspector: VocabMatchInspector, is_active: bool) -> ForbidsHasDisplayedOverlappingFollowingCompound | None:
         return ForbidsHasDisplayedOverlappingFollowingCompound(inspector) if is_active else None
 
     @property
