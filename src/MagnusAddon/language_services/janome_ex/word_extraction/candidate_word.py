@@ -58,6 +58,8 @@ class CandidateWord(WeakRefable, Slots):
             self.indexing_variants.append(non_optional(self.base_variant))
 
     def run_display_analysis_pass_true_if_there_were_changes(self) -> bool:
+        if self.location_count > 1 and not self.valid_variants: return False  # the only exception to the requirement for validity is emergency displaying single token words when we have nothing else to display. That does not apply to compounds
+
         if self.base_variant is not None: self.base_variant.run_visibility_analysis()
         self.surface_variant.run_visibility_analysis()
 
