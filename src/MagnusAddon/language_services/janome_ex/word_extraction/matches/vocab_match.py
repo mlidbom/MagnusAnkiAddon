@@ -70,7 +70,7 @@ class VocabMatch(Match, Slots):
                 RequiresOrForbidsStartsWithIchidanImperativeStemOrInflection.apply_to(self.vocab_inspector),
 
                 # tail requirements
-                RequiresOrForbidsIsSentenceEnd.for_if(self.vocab_inspector),
+                RequiresOrForbidsIsSentenceEnd.apply_to(self.vocab_inspector),
                 ForbidsSuffixIsIn.for_if(self.vocab_inspector, self.rules.suffix_is_not.get()),
 
                 # misc requirements
