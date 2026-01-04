@@ -54,7 +54,7 @@ class VocabMatch(Match, Slots):
     @override
     def _create_validity_requirements(self) -> tuple[MatchRequirement | None, ...]:
         return (
-                ForbidsAnotherMatchOwnsTheForm(self.vocab_inspector),
+                ForbidsAnotherMatchOwnsTheForm.apply_to(self.vocab_inspector),
                 # head requirements
                 ForbidsPrefixIsIn.apply_to(self.vocab_inspector, self.rules.prefix_is_not.get()),
                 RequiresPrefixIsIn.apply_to(self.vocab_inspector, self.rules.required_prefix.get()),
