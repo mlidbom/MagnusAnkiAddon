@@ -10,24 +10,24 @@ if TYPE_CHECKING:
 
 class JNTokenWrapper(SplitToken, Slots):
     def __init__(self, token: JNToken) -> None:
-        super().__init__(token, token.surface, token.base_form, is_non_word_character=token.parts_of_speech.is_non_word_character(), is_inflectable_word=token.is_inflectable_word())
+        super().__init__(token, token.surface, token.base_form, is_non_word_character=token.is_non_word_character, is_inflectable_word=token.is_inflectable_word)
         self.token: JNToken = token
 
     @property
     @override
-    def is_past_tense_stem(self) -> bool: return self.token.is_past_tense_stem()
+    def is_past_tense_stem(self) -> bool: return self.token.is_past_tense_stem
     @property
     @override
-    def is_te_form_stem(self) -> bool: return self.token.is_te_form_stem()
+    def is_te_form_stem(self) -> bool: return self.token.is_te_form_stem
     @property
     @override
-    def is_ichidan_masu_stem(self) -> bool: return self.token.is_ichidan_masu_stem()
+    def is_ichidan_masu_stem(self) -> bool: return self.token.is_ichidan_masu_stem
     @property
     @override
-    def is_past_tense_marker(self) -> bool: return self.token.is_past_tense_marker()
+    def is_past_tense_marker(self) -> bool: return self.token.is_past_tense_marker
     @property
     @override
-    def is_special_nai_negative(self) -> bool: return self.token.is_special_nai_negative()
+    def is_special_nai_negative(self) -> bool: return self.token.is_special_nai_negative
 
     @property
     @override

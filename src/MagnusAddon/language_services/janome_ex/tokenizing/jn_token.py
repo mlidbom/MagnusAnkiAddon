@@ -7,6 +7,7 @@ from language_services.janome_ex.tokenizing import inflection_forms, inflection_
 from language_services.janome_ex.tokenizing.inflection_forms import InflectionForms
 from language_services.janome_ex.tokenizing.inflection_types import InflectionTypes
 from language_services.janome_ex.tokenizing.jn_parts_of_speech import JNPOS, JNPartsOfSpeech
+from language_services.janome_ex.tokenizing.processed_token import IAnalysisToken
 from language_services.janome_ex.word_extraction import analysis_constants
 from sysutils import kana_utils, typed
 from sysutils.weak_ref import WeakRef, WeakRefable
@@ -17,7 +18,7 @@ if TYPE_CHECKING:
     from language_services.janome_ex.tokenizing.inflection_types import InflectionType
 
 # noinspection PyUnusedFunction
-class JNToken(WeakRefable, Slots):
+class JNToken(IAnalysisToken, WeakRefable, Slots):
     def __init__(self,
                  parts_of_speech: JNPartsOfSpeech,
                  base_form: str,
@@ -29,8 +30,8 @@ class JNToken(WeakRefable, Slots):
                  node_type: str = "",
                  raw_token: Token | None = None) -> None:
         self.weak_ref: WeakRef[JNToken] = WeakRef(self)
-        self.base_form: str = typed.str_(base_form)
-        self.surface: str = typed.str_(surface)
+        self._base_form: str = typed.str_(base_form)
+        self._surface: str = typed.str_(surface)
         self.inflection_type: InflectionType = inflection_types.all_dict[inflection_type] if isinstance(inflection_type, str) else inflection_type
         self.inflected_form: InflectionForm = inflection_forms.all_dict[inflected_form] if isinstance(inflected_form, str) else inflected_form
         self.reading: str = typed.str_(reading)
@@ -72,39 +73,73 @@ class JNToken(WeakRefable, Slots):
                     self.parts_of_speech == other.parts_of_speech)
         return False
 
-    def is_verb(self) -> bool:
-        return self.parts_of_speech in JNPOS.Verb.all_types
-
+    # <IAnalysisToken implementation>
+    @property
+    @override
+    def is_past_tense_stem(self) -> bool: return self.inflected_form == InflectionForms.Continuative.ta_connection  # "連用タ接続"
+    @property
+    @override
+    def is_ichidan_masu_stem(self) -> bool: return self.is_masu_stem  # todo why is this checking for any masu stem and not checking anything ichidan specific?
+    _te_connections: set[InflectionForm] = {InflectionForms.Continuative.te_connection, InflectionForms.Continuative.de_connection}
+    @property
+    @override
+    def is_te_form_stem(self) -> bool:
+        return (self.inflected_form in JNToken._te_connections or
+                (self.is_past_tense_stem and self.surface.endswith("ん")))
+    @property
+    @override
+    def is_past_tense_marker(self) -> bool: return self.inflection_type == InflectionTypes.Special.ta  # "連用タ接続"
+    @property
+    @override
+    def is_special_nai_negative(self) -> bool: return self.inflection_type == InflectionTypes.Special.nai
+    @property
+    @override
+    def is_masu_stem(self) -> bool: return self.inflected_form == InflectionForms.Continuative.renyoukei_masu_stem
+    @property
+    @override
+    def surface(self) -> str: return self._surface
+    @property
+    @override
+    def base_form(self) -> str: return self._base_form
     _pseudo_verbs_for_inflection_purposes: set[str] = {"ます"}
+    @property
+    @override
     def is_inflectable_word(self) -> bool:
         return self.is_verb() or self.is_adjective() or self.base_form in self._pseudo_verbs_for_inflection_purposes
+    @property
+    @override
+    def is_non_word_character(self) -> bool: return self.parts_of_speech.is_non_word_character()
+
+    #   <Only true for split tokens>
+    @property
+    @override
+    def is_godan_potential_stem(self) -> bool: return False
+    @property
+    @override
+    def is_godan_imperative_stem(self) -> bool: return False
+    @property
+    @override
+    def is_ichidan_imperative_stem(self) -> bool: return False
+    @property
+    @override
+    def is_godan_potential_inflection(self) -> bool: return False
+    @property
+    @override
+    def is_godan_imperative_inflection(self) -> bool: return False
+    @property
+    @override
+    def is_ichidan_imperative_inflection(self) -> bool: return False
+    #   </Only true for split tokens>
+    # </IAnalysisToken implementation>
+
+    def is_verb(self) -> bool:
+        return self.parts_of_speech in JNPOS.Verb.all_types
 
     def is_adjective(self) -> bool:
         return self.parts_of_speech in JNPOS.Adjective.all_types
 
     def is_ichidan_verb(self) -> bool:
         return self.inflection_type == InflectionTypes.Ichidan.regular
-
-    def is_past_tense_stem(self) -> bool:
-        return self.inflected_form == InflectionForms.Continuative.ta_connection  # "連用タ接続"
-
-    _te_connections: set[InflectionForm] = {InflectionForms.Continuative.te_connection, InflectionForms.Continuative.de_connection}
-    def is_te_form_stem(self) -> bool:
-        return (self.inflected_form in JNToken._te_connections or
-                (self.is_past_tense_stem() and self.surface.endswith("ん")))
-
-    def is_ichidan_masu_stem(self) -> bool:
-        return self.is_masu_stem  # todo why is this checking for any masu stem and not checking anything ichidan specific?
-
-    @property
-    def is_masu_stem(self) -> bool:
-        return self.inflected_form == InflectionForms.Continuative.renyoukei_masu_stem
-
-    def is_special_nai_negative(self) -> bool:
-        return self.inflection_type == InflectionTypes.Special.nai
-
-    def is_past_tense_marker(self) -> bool:
-        return self.inflection_type == InflectionTypes.Special.ta  # "連用タ接続"
 
     def is_t_form_marker(self) -> bool:
         return self.inflection_type == InflectionTypes.Special.ta  # "連用タ接続"

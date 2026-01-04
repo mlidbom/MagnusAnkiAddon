@@ -67,6 +67,7 @@ class SplitToken(IAnalysisToken, Slots):
         self._is_godan_imperative_inflection: bool = is_godan_imperative_inflection
         self._is_ichidan_imperative_inflection: bool = is_ichidan_imperative_inflection
 
+    # <IAnalysisToken implementation>
     @property
     @override
     def is_past_tense_stem(self) -> bool: return False
@@ -115,6 +116,7 @@ class SplitToken(IAnalysisToken, Slots):
     @property
     @override
     def is_ichidan_imperative_inflection(self) -> bool: return self._is_ichidan_imperative_inflection
+    # </IAnalysisToken implementation>
 
     @override
     def __repr__(self) -> str:
