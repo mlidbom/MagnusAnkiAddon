@@ -17,8 +17,8 @@ class FailedMatchRequirement(MatchRequirement):
     @override
     def failure_reason(self) -> str: return self.reason
 
-    @staticmethod
-    def forbids(message: str) -> FailedMatchRequirement: return FailedMatchRequirement(f"forbids::{message}")
+    @classmethod
+    def forbids(cls, message: str) -> FailedMatchRequirement: return FailedMatchRequirement(f"forbids::{message}")
 
-    @staticmethod
-    def required(message: str) -> FailedMatchRequirement: return FailedMatchRequirement(f"required::{message}")
+    @classmethod
+    def required(cls, message: str) -> FailedMatchRequirement: return FailedMatchRequirement(f"required::{message}")

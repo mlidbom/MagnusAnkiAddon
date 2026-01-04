@@ -24,8 +24,8 @@ class RequiresOrForbidsIsExactMatch(Slots):
                 return cls._forbidden_failure
         return None
 
-    @staticmethod
-    def _internal_is_in_state(inspector: VocabMatchInspector) -> bool:
+    @classmethod
+    def _internal_is_in_state(cls, inspector: VocabMatchInspector) -> bool:
         if not inspector.variant.is_surface:
             return False
 

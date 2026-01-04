@@ -13,8 +13,8 @@ if TYPE_CHECKING:
     from anki.dbproxy import Row
 
 class NoteBulkLoader:
-    @staticmethod
-    def load_all_notes_of_type(col: Collection, note_type_name: str) -> list[Note]:
+    @classmethod
+    def load_all_notes_of_type(cls, col: Collection, note_type_name: str) -> list[Note]:
         note_type: NotetypeDict = typed.non_optional(col.models.by_name(note_type_name))
         field_map: dict[str, tuple[int, FieldDict]] = col.models.field_map(non_optional(note_type))
         field_count = len(note_type["flds"]) # pyright: ignore[reportAny]

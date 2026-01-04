@@ -13,8 +13,8 @@ if TYPE_CHECKING:
 
 
 class CardUtils(Slots):
-    @staticmethod
-    def is_new(card: Card) -> bool:
+    @classmethod
+    def is_new(cls, card: Card) -> bool:
         return card.queue == QUEUE_TYPE_NEW
 
     @classmethod

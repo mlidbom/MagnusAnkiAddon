@@ -25,8 +25,8 @@ class RequiresOrForbidsStartsWithGodanPotentialStemOrInflection(Slots):
         return None
 
 
-    @staticmethod
-    def _internal_is_in_state(inspector: VocabMatchInspector) -> bool:
+    @classmethod
+    def _internal_is_in_state(cls, inspector: VocabMatchInspector) -> bool:
         if inspector.word.start_location.token.is_godan_potential_inflection or inspector.word.start_location.token.is_godan_potential_stem:  # noqa: SIM103
             return True
         return False

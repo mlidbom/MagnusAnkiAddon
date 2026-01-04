@@ -11,8 +11,8 @@ if TYPE_CHECKING:
     from typed_linq_collections.collections.q_set import QSet
 
 class ForbidsSuffixIsIn(Slots):
-    @staticmethod
-    def apply_to(inspector: VocabMatchInspector, suffixes: QSet[str]) -> MatchRequirement | None:
+    @classmethod
+    def apply_to(cls, inspector: VocabMatchInspector, suffixes: QSet[str]) -> MatchRequirement | None:
         if suffixes and any(suffix for suffix in suffixes if inspector.suffix.startswith(suffix)):
             return FailedMatchRequirement.forbids(f"""suffix_in:{",".join(suffixes)}""")
 

@@ -15,8 +15,8 @@ if TYPE_CHECKING:
     from qt_utils.i_task_progress_runner import ITaskRunner
 
 class TaskRunner(Slots):
-    @staticmethod
-    def create(window_title: str, label_text: str, visible: bool | None = None, allow_cancel: bool = True) -> ITaskRunner:
+    @classmethod
+    def create(cls, window_title: str, label_text: str, visible: bool | None = None, allow_cancel: bool = True) -> ITaskRunner:
         if visible is None: visible = not app.is_testing
         if not visible:
             return InvisibleTaskRunner(window_title, label_text)

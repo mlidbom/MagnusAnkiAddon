@@ -57,8 +57,8 @@ class VocabNoteUserCompoundParts(Slots):
 
         self.set(compound_parts)
 
-    @staticmethod
-    def _strip_brackets(part: str) -> str:
+    @classmethod
+    def _strip_brackets(cls, part: str) -> str:
         return part.replace("[", "").replace("]", "")
 
     @override

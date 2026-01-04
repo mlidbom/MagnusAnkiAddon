@@ -84,8 +84,8 @@ class JPNote(WeakRefable, Slots):
         if cls.get_note_type(note) == NoteTypes.Sentence: return SentenceNote(note)
         return JPNote(note)
 
-    @staticmethod
-    def get_note_type(note: Note) -> str:
+    @classmethod
+    def get_note_type(cls, note: Note) -> str:
         return str_(cast(NotetypeDict, note.note_type())["name"])  # pyright: ignore[reportAny]
 
     def get_type(self) -> NoteTypeEx:

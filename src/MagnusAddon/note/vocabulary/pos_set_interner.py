@@ -71,8 +71,8 @@ class POSSetManager:
         "'taru' adjective": [POS.TARU_ADJECTIVE],
     }
 
-    @staticmethod
-    def _harmonize(pos: set[str]) -> set[str]:
+    @classmethod
+    def _harmonize(cls, pos: set[str]) -> set[str]:
         result: set[str] = set()
         for item in pos:
             mapped = POSSetManager._remappings.get(item.lower())
@@ -82,8 +82,8 @@ class POSSetManager:
                 result.add(item)
         return result
 
-    @staticmethod
-    def _intern_frozenset(pos_values_set: set[str]) -> frozenset[str]:
+    @classmethod
+    def _intern_frozenset(cls, pos_values_set: set[str]) -> frozenset[str]:
         """Internal method to intern a harmonized POS set."""
         pos_key = ", ".join(sorted(pos_values_set))
         if pos_key not in POSSetManager._pos_by_str:
@@ -92,26 +92,26 @@ class POSSetManager:
             )
         return POSSetManager._pos_by_str[pos_key]
 
-    @staticmethod
-    def intern_and_harmonize(pos: str) -> str:
+    @classmethod
+    def intern_and_harmonize(cls, pos: str) -> str:
         pos_values_list = ex_str.extract_comma_separated_values(pos).select(lambda it: it.lower()).to_list()
         pos_values_set = POSSetManager._harmonize(set(pos_values_list))
         POSSetManager._intern_frozenset(pos_values_set)
         return ", ".join(sorted(pos_values_set))
 
-    @staticmethod
-    def intern_and_harmonize_from_list(pos_list: list[str]) -> frozenset[str]:
+    @classmethod
+    def intern_and_harmonize_from_list(cls, pos_list: list[str]) -> frozenset[str]:
         """Intern and harmonize POS from a list of strings. Returns the interned frozenset."""
         pos_values_set = POSSetManager._harmonize({pos.lower() for pos in pos_list})
         return POSSetManager._intern_frozenset(pos_values_set)
 
-    @staticmethod
-    def get(pos: str) -> frozenset[str]: return POSSetManager._pos_by_str[pos]
+    @classmethod
+    def get(cls, pos: str) -> frozenset[str]: return POSSetManager._pos_by_str[pos]
 
-    @staticmethod
-    def is_transitive_verb(pos_set: frozenset[str]) -> bool:
+    @classmethod
+    def is_transitive_verb(cls, pos_set: frozenset[str]) -> bool:
         return POS.TRANSITIVE in pos_set
 
-    @staticmethod
-    def is_intransitive_verb(pos_set: frozenset[str]) -> bool:
+    @classmethod
+    def is_intransitive_verb(cls, pos_set: frozenset[str]) -> bool:
         return POS.INTRANSITIVE in pos_set

@@ -26,8 +26,8 @@ class RequiresOrForbidsHasTeFormStem(Slots):
                 return RequiresOrForbidsHasTeFormStem._forbidden_failure
         return None
 
-    @staticmethod
-    def _internal_is_in_state(inspector: VocabMatchInspector) -> bool:
+    @classmethod
+    def _internal_is_in_state(cls, inspector: VocabMatchInspector) -> bool:
         # todo get this stuff moved into the tokenizing stage...
         if inspector.previous_location is None:
             return False

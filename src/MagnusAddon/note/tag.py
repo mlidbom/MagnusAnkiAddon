@@ -25,13 +25,13 @@ class Tag(Slots):
         Tag._by_id[id] = self
         Tag._by_name[name] = self
 
-    @staticmethod
-    def _add_tag(name: str) -> Tag: return Tag(name, Tag._secret)
+    @classmethod
+    def _add_tag(cls, name: str) -> Tag: return Tag(name, Tag._secret)
 
-    @staticmethod
-    def from_name(name: str) -> Tag:
+    @classmethod
+    def from_name(cls, name: str) -> Tag:
         return Tag._by_name.get_or_add(name, Tag._add_tag)
 
-    @staticmethod
-    def from_id(id: int) -> Tag:
+    @classmethod
+    def from_id(cls, id: int) -> Tag:
         return Tag._by_id[id]

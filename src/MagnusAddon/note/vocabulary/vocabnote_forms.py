@@ -66,8 +66,8 @@ class VocabNoteForms(WeakRefable, Slots):
     def without_noise_characters(self) -> list[str]:
         return [self._strip_noise_characters(form) for form in self.all_list()]
 
-    @staticmethod
-    def _strip_noise_characters(string: str) -> str:
+    @classmethod
+    def _strip_noise_characters(cls, string: str) -> str:
         return string.replace(Mine.VocabPrefixSuffixMarker, "")
 
     def set_set(self, forms: QSet[str]) -> None: self.set_list(list(forms))

@@ -54,18 +54,18 @@ class ObjectInstanceTracker(Slots):
     def __del__(self) -> None:
         current_instance_count[self.type_name] -= 1
 
-    @staticmethod
-    def _get_fully_qualified_name(cls_type: type[object]) -> str:
+    @classmethod
+    def _get_fully_qualified_name(cls, cls_type: type[object]) -> str:
         if cls_type.__module__ != "__builtin__":
             return sys.intern(cls_type.__module__ + "." + cls_type.__qualname__)
         return sys.intern(cls_type.__qualname__)
 
     # noinspection PyUnusedFunction
-    @staticmethod
-    def configured_tracker_for(obj: object) -> object | None: return ObjectInstanceTracker(obj.__class__) if ObjectInstanceTracker._track_instances_in_memory else None
+    @classmethod
+    def configured_tracker_for(cls, obj: object) -> object | None: return ObjectInstanceTracker(obj.__class__) if ObjectInstanceTracker._track_instances_in_memory else None
 
-    @staticmethod
-    def tracker_for(obj: object) -> ObjectInstanceTracker: return ObjectInstanceTracker(obj.__class__)
+    @classmethod
+    def tracker_for(cls, obj: object) -> ObjectInstanceTracker: return ObjectInstanceTracker(obj.__class__)
 
 def print_instance_counts() -> None:
     print("################### Instance counts ###################")

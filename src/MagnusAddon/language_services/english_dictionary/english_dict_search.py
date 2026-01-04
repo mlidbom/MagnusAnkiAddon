@@ -64,12 +64,12 @@ class EnglishDictionary(Slots):
                         self.words.append(english_word)
                         self.word_map[lower_word] = english_word
 
-    @staticmethod
-    def _shortest_word_first(word: EnglishWord) -> int:
+    @classmethod
+    def _shortest_word_first(cls, word: EnglishWord) -> int:
         return len(word.lower_case_word)
 
-    @staticmethod
-    def _starting_with_first_then_shortest_first(word: EnglishWord, search_string: str) -> tuple[bool, int, str]:
+    @classmethod
+    def _starting_with_first_then_shortest_first(cls, word: EnglishWord, search_string: str) -> tuple[bool, int, str]:
         return not word.lower_case_word.startswith(search_string), len(word.lower_case_word), word.lower_case_word
 
     def words_containing_starting_with_first_then_by_shortest_first(self, search_string: str) -> list[EnglishWord]:

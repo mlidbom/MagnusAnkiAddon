@@ -54,9 +54,9 @@ class StopWatch(Slots):
     def elapsed_formatted(self) -> str:
         return format_seconds_as_ss_ttt_ttt(time.perf_counter() - self.start_time)
 
-    @staticmethod
+    @classmethod
     @contextmanager
-    def log_warning_if_slower_than(warn_if_slower_than:float, message:str = "") -> Iterator[None]:
+    def log_warning_if_slower_than(cls, warn_if_slower_than:float, message:str = "") -> Iterator[None]:
         # noinspection DuplicatedCode
         watch = StopWatch()
 
@@ -77,9 +77,9 @@ class StopWatch(Slots):
             elif elapsed_seconds * 2 > warn_if_slower_than:
                 mylog.info(get_message())
 
-    @staticmethod
+    @classmethod
     @contextmanager
-    def log_execution_time(message:str = "") -> Iterator[None]:
+    def log_execution_time(cls, message:str = "") -> Iterator[None]:
         # noinspection DuplicatedCode
         watch = StopWatch()
 

@@ -12,8 +12,8 @@ if TYPE_CHECKING:
 class ParsedWordSerializer(Slots):
     separator: str = f" {invisible_space} "
 
-    @staticmethod
-    def to_row(parsed_word: ParsedMatch) -> str: return ParsedWordSerializer.separator.join([
+    @classmethod
+    def to_row(cls, parsed_word: ParsedMatch) -> str: return ParsedWordSerializer.separator.join([
             parsed_word.variant,  # 0
             str(parsed_word.start_index),  # 1
             str(1 if parsed_word.is_displayed else 0),  # 2
@@ -21,8 +21,8 @@ class ParsedWordSerializer(Slots):
             str(parsed_word.vocab_id),  # 4
     ])
 
-    @staticmethod
-    def from_row(serialized: str) -> ParsedMatch:
+    @classmethod
+    def from_row(cls, serialized: str) -> ParsedMatch:
         from note.sentences.parsed_match import ParsedMatch
         values = serialized.split(ParsedWordSerializer.separator)
 

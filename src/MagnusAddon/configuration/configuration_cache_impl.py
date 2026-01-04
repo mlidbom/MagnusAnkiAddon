@@ -15,17 +15,17 @@ class ConfigurationCache:
             app.config().hide_all_compounds.on_change(self._replace_instance)
             ConfigurationCache._initialized = True
 
-    @staticmethod
-    def hide_transparent_compounds() -> bool: return ConfigurationCache._get_instance()._hide_transparent_compounds
-    @staticmethod
-    def hide_all_compounds() -> bool: return ConfigurationCache._get_instance()._hide_all_compounds
+    @classmethod
+    def hide_transparent_compounds(cls) -> bool: return ConfigurationCache._get_instance()._hide_transparent_compounds
+    @classmethod
+    def hide_all_compounds(cls) -> bool: return ConfigurationCache._get_instance()._hide_all_compounds
 
-    @staticmethod
-    def _get_instance() -> ConfigurationCache:
+    @classmethod
+    def _get_instance(cls) -> ConfigurationCache:
         if ConfigurationCache._instance is None:
             ConfigurationCache._instance = ConfigurationCache()
         return ConfigurationCache._instance
 
-    @staticmethod
-    def _replace_instance(_: object) -> None:
+    @classmethod
+    def _replace_instance(cls, _: object) -> None:
         ConfigurationCache._instance = ConfigurationCache()

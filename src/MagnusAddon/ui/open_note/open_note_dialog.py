@@ -182,8 +182,8 @@ class NoteSearchDialog(QDialog): # Cannot inherit Slots for some QT internal rea
                 self.progress_bar.hide()
 
 
-    @staticmethod
-    def _search_in_notes[TNote: JPNote](max_notes: int, notes: list[TNote], search_text: str, **extractors: Callable[[TNote], str]) -> list[JPNote]:
+    @classmethod
+    def _search_in_notes[TNote: JPNote](cls, max_notes: int, notes: list[TNote], search_text: str, **extractors: Callable[[TNote], str]) -> list[JPNote]:
         matches: list[JPNote] = []
 
         if max_notes <= 0:
@@ -252,8 +252,8 @@ class NoteSearchDialog(QDialog): # Cannot inherit Slots for some QT internal rea
 
         return matches
 
-    @staticmethod
-    def _create_item(text: str, is_question: bool = False) -> QTableWidgetItem:
+    @classmethod
+    def _create_item(cls, text: str, is_question: bool = False) -> QTableWidgetItem:
         item = QTableWidgetItem()
         item.setText(ex_str.strip_html_and_bracket_markup(text))
 
@@ -281,8 +281,8 @@ class NoteSearchDialog(QDialog): # Cannot inherit Slots for some QT internal rea
 
         self.results_table.resizeColumnsToContents()
 
-    @staticmethod
-    def _get_note_type_display(note: JPNote) -> str:
+    @classmethod
+    def _get_note_type_display(cls, note: JPNote) -> str:
         """Get a display name for the note type"""
         if isinstance(note, VocabNote):
             return "Vocab"

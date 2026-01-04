@@ -41,8 +41,8 @@ _all_word_forms = Lazy(_find_all_words)
 _all_name_forms = Lazy(_find_all_names)
 
 class DictLookup(Slots):
-    @staticmethod
-    def _failed_for_word(word: str) -> DictLookupResult:
+    @classmethod
+    def _failed_for_word(cls, word: str) -> DictLookupResult:
         return DictLookupResult(QList(), word, QList())
 
     @classmethod
@@ -128,8 +128,8 @@ class DictLookup(Slots):
         result = list(_jamdict_threading_wrapper.lookup(word, include_names=True).names)
         return DictEntry.create(result)
 
-    @staticmethod
-    def _is_kana_only(entry: JMDEntry) -> bool:
+    @classmethod
+    def _is_kana_only(cls, entry: JMDEntry) -> bool:
         return not entry.kanji_forms or any(sense for sense
                                             in entry.senses
                                             if "word usually written using kana alone" in sense.misc)  # pyright: ignore[reportUnknownMemberType]

@@ -22,8 +22,8 @@ class PrerenderingAnswerContentRenderer[TNote: JPNote](Slots):
         self._render_methods: dict[str, Callable[[TNote], str]] = render_methods
         self._promises: dict[str, Future[str]] | None = None
 
-    @staticmethod
-    def _schedule_render_method(_render_method: Callable[[TNote], str], tag: str, note: TNote) -> Future[str]:
+    @classmethod
+    def _schedule_render_method(cls, _render_method: Callable[[TNote], str], tag: str, note: TNote) -> Future[str]:
         def run_render_method() -> str:
             with StopWatch.log_warning_if_slower_than(0.5, f"rendering:{tag}"):
                 return _render_method(note)

@@ -36,8 +36,8 @@ class CardEx(Slots):
     def __init__(self, card:anki.cards.Card) -> None:
         self.card:anki.cards.Card = card
 
-    @staticmethod
-    def _scheduler() -> Scheduler:
+    @classmethod
+    def _scheduler(cls) -> Scheduler:
         return app.anki_scheduler()
 
     def is_suspended(self) -> bool:
@@ -63,8 +63,8 @@ class CardEx(Slots):
         from note.jpnote import JPNote
         return JPNote.note_from_card(self.card)
 
-    @staticmethod
-    def _deck_manager() -> DeckManager:
+    @classmethod
+    def _deck_manager(cls) -> DeckManager:
         return app.anki_collection().decks
 
     def get_deck(self) -> DeckEx:

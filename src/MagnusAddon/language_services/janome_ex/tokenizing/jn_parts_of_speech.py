@@ -9,8 +9,8 @@ from typed_linq_collections.collections.q_set import QSet
 
 
 class JNPartsOfSpeech(Slots):
-    @staticmethod
-    def fetch(unparsed: str) -> JNPartsOfSpeech:
+    @classmethod
+    def fetch(cls, unparsed: str) -> JNPartsOfSpeech:
         return _full_parts_of_speech_dictionary[unparsed]
 
     def __init__(self, level1: str, level2: str = "*", level3: str = "*", level4: str = "*") -> None:

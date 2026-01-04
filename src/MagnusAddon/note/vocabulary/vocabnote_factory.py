@@ -16,8 +16,8 @@ if TYPE_CHECKING:
     from note.vocabulary.vocabnote import VocabNote
 
 class VocabNoteFactory(Slots):
-    @staticmethod
-    def create_with_dictionary(question: str) -> VocabNote:
+    @classmethod
+    def create_with_dictionary(cls, question: str) -> VocabNote:
         from note.vocabulary.vocabnote import VocabNote
         lookup_result: DictLookupResult = DictLookup.lookup_word(question)
         if not lookup_result.found_words():
@@ -28,8 +28,8 @@ class VocabNoteFactory(Slots):
         created.update_generated_data()
         return created
 
-    @staticmethod
-    def create(question: str, answer: str, readings: list[str], initializer: Callable[[VocabNote], None] | None = None) -> VocabNote:
+    @classmethod
+    def create(cls, question: str, answer: str, readings: list[str], initializer: Callable[[VocabNote], None] | None = None) -> VocabNote:
         from note.vocabulary.vocabnote import VocabNote
         backend_note = Note(app.anki_collection(), app.anki_collection().models.by_name(NoteTypes.Vocab))
         note = VocabNote(backend_note)

@@ -26,8 +26,8 @@ class RequiresOrForbidsHasEStem(Slots):
                 return cls._forbidden_failure
         return None
 
-    @staticmethod
-    def _internal_is_in_state(inspector: VocabMatchInspector) -> bool:
+    @classmethod
+    def _internal_is_in_state(cls, inspector: VocabMatchInspector) -> bool:
         if not inspector.prefix:
             return False
 

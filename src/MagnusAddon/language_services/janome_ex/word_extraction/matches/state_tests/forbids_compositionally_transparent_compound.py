@@ -13,8 +13,8 @@ if TYPE_CHECKING:
 class ForbidsCompositionallyTransparentCompound(Slots):
     _failed: MatchRequirement = FailedMatchRequirement.forbids("configured_to_hide_compositionally_transparent_compounds")
 
-    @staticmethod
-    def apply_to(inspector: VocabMatchInspector) -> MatchRequirement | None:
+    @classmethod
+    def apply_to(cls, inspector: VocabMatchInspector) -> MatchRequirement | None:
         _match = inspector.match
         if (ConfigurationCache.hide_transparent_compounds()
                 and _match.word.analysis.for_ui

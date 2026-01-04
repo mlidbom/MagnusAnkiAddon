@@ -8,8 +8,8 @@ from typed_linq_collections.q_iterable import query
 
 
 class WordInfo(Slots):
-    @staticmethod
-    def lookup(word: str) -> WordInfoEntry | None:
+    @classmethod
+    def lookup(cls, word: str) -> WordInfoEntry | None:
         vocab_entries = query(app.col().vocab.with_form(word))
         if vocab_entries.any():
             for vocab in vocab_entries:
@@ -23,18 +23,18 @@ class WordInfo(Slots):
 
         return None
 
-    @staticmethod
-    def lookup_godan(word: str) -> WordInfoEntry | None:
+    @classmethod
+    def lookup_godan(cls, word: str) -> WordInfoEntry | None:
         word_info = WordInfo.lookup(word)
         return word_info if word_info is not None and word_info.is_godan else None
 
-    @staticmethod
-    def lookup_ichidan(word: str) -> WordInfoEntry | None:
+    @classmethod
+    def lookup_ichidan(cls, word: str) -> WordInfoEntry | None:
         word_info = WordInfo.lookup(word)
         return word_info if word_info is not None and word_info.is_ichidan else None
 
-    @staticmethod
-    def is_godan(word: str) -> bool: return WordInfo.lookup_godan(word) is not None
+    @classmethod
+    def is_godan(cls, word: str) -> bool: return WordInfo.lookup_godan(word) is not None
 
-    @staticmethod
-    def is_ichidan(word: str) -> bool: return WordInfo.lookup_ichidan(word) is not None
+    @classmethod
+    def is_ichidan(cls, word: str) -> bool: return WordInfo.lookup_ichidan(word) is not None

@@ -181,8 +181,8 @@ class JapaneseConfig(Slots):
     def _read_reading_mappings_from_file(cls) -> dict[str, str]:
         return cls._parse_mappings_from_string(cls.read_readings_mappings_file())
 
-    @staticmethod
-    def _parse_mappings_from_string(mappings_string: str) -> dict[str, str]:
+    @classmethod
+    def _parse_mappings_from_string(cls, mappings_string: str) -> dict[str, str]:
         def parse_value_part(value_part: str) -> str:
             if "<read>" in value_part:
                 return value_part
@@ -197,8 +197,8 @@ class JapaneseConfig(Slots):
             if ":" in line
         }
 
-    @staticmethod
-    def _mappings_file_path() -> str:
+    @classmethod
+    def _mappings_file_path(cls) -> str:
         return os.path.join(app.user_files_dir, "readings_mappings.txt")
 
 config: Lazy[JapaneseConfig] = Lazy(lambda: JapaneseConfig())

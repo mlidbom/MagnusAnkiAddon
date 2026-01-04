@@ -32,8 +32,8 @@ class JamdictThreadingWrapper(WeakRefable,Slots):
         weak_self = WeakRef(self)
         self.jamdict: Lazy[Jamdict] = Lazy(lambda: weak_self().create_jamdict()) # todo: earlier attempts to save memory by resetting the jamdict instance periodically were flawed since the lazy did not use a weak reference, creatinga circular referenene that kept the instance in memory.
 
-    @staticmethod
-    def create_jamdict() -> Jamdict:
+    @classmethod
+    def create_jamdict(cls) -> Jamdict:
         return Jamdict(memory_mode=True) \
             if (app.config().load_jamdict_db_into_memory.get_value()
                 and not app.is_testing) \

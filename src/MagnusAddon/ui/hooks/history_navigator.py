@@ -26,8 +26,8 @@ class CardHistoryNavigator(WeakRefable, Slots):
     def _set_current_position_to_end_of_history(self) -> None:
         self.current_position = len(self.card_history) - 1
 
-    @staticmethod
-    def _get_history_file_path() -> str:
+    @classmethod
+    def _get_history_file_path(cls) -> str:
         return os.path.join(app.user_files_dir, "card_history.json")
 
     def _save_last_hundred_items_to_file(self) -> None:
@@ -72,8 +72,8 @@ class CardHistoryNavigator(WeakRefable, Slots):
     def _remove_from_history(self, card_id: CardId) -> None:
         while card_id in self.card_history: self.card_history.remove(card_id)  # no duplicates in the history please
 
-    @staticmethod
-    def _card_exists(card_id: CardId) -> bool:
+    @classmethod
+    def _card_exists(cls, card_id: CardId) -> bool:
         # noinspection PyBroadException
         try:
             _discarded = non_optional(mw.col).get_card(card_id)
@@ -115,8 +115,8 @@ class CardHistoryNavigator(WeakRefable, Slots):
     def _is_at_end_of_history(self) -> bool: return self.current_position >= len(self.card_history) - 1
     def _is_at_start_of_history(self) -> bool: return self.current_position <= 0
 
-    @staticmethod
-    def _show_card_by_id(card_id: CardId) -> None: search_executor.do_lookup(query_builder.open_card_by_id(card_id))
+    @classmethod
+    def _show_card_by_id(cls, card_id: CardId) -> None: search_executor.do_lookup(query_builder.open_card_by_id(card_id))
 
 navigator: CardHistoryNavigator = CardHistoryNavigator()
 

@@ -21,8 +21,8 @@ class IntObject(Slots):
     def to_dict(self) -> dict[str, int]:
         return {"value": self.value}
 
-    @staticmethod
-    def from_json(reader: JsonReader) -> IntObject:
+    @classmethod
+    def from_json(cls, reader: JsonReader) -> IntObject:
         return IntObject(reader.integer("value"))
 
     @override
@@ -42,8 +42,8 @@ class HasObjectList(Slots):
     def to_dict(self) -> dict[str, list[dict[str, int]]]:
         return {"values": [value.to_dict() for value in self.values]}
 
-    @staticmethod
-    def from_json(reader: JsonReader) -> HasObjectList:
+    @classmethod
+    def from_json(cls, reader: JsonReader) -> HasObjectList:
         return HasObjectList(reader.object_list("values", IntObject.from_json))
 
 def test_round_object_list() -> None:

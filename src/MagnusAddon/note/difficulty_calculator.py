@@ -12,8 +12,8 @@ class DifficultyCalculator(Slots):
         self.katakata_seconds: float = katakata_seconds
         self.kanji_seconds: float = kanji_seconds
 
-    @staticmethod
-    def is_other_character(char: str) -> bool:
+    @classmethod
+    def is_other_character(cls, char: str) -> bool:
         return not kana_utils.character_is_kana(char) and not kana_utils.character_is_kanji(char)
 
     def allowed_seconds(self, string: str) -> float:

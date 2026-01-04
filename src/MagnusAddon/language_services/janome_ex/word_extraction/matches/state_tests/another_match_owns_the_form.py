@@ -18,8 +18,8 @@ class ForbidsAnotherMatchOwnsTheForm(Slots):
             return cls._failed
         return None
 
-    @staticmethod
-    def _internal_is_in_state(inspector: VocabMatchInspector) -> bool:
+    @classmethod
+    def _internal_is_in_state(cls, inspector: VocabMatchInspector) -> bool:
         if inspector.match.vocab.forms.is_owned_form(inspector.tokenized_form):
             return False
 

@@ -48,8 +48,8 @@ class DictEntry(Slots):
     def is_kana_only(self) -> bool:
         return not self.kanji_forms or self.senses.any(lambda sense: sense.is_kana_only)
 
-    @staticmethod
-    def create(entries: Sequence[JMDEntry]) -> QList[DictEntry]:
+    @classmethod
+    def create(cls, entries: Sequence[JMDEntry]) -> QList[DictEntry]:
         return QList(DictEntry(entry) for entry in entries)
 
     def has_matching_kana_form(self, search: str) -> bool:
