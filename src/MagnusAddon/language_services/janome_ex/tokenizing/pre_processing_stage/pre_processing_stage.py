@@ -31,7 +31,7 @@ class PreProcessingStage(Slots):
         if split_godan_imperative is not None:
             return split_godan_imperative
 
-        split_ichidan_imperative = IchidanImperativeSplitter(token).try_split()
+        split_ichidan_imperative = IchidanImperativeSplitter.try_split(token)
         if split_ichidan_imperative is not None:
             return split_ichidan_imperative
 
