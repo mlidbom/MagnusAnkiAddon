@@ -1,24 +1,19 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, override
+from typing import TYPE_CHECKING
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
-from language_services.janome_ex.word_extraction.matches.requirements.match_custom_forbids import MatchCustomForbids
+from language_services.janome_ex.word_extraction.matches.state_tests.head.failed_match_requirement import FailedMatchRequirement
 
 if TYPE_CHECKING:
     from language_services.janome_ex.word_extraction.matches.requirements.match_inspector import MatchInspector
+    from language_services.janome_ex.word_extraction.matches.requirements.requirement import MatchRequirement
 
-class ForbidsIsConfiguredHidden(MatchCustomForbids, Slots):
-    def __init__(self, inspector: MatchInspector) -> None:
-        super().__init__(inspector)
+class ForbidsIsConfiguredHidden(Slots):
+    _failed: MatchRequirement = FailedMatchRequirement.forbids("configured_hidden")
 
-    @property
-    @override
-    def description(self) -> str: return "configured_hidden"
-
-    @override
-    def _internal_is_in_state(self) -> bool:
-        # todo: think a bit about this. Now we use the variant start index, which may differ from the match start index. Which should be used?
-        if self.inspector.variant.configuration.hidden_matches.excludes_at_index(self.inspector.tokenized_form, self.inspector.variant.start_index):  # noqa: SIM103
-            return True
-        return False
+    @staticmethod
+    def apply_to(inspector: MatchInspector) -> MatchRequirement | None:
+        if inspector.variant.configuration.hidden_matches.excludes_at_index(inspector.tokenized_form, inspector.variant.start_index):  # noqa: SIM103
+            return ForbidsIsConfiguredHidden._failed
+        return None

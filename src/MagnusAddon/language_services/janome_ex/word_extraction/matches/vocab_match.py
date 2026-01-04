@@ -56,7 +56,7 @@ class VocabMatch(Match, Slots):
         return (
                 ForbidsAnotherMatchOwnsTheForm(self.vocab_inspector),
                 # head requirements
-                ForbidsPrefixIsIn.for_if(self.vocab_inspector, self.rules.prefix_is_not.get()),
+                ForbidsPrefixIsIn.apply_to(self.vocab_inspector, self.rules.prefix_is_not.get()),
                 RequiresPrefixIsIn.for_if(self.vocab_inspector, self.rules.required_prefix.get()),
                 RequiresOrForbidsIsSentenceStart.for_if(self.vocab_inspector),
                 RequiresOrForbidsHasTeFormStem.for_if(self.vocab_inspector),
