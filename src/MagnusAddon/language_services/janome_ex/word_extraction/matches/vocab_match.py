@@ -66,7 +66,7 @@ class VocabMatch(Match, Slots):
 
                 RequiresOrForbidsHasGodanImperativePrefix.apply_to(self.vocab_inspector),
                 RequiresOrForbidsStartsWithGodanPotentialStemOrInflection.apply_to(self.vocab_inspector),
-                RequiresOrForbidsStartsWithGodanImperativeStemOrInflection.for_if(self.vocab_inspector),
+                RequiresOrForbidsStartsWithGodanImperativeStemOrInflection.apply_to(self.vocab_inspector),
                 RequiresOrForbidsStartsWithIchidanImperativeStemOrInflection.for_if(self.vocab_inspector),
 
                 # tail requirements
