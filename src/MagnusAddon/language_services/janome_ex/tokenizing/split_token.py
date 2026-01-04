@@ -38,25 +38,10 @@ class SplitToken(IAnalysisToken, Slots):
     # <IAnalysisToken implementation>
     @property
     @override
-    def is_past_tense_stem(self) -> bool: return False
-    @property
-    @override
-    def is_ichidan_masu_stem(self) -> bool: return False
+    def surface(self) -> str: return self._surface
     @property
     @override
     def is_te_form_stem(self) -> bool: return self.is_godan_potential_inflection
-    @property
-    @override
-    def is_past_tense_marker(self) -> bool: return False
-    @property
-    @override
-    def is_special_nai_negative(self) -> bool: return False
-    @property
-    @override
-    def is_masu_stem(self) -> bool: return False
-    @property
-    @override
-    def surface(self) -> str: return self._surface
     @property
     @override
     def base_form(self) -> str: return self._base_form

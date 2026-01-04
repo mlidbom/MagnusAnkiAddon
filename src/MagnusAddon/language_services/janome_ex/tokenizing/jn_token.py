@@ -109,27 +109,6 @@ class JNToken(IAnalysisToken, WeakRefable, Slots):
     @property
     @override
     def is_non_word_character(self) -> bool: return self.parts_of_speech.is_non_word_character()
-
-    #   <Only true for split tokens>
-    @property
-    @override
-    def is_godan_potential_stem(self) -> bool: return False
-    @property
-    @override
-    def is_godan_imperative_stem(self) -> bool: return False
-    @property
-    @override
-    def is_ichidan_imperative_stem(self) -> bool: return False
-    @property
-    @override
-    def is_godan_potential_inflection(self) -> bool: return False
-    @property
-    @override
-    def is_godan_imperative_inflection(self) -> bool: return False
-    @property
-    @override
-    def is_ichidan_imperative_inflection(self) -> bool: return False
-    #   </Only true for split tokens>
     # </IAnalysisToken implementation>
 
     def is_verb(self) -> bool:
