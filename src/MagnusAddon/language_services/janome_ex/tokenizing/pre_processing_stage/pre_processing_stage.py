@@ -23,7 +23,7 @@ class PreProcessingStage(Slots):
 
 
     def pre_process_token(self, token: JNToken) -> list[ProcessedToken]:  # note: The order here matters, it's not random. any change will break things even should the tests be incomplete and not show it.
-        split_godan_imperative = GodanImperativeSplitter(token).try_split()
+        split_godan_imperative = GodanImperativeSplitter.try_split(token)
         if split_godan_imperative is not None:
             return split_godan_imperative
 
