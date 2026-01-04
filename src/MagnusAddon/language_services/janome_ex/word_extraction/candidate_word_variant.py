@@ -13,6 +13,8 @@ from sysutils.lazy import Lazy
 from sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
+    from collections.abc import Iterable
+
     from language_services.jamdict_ex.dict_lookup_result import DictLookupResult
     from language_services.janome_ex.word_extraction.candidate_word import CandidateWord
     from language_services.janome_ex.word_extraction.matches.match import Match
@@ -35,31 +37,38 @@ class CandidateWordVariant(WeakRefable, Slots):
         self.completed_visibility_analysis = False
         self.matches: list[Match] = []
         self._is_valid: bool = False
-        self._valid_matches: list[Match] = []
+        self._valid_matches: Iterable[Match] = []
         self._display_matches: list[Match] = []
+        self._valid_vocab_matches: list[VocabMatch] = []
 
     @property
     def is_surface(self) -> bool: return self.form == self.word.surface_form
     @property
     def vocabs_control_match_status(self) -> bool:
-        return (any(self._valid_vocab_matches)
-                or any(self._form_owning_vocab_matches)
+        return (any(self._form_owning_vocab_matches)
                 or (any(self.vocab_matches) and not self._dict_lookup().found_words() and self.word.is_compound))
 
     def run_validity_analysis(self) -> None:
         ex_assert.that(not self.completed_validity_analysis)
 
-        if self.vocabs_control_match_status:
+        self._valid_vocab_matches = [vm for vm in self.vocab_matches if vm.is_valid]
+
+        if any(self._valid_vocab_matches) or self.vocabs_control_match_status:
             self.matches = list(self.vocab_matches)
+            self.completed_validity_analysis = True
+            self._valid_matches = [match for match in self._valid_vocab_matches if match.is_valid]
+            if len(self._valid_vocab_matches) != len(self._valid_matches):
+                print(f"""WTF valid_vocab{len(self._valid_vocab_matches)} != valid_matche:{len(self._valid_matches)}""")
         else:
             if self._dict_lookup().found_words():
                 self.matches = [DictionaryMatch(self.weak_ref, self._dict_lookup().entries[0])]
             else:
                 self.matches = [MissingMatch(self.weak_ref)]
 
-        self.completed_validity_analysis = True
-        self._is_valid = any(match for match in self._once_validity_analyzed.matches if match.is_valid)
-        self._valid_matches = [match for match in self.matches if match.is_valid]
+            self.completed_validity_analysis = True
+            self._valid_matches = [match for match in self._once_validity_analyzed.matches if match.is_valid]
+
+        self._is_valid = any(self._valid_matches)
 
     def run_visibility_analysis(self) -> None:
         self._display_matches = [match for match in self._once_validity_analyzed.matches if match.is_displayed]
@@ -76,11 +85,9 @@ class CandidateWordVariant(WeakRefable, Slots):
     @property
     def _form_owning_vocab_matches(self) -> list[VocabMatch]: return [vm for vm in self.vocab_matches if vm.vocab.forms.is_owned_form(self.form)]
     @property
-    def _valid_vocab_matches(self) -> list[VocabMatch]: return [vm for vm in self.vocab_matches if vm.is_valid]
-    @property
     def has_valid_match(self) -> bool: return self._once_validity_analyzed._is_valid
     @property
-    def valid_matches(self) -> list[Match]: return self._once_validity_analyzed._valid_matches
+    def valid_matches(self) -> Iterable[Match]: return self._once_validity_analyzed._valid_matches
     @property
     def display_matches(self) -> list[Match]: return self._once_visibility_analyzed._display_matches
 
