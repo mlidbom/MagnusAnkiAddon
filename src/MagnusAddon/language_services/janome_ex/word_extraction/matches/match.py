@@ -23,7 +23,6 @@ class Match(WeakRefable, Slots):
         weakref_self = WeakRef(self)
         inspector = MatchInspector(weakref_self)
         self.inspector: MatchInspector = inspector
-        self._is_not_shadowed_requirement: MatchRequirement = ForbidsIsShadowed(inspector)
         self.weakref: WeakRef[Match] = weakref_self
         self._variant: WeakRef[CandidateWordVariant] = word_variant
 
@@ -50,7 +49,7 @@ class Match(WeakRefable, Slots):
     def _display_requirements(self) -> list[MatchRequirement]:
         if self._display_requirements_cache is None:
             self._display_requirements_cache = [r for r in (
-                    self._is_not_shadowed_requirement,
+                    ForbidsIsShadowed(self.inspector),
                     ForbidsIsConfiguredHidden.apply_to(self.inspector),
                     ForbidsConfiguredToHideCompounds.apply_to(self),
                     *self._create_display_requirements()) if r is not None]
@@ -124,7 +123,7 @@ class Match(WeakRefable, Slots):
     def _is_emergency_displayed(self) -> bool:
         return (self.variant.is_surface
                 and self._surface_is_seemingly_valid_single_token
-                and self._is_not_shadowed_requirement.is_fulfilled
+                and not self.is_shadowed
                 and not self._base_is_valid_word
                 and not self._has_valid_for_display_sibling)
 
