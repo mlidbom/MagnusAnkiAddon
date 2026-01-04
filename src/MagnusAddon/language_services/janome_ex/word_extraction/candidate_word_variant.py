@@ -33,11 +33,11 @@ class CandidateWordVariant(WeakRefable, Slots):
         self.vocab_matches: list[VocabMatch] = [VocabMatch(self.weak_ref, vocab) for vocab in app.col().vocab.with_form(form)]
 
         # will be completed in complete_analysis
-        self.completed_validity_analysis = False
+        self._completed_validity_analysis = False
         self.completed_visibility_analysis = False
         self.matches: list[Match] = []
         self._is_valid: bool = False
-        self._valid_matches: Iterable[Match] = []
+        self._valid_matches: list[Match] = []
         self._display_matches: list[Match] = []
         self._valid_vocab_matches: list[VocabMatch] = []
 
@@ -49,26 +49,22 @@ class CandidateWordVariant(WeakRefable, Slots):
                 or (any(self.vocab_matches) and not self._dict_lookup().found_words() and self.word.is_compound))
 
     def run_validity_analysis(self) -> None:
-        ex_assert.that(not self.completed_validity_analysis)
+        ex_assert.that(not self._completed_validity_analysis)
 
         self._valid_vocab_matches = [vm for vm in self.vocab_matches if vm.is_valid]
 
         if any(self._valid_vocab_matches) or self.vocabs_control_match_status:
             self.matches = list(self.vocab_matches)
-            self.completed_validity_analysis = True
-            self._valid_matches = [match for match in self._valid_vocab_matches if match.is_valid]
-            if len(self._valid_vocab_matches) != len(self._valid_matches):
-                print(f"""WTF valid_vocab{len(self._valid_vocab_matches)} != valid_matche:{len(self._valid_matches)}""")
+            self._valid_matches = list(self._valid_vocab_matches)
         else:
             if self._dict_lookup().found_words():
                 self.matches = [DictionaryMatch(self.weak_ref, self._dict_lookup().entries[0])]
             else:
                 self.matches = [MissingMatch(self.weak_ref)]
-
-            self.completed_validity_analysis = True
-            self._valid_matches = [match for match in self._once_validity_analyzed.matches if match.is_valid]
+            self._valid_matches = [match for match in self.matches if match.is_valid]
 
         self._is_valid = any(self._valid_matches)
+        self._completed_validity_analysis = True
 
     def run_visibility_analysis(self) -> None:
         self._display_matches = [match for match in self._once_validity_analyzed.matches if match.is_displayed]
@@ -93,12 +89,12 @@ class CandidateWordVariant(WeakRefable, Slots):
 
     @property
     def _once_validity_analyzed(self) -> CandidateWordVariant:
-        if not self.completed_validity_analysis: raise Exception("Analysis not completed yet")
+        if not self._completed_validity_analysis: raise Exception("Analysis not completed yet")
         return self
 
     @property
     def _once_visibility_analyzed(self) -> CandidateWordVariant:
-        if not self.completed_validity_analysis: raise Exception("Analysis not completed yet")
+        if not self._completed_validity_analysis: raise Exception("Analysis not completed yet")
         return self
 
     def to_exclusion(self) -> WordExclusion:

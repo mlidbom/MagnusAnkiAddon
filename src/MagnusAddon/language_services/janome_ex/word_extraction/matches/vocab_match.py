@@ -105,7 +105,9 @@ class VocabMatch(Match, Slots):
 
     @override
     def _is_valid(self) -> bool:
-        return self._is_valid_internal or (self.is_highlighted and not any(match for match in self.variant.vocab_matches if match._is_valid_internal))
+        return (self._is_valid_internal
+                or (self.is_highlighted
+                    and not any(match for match in self.variant.vocab_matches if match != self and match._is_valid_internal)))  # We never mix vocab matches with other matches so using the vocab specific collection is fine
 
     @property
     def another_match_owns_the_form(self) -> bool:

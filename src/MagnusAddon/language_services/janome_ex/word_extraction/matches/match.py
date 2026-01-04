@@ -77,14 +77,10 @@ class Match(WeakRefable, Slots):
 
     @property
     def is_valid(self) -> bool:
-        if self._is_valid_cache is not None:
-            return self._is_valid_cache
-
-        if self.variant.completed_validity_analysis:
+        if self._is_valid_cache is None:
             self._is_valid_cache = self._is_valid()
-            return self._is_valid_cache
 
-        return self._is_valid()
+        return self._is_valid_cache
 
     def _is_valid(self) -> bool:
         return self._is_valid_internal or self.is_highlighted
@@ -120,15 +116,11 @@ class Match(WeakRefable, Slots):
                 and not self._has_valid_for_display_sibling)
 
     @property
-    def _has_valid_for_display_sibling(self) -> bool: return any(other_match for other_match in self._sibling_matches if other_match.is_valid_for_display)
-    @property
-    def _sibling_matches(self) -> list[Match]: return [match for match in self.variant.matches if match != self]
+    def _has_valid_for_display_sibling(self) -> bool: return any(other_match for other_match in self.variant.matches if other_match != self and other_match.is_valid_for_display)
     @property
     def _base_is_valid_word(self) -> bool: return self.word.base_variant is not None and self.word.base_variant.has_valid_match
-
     @property
     def _surface_is_seemingly_valid_single_token(self) -> bool: return self.word.has_seemingly_valid_single_token
-
     @property
     def is_shadowed(self) -> bool: return self.word.is_shadowed
     @property
