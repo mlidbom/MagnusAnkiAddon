@@ -1,40 +1,27 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, override
+from typing import TYPE_CHECKING
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from language_services.janome_ex.word_extraction import analysis_constants
 from language_services.janome_ex.word_extraction.matches.requirements.custom_requires_or_forbids import CustomRequiresOrForbids
+from language_services.janome_ex.word_extraction.matches.state_tests.head.failed_match_requirement import FailedMatchRequirement
 
 if TYPE_CHECKING:
+    from language_services.janome_ex.word_extraction.matches.requirements.requirement import MatchRequirement
     from language_services.janome_ex.word_extraction.matches.requirements.vocab_match_inspector import VocabMatchInspector
 
 class RequiresOrForbidsIsSentenceStart(CustomRequiresOrForbids, Slots):
-    def __init__(self, inspector: VocabMatchInspector) -> None:
-        super().__init__(inspector)
+    _required_failure: FailedMatchRequirement = FailedMatchRequirement.required("sentence_start")
+    _forbidden_failure: FailedMatchRequirement = FailedMatchRequirement.forbids("sentence_start")
 
     @staticmethod
-    def for_if(inspector: VocabMatchInspector) -> RequiresOrForbidsIsSentenceStart | None:
-        return RequiresOrForbidsIsSentenceStart(inspector) if inspector.match.requires_forbids.sentence_start.is_active else None
-
-    @property
-    @override
-    def is_required(self) -> bool:
-        return self.inspector.match.requires_forbids.sentence_start.is_required
-
-    @property
-    @override
-    def is_forbidden(self) -> bool:
-        return self.inspector.match.requires_forbids.sentence_start.is_forbidden
-
-    @property
-    @override
-    def description(self) -> str:
-        return "sentence_start"
-
-    @override
-    def _internal_is_in_state(self) -> bool:
-        if len(self.inspector.prefix) == 0 or self.inspector.prefix[-1] in analysis_constants.sentence_start_characters:  # noqa: SIM103
-            return True
-        return False
-
+    def apply_to(inspector: VocabMatchInspector) -> MatchRequirement | None:
+        requirement = inspector.match.matching_configuration.requires_forbids.sentence_start
+        if requirement.is_active:
+            is_in_state = len(inspector.prefix) == 0 or inspector.prefix[-1] in analysis_constants.sentence_start_characters
+            if requirement.is_required and not is_in_state:
+                return RequiresOrForbidsIsSentenceStart._required_failure
+            if requirement.is_forbidden and is_in_state:
+                return RequiresOrForbidsIsSentenceStart._forbidden_failure
+        return None
