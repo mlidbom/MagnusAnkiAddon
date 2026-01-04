@@ -9,8 +9,8 @@ from language_services.janome_ex.tokenizing.pre_processing_stage.pre_processing_
 
 if TYPE_CHECKING:
     from janome.tokenizer import Token  # pyright: ignore[reportMissingTypeStubs]
+    from language_services.janome_ex.tokenizing.analysis_token import IAnalysisToken
     from language_services.janome_ex.tokenizing.jn_token import JNToken
-    from language_services.janome_ex.tokenizing.processed_token import IAnalysisToken
 
 class JNTokenizedText(Slots):
     def __init__(self, text: str, raw_tokens: list[Token], tokens: list[JNToken]) -> None:

@@ -4,10 +4,10 @@ from typing import TYPE_CHECKING, override
 
 from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from language_services.janome_ex.tokenizing import inflection_forms, inflection_types
+from language_services.janome_ex.tokenizing.analysis_token import IAnalysisToken
 from language_services.janome_ex.tokenizing.inflection_forms import InflectionForms
 from language_services.janome_ex.tokenizing.inflection_types import InflectionTypes
 from language_services.janome_ex.tokenizing.jn_parts_of_speech import JNPOS, JNPartsOfSpeech
-from language_services.janome_ex.tokenizing.processed_token import IAnalysisToken
 from language_services.janome_ex.word_extraction import analysis_constants
 from sysutils import kana_utils, typed
 from sysutils.weak_ref import WeakRef, WeakRefable

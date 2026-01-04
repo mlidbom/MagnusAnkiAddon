@@ -4,9 +4,10 @@ from typing import TYPE_CHECKING
 
 from autoslot import Slots
 from language_services.janome_ex.tokenizing.inflection_forms import InflectionForms
-from language_services.janome_ex.tokenizing.processed_token import IAnalysisToken, SplitToken
+from language_services.janome_ex.tokenizing.split_token import SplitToken
 
 if TYPE_CHECKING:
+    from language_services.janome_ex.tokenizing.analysis_token import IAnalysisToken
     from language_services.janome_ex.tokenizing.jn_token import JNToken
 
 class IchidanImperativeSplitter(Slots):

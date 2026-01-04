@@ -7,7 +7,7 @@ from sysutils.weak_ref import WeakRef, WeakRefable
 from typed_linq_collections.q_iterable import query  # pyright: ignore[reportMissingTypeStubs]
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.tokenizing.processed_token import IAnalysisToken
+    from language_services.janome_ex.tokenizing.analysis_token import IAnalysisToken
     from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
     from language_services.janome_ex.word_extraction.matches.match import Match
     from typed_linq_collections.collections.q_list import QList

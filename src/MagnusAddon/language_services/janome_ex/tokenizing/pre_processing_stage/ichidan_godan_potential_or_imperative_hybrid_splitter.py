@@ -6,10 +6,11 @@ from autoslot import Slots
 from language_services import conjugator
 from language_services.janome_ex.tokenizing.inflection_forms import InflectionForms
 from language_services.janome_ex.tokenizing.pre_processing_stage.word_info import WordInfo
-from language_services.janome_ex.tokenizing.processed_token import IAnalysisToken, SplitToken
+from language_services.janome_ex.tokenizing.split_token import SplitToken
 from sysutils.typed import non_optional
 
 if TYPE_CHECKING:
+    from language_services.janome_ex.tokenizing.analysis_token import IAnalysisToken
     from language_services.janome_ex.tokenizing.jn_token import JNToken
     from note.collection.vocab_collection import VocabCollection
 

@@ -7,7 +7,7 @@ from autoslot import Slots  # pyright: ignore[reportMissingTypeStubs]
 from sysutils.weak_ref import WeakRef, WeakRefable
 
 if TYPE_CHECKING:
-    from language_services.janome_ex.tokenizing.processed_token import IAnalysisToken
+    from language_services.janome_ex.tokenizing.analysis_token import IAnalysisToken
     from language_services.janome_ex.word_extraction.candidate_word_variant import CandidateWordVariant
     from language_services.janome_ex.word_extraction.text_analysis import TextAnalysis
 

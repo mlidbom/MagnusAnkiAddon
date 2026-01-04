@@ -3,44 +3,12 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from autoslot import Slots
+from language_services.janome_ex.tokenizing.analysis_token import IAnalysisToken
 
 if TYPE_CHECKING:
     from language_services.janome_ex.tokenizing.jn_token import JNToken
 
-class IAnalysisToken(Slots):
-
-    @property
-    def is_past_tense_stem(self) -> bool: raise NotImplementedError()
-    @property
-    def is_ichidan_masu_stem(self) -> bool: raise NotImplementedError()
-    @property
-    def is_te_form_stem(self) -> bool: raise NotImplementedError()
-    @property
-    def is_past_tense_marker(self) -> bool: raise NotImplementedError()
-    @property
-    def is_special_nai_negative(self) -> bool: raise NotImplementedError()
-    @property
-    def is_godan_potential_stem(self) -> bool: raise NotImplementedError()
-    @property
-    def is_godan_potential_inflection(self) -> bool: raise NotImplementedError()
-    @property
-    def is_ichidan_imperative_stem(self) -> bool: raise NotImplementedError()
-    @property
-    def surface(self) -> str: raise NotImplementedError()
-    @property
-    def base_form(self) -> str: raise NotImplementedError()
-    @property
-    def is_inflectable_word(self) -> bool: raise NotImplementedError()
-    @property
-    def is_non_word_character(self) -> bool: raise NotImplementedError()
-    @property
-    def is_godan_imperative_inflection(self) -> bool: raise NotImplementedError()
-    @property
-    def is_ichidan_imperative_inflection(self) -> bool: raise NotImplementedError()
-    @property
-    def is_godan_imperative_stem(self) -> bool: raise NotImplementedError()
-    @property
-    def is_masu_stem(self) -> bool: raise NotImplementedError()
+# this is the interface that is actually used in the text analysis pipeline
 
 class SplitToken(IAnalysisToken, Slots):
     def __init__(self,
